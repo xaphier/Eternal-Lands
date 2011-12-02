@@ -278,7 +278,11 @@ namespace eternal_lands
 
 			if (in_mask[index])
 			{
+#ifdef	USE_SSE2_
 				switch (get_plane(index).intersect_sse2(box))
+#else	/* USE_SSE2 */
+				switch (get_plane(index).intersect(box))
+#endif	/* USE_SSE2 */
 				{
 					case it_outside:
 						return;

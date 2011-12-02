@@ -91,7 +91,7 @@ namespace eternal_lands
 
 		return true;
 	}
-
+#ifdef	USE_SSE2_
 	IntersectionType Plane::intersect_sse2(const BoundingBox &box) const
 	{
 		__m128 c_xy, h_xy, c_z, h_z, min_max_xy, p, p_xy, p_z, p_w;
@@ -142,7 +142,7 @@ namespace eternal_lands
 
 		return it_intersect;
 	}
-
+#endif	/* USE_SSE2 */
 	const String &Plane::get_str(const IntersectionType intersection)
 	{
 		if (intersection_type_names_count <= intersection)

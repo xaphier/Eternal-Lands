@@ -190,10 +190,10 @@ namespace eternal_lands
 					}
 				}
 			}
-
+#ifdef	USE_SSE2_
 			IntersectionType intersect_sse2(const BoundingBox &box)
 				const;
-
+#endif	/* USE_SSE2 */
 			/**
 			 * @brief Gets a transformed plane.
 			 *
