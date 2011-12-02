@@ -1,0 +1,22 @@
+/****************************************************************************
+ *            buildinformations.cpp.in
+ *
+ * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Copyright: See COPYING file that comes with this distribution
+ ****************************************************************************/
+
+#include "buildinformations.hpp"
+
+namespace eternal_lands
+{
+
+#define GIT_SHA1 "@GIT_SHA1@"
+#define GIT_DESCRIBE "@GIT_DESCRIBE@"
+#define CMAKE_BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+
+	const char* git_sha1_str = GIT_SHA1;
+	const char* git_describe_str = GIT_DESCRIBE;
+	const char* cmake_build_type_str = CMAKE_BUILD_TYPE;
+
+}
+

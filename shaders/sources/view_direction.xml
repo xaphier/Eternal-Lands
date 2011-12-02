@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>default</name>
+ <type>view_direction</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>world_position</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>camera</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_view_direction</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	world_view_direction.xyz = world_position - camera.xyz;
+	world_view_direction.w = dot(world_view_direction.xyz,
+		world_view_direction.xyz);
+	world_view_direction *= inversesqrt(world_view_direction.w);
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_150>true</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>true</material_texture_arrays>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

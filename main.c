@@ -17,8 +17,6 @@
  char   *win_command_line;
 #endif //WINDOWS
 
-#include "2d_objects.h"
-#include "3d_objects.h"
 #include "actor_scripts.h"
 #include "asc.h"
 #include "astrology.h"
@@ -39,13 +37,11 @@
 #include "item_lists.h"
 #include "interface.h"
 #include "lights.h"
-#include "manufacture.h"
 #include "multiplayer.h"
 #include "particles.h"
 #include "pm_log.h"
 #include "questlog.h"
 #include "queue.h"
-#include "reflection.h"
 #include "rules.h"
 #include "sound.h"
 #include "text.h"
@@ -69,6 +65,7 @@
 #ifdef	FSAA
 #include "fsaa/fsaa.h"
 #endif	/* FSAA */
+#include "engine.h"
 
 Uint32 cur_time=0, last_time=0;//for FPS
 
@@ -99,15 +96,6 @@ void cleanup_mem(void)
 	destroy_all_actors();
 	end_actors_lists();
 	cleanup_lights();
-	/* 2d objects */
-	destroy_all_2d_objects();
-	/* 3d objects */
-	destroy_all_3d_objects();
-
-	/* caches */
-	cache_e3d->free_item = &destroy_e3d;
-	cache_delete(cache_e3d);
-	cache_e3d = NULL;
 	// Horrible hack >>>>
 	// There's a bug with this call, it appears to make use of memory it's already freed.
 	// Valgrind shows on Linux but I've not seen a crash.
@@ -262,9 +250,6 @@ int start_rendering()
 	cleanup_chan_names();
 	SDL_RemoveTimer(draw_scene_timer);
 	SDL_RemoveTimer(misc_timer);
-	end_particles ();
-	free_bbox_tree(main_bbox_tree);
-	main_bbox_tree = NULL;
 	free_astro_buffer();
 	/* Destroy our GL context, etc. */
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
@@ -295,8 +280,7 @@ int start_rendering()
 	cleanup_mem();
 	xmlCleanupParser();
 	FreeXML();
-	// shouldn't this be before SDL_Quit()? that shutsdown the video mode
-	if (use_frame_buffer) free_reflection_framebuffer();
+	exit_engine();
 
 	exit_logging();
 
@@ -429,6 +413,8 @@ int main(int argc, char **argv)
 #ifdef	OLC
 	olc_init();
 #endif	//OLC
+	init_file_system();
+	init_global_vars();
 	init_logging("log");
 
 	check_log_level_on_command_line();
@@ -452,6 +438,8 @@ int main(int argc, char **argv)
 #ifdef	OLC
 	olc_shutdown();
 #endif	//OLC
+	exit_global_vars();
+	exit_file_system();
 
 #ifndef WINDOWS
 	// attempt to restart if requested

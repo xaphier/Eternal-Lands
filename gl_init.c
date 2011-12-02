@@ -22,10 +22,10 @@
 #include "minimap.h"
 #include "sky.h"
 #include "shader/shader.h"
-#include "actor_init.h"
 #ifdef	FSAA
 #include "fsaa/fsaa.h"
 #endif	/* FSAA */
+#include "engine.h"
 
 Uint32 flags;
 
@@ -62,7 +62,7 @@ struct list {
 	struct list * next;
 } * list;
 
-void APIENTRY Emul_glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices)
+void Emul_glDrawRangeElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const GLvoid *indices)
 {
 	glDrawElements(mode, count, type, indices);
 }
@@ -597,6 +597,22 @@ void init_gl_extensions()
 {
 	char str[1024];
 
+#ifdef OSX
+	/* Test if that helps .... */
+	glewExperimental = GL_TRUE;
+#endif	/* OSX */
+	glewInit();
+
+	if (!GLEW_VERSION_2_1)
+	{
+		safe_snprintf(str, sizeof(str), "OpenGL 2.1 needed, but onlny"
+			" '%s' found!", glGetString(GL_VERSION));
+		LOG_TO_CONSOLE(c_red1, str);
+		LOG_ERROR("%s", str);
+
+		exit(1);
+	}
+
 	init_opengl_extensions();
 
 	/*	GL_ARB_multitexture			*/
@@ -968,7 +984,7 @@ void init_gl_extensions()
 		check_fbo_formats();
 	}
 #endif
-	init_shaders();
+//	init_shaders();
 
 #ifdef	GL_EXTENSION_CHECK
 	evaluate_extension();
@@ -1019,16 +1035,22 @@ void resize_root_window()
 	}
 	else
 	{
+#if	0
 		glFrustum(-perspective*window_ratio*near_plane,
 				   perspective*window_ratio*near_plane,
 				  -perspective*near_plane,
 				   perspective*near_plane,
 				  near_plane, far_plane);
+
 		if (!first_person)
 		{
 			glTranslatef(0.0, 0.0, zoom_level*camera_distance);
 			glTranslatef(0.0, 0.0, -zoom_level/perspective);
 		}
+#else
+		gluPerspective(40.0f, window_ratio, near_plane, far_plane);
+		engine_resize_root_window(40.0f, window_ratio, near_plane, far_plane);
+#endif
 	}
 
 	glMatrixMode(GL_MODELVIEW);					// Select The Modelview Matrix
@@ -1077,23 +1099,6 @@ void set_new_video_mode(int fs,int mode)
 		}
 #endif
 #endif	/* NEW_TEXTURES */
-
-	if (use_vertex_buffers)
-	{
-		e3d_object * obj;
-
-#ifdef FASTER_MAP_LOAD
-		for (i = 0; i < cache_e3d->num_items; i++)
-#else
-		for (i = 0; i < cache_e3d->max_item; i++)
-#endif
-		{
-			if (!cache_e3d->cached_items[i]) continue;
-			obj= cache_e3d->cached_items[i]->cache_item;
-			free_e3d_va(obj);
-		}
-		CHECK_GL_ERRORS();
-	}
 
 #ifndef	NEW_TEXTURES
 	ec_clear_textures();

@@ -34,7 +34,7 @@
 #include "minimap.h"
 #include "io/elfilewrapper.h"
 #include "io/cal3d_io_wrapper.h"
-#include "actor_init.h"
+#include "engine.h"
 #ifdef	NEW_TEXTURES
 #include "textures.h"
 #endif	/* NEW_TEXTURES */
@@ -155,7 +155,7 @@ void cal_actor_set_random_idle(int id)
 	//actors_list[id]->anim_time=0.0;
 	CalModel_Update(actors_list[id]->calmodel,0.0001);//Make changes take effect now
 	build_actor_bounding_box(actors_list[id]);
-	if (use_animation_program)
+	if (1) /* use_animation_program */
 	{
 		set_transformation_buffers(actors_list[id]);
 	}
@@ -453,7 +453,7 @@ void animate_actors()
 				}
 
 				}
-				if (use_animation_program)
+				if (1) /* use_animation_program */
 				{
 					set_transformation_buffers(actors_list[i]);
 				}
@@ -611,14 +611,6 @@ void move_to_next_frame()
 #ifdef	NEW_TEXTURES
 			if (actors_list[i]->in_aim_mode == 0)
 			{
-				if (actors_list[i]->is_enhanced_model != 0)
-				{
-					if (get_actor_texture_ready(actors_list[i]->texture_id))
-					{
-						use_ready_actor_texture(actors_list[i]->texture_id);
-					}
-				}
-
 				if (actors_list[i]->delayed_item_changes_count > 0)
 				{
 					// we really leave the aim mode only when the animation is finished
@@ -1717,16 +1709,10 @@ void free_actor_data(int actor_index)
 {
 	actor *act = actors_list[actor_index];
     if(act->calmodel!=NULL)
-        model_delete(act->calmodel);
+        model_delete(act->actor_id);
 #ifdef	NEW_TEXTURES
-	if(act->remapped_colors)
-	{
-		free_actor_texture(act->texture_id);
-	}
 	if (act->is_enhanced_model)
 	{
-		free_actor_texture(act->texture_id);
-
 	        if (act->body_parts)
 		{
 			free(act->body_parts);
@@ -2011,7 +1997,7 @@ void add_command_to_actor(int actor_id, unsigned char command)
 				CalModel_Update(act->calmodel, 5.0f);
 				build_actor_bounding_box(act);
 				missiles_rotate_actor_bones(get_actor_ptr_from_id(actor_id));
-				if (use_animation_program)
+				if (1) /* use_animation_program */
 				{
 					set_transformation_buffers(act);
 				}
@@ -4482,10 +4468,8 @@ int parse_actor_script(const xmlNode *cfg)
 			act->shirt = (shirt_part*)calloc(actor_part_sizes[ACTOR_SHIRT_SIZE], sizeof(shirt_part));
 			act->shirt[0].mesh_index= cal_load_mesh(act, act->file_name, NULL); //save the single meshindex as torso
 		}
-		if (use_animation_program)
-		{
-			build_buffers(act);
-		}
+
+		build_buffers(act);
 	}
 
 	return ok;

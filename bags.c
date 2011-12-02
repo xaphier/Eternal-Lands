@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "bags.h"
-#include "3d_objects.h"
 #include "asc.h"
 #include "cursors.h"
 #include "elwindows.h"
@@ -21,8 +20,9 @@
 #include "gl_init.h"
 #ifdef NEW_SOUND
 #include "actors.h"
-#endif // NEW_SOUND
 #include "sound.h"
+#endif // NEW_SOUND
+#include "engine.h"
 
 ground_item ground_item_list[ITEMS_PER_BAG];
 bag bag_list[NUM_BAGS];
@@ -140,7 +140,7 @@ float get_bag_tilt(float pos_x, float pos_y, int bag_id, int map_x, int map_y)
 void put_bag_on_ground(int bag_x,int bag_y,int bag_id)
 {
 	float x,y,z;
-	int obj_3d_id;
+	Uint32 obj_3d_id;
 #ifdef NEW_SOUND
 	int snd;
 #endif // NEW_SOUND
@@ -184,19 +184,16 @@ void put_bag_on_ground(int bag_x,int bag_y,int bag_id)
 	}
 #endif // NEW_SOUND
 
-#ifdef OLD_MISC_OBJ_DIR
-	obj_3d_id=add_e3d("./3dobjects/misc_objects/bag1.e3d", x, y, z,
-#else
-	obj_3d_id=add_e3d("./3dobjects/bag1.e3d", x, y, z,
-#endif
+	obj_3d_id = get_next_free_id();
+	add_object_engine("./3dobjects/bag1.e3d", x, y, z,
 		get_bag_tilt(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y), 0,
 		get_bag_rotation(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y),
-		1 ,0 ,1.0f ,1.0f, 1.0f, 1);
+		0, 1.0f, 1.0f, 1.0f, obj_3d_id, st_pick);
 
 	//now, find a place into the bags list, so we can destroy the bag properly
-	bag_list[bag_id].x=bag_x;
-	bag_list[bag_id].y=bag_y;
-	bag_list[bag_id].obj_3d_id=obj_3d_id;
+	bag_list[bag_id].x = bag_x;
+	bag_list[bag_id].y = bag_y;
+	bag_list[bag_id].obj_3d_id = obj_3d_id;
 }
 
 void add_bags_from_list (const Uint8 *data)
@@ -205,7 +202,8 @@ void add_bags_from_list (const Uint8 *data)
 	int i;
 	int bag_x,bag_y,my_offset; //bag_type unused?
 	float x,y,z;
-	int obj_3d_id, bag_id;
+	Uint32 obj_3d_id;
+	int bag_id;
 
 	bags_no=data[0];
 
@@ -257,17 +255,15 @@ void add_bags_from_list (const Uint8 *data)
 			return;
 		}
 
-#ifdef OLD_MISC_OBJ_DIR
-		obj_3d_id = add_e3d("./3dobjects/misc_objects/bag1.e3d", x, y, z,
-#else
-		obj_3d_id = add_e3d("./3dobjects/bag1.e3d", x, y, z,
-#endif
+		obj_3d_id = get_next_free_id();
+		add_object_engine("./3dobjects/bag1.e3d", x, y, z,
 			get_bag_tilt(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y), 0,
 			get_bag_rotation(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y),
-			1, 0, 1.0f, 1.0f, 1.0f, 1);
-		bag_list[bag_id].x=bag_x;
-		bag_list[bag_id].y=bag_y;
-		bag_list[bag_id].obj_3d_id=obj_3d_id;
+			0, 1.0f, 1.0f, 1.0f, obj_3d_id, st_pick);
+
+		bag_list[bag_id].x = bag_x;
+		bag_list[bag_id].y = bag_y;
+		bag_list[bag_id].obj_3d_id = obj_3d_id;
 	}
 }
 
@@ -278,6 +274,7 @@ void remove_item_from_ground(Uint8 pos)
 
 void remove_bag(int bag_id)
 {
+	float x, y, z;
 #ifdef NEW_SOUND
 	int snd;
 #endif // NEW_SOUND
@@ -290,8 +287,10 @@ void remove_bag(int bag_id)
 		return;
 	}
 
-	if (use_eye_candy) {
-		ec_create_bag_pickup(objects_list[bag_list[bag_id].obj_3d_id]->x_pos, objects_list[bag_list[bag_id].obj_3d_id]->y_pos, objects_list[bag_list[bag_id].obj_3d_id]->z_pos, (poor_man ? 6 : 10));
+	if (use_eye_candy)
+	{
+		get_object_position(bag_list[bag_id].obj_3d_id, &x, &y, &z);
+		ec_create_bag_pickup(x, y, z, (poor_man ? 6 : 10));
 #ifdef ONGOING_BAG_EFFECT
 		if (bag_list[bag_id].ongoing_bag_effect_reference != NULL) {
 			ec_recall_effect(bag_list[bag_id].ongoing_bag_effect_reference);
@@ -310,15 +309,17 @@ void remove_bag(int bag_id)
 	}
 #endif // NEW_SOUND
 
-	destroy_3d_object(bag_list[bag_id].obj_3d_id);
-	bag_list[bag_id].obj_3d_id=-1;
+	remove_object(bag_list[bag_id].obj_3d_id);
+	bag_list[bag_id].obj_3d_id = -1;
 }
 
-void remove_all_bags(){
+void remove_all_bags()
+{
 	int i;
 
-	for(i=0; i<NUM_BAGS; i++){    // clear bags list!!!!
-		bag_list[i].obj_3d_id= -1;
+	for (i = 0; i < NUM_BAGS; i++)
+	{
+		bag_list[i].obj_3d_id = -1;
 	}
 }
 
@@ -553,6 +554,7 @@ int click_ground_items_handler(window_info *win, int mx, int my, Uint32 flags)
 	if(mx>(win->len_x-GRIDSIZE) && mx<win->len_x && my>ELW_BOX_SIZE && my<GRIDSIZE+ELW_BOX_SIZE){
 		pick_up_all_items();
 		do_get_item_sound();
+
 		return 1;
 	}
 

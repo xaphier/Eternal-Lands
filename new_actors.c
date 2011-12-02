@@ -29,7 +29,7 @@
 #include "gl_init.h"
 #endif
 #include "io/elfilewrapper.h"
-#include "actor_init.h"
+#include "engine.h"
 
 float sitting=1.0f;
 glow_color glow_colors[10];
@@ -67,7 +67,7 @@ int add_enhanced_actor(enhanced_actor *this_actor, float x_pos, float y_pos,
 					   float z_pos, float z_rot, float scale, int actor_id)
 #endif	// NEW_TEXTURES
 {
-	int texture_id;
+//	int texture_id;
 	int i;
 	int k;
 	actor *our_actor;
@@ -80,13 +80,6 @@ int add_enhanced_actor(enhanced_actor *this_actor, float x_pos, float y_pos,
 	ERR();
 #endif
 
-	//get the skin
-#ifdef	NEW_TEXTURES
-	texture_id = load_enhanced_actor(this_actor, name);
-#else	/* NEW_TEXTURES */
-	texture_id= load_bmp8_enhanced_actor(this_actor, 255);
-#endif	/* NEW_TEXTURES */
-
 	our_actor = calloc(1, sizeof(actor));
 #ifndef	NEW_TEXTURES
 	our_actor->has_alpha= this_actor->has_alpha;
@@ -95,7 +88,7 @@ int add_enhanced_actor(enhanced_actor *this_actor, float x_pos, float y_pos,
 	memset(our_actor->current_displayed_text, 0, MAX_CURRENT_DISPLAYED_TEXT_LEN);
 	our_actor->current_displayed_text_time_left =  0;
 
-	our_actor->texture_id=texture_id;
+	our_actor->texture_id=0;//texture_id;
 	our_actor->is_enhanced_model=1;
 	our_actor->actor_id=actor_id;
 
@@ -207,7 +200,7 @@ Uint32 delay_texture_item_change(actor* a, const int which_part, const int which
 
 	if (a->delay_texture_item_changes != 0)
 	{
-		change_enhanced_actor(a->texture_id, a->body_parts);
+		load_enhanced_actor_texture(a);
 
 		if (a->delayed_item_changes_count < MAX_ITEM_CHANGES_QUEUE)
 		{
@@ -1126,7 +1119,10 @@ void add_enhanced_actor_from_server (const char *in_data, int len)
 		add_actor_attachment(actor_id, attachment_type);
 
 	if (actors_defs[actor_type].coremodel!=NULL) {
-		actors_list[i]->calmodel=model_new(actors_defs[actor_type].coremodel);
+		actors_list[i]->calmodel = model_new(actor_type,
+			actors_list[i]->actor_id, actors_list[i]->actor_name,
+			actors_list[i]->kind_of_actor, 1);
+		load_enhanced_actor_texture(actors_list[i]);
 
 		if (actors_list[i]->calmodel!=NULL) {
 			//Setup cal3d model
@@ -1172,7 +1168,7 @@ void add_enhanced_actor_from_server (const char *in_data, int len)
                 /* CalModel_Update(actors_list[i]->calmodel,0); */
             }
 			build_actor_bounding_box(actors_list[i]);
-			if (use_animation_program)
+			if (1) /* use_animation_program */
 			{
 				set_transformation_buffers(actors_list[i]);
 			}
@@ -1301,7 +1297,8 @@ actor * add_actor_interface(float x, float y, float z_rot, float scale, int acto
 	safe_snprintf(a->actor_name, sizeof(a->actor_name), "Player");
 
 	if (actors_defs[actor_type].coremodel!=NULL) {
-		a->calmodel=model_new(actors_defs[actor_type].coremodel);
+		a->calmodel = model_new(actor_type, a->actor_id, a->actor_name,
+		a->kind_of_actor, 1);
 
 		if (a->calmodel!=NULL) {
 			//Setup cal3d model
@@ -1328,12 +1325,14 @@ actor * add_actor_interface(float x, float y, float z_rot, float scale, int acto
 			a->last_anim_update= cur_time;
 			CalModel_Update(a->calmodel,0);
 			build_actor_bounding_box(a);
-			if (use_animation_program)
+			if (1) /* use_animation_program */
 			{
 				set_transformation_buffers(a);
 			}
 		}
 	} else a->calmodel=NULL;
+
+	load_enhanced_actor_texture(a);
 
 	UNLOCK_ACTORS_LISTS();  //unlock it
 

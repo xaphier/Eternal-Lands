@@ -321,11 +321,6 @@ typedef struct
 	float skel_scale;
 
 	struct CalCoreModel *coremodel;
-	struct CalHardwareModel* hardware_model;
-	GLuint vertex_buffer;
-	GLuint index_buffer;
-	GLenum index_type;
-	Uint32 index_size;
 	//Animation indexes
 	struct cal_anim_group idle_group[16];//16 animation groups
 	int group_count;

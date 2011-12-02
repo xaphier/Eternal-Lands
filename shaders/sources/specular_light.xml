@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>specular</name>
+ <type>light</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>lighting_position</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>lighting_normal</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>light_position</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>light_color</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>diffuse_color</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>inout</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>specular_color</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>inout</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	vec3 dir, half_vec;
+	float dist, scale, nxdir, diffuse, specular, hxdir;
+
+	dir = light_position.xyz - lighting_position * light_color.a;
+	dist = dot(dir, dir);
+	dir = normalize(dir);
+	nxdir = max(0.0, dot(lighting_normal, dir));
+	scale = max(0.0, 1.0 - dist * light_position.w);
+	diffuse = scale * nxdir;
+
+	diffuse_color = vec3(0.0);
+	specular_color = vec3(0.0);
+
+	if (diffuse &gt; 0.0)
+	{
+		hxdir = max(0.0, dot(lighting_normal, half_vec));
+		specular = pow(hxdir, 32) * scale;
+		diffuse_color += light_color.rgb * diffuse;
+		specular_color += light_color.rgb * specular;
+	}
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_150>true</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>true</material_texture_arrays>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

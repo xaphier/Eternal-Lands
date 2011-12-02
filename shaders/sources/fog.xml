@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>default</name>
+ <type>fog</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>view_position</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>fog_data</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>fog</name>
+     <source></source>
+     <type>float</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	fog = min(exp2(dot(view_position, view_position) * fog_data.a), 1.0);
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_150>true</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>true</material_texture_arrays>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

@@ -9,7 +9,6 @@
 #include <ctype.h>
 #include <time.h>
 #include "init.h"
-#include "2d_objects.h"
 #include "actor_scripts.h"
 #include "asc.h"
 #include "books.h"
@@ -86,6 +85,7 @@
 #ifdef  CUSTOM_UPDATE
 #include "custom_update.h"
 #endif  //CUSTOM_UPDATE
+#include "engine.h"
 
 #define	CFG_VERSION 7	// change this when critical changes to el.cfg are made that will break it
 
@@ -128,59 +128,6 @@ static int no_lang_in_config = 0;
 int video_mode_set=0;
 
 void read_command_line(); //from main.c
-
-#ifndef FASTER_MAP_LOAD
-static void load_harvestable_list()
-{
-	FILE *f = NULL;
-	int i = 0;
-	char strLine[255];
-
-	memset(harvestable_objects, 0, sizeof(harvestable_objects));
-	f = open_file_data("harvestable.lst", "rb");
-	if(f == NULL) {
-		LOG_ERROR("%s: %s \"harvestable.lst\"\n", reg_error_str, cant_open_file);
-		return;
-	}
-	while(1)
-	{
-		if (fscanf (f, "%254s", strLine) != 1)
-			break;
-		my_strncp (harvestable_objects[i], strLine, sizeof (harvestable_objects[i]));
-
-		i++;
-		if(!fgets(strLine, sizeof(strLine), f)) {
-			break;
-		}
-	}
-	fclose(f);
-}
-
-static void load_entrable_list()
-{
-	FILE *f = NULL;
-	int i=0;
-	char strLine[255];
-
-	memset(entrable_objects, 0, sizeof(entrable_objects));
-	i=0;
-	f=open_file_data("entrable.lst", "rb");
-	if(f == NULL){
-		LOG_ERROR("%s: %s \"entrable.lst\"\n", reg_error_str, cant_open_file);
-		return;
-	}
-	while(1)
-		{
-			if (fscanf (f, "%254s", strLine) != 1)
-				break;
-			my_strncp (entrable_objects[i], strLine, sizeof (entrable_objects[i]));
-
-			i++;
-			if(!fgets(strLine, sizeof(strLine), f))break;
-		}
-	fclose(f);
-}
-#endif // FASTER_MAP_LOAD
 
 void load_knowledge_list()
 {
@@ -661,22 +608,6 @@ void init_texture_cache()
 }
 #endif	/* NEW_TEXTURES */
 
-void init_e3d_cache()
-{
-	//cache_e3d= cache_init(1000, &destroy_e3d);	//TODO: autofree the name as well
-	cache_e3d = cache_init("E3d cache", 1000, NULL);	//no aut- free permitted
-	cache_set_compact(cache_e3d, &free_e3d_va);	// to compact, free VA arrays
-	cache_set_time_limit(cache_e3d, 5*60*1000);
-	cache_set_size_limit(cache_e3d, 8*1024*1024);
-}
-
-#ifndef FASTER_MAP_LOAD
-void init_2d_obj_cache()
-{
-	memset(obj_2d_def_cache, 0, sizeof(obj_2d_def_cache));
-}
-#endif
-
 void init_stuff()
 {
 	int seed;
@@ -752,18 +683,10 @@ void init_stuff()
 	SDL_WM_SetCaption( win_principal, "eternallands" );
 #endif
 
-#ifdef OSX
-	// don't emulate a 3 button mouse, ALT+leftclick doesn't work with the emulation
-	SDL_putenv("SDL_HAS3BUTTONMOUSE=1");
-#endif
-
 	//Init the caches here, as the loading window needs them
 	cache_system_init(MAX_CACHE_SYSTEM);
 	init_texture_cache();
-	init_e3d_cache();
-#ifndef FASTER_MAP_LOAD
-	init_2d_obj_cache();
-#endif
+
 	//now load the font textures
 	load_font_textures ();
 	CHECK_GL_ERRORS();
@@ -789,6 +712,8 @@ void init_stuff()
 	LOG_DEBUG("Init extensions.");
 	init_gl_extensions();
 	LOG_DEBUG("Init extensions done");
+
+	init_engine();
 
 	// Setup the new eye candy system
 	LOG_DEBUG("Init eyecandy");
@@ -823,13 +748,11 @@ void init_stuff()
 	build_glow_color_table();
 
 
-	update_loading_win(init_lists_str, 2);
+	update_loading_win(init_lists_str, 6);
 	init_actors_lists();
-	update_loading_win("init particles", 4);
 	memset(tile_list, 0, sizeof(tile_list));
 	memset(lights_list, 0, sizeof(lights_list));
 	main_bbox_tree = build_bbox_tree();
-	init_particles ();
 #ifdef NEW_SOUND
 	update_loading_win(init_audio_str, 1);
 	initial_sound_init();
@@ -846,7 +769,9 @@ void init_stuff()
 	missiles_init_defs();
 
 	update_loading_win(load_map_tiles_str, 4);
+#if	0
 	load_map_tiles();
+#endif
 
 	update_loading_win(init_lights_str, 4);
 	//lights setup
@@ -1065,8 +990,6 @@ void init_stuff()
 		create_rules_root_window (window_width, window_height, opening_root_win, 15);
 		show_window (rules_root_win);
 	}
-
-	if (use_frame_buffer) make_reflection_framebuffer(window_width, window_height);
 
 	skybox_init_gl();
 	popup_init();

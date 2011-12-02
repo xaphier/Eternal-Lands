@@ -79,6 +79,7 @@
 #endif //WINDOWS
 
 #ifdef OSX
+ #include <GLEW/glew.h>
  #include <OpenGL/gl.h>
  #include <OpenGL/glu.h>
  //#include <OpenGL/glext.h>
@@ -86,11 +87,13 @@
  #define APIENTRY 
  #define APIENTRYP *
 #elif !defined(BSD)
+ #include <GL/glew.h>
  #define GL_GLEXT_LEGACY
  #include <GL/gl.h>
  #include <GL/glu.h>
  #include "glext.h"
 #else // BSD
+ #include <GL/glew.h>
  #include <GL/gl.h>
  #include <GL/glu.h>
 #endif

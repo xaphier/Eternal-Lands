@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>default</name>
+ <type>uv</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>texture_coordinate_0</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_uv</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	world_uv = texture_coordinate_0;
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_150>true</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>true</material_texture_arrays>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

@@ -1,0 +1,233 @@
+/****************************************************************************
+ *            opengl2mesh.cpp
+ *
+ * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Copyright: See COPYING file that comes with this distribution
+ ****************************************************************************/
+
+#include "opengl2mesh.hpp"
+#include "hardwarewritememorybuffer.hpp"
+#include "vertexelements.hpp"
+#include "submesh.hpp"
+
+namespace eternal_lands
+{
+
+	OpenGl2Mesh::OpenGl2Mesh()
+	{
+	}
+
+	OpenGl2Mesh::~OpenGl2Mesh() throw()
+	{
+	}
+
+	AbstractWriteMemoryBufferSharedPtr OpenGl2Mesh::get_vertex_buffer(
+		const Uint16 index)
+	{
+		AbstractWriteMemoryBufferSharedPtr result;
+
+		assert(index < m_vertex_data.size());
+
+		if (m_vertex_data[index].get() != 0)
+		{
+			result.reset(new HardwareWriteMemoryBuffer(
+				m_vertex_data[index], hbt_vertex));
+		}
+
+		return result;
+	}
+
+	AbstractWriteMemoryBufferSharedPtr OpenGl2Mesh::get_index_buffer()
+	{
+		AbstractWriteMemoryBufferSharedPtr result;
+
+		if (m_index_data.get() != 0)
+		{
+			result.reset(new HardwareWriteMemoryBuffer(
+				m_index_data, hbt_index));
+		}
+
+		return result;
+	}
+
+	void OpenGl2Mesh::bind(const VertexElements &vertex_elements,
+		const HardwareBufferSharedPtr &buffer)
+	{
+		GLintptr offset;
+		Uint32 i, stride, count;
+		GLenum type;
+		GLboolean normalized;
+		VertexSemanticType semantic;
+
+		if (vertex_elements.get_count() == 0)
+		{
+			return;
+		}
+
+		buffer->bind(hbt_vertex);
+
+		stride = vertex_elements.get_stride();
+
+		for (i = 0; i < vertex_elements.get_count(); i++)
+		{
+			offset = vertex_elements.get_offset(i);
+			count = vertex_elements.get_count(i);
+			type = vertex_elements.get_gl_type(i);
+			normalized = vertex_elements.get_gl_normalized(i);
+			semantic = vertex_elements.get_semantic(i);
+
+			glVertexAttribPointer(semantic, count, type,
+				normalized, stride,
+				static_cast<Uint8*>(0) + offset);
+
+			glEnableVertexAttribArray(semantic);
+		}
+	}
+
+	void OpenGl2Mesh::unbind(const VertexElements &vertex_elements,
+		const HardwareBufferSharedPtr &buffer)
+	{
+		Uint32 i;
+		VertexSemanticType semantic;
+
+		if (vertex_elements.get_count() == 0)
+		{
+			return;
+		}
+
+		buffer->unbind(hbt_vertex);
+
+		for (i = 0; i < vertex_elements.get_count(); i++)
+		{
+			semantic = vertex_elements.get_semantic(i);
+			glDisableVertexAttribArray(semantic);
+		}
+	}
+
+	void OpenGl2Mesh::init_vertices()
+	{
+		Uint32 i, size;
+
+		for (i = 0; i < 4; i++)
+		{
+			if (get_vertex_elements(i).get_count() > 0)
+			{
+				m_vertex_data[i].reset(new HardwareBuffer());
+
+				size = get_vertex_count();
+				size *= get_vertex_elements(i).get_stride();
+				m_vertex_data[i]->set_size(hbt_vertex, size,
+					hbut_static_draw);
+			}
+			else
+			{
+				m_vertex_data[i].reset();
+			}
+		}
+	}
+
+	void OpenGl2Mesh::init_indices()
+	{
+		Uint32 size;
+
+		size = get_index_count();
+
+		if (size == 0)
+		{
+			m_index_data.reset();
+
+			return;
+		}
+
+		if (get_use_16_bit_indices())
+		{
+			size *= sizeof(Uint16);
+		}
+		else
+		{
+			size *= sizeof(Uint32);
+		}
+
+		m_index_data.reset(new HardwareBuffer());
+		m_index_data->set_size(hbt_index, size, hbut_static_draw);
+	}
+
+	void OpenGl2Mesh::bind_vertex_buffers()
+	{
+		Uint32 i;
+
+		for (i = 0; i < 4; i++)
+		{
+			bind(get_vertex_elements(i), m_vertex_data[i]);
+		}
+	}
+
+	void OpenGl2Mesh::unbind_vertex_buffers()
+	{
+		Uint32 i;
+
+		for (i = 0; i < 4; i++)
+		{
+			unbind(get_vertex_elements(i), m_vertex_data[i]);
+		}
+	}
+
+	void OpenGl2Mesh::bind_index_buffers()
+	{
+		if (m_index_data.get() != 0)
+		{
+			m_index_data->bind(hbt_index);
+		}
+	}
+
+	void OpenGl2Mesh::unbind_index_buffers()
+	{
+		if (m_index_data.get() != 0)
+		{
+			m_index_data->unbind(hbt_index);
+		}
+	}
+
+	void OpenGl2Mesh::bind()
+	{
+		bind_vertex_buffers();
+		bind_index_buffers();
+	}
+
+	void OpenGl2Mesh::unbind()
+	{
+		unbind_vertex_buffers();
+		unbind_index_buffers();
+	}
+
+	void OpenGl2Mesh::draw(const MeshDrawData &draw_data)
+	{
+		if (m_index_data.get() != 0)
+		{
+			glDrawRangeElements(get_primitive_type(),
+				draw_data.get_min_vertex(),
+				draw_data.get_max_vertex(),
+				draw_data.get_count(), get_index_type(),
+				static_cast<Uint8*>(0) +
+				get_index_offset(draw_data.get_offset()));
+		}
+		else
+		{
+			glDrawArrays(get_primitive_type(),
+				draw_data.get_offset(), draw_data.get_count());
+		}
+	}
+
+	AbstractMeshSharedPtr OpenGl2Mesh::clone_vertex_data()
+	{
+		boost::shared_ptr<OpenGl2Mesh> result;
+
+		result.reset(new OpenGl2Mesh());
+
+		result->m_vertex_data = m_vertex_data;
+		result->copy_vertex_descriptions(*this);
+
+		return result;
+	}
+
+}

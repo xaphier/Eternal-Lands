@@ -1,0 +1,1091 @@
+/****************************************************************************
+ *            scene.cpp
+ *
+ * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Copyright: See COPYING file that comes with this distribution
+ ****************************************************************************/
+
+#include "scene.hpp"
+#include "light.hpp"
+#include "object.hpp"
+#include "exceptions.hpp"
+#include "rstartree.hpp"
+#include "meshcache.hpp"
+#include "actordatacache.hpp"
+#include "frustum.hpp"
+#include "instancedata.hpp"
+#include "objectdescription.hpp"
+#include "glslprogram.hpp"
+#include "actor.hpp"
+#include "effect.hpp"
+#include "texturecache.hpp"
+#include "renderobjectdata.hpp"
+#include "meshbuilder.hpp"
+#include "abstractmesh.hpp"
+#include "shader/autoparameterutil.hpp"
+#include "abstractframebuffer.hpp"
+#include "shader/shadertextureutil.hpp"
+#include "globalvars.hpp"
+#include "subobject.hpp"
+#include "materialdescription.hpp"
+#include "framebufferbuilder.hpp"
+
+
+
+#include "texture.hpp"
+#include "filter.hpp"
+
+
+
+#include "../client_serv.h"
+
+namespace eternal_lands
+{
+
+	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
+		const FileSystemWeakPtr &file_system):
+		m_global_vars(global_vars), m_scene_resources(global_vars,
+			file_system), m_scene_view(global_vars), m_name(L""),
+		m_frame_id(0), m_id(0), m_dungeon(false),
+		m_shadow_map_change(true)
+	{
+		m_light_tree.reset(new RStarTree());
+		m_object_tree.reset(new RStarTree());
+
+		m_light_position_array.resize(8);
+		m_light_color_array.resize(8);
+
+		set_ambient(glm::vec3(0.2f));
+		set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
+		set_main_light_color(glm::vec3(0.2f));
+		set_main_light_ambient(glm::vec3(0.2f));
+	}
+
+	Scene::~Scene() throw()
+	{
+	}
+
+	ActorSharedPtr Scene::add_actor(const Uint32 type_id, const Uint32 id,
+		const String &name, const SelectionType selection,
+		const bool enhanced_actor)
+	{
+		std::pair<Uint32ActorSharedPtrMap::iterator, bool> result;
+		ActorSharedPtr actor;
+
+		actor = get_scene_resources().get_actor_data_cache().get_actor(
+			type_id, id, name, selection, enhanced_actor);
+
+		result = m_actors.insert(Uint32ActorSharedPtrMap::value_type(id,
+			actor));
+
+		assert(result.second);
+
+		return actor;
+	}
+
+	void Scene::remove_actor(const Uint32 id)
+	{
+		m_actors.erase(id);
+	}
+
+	void Scene::remove_all_actors()
+	{
+		m_actors.clear();
+	}
+
+	void Scene::add_object(const ObjectData &object_data)
+	{
+		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
+		ObjectSharedPtr object;
+		AbstractMeshSharedPtr mesh;
+		MaterialDescriptionVector materials;
+
+		get_scene_resources().get_mesh_cache().get_mesh(
+			object_data.get_name(), mesh, materials);
+
+		object = boost::make_shared<Object>(object_data, mesh,
+			materials, get_scene_resources().get_effect_cache_ptr(),
+			get_scene_resources().get_texture_cache_ptr());
+
+		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
+			object_data.get_id(), object));
+
+		assert(temp.second);
+
+		m_object_tree->add(object);
+	}
+
+	void Scene::add_object(const InstanceData &instance_data)
+	{
+		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
+		ObjectSharedPtr object;
+		AbstractMeshSharedPtr mesh;
+
+		mesh = get_scene_resources().get_mesh_builder().get_mesh(
+			vft_mesh, instance_data.get_mesh_data_tool());
+
+		object = boost::make_shared<Object>(instance_data, mesh,
+			instance_data.get_materials(),
+			get_scene_resources().get_effect_cache_ptr(),
+			get_scene_resources().get_texture_cache_ptr(),
+			instance_data.get_instanced_objects());
+		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
+			instance_data.get_id(), object));
+
+		assert(temp.second);
+
+		m_object_tree->add(object);
+	}
+
+	void Scene::remove_object(const Uint32 id)
+	{
+		Uint32ObjectSharedPtrMap::iterator found;
+
+		found = m_objects.find(id);
+
+		if (found != m_objects.end())
+		{
+			m_object_tree->remove(found->second);
+
+			m_objects.erase(found);
+		}
+	}
+
+	bool Scene::get_object_position(const Uint32 id, glm::vec3 &position)
+	{
+		Uint32ObjectSharedPtrMap::iterator found;
+
+		found = m_objects.find(id);
+
+		if (found == m_objects.end())
+		{
+			return false;
+		}
+
+		position = found->second->get_world_matrix()[3];
+
+		return true;
+	}
+
+	void Scene::add_light(const glm::vec3 &position, const glm::vec3 &color,
+		const float ambient, const float radius, const Uint32 id)
+	{
+		std::pair<Uint32LightSharedPtrMap::iterator, bool> temp;
+		LightSharedPtr light;
+
+		light = boost::make_shared<Light>(position, color, ambient,
+			radius, id);
+		assert(light->get_radius() == radius);
+		temp = m_lights.insert(Uint32LightSharedPtrMap::value_type(id,
+			light));
+
+		assert(temp.second);
+
+		m_light_tree->add(light);
+	}
+
+	void Scene::remove_light(const Uint32 id)
+	{
+		Uint32LightSharedPtrMap::iterator found;
+
+		found = m_lights.find(id);
+
+		if (found != m_lights.end())
+		{
+			m_light_tree->remove(found->second);
+
+			m_lights.erase(found);
+		}
+	}
+
+	void Scene::set_fog(const glm::vec3 &color, const float density)
+	{
+		/* 1.442695 = 1 / ln(2) */
+		m_fog = glm::vec4(color, -density * density * 1.442695f);
+	}
+
+	namespace
+	{
+
+		Uint32 querie_ids[4096];
+
+	}
+
+	void Scene::init()
+	{
+		glGenQueries(4096, querie_ids);
+		m_scene_resources.init();
+	}
+
+	void Scene::update_shadow_map()
+	{
+		float offset;
+		Uint32 shadow_map_width, shadow_map_height, shadow_map_size;
+		Uint16 mipmaps, samples, shadow_map_count;
+
+		shadow_map_width = m_scene_view.get_shadow_map_width();
+
+		shadow_map_height = m_scene_view.get_shadow_map_height();
+
+		shadow_map_size = std::max(shadow_map_width, shadow_map_height);
+
+		offset = 2.0f;
+
+		if (m_scene_view.get_shadow_map_count() == 0)
+		{
+			m_shadow_frame_buffer.reset();
+			m_shadow_filter_frame_buffer.reset();
+			return;
+		}
+
+		mipmaps = 0;
+
+		if (m_scene_view.get_exponential_shadow_maps())
+		{
+			while ((1 << mipmaps) < shadow_map_size)
+			{
+				mipmaps++;
+			}
+
+			shadow_map_count = m_scene_view.get_shadow_map_count();
+
+			if (get_global_vars()->get_msaa_shadows())
+			{
+				samples = 4;
+			}
+			else
+			{
+				samples = 0;
+			}
+
+			m_shadow_frame_buffer = FrameBufferBuilder::build(
+				String(L"Shadow"), shadow_map_width,
+				shadow_map_height, shadow_map_count,
+				mipmaps, samples, tft_r32f);
+
+			if (get_global_vars()->get_filter_shadow_map())
+			{
+				m_shadow_filter_frame_buffer =
+					FrameBufferBuilder::build_filter(
+						String(L"ShadowFilter"),
+						shadow_map_width,
+						shadow_map_height, tft_r32f);
+			}
+			else
+			{
+				m_shadow_filter_frame_buffer.reset();
+			}
+		}
+		else
+		{
+			m_shadow_frame_buffer = FrameBufferBuilder::build(
+				String(L"Shadow"), shadow_map_width,
+				shadow_map_height, 0, tft_depth32);
+		}
+
+		m_shadow_texture_offset.x = offset / shadow_map_size;
+		m_shadow_texture_offset.y = offset / shadow_map_size;
+		m_shadow_texture_offset.z = -offset / shadow_map_size;
+		m_shadow_texture_offset.w = 0.0f;
+	}
+
+	void Scene::load(const String &name, const glm::vec3 &ambient,
+		const Uint32 id)
+	{
+		m_name = name;
+		m_id = id;
+
+		set_ambient(ambient);
+
+		clear();
+	}
+
+	void Scene::clear()
+	{
+		m_light_tree->clear();
+		m_object_tree->clear();
+		m_actors.clear();
+		m_objects.clear();
+		m_lights.clear();
+	}
+
+	void Scene::get_lights(const BoundingBox &bounding_box,
+		Uint32 &light_count)
+	{
+		Uint32 i, size;
+
+		light_count = 1;
+
+		if (m_dungeon || m_night)
+		{
+			BOOST_FOREACH(const LightSharedPtr &light,
+				m_visible_lights.get_lights())
+			{
+				if (light->intersect(bounding_box))
+				{
+					m_light_position_array[light_count] =
+						glm::vec4(light->get_position(),
+						light->get_inv_sqr_radius());
+					m_light_color_array[light_count] =
+						glm::vec4(light->get_color(),
+						1.0);
+					light_count++;
+
+					if (light_count >=
+						m_light_position_array.size())
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		size = m_light_color_array.size();
+
+		for (i = light_count; i < size; i++)
+		{
+			m_light_color_array[i] = glm::vec4(0.0f);
+			m_light_position_array[i] = glm::vec4(0.0f);
+		}
+	}
+
+	void Scene::set_lights(const GlslProgramSharedPtr &program,
+		const glm::ivec3 &dynamic_light_count, const glm::vec4 &color)
+	{
+		if (m_dungeon)
+		{
+			program->set_parameter(apt_ambient, m_ambient + color);
+		}
+		else
+		{
+			if (m_night)
+			{
+				program->set_parameter(apt_ambient,
+					m_ambient + m_main_light_ambient);
+			}
+			else
+			{
+				program->set_parameter(apt_ambient,
+					m_ambient + m_main_light_ambient +
+					color);
+			}
+		}
+
+		program->set_parameter(apt_dynamic_light_count,
+			dynamic_light_count);
+		program->set_parameter(apt_light_positions,
+			m_light_position_array);
+		program->set_parameter(apt_light_colors, m_light_color_array);
+	}
+
+	void Scene::cull()
+	{
+		Frustum frustum;
+		Uint32ActorSharedPtrMap::iterator it, end;
+		SubFrustumsMask mask;
+
+		m_scene_view.update();
+
+		frustum = Frustum(m_scene_view.get_projection_view_matrix());
+
+		m_visible_lights.get_lights().clear();
+
+		if (m_dungeon)
+		{
+			m_light_position_array[0] =
+				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+			m_light_color_array[0] =
+				glm::vec4(glm::vec3(0.3f), 0.0f);
+		}
+		else
+		{
+			m_light_position_array[0] = m_main_light_direction;
+			m_light_color_array[0] = m_main_light_color;
+		}
+
+		m_visible_objects.next_frame();
+		m_object_tree->intersect(frustum, m_visible_objects);
+
+		m_time = SDL_GetTicks() * 0.001f;
+
+		end = m_actors.end();
+
+		for (it = m_actors.begin(); it != end; ++it)
+		{
+			mask = frustum.intersect_sub_frustums(
+				it->second->get_bounding_box());
+
+			if (mask.any())
+			{
+				if ((it->second->get_buffs().to_ulong() &
+					BUFF_INVISIBILITY) != 0)
+				{
+					m_visible_objects.add(it->second, 0.25f,
+						true, mask);
+				}
+				else
+				{
+					m_visible_objects.add(it->second, mask);
+				}
+			}
+		}
+
+		m_visible_objects.sort(glm::vec3(m_scene_view.get_camera()));
+
+		cull_all_shadows();
+
+		m_light_tree->intersect(frustum, m_visible_lights);
+		m_visible_lights.sort(glm::vec3(m_scene_view.get_focus()));
+	}
+
+	void Scene::cull_all_shadows()
+	{
+		SubFrustumsBoundingBoxes split_boxes, receiver_boxes;
+		SubFrustumsBoundingBoxes caster_boxes, shadow_boxes;
+		Frustum frustum;
+		glm::vec4 camera;
+		Uint32ActorSharedPtrMap::iterator it, end;
+		SubFrustumsMask mask;
+		Uint32 i;
+
+		if (m_shadow_map_change)
+		{
+			update_shadow_map();
+			m_shadow_map_change = false;
+		}
+
+		frustum = Frustum(m_scene_view.get_projection_view_matrices());
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_visible_objects.get_objects())
+		{
+			mask = frustum.intersect_sub_frustums(
+				object.get_object()->get_bounding_box());
+
+			for (i = 0; i < mask.size(); i++)
+			{
+				if (mask[i])
+				{
+					receiver_boxes[i].merge(
+						object.get_object(
+						)->get_bounding_box());
+				}
+			}
+		}
+
+		split_boxes = frustum.get_bounding_boxes();
+
+		for (i = 0; i < SubFrustumsBoundingBoxes::size(); i++)
+		{
+			receiver_boxes[i].clamp(split_boxes[i]);
+		}
+
+		m_scene_view.build_shadow_matrices(
+			glm::vec3(get_main_light_direction()),
+			split_boxes, receiver_boxes,
+			m_object_tree->get_bounding_box().get_max().z);
+
+		camera = glm::vec4(0.0, 0.0, 0.0f, 1.0f);
+		camera = glm::inverse(
+			m_scene_view.get_shadow_view_matrix()) * camera;
+
+		frustum = Frustum(
+			m_scene_view.get_shadow_projection_view_matrices());
+
+		m_shadow_objects.next_frame();
+		m_object_tree->intersect(frustum, m_shadow_objects);
+
+		end = m_actors.end();
+
+		for (it = m_actors.begin(); it != end; ++it)
+		{
+			mask = frustum.intersect_sub_frustums(
+				it->second->get_bounding_box());
+
+			if (mask.any())
+			{
+				if ((it->second->get_buffs().to_ulong() &
+					BUFF_INVISIBILITY) == 0)
+				{
+					m_shadow_objects.add(it->second, mask);
+				}
+			}
+		}
+
+		m_shadow_objects.sort(glm::vec3(camera));
+
+		m_shadow_objects_mask.reset();
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_shadow_objects.get_objects())
+		{
+			mask = frustum.intersect_sub_frustums(
+				object.get_object()->get_bounding_box());
+
+			for (i = 0; i < mask.size(); i++)
+			{
+				if (mask[i])
+				{
+					caster_boxes[i].merge(
+						object.get_object(
+							)->get_bounding_box());
+				}
+			}
+
+			m_shadow_objects_mask |= mask;
+		}
+
+		shadow_boxes = frustum.get_bounding_boxes();
+
+		for (i = 0; i < SubFrustumsBoundingBoxes::size(); i++)
+		{
+			caster_boxes[i].clamp(shadow_boxes[i]);
+		}
+
+		m_scene_view.update_shadow_matrices(shadow_boxes,
+			receiver_boxes, caster_boxes);
+	}
+
+	bool Scene::switch_program(const GlslProgramSharedPtr &program)
+	{
+		bool result;
+
+		result = m_state_manager.switch_program(program);
+
+		if (program.get() == 0)
+		{
+			return result;
+		}
+
+		if (m_frame_id != program->get_last_used())
+		{
+			program->set_parameter(apt_view_matrix,
+				m_scene_view.get_current_view_matrix());
+			program->set_parameter(apt_projection_matrix,
+				m_scene_view.get_current_projection_matrix());
+			program->set_parameter(apt_projection_view_matrix,
+				m_scene_view.get_current_projection_view_matrix(
+					));
+			program->set_parameter(apt_time, m_time);
+			program->set_parameter(apt_fog_data, m_fog);
+			program->set_parameter(apt_camera,
+				m_scene_view.get_camera());
+			program->set_parameter(apt_shadow_camera,
+				m_scene_view.get_shadow_camera());
+			program->set_parameter(apt_shadow_view_matrix,
+				m_scene_view.get_shadow_view_matrix());
+			program->set_parameter(apt_shadow_projection_matrix,
+				m_scene_view.get_shadow_projection_matrix());
+			program->set_parameter(
+				apt_shadow_projection_view_matrix,
+				m_scene_view.get_shadow_projection_view_matrix(
+				));
+			program->set_parameter(apt_shadow_texture_matrix,
+				m_scene_view.get_shadow_texture_matrices());
+			program->set_parameter(apt_shadow_texture_offset,
+				m_shadow_texture_offset);
+			program->set_parameter(apt_split_distances,
+				m_scene_view.get_split_distances());
+
+			program->set_last_used(m_frame_id);
+		}
+
+		return result;
+	}
+
+	void Scene::draw_object(const ObjectSharedPtr &object)
+	{
+		glm::ivec3 dynamic_light_count;
+		Uint32 light_count, materials, i;
+		bool object_data_set;
+
+		m_state_manager.switch_mesh(object->get_mesh());
+
+		materials = object->get_materials().size();
+
+		get_lights(object->get_bounding_box(), light_count);
+
+		object_data_set = false;
+
+		for (i = 0; i < materials; i++)
+		{
+			if (switch_program(object->get_materials(
+				)[i].get_effect()->get_default_program(
+					light_count, dynamic_light_count)))
+			{
+				object_data_set = false;
+			}
+
+			if (!object_data_set)
+			{
+				m_state_manager.get_program()->set_parameter(
+					apt_world_matrix,
+					object->get_world_matrix());
+				m_state_manager.get_program()->set_parameter(
+					apt_bones, object->get_bones());
+				set_lights(m_state_manager.get_program(),
+					dynamic_light_count,
+					object->get_color());
+				object_data_set = true;
+			}
+
+			object->get_materials()[i].bind(m_state_manager);
+
+			m_state_manager.get_mesh()->draw(i);
+		}
+	}
+
+	void Scene::draw_object_shadow(const ObjectSharedPtr &object)
+	{
+		Uint32 materials, i;
+		bool object_data_set;
+
+		m_state_manager.switch_mesh(object->get_mesh());
+
+		materials = object->get_materials().size();
+
+		object_data_set = false;
+
+		for (i = 0; i < materials; i++)
+		{
+			if (!object->get_materials()[i].get_shadow())
+			{
+				continue;
+			}
+
+			if (switch_program(object->get_materials(
+				)[i].get_effect()->get_shadow_program()))
+			{
+				object_data_set = false;
+			}
+
+			if (!object_data_set)
+			{
+				m_state_manager.get_program()->set_parameter(
+					apt_world_matrix,
+					object->get_world_matrix());
+				m_state_manager.get_program()->set_parameter(
+					apt_bones, object->get_bones());
+				object_data_set = true;
+			}
+
+			object->get_materials()[i].bind(m_state_manager);
+			m_state_manager.get_mesh()->draw(i);
+		}
+	}
+
+	void Scene::draw_object_depth(const ObjectSharedPtr &object)
+	{
+		Uint32 materials, i;
+		bool object_data_set;
+
+		m_state_manager.switch_mesh(object->get_mesh());
+
+		materials = object->get_materials().size();
+
+		object_data_set = false;
+
+		for (i = 0; i < materials; i++)
+		{
+			if (switch_program(object->get_materials(
+				)[i].get_effect()->get_depth_program()))
+			{
+				object_data_set = false;
+			}
+
+			if (!object_data_set)
+			{
+				m_state_manager.get_program()->set_parameter(
+					apt_world_matrix,
+					object->get_world_matrix());
+				m_state_manager.get_program()->set_parameter(
+					apt_bones, object->get_bones());
+				object_data_set = true;
+			}
+
+			object->get_materials()[i].bind(m_state_manager);
+			m_state_manager.get_mesh()->draw(i);
+		}
+	}
+
+	void Scene::draw_sub_object_depth(const ObjectSharedPtr &object,
+		const SubObject &sub_object)
+	{
+		Uint32 material;
+
+		m_state_manager.switch_mesh(object->get_mesh());
+
+		material = sub_object.get_material();
+
+		if (switch_program(object->get_materials(
+			)[material].get_effect()->get_depth_program()))
+		{
+			m_state_manager.get_program()->set_parameter(
+				apt_world_matrix,
+				object->get_world_matrix());
+		}
+
+		object->get_materials()[material].bind(m_state_manager);
+
+		m_state_manager.get_mesh()->draw(sub_object);
+	}
+
+	void Scene::draw_shadows(const Uint16 index)
+	{
+		Uint32 width, height;
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_state_manager.switch_polygon_offset_fill(
+			!m_scene_view.get_exponential_shadow_maps());
+		m_state_manager.switch_color_mask(glm::bvec4(
+			m_scene_view.get_exponential_shadow_maps()));
+		m_state_manager.switch_multisample(
+			get_global_vars()->get_msaa_shadows());
+		m_state_manager.switch_sample_alpha_to_coverage(
+			get_global_vars()->get_msaa_shadows());
+
+		m_shadow_frame_buffer->bind(index);
+		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+
+		m_scene_view.set_shadow_view(index);
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_shadow_objects.get_objects())
+		{
+			if (object.get_sub_frustums_mask(index))
+			{
+				draw_object_shadow(object.get_object());
+			}
+		}
+
+		m_frame_id++;
+
+		m_shadow_frame_buffer->blit();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		unbind_all();
+
+		if (m_scene_view.get_exponential_shadow_maps() &&
+			get_global_vars()->get_filter_shadow_map())
+		{
+			width = m_shadow_frame_buffer->get_width();
+			height = m_shadow_frame_buffer->get_height();
+
+			m_state_manager.switch_depth_mask(false);
+			m_state_manager.switch_depth_test(false);
+
+			m_shadow_filter_frame_buffer->bind(0);
+			m_shadow_filter_frame_buffer->clear(glm::vec4(0));
+			m_state_manager.switch_texture(stt_diffuse_0,
+				m_shadow_frame_buffer->get_texture());
+			m_scene_resources.get_filter(1).bind(width,
+				height, index, false, m_state_manager);
+
+			m_shadow_frame_buffer->bind_texture(index);
+			m_shadow_frame_buffer->clear(glm::vec4(0));
+			m_state_manager.switch_texture(stt_diffuse_0,
+				m_shadow_filter_frame_buffer->get_texture());
+			m_scene_resources.get_filter(1).bind(width,
+				height, true, m_state_manager);
+		}
+
+		unbind_all();
+
+		DEBUG_CHECK_GL_ERROR();
+	}
+
+	void Scene::draw_all_shadows()
+	{
+		Uint32 width, height;
+		Uint16 i;
+
+		DEBUG_CHECK_GL_ERROR();
+
+		if (!m_scene_view.get_exponential_shadow_maps())
+		{
+			glPolygonOffset(1.25f, 32.0f);
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		width = m_shadow_frame_buffer->get_width();
+		height = m_shadow_frame_buffer->get_height();
+
+		glViewport(0, 0, width, height);
+
+		for (i = 0; i < m_scene_view.get_shadow_map_count(); i++)
+		{
+			if (m_shadow_objects_mask[i])
+			{
+				draw_shadows(i);
+			}
+			else
+			{
+				m_shadow_frame_buffer->bind_texture(i);
+				m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+			}
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_shadow_frame_buffer->unbind();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_state_manager.switch_texture(stt_shadow,
+			m_shadow_frame_buffer->get_texture());
+
+		DEBUG_CHECK_GL_ERROR();
+
+		if (m_scene_view.get_exponential_shadow_maps())
+		{
+			glGenerateMipmap(ttt_2d_texture_array);
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glViewport(m_scene_view.get_view_port()[0],
+			m_scene_view.get_view_port()[1],
+			m_scene_view.get_view_port()[2],
+			m_scene_view.get_view_port()[3]);
+
+		DEBUG_CHECK_GL_ERROR();
+	}
+
+	void Scene::draw()
+	{
+		CHECK_GL_ERROR();
+
+		m_state_manager.init();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		if (m_scene_view.get_shadow_map_count() > 0)
+		{
+			draw_all_shadows();
+		}
+
+		m_scene_view.set_default_view();
+
+		m_state_manager.switch_multisample(true);
+
+		m_state_manager.switch_sample_alpha_to_coverage(
+			get_global_vars()->get_alpha_to_coverage());
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_visible_objects.get_objects())
+		{
+			if (m_state_manager.switch_blend(object.get_blend()))
+			{
+				if (object.get_blend())
+				{
+					glBlendColor(1.0f, 1.0f, 1.0f,
+						object.get_transparency());
+				}
+			}
+
+			draw_object(object.get_object());
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+/*
+		if (m_scene_view.get_shadow_map_count() > 0)
+		{
+			filter_draw();
+		}
+*/
+		unbind_all();
+
+		CHECK_GL_ERROR();
+
+		m_frame_id++;
+	}
+
+	void Scene::filter_draw()
+	{
+		static GlslProgramSharedPtr filter;
+
+		if (m_shadow_filter_frame_buffer.get() == 0)
+		{
+			return;
+		}
+
+		if (filter.get() == 0)
+		{
+			String vertex, fragment;
+			StringVariantMap values;
+			Variant value;
+
+			vertex = L"#version 130\n"
+				"attribute vec2 position;\n"
+				"\n"
+				"varying vec2 uv;\n"
+				"\n"
+				"uniform vec4 scale_offset;\n"
+				"\n"
+				"void main()\n"
+				"{\n"
+				"\tgl_Position = vec4(position * scale_offset.xy + scale_offset.zw, 0.5, 1.0);"
+				"\n"
+				"\tuv = position;\n"
+				"}\n";
+
+			fragment = L"#version 130\n"
+				"varying vec2 uv;\n"
+				"\n"
+//				"uniform sampler2DArray diffuse_sampler;\n"
+				"uniform sampler2D diffuse_sampler;\n"
+				"\n"
+				"void main()\n"
+				"{\n"
+//				"\tgl_FragColor = log(texture(diffuse_sampler, vec3(uv, index))) * 0.1;\n"
+				"\tgl_FragColor = log(texture(diffuse_sampler, uv)) / 100.0;\n"
+				"}\n";
+
+			value = Variant(static_cast<Sint64>(stt_shadow));
+			values[String(L"diffuse_sampler")] = value;
+
+			filter = boost::make_shared<GlslProgram>(vertex,
+				fragment, values, String(L"filter"));
+		}
+		unbind_all();
+
+		m_state_manager.switch_depth_test(false);
+
+		m_state_manager.switch_program(filter);
+		m_state_manager.switch_texture(stt_shadow,
+//			m_shadow_frame_buffer->get_texture());
+			m_shadow_filter_frame_buffer->get_texture());
+
+		filter->set_variant_parameter(String(L"scale_offset"),
+			glm::vec4(1.0f, 1.0f, -2.0f, -2.0f) / 2.0f);
+		glRectf(0.0f, 0.0f, 1.0f, 1.0f);
+
+		unbind_all();
+	}
+
+	void Scene::pick_object(const ObjectSharedPtr &object,
+		Uint32PairUint32SelectionTypeMap &id_map, Uint32 &index,
+		const glm::vec2 &min, const glm::vec2 &max)
+	{
+		PairUint32SelectionType data;
+		Uint32 i, sub_objects;
+
+		if (object->get_selection() == st_none)
+		{
+			return;
+		}
+
+		if (!object->get_bounding_box().intersect(
+			m_scene_view.get_view_matrix(),
+			m_scene_view.get_projection_matrix(),
+			m_scene_view.get_view_port(), min, max))
+		{
+			return;
+		}
+
+		if (object->get_sub_objects().size() == 0)
+		{
+			data.first = object->get_id();
+			data.second = object->get_selection();
+			id_map[index] = data;
+			glBeginQuery(GL_SAMPLES_PASSED, querie_ids[index]);
+
+			draw_object_depth(object);
+
+			glEndQuery(GL_SAMPLES_PASSED);
+			index++;
+		}
+		else
+		{
+			sub_objects = object->get_sub_objects().size();
+
+			for (i = 0; i < sub_objects; i++)
+			{
+				if (object->get_sub_objects()[i].get_selection()
+					== st_none)
+				{
+					continue;
+				}
+
+				data.first = object->get_sub_objects(
+					)[i].get_id();
+				data.second =  object->get_sub_objects(
+					)[i].get_selection();
+				id_map[index] = data;
+
+				glBeginQuery(GL_SAMPLES_PASSED,
+					querie_ids[index]);
+
+				draw_sub_object_depth(object,
+					object->get_sub_objects()[i]);
+
+				glEndQuery(GL_SAMPLES_PASSED);
+				index++;
+			}
+		}
+	}
+
+	Uint32 Scene::pick(const glm::vec2 &offset, const glm::vec2 &size,
+		SelectionType &selection)
+	{
+		Uint32PairUint32SelectionTypeMap id_map;
+		glm::vec2 min, max;
+		Uint32 i, index, max_count, count, id;
+
+		m_state_manager.switch_scissor_test(true);
+		glScissor(offset.x - size.x, offset.y - size.y, 2 * size.x,
+			2 * size.y);
+		glDepthFunc(GL_LEQUAL);
+
+		m_state_manager.switch_color_mask(glm::bvec4(false));
+		m_state_manager.switch_depth_mask(false);
+
+		min = offset - size;
+		max = offset + size;
+
+		index = 0;
+
+		m_scene_view.set_default_view();
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_visible_objects.get_objects())
+		{
+			pick_object(object.get_object(), id_map, index, min,
+				max);
+		}
+
+		unbind_all();
+		m_frame_id++;
+
+		max_count = 0;
+		id = 0xFFFFFF;
+		selection = st_none;
+
+		for (i = 0; i < index; i++)
+		{
+			count = 0;
+			glGetQueryObjectuiv(querie_ids[i], GL_QUERY_RESULT,
+				&count);
+
+			if (count > max_count)
+			{
+				id = id_map[i].first;
+				selection = id_map[i].second;
+
+				max_count = count;
+			}
+		}
+
+		return id;
+	}
+
+}

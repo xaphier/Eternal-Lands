@@ -587,7 +587,6 @@ void new_minute()
 			sun_position[1]=sun_pos[game_minute-30].y;
 			sun_position[2]=sun_pos[game_minute-30].z;
 			sun_position[3]=sun_pos[game_minute-30].w;
-			calc_shadow_matrix();
 		}
 		else//it's too dark, or we are in a dungeon
 		{
@@ -628,7 +627,6 @@ void new_second()
 			skybox_sun_position[1] = sun_show[cur_min].y * ratio1 + sun_show[next_min].y * ratio2;
 			skybox_sun_position[2] = sun_show[cur_min].z * ratio1 + sun_show[next_min].z * ratio2;
 			skybox_sun_position[3] = sun_show[cur_min].w * ratio1 + sun_show[next_min].w * ratio2;
-			calc_shadow_matrix();
 		}
 		
 		skybox_update_positions();

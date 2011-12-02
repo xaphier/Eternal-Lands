@@ -48,6 +48,7 @@
 #ifdef	CUSTOM_UPDATE
 #include "custom_update.h"
 #endif	/* CUSTOM_UPDATE */
+#include "engine.h"
 
 typedef char name_t[32];
 
@@ -1641,6 +1642,7 @@ add_command("horse", &horse_cmd);
 	add_command("update", &command_update);
 	add_command("update_status", &command_update_status);
 #endif	/* CUSTOM_UPDATE */
+	add_command("lua", &command_lua);
 	add_command(cmd_time, &command_time);
 	add_command(cmd_date, &command_date);
 	add_command("quit", &command_quit);

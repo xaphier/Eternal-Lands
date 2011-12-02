@@ -28,7 +28,7 @@
 #endif
 #include "eye_candy_wrapper.h"
 #include "minimap.h"
-#include "actor_init.h"
+#include "engine.h"
 #ifdef	FSAA
 #include "fsaa/fsaa.h"
 #endif	/* FSAA */
@@ -299,14 +299,17 @@ void add_actor_attachment(int actor_id, int attachment_type)
 
 		if (actors_defs[attachment_type].coremodel!=NULL) {
 			//Setup cal3d model
-			actors_list[id]->calmodel = model_new(actors_defs[attachment_type].coremodel);
+			actors_list[id]->calmodel = model_new(attachment_type,
+				actors_list[id]->actor_id,
+				actors_list[id]->actor_name,
+				actors_list[id]->kind_of_actor, 0);
 			//Attach meshes
 			if(actors_list[id]->calmodel) {
 				model_attach_mesh(actors_list[id], actors_defs[attachment_type].shirt[0].mesh_index);
 				set_on_idle(id);
 
 				build_actor_bounding_box(actors_list[id]);
-				if (use_animation_program)
+				if (1) /* use_animation_program */
 					set_transformation_buffers(actors_list[id]);
 			}
 		}
@@ -745,11 +748,13 @@ CHECK_GL_ERRORS();
 
 void draw_actor_without_banner(actor * actor_id, Uint32 use_lightning, Uint32 use_textures, Uint32 use_glow)
 {
+#if	0
 	double x_pos,y_pos,z_pos;
 	float x_rot,y_rot,z_rot;
 	//if first person, dont draw actor
 	actor *me = get_our_actor();
 	if (me&&me->actor_id==actor_id->actor_id&&first_person) return;
+
 	if (use_textures)
 	{
 #ifdef	NEW_TEXTURES
@@ -819,14 +824,7 @@ void draw_actor_without_banner(actor * actor_id, Uint32 use_lightning, Uint32 us
 	if (actor_id->attached_actor >= 0)
 		glTranslatef(actor_id->attachment_shift[0], actor_id->attachment_shift[1], actor_id->attachment_shift[2]);
 
-	if (use_animation_program)
-	{
-		cal_render_actor_shader(actor_id, use_lightning, use_textures, use_glow);
-	}
-	else
-	{
-		cal_render_actor(actor_id, use_lightning, use_textures, use_glow);
-	}
+	cal_render_actor(actor_id, use_lightning, use_textures, use_glow);
 
 	//now, draw their damage & nametag
 	glPopMatrix();  // restore the matrix
@@ -834,6 +832,7 @@ void draw_actor_without_banner(actor * actor_id, Uint32 use_lightning, Uint32 us
 #ifdef OPENGL_TRACE
 CHECK_GL_ERRORS();
 #endif //OPENGL_TRACE
+#endif
 }
 
 static __inline__ void draw_actor_banner_new(actor * actor_id)
@@ -1040,199 +1039,6 @@ void display_actors(int banner, int render_pass)
 
 	get_actors_in_range();
 
-	glEnable(GL_CULL_FACE);
-
-	if (use_animation_program)
-	{
-		set_actor_animation_program(render_pass, 0);
-	}
-
-	switch (render_pass)
-	{
-		case DEFAULT_RENDER_PASS:
-		case SHADOW_RENDER_PASS:
-		case REFLECTION_RENDER_PASS:
-			use_lightning = 1;
-			use_textures = 1;
-			break;
-		case DEPTH_RENDER_PASS:
-			use_lightning = 0;
-			use_textures = 1;
-			break;
-	}
-
-	has_alpha = 0;
-	has_ghosts = 0;
-
-#ifdef	FSAA
-	if (fsaa > 1)
-	{
-		glEnable(GL_MULTISAMPLE);
-	}
-#endif	/* FSAA */
-	for (i = 0; i < no_near_actors; i++)
-	{
-		if (near_actors[i].ghost || (near_actors[i].buffs & BUFF_INVISIBILITY))
-		{
-			if ((render_pass == DEFAULT_RENDER_PASS) ||
-				(render_pass == SHADOW_RENDER_PASS))
-			{
-				has_ghosts = 1;
-			}
-		}
-		else if (near_actors[i].alpha)
-		{
-			has_alpha = 1;
-		}
-		else
-		{
-			actor *cur_actor = actors_list[near_actors[i].actor];
-			if (cur_actor)
-			{
-				draw_actor_without_banner(cur_actor, use_lightning, use_textures, 1);
-				if (near_actors[i].select)
-				{
-					if (cur_actor->kind_of_actor == NPC)
-					{
-						anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_NPC);
-					}
-					else
-					{
-						if ((cur_actor->kind_of_actor == HUMAN) ||
-							(cur_actor->kind_of_actor == COMPUTER_CONTROLLED_HUMAN) ||
-							(cur_actor->is_enhanced_model &&
-							((cur_actor->kind_of_actor == PKABLE_HUMAN) ||
-							(cur_actor->kind_of_actor == PKABLE_COMPUTER_CONTROLLED))))
-						{
-							anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_PLAYER);
-						}
-						else
-						{
-							anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_ANIMAL);
-						}
-					}
-				}
-			}
-		}
-	}
-	if (has_alpha)
-	{
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.4f);
-		for (i = 0; i < no_near_actors; i++)
-		{
-
-			if (near_actors[i].alpha && !(near_actors[i].ghost || (near_actors[i].buffs & BUFF_INVISIBILITY)))
-			{
-
-				actor *cur_actor = actors_list[near_actors[i].actor];
-				if (cur_actor)
-				{
-					draw_actor_without_banner(cur_actor, use_lightning, 1, 1);
-
-					if (near_actors[i].select)
-					{
-						if (cur_actor->kind_of_actor == NPC)
-						{
-							anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_NPC);
-						}
-						else
-						{
-							if ((cur_actor->kind_of_actor == HUMAN) ||
-								(cur_actor->kind_of_actor == COMPUTER_CONTROLLED_HUMAN) ||
-								(cur_actor->is_enhanced_model &&
-								 ((cur_actor->kind_of_actor == PKABLE_HUMAN) ||
-								 (cur_actor->kind_of_actor == PKABLE_COMPUTER_CONTROLLED))))
-							{
-								anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_PLAYER);
-							}
-							else
-							{
-								anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_ANIMAL);
-							}
-						}
-					}
-				}
-			}
-		}
-		glDisable(GL_ALPHA_TEST);
-	}
-	if (has_ghosts)
-	{
-		glEnable(GL_BLEND);
-		glDisable(GL_LIGHTING);
-		if (use_animation_program)
-		{
-			set_actor_animation_program(render_pass, 1);
-		}
-
-		for (i = 0; i < no_near_actors; i++)
-		{
-
-			if (near_actors[i].ghost || (near_actors[i].buffs & BUFF_INVISIBILITY))
-			{
-
-				actor *cur_actor = actors_list[near_actors[i].actor];
-				if (cur_actor)
-				{
-					//if any ghost has a glowing weapon, we need to reset the blend function each ghost actor.
-					glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-					if (!use_animation_program)
-					{
-						if ((near_actors[i].buffs & BUFF_INVISIBILITY))
-						{
-							glColor4f(1.0f, 1.0f, 1.0f, 0.25f);
-						}
-						else
-						{
-							glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-						}
-					}
-
-					draw_actor_without_banner(cur_actor, use_lightning, use_textures, 1);
-
-					if (near_actors[i].select)
-					{
-						if (cur_actor->kind_of_actor == NPC)
-						{
-							anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_NPC);
-						}
-						else
-						{
-							if ((cur_actor->kind_of_actor == HUMAN) ||
-								(cur_actor->kind_of_actor == COMPUTER_CONTROLLED_HUMAN) ||
-								(cur_actor->is_enhanced_model &&
-								 ((cur_actor->kind_of_actor == PKABLE_HUMAN) ||
-								 (cur_actor->kind_of_actor == PKABLE_COMPUTER_CONTROLLED))))
-							{
-								anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_PLAYER);
-							}
-							else
-							{
-								anything_under_the_mouse(near_actors[i].actor, UNDER_MOUSE_ANIMAL);
-							}
-						}
-					}
-				}
-			}
-		}
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glDisable(GL_BLEND);
-		glEnable(GL_LIGHTING);
-	}
-#ifdef	FSAA
-	if (fsaa > 1)
-	{
-		glDisable(GL_MULTISAMPLE);
-	}
-#endif	/* FSAA */
-
-	if (use_animation_program)
-	{
-		disable_actor_animation_program();
-	}
-
 	if (banner && (SDL_GetAppState() & SDL_APPACTIVE))
 	{
 		if (use_shadow_mapping)
@@ -1240,8 +1046,6 @@ void display_actors(int banner, int render_pass)
 			glPushAttrib(GL_TEXTURE_BIT|GL_ENABLE_BIT);
 			glDisable(GL_TEXTURE_2D);
 			ELglActiveTextureARB(shadow_unit);
-			glDisable(depth_texture_target);
-			disable_texgen();
 			ELglActiveTextureARB(GL_TEXTURE0);
 			glEnable(GL_TEXTURE_2D);
 			glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -1468,7 +1272,9 @@ void add_actor_from_server (const char *in_data, int len)
 
 	if (actors_defs[actor_type].coremodel!=NULL) {
 		//Setup cal3d model
-		actors_list[i]->calmodel = model_new(actors_defs[actor_type].coremodel);
+		actors_list[i]->calmodel = model_new(actor_type,
+			actors_list[i]->actor_id, actors_list[i]->actor_name,
+			actors_list[i]->kind_of_actor, 0);
 		//Attach meshes
 		if(actors_list[i]->calmodel){
 			model_attach_mesh(actors_list[i], actors_defs[actor_type].shirt[0].mesh_index);
@@ -1484,7 +1290,7 @@ void add_actor_from_server (const char *in_data, int len)
                 /* CalModel_Update(actors_list[i]->calmodel,0); */
             }
 			build_actor_bounding_box(actors_list[i]);
-			if (use_animation_program)
+			if (1) /* use_animation_program */
 			{
 				set_transformation_buffers(actors_list[i]);
 			}

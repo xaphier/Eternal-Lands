@@ -1,0 +1,211 @@
+cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+
+# set default cmake build type to Release (None Debug Release RelWithDebInfo MinSizeRel)
+IF(NOT CMAKE_BUILD_TYPE)
+	SET(CMAKE_BUILD_TYPE Release CACHE STRING
+		"Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel."
+		FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+project(el_client)
+
+include(FindBoost)
+include(FindOpenGL)
+include(FindThreads)
+include(FindZLIB)
+include(FindPNG)
+include(FindJPEG)
+include(FindLibXml2)
+include(FindSDL)
+include(FindSDL_net)
+include(FindSDL_image)
+include(FindOpenAL)
+include(FindThreads)
+include(CheckCXXCompilerFlag)
+include(FindOpenMP)
+include(cmake/FindCal3d.cmake)
+include(cmake/FindIconv.cmake)
+include(cmake/FindOGG.cmake)
+include(cmake/FindVorbis.cmake)
+include(cmake/FindVorbisFile.cmake)
+include(cmake/FindGLEW.cmake)
+include(cmake/FindGLM.cmake)
+include(cmake/GetGitRevisionDescription.cmake)
+include(cmake/PCHSupport.cmake)
+
+set(Boost_USE_STATIC_RUNTIME ON)
+
+find_package(Boost 1.40.0 COMPONENTS filesystem system)
+
+IF (PCHSupport_FOUND)
+	option(BUILD_PCH "Build using precompiled headers" on)
+ENDIF (PCHSupport_FOUND)
+
+option(BUILD_TESTS "Build tests" off)
+option(BUILD_EDITOR "Build editor for shader sources, needs gtk" off)
+option(BUILD_NATIVE "Optimize for native system, use only for private builds" off)
+
+IF (MSVC)
+	CHECK_CXX_COMPILER_FLAG(/arch:SSE2 msvc_sse2)
+	CHECK_CXX_COMPILER_FLAG(/fp:fast msvc_fastmath)
+	CHECK_CXX_COMPILER_FLAG(-D_SCL_SECURE_NO_WARNINGS msvc_scl_secure)
+ELSE (MSVC)
+	CHECK_CXX_COMPILER_FLAG(-march=native gcc_native)
+	CHECK_CXX_COMPILER_FLAG(-ffast-math gcc_fastmath)
+	CHECK_CXX_COMPILER_FLAG(-Wall gcc_wall)
+ENDIF (MSVC)
+
+IF (${gcc_wall})
+	add_definitions(-Wall)
+ENDIF (${gcc_wall})
+
+IF (${gcc_fastmath})
+	add_definitions(-ffast-math)
+ENDIF (${gcc_fastmath})
+
+IF (${msvc_fpmath})
+	add_definitions(/fp:fast)
+ENDIF (${msvc_fpmath})
+
+IF (${msvc_scl_secure})
+	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
+ENDIF (${msvc_scl_secure})
+
+IF (${gcc_native} AND BUILD_NATIVE)
+	add_definitions(-march=native)
+ENDIF (${gcc_native} AND BUILD_NATIVE)
+
+IF (OPENMP_FOUND)
+	add_definitions(${OpenMP_CXX_FLAGS})
+ENDIF (OPENMP_FOUND)
+
+include_directories(${CAL3D_INCLUDE_DIR})
+include_directories(${OPENGL_INCLUDE_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${PNG_INCLUDE_DIR})
+include_directories(${JPEG_INCLUDE_DIR})
+include_directories(${ZLIB_INCLUDE_DIR})
+include_directories(${LIBXML2_INCLUDE_DIR})
+include_directories(${GLM_INCLUDE_DIR})
+include_directories(${ICONV_INCLUDE_DIR})
+include_directories(${SDL_INCLUDE_DIR})
+include_directories(${GLEW_INCLUDE_PATH})
+include_directories(${SDLNET_INCLUDE_DIR})
+include_directories(${SDLIMAGE_INCLUDE_DIR})
+include_directories(${OPENAL_INCLUDE_DIR})
+include_directories(${OGG_INCLUDE_DIR})
+include_directories(${VORBIS_INCLUDE_DIR})
+include_directories(${VORBISFILE_INCLUDE_DIR})
+include_directories(${GLM_INCLUDE_DIR})
+include_directories(${ELENGINE_SOURCE_DIR})
+include_directories(${elengine_SOURCE_DIR})
+
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+git_describe(GIT_REFSPEC GIT_DESCRIBE)
+
+IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	add_definitions(-DOSX)
+ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	add_definitions(-DLINUX)
+ELSEIF (WIN32)
+	add_definitions(-DWINDOWS -DWINVER=0x500 -mwindows)
+	list(APPEND el_rc_files elc_private.rc)
+ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+
+#add_definitions(-DCLUSTER_INSIDES)
+add_definitions(-DCUSTOM_LOOK)
+add_definitions(-DCUSTOM_UPDATE)
+add_definitions(-DFUZZY_PATHS)
+add_definitions(-DNEW_SOUND)
+add_definitions(-DPNG_SCREENSHOT)
+add_definitions(-DTEXT_ALIASES)
+add_definitions(-DUSE_INLINE)
+add_definitions(-DBANDWIDTH_SAVINGS)
+add_definitions(-DANIMATION_SCALING)
+add_definitions(-DENCYCL_NAVIGATION)
+add_definitions(-DFSAA)
+add_definitions(-DNEW_NEW_CHAR_WINDOW)
+add_definitions(-DNEW_TEXTURES)
+add_definitions(-DVEGETATION)
+add_definitions(-DELC)
+
+file(GLOB el_cpp_header_files *.hpp)
+file(GLOB el_cpp_files *.cpp)
+file(GLOB el_c_header_files *.h)
+file(GLOB el_c_files *.c)
+
+#dir io
+file(GLOB io_cpp_header_files io/*.hpp)
+file(GLOB io_cpp_files io/*.cpp)
+file(GLOB io_c_header_files io/*.h)
+file(GLOB io_c_files io/*.c)
+list(APPEND el_cpp_header_files ${io_cpp_header_files})
+list(APPEND el_cpp_files ${io_cpp_files})
+list(APPEND el_c_header_files ${io_c_header_files})
+list(APPEND el_c_files ${io_c_files})
+
+#dir books
+file(GLOB books_c_header_files books/*.h)
+file(GLOB books_c_files books/*.c)
+list(APPEND el_c_header_files ${books_c_header_files})
+list(APPEND el_c_files ${books_c_files})
+
+#dir shader
+file(GLOB shader_c_header_files shader/*.h)
+file(GLOB shader_c_files shader/*.c)
+list(APPEND el_c_header_files ${shader_c_header_files})
+list(APPEND el_c_files ${shader_c_files})
+
+#dir fsaa
+list(APPEND el_c_header_files fsaa/fsaa.h)
+list(APPEND el_c_files fsaa/fsaa.c)
+list(APPEND el_c_files fsaa/fsaa_dummy.c)
+
+#dir xml
+list(APPEND el_cpp_header_files xml/xmlhelper.hpp)
+list(APPEND el_cpp_files xml/xmlhelper.cpp)
+
+#dir exceptions
+list(APPEND el_cpp_header_files exceptions/extendedexception.hpp)
+list(APPEND el_cpp_files exceptions/extendedexception.cpp)
+
+add_subdirectory(xz)
+add_subdirectory(engine)
+add_subdirectory(eye_candy)
+
+IF (${BUILD_EDITOR} MATCHES "ON")
+	add_subdirectory(shader_source_editor)
+ENDIF (${BUILD_EDITOR} MATCHES "ON")
+
+IF (${BUILD_TESTS} MATCHES "ON")
+	add_subdirectory(tests)
+ENDIF (${BUILD_TESTS} MATCHES "ON")
+
+add_executable(el_client WIN32 ${el_cpp_header_files}
+	${el_cpp_files} ${el_c_header_files} ${el_c_files} ${el_rc_files})
+
+IF (OPENMP_FOUND)
+	set_target_properties(el_client PROPERTIES LINK_FLAGS "${OpenMP_CXX_FLAGS}")
+ENDIF (OPENMP_FOUND)
+
+target_link_libraries(el_client eye_candy)
+target_link_libraries(el_client elengine)
+target_link_libraries(el_client xz)
+target_link_libraries(el_client ${GLEW_LIBRARY})
+target_link_libraries(el_client ${CAL3D_LIBRARIES})
+target_link_libraries(el_client ${JPEG_LIBRARIES})
+target_link_libraries(el_client ${PNG_LIBRARIES})
+target_link_libraries(el_client ${ZLIB_LIBRARIES})
+target_link_libraries(el_client ${Boost_LIBRARIES})
+target_link_libraries(el_client ${OPENGL_LIBRARIES})
+target_link_libraries(el_client ${ICONV_LIBRARIES})
+target_link_libraries(el_client ${LIBXML2_LIBRARIES})
+target_link_libraries(el_client ${SDL_LIBRARY})
+target_link_libraries(el_client ${SDLNET_LIBRARY})
+target_link_libraries(el_client ${SDLIMAGE_LIBRARY})
+target_link_libraries(el_client ${OPENAL_LIBRARY})
+target_link_libraries(el_client ${OGG_LIBRARY})
+target_link_libraries(el_client ${VORBIS_LIBRARY})
+target_link_libraries(el_client ${VORBISFILE_LIBRARY})
+target_link_libraries(el_client ${CMAKE_THREAD_LIBS_INIT})
+

@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "gamewin.h"
-#include "2d_objects.h"
-#include "3d_objects.h"
 #include "actor_scripts.h"
 #include "achievements.h"
 #include "asc.h"
@@ -67,8 +65,8 @@
 #ifdef ECDEBUGWIN
 #include "eye_candy_debugwin.h"
 #endif
-#include "actor_init.h"
 #include "emotes.h"
+#include "engine.h"
 
 int game_root_win = -1;
 int gamewin_in_id = 4442;
@@ -366,7 +364,7 @@ int mouseover_game_handler (window_info *win, int mx, int my)
 		}
 	}
 
-	else if (thing_under_the_mouse==UNDER_MOUSE_3D_OBJ && objects_list[object_under_mouse])
+	else if (thing_under_the_mouse==UNDER_MOUSE_3D_OBJ)
 	{
 		int range_weapon_equipped;
 		LOCK_ACTORS_LISTS();
@@ -378,7 +376,7 @@ int mouseover_game_handler (window_info *win, int mx, int my)
 		{
 			elwin_mouse = CURSOR_EYE;
 		}
-		else if(objects_list[object_under_mouse]->flags&OBJ_3D_BAG)
+		else if(get_object_under_mouse_pickable())
 		{
 			elwin_mouse = CURSOR_PICK;
 		}
@@ -397,12 +395,13 @@ int mouseover_game_handler (window_info *win, int mx, int my)
 			elwin_mouse = CURSOR_ATTACK;
 		}
 		//see if the object is a harvestable resource.
-		else if(objects_list[object_under_mouse]->flags&OBJ_3D_HARVESTABLE)
+		else if(get_object_under_mouse_harvestable()) 
 		{
 			elwin_mouse = CURSOR_HARVEST;
 		}
 		//see if the object is an entrable resource.
-		else if(objects_list[object_under_mouse]->flags&OBJ_3D_ENTRABLE) {
+		else if(get_object_under_mouse_entrable())
+		{
 			elwin_mouse = CURSOR_ENTER;
 		}
 		//hmm, no usefull object, so select walk....
@@ -1056,12 +1055,9 @@ int display_game_handler (window_info *win)
 	move_camera ();
 	save_scene_matrix ();
 
-	CalculateFrustum ();
 	set_click_line();
-	any_reflection = find_reflection ();
+//	any_reflection = find_reflection ();
 	CHECK_GL_ERRORS ();
-
-	reset_under_the_mouse();
 
 	// are we actively drawing things?
 	if (SDL_GetAppState() & SDL_APPACTIVE)
@@ -1091,10 +1087,10 @@ int display_game_handler (window_info *win)
 		if (dungeon || !is_day)
 		{
 			update_scene_lights ();
-			draw_lights ();
+//			draw_lights ();
 		}
 		CHECK_GL_ERRORS ();
-
+#if	0
 		if (!dungeon && shadows_on && (is_day || lightning_falling))
 		{
 			render_light_view();
@@ -1107,6 +1103,7 @@ int display_game_handler (window_info *win)
 			CHECK_GL_ERRORS ();
 			if (show_reflection) display_3d_reflection ();
 		}
+#endif
 		CHECK_GL_ERRORS ();
 		glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -1114,7 +1111,7 @@ int display_game_handler (window_info *win)
 	
 		if (!is_day)
 			weather_init_lightning_light();
-
+#if	0
 		if (!dungeon && shadows_on && (is_day || lightning_falling))
 		{
 			glNormal3f(0.0f,0.0f,1.0f);
@@ -1136,10 +1133,16 @@ int display_game_handler (window_info *win)
 			anything_under_the_mouse(0, UNDER_MOUSE_NOTHING);
 			display_objects();
 			display_ground_objects();	
+
 			display_actors(1, DEFAULT_RENDER_PASS);
 			display_alpha_objects();
 			display_blended_objects();
 		}
+#else
+		draw_engine();
+
+		display_actors(1, DEFAULT_RENDER_PASS);
+#endif
 
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
@@ -1163,7 +1166,9 @@ int display_game_handler (window_info *win)
 	light_idle();
 #endif // DEBUG_TIME
 
+#if	0
 	ec_idle();
+#endif
 
 	CHECK_GL_ERRORS();
 	// if not active, dont bother drawing any more
@@ -1183,9 +1188,11 @@ int display_game_handler (window_info *win)
 
 	CHECK_GL_ERRORS ();
 	//particles should be last, we have no Z writting
+#if	0
 	display_particles ();
-
 	CHECK_GL_ERRORS ();
+#endif
+
 	//we do this because we don't want the rain/particles to mess with our cursor
 
 	ec_draw();
@@ -1293,8 +1300,6 @@ int display_game_handler (window_info *win)
 #endif	//DEBUG
 		safe_snprintf ((char*)str, sizeof(str), "FPS: %i", fps[0]);
 		draw_string (win->len_x-hud_x-95, 4, str, 1);
-		safe_snprintf((char*)str, sizeof(str), "UVP: %d", use_animation_program);
-		draw_string (win->len_x-hud_x-95, 19, str, 1);
 #ifdef DEBUG
 		//LRNR: stats testing
 		safe_snprintf((char*)str, sizeof(str), "E3D:%3d TOT:%3d", e3d_count, e3d_total);
@@ -1318,7 +1323,6 @@ int display_game_handler (window_info *win)
 		}
 	}
 	
-	anything_under_the_mouse (0, UNDER_MOUSE_NO_CHANGE);
 	CHECK_GL_ERRORS ();
 
 	draw_ingame_interface ();
@@ -1709,6 +1713,23 @@ int keypress_root_common (Uint32 key, Uint32 unikey)
 		ec_create_mine_detonate(your_actor->x_pos + 0.25f, your_actor->y_pos + 0.25f, 0, MINE_TYPE_MAGIC_IMMUNITY_REMOVAL, (poor_man ? 6 : 10));
 	}
 #endif
+	else if((keysym == SDLK_m) && shift_on && ctrl_on && alt_on)
+	{
+		freeze_time = !freeze_time;
+		if (freeze_time)
+		{
+			LOG_TO_CONSOLE(c_green2, "Day Time freezed!");
+			game_minute = 180;
+			new_minute();
+			new_second();
+		}
+		else
+		{
+			LOG_TO_CONSOLE(c_green2, "Time unfreezed!");
+			new_minute();
+			new_second();
+		}
+	}
 #ifdef DEBUG
     // scale the current actor
 	else if((keysym == SDLK_p) && shift_on && ctrl_on && !alt_on)

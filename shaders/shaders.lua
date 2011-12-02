@@ -1,0 +1,48 @@
+files = {
+	"shaders/sources/bone_depth_animation.xml",
+	"shaders/sources/bone_normal_animation.xml",
+	"shaders/sources/bone_tangent_animation.xml",
+	"shaders/sources/depth_transform.xml",
+	"shaders/sources/normal_transform.xml",
+	"shaders/sources/tangent_transform.xml",
+	"shaders/sources/view_direction.xml",
+	"shaders/sources/view_transform.xml",
+	"shaders/sources/diffuse_blend_mapping.xml",
+	"shaders/sources/diffuse_mapping.xml",
+	"shaders/sources/uv.xml",
+	"shaders/sources/lava.xml",
+	"shaders/sources/lava_uv.xml",
+	"shaders/sources/fog.xml",
+	"shaders/sources/shadow_uv.xml",
+	"shaders/sources/shadow_mapping.xml",
+	"shaders/sources/shadow_filtering_mapping.xml",
+	"shaders/sources/transparent.xml",
+	"shaders/sources/diffuse_light.xml",
+	"shaders/sources/specular_light.xml",
+	"shaders/sources/no_normal_mapping.xml",
+	"shaders/sources/no_normal_depth_mapping.xml",
+	"shaders/sources/no_specular_mapping.xml",
+	"shaders/sources/parallax_slope_mapping.xml",
+	"shaders/sources/shadow_map.xml",
+	"shaders/sources/exp_shadow_map.xml",
+	"shaders/sources/exp_shadow_mapping.xml"
+};
+
+defaults = {
+	world_depth_transform = "default",
+	world_normal_transform = "default",
+	world_tangent_transform = "default",
+	view_direction = "default",
+	view_transform = "default",
+	diffuse_mapping = "default",
+	uv = "default",
+	shadow_uv = "default",
+	shadow_mapping = "default",
+	fog = "default",
+	transparent = "default",
+	light = "diffuse",
+	normal_mapping = "no_normal_mapping",
+	specular_mapping = "no_specular_mapping",
+	shadow_map = "default"
+};
+

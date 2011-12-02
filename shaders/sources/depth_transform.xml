@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>default</name>
+ <type>world_depth_transform</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>position</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_matrix</name>
+     <source></source>
+     <type>mat4x3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	world_position = world_matrix * vec4(position.xyz, 1.0);
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_150>true</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>true</material_texture_arrays>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

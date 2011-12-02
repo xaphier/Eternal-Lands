@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>parallax_slope_mapping</name>
+ <type>normal_mapping</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>world_normal</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_tangent</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_binormal</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_uv</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>camera</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>normal_sampler_0</name>
+     <source></source>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>scale_bias</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>fragment_normal</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>fragment_uv</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>view_dir</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	mat3 tbn_matrix;
+	vec4 normal;
+	vec3 uv, view;
+	float h;
+	int i;
+
+	uv = vec3(vertex_uv, 0.0);
+	view_dir = normalize(world_position - camera.xyz);
+
+	tbn_matrix[0] = world_tangent;
+	tbn_matrix[1] = world_binormal;
+	tbn_matrix[2] = world_normal;
+
+	for (int i = 0; i &lt; 4; i++)
+	{
+		normal = texture2D(normal_sampler_0, uv.xy);
+		normal.xyz = normal.xyz * 2.0 - vec3(1.0);
+		h = normal.a * scale_bias.x + scale_bias.y;
+		uv += (h - uv.z) * normal.z * view_dir;
+	}
+
+	fragment_normal = normalize(tbn_matrix * normal.xyz);
+	fragment_uv = uv.xy;
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_150>false</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>false</material_texture_arrays>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

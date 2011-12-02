@@ -12,7 +12,7 @@
 #error	"Including C++ header in C translation unit!"
 #endif	/* __cplusplus */
 
-#include "../platform.h"
+#include "prerequisites.hpp"
 
 /**
  * @file
@@ -77,7 +77,7 @@ namespace eternal_lands
 	 *
 	 * @c class for opengl hardware buffers.
 	 */
-	class HardwareBuffer
+	class HardwareBuffer: public boost::noncopyable
 	{
 		private:
 			/**

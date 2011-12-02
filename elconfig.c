@@ -78,7 +78,6 @@
 
 #include "eye_candy_wrapper.h"
 #include "sendvideoinfo.h"
-#include "actor_init.h"
 #include "io/elpathwrapper.h"
 #ifdef	NEW_TEXTURES
 #include "textures.h"
@@ -89,6 +88,7 @@
 #ifdef	CUSTOM_UPDATE
 #include "custom_update.h"
 #endif	/* CUSTOM_UPDATE */
+#include "engine.h"
 
 typedef	float (*float_min_max_func)();
 typedef	int (*int_min_max_func)();
@@ -145,6 +145,7 @@ int shadow_map_size_multi= 0;
 #ifdef	FSAA
 int fsaa_index = 0;
 #endif	/* FSAA */
+int shader_quality_multi = 0;
 
 /* temporary variables for fine graphic positions asjustmeet */
 int gx_adjust = 0;
@@ -171,15 +172,186 @@ int skybox_local_weather = 0;
 #ifdef OSX	// for probelem with rounded buttons on Intel graphics
 int square_buttons = 0;
 #endif
-#ifdef	NEW_TEXTURES
-int small_actor_texture_cache = 0;
-#endif	/* NEW_TEXTURES */
 
 int video_info_sent = 0;
 
 #ifdef DEBUG
 int enable_client_aiming = 0;
 #endif // DEBUG
+
+enum
+{
+	el_true = 1,
+	el_false = 0
+};
+
+int el_shadow_map_count = 0;
+int el_shadow_map_size = 2;
+float el_shadow_distance = 40.0f;
+float el_view_distance = 40.0f;
+int el_msaa_shadows = el_false;
+int el_exponential_shadow_maps = el_false;
+int el_alpha_to_coverage = el_false;
+int el_filter_shadow_map = el_false;
+int el_fog = el_false;
+
+void change_el_shadow_map_count(int* var, int value)
+{
+	if (value < 2)
+	{
+		if (!gl_extensions_loaded || GLEW_EXT_framebuffer_object ||
+			GLEW_ARB_framebuffer_object || GLEW_VERSION_3_0 ||
+			(value == 0))
+		{
+			*var = value;
+			set_shadow_map_count(*var);
+		}
+		else
+		{
+			LOG_TO_CONSOLE(c_green2, "Framebuffer support needed");
+		}
+	}
+	else
+	{
+		if (!gl_extensions_loaded || GLEW_VERSION_3_0)
+		{
+			if (gl_extensions_loaded && !el_exponential_shadow_maps)
+			{
+				*var = 1;
+				LOG_TO_CONSOLE(c_green2, "Exponential Shadow "
+					"Maps needed");
+			}
+			else
+			{
+				*var = value;
+				set_shadow_map_count(*var);
+			}
+		}
+		else
+		{
+			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
+		}
+	}
+}
+
+void change_el_shadow_map_size(int* var, int value)
+{
+	*var = value;
+	set_shadow_map_size(value);
+}
+
+void change_el_shadow_distance(float* var, float value)
+{
+	*var = value;
+	set_shadow_distance(value);
+}
+
+void change_el_view_distance(float* var, float value)
+{
+	*var = value;
+	set_view_distance(value);
+}
+
+void change_el_msaa_shadows(int* var)
+{
+	if (*var)
+	{
+		*var = el_false;
+		set_msaa_shadows(*var);
+	}
+	else
+	{
+		if (!gl_extensions_loaded || GLEW_VERSION_3_0)
+		{
+			if (gl_extensions_loaded && !el_exponential_shadow_maps)
+			{
+				LOG_TO_CONSOLE(c_green2, "Exponential Shadow "
+					"Maps needed");
+			}
+			else
+			{
+				*var = el_true;
+				set_msaa_shadows(*var);
+			}
+		}
+		else
+		{
+			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
+		}
+	}
+}
+
+void change_el_exponential_shadow_maps(int* var)
+{
+	if (*var)
+	{
+		if (el_shadow_map_count > 1)
+		{
+			el_shadow_map_count = 1;
+		}
+
+		*var = el_false;
+		el_filter_shadow_map = el_false;
+		el_msaa_shadows = el_false;
+		set_exponential_shadow_maps(*var);
+		set_filter_shadow_map(el_filter_shadow_map);
+		set_msaa_shadows(el_msaa_shadows);
+		set_shadow_map_count(el_shadow_map_count);
+	}
+	else
+	{
+		if (!gl_extensions_loaded || GLEW_VERSION_3_0)
+		{
+			*var = el_true;
+			set_exponential_shadow_maps(*var);
+		}
+		else
+		{
+			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
+		}
+	}
+}
+
+void change_el_alpha_to_coverage(int* var)
+{
+	*var = !*var;
+	set_alpha_to_coverage(*var);
+}
+
+void change_el_filter_shadow_map(int* var)
+{
+	if (*var)
+	{
+		*var = el_false;
+		set_filter_shadow_map(*var);
+	}
+	else
+	{
+		if (!gl_extensions_loaded || GLEW_VERSION_3_0)
+		{
+			if (gl_extensions_loaded && !el_exponential_shadow_maps)
+			{
+				LOG_TO_CONSOLE(c_green2, "Exponential Shadow "
+					"Maps needed");
+			}
+			else
+			{
+				*var = el_true;
+				set_filter_shadow_map(*var);
+			}
+		}
+		else
+		{
+			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
+		}
+	}
+}
+
+void change_el_fog(int* var)
+{
+	*var = !*var;
+	set_fog(*var);
+}
 
 void options_loaded(void)
 {
@@ -214,68 +386,6 @@ float float_one_func()
 
 static __inline__ void check_option_var(char* name);
 
-static __inline__ void destroy_shadow_mapping()
-{
-	if (gl_extensions_loaded)
-	{
-		CHECK_GL_ERRORS();
-		if (have_extension(ext_framebuffer_object))
-		{
-#ifndef MAP_EDITOR
-			free_shadow_framebuffer();
-#endif //MAP_EDITOR
-		}
-		else
-		{
-			if (depth_map_id != 0)
-			{
-				glDeleteTextures(1, &depth_map_id);
-				depth_map_id = 0;
-			}
-		}
-		CHECK_GL_ERRORS();
-	}
-}
-
-static __inline__ void destroy_fbos()
-{
-	if (gl_extensions_loaded)
-	{
-		CHECK_GL_ERRORS();
-		if (have_extension(ext_framebuffer_object))
-		{
-#ifndef MAP_EDITOR
-			destroy_shadow_mapping();
-			free_reflection_framebuffer();
-#endif //MAP_EDITOR
-		}
-		CHECK_GL_ERRORS();
-	}
-}
-
-static __inline__ void build_fbos()
-{
-	if (gl_extensions_loaded)
-	{
-#ifndef MAP_EDITOR
-		if (have_extension(ext_framebuffer_object) && use_frame_buffer)
-		{
-			if ((water_shader_quality > 0) && show_reflection)
-			{
-				make_reflection_framebuffer(window_width, window_height);
-			}
-		}
-#endif // MAP_EDITOR
-		check_option_var("shadow_map_size");
-	}
-}
-
-static __inline__ void update_fbos()
-{
-	destroy_fbos();
-	build_fbos();
-}
-
 void change_var(int * var)
 {
 	*var= !*var;
@@ -302,45 +412,6 @@ void change_sky_var(int * var)
 {
 	*var= !*var;
 	skybox_update_colors();
-}
-
-void change_use_animation_program(int * var)
-{
-	if (*var)
-	{
-		if (gl_extensions_loaded && have_extension(arb_vertex_buffer_object) &&
-			have_extension(arb_vertex_program))
-		{
-			unload_vertex_programs();
-		}
-		*var = 0;
-	}
-	else
-	{
-		if (!gl_extensions_loaded)
-		{
-			*var = 1;
-		}
-		else
-		{
-			if (have_extension(arb_vertex_buffer_object) &&
-				have_extension(arb_vertex_program))
-			{
-				*var = load_vertex_programs();
-			}
-		}
-	}
-	if (gl_extensions_loaded)
-	{
-		if (use_animation_program)
-		{
-			LOG_TO_CONSOLE(c_green2, "Using vertex program for actor animation.");
-		}
-		else
-		{
-			LOG_TO_CONSOLE(c_red1, "Not using vertex program for actor animation.");
-		}
-	}
 }
 #endif //MAP_EDITOR
 
@@ -439,43 +510,13 @@ void change_password(char * passwd)
 	}
 }
 
-#ifdef	NEW_TEXTURES
-void update_max_actor_texture_handles()
-{
-	if (poor_man == 1)
-	{
-		if (small_actor_texture_cache == 1)
-		{
-			max_actor_texture_handles = 1;
-		}
-		else
-		{
-			max_actor_texture_handles = 4;
-		}
-	}
-	else
-	{
-		if (small_actor_texture_cache == 1)
-		{
-			max_actor_texture_handles = 16;
-		}
-		else
-		{
-			max_actor_texture_handles = 32;
-		}
-	}
-}
-#endif	/* NEW_TEXTURES */
-
 void change_poor_man(int *poor_man)
 {
 	*poor_man= !*poor_man;
 #ifdef	NEW_TEXTURES
 	unload_texture_cache();
-	update_max_actor_texture_handles();
 #endif	/* NEW_TEXTURES */
 	if(*poor_man) {
-		show_reflection= 0;
 		shadows_on= 0;
 		clouds_shadows= 0;
 		use_shadow_mapping= 0;
@@ -487,7 +528,6 @@ void change_poor_man(int *poor_man)
 #ifndef MAP_EDITOR
 		use_frame_buffer= 0;
 #endif
-		update_fbos();
 		skybox_show_clouds = 0;
 		skybox_show_sun = 0;
 		skybox_show_moons = 0;
@@ -538,20 +578,6 @@ void change_clouds_shadows(int *value)
 }
 
 #ifdef	NEW_TEXTURES
-void change_small_actor_texture_cache(int *value)
-{
-	if (*value)
-	{
-		*value = 0;
-	}
-	else
-	{
-		*value = 1;
-	}
-
-	update_max_actor_texture_handles();
-}
-
 void change_eye_candy(int *value)
 {
 	if (*value)
@@ -601,18 +627,6 @@ void change_point_particles(int *value)
 #ifndef	NEW_TEXTURES
 	ec_set_draw_method();
 #endif	/* NEW_TEXTURES */
-}
-
-void change_particles_percentage(int *pointer, int value)
-{
-	if(value>0 && value <=100) {
-		particles_percentage= value;
-	}
-	else
-	{
-		particles_percentage= 0;
-		LOG_TO_CONSOLE(c_green2, disabled_particles_str);
-	}
 }
 
 void change_new_selection(int *value)
@@ -673,8 +687,6 @@ int switch_video(int mode, int full_screen)
 	return 1;
 #endif
 
-	destroy_fbos();
-
 	if (!SDL_VideoModeOK(win_width, win_height, win_bpp, flags)) {
 		LOG_TO_CONSOLE(c_red2, invalid_video_mode);
 		return 0;
@@ -686,7 +698,6 @@ int switch_video(int mode, int full_screen)
 		}
 #endif
 	}
-	build_fbos();
 	return 1;
 }
 void switch_vidmode(int *pointer, int mode)
@@ -768,8 +779,7 @@ void change_tilt_float(float * var, float * value)
 void change_shadow_map_size(int *pointer, int value)
 {
 	const int array[10]= {256, 512, 768, 1024, 1280, 1536, 1792, 2048, 3072, 4096};
-	int index, size, i, max_size, error;
-	char error_str[1024];
+	int index, i;
 
 	if (value >= array[0])
 	{
@@ -789,75 +799,24 @@ void change_shadow_map_size(int *pointer, int value)
 		index = min2i(max2i(0, value), 9);
 	}
 
-	size = array[index];
-
-	if (gl_extensions_loaded && use_shadow_mapping)
-	{
-		error= 0;
-
-		if (use_frame_buffer)
-		{
-			glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &max_size);
-		}
-		else
-		{
-			max_size = min2i(window_width, window_height);
-		}
-
-		if (size > max_size)
-		{
-			while ((size > max_size) && (index > 0))
-			{
-				index--;
-				size = array[index];
-			}
-			error= 1;
-		}
-
-		if (!(have_extension(arb_texture_non_power_of_two) || supports_gl_version(2, 0)))
-		{
-			switch (index)
-			{
-				case 2:
-					index = 1;
-					error = 1;
-					break;
-				case 4:
-				case 5:
-				case 6:
-					index = 3;
-					error = 1;
-					break;
-				case 8:
-					index = 7;
-					error = 1;
-					break;
-			}
-			size = array[index];
-		}
-		if (error == 1)
-		{
-			memset(error_str, 0, sizeof(error_str));
-			safe_snprintf(error_str, sizeof(error_str),
-				shadow_map_size_not_supported_str, size);
-			LOG_TO_CONSOLE(c_yellow2, error_str);
-		}
-		shadow_map_size = size;
-
-		destroy_shadow_mapping();
-		if (have_extension(ext_framebuffer_object) && use_frame_buffer)
-		{
-			make_shadow_framebuffer();
-		}
-	}
-	else
-	{
-		shadow_map_size = size;
-	}
-
 	if (pointer != NULL)
 	{
 		*pointer= index;
+	}
+}
+
+void change_shader_quality(int *pointer, int value)
+{
+	const char* array[4]= { "low", "medium", "high", "debug" };
+	int index;
+
+	index = min2i(max2i(0, value), 3);
+
+	engine_set_shader_quality(array[index]);
+
+	if (pointer != NULL)
+	{
+		*pointer = index;
 	}
 }
 
@@ -910,9 +869,6 @@ void change_custom_update(int *var)
 void change_custom_clothing(int *var)
 {
 	*var = !*var;
-#ifdef	NEW_TEXTURES
-	unload_actor_texture_cache();
-#endif	/* NEW_TEXTURES */	    
 }
 #endif    //CUSTOM_UPDATE
 
@@ -1044,6 +1000,7 @@ void change_dir_name (char *var, const char *str, int len)
 		var[idx++]= '/';
 	}
 	var[idx]= '\0';
+	file_system_add_dir(var);
 }
 
 #ifdef ANTI_ALIAS
@@ -1178,7 +1135,6 @@ void change_shadow_mapping (int *sm)
 			LOG_TO_CONSOLE (c_red1, disabled_shadow_mapping);
 		}
 	}
-	update_fbos();
 }
 
 #ifndef MAP_EDITOR2
@@ -1198,7 +1154,6 @@ void change_global_filters (int *use)
 void change_reflection(int *rf)
 {
 	*rf= !*rf;
-	update_fbos();
 }
 
 #ifndef MAP_EDITOR
@@ -1219,42 +1174,13 @@ void change_frame_buffer(int *fb)
 			LOG_TO_CONSOLE (c_red1, disabled_framebuffer);
 		}
 	}
-	update_fbos();
 }
 #endif
 
 void change_shadows(int *sh)
 {
 	*sh= !*sh;
-	update_fbos();
 }
-
-#ifndef MAP_EDITOR
-int int_max_water_shader_quality()
-{
-	if (gl_extensions_loaded)
-	{
-		return get_max_supported_water_shader_quality();
-	}
-	else
-	{
-		return 2;
-	}
-}
-
-void change_water_shader_quality(int *wsq, int value)
-{
-	if (gl_extensions_loaded)
-	{
-		*wsq = min2i(max2i(value, 0), get_max_supported_water_shader_quality());
-	}
-	else
-	{
-		*wsq = value;
-	}
-	update_fbos();
-}
-#endif
 
 #ifdef MAP_EDITOR
 
@@ -1267,7 +1193,7 @@ void set_auto_save_interval (int *save_time, int time)
 	}
 }
 
-void switch_vidmode(int *pointer, int mode)
+void switch_vidmode(int mode)
 {
 	switch(mode)
 		{
@@ -1436,7 +1362,6 @@ void check_options()
 	check_option_var("use_vertex_buffers");
 	check_option_var("clouds_shadows");
 #ifdef	NEW_TEXTURES
-	check_option_var("small_actor_texture_cache");
 	check_option_var("use_eye_candy");
 #else	/* NEW_TEXTURES */
 	check_option_var("use_mipmaps");
@@ -1444,9 +1369,11 @@ void check_options()
 	check_option_var("use_point_particles");
 	check_option_var("use_frame_buffer");
 	check_option_var("use_shadow_mapping");
-	check_option_var("shadow_map_size");
 	check_option_var("water_shader_quality");
-	check_option_var("use_animation_program");
+	check_option_var("exponential_shadow_maps");
+	check_option_var("msaa_shadows");
+	check_option_var("filter_shadow_map");
+	check_option_var("shadow_map_count");
 }
 
 int check_var (char *str, var_name_type type)
@@ -1873,26 +1800,25 @@ static void init_ELC_vars(void)
 	}
 #endif	/* FSAA */
 	add_var (OPT_BOOL, "use_frame_buffer", "fb", &use_frame_buffer, change_frame_buffer, 0, "Toggle Frame Buffer Support", "Toggle frame buffer support. Used for reflection and shadow mapping.", VIDEO);
-	add_var(OPT_INT_F,"water_shader_quality","water_shader_quality",&water_shader_quality,change_water_shader_quality,1,"  water shader quality","Defines what shader is used for water rendering. Higher values are slower but look better. Needs \"toggle frame buffer support\" to be turned on.",VIDEO, int_zero_func, int_max_water_shader_quality);
-#ifdef	NEW_TEXTURES
-	add_var(OPT_BOOL,"small_actor_texture_cache","small_actor_tc",&small_actor_texture_cache,change_small_actor_texture_cache,0,"Small actor texture cache","A small Actor texture cache uses less video memory, but actor loading can be slower.",VIDEO);
-#else	/* NEW_TEXTURES */
+#ifndef	NEW_TEXTURES
 	add_var(OPT_BOOL,"use_mipmaps","mm",&use_mipmaps,change_mipmaps,0,"Mipmaps","Mipmaps is a texture effect that blurs the texture a bit - it may look smoother and better, or it may look worse depending on your graphics driver settings and the like.",VIDEO);
 #endif	/* NEW_TEXTURES */
 	add_var(OPT_BOOL,"use_vertex_buffers","vbo",&use_vertex_buffers,change_vertex_buffers,0,"Vertex Buffer Objects","Toggle the use of the vertex buffer objects, restart required to activate it",VIDEO);
-	add_var(OPT_BOOL, "use_animation_program", "uap", &use_animation_program, change_use_animation_program, 1, "Use animation program", "Use GL_ARB_vertex_program for actor animation", VIDEO);
 	add_var(OPT_BOOL_INI, "video_info_sent", "svi", &video_info_sent, change_var, 0, "Video info sent", "Video information are sent to the server (like OpenGL version and OpenGL extentions)", VIDEO);
 	// VIDEO TAB
 
 
 	// GFX TAB
-	add_var(OPT_BOOL,"shadows_on","shad",&shadows_on,change_shadows,0,"Shadows","Toggles the shadows", GFX);
-	add_var(OPT_BOOL,"use_shadow_mapping", "sm", &use_shadow_mapping, change_shadow_mapping, 0, "Shadow Mapping", "If you want to use some better quality shadows, enable this. It will use more resources, but look prettier.", GFX);
-	add_var(OPT_MULTI,"shadow_map_size","smsize",&shadow_map_size_multi,change_shadow_map_size,1024,"Shadow Map Size","This parameter determines the quality of the shadow maps. You should as minimum set it to 512.",GFX,"256","512","768","1024","1280","1536","1792","2048","3072","4096",NULL);
-	add_var(OPT_BOOL,"no_adjust_shadows","noadj",&no_adjust_shadows,change_var,0,"Don't Adjust Shadows","If enabled, tell the engine not to disable the shadows if the frame rate is too low.",GFX);
-	add_var(OPT_BOOL,"clouds_shadows","cshad",&clouds_shadows,change_clouds_shadows,1,"Cloud Shadows","The clouds shadows are projected on the ground, and the game looks nicer with them on.",GFX);
-	add_var(OPT_BOOL,"show_reflection","refl",&show_reflection,change_reflection,1,"Show Reflections","Toggle the reflections",GFX);
-	add_var(OPT_BOOL,"render_fog","fog",&use_fog,change_var,1,"Render Fog","Toggles fog rendering.",GFX);
+	add_var(OPT_INT, "shadow_map_count", "shadow_map_count", &el_shadow_map_count, change_el_shadow_map_count, 0, "Shadow map count", "Number of shadow maps used.", GFX, 0, 4);
+	add_var(OPT_MULTI_H, "shadow_map_size", "shadow_map_size", &el_shadow_map_size, change_el_shadow_map_size, 0, "Shadow Map Size", "Shadow Map Size", GFX, "256", "512", "1024", "2048", 0);
+	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &el_shadow_distance, change_el_shadow_distance, 40.0f, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0f, 200.0f, 5.0f);
+	add_var(OPT_FLOAT, "view_distance", "view_distance", &el_view_distance, change_el_view_distance, 80.0f, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0f, 200.0f, 5.0f);
+	add_var(OPT_BOOL, "msaa_shadows", "msaa_shadows", &el_msaa_shadows, change_el_msaa_shadows, el_false, "MSAA for shadow mapping", "Using MSAA antialiasing for shadow map generation", GFX);
+	add_var(OPT_BOOL, "exponential_shadow_maps", "exponential_shadow_maps", &el_exponential_shadow_maps, change_el_exponential_shadow_maps, el_false, "Exponential Shadow Maps", "Exponential Shadow Maps", GFX);
+	add_var(OPT_BOOL, "alpha_to_coverage", "alpha_to_coverage", &el_alpha_to_coverage, change_el_alpha_to_coverage, el_false, "Alpha to coverage", "Alpha to coverage", GFX);
+	add_var(OPT_BOOL, "filter_shadow_map", "filter_shadow_map", &el_filter_shadow_map, change_el_filter_shadow_map, el_false, "Filter shadow map", "Filter shadow map", GFX);
+	add_var(OPT_BOOL, "fog", "fog", &el_fog, change_el_fog, el_false, "Fog", "Fog", GFX);
+
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */
 	add_var(OPT_BOOL,"skybox_show_clouds","sky_clouds", &skybox_show_clouds, change_sky_var,1,"Show Clouds", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX);
@@ -1901,7 +1827,6 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL,"skybox_show_moons","sky_moons", &skybox_show_moons, change_sky_var,1,"Show Moons", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX);
 	add_var(OPT_BOOL,"skybox_show_stars","sky_stars", &skybox_show_stars, change_sky_var,1,"Show Stars", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX);
 	add_var(OPT_INT,"skybox_update_delay","skybox_update_delay", &skybox_update_delay, change_int, skybox_update_delay, "Sky Update Delay", "Specifies the delay in seconds between 2 updates of the sky and the environment. A value of 0 corresponds to an update at every frame.", GFX, 0, 60);
-	add_var(OPT_INT,"particles_percentage","pp",&particles_percentage,change_particles_percentage,100,"Particle Percentage","If you experience a significant slowdown when particles are nearby, you should consider lowering this number.",GFX,0,100);
 	add_var(OPT_BOOL,"special_effects", "sfx", &special_effects, change_var, 1, "Toggle Special Effects", "Special spell effects", GFX);
 #ifdef	NEW_TEXTURES
 	add_var(OPT_BOOL,"use_eye_candy", "ec", &use_eye_candy, change_eye_candy, 1, "Enable Eye Candy", "Toggles most visual effects, like spells' and harvesting events'. Needs OpenGL 1.5", GFX);
@@ -1953,11 +1878,12 @@ static void init_ELC_vars(void)
 
 
 	// TROUBLESHOOT TAB
+#if	0
 	add_var(OPT_BOOL,"shadows_on","shad",&shadows_on,change_shadows,0,"Shadow Bug","Some video cards have trouble with the shadows. Uncheck this if everything you see is white.", TROUBLESHOOT);
+#endif
 	// Grum: attempt to work around bug in Ati linux drivers.
 	add_var(OPT_BOOL,"ati_click_workaround", "atibug", &ati_click_workaround, change_var, 0, "ATI Bug", "If you are using an ATI graphics card and don't move when you click, try this option to work around a bug in their drivers.", TROUBLESHOOT);
 	add_var (OPT_BOOL,"use_old_clicker", "oldmclick", &use_old_clicker, change_var, 0, "Mouse Bug", "Unrelated to ATI graphics cards, if clicking to walk doesn't move you, try toggling this option.", TROUBLESHOOT);
-	add_var(OPT_BOOL,"use_new_selection", "uns", &use_new_selection, change_new_selection, 1, "New selection", "Using new selection can give you a higher framerate.  However, if your cursor does not change when over characters or items, try disabling this option.", TROUBLESHOOT);
 	add_var(OPT_BOOL,"use_compiled_vertex_array","cva",&use_compiled_vertex_array,change_compiled_vertex_array,1,"Compiled Vertex Array","Some systems will not support the new compiled vertex array in EL. Disable this if some 3D objects do not display correctly.",TROUBLESHOOT);
 	add_var(OPT_BOOL,"use_draw_range_elements","dre",&use_draw_range_elements,change_var,1,"Draw Range Elements","Disable this if objects appear partially stretched.",TROUBLESHOOT);
 	add_var(OPT_BOOL,"use_point_particles","upp",&use_point_particles,change_point_particles,1,"Point Particles","Some systems will not support the new point based particles in EL. Disable this if your client complains about not having the point based particles extension.",TROUBLESHOOT);
@@ -1969,7 +1895,6 @@ static void init_ELC_vars(void)
 #ifdef OSX
 	add_var(OPT_BOOL, "square_buttons", "sqbutt",&square_buttons,change_var,1,"Square Buttons","Use square buttons rather than rounded",TROUBLESHOOT);
 #endif
-	add_var(OPT_BOOL, "use_animation_program", "uap", &use_animation_program, change_use_animation_program, 1, "Use animation program", "Use GL_ARB_vertex_program for actor animation", TROUBLESHOOT);
 	add_var(OPT_BOOL,"poor_man","poor",&poor_man,change_poor_man,0,"Poor Man","If the game is running very slow for you, toggle this setting.",TROUBLESHOOT);
 	// TROUBLESHOOT TAB
 
@@ -2011,7 +1936,6 @@ void init_vars()
 	add_var(OPT_STRING,"data_dir","dir",datadir,change_dir_name,90,"Data Directory","Place were we keep our data. Can only be changed with a Client restart.",SERVER);
 	add_var(OPT_INT,"limit_fps","lfps",&limit_fps,change_int,0,"Limit FPS","Limit the frame rate to reduce load on the system",VIDEO,0,INT_MAX);
 #ifdef MAP_EDITOR
-	add_var(OPT_INT,"video_mode","vid",&video_mode,switch_vidmode,4,"Video Mode","The video mode you wish to use",VIDEO,1,7);
 	add_var(OPT_BOOL,"close_browser_on_select","cbos",&close_browser_on_select, change_var, 0,"Close Browser","Close the browser on select",HUD);
 	add_var(OPT_BOOL,"show_position_on_minimap","spos",&show_position_on_minimap, change_var, 0,"Show Pos","Show position on the minimap",HUD);
 	add_var(OPT_SPECINT,"auto_save","asv",&auto_save_time, set_auto_save_interval, 0,"Auto Save","Auto Save",HUD,0,INT_MAX);
@@ -2019,7 +1943,6 @@ void init_vars()
 #endif
 #ifndef MAP_EDITOR
 	add_var (OPT_BOOL, "use_frame_buffer", "fb", &use_frame_buffer, change_frame_buffer, 0, "Toggle Frame Buffer Support", "Toggle frame buffer support. Used for reflection and shadow mapping.", VIDEO);
-	add_var(OPT_BOOL, "use_animation_program", "uap", &use_animation_program, change_use_animation_program, 1, "Use animation program", "Use GL_ARB_vertex_program for actor animation", VIDEO);
 #endif //MAP_EDITOR
 #ifdef OSX
 	add_var(OPT_BOOL, "square_buttons", "sqbutt",&square_buttons,change_var,1,"Square Buttons","Use square buttons rather than rounded",HUD);
@@ -2350,6 +2273,7 @@ int onclick_label_handler(widget_list *widget, int mx, int my, Uint32 flags)
 	}
 
 	do_click_sound();
+
 	return 1;
 }
 

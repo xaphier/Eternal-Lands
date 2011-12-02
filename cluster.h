@@ -193,27 +193,6 @@ static __inline__  void update_occupied_with_light (char* occupied, int id)
 
 /*!
  * \ingroup maps
- * \brief Update the occupation array with a particle system
- *
- *      Mark the fields in the occupation array that are included in
- *      the bounding box of the particle system.
- *
- * \param occupied The occupation array
- * \param id       The index in particles_list of the particle system
- */
-static __inline__ void update_occupied_with_particle_system (char* occupied, int id)
-{
-	AABBOX box;
-
-	if (id < 0 || id >= MAX_PARTICLE_SYSTEMS || !particles_list[id])
-		return;
-
-	calc_bounding_box_for_particle_sys (&box, particles_list[id]);
-	update_occupied_with_bbox (occupied, &box);
-}
-
-/*!
- * \ingroup maps
  * \brief Set the cluster map from file data
  *
  *	Allocate and read the cluster map from file data.

@@ -73,13 +73,7 @@ Uint32 my_timer(Uint32 interval, void * data)
 			my_timer_adjust--;
 		}
 		normal_animation_timer=0;
-		//update_particles();
-		//e.type= SDL_USEREVENT;
-		e.user.code= EVENT_UPDATE_PARTICLES;
-		SDL_PushEvent(&e);
 
-		water_movement_u+=0.0004f;
-		water_movement_v+=0.0002f;
 		if(!dungeon && 0)//we do not want clouds movement in dungeons, but we want clouds detail
 		{
 			clouds_movement_u+=0.0003f;

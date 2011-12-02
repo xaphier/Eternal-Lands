@@ -14,8 +14,6 @@
 #include "misc.h"
 #include "translate.h"
 #include "weather.h"
-#include "2d_objects.h"
-#include "3d_objects.h"
 #include "spells.h"
 #include "tiles.h"
 #include "actors.h"

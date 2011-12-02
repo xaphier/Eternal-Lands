@@ -28,6 +28,9 @@ Uint16 compress_normal(const float *normal)
 	Uint16 result;
 
 	result = 0;
+	tmp[0] = normal[0];
+	tmp[1] = normal[1];
+	tmp[2] = normal[2];
 
 	if (tmp[0] < 0.0f)
 	{

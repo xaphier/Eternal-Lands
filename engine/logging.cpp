@@ -19,6 +19,10 @@
 #include <SDL/SDL_mutex.h>
 #include <SDL/SDL_thread.h>
 #include "../elc_private.h"
+#include "../platform.h"
+#include "buildinformations.hpp"
+#include <boost/exception/all.hpp>
+#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -278,6 +282,7 @@ namespace eternal_lands
 			id = SDL_ThreadID();
 
 			str << name << " (" << std::hex << id << ")";
+			str << std::dec;
 
 			found = thread_datas.find(id);
 
@@ -288,14 +293,23 @@ namespace eternal_lands
 				return;
 			}
 
-			file_name << log_dir << name << "_" << std::hex << id;
-			file_name << ".log";
+			file_name << log_dir << "new_" << name << "_";
+			file_name << std::hex << id << ".log" << std::dec;
 
 			thread_datas[id].m_name = str.str();
 			thread_datas[id].m_last_message_count = 0;
 			thread_datas[id].m_message_level = 0;
 			thread_datas[id].m_log_file = open(file_name.str(
 				).c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+			log_message("Git sha1: ", git_sha1_str,
+				__FILE__, __LINE__, thread_datas[id]);
+
+			log_message("Git describe: ", git_describe_str,
+				__FILE__, __LINE__, thread_datas[id]);
+
+			log_message("CMAKE_BUILD_TYPE: ", cmake_build_type_str,
+				__FILE__, __LINE__, thread_datas[id]);
 
 			log_message("Log started at", get_local_time_string(),
 				__FILE__, __LINE__, thread_datas[id]);
@@ -457,5 +471,26 @@ namespace eternal_lands
 		SDL_UnlockMutex(log_mutex);
 	}
 
-}
+	void log_message(const LogLevelType log_level,
+		const StringType &message, const std::string &file,
+		const Uint32 line)
+	{
+		log_message(log_level, string_to_utf8(message), file, line);
+	}
 
+	void log_exception(const boost::exception &exception,
+		const std::string &file, const Uint32 line)
+	{
+		
+		log_message(llt_error,
+			boost::diagnostic_information(exception), file, line);
+	}
+
+	void log_exception(const std::exception &exception,
+		const std::string &file, const Uint32 line)
+	{
+		
+		log_message(llt_error, exception.what(), file, line);
+	}
+
+}

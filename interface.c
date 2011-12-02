@@ -34,7 +34,6 @@
  #include "errors.h"
  #include "io/elpathwrapper.h"
  #include "io/elfilewrapper.h"
-#include "3d_objects.h"
 #ifdef	NEW_TEXTURES
 #include "image_loading.h"
 #endif	/* NEW_TEXTURES */

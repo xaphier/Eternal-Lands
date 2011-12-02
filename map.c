@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "map.h"
-#include "2d_objects.h"
-#include "3d_objects.h"
 #include "asc.h"
 #include "bbox_tree.h"
 #include "consolewin.h"
@@ -41,6 +39,7 @@
 #include "sky.h"
 #include "mines.h"
 #include "highlight.h"
+#include "engine.h"
 
 int map_type=1;
 Uint32 map_flags=0;
@@ -57,7 +56,6 @@ void destroy_map()
 
 	have_a_map = 0;
 
-	clear_bbox_tree(main_bbox_tree);
 	//kill the tile and height map
 	if(tile_map)
 	{
@@ -84,12 +82,6 @@ void destroy_map()
 			pf_destroy_path();
 	}
 #endif
-
-	//kill the 3d objects links
-	destroy_all_3d_objects();
-
-	//kill the 2d objects links
-	destroy_all_2d_objects();
 
 	//kill the lights links
 	for(i=0;i<MAX_LIGHTS;i++)
@@ -199,7 +191,6 @@ static int el_load_map(const char * file_name)
 		skybox_init_defs(file_name);
 	}
 	build_path_map();
-	init_buffers();
 	
 	// reset light levels in case we enter or leave an inside map
 	new_minute();
@@ -223,7 +214,6 @@ void change_map (const char *mapname)
 #endif
 	close_dialogue();	// close the dialogue window if open
 	close_storagewin(); //if storage is open, close it
-	destroy_all_particles();
 	ec_delete_all_effects();
 #ifdef NEW_SOUND
 	stop_all_sounds();
@@ -510,38 +500,6 @@ void change_3d_marks(int *rel){
 }
 
 
-void init_buffers()
-{
-	int terrain_buffer_size;
-	int water_buffer_size;
-	int i, j, cur_tile;
-
-	terrain_buffer_size = 0;
-	water_buffer_size = 0;
-
-	for(i = 0; i < tile_map_size_y; i++)
-	{
-		for(j = 0; j < tile_map_size_x; j++)
-		{
-			cur_tile = tile_map[i*tile_map_size_x+j];
-			if (cur_tile != 255)
-			{
-				if (IS_WATER_TILE(cur_tile)) 
-				{
-					water_buffer_size++;
-				}
-				else 
-				{
-					terrain_buffer_size++;
-				}
-			}
-		}
-	}
-	init_water_buffers(water_buffer_size);
-	init_terrain_buffers(terrain_buffer_size);
-	init_reflection_portals(water_buffer_size);
-}
-
 int get_3d_objects_from_server (int nr_objs, const Uint8 *data, int len)
 {
 	int iobj;
@@ -609,7 +567,7 @@ int get_3d_objects_from_server (int nr_objs, const Uint8 *data, int len)
 		nb_left -= name_len + 1;
 		
 		if (!obj_err)
-			add_e3d_at_id (id, obj_name, x, y, z, rx, ry, rz, 0, 0, 1.0f, 1.0f, 1.0f, 1);
+			add_object_engine(obj_name, x, y, z, rx, ry, rz, 0, 0.0f, 0.0f, 0.0f, id, st_detect);
 		else
 			all_ok = 0;
 	}
@@ -619,18 +577,7 @@ int get_3d_objects_from_server (int nr_objs, const Uint8 *data, int len)
 	
 void remove_3d_object_from_server (int id)
 {	
-	if (id < 0 || id > MAX_OBJ_3D)
-	{
-		LOG_ERROR ("Trying to remove object with invalid id %d", id);
-		return;
-	}
-	if (objects_list[id] == NULL)
-	{
-		LOG_ERROR ("Trying to remove non-existant object");
-		return;
-	}
-
-	destroy_3d_object (id);
+	remove_object(id);
 }
 
 

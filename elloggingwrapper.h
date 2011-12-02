@@ -8,8 +8,6 @@
 #ifndef	UUID_f1a7fcd3_705c_45f3_b3df_7d572d295698
 #define	UUID_f1a7fcd3_705c_45f3_b3df_7d572d295698
 
-#include "platform.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -60,7 +58,7 @@ void set_log_level(const LogLevelType log_level);
  * @param line Line of the error.
  * @param message Error message.
  */
-void log_error(const char* file, const Uint32 line, const char* message, ...);
+void log_error(const char* file, const int line, const char* message, ...);
 
 /**
  * @ingroup logging
@@ -70,7 +68,7 @@ void log_error(const char* file, const Uint32 line, const char* message, ...);
  * @param line Line of the warning.
  * @param message Warning message.
  */
-void log_warning(const char* file, const Uint32 line, const char* message, ...);
+void log_warning(const char* file, const int line, const char* message, ...);
 
 /**
  * @ingroup logging
@@ -80,7 +78,7 @@ void log_warning(const char* file, const Uint32 line, const char* message, ...);
  * @param line Line of the info.
  * @param message Info message.
  */
-void log_info(const char* file, const Uint32 line, const char* message, ...);
+void log_info(const char* file, const int line, const char* message, ...);
 
 /**
  * @ingroup logging
@@ -90,7 +88,7 @@ void log_info(const char* file, const Uint32 line, const char* message, ...);
  * @param line Line of the debug message.
  * @param message Debug message.
  */
-void log_debug(const char* file, const Uint32 line, const char* message, ...);
+void log_debug(const char* file, const int line, const char* message, ...);
 
 /**
  * @ingroup logging
@@ -100,8 +98,8 @@ void log_debug(const char* file, const Uint32 line, const char* message, ...);
  * @param line Line of the debug verbose message.
  * @param message Debug verbose message.
  */
-void log_debug_verbose(const char* file, const Uint32 line,
-	const char* message, ...);
+void log_debug_verbose(const char* file, const int line, const char* message,
+	...);
 
 /**
  * @ingroup logging
@@ -111,8 +109,7 @@ void log_debug_verbose(const char* file, const Uint32 line,
  * @param line Line of the debug mark.
  * @param name Name of the debug mark.
  */
-void enter_debug_mark(const char* file, const Uint32 line,
-	const char* name);
+void enter_debug_mark(const char* file, const int line, const char* name);
 
 /**
  * @ingroup logging
@@ -122,8 +119,7 @@ void enter_debug_mark(const char* file, const Uint32 line,
  * @param line Line of the debug mark.
  * @param name Name of the debug mark.
  */
-void leave_debug_mark(const char* file, const Uint32 line,
-	const char* name);
+void leave_debug_mark(const char* file, const int line, const char* name);
 
 /**
  * @ingroup logging

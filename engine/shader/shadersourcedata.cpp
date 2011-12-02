@@ -1,0 +1,211 @@
+/****************************************************************************
+ *            shadersourcedata.cpp
+ *
+ * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Copyright: See COPYING file that comes with this distribution
+ ****************************************************************************/
+
+#include "shadersourcedata.hpp"
+#include "shadertextureutil.hpp"
+#include "shadersourceparameterbuilder.hpp"
+#include "shadersourceparameter.hpp"
+#include "xmlwriter.hpp"
+#include "xmlutil.hpp"
+
+namespace eternal_lands
+{
+
+	ShaderSourceData::ShaderSourceData(): m_glsl_120(false),
+		m_glsl_150(false), m_material_default(false),
+		m_material_texture_arrays(false)
+	{
+	}
+
+	ShaderSourceData::ShaderSourceData(const xmlNodePtr node):
+		m_glsl_120(false), m_glsl_150(false), m_material_default(false),
+		m_material_texture_arrays(false)
+	{
+		load_xml(node);
+	}
+
+	ShaderSourceData::~ShaderSourceData() throw()
+	{
+	}
+
+	void ShaderSourceData::write_function_use(const String &name,
+		OutStream &str) const
+	{
+		bool first;
+
+		str << L"\t" << name << L"(";
+
+		first = true;
+
+		BOOST_FOREACH(const ShaderSourceParameter &parameter,
+			get_parameters())
+		{
+			parameter.write_name(str, first);
+		}
+
+		str << L");" << std::endl;
+	}
+
+	void ShaderSourceData::write_function(const String &name,
+		const ParameterSizeTypeUint16Map &array_sizes,
+		OutStream &str) const
+	{
+		bool first;
+
+		str << L"void " << name << L"(";
+
+		first = true;
+
+		BOOST_FOREACH(const ShaderSourceParameter &parameter,
+			get_parameters())
+		{
+			parameter.write_parameter(array_sizes, str, first);
+		}
+
+		str << L")\n{\n" << get_source() << L"}\n";
+	}
+
+	void ShaderSourceData::build_function(const String &name,
+		const ParameterSizeTypeUint16Map &array_sizes,
+		const ShaderSourceParameterVector &locals, 
+		OutStream &functions, OutStream &local, 
+		ShaderSourceParameterVector &globals) const
+	{
+		write_function(name, array_sizes, functions);
+		write_function_use(name, local);
+
+		BOOST_FOREACH(const ShaderSourceParameter &parameter,
+			get_parameters())
+		{
+			ShaderSourceParameterBuilder::add_parameter(parameter,
+				locals, globals);
+		}
+	}
+
+	bool ShaderSourceData::check_source_parameter(const String &name) const
+	{
+		BOOST_FOREACH(const ShaderSourceParameter &parameter,
+			get_parameters())
+		{
+			if ((parameter.get_name() == name) &&
+				(parameter.get_qualifier() != pqt_out))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void ShaderSourceData::load_parameters_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		m_parameters.clear();
+
+		if (!XmlUtil::has_children(node, true))
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST "parameter") == 0)
+			{
+				m_parameters.push_back(ShaderSourceParameter(
+					it));
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
+	void ShaderSourceData::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST "shader_source_data") != 0)
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST "parameters") == 0)
+			{
+				load_parameters_xml(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST "source") == 0)
+			{
+				set_source(XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST "glsl_120") == 0)
+			{
+				set_glsl_120(XmlUtil::get_bool_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST "glsl_150") == 0)
+			{
+				set_glsl_150(XmlUtil::get_bool_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST "material_default")
+				== 0)
+			{
+				set_material_default(
+					XmlUtil::get_bool_value(it));
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST "material_texture_arrays") == 0)
+			{
+				set_material_texture_arrays(
+					XmlUtil::get_bool_value(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
+	void ShaderSourceData::save_xml(const XmlWriterSharedPtr &writer) const
+	{
+		StringVariantMap::const_iterator it, end;
+
+		writer->start_element("shader_source_data");
+
+		writer->start_element("parameters");
+
+		BOOST_FOREACH(const ShaderSourceParameter &parameter,
+			get_parameters())
+		{
+			parameter.save_xml(writer);
+		}
+
+		writer->end_element();
+
+		writer->write_element("source", get_source());
+		writer->write_bool_element("glsl_120", get_glsl_120());
+		writer->write_bool_element("glsl_150", get_glsl_150());
+		writer->write_bool_element("material_default",
+			get_material_default());
+		writer->write_bool_element("material_texture_arrays",
+			get_material_texture_arrays());
+
+		writer->end_element();
+	}
+
+	void ShaderSourceData::set_parameters(
+		const ShaderSourceParameterVector &parameters)
+	{
+		m_parameters = parameters;
+	}
+
+}

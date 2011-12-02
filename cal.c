@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "actors.h"
-#include "actor_init.h"
 #include "cal.h"
 #include "draw_scene.h"
 #include "errors.h"
@@ -23,6 +22,7 @@
 #endif /* OPENGL_TRADE */
 #include "io/elfilewrapper.h"
 #include "io/cal3d_io_wrapper.h"
+#include "engine.h"
 
 #ifdef MORE_EMOTES
 void start_transition(actor *act, int to, int msec){
@@ -329,7 +329,7 @@ void cal_actor_set_anim_delay(int id, struct cal_anim anim, float delay)
 
 	missiles_rotate_actor_bones(pActor);
 
-	if (use_animation_program)
+	if (1) /* use_animation_program */
 	{
 		set_transformation_buffers(pActor);
 	}
@@ -648,7 +648,7 @@ void cal_render_actor(actor *act, Uint32 use_lightning, Uint32 use_textures, Uin
 			CalModel_Update(act->calmodel, (((cur_time-act->last_anim_update)*act->cur_anim.duration_scale)/1000.0));
 	build_actor_bounding_box(act);
 	missiles_rotate_actor_bones(act);
-	if (use_animation_program)
+	if (1) /* use_animation_program */
 	{
 		set_transformation_buffers(act);
 	}
@@ -741,8 +741,6 @@ void cal_render_actor(actor *act, Uint32 use_lightning, Uint32 use_textures, Uin
 						if(use_shadow_mapping){
 							glPushAttrib(GL_TEXTURE_BIT|GL_ENABLE_BIT);
 							ELglActiveTextureARB(shadow_unit);
-							glDisable(depth_texture_target);
-							disable_texgen();
 							ELglActiveTextureARB(GL_TEXTURE0);
 						}
 

@@ -16,6 +16,7 @@
 #include "platform.h"
 #include "spells.h" // for the sigils texture
 #include "textures.h"
+#include "engine.h"
 
 int view_buffs = 1;
 int buff_icon_size = 32;
@@ -120,6 +121,8 @@ void update_actor_buffs(int actor_id, Uint32 in_buffs)
 //		}
 #endif // BUFF_DEBUG
 		update_buff_eye_candy(actor_id);
+
+		engine_update_actor_buffs(act, in_buffs);
 	}
 }
 

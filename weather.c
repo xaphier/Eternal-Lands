@@ -21,6 +21,7 @@
 #include "gl_init.h"
 #endif
 #include "sky.h"
+#include "engine.h"
 
 int use_fog = 1;
 
@@ -328,7 +329,7 @@ void update_wind(void)
 
 void update_weather_type(int type, float x, float y, float z, int ticks)
 {
-	int num_drops = weather_ratios[type] * weather_defs[type].density * particles_percentage * 0.01 * MAX_RAIN_DROPS;
+	int num_drops = weather_ratios[type] * weather_defs[type].density * 0.01 * MAX_RAIN_DROPS;
 
 	if (num_drops > MAX_RAIN_DROPS) num_drops = MAX_RAIN_DROPS;
 	
@@ -417,7 +418,6 @@ void weather_update()
 	if (lightning_falling && cur_time > lightning_stop)
 	{
 		lightning_falling = 0;
-		calc_shadow_matrix();
 		if (skybox_update_delay > 0)
 			skybox_update_colors();
 	}
@@ -468,14 +468,7 @@ void weather_update()
 
 void weather_render_fog()
 {
-	glEnable(GL_FOG);
-	glFogi(GL_FOG_MODE, GL_EXP2);
-	glFogf(GL_FOG_DENSITY, skybox_fog_density);
-	glFogfv(GL_FOG_COLOR, skybox_fog_color);
-
-#ifdef OPENGL_TRACE
-	CHECK_GL_ERRORS();
-#endif //OPENGL_TRACE
+	set_fog_data(skybox_fog_color, skybox_fog_density);
 }
 
 void weather_render()
@@ -643,8 +636,6 @@ void weather_add_lightning(int type, float x, float y)
         
         lightning_sky_position[0] -= camera_x;
         lightning_sky_position[1] -= camera_y;
-        
-		calc_shadow_matrix();
 
         if (skybox_update_delay > 0)
             skybox_update_colors();

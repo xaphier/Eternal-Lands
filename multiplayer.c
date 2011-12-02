@@ -1,8 +1,6 @@
 #include <string.h>
 #include <time.h>
 #include "multiplayer.h"
-#include "2d_objects.h"
-#include "3d_objects.h"
 #include "asc.h"
 #include "actors.h"
 #include "actor_scripts.h"
@@ -1872,6 +1870,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			  LOG_WARNING("CAUTION: Possibly forged MAP_SET_OBJECTS packet received.\n");
 			  break;
 			}
+#if	0
 			switch(in_data[3]){
 				case	0:	//2D
 					set_2d_object(in_data[4], in_data+5, data_length-3);
@@ -1880,6 +1879,9 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 					set_3d_object(in_data[4], in_data+5, data_length-3);
 					break;
 			}
+#else
+			LOG_WARNING("MAP_SET_OBJECTS not implemented (type %d, value %d).\n", in_data[3], in_data[4]);
+#endif
 			break;
 
 		// for future expansion
@@ -1889,6 +1891,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			  LOG_WARNING("CAUTION: Possibly forged MAP_STATE_OBJECTS packet received.\n");
 			  break;
 			}
+#if	0
 			switch(in_data[3]){
 				case	0:	//2D
 					state_2d_object(in_data[4], in_data+5, data_length-3);
@@ -1897,6 +1900,9 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 					state_3d_object(in_data[4], in_data+5, data_length-3);
 					break;
 			}
+#else
+			LOG_WARNING("MAP_STATE_OBJECTS not implemented (type %d, value %d).\n", in_data[3], in_data[4]);
+#endif
 			break;
 
 		case MAP_FLAGS:

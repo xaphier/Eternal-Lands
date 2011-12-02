@@ -1,0 +1,105 @@
+/****************************************************************************
+ *            shadersource.cpp
+ *
+ * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Copyright: See COPYING file that comes with this distribution
+ ****************************************************************************/
+
+#include "prerequisites.hpp"
+#include "shader/shadersource.hpp"
+#include "utf.hpp"
+#include "xmlbuffer.hpp"
+#include "xmlwriter.hpp"
+#include "xmlreader.hpp"
+#include <glm/gtx/epsilon.hpp>
+#include <boost/random.hpp>
+#include <boost/exception/diagnostic_information.hpp>
+#define BOOST_TEST_MODULE objectdata
+#include <boost/test/unit_test.hpp>
+
+namespace el = eternal_lands;
+
+BOOST_AUTO_TEST_CASE(shader_source_default_creation)
+{
+	el::ShaderSource shader_source;
+
+	BOOST_CHECK_EQUAL(el::string_to_utf8(
+		shader_source.get_name()), "");
+
+	BOOST_CHECK_EQUAL(shader_source.get_type(),
+		el::sst_world_depth_transform);
+}
+
+BOOST_AUTO_TEST_CASE(shader_source_name)
+{
+	el::ShaderSource shader_source;
+
+	shader_source.set_name(el::String(L"3sfd23"));
+	BOOST_CHECK_EQUAL(el::string_to_utf8(
+		shader_source.get_name()), "3sfd23");
+
+	shader_source.set_name(el::String(L"w4tgi3"));
+	BOOST_CHECK_EQUAL(el::string_to_utf8(
+		shader_source.get_name()), "w4tgi3");
+}
+
+BOOST_AUTO_TEST_CASE(shader_source_type)
+{
+	el::ShaderSource shader_source;
+
+	shader_source.set_type(el::sst_world_depth_transform);
+	BOOST_CHECK_EQUAL(shader_source.get_type(), el::sst_world_depth_transform);
+
+	shader_source.set_type(el::sst_light);
+	BOOST_CHECK_EQUAL(shader_source.get_type(), el::sst_light);
+
+	shader_source.set_type(el::sst_shadow_mapping);
+	BOOST_CHECK_EQUAL(shader_source.get_type(), el::sst_shadow_mapping);
+
+	shader_source.set_type(el::sst_diffuse_mapping);
+	BOOST_CHECK_EQUAL(shader_source.get_type(), el::sst_diffuse_mapping);
+
+	shader_source.set_type(el::sst_shadow_map);
+	BOOST_CHECK_EQUAL(shader_source.get_type(), el::sst_shadow_map);
+}
+
+BOOST_AUTO_TEST_CASE(shader_source_save_xml)
+{
+	el::XmlBuffer buffer;
+	el::XmlWriterSharedPtr writer;
+	el::ShaderSource shader_source;
+
+	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
+
+	BOOST_CHECK_NO_THROW(shader_source.save_xml(writer));
+	writer.reset();
+}
+
+BOOST_AUTO_TEST_CASE(shader_source_save_load_xml)
+{
+	el::XmlBuffer buffer;
+	el::XmlWriterSharedPtr writer;
+	el::XmlReaderSharedPtr reader;
+	el::ShaderSource shader_source_load;
+	el::ShaderSource shader_source_save;
+
+	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
+
+	shader_source_save.set_name(el::String(L"3sfd23"));
+	shader_source_save.set_type(el::sst_light);
+
+	BOOST_CHECK_NO_THROW(shader_source_save.save_xml(writer));
+
+	writer.reset();
+
+	reader = el::XmlReaderSharedPtr(new el::XmlReader(buffer.get_buffer()));
+
+	BOOST_CHECK_NO_THROW(shader_source_load.load_xml(
+		reader->get_root_node()));
+
+	reader.reset();
+
+	BOOST_CHECK_EQUAL(el::string_to_utf8(shader_source_load.get_name()),
+		"3sfd23");
+	BOOST_CHECK_EQUAL(shader_source_load.get_type(), el::sst_light);
+}

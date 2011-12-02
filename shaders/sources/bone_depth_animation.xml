@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>bone_animation</name>
+ <type>world_depth_transform</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>bone_index</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>bone_weight</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>position</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_matrix</name>
+     <source></source>
+     <type>mat4x3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>bones</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>bone_count</size>
+     <scale>3</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	vec4 weight, index, tmp;
+	vec3 tmp_position;
+	int i, idx;
+
+	tmp = vec4(position.xyz, 1.0);
+	index = bone_index;
+	weight = bone_weight;
+
+	tmp_position = vec3(0.0);
+
+	for (i = 0; i &lt; 4; i++)
+	{
+		idx = int(index.x);
+		tmp_position.x += dot(bones[idx * 3 + 0], tmp) * weight.x;
+		tmp_position.y += dot(bones[idx * 3 + 1], tmp) * weight.x;
+		tmp_position.z += dot(bones[idx * 3 + 2], tmp) * weight.x;
+
+		if (weight.y &lt;= 0.0)
+		{
+			break;
+		}
+
+		index.xyz = index.yzw;
+		weight.xyz = weight.yzw;
+	}
+
+	world_position = world_matrix * vec4(tmp_position, 1.0);
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_150>true</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>true</material_texture_arrays>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

@@ -6,6 +6,12 @@
  ****************************************************************************/
 
 #include "elloggingwrapper.h"
+#undef LOG_ERROR
+#undef LOG_WARNING
+#undef LOG_INFO
+#undef LOG_DEBUG
+#undef LOG_DEBUG_VERBOSE
+#include "engine/prerequisites.hpp"
 #include "engine/logging.hpp"
 #include "io/elpathwrapper.h"
 #include "asc.h"
@@ -15,7 +21,7 @@ namespace el = eternal_lands;
 
 extern "C" void init_logging(const char* log_file_name)
 {
-	char str[1024];
+	char str[65536];
 
 	snprintf(str, sizeof(str), "%s%s", get_path_config(), log_file_name);
 
@@ -37,11 +43,11 @@ extern "C" void set_log_level(const LogLevelType log_level)
 	el::set_log_level(static_cast<el::LogLevelType>(log_level));
 }
 
-extern "C" void log_error(const char* file, const Uint32 line,
+extern "C" void log_error(const char* file, const int line,
 	const char* message, ...)
 {
 	va_list ap;
-	char err_msg[512];
+	char err_msg[65536];
 
 	assert(message != 0);
 	assert(strlen(message) > 0);
@@ -66,11 +72,11 @@ extern "C" void log_error(const char* file, const Uint32 line,
 	el::log_message(el::llt_error, err_msg, file, line);
 }
 
-extern "C" void log_warning(const char* file, const Uint32 line,
+extern "C" void log_warning(const char* file, const int line,
 	const char* message, ...)
 {
 	va_list ap;
-	char err_msg[512];
+	char err_msg[65536];
 
 	assert(message != 0);
 	assert(strlen(message) > 0);
@@ -95,11 +101,11 @@ extern "C" void log_warning(const char* file, const Uint32 line,
 	el::log_message(el::llt_warning, err_msg, file, line);
 }
 
-extern "C" void log_info(const char* file, const Uint32 line,
+extern "C" void log_info(const char* file, const int line,
 	const char* message, ...)
 {
 	va_list ap;
-	char err_msg[512];
+	char err_msg[65536];
 
 	assert(message != 0);
 	assert(strlen(message) > 0);
@@ -124,11 +130,11 @@ extern "C" void log_info(const char* file, const Uint32 line,
 	el::log_message(el::llt_info, err_msg, file, line);
 }
 
-extern "C" void log_debug(const char* file, const Uint32 line,
+extern "C" void log_debug(const char* file, const int line,
 	const char* message, ...)
 {
 	va_list ap;
-	char err_msg[512];
+	char err_msg[65536];
 
 	assert(message != 0);
 	assert(strlen(message) > 0);
@@ -153,11 +159,11 @@ extern "C" void log_debug(const char* file, const Uint32 line,
 	el::log_message(el::llt_debug, err_msg, file, line);
 }
 
-extern "C" void log_debug_verbose(const char* file, const Uint32 line,
+extern "C" void log_debug_verbose(const char* file, const int line,
 	const char* message, ...)
 {
 	va_list ap;
-	char err_msg[512];
+	char err_msg[65536];
 
 	assert(message != 0);
 	assert(strlen(message) > 0);
@@ -182,7 +188,7 @@ extern "C" void log_debug_verbose(const char* file, const Uint32 line,
 	el::log_message(el::llt_debug_verbose, err_msg, file, line);
 }
 
-extern "C" void enter_debug_mark(const char* file, const Uint32 line,
+extern "C" void enter_debug_mark(const char* file, const int line,
 	const char* name)
 {
 	assert(name != 0);
@@ -191,7 +197,7 @@ extern "C" void enter_debug_mark(const char* file, const Uint32 line,
 	el::enter_debug_mark(name, file, line);
 }
 
-extern "C" void leave_debug_mark(const char* file, const Uint32 line,
+extern "C" void leave_debug_mark(const char* file, const int line,
 	const char* name)
 {
 	assert(name != 0);
@@ -207,4 +213,3 @@ extern "C" void init_thread_log(const char* name)
 
 	el::init_thread_log(name);
 }
-

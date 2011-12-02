@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>lava</name>
+ <type>diffuse_mapping</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>diffuse_sampler_0</name>
+     <source></source>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>diffuse_sampler_1</name>
+     <source></source>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>uv</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>3</scale>
+    </parameter>
+    <parameter>
+     <name>diffuse</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	vec4 noise;
+	vec3 color;
+	vec2 tmp_uv[2];
+	float p;
+
+	noise = texture2D(diffuse_sampler_1, uv[0]);
+
+	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
+	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
+
+	p = texture2D(noise_sampler, tmp_uv[0]).a;
+	color = texture2D(diffuse_sampler_0, tmp_uv[1]).rgb;
+	color = color * p * 2.0 + color * color - 0.1;
+
+	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
+	color.rb += clamp(color.g - 1.0, 0.0, 1.0);
+	color.rg += clamp(color.b - 1.0, 0.0, 1.0);
+
+	diffuse = vec4(color, 1.0);
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_150>false</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>false</material_texture_arrays>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>diffuse_sampler_0</name>
+     <source></source>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>diffuse_sampler_1</name>
+     <source></source>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>uv</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>3</scale>
+    </parameter>
+    <parameter>
+     <name>diffuse</name>
+     <source></source>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	vec4 noise;
+	vec3 color;
+	vec2 tmp_uv[2];
+	float p;
+
+	noise = texture2D(diffuse_sampler_1, uv[0]);
+
+	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
+	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
+
+	p = texture2D(noise_sampler, tmp_uv[0]).a;
+	color = texture2D(diffuse_sampler_0, tmp_uv[1]).rgb;
+	color = color * p * 2.0 + color * color - 0.1;
+
+	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
+	color.rb += clamp(color.g - 1.0, 0.0, 1.0);
+	color.rg += clamp(color.b - 1.0, 0.0, 1.0);
+
+	diffuse = vec4(color, 1.0);
+}</source>
+   <glsl_120>false</glsl_120>
+   <glsl_150>true</glsl_150>
+   <material_default>true</material_default>
+   <material_texture_arrays>false</material_texture_arrays>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

@@ -6,47 +6,58 @@
  ****************************************************************************/
 
 #include "hardwarebuffer.hpp"
-#include "../load_gl_extensions.h"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
 
-	HardwareBuffer::HardwareBuffer()
+	HardwareBuffer::HardwareBuffer(): m_size(0), m_id(0)
 	{
-		ELglGenBuffersARB(1, &m_id);
+		CHECK_GL_ERROR();
+
+		glGenBuffers(1, &m_id);
+
+		assert(m_id != 0);
+
+		CHECK_GL_ERROR();
 	}
 
 	HardwareBuffer::~HardwareBuffer() throw()
 	{
-		ELglDeleteBuffersARB(1, &m_id);
+		glDeleteBuffers(1, &m_id);
 	}
 
 	void HardwareBuffer::set_size(const HardwareBufferType type,
 		const Uint64 size, const HardwareBufferUsageType usage)
 	{
+		CHECK_GL_ERROR();
+
 		m_size = size;
-		ELglBufferDataARB(type, size, 0, usage);
+		glBindBuffer(type, m_id);
+		glBufferData(type, size, 0, usage);
+
+		CHECK_GL_ERROR();
 	}
 
 	void HardwareBuffer::bind(const HardwareBufferType type)
 	{
-		ELglBindBufferARB(type, m_id);
+		glBindBuffer(type, m_id);
 	}
 
 	void HardwareBuffer::unbind(const HardwareBufferType type)
 	{
-		ELglBindBufferARB(type, 0);
+		glBindBuffer(type, 0);
 	}
 
 	void* HardwareBuffer::map(const HardwareBufferType type,
 		const HardwareBufferAccessType access)
 	{
-		return ELglMapBufferARB(type, access);
+		return glMapBuffer(type, access);
 	}
 
 	bool HardwareBuffer::unmap(const HardwareBufferType type)
 	{
-		return ELglUnmapBufferARB(type) == GL_TRUE;
+		return glUnmapBuffer(type) == GL_TRUE;
 	}
 
 }

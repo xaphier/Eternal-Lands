@@ -318,7 +318,9 @@ int HandleEvent (SDL_Event *event)
 				pf_move();
 				break;
 			case	EVENT_UPDATE_PARTICLES:
+#if	0
 				update_particles();
+#endif
 				break;
 
 			case    EVENT_UPDATES_DOWNLOADED:
@@ -336,9 +338,6 @@ int HandleEvent (SDL_Event *event)
 #endif
 #ifdef	CUSTOM_UPDATE
 			case    EVENT_CUSTOM_UPDATE_COMPLETE:
-#ifdef	NEW_TEXTURES
-				unload_actor_texture_cache();
-#endif	/* NEW_TEXTURES */	    
 				break;
 #endif	/* CUSTOM_UPDATE */
 			}
