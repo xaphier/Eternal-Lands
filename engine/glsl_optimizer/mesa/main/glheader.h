@@ -60,6 +60,10 @@
 #define GLAPIENTRY	APIENTRY
 #endif
 
+#ifndef GLAPIENTRYP
+#define GLAPIENTRYP	GLAPIENTRY *
+#endif
+
 typedef GLhalf GLhalfARB;
 
 /**
