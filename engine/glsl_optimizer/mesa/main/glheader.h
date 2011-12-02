@@ -50,9 +50,17 @@
 
 
 #define GL_GLEXT_PROTOTYPES
-#include "GL/gl.h"
-#include "GL/glext.h"
+#ifdef OSX
+ #include <GLEW/glew.h>
+#else
+ #include <GL/glew.h>
+#endif
 
+#ifndef GLAPIENTRY
+#define GLAPIENTRY	APIENTRY
+#endif
+
+typedef GLhalf GLhalfARB;
 
 /**
  * GL_FIXED is defined in glext.h version 64 but these typedefs aren't (yet).

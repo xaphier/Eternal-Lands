@@ -300,4 +300,3 @@ namespace eternal_lands
 	}
 
 }
-

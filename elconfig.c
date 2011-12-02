@@ -237,19 +237,19 @@ void change_el_shadow_map_count(int* var, int value)
 void change_el_shadow_map_size(int* var, int value)
 {
 	*var = value;
-	set_shadow_map_size(value);
+	set_shadow_map_size(*var);
 }
 
-void change_el_shadow_distance(float* var, float value)
+void change_el_shadow_distance(float* var, float* value)
 {
-	*var = value;
-	set_shadow_distance(value);
+	*var = *value;
+	set_shadow_distance(*var);
 }
 
-void change_el_view_distance(float* var, float value)
+void change_el_view_distance(float* var, float* value)
 {
-	*var = value;
-	set_view_distance(value);
+	*var = *value;
+	set_view_distance(*var);
 }
 
 void change_el_msaa_shadows(int* var)
@@ -1811,8 +1811,8 @@ static void init_ELC_vars(void)
 	// GFX TAB
 	add_var(OPT_INT, "shadow_map_count", "shadow_map_count", &el_shadow_map_count, change_el_shadow_map_count, 0, "Shadow map count", "Number of shadow maps used.", GFX, 0, 4);
 	add_var(OPT_MULTI_H, "shadow_map_size", "shadow_map_size", &el_shadow_map_size, change_el_shadow_map_size, 0, "Shadow Map Size", "Shadow Map Size", GFX, "256", "512", "1024", "2048", 0);
-	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &el_shadow_distance, change_el_shadow_distance, 40.0f, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0f, 200.0f, 5.0f);
-	add_var(OPT_FLOAT, "view_distance", "view_distance", &el_view_distance, change_el_view_distance, 80.0f, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0f, 200.0f, 5.0f);
+	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &el_shadow_distance, change_el_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
+	add_var(OPT_FLOAT, "view_distance", "view_distance", &el_view_distance, change_el_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "msaa_shadows", "msaa_shadows", &el_msaa_shadows, change_el_msaa_shadows, el_false, "MSAA for shadow mapping", "Using MSAA antialiasing for shadow map generation", GFX);
 	add_var(OPT_BOOL, "exponential_shadow_maps", "exponential_shadow_maps", &el_exponential_shadow_maps, change_el_exponential_shadow_maps, el_false, "Exponential Shadow Maps", "Exponential Shadow Maps", GFX);
 	add_var(OPT_BOOL, "alpha_to_coverage", "alpha_to_coverage", &el_alpha_to_coverage, change_el_alpha_to_coverage, el_false, "Alpha to coverage", "Alpha to coverage", GFX);

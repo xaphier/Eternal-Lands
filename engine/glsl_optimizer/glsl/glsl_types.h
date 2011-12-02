@@ -30,7 +30,11 @@
 #include <assert.h>
 
 extern "C" {
-#include "GL/gl.h"
+#ifdef OSX
+ #include <GLEW/glew.h>
+#else
+ #include <GL/glew.h>
+#endif
 }
 
 #include "ralloc.h"

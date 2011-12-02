@@ -97,8 +97,6 @@ include_directories(${OGG_INCLUDE_DIR})
 include_directories(${VORBIS_INCLUDE_DIR})
 include_directories(${VORBISFILE_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
-include_directories(${ELENGINE_SOURCE_DIR})
-include_directories(${elengine_SOURCE_DIR})
 
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 git_describe(GIT_REFSPEC GIT_DESCRIBE)
@@ -188,6 +186,8 @@ IF (OPENMP_FOUND)
 	set_target_properties(el_client PROPERTIES LINK_FLAGS "${OpenMP_CXX_FLAGS}")
 ENDIF (OPENMP_FOUND)
 
+include_directories(${elengine_SOURCE_DIR})
+
 target_link_libraries(el_client eye_candy)
 target_link_libraries(el_client elengine)
 target_link_libraries(el_client xz)
@@ -208,4 +208,3 @@ target_link_libraries(el_client ${OGG_LIBRARY})
 target_link_libraries(el_client ${VORBIS_LIBRARY})
 target_link_libraries(el_client ${VORBISFILE_LIBRARY})
 target_link_libraries(el_client ${CMAKE_THREAD_LIBS_INIT})
-
