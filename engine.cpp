@@ -43,7 +43,8 @@ namespace el = eternal_lands;
 
 namespace
 {
-
+	// equivalent to calling flyweight<std::string>::init()
+	el::String::initializer fwinit;
 	boost::scoped_ptr<el::Scene> scene;
 	boost::scoped_ptr<el::InstancesBuilder> instances_builder;
 	Sint32 pick_frame = 0;

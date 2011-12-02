@@ -30,13 +30,9 @@ namespace eternal_lands
 	void HardwareBuffer::set_size(const HardwareBufferType type,
 		const Uint64 size, const HardwareBufferUsageType usage)
 	{
-		CHECK_GL_ERROR();
-
 		m_size = size;
 		glBindBuffer(type, m_id);
 		glBufferData(type, size, 0, usage);
-
-		CHECK_GL_ERROR();
 	}
 
 	void HardwareBuffer::bind(const HardwareBufferType type)
@@ -61,4 +57,3 @@ namespace eternal_lands
 	}
 
 }
-

@@ -97,6 +97,7 @@ include_directories(${OGG_INCLUDE_DIR})
 include_directories(${VORBIS_INCLUDE_DIR})
 include_directories(${VORBISFILE_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/engine)
 
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 git_describe(GIT_REFSPEC GIT_DESCRIBE)
@@ -185,8 +186,6 @@ add_executable(el_client WIN32 ${el_cpp_header_files}
 IF (OPENMP_FOUND)
 	set_target_properties(el_client PROPERTIES LINK_FLAGS "${OpenMP_CXX_FLAGS}")
 ENDIF (OPENMP_FOUND)
-
-include_directories(${elengine_SOURCE_DIR})
 
 target_link_libraries(el_client eye_candy)
 target_link_libraries(el_client elengine)

@@ -33,6 +33,7 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+#undef	THIS
 /* Tokens.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
