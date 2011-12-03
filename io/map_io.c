@@ -144,7 +144,8 @@ static int do_load_map(const char *file_name, update_func *update_function)
 	}
 
 	load_map_engine(map_file_name, cur_map_header.ambient_r,
-		cur_map_header.ambient_g, cur_map_header.ambient_b);
+		cur_map_header.ambient_g, cur_map_header.ambient_b,
+		cur_map_header.dungeon);
 
 	set_next_free_id(cur_map_header.obj_3d_no);
 

@@ -142,6 +142,8 @@ namespace eternal_lands
 				BoundingBox(glm::vec3(-1.0f), glm::vec3(1.0f)),
 				0, sphere_index_count, 0,
 				sphere_vertex_count - 1));
+
+			mesh_data_tool->update_sub_meshs_packed();
 		}
 
 		void load_plane(const Uint16 tile_size,
@@ -212,6 +214,8 @@ namespace eternal_lands
 			mesh_data_tool->set_sub_mesh_data(0, SubMesh(
 				BoundingBox(vmin, vmax), 0, index_count, 0,
 				vertex_count - 1));
+
+			mesh_data_tool->update_sub_meshs_packed();
 		}
 
 		void load_e2d(const ReaderSharedPtr &reader,
@@ -301,6 +305,8 @@ namespace eternal_lands
 			reader = get_file_system()->get_file(name);
 
 			do_load_mesh(reader, mesh_data_tool, materials);
+
+			mesh_data_tool->update_sub_meshs_packed();
 
 			return;
 		}

@@ -29,18 +29,37 @@
 #include "subobject.hpp"
 #include "materialdescription.hpp"
 #include "framebufferbuilder.hpp"
-
-
-
-#include "texture.hpp"
 #include "filter.hpp"
-
-
+#include "texture.hpp"
 
 #include "../client_serv.h"
 
 namespace eternal_lands
 {
+
+	namespace
+	{
+
+		class StateManagerUtil
+		{
+			private:
+				StateManager &m_manager;
+
+			public:
+				inline StateManagerUtil(StateManager &manager):
+					m_manager(manager)
+				{
+					m_manager.init();
+				}
+
+				inline ~StateManagerUtil() throw()
+				{
+					m_manager.unbind_all();
+				}
+
+		};
+
+	}
 
 	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemWeakPtr &file_system):
@@ -290,11 +309,11 @@ namespace eternal_lands
 	}
 
 	void Scene::load(const String &name, const glm::vec3 &ambient,
-		const Uint32 id)
+		const bool dungeon)
 	{
 		m_name = name;
-		m_id = id;
 
+		set_dungeon(dungeon);
 		set_ambient(ambient);
 
 		clear();
@@ -361,12 +380,14 @@ namespace eternal_lands
 			if (m_night)
 			{
 				program->set_parameter(apt_ambient,
-					m_ambient + m_main_light_ambient);
+					m_ambient + m_main_light_ambient +
+					glm::vec4(glm::vec3(0.1f), 0.0f));
 			}
 			else
 			{
 				program->set_parameter(apt_ambient,
 					m_ambient + m_main_light_ambient +
+					glm::vec4(glm::vec3(0.1f), 0.0f) +
 					color);
 			}
 		}
@@ -395,12 +416,13 @@ namespace eternal_lands
 			m_light_position_array[0] =
 				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 			m_light_color_array[0] =
-				glm::vec4(glm::vec3(0.3f), 0.0f);
+				glm::vec4(glm::vec3(0.2f), 0.0f);
 		}
 		else
 		{
 			m_light_position_array[0] = m_main_light_direction;
-			m_light_color_array[0] = m_main_light_color;
+			m_light_color_array[0] = m_main_light_color +
+				glm::vec4(glm::vec3(0.1f), 0.0f);
 		}
 
 		m_visible_objects.next_frame();
@@ -856,9 +878,8 @@ namespace eternal_lands
 
 	void Scene::draw()
 	{
+		StateManagerUtil state(m_state_manager);
 		CHECK_GL_ERROR();
-
-		m_state_manager.init();
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -866,6 +887,8 @@ namespace eternal_lands
 		{
 			draw_all_shadows();
 		}
+
+		m_state_manager.init();
 
 		m_scene_view.set_default_view();
 
@@ -896,13 +919,6 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-/*
-		if (m_scene_view.get_shadow_map_count() > 0)
-		{
-			filter_draw();
-		}
-*/
-		unbind_all();
 
 		CHECK_GL_ERROR();
 
@@ -984,14 +1000,6 @@ namespace eternal_lands
 			return;
 		}
 
-		if (!object->get_bounding_box().intersect(
-			m_scene_view.get_view_matrix(),
-			m_scene_view.get_projection_matrix(),
-			m_scene_view.get_view_port(), min, max))
-		{
-			return;
-		}
-
 		if (object->get_sub_objects().size() == 0)
 		{
 			data.first = object->get_id();
@@ -1040,14 +1048,15 @@ namespace eternal_lands
 		Uint32PairUint32SelectionTypeMap id_map;
 		glm::vec2 min, max;
 		Uint32 i, index, max_count, count, id;
+		StateManagerUtil state(m_state_manager);
 
 		m_state_manager.switch_scissor_test(true);
 		glScissor(offset.x - size.x, offset.y - size.y, 2 * size.x,
 			2 * size.y);
 		glDepthFunc(GL_LEQUAL);
-
 		m_state_manager.switch_color_mask(glm::bvec4(false));
 		m_state_manager.switch_depth_mask(false);
+		m_state_manager.switch_multisample(false);
 
 		min = offset - size;
 		max = offset + size;
@@ -1063,7 +1072,6 @@ namespace eternal_lands
 				max);
 		}
 
-		unbind_all();
 		m_frame_id++;
 
 		max_count = 0;

@@ -137,7 +137,7 @@ namespace eternal_lands
 			void init();
 			void cull();
 			void load(const String &name, const glm::vec3 &ambient,
-				const Uint32 id);
+				const bool dungeon);
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
 				SelectionType &selection);

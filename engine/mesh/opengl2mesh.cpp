@@ -208,8 +208,8 @@ namespace eternal_lands
 				draw_data.get_min_vertex(),
 				draw_data.get_max_vertex(),
 				draw_data.get_count(), get_index_type(),
-				static_cast<Uint8*>(0) +
-				get_index_offset(draw_data.get_offset()));
+				get_index_offset(draw_data.get_offset()) +
+					static_cast<Uint8*>(0));
 		}
 		else
 		{

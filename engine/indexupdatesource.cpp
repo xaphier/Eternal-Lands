@@ -145,7 +145,7 @@ namespace eternal_lands
 		}
 
 		result.push_back(SubMesh(BoundingBox(min, max), 0, count,
-			min_vertex, max_vertex));
+			min_vertex, max_vertex, false));
 
 		return result;
 	}

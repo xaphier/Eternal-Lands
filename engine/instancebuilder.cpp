@@ -73,7 +73,7 @@ namespace eternal_lands
 			std::map<Uint32, Uint32> index_map;
 			glm::mat4x3 world_matrix;
 			Uint32Vector indices;
-			Uint32 i, index, count, min_vertex, max_vertex;
+			Uint32 i, index, count, min_vertex, max_vertex, size;
 
 			instancing_data.get_mesh_data_tool(
 				)->get_triangle_indices(sub_mesh_index, indices,
@@ -86,16 +86,18 @@ namespace eternal_lands
 				)->get_sub_meshs(
 					)[sub_mesh_index].get_max_vertex();
 
-			count = max_vertex - min_vertex + 1;
+			assert(max_vertex >= min_vertex);
 
-			if (mesh_data_tool.get_vertex_count()
-				< (vertex_offset + count))
+			size = vertex_offset + max_vertex - min_vertex + 1;
+
+			if (mesh_data_tool.get_vertex_count() < size)
 			{
-				mesh_data_tool.resize_vertices(
-					vertex_offset + count);
+				mesh_data_tool.resize_vertices(size);
 			}
 
 			count = indices.size();
+
+			assert((indices.size() % 3) == 0);
 
 			world_matrix = instancing_data.get_world_matrix();
 			world_matrix[3] -= center;
@@ -133,7 +135,7 @@ namespace eternal_lands
 		{
 			Uint32Vector indices;
 			glm::mat4x3 world_matrix;
-			Uint32 i, count, min_vertex, max_vertex;
+			Uint32 i, count, min_vertex, max_vertex, size;
 
 			instancing_data.get_mesh_data_tool(
 				)->get_triangle_indices(sub_mesh_index, indices,
@@ -146,10 +148,18 @@ namespace eternal_lands
 				)->get_sub_meshs(
 					)[sub_mesh_index].get_max_vertex();
 
-			world_matrix = instancing_data.get_world_matrix();
-			world_matrix[3] -= center;
+			assert(max_vertex >= min_vertex);
+
+			size = vertex_offset + max_vertex - min_vertex + 1;
+
+			if (mesh_data_tool.get_vertex_count() < size)
+			{
+				mesh_data_tool.resize_vertices(size);
+			}
 
 			count = indices.size();
+
+			assert((indices.size() % 3) == 0);
 
 			for (i = 0; i < count; i++)
 			{
@@ -162,12 +172,8 @@ namespace eternal_lands
 
 			count = max_vertex - min_vertex + 1;
 
-			if (mesh_data_tool.get_vertex_count()
-				< (vertex_offset + count))
-			{
-				mesh_data_tool.resize_vertices(
-					vertex_offset + count);
-			}
+			world_matrix = instancing_data.get_world_matrix();
+			world_matrix[3] -= center;
 
 			for (i = 0; i < count; i++)
 			{

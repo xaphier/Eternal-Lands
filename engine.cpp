@@ -474,7 +474,7 @@ extern "C" void init_engine()
 }
 
 extern "C" void load_map_engine(const char* name, const float r, const float g,
-	const float b)
+	const float b, const int dungeon)
 {
 	TRY_BLOCK
 
@@ -483,7 +483,7 @@ extern "C" void load_map_engine(const char* name, const float r, const float g,
 	free_ids.clear();
 
 	scene->load(el::String(el::utf8_to_string(name)),
-		glm::vec3(r, g, b) + 0.2f, 0);
+		glm::vec3(r, g, b), dungeon != 0);
 
 	instances_builder.reset(new el::InstancesBuilder(
 		scene->get_scene_resources().get_mesh_data_cache_ptr()));

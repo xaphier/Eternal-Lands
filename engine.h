@@ -34,7 +34,7 @@ void exit_global_vars();
 void exit_file_system();
 void file_system_add_dir(const char* dir);
 void load_map_engine(const char* name, const float r, const float g,
-	const float b);
+	const float b, const int dungeon);
 void draw_engine();
 void clear_engine();
 void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile);

@@ -36,6 +36,7 @@ namespace eternal_lands
 		set_scissor_test(false);
 		set_sample_alpha_to_coverage(false);
 		set_polygon_offset_fill(false);
+		glCullFace(GL_BACK);
 	}
 
 	void StateManager::set_mesh(const AbstractMeshSharedPtr &mesh)

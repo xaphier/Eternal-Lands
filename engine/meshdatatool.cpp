@@ -963,12 +963,16 @@ namespace eternal_lands
 
 		triangles.start(sub_mesh_index, use_base_vertex);
 
+		assert((indices.size() % 3) == 0);
+
 		while (triangles.next_triangle())
 		{
 			indices.push_back(triangles.get_current_index(0));
 			indices.push_back(triangles.get_current_index(1));
 			indices.push_back(triangles.get_current_index(2));
 		}
+
+		assert((indices.size() % 3) == 0);
 	}
 
 	void MeshDataTool::write_vertex_semantic_to_stream(

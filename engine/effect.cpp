@@ -87,7 +87,7 @@ namespace eternal_lands
 
 	}
 
-	Effect::Effect(): m_name(L"simple")
+	Effect::Effect(): m_name(L"simple"), m_culling(true)
 	{
 		error_load();
 	}
@@ -95,7 +95,7 @@ namespace eternal_lands
 	Effect::Effect(const ShaderSourceBuilderWeakPtr &shader_source_builder,
 		const FileSystemWeakPtr &file_system, const String &name):
 		m_shader_source_builder(shader_source_builder),
-		m_file_system(file_system), m_name(name)
+		m_file_system(file_system), m_name(name), m_culling(true)
 	{
 		assert(!m_shader_source_builder.expired());
 
