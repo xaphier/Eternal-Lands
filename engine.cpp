@@ -656,6 +656,11 @@ extern "C" void draw_engine()
 	{
 		glDisableVertexAttribArray(i);
 	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glBlendFunc(GL_ZERO, GL_ONE);
+
 #ifdef	EL_TIME_FRAME_DEBUG
 	if ((do_el_time % 100) == 0)
 	{

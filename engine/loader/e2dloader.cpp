@@ -64,7 +64,7 @@ namespace eternal_lands
 				}
 			}
 
-			if ((lines.size() != 10) && (lines.size() != 11))
+			if (lines.size() < 10)
 			{
 				EL_THROW_EXCEPTION(E2dReadErrorException()
 					<< errinfo_string_value(e2d_data)
