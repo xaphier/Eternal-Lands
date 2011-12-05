@@ -30,8 +30,8 @@ namespace eternal_lands
 
 		if (m_vertex_data[index].get() != 0)
 		{
-			result.reset(new HardwareWriteMemoryBuffer(
-				m_vertex_data[index], hbt_vertex));
+			result = boost::make_shared<HardwareWriteMemoryBuffer>(
+				m_vertex_data[index], hbt_vertex);
 		}
 
 		return result;
@@ -43,8 +43,8 @@ namespace eternal_lands
 
 		if (m_index_data.get() != 0)
 		{
-			result.reset(new HardwareWriteMemoryBuffer(
-				m_index_data, hbt_index));
+			result = boost::make_shared<HardwareWriteMemoryBuffer>(
+				m_index_data, hbt_index);
 		}
 
 		return result;
@@ -92,7 +92,8 @@ namespace eternal_lands
 		{
 			if (get_vertex_elements(i).get_count() > 0)
 			{
-				m_vertex_data[i].reset(new HardwareBuffer());
+				m_vertex_data[i] =
+					boost::make_shared<HardwareBuffer>();
 
 				size = get_vertex_count();
 				size *= get_vertex_elements(i).get_stride();
@@ -128,7 +129,7 @@ namespace eternal_lands
 			size *= sizeof(Uint32);
 		}
 
-		m_index_data.reset(new HardwareBuffer());
+		m_index_data = boost::make_shared<HardwareBuffer>();
 		m_index_data->set_size(hbt_index, size, hbut_static_draw);
 	}
 

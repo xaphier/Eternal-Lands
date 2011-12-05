@@ -196,8 +196,8 @@ namespace eternal_lands
 	void MeshBuilder::set_format(const VertexFormatType format,
 		const VertexElements &elements)
 	{
-		m_vertex_formats[format].reset(new VertexFormat(
-			get_str(format), elements));
+		m_vertex_formats[format] = boost::make_shared<VertexFormat>(
+			get_str(format), elements);
 	}
 
 	AbstractMeshSharedPtr MeshBuilder::get_mesh() const

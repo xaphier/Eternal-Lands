@@ -67,9 +67,7 @@ namespace eternal_lands
 			if ((lines.size() != 10) && (lines.size() != 11))
 			{
 				EL_THROW_EXCEPTION(E2dReadErrorException()
-					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+					<< errinfo_string_value(e2d_data)
 					<< boost::errinfo_at_line(lines.size()));
 			}
 

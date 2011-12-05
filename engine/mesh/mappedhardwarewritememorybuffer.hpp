@@ -1,5 +1,5 @@
 /****************************************************************************
- *            hardwarewritememorybuffer.hpp
+ *            mappedhardwarewritememorybuffer.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -24,7 +24,7 @@
 namespace eternal_lands
 {
 
-	class HardwareWriteMemoryBuffer: public AbstractWriteMemoryBuffer
+	class MappedHardwareWriteMemoryBuffer: public AbstractWriteMemoryBuffer
 	{
 		private:
 			HardwareBufferSharedPtr m_buffer;
@@ -35,14 +35,14 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			HardwareWriteMemoryBuffer(
+			MappedHardwareWriteMemoryBuffer(
 				const HardwareBufferSharedPtr &buffer,
 				const HardwareBufferType type);
 
 			/**
 			 * Default destructor.
 			 */
-			virtual ~HardwareWriteMemoryBuffer() throw();
+			virtual ~MappedHardwareWriteMemoryBuffer() throw();
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -70,4 +70,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_6d5a0d7a_874e_4cea_b2aa_9c2dcc7ef07f */
-

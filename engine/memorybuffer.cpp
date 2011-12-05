@@ -20,6 +20,21 @@ namespace eternal_lands
 	{
 	}
 
+	void* MemoryBuffer::get_ptr()
+	{
+		return m_ptr.get();
+	}
+
+	const void* MemoryBuffer::get_ptr() const
+	{
+		return m_ptr.get();
+	}
+
+	Uint64 MemoryBuffer::get_size() const
+	{
+		return m_size;
+	}
+
 	void MemoryBuffer::resize(const Uint64 size)
 	{
 		Uint8ScopedArray ptr;

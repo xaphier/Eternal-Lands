@@ -792,7 +792,7 @@ namespace eternal_lands
 	GlslProgram::GlslProgram(const StringType &vertex_shader,
 		const StringType &fragment_shader,
 		const StringVariantMap &values, const String &name):
-		m_name(name), m_program(0)
+		m_name(name), m_last_used(0), m_program(0)
 	{
 		build(vertex_shader, fragment_shader, values);
 	}
@@ -1870,6 +1870,8 @@ namespace eternal_lands
 		unbind();
 
 		update_used_texture_units();
+
+		m_last_used = 0;
 	}
 
 	void GlslProgram::update_used_texture_units()

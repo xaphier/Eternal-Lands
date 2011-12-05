@@ -7,6 +7,7 @@
 
 #include "hardwarebuffer.hpp"
 #include "exceptions.hpp"
+#include "memorybuffer.hpp"
 
 namespace eternal_lands
 {
@@ -31,8 +32,28 @@ namespace eternal_lands
 		const Uint64 size, const HardwareBufferUsageType usage)
 	{
 		m_size = size;
-		glBindBuffer(type, m_id);
+		bind(type);
 		glBufferData(type, size, 0, usage);
+		unbind(type);
+	}
+
+	void HardwareBuffer::set(const HardwareBufferType type,
+		const MemoryBuffer &buffer, const HardwareBufferUsageType usage)
+	{
+		m_size = buffer.get_size();
+		bind(type);
+		glBufferData(type, buffer.get_size(), buffer.get_ptr(), usage);
+		unbind(type);
+	}
+
+	void HardwareBuffer::update(const HardwareBufferType type,
+		const MemoryBuffer &buffer, const Uint64 offset)
+	{
+		assert(get_size() <= (offset + buffer.get_size()));
+		bind(type);
+		glBufferSubData(type, offset, buffer.get_size(),
+			buffer.get_ptr());
+		unbind(type);
 	}
 
 	void HardwareBuffer::bind(const HardwareBufferType type)

@@ -52,8 +52,8 @@ namespace eternal_lands
 
 		semantics.insert(vst_position);
 
-		mesh_data_tool = MeshDataToolSharedPtr(new MeshDataTool(4, 6,
-			1, semantics, 0xFFFFFFFF, pt_triangles, false));
+		mesh_data_tool = boost::make_shared<MeshDataTool>(4, 6,
+			1, semantics, 0xFFFFFFFF, pt_triangles, false);
 
 		mesh_data_tool->set_vertex_data(vst_position, 0,
 			glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));

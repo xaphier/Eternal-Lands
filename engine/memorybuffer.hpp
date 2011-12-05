@@ -59,10 +59,7 @@ namespace eternal_lands
 			 * Gets the pointer of the memory.
 			 * @return Returns the pointer of the memory.
 			 */
-			virtual inline void* get_ptr()
-			{
-				return m_ptr.get();
-			}
+			void* get_ptr();
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -70,10 +67,7 @@ namespace eternal_lands
 			 * Gets the pointer of the memory.
 			 * @return Returns the pointer of the memory.
 			 */
-			virtual inline const void* get_ptr() const
-			{
-				return m_ptr.get();
-			}
+			const void* get_ptr() const;
 
 			/**
 			 * @brief Gets the size of the memory.
@@ -81,10 +75,7 @@ namespace eternal_lands
 			 * Gets the size of the memory.
 			 * @return Returns the size of the memory.
 			 */
-			virtual inline Uint64 get_size() const
-			{
-				return m_size;
-			}
+			Uint64 get_size() const;
 
 			/**
 			 * @brief Resizes the memory.

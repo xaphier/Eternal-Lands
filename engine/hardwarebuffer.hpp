@@ -120,6 +120,14 @@ namespace eternal_lands
 				const Uint64 size,
 				const HardwareBufferUsageType usage);
 
+			void set(const HardwareBufferType type,
+				const MemoryBuffer &buffer,
+				const HardwareBufferUsageType usage);
+
+			void update(const HardwareBufferType type,
+				const MemoryBuffer &buffer,
+				const Uint64 offset = 0);
+
 			/**
 			 * Binds the buffer.
 			 * @param type The type of the buffer to bind.
