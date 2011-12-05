@@ -16,6 +16,7 @@
 #include "effectcache.hpp"
 #include "logging.hpp"
 #include "indexbuilder.hpp"
+#include "submesh.hpp"
 
 namespace eternal_lands
 {
@@ -142,8 +143,6 @@ namespace eternal_lands
 				BoundingBox(glm::vec3(-1.0f), glm::vec3(1.0f)),
 				0, sphere_index_count, 0,
 				sphere_vertex_count - 1));
-
-			mesh_data_tool->update_sub_meshs_packed();
 		}
 
 		void load_plane(const Uint16 tile_size,
@@ -157,12 +156,27 @@ namespace eternal_lands
 			VertexSemanticTypeSet semantics;
 			StringType str;
 			Uint32 vertex_count, index_count, i, index, x, y;
+			Uint32 restart_index;
+			PrimitiveType primitive_type;
+			bool use_restart_index;
 
 			vertex_count = tile_size + 1;
 			vertex_count *= tile_size + 1;
 
-			IndexBuilder::build_plane_indices(indices, tile_size,
-				false, 0, true, 0);
+			use_restart_index = GLEW_VERSION_3_1;
+
+			if (use_restart_index)
+			{
+				primitive_type = pt_triangle_fan;
+			}
+			else
+			{
+				primitive_type = pt_triangles;
+			}
+
+			restart_index = IndexBuilder::build_plane_indices(
+				indices, tile_size, use_restart_index, 0, true,
+				0);
 
 			index_count = indices.size();
 
@@ -171,9 +185,10 @@ namespace eternal_lands
 			semantics.insert(vst_normal);
 			semantics.insert(vst_tangent);
 
-			mesh_data_tool = MeshDataToolSharedPtr(new MeshDataTool(
+			mesh_data_tool = boost::make_shared<MeshDataTool>(
 				vertex_count, index_count, 1, semantics,
-				0, pt_triangles, false));
+				restart_index, primitive_type,
+				use_restart_index);
 
 			for (i = 0; i < index_count; i++)
 			{
@@ -214,8 +229,6 @@ namespace eternal_lands
 			mesh_data_tool->set_sub_mesh_data(0, SubMesh(
 				BoundingBox(vmin, vmax), 0, index_count, 0,
 				vertex_count - 1));
-
-			mesh_data_tool->update_sub_meshs_packed();
 		}
 
 		void load_e2d(const ReaderSharedPtr &reader,
@@ -269,6 +282,48 @@ namespace eternal_lands
 			}
 		}
 
+		bool load_plane(const String &name,
+			MeshDataToolSharedPtr &mesh_data_tool)
+		{
+			if (name == L"plane_4")
+			{
+				load_plane(4, mesh_data_tool);
+				return true;
+			}
+
+			if (name == L"plane_8")
+			{
+				load_plane(8, mesh_data_tool);
+				return true;
+			}
+
+			if (name == L"plane_16")
+			{
+				load_plane(16, mesh_data_tool);
+				return true;
+			}
+
+			if (name == L"plane_32")
+			{
+				load_plane(32, mesh_data_tool);
+				return true;
+			}
+
+			if (name == L"plane_64")
+			{
+				load_plane(64, mesh_data_tool);
+				return true;
+			}
+
+			if (name == L"plane_128")
+			{
+				load_plane(128, mesh_data_tool);
+				return true;
+			}
+
+			return false;
+		}
+
 	}
 
 	class MeshDataCache::MeshDataCacheItem
@@ -281,13 +336,7 @@ namespace eternal_lands
 	MeshDataCache::MeshDataCache(const FileSystemWeakPtr &file_system):
 		m_file_system(file_system)
 	{
-		MeshDataCache::MeshDataCacheItem tmp;
-
 		assert(!m_file_system.expired());
-
-		load_plane(8, tmp.m_mesh_data_tool);
-
-		m_mesh_data_cache[String(L"plane")] = tmp;
 	}
 
 	MeshDataCache::~MeshDataCache() throw()
@@ -302,11 +351,16 @@ namespace eternal_lands
 
 		try
 		{
+			if (load_plane(name, mesh_data_tool))
+			{
+				return;
+			}
+
 			reader = get_file_system()->get_file(name);
 
 			do_load_mesh(reader, mesh_data_tool, materials);
 
-			mesh_data_tool->update_sub_meshs_packed();
+			mesh_data_tool->optimize();
 
 			return;
 		}

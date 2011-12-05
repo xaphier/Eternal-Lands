@@ -326,9 +326,10 @@ namespace eternal_lands
 			throw;
 		}
 
-		mesh_data_tool = MeshDataToolSharedPtr(new MeshDataTool(
-			vertex_count, index_count, 1, semantics,
-			0, pt_triangles, false));
+		mesh_data_tool = boost::make_shared<MeshDataTool>(vertex_count,
+			index_count, 1, semantics,
+			std::numeric_limits<Uint32>::max(), pt_triangles,
+			false);
 
 		load_vertex_data(mesh_data_tool, texture_coordinates, size);
 

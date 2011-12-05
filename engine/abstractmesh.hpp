@@ -35,8 +35,10 @@ namespace eternal_lands
 			VertexFormatSharedPtr m_vertex_format;
 			Uint32 m_vertex_count;
 			Uint32 m_index_count;
+			Uint32 m_restart_index;
 			PrimitiveType m_primitive_type;
 			bool m_use_16_bit_indices;
+			bool m_use_restart_index;
 
 		protected:
 			/**
@@ -107,6 +109,8 @@ namespace eternal_lands
 			 */
 			virtual AbstractMeshSharedPtr clone_vertex_data() = 0;
 
+			virtual bool get_supports_restart_index() = 0;
+
 			/**
 			 * Draws the sub mesh with the given index.
 			 */
@@ -176,6 +180,24 @@ namespace eternal_lands
 			inline bool get_use_16_bit_indices() const
 			{
 				return m_use_16_bit_indices;
+			}
+
+			/**
+			 * Return the restart index.
+			 * @result The restart index.
+			 */
+			inline Uint32 get_restart_index() const
+			{
+				return m_restart_index;
+			}
+
+			/**
+			 * Returns if the restart index is used.
+			 * @result If the restart index is used.
+			 */
+			inline bool get_use_restart_index() const
+			{
+				return m_use_restart_index;
 			}
 
 	};

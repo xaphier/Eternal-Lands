@@ -74,6 +74,11 @@ namespace eternal_lands
 			void build_instance();
 			void set_instance(InstanceDataVector &instances);
 
+			inline void operator()()
+			{
+				build_instance();
+			}
+
 	};
 
 }

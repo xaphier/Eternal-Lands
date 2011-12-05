@@ -10,6 +10,7 @@
 #include "materialdescription.hpp"
 #include "meshdatacache.hpp"
 #include "meshbuilder.hpp"
+#include "submesh.hpp"
 
 namespace eternal_lands
 {

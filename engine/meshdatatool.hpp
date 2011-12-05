@@ -14,7 +14,6 @@
 
 #include "prerequisites.hpp"
 #include "vertexelement.hpp"
-#include "submesh.hpp"
 #include "primitiveutil.hpp"
 
 /**
@@ -194,35 +193,58 @@ namespace eternal_lands
 			 * Returns the number of vertices.
 			 * @result The vertex count.
 			 */
-			Uint32 get_vertex_count() const;
+			inline Uint32 get_vertex_count() const
+			{
+				return m_vertex_count;
+			}
 
 			/**
 			 * Returns the number of indices.
 			 * @result The index count.
 			 */
-			Uint32 get_index_count() const;
+			inline Uint32 get_index_count() const
+			{
+				return m_indices.size();
+			}
 
 			/**
+			 * Return the primitive type.
+			 * @result The primitive type.
 			 */
-			PrimitiveType get_primitive_type() const;
+			inline PrimitiveType get_primitive_type() const
+			{
+				return m_primitive_type;
+			}
 
 			/**
+			 * Return the restart index.
+			 * @result The restart index.
 			 */
-			Uint32 get_restart_index() const;
+			inline Uint32 get_restart_index() const
+			{
+				return m_restart_index;
+			}
 
 			/**
+			 * Returns if the restart index is used.
+			 * @result If the restart index is used.
 			 */
-			bool get_use_restart_index() const;
+			inline bool get_use_restart_index() const
+			{
+				return m_use_restart_index;
+			}
 
 			/**
 			 * Returns the sub meshs.
 			 * @result The sub meshs.
 			 */
-			const SubMeshVector &get_sub_meshs() const;
+			inline const SubMeshVector &get_sub_meshs() const
+			{
+				return m_sub_meshs;
+			}
 
 	};
 
 }
 
 #endif	/* UUID_ea879c22_9289_40a2_8984_ef65232243b0 */
-

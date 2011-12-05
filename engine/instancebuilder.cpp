@@ -11,6 +11,7 @@
 #include "instancedata.hpp"
 #include "instancingdata.hpp"
 #include "subobject.hpp"
+#include "submesh.hpp"
 
 namespace eternal_lands
 {
@@ -95,12 +96,17 @@ namespace eternal_lands
 				mesh_data_tool.resize_vertices(size);
 			}
 
-			count = indices.size();
+			size = index_offset + indices.size();
 
-			assert((indices.size() % 3) == 0);
+			if (mesh_data_tool.get_index_count() < size)
+			{
+				mesh_data_tool.resize_indices(size);
+			}
 
 			world_matrix = instancing_data.get_world_matrix();
 			world_matrix[3] -= center;
+
+			count = indices.size();
 
 			for (i = 0; i < count; i++)
 			{
@@ -157,9 +163,14 @@ namespace eternal_lands
 				mesh_data_tool.resize_vertices(size);
 			}
 
-			count = indices.size();
+			size = index_offset + indices.size();
 
-			assert((indices.size() % 3) == 0);
+			if (mesh_data_tool.get_index_count() < size)
+			{
+				mesh_data_tool.resize_indices(size);
+			}
+
+			count = indices.size();
 
 			for (i = 0; i < count; i++)
 			{
@@ -363,8 +374,9 @@ namespace eternal_lands
 		semantics.insert(vst_texture_coordinate_0);
 
 		mesh_data_tool = boost::make_shared<MeshDataTool>(vertex_count,
-			index_count, sub_mesh_count, semantics, 0,
-			pt_triangles, false);
+			index_count, sub_mesh_count, semantics,
+			std::numeric_limits<Uint32>::max(), pt_triangles,
+			false);
 
 		index_offset = 0;
 		vertex_offset = 0;
@@ -380,6 +392,7 @@ namespace eternal_lands
 			sub_mesh_index++;
 		}
 
+		mesh_data_tool->resize_indices(index_offset);
 		mesh_data_tool->resize_vertices(vertex_offset);
 
 		world_matrix[3] = center;

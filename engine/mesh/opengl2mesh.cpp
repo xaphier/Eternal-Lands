@@ -84,26 +84,6 @@ namespace eternal_lands
 		}
 	}
 
-	void OpenGl2Mesh::unbind(const VertexElements &vertex_elements,
-		const HardwareBufferSharedPtr &buffer)
-	{
-		Uint32 i;
-		VertexSemanticType semantic;
-
-		if (vertex_elements.get_count() == 0)
-		{
-			return;
-		}
-
-		buffer->unbind(hbt_vertex);
-
-		for (i = 0; i < vertex_elements.get_count(); i++)
-		{
-			semantic = vertex_elements.get_semantic(i);
-			glDisableVertexAttribArray(semantic);
-		}
-	}
-
 	void OpenGl2Mesh::init_vertices()
 	{
 		Uint32 i, size;
@@ -164,12 +144,14 @@ namespace eternal_lands
 
 	void OpenGl2Mesh::unbind_vertex_buffers()
 	{
-		Uint32 i;
+		Uint16 i;
 
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < 16; i++)
 		{
-			unbind(get_vertex_elements(i), m_vertex_data[i]);
+			glDisableVertexAttribArray(i);
 		}
+
+		HardwareBuffer::unbind(hbt_vertex);
 	}
 
 	void OpenGl2Mesh::bind_index_buffers()
@@ -182,10 +164,7 @@ namespace eternal_lands
 
 	void OpenGl2Mesh::unbind_index_buffers()
 	{
-		if (m_index_data.get() != 0)
-		{
-			m_index_data->unbind(hbt_index);
-		}
+		HardwareBuffer::unbind(hbt_index);
 	}
 
 	void OpenGl2Mesh::bind()
@@ -228,6 +207,11 @@ namespace eternal_lands
 		result->copy_vertex_descriptions(*this);
 
 		return result;
+	}
+
+	bool OpenGl2Mesh::get_supports_restart_index()
+	{
+		return false;
 	}
 
 }

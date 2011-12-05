@@ -65,6 +65,7 @@
 #ifdef	FSAA
 #include "fsaa/fsaa.h"
 #endif	/* FSAA */
+#include "manufacture.h"
 #include "engine.h"
 
 Uint32 cur_time=0, last_time=0;//for FPS

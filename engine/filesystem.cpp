@@ -136,6 +136,7 @@ namespace eternal_lands
 
 	FileSystem::FileSystem()
 	{
+		m_archives.push_back(new DirArchive(String(L".")));
 	}
 
 	FileSystem::~FileSystem() throw()

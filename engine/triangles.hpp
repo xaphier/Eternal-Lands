@@ -41,6 +41,7 @@ namespace eternal_lands
 			Uint32 m_restart_index;
 			PrimitiveType m_primitive;
 			bool m_use_restart_index;
+			bool m_flip_triangle;
 
 			bool get_degenerated_triangle() const;
 			bool do_next_triangle();
@@ -55,7 +56,7 @@ namespace eternal_lands
 
 			void get_triangles(const Uint32 sub_mesh_index,
 				Uint32Vector &indices);
-			void start(const Uint32 sub_mesh_index,
+			bool start(const Uint32 sub_mesh_index,
 				const bool use_base_vertex);
 			bool next_triangle();
 

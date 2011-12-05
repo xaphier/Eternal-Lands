@@ -187,9 +187,10 @@ namespace eternal_lands
 
 		semantics = get_semantics(options);
 
-		mesh_data_tool = MeshDataToolSharedPtr(new MeshDataTool(
-			vertex_count, index_count, material_count, semantics,
-			0, pt_triangles, false));
+		mesh_data_tool = boost::make_shared<MeshDataTool>(vertex_count,
+			index_count, material_count, semantics,
+			std::numeric_limits<Uint32>::max(), pt_triangles,
+			false);
 
 		load_vertex(*mesh_data_tool, options, format, vertex_count,
 			vertex_size, vertex_offset);

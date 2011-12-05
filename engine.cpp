@@ -403,8 +403,6 @@ extern "C" void init_global_vars()
 {
 	TRY_BLOCK
 
-	CHECK_GL_ERROR();
-
 	global_vars.reset(new el::GlobalVars());
 
 	CATCH_BLOCK
@@ -413,8 +411,6 @@ extern "C" void init_global_vars()
 extern "C" void init_file_system()
 {
 	TRY_BLOCK
-
-	CHECK_GL_ERROR();
 
 	file_system.reset(new el::FileSystem());
 	file_system->add_dirs(VER_MAJOR, VER_MINOR, VER_RELEASE);
@@ -425,8 +421,6 @@ extern "C" void init_file_system()
 extern "C" void file_system_add_dir(const char* dir)
 {
 	TRY_BLOCK
-
-	CHECK_GL_ERROR();
 
 	file_system->add_dir(el::String(el::utf8_to_string(dir)));
 
@@ -523,11 +517,7 @@ extern "C" void exit_global_vars()
 {
 	TRY_BLOCK
 
-	CHECK_GL_ERROR();
-
 	global_vars.reset();
-
-	CHECK_GL_ERROR();
 
 	CATCH_BLOCK
 }
@@ -536,11 +526,7 @@ extern "C" void exit_file_system()
 {
 	TRY_BLOCK
 
-	CHECK_GL_ERROR();
-
 	file_system.reset();
-
-	CHECK_GL_ERROR();
 
 	CATCH_BLOCK
 }
@@ -767,7 +753,7 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 	materials[0].set_shadow(false);
 
 	instances_builder->add(el::ObjectData(glm::mat4x3(matrix),
-		glm::vec4(0.0f), el::String(L"plane"), 0.0f,
+		glm::vec4(0.0f), el::String(L"plane_4"), 0.0f,
 		free_ids.get_next_free_id(), el::st_none, false), materials);
 
 	CATCH_BLOCK

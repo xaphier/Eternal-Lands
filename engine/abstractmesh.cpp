@@ -48,8 +48,19 @@ namespace eternal_lands
 		AbstractWriteMemoryBufferSharedPtr buffer;
 		Uint32 i;
 
-		assert(source != 0);
-		assert(source->get_vertex_count() > 0);
+		if (source->get_vertex_count() == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(L"Vertex count is zero"));
+		}
+
+		if (source->get_use_restart_index() &&
+			!get_supports_restart_index())
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(L"Restart index used but "
+				"not supported"));
+		}
 
 		m_use_16_bit_indices = use_16_bit_indices;
 		m_vertex_format = vertex_format;
@@ -57,6 +68,8 @@ namespace eternal_lands
 		m_index_count = source->get_index_count();
 		m_sub_meshs = source->get_sub_meshs();
 		m_primitive_type = source->get_primitive_type();
+		m_restart_index = source->get_restart_index();
+		m_use_restart_index = source->get_use_restart_index();
 
 		LOG_DEBUG(L"use_16_bit_indices: %1%, vertex_count:"
 			" %2%, index_count: %3%, sub_mesh_count: %4%",

@@ -12,6 +12,7 @@
 #include "abstractwritememorybuffer.hpp"
 #include "triangles.hpp"
 #include "exceptions.hpp"
+#include "submesh.hpp"
 
 namespace eternal_lands
 {
@@ -210,7 +211,10 @@ namespace eternal_lands
 
 		static inline float calc_new_score(const Uint32 count)
 		{
-			assert(count > 0);
+			if (count == 0)
+			{
+				return 0.0f;
+			}
 
 			return 2.0f / std::sqrt(count);
 		}
@@ -543,44 +547,60 @@ namespace eternal_lands
 			get_primitive_type(), get_restart_index(),
 			get_use_restart_index());
 		Vec4Vector vertices;
-		std::map<Uint32, Uint32> indices;
-		Uint32 i, j, index, count;
+		Uint32Vector indices;
+		std::map<Uint32, Uint32> index_map;
+		Uint32 i, j, index, count, value, semantics;
 
-		count = get_sub_meshs().size();
+		count = get_index_count();
 
 		for (i = 0; i < count; i++)
 		{
-			triangles.start(i, true);
+			index = get_index_data(i);
 
-			while (triangles.next_triangle())
+			if ((index == get_restart_index()) &&
+				get_use_restart_index())
 			{
-				for (j = 0; j < 3; j++)
-				{
-					index = triangles.get_current_index(j);
+				indices.push_back(index);
 
-					if (indices.find(index) == indices.end())
-					{
-						indices[index] = indices.size();
-					}
-				}
+				continue;
 			}
+
+			if (index_map.find(index) == index_map.end())
+			{
+				value = index_map.size();
+
+				index_map[index] = value;
+			}
+			else
+			{
+				value = index_map[index];
+			}
+
+			indices.push_back(value);
 		}
+
+		assert(get_vertex_count() == index_map.size());
 
 		vertices.resize(m_vertices.size());
 
-		for (i = 0; i < get_vertex_count(); i++)
-		{
-			index = indices[i];
+		count = get_vertex_count();
 
-			count = get_semantic_count();
-			for (j = 0; j < count; j++)
+		for (i = 0; i < count; i++)
+		{
+			index = index_map[i];
+
+			semantics = get_semantic_count();
+
+			for (j = 0; j < semantics; j++)
 			{
-				vertices[index * count + j] =
-					m_vertices[i * count + j];
+				vertices[index * semantics + j] =
+					m_vertices[i * semantics + j];
 			}
 		}
 
+		std::swap(m_indices, indices);
 		std::swap(m_vertices, vertices);
+		update_sub_meshs_packed();
 	}
 
 	void MeshDataTool::build_normal(const bool morph_target)
@@ -1126,36 +1146,6 @@ namespace eternal_lands
 					get_index_data(i);
 			}
 		}
-	}
-
-	Uint32 MeshDataTool::get_vertex_count() const
-	{
-		return m_vertex_count;
-	}
-
-	Uint32 MeshDataTool::get_index_count() const
-	{
-		return m_indices.size();
-	}
-
-	PrimitiveType MeshDataTool::get_primitive_type() const
-	{
-		return m_primitive_type;
-	}
-
-	Uint32 MeshDataTool::get_restart_index() const
-	{
-		return m_restart_index;
-	}
-
-	bool MeshDataTool::get_use_restart_index() const
-	{
-		return m_use_restart_index;
-	}
-
-	const SubMeshVector &MeshDataTool::get_sub_meshs() const
-	{
-		return m_sub_meshs;
 	}
 
 	void MeshDataTool::get_bounding_box(const glm::mat4x3 &matrix,

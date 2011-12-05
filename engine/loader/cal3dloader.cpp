@@ -216,9 +216,10 @@ namespace eternal_lands
 			semantics.insert(vst_extra_bone_weight);
 		}
 
-		mesh_data_tool = MeshDataToolSharedPtr(new MeshDataTool(
+		mesh_data_tool = boost::make_shared<MeshDataTool>(
 			m_vertex_count, m_index_count, mesh_count, semantics,
-			0, pt_triangles, false));
+			std::numeric_limits<Uint32>::max(), pt_triangles,
+			false);
 
 		for (i = 0; i < mesh_count; i++)
 		{

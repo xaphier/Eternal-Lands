@@ -39,17 +39,16 @@ namespace eternal_lands
 		protected:
 			static void bind(const VertexElements &vertex_elements,
 				const HardwareBufferSharedPtr &buffer);
-			static void unbind(const VertexElements &vertex_elements,
-				const HardwareBufferSharedPtr &buffer);
 
 			void bind_vertex_buffers();
 			void unbind_vertex_buffers();
 			void bind_index_buffers();
 			void unbind_index_buffers();
 
-			virtual AbstractWriteMemoryBufferSharedPtr get_vertex_buffer(
-				const Uint16 index);
-			virtual AbstractWriteMemoryBufferSharedPtr get_index_buffer();
+			virtual AbstractWriteMemoryBufferSharedPtr
+				get_vertex_buffer(const Uint16 index);
+			virtual AbstractWriteMemoryBufferSharedPtr
+				get_index_buffer();
 			virtual void init_vertices();
 			virtual void init_indices();
 
@@ -68,6 +67,7 @@ namespace eternal_lands
 			virtual void unbind();
 			virtual void draw(const MeshDrawData &draw_data);
 			virtual AbstractMeshSharedPtr clone_vertex_data();
+			virtual bool get_supports_restart_index();
 
 	};
 

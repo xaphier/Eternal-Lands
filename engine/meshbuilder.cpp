@@ -8,6 +8,7 @@
 #include "meshbuilder.hpp"
 #include "mesh/opengl2mesh.hpp"
 #include "mesh/opengl3mesh.hpp"
+#include "mesh/opengl31mesh.hpp"
 #include "vertexformat.hpp"
 #include "abstractmesh.hpp"
 #include "exceptions.hpp"
@@ -201,14 +202,17 @@ namespace eternal_lands
 
 	AbstractMeshSharedPtr MeshBuilder::get_mesh() const
 	{
-		if (GLEW_ARB_vertex_array_object)
+		if (GLEW_VERSION_3_1)
+		{
+			return boost::make_shared<OpenGl31Mesh>();
+		}
+
+		if (GLEW_ARB_vertex_array_object || GLEW_VERSION_3_0)
 		{
 			return boost::make_shared<OpenGl3Mesh>();
 		}
-		else
-		{
-			return boost::make_shared<OpenGl2Mesh>();
-		}
+
+		return boost::make_shared<OpenGl2Mesh>();
 	}
 
 	AbstractMeshSharedPtr MeshBuilder::get_mesh(

@@ -41,7 +41,7 @@ namespace eternal_lands
 	{
 		Uint32 index;
 
-		if (m_primitive == pt_triangles)
+		if ((m_primitive == pt_triangles) || (m_index == 0))
 		{
 			return do_next_triangle();
 		}
@@ -56,6 +56,8 @@ namespace eternal_lands
 
 		if (m_use_restart_index && (index == m_restart_index))
 		{
+			m_flip_triangle = true;
+
 			return do_next_triangle();
 		}
 
@@ -66,7 +68,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			if ((m_index & 2) == 1)
+			if (m_flip_triangle)
 			{
 				m_current_indices[0] = m_current_indices[2];
 				m_current_indices[2] = index + m_base_vertex;
@@ -76,6 +78,8 @@ namespace eternal_lands
 				m_current_indices[1] = m_current_indices[2];
 				m_current_indices[2] = index + m_base_vertex;
 			}
+
+			m_flip_triangle = !m_flip_triangle;
 		}
 
 		if (get_degenerated_triangle())
@@ -100,7 +104,7 @@ namespace eternal_lands
 	{
 	}
 
-	void Triangles::start(const Uint32 sub_mesh_index,
+	bool Triangles::start(const Uint32 sub_mesh_index,
 		const bool use_base_vertex)
 	{
 		if (sub_mesh_index >= m_sub_meshs.size())
@@ -114,6 +118,9 @@ namespace eternal_lands
 		m_index = 0;
 		m_count = m_sub_meshs[sub_mesh_index].get_count();
 		m_offset = m_sub_meshs[sub_mesh_index].get_offset();
+		m_flip_triangle = true;
+
+		assert((m_count + m_offset) <= m_indices.size());
 
 		if (use_base_vertex)
 		{
@@ -124,7 +131,8 @@ namespace eternal_lands
 			m_base_vertex =
 				m_sub_meshs[sub_mesh_index].get_base_vertex();
 		}
+
+		return m_count >= 3;
 	}
 
 }
-
