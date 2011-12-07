@@ -116,13 +116,13 @@ namespace eternal_lands
 		if (enhanced_actor)
 		{
 			materials.push_back(MaterialDescription(
-				String(L"animated.solid")));
+				String(UTF8("animated.solid"))));
 		}
 		else
 		{
 			materials.push_back(MaterialDescription(
 				found->second.m_skin_name,
-				String(L"animated.solid")));
+				String(UTF8("animated.solid"))));
 		}
 
 		if (found->second.m_ghost)

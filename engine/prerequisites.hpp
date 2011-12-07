@@ -91,12 +91,13 @@ namespace eternal_lands
 	#define WEAK_PTR(type) typedef boost::weak_ptr<type> type##WeakPtr
 	#define ARRAY(type, N) ARRAY_NAME(type, N, type)
 	#define VECTOR(type) VECTOR_NAME(type, type)
+	#define UTF8(str) str
 
-	typedef std::wstring StringType;
-	typedef std::wstringstream StringStream;
-	typedef std::wostream OutStream;
-	typedef std::wistream InStream;
-	typedef boost::wformat BoostFormat;
+	typedef std::string StringType;
+	typedef std::stringstream StringStream;
+	typedef std::ostream OutStream;
+	typedef std::istream InStream;
+	typedef boost::format BoostFormat;
 	typedef boost::flyweights::flyweight<StringType> String;
 	typedef std::bitset<32> BitSet32;
 	typedef std::bitset<16> BitSet16;

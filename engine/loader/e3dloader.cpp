@@ -14,6 +14,7 @@
 #include "packtool.hpp"
 #include "logging.hpp"
 #include "utf.hpp"
+#include "filesystem.hpp"
 
 namespace eternal_lands
 {
@@ -419,12 +420,12 @@ namespace eternal_lands
 		if (options != 0)
 		{
 			return MaterialDescription(String(dir + name),
-				String(L"mesh.transparent"));
+				String(UTF8("mesh.transparent")));
 		}
 		else
 		{
 			return MaterialDescription(String(dir + name),
-				String(L"mesh.solid"));
+				String(UTF8("mesh.solid")));
 		}
 	}
 
@@ -432,42 +433,26 @@ namespace eternal_lands
 		const Uint32 material_count, const Uint32 material_size,
 		const Uint32 material_offset)
 	{
-		StringType dir;
 		StringType str;
-		std::size_t pos;
 		Uint32 i;
 
-		str = m_reader->get_name();
+		str = FileSystem::get_dir_name(m_reader->get_name());
 
-		pos = str.find(L"./");
-
-		while (pos != std::string::npos)
+		if (str.length() > 0)
 		{
-			str.erase(pos, 2);
-			pos = str.find(L"./");
-		}
-
-		pos = str.rfind(L"/");
-
-		if (pos != std::string::npos)
-		{
-			dir = str.substr(0, pos + 1);
-		}
-		else
-		{
-			dir = str + L"/";
+			str += UTF8("/");
 		}
 
 		for (i = 0; i < material_count; i++)
 		{
 			materials.push_back(load_material(material_offset,
-				material_size, i, dir));
+				material_size, i, str));
 		}
 	}
 
 	E3dLoader::E3dLoader(const ReaderSharedPtr &reader): m_reader(reader)
 	{
-		LOG_DEBUG(L"Loading file '%1%'.", m_reader->get_name());
+		LOG_DEBUG(UTF8("Loading file '%1%'."), m_reader->get_name());
 	}
 
 	E3dLoader::~E3dLoader() throw()
@@ -498,84 +483,84 @@ namespace eternal_lands
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"normal";
+			str += UTF8("normal");
 		}
 
 		if (get_tangent(options))
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"tangent";
+			str += UTF8("tangent");
 		}
 
 		if (get_secondary_texture_coordinate(options))
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"secondary_texture_coordinate";
+			str += UTF8("secondary_texture_coordinate");
 		}
 
 		if (get_color(options))
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"color";
+			str += UTF8("color");
 		}
 
 		if (get_half_position(format))
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"half_position";
+			str += UTF8("half_position");
 		}
 
 		if (get_half_uv(format))
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"half_uv";
+			str += UTF8("half_uv");
 		}
 
 		if (get_half_extra_uv(format))
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"half_extra_uv";
+			str += UTF8("half_extra_uv");
 		}
 
 		if (get_compressed_normalized_vector(format))
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"compressed_normalized_vector";
+			str += UTF8("compressed_normalized_vector");
 		}
 
 		if (get_short_index(format))
 		{
 			if (!str.empty())
 			{
-				str += L", ";
+				str += UTF8(", ");
 			}
-			str += L"short_index";
+			str += UTF8("short_index");
 		}
 
-		LOG_DEBUG(L"Formats [%1%] for file '%2%'.", str %
+		LOG_DEBUG(UTF8("Formats [%1%] for file '%2%'."), str %
 			m_reader->get_name());
 	}
 
@@ -654,7 +639,8 @@ namespace eternal_lands
 
 	void E3dLoader::check_index_size(const Uint32 index_size) const
 	{
-		if ((index_size != sizeof(Uint16)) && (index_size != sizeof(Uint32)))
+		if ((index_size != sizeof(Uint16)) &&
+			(index_size != sizeof(Uint32)))
 		{
 			EL_THROW_EXCEPTION(E3dLoadingException()
 				<< errinfo_value(index_size)

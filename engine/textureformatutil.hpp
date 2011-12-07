@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "packtool.hpp"
 
 /**
  * @file
@@ -284,6 +285,10 @@ namespace eternal_lands
 			static IntegerType get_integer_type(
 				const TextureFormatType texture_format);
 			static TextureFormatType get_type(const String &str);
+			static PackFormatType get_pack_format_type(
+				const TextureFormatType texture_format);
+			static bool get_has_format_type(
+				const TextureFormatType texture_format);
 
 	};
 

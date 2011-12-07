@@ -131,12 +131,13 @@ namespace eternal_lands
 			sizes[1] = image_height;
 			sizes[2] = 1;
 
-			image = boost::make_shared<Image>(String(L"error"),
+			image = boost::make_shared<Image>(String(UTF8("error")),
 				false, tft_rgb8, sizes, 0);
 
 			rle_decode(rle_pixel_data, image->get_buffer());
 
-			texture = boost::make_shared<Texture>(String(L"error"));
+			texture = boost::make_shared<Texture>(String(UTF8(
+				"error")));
 			texture->set_format(image->get_texture_format());
 			texture->set_image(image);
 

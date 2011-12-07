@@ -73,12 +73,11 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name())
 					<< errinfo_expected_value(1)
 					<< errinfo_value(width)
-					<< errinfo_message(L"Wrong image "
-						"depth"));
+					<< errinfo_message(UTF8("Wrong image "
+						"depth")));
 			}
 
 			width = image_sizes[0];
@@ -97,38 +96,35 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name())
 					<< errinfo_expected_value(mipmap)
 					<< errinfo_value(mipmap_count)
-					<< errinfo_message(L"Not enought "
-						"mipmaps"));
+					<< errinfo_message(UTF8("Not enought "
+						"mipmaps")));
 			}
 
 			if (width != (sizes[0] * scale))
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name())
 					<< errinfo_expected_value(
 						sizes[0] * scale)
 					<< errinfo_value(width)
-					<< errinfo_message(L"Wrong image "
-						"width"));
+					<< errinfo_message(UTF8("Wrong image "
+						"width")));
 			}
 
 			if (height != (sizes[1] * scale))
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name())
 					<< errinfo_expected_value(
 						sizes[1] * scale)
 					<< errinfo_value(height)
-					<< errinfo_message(L"Wrong image "
-						"height"));
+					<< errinfo_message(UTF8("Wrong image "
+						"height")));
 			}
 
 			return texture_format;
@@ -187,9 +183,9 @@ namespace eternal_lands
 
 			if (count > 1)
 			{
-				LOG_WARNING(L"Only one channel for mask image"
-					" needed, but file '%1%' has %2% "
-					"channels.", mask_reader->get_name() %
+				LOG_WARNING(UTF8("Only one channel for mask "
+					"image needed, but file '%1%' has %2% "
+					"channels."), mask_reader->get_name() %
 					count);
 			}
 
@@ -202,12 +198,12 @@ namespace eternal_lands
 
 			EL_THROW_EXCEPTION(ActorTextureErrorException()
 				<< boost::errinfo_file_name(
-					string_to_utf8(mask_reader->get_name()))
+					mask_reader->get_name())
 				<< errinfo_string_value(
 					TextureFormatUtil::get_str(
 						texture_format))
-				<< errinfo_message(L"A format with one channel"
-					"is needed"));
+				<< errinfo_message(UTF8("A format with one channel"
+					"is needed")));
 		}
 
 		ImageSharedPtr get_image(
@@ -227,11 +223,10 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name()))
 					<< errinfo_expected_value(1)
 					<< errinfo_value(width)
-					<< errinfo_message(L"Wrong image "
+					<< errinfo_message(UTF8("Wrong image "
 						"depth"));
 			}
 
@@ -251,12 +246,11 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name()))
 					<< errinfo_expected_value(mipmap)
 					<< errinfo_value(
 						result->get_mipmap_count())
-					<< errinfo_message(L"Not enought "
+					<< errinfo_message(UTF8("Not enought "
 						"mipmaps"));
 			}
 
@@ -264,12 +258,11 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name()))
 					<< errinfo_expected_value(
 						sizes[0] * scale)
 					<< errinfo_value(width)
-					<< errinfo_message(L"Wrong image "
+					<< errinfo_message(UTF8("Wrong image "
 						"width"));
 			}
 
@@ -277,12 +270,11 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name()))
 					<< errinfo_expected_value(
 						sizes[1] * scale)
 					<< errinfo_value(height)
-					<< errinfo_message(L"Wrong image "
+					<< errinfo_message(UTF8("Wrong image "
 						"height"));
 			}
 

@@ -138,7 +138,7 @@ namespace eternal_lands
 			<< errinfo_range_min(0)
 			<< errinfo_range_max(5)
 			<< errinfo_range_index(index)
-			<< errinfo_parameter_name(L"index"));
+			<< errinfo_parameter_name(UTF8("index")));
 	}
 
 	bool MaterialDescription::empty(const bool use_low_index) const

@@ -22,7 +22,8 @@ BOOST_AUTO_TEST_CASE(objectdata_default_creation)
 		-12445.34f, 0.04356f, -0.005467f, 1243.000013f, 98900000.0f,
 		-675786000.0f, 8903.0000324f, 1.0f, 0.0f),
 		glm::vec4(34.5f, -214.012f, 0.234f, -0.43f),
-		el::String(L"3sfd23"), 0.54f, 543549564, el::st_player, true);
+		el::String(UTF8("3sfd23")), 0.54f, 543549564, el::st_player,
+		true);
 
 	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[0][0], 43.0f, 0.001);
 	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[0][1], 1234.56f,
@@ -50,7 +51,7 @@ BOOST_AUTO_TEST_CASE(objectdata_default_creation)
 	BOOST_CHECK_CLOSE(object_data.get_color()[2], 0.234f, 0.001);
 	BOOST_CHECK_CLOSE(object_data.get_color()[3], -0.43f, 0.001);
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(object_data.get_name()), "3sfd23");
+	BOOST_CHECK_EQUAL(UTF8(object_data.get_name()), UTF8("3sfd23"));
 
 	BOOST_CHECK_CLOSE(object_data.get_transparency(), 0.54f, 0.001);
 
@@ -102,17 +103,14 @@ BOOST_AUTO_TEST_CASE(objectdata_name)
 {
 	el::ObjectData object_data;
 
-	object_data.set_name(el::String(L"object"));
-	BOOST_CHECK_EQUAL(el::string_to_utf8(object_data.get_name()),
-		"object");
+	object_data.set_name(el::String(UTF8("object")));
+	BOOST_CHECK_EQUAL(object_data.get_name(), UTF8("object"));
 
-	object_data.set_name(el::String(L"sdgstgr345"));
-	BOOST_CHECK_EQUAL(el::string_to_utf8(object_data.get_name()),
-		"sdgstgr345");
+	object_data.set_name(el::String(UTF8("sdgstgr345")));
+	BOOST_CHECK_EQUAL(object_data.get_name(), UTF8("sdgstgr345"));
 
-	object_data.set_name(el::String(L"1246546"));
-	BOOST_CHECK_EQUAL(el::string_to_utf8(object_data.get_name()),
-		"1246546");
+	object_data.set_name(el::String(UTF8("1246546")));
+	BOOST_CHECK_EQUAL(object_data.get_name(), UTF8("1246546"));
 }
 
 BOOST_AUTO_TEST_CASE(objectdata_transparency)

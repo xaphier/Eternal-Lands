@@ -20,15 +20,15 @@ namespace eternal_lands
 		if (m_writer == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error creating the xml "
-					"writer"));
+				<< errinfo_message(UTF8("Error creating the "
+					"xml writer")));
 		}
 
 		if (xmlTextWriterSetIndent(m_writer, 8) < 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error at "
-					"xmlTextWriterSetIndent"));
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterSetIndent")));
 		}
 
 		/* Start the document with the xml default for the version,
@@ -37,34 +37,31 @@ namespace eternal_lands
 		if (xmlTextWriterStartDocument(m_writer, 0, "utf8", 0) < 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error at "
-					"xmlTextWriterStartDocument"));
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterStartDocument")));
 		}
 	}
 
 	XmlWriter::XmlWriter(const String &file_name)
 	{
-		std::string name;
-
-		name = string_to_utf8(file_name);
-
-		m_writer = xmlNewTextWriterFilename(name.c_str(), 0);
+		m_writer = xmlNewTextWriterFilename(utf8_to_string(
+			file_name.get()).c_str(), 0);
 
 		/* Create a new XmlWriter for uri, with no compression. */
 		if (m_writer == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error creating the xml "
-					"writer")
-				<< boost::errinfo_file_name(name));
+				<< errinfo_message(UTF8("Error creating the "
+					"xml writer"))
+				<< boost::errinfo_file_name(file_name));
 		}
 
 		if (xmlTextWriterSetIndent(m_writer, 8) < 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error at "
-					"xmlTextWriterSetIndent")
-				<< boost::errinfo_file_name(name));
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterSetIndent"))
+				<< boost::errinfo_file_name(file_name));
 		}
 
 		/* Start the document with the xml default for the version,
@@ -73,9 +70,9 @@ namespace eternal_lands
 		if (xmlTextWriterStartDocument(m_writer, 0, "utf8", 0) < 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error at "
-					"xmlTextWriterStartDocument")
-				<< boost::errinfo_file_name(name));
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterStartDocument"))
+				<< boost::errinfo_file_name(file_name));
 		}
 	}
 
@@ -92,8 +89,8 @@ namespace eternal_lands
 			BAD_CAST name.c_str()) < 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error at "
-					"xmlTextWriterStartElement"));
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterStartElement")));
 		}
 	}
 
@@ -102,24 +99,20 @@ namespace eternal_lands
 		if (xmlTextWriterEndElement(m_writer) < 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error at "
-					"xmlTextWriterEndElement"));
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterEndElement")));
 		}
 	}
 
 	void XmlWriter::write_element(const std::string &name,
 		const StringType &value)
 	{
-		std::string str;
-
-		str = string_to_utf8(value);
-
 		if (xmlTextWriterWriteElement(m_writer, BAD_CAST name.c_str(),
-			BAD_CAST str.c_str()) < 0)
+			BAD_CAST value.c_str()) < 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error at "
-					"xmlTextWriterWriteElement"));
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterWriteElement")));
 		}
 
 	}

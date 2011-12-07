@@ -16,9 +16,9 @@ namespace eternal_lands
 
 		const String intersection_type_names[] =
 		{
-			String(L"inside"),
-			String(L"outside"),
-			String(L"intersect")
+			String(UTF8("inside")),
+			String(UTF8("outside")),
+			String(UTF8("intersect"))
 		};
 
 		const Uint32 intersection_type_names_count =
@@ -154,7 +154,7 @@ namespace eternal_lands
 				<< errinfo_range_index(static_cast<Uint32>(
 					intersection))
 				<< boost::errinfo_type_info_name(
-					"IntersectionType"));
+					UTF8("IntersectionType")));
 		}
 
 		return intersection_type_names[intersection];
@@ -177,7 +177,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("IntersectionType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"IntersectionType")));
 	}
 
 	OutStream& operator<<(OutStream &str, const IntersectionType value)

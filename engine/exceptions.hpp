@@ -110,60 +110,6 @@ namespace eternal_lands
 	typedef boost::error_info<struct errinfo_fragment_shader_, StringType>
 		errinfo_fragment_shader_source;
 
-	inline std::string to_string(const errinfo_parameter_name &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(const errinfo_message &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(const errinfo_item_name &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(const errinfo_string_value &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(
-		const errinfo_expected_string_value &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(const errinfo_lua_type_name &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(const errinfo_type_name &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(
-		const errinfo_variant_type_name &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(
-		const errinfo_vertex_shader_source &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
-	inline std::string to_string(
-		const errinfo_fragment_shader_source &error_info)
-	{
-		return string_to_utf8(error_info.value());
-	}
-
 #define EL_THROW_EXCEPTION(exception)	\
 	throw exception <<\
 	::boost::throw_function(BOOST_CURRENT_FUNCTION) <<\

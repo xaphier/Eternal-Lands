@@ -21,11 +21,11 @@ namespace el = eternal_lands;
 
 BOOST_AUTO_TEST_CASE(shader_source_parameter_default_creation)
 {
-	el::ShaderSourceParameter shader_source_parameter(el::String(L"3sfd23"),
-		el::pt_uvec3, el::pqt_inout, el::pst_bone_count, 14536u);
+	el::ShaderSourceParameter shader_source_parameter(
+		el::String(UTF8("3sfd23")), el::pt_uvec3, el::pqt_inout,
+		el::pst_bone_count, 14536u);
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(
-		shader_source_parameter.get_name()), "3sfd23");
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("3sfd23"));
 
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_type(), el::pt_uvec3);
 
@@ -42,13 +42,11 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_name)
 {
 	el::ShaderSourceParameter shader_source_parameter;
 
-	shader_source_parameter.set_name(el::String(L"3sfd23"));
-	BOOST_CHECK_EQUAL(el::string_to_utf8(
-		shader_source_parameter.get_name()), "3sfd23");
+	shader_source_parameter.set_name(el::String(UTF8("3sfd23")));
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("3sfd23"));
 
-	shader_source_parameter.set_name(el::String(L"w4tgi3"));
-	BOOST_CHECK_EQUAL(el::string_to_utf8(
-		shader_source_parameter.get_name()), "w4tgi3");
+	shader_source_parameter.set_name(el::String(UTF8("w4tgi3")));
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("w4tgi3"));
 }
 
 BOOST_AUTO_TEST_CASE(shader_source_parameter_type)
@@ -143,8 +141,9 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_xml)
 {
 	el::XmlBuffer buffer;
 	el::XmlWriterSharedPtr writer;
-	el::ShaderSourceParameter shader_source_parameter(el::String(L"3sfd23"),
-		el::pt_uvec3, el::pqt_inout, el::pst_bone_count, 14536u);
+	el::ShaderSourceParameter shader_source_parameter(
+		el::String(UTF8("3sfd23")), el::pt_uvec3, el::pqt_inout,
+		el::pst_bone_count, 14536u);
 
 	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
 
@@ -154,10 +153,10 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_xml)
 
 BOOST_AUTO_TEST_CASE(shader_source_parameter_load_xml)
 {
-	el::XmlBuffer buffer("<?xml version=\"1.0\" encoding=\"utf8\"?>"
+	el::XmlBuffer buffer(UTF8("<?xml version=\"1.0\" encoding=\"utf8\"?>"
 		"<parameter><name>3sfd23</name><source></source>"
 		"<type>uvec3</type><qualifier>inout</qualifier>"
-		"<size>bone_count</size><scale>14536</scale></parameter>");
+		"<size>bone_count</size><scale>14536</scale></parameter>"));
 	el::XmlReaderSharedPtr reader;
 	el::ShaderSourceParameter shader_source_parameter;
 
@@ -168,8 +167,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_load_xml)
 
 	reader.reset();
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(
-		shader_source_parameter.get_name()), "3sfd23");
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("3sfd23"));
 
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_type(), el::pt_uvec3);
 
@@ -189,7 +187,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 	el::XmlReaderSharedPtr reader;
 	el::ShaderSourceParameter shader_source_parameter_load;
 	el::ShaderSourceParameter shader_source_parameter_save(
-		el::String(L"3sfd23"), el::pt_uvec3, el::pqt_inout,
+		el::String(UTF8("3sfd23")), el::pt_uvec3, el::pqt_inout,
 		el::pst_bone_count, 14536u);
 
 	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
@@ -205,8 +203,8 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 
 	reader.reset();
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(
-		shader_source_parameter_load.get_name()), "3sfd23");
+	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_name(),
+		UTF8("3sfd23"));
 
 	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_type(),
 		el::pt_uvec3);

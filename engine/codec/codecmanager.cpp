@@ -404,8 +404,8 @@ namespace eternal_lands
 
 		BOOST_FOREACH(const Uint8 value, magic)
 		{
-			str << value << L"(0x" << std::hex;
-			str << static_cast<Uint16>(value) << L") ";
+			str << value << UTF8("(0x") << std::hex;
+			str << static_cast<Uint16>(value) << UTF8(") ");
 			str << std::dec;
 		}
 
@@ -457,8 +457,8 @@ namespace eternal_lands
 
 		BOOST_FOREACH(const Uint8 value, magic)
 		{
-			str << value << L"(0x" << std::hex;
-			str << static_cast<Uint16>(value) << L") ";
+			str << value << UTF8("(0x") << std::hex;
+			str << static_cast<Uint16>(value) << UTF8(") ");
 			str << std::dec;
 		}
 
@@ -473,10 +473,10 @@ namespace eternal_lands
 	{
 		extensions.clear();
 
-		extensions.push_back(String(L"*.dds"));
-		extensions.push_back(String(L"*.png"));
-		extensions.push_back(String(L"*.jpg"));
-		extensions.push_back(String(L"*.jpeg"));
+		extensions.push_back(String(UTF8("*.dds")));
+		extensions.push_back(String(UTF8("*.png")));
+		extensions.push_back(String(UTF8("*.jpg")));
+		extensions.push_back(String(UTF8("*.jpeg")));
 	}
 
 }

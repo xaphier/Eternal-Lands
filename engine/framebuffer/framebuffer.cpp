@@ -19,23 +19,24 @@ namespace eternal_lands
 			switch (status)
 			{
 				case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-					return String(L"ATTACHMENT");
+					return String(UTF8("ATTACHMENT"));
 				case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-					return String(L"MISSING_ATTACHMENT");
+					return String(UTF8(
+						"MISSING_ATTACHMENT"));
 				case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-					return String(L"DRAW_BUFFER");
+					return String(UTF8("DRAW_BUFFER"));
 				case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-					return String(L"READ_BUFFER");
+					return String(UTF8("READ_BUFFER"));
 				case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-					return String(L"MULTISAMPLE");
+					return String(UTF8("MULTISAMPLE"));
 				case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-					return String(L"LAYER_TARGETS");
+					return String(UTF8("LAYER_TARGETS"));
 				case GL_FRAMEBUFFER_UNSUPPORTED:
-					return String(L"UNSUPPORTED");
+					return String(UTF8("UNSUPPORTED"));
 				case GL_FRAMEBUFFER_COMPLETE:
-					return String(L"COMPLETE");
+					return String(UTF8("COMPLETE"));
 				default:
-					return String(L"Unknown");
+					return String(UTF8("Unknown"));
 			}
 		}
 
@@ -100,4 +101,3 @@ namespace eternal_lands
 	}
 
 }
-

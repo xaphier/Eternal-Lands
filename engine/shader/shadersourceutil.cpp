@@ -52,31 +52,36 @@ namespace eternal_lands
 
 		const ShaderSourceTypeData shader_source_type_datas[] =
 		{
-			ShaderSourceTypeData(String(L"world_depth_transform"),
-				boost::assign::map_list_of
-					(cpt_world_position, pqt_out)),
-			ShaderSourceTypeData(String(L"world_normal_transform"),
-				boost::assign::map_list_of
-					(cpt_world_position, pqt_out)
-					(cpt_world_normal, pqt_out)),
-			ShaderSourceTypeData(String(L"world_tangent_transform"),
-				boost::assign::map_list_of
-					(cpt_world_position, pqt_out)
-					(cpt_world_normal, pqt_out)
-					(cpt_world_tangent, pqt_out)),
-			ShaderSourceTypeData(String(L"view_direction"),
-				boost::assign::map_list_of
-					(cpt_world_position, pqt_in)
-					(cpt_world_view_direction, pqt_out)),
-			ShaderSourceTypeData(String(L"view_transform"),
+			ShaderSourceTypeData(String(UTF8(
+				"world_depth_transform")),
+					boost::assign::map_list_of
+						(cpt_world_position, pqt_out)),
+			ShaderSourceTypeData(String(UTF8(
+				"world_normal_transform")),
+					boost::assign::map_list_of
+						(cpt_world_position, pqt_out)
+						(cpt_world_normal, pqt_out)),
+			ShaderSourceTypeData(String(UTF8(
+				"world_tangent_transform")),
+					boost::assign::map_list_of
+						(cpt_world_position, pqt_out)
+						(cpt_world_normal, pqt_out)
+						(cpt_world_tangent, pqt_out)),
+			ShaderSourceTypeData(String(UTF8(
+				"view_direction")),
+					boost::assign::map_list_of
+						(cpt_world_position, pqt_in)
+						(cpt_world_view_direction,
+							pqt_out)),
+			ShaderSourceTypeData(String(UTF8("view_transform")),
 				boost::assign::map_list_of
 					(cpt_world_position, pqt_in)
 					(cpt_view_position, pqt_out)),
-			ShaderSourceTypeData(String(L"fog"),
+			ShaderSourceTypeData(String(UTF8("fog")),
 				boost::assign::map_list_of
 					(cpt_view_position, pqt_in)
 					(cpt_fog, pqt_out)),
-			ShaderSourceTypeData(String(L"light"),
+			ShaderSourceTypeData(String(UTF8("light")),
 				boost::assign::map_list_of
 					(cpt_light_color, pqt_in)
 					(cpt_light_position, pqt_in)
@@ -84,38 +89,39 @@ namespace eternal_lands
 					(cpt_world_position, pqt_in)
 					(cpt_diffuse_color, pqt_out)
 					(cpt_specular_color, pqt_out)),
-			ShaderSourceTypeData(String(L"uv"),
+			ShaderSourceTypeData(String(UTF8("uv")),
 				boost::assign::map_list_of
 					(cpt_world_uv, pqt_out)),
-			ShaderSourceTypeData(String(L"shadow_uv"),
+			ShaderSourceTypeData(String(UTF8("shadow_uv")),
 				boost::assign::map_list_of
 					(cpt_shadow_uv, pqt_out)),
-			ShaderSourceTypeData(String(L"shadow_mapping"),
+			ShaderSourceTypeData(String(UTF8("shadow_mapping")),
 				boost::assign::map_list_of
 					(cpt_shadow_uv, pqt_in)
 					(cpt_shadow, pqt_out)),
-			ShaderSourceTypeData(String(L"normal_mapping"),
+			ShaderSourceTypeData(String(UTF8("normal_mapping")),
 				boost::assign::map_list_of
 					(cpt_world_uv, pqt_in)
 					(cpt_world_normal, pqt_in)
 					(cpt_fragment_uv, pqt_out)
 					(cpt_fragment_normal, pqt_out)),
-			ShaderSourceTypeData(String(L"normal_depth_mapping"),
-				boost::assign::map_list_of
-					(cpt_world_uv, pqt_in)
-					(cpt_fragment_uv, pqt_out)),
-			ShaderSourceTypeData(String(L"diffuse_mapping"),
+			ShaderSourceTypeData(String(UTF8(
+				"normal_depth_mapping")),
+					boost::assign::map_list_of
+						(cpt_world_uv, pqt_in)
+						(cpt_fragment_uv, pqt_out)),
+			ShaderSourceTypeData(String(UTF8("diffuse_mapping")),
 				boost::assign::map_list_of
 					(cpt_fragment_uv, pqt_in)
 					(cpt_diffuse, pqt_out)),
-			ShaderSourceTypeData(String(L"specular_mapping"),
+			ShaderSourceTypeData(String(UTF8("specular_mapping")),
 				boost::assign::map_list_of
 					(cpt_fragment_uv, pqt_in)
 					(cpt_specular, pqt_out)),
-			ShaderSourceTypeData(String(L"transparent"),
+			ShaderSourceTypeData(String(UTF8("transparent")),
 				boost::assign::map_list_of
 					(cpt_diffuse, pqt_in)),
-			ShaderSourceTypeData(String(L"shadow_map"),
+			ShaderSourceTypeData(String(UTF8("shadow_map")),
 				boost::assign::map_list_of
 					(cpt_shadow_map_data, pqt_out))
 		};
@@ -136,8 +142,8 @@ namespace eternal_lands
 					shader_source_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					source))
-				<< boost::errinfo_type_info_name(
-					"ShaderSourceType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ShaderSourceType")));
 		}
 
 		return shader_source_type_datas[source].get_name();
@@ -161,7 +167,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("ShaderSourceType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"ShaderSourceType")));
 	}
 
 	Uint32 ShaderSourceUtil::get_shader_source_count()

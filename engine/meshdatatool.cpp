@@ -423,8 +423,8 @@ namespace eternal_lands
 			(primitive_type != pt_triangle_strip))
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"Only triangle primitives "
-					"supported")
+				<< errinfo_message(UTF8("Only triangle "
+					"primitives supported"))
 				<< errinfo_string_value(
 					PrimitiveUtil::get_str(
 					primitive_type)));

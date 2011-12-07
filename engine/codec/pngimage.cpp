@@ -45,7 +45,7 @@ namespace eternal_lands
 		void png_warning(png_structp png_ptr,
 			png_const_charp warning_message)
 		{
-			LOG_WARNING(L"PNG: %1%", warning_message);
+			LOG_WARNING(UTF8("PNG: %1%"), warning_message);
 		}
 
 		void png_read(png_structp png_ptr, png_bytep buffer,
@@ -310,7 +310,7 @@ namespace eternal_lands
 
 	String PngImage::get_image_str()
 	{
-		return String(L"png-image");
+		return String(UTF8("png-image"));
 	}
 
 }

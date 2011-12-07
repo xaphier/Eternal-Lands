@@ -14,6 +14,7 @@
 #include "indexbuilder.hpp"
 #include "materialdescription.hpp"
 #include "utf.hpp"
+#include "filesystem.hpp"
 
 namespace eternal_lands
 {
@@ -46,7 +47,7 @@ namespace eternal_lands
 			e2d_data = reader->read_utf8_string(reader->get_size());
 
 			boost::split(lines, e2d_data, boost::is_any_of(
-				L"\n"), boost::token_compress_on);
+				UTF8("\n")), boost::token_compress_on);
 
 			it = lines.begin();
 
@@ -72,8 +73,8 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[0], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"texture"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] == UTF8("texture")))
 			{
 				boost::algorithm::trim(line[1]);
 				texture = line[1];
@@ -85,9 +86,10 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[1], boost::is_any_of(
-				L":"),
+				UTF8(":")),
 				boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"file_x_len"))
+			if ((line.size() == 2) && (line[0] ==
+				UTF8("file_x_len")))
 			{
 				boost::algorithm::trim(line[1]);
 				file_x_len = boost::lexical_cast<float>(line[1]);
@@ -99,8 +101,9 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[2], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"file_y_len"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] ==
+				UTF8("file_y_len")))
 			{
 				boost::algorithm::trim(line[1]);
 				file_y_len = boost::lexical_cast<float>(line[1]);
@@ -112,8 +115,8 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[3], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"x_size"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] == UTF8("x_size")))
 			{
 				boost::algorithm::trim(line[1]);
 				x_size = boost::lexical_cast<float>(line[1]);
@@ -125,8 +128,8 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[4], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"y_size"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] == UTF8("y_size")))
 			{
 				boost::algorithm::trim(line[1]);
 				y_size = boost::lexical_cast<float>(line[1]);
@@ -138,8 +141,8 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[5], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"u_start"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] == UTF8("u_start")))
 			{
 				boost::algorithm::trim(line[1]);
 				u_start = boost::lexical_cast<float>(line[1]);
@@ -151,8 +154,8 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[6], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"u_end"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] == UTF8("u_end")))
 			{
 				boost::algorithm::trim(line[1]);
 				u_end = boost::lexical_cast<float>(line[1]);
@@ -164,8 +167,8 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[7], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"v_start"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] == UTF8("v_start")))
 			{
 				boost::algorithm::trim(line[1]);
 				v_start = boost::lexical_cast<float>(line[1]);
@@ -177,8 +180,8 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[8], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"v_end"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] == UTF8("v_end")))
 			{
 				boost::algorithm::trim(line[1]);
 				v_end = boost::lexical_cast<float>(line[1]);
@@ -190,12 +193,12 @@ namespace eternal_lands
 			}
 
 			boost::split(line, lines[9], boost::is_any_of(
-				L":"), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == L"type"))
+				UTF8(":")), boost::token_compress_on);
+			if ((line.size() == 2) && (line[0] == UTF8("type")))
 			{
 				boost::algorithm::trim(line[1]);
 
-				if (line[1] != L"ground")
+				if (line[1] != UTF8("ground"))
 				{
 					EL_THROW_EXCEPTION(
 						E2dReadErrorException()
@@ -208,7 +211,8 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(10));
 			}
 
-			scale = glm::vec2(1.0f) / glm::vec2(file_x_len, file_y_len);
+			scale = glm::vec2(1.0f) /
+				glm::vec2(file_x_len, file_y_len);
 
 			texture_coordinates[0] = u_start * scale[0];
 			texture_coordinates[1] = 1.0f - v_start * scale[1];
@@ -224,7 +228,7 @@ namespace eternal_lands
 
 	E2dLoader::E2dLoader(const ReaderSharedPtr &reader): m_reader(reader)
 	{
-		LOG_DEBUG(L"Loading file '%1%'.", m_reader->get_name());
+		LOG_DEBUG(UTF8("Loading file '%1%'."), m_reader->get_name());
 	}
 
 	E2dLoader::~E2dLoader() throw()
@@ -293,10 +297,9 @@ namespace eternal_lands
 		glm::vec3 vmin, vmax;
 		glm::vec2 size;
 		Uint32Vector indices;
-		String dir, texture;
+		String texture;
 		VertexSemanticTypeSet semantics;
 		StringType str;
-		std::size_t pos;
 		Uint32 vertex_count, index_count, i;
 
 		vertex_count = get_tile_size() + 1;
@@ -342,31 +345,17 @@ namespace eternal_lands
 		mesh_data_tool->set_sub_mesh_data(0, SubMesh(BoundingBox(vmin,
 			vmax), 0, index_count, 0, vertex_count - 1));
 
-		str = m_reader->get_name();
+		str = FileSystem::get_dir_name(m_reader->get_name());
 
-		pos = str.find(L"./");
-
-		while (pos != StringType::npos)
+		if (str.length() > 0)
 		{
-			str.erase(pos, 2);
-			pos = str.find(L"./");
-		}
-
-		pos = str.rfind(L"/");
-
-		if (pos != StringType::npos)
-		{
-			dir = str.substr(0, pos + 1);
-		}
-		else
-		{
-			dir = str + L"/";
+			str += UTF8("/");
 		}
 
 		materials.clear();
 		materials.push_back(MaterialDescription(
-			String(dir.get() + texture.get()),
-			String(L"mesh.transparent")));
+			String(str + texture.get()),
+			String(UTF8("mesh.transparent"))));
 		materials[0].set_shadow(false);
 	}
 

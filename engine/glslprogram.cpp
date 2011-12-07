@@ -65,13 +65,10 @@ namespace eternal_lands
 		void GlslShaderObject::load(const StringType &source)
 		{
 			GLint size;
-			std::string str;
 
-			str = string_to_utf8(source);
-
-			const char* buffer = str.c_str();
+			const char* buffer = source.c_str();
 	
-			size = str.length();
+			size = source.length();
 
 			assert(size > 0);
 
@@ -97,7 +94,7 @@ namespace eternal_lands
 			}
 			else
 			{
-				return L"";
+				return UTF8("");
 			}
 		}
 
@@ -120,7 +117,7 @@ namespace eternal_lands
 					<< errinfo_message(get_shader_log()));
 			}
 
-			LOG_DEBUG(L"GlslShader compiled successful: %1%",
+			LOG_DEBUG(UTF8("GlslShader compiled successful: %1%"),
 				get_shader_log());
 		}
 
@@ -128,10 +125,10 @@ namespace eternal_lands
 		{
 			StringType::size_type found;
 
-			found = name.rfind(L'[');
+			found = name.rfind('[');
 
 			if ((found != std::string::npos) &&
-				(name.size() == (name.rfind(L']') + 1)))
+				(name.size() == (name.rfind(']') + 1)))
 			{
 				return String(name.substr(0, found));
 			}
@@ -458,9 +455,9 @@ namespace eternal_lands
 			{	\
 				if (m_parameter != parameter)	\
 				{	\
-					BoostFormat format_string(L"Uniform "	\
-						"%1% has type %2%, but given "	\
-						"type is %3%");	\
+					BoostFormat format_string(UTF8(	\
+						"Uniform %1% has type %2%, but"	\
+						" given type is %3%"));	\
 					\
 					format_string % m_name % m_parameter %	\
 						parameter;	\
@@ -565,9 +562,9 @@ namespace eternal_lands
 						return;
 					}
 
-					BoostFormat format_string(L"Uniform "
-						"%1% has type %2%, but given "
-						"type is int");
+					BoostFormat format_string(UTF8(
+						"Uniform %1% has type %2%, but"
+						" given type is int"));
 
 					format_string % m_name % m_parameter;
 
@@ -1609,7 +1606,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			return L"";
+			return UTF8("");
 		}
 	}
 
@@ -1650,7 +1647,7 @@ namespace eternal_lands
 	void GlslProgram::bind_attribute_location(const VertexSemanticType type)
 	{
 		glBindAttribLocation(m_program, type,
-			string_to_utf8(VertexElement::get_str(type)).c_str());
+			VertexElement::get_str(type).get().c_str());
 	}
 
 	void GlslProgram::bind_attribute_locations()
@@ -1714,8 +1711,8 @@ namespace eternal_lands
 				uniform.m_size = array_size;
 				uniform.m_parameter = parameter;
 
-				LOG_DEBUG(L"\tUniform %1% of type %2% has size"
-					" %3% and index %4%.", name %
+				LOG_DEBUG(UTF8("\tUniform %1% of type %2% has "
+					"size %3% and index %4%."), name %
 					parameter % array_size % index);
 
 				m_uniforms[name] = uniform;
@@ -1771,8 +1768,8 @@ namespace eternal_lands
 			index = glGetAttribLocation(m_program, buffer.get());
 			parameter = ParameterUtil::get_parameter(type);
 
-			LOG_DEBUG(L"\tAttribute %1% of type %2% has size %3% "
-				"and index %4%.", name % parameter %
+			LOG_DEBUG(UTF8("\tAttribute %1% of type %2% has size "
+				"%3% and index %4%."), name % parameter %
 				array_size % index);
 		}
 	}
@@ -1787,7 +1784,7 @@ namespace eternal_lands
 				<< errinfo_message(get_program_log()));
 		}
 
-		LOG_INFO(L"Program validate successful: %1%",
+		LOG_INFO(UTF8("Program validate successful: %1%"),
 			get_program_log());
 	}
 
@@ -1827,7 +1824,8 @@ namespace eternal_lands
 				<< errinfo_message(get_program_log()));
 		}
 
-		LOG_DEBUG(L"Program linked successful: %1%", get_program_log());
+		LOG_DEBUG(UTF8("Program linked successful: %1%"),
+			get_program_log());
 
 		log_attribute_locations();
 		log_uniforms();
@@ -1839,13 +1837,14 @@ namespace eternal_lands
 	{
 		StringVariantMap::const_iterator it, end;
 
-		LOG_DEBUG(L"Building Shader %1%", get_name());
+		LOG_DEBUG(UTF8("Building Shader %1%"), get_name());
 
 		try
 		{
 			do_build(vertex_shader, fragment_shader);
-			LOG_DEBUG(L"Vertex Shader:\n%1%", vertex_shader);
-			LOG_DEBUG(L"Fragment Shader:\n%1%", fragment_shader);
+			LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex_shader);
+			LOG_DEBUG(UTF8("Fragment Shader:\n%1%"),
+				fragment_shader);
 		}
 		catch (boost::exception &exception)
 		{

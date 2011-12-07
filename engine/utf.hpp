@@ -20,14 +20,8 @@
 namespace eternal_lands
 {
 
-	StringType utf8_to_string(const std::string &str);
-
-	std::string string_to_utf8(const StringType &str);
-
-	inline std::string to_string(const StringType &str)
-	{
-		return string_to_utf8(str);
-	}
+	std::string utf8_to_string(const std::string &str);
+	std::string string_to_utf8(const std::string &str);
 
 }
 

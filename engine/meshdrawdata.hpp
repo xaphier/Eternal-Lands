@@ -91,6 +91,8 @@ namespace eternal_lands
 
 	};
 
+	OutStream& operator<<(OutStream &str, const MeshDrawData &value);
+
 }
 
 #endif	/* UUID_b3ced261_24a1_4af4_8f0f_f8871c9bb6cd */

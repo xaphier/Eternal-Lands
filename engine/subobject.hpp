@@ -81,6 +81,8 @@ namespace eternal_lands
 
 	};
 
+	OutStream& operator<<(OutStream &str, const SubObject &value);
+
 }
 
 #endif	/* UUID_53c2c46f_d39a_40ef_913e_6bad5143b2eb */

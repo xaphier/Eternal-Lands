@@ -100,73 +100,73 @@ namespace eternal_lands
 
 		const VertexElementTypeData vertex_element_type_datas[] =
 		{
-			VertexElementTypeData(String(L"float1"),
+			VertexElementTypeData(String(UTF8("float1")),
 				1 * sizeof(GLfloat), GL_FLOAT, 1, true, true,
 				false),
-			VertexElementTypeData(String(L"float2"),
+			VertexElementTypeData(String(UTF8("float2")),
 				2 * sizeof(GLfloat), GL_FLOAT, 2, true, true,
 				false),
-			VertexElementTypeData(String(L"float3"),
+			VertexElementTypeData(String(UTF8("float3")),
 				3 * sizeof(GLfloat), GL_FLOAT, 3, true, true,
 				false),
-			VertexElementTypeData(String(L"float4"),
+			VertexElementTypeData(String(UTF8("float4")),
 				4 * sizeof(GLfloat), GL_FLOAT, 4, true, true,
 				false),
-			VertexElementTypeData(String(L"half2"),
+			VertexElementTypeData(String(UTF8("half2")),
 				2 * sizeof(GLhalf), GL_HALF_FLOAT, 2, true,
 				true, false),
-			VertexElementTypeData(String(L"half4"),
+			VertexElementTypeData(String(UTF8("half4")),
 				4 * sizeof(GLhalf), GL_HALF_FLOAT, 4, true,
 				true, false),
-			VertexElementTypeData(String(L"short2"),
+			VertexElementTypeData(String(UTF8("short2")),
 				2 * sizeof(GLshort), GL_SHORT, 2, false, true,
 				false),
-			VertexElementTypeData(String(L"short2_normlaized"),
+			VertexElementTypeData(String(UTF8("short2_normlaized")),
 				2 * sizeof(GLshort), GL_SHORT, 2, false, true,
 				true),
-			VertexElementTypeData(String(L"short4"),
+			VertexElementTypeData(String(UTF8("short4")),
 				4 * sizeof(GLshort), GL_SHORT, 4, false, true,
 				false),
-			VertexElementTypeData(String(L"short4_normlaized"),
+			VertexElementTypeData(String(UTF8("short4_normlaized")),
 				4 * sizeof(GLshort),
 				GL_SHORT, 4, false, true, true),
-			VertexElementTypeData(String(L"ushort2"),
+			VertexElementTypeData(String(UTF8("ushort2")),
 				2 * sizeof(GLushort), GL_UNSIGNED_SHORT, 2,
 				false, false, false),
-			VertexElementTypeData(String(L"ushort2_normlaized"),
+			VertexElementTypeData(String(UTF8("ushort2_normlaized")),
 				2 * sizeof(GLushort),
 				GL_UNSIGNED_SHORT, 2, false, false, true),
-			VertexElementTypeData(String(L"ushort4"),
+			VertexElementTypeData(String(UTF8("ushort4")),
 				4 * sizeof(GLushort), GL_UNSIGNED_SHORT, 4,
 				false, false, false),
-			VertexElementTypeData(String(L"ushort4_normlaized"),
+			VertexElementTypeData(String(UTF8("ushort4_normlaized")),
 				4 * sizeof(GLushort),
 				GL_UNSIGNED_SHORT, 4, false, false, true),
-			VertexElementTypeData(String(L"byte4"),
+			VertexElementTypeData(String(UTF8("byte4")),
 				4 * sizeof(GLbyte), GL_BYTE, 4, false, true,
 				false),
-			VertexElementTypeData(String(L"byte4_normlaized"),
+			VertexElementTypeData(String(UTF8("byte4_normlaized")),
 				4 * sizeof(GLbyte), GL_BYTE, 4, false, true,
 				true),
-			VertexElementTypeData(String(L"ubyte4"),
+			VertexElementTypeData(String(UTF8("ubyte4")),
 				4 * sizeof(GLubyte), GL_UNSIGNED_BYTE, 4,
 				false, false, false),
-			VertexElementTypeData(String(L"ubyte4_normlaized"),
+			VertexElementTypeData(String(UTF8("ubyte4_normlaized")),
 				4 * sizeof(GLubyte),
 				GL_UNSIGNED_BYTE, 4, false, false, true),
-			VertexElementTypeData(String(L"signed_xyz10_w2"),
+			VertexElementTypeData(String(UTF8("signed_xyz10_w2")),
 				sizeof(GLint),
 				GL_INT_2_10_10_10_REV, 4, false, true, false),
 			VertexElementTypeData(
-				String(L"signed_xyz10_w2_normlaized"),
+				String(UTF8("signed_xyz10_w2_normlaized")),
 				sizeof(GLint),
 				GL_INT_2_10_10_10_REV, 4, false, true, true),
-			VertexElementTypeData(String(L"unsigned_xyz10_w2"),
+			VertexElementTypeData(String(UTF8("unsigned_xyz10_w2")),
 				sizeof(GLuint),
 				GL_UNSIGNED_INT_2_10_10_10_REV, 4, false,
 				false, false),
 			VertexElementTypeData(
-				String(L"unsigned_xyz10_w2_normlaized"),
+				String(UTF8("unsigned_xyz10_w2_normlaized")),
 				sizeof(GLuint),
 				GL_UNSIGNED_INT_2_10_10_10_REV, 4, false,
 				false, true),
@@ -178,22 +178,22 @@ namespace eternal_lands
 
 		const String vertex_semantic_type_names[] =
 		{
-			String(L"position"),
-			String(L"normal"),
-			String(L"tangent"),
-			String(L"color"),
-			String(L"bone_weight"),
-			String(L"bone_index"),
-			String(L"extra_bone_weight"),
-			String(L"extra_bone_index"),
-			String(L"texture_coordinate_0"),
-			String(L"texture_coordinate_1"),
-			String(L"layer_index"),
-			String(L"morph_position"),
-			String(L"morph_normal"),
-			String(L"morph_tangent"),
-			String(L"morph_texture_coordinate_0"),
-			String(L"morph_texture_coordinate_1")
+			String(UTF8("position")),
+			String(UTF8("normal")),
+			String(UTF8("tangent")),
+			String(UTF8("color")),
+			String(UTF8("bone_weight")),
+			String(UTF8("bone_index")),
+			String(UTF8("extra_bone_weight")),
+			String(UTF8("extra_bone_index")),
+			String(UTF8("texture_coordinate_0")),
+			String(UTF8("texture_coordinate_1")),
+			String(UTF8("layer_index")),
+			String(UTF8("morph_position")),
+			String(UTF8("morph_normal")),
+			String(UTF8("morph_tangent")),
+			String(UTF8("morph_texture_coordinate_0")),
+			String(UTF8("morph_texture_coordinate_1"))
 		};
 
 		const Uint32 vertex_semantic_type_names_count =
@@ -225,8 +225,8 @@ namespace eternal_lands
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element_type))
-				<< boost::errinfo_type_info_name(
-					"VertexElementType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
@@ -244,8 +244,8 @@ namespace eternal_lands
 					vertex_semantic_type_names_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_semantic_type))
-				<< boost::errinfo_type_info_name(
-					"VertexSemanticType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexSemanticType")));
 		}
 
 		return vertex_semantic_type_names[vertex_semantic_type];
@@ -269,7 +269,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("VertexElementType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"VertexElementType")));
 	}
 
 	VertexSemanticType VertexElement::get_vertex_semantic_type(
@@ -291,7 +292,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("VertexSemanticType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"VertexSemanticType")));
 	}
 
 	bool VertexElement::get_is_vertex_semantic_type(const String &str)
@@ -324,8 +326,8 @@ namespace eternal_lands
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element_type))
-				<< boost::errinfo_type_info_name(
-					"VertexElementType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[vertex_element_type].get_size();
@@ -342,8 +344,8 @@ namespace eternal_lands
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element_type))
-				<< boost::errinfo_type_info_name(
-					"VertexElementType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
@@ -361,8 +363,8 @@ namespace eternal_lands
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element_type))
-				<< boost::errinfo_type_info_name(
-					"VertexElementType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
@@ -405,7 +407,8 @@ namespace eternal_lands
 		 * because we forgot to add all types to the switch or an
 		 * invalid int was used (with a type cast)!
 		 */
-		VALUE_NOT_IN_SWITCH(vertex_element_type, "VertexElementType");
+		VALUE_NOT_IN_SWITCH(vertex_element_type,
+			UTF8("VertexElementType"));
 	}
 
 	bool VertexElement::get_signed_elements(
@@ -419,8 +422,8 @@ namespace eternal_lands
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element_type))
-				<< boost::errinfo_type_info_name(
-					"VertexElementType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
@@ -438,8 +441,8 @@ namespace eternal_lands
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element_type))
-				<< boost::errinfo_type_info_name(
-					"VertexElementType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
@@ -457,8 +460,8 @@ namespace eternal_lands
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element_type))
-				<< boost::errinfo_type_info_name(
-					"VertexElementType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[

@@ -49,6 +49,12 @@ file(GLOB gui_cpp_files gui/*.cpp)
 list(APPEND engine_cpp_files ${gui_header_files})
 list(APPEND engine_header_files ${gui_cpp_files})
 
+#font dir
+file(GLOB font_header_files font/*.hpp)
+file(GLOB font_cpp_files font/*.cpp)
+list(APPEND engine_cpp_files ${font_header_files})
+list(APPEND engine_header_files ${font_cpp_files})
+
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/buildinformations.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp" @ONLY)
 
 list(APPEND engine_cpp_files "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp")

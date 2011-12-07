@@ -16,8 +16,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		if (node->children == 0)
@@ -33,8 +33,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		if (node->children == 0)
@@ -50,8 +50,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		if (node->children == 0)
@@ -67,8 +67,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		if (node->children == 0)
@@ -84,8 +84,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		if (node->children == 0)
@@ -101,13 +101,13 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		if (node->children == 0)
 		{
-			return String(L"");
+			return String(UTF8(""));
 		}
 
 		return String(utf8_to_string((char*)node->children->content));
@@ -118,8 +118,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		if (node->children == 0)
@@ -127,22 +127,26 @@ namespace eternal_lands
 			return false;
 		}
 
-		if (xmlStrcmp(node->children->content, BAD_CAST "true") == 0)
+		if (xmlStrcmp(node->children->content, BAD_CAST UTF8("true"))
+			== 0)
 		{
 			return true;
 		}
 
-		if (xmlStrcmp(node->children->content, BAD_CAST "yes") == 0)
+		if (xmlStrcmp(node->children->content, BAD_CAST UTF8("yes"))
+			== 0)
 		{
 			return true;
 		}
 
-		if (xmlStrcmp(node->children->content, BAD_CAST "false") == 0)
+		if (xmlStrcmp(node->children->content, BAD_CAST UTF8("false"))
+			== 0)
 		{
 			return false;
 		}
 
-		if (xmlStrcmp(node->children->content, BAD_CAST "no") == 0)
+		if (xmlStrcmp(node->children->content, BAD_CAST UTF8("no"))
+			== 0)
 		{
 			return false;
 		}
@@ -155,8 +159,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"it"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("it")));
 		}
 
 		while (node->type != XML_ELEMENT_NODE)
@@ -177,8 +181,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"it"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("it")));
 		}
 
 		node = node->next;
@@ -201,7 +205,7 @@ namespace eternal_lands
 		if (!next(node, elements_only))
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"no next xml node"));
+				<< errinfo_message(UTF8("no next xml node")));
 		}
 	}
 
@@ -213,8 +217,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		result = node->children;
@@ -222,7 +226,7 @@ namespace eternal_lands
 		if (result == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"no child xml node"));
+				<< errinfo_message(UTF8("no child xml node")));
 		}
 
 		if (elements_only)
@@ -241,8 +245,8 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
 		it = node->children;

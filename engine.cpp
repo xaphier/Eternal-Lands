@@ -105,12 +105,12 @@ namespace
 
 		str = el::utf8_to_string(name);
 
-		pos = str.find(L"./");
+		pos = str.find(UTF8("./"));
 
 		while (pos != std::string::npos)
 		{
 			str.erase(pos, 2);
-			pos = str.find(L"./");
+			pos = str.find(UTF8("./"));
 		}
 
 		return el::String(str);
@@ -159,7 +159,7 @@ namespace
 		if (n != 0)
 		{
 			return luaL_error(L,
-				"Got %d arguments expected 0", n); 
+				UTF8("Got %d arguments expected 0"), n); 
 		}
 
 		scene->get_scene_resources().get_effect_cache().reload();
@@ -176,13 +176,13 @@ namespace
 		if (n != 0)
 		{
 			return luaL_error(L,
-				"Got %d arguments expected 0", n); 
+				UTF8("Got %d arguments expected 0"), n); 
 		}
 
 		scene->get_scene_resources().get_shader_source_builder().load(
-			el::String(L"shaders/shaders.lua"));
+			el::String(UTF8("shaders/shaders.lua")));
 		scene->get_scene_resources().get_shader_source_builder(
-			).load_default(el::String(L"shaders/shaders.lua"));
+			).load_default(el::String(UTF8("shaders/shaders.lua")));
 
 		return 0;
 	}
@@ -347,10 +347,10 @@ extern "C" void load_harvestable_list()
 	el::String harvestables_str;
 
 	harvestables_str = file_system->get_file_string(
-		el::String(L"harvestable.lst"));
+		el::String(UTF8("harvestable.lst")));
 
 	boost::split(lines, harvestables_str.get(), boost::is_any_of(
-		L"\n"), boost::token_compress_on);
+		UTF8("\n")), boost::token_compress_on);
 
 	it = lines.begin();
 
@@ -360,7 +360,7 @@ extern "C" void load_harvestable_list()
 
 		if (!it->empty())
 		{
-			str = L"3dobjects/";
+			str = UTF8("3dobjects/");
 			str += *it;
 			harvestables.insert(el::String(str));
 		}
@@ -377,10 +377,10 @@ extern "C" void load_entrable_list()
 	el::String entrable_str;
 
 	entrable_str = file_system->get_file_string(
-		el::String(L"entrable.lst"));
+		el::String(UTF8("entrable.lst")));
 
 	boost::split(lines, entrable_str.get(), boost::is_any_of(
-		L"\n"), boost::token_compress_on);
+		UTF8("\n")), boost::token_compress_on);
 
 	it = lines.begin();
 
@@ -390,7 +390,7 @@ extern "C" void load_entrable_list()
 
 		if (!it->empty())
 		{
-			str = L"3dobjects";
+			str = UTF8("3dobjects");
 			str += *it;
 			entrables.insert(el::String(str));
 		}
@@ -626,6 +626,7 @@ extern "C" void draw_engine()
 		{
 			thing_under_the_mouse = UNDER_MOUSE_3D_OBJ;
 			object_under_mouse = id;
+			actor_under_mouse = 0;
 		}
 
 		pick_frame = 0;
@@ -732,33 +733,34 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 
 	if ((tile != 0) && (tile != 240))
 	{
-		str << L"3dobjects/tile";
-		str << static_cast<Uint16>(tile) << L".dds";
+		str << UTF8("3dobjects/tile");
+		str << static_cast<Uint16>(tile) << UTF8(".dds");
 		materials.push_back(el::MaterialDescription(
-			el::String(str.str()), el::String(L"mesh.solid")));
+			el::String(str.str()), el::String(UTF8("mesh.solid"))));
 	}
 	else
 	{
 		if (tile == 240)
 		{
 			materials.push_back(el::MaterialDescription(
-				el::String(L"textures/lava.dds"),
-				el::String(L"textures/noise.dds"),
-				el::String(L"lava.solid")));
+				el::String(UTF8("textures/lava.dds")),
+				el::String(UTF8("textures/noise.dds")),
+				el::String(UTF8("lava.solid"))));
 		}
 		else
 		{
 			materials.push_back(el::MaterialDescription(
-				el::String(L"3dobjects/tile0.dds"),
-				el::String(L"textures/water_normal.dds"),
-				el::String(L""), el::String(L"mesh.solid")));
+				el::String(UTF8("3dobjects/tile0.dds")),
+				el::String(UTF8("textures/water_normal.dds")),
+				el::String(UTF8("")),
+				el::String(UTF8("mesh.solid"))));
 		}
 	}
 
 	materials[0].set_shadow(false);
 
 	instances_builder->add(el::ObjectData(glm::mat4x3(matrix),
-		glm::vec4(0.0f), el::String(L"plane_4"), 0.0f,
+		glm::vec4(0.0f), el::String(UTF8("plane_4")), 0.0f,
 		free_ids.get_next_free_id(), el::st_none, false), materials);
 
 	CATCH_BLOCK
@@ -961,6 +963,8 @@ extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 	CalModel* result;
 	el::ActorSharedPtr actor;
 	el::SelectionType selection;
+	std::string source, dest;
+	Uint32 i, count;
 
 	result = 0;
 
@@ -986,8 +990,19 @@ extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 		}
 	}
 
+	source = name;
+	count = source.length();
+
+	for (i = 0; i < count; i++)
+	{
+		if (static_cast<Uint16>(source[i]) < 128)
+		{
+			dest += source[i];
+		}
+	}
+
 	actor = scene->add_actor(type_id, id,
-		el::String(el::utf8_to_string(name)), selection,
+		el::String(el::utf8_to_string(dest)), selection,
 		enhanced_actor != 0);
 
 	result = actor->get_model();
@@ -1275,7 +1290,7 @@ extern "C" int command_lua(char *text, int len)
 	try
 	{
 		lua->do_string(el::String(el::utf8_to_string(std::string(text,
-			len))), el::String(L"command"));
+			len))), el::String(UTF8("command")));
 	}
 	catch (const el::LuaException &exception)
 	{
@@ -1335,12 +1350,13 @@ extern "C" void set_exponential_shadow_maps(const int value)
 		if (value != 0)
 		{
 			scene->get_scene_resources().get_shader_source_builder(
-				).set_shadow_map_type(el::String(L"esm"));
+				).set_shadow_map_type(el::String(UTF8("esm")));
 		}
 		else
 		{
 			scene->get_scene_resources().get_shader_source_builder(
-				).set_shadow_map_type(el::String(L"default"));
+				).set_shadow_map_type(el::String(
+					UTF8("default")));
 		}
 
 		scene->get_scene_resources().get_effect_cache().reload();

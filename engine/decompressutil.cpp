@@ -65,7 +65,8 @@ namespace eternal_lands
 		if (err != Z_OK)
 		{
 			EL_THROW_EXCEPTION(UncompressException()
-				<< errinfo_message(L"gz uncompress error"));
+				<< errinfo_message(UTF8("gz uncompress "
+					"error")));
 		}
 
 		result = MemoryBufferSharedPtr(new MemoryBuffer());
@@ -91,7 +92,8 @@ namespace eternal_lands
 		if (err != Z_OK)
 		{
 			EL_THROW_EXCEPTION(UncompressException()
-				<< errinfo_message(L"gz uncompress error"));
+				<< errinfo_message(UTF8("gz uncompress "
+					"error")));
 		}
 
 		return result;
@@ -114,7 +116,8 @@ namespace eternal_lands
 		if (err != SZ_OK)
 		{
 			EL_THROW_EXCEPTION(UncompressException()
-				<< errinfo_message(L"xz uncompress error"));
+				<< errinfo_message(UTF8("xz uncompress "
+					"error")));
 		}
 
 		dst_idx = 0;
@@ -148,7 +151,8 @@ namespace eternal_lands
 		if (err != SZ_OK)
 		{
 			EL_THROW_EXCEPTION(UncompressException()
-				<< errinfo_message(L"xz uncompress error"));
+				<< errinfo_message(UTF8("xz uncompress "
+					"error")));
 		}
 
 		result->resize(dst_idx);

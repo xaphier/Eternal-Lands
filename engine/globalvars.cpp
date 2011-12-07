@@ -476,7 +476,7 @@ namespace eternal_lands
 		#define GLOBAL_VAR_FLOAT(name, group, description_short, description_long, def, min, max, step)	\
 			m_##name = def;
 		#define GLOBAL_VAR_STRING(name, group, description_short, description_long, def)	\
-			m_##name = L##def;
+			m_##name = UTF8(def);
 		#define GLOBAL_VAR_ENUM(name, group, description_short, description_long, def, list)	\
 			m_##name = def;
 		#include "globalvarslist.txt"

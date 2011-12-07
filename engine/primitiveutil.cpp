@@ -55,11 +55,11 @@ namespace eternal_lands
 
 		const PrimitiveTypeData primitive_type_datas[] =
 		{
-			PrimitiveTypeData(String(L"points"), 1, 0),
-			PrimitiveTypeData(String(L"lines"), 2, 0),
-			PrimitiveTypeData(String(L"triangles"), 3, 0),
-			PrimitiveTypeData(String(L"triangle_strip"), 1, 2),
-			PrimitiveTypeData(String(L"triangle_fan"), 1, 2)
+			PrimitiveTypeData(String(UTF8("points")), 1, 0),
+			PrimitiveTypeData(String(UTF8("lines")), 2, 0),
+			PrimitiveTypeData(String(UTF8("triangles")), 3, 0),
+			PrimitiveTypeData(String(UTF8("triangle_strip")), 1, 2),
+			PrimitiveTypeData(String(UTF8("triangle_fan")), 1, 2)
 		};
 
 		const Uint32 primitive_type_datas_count =
@@ -79,8 +79,8 @@ namespace eternal_lands
 					primitive_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					primitive))
-				<< boost::errinfo_type_info_name(
-					"PrimitiveType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"PrimitiveType")));
 		}
 
 		return primitive_type_datas[primitive].get_scale() * count +
@@ -97,8 +97,8 @@ namespace eternal_lands
 					primitive_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					primitive))
-				<< boost::errinfo_type_info_name(
-					"PrimitiveType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"PrimitiveType")));
 		}
 
 		return primitive_type_datas[primitive].get_name();
@@ -121,8 +121,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name(
-				"PrimitiveType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"PrimitiveType")));
 	}
 
 	OutStream& operator<<(OutStream &str, const PrimitiveType value)

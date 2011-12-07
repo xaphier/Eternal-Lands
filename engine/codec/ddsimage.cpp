@@ -96,9 +96,9 @@ namespace eternal_lands
 				((header.m_caps.m_caps1 & dds::DDSCAPS_COMPLEX)
 				!= dds::DDSCAPS_COMPLEX))
 			{
-				LOG_WARNING(L"%s%", L"File is invalid. "
-					"DDSCAPS_COMPLEX cap should be set for"
-					" a valid cube map DDS file.");
+				LOG_WARNING(UTF8("%s%"), UTF8("File is invalid."
+					" DDSCAPS_COMPLEX cap should be set for"
+					" a valid cube map DDS file."));
 			}
 
 			if (((header.m_caps.m_caps2 & dds::DDSCAPS2_VOLUME) ==
@@ -106,9 +106,9 @@ namespace eternal_lands
 				((header.m_caps.m_caps1 & dds::DDSCAPS_COMPLEX)
 				!= dds::DDSCAPS_COMPLEX))
 			{
-				LOG_WARNING(L"%s%", L"File is invalid. "
-					"DDSCAPS_COMPLEX cap %1% should be set"
-					" for a valid volume DDS file.");
+				LOG_WARNING(UTF8("%s%"), UTF8("File is invalid."
+					" DDSCAPS_COMPLEX cap should be set"
+					" for a valid volume DDS file."));
 			}
 
 			if (((header.m_caps.m_caps1 & dds::DDSCAPS_MIPMAP) ==
@@ -116,9 +116,9 @@ namespace eternal_lands
 				((header.m_caps.m_caps1 & dds::DDSCAPS_COMPLEX)
 				!= dds::DDSCAPS_COMPLEX))
 			{
-				LOG_WARNING(L"%s%", L"File is invalid. "
-					"DDSCAPS_COMPLEX cap %1% should be set"
-					" for a valid DDS file with mipmaps.");
+				LOG_WARNING(UTF8("%s%"), UTF8("File is invalid."
+					" DDSCAPS_COMPLEX cap should be set"
+					" for a valid DDS file with mipmaps."));
 			}
 
 			if (((header.m_caps.m_caps1 & dds::DDSCAPS_COMPLEX) ==
@@ -131,10 +131,10 @@ namespace eternal_lands
 				dds::DDSCAPS2_CUBEMAP) !=
 				dds::DDSCAPS2_CUBEMAP))
 			{
-				LOG_WARNING(L"%s%", L"File is invalid. "
-					"DDSCAPS_COMPLEX cap should be set "
+				LOG_WARNING(UTF8("%s%"), UTF8("File is invalid."
+					" DDSCAPS_COMPLEX cap should be set "
 					"only if the DDS file is a cube map, a"
-					" volume and/or has mipmaps.");
+					" volume and/or has mipmaps."));
 			}
 
 			if (((header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
@@ -825,8 +825,8 @@ namespace eternal_lands
 				EL_THROW_EXCEPTION(DdsUnkownFormatException());
 			}
 
-			LOG_DEBUG_VERBOSE(L"Loading of DDS FourCC %1% is "
-				"supported.", format_str);
+			LOG_DEBUG_VERBOSE(UTF8("Loading of DDS FourCC %1% is "
+				"supported."), format_str);
 		}
 
 		Uint32 get_fourcc(const Image &image, Uint32 &swap_size)
@@ -989,7 +989,8 @@ namespace eternal_lands
 		void DdsImageLoader::load(
 			const ImageCompressionTypeSet &compression)
 		{
-			LOG_INFO(L"Loading file '%1%'.", m_reader->get_name());
+			LOG_INFO(UTF8("Loading file '%1%'."),
+				m_reader->get_name());
 
 			if ((m_header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
 				!= dds::DDPF_FOURCC)
@@ -1170,7 +1171,7 @@ namespace eternal_lands
 			GLenum gl_format;
 			GLenum gl_type;
 
-			LOG_DEBUG(L"Uncompressing DDS file '%1%'.",
+			LOG_DEBUG(UTF8("Uncompressing DDS file '%1%'."),
 				m_reader->get_name());
 
 			if ((m_header.m_height % 4) != 0)
@@ -1421,73 +1422,73 @@ namespace eternal_lands
 
 	String DdsImage::get_image_str()
 	{
-		return String(L"dds-image");
+		return String(UTF8("dds-image"));
 	}
 
 	void DdsImage::check_all_fourcc_support(
 		const CodecManager &codec_manager)
 	{
 		check_fourcc_support(codec_manager, dds::DDSFMT_R8G8B8,
-			String(L"R8G8B8"), 24);
+			String(UTF8("R8G8B8")), 24);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A8R8G8B8,
-			String(L"A8R8G8B8"), 32);
+			String(UTF8("A8R8G8B8")), 32);
 		check_fourcc_support(codec_manager, dds::DDSFMT_R5G6B5,
-			String(L"R5G6B5"), 16);
+			String(UTF8("R5G6B5")), 16);
 		check_fourcc_support(codec_manager, dds::DDSFMT_X1R5G5B5,
-			String(L"X1R5G5B5"), 16);
+			String(UTF8("X1R5G5B5")), 16);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A1R5G5B5,
-			String(L"A1R5G5B5"), 16);
+			String(UTF8("A1R5G5B5")), 16);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A4R4G4B4,
-			String(L"A4R4G4B4"), 16);
+			String(UTF8("A4R4G4B4")), 16);
 		check_fourcc_support(codec_manager, dds::DDSFMT_R3G3B2,
-			String(L"R3G3B2"), 8);
+			String(UTF8("R3G3B2")), 8);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A8,
-			String(L"A8"), 8);
+			String(UTF8("A8")), 8);
 		check_fourcc_support(codec_manager, dds::DDSFMT_X4R4G4B4,
-			String(L"X4R4G4B4"), 16);
+			String(UTF8("X4R4G4B4")), 16);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A2B10G10R10,
-			String(L"A2B10G10R10"), 32);
+			String(UTF8("A2B10G10R10")), 32);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A8B8G8R8,
-			String(L"A8B8G8R8"), 32);
+			String(UTF8("A8B8G8R8")), 32);
 		check_fourcc_support(codec_manager, dds::DDSFMT_G16R16,
-			String(L"G16R16"), 32);
+			String(UTF8("G16R16")), 32);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A2R10G10B10,
-			String(L"A2R10G10B10"), 32);
+			String(UTF8("A2R10G10B10")), 32);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A16B16G16R16,
-			String(L"A16B16G16R16"), 64);
+			String(UTF8("A16B16G16R16")), 64);
 		check_fourcc_support(codec_manager,
 			dds::DDSFMT_A16B16G16R16_SIGNED,
-			String(L"A16B16G16R16_SIGNED"), 64);
+			String(UTF8("A16B16G16R16_SIGNED")), 64);
 		check_fourcc_support(codec_manager, dds::DDSFMT_L8,
-			String(L"L8"), 8);
+			String(UTF8("L8")), 8);
 		check_fourcc_support(codec_manager, dds::DDSFMT_L16,
-			String(L"L16"), 16);
+			String(UTF8("L16")), 16);
 		check_fourcc_support(codec_manager, dds::DDSFMT_DXT1,
-			String(L"DXT1"), 4);
+			String(UTF8("DXT1")), 4);
 		check_fourcc_support(codec_manager, dds::DDSFMT_DXT2,
-			String(L"DXT2"), 8);
+			String(UTF8("DXT2")), 8);
 		check_fourcc_support(codec_manager, dds::DDSFMT_DXT3,
-			String(L"DXT3"), 8);
+			String(UTF8("DXT3")), 8);
 		check_fourcc_support(codec_manager, dds::DDSFMT_DXT4,
-			String(L"DXT4"), 8);
+			String(UTF8("DXT4")), 8);
 		check_fourcc_support(codec_manager, dds::DDSFMT_DXT5,
-			String(L"DXT5"), 8);
+			String(UTF8("DXT5")), 8);
 		check_fourcc_support(codec_manager, dds::DDSFMT_ATI1,
-			String(L"ATI1"), 4);
+			String(UTF8("ATI1")), 4);
 		check_fourcc_support(codec_manager, dds::DDSFMT_ATI2,
-			String(L"ATI2"), 8);
+			String(UTF8("ATI2")), 8);
 		check_fourcc_support(codec_manager, dds::DDSFMT_R16F,
-			String(L"R16F"), 16);
+			String(UTF8("R16F")), 16);
 		check_fourcc_support(codec_manager, dds::DDSFMT_G16R16F,
-			String(L"G16R16F"), 32);
+			String(UTF8("G16R16F")), 32);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A16B16G16R16F,
-			String(L"A16B16G16R16F"), 64);
+			String(UTF8("A16B16G16R16F")), 64);
 		check_fourcc_support(codec_manager, dds::DDSFMT_R32F,
-			String(L"R32F"), 32);
+			String(UTF8("R32F")), 32);
 		check_fourcc_support(codec_manager, dds::DDSFMT_G32R32F,
-			String(L"G32R32F"), 64);
+			String(UTF8("G32R32F")), 64);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A32B32G32R32F,
-			String(L"A32B32G32R32F"), 128);
+			String(UTF8("A32B32G32R32F")), 128);
 	}
 
 }

@@ -16,12 +16,12 @@ namespace eternal_lands
 
 		const String plane_type_names[] =
 		{
-			String(L"right"),
-			String(L"left"),
-			String(L"top"),
-			String(L"bottom"),
-			String(L"near"),
-			String(L"far")
+			String(UTF8("right")),
+			String(UTF8("left")),
+			String(UTF8("top")),
+			String(UTF8("bottom")),
+			String(UTF8("near")),
+			String(UTF8("far"))
 		};
 
 		const Uint16 plane_type_names_count =
@@ -186,7 +186,7 @@ namespace eternal_lands
 					matrix[2][3] - matrix[2][2],
 					matrix[3][3] - matrix[3][2]));
 		}
-		VALUE_NOT_IN_SWITCH(plane, "PlaneType");
+		VALUE_NOT_IN_SWITCH(plane, UTF8("PlaneType"));
 	}
 
 	void Frustum::set_plane(const glm::mat4 &matrix, const PlaneType plane,
@@ -435,7 +435,8 @@ namespace eternal_lands
 					plane_type_names_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					plane_type))
-				<< boost::errinfo_type_info_name("PlaneType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"PlaneType")));
 		}
 
 		return plane_type_names[plane_type];

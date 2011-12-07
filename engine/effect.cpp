@@ -21,7 +21,7 @@ namespace eternal_lands
 	namespace
 	{
 
-		const StringType vertex_shader = L""
+		const StringType vertex_shader = UTF8(""
 			"#version 120\n"
 			"\n"
 			"varying vec2 uv;\n"
@@ -41,9 +41,9 @@ namespace eternal_lands
 			"\tgl_Position = projection_view_matrix * "
 				"vec4(world_position, 1.0);\n"
 			"\tuv = texture_coordinate_0;\n"
-			"}\n";
+			"}\n");
 
-		const StringType fragment_shader = L""
+		const StringType fragment_shader = UTF8(""
 			"#version 120\n"
 			"\n"
 			"varying vec2 uv;\n"
@@ -57,9 +57,9 @@ namespace eternal_lands
 			"\tgl_FragColor.rgb = texture2D(diffuse_sampler_0, "
 				"uv).rgb * ambient.rgb;\n"
 			"\tgl_FragColor.a = alpha_value;\n"
-			"}\n";
+			"}\n");
 
-		const StringType depth_vertex_shader = L""
+		const StringType depth_vertex_shader = UTF8(""
 			"#version 120\n"
 			"\n"
 			"uniform mat4x3 world_matrix;\n"
@@ -75,19 +75,19 @@ namespace eternal_lands
 				"vec4(position.xyz, 1.0);\n"
 			"\tgl_Position = projection_view_matrix * "
 				"vec4(world_position, 1.0);\n"
-			"}\n";
+			"}\n");
 
-		const StringType depth_fragment_shader = L""
+		const StringType depth_fragment_shader = UTF8(""
 			"#version 120\n"
 			"\n"
 			"void main ()\n"
 			"{\n"
 			"\tgl_FragColor = gl_FragCoord.zzzz;\n"
-			"}\n";
+			"}\n");
 
 	}
 
-	Effect::Effect(): m_name(L"simple"), m_culling(true)
+	Effect::Effect(): m_name(UTF8("simple")), m_culling(true)
 	{
 		error_load();
 	}
@@ -99,11 +99,11 @@ namespace eternal_lands
 	{
 		assert(!m_shader_source_builder.expired());
 
-		if (name == L"")
+		if (name == UTF8(""))
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_parameter_name(L"name")
-				<< errinfo_message(L"Paramter is empty"));
+				<< errinfo_parameter_name(UTF8("name"))
+				<< errinfo_message(UTF8("Paramter is empty")));
 		}
 
 		load();
@@ -125,7 +125,7 @@ namespace eternal_lands
 			return;
 		}
 
-		lua.push_string("culling");
+		lua.push_string(UTF8("culling"));
 		lua.get_table(-2);
 
 		if (!lua.is_bool(-1))
@@ -168,13 +168,13 @@ namespace eternal_lands
 		if (tokens.size() != 2)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"Invalid effect name")
+				<< errinfo_message(UTF8("Invalid effect name"))
 				<< errinfo_string_value(get_name()));
 		}
 
-		str = L"shaders/";
+		str = UTF8("shaders/");
 		str += tokens[0];
-		str += L".lua";
+		str += UTF8(".lua");
 
 		lua.do_string(get_file_system()->get_file_string(String(str)),
 			String(str));

@@ -38,8 +38,8 @@ namespace eternal_lands
 		private:
 			typedef std::pair<Uint32, SelectionType>
 				PairUint32SelectionType;
-			typedef std::map<Uint32, PairUint32SelectionType>
-				Uint32PairUint32SelectionTypeMap;
+			typedef std::vector<PairUint32SelectionType>
+				PairUint32SelectionTypeVector;
 
 			GlobalVarsSharedPtr m_global_vars;
 			SceneResources m_scene_resources;
@@ -66,6 +66,7 @@ namespace eternal_lands
 			glm::vec4 m_shadow_texture_offset;
 			String m_name;
 			Uint64 m_frame_id;
+			Uint64 m_program_vars_id;
 			Uint32 m_id;
 			float m_time;
 			SubFrustumsMask m_shadow_objects_mask;
@@ -85,9 +86,8 @@ namespace eternal_lands
 				const SubObject &sub_object);
 			void draw_object_shadow(const ObjectSharedPtr &object);
 			void pick_object(const ObjectSharedPtr &object,
-				Uint32PairUint32SelectionTypeMap &id_map,
-				Uint32 &index, const glm::vec2 &min,
-				const glm::vec2 &max);
+				PairUint32SelectionTypeVector &ids,
+				const glm::vec2 &min, const glm::vec2 &max);
 			bool switch_program(
 				const GlslProgramSharedPtr &program);
 			void cull_shadows(const glm::vec3 &camera,
@@ -95,7 +95,6 @@ namespace eternal_lands
 			void cull_all_shadows();
 			void draw_shadows(const Uint16 index);
 			void draw_all_shadows();
-			void filter_draw();
 			void update_shadow_map();
 
 			inline GlobalVarsSharedPtr get_global_vars() const

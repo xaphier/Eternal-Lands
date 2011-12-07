@@ -107,7 +107,7 @@ namespace eternal_lands
 			(*cinfo->err->format_message)(cinfo, el_err->m_buffer);
 
 			// send it to user's message proc
-			LOG_WARNING(L"JPEG: %1%", el_err->m_buffer);
+			LOG_WARNING(UTF8("JPEG: %1%"), el_err->m_buffer);
 		}
 
 		class JpegDecompress
@@ -307,7 +307,7 @@ namespace eternal_lands
 
 	String JpegImage::get_image_str()
 	{
-		return String(L"jpeg-image");
+		return String(UTF8("jpeg-image"));
 	}
 
 }

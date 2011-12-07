@@ -8,12 +8,11 @@
 #include "filesystem.hpp"
 #include "exceptions.hpp"
 #include "abstractarchive.hpp"
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
 #include "memorybuffer.hpp"
 #include "reader.hpp"
 #include "zipfile.hpp"
 #include "decompressutil.hpp"
+#include <sys/stat.h>
 
 #include "../io/elpathwrapper.h"
 
@@ -69,31 +68,40 @@ namespace eternal_lands
 			ReaderSharedPtr reader;
 			MemoryBufferSharedPtr buffer;
 			Uint64 size;
-			boost::filesystem::ifstream stream;
-			boost::filesystem::path path, gz_path, xz_path;
+			std::ifstream stream;
+			StringType path, gz_path, xz_path;
+			struct stat fstat;
 
 			path = get_name().get();
-			path /= file_name.get();
+			path += '/';
+			path += file_name.get();
+			path = utf8_to_string(path);
 
 			gz_path = path;
-			gz_path /= L".gz";
+			gz_path += ".gz";
 
 			xz_path = path;
-			xz_path /= L".xz";
+			xz_path += ".xz";
 
-			if (boost::filesystem::exists(gz_path))
+			if (stat(gz_path.c_str(), &fstat) == 0)
 			{
 				path = gz_path;
 			}
 
-			if (boost::filesystem::exists(xz_path))
+			if (stat(xz_path.c_str(), &fstat) == 0)
 			{
 				path = xz_path;
 			}
 
-			size = boost::filesystem::file_size(path);
+			if (stat(path.c_str(), &fstat) != 0)
+			{
+				EL_THROW_EXCEPTION(FileNotFoundException()
+					<< boost::errinfo_file_name(file_name));
+			}
 
-			stream.open(path);
+			size = fstat.st_size;
+
+			stream.open(path.c_str());
 
 			buffer = boost::make_shared<MemoryBuffer>(size);
 
@@ -108,63 +116,166 @@ namespace eternal_lands
 
 		bool DirArchive::get_has_file(const String &file_name) const
 		{
-			boost::filesystem::path path, gz_path, xz_path;
+			StringType path, gz_path, xz_path;
+			struct stat fstat;
 
 			path = get_name().get();
-			path /= file_name.get();
+			path += '/';
+			path += file_name.get();
+			path = utf8_to_string(path);
 
-			gz_path = get_name().get();
-			gz_path /= file_name.get() + L".gz";
+			gz_path = path;
+			gz_path += ".gz";
 
-			xz_path = get_name().get();
-			xz_path /= file_name.get() + L".xz";
+			xz_path = path;
+			xz_path += ".xz";
 
-			if (boost::filesystem::exists(gz_path))
+			if (stat(gz_path.c_str(), &fstat) == 0)
 			{
 				return true;
 			}
 
-			if (boost::filesystem::exists(xz_path))
+			if (stat(xz_path.c_str(), &fstat) == 0)
 			{
 				return true;
 			}
 
-			return boost::filesystem::exists(path);
+			return stat(path.c_str(), &fstat) == 0;
 		}
 
 	}
 
 	FileSystem::FileSystem()
 	{
-		m_archives.push_back(new DirArchive(String(L".")));
+		m_archives.push_back(new DirArchive(String(".")));
 	}
 
 	FileSystem::~FileSystem() throw()
 	{
 	}
 
+	String FileSystem::get_file_name(const String &file_name)
+	{
+		StringTypeVector splits;
+
+		boost::split(splits, file_name.get(), boost::is_any_of(
+			UTF8("\\/")), boost::token_compress_on);
+
+		if (splits.size() > 0)
+		{
+			return String(*splits.rbegin());
+		}
+
+		return String(UTF8(""));
+	}
+
+	StringTypeVector FileSystem::get_stripped_path(const String &file_name)
+	{
+		StringTypeVector splits, path;
+		Uint32 i, count;
+
+		boost::split(splits, file_name.get(), boost::is_any_of(
+			UTF8("\\/")), boost::token_compress_on);
+
+		count = splits.size();
+
+		for (i = 0; i < count; i++)
+		{
+			if (splits[i] == "..")
+			{
+				if (path.size() > 0)
+				{
+					path.pop_back();
+				}
+				continue;
+			}
+
+			if (splits[i] == ".")
+			{
+				continue;
+			}
+
+			path.push_back(splits[i]);
+		}
+
+		return path;
+	}
+
+	String FileSystem::get_strip_relative_path(const String &file_name)
+	{
+		StringTypeVector path;
+		StringType result;
+		Uint32 i, count;
+
+		path = get_stripped_path(file_name);
+
+		count = path.size();
+
+		if (count == 0)
+		{
+			return String(UTF8(""));
+		}
+
+		result = path[0];
+
+		for (i = 1; i < count; i++)
+		{
+			result += '/';
+			result += path[i];
+		}
+
+		return String(result);
+	}
+
+	String FileSystem::get_dir_name(const String &file_name)
+	{
+		StringTypeVector path;
+		StringType result;
+		Uint32 i, count;
+
+		path = get_stripped_path(file_name);
+
+		count = path.size();
+
+		if (count < 2)
+		{
+			return String(UTF8(""));
+		}
+
+		count -= 1;
+		result = path[0];
+
+		for (i = 1; i < count; i++)
+		{
+			result += '/';
+			result += path[i];
+		}
+
+		return String(result);
+	}
+
 	void FileSystem::add_dirs(const Uint16 major, const Uint16 minor,
 		const Uint16 release)
 	{
 		StringStream str;
-		boost::filesystem::path config_dir, update_dir, custom_dir;
+		StringType config_dir, update_dir, custom_dir;
 
-		config_dir = utf8_to_string(get_path_config_base());
+		config_dir = string_to_utf8(get_path_config_base());
 
-		m_archives.push_back(new DirArchive(String(config_dir.wstring())));
+		m_archives.push_back(new DirArchive(String(config_dir)));
 
 		str << major << "_" << minor << "_" << release;
 
 		update_dir = config_dir;
-		update_dir /= L"update";
-		update_dir /= str.str();
+		update_dir += "/update";
+		update_dir += str.str();
 
-		m_archives.push_back(new DirArchive(String(update_dir.wstring())));
+		m_archives.push_back(new DirArchive(String(update_dir)));
 
 		custom_dir = config_dir;
-		custom_dir /= L"custom";
+		custom_dir += "/custom";
 
-		m_archives.push_back(new DirArchive(String(custom_dir.wstring())));
+		m_archives.push_back(new DirArchive(String(custom_dir)));
 	}
 
 	void FileSystem::add_dir(const String &dir_name)
@@ -196,14 +307,12 @@ namespace eternal_lands
 		return false;
 	}
 
-	bool FileSystem::delete_file(const String &file_name)
-	{
-		return false;
-	}
-
 	ReaderSharedPtr FileSystem::get_file(const String &file_name)
 	{
 		AbstractArchiveVector::const_iterator it, end;
+		String name;
+
+		name = get_strip_relative_path(file_name);
 
 		end = m_archives.end();
 
@@ -216,7 +325,7 @@ namespace eternal_lands
 		}
 
 		EL_THROW_EXCEPTION(FileNotFoundException()
-			<< boost::errinfo_file_name(string_to_utf8(file_name)));
+			<< boost::errinfo_file_name(file_name));
 	}
 
 	String FileSystem::get_file_string(const String &file_name)

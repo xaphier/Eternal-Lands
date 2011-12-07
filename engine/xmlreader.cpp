@@ -19,25 +19,22 @@ namespace eternal_lands
 		if (m_doc == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error reading the xml "
-					"data"));
+				<< errinfo_message(UTF8("Error reading the xml "
+					"data")));
 		}
 	}
 
 	XmlReader::XmlReader(const String &file_name)
 	{
-		std::string name;
-
-		name = string_to_utf8(file_name);
-
-		m_doc = xmlReadFile(name.c_str(), 0, XML_PARSE_NOENT);
+		m_doc = xmlReadFile(utf8_to_string(file_name.get()).c_str(), 0,
+			XML_PARSE_NOENT);
 
 		if (m_doc == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(L"Error reading the xml "
-					"file")
-				<< boost::errinfo_file_name(name));
+				<< errinfo_message(UTF8("Error reading the xml "
+					"file"))
+				<< boost::errinfo_file_name(file_name));
 		}
 	}
 

@@ -16,9 +16,9 @@ namespace eternal_lands
 
 		const String shader_build_type_names[] =
 		{
-			String(L"color"),
-			String(L"depth"),
-			String(L"shadow")
+			String(UTF8("color")),
+			String(UTF8("depth")),
+			String(UTF8("shadow"))
 		};
 
 		const Uint32 shader_build_type_names_count =
@@ -37,8 +37,8 @@ namespace eternal_lands
 					shader_build_type_names_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					shader_build))
-				<< boost::errinfo_type_info_name(
-					"ShaderBuildType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ShaderBuildType")));
 		}
 
 		return shader_build_type_names[shader_build];
@@ -62,7 +62,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("ShaderBuildType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"ShaderBuildType")));
 	}
 
 	OutStream& operator<<(OutStream &str, const ShaderBuildType value)

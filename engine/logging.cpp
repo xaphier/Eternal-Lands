@@ -472,10 +472,10 @@ namespace eternal_lands
 	}
 
 	void log_message(const LogLevelType log_level,
-		const StringType &message, const std::string &file,
+		const String &message, const std::string &file,
 		const Uint32 line)
 	{
-		log_message(log_level, string_to_utf8(message), file, line);
+		log_message(log_level, message, file, line);
 	}
 
 	void log_exception(const boost::exception &exception,

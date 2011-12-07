@@ -155,15 +155,16 @@ namespace eternal_lands
 
 	String Image::get_log_str() const
 	{
-		BoostFormat format_string(L"'%1%' %2% faces with "
+		BoostFormat format_string(UTF8("'%1%' %2% faces with "
 			"format %3% of size %4%x%5%x%6% with %7% mipmaps and "
 			"%8% bits per pixel, using color space %9%, giving a "
-			"total size of %10%");
+			"total size of %10%"));
 
 		format_string % get_name() % get_face_count() %
 			get_texture_format() % get_width() % get_height() %
 			get_depth() % get_mipmap_count() % get_pixel_size() %
-			(get_sRGB() ? L"sRGB" : L"RGB") % get_total_size();
+			(get_sRGB() ? UTF8("sRGB") : UTF8("RGB")) %
+			get_total_size();
 
 		return String(format_string.str());
 	}
@@ -190,7 +191,7 @@ namespace eternal_lands
 		m_type = type;
 		m_sRGB = sRGB;
 
-		LOG_DEBUG(L"Setting image %1%.", get_log_str());
+		LOG_DEBUG(UTF8("Setting image %1%."), get_log_str());
 
 		get_buffer().resize(get_total_size());
 		memset(get_buffer().get_ptr(), 0, get_buffer().get_size());
@@ -215,7 +216,7 @@ namespace eternal_lands
 		m_pixel_size = TextureFormatUtil::get_size(texture_format);
 		m_sRGB = TextureFormatUtil::get_sRGB(texture_format);
 
-		LOG_DEBUG(L"Setting image %1%.", get_log_str());
+		LOG_DEBUG(UTF8("Setting image %1%."), get_log_str());
 
 		get_buffer().resize(get_total_size());
 		memset(get_buffer().get_ptr(), 0, get_buffer().get_size());
@@ -661,4 +662,3 @@ namespace eternal_lands
 	}
 
 }
-

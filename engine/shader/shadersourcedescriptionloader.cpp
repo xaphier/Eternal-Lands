@@ -138,27 +138,30 @@ namespace eternal_lands
 
 		m_sources.clear();
 
-		load_string(defaults, String(L"world_transform"),
+		load_string(defaults, String(UTF8("world_transform")),
 			sst_world_depth_transform, lua);
-		load_string(defaults, String(L"world_transform"),
+		load_string(defaults, String(UTF8("world_transform")),
 			sst_world_normal_transform, lua);
-		load_string(defaults, String(L"world_transform"),
+		load_string(defaults, String(UTF8("world_transform")),
 			sst_world_tangent_transform, lua);
-		load_bool(defaults, String(L"fog"), sst_fog, lua);
-		load_bool_or_string(defaults, String(L"light"), sst_light, lua);
-		load_bool(defaults, String(L"shadow"), sst_shadow_uv, lua);
-		load_bool(defaults, String(L"shadow"), sst_shadow_mapping, lua);
-		load_string(defaults, String(L"normal_mapping"),
-			sst_normal_mapping, lua);
-		load_string(defaults, String(L"normal_depth_mapping"),
-			sst_normal_depth_mapping, lua);
-		load_string(defaults, String(L"uv"), sst_uv, lua);
-		load_string(defaults, String(L"diffuse_mapping"),
-			sst_diffuse_mapping, lua);
-		load_string(defaults, String(L"specular_mapping"),
-			sst_specular_mapping, lua);
-		load_bool(defaults, String(L"transparent"), sst_transparent,
+		load_bool(defaults, String(UTF8("fog")), sst_fog, lua);
+		load_bool_or_string(defaults, String(UTF8("light")), sst_light,
 			lua);
+		load_bool(defaults, String(UTF8("shadow")), sst_shadow_uv,
+			lua);
+		load_bool(defaults, String(UTF8("shadow")), sst_shadow_mapping,
+			lua);
+		load_string(defaults, String(UTF8("normal_mapping")),
+			sst_normal_mapping, lua);
+		load_string(defaults, String(UTF8("normal_depth_mapping")),
+			sst_normal_depth_mapping, lua);
+		load_string(defaults, String(UTF8("uv")), sst_uv, lua);
+		load_string(defaults, String(UTF8("diffuse_mapping")),
+			sst_diffuse_mapping, lua);
+		load_string(defaults, String(UTF8("specular_mapping")),
+			sst_specular_mapping, lua);
+		load_bool(defaults, String(UTF8("transparent")),
+			sst_transparent, lua);
 		copy_default(defaults, sst_view_direction, m_sources);
 		copy_default(defaults, sst_view_transform, m_sources);
 		copy_default(defaults, sst_shadow_map, m_sources);

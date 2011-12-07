@@ -43,11 +43,11 @@ namespace eternal_lands
 	void ShaderSourceParameter::log(OutStream &str) const
 	{
 		assert(!get_name().get().empty());
-		str << L"ShaderSourceParameter";
-		str << L" [name]: " << get_name();
-		str << L" [type]: " << get_type();
-		str << L" [qualifier]: " << get_qualifier();
-		str << L" [scale]: " << get_scale();
+		str << UTF8("ShaderSourceParameter");
+		str << UTF8(" [name]: ") << get_name();
+		str << UTF8(" [type]: ") << get_type();
+		str << UTF8(" [qualifier]: ") << get_qualifier();
+		str << UTF8(" [scale]: ") << get_scale();
 	}
 
 	Uint16 ShaderSourceParameter::get_array_size(
@@ -79,23 +79,26 @@ namespace eternal_lands
 
 		if (get_type() != parameter.get_type())
 		{
-			EL_THROW_MESSAGE_EXCEPTION(L"Parameter '%1%' and '%2%' "
-				"have the same name, but not equal types",
-				*this % parameter, InvalidParameterException());
+			EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' and "
+				"'%2%' have the same name, but not equal "
+				"types"), *this % parameter,
+				InvalidParameterException());
 		}
 
 		if (get_size() != parameter.get_size())
 		{
-			EL_THROW_MESSAGE_EXCEPTION(L"Parameter '%1%' and '%2%' "
-				"have the same name, but not equal sizes",
-				*this % parameter, InvalidParameterException());
+			EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' and "
+				"'%2%' have the same name, but not equal "
+				"sizes"), *this % parameter,
+				InvalidParameterException());
 		}
 
 		if (get_scale() != parameter.get_scale())
 		{
-			EL_THROW_MESSAGE_EXCEPTION(L"Parameter '%1%' and '%2%' "
-				"have the same name, but not equal scales",
-				*this % parameter, InvalidParameterException());
+			EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' and "
+				"'%2%' have the same name, but not equal "
+				"scales"), *this % parameter,
+				InvalidParameterException());
 		}
 
 		switch (get_qualifier())
@@ -122,9 +125,9 @@ namespace eternal_lands
 				break;
 		}
 
-		EL_THROW_MESSAGE_EXCEPTION(L"Parameter '%1%' and '%2%' have "
-			"the same name, but not compatible qualifiers", *this %
-			parameter, InvalidParameterException());
+		EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' and '%2%' "
+			"have the same name, but not compatible qualifiers"),
+			*this % parameter, InvalidParameterException());
 	}
 
 	void ShaderSourceParameter::write(
@@ -134,13 +137,13 @@ namespace eternal_lands
 
 		assert(!get_name().get().empty());
 
-		str << get_type() << L" " << get_name();
+		str << get_type() << UTF8(" ") << get_name();
 
 		array_size = get_array_size(sizes);
 
 		if ((array_size > 1) || (get_size() != pst_one))
 		{
-			str << L"[" << array_size << L"]";
+			str << UTF8("[") << array_size << UTF8("]");
 		}
 	}
 
@@ -152,7 +155,7 @@ namespace eternal_lands
 
 		if (!first)
 		{
-			str << L", ";
+			str << UTF8(", ");
 		}
 
 		str << prefix;
@@ -169,7 +172,7 @@ namespace eternal_lands
 
 		if (!first)
 		{
-			str << L", ";
+			str << UTF8(", ");
 		}
 
 		str << get_name();
@@ -185,10 +188,10 @@ namespace eternal_lands
 
 		if (!first)
 		{
-			str << L", ";
+			str << UTF8(", ");
 		}
 
-		str << get_qualifier() << L" ";
+		str << get_qualifier() << UTF8(" ");
 
 		write(sizes, str);
 
@@ -199,7 +202,7 @@ namespace eternal_lands
 	{
 		xmlNodePtr it;
 
-		if (xmlStrcmp(node->name, BAD_CAST "parameter") != 0)
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("parameter")) != 0)
 		{
 			return;
 		}
@@ -208,36 +211,37 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST "name") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
 			{
 				set_name(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "source") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("source")) == 0)
 			{
 				set_source(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "type") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
 			{
 				set_type(ParameterUtil::get_parameter(
 					XmlUtil::get_string_value(it)));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "qualifier") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("qualifier"))
+				== 0)
 			{
 				set_qualifier(
 					ParameterQualifierUtil::get_parameter_qualifier(
 						XmlUtil::get_string_value(it)));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "size") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("size")) == 0)
 			{
 				set_size(ParameterSizeUtil::get_parameter_size(
 					XmlUtil::get_string_value(it)));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "scale") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("scale")) == 0)
 			{
 				set_scale(XmlUtil::get_uint16_value(it));
 			}
@@ -248,16 +252,16 @@ namespace eternal_lands
 	void ShaderSourceParameter::save_xml(const XmlWriterSharedPtr &writer)
 		const
 	{
-		writer->start_element("parameter");
-		writer->write_element("name", get_name());
-		writer->write_element("source", get_source());
-		writer->write_element("type", ParameterUtil::get_str(
+		writer->start_element(UTF8("parameter"));
+		writer->write_element(UTF8("name"), get_name());
+		writer->write_element(UTF8("source"), get_source());
+		writer->write_element(UTF8("type"), ParameterUtil::get_str(
 			get_type()));
-		writer->write_element("qualifier",
+		writer->write_element(UTF8("qualifier"),
 			ParameterQualifierUtil::get_str(get_qualifier()));
-		writer->write_element("size",
+		writer->write_element(UTF8("size"),
 			ParameterSizeUtil::get_str(get_size()));
-		writer->write_int_element("scale", get_scale());
+		writer->write_int_element(UTF8("scale"), get_scale());
 		writer->end_element();
 	}
 

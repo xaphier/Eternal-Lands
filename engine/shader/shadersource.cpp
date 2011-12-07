@@ -25,22 +25,22 @@ namespace eternal_lands
 
 		const String shader_source_type_datas[] =
 		{
-			String(L"world_depth_transform"),
-			String(L"world_normal_transform"),
-			String(L"world_tangent_transform"),
-			String(L"view_direction"),
-			String(L"view_transform"),
-			String(L"fog"),
-			String(L"light"),
-			String(L"uv"),
-			String(L"shadow_uv"),
-			String(L"shadow_mapping"),
-			String(L"normal_mapping"),
-			String(L"normal_depth_mapping"),
-			String(L"diffuse_mapping"),
-			String(L"specular_mapping"),
-			String(L"transparent"),
-			String(L"depth_color")
+			String(UTF8("world_depth_transform")),
+			String(UTF8("world_normal_transform")),
+			String(UTF8("world_tangent_transform")),
+			String(UTF8("view_direction")),
+			String(UTF8("view_transform")),
+			String(UTF8("fog")),
+			String(UTF8("light")),
+			String(UTF8("uv")),
+			String(UTF8("shadow_uv")),
+			String(UTF8("shadow_mapping")),
+			String(UTF8("normal_mapping")),
+			String(UTF8("normal_depth_mapping")),
+			String(UTF8("diffuse_mapping")),
+			String(UTF8("specular_mapping")),
+			String(UTF8("transparent")),
+			String(UTF8("depth_color"))
 		};
 
 		const Uint32 shader_source_type_datas_count =
@@ -71,8 +71,8 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST "shader_source_data")
-				== 0)
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("shader_source_data")) == 0)
 			{
 				m_datas.push_back(ShaderSourceData(it));
 			}
@@ -87,11 +87,11 @@ namespace eternal_lands
 		if (node == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"parameter is zero")
-				<< errinfo_parameter_name(L"node"));
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
 		}
 
-		if (xmlStrcmp(node->name, BAD_CAST "shader_source") != 0)
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("shader_source")) != 0)
 		{
 			return;
 		}
@@ -100,18 +100,18 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST "shader_source_datas")
-				== 0)
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("shader_source_datas")) == 0)
 			{
 				load_datas_xml(it);
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "name") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
 			{
 				set_name(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "type") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
 			{
 				set_type(ShaderSourceUtil::get_shader_source(
 					XmlUtil::get_string_value(it)));
@@ -131,13 +131,13 @@ namespace eternal_lands
 
 	void ShaderSource::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element("shader_source");
+		writer->start_element(UTF8("shader_source"));
 
-		writer->write_element("name", get_name());
-		writer->write_element("type", ShaderSourceUtil::get_str(
+		writer->write_element(UTF8("name"), get_name());
+		writer->write_element(UTF8("type"), ShaderSourceUtil::get_str(
 			get_type()));
 
-		writer->start_element("shader_source_datas");
+		writer->start_element(UTF8("shader_source_datas"));
 
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{
@@ -250,8 +250,8 @@ namespace eternal_lands
 			}
 		}
 
-		EL_THROW_MESSAGE_EXCEPTION(L"No shader source data with type "
-			"%1% in %2% found.", type % get_name(),
+		EL_THROW_MESSAGE_EXCEPTION(UTF8("No shader source data with "
+			"type %1% in %2% found."), type % get_name(),
 			ItemNotFoundException());
 	}
 
@@ -263,7 +263,7 @@ namespace eternal_lands
 	String ShaderSource::get_typed_name() const
 	{
 		return String(ShaderSourceUtil::get_str(get_type()).get() +
-			L"_" + get_name().get());
+			UTF8("_") + get_name().get());
 	}
 
 }

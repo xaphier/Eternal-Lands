@@ -6,6 +6,8 @@
  ****************************************************************************/
 
 #include "packtool.hpp"
+#include "abstractreadmemorybuffer.hpp"
+#include "abstractwritememorybuffer.hpp"
 
 namespace eternal_lands
 {
@@ -30,37 +32,152 @@ namespace eternal_lands
 		*/
 		const Uint16 BOTTOM_MASK = 0x007F;
 
-		template <const bool signed_value, Uint32 X, Uint32 Y, Uint32 Z,
-			Uint32 W, typename T>
-		glm::vec4 unpack_values(const bool normalize, const T value)
+		template <typename T, bool normalize>
+		static inline T convert_from_float(const float value)
+		{
+			float tmp;
+
+			BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
+
+			tmp = value;
+
+			if (value < 0.0f)
+			{
+				if (normalize)
+				{
+					tmp *= std::abs(
+						std::numeric_limits<T>::min());
+				}
+
+				tmp -= 0.5f;
+			}
+			else
+			{
+				if (normalize)
+				{
+					tmp *= std::numeric_limits<T>::max();
+				}
+
+				tmp += 0.5f;
+			}
+
+			return boost::numeric_cast<T>(tmp);
+		}
+
+		template <typename T, Uint16 count, bool normalize>
+		void convert_from_vec4(const glm::vec4 &value, T* ptr)
+		{
+			Uint32 i;
+
+			BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
+
+			for (i = 0; i < count; i++)
+			{
+				ptr[i] = convert_from_float<T, normalize>(
+					value[i]);
+			}
+		}
+
+		template <typename T, bool normalize>
+		static inline float convert_to_float(const T value)
+		{
+			float tmp;
+
+			BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
+
+			tmp = value;
+
+			if (normalize)
+			{
+				if (value < static_cast<T>(0))
+				{
+					tmp /= std::abs(
+						std::numeric_limits<T>::min());
+				}
+				else
+				{
+					tmp /= std::numeric_limits<T>::max();
+				}
+			}
+
+			return tmp;
+		}
+
+		template <typename T, Uint16 count, bool normalize>
+		glm::vec4 convert_to_vec4(const T* ptr)
 		{
 			glm::vec4 result;
-			Uint32Array4 mask;
-			Sint32 tmp, max_value, min_value, total;
-			Uint32 i, shift;
+			Uint32 i;
 
-			mask[0] = X;
-			mask[1] = Y;
-			mask[2] = Z;
-			mask[3] = W;
+			BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
+
+			for (i = 0; i < count; i++)
+			{
+				result[i] = convert_to_float<T, normalize>(
+					ptr[i]);
+			}
+
+			return result;
+		}
+
+		template <typename T, Uint16 x, Uint16 y, Uint16 z,
+			Uint16 w, bool signed_value, bool normalize,
+			bool reverse>
+		glm::vec4 unpack_values(const T value)
+		{
+			glm::vec4 result;
+			Uint32Array4 masks;
+			Uint16Array4 bits, shifts;
+			Sint32 tmp, max_value, min_value, total;
+			Uint32 i, shift, mask;
+
+			if (reverse)
+			{
+				shift = 0;
+			}
+			else
+			{
+				shift = x + y + z + w;
+			}
+
+			bits[0] = x;
+			bits[1] = y;
+			bits[2] = z;
+			bits[3] = w;
 
 			for (i = 0; i < 4; i++)
 			{
-				if (mask[i] > 0)
+				if (!reverse)
 				{
-					shift = __builtin_ctz(mask[i]);
-					tmp = ((value & mask[i]) >> shift);
+					shift -= bits[i];
+				}
 
-					total = 1 << __builtin_popcount(mask[i]);
+				mask = (1 << bits[i]) - 1;
+				masks[i] = mask << shift;
+				shifts[i] = shift;
+
+				if (reverse)
+				{
+					shift += bits[i];
+				}
+			}
+
+			for (i = 0; i < 4; i++)
+			{
+				if (bits[i] > 0)
+				{
+					tmp = ((value & masks[i]) >> shifts[i]);
+
+					total = 1 << bits[i];
 
 					if (signed_value)
 					{
-						max_value = (1 << (__builtin_popcount(mask[i]) - 1)) - 1;
-						min_value = -(1 << (__builtin_popcount(mask[i]) - 1));
+						max_value = (1 << (bits[i] - 1)) - 1;
+						min_value = -(1 << (bits[i] - 1));
 					}
 					else
 					{
-						max_value = (1 << __builtin_popcount(mask[i])) - 1;
+						max_value = (1 << bits[i]) - 1;
 						min_value = 0;
 					}
 
@@ -90,40 +207,67 @@ namespace eternal_lands
 			return result;
 		}
 
-		template <typename T, bool signed_value, Uint32 X, Uint32 Y,
-			Uint32 Z, Uint32 W>
-		T pack_values(const bool normalize, const glm::vec4 &value)
+		template <typename T, Uint16 x, Uint16 y, Uint16 z,
+			Uint16 w, bool signed_value, bool normalize,
+			bool reverse>
+		T pack_values(const glm::vec4 &value)
 		{
 			T result;
-			Uint32Array4 mask;
+			Uint32Array4 masks;
+			Uint16Array4 bits, shifts;
 			float temp;
 			Sint32 tmp, max_value, min_value, total;
-			Uint32 i, shift;
+			Uint32 i, shift, mask;
 
-			mask[0] = X;
-			mask[1] = Y;
-			mask[2] = Z;
-			mask[3] = W;
+			if (reverse)
+			{
+				shift = 0;
+			}
+			else
+			{
+				shift = x + y + z + w;
+			}
+
+			bits[0] = x;
+			bits[1] = y;
+			bits[2] = z;
+			bits[3] = w;
+
+			for (i = 0; i < 4; i++)
+			{
+				if (!reverse)
+				{
+					shift -= bits[i];
+				}
+
+				mask = (1 << bits[i]) - 1;
+				masks[i] = mask << shift;
+				shifts[i] = shift;
+
+				if (reverse)
+				{
+					shift += bits[i];
+				}
+			}
 
 			result = 0;
 
 			for (i = 0; i < 4; i++)
 			{
-				if (mask[i] > 0)
+				if (masks[i] > 0)
 				{
-					shift = __builtin_ctz(mask[i]);
 					temp = value[i];
 
-					total = 1 << __builtin_popcount(mask[i]);
+					total = 1 << bits[i];
 
 					if (signed_value)
 					{
-						max_value = (1 << (__builtin_popcount(mask[i]) - 1)) - 1;
-						min_value = -(1 << (__builtin_popcount(mask[i]) - 1));
+						max_value = (1 << (bits[i] - 1)) - 1;
+						min_value = -(1 << (bits[i] - 1));
 					}
 					else
 					{
-						max_value = (1 << __builtin_popcount(mask[i])) - 1;
+						max_value = (1 << bits[i]) - 1;
 						min_value = 0;
 					}
 
@@ -162,12 +306,13 @@ namespace eternal_lands
 						}
 					}
 
-					result |= (tmp << shift) & mask[i];
+					result |= (tmp << shifts[i]) & masks[i];
 				}
 			}
 
 			return result;
 		}
+
 	}
 
 	Uint16 PackTool::compress_normalized(const glm::vec3 &value)
@@ -284,122 +429,555 @@ namespace eternal_lands
 
 	glm::vec3 PackTool::unpack_uint_3_3_2(const bool normalize, const Uint8 value)
 	{
-		return glm::vec3(unpack_values<false, 0xE0, 0x1C, 0x03, 0x00>(normalize, value));
+		if (normalize)
+		{
+			return glm::vec3(unpack_values<Uint8, 3, 3, 2, 0, false, true, false>(value));
+		}
+		else
+		{
+			return glm::vec3(unpack_values<Uint8, 3, 3, 2, 0, false, false, false>(value));
+		}
 	}
 
 	glm::vec3 PackTool::unpack_uint_2_3_3_rev(const bool normalize, const Uint8 value)
 	{
-		return glm::vec3(unpack_values<false, 0x07, 0x38, 0xC0, 0x00>(normalize, value));
+		if (normalize)
+		{
+			return glm::vec3(unpack_values<Uint8, 3, 3, 2, 0, false, true, true>(value));
+		}
+		else
+		{
+			return glm::vec3(unpack_values<Uint8, 3, 3, 2, 0, false, false, true>(value));
+		}
 	}
 
 	glm::vec3 PackTool::unpack_uint_5_6_5(const bool normalize, const Uint16 value)
 	{
-		return glm::vec3(unpack_values<false, 0x001F, 0x07E0, 0xF800, 0x0000>(normalize, value));
+		if (normalize)
+		{
+			return glm::vec3(unpack_values<Uint16, 5, 6, 5, 0, false, true, false>(value));
+		}
+		else
+		{
+			return glm::vec3(unpack_values<Uint16, 5, 6, 5, 0, false, false, false>(value));
+		}
 	}
 
 	glm::vec3 PackTool::unpack_uint_5_6_5_rev(const bool normalize, const Uint16 value)
 	{
-		return glm::vec3(unpack_values<false, 0xF800, 0x07E0, 0x001F, 0x0000>(normalize, value));
+		if (normalize)
+		{
+			return glm::vec3(unpack_values<Uint16, 5, 6, 5, 0, false, true, true>(value));
+		}
+		else
+		{
+			return glm::vec3(unpack_values<Uint16, 5, 6, 5, 0, false, false, true>(value));
+		}
 	}
 
 	glm::vec4 PackTool::unpack_uint_5_5_5_1(const bool normalize, const Uint16 value)
 	{
-		return unpack_values<false, 0xF800, 0x07C0, 0x003E, 0x0001>(normalize, value);
+		if (normalize)
+		{
+			return unpack_values<Uint16, 5, 5, 5, 1, false, true, false>(value);
+		}
+		else
+		{
+			return unpack_values<Uint16, 5, 5, 5, 1, false, false, false>(value);
+		}
 	}
 
 	glm::vec4 PackTool::unpack_uint_1_5_5_5_rev(const bool normalize, const Uint16 value)
 	{
-		return unpack_values<false, 0x8000, 0x7C00, 0x03E0, 0x001F>(normalize, value);
+		if (normalize)
+		{
+			return unpack_values<Uint16, 5, 5, 5, 1, false, true, true>(value);
+		}
+		else
+		{
+			return unpack_values<Uint16, 5, 5, 5, 1, false, false, true>(value);
+		}
 	}
 
 	glm::vec4 PackTool::unpack_uint_4_4_4_4(const bool normalize, const Uint16 value)
 	{
-		return unpack_values<false, 0xF000, 0x0F00, 0x00F0, 0x000F>(normalize, value);
+		if (normalize)
+		{
+			return unpack_values<Uint16, 4, 4, 4, 4, false, true, false>(value);
+		}
+		else
+		{
+			return unpack_values<Uint16, 4, 4, 4, 4, false, false, false>(value);
+		}
 	}
 
 	glm::vec4 PackTool::unpack_uint_4_4_4_4_rev(const bool normalize, const Uint16 value)
 	{
-		return unpack_values<false, 0x000F, 0x00F0, 0x0F00, 0xF000>(normalize, value);
+		if (normalize)
+		{
+			return unpack_values<Uint16, 4, 4, 4, 4, false, true, true>(value);
+		}
+		else
+		{
+			return unpack_values<Uint16, 4, 4, 4, 4, false, false, true>(value);
+		}
 	}
 
 	glm::vec4 PackTool::unpack_uint_10_10_10_2(const bool normalize, const Uint32 value)
 	{
-		return unpack_values<false, 0xFFC00000, 0x003FF000, 0x00000FFC, 0x00000003>(normalize, value);
+		if (normalize)
+		{
+			return unpack_values<Uint32, 10, 10, 10, 2, false, true, false>(value);
+		}
+		else
+		{
+			return unpack_values<Uint32, 10, 10, 10, 2, false, false, false>(value);
+		}
 	}
 
 	glm::vec4 PackTool::unpack_uint_2_10_10_10_rev(const bool normalize, const Uint32 value)
 	{
-		return unpack_values<false, 0x000003FF, 0x000FFC00, 0x3FF00000, 0xC0000000>(normalize, value);
+		if (normalize)
+		{
+			return unpack_values<Uint32, 10, 10, 10, 2, false, true, true>(value);
+		}
+		else
+		{
+			return unpack_values<Uint32, 10, 10, 10, 2, false, false, true>(value);
+		}
 	}
 
 	glm::vec4 PackTool::unpack_sint_10_10_10_2(const bool normalize, const Uint32 value)
 	{
-		return unpack_values<true, 0xFFC00000, 0x003FF000, 0x00000FFC, 0x00000003>(normalize, value);
+		if (normalize)
+		{
+			return unpack_values<Uint32, 10, 10, 10, 2, true, true, false>(value);
+		}
+		else
+		{
+			return unpack_values<Uint32, 10, 10, 10, 2, true, false, false>(value);
+		}
 	}
 
 	glm::vec4 PackTool::unpack_sint_2_10_10_10_rev(const bool normalize, const Uint32 value)
 	{
-		return unpack_values<true, 0x000003FF, 0x000FFC00, 0x3FF00000, 0xC0000000>(normalize, value);
+		if (normalize)
+		{
+			return unpack_values<Uint32, 10, 10, 10, 2, true, true, true>(value);
+		}
+		else
+		{
+			return unpack_values<Uint32, 10, 10, 10, 2, true, false, true>(value);
+		}
 	}
 
 	Uint8 PackTool::pack_uint_3_3_2(const bool normalize, const glm::vec3 &value)
 	{
-		return pack_values<Uint8, false, 0xE0, 0x1C, 0x03, 0x00>(normalize, glm::vec4(value, 0.0f));
+		if (normalize)
+		{
+			return pack_values<Uint8, 3, 3, 2, 0, false, true, false>(glm::vec4(value, 0.0f));
+		}
+		else
+		{
+			return pack_values<Uint8, 3, 3, 2, 0, false, false, false>(glm::vec4(value, 0.0f));
+		}
 	}
 
 	Uint8 PackTool::pack_uint_2_3_3_rev(const bool normalize, const glm::vec3 &value)
 	{
-		return pack_values<Uint8, false, 0x07, 0x38, 0xC0, 0x00>(normalize, glm::vec4(value, 0.0f));
+		if (normalize)
+		{
+			return pack_values<Uint8, 3, 3, 2, 0, false, true, true>(glm::vec4(value, 0.0f));
+		}
+		else
+		{
+			return pack_values<Uint8, 3, 3, 2, 0, false, false, true>(glm::vec4(value, 0.0f));
+		}
 	}
 
 	Uint16 PackTool::pack_uint_5_6_5(const bool normalize, const glm::vec3 &value)
 	{
-		return pack_values<Uint16, false, 0x001F, 0x07E0, 0xF800, 0x0000>(normalize, glm::vec4(value, 0.0f));
+		if (normalize)
+		{
+			return pack_values<Uint16, 5, 6, 5, 0, false, true, false>(glm::vec4(value, 0.0f));
+		}
+		else
+		{
+			return pack_values<Uint16, 5, 6, 5, 0, false, false, false>(glm::vec4(value, 0.0f));
+		}
 	}
 
 	Uint16 PackTool::pack_uint_5_6_5_rev(const bool normalize, const glm::vec3 &value)
 	{
-		return pack_values<Uint16, false, 0xF800, 0x07E0, 0x001F, 0x0000>(normalize, glm::vec4(value, 0.0f));
+		if (normalize)
+		{
+			return pack_values<Uint16, 5, 6, 5, 0, false, true, true>(glm::vec4(value, 0.0f));
+		}
+		else
+		{
+			return pack_values<Uint16, 5, 6, 5, 0, false, false, true>(glm::vec4(value, 0.0f));
+		}
 	}
 
 	Uint16 PackTool::pack_uint_5_5_5_1(const bool normalize, const glm::vec4 &value)
 	{
-		return pack_values<Uint16, false, 0xF800, 0x07C0, 0x003E, 0x0001>(normalize, value);
+		if (normalize)
+		{
+			return pack_values<Uint16, 5, 5, 5, 1, false, true, false>(value);
+		}
+		else
+		{
+			return pack_values<Uint16, 5, 5, 5, 1, false, false, false>(value);
+		}
 	}
 
 	Uint16 PackTool::pack_uint_1_5_5_5_rev(const bool normalize, const glm::vec4 &value)
 	{
-		return pack_values<Uint16, false, 0x8000, 0x7C00, 0x03E0, 0x001F>(normalize, value);
+		if (normalize)
+		{
+			return pack_values<Uint16, 5, 5, 5, 1, false, true, true>(value);
+		}
+		else
+		{
+			return pack_values<Uint16, 5, 5, 5, 1, false, false, true>(value);
+		}
 	}
 
 	Uint16 PackTool::pack_uint_4_4_4_4(const bool normalize, const glm::vec4 &value)
 	{
-		return pack_values<Uint16, false, 0xF000, 0x0F00, 0x00F0, 0x000F>(normalize, value);
+		if (normalize)
+		{
+			return pack_values<Uint16, 4, 4, 4, 4, false, true, false>(value);
+		}
+		else
+		{
+			return pack_values<Uint16, 4, 4, 4, 4, false, false, false>(value);
+		}
 	}
 
 	Uint16 PackTool::pack_uint_4_4_4_4_rev(const bool normalize, const glm::vec4 &value)
 	{
-		return pack_values<Uint16, false, 0x000F, 0x00F0, 0x0F00, 0xF000>(normalize, value);
+		if (normalize)
+		{
+			return pack_values<Uint16, 4, 4, 4, 4, false, true, true>(value);
+		}
+		else
+		{
+			return pack_values<Uint16, 4, 4, 4, 4, false, false, true>(value);
+		}
 	}
 
 	Uint32 PackTool::pack_uint_10_10_10_2(const bool normalize, const glm::vec4 &value)
 	{
-		return pack_values<Uint32, false, 0xFFC00000, 0x003FF000, 0x00000FFC, 0x00000003>(normalize, value);
+		if (normalize)
+		{
+			return pack_values<Uint32, 10, 10, 10, 2, false, true, false>(value);
+		}
+		else
+		{
+			return pack_values<Uint32, 10, 10, 10, 2, false, false, false>(value);
+		}
 	}
 
 	Uint32 PackTool::pack_uint_2_10_10_10_rev(const bool normalize, const glm::vec4 &value)
 	{
-		return pack_values<Uint32, false, 0x000003FF, 0x000FFC00, 0x3FF00000, 0xC0000000>(normalize, value);
+		if (normalize)
+		{
+			return pack_values<Uint32, 10, 10, 10, 2, false, true, true>(value);
+		}
+		else
+		{
+			return pack_values<Uint32, 10, 10, 10, 2, false, false, true>(value);
+		}
 	}
 
 	Uint32 PackTool::pack_sint_10_10_10_2(const bool normalize, const glm::vec4 &value)
 	{
-		return pack_values<Uint64, true, 0xFFC00000, 0x003FF000, 0x00000FFC, 0x00000003>(normalize, value);
+		if (normalize)
+		{
+			return pack_values<Uint32, 10, 10, 10, 2, true, true, false>(value);
+		}
+		else
+		{
+			return pack_values<Uint32, 10, 10, 10, 2, true, false, false>(value);
+		}
 	}
 
 	Uint32 PackTool::pack_sint_2_10_10_10_rev(const bool normalize, const glm::vec4 &value)
 	{
-		return pack_values<Uint64, true, 0x000003FF, 0x000FFC00, 0x3FF00000, 0xC0000000>(normalize, value);
+		if (normalize)
+		{
+			return pack_values<Uint32, 10, 10, 10, 2, true, true, true>(value);
+		}
+		else
+		{
+			return pack_values<Uint32, 10, 10, 10, 2, true, false, true>(value);
+		}
 	}
+
+#define PACK_FORMAT(name, type, normalized, ptr)	\
+	case pft_##name##_1:	\
+		return convert_to_vec4<type, 1, normalized>(	\
+			static_cast<const type*>(ptr));	\
+	case pft_##name##_2:	\
+		return convert_to_vec4<type, 2, normalized>(	\
+			static_cast<const type*>(ptr));	\
+	case pft_##name##_3:	\
+		return convert_to_vec4<type, 3, normalized>(	\
+			static_cast<const type*>(ptr));	\
+	case pft_##name##_4:	\
+		return convert_to_vec4<type, 4, normalized>(	\
+			static_cast<const type*>(ptr));
+
+#define PACK_FORMAT_INT(name, type, ptr)	\
+	PACK_FORMAT(unsigned_##name, unsigned type, false, ptr)	\
+	PACK_FORMAT(signed_##name, signed type, false, ptr)	\
+	PACK_FORMAT(unsigned_normalized_##name, unsigned type, true, ptr)	\
+	PACK_FORMAT(signed_normalized_##name, signed type, true, ptr)
+
+#define PACK_FORMAT_PACKED_3(name, type, x, y, z, ptr)	\
+	case pft_unsigned_##name##_##x##_##y##_##z:	\
+		return unpack_values<type, x, y, z, 0, false, false, false>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_signed_##name##_##x##_##y##_##z:	\
+		return unpack_values<type, x, y, z, 0, true, false, false>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_unsigned_normalized_##name##_##x##_##y##_##z:	\
+		return unpack_values<type, x, y, z, 0, false, true, false>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_signed_normalized_##name##_##x##_##y##_##z:	\
+		return unpack_values<type, x, y, z, 0, true, true, false>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_unsigned_##name##_rev_##z##_##y##_##x:	\
+		return unpack_values<type, z, y, x, 0, false, false, true>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_signed_##name##_rev_##z##_##y##_##x:	\
+		return unpack_values<type, z, y, x, 0, true, false, true>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_unsigned_normalized_##name##_rev_##z##_##y##_##x:	\
+		return unpack_values<type, z, y, x, 0, false, true, true>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_signed_normalized_##name##_rev_##z##_##y##_##x:	\
+		return unpack_values<type, z, y, x, 0, true, true, true>(	\
+			*static_cast<const type*>(ptr));
+
+#define PACK_FORMAT_PACKED_4(name, type, x, y, z, w, ptr)	\
+	case pft_unsigned_##name##_##x##_##y##_##z##_##w:	\
+		return unpack_values<type, x, y, z, w, false, false, false>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_signed_##name##_##x##_##y##_##z##_##w:	\
+		return unpack_values<type, x, y, z, w, true, false, false>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_unsigned_normalized_##name##_##x##_##y##_##z##_##w:	\
+		return unpack_values<type, x, y, z, w, false, true, false>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_signed_normalized_##name##_##x##_##y##_##z##_##w:	\
+		return unpack_values<type, x, y, z, w, true, true, false>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_unsigned_##name##_rev_##w##_##z##_##y##_##x:	\
+		return unpack_values<type, w, z, y, x, false, false, true>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_signed_##name##_rev_##w##_##z##_##y##_##x:	\
+		return unpack_values<type, w, z, y, x, true, false, true>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_unsigned_normalized_##name##_rev_##w##_##z##_##y##_##x:	\
+		return unpack_values<type, w, z, y, x, false, true, true>(	\
+			*static_cast<const type*>(ptr));	\
+	case pft_signed_normalized_##name##_rev_##w##_##z##_##y##_##x:	\
+		return unpack_values<type, w, z, y, x, true, true, true>(	\
+			*static_cast<const type*>(ptr));
+
+	glm::vec4 PackTool::unpack_vec4(const AbstractReadMemoryBuffer &buffer,
+		const Uint64 offset, const PackFormatType type)
+	{
+		glm::vec4 result;
+		const void* ptr;
+
+		ptr = static_cast<const Uint8*>(buffer.get_ptr()) + offset;
+
+		switch (type)
+		{
+			PACK_FORMAT_INT(byte, char, ptr)
+			PACK_FORMAT_INT(short, short, ptr)
+			PACK_FORMAT_INT(int, int, ptr)
+			PACK_FORMAT_PACKED_3(byte, Uint8, 3, 3, 2, ptr)
+			PACK_FORMAT_PACKED_4(short, Uint16, 4, 4, 4, 4, ptr)
+			PACK_FORMAT_PACKED_3(short, Uint16, 5, 6, 5, ptr)
+			PACK_FORMAT_PACKED_4(short, Uint16, 5, 5, 5, 1, ptr)
+			PACK_FORMAT_PACKED_4(int, Uint32, 10, 10, 10, 2, ptr)
+			case pft_float_4:
+				result[3] = static_cast<const float*>(ptr)[3];
+			case pft_float_3:
+				result[2] = static_cast<const float*>(ptr)[2];
+			case pft_float_2:
+				result[1] = static_cast<const float*>(ptr)[1];
+			case pft_float_1:
+				result[0] = static_cast<const float*>(ptr)[0];
+				return result;
+			case pft_half_4:
+				result[3] = glm::detail::toFloat16(
+					static_cast<const glm::detail::hdata*>(
+						ptr)[3]);
+			case pft_half_3:
+				result[2] = glm::detail::toFloat16(
+					static_cast<const glm::detail::hdata*>(
+						ptr)[2]);
+			case pft_half_2:
+				result[1] = glm::detail::toFloat16(
+					static_cast<const glm::detail::hdata*>(
+						ptr)[1]);
+			case pft_half_1:
+				result[0] = glm::detail::toFloat16(
+					static_cast<const glm::detail::hdata*>(
+						ptr)[0]);
+				return result;
+		}
+
+		return glm::vec4(0.0f);
+	}
+
+#undef	PACK_FORMAT
+#undef	PACK_FORMAT_INT
+#undef	PACK_FORMAT_PACKED_3
+#undef	PACK_FORMAT_PACKED_4
+
+#define PACK_FORMAT(name, type, normalized, data, ptr)	\
+	case pft_##name##_1:	\
+		convert_from_vec4<type, 1, normalized>(data,	\
+			static_cast<type*>(ptr));	\
+		return;	\
+	case pft_##name##_2:	\
+		convert_from_vec4<type, 2, normalized>(data,	\
+			static_cast<type*>(ptr));	\
+		return;	\
+	case pft_##name##_3:	\
+		convert_from_vec4<type, 3, normalized>(data,	\
+			static_cast<type*>(ptr));	\
+		return;	\
+	case pft_##name##_4:	\
+		convert_from_vec4<type, 4, normalized>(data,	\
+			static_cast<type*>(ptr));	\
+		return;
+
+#define PACK_FORMAT_INT(name, type, data, ptr)	\
+	PACK_FORMAT(unsigned_##name, unsigned type, false, data, ptr)	\
+	PACK_FORMAT(signed_##name, signed type, false, data, ptr)	\
+	PACK_FORMAT(unsigned_normalized_##name, unsigned type, true, data, ptr)	\
+	PACK_FORMAT(signed_normalized_##name, signed type, true, data, ptr)
+
+#define PACK_FORMAT_PACKED_3(name, type, x, y, z, data, ptr)	\
+	case pft_unsigned_##name##_##x##_##y##_##z:	\
+		*static_cast<type*>(ptr) = pack_values<type, x, y, z, 0, false,	\
+			false, false>(data);	\
+		return;	\
+	case pft_signed_##name##_##x##_##y##_##z:	\
+		*static_cast<type*>(ptr) = pack_values<type, x, y, z, 0, true,	\
+			false, false>(data);	\
+		return;	\
+	case pft_unsigned_normalized_##name##_##x##_##y##_##z:	\
+		*static_cast<type*>(ptr) = pack_values<type, x, y, z, 0, false,	\
+			true, false>(data);	\
+		return;	\
+	case pft_signed_normalized_##name##_##x##_##y##_##z:	\
+		*static_cast<type*>(ptr) = pack_values<type, x, y, z, 0, true,	\
+			true, false>(data);	\
+		return;	\
+	case pft_unsigned_##name##_rev_##z##_##y##_##x:	\
+		*static_cast<type*>(ptr) = pack_values<type, z, y, x, 0, false,	\
+			false, true>(data);	\
+		return;	\
+	case pft_signed_##name##_rev_##z##_##y##_##x:	\
+		*static_cast<type*>(ptr) = pack_values<type, z, y, x, 0, true,	\
+			false, true>(data);	\
+		return;	\
+	case pft_unsigned_normalized_##name##_rev_##z##_##y##_##x:	\
+		*static_cast<type*>(ptr) = pack_values<type, z, y, x, 0, false,	\
+			true, true>(data);	\
+		return;	\
+	case pft_signed_normalized_##name##_rev_##z##_##y##_##x:	\
+		*static_cast<type*>(ptr) = pack_values<type, z, y, x, 0, true,	\
+			true, true>(data);	\
+		return;
+
+#define PACK_FORMAT_PACKED_4(name, type, x, y, z, w, data, ptr)	\
+	case pft_unsigned_##name##_##x##_##y##_##z##_##w:	\
+		*static_cast<type*>(ptr) = pack_values<type, x, y, z, w, false,	\
+			false, false>(data);	\
+		return;	\
+	case pft_signed_##name##_##x##_##y##_##z##_##w:	\
+		*static_cast<type*>(ptr) = pack_values<type, x, y, z, w, true,	\
+			false, false>(data);	\
+		return;	\
+	case pft_unsigned_normalized_##name##_##x##_##y##_##z##_##w:	\
+		*static_cast<type*>(ptr) = pack_values<type, x, y, z, w, false,	\
+			true, false>(data);	\
+		return;	\
+	case pft_signed_normalized_##name##_##x##_##y##_##z##_##w:	\
+		*static_cast<type*>(ptr) = pack_values<type, x, y, z, w, true,	\
+			true, false>(data);	\
+		return;	\
+	case pft_unsigned_##name##_rev_##w##_##z##_##y##_##x:	\
+		*static_cast<type*>(ptr) = pack_values<type, w, z, y, x, false,	\
+			false, true>(data);	\
+		return;	\
+	case pft_signed_##name##_rev_##w##_##z##_##y##_##x:	\
+		*static_cast<type*>(ptr) = pack_values<type, w, z, y, x, true,	\
+			false, true>(data);	\
+		return;	\
+	case pft_unsigned_normalized_##name##_rev_##w##_##z##_##y##_##x:	\
+		*static_cast<type*>(ptr) = pack_values<type, w, z, y, x, false,	\
+			true, true>(data);	\
+		return;	\
+	case pft_signed_normalized_##name##_rev_##w##_##z##_##y##_##x:	\
+		*static_cast<type*>(ptr) = pack_values<type, w, z, y, x, true,	\
+			true, true>(data);	\
+		return;
+
+	void PackTool::pack(const Uint64 offset, const PackFormatType type,
+		const glm::vec4 &data, AbstractWriteMemoryBuffer &buffer)
+	{
+		void* ptr;
+
+		ptr = static_cast<Uint8*>(buffer.get_ptr()) + offset;
+
+		switch (type)
+		{
+			PACK_FORMAT_INT(byte, char, data, ptr)
+			PACK_FORMAT_INT(short, short, data, ptr)
+			PACK_FORMAT_INT(int, int, data, ptr)
+			PACK_FORMAT_PACKED_3(byte, Uint8, 3, 3, 2, data, ptr)
+			PACK_FORMAT_PACKED_4(short, Uint16, 4, 4, 4, 4, data, ptr)
+			PACK_FORMAT_PACKED_3(short, Uint16, 5, 6, 5, data, ptr)
+			PACK_FORMAT_PACKED_4(short, Uint16, 5, 5, 5, 1, data, ptr)
+			PACK_FORMAT_PACKED_4(int, Uint32, 10, 10, 10, 2, data, ptr)
+			case pft_float_4:
+				static_cast<float*>(ptr)[3] = data[3];
+			case pft_float_3:
+				static_cast<float*>(ptr)[2] = data[2];
+			case pft_float_2:
+				static_cast<float*>(ptr)[1] = data[1];
+			case pft_float_1:
+				static_cast<float*>(ptr)[0] = data[0];
+				return;
+			case pft_half_4:
+				static_cast<glm::detail::hdata*>(ptr)[3] =
+					glm::detail::toFloat32(data[3]);
+			case pft_half_3:
+				static_cast<glm::detail::hdata*>(ptr)[2] =
+					glm::detail::toFloat32(data[2]);
+			case pft_half_2:
+				static_cast<glm::detail::hdata*>(ptr)[1] =
+					glm::detail::toFloat32(data[1]);
+			case pft_half_1:
+				static_cast<glm::detail::hdata*>(ptr)[0] =
+					glm::detail::toFloat32(data[0]);
+				return;
+		}
+	}
+
+#undef	PACK_FORMAT
+#undef	PACK_FORMAT_INT
+#undef	PACK_FORMAT_PACKED_3
+#undef	PACK_FORMAT_PACKED_4
 
 }

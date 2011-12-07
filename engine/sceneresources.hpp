@@ -33,10 +33,7 @@ namespace eternal_lands
 			MeshDataCacheSharedPtr m_mesh_data_cache;
 			ActorDataCacheSharedPtr m_actor_data_cache;
 			ShaderSourceBuilderSharedPtr m_shader_source_builder;
-			boost::scoped_ptr<Filter> m_filter_channels_1;
-			boost::scoped_ptr<Filter> m_filter_channels_2;
-			boost::scoped_ptr<Filter> m_filter_channels_3;
-			boost::scoped_ptr<Filter> m_filter_channels_4;
+			boost::scoped_ptr<Filter> m_filter;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
@@ -128,20 +125,9 @@ namespace eternal_lands
 				return m_shader_source_builder;
 			}
 
-			inline Filter &get_filter(const Uint16 channels) const
+			inline Filter &get_filter() const
 			{
-				switch (channels)
-				{
-					case 1:
-						return *m_filter_channels_1;
-					case 2:
-						return *m_filter_channels_2;
-					case 3:
-						return *m_filter_channels_3;
-					case 4:
-					default:
-						return *m_filter_channels_4;
-				}
+				return *m_filter;
 			}
 
 	};
@@ -149,4 +135,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_90784f4e_4047_496d_ba28_81d920a6e71e */
-

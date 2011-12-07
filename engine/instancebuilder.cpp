@@ -282,13 +282,11 @@ namespace eternal_lands
 		SubMesh sub_mesh;
 		SubObject sub_object;
 		glm::vec3 min, max;
-		Uint32 count, i;
+		Uint32 count, i, min_vertex, max_vertex, offset;
 
 		sub_mesh.set_offset(index_offset);
 		sub_mesh.set_min_vertex(vertex_offset);
 
-		sub_object.set_offset(index_offset);
-		sub_object.set_min_vertex(vertex_offset);
 		sub_object.set_material(sub_mesh_index);
 
 		BOOST_FOREACH(const InstancingData &instancing_data,
@@ -302,19 +300,22 @@ namespace eternal_lands
 
 			for (i = 0; i < count; i++)
 			{
+				offset = index_offset;
+				min_vertex = vertex_offset;
+
 				if (build_sub_mesh(center, instancing_data,
 					mesh_data_tool, material, i, min, max,
 					vertex_offset, index_offset))
 				{
+					max_vertex = vertex_offset - 1;
+
+					sub_object.set_offset(offset);
+					sub_object.set_min_vertex(min_vertex);
 					sub_object.set_count(index_offset -
-						sub_object.get_offset());
-					sub_object.set_max_vertex(
-						vertex_offset - 1);
+						offset);
+					sub_object.set_max_vertex(max_vertex);
 
 					sub_objects.push_back(sub_object);
-
-					sub_object.set_offset(index_offset);
-					sub_object.set_min_vertex(vertex_offset);
 				}	
 			}
 		}
@@ -398,7 +399,7 @@ namespace eternal_lands
 		world_matrix[3] = center;
 
 		m_instance_data.reset(new InstanceData(ObjectData(world_matrix,
-			glm::vec4(0.0f), String(L"Instance"), 1.0f,
+			glm::vec4(0.0f), String(UTF8("Instance")), 1.0f,
 			get_id(), selection, false), mesh_data_tool, materials,
 			instanced_objects));
 	}

@@ -58,7 +58,7 @@ namespace eternal_lands
 			 */
 			InstancesBuilder(
 				const MeshDataCacheWeakPtr &mesh_data_cache,
-				const float max_size = 16.0f);
+				const float max_size = 8.0f);
 
 			/**
 			 * Default destructor.

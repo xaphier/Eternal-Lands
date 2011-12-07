@@ -16,15 +16,15 @@ namespace eternal_lands
 
 		const String selection_type_datas[] =
 		{
-			String(L"none"),
-			String(L"select"),
-			String(L"harvest"),
-			String(L"pick"),
-			String(L"enter"),
-			String(L"pick"),
-			String(L"npc"),
-			String(L"player"),
-			String(L"animal")
+			String(UTF8("none")),
+			String(UTF8("select")),
+			String(UTF8("harvest")),
+			String(UTF8("pick")),
+			String(UTF8("enter")),
+			String(UTF8("pick")),
+			String(UTF8("npc")),
+			String(UTF8("player")),
+			String(UTF8("animal"))
 		};
 
 		const Uint32 selection_type_datas_count =
@@ -42,8 +42,8 @@ namespace eternal_lands
 					selection_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					selection))
-				<< boost::errinfo_type_info_name(
-					"SelectionType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"SelectionType")));
 		}
 
 		return selection_type_datas[selection];
@@ -66,8 +66,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name(
-				"SelectionType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"SelectionType")));
 	}
 
 	OutStream& operator<<(OutStream &str, const SelectionType value)

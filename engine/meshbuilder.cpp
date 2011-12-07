@@ -21,20 +21,20 @@ namespace eternal_lands
 
 		const String vertex_format_type_names[] =
 		{
-			String(L"mesh"),
-			String(L"animated_mesh"),
-			String(L"morph_mesh"),
-			String(L"mesh_tangent"),
-			String(L"animated_mesh_tangent"),
-			String(L"morph_mesh_tangent"),
-			String(L"mesh_extra_uv"),
-			String(L"animated_mesh_extra_uv"),
-			String(L"morph_mesh_extra_uv"),
-			String(L"mesh_tangent_extra_uv"),
-			String(L"animated_mesh_tangent_extra_uv"),
-			String(L"morph_mesh_tangent_extra_uv"),
-			String(L"rect"),
-			String(L"sprite"),
+			String(UTF8("mesh")),
+			String(UTF8("animated_mesh")),
+			String(UTF8("morph_mesh")),
+			String(UTF8("mesh_tangent")),
+			String(UTF8("animated_mesh_tangent")),
+			String(UTF8("morph_mesh_tangent")),
+			String(UTF8("mesh_extra_uv")),
+			String(UTF8("animated_mesh_extra_uv")),
+			String(UTF8("morph_mesh_extra_uv")),
+			String(UTF8("mesh_tangent_extra_uv")),
+			String(UTF8("animated_mesh_tangent_extra_uv")),
+			String(UTF8("morph_mesh_tangent_extra_uv")),
+			String(UTF8("rect")),
+			String(UTF8("sprite"))
 		};
 
 		const Uint32 vertex_format_type_names_count =
@@ -238,8 +238,8 @@ namespace eternal_lands
 		if (found == m_vertex_formats.end())
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(
-					L"Invalid vertex format")
+				<< errinfo_message(UTF8("Invalid vertex "
+					"format"))
 				<< errinfo_value(vertex_format));
 		}
 
@@ -256,8 +256,8 @@ namespace eternal_lands
 					vertex_format_type_names_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_format))
-				<< boost::errinfo_type_info_name(
-					"VertexFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexFormatType")));
 		}
 
 		return vertex_format_type_names[vertex_format];
@@ -280,8 +280,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name(
-				"VertexFormatType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"VertexFormatType")));
 	}
 
 	OutStream& operator<<(OutStream &str,

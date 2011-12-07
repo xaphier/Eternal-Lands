@@ -39,10 +39,6 @@
     </parameter>
    </parameters>
    <source>{
-	const float over_darkening_factor = 1.5;
-
-//	shadow_map_data = vec3(shadow_view_matrix * vec4(world_position, 1.0)).zzz;
-//	shadow_map_data = vec3((over_darkening_factor * view_position.z));
 	shadow_map_data = vec3(exp(distance(shadow_camera.xyz, world_position)));
 }
 </source>

@@ -32,152 +32,152 @@ namespace eternal_lands
 
 				void operator()(const bool value) const
 				{
-					m_name = String(L"bool");
+					m_name = String(UTF8("bool"));
 				}
 
 				void operator()(const float value) const
 				{
-					m_name = String(L"float");
+					m_name = String(UTF8("float"));
 				}
 
 				void operator()(const Sint64 value) const
 				{
-					m_name = String(L"int");
+					m_name = String(UTF8("int"));
 				}
 
 				void operator()(const glm::vec2 &value) const
 				{
-					m_name = String(L"vec2");
+					m_name = String(UTF8("vec2"));
 				}
 
 				void operator()(const glm::vec3 &value) const
 				{
-					m_name = String(L"vec3");
+					m_name = String(UTF8("vec3"));
 				}
 
 				void operator()(const glm::vec4 &value) const
 				{
-					m_name = String(L"vec4");
+					m_name = String(UTF8("vec4"));
 				}
 
 				void operator()(const glm::ivec2 &value) const
 				{
-					m_name = String(L"ivec2");
+					m_name = String(UTF8("ivec2"));
 				}
 
 				void operator()(const glm::ivec3 &value) const
 				{
-					m_name = String(L"ivec3");
+					m_name = String(UTF8("ivec3"));
 				}
 
 				void operator()(const glm::ivec4 &value) const
 				{
-					m_name = String(L"ivec4");
+					m_name = String(UTF8("ivec4"));
 				}
 
 				void operator()(const glm::uvec2 &value) const
 				{
-					m_name = String(L"uvec2");
+					m_name = String(UTF8("uvec2"));
 				}
 
 				void operator()(const glm::uvec3 &value) const
 				{
-					m_name = String(L"uvec3");
+					m_name = String(UTF8("uvec3"));
 				}
 
 				void operator()(const glm::uvec4 &value) const
 				{
-					m_name = String(L"uvec4");
+					m_name = String(UTF8("uvec4"));
 				}
 
 				void operator()(const glm::bvec2 &value) const
 				{
-					m_name = String(L"bvec2");
+					m_name = String(UTF8("bvec2"));
 				}
 
 				void operator()(const glm::bvec3 &value) const
 				{
-					m_name = String(L"bvec3");
+					m_name = String(UTF8("bvec3"));
 				}
 
 				void operator()(const glm::bvec4 &value) const
 				{
-					m_name = String(L"bvec4");
+					m_name = String(UTF8("bvec4"));
 				}
 
 				void operator()(const glm::mat2x2 &value) const
 				{
-					m_name = String(L"mat2x2");
+					m_name = String(UTF8("mat2x2"));
 				}
 
 				void operator()(const glm::mat2x3 &value) const
 				{
-					m_name = String(L"mat2x3");
+					m_name = String(UTF8("mat2x3"));
 				}
 
 				void operator()(const glm::mat2x4 &value) const
 				{
-					m_name = String(L"mat2x4");
+					m_name = String(UTF8("mat2x4"));
 				}
 
 				void operator()(const glm::mat3x2 &value) const
 				{
-					m_name = String(L"mat3x2");
+					m_name = String(UTF8("mat3x2"));
 				}
 
 				void operator()(const glm::mat3x3 &value) const
 				{
-					m_name = String(L"mat3x3");
+					m_name = String(UTF8("mat3x3"));
 				}
 
 				void operator()(const glm::mat3x4 &value) const
 				{
-					m_name = String(L"mat3x4");
+					m_name = String(UTF8("mat3x4"));
 				}
 
 				void operator()(const glm::mat4x2 &value) const
 				{
-					m_name = String(L"mat4x2");
+					m_name = String(UTF8("mat4x2"));
 				}
 
 				void operator()(const glm::mat4x3 &value) const
 				{
-					m_name = String(L"mat4x3");
+					m_name = String(UTF8("mat4x3"));
 				}
 
 				void operator()(const glm::mat4x4 &value) const
 				{
-					m_name = String(L"mat4x4");
+					m_name = String(UTF8("mat4x4"));
 				}
 
 				void operator()(const Ivec4Vector &value) const
 				{
-					m_name = String(L"ivec4_vector");
+					m_name = String(UTF8("ivec4_vector"));
 				}
 
 				void operator()(const Uvec4Vector &value) const
 				{
-					m_name = String(L"uvec4_vector");
+					m_name = String(UTF8("uvec4_vector"));
 				}
 
 				void operator()(const Vec4Vector &value) const
 				{
-					m_name = String(L"vec4_vector");
+					m_name = String(UTF8("vec4_vector"));
 				}
 
 				void operator()(const Mat2x4Vector &value) const
 				{
-					m_name = String(L"mat2x4_vector");
+					m_name = String(UTF8("mat2x4_vector"));
 				}
 
 				void operator()(const Mat3x4Vector &value) const
 				{
-					m_name = String(L"mat3x4_vector");
+					m_name = String(UTF8("mat3x4_vector"));
 				}
 
 				void operator()(const Mat4x4Vector &value) const
 				{
-					m_name = String(L"mat4x4_vector");
+					m_name = String(UTF8("mat4x4_vector"));
 				}
 
 		};

@@ -26,4 +26,18 @@ namespace eternal_lands
 	{
 	}
 
+	OutStream& operator<<(OutStream &str, const SubObject &value)
+	{
+		str << "[offset]: " << value.get_offset() << std::endl;
+		str << "[count]: " << value.get_count() << std::endl;
+		str << "[min_vertex]: " << value.get_min_vertex() << std::endl;
+		str << "[max_vertex]: " << value.get_max_vertex() << std::endl;
+		str << "[base_vertex]: " << value.get_base_vertex() << std::endl;
+		str << "[id]: " << value.get_id() << std::endl;
+		str << "[material]: " << value.get_material() << std::endl;
+		str << "[selection]: " << value.get_selection() << std::endl;
+
+		return str;
+	}
+
 }

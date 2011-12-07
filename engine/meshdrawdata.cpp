@@ -27,4 +27,15 @@ namespace eternal_lands
 	{
 	}
 
+	OutStream& operator<<(OutStream &str, const MeshDrawData &value)
+	{
+		str << "[offset]: " << value.get_offset() << std::endl;
+		str << "[count]: " << value.get_count() << std::endl;
+		str << "[min_vertex]: " << value.get_min_vertex() << std::endl;
+		str << "[max_vertex]: " << value.get_max_vertex() << std::endl;
+		str << "[base_vertex]: " << value.get_base_vertex() << std::endl;
+
+		return str;
+	}
+
 }

@@ -64,9 +64,9 @@ namespace eternal_lands
 	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemWeakPtr &file_system):
 		m_global_vars(global_vars), m_scene_resources(global_vars,
-			file_system), m_scene_view(global_vars), m_name(L""),
-		m_frame_id(0), m_id(0), m_dungeon(false),
-		m_shadow_map_change(true)
+			file_system), m_scene_view(global_vars),
+			m_name(UTF8("")), m_frame_id(0), m_program_vars_id(0),
+			m_id(0), m_dungeon(false), m_shadow_map_change(true)
 	{
 		m_light_tree.reset(new RStarTree());
 		m_object_tree.reset(new RStarTree());
@@ -278,7 +278,7 @@ namespace eternal_lands
 			}
 
 			m_shadow_frame_buffer = FrameBufferBuilder::build(
-				String(L"Shadow"), shadow_map_width,
+				String(UTF8("Shadow")), shadow_map_width,
 				shadow_map_height, shadow_map_count,
 				mipmaps, samples, tft_r32f);
 
@@ -286,7 +286,7 @@ namespace eternal_lands
 			{
 				m_shadow_filter_frame_buffer =
 					FrameBufferBuilder::build_filter(
-						String(L"ShadowFilter"),
+						String(UTF8("ShadowFilter")),
 						shadow_map_width,
 						shadow_map_height, tft_r32f);
 			}
@@ -298,7 +298,7 @@ namespace eternal_lands
 		else
 		{
 			m_shadow_frame_buffer = FrameBufferBuilder::build(
-				String(L"Shadow"), shadow_map_width,
+				String(UTF8("Shadow")), shadow_map_width,
 				shadow_map_height, 0, tft_depth32);
 		}
 
@@ -579,7 +579,7 @@ namespace eternal_lands
 			return result;
 		}
 
-		if (m_frame_id != program->get_last_used())
+		if (m_program_vars_id != program->get_last_used())
 		{
 			program->set_parameter(apt_view_matrix,
 				m_scene_view.get_current_view_matrix());
@@ -609,7 +609,7 @@ namespace eternal_lands
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 
-			program->set_last_used(m_frame_id);
+			program->set_last_used(m_program_vars_id);
 		}
 
 		return result;
@@ -748,7 +748,6 @@ namespace eternal_lands
 		}
 
 		object->get_materials()[material].bind(m_state_manager);
-
 		m_state_manager.get_mesh()->draw(sub_object);
 	}
 
@@ -781,7 +780,7 @@ namespace eternal_lands
 			}
 		}
 
-		m_frame_id++;
+		m_program_vars_id++;
 
 		m_shadow_frame_buffer->blit();
 
@@ -802,15 +801,17 @@ namespace eternal_lands
 			m_shadow_filter_frame_buffer->clear(glm::vec4(0));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_frame_buffer->get_texture());
-			m_scene_resources.get_filter(1).bind(width,
-				height, index, false, m_state_manager);
+			m_scene_resources.get_filter().bind(width,
+				height, index, 1, ft_gauss_5_tap, false,
+				m_state_manager);
 
 			m_shadow_frame_buffer->bind_texture(index);
 			m_shadow_frame_buffer->clear(glm::vec4(0));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_filter_frame_buffer->get_texture());
-			m_scene_resources.get_filter(1).bind(width,
-				height, true, m_state_manager);
+			m_scene_resources.get_filter().bind(width,
+				height, 1, ft_gauss_5_tap, true,
+				m_state_manager);
 		}
 
 		unbind_all();
@@ -883,12 +884,12 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
+		m_state_manager.init();
+
 		if (m_scene_view.get_shadow_map_count() > 0)
 		{
 			draw_all_shadows();
 		}
-
-		m_state_manager.init();
 
 		m_scene_view.set_default_view();
 
@@ -922,74 +923,12 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
+		m_program_vars_id++;
 		m_frame_id++;
 	}
 
-	void Scene::filter_draw()
-	{
-		static GlslProgramSharedPtr filter;
-
-		if (m_shadow_filter_frame_buffer.get() == 0)
-		{
-			return;
-		}
-
-		if (filter.get() == 0)
-		{
-			String vertex, fragment;
-			StringVariantMap values;
-			Variant value;
-
-			vertex = L"#version 130\n"
-				"attribute vec2 position;\n"
-				"\n"
-				"varying vec2 uv;\n"
-				"\n"
-				"uniform vec4 scale_offset;\n"
-				"\n"
-				"void main()\n"
-				"{\n"
-				"\tgl_Position = vec4(position * scale_offset.xy + scale_offset.zw, 0.5, 1.0);"
-				"\n"
-				"\tuv = position;\n"
-				"}\n";
-
-			fragment = L"#version 130\n"
-				"varying vec2 uv;\n"
-				"\n"
-//				"uniform sampler2DArray diffuse_sampler;\n"
-				"uniform sampler2D diffuse_sampler;\n"
-				"\n"
-				"void main()\n"
-				"{\n"
-//				"\tgl_FragColor = log(texture(diffuse_sampler, vec3(uv, index))) * 0.1;\n"
-				"\tgl_FragColor = log(texture(diffuse_sampler, uv)) / 100.0;\n"
-				"}\n";
-
-			value = Variant(static_cast<Sint64>(stt_shadow));
-			values[String(L"diffuse_sampler")] = value;
-
-			filter = boost::make_shared<GlslProgram>(vertex,
-				fragment, values, String(L"filter"));
-		}
-		unbind_all();
-
-		m_state_manager.switch_depth_test(false);
-
-		m_state_manager.switch_program(filter);
-		m_state_manager.switch_texture(stt_shadow,
-//			m_shadow_frame_buffer->get_texture());
-			m_shadow_filter_frame_buffer->get_texture());
-
-		filter->set_variant_parameter(String(L"scale_offset"),
-			glm::vec4(1.0f, 1.0f, -2.0f, -2.0f) / 2.0f);
-		glRectf(0.0f, 0.0f, 1.0f, 1.0f);
-
-		unbind_all();
-	}
-
 	void Scene::pick_object(const ObjectSharedPtr &object,
-		Uint32PairUint32SelectionTypeMap &id_map, Uint32 &index,
+		PairUint32SelectionTypeVector &ids,
 		const glm::vec2 &min, const glm::vec2 &max)
 	{
 		PairUint32SelectionType data;
@@ -1004,13 +943,14 @@ namespace eternal_lands
 		{
 			data.first = object->get_id();
 			data.second = object->get_selection();
-			id_map[index] = data;
-			glBeginQuery(GL_SAMPLES_PASSED, querie_ids[index]);
+
+			glBeginQuery(GL_SAMPLES_PASSED, querie_ids[ids.size()]);
 
 			draw_object_depth(object);
 
 			glEndQuery(GL_SAMPLES_PASSED);
-			index++;
+
+			ids.push_back(data);
 		}
 		else
 		{
@@ -1028,16 +968,16 @@ namespace eternal_lands
 					)[i].get_id();
 				data.second =  object->get_sub_objects(
 					)[i].get_selection();
-				id_map[index] = data;
 
 				glBeginQuery(GL_SAMPLES_PASSED,
-					querie_ids[index]);
+					querie_ids[ids.size()]);
 
 				draw_sub_object_depth(object,
 					object->get_sub_objects()[i]);
 
 				glEndQuery(GL_SAMPLES_PASSED);
-				index++;
+
+				ids.push_back(data);
 			}
 		}
 	}
@@ -1045,53 +985,54 @@ namespace eternal_lands
 	Uint32 Scene::pick(const glm::vec2 &offset, const glm::vec2 &size,
 		SelectionType &selection)
 	{
-		Uint32PairUint32SelectionTypeMap id_map;
+		PairUint32SelectionTypeVector ids;
 		glm::vec2 min, max;
-		Uint32 i, index, max_count, count, id;
+		Uint32 i, max_count, count, id;
 		StateManagerUtil state(m_state_manager);
 
+		m_state_manager.unbind_all();
 		m_state_manager.switch_scissor_test(true);
 		glScissor(offset.x - size.x, offset.y - size.y, 2 * size.x,
 			2 * size.y);
-		glDepthFunc(GL_LEQUAL);
 		m_state_manager.switch_color_mask(glm::bvec4(false));
 		m_state_manager.switch_depth_mask(false);
 		m_state_manager.switch_multisample(false);
+		glDepthFunc(GL_LEQUAL);
 
 		min = offset - size;
 		max = offset + size;
-
-		index = 0;
 
 		m_scene_view.set_default_view();
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			pick_object(object.get_object(), id_map, index, min,
-				max);
+			pick_object(object.get_object(), ids, min, max);
 		}
 
-		m_frame_id++;
+		m_program_vars_id++;
 
 		max_count = 0;
 		id = 0xFFFFFF;
 		selection = st_none;
 
-		for (i = 0; i < index; i++)
+		for (i = 0; i < ids.size(); i++)
 		{
 			count = 0;
+
 			glGetQueryObjectuiv(querie_ids[i], GL_QUERY_RESULT,
 				&count);
 
 			if (count > max_count)
 			{
-				id = id_map[i].first;
-				selection = id_map[i].second;
+				id = ids[i].first;
+				selection = ids[i].second;
 
 				max_count = count;
 			}
 		}
+
+		CHECK_GL_ERROR();
 
 		return id;
 	}

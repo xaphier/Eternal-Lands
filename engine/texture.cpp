@@ -134,7 +134,7 @@ namespace eternal_lands
 		 * because we forgot to add all types to the switch or an invalid int
 		 * was used (with a type cast)!
 		 */
-		VALUE_NOT_IN_SWITCH(get_target(), "TextureTargetType");
+		VALUE_NOT_IN_SWITCH(get_target(), UTF8("TextureTargetType"));
 	}
 
 	void Texture::set_texture_parameter()
@@ -144,26 +144,25 @@ namespace eternal_lands
 			if (get_use_mipmaps())
 			{
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_message(L"Can't use mipmaps"
-						" for ractangle textures"));
+					<< errinfo_message(UTF8("Can't use "
+						"mipmaps for ractangle "
+						"textures")));
 			}
 
 			if (get_wrap_s() != twt_clamp)
 			{
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_message(
-						L"Only valid wrapping mode for"
-						" ractangle textures is "
-						"clamp"));
+					<< errinfo_message(UTF8("Only valid "
+						"wrapping mode for ractangle "
+						"textures is clamp")));
 			}
 
 			if (get_wrap_t() != twt_clamp)
 			{
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_message(
-						L"Only valid wrapping mode for"
-						" ractangle textures is "
-						"clamp"));
+					<< errinfo_message(UTF8("Only valid "
+						"wrapping mode for ractangle "
+						"textures is clamp")));
 			}
 		}
 
@@ -192,9 +191,10 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(L"Setting texture leve %1% of 1d texture"
-			" '%2%' using %3% data.", mipmap % get_name() %
-			(compressed ? L"compressed" : L"uncompressed"));
+		LOG_DEBUG(UTF8("Setting texture leve %1% of 1d texture"
+			" '%2%' using %3% data."), mipmap % get_name() %
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		CHECK_GL_ERROR();
 
@@ -228,9 +228,10 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(L"Setting texture leve %1% of 2d texture"
-			" '%2%' using %3% data.", mipmap % get_name() %
-			(compressed ? L"compressed" : L"uncompressed"));
+		LOG_DEBUG(UTF8("Setting texture leve %1% of 2d texture"
+			" '%2%' using %3% data."), mipmap % get_name() %
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		CHECK_GL_ERROR();
 
@@ -264,9 +265,10 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(L"Setting texture leve %1% of 3d texture"
-			" '%2%' using %3% data.", mipmap % get_name() %
-			(compressed ? L"compressed" :	L"uncompressed"));
+		LOG_DEBUG(UTF8("Setting texture leve %1% of 3d texture"
+			" '%2%' using %3% data."), mipmap % get_name() %
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		CHECK_GL_ERROR();
 
@@ -295,9 +297,10 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(L"Setting texture leve %1% of cube map "
-			"texture '%2%' using %3% data.", mipmap % get_name() %
-			(compressed ? L"compressed" :	L"uncompressed"));
+		LOG_DEBUG(UTF8("Setting texture leve %1% of cube map "
+			"texture '%2%' using %3% data."), mipmap % get_name() %
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		set_texture_image_cube_map_face(mipmap, width, height,
 			cmft_positive_x, image);
@@ -354,9 +357,10 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(L"Initializing texture leve %1% of %3% "
-			" cube map texture.", mipmap % get_name() %
-			(compressed ? L"compressed" :	L"uncompressed"));
+		LOG_DEBUG(UTF8("Initializing texture leve %1% of %3% "
+			" cube map texture."), mipmap % get_name() %
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		set_texture_image_cube_map_face(mipmap, width, height, depth,
 			cmft_positive_x, image);
@@ -418,10 +422,10 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(L"Setting texture leve %1%, layer %2% of 2d texture"
-			" array '%3%' using %4% data.", mipmap % layer
-			% get_name() % (compressed ? L"compressed" :
-				L"uncompressed"));
+		LOG_DEBUG(UTF8("Setting texture leve %1%, layer %2% of 2d "
+			"texture array '%3%' using %4% data."), mipmap % layer
+			% get_name() % (compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		CHECK_GL_ERROR();
 
@@ -457,10 +461,11 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, 1, 1);
 
-		LOG_DEBUG(L"Setting texture leve %1% of 1d texture"
-			" '%2%' using level %3% of %4% data.", texture_mipmap
+		LOG_DEBUG(UTF8("Setting texture leve %1% of 1d texture"
+			" '%2%' using level %3% of %4% data."), texture_mipmap
 			% get_name() % image_mipmap %
-			(compressed ? L"compressed" :	L"uncompressed"));
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		CHECK_GL_ERROR();
 
@@ -498,10 +503,11 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, height, 1);
 
-		LOG_DEBUG(L"Setting texture leve %1% of 2d texture"
-			" '%2%' using level %3% of %4% data.", texture_mipmap
+		LOG_DEBUG(UTF8("Setting texture leve %1% of 2d texture"
+			" '%2%' using level %3% of %4% data."), texture_mipmap
 			% get_name() % image_mipmap %
-			(compressed ? L"compressed" :	L"uncompressed"));
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		CHECK_GL_ERROR();
 
@@ -543,10 +549,11 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, height, depth);
 
-		LOG_DEBUG(L"Setting texture leve %1% of 3d texture"
-			" '%2%' using level %3% of %4% data.", texture_mipmap
+		LOG_DEBUG(UTF8("Setting texture leve %1% of 3d texture"
+			" '%2%' using level %3% of %4% data."), texture_mipmap
 			% get_name() % image_mipmap %
-			(compressed ? L"compressed" :	L"uncompressed"));
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		CHECK_GL_ERROR();
 
@@ -585,10 +592,11 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(L"Setting texture leve %1% of cube map "
-			"texture '%2%' using level %3% of %4% data.",
+		LOG_DEBUG(UTF8("Setting texture leve %1% of cube map "
+			"texture '%2%' using level %3% of %4% data."),
 			texture_mipmap % get_name() % image_mipmap %
-			(compressed ? L"compressed" :	L"uncompressed"));
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		set_texture_image_cube_map_face(texture_mipmap, image_mipmap,
 			width, height, cmft_positive_x, image, texture_position,
@@ -661,10 +669,11 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(L"Setting texture leve %1% of 1d texture"
-			" '%2%' using level %3% of %4% data.", texture_mipmap
+		LOG_DEBUG(UTF8("Setting texture leve %1% of 1d texture"
+			" '%2%' using level %3% of %4% data."), texture_mipmap
 			% get_name() % image_mipmap %
-			(compressed ? L"compressed" :	L"uncompressed"));
+			(compressed ? UTF8("compressed") :
+				UTF8("uncompressed")));
 
 		set_texture_image_cube_map_face(texture_mipmap, image_mipmap,
 			width, height, depth, cmft_positive_x, image,
@@ -734,8 +743,8 @@ namespace eternal_lands
 	{
 		GLenum format, type;
 
-		LOG_DEBUG(L"Initializationing texture leve %1% of"
-			" 1d texture '%2%'.", mipmap % get_name());
+		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
+			" 1d texture '%2%'."), mipmap % get_name());
 
 		CHECK_GL_ERROR();
 
@@ -753,8 +762,8 @@ namespace eternal_lands
 	{
 		GLenum format, type;
 
-		LOG_DEBUG(L"Initializationing texture leve %1% of"
-			" 2d texture '%2%'.", mipmap % get_name());
+		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
+			" 2d texture '%2%'."), mipmap % get_name());
 
 		CHECK_GL_ERROR();
 
@@ -772,8 +781,8 @@ namespace eternal_lands
 	{
 		GLenum format, type;
 
-		LOG_DEBUG(L"Initializationing texture leve %1% of"
-			" 3d texture '%2%'.", mipmap % get_name());
+		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
+			" 3d texture '%2%'."), mipmap % get_name());
 
 		CHECK_GL_ERROR();
 
@@ -789,8 +798,8 @@ namespace eternal_lands
 	void Texture::set_texture_image_cube_map(const Uint16 mipmap,
 		const Uint32 width, const Uint32 height)
 	{
-		LOG_DEBUG(L"Initializationing texture leve %1% of"
-			" cube map texture '%2%'.", mipmap % get_name());
+		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
+			" cube map texture '%2%'."), mipmap % get_name());
 
 		set_texture_image_cube_map_face(mipmap, width, height,
 			cmft_positive_x);
@@ -826,8 +835,8 @@ namespace eternal_lands
 	void Texture::set_texture_image_cube_map(const Uint16 mipmap,
 		const Uint32 width, const Uint32 height, const Uint32 depth)
 	{
-		LOG_DEBUG(L"Initializationing texture leve %1% of"
-			" cube map texture '%2%'.", mipmap % get_name());
+		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
+			" cube map texture '%2%'."), mipmap % get_name());
 
 		set_texture_image_cube_map_face(mipmap, width, height, depth,
 			cmft_positive_x);
@@ -913,8 +922,8 @@ namespace eternal_lands
 		depth = get_depth();
 		layer = get_depth();
 
-		LOG_DEBUG(L"Loading texture %1% of format %2%.", get_name() %
-			get_format());
+		LOG_DEBUG(UTF8("Loading texture %1% of format %2%."),
+			get_name() % get_format());
 
 		for (mip = 0; mip < level; mip++)
 		{
@@ -1457,24 +1466,24 @@ namespace eternal_lands
 		switch (value)
 		{
 			case cmft_negative_x:
-				return String(L"negative_x");
+				return String(UTF8("negative_x"));
 			case cmft_negative_y:
-				return String(L"negative_y");
+				return String(UTF8("negative_y"));
 			case cmft_negative_z:
-				return String(L"negative_z");
+				return String(UTF8("negative_z"));
 			case cmft_positive_x:
-				return String(L"positive_x");
+				return String(UTF8("positive_x"));
 			case cmft_positive_y:
-				return String(L"positive_y");
+				return String(UTF8("positive_y"));
 			case cmft_positive_z:
-				return String(L"positive_z");
+				return String(UTF8("positive_z"));
 		}
 		/**
 		 * We should be never here. If so, it's a programming error,
 		 * because we forgot to add all types to the switch or an
 		 * invalid int was used (with a type cast)!
 		 */
-		VALUE_NOT_IN_SWITCH(value, "CubeMapFaceType");
+		VALUE_NOT_IN_SWITCH(value, UTF8("CubeMapFaceType"));
 	}
 
 	String Texture::get_str(const TextureTargetType value)
@@ -1482,28 +1491,28 @@ namespace eternal_lands
 		switch (value)
 		{
 			case ttt_1d_texture:
-				return String(L"1d_texture");
+				return String(UTF8("1d_texture"));
 			case ttt_2d_texture:
-				return String(L"2d_texture");
+				return String(UTF8("2d_texture"));
 			case ttt_3d_texture:
-				return String(L"3d_texture");
+				return String(UTF8("3d_texture"));
 			case ttt_cube_map_texture:
-				return String(L"cube_map_texture");
+				return String(UTF8("cube_map_texture"));
 			case ttt_1d_texture_array:
-				return String(L"1d_texture_array");
+				return String(UTF8("1d_texture_array"));
 			case ttt_2d_texture_array:
-				return String(L"2d_texture_array");
+				return String(UTF8("2d_texture_array"));
 			case ttt_cube_map_texture_array:
-				return String(L"cube_map_texture_array");
+				return String(UTF8("cube_map_texture_array"));
 			case ttt_texture_rectangle:
-				return String(L"texture_rectangle");
+				return String(UTF8("texture_rectangle"));
 		}
 		/**
 		 * We should be never here. If so, it's a programming error,
 		 * because we forgot to add all types to the switch or an
 		 * invalid int was used (with a type cast)!
 		 */
-		VALUE_NOT_IN_SWITCH(value, "TextureTargetType");
+		VALUE_NOT_IN_SWITCH(value, UTF8("TextureTargetType"));
 	}
 
 	String Texture::get_str(const TextureFilterType value)
@@ -1511,16 +1520,16 @@ namespace eternal_lands
 		switch (value)
 		{
 			case tft_nearest:
-				return String(L"nearest");
+				return String(UTF8("nearest"));
 			case tft_linear:
-				return String(L"linear");
+				return String(UTF8("linear"));
 		}
 		/**
 		 * We should be never here. If so, it's a programming error,
 		 * because we forgot to add all types to the switch or an
 		 * invalid int was used (with a type cast)!
 		 */
-		VALUE_NOT_IN_SWITCH(value, "TextureFilterType");
+		VALUE_NOT_IN_SWITCH(value, UTF8("TextureFilterType"));
 	}
 
 	String Texture::get_str(const TextureMipmapType value)
@@ -1528,18 +1537,18 @@ namespace eternal_lands
 		switch (value)
 		{
 			case tmt_none:
-				return String(L"none");
+				return String(UTF8("none"));
 			case tmt_nearest:
-				return String(L"nearest");
+				return String(UTF8("nearest"));
 			case tmt_linear:
-				return String(L"linear");
+				return String(UTF8("linear"));
 		}
 		/**
 		 * We should be never here. If so, it's a programming error,
 		 * because we forgot to add all types to the switch or an
 		 * invalid int was used (with a type cast)!
 		 */
-		VALUE_NOT_IN_SWITCH(value, "TextureMipmapType");
+		VALUE_NOT_IN_SWITCH(value, UTF8("TextureMipmapType"));
 	}
 
 	String Texture::get_str(const TextureWrapType value)
@@ -1547,18 +1556,18 @@ namespace eternal_lands
 		switch (value)
 		{
 			case twt_clamp:
-				return String(L"clamp");
+				return String(UTF8("clamp"));
 			case twt_mirrored_repeat:
-				return String(L"mirrored_repeat");
+				return String(UTF8("mirrored_repeat"));
 			case twt_repeat:
-				return String(L"repeat");
+				return String(UTF8("repeat"));
 		}
 		/**
 		 * We should be never here. If so, it's a programming error,
 		 * because we forgot to add all types to the switch or an
 		 * invalid int was used (with a type cast)!
 		 */
-		VALUE_NOT_IN_SWITCH(value, "TextureWrapType");
+		VALUE_NOT_IN_SWITCH(value, UTF8("TextureWrapType"));
 	}
 
 	OutStream& operator<<(OutStream &str, const CubeMapFaceType value)

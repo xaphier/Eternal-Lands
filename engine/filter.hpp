@@ -22,32 +22,103 @@
 namespace eternal_lands
 {
 
+	enum FilterType
+	{
+		/**
+		 * 5 tap gauss filter, uses 3 linear texture fetches.
+		 */
+		ft_gauss_5_tap,
+		/**
+		 * 9 tap gauss filter, shorted to use 3 linear texture fetches.
+		 */
+		ft_gauss_9_tap_short,
+		/**
+		 * 9 tap gauss filter, uses 5 linear texture fetches.
+		 */
+		ft_gauss_9_tap,
+		/**
+		 * 13 tap gauss filter, shorted to use 5 linear texture fetches.
+		 */
+		ft_gauss_13_tap_short,
+		/**
+		 * 13 tap gauss filter, uses 7 linear texture fetches.
+		 */
+		ft_gauss_13_tap,
+		/**
+		 * 17 tap gauss filter, shorted to use 7 linear texture fetches.
+		 */
+		ft_gauss_17_tap_short,
+		/**
+		 * 5 tap box filter, uses 3 linear texture fetches.
+		 */
+		ft_box_5_tap,
+		/**
+		 * 9 tap gauss filter, uses 5 linear texture fetches.
+		 */
+		ft_box_9_tap,
+		/**
+		 * 13 tap gauss filter, uses 7 linear texture fetches.
+		 */
+		ft_box_13_tap
+	};
+
 	class Filter: public boost::noncopyable
 	{
 		private:
 			AbstractMeshSharedPtr m_mesh;
-			boost::array<GlslProgramSharedPtr, 4> m_programs;
-			const Uint16 m_channel_count;
+			boost::array<GlslProgramSharedPtr, 64> m_programs;
 
-			String get_vertex_str(const Uint16 version) const;
-			String get_fragment_str(const Uint16 version,
-				const bool layer, const bool vertical) const;
+			void build_filter(const StringVariantMap &values,
+				const Uint16 version,
+				const Uint16 channel_count,
+				const Uint16 half_taps_minus_one,
+				const bool layer, const bool vertical);
+			static String get_vertex_str(const Uint16 version);
+			static String get_fragment_str(const Uint16 version,
+				const Uint16 channel_count,
+				const Uint16 half_taps_minus_one,
+				const bool layer, const bool vertical);
+			static Uint16 get_scale_offset(const FilterType type,
+				glm::vec4 &scale, glm::vec4 &offset);
+
+			static inline Uint16 get_index(
+				const Uint16 channel_count,
+				const Uint16 half_taps_minus_one,
+				const bool layer, const bool vertical)
+			{
+				Uint16 result;
+
+				assert(channel_count > 0);
+				assert(channel_count < 5);
+				assert(half_taps_minus_one < 4);
+
+				result = channel_count - 1;
+				result = half_taps_minus_one << 2;
+
+				if (layer)
+				{
+					result += 1 << 4;
+				}
+
+				if (vertical)
+				{
+					result += 1 << 5;
+				}
+
+				return result;
+			}
 
 		public:
-			Filter(const MeshCacheSharedPtr &mesh_cache,
-				const Uint16 channel_count);
+			Filter(const MeshCacheSharedPtr &mesh_cache);
 			~Filter() throw();
 			void bind(const Uint32 width, const Uint32 height,
-				const Uint32 layer, const bool vertical,
+				const Uint32 layer, const Uint16 channel_count,
+				const FilterType type, const bool vertical,
 				StateManager &state_manager);
 			void bind(const Uint32 width, const Uint32 height,
-				const bool vertical,
+				const Uint16 channel_count,
+				const FilterType type, const bool vertical,
 				StateManager &state_manager);
-
-			inline Uint16 get_channel_count() const
-			{
-				return m_channel_count;
-			}
 
 	};
 

@@ -83,9 +83,9 @@ namespace eternal_lands
 
 		if (parameter.get_qualifier() == pqt_inout)
 		{
-			EL_THROW_MESSAGE_EXCEPTION(L"Parameter '%1%' has "
-				"qualifier %2% and there is no possible input.",
-				parameter % pqt_inout,
+			EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' has "
+				"qualifier %2% and there is no possible "
+				"input."), parameter % pqt_inout,
 				InvalidParameterException());
 		}
 
@@ -121,9 +121,10 @@ namespace eternal_lands
 
 		if (local.get_qualifier() == pqt_inout)
 		{
-			EL_THROW_MESSAGE_EXCEPTION(L"Parameter '%1%' has "
-				"qualifier %2% and there is no possible input.",
-				local % pqt_inout, InvalidParameterException());
+			EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' has "
+				"qualifier %2% and there is no possible "
+				"input."), local % pqt_inout,
+				InvalidParameterException());
 		}
 
 		locals.push_back(local);

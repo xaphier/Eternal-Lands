@@ -19,6 +19,7 @@ namespace eternal_lands
 			private:
 				const String m_name;
 				const IntegerType m_integer_type;
+				const PackFormatType m_pack_format_type;
 				const GLenum m_gl_type;
 				const GLenum m_source_type;
 				const GLenum m_format_type;
@@ -29,25 +30,47 @@ namespace eternal_lands
 				const bool m_depth;
 				const bool m_stencil;
 				const bool m_integer;
+				const bool m_pack_format;
 
 			public:
 				inline TextureFormatTypeData(const String &name,
 					const IntegerType integer_type,
+					const PackFormatType pack_format_type,
 					const GLenum gl_type,
 					const GLenum source_type,
 					const GLenum format_type,
 					const Uint16 count,
 					const Uint16 size,
-					const bool compressed = false,
 					const bool sRGB = false): m_name(name),
 					m_integer_type(integer_type),
+					m_pack_format_type(pack_format_type),
 					m_gl_type(gl_type),
 					m_source_type(source_type),
 					m_format_type(format_type),
 					m_count(count), m_size(size),
-					m_compressed(compressed), m_sRGB(sRGB),
+					m_compressed(false), m_sRGB(sRGB),
 					m_depth(false), m_stencil(false),
-					m_integer(true)
+					m_integer(true), m_pack_format(true)
+				{
+				}
+
+				inline TextureFormatTypeData(const String &name,
+					const PackFormatType pack_format_type,
+					const GLenum gl_type,
+					const GLenum source_type,
+					const GLenum format_type,
+					const Uint16 count,
+					const Uint16 size):
+					m_name(name),
+					m_integer_type(it_unsigned),
+					m_pack_format_type(pack_format_type),
+					m_gl_type(gl_type),
+					m_source_type(source_type),
+					m_format_type(format_type),
+					m_count(count), m_size(size),
+					m_compressed(false), m_sRGB(false),
+					m_depth(false), m_stencil(false),
+					m_integer(false), m_pack_format(true)
 				{
 				}
 
@@ -57,19 +80,17 @@ namespace eternal_lands
 					const GLenum format_type,
 					const Uint16 count,
 					const Uint16 size,
-					const bool compressed = false,
-					const bool sRGB = false,
-					const bool depth = false,
 					const bool stencil = false):
 					m_name(name),
 					m_integer_type(it_unsigned),
+					m_pack_format_type(pft_unsigned_byte_1),
 					m_gl_type(gl_type),
 					m_source_type(source_type),
 					m_format_type(format_type),
 					m_count(count), m_size(size),
-					m_compressed(compressed), m_sRGB(sRGB),
-					m_depth(depth), m_stencil(stencil),
-					m_integer(false)
+					m_compressed(false), m_sRGB(false),
+					m_depth(true), m_stencil(stencil),
+					m_integer(false), m_pack_format(false)
 				{
 				}
 
@@ -81,13 +102,14 @@ namespace eternal_lands
 					const bool sRGB = false):
 					m_name(name),
 					m_integer_type(integer_type),
+					m_pack_format_type(pft_unsigned_byte_1),
 					m_gl_type(gl_type),
 					m_source_type(GL_NONE),
 					m_format_type(gl_type),
 					m_count(count), m_size(size),
 					m_compressed(true), m_sRGB(sRGB),
 					m_depth(false), m_stencil(false),
-					m_integer(true)
+					m_integer(true), m_pack_format(false)
 				{
 				}
 
@@ -98,13 +120,14 @@ namespace eternal_lands
 					const bool sRGB = false):
 					m_name(name),
 					m_integer_type(it_unsigned),
+					m_pack_format_type(pft_unsigned_byte_1),
 					m_gl_type(gl_type),
 					m_source_type(GL_NONE),
 					m_format_type(gl_type),
 					m_count(count), m_size(size),
 					m_compressed(true), m_sRGB(sRGB),
 					m_depth(false), m_stencil(false),
-					m_integer(false)
+					m_integer(false), m_pack_format(false)
 				{
 				}
 
@@ -171,148 +194,169 @@ namespace eternal_lands
 
 		};
 
-#define EXPAND_INTEGER_TEXTURE_FORMAT_TYPE(name, gl_type, source_type, source_format, count, size)	\
-	TextureFormatTypeData(String(L##name "ui"), it_unsigned,	\
-		gl_type##UI, GL_UNSIGNED_##source_type, source_format,	\
-		count, size),	\
-	TextureFormatTypeData(String(L##name "i"), it_signed, gl_type##I,	\
-		GL_##source_type, source_format, count, size),	\
-	TextureFormatTypeData(String(L##name), it_unsigned, gl_type,	\
+#define EXPAND_INTEGER_TEXTURE_FORMAT_TYPE(name, packed, gl_type, source_type, source_format, count, size)	\
+	TextureFormatTypeData(String(UTF8(name "ui")), it_unsigned,	\
+		pft_unsigned_##packed##_##count, gl_type##UI, 	\
 		GL_UNSIGNED_##source_type, source_format, count, size),	\
-	TextureFormatTypeData(String(L##name "snorm"), it_signed,	\
-		gl_type##_SNORM, GL_##source_type, source_format, count, size)
+	TextureFormatTypeData(String(UTF8(name "i")), it_signed,	\
+		pft_signed_##packed##_##count, gl_type##I, GL_##source_type,	\
+		source_format, count, size),	\
+	TextureFormatTypeData(String(UTF8(name)), it_unsigned,	\
+		pft_unsigned_normalized_##packed##_##count, gl_type,	\
+		GL_UNSIGNED_##source_type, source_format, count, size),	\
+	TextureFormatTypeData(String(UTF8(name "snorm")), it_signed,	\
+		pft_signed_normalized_##packed##_##count, gl_type##_SNORM,	\
+		GL_##source_type, source_format, count, size)
 
 		const TextureFormatTypeData texture_format_type_datas[] =
 		{
-			TextureFormatTypeData(String(L"rgba4"),
-				it_unsigned_normalized, GL_RGBA4,
+			TextureFormatTypeData(String(UTF8("rgba4")),
+				it_unsigned_normalized,
+				pft_unsigned_short_4_4_4_4, GL_RGBA4,
 				GL_UNSIGNED_SHORT_4_4_4_4, GL_RGBA, 4, 16),
-			TextureFormatTypeData(String(L"r3g3b2"),
-				it_unsigned_normalized, GL_R3_G3_B2,
+			TextureFormatTypeData(String(UTF8("r3g3b2")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_byte_3_3_2, GL_R3_G3_B2,
 				GL_UNSIGNED_BYTE_3_3_2, GL_RGB, 3, 8),
-			TextureFormatTypeData(String(L"r5g6b5"),
-				it_unsigned_normalized, GL_RGB5,
+			TextureFormatTypeData(String(UTF8("r5g6b5")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_short_5_6_5, GL_RGB5,
 				GL_UNSIGNED_SHORT_5_6_5, GL_RGB, 3, 16),
-			TextureFormatTypeData(String(L"rgb5_a1"),
-				it_unsigned_normalized, GL_RGB5_A1,
+			TextureFormatTypeData(String(UTF8("rgb5_a1")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_short_5_5_5_1, GL_RGB5_A1,
 				GL_UNSIGNED_SHORT_5_5_5_1, GL_RGBA, 4, 16),
-			TextureFormatTypeData(String(L"rgb10_a2"),
-				it_unsigned_normalized, GL_RGB10_A2,
+			TextureFormatTypeData(String(UTF8("rgb10_a2")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_int_10_10_10_2, GL_RGB10_A2,
 				GL_UNSIGNED_INT_10_10_10_2, GL_RGBA, 4, 32),
-			TextureFormatTypeData(String(L"rgb10_a2_ui"),
-				it_unsigned, GL_RGB10_A2UI,
-				GL_UNSIGNED_INT_10_10_10_2, GL_RGBA, 4, 32),
-			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("r8", GL_R8,
+			TextureFormatTypeData(String(UTF8("rgb10_a2_ui")),
+				it_unsigned, pft_unsigned_int_10_10_10_2,
+				GL_RGB10_A2UI, GL_UNSIGNED_INT_10_10_10_2,
+				GL_RGBA, 4, 32),
+			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("r8", byte, GL_R8,
 				BYTE, GL_RED, 1, 8),
-			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rg8", GL_RG8,
+			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rg8", byte, GL_RG8,
 				BYTE, GL_RG, 2, 16),
-			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rgb8", GL_RGB8,
-				BYTE, GL_RGB, 3, 24),
-			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rgba8", GL_RGBA8,
-				BYTE, GL_RGBA, 4, 32),
-			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("r16", GL_R16,
+			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rgb8", byte,
+				GL_RGB8, BYTE, GL_RGB, 3, 24),
+			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rgba8", byte,
+				GL_RGBA8, BYTE, GL_RGBA, 4, 32),
+			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("r16", short, GL_R16,
 				SHORT, GL_RED, 1, 16),
-			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rg16", GL_RG16,
-				SHORT, GL_RG, 2, 32),
-			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rgb16", GL_RGB16,
-				SHORT, GL_RGB, 3, 48),
-			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rgba16", GL_RGBA16,
-				SHORT, GL_RGBA, 4, 64),
-			TextureFormatTypeData(String(L"r32ui"), GL_R32UI,
-				GL_UNSIGNED_INT, GL_RED, 1, 32),
-			TextureFormatTypeData(String(L"r32i"), GL_R32I,
-				GL_INT, GL_RED, 1, 32),
-			TextureFormatTypeData(String(L"rg32ui"), GL_RG32UI,
-				GL_UNSIGNED_INT, GL_RG, 2, 64),
-			TextureFormatTypeData(String(L"rg32i"), GL_RG32I,
-				GL_INT, GL_RG, 2, 64),
-			TextureFormatTypeData(String(L"rgb32ui"),
-				GL_RGB32UI, GL_UNSIGNED_INT, GL_RGB, 3, 96),
-			TextureFormatTypeData(String(L"rgb32i"), GL_RGB32I,
-				GL_INT, GL_RGB, 3, 96),
-			TextureFormatTypeData(String(L"rgba32ui"),
-				GL_RGBA32UI, GL_UNSIGNED_INT, GL_RGBA, 4, 128),
-			TextureFormatTypeData(String(L"rgba32i"),
-				GL_RGBA32I, GL_INT, GL_RGBA, 4, 128),
-			TextureFormatTypeData(String(L"r16f"), GL_R16F,
-				GL_HALF_FLOAT, GL_RED, 1, 16),
-			TextureFormatTypeData(String(L"rg16f"), GL_RG16F,
-				GL_HALF_FLOAT, GL_RG, 2, 32),
-			TextureFormatTypeData(String(L"rgb16f"), GL_RGB16F,
-				GL_HALF_FLOAT, GL_RGB, 3, 48),
-			TextureFormatTypeData(String(L"rgba16f"),
-				GL_RGBA16F, GL_HALF_FLOAT, GL_RGBA, 4, 64),
-			TextureFormatTypeData(String(L"r32f"), GL_R32F,
-				GL_FLOAT, GL_RED, 1, 32),
-			TextureFormatTypeData(String(L"rg32f"), GL_RG32F,
-				GL_FLOAT, GL_RG, 2, 64),
-			TextureFormatTypeData(String(L"rgb32f"),
-				GL_RGB32F, GL_FLOAT, GL_RGB, 3, 96),
-			TextureFormatTypeData(String(L"rgba32f"),
-				GL_RGBA32F, GL_FLOAT, GL_RGBA, 4, 128),
-			TextureFormatTypeData(String(L"rgb_dxt1"),
+			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rg16", short,
+				GL_RG16, SHORT, GL_RG, 2, 32),
+			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rgb16", short,
+				GL_RGB16, SHORT, GL_RGB, 3, 48),
+			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rgba16", short,
+				GL_RGBA16, SHORT, GL_RGBA, 4, 64),
+			TextureFormatTypeData(String(UTF8("r32ui")),
+				pft_unsigned_int_1, GL_R32UI, GL_UNSIGNED_INT,
+				GL_RED, 1, 32),
+			TextureFormatTypeData(String(UTF8("r32i")),
+				pft_signed_int_1, GL_R32I, GL_INT, GL_RED, 1,
+				32),
+			TextureFormatTypeData(String(UTF8("rg32ui")),
+				pft_unsigned_int_2, GL_RG32UI, GL_UNSIGNED_INT,
+				GL_RG, 2, 64),
+			TextureFormatTypeData(String(UTF8("rg32i")),
+				pft_signed_int_2, GL_RG32I, GL_INT, GL_RG, 2,
+				64),
+			TextureFormatTypeData(String(UTF8("rgb32ui")),
+				pft_unsigned_int_3, GL_RGB32UI, GL_UNSIGNED_INT,
+				GL_RGB, 3, 96),
+			TextureFormatTypeData(String(UTF8("rgb32i")),
+				pft_signed_int_3, GL_RGB32I, GL_INT, GL_RGB, 3,
+				96),
+			TextureFormatTypeData(String(UTF8("rgba32ui")),
+				pft_unsigned_int_4, GL_RGBA32UI,
+				GL_UNSIGNED_INT, GL_RGBA, 4, 128),
+			TextureFormatTypeData(String(UTF8("rgba32i")),
+				pft_signed_int_4, GL_RGBA32I, GL_INT, GL_RGBA,
+				4, 128),
+			TextureFormatTypeData(String(UTF8("r16f")), pft_half_1,
+				GL_R16F, GL_HALF_FLOAT, GL_RED, 1, 16),
+			TextureFormatTypeData(String(UTF8("rg16f")), pft_half_2,
+				GL_RG16F, GL_HALF_FLOAT, GL_RG, 2, 32),
+			TextureFormatTypeData(String(UTF8("rgb16f")),
+				pft_half_3, GL_RGB16F, GL_HALF_FLOAT, GL_RGB,
+				3, 48),
+			TextureFormatTypeData(String(UTF8("rgba16f")),
+				pft_half_4, GL_RGBA16F, GL_HALF_FLOAT, GL_RGBA,
+				4, 64),
+			TextureFormatTypeData(String(UTF8("r32f")),
+				pft_float_1, GL_R32F, GL_FLOAT, GL_RED, 1, 32),
+			TextureFormatTypeData(String(UTF8("rg32f")),
+				pft_float_2, GL_RG32F, GL_FLOAT, GL_RG, 2, 64),
+			TextureFormatTypeData(String(UTF8("rgb32f")),
+				pft_float_3, GL_RGB32F, GL_FLOAT, GL_RGB, 3,
+				96),
+			TextureFormatTypeData(String(UTF8("rgba32f")),
+				pft_float_4, GL_RGBA32F, GL_FLOAT, GL_RGBA, 4,
+				128),
+			TextureFormatTypeData(String(UTF8("rgb_dxt1")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_RGB_S3TC_DXT1_EXT, 3, 4),
-			TextureFormatTypeData(String(L"rgba_dxt1"),
+			TextureFormatTypeData(String(UTF8("rgba_dxt1")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 4, 4),
-			TextureFormatTypeData(String(L"rgba_dxt3"),
+			TextureFormatTypeData(String(UTF8("rgba_dxt3")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, 4, 8),
-			TextureFormatTypeData(String(L"rgba_dxt5"),
+			TextureFormatTypeData(String(UTF8("rgba_dxt5")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, 4, 8),
-			TextureFormatTypeData(String(L"r_rgtc1"),
+			TextureFormatTypeData(String(UTF8("r_rgtc1")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_RED_RGTC1, 1, 4),
-			TextureFormatTypeData(String(L"signed_r_rgtc1"),
+			TextureFormatTypeData(String(UTF8("signed_r_rgtc1")),
 				it_signed_normalized,
 				GL_COMPRESSED_SIGNED_RED_RGTC1, 1, 4),
-			TextureFormatTypeData(String(L"rg_rgtc2"),
+			TextureFormatTypeData(String(UTF8("rg_rgtc2")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_RG_RGTC2, 2, 8),
-			TextureFormatTypeData(String(L"signed_rg_rgtc2"),
+			TextureFormatTypeData(String(UTF8("signed_rg_rgtc2")),
 				it_signed_normalized,
 				GL_COMPRESSED_SIGNED_RG_RGTC2, 2, 8),
-			TextureFormatTypeData(String(L"depth16"),
+			TextureFormatTypeData(String(UTF8("depth16")),
 				GL_DEPTH_COMPONENT16, GL_UNSIGNED_SHORT,
-				GL_DEPTH_COMPONENT, 0, 16, false, false, true),
-			TextureFormatTypeData(String(L"depth24"),
+				GL_DEPTH_COMPONENT, 0, 16, false),
+			TextureFormatTypeData(String(UTF8("depth24")),
 				GL_DEPTH_COMPONENT24, GL_UNSIGNED_INT,
-				GL_DEPTH_COMPONENT, 0, 24, false, false, true),
-			TextureFormatTypeData(String(L"depth32"),
+				GL_DEPTH_COMPONENT, 0, 24, false),
+			TextureFormatTypeData(String(UTF8("depth32")),
 				GL_DEPTH_COMPONENT32, GL_UNSIGNED_INT,
-				GL_DEPTH_COMPONENT, 0, 32, false, false, true),
-			TextureFormatTypeData(String(L"depth24_stencil8"),
+				GL_DEPTH_COMPONENT, 0, 32, false),
+			TextureFormatTypeData(String(UTF8("depth24_stencil8")),
 				GL_DEPTH24_STENCIL8, GL_UNSIGNED_INT_24_8,
-				GL_DEPTH_COMPONENT, 0, 32, false, false, true,
-				true),
-			TextureFormatTypeData(String(L"depth32f"),
+				GL_DEPTH_COMPONENT, 0, 32, true),
+			TextureFormatTypeData(String(UTF8("depth32f")),
 				GL_DEPTH_COMPONENT32F, GL_FLOAT,
-				GL_DEPTH_COMPONENT, 0, 32, false, false, true),
-			TextureFormatTypeData(String(L"depth32f_stencil8"),
+				GL_DEPTH_COMPONENT, 0, 32, false),
+			TextureFormatTypeData(String(UTF8("depth32f_stencil8")),
 				GL_DEPTH32F_STENCIL8,
 				GL_FLOAT_32_UNSIGNED_INT_24_8_REV,
-				GL_DEPTH_COMPONENT, 0, 64, false, false, true,
-				true),
-			TextureFormatTypeData(String(L"srgb8"),
-				it_unsigned_normalized, GL_SRGB8,
+				GL_DEPTH_COMPONENT, 0, 64, true),
+			TextureFormatTypeData(String(UTF8("srgb8")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_byte_3, GL_SRGB8,
 				GL_UNSIGNED_BYTE, GL_RGB, 3, 24),
-			TextureFormatTypeData(String(L"srgb8_a8"),
-				it_unsigned_normalized, GL_SRGB8_ALPHA8,
+			TextureFormatTypeData(String(UTF8("srgb8_a8")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_byte_4, GL_SRGB8_ALPHA8,
 				GL_UNSIGNED_BYTE, GL_RGBA, 4, 32),
-			TextureFormatTypeData(String(L"srgb_dxt1"),
+			TextureFormatTypeData(String(UTF8("srgb_dxt1")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_SRGB_S3TC_DXT1_EXT, 3, 4, true),
-			TextureFormatTypeData(String(L"srgb_a_dxt1"),
+			TextureFormatTypeData(String(UTF8("srgb_a_dxt1")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT, 4, 4,
 				true),
-			TextureFormatTypeData(String(L"srgb_a_dxt3"),
+			TextureFormatTypeData(String(UTF8("srgb_a_dxt3")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT, 4, 8,
 				true),
-			TextureFormatTypeData(String(L"srgb_a_dxt5"),
+			TextureFormatTypeData(String(UTF8("srgb_a_dxt5")),
 				it_unsigned_normalized,
 				GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT, 4, 8,
 				true),
@@ -338,8 +382,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		type = texture_format_type_datas[
@@ -359,8 +403,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[texture_format].get_count();
@@ -377,8 +421,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[texture_format].get_name();
@@ -395,8 +439,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[texture_format].get_sRGB();
@@ -414,8 +458,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[texture_format].get_depth();
@@ -433,8 +477,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[texture_format].get_stencil();
@@ -452,8 +496,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[
@@ -471,8 +515,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		switch (texture_format)
@@ -568,8 +612,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[texture_format].get_size();
@@ -587,8 +631,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[texture_format].get_gl_type();
@@ -606,8 +650,8 @@ namespace eternal_lands
 					texture_format_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
-				<< boost::errinfo_type_info_name(
-					"TextureFormatType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"TextureFormatType")));
 		}
 
 		return texture_format_type_datas[
@@ -632,8 +676,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name(
-				"TextureFormatUtil"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"TextureFormatUtil")));
 	}
 
 	OutStream& operator<<(OutStream &str, const TextureFormatType value)

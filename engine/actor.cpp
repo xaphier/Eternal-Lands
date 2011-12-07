@@ -65,12 +65,12 @@ namespace eternal_lands
 		if (m_actor_texture_builder->get_uses_alpha())
 		{
 			get_modifiable_materials()[0].set_effect(
-				String(L"animated.transparent"));
+				String(UTF8("animated.transparent")));
 		}
 		else
 		{
 			get_modifiable_materials()[0].set_effect(
-				String(L"animated.solid"));
+				String(UTF8("animated.solid")));
 		}
 	}
 

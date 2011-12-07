@@ -26,6 +26,9 @@ namespace eternal_lands
 			AbstractArchiveVector m_archives;
 			String get_tmp_file();
 
+			static StringTypeVector get_stripped_path(
+				const String &file_name);
+
 		public:
 			FileSystem();
 			~FileSystem() throw();
@@ -34,13 +37,12 @@ namespace eternal_lands
 			void add_dir(const String &dir_name);
 			void add_zip(const String &file_name);
 			bool remove_archive(const String &file_name);
-			bool delete_file(const String &file_name);
-//			bool replace_file(const String &file_name,
-//				const IOStreamSharedPtr &file);
-//			IOStreamSharedPtr get_temp_file();
 			ReaderSharedPtr get_file(const String &file_name);
 			String get_file_string(const String &file_name);
-//			const ZipFile &get_zip_file(const String &file_name);
+			static String get_file_name(const String &file_name);
+			static String get_dir_name(const String &file_name);
+			static String get_strip_relative_path(
+				const String &file_name);
 
 	};
 

@@ -51,15 +51,16 @@ namespace eternal_lands
 		if (source->get_vertex_count() == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"Vertex count is zero"));
+				<< errinfo_message(UTF8("Vertex count is "
+					"zero")));
 		}
 
 		if (source->get_use_restart_index() &&
 			!get_supports_restart_index())
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(L"Restart index used but "
-				"not supported"));
+				<< errinfo_message(UTF8("Restart index used "
+					"but not supported")));
 		}
 
 		m_use_16_bit_indices = use_16_bit_indices;
@@ -71,8 +72,8 @@ namespace eternal_lands
 		m_restart_index = source->get_restart_index();
 		m_use_restart_index = source->get_use_restart_index();
 
-		LOG_DEBUG(L"use_16_bit_indices: %1%, vertex_count:"
-			" %2%, index_count: %3%, sub_mesh_count: %4%",
+		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+			" %2%, index_count: %3%, sub_mesh_count: %4%"),
 			get_use_16_bit_indices() % get_vertex_count() %
 			get_index_count() % get_sub_meshs().size());
 
@@ -117,8 +118,8 @@ namespace eternal_lands
 		m_vertex_format = vertex_format;
 		m_vertex_count = source->get_vertex_count();
 
-		LOG_DEBUG(L"use_16_bit_indices: %1%, vertex_count:"
-			" %2%, index_count: %3%, sub_mesh_count: %4%",
+		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+			" %2%, index_count: %3%, sub_mesh_count: %4%"),
 			get_use_16_bit_indices() % get_vertex_count() %
 			get_index_count() % get_sub_meshs().size());
 

@@ -63,43 +63,43 @@ namespace eternal_lands
 
 		const AutoParameterTypeData auto_parameter_type_datas[] =
 		{
-			AutoParameterTypeData(String(L"world_matrix"),
+			AutoParameterTypeData(String(UTF8("world_matrix")),
 				pt_mat4x3),
-			AutoParameterTypeData(String(L"view_matrix"),
+			AutoParameterTypeData(String(UTF8("view_matrix")),
 				pt_mat4x4),
-			AutoParameterTypeData(String(L"projection_matrix"),
+			AutoParameterTypeData(String(UTF8("projection_matrix")),
 				pt_mat4x4),
-			AutoParameterTypeData(
-				String(L"projection_view_matrix"), pt_mat4x4),
-			AutoParameterTypeData(String(L"reflection_matrix"),
+			AutoParameterTypeData(String(UTF8(
+				"projection_view_matrix")), pt_mat4x4),
+			AutoParameterTypeData(String(UTF8("reflection_matrix")),
 				pt_mat4x4),
-			AutoParameterTypeData(String(L"shadow_view_matrix"),
-				pt_mat4x4),
-			AutoParameterTypeData(
-				String(L"shadow_projection_matrix"),
-				pt_mat4x4),
-			AutoParameterTypeData(
-				String(L"shadow_projection_view_matrix"),
-				pt_mat4x4),
-			AutoParameterTypeData(String(L"shadow_texture_matrix"),
-				pt_mat4x4, pst_shadow_map_count),
-			AutoParameterTypeData(String(L"shadow_texture_offset"),
-				pt_vec4),
-			AutoParameterTypeData(String(L"light_positions"),
+			AutoParameterTypeData(String(UTF8(
+				"shadow_view_matrix")), pt_mat4x4),
+			AutoParameterTypeData(String(UTF8(
+				"shadow_projection_matrix")), pt_mat4x4),
+			AutoParameterTypeData(String(UTF8(
+				"shadow_projection_view_matrix")), pt_mat4x4),
+			AutoParameterTypeData(String(UTF8(
+				"shadow_texture_matrix")), pt_mat4x4,
+				pst_shadow_map_count),
+			AutoParameterTypeData(String(UTF8(
+				"shadow_texture_offset")), pt_vec4),
+			AutoParameterTypeData(String(UTF8("light_positions")),
 				pt_vec4, pst_light_count),
-			AutoParameterTypeData(String(L"light_colors"), pt_vec4,
-				pst_light_count),
-			AutoParameterTypeData(String(L"ambient"), pt_vec4),
-			AutoParameterTypeData(String(L"dynamic_light_count"),
-				pt_ivec3),
-			AutoParameterTypeData(String(L"bones"), pt_vec4,
+			AutoParameterTypeData(String(UTF8("light_colors")),
+				pt_vec4, pst_light_count),
+			AutoParameterTypeData(String(UTF8("ambient")), pt_vec4),
+			AutoParameterTypeData(String(UTF8(
+				"dynamic_light_count")), pt_ivec3),
+			AutoParameterTypeData(String(UTF8("bones")), pt_vec4,
 				pst_bone_count, 3),
-			AutoParameterTypeData(String(L"time"), pt_float),
-			AutoParameterTypeData(String(L"fog_data"), pt_vec4),
-			AutoParameterTypeData(String(L"camera"), pt_vec4),
-			AutoParameterTypeData(String(L"shadow_camera"),
+			AutoParameterTypeData(String(UTF8("time")), pt_float),
+			AutoParameterTypeData(String(UTF8("fog_data")),
 				pt_vec4),
-			AutoParameterTypeData(String(L"split_distances"),
+			AutoParameterTypeData(String(UTF8("camera")), pt_vec4),
+			AutoParameterTypeData(String(UTF8("shadow_camera")),
+				pt_vec4),
+			AutoParameterTypeData(String(UTF8("split_distances")),
 				pt_vec4)
 		};
 
@@ -120,8 +120,8 @@ namespace eternal_lands
 					auto_parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					auto_parameter))
-				<< boost::errinfo_type_info_name(
-					"AutoParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"AutoParameterType")));
 		}
 
 		return auto_parameter_type_datas[auto_parameter].get_name();
@@ -138,8 +138,8 @@ namespace eternal_lands
 					auto_parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					auto_parameter))
-				<< boost::errinfo_type_info_name(
-					"AutoParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"AutoParameterType")));
 		}
 
 		return auto_parameter_type_datas[auto_parameter].get_type();
@@ -156,8 +156,8 @@ namespace eternal_lands
 					auto_parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					auto_parameter))
-				<< boost::errinfo_type_info_name(
-					"AutoParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"AutoParameterType")));
 		}
 
 		return auto_parameter_type_datas[auto_parameter].get_size();
@@ -174,8 +174,8 @@ namespace eternal_lands
 					auto_parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					auto_parameter))
-				<< boost::errinfo_type_info_name(
-					"AutoParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"AutoParameterType")));
 		}
 
 		return auto_parameter_type_datas[auto_parameter].get_scale();
@@ -199,7 +199,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("AutoParameterType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"AutoParameterType")));
 	}
 
 	bool AutoParameterUtil::get_auto_parameter(const String &str,

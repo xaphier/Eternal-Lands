@@ -19,11 +19,11 @@ namespace eternal_lands
 		{
 			if (lua_tostring(lua, index) != 0)
 			{
-				return utf8_to_string(lua_tostring(lua, index));
+				return lua_tostring(lua, index);
 			}
 			else
 			{
-				return L"";
+				return UTF8("");
 			}
 		}
 
@@ -42,7 +42,7 @@ namespace eternal_lands
 			if (!lua.is_table(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type")
+					<< errinfo_message(UTF8("Wrong type"))
 					<< errinfo_table_size(result.row_size()
 						* result.col_size())
 					<< errinfo_lua_type(lua.type(-1))
@@ -62,8 +62,8 @@ namespace eternal_lands
 				{
 					EL_THROW_EXCEPTION(
 						LuaTableSizeException()
-						<< errinfo_message(L"Too many"
-							" elements")
+						<< errinfo_message(UTF8("Too "
+							"many elements"))
 						<< errinfo_table_index(i *
 							result.col_size() + j)
 						<< errinfo_table_size(
@@ -73,8 +73,8 @@ namespace eternal_lands
 				if (!lua.is_number(-1))
 				{
 					EL_THROW_EXCEPTION(LuaVarTypeException()
-						<< errinfo_message(L"Wrong "
-							"type, number needed")
+						<< errinfo_message(UTF8("Wrong "
+							"type, number needed"))
 						<< errinfo_table_index(i *
 							result.col_size() + j)
 						<< errinfo_lua_type(
@@ -100,7 +100,8 @@ namespace eternal_lands
 				(result.row_size() * result.col_size()))
 			{
 				EL_THROW_EXCEPTION(LuaTableSizeException()
-					<< errinfo_message(L"Too few elements")
+					<< errinfo_message(UTF8("Too few "
+						"elements"))
 					<< errinfo_table_index(i *
 						result.col_size() + j)
 					<< errinfo_table_size(result.row_size()
@@ -118,7 +119,7 @@ namespace eternal_lands
 			if (!lua.is_table(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type")
+					<< errinfo_message(UTF8("Wrong type"))
 					<< errinfo_lua_type(lua.type(-1))
 					<< errinfo_lua_type_name(
 						lua.type_name(-1)));
@@ -154,7 +155,7 @@ namespace eternal_lands
 			if (!lua.is_table(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type")
+					<< errinfo_message(UTF8("Wrong type"))
 					<< errinfo_table_size(result.length())
 					<< errinfo_lua_type(lua.type(-1))
 					<< errinfo_lua_type_name(
@@ -171,8 +172,8 @@ namespace eternal_lands
 				{
 					EL_THROW_EXCEPTION(
 						LuaTableSizeException()
-						<< errinfo_message(L"Too many"
-							" elements")
+						<< errinfo_message(UTF8("Too "
+							"many elements"))
 						<< errinfo_table_index(i)
 						<< errinfo_table_size(
 							result.length()));
@@ -180,8 +181,8 @@ namespace eternal_lands
 				if (!lua.is_number(-1))
 				{
 					EL_THROW_EXCEPTION(LuaVarTypeException()
-						<< errinfo_message(L"Wrong "
-							"type, number needed")
+						<< errinfo_message(UTF8("Wrong "
+							"type, number needed"))
 						<< errinfo_table_index(i)
 						<< errinfo_lua_type(
 							lua.type(-1))
@@ -199,7 +200,8 @@ namespace eternal_lands
 			if (i < result.length())
 			{
 				EL_THROW_EXCEPTION(LuaTableSizeException()
-					<< errinfo_message(L"Too few elements")
+					<< errinfo_message(UTF8("Too few "
+						"elements"))
 					<< errinfo_table_index(i)
 					<< errinfo_table_size(result.length()));
 			}
@@ -215,7 +217,7 @@ namespace eternal_lands
 			if (!lua.is_table(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type")
+					<< errinfo_message(UTF8("Wrong type"))
 					<< errinfo_lua_type(lua.type(-1))
 					<< errinfo_lua_type_name(
 						lua.type_name(-1)));
@@ -251,7 +253,7 @@ namespace eternal_lands
 			if (!lua.is_table(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type")
+					<< errinfo_message(UTF8("Wrong type"))
 					<< errinfo_table_size(result.length())
 					<< errinfo_lua_type(lua.type(-1))
 					<< errinfo_lua_type_name(
@@ -268,8 +270,8 @@ namespace eternal_lands
 				{
 					EL_THROW_EXCEPTION(
 						LuaTableSizeException()
-						<< errinfo_message(L"Too many"
-							" elements")
+						<< errinfo_message(UTF8("Too "
+							"many elements"))
 						<< errinfo_table_index(i)
 						<< errinfo_table_size(
 							result.length()));
@@ -277,8 +279,8 @@ namespace eternal_lands
 				if (!lua.is_bool(-1))
 				{
 					EL_THROW_EXCEPTION(LuaVarTypeException()
-						<< errinfo_message(L"Wrong "
-							"type, bool needed")
+						<< errinfo_message(UTF8("Wrong "
+							"type, bool needed"))
 						<< errinfo_table_index(i)
 						<< errinfo_lua_type(
 							lua.type(-1))
@@ -296,7 +298,8 @@ namespace eternal_lands
 			if (i < result.length())
 			{
 				EL_THROW_EXCEPTION(LuaTableSizeException()
-					<< errinfo_message(L"Too few elements")
+					<< errinfo_message(UTF8("Too few "
+						"elements"))
 					<< errinfo_table_index(i)
 					<< errinfo_table_size(result.length()));
 			}
@@ -771,7 +774,7 @@ namespace eternal_lands
 		if (m_lua == 0)
 		{
 			EL_THROW_EXCEPTION(LuaException()
-				<< errinfo_message(L"lua state is null"));
+				<< errinfo_message(UTF8("lua state is null")));
 		}
 
 		lua_atpanic(m_lua, &throw_lua_exception);
@@ -808,7 +811,7 @@ namespace eternal_lands
 	void BasicLua::get_global(const String &name)
 	{
 		assert(m_lua != 0);
-		lua_getglobal(m_lua, string_to_utf8(name).c_str());
+		lua_getglobal(m_lua, name.get().c_str());
 	}
 
 	void BasicLua::get_global(const std::string &name)
@@ -834,27 +837,27 @@ namespace eternal_lands
 		switch (type(index))
 		{
 			case LUA_TNONE:
-				return String(L"none");
+				return String(UTF8("none"));
 			case LUA_TNIL:
-				return String(L"nil");
+				return String(UTF8("nil"));
 			case LUA_TBOOLEAN:
-				return String(L"boolean");
+				return String(UTF8("boolean"));
 			case LUA_TLIGHTUSERDATA:
-				return String(L"light_user_data");
+				return String(UTF8("light_user_data"));
 			case LUA_TNUMBER:
-				return String(L"number");
+				return String(UTF8("number"));
 			case LUA_TSTRING:
-				return String(L"string");
+				return String(UTF8("string"));
 			case LUA_TTABLE:
-				return String(L"table");
+				return String(UTF8("table"));
 			case LUA_TFUNCTION:
-				return String(L"function");
+				return String(UTF8("function"));
 			case LUA_TUSERDATA:
-				return String(L"user_data");
+				return String(UTF8("user_data"));
 			case LUA_TTHREAD:
-				return String(L"thread");
+				return String(UTF8("thread"));
 			default:
-				return String(L"unknown");
+				return String(UTF8("unknown"));
 		}			
 	}
 
@@ -915,7 +918,7 @@ namespace eternal_lands
 	void BasicLua::push_string(const String &value)
 	{
 		assert(m_lua != 0);
-		lua_pushstring(m_lua, string_to_utf8(value).c_str());
+		lua_pushstring(m_lua, value.get().c_str());
 	}
 
 	void BasicLua::push_string(const std::string &value)
@@ -1104,8 +1107,8 @@ namespace eternal_lands
 		if (!is_table(-1))
 		{
 			EL_THROW_EXCEPTION(LuaVarTypeException()
-				<< errinfo_message(L"Wrong type, bool array "
-					"needed")
+				<< errinfo_message(UTF8("Wrong type, bool "
+					"array needed"))
 				<< errinfo_lua_type(type(-1))
 				<< errinfo_lua_type_name(type_name(-1)));
 		}
@@ -1117,8 +1120,8 @@ namespace eternal_lands
 			if (!is_bool(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type, bool "
-						"needed")
+					<< errinfo_message(UTF8("Wrong type, "
+						"bool needed"))
 					<< errinfo_array_index(result.size())
 					<< errinfo_lua_type(type(-1))
 					<< errinfo_lua_type_name(
@@ -1141,8 +1144,8 @@ namespace eternal_lands
 		if (!is_table(-1))
 		{
 			EL_THROW_EXCEPTION(LuaVarTypeException()
-				<< errinfo_message(L"Wrong type, int array "
-					"needed")
+				<< errinfo_message(UTF8("Wrong type, int array "
+					"needed"))
 				<< errinfo_lua_type(type(-1))
 				<< errinfo_lua_type_name(type_name(-1)));
 		}
@@ -1154,8 +1157,8 @@ namespace eternal_lands
 			if (!is_number(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type, "
-						"number needed")
+					<< errinfo_message(UTF8("Wrong type, "
+						"number needed"))
 					<< errinfo_array_index(result.size())
 					<< errinfo_lua_type(type(-1))
 					<< errinfo_lua_type_name(
@@ -1177,8 +1180,8 @@ namespace eternal_lands
 		if (!is_table(-1))
 		{
 			EL_THROW_EXCEPTION(LuaVarTypeException()
-				<< errinfo_message(L"Wrong type, int array "
-					"needed")
+				<< errinfo_message(UTF8("Wrong type, int array "
+					"needed"))
 				<< errinfo_lua_type(type(-1))
 				<< errinfo_lua_type_name(type_name(-1)));
 		}
@@ -1190,8 +1193,8 @@ namespace eternal_lands
 			if (!is_number(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type, "
-						"number needed")
+					<< errinfo_message(UTF8("Wrong type, "
+						"number needed"))
 					<< errinfo_array_index(result.size())
 					<< errinfo_lua_type(type(-1))
 					<< errinfo_lua_type_name(
@@ -1213,8 +1216,8 @@ namespace eternal_lands
 		if (!is_table(-1))
 		{
 			EL_THROW_EXCEPTION(LuaVarTypeException()
-				<< errinfo_message(L"Wrong type, bool array "
-					"needed")
+				<< errinfo_message(UTF8("Wrong type, bool "
+					"array needed"))
 				<< errinfo_lua_type(type(-1))
 				<< errinfo_lua_type_name(type_name(-1)));
 		}
@@ -1226,8 +1229,8 @@ namespace eternal_lands
 			if (!is_bool(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type, bool"
-						" needed")
+					<< errinfo_message(UTF8("Wrong type, "
+						"bool needed"))
 					<< errinfo_array_index(result.size())
 					<< errinfo_lua_type(type(-1))
 					<< errinfo_lua_type_name(
@@ -1250,8 +1253,8 @@ namespace eternal_lands
 		if (!is_table(-1))
 		{
 			EL_THROW_EXCEPTION(LuaVarTypeException()
-				<< errinfo_message(L"Wrong type, float array "
-					"needed")
+				<< errinfo_message(UTF8("Wrong type, float "
+					"array needed"))
 				<< errinfo_lua_type(type(-1))
 				<< errinfo_lua_type_name(type_name(-1)));
 		}
@@ -1263,8 +1266,8 @@ namespace eternal_lands
 			if (!is_number(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type, "
-						"number needed")
+					<< errinfo_message(UTF8("Wrong type, "
+						"number needed"))
 					<< errinfo_array_index(result.size())
 					<< errinfo_lua_type(type(-1))
 					<< errinfo_lua_type_name(
@@ -1287,8 +1290,8 @@ namespace eternal_lands
 		if (!is_table(-1))
 		{
 			EL_THROW_EXCEPTION(LuaVarTypeException()
-				<< errinfo_message(L"Wrong type, string array"
-					" needed")
+				<< errinfo_message(UTF8("Wrong type, string "
+					"array needed"))
 				<< errinfo_lua_type(type(-1))
 				<< errinfo_lua_type_name(type_name(-1)));
 		}
@@ -1300,8 +1303,8 @@ namespace eternal_lands
 			if (!is_string(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type, "
-						"string needed")
+					<< errinfo_message(UTF8("Wrong type, "
+						"string needed"))
 					<< errinfo_array_index(result.size())
 					<< errinfo_lua_type(type(-1))
 					<< errinfo_lua_type_name(
@@ -1324,8 +1327,8 @@ namespace eternal_lands
 		if (!is_table(-1))
 		{
 			EL_THROW_EXCEPTION(LuaVarTypeException()
-				<< errinfo_message(L"Wrong type, string array"
-					" needed")
+				<< errinfo_message(UTF8("Wrong type, string "
+					"array needed"))
 				<< errinfo_lua_type(type(-1))
 				<< errinfo_lua_type_name(type_name(-1)));
 		}
@@ -1337,8 +1340,8 @@ namespace eternal_lands
 			if (!is_string(-1))
 			{
 				EL_THROW_EXCEPTION(LuaVarTypeException()
-					<< errinfo_message(L"Wrong type, "
-						"string needed")
+					<< errinfo_message(UTF8("Wrong type, "
+						"string needed"))
 					<< errinfo_array_index(result.size())
 					<< errinfo_lua_type(type(-1))
 					<< errinfo_lua_type_name(
@@ -1511,13 +1514,12 @@ namespace eternal_lands
 
 		m_file_name = file_name;
 
-		if (luaL_dostring(m_lua, string_to_utf8(str).c_str()) != 0)
+		if (luaL_dostring(m_lua, str.get().c_str()) != 0)
 		{
 			EL_THROW_EXCEPTION(LuaException()
 				<< errinfo_message(load_string())
 				<< errinfo_string_value(str)
-				<< boost::errinfo_file_name(
-					string_to_utf8(file_name)));
+				<< boost::errinfo_file_name(file_name));
 		}
 	}
 

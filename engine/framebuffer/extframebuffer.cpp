@@ -19,29 +19,30 @@ namespace eternal_lands
 			switch (status)
 			{
 				case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
-					return String(L"ATTACHMENT");
+					return String(UTF8("ATTACHMENT"));
 				case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_EXT:
-					return String(L"MISSING_ATTACHMENT");
+					return String(UTF8(
+						"MISSING_ATTACHMENT"));
 				case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-					return String(L"DIMENSIONS");
+					return String(UTF8("DIMENSIONS"));
 				case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-					return String(L"FORMATS");
+					return String(UTF8("FORMATS"));
 				case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_EXT:
-					return String(L"DRAW_BUFFER");
+					return String(UTF8("DRAW_BUFFER"));
 				case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_EXT:
-					return String(L"READ_BUFFER");
+					return String(UTF8("READ_BUFFER"));
 				case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT:
-					return String(L"MULTISAMPLE");
+					return String(UTF8("MULTISAMPLE"));
 				case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_EXT:
-					return String(L"LAYER_TARGETS");
+					return String(UTF8("LAYER_TARGETS"));
 				case GL_FRAMEBUFFER_INCOMPLETE_LAYER_COUNT_EXT:
-					return String(L"LAYER_COUNT");
+					return String(UTF8("LAYER_COUNT"));
 				case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
-					return String(L"UNSUPPORTED");
+					return String(UTF8("UNSUPPORTED"));
 				case GL_FRAMEBUFFER_COMPLETE_EXT:
-					return String(L"COMPLETE");
+					return String(UTF8("COMPLETE"));
 				default:
-					return String(L"Unknown");
+					return String(UTF8("Unknown"));
 			}
 		}
 

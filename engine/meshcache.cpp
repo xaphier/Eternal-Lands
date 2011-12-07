@@ -38,7 +38,7 @@ namespace eternal_lands
 
 		init_rect(tmp.m_mesh);
 
-		m_mesh_cache[String(L"rect")] = tmp;
+		m_mesh_cache[String(UTF8("rect"))] = tmp;
 	}
 
 	MeshCache::~MeshCache() throw()

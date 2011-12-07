@@ -37,7 +37,7 @@ namespace eternal_lands
 	{
 		bool first;
 
-		str << L"\t" << name << L"(";
+		str << UTF8("\t") << name << UTF8("(");
 
 		first = true;
 
@@ -47,7 +47,7 @@ namespace eternal_lands
 			parameter.write_name(str, first);
 		}
 
-		str << L");" << std::endl;
+		str << UTF8(");") << std::endl;
 	}
 
 	void ShaderSourceData::write_function(const String &name,
@@ -56,7 +56,7 @@ namespace eternal_lands
 	{
 		bool first;
 
-		str << L"void " << name << L"(";
+		str << UTF8("void ") << name << UTF8("(");
 
 		first = true;
 
@@ -66,7 +66,7 @@ namespace eternal_lands
 			parameter.write_parameter(array_sizes, str, first);
 		}
 
-		str << L")\n{\n" << get_source() << L"}\n";
+		str << UTF8(")\n{\n") << get_source() << UTF8("}\n");
 	}
 
 	void ShaderSourceData::build_function(const String &name,
@@ -116,7 +116,8 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST "parameter") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("parameter"))
+				== 0)
 			{
 				m_parameters.push_back(ShaderSourceParameter(
 					it));
@@ -129,7 +130,8 @@ namespace eternal_lands
 	{
 		xmlNodePtr it;
 
-		if (xmlStrcmp(node->name, BAD_CAST "shader_source_data") != 0)
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("shader_source_data"))
+			!= 0)
 		{
 			return;
 		}
@@ -138,35 +140,36 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST "parameters") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("parameters"))
+				== 0)
 			{
 				load_parameters_xml(it);
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "source") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("source")) == 0)
 			{
 				set_source(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "glsl_120") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_120")) == 0)
 			{
 				set_glsl_120(XmlUtil::get_bool_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "glsl_150") == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_150")) == 0)
 			{
 				set_glsl_150(XmlUtil::get_bool_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST "material_default")
-				== 0)
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("material_default")) == 0)
 			{
 				set_material_default(
 					XmlUtil::get_bool_value(it));
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST "material_texture_arrays") == 0)
+				BAD_CAST UTF8("material_texture_arrays")) == 0)
 			{
 				set_material_texture_arrays(
 					XmlUtil::get_bool_value(it));
@@ -179,9 +182,9 @@ namespace eternal_lands
 	{
 		StringVariantMap::const_iterator it, end;
 
-		writer->start_element("shader_source_data");
+		writer->start_element(UTF8("shader_source_data"));
 
-		writer->start_element("parameters");
+		writer->start_element(UTF8("parameters"));
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
 			get_parameters())
@@ -191,12 +194,12 @@ namespace eternal_lands
 
 		writer->end_element();
 
-		writer->write_element("source", get_source());
-		writer->write_bool_element("glsl_120", get_glsl_120());
-		writer->write_bool_element("glsl_150", get_glsl_150());
-		writer->write_bool_element("material_default",
+		writer->write_element(UTF8("source"), get_source());
+		writer->write_bool_element(UTF8("glsl_120"), get_glsl_120());
+		writer->write_bool_element(UTF8("glsl_150"), get_glsl_150());
+		writer->write_bool_element(UTF8("material_default"),
 			get_material_default());
-		writer->write_bool_element("material_texture_arrays",
+		writer->write_bool_element(UTF8("material_texture_arrays"),
 			get_material_texture_arrays());
 
 		writer->end_element();

@@ -118,129 +118,129 @@ namespace eternal_lands
 
 		const ParameterTypeData parameter_type_datas[] =
 		{
-			ParameterTypeData(String(L"bool"), 1,
+			ParameterTypeData(String(UTF8("bool")), 1,
 				GL_BOOL, pvt_bool, pft_none),
-			ParameterTypeData(String(L"bvec2"), 2,
+			ParameterTypeData(String(UTF8("bvec2")), 2,
 				GL_BOOL_VEC2, pvt_bool, pft_none),
-			ParameterTypeData(String(L"bvec3"), 3,
+			ParameterTypeData(String(UTF8("bvec3")), 3,
 				GL_BOOL_VEC3, pvt_bool, pft_none),
-			ParameterTypeData(String(L"bvec4"), 4,
+			ParameterTypeData(String(UTF8("bvec4")), 4,
 				GL_BOOL_VEC4, pvt_bool, pft_none),
-			ParameterTypeData(String(L"int"), 1,
+			ParameterTypeData(String(UTF8("int")), 1,
 				GL_INT, pvt_int, pft_none),
-			ParameterTypeData(String(L"ivec2"), 2,
+			ParameterTypeData(String(UTF8("ivec2")), 2,
 				GL_INT_VEC2, pvt_int, pft_none),
-			ParameterTypeData(String(L"ivec3"), 3,
+			ParameterTypeData(String(UTF8("ivec3")), 3,
 				GL_INT_VEC3, pvt_int, pft_none),
-			ParameterTypeData(String(L"ivec4"), 4,
+			ParameterTypeData(String(UTF8("ivec4")), 4,
 				GL_INT_VEC4, pvt_int, pft_none),
-			ParameterTypeData(String(L"unsigned int"), 1,
+			ParameterTypeData(String(UTF8("unsigned int")), 1,
 				GL_UNSIGNED_INT, pvt_unsigned_int, pft_none),
-			ParameterTypeData(String(L"uvec2"), 2,
+			ParameterTypeData(String(UTF8("uvec2")), 2,
 				GL_UNSIGNED_INT_VEC2, pvt_unsigned_int,
 				pft_none),
-			ParameterTypeData(String(L"uvec3"), 3,
+			ParameterTypeData(String(UTF8("uvec3")), 3,
 				GL_UNSIGNED_INT_VEC3, pvt_unsigned_int,
 				pft_none),
-			ParameterTypeData(String(L"uvec4"), 4,
+			ParameterTypeData(String(UTF8("uvec4")), 4,
 				GL_UNSIGNED_INT_VEC4, pvt_unsigned_int,
 				pft_none),
-			ParameterTypeData(String(L"float"), 1,
+			ParameterTypeData(String(UTF8("float")), 1,
 				GL_FLOAT, pvt_float, pft_none),
-			ParameterTypeData(String(L"vec2"), 2,
+			ParameterTypeData(String(UTF8("vec2")), 2,
 				GL_FLOAT_VEC2, pvt_float, pft_none),
-			ParameterTypeData(String(L"vec3"), 3,
+			ParameterTypeData(String(UTF8("vec3")), 3,
 				GL_FLOAT_VEC3, pvt_float, pft_none),
-			ParameterTypeData(String(L"vec4"), 4,
+			ParameterTypeData(String(UTF8("vec4")), 4,
 				GL_FLOAT_VEC4, pvt_float, pft_none),
-			ParameterTypeData(String(L"mat2"), 4,
+			ParameterTypeData(String(UTF8("mat2")), 4,
 				GL_FLOAT_MAT2, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"mat2x3"), 6,
+			ParameterTypeData(String(UTF8("mat2x3")), 6,
 				GL_FLOAT_MAT2x3, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"mat2x4"), 8,
+			ParameterTypeData(String(UTF8("mat2x4")), 8,
 				GL_FLOAT_MAT2x4, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"mat3x2"), 6,
+			ParameterTypeData(String(UTF8("mat3x2")), 6,
 				GL_FLOAT_MAT3x2, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"mat3"), 9,
+			ParameterTypeData(String(UTF8("mat3")), 9,
 				GL_FLOAT_MAT3, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"mat3x4"), 12,
+			ParameterTypeData(String(UTF8("mat3x4")), 12,
 				GL_FLOAT_MAT3x4, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"mat4x2"), 8,
+			ParameterTypeData(String(UTF8("mat4x2")), 8,
 				GL_FLOAT_MAT4x2, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"mat4x3"), 12,
+			ParameterTypeData(String(UTF8("mat4x3")), 12,
 				GL_FLOAT_MAT4x3, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"mat4"), 16,
+			ParameterTypeData(String(UTF8("mat4")), 16,
 				GL_FLOAT_MAT4, pvt_float, pft_matrix),
-			ParameterTypeData(String(L"sampler1D"),
+			ParameterTypeData(String(UTF8("sampler1D")),
 				GL_SAMPLER_1D, pvt_float, pft_none),
-			ParameterTypeData(String(L"sampler2D"),
+			ParameterTypeData(String(UTF8("sampler2D")),
 				GL_SAMPLER_2D, pvt_float, pft_none),
-			ParameterTypeData(String(L"samplerCube"),
+			ParameterTypeData(String(UTF8("samplerCube")),
 				GL_SAMPLER_CUBE, pvt_float, pft_none),
-			ParameterTypeData(String(L"sampler3D"),
+			ParameterTypeData(String(UTF8("sampler3D")),
 				GL_SAMPLER_3D, pvt_float, pft_none),
-			ParameterTypeData(String(L"sampler1DShadow"),
+			ParameterTypeData(String(UTF8("sampler1DShadow")),
 				GL_SAMPLER_1D_SHADOW, pvt_shadow, pft_none),
-			ParameterTypeData(String(L"sampler2DShadow"),
+			ParameterTypeData(String(UTF8("sampler2DShadow")),
 				GL_SAMPLER_2D_SHADOW, pvt_shadow, pft_none),
-			ParameterTypeData(String(L"sampler2DRect"),
+			ParameterTypeData(String(UTF8("sampler2DRect")),
 				GL_SAMPLER_2D_RECT, pvt_float, pft_rect),
-			ParameterTypeData(String(L"sampler2DRectShadow"),
+			ParameterTypeData(String(UTF8("sampler2DRectShadow")),
 				GL_SAMPLER_2D_RECT_SHADOW, pvt_shadow,
 				pft_rect),
-			ParameterTypeData(String(L"sampler1DArray"),
+			ParameterTypeData(String(UTF8("sampler1DArray")),
 				GL_SAMPLER_1D_ARRAY, pvt_float, pft_array),
-			ParameterTypeData(String(L"sampler2DArray"),
+			ParameterTypeData(String(UTF8("sampler2DArray")),
 				GL_SAMPLER_2D_ARRAY, pvt_float, pft_array),
-			ParameterTypeData(String(L"sampler1DArrayShadow"),
+			ParameterTypeData(String(UTF8("sampler1DArrayShadow")),
 				GL_SAMPLER_1D_ARRAY_SHADOW, pvt_shadow,
 				pft_array),
-			ParameterTypeData(String(L"sampler2DArrayShadow"),
+			ParameterTypeData(String(UTF8("sampler2DArrayShadow")),
 				GL_SAMPLER_2D_ARRAY_SHADOW, pvt_shadow,
 				pft_array),
-			ParameterTypeData(String(L"samplerCubeShadow"),
+			ParameterTypeData(String(UTF8("samplerCubeShadow")),
 				GL_SAMPLER_CUBE_SHADOW, pvt_shadow,
 				pft_none),
-			ParameterTypeData(String(L"samplerBuffer"),
+			ParameterTypeData(String(UTF8("samplerBuffer")),
 				GL_SAMPLER_BUFFER, pvt_float, pft_buffer),
-			ParameterTypeData(String(L"isampler1D"),
+			ParameterTypeData(String(UTF8("isampler1D")),
 				GL_INT_SAMPLER_1D, pvt_int, pft_none),
-			ParameterTypeData(String(L"isampler2D"),
+			ParameterTypeData(String(UTF8("isampler2D")),
 				GL_INT_SAMPLER_2D, pvt_int, pft_none),
-			ParameterTypeData(String(L"isamplerCube"),
+			ParameterTypeData(String(UTF8("isamplerCube")),
 				GL_INT_SAMPLER_CUBE, pvt_int, pft_none),
-			ParameterTypeData(String(L"isampler3D"),
+			ParameterTypeData(String(UTF8("isampler3D")),
 				GL_INT_SAMPLER_3D, pvt_int, pft_none),
-			ParameterTypeData(String(L"isampler1DArray"),
+			ParameterTypeData(String(UTF8("isampler1DArray")),
 				GL_INT_SAMPLER_1D_ARRAY, pvt_int, pft_array),
-			ParameterTypeData(String(L"isampler2DArray"),
+			ParameterTypeData(String(UTF8("isampler2DArray")),
 				GL_INT_SAMPLER_2D_ARRAY, pvt_int, pft_array),
-			ParameterTypeData(String(L"isampler2DRect"),
+			ParameterTypeData(String(UTF8("isampler2DRect")),
 				GL_INT_SAMPLER_2D_RECT, pvt_int, pft_rect),
-			ParameterTypeData(String(L"isamplerBuffer"),
+			ParameterTypeData(String(UTF8("isamplerBuffer")),
 				GL_INT_SAMPLER_BUFFER, pvt_int, pft_buffer),
-			ParameterTypeData(String(L"usampler1D"),
+			ParameterTypeData(String(UTF8("usampler1D")),
 				GL_UNSIGNED_INT_SAMPLER_1D, pvt_unsigned_int,
 				pft_none),
-			ParameterTypeData(String(L"usampler2D"),
+			ParameterTypeData(String(UTF8("usampler2D")),
 				GL_UNSIGNED_INT_SAMPLER_2D, pvt_unsigned_int,
 				pft_none),
-			ParameterTypeData(String(L"usamplerCube"),
+			ParameterTypeData(String(UTF8("usamplerCube")),
 				GL_UNSIGNED_INT_SAMPLER_CUBE, pvt_unsigned_int,
 				pft_none),
-			ParameterTypeData(String(L"usampler3D"),
+			ParameterTypeData(String(UTF8("usampler3D")),
 				GL_UNSIGNED_INT_SAMPLER_3D, pvt_unsigned_int,
 				pft_none),
-			ParameterTypeData(String(L"usampler1DArray"),
+			ParameterTypeData(String(UTF8("usampler1DArray")),
 				GL_UNSIGNED_INT_SAMPLER_1D_ARRAY,
 				pvt_unsigned_int, pft_array),
-			ParameterTypeData(String(L"usampler2DArray"),
+			ParameterTypeData(String(UTF8("usampler2DArray")),
 				GL_UNSIGNED_INT_SAMPLER_2D_ARRAY,
 				pvt_unsigned_int, pft_array),
-			ParameterTypeData(String(L"usampler2DRect"),
+			ParameterTypeData(String(UTF8("usampler2DRect")),
 				GL_UNSIGNED_INT_SAMPLER_2D_RECT,
 				pvt_unsigned_int, pft_rect),
-			ParameterTypeData(String(L"usamplerBuffer"),
+			ParameterTypeData(String(UTF8("usamplerBuffer")),
 				GL_UNSIGNED_INT_SAMPLER_BUFFER,
 				pvt_unsigned_int, pft_buffer)
 		};
@@ -261,8 +261,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_count();
@@ -278,8 +278,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_sampler();
@@ -295,8 +295,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_value_type() ==
@@ -313,8 +313,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_value_type() ==
@@ -331,8 +331,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_value_type() ==
@@ -349,8 +349,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_value_type() ==
@@ -367,8 +367,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_format_type() ==
@@ -385,8 +385,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_gl_type();
@@ -402,8 +402,8 @@ namespace eternal_lands
 					parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterType")));
 		}
 
 		return parameter_type_datas[parameter].get_name();
@@ -426,7 +426,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_value(parameter)
-			<< boost::errinfo_type_info_name("ParameterType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"ParameterType")));
 	}
 
 	ParameterType ParameterUtil::get_parameter(const String &str)
@@ -446,7 +447,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("ParameterType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"ParameterType")));
 	}
 
 	bool ParameterUtil::get_parameter(const String &str,

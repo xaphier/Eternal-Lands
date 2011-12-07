@@ -62,10 +62,9 @@ namespace eternal_lands
 		if ((size % swap_size) != 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_parameter_name(L"swap_size")
+				<< errinfo_parameter_name(UTF8("swap_size"))
 				<< errinfo_value(swap_size)
-				<< boost::errinfo_file_name(string_to_utf8(
-					get_name())));
+				<< boost::errinfo_file_name(get_name()));
 		}
 
 		buffer.resize(size);
@@ -98,10 +97,11 @@ namespace eternal_lands
 				break;
 			default:
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(L"swap_size")
+					<< errinfo_parameter_name(UTF8(
+						"swap_size"))
 					<< errinfo_value(swap_size)
 					<< boost::errinfo_file_name(
-						string_to_utf8(get_name())));
+						get_name()));
 		}
 	}
 
@@ -114,10 +114,9 @@ namespace eternal_lands
 		if ((size % swap_size) != 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_parameter_name(L"swap_size")
+				<< errinfo_parameter_name(UTF8("swap_size"))
 				<< errinfo_value(swap_size)
-				<< boost::errinfo_file_name(string_to_utf8(
-					get_name())));
+				<< boost::errinfo_file_name(get_name()));
 		}
 
 		buffer.resize(size);
@@ -150,10 +149,11 @@ namespace eternal_lands
 				break;
 			default:
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(L"swap_size")
+					<< errinfo_parameter_name(UTF8(
+						"swap_size"))
 					<< errinfo_value(swap_size)
 					<< boost::errinfo_file_name(
-						string_to_utf8(get_name())));
+						get_name()));
 		}
 	}
 
@@ -176,7 +176,7 @@ namespace eternal_lands
 
 		skip(size);
 
-		return String(utf8_to_string(result));
+		return String(result);
 	}
 
 	Uint64 Reader::get_size() const

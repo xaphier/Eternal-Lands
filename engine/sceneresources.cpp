@@ -39,10 +39,7 @@ namespace eternal_lands
 			get_mesh_builder_ptr(), get_effect_cache_ptr(),
 			get_texture_cache_ptr(), get_codec_manager_ptr(),
 			file_system);
-		m_filter_channels_1.reset(new Filter(get_mesh_cache_ptr(), 1));
-		m_filter_channels_2.reset(new Filter(get_mesh_cache_ptr(), 2));
-		m_filter_channels_3.reset(new Filter(get_mesh_cache_ptr(), 3));
-		m_filter_channels_4.reset(new Filter(get_mesh_cache_ptr(), 4));
+		m_filter.reset(new Filter(get_mesh_cache_ptr()));
 	}
 
 	SceneResources::~SceneResources() throw()
@@ -63,9 +60,10 @@ namespace eternal_lands
 
 	void SceneResources::init()
 	{
-		m_shader_source_builder->load(String(L"shaders/shaders.lua"));
-		m_shader_source_builder->load_default(
-			String(L"shaders/shaders.lua"));
+		m_shader_source_builder->load(String(UTF8(
+			"shaders/shaders.lua")));
+		m_shader_source_builder->load_default(String(UTF8(
+			"shaders/shaders.lua")));
 	}
 
 }

@@ -22,6 +22,57 @@
 namespace eternal_lands
 {
 
+#define PACK_FORMAT(type)	\
+	pft_##type##_1,	\
+	pft_##type##_2,	\
+	pft_##type##_3,	\
+	pft_##type##_4
+
+#define PACK_FORMAT_INT(type)	\
+	PACK_FORMAT(unsigned_##type),	\
+	PACK_FORMAT(signed_##type),	\
+	PACK_FORMAT(unsigned_normalized_##type),	\
+	PACK_FORMAT(signed_normalized_##type)
+
+#define PACK_FORMAT_PACKED_3(type, x, y, z)	\
+	pft_unsigned_##type##_##x##_##y##_##z,	\
+	pft_signed_##type##_##x##_##y##_##z,	\
+	pft_unsigned_normalized_##type##_##x##_##y##_##z,	\
+	pft_signed_normalized_##type##_##x##_##y##_##z,	\
+	pft_unsigned_##type##_rev_##z##_##y##_##x,	\
+	pft_signed_##type##_rev_##z##_##y##_##x,	\
+	pft_unsigned_normalized_##type##_rev_##z##_##y##_##x,	\
+	pft_signed_normalized_##type##_rev_##z##_##y##_##x
+
+#define PACK_FORMAT_PACKED_4(type, x, y, z, w)	\
+	pft_unsigned_##type##_##x##_##y##_##z##_##w,	\
+	pft_signed_##type##_##x##_##y##_##z##_##w,	\
+	pft_unsigned_normalized_##type##_##x##_##y##_##z##_##w,	\
+	pft_signed_normalized_##type##_##x##_##y##_##z##_##w,	\
+	pft_unsigned_##type##_rev_##w##_##z##_##y##_##x,	\
+	pft_signed_##type##_rev_##w##_##z##_##y##_##x,	\
+	pft_unsigned_normalized_##type##_rev_##w##_##z##_##y##_##x,	\
+	pft_signed_normalized_##type##_rev_##w##_##z##_##y##_##x
+
+	enum PackFormatType
+	{
+		PACK_FORMAT_INT(byte),
+		PACK_FORMAT_INT(short),
+		PACK_FORMAT_INT(int),
+		PACK_FORMAT(float),
+		PACK_FORMAT(half),
+		PACK_FORMAT_PACKED_3(byte, 3, 3, 2),
+		PACK_FORMAT_PACKED_4(short, 4, 4, 4, 4),
+		PACK_FORMAT_PACKED_3(short, 5, 6, 5),
+		PACK_FORMAT_PACKED_4(short, 5, 5, 5, 1),
+		PACK_FORMAT_PACKED_4(int, 10, 10, 10, 2)
+	};
+
+#undef	PACK_FORMAT
+#undef	PACK_FORMAT_INT
+#undef	PACK_FORMAT_PACKED_3
+#undef	PACK_FORMAT_PACKED_4
+
 	class PackTool
 	{
 		public:
@@ -319,9 +370,17 @@ namespace eternal_lands
 			static Uint32 pack_sint_2_10_10_10_rev(
 				const bool normalize, const glm::vec4 &value);
 
+			static glm::vec4 unpack_vec4(
+				const AbstractReadMemoryBuffer &buffer,
+				const Uint64 offset, const PackFormatType type);
+
+			static void pack(const Uint64 offset,
+				const PackFormatType type,
+				const glm::vec4 &data,
+				AbstractWriteMemoryBuffer &buffer);
+
 	};
 
 }
 
 #endif	/* UUID_3afdaee9_6721_4536_9aeb_bf4558d8a4b9 */
-

@@ -61,38 +61,42 @@ namespace eternal_lands
 
 		const CommonParameterTypeData common_parameter_type_datas[] =
 		{
-			CommonParameterTypeData(String(L"diffuse_color"),
+			CommonParameterTypeData(String(UTF8("diffuse_color")),
 				pt_vec3),
-			CommonParameterTypeData(String(L"specular_color"),
+			CommonParameterTypeData(String(UTF8("specular_color")),
 				pt_vec3),
-			CommonParameterTypeData(String(L"shadow"), pt_float),
-			CommonParameterTypeData(String(L"light_color"),
+			CommonParameterTypeData(String(UTF8("shadow")),
+				pt_float),
+			CommonParameterTypeData(String(UTF8("light_color")),
 				pt_vec4),
-			CommonParameterTypeData(String(L"light_position"),
+			CommonParameterTypeData(String(UTF8("light_position")),
 				pt_vec4),
-			CommonParameterTypeData(String(L"lighting_normal"),
+			CommonParameterTypeData(String(UTF8("lighting_normal")),
 				pt_vec3),
-			CommonParameterTypeData(String(L"world_position"),
+			CommonParameterTypeData(String(UTF8("world_position")),
 				pt_vec3),
-			CommonParameterTypeData(String(L"world_normal"),
+			CommonParameterTypeData(String(UTF8("world_normal")),
 				pt_vec3),
-			CommonParameterTypeData(String(L"world_tangent"),
+			CommonParameterTypeData(String(UTF8("world_tangent")),
 				pt_vec3),
-			CommonParameterTypeData(String(L"world_view_direction"),
-				pt_vec4),
-			CommonParameterTypeData(String(L"world_uv"), pt_vec2),
-			CommonParameterTypeData(String(L"view_position"),
-				pt_vec3),
-			CommonParameterTypeData(String(L"diffuse"), pt_vec4),
-			CommonParameterTypeData(String(L"specular"), pt_float),
-			CommonParameterTypeData(String(L"fragment_normal"),
-				pt_vec3),
-			CommonParameterTypeData(String(L"fragment_uv"),
+			CommonParameterTypeData(String(UTF8(
+				"world_view_direction")), pt_vec4),
+			CommonParameterTypeData(String(UTF8("world_uv")),
 				pt_vec2),
-			CommonParameterTypeData(String(L"fog"), pt_float),
-			CommonParameterTypeData(String(L"shadow_uv"), pt_vec4,
-				pst_shadow_map_count),
-			CommonParameterTypeData(String(L"shadow_map_data"),
+			CommonParameterTypeData(String(UTF8("view_position")),
+				pt_vec3),
+			CommonParameterTypeData(String(UTF8("diffuse")),
+				pt_vec4),
+			CommonParameterTypeData(String(UTF8("specular")),
+				pt_float),
+			CommonParameterTypeData(String(UTF8("fragment_normal")),
+				pt_vec3),
+			CommonParameterTypeData(String(UTF8("fragment_uv")),
+				pt_vec2),
+			CommonParameterTypeData(String(UTF8("fog")), pt_float),
+			CommonParameterTypeData(String(UTF8("shadow_uv")),
+				pt_vec4, pst_shadow_map_count),
+			CommonParameterTypeData(String(UTF8("shadow_map_data")),
 				pt_vec3)
 		};
 
@@ -113,8 +117,8 @@ namespace eternal_lands
 					common_parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					common_parameter))
-				<< boost::errinfo_type_info_name(
-					"CommonParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"CommonParameterType")));
 		}
 
 		return common_parameter_type_datas[common_parameter].get_name();
@@ -131,8 +135,8 @@ namespace eternal_lands
 					common_parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					common_parameter))
-				<< boost::errinfo_type_info_name(
-					"CommonParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"CommonParameterType")));
 		}
 
 		return common_parameter_type_datas[common_parameter].get_type();
@@ -149,8 +153,8 @@ namespace eternal_lands
 					common_parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					common_parameter))
-				<< boost::errinfo_type_info_name(
-					"CommonParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"CommonParameterType")));
 		}
 
 		return common_parameter_type_datas[common_parameter].get_size();
@@ -167,8 +171,8 @@ namespace eternal_lands
 					common_parameter_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					common_parameter))
-				<< boost::errinfo_type_info_name(
-					"CommonParameterType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"CommonParameterType")));
 		}
 
 		return common_parameter_type_datas[
@@ -193,7 +197,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("CommonParameterType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"CommonParameterType")));
 	}
 
 	bool CommonParameterUtil::get_common_parameter(const String &str,

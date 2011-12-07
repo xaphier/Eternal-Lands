@@ -16,22 +16,22 @@ namespace eternal_lands
 
 		const String shader_texture_type_datas[] =
 		{
-			String(L"diffuse_sampler_0"),
-			String(L"diffuse_sampler_1"),
-			String(L"diffuse_sampler_2"),
-			String(L"diffuse_sampler_3"),
-			String(L"normal_sampler_0"),
-			String(L"specular_sampler_0"),
-			String(L"glow_sampler_0"),
-			String(L"blend_sampler_0"),
-			String(L"normal_sampler_1"),
-			String(L"specular_sampler_1"),
-			String(L"glow_sampler_1"),
-			String(L"blend_sampler_1"),
-			String(L"extra_sampler_0"),
-			String(L"extra_sampler_1"),
-			String(L"extra_sampler_2"),
-			String(L"shadow_sampler")
+			String(UTF8("diffuse_sampler_0")),
+			String(UTF8("diffuse_sampler_1")),
+			String(UTF8("diffuse_sampler_2")),
+			String(UTF8("diffuse_sampler_3")),
+			String(UTF8("normal_sampler_0")),
+			String(UTF8("specular_sampler_0")),
+			String(UTF8("glow_sampler_0")),
+			String(UTF8("blend_sampler_0")),
+			String(UTF8("normal_sampler_1")),
+			String(UTF8("specular_sampler_1")),
+			String(UTF8("glow_sampler_1")),
+			String(UTF8("blend_sampler_1")),
+			String(UTF8("extra_sampler_0")),
+			String(UTF8("extra_sampler_1")),
+			String(UTF8("extra_sampler_2")),
+			String(UTF8("shadow_sampler"))
 		};
 
 		const Uint32 shader_texture_type_datas_count =
@@ -50,8 +50,8 @@ namespace eternal_lands
 					shader_texture_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture))
-				<< boost::errinfo_type_info_name(
-					"ShaderTextureType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ShaderTextureType")));
 		}
 
 		return shader_texture_type_datas[texture];
@@ -76,7 +76,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name("ShaderTextureType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"ShaderTextureType")));
 	}
 
 	bool ShaderTextureUtil::get_shader_texture(const String &str,

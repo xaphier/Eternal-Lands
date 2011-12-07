@@ -16,9 +16,9 @@ namespace eternal_lands
 
 		const String parameter_qualifier_type_datas[] =
 		{
-			String(L"in"),
-			String(L"out"),
-			String(L"inout")
+			String(UTF8("in")),
+			String(UTF8("out")),
+			String(UTF8("inout"))
 		};
 
 		const Uint32 parameter_qualifier_type_datas_count =
@@ -39,8 +39,8 @@ namespace eternal_lands
 						- 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
-				<< boost::errinfo_type_info_name(
-					"ParameterQualifierType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterQualifierType")));
 		}
 
 		return parameter_qualifier_type_datas[parameter];
@@ -65,8 +65,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name(
-				"ParameterQualifierType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"ParameterQualifierType")));
 	}
 
 	bool ParameterQualifierUtil::get_parameter_qualifier(const String &str,

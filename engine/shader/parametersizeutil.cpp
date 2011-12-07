@@ -16,10 +16,10 @@ namespace eternal_lands
 
 		const String parameter_size_type_datas[] =
 		{
-			String(L"one"),
-			String(L"light_count"),
-			String(L"bone_count"),
-			String(L"shadow_map_count")
+			String(UTF8("one")),
+			String(UTF8("light_count")),
+			String(UTF8("bone_count")),
+			String(UTF8("shadow_map_count"))
 		};
 
 		const Uint32 parameter_size_type_datas_count =
@@ -38,8 +38,8 @@ namespace eternal_lands
 					parameter_size_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter_size))
-				<< boost::errinfo_type_info_name(
-					"ParameterSizeType"));
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterSizeType")));
 		}
 
 		return parameter_size_type_datas[parameter_size];
@@ -63,8 +63,8 @@ namespace eternal_lands
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
-			<< boost::errinfo_type_info_name(
-				"ParameterSizeType"));
+			<< boost::errinfo_type_info_name(UTF8(
+				"ParameterSizeType")));
 	}
 
 	bool ParameterSizeUtil::get_parameter_size(const String &str,

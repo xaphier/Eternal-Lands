@@ -285,37 +285,37 @@ namespace eternal_lands
 		bool load_plane(const String &name,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
-			if (name == L"plane_4")
+			if (name == UTF8("plane_4"))
 			{
 				load_plane(4, mesh_data_tool);
 				return true;
 			}
 
-			if (name == L"plane_8")
+			if (name == UTF8("plane_8"))
 			{
 				load_plane(8, mesh_data_tool);
 				return true;
 			}
 
-			if (name == L"plane_16")
+			if (name == UTF8("plane_16"))
 			{
 				load_plane(16, mesh_data_tool);
 				return true;
 			}
 
-			if (name == L"plane_32")
+			if (name == UTF8("plane_32"))
 			{
 				load_plane(32, mesh_data_tool);
 				return true;
 			}
 
-			if (name == L"plane_64")
+			if (name == UTF8("plane_64"))
 			{
 				load_plane(64, mesh_data_tool);
 				return true;
 			}
 
-			if (name == L"plane_128")
+			if (name == UTF8("plane_128"))
 			{
 				load_plane(128, mesh_data_tool);
 				return true;

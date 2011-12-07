@@ -20,7 +20,7 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String empty_str = String(L"");
+		const String empty_str = String(UTF8(""));
 
 	}
 
