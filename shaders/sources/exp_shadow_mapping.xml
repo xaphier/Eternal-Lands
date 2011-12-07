@@ -120,9 +120,7 @@
 	// compute distance from current fragment to the main light
 	light_distance = distance(shadow_camera.xyz, world_position) + light_shadow_bias;
 
-	shadow = exp(over_darkening_factor * (log(occluder) - light_distance));
-//	shadow = exp(over_darkening_factor * ((occluder) - light_distance));
-//	shadow = occluder / exp(over_darkening_factor * light_distance);
+	shadow += exp(over_darkening_factor * (log(occluder) - light_distance));
 
 	shadow = clamp(shadow, 0.0, 1.0);
 }

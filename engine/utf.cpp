@@ -83,9 +83,6 @@ namespace eternal_lands
 					 */
 					iconv_close(cd);
 
-					assert(false);
-					std::cout << "input: " << input << std::endl;
-
 					EL_THROW_EXCEPTION(
 						InvalidParameterException()
 						<< errinfo_parameter_name(UTF8(
@@ -120,12 +117,12 @@ namespace eternal_lands
 
 	std::string utf8_to_string(const std::string &str)
 	{
-		return convert("UTF−8", "", str);
+		return convert("UTF-8", "", str);
 	}
 
 	std::string string_to_utf8(const std::string &str)
 	{
-		return convert("", "UTF−8", str);
+		return convert("", "UTF-8", str);
 	}
 
 }

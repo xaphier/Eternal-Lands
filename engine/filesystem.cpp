@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 
 #include "../io/elpathwrapper.h"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -331,10 +332,16 @@ namespace eternal_lands
 	String FileSystem::get_file_string(const String &file_name)
 	{
 		ReaderSharedPtr reader;
+		String str;
 
 		reader = get_file(file_name);
 
-		return reader->read_utf8_string(reader->get_size());
+		str = reader->read_utf8_string(reader->get_size());
+
+		LOG_INFO(UTF8("File '%1%' has size %2% and string: '%3%'"),
+			file_name % reader->get_size() % str);
+
+		return str;
 	}
 
 }

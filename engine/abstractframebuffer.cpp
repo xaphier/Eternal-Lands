@@ -16,8 +16,6 @@ namespace eternal_lands
 		m_texture(boost::make_shared<Texture>(name)), m_width(width),
 		m_height(height)
 	{
-		assert(m_width <= 2048);
-		assert(m_height <= 2048);
 	}
 
 	AbstractFrameBuffer::~AbstractFrameBuffer() throw()
