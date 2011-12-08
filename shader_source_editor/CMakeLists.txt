@@ -3,17 +3,23 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 project(shader_source_editor)
 
 find_package(PkgConfig)
-pkg_check_modules(PC_GTK3 QUIET gtk+-3.0)
 
-set(GTK3_DEFINITIONS ${PC_GTK3_CFLAGS_OTHER})
-set(GTK3_LIBRARY ${PC_GTK3_LIBRARIES} )
-set(GTK3_INCLUDE_DIR ${PC_GTK3_INCLUDE_DIRS} )
+if (PKG_CONFIG_FOUND)
+	pkg_check_modules(PC_GTK QUIET gtk+-3.0)
 
-set(GTK3_LIBRARIES ${GTK3_LIBRARY} )
-set(GTK3_INCLUDE_DIRS ${GTK3_INCLUDE_DIR} )
+	set(GTK_DEFINITIONS ${PC_GTK_CFLAGS_OTHER})
+	set(GTK_LIBRARIES ${PC_GTK_LIBRARIES} )
+	set(GTK_INCLUDE_DIRS ${PC_GTK_INCLUDE_DIRS} )
+else (PKG_CONFIG_FOUND)
+	include(FindGTK2)
 
-include_directories(${GTK3_INCLUDE_DIRS})
-add_definitions(${GTK3_DEFINITIONS})
+	set(GTK_DEFINITIONS)
+	set(GTK_LIBRARY ${GTK2_LIBRARIES} )
+	set(GTK_INCLUDE_DIR ${GTK2_INCLUDE_DIRS} )
+endif (PKG_CONFIG_FOUND)
+
+include_directories(${GTK_INCLUDE_DIRS})
+add_definitions(${GTK_DEFINITIONS})
 
 file(GLOB shader_source_editor_cpp_header_files *.hpp)
 file(GLOB shader_source_editor_cpp_files *.cpp)
@@ -27,5 +33,5 @@ add_executable(shader_source_editor WIN32
 	${shader_source_editor_c_files})
 
 target_link_libraries(shader_source_editor elengine)
-target_link_libraries(shader_source_editor ${GTK3_LIBRARIES})
+target_link_libraries(shader_source_editor ${GTK_LIBRARIES})
 
