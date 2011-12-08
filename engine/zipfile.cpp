@@ -7,9 +7,9 @@
 
 #include "zipfile.hpp"
 #include "../io/unzip.h"
-#include <boost/filesystem/fstream.hpp>
 #include "memorybuffer.hpp"
 #include "reader.hpp"
+#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -66,9 +66,14 @@ namespace eternal_lands
 		}
 
 		voidpf ZCALLBACK open_ifstream_func(voidpf opaque,
-			const wchar_t* file_name, int mode)
+			const String &file_name, int mode)
 		{
-			return new boost::filesystem::fstream(file_name);
+			StringType path;
+
+			path = utf8_to_string(file_name.get());
+
+			return new std::ifstream(path.c_str(),
+				std::ifstream::binary);
 		}
 
 		uLong ZCALLBACK read_istream_func(voidpf opaque,
