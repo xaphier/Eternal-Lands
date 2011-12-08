@@ -36,7 +36,7 @@ include(cmake/PCHSupport.cmake)
 
 set(Boost_USE_STATIC_RUNTIME ON)
 
-find_package(Boost 1.40.0 COMPONENTS filesystem system)
+find_package(Boost 1.40.0 COMPONENTS)
 
 IF (PCHSupport_FOUND)
 	option(BUILD_PCH "Build using precompiled headers" on)
