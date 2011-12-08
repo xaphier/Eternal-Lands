@@ -19,6 +19,7 @@
 #include "shadersourceparameter.hpp"
 #include "shadertextureutil.hpp"
 #include "filesystem.hpp"
+#include "glsl_optimizer/glsl/glsl_optimizer.h"
 
 namespace eternal_lands
 {
@@ -492,6 +493,37 @@ namespace eternal_lands
 
 	}
 
+	class ShaderSourceBuilder::ShaderSourceOptimizer
+	{
+		private:
+			glslopt_ctx* m_optimizer;
+			const bool m_opengl3;
+
+		public:
+			inline ShaderSourceOptimizer(const bool opengl3):
+				m_opengl3(opengl3)
+			{
+				m_optimizer = glslopt_initialize(false,
+					get_opengl3());
+			}
+
+			inline ~ShaderSourceOptimizer() throw()
+			{
+				glslopt_cleanup(m_optimizer);
+			}
+
+			inline glslopt_ctx* get_optimizer()
+			{
+				return m_optimizer;
+			}
+
+			inline bool get_opengl3() const
+			{
+				return m_opengl3;
+			}
+
+	};
+
 	enum ShaderSourceBuildOptionTypes
 	{
 		ssbot_tangent = 0,
@@ -632,13 +664,12 @@ namespace eternal_lands
 	ShaderSourceBuilder::ShaderSourceBuilder(
 		const GlobalVarsSharedPtr &global_vars,
 		const FileSystemWeakPtr &file_system):
-		m_global_vars(global_vars), m_file_system(file_system),
-		m_optimizer(0)
+		m_global_vars(global_vars), m_file_system(file_system)
 	{
 		assert(m_global_vars.get() != 0);
 		assert(!m_file_system.expired());
 
-		m_optimizer = glslopt_initialize(false, true);
+		m_optimizer.reset(new ShaderSourceOptimizer(GLEW_VERSION_3_0));
 
 		m_shadow_scale = 0.6f;
 		m_vertex_light_count = 4;
@@ -649,7 +680,6 @@ namespace eternal_lands
 
 	ShaderSourceBuilder::~ShaderSourceBuilder() throw()
 	{
-		glslopt_cleanup(m_optimizer);
 	}
 
 	void ShaderSourceBuilder::load_file(const String &file_name)
@@ -1438,7 +1468,14 @@ namespace eternal_lands
 		fragment = UTF8("");
 		values.clear();
 
-		version = 130;
+		if (m_optimizer->get_opengl3())
+		{
+			version = 130;
+		}
+		else
+		{
+			version = 120;
+		}
 
 		array_sizes[pst_light_count] = data.get_light_count();
 		array_sizes[pst_bone_count] = get_bone_count();
@@ -1542,7 +1579,8 @@ namespace eternal_lands
 
 		try
 		{
-			vertex = get_optimized_source(m_optimizer, vertex,
+			vertex = get_optimized_source(
+				m_optimizer->get_optimizer(), vertex,
 				kGlslOptShaderVertex, vertex_source.str());
 		}
 		catch (boost::exception &exception)
@@ -1555,7 +1593,8 @@ namespace eternal_lands
 
 		try
 		{
-			fragment = get_optimized_source(m_optimizer, fragment,
+			fragment = get_optimized_source(
+				m_optimizer->get_optimizer(), fragment,
 				kGlslOptShaderFragment, fragment_source.str());
 		}
 		catch (boost::exception &exception)

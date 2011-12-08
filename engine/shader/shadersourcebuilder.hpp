@@ -16,7 +16,6 @@
 #include "shadersource.hpp"
 #include "parametersizeutil.hpp"
 #include "commonparameterutil.hpp"
-#include "glsl_optimizer/glsl/glsl_optimizer.h"
 
 /**
  * @file
@@ -30,6 +29,7 @@ namespace eternal_lands
 	{
 		private:
 			class ShaderSourceBuildData;
+			class ShaderSourceOptimizer;
 
 			typedef std::pair<ShaderSourceType, String>
 				ShaderSourceTypeStringPair;
@@ -42,7 +42,7 @@ namespace eternal_lands
 			ShaderSourceTypeStringMap m_defaults;
 			GlobalVarsSharedPtr m_global_vars;
 			FileSystemWeakPtr m_file_system;
-			glslopt_ctx* m_optimizer;
+			boost::scoped_ptr<ShaderSourceOptimizer> m_optimizer;
 			float m_shadow_scale;
 			Uint16 m_vertex_light_count;
 			Uint16 m_fragment_light_count;
