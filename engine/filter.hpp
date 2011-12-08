@@ -111,12 +111,15 @@ namespace eternal_lands
 		public:
 			Filter(const MeshCacheSharedPtr &mesh_cache);
 			~Filter() throw();
-			void bind(const Uint32 width, const Uint32 height,
-				const Uint32 layer, const Uint16 channel_count,
+			void bind(const glm::vec4 &source,
+				const glm::vec4 &dest, const Uint32 width,
+				const Uint32 height, const Uint32 layer,
+				const Uint16 channel_count,
 				const FilterType type, const bool vertical,
 				StateManager &state_manager);
-			void bind(const Uint32 width, const Uint32 height,
-				const Uint16 channel_count,
+			void bind(const glm::vec4 &source,
+				const glm::vec4 &dest, const Uint32 width,
+				const Uint32 height, const Uint16 channel_count,
 				const FilterType type, const bool vertical,
 				StateManager &state_manager);
 

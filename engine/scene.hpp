@@ -63,7 +63,6 @@ namespace eternal_lands
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
-			glm::vec4 m_shadow_texture_offset;
 			String m_name;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;

@@ -282,14 +282,16 @@ namespace eternal_lands
 		str << UTF8("\n");
 		str << UTF8("varying vec2 uv;\n");
 		str << UTF8("\n");
-		str << UTF8("uniform vec4 scale_offset;\n");
+		str << UTF8("uniform vec4 source_scale_offset;\n");
+		str << UTF8("uniform vec4 dest_scale_offset;\n");
 		str << UTF8("\n");
 		str << UTF8("void main()\n");
 		str << UTF8("{\n");
-		str << UTF8("\tgl_Position = vec4(position * 2.0 - 1.0, 0.5,");
-		str << UTF8(" 1.0);\n");
-		str << UTF8("\tuv = position * scale_offset.xy + ");
-		str << UTF8("scale_offset.zw;\n");
+		str << UTF8("\tgl_Position = vec4(position * ");
+		str << UTF8("dest_scale_offset.xy + dest_scale_offset.zw, ");
+		str << UTF8("0.5, 1.0);\n");
+		str << UTF8("\tuv = position * source_scale_offset.xy + ");
+		str << UTF8("source_scale_offset.zw;\n");
 		str << UTF8("}\n");
 
 		return String(str.str());
@@ -510,12 +512,13 @@ namespace eternal_lands
 		return 0;
 	}
 
-	void Filter::bind(const Uint32 width, const Uint32 height,
-		const Uint32 layer, const Uint16 channel_count,
-		const FilterType type, const bool vertical,
-		StateManager &state_manager)
+	void Filter::bind(const glm::vec4 &source, const glm::vec4 &dest,
+		const Uint32 width, const Uint32 height, const Uint32 layer,
+		const Uint16 channel_count, const FilterType type,
+		const bool vertical, StateManager &state_manager)
 	{
 		glm::vec4 scale, offset, scale_offset;
+		glm::vec4 dest_scale_offset, source_scale_offset;
 		Uint16 index, half_taps_minus_one;
 
 		half_taps_minus_one = get_scale_offset(type, scale, offset);
@@ -526,6 +529,20 @@ namespace eternal_lands
 		scale_offset.y = (height - 1) / static_cast<float>(height);
 		scale_offset.z = 0.5f / static_cast<float>(width);
 		scale_offset.w = 0.5f / static_cast<float>(height);
+
+		dest_scale_offset = dest;
+		source_scale_offset = source;
+
+		source_scale_offset.x *= scale_offset.x;
+		source_scale_offset.y *= scale_offset.y;
+		source_scale_offset.z *= scale_offset.x;
+		source_scale_offset.w *= scale_offset.y;
+		source_scale_offset.z += scale_offset.z;
+		source_scale_offset.w += scale_offset.w;
+
+		dest_scale_offset *= 2.0f;
+		dest_scale_offset.z -= 1.0f;
+		dest_scale_offset.w -= 1.0f;
 
 		if (vertical)
 		{
@@ -545,16 +562,22 @@ namespace eternal_lands
 		state_manager.get_program()->set_variant_parameter(
 			String(UTF8("offset")), offset);
 		state_manager.get_program()->set_variant_parameter(
-			String(UTF8("scale_offset")), scale_offset);
+			String(UTF8("source_scale_offset")),
+			source_scale_offset);
+		state_manager.get_program()->set_variant_parameter(
+			String(UTF8("dest_scale_offset")),
+			dest_scale_offset);
 		state_manager.switch_mesh(m_mesh);
 		state_manager.get_mesh()->draw(0);
 	}
 
-	void Filter::bind(const Uint32 width, const Uint32 height,
+	void Filter::bind(const glm::vec4 &source, const glm::vec4 &dest,
+		const Uint32 width, const Uint32 height,
 		const Uint16 channel_count, const FilterType type,
 		const bool vertical, StateManager &state_manager)
 	{
 		glm::vec4 scale, offset, scale_offset;
+		glm::vec4 dest_scale_offset, source_scale_offset;
 		Uint16 index, half_taps_minus_one;
 
 		half_taps_minus_one = get_scale_offset(type, scale, offset);
@@ -565,6 +588,20 @@ namespace eternal_lands
 		scale_offset.y = (height - 1) / static_cast<float>(height);
 		scale_offset.z = 0.5f / static_cast<float>(width);
 		scale_offset.w = 0.5f / static_cast<float>(height);
+
+		dest_scale_offset = dest;
+		source_scale_offset = source;
+
+		source_scale_offset.x *= scale_offset.x;
+		source_scale_offset.y *= scale_offset.y;
+		source_scale_offset.z *= scale_offset.x;
+		source_scale_offset.w *= scale_offset.y;
+		source_scale_offset.z += scale_offset.z;
+		source_scale_offset.w += scale_offset.w;
+
+		dest_scale_offset *= 2.0f;
+		dest_scale_offset.z -= 1.0f;
+		dest_scale_offset.w -= 1.0f;
 
 		if (vertical)
 		{
@@ -582,7 +619,11 @@ namespace eternal_lands
 		state_manager.get_program()->set_variant_parameter(
 			String(UTF8("offset")), offset);
 		state_manager.get_program()->set_variant_parameter(
-			String(UTF8("scale_offset")), scale_offset);
+			String(UTF8("source_scale_offset")),
+			source_scale_offset);
+		state_manager.get_program()->set_variant_parameter(
+			String(UTF8("dest_scale_offset")),
+			dest_scale_offset);
 		state_manager.switch_mesh(m_mesh);
 		state_manager.get_mesh()->draw(0);
 	}

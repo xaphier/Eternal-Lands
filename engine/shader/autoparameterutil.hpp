@@ -39,7 +39,6 @@ namespace eternal_lands
 		apt_shadow_projection_matrix,
 		apt_shadow_projection_view_matrix,
 		apt_shadow_texture_matrix,
-		apt_shadow_texture_offset,
 		apt_light_positions,
 		apt_light_colors,
 		/**

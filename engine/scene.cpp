@@ -141,7 +141,7 @@ namespace eternal_lands
 		AbstractMeshSharedPtr mesh;
 
 		mesh = get_scene_resources().get_mesh_builder().get_mesh(
-			vft_mesh, instance_data.get_mesh_data_tool());
+			vft_instanced_mesh, instance_data.get_mesh_data_tool());
 
 		object = boost::make_shared<Object>(instance_data, mesh,
 			instance_data.get_materials(),
@@ -238,7 +238,6 @@ namespace eternal_lands
 
 	void Scene::update_shadow_map()
 	{
-		float offset;
 		Uint32 shadow_map_width, shadow_map_height, shadow_map_size;
 		Uint16 mipmaps, samples, shadow_map_count;
 
@@ -247,8 +246,6 @@ namespace eternal_lands
 		shadow_map_height = m_scene_view.get_shadow_map_height();
 
 		shadow_map_size = std::max(shadow_map_width, shadow_map_height);
-
-		offset = 2.0f;
 
 		if (m_scene_view.get_shadow_map_count() == 0)
 		{
@@ -293,8 +290,8 @@ namespace eternal_lands
 				m_shadow_filter_frame_buffer =
 					FrameBufferBuilder::build_filter(
 						String(UTF8("ShadowFilter")),
-						shadow_map_width,
-						shadow_map_height, tft_r32f);
+						shadow_map_size,
+						shadow_map_size, tft_r32f);
 			}
 			else
 			{
@@ -307,11 +304,6 @@ namespace eternal_lands
 				String(UTF8("Shadow")), shadow_map_width,
 				shadow_map_height, 0, tft_depth32);
 		}
-
-		m_shadow_texture_offset.x = offset / shadow_map_size;
-		m_shadow_texture_offset.y = offset / shadow_map_size;
-		m_shadow_texture_offset.z = -offset / shadow_map_size;
-		m_shadow_texture_offset.w = 0.0f;
 	}
 
 	void Scene::load(const String &name, const glm::vec3 &ambient,
@@ -503,11 +495,6 @@ namespace eternal_lands
 
 		split_boxes = frustum.get_bounding_boxes();
 
-		for (i = 0; i < SubFrustumsBoundingBoxes::size(); i++)
-		{
-			receiver_boxes[i].clamp(split_boxes[i]);
-		}
-
 		m_scene_view.build_shadow_matrices(
 			glm::vec3(get_main_light_direction()),
 			split_boxes, receiver_boxes,
@@ -565,11 +552,6 @@ namespace eternal_lands
 
 		shadow_boxes = frustum.get_bounding_boxes();
 
-		for (i = 0; i < SubFrustumsBoundingBoxes::size(); i++)
-		{
-			caster_boxes[i].clamp(shadow_boxes[i]);
-		}
-
 		m_scene_view.update_shadow_matrices(shadow_boxes,
 			receiver_boxes, caster_boxes);
 	}
@@ -610,8 +592,6 @@ namespace eternal_lands
 				));
 			program->set_parameter(apt_shadow_texture_matrix,
 				m_scene_view.get_shadow_texture_matrices());
-			program->set_parameter(apt_shadow_texture_offset,
-				m_shadow_texture_offset);
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 
@@ -790,6 +770,7 @@ namespace eternal_lands
 
 	void Scene::draw_shadows_array(const Uint16 index)
 	{
+		glm::vec4 tmp;
 		Uint32 width, height;
 
 		DEBUG_CHECK_GL_ERROR();
@@ -808,6 +789,8 @@ namespace eternal_lands
 		if (m_scene_view.get_exponential_shadow_maps() &&
 			get_global_vars()->get_filter_shadow_map())
 		{
+			tmp = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+
 			width = m_shadow_frame_buffer->get_width();
 			height = m_shadow_frame_buffer->get_height();
 
@@ -818,7 +801,7 @@ namespace eternal_lands
 			m_shadow_filter_frame_buffer->clear(glm::vec4(0));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_frame_buffer->get_texture());
-			m_scene_resources.get_filter().bind(width,
+			m_scene_resources.get_filter().bind(tmp, tmp, width,
 				height, index, 1, ft_gauss_5_tap, false,
 				m_state_manager);
 
@@ -826,7 +809,7 @@ namespace eternal_lands
 			m_shadow_frame_buffer->clear(glm::vec4(0));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_filter_frame_buffer->get_texture());
-			m_scene_resources.get_filter().bind(width,
+			m_scene_resources.get_filter().bind(tmp, tmp, width,
 				height, 1, ft_gauss_5_tap, true,
 				m_state_manager);
 		}
@@ -896,6 +879,7 @@ namespace eternal_lands
 
 	void Scene::draw_all_shadows()
 	{
+		glm::vec4 source, dest;
 		Uint32 width, height, size;
 		Uint16 i;
 
@@ -952,8 +936,13 @@ namespace eternal_lands
 		if (m_scene_view.get_exponential_shadow_maps() &&
 			get_global_vars()->get_filter_shadow_map())
 		{
-			width = m_shadow_frame_buffer->get_width();
-			height = m_shadow_frame_buffer->get_height();
+			dest = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+			source = glm::vec4(2.0f / 3.0f, 1.0f, 0.0f, 0.0f);
+
+			width = m_shadow_filter_frame_buffer->get_width();
+			height = m_shadow_filter_frame_buffer->get_height();
+
+			glViewport(0, 0, width, height);
 
 			m_state_manager.switch_depth_mask(false);
 			m_state_manager.switch_depth_test(false);
@@ -961,17 +950,28 @@ namespace eternal_lands
 			m_shadow_filter_frame_buffer->bind(0);
 			m_shadow_filter_frame_buffer->clear(glm::vec4(0));
 
+			width = m_shadow_frame_buffer->get_width();
+			height = m_shadow_frame_buffer->get_height();
+
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_frame_buffer->get_texture());
-			m_scene_resources.get_filter().bind(width,
+			m_scene_resources.get_filter().bind(source, dest, width,
 				height, 0, 1, ft_gauss_5_tap, false,
 				m_state_manager);
 
+			dest = glm::vec4(2.0f / 3.0f, 1.0f, 0.0f, 0.0f);
+			source = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+
+			glViewport(0, 0, width, height);
+
+			width = m_shadow_filter_frame_buffer->get_width();
+			height = m_shadow_filter_frame_buffer->get_height();
+
 			m_shadow_frame_buffer->bind_texture(0);
-			m_shadow_frame_buffer->clear(glm::vec4(0));
+//			m_shadow_frame_buffer->clear(glm::vec4(0));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_filter_frame_buffer->get_texture());
-			m_scene_resources.get_filter().bind(width,
+			m_scene_resources.get_filter().bind(source, dest, width,
 				height, 1, ft_gauss_5_tap, true,
 				m_state_manager);
 		}

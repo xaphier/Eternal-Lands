@@ -214,7 +214,7 @@ namespace eternal_lands
 		// Calculate position
 		// We want to be in the -ve direction of the light direction
 		// far enough to project for the dir light extrusion distance
-		pos = target + dir * 15.0f;
+		pos = target + dir * 50.0f;
 
 		// get Cam orientation
 		up = glm::vec3(0.0f, 0.0f, 1.0);

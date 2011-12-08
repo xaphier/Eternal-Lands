@@ -82,8 +82,6 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8(
 				"shadow_texture_matrix")), pt_mat4x4,
 				pst_shadow_map_count),
-			AutoParameterTypeData(String(UTF8(
-				"shadow_texture_offset")), pt_vec4),
 			AutoParameterTypeData(String(UTF8("light_positions")),
 				pt_vec4, pst_light_count),
 			AutoParameterTypeData(String(UTF8("light_colors")),
