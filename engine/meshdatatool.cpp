@@ -1033,7 +1033,7 @@ namespace eternal_lands
 			write_vertex_semantic_to_stream(vst_extra_bone_index, i, str);
 			write_vertex_semantic_to_stream(vst_texture_coordinate_0, i, str);
 			write_vertex_semantic_to_stream(vst_texture_coordinate_1, i, str);
-			write_vertex_semantic_to_stream(vst_layer_index, i, str);
+			write_vertex_semantic_to_stream(vst_blend_index, i, str);
 			write_vertex_semantic_to_stream(vst_morph_position, i, str);
 			write_vertex_semantic_to_stream(vst_morph_normal, i, str);
 			write_vertex_semantic_to_stream(vst_morph_tangent, i, str);

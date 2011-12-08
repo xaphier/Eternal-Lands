@@ -60,9 +60,9 @@ namespace eternal_lands
 					vst_texture_coordinate_0,
 					source_index));
 
-			mesh_data_tool.set_vertex_data(vst_layer_index,
+			mesh_data_tool.set_vertex_data(vst_blend_index,
 				dest_index, source->get_vertex_data(
-					vst_layer_index, source_index));
+					vst_blend_index, source_index));
 		}
 
 		void build_sub_mesh_unpacked(MeshDataTool &mesh_data_tool,
@@ -373,6 +373,7 @@ namespace eternal_lands
 		semantics.insert(vst_color);
 		semantics.insert(vst_tangent);
 		semantics.insert(vst_texture_coordinate_0);
+		semantics.insert(vst_blend_index);
 
 		mesh_data_tool = boost::make_shared<MeshDataTool>(vertex_count,
 			index_count, sub_mesh_count, semantics,

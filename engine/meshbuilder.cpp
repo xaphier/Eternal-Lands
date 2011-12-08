@@ -24,15 +24,19 @@ namespace eternal_lands
 			String(UTF8("mesh")),
 			String(UTF8("animated_mesh")),
 			String(UTF8("morph_mesh")),
+			String(UTF8("instanced_mesh")),
 			String(UTF8("mesh_tangent")),
 			String(UTF8("animated_mesh_tangent")),
 			String(UTF8("morph_mesh_tangent")),
+			String(UTF8("instanced_mesh_tangent")),
 			String(UTF8("mesh_extra_uv")),
 			String(UTF8("animated_mesh_extra_uv")),
 			String(UTF8("morph_mesh_extra_uv")),
+			String(UTF8("instanced_mesh_extra_uv")),
 			String(UTF8("mesh_tangent_extra_uv")),
 			String(UTF8("animated_mesh_tangent_extra_uv")),
 			String(UTF8("morph_mesh_tangent_extra_uv")),
+			String(UTF8("instanced_mesh_tangent_extra_uv")),
 			String(UTF8("rect")),
 			String(UTF8("sprite"))
 		};
@@ -45,35 +49,35 @@ namespace eternal_lands
 	MeshBuilder::MeshBuilder()
 	{
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
-		VertexDescriptionMap mesh_tangent, animated_mesh_tangent;
-		VertexDescriptionMap morph_mesh_tangent, rect, sprite;
+		VertexDescriptionMap instanced_mesh, mesh_tangent;
+		VertexDescriptionMap animated_mesh_tangent, morph_mesh_tangent;
+		VertexDescriptionMap instanced_mesh_tangent, rect, sprite;
+		VertexElementType position, texture_coordinate, normal;
 
 		if (GLEW_ARB_half_float_vertex)
 		{
-			mesh[vst_position] = vet_half4;
-			mesh[vst_texture_coordinate_0] = vet_half2;
-			animated_mesh[vst_position] = vet_half4;
-			animated_mesh[vst_texture_coordinate_0] = vet_half2;
-			morph_mesh[vst_position] = vet_half4;
-			morph_mesh[vst_texture_coordinate_0] = vet_half2;
-			morph_mesh[vst_morph_position] = vet_half4;
-			morph_mesh[vst_morph_texture_coordinate_0] = vet_half2;
-			sprite[vst_position] = vet_half4;
-			sprite[vst_texture_coordinate_0] = vet_half2;
+			position = vet_half4;
+			texture_coordinate = vet_half2;
 		}
 		else
 		{
-			mesh[vst_position] = vet_float3;
-			mesh[vst_texture_coordinate_0] = vet_float2;
-			animated_mesh[vst_position] = vet_float3;
-			animated_mesh[vst_texture_coordinate_0] = vet_float2;
-			morph_mesh[vst_position] = vet_float3;
-			morph_mesh[vst_texture_coordinate_0] = vet_float2;
-			morph_mesh[vst_morph_position] = vet_float3;
-			morph_mesh[vst_morph_texture_coordinate_0] = vet_float2;
-			sprite[vst_position] = vet_float3;
-			sprite[vst_texture_coordinate_0] = vet_ushort2;
+			position = vet_float3;
+			texture_coordinate = vet_float2;
 		}
+
+		mesh[vst_position] = position;
+		mesh[vst_texture_coordinate_0] = texture_coordinate;
+		animated_mesh[vst_position] = position;
+		animated_mesh[vst_texture_coordinate_0] = texture_coordinate;
+		morph_mesh[vst_position] = position;
+		morph_mesh[vst_texture_coordinate_0] = texture_coordinate;
+		morph_mesh[vst_morph_position] = position;
+		morph_mesh[vst_morph_texture_coordinate_0] = texture_coordinate;
+		instanced_mesh[vst_position] = position;
+		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
+		instanced_mesh[vst_blend_index] = vet_ubyte4_normalized;
+		sprite[vst_position] = position;
+		sprite[vst_texture_coordinate_0] = vet_ushort2_normalized;
 
 		rect[vst_position] = vet_ushort2;
 
@@ -82,111 +86,78 @@ namespace eternal_lands
 
 		if (GLEW_ARB_vertex_type_2_10_10_10_rev)
 		{
-			mesh[vst_normal] = vet_signed_xyz10_w2_normalized;
-			animated_mesh[vst_normal] =
-				vet_signed_xyz10_w2_normalized;
-			morph_mesh[vst_normal] =
-				vet_signed_xyz10_w2_normalized;
-			morph_mesh[vst_morph_normal] =
-				vet_signed_xyz10_w2_normalized;
-
-			mesh_tangent = mesh;
-			animated_mesh_tangent = animated_mesh;
-			morph_mesh_tangent = morph_mesh;
-
-			mesh_tangent[vst_tangent] =
-				vet_signed_xyz10_w2_normalized;
-			animated_mesh_tangent[vst_tangent] =
-				vet_signed_xyz10_w2_normalized;
-			morph_mesh_tangent[vst_tangent] =
-				vet_signed_xyz10_w2_normalized;
-			morph_mesh_tangent[vst_morph_tangent] =
-				vet_signed_xyz10_w2_normalized;
+			normal = vet_signed_xyz10_w2_normalized;
 		}
 		else
 		{
-			mesh[vst_normal] = vet_short4_normalized;
-			animated_mesh[vst_normal] = vet_short4_normalized;
-			morph_mesh[vst_normal] = vet_short4_normalized;
-			morph_mesh[vst_morph_normal] = vet_short4_normalized;
-
-			mesh_tangent = mesh;
-			animated_mesh_tangent = animated_mesh;
-			morph_mesh_tangent = morph_mesh;
-
-			mesh_tangent[vst_tangent] = vet_short4_normalized;
-			animated_mesh_tangent[vst_tangent] =
-				vet_short4_normalized;
-			morph_mesh_tangent[vst_tangent] =
-				vet_short4_normalized;
-			morph_mesh_tangent[vst_morph_tangent] =
-				vet_short4_normalized;
+			normal = vet_short4_normalized;
 		}
 
-		set_format(vft_rect, VertexElements(rect));
+		mesh[vst_normal] = normal;
+		animated_mesh[vst_normal] = normal;
+		morph_mesh[vst_normal] = normal;
+		morph_mesh[vst_morph_normal] = normal;
+		instanced_mesh[vst_normal] = normal;
 
+		mesh_tangent = mesh;
+		animated_mesh_tangent = animated_mesh;
+		morph_mesh_tangent = morph_mesh;
+		instanced_mesh_tangent = instanced_mesh;
+
+		mesh_tangent[vst_tangent] = normal;
+		animated_mesh_tangent[vst_tangent] = normal;
+		morph_mesh_tangent[vst_tangent] = normal;
+		morph_mesh_tangent[vst_morph_tangent] = normal;
+		instanced_mesh_tangent[vst_tangent] = normal;
+
+		set_format(vft_rect, VertexElements(rect));
 		set_format(vft_sprite, VertexElements(sprite));
 
 		set_format(vft_mesh, VertexElements(mesh));
-
 		set_format(vft_animated_mesh, VertexElements(animated_mesh));
-
 		set_format(vft_morph_mesh, VertexElements(morph_mesh));
+		set_format(vft_instanced_mesh, VertexElements(instanced_mesh));
 
 		set_format(vft_mesh_tangent, VertexElements(mesh_tangent));
-
 		set_format(vft_animated_mesh_tangent,
 			VertexElements(animated_mesh_tangent));
-
 		set_format(vft_morph_mesh_tangent,
 			VertexElements(morph_mesh_tangent));
+		set_format(vft_instanced_mesh_tangent,
+			VertexElements(instanced_mesh_tangent));
 
-		if (GLEW_ARB_half_float_vertex)
-		{
-			mesh[vst_texture_coordinate_1] = vet_half2;
-			animated_mesh[vst_texture_coordinate_1] = vet_half2;
-			morph_mesh[vst_texture_coordinate_1] = vet_half2;
-			morph_mesh[vst_morph_texture_coordinate_1] = vet_half2;
+		mesh[vst_texture_coordinate_1] = texture_coordinate;
+		animated_mesh[vst_texture_coordinate_1] = texture_coordinate;
+		morph_mesh[vst_texture_coordinate_1] = texture_coordinate;
+		morph_mesh[vst_morph_texture_coordinate_1] = texture_coordinate;
+		instanced_mesh[vst_texture_coordinate_1] = texture_coordinate;
 
-			mesh_tangent[vst_texture_coordinate_1] = vet_half2;
-			animated_mesh_tangent[vst_texture_coordinate_1] =
-				vet_half2;
-			morph_mesh_tangent[vst_texture_coordinate_1] =
-				vet_half2;
-			morph_mesh_tangent[vst_morph_texture_coordinate_1] =
-				vet_half2;
-		}
-		else
-		{
-			mesh[vst_texture_coordinate_1] = vet_float2;
-			animated_mesh[vst_texture_coordinate_1] = vet_float2;
-			morph_mesh[vst_texture_coordinate_1] = vet_float2;
-			morph_mesh[vst_morph_texture_coordinate_1] = vet_float2;
-
-			mesh_tangent[vst_texture_coordinate_1] = vet_float2;
-			animated_mesh_tangent[vst_texture_coordinate_1] =
-				vet_float2;
-			morph_mesh_tangent[vst_texture_coordinate_1] =
-				vet_float2;
-			morph_mesh_tangent[vst_morph_texture_coordinate_1] =
-				vet_float2;
-		}
+		mesh_tangent[vst_texture_coordinate_1] = texture_coordinate;
+		animated_mesh_tangent[vst_texture_coordinate_1] =
+			texture_coordinate;
+		morph_mesh_tangent[vst_texture_coordinate_1] =
+			texture_coordinate;
+		morph_mesh_tangent[vst_morph_texture_coordinate_1] =
+			texture_coordinate;
+		instanced_mesh_tangent[vst_texture_coordinate_1] =
+			texture_coordinate;
 
 		set_format(vft_mesh_extra_uv, VertexElements(mesh));
-
 		set_format(vft_animated_mesh_extra_uv,
 			VertexElements(animated_mesh));
-
-		set_format(vft_morph_mesh_extra_uv, VertexElements(morph_mesh));
+		set_format(vft_morph_mesh_extra_uv,
+			VertexElements(morph_mesh));
+		set_format(vft_instanced_mesh_extra_uv,
+			VertexElements(instanced_mesh));
 
 		set_format(vft_mesh_tangent_extra_uv,
 			VertexElements(mesh_tangent));
-
 		set_format(vft_animated_mesh_tangent_extra_uv,
 			VertexElements(animated_mesh_tangent));
-
 		set_format(vft_morph_mesh_tangent_extra_uv,
 			VertexElements(morph_mesh_tangent));
+		set_format(vft_instanced_mesh_tangent_extra_uv,
+			VertexElements(instanced_mesh_tangent));
 	}
 
 	MeshBuilder::~MeshBuilder() throw()
@@ -204,7 +175,7 @@ namespace eternal_lands
 	{
 		if (GLEW_VERSION_3_1)
 		{
-			return boost::make_shared<OpenGl31Mesh>();
+//			return boost::make_shared<OpenGl31Mesh>();
 		}
 
 		if (GLEW_ARB_vertex_array_object || GLEW_VERSION_3_0)

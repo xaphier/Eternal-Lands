@@ -188,7 +188,7 @@ namespace eternal_lands
 			String(UTF8("extra_bone_index")),
 			String(UTF8("texture_coordinate_0")),
 			String(UTF8("texture_coordinate_1")),
-			String(UTF8("layer_index")),
+			String(UTF8("blend_index")),
 			String(UTF8("morph_position")),
 			String(UTF8("morph_normal")),
 			String(UTF8("morph_tangent")),

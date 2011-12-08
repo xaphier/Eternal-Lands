@@ -1662,7 +1662,7 @@ namespace eternal_lands
 		bind_attribute_location(vst_extra_bone_index);
 		bind_attribute_location(vst_texture_coordinate_0);
 		bind_attribute_location(vst_texture_coordinate_1);
-		bind_attribute_location(vst_layer_index);
+		bind_attribute_location(vst_blend_index);
 		bind_attribute_location(vst_morph_position);
 		bind_attribute_location(vst_morph_normal);
 		bind_attribute_location(vst_morph_tangent);
@@ -1842,9 +1842,6 @@ namespace eternal_lands
 		try
 		{
 			do_build(vertex_shader, fragment_shader);
-			LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex_shader);
-			LOG_DEBUG(UTF8("Fragment Shader:\n%1%"),
-				fragment_shader);
 		}
 		catch (boost::exception &exception)
 		{
