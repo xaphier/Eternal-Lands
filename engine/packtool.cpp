@@ -45,8 +45,12 @@ namespace eternal_lands
 			{
 				if (normalize)
 				{
-					tmp *= std::abs(
-						std::numeric_limits<T>::min());
+					tmp *= std::numeric_limits<T>::min();
+
+					if (std::numeric_limits<T>::is_signed)
+					{
+						tmp = -tmp;
+					}
 				}
 
 				tmp -= 0.5f;
@@ -91,8 +95,8 @@ namespace eternal_lands
 			{
 				if (value < static_cast<T>(0))
 				{
-					tmp /= std::abs(
-						std::numeric_limits<T>::min());
+					tmp = -tmp /
+						std::numeric_limits<T>::min();
 				}
 				else
 				{
