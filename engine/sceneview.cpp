@@ -108,6 +108,7 @@ namespace eternal_lands
 		glm::mat4x4 shadow_projection_matrix;
 		glm::mat4x4 shadow_projection_view_matrix;
 		glm::mat4x4 shadow_texture_matrix;
+		glm::vec3 scale, offset;
 
 		if (receiver_box.get_empty())
 		{
@@ -126,10 +127,64 @@ namespace eternal_lands
 		shadow_projection_view_matrix =	shadow_projection_matrix *
 			get_shadow_view_matrix();
 
-		shadow_texture_matrix = glm::translate(glm::vec3(0.5f));
+		if (m_shadow_map_count == 3)
+		{
+			switch (index)
+			{
+				case 0:
+					scale = glm::vec3(1.0f / 3.0f, 0.5f, 0.5f);
+					offset = glm::vec3(1.0f / 3.0f, 0.5f, 0.5f);
+					break;
+				case 1:
+					scale = glm::vec3(1.0f / 6.0f, 0.25f, 0.5f);
+					offset = glm::vec3(5.0f / 6.0f, 0.25f, 0.5f);
+					break;
+				case 2:
+					scale = glm::vec3(1.0f / 6.0f, 0.25f, 0.5f);
+					offset = glm::vec3(5.0f / 6.0f, 0.75f, 0.5f);
+					break;
+			}
+#if	0
+			scale = glm::vec3(0.25f, 0.5f, 0.5f);
 
+			switch (index)
+			{
+				case 0:
+					offset = glm::vec3(0.25f, 0.5f, 0.5f);
+					break;
+				case 1:
+					offset = glm::vec3(0.75f, 0.5f, 0.5f);
+					break;
+			}
+
+			scale = glm::vec3(0.25f, 0.25f, 0.5f);
+
+			switch (index)
+			{
+				case 0:
+					offset = glm::vec3(0.25f, 0.25f, 0.5f);
+					break;
+				case 1:
+					offset = glm::vec3(0.75f, 0.25f, 0.5f);
+					break;
+				case 2:
+					offset = glm::vec3(0.75f, 0.25f, 0.5f);
+					break;
+				case 3:
+					offset = glm::vec3(0.75f, 0.75f, 0.5f);
+					break;
+			}
+#endif
+		}
+		else
+		{
+			scale = glm::vec3(0.5f);
+			offset = glm::vec3(0.5f);
+		}
+
+		shadow_texture_matrix = glm::translate(offset);
 		shadow_texture_matrix = glm::scale(shadow_texture_matrix,
-			glm::vec3(0.5f));
+			scale);
 
 		m_shadow_projection_matrices[index] = shadow_projection_matrix;
 		m_shadow_projection_view_matrices[index] =

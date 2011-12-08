@@ -94,7 +94,9 @@ namespace eternal_lands
 				const Uint16 index);
 			void cull_all_shadows();
 			void draw_shadows(const Uint16 index);
+			void draw_shadows_array(const Uint16 index);
 			void draw_all_shadows();
+			void draw_all_shadows_array();
 			void update_shadow_map();
 
 			inline GlobalVarsSharedPtr get_global_vars() const

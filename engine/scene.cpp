@@ -277,6 +277,12 @@ namespace eternal_lands
 				samples = 0;
 			}
 
+			if (shadow_map_count == 3)
+			{
+				shadow_map_count = 1;
+				shadow_map_width = (shadow_map_width * 3) / 2;
+			}
+
 			m_shadow_frame_buffer = FrameBufferBuilder::build(
 				String(UTF8("Shadow")), shadow_map_width,
 				shadow_map_height, shadow_map_count,
@@ -753,8 +759,6 @@ namespace eternal_lands
 
 	void Scene::draw_shadows(const Uint16 index)
 	{
-		Uint32 width, height;
-
 		DEBUG_CHECK_GL_ERROR();
 
 		m_state_manager.switch_polygon_offset_fill(
@@ -765,9 +769,6 @@ namespace eternal_lands
 			get_global_vars()->get_msaa_shadows());
 		m_state_manager.switch_sample_alpha_to_coverage(
 			get_global_vars()->get_msaa_shadows());
-
-		m_shadow_frame_buffer->bind(index);
-		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
 
 		m_scene_view.set_shadow_view(index);
 
@@ -781,6 +782,22 @@ namespace eternal_lands
 		}
 
 		m_program_vars_id++;
+
+		DEBUG_CHECK_GL_ERROR();
+
+		unbind_all();
+	}
+
+	void Scene::draw_shadows_array(const Uint16 index)
+	{
+		Uint32 width, height;
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_shadow_frame_buffer->bind(index);
+		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+
+		draw_shadows(index);
 
 		m_shadow_frame_buffer->blit();
 
@@ -819,7 +836,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 	}
 
-	void Scene::draw_all_shadows()
+	void Scene::draw_all_shadows_array()
 	{
 		Uint32 width, height;
 		Uint16 i;
@@ -842,7 +859,7 @@ namespace eternal_lands
 		{
 			if (m_shadow_objects_mask[i])
 			{
-				draw_shadows(i);
+				draw_shadows_array(i);
 			}
 			else
 			{
@@ -877,6 +894,116 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 	}
 
+	void Scene::draw_all_shadows()
+	{
+		Uint32 width, height, size;
+		Uint16 i;
+
+		DEBUG_CHECK_GL_ERROR();
+
+		if (!m_scene_view.get_exponential_shadow_maps())
+		{
+			glPolygonOffset(1.25f, 32.0f);
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		width = m_shadow_frame_buffer->get_width();
+		height = m_shadow_frame_buffer->get_height();
+
+		m_shadow_frame_buffer->bind(0);
+		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+
+		size = m_shadow_frame_buffer->get_height() / 2;
+
+		for (i = 0; i < m_scene_view.get_shadow_map_count(); i++)
+		{
+			switch (i)
+			{
+				case 0:
+					glViewport(0, 0, size * 2, size * 2);
+					break;
+				case 1:
+					glViewport(size * 2, 0, size, size);
+					break;
+				case 2:
+					glViewport(size * 2, size, size, size);
+					break;
+			}
+
+			if (m_shadow_objects_mask[i])
+			{
+				draw_shadows(i);
+			}
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glViewport(0, 0, width, height);
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_shadow_frame_buffer->blit();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		unbind_all();
+
+		if (m_scene_view.get_exponential_shadow_maps() &&
+			get_global_vars()->get_filter_shadow_map())
+		{
+			width = m_shadow_frame_buffer->get_width();
+			height = m_shadow_frame_buffer->get_height();
+
+			m_state_manager.switch_depth_mask(false);
+			m_state_manager.switch_depth_test(false);
+
+			m_shadow_filter_frame_buffer->bind(0);
+			m_shadow_filter_frame_buffer->clear(glm::vec4(0));
+
+			m_state_manager.switch_texture(stt_diffuse_0,
+				m_shadow_frame_buffer->get_texture());
+			m_scene_resources.get_filter().bind(width,
+				height, 0, 1, ft_gauss_5_tap, false,
+				m_state_manager);
+
+			m_shadow_frame_buffer->bind_texture(0);
+			m_shadow_frame_buffer->clear(glm::vec4(0));
+			m_state_manager.switch_texture(stt_diffuse_0,
+				m_shadow_filter_frame_buffer->get_texture());
+			m_scene_resources.get_filter().bind(width,
+				height, 1, ft_gauss_5_tap, true,
+				m_state_manager);
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_shadow_frame_buffer->unbind();
+
+		unbind_all();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_state_manager.switch_texture(stt_shadow,
+			m_shadow_frame_buffer->get_texture());
+
+		DEBUG_CHECK_GL_ERROR();
+
+		if (m_scene_view.get_exponential_shadow_maps())
+		{
+			glGenerateMipmap(ttt_2d_texture_array);
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glViewport(m_scene_view.get_view_port()[0],
+			m_scene_view.get_view_port()[1],
+			m_scene_view.get_view_port()[2],
+			m_scene_view.get_view_port()[3]);
+
+		DEBUG_CHECK_GL_ERROR();
+	}
+
 	void Scene::draw()
 	{
 		StateManagerUtil state(m_state_manager);
@@ -888,7 +1015,14 @@ namespace eternal_lands
 
 		if (m_scene_view.get_shadow_map_count() > 0)
 		{
-			draw_all_shadows();
+			if (m_scene_view.get_shadow_map_count() == 3)
+			{
+				draw_all_shadows();
+			}
+			else
+			{
+				draw_all_shadows_array();
+			}
 		}
 
 		m_scene_view.set_default_view();
