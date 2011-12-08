@@ -193,7 +193,7 @@ int el_msaa_shadows = el_false;
 int el_exponential_shadow_maps = el_false;
 int el_alpha_to_coverage = el_false;
 int el_filter_shadow_map = el_false;
-int el_fog = el_false;
+int el_fog = el_true;
 int el_optmize_shader_source = el_true;
 
 void change_el_shadow_map_count(int* var, int value)
@@ -1824,7 +1824,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "exponential_shadow_maps", "exponential_shadow_maps", &el_exponential_shadow_maps, change_el_exponential_shadow_maps, el_false, "Exponential Shadow Maps", "Exponential Shadow Maps", GFX);
 	add_var(OPT_BOOL, "alpha_to_coverage", "alpha_to_coverage", &el_alpha_to_coverage, change_el_alpha_to_coverage, el_false, "Alpha to coverage", "Alpha to coverage", GFX);
 	add_var(OPT_BOOL, "filter_shadow_map", "filter_shadow_map", &el_filter_shadow_map, change_el_filter_shadow_map, el_false, "Filter shadow map", "Filter shadow map", GFX);
-	add_var(OPT_BOOL, "fog", "fog", &el_fog, change_el_fog, el_false, "Fog", "Fog", GFX);
+	add_var(OPT_BOOL, "fog", "fog", &el_fog, change_el_fog, el_true, "Fog", "Fog", GFX);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */
