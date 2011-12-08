@@ -49,16 +49,9 @@ namespace eternal_lands
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 			void load(const String &file_name);
-			void write_function_use(
-				const ShaderSourceDataType &type,
-				OutStream &str) const;
-			void write_function(const ShaderSourceDataType &type,
-				const ParameterSizeTypeUint16Map &array_sizes,
-				OutStream &str) const;
-			void build_function(const ShaderSourceDataType &type,
-				const ParameterSizeTypeUint16Map &array_sizes,
+			void build_source(const ShaderSourceDataType &type,
 				const ShaderSourceParameterVector &locals, 
-				OutStream &functions, OutStream &local,
+				OutStream &stream,
 				ShaderSourceParameterVector &globals) const;
 			bool check_source_parameter(
 				const ShaderSourceDataType &type,

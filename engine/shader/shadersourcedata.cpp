@@ -32,51 +32,11 @@ namespace eternal_lands
 	{
 	}
 
-	void ShaderSourceData::write_function_use(const String &name,
-		OutStream &str) const
-	{
-		bool first;
-
-		str << UTF8("\t") << name << UTF8("(");
-
-		first = true;
-
-		BOOST_FOREACH(const ShaderSourceParameter &parameter,
-			get_parameters())
-		{
-			parameter.write_name(str, first);
-		}
-
-		str << UTF8(");") << std::endl;
-	}
-
-	void ShaderSourceData::write_function(const String &name,
-		const ParameterSizeTypeUint16Map &array_sizes,
-		OutStream &str) const
-	{
-		bool first;
-
-		str << UTF8("void ") << name << UTF8("(");
-
-		first = true;
-
-		BOOST_FOREACH(const ShaderSourceParameter &parameter,
-			get_parameters())
-		{
-			parameter.write_parameter(array_sizes, str, first);
-		}
-
-		str << UTF8(")\n{\n") << get_source() << UTF8("}\n");
-	}
-
-	void ShaderSourceData::build_function(const String &name,
-		const ParameterSizeTypeUint16Map &array_sizes,
+	void ShaderSourceData::build_source(
 		const ShaderSourceParameterVector &locals, 
-		OutStream &functions, OutStream &local, 
-		ShaderSourceParameterVector &globals) const
+		OutStream &stream, ShaderSourceParameterVector &globals) const
 	{
-		write_function(name, array_sizes, functions);
-		write_function_use(name, local);
+		stream << get_source() << UTF8("\n");
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
 			get_parameters())

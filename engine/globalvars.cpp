@@ -469,22 +469,17 @@ namespace eternal_lands
 
 	GlobalVars::GlobalVars()
 	{
-		#define GLOBAL_VAR_INT(name, group, description_short, description_long, def, min, max)	\
-			m_##name = def;
-		#define GLOBAL_VAR_BOOL(name, group, description_short, description_long, def)	\
-			m_##name = def;
-		#define GLOBAL_VAR_FLOAT(name, group, description_short, description_long, def, min, max, step)	\
-			m_##name = def;
-		#define GLOBAL_VAR_STRING(name, group, description_short, description_long, def)	\
-			m_##name = UTF8(def);
-		#define GLOBAL_VAR_ENUM(name, group, description_short, description_long, def, list)	\
-			m_##name = def;
-		#include "globalvarslist.txt"
-		#undef GLOBAL_VAR_INT
-		#undef GLOBAL_VAR_BOOL
-		#undef GLOBAL_VAR_FLOAT
-		#undef GLOBAL_VAR_STRING
-		#undef GLOBAL_VAR_ENUM
+		m_quality = String(UTF8("high"));
+		m_shadow_distance = 40.0f;
+		m_view_distance = 40.0f;
+		m_shadow_map_count = 1;
+		m_shadow_map_size = 2;
+		m_msaa_shadows = false;
+		m_exponential_shadow_maps = false;
+		m_alpha_to_coverage = false;
+		m_filter_shadow_map = false;
+		m_fog = true;
+		m_optmize_shader_source = true;
 	}
 
 	GlobalVars::~GlobalVars() throw()

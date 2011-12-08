@@ -88,6 +88,7 @@ void set_fog(const int value);
 void set_msaa_shadows(const int value);
 void set_alpha_to_coverage(const int value);
 void set_filter_shadow_map(const int value);
+void set_optmize_shader_source(const int value);
 void set_fog_data(const float* color, const float density);
 
 #ifdef __cplusplus

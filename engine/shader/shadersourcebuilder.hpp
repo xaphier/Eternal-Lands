@@ -73,7 +73,7 @@ namespace eternal_lands
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
 				const bool vertex, const bool shadow,
-				OutStream &functions, OutStream &main,
+				OutStream &main,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
 			bool build_function(
@@ -81,7 +81,7 @@ namespace eternal_lands
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
 				const ShaderSourceType shader_source_type,
-				OutStream &functions, OutStream &local, 
+				OutStream &stream,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
 			void load(Lua &lua, const String &name,
@@ -89,13 +89,13 @@ namespace eternal_lands
 			void build_vertex_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
-				OutStream &functions, OutStream &main,
+				OutStream &main,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
 			void build_fragment_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
-				OutStream &functions, OutStream &main,
+				OutStream &main,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
 			void load_file(const String &file_name);
@@ -139,6 +139,8 @@ namespace eternal_lands
 			 * Returns true if the shader uses fog.
 			 */
 			bool get_fog() const;
+
+			bool get_optmize_shader_source() const;
 
 			/**
 			 * Returns the darkening of the diffuse light when it's

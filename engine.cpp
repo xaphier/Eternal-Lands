@@ -1406,6 +1406,16 @@ extern "C" void set_filter_shadow_map(const int value)
 	}
 }
 
+extern "C" void set_optmize_shader_source(const int value)
+{
+	global_vars->set_optmize_shader_source(value != 0);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache().reload();
+	}
+}
+
 extern "C" void set_fog_data(const float* color, const float density)
 {
 	if (scene.get() != 0)

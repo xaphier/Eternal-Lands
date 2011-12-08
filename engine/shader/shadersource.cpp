@@ -158,28 +158,11 @@ namespace eternal_lands
 		save_xml(writer);
 	}
 
-	void ShaderSource::write_function_use(const ShaderSourceDataType &type,
-		OutStream &str) const
-	{
-		get_data(type).write_function_use(get_typed_name(), str);
-	}
-
-	void ShaderSource::write_function(const ShaderSourceDataType &type,
-		const ParameterSizeTypeUint16Map &array_sizes, OutStream &str)
-		const
-	{
-		get_data(type).write_function(get_typed_name(), array_sizes,
-			str);
-	}
-
-	void ShaderSource::build_function(const ShaderSourceDataType &type,
-		const ParameterSizeTypeUint16Map &array_sizes,
+	void ShaderSource::build_source(const ShaderSourceDataType &type,
 		const ShaderSourceParameterVector &locals,
-		OutStream &functions, OutStream &local,
-		ShaderSourceParameterVector &globals) const
+		OutStream &stream, ShaderSourceParameterVector &globals) const
 	{
-		get_data(type).build_function(get_typed_name(), array_sizes,
-			locals, functions, local, globals);
+		get_data(type).build_source(locals, stream, globals);
 	}
 
 	bool ShaderSource::check_source_parameter(

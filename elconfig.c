@@ -194,6 +194,7 @@ int el_exponential_shadow_maps = el_false;
 int el_alpha_to_coverage = el_false;
 int el_filter_shadow_map = el_false;
 int el_fog = el_false;
+int el_optmize_shader_source = el_true;
 
 void change_el_shadow_map_count(int* var, int value)
 {
@@ -351,6 +352,12 @@ void change_el_fog(int* var)
 {
 	*var = !*var;
 	set_fog(*var);
+}
+
+void change_el_optmize_shader_source(int* var)
+{
+	*var = !*var;
+	set_optmize_shader_source(*var);
 }
 
 void options_loaded(void)
@@ -1897,6 +1904,7 @@ static void init_ELC_vars(void)
 #endif
 	add_var(OPT_BOOL,"poor_man","poor",&poor_man,change_poor_man,0,"Poor Man","If the game is running very slow for you, toggle this setting.",TROUBLESHOOT);
 	// TROUBLESHOOT TAB
+	add_var(OPT_BOOL, "optmize_shader_source", "oss", &el_optmize_shader_source, change_el_optmize_shader_source, el_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
 
 
 	// DEBUGTAB TAB
