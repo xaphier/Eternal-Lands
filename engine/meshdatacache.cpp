@@ -163,7 +163,7 @@ namespace eternal_lands
 			vertex_count = tile_size + 1;
 			vertex_count *= tile_size + 1;
 
-			use_restart_index = GLEW_VERSION_3_1;
+			use_restart_index = false;//GLEW_VERSION_3_1;
 
 			if (use_restart_index)
 			{
