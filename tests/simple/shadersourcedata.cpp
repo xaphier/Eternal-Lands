@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(shader_source_data_default_creation)
 	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_120(), false);
 	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_150(), false);
 	BOOST_CHECK_EQUAL(shader_source_data.get_material_default(), false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_material_texture_arrays(),
+	BOOST_CHECK_EQUAL(shader_source_data.get_material_merged(),
 		false);
 }
 
@@ -66,12 +66,12 @@ BOOST_AUTO_TEST_CASE(shader_source_data_options)
 	shader_source_data.set_material_default(true);
 	BOOST_CHECK_EQUAL(shader_source_data.get_material_default(), true);
 
-	shader_source_data.set_material_texture_arrays(false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_material_texture_arrays(),
+	shader_source_data.set_material_merged(false);
+	BOOST_CHECK_EQUAL(shader_source_data.get_material_merged(),
 		false);
 
-	shader_source_data.set_material_texture_arrays(true);
-	BOOST_CHECK_EQUAL(shader_source_data.get_material_texture_arrays(),
+	shader_source_data.set_material_merged(true);
+	BOOST_CHECK_EQUAL(shader_source_data.get_material_merged(),
 		true);
 }
 
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 	shader_source_data_save.set_glsl_120(false);
 	shader_source_data_save.set_glsl_150(true);
 	shader_source_data_save.set_material_default(false);
-	shader_source_data_save.set_material_texture_arrays(true);
+	shader_source_data_save.set_material_merged(true);
 
 	BOOST_CHECK_NO_THROW(shader_source_data_save.save_xml(writer));
 
@@ -120,6 +120,6 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 	BOOST_CHECK_EQUAL(shader_source_data_load.get_glsl_150(), true);
 	BOOST_CHECK_EQUAL(shader_source_data_load.get_material_default(),
 		false);
-	BOOST_CHECK_EQUAL(shader_source_data_load.get_material_texture_arrays(),
+	BOOST_CHECK_EQUAL(shader_source_data_load.get_material_merged(),
 		true);
 }

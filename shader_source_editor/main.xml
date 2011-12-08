@@ -485,8 +485,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="toggle_button_material_texture_arrays_0">
-                                    <property name="label" translatable="yes">texture arrays</property>
+                                  <object class="GtkCheckButton" id="toggle_button_material_merged_0">
+                                    <property name="label" translatable="yes">merged</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -630,7 +630,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
+                                <property name="expand">True</property>
                                 <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
@@ -732,10 +732,9 @@
                         <child>
                           <object class="GtkTextView" id="source_0">
                             <property name="width_request">200</property>
+                            <property name="height_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="hscroll_policy">natural</property>
-                            <property name="vscroll_policy">natural</property>
                             <property name="wrap_mode">word-char</property>
                             <property name="buffer">text_buffer_0</property>
                           </object>
@@ -752,7 +751,7 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">2</property>
                   </packing>
@@ -879,8 +878,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="toggle_button_material_texture_arrays_1">
-                                    <property name="label" translatable="yes">texture arrays</property>
+                                  <object class="GtkCheckButton" id="toggle_button_material_merged_1">
+                                    <property name="label" translatable="yes">merged</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -1132,12 +1131,11 @@
                         <child>
                           <object class="GtkTextView" id="source_1">
                             <property name="width_request">200</property>
+                            <property name="height_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="hscroll_policy">natural</property>
-                            <property name="vscroll_policy">natural</property>
                             <property name="wrap_mode">word-char</property>
-                            <property name="buffer">text_buffer_1</property>
+                            <property name="buffer">text_buffer_0</property>
                           </object>
                         </child>
                       </object>
@@ -1282,8 +1280,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="toggle_button_material_texture_arrays_2">
-                                    <property name="label" translatable="yes">texture arrays</property>
+                                  <object class="GtkCheckButton" id="toggle_button_material_merged_2">
+                                    <property name="label" translatable="yes">merged</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -1535,12 +1533,11 @@
                         <child>
                           <object class="GtkTextView" id="source_2">
                             <property name="width_request">200</property>
+                            <property name="height_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="hscroll_policy">natural</property>
-                            <property name="vscroll_policy">natural</property>
                             <property name="wrap_mode">word-char</property>
-                            <property name="buffer">text_buffer_2</property>
+                            <property name="buffer">text_buffer_0</property>
                           </object>
                         </child>
                       </object>
@@ -1685,8 +1682,8 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="toggle_button_material_texture_arrays_3">
-                                    <property name="label" translatable="yes">texture arrays</property>
+                                  <object class="GtkCheckButton" id="toggle_button_material_merged_3">
+                                    <property name="label" translatable="yes">merged</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -1938,12 +1935,11 @@
                         <child>
                           <object class="GtkTextView" id="source_3">
                             <property name="width_request">200</property>
+                            <property name="height_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="hscroll_policy">natural</property>
-                            <property name="vscroll_policy">natural</property>
                             <property name="wrap_mode">word-char</property>
-                            <property name="buffer">text_buffer_3</property>
+                            <property name="buffer">text_buffer_0</property>
                           </object>
                         </child>
                       </object>

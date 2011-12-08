@@ -106,6 +106,11 @@ namespace eternal_lands
 				const StringVector &speculars,
 				const String &effect, glm::ivec4 &index) const;
 
+			bool contains(const MaterialDescription &material,
+				glm::vec4 &index) const;
+			bool can_merge(const MaterialDescription &material)
+				const;
+
 			inline void set_effect(const String &effect)
 			{
 				m_effect = effect;

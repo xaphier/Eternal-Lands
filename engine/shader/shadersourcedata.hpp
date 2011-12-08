@@ -31,7 +31,7 @@ namespace eternal_lands
 			bool m_glsl_120;
 			bool m_glsl_150;
 			bool m_material_default;
-			bool m_material_texture_arrays;
+			bool m_material_merged;
 
 			void load_parameters_xml(const xmlNodePtr node);
 
@@ -76,11 +76,10 @@ namespace eternal_lands
 				m_material_default = material_default;
 			}
 
-			inline void set_material_texture_arrays(
-				const bool material_texture_arrays)
+			inline void set_material_merged(
+				const bool material_merged)
 			{
-				m_material_texture_arrays =
-					material_texture_arrays;
+				m_material_merged = material_merged;
 			}
 
 			inline const ShaderSourceParameterVector
@@ -109,9 +108,9 @@ namespace eternal_lands
 				return m_material_default;
 			}
 
-			inline bool get_material_texture_arrays() const
+			inline bool get_material_merged() const
 			{
-				return m_material_texture_arrays;
+				return m_material_merged;
 			}
 
 	};

@@ -195,7 +195,15 @@ namespace eternal_lands
 			switch (type)
 			{
 				case ssdt_glsl_120:
-					if (data.get_glsl_120())
+					if (data.get_glsl_120() &&
+						data.get_material_default())
+					{
+						return true;
+					}
+					break;
+				case ssdt_glsl_120_merged:
+					if (data.get_glsl_120() &&
+						data.get_material_merged())
 					{
 						return true;
 					}
@@ -207,9 +215,9 @@ namespace eternal_lands
 						return true;
 					}
 					break;
-				case ssdt_glsl_150_texture_arrays:
-					if (data.get_material_texture_arrays()
-						&& data.get_glsl_150())
+				case ssdt_glsl_150_merged:
+					if (data.get_glsl_150() &&
+						data.get_material_merged())
 					{
 						return true;
 					}
@@ -228,7 +236,15 @@ namespace eternal_lands
 			switch (type)
 			{
 				case ssdt_glsl_120:
-					if (data.get_glsl_120())
+					if (data.get_glsl_120() &&
+						data.get_material_default())
+					{
+						return data;
+					}
+					break;
+				case ssdt_glsl_120_merged:
+					if (data.get_glsl_120() &&
+						data.get_material_merged())
 					{
 						return data;
 					}
@@ -240,9 +256,9 @@ namespace eternal_lands
 						return data;
 					}
 					break;
-				case ssdt_glsl_150_texture_arrays:
-					if (data.get_material_texture_arrays()
-						&& data.get_glsl_150())
+				case ssdt_glsl_150_merged:
+					if (data.get_glsl_150() &&
+						data.get_material_merged())
 					{
 						return data;
 					}

@@ -333,4 +333,134 @@ namespace eternal_lands
 		return false;
 	}
 
+	bool MaterialDescription::can_merge(const MaterialDescription &material)
+		const
+	{
+		if (get_effect() != material.get_effect())
+		{
+			return false;
+		}
+
+		if (get_texture(stt_diffuse_2).get().empty() &&
+			get_texture(stt_diffuse_3).get().empty() &&
+			get_texture(stt_normal_1).get().empty() &&
+			get_texture(stt_specular_1).get().empty() &&
+			get_texture(stt_glow_0).get().empty() &&
+			get_texture(stt_glow_1).get().empty() &&
+			get_texture(stt_blend_0).get().empty() &&
+			get_texture(stt_blend_1).get().empty() &&
+			material.get_texture(stt_diffuse_2).get().empty() &&
+			material.get_texture(stt_diffuse_3).get().empty() &&
+			material.get_texture(stt_normal_1).get().empty() &&
+			material.get_texture(stt_specular_1).get().empty() &&
+			material.get_texture(stt_glow_0).get().empty() &&
+			material.get_texture(stt_glow_1).get().empty() &&
+			material.get_texture(stt_blend_0).get().empty() &&
+			material.get_texture(stt_blend_1).get().empty())
+		{
+			return true;
+		}
+
+		return false;		
+	}
+
+	bool MaterialDescription::contains(const MaterialDescription &material,
+		glm::vec4 &index) const
+	{
+		if (get_effect() != material.get_effect())
+		{
+			return false;
+		}
+
+		if (get_texture(stt_diffuse_0) ==
+			material.get_texture(stt_diffuse_0))
+		{
+			index.x = 0.0f;
+		}
+		else
+		{
+			if (get_texture(stt_diffuse_2) ==
+				material.get_texture(stt_diffuse_0))
+			{
+				index.x = 1.0f;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if (get_texture(stt_diffuse_1) ==
+			material.get_texture(stt_diffuse_1))
+		{
+			index.y = 0.0f;
+		}
+		else
+		{
+			if (get_texture(stt_diffuse_3) ==
+				material.get_texture(stt_diffuse_1))
+			{
+				index.y = 1.0f;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if (get_texture(stt_normal_0) ==
+			material.get_texture(stt_normal_0))
+		{
+			index.z = 0.0f;
+		}
+		else
+		{
+			if (get_texture(stt_normal_1) ==
+				material.get_texture(stt_normal_0))
+			{
+				index.z = 1.0f;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if (get_texture(stt_specular_0) ==
+			material.get_texture(stt_specular_0))
+		{
+			index.w = 0.0f;
+		}
+		else
+		{
+			if (get_texture(stt_specular_1) ==
+				material.get_texture(stt_specular_0))
+			{
+				index.w = 1.0f;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if (material.get_texture(stt_diffuse_2).get().empty() &&
+			material.get_texture(stt_diffuse_3).get().empty() &&
+			material.get_texture(stt_normal_1).get().empty() &&
+			material.get_texture(stt_specular_1).get().empty() &&
+			get_texture(stt_glow_0) ==
+				material.get_texture(stt_glow_0) &&
+			get_texture(stt_glow_1) ==
+				material.get_texture(stt_glow_1) &&
+			get_texture(stt_blend_0) ==
+				material.get_texture(stt_blend_0) &&
+			get_texture(stt_blend_1) ==
+				material.get_texture(stt_blend_1))
+		{
+			return true;
+		}
+
+		return false;		
+	}
+
 }

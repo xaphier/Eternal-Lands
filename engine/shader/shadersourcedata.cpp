@@ -17,13 +17,13 @@ namespace eternal_lands
 
 	ShaderSourceData::ShaderSourceData(): m_glsl_120(false),
 		m_glsl_150(false), m_material_default(false),
-		m_material_texture_arrays(false)
+		m_material_merged(false)
 	{
 	}
 
 	ShaderSourceData::ShaderSourceData(const xmlNodePtr node):
 		m_glsl_120(false), m_glsl_150(false), m_material_default(false),
-		m_material_texture_arrays(false)
+		m_material_merged(false)
 	{
 		load_xml(node);
 	}
@@ -169,9 +169,9 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("material_texture_arrays")) == 0)
+				BAD_CAST UTF8("material_merged")) == 0)
 			{
-				set_material_texture_arrays(
+				set_material_merged(
 					XmlUtil::get_bool_value(it));
 			}
 		}
@@ -199,8 +199,8 @@ namespace eternal_lands
 		writer->write_bool_element(UTF8("glsl_150"), get_glsl_150());
 		writer->write_bool_element(UTF8("material_default"),
 			get_material_default());
-		writer->write_bool_element(UTF8("material_texture_arrays"),
-			get_material_texture_arrays());
+		writer->write_bool_element(UTF8("material_merged"),
+			get_material_merged());
 
 		writer->end_element();
 	}

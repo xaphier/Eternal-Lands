@@ -45,7 +45,7 @@
    <glsl_120>true</glsl_120>
    <glsl_150>true</glsl_150>
    <material_default>true</material_default>
-   <material_texture_arrays>true</material_texture_arrays>
+   <material_merged>true</material_merged>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

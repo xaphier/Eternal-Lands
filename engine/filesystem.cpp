@@ -102,7 +102,7 @@ namespace eternal_lands
 
 			size = fstat.st_size;
 
-			stream.open(path.c_str());
+			stream.open(path.c_str(), std::ifstream::binary);
 
 			buffer = boost::make_shared<MemoryBuffer>(size);
 

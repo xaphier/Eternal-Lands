@@ -27,8 +27,9 @@ namespace eternal_lands
 	enum ShaderSourceDataType
 	{
 		ssdt_glsl_120,
+		ssdt_glsl_120_merged,
 		ssdt_glsl_150,
-		ssdt_glsl_150_texture_arrays
+		ssdt_glsl_150_merged
 	};
 
 	class ShaderSource

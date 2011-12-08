@@ -210,7 +210,7 @@ typedef struct
 	GtkToggleButton* toggle_button_glsl_120[4];
 	GtkToggleButton* toggle_button_glsl_150[4];
 	GtkToggleButton* toggle_button_material_default[4];
-	GtkToggleButton* toggle_button_material_texture_arrays[4];
+	GtkToggleButton* toggle_button_material_merged[4];
 	GtkSpinButton* spin_button_pages;
 	GtkComboBoxText* type;
 	GtkEntry* name;
@@ -266,7 +266,7 @@ G_MODULE_EXPORT void load_file(GtkMenuItem* menu_item, ShaderData* data)
 		gtk_toggle_button_set_active(
 			data->toggle_button_material_default[i], FALSE);
 		gtk_toggle_button_set_active(
-			data->toggle_button_material_texture_arrays[i], FALSE);
+			data->toggle_button_material_merged[i], FALSE);
 	}
 
 	gtk_entry_set_text(data->name, el::string_to_utf8(
@@ -294,9 +294,9 @@ G_MODULE_EXPORT void load_file(GtkMenuItem* menu_item, ShaderData* data)
 			data->toggle_button_material_default[i],
 			shader_source.get_datas()[i].get_material_default());
 		gtk_toggle_button_set_active(
-			data->toggle_button_material_texture_arrays[i],
+			data->toggle_button_material_merged[i],
 			shader_source.get_datas(
-				)[i].get_material_texture_arrays());
+				)[i].get_material_merged());
 
 		gtk_text_buffer_set_text(data->text_buffers[i],
 			el::string_to_utf8(shader_source.get_datas(
@@ -408,9 +408,9 @@ void do_save_file(ShaderData* data)
 			gtk_toggle_button_get_active(
 				data->toggle_button_material_default[i])
 					== TRUE);
-		shader_source_data.set_material_texture_arrays(
+		shader_source_data.set_material_merged(
 			gtk_toggle_button_get_active(
-				data->toggle_button_material_texture_arrays[i])
+				data->toggle_button_material_merged[i])
 					== TRUE);
 
 		gtk_text_buffer_get_bounds(data->text_buffers[i], &start, &end);
@@ -671,10 +671,10 @@ int main(int argc, char *argv[])
 			GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder,
 				name.c_str()));
 
-		name = "toggle_button_material_texture_arrays_";
+		name = "toggle_button_material_merged_";
 		name += str.str();
 
-		shader_data.toggle_button_material_texture_arrays[i] =
+		shader_data.toggle_button_material_merged[i] =
 			GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder,
 				name.c_str()));
 
