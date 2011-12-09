@@ -356,8 +356,23 @@ void change_el_fog(int* var)
 
 void change_el_optmize_shader_source(int* var)
 {
-	*var = !*var;
-	set_optmize_shader_source(*var);
+	if (*var)
+	{
+		*var = el_false;
+		set_optmize_shader_source(*var);
+	}
+	else
+	{
+		if (gl_extensions_loaded && get_opengl_3_0())
+		{
+			LOG_TO_CONSOLE(c_green2, "Only for OpenGL 2.1 mode");
+		}
+		else
+		{
+			*var = el_true;
+			set_optmize_shader_source(*var);
+		}
+	}
 }
 
 void change_el_opengl_version(int* var, int value)
@@ -1388,6 +1403,7 @@ void check_options()
 	check_option_var("msaa_shadows");
 	check_option_var("filter_shadow_map");
 	check_option_var("shadow_map_count");
+	check_option_var("optmize_shader_source");
 }
 
 int check_var (char *str, var_name_type type)
