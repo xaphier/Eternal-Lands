@@ -1730,6 +1730,23 @@ int keypress_root_common (Uint32 key, Uint32 unikey)
 			new_second();
 		}
 	}
+	else if((keysym == SDLK_q) && shift_on && ctrl_on && alt_on)
+	{
+		freeze_time = !freeze_time;
+		if (freeze_time)
+		{
+			LOG_TO_CONSOLE(c_green2, "Night Time freezed!");
+			game_minute = 300;
+			new_minute();
+			new_second();
+		}
+		else
+		{
+			LOG_TO_CONSOLE(c_green2, "Time unfreezed!");
+			new_minute();
+			new_second();
+		}
+	}
 #ifdef DEBUG
     // scale the current actor
 	else if((keysym == SDLK_p) && shift_on && ctrl_on && !alt_on)
