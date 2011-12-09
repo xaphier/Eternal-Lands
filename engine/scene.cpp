@@ -226,13 +226,21 @@ namespace eternal_lands
 	namespace
 	{
 
-		Uint32 querie_ids[4096];
+		boost::array<GLuint, 0x10000> querie_ids;
 
 	}
 
 	void Scene::init()
 	{
-		glGenQueries(4096, querie_ids);
+		Uint32 i;
+
+		for (i = 0; i < querie_ids.size(); i++)
+		{
+			querie_ids[i] = i + 1;
+		}
+
+		glGenQueries(querie_ids.size(), querie_ids.data());
+
 		m_scene_resources.init();
 	}
 
@@ -379,14 +387,12 @@ namespace eternal_lands
 			{
 				program->set_parameter(apt_ambient,
 					m_ambient + m_main_light_ambient +
-					glm::vec4(glm::vec3(0.1f), 0.0f));
+					color);
 			}
 			else
 			{
 				program->set_parameter(apt_ambient,
-					m_ambient + m_main_light_ambient +
-					glm::vec4(glm::vec3(0.1f), 0.0f) +
-					color);
+					m_ambient + m_main_light_ambient);
 			}
 		}
 
@@ -716,27 +722,6 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::draw_sub_object_depth(const ObjectSharedPtr &object,
-		const SubObject &sub_object)
-	{
-		Uint32 material;
-
-		m_state_manager.switch_mesh(object->get_mesh());
-
-		material = sub_object.get_material();
-
-		if (switch_program(object->get_materials(
-			)[material].get_effect()->get_depth_program()))
-		{
-			m_state_manager.get_program()->set_parameter(
-				apt_world_matrix,
-				object->get_world_matrix());
-		}
-
-		object->get_materials()[material].bind(m_state_manager);
-		m_state_manager.get_mesh()->draw(sub_object);
-	}
-
 	void Scene::draw_shadows(const Uint16 index)
 	{
 		DEBUG_CHECK_GL_ERROR();
@@ -1062,11 +1047,11 @@ namespace eternal_lands
 	}
 
 	void Scene::pick_object(const ObjectSharedPtr &object,
-		PairUint32SelectionTypeVector &ids,
-		const glm::vec2 &min, const glm::vec2 &max)
+		PairUint32SelectionTypeVector &ids)
 	{
 		PairUint32SelectionType data;
-		Uint32 i, sub_objects;
+		Uint32 i, sub_objects, material;
+		bool object_data_set;
 
 		if (object->get_selection() == st_none)
 		{
@@ -1085,34 +1070,55 @@ namespace eternal_lands
 			glEndQuery(GL_SAMPLES_PASSED);
 
 			ids.push_back(data);
+
+			return;
 		}
-		else
+
+		m_state_manager.switch_mesh(object->get_mesh());
+
+		sub_objects = object->get_sub_objects().size();
+
+		object_data_set = false;
+
+		for (i = 0; i < sub_objects; i++)
 		{
-			sub_objects = object->get_sub_objects().size();
-
-			for (i = 0; i < sub_objects; i++)
+			if (object->get_sub_objects()[i].get_selection()
+				== st_none)
 			{
-				if (object->get_sub_objects()[i].get_selection()
-					== st_none)
-				{
-					continue;
-				}
-
-				data.first = object->get_sub_objects(
-					)[i].get_id();
-				data.second =  object->get_sub_objects(
-					)[i].get_selection();
-
-				glBeginQuery(GL_SAMPLES_PASSED,
-					querie_ids[ids.size()]);
-
-				draw_sub_object_depth(object,
-					object->get_sub_objects()[i]);
-
-				glEndQuery(GL_SAMPLES_PASSED);
-
-				ids.push_back(data);
+				continue;
 			}
+
+			data.first = object->get_sub_objects()[i].get_id();
+			data.second = object->get_sub_objects(
+				)[i].get_selection();
+
+			glBeginQuery(GL_SAMPLES_PASSED, querie_ids[ids.size()]);
+
+			material = object->get_sub_objects()[i].get_material();
+
+			if (switch_program(object->get_materials(
+				)[material].get_effect()->get_depth_program()))
+			{
+				object_data_set = false;
+			}
+
+			if (!object_data_set)
+			{
+				m_state_manager.get_program()->set_parameter(
+					apt_world_matrix,
+					object->get_world_matrix());
+				m_state_manager.get_program()->set_parameter(
+					apt_bones, object->get_bones());
+				object_data_set = true;
+			}
+
+			object->get_materials()[material].bind(m_state_manager);
+			m_state_manager.get_mesh()->draw(
+				object->get_sub_objects()[i]);
+
+			glEndQuery(GL_SAMPLES_PASSED);
+
+			ids.push_back(data);
 		}
 	}
 
@@ -1120,7 +1126,6 @@ namespace eternal_lands
 		SelectionType &selection)
 	{
 		PairUint32SelectionTypeVector ids;
-		glm::vec2 min, max;
 		Uint32 i, max_count, count, id;
 		StateManagerUtil state(m_state_manager);
 
@@ -1129,19 +1134,18 @@ namespace eternal_lands
 		glScissor(offset.x - size.x, offset.y - size.y, 2 * size.x,
 			2 * size.y);
 		m_state_manager.switch_color_mask(glm::bvec4(false));
-		m_state_manager.switch_depth_mask(false);
 		m_state_manager.switch_multisample(false);
+
 		glDepthFunc(GL_LEQUAL);
 
-		min = offset - size;
-		max = offset + size;
-
 		m_scene_view.set_default_view();
+
+		m_state_manager.switch_depth_mask(false);
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			pick_object(object.get_object(), ids, min, max);
+			pick_object(object.get_object(), ids);
 		}
 
 		m_program_vars_id++;
