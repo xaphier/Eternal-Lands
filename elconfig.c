@@ -366,6 +366,8 @@ void change_el_optmize_shader_source(int* var)
 		if (gl_extensions_loaded && get_opengl_3_0())
 		{
 			LOG_TO_CONSOLE(c_green2, "Only for OpenGL 2.1 mode");
+			*var = el_false;
+			set_optmize_shader_source(*var);
 		}
 		else
 		{
