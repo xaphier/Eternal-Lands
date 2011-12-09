@@ -264,53 +264,56 @@ namespace eternal_lands
 
 		mipmaps = 0;
 
-		if (m_scene_view.get_exponential_shadow_maps())
+		if (!m_scene_view.get_exponential_shadow_maps())
 		{
-			while ((1 << mipmaps) < shadow_map_size)
-			{
-				mipmaps++;
-			}
+			m_shadow_frame_buffer = get_scene_resources(
+				).get_framebuffer_builder().build(
+					String(UTF8("Shadow")),
+					shadow_map_width, shadow_map_height, 0,
+					tft_depth32);
 
-			shadow_map_count = m_scene_view.get_shadow_map_count();
+			return;
+		}
 
-			if (get_global_vars()->get_msaa_shadows())
-			{
-				samples = 4;
-			}
-			else
-			{
-				samples = 0;
-			}
+		while ((1 << mipmaps) < shadow_map_size)
+		{
+			mipmaps++;
+		}
 
-			if (shadow_map_count == 3)
-			{
-				shadow_map_count = 1;
-				shadow_map_width = (shadow_map_width * 3) / 2;
-			}
+		shadow_map_count = m_scene_view.get_shadow_map_count();
 
-			m_shadow_frame_buffer = FrameBufferBuilder::build(
-				String(UTF8("Shadow")), shadow_map_width,
-				shadow_map_height, shadow_map_count,
-				mipmaps, samples, tft_r32f);
-
-			if (get_global_vars()->get_filter_shadow_map())
-			{
-				m_shadow_filter_frame_buffer =
-					FrameBufferBuilder::build_filter(
-						String(UTF8("ShadowFilter")),
-						shadow_map_size,
-						shadow_map_size, tft_r32f);
-			}
-			else
-			{
-				m_shadow_filter_frame_buffer.reset();
-			}
+		if (get_global_vars()->get_msaa_shadows())
+		{
+			samples = 4;
 		}
 		else
 		{
-			m_shadow_frame_buffer = FrameBufferBuilder::build(
-				String(UTF8("Shadow")), shadow_map_width,
-				shadow_map_height, 0, tft_depth32);
+			samples = 0;
+		}
+
+		if (shadow_map_count == 3)
+		{
+			shadow_map_count = 1;
+			shadow_map_width = (shadow_map_width * 3) / 2;
+		}
+
+		m_shadow_frame_buffer = get_scene_resources(
+			).get_framebuffer_builder().build(
+				String(UTF8("Shadow")),	shadow_map_width,
+				shadow_map_height, shadow_map_count,
+				mipmaps, samples, tft_r32f);
+
+		if (get_global_vars()->get_filter_shadow_map())
+		{
+			m_shadow_filter_frame_buffer = get_scene_resources(
+				).get_framebuffer_builder().build_filter(
+					String(UTF8("ShadowFilter")),
+					shadow_map_size, shadow_map_size,
+					tft_r32f);
+		}
+		else
+		{
+			m_shadow_filter_frame_buffer.reset();
 		}
 	}
 

@@ -191,6 +191,7 @@ namespace eternal_lands
 	class FileSystem;
 	class Filter;
 	class FreeIds;
+	class FrameBufferBuilder;
 	class GlobalVars;
 	class GlslProgram;
 	class HardwareBuffer;
@@ -265,6 +266,7 @@ namespace eternal_lands
 	SHARED_PTR(EffectCache);
 	SHARED_PTR(FileSystem);
 	SHARED_PTR(Filter);
+	SHARED_PTR(FrameBufferBuilder);
 	SHARED_PTR(GlobalVars);
 	SHARED_PTR(GlslProgram);
 	SHARED_PTR(HardwareBuffer);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>no_specular_mapping</name>
+ <name>disabled</name>
  <type>specular_mapping</type>
  <shader_source_datas>
   <shader_source_data>

@@ -26,7 +26,7 @@ namespace eternal_lands
 
 	OpenGl3Mesh::VertexArrayObject::VertexArrayObject()
 	{
-		assert(GLEW_ARB_vertex_array_object || GLEW_VERSION_3_0);
+		assert(GLEW_VERSION_3_0);
 		glGenVertexArrays(1, &m_id);
 	}
 
@@ -47,7 +47,7 @@ namespace eternal_lands
 
 	OpenGl3Mesh::OpenGl3Mesh()
 	{
-		assert(GLEW_ARB_vertex_array_object || GLEW_VERSION_3_0);
+		assert(GLEW_VERSION_3_0);
 	}
 
 	OpenGl3Mesh::~OpenGl3Mesh() throw()

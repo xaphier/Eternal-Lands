@@ -32,12 +32,12 @@ namespace eternal_lands
 			GlslProgramSharedPtr m_depth_program;
 			GlslProgramSharedPtr m_shadow_program;
 			Ivec2Vector m_light_counts;
-			bool m_culling;
+			bool m_merged;
 
-			void load_culling(const String &name, Lua &lua);
-			void load(String &name, Lua &lua) const;
 			void error_load();
 			void do_load();
+			static void get_data(const String &name,
+				String &file_name, bool &merged);
 
 			inline ShaderSourceBuilderSharedPtr
 				get_shader_source_builder() const
@@ -75,6 +75,7 @@ namespace eternal_lands
 				const String &name);
 			~Effect() throw();
 			void load();
+			static String get_file_name(const String &name);
 
 			inline const String &get_name() const
 			{
@@ -129,9 +130,9 @@ namespace eternal_lands
 				return m_shadow_program;
 			}
 
-			inline bool get_culling() const
+			inline bool get_merged() const
 			{
-				return m_culling;
+				return m_merged;
 			}
 
 	};

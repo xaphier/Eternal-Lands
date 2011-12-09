@@ -27,7 +27,7 @@ namespace eternal_lands
 	Material::Material(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_shadow(true)
+		m_shadow(true), m_culling(true)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
@@ -37,10 +37,13 @@ namespace eternal_lands
 		const TextureCacheWeakPtr &texture_cache,
 		const MaterialDescription &material):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_shadow(true)
+		m_shadow(true), m_culling(true)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
+
+		set_shadow(material.get_shadow());
+		set_culling(material.get_culling());
 
 		set_effect(material.get_effect());
 
@@ -132,7 +135,7 @@ namespace eternal_lands
 			}
 		}
 
-		state_manager.switch_culling(get_effect()->get_culling());
+		state_manager.switch_culling(get_culling());
 	}
 
 	const String &Material::get_effect_name() const

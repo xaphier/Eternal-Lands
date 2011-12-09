@@ -61,13 +61,13 @@
      <name>shadow</name>
      <source></source>
      <type>float</type>
-     <qualifier>in</qualifier>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
    <source>{
-	shadow = shadowProj(shadow_sampler, shadow_uv[0]).r;
+	shadow = textureProj(shadow_sampler, shadow_uv[0]).r;
 }</source>
    <glsl_120>false</glsl_120>
    <glsl_150>true</glsl_150>

@@ -11,6 +11,7 @@
 #include "meshcache.hpp"
 #include "statemanager.hpp"
 #include "abstractmesh.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
@@ -240,7 +241,8 @@ namespace eternal_lands
 				vertical), values, String(name));
 	}
 
-	Filter::Filter(const MeshCacheSharedPtr &mesh_cache)
+	Filter::Filter(const MeshCacheSharedPtr &mesh_cache,
+		const GlobalVarsSharedPtr &global_vars)
 	{
 		StringVariantMap values;
 		Uint32 i, j;
@@ -254,14 +256,18 @@ namespace eternal_lands
 		{
 			for (j = 0; j < 4; j++)
 			{
-				build_filter(values, 120, i, j, false, false);
-				build_filter(values, 120, i, j, false, true);
-
-				if (!GLEW_VERSION_3_0)
+				if (!global_vars->get_opengl_3_0())
 				{
+					build_filter(values, 120, i, j, false,
+						false);
+					build_filter(values, 120, i, j, false,
+						true);
+
 					continue;
 				}
 
+				build_filter(values, 130, i, j, false, false);
+				build_filter(values, 130, i, j, false, true);
 				build_filter(values, 130, i, j, true, false);
 				build_filter(values, 130, i, j, true, true);
 			}

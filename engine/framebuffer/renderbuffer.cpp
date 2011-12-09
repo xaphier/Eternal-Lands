@@ -18,7 +18,7 @@ namespace eternal_lands
 	{
 		GLint max_samples;
 
-		assert(GLEW_ARB_framebuffer_object || GLEW_VERSION_3_0);
+		assert(GLEW_VERSION_3_0);
 
 		glGenRenderbuffers(1, &m_id);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_id);

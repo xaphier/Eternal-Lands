@@ -22,6 +22,15 @@
 namespace eternal_lands
 {
 
+	enum OpenglVerionType
+	{
+		ovt_2_1,
+		ovt_3_0,
+		ovt_3_1,
+		ovt_3_2,
+		ovt_3_3
+	};
+
 	class GlobalVars
 	{
 		private:
@@ -30,6 +39,7 @@ namespace eternal_lands
 			float m_view_distance;
 			Uint16 m_shadow_map_count;
 			Uint16 m_shadow_map_size;
+			OpenglVerionType m_opengl_version;
 			bool m_msaa_shadows;
 			bool m_exponential_shadow_maps;
 			bool m_alpha_to_coverage;
@@ -70,6 +80,11 @@ namespace eternal_lands
 				m_shadow_map_size = shadow_map_size;
 			}
 
+			inline void set_opengl_version(
+				const OpenglVerionType opengl_version)
+			{
+				m_opengl_version = opengl_version;
+			}
 
 			inline void set_msaa_shadows(const bool msaa_shadows)
 			{
@@ -134,6 +149,11 @@ namespace eternal_lands
 				return m_shadow_map_size;
 			}
 
+			inline OpenglVerionType get_opengl_version() const
+			{
+				return m_opengl_version;
+			}
+
 			inline bool get_msaa_shadows() const
 			{
 				return m_msaa_shadows;
@@ -162,6 +182,45 @@ namespace eternal_lands
 			inline bool get_optmize_shader_source() const
 			{
 				return m_optmize_shader_source;
+			}
+
+			inline bool get_opengl_3_0() const
+			{
+				return get_opengl_version() >= ovt_3_0;
+			}
+
+			inline bool get_opengl_3_1() const
+			{
+				return get_opengl_version() >= ovt_3_1;
+			}
+
+			inline bool get_opengl_3_2() const
+			{
+				return get_opengl_version() >= ovt_3_2;
+			}
+
+			inline bool get_opengl_3_3() const
+			{
+				return get_opengl_version() >= ovt_3_3;
+			}
+
+			inline Uint16 get_glsl_version() const
+			{
+				switch (get_opengl_version())
+				{
+					case ovt_2_1:
+						return 120;
+					case ovt_3_0:
+						return 130;
+					case ovt_3_1:
+						return 140;
+					case ovt_3_2:
+						return 150;
+					case ovt_3_3:
+						return 330;
+				}
+
+				return 110;
 			}
 
 	};

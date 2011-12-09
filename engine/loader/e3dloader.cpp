@@ -407,6 +407,7 @@ namespace eternal_lands
 		const Uint32 material_offset, const Uint32 material_size,
 		const Uint32 material_index, const StringType &dir)
 	{
+		MaterialDescription material;
 		StringType name;
 		Uint32 options;
 
@@ -417,16 +418,19 @@ namespace eternal_lands
 
 		name = m_reader->read_utf8_string(128);
 
+		material.set_texture(String(dir + name), stt_diffuse_0);
+
 		if (options != 0)
 		{
-			return MaterialDescription(String(dir + name),
-				String(UTF8("mesh.transparent")));
+			material.set_effect(String(UTF8("mesh_transparent")));
+			material.set_culling(false);
 		}
 		else
 		{
-			return MaterialDescription(String(dir + name),
-				String(UTF8("mesh.solid")));
+			material.set_effect(String(UTF8("mesh_solid")));
 		}
+
+		return material;
 	}
 
 	void E3dLoader::load_materials(MaterialDescriptionVector &materials,

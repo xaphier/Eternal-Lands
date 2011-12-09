@@ -30,6 +30,8 @@ namespace eternal_lands
 		public:
 			XmlReader(xmlBufferPtr buffer);
 			XmlReader(const String &file_name);
+			XmlReader(const String &file_name,
+				const FileSystemSharedPtr file_system);
 			~XmlReader() throw();
 			xmlNodePtr get_root_node();
 

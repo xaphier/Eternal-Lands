@@ -8,12 +8,11 @@
 #include "effect.hpp"
 #include "glslprogram.hpp"
 #include "exceptions.hpp"
-#include "lua.hpp"
 #include "shader/shadersourcebuilder.hpp"
-#include "shader/shadersourcedescriptionloader.hpp"
+#include "shader/shadersourcedescription.hpp"
 #include "logging.hpp"
 #include "shader/shadertextureutil.hpp"
-#include "filesystem.hpp"
+#include "xmlreader.hpp"
 
 namespace eternal_lands
 {
@@ -87,7 +86,7 @@ namespace eternal_lands
 
 	}
 
-	Effect::Effect(): m_name(UTF8("simple")), m_culling(true)
+	Effect::Effect(): m_name(UTF8("simple")), m_merged(false)
 	{
 		error_load();
 	}
@@ -95,11 +94,11 @@ namespace eternal_lands
 	Effect::Effect(const ShaderSourceBuilderWeakPtr &shader_source_builder,
 		const FileSystemWeakPtr &file_system, const String &name):
 		m_shader_source_builder(shader_source_builder),
-		m_file_system(file_system), m_name(name), m_culling(true)
+		m_file_system(file_system), m_name(name), m_merged(false)
 	{
 		assert(!m_shader_source_builder.expired());
 
-		if (name == UTF8(""))
+		if (name.get().empty())
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_parameter_name(UTF8("name"))
@@ -113,94 +112,64 @@ namespace eternal_lands
 	{
 	}
 
-	void Effect::load_culling(const String &name, Lua &lua)
+	void Effect::get_data(const String &name, String &file_name,
+		bool &merged)
 	{
-		// Fetch the table from the Lua context and make sure it exists:
-		lua.get_global(name);
-
-		if (!lua.is_table(-1))
-		{
-			lua.pop(1);
-
-			return;
-		}
-
-		lua.push_string(UTF8("culling"));
-		lua.get_table(-2);
-
-		if (!lua.is_bool(-1))
-		{
-			lua.pop(2);
-
-			return;
-		}
-
-		m_culling = lua.to_bool(-1);
-
-		lua.pop(2);
-	}
-
-	void Effect::load(String &name, Lua &lua) const
-	{
-		StringType str;
 		std::vector<StringType> tokens;
-		std::vector<StringType>::iterator it;
+		Uint32 i, count;
 
-		boost::split(tokens, get_name().get(), boost::is_any_of(L"."),
+		boost::split(tokens, name.get(), boost::is_any_of(UTF8(".")),
 			boost::token_compress_on);
 
-		it = tokens.begin();
-
-		while (it != tokens.end())
-		{
-			boost::algorithm::trim(*it);
-
-			if (it->empty())
-			{
-				it = tokens.erase(it);
-			}
-			else
-			{
-				it++;
-			}
-		}
-
-		if (tokens.size() != 2)
+		if (tokens.size() == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_message(UTF8("Invalid effect name"))
-				<< errinfo_string_value(get_name()));
+				<< errinfo_string_value(name));
 		}
 
-		str = UTF8("shaders/");
-		str += tokens[0];
-		str += UTF8(".lua");
+		file_name = String(UTF8("shaders/") + tokens[0] + UTF8(".xml"));
 
-		lua.do_string(get_file_system()->get_file_string(String(str)),
-			String(str));
+		count = tokens.size();
 
-		name = String(tokens[1]);
+		merged = false;
+
+		for (i = 1; i < count; i++)
+		{
+			if (tokens[i] == UTF8("merged"))
+			{
+				merged = true;
+			}
+		}
+	}
+
+	String Effect::get_file_name(const String &name)
+	{
+		String file_name;
+		bool merged;
+
+		get_data(name, file_name, merged);
+
+		return file_name;
 	}
 
 	void Effect::do_load()
 	{
-		Lua lua;
-		boost::scoped_ptr<ShaderSourceDescriptionLoader> loader;
-		String name;
+		XmlReaderSharedPtr xml_reader;
+		ShaderSourceDescription description;
+		String file_name;
 		StringType vertex, fragment;
 		StringVariantMap values;
 		Uint16 light_count, i, fragment_light_count, vertex_light_count;
 
-		load(name, lua);
-		load_culling(name, lua);
-
-		loader.reset(new ShaderSourceDescriptionLoader(
-			get_shader_source_builder()->get_global_vars(),
-			get_shader_source_builder()->get_defaults(), name,
-			get_shader_source_builder()->get_quality(), lua));
-
 		m_light_counts.clear();
 		m_default_programs.clear();
+
+		get_data(get_name(), file_name, m_merged);
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(file_name));
+
+		description.load_xml(xml_reader->get_root_node());
 
 		fragment_light_count = get_shader_source_builder(
 			)->get_fragment_light_count();
@@ -224,10 +193,9 @@ namespace eternal_lands
 		{
 			m_light_counts.push_back(glm::ivec2(0, i));
 
-			get_shader_source_builder()->build(
-				loader->get_shader_source_description(
-					sbt_color, i), vertex, fragment,
-					values);
+			get_shader_source_builder()->build(i, get_merged(),
+				sbt_color, description, vertex, fragment,
+				values);
 
 			m_default_programs.push_back(
 				boost::make_shared<GlslProgram>(vertex,
@@ -240,25 +208,22 @@ namespace eternal_lands
 		m_light_counts.push_back(glm::ivec2(vertex_light_count,
 			fragment_light_count));
 
-		get_shader_source_builder()->build(
-			loader->get_shader_source_description(sbt_color,
-				light_count), vertex, fragment, values);
+		get_shader_source_builder()->build(light_count, get_merged(),
+			sbt_color, description, vertex, fragment, values);
 
 		m_default_programs.push_back(boost::make_shared<GlslProgram>(
 			vertex, fragment, values, get_name()));
 
 		/* Depth shader */
-		get_shader_source_builder()->build(
-			loader->get_shader_source_description(sbt_depth, 0),
-			vertex, fragment, values);
+		get_shader_source_builder()->build(0, get_merged(), sbt_depth,
+			description, vertex, fragment, values);
 
 		m_depth_program = boost::make_shared<GlslProgram>(
 			vertex, fragment, values, get_name());
 
 		/* Shadow shader */
-		get_shader_source_builder()->build(
-			loader->get_shader_source_description(sbt_shadow, 0),
-			vertex, fragment, values);
+		get_shader_source_builder()->build(0, get_merged(), sbt_shadow,
+			description, vertex, fragment, values);
 
 		m_shadow_program = boost::make_shared<GlslProgram>(
 			vertex, fragment, values, get_name());
@@ -268,13 +233,12 @@ namespace eternal_lands
 	{
 		StringVariantMap values;
 
-		m_culling = true;
-
 		m_light_counts.clear();
 		m_default_programs.clear();
 
-		/* Default shader */
+		m_merged = false;
 
+		/* Default shader */
 		values[ShaderTextureUtil::get_str(stt_diffuse_0)] =
 			Variant(static_cast<Sint64>(stt_diffuse_0));
 

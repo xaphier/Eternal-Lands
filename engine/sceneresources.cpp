@@ -15,6 +15,7 @@
 #include "actordatacache.hpp"
 #include "shader/shadersourcebuilder.hpp"
 #include "filter.hpp"
+#include "framebufferbuilder.hpp"
 
 namespace eternal_lands
 {
@@ -22,7 +23,7 @@ namespace eternal_lands
 	SceneResources::SceneResources(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemWeakPtr &file_system)
 	{
-		m_mesh_builder = boost::make_shared<MeshBuilder>();
+		m_mesh_builder = boost::make_shared<MeshBuilder>(global_vars);
 		m_shader_source_builder =
 			boost::make_shared<ShaderSourceBuilder>(global_vars,
 				file_system);
@@ -39,7 +40,9 @@ namespace eternal_lands
 			get_mesh_builder_ptr(), get_effect_cache_ptr(),
 			get_texture_cache_ptr(), get_codec_manager_ptr(),
 			file_system);
-		m_filter.reset(new Filter(get_mesh_cache_ptr()));
+		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
+			global_vars);
+		m_filter.reset(new Filter(get_mesh_cache_ptr(), global_vars));
 	}
 
 	SceneResources::~SceneResources() throw()

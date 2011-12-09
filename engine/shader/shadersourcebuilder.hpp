@@ -16,6 +16,7 @@
 #include "shadersource.hpp"
 #include "parametersizeutil.hpp"
 #include "commonparameterutil.hpp"
+#include "shaderbuildutil.hpp"
 
 /**
  * @file
@@ -39,8 +40,8 @@ namespace eternal_lands
 
 			ShaderSourceTypeStringPairShaderSourceMap
 				m_shader_sources;
-			ShaderSourceTypeStringMap m_defaults;
-			GlobalVarsSharedPtr m_global_vars;
+			ShaderSourceTypeStringMap m_sources;
+			const GlobalVarsSharedPtr m_global_vars;
 			FileSystemWeakPtr m_file_system;
 			boost::scoped_ptr<ShaderSourceOptimizer> m_optimizer;
 			float m_shadow_scale;
@@ -99,48 +100,38 @@ namespace eternal_lands
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
 			void load_file(const String &file_name);
-			bool get_transparent(
-				const ShaderSourceTypeStringMap &types) const;
+			ShaderSourceTypeStringMap build_sources(
+				const ShaderSourceDescription &description)
+				const;
+			bool check(const ShaderSourceTypeStringPair &source,
+				const ShaderSourceDataType data_type) const;
 
 		public:
 			ShaderSourceBuilder(
 				const GlobalVarsSharedPtr &global_vars,
 				const FileSystemWeakPtr &file_system);
 			~ShaderSourceBuilder() throw();
+			bool get_can_merge(const String &effect_name) const;
 			void load(const String &file_name);
 			void load_default(const String &file_name);
-			void build(const ShaderSourceDescription &description,
+			void build(const Uint16 light_count, const bool merged,
+				const ShaderBuildType shader_build_type,
+				const ShaderSourceDescription &description,
 				StringType &vertex, StringType &fragment,
 				StringVariantMap &values) const;
 			void set_shadow_map_type(const String &name);
 
-			inline const ShaderSourceTypeStringMap &get_defaults()
+			inline const ShaderSourceTypeStringMap &get_sources()
 				const
 			{
-				return m_defaults;
+				return m_sources;
 			}
 
-			inline GlobalVarsSharedPtr get_global_vars() const
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
 			{
 				return m_global_vars;
 			}
-
-			/**
-			 * Returns the quality the shader uses.
-			 */
-			const String &get_quality() const;
-
-			/**
-			 * Returns the number of shadow maps the shader uses.
-			 */
-			Uint16 get_shadow_map_count() const;
-
-			/**
-			 * Returns true if the shader uses fog.
-			 */
-			bool get_fog() const;
-
-			bool get_optmize_shader_source() const;
 
 			/**
 			 * Returns the darkening of the diffuse light when it's

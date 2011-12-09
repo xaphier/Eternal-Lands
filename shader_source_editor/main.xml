@@ -1135,7 +1135,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="wrap_mode">word-char</property>
-                            <property name="buffer">text_buffer_0</property>
+                            <property name="buffer">text_buffer_1</property>
                           </object>
                         </child>
                       </object>
@@ -1537,7 +1537,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="wrap_mode">word-char</property>
-                            <property name="buffer">text_buffer_0</property>
+                            <property name="buffer">text_buffer_2</property>
                           </object>
                         </child>
                       </object>
@@ -1939,7 +1939,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="wrap_mode">word-char</property>
-                            <property name="buffer">text_buffer_0</property>
+                            <property name="buffer">text_buffer_3</property>
                           </object>
                         </child>
                       </object>

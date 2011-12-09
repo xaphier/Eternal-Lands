@@ -189,6 +189,7 @@ int el_shadow_map_count = 0;
 int el_shadow_map_size = 2;
 float el_shadow_distance = 40.0f;
 float el_view_distance = 40.0f;
+float el_ambient_scale = 1.0f;
 int el_msaa_shadows = el_false;
 int el_exponential_shadow_maps = el_false;
 int el_alpha_to_coverage = el_false;
@@ -201,8 +202,7 @@ void change_el_shadow_map_count(int* var, int value)
 	if (value < 2)
 	{
 		if (!gl_extensions_loaded || GLEW_EXT_framebuffer_object ||
-			GLEW_ARB_framebuffer_object || GLEW_VERSION_3_0 ||
-			(value == 0))
+			get_opengl_3_0() || (value == 0))
 		{
 			*var = value;
 			set_shadow_map_count(*var);
@@ -214,7 +214,7 @@ void change_el_shadow_map_count(int* var, int value)
 	}
 	else
 	{
-		if (!gl_extensions_loaded || GLEW_VERSION_3_0)
+		if (!gl_extensions_loaded || get_opengl_3_0())
 		{
 			if (gl_extensions_loaded && !el_exponential_shadow_maps)
 			{
@@ -262,7 +262,7 @@ void change_el_msaa_shadows(int* var)
 	}
 	else
 	{
-		if (!gl_extensions_loaded || GLEW_VERSION_3_0)
+		if (!gl_extensions_loaded || get_opengl_3_0())
 		{
 			if (gl_extensions_loaded && !el_exponential_shadow_maps)
 			{
@@ -301,7 +301,7 @@ void change_el_exponential_shadow_maps(int* var)
 	}
 	else
 	{
-		if (!gl_extensions_loaded || GLEW_VERSION_3_0)
+		if (!gl_extensions_loaded || get_opengl_3_0())
 		{
 			*var = el_true;
 			set_exponential_shadow_maps(*var);
@@ -328,7 +328,7 @@ void change_el_filter_shadow_map(int* var)
 	}
 	else
 	{
-		if (!gl_extensions_loaded || GLEW_VERSION_3_0)
+		if (!gl_extensions_loaded || get_opengl_3_0())
 		{
 			if (gl_extensions_loaded && !el_exponential_shadow_maps)
 			{
@@ -358,6 +358,13 @@ void change_el_optmize_shader_source(int* var)
 {
 	*var = !*var;
 	set_optmize_shader_source(*var);
+}
+
+void change_el_opengl_version(int* var, int value)
+{
+	*var = value;
+
+	LOG_TO_CONSOLE(c_green2, video_restart_str);
 }
 
 void options_loaded(void)
@@ -1905,6 +1912,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL,"poor_man","poor",&poor_man,change_poor_man,0,"Poor Man","If the game is running very slow for you, toggle this setting.",TROUBLESHOOT);
 	// TROUBLESHOOT TAB
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &el_optmize_shader_source, change_el_optmize_shader_source, el_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
+	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &el_opengl_version, change_el_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", 0);
 
 
 	// DEBUGTAB TAB
@@ -2462,7 +2470,7 @@ void elconfig_populate_tabs(void)
 			case OPT_MULTI_H:
 
 				label_id= label_add_extended(elconfig_tabs[tab_id].tab, elconfig_free_widget_id++, NULL, elconfig_tabs[tab_id].x, elconfig_tabs[tab_id].y, 0, 1.0, 0.77f, 0.59f, 0.39f, (char*)our_vars.var[i]->display.str);
-				widget_id= multiselect_add_extended(elconfig_tabs[tab_id].tab, elconfig_free_widget_id++, NULL, elconfig_tabs[tab_id].x+SPACING+get_string_width(our_vars.var[i]->display.str), elconfig_tabs[tab_id].y, 350, 80, 1.0f, 0.77f, 0.59f, 0.39f, 0.32f, 0.23f, 0.15f, 0);
+				widget_id= multiselect_add_extended(elconfig_tabs[tab_id].tab, elconfig_free_widget_id++, NULL, elconfig_tabs[tab_id].x+SPACING+get_string_width(our_vars.var[i]->display.str), elconfig_tabs[tab_id].y, 450, 80, 1.0f, 0.77f, 0.59f, 0.39f, 0.32f, 0.23f, 0.15f, 0);
 				x = 0;
 				for(y= 0; !queue_isempty(our_vars.var[i]->queue); y++) {
 					char *label= queue_pop(our_vars.var[i]->queue);

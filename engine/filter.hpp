@@ -109,7 +109,8 @@ namespace eternal_lands
 			}
 
 		public:
-			Filter(const MeshCacheSharedPtr &mesh_cache);
+			Filter(const MeshCacheSharedPtr &mesh_cache,
+				const GlobalVarsSharedPtr &global_vars);
 			~Filter() throw();
 			void bind(const glm::vec4 &source,
 				const glm::vec4 &dest, const Uint32 width,

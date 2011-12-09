@@ -33,6 +33,7 @@ namespace eternal_lands
 			MeshDataCacheSharedPtr m_mesh_data_cache;
 			ActorDataCacheSharedPtr m_actor_data_cache;
 			ShaderSourceBuilderSharedPtr m_shader_source_builder;
+			FrameBufferBuilderSharedPtr m_framebuffer_builder;
 			boost::scoped_ptr<Filter> m_filter;
 
 		public:
@@ -82,6 +83,11 @@ namespace eternal_lands
 				return *get_shader_source_builder_ptr();
 			}
 
+			inline FrameBufferBuilder &get_framebuffer_builder()
+			{
+				return *get_framebuffer_builder_ptr();
+			}
+
 			inline MeshBuilderSharedPtr &get_mesh_builder_ptr()
 			{
 				return m_mesh_builder;
@@ -123,6 +129,12 @@ namespace eternal_lands
 				&get_shader_source_builder_ptr()
 			{
 				return m_shader_source_builder;
+			}
+
+			inline FrameBufferBuilderSharedPtr
+				&get_framebuffer_builder_ptr()
+			{
+				return m_framebuffer_builder;
 			}
 
 			inline Filter &get_filter() const

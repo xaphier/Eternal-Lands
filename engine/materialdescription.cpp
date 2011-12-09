@@ -41,25 +41,27 @@ namespace eternal_lands
 
 	}
 
-	MaterialDescription::MaterialDescription(): m_shadow(true)
+	MaterialDescription::MaterialDescription(): m_shadow(true),
+		m_culling(true)
 	{
 	}
 
 	MaterialDescription::MaterialDescription(const String &effect):
-		m_shadow(true)
+		m_shadow(true), m_culling(true)
 	{
 		set_effect(effect);
 	}
 
 	MaterialDescription::MaterialDescription(const String &diffuse_0,
-		const String &effect): m_shadow(true)
+		const String &effect): m_shadow(true), m_culling(true)
 	{
 		set_texture(diffuse_0, stt_diffuse_0);
 		set_effect(effect);
 	}
 
 	MaterialDescription::MaterialDescription(const String &diffuse_0,
-		const String &diffuse_1, const String &effect): m_shadow(true)
+		const String &diffuse_1, const String &effect): m_shadow(true),
+		m_culling(true)
 	{
 		set_texture(diffuse_0, stt_diffuse_0);
 		set_texture(diffuse_1, stt_diffuse_1);
@@ -68,7 +70,7 @@ namespace eternal_lands
 
 	MaterialDescription::MaterialDescription(const String &diffuse_0,
 		const String &normal, const String &specular,
-		const String &effect): m_shadow(true)
+		const String &effect): m_shadow(true), m_culling(true)
 	{
 		set_texture(diffuse_0, stt_diffuse_0);
 		set_texture(normal, stt_normal_0);
@@ -78,7 +80,8 @@ namespace eternal_lands
 
 	MaterialDescription::MaterialDescription(const String &diffuse_0,
 		const String &diffuse_1, const String &normal,
-		const String &specular, const String &effect): m_shadow(true)
+		const String &specular, const String &effect): m_shadow(true),
+		m_culling(true)
 	{
 		set_texture(diffuse_0, stt_diffuse_0);
 		set_texture(diffuse_1, stt_diffuse_1);
@@ -184,7 +187,8 @@ namespace eternal_lands
 		const MaterialDescription &material) const
 	{
 		return (get_effect() == material.get_effect()) &&
-			(get_shadow() == material.get_shadow());
+			(get_shadow() == material.get_shadow()) &&
+			(get_culling() == material.get_culling());
 	}
 
 	bool MaterialDescription::operator==(
@@ -221,127 +225,21 @@ namespace eternal_lands
 			}
 		}
 
-		return get_shadow() < material.get_shadow();
-	}
-
-	bool MaterialDescription::can_merge(const StringVector &diffuses,
-		const StringVector &normals, const StringVector &speculars,
-		const StringVector &glows, const String &effect,
-		glm::ivec4 &index) const
-	{
-		Sint32 found;
-
-		if (effect != get_effect())
+		if (get_shadow() != material.get_shadow())
 		{
-			return false;
+			return get_shadow() < material.get_shadow();
 		}
 
-		if (!find(diffuses, get_texture(stt_diffuse_0), found))
-		{
-			return false;
-		}
-
-		index.x = found;
-
-		if (!find(normals, get_texture(stt_normal_0), found))
-		{
-			return false;
-		}
-
-		index.y = found;
-
-		if (!find(speculars, get_texture(stt_specular_0), found))
-		{
-			return false;
-		}
-
-		index.z = found;
-
-		if (!find(glows, get_texture(stt_glow_0), found))
-		{
-			return false;
-		}
-
-		index.w = found;
-
-		if (get_texture(stt_diffuse_1).get().empty() &&
-			get_texture(stt_diffuse_2).get().empty() &&
-			get_texture(stt_diffuse_3).get().empty() &&
-			get_texture(stt_normal_1).get().empty() &&
-			get_texture(stt_specular_1).get().empty() &&
-			get_texture(stt_glow_1).get().empty() &&
-			get_texture(stt_blend_0).get().empty() &&
-			get_texture(stt_blend_1).get().empty())
-		{
-			return true;
-		}
-
-		return false;
-	}
-
-	bool MaterialDescription::can_merge(const StringVector &diffuses,
-		const StringVector &normals, const StringVector &speculars,
-		const String &effect, glm::ivec4 &index) const
-	{
-		Sint32 found;
-
-		if (effect != get_effect())
-		{
-			return false;
-		}
-
-		if (!find(diffuses, get_texture(stt_diffuse_0), found))
-		{
-			return false;
-		}
-
-		index.x = found;
-
-		if (!find(normals, get_texture(stt_normal_0), found))
-		{
-			return false;
-		}
-
-		index.y = found;
-
-		if (!find(speculars, get_texture(stt_specular_0), found))
-		{
-			return false;
-		}
-
-		index.z = found;
-
-		if (!find(diffuses, get_texture(stt_diffuse_1), found))
-		{
-			return false;
-		}
-
-		index.w = found;
-
-		if (get_texture(stt_diffuse_2).get().empty() &&
-			get_texture(stt_diffuse_3).get().empty() &&
-			get_texture(stt_normal_1).get().empty() &&
-			get_texture(stt_specular_1).get().empty() &&
-			get_texture(stt_glow_0).get().empty() &&
-			get_texture(stt_glow_1).get().empty() &&
-			get_texture(stt_blend_0).get().empty() &&
-			get_texture(stt_blend_1).get().empty())
-		{
-			return true;
-		}
-
-		return false;
+		return get_culling() < material.get_culling();
 	}
 
 	bool MaterialDescription::can_merge(const MaterialDescription &material)
 		const
 	{
-		if (get_effect() != material.get_effect())
-		{
-			return false;
-		}
-
-		if (get_texture(stt_diffuse_2).get().empty() &&
+		return (get_effect() == material.get_effect()) &&
+			(get_shadow() == material.get_shadow()) &&
+			(get_culling() == material.get_culling()) &&
+			get_texture(stt_diffuse_2).get().empty() &&
 			get_texture(stt_diffuse_3).get().empty() &&
 			get_texture(stt_normal_1).get().empty() &&
 			get_texture(stt_specular_1).get().empty() &&
@@ -356,18 +254,15 @@ namespace eternal_lands
 			material.get_texture(stt_glow_0).get().empty() &&
 			material.get_texture(stt_glow_1).get().empty() &&
 			material.get_texture(stt_blend_0).get().empty() &&
-			material.get_texture(stt_blend_1).get().empty())
-		{
-			return true;
-		}
-
-		return false;		
+			material.get_texture(stt_blend_1).get().empty();
 	}
 
 	bool MaterialDescription::contains(const MaterialDescription &material,
 		glm::vec4 &index) const
 	{
-		if (get_effect() != material.get_effect())
+		if ((get_effect() != material.get_effect()) ||
+			(get_shadow() != material.get_shadow()) ||
+			(get_culling() != material.get_culling()))
 		{
 			return false;
 		}

@@ -56,6 +56,7 @@ float near_plane = 0.1f; // don't cut off anything
 float far_plane = 100.0;   // LOD helper. Cull distant objects. Lower value == higher framerates.
 float far_reflection_plane = 100.0;   // LOD helper. Cull distant reflected objects. Lower value == higher framerates.
 int gl_extensions_loaded = 0;
+int el_opengl_version = 0;
 
 struct list {
 	int i;
@@ -593,6 +594,31 @@ void evaluate_extension()
 }
 #endif	//GL_EXTENSION_CHECK
 
+static int get_version()
+{
+	if (GLEW_VERSION_3_3)
+	{
+		return 4;
+	}
+	
+	if (GLEW_VERSION_3_2)
+	{
+		return 3;
+	}
+
+	if (GLEW_VERSION_3_1)
+	{
+		return 2;
+	}
+
+	if (GLEW_VERSION_3_0)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
 void init_gl_extensions()
 {
 	char str[1024];
@@ -991,6 +1017,15 @@ void init_gl_extensions()
 #endif	//GL_EXTENSION_CHECK
 
 	gl_extensions_loaded = 1;
+
+	if (el_opengl_version == 0)
+	{
+		set_opengl_version(get_version());
+	}
+	else
+	{
+		set_opengl_version(min2i(get_version(), el_opengl_version - 1));
+	}
 
 	CHECK_GL_ERRORS();
 }

@@ -41,8 +41,9 @@ defaults = {
 	fog = "default",
 	transparent = "default",
 	light = "diffuse",
-	normal_mapping = "no_normal_mapping",
-	specular_mapping = "no_specular_mapping",
+	normal_mapping = "disabled",
+	normal_depth_mapping = "disabled",
+	specular_mapping = "disabled",
 	shadow_map = "default"
 };
 

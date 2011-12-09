@@ -12,6 +12,7 @@
 #include "vertexformat.hpp"
 #include "abstractmesh.hpp"
 #include "exceptions.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
@@ -46,7 +47,8 @@ namespace eternal_lands
 
 	}
 
-	MeshBuilder::MeshBuilder()
+	MeshBuilder::MeshBuilder(const GlobalVarsSharedPtr &global_vars):
+		m_global_vars(global_vars)
 	{
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
 		VertexDescriptionMap instanced_mesh, mesh_tangent;
@@ -54,7 +56,7 @@ namespace eternal_lands
 		VertexDescriptionMap instanced_mesh_tangent, rect, sprite;
 		VertexElementType position, texture_coordinate, normal;
 
-		if (GLEW_ARB_half_float_vertex)
+		if (get_global_vars()->get_opengl_3_0())
 		{
 			position = vet_half4;
 			texture_coordinate = vet_half2;
@@ -84,7 +86,7 @@ namespace eternal_lands
 		animated_mesh[vst_bone_index] = vet_ubyte4;
 		animated_mesh[vst_bone_weight] = vet_ushort4_normalized;
 
-		if (GLEW_ARB_vertex_type_2_10_10_10_rev)
+		if (get_global_vars()->get_opengl_3_3())
 		{
 			normal = vet_signed_xyz10_w2_normalized;
 		}
@@ -173,12 +175,12 @@ namespace eternal_lands
 
 	AbstractMeshSharedPtr MeshBuilder::get_mesh() const
 	{
-		if (GLEW_VERSION_3_1)
+		if (get_global_vars()->get_opengl_3_1())
 		{
 //			return boost::make_shared<OpenGl31Mesh>();
 		}
 
-		if (GLEW_ARB_vertex_array_object || GLEW_VERSION_3_0)
+		if (get_global_vars()->get_opengl_3_0())
 		{
 			return boost::make_shared<OpenGl3Mesh>();
 		}

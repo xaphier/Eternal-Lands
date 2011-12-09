@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>no_normal_mapping</name>
+ <name>disabled</name>
  <type>normal_mapping</type>
  <shader_source_datas>
   <shader_source_data>

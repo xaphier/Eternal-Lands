@@ -395,12 +395,12 @@ namespace eternal_lands
 				return true;
 			case vet_half2:
 			case vet_half4:
-				return GLEW_ARB_half_float_vertex;
+				return GLEW_VERSION_3_0;
 			case vet_signed_xyz10_w2:
 			case vet_signed_xyz10_w2_normalized:
 			case vet_unsigned_xyz10_w2:
 			case vet_unsigned_xyz10_w2_normalized:
-				return GLEW_ARB_vertex_type_2_10_10_10_rev;
+				return GLEW_VERSION_3_3;
 		}
 		/**
 		 * We should be never here. If so, it's a programming error,

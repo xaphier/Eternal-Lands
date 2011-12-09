@@ -338,9 +338,6 @@ namespace eternal_lands
 
 		str = reader->read_utf8_string(reader->get_size());
 
-		LOG_INFO(UTF8("File '%1%' has size %2% and string: '%3%'"),
-			file_name % reader->get_size() % str);
-
 		return str;
 	}
 

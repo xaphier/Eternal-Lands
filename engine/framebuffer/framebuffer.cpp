@@ -44,7 +44,7 @@ namespace eternal_lands
 
 	FrameBuffer::FrameBuffer(): m_id(0)
 	{
-		assert(GLEW_ARB_framebuffer_object || GLEW_VERSION_3_0);
+		assert(GLEW_VERSION_3_0);
 
 		glGenFramebuffers(1, &m_id);
 	}

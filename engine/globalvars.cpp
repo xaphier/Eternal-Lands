@@ -474,6 +474,7 @@ namespace eternal_lands
 		m_view_distance = 40.0f;
 		m_shadow_map_count = 1;
 		m_shadow_map_size = 2;
+		m_opengl_version = ovt_3_3;
 		m_msaa_shadows = false;
 		m_exponential_shadow_maps = false;
 		m_alpha_to_coverage = false;

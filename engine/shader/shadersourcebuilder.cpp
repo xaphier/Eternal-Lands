@@ -20,6 +20,8 @@
 #include "shadertextureutil.hpp"
 #include "filesystem.hpp"
 #include "glsl_optimizer/glsl/glsl_optimizer.h"
+#include "xmlreader.hpp"
+#include "effect.hpp"
 
 namespace eternal_lands
 {
@@ -497,14 +499,11 @@ namespace eternal_lands
 	{
 		private:
 			glslopt_ctx* m_optimizer;
-			const bool m_opengl3;
 
 		public:
-			inline ShaderSourceOptimizer(const bool opengl3):
-				m_opengl3(opengl3)
+			inline ShaderSourceOptimizer()
 			{
-				m_optimizer = glslopt_initialize(false,
-					get_opengl3());
+				m_optimizer = glslopt_initialize(false, false);
 			}
 
 			inline ~ShaderSourceOptimizer() throw()
@@ -517,11 +516,6 @@ namespace eternal_lands
 				return m_optimizer;
 			}
 
-			inline bool get_opengl3() const
-			{
-				return m_opengl3;
-			}
-
 	};
 
 	enum ShaderSourceBuildOptionTypes
@@ -532,7 +526,8 @@ namespace eternal_lands
 		ssbot_world_uv,
 		ssbot_fragment_uv,
 		ssbot_view_position,
-		ssbot_alpha_to_coverage
+		ssbot_alpha_to_coverage,
+		ssbot_fog
 	};
 
 	class ShaderSourceBuilder::ShaderSourceBuildData
@@ -545,12 +540,14 @@ namespace eternal_lands
 			Uint16 m_vertex_light_count;
 			Uint16 m_fragment_light_count;
 			Uint16 m_light_count;
+			Uint16 m_shadow_map_count;
 
 		public:
 			inline ShaderSourceBuildData(): m_type(ssdt_glsl_120),
 				m_shader_build_type(sbt_color),
 				m_vertex_light_count(0),
-				m_fragment_light_count(0), m_light_count(0)
+				m_fragment_light_count(0), m_light_count(0),
+				m_shadow_map_count(0)
 			{
 			}
 
@@ -560,12 +557,14 @@ namespace eternal_lands
 				const ShaderBuildType shader_build_type,
 				const Uint16 vertex_light_count,
 				const Uint16 fragment_light_count,
-				const Uint16 light_count): m_sources(sources),
-				m_type(type),
+				const Uint16 light_count,
+				const Uint16 shadow_map_count):
+				m_sources(sources), m_type(type),
 				m_shader_build_type(shader_build_type),
 				m_vertex_light_count(vertex_light_count),
 				m_fragment_light_count(fragment_light_count),
-				m_light_count(light_count)
+				m_light_count(light_count),
+				m_shadow_map_count(shadow_map_count)
 			{
 				Sint32 tmp;
 
@@ -659,6 +658,14 @@ namespace eternal_lands
 				return m_fragment_light_count;
 			}
 
+			/**
+			 * Returns the number of shadow maps the shader uses.
+			 */
+			inline Uint16 get_shadow_map_count() const
+			{
+				return m_shadow_map_count;
+			}
+
 	};
 
 	ShaderSourceBuilder::ShaderSourceBuilder(
@@ -669,7 +676,7 @@ namespace eternal_lands
 		assert(m_global_vars.get() != 0);
 		assert(!m_file_system.expired());
 
-		m_optimizer.reset(new ShaderSourceOptimizer(GLEW_VERSION_3_0));
+		m_optimizer.reset(new ShaderSourceOptimizer());
 
 		m_shadow_scale = 0.6f;
 		m_vertex_light_count = 4;
@@ -754,7 +761,7 @@ namespace eternal_lands
 		lua.do_string(get_file_system()->get_file_string(file_name),
 			file_name);
 
-		m_defaults.clear();
+		m_sources.clear();
 
 		// Fetch the table from the Lua context and make sure it exists:
 		lua.get_global("defaults");
@@ -780,7 +787,7 @@ namespace eternal_lands
 
 			if (lua.is_string(-1))
 			{
-				m_defaults[shader_source_type] =
+				m_sources[shader_source_type] =
 					lua.to_string(-1);
 			}
 
@@ -811,8 +818,6 @@ namespace eternal_lands
 
 		if (found == m_shader_sources.end())
 		{
-			LOG_ERROR(UTF8("Can't find '%1%' for source type %2%."),
-				index->second % shader_source_type);
 			return false;
 		}
 
@@ -1088,7 +1093,7 @@ namespace eternal_lands
 
 		if (data.get_shader_build_type() == sbt_color)
 		{
-			if (get_fog())
+			if (data.get_option(ssbot_fog))
 			{
 				build_function(data, array_sizes, locals,
 					sst_fog, main, globals, values);
@@ -1100,7 +1105,7 @@ namespace eternal_lands
 					true, false, main, globals, values);
 			}
 
-			if ((get_shadow_map_count() > 0) &&
+			if ((data.get_shadow_map_count() > 0) &&
 				(data.get_fragment_light_count() > 0))
 			{
 				build_function(data, array_sizes, locals,
@@ -1173,7 +1178,7 @@ namespace eternal_lands
 
 			if (data.get_fragment_light_count() > 0)
 			{
-				if (get_shadow_map_count() > 0)
+				if (data.get_shadow_map_count() > 0)
 				{
 					shadows = build_function(data,
 						array_sizes, locals,
@@ -1218,7 +1223,7 @@ namespace eternal_lands
 				main << UTF8("\t") << gl_FragColor;
 				main << UTF8(".rgb = ");
 
-				if (get_fog())
+				if (data.get_option(ssbot_fog))
 				{
 					add_parameter(cpt_fog, pqt_in, locals,
 						globals);
@@ -1296,6 +1301,22 @@ namespace eternal_lands
 			name);
 	}
 
+	bool ShaderSourceBuilder::check(
+		const ShaderSourceTypeStringPair &source,
+		const ShaderSourceDataType data_type) const
+	{
+		ShaderSourceTypeStringPairShaderSourceMap::const_iterator found;
+
+		found = m_shader_sources.find(source);
+
+		if (found == m_shader_sources.end())
+		{
+			return false;
+		}
+
+		return found->second->get_has_data(data_type);
+	}
+
 	bool ShaderSourceBuilder::get_source_parameter(
 		const ShaderSourceBuildData &data,
 		const CommonParameterType common_parameter) const
@@ -1314,7 +1335,7 @@ namespace eternal_lands
 
 		if ((data.get_shader_build_type() == sbt_color))
 		{
-			if (get_fog())
+			if (data.get_option(ssbot_fog))
 			{
 				result |= check_function(data, name, sst_fog);
 			}
@@ -1324,7 +1345,7 @@ namespace eternal_lands
 				result |= check_function(data, name, sst_light);
 			}
 
-			if ((get_shadow_map_count() > 0) &&
+			if ((data.get_shadow_map_count() > 0) &&
 				(data.get_fragment_light_count() > 0))
 			{
 				result |= check_function(data, name,
@@ -1374,7 +1395,7 @@ namespace eternal_lands
 
 			if (data.get_fragment_light_count() > 0)
 			{
-				if (get_shadow_map_count() > 0)
+				if (data.get_shadow_map_count() > 0)
 				{
 					result |= check_function(data,
 						name, sst_shadow_mapping);
@@ -1393,88 +1414,148 @@ namespace eternal_lands
 		return result;
 	}
 
-	bool ShaderSourceBuilder::get_transparent(
-		const ShaderSourceTypeStringMap &types) const
-	{
-		ShaderSourceTypeStringMap::const_iterator found;
-
-		found = types.find(sst_transparent);
-
-		if (found == types.end())
-		{
-			return false;
-		}
-
-		return m_shader_sources.find(*found) != m_shader_sources.end();
-	}
-
 	void ShaderSourceBuilder::set_shadow_map_type(const String &name)
 	{
-		m_defaults[sst_shadow_mapping] = name;
-		m_defaults[sst_shadow_map] = name;
+		m_sources[sst_shadow_mapping] = name;
+		m_sources[sst_shadow_map] = name;
 	}
 
-	const String &ShaderSourceBuilder::get_quality() const
+	ShaderSourceTypeStringMap ShaderSourceBuilder::build_sources(
+		const ShaderSourceDescription &description) const
 	{
-		return m_global_vars->get_quality();
+		ShaderSourceTypeStringMap::iterator found;
+		ShaderSourceTypeStringMap sources;
+
+		sources = get_sources();
+
+		sources[sst_world_depth_transform] =
+			description.get_world_transform();
+		sources[sst_world_normal_transform] =
+			description.get_world_transform();
+		sources[sst_world_tangent_transform] =
+			description.get_world_transform();
+		sources[sst_uv] = description.get_texture_coodrinates();
+		sources[sst_diffuse_mapping] =
+			description.get_diffuse_mapping();
+
+		if (!description.get_normal_mapping().get().empty())
+		{
+			sources[sst_normal_mapping] =
+				description.get_normal_mapping();
+			sources[sst_normal_depth_mapping] =
+				description.get_normal_mapping();
+		}
+
+		if (!description.get_specular_mapping().get().empty())
+		{
+			sources[sst_specular_mapping] =
+				description.get_specular_mapping();
+		}
+
+		if (!description.get_light().get().empty())
+		{
+			sources[sst_light] = description.get_light();
+		}
+
+		if (!description.get_receives_shadows())
+		{
+			found = sources.find(sst_shadow_uv);
+
+			if (found != sources.end())
+			{
+				sources.erase(found);
+			}
+
+			found = sources.find(sst_shadow_mapping);
+
+			if (found != sources.end())
+			{
+				sources.erase(found);
+			}
+		}
+
+		if (!description.get_transparent())
+		{
+			found = sources.find(sst_transparent);
+
+			if (found != sources.end())
+			{
+				sources.erase(found);
+			}
+		}
+
+		return sources;
 	}
 
-	Uint16 ShaderSourceBuilder::get_shadow_map_count() const
-	{
-		return m_global_vars->get_shadow_map_count();
-	}
-
-	bool ShaderSourceBuilder::get_fog() const
-	{
-		return m_global_vars->get_fog();
-	}
-
-	bool ShaderSourceBuilder::get_optmize_shader_source() const
-	{
-		return m_global_vars->get_optmize_shader_source();
-	}
-
-	void ShaderSourceBuilder::build(
+	void ShaderSourceBuilder::build(const Uint16 light_count,
+		const bool merged, const ShaderBuildType shader_build_type,
 		const ShaderSourceDescription &description, StringType &vertex,
 		StringType &fragment, StringVariantMap &values) const
 	{
+		ShaderSourceBuildData data;
 		ShaderSourceParameterVector attributes, varyings;
 		ShaderSourceParameterVector vertex_globals;
 		ShaderSourceParameterVector fragment_globals;
 		ParameterSizeTypeUint16Map array_sizes;
+		ShaderSourceTypeStringMap sources;
 		StringSet vertex_extensions, fragment_extensions;
 		StringStream vertex_main, fragment_main;
 		StringStream vertex_source, fragment_source;
 		Uint32 i, count;
 		Uint16 version;
-		ShaderSourceBuildData data;
+		ShaderSourceDataType data_type;
 
-		data = ShaderSourceBuildData(description.get_sources(),
-			ssdt_glsl_120, description.get_shader_build_type(),
-			get_vertex_light_count(), get_fragment_light_count(),
-			std::min(get_light_count(),
-				description.get_light_count()));
+		sources = build_sources(description);
 
 		vertex = UTF8("");
 		fragment = UTF8("");
 		values.clear();
 
-		if (m_optimizer->get_opengl3())
-		{
-			version = 130;
-		}
-		else
+		if (get_global_vars()->get_optmize_shader_source())
 		{
 			version = 120;
 		}
+		else
+		{
+			version = get_global_vars()->get_glsl_version();
+		}
+
+		if (version >= 150)
+		{
+			if (merged)
+			{
+				data_type = ssdt_glsl_150_merged;
+			}
+			else
+			{
+				data_type = ssdt_glsl_150;
+			}
+		}
+		else
+		{
+			if (merged)
+			{
+				data_type = ssdt_glsl_120_merged;
+			}
+			else
+			{
+				data_type = ssdt_glsl_120;
+			}
+		}
+
+		data = ShaderSourceBuildData(sources, data_type,
+			shader_build_type, get_vertex_light_count(),
+			get_fragment_light_count(),
+			std::min(get_light_count(), light_count),
+			get_global_vars()->get_shadow_map_count());
 
 		array_sizes[pst_light_count] = data.get_light_count();
 		array_sizes[pst_bone_count] = get_bone_count();
 		array_sizes[pst_shadow_map_count] =
-			get_shadow_map_count();
+			data.get_shadow_map_count();
 
 		data.set_option(ssbot_transparent,
-			get_transparent(description.get_sources()));
+			description.get_transparent());
 		data.set_option(ssbot_view_direction, get_source_parameter(data,
 			cpt_world_view_direction));
 		data.set_option(ssbot_fragment_uv, get_source_parameter(data,
@@ -1566,7 +1647,7 @@ namespace eternal_lands
 		LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex_source.str());
 		LOG_DEBUG(UTF8("Fragment Shader:\n%1%"), fragment_source.str());
 
-		if (get_optmize_shader_source())
+		if (get_global_vars()->get_optmize_shader_source())
 		{
 			try
 			{
@@ -1612,6 +1693,50 @@ namespace eternal_lands
 				static_cast<ShaderTextureType>(i))] =
 					static_cast<Sint64>(i);
 		}	
+	}
+
+	bool ShaderSourceBuilder::get_can_merge(const String &effect_name) const
+	{
+		XmlReaderSharedPtr xml_reader;
+		ShaderSourceDescription description;
+		ShaderSourceTypeStringMap sources;
+		Uint16 version;
+		ShaderSourceDataType data_type;
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(
+			Effect::get_file_name(effect_name)));
+
+		description.load_xml(xml_reader->get_root_node());
+
+		sources = build_sources(description);
+
+		if (get_global_vars()->get_optmize_shader_source())
+		{
+			version = 120;
+		}
+		else
+		{
+			version = get_global_vars()->get_glsl_version();
+		}
+
+		if (version >= 150)
+		{
+			data_type = ssdt_glsl_150_merged;
+		}
+		else
+		{
+			data_type = ssdt_glsl_120_merged;
+		}
+
+		BOOST_FOREACH(const ShaderSourceTypeStringPair source, sources)
+		{
+			if (!check(source, data_type))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

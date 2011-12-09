@@ -736,7 +736,7 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 		str << UTF8("3dobjects/tile");
 		str << static_cast<Uint16>(tile) << UTF8(".dds");
 		materials.push_back(el::MaterialDescription(
-			el::String(str.str()), el::String(UTF8("mesh.solid"))));
+			el::String(str.str()), el::String(UTF8("mesh_solid"))));
 	}
 	else
 	{
@@ -745,7 +745,7 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 			materials.push_back(el::MaterialDescription(
 				el::String(UTF8("textures/lava.dds")),
 				el::String(UTF8("textures/noise.dds")),
-				el::String(UTF8("lava.solid"))));
+				el::String(UTF8("lava"))));
 		}
 		else
 		{
@@ -753,11 +753,9 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 				el::String(UTF8("3dobjects/tile0.dds")),
 				el::String(UTF8("textures/water_normal.dds")),
 				el::String(UTF8("")),
-				el::String(UTF8("mesh.solid"))));
+				el::String(UTF8("mesh_solid"))));
 		}
 	}
-
-	materials[0].set_shadow(false);
 
 	instances_builder->add(el::ObjectData(glm::mat4x3(matrix),
 		glm::vec4(0.0f), el::String(UTF8("plane_4")), 0.0f,
@@ -1415,6 +1413,32 @@ extern "C" void set_optmize_shader_source(const int value)
 		scene->get_scene_resources().get_effect_cache().reload();
 	}
 }
+
+extern "C" void set_opengl_version(const int value)
+{
+	global_vars->set_opengl_version(
+		static_cast<el::OpenglVerionType>(value));
+}
+
+extern "C" int get_opengl_3_0()
+{
+	return global_vars->get_opengl_3_0();
+}	
+
+extern "C" int get_opengl_3_1()
+{
+	return global_vars->get_opengl_3_1();
+}	
+
+extern "C" int get_opengl_3_2()
+{
+	return global_vars->get_opengl_3_2();
+}	
+
+extern "C" int get_opengl_3_3()
+{
+	return global_vars->get_opengl_3_3();
+}	
 
 extern "C" void set_fog_data(const float* color, const float density)
 {

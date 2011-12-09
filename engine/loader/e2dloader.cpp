@@ -355,8 +355,8 @@ namespace eternal_lands
 		materials.clear();
 		materials.push_back(MaterialDescription(
 			String(str + texture.get()),
-			String(UTF8("mesh.transparent"))));
-		materials[0].set_shadow(false);
+			String(UTF8("mesh_transparent"))));
+		materials[0].set_culling(false);
 	}
 
 	bool E2dLoader::check_format(const Uint8Array8 &id)

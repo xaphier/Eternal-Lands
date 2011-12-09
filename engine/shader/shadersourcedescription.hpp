@@ -35,44 +35,114 @@ namespace eternal_lands
 	class ShaderSourceDescription
 	{
 		private:
-			ShaderSourceTypeStringMap m_sources;
-			ShaderBuildType m_shader_build_type;
-			Uint16 m_light_count;
+			String m_world_transform;
+			String m_texture_coodrinates;
+			String m_diffuse_mapping;
+			String m_normal_mapping;
+			String m_specular_mapping;
+			String m_light;
+			bool m_receives_shadows;
+			bool m_transparent;
 
 		public:
-			ShaderSourceDescription(
-				const ShaderSourceTypeStringMap &sources,
-				const ShaderBuildType shader_build_type,
-				const Uint16 light_count);
+			/**
+			 * Default constructor.
+			 */
+			ShaderSourceDescription();
 
 			/**
 			 * Default destructor.
 			 */
 			~ShaderSourceDescription() throw();
 
-			/**
-			 * Returns the sources of the different shader parts.
-			 */
-			inline const ShaderSourceTypeStringMap &get_sources()
-				const
+			void load_xml(const xmlNodePtr node);
+
+			void save_xml(const XmlWriterSharedPtr &writer) const;
+
+			inline const String &get_world_transform() const
 			{
-				return m_sources;
+				return m_world_transform;
 			}
 
-			/**
-			 * Returns the number of lights the shader uses.
-			 */
-			inline Uint16 get_light_count() const
+			inline const String &get_texture_coodrinates() const
 			{
-				return m_light_count;
+				return m_texture_coodrinates;
 			}
 
-			/**
-			 * Returns the shader build type.
-			 */
-			inline ShaderBuildType get_shader_build_type() const
+			inline const String &get_diffuse_mapping() const
 			{
-				return m_shader_build_type;
+				return m_diffuse_mapping;
+			}
+
+			inline const String &get_normal_mapping() const
+			{
+				return m_normal_mapping;
+			}
+
+			inline const String &get_specular_mapping() const
+			{
+				return m_specular_mapping;
+			}
+
+			inline const String &get_light() const
+			{
+				return m_light;
+			}
+
+			inline bool get_receives_shadows() const
+			{
+				return m_receives_shadows;
+			}
+
+			inline bool get_transparent() const
+			{
+				return m_transparent;
+			}
+
+			inline void set_light(const String &light)
+			{
+				m_light = light;
+			}
+
+			inline void set_world_transform(
+				const String &world_transform)
+			{
+				m_world_transform = world_transform;
+			}
+
+			inline void set_texture_coodrinates(
+				const String &texture_coodrinates)
+			{
+				m_texture_coodrinates = texture_coodrinates;
+			}
+
+			inline void set_diffuse_mapping(
+				const String &diffuse_mapping)
+			{
+				m_diffuse_mapping = diffuse_mapping;
+			}
+
+			inline void set_normal_mapping(
+				const String &normal_mapping)
+			{
+				m_normal_mapping = normal_mapping;
+			}
+
+			inline void set_specular_mapping(
+				const String &specular_mapping)
+			{
+				m_specular_mapping = specular_mapping;
+			}
+
+			inline void set_receives_shadows(
+				const bool receives_shadows)
+			{
+				m_receives_shadows = receives_shadows;
+			}
+
+			inline void set_transparent(const bool transparent)
+			{
+				m_transparent = transparent;
 			}
 
 	};

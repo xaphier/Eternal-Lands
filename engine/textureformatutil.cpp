@@ -522,14 +522,12 @@ namespace eternal_lands
 		switch (texture_format)
 		{
 			case tft_rgb10_a2_ui:
-				return GLEW_VERSION_3_3 ||
-					GLEW_ARB_texture_rgb10_a2ui;
+				return GLEW_VERSION_3_3;
 			case tft_rgb16f:
 			case tft_rgba16f:
 			case tft_rgb32f:
 			case tft_rgba32f:
-				return GLEW_VERSION_3_0 ||
-					GLEW_ARB_texture_float;
+				return GLEW_VERSION_3_0;
 			case tft_rgb_dxt1:
 			case tft_rgba_dxt1:
 			case tft_rgba_dxt3:
@@ -539,17 +537,13 @@ namespace eternal_lands
 			case tft_signed_r_rgtc1:
 			case tft_rg_rgtc2:
 			case tft_signed_rg_rgtc2:
-				return GLEW_VERSION_3_0 ||
-					GLEW_EXT_texture_compression_rgtc ||
-					GLEW_ARB_texture_compression_rgtc;
+				return GLEW_VERSION_3_0;
 			case tft_depth24_stencil8:
 				return GLEW_VERSION_3_0 ||
-					GLEW_EXT_packed_depth_stencil ||
-					GLEW_ARB_framebuffer_object;
+					GLEW_EXT_packed_depth_stencil;
 			case tft_depth32f:
 			case tft_depth32f_stencil8:
-				return GLEW_VERSION_3_0 ||
-					GLEW_ARB_depth_buffer_float;
+				return GLEW_VERSION_3_0;
 			case tft_srgb8:
 			case tft_srgb8_a8:
 				return GLEW_VERSION_2_1 ||
@@ -574,13 +568,11 @@ namespace eternal_lands
 				case it_signed:
 					if (format.get_count() > 2)
 					{
-						return GLEW_VERSION_3_0 ||
-							GLEW_ARB_texture_rg;
+						return GLEW_VERSION_3_0;
 					}
 					else
 					{
-						return GLEW_VERSION_3_0 ||
-							GLEW_EXT_texture_integer;
+						return GLEW_VERSION_3_0;
 					}
 				case it_unsigned_normalized:
 					if (format.get_count() > 2)
@@ -589,12 +581,10 @@ namespace eternal_lands
 					}
 					else
 					{
-						return GLEW_VERSION_3_0 ||
-							GLEW_ARB_texture_rg;
+						return GLEW_VERSION_3_0;
 					}
 				case it_signed_normalized:
-					return GLEW_VERSION_3_1 ||
-						GLEW_EXT_texture_snorm;
+					return GLEW_VERSION_3_1;
 			}
 		}
 

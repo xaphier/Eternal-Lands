@@ -23,22 +23,34 @@
 namespace eternal_lands
 {
 
-	class FrameBufferBuilder
+	class FrameBufferBuilder: public boost::noncopyable
 	{
+		private:
+			const GlobalVarsSharedPtr m_global_vars;
+
 		public:
-			static AbstractFrameBufferSharedPtr build(
+			FrameBufferBuilder(
+				const GlobalVarsSharedPtr &global_vars);
+			~FrameBufferBuilder() throw();
+			AbstractFrameBufferSharedPtr build(
 				const String &name, const Uint32 width,
 				const Uint32 height, const Uint16 mipmaps,
 				const TextureFormatType format);
-			static AbstractFrameBufferSharedPtr build_filter(
+			AbstractFrameBufferSharedPtr build_filter(
 				const String &name, const Uint32 width,
 				const Uint32 height,
 				const TextureFormatType format);
-			static AbstractFrameBufferSharedPtr build(
+			AbstractFrameBufferSharedPtr build(
 				const String &name, const Uint32 width,
 				const Uint32 height, const Uint32 layers,
 				const Uint16 mipmaps, const Uint16 samples,
 				const TextureFormatType format);
+
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
+			{
+				return m_global_vars;
+			}
 
 	};
 

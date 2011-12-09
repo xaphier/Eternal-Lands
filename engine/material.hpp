@@ -31,6 +31,7 @@ namespace eternal_lands
 			EffectSharedPtr m_effect;
 			TextureSharedPtrArray12 m_textures;
 			bool m_shadow;
+			bool m_culling;
 
 			inline EffectCacheSharedPtr get_effect_cache()
 				const
@@ -92,9 +93,19 @@ namespace eternal_lands
 				m_shadow = shadow;
 			}
 
+			inline void set_culling(const bool culling)
+			{
+				m_culling = culling;
+			}
+
 			inline bool get_shadow() const
 			{
 				return m_shadow;
+			}
+
+			inline bool get_culling() const
+			{
+				return m_culling;
 			}
 
 	};
