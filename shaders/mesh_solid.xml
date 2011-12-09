@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source_description>
+ <world_transform>default</world_transform>
+ <texture_coodrinates>default</texture_coodrinates>
+ <diffuse_mapping>default</diffuse_mapping>
+ <normal_mapping></normal_mapping>
+ <specular_mapping></specular_mapping>
+ <light></light>
+ <receives_shadows>true</receives_shadows>
+ <transparent>false</transparent>
+</shader_source_description>

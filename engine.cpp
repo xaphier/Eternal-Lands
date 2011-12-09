@@ -860,7 +860,7 @@ extern "C" void add_light_engine(const float x_pos, const float y_pos,
 	scale = std::max(std::max(r, g), std::max(b, 1.0f));
 	color /= scale;
 
-	scene->add_light(position, color, 0.1f, radius * std::sqrt(scale), id);
+	scene->add_light(position, color, 0.1f, radius * scale, id);
 
 	CATCH_BLOCK
 }

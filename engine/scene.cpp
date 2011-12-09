@@ -390,7 +390,7 @@ namespace eternal_lands
 			{
 				program->set_parameter(apt_ambient,
 					m_ambient + m_main_light_ambient +
-					color);
+					color + 0.2f);
 			}
 			else
 			{
