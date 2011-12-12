@@ -493,6 +493,26 @@ namespace eternal_lands
 			return String(str);
 		}
 
+		ShaderVersionType get_shader_version_type(const Uint16 version)
+		{
+			if (version >= 150)
+			{
+				return svt_150;
+			}
+
+			if (version >= 140)
+			{
+				return svt_140;
+			}
+
+			if (version >= 130)
+			{
+				return svt_130;
+			}
+
+			return svt_120;
+		}
+
 	}
 
 	class ShaderSourceBuilder::ShaderSourceOptimizer
@@ -534,7 +554,7 @@ namespace eternal_lands
 	{
 		private:
 			ShaderSourceTypeStringMap m_sources;
-			ShaderSourceDataType m_type;
+			ShaderVersionType m_version;
 			ShaderBuildType m_shader_build_type;
 			BitSet16 m_options;
 			Uint16 m_vertex_light_count;
@@ -543,7 +563,7 @@ namespace eternal_lands
 			Uint16 m_shadow_map_count;
 
 		public:
-			inline ShaderSourceBuildData(): m_type(ssdt_glsl_120),
+			inline ShaderSourceBuildData():	m_version(svt_120),
 				m_shader_build_type(sbt_color),
 				m_vertex_light_count(0),
 				m_fragment_light_count(0), m_light_count(0),
@@ -553,13 +573,13 @@ namespace eternal_lands
 
 			inline ShaderSourceBuildData(
 				const ShaderSourceTypeStringMap &sources,
-				const ShaderSourceDataType type,
+				const ShaderVersionType version,
 				const ShaderBuildType shader_build_type,
 				const Uint16 vertex_light_count,
 				const Uint16 fragment_light_count,
 				const Uint16 light_count,
 				const Uint16 shadow_map_count):
-				m_sources(sources), m_type(type),
+				m_sources(sources), m_version(version),
 				m_shader_build_type(shader_build_type),
 				m_vertex_light_count(vertex_light_count),
 				m_fragment_light_count(fragment_light_count),
@@ -611,9 +631,9 @@ namespace eternal_lands
 				return m_shader_build_type;
 			}
 
-			inline ShaderSourceDataType get_type() const
+			inline ShaderVersionType get_version() const
 			{
-				return m_type;
+				return m_version;
 			}
 
 			/**
@@ -821,7 +841,7 @@ namespace eternal_lands
 			return false;
 		}
 
-		found->second->build_source(data.get_type(), locals, stream,
+		found->second->build_source(data.get_version(), locals, stream,
 			globals);
 
 		return true;
@@ -1297,13 +1317,13 @@ namespace eternal_lands
 			return false;
 		}
 
-		return found->second->check_source_parameter(data.get_type(),
+		return found->second->check_source_parameter(data.get_version(),
 			name);
 	}
 
 	bool ShaderSourceBuilder::check(
 		const ShaderSourceTypeStringPair &source,
-		const ShaderSourceDataType data_type) const
+		const ShaderVersionType version) const
 	{
 		ShaderSourceTypeStringPairShaderSourceMap::const_iterator found;
 
@@ -1314,7 +1334,7 @@ namespace eternal_lands
 			return false;
 		}
 
-		return found->second->get_has_data(data_type);
+		return found->second->get_has_data(version);
 	}
 
 	bool ShaderSourceBuilder::get_source_parameter(
@@ -1488,7 +1508,7 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceBuilder::build(const Uint16 light_count,
-		const bool merged, const ShaderBuildType shader_build_type,
+		const ShaderBuildType shader_build_type,
 		const ShaderSourceDescription &description, StringType &vertex,
 		StringType &fragment, StringVariantMap &values) const
 	{
@@ -1503,7 +1523,7 @@ namespace eternal_lands
 		StringStream vertex_source, fragment_source;
 		Uint32 i, count;
 		Uint16 version;
-		ShaderSourceDataType data_type;
+		ShaderVersionType version_type;
 
 		sources = build_sources(description);
 
@@ -1520,30 +1540,9 @@ namespace eternal_lands
 			version = get_global_vars()->get_glsl_version();
 		}
 
-		if (version >= 150)
-		{
-			if (merged)
-			{
-				data_type = ssdt_glsl_150_merged;
-			}
-			else
-			{
-				data_type = ssdt_glsl_150;
-			}
-		}
-		else
-		{
-			if (merged)
-			{
-				data_type = ssdt_glsl_120_merged;
-			}
-			else
-			{
-				data_type = ssdt_glsl_120;
-			}
-		}
+		version_type = get_shader_version_type(version);
 
-		data = ShaderSourceBuildData(sources, data_type,
+		data = ShaderSourceBuildData(sources, version_type,
 			shader_build_type, get_vertex_light_count(),
 			get_fragment_light_count(),
 			std::min(get_light_count(), light_count),
@@ -1678,12 +1677,18 @@ namespace eternal_lands
 
 				throw;
 			}
+
+			LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex);
+			LOG_DEBUG(UTF8("Fragment Shader:\n%1%"), fragment);
 		}
 		else
 		{
 			vertex = vertex_source.str();
 			fragment = fragment_source.str();
 		}
+
+		LOG_INFO(UTF8("Vertex Shader:\n%1%"), vertex);
+		LOG_INFO(UTF8("Fragment Shader:\n%1%"), fragment);
 
 		count = ShaderTextureUtil::get_shader_texture_count();
 
@@ -1693,50 +1698,6 @@ namespace eternal_lands
 				static_cast<ShaderTextureType>(i))] =
 					static_cast<Sint64>(i);
 		}	
-	}
-
-	bool ShaderSourceBuilder::get_can_merge(const String &effect_name) const
-	{
-		XmlReaderSharedPtr xml_reader;
-		ShaderSourceDescription description;
-		ShaderSourceTypeStringMap sources;
-		Uint16 version;
-		ShaderSourceDataType data_type;
-
-		xml_reader = XmlReaderSharedPtr(new XmlReader(
-			Effect::get_file_name(effect_name)));
-
-		description.load_xml(xml_reader->get_root_node());
-
-		sources = build_sources(description);
-
-		if (get_global_vars()->get_optmize_shader_source())
-		{
-			version = 120;
-		}
-		else
-		{
-			version = get_global_vars()->get_glsl_version();
-		}
-
-		if (version >= 150)
-		{
-			data_type = ssdt_glsl_150_merged;
-		}
-		else
-		{
-			data_type = ssdt_glsl_120_merged;
-		}
-
-		BOOST_FOREACH(const ShaderSourceTypeStringPair source, sources)
-		{
-			if (!check(source, data_type))
-			{
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 }

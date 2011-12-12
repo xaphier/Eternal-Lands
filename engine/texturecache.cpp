@@ -12,6 +12,8 @@
 #include "codec/codecmanager.hpp"
 #include "logging.hpp"
 #include "filesystem.hpp"
+#include "xmlreader.hpp"
+#include "xmlutil.hpp"
 
 namespace eternal_lands
 {
@@ -146,12 +148,23 @@ namespace eternal_lands
 
 	}
 
+	class TextureCache::TextureArrayItem
+	{
+		public:
+			TextureSharedPtr m_texture;
+			Uint32 m_layer;
+
+	};
+
 	TextureCache::TextureCache(const CodecManagerWeakPtr &codec_manager,
-		const FileSystemWeakPtr &file_system):
-		m_codec_manager(codec_manager), m_file_system(file_system)
+		const FileSystemWeakPtr &file_system,
+		const GlobalVarsSharedPtr &global_vars):
+		m_codec_manager(codec_manager), m_file_system(file_system),
+		m_global_vars(global_vars)
 	{
 		assert(!m_codec_manager.expired());
 		assert(!m_file_system.expired());
+		assert(m_global_vars.get() != 0);
 	}
 
 	TextureCache::~TextureCache() throw()
@@ -191,6 +204,43 @@ namespace eternal_lands
 		texture = boost::make_shared<Texture>(name);
 		texture->set_format(image->get_texture_format());
 		texture->set_image(image);
+
+		return texture;
+	}
+
+	TextureSharedPtr TextureCache::load_texture_array(String name,
+		const Uint32 width, const Uint32 height, const Uint16 mipmaps,
+		const TextureFormatType format, const StringVector &file_names)
+		const
+	{
+		ImageSharedPtrVector images;
+		TextureSharedPtr texture;
+		ReaderSharedPtr reader;
+		ImageCompressionTypeSet compressions;
+
+		if (GLEW_EXT_texture_compression_s3tc)
+		{
+			compressions.insert(ict_s3tc);
+		}
+
+		if (GLEW_EXT_texture_compression_rgtc)
+		{
+			compressions.insert(ict_rgtc);
+		}
+
+		BOOST_FOREACH(const String &file_name, file_names)
+		{
+			reader = get_file_system()->get_file(file_name);
+
+			images.push_back(get_codec_manager()->load_image(
+				reader, compressions));
+		}
+
+		texture = boost::make_shared<Texture>(name);
+		texture->set_format(format);
+		texture->set_width(width);
+		texture->set_height(height);
+		texture->set_images(mipmaps, images);
 
 		return texture;
 	}
@@ -242,6 +292,156 @@ namespace eternal_lands
 		{
 			return found->second;
 		}
+	}
+
+	const TextureSharedPtr &TextureCache::get_texture_array(
+		const String &name, Uint32 &layer)
+	{
+		TextureArrayMap::const_iterator found;
+
+		found = m_texture_arrays.find(name);
+
+		if (found != m_texture_arrays.end())
+		{
+			layer = found->second.m_layer;
+			return found->second.m_texture;
+		}
+
+		layer = 0;
+
+		return get_texture(name);
+	}
+
+	bool TextureCache::get_texture_array_name(const String &name,
+		String &array_name, Uint32 &layer) const
+	{
+		TextureArrayMap::const_iterator found;
+
+		found = m_texture_arrays.find(name);
+
+		if (found != m_texture_arrays.end())
+		{
+			layer = found->second.m_layer;
+			array_name = found->second.m_texture->get_name();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	Uint32 TextureCache::get_texture_array_layer(const String &name) const
+	{
+		TextureArrayMap::const_iterator found;
+
+		found = m_texture_arrays.find(name);
+
+		if (found != m_texture_arrays.end())
+		{
+			return found->second.m_layer;
+		}
+
+		return 0;
+	}
+
+	void TextureCache::load_texture_array_xml(const xmlNodePtr node)
+	{
+		String name;
+		StringVector file_names;
+		xmlNodePtr it;
+		Uint32 width, height;
+		Uint16 mipmaps;
+		TextureFormatType format;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("texture_array")) != 0)
+		{
+			return;
+		}
+
+		if (!XmlUtil::has_children(node, true))
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		width = 0;
+		height = 0;
+		mipmaps = 0;
+		format = tft_rgba8;
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("width")) == 0)
+			{
+				width = XmlUtil::get_uint32_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("height")) == 0)
+			{
+				height = XmlUtil::get_uint32_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("mipmaps")) == 0)
+			{
+				mipmaps = XmlUtil::get_uint16_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("format")) == 0)
+			{
+				format = TextureFormatUtil::get_texture_format(
+					XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("file_name"))
+				== 0)
+			{
+				file_names.push_back(
+					XmlUtil::get_string_value(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
+
+		load_texture_array(name, width, height, mipmaps, format,
+			file_names);
+	}
+
+	void TextureCache::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("texture_arrays")) != 0)
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("texture_array"))
+				== 0)
+			{
+				load_texture_array_xml(it);
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
+	void TextureCache::load_xml(const String &file_name)
+	{
+		XmlReaderSharedPtr reader;
+
+		reader = XmlReaderSharedPtr(new XmlReader(file_name));
+
+		load_xml(reader->get_root_node());
 	}
 
 }

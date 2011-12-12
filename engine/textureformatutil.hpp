@@ -284,7 +284,8 @@ namespace eternal_lands
 				const TextureFormatType texture_format);
 			static IntegerType get_integer_type(
 				const TextureFormatType texture_format);
-			static TextureFormatType get_type(const String &str);
+			static TextureFormatType get_texture_format(
+				const String &str);
 			static PackFormatType get_pack_format_type(
 				const TextureFormatType texture_format);
 			static bool get_has_format_type(

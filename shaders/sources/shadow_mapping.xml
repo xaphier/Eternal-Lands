@@ -35,9 +35,9 @@
 }
 </source>
    <glsl_120>true</glsl_120>
+   <glsl_130>false</glsl_130>
+   <glsl_140>false</glsl_140>
    <glsl_150>false</glsl_150>
-   <material_default>true</material_default>
-   <material_merged>true</material_merged>
   </shader_source_data>
   <shader_source_data>
    <parameters>
@@ -70,9 +70,9 @@
 	shadow = textureProj(shadow_sampler, shadow_uv[0]).r;
 }</source>
    <glsl_120>false</glsl_120>
+   <glsl_130>true</glsl_130>
+   <glsl_140>true</glsl_140>
    <glsl_150>true</glsl_150>
-   <material_default>true</material_default>
-   <material_merged>true</material_merged>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

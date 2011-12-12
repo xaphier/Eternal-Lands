@@ -15,10 +15,6 @@
 namespace eternal_lands
 {
 
-	namespace
-	{
-	}
-
 	class MeshCache::MeshCacheItem
 	{
 		public:

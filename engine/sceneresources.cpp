@@ -31,7 +31,7 @@ namespace eternal_lands
 			get_shader_source_builder_ptr(), file_system);
 		m_codec_manager = boost::make_shared<CodecManager>();
 		m_texture_cache = boost::make_shared<TextureCache>(
-			get_codec_manager_ptr(), file_system);
+			get_codec_manager_ptr(), file_system, global_vars);
 		m_mesh_data_cache = boost::make_shared<MeshDataCache>(
 			file_system);
 		m_mesh_cache = boost::make_shared<MeshCache>(

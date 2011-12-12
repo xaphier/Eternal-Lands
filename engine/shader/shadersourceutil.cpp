@@ -16,119 +16,29 @@ namespace eternal_lands
 	namespace
 	{
 
-		typedef std::map<CommonParameterType, ParameterQualifierType>
-			CommonParameters;
-
-		class ShaderSourceTypeData
+		const String shader_source_type_datas[] =
 		{
-			private:
-				const String m_name;
-				const CommonParameters m_parameters;
-
-			public:
-				inline ShaderSourceTypeData(
-					const String &name,
-					const CommonParameters parameters):
-						m_name(name),
-						m_parameters(parameters)
-				{
-				}
-
-				inline ~ShaderSourceTypeData() throw()
-				{
-				}
-
-				inline const String &get_name() const
-				{
-					return m_name;
-				}
-
-				inline CommonParameters get_parameters() const
-				{
-					return m_parameters;
-				}
-
-		};
-
-		const ShaderSourceTypeData shader_source_type_datas[] =
-		{
-			ShaderSourceTypeData(String(UTF8(
-				"world_depth_transform")),
-					boost::assign::map_list_of
-						(cpt_world_position, pqt_out)),
-			ShaderSourceTypeData(String(UTF8(
-				"world_normal_transform")),
-					boost::assign::map_list_of
-						(cpt_world_position, pqt_out)
-						(cpt_world_normal, pqt_out)),
-			ShaderSourceTypeData(String(UTF8(
-				"world_tangent_transform")),
-					boost::assign::map_list_of
-						(cpt_world_position, pqt_out)
-						(cpt_world_normal, pqt_out)
-						(cpt_world_tangent, pqt_out)),
-			ShaderSourceTypeData(String(UTF8(
-				"view_direction")),
-					boost::assign::map_list_of
-						(cpt_world_position, pqt_in)
-						(cpt_world_view_direction,
-							pqt_out)),
-			ShaderSourceTypeData(String(UTF8("view_transform")),
-				boost::assign::map_list_of
-					(cpt_world_position, pqt_in)
-					(cpt_view_position, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("fog")),
-				boost::assign::map_list_of
-					(cpt_view_position, pqt_in)
-					(cpt_fog, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("light")),
-				boost::assign::map_list_of
-					(cpt_light_color, pqt_in)
-					(cpt_light_position, pqt_in)
-					(cpt_lighting_normal, pqt_in)
-					(cpt_world_position, pqt_in)
-					(cpt_diffuse_color, pqt_out)
-					(cpt_specular_color, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("uv")),
-				boost::assign::map_list_of
-					(cpt_world_uv, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("shadow_uv")),
-				boost::assign::map_list_of
-					(cpt_shadow_uv, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("shadow_mapping")),
-				boost::assign::map_list_of
-					(cpt_shadow_uv, pqt_in)
-					(cpt_shadow, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("normal_mapping")),
-				boost::assign::map_list_of
-					(cpt_world_uv, pqt_in)
-					(cpt_world_normal, pqt_in)
-					(cpt_fragment_uv, pqt_out)
-					(cpt_fragment_normal, pqt_out)),
-			ShaderSourceTypeData(String(UTF8(
-				"normal_depth_mapping")),
-					boost::assign::map_list_of
-						(cpt_world_uv, pqt_in)
-						(cpt_fragment_uv, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("diffuse_mapping")),
-				boost::assign::map_list_of
-					(cpt_fragment_uv, pqt_in)
-					(cpt_diffuse, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("specular_mapping")),
-				boost::assign::map_list_of
-					(cpt_fragment_uv, pqt_in)
-					(cpt_specular, pqt_out)),
-			ShaderSourceTypeData(String(UTF8("transparent")),
-				boost::assign::map_list_of
-					(cpt_diffuse, pqt_in)),
-			ShaderSourceTypeData(String(UTF8("shadow_map")),
-				boost::assign::map_list_of
-					(cpt_shadow_map_data, pqt_out))
+			String(UTF8("world_depth_transform")),
+			String(UTF8("world_normal_transform")),
+			String(UTF8("world_tangent_transform")),
+			String(UTF8("view_direction")),
+			String(UTF8("view_transform")),
+			String(UTF8("fog")),
+			String(UTF8("light")),
+			String(UTF8("uv")),
+			String(UTF8("shadow_uv")),
+			String(UTF8("shadow_mapping")),
+			String(UTF8("normal_mapping")),
+			String(UTF8("normal_depth_mapping")),
+			String(UTF8("diffuse_mapping")),
+			String(UTF8("specular_mapping")),
+			String(UTF8("transparent")),
+			String(UTF8("shadow_map")),
+			String(UTF8("blend_index"))
 		};
 
 		const Uint32 shader_source_type_datas_count =
-			sizeof(shader_source_type_datas) /
-			sizeof(ShaderSourceTypeData);
+			sizeof(shader_source_type_datas) / sizeof(String);
 
 	}
 
@@ -146,7 +56,7 @@ namespace eternal_lands
 					"ShaderSourceType")));
 		}
 
-		return shader_source_type_datas[source].get_name();
+		return shader_source_type_datas[source];
 	}
 
 	ShaderSourceType ShaderSourceUtil::get_shader_source(const String &str)

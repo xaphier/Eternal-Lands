@@ -51,9 +51,9 @@
 }
 </source>
    <glsl_120>true</glsl_120>
+   <glsl_130>false</glsl_130>
+   <glsl_140>false</glsl_140>
    <glsl_150>false</glsl_150>
-   <material_default>true</material_default>
-   <material_merged>false</material_merged>
   </shader_source_data>
   <shader_source_data>
    <parameters>
@@ -68,7 +68,7 @@
     <parameter>
      <name>diffuse_sampler_0</name>
      <source></source>
-     <type>sampler2D</type>
+     <type>sampler2DArray</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -76,7 +76,7 @@
     <parameter>
      <name>diffuse_sampler_1</name>
      <source></source>
-     <type>sampler2D</type>
+     <type>sampler2DArray</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -99,13 +99,13 @@
     </parameter>
    </parameters>
    <source>{
-	diffuse = mix(texture(diffuse_sampler_0, fragment_uv), texture2D(diffuse_sampler_1, fragment_uv), vertex_color.a);
+	diffuse = mix(texture(diffuse_sampler_0, vec3(fragment_uv, layer.x)), texture(diffuse_sampler_1, vec3(fragment_uv, layer.x)), vertex_color.a);
 }
 </source>
    <glsl_120>false</glsl_120>
+   <glsl_130>true</glsl_130>
+   <glsl_140>true</glsl_140>
    <glsl_150>true</glsl_150>
-   <material_default>true</material_default>
-   <material_merged>false</material_merged>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

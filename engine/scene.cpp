@@ -380,25 +380,6 @@ namespace eternal_lands
 	void Scene::set_lights(const GlslProgramSharedPtr &program,
 		const glm::ivec3 &dynamic_light_count, const glm::vec4 &color)
 	{
-		if (m_dungeon)
-		{
-			program->set_parameter(apt_ambient, m_ambient + color);
-		}
-		else
-		{
-			if (m_night)
-			{
-				program->set_parameter(apt_ambient,
-					m_ambient + m_main_light_ambient +
-					color + 0.2f);
-			}
-			else
-			{
-				program->set_parameter(apt_ambient,
-					m_ambient + m_main_light_ambient);
-			}
-		}
-
 		program->set_parameter(apt_dynamic_light_count,
 			dynamic_light_count);
 		program->set_parameter(apt_light_positions,
@@ -604,13 +585,24 @@ namespace eternal_lands
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 
+			if (m_dungeon)
+			{
+				program->set_parameter(apt_ambient, m_ambient);
+			}
+			else
+			{
+				program->set_parameter(apt_ambient,
+					m_main_light_ambient);
+			}
+
 			program->set_last_used(m_program_vars_id);
 		}
 
 		return result;
 	}
 
-	void Scene::draw_object(const ObjectSharedPtr &object)
+	void Scene::draw_object(const ObjectSharedPtr &object,
+		const bool shadow_receiver)
 	{
 		glm::ivec3 dynamic_light_count;
 		Uint32 light_count, materials, i;
@@ -628,7 +620,8 @@ namespace eternal_lands
 		{
 			if (switch_program(object->get_materials(
 				)[i].get_effect()->get_default_program(
-					light_count, dynamic_light_count)))
+					light_count, shadow_receiver,
+					dynamic_light_count)))
 			{
 				object_data_set = false;
 			}
@@ -1036,7 +1029,7 @@ namespace eternal_lands
 				}
 			}
 
-			draw_object(object.get_object());
+			draw_object(object.get_object(), true);
 		}
 
 		DEBUG_CHECK_GL_ERROR();

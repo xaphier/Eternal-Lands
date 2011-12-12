@@ -6,6 +6,6 @@
  <normal_mapping></normal_mapping>
  <specular_mapping></specular_mapping>
  <light></light>
- <receives_shadows>false</receives_shadows>
+ <receives_shadows>true</receives_shadows>
  <transparent>false</transparent>
 </shader_source_description>

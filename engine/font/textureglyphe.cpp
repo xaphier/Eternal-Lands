@@ -10,7 +10,13 @@
 namespace eternal_lands
 {
 
-	TextureGlyphe::TextureGlyphe()
+	TextureGlyphe::TextureGlyphe(const Utf32Char charcode,
+		const Uint16 width, const Uint16 height,
+		const glm::uvec2 &offset, const glm::vec2 &advance,
+		const glm::uvec4 &uv, const Utf32CharFloatMap &kerning):
+		m_charcode(charcode), m_width(width), m_height(height),
+		m_offset(offset), m_advance(advance), m_uv(uv),
+		m_kerning(kerning)
 	{
 	}
 

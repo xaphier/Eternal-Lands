@@ -384,6 +384,13 @@ void change_el_opengl_version(int* var, int value)
 	LOG_TO_CONSOLE(c_green2, video_restart_str);
 }
 
+void change_el_shadow_filter(int* var, int value)
+{
+	*var = value;
+
+	set_filter(*var);
+}
+
 void options_loaded(void)
 {
 	size_t i;
@@ -1880,7 +1887,6 @@ static void init_ELC_vars(void)
 
 
 	// CAMERA TAB
-	add_var(OPT_FLOAT,"far_plane", "far_plane", &far_plane, change_projection_float, 100.0, "Maximum Viewing Distance", "Adjusts how far you can see.", CAMERA, 40.0, 200.0, 1.0);
 	add_var(OPT_FLOAT,"far_reflection_plane", "far_reflection_plane", &far_reflection_plane, change_projection_float, 100.0, "Maximum Reflection Distance", "Adjusts how far the reflections are displayed.", CAMERA, 0.0, 200.0, 1.0);
 	add_var(OPT_FLOAT,"max_zoom_level","maxzoomlevel",&max_zoom_level,change_float,max_zoom_level,"Maximum Camera Zoom Out","Sets the maxiumum value that the camera can zoom out",CAMERA,4.0,8.0,0.5);
 #ifndef OSX
@@ -1931,7 +1937,6 @@ static void init_ELC_vars(void)
 	// TROUBLESHOOT TAB
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &el_optmize_shader_source, change_el_optmize_shader_source, el_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
 	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &el_opengl_version, change_el_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", 0);
-
 
 	// DEBUGTAB TAB
 #ifdef DEBUG

@@ -28,18 +28,14 @@ namespace eternal_lands
 		private:
 			String m_effect;
 			StringArray12 m_textures;
+			glm::vec4 m_layer_index;
 			bool m_shadow;
 			bool m_culling;
 
 			bool compare_textures(
-				const MaterialDescription &material,
-				const bool use_low_index,
-				const bool use_low_source_index) const;
+				const MaterialDescription &material) const;
 			bool compare_non_textures(
 				const MaterialDescription &material) const;
-			bool empty(const bool use_low_index) const;
-			static ShaderTextureType get_shader_texture(
-				const Uint16 index, const bool use_low_index);
 
 		public:
 			MaterialDescription();
@@ -61,8 +57,25 @@ namespace eternal_lands
 				const;
 			bool operator<(const MaterialDescription &material)
 				const;
-			bool contains(const MaterialDescription &material,
-				glm::vec4 &index) const;
+
+			/**
+			 * @brief 
+			 * 
+			 * Returns true if this material description can be
+			 * merged with the given material using texture arrays.
+			 * @param diffuses vector of textures the texture array
+			 * bound to stt_diffuse_0 contains
+			 * @param normals vector of textures the texture array
+			 * bound to stt_diffuse_0 contains
+			 * @param speculars vector of textures the texture
+			 * array bound to stt_specular_0 contains
+			 * @param glows vector of textures the texture array
+			 * bound to stt_glow_0 contains
+			 * @param effect the effect
+			 * @param index the index of the textures,
+			 * ivec4(stt_diffuse_0, stt_normal_0, stt_specular_0,
+			 * stt_glow_0)
+			 */
 			bool can_merge(const MaterialDescription &material)
 				const;
 

@@ -48,7 +48,8 @@ namespace eternal_lands
 		cpt_fragment_uv,
 		cpt_fog,
 		cpt_shadow_uv,
-		cpt_shadow_map_data
+		cpt_shadow_map_data,
+		cpt_layer
 	};
 	/**
 	 * @}

@@ -83,18 +83,14 @@ namespace eternal_lands
 
 		count = builders.size();
 
-#ifdef _OPENMP
-		#pragma omp parallel for
-#endif	/*  _OPENMP */
 		for (i = 0; i < count; i++)
 		{
 			builders[i].build_instance();
-#ifdef _OPENMP
-			#pragma omp critical
-#endif	/*  _OPENMP */
-			{
-				builders[i].set_instance(instances);
-			}
+		}
+
+		for (i = 0; i < count; i++)
+		{
+			builders[i].set_instance(instances);
 		}
 	}
 

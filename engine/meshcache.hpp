@@ -35,8 +35,8 @@ namespace eternal_lands
 			typedef std::map<String, MeshCacheItem> MeshCacheMap;
 
 			MeshCacheMap m_mesh_cache;
-			MeshBuilderWeakPtr m_mesh_builder;
-			MeshDataCacheWeakPtr m_mesh_data_cache;
+			const MeshBuilderWeakPtr m_mesh_builder;
+			const MeshDataCacheWeakPtr m_mesh_data_cache;
 
 			inline MeshDataCacheSharedPtr get_mesh_data_cache()
 				const

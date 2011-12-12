@@ -13,13 +13,35 @@
 #include "../engine/shader/parameterqualifierutil.hpp"
 #include "../engine/shader/parametersizeutil.hpp"
 #include "../engine/shader/shadersourceutil.hpp"
+#include "../engine/shader/shadertextureutil.hpp"
 #include "../engine/exceptions.hpp"
 
 namespace eternal_lands
 {
 
-	void EnumUtils::append_source_types(GtkComboBoxText* combo_box_text)
+	namespace
 	{
+
+		void get_data(const CommonParameterType common_parameter,
+			const ParameterQualifierType parameter_qualifier,
+			std::string &name, std::string &type,
+			std::string &qualifier, std::string &size, gint &scale)
+		{
+			name = CommonParameterUtil::get_str(common_parameter);
+			type = ParameterUtil::get_str(
+				CommonParameterUtil::get_type(
+					common_parameter));
+			qualifier = ParameterQualifierUtil::get_str(
+				parameter_qualifier);
+			size = ParameterSizeUtil::get_str(pst_one);
+			scale = 1;
+		}
+
+	}
+
+	void EnumUtils::append_source_types(GtkListStore *list_store)
+	{
+		GtkTreeIter it;
 		std::string name;
 		Uint32 i, count;
 
@@ -27,16 +49,19 @@ namespace eternal_lands
 
 		for (i = 0; i < count; i++)
 		{
-			name = string_to_utf8(ShaderSourceUtil::get_str(
-				static_cast<ShaderSourceType>(i)));
+			name = ShaderSourceUtil::get_str(
+				static_cast<ShaderSourceType>(i));
 
-			gtk_combo_box_text_append_text(combo_box_text,
-				name.c_str());
+			gtk_list_store_insert_with_values(list_store, &it,
+				-1,
+				0, name.c_str(),
+				-1);
 		}
 	}
 
-	void EnumUtils::append_parameter_names(GtkComboBoxText* combo_box_text)
+	void EnumUtils::append_parameter_names(GtkListStore *list_store)
 	{
+		GtkTreeIter it;
 		std::string name;
 		Uint32 i, count;
 
@@ -44,45 +69,80 @@ namespace eternal_lands
 
 		for (i = 0; i < count; i++)
 		{
-			name = string_to_utf8(AutoParameterUtil::get_str(
-				static_cast<AutoParameterType>(i)));
+			name = AutoParameterUtil::get_str(
+				static_cast<AutoParameterType>(i));
 
-			gtk_combo_box_text_append_text(combo_box_text,
-				name.c_str());
+			gtk_list_store_insert_with_values(list_store, &it,
+				-1,
+				0, name.c_str(),
+				-1);
 		}
 
 		count = CommonParameterUtil::get_common_parameter_count();
 
 		for (i = 0; i < count; i++)
 		{
-			name = string_to_utf8(CommonParameterUtil::get_str(
-				static_cast<CommonParameterType>(i)));
+			name = CommonParameterUtil::get_str(
+				static_cast<CommonParameterType>(i));
 
-			gtk_combo_box_text_append_text(combo_box_text,
-				name.c_str());
+			gtk_list_store_insert_with_values(list_store, &it,
+				-1,
+				0, name.c_str(),
+				-1);
 		}
-	}
 
-	void EnumUtils::append_parameter_types(GtkComboBoxText* combo_box_text)
-	{
-		std::string name;
-		Uint32 i, count;
-
-		count = ParameterUtil::get_parameter_count();
+		count = ShaderTextureUtil::get_shader_texture_count();
 
 		for (i = 0; i < count; i++)
 		{
-			name = string_to_utf8(ParameterUtil::get_str(
-				static_cast<ParameterType>(i)));
+			name = ShaderTextureUtil::get_str(
+				static_cast<ShaderTextureType>(i));
 
-			gtk_combo_box_text_append_text(combo_box_text,
-				name.c_str());
+			gtk_list_store_insert_with_values(list_store, &it,
+				-1,
+				0, name.c_str(),
+				-1);
+		}
+	}
+
+	void EnumUtils::append_parameter_types(const gboolean sampler_types,
+		GtkListStore* list_store)
+	{
+		GtkTreeIter it;
+		std::string name;
+		Uint32 i, count, index;
+		bool sampler;
+
+		count = ParameterUtil::get_parameter_count();
+
+		sampler = sampler_types == TRUE;
+		index = 0;
+
+		for (i = 0; i < count; i++)
+		{
+			if (sampler == ParameterUtil::get_sampler(
+				static_cast<ParameterType>(i)))
+			{
+				name = ParameterUtil::get_str(
+					static_cast<ParameterType>(i));
+
+				gtk_list_store_insert_with_values(list_store,
+					&it,
+					-1,
+					0, name.c_str(),
+					1, i,
+					2, index,
+					-1);
+
+				index++;
+			}
 		}
 	}
 
 	void EnumUtils::append_parameter_qualifier_types(
-		GtkComboBoxText* combo_box_text)
+		GtkListStore* list_store)
 	{
+		GtkTreeIter it;
 		std::string name;
 		Uint32 i, count;
 
@@ -90,17 +150,19 @@ namespace eternal_lands
 
 		for (i = 0; i < count; i++)
 		{
-			name = string_to_utf8(ParameterQualifierUtil::get_str(
-				static_cast<ParameterQualifierType>(i)));
+			name = ParameterQualifierUtil::get_str(
+				static_cast<ParameterQualifierType>(i));
 
-			gtk_combo_box_text_append_text(combo_box_text,
-				name.c_str());
+			gtk_list_store_insert_with_values(list_store, &it,
+				-1,
+				0, name.c_str(),
+				-1);
 		}
 	}
 
-	void EnumUtils::append_parameter_size_types(
-		GtkComboBoxText* combo_box_text)
+	void EnumUtils::append_parameter_size_types(GtkListStore* list_store)
 	{
+		GtkTreeIter it;
 		std::string name;
 		Uint32 i, count;
 
@@ -108,23 +170,27 @@ namespace eternal_lands
 
 		for (i = 0; i < count; i++)
 		{
-			name = string_to_utf8(ParameterSizeUtil::get_str(
-				static_cast<ParameterSizeType>(i)));
+			name = ParameterSizeUtil::get_str(
+				static_cast<ParameterSizeType>(i));
 
-			gtk_combo_box_text_append_text(combo_box_text,
-				name.c_str());
+			gtk_list_store_insert_with_values(list_store, &it,
+				-1,
+				0, name.c_str(),
+				-1);
 		}
 	}
 
 	bool EnumUtils::get_parameter_data(const gchar* str, gint &type,
 		gint &qualifier, gint &size, gint &scale,
-		gboolean &qualifier_selection)
+		gboolean &type_selection, gboolean &qualifier_selection,
+		gboolean &sampler_types)
 	{
 		String name;
 		AutoParameterType auto_parameter;
 		CommonParameterType common_parameter;
+		ShaderTextureType shader_texture;
 
-		name = String(utf8_to_string(str));
+		name = String(str);
 
 		if (AutoParameterUtil::get_auto_parameter(name,
 			auto_parameter))
@@ -135,6 +201,8 @@ namespace eternal_lands
 			scale = AutoParameterUtil::get_scale(auto_parameter);
 
 			qualifier_selection = FALSE;
+			type_selection = FALSE;
+			sampler_types = FALSE;
 
 			return true;
 		}
@@ -148,22 +216,65 @@ namespace eternal_lands
 			scale = CommonParameterUtil::get_scale(common_parameter);
 
 			qualifier_selection = TRUE;
+			type_selection = FALSE;
+			sampler_types = FALSE;
 
 			return true;
 		}
 
+		if (ShaderTextureUtil::get_shader_texture(name,
+			shader_texture))
+		{
+			type = pt_sampler2D;
+			qualifier = pqt_in;
+			size = pst_one;
+			scale = 1;
+
+			qualifier_selection = FALSE;
+			type_selection = TRUE;
+			sampler_types = TRUE;
+
+			return true;
+		}
+/*
+		if (CommonParameterUtil::get_common_parameter(name,
+			common_parameter))
+		{
+			type = CommonParameterUtil::get_type(common_parameter);
+			qualifier = pqt_in;
+			size = CommonParameterUtil::get_size(common_parameter);
+			scale = CommonParameterUtil::get_scale(
+				common_parameter);
+
+			qualifier_selection = FALSE;
+			type_selection = TRUE;
+			sampler_types = FALSE;
+
+			return true;
+		}
+*/
 		return false;
 	}
 
-	gint EnumUtils::get_parameter_type(const gchar* str)
+	gint EnumUtils::get_parameter_type(const gchar* str,
+		gboolean &sampler_type)
 	{
 		String name;
 		ParameterType parameter;
 
-		name = String(utf8_to_string(str));
+		name = String(str);
 
 		if (ParameterUtil::get_parameter(name, parameter))
 		{
+			if (ParameterUtil::get_sampler(parameter))
+			{
+				sampler_type = TRUE;
+			}
+			else
+			{
+				sampler_type = FALSE;
+			}
+
 			return parameter;
 		}
 
@@ -175,7 +286,7 @@ namespace eternal_lands
 		String name;
 		ParameterQualifierType parameter_qualifier;
 
-		name = String(utf8_to_string(str));
+		name = String(str);
 
 		if (ParameterQualifierUtil::get_parameter_qualifier(name,
 			parameter_qualifier))
@@ -191,7 +302,7 @@ namespace eternal_lands
 		String name;
 		ParameterSizeType parameter_size;
 
-		name = String(utf8_to_string(str));
+		name = String(str);
 
 		if (ParameterSizeUtil::get_parameter_size(name, parameter_size))
 		{
@@ -199,6 +310,280 @@ namespace eternal_lands
 		}
 
 		return -1;
+	}
+
+	bool EnumUtils::get_default_parameter_data(const gint source_type,
+		const guint index, std::string &name, std::string &type,
+		std::string &qualifier, std::string &size, gint &scale)
+	{
+		switch (source_type)
+		{
+			case sst_world_depth_transform:
+				if (index == 0)
+				{
+					get_data(cpt_world_position, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_world_normal_transform:
+				if (index == 0)
+				{
+					get_data(cpt_world_position, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_world_normal, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_world_tangent_transform:
+				if (index == 0)
+				{
+					get_data(cpt_world_position, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_world_normal, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(cpt_world_tangent, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_view_direction:
+				if (index == 0)
+				{
+					get_data(cpt_world_position, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_world_view_direction,
+						pqt_out, name, type, qualifier,
+						size, scale);
+					return true;
+				}
+				return false;
+			case sst_view_transform:
+				if (index == 0)
+				{
+					get_data(cpt_world_position, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_view_position, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_fog:
+				if (index == 0)
+				{
+					get_data(cpt_view_position, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_fog, pqt_out, name, type,
+						qualifier, size, scale);
+					return true;
+				}
+				return false;
+			case sst_light:
+				if (index == 0)
+				{
+					get_data(cpt_light_color, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_light_position, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(cpt_lighting_normal, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 3)
+				{
+					get_data(cpt_world_position, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 4)
+				{
+					get_data(cpt_diffuse_color, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 5)
+				{
+					get_data(cpt_specular_color, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_uv:
+				if (index == 0)
+				{
+					get_data(cpt_world_uv, pqt_out, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				return false;
+			case sst_shadow_uv:
+				if (index == 0)
+				{
+					get_data(cpt_shadow_uv, pqt_out, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				return false;
+			case sst_shadow_mapping:
+				if (index == 0)
+				{
+					get_data(cpt_shadow_uv, pqt_in, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_shadow, pqt_out, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				return false;
+			case sst_normal_mapping:
+				if (index == 0)
+				{
+					get_data(cpt_world_uv, pqt_in, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_world_normal, pqt_in, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(cpt_fragment_uv, pqt_out, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 3)
+				{
+					get_data(cpt_fragment_normal, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_normal_depth_mapping:
+				if (index == 0)
+				{
+					get_data(cpt_world_uv, pqt_in, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_fragment_uv, pqt_out, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				return false;
+			case sst_diffuse_mapping:
+				if (index == 0)
+				{
+					get_data(cpt_fragment_uv, pqt_in, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_diffuse, pqt_out, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				return false;
+			case sst_specular_mapping:
+				if (index == 0)
+				{
+					get_data(cpt_fragment_uv, pqt_in, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_specular, pqt_out, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				return false;
+			case sst_transparent:
+				if (index == 0)
+				{
+					get_data(cpt_diffuse, pqt_in, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				return false;
+			case sst_shadow_map:
+				if (index == 0)
+				{
+					get_data(cpt_shadow_map_data, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_blend_index:
+				if (index == 0)
+				{
+					get_data(cpt_layer, pqt_out, name, type,
+						qualifier, size, scale);
+					return true;
+				}
+				return false;
+			default:
+				return false;
+		}
 	}
 
 }

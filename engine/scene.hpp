@@ -78,7 +78,8 @@ namespace eternal_lands
 			void set_lights(const GlslProgramSharedPtr &program,
 				const glm::ivec3 &dynamic_light_count,
 				const glm::vec4 &color);
-			void draw_object(const ObjectSharedPtr &object);
+			void draw_object(const ObjectSharedPtr &object,
+				const bool shadow_receiver);
 			void draw_object_depth(const ObjectSharedPtr &object);
 			void draw_object_shadow(const ObjectSharedPtr &object);
 			void pick_object(const ObjectSharedPtr &object,

@@ -648,7 +648,8 @@ namespace eternal_lands
 			texture_format].get_integer_type();
 	}
 
-	TextureFormatType TextureFormatUtil::get_type(const String &str)
+	TextureFormatType TextureFormatUtil::get_texture_format(
+		const String &str)
 	{
 		Uint32 i;
 		TextureFormatType texture_format_type;
@@ -683,7 +684,7 @@ namespace eternal_lands
 
 		str >> string;
 
-		value = TextureFormatUtil::get_type(String(string));
+		value = TextureFormatUtil::get_texture_format(String(string));
 
 		return str;
 	}

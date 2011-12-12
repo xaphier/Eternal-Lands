@@ -15,15 +15,11 @@
 namespace eternal_lands
 {
 
-	ShaderSourceData::ShaderSourceData(): m_glsl_120(false),
-		m_glsl_150(false), m_material_default(false),
-		m_material_merged(false)
+	ShaderSourceData::ShaderSourceData()
 	{
 	}
 
-	ShaderSourceData::ShaderSourceData(const xmlNodePtr node):
-		m_glsl_120(false), m_glsl_150(false), m_material_default(false),
-		m_material_merged(false)
+	ShaderSourceData::ShaderSourceData(const xmlNodePtr node)
 	{
 		load_xml(node);
 	}
@@ -116,23 +112,19 @@ namespace eternal_lands
 				set_glsl_120(XmlUtil::get_bool_value(it));
 			}
 
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_130")) == 0)
+			{
+				set_glsl_130(XmlUtil::get_bool_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_140")) == 0)
+			{
+				set_glsl_140(XmlUtil::get_bool_value(it));
+			}
+
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_150")) == 0)
 			{
 				set_glsl_150(XmlUtil::get_bool_value(it));
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("material_default")) == 0)
-			{
-				set_material_default(
-					XmlUtil::get_bool_value(it));
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("material_merged")) == 0)
-			{
-				set_material_merged(
-					XmlUtil::get_bool_value(it));
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -156,11 +148,9 @@ namespace eternal_lands
 
 		writer->write_element(UTF8("source"), get_source());
 		writer->write_bool_element(UTF8("glsl_120"), get_glsl_120());
+		writer->write_bool_element(UTF8("glsl_130"), get_glsl_130());
+		writer->write_bool_element(UTF8("glsl_140"), get_glsl_140());
 		writer->write_bool_element(UTF8("glsl_150"), get_glsl_150());
-		writer->write_bool_element(UTF8("material_default"),
-			get_material_default());
-		writer->write_bool_element(UTF8("material_merged"),
-			get_material_merged());
 
 		writer->end_element();
 	}

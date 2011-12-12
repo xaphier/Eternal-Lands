@@ -77,7 +77,7 @@ namespace eternal_lands
 		morph_mesh[vst_morph_texture_coordinate_0] = texture_coordinate;
 		instanced_mesh[vst_position] = position;
 		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
-		instanced_mesh[vst_blend_index] = vet_ubyte4_normalized;
+		instanced_mesh[vst_layer_index] = vet_ubyte4;
 		sprite[vst_position] = position;
 		sprite[vst_texture_coordinate_0] = vet_ushort2_normalized;
 

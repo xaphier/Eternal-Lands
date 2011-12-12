@@ -38,7 +38,7 @@ namespace eternal_lands
 		vst_extra_bone_index = 7,
 		vst_texture_coordinate_0 = 8,
 		vst_texture_coordinate_1 = 9,
-		vst_blend_index = 10,
+		vst_layer_index = 10,
 		vst_morph_position = 11,
 		vst_morph_normal = 12,
 		vst_morph_tangent = 13,

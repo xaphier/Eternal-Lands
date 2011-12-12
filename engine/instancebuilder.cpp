@@ -24,7 +24,7 @@ namespace eternal_lands
 			const glm::mat4x3 &world_matrix,
 			const glm::vec4 &color, const Uint32 source_index,
 			const Uint32 dest_index, glm::vec3 &min, glm::vec3 &max,
-			const float material_index)
+			const glm::vec4 &layer_index)
 		{
 			glm::vec3 normal, tangent, position;
 
@@ -44,7 +44,7 @@ namespace eternal_lands
 				vst_normal, source_index));
 			normal = glm::mat3(world_matrix) * normal;
 			mesh_data_tool.set_vertex_data(vst_normal, dest_index,
-				glm::vec4(normal, material_index));
+				glm::vec4(normal, 0.0f));
 
 			tangent = glm::vec3(source->get_vertex_data(
 				vst_tangent, source_index));
@@ -52,24 +52,24 @@ namespace eternal_lands
 			mesh_data_tool.set_vertex_data(vst_tangent, dest_index,
 				glm::vec4(tangent, 1.0f));
 
-			mesh_data_tool.set_vertex_data(vst_color, dest_index,
-				color);
-
 			mesh_data_tool.set_vertex_data(vst_texture_coordinate_0,
 				dest_index, source->get_vertex_data(
 					vst_texture_coordinate_0,
 					source_index));
 
-			mesh_data_tool.set_vertex_data(vst_blend_index,
+			mesh_data_tool.set_vertex_data(vst_layer_index,
+				dest_index, layer_index);
+
+			mesh_data_tool.set_vertex_data(vst_color,
 				dest_index, source->get_vertex_data(
-					vst_blend_index, source_index));
+					vst_color, source_index));
 		}
 
 		void build_sub_mesh_unpacked(MeshDataTool &mesh_data_tool,
 			const InstancingData &instancing_data,
 			const Uint32 sub_mesh_index, Uint32 &vertex_offset,
 			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max,
-			const glm::vec3 &center, const float material_index)
+			const glm::vec3 &center, const glm::vec4 &layer_index)
 		{
 			std::map<Uint32, Uint32> index_map;
 			glm::mat4x3 world_matrix;
@@ -121,7 +121,7 @@ namespace eternal_lands
 						world_matrix,
 						instancing_data.get_color(),
 						index, vertex_offset, min, max,
-						material_index);
+						layer_index);
 
 					vertex_offset++;
 				}
@@ -137,7 +137,8 @@ namespace eternal_lands
 			const InstancingData &instancing_data,
 			const Uint32 sub_mesh_index, Uint32 &vertex_offset,
 			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max,
-			const glm::vec3 &center, const float material_index)
+			const glm::vec3 &center,
+			const glm::vec4 &layer_index)
 		{
 			Uint32Vector indices;
 			glm::mat4x3 world_matrix;
@@ -193,10 +194,29 @@ namespace eternal_lands
 					world_matrix,
 					instancing_data.get_color(),
 					i + min_vertex, vertex_offset, min, max,
-					material_index);
+					layer_index);
 
 				vertex_offset++;
 			}
+		}
+
+		bool get_material_index(const MaterialDescription &material,
+			const MaterialDescription &sub_material,
+			glm::vec4 &layer_index)
+		{
+			if (material == sub_material)
+			{
+				layer_index = glm::vec4(0);
+
+				return true;
+			}
+/*
+			if (material.contains(sub_material, layer_index))
+			{
+				return true;
+			}
+*/
+			return false;
 		}
 
 		bool build_sub_mesh(const glm::vec3 &center,
@@ -206,21 +226,13 @@ namespace eternal_lands
 			glm::vec3 &min, glm::vec3 &max, Uint32 &vertex_offset,
 			Uint32 &index_offset)
 		{
-			float material_index;
-			bool high_index;
+			glm::vec4 layer_index;
 
-			high_index = false;
-
-			if (material != instancing_data.get_materials()[index])
+			if (!get_material_index(material,
+				instancing_data.get_materials()[index],
+				layer_index))
 			{
 				return false;
-			}
-
-			material_index = 0.0f;
-
-			if (high_index)
-			{
-				material_index = 1.0f;
 			}
 
 			if (instancing_data.get_mesh_data_tool(
@@ -229,14 +241,14 @@ namespace eternal_lands
 				build_sub_mesh_packed(*mesh_data_tool,
 					instancing_data, index, vertex_offset,
 					index_offset, min, max, center,
-					material_index);
+					layer_index);
 			}
 			else
 			{
 				build_sub_mesh_unpacked(*mesh_data_tool,
 					instancing_data, index, vertex_offset,
 					index_offset, min, max, center,
-					material_index);
+					layer_index);
 			}
 
 			return true;
@@ -331,7 +343,8 @@ namespace eternal_lands
 		SubMesh sub_mesh;
 		glm::mat4x3 world_matrix;
 		glm::vec3 center;
-		std::set<MaterialDescription> material_set;
+		std::set<MaterialDescription> material_set, merged_materials;
+		std::set<MaterialDescription>::iterator it, end, begin, material;
 		MeshDataToolSharedPtr mesh_data_tool;
 		MaterialDescriptionVector materials;
 		SubObjectVector instanced_objects;
@@ -339,6 +352,7 @@ namespace eternal_lands
 		Uint32 index_count, vertex_count, sub_mesh_count;
 		Uint32 vertex_offset, index_offset, sub_mesh_index;
 		SelectionType selection;
+		bool texture_arrays;
 
 		center = get_center();
 
@@ -365,15 +379,47 @@ namespace eternal_lands
 				material_set.insert(material);
 			}
 		}
+#if	1
+		merged_materials = material_set;
+#else
+		while (material_set.begin() != material_set.end())
+		{
+			end = material_set.end();
+			material = material_set.begin();
+			merged = false;
 
-		sub_mesh_count = material_set.size();
+			begin = material;
+
+			begin++;
+
+			for (it = begin; it != end; ++it)
+			{
+				if (material->can_merge(*it))
+				{
+					merged_materials.insert(
+						material->merge(*it));
+					material_set.erase(it);
+					merged = true;
+					break;
+				}
+			}
+
+			if (!merged)
+			{
+				merged_materials.insert(*material_set.begin());
+			}
+
+			material_set.erase(material_set.begin());
+		}
+#endif
+		sub_mesh_count = merged_materials.size();
 
 		semantics.insert(vst_position);
 		semantics.insert(vst_normal);
 		semantics.insert(vst_color);
 		semantics.insert(vst_tangent);
 		semantics.insert(vst_texture_coordinate_0);
-		semantics.insert(vst_blend_index);
+		semantics.insert(vst_layer_index);
 
 		mesh_data_tool = boost::make_shared<MeshDataTool>(vertex_count,
 			index_count, sub_mesh_count, semantics,
@@ -384,7 +430,8 @@ namespace eternal_lands
 		vertex_offset = 0;
 		sub_mesh_index = 0;
 
-		BOOST_FOREACH(const MaterialDescription &material, material_set)
+		BOOST_FOREACH(const MaterialDescription &material,
+			merged_materials)
 		{
 			build_instance_sub_mesh(center, mesh_data_tool,
 				material, sub_mesh_index, vertex_offset,

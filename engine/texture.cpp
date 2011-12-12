@@ -985,8 +985,8 @@ namespace eternal_lands
 		CHECK_GL_ERROR();
 	}
 
-	void Texture::set_images(const Uint16 mipmaps, const Uint32 width,
-		const Uint32 height, const ImageSharedPtrVector &images)
+	void Texture::set_images(const Uint16 mipmaps,
+		const ImageSharedPtrVector &images)
 	{
 		Uint32 layer, i, w, h, mip, level, used_mipmaps;
 
@@ -1004,13 +1004,19 @@ namespace eternal_lands
 
 		BOOST_FOREACH(const ImageSharedPtr &image, images)
 		{
-			assert(width != image->get_width());
-			assert(height != image->get_height());
-			assert(level <= (image->get_mipmap_count() + 1));
+			if (get_width() != image->get_width())
+			{
+			}
+
+			if (get_height() != image->get_height())
+			{
+			}
+
+			if (level <= (image->get_mipmap_count() + 1))
+			{
+			}
 		}
 
-		set_width(width);
-		set_height(height);
 		set_depth(images.size());
 
 		CHECK_GL_ERROR();

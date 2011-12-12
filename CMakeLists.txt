@@ -98,6 +98,7 @@ include_directories(${OGG_INCLUDE_DIR})
 include_directories(${VORBIS_INCLUDE_DIR})
 include_directories(${VORBISFILE_INCLUDE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
+include_directories(${FREETYPE_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/engine)
 
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)

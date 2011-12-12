@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "textureformatutil.hpp"
 
 /**
  * @file
@@ -25,17 +26,29 @@ namespace eternal_lands
 	class TextureCache: public boost::noncopyable
 	{
 		private:
+			class TextureArrayItem;
 			typedef std::map<String, TextureSharedPtr>
 				TextureCacheMap;
+			typedef std::map<String, TextureArrayItem>
+				TextureArrayMap;
 
 			TextureCacheMap m_texture_cache;
-			CodecManagerWeakPtr m_codec_manager;
-			FileSystemWeakPtr m_file_system;
+			TextureArrayMap m_texture_arrays;
+			const CodecManagerWeakPtr m_codec_manager;
+			const FileSystemWeakPtr m_file_system;
+			const GlobalVarsSharedPtr m_global_vars;
 			TextureSharedPtr m_error_texture;
 
 			TextureSharedPtr load_texture(const String &name);
 			TextureSharedPtr do_load_texture(const String &name)
 				const;
+			void load_texture_array_xml(const xmlNodePtr node);
+			void load_xml(const xmlNodePtr node);
+			TextureSharedPtr load_texture_array(String name,
+				const Uint32 width, const Uint32 height,
+				const Uint16 mipmaps,
+				const TextureFormatType format,
+				const StringVector &file_names) const;
 
 			inline CodecManagerSharedPtr get_codec_manager() const
 			{
@@ -59,12 +72,25 @@ namespace eternal_lands
 				return result;
 			}
 
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
+			{
+				return m_global_vars;
+			}
+
 		public:
 			TextureCache(const CodecManagerWeakPtr &codec_manager,
-				const FileSystemWeakPtr &file_system);
+				const FileSystemWeakPtr &file_system,
+				const GlobalVarsSharedPtr &global_vars);
 			~TextureCache() throw();
-
+			void load_xml(const String &file_name);
 			const TextureSharedPtr &get_texture(const String &name);
+			const TextureSharedPtr &get_texture_array(
+				const String &name, Uint32 &layer);
+			bool get_texture_array_name(const String &name,
+				String &array_name, Uint32 &layer) const;
+			Uint32 get_texture_array_layer(const String &name)
+				const;
 			const TextureSharedPtr &get_error_texture();
 
 	};

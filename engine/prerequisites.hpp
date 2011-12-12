@@ -91,6 +91,9 @@ namespace eternal_lands
 	#define WEAK_PTR(type) typedef boost::weak_ptr<type> type##WeakPtr
 	#define ARRAY(type, N) ARRAY_NAME(type, N, type)
 	#define VECTOR(type) VECTOR_NAME(type, type)
+
+	typedef wchar_t Utf32Char;
+	typedef std::wstring Utf32String;
 	#define UTF8(str) str
 
 	typedef std::string StringType;

@@ -345,32 +345,32 @@ namespace eternal_lands
 
 			inline void set_width(const Uint32 width)
 			{
+				m_rebuild = m_width != width;
 				m_width = width;
-				m_rebuild = true;
 			}
 
 			inline void set_height(const Uint32 height)
 			{
+				m_rebuild = m_height != height;
 				m_height = height;
-				m_rebuild = true;
 			}
 
 			inline void set_depth(const Uint32 depth)
 			{
+				m_rebuild = m_depth != depth;
 				m_depth = depth;
-				m_rebuild = true;
 			}
 
 			inline void set_format(const TextureFormatType value)
 			{
+				m_rebuild = m_format != value;
 				m_format = value;
-				m_rebuild = true;
 			}
 
 			inline void set_target(const TextureTargetType value)
 			{
+				m_rebuild = m_target != value;
 				m_target = value;
-				m_rebuild = true;
 			}
 
 			inline void set_mag_filter(
@@ -423,7 +423,6 @@ namespace eternal_lands
 
 			void set_image(const ImageSharedPtr &image);
 			void set_images(const Uint16 mipmaps,
-				const Uint32 width, const Uint32 height,
 				const ImageSharedPtrVector &images);
 			void sub_texture(const Uint16 mipmap,
 				const ImageSharedPtr &image,

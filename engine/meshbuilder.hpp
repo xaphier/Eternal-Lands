@@ -56,6 +56,12 @@ namespace eternal_lands
 			void set_format(const VertexFormatType format,
 				const VertexElements &elements);
 
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
+			{
+				return m_global_vars;
+			}
+
 		public:
 			MeshBuilder(const GlobalVarsSharedPtr &global_vars);
 			~MeshBuilder() throw();
@@ -69,12 +75,6 @@ namespace eternal_lands
 			static const String &get_str(
 				const VertexFormatType type);
 			static VertexFormatType get_type(const String &str);
-
-			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
-			{
-				return m_global_vars;
-			}
 
 	};
 

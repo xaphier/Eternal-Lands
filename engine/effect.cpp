@@ -86,7 +86,7 @@ namespace eternal_lands
 
 	}
 
-	Effect::Effect(): m_name(UTF8("simple")), m_merged(false)
+	Effect::Effect(): m_name(UTF8("simple")), m_max_index(0)
 	{
 		error_load();
 	}
@@ -94,7 +94,7 @@ namespace eternal_lands
 	Effect::Effect(const ShaderSourceBuilderWeakPtr &shader_source_builder,
 		const FileSystemWeakPtr &file_system, const String &name):
 		m_shader_source_builder(shader_source_builder),
-		m_file_system(file_system), m_name(name), m_merged(false)
+		m_file_system(file_system), m_name(name), m_max_index(0)
 	{
 		assert(!m_shader_source_builder.expired());
 
@@ -112,62 +112,60 @@ namespace eternal_lands
 	{
 	}
 
-	void Effect::get_data(const String &name, String &file_name,
-		bool &merged)
+	void Effect::build_default_shader(ShaderSourceDescription description,
+		const Uint16 vertex_light_count,
+		const Uint16 fragment_light_count)
 	{
-		std::vector<StringType> tokens;
-		Uint32 i, count;
+		GlslProgramSharedPtr program;
+		StringType vertex, fragment;
+		StringVariantMap values;
+		Uint16 light_count;
 
-		boost::split(tokens, name.get(), boost::is_any_of(UTF8(".")),
-			boost::token_compress_on);
+		m_light_counts.push_back(glm::ivec2(vertex_light_count,
+			fragment_light_count));
 
-		if (tokens.size() == 0)
+		light_count = vertex_light_count + fragment_light_count;
+
+		get_shader_source_builder()->build(light_count, sbt_color,
+			description, vertex, fragment, values);
+
+		program = boost::make_shared<GlslProgram>(vertex, fragment,
+			values, get_name());
+
+		m_default_programs.push_back(program);
+
+		if (description.get_receives_shadows())
 		{
-			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(UTF8("Invalid effect name"))
-				<< errinfo_string_value(name));
+			values.clear();
+
+			description.set_receives_shadows(false);
+
+			get_shader_source_builder()->build(light_count,
+				sbt_color, description, vertex, fragment,
+				values);
+
+			program = boost::make_shared<GlslProgram>(vertex,
+				fragment, values, get_name());
 		}
 
-		file_name = String(UTF8("shaders/") + tokens[0] + UTF8(".xml"));
-
-		count = tokens.size();
-
-		merged = false;
-
-		for (i = 1; i < count; i++)
-		{
-			if (tokens[i] == UTF8("merged"))
-			{
-				merged = true;
-			}
-		}
-	}
-
-	String Effect::get_file_name(const String &name)
-	{
-		String file_name;
-		bool merged;
-
-		get_data(name, file_name, merged);
-
-		return file_name;
+		m_default_programs.push_back(program);
 	}
 
 	void Effect::do_load()
 	{
 		XmlReaderSharedPtr xml_reader;
 		ShaderSourceDescription description;
-		String file_name;
 		StringType vertex, fragment;
 		StringVariantMap values;
+		String file_name;
 		Uint16 light_count, i, fragment_light_count, vertex_light_count;
 
 		m_light_counts.clear();
 		m_default_programs.clear();
+		m_max_index = 0;
 
-		get_data(get_name(), file_name, m_merged);
-
-		xml_reader = XmlReaderSharedPtr(new XmlReader(file_name));
+		xml_reader = XmlReaderSharedPtr(new XmlReader(String(
+			UTF8("shaders/") + get_name().get() + UTF8(".xml"))));
 
 		description.load_xml(xml_reader->get_root_node());
 
@@ -185,45 +183,33 @@ namespace eternal_lands
 			light_count = fragment_light_count;
 		}
 
-		m_light_counts.reserve(light_count + 1);
-		m_default_programs.reserve(light_count + 1);
+		m_max_index = light_count;
+
+		m_light_counts.reserve(get_max_index() + 1);
+		m_default_programs.reserve((get_max_index() + 1) * 2);
 
 		/* Light shader for different light counts */
 		for (i = 0; i < light_count; i++)
 		{
-			m_light_counts.push_back(glm::ivec2(0, i));
-
-			get_shader_source_builder()->build(i, get_merged(),
-				sbt_color, description, vertex, fragment,
-				values);
-
-			m_default_programs.push_back(
-				boost::make_shared<GlslProgram>(vertex,
-				fragment, values, get_name()));
+			build_default_shader(description, 0, i);
 		}
 
-		light_count = fragment_light_count + vertex_light_count;
-
 		/* Max light shader */
-		m_light_counts.push_back(glm::ivec2(vertex_light_count,
-			fragment_light_count));
-
-		get_shader_source_builder()->build(light_count, get_merged(),
-			sbt_color, description, vertex, fragment, values);
-
-		m_default_programs.push_back(boost::make_shared<GlslProgram>(
-			vertex, fragment, values, get_name()));
+		build_default_shader(description, vertex_light_count,
+			fragment_light_count);
 
 		/* Depth shader */
-		get_shader_source_builder()->build(0, get_merged(), sbt_depth,
-			description, vertex, fragment, values);
+		get_shader_source_builder()->build(0, sbt_depth, description,
+			vertex, fragment, values);
 
 		m_depth_program = boost::make_shared<GlslProgram>(
 			vertex, fragment, values, get_name());
 
+		values.clear();
+
 		/* Shadow shader */
-		get_shader_source_builder()->build(0, get_merged(), sbt_shadow,
-			description, vertex, fragment, values);
+		get_shader_source_builder()->build(0, sbt_shadow, description,
+			vertex, fragment, values);
 
 		m_shadow_program = boost::make_shared<GlslProgram>(
 			vertex, fragment, values, get_name());
@@ -231,12 +217,12 @@ namespace eternal_lands
 
 	void Effect::error_load()
 	{
+		GlslProgramSharedPtr program;
 		StringVariantMap values;
 
 		m_light_counts.clear();
 		m_default_programs.clear();
-
-		m_merged = false;
+		m_max_index = 0;
 
 		/* Default shader */
 		values[ShaderTextureUtil::get_str(stt_diffuse_0)] =
@@ -244,8 +230,13 @@ namespace eternal_lands
 
 		m_light_counts.push_back(glm::ivec2(0));
 
-		m_default_programs.push_back(boost::make_shared<GlslProgram>(
-			vertex_shader, fragment_shader, values, get_name()));
+		program = boost::make_shared<GlslProgram>(vertex_shader,
+			fragment_shader, values, get_name());
+
+		m_default_programs.push_back(program);
+		m_default_programs.push_back(program);
+
+		values.clear();
 
 		/* Depth shader */
 		m_depth_program = boost::make_shared<GlslProgram>(
@@ -279,6 +270,13 @@ namespace eternal_lands
 		}
 
 		error_load();
+
+		assert(get_index(std::numeric_limits<Uint16>::max())
+			< m_light_counts.size());
+		assert(get_index(std::numeric_limits<Uint16>::max(), true)
+			< m_default_programs.size());
+		assert(get_index(std::numeric_limits<Uint16>::max(), false)
+			< m_default_programs.size());
 	}
 
 }

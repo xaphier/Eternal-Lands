@@ -97,7 +97,9 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("shadow_uv")),
 				pt_vec4, pst_shadow_map_count),
 			CommonParameterTypeData(String(UTF8("shadow_map_data")),
-				pt_vec3)
+				pt_vec3),
+			CommonParameterTypeData(String(UTF8("layer")),
+				pt_vec4)
 		};
 
 		const Uint32 common_parameter_type_datas_count =

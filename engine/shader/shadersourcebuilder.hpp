@@ -104,17 +104,16 @@ namespace eternal_lands
 				const ShaderSourceDescription &description)
 				const;
 			bool check(const ShaderSourceTypeStringPair &source,
-				const ShaderSourceDataType data_type) const;
+				const ShaderVersionType data_type) const;
 
 		public:
 			ShaderSourceBuilder(
 				const GlobalVarsSharedPtr &global_vars,
 				const FileSystemWeakPtr &file_system);
 			~ShaderSourceBuilder() throw();
-			bool get_can_merge(const String &effect_name) const;
 			void load(const String &file_name);
 			void load_default(const String &file_name);
-			void build(const Uint16 light_count, const bool merged,
+			void build(const Uint16 light_count,
 				const ShaderBuildType shader_build_type,
 				const ShaderSourceDescription &description,
 				StringType &vertex, StringType &fragment,

@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include <gtk/gtk.h>
+#include <string>
 
 /**
  * @file
@@ -26,23 +27,32 @@ namespace eternal_lands
 	{
 		public:
 			static void append_source_types(
-				GtkComboBoxText *combo_box_text);
+				GtkListStore *list_store);
 			static void append_parameter_names(
-				GtkComboBoxText *combo_box_text);
+				GtkListStore *list_store);
 			static void append_parameter_types(
-				GtkComboBoxText *combo_box_text);
+				const gboolean sampler_types,
+				GtkListStore* list_store);
 			static void append_parameter_qualifier_types(
-				GtkComboBoxText *combo_box_text);
+				GtkListStore *list_store);
 			static void append_parameter_size_types(
-				GtkComboBoxText *combo_box_text);
+				GtkListStore *list_store);
 			static bool get_parameter_data(const gchar* str,
 				gint &type, gint &qualifier, gint &size,
-				gint &scale, gboolean &qualifier_selection);
-			static gint get_parameter_type(const gchar* str);
+				gint &scale, gboolean &type_selection,
+				gboolean &qualifier_selection,
+				gboolean &sampler_types);
+			static gint get_parameter_type(const gchar* str,
+				gboolean &sampler_type);
 			static gint get_parameter_qualifier_type(
 				const gchar* str);
 			static gint get_parameter_size_type(
 				const gchar* str);
+			static bool get_default_parameter_data(
+				const gint source_type, const guint index,
+				std::string &name, std::string &type,
+				std::string &qualifier,
+				std::string &size, gint &scale);
 
 	};
 

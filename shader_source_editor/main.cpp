@@ -42,33 +42,74 @@ G_MODULE_EXPORT void set_pages_visible(GtkSpinButton* spin_button,
 typedef struct
 {
 	GtkEntry* name_value;
-	GtkComboBoxText* name_values;
-	GtkComboBoxText* type_values;
-	GtkComboBoxText* qualifier_values;
-	GtkComboBoxText* size_values;
+	GtkComboBox* name_values;
+	GtkComboBox* type_values;
+	GtkComboBox* qualifier_values;
+	GtkComboBox* size_values;
 	GtkSpinButton* scale_values;
+	GtkListStore* sampler_types;
+	GtkListStore* no_sampler_types;
 } ParameterData;
 
-G_MODULE_EXPORT void name_changed(GtkComboBoxText* name_values,
+G_MODULE_EXPORT gboolean get_index(GtkTreeModel* model, GtkTreePath *path,
+	GtkTreeIter* it, gpointer data)
+{
+	gchar* name_str;
+	gint id, index;
+
+	gtk_tree_model_get(model, it,
+		0, &name_str,
+		1, &id,
+		2, &index,
+		-1);
+
+	g_free(name_str);
+
+	if (id == *((gint*)data))
+	{
+		*((gint*)data) = index;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+G_MODULE_EXPORT void name_changed(GtkComboBox* name_values,
 	ParameterData* data)
 {
-	gboolean sensitive, qualifier_sensitive;
+	gboolean sensitive, type_sensitive, qualifier_sensitive;
+	gboolean sampler_types;
 	gint type, qualifier, size, scale;
-	gchar* str;
+	const gchar* str;
 
 	sensitive = TRUE;
 
+	type_sensitive = TRUE;
 	qualifier_sensitive = TRUE;
 
-	str = gtk_combo_box_text_get_active_text(name_values);
+	str = gtk_entry_get_text(data->name_value);
 
 	if (el::EnumUtils::get_parameter_data(str, type, qualifier,
-			size, scale, qualifier_sensitive))
+			size, scale, type_sensitive, qualifier_sensitive,
+			sampler_types))
 	{
 		sensitive = FALSE;
 
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->type_values),
-			type);
+		if (sampler_types == TRUE)
+		{
+			gtk_combo_box_set_model(data->type_values,
+				GTK_TREE_MODEL(data->sampler_types));
+		}
+		else
+		{
+			gtk_combo_box_set_model(data->type_values,
+				GTK_TREE_MODEL(data->no_sampler_types));
+		}
+
+		gtk_tree_model_foreach(gtk_combo_box_get_model(
+			data->type_values), get_index, &type);
+
+		gtk_combo_box_set_active(data->type_values, type);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(data->qualifier_values),
 			qualifier);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(data->size_values),
@@ -76,8 +117,19 @@ G_MODULE_EXPORT void name_changed(GtkComboBoxText* name_values,
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->scale_values),
 			scale);
 	}
+	else
+	{
+		if (gtk_combo_box_get_model(data->type_values) !=
+			GTK_TREE_MODEL(data->no_sampler_types))
+		{
+			gtk_combo_box_set_model(data->type_values,
+				GTK_TREE_MODEL(data->no_sampler_types));
+			gtk_combo_box_set_active(data->type_values, 0);
+		}
+	}
 
-	gtk_widget_set_sensitive(GTK_WIDGET(data->type_values), sensitive);
+	gtk_widget_set_sensitive(GTK_WIDGET(data->type_values),
+		type_sensitive);
 	gtk_widget_set_sensitive(GTK_WIDGET(data->qualifier_values),
 		qualifier_sensitive);
 	gtk_widget_set_sensitive(GTK_WIDGET(data->size_values), sensitive);
@@ -94,12 +146,14 @@ typedef struct
 
 G_MODULE_EXPORT void parameter_edit(GtkButton* button, ParametersData* data)
 {
-	GtkTreeIter it;
+	GtkTreeIter it, type_it, qualifier_it, size_it;
 	gint type, qualifier, size, scale;
+	gboolean sampler_type;
 	gchar* name;
 	gchar* type_str;
 	gchar* qualifier_str;
 	gchar* size_str;
+	const gchar* str;
 
 	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection(
 		data->parameters), 0, &it))
@@ -114,12 +168,26 @@ G_MODULE_EXPORT void parameter_edit(GtkButton* button, ParametersData* data)
 		3, &size_str,
 		4, &scale, -1);
 
-	type = el::EnumUtils::get_parameter_type(type_str);
+	type = el::EnumUtils::get_parameter_type(type_str, sampler_type);
 	qualifier = el::EnumUtils::get_parameter_qualifier_type(qualifier_str);
 	size = el::EnumUtils::get_parameter_size_type(size_str);
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->parameter->type_values),
-		type);
+	if (sampler_type == TRUE)
+	{
+		gtk_combo_box_set_model(data->parameter->type_values,
+			GTK_TREE_MODEL(data->parameter->sampler_types));
+	}
+	else
+	{
+		gtk_combo_box_set_model(data->parameter->type_values,
+			GTK_TREE_MODEL(data->parameter->no_sampler_types));
+	}
+
+	gtk_tree_model_foreach(gtk_combo_box_get_model(
+		data->parameter->type_values), get_index, &type);
+
+	gtk_combo_box_set_active(data->parameter->type_values, type);
+
 	gtk_combo_box_set_active(GTK_COMBO_BOX(
 		data->parameter->qualifier_values), qualifier);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(
@@ -128,20 +196,48 @@ G_MODULE_EXPORT void parameter_edit(GtkButton* button, ParametersData* data)
 		data->parameter->scale_values), scale);
 	gtk_entry_set_text(data->parameter->name_value, name);
 
+	g_free(name);
+	g_free(type_str);
+	g_free(qualifier_str);
+	g_free(size_str);
+
 	if (gtk_dialog_run(data->dialog) == 1)
 	{
+		str = gtk_entry_get_text(data->parameter->name_value);
+
+		gtk_combo_box_get_active_iter(data->parameter->type_values,
+			&type_it);
+
+		gtk_tree_model_get(gtk_combo_box_get_model(
+			data->parameter->type_values), &type_it,
+			0, &type_str, -1);
+
+		gtk_combo_box_get_active_iter(data->parameter->qualifier_values,
+			&qualifier_it);
+
+		gtk_tree_model_get(gtk_combo_box_get_model(
+			data->parameter->qualifier_values), &qualifier_it,
+			0, &qualifier_str, -1);
+
+		gtk_combo_box_get_active_iter(data->parameter->size_values,
+			&size_it);
+
+		gtk_tree_model_get(gtk_combo_box_get_model(
+			data->parameter->size_values), &size_it,
+			0, &size_str, -1);
+
 		gtk_list_store_set(data->parameters_list, &it,
-			0, gtk_combo_box_text_get_active_text(
-				data->parameter->name_values),
-			1, gtk_combo_box_text_get_active_text(
-				data->parameter->type_values),
-			2, gtk_combo_box_text_get_active_text(
-				data->parameter->qualifier_values),
-			3, gtk_combo_box_text_get_active_text(
-				data->parameter->size_values),
+			0, str,
+			1, type_str,
+			2, qualifier_str,
+			3, size_str,
 			4, gtk_spin_button_get_value_as_int(
 				data->parameter->scale_values),
-                          -1);
+			-1);
+
+		g_free(type_str);
+		g_free(qualifier_str);
+		g_free(size_str);
 	}
 
 	gtk_widget_hide(GTK_WIDGET(data->dialog));
@@ -149,23 +245,49 @@ G_MODULE_EXPORT void parameter_edit(GtkButton* button, ParametersData* data)
 
 G_MODULE_EXPORT void parameter_add(GtkButton* button, ParametersData* data)
 {
-	GtkTreeIter it;
+	GtkTreeIter it, type_it, qualifier_it, size_it;
+	gchar* type_str;
+	gchar* qualifier_str;
+	gchar* size_str;
+	const gchar* str;
 
 	if (gtk_dialog_run(data->dialog) == 1)
 	{
-		gtk_list_store_insert_with_values(data->parameters_list, &it,
-			-1,
-			0, gtk_combo_box_text_get_active_text(
-				data->parameter->name_values),
-			1, gtk_combo_box_text_get_active_text(
-				data->parameter->type_values),
-			2, gtk_combo_box_text_get_active_text(
-				data->parameter->qualifier_values),
-			3, gtk_combo_box_text_get_active_text(
-				data->parameter->size_values),
+		str = gtk_entry_get_text(data->parameter->name_value);
+
+		gtk_combo_box_get_active_iter(data->parameter->type_values,
+			&type_it);
+
+		gtk_tree_model_get(gtk_combo_box_get_model(
+			data->parameter->type_values), &type_it,
+			0, &type_str, -1);
+
+		gtk_combo_box_get_active_iter(data->parameter->qualifier_values,
+			&qualifier_it);
+
+		gtk_tree_model_get(gtk_combo_box_get_model(
+			data->parameter->qualifier_values), &qualifier_it,
+			0, &qualifier_str, -1);
+
+		gtk_combo_box_get_active_iter(data->parameter->size_values,
+			&size_it);
+
+		gtk_tree_model_get(gtk_combo_box_get_model(
+			data->parameter->size_values), &size_it,
+			0, &size_str, -1);
+
+		gtk_list_store_set(data->parameters_list, &it,
+			0, str,
+			1, type_str,
+			2, qualifier_str,
+			3, size_str,
 			4, gtk_spin_button_get_value_as_int(
 				data->parameter->scale_values),
 			-1);
+
+		g_free(type_str);
+		g_free(qualifier_str);
+		g_free(size_str);
 	}
 
 	gtk_widget_hide(GTK_WIDGET(data->dialog));
@@ -203,16 +325,156 @@ G_MODULE_EXPORT void show_about(GtkMenuItem* menuitem, GtkAboutDialog* about)
 
 typedef struct
 {
-	GtkTreeView* parameters[4];
-	GtkListStore* parameters_lists[4];
-	GtkTextView* sources[4];
-	GtkTextBuffer* text_buffers[4];
-	GtkToggleButton* toggle_button_glsl_120[4];
-	GtkToggleButton* toggle_button_glsl_150[4];
-	GtkToggleButton* toggle_button_material_default[4];
-	GtkToggleButton* toggle_button_material_merged[4];
-	GtkSpinButton* spin_button_pages;
-	GtkComboBoxText* type;
+	GtkTreeView* parameters;
+	GtkListStore* parameters_list;
+	GtkTextView* source;
+	GtkTextBuffer* text_buffer;
+	GtkToggleButton* glsl_120;
+	GtkToggleButton* glsl_130;
+	GtkToggleButton* glsl_140;
+	GtkToggleButton* glsl_150;
+} PageData;
+
+typedef struct
+{
+	PageData pages[max_parameter_pages];
+} PagesData;
+
+G_MODULE_EXPORT void clear_pages(PagesData* pages)
+{
+	gint i;
+
+	for (i = 0; i < max_parameter_pages; i++)
+	{
+		gtk_list_store_clear(pages->pages[i].parameters_list);
+
+		gtk_text_buffer_set_text(pages->pages[i].text_buffer,
+			"", -1);
+
+		gtk_toggle_button_set_active(pages->pages[i].glsl_120,
+			FALSE);
+		gtk_toggle_button_set_active(pages->pages[i].glsl_130,
+			FALSE);
+		gtk_toggle_button_set_active(pages->pages[i].glsl_140,
+			FALSE);
+		gtk_toggle_button_set_active(pages->pages[i].glsl_150,
+			FALSE);
+	}
+}
+
+typedef struct
+{
+	GtkToggleButton* add_default_parameter;
+	GtkSpinButton* new_pages;
+	GtkComboBox* new_type;
+	GtkEntry* new_name;
+	GtkDialog* dialog;
+	GtkSpinButton* pages;
+	GtkComboBox* type;
+	GtkEntry* name;
+	PagesData* data;
+} NewData;
+
+G_MODULE_EXPORT void new_file(GtkMenuItem* menuitem, NewData* data)
+{
+	GtkTreeIter it;
+	std::string name_str, type_str, qualifier_str, size_str;
+	gint i, count, type, index, scale;
+
+	if (gtk_dialog_run(data->dialog) != 1)
+	{
+		gtk_widget_hide(GTK_WIDGET(data->dialog));
+		return;
+	}
+
+	gtk_widget_hide(GTK_WIDGET(data->dialog));
+
+	clear_pages(data->data);
+
+	count = gtk_spin_button_get_value_as_int(data->new_pages);
+	gtk_spin_button_set_value(data->pages, count);
+
+	type = gtk_combo_box_get_active(data->new_type);
+	gtk_combo_box_set_active(data->type, type);
+
+	gtk_entry_set_text(data->name, gtk_entry_get_text(data->new_name));
+
+	switch (count)
+	{
+		case 1:
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_120, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_130, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_140, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_150, TRUE);
+			break;
+		case 2:
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_120, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[1].glsl_130, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[1].glsl_140, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[1].glsl_150, TRUE);
+			break;
+		case 3:
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_120, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[1].glsl_130, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[2].glsl_140, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[2].glsl_150, TRUE);
+			break;
+		case 4:
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_120, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[1].glsl_130, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[2].glsl_140, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[3].glsl_150, TRUE);
+			break;
+	}
+
+	if (gtk_toggle_button_get_active(data->add_default_parameter) != TRUE)
+	{
+		return;
+	}
+
+	index = 0;
+
+	while (el::EnumUtils::get_default_parameter_data(type, index, name_str,
+		type_str, qualifier_str, size_str, scale))
+	{
+		for (i = 0; i < max_parameter_pages; i++)
+		{
+			gtk_list_store_insert_with_values(
+				data->data->pages[i].parameters_list,
+				&it, -1,
+				0, name_str.c_str(),
+				1, type_str.c_str(),
+				2, qualifier_str.c_str(),
+				3, size_str.c_str(),
+				4, scale,
+				-1);
+		}
+
+		index++;
+	}
+}
+
+typedef struct
+{
+	PagesData* data;
+	GtkSpinButton* pages;
+	GtkComboBox* type;
 	GtkEntry* name;
 	GtkWidget *save_dialog;
 	GtkWidget *load_dialog;
@@ -241,36 +503,31 @@ G_MODULE_EXPORT void load_file(GtkMenuItem* menu_item, ShaderData* data)
 	file_name = gtk_file_chooser_get_filename(
 		GTK_FILE_CHOOSER(data->load_dialog));
 
-	data->file_name = el::String(el::utf8_to_string(file_name));
+	data->file_name = el::String(file_name);
 	g_free(file_name);
 
 	try
 	{
 		shader_source.load_xml(data->file_name);
 	}
+	catch (const boost::exception &exception)
+	{
+		std::cout << boost::diagnostic_information(exception) << std::endl;
+		return;
+	}
+	catch (const std::exception &exception)
+	{
+		std::cout << exception.what() << std::endl;
+		return;
+	}
 	catch (...)
 	{
 		return;
 	}
 
-	for (i = 0; i < max_parameter_pages; i++)
-	{
-		gtk_list_store_clear(data->parameters_lists[i]);
+	clear_pages(data->data);
 
-		gtk_text_buffer_set_text(data->text_buffers[i], "", -1);
-
-		gtk_toggle_button_set_active(data->toggle_button_glsl_120[i],
-			FALSE);
-		gtk_toggle_button_set_active(data->toggle_button_glsl_150[i],
-			FALSE);
-		gtk_toggle_button_set_active(
-			data->toggle_button_material_default[i], FALSE);
-		gtk_toggle_button_set_active(
-			data->toggle_button_material_merged[i], FALSE);
-	}
-
-	gtk_entry_set_text(data->name, el::string_to_utf8(
-		shader_source.get_name()).c_str());
+	gtk_entry_set_text(data->name, shader_source.get_name().get().c_str());
 
 	count = shader_source.get_datas().size();
 
@@ -279,48 +536,41 @@ G_MODULE_EXPORT void load_file(GtkMenuItem* menu_item, ShaderData* data)
 		count = max_parameter_pages;
 	}
 
-	gtk_spin_button_set_value(data->spin_button_pages, count);
+	gtk_spin_button_set_value(data->pages, count);
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->type),
-		shader_source.get_type());
+	gtk_combo_box_set_active(data->type, shader_source.get_type());
 
 	for (i = 0; i < count; i++)
 	{
-		gtk_toggle_button_set_active(data->toggle_button_glsl_120[i],
+		gtk_toggle_button_set_active(data->data->pages[i].glsl_120,
 			shader_source.get_datas()[i].get_glsl_120());
-		gtk_toggle_button_set_active(data->toggle_button_glsl_150[i],
+		gtk_toggle_button_set_active(data->data->pages[i].glsl_130,
+			shader_source.get_datas()[i].get_glsl_130());
+		gtk_toggle_button_set_active(data->data->pages[i].glsl_140,
+			shader_source.get_datas()[i].get_glsl_140());
+		gtk_toggle_button_set_active(data->data->pages[i].glsl_150,
 			shader_source.get_datas()[i].get_glsl_150());
-		gtk_toggle_button_set_active(
-			data->toggle_button_material_default[i],
-			shader_source.get_datas()[i].get_material_default());
-		gtk_toggle_button_set_active(
-			data->toggle_button_material_merged[i],
-			shader_source.get_datas(
-				)[i].get_material_merged());
 
-		gtk_text_buffer_set_text(data->text_buffers[i],
-			el::string_to_utf8(shader_source.get_datas(
-				)[i].get_source()).c_str(), -1);
+		gtk_text_buffer_set_text(data->data->pages[i].text_buffer,
+			shader_source.get_datas()[i].get_source().get().c_str(),
+			-1);
 
-		gtk_list_store_clear(data->parameters_lists[i]);
+		gtk_list_store_clear(data->data->pages[i].parameters_list);
 
 		BOOST_FOREACH(const el::ShaderSourceParameter &parameter,
 			shader_source.get_datas()[i].get_parameters())
 		{
-			name_str = el::string_to_utf8(parameter.get_name());
-			type_str = el::string_to_utf8(
-				el::ParameterUtil::get_str(
-					parameter.get_type()));
-			qualifier_str = el::string_to_utf8(
-				el::ParameterQualifierUtil::get_str(
-					parameter.get_qualifier()));
-			size_str = el::string_to_utf8(
-				el::ParameterSizeUtil::get_str(
-					parameter.get_size()));
+			name_str = parameter.get_name();
+			type_str = el::ParameterUtil::get_str(
+				parameter.get_type());
+			qualifier_str = el::ParameterQualifierUtil::get_str(
+				parameter.get_qualifier());
+			size_str = el::ParameterSizeUtil::get_str(
+				parameter.get_size());
 			scale = parameter.get_scale();
 
 			gtk_list_store_insert_with_values(
-				data->parameters_lists[i],
+				data->data->pages[i].parameters_list,
 				&it, -1,
 				0, name_str.c_str(),
 				1, type_str.c_str(),
@@ -337,6 +587,7 @@ G_MODULE_EXPORT gboolean set_parameters(GtkTreeModel* model, GtkTreePath *path,
 {
 	el::ShaderSourceParameter shader_source_parameter;
 	gint type, qualifier, size, scale;
+	gboolean sampler_type;
 	el::String name;
 	gchar* name_str;
 	gchar* type_str;
@@ -350,10 +601,10 @@ G_MODULE_EXPORT gboolean set_parameters(GtkTreeModel* model, GtkTreePath *path,
 		3, &size_str,
 		4, &scale, -1);
 
-	type = el::EnumUtils::get_parameter_type(type_str);
+	type = el::EnumUtils::get_parameter_type(type_str, sampler_type);
 	qualifier = el::EnumUtils::get_parameter_qualifier_type(qualifier_str);
 	size = el::EnumUtils::get_parameter_size_type(size_str);
-	name = el::String(el::utf8_to_string(name_str));
+	name = el::String(name_str);
 
 	g_free(type_str);
 	g_free(qualifier_str);
@@ -390,10 +641,9 @@ void do_save_file(ShaderData* data)
 	GtkTextIter start, end;
 	gint i, count;
 
-	shader_source.set_name(el::String(el::utf8_to_string(
-		gtk_entry_get_text(data->name))));
+	shader_source.set_name(el::String(gtk_entry_get_text(data->name)));
 
-	count = gtk_spin_button_get_value_as_int(data->spin_button_pages);
+	count = gtk_spin_button_get_value_as_int(data->pages);
 
 	shader_source.set_type(static_cast<el::ShaderSourceType>(
 		gtk_combo_box_get_active(GTK_COMBO_BOX(data->type))));
@@ -401,23 +651,20 @@ void do_save_file(ShaderData* data)
 	for (i = 0; i < count; i++)
 	{
 		shader_source_data.set_glsl_120(gtk_toggle_button_get_active(
-			data->toggle_button_glsl_120[i]) == TRUE);
+			data->data->pages[i].glsl_120) == TRUE);
+		shader_source_data.set_glsl_130(gtk_toggle_button_get_active(
+			data->data->pages[i].glsl_130) == TRUE);
+		shader_source_data.set_glsl_140(gtk_toggle_button_get_active(
+			data->data->pages[i].glsl_140) == TRUE);
 		shader_source_data.set_glsl_150(gtk_toggle_button_get_active(
-			data->toggle_button_glsl_150[i]) == TRUE);
-		shader_source_data.set_material_default(
-			gtk_toggle_button_get_active(
-				data->toggle_button_material_default[i])
-					== TRUE);
-		shader_source_data.set_material_merged(
-			gtk_toggle_button_get_active(
-				data->toggle_button_material_merged[i])
-					== TRUE);
+			data->data->pages[i].glsl_150) == TRUE);
 
-		gtk_text_buffer_get_bounds(data->text_buffers[i], &start, &end);
+		gtk_text_buffer_get_bounds(data->data->pages[i].text_buffer,
+			&start, &end);
 
-		str = gtk_text_buffer_get_text(data->text_buffers[i], &start,
-			&end, TRUE);
-		source_str = el::String(el::utf8_to_string(str));
+		str = gtk_text_buffer_get_text(
+			data->data->pages[i].text_buffer, &start, &end, TRUE);
+		source_str = el::String(str);
 		g_free(str);
 
 		shader_source_data.set_source(source_str);
@@ -425,7 +672,7 @@ void do_save_file(ShaderData* data)
 		shader_source_parameters.clear();
 
 		gtk_tree_model_foreach(gtk_tree_view_get_model(
-			data->parameters[i]), set_parameters,
+			data->data->pages[i].parameters), set_parameters,
 			&shader_source_parameters);
 
 		shader_source_data.set_parameters(shader_source_parameters);
@@ -456,7 +703,7 @@ bool get_file_name(ShaderData* data)
 	{
 		gtk_file_chooser_set_filename(
 			GTK_FILE_CHOOSER(data->save_dialog),
-			el::string_to_utf8(data->file_name).c_str());
+			data->file_name.get().c_str());
 	}
 
 	if (gtk_dialog_run(GTK_DIALOG(data->save_dialog)) ==
@@ -467,7 +714,7 @@ bool get_file_name(ShaderData* data)
 		file_name = gtk_file_chooser_get_filename(
 			GTK_FILE_CHOOSER(data->save_dialog));
 
-		data->file_name = el::String(el::utf8_to_string(file_name));
+		data->file_name = el::String(file_name);
 
 		g_free(file_name);
 
@@ -507,16 +754,20 @@ int main(int argc, char *argv[])
 	GtkDialog* dialog = 0;
 	GtkMenuItem* menu_item = 0;
 	GtkSpinButton* spin_button = 0;
-	GtkComboBoxText* combo_box_text = 0;
+	GtkComboBox* combo_box = 0;
 	GtkButton* button = 0;
 	GtkTreeSelection* tree_selection = 0;
 	GtkFileFilter* filter_xml = 0;
 	GtkFileFilter* filter_all = 0;
+	GtkListStore* list_store = 0;
+	GtkEntry* entry = 0;
 	GError *error = 0;
 	NoteBookPages pages;
 	ParametersData parameters[max_parameter_pages];
 	ParameterData parameter;
 	ShaderData shader_data;
+	NewData new_data;
+	PagesData page_datas;
 	gint i;
 
 	gtk_init(&argc, &argv);
@@ -539,51 +790,81 @@ int main(int argc, char *argv[])
 	g_signal_connect(menu_item, "activate", G_CALLBACK(show_about), dialog);
 
 	spin_button = GTK_SPIN_BUTTON(gtk_builder_get_object(builder,
-		"spin_button_pages"));
+		"pages"));
 
-	shader_data.spin_button_pages = spin_button;
+	shader_data.pages = spin_button;
+	new_data.pages = spin_button;
 
 	g_signal_connect(spin_button, "value-changed",
 		G_CALLBACK(set_pages_visible), &pages);
 
-	combo_box_text = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(builder,
-		"type"));
-	shader_data.type = combo_box_text;
+	combo_box = GTK_COMBO_BOX(gtk_builder_get_object(builder, "type"));
 
-	el::EnumUtils::append_source_types(combo_box_text);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box_text), 0);
+	shader_data.type = combo_box;
+	new_data.type = combo_box;
+
+	list_store = GTK_LIST_STORE(gtk_builder_get_object(builder,
+		"source_types"));
+
+	el::EnumUtils::append_source_types(list_store);
+
+	gtk_combo_box_set_active(combo_box, 0);
 
 	parameter.name_value = GTK_ENTRY(gtk_builder_get_object(builder,
 		"name_value"));
-	parameter.name_values = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(
+	parameter.name_values = GTK_COMBO_BOX(gtk_builder_get_object(
 		builder, "name_values"));
-	parameter.type_values = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(
+	parameter.type_values = GTK_COMBO_BOX(gtk_builder_get_object(
 		builder, "type_values"));
-	parameter.qualifier_values = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(
+	parameter.qualifier_values = GTK_COMBO_BOX(gtk_builder_get_object(
 		builder, "qualifier_values"));
-	parameter.size_values = GTK_COMBO_BOX_TEXT(gtk_builder_get_object(
+	parameter.size_values = GTK_COMBO_BOX(gtk_builder_get_object(
 		builder, "size_values"));
 	parameter.scale_values = GTK_SPIN_BUTTON(gtk_builder_get_object(
 		builder, "scale_values"));
 
-	el::EnumUtils::append_parameter_names(parameter.name_values);
+	list_store = GTK_LIST_STORE(gtk_builder_get_object(builder,
+		"names"));
+
+	el::EnumUtils::append_parameter_names(list_store);
+
 	g_signal_connect(parameter.name_values, "changed",
 		G_CALLBACK(name_changed), &parameter);
 
-	el::EnumUtils::append_parameter_types(parameter.type_values);
+	parameter.sampler_types = GTK_LIST_STORE(gtk_builder_get_object(
+		builder, "sampler_types"));
+
+	el::EnumUtils::append_parameter_types(TRUE, parameter.sampler_types);
+
+	parameter.no_sampler_types = GTK_LIST_STORE(gtk_builder_get_object(
+		builder, "no_sampler_types"));
+
+	el::EnumUtils::append_parameter_types(FALSE,
+		parameter.no_sampler_types);
+
 	gtk_combo_box_set_active(GTK_COMBO_BOX(parameter.type_values), 0);
 
-	el::EnumUtils::append_parameter_qualifier_types(
-		parameter.qualifier_values);
+	list_store = GTK_LIST_STORE(gtk_builder_get_object(builder,
+		"qualifier_types"));
+
+	el::EnumUtils::append_parameter_qualifier_types(list_store);
+
 	gtk_combo_box_set_active(GTK_COMBO_BOX(parameter.qualifier_values), 0);
 
-	el::EnumUtils::append_parameter_size_types(parameter.size_values);
+	list_store = GTK_LIST_STORE(gtk_builder_get_object(builder,
+		"size_types"));
+
+	el::EnumUtils::append_parameter_size_types(list_store);
+
 	gtk_combo_box_set_active(GTK_COMBO_BOX(parameter.size_values), 0);
 
 	dialog = GTK_DIALOG(gtk_builder_get_object(builder,
 		"parameter_dialog"));
 
-	shader_data.name = GTK_ENTRY(gtk_builder_get_object(builder, "name"));
+	entry = GTK_ENTRY(gtk_builder_get_object(builder, "name"));
+
+	shader_data.name = entry;
+	new_data.name = entry;
 
 	for (i = 0; i < max_parameter_pages; i++)
 	{
@@ -601,28 +882,30 @@ int main(int argc, char *argv[])
 		name = "parameters_";
 		name += str.str();
 
-		parameters[i].parameters = GTK_TREE_VIEW(
+		page_datas.pages[i].parameters = GTK_TREE_VIEW(
 			gtk_builder_get_object(builder, name.c_str()));
 
-		shader_data.parameters[i] = parameters[i].parameters;
-
 		tree_selection = gtk_tree_view_get_selection(
-			parameters[i].parameters);
+			page_datas.pages[i].parameters);
 
 		name = "parameters_list_";
 		name += str.str();
 
-		parameters[i].parameters_list = GTK_LIST_STORE(
+		page_datas.pages[i].parameters_list = GTK_LIST_STORE(
 			gtk_builder_get_object(builder, name.c_str()));
-		shader_data.parameters_lists[i] = parameters[i].parameters_list;
-		parameters[i].dialog = dialog;
-		parameters[i].parameter = &parameter;
 
 		name = "add_";
 		name += str.str();
 
 		button = GTK_BUTTON(gtk_builder_get_object(builder,
 			name.c_str()));
+
+		parameters[i].parameters = page_datas.pages[i].parameters;
+		parameters[i].parameters_list =
+			page_datas.pages[i].parameters_list;
+		parameters[i].dialog = dialog;
+		parameters[i].parameter = &parameter;
+
 		g_signal_connect(button, "clicked", G_CALLBACK(parameter_add),
 			&parameters[i]);
 
@@ -649,41 +932,43 @@ int main(int argc, char *argv[])
 		name = "sources_";
 		name += str.str();
 
-		shader_data.sources[i] = GTK_TEXT_VIEW(gtk_builder_get_object(
-			builder, name.c_str()));
-
-		name = "toggle_button_glsl_120_";
-		name += str.str();
-
-		shader_data.toggle_button_glsl_120[i] = GTK_TOGGLE_BUTTON(
-			gtk_builder_get_object(builder, name.c_str()));
-
-		name = "toggle_button_glsl_150_";
-		name += str.str();
-
-		shader_data.toggle_button_glsl_150[i] = GTK_TOGGLE_BUTTON(
-			gtk_builder_get_object(builder, name.c_str()));
-
-		name = "toggle_button_material_default_";
-		name += str.str();
-
-		shader_data.toggle_button_material_default[i] =
-			GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder,
+		page_datas.pages[i].source =
+			GTK_TEXT_VIEW(gtk_builder_get_object(builder,
 				name.c_str()));
 
-		name = "toggle_button_material_merged_";
+		name = "glsl_120_";
 		name += str.str();
 
-		shader_data.toggle_button_material_merged[i] =
-			GTK_TOGGLE_BUTTON(gtk_builder_get_object(builder,
-				name.c_str()));
+		page_datas.pages[i].glsl_120 = GTK_TOGGLE_BUTTON(
+			gtk_builder_get_object(builder, name.c_str()));
+
+		name = "glsl_130_";
+		name += str.str();
+
+		page_datas.pages[i].glsl_130 = GTK_TOGGLE_BUTTON(
+			gtk_builder_get_object(builder, name.c_str()));
+
+		name = "glsl_140_";
+		name += str.str();
+
+		page_datas.pages[i].glsl_140 = GTK_TOGGLE_BUTTON(
+			gtk_builder_get_object(builder, name.c_str()));
+
+		name = "glsl_150_";
+		name += str.str();
+
+		page_datas.pages[i].glsl_150 = GTK_TOGGLE_BUTTON(
+			gtk_builder_get_object(builder, name.c_str()));
 
 		name = "text_buffer_";
 		name += str.str();
 
-		shader_data.text_buffers[i] = GTK_TEXT_BUFFER(
+		page_datas.pages[i].text_buffer = GTK_TEXT_BUFFER(
 			gtk_builder_get_object(builder,	name.c_str()));
 	}
+
+	shader_data.data = &page_datas;
+	new_data.data = &page_datas;
 
 	filter_xml = GTK_FILE_FILTER(gtk_builder_get_object(builder,
 		"xml_file_filter"));
@@ -728,6 +1013,33 @@ int main(int argc, char *argv[])
 		"menu_item_save_as_file"));
 	g_signal_connect(menu_item, "activate", G_CALLBACK(save_as_file),
 		&shader_data);
+
+	new_data.dialog = GTK_DIALOG(gtk_builder_get_object(builder,
+		"new_dialog"));
+
+	entry = GTK_ENTRY(gtk_builder_get_object(builder,
+		"new_name"));
+
+	new_data.new_name = entry;
+
+	combo_box = GTK_COMBO_BOX(gtk_builder_get_object(builder, "new_type"));
+
+	new_data.new_type = combo_box;
+
+	gtk_combo_box_set_active(combo_box, 0);
+
+	spin_button = GTK_SPIN_BUTTON(gtk_builder_get_object(
+		builder, "new_pages"));
+
+	new_data.new_pages = spin_button;
+
+	new_data.add_default_parameter = GTK_TOGGLE_BUTTON(
+		gtk_builder_get_object(builder, "add_default_parameter"));
+
+	menu_item = GTK_MENU_ITEM(gtk_builder_get_object(builder,
+		"menu_item_new_file"));
+	g_signal_connect(menu_item, "activate", G_CALLBACK(new_file),
+		&new_data);
 
 	gtk_widget_show(GTK_WIDGET(window));
 	gtk_main();

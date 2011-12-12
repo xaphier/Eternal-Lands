@@ -30,21 +30,26 @@ namespace eternal_lands
 	class TextureGlyphe
 	{
 		private:
-			typedef std::map<wchar_t, float> WcharFloatMap;
+			typedef std::map<Utf32Char, float> Utf32CharFloatMap;
 
-			wchar_t m_charcode;
+			Utf32Char m_charcode;
 			Uint16 m_width;
 			Uint16 m_height;
 			glm::uvec2 m_offset;
 			glm::vec2 m_advance;
 			glm::uvec4 m_uv;
-			WcharFloatMap m_kerning;
+			Utf32CharFloatMap m_kerning;
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			TextureGlyphe();
+			TextureGlyphe(const Utf32Char charcode,
+				const Uint16 width, const Uint16 height,
+				const glm::uvec2 &offset,
+				const glm::vec2 &advance,
+				const glm::uvec4 &uv,
+				const Utf32CharFloatMap &kerning);
 
 			/**
 			 * Default destructor.
@@ -57,7 +62,7 @@ namespace eternal_lands
 				const AbstractWriteMemoryBuffer &buffer,
 				Uint16Array2 &position); 
 
-			inline wchar_t get_charcode() const
+			inline Utf32Char get_charcode() const
 			{
 				return m_charcode;
 			}
@@ -93,9 +98,9 @@ namespace eternal_lands
 				return get_kerning(glyphe.get_charcode());
 			}
 
-			inline float get_kerning(const wchar_t charcode) const
+			inline float get_kerning(const Utf32Char charcode) const
 			{
-				WcharFloatMap::const_iterator found;
+				Utf32CharFloatMap::const_iterator found;
 
 				found = m_kerning.find(charcode);
 

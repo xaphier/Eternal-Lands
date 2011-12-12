@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "shadersourceutil.hpp"
 #include "parametersizeutil.hpp"
+#include "shaderversionutil.hpp"
 
 /**
  * @file
@@ -23,14 +24,6 @@
  */
 namespace eternal_lands
 {
-
-	enum ShaderSourceDataType
-	{
-		ssdt_glsl_120,
-		ssdt_glsl_120_merged,
-		ssdt_glsl_150,
-		ssdt_glsl_150_merged
-	};
 
 	class ShaderSource
 	{
@@ -49,17 +42,17 @@ namespace eternal_lands
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 			void load(const String &file_name);
-			void build_source(const ShaderSourceDataType &type,
+			void build_source(const ShaderVersionType &type,
 				const ShaderSourceParameterVector &locals, 
 				OutStream &stream,
 				ShaderSourceParameterVector &globals) const;
 			bool check_source_parameter(
-				const ShaderSourceDataType &type,
+				const ShaderVersionType &type,
 				const String &name) const;
-			bool get_has_data(const ShaderSourceDataType type)
-				const;
+			bool get_has_data(
+				const ShaderVersionType shader_version) const;
 			const ShaderSourceData &get_data(
-				const ShaderSourceDataType type) const;
+				const ShaderVersionType shader_version) const;
 			void set_datas(const ShaderSourceDataVector &datas);
 			String get_typed_name() const;
 

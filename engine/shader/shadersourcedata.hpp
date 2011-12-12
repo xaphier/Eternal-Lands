@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "parametersizeutil.hpp"
+#include "shaderversionutil.hpp"
 
 /**
  * @file
@@ -27,11 +28,8 @@ namespace eternal_lands
 	{
 		private:
 			ShaderSourceParameterVector m_parameters;
+			std::set<ShaderVersionType> m_versions;
 			String m_source;
-			bool m_glsl_120;
-			bool m_glsl_150;
-			bool m_material_default;
-			bool m_material_merged;
 
 			void load_parameters_xml(const xmlNodePtr node);
 
@@ -54,26 +52,63 @@ namespace eternal_lands
 				m_source = source;
 			}
 
+			inline void add_version(const ShaderVersionType version)
+			{
+				m_versions.insert(version);
+			}
+
+			inline void erase_version(
+				const ShaderVersionType version)
+			{
+				m_versions.erase(version);
+			}
+
 			inline void set_glsl_120(const bool glsl_120)
 			{
-				m_glsl_120 = glsl_120;
+				if (glsl_120)
+				{
+					add_version(svt_120);
+				}
+				else
+				{
+					erase_version(svt_120);
+				}
+			}
+
+			inline void set_glsl_130(const bool glsl_130)
+			{
+				if (glsl_130)
+				{
+					add_version(svt_130);
+				}
+				else
+				{
+					erase_version(svt_130);
+				}
+			}
+
+			inline void set_glsl_140(const bool glsl_140)
+			{
+				if (glsl_140)
+				{
+					add_version(svt_140);
+				}
+				else
+				{
+					erase_version(svt_140);
+				}
 			}
 
 			inline void set_glsl_150(const bool glsl_150)
 			{
-				m_glsl_150 = glsl_150;
-			}
-
-			inline void set_material_default(
-				const bool material_default)
-			{
-				m_material_default = material_default;
-			}
-
-			inline void set_material_merged(
-				const bool material_merged)
-			{
-				m_material_merged = material_merged;
+				if (glsl_150)
+				{
+					add_version(svt_150);
+				}
+				else
+				{
+					erase_version(svt_150);
+				}
 			}
 
 			inline const ShaderSourceParameterVector
@@ -87,24 +122,30 @@ namespace eternal_lands
 				return m_source;
 			}
 
+			inline bool get_version(
+				const ShaderVersionType version) const
+			{
+				return m_versions.count(version) > 0;
+			}
+
 			inline bool get_glsl_120() const
 			{
-				return m_glsl_120;
+				return m_versions.count(svt_120) > 0;
+			}
+
+			inline bool get_glsl_130() const
+			{
+				return m_versions.count(svt_130) > 0;
+			}
+
+			inline bool get_glsl_140() const
+			{
+				return m_versions.count(svt_140) > 0;
 			}
 
 			inline bool get_glsl_150() const
 			{
-				return m_glsl_150;
-			}
-
-			inline bool get_material_default() const
-			{
-				return m_material_default;
-			}
-
-			inline bool get_material_merged() const
-			{
-				return m_material_merged;
+				return m_versions.count(svt_150) > 0;
 			}
 
 	};

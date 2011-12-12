@@ -60,6 +60,12 @@ namespace eternal_lands
 	{
 		xmlNodePtr it;
 
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("shader_source_datas"))
+			!= 0)
+		{
+			return;
+		}
+
 		m_datas.clear();
 
 		if (!XmlUtil::has_children(node, true))
@@ -158,7 +164,7 @@ namespace eternal_lands
 		save_xml(writer);
 	}
 
-	void ShaderSource::build_source(const ShaderSourceDataType &type,
+	void ShaderSource::build_source(const ShaderVersionType &type,
 		const ShaderSourceParameterVector &locals,
 		OutStream &stream, ShaderSourceParameterVector &globals) const
 	{
@@ -166,45 +172,19 @@ namespace eternal_lands
 	}
 
 	bool ShaderSource::check_source_parameter(
-		const ShaderSourceDataType &type, const String &name) const
+		const ShaderVersionType &type, const String &name) const
 	{
 		return get_data(type).check_source_parameter(name);
 	}
 
-	bool ShaderSource::get_has_data(const ShaderSourceDataType type) const
+	bool ShaderSource::get_has_data(const ShaderVersionType shader_version)
+		const
 	{
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{
-			switch (type)
+			if (data.get_version(shader_version))
 			{
-				case ssdt_glsl_120:
-					if (data.get_glsl_120() &&
-						data.get_material_default())
-					{
-						return true;
-					}
-					break;
-				case ssdt_glsl_120_merged:
-					if (data.get_glsl_120() &&
-						data.get_material_merged())
-					{
-						return true;
-					}
-					break;
-				case ssdt_glsl_150:
-					if (data.get_glsl_150() &&
-						data.get_material_default())
-					{
-						return true;
-					}
-					break;
-				case ssdt_glsl_150_merged:
-					if (data.get_glsl_150() &&
-						data.get_material_merged())
-					{
-						return true;
-					}
-					break;
+				return true;
 			}
 		}
 
@@ -212,45 +192,19 @@ namespace eternal_lands
 	}
 
 	const ShaderSourceData &ShaderSource::get_data(
-		const ShaderSourceDataType type) const
+		const ShaderVersionType shader_version) const
 	{
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{
-			switch (type)
+			if (data.get_version(shader_version))
 			{
-				case ssdt_glsl_120:
-					if (data.get_glsl_120() &&
-						data.get_material_default())
-					{
-						return data;
-					}
-					break;
-				case ssdt_glsl_120_merged:
-					if (data.get_glsl_120() &&
-						data.get_material_merged())
-					{
-						return data;
-					}
-					break;
-				case ssdt_glsl_150:
-					if (data.get_glsl_150() &&
-						data.get_material_default())
-					{
-						return data;
-					}
-					break;
-				case ssdt_glsl_150_merged:
-					if (data.get_glsl_150() &&
-						data.get_material_merged())
-					{
-						return data;
-					}
-					break;
+				return data;
 			}
 		}
 
 		EL_THROW_MESSAGE_EXCEPTION(UTF8("No shader source data with "
-			"type %1% in %2% found."), type % get_name(),
+			"shader version %1% in '[%2%]: %3%' found."),
+			shader_version % get_type() % get_name(),
 			ItemNotFoundException());
 	}
 

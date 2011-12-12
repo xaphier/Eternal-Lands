@@ -38,6 +38,7 @@
 #include "engine/utf.hpp"
 #include "engine/logging.hpp"
 #include "engine/filesystem.hpp"
+#include "engine/filter.hpp"
 
 namespace el = eternal_lands;
 
@@ -1416,8 +1417,48 @@ extern "C" void set_optmize_shader_source(const int value)
 
 extern "C" void set_opengl_version(const int value)
 {
-	global_vars->set_opengl_version(
-		static_cast<el::OpenglVerionType>(value));
+	el::OpenglVerionType version;
+
+	if (value <= el::ovt_2_1)
+	{
+		version = el::ovt_2_1;
+	}
+	else
+	{
+		if (value >= el::ovt_3_3)
+		{
+			version = el::ovt_3_3;
+		}
+		else
+		{
+			version = static_cast<el::OpenglVerionType>(value);
+		}
+	}
+
+	global_vars->set_opengl_version(version);
+}
+
+extern "C" void set_filter(const int value)
+{
+	el::FilterType filter;
+
+	if (value <= el::ft_gauss_5_tap)
+	{
+		filter = el::ft_gauss_5_tap;
+	}
+	else
+	{
+		if (value >= el::ft_box_13_tap)
+		{
+			filter = el::ft_box_13_tap;
+		}
+		else
+		{
+			filter = static_cast<el::FilterType>(value);
+		}
+	}
+
+//	global_vars->set_filter(filter);
 }
 
 extern "C" int get_opengl_3_0()
