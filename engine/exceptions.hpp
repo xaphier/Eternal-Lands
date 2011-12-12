@@ -148,7 +148,7 @@ namespace eternal_lands
 		{	\
 			EL_THROW_EXCEPTION(::eternal_lands::OpenGlException()	\
 				<< ::eternal_lands::errinfo_message(	\
-					::eternal_lands::utf8_to_string(	\
+					::eternal_lands::string_to_utf8(	\
 						reinterpret_cast<const char*>(	\
 							gluErrorString(gl_error))))	\
 				<< ::eternal_lands::errinfo_gl_error(gl_error));	\
