@@ -698,7 +698,7 @@ namespace eternal_lands
 
 		m_optimizer.reset(new ShaderSourceOptimizer());
 
-		m_shadow_scale = 1.0f;
+		m_shadow_scale = 0.8f;
 		m_vertex_light_count = 4;
 		m_fragment_light_count = 4;
 		m_bone_count = 72;

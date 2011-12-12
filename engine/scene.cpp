@@ -591,8 +591,16 @@ namespace eternal_lands
 			}
 			else
 			{
-				program->set_parameter(apt_ambient,
-					m_main_light_ambient);
+				if (m_night)
+				{
+					program->set_parameter(apt_ambient,
+						m_main_light_ambient + 0.2f);
+				}
+				else
+				{
+					program->set_parameter(apt_ambient,
+						m_main_light_ambient);
+				}
 			}
 
 			program->set_last_used(m_program_vars_id);
