@@ -1109,6 +1109,7 @@ int display_game_handler (window_info *win)
 
 		missiles_update();
 	
+	CHECK_GL_ERRORS();
 		if (!is_day)
 			weather_init_lightning_light();
 #if	0
@@ -1139,6 +1140,7 @@ int display_game_handler (window_info *win)
 			display_blended_objects();
 		}
 #else
+	CHECK_GL_ERRORS();
 		draw_engine();
 
 		display_actors(1, DEFAULT_RENDER_PASS);
@@ -1193,6 +1195,7 @@ int display_game_handler (window_info *win)
 
 	//we do this because we don't want the rain/particles to mess with our cursor
 
+	CHECK_GL_ERRORS();
 	ec_draw();
 	CHECK_GL_ERRORS();
 
@@ -1298,12 +1301,6 @@ int display_game_handler (window_info *win)
 #endif	//DEBUG
 		safe_snprintf ((char*)str, sizeof(str), "FPS: %i", fps[0]);
 		draw_string (win->len_x-hud_x-95, 4, str, 1);
-#ifdef DEBUG
-		//LRNR: stats testing
-		safe_snprintf((char*)str, sizeof(str), "E3D:%3d TOT:%3d", e3d_count, e3d_total);
-		draw_string (win->len_x-hud_x-183, 49, str, 1);
-		e3d_count= e3d_total= 0;
-#endif //DEBUG
 	}
 	draw_spell_icon_strings();
 
@@ -2310,12 +2307,6 @@ int keypress_game_handler (window_info *win, int mx, int my, Uint32 key, Uint32 
 		}
 #endif	/* NEW_TEXTURES */
 	}
-#ifdef	NEW_TEXTURES
-	else if (keysym == SDLK_F12)
-	{
-		dump_texture_cache();
-	}
-#endif	/* NEW_TEXTURES */
 #endif	/* DEBUG */
 	// END OF TEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	else

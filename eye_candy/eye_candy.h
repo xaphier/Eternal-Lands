@@ -2029,7 +2029,6 @@ namespace ec
 				particle_max_count = 0;
 				particle_count = 0;
 				buffer = 0;
-				buffer_float_count = 0;
 #endif	/* NEW_TEXTURES */
 			}
 			;
@@ -2127,7 +2126,6 @@ namespace ec
 			Uint32 particle_max_count;
 			Uint32 particle_count;
 			float* buffer;
-			Uint32 buffer_float_count;
 #endif	/* NEW_TEXTURES */
 		};
 
