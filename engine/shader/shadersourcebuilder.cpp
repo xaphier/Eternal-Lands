@@ -1617,6 +1617,8 @@ namespace eternal_lands
 		vertex_source << UTF8("\n");
 		vertex_source << vertex_main.str();
 
+		LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex_source.str());
+
 		fragment_source << UTF8("#version ") << version;
 		fragment_source << UTF8("\n");
 		BOOST_FOREACH(const String &extension, fragment_extensions)
@@ -1643,7 +1645,6 @@ namespace eternal_lands
 		fragment_source << UTF8("\n");
 		fragment_source << fragment_main.str();
 
-		LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex_source.str());
 		LOG_DEBUG(UTF8("Fragment Shader:\n%1%"), fragment_source.str());
 
 		if (get_global_vars()->get_optmize_shader_source())
@@ -1663,6 +1664,8 @@ namespace eternal_lands
 				throw;
 			}
 
+			LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex);
+
 			try
 			{
 				fragment = get_optimized_source(
@@ -1678,7 +1681,6 @@ namespace eternal_lands
 				throw;
 			}
 
-			LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex);
 			LOG_DEBUG(UTF8("Fragment Shader:\n%1%"), fragment);
 		}
 		else
@@ -1686,9 +1688,6 @@ namespace eternal_lands
 			vertex = vertex_source.str();
 			fragment = fragment_source.str();
 		}
-
-		LOG_INFO(UTF8("Vertex Shader:\n%1%"), vertex);
-		LOG_INFO(UTF8("Fragment Shader:\n%1%"), fragment);
 
 		count = ShaderTextureUtil::get_shader_texture_count();
 
