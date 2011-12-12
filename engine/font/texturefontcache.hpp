@@ -35,6 +35,9 @@ namespace eternal_lands
 			Uint16 m_width;
 			Uint16 m_height;
 
+			String get_font_file_name(const String &family,
+				const float size, const bool bold,
+				const bool italic);
 		public:
 			/**
 			 * Default constructor.
@@ -48,6 +51,7 @@ namespace eternal_lands
 
 			void add_font(const String &family, const float size,
 				const bool bold, const bool italic);
+			void add_font(const String &file_name);
 
 	};
 

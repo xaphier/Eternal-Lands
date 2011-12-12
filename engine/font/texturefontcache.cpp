@@ -8,7 +8,9 @@
 #include "texturefontcache.hpp"
 #include <ft2build.h>
 #include FT_FREETYPE_H 
+#ifdef	LINUX
 #include <fontconfig/fontconfig.h>
+#endif
 
 namespace eternal_lands
 {
@@ -21,9 +23,10 @@ namespace eternal_lands
 	{
 	}
 
-	void TextureFontCache::add_font(const String &family, const float size,
-		const bool bold, const bool italic)
+	String TextureFontCache::get_font_file_name(const String &family,
+		const float size, const bool bold, const bool italic)
 	{
+#ifdef	LINUX
 		std::string file_name;
 		Sint32 weight, slant;
 		FcPattern *pattern;
@@ -58,7 +61,7 @@ namespace eternal_lands
 		if (match == 0)
 		{
 			fprintf( stderr, "fontconfig error: could not match family '%s'", family.get().c_str());
-			return;
+			return String();
 		}
 		else
 		{
@@ -79,7 +82,20 @@ namespace eternal_lands
 //    font = texture_font_new( self->atlas, filename, size );
 //    texture_font_cache_glyphs( font, self->cache );
 
-		return;
+		return String(file_name);
+#else	/* LINUX */
+		return String();
+#endif	/* LINUX */
+	}
+
+	void TextureFontCache::add_font(const String &family, const float size,
+		const bool bold, const bool italic)
+	{
+		add_font(get_font_file_name(family, size, bold, italic));
+	}
+
+	void TextureFontCache::add_font(const String &file_name)
+	{
 	}
 
 }
