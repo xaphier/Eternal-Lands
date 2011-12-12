@@ -218,6 +218,7 @@ namespace ec
 		corner[3] = Vec3(pos - base->corner_offset2 * size);
 
 		assert(particle_count < particle_max_count);
+		assert(buffer != 0);
 
 		for (i = 0; i < 4; i++)
 		{
@@ -253,13 +254,15 @@ namespace ec
 		buffer_float_count = particle_max_count * 40;
 		size = buffer_float_count * sizeof(float);
 
-		particle_vertex_buffer.bind(el::hbt_vertex);
-
 		if (particle_vertex_buffer.get_size() < size)
 		{
+			particle_vertex_buffer.bind(el::hbt_vertex);
+
 			particle_vertex_buffer.set_size(el::hbt_vertex, size,
 				el::hbut_dynamic_draw);
 		}
+
+		particle_vertex_buffer.bind(el::hbt_vertex);
 
 		buffer = static_cast<float*>(particle_vertex_buffer.map(
 			el::hbt_vertex, el::hbat_write_only));
@@ -284,6 +287,9 @@ namespace ec
 		}
 
 		particle_vertex_buffer.unmap(el::hbt_vertex);
+
+		particle_vertex_buffer.unbind(el::hbt_vertex);
+
 		buffer_float_count = 0;
 		buffer = 0;
 	}
@@ -319,6 +325,7 @@ namespace ec
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             ELglClientActiveTextureARB(GL_TEXTURE0);
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		particle_vertex_buffer.unbind(el::hbt_vertex);
         }
 	}
 #endif	/* NEW_TEXTURES */
