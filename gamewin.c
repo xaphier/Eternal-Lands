@@ -1166,9 +1166,7 @@ int display_game_handler (window_info *win)
 	light_idle();
 #endif // DEBUG_TIME
 
-#if	0
 	ec_idle();
-#endif
 
 	CHECK_GL_ERRORS();
 	// if not active, dont bother drawing any more

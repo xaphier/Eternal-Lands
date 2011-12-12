@@ -217,20 +217,24 @@ namespace ec
 		corner[2] = Vec3(pos + base->corner_offset1 * size);
 		corner[3] = Vec3(pos - base->corner_offset2 * size);
 
+		assert(particle_count < particle_max_count);
+
 		for (i = 0; i < 4; i++)
 		{
-			index = particle_count * 4 + i;
+			index = (particle_count * 4 + i) * 10;
 
-			buffer[index * 10 + 0] = r;
-			buffer[index * 10 + 1] = g;
-			buffer[index * 10 + 2] = b;
-			buffer[index * 10 + 3] = alpha;
-			buffer[index * 10 + 4] = corner[i].x;
-			buffer[index * 10 + 5] = corner[i].y;
-			buffer[index * 10 + 6] = corner[i].z;
-			buffer[index * 10 + 7] = get_texture_coordinates(texture, i)[0];
-			buffer[index * 10 + 8] = get_texture_coordinates(texture, i)[1];
-			buffer[index * 10 + 9] = get_texture_coordinate(burn);
+			assert((particle_count + 9) < buffer_float_count);
+
+			buffer[index + 0] = r;
+			buffer[index + 1] = g;
+			buffer[index + 2] = b;
+			buffer[index + 3] = alpha;
+			buffer[index + 4] = corner[i].x;
+			buffer[index + 5] = corner[i].y;
+			buffer[index + 6] = corner[i].z;
+			buffer[index + 7] = get_texture_coordinates(texture, i)[0];
+			buffer[index + 8] = get_texture_coordinates(texture, i)[1];
+			buffer[index + 9] = get_texture_coordinate(burn);
 		}
 
 		particle_count++;
@@ -238,6 +242,7 @@ namespace ec
 
 	void Effect::build_particle_buffer(const Uint64 time_diff)
 	{
+		Uint32 size;
 		std::map<Particle*, bool>::const_iterator iter;
 		const Vec3 center(base->center);
 
@@ -245,11 +250,16 @@ namespace ec
 
 		particle_max_count = particles.size() * (1 + motion_blur_points);
 
+		buffer_float_count = particle_max_count * 40;
+		size = buffer_float_count * sizeof(float);
+
 		particle_vertex_buffer.bind(el::hbt_vertex);
 
-		particle_vertex_buffer.set_size(el::hbt_vertex,
-			particle_max_count * 40 * sizeof(float),
-			el::hbut_dynamic_draw);
+		if (particle_vertex_buffer.get_size() < size)
+		{
+			particle_vertex_buffer.set_size(el::hbt_vertex, size,
+				el::hbut_dynamic_draw);
+		}
 
 		buffer = static_cast<float*>(particle_vertex_buffer.map(
 			el::hbt_vertex, el::hbat_write_only));
@@ -274,6 +284,8 @@ namespace ec
 		}
 
 		particle_vertex_buffer.unmap(el::hbt_vertex);
+		buffer_float_count = 0;
+		buffer = 0;
 	}
 
 	void Effect::draw_particle_buffer()
