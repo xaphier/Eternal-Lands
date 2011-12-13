@@ -336,8 +336,24 @@ namespace eternal_lands
 		m_view_dir = glm::vec4(glm::normalize(glm::vec3(m_view_dir) -
 			glm::vec3(m_camera)), 0.0f);
 
-		shadow_map_size = 256 <<
-			get_global_vars()->get_shadow_map_size();
+		switch (get_global_vars()->get_shadow_map_size())
+		{
+			case 0:
+				shadow_map_size = 512;
+				break;
+			case 1:
+				shadow_map_size = 1024;
+				break;
+			case 2:
+				shadow_map_size = 1536;
+				break;
+			case 3:
+				shadow_map_size = 2048;
+				break;
+			default:
+				shadow_map_size = 512;
+				break;
+		}
 
 		m_shadow_map_count = get_global_vars()->get_shadow_map_count();
 		m_exponential_shadow_maps =
