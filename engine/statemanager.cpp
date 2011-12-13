@@ -13,10 +13,11 @@
 namespace eternal_lands
 {
 
-	StateManager::StateManager(): m_texture_unit(0), m_color_mask(true),
-		m_multisample(false), m_blend(false), m_culling(true),
-		m_depth_mask(true), m_depth_test(true), m_scissor_test(false),
-		m_sample_alpha_to_coverage(false), m_polygon_offset_fill(false)
+	StateManager::StateManager(): m_layer_index(0.0f), m_color_mask(true),
+		m_texture_unit(0), m_multisample(false), m_blend(false),
+		m_culling(true), m_depth_mask(true), m_depth_test(true),
+		m_scissor_test(false), m_sample_alpha_to_coverage(false),
+		m_polygon_offset_fill(false)
 	{
 		m_program_used_texture_units.set();
 	}
@@ -36,6 +37,7 @@ namespace eternal_lands
 		set_scissor_test(false);
 		set_sample_alpha_to_coverage(false);
 		set_polygon_offset_fill(false);
+		set_layer_index(glm::vec4(0.0f));
 		glCullFace(GL_BACK);
 	}
 
@@ -196,6 +198,14 @@ namespace eternal_lands
 		{
 			glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 		}
+	}
+
+	void StateManager::set_layer_index(const glm::vec4 &layer_index)
+	{
+		m_layer_index = layer_index;
+
+		glVertexAttrib4fv(vst_layer_index,
+			glm::value_ptr(m_layer_index));
 	}
 
 	bool StateManager::switch_texture_unit(const Uint16 texture_unit)

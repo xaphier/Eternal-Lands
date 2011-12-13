@@ -481,7 +481,8 @@ extern "C" void load_map_engine(const char* name, const float r, const float g,
 		glm::vec3(r, g, b), dungeon != 0);
 
 	instances_builder.reset(new el::InstancesBuilder(
-		scene->get_scene_resources().get_mesh_data_cache_ptr()));
+		scene->get_scene_resources().get_mesh_data_cache_ptr(),
+		scene->get_scene_resources().get_texture_cache_ptr()));
 
 	CHECK_GL_ERROR();
 

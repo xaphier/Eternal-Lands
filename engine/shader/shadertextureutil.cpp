@@ -14,28 +14,80 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String shader_texture_type_datas[] =
+		class ShaderTextureTypeData
 		{
-			String(UTF8("diffuse_sampler_0")),
-			String(UTF8("diffuse_sampler_1")),
-			String(UTF8("diffuse_sampler_2")),
-			String(UTF8("diffuse_sampler_3")),
-			String(UTF8("normal_sampler_0")),
-			String(UTF8("specular_sampler_0")),
-			String(UTF8("glow_sampler_0")),
-			String(UTF8("blend_sampler_0")),
-			String(UTF8("normal_sampler_1")),
-			String(UTF8("specular_sampler_1")),
-			String(UTF8("glow_sampler_1")),
-			String(UTF8("blend_sampler_1")),
-			String(UTF8("extra_sampler_0")),
-			String(UTF8("extra_sampler_1")),
-			String(UTF8("extra_sampler_2")),
-			String(UTF8("shadow_sampler"))
+			private:
+				const String m_name;
+				const Uint16 m_layer_index;
+				const bool m_use_layer_index;
+
+			public:
+				inline ShaderTextureTypeData(const String &name,
+					const Uint16 layer_index): m_name(name),
+					m_layer_index(layer_index),
+					m_use_layer_index(true)
+				{
+				}
+
+				inline ShaderTextureTypeData(
+					const String &name): m_name(name),
+					m_layer_index(std::numeric_limits<
+						Uint16>::max()),
+					m_use_layer_index(false)
+				{
+				}
+
+				inline ~ShaderTextureTypeData() throw()
+				{
+				}
+
+				inline const String &get_name() const
+				{
+					return m_name;
+				}
+
+				inline Uint16 get_layer_index() const
+				{
+					return m_layer_index;
+				}
+
+				inline bool get_use_layer_index() const
+				{
+					return m_use_layer_index;
+				}
+
+		};
+
+		const ShaderTextureTypeData shader_texture_type_datas[] =
+		{
+			ShaderTextureTypeData(
+				String(UTF8("diffuse_sampler_0")), 0),
+			ShaderTextureTypeData(
+				String(UTF8("diffuse_sampler_1")), 1),
+			ShaderTextureTypeData(
+				String(UTF8("diffuse_sampler_2"))),
+			ShaderTextureTypeData(
+				String(UTF8("diffuse_sampler_3"))),
+			ShaderTextureTypeData(
+				String(UTF8("normal_sampler_0")), 2),
+			ShaderTextureTypeData(
+				String(UTF8("specular_sampler_0")), 3),
+			ShaderTextureTypeData(String(UTF8("glow_sampler_0"))),
+			ShaderTextureTypeData(String(UTF8("blend_sampler_0"))),
+			ShaderTextureTypeData(String(UTF8("normal_sampler_1"))),
+			ShaderTextureTypeData(
+				String(UTF8("specular_sampler_1"))),
+			ShaderTextureTypeData(String(UTF8("glow_sampler_1"))),
+			ShaderTextureTypeData(String(UTF8("blend_sampler_1"))),
+			ShaderTextureTypeData(String(UTF8("extra_sampler_0"))),
+			ShaderTextureTypeData(String(UTF8("extra_sampler_1"))),
+			ShaderTextureTypeData(String(UTF8("extra_sampler_2"))),
+			ShaderTextureTypeData(String(UTF8("shadow_sampler")))
 		};
 
 		const Uint32 shader_texture_type_datas_count =
-			sizeof(shader_texture_type_datas) / sizeof(String);
+			sizeof(shader_texture_type_datas) /
+				sizeof(ShaderTextureTypeData);
 
 	}
 
@@ -54,7 +106,7 @@ namespace eternal_lands
 					"ShaderTextureType")));
 		}
 
-		return shader_texture_type_datas[texture];
+		return shader_texture_type_datas[texture].get_name();
 	}
 
 	ShaderTextureType ShaderTextureUtil::get_shader_texture(
@@ -99,6 +151,42 @@ namespace eternal_lands
 		}
 
 		return false;
+	}
+
+	Uint16 ShaderTextureUtil::get_layer_index(
+		const ShaderTextureType texture)
+	{
+		if (shader_texture_type_datas_count <= texture)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_range_min(0)
+				<< errinfo_range_max(
+					shader_texture_type_datas_count - 1)
+				<< errinfo_range_index(static_cast<Uint32>(
+					texture))
+				<< boost::errinfo_type_info_name(UTF8(
+					"ShaderTextureType")));
+		}
+
+		return shader_texture_type_datas[texture].get_layer_index();
+	}
+
+	bool ShaderTextureUtil::get_use_layer_index(
+		const ShaderTextureType texture)
+	{
+		if (shader_texture_type_datas_count <= texture)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_range_min(0)
+				<< errinfo_range_max(
+					shader_texture_type_datas_count - 1)
+				<< errinfo_range_index(static_cast<Uint32>(
+					texture))
+				<< boost::errinfo_type_info_name(UTF8(
+					"ShaderTextureType")));
+		}
+
+		return shader_texture_type_datas[texture].get_use_layer_index();
 	}
 
 	Uint32 ShaderTextureUtil::get_shader_texture_count()

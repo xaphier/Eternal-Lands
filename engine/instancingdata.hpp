@@ -42,6 +42,9 @@ namespace eternal_lands
 
 			~InstancingData() throw();
 
+			void build_layer_indices(
+				const TextureCacheSharedPtr &texture_cache);
+
 			Sint16Sint16Pair get_index(const float max_size) const;
 
 			inline const BoundingBox &get_bounding_box() const

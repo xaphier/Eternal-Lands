@@ -36,6 +36,9 @@ namespace eternal_lands
 				const MaterialDescription &material) const;
 			bool compare_non_textures(
 				const MaterialDescription &material) const;
+			void build_layer_index(
+				const TextureCacheSharedPtr &texture_cache,
+				const ShaderTextureType texture_type);
 
 		public:
 			MaterialDescription();
@@ -78,6 +81,8 @@ namespace eternal_lands
 			 */
 			bool can_merge(const MaterialDescription &material)
 				const;
+			void build_layer_index(
+				const TextureCacheSharedPtr &texture_cache);
 
 			inline void set_effect(const String &effect)
 			{
@@ -105,6 +110,12 @@ namespace eternal_lands
 				return m_effect;
 			}
 
+			inline void set_layer_index(
+				const glm::vec4 &layer_index)
+			{
+				m_layer_index = layer_index;
+			}
+
 			inline void set_shadow(const bool shadow)
 			{
 				m_shadow = shadow;
@@ -113,6 +124,11 @@ namespace eternal_lands
 			inline void set_culling(const bool culling)
 			{
 				m_culling = culling;
+			}
+
+			inline const glm::vec4 &get_layer_index() const
+			{
+				return m_layer_index;
 			}
 
 			inline bool get_shadow() const

@@ -37,11 +37,12 @@ namespace eternal_lands
 				ActorDataCacheMap;
 
 			ActorDataCacheMap m_actor_data_cache;
-			MeshBuilderWeakPtr m_mesh_builder;
-			EffectCacheWeakPtr m_effect_cache;
-			TextureCacheWeakPtr m_texture_cache;
-			CodecManagerWeakPtr m_codec_manager;
-			FileSystemWeakPtr m_file_system;
+			const MeshBuilderWeakPtr m_mesh_builder;
+			const EffectCacheWeakPtr m_effect_cache;
+			const TextureCacheWeakPtr m_texture_cache;
+			const CodecManagerWeakPtr m_codec_manager;
+			const FileSystemWeakPtr m_file_system;
+			const GlobalVarsSharedPtr m_global_vars;
 
 			inline MeshBuilderSharedPtr get_mesh_builder() const
 			{
@@ -77,6 +78,12 @@ namespace eternal_lands
 				return m_file_system;
 			}
 
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
+			{
+				return m_global_vars;
+			}
+
 		public:
 			/**
 			 * Default constructor.
@@ -85,7 +92,8 @@ namespace eternal_lands
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
 				const CodecManagerWeakPtr &codec_manager,
-				const FileSystemWeakPtr &file_system);
+				const FileSystemWeakPtr &file_system,
+				const GlobalVarsSharedPtr &global_vars);
 
 			/**
 			 * Default destructor.

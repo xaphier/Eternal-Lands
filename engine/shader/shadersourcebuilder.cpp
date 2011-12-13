@@ -13,7 +13,6 @@
 #include "logging.hpp"
 #include "globalvars.hpp"
 #include "shadersourcedescription.hpp"
-#include "utf.hpp"
 #include "commonparameterutil.hpp"
 #include "shadersourceparameterbuilder.hpp"
 #include "shadersourceparameter.hpp"
@@ -266,6 +265,7 @@ namespace eternal_lands
 			ShaderSourceParameterVector &attributes)
 		{
 			ShaderSourceParameterVector::iterator it;
+			VertexSemanticType vertex_semantic;
 			Uint32 i;
 
 			i = 0;
@@ -274,8 +274,8 @@ namespace eternal_lands
 			{
 				it = inputs.begin() + i;
 
-				if (VertexElement::get_is_vertex_semantic_type(
-					it->get_name()))
+				if (VertexElement::get_vertex_semantic(
+					it->get_name(), vertex_semantic))
 				{
 					attributes.push_back(*it);
 					inputs.erase(it);
@@ -456,7 +456,7 @@ namespace eternal_lands
 			m_shader(0)
 		{
 			m_shader = glslopt_optimize(m_optimizer, type,
-				string_to_utf8(source).c_str(), 0);
+				source.c_str(), 0);
 		}
 
 		OptimizeShaderSource::~OptimizeShaderSource() throw()
@@ -468,14 +468,13 @@ namespace eternal_lands
 		{
 			if (glslopt_get_status(m_shader))
 			{
-				return utf8_to_string(glslopt_get_output(
-					m_shader));
+				return glslopt_get_output(m_shader);
 			}
 			else
 			{
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_message(utf8_to_string(
-						glslopt_get_log(m_shader))));
+					<< errinfo_message(glslopt_get_log(
+						m_shader)));
 			}
 		}
 
@@ -546,6 +545,7 @@ namespace eternal_lands
 		ssbot_world_uv,
 		ssbot_fragment_uv,
 		ssbot_view_position,
+		ssbot_layer_index,
 		ssbot_alpha_to_coverage,
 		ssbot_fog
 	};
@@ -556,7 +556,7 @@ namespace eternal_lands
 			ShaderSourceTypeStringMap m_sources;
 			ShaderVersionType m_version;
 			ShaderBuildType m_shader_build_type;
-			BitSet16 m_options;
+			std::set<ShaderSourceBuildOptionTypes> m_options;
 			Uint16 m_vertex_light_count;
 			Uint16 m_fragment_light_count;
 			Uint16 m_light_count;
@@ -611,7 +611,14 @@ namespace eternal_lands
 				const ShaderSourceBuildOptionTypes option,
 				const bool enabled)
 			{
-				m_options[option] = enabled;
+				if (enabled)
+				{
+					m_options.insert(option);
+				}
+				else
+				{
+					m_options.erase(option);
+				}
 			}
 
 			/**
@@ -642,15 +649,7 @@ namespace eternal_lands
 			inline bool get_option(
 				const ShaderSourceBuildOptionTypes option) const
 			{
-				return m_options[option];
-			}
-
-			/**
-			 * Returns the options the shader uses.
-			 */
-			inline BitSet16 get_options() const
-			{
-				return m_options;
+				return m_options.count(option);
 			}
 
 			/**
@@ -727,8 +726,7 @@ namespace eternal_lands
 		}
 		catch (boost::exception &exception)
 		{
-			exception << boost::errinfo_file_name(string_to_utf8(
-				file_name));
+			exception << boost::errinfo_file_name(file_name);
 
 			LOG_EXCEPTION(exception);
 		}
@@ -1139,6 +1137,13 @@ namespace eternal_lands
 				main, globals, values);
 		}
 
+
+		if (data.get_option(ssbot_layer_index))
+		{
+			build_function(data, array_sizes, locals,
+				sst_layer_index, main, globals, values);
+		}
+
 		main << UTF8("}\n");
 	}
 
@@ -1384,6 +1389,11 @@ namespace eternal_lands
 				sst_view_direction);
 		}
 
+		if (data.get_option(ssbot_layer_index))
+		{
+			result |= check_function(data, name, sst_layer_index);
+		}
+
 		if ((data.get_shader_build_type() != sbt_color) ||
 			(data.get_fragment_light_count() == 0))
 		{
@@ -1561,6 +1571,8 @@ namespace eternal_lands
 			cpt_fragment_uv));
 		data.set_option(ssbot_world_uv, get_source_parameter(data,
 			cpt_world_uv));
+		data.set_option(ssbot_layer_index, get_source_parameter(data,
+			cpt_layer));
 		data.set_option(ssbot_view_position, get_source_parameter(data,
 			cpt_view_position));
 		data.set_option(ssbot_tangent, get_source_parameter(data,

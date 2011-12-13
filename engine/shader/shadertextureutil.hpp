@@ -56,6 +56,10 @@ namespace eternal_lands
 			static bool get_shader_texture(const String &str,
 				ShaderTextureType &shader_texture);
 			static Uint32 get_shader_texture_count();
+			static Uint16 get_layer_index(
+				const ShaderTextureType texture);
+			static bool get_use_layer_index(
+				const ShaderTextureType texture);
 
 	};
 

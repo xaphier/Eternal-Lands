@@ -14,6 +14,7 @@
 #include "filesystem.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
@@ -146,13 +147,71 @@ namespace eternal_lands
 			return texture;
 		}
 
+		StringVector load_file_names_xml(const xmlNodePtr node)
+		{
+			StringVector file_names;
+			xmlNodePtr it;
+
+			if (xmlStrcmp(node->name, BAD_CAST UTF8("file_names")) != 0)
+			{
+				return file_names;
+			}
+
+			if (!XmlUtil::has_children(node, true))
+			{
+				return file_names;
+			}
+
+			it = XmlUtil::children(node, true);
+
+			do
+			{
+				if (xmlStrcmp(it->name,
+					BAD_CAST UTF8("file_name")) == 0)
+				{
+					file_names.push_back(
+						XmlUtil::get_string_value(it));
+				}
+			}
+			while (XmlUtil::next(it, true));
+
+			return file_names;
+		}
+
 	}
 
 	class TextureCache::TextureArrayItem
 	{
-		public:
+		private:
 			TextureSharedPtr m_texture;
-			Uint32 m_layer;
+			Uint16 m_layer;
+
+		public:
+			inline TextureArrayItem():
+				m_layer(std::numeric_limits<Uint16>::max())
+			{
+			}
+
+			inline TextureArrayItem(const TextureSharedPtr &texture,
+				const Uint16 layer): m_texture(texture),
+				m_layer(layer)
+			{
+				assert(texture.get() != 0);
+			}
+
+			inline ~TextureArrayItem() throw()
+			{
+			}
+
+			inline const TextureSharedPtr &get_texture() const
+			{
+				return m_texture;
+			}
+
+			inline Uint16 get_layer() const
+			{
+				return m_layer;
+			}
 
 	};
 
@@ -181,7 +240,8 @@ namespace eternal_lands
 		return m_error_texture;
 	}
 
-	TextureSharedPtr TextureCache::do_load_texture(const String &name) const
+	TextureSharedPtr TextureCache::do_load_texture(const String &name,
+		const String &index) const
 	{
 		ImageSharedPtr image;
 		TextureSharedPtr texture;
@@ -193,7 +253,7 @@ namespace eternal_lands
 			compressions.insert(ict_s3tc);
 		}
 
-		if (GLEW_EXT_texture_compression_rgtc)
+		if (get_global_vars()->get_opengl_3_0())
 		{
 			compressions.insert(ict_rgtc);
 		}
@@ -201,14 +261,20 @@ namespace eternal_lands
 		reader = get_file_system()->get_file(name);
 
 		image = get_codec_manager()->load_image(reader, compressions);
-		texture = boost::make_shared<Texture>(name);
+		texture = boost::make_shared<Texture>(index);
+
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			texture->set_target(ttt_2d_texture_array);
+		}
+
 		texture->set_format(image->get_texture_format());
 		texture->set_image(image);
 
 		return texture;
 	}
 
-	TextureSharedPtr TextureCache::load_texture_array(String name,
+	TextureSharedPtr TextureCache::load_texture_array(const String &name,
 		const Uint32 width, const Uint32 height, const Uint16 mipmaps,
 		const TextureFormatType format, const StringVector &file_names)
 		const
@@ -223,10 +289,7 @@ namespace eternal_lands
 			compressions.insert(ict_s3tc);
 		}
 
-		if (GLEW_EXT_texture_compression_rgtc)
-		{
-			compressions.insert(ict_rgtc);
-		}
+		compressions.insert(ict_rgtc);
 
 		BOOST_FOREACH(const String &file_name, file_names)
 		{
@@ -237,6 +300,7 @@ namespace eternal_lands
 		}
 
 		texture = boost::make_shared<Texture>(name);
+		texture->set_target(ttt_2d_texture_array);
 		texture->set_format(format);
 		texture->set_width(width);
 		texture->set_height(height);
@@ -245,11 +309,44 @@ namespace eternal_lands
 		return texture;
 	}
 
-	TextureSharedPtr TextureCache::load_texture(const String &name)
+	void TextureCache::add_texture_array(const String &name,
+		const Uint32 width, const Uint32 height, const Uint16 mipmaps,
+		const TextureFormatType format, const StringVector &file_names)
+	{
+		TextureSharedPtr texture;
+		String index;
+		Uint16 i, count;
+
+		if (!get_global_vars()->get_opengl_3_0())
+		{
+			return;
+		}
+
+		texture = load_texture_array(name, width, height, mipmaps,
+			format, file_names);
+
+		count = file_names.size();
+
+		assert(texture.get() != 0);
+		assert(name == texture->get_name());
+
+		m_texture_cache[name] = texture;
+
+		for (i = 0; i < count; i++)
+		{
+			index = FileSystem::get_file_name_without_extension(
+				file_names[i]);
+
+			m_texture_arrays[index] = TextureArrayItem(texture, i);
+		}
+	}
+
+	TextureSharedPtr TextureCache::load_texture(const String &name,
+		const String &index)
 	{
 		try
 		{
-			return do_load_texture(name);
+			return do_load_texture(name, index);
 		}
 		catch (boost::exception &exception)
 		{
@@ -267,26 +364,19 @@ namespace eternal_lands
 	{
 		TextureSharedPtr texture;
 		TextureCacheMap::iterator found;
-		StringType str;
-		Uint32 size;
+		String index;
 
-		str = name;
+		index = FileSystem::get_file_name_without_extension(name);
 
-		size = str.size();
-
-		str[size - 1] = 's';
-		str[size - 2] = 'd';
-		str[size - 3] = 'd';
-
-		found = m_texture_cache.find(String(str));
+		found = m_texture_cache.find(index);
 
 		if (found == m_texture_cache.end())
 		{
-			texture = load_texture(String(str));
+			texture = load_texture(name, index);
 
-			m_texture_cache[String(str)] = texture;
+			m_texture_cache[index] = texture;
 
-			return m_texture_cache[String(str)];
+			return m_texture_cache[index];
 		}
 		else
 		{
@@ -295,16 +385,20 @@ namespace eternal_lands
 	}
 
 	const TextureSharedPtr &TextureCache::get_texture_array(
-		const String &name, Uint32 &layer)
+		const String &name, float &layer)
 	{
 		TextureArrayMap::const_iterator found;
+		String index;
 
-		found = m_texture_arrays.find(name);
+		index = FileSystem::get_file_name_without_extension(name);
+
+		found = m_texture_arrays.find(index);
 
 		if (found != m_texture_arrays.end())
 		{
-			layer = found->second.m_layer;
-			return found->second.m_texture;
+			layer = found->second.get_layer();
+
+			return found->second.get_texture();
 		}
 
 		layer = 0;
@@ -312,17 +406,47 @@ namespace eternal_lands
 		return get_texture(name);
 	}
 
-	bool TextureCache::get_texture_array_name(const String &name,
-		String &array_name, Uint32 &layer) const
+	bool TextureCache::get_texture_array(const String &name,
+		TextureSharedPtr &texture, float &layer) const
 	{
 		TextureArrayMap::const_iterator found;
+		String index;
 
-		found = m_texture_arrays.find(name);
+		index = FileSystem::get_file_name_without_extension(name);
+
+		found = m_texture_arrays.find(index);
+
+		if (found == m_texture_arrays.end())
+		{
+			return false;
+		}
+
+		layer = found->second.get_layer();
+
+		texture = found->second.get_texture();
+
+		return true;
+	}
+
+	bool TextureCache::get_texture_array_name(const String &name,
+		String &array_name, float &layer) const
+	{
+		TextureArrayMap::const_iterator found;
+		String index;
+
+		index = FileSystem::get_file_name_without_extension(name);
+
+		found = m_texture_arrays.find(index);
 
 		if (found != m_texture_arrays.end())
 		{
-			layer = found->second.m_layer;
-			array_name = found->second.m_texture->get_name();
+			layer = found->second.get_layer();
+			array_name = found->second.get_texture()->get_name();
+
+			assert(m_texture_arrays.find(array_name) !=
+				m_texture_arrays.end());
+			assert(found->second.get_texture() ==
+				*m_texture_arrays.find(array_name));
 
 			return true;
 		}
@@ -330,15 +454,18 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 TextureCache::get_texture_array_layer(const String &name) const
+	Uint16 TextureCache::get_texture_array_layer(const String &name) const
 	{
 		TextureArrayMap::const_iterator found;
+		String index;
 
-		found = m_texture_arrays.find(name);
+		index = FileSystem::get_file_name_without_extension(name);
+
+		found = m_texture_arrays.find(index);
 
 		if (found != m_texture_arrays.end())
 		{
-			return found->second.m_layer;
+			return found->second.get_layer();
 		}
 
 		return 0;
@@ -372,6 +499,11 @@ namespace eternal_lands
 
 		do
 		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
+			{
+				name = XmlUtil::get_string_value(it);
+			}
+
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("width")) == 0)
 			{
 				width = XmlUtil::get_uint32_value(it);
@@ -393,16 +525,15 @@ namespace eternal_lands
 					XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("file_name"))
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("file_names"))
 				== 0)
 			{
-				file_names.push_back(
-					XmlUtil::get_string_value(it));
+				file_names = load_file_names_xml(it);
 			}
 		}
 		while (XmlUtil::next(it, true));
 
-		load_texture_array(name, width, height, mipmaps, format,
+		add_texture_array(name, width, height, mipmaps,	format,
 			file_names);
 	}
 
@@ -438,6 +569,11 @@ namespace eternal_lands
 	void TextureCache::load_xml(const String &file_name)
 	{
 		XmlReaderSharedPtr reader;
+
+		if (!get_file_system()->get_file_readable(file_name))
+		{
+			return;
+		}
 
 		reader = XmlReaderSharedPtr(new XmlReader(file_name));
 

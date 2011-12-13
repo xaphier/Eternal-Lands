@@ -12,8 +12,8 @@
 #include "texture.hpp"
 #include "logging.hpp"
 #include "codec/codecmanager.hpp"
-#include "utf.hpp"
 #include "filesystem.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
@@ -840,11 +840,14 @@ namespace eternal_lands
 
 	ActorTextureBuilder::ActorTextureBuilder(
 		const CodecManagerWeakPtr &codec_manager,
-		const FileSystemWeakPtr &file_system, const String &name):
+		const FileSystemWeakPtr &file_system,
+		const GlobalVarsSharedPtr &global_vars, const String &name):
 		m_name(name), m_codec_manager(codec_manager),
-		m_file_system(file_system)
+		m_file_system(file_system), m_global_vars(global_vars)
 	{
 		assert(!m_codec_manager.expired());
+		assert(!m_file_system.expired());
+		assert(m_global_vars.get() != 0);
 
 		m_scale = 4;
 		m_size = 128 * m_scale;
@@ -852,6 +855,11 @@ namespace eternal_lands
 		m_alphas.reset();
 
 		m_texture = boost::make_shared<Texture>(name);
+
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			m_texture->set_target(ttt_2d_texture_array);
+		}
 	}
 
 	ActorTextureBuilder::~ActorTextureBuilder() throw()

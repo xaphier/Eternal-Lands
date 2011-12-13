@@ -273,7 +273,7 @@ namespace eternal_lands
 				"VertexElementType")));
 	}
 
-	VertexSemanticType VertexElement::get_vertex_semantic_type(
+	VertexSemanticType VertexElement::get_vertex_semantic(
 		const String &str)
 	{
 		Uint32 i;
@@ -296,7 +296,8 @@ namespace eternal_lands
 				"VertexSemanticType")));
 	}
 
-	bool VertexElement::get_is_vertex_semantic_type(const String &str)
+	bool VertexElement::get_vertex_semantic(const String &str,
+		VertexSemanticType &vertex_semantic)
 	{
 		Uint32 i;
 		VertexSemanticType vertex_semantic_type;
@@ -308,11 +309,17 @@ namespace eternal_lands
 
 			if (str == get_str(vertex_semantic_type))
 			{
+				vertex_semantic = vertex_semantic_type;
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	Uint32 VertexElement::get_vertex_semantic_count()
+	{
+		return vertex_semantic_type_names_count;
 	}
 
 	Uint32 VertexElement::get_size(
@@ -512,7 +519,7 @@ namespace eternal_lands
 
 		str >> string;
 
-		value = VertexElement::get_vertex_semantic_type(String(string));
+		value = VertexElement::get_vertex_semantic(String(string));
 
 		return str;
 	}

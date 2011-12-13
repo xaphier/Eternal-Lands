@@ -15,6 +15,7 @@
 #include "../engine/shader/shadersourceutil.hpp"
 #include "../engine/shader/shadertextureutil.hpp"
 #include "../engine/exceptions.hpp"
+#include "../engine/vertexelements.hpp"
 
 namespace eternal_lands
 {
@@ -33,6 +34,30 @@ namespace eternal_lands
 					common_parameter));
 			qualifier = ParameterQualifierUtil::get_str(
 				parameter_qualifier);
+			size = ParameterSizeUtil::get_str(pst_one);
+			scale = 1;
+		}
+
+		void get_data(const AutoParameterType auto_parameter,
+			std::string &name, std::string &type,
+			std::string &qualifier, std::string &size, gint &scale)
+		{
+			name = AutoParameterUtil::get_str(auto_parameter);
+			type = ParameterUtil::get_str(
+				AutoParameterUtil::get_type(auto_parameter));
+			qualifier = ParameterQualifierUtil::get_str(pqt_in);
+			size = ParameterSizeUtil::get_str(pst_one);
+			scale = AutoParameterUtil::get_scale(auto_parameter);
+		}
+
+		void get_data(const VertexSemanticType vertex_element,
+			const ParameterType parameter_type,
+			std::string &name, std::string &type,
+			std::string &qualifier, std::string &size, gint &scale)
+		{
+			name = VertexElement::get_str(vertex_element);
+			type = ParameterUtil::get_str(parameter_type);
+			qualifier = ParameterQualifierUtil::get_str(pqt_in);
 			size = ParameterSizeUtil::get_str(pst_one);
 			scale = 1;
 		}
@@ -97,6 +122,19 @@ namespace eternal_lands
 		{
 			name = ShaderTextureUtil::get_str(
 				static_cast<ShaderTextureType>(i));
+
+			gtk_list_store_insert_with_values(list_store, &it,
+				-1,
+				0, name.c_str(),
+				-1);
+		}
+
+		count = VertexElement::get_vertex_semantic_count();
+
+		for (i = 0; i < count; i++)
+		{
+			name = VertexElement::get_str(
+				static_cast<VertexSemanticType>(i));
 
 			gtk_list_store_insert_with_values(list_store, &it,
 				-1,
@@ -189,6 +227,7 @@ namespace eternal_lands
 		AutoParameterType auto_parameter;
 		CommonParameterType common_parameter;
 		ShaderTextureType shader_texture;
+		VertexSemanticType vertex_semantic;
 
 		name = String(str);
 
@@ -222,8 +261,7 @@ namespace eternal_lands
 			return true;
 		}
 
-		if (ShaderTextureUtil::get_shader_texture(name,
-			shader_texture))
+		if (ShaderTextureUtil::get_shader_texture(name, shader_texture))
 		{
 			type = pt_sampler2D;
 			qualifier = pqt_in;
@@ -236,15 +274,13 @@ namespace eternal_lands
 
 			return true;
 		}
-/*
-		if (CommonParameterUtil::get_common_parameter(name,
-			common_parameter))
+
+		if (VertexElement::get_vertex_semantic(name, vertex_semantic))
 		{
-			type = CommonParameterUtil::get_type(common_parameter);
+			type = pt_vec4;
 			qualifier = pqt_in;
-			size = CommonParameterUtil::get_size(common_parameter);
-			scale = CommonParameterUtil::get_scale(
-				common_parameter);
+			size = pst_one;
+			scale = 1;
 
 			qualifier_selection = FALSE;
 			type_selection = TRUE;
@@ -252,7 +288,7 @@ namespace eternal_lands
 
 			return true;
 		}
-*/
+
 		return false;
 	}
 
@@ -326,6 +362,19 @@ namespace eternal_lands
 						scale);
 					return true;
 				}
+				if (index == 1)
+				{
+					get_data(vst_position, pt_vec3,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(apt_world_matrix, name, type,
+						qualifier, size, scale);
+					return true;
+				}
 				return false;
 			case sst_world_normal_transform:
 				if (index == 0)
@@ -340,6 +389,26 @@ namespace eternal_lands
 					get_data(cpt_world_normal, pqt_out,
 						name, type, qualifier, size,
 						scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(vst_position, pt_vec3,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 3)
+				{
+					get_data(vst_normal, pt_vec3,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 4)
+				{
+					get_data(apt_world_matrix, name, type,
+						qualifier, size, scale);
 					return true;
 				}
 				return false;
@@ -363,6 +432,33 @@ namespace eternal_lands
 					get_data(cpt_world_tangent, pqt_out,
 						name, type, qualifier, size,
 						scale);
+					return true;
+				}
+				if (index == 3)
+				{
+					get_data(vst_position, pt_vec3,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 4)
+				{
+					get_data(vst_normal, pt_vec3,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 5)
+				{
+					get_data(vst_tangent, pt_vec3,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 6)
+				{
+					get_data(apt_world_matrix, name, type,
+						qualifier, size, scale);
 					return true;
 				}
 				return false;
@@ -397,6 +493,12 @@ namespace eternal_lands
 						scale);
 					return true;
 				}
+				if (index == 2)
+				{
+					get_data(apt_view_matrix, name, type,
+						qualifier, size, scale);
+					return true;
+				}
 				return false;
 			case sst_fog:
 				if (index == 0)
@@ -409,6 +511,12 @@ namespace eternal_lands
 				if (index == 1)
 				{
 					get_data(cpt_fog, pqt_out, name, type,
+						qualifier, size, scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(apt_fog_data, name, type,
 						qualifier, size, scale);
 					return true;
 				}
@@ -464,12 +572,33 @@ namespace eternal_lands
 						type, qualifier, size, scale);
 					return true;
 				}
+				if (index == 1)
+				{
+					get_data(vst_texture_coordinate_0,
+						pt_vec2, name, type, qualifier,
+						size, scale);
+					return true;
+				}
 				return false;
 			case sst_shadow_uv:
 				if (index == 0)
 				{
 					get_data(cpt_shadow_uv, pqt_out, name,
 						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(apt_shadow_texture_matrix,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(apt_shadow_view_matrix,
+						name, type, qualifier, size,
+						scale);
 					return true;
 				}
 				return false;
@@ -484,6 +613,13 @@ namespace eternal_lands
 				{
 					get_data(cpt_shadow, pqt_out, name,
 						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(apt_shadow_camera,
+						name, type, qualifier, size,
+						scale);
 					return true;
 				}
 				return false;
@@ -573,11 +709,18 @@ namespace eternal_lands
 					return true;
 				}
 				return false;
-			case sst_blend_index:
+			case sst_layer_index:
 				if (index == 0)
 				{
 					get_data(cpt_layer, pqt_out, name, type,
 						qualifier, size, scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(vst_layer_index, pt_vec4,
+						name, type, qualifier, size,
+						scale);
 					return true;
 				}
 				return false;

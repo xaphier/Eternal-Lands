@@ -76,9 +76,19 @@ namespace eternal_lands
 			 * The size of a compressed block.
 			 * @return Size of a compressed block (4x4) in bytes.
 			 */
+			static inline Uint16 get_block_size(
+				const Uint16 pixel_size)
+			{
+				return (pixel_size * 16) / 8;
+			}
+
+			/**
+			 * The size of a compressed block.
+			 * @return Size of a compressed block (4x4) in bytes.
+			 */
 			inline Uint16 get_block_size() const
 			{
-				return (get_pixel_size() * 16) / 8;
+				return get_block_size(get_pixel_size());
 			}
 
 			/**
@@ -372,6 +382,18 @@ namespace eternal_lands
 			 */
 			Uint32 get_size(const Uint32 width, const Uint32 height,
 				const Uint32 depth) const;
+
+			/**
+			 * @brief The size of the given volume.
+			 * Returns the size of one face of the given volume
+			 * @param width The width to use.
+			 * @param height The width to use.
+			 * @param depth The width to use.
+			 * @return The size of the given volume.
+			 */
+			static Uint32 get_size(const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const TextureFormatType texture_format);
 
 			glm::vec4 get_pixel(const Uint32 x, const Uint32 y,
 				const Uint32 z, const Uint16 face,

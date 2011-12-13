@@ -104,6 +104,24 @@ namespace eternal_lands
 		}
 	}
 
+	Uint32 Image::get_size(const Uint32 width, const Uint32 height,
+		const Uint32 depth, const TextureFormatType texture_format)
+	{
+		Uint32 pixel_size;
+
+		pixel_size = TextureFormatUtil::get_size(texture_format);
+
+		if (TextureFormatUtil::get_compressed(texture_format))
+		{
+			return get_block_size(pixel_size) * ((width + 3) / 4) *
+				((height + 3) / 4) * depth;
+		}
+		else
+		{
+			return (pixel_size / 8) * width * height * depth;
+		}
+	}
+
 	Uint32 Image::get_buffer_pixel_offset(const Uint32 x, const Uint32 y,
 		const Uint32 z, const Uint16 mipmap_level) const
 	{

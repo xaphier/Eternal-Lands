@@ -7,61 +7,33 @@
 
 #include "materialdescription.hpp"
 #include "exceptions.hpp"
+#include "texturecache.hpp"
 
 namespace eternal_lands
 {
 
-	namespace
-	{
-
-		bool find(const StringVector &names, const String &name,
-			Sint32 &index)
-		{
-			Uint32 i, count;
-
-			if (name.get().empty())
-			{
-				index = 0;
-				return true;
-			}
-
-			count = names.size();
-
-			for (i = 0; i < count; i++)
-			{
-				if (names[i] == name)
-				{
-					index = i;
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-	}
-
-	MaterialDescription::MaterialDescription(): m_shadow(true),
-		m_culling(true)
+	MaterialDescription::MaterialDescription(): m_layer_index(0.0f),
+		m_shadow(true), m_culling(true)
 	{
 	}
 
 	MaterialDescription::MaterialDescription(const String &effect):
-		m_shadow(true), m_culling(true)
+		m_layer_index(0.0f), m_shadow(true), m_culling(true)
 	{
 		set_effect(effect);
 	}
 
 	MaterialDescription::MaterialDescription(const String &diffuse_0,
-		const String &effect): m_shadow(true), m_culling(true)
+		const String &effect): m_layer_index(0.0f), m_shadow(true),
+		m_culling(true)
 	{
 		set_texture(diffuse_0, stt_diffuse_0);
 		set_effect(effect);
 	}
 
 	MaterialDescription::MaterialDescription(const String &diffuse_0,
-		const String &diffuse_1, const String &effect): m_shadow(true),
-		m_culling(true)
+		const String &diffuse_1, const String &effect):
+		m_layer_index(0.0f), m_shadow(true), m_culling(true)
 	{
 		set_texture(diffuse_0, stt_diffuse_0);
 		set_texture(diffuse_1, stt_diffuse_1);
@@ -70,7 +42,8 @@ namespace eternal_lands
 
 	MaterialDescription::MaterialDescription(const String &diffuse_0,
 		const String &normal, const String &specular,
-		const String &effect): m_shadow(true), m_culling(true)
+		const String &effect): m_layer_index(0.0f), m_shadow(true),
+		m_culling(true)
 	{
 		set_texture(diffuse_0, stt_diffuse_0);
 		set_texture(normal, stt_normal_0);
@@ -80,8 +53,8 @@ namespace eternal_lands
 
 	MaterialDescription::MaterialDescription(const String &diffuse_0,
 		const String &diffuse_1, const String &normal,
-		const String &specular, const String &effect): m_shadow(true),
-		m_culling(true)
+		const String &specular, const String &effect):
+		m_layer_index(0.0f), m_shadow(true), m_culling(true)
 	{
 		set_texture(diffuse_0, stt_diffuse_0);
 		set_texture(diffuse_1, stt_diffuse_1);
@@ -124,7 +97,9 @@ namespace eternal_lands
 		const MaterialDescription &material) const
 	{
 		return compare_textures(material) &&
-			compare_non_textures(material);
+			compare_non_textures(material) &&
+			glm::all(glm::equal(get_layer_index(),
+				material.get_layer_index()));
 	}
 
 	bool MaterialDescription::operator!=(
@@ -153,6 +128,17 @@ namespace eternal_lands
 			}
 		}
 
+		count = m_layer_index.length();
+
+		for (i = 0; i < count; i++)
+		{
+			if (m_layer_index[i] != material.m_layer_index[i])
+			{
+				return m_layer_index[i] <
+					material.m_layer_index[i];
+			}
+		}
+
 		if (get_shadow() != material.get_shadow())
 		{
 			return get_shadow() < material.get_shadow();
@@ -164,50 +150,42 @@ namespace eternal_lands
 	bool MaterialDescription::can_merge(
 		const MaterialDescription &material) const
 	{
-		return (get_effect() == material.get_effect()) &&
-			(get_shadow() == material.get_shadow()) &&
-			(get_culling() == material.get_culling()) &&
-			(get_texture(stt_diffuse_2) ==
-				material.get_texture(stt_diffuse_2)) &&
-			(get_texture(stt_diffuse_3) ==
-				material.get_texture(stt_diffuse_3)) &&
-			(get_texture(stt_normal_1) ==
-				material.get_texture(stt_normal_1)) &&
-			(get_texture(stt_specular_1) ==
-				material.get_texture(stt_specular_1)) &&
-			(get_texture(stt_glow_0) ==
-				material.get_texture(stt_glow_0)) &&
-			(get_texture(stt_glow_1) ==
-				material.get_texture(stt_glow_1)) &&
-			(get_texture(stt_blend_0) ==
-				material.get_texture(stt_blend_0)) &&
-			(get_texture(stt_blend_1) ==
-				material.get_texture(stt_blend_1));
+		return compare_textures(material) &&
+			compare_non_textures(material);
 	}
-#if	0	
-		String texture;
-		Uint32 i, count;
 
-		texture = get_texture(texture_type);
+	void MaterialDescription::build_layer_index(
+		const TextureCacheSharedPtr &texture_cache,
+		const ShaderTextureType texture_type)
+	{
+		String name;
+		float layer;
+		Uint16 index;
 
-		if (texture.get().empty())
+		if (ShaderTextureUtil::get_use_layer_index(texture_type)
+			&& texture_cache->get_texture_array_name(
+				get_texture(texture_type), name, layer))
 		{
-			layer = 0;
-			return true;
-		}
+			index = ShaderTextureUtil::get_layer_index(
+				texture_type);
 
-		count = textures.size();
+			m_layer_index[index] = layer;
+			m_textures[texture_type] = name;
+		}
+	}
+
+	void MaterialDescription::build_layer_index(
+		const TextureCacheSharedPtr &texture_cache)
+	{
+		Uint16 i, count;
+
+		count = m_textures.size();
 
 		for (i = 0; i < count; i++)
 		{
-			if (textures[i] == texture)
-			{
-				layer = i;
-				return true;
-			}
+			build_layer_index(texture_cache,
+				static_cast<ShaderTextureType>(i));
 		}
-
-		return false;
 	}
-#endif
+
 }

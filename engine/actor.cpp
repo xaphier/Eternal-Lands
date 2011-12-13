@@ -44,11 +44,12 @@ namespace eternal_lands
 
 	void Actor::init_enhanced_actor(
 		const CodecManagerWeakPtr &codec_manager,
-		const FileSystemWeakPtr &file_system)
+		const FileSystemWeakPtr &file_system,
+		const GlobalVarsSharedPtr &global_vars)
 	{
 		m_actor_texture_builder =
 			boost::make_shared<ActorTextureBuilder>(codec_manager,
-				file_system, get_name());
+				file_system, global_vars, get_name());
 
 		get_modifiable_materials()[0].set_texture(
 			m_actor_texture_builder->get_texture(), stt_diffuse_0);

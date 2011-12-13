@@ -34,8 +34,9 @@ namespace eternal_lands
 			GlslProgramSharedPtr m_program;
 			TextureSharedPtrArray32 m_textures;
 			BitSet32 m_program_used_texture_units;
-			Uint16 m_texture_unit;
+			glm::vec4 m_layer_index;
 			glm::bvec4 m_color_mask;
+			Uint16 m_texture_unit;
 			bool m_multisample;
 			bool m_blend;
 			bool m_culling;
@@ -62,6 +63,7 @@ namespace eternal_lands
 				const bool polygon_offset_fill);
 			void set_sample_alpha_to_coverage(
 				const bool sample_alpha_to_coverage);
+			void set_layer_index(const glm::vec4 &layer_index);
 
 		public:
 			/**
@@ -229,6 +231,20 @@ namespace eternal_lands
 
 				set_sample_alpha_to_coverage(
 					sample_alpha_to_coverage);
+
+				return true;
+			}
+
+			inline bool switch_layer_index(
+				const glm::vec4 &layer_index)
+			{
+				if (glm::all(glm::equal(m_layer_index,
+					layer_index)))
+				{
+					return false;
+				}
+
+				set_layer_index(layer_index);
 
 				return true;
 			}

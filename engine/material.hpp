@@ -89,6 +89,12 @@ namespace eternal_lands
 				return m_effect;
 			}
 
+			inline void set_layer_index(
+				const glm::vec4 &layer_index)
+			{
+				m_layer_index = layer_index;
+			}
+
 			inline void set_shadow(const bool shadow)
 			{
 				m_shadow = shadow;

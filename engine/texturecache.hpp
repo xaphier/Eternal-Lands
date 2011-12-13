@@ -39,16 +39,22 @@ namespace eternal_lands
 			const GlobalVarsSharedPtr m_global_vars;
 			TextureSharedPtr m_error_texture;
 
-			TextureSharedPtr load_texture(const String &name);
-			TextureSharedPtr do_load_texture(const String &name)
-				const;
+			TextureSharedPtr load_texture(const String &name,
+				const String &index);
+			TextureSharedPtr do_load_texture(const String &name,
+				const String &index) const;
 			void load_texture_array_xml(const xmlNodePtr node);
 			void load_xml(const xmlNodePtr node);
-			TextureSharedPtr load_texture_array(String name,
+			TextureSharedPtr load_texture_array(const String &name,
 				const Uint32 width, const Uint32 height,
 				const Uint16 mipmaps,
 				const TextureFormatType format,
 				const StringVector &file_names) const;
+			void add_texture_array(const String &name,
+				const Uint32 width, const Uint32 height,
+				const Uint16 mipmaps,
+				const TextureFormatType format,
+				const StringVector &file_names);
 
 			inline CodecManagerSharedPtr get_codec_manager() const
 			{
@@ -86,10 +92,12 @@ namespace eternal_lands
 			void load_xml(const String &file_name);
 			const TextureSharedPtr &get_texture(const String &name);
 			const TextureSharedPtr &get_texture_array(
-				const String &name, Uint32 &layer);
+				const String &name, float &layer);
+			bool get_texture_array(const String &name,
+				TextureSharedPtr &texture, float &layer) const;
 			bool get_texture_array_name(const String &name,
-				String &array_name, Uint32 &layer) const;
-			Uint32 get_texture_array_layer(const String &name)
+				String &array_name, float &layer) const;
+			Uint16 get_texture_array_layer(const String &name)
 				const;
 			const TextureSharedPtr &get_error_texture();
 

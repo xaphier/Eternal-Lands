@@ -39,7 +39,7 @@ namespace eternal_lands
 		m_actor_data_cache = boost::make_shared<ActorDataCache>(
 			get_mesh_builder_ptr(), get_effect_cache_ptr(),
 			get_texture_cache_ptr(), get_codec_manager_ptr(),
-			file_system);
+			file_system, global_vars);
 		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
 			global_vars);
 		m_filter.reset(new Filter(get_mesh_cache_ptr(), global_vars));
@@ -67,6 +67,7 @@ namespace eternal_lands
 			"shaders/shaders.lua")));
 		m_shader_source_builder->load_default(String(UTF8(
 			"shaders/shaders.lua")));
+		m_texture_cache->load_xml(String(UTF8("texture_arrays.xml")));
 	}
 
 }

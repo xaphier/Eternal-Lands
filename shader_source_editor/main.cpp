@@ -276,7 +276,8 @@ G_MODULE_EXPORT void parameter_add(GtkButton* button, ParametersData* data)
 			data->parameter->size_values), &size_it,
 			0, &size_str, -1);
 
-		gtk_list_store_set(data->parameters_list, &it,
+		gtk_list_store_insert_with_values(data->parameters_list, &it,
+		 	-1,
 			0, str,
 			1, type_str,
 			2, qualifier_str,

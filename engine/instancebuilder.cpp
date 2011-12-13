@@ -204,19 +204,9 @@ namespace eternal_lands
 			const MaterialDescription &sub_material,
 			glm::vec4 &layer_index)
 		{
-			if (material == sub_material)
-			{
-				layer_index = glm::vec4(0);
+			layer_index = sub_material.get_layer_index();
 
-				return true;
-			}
-/*
-			if (material.contains(sub_material, layer_index))
-			{
-				return true;
-			}
-*/
-			return false;
+			return material.can_merge(sub_material);
 		}
 
 		bool build_sub_mesh(const glm::vec3 &center,
@@ -257,9 +247,12 @@ namespace eternal_lands
 	}
 
 	InstanceBuilder::InstanceBuilder(
-		const InstancingDataVector &instancing_datas, const Uint32 id):
+		const TextureCacheSharedPtr &texture_cache,
+		InstancingDataVector &instancing_datas, const Uint32 id):
+		m_texture_cache(texture_cache),
 		m_instancing_datas(instancing_datas), m_id(id)
 	{
+		assert(m_texture_cache.get() != 0);
 		assert(get_instancing_datas().size() > 1);
 	}
 
@@ -343,8 +336,8 @@ namespace eternal_lands
 		SubMesh sub_mesh;
 		glm::mat4x3 world_matrix;
 		glm::vec3 center;
-		std::set<MaterialDescription> material_set, merged_materials;
-		std::set<MaterialDescription>::iterator it, end, begin, material;
+		MaterialDescription zero_layer_material;
+		std::set<MaterialDescription> material_set;
 		MeshDataToolSharedPtr mesh_data_tool;
 		MaterialDescriptionVector materials;
 		SubObjectVector instanced_objects;
@@ -352,7 +345,6 @@ namespace eternal_lands
 		Uint32 index_count, vertex_count, sub_mesh_count;
 		Uint32 vertex_offset, index_offset, sub_mesh_index;
 		SelectionType selection;
-		bool texture_arrays;
 
 		center = get_center();
 
@@ -361,7 +353,7 @@ namespace eternal_lands
 
 		selection = st_none;
 
-		BOOST_FOREACH(const InstancingData &instancing_data,
+		BOOST_FOREACH(InstancingData &instancing_data,
 			get_instancing_datas())
 		{
 			if (instancing_data.get_selection() != st_none)
@@ -373,46 +365,22 @@ namespace eternal_lands
 			index_count += mesh_data_tool->get_index_count();
 			vertex_count += mesh_data_tool->get_vertex_count();
 
+			instancing_data.build_layer_indices(
+				get_texture_cache());
+
 			BOOST_FOREACH(const MaterialDescription &material,
 				instancing_data.get_materials())
 			{
-				material_set.insert(material);
+				zero_layer_material = material;
+
+				zero_layer_material.set_layer_index(
+					glm::vec4(0.0f));
+
+				material_set.insert(zero_layer_material);
 			}
 		}
-#if	1
-		merged_materials = material_set;
-#else
-		while (material_set.begin() != material_set.end())
-		{
-			end = material_set.end();
-			material = material_set.begin();
-			merged = false;
 
-			begin = material;
-
-			begin++;
-
-			for (it = begin; it != end; ++it)
-			{
-				if (material->can_merge(*it))
-				{
-					merged_materials.insert(
-						material->merge(*it));
-					material_set.erase(it);
-					merged = true;
-					break;
-				}
-			}
-
-			if (!merged)
-			{
-				merged_materials.insert(*material_set.begin());
-			}
-
-			material_set.erase(material_set.begin());
-		}
-#endif
-		sub_mesh_count = merged_materials.size();
+		sub_mesh_count = material_set.size();
 
 		semantics.insert(vst_position);
 		semantics.insert(vst_normal);
@@ -430,8 +398,7 @@ namespace eternal_lands
 		vertex_offset = 0;
 		sub_mesh_index = 0;
 
-		BOOST_FOREACH(const MaterialDescription &material,
-			merged_materials)
+		BOOST_FOREACH(const MaterialDescription &material, material_set)
 		{
 			build_instance_sub_mesh(center, mesh_data_tool,
 				material, sub_mesh_index, vertex_offset,

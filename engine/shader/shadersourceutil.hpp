@@ -40,7 +40,7 @@ namespace eternal_lands
 		sst_specular_mapping,
 		sst_transparent,
 		sst_shadow_map,
-		sst_blend_index
+		sst_layer_index
 	};
 
 	typedef std::map<ShaderSourceType, String> ShaderSourceTypeStringMap;

@@ -25,7 +25,8 @@ files = {
 	"shaders/sources/parallax_slope_mapping.xml",
 	"shaders/sources/shadow_map.xml",
 	"shaders/sources/exp_shadow_map.xml",
-	"shaders/sources/exp_shadow_mapping.xml"
+	"shaders/sources/exp_shadow_mapping.xml",
+	"shaders/sources/layer_index.xml"
 };
 
 defaults = {
@@ -44,6 +45,7 @@ defaults = {
 	normal_mapping = "disabled",
 	normal_depth_mapping = "disabled",
 	specular_mapping = "disabled",
-	shadow_map = "default"
+	shadow_map = "default",
+	layer_index = "default"
 };
 

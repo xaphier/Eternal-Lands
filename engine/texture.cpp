@@ -15,6 +15,7 @@ namespace eternal_lands
 
 	Texture::Texture(const String &name): m_name(name)
 	{
+		assert(!get_name().get().empty());
 		set_format(tft_rgb8);
 		set_target(ttt_2d_texture);
 		set_mag_filter(tft_linear);
@@ -741,7 +742,9 @@ namespace eternal_lands
 	void Texture::set_texture_image_1d(const Uint16 mipmap,
 		const Uint32 width)
 	{
+		Uint32 size;
 		GLenum format, type;
+		bool compressed;
 
 		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
 			" 1d texture '%2%'."), mipmap % get_name());
@@ -751,8 +754,19 @@ namespace eternal_lands
 		TextureFormatUtil::get_source_format_type(get_format(), format,
 			type);
 
-		glTexImage1D(get_target(), mipmap, get_gl_format(), width, 0,
-			format, type, 0);
+		compressed = TextureFormatUtil::get_compressed(get_format());
+		size = Image::get_size(width, 1, 1, get_format());
+
+		if (compressed)
+		{
+			glCompressedTexImage1D(get_target(), mipmap,
+				get_gl_format(), width, 0, size, 0);
+		}
+		else
+		{
+			glTexImage1D(get_target(), mipmap, get_gl_format(),
+				width, 0, format, type, 0);
+		}
 
 		CHECK_GL_ERROR();
 	}
@@ -760,7 +774,9 @@ namespace eternal_lands
 	void Texture::set_texture_image_2d(const Uint16 mipmap,
 		const Uint32 width, const Uint32 height)
 	{
+		Uint32 size;
 		GLenum format, type;
+		bool compressed;
 
 		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
 			" 2d texture '%2%'."), mipmap % get_name());
@@ -770,8 +786,19 @@ namespace eternal_lands
 		TextureFormatUtil::get_source_format_type(get_format(), format,
 			type);
 
-		glTexImage2D(get_target(), mipmap, get_gl_format(), width,
-			height, 0, format, type, 0);
+		compressed = TextureFormatUtil::get_compressed(get_format());
+		size = Image::get_size(width, height, 1, get_format());
+
+		if (compressed)
+		{
+			glCompressedTexImage2D(get_target(), mipmap,
+				get_gl_format(), width, height, 0, size, 0);
+		}
+		else
+		{
+			glTexImage2D(get_target(), mipmap, get_gl_format(),
+				width, height, 0, format, type, 0);
+		}
 
 		CHECK_GL_ERROR();
 	}
@@ -779,7 +806,9 @@ namespace eternal_lands
 	void Texture::set_texture_image_3d(const Uint16 mipmap,
 		const Uint32 width, const Uint32 height, const Uint32 depth)
 	{
+		Uint32 size;
 		GLenum format, type;
+		bool compressed;
 
 		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
 			" 3d texture '%2%'."), mipmap % get_name());
@@ -789,8 +818,20 @@ namespace eternal_lands
 		TextureFormatUtil::get_source_format_type(get_format(), format,
 			type);
 
-		glTexImage3D(get_target(), mipmap, get_gl_format(), width,
-			height, depth, 0, format, type, 0);
+		compressed = TextureFormatUtil::get_compressed(get_format());
+		size = Image::get_size(width, height, depth, get_format());
+
+		if (compressed)
+		{
+			glCompressedTexImage3D(get_target(), mipmap,
+				get_gl_format(), width, height,
+				depth, 0, size, 0);
+		}
+		else
+		{
+			glTexImage3D(get_target(), mipmap, get_gl_format(),
+				width, height, depth, 0, format, type, 0);
+		}
 
 		CHECK_GL_ERROR();
 	}
@@ -819,15 +860,28 @@ namespace eternal_lands
 		const Uint32 width, const Uint32 height,
 		const CubeMapFaceType face)
 	{
+		Uint32 size;
 		GLenum format, type;
+		bool compressed;
 
 		CHECK_GL_ERROR();
 
 		TextureFormatUtil::get_source_format_type(get_format(), format,
 			type);
 
-		glTexImage2D(face, mipmap, get_gl_format(), width, height, 0,
-			format, type, 0);
+		compressed = TextureFormatUtil::get_compressed(get_format());
+		size = Image::get_size(width, height, 1, get_format());
+
+		if (compressed)
+		{
+			glCompressedTexImage2D(get_target(), mipmap,
+				get_gl_format(), width, height, 0, size, 0);
+		}
+		else
+		{
+			glTexImage2D(get_target(), mipmap, get_gl_format(),
+				width, height, 0, format, type, 0);
+		}
 
 		CHECK_GL_ERROR();
 	}
@@ -856,15 +910,28 @@ namespace eternal_lands
 		const Uint32 width, const Uint32 height, const Uint32 depth,
 		const CubeMapFaceType face)
 	{
+		Uint32 size;
 		GLenum format, type;
+		bool compressed;
 
 		CHECK_GL_ERROR();
 
 		TextureFormatUtil::get_source_format_type(get_format(), format,
 			type);
 
-		glTexImage3D(face, mipmap, get_gl_format(), width, height,
-			depth, 0, format, type, 0);
+		compressed = TextureFormatUtil::get_compressed(get_format());
+		size = Image::get_size(width, height, depth, get_format());
+
+		if (compressed)
+		{
+			glCompressedTexImage3D(face, mipmap, get_gl_format(),
+				width, height, depth, 0, size, 0);
+		}
+		else
+		{
+			glTexImage3D(face, mipmap, get_gl_format(), width,
+				height, depth, 0, format, type, 0);
+		}
 
 		CHECK_GL_ERROR();
 	}

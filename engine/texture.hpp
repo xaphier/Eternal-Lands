@@ -108,7 +108,7 @@ namespace eternal_lands
 	class Texture: public boost::noncopyable
 	{
 		private:
-			String m_name;
+			const String m_name;
 			GLfloat m_anisotropic_filter;
 			GLuint m_texture_id;
 			Uint32 m_width;
@@ -252,7 +252,7 @@ namespace eternal_lands
 
 		public:
 			Texture(const String &name);
-			virtual ~Texture() throw();
+			~Texture() throw();
 			void unload() throw();
 			static String get_str(const CubeMapFaceType value);
 			static String get_str(const TextureTargetType value);

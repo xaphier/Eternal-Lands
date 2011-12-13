@@ -309,16 +309,7 @@ namespace eternal_lands
 			 * @return The vertex semantic type represented by the
 			 * string
 			 */
-			static VertexSemanticType get_vertex_semantic_type(
-				const String &str);
-
-			/**
-			 * Returns true if the string is a vertex semantic type.
-			 * @param str The string to use.
-			 * @return True if the string is a vertex semantic type,
-			 * else false.
-			 */
-			static bool get_is_vertex_semantic_type(
+			static VertexSemanticType get_vertex_semantic(
 				const String &str);
 
 			/**
@@ -406,6 +397,20 @@ namespace eternal_lands
 			 */
 			static bool get_supported(
 				const VertexElementType vertex_element_type);
+
+			/**
+			 * Returns true if the string is the name of a vertex
+			 * semantic type and sets the vertex_semantic parameter
+			 * to the vertex semantic type, else returns false.
+			 * @param str The string to use.
+			 * @param vertex_semantic The vertex semantic.
+			 * @return True if the string is the name of a vertex
+			 * semantic type, else false.
+			 */
+			static bool get_vertex_semantic(const String &str,
+				VertexSemanticType &vertex_semantic);
+
+			static Uint32 get_vertex_semantic_count();
 
 	};
 

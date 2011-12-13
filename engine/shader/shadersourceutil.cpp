@@ -34,7 +34,7 @@ namespace eternal_lands
 			String(UTF8("specular_mapping")),
 			String(UTF8("transparent")),
 			String(UTF8("shadow_map")),
-			String(UTF8("blend_index"))
+			String(UTF8("layer_index"))
 		};
 
 		const Uint32 shader_source_type_datas_count =

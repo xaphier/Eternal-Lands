@@ -27,7 +27,7 @@ namespace eternal_lands
 	Material::Material(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_shadow(true), m_culling(true)
+		m_layer_index(0.0f), m_shadow(true), m_culling(true)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
@@ -37,10 +37,12 @@ namespace eternal_lands
 		const TextureCacheWeakPtr &texture_cache,
 		const MaterialDescription &material):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_shadow(true), m_culling(true)
+		m_layer_index(0.0f), m_shadow(true), m_culling(true)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
+
+		set_layer_index(material.get_layer_index());
 
 		set_shadow(material.get_shadow());
 		set_culling(material.get_culling());
@@ -74,17 +76,36 @@ namespace eternal_lands
 	void Material::set_texture(const String &name,
 		const ShaderTextureType texture_type)
 	{
+		TextureSharedPtr texture;
+		float layer;
+		Uint16 index;
+
 		assert(texture_type < m_textures.size());
 
-		if (name != empty_str)
-		{
-			m_textures[texture_type] =
-				get_texture_cache()->get_texture(name);
-		}
-		else
+		if (name.get().empty())
 		{
 			m_textures[texture_type].reset();
+
+			return;
 		}
+
+		if (ShaderTextureUtil::get_use_layer_index(texture_type) &&
+			get_texture_cache()->get_texture_array(name, texture,
+				layer))
+		{
+			index = ShaderTextureUtil::get_layer_index(
+				texture_type);
+
+			assert(m_layer_index[index] == layer);
+
+			m_layer_index[index] = layer;
+			m_textures[texture_type] = texture;
+
+			return;
+		}
+
+		m_textures[texture_type] =
+			get_texture_cache()->get_texture(name);
 	}
 
 	const String &Material::get_texture_name(
@@ -136,6 +157,7 @@ namespace eternal_lands
 		}
 
 		state_manager.switch_culling(get_culling());
+		state_manager.switch_layer_index(get_layer_index());
 	}
 
 	const String &Material::get_effect_name() const

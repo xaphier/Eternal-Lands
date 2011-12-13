@@ -60,14 +60,22 @@
     <parameter>
      <name>diffuse_sampler_0</name>
      <source></source>
-     <type>sampler2D</type>
+     <type>sampler2DArray</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>layer</name>
+     <source></source>
+     <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
    <source>{
-	diffuse = texture(diffuse_sampler_0, fragment_uv);
+	diffuse = texture(diffuse_sampler_0, vec3(fragment_uv, layer.x));
 }</source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

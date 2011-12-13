@@ -9,7 +9,6 @@
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "shader/parameterutil.hpp"
-#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -89,8 +88,7 @@ namespace eternal_lands
 				glGetShaderInfoLog(m_shader, blen, &slen,
 					buffer.get());
 
-				return utf8_to_string(std::string(buffer.get(),
-					slen));
+				return std::string(buffer.get(), slen);
 			}
 			else
 			{
@@ -1602,7 +1600,7 @@ namespace eternal_lands
 
 			slen = std::min((GLint)strlen(buffer.get()), slen);
 
-			return utf8_to_string(std::string(buffer.get(), slen));
+			return std::string(buffer.get(), slen);
 		}
 		else
 		{
@@ -1700,8 +1698,8 @@ namespace eternal_lands
 
 			assert(array_size > 0);
 
-			name = String(get_base_name(utf8_to_string(std::string(
-				buffer.get(), length))));
+			name = String(get_base_name(std::string(buffer.get(),
+				length)));
 			index = glGetUniformLocation(m_program, buffer.get());
 			parameter = ParameterUtil::get_parameter(type);
 
@@ -1763,8 +1761,7 @@ namespace eternal_lands
 
 			assert(array_size > 0);
 
-			name = get_base_name(utf8_to_string(std::string(
-				buffer.get(), length)));
+			name = get_base_name(std::string(buffer.get(), length));
 			index = glGetAttribLocation(m_program, buffer.get());
 			parameter = ParameterUtil::get_parameter(type);
 
