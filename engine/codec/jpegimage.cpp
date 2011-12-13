@@ -13,7 +13,6 @@
 #include "image.hpp"
 #include <jpeglib.h>
 #include <setjmp.h>
-#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -164,11 +163,9 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(JpegErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
+						reader->get_name())
 					<< errinfo_message(
-						utf8_to_string(
-							m_jerr.m_buffer)));
+						m_jerr.m_buffer));
 			}
 
 			jpeg_mem_src(&m_cinfo,
@@ -260,10 +257,8 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(JpegErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
-					<< errinfo_message(utf8_to_string(
-						m_jerr.m_buffer)));
+						reader->get_name())
+					<< errinfo_message(m_jerr.m_buffer));
 			}
 
 			jpeg_mem_src(&m_cinfo, static_cast<Uint8*>(

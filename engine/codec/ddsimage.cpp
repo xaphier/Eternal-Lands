@@ -12,7 +12,6 @@
 #include "../image.hpp"
 #include "codecmanager.hpp"
 #include "dds.hpp"
-#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -348,8 +347,7 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(DdsErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name())));
+						reader->get_name()));
 			}
 
 			header.m_size = reader->read_u32_le();
@@ -941,10 +939,10 @@ namespace eternal_lands
 				init_dds_image(m_reader, m_header);
 				load(compression);
 			}
-			catch (boost::exception &e)
+			catch (boost::exception &exception)
 			{
-				e << boost::errinfo_file_name(string_to_utf8(
-					m_reader->get_name()));
+				exception << boost::errinfo_file_name(
+					m_reader->get_name());
 				throw;
 			}
 		}
@@ -981,8 +979,7 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(DdsErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							m_reader->get_name())));
+						m_reader->get_name()));
 			}
 		}
 
@@ -1178,16 +1175,14 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(InvalidParameterException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							m_reader->get_name())));
+						m_reader->get_name()));
 			}
 
 			if ((m_header.m_width % 4) != 0)
 			{
 				EL_THROW_EXCEPTION(InvalidParameterException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							m_reader->get_name())));
+						m_reader->get_name()));
 			}
 
 			m_header.m_pixel_format.m_flags = 0;
@@ -1240,8 +1235,7 @@ namespace eternal_lands
 						EL_THROW_EXCEPTION(
 							InvalidParameterException()
 								<< boost::errinfo_file_name(
-									string_to_utf8(
-										m_reader->get_name())));
+									m_reader->get_name()));
 					}
 				}
 			}
@@ -1348,8 +1342,7 @@ namespace eternal_lands
 					EL_THROW_EXCEPTION(
 						InvalidParameterException()
 						<< boost::errinfo_file_name(
-							string_to_utf8(
-								m_reader->get_name())));
+							m_reader->get_name()));
 			}
 
 			sx = std::min(width - x, static_cast<Uint32>(4));
@@ -1382,8 +1375,8 @@ namespace eternal_lands
 		}
 		catch (boost::exception &exception)
 		{
-			exception << boost::errinfo_file_name(string_to_utf8(
-				reader->get_name()));
+			exception << boost::errinfo_file_name(
+				reader->get_name());
 			throw;
 		}
 	}
@@ -1408,8 +1401,8 @@ namespace eternal_lands
 		}
 		catch (boost::exception &exception)
 		{
-			exception << boost::errinfo_file_name(string_to_utf8(
-				reader->get_name()));
+			exception << boost::errinfo_file_name(
+				reader->get_name());
 			throw;
 		}
 	}

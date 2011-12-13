@@ -227,6 +227,11 @@ namespace eternal_lands
 				const ImageCompressionTypeSet &compressions)
 				const;
 
+			ImageSharedPtr load_image(const String &name,
+				const FileSystemSharedPtr &file_system,
+				const ImageCompressionTypeSet &compressions)
+				const;
+
 			void get_image_information(
 				const ReaderSharedPtr &reader,
 				TextureFormatType &texture_format,

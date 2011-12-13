@@ -12,7 +12,6 @@
 #include "reader.hpp"
 #include "image.hpp"
 #include <png.h>
-#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -126,10 +125,8 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(PngErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
-					<< errinfo_message(utf8_to_string(
-						m_error_buffer)));
+						reader->get_name())
+					<< errinfo_message(m_error_buffer));
 			}
 
 			png_set_read_fn(m_png_ptr, reader.get(), png_read);
@@ -188,10 +185,8 @@ namespace eternal_lands
 			{
 				EL_THROW_EXCEPTION(PngErrorException()
 					<< boost::errinfo_file_name(
-						string_to_utf8(
-							reader->get_name()))
-					<< errinfo_message(utf8_to_string(
-						m_error_buffer)));
+						reader->get_name())
+					<< errinfo_message(m_error_buffer));
 			}
 
 			png_set_read_fn(m_png_ptr, reader.get(), png_read);

@@ -308,6 +308,49 @@ namespace eternal_lands
 		return false;
 	}
 
+	bool FileSystem::get_file_readable(const String &file_name)
+	{
+		AbstractArchiveVector::const_iterator it, end;
+		String name;
+
+		name = get_strip_relative_path(file_name);
+
+		end = m_archives.end();
+
+		for (it = m_archives.begin(); it != end; ++it)
+		{
+			if (it->get_has_file(file_name))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool FileSystem::get_file_if_readable(const String &file_name,
+		ReaderSharedPtr &reader)
+	{
+		AbstractArchiveVector::const_iterator it, end;
+		String name;
+
+		name = get_strip_relative_path(file_name);
+
+		end = m_archives.end();
+
+		for (it = m_archives.begin(); it != end; ++it)
+		{
+			if (it->get_has_file(file_name))
+			{
+				reader = it->get_file(file_name);
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	ReaderSharedPtr FileSystem::get_file(const String &file_name)
 	{
 		AbstractArchiveVector::const_iterator it, end;
@@ -339,6 +382,44 @@ namespace eternal_lands
 		str = reader->read_utf8_string(reader->get_size());
 
 		return str;
+	}
+
+	String FileSystem::get_file_name_without_extension(
+		const String &file_name)
+	{
+		StringTypeVector path;
+		StringType result;
+		std::size_t pos;
+		Uint32 i, index, count;
+
+		path = get_stripped_path(file_name);
+
+		count = path.size();
+
+		if (count == 0)
+		{
+			return String(UTF8(""));
+		}
+
+		index = count - 1;
+
+		pos = path[index].rfind(UTF8("."));
+
+		if (pos != std::string::npos)
+		{
+			path[index].erase(path[index].begin() + pos,
+				path[index].end());
+		}
+
+		result = path[0];
+
+		for (i = 1; i < count; i++)
+		{
+			result += '/';
+			result += path[i];
+		}
+
+		return String(result);
 	}
 
 }

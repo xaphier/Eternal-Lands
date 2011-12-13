@@ -13,7 +13,7 @@
 #include "ddsimage.hpp"
 #include "pngimage.hpp"
 #include "jpegimage.hpp"
-#include "utf.hpp"
+#include "filesystem.hpp"
 
 namespace eternal_lands
 {
@@ -371,6 +371,55 @@ namespace eternal_lands
 		return false;
 	}
 
+	ImageSharedPtr CodecManager::load_image(const String &name,
+		const FileSystemSharedPtr &file_system,
+		const ImageCompressionTypeSet &compressions) const
+	{
+		Uint8Array32 magic;
+		boost::array<String, 5> file_names;
+		String base_name;
+		ReaderSharedPtr reader;
+
+		base_name = file_system->get_file_name_without_extension(name);
+
+		file_names[0] = name;
+		file_names[1] = base_name.get() + UTF8(".dds");
+		file_names[2] = base_name.get() + UTF8(".png");
+		file_names[3] = base_name.get() + UTF8(".jpg");
+		file_names[4] = base_name.get() + UTF8(".jpeg");
+
+		BOOST_FOREACH(const String &file_name, file_names)
+		{
+			if (!file_system->get_file_readable(file_name))
+			{
+				continue;
+			}
+
+			reader = file_system->get_file(file_name);
+
+			reader->set_position(0);
+
+			BOOST_FOREACH(Uint8 &value, magic)
+			{
+				value = reader->read_u8();
+			}
+
+			reader->set_position(0);
+
+			if (DdsImage::check_load(magic) ||
+				PngImage::check_load(magic) ||
+				JpegImage::check_load(magic))
+			{
+				return load_image(reader, compressions);
+			}
+		}
+
+		EL_THROW_MESSAGE_EXCEPTION(UTF8("Can't find file '%1%' or "
+			"'%2%'[.dds|.png|.jpg|.jpeg]"), name % base_name,
+			FileNotFoundException()
+				<< boost::errinfo_file_name(name));
+	}
+
 	ImageSharedPtr CodecManager::load_image(const ReaderSharedPtr &reader,
 		const ImageCompressionTypeSet &compressions) const
 	{
@@ -410,8 +459,7 @@ namespace eternal_lands
 		}
 
 		EL_THROW_EXCEPTION(UnkownFormatException()
-			<< boost::errinfo_file_name(string_to_utf8(
-				reader->get_name()))
+			<< boost::errinfo_file_name(reader->get_name())
 			<< errinfo_string_value(str.str()));
 	}
 
@@ -463,8 +511,7 @@ namespace eternal_lands
 		}
 
 		EL_THROW_EXCEPTION(UnkownFormatException()
-			<< boost::errinfo_file_name(string_to_utf8(
-				reader->get_name()))
+			<< boost::errinfo_file_name(reader->get_name())
 			<< errinfo_string_value(str.str()));
 	}
 

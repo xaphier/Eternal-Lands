@@ -37,11 +37,16 @@ namespace eternal_lands
 			void add_dir(const String &dir_name);
 			void add_zip(const String &file_name);
 			bool remove_archive(const String &file_name);
+			bool get_file_readable(const String &file_name);
 			ReaderSharedPtr get_file(const String &file_name);
+			bool get_file_if_readable(const String &file_name,
+				ReaderSharedPtr &reader);
 			String get_file_string(const String &file_name);
 			static String get_file_name(const String &file_name);
 			static String get_dir_name(const String &file_name);
 			static String get_strip_relative_path(
+				const String &file_name);
+			static String get_file_name_without_extension(
 				const String &file_name);
 
 	};
