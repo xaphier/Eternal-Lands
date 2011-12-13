@@ -13,7 +13,6 @@
 #include "logging.hpp"
 #include "indexbuilder.hpp"
 #include "materialdescription.hpp"
-#include "utf.hpp"
 #include "filesystem.hpp"
 
 namespace eternal_lands
@@ -246,8 +245,8 @@ namespace eternal_lands
 		if (glm::any(glm::lessThanEqual(size, glm::vec2(0.0f))))
 		{
 			EL_THROW_EXCEPTION(E2dLoadingException()
-				<< boost::errinfo_file_name(string_to_utf8(
-					m_reader->get_name())));
+				<< boost::errinfo_file_name(
+					m_reader->get_name()));
 		}
 
 		normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -323,7 +322,7 @@ namespace eternal_lands
 		catch (const boost::exception &exception)
 		{
 			exception << boost::errinfo_file_name(
-				string_to_utf8(m_reader->get_name()));
+				m_reader->get_name());
 			throw;
 		}
 

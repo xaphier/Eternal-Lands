@@ -13,7 +13,6 @@
 #include "exceptions.hpp"
 #include "packtool.hpp"
 #include "logging.hpp"
-#include "utf.hpp"
 #include "filesystem.hpp"
 
 namespace eternal_lands
@@ -636,8 +635,8 @@ namespace eternal_lands
 		{
 			EL_THROW_EXCEPTION(E3dLoadingException()
 				<< errinfo_value(vertex_size)
-				<< boost::errinfo_file_name(string_to_utf8(
-					m_reader->get_name())));
+				<< boost::errinfo_file_name(
+					m_reader->get_name()));
 		}
 	}
 
@@ -648,8 +647,8 @@ namespace eternal_lands
 		{
 			EL_THROW_EXCEPTION(E3dLoadingException()
 				<< errinfo_value(index_size)
-				<< boost::errinfo_file_name(string_to_utf8(
-					m_reader->get_name())));
+				<< boost::errinfo_file_name(
+					m_reader->get_name()));
 		}
 	}
 /*
