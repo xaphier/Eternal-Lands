@@ -30,9 +30,7 @@ namespace eternal_lands
 	class TextureGlyphe
 	{
 		private:
-			typedef std::map<Utf32Char, float> Utf32CharFloatMap;
-
-			Utf32Char m_charcode;
+			Utf32Char m_char_code;
 			Uint16 m_width;
 			Uint16 m_height;
 			glm::uvec2 m_offset;
@@ -44,12 +42,11 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			TextureGlyphe(const Utf32Char charcode,
+			TextureGlyphe(const Utf32Char char_code,
 				const Uint16 width, const Uint16 height,
 				const glm::uvec2 &offset,
 				const glm::vec2 &advance,
-				const glm::uvec4 &uv,
-				const Utf32CharFloatMap &kerning);
+				const glm::uvec4 &uv);
 
 			/**
 			 * Default destructor.
@@ -62,9 +59,15 @@ namespace eternal_lands
 				const AbstractWriteMemoryBuffer &buffer,
 				Uint16Array2 &position); 
 
-			inline Utf32Char get_charcode() const
+			inline void set_kerning(
+				const Utf32CharFloatMap &kerning)
 			{
-				return m_charcode;
+				m_kerning = kerning;
+			}
+
+			inline Utf32Char get_char_code() const
+			{
+				return m_char_code;
 			}
 
 			inline Uint16 get_width() const
@@ -95,14 +98,15 @@ namespace eternal_lands
 			inline float get_kerning(const TextureGlyphe &glyphe)
 				const
 			{
-				return get_kerning(glyphe.get_charcode());
+				return get_kerning(glyphe.get_char_code());
 			}
 
-			inline float get_kerning(const Utf32Char charcode) const
+			inline float get_kerning(const Utf32Char char_code)
+				const
 			{
 				Utf32CharFloatMap::const_iterator found;
 
-				found = m_kerning.find(charcode);
+				found = m_kerning.find(char_code);
 
 				if (found == m_kerning.end())
 				{
@@ -113,6 +117,8 @@ namespace eternal_lands
 			}
 
 	};
+
+	typedef std::vector<TextureGlyphe> TextureGlypheVector;
 
 }
 

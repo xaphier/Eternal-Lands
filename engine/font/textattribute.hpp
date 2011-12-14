@@ -31,9 +31,8 @@ namespace eternal_lands
 	{
 		private:
 			glm::vec4 m_color;
+			String m_font;
 			Uint16 m_size;
-			bool m_bold;
-			bool m_italic;
 
 		public:
 			/**
@@ -56,14 +55,9 @@ namespace eternal_lands
 				m_size = size;
 			}
 
-			inline void set_bold(const bool bold)
+			inline void set_font(const String font)
 			{
-				m_bold = bold;
-			}
-
-			inline void set_italic(const bool italic)
-			{
-				m_italic = italic;
+				m_font = font;
 			}
 
 			inline const glm::vec4 &get_color() const
@@ -76,14 +70,9 @@ namespace eternal_lands
 				return m_size;
 			}
 
-			inline bool get_bold() const
+			inline const String &get_font() const
 			{
-				return m_bold;
-			}
-
-			inline bool get_italic() const
-			{
-				return m_italic;
+				return m_font;
 			}
 
 	};

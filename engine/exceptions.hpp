@@ -61,6 +61,8 @@ namespace eternal_lands
 		errinfo_parameter_name;
 	typedef boost::error_info<struct errinfo_message_, StringType>
 		errinfo_message;
+	typedef boost::error_info<struct errinfo_code_, Uint64>
+		errinfo_code;
 	typedef boost::error_info<struct errinfo_file_position_, Uint64>
 		errinfo_file_position;
 	typedef boost::error_info<struct errinfo_value_, Uint32> errinfo_value;
@@ -103,8 +105,6 @@ namespace eternal_lands
 		errinfo_type_name;
 	typedef boost::error_info<struct errinfo_any_type_name_, StringType>
 		errinfo_variant_type_name;
-	typedef boost::error_info<struct errinfo_gl_error_, Uint64>
-		errinfo_gl_error;
 	typedef boost::error_info<struct errinfo_vertex_shader_, StringType>
 		errinfo_vertex_shader_source;
 	typedef boost::error_info<struct errinfo_fragment_shader_, StringType>
@@ -151,7 +151,7 @@ namespace eternal_lands
 					::eternal_lands::string_to_utf8(	\
 						reinterpret_cast<const char*>(	\
 							gluErrorString(gl_error))))	\
-				<< ::eternal_lands::errinfo_gl_error(gl_error));	\
+				<< ::eternal_lands::errinfo_code(gl_error));	\
 		}	\
 	}	\
 	while (false)

@@ -123,7 +123,9 @@ namespace eternal_lands
 	ARRAY(Uint16, 4);
 	ARRAY(Uint16, 16);
 	ARRAY(Uint8, 2);
+	ARRAY(Uint8, 3);
 	ARRAY(Uint8, 4);
+	ARRAY(Uint8, 5);
 	ARRAY(Uint8, 6);
 	ARRAY(Uint8, 8);
 	ARRAY(Uint8, 16);
@@ -186,6 +188,7 @@ namespace eternal_lands
 	class Actor;
 	class ActorDataCache;
 	class ActorTextureBuilder;
+	class Atlas;
 	class BoundedObject;
 	class BoundingBox;
 	class CodecManager;
@@ -233,6 +236,9 @@ namespace eternal_lands
 	class SubObject;
 	class Texture;
 	class TextureCache;
+	class TextureGlyphe;
+	class TextureFont;
+	class TextureFontCache;
 	class VertexElement;
 	class VertexElements;
 	class VertexFormat;
@@ -263,6 +269,7 @@ namespace eternal_lands
 	SHARED_PTR(Actor);
 	SHARED_PTR(ActorDataCache);
 	SHARED_PTR(ActorTextureBuilder);
+	SHARED_PTR(Atlas);
 	SHARED_PTR(BoundedObject);
 	SHARED_PTR(CodecManager);
 	SHARED_PTR(Effect);
@@ -339,6 +346,7 @@ namespace eternal_lands
 	typedef std::map<Uint32, ActorSharedPtr> Uint32ActorSharedPtrMap;
 	typedef std::map<Uint32, ObjectSharedPtr> Uint32ObjectSharedPtrMap;
 	typedef std::map<Uint32, LightSharedPtr> Uint32LightSharedPtrMap;
+	typedef std::map<Utf32Char, float> Utf32CharFloatMap;
 	typedef std::stack<RStarTreeNodeSharedPtr> RStarTreeNodeSharedPtrStack;
 	typedef boost::ptr_vector<InstanceData> InstanceDataVector;
 	typedef boost::ptr_vector<InstancingData> InstancingDataVector;

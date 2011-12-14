@@ -10,13 +10,12 @@
 namespace eternal_lands
 {
 
-	TextureGlyphe::TextureGlyphe(const Utf32Char charcode,
+	TextureGlyphe::TextureGlyphe(const Utf32Char char_code,
 		const Uint16 width, const Uint16 height,
 		const glm::uvec2 &offset, const glm::vec2 &advance,
-		const glm::uvec4 &uv, const Utf32CharFloatMap &kerning):
-		m_charcode(charcode), m_width(width), m_height(height),
-		m_offset(offset), m_advance(advance), m_uv(uv),
-		m_kerning(kerning)
+		const glm::uvec4 &uv): m_char_code(char_code), m_width(width),
+		m_height(height), m_offset(offset), m_advance(advance),
+		m_uv(uv)
 	{
 	}
 
@@ -87,14 +86,18 @@ texture_glyph_add_to_vertex_buffer( const TextureGlyph *self,
 	void TextureGlyphe::write_to_memory(const glm::vec4 &color,
 		const float kerning, const float spacing, const float rise,
 		const AbstractWriteMemoryBuffer &buffer,
-		Uint16Array2 &position)
+		glm::uvec2 &position)
 	{
 		position.x += kerning;
 
 		x0 = position.x + get_offset().x;
-		y0 = position.x + get_offset().y + rise;
+		y0 = position.y + get_offset().y + rise;
 		x1 = x0 + get_width();
 		y1 = y0 - get_height();
+
+
+		position.x = get_advance().x + spacing;
+		position.y = get_advance().y;
 	}
 
 	TextureGlyphe

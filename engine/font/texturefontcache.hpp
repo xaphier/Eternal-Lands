@@ -30,19 +30,20 @@ namespace eternal_lands
 	class TextureFontCache
 	{
 		private:
-			class TextureFontCacheItem;
+			typedef boost::ptr_vector<TextureFont>
+				TextureFontVector;
 
-			Uint16 m_width;
-			Uint16 m_height;
+			AtlasSharedPtr m_atlas;
+			ImageSharedPtr m_image;
+			TextureSharedPtr m_texture;
+			TextureFontVector m_fonts;
 
-			String get_font_file_name(const String &family,
-				const float size, const bool bold,
-				const bool italic);
 		public:
 			/**
 			 * Default constructor.
 			 */
-			TextureFontCache();
+			TextureFontCache(const Uint16 width,
+				const Uint16 height);
 
 			/**
 			 * Default destructor.
@@ -51,7 +52,8 @@ namespace eternal_lands
 
 			void add_font(const String &family, const float size,
 				const bool bold, const bool italic);
-			void add_font(const String &file_name);
+			void add_font(const String &file_name,
+				const float size);
 
 	};
 

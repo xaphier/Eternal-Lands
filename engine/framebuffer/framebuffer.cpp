@@ -68,7 +68,7 @@ namespace eternal_lands
 		{
 			EL_THROW_EXCEPTION(OpenGlException()
 				<< errinfo_message(get_status_str(status))
-				<< errinfo_gl_error(status));
+				<< errinfo_code(status));
 		}
 
 		CHECK_GL_ERROR();
