@@ -443,11 +443,6 @@ namespace eternal_lands
 			layer = found->second.get_layer();
 			array_name = found->second.get_texture()->get_name();
 
-			assert(m_texture_arrays.find(array_name) !=
-				m_texture_arrays.end());
-			assert(found->second.get_texture() ==
-				*m_texture_arrays.find(array_name));
-
 			return true;
 		}
 

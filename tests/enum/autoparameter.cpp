@@ -107,9 +107,6 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 		el::apt_shadow_texture_matrix)), "shadow_texture_matrix");
 
 	BOOST_CHECK_EQUAL(el::string_to_utf8(el::AutoParameterUtil::get_str(
-		el::apt_shadow_texture_offset)), "shadow_texture_offset");
-
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::AutoParameterUtil::get_str(
 		el::apt_light_colors)), "light_colors");
 
 	BOOST_CHECK_EQUAL(el::string_to_utf8(el::AutoParameterUtil::get_str(
@@ -117,9 +114,6 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_type(el::apt_view_matrix),
 		el::pt_mat4x4);
-
-	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_type(
-			el::apt_shadow_texture_offset), el::pt_vec4);
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_type(el::apt_ambient),
 		el::pt_vec4);
