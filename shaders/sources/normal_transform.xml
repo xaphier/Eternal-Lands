@@ -55,6 +55,7 @@
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>
    <glsl_150>true</glsl_150>
+   <glsl_330>true</glsl_330>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

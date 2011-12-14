@@ -14,7 +14,7 @@
 
 namespace el = eternal_lands;
 
-const int max_parameter_pages = 4;
+const int max_parameter_pages = 5;
 
 typedef struct
 {
@@ -312,13 +312,13 @@ G_MODULE_EXPORT void selection_changed(GtkTreeSelection* tree_selection,
 		tree_selection, 0, 0));
 }
 
-G_MODULE_EXPORT void close_main_window(GtkMenuItem* menu_item, GtkWidget* dest)
+G_MODULE_EXPORT void close_main_window(GtkAction* action, GtkWidget* dest)
 {
 	gtk_widget_hide(dest);
 	gtk_widget_destroy(dest);
 }
 
-G_MODULE_EXPORT void show_about(GtkMenuItem* menuitem, GtkAboutDialog* about)
+G_MODULE_EXPORT void show_about(GtkAction* action, GtkAboutDialog* about)
 {
 	gtk_dialog_run(GTK_DIALOG(about));
 	gtk_widget_hide(GTK_WIDGET(about));
@@ -334,6 +334,7 @@ typedef struct
 	GtkToggleButton* glsl_130;
 	GtkToggleButton* glsl_140;
 	GtkToggleButton* glsl_150;
+	GtkToggleButton* glsl_330;
 } PageData;
 
 typedef struct
@@ -360,6 +361,8 @@ G_MODULE_EXPORT void clear_pages(PagesData* pages)
 			FALSE);
 		gtk_toggle_button_set_active(pages->pages[i].glsl_150,
 			FALSE);
+		gtk_toggle_button_set_active(pages->pages[i].glsl_330,
+			FALSE);
 	}
 }
 
@@ -376,7 +379,7 @@ typedef struct
 	PagesData* data;
 } NewData;
 
-G_MODULE_EXPORT void new_file(GtkMenuItem* menuitem, NewData* data)
+G_MODULE_EXPORT void new_file(GtkAction* action, NewData* data)
 {
 	GtkTreeIter it;
 	std::string name_str, type_str, qualifier_str, size_str;
@@ -411,6 +414,8 @@ G_MODULE_EXPORT void new_file(GtkMenuItem* menuitem, NewData* data)
 				data->data->pages[0].glsl_140, TRUE);
 			gtk_toggle_button_set_active(
 				data->data->pages[0].glsl_150, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_330, TRUE);
 			break;
 		case 2:
 			gtk_toggle_button_set_active(
@@ -421,6 +426,8 @@ G_MODULE_EXPORT void new_file(GtkMenuItem* menuitem, NewData* data)
 				data->data->pages[1].glsl_140, TRUE);
 			gtk_toggle_button_set_active(
 				data->data->pages[1].glsl_150, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[1].glsl_330, TRUE);
 			break;
 		case 3:
 			gtk_toggle_button_set_active(
@@ -431,6 +438,8 @@ G_MODULE_EXPORT void new_file(GtkMenuItem* menuitem, NewData* data)
 				data->data->pages[2].glsl_140, TRUE);
 			gtk_toggle_button_set_active(
 				data->data->pages[2].glsl_150, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[2].glsl_330, TRUE);
 			break;
 		case 4:
 			gtk_toggle_button_set_active(
@@ -441,6 +450,20 @@ G_MODULE_EXPORT void new_file(GtkMenuItem* menuitem, NewData* data)
 				data->data->pages[2].glsl_140, TRUE);
 			gtk_toggle_button_set_active(
 				data->data->pages[3].glsl_150, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[3].glsl_330, TRUE);
+			break;
+		case 5:
+			gtk_toggle_button_set_active(
+				data->data->pages[0].glsl_120, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[1].glsl_130, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[2].glsl_140, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[3].glsl_150, TRUE);
+			gtk_toggle_button_set_active(
+				data->data->pages[4].glsl_330, TRUE);
 			break;
 	}
 
@@ -482,7 +505,7 @@ typedef struct
 	el::String file_name;
 } ShaderData;
 
-G_MODULE_EXPORT void load_file(GtkMenuItem* menu_item, ShaderData* data)
+G_MODULE_EXPORT void load_file(GtkAction* action, ShaderData* data)
 {
 	el::ShaderSource shader_source;
 	el::String name;
@@ -551,6 +574,8 @@ G_MODULE_EXPORT void load_file(GtkMenuItem* menu_item, ShaderData* data)
 			shader_source.get_datas()[i].get_glsl_140());
 		gtk_toggle_button_set_active(data->data->pages[i].glsl_150,
 			shader_source.get_datas()[i].get_glsl_150());
+		gtk_toggle_button_set_active(data->data->pages[i].glsl_330,
+			shader_source.get_datas()[i].get_glsl_330());
 
 		gtk_text_buffer_set_text(data->data->pages[i].text_buffer,
 			shader_source.get_datas()[i].get_source().get().c_str(),
@@ -659,6 +684,8 @@ void do_save_file(ShaderData* data)
 			data->data->pages[i].glsl_140) == TRUE);
 		shader_source_data.set_glsl_150(gtk_toggle_button_get_active(
 			data->data->pages[i].glsl_150) == TRUE);
+		shader_source_data.set_glsl_330(gtk_toggle_button_get_active(
+			data->data->pages[i].glsl_330) == TRUE);
 
 		gtk_text_buffer_get_bounds(data->data->pages[i].text_buffer,
 			&start, &end);
@@ -727,7 +754,7 @@ bool get_file_name(ShaderData* data)
 	return false;
 }
 
-G_MODULE_EXPORT void save_file(GtkMenuItem* menu_item, ShaderData* data)
+G_MODULE_EXPORT void save_file(GtkAction* action, ShaderData* data)
 {
 	if (data->file_name.get().empty())
 	{
@@ -740,7 +767,7 @@ G_MODULE_EXPORT void save_file(GtkMenuItem* menu_item, ShaderData* data)
 	do_save_file(data);
 }
 
-G_MODULE_EXPORT void save_as_file(GtkMenuItem* menu_item, ShaderData* data)
+G_MODULE_EXPORT void save_as_file(GtkAction* action, ShaderData* data)
 {
 	if (get_file_name(data))
 	{
@@ -753,7 +780,7 @@ int main(int argc, char *argv[])
 	GtkBuilder *builder = 0;
 	GtkWindow *window = 0;
 	GtkDialog* dialog = 0;
-	GtkMenuItem* menu_item = 0;
+	GtkAction* action = 0;
 	GtkSpinButton* spin_button = 0;
 	GtkComboBox* combo_box = 0;
 	GtkButton* button = 0;
@@ -779,16 +806,14 @@ int main(int argc, char *argv[])
 	gtk_builder_connect_signals(builder, 0);
 
 	window = GTK_WINDOW(gtk_builder_get_object(builder, "main_window"));
-	menu_item = GTK_MENU_ITEM(gtk_builder_get_object(builder,
-		"menu_item_quit"));
-	g_signal_connect(menu_item, "activate", G_CALLBACK(close_main_window),
+	action = GTK_ACTION(gtk_builder_get_object(builder, "quit"));
+	g_signal_connect(action, "activate", G_CALLBACK(close_main_window),
 		GTK_WIDGET(window));
 	g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), 0);
 
-	menu_item = GTK_MENU_ITEM(gtk_builder_get_object(builder,
-		"menu_item_about"));
+	action = GTK_ACTION(gtk_builder_get_object(builder, "about"));
 	dialog = GTK_DIALOG(gtk_builder_get_object(builder, "about_dialog"));
-	g_signal_connect(menu_item, "activate", G_CALLBACK(show_about), dialog);
+	g_signal_connect(action, "activate", G_CALLBACK(show_about), dialog);
 
 	spin_button = GTK_SPIN_BUTTON(gtk_builder_get_object(builder,
 		"pages"));
@@ -961,6 +986,12 @@ int main(int argc, char *argv[])
 		page_datas.pages[i].glsl_150 = GTK_TOGGLE_BUTTON(
 			gtk_builder_get_object(builder, name.c_str()));
 
+		name = "glsl_330_";
+		name += str.str();
+
+		page_datas.pages[i].glsl_330 = GTK_TOGGLE_BUTTON(
+			gtk_builder_get_object(builder, name.c_str()));
+
 		name = "text_buffer_";
 		name += str.str();
 
@@ -1000,19 +1031,16 @@ int main(int argc, char *argv[])
 	gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(shader_data.load_dialog),
 		filter_all);
 
-	menu_item = GTK_MENU_ITEM(gtk_builder_get_object(builder,
-		"menu_item_open_file"));
-	g_signal_connect(menu_item, "activate", G_CALLBACK(load_file),
+	action = GTK_ACTION(gtk_builder_get_object(builder, "file_open"));
+	g_signal_connect(action, "activate", G_CALLBACK(load_file),
 		&shader_data);
 
-	menu_item = GTK_MENU_ITEM(gtk_builder_get_object(builder,
-		"menu_item_save_file"));
-	g_signal_connect(menu_item, "activate", G_CALLBACK(save_file),
+	action = GTK_ACTION(gtk_builder_get_object(builder, "file_save"));
+	g_signal_connect(action, "activate", G_CALLBACK(save_file),
 		&shader_data);
 
-	menu_item = GTK_MENU_ITEM(gtk_builder_get_object(builder,
-		"menu_item_save_as_file"));
-	g_signal_connect(menu_item, "activate", G_CALLBACK(save_as_file),
+	action = GTK_ACTION(gtk_builder_get_object(builder, "file_save_as"));
+	g_signal_connect(action, "activate", G_CALLBACK(save_as_file),
 		&shader_data);
 
 	new_data.dialog = GTK_DIALOG(gtk_builder_get_object(builder,
@@ -1037,10 +1065,8 @@ int main(int argc, char *argv[])
 	new_data.add_default_parameter = GTK_TOGGLE_BUTTON(
 		gtk_builder_get_object(builder, "add_default_parameter"));
 
-	menu_item = GTK_MENU_ITEM(gtk_builder_get_object(builder,
-		"menu_item_new_file"));
-	g_signal_connect(menu_item, "activate", G_CALLBACK(new_file),
-		&new_data);
+	action = GTK_ACTION(gtk_builder_get_object(builder, "file_new"));
+	g_signal_connect(action, "activate", G_CALLBACK(new_file), &new_data);
 
 	gtk_widget_show(GTK_WIDGET(window));
 	gtk_main();

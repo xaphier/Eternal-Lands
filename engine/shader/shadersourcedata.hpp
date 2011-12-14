@@ -111,6 +111,18 @@ namespace eternal_lands
 				}
 			}
 
+			inline void set_glsl_330(const bool glsl_330)
+			{
+				if (glsl_330)
+				{
+					add_version(svt_330);
+				}
+				else
+				{
+					erase_version(svt_330);
+				}
+			}
+
 			inline const ShaderSourceParameterVector
 				&get_parameters() const
 			{
@@ -146,6 +158,11 @@ namespace eternal_lands
 			inline bool get_glsl_150() const
 			{
 				return m_versions.count(svt_150) > 0;
+			}
+
+			inline bool get_glsl_330() const
+			{
+				return m_versions.count(svt_330) > 0;
 			}
 
 	};

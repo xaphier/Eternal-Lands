@@ -494,6 +494,11 @@ namespace eternal_lands
 
 		ShaderVersionType get_shader_version_type(const Uint16 version)
 		{
+			if (version >= 330)
+			{
+				return svt_330;
+			}
+
 			if (version >= 150)
 			{
 				return svt_150;

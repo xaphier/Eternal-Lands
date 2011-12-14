@@ -126,6 +126,11 @@ namespace eternal_lands
 			{
 				set_glsl_150(XmlUtil::get_bool_value(it));
 			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_330")) == 0)
+			{
+				set_glsl_330(XmlUtil::get_bool_value(it));
+			}
 		}
 		while (XmlUtil::next(it, true));
 	}
@@ -151,6 +156,7 @@ namespace eternal_lands
 		writer->write_bool_element(UTF8("glsl_130"), get_glsl_130());
 		writer->write_bool_element(UTF8("glsl_140"), get_glsl_140());
 		writer->write_bool_element(UTF8("glsl_150"), get_glsl_150());
+		writer->write_bool_element(UTF8("glsl_330"), get_glsl_330());
 
 		writer->end_element();
 	}
