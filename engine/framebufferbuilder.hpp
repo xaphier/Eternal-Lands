@@ -28,6 +28,12 @@ namespace eternal_lands
 		private:
 			const GlobalVarsSharedPtr m_global_vars;
 
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
+			{
+				return m_global_vars;
+			}
+
 		public:
 			FrameBufferBuilder(
 				const GlobalVarsSharedPtr &global_vars);
@@ -45,12 +51,6 @@ namespace eternal_lands
 				const Uint32 height, const Uint32 layers,
 				const Uint16 mipmaps, const Uint16 samples,
 				const TextureFormatType format);
-
-			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
-			{
-				return m_global_vars;
-			}
 
 	};
 
