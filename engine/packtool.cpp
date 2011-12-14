@@ -130,10 +130,9 @@ namespace eternal_lands
 		glm::vec4 unpack_values(const T value)
 		{
 			glm::vec4 result;
-			Uint32Array4 masks;
-			Uint16Array4 bits, shifts;
+			glm::uvec4 masks, bits, shifts;
 			Sint32 tmp, max_value, min_value, total;
-			Uint32 i, shift, mask;
+			Uint32 i, shift, mask, count;
 
 			if (reverse)
 			{
@@ -148,6 +147,33 @@ namespace eternal_lands
 			bits[1] = y;
 			bits[2] = z;
 			bits[3] = w;
+
+			count = 0;
+
+			for (i = 0; i < 4; i++)
+			{
+				if (bits[i] > 0)
+				{
+					count++;
+				}
+			}
+
+			if (reverse)
+			{
+				switch (count)
+				{
+					case 2:
+						std::swap(bits.x, bits.y);
+						break;
+					case 3:
+						std::swap(bits.x, bits.z);
+						break;
+					case 4:
+						std::swap(bits.x, bits.w);
+						std::swap(bits.y, bits.z);
+						break;
+				}
+			}
 
 			for (i = 0; i < 4; i++)
 			{
@@ -166,45 +192,44 @@ namespace eternal_lands
 				}
 			}
 
-			for (i = 0; i < 4; i++)
+			for (i = 0; i < count; i++)
 			{
-				if (bits[i] > 0)
+				tmp = ((value & masks[i]) >> shifts[i]);
+
+				total = 1 << bits[i];
+
+				if (signed_value)
 				{
-					tmp = ((value & masks[i]) >> shifts[i]);
+					max_value = (1 << (bits[i] - 1)) - 1;
+					min_value = -(1 << (bits[i] - 1));
+				}
+				else
+				{
+					max_value = (1 << bits[i]) - 1;
+					min_value = 0;
+				}
 
-					total = 1 << bits[i];
+				if (tmp > max_value)
+				{
+					tmp = tmp - total;
+				}
 
-					if (signed_value)
+				if (normalize)
+				{
+					if (tmp < 0.0f)
 					{
-						max_value = (1 << (bits[i] - 1)) - 1;
-						min_value = -(1 << (bits[i] - 1));
+						result[i] = static_cast<float>(
+							tmp) / -min_value;
 					}
 					else
 					{
-						max_value = (1 << bits[i]) - 1;
-						min_value = 0;
+						result[i] = static_cast<float>(
+							tmp) / max_value;
 					}
-
-					if (tmp > max_value)
-					{
-						tmp = tmp - total;
-					}
-
-					if (normalize)
-					{
-						if (tmp < 0.0f)
-						{
-							result[i] = static_cast<float>(tmp) / -min_value;
-						}
-						else
-						{
-							result[i] = static_cast<float>(tmp) / max_value;
-						}
-					}
-					else
-					{
-						result[i] = tmp;
-					}
+				}
+				else
+				{
+					result[i] = tmp;
 				}
 			}
 
@@ -217,11 +242,10 @@ namespace eternal_lands
 		T pack_values(const glm::vec4 &value)
 		{
 			T result;
-			Uint32Array4 masks;
-			Uint16Array4 bits, shifts;
+			glm::uvec4 masks, bits, shifts;
 			float temp;
 			Sint32 tmp, max_value, min_value, total;
-			Uint32 i, shift, mask;
+			Uint32 i, shift, mask, count;
 
 			if (reverse)
 			{
@@ -236,6 +260,33 @@ namespace eternal_lands
 			bits[1] = y;
 			bits[2] = z;
 			bits[3] = w;
+
+			count = 0;
+
+			for (i = 0; i < 4; i++)
+			{
+				if (bits[i] > 0)
+				{
+					count++;
+				}
+			}
+
+			if (reverse)
+			{
+				switch (count)
+				{
+					case 2:
+						std::swap(bits.x, bits.y);
+						break;
+					case 3:
+						std::swap(bits.x, bits.z);
+						break;
+					case 4:
+						std::swap(bits.x, bits.w);
+						std::swap(bits.y, bits.z);
+						break;
+				}
+			}
 
 			for (i = 0; i < 4; i++)
 			{
@@ -256,62 +307,66 @@ namespace eternal_lands
 
 			result = 0;
 
-			for (i = 0; i < 4; i++)
+			for (i = 0; i < count; i++)
 			{
-				if (masks[i] > 0)
+				temp = value[i];
+
+				total = 1 << bits[i];
+
+				if (signed_value)
 				{
-					temp = value[i];
+					max_value = (1 << (bits[i] - 1)) - 1;
+					min_value = -(1 << (bits[i] - 1));
+				}
+				else
+				{
+					max_value = (1 << bits[i]) - 1;
+					min_value = 0;
+				}
 
-					total = 1 << bits[i];
-
+				if (normalize)
+				{
 					if (signed_value)
 					{
-						max_value = (1 << (bits[i] - 1)) - 1;
-						min_value = -(1 << (bits[i] - 1));
+						temp = std::min(1.0f,
+							std::max(-1.0f, temp));
 					}
 					else
 					{
-						max_value = (1 << bits[i]) - 1;
-						min_value = 0;
+						temp = std::min(1.0f,
+							std::max(0.0f, temp));
 					}
 
-					if (normalize)
+					if (temp < 0.0f)
 					{
-						if (signed_value)
-						{
-							temp = std::min(1.0f, std::max(-1.0f, temp));
-						}
-						else
-						{
-							temp = std::min(1.0f, std::max(0.0f, temp));
-						}
-
-						if (temp < 0.0f)
-						{
-							tmp = total - static_cast<Sint32>(temp * min_value + 0.5f);
-						}
-						else
-						{
-							tmp = temp * max_value + 0.5f;
-						}
+						tmp = total;
+						tmp -= static_cast<Sint32>(temp
+							* min_value + 0.5f);
 					}
 					else
 					{
-						temp = std::min(static_cast<float>(max_value), temp);
-						temp = std::max(static_cast<float>(min_value), temp);
-
-						if (temp < 0.0f)
-						{
-							tmp = total + static_cast<Sint32>(temp - 0.5f);
-						}
-						else
-						{
-							tmp = temp + 0.5f;
-						}
+						tmp = temp * max_value + 0.5f;
 					}
-
-					result |= (tmp << shifts[i]) & masks[i];
 				}
+				else
+				{
+					temp = std::min(static_cast<float>(
+						max_value), temp);
+					temp = std::max(static_cast<float>(
+						min_value), temp);
+
+					if (temp < 0.0f)
+					{
+						tmp = total + static_cast<
+							Sint32>(temp - 0.5f);
+					}
+					else
+					{
+						tmp = temp + 0.5f;
+					}
+				}
+
+				result |= (tmp << shifts[i]) & masks[i];
 			}
 
 			return result;
@@ -447,11 +502,11 @@ namespace eternal_lands
 	{
 		if (normalize)
 		{
-			return glm::vec3(unpack_values<Uint8, 3, 3, 2, 0, false, true, true>(value));
+			return glm::vec3(unpack_values<Uint8, 2, 3, 3, 0, false, true, true>(value));
 		}
 		else
 		{
-			return glm::vec3(unpack_values<Uint8, 3, 3, 2, 0, false, false, true>(value));
+			return glm::vec3(unpack_values<Uint8, 2, 3, 3, 0, false, false, true>(value));
 		}
 	}
 
@@ -495,11 +550,11 @@ namespace eternal_lands
 	{
 		if (normalize)
 		{
-			return unpack_values<Uint16, 5, 5, 5, 1, false, true, true>(value);
+			return unpack_values<Uint16, 1, 5, 5, 5, false, true, true>(value);
 		}
 		else
 		{
-			return unpack_values<Uint16, 5, 5, 5, 1, false, false, true>(value);
+			return unpack_values<Uint16, 1, 5, 5, 5, false, false, true>(value);
 		}
 	}
 
@@ -543,11 +598,11 @@ namespace eternal_lands
 	{
 		if (normalize)
 		{
-			return unpack_values<Uint32, 10, 10, 10, 2, false, true, true>(value);
+			return unpack_values<Uint32, 2, 10, 10, 10, false, true, true>(value);
 		}
 		else
 		{
-			return unpack_values<Uint32, 10, 10, 10, 2, false, false, true>(value);
+			return unpack_values<Uint32, 2, 10, 10, 10, false, false, true>(value);
 		}
 	}
 
@@ -567,11 +622,11 @@ namespace eternal_lands
 	{
 		if (normalize)
 		{
-			return unpack_values<Uint32, 10, 10, 10, 2, true, true, true>(value);
+			return unpack_values<Uint32, 2, 10, 10, 10, true, true, true>(value);
 		}
 		else
 		{
-			return unpack_values<Uint32, 10, 10, 10, 2, true, false, true>(value);
+			return unpack_values<Uint32, 2, 10, 10, 10, true, false, true>(value);
 		}
 	}
 
@@ -591,11 +646,11 @@ namespace eternal_lands
 	{
 		if (normalize)
 		{
-			return pack_values<Uint8, 3, 3, 2, 0, false, true, true>(glm::vec4(value, 0.0f));
+			return pack_values<Uint8, 2, 3, 3, 0, false, true, true>(glm::vec4(value, 0.0f));
 		}
 		else
 		{
-			return pack_values<Uint8, 3, 3, 2, 0, false, false, true>(glm::vec4(value, 0.0f));
+			return pack_values<Uint8, 2, 3, 3, 0, false, false, true>(glm::vec4(value, 0.0f));
 		}
 	}
 
@@ -639,11 +694,11 @@ namespace eternal_lands
 	{
 		if (normalize)
 		{
-			return pack_values<Uint16, 5, 5, 5, 1, false, true, true>(value);
+			return pack_values<Uint16, 1, 5, 5, 5, false, true, true>(value);
 		}
 		else
 		{
-			return pack_values<Uint16, 5, 5, 5, 1, false, false, true>(value);
+			return pack_values<Uint16, 1, 5, 5, 5, false, false, true>(value);
 		}
 	}
 
@@ -687,11 +742,11 @@ namespace eternal_lands
 	{
 		if (normalize)
 		{
-			return pack_values<Uint32, 10, 10, 10, 2, false, true, true>(value);
+			return pack_values<Uint32, 2, 10, 10, 10, false, true, true>(value);
 		}
 		else
 		{
-			return pack_values<Uint32, 10, 10, 10, 2, false, false, true>(value);
+			return pack_values<Uint32, 2, 10, 10, 10, false, false, true>(value);
 		}
 	}
 
@@ -711,11 +766,11 @@ namespace eternal_lands
 	{
 		if (normalize)
 		{
-			return pack_values<Uint32, 10, 10, 10, 2, true, true, true>(value);
+			return pack_values<Uint32, 2, 10, 10, 10, true, true, true>(value);
 		}
 		else
 		{
-			return pack_values<Uint32, 10, 10, 10, 2, true, false, true>(value);
+			return pack_values<Uint32, 2, 10, 10, 10, true, false, true>(value);
 		}
 	}
 
@@ -819,19 +874,19 @@ namespace eternal_lands
 				result[0] = static_cast<const float*>(ptr)[0];
 				return result;
 			case pft_half_4:
-				result[3] = glm::detail::toFloat16(
+				result[3] = glm::detail::toFloat32(
 					static_cast<const glm::detail::hdata*>(
 						ptr)[3]);
 			case pft_half_3:
-				result[2] = glm::detail::toFloat16(
+				result[2] = glm::detail::toFloat32(
 					static_cast<const glm::detail::hdata*>(
 						ptr)[2]);
 			case pft_half_2:
-				result[1] = glm::detail::toFloat16(
+				result[1] = glm::detail::toFloat32(
 					static_cast<const glm::detail::hdata*>(
 						ptr)[1]);
 			case pft_half_1:
-				result[0] = glm::detail::toFloat16(
+				result[0] = glm::detail::toFloat32(
 					static_cast<const glm::detail::hdata*>(
 						ptr)[0]);
 				return result;
@@ -965,16 +1020,16 @@ namespace eternal_lands
 				return;
 			case pft_half_4:
 				static_cast<glm::detail::hdata*>(ptr)[3] =
-					glm::detail::toFloat32(data[3]);
+					glm::detail::toFloat16(data[3]);
 			case pft_half_3:
 				static_cast<glm::detail::hdata*>(ptr)[2] =
-					glm::detail::toFloat32(data[2]);
+					glm::detail::toFloat16(data[2]);
 			case pft_half_2:
 				static_cast<glm::detail::hdata*>(ptr)[1] =
-					glm::detail::toFloat32(data[1]);
+					glm::detail::toFloat16(data[1]);
 			case pft_half_1:
 				static_cast<glm::detail::hdata*>(ptr)[0] =
-					glm::detail::toFloat32(data[0]);
+					glm::detail::toFloat16(data[0]);
 				return;
 		}
 	}

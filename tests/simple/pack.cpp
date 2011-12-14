@@ -24,6 +24,15 @@ BOOST_AUTO_TEST_CASE(pack_unpack_3_3_2)
 	for (i = 0; i < std::numeric_limits<Uint8>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_3_3_2(false, i);
+
+		BOOST_CHECK_LE(tmp[0], 7.0f);
+		BOOST_CHECK_LE(tmp[1], 7.0f);
+		BOOST_CHECK_LE(tmp[2], 3.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+
 		value = el::PackTool::pack_uint_3_3_2(false, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -37,6 +46,15 @@ BOOST_AUTO_TEST_CASE(pack_unpack_3_3_2_normalized)
 	for (i = 0; i < std::numeric_limits<Uint8>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_3_3_2(true, i);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+
 		value = el::PackTool::pack_uint_3_3_2(true, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -50,6 +68,15 @@ BOOST_AUTO_TEST_CASE(pack_unpack_2_3_3_rev)
 	for (i = 0; i < std::numeric_limits<Uint8>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_2_3_3_rev(false, i);
+
+		BOOST_CHECK_LE(tmp[0], 7.0f);
+		BOOST_CHECK_LE(tmp[1], 7.0f);
+		BOOST_CHECK_LE(tmp[2], 3.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+
 		value = el::PackTool::pack_uint_2_3_3_rev(false, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -63,6 +90,15 @@ BOOST_AUTO_TEST_CASE(pack_unpack_2_3_3_rev_normalized)
 	for (i = 0; i < std::numeric_limits<Uint8>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_2_3_3_rev(true, i);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+
 		value = el::PackTool::pack_uint_2_3_3_rev(true, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -89,6 +125,15 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5_normalized)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_5_6_5(true, i);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+
 		value = el::PackTool::pack_uint_5_6_5(true, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -115,6 +160,15 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5_rev_normalized)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_5_6_5_rev(true, i);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+
 		value = el::PackTool::pack_uint_5_6_5_rev(true, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -128,6 +182,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_5_5_1)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_5_5_5_1(false, i);
+
+		BOOST_CHECK_LE(tmp[0], 31.0f);
+		BOOST_CHECK_LE(tmp[1], 31.0f);
+		BOOST_CHECK_LE(tmp[2], 31.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_5_5_5_1(false, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -141,6 +206,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_5_5_1_normalized)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_5_5_5_1(true, i);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_5_5_5_1(true, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -154,6 +230,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_1_5_5_5_rev)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_1_5_5_5_rev(false, i);
+
+		BOOST_CHECK_LE(tmp[0], 31.0f);
+		BOOST_CHECK_LE(tmp[1], 31.0f);
+		BOOST_CHECK_LE(tmp[2], 31.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_1_5_5_5_rev(false, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -167,6 +254,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_1_5_5_5_rev_normalized)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_1_5_5_5_rev(true, i);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_1_5_5_5_rev(true, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -180,6 +278,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_4_4_4_4(false, i);
+
+		BOOST_CHECK_LE(tmp[0], 15.0f);
+		BOOST_CHECK_LE(tmp[1], 15.0f);
+		BOOST_CHECK_LE(tmp[2], 15.0f);
+		BOOST_CHECK_LE(tmp[3], 15.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_4_4_4_4(false, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -193,6 +302,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_normalized)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_4_4_4_4(true, i);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_4_4_4_4(true, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -206,6 +326,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_rev)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_4_4_4_4_rev(false, i);
+
+		BOOST_CHECK_LE(tmp[0], 15.0f);
+		BOOST_CHECK_LE(tmp[1], 15.0f);
+		BOOST_CHECK_LE(tmp[2], 15.0f);
+		BOOST_CHECK_LE(tmp[3], 15.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_4_4_4_4_rev(false, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -219,6 +350,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_rev_normalized)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		tmp = el::PackTool::unpack_uint_4_4_4_4_rev(true, i);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_4_4_4_4_rev(true, tmp);
 		BOOST_CHECK_EQUAL(value, i);
 	}
@@ -237,6 +379,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_uint_10_10_10_2)
 	{
 		temp = random_uint32();
 		tmp = el::PackTool::unpack_uint_10_10_10_2(false, temp);
+
+		BOOST_CHECK_LE(tmp[0], 1023.0f);
+		BOOST_CHECK_LE(tmp[1], 1023.0f);
+		BOOST_CHECK_LE(tmp[2], 1023.0f);
+		BOOST_CHECK_LE(tmp[3], 3.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_10_10_10_2(false, tmp);
 		BOOST_CHECK_EQUAL(value, temp);
 	}
@@ -255,6 +408,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_uint_10_10_10_2_normalized)
 	{
 		temp = random_uint32();
 		tmp = el::PackTool::unpack_uint_10_10_10_2(true, temp);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_10_10_10_2(true, tmp);
 		BOOST_CHECK_EQUAL(value, temp);
 	}
@@ -273,6 +437,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_uint_2_10_10_10_rev)
 	{
 		temp = random_uint32();
 		tmp = el::PackTool::unpack_uint_2_10_10_10_rev(false, temp);
+
+		BOOST_CHECK_LE(tmp[0], 1023.0f);
+		BOOST_CHECK_LE(tmp[1], 1023.0f);
+		BOOST_CHECK_LE(tmp[2], 1023.0f);
+		BOOST_CHECK_LE(tmp[3], 3.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_2_10_10_10_rev(false, tmp);
 		BOOST_CHECK_EQUAL(value, temp);
 	}
@@ -291,6 +466,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_uint_2_10_10_10_rev_normalized)
 	{
 		temp = random_uint32();
 		tmp = el::PackTool::unpack_uint_2_10_10_10_rev(true, temp);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
 		value = el::PackTool::pack_uint_2_10_10_10_rev(true, tmp);
 		BOOST_CHECK_EQUAL(value, temp);
 	}
@@ -309,6 +495,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_sint_10_10_10_2)
 	{
 		temp = random_uint32();
 		tmp = el::PackTool::unpack_sint_10_10_10_2(false, temp);
+
+		BOOST_CHECK_LE(tmp[0], 511.0f);
+		BOOST_CHECK_LE(tmp[1], 511.0f);
+		BOOST_CHECK_LE(tmp[2], 511.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], -512.0f);
+		BOOST_CHECK_GE(tmp[1], -512.0f);
+		BOOST_CHECK_GE(tmp[2], -512.0f);
+		BOOST_CHECK_GE(tmp[3], -2.0f);
+
 		value = el::PackTool::pack_sint_10_10_10_2(false, tmp);
 		BOOST_CHECK_EQUAL(value, temp);
 	}
@@ -327,6 +524,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_sint_10_10_10_2_normalized)
 	{
 		temp = random_uint32();
 		tmp = el::PackTool::unpack_sint_10_10_10_2(true, temp);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], -1.0f);
+		BOOST_CHECK_GE(tmp[1], -1.0f);
+		BOOST_CHECK_GE(tmp[2], -1.0f);
+		BOOST_CHECK_GE(tmp[3], -1.0f);
+
 		value = el::PackTool::pack_sint_10_10_10_2(true, tmp);
 		BOOST_CHECK_EQUAL(value, temp);
 	}
@@ -345,6 +553,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_sint_2_10_10_10_rev)
 	{
 		temp = random_uint32();
 		tmp = el::PackTool::unpack_sint_2_10_10_10_rev(false, temp);
+
+		BOOST_CHECK_LE(tmp[0], 511.0f);
+		BOOST_CHECK_LE(tmp[1], 511.0f);
+		BOOST_CHECK_LE(tmp[2], 511.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], -512.0f);
+		BOOST_CHECK_GE(tmp[1], -512.0f);
+		BOOST_CHECK_GE(tmp[2], -512.0f);
+		BOOST_CHECK_GE(tmp[3], -2.0f);
+
 		value = el::PackTool::pack_sint_2_10_10_10_rev(false, tmp);
 		BOOST_CHECK_EQUAL(value, temp);
 	}
@@ -363,6 +582,17 @@ BOOST_AUTO_TEST_CASE(pack_unpack_sint_2_10_10_10_rev_normalized)
 	{
 		temp = random_uint32();
 		tmp = el::PackTool::unpack_sint_2_10_10_10_rev(true, temp);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], -1.0f);
+		BOOST_CHECK_GE(tmp[1], -1.0f);
+		BOOST_CHECK_GE(tmp[2], -1.0f);
+		BOOST_CHECK_GE(tmp[3], -1.0f);
+
 		value = el::PackTool::pack_sint_2_10_10_10_rev(true, tmp);
 		BOOST_CHECK_EQUAL(value, temp);
 	}
@@ -388,7 +618,8 @@ BOOST_AUTO_TEST_CASE(compress_uncompress_normalized)
 		{
 			duplicates++;
 			similar = el::PackTool::uncompress_normalized(value);
-			BOOST_CHECK_SMALL(glm::distance(normal, similar), 0.01f);
+			BOOST_CHECK_SMALL(glm::distance(normal, similar),
+				0.01f);
 		}
 	}
 
@@ -396,4 +627,3 @@ BOOST_AUTO_TEST_CASE(compress_uncompress_normalized)
 
 	BOOST_CHECK_LT(duplicates, (max_duplicates));
 }
-

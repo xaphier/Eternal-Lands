@@ -21,6 +21,7 @@ namespace eternal_lands
 				const Uint32 m_size;
 				const GLenum m_gl_type;
 				const Uint16 m_element_count;
+				const PackFormatType m_pack_format;
 				const bool m_dynamic_range;
 				const bool m_signed_elements;
 				const bool m_normalized;
@@ -30,12 +31,14 @@ namespace eternal_lands
 					const String &name,
 					const Uint32 size, const GLenum gl_type,
 					const Uint16 element_count,
+					const PackFormatType pack_format,
 					const bool dynamic_range,
 					const bool signed_elements,
 					const bool normalized):
 					m_name(name), m_size(size),
 					m_gl_type(gl_type),
 					m_element_count(element_count),
+					m_pack_format(pack_format),
 					m_dynamic_range(dynamic_range),
 					m_signed_elements(signed_elements),
 					m_normalized(normalized)
@@ -67,6 +70,11 @@ namespace eternal_lands
 				inline Uint16 get_element_count() const
 				{
 					return m_element_count;
+				}
+
+				inline PackFormatType get_pack_format() const
+				{
+					return m_pack_format;
 				}
 
 				inline bool get_dynamic_range() const
@@ -101,75 +109,83 @@ namespace eternal_lands
 		const VertexElementTypeData vertex_element_type_datas[] =
 		{
 			VertexElementTypeData(String(UTF8("float1")),
-				1 * sizeof(GLfloat), GL_FLOAT, 1, true, true,
-				false),
+				1 * sizeof(GLfloat), GL_FLOAT, 1, pft_float_1,
+				true, true, false),
 			VertexElementTypeData(String(UTF8("float2")),
-				2 * sizeof(GLfloat), GL_FLOAT, 2, true, true,
-				false),
+				2 * sizeof(GLfloat), GL_FLOAT, 2, pft_float_2,
+				true, true, false),
 			VertexElementTypeData(String(UTF8("float3")),
-				3 * sizeof(GLfloat), GL_FLOAT, 3, true, true,
-				false),
+				3 * sizeof(GLfloat), GL_FLOAT, 3, pft_float_3,
+				true, true, false),
 			VertexElementTypeData(String(UTF8("float4")),
-				4 * sizeof(GLfloat), GL_FLOAT, 4, true, true,
-				false),
+				4 * sizeof(GLfloat), GL_FLOAT, 4, pft_float_4,
+				true, true, false),
 			VertexElementTypeData(String(UTF8("half2")),
-				2 * sizeof(GLhalf), GL_HALF_FLOAT, 2, true,
-				true, false),
+				2 * sizeof(GLhalf), GL_HALF_FLOAT, 2,
+				pft_half_2, true, true, false),
 			VertexElementTypeData(String(UTF8("half4")),
-				4 * sizeof(GLhalf), GL_HALF_FLOAT, 4, true,
-				true, false),
+				4 * sizeof(GLhalf), GL_HALF_FLOAT, 4,
+				pft_half_4, true, true, false),
 			VertexElementTypeData(String(UTF8("short2")),
-				2 * sizeof(GLshort), GL_SHORT, 2, false, true,
-				false),
-			VertexElementTypeData(String(UTF8("short2_normlaized")),
-				2 * sizeof(GLshort), GL_SHORT, 2, false, true,
+				2 * sizeof(GLshort), GL_SHORT, 2,
+				pft_signed_short_2, false, true, false),
+			VertexElementTypeData(String(UTF8("short2_normalized")),
+				2 * sizeof(GLshort), GL_SHORT, 2,
+				pft_signed_normalized_short_2, false, true,
 				true),
 			VertexElementTypeData(String(UTF8("short4")),
-				4 * sizeof(GLshort), GL_SHORT, 4, false, true,
-				false),
-			VertexElementTypeData(String(UTF8("short4_normlaized")),
-				4 * sizeof(GLshort),
-				GL_SHORT, 4, false, true, true),
+				4 * sizeof(GLshort), GL_SHORT, 4,
+				pft_signed_short_4, false, true, false),
+			VertexElementTypeData(String(UTF8("short4_normalized")),
+				4 * sizeof(GLshort), GL_SHORT, 4,
+				pft_signed_normalized_short_4, false, true,
+				true),
 			VertexElementTypeData(String(UTF8("ushort2")),
 				2 * sizeof(GLushort), GL_UNSIGNED_SHORT, 2,
-				false, false, false),
-			VertexElementTypeData(String(UTF8("ushort2_normlaized")),
-				2 * sizeof(GLushort),
-				GL_UNSIGNED_SHORT, 2, false, false, true),
+				pft_unsigned_short_2, false, false, false),
+			VertexElementTypeData(String(UTF8("ushort2_normalized")),
+				2 * sizeof(GLushort), GL_UNSIGNED_SHORT, 2,
+				pft_unsigned_normalized_short_2, false, false,
+				true),
 			VertexElementTypeData(String(UTF8("ushort4")),
 				4 * sizeof(GLushort), GL_UNSIGNED_SHORT, 4,
-				false, false, false),
-			VertexElementTypeData(String(UTF8("ushort4_normlaized")),
-				4 * sizeof(GLushort),
-				GL_UNSIGNED_SHORT, 4, false, false, true),
+				pft_unsigned_short_4, false, false, false),
+			VertexElementTypeData(String(UTF8("ushort4_normalized")),
+				4 * sizeof(GLushort), GL_UNSIGNED_SHORT, 4,
+				pft_unsigned_normalized_short_4, false, false,
+				true),
 			VertexElementTypeData(String(UTF8("byte4")),
-				4 * sizeof(GLbyte), GL_BYTE, 4, false, true,
-				false),
-			VertexElementTypeData(String(UTF8("byte4_normlaized")),
-				4 * sizeof(GLbyte), GL_BYTE, 4, false, true,
+				4 * sizeof(GLbyte), GL_BYTE, 4,
+				pft_signed_byte_4, false, true, false),
+			VertexElementTypeData(String(UTF8("byte4_normalized")),
+				4 * sizeof(GLbyte), GL_BYTE, 4,
+				pft_signed_normalized_byte_4, false, true,
 				true),
 			VertexElementTypeData(String(UTF8("ubyte4")),
 				4 * sizeof(GLubyte), GL_UNSIGNED_BYTE, 4,
-				false, false, false),
-			VertexElementTypeData(String(UTF8("ubyte4_normlaized")),
-				4 * sizeof(GLubyte),
-				GL_UNSIGNED_BYTE, 4, false, false, true),
+				pft_unsigned_byte_4, false, false, false),
+			VertexElementTypeData(String(UTF8("ubyte4_normalized")),
+				4 * sizeof(GLubyte), GL_UNSIGNED_BYTE, 4,
+				pft_unsigned_normalized_byte_4, false, false,
+				true),
 			VertexElementTypeData(String(UTF8("signed_xyz10_w2")),
-				sizeof(GLint),
-				GL_INT_2_10_10_10_REV, 4, false, true, false),
+				sizeof(GLint), GL_INT_2_10_10_10_REV, 4,
+				pft_signed_int_rev_2_10_10_10, false, true,
+				false),
 			VertexElementTypeData(
-				String(UTF8("signed_xyz10_w2_normlaized")),
-				sizeof(GLint),
-				GL_INT_2_10_10_10_REV, 4, false, true, true),
+				String(UTF8("signed_xyz10_w2_normalized")),
+				sizeof(GLint), GL_INT_2_10_10_10_REV, 4,
+				pft_signed_normalized_int_rev_2_10_10_10,
+				false, true, true),
 			VertexElementTypeData(String(UTF8("unsigned_xyz10_w2")),
-				sizeof(GLuint),
-				GL_UNSIGNED_INT_2_10_10_10_REV, 4, false,
+				sizeof(GLuint), GL_UNSIGNED_INT_2_10_10_10_REV,
+				4, pft_unsigned_int_rev_2_10_10_10, false,
 				false, false),
 			VertexElementTypeData(
-				String(UTF8("unsigned_xyz10_w2_normlaized")),
-				sizeof(GLuint),
-				GL_UNSIGNED_INT_2_10_10_10_REV, 4, false,
-				false, true),
+				String(UTF8("unsigned_xyz10_w2_normalized")),
+				sizeof(GLuint), GL_UNSIGNED_INT_2_10_10_10_REV,
+				4, pft_unsigned_normalized_int_rev_2_10_10_10,
+				false, false, true)
 		};
 
 		const Uint32 vertex_element_type_datas_count =
@@ -215,22 +231,21 @@ namespace eternal_lands
 	}
 
 	const String &VertexElement::get_str(
-		const VertexElementType vertex_element_type)
+		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element_type)
+		if (vertex_element_type_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
-					vertex_element_type))
+					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[
-			vertex_element_type].get_name();
+		return vertex_element_type_datas[vertex_element].get_name();
 	}
 
 	const String &VertexElement::get_str(
@@ -251,19 +266,18 @@ namespace eternal_lands
 		return vertex_semantic_type_names[vertex_semantic_type];
 	}
 
-	VertexElementType VertexElement::get_vertex_element_type(
-		const String &str)
+	VertexElementType VertexElement::get_vertex_element(const String &str)
 	{
 		Uint32 i;
-		VertexElementType vertex_element_type;
+		VertexElementType vertex_element;
 
 		for (i = 0; i < vertex_element_type_datas_count; i++)
 		{
-			vertex_element_type = static_cast<VertexElementType>(i);
+			vertex_element = static_cast<VertexElementType>(i);
 
-			if (str == get_str(vertex_element_type))
+			if (str == get_str(vertex_element))
 			{
-				return vertex_element_type;
+				return vertex_element;
 			}
 		}
 
@@ -322,66 +336,63 @@ namespace eternal_lands
 		return vertex_semantic_type_names_count;
 	}
 
-	Uint32 VertexElement::get_size(
-		const VertexElementType vertex_element_type)
+	Uint32 VertexElement::get_size(const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element_type)
+		if (vertex_element_type_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
-					vertex_element_type))
+					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[vertex_element_type].get_size();
+		return vertex_element_type_datas[vertex_element].get_size();
 	}
 
-	Uint32 VertexElement::get_count(
-		const VertexElementType vertex_element_type)
+	Uint32 VertexElement::get_count(const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element_type)
+		if (vertex_element_type_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
-					vertex_element_type))
+					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
-			vertex_element_type].get_element_count();
+			vertex_element].get_element_count();
 	}
 
 	GLenum VertexElement::get_gl_type(
-		const VertexElementType vertex_element_type)
+		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element_type)
+		if (vertex_element_type_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
-					vertex_element_type))
+					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[
-			vertex_element_type].get_gl_type();
+		return vertex_element_type_datas[vertex_element].get_gl_type();
 	}
 
 	bool VertexElement::get_supported(
-		const VertexElementType vertex_element_type)
+		const VertexElementType vertex_element)
 	{
-		switch (vertex_element_type)
+		switch (vertex_element)
 		{
 			case vet_float1:
 			case vet_float2:
@@ -414,71 +425,70 @@ namespace eternal_lands
 		 * because we forgot to add all types to the switch or an
 		 * invalid int was used (with a type cast)!
 		 */
-		VALUE_NOT_IN_SWITCH(vertex_element_type,
-			UTF8("VertexElementType"));
+		VALUE_NOT_IN_SWITCH(vertex_element, UTF8("VertexElementType"));
 	}
 
 	bool VertexElement::get_signed_elements(
-		const VertexElementType vertex_element_type)
+		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element_type)
+		if (vertex_element_type_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
-					vertex_element_type))
+					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
-			vertex_element_type].get_signed_elements();
+			vertex_element].get_signed_elements();
 	}
 
 	bool VertexElement::get_dynamic_range(
-		const VertexElementType vertex_element_type)
+		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element_type)
+		if (vertex_element_type_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
-					vertex_element_type))
+					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
-			vertex_element_type].get_dynamic_range();
+			vertex_element].get_dynamic_range();
 	}
 
 	bool VertexElement::get_normalized(
-		const VertexElementType vertex_element_type)
+		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element_type)
+		if (vertex_element_type_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
 					vertex_element_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
-					vertex_element_type))
+					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
 		return vertex_element_type_datas[
-			vertex_element_type].get_normalized();
+			vertex_element].get_normalized();
 	}
 
 	GLboolean VertexElement::get_gl_normalized(
-		const VertexElementType vertex_element_type)
+		const VertexElementType vertex_element)
 	{
-		if (get_normalized(vertex_element_type))
+		if (get_normalized(vertex_element))
 		{
 			return GL_TRUE;
 		}
@@ -486,6 +496,25 @@ namespace eternal_lands
 		{
 			return GL_FALSE;
 		}
+	}
+
+	PackFormatType VertexElement::get_pack_format(
+		const VertexElementType vertex_element)
+	{
+		if (vertex_element_type_datas_count <= vertex_element)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_range_min(0)
+				<< errinfo_range_max(
+					vertex_element_type_datas_count - 1)
+				<< errinfo_range_index(static_cast<Uint32>(
+					vertex_element))
+				<< boost::errinfo_type_info_name(UTF8(
+					"VertexElementType")));
+		}
+
+		return vertex_element_type_datas[
+			vertex_element].get_pack_format();
 	}
 
 	OutStream& operator<<(OutStream &str, const VertexElementType value)
@@ -508,7 +537,7 @@ namespace eternal_lands
 
 		str >> string;
 
-		value = VertexElement::get_vertex_element_type(String(string));
+		value = VertexElement::get_vertex_element(String(string));
 
 		return str;
 	}

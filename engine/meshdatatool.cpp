@@ -20,146 +20,6 @@ namespace eternal_lands
 	namespace
 	{
 
-		template <typename T>
-		static inline T scale(const float value)
-		{
-			float mul;
-
-			BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
-
-			if (value < 0.0f)
-			{
-				mul = std::abs(std::numeric_limits<T>::min());
-			}
-			else
-			{
-				mul = std::numeric_limits<T>::max();
-			}
-
-			return boost::numeric_cast<T>(value * mul);
-		}
-
-		template <typename T>
-		void convert(const bool normalize, const glm::vec4 &value,
-			void* ptr, const Uint32 count)
-		{
-			Uint32 i;
-
-			BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
-
-			for (i = 0; i < count; i++)
-			{
-				if (normalize)
-				{
-					static_cast<T*>(ptr)[i] =
-						scale<T>(value[i]);
-				}
-				else
-				{
-					static_cast<T*>(ptr)[i] = value[i];
-				}
-			}
-		}
-
-		void write_to_memory(void* ptr,
-			const VertexElementType vertex_element_type,
-			const glm::vec4 &data)
-		{
-			switch (vertex_element_type)
-			{
-				case vet_float1:
-					static_cast<float*>(ptr)[0] = data[0];
-					return;
-				case vet_float2:
-					static_cast<float*>(ptr)[0] = data[0];
-					static_cast<float*>(ptr)[1] = data[1];
-					return;
-				case vet_float3:
-					static_cast<float*>(ptr)[0] = data[0];
-					static_cast<float*>(ptr)[1] = data[1];
-					static_cast<float*>(ptr)[2] = data[2];
-					return;
-				case vet_float4:
-					static_cast<float*>(ptr)[0] = data[0];
-					static_cast<float*>(ptr)[1] = data[1];
-					static_cast<float*>(ptr)[2] = data[2];
-					static_cast<float*>(ptr)[3] = data[3];
-					return;
-				case vet_half2:
-					static_cast<glm::detail::hdata*>(ptr)[0] =
-						glm::detail::toFloat16(data[0]);
-					static_cast<glm::detail::hdata*>(ptr)[1] =
-						glm::detail::toFloat16(data[1]);
-					return;
-				case vet_half4:
-					static_cast<glm::detail::hdata*>(ptr)[0] =
-						glm::detail::toFloat16(data[0]);
-					static_cast<glm::detail::hdata*>(ptr)[1] =
-						glm::detail::toFloat16(data[1]);
-					static_cast<glm::detail::hdata*>(ptr)[2] =
-						glm::detail::toFloat16(data[2]);
-					static_cast<glm::detail::hdata*>(ptr)[3] =
-						glm::detail::toFloat16(data[3]);
-					return;
-				case vet_short2:
-					convert<Sint16>(false, data, ptr, 2);
-					return;
-				case vet_short2_normalized:
-					convert<Sint16>(true, data, ptr, 2);
-					return;
-				case vet_short4:
-					convert<Sint16>(false, data, ptr, 4);
-					return;
-				case vet_short4_normalized:
-					convert<Sint16>(true, data, ptr, 4);
-					return;
-				case vet_ushort2:
-					convert<Uint16>(false, data, ptr, 2);
-					return;
-				case vet_ushort2_normalized:
-					convert<Uint16>(true, data, ptr, 2);
-					return;
-				case vet_ushort4:
-					convert<Uint16>(false, data, ptr, 4);
-					return;
-				case vet_ushort4_normalized:
-					convert<Uint16>(true, data, ptr, 4);
-					return;
-				case vet_ubyte4:
-					convert<Uint8>(false, data, ptr, 4);
-					return;
-				case vet_ubyte4_normalized:
-					convert<Uint8>(true, data, ptr, 4);
-					return;
-				case vet_byte4:
-					convert<Sint8>(false, data, ptr, 4);
-					return;
-				case vet_byte4_normalized:
-					convert<Sint8>(true, data, ptr, 4);
-					return;
-				case vet_signed_xyz10_w2:
-					static_cast<Uint32*>(ptr)[0] =
-						PackTool::pack_sint_2_10_10_10_rev(
-						false, data);
-					return;
-				case vet_signed_xyz10_w2_normalized:
-					static_cast<Uint32*>(ptr)[0] =
-						PackTool::pack_sint_2_10_10_10_rev(
-						true, data);
-					return;
-				case vet_unsigned_xyz10_w2:
-					static_cast<Uint32*>(ptr)[0] =
-						PackTool::pack_uint_2_10_10_10_rev(
-						false, data);
-					return;
-				case vet_unsigned_xyz10_w2_normalized:
-					static_cast<Uint32*>(ptr)[0] =
-						PackTool::pack_uint_2_10_10_10_rev(
-						true, data);
-					return;
-			}
-		}
-
 		struct triangle_data
 		{
 			bool added;
@@ -1086,16 +946,14 @@ namespace eternal_lands
 		const VertexElements &vertex_elements,
 		const AbstractWriteMemoryBufferSharedPtr &buffer) const
 	{
-		Uint8* ptr;
-		Uint8* src;
+		Uint64 offset;
 		Uint32 stride;
 		Uint32 i, j, count;
+		PackFormatType type;
 
 		count = vertex_elements.get_count();
 
 		stride = vertex_elements.get_stride();
-
-		src = static_cast<Uint8*>(buffer->get_ptr());
 
 		assert(buffer->get_size() >= (stride * get_vertex_count()));
 
@@ -1103,13 +961,15 @@ namespace eternal_lands
 		{
 			for (j = 0; j < count; j++)
 			{
-				ptr = src + i * stride +
+				offset = i * stride +
 					vertex_elements.get_offset(j);
 
-				write_to_memory(ptr,
-					vertex_elements.get_type(j),
-					get_vertex_data(
-					vertex_elements.get_semantic(j), i));
+				type = VertexElement::get_pack_format(
+					vertex_elements.get_type(j));
+
+				PackTool::pack(offset, type, get_vertex_data(
+					vertex_elements.get_semantic(j), i),
+					*buffer);
 			}
 		}
 	}

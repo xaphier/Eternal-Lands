@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "packtool.hpp"
 
 /**
  * @file
@@ -275,12 +276,12 @@ namespace eternal_lands
 			/**
 			 * Returns the string representation of the given enum
 			 * value.
-			 * @param vertex_element_type The enum to use.
+			 * @param vertex_element The enum to use.
 			 * @return The string representation of the given enum
 			 * value.
 			 */
 			static const String &get_str(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns the string representation of the given enum
@@ -299,7 +300,7 @@ namespace eternal_lands
 			 * @return The vertex element type represented by the
 			 * string
 			 */
-			static VertexElementType get_vertex_element_type(
+			static VertexElementType get_vertex_element(
 				const String &str);
 
 			/**
@@ -314,89 +315,89 @@ namespace eternal_lands
 
 			/**
 			 * Returns the size of the vertex element type in bytes.
-			 * @param vertex_element_type The type for the vertex
+			 * @param vertex_element The type for the vertex
 			 * element to use.
 			 * @return The size of the vertex element type in bytes.
 			 */
 			static Uint32 get_size(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns the element count that the vertex element
 			 * type contains.
-			 * @param vertex_element_type The type for the vertex
+			 * @param vertex_element The type for the vertex
 			 * element to use.
 			 * @return The count of floats/shorts/bytes the vertex
 			 * element type contains.
 			 */
 			static Uint32 get_count(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns true if the elements of the given type are
 			 * signed, false else.
-			 * @param vertex_element_type The type for the vertex
+			 * @param vertex_element The type for the vertex
 			 * element to use.
 			 * @return True if its a signed type, false else.
 			 */
 			static bool get_signed_elements(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns true if its a type with dynamic range, false
 			 * else.
-			 * @param vertex_element_type The type for the vertex
+			 * @param vertex_element The type for the vertex
 			 * element to use.
 			 * @return True if its a type with dynamic range, false
 			 * else.
 			 */
 			static bool get_dynamic_range(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns the OpenGL tpye of the vertex element type.
-			 * @param vertex_element_type The type for the vertex
+			 * @param vertex_element The type for the vertex
 			 * element to use.
 			 * @return The OpenGL tpye of the vertex element type.
 			 */
 			static GLenum get_gl_type(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns GL_TRUE if the signed integer values get
 			 * scaled so they fit into -1.0 .. 1.0 range and if the
 			 * unsigned inter values get scaled so they fit into
 			 * the 0.0 .. 1.0 range. GL_FALSE otherwise.
-			 * @param vertex_element_type The type for the vertex
+			 * @param vertex_element The type for the vertex
 			 * element to use.
 			 * @return GL_TRUE if normalization is used, else
 			 * GL_FALSE.
 			 */
 			static GLboolean get_gl_normalized(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns true if the signed integer values get
 			 * scaled so they fit into -1.0 .. 1.0 range and if the
 			 * unsigned inter values get scaled so they fit into
 			 * the 0.0 .. 1.0 range. false otherwise.
-			 * @param vertex_element_type The type for the vertex
+			 * @param vertex_element The type for the vertex
 			 * element to use.
 			 * @return true if normalization is used, else
 			 * false.
 			 */
 			static bool get_normalized(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns true if the vertex element type is supported,
 			 * else false.
-			 * @param vertex_element_type The type for the vertex
+			 * @param vertex_element The type for the vertex
 			 * element to use.
 			 * @return True if supported, false else.
 			 */
 			static bool get_supported(
-				const VertexElementType vertex_element_type);
+				const VertexElementType vertex_element);
 
 			/**
 			 * Returns true if the string is the name of a vertex
@@ -409,6 +410,15 @@ namespace eternal_lands
 			 */
 			static bool get_vertex_semantic(const String &str,
 				VertexSemanticType &vertex_semantic);
+
+			/**
+			 * Returns the pack format of the vertex element type.
+			 * @param vertex_element The type for the vertex
+			 * element to use.
+			 * @return The pack format of the vertex element type.
+			 */
+			static PackFormatType get_pack_format(
+				const VertexElementType vertex_element);
 
 			static Uint32 get_vertex_semantic_count();
 

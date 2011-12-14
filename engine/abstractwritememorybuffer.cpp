@@ -19,4 +19,3 @@ namespace eternal_lands
 	}
 
 }
-
