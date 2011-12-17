@@ -44,7 +44,7 @@ MACRO(ADD_PRECOMPILED_HEADER_GCC _targetName _input )
 	MAKE_DIRECTORY(${_outdir})
 	SET(_output "${_outdir}/${CMAKE_BUILD_TYPE}.c++")
 	STRING(TOUPPER "CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}" _flags_var_name)
-	SET(_compiler_FLAGS ${${_flags_var_name}})
+	SET(_compiler_FLAGS "${${_flags_var_name}} ${CMAKE_CXX_FLAGS}")
 
 	GET_DIRECTORY_PROPERTY(_directory_flags INCLUDE_DIRECTORIES)
 	FOREACH(item ${_directory_flags})

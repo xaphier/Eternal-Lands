@@ -64,10 +64,6 @@ add_subdirectory(glsl_optimizer)
 
 add_library(elengine ${engine_cpp_files} ${engine_header_files})
 
-IF (OPENMP_FOUND)
-	set_target_properties(elengine PROPERTIES LINK_FLAGS "${OpenMP_CXX_FLAGS}")
-ENDIF (OPENMP_FOUND)
-
 target_link_libraries(elengine ${CAL3D_LIBRARIES})
 target_link_libraries(elengine ${JPEG_LIBRARIES})
 target_link_libraries(elengine ${PNG_LIBRARIES})
