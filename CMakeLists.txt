@@ -57,15 +57,18 @@ ELSE (MSVC)
 ENDIF (MSVC)
 
 IF (${gcc_wall})
-	add_definitions(-Wall)
+	SET (CMAKE_C_FLAGS "-Wall ${CMAKE_C_FLAGS}" )
+	SET (CMAKE_CXX_FLAGS "-Wall ${CMAKE_CXX_FLAGS}" )
 ENDIF (${gcc_wall})
 
 IF (${gcc_fastmath})
-	add_definitions(-ffast-math)
+	SET (CMAKE_C_FLAGS "-ffast-math ${CMAKE_C_FLAGS}" )
+	SET (CMAKE_CXX_FLAGS "-ffast-math ${CMAKE_CXX_FLAGS}" )
 ENDIF (${gcc_fastmath})
 
 IF (${msvc_fpmath})
-	add_definitions(/fp:fast)
+	SET (CMAKE_C_FLAGS "/fp:fast ${CMAKE_C_FLAGS}" )
+	SET (CMAKE_CXX_FLAGS "/fp:fast ${CMAKE_CXX_FLAGS}" )
 ENDIF (${msvc_fpmath})
 
 IF (${msvc_scl_secure})
@@ -73,11 +76,13 @@ IF (${msvc_scl_secure})
 ENDIF (${msvc_scl_secure})
 
 IF (${gcc_native} AND BUILD_NATIVE)
-	add_definitions(-march=native)
+	SET (CMAKE_C_FLAGS "-march=native ${CMAKE_C_FLAGS}" )
+	SET (CMAKE_CXX_FLAGS "-march=native ${CMAKE_CXX_FLAGS}" )
 ENDIF (${gcc_native} AND BUILD_NATIVE)
 
 IF (OPENMP_FOUND)
-	add_definitions(${OpenMP_CXX_FLAGS})
+	SET (CMAKE_C_FLAGS "${OpenMP_C_FLAGS} ${CMAKE_C_FLAGS}" )
+	SET (CMAKE_CXX_FLAGS "${OpenMP_CXX_FLAGS} ${CMAKE_CXX_FLAGS}" )
 ENDIF (OPENMP_FOUND)
 
 include_directories(${CAL3D_INCLUDE_DIR})
@@ -109,7 +114,9 @@ IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 ELSEIF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	add_definitions(-DLINUX)
 ELSEIF (WIN32)
-	add_definitions(-DWINDOWS -DWINVER=0x500 -mwindows)
+	add_definitions(-DWINDOWS -DWINVER=0x500)
+	SET (CMAKE_C_FLAGS "-mwindows ${CMAKE_C_FLAGS}" )
+	SET (CMAKE_CXX_FLAGS "-mwindows ${CMAKE_CXX_FLAGS}" )
 	list(APPEND el_rc_files elc_private.rc)
 ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
@@ -184,10 +191,6 @@ ENDIF (${BUILD_TESTS} MATCHES "ON")
 
 add_executable(el_client WIN32 ${el_cpp_header_files}
 	${el_cpp_files} ${el_c_header_files} ${el_c_files} ${el_rc_files})
-
-IF (OPENMP_FOUND)
-	set_target_properties(el_client PROPERTIES LINK_FLAGS "${OpenMP_CXX_FLAGS}")
-ENDIF (OPENMP_FOUND)
 
 target_link_libraries(el_client eye_candy)
 target_link_libraries(el_client elengine)
