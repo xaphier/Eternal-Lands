@@ -17,7 +17,7 @@ namespace eternal_lands
 	}
 
 	VertexFormat::VertexFormat(const String &name,
-		const VertexElementsArray16 &vertex_elements):
+		const VertexElementsArray &vertex_elements):
 		m_vertex_elements(vertex_elements), m_name(name)
 	{
 	}
@@ -27,4 +27,3 @@ namespace eternal_lands
 	}
 
 }
-

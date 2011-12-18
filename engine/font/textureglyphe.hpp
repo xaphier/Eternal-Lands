@@ -53,11 +53,10 @@ namespace eternal_lands
 			 */
 			~TextureGlyphe() throw();
 
-			void write_to_memory(const glm::vec4 &color,
+			void write_to_stream(const glm::vec4 &color,
 				const float kerning, const float spacing,
-				const float rise,
-				const AbstractWriteMemoryBuffer &buffer,
-				Uint16Array2 &position); 
+				const float rise, VertexStream &stream,
+				glm::uvec2 &position); 
 
 			inline void set_kerning(
 				const Utf32CharFloatMap &kerning)

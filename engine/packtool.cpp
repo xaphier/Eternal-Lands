@@ -1059,6 +1059,8 @@ namespace eternal_lands
 			}
 		}
 
+		assert((((size_t)ptr) & 0xF) == 0);
+
 		if (pack_format == pft_half_4)
 		{
 			SIMD::float_to_half_4(glm::value_ptr(data[0]),

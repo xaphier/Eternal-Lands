@@ -151,7 +151,7 @@ namespace eternal_lands
 	{
 		Uint16 i;
 
-		for (i = 0; i < 16; ++i)
+		for (i = 0; i < vertex_stream_count; ++i)
 		{
 			glDisableVertexAttribArray(i);
 		}

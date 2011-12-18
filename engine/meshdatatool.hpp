@@ -32,11 +32,11 @@ namespace eternal_lands
 	class MeshDataTool
 	{
 		private:
-			typedef std::map<VertexSemanticType, Vec4Vector>
-				VertexSemanticTypeVec4VectorMap;
+			typedef std::map<VertexSemanticType, Vec4AlignedVector>
+				VertexSemanticTypeVec4AlignedVectorMap;
 
 			SubMeshVector m_sub_meshs;
-			VertexSemanticTypeVec4VectorMap m_vertices;
+			VertexSemanticTypeVec4AlignedVectorMap m_vertices;
 			Uint32Vector m_indices;
 			Uint32 m_vertex_count;
 			Uint32 m_restart_index;
@@ -185,6 +185,12 @@ namespace eternal_lands
 			 * @param stream The vertex stream to use.
 			 */
 			void write_vertex_stream(VertexStream &stream) const;
+
+			/**
+			 * Write the data to the vertex stream.
+			 * @param stream The vertex stream to use.
+			 */
+			void write_vertex_streams(VertexStreams &streams) const;
 
 			/**
 			 * Write the data to the index buffer.

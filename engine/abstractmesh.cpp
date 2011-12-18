@@ -80,7 +80,7 @@ namespace eternal_lands
 
 		init_vertices();
 
-		for (i = 0; i < 16; ++i)
+		for (i = 0; i < vertex_stream_count; ++i)
 		{
 			if (get_vertex_elements(i).get_count() > 0)
 			{

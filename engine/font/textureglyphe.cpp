@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "textureglyphe.hpp"
+#include "vertexstream.hpp"
 
 namespace eternal_lands
 {
@@ -21,6 +22,47 @@ namespace eternal_lands
 
 	TextureGlyphe::~TextureGlyphe() throw()
 	{
+	}
+
+	void TextureGlyphe::write_to_stream(const glm::vec4 &color,
+		const float kerning, const float spacing, const float rise,
+		VertexStream &stream, glm::uvec2 &position)
+	{
+		float x0, x1, y0, y1;
+
+		position.x += kerning;
+
+		x0 = position.x + get_offset().x;
+		y0 = position.y + get_offset().y + rise;
+		x1 = x0 + get_width();
+		y1 = y0 - get_height();
+
+		stream.set(vst_position, glm::vec4(x0, y0, 0.0f, 1.0f));
+		stream.set(vst_texture_coordinate_0,
+			glm::vec4(get_uv().x, get_uv().y, 0.0f, 1.0f));
+		stream.set(vst_color, color);
+		stream.push_vertex();
+
+		stream.set(vst_position, glm::vec4(x0, y1, 0.0f, 1.0f));
+		stream.set(vst_texture_coordinate_0,
+			glm::vec4(get_uv().x, get_uv().w, 0.0f, 1.0f));
+		stream.set(vst_color, color);
+		stream.push_vertex();
+
+		stream.set(vst_position, glm::vec4(x1, y1, 0.0f, 1.0f));
+		stream.set(vst_texture_coordinate_0,
+			glm::vec4(get_uv().z, get_uv().w, 0.0f, 1.0f));
+		stream.set(vst_color, color);
+		stream.push_vertex();
+
+		stream.set(vst_position, glm::vec4(x1, y0, 0.0f, 1.0f));
+		stream.set(vst_texture_coordinate_0,
+			glm::vec4(get_uv().z, get_uv().y, 0.0f, 1.0f));
+		stream.set(vst_color, color);
+		stream.push_vertex();
+
+		position.x = get_advance().x + spacing;
+		position.y = get_advance().y;
 	}
 
 #if	0

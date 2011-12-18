@@ -54,6 +54,7 @@ namespace eternal_lands
 				const bool bold, const bool italic);
 			void add_font(const String &file_name,
 				const float size);
+			void update_texture();
 
 	};
 

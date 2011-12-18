@@ -179,6 +179,10 @@ namespace eternal_lands
 	VECTOR_NAME(float, Float);
 	VECTOR_NAME(bool, Bool);
 
+	typedef glm::vec4 __attribute__((aligned(0x10))) Vec4Aligned;
+
+	VECTOR(Vec4Aligned);
+
 	class AbstractArchive;
 	class AbstractFrameBuffer;
 	class AbstractMesh;
@@ -246,6 +250,7 @@ namespace eternal_lands
 	class VertexElements;
 	class VertexFormat;
 	class VertexStream;
+	class VertexStreams;
 	class XmlReader;
 	class XmlWriter;
 
@@ -254,7 +259,11 @@ namespace eternal_lands
 	ARRAY(String, 8);
 	ARRAY(String, 12);
 	ARRAY(String, 16);
-	ARRAY(VertexElements, 16);
+
+	const Uint16 vertex_stream_count = 16;
+
+	typedef boost::array<VertexElements, vertex_stream_count>
+		VertexElementsArray;
 
 	typedef RStarTree* RStarTreePtr;
 	typedef SubObject* SubObjectPtr;
@@ -358,6 +367,11 @@ namespace eternal_lands
 	typedef boost::ptr_vector<InstanceData> InstanceDataVector;
 	typedef boost::ptr_vector<InstancingData> InstancingDataVector;
 	typedef boost::ptr_vector<AbstractArchive> AbstractArchiveVector;
+	typedef boost::ptr_array<VertexStream, vertex_stream_count>
+		VertexStreamArray;
+	typedef boost::ptr_array<AbstractWriteMemoryBufferSharedPtr,
+		vertex_stream_count> AbstractWriteMemoryBufferSharedPtrArray;
+	typedef boost::ptr_vector<VertexStream> VertexStreamVector;
 
 	typedef boost::variant<bool, Sint64, float,
 		glm::ivec2, glm::ivec3, glm::ivec4,

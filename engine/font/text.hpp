@@ -31,7 +31,8 @@ namespace eternal_lands
 	class Text
 	{
 		private:
-			typedef std::pair<String, TextAttribute> StringTextAttributePair;
+			typedef std::pair<String, TextAttribute>
+				StringTextAttributePair;
 
 			std::vector<StringTextAttributePair> m_text;
 

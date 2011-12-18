@@ -27,6 +27,8 @@ namespace eternal_lands
 			false, tft_rgb8, sizes, 0);
 
 		m_atlas = boost::make_shared<Atlas>(width, height);
+
+		m_texture = boost::make_shared<Texture>(String(UTF8("font")));
 	}
 
 	TextureFontCache::~TextureFontCache() throw()
@@ -46,5 +48,11 @@ namespace eternal_lands
 		m_fonts.push_back(new TextureFont(m_atlas, m_image, file_name,
 			size));
 	}
-  
+
+	void TextureFontCache::update_texture()
+	{
+		m_texture->set_format(m_image->get_texture_format());
+		m_texture->set_image(m_image);
+	}
+
 }
