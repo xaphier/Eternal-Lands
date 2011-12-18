@@ -30,9 +30,12 @@ namespace eternal_lands
 	class TextureFont: public boost::noncopyable
 	{
 		private:
+			typedef std::map<Utf32Char, TextureGlyphe>
+				Utf32CharTextureGlypheMap;
+
 			const AtlasSharedPtr m_atlas;
 			const ImageSharedPtr m_image;
-			std::vector<TextureGlyphe> m_glyphs;
+			Utf32CharTextureGlypheMap m_glyphs;
 			String m_file_name;
 			Uint8Array5 m_lcd_weights;
 			float m_size;
@@ -71,6 +74,13 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~TextureFont() throw();
+
+			void write_to_stream(const glm::vec4 &color,
+				const glm::uvec2 &position, const String &str,
+				const float spacing, const float rise,
+				VertexStream &stream);
+
+			glm::vec2 get_size(const String &str) const;
 
 			inline const String &get_file_name() const
 			{

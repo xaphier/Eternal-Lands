@@ -18,6 +18,11 @@ namespace eternal_lands
 	{
 	}
 
+	void Text::add(const String &str, const TextAttribute &attribute)
+	{
+		m_text.push_back(StringTextAttributePair(str, attribute));
+	}
+
 	String Text::get_string() const
 	{
 		StringType result;

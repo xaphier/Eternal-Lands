@@ -286,6 +286,9 @@ namespace eternal_lands
 
 	size_t TextureFont::cache_glyphs(const Utf32String &char_codes)
 	{
+		Utf32CharTextureGlypheMap::const_iterator kerning_it;
+		Utf32CharTextureGlypheMap::const_iterator kerning_end;
+		Utf32CharTextureGlypheMap::iterator it, end;
 		Utf32CharFloatMap kernings;
 		Utf32Char char_code;
 		FtLibrarySharedPtr library;
@@ -410,20 +413,23 @@ namespace eternal_lands
 		 * For each glyph couple combination, check if kerning is
 		 * necessary
 		 */
-		BOOST_FOREACH(TextureGlyphe &glyph, m_glyphs)
+		end = m_glyphs.end();
+		kerning_end = m_glyphs.end();
+
+		for (it = m_glyphs.begin(); it != end; ++it)
 		{
 			/**
 			 * Count how many kerning pairs we need
 			 */
 			glyph_index = FT_Get_Char_Index(face->get_face(),
-				glyph.get_char_code());
+				it->second.get_char_code());
 
 			kernings.clear();
 
-			BOOST_FOREACH(const TextureGlyphe &kerning_glyph,
-				m_glyphs)
+			for (kerning_it = m_glyphs.begin();
+				kerning_it != kerning_end; ++kerning_it)
 			{
-				char_code = kerning_glyph.get_char_code();
+				char_code = kerning_it->second.get_char_code();
 
 				kerning_index = FT_Get_Char_Index(
 					face->get_face(), char_code);
@@ -440,10 +446,38 @@ namespace eternal_lands
 				kernings[char_code] = kerning.x / 4096.0f;
 			}
 
-			glyph.set_kerning(kernings);
+			it->second.set_kerning(kernings);
 		}
 
 		return 0;
 	}
- 
+
+	void TextureFont::write_to_stream(const glm::vec4 &color,
+		const glm::uvec2 &position, const String &str,
+		const float spacing, const float rise, VertexStream &stream)
+	{
+		Utf32CharTextureGlypheMap::const_iterator found, end;
+		Utf32String string;
+		glm::uvec2 pos;
+		float kerning;
+
+		pos = position;
+		string = utf8_to_utf32(str);
+
+		end = m_glyphs.end();
+
+		BOOST_FOREACH(const Utf32Char char_code, string)
+		{
+			found = m_glyphs.find(char_code);
+
+			if (found == end)
+			{
+				continue;
+			}
+
+			found->second.write_to_stream(color, kerning, spacing,
+				rise, stream, pos);
+		}
+	}
+
 }

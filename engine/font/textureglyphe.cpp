@@ -26,7 +26,7 @@ namespace eternal_lands
 
 	void TextureGlyphe::write_to_stream(const glm::vec4 &color,
 		const float kerning, const float spacing, const float rise,
-		VertexStream &stream, glm::uvec2 &position)
+		VertexStream &stream, glm::uvec2 &position) const
 	{
 		float x0, x1, y0, y1;
 

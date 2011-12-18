@@ -47,6 +47,9 @@ namespace eternal_lands
 			 */
 			~Text() throw();
 
+			void add(const String &str,
+				const TextAttribute &attribute);
+
 			String get_string() const;
 
 	};
