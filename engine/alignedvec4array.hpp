@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "exceptions.hpp"
+#include <mm_malloc.h>
 
 /**
  * @file
@@ -117,7 +118,7 @@ namespace eternal_lands
 
 				if (m_data != 0)
 				{
-					free(m_data);
+					_mm_free(m_data);
 					m_data = 0;
 				}
 			}
@@ -164,7 +165,6 @@ namespace eternal_lands
 
 			inline void reserve(const Uint32 new_capacity)
 			{
-				void* ptr;
 				glm::vec4* data;
 				Uint32 count;
 
@@ -175,14 +175,13 @@ namespace eternal_lands
 
 				count = new_capacity * 4 * sizeof(float);
 
-				ptr = 0;
+				data = static_cast<glm::vec4*>(
+					_mm_malloc(count, 16));
 
-				if (posix_memalign(&ptr, 16, count) != 0)
+				if (data == 0)
 				{
 					EL_THROW_EXCEPTION(BadAllocException());
 				}
-
-				data = static_cast<glm::vec4*>(ptr);
 
 				count = std::min(new_capacity, size()) * 4 *
 					sizeof(float);
@@ -196,7 +195,7 @@ namespace eternal_lands
 
 				if (data != 0)
 				{
-					free(data);
+					_mm_free(data);
 				}
 
 				m_capacity = new_capacity;
