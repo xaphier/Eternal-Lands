@@ -1057,6 +1057,8 @@ namespace eternal_lands
 				pack(offset + i * stride, pack_format, data[i],
 					buffer);
 			}
+
+			return;
 		}
 
 		assert((((size_t)glm::value_ptr(data[0])) & 0xF) == 0);
