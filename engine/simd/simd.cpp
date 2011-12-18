@@ -16,7 +16,7 @@ namespace eternal_lands
 	bool SIMD::get_supported()
 	{
 #ifdef	USE_SSE2
-		return SDL_HasSSE2() && false; // disabled for now, too many memory loading problems
+		return SDL_HasSSE2();
 #else	/* USE_SSE2 */
 		return false;
 #endif	/* USE_SSE2 */

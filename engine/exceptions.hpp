@@ -56,6 +56,8 @@ namespace eternal_lands
 		public virtual ::boost::exception {};
 	class UncompressException: public virtual ::std::exception,
 		public virtual ::boost::exception {};
+	class BadAllocException: public virtual ::std::bad_alloc,
+		public virtual ::boost::exception {};
 
 	typedef boost::error_info<struct errinfo_parameter_name_, StringType>
 		errinfo_parameter_name;

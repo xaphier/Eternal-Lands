@@ -8,6 +8,7 @@
 #include "packtool.hpp"
 #include "abstractreadmemorybuffer.hpp"
 #include "abstractwritememorybuffer.hpp"
+#include "alignedvec4array.hpp"
 #include "simd/simd.hpp"
 
 namespace eternal_lands
@@ -1045,6 +1046,20 @@ namespace eternal_lands
 		const Uint32 count, const PackFormatType pack_format,
 		const Vec4Vector &data, AbstractWriteMemoryBuffer &buffer)
 	{
+		Uint32 i;
+
+		for (i = 0; i < count; ++i)
+		{
+			pack(offset + i * stride, pack_format, data[i], buffer);
+		}
+	}
+
+
+	void PackTool::pack(const Uint64 offset, const Uint32 stride,
+		const Uint32 count, const PackFormatType pack_format,
+		const AlignedVec4Array &data, AbstractWriteMemoryBuffer &buffer)
+	{
+		float* source;
 		Uint8* ptr;
 		Uint32 i;
 
@@ -1061,100 +1076,100 @@ namespace eternal_lands
 			return;
 		}
 
-		assert((((size_t)glm::value_ptr(data[0])) & 0xF) == 0);
+		source = static_cast<float*>(data.get_ptr());
+
+		assert((((size_t)source) & 0xF) == 0);
 
 		if (pack_format == pft_half_4)
 		{
-			SIMD::float_to_half_4(glm::value_ptr(data[0]),
-				count, stride, ptr);
+			SIMD::float_to_half_4(source, count, stride, ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_half_2)
 		{
-			SIMD::float_to_half_2(glm::value_ptr(data[0]),
-				count, stride, ptr);
+			SIMD::float_to_half_2(source, count, stride, ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_unsigned_short_4)
 		{
-			SIMD::float_to_unsigned_short_4(glm::value_ptr(data[0]),
-				count, stride, ptr);
+			SIMD::float_to_unsigned_short_4(source, count, stride,
+				ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_unsigned_short_2)
 		{
-			SIMD::float_to_unsigned_short_2(glm::value_ptr(data[0]),
-				count, stride, ptr);
+			SIMD::float_to_unsigned_short_2(source, count, stride,
+				ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_unsigned_normalized_short_4)
 		{
-			SIMD::float_to_unsigned_normalized_short_4(
-				glm::value_ptr(data[0]), count, stride, ptr);
+			SIMD::float_to_unsigned_normalized_short_4(source,
+				count, stride, ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_unsigned_normalized_short_2)
 		{
-			SIMD::float_to_unsigned_normalized_short_2(
-				glm::value_ptr(data[0]), count, stride, ptr);
+			SIMD::float_to_unsigned_normalized_short_2(source,
+				count, stride, ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_signed_short_4)
 		{
-			SIMD::float_to_signed_short_4(glm::value_ptr(data[0]),
-				count, stride, ptr);
+			SIMD::float_to_signed_short_4(source, count, stride,
+				ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_signed_short_2)
 		{
-			SIMD::float_to_signed_short_2(glm::value_ptr(data[0]),
-				count, stride, ptr);
+			SIMD::float_to_signed_short_2(source, count, stride,
+				ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_signed_normalized_short_4)
 		{
-			SIMD::float_to_signed_normalized_short_4(
-				glm::value_ptr(data[0]), count, stride, ptr);
+			SIMD::float_to_signed_normalized_short_4(source, count,
+				stride, ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_signed_normalized_short_2)
 		{
-			SIMD::float_to_signed_normalized_short_2(
-				glm::value_ptr(data[0]), count, stride, ptr);
+			SIMD::float_to_signed_normalized_short_2(source, count,
+				stride, ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_unsigned_byte_4)
 		{
-			SIMD::float_to_unsigned_byte_4(glm::value_ptr(data[0]),
-				count, stride, ptr);
+			SIMD::float_to_unsigned_byte_4(source, count, stride,
+				ptr);
 
 			return;
 		}
 
 		if (pack_format == pft_unsigned_normalized_byte_4)
 		{
-			SIMD::float_to_unsigned_normalized_byte_4(
-				glm::value_ptr(data[0]), count, stride, ptr);
+			SIMD::float_to_unsigned_normalized_byte_4(source,
+				count, stride, ptr);
 
 			return;
 		}

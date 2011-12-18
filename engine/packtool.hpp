@@ -385,6 +385,12 @@ namespace eternal_lands
 				const Vec4Vector &data,
 				AbstractWriteMemoryBuffer &buffer);
 
+			static void pack(const Uint64 offset,
+				const Uint32 stride, const Uint32 count,
+				const PackFormatType pack_format,
+				const AlignedVec4Array &data,
+				AbstractWriteMemoryBuffer &buffer);
+
 	};
 
 }

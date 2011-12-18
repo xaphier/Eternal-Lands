@@ -47,6 +47,8 @@ namespace eternal_lands
 				const glm::vec4 &data);
 			void set(const VertexSemanticType semantic,
 				const Vec4Vector &data);
+			void set(const VertexSemanticType semantic,
+				const AlignedVec4Array &data);
 			const VertexElements &get_vertex_elements() const;
 			Uint16 get_vertex_elements_count() const;
 

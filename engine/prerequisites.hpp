@@ -179,10 +179,6 @@ namespace eternal_lands
 	VECTOR_NAME(float, Float);
 	VECTOR_NAME(bool, Bool);
 
-	typedef glm::vec4 __attribute__((aligned(0x10))) Vec4Aligned;
-
-	VECTOR(Vec4Aligned);
-
 	class AbstractArchive;
 	class AbstractFrameBuffer;
 	class AbstractMesh;
@@ -192,6 +188,7 @@ namespace eternal_lands
 	class Actor;
 	class ActorDataCache;
 	class ActorTextureBuilder;
+	class AlignedVec4Array;
 	class Atlas;
 	class BoundedObject;
 	class BoundingBox;

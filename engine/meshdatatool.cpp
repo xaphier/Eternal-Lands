@@ -15,6 +15,7 @@
 #include "submesh.hpp"
 #include "vertexstream.hpp"
 #include "vertexstreams.hpp"
+#include "alignedvec4array.hpp"
 #include "simd/simd.hpp"
 
 namespace eternal_lands
@@ -314,7 +315,7 @@ namespace eternal_lands
 
 	void MeshDataTool::resize_vertices(const Uint32 vertex_count)
 	{
-		VertexSemanticTypeVec4AlignedVectorMap::iterator it, end;
+		VertexSemanticTypeAlignedVec4ArrayMap::iterator it, end;
 
 		m_vertex_count = vertex_count;
 
@@ -330,7 +331,7 @@ namespace eternal_lands
 		const VertexSemanticType vertex_semantic, const Uint32 index,
 		const glm::vec4 &data)
 	{
-		VertexSemanticTypeVec4AlignedVectorMap::iterator found;
+		VertexSemanticTypeAlignedVec4ArrayMap::iterator found;
 
 		assert(index < get_vertex_count());
 
@@ -346,7 +347,7 @@ namespace eternal_lands
 		const VertexSemanticType vertex_semantic, const Uint32 index)
 		const
 	{
-		VertexSemanticTypeVec4AlignedVectorMap::const_iterator found;
+		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator found;
 
 		assert(index < get_vertex_count());
 
@@ -402,8 +403,8 @@ namespace eternal_lands
 		Triangles triangles(get_indices(), get_sub_meshs(),
 			get_primitive_type(), get_restart_index(),
 			get_use_restart_index());
-		VertexSemanticTypeVec4AlignedVectorMap::iterator it, end;
-		Vec4Vector vertices;
+		VertexSemanticTypeAlignedVec4ArrayMap::iterator it, end;
+		AlignedVec4Array vertices;
 		Uint32Vector indices;
 		std::map<Uint32, Uint32> index_map;
 		Uint32 i, index, count, value;
@@ -940,8 +941,8 @@ namespace eternal_lands
 
 	void MeshDataTool::write_vertex_stream(VertexStream &stream) const
 	{
-		VertexSemanticTypeVec4AlignedVectorMap::const_iterator found;
-		VertexSemanticTypeVec4AlignedVectorMap::const_iterator end;
+		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator found;
+		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator end;
 
 		end = m_vertices.end();
 
@@ -1024,8 +1025,8 @@ namespace eternal_lands
 		const VertexSemanticType semantic, const Uint32 source_index,
 		const Uint32 dest_index, const Uint32 count)
 	{
-		VertexSemanticTypeVec4AlignedVectorMap::const_iterator source;
-		VertexSemanticTypeVec4AlignedVectorMap::iterator dest;
+		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator source;
+		VertexSemanticTypeAlignedVec4ArrayMap::iterator dest;
 		glm::vec4 data;
 		Uint32 i;
 
@@ -1073,8 +1074,8 @@ namespace eternal_lands
 		const Uint32 dest_index, const Uint32 count,
 		const glm::mat4x3 &matrix)
 	{
-		VertexSemanticTypeVec4AlignedVectorMap::const_iterator source;
-		VertexSemanticTypeVec4AlignedVectorMap::iterator dest;
+		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator source;
+		VertexSemanticTypeAlignedVec4ArrayMap::iterator dest;
 		glm::vec4 data;
 		Uint32 i;
 
@@ -1137,8 +1138,8 @@ namespace eternal_lands
 		const Uint32 dest_index, const Uint32 count,
 		const glm::mat3x3 &matrix)
 	{
-		VertexSemanticTypeVec4AlignedVectorMap::const_iterator source;
-		VertexSemanticTypeVec4AlignedVectorMap::iterator dest;
+		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator source;
+		VertexSemanticTypeAlignedVec4ArrayMap::iterator dest;
 		glm::vec4 data;
 		glm::vec3 tmp;
 		Uint32 i;
@@ -1198,7 +1199,7 @@ namespace eternal_lands
 	void MeshDataTool::fill_vertics(const VertexSemanticType semantic,
 		const Uint32 index, const Uint32 count, const glm::vec4 &data)
 	{
-		VertexSemanticTypeVec4AlignedVectorMap::iterator found;
+		VertexSemanticTypeAlignedVec4ArrayMap::iterator found;
 		Uint32 i;
 
 		found = m_vertices.find(semantic);

@@ -9,6 +9,7 @@
 #include "abstractwritememorybuffer.hpp"
 #include "vertexformat.hpp"
 #include "exceptions.hpp"
+#include "alignedvec4array.hpp"
 
 namespace eternal_lands
 {
@@ -92,7 +93,29 @@ namespace eternal_lands
 		const Vec4Vector &data)
 	{
 		VertexSemanticTypePackDataMap::const_iterator found;
-		Uint32 i, count, offset;
+		Uint32 count, offset;
+		PackFormatType pack_format;
+
+		found = m_pack_datas.find(semantic);
+
+		if (found == m_pack_datas.end())
+		{
+			return;
+		}
+
+		count = data.size();
+		offset = found->second.get_offset() + get_offset();
+		pack_format = found->second.get_pack_format();
+
+		PackTool::pack(offset, get_stride(), count, pack_format,
+			data, *m_buffer);
+	}
+
+	void VertexStream::set(const VertexSemanticType semantic,
+		const AlignedVec4Array &data)
+	{
+		VertexSemanticTypePackDataMap::const_iterator found;
+		Uint32 count, offset;
 		PackFormatType pack_format;
 
 		found = m_pack_datas.find(semantic);

@@ -32,11 +32,11 @@ namespace eternal_lands
 	class MeshDataTool
 	{
 		private:
-			typedef std::map<VertexSemanticType, Vec4AlignedVector>
-				VertexSemanticTypeVec4AlignedVectorMap;
+			typedef std::map<VertexSemanticType, AlignedVec4Array>
+				VertexSemanticTypeAlignedVec4ArrayMap;
 
 			SubMeshVector m_sub_meshs;
-			VertexSemanticTypeVec4AlignedVectorMap m_vertices;
+			VertexSemanticTypeAlignedVec4ArrayMap m_vertices;
 			Uint32Vector m_indices;
 			Uint32 m_vertex_count;
 			Uint32 m_restart_index;
