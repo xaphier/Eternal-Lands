@@ -17,6 +17,7 @@
 #include "logging.hpp"
 #include "indexbuilder.hpp"
 #include "submesh.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
@@ -109,9 +110,10 @@ namespace eternal_lands
 
 			mesh_data_tool.reset(new MeshDataTool(
 				sphere_vertex_count, sphere_index_count, 1,
-				semantics, 0xFFFFFFFF, pt_triangles, false));
+				semantics, std::numeric_limits<Uint32>::max(),
+				pt_triangles, false));
 
-			for (i = 0; i < sphere_vertex_count; i++)
+			for (i = 0; i < sphere_vertex_count; ++i)
 			{
 				position = sphere_vertices[i];
 
@@ -133,7 +135,7 @@ namespace eternal_lands
 					glm::vec4(1.0f));
 			}
 
-			for (i = 0; i < sphere_index_count; i++)
+			for (i = 0; i < sphere_index_count; ++i)
 			{
 				mesh_data_tool->set_index_data(i,
 					sphere_indices[i]);
@@ -190,7 +192,7 @@ namespace eternal_lands
 				restart_index, primitive_type,
 				use_restart_index);
 
-			for (i = 0; i < index_count; i++)
+			for (i = 0; i < index_count; ++i)
 			{
 				mesh_data_tool->set_index_data(i, indices[i]);
 			}
@@ -200,9 +202,9 @@ namespace eternal_lands
 
 			index = 0;
 
-			for (y = 0; y <= tile_size; y++)
+			for (y = 0; y <= tile_size; ++y)
 			{
-				for (x = 0; x <= tile_size; x++)
+				for (x = 0; x <= tile_size; ++x)
 				{
 					uv = glm::vec2(x, y) /
 						static_cast<float>(tile_size);
@@ -258,7 +260,7 @@ namespace eternal_lands
 			Uint8Array8 id;
 			Uint32 i;
 
-			for (i = 0; i < id.size(); i++)
+			for (i = 0; i < id.size(); ++i)
 			{
 				id[i] = reader->read_u8();
 			}
@@ -333,10 +335,16 @@ namespace eternal_lands
 			MaterialDescriptionVector m_materials;
 	};
 
-	MeshDataCache::MeshDataCache(const FileSystemWeakPtr &file_system):
-		m_file_system(file_system)
+	MeshDataCache::MeshDataCache(
+		const TextureArrayCacheWeakPtr &texture_array_cache,
+		const FileSystemWeakPtr &file_system,
+		const GlobalVarsSharedPtr &global_vars):
+		m_texture_array_cache(texture_array_cache),
+		m_file_system(file_system), m_global_vars(global_vars)
 	{
+		assert(!m_texture_array_cache.expired());
 		assert(!m_file_system.expired());
+		assert(m_global_vars.get() != 0);
 	}
 
 	MeshDataCache::~MeshDataCache() throw()
@@ -361,6 +369,22 @@ namespace eternal_lands
 			do_load_mesh(reader, mesh_data_tool, materials);
 
 			mesh_data_tool->optimize();
+
+			if (!get_global_vars()->get_opengl_3_1())
+			{
+				mesh_data_tool->disable_restart_index();
+			}
+
+			if (!get_global_vars()->get_opengl_3_0())
+			{
+				return;
+			}
+
+			BOOST_FOREACH(MaterialDescription &material, materials)
+			{
+				material.build_layer_index(
+					get_texture_array_cache());
+			}
 
 			return;
 		}

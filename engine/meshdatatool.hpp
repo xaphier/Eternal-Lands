@@ -32,26 +32,22 @@ namespace eternal_lands
 	class MeshDataTool
 	{
 		private:
-			typedef std::map<VertexSemanticType, Uint32>
-				VertexSemanticTypeUint32Map;
+			typedef std::map<VertexSemanticType, Vec4Vector>
+				VertexSemanticTypeVec4VectorMap;
 
-			VertexSemanticTypeUint32Map m_semantic_indices;
 			SubMeshVector m_sub_meshs;
-			Vec4Vector m_vertices;
+			VertexSemanticTypeVec4VectorMap m_vertices;
 			Uint32Vector m_indices;
-			std::set<VertexSemanticType> m_semantics;
 			Uint32 m_vertex_count;
 			Uint32 m_restart_index;
 			PrimitiveType m_primitive_type;
 			bool m_use_restart_index;
 
 			void vertex_optimize();
-			void build_vertex_semantic_indices(
-				const VertexSemanticTypeSet &semantics);
 
 			inline Uint32 get_semantic_count() const
 			{
-				return m_semantic_indices.size();
+				return m_vertices.size();
 			}
 
 		public:
@@ -90,21 +86,36 @@ namespace eternal_lands
 				const VertexSemanticType semantic,
 				const Uint32 index, OutStream &str);
 			void write_to_stream(OutStream &str);
-
 			void set_vertex_data(
 				const VertexSemanticType vertex_semantic,
 				const Uint32 index, const glm::vec4 &data);
-
 			glm::vec4 get_vertex_data(
 				const VertexSemanticType vertex_semantic,
 				const Uint32 index) const;
-
-			inline void resize_vertices(const Uint32 vertex_count)
-			{
-				m_vertex_count = vertex_count;
-				m_vertices.resize(vertex_count *
-					get_semantic_count());
-			}
+			void copy_vertics(const MeshDataTool &mesh_data_tool,
+				const VertexSemanticType semantic,
+				const Uint32 source_index,
+				const Uint32 dest_index, const Uint32 count);
+			void fill_vertics(const VertexSemanticType semantic,
+				const Uint32 index, const Uint32 count,
+				const glm::vec4 &data);
+			void transform_vertics(
+				const MeshDataTool &mesh_data_tool,
+				const VertexSemanticType semantic,
+				const Uint32 source_index,
+				const Uint32 dest_index, const Uint32 count,
+				const glm::mat4x3 &matrix);
+			void transform_vertics(
+				const MeshDataTool &mesh_data_tool,
+				const VertexSemanticType semantic,
+				const Uint32 source_index,
+				const Uint32 dest_index, const Uint32 count,
+				const glm::mat3x3 &matrix);
+			void set_indices(const Uint32Vector &indices,
+				const Uint32 source_index,
+				const Uint32 dest_index, const Uint32 count,
+				const Sint32 offset);
+			void resize_vertices(const Uint32 vertex_count);
 
 			inline void resize_indices(const Uint32 index_count)
 			{
@@ -170,13 +181,10 @@ namespace eternal_lands
 			}
 
 			/**
-			 * Write the data to the vertex buffer.
-			 * @param vertex_stream The vertex buffer to use.
+			 * Write the data to the vertex stream.
+			 * @param stream The vertex stream to use.
 			 */
-			void write_vertex_buffer(
-				const VertexElements &vertex_elements,
-				const AbstractWriteMemoryBufferSharedPtr &buffer)
-				const;
+			void write_vertex_stream(VertexStream &stream) const;
 
 			/**
 			 * Write the data to the index buffer.

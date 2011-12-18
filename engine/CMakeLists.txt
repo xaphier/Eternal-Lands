@@ -55,6 +55,10 @@ file(GLOB font_cpp_files font/*.cpp)
 list(APPEND engine_cpp_files ${font_header_files})
 list(APPEND engine_header_files ${font_cpp_files})
 
+list(APPEND engine_cpp_files simd/simd.cpp)
+list(APPEND engine_header_files simd/simd.hpp)
+set_property(SOURCE simd/simd.cpp APPEND PROPERTY COMPILE_FLAGS ${SSE2_FLAGS})
+
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/buildinformations.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp" @ONLY)
 
 list(APPEND engine_cpp_files "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp")
@@ -63,10 +67,6 @@ add_subdirectory(lua)
 add_subdirectory(glsl_optimizer)
 
 add_library(elengine ${engine_cpp_files} ${engine_header_files})
-
-IF (OPENMP_FOUND)
-	set_target_properties(elengine PROPERTIES LINK_FLAGS "${OpenMP_CXX_FLAGS}")
-ENDIF (OPENMP_FOUND)
 
 target_link_libraries(elengine ${CAL3D_LIBRARIES})
 target_link_libraries(elengine ${JPEG_LIBRARIES})
@@ -78,6 +78,7 @@ target_link_libraries(elengine ${ICONV_LIBRARIES})
 target_link_libraries(elengine ${LIBXML2_LIBRARIES})
 target_link_libraries(elengine ${SDL_LIBRARIES})
 target_link_libraries(elengine ${GLEW_LIBRARY})
+target_link_libraries(elengine ${SDL_LIBRARY})
 target_link_libraries(elengine glsl_optimizer)
 target_link_libraries(elengine elluac++)
 target_link_libraries(elengine xz)

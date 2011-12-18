@@ -75,6 +75,16 @@ namespace eternal_lands
 			~VertexElements() throw();
 
 			/**
+			 * Returns the vertex elements.
+			 * @return The vertex elements.
+			 */
+			inline const VertexElementVector &get_vertex_elements()
+				const
+			{
+				return m_vertex_elements;
+			}
+
+			/**
 			 * Returns the divisor.
 			 * @return The divisor.
 			 */

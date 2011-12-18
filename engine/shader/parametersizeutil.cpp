@@ -51,7 +51,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterSizeType parameter_size;
 
-		for (i = 0; i < parameter_size_type_datas_count; i++)
+		for (i = 0; i < parameter_size_type_datas_count; ++i)
 		{
 			parameter_size = static_cast<ParameterSizeType>(i);
 
@@ -73,7 +73,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterSizeType tmp;
 
-		for (i = 0; i < parameter_size_type_datas_count; i++)
+		for (i = 0; i < parameter_size_type_datas_count; ++i)
 		{
 			tmp = static_cast<ParameterSizeType>(i);
 

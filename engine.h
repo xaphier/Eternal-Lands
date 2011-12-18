@@ -67,8 +67,8 @@ void build_actor_bounding_box(actor* a);
 void set_transformation_buffers(actor* act);
 struct CalModel *model_new(const Uint32 type_id, const Uint32 id,
 	const char* name, const Uint32 kind_of_actor,
-	const Uint32 enhanced_actor);
-void model_delete(const Uint32 id);
+	const Uint32 enhanced_actor, Uint32* client_id);
+void model_delete(const Uint32 client_id);
 void model_attach_mesh(actor *act, int mesh_id);
 void model_detach_mesh(actor *act, int mesh_id);
 void load_harvestable_list();

@@ -497,7 +497,7 @@ namespace eternal_lands
 
 					m_str << value[0];
 
-					for (i = 1; i < count; i++)
+					for (i = 1; i < count; ++i)
 					{
 						m_str << L" " << value[i];
 					}
@@ -516,7 +516,7 @@ namespace eternal_lands
 
 					m_str << value[0];
 
-					for (i = 1; i < count; i++)
+					for (i = 1; i < count; ++i)
 					{
 						m_str << L" " << value[i];
 					}
@@ -535,7 +535,7 @@ namespace eternal_lands
 
 					m_str << value[0];
 
-					for (i = 1; i < count; i++)
+					for (i = 1; i < count; ++i)
 					{
 						m_str << L" " << value[i];
 					}
@@ -554,7 +554,7 @@ namespace eternal_lands
 
 					m_str << value[0];
 
-					for (i = 1; i < count; i++)
+					for (i = 1; i < count; ++i)
 					{
 						m_str << L" " << value[i];
 					}
@@ -573,7 +573,7 @@ namespace eternal_lands
 
 					m_str << value[0];
 
-					for (i = 1; i < count; i++)
+					for (i = 1; i < count; ++i)
 					{
 						m_str << L" " << value[i];
 					}
@@ -592,7 +592,7 @@ namespace eternal_lands
 
 					m_str << value[0];
 
-					for (i = 1; i < count; i++)
+					for (i = 1; i < count; ++i)
 					{
 						m_str << L" " << value[i];
 					}

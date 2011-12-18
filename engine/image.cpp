@@ -44,7 +44,7 @@ namespace eternal_lands
 
 		face_count = get_face_count();
 
-		for (i = 0; i <= get_mipmap_count(); i++)
+		for (i = 0; i <= get_mipmap_count(); ++i)
 		{
 			size += get_size(i) * face_count;
 		}
@@ -60,7 +60,7 @@ namespace eternal_lands
 
 		face_count = get_face_count();
 
-		for (i = 0; i < mipmap; i++)
+		for (i = 0; i < mipmap; ++i)
 		{
 			offset += get_size(i) * face_count;
 		}
@@ -357,34 +357,34 @@ namespace eternal_lands
 		switch (get_type())
 		{
 			case GL_UNSIGNED_BYTE:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					result[i] = static_cast<const Uint8*>(value)[i];
 					result[i] /= std::numeric_limits<Uint8>::max();
 				}
 				break;
 			case GL_UNSIGNED_SHORT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					result[i] = static_cast<const Uint16*>(value)[i];
 					result[i] /= std::numeric_limits<Uint16>::max();
 				}
 				break;
 			case GL_UNSIGNED_INT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					result[i] = static_cast<const Uint32*>(value)[i];
 					result[i] /= std::numeric_limits<Uint32>::max();
 				}
 				break;
 			case GL_FLOAT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					result[i] = static_cast<const float*>(value)[i];
 				}
 				break;
 			case GL_HALF_FLOAT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					result[i] = glm::detail::toFloat32(
 						static_cast<const Uint16*>(value)[i]);
@@ -415,14 +415,14 @@ namespace eternal_lands
 				return PackTool::unpack_uint_1_5_5_5_rev(true,
 					*static_cast<const Uint16*>(value));
 			case GL_UNSIGNED_INT_8_8_8_8:
-				for (i = 0; i < 4; i++)
+				for (i = 0; i < 4; ++i)
 				{
 					result[i] = static_cast<const Uint8*>(value)[i];
 					result[i] /= std::numeric_limits<Uint8>::max();
 				}
 				return result;
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
-				for (i = 0; i < 4; i++)
+				for (i = 0; i < 4; ++i)
 				{
 					result[i] = static_cast<const Uint8*>(value)[3 - i];
 					result[i] /= std::numeric_limits<Uint8>::max();
@@ -435,21 +435,21 @@ namespace eternal_lands
 				return PackTool::unpack_uint_2_10_10_10_rev(true,
 					*static_cast<const Uint32*>(value));
 			case GL_BYTE:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					result[i] = static_cast<const Sint8*>(value)[i];
 					result[i] /= std::numeric_limits<Sint8>::max();
 				}
 				break;
 			case GL_SHORT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					result[i] = static_cast<const Sint16*>(value)[i];
 					result[i] /= std::numeric_limits<Sint16>::max();
 				}
 				break;
 			case GL_INT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					result[i] = static_cast<const Sint32*>(value)[i];
 					result[i] /= std::numeric_limits<Sint32>::max();
@@ -477,34 +477,34 @@ namespace eternal_lands
 		switch (get_type())
 		{
 			case GL_UNSIGNED_BYTE:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					static_cast<Uint8*>(value)[i] = data[i] *
 						std::numeric_limits<Uint8>::max();
 				}
 				return;
 			case GL_UNSIGNED_SHORT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					static_cast<Uint16*>(value)[i] = data[i] *
 						std::numeric_limits<Uint16>::max();
 				}
 				return;
 			case GL_UNSIGNED_INT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					static_cast<Uint32*>(value)[i] = data[i] *
 						std::numeric_limits<Uint32>::max();
 				}
 				return;
 			case GL_FLOAT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					static_cast<float*>(value)[i] = data[i];
 				}
 				return;
 			case GL_HALF_FLOAT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					static_cast<glm::detail::hdata*>(value)[i] =
 						glm::detail::toFloat16(data[i]);
@@ -543,14 +543,14 @@ namespace eternal_lands
 					PackTool::pack_uint_1_5_5_5_rev(true, data);
 				return;
 			case GL_UNSIGNED_INT_8_8_8_8:
-				for (i = 0; i < 4; i++)
+				for (i = 0; i < 4; ++i)
 				{
 					static_cast<Uint8*>(value)[i] = data[i] *
 						std::numeric_limits<Uint8>::max();
 				}
 				return;
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
-				for (i = 0; i < 4; i++)
+				for (i = 0; i < 4; ++i)
 				{
 					static_cast<Uint8*>(value)[i] = data[3 - i] *
 						std::numeric_limits<Uint8>::max();
@@ -565,21 +565,21 @@ namespace eternal_lands
 					PackTool::pack_uint_2_10_10_10_rev(true, data);
 				return;
 			case GL_BYTE:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					static_cast<Sint8*>(value)[i] = data[i] *
 						std::numeric_limits<Sint8>::max();
 				}
 				return;
 			case GL_SHORT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					static_cast<Sint16*>(value)[i] = data[i] *
 						std::numeric_limits<Sint16>::max();
 				}
 				return;
 			case GL_INT:
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					static_cast<Sint32*>(value)[i] = data[i] *
 						std::numeric_limits<Sint32>::max();
@@ -598,7 +598,7 @@ namespace eternal_lands
 
 		m_sizes = image.m_sizes;
 
-		for (i = 0; i < mipmap; i++)
+		for (i = 0; i < mipmap; ++i)
 		{
 			m_sizes[0] = std::max(1u, m_sizes[0] / 2);
 			m_sizes[1] = std::max(1u, m_sizes[1] / 2);
@@ -640,7 +640,7 @@ namespace eternal_lands
 
 			count = get_total_size() / 16;
 
-			for (i = 0; i < count; i++)
+			for (i = 0; i < count; ++i)
 			{
 				memcpy(static_cast<Uint8*>(
 					get_buffer().get_ptr()) + i * 16,

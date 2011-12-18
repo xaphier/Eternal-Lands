@@ -1709,7 +1709,7 @@ void free_actor_data(int actor_index)
 {
 	actor *act = actors_list[actor_index];
     if(act->calmodel!=NULL)
-        model_delete(act->actor_id);
+        model_delete(act->client_id);
 #ifdef	NEW_TEXTURES
 	if (act->is_enhanced_model)
 	{

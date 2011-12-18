@@ -116,7 +116,7 @@ namespace eternal_lands
 			count = matrices.size();
 		}
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			set_sub_frustum(matrices[i], i);
 		}
@@ -272,7 +272,7 @@ namespace eternal_lands
 
 		offset = sub_frustum_index * sub_frustum_planes_count;
 
-		for (i = 0; i < sub_frustum_planes_count; i++)
+		for (i = 0; i < sub_frustum_planes_count; ++i)
 		{
 			index = i + offset;
 
@@ -309,7 +309,7 @@ namespace eternal_lands
 
 		out_mask.reset();
 
-		for (i = 0; i < sub_frustum_count; i++)
+		for (i = 0; i < sub_frustum_count; ++i)
 		{
 			intersect(box, in_mask, i, out_mask);
 		}
@@ -333,7 +333,7 @@ namespace eternal_lands
 		PlanesMask mask;
 		Uint16 i;
 
-		for (i = 0; i < sub_frustum_count; i++)
+		for (i = 0; i < sub_frustum_count; ++i)
 		{
 			intersect(box, in_mask, i, mask);
 		}
@@ -347,7 +347,7 @@ namespace eternal_lands
 		SubFrustumsMask result;
 		Uint16 i;
 
-		for (i = 0; i < sub_frustum_count; i++)
+		for (i = 0; i < sub_frustum_count; ++i)
 		{
 			result[i] = (mask & sub_frustum_masks[i]).any();
 		}
@@ -364,9 +364,9 @@ namespace eternal_lands
 
 		offset = sub_frustum_index * sub_frustum_planes_count;
 
-		for (i = 0; i < 8; i++)
+		for (i = 0; i < 8; ++i)
 		{
-			for (j = 0; j < 3; j++)
+			for (j = 0; j < 3; ++j)
 			{
 				offsets[j] = offset + j * 2;
 
@@ -393,7 +393,7 @@ namespace eternal_lands
 		SubFrustumsBoundingBoxes result;
 		Uint16 i;
 
-		for (i = 0; i < sub_frustum_count; i++)
+		for (i = 0; i < sub_frustum_count; ++i)
 		{
 			if ((get_planes_mask() & sub_frustum_6_planes_masks[i])
 				== sub_frustum_6_planes_masks[i])
@@ -413,7 +413,7 @@ namespace eternal_lands
 		frustum.m_planes = m_planes;
 		frustum.m_planes_mask = m_planes_mask;
 
-		for (i = 0; i < get_planes_mask().size(); i++)
+		for (i = 0; i < get_planes_mask().size(); ++i)
 		{
 			if (get_planes_mask()[i])
 			{

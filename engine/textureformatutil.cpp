@@ -654,7 +654,7 @@ namespace eternal_lands
 		Uint32 i;
 		TextureFormatType texture_format_type;
 
-		for (i = 0; i < texture_format_type_datas_count; i++)
+		for (i = 0; i < texture_format_type_datas_count; ++i)
 		{
 			texture_format_type =
 				static_cast<TextureFormatType>(i);

@@ -54,7 +54,7 @@ namespace eternal_lands
 		Uint32 i;
 		SelectionType selection_type;
 
-		for (i = 0; i < selection_type_datas_count; i++)
+		for (i = 0; i < selection_type_datas_count; ++i)
 		{
 			selection_type = static_cast<SelectionType>(i);
 

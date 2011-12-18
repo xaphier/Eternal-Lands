@@ -185,7 +185,7 @@ namespace eternal_lands
 		Uint32 i;
 		AutoParameterType auto_parameter;
 
-		for (i = 0; i < auto_parameter_type_datas_count; i++)
+		for (i = 0; i < auto_parameter_type_datas_count; ++i)
 		{
 			auto_parameter = static_cast<AutoParameterType>(i);
 
@@ -207,7 +207,7 @@ namespace eternal_lands
 		Uint32 i;
 		AutoParameterType tmp;
 
-		for (i = 0; i < auto_parameter_type_datas_count; i++)
+		for (i = 0; i < auto_parameter_type_datas_count; ++i)
 		{
 			tmp = static_cast<AutoParameterType>(i);
 

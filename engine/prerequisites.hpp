@@ -209,6 +209,7 @@ namespace eternal_lands
 	class InstancingData;
 	class Light;
 	class Lua;
+	class Map;
 	class MemoryBuffer;
 	class Material;
 	class MaterialDescription;
@@ -235,6 +236,8 @@ namespace eternal_lands
 	class SubMesh;
 	class SubObject;
 	class Texture;
+	class TextureArray;
+	class TextureArrayCache;
 	class TextureCache;
 	class TextureGlyphe;
 	class TextureFont;
@@ -242,6 +245,7 @@ namespace eternal_lands
 	class VertexElement;
 	class VertexElements;
 	class VertexFormat;
+	class VertexStream;
 	class XmlReader;
 	class XmlWriter;
 
@@ -250,7 +254,7 @@ namespace eternal_lands
 	ARRAY(String, 8);
 	ARRAY(String, 12);
 	ARRAY(String, 16);
-	ARRAY(VertexElements, 4);
+	ARRAY(VertexElements, 16);
 
 	typedef RStarTree* RStarTreePtr;
 	typedef SubObject* SubObjectPtr;
@@ -296,6 +300,7 @@ namespace eternal_lands
 	SHARED_PTR(ShaderSourceDescription);
 	SHARED_PTR(ShaderSourceDescriptionLoader);
 	SHARED_PTR(Texture);
+	SHARED_PTR(TextureArrayCache);
 	SHARED_PTR(TextureCache);
 	SHARED_PTR(VertexFormat);
 	SHARED_PTR(XmlReader);
@@ -310,6 +315,7 @@ namespace eternal_lands
 	WEAK_PTR(MeshDataCache);
 	WEAK_PTR(SceneResources);
 	WEAK_PTR(ShaderSourceBuilder);
+	WEAK_PTR(TextureArrayCache);
 	WEAK_PTR(TextureCache);
 
 	VECTOR(ActorSharedPtr);
@@ -332,6 +338,7 @@ namespace eternal_lands
 	VECTOR(SubMesh);
 	VECTOR(SubObject);
 	VECTOR(SubObjectPtr);
+	VECTOR(TextureArray);
 	VECTOR(TextureSharedPtr);
 	VECTOR(VertexElement);
 

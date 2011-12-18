@@ -87,11 +87,11 @@ namespace eternal_lands
 
 				lua.pop(1);
 
-				j++;
+				++j;
 
 				if (j == result.col_size())
 				{
-					i++;
+					++i;
 					j = 0;
 				}
 			}
@@ -194,7 +194,7 @@ namespace eternal_lands
 
 				lua.pop(1);
 
-				i++;
+				++i;
 			}
 
 			if (i < result.length())
@@ -292,7 +292,7 @@ namespace eternal_lands
 
 				lua.pop(1);
 
-				i++;
+				++i;
 			}
 
 			if (i < result.length())
@@ -317,9 +317,9 @@ namespace eternal_lands
 
 			index = 1;
 
-			for (i = 0; i < value.row_size(); i++)
+			for (i = 0; i < value.row_size(); ++i)
 			{
-				for (j = 0; j < value.col_size(); j++)
+				for (j = 0; j < value.col_size(); ++j)
 				{
 					lua.push_int(index);		/* Push the table index */
 					lua.push_float(value[i][j]);	/* Push the cell value */
@@ -336,7 +336,7 @@ namespace eternal_lands
 
 			lua.create_table(values.size(), 0);
 
-			for (i = 0; i < values.size(); i++)
+			for (i = 0; i < values.size(); ++i)
 			{
 				lua.push_int(i + 1);		/* Push the table index */
 				push_matrix(lua, values[i]);	/* Push the cell value */
@@ -351,7 +351,7 @@ namespace eternal_lands
 
 			lua.create_table(value.length(), 0);
 
-			for (i = 0; i < value.length(); i++)
+			for (i = 0; i < value.length(); ++i)
 			{
 				lua.push_int(i + 1);		/* Push the table index */
 				lua.push_number(value[i]);	/* Push the cell value */
@@ -366,7 +366,7 @@ namespace eternal_lands
 
 			lua.create_table(values.size(), 0);
 
-			for (i = 0; i < values.size(); i++)
+			for (i = 0; i < values.size(); ++i)
 			{
 				lua.push_int(i + 1);		/* Push the table index */
 				push_vector(lua, values[i]);	/* Push the cell value */
@@ -381,7 +381,7 @@ namespace eternal_lands
 
 			lua.create_table(value.length(), 0);
 
-			for (i = 0; i < value.length(); i++)
+			for (i = 0; i < value.length(); ++i)
 			{
 				lua.push_int(i + 1);		/* Push the table index */
 				lua.push_bool(value[i]);	/* Push the cell value */
@@ -396,7 +396,7 @@ namespace eternal_lands
 
 			lua.create_table(value.length(), 0);
 
-			for (i = 0; i < value.length(); i++)
+			for (i = 0; i < value.length(); ++i)
 			{
 				lua.push_int(i + 1);	/* Push the table index */
 				lua.push_int(value[i]);	/* Push the cell value */
@@ -412,7 +412,7 @@ namespace eternal_lands
 
 			lua.create_table(values.size(), 0);
 
-			for (i = 0; i < values.size(); i++)
+			for (i = 0; i < values.size(); ++i)
 			{
 				lua.push_int(i + 1);			/* Push the table index */
 				push_int_vector(lua, values[i]);	/* Push the cell value */
@@ -1453,7 +1453,7 @@ namespace eternal_lands
 
 		create_table(value.size(), 0);
 
-		for (i = 0; i < value.size(); i++)
+		for (i = 0; i < value.size(); ++i)
 		{
 			push_bool(value[i]);
 		}
@@ -1465,7 +1465,7 @@ namespace eternal_lands
 
 		create_table(value.size(), 0);
 
-		for (i = 0; i < value.size(); i++)
+		for (i = 0; i < value.size(); ++i)
 		{
 			push_float(value[i]);
 		}
@@ -1477,7 +1477,7 @@ namespace eternal_lands
 
 		create_table(value.size(), 0);
 
-		for (i = 0; i < value.size(); i++)
+		for (i = 0; i < value.size(); ++i)
 		{
 			push_int(value[i]);
 		}
@@ -1489,7 +1489,7 @@ namespace eternal_lands
 
 		create_table(value.size(), 0);
 
-		for (i = 0; i < value.size(); i++)
+		for (i = 0; i < value.size(); ++i)
 		{
 			push_string(value[i]);
 		}

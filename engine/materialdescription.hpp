@@ -36,9 +36,9 @@ namespace eternal_lands
 				const MaterialDescription &material) const;
 			bool compare_non_textures(
 				const MaterialDescription &material) const;
-			void build_layer_index(
-				const TextureCacheSharedPtr &texture_cache,
-				const ShaderTextureType texture_type);
+			void build_layer_index(const TextureArrayCacheSharedPtr
+				&texture_array_cache,
+					const ShaderTextureType texture_type);
 
 		public:
 			MaterialDescription();
@@ -81,8 +81,8 @@ namespace eternal_lands
 			 */
 			bool can_merge(const MaterialDescription &material)
 				const;
-			void build_layer_index(
-				const TextureCacheSharedPtr &texture_cache);
+			void build_layer_index(const TextureArrayCacheSharedPtr
+				&texture_array_cache);
 
 			inline void set_effect(const String &effect)
 			{

@@ -160,7 +160,7 @@ namespace eternal_lands
 			/* read file */
 			row_pointers.reset(new png_bytep[image->get_height()]);
 
-			for (i = 0; i < image->get_height(); i++)
+			for (i = 0; i < image->get_height(); ++i)
 			{
 				row_pointers[i] = static_cast<png_byte*>(
 					image->get_buffer().get_ptr()) +

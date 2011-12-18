@@ -180,7 +180,7 @@ namespace eternal_lands
 
 		count = splits.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			if (splits[i] == "..")
 			{
@@ -219,7 +219,7 @@ namespace eternal_lands
 
 		result = path[0];
 
-		for (i = 1; i < count; i++)
+		for (i = 1; i < count; ++i)
 		{
 			result += '/';
 			result += path[i];
@@ -246,7 +246,7 @@ namespace eternal_lands
 		count -= 1;
 		result = path[0];
 
-		for (i = 1; i < count; i++)
+		for (i = 1; i < count; ++i)
 		{
 			result += '/';
 			result += path[i];
@@ -413,7 +413,7 @@ namespace eternal_lands
 
 		result = path[0];
 
-		for (i = 1; i < count; i++)
+		for (i = 1; i < count; ++i)
 		{
 			result += '/';
 			result += path[i];

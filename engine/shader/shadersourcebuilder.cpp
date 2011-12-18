@@ -244,7 +244,7 @@ namespace eternal_lands
 					return;
 				}
 
-				i++;
+				++i;
 			}
 		}
 
@@ -282,7 +282,7 @@ namespace eternal_lands
 				}
 				else
 				{
-					i++;
+					++i;
 				}
 			}
 		}
@@ -310,7 +310,7 @@ namespace eternal_lands
 				}
 				else
 				{
-					i++;
+					++i;
 				}
 			}
 
@@ -326,7 +326,7 @@ namespace eternal_lands
 				}
 				else
 				{
-					i++;
+					++i;
 				}
 			}
 		}
@@ -798,7 +798,7 @@ namespace eternal_lands
 
 		count = ShaderSourceUtil::get_shader_source_count();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			shader_source_type =
 				static_cast<ShaderSourceType>(i);
@@ -954,7 +954,7 @@ namespace eternal_lands
 			stream << light_count;
 		}
 
-		stream << UTF8("; i++)\n\t{\n");
+		stream << UTF8("; ++i)\n\t{\n");
 
 		add_local(cpt_light_color, pqt_in, function_locals,
 			function_parameters);
@@ -1708,7 +1708,7 @@ namespace eternal_lands
 
 		count = ShaderTextureUtil::get_shader_texture_count();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			values[ShaderTextureUtil::get_str(
 				static_cast<ShaderTextureType>(i))] =

@@ -50,7 +50,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderBuildType shader_build_type;
 
-		for (i = 0; i < shader_build_type_names_count; i++)
+		for (i = 0; i < shader_build_type_names_count; ++i)
 		{
 			shader_build_type = static_cast<ShaderBuildType>(i);
 

@@ -40,15 +40,6 @@ namespace eternal_lands
 	{
 	}
 
-	void InstancingData::build_layer_indices(
-		const TextureCacheSharedPtr &texture_cache)
-	{
-		BOOST_FOREACH(MaterialDescription &material, m_materials)
-		{
-			material.build_layer_index(texture_cache);
-		}
-	}
-
 	Sint16Sint16Pair InstancingData::get_index(const float max_size) const
 	{
 		Sint16Sint16Pair result;

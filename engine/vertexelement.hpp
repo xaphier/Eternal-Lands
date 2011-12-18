@@ -167,6 +167,7 @@ namespace eternal_lands
 		private:
 			VertexSemanticType m_semantic;
 			VertexElementType m_type;
+			PackFormatType m_pack_format;
 			GLenum m_gl_type;
 			Uint16 m_offset;
 			Uint16 m_count;
@@ -271,6 +272,15 @@ namespace eternal_lands
 			inline GLboolean get_gl_normalized() const
 			{
 				return m_gl_normalized;
+			}
+
+			/**
+			 * Returns the pack format of the vertex element type.
+			 * @return The pack format of the vertex element type.
+			 */
+			inline PackFormatType get_pack_format() const
+			{
+				return m_pack_format;
 			}
 
 			/**

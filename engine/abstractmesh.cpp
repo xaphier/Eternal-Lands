@@ -14,6 +14,7 @@
 #include "vertexformat.hpp"
 #include "logging.hpp"
 #include "exceptions.hpp"
+#include "vertexstream.hpp"
 
 namespace eternal_lands
 {
@@ -79,7 +80,7 @@ namespace eternal_lands
 
 		init_vertices();
 
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < 16; ++i)
 		{
 			if (get_vertex_elements(i).get_count() > 0)
 			{
@@ -87,8 +88,9 @@ namespace eternal_lands
 
 				assert(buffer.get() != 0);
 
-				source->write_vertex_buffer(
-					get_vertex_elements(i), buffer);
+				VertexStream stream(m_vertex_format, buffer, i);
+
+				source->write_vertex_stream(stream);
 			}
 		}
 
@@ -125,7 +127,7 @@ namespace eternal_lands
 
 		init_vertices();
 
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < 16; ++i)
 		{
 			if (get_vertex_elements(i).get_count() > 0)
 			{
@@ -133,8 +135,9 @@ namespace eternal_lands
 
 				assert(buffer.get() != 0);
 
-				source->write_vertex_buffer(
-					get_vertex_elements(i), buffer);
+				VertexStream stream(m_vertex_format, buffer, i);
+
+				source->write_vertex_stream(stream);
 			}
 		}
 	}
@@ -181,7 +184,7 @@ namespace eternal_lands
 		bounding_box = get_sub_meshs()[0].get_bounding_box().transform(
 			matrix);
 
-		for (i = 1; i < get_sub_meshs().size(); i++)
+		for (i = 1; i < get_sub_meshs().size(); ++i)
 		{
 			bounding_box.merge(get_sub_meshs()[i].get_bounding_box(
 				).transform(matrix));

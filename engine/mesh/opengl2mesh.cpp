@@ -68,7 +68,7 @@ namespace eternal_lands
 
 		stride = vertex_elements.get_stride();
 
-		for (i = 0; i < vertex_elements.get_count(); i++)
+		for (i = 0; i < vertex_elements.get_count(); ++i)
 		{
 			offset = vertex_elements.get_offset(i);
 			count = vertex_elements.get_count(i);
@@ -86,9 +86,11 @@ namespace eternal_lands
 
 	void OpenGl2Mesh::init_vertices()
 	{
-		Uint32 i, size;
+		Uint32 i, size, count;
 
-		for (i = 0; i < 4; i++)
+		count = m_vertex_data.size();
+
+		for (i = 0; i < count; ++i)
 		{
 			if (get_vertex_elements(i).get_count() > 0)
 			{
@@ -135,9 +137,11 @@ namespace eternal_lands
 
 	void OpenGl2Mesh::bind_vertex_buffers()
 	{
-		Uint32 i;
+		Uint32 i, count;
 
-		for (i = 0; i < 4; i++)
+		count = m_vertex_data.size();
+
+		for (i = 0; i < count; ++i)
 		{
 			bind(get_vertex_elements(i), m_vertex_data[i]);
 		}
@@ -147,7 +151,7 @@ namespace eternal_lands
 	{
 		Uint16 i;
 
-		for (i = 0; i < 16; i++)
+		for (i = 0; i < 16; ++i)
 		{
 			glDisableVertexAttribArray(i);
 		}

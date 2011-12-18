@@ -245,7 +245,7 @@ namespace eternal_lands
 		m_shadow_camera = glm::inverse(shadow_view_matrix) *
 			m_shadow_camera;
 
-		for (i = 0; i < get_shadow_map_count(); i++)
+		for (i = 0; i < get_shadow_map_count(); ++i)
 		{
 			shadow_extrusion_distance = std::max(scene_max_height -
 				receiver_boxes[i].get_min().z, 0.0f) / dir.z;
@@ -280,7 +280,7 @@ namespace eternal_lands
 		basic_projection_view_matrix = basic_projection_matrix
 			* get_shadow_view_matrix();
 
-		for (i = 0; i < get_shadow_map_count(); i++)
+		for (i = 0; i < get_shadow_map_count(); ++i)
 		{
 			build_shadow_matrix(basic_projection_matrix,
 				basic_projection_view_matrix, split_boxes[i],
@@ -374,7 +374,7 @@ namespace eternal_lands
 		m_shadow_map_width = shadow_map_size;
 		m_shadow_map_height = shadow_map_size;
 
-		for (i = 0; i < get_shadow_map_count(); i++)
+		for (i = 0; i < get_shadow_map_count(); ++i)
 		{
 			z_near = get_split_point(get_z_near(),
 				get_shadow_z_far(), i,
@@ -391,7 +391,7 @@ namespace eternal_lands
 					z_near, z_far) * get_view_matrix();
 		}
 
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < 4; ++i)
 		{
 			m_split_distances[i] = get_split_point(get_z_near(),
 				get_shadow_z_far(), i + 1,

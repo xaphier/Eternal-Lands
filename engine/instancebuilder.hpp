@@ -30,8 +30,7 @@ namespace eternal_lands
 	class InstanceBuilder
 	{
 		private:
-			const TextureCacheSharedPtr m_texture_cache;
-			InstancingDataVector &m_instancing_datas;
+			const InstancingDataVector &m_instancing_datas;
 			const Uint32 m_id;
 			std::auto_ptr<InstanceData> m_instance_data;
 
@@ -40,21 +39,10 @@ namespace eternal_lands
 				return m_id;
 			}
 
-			inline InstancingDataVector &get_instancing_datas()
-			{
-				return m_instancing_datas;
-			}
-
 			inline const InstancingDataVector
 				&get_instancing_datas() const
 			{
 				return m_instancing_datas;
-			}
-
-			inline const TextureCacheSharedPtr &get_texture_cache()
-				const
-			{
-				return m_texture_cache;
 			}
 
 			inline const InstancingData &get_instancing_data(
@@ -76,8 +64,7 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			InstanceBuilder(
-				const TextureCacheSharedPtr &texture_cache,
-				InstancingDataVector &instancing_datas,
+				const InstancingDataVector &instancing_datas,
 				const Uint32 id);
 
 			/**

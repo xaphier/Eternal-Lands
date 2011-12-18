@@ -648,6 +648,7 @@ typedef struct
 	short cluster;
 #endif
 	ec_reference ec_buff_reference[NUM_BUFFS];
+	Uint32 client_id;
 }actor;
 
 #define	DEFAULT_RENDER_PASS	0

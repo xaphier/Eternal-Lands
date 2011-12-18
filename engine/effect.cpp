@@ -189,7 +189,7 @@ namespace eternal_lands
 		m_default_programs.reserve((get_max_index() + 1) * 2);
 
 		/* Light shader for different light counts */
-		for (i = 0; i < light_count; i++)
+		for (i = 0; i < light_count; ++i)
 		{
 			build_default_shader(description, 0, i);
 		}

@@ -102,7 +102,7 @@ namespace eternal_lands
 		{
 			count = node->get_count();
 
-			for (i = 0; i < count; i++)
+			for (i = 0; i < count; ++i)
 			{
 				oft.reset();
 				add_data(node->get_element(i),
@@ -245,7 +245,7 @@ namespace eternal_lands
 
 		minimum_load = get_root_node()->get_max_count() * m_fill_factor;
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			RStarTreeNodeSharedPtrStack path_buffer;
 			RStarTreeNodeSharedPtrVector reinsert;

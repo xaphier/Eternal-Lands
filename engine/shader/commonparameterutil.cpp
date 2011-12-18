@@ -187,7 +187,7 @@ namespace eternal_lands
 		Uint32 i;
 		CommonParameterType common_parameter;
 
-		for (i = 0; i < common_parameter_type_datas_count; i++)
+		for (i = 0; i < common_parameter_type_datas_count; ++i)
 		{
 			common_parameter = static_cast<CommonParameterType>(i);
 
@@ -209,7 +209,7 @@ namespace eternal_lands
 		Uint32 i;
 		CommonParameterType tmp;
 
-		for (i = 0; i < common_parameter_type_datas_count; i++)
+		for (i = 0; i < common_parameter_type_datas_count; ++i)
 		{
 			tmp = static_cast<CommonParameterType>(i);
 

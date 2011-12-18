@@ -38,7 +38,7 @@ namespace eternal_lands
 
 		src = m_indices.get_ptr();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			if (use_16_bit_indices)
 			{

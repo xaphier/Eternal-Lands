@@ -311,7 +311,7 @@ namespace eternal_lands
 			Uint32 i;
 			Uint8 a;
 
-			for (i = 0; i < 16; i++)
+			for (i = 0; i < 16; ++i)
 			{
 				Y  = values[i][3];
 				Co = values[i][0];
@@ -1254,13 +1254,13 @@ namespace eternal_lands
 			face_count = m_image->get_face_count();
 			mipmap_count = m_image->get_mipmap_count();
 
-			for (i = 0; i < face_count; i++)
+			for (i = 0; i < face_count; ++i)
 			{
 				width = m_image->get_width();
 				height = m_image->get_height();
 				depth = m_image->get_depth();
 
-				for (j = 0; j <= mipmap_count; j++)
+				for (j = 0; j <= mipmap_count; ++j)
 				{
 					read_uncompress_face(format,
 						width, height, depth, i, j);

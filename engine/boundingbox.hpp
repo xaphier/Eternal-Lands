@@ -139,7 +139,7 @@ namespace eternal_lands
 				glm::vec3 result;
 				Uint16 i;
 
-				for (i = 0; i < 3; i++)
+				for (i = 0; i < 3; ++i)
 				{
 					if (index[i])
 					{
@@ -159,7 +159,7 @@ namespace eternal_lands
 				Vec3Array8 result;
 				Uint16 i;
 
-				for (i = 0; i < 8; i++)
+				for (i = 0; i < 8; ++i)
 				{
 					result[i] = get_point(
 						std::bitset<3>(i));

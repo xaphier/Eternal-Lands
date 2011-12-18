@@ -16,12 +16,10 @@ namespace eternal_lands
 
 	InstancesBuilder::InstancesBuilder(
 		const MeshDataCacheWeakPtr &mesh_data_cache,
-		const TextureCacheWeakPtr &texture_cache,
 		const float max_size): m_mesh_data_cache(mesh_data_cache),
-		m_texture_cache(texture_cache), m_max_size(max_size)
+		m_max_size(max_size)
 	{
 		assert(!m_mesh_data_cache.expired());
-		assert(!m_texture_cache.expired());
 	}
 
 	InstancesBuilder::~InstancesBuilder() throw()
@@ -78,19 +76,19 @@ namespace eternal_lands
 			else
 			{
 				builders.push_back(new InstanceBuilder(
-					get_texture_cache(), it->second,
+					it->second,
 					free_ids.get_next_free_id()));
 			}
 		}
 
 		count = builders.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			builders[i].build_instance();
 		}
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			builders[i].set_instance(instances);
 		}

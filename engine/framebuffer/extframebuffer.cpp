@@ -68,7 +68,7 @@ namespace eternal_lands
 	{
 		GLuint status;
 
-		status = glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
+		status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 
 		if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
 		{
@@ -82,7 +82,7 @@ namespace eternal_lands
 
 	bool ExtFrameBuffer::get_status() const
 	{
-		return glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT) ==
+		return glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) ==
 			GL_FRAMEBUFFER_COMPLETE_EXT;
 	}
 
@@ -93,7 +93,7 @@ namespace eternal_lands
 
 	void ExtFrameBuffer::bind()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER_EXT, m_id);
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_id);
 	}
 
 }

@@ -263,6 +263,7 @@ void add_actor_attachment(int actor_id, int attachment_type)
 						   0, 0, 0, 0, 0, 0, -1);
 		actors_list[id]->attached_actor = i;
 		parent->attached_actor = id;
+		memset(actors_list[id]->actor_name, 0, sizeof(actors_list[id]->actor_name));
 
 		actors_list[id]->async_fighting = 0;
 		actors_list[id]->async_x_tile_pos = parent->async_x_tile_pos;
@@ -300,9 +301,10 @@ void add_actor_attachment(int actor_id, int attachment_type)
 		if (actors_defs[attachment_type].coremodel!=NULL) {
 			//Setup cal3d model
 			actors_list[id]->calmodel = model_new(attachment_type,
-				actors_list[id]->actor_id,
+				actors_list[id]->actor_id, 
 				actors_list[id]->actor_name,
-				actors_list[id]->kind_of_actor, 0);
+				actors_list[id]->kind_of_actor, 0,
+				&actors_list[id]->client_id);
 			//Attach meshes
 			if(actors_list[id]->calmodel) {
 				model_attach_mesh(actors_list[id], actors_defs[attachment_type].shirt[0].mesh_index);
@@ -1274,7 +1276,8 @@ void add_actor_from_server (const char *in_data, int len)
 		//Setup cal3d model
 		actors_list[i]->calmodel = model_new(actor_type,
 			actors_list[i]->actor_id, actors_list[i]->actor_name,
-			actors_list[i]->kind_of_actor, 0);
+			actors_list[i]->kind_of_actor, 0,
+			&actors_list[i]->client_id);
 		//Attach meshes
 		if(actors_list[i]->calmodel){
 			model_attach_mesh(actors_list[i], actors_defs[actor_type].shirt[0].mesh_index);

@@ -16,6 +16,7 @@
 #include "shader/shadersourcebuilder.hpp"
 #include "filter.hpp"
 #include "framebufferbuilder.hpp"
+#include "texturearraycache.hpp"
 
 namespace eternal_lands
 {
@@ -28,21 +29,23 @@ namespace eternal_lands
 			boost::make_shared<ShaderSourceBuilder>(global_vars,
 				file_system);
 		m_effect_cache = boost::make_shared<EffectCache>(
-			get_shader_source_builder_ptr(), file_system);
+			get_shader_source_builder(), file_system);
+		m_texture_array_cache = boost::make_shared<TextureArrayCache>();
 		m_codec_manager = boost::make_shared<CodecManager>();
 		m_texture_cache = boost::make_shared<TextureCache>(
-			get_codec_manager_ptr(), file_system, global_vars);
+			get_codec_manager(), get_texture_array_cache(),
+			file_system, global_vars);
 		m_mesh_data_cache = boost::make_shared<MeshDataCache>(
-			file_system);
+			get_texture_array_cache(), file_system, global_vars);
 		m_mesh_cache = boost::make_shared<MeshCache>(
-			get_mesh_builder_ptr(), get_mesh_data_cache_ptr());
+			get_mesh_builder(), get_mesh_data_cache());
 		m_actor_data_cache = boost::make_shared<ActorDataCache>(
-			get_mesh_builder_ptr(), get_effect_cache_ptr(),
-			get_texture_cache_ptr(), get_codec_manager_ptr(),
+			get_mesh_builder(), get_effect_cache(),
+			get_texture_cache(), get_codec_manager(),
 			file_system, global_vars);
 		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
 			global_vars);
-		m_filter.reset(new Filter(get_mesh_cache_ptr(), global_vars));
+		m_filter.reset(new Filter(get_mesh_cache(), global_vars));
 	}
 
 	SceneResources::~SceneResources() throw()
@@ -61,13 +64,15 @@ namespace eternal_lands
 		m_shader_source_builder.reset();
 	}
 
-	void SceneResources::init()
+	void SceneResources::init(const FileSystemSharedPtr &file_system)
 	{
 		m_shader_source_builder->load(String(UTF8(
 			"shaders/shaders.lua")));
 		m_shader_source_builder->load_default(String(UTF8(
 			"shaders/shaders.lua")));
-		m_texture_cache->load_xml(String(UTF8("texture_arrays.xml")));
+		m_texture_array_cache->load_xml(file_system,
+			String(UTF8("textures/arrays.xml")));
+		m_texture_cache->add_texture_arrays();
 	}
 
 }

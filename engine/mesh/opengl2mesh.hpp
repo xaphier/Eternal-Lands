@@ -33,7 +33,7 @@ namespace eternal_lands
 	class OpenGl2Mesh: public AbstractMesh
 	{
 		protected:
-			boost::array<HardwareBufferSharedPtr, 4> m_vertex_data;
+			boost::array<HardwareBufferSharedPtr, 16> m_vertex_data;
 			HardwareBufferSharedPtr m_index_data;
 
 		protected:

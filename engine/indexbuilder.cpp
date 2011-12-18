@@ -235,9 +235,9 @@ namespace eternal_lands
 
 			assert((count * step * 2) == get_tile_size());
 
-			for (j = 0; j < count; j++)
+			for (j = 0; j < count; ++j)
 			{
-				for (i = 0; i < count; i++)
+				for (i = 0; i < count; ++i)
 				{
 					mask[dt_north] = (j == 0);
 					mask[dt_east] = (i == (count - 1));

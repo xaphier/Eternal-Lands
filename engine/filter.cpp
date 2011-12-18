@@ -252,9 +252,9 @@ namespace eternal_lands
 		values[ShaderTextureUtil::get_str(stt_diffuse_0)] =
 			Variant(static_cast<Sint64>(stt_diffuse_0));
 
-		for (i = 1; i < 5; i++)
+		for (i = 1; i < 5; ++i)
 		{
-			for (j = 0; j < 4; j++)
+			for (j = 0; j < 4; ++j)
 			{
 				if (!global_vars->get_opengl_3_0())
 				{

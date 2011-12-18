@@ -25,9 +25,10 @@ namespace eternal_lands
 	class Effect: public boost::noncopyable
 	{
 		private:
-			ShaderSourceBuilderWeakPtr m_shader_source_builder;
-			FileSystemWeakPtr m_file_system;
-			String m_name;
+			const ShaderSourceBuilderWeakPtr
+				m_shader_source_builder;
+			const FileSystemWeakPtr m_file_system;
+			const String m_name;
 			GlslProgramSharedPtrVector m_default_programs;
 			GlslProgramSharedPtr m_depth_program;
 			GlslProgramSharedPtr m_shadow_program;

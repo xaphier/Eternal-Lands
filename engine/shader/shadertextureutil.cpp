@@ -115,7 +115,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderTextureType shader_texture_type;
 
-		for (i = 0; i < shader_texture_type_datas_count; i++)
+		for (i = 0; i < shader_texture_type_datas_count; ++i)
 		{
 			shader_texture_type =
 				static_cast<ShaderTextureType>(i);
@@ -138,7 +138,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderTextureType tmp;
 
-		for (i = 0; i < shader_texture_type_datas_count; i++)
+		for (i = 0; i < shader_texture_type_datas_count; ++i)
 		{
 			tmp = static_cast<ShaderTextureType>(i);
 

@@ -165,7 +165,7 @@ namespace eternal_lands
 		Uint32 i;
 		IntersectionType intersection_type;
 
-		for (i = 0; i < intersection_type_names_count; i++)
+		for (i = 0; i < intersection_type_names_count; ++i)
 		{
 			intersection_type = static_cast<IntersectionType>(i);
 

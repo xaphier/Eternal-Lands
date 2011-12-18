@@ -1121,7 +1121,8 @@ void add_enhanced_actor_from_server (const char *in_data, int len)
 	if (actors_defs[actor_type].coremodel!=NULL) {
 		actors_list[i]->calmodel = model_new(actor_type,
 			actors_list[i]->actor_id, actors_list[i]->actor_name,
-			actors_list[i]->kind_of_actor, 1);
+			actors_list[i]->kind_of_actor, 1,
+			&actors_list[i]->client_id);
 		load_enhanced_actor_texture(actors_list[i]);
 
 		if (actors_list[i]->calmodel!=NULL) {
@@ -1264,6 +1265,7 @@ actor * add_actor_interface(float x, float y, float z_rot, float scale, int acto
 {
 	enhanced_actor * this_actor=calloc(1,sizeof(enhanced_actor));
 	actor * a;
+	int index;
 
 	//get the torso
 	my_strncp(this_actor->arms_tex,actors_defs[actor_type].shirt[shirt].arms_name,sizeof(this_actor->arms_tex));
@@ -1279,10 +1281,11 @@ actor * add_actor_interface(float x, float y, float z_rot, float scale, int acto
 	my_strncp(this_actor->pants_mask,actors_defs[actor_type].legs[pants].legs_mask,sizeof(this_actor->pants_mask));
 
 #ifdef	NEW_TEXTURES
-	a=actors_list[add_enhanced_actor(this_actor, x*0.5f, y*0.5f, 0.00000001f, z_rot, scale, 0, 0)];
+	index = add_enhanced_actor(this_actor, x*0.5f, y*0.5f, 0.00000001f, z_rot, scale, 0, 0);
 #else	/* NEW_TEXTURES */
-	a=actors_list[add_enhanced_actor(this_actor, x*0.5f, y*0.5f, 0.00000001f, z_rot, scale, 0)];
+	index = add_enhanced_actor(this_actor, x*0.5f, y*0.5f, 0.00000001f, z_rot, scale, 0);
 #endif	/* NEW_TEXTURES */
+	a=actors_list[index];
 
 	a->x_tile_pos=x;
 	a->y_tile_pos=y;
@@ -1298,7 +1301,7 @@ actor * add_actor_interface(float x, float y, float z_rot, float scale, int acto
 
 	if (actors_defs[actor_type].coremodel!=NULL) {
 		a->calmodel = model_new(actor_type, a->actor_id, a->actor_name,
-		a->kind_of_actor, 1);
+		a->kind_of_actor, 1, &a->client_id);
 
 		if (a->calmodel!=NULL) {
 			//Setup cal3d model

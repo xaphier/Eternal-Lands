@@ -155,7 +155,7 @@ namespace eternal_lands
 
 		m_color_mask = color_mask;
 
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < color_mask.length(); ++i)
 		{
 			if (color_mask[i])
 			{
@@ -294,7 +294,7 @@ namespace eternal_lands
 
 		result = false;
 
-		for (i = 0; i < m_textures.size(); i++)
+		for (i = 0; i < m_textures.size(); ++i)
 		{
 			result |= unbind_texture(i);
 		}

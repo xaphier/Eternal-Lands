@@ -397,7 +397,7 @@ namespace eternal_lands
 
 				assert(element);
 
-				for (i = 0; i < get_count(); i++)
+				for (i = 0; i < get_count(); ++i)
 				{
 					if (get_element(i) == element)
 					{

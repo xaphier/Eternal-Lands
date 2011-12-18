@@ -74,9 +74,9 @@ namespace eternal_lands
 
 			index = 0;
 
-			for (i = 0; i < 4; i++)
+			for (i = 0; i < 4; ++i)
 			{
-				for (j = 0; j < 4; j++)
+				for (j = 0; j < 4; ++j)
 				{
 					value = boost::numeric_cast<float>(
 						(block.m_alphas[i] >> (j * 4)) & 0xF);
@@ -97,7 +97,7 @@ namespace eternal_lands
 
 			if (block.m_alphas[0] > block.m_alphas[1])
 			{
-				for (i = 0; i < 6; i++)
+				for (i = 0; i < 6; ++i)
 				{
 					alphas[i + 2] = (((6 - i) *
 						block.m_alphas[0]) +
@@ -111,7 +111,7 @@ namespace eternal_lands
 				// full range including extremes at [0] and [5]
 				// we want to fill in [1] through [4] at weights ranging
 				// from 1/5 to 4/5
-				for (i = 0; i < 4; i++)
+				for (i = 0; i < 4; ++i)
 				{
 					alphas[i + 2] = (((4 - i) *
 						block.m_alphas[0]) +
@@ -123,7 +123,7 @@ namespace eternal_lands
 				alphas[7] = 255.0f;
 			}
 
-			for (i = 0; i < 16; i++)
+			for (i = 0; i < 16; ++i)
 			{
 				idx0 = (i * 3) / 8;
 				idx1 = (i * 3) % 8;

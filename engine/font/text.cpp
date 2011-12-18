@@ -25,7 +25,7 @@ namespace eternal_lands
 
 		count = m_text.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			result += m_text[i].first;
 		}

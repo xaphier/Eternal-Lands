@@ -108,7 +108,7 @@ namespace eternal_lands
 
 			count = indices.size();
 
-			for (i = 0; i < count; i++)
+			for (i = 0; i < count; ++i)
 			{
 				index = indices[i];
 
@@ -142,11 +142,29 @@ namespace eternal_lands
 		{
 			Uint32Vector indices;
 			glm::mat4x3 world_matrix;
-			Uint32 i, count, min_vertex, max_vertex, size;
+			Uint32 count, min_vertex, max_vertex, size, offset;
+			bool triangles;
 
-			instancing_data.get_mesh_data_tool(
-				)->get_triangle_indices(sub_mesh_index, indices,
-				false);
+			triangles = instancing_data.get_mesh_data_tool(
+				)->get_primitive_type() != pt_triangles;
+
+			if (triangles)
+			{
+				count = instancing_data.get_mesh_data_tool(
+					)->get_sub_mesh_data(
+						sub_mesh_index).get_count();
+				offset = instancing_data.get_mesh_data_tool(
+					)->get_sub_mesh_data(
+						sub_mesh_index).get_offset();
+			}
+			else
+			{
+				instancing_data.get_mesh_data_tool(
+					)->get_triangle_indices(sub_mesh_index,
+						indices, false);
+				count = indices.size();
+				offset = 0;
+			}
 
 			min_vertex = instancing_data.get_mesh_data_tool(
 				)->get_sub_meshs(
@@ -164,40 +182,80 @@ namespace eternal_lands
 				mesh_data_tool.resize_vertices(size);
 			}
 
-			size = index_offset + indices.size();
+			size = index_offset + count;
 
 			if (mesh_data_tool.get_index_count() < size)
 			{
 				mesh_data_tool.resize_indices(size);
 			}
 
-			count = indices.size();
-
-			for (i = 0; i < count; i++)
+			if (triangles)
 			{
-				mesh_data_tool.set_index_data(index_offset,
-					indices[i] - min_vertex +
-						vertex_offset);
-
-				index_offset++;
+				mesh_data_tool.set_indices(
+					instancing_data.get_mesh_data_tool(
+						)->get_indices(),
+					offset, index_offset, count,
+					vertex_offset - min_vertex);
 			}
+			else
+			{
+				mesh_data_tool.set_indices(indices,
+					offset, index_offset, count,
+					vertex_offset - min_vertex);
+			}
+
+			index_offset += count;
 
 			count = max_vertex - min_vertex + 1;
 
 			world_matrix = instancing_data.get_world_matrix();
 			world_matrix[3] -= center;
 
-			for (i = 0; i < count; i++)
-			{
-				add_vertex(mesh_data_tool,
-					instancing_data.get_mesh_data_tool(),
-					world_matrix,
-					instancing_data.get_color(),
-					i + min_vertex, vertex_offset, min, max,
-					layer_index);
+			mesh_data_tool.transform_vertics(
+				*instancing_data.get_mesh_data_tool(),
+				vst_position, min_vertex, vertex_offset, count,
+				world_matrix);
 
-				vertex_offset++;
-			}
+			mesh_data_tool.transform_vertics(
+				*instancing_data.get_mesh_data_tool(),
+				vst_normal, min_vertex, vertex_offset, count,
+				glm::mat3x3(world_matrix));
+
+			mesh_data_tool.transform_vertics(
+				*instancing_data.get_mesh_data_tool(),
+				vst_tangent, min_vertex, vertex_offset, count,
+				glm::mat3x3(world_matrix));
+
+			mesh_data_tool.copy_vertics(
+				*instancing_data.get_mesh_data_tool(),
+				vst_texture_coordinate_0, min_vertex,
+				vertex_offset, count);
+
+			mesh_data_tool.copy_vertics(
+				*instancing_data.get_mesh_data_tool(),
+				vst_color, min_vertex, vertex_offset, count);
+
+			mesh_data_tool.fill_vertics(vst_layer_index,
+				vertex_offset, count, layer_index);
+
+			vertex_offset += count;
+
+			glm::vec3 tmin, tmax;
+
+			tmin = instancing_data.get_mesh_data_tool(
+				)->get_sub_meshs(
+					)[sub_mesh_index].get_bounding_box(
+						).get_min();
+			tmax = instancing_data.get_mesh_data_tool(
+				)->get_sub_meshs(
+					)[sub_mesh_index].get_bounding_box(
+						).get_max();
+
+			tmin = world_matrix * glm::vec4(tmin, 1.0f);
+			tmax = world_matrix * glm::vec4(tmax, 1.0f);
+
+			min = glm::min(min, glm::min(tmin, tmax));
+			max = glm::max(max, glm::max(tmin, tmax));
 		}
 
 		bool get_material_index(const MaterialDescription &material,
@@ -247,12 +305,9 @@ namespace eternal_lands
 	}
 
 	InstanceBuilder::InstanceBuilder(
-		const TextureCacheSharedPtr &texture_cache,
-		InstancingDataVector &instancing_datas, const Uint32 id):
-		m_texture_cache(texture_cache),
+		const InstancingDataVector &instancing_datas, const Uint32 id):
 		m_instancing_datas(instancing_datas), m_id(id)
 	{
-		assert(m_texture_cache.get() != 0);
 		assert(get_instancing_datas().size() > 1);
 	}
 
@@ -269,7 +324,7 @@ namespace eternal_lands
 
 		bounding_box = get_instancing_data(0).get_bounding_box();
 
-		for (i = 1; i < get_instancing_datas().size(); i++)
+		for (i = 1; i < get_instancing_datas().size(); ++i)
 		{
 			bounding_box.merge(
 				get_instancing_data(i).get_bounding_box());
@@ -303,7 +358,7 @@ namespace eternal_lands
 				instancing_data.get_selection());
 			sub_object.set_id(instancing_data.get_id());
 
-			for (i = 0; i < count; i++)
+			for (i = 0; i < count; ++i)
 			{
 				offset = index_offset;
 				min_vertex = vertex_offset;
@@ -353,7 +408,7 @@ namespace eternal_lands
 
 		selection = st_none;
 
-		BOOST_FOREACH(InstancingData &instancing_data,
+		BOOST_FOREACH(const InstancingData &instancing_data,
 			get_instancing_datas())
 		{
 			if (instancing_data.get_selection() != st_none)
@@ -364,9 +419,6 @@ namespace eternal_lands
 			mesh_data_tool = instancing_data.get_mesh_data_tool();
 			index_count += mesh_data_tool->get_index_count();
 			vertex_count += mesh_data_tool->get_vertex_count();
-
-			instancing_data.build_layer_indices(
-				get_texture_cache());
 
 			BOOST_FOREACH(const MaterialDescription &material,
 				instancing_data.get_materials())

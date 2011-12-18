@@ -163,7 +163,7 @@ namespace
 				UTF8("Got %d arguments expected 0"), n); 
 		}
 
-		scene->get_scene_resources().get_effect_cache().reload();
+		scene->get_scene_resources().get_effect_cache()->reload();
 
 		return 0;
 	}
@@ -180,10 +180,10 @@ namespace
 				UTF8("Got %d arguments expected 0"), n); 
 		}
 
-		scene->get_scene_resources().get_shader_source_builder().load(
+		scene->get_scene_resources().get_shader_source_builder()->load(
 			el::String(UTF8("shaders/shaders.lua")));
 		scene->get_scene_resources().get_shader_source_builder(
-			).load_default(el::String(UTF8("shaders/shaders.lua")));
+			)->load_default(el::String(UTF8("shaders/shaders.lua")));
 
 		return 0;
 	}
@@ -449,7 +449,7 @@ extern "C" void init_engine()
 	lua_setfield(lua->get(), -2, "__index");
 
 	scene.reset(new el::Scene(global_vars, file_system));
-	scene->init();
+	scene->init(file_system);
 
 	CHECK_GL_ERROR();
 #ifdef	USE_GL_DEBUG_OUTPUT
@@ -481,8 +481,7 @@ extern "C" void load_map_engine(const char* name, const float r, const float g,
 		glm::vec3(r, g, b), dungeon != 0);
 
 	instances_builder.reset(new el::InstancesBuilder(
-		scene->get_scene_resources().get_mesh_data_cache_ptr(),
-		scene->get_scene_resources().get_texture_cache_ptr()));
+		scene->get_scene_resources().get_mesh_data_cache()));
 
 	CHECK_GL_ERROR();
 
@@ -759,6 +758,15 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 		}
 	}
 
+	if (global_vars->get_opengl_3_0())
+	{
+		BOOST_FOREACH(el::MaterialDescription &material, materials)
+		{
+			material.build_layer_index(scene->get_scene_resources(
+				).get_texture_array_cache());
+		}
+	}
+
 	instances_builder->add(el::ObjectData(glm::mat4x3(matrix),
 		glm::vec4(0.0f), el::String(UTF8("plane_4")), 0.0f,
 		free_ids.get_next_free_id(), el::st_none, false), materials);
@@ -871,7 +879,7 @@ extern "C" void build_buffers(actor_types* a)
 {
 	TRY_BLOCK
 
-	scene->get_scene_resources().get_actor_data_cache().add_actor(
+	scene->get_scene_resources().get_actor_data_cache()->add_actor(
 		a->actor_type, a->coremodel, 
 		el::String(el::utf8_to_string(a->actor_name)),
 		el::String(el::utf8_to_string(a->skin_name)),
@@ -889,7 +897,7 @@ extern "C" void build_buffers(actor_types* a)
 extern "C" void set_transformation_buffers(actor* actor)
 {
 	glm::mat4 matrix;
-	glm::vec3 offset;
+	glm::vec3 offset, attachment_shift;
 
 	TRY_BLOCK
 
@@ -909,17 +917,18 @@ extern "C" void set_transformation_buffers(actor* actor)
 
 	if (actor->attached_actor >= 0)
 	{
-		offset.x += actor->attachment_shift[0];
-		offset.y += actor->attachment_shift[1];
-		offset.z += actor->attachment_shift[2];
+		attachment_shift.x = actor->attachment_shift[0];
+		attachment_shift.y = actor->attachment_shift[1];
+		attachment_shift.z = actor->attachment_shift[2];
 	}
 
-	matrix = glm::rotate(180.0f - actor->z_rot, glm::vec3(0.0f, 0.0f, 1.0f));
+	matrix = glm::translate(offset);
+	matrix = glm::rotate(matrix, 180.0f - actor->z_rot, glm::vec3(0.0f, 0.0f, 1.0f));
 	matrix = glm::rotate(matrix, actor->x_rot, glm::vec3(1.0f, 0.0f, 0.0f));
 	matrix = glm::rotate(matrix, actor->y_rot, glm::vec3(0.0f, 1.0f, 0.0f));
+	matrix = glm::translate(matrix, attachment_shift);
 	matrix = glm::scale(matrix, glm::vec3(actors_defs[actor->actor_type].actor_scale));
 	matrix = glm::scale(matrix, glm::vec3(actor->scale));
-	matrix[3] = glm::vec4(offset, 1.0f);
 
 	reinterpret_cast<el::Actor*>(actor->calmodel->getUserData(
 		))->update_bones();
@@ -956,9 +965,11 @@ extern "C" void build_actor_bounding_box(actor* a)
 	CATCH_BLOCK
 }
 
+static Uint64 client_ids = 0;
+
 extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 	const char* name, const Uint32 kind_of_actor,
-	const Uint32 enhanced_actor)
+	const Uint32 enhanced_actor, Uint32* client_id)
 {
 	CalModel* result;
 	el::ActorSharedPtr actor;
@@ -990,7 +1001,11 @@ extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 		}
 	}
 
-	source = name;
+	if (name != 0)
+	{
+		source = name;
+	}
+
 	count = source.length();
 
 	for (i = 0; i < count; i++)
@@ -1001,7 +1016,9 @@ extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 		}
 	}
 
-	actor = scene->add_actor(type_id, id,
+	*client_id = client_ids++;
+
+	actor = scene->add_actor(type_id, id, *client_id,
 		el::String(el::utf8_to_string(dest)), selection,
 		enhanced_actor != 0);
 
@@ -1017,9 +1034,9 @@ extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 	return result;
 }
 
-extern "C" void model_delete(const Uint32 id)
+extern "C" void model_delete(const Uint32 client_id)
 {
-	scene->remove_actor(id);
+	scene->remove_actor(client_id);
 }
 
 extern "C" void model_attach_mesh(actor *act, int mesh_id)
@@ -1316,7 +1333,7 @@ extern "C" void set_shadow_map_count(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache().reload();
+		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->shadow_map_change();
 	}
 }
@@ -1350,16 +1367,16 @@ extern "C" void set_exponential_shadow_maps(const int value)
 		if (value != 0)
 		{
 			scene->get_scene_resources().get_shader_source_builder(
-				).set_shadow_map_type(el::String(UTF8("esm")));
+				)->set_shadow_map_type(el::String(UTF8("esm")));
 		}
 		else
 		{
 			scene->get_scene_resources().get_shader_source_builder(
-				).set_shadow_map_type(el::String(
+				)->set_shadow_map_type(el::String(
 					UTF8("default")));
 		}
 
-		scene->get_scene_resources().get_effect_cache().reload();
+		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->shadow_map_change();
 	}
 }
@@ -1370,7 +1387,7 @@ extern "C" void set_fog(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache().reload();
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 
@@ -1380,7 +1397,7 @@ extern "C" void set_msaa_shadows(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache().reload();
+		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->shadow_map_change();
 	}
 }
@@ -1391,7 +1408,7 @@ extern "C" void set_alpha_to_coverage(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache().reload();
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 
@@ -1401,7 +1418,7 @@ extern "C" void set_filter_shadow_map(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache().reload();
+		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->shadow_map_change();
 	}
 }
@@ -1412,7 +1429,7 @@ extern "C" void set_optmize_shader_source(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache().reload();
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 

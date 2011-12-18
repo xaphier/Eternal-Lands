@@ -15,6 +15,8 @@
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
 #include "globalvars.hpp"
+#include "texturearray.hpp"
+#include "texturearraycache.hpp"
 
 namespace eternal_lands
 {
@@ -180,26 +182,27 @@ namespace eternal_lands
 
 	}
 
-	class TextureCache::TextureArrayItem
+	class TextureCache::TextureArrayLayer
 	{
 		private:
 			TextureSharedPtr m_texture;
 			Uint16 m_layer;
 
 		public:
-			inline TextureArrayItem():
+			inline TextureArrayLayer():
 				m_layer(std::numeric_limits<Uint16>::max())
 			{
 			}
 
-			inline TextureArrayItem(const TextureSharedPtr &texture,
+			inline TextureArrayLayer(
+				const TextureSharedPtr &texture,
 				const Uint16 layer): m_texture(texture),
 				m_layer(layer)
 			{
 				assert(texture.get() != 0);
 			}
 
-			inline ~TextureArrayItem() throw()
+			inline ~TextureArrayLayer() throw()
 			{
 			}
 
@@ -216,12 +219,15 @@ namespace eternal_lands
 	};
 
 	TextureCache::TextureCache(const CodecManagerWeakPtr &codec_manager,
+		const TextureArrayCacheWeakPtr &texture_array_cache,
 		const FileSystemWeakPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
-		m_codec_manager(codec_manager), m_file_system(file_system),
-		m_global_vars(global_vars)
+		m_codec_manager(codec_manager),
+		m_texture_array_cache(texture_array_cache),
+		m_file_system(file_system), m_global_vars(global_vars)
 	{
 		assert(!m_codec_manager.expired());
+		assert(!m_texture_array_cache.expired());
 		assert(!m_file_system.expired());
 		assert(m_global_vars.get() != 0);
 	}
@@ -274,9 +280,7 @@ namespace eternal_lands
 		return texture;
 	}
 
-	TextureSharedPtr TextureCache::load_texture_array(const String &name,
-		const Uint32 width, const Uint32 height, const Uint16 mipmaps,
-		const TextureFormatType format, const StringVector &file_names)
+	TextureSharedPtr TextureCache::load(const TextureArray &texture_array)
 		const
 	{
 		ImageSharedPtrVector images;
@@ -291,7 +295,8 @@ namespace eternal_lands
 
 		compressions.insert(ict_rgtc);
 
-		BOOST_FOREACH(const String &file_name, file_names)
+		BOOST_FOREACH(const String &file_name,
+			texture_array.get_file_names())
 		{
 			reader = get_file_system()->get_file(file_name);
 
@@ -299,45 +304,45 @@ namespace eternal_lands
 				reader, compressions));
 		}
 
-		texture = boost::make_shared<Texture>(name);
+		texture = boost::make_shared<Texture>(texture_array.get_name());
 		texture->set_target(ttt_2d_texture_array);
-		texture->set_format(format);
-		texture->set_width(width);
-		texture->set_height(height);
-		texture->set_images(mipmaps, images);
+		texture->set_format(texture_array.get_format());
+		texture->set_width(texture_array.get_width());
+		texture->set_height(texture_array.get_height());
+		texture->set_images(texture_array.get_mipmaps(), images);
 
 		return texture;
 	}
 
-	void TextureCache::add_texture_array(const String &name,
-		const Uint32 width, const Uint32 height, const Uint16 mipmaps,
-		const TextureFormatType format, const StringVector &file_names)
+	void TextureCache::add(const TextureArray &array)
 	{
 		TextureSharedPtr texture;
 		String index;
-		Uint16 i, count;
+		Uint16 layer;
 
 		if (!get_global_vars()->get_opengl_3_0())
 		{
 			return;
 		}
 
-		texture = load_texture_array(name, width, height, mipmaps,
-			format, file_names);
-
-		count = file_names.size();
+		texture = load(array);
 
 		assert(texture.get() != 0);
-		assert(name == texture->get_name());
+		assert(array.get_name() == texture->get_name());
 
-		m_texture_cache[name] = texture;
+		m_texture_cache[array.get_name()] = texture;
 
-		for (i = 0; i < count; i++)
+		layer = 0;
+
+		BOOST_FOREACH(const String &file_name, array.get_file_names())
 		{
 			index = FileSystem::get_file_name_without_extension(
-				file_names[i]);
+				file_name);
 
-			m_texture_arrays[index] = TextureArrayItem(texture, i);
+			m_texture_arrays[index] = TextureArrayLayer(texture,
+				layer);
+
+			++layer;
 		}
 	}
 
@@ -384,10 +389,10 @@ namespace eternal_lands
 		}
 	}
 
-	const TextureSharedPtr &TextureCache::get_texture_array(
+	const TextureSharedPtr &TextureCache::get_texture(
 		const String &name, float &layer)
 	{
-		TextureArrayMap::const_iterator found;
+		StringTextureArrayLayerMap::const_iterator found;
 		String index;
 
 		index = FileSystem::get_file_name_without_extension(name);
@@ -401,178 +406,16 @@ namespace eternal_lands
 			return found->second.get_texture();
 		}
 
-		layer = 0;
-
 		return get_texture(name);
 	}
 
-	bool TextureCache::get_texture_array(const String &name,
-		TextureSharedPtr &texture, float &layer) const
+	void TextureCache::add_texture_arrays()
 	{
-		TextureArrayMap::const_iterator found;
-		String index;
-
-		index = FileSystem::get_file_name_without_extension(name);
-
-		found = m_texture_arrays.find(index);
-
-		if (found == m_texture_arrays.end())
+		BOOST_FOREACH(const TextureArray &array,
+			get_texture_array_cache()->get_texture_arrays())
 		{
-			return false;
+			add(array);
 		}
-
-		layer = found->second.get_layer();
-
-		texture = found->second.get_texture();
-
-		return true;
-	}
-
-	bool TextureCache::get_texture_array_name(const String &name,
-		String &array_name, float &layer) const
-	{
-		TextureArrayMap::const_iterator found;
-		String index;
-
-		index = FileSystem::get_file_name_without_extension(name);
-
-		found = m_texture_arrays.find(index);
-
-		if (found != m_texture_arrays.end())
-		{
-			layer = found->second.get_layer();
-			array_name = found->second.get_texture()->get_name();
-
-			return true;
-		}
-
-		return false;
-	}
-
-	Uint16 TextureCache::get_texture_array_layer(const String &name) const
-	{
-		TextureArrayMap::const_iterator found;
-		String index;
-
-		index = FileSystem::get_file_name_without_extension(name);
-
-		found = m_texture_arrays.find(index);
-
-		if (found != m_texture_arrays.end())
-		{
-			return found->second.get_layer();
-		}
-
-		return 0;
-	}
-
-	void TextureCache::load_texture_array_xml(const xmlNodePtr node)
-	{
-		String name;
-		StringVector file_names;
-		xmlNodePtr it;
-		Uint32 width, height;
-		Uint16 mipmaps;
-		TextureFormatType format;
-
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("texture_array")) != 0)
-		{
-			return;
-		}
-
-		if (!XmlUtil::has_children(node, true))
-		{
-			return;
-		}
-
-		it = XmlUtil::children(node, true);
-
-		width = 0;
-		height = 0;
-		mipmaps = 0;
-		format = tft_rgba8;
-
-		do
-		{
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
-			{
-				name = XmlUtil::get_string_value(it);
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("width")) == 0)
-			{
-				width = XmlUtil::get_uint32_value(it);
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("height")) == 0)
-			{
-				height = XmlUtil::get_uint32_value(it);
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("mipmaps")) == 0)
-			{
-				mipmaps = XmlUtil::get_uint16_value(it);
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("format")) == 0)
-			{
-				format = TextureFormatUtil::get_texture_format(
-					XmlUtil::get_string_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("file_names"))
-				== 0)
-			{
-				file_names = load_file_names_xml(it);
-			}
-		}
-		while (XmlUtil::next(it, true));
-
-		add_texture_array(name, width, height, mipmaps,	format,
-			file_names);
-	}
-
-	void TextureCache::load_xml(const xmlNodePtr node)
-	{
-		xmlNodePtr it;
-
-		if (node == 0)
-		{
-			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_message(UTF8("parameter is zero"))
-				<< errinfo_parameter_name(UTF8("node")));
-		}
-
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("texture_arrays")) != 0)
-		{
-			return;
-		}
-
-		it = XmlUtil::children(node, true);
-
-		do
-		{
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("texture_array"))
-				== 0)
-			{
-				load_texture_array_xml(it);
-			}
-		}
-		while (XmlUtil::next(it, true));
-	}
-
-	void TextureCache::load_xml(const String &file_name)
-	{
-		XmlReaderSharedPtr reader;
-
-		if (!get_file_system()->get_file_readable(file_name))
-		{
-			return;
-		}
-
-		reader = XmlReaderSharedPtr(new XmlReader(file_name));
-
-		load_xml(reader->get_root_node());
 	}
 
 }

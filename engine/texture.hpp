@@ -435,8 +435,8 @@ namespace eternal_lands
 				const Uint32Array3 &size);
 			void init(const Uint32 width, const Uint32 height,
 				const Uint32 depth, const Uint16 mipmaps);
-			void attach(const GLenum attachment,
-				const Uint32 level);
+			void attach_ext(const GLenum attachment,
+				const Uint32 level, const Uint32 layer);
 			void attach(const GLenum attachment, const Uint32 level,
 				const Uint32 layer);
 			void attach(const GLenum attachment,

@@ -34,6 +34,7 @@ namespace eternal_lands
 			ActorDataCacheSharedPtr m_actor_data_cache;
 			ShaderSourceBuilderSharedPtr m_shader_source_builder;
 			FrameBufferBuilderSharedPtr m_framebuffer_builder;
+			TextureArrayCacheSharedPtr m_texture_array_cache;
 			boost::scoped_ptr<Filter> m_filter;
 
 		public:
@@ -41,100 +42,65 @@ namespace eternal_lands
 				const FileSystemWeakPtr &file_system);
 			~SceneResources() throw();
 			void clear();
-			void init();
+			void init(const FileSystemSharedPtr &file_system);
 
-			inline MeshBuilder &get_mesh_builder()
-			{
-				return *get_mesh_builder_ptr();
-			}
-
-			inline MeshCache &get_mesh_cache()
-			{
-				return *get_mesh_cache_ptr();
-			}
-
-			inline EffectCache &get_effect_cache()
-			{
-				return *get_effect_cache_ptr();
-			}
-
-			inline TextureCache &get_texture_cache()
-			{
-				return *get_texture_cache_ptr();
-			}
-
-			inline CodecManager &get_codec_manager()
-			{
-				return *get_codec_manager_ptr();
-			}
-
-			inline MeshDataCache &get_mesh_data_cache()
-			{
-				return *get_mesh_data_cache_ptr();
-			}
-
-			inline ActorDataCache &get_actor_data_cache()
-			{
-				return *get_actor_data_cache_ptr();
-			}
-
-			inline ShaderSourceBuilder &get_shader_source_builder()
-			{
-				return *get_shader_source_builder_ptr();
-			}
-
-			inline FrameBufferBuilder &get_framebuffer_builder()
-			{
-				return *get_framebuffer_builder_ptr();
-			}
-
-			inline MeshBuilderSharedPtr &get_mesh_builder_ptr()
+			inline const MeshBuilderSharedPtr &get_mesh_builder()
+				const
 			{
 				return m_mesh_builder;
 			}
 
-			inline MeshCacheSharedPtr &get_mesh_cache_ptr()
+			inline const MeshCacheSharedPtr &get_mesh_cache() const
 			{
 				return m_mesh_cache;
 			}
 
-			inline EffectCacheSharedPtr &get_effect_cache_ptr()
+			inline const EffectCacheSharedPtr &get_effect_cache()
+				const
 			{
 				return m_effect_cache;
 			}
 
-			inline TextureCacheSharedPtr &get_texture_cache_ptr()
+			inline const TextureCacheSharedPtr &get_texture_cache()
+				const
 			{
 				return m_texture_cache;
 			}
 
-			inline CodecManagerSharedPtr &get_codec_manager_ptr()
+			inline const CodecManagerSharedPtr &get_codec_manager()
+				const
 			{
 				return m_codec_manager;
 			}
 
-			inline MeshDataCacheSharedPtr
-				&get_mesh_data_cache_ptr()
+			inline const MeshDataCacheSharedPtr
+				&get_mesh_data_cache() const
 			{
 				return m_mesh_data_cache;
 			}
 
-			inline ActorDataCacheSharedPtr
-				&get_actor_data_cache_ptr()
+			inline const ActorDataCacheSharedPtr
+				&get_actor_data_cache() const
 			{
 				return m_actor_data_cache;
 			}
 
-			inline ShaderSourceBuilderSharedPtr
-				&get_shader_source_builder_ptr()
+			inline const ShaderSourceBuilderSharedPtr
+				&get_shader_source_builder() const
 			{
 				return m_shader_source_builder;
 			}
 
-			inline FrameBufferBuilderSharedPtr
-				&get_framebuffer_builder_ptr()
+			inline const FrameBufferBuilderSharedPtr
+				&get_framebuffer_builder() const
 			{
 				return m_framebuffer_builder;
+			}
+
+			inline const TextureArrayCacheSharedPtr
+				&get_texture_array_cache() const
+			{
+				return m_texture_array_cache;
 			}
 
 			inline Filter &get_filter() const

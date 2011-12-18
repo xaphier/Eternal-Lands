@@ -81,13 +81,13 @@ namespace eternal_lands
 
 			bounding_box = split_data[0]->get_bounding_box();
 
-			for (i = 1; i < min_index; i++)
+			for (i = 1; i < min_index; ++i)
 			{
 				bounding_box.merge(
 					split_data[i]->get_bounding_box());
 			}
 
-			for (i = min_index; i < max_index; i++)
+			for (i = min_index; i < max_index; ++i)
 			{
 				margin_value += bounding_box.get_margin();
 
@@ -97,7 +97,7 @@ namespace eternal_lands
 
 			bounding_box = split_data[size - 1]->get_bounding_box();
 
-			for (i = max_index; i < (size - 1); i++)
+			for (i = max_index; i < (size - 1); ++i)
 			{
 				bounding_box.merge(
 					split_data[i]->get_bounding_box());
@@ -158,7 +158,7 @@ namespace eternal_lands
 
 			bounding_box_min = split_data[0]->get_bounding_box();
 
-			for (i = 1; i < min_index; i++)
+			for (i = 1; i < min_index; ++i)
 			{
 				bounding_box_min.merge(
 					split_data[i]->get_bounding_box());
@@ -167,13 +167,13 @@ namespace eternal_lands
 			bounding_box_max =
 				split_data[size - 1]->get_bounding_box();
 
-			for (i = max_index; i < (size - 1); i++)
+			for (i = max_index; i < (size - 1); ++i)
 			{
 				bounding_box_max.merge(
 					split_data[i]->get_bounding_box());
 			}
 
-			for (i = min_index; i < max_index; i++)
+			for (i = min_index; i < max_index; ++i)
 			{
 				bounding_box = bounding_box_max;
 
@@ -248,7 +248,7 @@ namespace eternal_lands
 
 		if (get_leaf())
 		{
-			for (i = 0; i < get_count(); i++)
+			for (i = 0; i < get_count(); ++i)
 			{
 				visitor(get_element(i), sub_frustums_mask);
 			}
@@ -256,7 +256,7 @@ namespace eternal_lands
 			return;
 		}
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			get_node(i)->add_node(sub_frustums_mask, visitor);
 		}
@@ -289,7 +289,7 @@ namespace eternal_lands
 
 		assert(get_leaf());
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			sub_frustums_mask = frustum.intersect_sub_frustums(
 				get_element_bounding_box(i), in_mask);
@@ -314,7 +314,7 @@ namespace eternal_lands
 			return;
 		}
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			result = frustum.intersect(get_element_bounding_box(i),
 				mask, out_mask);
@@ -353,7 +353,7 @@ namespace eternal_lands
 
 		count = 0;
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			count += get_node(i)->get_item_count();
 		}
@@ -384,7 +384,7 @@ namespace eternal_lands
 
 		path_buffer.push(get_shared_from_this());
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			if (get_element_bounding_box(i).contains(
 				element->get_bounding_box()))
@@ -446,7 +446,7 @@ namespace eternal_lands
 			return add_element(element);
 		}
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			if (get_element_bounding_box(i).contains(
 				element->get_bounding_box()))
@@ -475,7 +475,7 @@ namespace eternal_lands
 
 		index = std::numeric_limits<Uint32>::max();
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			tmp_bounding_box = enclose(bounding_box,
 				get_element_bounding_box(i));
@@ -516,7 +516,7 @@ namespace eternal_lands
 
 		index = std::numeric_limits<Uint32>::max();
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			enlargement = get_element_bounding_box(i).enlargement(
 				bounding_box);
@@ -541,7 +541,7 @@ namespace eternal_lands
 		min = get_element_bounding_box(0).get_min();
 		max = get_element_bounding_box(0).get_max();
 
-		for (i = 1; i < get_count(); i++)
+		for (i = 1; i < get_count(); ++i)
 		{
 			min = glm::min(min,
 				get_element_bounding_box(i).get_min());
@@ -605,14 +605,14 @@ namespace eternal_lands
 
 		clear();
 
-		for (i = 0; i < split_point; i++)
+		for (i = 0; i < split_point; ++i)
 		{
 			new_node->add_element(split_data[i]);
 		}
 
 		assert(new_node->get_count() > 0);
 
-		for (i = split_point; i < new_size; i++)
+		for (i = split_point; i < new_size; ++i)
 		{
 			add_element(split_data[i]);
 		}
@@ -665,7 +665,7 @@ namespace eternal_lands
 
 				adjust_tree(path_buffer);
 
-				for (i = 0; i < reinsert.size(); i++)
+				for (i = 0; i < reinsert.size(); ++i)
 				{
 					tree->add_data(reinsert[i],
 						get_level(), oft);
@@ -741,7 +741,7 @@ namespace eternal_lands
 
 		path_buffer.push(get_shared_from_this());
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			found = get_node(i)->find_small_leaf(minimum_load,
 				path_buffer);
@@ -825,12 +825,12 @@ namespace eternal_lands
 
 		reinsert.reserve(reinsert_count + 1);
 
-		for (i = 0; i < reinsert_count; i++)
+		for (i = 0; i < reinsert_count; ++i)
 		{
 			reinsert.push_back(get_element(i));
 		}
 
-		for (i = 0; i < reinsert_count; i++)
+		for (i = 0; i < reinsert_count; ++i)
 		{
 			assert(get_index(reinsert[i]) == i);
 			remove_element(i);
@@ -861,7 +861,7 @@ namespace eternal_lands
 
 		result = get_count();
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			result += get_node(i)->get_sub_nodes_count();
 		}
@@ -888,7 +888,7 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
-		for (i = 0; i < get_count(); i++)
+		for (i = 0; i < get_count(); ++i)
 		{
 			if (!get_bounding_box().contains(
 				get_element_bounding_box(i)))

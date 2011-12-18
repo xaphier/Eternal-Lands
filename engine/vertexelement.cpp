@@ -220,6 +220,7 @@ namespace eternal_lands
 	VertexElement::VertexElement(const VertexSemanticType semantic,
 		const VertexElementType type, const Uint16 offset):
 		m_semantic(semantic), m_type(type),
+		m_pack_format(get_pack_format(type)),
 		m_gl_type(get_gl_type(type)), m_offset(offset),
 		m_count(get_count(type)), m_size(get_size(type)),
 		m_gl_normalized(get_gl_normalized(type))
@@ -271,7 +272,7 @@ namespace eternal_lands
 		Uint32 i;
 		VertexElementType vertex_element;
 
-		for (i = 0; i < vertex_element_type_datas_count; i++)
+		for (i = 0; i < vertex_element_type_datas_count; ++i)
 		{
 			vertex_element = static_cast<VertexElementType>(i);
 
@@ -293,7 +294,7 @@ namespace eternal_lands
 		Uint32 i;
 		VertexSemanticType vertex_semantic_type;
 
-		for (i = 0; i < vertex_semantic_type_names_count; i++)
+		for (i = 0; i < vertex_semantic_type_names_count; ++i)
 		{
 			vertex_semantic_type =
 				static_cast<VertexSemanticType>(i);
@@ -316,7 +317,7 @@ namespace eternal_lands
 		Uint32 i;
 		VertexSemanticType vertex_semantic_type;
 
-		for (i = 0; i < vertex_semantic_type_names_count; i++)
+		for (i = 0; i < vertex_semantic_type_names_count; ++i)
 		{
 			vertex_semantic_type =
 				static_cast<VertexSemanticType>(i);

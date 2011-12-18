@@ -30,19 +30,21 @@ namespace eternal_lands
 
 		if (TextureFormatUtil::get_depth(format))
 		{
-			get_texture()->attach(GL_DEPTH_ATTACHMENT_EXT, 0, 0);
+			get_texture()->attach_ext(GL_DEPTH_ATTACHMENT_EXT, 0,
+				0);
 
 			if (TextureFormatUtil::get_stencil(format))
 			{
-				get_texture()->attach(GL_STENCIL_ATTACHMENT_EXT,
-					0, 0);
+				get_texture()->attach_ext(
+					GL_STENCIL_ATTACHMENT_EXT, 0, 0);
 			}
 
 			glDrawBuffer(GL_NONE);
 		}
 		else
 		{
-			get_texture()->attach(GL_COLOR_ATTACHMENT0_EXT, 0, 0);
+			get_texture()->attach_ext(GL_COLOR_ATTACHMENT0_EXT, 0,
+				0);
 
 			if (GLEW_EXT_packed_depth_stencil)
 			{

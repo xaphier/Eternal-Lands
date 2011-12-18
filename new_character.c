@@ -187,12 +187,13 @@ void change_actor ()
 	// We only need to reload the core model, and attach all the correct mesh types.
 	if (our_actor.our_model){
 		if(our_actor.our_model->calmodel!=NULL)
-			model_delete(our_actor.our_model->actor_id);
+			model_delete(our_actor.our_model->client_id);
 		
 		our_actor.our_model->calmodel = model_new(our_actor.race,
 			our_actor.our_model->actor_id,
 			our_actor.our_model->actor_name,
-			our_actor.our_model->kind_of_actor, 1);
+			our_actor.our_model->kind_of_actor, 1,
+			&our_actor.our_model->client_id);
 		our_actor.our_model->actor_type = our_actor.race;
 			
 		// Attach the Meshes.

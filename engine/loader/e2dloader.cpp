@@ -333,7 +333,7 @@ namespace eternal_lands
 
 		load_vertex_data(mesh_data_tool, texture_coordinates, size);
 
-		for (i = 0; i < index_count; i++)
+		for (i = 0; i < index_count; ++i)
 		{
 			mesh_data_tool->set_index_data(i, indices[i]);
 		}

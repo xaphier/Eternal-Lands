@@ -1133,7 +1133,7 @@ namespace eternal_lands
 			}
 		}
 
-		for (i = 0; i < layer; i++)
+		for (i = 0; i < layer; ++i)
 		{
 			w = get_width();
 			h = get_height();
@@ -1370,30 +1370,37 @@ namespace eternal_lands
 		CHECK_GL_ERROR();
 	}
 
-	void Texture::attach(const GLenum attachment, const Uint32 level)
+	void Texture::attach_ext(const GLenum attachment, const Uint32 level,
+		const Uint32 layer)
 	{
 		CHECK_GL_ERROR();
 
 		switch (get_target())
 		{
 			case ttt_1d_texture:
-				glFramebufferTexture1D(GL_FRAMEBUFFER,
+				glFramebufferTexture1DEXT(GL_FRAMEBUFFER_EXT,
 					attachment, get_target(),
 					get_texture_id(), level);
 				CHECK_GL_ERROR();
 				break;
 			case ttt_2d_texture:
 			case ttt_texture_rectangle:
-				glFramebufferTexture2D(GL_FRAMEBUFFER,
+				glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
 					attachment, get_target(),
 					get_texture_id(), level);
 				CHECK_GL_ERROR();
 				break;
 			case ttt_3d_texture:
-			case ttt_2d_texture_array:
+				glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT,
+					attachment, get_target(),
+					get_texture_id(), level, layer);
+				CHECK_GL_ERROR();
+				break;
 			case ttt_1d_texture_array:
+			case ttt_2d_texture_array:
 			case ttt_cube_map_texture:
 			case ttt_cube_map_texture_array:
+			default:
 				assert(false);
 				CHECK_GL_ERROR();
 				break;

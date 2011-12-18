@@ -1687,7 +1687,7 @@ namespace eternal_lands
 
 		glGetProgramiv(m_program, GL_ACTIVE_UNIFORMS, &count);
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			type = 0;
 			length = 0;
@@ -1750,7 +1750,7 @@ namespace eternal_lands
 
 		glGetProgramiv(m_program, GL_ACTIVE_ATTRIBUTES, &count);
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			type = 0;
 			length = 0;

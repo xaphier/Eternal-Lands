@@ -36,7 +36,6 @@ namespace eternal_lands
 			Sint16Sint16PairInstancingDataVectorMap
 				m_instancing_datas;
 			const MeshDataCacheWeakPtr m_mesh_data_cache;
-			const TextureCacheWeakPtr m_texture_cache;
 			const float m_max_size;
 
 			inline MeshDataCacheSharedPtr get_mesh_data_cache()
@@ -51,18 +50,6 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline TextureCacheSharedPtr get_texture_cache()
-				const
-			{
-				TextureCacheSharedPtr result;
-
-				result = m_texture_cache.lock();
-
-				assert(result.get() != 0);
-
-				return result;
-			}
-
 			void do_add(const InstancingData &instancing_data);
 
 		public:
@@ -71,7 +58,6 @@ namespace eternal_lands
 			 */
 			InstancesBuilder(
 				const MeshDataCacheWeakPtr &mesh_data_cache,
-				const TextureCacheWeakPtr &texture_cache,
 				const float max_size = 16.0f);
 
 			/**

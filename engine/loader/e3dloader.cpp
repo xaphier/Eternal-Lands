@@ -110,7 +110,7 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
-		for (i = 0; i < 4; i++)
+		for (i = 0; i < 4; ++i)
 		{
 			if (id[i] != e3d_magic_number[i])
 			{
@@ -220,7 +220,7 @@ namespace eternal_lands
 		uv = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		extra_uv = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-		for (i = 0; i < vertex_count; i++)
+		for (i = 0; i < vertex_count; ++i)
 		{
 			m_reader->set_position(vertex_offset + i * vertex_size);
 
@@ -336,7 +336,7 @@ namespace eternal_lands
 
 		m_reader->set_position(index_offset);
 
-		for (i = 0; i < index_count; i++)
+		for (i = 0; i < index_count; ++i)
 		{
 			if (index_size == sizeof(Uint16))
 			{
@@ -395,7 +395,7 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
-		for (i = 0; i < material_count; i++)
+		for (i = 0; i < material_count; ++i)
 		{
 			mesh_data_tool.set_sub_mesh_data(i, load_sub_mesh(
 				material_offset, material_size, i));
@@ -446,7 +446,7 @@ namespace eternal_lands
 			str += UTF8("/");
 		}
 
-		for (i = 0; i < material_count; i++)
+		for (i = 0; i < material_count; ++i)
 		{
 			materials.push_back(load_material(material_offset,
 				material_size, i, str));

@@ -52,7 +52,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterQualifierType parameter_qualifier;
 
-		for (i = 0; i < parameter_qualifier_type_datas_count; i++)
+		for (i = 0; i < parameter_qualifier_type_datas_count; ++i)
 		{
 			parameter_qualifier =
 				static_cast<ParameterQualifierType>(i);
@@ -75,7 +75,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterQualifierType tmp;
 
-		for (i = 0; i < parameter_qualifier_type_datas_count; i++)
+		for (i = 0; i < parameter_qualifier_type_datas_count; ++i)
 		{
 			tmp = static_cast<ParameterQualifierType>(i);
 

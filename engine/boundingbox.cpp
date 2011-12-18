@@ -29,7 +29,7 @@ namespace eternal_lands
 		min = points[0];
 		max = points[0];
 
-		for (i = 1; i < 8; i++)
+		for (i = 1; i < 8; ++i)
 		{
 			min = glm::min(min, points[i]);
 			max = glm::max(max, points[i]);
@@ -134,7 +134,7 @@ namespace eternal_lands
 		min = glm::vec3(std::numeric_limits<float>::max());
 		max = glm::vec3(-std::numeric_limits<float>::max());
 
-		for (i = 0; i < 8; i++)
+		for (i = 0; i < 8; ++i)
 		{
 			point = glm::vec4(get_point(std::bitset<3>(i)), 1.0f);
 			tmp = matrix * point;
@@ -155,7 +155,7 @@ namespace eternal_lands
 		min = glm::vec3(std::numeric_limits<float>::max());
 		max = glm::vec3(-std::numeric_limits<float>::max());
 
-		for (i = 0; i < 8; i++)
+		for (i = 0; i < 8; ++i)
 		{
 			point = glm::vec4(get_point(std::bitset<3>(i)), 1.0f);
 			point = matrix * point;
@@ -176,7 +176,7 @@ namespace eternal_lands
 		Uint32 i;
 		BitSet4 set;
 
-		for (i = 0; i < 8; i++)
+		for (i = 0; i < 8; ++i)
 		{
 			point = glm::vec2(glm::project(get_point(
 				std::bitset<3>(i)), view_matrix,

@@ -30,13 +30,13 @@ namespace eternal_lands
 
 			core_mesh_count = core_model->getCoreMeshCount();
 
-			for (i = 0; i < core_mesh_count; i++)
+			for (i = 0; i < core_mesh_count; ++i)
 			{
 				core_mesh = core_model->getCoreMesh(i);
 				core_sub_mesh_count =
 					core_mesh->getCoreSubmeshCount();
 
-				for (j = 0; j < core_sub_mesh_count; j++)
+				for (j = 0; j < core_sub_mesh_count; ++j)
 				{
 					core_sub_mesh =
 						core_mesh->getCoreSubmesh(j);
@@ -66,7 +66,7 @@ namespace eternal_lands
 
 			count = core_sub_mesh->getFaceCount();
 
-			for (i = 0; i < count; i++)
+			for (i = 0; i < count; ++i)
 			{
 				mesh_data_tool->set_index_data(
 					index_offset + i * 3 + 0,
@@ -89,7 +89,7 @@ namespace eternal_lands
 
 			uv = glm::vec4(glm::vec3(0.0f), 1.0f);
 
-			for (i = 0; i < count; i++)
+			for (i = 0; i < count; ++i)
 			{
 				position.x = core_sub_mesh->getVectorVertex()[i].position.x;
 				position.y = core_sub_mesh->getVectorVertex()[i].position.y;
@@ -137,7 +137,7 @@ namespace eternal_lands
 							extra_index[j - 4] = tmp_index;
 							extra_weight[j - 4] = tmp_weight;
 						}
-						j++;
+						++j;
 					}
 
 					if (j >= 8)
@@ -145,7 +145,7 @@ namespace eternal_lands
 						break;
 					}
 
-					k++;
+					++k;
 				}
 
 				mesh_data_tool->set_vertex_data(
@@ -221,7 +221,7 @@ namespace eternal_lands
 			std::numeric_limits<Uint32>::max(), pt_triangles,
 			false);
 
-		for (i = 0; i < mesh_count; i++)
+		for (i = 0; i < mesh_count; ++i)
 		{
 			core_mesh = m_core_model->getCoreMesh(i);
 			sub_mesh_count = core_mesh->getCoreSubmeshCount();
@@ -231,7 +231,7 @@ namespace eternal_lands
 			min = glm::vec3(std::numeric_limits<float>::max());
 			max = glm::vec3(-std::numeric_limits<float>::max());
 
-			for (j = 0; j < sub_mesh_count; j++)
+			for (j = 0; j < sub_mesh_count; ++j)
 			{
 				load_mesh(mesh_data_tool,
 					core_mesh->getCoreSubmesh(j),

@@ -76,8 +76,6 @@ namespace eternal_lands
 	void Material::set_texture(const String &name,
 		const ShaderTextureType texture_type)
 	{
-		TextureSharedPtr texture;
-		float layer;
 		Uint16 index;
 
 		assert(texture_type < m_textures.size());
@@ -89,23 +87,19 @@ namespace eternal_lands
 			return;
 		}
 
-		if (ShaderTextureUtil::get_use_layer_index(texture_type) &&
-			get_texture_cache()->get_texture_array(name, texture,
-				layer))
+		if (ShaderTextureUtil::get_use_layer_index(texture_type))
 		{
 			index = ShaderTextureUtil::get_layer_index(
 				texture_type);
 
-			assert(m_layer_index[index] == layer);
-
-			m_layer_index[index] = layer;
-			m_textures[texture_type] = texture;
+			m_textures[texture_type] = get_texture_cache(
+				)->get_texture(name, m_layer_index[index]);
 
 			return;
 		}
 
-		m_textures[texture_type] =
-			get_texture_cache()->get_texture(name);
+		m_textures[texture_type] = get_texture_cache()->get_texture(
+			name);
 	}
 
 	const String &Material::get_texture_name(
@@ -148,7 +142,7 @@ namespace eternal_lands
 
 		count = m_textures.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			if (m_textures[i].get() != 0)
 			{

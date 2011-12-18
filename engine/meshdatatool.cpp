@@ -13,6 +13,8 @@
 #include "triangles.hpp"
 #include "exceptions.hpp"
 #include "submesh.hpp"
+#include "vertexstream.hpp"
+#include "simd/simd.hpp"
 
 namespace eternal_lands
 {
@@ -49,7 +51,7 @@ namespace eternal_lands
 			cache_ptr = 0;
 			cache_misses = 0;
 
-			for (i = 0 ; i < count; i++)
+			for (i = 0 ; i < count; ++i)
 			{
 				cache_hit = false;
 
@@ -101,7 +103,7 @@ namespace eternal_lands
 			triangle_count = count / 3;
 			vertex_count = 0;
 
-			for (i = 0; i < count; i++)
+			for (i = 0; i < count; ++i)
 			{
 				if (indices[offset + i] > vertex_count)
 				{
@@ -110,13 +112,13 @@ namespace eternal_lands
 			}
 			vertex_count++;
 
-			for (i = 3; i < cache_size; i++)
+			for (i = 3; i < cache_size; ++i)
 			{
 				cache_score[i] = powf((cache_size - i) /
 					(cache_size - 3.0), 1.5);
 			}
 
-			for (i = 0; i < 3; i++)
+			for (i = 0; i < 3; ++i)
 			{
 				cache_score[cache_size + i] = 0.0;
 			}
@@ -125,12 +127,12 @@ namespace eternal_lands
 			std::vector<triangle_data> t(triangle_count);
 			std::vector<vertex_data> v(vertex_count);
 
-			for (i = 0; i < vertex_count; i++)
+			for (i = 0; i < vertex_count; ++i)
 			{
 				v[i].score = 0.0;
 				v[i].remaining_triangles.clear();
 			}
-			for (i = 0; i < triangle_count; i++)
+			for (i = 0; i < triangle_count; ++i)
 			{
 				t[i].added = false;
 				t[i].score = 0.0;
@@ -145,11 +147,11 @@ namespace eternal_lands
 				index = indices[offset + i * 3 + 2];
 				v[index].remaining_triangles.insert(i);
 			}
-			for (i = 0; i < vertex_count; i++)
+			for (i = 0; i < vertex_count; ++i)
 			{
 				v[i].score = calc_new_score(v[i].remaining_triangles.size());
 			}
-			for (i = 0; i < triangle_count; i++)
+			for (i = 0; i < triangle_count; ++i)
 			{
 				t[i].score = v[t[i].vertices[0]].score +
 					v[t[i].vertices[1]].score +
@@ -160,7 +162,7 @@ namespace eternal_lands
 			{
 				best_score = 0.0;
 				best_idx = 0xFFFFFFFF;
-				for (i = 0; i < triangle_count; i++)
+				for (i = 0; i < triangle_count; ++i)
 				{
 					if (!t[i].added)
 					{
@@ -177,7 +179,7 @@ namespace eternal_lands
 				indices[offset + (triangle_count - triangles_left) * 3 + 0] = a;
 				indices[offset + (triangle_count - triangles_left) * 3 + 1] = b;
 				indices[offset + (triangle_count - triangles_left) * 3 + 2] = c;
-				for (i = 0; i < 3; i++)
+				for (i = 0; i < 3; ++i)
 				{
 					index = t[best_idx].vertices[i];
 					v[index].remaining_triangles.erase(best_idx);
@@ -188,7 +190,7 @@ namespace eternal_lands
 				grow_cache_idx[1] = b;
 				grow_cache_idx[2] = c;
 				j = 3;
-				for (i = 0; i < cache_size; i++)
+				for (i = 0; i < cache_size; ++i)
 				{
 					grow_cache_idx[i + 3] = 0xFFFFFFFF;
 					if ((cache_idx[i] != a) &&
@@ -199,7 +201,7 @@ namespace eternal_lands
 					}
 				}
 				cache_idx.swap(grow_cache_idx);
-				for (i = 0; i < cache_size; i++)
+				for (i = 0; i < cache_size; ++i)
 				{
 					if (cache_idx[i] < 0xFFFFFFFF)
 					{
@@ -291,34 +293,35 @@ namespace eternal_lands
 		}
 
 		m_vertex_count = vertex_count;
-		m_semantics = semantics;
 		m_restart_index = restart_index;
 		m_primitive_type = primitive_type;
 		m_use_restart_index = use_restart_index;
 
-		build_vertex_semantic_indices(semantics);
+		BOOST_FOREACH(const VertexSemanticType semantic, semantics)
+		{
+			m_vertices[semantic].resize(vertex_count);
+		}
 
-		m_vertices.resize(vertex_count * get_semantic_count());
-		m_indices.resize(index_count);
 		m_sub_meshs.resize(sub_mesh_count);
+
+		resize_indices(index_count);
 	}
 
 	MeshDataTool::~MeshDataTool() throw()
 	{
 	}
 
-	void MeshDataTool::build_vertex_semantic_indices(
-		const VertexSemanticTypeSet &semantics)
+	void MeshDataTool::resize_vertices(const Uint32 vertex_count)
 	{
-		Uint32 index;
+		VertexSemanticTypeVec4VectorMap::iterator it, end;
 
-		index = 0;
-		m_semantic_indices.clear();
+		m_vertex_count = vertex_count;
 
-		BOOST_FOREACH(const VertexSemanticType &semantic, semantics)
+		end = m_vertices.end();
+
+		for (it = m_vertices.begin(); it != end; ++it)
 		{
-			m_semantic_indices[semantic] = index;
-			index++;
+			it->second.resize(vertex_count);
 		}
 	}
 
@@ -326,20 +329,15 @@ namespace eternal_lands
 		const VertexSemanticType vertex_semantic, const Uint32 index,
 		const glm::vec4 &data)
 	{
-		VertexSemanticTypeUint32Map::const_iterator found;
-		Uint32 idx;
+		VertexSemanticTypeVec4VectorMap::iterator found;
 
 		assert(index < get_vertex_count());
-		assert(vertex_semantic < 32);
-		assert((get_semantic_count() > 0) && get_semantic_count() <= 32);
 
-		found = m_semantic_indices.find(vertex_semantic);
+		found = m_vertices.find(vertex_semantic);
 
-		if (found != m_semantic_indices.end())
+		if (found != m_vertices.end())
 		{
-			idx = index * get_semantic_count() + found->second;
-
-			m_vertices[idx] = data;
+			found->second[index] = data;
 		}
 	}
 
@@ -347,18 +345,15 @@ namespace eternal_lands
 		const VertexSemanticType vertex_semantic, const Uint32 index)
 		const
 	{
-		VertexSemanticTypeUint32Map::const_iterator found;
-		Uint32 idx;
+		VertexSemanticTypeVec4VectorMap::const_iterator found;
 
 		assert(index < get_vertex_count());
 
-		found = m_semantic_indices.find(vertex_semantic);
+		found = m_vertices.find(vertex_semantic);
 
-		if (found != m_semantic_indices.end())
+		if (found != m_vertices.end())
 		{
-			idx = index * get_semantic_count() + found->second;
-
-			return m_vertices[idx];
+			return found->second[index];
 		}
 		else
 		{
@@ -390,7 +385,7 @@ namespace eternal_lands
 		{
 			count = get_sub_meshs().size();
 
-			for (i = 0; i < count; i++)
+			for (i = 0; i < count; ++i)
 			{
 				optimize_vertex_cache_order(m_indices,
 					get_sub_meshs()[i].get_offset(),
@@ -406,14 +401,15 @@ namespace eternal_lands
 		Triangles triangles(get_indices(), get_sub_meshs(),
 			get_primitive_type(), get_restart_index(),
 			get_use_restart_index());
+		VertexSemanticTypeVec4VectorMap::iterator it, end;
 		Vec4Vector vertices;
 		Uint32Vector indices;
 		std::map<Uint32, Uint32> index_map;
-		Uint32 i, j, index, count, value, semantics;
+		Uint32 i, index, count, value;
 
 		count = get_index_count();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			index = get_index_data(i);
 
@@ -441,25 +437,24 @@ namespace eternal_lands
 
 		assert(get_vertex_count() == index_map.size());
 
-		vertices.resize(m_vertices.size());
+		vertices.resize(get_vertex_count());
 
 		count = get_vertex_count();
 
-		for (i = 0; i < count; i++)
+		end = m_vertices.end();
+
+		for (it = m_vertices.begin(); it != end; ++it)
 		{
-			index = index_map[i];
-
-			semantics = get_semantic_count();
-
-			for (j = 0; j < semantics; j++)
+			for (i = 0; i < count; ++i)
 			{
-				vertices[index * semantics + j] =
-					m_vertices[i * semantics + j];
+				index = index_map[i];
+				vertices[index] = it->second[i];
 			}
+
+			std::swap(it->second, vertices);
 		}
 
 		std::swap(m_indices, indices);
-		std::swap(m_vertices, vertices);
 		update_sub_meshs_packed();
 	}
 
@@ -489,7 +484,7 @@ namespace eternal_lands
 
 		count = get_sub_meshs().size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			triangles.start(i, true);
 
@@ -517,7 +512,7 @@ namespace eternal_lands
 
 		count = normals.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			set_vertex_data(normal, i, glm::vec4(
 				glm::normalize(normals[i]), 0.0f));
@@ -574,7 +569,7 @@ namespace eternal_lands
 
 		count = get_sub_meshs().size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			triangles.start(i, true);
 
@@ -607,7 +602,7 @@ namespace eternal_lands
 
 		count = tangents.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			if (gram_schmidth_orthogonalize)
 			{
@@ -641,7 +636,7 @@ namespace eternal_lands
 		indices.resize(get_vertex_count());
 		count = get_vertex_count();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			tmp = glm::vec3(get_vertex_data(vst_position, i));
 
@@ -668,7 +663,7 @@ namespace eternal_lands
 		direction.resize(positions.size());
 		count = get_sub_meshs().size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			triangles.start(i, true);
 
@@ -697,14 +692,14 @@ namespace eternal_lands
 
 		count = direction.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			direction[i] = glm::normalize(direction[i]);
 		}
 
 		count = get_sub_meshs().size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			triangles.start(i, true);
 
@@ -739,7 +734,7 @@ namespace eternal_lands
 
 		count = get_sub_meshs().size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			min = glm::vec3(std::numeric_limits<float>::max());
 			max = glm::vec3(-std::numeric_limits<float>::max());
@@ -773,7 +768,7 @@ namespace eternal_lands
 
 		count = get_sub_meshs().size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			indices.clear();
 
@@ -826,7 +821,7 @@ namespace eternal_lands
 
 		count = get_sub_meshs().size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			get_triangle_indices(i, indices, true);
 		}
@@ -861,7 +856,7 @@ namespace eternal_lands
 	{
 		glm::vec4 data;
 
-		if (m_semantics.count(semantic) > 0)
+		if (m_vertices.find(semantic) != m_vertices.end())
 		{
 			data = get_vertex_data(semantic, index);
 
@@ -881,7 +876,7 @@ namespace eternal_lands
 
 		str << "vertex count: " << count << std::endl;
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			write_vertex_semantic_to_stream(vst_position, i, str);
 			write_vertex_semantic_to_stream(vst_normal, i, str);
@@ -909,7 +904,7 @@ namespace eternal_lands
 
 		str << "index count: " << count << std::endl;
 
-		for (i = 0; i < count / 3; i++)
+		for (i = 0; i < count / 3; ++i)
 		{
 			str << get_index_data(i * 3 + 0) << ", ";
 			str << get_index_data(i * 3 + 1) << ", ";
@@ -921,7 +916,7 @@ namespace eternal_lands
 
 		str << "sub mesh count: " << count << std::endl;
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			str << "bounding box: " << get_sub_meshs()[i].get_bounding_box() << std::endl;
 			str << "offset: " << get_sub_meshs()[i].get_offset() << std::endl;
@@ -942,34 +937,20 @@ namespace eternal_lands
 		}
 	}
 
-	void MeshDataTool::write_vertex_buffer(
-		const VertexElements &vertex_elements,
-		const AbstractWriteMemoryBufferSharedPtr &buffer) const
+	void MeshDataTool::write_vertex_stream(VertexStream &stream) const
 	{
-		Uint64 offset;
-		Uint32 stride;
-		Uint32 i, j, count;
-		PackFormatType type;
+		VertexSemanticTypeVec4VectorMap::const_iterator found, end;
 
-		count = vertex_elements.get_count();
+		end = m_vertices.end();
 
-		stride = vertex_elements.get_stride();
-
-		assert(buffer->get_size() >= (stride * get_vertex_count()));
-
-		for (i = 0; i < get_vertex_count(); i++)
+		BOOST_FOREACH(const VertexElement &element,
+			stream.get_vertex_elements().get_vertex_elements())
 		{
-			for (j = 0; j < count; j++)
+			found = m_vertices.find(element.get_semantic());
+
+			if (found != end)
 			{
-				offset = i * stride +
-					vertex_elements.get_offset(j);
-
-				type = VertexElement::get_pack_format(
-					vertex_elements.get_type(j));
-
-				PackTool::pack(offset, type, get_vertex_data(
-					vertex_elements.get_semantic(j), i),
-					*buffer);
+				stream.set(found->first, found->second);
 			}
 		}
 	}
@@ -993,7 +974,7 @@ namespace eternal_lands
 				get_index_count()));
 		}
 
-		for (i = 0; i < get_index_count(); i++)
+		for (i = 0; i < get_index_count(); ++i)
 		{
 			if (use_16_bit_indices)
 			{
@@ -1022,12 +1003,228 @@ namespace eternal_lands
 		bounding_box = get_sub_meshs()[0].get_bounding_box().transform(
 			matrix);
 
-		for (i = 1; i < get_sub_meshs().size(); i++)
+		for (i = 1; i < get_sub_meshs().size(); ++i)
 		{
 			bounding_box.merge(get_sub_meshs()[i].get_bounding_box(
 				).transform(matrix));
 		}
 	}
 
-}
+	void MeshDataTool::copy_vertics(const MeshDataTool &mesh_data_tool,
+		const VertexSemanticType semantic, const Uint32 source_index,
+		const Uint32 dest_index, const Uint32 count)
+	{
+		VertexSemanticTypeVec4VectorMap::const_iterator source;
+		VertexSemanticTypeVec4VectorMap::iterator dest;
+		glm::vec4 data;
+		Uint32 i;
 
+		dest = m_vertices.find(semantic);
+
+		if (dest == m_vertices.end())
+		{
+			return;
+		}
+
+		assert((dest_index + count) <= dest->second.size());
+
+		source = mesh_data_tool.m_vertices.find(semantic);
+
+		if (source == mesh_data_tool.m_vertices.end())
+		{
+			data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+			if (SIMD::get_supported())
+			{
+				SIMD::fill(data, count, glm::value_ptr(
+					dest->second[dest_index]));
+
+				return;
+			}
+
+			for (i = 0; i < count; ++i)
+			{
+				dest->second[dest_index + i] = data;
+			}
+
+			return;
+		}
+
+		assert((source_index + count) <= source->second.size());
+
+		memcpy(glm::value_ptr(dest->second[dest_index]),
+			glm::value_ptr(source->second[source_index]),
+			count * sizeof(float) * 4);
+	}
+
+	void MeshDataTool::transform_vertics(
+		const MeshDataTool &mesh_data_tool,
+		const VertexSemanticType semantic, const Uint32 source_index,
+		const Uint32 dest_index, const Uint32 count,
+		const glm::mat4x3 &matrix)
+	{
+		VertexSemanticTypeVec4VectorMap::const_iterator source;
+		VertexSemanticTypeVec4VectorMap::iterator dest;
+		glm::vec4 data;
+		Uint32 i;
+
+		dest = m_vertices.find(semantic);
+
+		if (dest == m_vertices.end())
+		{
+			return;
+		}
+
+		assert((dest_index + count) <= dest->second.size());
+
+		source = mesh_data_tool.m_vertices.find(semantic);
+
+		if (source == mesh_data_tool.m_vertices.end())
+		{
+			data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+			if (SIMD::get_supported())
+			{
+				SIMD::fill(data, count, glm::value_ptr(
+					dest->second[dest_index]));
+
+				return;
+			}
+
+			for (i = 0; i < count; ++i)
+			{
+				dest->second[dest_index + i] = data;
+			}
+
+			return;
+		}
+
+		assert((source_index + count) <= source->second.size());
+
+		if (SIMD::get_supported())
+		{
+			SIMD::transform(
+				glm::value_ptr(source->second[source_index]),
+				count, matrix,
+				glm::value_ptr(dest->second[dest_index]));
+
+			return;
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			data = source->second[source_index + i];
+			data.w = 1.0f;
+
+			dest->second[dest_index + i] =
+				glm::vec4(matrix * data, 1.0f);
+		}
+	}
+
+	void MeshDataTool::transform_vertics(
+		const MeshDataTool &mesh_data_tool,
+		const VertexSemanticType semantic, const Uint32 source_index,
+		const Uint32 dest_index, const Uint32 count,
+		const glm::mat3x3 &matrix)
+	{
+		VertexSemanticTypeVec4VectorMap::const_iterator source;
+		VertexSemanticTypeVec4VectorMap::iterator dest;
+		glm::vec4 data;
+		glm::vec3 tmp;
+		Uint32 i;
+
+		dest = m_vertices.find(semantic);
+
+		if (dest == m_vertices.end())
+		{
+			return;
+		}
+
+		assert((dest_index + count) <= dest->second.size());
+
+		source = mesh_data_tool.m_vertices.find(semantic);
+
+		if (source == mesh_data_tool.m_vertices.end())
+		{
+			data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+			if (SIMD::get_supported())
+			{
+				SIMD::fill(data, count, glm::value_ptr(
+					dest->second[dest_index]));
+
+				return;
+			}
+
+			for (i = 0; i < count; ++i)
+			{
+				dest->second[dest_index + i] = data;
+			}
+
+			return;
+		}
+
+		assert((source_index + count) <= source->second.size());
+
+		if (SIMD::get_supported())
+		{
+			SIMD::transform(
+				glm::value_ptr(source->second[source_index]),
+				count, matrix,
+				glm::value_ptr(dest->second[dest_index]));
+
+				return;
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			data = source->second[source_index + i];
+
+			dest->second[dest_index + i] =
+				glm::vec4(matrix * glm::vec3(data), 1.0f);
+		}
+	}
+
+	void MeshDataTool::fill_vertics(const VertexSemanticType semantic,
+		const Uint32 index, const Uint32 count, const glm::vec4 &data)
+	{
+		VertexSemanticTypeVec4VectorMap::iterator found;
+		Uint32 i;
+
+		found = m_vertices.find(semantic);
+
+		if (found == m_vertices.end())
+		{
+			return;
+		}
+
+		assert((index + count) <= found->second.size());
+
+		if (SIMD::get_supported())
+		{
+			SIMD::fill(data, count,
+				glm::value_ptr(found->second[index]));
+
+				return;
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			found->second[index + i] = data;
+		}
+	}
+
+	void MeshDataTool::set_indices(const Uint32Vector &indices,
+		const Uint32 source_index, const Uint32 dest_index,
+		const Uint32 count, const Sint32 offset)
+	{
+		Uint32 i;
+
+		for (i = 0; i < count; ++i)
+		{
+			m_indices[dest_index + i] = indices[source_index + i]
+				+ offset;
+		}
+	}
+
+}

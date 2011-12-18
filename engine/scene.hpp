@@ -47,29 +47,22 @@ namespace eternal_lands
 			RStarTreeObjectVisitor m_visible_objects;
 			RStarTreeObjectVisitor m_shadow_objects;
 			RStarTreeLightVisitor m_visible_lights;
-			boost::scoped_ptr<RStarTree> m_object_tree;
-			boost::scoped_ptr<RStarTree> m_light_tree;
+			boost::scoped_ptr<Map> m_map;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractFrameBufferSharedPtr
 				m_shadow_filter_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
-			Uint32ObjectSharedPtrMap m_objects;
-			Uint32LightSharedPtrMap m_lights;
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;
 			SceneView m_scene_view;
-			glm::vec4 m_ambient;
 			glm::vec4 m_main_light_direction;
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
-			String m_name;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
-			Uint32 m_id;
 			float m_time;
 			SubFrustumsMask m_shadow_objects_mask;
-			bool m_dungeon;
 			bool m_night;
 			bool m_shadow_map_change;
 
@@ -95,7 +88,8 @@ namespace eternal_lands
 			void draw_all_shadows_array();
 			void update_shadow_map();
 
-			inline GlobalVarsSharedPtr get_global_vars() const
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
 			{
 				return m_global_vars;
 			}
@@ -113,7 +107,8 @@ namespace eternal_lands
 			~Scene() throw();
 
 			ActorSharedPtr add_actor(const Uint32 type_id,
-				const Uint32 id, const String &name,
+				const Uint32 id, const Uint32 index,
+				const String &name,
 				const SelectionType selection,
 				const bool enhanced_actor);
 			void remove_actor(const Uint32 id);
@@ -131,7 +126,7 @@ namespace eternal_lands
 				const float density);
 			void clear();
 			void draw();
-			void init();
+			void init(const FileSystemSharedPtr &file_system);
 			void cull();
 			void load(const String &name, const glm::vec3 &ambient,
 				const bool dungeon);
@@ -215,26 +210,6 @@ namespace eternal_lands
 				m_scene_view.set_focus(focus);
 			}
 
-			inline void set_ambient(const glm::vec3 &ambient)
-			{
-				m_ambient = glm::vec4(ambient, 0.0f);
-			}
-
-			inline const glm::vec4 &get_ambient() const
-			{
-				return m_ambient;
-			}
-
-			inline void set_dungeon(const bool dungeon)
-			{
-				m_dungeon = dungeon;
-			}
-
-			inline bool get_dungeon() const
-			{
-				return m_dungeon;
-			}
-
 			inline void set_night(const bool night)
 			{
 				m_night = night;
@@ -243,16 +218,6 @@ namespace eternal_lands
 			inline bool get_night() const
 			{
 				return m_night;
-			}
-
-			inline const String &get_name() const
-			{
-				return m_name;
-			}
-
-			inline Uint32 get_id() const
-			{
-				return m_id;
 			}
 
 			inline SceneResources &get_scene_resources()

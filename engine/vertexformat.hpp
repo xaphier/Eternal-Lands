@@ -30,7 +30,7 @@ namespace eternal_lands
 	class VertexFormat: public boost::noncopyable
 	{
 		private:
-			VertexElementsArray4 m_vertex_elements;
+			VertexElementsArray16 m_vertex_elements;
 			String m_name;
 
 		public:
@@ -44,12 +44,18 @@ namespace eternal_lands
 			 * @brief Default constructor.
 			 */
 			VertexFormat(const String &name,
-				const VertexElementsArray4 &vertex_elements);
+				const VertexElementsArray16 &vertex_elements);
 
 			/**
 			 * @brief Default destructor.
 			 */
 			~VertexFormat() throw();
+
+			inline const VertexElementsArray16
+				&get_vertex_elements() const
+			{
+				return m_vertex_elements;
+			}
 
 			inline const VertexElements &get_vertex_elements(
 				const Uint16 index) const

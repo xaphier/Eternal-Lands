@@ -75,21 +75,21 @@ namespace eternal_lands
 				read(buffer);
 				break;
 			case 2:
-				for (i = 0; i < (size / 2); i++)
+				for (i = 0; i < (size / 2); ++i)
 				{
 					static_cast<Uint16*>(buffer.get_ptr())[i]
 						= read_u16_le();
 				}
 				break;
 			case 4:
-				for (i = 0; i < (size / 4); i++)
+				for (i = 0; i < (size / 4); ++i)
 				{
 					static_cast<Uint32*>(buffer.get_ptr())[i]
 						= read_u32_le();
 				}
 				break;
 			case 8:
-				for (i = 0; i < (size / 8); i++)
+				for (i = 0; i < (size / 8); ++i)
 				{
 					static_cast<Uint64*>(buffer.get_ptr())[i]
 						= read_u64_le();
@@ -127,21 +127,21 @@ namespace eternal_lands
 				read(buffer);
 				break;
 			case 2:
-				for (i = 0; i < (size / 2); i++)
+				for (i = 0; i < (size / 2); ++i)
 				{
 					static_cast<Uint16*>(buffer.get_ptr())[i]
 						= read_u16_be();
 				}
 				break;
 			case 4:
-				for (i = 0; i < (size / 4); i++)
+				for (i = 0; i < (size / 4); ++i)
 				{
 					static_cast<Uint32*>(buffer.get_ptr())[i]
 						= read_u32_be();
 				}
 				break;
 			case 8:
-				for (i = 0; i < (size / 8); i++)
+				for (i = 0; i < (size / 8); ++i)
 				{
 					static_cast<Uint64*>(buffer.get_ptr())[i]
 						= read_u64_be();

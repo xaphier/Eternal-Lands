@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "scene.hpp"
+#include "map.hpp"
 #include "light.hpp"
 #include "object.hpp"
 #include "exceptions.hpp"
@@ -65,19 +66,20 @@ namespace eternal_lands
 		const FileSystemWeakPtr &file_system):
 		m_global_vars(global_vars), m_scene_resources(global_vars,
 			file_system), m_scene_view(global_vars),
-			m_name(UTF8("")), m_frame_id(0), m_program_vars_id(0),
-			m_id(0), m_dungeon(false), m_shadow_map_change(true)
+			m_frame_id(0), m_program_vars_id(0),
+			m_shadow_map_change(true)
 	{
-		m_light_tree.reset(new RStarTree());
-		m_object_tree.reset(new RStarTree());
-
 		m_light_position_array.resize(8);
 		m_light_color_array.resize(8);
 
-		set_ambient(glm::vec3(0.2f));
 		set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
 		set_main_light_color(glm::vec3(0.2f));
 		set_main_light_ambient(glm::vec3(0.2f));
+
+		m_map.reset(new Map(m_scene_resources.get_mesh_builder(),
+			m_scene_resources.get_mesh_cache(),
+			m_scene_resources.get_effect_cache(),
+			m_scene_resources.get_texture_cache()));
 	}
 
 	Scene::~Scene() throw()
@@ -85,26 +87,26 @@ namespace eternal_lands
 	}
 
 	ActorSharedPtr Scene::add_actor(const Uint32 type_id, const Uint32 id,
-		const String &name, const SelectionType selection,
-		const bool enhanced_actor)
+		const Uint32 index, const String &name,
+		const SelectionType selection, const bool enhanced_actor)
 	{
 		std::pair<Uint32ActorSharedPtrMap::iterator, bool> result;
 		ActorSharedPtr actor;
 
-		actor = get_scene_resources().get_actor_data_cache().get_actor(
+		actor = get_scene_resources().get_actor_data_cache()->get_actor(
 			type_id, id, name, selection, enhanced_actor);
 
-		result = m_actors.insert(Uint32ActorSharedPtrMap::value_type(id,
-			actor));
+		result = m_actors.insert(Uint32ActorSharedPtrMap::value_type(
+			index, actor));
 
 		assert(result.second);
 
 		return actor;
 	}
 
-	void Scene::remove_actor(const Uint32 id)
+	void Scene::remove_actor(const Uint32 index)
 	{
-		m_actors.erase(id);
+		m_actors.erase(index);
 	}
 
 	void Scene::remove_all_actors()
@@ -114,107 +116,33 @@ namespace eternal_lands
 
 	void Scene::add_object(const ObjectData &object_data)
 	{
-		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
-		ObjectSharedPtr object;
-		AbstractMeshSharedPtr mesh;
-		MaterialDescriptionVector materials;
-
-		get_scene_resources().get_mesh_cache().get_mesh(
-			object_data.get_name(), mesh, materials);
-
-		object = boost::make_shared<Object>(object_data, mesh,
-			materials, get_scene_resources().get_effect_cache_ptr(),
-			get_scene_resources().get_texture_cache_ptr());
-
-		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
-			object_data.get_id(), object));
-
-		assert(temp.second);
-
-		m_object_tree->add(object);
+		m_map->add_object(object_data);
 	}
 
 	void Scene::add_object(const InstanceData &instance_data)
 	{
-		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
-		ObjectSharedPtr object;
-		AbstractMeshSharedPtr mesh;
-
-		mesh = get_scene_resources().get_mesh_builder().get_mesh(
-			vft_instanced_mesh, instance_data.get_mesh_data_tool());
-
-		object = boost::make_shared<Object>(instance_data, mesh,
-			instance_data.get_materials(),
-			get_scene_resources().get_effect_cache_ptr(),
-			get_scene_resources().get_texture_cache_ptr(),
-			instance_data.get_instanced_objects());
-		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
-			instance_data.get_id(), object));
-
-		assert(temp.second);
-
-		m_object_tree->add(object);
+		m_map->add_object(instance_data);
 	}
 
 	void Scene::remove_object(const Uint32 id)
 	{
-		Uint32ObjectSharedPtrMap::iterator found;
-
-		found = m_objects.find(id);
-
-		if (found != m_objects.end())
-		{
-			m_object_tree->remove(found->second);
-
-			m_objects.erase(found);
-		}
+		m_map->remove_object(id);
 	}
 
 	bool Scene::get_object_position(const Uint32 id, glm::vec3 &position)
 	{
-		Uint32ObjectSharedPtrMap::iterator found;
-
-		found = m_objects.find(id);
-
-		if (found == m_objects.end())
-		{
-			return false;
-		}
-
-		position = found->second->get_world_matrix()[3];
-
-		return true;
+		return m_map->get_object_position(id, position);
 	}
 
 	void Scene::add_light(const glm::vec3 &position, const glm::vec3 &color,
 		const float ambient, const float radius, const Uint32 id)
 	{
-		std::pair<Uint32LightSharedPtrMap::iterator, bool> temp;
-		LightSharedPtr light;
-
-		light = boost::make_shared<Light>(position, color, ambient,
-			radius, id);
-		assert(light->get_radius() == radius);
-		temp = m_lights.insert(Uint32LightSharedPtrMap::value_type(id,
-			light));
-
-		assert(temp.second);
-
-		m_light_tree->add(light);
+		m_map->add_light(position, color, ambient, radius, id);
 	}
 
 	void Scene::remove_light(const Uint32 id)
 	{
-		Uint32LightSharedPtrMap::iterator found;
-
-		found = m_lights.find(id);
-
-		if (found != m_lights.end())
-		{
-			m_light_tree->remove(found->second);
-
-			m_lights.erase(found);
-		}
+		m_map->remove_light(id);
 	}
 
 	void Scene::set_fog(const glm::vec3 &color, const float density)
@@ -230,18 +158,18 @@ namespace eternal_lands
 
 	}
 
-	void Scene::init()
+	void Scene::init(const FileSystemSharedPtr &file_system)
 	{
 		Uint32 i;
 
-		for (i = 0; i < querie_ids.size(); i++)
+		for (i = 0; i < querie_ids.size(); ++i)
 		{
 			querie_ids[i] = i + 1;
 		}
 
 		glGenQueries(querie_ids.size(), querie_ids.data());
 
-		m_scene_resources.init();
+		m_scene_resources.init(file_system);
 	}
 
 	void Scene::update_shadow_map()
@@ -267,7 +195,7 @@ namespace eternal_lands
 		if (!m_scene_view.get_exponential_shadow_maps())
 		{
 			m_shadow_frame_buffer = get_scene_resources(
-				).get_framebuffer_builder().build(
+				).get_framebuffer_builder()->build(
 					String(UTF8("Shadow")),
 					shadow_map_width, shadow_map_height, 0,
 					tft_depth32);
@@ -298,7 +226,7 @@ namespace eternal_lands
 		}
 
 		m_shadow_frame_buffer = get_scene_resources(
-			).get_framebuffer_builder().build(
+			).get_framebuffer_builder()->build(
 				String(UTF8("Shadow")),	shadow_map_width,
 				shadow_map_height, shadow_map_count,
 				mipmaps, samples, tft_r32f);
@@ -306,7 +234,7 @@ namespace eternal_lands
 		if (get_global_vars()->get_filter_shadow_map())
 		{
 			m_shadow_filter_frame_buffer = get_scene_resources(
-				).get_framebuffer_builder().build_filter(
+				).get_framebuffer_builder()->build_filter(
 					String(UTF8("ShadowFilter")),
 					shadow_map_size, shadow_map_size,
 					tft_r32f);
@@ -320,21 +248,13 @@ namespace eternal_lands
 	void Scene::load(const String &name, const glm::vec3 &ambient,
 		const bool dungeon)
 	{
-		m_name = name;
-
-		set_dungeon(dungeon);
-		set_ambient(ambient);
-
-		clear();
+		m_map->load(name, ambient, dungeon);
 	}
 
 	void Scene::clear()
 	{
-		m_light_tree->clear();
-		m_object_tree->clear();
+		m_map->clear();
 		m_actors.clear();
-		m_objects.clear();
-		m_lights.clear();
 	}
 
 	void Scene::get_lights(const BoundingBox &bounding_box,
@@ -344,7 +264,7 @@ namespace eternal_lands
 
 		light_count = 1;
 
-		if (m_dungeon || m_night)
+		if (m_map->get_dungeon() || m_night)
 		{
 			BOOST_FOREACH(const LightSharedPtr &light,
 				m_visible_lights.get_lights())
@@ -370,7 +290,7 @@ namespace eternal_lands
 
 		size = m_light_color_array.size();
 
-		for (i = light_count; i < size; i++)
+		for (i = light_count; i < size; ++i)
 		{
 			m_light_color_array[i] = glm::vec4(0.0f);
 			m_light_position_array[i] = glm::vec4(0.0f);
@@ -399,7 +319,7 @@ namespace eternal_lands
 
 		m_visible_lights.get_lights().clear();
 
-		if (m_dungeon)
+		if (m_map->get_dungeon())
 		{
 			m_light_position_array[0] =
 				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
@@ -414,7 +334,7 @@ namespace eternal_lands
 		}
 
 		m_visible_objects.next_frame();
-		m_object_tree->intersect(frustum, m_visible_objects);
+		m_map->get_object_tree().intersect(frustum, m_visible_objects);
 
 		m_time = SDL_GetTicks() * 0.001f;
 
@@ -444,7 +364,7 @@ namespace eternal_lands
 
 		cull_all_shadows();
 
-		m_light_tree->intersect(frustum, m_visible_lights);
+		m_map->get_light_tree().intersect(frustum, m_visible_lights);
 		m_visible_lights.sort(glm::vec3(m_scene_view.get_focus()));
 	}
 
@@ -472,7 +392,7 @@ namespace eternal_lands
 			mask = frustum.intersect_sub_frustums(
 				object.get_object()->get_bounding_box());
 
-			for (i = 0; i < mask.size(); i++)
+			for (i = 0; i < mask.size(); ++i)
 			{
 				if (mask[i])
 				{
@@ -488,7 +408,7 @@ namespace eternal_lands
 		m_scene_view.build_shadow_matrices(
 			glm::vec3(get_main_light_direction()),
 			split_boxes, receiver_boxes,
-			m_object_tree->get_bounding_box().get_max().z);
+			m_map->get_object_tree().get_bounding_box().get_max().z);
 
 		camera = glm::vec4(0.0, 0.0, 0.0f, 1.0f);
 		camera = glm::inverse(
@@ -498,7 +418,7 @@ namespace eternal_lands
 			m_scene_view.get_shadow_projection_view_matrices());
 
 		m_shadow_objects.next_frame();
-		m_object_tree->intersect(frustum, m_shadow_objects);
+		m_map->get_object_tree().intersect(frustum, m_shadow_objects);
 
 		end = m_actors.end();
 
@@ -527,7 +447,7 @@ namespace eternal_lands
 			mask = frustum.intersect_sub_frustums(
 				object.get_object()->get_bounding_box());
 
-			for (i = 0; i < mask.size(); i++)
+			for (i = 0; i < mask.size(); ++i)
 			{
 				if (mask[i])
 				{
@@ -585,9 +505,10 @@ namespace eternal_lands
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 
-			if (m_dungeon)
+			if (m_map->get_dungeon())
 			{
-				program->set_parameter(apt_ambient, m_ambient);
+				program->set_parameter(apt_ambient,
+					m_map->get_ambient());
 			}
 			else
 			{
@@ -624,7 +545,7 @@ namespace eternal_lands
 
 		object_data_set = false;
 
-		for (i = 0; i < materials; i++)
+		for (i = 0; i < materials; ++i)
 		{
 			if (switch_program(object->get_materials(
 				)[i].get_effect()->get_default_program(
@@ -664,7 +585,7 @@ namespace eternal_lands
 
 		object_data_set = false;
 
-		for (i = 0; i < materials; i++)
+		for (i = 0; i < materials; ++i)
 		{
 			if (!object->get_materials()[i].get_shadow())
 			{
@@ -703,7 +624,7 @@ namespace eternal_lands
 
 		object_data_set = false;
 
-		for (i = 0; i < materials; i++)
+		for (i = 0; i < materials; ++i)
 		{
 			if (switch_program(object->get_materials(
 				)[i].get_effect()->get_depth_program()))
@@ -827,7 +748,7 @@ namespace eternal_lands
 
 		glViewport(0, 0, width, height);
 
-		for (i = 0; i < m_scene_view.get_shadow_map_count(); i++)
+		for (i = 0; i < m_scene_view.get_shadow_map_count(); ++i)
 		{
 			if (m_shadow_objects_mask[i])
 			{
@@ -889,7 +810,7 @@ namespace eternal_lands
 
 		size = m_shadow_frame_buffer->get_height() / 2;
 
-		for (i = 0; i < m_scene_view.get_shadow_map_count(); i++)
+		for (i = 0; i < m_scene_view.get_shadow_map_count(); ++i)
 		{
 			switch (i)
 			{
@@ -1084,7 +1005,7 @@ namespace eternal_lands
 
 		object_data_set = false;
 
-		for (i = 0; i < sub_objects; i++)
+		for (i = 0; i < sub_objects; ++i)
 		{
 			if (object->get_sub_objects()[i].get_selection()
 				== st_none)
@@ -1158,7 +1079,7 @@ namespace eternal_lands
 		id = 0xFFFFFF;
 		selection = st_none;
 
-		for (i = 0; i < ids.size(); i++)
+		for (i = 0; i < ids.size(); ++i)
 		{
 			count = 0;
 

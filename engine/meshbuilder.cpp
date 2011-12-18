@@ -39,7 +39,8 @@ namespace eternal_lands
 			String(UTF8("morph_mesh_tangent_extra_uv")),
 			String(UTF8("instanced_mesh_tangent_extra_uv")),
 			String(UTF8("rect")),
-			String(UTF8("sprite"))
+			String(UTF8("sprite")),
+			String(UTF8("font"))
 		};
 
 		const Uint32 vertex_format_type_names_count =
@@ -53,7 +54,7 @@ namespace eternal_lands
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
 		VertexDescriptionMap instanced_mesh, mesh_tangent;
 		VertexDescriptionMap animated_mesh_tangent, morph_mesh_tangent;
-		VertexDescriptionMap instanced_mesh_tangent, rect, sprite;
+		VertexDescriptionMap instanced_mesh_tangent, rect, sprite, font;
 		VertexElementType position, texture_coordinate, normal;
 
 		if (get_global_vars()->get_opengl_3_0())
@@ -69,19 +70,28 @@ namespace eternal_lands
 
 		mesh[vst_position] = position;
 		mesh[vst_texture_coordinate_0] = texture_coordinate;
+		mesh[vst_color] = vet_ubyte4_normalized;
 		animated_mesh[vst_position] = position;
 		animated_mesh[vst_texture_coordinate_0] = texture_coordinate;
+		animated_mesh[vst_color] = vet_ubyte4_normalized;
 		morph_mesh[vst_position] = position;
 		morph_mesh[vst_texture_coordinate_0] = texture_coordinate;
+		morph_mesh[vst_color] = vet_ubyte4_normalized;
 		morph_mesh[vst_morph_position] = position;
 		morph_mesh[vst_morph_texture_coordinate_0] = texture_coordinate;
 		instanced_mesh[vst_position] = position;
 		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
+		instanced_mesh[vst_color] = vet_ubyte4_normalized;
+
 		instanced_mesh[vst_layer_index] = vet_ubyte4;
+
 		sprite[vst_position] = position;
 		sprite[vst_texture_coordinate_0] = vet_ushort2_normalized;
-
 		rect[vst_position] = vet_ushort2;
+
+		font[vst_position] = vet_ushort2;
+		font[vst_texture_coordinate_0] = vet_ushort2_normalized;
+		font[vst_color] = vet_ubyte4_normalized;
 
 		animated_mesh[vst_bone_index] = vet_ubyte4;
 		animated_mesh[vst_bone_weight] = vet_ushort4_normalized;
@@ -114,6 +124,7 @@ namespace eternal_lands
 
 		set_format(vft_rect, VertexElements(rect));
 		set_format(vft_sprite, VertexElements(sprite));
+		set_format(vft_font, VertexElements(font));
 
 		set_format(vft_mesh, VertexElements(mesh));
 		set_format(vft_animated_mesh, VertexElements(animated_mesh));
@@ -241,7 +252,7 @@ namespace eternal_lands
 		Uint32 i;
 		VertexFormatType vertex_format_type;
 
-		for (i = 0; i < vertex_format_type_names_count; i++)
+		for (i = 0; i < vertex_format_type_names_count; ++i)
 		{
 			vertex_format_type = static_cast<VertexFormatType>(i);
 

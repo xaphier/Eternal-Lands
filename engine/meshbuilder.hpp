@@ -41,7 +41,8 @@ namespace eternal_lands
 		vft_morph_mesh_tangent_extra_uv,
 		vft_instanced_mesh_tangent_extra_uv,
 		vft_rect,
-		vft_sprite
+		vft_sprite,
+		vft_font
 	};
 
 	class MeshBuilder: public boost::noncopyable
@@ -50,8 +51,8 @@ namespace eternal_lands
 			typedef std::map<VertexFormatType,
 				VertexFormatSharedPtr> VertexFormatsMap;
 
-			VertexFormatsMap m_vertex_formats;
 			const GlobalVarsSharedPtr m_global_vars;
+			VertexFormatsMap m_vertex_formats;
 
 			void set_format(const VertexFormatType format,
 				const VertexElements &elements);

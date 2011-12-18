@@ -95,6 +95,29 @@ texture_glyph_add_to_vertex_buffer( const TextureGlyph *self,
 		x1 = x0 + get_width();
 		y1 = y0 - get_height();
 
+		vertex_stream->set(vst_position, glm::vec4(x0, y0, 0.0f, 1.0f));
+		vertex_stream->set(vst_texture_coordinate_0,
+			glm::vec4(get_uv().x, get_uv().y, 0.0f, 1.0f));
+		vertex_stream->set(vst_color, color);
+		vertex_stream->push_vertex();
+
+		vertex_stream->set(vst_position, glm::vec4(x0, y1, 0.0f, 1.0f));
+		vertex_stream->set(vst_texture_coordinate_0,
+			glm::vec4(get_uv().x, get_uv().w, 0.0f, 1.0f));
+		vertex_stream->set(vst_color, color);
+		vertex_stream->push_vertex();
+
+		vertex_stream->set(vst_position, glm::vec4(x1, y1, 0.0f, 1.0f));
+		vertex_stream->set(vst_texture_coordinate_0,
+			glm::vec4(get_uv().z, get_uv().w, 0.0f, 1.0f));
+		vertex_stream->set(vst_color, color);
+		vertex_stream->push_vertex();
+
+		vertex_stream->set(vst_position, glm::vec4(x1, y0, 0.0f, 1.0f));
+		vertex_stream->set(vst_texture_coordinate_0,
+			glm::vec4(get_uv().z, get_uv().y, 0.0f, 1.0f));
+		vertex_stream->set(vst_color, color);
+		vertex_stream->push_vertex();
 
 		position.x = get_advance().x + spacing;
 		position.y = get_advance().y;

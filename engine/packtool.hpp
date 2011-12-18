@@ -375,8 +375,14 @@ namespace eternal_lands
 				const Uint64 offset, const PackFormatType type);
 
 			static void pack(const Uint64 offset,
-				const PackFormatType type,
+				const PackFormatType pack_format,
 				const glm::vec4 &data,
+				AbstractWriteMemoryBuffer &buffer);
+
+			static void pack(const Uint64 offset,
+				const Uint32 stride, const Uint32 count,
+				const PackFormatType pack_format,
+				const Vec4Vector &data,
 				AbstractWriteMemoryBuffer &buffer);
 
 	};

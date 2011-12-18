@@ -100,7 +100,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderVersionType shader_version;
 
-		for (i = 0; i < shader_version_type_datas_count; i++)
+		for (i = 0; i < shader_version_type_datas_count; ++i)
 		{
 			shader_version = static_cast<ShaderVersionType>(i);
 
@@ -122,7 +122,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderVersionType tmp;
 
-		for (i = 0; i < shader_version_type_datas_count; i++)
+		for (i = 0; i < shader_version_type_datas_count; ++i)
 		{
 			tmp = static_cast<ShaderVersionType>(i);
 

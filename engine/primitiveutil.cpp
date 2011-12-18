@@ -109,7 +109,7 @@ namespace eternal_lands
 		Uint32 i;
 		PrimitiveType primitive_type;
 
-		for (i = 0; i < primitive_type_datas_count; i++)
+		for (i = 0; i < primitive_type_datas_count; ++i)
 		{
 			primitive_type = static_cast<PrimitiveType>(i);
 

@@ -414,7 +414,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterType parameter_type;
 
-		for (i = 0; i < parameter_type_datas_count; i++)
+		for (i = 0; i < parameter_type_datas_count; ++i)
 		{
 			parameter_type = static_cast<ParameterType>(i);
 
@@ -435,7 +435,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterType parameter;
 
-		for (i = 0; i < parameter_type_datas_count; i++)
+		for (i = 0; i < parameter_type_datas_count; ++i)
 		{
 			parameter = static_cast<ParameterType>(i);
 
@@ -457,7 +457,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterType tmp;
 
-		for (i = 0; i < parameter_type_datas_count; i++)
+		for (i = 0; i < parameter_type_datas_count; ++i)
 		{
 			tmp = static_cast<ParameterType>(i);
 

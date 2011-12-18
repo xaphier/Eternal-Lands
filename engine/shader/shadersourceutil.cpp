@@ -64,7 +64,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderSourceType shader_source_type;
 
-		for (i = 0; i < shader_source_type_datas_count; i++)
+		for (i = 0; i < shader_source_type_datas_count; ++i)
 		{
 			shader_source_type =
 				static_cast<ShaderSourceType>(i);

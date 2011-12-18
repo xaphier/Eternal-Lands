@@ -7,7 +7,7 @@
 
 #include "materialdescription.hpp"
 #include "exceptions.hpp"
-#include "texturecache.hpp"
+#include "texturearraycache.hpp"
 
 namespace eternal_lands
 {
@@ -74,7 +74,7 @@ namespace eternal_lands
 
 		count = m_textures.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			if (m_textures[i] != material.m_textures[i])
 			{
@@ -120,7 +120,7 @@ namespace eternal_lands
 
 		count = m_textures.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			if (m_textures[i] != material.m_textures[i])
 			{
@@ -130,7 +130,7 @@ namespace eternal_lands
 
 		count = m_layer_index.length();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
 			if (m_layer_index[i] != material.m_layer_index[i])
 			{
@@ -155,7 +155,7 @@ namespace eternal_lands
 	}
 
 	void MaterialDescription::build_layer_index(
-		const TextureCacheSharedPtr &texture_cache,
+		const TextureArrayCacheSharedPtr &texture_array_cache,
 		const ShaderTextureType texture_type)
 	{
 		String name;
@@ -163,7 +163,7 @@ namespace eternal_lands
 		Uint16 index;
 
 		if (ShaderTextureUtil::get_use_layer_index(texture_type)
-			&& texture_cache->get_texture_array_name(
+			&& texture_array_cache->get_texture_array_name(
 				get_texture(texture_type), name, layer))
 		{
 			index = ShaderTextureUtil::get_layer_index(
@@ -175,15 +175,15 @@ namespace eternal_lands
 	}
 
 	void MaterialDescription::build_layer_index(
-		const TextureCacheSharedPtr &texture_cache)
+		const TextureArrayCacheSharedPtr &texture_array_cache)
 	{
 		Uint16 i, count;
 
 		count = m_textures.size();
 
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; ++i)
 		{
-			build_layer_index(texture_cache,
+			build_layer_index(texture_array_cache,
 				static_cast<ShaderTextureType>(i));
 		}
 	}

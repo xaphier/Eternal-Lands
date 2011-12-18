@@ -52,7 +52,7 @@ namespace eternal_lands
 			}
 
 			width_left -= m_nodes[i].z;
-			i++;
+			++i;
 		}
 		
 		return y;
@@ -63,7 +63,7 @@ namespace eternal_lands
 		Uvec3Vector::iterator it, next;
 		Uint32 i;
 
-		for (i = 0; i< (m_nodes.size() - 1); i++)
+		for (i = 0; i< (m_nodes.size() - 1); ++i)
 		{
 			it = m_nodes.begin() + i;
 			next = it + 1;
@@ -88,7 +88,7 @@ namespace eternal_lands
 		best_height = std::numeric_limits<Uint32>::max();
 		best_width = std::numeric_limits<Uint32>::max();
 
-		for (i = 0; i < m_nodes.size(); i++)
+		for (i = 0; i < m_nodes.size(); ++i)
 		{
 			y = fit(i, width, height);
 
@@ -113,7 +113,7 @@ namespace eternal_lands
 		m_nodes[best_index].y = offset.y + height;
 		m_nodes[best_index].z = width;
 
-		for (i = best_index + 1; i < m_nodes.size(); i++)
+		for (i = best_index + 1; i < m_nodes.size(); ++i)
 		{
 			it = m_nodes.begin() + i;
 			prev = it - 1;
