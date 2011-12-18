@@ -155,6 +155,8 @@ namespace eternal_lands
 	{
 		m_light_tree->clear();
 		m_object_tree->clear();
+		m_objects.clear();
+		m_lights.clear();
 	}
 
 }
