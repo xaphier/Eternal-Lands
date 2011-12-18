@@ -1291,7 +1291,7 @@ namespace eternal_lands
 				break;
 		}
 
-		main << UTF8(";\n\tgl_FragColor.a = ");
+		main << UTF8(";\n\t") << gl_FragColor << UTF8(".a = ");
 
 		if (data.get_option(ssbot_transparent) &&
 			data.get_option(ssbot_alpha_to_coverage))
@@ -1624,8 +1624,16 @@ namespace eternal_lands
 		write_parameters(pqt_in, vertex_globals, array_sizes,
 			UTF8("uniform "), vertex_source);
 		vertex_source << UTF8("\n");
-		write_parameters(varyings, array_sizes,
-			UTF8("varying "), vertex_source);
+		if (version_type >= svt_130)
+		{
+			write_parameters(varyings, array_sizes,
+				UTF8("out "), vertex_source);
+		}
+		else
+		{
+			write_parameters(varyings, array_sizes,
+				UTF8("varying "), vertex_source);
+		}
 		vertex_source << UTF8("\n");
 		vertex_source << UTF8("void main()\n");
 		vertex_source << UTF8("{\n");
@@ -1652,8 +1660,16 @@ namespace eternal_lands
 		write_parameters(pqt_in, fragment_globals, array_sizes,
 			UTF8("uniform "), fragment_source);
 		fragment_source << UTF8("\n");
-		write_parameters(varyings, array_sizes,
-			UTF8("varying "), fragment_source);
+		if (version_type >= svt_130)
+		{
+			write_parameters(varyings, array_sizes,
+				UTF8("in "), fragment_source);
+		}
+		else
+		{
+			write_parameters(varyings, array_sizes,
+				UTF8("varying "), fragment_source);
+		}
 		fragment_source << UTF8("\n");
 		fragment_source << UTF8("void main()\n");
 		fragment_source << UTF8("{\n");

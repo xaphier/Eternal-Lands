@@ -68,7 +68,7 @@
     </parameter>
    </parameters>
    <source>{
-	shadow = textureProj(shadow_sampler, shadow_uv[0]).r;
+	shadow = textureProj(shadow_sampler, shadow_uv[0]);
 }</source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>
