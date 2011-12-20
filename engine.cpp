@@ -431,7 +431,7 @@ extern "C" void file_system_add_dir(const char* dir)
 	{
 		file_system->add_zip(el::String(el::utf8_to_string(dir) +
 			UTF8("shaders.zip")),
-				"878ebd4adfaf73abbf22d526508fbed5");
+				"f45dabd0731b170618fe029f9cacf430");
 	}
 	catch (...)
 	{

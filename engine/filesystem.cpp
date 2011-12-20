@@ -294,7 +294,7 @@ namespace eternal_lands
 			UTF8("shaders/sources/bone_normal_animation.xml"))] =
 				get_md5("aaf5cbae8b7d88541c6ccd586f2b6a21");
 		m_md5s[String(UTF8("shaders/sources/diffuse_mapping.xml"))] =
-			get_md5("f9891a4b4d44a67f962d4b967c9290a2");
+			get_md5("d91575d1a76ce266f8836827c29428a3");
 		m_md5s[String(UTF8("shaders/sources/shadow_mapping.xml"))] =
 			get_md5("bcf60fe0b6641eb7d9c01101d33cf16e");
 		m_md5s[String(UTF8("shaders/sources/fog.xml"))] =
