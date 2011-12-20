@@ -454,10 +454,11 @@ namespace eternal_lands
 
 	void TextureFont::write_to_stream(const glm::vec4 &color,
 		const glm::uvec2 &position, const String &str,
-		const float spacing, const float rise, VertexStream &stream)
+		const float spacing, const float rise, VertexStreams &streams)
 	{
 		Utf32CharTextureGlypheMap::const_iterator found, end;
 		Utf32String string;
+		Utf32Char last_char_code;
 		glm::uvec2 pos;
 		float kerning;
 
@@ -465,6 +466,7 @@ namespace eternal_lands
 		string = utf8_to_utf32(str);
 
 		end = m_glyphs.end();
+		last_char_code = L'\0';
 
 		BOOST_FOREACH(const Utf32Char char_code, string)
 		{
@@ -475,8 +477,12 @@ namespace eternal_lands
 				continue;
 			}
 
+			kerning = found->second.get_kerning(last_char_code);
+
 			found->second.write_to_stream(color, kerning, spacing,
-				rise, stream, pos);
+				rise, streams, pos);
+
+			last_char_code = found->second.get_char_code();
 		}
 	}
 

@@ -31,47 +31,10 @@ namespace eternal_lands
 
 		assert(!m_mesh_builder.expired());
 		assert(!m_mesh_data_cache.expired());
-
-		init_rect(tmp.m_mesh);
-
-		m_mesh_cache[String(UTF8("rect"))] = tmp;
 	}
 
 	MeshCache::~MeshCache() throw()
 	{
-	}
-
-	void MeshCache::init_rect(AbstractMeshSharedPtr &mesh) const
-	{
-		MeshDataToolSharedPtr mesh_data_tool;
-		VertexSemanticTypeSet semantics;
-
-		semantics.insert(vst_position);
-
-		mesh_data_tool = boost::make_shared<MeshDataTool>(4, 6,
-			1, semantics, 0xFFFFFFFF, pt_triangles, false);
-
-		mesh_data_tool->set_vertex_data(vst_position, 0,
-			glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-		mesh_data_tool->set_vertex_data(vst_position, 1,
-			glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
-		mesh_data_tool->set_vertex_data(vst_position, 2,
-			glm::vec4(0.0f, 1.0f, 0.0f, 0.0f));
-		mesh_data_tool->set_vertex_data(vst_position, 3,
-			glm::vec4(1.0f, 1.0f, 0.0f, 0.0f));
-
-		mesh_data_tool->set_index_data(0, 0);
-		mesh_data_tool->set_index_data(1, 1);
-		mesh_data_tool->set_index_data(2, 2);
-		mesh_data_tool->set_index_data(3, 1);
-		mesh_data_tool->set_index_data(4, 3);
-		mesh_data_tool->set_index_data(5, 2);
-
-		mesh_data_tool->set_sub_mesh_data(0, SubMesh(BoundingBox(
-			glm::vec3(0.0f), glm::vec3(1.0f, 1.0f, 0.01f)),
-				0, 6, 0, 3));
-
-		mesh = get_mesh_builder()->get_mesh(vft_rect, mesh_data_tool);
 	}
 
 	void MeshCache::load_mesh(const String &name,

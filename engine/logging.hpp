@@ -34,9 +34,6 @@ namespace eternal_lands
 	LogLevelType get_log_level();
 	void set_log_level(const LogLevelType log_level);
 	void log_message(const LogLevelType log_level,
-		const StringType &message, const std::string &file,
-		const Uint32 line);
-	void log_message(const LogLevelType log_level,
 		const std::string &message, const std::string &file,
 		const Uint32 line);
 	void log_exception(const std::exception &exception,

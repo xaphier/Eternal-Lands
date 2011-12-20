@@ -14,7 +14,6 @@
 
 #include "prerequisites.hpp"
 #include "exceptions.hpp"
-#include <mm_malloc.h>
 
 /**
  * @file
@@ -42,34 +41,13 @@ namespace eternal_lands
 			}
 
 		public:
-			inline AlignedVec4Array(): m_data(0), m_size(0),
-				m_capacity(0)
-			{
-			}
-
-			inline AlignedVec4Array(const AlignedVec4Array &array):
-				m_data(0), m_size(0), m_capacity(0)
-			{
-				resize(array.m_size);
-				memcpy(m_data, array.m_data, size() * 4 *
-					sizeof(float));
-			}
-
-			inline ~AlignedVec4Array()
-			{
-				clear();
-			}
-
-			inline AlignedVec4Array &operator=(
-				const AlignedVec4Array &array)
-			{
-				resize(array.m_size);
-
-				memcpy(m_data, array.m_data, size() * 4 *
-					sizeof(float));
-
-				return *this;
-			}
+			AlignedVec4Array();
+			AlignedVec4Array(const AlignedVec4Array &array);
+			~AlignedVec4Array() throw();
+			AlignedVec4Array &operator=(
+				const AlignedVec4Array &array);
+			void clear();
+			void reserve(const Uint32 new_capacity);
 
 			inline void* get_ptr() const
 			{
@@ -111,18 +89,6 @@ namespace eternal_lands
 				return m_data[index];
 			}
 
-			inline void clear()
-			{
-				m_size = 0;
-				m_capacity = 0;
-
-				if (m_data != 0)
-				{
-					_mm_free(m_data);
-					m_data = 0;
-				}
-			}
-
 			inline void pop_back()
 			{
 				assert(m_size > 0);
@@ -161,44 +127,6 @@ namespace eternal_lands
 				}
 
 				m_size = new_size;
-			}
-
-			inline void reserve(const Uint32 new_capacity)
-			{
-				glm::vec4* data;
-				Uint32 count;
-
-				if (capacity() >= new_capacity)
-				{
-					return;
-				}
-
-				count = new_capacity * 4 * sizeof(float);
-
-				data = static_cast<glm::vec4*>(
-					_mm_malloc(count, 16));
-
-				if (data == 0)
-				{
-					EL_THROW_EXCEPTION(BadAllocException());
-				}
-
-				count = std::min(new_capacity, size()) * 4 *
-					sizeof(float);
-
-				std::swap(m_data, data);
-
-				if ((count > 0) && (data != 0))
-				{
-					memcpy(m_data, data, count);
-				}
-
-				if (data != 0)
-				{
-					_mm_free(data);
-				}
-
-				m_capacity = new_capacity;
 			}
 
 	};

@@ -164,8 +164,9 @@ namespace eternal_lands
 		m_default_programs.clear();
 		m_max_index = 0;
 
-		xml_reader = XmlReaderSharedPtr(new XmlReader(String(
-			UTF8("shaders/") + get_name().get() + UTF8(".xml"))));
+		xml_reader = XmlReaderSharedPtr(new XmlReader(
+			get_file_system(), String(UTF8("shaders/") +
+			get_name().get() + UTF8(".xml"))));
 
 		description.load_xml(xml_reader->get_root_node());
 

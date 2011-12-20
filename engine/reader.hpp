@@ -48,6 +48,12 @@ namespace eternal_lands
 			void read_be(MemoryBuffer &buffer,
 				const Uint16 swap_size);
 
+			const AbstractReadMemoryBufferSharedPtr &get_buffer()
+				const
+			{
+				return m_buffer;
+			}
+
 			/**
 			 * Returns the total size of the reader source buffer.
 			 * @return The total size of the reader source buffer.

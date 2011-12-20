@@ -51,6 +51,9 @@ namespace eternal_lands
 
 			virtual AbstractWriteMemoryBufferSharedPtr
 				get_vertex_buffer(const Uint16 index);
+			virtual void set_vertex_buffer(
+				const AbstractReadMemoryBufferSharedPtr &buffer,
+				const Uint16 index);
 			virtual AbstractWriteMemoryBufferSharedPtr
 				get_index_buffer();
 			virtual void init_vertices();

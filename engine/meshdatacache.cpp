@@ -147,7 +147,7 @@ namespace eternal_lands
 				sphere_vertex_count - 1));
 		}
 
-		void load_plane(const Uint16 tile_size,
+		void load_plane(const Uint16 tile_size, const bool split,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			glm::vec4 normal, tangent, data;
@@ -177,7 +177,7 @@ namespace eternal_lands
 			}
 
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, tile_size, use_restart_index, 0, true,
+				indices, tile_size, use_restart_index, 0, split,
 				0);
 
 			index_count = indices.size();
@@ -287,39 +287,51 @@ namespace eternal_lands
 		bool load_plane(const String &name,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
+			if (name == UTF8("plane_1"))
+			{
+				load_plane(2, false, mesh_data_tool);
+				return true;
+			}
+
+			if (name == UTF8("plane_2"))
+			{
+				load_plane(2, true, mesh_data_tool);
+				return true;
+			}
+
 			if (name == UTF8("plane_4"))
 			{
-				load_plane(4, mesh_data_tool);
+				load_plane(4, true, mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_8"))
 			{
-				load_plane(8, mesh_data_tool);
+				load_plane(8, true, mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_16"))
 			{
-				load_plane(16, mesh_data_tool);
+				load_plane(16, true, mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_32"))
 			{
-				load_plane(32, mesh_data_tool);
+				load_plane(32, true, mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_64"))
 			{
-				load_plane(64, mesh_data_tool);
+				load_plane(64, true, mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_128"))
 			{
-				load_plane(128, mesh_data_tool);
+				load_plane(128, true, mesh_data_tool);
 				return true;
 			}
 

@@ -426,6 +426,16 @@ extern "C" void file_system_add_dir(const char* dir)
 	file_system->add_dir(el::String(el::utf8_to_string(dir)));
 
 	CATCH_BLOCK
+
+	try
+	{
+		file_system->add_zip(el::String(el::utf8_to_string(dir) +
+			UTF8("/shaders.zip")),
+				"858f7e7317bd32a209753c7eb851bd60");
+	}
+	catch (...)
+	{
+	}
 }
 
 #ifdef	EL_TIME_FRAME_DEBUG
@@ -1327,17 +1337,6 @@ extern "C" int command_lua(char *text, int len)
 	return 1;
 }
 
-extern "C" void set_shadow_map_count(const int value)
-{
-	global_vars->set_shadow_map_count(value);
-
-	if (scene.get() != 0)
-	{
-		scene->get_scene_resources().get_effect_cache()->reload();
-		scene->shadow_map_change();
-	}
-}
-
 extern "C" void set_shadow_map_size(const int value)
 {
 	global_vars->set_shadow_map_size(value);
@@ -1358,13 +1357,32 @@ extern "C" void set_view_distance(const float value)
 	global_vars->set_view_distance(value);
 }
 
-extern "C" void set_exponential_shadow_maps(const int value)
+extern "C" void set_shadow_quality(const int value)
 {
-	global_vars->set_exponential_shadow_maps(value != 0);
+	el::ShadowQualityType shadow_quality;
+
+	if (value <= el::sqt_no)
+	{
+		shadow_quality = el::sqt_no;
+	}
+	else
+	{
+		if (value >= el::sqt_ultra)
+		{
+			shadow_quality = el::sqt_ultra;
+		}
+		else
+		{
+			shadow_quality = static_cast<el::ShadowQualityType>(
+				value);
+		}
+	}
+
+	global_vars->set_shadow_quality(shadow_quality);
 
 	if (scene.get() != 0)
 	{
-		if (value != 0)
+		if (global_vars->get_exponential_shadow_maps())
 		{
 			scene->get_scene_resources().get_shader_source_builder(
 				)->set_shadow_map_type(el::String(UTF8("esm")));
@@ -1391,17 +1409,6 @@ extern "C" void set_fog(const int value)
 	}
 }
 
-extern "C" void set_msaa_shadows(const int value)
-{
-	global_vars->set_msaa_shadows(value != 0);
-
-	if (scene.get() != 0)
-	{
-		scene->get_scene_resources().get_effect_cache()->reload();
-		scene->shadow_map_change();
-	}
-}
-
 extern "C" void set_alpha_to_coverage(const int value)
 {
 	global_vars->set_alpha_to_coverage(value != 0);
@@ -1409,17 +1416,6 @@ extern "C" void set_alpha_to_coverage(const int value)
 	if (scene.get() != 0)
 	{
 		scene->get_scene_resources().get_effect_cache()->reload();
-	}
-}
-
-extern "C" void set_filter_shadow_map(const int value)
-{
-	global_vars->set_filter_shadow_map(value != 0);
-
-	if (scene.get() != 0)
-	{
-		scene->get_scene_resources().get_effect_cache()->reload();
-		scene->shadow_map_change();
 	}
 }
 
@@ -1456,27 +1452,30 @@ extern "C" void set_opengl_version(const int value)
 	global_vars->set_opengl_version(version);
 }
 
-extern "C" void set_filter(const int value)
+extern "C" void set_shadow_map_filter(const int value)
 {
-	el::FilterType filter;
+	el::FilterType shadow_map_filter;
 
 	if (value <= el::ft_gauss_5_tap)
 	{
-		filter = el::ft_gauss_5_tap;
+		shadow_map_filter = el::ft_gauss_5_tap;
 	}
 	else
 	{
 		if (value >= el::ft_box_13_tap)
 		{
-			filter = el::ft_box_13_tap;
+			shadow_map_filter = el::ft_box_13_tap;
 		}
 		else
 		{
-			filter = static_cast<el::FilterType>(value);
+			shadow_map_filter = static_cast<el::FilterType>(value);
 		}
 	}
 
-//	global_vars->set_filter(filter);
+	if (scene.get() != 0)
+	{
+		scene->set_shadow_map_filter(shadow_map_filter);
+	}
 }
 
 extern "C" int get_opengl_3_0()

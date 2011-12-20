@@ -23,7 +23,12 @@ namespace eternal_lands
 	class FileSystem
 	{
 		private:
+			typedef std::map<String, Uint8Array16>
+				StringUint8Array16Map;
+
 			AbstractArchiveVector m_archives;
+			StringUint8Array16Map m_md5s;
+
 			String get_tmp_file();
 
 			static StringTypeVector get_stripped_path(
@@ -35,7 +40,11 @@ namespace eternal_lands
 			void add_dirs(const Uint16 major, const Uint16 minor,
 				const Uint16 release);
 			void add_dir(const String &dir_name);
-			void add_zip(const String &file_name);
+			void add_zip(const String &zip_name);
+			void add_zip(const String &zip_name,
+				const Uint8Array16 &md5);
+			void add_zip(const String &zip_name,
+				const StringType &md5);
 			bool remove_archive(const String &file_name);
 			bool get_file_readable(const String &file_name);
 			ReaderSharedPtr get_file(const String &file_name);

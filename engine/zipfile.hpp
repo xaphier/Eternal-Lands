@@ -32,6 +32,8 @@ namespace eternal_lands
 			ZipFileEntries m_files;
 			void* m_file;
 
+			void init();
+
 		public:
 			/**
 			 * Default constructor.

@@ -129,7 +129,7 @@
 #endif
 #ifdef	NEW_TEXTURES
 #include <memory>
-#include "../engine/hardwarebuffer.hpp"
+#include "../engine/mesh/hardwarebuffer.hpp"
 
 namespace el = eternal_lands;
 

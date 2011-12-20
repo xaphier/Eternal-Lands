@@ -78,7 +78,7 @@ namespace eternal_lands
 			void write_to_stream(const glm::vec4 &color,
 				const glm::uvec2 &position, const String &str,
 				const float spacing, const float rise,
-				VertexStream &stream);
+				VertexStreams &streams);
 
 			glm::vec2 get_size(const String &str) const;
 

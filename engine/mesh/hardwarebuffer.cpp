@@ -38,7 +38,8 @@ namespace eternal_lands
 	}
 
 	void HardwareBuffer::set(const HardwareBufferType type,
-		const MemoryBuffer &buffer, const HardwareBufferUsageType usage)
+		const AbstractReadMemoryBuffer &buffer,
+		const HardwareBufferUsageType usage)
 	{
 		m_size = buffer.get_size();
 		bind(type);
@@ -47,7 +48,7 @@ namespace eternal_lands
 	}
 
 	void HardwareBuffer::update(const HardwareBufferType type,
-		const MemoryBuffer &buffer, const Uint64 offset)
+		const AbstractReadMemoryBuffer &buffer, const Uint64 offset)
 	{
 		assert(get_size() <= (offset + buffer.get_size()));
 		bind(type);

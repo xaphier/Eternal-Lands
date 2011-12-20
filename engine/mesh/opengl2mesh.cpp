@@ -6,9 +6,11 @@
  ****************************************************************************/
 
 #include "opengl2mesh.hpp"
+#include "mappedhardwarewritememorybuffer.hpp"
 #include "hardwarewritememorybuffer.hpp"
 #include "vertexelements.hpp"
 #include "submesh.hpp"
+#include "vertexstream.hpp"
 
 namespace eternal_lands
 {
@@ -30,11 +32,19 @@ namespace eternal_lands
 
 		if (m_vertex_data[index].get() != 0)
 		{
-			result = boost::make_shared<HardwareWriteMemoryBuffer>(
+			result = boost::make_shared<MappedHardwareWriteMemoryBuffer>(
 				m_vertex_data[index], hbt_vertex);
 		}
 
 		return result;
+	}
+
+	void OpenGl2Mesh::set_vertex_buffer(
+		const AbstractReadMemoryBufferSharedPtr &buffer,
+		const Uint16 index)
+	{
+		m_vertex_data[index]->set(hbt_vertex, *buffer,
+			hbut_static_draw);
 	}
 
 	AbstractWriteMemoryBufferSharedPtr OpenGl2Mesh::get_index_buffer()
@@ -43,7 +53,7 @@ namespace eternal_lands
 
 		if (m_index_data.get() != 0)
 		{
-			result = boost::make_shared<HardwareWriteMemoryBuffer>(
+			result = boost::make_shared<MappedHardwareWriteMemoryBuffer>(
 				m_index_data, hbt_index);
 		}
 

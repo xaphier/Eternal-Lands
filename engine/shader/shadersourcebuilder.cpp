@@ -722,7 +722,7 @@ namespace eternal_lands
 		{
 			shader_source.reset(new ShaderSource());
 
-			shader_source->load_xml(file_name);
+			shader_source->load_xml(get_file_system(), file_name);
 
 			index.first = shader_source->get_type();
 			index.second = shader_source->get_name();
@@ -1159,10 +1159,10 @@ namespace eternal_lands
 		StringVariantMap &values) const
 	{
 		ShaderSourceParameterVector locals;
-		StringType gl_FragColor;
+		StringType output;
 		bool shadows;
 
-		gl_FragColor = UTF8("gl_FragColor");
+		output = UTF8("gl_FragColor");
 
 		shadows = false;
 
@@ -1223,6 +1223,8 @@ namespace eternal_lands
 			{
 				add_parameter(sslt_fragment_color, pqt_out,
 					locals, globals);
+				add_parameter(cpt_diffuse, pqt_in, locals,
+					globals);
 
 				main << UTF8("\t") << sslt_fragment_color;
 				main << UTF8(" = ") << cpt_diffuse;
@@ -1239,6 +1241,9 @@ namespace eternal_lands
 				{
 					add_parameter(apt_ambient, locals,
 						globals);
+
+					add_parameter(apt_ambient, locals,
+						globals);
 					main << apt_ambient << UTF8(".rgb;\n");
 				}
 			}
@@ -1250,7 +1255,7 @@ namespace eternal_lands
 				add_parameter(sslt_fragment_color, pqt_in,
 					locals, globals);
 
-				main << UTF8("\t") << gl_FragColor;
+				main << UTF8("\t") << output;
 				main << UTF8(".rgb = ");
 
 				if (data.get_option(ssbot_fog))
@@ -1273,7 +1278,7 @@ namespace eternal_lands
 
 				break;
 			case sbt_depth:
-				main << UTF8("\t") << gl_FragColor;
+				main << UTF8("\t") << output;
 				main << UTF8(".rgb = vec3(1.0)");
 
 				break;
@@ -1284,14 +1289,14 @@ namespace eternal_lands
 				add_parameter(cpt_shadow_map_data, pqt_in,
 					locals, globals);
 
-				main << UTF8("\t") << gl_FragColor;
+				main << UTF8("\t") << output;
 				main << UTF8(".rgb = ");
 				main << cpt_shadow_map_data;
 
 				break;
 		}
 
-		main << UTF8(";\n\t") << gl_FragColor << UTF8(".a = ");
+		main << UTF8(";\n\t") << output << UTF8(".a = ");
 
 		if (data.get_option(ssbot_transparent) &&
 			data.get_option(ssbot_alpha_to_coverage))

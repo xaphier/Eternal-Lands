@@ -126,6 +126,17 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
+	void ShaderSource::load_xml(const FileSystemSharedPtr &file_system,
+		const String &file_name)
+	{
+		XmlReaderSharedPtr reader;
+
+		reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			file_name));
+
+		load_xml(reader->get_root_node());
+	}
+
 	void ShaderSource::load_xml(const String &file_name)
 	{
 		XmlReaderSharedPtr reader;

@@ -62,9 +62,15 @@ namespace eternal_lands
 				m_offset += get_stride();
 			}
 
-			inline VertexFormatSharedPtr get_format() const
+			inline const VertexFormatSharedPtr &get_format() const
 			{
 				return m_format;
+			}
+
+			inline const AbstractWriteMemoryBufferSharedPtr
+				&get_buffer() const
+			{
+				return m_buffer;
 			}
 
 			inline Uint64 get_offset() const

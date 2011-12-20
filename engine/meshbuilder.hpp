@@ -40,7 +40,6 @@ namespace eternal_lands
 		vft_animated_mesh_tangent_extra_uv,
 		vft_morph_mesh_tangent_extra_uv,
 		vft_instanced_mesh_tangent_extra_uv,
-		vft_rect,
 		vft_sprite,
 		vft_font
 	};

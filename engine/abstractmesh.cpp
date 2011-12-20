@@ -15,6 +15,7 @@
 #include "logging.hpp"
 #include "exceptions.hpp"
 #include "vertexstream.hpp"
+#include "vertexbuffers.hpp"
 
 namespace eternal_lands
 {
@@ -114,7 +115,7 @@ namespace eternal_lands
 		AbstractWriteMemoryBufferSharedPtr buffer;
 		Uint32 i;
 
-		assert(source != 0);
+		assert(source.get() != 0);
 		assert(source->get_vertex_count() > 0);
 
 		m_vertex_format = vertex_format;
@@ -127,7 +128,7 @@ namespace eternal_lands
 
 		init_vertices();
 
-		for (i = 0; i < 16; ++i)
+		for (i = 0; i < vertex_stream_count; ++i)
 		{
 			if (get_vertex_elements(i).get_count() > 0)
 			{
@@ -138,6 +139,32 @@ namespace eternal_lands
 				VertexStream stream(m_vertex_format, buffer, i);
 
 				source->write_vertex_stream(stream);
+			}
+		}
+	}
+
+	void AbstractMesh::init_vertex(const VertexBuffersSharedPtr &buffers)
+	{
+		Uint32 i;
+
+		assert(buffers.get() != 0);
+		assert(buffers->get_vertex_count() > 0);
+
+		m_vertex_format = buffers->get_format();
+		m_vertex_count = buffers->get_vertex_count();
+
+		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+			" %2%, index_count: %3%, sub_mesh_count: %4%"),
+			get_use_16_bit_indices() % get_vertex_count() %
+			get_index_count() % get_sub_meshs().size());
+
+		init_vertices();
+
+		for (i = 0; i < vertex_stream_count; ++i)
+		{
+			if (get_vertex_elements(i).get_count() > 0)
+			{
+				set_vertex_buffer(buffers->get_buffer(i), i);
 			}
 		}
 	}

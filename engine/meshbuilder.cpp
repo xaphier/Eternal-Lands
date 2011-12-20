@@ -38,7 +38,6 @@ namespace eternal_lands
 			String(UTF8("animated_mesh_tangent_extra_uv")),
 			String(UTF8("morph_mesh_tangent_extra_uv")),
 			String(UTF8("instanced_mesh_tangent_extra_uv")),
-			String(UTF8("rect")),
 			String(UTF8("sprite")),
 			String(UTF8("font"))
 		};
@@ -54,7 +53,7 @@ namespace eternal_lands
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
 		VertexDescriptionMap instanced_mesh, mesh_tangent;
 		VertexDescriptionMap animated_mesh_tangent, morph_mesh_tangent;
-		VertexDescriptionMap instanced_mesh_tangent, rect, sprite, font;
+		VertexDescriptionMap instanced_mesh_tangent, sprite, font;
 		VertexElementType position, texture_coordinate, normal;
 
 		if (get_global_vars()->get_opengl_3_0())
@@ -87,7 +86,6 @@ namespace eternal_lands
 
 		sprite[vst_position] = position;
 		sprite[vst_texture_coordinate_0] = vet_ushort2_normalized;
-		rect[vst_position] = vet_ushort2;
 
 		font[vst_position] = vet_ushort2;
 		font[vst_texture_coordinate_0] = vet_ushort2_normalized;
@@ -122,7 +120,6 @@ namespace eternal_lands
 		morph_mesh_tangent[vst_morph_tangent] = normal;
 		instanced_mesh_tangent[vst_tangent] = normal;
 
-		set_format(vft_rect, VertexElements(rect));
 		set_format(vft_sprite, VertexElements(sprite));
 		set_format(vft_font, VertexElements(font));
 

@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "vertexelement.hpp"
 
 /**
  * @file
@@ -33,7 +34,13 @@ namespace eternal_lands
 			VertexStreams(const VertexFormatSharedPtr &format,
 				const AbstractWriteMemoryBufferSharedPtrArray
 					&memory, const Uint32 vertex_count);
+			VertexStreams(const VertexFormatSharedPtr &format,
+				const MemoryBufferSharedPtrVector &buffers,
+				const Uint32 vertex_count);
 			~VertexStreams() throw();
+			void set(const VertexSemanticType semantic,
+				const glm::vec4 &data);
+			void push_vertex();
 
 			inline const VertexFormatSharedPtr &get_format() const
 			{
@@ -48,6 +55,21 @@ namespace eternal_lands
 			inline VertexStreamVector &get_streams()
 			{
 				return m_streams;
+			}
+
+			inline const VertexStream &get_stream(
+				const Uint32 index) const
+			{
+				assert(index < m_streams.size());
+
+				return m_streams[index];
+			}
+
+			inline VertexStream &get_streams(const Uint32 index)
+			{
+				assert(index < m_streams.size());
+
+				return m_streams[index];
 			}
 
 			inline Uint32 get_vertex_count() const

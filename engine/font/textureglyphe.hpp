@@ -55,7 +55,7 @@ namespace eternal_lands
 
 			void write_to_stream(const glm::vec4 &color,
 				const float kerning, const float spacing,
-				const float rise, VertexStream &stream,
+				const float rise, VertexStreams &streams,
 				glm::uvec2 &position) const;
 
 			inline void set_kerning(

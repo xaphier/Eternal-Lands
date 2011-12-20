@@ -472,13 +472,10 @@ namespace eternal_lands
 		m_quality = String(UTF8("high"));
 		m_shadow_distance = 40.0f;
 		m_view_distance = 40.0f;
-		m_shadow_map_count = 1;
+		m_shadow_quality = sqt_no;
 		m_shadow_map_size = 2;
 		m_opengl_version = ovt_2_1;
-		m_msaa_shadows = false;
-		m_exponential_shadow_maps = false;
 		m_alpha_to_coverage = false;
-		m_filter_shadow_map = false;
 		m_fog = true;
 		m_optmize_shader_source = true;
 	}

@@ -185,19 +185,17 @@ enum
 	el_false = 0
 };
 
-int el_shadow_map_count = 0;
+int el_shadow_quality = 0;
 int el_shadow_map_size = 2;
 float el_shadow_distance = 40.0f;
 float el_view_distance = 40.0f;
 float el_ambient_scale = 1.0f;
-int el_msaa_shadows = el_false;
-int el_exponential_shadow_maps = el_false;
 int el_alpha_to_coverage = el_false;
-int el_filter_shadow_map = el_false;
 int el_fog = el_true;
 int el_optmize_shader_source = el_true;
+int el_shadow_map_filter = 0;
 
-void change_el_shadow_map_count(int* var, int value)
+void change_el_shadow_quality(int* var, int value)
 {
 	if (value < 2)
 	{
@@ -205,10 +203,12 @@ void change_el_shadow_map_count(int* var, int value)
 			get_opengl_3_0() || (value == 0))
 		{
 			*var = value;
-			set_shadow_map_count(*var);
+			set_shadow_quality(*var);
 		}
 		else
 		{
+			*var = 0;
+			set_shadow_quality(*var);
 			LOG_TO_CONSOLE(c_green2, "Framebuffer support needed");
 		}
 	}
@@ -216,20 +216,13 @@ void change_el_shadow_map_count(int* var, int value)
 	{
 		if (!gl_extensions_loaded || get_opengl_3_0())
 		{
-			if (gl_extensions_loaded && !el_exponential_shadow_maps)
-			{
-				*var = 1;
-				LOG_TO_CONSOLE(c_green2, "Exponential Shadow "
-					"Maps needed");
-			}
-			else
-			{
-				*var = value;
-				set_shadow_map_count(*var);
-			}
+			*var = value;
+			set_shadow_quality(*var);
 		}
 		else
 		{
+			*var = 0;
+			set_shadow_quality(*var);
 			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
 		}
 	}
@@ -253,99 +246,10 @@ void change_el_view_distance(float* var, float* value)
 	set_view_distance(*var);
 }
 
-void change_el_msaa_shadows(int* var)
-{
-	if (*var)
-	{
-		*var = el_false;
-		set_msaa_shadows(*var);
-	}
-	else
-	{
-		if (!gl_extensions_loaded || get_opengl_3_0())
-		{
-			if (gl_extensions_loaded && !el_exponential_shadow_maps)
-			{
-				LOG_TO_CONSOLE(c_green2, "Exponential Shadow "
-					"Maps needed");
-			}
-			else
-			{
-				*var = el_true;
-				set_msaa_shadows(*var);
-			}
-		}
-		else
-		{
-			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
-		}
-	}
-}
-
-void change_el_exponential_shadow_maps(int* var)
-{
-	if (*var)
-	{
-		if (el_shadow_map_count > 1)
-		{
-			el_shadow_map_count = 1;
-		}
-
-		*var = el_false;
-		el_filter_shadow_map = el_false;
-		el_msaa_shadows = el_false;
-		set_exponential_shadow_maps(*var);
-		set_filter_shadow_map(el_filter_shadow_map);
-		set_msaa_shadows(el_msaa_shadows);
-		set_shadow_map_count(el_shadow_map_count);
-	}
-	else
-	{
-		if (!gl_extensions_loaded || get_opengl_3_0())
-		{
-			*var = el_true;
-			set_exponential_shadow_maps(*var);
-		}
-		else
-		{
-			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
-		}
-	}
-}
-
 void change_el_alpha_to_coverage(int* var)
 {
 	*var = !*var;
 	set_alpha_to_coverage(*var);
-}
-
-void change_el_filter_shadow_map(int* var)
-{
-	if (*var)
-	{
-		*var = el_false;
-		set_filter_shadow_map(*var);
-	}
-	else
-	{
-		if (!gl_extensions_loaded || get_opengl_3_0())
-		{
-			if (gl_extensions_loaded && !el_exponential_shadow_maps)
-			{
-				LOG_TO_CONSOLE(c_green2, "Exponential Shadow "
-					"Maps needed");
-			}
-			else
-			{
-				*var = el_true;
-				set_filter_shadow_map(*var);
-			}
-		}
-		else
-		{
-			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
-		}
-	}
 }
 
 void change_el_fog(int* var)
@@ -384,11 +288,11 @@ void change_el_opengl_version(int* var, int value)
 	LOG_TO_CONSOLE(c_green2, video_restart_str);
 }
 
-void change_el_shadow_filter(int* var, int value)
+void change_el_shadow_map_filter(int* var, int value)
 {
 	*var = value;
 
-	set_filter(*var);
+	set_shadow_map_filter(*var);
 }
 
 void options_loaded(void)
@@ -1406,13 +1310,10 @@ void check_options()
 #endif	/* NEW_TEXTURES */
 	check_option_var("use_point_particles");
 	check_option_var("use_frame_buffer");
-	check_option_var("use_shadow_mapping");
 	check_option_var("water_shader_quality");
-	check_option_var("exponential_shadow_maps");
-	check_option_var("msaa_shadows");
-	check_option_var("filter_shadow_map");
-	check_option_var("shadow_map_count");
+	check_option_var("shadow_quality");
 	check_option_var("optmize_shader_source");
+	check_option_var("shadow_map_filter");
 }
 
 int check_var (char *str, var_name_type type)
@@ -1848,15 +1749,13 @@ static void init_ELC_vars(void)
 
 
 	// GFX TAB
-	add_var(OPT_INT, "shadow_map_count", "shadow_map_count", &el_shadow_map_count, change_el_shadow_map_count, 0, "Shadow map count", "Number of shadow maps used.", GFX, 0, 4);
+	add_var(OPT_MULTI_H, "shadow_quality", "shadow_quality", &el_shadow_quality, change_el_shadow_quality, 0, "Shadow Quality", "Shadow Quality", GFX, "no", "low", "medium", "high", "ultra", 0);
 	add_var(OPT_MULTI_H, "shadow_map_size", "shadow_map_size", &el_shadow_map_size, change_el_shadow_map_size, 0, "Shadow Map Size", "Shadow Map Size", GFX, "512", "1024", "1536", "2048", 0);
 	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &el_shadow_distance, change_el_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &el_view_distance, change_el_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
-	add_var(OPT_BOOL, "msaa_shadows", "msaa_shadows", &el_msaa_shadows, change_el_msaa_shadows, el_false, "MSAA for shadow mapping", "Using MSAA antialiasing for shadow map generation", GFX);
-	add_var(OPT_BOOL, "exponential_shadow_maps", "exponential_shadow_maps", &el_exponential_shadow_maps, change_el_exponential_shadow_maps, el_false, "Exponential Shadow Maps", "Exponential Shadow Maps", GFX);
 	add_var(OPT_BOOL, "alpha_to_coverage", "alpha_to_coverage", &el_alpha_to_coverage, change_el_alpha_to_coverage, el_false, "Alpha to coverage", "Alpha to coverage", GFX);
-	add_var(OPT_BOOL, "filter_shadow_map", "filter_shadow_map", &el_filter_shadow_map, change_el_filter_shadow_map, el_false, "Filter shadow map", "Filter shadow map", GFX);
 	add_var(OPT_BOOL, "fog", "fog", &el_fog, change_el_fog, el_true, "Fog", "Fog", GFX);
+	add_var(OPT_MULTI, "shadow_map_filter", "smf", &el_shadow_map_filter, change_el_shadow_map_filter, 0, "Shadow Map Filter", "Shadow Map Filter", GFX, "Gauss 5x5", "Gauss 9x9 using 5x5 inner values", "Gauss 9x9", "Gauss 13x13 using 9x9 inner values", "Gauss 13x13", "Gauss 17x17 using 13x13 inner values", "Box 5x5", "Box 9x9", "Box 13x13", 0);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */

@@ -38,6 +38,8 @@ namespace eternal_lands
 			ShaderSource();
 			~ShaderSource() throw();
 			void load_xml(const String &file_name);
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
 			void save_xml(const String &file_name) const;
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;

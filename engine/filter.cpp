@@ -247,7 +247,7 @@ namespace eternal_lands
 		StringVariantMap values;
 		Uint32 i, j;
 
-		mesh_cache->get_mesh(String(UTF8("rect")), m_mesh);
+		mesh_cache->get_mesh(String(UTF8("plane_2")), m_mesh);
 
 		values[ShaderTextureUtil::get_str(stt_diffuse_0)] =
 			Variant(static_cast<Sint64>(stt_diffuse_0));
@@ -320,7 +320,7 @@ namespace eternal_lands
 
 		if (layer)
 		{
-			str << UTF8("uniform int layer;\n");
+			str << UTF8("uniform float layer;\n");
 			str << UTF8("uniform sampler2DArray ") << stt_diffuse_0;
 		}
 		else
@@ -562,7 +562,7 @@ namespace eternal_lands
 		state_manager.switch_program(m_programs[index]);
 
 		state_manager.get_program()->set_variant_parameter(
-			String(UTF8("layer")), static_cast<Sint64>(layer));
+			String(UTF8("layer")), static_cast<float>(layer));
 		state_manager.get_program()->set_variant_parameter(
 			String(UTF8("scale")), scale);
 		state_manager.get_program()->set_variant_parameter(

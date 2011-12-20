@@ -9,6 +9,7 @@
 #include "abstractwritememorybuffer.hpp"
 #include "vertexformat.hpp"
 #include "vertexstream.hpp"
+#include "memorybuffer.hpp"
 
 namespace eternal_lands
 {
@@ -20,7 +21,7 @@ namespace eternal_lands
 	{
 		Uint32 i, count;
 
-		count = m_streams.size();
+		count = memory.size();
 
 		for (i = 0; i < count; i++)
 		{
@@ -32,8 +33,44 @@ namespace eternal_lands
 		}
 	}
 
+	VertexStreams::VertexStreams(const VertexFormatSharedPtr &format,
+		const MemoryBufferSharedPtrVector &buffers,
+		const Uint32 vertex_count): m_format(format),
+		m_vertex_count(vertex_count)
+	{
+		Uint32 i, count;
+
+		count = buffers.size();
+
+		for (i = 0; i < count; i++)
+		{
+			if (buffers[i].get() != 0)
+			{
+				m_streams.push_back(new VertexStream(format,
+					buffers[i], i));
+			}
+		}
+	}
+
 	VertexStreams::~VertexStreams() throw()
 	{
+	}
+
+	void VertexStreams::set(const VertexSemanticType semantic,
+		const glm::vec4 &data)
+	{
+		BOOST_FOREACH(VertexStream &stream, get_streams())
+		{
+			stream.set(semantic, data);
+		}
+	}
+
+	void VertexStreams::push_vertex()
+	{
+		BOOST_FOREACH(VertexStream &stream, get_streams())
+		{
+			stream.push_vertex();
+		}
 	}
 
 }

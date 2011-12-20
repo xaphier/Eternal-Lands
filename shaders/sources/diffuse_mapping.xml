@@ -77,6 +77,9 @@
    </parameters>
    <source>{
 	diffuse = texture(diffuse_sampler_0, vec3(fragment_uv, layer.x));
+	float scale;
+	scale = max(1.0, -textureQueryLod(diffuse_sampler_0, fragment_uv).y);
+	diffuse.a = (diffuse.a - 0.5) * scale + 0.5;
 }</source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

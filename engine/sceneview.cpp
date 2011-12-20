@@ -26,7 +26,7 @@ namespace eternal_lands
 			split_uni = z_near + (z_far - z_near) * scale;
 			split_log = z_near * std::pow(z_far / z_near, scale);
 
-			return glm::mix(split_uni, split_log, 0.25f);
+			return glm::mix(split_uni, split_log, 0.5f);
 		}
 
 		glm::mat4x4 build_shadow_cropp_matrix(
@@ -127,60 +127,8 @@ namespace eternal_lands
 		shadow_projection_view_matrix =	shadow_projection_matrix *
 			get_shadow_view_matrix();
 
-		if (m_shadow_map_count == 3)
-		{
-			switch (index)
-			{
-				case 0:
-					scale = glm::vec3(1.0f / 3.0f, 0.5f, 0.5f);
-					offset = glm::vec3(1.0f / 3.0f, 0.5f, 0.5f);
-					break;
-				case 1:
-					scale = glm::vec3(1.0f / 6.0f, 0.25f, 0.5f);
-					offset = glm::vec3(5.0f / 6.0f, 0.25f, 0.5f);
-					break;
-				case 2:
-					scale = glm::vec3(1.0f / 6.0f, 0.25f, 0.5f);
-					offset = glm::vec3(5.0f / 6.0f, 0.75f, 0.5f);
-					break;
-			}
-#if	0
-			scale = glm::vec3(0.25f, 0.5f, 0.5f);
-
-			switch (index)
-			{
-				case 0:
-					offset = glm::vec3(0.25f, 0.5f, 0.5f);
-					break;
-				case 1:
-					offset = glm::vec3(0.75f, 0.5f, 0.5f);
-					break;
-			}
-
-			scale = glm::vec3(0.25f, 0.25f, 0.5f);
-
-			switch (index)
-			{
-				case 0:
-					offset = glm::vec3(0.25f, 0.25f, 0.5f);
-					break;
-				case 1:
-					offset = glm::vec3(0.75f, 0.25f, 0.5f);
-					break;
-				case 2:
-					offset = glm::vec3(0.75f, 0.25f, 0.5f);
-					break;
-				case 3:
-					offset = glm::vec3(0.75f, 0.75f, 0.5f);
-					break;
-			}
-#endif
-		}
-		else
-		{
-			scale = glm::vec3(0.5f);
-			offset = glm::vec3(0.5f);
-		}
+		scale = glm::vec3(0.5f);
+		offset = glm::vec3(0.5f);
 
 		shadow_texture_matrix = glm::translate(offset);
 		shadow_texture_matrix = glm::scale(shadow_texture_matrix,

@@ -79,20 +79,16 @@ void engine_resize_root_window(const float fov, const float aspect,
 	const float z_near, const float z_far);
 int command_lua(char *text, int len);
 
-void set_shadow_map_count(const int value);
 void set_shadow_map_size(const int value);
+void set_shadow_quality(const int value);
 void set_shadow_distance(const float value);
 void set_view_distance(const float value);
-void set_exponential_shadow_maps(const int value);
 void set_fog(const int value);
-void set_msaa_shadows(const int value);
 void set_alpha_to_coverage(const int value);
-void set_filter_shadow_map(const int value);
 void set_optmize_shader_source(const int value);
-void set_texture_arrays(const int value);
 void set_opengl_version(const int value);
-void set_filter(const int value);
 void set_fog_data(const float* color, const float density);
+void set_shadow_map_filter(const int value);
 int get_opengl_3_0();
 int get_opengl_3_1();
 int get_opengl_3_2();

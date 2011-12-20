@@ -10,6 +10,7 @@
 #include "memorybuffer.hpp"
 #include "reader.hpp"
 #include "utf.hpp"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
@@ -66,20 +67,21 @@ namespace eternal_lands
 		}
 
 		voidpf ZCALLBACK open_ifstream_func(voidpf opaque,
-			const String &file_name, int mode)
+			const void* file_name, int mode)
 		{
-			StringType path;
-
-			path = utf8_to_string(file_name.get());
-
-			return new std::ifstream(path.c_str(),
+			return new std::ifstream(
+				static_cast<const char*>(file_name),
 				std::ifstream::binary);
 		}
 
 		uLong ZCALLBACK read_istream_func(voidpf opaque,
-			std::istream* stream, void* buf, uLong size)
+			voidpf ptr, void* buf, uLong size)
 		{
-			assert(stream != 0);
+			std::istream* stream;
+
+			assert(ptr != 0);
+
+			stream = static_cast<std::istream*>(ptr);
 
 			stream->read(static_cast<char*>(buf), size);
 
@@ -92,25 +94,32 @@ namespace eternal_lands
 		}
 
 		uLong ZCALLBACK write_istream_func(voidpf opaque,
-			voidpf stream, const void* buf, uLong size)
+			voidpf ptr, const void* buf, uLong size)
 		{
-			assert(stream != 0);
+			assert(ptr != 0);
 
 			return 0;
 		}
 
-		long ZCALLBACK tell_istream_func(voidpf opaque,
-			std::istream* stream)
+		ZPOS64_T ZCALLBACK tell_istream_func(voidpf opaque, voidpf ptr)
 		{
-			assert(stream != 0);
+			std::istream* stream;
+
+			assert(ptr != 0);
+
+			stream = static_cast<std::istream*>(ptr);
 
 			return stream->tellg();
 		}
 
-		long ZCALLBACK seek_istream_func(voidpf opaque,
-			std::istream* stream, ZPOS64_T offset, int origin)
+		long ZCALLBACK seek_istream_func(voidpf opaque, voidpf ptr,
+			ZPOS64_T offset, int origin)
 		{
-			assert(stream != 0);
+			std::istream* stream;
+
+			assert(ptr != 0);
+
+			stream = static_cast<std::istream*>(ptr);
 
 			switch (origin)
 			{
@@ -135,23 +144,29 @@ namespace eternal_lands
 				return -1;
 			}
 
-			return stream->tellg();
+			return 0;
 		}
 
-		int ZCALLBACK close_istream_func(voidpf opaque,
-			std::istream* stream)
+		int ZCALLBACK close_istream_func(voidpf opaque, voidpf ptr)
 		{
-			assert(stream != 0);
+			std::istream* stream;
+
+			assert(ptr != 0);
+
+			stream = static_cast<std::istream*>(ptr);
 
 			delete stream;
 
 			return 0;
 		}
 
-		int ZCALLBACK error_istream_func(voidpf opaque,
-			std::istream* stream)
+		int ZCALLBACK error_istream_func(voidpf opaque, voidpf ptr)
 		{
-			if (stream != 0)
+			std::istream* stream;
+
+			stream = static_cast<std::istream*>(ptr);
+
+			if (stream == 0)
 			{
 				return -1;
 			}
@@ -166,18 +181,95 @@ namespace eternal_lands
 
 	}
 
-	class ZipFile::ZipFileEntry: public unz64_file_pos
+	class ZipFile::ZipFileEntry
 	{
+		private:
+			unz64_file_pos m_position;
+
+		public:
+			inline ZipFileEntry()
+			{
+			}
+
+			inline ZipFileEntry(const unz64_file_pos &position)
+			{
+				set_position(position);
+			}
+
+			inline ~ZipFileEntry() throw()
+			{
+			}
+
+			inline unz64_file_pos &get_position()
+			{
+				return m_position;
+			}
+
+			inline const unz64_file_pos &get_position() const
+			{
+				return m_position;
+			}
+
+			inline void set_position(const unz64_file_pos &position)
+			{
+				m_position = position;
+			}
 	};
 
 	ZipFile::ZipFile(const String &name): AbstractArchive(name)
 	{
-		
+		init();
 	}
 
 	ZipFile::~ZipFile() throw()
 	{
 		unzClose(m_file);
+	}
+
+	void ZipFile::init()
+	{
+		zlib_filefunc64_def file_functions;
+		unz_file_info64 info;
+		unz64_file_pos position;
+		boost::scoped_array<char> file_name;
+		String index;
+		Uint32 size;
+		Sint32 ok;
+
+		file_functions.zopen64_file = open_ifstream_func;
+		file_functions.zread_file = read_istream_func;
+		file_functions.zwrite_file = write_istream_func;
+		file_functions.ztell64_file = tell_istream_func;
+		file_functions.zseek64_file = seek_istream_func;
+		file_functions.zclose_file = close_istream_func;
+		file_functions.zerror_file = error_istream_func;
+
+		m_file = unzOpen2_64(utf8_to_string(get_name()).c_str(),
+			&file_functions);
+
+		ok = unzGoToFirstFile(m_file);
+
+		while (ok == UNZ_OK)
+		{
+			unzGetFilePos64(m_file, &position);
+
+			unzGetCurrentFileInfo64(m_file, &info, 0, 0, 0, 0, 0,
+				0);
+
+			size = info.size_filename;
+
+			file_name.reset(new char[size + 1]);
+
+			unzGetCurrentFileInfo64(m_file, 0, file_name.get(),
+				size, 0, 0, 0, 0);
+
+			index = String(string_to_utf8(StringType(
+				file_name.get(), size)));
+
+			m_files[index] = ZipFileEntry(position);
+
+			ok = unzGoToNextFile(m_file);
+		}
 	}
 
 	ReaderSharedPtr ZipFile::get_file(const String &file_name) const
@@ -187,9 +279,10 @@ namespace eternal_lands
 
 		found = m_files.find(file_name);
 
-		if (found == m_files.end())
+		if (found != m_files.end())
 		{
-			ZipFileReader zip_reader(m_file, found->second);
+			ZipFileReader zip_reader(m_file,
+				found->second.get_position());
 
 			reader = boost::make_shared<Reader>(
 				zip_reader.get_buffer(), file_name);
@@ -197,7 +290,8 @@ namespace eternal_lands
 			return reader;
 		}
 
-		return reader;
+		EL_THROW_EXCEPTION(FileNotFoundException()
+			<< boost::errinfo_file_name(file_name));
 	}
 
 	bool ZipFile::get_has_file(const String &file_name) const

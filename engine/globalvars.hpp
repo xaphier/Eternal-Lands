@@ -31,19 +31,25 @@ namespace eternal_lands
 		ovt_3_3
 	};
 
+	enum ShadowQualityType
+	{
+		sqt_no,
+		sqt_low,
+		sqt_medium,
+		sqt_high,
+		sqt_ultra
+	};		
+
 	class GlobalVars
 	{
 		private:
 			String m_quality;
 			float m_shadow_distance;
 			float m_view_distance;
-			Uint16 m_shadow_map_count;
 			Uint16 m_shadow_map_size;
+			ShadowQualityType m_shadow_quality;
 			OpenglVerionType m_opengl_version;
-			bool m_msaa_shadows;
-			bool m_exponential_shadow_maps;
 			bool m_alpha_to_coverage;
-			bool m_filter_shadow_map;
 			bool m_fog;
 			bool m_optmize_shader_source;
 
@@ -68,10 +74,10 @@ namespace eternal_lands
 				m_view_distance = view_distance;
 			}
 
-			inline void set_shadow_map_count(
-				const Uint16 shadow_map_count)
+			inline void set_shadow_quality(
+				const ShadowQualityType shadow_quality)
 			{
-				m_shadow_map_count = shadow_map_count;
+				m_shadow_quality = shadow_quality;
 			}
 
 			inline void set_shadow_map_size(
@@ -86,30 +92,11 @@ namespace eternal_lands
 				m_opengl_version = opengl_version;
 			}
 
-			inline void set_msaa_shadows(const bool msaa_shadows)
-			{
-				m_msaa_shadows = msaa_shadows;
-			}
-
-			inline void set_exponential_shadow_maps(
-				const bool exponential_shadow_maps)
-			{
-				m_exponential_shadow_maps =
-					exponential_shadow_maps;
-			}
-
 			inline void set_alpha_to_coverage(
 				const bool alpha_to_coverage)
 			{
 				m_alpha_to_coverage =
 					alpha_to_coverage;
-			}
-
-			inline void set_filter_shadow_map(
-				const bool filter_shadow_map)
-			{
-				m_filter_shadow_map =
-					filter_shadow_map;
 			}
 
 			inline void set_fog(const bool fog)
@@ -139,9 +126,27 @@ namespace eternal_lands
 				return m_view_distance;
 			}
 
+			inline ShadowQualityType get_shadow_quality() const
+			{
+				return m_shadow_quality;
+			}
+
 			inline Uint16 get_shadow_map_count() const
 			{
-				return m_shadow_map_count;
+				switch (get_shadow_quality())
+				{
+					case sqt_no:
+						return 0;
+					case sqt_low:
+					case sqt_medium:
+						return 1;
+					case sqt_high:
+						return 2;
+					case sqt_ultra:
+						return 3;
+				}
+
+				return 0;
 			}
 
 			inline Uint16 get_shadow_map_size() const
@@ -156,12 +161,34 @@ namespace eternal_lands
 
 			inline bool get_msaa_shadows() const
 			{
-				return m_msaa_shadows;
+				switch (get_shadow_quality())
+				{
+					case sqt_no:
+					case sqt_low:
+					case sqt_medium:
+					case sqt_high:
+						return false;
+					case sqt_ultra:
+						return true;
+				}
+
+				return false;
 			}
 
 			inline bool get_exponential_shadow_maps() const
 			{
-				return m_exponential_shadow_maps;
+				switch (get_shadow_quality())
+				{
+					case sqt_no:
+					case sqt_low:
+						return false;
+					case sqt_medium:
+					case sqt_high:
+					case sqt_ultra:
+						return true;
+				}
+
+				return false;
 			}
 
 			inline bool get_alpha_to_coverage() const
@@ -171,7 +198,18 @@ namespace eternal_lands
 
 			inline bool get_filter_shadow_map() const
 			{
-				return m_filter_shadow_map;
+				switch (get_shadow_quality())
+				{
+					case sqt_no:
+					case sqt_low:
+					case sqt_medium:
+						return false;
+					case sqt_high:
+					case sqt_ultra:
+						return true;
+				}
+
+				return false;
 			}
 
 			inline bool get_fog() const

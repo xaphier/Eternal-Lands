@@ -64,7 +64,6 @@ namespace eternal_lands
 			void load_mesh(const String &name,
 				AbstractMeshSharedPtr &mesh,
 				MaterialDescriptionVector &materials) const;
-			void init_rect(AbstractMeshSharedPtr &mesh) const;
 
 		public:
 			/**

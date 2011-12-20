@@ -49,6 +49,11 @@ namespace eternal_lands
 				const SubFrustumsMask mask);
 			void next_frame();
 
+			inline RenderObjectDataVector &get_objects()
+			{
+				return m_objects;
+			}
+
 			inline const RenderObjectDataVector &get_objects() const
 			{
 				return m_objects;

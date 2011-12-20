@@ -23,6 +23,7 @@
 #include "buildinformations.hpp"
 #include <boost/exception/all.hpp>
 #include "utf.hpp"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
@@ -471,19 +472,51 @@ namespace eternal_lands
 		SDL_UnlockMutex(log_mutex);
 	}
 
-	void log_message(const LogLevelType log_level,
-		const String &message, const std::string &file,
-		const Uint32 line)
-	{
-		log_message(log_level, message, file, line);
-	}
-
 	void log_exception(const boost::exception &exception,
 		const std::string &file, const Uint32 line)
 	{
-		
-		log_message(llt_error,
-			boost::diagnostic_information(exception), file, line);
+		String str, throw_file;
+		Uint32 throw_line;
+
+		throw_file = UTF8("Unkown file");
+
+		if (boost::get_error_info<boost::throw_file>(exception) != 0)
+		{
+			throw_file = *boost::get_error_info<boost::throw_file>(
+				exception);
+		}
+
+		throw_line = 0;
+
+		if (boost::get_error_info<boost::throw_line>(exception) != 0)
+		{
+			throw_line = *boost::get_error_info<boost::throw_line>(
+				exception);
+		}
+
+		if (typeid(exception) == typeid(FileNotFoundException))
+		{
+			BoostFormat format_string(UTF8("File '%1%' not found"));
+
+			str = UTF8("Unkown file");
+
+			if (boost::get_error_info<
+				boost::errinfo_file_name>(exception) != 0)
+			{
+				str = *boost::get_error_info<
+					boost::errinfo_file_name>(exception);
+			}
+
+			format_string % str;
+
+			log_message(llt_error, String(format_string.str()),
+				throw_file, throw_line);
+
+			return;
+		}
+
+		log_message(llt_error, boost::diagnostic_information(
+			exception), throw_file, throw_line);
 	}
 
 	void log_exception(const std::exception &exception,

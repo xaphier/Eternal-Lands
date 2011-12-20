@@ -17,7 +17,7 @@ namespace eternal_lands
 		const TextureFormatType format): AbstractFrameBuffer(name,
 			width, height)
 	{
-		get_texture()->set_target(ttt_2d_texture);
+		get_texture()->set_target(ttt_2d_texture_array);
 
 		get_texture()->set_format(format);
 		get_texture()->set_wrap_s(twt_clamp);
@@ -25,7 +25,7 @@ namespace eternal_lands
 		get_texture()->set_wrap_r(twt_clamp);
 
 		get_texture()->set_mipmap_count(0);
-		get_texture()->init(get_width(), get_height(), 0, 0);
+		get_texture()->init(get_width(), get_height(), 1, 0);
 
 		m_frame_buffer.bind();
 

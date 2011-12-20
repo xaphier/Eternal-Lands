@@ -67,6 +67,7 @@ namespace eternal_lands
 		m_global_vars(global_vars), m_scene_resources(global_vars,
 			file_system), m_scene_view(global_vars),
 			m_frame_id(0), m_program_vars_id(0),
+			m_shadow_map_filter(ft_gauss_5_tap),
 			m_shadow_map_change(true)
 	{
 		m_light_position_array.resize(8);
@@ -212,17 +213,11 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_msaa_shadows())
 		{
-			samples = 4;
+			samples = 2;
 		}
 		else
 		{
 			samples = 0;
-		}
-
-		if (shadow_map_count == 3)
-		{
-			shadow_map_count = 1;
-			shadow_map_width = (shadow_map_width * 3) / 2;
 		}
 
 		m_shadow_frame_buffer = get_scene_resources(
@@ -386,7 +381,7 @@ namespace eternal_lands
 
 		frustum = Frustum(m_scene_view.get_projection_view_matrices());
 
-		BOOST_FOREACH(const RenderObjectData &object,
+		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
 			mask = frustum.intersect_sub_frustums(
@@ -401,6 +396,7 @@ namespace eternal_lands
 						)->get_bounding_box());
 				}
 			}
+			object.set_sub_frustums_mask(mask);
 		}
 
 		split_boxes = frustum.get_bounding_boxes();
@@ -708,19 +704,19 @@ namespace eternal_lands
 			m_state_manager.switch_depth_test(false);
 
 			m_shadow_filter_frame_buffer->bind(0);
-			m_shadow_filter_frame_buffer->clear(glm::vec4(0));
+			m_shadow_filter_frame_buffer->clear(glm::vec4(1e38f));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_frame_buffer->get_texture());
 			m_scene_resources.get_filter().bind(tmp, tmp, width,
-				height, index, 1, ft_gauss_5_tap, false,
-				m_state_manager);
+				height, index, 1, get_shadow_map_filter(),
+				false, m_state_manager);
 
 			m_shadow_frame_buffer->bind_texture(index);
-			m_shadow_frame_buffer->clear(glm::vec4(0));
+			m_shadow_frame_buffer->clear(glm::vec4(1e38f));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_filter_frame_buffer->get_texture());
 			m_scene_resources.get_filter().bind(tmp, tmp, width,
-				height, 1, ft_gauss_5_tap, true,
+				height, 0, 1, get_shadow_map_filter(), true,
 				m_state_manager);
 		}
 
@@ -866,7 +862,7 @@ namespace eternal_lands
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_frame_buffer->get_texture());
 			m_scene_resources.get_filter().bind(source, dest, width,
-				height, 0, 1, ft_gauss_5_tap, false,
+				height, 0, 1, get_shadow_map_filter(), false,
 				m_state_manager);
 
 			dest = glm::vec4(2.0f / 3.0f, 1.0f, 0.0f, 0.0f);
@@ -882,7 +878,7 @@ namespace eternal_lands
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_filter_frame_buffer->get_texture());
 			m_scene_resources.get_filter().bind(source, dest, width,
-				height, 1, ft_gauss_5_tap, true,
+				height, 1, get_shadow_map_filter(), true,
 				m_state_manager);
 		}
 
@@ -925,14 +921,7 @@ namespace eternal_lands
 
 		if (m_scene_view.get_shadow_map_count() > 0)
 		{
-			if (m_scene_view.get_shadow_map_count() == 3)
-			{
-				draw_all_shadows();
-			}
-			else
-			{
-				draw_all_shadows_array();
-			}
+			draw_all_shadows_array();
 		}
 
 		m_scene_view.set_default_view();
@@ -958,7 +947,8 @@ namespace eternal_lands
 				}
 			}
 
-			draw_object(object.get_object(), true);
+			draw_object(object.get_object(),
+				object.get_sub_frustums_mask().any());
 		}
 
 		DEBUG_CHECK_GL_ERROR();

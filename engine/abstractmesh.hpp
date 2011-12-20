@@ -54,6 +54,10 @@ namespace eternal_lands
 			virtual AbstractWriteMemoryBufferSharedPtr
 				get_vertex_buffer(const Uint16 index) = 0;
 
+			virtual void set_vertex_buffer(
+				const AbstractReadMemoryBufferSharedPtr &buffer,
+				const Uint16 index) = 0;
+
 			virtual AbstractWriteMemoryBufferSharedPtr
 				get_index_buffer() = 0;
 
@@ -127,6 +131,7 @@ namespace eternal_lands
 			void init_vertex(
 				const VertexFormatSharedPtr &vertex_format,
 				const MeshDataToolSharedPtr &source);
+			void init_vertex(const VertexBuffersSharedPtr &buffers);
 
 			void update_indices(const Uint32Set &blocks,
 				const IndexUpdateSourceSharedPtr &update);

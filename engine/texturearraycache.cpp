@@ -95,7 +95,8 @@ namespace eternal_lands
 			return;
 		}
 
-		reader = XmlReaderSharedPtr(new XmlReader(file_name));
+		reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			file_name));
 
 		node = reader->get_root_node();
 

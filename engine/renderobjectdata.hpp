@@ -65,6 +65,12 @@ namespace eternal_lands
 				m_blend = blend;
 			}
 
+			inline void set_sub_frustums_mask(
+				const SubFrustumsMask &sub_frustums_mask)
+			{
+				m_sub_frustums_mask = sub_frustums_mask;
+			}
+
 			inline const ObjectSharedPtr &get_object() const
 			{
 				return m_object;

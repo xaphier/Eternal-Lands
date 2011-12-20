@@ -246,6 +246,7 @@ namespace eternal_lands
 	class VertexElement;
 	class VertexElements;
 	class VertexFormat;
+	class VertexBuffers;
 	class VertexStream;
 	class VertexStreams;
 	class XmlReader;
@@ -309,6 +310,8 @@ namespace eternal_lands
 	SHARED_PTR(TextureArrayCache);
 	SHARED_PTR(TextureCache);
 	SHARED_PTR(VertexFormat);
+	SHARED_PTR(VertexBuffers);
+	SHARED_PTR(VertexStreams);
 	SHARED_PTR(XmlReader);
 	SHARED_PTR(XmlWriter);
 
@@ -332,6 +335,7 @@ namespace eternal_lands
 	VECTOR(LightSharedPtr);
 	VECTOR(Material);
 	VECTOR(MaterialDescription);
+	VECTOR(MemoryBufferSharedPtr);
 	VECTOR(MeshDrawData);
 	VECTOR(ObjectData);
 	VECTOR(ObjectDescription);
@@ -366,7 +370,7 @@ namespace eternal_lands
 	typedef boost::ptr_vector<AbstractArchive> AbstractArchiveVector;
 	typedef boost::ptr_array<VertexStream, vertex_stream_count>
 		VertexStreamArray;
-	typedef boost::ptr_array<AbstractWriteMemoryBufferSharedPtr,
+	typedef boost::array<AbstractWriteMemoryBufferSharedPtr,
 		vertex_stream_count> AbstractWriteMemoryBufferSharedPtrArray;
 	typedef boost::ptr_vector<VertexStream> VertexStreamVector;
 

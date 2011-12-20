@@ -7,6 +7,9 @@
 
 #include "xmlreader.hpp"
 #include "exceptions.hpp"
+#include "filesystem.hpp"
+#include "reader.hpp"
+#include "abstractreadmemorybuffer.hpp"
 
 namespace eternal_lands
 {
@@ -26,23 +29,31 @@ namespace eternal_lands
 
 	XmlReader::XmlReader(const String &file_name)
 	{
-		m_doc = xmlReadFile(utf8_to_string(file_name.get()).c_str(), 0,
-			XML_PARSE_NOENT);
+		std::string name;
+
+		name = string_to_utf8(file_name);
+
+		m_doc = xmlReadFile(name.c_str(), 0, XML_PARSE_NOENT);
 
 		if (m_doc == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
 				<< errinfo_message(UTF8("Error reading the xml "
 					"file"))
-				<< boost::errinfo_file_name(file_name));
+				<< boost::errinfo_file_name(name));
 		}
 	}
 
-	XmlReader::XmlReader(const String &file_name,
-		const FileSystemSharedPtr file_system)
+	XmlReader::XmlReader(const FileSystemSharedPtr &file_system,
+		const String &file_name)
 	{
-		m_doc = xmlReadFile(utf8_to_string(file_name.get()).c_str(), 0,
-			XML_PARSE_NOENT);
+		ReaderSharedPtr reader;
+
+		reader = file_system->get_file(file_name);
+
+		m_doc = xmlReadMemory(static_cast<const char*>(
+			reader->get_buffer()->get_ptr()),
+			reader->get_size(), "", 0, XML_PARSE_NOENT);
 
 		if (m_doc == 0)
 		{
