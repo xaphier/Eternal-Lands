@@ -106,7 +106,7 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/engine)
 
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-git_describe(GIT_REFSPEC GIT_DESCRIBE)
+git_get_exact_tag(GIT_TAG)
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 	add_definitions(-DOSX)

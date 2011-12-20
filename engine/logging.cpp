@@ -303,13 +303,13 @@ namespace eternal_lands
 			thread_datas[id].m_log_file = open(file_name.str(
 				).c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
-			log_message("Git sha1: ", git_sha1_str,
+			log_message("Git sha1", git_sha1_str,
 				__FILE__, __LINE__, thread_datas[id]);
 
-			log_message("Git describe: ", git_describe_str,
+			log_message("Git tag", git_tag_str,
 				__FILE__, __LINE__, thread_datas[id]);
 
-			log_message("CMAKE_BUILD_TYPE: ", cmake_build_type_str,
+			log_message("CMAKE_BUILD_TYPE", cmake_build_type_str,
 				__FILE__, __LINE__, thread_datas[id]);
 
 			log_message("Log started at", get_local_time_string(),

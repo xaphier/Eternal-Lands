@@ -18,7 +18,7 @@ namespace eternal_lands
 {
 
 	extern const char* git_sha1_str;
-	extern const char* git_describe_str;
+	extern const char* git_tag_str;
 	extern const char* cmake_build_type_str;
 
 }
