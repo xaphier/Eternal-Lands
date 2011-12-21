@@ -20,7 +20,9 @@
 namespace eternal_lands
 {
 
-	AbstractMesh::AbstractMesh()
+	AbstractMesh::AbstractMesh(const bool static_indices,
+		const bool static_vertices): m_static_indices(static_indices),
+		m_static_vertices(static_vertices)
 	{
 		m_use_16_bit_indices = true;
 		m_vertex_count = 0;
@@ -33,19 +35,22 @@ namespace eternal_lands
 	}
 
 	void AbstractMesh::init(const VertexFormatSharedPtr &vertex_format,
-		const MeshDataToolSharedPtr &source)
+		const MeshDataToolSharedPtr &source,
+		const bool static_indices, const bool static_vertices)
 	{
 		bool use_16_bit_indices;
 
 		use_16_bit_indices = source->get_vertex_count()
 			<= std::numeric_limits<Uint16>::max();
 
-		init(use_16_bit_indices, vertex_format, source);
+		init(use_16_bit_indices, vertex_format, source, static_indices,
+			static_vertices);
 	}
 
 	void AbstractMesh::init(const bool use_16_bit_indices,
 		const VertexFormatSharedPtr &vertex_format,
-		const MeshDataToolSharedPtr &source)
+		const MeshDataToolSharedPtr &source, const bool static_indices,
+		const bool static_vertices)
 	{
 		AbstractWriteMemoryBufferSharedPtr buffer;
 		Uint32 i;
@@ -73,6 +78,8 @@ namespace eternal_lands
 		m_primitive_type = source->get_primitive_type();
 		m_restart_index = source->get_restart_index();
 		m_use_restart_index = source->get_use_restart_index();
+		m_static_indices = static_indices;
+		m_static_vertices = static_vertices;
 
 		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
 			" %2%, index_count: %3%, sub_mesh_count: %4%"),
@@ -110,16 +117,18 @@ namespace eternal_lands
 
 	void AbstractMesh::init_vertex(
 		const VertexFormatSharedPtr &vertex_format,
-		const MeshDataToolSharedPtr &source)
+		const MeshDataToolSharedPtr &source, const bool static_vertices)
 	{
 		AbstractWriteMemoryBufferSharedPtr buffer;
 		Uint32 i;
 
 		assert(source.get() != 0);
 		assert(source->get_vertex_count() > 0);
+		assert(vertex_format.get() != 0);
 
 		m_vertex_format = vertex_format;
 		m_vertex_count = source->get_vertex_count();
+		m_static_vertices = static_vertices;
 
 		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
 			" %2%, index_count: %3%, sub_mesh_count: %4%"),
@@ -143,7 +152,8 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMesh::init_vertex(const VertexBuffersSharedPtr &buffers)
+	void AbstractMesh::init_vertex(const VertexBuffersSharedPtr &buffers,
+		const bool static_vertices)
 	{
 		Uint32 i;
 
@@ -152,6 +162,7 @@ namespace eternal_lands
 
 		m_vertex_format = buffers->get_format();
 		m_vertex_count = buffers->get_vertex_count();
+		m_static_vertices = static_vertices;
 
 		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
 			" %2%, index_count: %3%, sub_mesh_count: %4%"),
@@ -169,8 +180,74 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMesh::update_indices(const Uint32Set &blocks,
-		const IndexUpdateSourceSharedPtr &update)
+	void AbstractMesh::init_vertex(
+		const VertexFormatSharedPtr &vertex_format,
+		const Uint32 vertex_count, const bool static_vertices)
+	{
+		assert(vertex_format.get() != 0);
+		assert(vertex_count > 0);
+
+		m_vertex_format = vertex_format;
+		m_vertex_count = vertex_count;
+		m_static_vertices = static_vertices;
+
+		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+			" %2%, index_count: %3%, sub_mesh_count: %4%"),
+			get_use_16_bit_indices() % get_vertex_count() %
+			get_index_count() % get_sub_meshs().size());
+
+		init_vertices();
+	}
+
+	void AbstractMesh::update_vertex(const VertexBuffersSharedPtr &buffers)
+	{
+		Uint32 i;
+
+		assert(buffers.get() != 0);
+		assert(buffers->get_vertex_count() > 0);
+
+		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+			" %2%, index_count: %3%, sub_mesh_count: %4%"),
+			get_use_16_bit_indices() % get_vertex_count() %
+			get_index_count() % get_sub_meshs().size());
+
+		for (i = 0; i < vertex_stream_count; ++i)
+		{
+			if (get_vertex_elements(i).get_count() > 0)
+			{
+				update_vertex_buffer(buffers->get_buffer(i), i);
+			}
+		}
+	}
+
+	VertexBuffersSharedPtr AbstractMesh::get_vertex_buffers() const
+	{
+		MemoryBufferSharedPtrVector buffers;
+		MemoryBufferSharedPtr buffer;
+		VertexBuffersSharedPtr result;
+		Uint32 i;
+		Uint64 size;
+
+		for (i = 0; i < vertex_stream_count; ++i)
+		{
+			if (get_vertex_elements(i).get_count() > 0)
+			{
+				size = get_vertex_elements(i).get_stride() *
+					get_vertex_count();
+				buffer = boost::make_shared<MemoryBuffer>(size);
+				buffers.push_back(buffer);
+			}
+		}
+
+		result = boost::make_shared<VertexBuffers>(get_vertex_format(),
+			buffers, get_vertex_count());
+
+		return result;
+	}
+
+	void AbstractMesh::init_indices(const Uint32Set &blocks,
+		const IndexUpdateSourceSharedPtr &update,
+		const bool static_indices)
 	{
 		AbstractWriteMemoryBufferSharedPtr buffer;
 
@@ -178,6 +255,7 @@ namespace eternal_lands
 		m_index_count = update->get_count(blocks);
 		m_primitive_type = update->get_primitive_type();
 		m_sub_meshs = update->get_sub_meshs(blocks);
+		m_static_indices = static_indices;
 
 		init_indices();
 
@@ -188,6 +266,31 @@ namespace eternal_lands
 			assert(buffer.get() != 0);
 
 			update->write_index_buffer(blocks, buffer);
+		}
+	}
+
+	void AbstractMesh::init_indices(const bool use_16_bit_indices,
+		const PrimitiveType primitive_type,
+		const SubMeshVector &sub_meshs,
+		const Uint32Vector &indices, const bool static_indices)
+	{
+		AbstractWriteMemoryBufferSharedPtr buffer;
+
+		m_use_16_bit_indices = use_16_bit_indices;
+		m_index_count = indices.size();
+		m_primitive_type = primitive_type;
+		m_sub_meshs = sub_meshs;
+		m_static_indices = static_indices;
+
+		init_indices();
+
+		if (get_index_count() > 0)
+		{
+			buffer = get_index_buffer();
+
+			assert(buffer.get() != 0);
+
+//			update->write_index_buffer(blocks, buffer);
 		}
 	}
 

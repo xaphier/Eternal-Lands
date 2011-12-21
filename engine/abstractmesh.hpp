@@ -39,12 +39,15 @@ namespace eternal_lands
 			PrimitiveType m_primitive_type;
 			bool m_use_16_bit_indices;
 			bool m_use_restart_index;
+			bool m_static_indices;
+			bool m_static_vertices;
 
 		protected:
 			/**
 			 * Default constructor.
 			 */
-			AbstractMesh();
+			AbstractMesh(const bool static_indices = true,
+				const bool static_vertices = true);
 
 			void copy_vertex_descriptions(const AbstractMesh &mesh);
 
@@ -58,8 +61,18 @@ namespace eternal_lands
 				const AbstractReadMemoryBufferSharedPtr &buffer,
 				const Uint16 index) = 0;
 
+			virtual void update_vertex_buffer(
+				const AbstractReadMemoryBufferSharedPtr &buffer,
+				const Uint16 index) = 0;
+
 			virtual AbstractWriteMemoryBufferSharedPtr
 				get_index_buffer() = 0;
+
+			inline const VertexFormatSharedPtr &get_vertex_format()
+				const
+			{
+				return m_vertex_format;
+			}
 
 			inline GLenum get_index_type() const
 			{
@@ -120,24 +133,44 @@ namespace eternal_lands
 			 */
 			void draw(const Uint32 index);
 
-			void init(
-				const VertexFormatSharedPtr &vertex_format,
-				const MeshDataToolSharedPtr &source);
+			void init(const VertexFormatSharedPtr &vertex_format,
+				const MeshDataToolSharedPtr &source,
+				const bool static_indices = true,
+				const bool static_vertices = true);
 
 			void init(const bool use_16_bit_indices,
 				const VertexFormatSharedPtr &vertex_format,
-				const MeshDataToolSharedPtr &source);
+				const MeshDataToolSharedPtr &source,
+				const bool static_indices = true,
+				const bool static_vertices = true);
 
 			void init_vertex(
 				const VertexFormatSharedPtr &vertex_format,
-				const MeshDataToolSharedPtr &source);
-			void init_vertex(const VertexBuffersSharedPtr &buffers);
+				const MeshDataToolSharedPtr &source,
+				const bool static_vertices = true);
+			void init_vertex(const VertexBuffersSharedPtr &buffers,
+				const bool static_vertices = true);
+			void init_vertex(
+				const VertexFormatSharedPtr &vertex_format,
+				const Uint32 vertex_count,
+				const bool static_vertices = true);
+			void update_vertex(
+				const VertexBuffersSharedPtr &buffers);
 
-			void update_indices(const Uint32Set &blocks,
-				const IndexUpdateSourceSharedPtr &update);
+			void init_indices(const Uint32Set &blocks,
+				const IndexUpdateSourceSharedPtr &update,
+				const bool static_indices = true);
+
+			void init_indices(const bool use_16_bit_indices,
+				const PrimitiveType primitive_type,
+				const SubMeshVector &sub_meshs,
+				const Uint32Vector &indices,
+				const bool static_indices = true);
 
 			void get_bounding_box(const glm::mat4x3 &matrix,
 				BoundingBox &bounding_box);
+
+			VertexBuffersSharedPtr get_vertex_buffers() const;
 
 			/**
 			 */
@@ -203,6 +236,24 @@ namespace eternal_lands
 			inline bool get_use_restart_index() const
 			{
 				return m_use_restart_index;
+			}
+
+			/**
+			 * Returns if the indices are mostly static.
+			 * @result If the indices are mostly static.
+			 */
+			inline bool get_static_indices() const
+			{
+				return m_static_indices;
+			}
+
+			/**
+			 * Returns if the vertices are mostly static.
+			 * @result If the vertices are mostly static.
+			 */
+			inline bool get_static_vertices() const
+			{
+				return m_static_vertices;
 			}
 
 	};

@@ -54,7 +54,7 @@ namespace eternal_lands
 			String get_font_file_name(const String &family,
 				const float size, const bool bold,
 				const bool italic);
-			size_t cache_glyphs(const Utf32String &char_codes);
+			void cache_glyphs(const Utf32String &char_codes);
 			void init();
 
 		public:
@@ -76,10 +76,11 @@ namespace eternal_lands
 			~TextureFont() throw();
 
 			void write_to_stream(const glm::vec4 &color,
-				const glm::uvec2 &position, const String &str,
-				const float spacing, const float rise,
-				VertexStreams &streams);
-
+				const glm::vec2 &position,
+				const Utf32String &str, const float spacing,
+				const float rise, VertexStreams &streams);
+			glm::vec2 get_size(const Utf32String &str,
+				const float spacing, const float rise);
 			glm::vec2 get_size(const String &str) const;
 
 			inline const String &get_file_name() const

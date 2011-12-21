@@ -51,17 +51,18 @@ namespace eternal_lands
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glReadBuffer(GL_COLOR_ATTACHMENT0);
 
-		m_multisample_frame_buffer.unbind();
 		m_multisample_frame_buffer.check_status();
+		m_multisample_frame_buffer.unbind();
 
 		m_frame_buffer.bind();
 		get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
 		m_layer = 0;
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glReadBuffer(GL_NONE);
 
-		m_frame_buffer.unbind();
 		m_frame_buffer.check_status();
+		m_frame_buffer.unbind();
 	}
 
 	MultiSampleFrameBuffer::~MultiSampleFrameBuffer() throw()

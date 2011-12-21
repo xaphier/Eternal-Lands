@@ -32,6 +32,8 @@ namespace eternal_lands
 		Sint32 width_left;
 		Uint32 x, y, i;
 
+		assert(index < m_nodes.size());
+
 		width_left = width;
 		i = index;
 		x = m_nodes[i].x;
@@ -44,9 +46,11 @@ namespace eternal_lands
 
 		while (width_left > 0)
 		{
+			assert(i < m_nodes.size());
+
 			y = std::max(y, m_nodes[i].y);
 
-			if ((y + height) > height)
+			if ((y + height) > get_height())
 			{
 				return -1;
 			}
@@ -63,7 +67,9 @@ namespace eternal_lands
 		Uvec3Vector::iterator it, next;
 		Uint32 i;
 
-		for (i = 0; i< (m_nodes.size() - 1); ++i)
+		i = 0;
+
+		while ((i + 1) < m_nodes.size())
 		{
 			it = m_nodes.begin() + i;
 			next = it + 1;
@@ -72,7 +78,10 @@ namespace eternal_lands
 			{
 				it->z += next->z;
 				m_nodes.erase(next);
-				i--;
+			}
+			else
+			{
+				++i;
 			}
 		}
 	}
@@ -82,13 +91,15 @@ namespace eternal_lands
 	{
 		Uvec3Vector::iterator it, prev;
 		Sint32 y, best_index;
-		Uint32 best_height, best_width, shrink, i;
+		Uint32 best_height, best_width, shrink, i, count;
 
 		best_index  = -1;
 		best_height = std::numeric_limits<Uint32>::max();
 		best_width = std::numeric_limits<Uint32>::max();
 
-		for (i = 0; i < m_nodes.size(); ++i)
+		count = m_nodes.size();
+
+		for (i = 0; i < count; ++i)
 		{
 			y = fit(i, width, height);
 
@@ -109,14 +120,13 @@ namespace eternal_lands
 			return false;
 		}
 
-		m_nodes[best_index].x = offset.x;
-		m_nodes[best_index].y = offset.y + height;
-		m_nodes[best_index].z = width;
+		m_nodes.insert(m_nodes.begin() + best_index,
+			glm::uvec3(offset.x, offset.y + height, width));
 
-		for (i = best_index + 1; i < m_nodes.size(); ++i)
+		while ((best_index + 1) < m_nodes.size())
 		{
-			it = m_nodes.begin() + i;
-			prev = it - 1;
+			prev = m_nodes.begin() + best_index;
+			it = prev + 1;
 
 			if (it->x < (prev->x + prev->z))
 			{
@@ -125,7 +135,6 @@ namespace eternal_lands
 				if (it->z < shrink)
 				{
 					m_nodes.erase(it);
-					i--;
 				}
 				else
 				{

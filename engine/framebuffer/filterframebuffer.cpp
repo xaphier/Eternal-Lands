@@ -34,8 +34,9 @@ namespace eternal_lands
 
 		get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
 
-		m_frame_buffer.unbind();
 		m_frame_buffer.check_status();
+
+		m_frame_buffer.unbind();
 	}
 
 	FilterFrameBuffer::~FilterFrameBuffer() throw()
@@ -62,7 +63,6 @@ namespace eternal_lands
 
 	void FilterFrameBuffer::clear(const glm::vec4 &color)
 	{
-		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		glClearBufferfv(GL_COLOR, 0, glm::value_ptr(color));
 	}
 

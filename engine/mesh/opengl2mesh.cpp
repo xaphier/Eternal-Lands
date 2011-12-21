@@ -32,8 +32,9 @@ namespace eternal_lands
 
 		if (m_vertex_data[index].get() != 0)
 		{
-			result = boost::make_shared<MappedHardwareWriteMemoryBuffer>(
-				m_vertex_data[index], hbt_vertex);
+			result = boost::make_shared<
+				MappedHardwareWriteMemoryBuffer>(
+					m_vertex_data[index], hbt_vertex);
 		}
 
 		return result;
@@ -44,7 +45,14 @@ namespace eternal_lands
 		const Uint16 index)
 	{
 		m_vertex_data[index]->set(hbt_vertex, *buffer,
-			hbut_static_draw);
+			get_vertices_usage());
+	}
+
+	void OpenGl2Mesh::update_vertex_buffer(
+		const AbstractReadMemoryBufferSharedPtr &buffer,
+		const Uint16 index)
+	{
+		m_vertex_data[index]->update(hbt_vertex, *buffer);
 	}
 
 	AbstractWriteMemoryBufferSharedPtr OpenGl2Mesh::get_index_buffer()
@@ -53,8 +61,9 @@ namespace eternal_lands
 
 		if (m_index_data.get() != 0)
 		{
-			result = boost::make_shared<MappedHardwareWriteMemoryBuffer>(
-				m_index_data, hbt_index);
+			result = boost::make_shared<
+				MappedHardwareWriteMemoryBuffer>(
+					m_index_data, hbt_index);
 		}
 
 		return result;
@@ -110,7 +119,7 @@ namespace eternal_lands
 				size = get_vertex_count();
 				size *= get_vertex_elements(i).get_stride();
 				m_vertex_data[i]->set_size(hbt_vertex, size,
-					hbut_static_draw);
+					get_vertices_usage());
 			}
 			else
 			{
@@ -142,7 +151,7 @@ namespace eternal_lands
 		}
 
 		m_index_data = boost::make_shared<HardwareBuffer>();
-		m_index_data->set_size(hbt_index, size, hbut_static_draw);
+		m_index_data->set_size(hbt_index, size, get_indices_usage());
 	}
 
 	void OpenGl2Mesh::bind_vertex_buffers()
@@ -216,7 +225,7 @@ namespace eternal_lands
 	{
 		boost::shared_ptr<OpenGl2Mesh> result;
 
-		result.reset(new OpenGl2Mesh());
+		result = boost::make_shared<OpenGl2Mesh>();
 
 		result->m_vertex_data = m_vertex_data;
 		result->copy_vertex_descriptions(*this);

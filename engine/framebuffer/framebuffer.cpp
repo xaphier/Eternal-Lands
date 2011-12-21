@@ -70,8 +70,6 @@ namespace eternal_lands
 				<< errinfo_message(get_status_str(status))
 				<< errinfo_code(status));
 		}
-
-		CHECK_GL_ERROR();
 	}
 
 	bool FrameBuffer::get_status() const

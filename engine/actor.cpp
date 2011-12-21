@@ -32,14 +32,14 @@ namespace eternal_lands
 	{
 		m_meshs.insert(id);
 
-		get_mesh()->update_indices(m_meshs, m_index_source);
+		get_mesh()->init_indices(m_meshs, m_index_source);
 	}
 
 	void Actor::remove_mesh(const Uint32 id)
 	{
 		m_meshs.erase(id);
 
-		get_mesh()->update_indices(m_meshs, m_index_source);
+		get_mesh()->init_indices(m_meshs, m_index_source);
 	}
 
 	void Actor::init_enhanced_actor(

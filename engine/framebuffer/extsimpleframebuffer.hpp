@@ -31,6 +31,9 @@ namespace eternal_lands
 		private:
 			ExtFrameBuffer m_frame_buffer;
 			boost::scoped_ptr<ExtRenderBuffer> m_render_buffer;
+			bool m_depth;
+			bool m_stencil;
+			bool m_color;
 
 		public:
 			ExtSimpleFrameBuffer(const String &name,

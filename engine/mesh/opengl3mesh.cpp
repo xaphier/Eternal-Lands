@@ -85,7 +85,7 @@ namespace eternal_lands
 	{
 		boost::shared_ptr<OpenGl3Mesh> result;
 
-		result.reset(new OpenGl3Mesh());
+		result = boost::make_shared<OpenGl3Mesh>();
 
 		result->m_id = m_id;
 		result->m_vertex_data = m_vertex_data;

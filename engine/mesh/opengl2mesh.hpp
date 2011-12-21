@@ -40,7 +40,26 @@ namespace eternal_lands
 			HardwareBufferSharedPtrArray m_vertex_data;
 			HardwareBufferSharedPtr m_index_data;
 
-		protected:
+			HardwareBufferUsageType get_vertices_usage() const
+			{
+				if (get_static_vertices())
+				{
+					return hbut_static_draw;
+				}
+
+				return hbut_stream_draw;
+			}
+
+			HardwareBufferUsageType get_indices_usage() const
+			{
+				if (get_static_indices())
+				{
+					return hbut_static_draw;
+				}
+
+				return hbut_stream_draw;
+			}
+
 			static void bind(const VertexElements &vertex_elements,
 				const HardwareBufferSharedPtr &buffer);
 
@@ -52,6 +71,9 @@ namespace eternal_lands
 			virtual AbstractWriteMemoryBufferSharedPtr
 				get_vertex_buffer(const Uint16 index);
 			virtual void set_vertex_buffer(
+				const AbstractReadMemoryBufferSharedPtr &buffer,
+				const Uint16 index);
+			virtual void update_vertex_buffer(
 				const AbstractReadMemoryBufferSharedPtr &buffer,
 				const Uint16 index);
 			virtual AbstractWriteMemoryBufferSharedPtr

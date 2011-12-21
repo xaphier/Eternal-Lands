@@ -36,12 +36,19 @@ namespace eternal_lands
 		get_texture()->set_mipmap_count(mipmaps);
 		get_texture()->init(get_width(), get_height(), layers, mipmaps);
 
+		m_depth = true;
+
 		if (TextureFormatUtil::get_depth(format))
 		{
+			m_stencil = false;
+			m_color = false;
+
 			get_texture()->attach(GL_DEPTH_ATTACHMENT, 0, 0);
 
 			if (TextureFormatUtil::get_stencil(format))
 			{
+				m_stencil = true;
+
 				get_texture()->attach(GL_STENCIL_ATTACHMENT, 0,
 					0);
 			}
@@ -50,6 +57,9 @@ namespace eternal_lands
 		}
 		else
 		{
+			m_stencil = true;
+			m_color = true;
+
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
 
 			m_render_buffer.reset(new RenderBuffer(get_width(),
@@ -62,10 +72,11 @@ namespace eternal_lands
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		}
 
+		glReadBuffer(GL_NONE);
 		CHECK_GL_ERROR();
 
-		m_frame_buffer.unbind();
 		m_frame_buffer.check_status();
+		m_frame_buffer.unbind();
 	}
 
 	SimpleFrameBuffer::~SimpleFrameBuffer() throw()
@@ -99,8 +110,29 @@ namespace eternal_lands
 
 	void SimpleFrameBuffer::clear(const glm::vec4 &color)
 	{
-		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		glClearBufferfv(GL_COLOR, 0, glm::value_ptr(color));
+		GLenum mask;
+
+		mask = 0;
+
+		if (m_depth)
+		{
+			mask |= GL_DEPTH_BUFFER_BIT;
+		}
+
+		if (m_stencil)
+		{
+			mask |= GL_STENCIL_BUFFER_BIT;
+		}
+
+		if (mask != 0)
+		{
+			glClear(mask);
+		}
+
+		if (m_color)
+		{
+			glClearBufferfv(GL_COLOR, 0, glm::value_ptr(color));
+		}
 	}
 
 	void SimpleFrameBuffer::unbind()

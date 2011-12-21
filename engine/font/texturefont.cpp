@@ -206,6 +206,7 @@ namespace eternal_lands
 
 		m_gamma = true;
 		m_hinting = true;
+		m_lcd_filter = false;
 		m_lcd_weights[0] = 0;
 		m_lcd_weights[1] = 0;
 		m_lcd_weights[2] = 255;
@@ -220,11 +221,14 @@ namespace eternal_lands
 		m_descender = (metrics.descender >> 6) / 100.0f;
 		m_height = (metrics.height >> 6) / 100.0f;
 		m_line_gap = get_height() - get_ascender() + get_descender();
+
+		cache_glyphs(L"abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZ!\"§$%&/()=?+-_.:,;<>|µ@^°{[]}\\1234567890#'~²³");
 	}
 
 	String TextureFont::get_font_file_name(const String &family,
 		const float size, const bool bold, const bool italic)
 	{
+#if	0
 #ifdef	LINUX
 		std::string file_name;
 		Sint32 weight, slant;
@@ -282,9 +286,11 @@ namespace eternal_lands
 #else	/* LINUX */
 		return String();
 #endif	/* LINUX */
+#endif
+		return String();
 	}
 
-	size_t TextureFont::cache_glyphs(const Utf32String &char_codes)
+	void TextureFont::cache_glyphs(const Utf32String &char_codes)
 	{
 		Utf32CharTextureGlypheMap::const_iterator kerning_it;
 		Utf32CharTextureGlypheMap::const_iterator kerning_end;
@@ -362,9 +368,9 @@ namespace eternal_lands
 			w = slot->bitmap.width / depth + 1;
 			h = slot->bitmap.rows + 1;
 
-			if (m_atlas->get_region(w, h, offset))
+			if (!m_atlas->get_region(w, h, offset))
 			{
-				return 0;
+				return;
 			}
 
 			w = w - 1;
@@ -390,7 +396,8 @@ namespace eternal_lands
 			x = offset.x;
 			y = offset.y;
 
-			offset = glm::uvec2(slot->bitmap_left, slot->bitmap_top);
+			offset = glm::uvec2(slot->bitmap_left,
+				slot->bitmap_top);
 
 			uv.x = x/(float)width;
 			uv.y = y/(float)height;
@@ -438,6 +445,8 @@ namespace eternal_lands
 					glyph_index, FT_KERNING_UNFITTED,
 					&kerning);
 
+				std::cout << "kerning: " << kerning.x << std::endl;
+
 				if (kerning.x == 0.0f)
 				{
 					continue;
@@ -448,27 +457,23 @@ namespace eternal_lands
 
 			it->second.set_kerning(kernings);
 		}
-
-		return 0;
 	}
 
 	void TextureFont::write_to_stream(const glm::vec4 &color,
-		const glm::uvec2 &position, const String &str,
+		const glm::vec2 &position, const Utf32String &str,
 		const float spacing, const float rise, VertexStreams &streams)
 	{
 		Utf32CharTextureGlypheMap::const_iterator found, end;
-		Utf32String string;
 		Utf32Char last_char_code;
-		glm::uvec2 pos;
+		glm::vec2 pos;
 		float kerning;
 
 		pos = position;
-		string = utf8_to_utf32(str);
 
 		end = m_glyphs.end();
 		last_char_code = L'\0';
 
-		BOOST_FOREACH(const Utf32Char char_code, string)
+		BOOST_FOREACH(const Utf32Char char_code, str)
 		{
 			found = m_glyphs.find(char_code);
 
@@ -484,6 +489,36 @@ namespace eternal_lands
 
 			last_char_code = found->second.get_char_code();
 		}
+	}
+
+	glm::vec2 TextureFont::get_size(const Utf32String &str,
+		const float spacing, const float rise)
+	{
+		Utf32CharTextureGlypheMap::const_iterator found, end;
+		Utf32Char last_char_code;
+		glm::vec2 size;
+		float kerning;
+
+		end = m_glyphs.end();
+		last_char_code = L'\0';
+
+		BOOST_FOREACH(const Utf32Char char_code, str)
+		{
+			found = m_glyphs.find(char_code);
+
+			if (found == end)
+			{
+				continue;
+			}
+
+			kerning = found->second.get_kerning(last_char_code);
+
+			size += found->second.get_size(kerning, spacing, rise);
+
+			last_char_code = found->second.get_char_code();
+		}
+
+		return size;
 	}
 
 }

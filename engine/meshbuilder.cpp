@@ -60,11 +60,13 @@ namespace eternal_lands
 		{
 			position = vet_half4;
 			texture_coordinate = vet_half2;
+			font[vst_position] = vet_half2;
 		}
 		else
 		{
 			position = vet_float3;
 			texture_coordinate = vet_float2;
+			font[vst_position] = vet_float2;
 		}
 
 		mesh[vst_position] = position;
@@ -82,12 +84,14 @@ namespace eternal_lands
 		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
 		instanced_mesh[vst_color] = vet_ubyte4_normalized;
 
-		instanced_mesh[vst_layer_index] = vet_ubyte4;
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			instanced_mesh[vst_layer_index] = vet_ubyte4;
+		}
 
 		sprite[vst_position] = position;
 		sprite[vst_texture_coordinate_0] = vet_ushort2_normalized;
 
-		font[vst_position] = vet_ushort2;
 		font[vst_texture_coordinate_0] = vet_ushort2_normalized;
 		font[vst_color] = vet_ubyte4_normalized;
 

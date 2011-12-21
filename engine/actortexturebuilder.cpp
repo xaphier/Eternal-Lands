@@ -828,8 +828,15 @@ namespace eternal_lands
 			}
 		}
 
+		CHECK_GL_ERROR();
+
 		m_texture->set_format(texture_format);
+
+		CHECK_GL_ERROR();
+
 		m_texture->set_image(m_image);
+
+		CHECK_GL_ERROR();
 	}
 
 	void ActorTextureBuilder::set_parts(

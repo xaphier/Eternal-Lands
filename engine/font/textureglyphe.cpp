@@ -26,7 +26,7 @@ namespace eternal_lands
 
 	void TextureGlyphe::write_to_stream(const glm::vec4 &color,
 		const float kerning, const float spacing, const float rise,
-		VertexStreams &streams, glm::uvec2 &position) const
+		VertexStreams &streams, glm::vec2 &position) const
 	{
 		float x0, x1, y0, y1;
 
@@ -63,6 +63,19 @@ namespace eternal_lands
 
 		position.x = get_advance().x + spacing;
 		position.y = get_advance().y;
+	}
+
+	glm::vec2 TextureGlyphe::get_size(const float kerning,
+		const float spacing, const float rise) const
+	{
+		glm::vec2 size;
+
+		size.x += kerning;
+
+		size.x = get_advance().x + spacing;
+		size.y = get_advance().y;
+
+		return size;
 	}
 
 }
