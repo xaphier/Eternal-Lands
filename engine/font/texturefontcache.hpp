@@ -60,7 +60,7 @@ namespace eternal_lands
 			void add_font(const String &index,
 				const String &file_name, const float size);
 			void update_texture();
-			void draw(const Utf32String &str,
+			void draw(const Utf32String &str, const String &index,
 				const glm::vec2 &position,
 				const glm::vec4 &color = glm::vec4(1.0f),
 				const float spacing = 0.0f,

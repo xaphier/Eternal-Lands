@@ -459,19 +459,21 @@ namespace eternal_lands
 		}
 	}
 
-	void TextureFont::write_to_stream(const glm::vec4 &color,
-		const glm::vec2 &position, const Utf32String &str,
-		const float spacing, const float rise, VertexStreams &streams)
+	Uint32 TextureFont::write_to_stream(const Utf32String &str,
+		const VertexStreamsSharedPtr &streams,
+		const glm::vec2 &position, const glm::vec4 &color,
+		const float spacing, const float rise) const
 	{
 		Utf32CharTextureGlypheMap::const_iterator found, end;
 		Utf32Char last_char_code;
 		glm::vec2 pos;
 		float kerning;
+		Uint32 count;
 
 		pos = position;
-
 		end = m_glyphs.end();
 		last_char_code = L'\0';
+		count = 0;
 
 		BOOST_FOREACH(const Utf32Char char_code, str)
 		{
@@ -488,11 +490,14 @@ namespace eternal_lands
 				rise, streams, pos);
 
 			last_char_code = found->second.get_char_code();
+			count++;
 		}
+
+		return count;
 	}
 
 	glm::vec2 TextureFont::get_size(const Utf32String &str,
-		const float spacing, const float rise)
+		const float spacing, const float rise) const
 	{
 		Utf32CharTextureGlypheMap::const_iterator found, end;
 		Utf32Char last_char_code;

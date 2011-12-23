@@ -13,6 +13,7 @@
 #include "meshbuilder.hpp"
 #include "abstractmesh.hpp"
 #include "submesh.hpp"
+#include "vertexbuffers.hpp"
 
 namespace eternal_lands
 {
@@ -94,10 +95,35 @@ namespace eternal_lands
 		m_texture->set_image(m_image);
 	}
 
-	void TextureFontCache::draw(const Utf32String &str,
+	void TextureFontCache::draw(const Utf32String &str, const String &index,
 		const glm::vec2 &position, const glm::vec4 &color,
 		const float spacing, const float rise) const
 	{
+		MeshDrawData draw_data;
+		StringTextureFontMap::const_iterator found;
+		Uint32 count;
+
+		found = m_fonts.find(index);
+
+		if (found == m_fonts.end())
+		{
+			return;
+		}
+
+		count = found->second->write_to_stream(str, m_buffers,
+			position, color, spacing, rise);
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		draw_data = MeshDrawData(0, count * 6, 0, count * 4 - 1);
+/*
+		m_texture->bind();
+		m_shader->bind();
+*/
+		m_mesh->draw(draw_data);
 	}
 
 }

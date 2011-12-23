@@ -75,12 +75,14 @@ namespace eternal_lands
 			 */
 			~TextureFont() throw();
 
-			void write_to_stream(const glm::vec4 &color,
+			Uint32 write_to_stream(const Utf32String &str,
+				const VertexStreamsSharedPtr &streams,
 				const glm::vec2 &position,
-				const Utf32String &str, const float spacing,
-				const float rise, VertexStreams &streams);
+				const glm::vec4 &color = glm::vec4(1.0f),
+				const float spacing = 0.0f,
+				const float rise = 0.0f) const;
 			glm::vec2 get_size(const Utf32String &str,
-				const float spacing, const float rise);
+				const float spacing, const float rise) const;
 			glm::vec2 get_size(const String &str) const;
 
 			inline const String &get_file_name() const
