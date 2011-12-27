@@ -52,14 +52,24 @@ namespace eternal_lands
 	{
 	}
 
-	Plane Plane::transform(const glm::mat4x3 &matrix) const
+	void Plane::transform(const glm::mat4x3 &matrix)
+	{
+		glm::vec3 point;
+
+		point = get_member_point();
+
+		set_normal(glm::mat3(matrix) * get_normal());
+
+		recalculate_distance(matrix * glm::vec4(point, 1.0f));
+	}
+
+	Plane Plane::get_transformed(const glm::mat4x3 &matrix) const
 	{
 		Plane result;
 
-		result.set_normal(glm::mat3(matrix) * get_normal());
+		result = *this;
 
-		result.recalculate_distance(matrix *
-			glm::vec4(get_member_point(), 1.0f));
+		result.transform(matrix);
 
 		return result;
 	}

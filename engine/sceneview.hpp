@@ -39,8 +39,6 @@ namespace eternal_lands
 			Mat4x4Vector m_shadow_projection_matrices;
 			Mat4x4Vector m_shadow_projection_view_matrices;
 			Mat4x4Vector m_shadow_texture_matrices;
-			glm::mat4x4 m_shadow_projection_matrix;
-			glm::mat4x4 m_shadow_projection_view_matrix;
 			glm::mat4x4 *m_current_view_matrix;
 			glm::mat4x4 *m_current_projection_matrix;
 			glm::mat4x4 *m_current_projection_view_matrix;
@@ -60,9 +58,14 @@ namespace eternal_lands
 			void build_shadow_matrix(
 				const glm::mat4x4 &basic_projection_matrix,
 				const glm::mat4x4 &basic_projection_view_matrix,
-				const BoundingBox &split_box,
-				const BoundingBox &receiver_box,
-				const BoundingBox &caster_box,
+				const ConvexBody &convex_body,
+				const Uint16 index);
+
+			void build_shadow_matrix(
+				const glm::mat4x4 &basic_projection_matrix,
+				const glm::mat4x4 &basic_projection_view_matrix,
+				const ConvexBody &convex_body,
+				const glm::vec3 &dir, const float max_height,
 				const Uint16 index);
 
 			inline GlobalVarsSharedPtr get_global_vars() const
@@ -84,13 +87,10 @@ namespace eternal_lands
 			void update();
 			void build_shadow_matrices(
 				const glm::vec3 &light_direction,
-				const SubFrustumsBoundingBoxes &split_boxes,
-				const SubFrustumsBoundingBoxes &receiver_boxes,
+				const SubFrustumsConvexBodys &convex_bodys,
 				const float scene_max_height);
 			void update_shadow_matrices(
-				const SubFrustumsBoundingBoxes &split_boxes,
-				const SubFrustumsBoundingBoxes &receiver_boxes,
-				const SubFrustumsBoundingBoxes &caster_boxes);
+				const SubFrustumsConvexBodys &convex_bodys);
 
 			inline void set_default_view()
 			{
@@ -193,18 +193,6 @@ namespace eternal_lands
 				&get_shadow_texture_matrices() const
 			{
 				return m_shadow_texture_matrices;
-			}
-
-			inline const glm::mat4x4 &get_shadow_projection_matrix(
-				) const
-			{
-				return m_shadow_projection_matrix;
-			}
-
-			inline const glm::mat4x4
-				&get_shadow_projection_view_matrix() const
-			{
-				return m_shadow_projection_view_matrix;
 			}
 
 			inline const glm::ivec4 &get_view_port() const

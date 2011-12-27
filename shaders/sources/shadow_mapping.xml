@@ -30,9 +30,9 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	shadow = shadow2DProj(shadow_sampler, shadow_uv[0]).r;
-}
+   <source>shadow = dot(vec2(1.0), step(vec2(0.5), abs(shadow_uv[0].xy - 0.5)));
+	shadow += shadow2DProj(shadow_sampler, shadow_uv[0]).r;
+	shadow = clamp(shadow, 0.0, 1.0);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>false</glsl_130>
@@ -67,9 +67,10 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	shadow = textureProj(shadow_sampler, shadow_uv[0]);
-}</source>
+   <source>shadow = dot(vec2(1.0), step(vec2(0.5), abs(shadow_uv[0].xy - 0.5)));
+	shadow += textureProj(shadow_sampler, shadow_uv[0]);
+	shadow = clamp(shadow, 0.0, 1.0);
+</source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>

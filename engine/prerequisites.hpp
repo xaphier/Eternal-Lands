@@ -193,12 +193,14 @@ namespace eternal_lands
 	class BoundedObject;
 	class BoundingBox;
 	class CodecManager;
+	class ConvexBody;
 	class Effect;
 	class EffectCache;
 	class FileSystem;
 	class Filter;
-	class FreeIds;
 	class FrameBufferBuilder;
+	class FreeIds;
+	class Frustum;
 	class GlobalVars;
 	class GlslProgram;
 	class HardwareBuffer;
@@ -223,6 +225,8 @@ namespace eternal_lands
 	class ObjectData;
 	class ObjectDescription;
 	class Plane;
+	class Polygon;
+	class Ray;
 	class Reader;
 	class RenderObjectData;
 	class RStarTree;
@@ -259,6 +263,7 @@ namespace eternal_lands
 	ARRAY(String, 16);
 
 	const Uint16 vertex_stream_count = 16;
+	const float epsilon = 1e-5f;
 
 	typedef boost::array<VertexElements, vertex_stream_count>
 		VertexElementsArray;
@@ -386,8 +391,11 @@ namespace eternal_lands
 		Ivec4Vector, Uvec4Vector, Vec4Vector> Variant;
 
 	typedef std::map<String, Variant> StringVariantMap;
+	typedef std::pair<String, Variant> StringVariantPair;
 
 	typedef boost::array<BoundingBox, 4> SubFrustumsBoundingBoxes;
+	typedef boost::array<Vec3Array8, 4> SubFrustumsConerPoints;
+	typedef boost::array<ConvexBody, 4> SubFrustumsConvexBodys;
 	typedef std::bitset<4> SubFrustumsMask;
 	typedef std::bitset<32> PlanesMask;
 

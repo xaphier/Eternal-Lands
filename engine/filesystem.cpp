@@ -225,7 +225,7 @@ namespace eternal_lands
 	FileSystem::FileSystem()
 	{
 		add_dir(String(UTF8(".")));
-
+/*
 		m_md5s[String(UTF8("shaders/shaders.lua"))] =
 			get_md5("ff996ce83d55855197b48ce3c29be2ef");
 		m_md5s[String(UTF8("shaders/animated_mesh_transparent.xml"))] =
@@ -303,6 +303,7 @@ namespace eternal_lands
 			get_md5("2aa25f02b3e0ce59a70c71f41b6f8889");
 		m_md5s[String(UTF8("shaders/sources/no_normal_mapping.xml"))] =
 			get_md5("0f09154ae990b9e658df870ed005c9fd");
+*/
 	}
 
 	FileSystem::~FileSystem() throw()

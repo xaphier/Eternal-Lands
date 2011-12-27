@@ -74,12 +74,6 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("reflection_matrix")),
 				pt_mat4x4),
 			AutoParameterTypeData(String(UTF8(
-				"shadow_view_matrix")), pt_mat4x4),
-			AutoParameterTypeData(String(UTF8(
-				"shadow_projection_matrix")), pt_mat4x4),
-			AutoParameterTypeData(String(UTF8(
-				"shadow_projection_view_matrix")), pt_mat4x4),
-			AutoParameterTypeData(String(UTF8(
 				"shadow_texture_matrix")), pt_mat4x4,
 				pst_shadow_map_count),
 			AutoParameterTypeData(String(UTF8("light_positions")),

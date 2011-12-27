@@ -360,11 +360,12 @@ namespace eternal_lands
 	{
 		Vec3Array8 result;
 		Uint16Array3 offsets;
-		Uint16 i, j, offset;
+		Uint16 i, j, offset, count;
 
 		offset = sub_frustum_index * sub_frustum_planes_count;
+		count = result.size();
 
-		for (i = 0; i < 8; ++i)
+		for (i = 0; i < count; ++i)
 		{
 			for (j = 0; j < 3; ++j)
 			{
@@ -405,24 +406,91 @@ namespace eternal_lands
 		return result;
 	}
 
-	Frustum Frustum::transform(const glm::mat4x3 &world_matrix) const
+	SubFrustumsConerPoints Frustum::get_corner_points() const
 	{
-		Frustum frustum;
-		Uint32 i;
+		SubFrustumsConerPoints result;
+		Uint16 i;
 
-		frustum.m_planes = m_planes;
-		frustum.m_planes_mask = m_planes_mask;
+		for (i = 0; i < sub_frustum_count; ++i)
+		{
+			if ((get_planes_mask() & sub_frustum_6_planes_masks[i])
+				== sub_frustum_6_planes_masks[i])
+			{
+				result[i] = get_corner_points(i);
+			}
+		}
+
+		return result;
+	}
+
+	PlaneVector Frustum::get_planes(const BoundingBox &box)
+	{
+		PlaneVector result;
+		glm::vec3 point, dir;
+
+		point = box.get_point(0);
+
+		dir = box.get_point(1) - point;
+		result.push_back(Plane(point, dir));
+
+		dir = box.get_point(2) - point;
+		result.push_back(Plane(point, dir));
+
+		dir = box.get_point(4) - point;
+		result.push_back(Plane(point, dir));
+
+		point = box.get_point(7);
+
+		dir = box.get_point(6) - point;
+		result.push_back(Plane(point, dir));
+
+		dir = box.get_point(5) - point;
+		result.push_back(Plane(point, dir));
+
+		dir = box.get_point(3) - point;
+		result.push_back(Plane(point, dir));
+
+		return result;
+	}
+
+	PlaneVector Frustum::get_planes(const Uint16 sub_frustum) const
+	{
+		PlaneVector result;
+		Uint16 i, index;
+
+		for (i = 0; i < sub_frustum_planes_count; ++i)
+		{
+			index = sub_frustum * sub_frustum_planes_count + i;
+
+			if (get_planes_mask()[index])
+			{
+				result.push_back(get_plane(index));
+			}
+		}
+
+		return result;
+	}
+
+	void Frustum::transform(const glm::mat4x3 &matrix)
+	{
+		Uint16 i;
 
 		for (i = 0; i < get_planes_mask().size(); ++i)
 		{
 			if (get_planes_mask()[i])
 			{
-				frustum.m_planes[i] =
-					get_plane(i).transform(world_matrix);
+				m_planes[i].transform(matrix);
 			}
 		}
+	}
 
-		return frustum;
+	Frustum Frustum::get_transformed(const glm::mat4x3 &matrix) const
+	{
+		Frustum result;
+
+		result.transform(matrix);
+
+		return result;
 	}
 
 	const String Frustum::get_str(const PlaneType plane_type)

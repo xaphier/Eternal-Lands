@@ -83,7 +83,7 @@ namespace eternal_lands
 		xmlFreeTextWriter(m_writer);
 	}
 
-	void XmlWriter::start_element(const std::string &name)
+	void XmlWriter::start_element(const StringType &name)
 	{
 		if (xmlTextWriterStartElement(m_writer,
 			BAD_CAST name.c_str()) < 0)
@@ -104,7 +104,7 @@ namespace eternal_lands
 		}
 	}
 
-	void XmlWriter::write_element(const std::string &name,
+	void XmlWriter::write_element(const StringType &name,
 		const StringType &value)
 	{
 		if (xmlTextWriterWriteElement(m_writer, BAD_CAST name.c_str(),
@@ -117,7 +117,7 @@ namespace eternal_lands
 
 	}
 
-	void XmlWriter::write_bool_element(const std::string &name,
+	void XmlWriter::write_bool_element(const StringType &name,
 		const bool value)
 	{
 		StringStream str;
@@ -127,7 +127,7 @@ namespace eternal_lands
 		write_element(name, str.str());
 	}
 
-	void XmlWriter::write_float_element(const std::string &name,
+	void XmlWriter::write_float_element(const StringType &name,
 		const float value)
 	{
 		StringStream str;
@@ -137,7 +137,7 @@ namespace eternal_lands
 		write_element(name, str.str());
 	}
 
-	void XmlWriter::write_int_element(const std::string &name,
+	void XmlWriter::write_int_element(const StringType &name,
 		const Sint64 value)
 	{
 		StringStream str;
@@ -145,6 +145,43 @@ namespace eternal_lands
 		str << value;
 
 		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_variant_element(const StringType &element,
+		const Variant &variant)
+	{
+		start_element(element);
+		write_element(UTF8("type"), VariantUtil::get_type_string(
+			variant));
+		write_element(UTF8("value"), VariantUtil::get_value_string(
+			variant));
+		end_element();
+	}
+
+	void XmlWriter::write_string_variant_element(const StringType &element,
+		const StringType &name, const Variant &variant)
+	{
+		start_element(element);
+		write_element(UTF8("name"), name);
+		write_element(UTF8("type"), VariantUtil::get_type_string(
+			variant));
+		write_element(UTF8("value"), VariantUtil::get_value_string(
+			variant));
+		end_element();
+	}
+
+	void XmlWriter::write_string_variant_map(const StringType &element,
+		const StringType &elements, const StringVariantMap &variants)
+	{
+		start_element(element);
+
+		BOOST_FOREACH(const StringVariantPair &variant, variants)
+		{
+			write_string_variant_element(elements, variant.first,
+				variant.second);
+		}
+
+		end_element();
 	}
 
 }

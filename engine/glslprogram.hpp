@@ -36,7 +36,7 @@ namespace eternal_lands
 			StringUniformMap m_uniforms;
 			AutoParameterTypeUniformMap m_auto_parameters;
 			StringUint16Map m_samplers;
-			const String m_name;
+			String m_name;
 			Uint64 m_last_used;
 			GLuint m_program;
 			BitSet32 m_used_texture_units;
@@ -57,6 +57,10 @@ namespace eternal_lands
 				const StringType &fragment_shader,
 				const StringVariantMap &values);
 			void update_used_texture_units();
+			void load_xml(const xmlNodePtr node);
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
+			void load_xml(const String &file_name);
 
 			inline GLuint get_program() const
 			{
@@ -68,6 +72,9 @@ namespace eternal_lands
 				const StringType &fragment_shader,
 				const StringVariantMap &values,
 				const String &name);
+			GlslProgram(const FileSystemSharedPtr &file_system,
+				const String &file_name);
+			GlslProgram(const String &file_name);
 			~GlslProgram() throw();
 			void bind();
 			void set_variant_parameter(const String &name,

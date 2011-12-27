@@ -16,168 +16,169 @@ namespace eternal_lands
 	namespace
 	{
 
-		class VariantTypeNames: public boost::static_visitor<>
+		class VariantParameterTypes: public boost::static_visitor<>
 		{
 			private:
-				String &m_name;
+				ParameterType &m_type;
 
 			public:
-				VariantTypeNames(String &name): m_name(name)
+				VariantParameterTypes(ParameterType &type):
+					m_type(type)
 				{
 				}
 
-				~VariantTypeNames() throw()
+				~VariantParameterTypes() throw()
 				{ 
 				}
 
 				void operator()(const bool value) const
 				{
-					m_name = String(UTF8("bool"));
+					m_type = pt_bool;
 				}
 
 				void operator()(const float value) const
 				{
-					m_name = String(UTF8("float"));
+					m_type = pt_float;
 				}
 
 				void operator()(const Sint64 value) const
 				{
-					m_name = String(UTF8("int"));
+					m_type = pt_int;
 				}
 
 				void operator()(const glm::vec2 &value) const
 				{
-					m_name = String(UTF8("vec2"));
+					m_type = pt_vec2;
 				}
 
 				void operator()(const glm::vec3 &value) const
 				{
-					m_name = String(UTF8("vec3"));
+					m_type = pt_vec3;
 				}
 
 				void operator()(const glm::vec4 &value) const
 				{
-					m_name = String(UTF8("vec4"));
+					m_type = pt_vec4;
 				}
 
 				void operator()(const glm::ivec2 &value) const
 				{
-					m_name = String(UTF8("ivec2"));
+					m_type = pt_ivec2;
 				}
 
 				void operator()(const glm::ivec3 &value) const
 				{
-					m_name = String(UTF8("ivec3"));
+					m_type = pt_ivec3;
 				}
 
 				void operator()(const glm::ivec4 &value) const
 				{
-					m_name = String(UTF8("ivec4"));
+					m_type = pt_ivec4;
 				}
 
 				void operator()(const glm::uvec2 &value) const
 				{
-					m_name = String(UTF8("uvec2"));
+					m_type = pt_uvec2;
 				}
 
 				void operator()(const glm::uvec3 &value) const
 				{
-					m_name = String(UTF8("uvec3"));
+					m_type = pt_uvec3;
 				}
 
 				void operator()(const glm::uvec4 &value) const
 				{
-					m_name = String(UTF8("uvec4"));
+					m_type = pt_uvec4;
 				}
 
 				void operator()(const glm::bvec2 &value) const
 				{
-					m_name = String(UTF8("bvec2"));
+					m_type = pt_bvec2;
 				}
 
 				void operator()(const glm::bvec3 &value) const
 				{
-					m_name = String(UTF8("bvec3"));
+					m_type = pt_bvec3;
 				}
 
 				void operator()(const glm::bvec4 &value) const
 				{
-					m_name = String(UTF8("bvec4"));
+					m_type = pt_bvec4;
 				}
 
 				void operator()(const glm::mat2x2 &value) const
 				{
-					m_name = String(UTF8("mat2x2"));
+					m_type = pt_mat2x2;
 				}
 
 				void operator()(const glm::mat2x3 &value) const
 				{
-					m_name = String(UTF8("mat2x3"));
+					m_type = pt_mat2x3;
 				}
 
 				void operator()(const glm::mat2x4 &value) const
 				{
-					m_name = String(UTF8("mat2x4"));
+					m_type = pt_mat2x4;
 				}
 
 				void operator()(const glm::mat3x2 &value) const
 				{
-					m_name = String(UTF8("mat3x2"));
+					m_type = pt_mat3x2;
 				}
 
 				void operator()(const glm::mat3x3 &value) const
 				{
-					m_name = String(UTF8("mat3x3"));
+					m_type = pt_mat3x3;
 				}
 
 				void operator()(const glm::mat3x4 &value) const
 				{
-					m_name = String(UTF8("mat3x4"));
+					m_type = pt_mat3x4;
 				}
 
 				void operator()(const glm::mat4x2 &value) const
 				{
-					m_name = String(UTF8("mat4x2"));
+					m_type = pt_mat4x2;
 				}
 
 				void operator()(const glm::mat4x3 &value) const
 				{
-					m_name = String(UTF8("mat4x3"));
+					m_type = pt_mat4x3;
 				}
 
 				void operator()(const glm::mat4x4 &value) const
 				{
-					m_name = String(UTF8("mat4x4"));
+					m_type = pt_mat4x4;
 				}
 
 				void operator()(const Ivec4Vector &value) const
 				{
-					m_name = String(UTF8("ivec4_vector"));
+					m_type = pt_ivec4;
 				}
 
 				void operator()(const Uvec4Vector &value) const
 				{
-					m_name = String(UTF8("uvec4_vector"));
+					m_type = pt_uvec4;
 				}
 
 				void operator()(const Vec4Vector &value) const
 				{
-					m_name = String(UTF8("vec4_vector"));
+					m_type = pt_vec4;
 				}
 
 				void operator()(const Mat2x4Vector &value) const
 				{
-					m_name = String(UTF8("mat2x4_vector"));
+					m_type = pt_mat2x4;
 				}
 
 				void operator()(const Mat3x4Vector &value) const
 				{
-					m_name = String(UTF8("mat3x4_vector"));
+					m_type = pt_mat3x4;
 				}
 
 				void operator()(const Mat4x4Vector &value) const
 				{
-					m_name = String(UTF8("mat4x4_vector"));
+					m_type = pt_mat4x4;
 				}
 
 		};
@@ -600,13 +601,27 @@ namespace eternal_lands
 
 		};
 
+		template<typename T>
+		T get_data(const String &values)
+		{
+			T result;
+			StringStream str;
+
+			str << std::boolalpha;
+			str << values;
+
+			str >> result;
+
+			return result;
+		}
+
 	}
 
-	String VariantUtil::get_type_string(const Variant &variant)
+	ParameterType VariantUtil::get_parameter_type(const Variant &variant)
 	{
-		String result;
+		ParameterType result;
 
-		boost::apply_visitor(VariantTypeNames(result), variant);
+		boost::apply_visitor(VariantParameterTypes(result), variant);
 
 		return result;
 	}
@@ -620,6 +635,11 @@ namespace eternal_lands
 		return result;
 	}
 
+	const String &VariantUtil::get_type_string(const Variant &variant)
+	{
+		return ParameterUtil::get_str(get_parameter_type(variant)); 
+	}
+
 	StringType VariantUtil::get_value_string(const Variant &variant)
 	{
 		StringStream result;
@@ -629,10 +649,140 @@ namespace eternal_lands
 		return result.str();
 	}
 
+	Variant VariantUtil::get_variant(const ParameterType type,
+		const String &values)
+	{
+		Variant result;
+
+		switch (type)
+		{
+			case pt_bool:
+				result = get_data<bool>(values);
+				break;
+			case pt_bvec2:
+				result = get_data<glm::bvec2>(values);
+				break;
+			case pt_bvec3:
+				result = get_data<glm::bvec3>(values);
+				break;
+			case pt_bvec4:
+				result = get_data<glm::bvec4>(values);
+				break;
+			case pt_int:
+				result = static_cast<Sint64>(get_data<Sint32>(
+					values));
+				break;
+			case pt_ivec2:
+				result = get_data<glm::ivec2>(values);
+				break;
+			case pt_ivec3:
+				result = get_data<glm::ivec3>(values);
+				break;
+			case pt_ivec4:
+				result = get_data<glm::ivec4>(values);
+				break;
+			case pt_unsigned_int:
+				result = static_cast<Sint64>(get_data<Uint32>(
+					values));
+				break;
+			case pt_uvec2:
+				result = get_data<glm::uvec2>(values);
+				break;
+			case pt_uvec3:
+				result = get_data<glm::uvec3>(values);
+				break;
+			case pt_uvec4:
+				result = get_data<glm::uvec4>(values);
+				break;
+			case pt_float:
+				result = get_data<float>(values);
+				break;
+			case pt_vec2:
+				result = get_data<glm::vec2>(values);
+				break;
+			case pt_vec3:
+				result = get_data<glm::vec3>(values);
+				break;
+			case pt_vec4:
+				result = get_data<glm::vec4>(values);
+				break;
+			case pt_mat2x2:
+				result = get_data<glm::mat2x2>(values);
+				break;
+			case pt_mat2x3:
+				result = get_data<glm::mat2x3>(values);
+				break;
+			case pt_mat2x4:
+				result = get_data<glm::mat2x4>(values);
+				break;
+			case pt_mat3x2:
+				result = get_data<glm::mat3x2>(values);
+				break;
+			case pt_mat3x3:
+				result = get_data<glm::mat3x3>(values);
+				break;
+			case pt_mat3x4:
+				result = get_data<glm::mat3x4>(values);
+				break;
+			case pt_mat4x2:
+				result = get_data<glm::mat4x2>(values);
+				break;
+			case pt_mat4x3:
+				result = get_data<glm::mat4x3>(values);
+				break;
+			case pt_mat4x4:
+				result = get_data<glm::mat4x4>(values);
+				break;
+			case pt_sampler1D:
+			case pt_sampler2D:
+			case pt_samplerCube:
+			case pt_sampler3D:
+			case pt_sampler1DShadow:
+			case pt_sampler2DShadow:
+			case pt_sampler2DRect:
+			case pt_sampler2DRectShadow:
+			case pt_sampler1DArray:
+			case pt_sampler2DArray:
+			case pt_sampler1DArrayShadow:
+			case pt_sampler2DArrayShadow:
+			case pt_samplerCubeShadow:
+			case pt_samplerBuffer:
+			case pt_isampler1D:
+			case pt_isampler2D:
+			case pt_isamplerCube:
+			case pt_isampler3D:
+			case pt_isampler1DArray:
+			case pt_isampler2DArray:
+			case pt_isampler2DRect:
+			case pt_isamplerBuffer:
+			case pt_usampler1D:
+			case pt_usampler2D:
+			case pt_usamplerCube:
+			case pt_usampler3D:
+			case pt_usampler1DArray:
+			case pt_usampler2DArray:
+			case pt_usampler2DRect:
+			case pt_usamplerBuffer:
+				break;
+		}
+
+		return result;
+	}
+
+	Variant VariantUtil::get_variant(const String &type,
+		const String &values)
+	{
+		ParameterType parameter_type;
+
+		parameter_type = ParameterUtil::get_parameter(type);
+
+		return get_variant(parameter_type, values);
+	}
+
 	OutStream& operator<<(OutStream &str, const Variant &value)
 	{
 		str << L"Variant ";
-		str << L" [type] " << VariantUtil::get_type_string(value);
+		str << L" [type] " << VariantUtil::get_parameter_type(value);
 		str << L" [size] " << VariantUtil::get_size(value);
 		str << L" [values] " << VariantUtil::get_value_string(value);
 

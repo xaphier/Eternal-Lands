@@ -7,6 +7,7 @@
 
 #include "xmlutil.hpp"
 #include "exceptions.hpp"
+#include "variantutil.hpp"
 
 namespace eternal_lands
 {
@@ -111,6 +112,101 @@ namespace eternal_lands
 		}
 
 		return String(utf8_to_string((char*)node->children->content));
+	}
+
+	Variant XmlUtil::get_variant_value(const xmlNodePtr node)
+	{
+		String type, value;
+		xmlNodePtr it;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
+			{
+				type = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("value")) == 0)
+			{
+				value = XmlUtil::get_string_value(it);
+			}
+		}
+		while (XmlUtil::next(it, true));
+
+		return VariantUtil::get_variant(type, value);
+	}
+
+	StringVariantPair XmlUtil::get_string_variant(const xmlNodePtr node)
+	{
+		String type, value, name;
+		xmlNodePtr it;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
+			{
+				name = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
+			{
+				type = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("value")) == 0)
+			{
+				value = XmlUtil::get_string_value(it);
+			}
+		}
+		while (XmlUtil::next(it, true));
+
+		return StringVariantPair(name, VariantUtil::get_variant(type,
+			value));
+	}
+
+	StringVariantMap XmlUtil::get_string_variant_map(const xmlNodePtr node,
+		const StringType &element)
+	{
+		StringVariantMap result;
+		xmlNodePtr it;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST element.c_str()) == 0)
+			{
+				result.insert(get_string_variant(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
+
+		return result;
 	}
 
 	bool XmlUtil::get_bool_value(const xmlNodePtr node)

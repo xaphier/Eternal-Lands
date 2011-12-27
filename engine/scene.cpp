@@ -32,6 +32,7 @@
 #include "framebufferbuilder.hpp"
 #include "filter.hpp"
 #include "texture.hpp"
+#include "convexbody.hpp"
 
 #include "../client_serv.h"
 
@@ -81,6 +82,12 @@ namespace eternal_lands
 			m_scene_resources.get_mesh_cache(),
 			m_scene_resources.get_effect_cache(),
 			m_scene_resources.get_texture_cache()));
+
+		m_fonts.reset(new TextureFontCache(
+			m_scene_resources.get_mesh_builder(), 1024, 1024,
+				1024));
+		m_fonts->add_font(String(UTF8("default")),
+			String(UTF8("/usr/share/fonts/truetype/freefont/FreeSerif.ttf")), 12);
 	}
 
 	Scene::~Scene() throw()
@@ -213,7 +220,7 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_msaa_shadows())
 		{
-			samples = 2;
+			samples = 4;
 		}
 		else
 		{
@@ -365,13 +372,14 @@ namespace eternal_lands
 
 	void Scene::cull_all_shadows()
 	{
-		SubFrustumsBoundingBoxes split_boxes, receiver_boxes;
-		SubFrustumsBoundingBoxes caster_boxes, shadow_boxes;
+		SubFrustumsConvexBodys convex_bodys;
+		SubFrustumsBoundingBoxes receiver_boxes;
+		SubFrustumsBoundingBoxes caster_boxes;
 		Frustum frustum;
 		glm::vec4 camera;
 		Uint32ActorSharedPtrMap::iterator it, end;
 		SubFrustumsMask mask;
-		Uint32 i;
+		Uint32 i, count;
 
 		if (m_shadow_map_change)
 		{
@@ -396,14 +404,20 @@ namespace eternal_lands
 						)->get_bounding_box());
 				}
 			}
+
 			object.set_sub_frustums_mask(mask);
 		}
 
-		split_boxes = frustum.get_bounding_boxes();
+		count = convex_bodys.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			convex_bodys[i] = ConvexBody(frustum, i);
+			convex_bodys[i].clip(receiver_boxes[i]);
+		}
 
 		m_scene_view.build_shadow_matrices(
-			glm::vec3(get_main_light_direction()),
-			split_boxes, receiver_boxes,
+			glm::vec3(get_main_light_direction()), convex_bodys, 
 			m_map->get_object_tree().get_bounding_box().get_max().z);
 
 		camera = glm::vec4(0.0, 0.0, 0.0f, 1.0f);
@@ -437,13 +451,14 @@ namespace eternal_lands
 
 		m_shadow_objects_mask.reset();
 
+		count = mask.size();
+
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_shadow_objects.get_objects())
 		{
-			mask = frustum.intersect_sub_frustums(
-				object.get_object()->get_bounding_box());
+			mask = object.get_sub_frustums_mask();
 
-			for (i = 0; i < mask.size(); ++i)
+			for (i = 0; i < count; ++i)
 			{
 				if (mask[i])
 				{
@@ -456,10 +471,13 @@ namespace eternal_lands
 			m_shadow_objects_mask |= mask;
 		}
 
-		shadow_boxes = frustum.get_bounding_boxes();
+		for (i = 0; i < count; ++i)
+		{
+			convex_bodys[i] = ConvexBody(frustum, i);
+			convex_bodys[i].clip(caster_boxes[i]);
+		}
 
-		m_scene_view.update_shadow_matrices(shadow_boxes,
-			receiver_boxes, caster_boxes);
+		m_scene_view.update_shadow_matrices(convex_bodys);
 	}
 
 	bool Scene::switch_program(const GlslProgramSharedPtr &program)
@@ -488,14 +506,6 @@ namespace eternal_lands
 				m_scene_view.get_camera());
 			program->set_parameter(apt_shadow_camera,
 				m_scene_view.get_shadow_camera());
-			program->set_parameter(apt_shadow_view_matrix,
-				m_scene_view.get_shadow_view_matrix());
-			program->set_parameter(apt_shadow_projection_matrix,
-				m_scene_view.get_shadow_projection_matrix());
-			program->set_parameter(
-				apt_shadow_projection_view_matrix,
-				m_scene_view.get_shadow_projection_view_matrix(
-				));
 			program->set_parameter(apt_shadow_texture_matrix,
 				m_scene_view.get_shadow_texture_matrices());
 			program->set_parameter(apt_split_distances,
@@ -756,6 +766,7 @@ namespace eternal_lands
 				m_shadow_frame_buffer->clear(glm::vec4(1e38f));
 			}
 		}
+		unbind_all();
 
 		DEBUG_CHECK_GL_ERROR();
 

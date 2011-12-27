@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "boundingbox.hpp"
+#include "ray.hpp"
 
 /**
  * @file
@@ -135,13 +136,13 @@ namespace eternal_lands
 
 				dist = get_distance(point);
 
-				if (dist < 0.0f)
+				if (dist < epsilon)
 				{
 					return it_outside;
 				}
 				else
 				{
-					if (dist > 0.0f)
+					if (dist > epsilon)
 					{
 						return it_inside;
 					}
@@ -150,6 +151,27 @@ namespace eternal_lands
 						return it_intersect;
 					}
 				}
+			}
+
+			inline bool intersect(const Ray &ray, float &t) const
+			{
+				float angle, distance;
+
+				angle = glm::dot(get_normal(),
+					ray.get_direction());
+
+				if (std::abs(angle) < epsilon)
+				{
+					t = 0.0f;
+
+					return false;
+				}
+
+				distance = get_distance(ray.get_origin());
+
+				t = -distance / angle;
+
+				return t >= 0.0f;
 			}
 
 			inline float get_distance(const BoundingBox &box) const
@@ -201,7 +223,8 @@ namespace eternal_lands
 			 * @param matrix The transform matrix.
 			 * @return The transformed plane.
 			 */
-			Plane transform(const glm::mat4x3 &matrix) const;
+			void transform(const glm::mat4x3 &matrix);
+			Plane get_transformed(const glm::mat4x3 &matrix) const;
 
 			inline bool intersection_point(const Plane p0,
 				const Plane p1, glm::vec3 &point) const

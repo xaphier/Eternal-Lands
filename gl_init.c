@@ -1055,11 +1055,7 @@ void resize_root_window()
 	//hud_x_adjust=(2.0/window_width)*hud_x;
 	//Setup matrix for the sky. If we don't do this the sky looks unhinged when perspective changes.
 	glLoadIdentity();
-	glFrustum(-perspective*window_ratio*near_plane,
-			   perspective*window_ratio*near_plane,
-			  -perspective*near_plane,
-			   perspective*near_plane,
-			   near_plane, 1000.0);
+	gluPerspective(40.0f, window_ratio, near_plane, 1000.0f);
 	glGetDoublev(GL_PROJECTION_MATRIX, skybox_view);
 	glLoadIdentity(); // Reset The Projection Matrix
 

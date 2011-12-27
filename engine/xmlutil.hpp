@@ -31,6 +31,12 @@ namespace eternal_lands
 			static Sint16 get_sint16_value(const xmlNodePtr node);
 			static Uint16 get_uint16_value(const xmlNodePtr node);
 			static String get_string_value(const xmlNodePtr node);
+			static Variant get_variant_value(const xmlNodePtr node);
+			static StringVariantPair get_string_variant(
+				const xmlNodePtr node);
+			static StringVariantMap get_string_variant_map(
+				const xmlNodePtr node,
+				const StringType &element);
 			static bool get_bool_value(const xmlNodePtr node);
 			static bool skip_non_elements(xmlNodePtr &node);
 			static void forece_next(xmlNodePtr &node,

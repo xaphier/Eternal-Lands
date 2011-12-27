@@ -397,7 +397,7 @@ namespace eternal_lands
 		return str;
 	}
 
-	InStream& operator<<(InStream &str, glm::mat3x2 &value)
+	InStream& operator>>(InStream &str, glm::mat3x2 &value)
 	{
 		str >> value[0][0];
 		str >> value[0][1];

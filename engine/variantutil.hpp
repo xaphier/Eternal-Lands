@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "shader/parameterutil.hpp"
 
 /**
  * @file
@@ -25,12 +26,18 @@ namespace eternal_lands
 	class VariantUtil
 	{
 		public:
-			static String get_type_string(
-				const Variant &variant);
 			static Uint32 get_size(
 				const Variant &variant);
 			static StringType get_value_string(
 				const Variant &variant);
+			static const String &get_type_string(
+				const Variant &variant);
+			static ParameterType get_parameter_type(
+				const Variant &variant);
+			static Variant get_variant(const ParameterType type,
+				const String &values);
+			static Variant get_variant(const String &type,
+				const String &values);
 
 	};
 

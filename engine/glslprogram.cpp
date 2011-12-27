@@ -9,6 +9,8 @@
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "shader/parameterutil.hpp"
+#include "xmlreader.hpp"
+#include "xmlutil.hpp"
 
 namespace eternal_lands
 {
@@ -790,6 +792,18 @@ namespace eternal_lands
 		m_name(name), m_last_used(0), m_program(0)
 	{
 		build(vertex_shader, fragment_shader, values);
+	}
+
+	GlslProgram::GlslProgram(const FileSystemSharedPtr &file_system,
+		const String &file_name): m_last_used(0), m_program(0)
+	{
+		load_xml(file_system, file_name);
+	}
+
+	GlslProgram::GlslProgram(const String &file_name): m_last_used(0),
+		m_program(0)
+	{
+		load_xml(file_name);
 	}
 
 	GlslProgram::~GlslProgram() throw()
@@ -1882,6 +1896,76 @@ namespace eternal_lands
 				m_used_texture_units[it->second] = true;
 			}
 		}
+	}
+
+	void GlslProgram::load_xml(const xmlNodePtr node)
+	{
+		String vertex_shader, fragment_shader;
+		StringVariantMap values;
+		xmlNodePtr it;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("glsl_program")) != 0)
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
+			{
+				m_name = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("vertex_shader")) == 0)
+			{
+				vertex_shader = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("fragment_shader")) == 0)
+			{
+				fragment_shader = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("values")) == 0)
+			{
+				values = XmlUtil::get_string_variant_map(it,
+					UTF8("value"));
+			}
+		}
+		while (XmlUtil::next(it, true));
+
+		build(vertex_shader, fragment_shader, values);
+	}
+
+	void GlslProgram::load_xml(const FileSystemSharedPtr &file_system,
+		const String &file_name)
+	{
+		XmlReaderSharedPtr reader;
+
+		reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			file_name));
+
+		load_xml(reader->get_root_node());
+	}
+
+	void GlslProgram::load_xml(const String &file_name)
+	{
+		XmlReaderSharedPtr reader;
+
+		reader = XmlReaderSharedPtr(new XmlReader(file_name));
+
+		load_xml(reader->get_root_node());
 	}
 
 }

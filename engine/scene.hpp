@@ -20,6 +20,7 @@
 #include "statemanager.hpp"
 #include "sceneview.hpp"
 #include "filter.hpp"
+#include "font/texturefontcache.hpp"
 
 /**
  * @file
@@ -60,6 +61,7 @@ namespace eternal_lands
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
+			boost::scoped_ptr<TextureFontCache> m_fonts;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
 			float m_time;

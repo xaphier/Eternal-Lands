@@ -56,8 +56,6 @@ namespace eternal_lands
 				const PlanesMask in_mask,
 				const Uint16 sub_frustum_index,
 				PlanesMask &out_mask) const;
-			Vec3Array8 get_corner_points(
-				const Uint16 sub_frustum_index) const;
 
 		public:
 			Frustum();
@@ -68,13 +66,15 @@ namespace eternal_lands
 			static Plane get_plane(const glm::mat4 &matrix,
 				const PlaneType plane);
 			static const String get_str(const PlaneType plane);
+			static PlaneVector get_planes(const BoundingBox &box);
+			PlaneVector get_planes(const Uint16 sub_frustum) const;
 
 			inline const PlanesMask &get_planes_mask() const
 			{
 				return m_planes_mask;
 			}
 
-			inline const Plane &get_plane(const Uint32 index) const
+			inline const Plane &get_plane(const Uint16 index) const
 			{
 				return m_planes[index];
 			}
@@ -117,7 +117,14 @@ namespace eternal_lands
 
 			SubFrustumsBoundingBoxes get_bounding_boxes() const;
 
-			Frustum transform(const glm::mat4x3 &world_matrix)
+			SubFrustumsConerPoints get_corner_points() const;
+
+			Vec3Array8 get_corner_points(
+				const Uint16 sub_frustum_index) const;
+
+			void transform(const glm::mat4x3 &matrix);
+
+			Frustum get_transformed(const glm::mat4x3 &matrix)
 				const;
 
 	};
