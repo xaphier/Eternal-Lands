@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <limits.h>
 #include <float.h>
+#include <errno.h>
 //For stat() etc.. below
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -104,6 +105,7 @@ typedef	int (*int_min_max_func)();
 #define GFX			7
 #define CAMERA		8
 #define TROUBLESHOOT	9
+
 
 #ifdef DEBUG
 #define DEBUGTAB	10
@@ -331,6 +333,13 @@ static __inline__ void check_option_var(char* name);
 void change_var(int * var)
 {
 	*var= !*var;
+}
+
+static void change_show_action_bar(int * var)
+{
+	*var= !*var;
+	if (stats_bar_win >= 0)
+		init_stats_display();
 }
 
 #ifndef MAP_EDITOR
@@ -1202,6 +1211,19 @@ int set_var_unsaved(const char *str, var_name_type type)
 	return 1;
 }
 
+int toggle_OPT_BOOL_by_name(const char *str)
+{
+	int var_index = find_var(str, OPT_BOOL);
+	if ((var_index == -1) || (our_vars.var[var_index]->type != OPT_BOOL))
+	{
+		fprintf(stderr, "%s(): Invalid OPT_BOOL '%s'\n", __FUNCTION__, str);
+		return 0;
+	}
+	our_vars.var[var_index]->func(our_vars.var[var_index]->var);
+	our_vars.var[var_index]->saved= 0;
+	return 1;
+}
+
 #ifdef	ELC
 // Find an OPT_INT widget and set its's value
 // Other types might be useful but I just needed an OPT_INT this time.
@@ -1607,6 +1629,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL,"show_game_seconds","show_game_seconds",&show_game_seconds,change_var,0,"Show Game Seconds","Show seconds on the digital clock. Note: the seconds displayed are computed on client side and synchronized with the server at each new minute.",HUD);
 	add_var(OPT_BOOL,"show_stats_in_hud","sstats",&show_stats_in_hud,change_var,0,"Stats In HUD","Toggle showing stats in the HUD",HUD);
 	add_var(OPT_BOOL,"show_statbars_in_hud","sstatbars",&show_statbars_in_hud,change_var,0,"StatBars In HUD","Toggle showing statbars in the HUD. Needs Stats in HUD",HUD);
+	add_var(OPT_BOOL,"show_action_bar","ssactionbar",&show_action_bar,change_show_action_bar,0,"Action Points Bar in HUD","Show the current action points level in a stats bar on the bottom HUD.",HUD);
 	add_var(OPT_BOOL,"logo_click_to_url","logoclick",&logo_click_to_url,change_var,0,"Logo Click To URL","Toggle clicking the LOGO opening a browser window",HUD);
 	add_var(OPT_STRING,"logo_link", "logolink", LOGO_URL_LINK, change_string, 128, "Logo Link", "URL when clicking the logo", HUD);
 	add_var(OPT_BOOL,"show_help_text","shelp",&show_help_text,change_var,1,"Help Text","Enable tooltips.",HUD);
@@ -1629,7 +1652,20 @@ static void init_ELC_vars(void)
 #if !defined(WINDOWS) && !defined(OSX)
 	add_var(OPT_BOOL,"use_clipboard","uclb",&use_clipboard, change_var, 1, "Use Clipboard For Pasting", "Use CLIPBOARD for pasting (as e.g. GNOME does) or use PRIMARY cutbuffer (as xterm does)",HUD);
 #endif
+
 	add_var(OPT_BOOL,"show_poison_count", "poison_count", &show_poison_count, change_var, 0, "Show Food Poison Count", "Displays on the poison drop icon, the number of times you have been food poisoned since last being free of poison.",HUD);
+	// instance mode options
+	add_var(OPT_BOOL,"use_view_mode_instance","instance_mode",&view_mode_instance, change_var, 0, "Use instance mode banners", "Shows only your and mobs banners, adds mana bar to your banner.",HUD);
+	add_var(OPT_FLOAT,"instance_mode_banner_height","instance_mode_bheight",&view_mode_instance_banner_height,change_float,5.0f,"Your instance banner height","Sets how high the banner is located above your character",HUD,1.0,12.0,0.2);
+	add_var(OPT_BOOL,"im_creature_view_names","im_cnm",&im_creature_view_names, change_var, 0, "Creatures instance banners - names", "Show creature names when using instance mode",HUD);
+	add_var(OPT_BOOL,"im_creature_view_hp","im_chp",&im_creature_view_hp, change_var, 0, "Creatures instance banners - health numbers", "Show creature health numbers when using instance mode",HUD);
+	add_var(OPT_BOOL,"im_creature_view_hp_bar","im_chpbar",&im_creature_view_hp_bar, change_var, 0, "Creatures instance banners - health bars", "Show creature health bars when using instance mode",HUD);
+	add_var(OPT_BOOL,"im_creature_banner_bg","im_cbbg",&im_creature_banner_bg, change_var, 0, "Creatures instance banners - background", "Show creatures banners background when using instance mode",HUD);
+	add_var(OPT_BOOL,"im_other_player_view_names","im_opnm",&im_other_player_view_names, change_var, 0, "Other players instance banners - names", "Show other players names when using instance mode",HUD);
+	add_var(OPT_BOOL,"im_other_player_view_hp","im_ophp",&im_other_player_view_hp, change_var, 0, "Other players instance banners - health numbers", "Show other players health numbers when using instance mode",HUD);
+	add_var(OPT_BOOL,"im_other_player_view_hp_bar","im_ophpbar",&im_other_player_view_hp_bar, change_var, 0, "Other players instance banners - health bars", "Show other players health bars when using instance mode",HUD);
+	add_var(OPT_BOOL,"im_other_player_banner_bg","im_opbbg",&im_other_player_banner_bg, change_var, 0, "Other players instance banners - background", "Show other players banners background when using instance mode",HUD);
+	add_var(OPT_BOOL,"im_other_player_show_banner_on_damage","im_opbdmg",&im_other_player_show_banner_on_damage, change_var, 0, "Other players instance banners - show hp on damage", "Show other players banners for a while if player gets hit when using instance mode",HUD);
 	// HUD TAB
 
 
@@ -1945,7 +1981,7 @@ int read_el_ini ()
 #endif //MAP_EDITOR
 
 	if (fin == NULL){
-		LOG_ERROR("%s: %s \"el.ini\"\n", reg_error_str, cant_open_file);
+		LOG_ERROR("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return 0;
 	}
 
@@ -2005,7 +2041,7 @@ int write_el_ini ()
 	// read the ini file
 	file = open_file_config("el.ini", "r");
 	if(file == NULL){
-		LOG_ERROR("%s: %s \"el.ini\"\n", reg_error_str, cant_open_file);
+		LOG_ERROR("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 	} else {
 		maxlines= 300;
 	 	cont= malloc (maxlines * sizeof (input_line));
@@ -2023,7 +2059,7 @@ int write_el_ini ()
 	// Now write the contents of the file, updating those variables that have been changed
 	file = open_file_config("el.ini", "w");
 	if(file == NULL){
-		LOG_ERROR("%s: %s \"el.ini\"\n", reg_error_str, cant_open_file);
+		LOG_ERROR("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return 0;
 	}
 

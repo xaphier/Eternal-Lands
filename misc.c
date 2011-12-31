@@ -21,6 +21,7 @@
 #endif
 #include <zlib.h>
 #include <SDL.h>
+#include <errno.h>
 #include "misc.h"
 #include "asc.h"
 #include "bbox_tree.h"
@@ -141,7 +142,7 @@ FILE *my_fopen (const char *fname, const char *mode)
 	FILE *file = fopen (fname, mode);
 	if (file == NULL)
 	{
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, cant_open_file, fname);
+		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 	}
 	return file;
 }
@@ -194,7 +195,7 @@ gzFile * my_gzopen(const char * filename, const char * mode)
 		result= gzopen(filename, mode);
 	}
 	if(result == NULL) {
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, cant_open_file, filename);
+		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, filename, strerror(errno));
 	}
 
 	return result;
@@ -213,10 +214,8 @@ static void png_write_data(png_structp ctx, png_bytep area, png_size_t size)
 
 static void png_io_flush (png_structp ctx)
 {
-	SDL_RWops *src;
-	
-	src = (SDL_RWops *) png_get_io_ptr(ctx);
-	/* how do I flush src? */
+	// it appears nobody ever writes a proper flush function but a dummy is required
+	// possibly we could just call png_write_flush()
 }
 
 static int png_colortype_from_surface(SDL_Surface *surface)

@@ -6,6 +6,7 @@
  #include <unistd.h>
 #endif
 #include <string.h>
+#include <errno.h>
 #include <ctype.h>
 #include <time.h>
 #include "init.h"
@@ -142,7 +143,7 @@ void load_knowledge_list()
 	// try the language specific knowledge list
 	f=open_file_lang("knowledge.lst", "rb");
 	if(f == NULL){
-		LOG_ERROR("%s: %s \"knowledge.lst\"\n", reg_error_str, cant_open_file);
+		LOG_ERROR("%s: %s \"knowledge.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return;
 	}
 	while(1)
@@ -187,7 +188,7 @@ void read_config()
 #ifndef WINDOWS
 	if (chdir(datadir) != 0)
 	{
-		LOG_ERROR("%s() chdir(\"%s\") failed\n", __FUNCTION__, datadir);
+		LOG_ERROR("%s() chdir(\"%s\") failed: %s\n", __FUNCTION__, datadir, strerror(errno));
 	}
 #endif //!WINDOWS
 
@@ -295,6 +296,9 @@ void read_bin_cfg()
 			if((quickbar_draggable=(cfg_mem.quickbar_flags&0xFF00)>>8)!=1)quickbar_draggable=0;
 		}
 
+#if MAX_WATCH_STATS != 5
+#error You cannot just go around changing MAX_WATCH_STATS as its used by the el.cfg file!
+#endif
 	for(i=0;i<MAX_WATCH_STATS;i++){
 		watch_this_stats[i]=cfg_mem.watch_this_stats[i];
 		if (watch_this_stats[i]<0 || watch_this_stats[i]>=NUM_WATCH_STAT)
@@ -310,9 +314,21 @@ void read_bin_cfg()
 	rz=cfg_mem.camera_z;
 	new_zoom_level=zoom_level=cfg_mem.zoom_level;
 
-	view_health_bar=cfg_mem.view_health_bar;
-	view_names=cfg_mem.view_names;
-	view_hp=cfg_mem.view_hp;
+	// Needed for just one release, recover previous settings for player banners.
+	if (cfg_mem.unused_01 != 0 || cfg_mem.unused_02 != 0)
+	{
+		cfg_mem.banner_settings &= 1;
+		cfg_mem.banner_settings |= (cfg_mem.unused_01 << 2);
+		cfg_mem.banner_settings |= (cfg_mem.unused_02 << 3);
+		cfg_mem.unused_01 = cfg_mem.unused_02 = 0;
+	}
+
+	view_health_bar=cfg_mem.banner_settings & 1;
+	view_ether_bar=(cfg_mem.banner_settings >> 1) & 1;
+	view_names=(cfg_mem.banner_settings >> 2) & 1;
+	view_hp=(cfg_mem.banner_settings >> 3) & 1;
+	view_ether=(cfg_mem.banner_settings >> 4) & 1;
+
 	quantities.selected=cfg_mem.quantity_selected;
 
 	for(i=0;i<ITEM_EDIT_QUANT;i++){
@@ -358,7 +374,7 @@ void save_bin_cfg()
 
 	f=open_file_config("el.cfg","wb");
 	if(f == NULL){
-		LOG_ERROR("%s: %s \"el.cfg\"\n", reg_error_str, cant_open_file);
+		LOG_ERROR("%s: %s \"el.cfg\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return;//blah, whatever
 	}
 	memset(&cfg_mem, 0, sizeof(cfg_mem));	// make sure its clean
@@ -542,9 +558,13 @@ void save_bin_cfg()
 		cfg_mem.tab_info_y=tab_info_y;
 	}
 
-	cfg_mem.view_health_bar=view_health_bar;
-	cfg_mem.view_names=view_names;
-	cfg_mem.view_hp=view_hp;
+	cfg_mem.banner_settings = 0;
+	cfg_mem.banner_settings |= view_health_bar;
+	cfg_mem.banner_settings |= view_ether_bar << 1;
+	cfg_mem.banner_settings |= view_names << 2;
+	cfg_mem.banner_settings |= view_hp << 3;
+	cfg_mem.banner_settings |= view_ether << 4;
+
 	cfg_mem.quantity_selected=(quantities.selected<ITEM_EDIT_QUANT)?quantities.selected :0;
 
 	if(quickbar_relocatable>0)
@@ -622,7 +642,7 @@ void init_stuff()
 
 	if (chdir(datadir) != 0)
 	{
-		LOG_ERROR("%s() chdir(\"%s\") failed\n", __FUNCTION__, datadir);
+		LOG_ERROR("%s() chdir(\"%s\") failed: %s\n", __FUNCTION__, datadir, strerror(errno));
 	}
 
 	init_crc_tables();

@@ -3,6 +3,7 @@
 #ifndef WINDOWS
  #include <locale.h>
 #endif
+#include <errno.h>
 #include "particles.h"
 #include "asc.h"
 #include "draw_scene.h"

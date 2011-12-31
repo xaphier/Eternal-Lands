@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include "map.h"
 #include "asc.h"
 #include "bbox_tree.h"
@@ -418,7 +419,7 @@ void save_markings()
 
 	fp = open_file_config(marks_file,"w");
 	if ( fp == NULL ){
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, cant_open_file, marks_file);
+		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, marks_file, strerror(errno));
 	} else {
 		for ( i = 0 ; i < max_mark ; i ++){
 			if ( marks[i].x > 0 && !marks[i].server_side){
@@ -447,7 +448,7 @@ void load_server_markings(){
 	my_tolower(fname);
 	fp = open_file_config(fname,"r");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, cant_open_file, fname);
+		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
@@ -478,7 +479,7 @@ void save_server_markings(){
 	my_tolower(fname);
 	fp = open_file_config(fname,"w");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, cant_open_file, fname);
+		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 

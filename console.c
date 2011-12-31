@@ -2,6 +2,7 @@
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 #include "new_actors.h"
 #include "console.h"
 #include "asc.h"
@@ -12,6 +13,7 @@
 #include "consolewin.h"
 #include "elconfig.h"
 #include "filter.h"
+#include "gamewin.h"
 #include "global.h"
 #include "hud.h"
 #include "ignore.h"
@@ -1559,6 +1561,20 @@ int command_ckdata(char *text, int len)
 } /* end command_ckdata() */
 
 
+/* pretend the specified key has been pressed - allows user menu to trigger keypress events */
+int command_keypress(char *text, int len)
+{
+	text = getparams(text);
+	if (*text)
+	{
+		Uint32 value = get_key_value(text);
+		if (value)
+			keypress_root_common(value, 0);
+	}
+	return 1;
+}
+
+
 int save_local_data(char * text, int len){
 	save_bin_cfg();
 	//Save the quickbar spells
@@ -1587,7 +1603,7 @@ void init_commands(const char *filename)
 {
 	FILE *fp = open_file_data(filename, "r");
 	if(fp == NULL) {
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, cant_open_file, filename);
+		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, filename, strerror(errno));
 	} else {
 	/* Read keywords from commands.lst */
 		char buffer[255];
@@ -1690,6 +1706,7 @@ add_command("horse", &horse_cmd);
 	add_command(cmd_open_url, &command_open_url);
 	add_command(cmd_show_spell, &command_show_spell);
 	add_command(cmd_cast_spell, &command_cast_spell);
+	add_command(cmd_keypress, &command_keypress);
 	command_buffer_offset = NULL;
 }
 

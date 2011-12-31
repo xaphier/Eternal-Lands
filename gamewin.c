@@ -498,6 +498,7 @@ int click_game_handler(window_info *win, int mx, int my, Uint32 flags)
 	int flag_ctrl = flags & ELW_CTRL;
 	int flag_right = flags & ELW_RIGHT_MOUSE;
 	int force_walk = (flag_ctrl && flag_right && !flag_alt);
+	int shift_on = flags & ELW_SHIFT;
 	int range_weapon_equipped;
 
 #ifdef MIDDLE_MOUSE_PASTE
@@ -562,11 +563,14 @@ int click_game_handler(window_info *win, int mx, int my, Uint32 flags)
 						cm_bool_line(cm_id, 0, &view_names, NULL);
 						cm_bool_line(cm_id, 1, &view_health_bar, NULL);
 						cm_bool_line(cm_id, 2, &view_hp, NULL);
-						cm_bool_line(cm_id, 3, &view_chat_text_as_overtext, NULL);
-						cm_bool_line(cm_id, 4, &use_alpha_banner, "use_alpha_banner");
-						cm_bool_line(cm_id, 5, &sit_lock, "sit_lock");
-						cm_bool_line(cm_id, 6, &ranging_lock, NULL);
-						cm_bool_line(cm_id, 8, &cm_banner_disabled, "cm_banner_disabled");
+						cm_bool_line(cm_id, 3, &view_ether_bar, NULL);
+						cm_bool_line(cm_id, 4, &view_ether, NULL);
+						cm_bool_line(cm_id, 5, &view_mode_instance, "use_view_mode_instance");
+						cm_bool_line(cm_id, 6, &view_chat_text_as_overtext, NULL);
+						cm_bool_line(cm_id, 7, &use_alpha_banner, "use_alpha_banner");
+						cm_bool_line(cm_id, 8, &sit_lock, "sit_lock");
+						cm_bool_line(cm_id, 9, &ranging_lock, NULL);
+						cm_bool_line(cm_id, 11, &cm_banner_disabled, "cm_banner_disabled");
 					}
 					cm_show_direct(cm_id, -1, -1);
 					reset_cursor_time = SDL_GetTicks();
@@ -851,8 +855,11 @@ int click_game_handler(window_info *win, int mx, int my, Uint32 flags)
 			if (use_item != -1 && current_cursor == CURSOR_USE_WITEM)
 			{
 				*((int *)(str+5)) = SDL_SwapLE32((int)item_list[use_item].pos);
-				use_item = -1;
-				action_mode = ACTION_WALK;
+				if (!shift_on)
+				{
+					use_item = -1;
+					action_mode = ACTION_WALK;
+				}
 			} 
 			else
 			{
