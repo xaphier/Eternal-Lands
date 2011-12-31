@@ -103,7 +103,7 @@ namespace eternal_lands
 			return;
 		}
 
-		glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, m_id);
+		glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, m_id);
 	}
 
 }
