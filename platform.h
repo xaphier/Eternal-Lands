@@ -83,7 +83,6 @@
  #include <OpenGL/gl.h>
  #include <OpenGL/glu.h>
  //#include <OpenGL/glext.h>
- #include "elglext.h"
  #define APIENTRY 
  #define APIENTRYP *
 #elif !defined(BSD)
@@ -91,7 +90,6 @@
  #define GL_GLEXT_LEGACY
  #include <GL/gl.h>
  #include <GL/glu.h>
- #include "glext.h"
 #else // BSD
  #include <GL/glew.h>
  #include <GL/gl.h>
