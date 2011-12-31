@@ -40,6 +40,7 @@ namespace eternal_lands
 			~VertexStreams() throw();
 			void set(const VertexSemanticType semantic,
 				const glm::vec4 &data);
+			void reset();
 			void push_vertex();
 
 			inline const VertexFormatSharedPtr &get_format() const

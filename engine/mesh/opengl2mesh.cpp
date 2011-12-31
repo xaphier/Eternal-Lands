@@ -32,6 +32,8 @@ namespace eternal_lands
 
 		if (m_vertex_data[index].get() != 0)
 		{
+			m_vertex_data[index]->bind(hbt_vertex);
+
 			result = boost::make_shared<
 				MappedHardwareWriteMemoryBuffer>(
 					m_vertex_data[index], hbt_vertex);
@@ -44,6 +46,7 @@ namespace eternal_lands
 		const AbstractReadMemoryBufferSharedPtr &buffer,
 		const Uint16 index)
 	{
+		m_vertex_data[index]->bind(hbt_vertex);
 		m_vertex_data[index]->set(hbt_vertex, *buffer,
 			get_vertices_usage());
 	}
@@ -52,6 +55,7 @@ namespace eternal_lands
 		const AbstractReadMemoryBufferSharedPtr &buffer,
 		const Uint16 index)
 	{
+		m_vertex_data[index]->bind(hbt_vertex);
 		m_vertex_data[index]->update(hbt_vertex, *buffer);
 	}
 
@@ -61,6 +65,8 @@ namespace eternal_lands
 
 		if (m_index_data.get() != 0)
 		{
+			m_index_data->bind(hbt_index);
+
 			result = boost::make_shared<
 				MappedHardwareWriteMemoryBuffer>(
 					m_index_data, hbt_index);
@@ -118,6 +124,8 @@ namespace eternal_lands
 
 				size = get_vertex_count();
 				size *= get_vertex_elements(i).get_stride();
+
+				m_vertex_data[i]->bind(hbt_vertex);
 				m_vertex_data[i]->set_size(hbt_vertex, size,
 					get_vertices_usage());
 			}
@@ -151,6 +159,7 @@ namespace eternal_lands
 		}
 
 		m_index_data = boost::make_shared<HardwareBuffer>();
+		m_index_data->bind(hbt_index);
 		m_index_data->set_size(hbt_index, size, get_indices_usage());
 	}
 

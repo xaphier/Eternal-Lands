@@ -515,6 +515,27 @@ namespace eternal_lands
 			return;
 		}
 
+		if (typeid(exception) == typeid(IoErrorException))
+		{
+			BoostFormat format_string(UTF8("File '%1%' is invalid"));
+
+			str = UTF8("Unkown file");
+
+			if (boost::get_error_info<
+				boost::errinfo_file_name>(exception) != 0)
+			{
+				str = *boost::get_error_info<
+					boost::errinfo_file_name>(exception);
+			}
+
+			format_string % str;
+
+			log_message(llt_error, String(format_string.str()),
+				throw_file, throw_line);
+
+			return;
+		}
+
 		log_message(llt_error, boost::diagnostic_information(
 			exception), throw_file, throw_line);
 	}

@@ -703,6 +703,141 @@ extern "C" void draw_engine()
 	CATCH_BLOCK
 }
 
+extern "C" void engine_cull_scene()
+{
+	glm::vec3 focus, main_light_ambient, main_light_color;
+	glm::vec3 main_light_direction;
+	actor* me;
+	Uint32 i;
+
+	TRY_BLOCK
+
+	CHECK_GL_ERROR();
+
+	me = get_our_actor ();
+
+	if (me != 0)
+	{
+		focus.x = me->x_pos + 0.25f;
+		focus.y = me->y_pos + 0.25f;
+		focus.z = -2.2f + height_map[me->y_tile_pos*tile_map_size_x*6+me->x_tile_pos]*0.2f;
+
+		scene->set_focus(focus);
+	}
+
+	for (i = 0; i < 3; i++)
+	{
+		main_light_ambient[i] = skybox_light_ambient_color[i];
+		main_light_color[i] = skybox_light_diffuse_color[i];
+		main_light_direction[i] = sun_position[i];
+	}
+
+	if (main_light_direction.z < 0.0f)
+	{
+		main_light_direction = -main_light_direction;
+	}
+
+	scene->set_main_light_ambient(main_light_ambient);
+	scene->set_main_light_color(main_light_color);
+	scene->set_main_light_direction(main_light_direction);
+	scene->set_night(!is_day);
+
+	scene->cull();
+
+	CATCH_BLOCK
+}
+
+extern "C" void engine_draw_scene()
+{
+	Uint32 i, id;
+
+	TRY_BLOCK
+
+	CHECK_GL_ERROR();
+
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_ALPHA_TEST);
+
+	scene->draw();
+
+	pick_frame++;
+
+	if (pick_frame > mouse_limit)
+	{
+		thing_under_the_mouse = UNDER_MOUSE_NOTHING;
+		actor_under_mouse = 0;
+		object_under_mouse = -1;
+
+		id = scene->pick(glm::vec2(mouse_x, window_height - mouse_y),
+			glm::vec2(5.0f), selection);
+
+		if (selection == el::st_npc)
+		{
+			thing_under_the_mouse = UNDER_MOUSE_NPC;
+			object_under_mouse = id;
+			actor_under_mouse = get_actor_ptr_from_id(object_under_mouse);
+		}
+
+		if (selection == el::st_player)
+		{
+			thing_under_the_mouse = UNDER_MOUSE_PLAYER;
+			object_under_mouse = id;
+			actor_under_mouse = get_actor_ptr_from_id(object_under_mouse);
+		}
+
+		if (selection == el::st_animal)
+		{
+			thing_under_the_mouse = UNDER_MOUSE_ANIMAL;
+			object_under_mouse = id;
+			actor_under_mouse = get_actor_ptr_from_id(object_under_mouse);
+		}
+
+		if ((selection == el::st_select) ||
+			(selection == el::st_harvest) ||
+			(selection == el::st_pick) ||
+			(selection == el::st_enter))
+		{
+			thing_under_the_mouse = UNDER_MOUSE_3D_OBJ;
+			object_under_mouse = id;
+			actor_under_mouse = 0;
+		}
+
+		pick_frame = 0;
+	}
+
+	for (i = 0; i < 8; i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+		glDisable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_CULL_FACE);
+	bind_texture_id(0);
+
+	glBindBufferARB(GL_ARRAY_BUFFER, 0);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
+	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
+	glUseProgram(0);
+
+	for (i = 0; i < 16; i++)
+	{
+		glDisableVertexAttribArray(i);
+	}
+
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glBlendFunc(GL_ZERO, GL_ONE);
+
+	CHECK_GL_ERROR();
+
+	CATCH_BLOCK
+}
+
 extern "C" void clear_engine()
 {
 	TRY_BLOCK
@@ -1505,4 +1640,42 @@ extern "C" void set_fog_data(const float* color, const float density)
 		scene->set_fog(glm::vec3(color[0], color[1], color[2]),
 			density);
 	}
+}
+
+extern "C" void add_font(const char* file_name, const char* index,
+	const float size)
+{
+	TRY_BLOCK
+
+	if (scene.get() != 0)
+	{
+		scene->add_font(file_system, el::String(file_name),
+			el::String(index), size);
+	}
+
+	CATCH_BLOCK
+}
+
+extern "C" void draw_text(const char* str, const char* index, const float x,
+	const float y, const float r, const float g, const float b)
+{
+	TRY_BLOCK
+
+	el::Utf32String text;
+	glm::mat4x3 world_matrix;
+	glm::vec4 color;
+
+	world_matrix = glm::mat4x3(glm::translate(x, y, 0.0f));
+
+	color.r = r;
+	color.g = g;
+	color.b = b;
+	color.a = 1.0f;
+
+	if (scene.get() != 0)
+	{
+		scene->draw_text(text, el::String(index), world_matrix, color);
+	}
+
+	CATCH_BLOCK
 }

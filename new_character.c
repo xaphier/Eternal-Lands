@@ -363,7 +363,6 @@ CHECK_GL_ERRORS();
 
 int display_newchar_handler (window_info *win)
 {
-	int any_reflection; 
 	static int main_count = 0;
 
 	if(disconnected)
@@ -418,6 +417,7 @@ int display_newchar_handler (window_info *win)
 
 	if (SDL_GetAppState() & SDL_APPACTIVE)
 	{
+		engine_cull_scene();
 
 		draw_global_light ();
 
@@ -436,7 +436,7 @@ int display_newchar_handler (window_info *win)
 		CHECK_GL_ERRORS ();
 		if (use_fog)
 			weather_render_fog();
-		draw_engine();
+		engine_draw_scene();
 		display_actors (1, DEFAULT_RENDER_PASS);
 
 		CHECK_GL_ERRORS ();

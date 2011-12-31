@@ -275,6 +275,7 @@ namespace eternal_lands
 		const Uint32Vector &indices, const bool static_indices)
 	{
 		AbstractWriteMemoryBufferSharedPtr buffer;
+		Uint32 i, count;
 
 		m_use_16_bit_indices = use_16_bit_indices;
 		m_index_count = indices.size();
@@ -286,11 +287,28 @@ namespace eternal_lands
 
 		if (get_index_count() > 0)
 		{
-			buffer = get_index_buffer();
+		}
 
-			assert(buffer.get() != 0);
+		buffer = get_index_buffer();
 
-//			update->write_index_buffer(blocks, buffer);
+		assert(buffer.get() != 0);
+
+		count = get_index_count();
+
+		if (use_16_bit_indices)
+		{
+			for (i = 0; i < count; ++i)
+			{
+				static_cast<Uint16*>(buffer->get_ptr())[i] =
+					indices[i];
+			}
+
+			return;
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			static_cast<Uint32*>(buffer->get_ptr())[i] = indices[i];
 		}
 	}
 

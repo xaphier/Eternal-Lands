@@ -65,6 +65,14 @@ namespace eternal_lands
 		}
 	}
 
+	void VertexStreams::reset()
+	{
+		BOOST_FOREACH(VertexStream &stream, get_streams())
+		{
+			stream.reset();
+		}
+	}
+
 	void VertexStreams::push_vertex()
 	{
 		BOOST_FOREACH(VertexStream &stream, get_streams())

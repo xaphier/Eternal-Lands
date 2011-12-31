@@ -125,6 +125,8 @@ namespace eternal_lands
 			return;
 		}
 
+		assert(get_offset() < m_buffer->get_size());
+
 		count = data.size();
 		offset = found->second.get_offset() + get_offset();
 		pack_format = found->second.get_pack_format();
@@ -141,6 +143,12 @@ namespace eternal_lands
 	Uint16 VertexStream::get_vertex_elements_count() const
 	{
 		return get_vertex_elements().get_count();
+	}
+
+	void VertexStream::push_vertex()
+	{
+		assert(get_offset() < m_buffer->get_size());
+		m_offset += get_stride();
 	}
 
 }

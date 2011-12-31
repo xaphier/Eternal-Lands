@@ -95,8 +95,8 @@ namespace eternal_lands
 	void MultiSampleFrameBuffer::blit()
 	{
 		// blit from multisample buffer to final buffer, triggers resolve
-		m_multisample_frame_buffer.bind_read();
-		m_frame_buffer.bind_draw();
+		m_multisample_frame_buffer.bind(false);
+		m_frame_buffer.bind(true);
 
 		glBlitFramebuffer(0, 0, get_width(), get_height(), 0, 0,
 			get_width(), get_height(), GL_COLOR_BUFFER_BIT,

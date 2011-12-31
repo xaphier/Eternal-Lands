@@ -137,6 +137,15 @@ namespace eternal_lands
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
 				SelectionType &selection);
+			void add_font(const FileSystemSharedPtr &file_system,
+				const String &file_name, const String &index,
+				const float size);
+			void draw_text(const Utf32String &str,
+				const String &index,
+				const glm::mat4x3 &world_matrix,
+				const glm::vec4 &color = glm::vec4(1.0f),
+				const float spacing = 0.0f,
+				const float rise = 0.0f);
 
 			inline void shadow_map_change()
 			{

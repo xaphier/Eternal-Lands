@@ -33,9 +33,9 @@ namespace eternal_lands
 			Utf32Char m_char_code;
 			Uint16 m_width;
 			Uint16 m_height;
-			glm::uvec2 m_offset;
+			glm::vec2 m_offset;
 			glm::vec2 m_advance;
-			glm::uvec4 m_uv;
+			glm::vec4 m_uv;
 			Utf32CharFloatMap m_kerning;
 
 		public:
@@ -44,9 +44,9 @@ namespace eternal_lands
 			 */
 			TextureGlyphe(const Utf32Char char_code,
 				const Uint16 width, const Uint16 height,
-				const glm::uvec2 &offset,
+				const glm::vec2 &offset,
 				const glm::vec2 &advance,
-				const glm::uvec4 &uv);
+				const glm::vec4 &uv);
 
 			/**
 			 * Default destructor.
@@ -82,7 +82,7 @@ namespace eternal_lands
 				return m_height;
 			}
 
-			inline const glm::uvec2 &get_offset() const
+			inline const glm::vec2 &get_offset() const
 			{
 				return m_offset;
 			}
@@ -92,7 +92,7 @@ namespace eternal_lands
 				return m_advance;
 			}
 
-			inline const glm::uvec4 &get_uv() const
+			inline const glm::vec4 &get_uv() const
 			{
 				return m_uv;
 			}

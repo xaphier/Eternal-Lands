@@ -31,6 +31,7 @@ namespace eternal_lands
 			ExtFrameBuffer();
 			~ExtFrameBuffer() throw();
 			void bind();
+			void bind(const bool draw);
 			void unbind();
 			void check_status() const;
 			bool get_status() const;

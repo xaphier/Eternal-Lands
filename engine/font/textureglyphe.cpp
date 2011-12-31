@@ -13,8 +13,8 @@ namespace eternal_lands
 
 	TextureGlyphe::TextureGlyphe(const Utf32Char char_code,
 		const Uint16 width, const Uint16 height,
-		const glm::uvec2 &offset, const glm::vec2 &advance,
-		const glm::uvec4 &uv): m_char_code(char_code), m_width(width),
+		const glm::vec2 &offset, const glm::vec2 &advance,
+		const glm::vec4 &uv): m_char_code(char_code), m_width(width),
 		m_height(height), m_offset(offset), m_advance(advance),
 		m_uv(uv)
 	{
@@ -62,8 +62,8 @@ namespace eternal_lands
 		streams->set(vst_color, color);
 		streams->push_vertex();
 
-		position.x = get_advance().x + spacing;
-		position.y = get_advance().y;
+		position.x += get_advance().x + spacing;
+		position.y += get_advance().y;
 	}
 
 	glm::vec2 TextureGlyphe::get_size(const float kerning,

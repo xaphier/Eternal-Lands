@@ -9,6 +9,7 @@
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "shader/parameterutil.hpp"
+#include "shader/shadertextureutil.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
 
@@ -1847,6 +1848,7 @@ namespace eternal_lands
 		const StringVariantMap &values)
 	{
 		StringVariantMap::const_iterator it, end;
+		Uint32 i, count;
 
 		LOG_DEBUG(UTF8("Building Shader %1%"), get_name());
 
@@ -1872,6 +1874,15 @@ namespace eternal_lands
 		for (it = values.begin(); it != end; ++it)
 		{
 			set_variant_parameter(it->first, it->second);
+		}
+
+		count = ShaderTextureUtil::get_shader_texture_count();
+
+		for (i = 0; i < count; ++i)
+		{
+			set_variant_parameter(ShaderTextureUtil::get_str(
+				static_cast<ShaderTextureType>(i)),
+					static_cast<Sint64>(i));
 		}
 
 		unbind();

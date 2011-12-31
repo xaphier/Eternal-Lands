@@ -35,8 +35,6 @@ void exit_file_system();
 void file_system_add_dir(const char* dir);
 void load_map_engine(const char* name, const float r, const float g,
 	const float b, const int dungeon);
-void draw_engine();
-void clear_engine();
 void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile);
 void add_instanced_object_engine(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
@@ -77,7 +75,13 @@ void engine_update_actor_buffs(actor *act, Uint32 buffs);
 void engine_set_shader_quality(const char* quality);
 void engine_resize_root_window(const float fov, const float aspect,
 	const float z_near, const float z_far);
+void add_font(const char* file_name, const char* index, const float size);
+void draw_text(const char* str, const char* index, const float x,
+	const float y, const float r, const float g, const float b);
 int command_lua(char *text, int len);
+
+void engine_cull_scene();
+void engine_draw_scene();
 
 void set_shadow_map_size(const int value);
 void set_shadow_quality(const int value);

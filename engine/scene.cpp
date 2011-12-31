@@ -86,8 +86,6 @@ namespace eternal_lands
 		m_fonts.reset(new TextureFontCache(
 			m_scene_resources.get_mesh_builder(), 1024, 1024,
 				1024));
-		m_fonts->add_font(String(UTF8("default")),
-			String(UTF8("/usr/share/fonts/truetype/freefont/FreeSerif.ttf")), 12);
 	}
 
 	Scene::~Scene() throw()
@@ -178,6 +176,8 @@ namespace eternal_lands
 		glGenQueries(querie_ids.size(), querie_ids.data());
 
 		m_scene_resources.init(file_system);
+
+		m_fonts->load_xml(file_system, String(UTF8("fonts.xml")));
 	}
 
 	void Scene::update_shadow_map()
@@ -970,6 +970,33 @@ namespace eternal_lands
 
 		m_program_vars_id++;
 		m_frame_id++;
+	}
+
+	void Scene::add_font(const FileSystemSharedPtr &file_system,
+		const String &file_name, const String &index, const float size)
+	{
+		m_fonts->add_font(file_system, index, file_name, size);
+	}
+
+	void Scene::draw_text(const Utf32String &str, const String &index,
+		const glm::mat4x3 &world_matrix, const glm::vec4 &color,
+		const float spacing, const float rise)
+	{
+		StateManagerUtil state(m_state_manager);
+
+		m_state_manager.switch_depth_mask(false);
+		m_state_manager.switch_blend(true);
+
+		switch_program(m_fonts->get_program());
+
+		m_state_manager.get_program()->set_parameter(
+			apt_world_matrix, world_matrix);
+
+
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+		m_fonts->draw(m_state_manager, str, index, glm::vec2(0.0f),
+			color);
 	}
 
 	void Scene::pick_object(const ObjectSharedPtr &object,

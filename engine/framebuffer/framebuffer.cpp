@@ -83,14 +83,16 @@ namespace eternal_lands
 		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 	}
 
-	void FrameBuffer::bind_read()
+	void FrameBuffer::bind(const bool draw)
 	{
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_id);
-	}
+		if (draw)
+		{
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_id);
 
-	void FrameBuffer::bind_draw()
-	{
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_id);
+			return;
+		}
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_id);
 	}
 
 	void FrameBuffer::unbind()

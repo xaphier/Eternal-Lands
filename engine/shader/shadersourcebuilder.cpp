@@ -1541,7 +1541,6 @@ namespace eternal_lands
 		StringSet vertex_extensions, fragment_extensions;
 		StringStream vertex_main, fragment_main;
 		StringStream vertex_source, fragment_source;
-		Uint32 i, count;
 		Uint16 version;
 		ShaderVersionType version_type;
 
@@ -1726,15 +1725,6 @@ namespace eternal_lands
 			vertex = vertex_source.str();
 			fragment = fragment_source.str();
 		}
-
-		count = ShaderTextureUtil::get_shader_texture_count();
-
-		for (i = 0; i < count; ++i)
-		{
-			values[ShaderTextureUtil::get_str(
-				static_cast<ShaderTextureType>(i))] =
-					static_cast<Sint64>(i);
-		}	
 	}
 
 }

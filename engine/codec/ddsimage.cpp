@@ -986,7 +986,7 @@ namespace eternal_lands
 		void DdsImageLoader::load(
 			const ImageCompressionTypeSet &compression)
 		{
-			LOG_INFO(UTF8("Loading file '%1%'."),
+			LOG_DEBUG(UTF8("Loading file '%1%'."),
 				m_reader->get_name());
 
 			if ((m_header.m_pixel_format.m_flags & dds::DDPF_FOURCC)

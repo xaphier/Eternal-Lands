@@ -14,7 +14,6 @@ namespace eternal_lands
 		const HardwareBufferSharedPtr &buffer,
 		const HardwareBufferType type): m_buffer(buffer), m_type(type)
 	{
-		m_buffer->bind(get_type());
 		m_ptr = m_buffer->map(get_type(), hbat_write_only);
 	}
 
@@ -22,7 +21,6 @@ namespace eternal_lands
 		throw()
 	{
 		m_buffer->unmap(get_type());
-		m_buffer->unbind(get_type());
 	}
 
 	void* MappedHardwareWriteMemoryBuffer::get_ptr()

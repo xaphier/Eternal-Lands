@@ -108,10 +108,11 @@ namespace eternal_lands
 
 			if (error != 0)
 			{
-				EL_THROW_EXCEPTION(InternalErrorException()
+				EL_THROW_EXCEPTION(FileNotFoundException()
 					<< errinfo_code(FT_Errors[error].code)
 					<< errinfo_message(
-						FT_Errors[error].message));
+						FT_Errors[error].message)
+					<< boost::errinfo_file_name(file_name));
 			}
 		}
 
@@ -170,26 +171,12 @@ namespace eternal_lands
 	}
 
 	TextureFont::TextureFont(const AtlasSharedPtr &atlas,
-		const ImageSharedPtr &image, const String &family,
-		const float size, const bool bold, const bool italic):
-		m_atlas(atlas), m_image(image)
-	{
-		m_file_name = get_font_file_name(family, size, bold, italic);
-		m_size = size;
-		m_bold = bold;
-		m_italic = italic;
-
-		init();
-	}
-
-	TextureFont::TextureFont(const AtlasSharedPtr &atlas,
-		const ImageSharedPtr &image, const String &file_name,
+		const ImageSharedPtr &image,
+		const FileSystemSharedPtr &file_system, const String &file_name,
 		const float size): m_atlas(atlas), m_image(image)
 	{
 		m_file_name = file_name;
 		m_size = size;
-		m_bold = false;
-		m_italic = false;
 
 		init();
 	}
@@ -204,14 +191,7 @@ namespace eternal_lands
 		FtFaceSharedPtr face;
 		FT_Size_Metrics metrics;
 
-		m_gamma = true;
 		m_hinting = true;
-		m_lcd_filter = false;
-		m_lcd_weights[0] = 0;
-		m_lcd_weights[1] = 0;
-		m_lcd_weights[2] = 255;
-		m_lcd_weights[3] = 0;
-		m_lcd_weights[4] = 0;
 
 		/* Get font metrics at high resolution */
 		load_face(get_file_name(), get_size() * 100.0f, library, face);
@@ -222,72 +202,9 @@ namespace eternal_lands
 		m_height = (metrics.height >> 6) / 100.0f;
 		m_line_gap = get_height() - get_ascender() + get_descender();
 
-		cache_glyphs(L"abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZ!\"§$%&/()=?+-_.:,;<>|µ@^°{[]}\\1234567890#'~²³");
-	}
-
-	String TextureFont::get_font_file_name(const String &family,
-		const float size, const bool bold, const bool italic)
-	{
-#if	0
-#ifdef	LINUX
-		std::string file_name;
-		Sint32 weight, slant;
-		FcPattern *pattern;
-		FcPattern *match;
-		FcResult result;
-		FcValue value;
-
-		weight = FC_WEIGHT_REGULAR;
-		slant = FC_SLANT_ROMAN;
-
-		if (bold)
-		{
-			weight = FC_WEIGHT_BOLD;
-		}
-
-		if (italic)
-		{
-			slant = FC_SLANT_ITALIC;
-		}
-
-		FcInit();
-		pattern = FcPatternCreate();
-		FcPatternAddDouble(pattern, FC_SIZE, size);
-		FcPatternAddInteger(pattern, FC_WEIGHT, weight);
-		FcPatternAddInteger(pattern, FC_SLANT, slant);
-		FcPatternAddString(pattern, FC_FAMILY, (FcChar8*)family.get().c_str());
-		FcConfigSubstitute(0, pattern, FcMatchPattern );
-		FcDefaultSubstitute(pattern);
-		match = FcFontMatch( 0, pattern, &result);
-		FcPatternDestroy(pattern);
-
-		if (match == 0)
-		{
-			fprintf( stderr, "fontconfig error: could not match family '%s'", family.get().c_str());
-			return String();
-		}
-		else
-		{
-			result = FcPatternGet(match, FC_FILE, 0, &value);
-
-			if (result)
-			{
-				fprintf( stderr, "fontconfig error: could not match family '%s'", family.get().c_str());
-			}
-			else
-			{
-				file_name = (char *)(value.u.s);
-			}
-		}
-
-		FcPatternDestroy(match);
-
-		return String(file_name);
-#else	/* LINUX */
-		return String();
-#endif	/* LINUX */
-#endif
-		return String();
+		cache_glyphs(L"abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOP"
+			"QRSTUVWXYZ!\"§$%&/()=?+-_.:,;<>|µ@^°{[]}\\1234567890"
+			"#'~²³");
 	}
 
 	void TextureFont::cache_glyphs(const Utf32String &char_codes)
@@ -299,19 +216,18 @@ namespace eternal_lands
 		Utf32Char char_code;
 		FtLibrarySharedPtr library;
 		FtFaceSharedPtr face;
-		size_t i, x, y, width, height, depth, w, h;
+		Uint32 x, y, width, height, w, h;
 		FT_Error error;
 		FT_GlyphSlot slot;
 		FT_UInt glyph_index, kerning_index;
 		FT_Vector kerning;
-		glm::uvec4 uv;
+		glm::vec4 uv;
 		glm::vec4 color;
 		glm::uvec2 offset;
 		glm::vec2 advance;
 
 		width  = m_atlas->get_width();
 		height = m_atlas->get_height();
-		depth  = 3;//self->atlas->depth;
 
 		load_face(get_file_name(), get_size(), library, face);
 
@@ -323,8 +239,6 @@ namespace eternal_lands
 			glyph_index = FT_Get_Char_Index(face->get_face(),
 				char_code);
 
-			// WARNING: We use texture-atlas depth to guess if user wants
-			//          LCD subpixel rendering
 			FT_Int32 flags = FT_LOAD_RENDER;
 
 			if (get_hinting())
@@ -334,20 +248,6 @@ namespace eternal_lands
 			else
 			{
 				flags |= FT_LOAD_FORCE_AUTOHINT;
-			}
-
-			if (depth == 3)
-			{
-				FT_Library_SetLcdFilter(library->get_library(),
-					FT_LCD_FILTER_LIGHT);
-				flags |= FT_LOAD_TARGET_LCD;
-
-				if (get_lcd_filter())
-				{
-					FT_Library_SetLcdFilterWeights(
-						library->get_library(),
-						m_lcd_weights.data());
-				}
 			}
 
 			error = FT_Load_Glyph(face->get_face(), glyph_index,
@@ -363,9 +263,7 @@ namespace eternal_lands
 
 			slot = face->get_face()->glyph;
 
-			// We want each glyph to be separated by at least one black pixel
-			// (for example for shader used in demo-subpixel.c)
-			w = slot->bitmap.width / depth + 1;
+			w = slot->bitmap.width + 1;
 			h = slot->bitmap.rows + 1;
 
 			if (!m_atlas->get_region(w, h, offset))
@@ -376,17 +274,12 @@ namespace eternal_lands
 			w = w - 1;
 			h = h - 1;
 
-			/* Gamma correction (sort of) */
 			for (x = 0; x < w; ++x)
 			{
 				for (y = 0; y < h; ++y)
 				{
-					for (i = 0; i < depth; ++i)
-					{
-						color[i] = *(slot->bitmap.buffer + y * slot->bitmap.pitch + x);
-						color[i] /= 255.0f;
-						color[i] = std::pow(color[i], get_gamma());
-					}
+					color.x = *(slot->bitmap.buffer + y * slot->bitmap.pitch + x);
+					color.x /= 255.0f;
 
 					m_image->set_pixel(x + offset.x,
 						y + offset.y, 0, 0, 0, color);
@@ -399,10 +292,10 @@ namespace eternal_lands
 			offset = glm::uvec2(slot->bitmap_left,
 				slot->bitmap_top);
 
-			uv.x = x/(float)width;
-			uv.y = y/(float)height;
-			uv.z = (x + w)/(float)width;
-			uv.w = (y + h)/(float)height;
+			uv.x = static_cast<float>(x) / width;
+			uv.y = static_cast<float>(y) / height;
+			uv.z = static_cast<float>(x + w) / width;
+			uv.w = static_cast<float>(y + h) / height;
 
 			/* Discard hinting to get advance */
 			FT_Load_Glyph(face->get_face(), glyph_index,
@@ -411,9 +304,10 @@ namespace eternal_lands
 			advance.x = slot->advance.x / 64.0f;
 			advance.y = slot->advance.y / 64.0f;
 
-			TextureGlyphe glyph(char_code, w, h,
-				glm::uvec2(slot->bitmap_left, slot->bitmap_top),
-				advance, uv);
+			m_glyphs.insert(Utf32CharTextureGlyphePair(char_code,
+				TextureGlyphe(char_code, w, h,
+				glm::vec2(slot->bitmap_left, slot->bitmap_top),
+				advance, uv)));
 		}
 
 		/**
@@ -445,8 +339,6 @@ namespace eternal_lands
 					glyph_index, FT_KERNING_UNFITTED,
 					&kerning);
 
-				std::cout << "kerning: " << kerning.x << std::endl;
-
 				if (kerning.x == 0.0f)
 				{
 					continue;
@@ -462,21 +354,38 @@ namespace eternal_lands
 	Uint32 TextureFont::write_to_stream(const Utf32String &str,
 		const VertexStreamsSharedPtr &streams,
 		const glm::vec2 &position, const glm::vec4 &color,
+		const Uint32 max_lines,
 		const float spacing, const float rise) const
 	{
 		Utf32CharTextureGlypheMap::const_iterator found, end;
 		Utf32Char last_char_code;
 		glm::vec2 pos;
 		float kerning;
-		Uint32 count;
+		Uint32 count, current_lines;
 
 		pos = position;
 		end = m_glyphs.end();
 		last_char_code = L'\0';
 		count = 0;
+		current_lines = 0;
 
 		BOOST_FOREACH(const Utf32Char char_code, str)
 		{
+			if ((char_code == L'\n') || (char_code == L'\r'))
+			{
+				pos.y += get_height();
+				pos.x = position.x;
+
+				current_lines++;
+
+				if (current_lines > max_lines)
+				{
+					break;
+				}
+
+				continue;
+			}
+
 			found = m_glyphs.find(char_code);
 
 			if (found == end)
@@ -485,7 +394,20 @@ namespace eternal_lands
 			}
 
 			kerning = found->second.get_kerning(last_char_code);
+/*
+			if (pos.x + displayed_font_x_size - position.x >= max_width)
+			{
+				pos.y += get_height();
+				pos.x = position.x;
 
+				current_lines++;
+
+				if (current_lines > max_lines)
+				{
+					break;
+				}
+			}
+*/
 			found->second.write_to_stream(color, kerning, spacing,
 				rise, streams, pos);
 

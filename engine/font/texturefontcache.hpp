@@ -38,7 +38,14 @@ namespace eternal_lands
 			TextureSharedPtr m_texture;
 			AbstractMeshSharedPtr m_mesh;
 			VertexBuffersSharedPtr m_buffers;
+			GlslProgramSharedPtr m_program;
 			StringTextureFontMap m_fonts;
+
+			void update_texture();
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const xmlNodePtr node);
+			void load_font(const FileSystemSharedPtr &file_system,
+				const xmlNodePtr node);
 
 		public:
 			/**
@@ -53,18 +60,23 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~TextureFontCache() throw();
-
-			void add_font(const String &index,
-				const String &family, const float size,
-				const bool bold, const bool italic);
-			void add_font(const String &index,
-				const String &file_name, const float size);
-			void update_texture();
-			void draw(const Utf32String &str, const String &index,
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
+			void add_font(const FileSystemSharedPtr &file_system,
+				const String &name, const String &file_name,
+				const float size);
+			void draw(StateManager &state_manager,
+				const Utf32String &str, const String &name,
 				const glm::vec2 &position,
 				const glm::vec4 &color = glm::vec4(1.0f),
+				const Uint32 max_lines = 1,
 				const float spacing = 0.0f,
 				const float rise = 0.0f) const;
+
+			inline const GlslProgramSharedPtr &get_program() const
+			{
+				return m_program;
+			}
 
 	};
 

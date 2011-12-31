@@ -975,7 +975,6 @@ int display_game_handler (window_info *win)
 	static int eye_candy_was_disabled=0;
 	unsigned char str[180];
 	int i;
-	int any_reflection = 0;
 	int mouse_rate;
 
 	if (!have_a_map) return 1;
@@ -1056,12 +1055,12 @@ int display_game_handler (window_info *win)
 	save_scene_matrix ();
 
 	set_click_line();
-//	any_reflection = find_reflection ();
 	CHECK_GL_ERRORS ();
 
 	// are we actively drawing things?
 	if (SDL_GetAppState() & SDL_APPACTIVE)
 	{
+		engine_cull_scene();
 
 		if (!dungeon){
 			draw_global_light ();
@@ -1087,23 +1086,7 @@ int display_game_handler (window_info *win)
 		if (dungeon || !is_day)
 		{
 			update_scene_lights ();
-//			draw_lights ();
 		}
-		CHECK_GL_ERRORS ();
-#if	0
-		if (!dungeon && shadows_on && (is_day || lightning_falling))
-		{
-			render_light_view();
-			CHECK_GL_ERRORS ();
-		}
-
-		if (any_reflection > 1) // there are water tiles to display
-		{
-			draw_water_background();
-			CHECK_GL_ERRORS ();
-			if (show_reflection) display_3d_reflection ();
-		}
-#endif
 		CHECK_GL_ERRORS ();
 		glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -1112,39 +1095,11 @@ int display_game_handler (window_info *win)
 	CHECK_GL_ERRORS();
 		if (!is_day)
 			weather_init_lightning_light();
-#if	0
-		if (!dungeon && shadows_on && (is_day || lightning_falling))
-		{
-			glNormal3f(0.0f,0.0f,1.0f);
-			if (use_fog && any_reflection) blend_reflection_fog();
-			draw_sun_shadowed_scene (any_reflection);
-		}
-		else 
-		{
-			glNormal3f (0.0f,0.0f,1.0f);
-			if (any_reflection) {
-				blend_reflection_fog();
-				draw_lake_tiles ();
-			}
-			
-			draw_tile_map();
-			CHECK_GL_ERRORS ();
-			display_2d_objects();
-			CHECK_GL_ERRORS();
-			anything_under_the_mouse(0, UNDER_MOUSE_NOTHING);
-			display_objects();
-			display_ground_objects();	
 
-			display_actors(1, DEFAULT_RENDER_PASS);
-			display_alpha_objects();
-			display_blended_objects();
-		}
-#else
 	CHECK_GL_ERRORS();
-		draw_engine();
+		engine_draw_scene();
 
 		display_actors(1, DEFAULT_RENDER_PASS);
-#endif
 
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
@@ -1185,13 +1140,6 @@ int display_game_handler (window_info *win)
 	}
 
 	weather_render();
-
-	CHECK_GL_ERRORS ();
-	//particles should be last, we have no Z writting
-#if	0
-	display_particles ();
-	CHECK_GL_ERRORS ();
-#endif
 
 	//we do this because we don't want the rain/particles to mess with our cursor
 

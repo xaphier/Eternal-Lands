@@ -51,15 +51,11 @@ namespace eternal_lands
 				const AlignedVec4Array &data);
 			const VertexElements &get_vertex_elements() const;
 			Uint16 get_vertex_elements_count() const;
+			void push_vertex();
 
 			inline void reset()
 			{
 				m_offset = 0;
-			}
-
-			inline void push_vertex()
-			{
-				m_offset += get_stride();
 			}
 
 			inline const VertexFormatSharedPtr &get_format() const

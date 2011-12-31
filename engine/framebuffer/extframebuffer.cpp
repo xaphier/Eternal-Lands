@@ -94,4 +94,16 @@ namespace eternal_lands
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_id);
 	}
 
+	void ExtFrameBuffer::bind(const bool draw)
+	{
+		if (draw)
+		{
+			glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, m_id);
+
+			return;
+		}
+
+		glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, m_id);
+	}
+
 }
