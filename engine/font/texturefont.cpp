@@ -13,9 +13,6 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H 
 #include FT_LCD_FILTER_H
-#ifdef	LINUX
-#include <fontconfig/fontconfig.h>
-#endif
 
 #undef __FTERRORS_H__
 #define FT_ERRORDEF( e, v, s )  { e, s },
