@@ -26,7 +26,7 @@ namespace eternal_lands
 
 	OpenGl3Mesh::VertexArrayObject::VertexArrayObject()
 	{
-		assert(GLEW_VERSION_3_0);
+		assert(GLEW_VERSION_3_0 || GLEW_ARB_vertex_array_object);
 		glGenVertexArrays(1, &m_id);
 	}
 
@@ -45,9 +45,11 @@ namespace eternal_lands
 		glBindVertexArray(0);
 	}
 
-	OpenGl3Mesh::OpenGl3Mesh()
+	OpenGl3Mesh::OpenGl3Mesh(const String &name, const bool static_indices,
+		const bool static_vertices):
+		OpenGl2Mesh(name, static_indices, static_vertices)
 	{
-		assert(GLEW_VERSION_3_0);
+		assert(GLEW_VERSION_3_0 || GLEW_ARB_vertex_array_object);
 	}
 
 	OpenGl3Mesh::~OpenGl3Mesh() throw()
@@ -64,15 +66,17 @@ namespace eternal_lands
 
 		m_id->bind();
 
-		bind_vertex_buffers();
+		bind_vertex_buffers(m_used_attributes);
 
 		m_id->unbind();
 	}
 
-	void OpenGl3Mesh::bind()
+	void OpenGl3Mesh::bind(BitSet32 &used_attributes)
 	{
 		m_id->bind();
 		bind_index_buffers();
+
+		used_attributes = m_used_attributes;
 	}
 
 	void OpenGl3Mesh::unbind()
@@ -85,7 +89,8 @@ namespace eternal_lands
 	{
 		boost::shared_ptr<OpenGl3Mesh> result;
 
-		result = boost::make_shared<OpenGl3Mesh>();
+		result = boost::make_shared<OpenGl3Mesh>(get_name(),
+			get_static_indices(), get_static_vertices());
 
 		result->m_id = m_id;
 		result->m_vertex_data = m_vertex_data;

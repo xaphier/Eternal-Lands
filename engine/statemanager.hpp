@@ -34,6 +34,7 @@ namespace eternal_lands
 			GlslProgramSharedPtr m_program;
 			TextureSharedPtrArray32 m_textures;
 			BitSet32 m_program_used_texture_units;
+			BitSet32 m_used_attributes;
 			glm::vec4 m_layer_index;
 			glm::bvec4 m_color_mask;
 			Uint16 m_texture_unit;
@@ -45,6 +46,9 @@ namespace eternal_lands
 			bool m_scissor_test;
 			bool m_sample_alpha_to_coverage;
 			bool m_polygon_offset_fill;
+
+			void log_texture_units();
+			void gl_error_check();
 
 			bool switch_texture_unit(const Uint16 texture_unit);
 			void set_mesh(const AbstractMeshSharedPtr &mesh);
@@ -249,22 +253,19 @@ namespace eternal_lands
 				return true;
 			}
 
+			inline const GlslProgramSharedPtr &get_program() const
+			{
+				return m_program;
+			}
+
 			void init();
 			bool unbind_all();
 			bool unbind_mesh();
 			bool unbind_program();
 			bool unbind_texture(const Uint16 unit);
 			bool unbind_textures();
-
-			inline const AbstractMeshSharedPtr &get_mesh() const
-			{
-				return m_mesh;
-			}
-
-			inline const GlslProgramSharedPtr &get_program() const
-			{
-				return m_program;
-			}
+			void draw(const Uint32 index);
+			void draw(const MeshDrawData &draw_data);
 
 	};
 

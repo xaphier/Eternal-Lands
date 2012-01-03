@@ -40,6 +40,7 @@ namespace eternal_lands
 			Uint64 m_last_used;
 			GLuint m_program;
 			BitSet32 m_used_texture_units;
+			BitSet32 m_used_attributes;
 
 			void bind_attribute_location(
 				const VertexSemanticType type);
@@ -191,6 +192,7 @@ namespace eternal_lands
 				const glm::mat4x4 &value,
 				const bool transpose = false);
 			void check();
+			bool validate();
 			void unbind();
 
 			inline void set_bool_parameter(
@@ -239,6 +241,11 @@ namespace eternal_lands
 			inline BitSet32 get_used_texture_units() const
 			{
 				return m_used_texture_units;
+			}
+
+			inline BitSet32 get_used_attributes() const
+			{
+				return m_used_attributes;
 			}
 
 	};

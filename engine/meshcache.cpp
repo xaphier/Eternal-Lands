@@ -46,7 +46,8 @@ namespace eternal_lands
 		get_mesh_data_cache()->get_mesh_data(name, mesh_data_tool,
 			materials);
 
-		mesh = get_mesh_builder()->get_mesh(vft_mesh, mesh_data_tool);
+		mesh = get_mesh_builder()->get_mesh(vft_mesh, mesh_data_tool,
+			name);
 	}
 
 	void MeshCache::get_mesh(const String &name,

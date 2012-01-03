@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 # set default cmake build type to Release (None Debug Release RelWithDebInfo MinSizeRel)
 IF(NOT CMAKE_BUILD_TYPE)
-	SET(CMAKE_BUILD_TYPE Release CACHE STRING
+	SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
 		"Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel."
 		FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)

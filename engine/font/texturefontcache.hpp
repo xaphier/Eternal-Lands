@@ -40,6 +40,7 @@ namespace eternal_lands
 			VertexBuffersSharedPtr m_buffers;
 			GlslProgramSharedPtr m_program;
 			StringTextureFontMap m_fonts;
+			DoubleSharedArray m_data;
 
 			void update_texture();
 			void load_xml(const FileSystemSharedPtr &file_system,
@@ -51,7 +52,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			TextureFontCache(
+			TextureFontCache(const FileSystemSharedPtr &file_system,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const Uint16 width, const Uint16 height,
 				const Uint16 max_char_count);
@@ -70,6 +71,8 @@ namespace eternal_lands
 				const glm::vec2 &position,
 				const glm::vec4 &color = glm::vec4(1.0f),
 				const Uint32 max_lines = 1,
+				const float max_width =
+					std::numeric_limits<Uint32>::max(),
 				const float spacing = 0.0f,
 				const float rise = 0.0f) const;
 

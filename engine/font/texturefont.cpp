@@ -168,21 +168,24 @@ namespace eternal_lands
 	}
 
 	TextureFont::TextureFont(const AtlasSharedPtr &atlas,
-		const ImageSharedPtr &image,
+		const DoubleSharedArray &data,
 		const FileSystemSharedPtr &file_system, const String &file_name,
-		const float size): m_atlas(atlas), m_image(image)
+		const float size)
 	{
 		m_file_name = file_name;
 		m_size = size;
 
-		init();
+		init(atlas, data, L"abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJ"
+			"KLMNOPQRSTUVWXYZ!\"§$%&/()=?+-_.:,;<>|µ@^°{[]}\\123"
+			"4567890#'~²³");
 	}
 
 	TextureFont::~TextureFont() throw()
 	{
 	}
 
-	void TextureFont::init()
+	void TextureFont::init(const AtlasSharedPtr &atlas,
+		const DoubleSharedArray &data, const Utf32String &char_codes)
 	{
 		FtLibrarySharedPtr library;
 		FtFaceSharedPtr face;
@@ -199,12 +202,11 @@ namespace eternal_lands
 		m_height = (metrics.height >> 6) / 100.0f;
 		m_line_gap = get_height() - get_ascender() + get_descender();
 
-		cache_glyphs(L"abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJKLMNOP"
-			"QRSTUVWXYZ!\"§$%&/()=?+-_.:,;<>|µ@^°{[]}\\1234567890"
-			"#'~²³");
+		cache_glyphs(atlas, data, char_codes);
 	}
 
-	void TextureFont::cache_glyphs(const Utf32String &char_codes)
+	void TextureFont::cache_glyphs(const AtlasSharedPtr &atlas,
+		const DoubleSharedArray &data, const Utf32String &char_codes)
 	{
 		Utf32CharTextureGlypheMap::const_iterator kerning_it;
 		Utf32CharTextureGlypheMap::const_iterator kerning_end;
@@ -213,18 +215,18 @@ namespace eternal_lands
 		Utf32Char char_code;
 		FtLibrarySharedPtr library;
 		FtFaceSharedPtr face;
-		Uint32 x, y, width, height, w, h;
 		FT_Error error;
 		FT_GlyphSlot slot;
 		FT_UInt glyph_index, kerning_index;
 		FT_Vector kerning;
 		glm::vec4 uv;
-		glm::vec4 color;
 		glm::uvec2 offset;
 		glm::vec2 advance;
+		Uint32 x, y, width, height, w, h;
+		float color;
 
-		width  = m_atlas->get_width();
-		height = m_atlas->get_height();
+		width  = atlas->get_width();
+		height = atlas->get_height();
 
 		load_face(get_file_name(), get_size(), library, face);
 
@@ -263,7 +265,7 @@ namespace eternal_lands
 			w = slot->bitmap.width + 1;
 			h = slot->bitmap.rows + 1;
 
-			if (!m_atlas->get_region(w, h, offset))
+			if (!atlas->get_region(w, h, offset))
 			{
 				return;
 			}
@@ -275,11 +277,11 @@ namespace eternal_lands
 			{
 				for (y = 0; y < h; ++y)
 				{
-					color.x = *(slot->bitmap.buffer + y * slot->bitmap.pitch + x);
-					color.x /= 255.0f;
+					color = *(slot->bitmap.buffer + y * slot->bitmap.pitch + x);
+					color /= 255.0f;
 
-					m_image->set_pixel(x + offset.x,
-						y + offset.y, 0, 0, 0, color);
+					data[x + offset.x +
+						(y + offset.y) * width] = color;
 				}
 			}
 
@@ -351,13 +353,13 @@ namespace eternal_lands
 	Uint32 TextureFont::write_to_stream(const Utf32String &str,
 		const VertexStreamsSharedPtr &streams,
 		const glm::vec2 &position, const glm::vec4 &color,
-		const Uint32 max_lines,
+		const Uint32 max_lines, const float max_width,
 		const float spacing, const float rise) const
 	{
 		Utf32CharTextureGlypheMap::const_iterator found, end;
 		Utf32Char last_char_code;
 		glm::vec2 pos;
-		float kerning;
+		float kerning, width;
 		Uint32 count, current_lines;
 
 		pos = position;
@@ -391,8 +393,11 @@ namespace eternal_lands
 			}
 
 			kerning = found->second.get_kerning(last_char_code);
-/*
-			if (pos.x + displayed_font_x_size - position.x >= max_width)
+
+			width = found->second.get_size(kerning, spacing,
+				rise).x;
+
+			if ((pos.x + width - position.x) >= max_width)
 			{
 				pos.y += get_height();
 				pos.x = position.x;
@@ -404,7 +409,7 @@ namespace eternal_lands
 					break;
 				}
 			}
-*/
+
 			found->second.write_to_stream(color, kerning, spacing,
 				rise, streams, pos);
 

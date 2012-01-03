@@ -10,7 +10,9 @@
 namespace eternal_lands
 {
 
-	OpenGl31Mesh::OpenGl31Mesh()
+	OpenGl31Mesh::OpenGl31Mesh(const String &name,
+		const bool static_indices, const bool static_vertices):
+		OpenGl3Mesh(name, static_indices, static_vertices)
 	{
 		assert(GLEW_VERSION_3_1);
 	}
@@ -19,9 +21,9 @@ namespace eternal_lands
 	{
 	}
 
-	void OpenGl31Mesh::bind()
+	void OpenGl31Mesh::bind(BitSet32 &used_attributes)
 	{
-		OpenGl3Mesh::bind();
+		OpenGl3Mesh::bind(used_attributes);
 
 		if (get_use_restart_index())
 		{

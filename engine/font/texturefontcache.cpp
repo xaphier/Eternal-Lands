@@ -21,56 +21,13 @@
 #include "xmlreader.hpp"
 #include "filesystem.hpp"
 #include "logging.hpp"
+#include "edtaa3func.hpp"
 
 namespace eternal_lands
 {
 
-	namespace
-	{
-
-		const StringType vertex_shader = UTF8(""
-			"#version 120\n"
-			"\n"
-			"varying vec2 uv;\n"
-			"varying vec4 vertex_color;\n"
-			"\n"
-			"uniform mat4x3 world_matrix;\n"
-			"uniform mat4 projection_view_matrix;\n"
-			"\n"
-			"attribute vec2 texture_coordinate_0;\n"
-			"attribute vec3 position;\n"
-			"attribute vec4 color;\n"
-			"\n"
-			"void main ()\n"
-			"{\n"
-			"\tvec3 world_position;\n"
-			"\n"
-			"\tworld_position = world_matrix * "
-				"vec4(position.x * 0.01, 0.0, "
-				"position.y * 0.01, 1.0);\n"
-			"\tgl_Position = projection_view_matrix * "
-				"vec4(world_position, 1.0);\n"
-			"\tuv = texture_coordinate_0;\n"
-			"\tvertex_color = color;\n"
-			"}\n");
-
-		const StringType fragment_shader = UTF8(""
-			"#version 120\n"
-			"\n"
-			"varying vec2 uv;\n"
-			"varying vec4 vertex_color;\n"
-			"\n"
-			"uniform sampler2D diffuse_sampler_0;\n"
-			"\n"
-			"void main ()\n"
-			"{\n"
-			"\tgl_FragColor = vertex_color;\n"
-			"\tgl_FragColor *= texture2D(diffuse_sampler_0, uv).r;\n"
-			"}\n");
-
-	}
-
 	TextureFontCache::TextureFontCache(
+		const FileSystemSharedPtr &file_system,
 		const MeshBuilderSharedPtr &mesh_builder, const Uint16 width,
 		const Uint16 height, const Uint16 max_char_count)
 	{
@@ -90,9 +47,11 @@ namespace eternal_lands
 
 		m_atlas = boost::make_shared<Atlas>(width, height);
 
+		m_data.reset(new double[width * height]);
+
 		m_texture = boost::make_shared<Texture>(String(UTF8("Fonts")));
 
-		m_mesh = mesh_builder->get_mesh();
+		m_mesh = mesh_builder->get_mesh(String(UTF8("Fonts")));
 		m_mesh->init_vertex(mesh_builder->get_vertex_format(vft_font),
 			4 * max_char_count, false);
 
@@ -115,8 +74,8 @@ namespace eternal_lands
 
 		m_buffers = m_mesh->get_vertex_buffers();
 
-		m_program = boost::make_shared<GlslProgram>(vertex_shader,
-			fragment_shader, values, String(UTF8("Font")));
+		m_program = boost::make_shared<GlslProgram>(file_system,
+			String(UTF8("shaders/font.xml")));
 	}
 
 	TextureFontCache::~TextureFontCache() throw()
@@ -217,7 +176,7 @@ namespace eternal_lands
 
 		try
 		{
-			font.reset(new TextureFont(m_atlas, m_image,
+			font.reset(new TextureFont(m_atlas, m_data,
 				file_system, file_name, size));
 
 			m_fonts.insert(name, font);
@@ -232,6 +191,85 @@ namespace eternal_lands
 
 	void TextureFontCache::update_texture()
 	{
+		boost::scoped_array<short> xdist, ydist;
+		boost::scoped_array<double> gx, gy, outside, inside;
+		double min, max, value;
+		Uint32 size, width, height, x, y, i, index;
+
+		width = m_atlas->get_width();
+		height = m_atlas->get_height();
+
+		size = width * height;
+
+		xdist.reset(new short[size]);
+		ydist.reset(new short[size]);
+
+		gx.reset(new double[size]);
+		gy.reset(new double[size]);
+		outside.reset(new double[size]);
+		inside.reset(new double[size]);
+
+		// Convert img into double (data)
+		min = 255.0;
+		max = -255.0;
+
+		for (i = 0; i < size; ++i)
+		{
+			min = std::min(min, m_data[i]);
+			max = std::max(max, m_data[i]);
+		}
+
+		// Rescale image levels between 0 and 1
+		for (i = 0; i < size; ++i)
+		{
+			m_data[i] = (m_data[i] - min) / max;
+		}
+
+		// Compute outside = edtaa3(bitmap); % Transform background (0's)
+		computegradient(m_data.get(), height, width, gx.get(),
+			gy.get());
+		edtaa3(m_data.get(), gx.get(), gy.get(), height, width,
+			xdist.get(), ydist.get(), outside.get());
+
+		for (i = 0; i < size; ++i)
+		{
+			outside[i] = std::max(0.0, outside[i]);
+		}
+
+		// Compute inside = edtaa3(1-bitmap); % Transform foreground (1's)
+		memset(gx.get(), 0, size * sizeof(double));
+		memset(gy.get(), 0, size * sizeof(double));
+
+		for (i = 0; i < size; ++i)
+		{
+			m_data[i] = 1.0 - m_data[i];
+		}
+
+		computegradient(m_data.get(), height, width, gx.get(),
+			gy.get());
+		edtaa3(m_data.get(), gx.get(), gy.get(), height, width,
+			xdist.get(), ydist.get(), inside.get());
+
+		for (i = 0; i < size; ++i)
+		{
+			inside[i] = std::max(0.0, inside[i]);
+		}
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				index = x + y * width;
+
+				value = outside[index] - inside[index];
+				value = 128 + value * 16;
+				value = std::min(255.0, std::max(0.0, value));
+
+				m_image->set_pixel(x, y, 0, 0, 0,
+					glm::vec4(255 - value));
+			}
+		}
+
 		m_texture->set_format(m_image->get_texture_format());
 		m_texture->set_image(m_image);
 	}
@@ -239,8 +277,8 @@ namespace eternal_lands
 	void TextureFontCache::draw(StateManager &state_manager,
 		const Utf32String &str, const String &name,
 		const glm::vec2 &position, const glm::vec4 &color,
-		const Uint32 max_lines, const float spacing, const float rise)
-		const
+		const Uint32 max_lines, const float max_width,
+		const float spacing, const float rise) const
 	{
 		MeshDrawData draw_data;
 		StringTextureFontMap::const_iterator found;
@@ -260,7 +298,7 @@ namespace eternal_lands
 		m_buffers->reset();
 
 		count = found->second->write_to_stream(str, m_buffers,
-			position, color, max_lines, spacing, rise);
+			position, color, max_lines, max_width, spacing, rise);
 
 		if (count == 0)
 		{
@@ -274,7 +312,7 @@ namespace eternal_lands
 
 		state_manager.switch_texture(stt_diffuse_0, m_texture);
 
-		m_mesh->draw(draw_data);
+		state_manager.draw(draw_data);
 	}
 
 }

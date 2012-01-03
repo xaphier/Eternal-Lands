@@ -738,6 +738,7 @@ void init_stuff()
 	LOG_DEBUG("Init extensions done");
 
 	init_engine();
+	set_window_size(window_width, window_height, hud_x, hud_y);
 
 	// Setup the new eye candy system
 	LOG_DEBUG("Init eyecandy");

@@ -574,7 +574,7 @@ namespace eternal_lands
 			String(UTF8("dest_scale_offset")),
 			dest_scale_offset);
 		state_manager.switch_mesh(m_mesh);
-		state_manager.get_mesh()->draw(0);
+		state_manager.draw(0);
 	}
 
 	void Filter::bind(const glm::vec4 &source, const glm::vec4 &dest,
@@ -631,7 +631,7 @@ namespace eternal_lands
 			String(UTF8("dest_scale_offset")),
 			dest_scale_offset);
 		state_manager.switch_mesh(m_mesh);
-		state_manager.get_mesh()->draw(0);
+		state_manager.draw(0);
 	}
 
 }

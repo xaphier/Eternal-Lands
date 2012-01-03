@@ -13,7 +13,8 @@
 namespace eternal_lands
 {
 
-	Texture::Texture(const String &name): m_name(name)
+	Texture::Texture(const String &name): m_name(name), m_texture_id(0),
+		m_size(0), m_rebuild(true)
 	{
 		assert(!get_name().get().empty());
 		set_format(tft_rgb8);
@@ -26,9 +27,6 @@ namespace eternal_lands
 		set_wrap_s(twt_repeat);
 		set_wrap_t(twt_repeat);
 		set_wrap_r(twt_repeat);
-		m_size = 0;
-		m_texture_id = 0;
-		m_rebuild = true;
 	}
 
 	Texture::~Texture() throw()

@@ -37,6 +37,7 @@ namespace eternal_lands
 			 * Vertex array object
 			 */
 			boost::shared_ptr<VertexArrayObject> m_id;
+			BitSet32 m_used_attributes;
 
 		protected:
 			virtual void init_vertices();
@@ -45,14 +46,16 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl3Mesh();
+			OpenGl3Mesh(const String &name,
+				const bool static_indices,
+				const bool static_vertices);
 
 			/**
 			 * Default destructor.
 			 */
 			virtual ~OpenGl3Mesh() throw();
 
-			virtual void bind();
+			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();
 			virtual AbstractMeshSharedPtr clone_vertex_data();
 

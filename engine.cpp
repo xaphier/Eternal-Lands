@@ -1679,3 +1679,57 @@ extern "C" void draw_text(const char* str, const char* index, const float x,
 
 	CATCH_BLOCK
 }
+
+extern "C" void draw_2d_text(const char* str, const char* index, const float x,
+	const float y, const float r, const float g, const float b,
+	const float scale, const Uint32 max_lines)
+{
+	TRY_BLOCK
+
+	el::Utf32String text;
+	glm::mat4x3 world_matrix;
+	glm::vec4 color;
+	glm::vec2 position;
+
+	position.x = x;
+	position.y = y;
+	world_matrix = glm::mat4x3(glm::scale(scale, scale, scale));
+
+	color.r = r;
+	color.g = g;
+	color.b = b;
+	color.a = 1.0f;
+
+	if (scene.get() != 0)
+	{
+		scene->draw_2d_text(text, el::String(index), position,
+			world_matrix, color, max_lines);
+	}
+
+	CATCH_BLOCK
+}
+
+extern "C" void set_window_size(const Uint32 width, const Uint32 height,
+	const Uint32 hud_x, const Uint32 hud_y)
+{
+	TRY_BLOCK
+
+	glm::uvec4 view_port;
+	glm::uvec2 window_size;
+
+	view_port.x = 0;
+	view_port.y = hud_y;
+	view_port.z = width - hud_x;
+	view_port.w = height - hud_y;
+
+	window_size.x = width;
+	window_size.y = height;
+
+	if (scene.get() != 0)
+	{
+		scene->set_view_port(view_port);
+		scene->set_window_size(window_size);
+	}
+
+	CATCH_BLOCK
+}

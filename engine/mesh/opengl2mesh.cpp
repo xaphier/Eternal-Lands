@@ -11,11 +11,14 @@
 #include "vertexelements.hpp"
 #include "submesh.hpp"
 #include "vertexstream.hpp"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
 
-	OpenGl2Mesh::OpenGl2Mesh()
+	OpenGl2Mesh::OpenGl2Mesh(const String &name, const bool static_indices,
+		const bool static_vertices):
+		AbstractMesh(name, static_indices, static_vertices)
 	{
 	}
 
@@ -35,7 +38,7 @@ namespace eternal_lands
 			m_vertex_data[index]->bind(hbt_vertex);
 
 			result = boost::make_shared<
-				MappedHardwareWriteMemoryBuffer>(
+				HardwareWriteMemoryBuffer>(
 					m_vertex_data[index], hbt_vertex);
 		}
 
@@ -68,7 +71,7 @@ namespace eternal_lands
 			m_index_data->bind(hbt_index);
 
 			result = boost::make_shared<
-				MappedHardwareWriteMemoryBuffer>(
+				HardwareWriteMemoryBuffer>(
 					m_index_data, hbt_index);
 		}
 
@@ -76,7 +79,8 @@ namespace eternal_lands
 	}
 
 	void OpenGl2Mesh::bind(const VertexElements &vertex_elements,
-		const HardwareBufferSharedPtr &buffer)
+		const HardwareBufferSharedPtr &buffer,
+		BitSet32 &used_attributes)
 	{
 		GLintptr offset;
 		Uint32 i, stride, count;
@@ -101,11 +105,11 @@ namespace eternal_lands
 			normalized = vertex_elements.get_gl_normalized(i);
 			semantic = vertex_elements.get_semantic(i);
 
+			used_attributes[semantic] = true;
+
 			glVertexAttribPointer(semantic, count, type,
 				normalized, stride,
 				static_cast<Uint8*>(0) + offset);
-
-			glEnableVertexAttribArray(semantic);
 		}
 	}
 
@@ -163,28 +167,57 @@ namespace eternal_lands
 		m_index_data->set_size(hbt_index, size, get_indices_usage());
 	}
 
-	void OpenGl2Mesh::bind_vertex_buffers()
+	void OpenGl2Mesh::bind_vertex_buffers(BitSet32 &used_attributes)
 	{
+		BitSet32 attributes;
 		Uint32 i, count;
 
 		count = m_vertex_data.size();
 
+		CHECK_GL_ERROR();
+
 		for (i = 0; i < count; ++i)
 		{
-			bind(get_vertex_elements(i), m_vertex_data[i]);
+			bind(get_vertex_elements(i), m_vertex_data[i],
+				attributes);
 		}
+
+		CHECK_GL_ERROR();
+
+		for (i = 0; i < vertex_stream_count; ++i)
+		{
+			if (used_attributes[i] && !attributes[i])
+			{
+				glDisableVertexAttribArray(i);
+			}
+
+			if (!used_attributes[i] && attributes[i])
+			{
+				glEnableVertexAttribArray(i);
+			}
+		}
+
+		used_attributes = attributes;
+
+		CHECK_GL_ERROR();
 	}
 
 	void OpenGl2Mesh::unbind_vertex_buffers()
 	{
 		Uint16 i;
 
+		CHECK_GL_ERROR();
+
 		for (i = 0; i < vertex_stream_count; ++i)
 		{
 			glDisableVertexAttribArray(i);
 		}
 
+		CHECK_GL_ERROR();
+
 		HardwareBuffer::unbind(hbt_vertex);
+
+		CHECK_GL_ERROR();
 	}
 
 	void OpenGl2Mesh::bind_index_buffers()
@@ -200,9 +233,9 @@ namespace eternal_lands
 		HardwareBuffer::unbind(hbt_index);
 	}
 
-	void OpenGl2Mesh::bind()
+	void OpenGl2Mesh::bind(BitSet32 &used_attributes)
 	{
-		bind_vertex_buffers();
+		bind_vertex_buffers(used_attributes);
 		bind_index_buffers();
 	}
 
@@ -234,7 +267,8 @@ namespace eternal_lands
 	{
 		boost::shared_ptr<OpenGl2Mesh> result;
 
-		result = boost::make_shared<OpenGl2Mesh>();
+		result = boost::make_shared<OpenGl2Mesh>(get_name(),
+			get_static_indices(), get_static_vertices());
 
 		result->m_vertex_data = m_vertex_data;
 		result->copy_vertex_descriptions(*this);

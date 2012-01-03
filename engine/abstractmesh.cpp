@@ -20,14 +20,13 @@
 namespace eternal_lands
 {
 
-	AbstractMesh::AbstractMesh(const bool static_indices,
-		const bool static_vertices): m_static_indices(static_indices),
+	AbstractMesh::AbstractMesh(const String &name,
+		const bool static_indices, const bool static_vertices):
+		m_name(name), m_vertex_count(0), m_index_count(0),
+		m_primitive_type(pt_triangles), m_use_16_bit_indices(true),
+		m_static_indices(static_indices),
 		m_static_vertices(static_vertices)
 	{
-		m_use_16_bit_indices = true;
-		m_vertex_count = 0;
-		m_index_count = 0;
-		m_primitive_type = pt_triangles;
 	}
 
 	AbstractMesh::~AbstractMesh() throw()

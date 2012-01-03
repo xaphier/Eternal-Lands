@@ -35,8 +35,6 @@ namespace eternal_lands
 			typedef std::map<Utf32Char, TextureGlyphe>
 				Utf32CharTextureGlypheMap;
 
-			const AtlasSharedPtr m_atlas;
-			const ImageSharedPtr m_image;
 			Utf32CharTextureGlypheMap m_glyphs;
 			String m_file_name;
 			float m_size;
@@ -48,15 +46,19 @@ namespace eternal_lands
 			bool m_sub_pixel;
 			bool m_hinting;
 
-			void cache_glyphs(const Utf32String &char_codes);
-			void init();
+			void cache_glyphs(const AtlasSharedPtr &atlas,
+				const DoubleSharedArray &data,
+				const Utf32String &char_codes);
+			void init(const AtlasSharedPtr &atlas,
+				const DoubleSharedArray &data,
+				const Utf32String &char_codes);
 
 		public:
 			/**
 			 * Default constructor.
 			 */
 			TextureFont(const AtlasSharedPtr &atlas,
-				const ImageSharedPtr &image,
+				const DoubleSharedArray &data,
 				const FileSystemSharedPtr &file_system,
 				const String &file_name, const float size);
 
@@ -70,6 +72,8 @@ namespace eternal_lands
 				const glm::vec2 &position,
 				const glm::vec4 &color = glm::vec4(1.0f),
 				const Uint32 max_lines = 1,
+				const float max_width =
+					std::numeric_limits<Uint32>::max(),
 				const float spacing = 0.0f,
 				const float rise = 0.0f) const;
 			glm::vec2 get_size(const Utf32String &str,

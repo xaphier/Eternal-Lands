@@ -59,6 +59,8 @@ void get_object_position(const Uint32 id, float* x, float* y, float* z);
 void remove_light(const Uint32 id);
 Uint32 get_next_free_id();
 void set_next_free_id(const Uint32 id);
+void set_window_size(const Uint32 widht, const Uint32 height,
+	const Uint32 hud_x, const Uint32 hud_y);
 
 void build_buffers(actor_types* a);
 void build_actor_bounding_box(actor* a);
@@ -78,6 +80,9 @@ void engine_resize_root_window(const float fov, const float aspect,
 void add_font(const char* file_name, const char* index, const float size);
 void draw_text(const char* str, const char* index, const float x,
 	const float y, const float r, const float g, const float b);
+void draw_2d_text(const char* str, const char* index, const float x,
+	const float y, const float r, const float g, const float b,
+	const float scale, const Uint32 max_lines);
 int command_lua(char *text, int len);
 
 void engine_cull_scene();

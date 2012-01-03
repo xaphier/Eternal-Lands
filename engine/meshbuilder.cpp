@@ -56,7 +56,7 @@ namespace eternal_lands
 		VertexDescriptionMap instanced_mesh_tangent, sprite, font;
 		VertexElementType position, texture_coordinate, normal;
 
-		if (get_global_vars()->get_opengl_3_0())
+		if (get_global_vars()->get_opengl_3_0() || GLEW_ARB_half_float_vertex)
 		{
 			position = vet_half4;
 			texture_coordinate = vet_half2;
@@ -185,28 +185,33 @@ namespace eternal_lands
 			get_str(format), elements);
 	}
 
-	AbstractMeshSharedPtr MeshBuilder::get_mesh() const
+	AbstractMeshSharedPtr MeshBuilder::get_mesh(const String &name,
+		const bool static_indices, const bool static_vertices) const
 	{
-		if (get_global_vars()->get_opengl_3_1())
+		if (get_global_vars()->get_opengl_3_1() && false)
 		{
-//			return boost::make_shared<OpenGl31Mesh>();
+			return boost::make_shared<OpenGl31Mesh>(name,
+				static_indices, static_vertices);
 		}
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
-			return boost::make_shared<OpenGl3Mesh>();
+			return boost::make_shared<OpenGl3Mesh>(name,
+				static_indices, static_vertices);
 		}
 
-		return boost::make_shared<OpenGl2Mesh>();
+		return boost::make_shared<OpenGl2Mesh>(name, static_indices,
+			static_vertices);
 	}
 
 	AbstractMeshSharedPtr MeshBuilder::get_mesh(
 		const VertexFormatType vertex_format,
-		const MeshDataToolSharedPtr &mesh_data_tool) const
+		const MeshDataToolSharedPtr &mesh_data_tool, const String &name,
+		const bool static_indices, const bool static_vertices) const
 	{
 		AbstractMeshSharedPtr result;
 
-		result = get_mesh();
+		result = get_mesh(name, static_indices, static_vertices);
 
 		result->init(get_vertex_format(vertex_format), mesh_data_tool);
 

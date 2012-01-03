@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf8"?>
+<glsl_program>
+ <name>font</name>
+ <vertex_shader>#version 120
+
+varying vec2 uv;
+varying vec4 vertex_color;
+
+uniform mat4x3 world_matrix;
+uniform mat4 projection_view_matrix;
+
+attribute vec2 texture_coordinate_0;
+attribute vec3 position;
+attribute vec4 color;
+
+void main ()
+{
+	vec3 world_position;
+
+	world_position = world_matrix * vec4(position.x, position.y, 0.0, 1.0);
+	gl_Position = projection_view_matrix * vec4(world_position, 1.0);
+	uv = texture_coordinate_0;
+	vertex_color = color;
+}
+</vertex_shader>
+ <fragment_shader>#version 120
+
+varying vec2 uv;
+varying vec4 vertex_color;
+
+uniform sampler2D diffuse_sampler_0;
+
+void main ()
+{
+	gl_FragColor = vertex_color;
+	gl_FragColor *= texture2D(diffuse_sampler_0, uv).r;
+}
+</fragment_shader>
+</glsl_program>

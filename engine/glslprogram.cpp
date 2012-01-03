@@ -1715,6 +1715,7 @@ namespace eternal_lands
 
 			name = String(get_base_name(std::string(buffer.get(),
 				length)));
+
 			index = glGetUniformLocation(m_program, buffer.get());
 			parameter = ParameterUtil::get_parameter(type);
 
@@ -1765,6 +1766,8 @@ namespace eternal_lands
 
 		glGetProgramiv(m_program, GL_ACTIVE_ATTRIBUTES, &count);
 
+		m_used_attributes.reset();
+
 		for (i = 0; i < count; ++i)
 		{
 			type = 0;
@@ -1779,6 +1782,8 @@ namespace eternal_lands
 			name = get_base_name(std::string(buffer.get(), length));
 			index = glGetAttribLocation(m_program, buffer.get());
 			parameter = ParameterUtil::get_parameter(type);
+
+			m_used_attributes[index] = true;
 
 			LOG_DEBUG(UTF8("\tAttribute %1% of type %2% has size "
 				"%3% and index %4%."), name % parameter %
@@ -1798,6 +1803,16 @@ namespace eternal_lands
 
 		LOG_INFO(UTF8("Program validate successful: %1%"),
 			get_program_log());
+	}
+
+	bool GlslProgram::validate()
+	{
+		glValidateProgram(m_program);
+
+		LOG_ERROR(UTF8("Program '%1%' validation: %2%"),
+			get_name() % get_program_log());
+
+		return program_validate_status();
 	}
 
 	void GlslProgram::unbind()

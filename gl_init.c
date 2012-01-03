@@ -183,6 +183,7 @@ void setup_video_mode(int fs, int mode)
 #ifndef WINDOWS
 	bpp=0;//under X, we can't change the desktop BPP
 #endif
+	set_window_size(window_width, window_height, hud_x, hud_y);
 }
 
 void check_gl_mode()

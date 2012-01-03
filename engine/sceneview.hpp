@@ -35,6 +35,7 @@ namespace eternal_lands
 			glm::mat4x4 m_projection_matrix;
 			glm::mat4x4 m_projection_view_matrix;
 			glm::mat4x4 m_shadow_view_matrix;
+			glm::mat4x4 m_ortho_projection_matrix;
 			Mat4x4Vector m_projection_view_matrices;
 			Mat4x4Vector m_shadow_projection_matrices;
 			Mat4x4Vector m_shadow_projection_view_matrices;
@@ -48,10 +49,10 @@ namespace eternal_lands
 			glm::vec4 m_focus;
 			glm::vec4 m_split_distances;
 			glm::ivec4 m_view_port;
+			glm::uvec2 m_window_size;
+			glm::uvec2 m_shadow_map_size;
 			float m_fov, m_aspect, m_z_near, m_z_far;
 			float m_shadow_z_far;
-			Uint32 m_shadow_map_width;
-			Uint32 m_shadow_map_height;
 			Uint16 m_shadow_map_count;
 			bool m_exponential_shadow_maps;
 
@@ -119,6 +120,17 @@ namespace eternal_lands
 				m_z_near = z_near;
 			}
 
+			inline void set_view_port(const glm::uvec4 &view_port)
+			{
+				m_view_port = view_port;
+			}
+
+			inline void set_window_size(
+				const glm::uvec2 &window_size)
+			{
+				m_window_size = window_size;
+			}
+
 			inline void set_focus(const glm::vec3 &focus)
 			{
 				m_focus = glm::vec4(focus, 1.0f);
@@ -157,6 +169,12 @@ namespace eternal_lands
 				&get_projection_view_matrix() const
 			{
 				return m_projection_view_matrix;
+			}
+
+			inline const glm::mat4x4 &get_ortho_projection_matrix()
+				const
+			{
+				return m_ortho_projection_matrix;
 			}
 
 			inline const Mat4x4Vector
@@ -245,14 +263,14 @@ namespace eternal_lands
 				return m_shadow_z_far;
 			}
 
-			inline Uint32 get_shadow_map_width() const
+			inline const glm::uvec2 &get_window_size() const
 			{
-				return m_shadow_map_width;
+				return m_window_size;
 			}
 
-			inline Uint32 get_shadow_map_height() const
+			inline const glm::uvec2 &get_shadow_map_size() const
 			{
-				return m_shadow_map_height;
+				return m_shadow_map_size;
 			}
 
 			inline Uint16 get_shadow_map_count() const

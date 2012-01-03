@@ -61,9 +61,10 @@ namespace eternal_lands
 			}
 
 			static void bind(const VertexElements &vertex_elements,
-				const HardwareBufferSharedPtr &buffer);
+				const HardwareBufferSharedPtr &buffer,
+				BitSet32 &used_attributes);
 
-			void bind_vertex_buffers();
+			void bind_vertex_buffers(BitSet32 &used_attributes);
 			void unbind_vertex_buffers();
 			void bind_index_buffers();
 			void unbind_index_buffers();
@@ -85,14 +86,16 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl2Mesh();
+			OpenGl2Mesh(const String &name,
+				const bool static_indices,
+				const bool static_vertices);
 
 			/**
 			 * Default destructor.
 			 */
 			virtual ~OpenGl2Mesh() throw();
 
-			virtual void bind();
+			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();
 			virtual void draw(const MeshDrawData &draw_data);
 			virtual AbstractMeshSharedPtr clone_vertex_data();

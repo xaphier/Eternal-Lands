@@ -399,6 +399,8 @@ namespace eternal_lands
 	typedef std::bitset<4> SubFrustumsMask;
 	typedef std::bitset<32> PlanesMask;
 
+	typedef boost::shared_array<double> DoubleSharedArray;
+
 }
 
 #endif	/* UUID_a9b0cc4b_b046_4138_b8f4_d747aac1179a */

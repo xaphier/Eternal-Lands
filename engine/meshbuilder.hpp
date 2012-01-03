@@ -65,11 +65,15 @@ namespace eternal_lands
 		public:
 			MeshBuilder(const GlobalVarsSharedPtr &global_vars);
 			~MeshBuilder() throw();
-			AbstractMeshSharedPtr get_mesh() const;
+			AbstractMeshSharedPtr get_mesh(const String &name,
+				const bool static_indices = true,
+				const bool static_vertices = true) const;
 			AbstractMeshSharedPtr get_mesh(
 				const VertexFormatType vertex_format,
-				const MeshDataToolSharedPtr &mesh_data_tool)
-				const;
+				const MeshDataToolSharedPtr &mesh_data_tool,
+				const String &name,
+				const bool static_indices = true,
+				const bool static_vertices = true) const;
 			VertexFormatSharedPtr get_vertex_format(
 				const VertexFormatType vertex_format) const;
 			static const String &get_str(

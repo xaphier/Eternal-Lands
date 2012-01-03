@@ -37,14 +37,16 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl31Mesh();
+			OpenGl31Mesh(const String &name,
+				const bool static_indices,
+				const bool static_vertices);
 
 			/**
 			 * Default destructor.
 			 */
 			virtual ~OpenGl31Mesh() throw();
 
-			virtual void bind();
+			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();
 			virtual bool get_supports_restart_index();
 

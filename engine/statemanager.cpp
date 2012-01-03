@@ -9,6 +9,7 @@
 #include "glslprogram.hpp"
 #include "texture.hpp"
 #include "abstractmesh.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -44,7 +45,8 @@ namespace eternal_lands
 	void StateManager::set_mesh(const AbstractMeshSharedPtr &mesh)
 	{
 		m_mesh = mesh;
-		m_mesh->bind();
+
+		m_mesh->bind(m_used_attributes);
 	}
 
 	void StateManager::set_program(const GlslProgramSharedPtr &program)
@@ -247,6 +249,8 @@ namespace eternal_lands
 
 	bool StateManager::unbind_mesh()
 	{
+		m_used_attributes.reset();
+
 		if (m_mesh.get() != 0)
 		{
 			m_mesh->unbind();
@@ -300,6 +304,60 @@ namespace eternal_lands
 		}
 
 		return result;
+	}
+
+	void StateManager::log_texture_units()
+	{
+		Uint32 i, count;
+
+		count = m_textures.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			if (m_textures[i].get() == 0)
+			{
+				LOG_ERROR(UTF8("No texture bound to unit %1%."),
+					i);
+
+				continue;
+			}
+
+			LOG_ERROR(UTF8("Texture '%1%' bound to unit %2%."),
+				m_textures[i]->get_name() % i);
+		}
+	}
+
+	void StateManager::gl_error_check()
+	{
+		GLint gl_error;
+
+		gl_error = glGetError();
+
+		if (gl_error != GL_NO_ERROR)
+		{
+			LOG_ERROR(UTF8("GL error %1%: '%2%'"), gl_error %
+				reinterpret_cast<const char*>(
+					gluErrorString(gl_error)));
+			log_texture_units();
+			m_program->validate();
+			LOG_ERROR(UTF8("Mesh '%1%' used."), m_mesh->get_name());
+		}
+	}
+
+	void StateManager::draw(const Uint32 index)
+	{
+		m_mesh->draw(index);
+#ifndef	NDEBUG
+		gl_error_check();
+#endif	/* NDEBUG */
+	}
+
+	void StateManager::draw(const MeshDrawData &draw_data)
+	{
+		m_mesh->draw(draw_data);
+#ifndef	NDEBUG
+		gl_error_check();
+#endif	/* NDEBUG */
 	}
 
 }

@@ -259,6 +259,7 @@ namespace eternal_lands
 
 	void SceneView::update()
 	{
+		glm::vec2 window_size;
 		float z_near, z_far;
 		Uint32 shadow_map_size;
 		Uint16 i;
@@ -272,7 +273,6 @@ namespace eternal_lands
 			get_aspect(), get_z_near(), get_z_far());
 
 		glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(m_view_matrix));
-		glGetIntegerv(GL_VIEWPORT, glm::value_ptr(m_view_port));
 
 		m_projection_view_matrix = m_projection_matrix *
 			get_view_matrix();
@@ -284,6 +284,10 @@ namespace eternal_lands
 		m_view_dir = glm::inverse(m_view_matrix) * m_view_dir;
 		m_view_dir = glm::vec4(glm::normalize(glm::vec3(m_view_dir) -
 			glm::vec3(m_camera)), 0.0f);
+
+		window_size = get_window_size();
+		m_ortho_projection_matrix = glm::ortho(0.0f, window_size.x,
+			window_size.y, 0.0f, -1.0f, 1.0f);
 
 		switch (get_global_vars()->get_shadow_map_size())
 		{
@@ -320,8 +324,7 @@ namespace eternal_lands
 		m_shadow_texture_matrices.resize(get_shadow_map_count());
 		m_projection_view_matrices.resize(get_shadow_map_count());
 
-		m_shadow_map_width = shadow_map_size;
-		m_shadow_map_height = shadow_map_size;
+		m_shadow_map_size = glm::uvec2(shadow_map_size);
 
 		for (i = 0; i < get_shadow_map_count(); ++i)
 		{

@@ -65,7 +65,8 @@ namespace eternal_lands
 		AbstractMeshSharedPtr mesh;
 
 		mesh = get_mesh_builder()->get_mesh(vft_instanced_mesh,
-			instance_data.get_mesh_data_tool());
+			instance_data.get_mesh_data_tool(),
+			instance_data.get_name());
 
 		object = boost::make_shared<Object>(instance_data, mesh,
 			instance_data.get_materials(), get_effect_cache(),

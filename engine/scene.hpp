@@ -43,6 +43,7 @@ namespace eternal_lands
 			typedef std::vector<PairUint32SelectionType>
 				PairUint32SelectionTypeVector;
 
+			boost::array<GLuint, 0x10000> m_querie_ids;
 			GlobalVarsSharedPtr m_global_vars;
 			SceneResources m_scene_resources;
 			StateManager m_state_manager;
@@ -103,7 +104,7 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			Scene(const GlobalVarsSharedPtr &global_vars,
-				const FileSystemWeakPtr &file_system);
+				const FileSystemSharedPtr &file_system);
 
 			/**
 			 * Default destructor.
@@ -130,6 +131,7 @@ namespace eternal_lands
 				const float density);
 			void clear();
 			void draw();
+			void draw_debug();
 			void init(const FileSystemSharedPtr &file_system);
 			void cull();
 			void load(const String &name, const glm::vec3 &ambient,
@@ -144,6 +146,12 @@ namespace eternal_lands
 				const String &index,
 				const glm::mat4x3 &world_matrix,
 				const glm::vec4 &color = glm::vec4(1.0f),
+				const float spacing = 0.0f,
+				const float rise = 0.0f);
+			void draw_2d_text(const Utf32String &str,
+				const String &index, const glm::vec2 &position,
+				const glm::mat4x3 &world_matrix,
+				const glm::vec4 &color, const Uint32 max_lines,
 				const float spacing = 0.0f,
 				const float rise = 0.0f);
 
@@ -163,6 +171,17 @@ namespace eternal_lands
 			{
 				m_scene_view.set_perspective(fov, aspect,
 					z_near);
+			}
+
+			inline void set_view_port(const glm::uvec4 &view_port)
+			{
+				m_scene_view.set_view_port(view_port);
+			}
+
+			inline void set_window_size(
+				const glm::uvec2 &window_size)
+			{
+				m_scene_view.set_window_size(window_size);
 			}
 
 			inline float get_fov() const

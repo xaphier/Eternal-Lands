@@ -33,6 +33,7 @@ namespace eternal_lands
 		private:
 			SubMeshVector m_sub_meshs;
 			VertexFormatSharedPtr m_vertex_format;
+			const String m_name;
 			Uint32 m_vertex_count;
 			Uint32 m_index_count;
 			Uint32 m_restart_index;
@@ -46,8 +47,9 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			AbstractMesh(const bool static_indices = true,
-				const bool static_vertices = true);
+			AbstractMesh(const String &name,
+				const bool static_indices,
+				const bool static_vertices);
 
 			void copy_vertex_descriptions(const AbstractMesh &mesh);
 
@@ -108,7 +110,7 @@ namespace eternal_lands
 			/**
 			 * Binds the mesh to OpenGL, using vertex buffers etc.
 			 */
-			virtual void bind() = 0;
+			virtual void bind(BitSet32 &used_attributes) = 0;
 
 			/**
 			 * Unbinds the mesh from OpenGL.
@@ -254,6 +256,13 @@ namespace eternal_lands
 			inline bool get_static_vertices() const
 			{
 				return m_static_vertices;
+			}
+
+			/**
+			 */
+			inline const String &get_name() const
+			{
+				return m_name;
 			}
 
 	};
