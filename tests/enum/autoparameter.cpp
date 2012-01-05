@@ -94,16 +94,6 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 		el::apt_reflection_matrix)), "reflection_matrix");
 
 	BOOST_CHECK_EQUAL(el::string_to_utf8(el::AutoParameterUtil::get_str(
-		el::apt_shadow_view_matrix)), "shadow_view_matrix");
-
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::AutoParameterUtil::get_str(
-		el::apt_shadow_projection_matrix)), "shadow_projection_matrix");
-
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::AutoParameterUtil::get_str(
-		el::apt_shadow_projection_view_matrix)),
-		"shadow_projection_view_matrix");
-
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::AutoParameterUtil::get_str(
 		el::apt_shadow_texture_matrix)), "shadow_texture_matrix");
 
 	BOOST_CHECK_EQUAL(el::string_to_utf8(el::AutoParameterUtil::get_str(
