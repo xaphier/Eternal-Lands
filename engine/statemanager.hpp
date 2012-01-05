@@ -34,6 +34,7 @@ namespace eternal_lands
 			GlslProgramSharedPtr m_program;
 			TextureSharedPtrArray32 m_textures;
 			BitSet32 m_program_used_texture_units;
+			BitSet32 m_used_texture_units;
 			BitSet32 m_used_attributes;
 			glm::vec4 m_layer_index;
 			glm::bvec4 m_color_mask;

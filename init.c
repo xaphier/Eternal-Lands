@@ -732,13 +732,14 @@ void init_stuff()
 	create_loading_win (window_width, window_height, 0);
 	show_window(loading_win);
 
-	update_loading_win(init_opengl_str, 5);
 	LOG_DEBUG("Init extensions.");
 	init_gl_extensions();
 	LOG_DEBUG("Init extensions done");
 
 	init_engine();
 	set_window_size(window_width, window_height, hud_x, hud_y);
+
+	update_loading_win(init_opengl_str, 5);
 
 	// Setup the new eye candy system
 	LOG_DEBUG("Init eyecandy");

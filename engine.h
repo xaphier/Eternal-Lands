@@ -78,11 +78,11 @@ void engine_set_shader_quality(const char* quality);
 void engine_resize_root_window(const float fov, const float aspect,
 	const float z_near, const float z_far);
 void add_font(const char* file_name, const char* index, const float size);
-void draw_text(const char* str, const char* index, const float x,
-	const float y, const float r, const float g, const float b);
-void draw_2d_text(const char* str, const char* index, const float x,
-	const float y, const float r, const float g, const float b,
-	const float scale, const Uint32 max_lines);
+void draw_text(const unsigned char* str, const char* font, const float x,
+	const float y);
+Uint32 draw_2d_text(const unsigned char* str, const char* font, const float x,
+	const float y, const float scale, const Uint32 max_lines);
+Uint32 text_width(const unsigned char* str, const char* font, const Uint32 len);
 int command_lua(char *text, int len);
 
 void engine_cull_scene();

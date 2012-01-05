@@ -10,7 +10,8 @@
 namespace eternal_lands
 {
 
-	TextAttribute::TextAttribute(): m_color(1.0f), m_size(12)
+	TextAttribute::TextAttribute(): m_color(1.0f), m_size(12),
+		m_spacing(0.0f), m_rise(0.0f)
 	{
 	}
 

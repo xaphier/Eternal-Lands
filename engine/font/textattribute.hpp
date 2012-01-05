@@ -32,7 +32,9 @@ namespace eternal_lands
 		private:
 			glm::vec4 m_color;
 			String m_font;
-			Uint16 m_size;
+			float m_size;
+			float m_spacing;
+			float m_rise;
 
 		public:
 			/**
@@ -45,14 +47,40 @@ namespace eternal_lands
 			 */
 			~TextAttribute() throw();
 
+			inline bool operator==(const TextAttribute &attribute)
+				const
+			{
+				return get_color() == attribute.get_color() &&
+					get_size() == attribute.get_size() &&
+					get_spacing() == attribute.get_spacing()
+					&& get_rise() == attribute.get_rise()
+					&& get_font() == attribute.get_font();
+			}
+
+			inline bool operator!=(const TextAttribute &attribute)
+				const
+			{
+				return !operator==(attribute);
+			}
+
 			inline void set_color(const glm::vec4 &color)
 			{
 				m_color = color;
 			}
 
-			inline void set_size(const Uint16 size)
+			inline void set_size(const float size)
 			{
 				m_size = size;
+			}
+
+			inline void set_spacing(const float spacing)
+			{
+				m_spacing = spacing;
+			}
+
+			inline void set_rise(const float rise)
+			{
+				m_rise = rise;
 			}
 
 			inline void set_font(const String font)
@@ -65,9 +93,19 @@ namespace eternal_lands
 				return m_color;
 			}
 
-			inline Uint16 get_size() const
+			inline float get_size() const
 			{
 				return m_size;
+			}
+
+			inline float get_spacing() const
+			{
+				return m_spacing;
+			}
+
+			inline float get_rise() const
+			{
+				return m_rise;
 			}
 
 			inline const String &get_font() const

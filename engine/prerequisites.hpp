@@ -240,6 +240,8 @@ namespace eternal_lands
 	class StateManager;
 	class SubMesh;
 	class SubObject;
+	class Text;
+	class TextAttribute;
 	class Texture;
 	class TextureArray;
 	class TextureArrayCache;
@@ -398,6 +400,12 @@ namespace eternal_lands
 	typedef boost::array<ConvexBody, 4> SubFrustumsConvexBodys;
 	typedef std::bitset<4> SubFrustumsMask;
 	typedef std::bitset<32> PlanesMask;
+	typedef std::pair<Utf32String, TextAttribute>
+		Utf32StringTextAttributePair;
+
+	typedef std::vector<Utf32StringTextAttributePair>
+		Utf32StringTextAttributePairVector;
+
 
 	typedef boost::shared_array<double> DoubleSharedArray;
 

@@ -67,17 +67,17 @@ namespace eternal_lands
 			 */
 			~TextureFont() throw();
 
-			Uint32 write_to_stream(const Utf32String &str,
+			void write_to_stream(const Utf32String &str,
+				const TextAttribute &attribute,
 				const VertexStreamsSharedPtr &streams,
-				const glm::vec2 &position,
-				const glm::vec4 &color = glm::vec4(1.0f),
+				const glm::vec2 &start_position,
+				glm::vec2 &position, Uint32 &line,
 				const Uint32 max_lines = 1,
 				const float max_width =
-					std::numeric_limits<Uint32>::max(),
-				const float spacing = 0.0f,
-				const float rise = 0.0f) const;
+					std::numeric_limits<Uint32>::max())
+						const;
 			glm::vec2 get_size(const Utf32String &str,
-				const float spacing, const float rise) const;
+				const TextAttribute &attribute) const;
 			glm::vec2 get_size(const String &str) const;
 
 			inline const String &get_file_name() const

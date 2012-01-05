@@ -142,18 +142,13 @@ namespace eternal_lands
 			void add_font(const FileSystemSharedPtr &file_system,
 				const String &file_name, const String &index,
 				const float size);
-			void draw_text(const Utf32String &str,
-				const String &index,
+			void draw_text(const Text &text,
+				const glm::mat4x3 &world_matrix);
+			Uint32 draw_2d_text(const Text &text,
+				const glm::vec2 &position,
 				const glm::mat4x3 &world_matrix,
-				const glm::vec4 &color = glm::vec4(1.0f),
-				const float spacing = 0.0f,
-				const float rise = 0.0f);
-			void draw_2d_text(const Utf32String &str,
-				const String &index, const glm::vec2 &position,
-				const glm::mat4x3 &world_matrix,
-				const glm::vec4 &color, const Uint32 max_lines,
-				const float spacing = 0.0f,
-				const float rise = 0.0f);
+				const Uint32 max_lines);
+			Uint32 get_text_width(const Text &text);
 
 			inline void shadow_map_change()
 			{

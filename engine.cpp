@@ -19,6 +19,8 @@
 #include "sky.h"
 #include "shadows.h"
 #include "elc_private.h"
+#include "asc.h"
+#include "colors.h"
 #include "engine/scene.hpp"
 #include "engine/actor.hpp"
 #include "engine/sceneresources.hpp"
@@ -39,6 +41,8 @@
 #include "engine/logging.hpp"
 #include "engine/filesystem.hpp"
 #include "engine/filter.hpp"
+#include "engine/font/text.hpp"
+#include "engine/font/textattribute.hpp"
 
 namespace el = eternal_lands;
 
@@ -56,6 +60,89 @@ namespace
 	boost::scoped_ptr<el::Lua> lua;
 	el::GlobalVarsSharedPtr global_vars;
 	el::FileSystemSharedPtr file_system;
+
+	el::Text get_text(const unsigned char* str, const char* font,
+		const Uint32 len = std::numeric_limits<Uint32>::max())
+	{
+		el::Text text;
+		el::TextAttribute attribute;
+		glm::vec4 color;
+		el::Utf32String utf32_str;
+		Uint32 i, count, index;
+
+		count = strlen(reinterpret_cast<const char*>(str));
+		count = std::min(count, len);
+
+		attribute.set_size(12.0f);
+		attribute.set_font(el::String(font));
+
+		for (i = 0; i < count; ++i)
+		{
+			if (str[i] < 127)
+			{
+				utf32_str += L'\0' + str[i];
+
+				continue;
+			}
+
+			if (is_color(str[i]))
+			{
+				index = from_color_char(str[i]);
+
+				color.r = colors_list[index].r1 / 255.0f;
+				color.g = colors_list[index].g1 / 255.0f;
+				color.b = colors_list[index].b1 / 255.0f;
+
+				if (utf32_str.length() > 0)
+				{
+					text.add(utf32_str, attribute);
+				}
+
+				attribute.set_color(color);
+				utf32_str = L"";
+			}
+		}
+
+		if (utf32_str.length() > 0)
+		{
+			text.add(utf32_str, attribute);
+		}
+
+		return text;
+	}
+
+	void disable_opengl2_stuff()
+	{
+		Uint16 i;
+
+		for (i = 0; i < 8; i++)
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+			glDisable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
+		glActiveTexture(GL_TEXTURE0);
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_BLEND);
+		bind_texture_id(0);
+
+		glBindBufferARB(GL_ARRAY_BUFFER, 0);
+		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
+		glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
+		glUseProgram(0);
+
+		for (i = 0; i < 16; i++)
+		{
+			glDisableVertexAttribArray(i);
+		}
+
+		glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glBlendFunc(GL_ZERO, GL_ONE);
+	}
 
 	el::SelectionType get_selection_type(el::String name)
 	{
@@ -645,33 +732,7 @@ extern "C" void draw_engine()
 
 	assert(!scene->unbind_all());
 
-	for (i = 0; i < 8; i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i);
-		glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_CULL_FACE);
-	bind_texture_id(0);
-
-	glBindBufferARB(GL_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
-	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
-	glUseProgram(0);
-
-	for (i = 0; i < 16; i++)
-	{
-		glDisableVertexAttribArray(i);
-	}
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glBlendFunc(GL_ZERO, GL_ONE);
+	disable_opengl2_stuff();
 
 #ifdef	EL_TIME_FRAME_DEBUG
 	if ((do_el_time % 100) == 0)
@@ -749,7 +810,7 @@ extern "C" void engine_cull_scene()
 
 extern "C" void engine_draw_scene()
 {
-	Uint32 i, id;
+	Uint32 id;
 
 	TRY_BLOCK
 
@@ -805,33 +866,7 @@ extern "C" void engine_draw_scene()
 		pick_frame = 0;
 	}
 
-	for (i = 0; i < 8; i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i);
-		glDisable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_CULL_FACE);
-	bind_texture_id(0);
-
-	glBindBufferARB(GL_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
-	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
-	glUseProgram(0);
-
-	for (i = 0; i < 16; i++)
-	{
-		glDisableVertexAttribArray(i);
-	}
-
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glBlendFunc(GL_ZERO, GL_ONE);
+	disable_opengl2_stuff();
 
 	CHECK_GL_ERROR();
 
@@ -1031,10 +1066,7 @@ extern "C" void build_buffers(actor_types* a)
 		el::String(el::utf8_to_string(a->file_name)), a->actor_scale,
 		a->scale, a->mesh_scale, a->skel_scale, a->ghost);
 
-	glBindBufferARB(GL_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
-	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
+	disable_opengl2_stuff();
 
 	CATCH_BLOCK
 }
@@ -1171,8 +1203,7 @@ extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 
 	result->setUserData(actor.get());
 
-	glBindBufferARB(GL_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+	disable_opengl2_stuff();
 
 	CATCH_BLOCK
 
@@ -1204,8 +1235,7 @@ extern "C" void model_attach_mesh(actor *act, int mesh_id)
 
 	actor->add_mesh(mesh_id);
 
-	glBindBufferARB(GL_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+	disable_opengl2_stuff();
 
 	CATCH_BLOCK
 }
@@ -1230,8 +1260,7 @@ extern "C" void model_detach_mesh(actor *act, int mesh_id)
 
 	actor->remove_mesh(mesh_id);
 
-	glBindBufferARB(GL_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+	disable_opengl2_stuff();
 
 	CATCH_BLOCK
 }
@@ -1308,8 +1337,7 @@ extern "C" void load_enhanced_actor_texture(actor *act)
 
 	actor->set_parts(parts);
 
-	glBindBufferARB(GL_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+	disable_opengl2_stuff();
 
 	CATCH_BLOCK
 }
@@ -1656,57 +1684,84 @@ extern "C" void add_font(const char* file_name, const char* index,
 	CATCH_BLOCK
 }
 
-extern "C" void draw_text(const char* str, const char* index, const float x,
-	const float y, const float r, const float g, const float b)
+extern "C" void draw_text(const unsigned char* str, const char* font,
+	const float x, const float y)
 {
 	TRY_BLOCK
 
-	el::Utf32String text;
-	glm::mat4x3 world_matrix;
-	glm::vec4 color;
+	el::Text text;
+	glm::mat4 world_matrix;
 
-	world_matrix = glm::mat4x3(glm::translate(x, y, 0.0f));
-
-	color.r = r;
-	color.g = g;
-	color.b = b;
-	color.a = 1.0f;
+	world_matrix = glm::translate(x, y, 0.0f);
 
 	if (scene.get() != 0)
 	{
-		scene->draw_text(text, el::String(index), world_matrix, color);
+		text = get_text(str, font);
+
+		scene->draw_text(text, glm::mat4x3(world_matrix));
 	}
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
-extern "C" void draw_2d_text(const char* str, const char* index, const float x,
-	const float y, const float r, const float g, const float b,
-	const float scale, const Uint32 max_lines)
+extern "C" Uint32 draw_2d_text(const unsigned char* str, const char* font,
+	const float x, const float y, const float scale, const Uint32 max_lines)
 {
+	Uint32 result;
+
 	TRY_BLOCK
 
-	el::Utf32String text;
-	glm::mat4x3 world_matrix;
+	el::Text text;
+	glm::mat4 world_matrix;
 	glm::vec4 color;
 	glm::vec2 position;
 
-	position.x = x;
-	position.y = y;
-	world_matrix = glm::mat4x3(glm::scale(scale, scale, scale));
+	position.x = 0;
+	position.y = 0;
 
-	color.r = r;
-	color.g = g;
-	color.b = b;
-	color.a = 1.0f;
+	world_matrix = glm::translate(x, y, 0.0f);
+	world_matrix = glm::scale(world_matrix, glm::vec3(scale));
+
+	result = 0;
 
 	if (scene.get() != 0)
 	{
-		scene->draw_2d_text(text, el::String(index), position,
-			world_matrix, color, max_lines);
+		text = get_text(str, font);
+
+		result = scene->draw_2d_text(text, position,
+			glm::mat4x3(world_matrix), max_lines);
 	}
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
+
+	return result;
+}
+
+extern "C" Uint32 text_width(const unsigned char* str, const char* font,
+	const Uint32 len)
+{
+	Uint32 result;
+
+	TRY_BLOCK
+
+	el::Text text;
+
+	result = 0;
+
+	if (scene.get() != 0)
+	{
+		text = get_text(str, font, len);
+
+		result = scene->get_text_width(text);
+	}
+
+	CATCH_BLOCK
+
+	return result;
 }
 
 extern "C" void set_window_size(const Uint32 width, const Uint32 height,

@@ -35,6 +35,7 @@
 #include "convexbody.hpp"
 
 #include "../client_serv.h"
+#include "font/text.hpp"
 
 namespace eternal_lands
 {
@@ -51,7 +52,6 @@ namespace eternal_lands
 				inline StateManagerUtil(StateManager &manager):
 					m_manager(manager)
 				{
-					m_manager.init();
 				}
 
 				inline ~StateManagerUtil() throw()
@@ -84,8 +84,8 @@ namespace eternal_lands
 			m_scene_resources.get_texture_cache()));
 
 		m_fonts.reset(new TextureFontCache(file_system,
-			m_scene_resources.get_mesh_builder(), 1024, 1024,
-				1024));
+			m_scene_resources.get_mesh_builder(), 512, 512,
+				512));
 	}
 
 	Scene::~Scene() throw()
@@ -528,6 +528,11 @@ namespace eternal_lands
 		Uint32 light_count, materials, i;
 		bool object_data_set;
 
+#ifndef	NDEBUG
+		m_state_manager.unbind_mesh();
+		m_state_manager.unbind_program();
+		m_state_manager.unbind_textures();
+#endif /* NDEBUG */
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		materials = object->get_materials().size();
@@ -570,6 +575,11 @@ namespace eternal_lands
 		Uint32 materials, i;
 		bool object_data_set;
 
+#ifndef	NDEBUG
+		m_state_manager.unbind_mesh();
+		m_state_manager.unbind_program();
+		m_state_manager.unbind_textures();
+#endif /* NDEBUG */
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		materials = object->get_materials().size();
@@ -609,6 +619,11 @@ namespace eternal_lands
 		Uint32 materials, i;
 		bool object_data_set;
 
+#ifndef	NDEBUG
+		m_state_manager.unbind_mesh();
+		m_state_manager.unbind_program();
+		m_state_manager.unbind_textures();
+#endif /* NDEBUG */
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		materials = object->get_materials().size();
@@ -835,9 +850,26 @@ namespace eternal_lands
 		m_fonts->add_font(file_system, index, file_name, size);
 	}
 
-	void Scene::draw_text(const Utf32String &str, const String &index,
-		const glm::mat4x3 &world_matrix, const glm::vec4 &color,
-		const float spacing, const float rise)
+	struct TextCacheItem
+	{
+		Text text;
+		AbstractMeshSharedPtr mesh;
+		Uint64 frame_id;
+		Uint32 count;
+		Uint32 lines;
+
+		TextCacheItem()
+		{
+			lines = 0;
+			count = 0;
+			frame_id = 0;
+		}
+	};
+
+	boost::array<TextCacheItem, 256> text_cache;
+
+	void Scene::draw_text(const Text &text,
+		const glm::mat4x3 &world_matrix)
 	{
 		StateManagerUtil state(m_state_manager);
 
@@ -860,38 +892,82 @@ namespace eternal_lands
 
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-		m_fonts->draw(m_state_manager, str, index, glm::vec2(0.0f),
-			color);
+		m_fonts->draw(m_state_manager, text, glm::vec2(0.0f));
 	}
 
-	void Scene::draw_2d_text(const Utf32String &str, const String &index,
-		const glm::vec2 &position, const glm::mat4x3 &world_matrix,
-		const glm::vec4 &color, const Uint32 max_lines,
-		const float spacing, const float rise)
+	Uint32 Scene::draw_2d_text(const Text &text, const glm::vec2 &position,
+		const glm::mat4x3 &world_matrix, const Uint32 max_lines)
 	{
 		StateManagerUtil state(m_state_manager);
+		glm::mat4 matrix, project, view;
+
+		if (text.get_text().size() == 0)
+		{
+			return 0;
+		}
+
+		glGetFloatv(GL_PROJECTION_MATRIX, glm::value_ptr(project));
+		glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(view));
+
+		matrix = project * view;
 
 		m_state_manager.switch_depth_mask(false);
 		m_state_manager.switch_blend(true);
 
 		m_state_manager.switch_program(m_fonts->get_program());
 
-		m_state_manager.get_program()->set_parameter(apt_view_matrix,
-			glm::mat4());
-		m_state_manager.get_program()->set_parameter(
-			apt_projection_matrix,
-			m_scene_view.get_ortho_projection_matrix());
 		m_state_manager.get_program()->set_parameter(
 			apt_projection_view_matrix,
-			m_scene_view.get_ortho_projection_matrix());
+			matrix);//m_scene_view.get_ortho_projection_matrix());
 		m_state_manager.get_program()->set_parameter(apt_time, m_time);
 		m_state_manager.get_program()->set_parameter(apt_world_matrix,
 			world_matrix);
 
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-		m_fonts->draw(m_state_manager, str, index, position, color,
-			max_lines);
+		Uint64 frame_id;
+		Uint32 i, index;
+
+		index = 0;
+		frame_id = m_frame_id;
+
+		for (i = 0; i < text_cache.size(); ++i)
+		{
+			if (text_cache[i].text == text)
+			{
+				m_fonts->draw(m_state_manager,
+					text_cache[i].mesh,
+					text_cache[i].count);
+				text_cache[i].frame_id = frame_id;
+
+				return text_cache[i].lines;
+			}
+
+			if (text_cache[i].frame_id < frame_id)
+			{
+				index = i;
+				frame_id = text_cache[i].frame_id;
+			}
+		}
+
+		text_cache[index].text = text;
+		text_cache[index].frame_id = m_frame_id;
+		text_cache[index].count = 0;
+		text_cache[index].mesh.reset();
+
+		text_cache[index].lines = m_fonts->build_mesh(text, position,
+			max_lines, std::numeric_limits<Uint32>::max(),
+			text_cache[index].mesh, text_cache[index].count);
+
+		m_fonts->draw(m_state_manager, text_cache[index].mesh,
+			text_cache[index].count);
+
+		return text_cache[index].lines;
+	}
+
+	Uint32 Scene::get_text_width(const Text &text)
+	{
+		return m_fonts->get_size(text).x;
 	}
 
 	void Scene::pick_object(const ObjectSharedPtr &object,

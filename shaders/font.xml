@@ -4,14 +4,14 @@
  <vertex_shader>#version 120
 
 varying vec2 uv;
-varying vec4 vertex_color;
+varying vec3 vertex_color;
 
 uniform mat4x3 world_matrix;
 uniform mat4 projection_view_matrix;
 
 attribute vec2 texture_coordinate_0;
 attribute vec3 position;
-attribute vec4 color;
+attribute vec3 color;
 
 void main ()
 {
@@ -26,14 +26,20 @@ void main ()
  <fragment_shader>#version 120
 
 varying vec2 uv;
-varying vec4 vertex_color;
+varying vec3 vertex_color;
 
 uniform sampler2D diffuse_sampler_0;
 
 void main ()
 {
-	gl_FragColor = vertex_color;
-	gl_FragColor *= texture2D(diffuse_sampler_0, uv).r;
+	vec4 shadow, color;
+	float alpha, distance;
+
+	distance = texture2D(diffuse_sampler_0, uv).r;
+	alpha = smoothstep(0.45, 0.55, distance);
+	color = vec4(vertex_color, 1.0) * alpha;
+
+	gl_FragColor = color;
 }
 </fragment_shader>
 </glsl_program>

@@ -47,6 +47,11 @@ namespace eternal_lands
 				const xmlNodePtr node);
 			void load_font(const FileSystemSharedPtr &file_system,
 				const xmlNodePtr node);
+			Uint32 build_buffer(const Text &text,
+				const glm::vec2 &position,
+				const Uint32 max_lines, const float max_width,
+				VertexBuffersSharedPtr &buffers, Uint32 &count)
+					const;
 
 		public:
 			/**
@@ -66,15 +71,21 @@ namespace eternal_lands
 			void add_font(const FileSystemSharedPtr &file_system,
 				const String &name, const String &file_name,
 				const float size);
-			void draw(StateManager &state_manager,
-				const Utf32String &str, const String &name,
-				const glm::vec2 &position,
-				const glm::vec4 &color = glm::vec4(1.0f),
+			Uint32 draw(StateManager &state_manager,
+				const Text &text, const glm::vec2 &position,
 				const Uint32 max_lines = 1,
 				const float max_width =
-					std::numeric_limits<Uint32>::max(),
-				const float spacing = 0.0f,
-				const float rise = 0.0f) const;
+					std::numeric_limits<Uint32>::max());
+			void draw(StateManager &state_manager,
+				const AbstractMeshSharedPtr &mesh,
+				const Uint32 count) const;
+			Uint32 build_mesh(const Text &text,
+				const glm::vec2 &position,
+				const Uint32 max_lines, const float max_width,
+				AbstractMeshSharedPtr &mesh, Uint32 &count)
+				const;
+
+			glm::vec2 get_size(const Text &text) const;
 
 			inline const GlslProgramSharedPtr &get_program() const
 			{

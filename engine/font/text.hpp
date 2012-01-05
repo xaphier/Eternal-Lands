@@ -31,10 +31,9 @@ namespace eternal_lands
 	class Text
 	{
 		private:
-			typedef std::pair<String, TextAttribute>
-				StringTextAttributePair;
-
-			std::vector<StringTextAttributePair> m_text;
+			Utf32StringTextAttributePairVector m_text;
+			std::size_t m_hash;
+			Uint32 m_length;
 
 		public:
 			/**
@@ -47,10 +46,40 @@ namespace eternal_lands
 			 */
 			~Text() throw();
 
-			void add(const String &str,
+			void add(const Utf32String &str,
 				const TextAttribute &attribute);
 
-			String get_string() const;
+			Utf32String get_string() const;
+
+			bool operator==(const Text &text) const;
+
+			inline bool operator!=(const Text &text) const
+			{
+				return !operator==(text);
+			}
+
+			inline const Utf32StringTextAttributePairVector
+				&get_text() const
+			{
+				return m_text;
+			}
+
+			inline std::size_t get_hash() const
+			{
+				return m_hash;
+			}
+
+			inline Uint32 get_length() const
+			{
+				return m_length;
+			}
+
+			inline void clear()
+			{
+				m_text.clear();
+				m_length = 0;
+				m_hash = 0;
+			}
 
 	};
 

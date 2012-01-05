@@ -287,7 +287,7 @@ namespace eternal_lands
 
 		window_size = get_window_size();
 		m_ortho_projection_matrix = glm::ortho(0.0f, window_size.x,
-			window_size.y, 0.0f, -1.0f, 1.0f);
+			0.0f, window_size.y, -1.0f, 1.0f);
 
 		switch (get_global_vars()->get_shadow_map_size())
 		{

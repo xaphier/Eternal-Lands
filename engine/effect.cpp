@@ -116,10 +116,15 @@ namespace eternal_lands
 		const Uint16 vertex_light_count,
 		const Uint16 fragment_light_count)
 	{
+		StringStream str;
 		GlslProgramSharedPtr program;
 		StringType vertex, fragment;
 		StringVariantMap values;
 		Uint16 light_count;
+
+		str << UTF8(" [");
+		str << UTF8("vl-") << vertex_light_count;
+		str << UTF8(" fl-") << fragment_light_count;
 
 		m_light_counts.push_back(glm::ivec2(vertex_light_count,
 			fragment_light_count));
@@ -130,7 +135,8 @@ namespace eternal_lands
 			description, vertex, fragment, values);
 
 		program = boost::make_shared<GlslProgram>(vertex, fragment,
-			values, get_name());
+			values, String(get_name().get() + str.str() +
+				UTF8("]")));
 
 		m_default_programs.push_back(program);
 
@@ -145,7 +151,8 @@ namespace eternal_lands
 				values);
 
 			program = boost::make_shared<GlslProgram>(vertex,
-				fragment, values, get_name());
+				fragment, values, String(get_name().get() +
+					str.str() + UTF8(" no-shadow]")));
 		}
 
 		m_default_programs.push_back(program);
@@ -204,7 +211,8 @@ namespace eternal_lands
 			vertex, fragment, values);
 
 		m_depth_program = boost::make_shared<GlslProgram>(
-			vertex, fragment, values, get_name());
+			vertex, fragment, values, String(get_name().get() +
+				UTF8(" [depth]")));
 
 		values.clear();
 
@@ -213,7 +221,8 @@ namespace eternal_lands
 			vertex, fragment, values);
 
 		m_shadow_program = boost::make_shared<GlslProgram>(
-			vertex, fragment, values, get_name());
+			vertex, fragment, values, String(get_name().get() +
+				UTF8(" [shadow]")));
 	}
 
 	void Effect::error_load()
@@ -232,7 +241,8 @@ namespace eternal_lands
 		m_light_counts.push_back(glm::ivec2(0));
 
 		program = boost::make_shared<GlslProgram>(vertex_shader,
-			fragment_shader, values, get_name());
+			fragment_shader, values, String(get_name().get() +
+				UTF8(" [error]")));
 
 		m_default_programs.push_back(program);
 		m_default_programs.push_back(program);
@@ -242,7 +252,8 @@ namespace eternal_lands
 		/* Depth shader */
 		m_depth_program = boost::make_shared<GlslProgram>(
 			depth_vertex_shader, depth_fragment_shader,
-			StringVariantMap(), get_name());
+			StringVariantMap(), String(get_name().get() +
+				UTF8(" [depth, error]")));
 
 		/* Shadow shader */
 		m_shadow_program = m_depth_program;

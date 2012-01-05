@@ -64,6 +64,7 @@ namespace eternal_lands
 
 		m_textures[texture_unit] = texture;
 		m_textures[texture_unit]->bind();
+		m_used_texture_units[texture_unit] = true;
 	}
 
 	void StateManager::set_multisample(const bool multisample)
@@ -284,6 +285,7 @@ namespace eternal_lands
 
 			m_textures[texture_unit]->unbind();
 			m_textures[texture_unit].reset();
+			m_used_texture_units[texture_unit] = false;
 
 			return true;
 		}
@@ -316,9 +318,6 @@ namespace eternal_lands
 		{
 			if (m_textures[i].get() == 0)
 			{
-				LOG_ERROR(UTF8("No texture bound to unit %1%."),
-					i);
-
 				continue;
 			}
 
@@ -338,6 +337,17 @@ namespace eternal_lands
 			LOG_ERROR(UTF8("GL error %1%: '%2%'"), gl_error %
 				reinterpret_cast<const char*>(
 					gluErrorString(gl_error)));
+			log_texture_units();
+			m_program->validate();
+			LOG_ERROR(UTF8("Mesh '%1%' used."), m_mesh->get_name());
+		}
+
+		if ((m_program_used_texture_units & m_used_texture_units) != m_program_used_texture_units)
+		{
+			LOG_ERROR(UTF8("Used texture units %1%."),
+				m_used_texture_units);
+			LOG_ERROR(UTF8("Program used texture units %1%."),
+				m_program_used_texture_units);
 			log_texture_units();
 			m_program->validate();
 			LOG_ERROR(UTF8("Mesh '%1%' used."), m_mesh->get_name());

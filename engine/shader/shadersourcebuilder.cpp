@@ -1242,8 +1242,6 @@ namespace eternal_lands
 					add_parameter(apt_ambient, locals,
 						globals);
 
-					add_parameter(apt_ambient, locals,
-						globals);
 					main << apt_ambient << UTF8(".rgb;\n");
 				}
 			}
