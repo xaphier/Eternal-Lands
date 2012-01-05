@@ -219,7 +219,8 @@ namespace eternal_lands
 		}
 	}
 
-	VertexBuffersSharedPtr AbstractMesh::get_vertex_buffers() const
+	VertexBuffersSharedPtr AbstractMesh::get_vertex_buffers(
+		const Uint32 vertex_count) const
 	{
 		MemoryBufferSharedPtrVector buffers;
 		MemoryBufferSharedPtr buffer;
@@ -232,14 +233,14 @@ namespace eternal_lands
 			if (get_vertex_elements(i).get_count() > 0)
 			{
 				size = get_vertex_elements(i).get_stride() *
-					get_vertex_count();
+					vertex_count;
 				buffer = boost::make_shared<MemoryBuffer>(size);
 				buffers.push_back(buffer);
 			}
 		}
 
 		result = boost::make_shared<VertexBuffers>(get_vertex_format(),
-			buffers, get_vertex_count());
+			buffers, vertex_count);
 
 		return result;
 	}
@@ -311,10 +312,19 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMesh::copy_vertex_descriptions(const AbstractMesh &mesh)
+	void AbstractMesh::copy_vertex_data(AbstractMesh &mesh) const
 	{
-		m_vertex_format = mesh.m_vertex_format;
-		m_vertex_count = mesh.m_vertex_count;
+		mesh.m_vertex_format = m_vertex_format;
+		mesh.m_vertex_count = m_vertex_count;
+	}
+
+	void AbstractMesh::copy_index_data(AbstractMesh &mesh) const
+	{
+		mesh.m_index_count = m_index_count;
+		mesh.m_restart_index = m_restart_index;
+		mesh.m_primitive_type = m_primitive_type;
+		mesh.m_use_16_bit_indices = m_use_16_bit_indices;
+		mesh.m_use_restart_index = m_use_restart_index;
 	}
 
 	void AbstractMesh::get_bounding_box(const glm::mat4x3 &matrix,

@@ -51,7 +51,8 @@ namespace eternal_lands
 				const bool static_indices,
 				const bool static_vertices);
 
-			void copy_vertex_descriptions(const AbstractMesh &mesh);
+			void copy_vertex_data(AbstractMesh &mesh) const;
+			void copy_index_data(AbstractMesh &mesh) const;
 
 			virtual void init_vertices() = 0;
 			virtual void init_indices() = 0;
@@ -123,10 +124,18 @@ namespace eternal_lands
 			virtual void draw(const MeshDrawData &draw_data) = 0;
 
 			/**
-			 * Clones the vertex data of the mesh. Mainly used for
+			 * Clones the vertex data of the mesh. Used for
 			 * animated actors.
 			 */
-			virtual AbstractMeshSharedPtr clone_vertex_data() = 0;
+			virtual AbstractMeshSharedPtr clone_vertex_data() const
+				= 0;
+
+			/**
+			 * Clones the index data of the mesh. Used for fonts
+			 * and particles.
+			 */
+			virtual AbstractMeshSharedPtr clone_index_data() const
+				= 0;
 
 			virtual bool get_supports_restart_index() = 0;
 
@@ -172,7 +181,8 @@ namespace eternal_lands
 			void get_bounding_box(const glm::mat4x3 &matrix,
 				BoundingBox &bounding_box);
 
-			VertexBuffersSharedPtr get_vertex_buffers() const;
+			VertexBuffersSharedPtr get_vertex_buffers(
+				const Uint32 vertex_count) const;
 
 			/**
 			 */

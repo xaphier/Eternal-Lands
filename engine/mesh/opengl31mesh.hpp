@@ -48,6 +48,8 @@ namespace eternal_lands
 
 			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();
+			virtual AbstractMeshSharedPtr clone_vertex_data() const;
+			virtual AbstractMeshSharedPtr clone_index_data() const;
 			virtual bool get_supports_restart_index();
 
 	};

@@ -85,16 +85,32 @@ namespace eternal_lands
 		unbind_index_buffers();
 	}
 
-	AbstractMeshSharedPtr OpenGl3Mesh::clone_vertex_data()
+	void OpenGl3Mesh::copy_vertex_data(OpenGl3Mesh &mesh) const
+	{
+		OpenGl2Mesh::copy_vertex_data(mesh);
+		mesh.m_id = m_id;
+	}
+
+	AbstractMeshSharedPtr OpenGl3Mesh::clone_vertex_data() const
 	{
 		boost::shared_ptr<OpenGl3Mesh> result;
 
 		result = boost::make_shared<OpenGl3Mesh>(get_name(),
 			get_static_indices(), get_static_vertices());
 
-		result->m_id = m_id;
-		result->m_vertex_data = m_vertex_data;
-		result->copy_vertex_descriptions(*this);
+		copy_vertex_data(*result);
+
+		return result;
+	}
+
+	AbstractMeshSharedPtr OpenGl3Mesh::clone_index_data() const
+	{
+		boost::shared_ptr<OpenGl3Mesh> result;
+
+		result = boost::make_shared<OpenGl3Mesh>(get_name(),
+			get_static_indices(), get_static_vertices());
+
+		copy_index_data(*result);
 
 		return result;
 	}

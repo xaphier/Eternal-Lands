@@ -41,6 +41,7 @@ namespace eternal_lands
 
 		protected:
 			virtual void init_vertices();
+			void copy_vertex_data(OpenGl3Mesh &mesh) const;
 
 		public:
 			/**
@@ -57,11 +58,11 @@ namespace eternal_lands
 
 			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();
-			virtual AbstractMeshSharedPtr clone_vertex_data();
+			virtual AbstractMeshSharedPtr clone_vertex_data() const;
+			virtual AbstractMeshSharedPtr clone_index_data() const;
 
 	};
 
 }
 
 #endif	/* UUID_ed58a002_ed47_43c1_acda_0bd30dbb9d7a */
-

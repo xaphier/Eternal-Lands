@@ -263,15 +263,38 @@ namespace eternal_lands
 		}
 	}
 
-	AbstractMeshSharedPtr OpenGl2Mesh::clone_vertex_data()
+	void OpenGl2Mesh::copy_vertex_data(OpenGl2Mesh &mesh) const
+	{
+		AbstractMesh::copy_vertex_data(mesh);
+		mesh.m_vertex_data = m_vertex_data;
+	}
+
+	void OpenGl2Mesh::copy_index_data(OpenGl2Mesh &mesh) const
+	{
+		AbstractMesh::copy_index_data(mesh);
+		mesh.m_index_data = m_index_data;
+	}
+
+	AbstractMeshSharedPtr OpenGl2Mesh::clone_vertex_data() const
 	{
 		boost::shared_ptr<OpenGl2Mesh> result;
 
 		result = boost::make_shared<OpenGl2Mesh>(get_name(),
 			get_static_indices(), get_static_vertices());
 
-		result->m_vertex_data = m_vertex_data;
-		result->copy_vertex_descriptions(*this);
+		copy_vertex_data(*result);
+
+		return result;
+	}
+
+	AbstractMeshSharedPtr OpenGl2Mesh::clone_index_data() const
+	{
+		boost::shared_ptr<OpenGl2Mesh> result;
+
+		result = boost::make_shared<OpenGl2Mesh>(get_name(),
+			get_static_indices(), get_static_vertices());
+
+		copy_index_data(*result);
 
 		return result;
 	}

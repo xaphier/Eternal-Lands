@@ -48,7 +48,7 @@ namespace eternal_lands
 	void HardwareBuffer::update(const HardwareBufferType type,
 		const AbstractReadMemoryBuffer &buffer, const Uint64 offset)
 	{
-		assert(get_size() <= (offset + buffer.get_size()));
+		assert(get_size() >= (offset + buffer.get_size()));
 
 		glBufferSubData(type, offset, buffer.get_size(),
 			buffer.get_ptr());

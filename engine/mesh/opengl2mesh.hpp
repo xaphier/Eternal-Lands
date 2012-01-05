@@ -32,7 +32,7 @@ namespace eternal_lands
 	 */
 	class OpenGl2Mesh: public AbstractMesh
 	{
-		protected:
+		private:
 			typedef boost::array<HardwareBufferSharedPtr,
 				vertex_stream_count>
 					HardwareBufferSharedPtrArray;
@@ -64,6 +64,9 @@ namespace eternal_lands
 				const HardwareBufferSharedPtr &buffer,
 				BitSet32 &used_attributes);
 
+		protected:
+			void copy_vertex_data(OpenGl2Mesh &mesh) const;
+			void copy_index_data(OpenGl2Mesh &mesh) const;
 			void bind_vertex_buffers(BitSet32 &used_attributes);
 			void unbind_vertex_buffers();
 			void bind_index_buffers();
@@ -98,7 +101,8 @@ namespace eternal_lands
 			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();
 			virtual void draw(const MeshDrawData &draw_data);
-			virtual AbstractMeshSharedPtr clone_vertex_data();
+			virtual AbstractMeshSharedPtr clone_vertex_data() const;
+			virtual AbstractMeshSharedPtr clone_index_data() const;
 			virtual bool get_supports_restart_index();
 
 	};
