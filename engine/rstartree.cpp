@@ -80,8 +80,6 @@ namespace eternal_lands
 				parent->remove_element(index);
 
 				reinsert.push_back(node);
-
-				parent->calculate_enclosing_bounding_box();
 			}
 			else
 			{
@@ -267,7 +265,8 @@ namespace eternal_lands
 			}
 			else
 			{
-				get_root_node()->calculate_enclosing_bounding_box();
+				get_root_node(
+					)->calculate_enclosing_bounding_box();
 			}
 
 			reinsert_nodes(reinsert);

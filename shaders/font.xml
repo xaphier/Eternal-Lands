@@ -4,7 +4,7 @@
  <vertex_shader>#version 120
 
 varying vec2 uv;
-varying vec3 vertex_color;
+varying vec3 font_color;
 
 uniform mat4x3 world_matrix;
 uniform mat4 projection_view_matrix;
@@ -20,26 +20,26 @@ void main ()
 	world_position = world_matrix * vec4(position.x, position.y, 0.0, 1.0);
 	gl_Position = projection_view_matrix * vec4(world_position, 1.0);
 	uv = texture_coordinate_0;
-	vertex_color = color;
+	font_color = color;
 }
 </vertex_shader>
  <fragment_shader>#version 120
 
 varying vec2 uv;
-varying vec3 vertex_color;
+varying vec3 font_color;
 
 uniform sampler2D diffuse_sampler_0;
 
+const vec3 outline_color = vec3(0.0);
+
 void main ()
 {
-	vec4 shadow, color;
-	float alpha, distance;
+	float distance;
 
 	distance = texture2D(diffuse_sampler_0, uv).r;
-	alpha = smoothstep(0.45, 0.55, distance);
-	color = vec4(vertex_color, 1.0) * alpha;
 
-	gl_FragColor = color;
+	gl_FragColor.rgb = mix(outline_color, font_color, smoothstep(0.45, 0.55, distance));
+	gl_FragColor.a = smoothstep(0.45, 0.55, distance);
 }
 </fragment_shader>
 </glsl_program>
