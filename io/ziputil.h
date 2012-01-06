@@ -8,8 +8,8 @@
 
 #include <SDL.h>
 #include "../md5.h"
-#include "zip.h"
-#include "unzip.h"
+#include "../engine/zip/zip.h"
+#include "../engine/zip/unzip.h"
 
 #ifdef __cplusplus
 extern "C"

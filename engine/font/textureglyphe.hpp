@@ -54,9 +54,11 @@ namespace eternal_lands
 			~TextureGlyphe() throw();
 
 			void write_to_stream(const TextAttribute &attribute,
-				const Uint32 padd, const float height, const float kerning,
+				const float height, const float kerning,
 				const VertexStreamsSharedPtr &streams,
 				glm::vec2 &position) const;
+			void advance(const TextAttribute &attribute,
+				const float kerning, glm::vec2 &position) const;
 			glm::vec2 get_size(const TextAttribute &attribute,
 				const float kerning) const;
 

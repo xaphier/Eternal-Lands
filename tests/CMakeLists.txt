@@ -10,6 +10,30 @@ set(Boost_USE_STATIC_RUNTIME ON)
 
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
+file(GLOB default default/*.cpp)
+
+foreach(FILE_NAME ${default})
+	file(RELATIVE_PATH PROG_NAME ${CMAKE_CURRENT_SOURCE_DIR}/default ${FILE_NAME})
+
+	string(REPLACE ".cpp" "" PROG_NAME ${PROG_NAME})
+
+	add_executable(${PROG_NAME} ${FILE_NAME})
+
+	target_link_libraries(${PROG_NAME} elengine)
+	target_link_libraries(${PROG_NAME} elluac++)
+	target_link_libraries(${PROG_NAME} ${CAL3D_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${JPEG_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${PNG_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${ZLIB_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${Boost_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${OPENGL_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${ICONV_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${LIBXML2_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${CMAKE_THREAD_LIBS_INIT})
+
+	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
+endforeach(FILE_NAME)
+
 file(GLOB simple simple/*.cpp)
 
 foreach(FILE_NAME ${simple})

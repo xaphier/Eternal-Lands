@@ -8,7 +8,6 @@
 #include "engine.h"
 #include "reflection.h"
 #include "errors.h"
-#include <sstream>
 #include "gl_init.h"
 #include "interface.h"
 #include "multiplayer.h"
@@ -21,6 +20,8 @@
 #include "elc_private.h"
 #include "asc.h"
 #include "colors.h"
+#include "io/elpathwrapper.h"
+#include <sstream>
 #include "engine/scene.hpp"
 #include "engine/actor.hpp"
 #include "engine/sceneresources.hpp"
@@ -62,6 +63,7 @@ namespace
 	el::FileSystemSharedPtr file_system;
 
 	el::Text get_text(const unsigned char* str, const char* font,
+		const glm::vec4 &start_color,
 		const Uint32 len = std::numeric_limits<Uint32>::max())
 	{
 		el::Text text;
@@ -75,6 +77,8 @@ namespace
 
 		attribute.set_size(12.0f);
 		attribute.set_font(el::String(font));
+
+		color = start_color;
 
 		for (i = 0; i < count; ++i)
 		{
@@ -501,7 +505,9 @@ extern "C" void init_file_system()
 	TRY_BLOCK
 
 	file_system.reset(new el::FileSystem());
-	file_system->add_dirs(VER_MAJOR, VER_MINOR, VER_RELEASE);
+	file_system->add_dirs(
+		el::String(el::string_to_utf8(get_path_config_base())),
+		VER_MAJOR, VER_MINOR, VER_RELEASE);
 
 	CATCH_BLOCK
 }
@@ -516,9 +522,8 @@ extern "C" void file_system_add_dir(const char* dir)
 
 	try
 	{
-		file_system->add_zip(el::String(el::utf8_to_string(dir) +
-			UTF8("shaders.zip")),
-				"f45dabd0731b170618fe029f9cacf430");
+//		file_system->add_zip(el::String(el::utf8_to_string(dir) +
+//			UTF8("shaders.zip")));
 	}
 	catch (...)
 	{
@@ -733,6 +738,7 @@ extern "C" void draw_engine()
 	assert(!scene->unbind_all());
 
 	disable_opengl2_stuff();
+	glDisable(GL_LIGHTING);
 
 #ifdef	EL_TIME_FRAME_DEBUG
 	if ((do_el_time % 100) == 0)
@@ -1670,7 +1676,7 @@ extern "C" void set_fog_data(const float* color, const float density)
 	}
 }
 
-extern "C" void add_font(const char* file_name, const char* index,
+extern "C" void engine_add_font(const char* file_name, const char* index,
 	const float size)
 {
 	TRY_BLOCK
@@ -1684,19 +1690,22 @@ extern "C" void add_font(const char* file_name, const char* index,
 	CATCH_BLOCK
 }
 
-extern "C" void draw_text(const unsigned char* str, const char* font,
+extern "C" void engine_draw_text(const unsigned char* str, const char* font,
 	const float x, const float y)
 {
 	TRY_BLOCK
 
 	el::Text text;
 	glm::mat4 world_matrix;
+	glm::vec4 color;
 
 	world_matrix = glm::translate(x, y, 0.0f);
 
+	color = glm::vec4(1.0f);
+
 	if (scene.get() != 0)
 	{
-		text = get_text(str, font);
+		text = get_text(str, font, color);
 
 		scene->draw_text(text, glm::mat4x3(world_matrix));
 	}
@@ -1706,8 +1715,10 @@ extern "C" void draw_text(const unsigned char* str, const char* font,
 	disable_opengl2_stuff();
 }
 
-extern "C" Uint32 draw_2d_text(const unsigned char* str, const char* font,
-	const float x, const float y, const float scale, const Uint32 max_lines)
+extern "C" Uint32 engine_draw_2d_text(const unsigned char* str,
+	const char* font, const float x, const float y, const float scale,
+	const Uint32 min_line, const Uint32 max_line, const float max_width,
+	const float max_height)
 {
 	Uint32 result;
 
@@ -1724,14 +1735,17 @@ extern "C" Uint32 draw_2d_text(const unsigned char* str, const char* font,
 	world_matrix = glm::translate(x, y, 0.0f);
 	world_matrix = glm::scale(world_matrix, glm::vec3(scale));
 
+	color = glm::vec4(1.0f);
+
 	result = 0;
 
 	if (scene.get() != 0)
 	{
-		text = get_text(str, font);
+		text = get_text(str, font, color);
 
 		result = scene->draw_2d_text(text, position,
-			glm::mat4x3(world_matrix), max_lines);
+			glm::mat4x3(world_matrix), min_line, max_line,
+			max_width, max_height, el::wmt_none);
 	}
 
 	CATCH_BLOCK
@@ -1741,22 +1755,86 @@ extern "C" Uint32 draw_2d_text(const unsigned char* str, const char* font,
 	return result;
 }
 
-extern "C" Uint32 text_width(const unsigned char* str, const char* font,
-	const Uint32 len)
+extern "C" Uint32 engine_draw_2d_text_colored(const unsigned char* str,
+	const char* font, const float x, const float y, const float r,
+	const float g, const float b, const float scale, const Uint32 min_line,
+	const Uint32 max_line, const float max_width, const float max_height)
 {
 	Uint32 result;
 
 	TRY_BLOCK
 
 	el::Text text;
+	glm::mat4 world_matrix;
+	glm::vec4 color;
+	glm::vec2 position;
+
+	position.x = 0;
+	position.y = 0;
+
+	world_matrix = glm::translate(x, y, 0.0f);
+	world_matrix = glm::scale(world_matrix, glm::vec3(scale));
+
+	color.r = r;
+	color.g = g;
+	color.b = b;
+	color.a = 1.0f;
 
 	result = 0;
 
 	if (scene.get() != 0)
 	{
-		text = get_text(str, font, len);
+		text = get_text(str, font, color);
+
+		result = scene->draw_2d_text(text, position,
+			glm::mat4x3(world_matrix), min_line, max_line,
+			max_width, max_height, el::wmt_none);
+	}
+
+	CATCH_BLOCK
+
+	disable_opengl2_stuff();
+
+	return result;
+}
+
+extern "C" float engine_text_width(const unsigned char* str, const char* font,
+	const Uint32 len)
+{
+	float result;
+
+	TRY_BLOCK
+
+	el::Text text;
+	glm::vec4 color;
+
+	color = glm::vec4(1.0f);
+
+	result = 0;
+
+	if (scene.get() != 0)
+	{
+		text = get_text(str, font, color, len);
 
 		result = scene->get_text_width(text);
+	}
+
+	CATCH_BLOCK
+
+	return result;
+}
+
+extern "C" float engine_font_height(const char* font)
+{
+	float result;
+
+	TRY_BLOCK
+
+	result = 0;
+
+	if (scene.get() != 0)
+	{
+		result = scene->get_font_height(el::String(font));
 	}
 
 	CATCH_BLOCK

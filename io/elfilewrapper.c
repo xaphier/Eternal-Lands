@@ -1,5 +1,5 @@
 #include "elfilewrapper.h"
-#include "unzip.h"
+#include "../engine/zip/unzip.h"
 #include "elpathwrapper.h"
 #include "fileutil.h"
 #include <sys/stat.h>

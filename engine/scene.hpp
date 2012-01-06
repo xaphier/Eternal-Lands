@@ -147,8 +147,23 @@ namespace eternal_lands
 			Uint32 draw_2d_text(const Text &text,
 				const glm::vec2 &position,
 				const glm::mat4x3 &world_matrix,
-				const Uint32 max_lines);
-			Uint32 get_text_width(const Text &text);
+				const Uint32 min_line, const Uint32 max_line,
+				const float max_width, const float max_height,
+				const WrapModeType wrap);
+			void build_mesh(
+				const VertexBuffersSharedPtr &buffers,
+				const Uint32 count,
+				AbstractMeshSharedPtr &mesh) const;
+			Uint32 write_to_stream(const Text &text,
+				const VertexStreamsSharedPtr &streams,
+				const glm::vec2 &start_position,
+				const Uint32 min_line, const Uint32 max_line,
+				const float max_width, const float max_height,
+				const WrapModeType wrap, Uint32 &line) const;
+			void draw(const AbstractMeshSharedPtr &mesh,
+				const Uint32 count);
+			float get_text_width(const Text &text) const;
+			float get_font_height(const String &font) const;
 
 			inline void shadow_map_change()
 			{

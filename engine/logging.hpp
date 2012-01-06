@@ -48,6 +48,30 @@ namespace eternal_lands
 
 }
 
+#ifdef	LOG_EXCEPTION
+#undef	LOG_EXCEPTION
+#endif	/* LOG_EXCEPTION */
+
+#ifdef	LOG_ERROR
+#undef	LOG_ERROR
+#endif	/* LOG_ERROR */
+
+#ifdef	LOG_WARNING
+#undef	LOG_WARNING
+#endif	/* LOG_WARNING */
+
+#ifdef	LOG_INFO
+#undef	LOG_INFO
+#endif	/* LOG_INFO */
+
+#ifdef	LOG_DEBUG
+#undef	LOG_DEBUG
+#endif	/* LOG_DEBUG */
+
+#ifdef	LOG_DEBUG_VERBOSE
+#undef	LOG_DEBUG_VERBOSE
+#endif	/* LOG_DEBUG_VERBOSE */
+
 #define LOG_EXCEPTION(exception)	\
 	eternal_lands::log_exception(exception, __FILE__, __LINE__)
 

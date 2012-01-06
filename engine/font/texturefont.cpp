@@ -274,7 +274,6 @@ namespace eternal_lands
 
 			offset += padd;
 
-#if	1
 			for (x = 0; x < w; ++x)
 			{
 				for (y = 0; y < h; ++y)
@@ -284,17 +283,14 @@ namespace eternal_lands
 						*(slot->bitmap.buffer + y * slot->bitmap.pitch + x);
 				}
 			}
-#else
-			build_distance_field(data, offset, width, scale_size,
-				slot);
-#endif
+
 			x = offset.x;
 			y = offset.y;
 
-			uv.x = static_cast<float>(x) / width;
-			uv.y = static_cast<float>(y) / height;
-			uv.z = static_cast<float>(x + w) / width;
-			uv.w = static_cast<float>(y + h) / height;
+			uv.x = static_cast<float>(x + 0.5f) / width;
+			uv.y = static_cast<float>(y + 0.5f) / height;
+			uv.z = static_cast<float>(x + w - 0.5f) / width;
+			uv.w = static_cast<float>(y + h - 0.5f) / height;
 
 			/* Discard hinting to get advance */
 			FT_Load_Glyph(face->get_face(), glyph_index,
@@ -350,93 +346,81 @@ namespace eternal_lands
 		}
 	}
 
-	void TextureFont::write_to_stream(const Utf32String &str,
-		const TextAttribute &attribute,
+	Uint32 TextureFont::write_to_stream(const TextAttribute &attribute,
 		const VertexStreamsSharedPtr &streams,
-		const glm::vec2 &start_position, glm::vec2 &position,
-		Uint32 &line, const Uint32 max_lines, const float max_width)
-		const
+		const Utf32Char last_char_code, const Utf32Char char_code,
+		glm::vec2 &position) const
 	{
 		Utf32CharTextureGlypheMap::const_iterator found, end;
-		Utf32Char last_char_code;
-		float kerning, width;
-
-		end = m_glyphs.end();
-		last_char_code = L'\0';
-
-		BOOST_FOREACH(const Utf32Char char_code, str)
-		{
-			if ((char_code == L'\n') || (char_code == L'\r'))
-			{
-				position.y += get_height() - get_line_gap();
-				position.x = start_position.x;
-
-				line++;
-
-				if (line > max_lines)
-				{
-					break;
-				}
-
-				continue;
-			}
-
-			found = m_glyphs.find(char_code);
-
-			if (found == end)
-			{
-				found = m_glyphs.begin();
-			}
-
-			kerning = found->second.get_kerning(last_char_code);
-
-			width = found->second.get_size(attribute, kerning).x;
-
-			if ((position.x + width - start_position.x) >=
-				max_width)
-			{
-				continue;
-			}
-
-			found->second.write_to_stream(attribute, 0,
-				get_height() + get_line_gap(),
-				kerning, streams, position);
-
-			last_char_code = found->second.get_char_code();
-		}
-	}
-
-	glm::vec2 TextureFont::get_size(const Utf32String &str,
-		const TextAttribute &attribute) const
-	{
-		Utf32CharTextureGlypheMap::const_iterator found, end;
-		Utf32Char last_char_code;
-		glm::vec2 size, result;
 		float kerning;
 
 		end = m_glyphs.end();
-		last_char_code = L'\0';
+		found = m_glyphs.find(char_code);
 
-		BOOST_FOREACH(const Utf32Char char_code, str)
+		if (found == end)
 		{
-			found = m_glyphs.find(char_code);
-
-			if (found == end)
-			{
-				continue;
-			}
-
-			kerning = found->second.get_kerning(last_char_code);
-
-			size = found->second.get_size(attribute, kerning);
-
-			result.x += size.x;
-			result.y = std::max(result.y, size.y);
-
-			last_char_code = found->second.get_char_code();
+			found = m_glyphs.begin();
 		}
 
-		return result;
+		if (found == end)
+		{
+			return 0;
+		}
+
+		kerning = found->second.get_kerning(last_char_code);
+
+		found->second.write_to_stream(attribute,
+			get_height() + get_line_gap(), kerning, streams,
+			position);
+
+		return 1;
+	}
+
+	Uint32 TextureFont::advance(const TextAttribute &attribute,
+		const Utf32Char last_char_code, const Utf32Char char_code,
+		glm::vec2 &position) const
+	{
+		Utf32CharTextureGlypheMap::const_iterator found, end;
+		float kerning;
+
+		end = m_glyphs.end();
+		found = m_glyphs.find(char_code);
+
+		if (found == end)
+		{
+			found = m_glyphs.begin();
+		}
+
+		if (found == end)
+		{
+			return 0;
+		}
+
+		kerning = found->second.get_kerning(last_char_code);
+
+		found->second.advance(attribute, kerning, position);
+
+		return 1;
+	}
+
+
+	float TextureFont::get_width(const TextAttribute &attribute,
+		const Utf32Char last_char_code, const Utf32Char char_code)
+		const
+	{
+		Utf32CharTextureGlypheMap::const_iterator found;
+		float kerning;
+
+		found = m_glyphs.find(char_code);
+
+		if (found == m_glyphs.end())
+		{
+			return 0.0f;
+		}
+
+		kerning = found->second.get_kerning(last_char_code);
+
+		return found->second.get_size(attribute, kerning).x;
 	}
 
 }

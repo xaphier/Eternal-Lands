@@ -594,13 +594,6 @@ namespace eternal_lands
 						scale);
 					return true;
 				}
-				if (index == 2)
-				{
-					get_data(apt_shadow_view_matrix,
-						name, type, qualifier, size,
-						scale);
-					return true;
-				}
 				return false;
 			case sst_shadow_mapping:
 				if (index == 0)

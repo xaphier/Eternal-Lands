@@ -100,16 +100,3 @@ BOOST_AUTO_TEST_CASE(light_radius)
 	light.set_radius(676897.0f);
 	BOOST_CHECK_CLOSE(light.get_radius(), 676897.0f, 0.001);
 }
-/*
-BOOST_AUTO_TEST_CASE(light_id)
-{
-	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
-		glm::vec3(34.5f, -214.012f, 0.234f), 0.54f, 10.9546f, 5435495);
-
-	light.set_id(8977);
-	BOOST_CHECK_EQUAL(light.get_id(), 8977);
-
-	light.set_id(4566067);
-	BOOST_CHECK_EQUAL(light.get_id(), 4566067);
-}
-*/

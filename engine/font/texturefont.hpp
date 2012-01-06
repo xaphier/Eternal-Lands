@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "texturefontcache.hpp"
 
 /**
  * @file
@@ -30,11 +31,6 @@ namespace eternal_lands
 	class TextureFont: public boost::noncopyable
 	{
 		private:
-			typedef std::pair<Utf32Char, TextureGlyphe>
-				Utf32CharTextureGlyphePair;
-			typedef std::map<Utf32Char, TextureGlyphe>
-				Utf32CharTextureGlypheMap;
-
 			Utf32CharTextureGlypheMap m_glyphs;
 			String m_file_name;
 			float m_size;
@@ -67,18 +63,18 @@ namespace eternal_lands
 			 */
 			~TextureFont() throw();
 
-			void write_to_stream(const Utf32String &str,
-				const TextAttribute &attribute,
+			Uint32 write_to_stream(const TextAttribute &attribute,
 				const VertexStreamsSharedPtr &streams,
-				const glm::vec2 &start_position,
-				glm::vec2 &position, Uint32 &line,
-				const Uint32 max_lines = 1,
-				const float max_width =
-					std::numeric_limits<Uint32>::max())
-						const;
-			glm::vec2 get_size(const Utf32String &str,
-				const TextAttribute &attribute) const;
-			glm::vec2 get_size(const String &str) const;
+				const Utf32Char last_char_code,
+				const Utf32Char char_code,
+				glm::vec2 &position) const;
+			Uint32 advance(const TextAttribute &attribute,
+				const Utf32Char last_char_code,
+				const Utf32Char char_code,
+				glm::vec2 &position) const;
+			float get_width(const TextAttribute &attribute,
+				const Utf32Char last_char_code,
+				const Utf32Char char_code) const;
 
 			inline const String &get_file_name() const
 			{

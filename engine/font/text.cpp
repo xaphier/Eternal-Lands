@@ -6,11 +6,12 @@
  ****************************************************************************/
 
 #include "text.hpp"
+#include "textattribute.hpp"
 
 namespace eternal_lands
 {
 
-	Text::Text(): m_hash(0), m_length(0)
+	Text::Text(): m_hash(0)
 	{
 	}
 
@@ -20,18 +21,17 @@ namespace eternal_lands
 
 	void Text::add(const Utf32String &str, const TextAttribute &attribute)
 	{
-		m_text.push_back(Utf32StringTextAttributePair(str, attribute));
+		m_text_attributes[m_string.length()] = TextAttributeUint32Pair(
+			attribute, str.length());
 
-		m_length += str.length();
+		m_string += str;
 
 		boost::hash_combine(m_hash, str);
 	}
 
 	bool Text::operator==(const Text &text) const
 	{
-		Uint32 i, count;
-
-		if (text.get_text().size() != get_text().size())
+		if (text.m_text_attributes.size() != m_text_attributes.size())
 		{
 			return false;
 		}
@@ -41,37 +41,33 @@ namespace eternal_lands
 			return false;
 		}
 
-		count = get_text().size();
-
-		for (i = 0; i < count; ++i)
+		if (text.get_string() != get_string())
 		{
-			if (get_text()[i].first != text.get_text()[i].first)
-			{
-				return false;
-			}
-
-			if (get_text()[i].second != text.get_text()[i].second)
-			{
-				return false;
-			}
+			return false;
 		}
 
-		return true;
+		return text.m_text_attributes == m_text_attributes;
 	}
 
-	Utf32String Text::get_string() const
+	const TextAttribute &Text::get_text_attribute(const Uint32 index,
+		Uint32 &size) const
 	{
-		Utf32String result;
-		Uint32 i, count;
+		Uint32TextAttributeUint32PairMap::const_iterator found;
 
-		count = m_text.size();
+		found = m_text_attributes.find(index);
 
-		for (i = 0; i < count; ++i)
-		{
-			result += m_text[i].first;
-		}
+		assert(found != m_text_attributes.end());
 
-		return result;
+		size = found->second.second;
+
+		return found->second.first;
+	}
+
+	void Text::clear()
+	{
+		m_text_attributes.clear();
+		m_string.clear();
+		m_hash = 0;
 	}
 
 }

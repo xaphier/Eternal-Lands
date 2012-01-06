@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "zipfile.hpp"
-#include "../io/unzip.h"
+#include "zip/unzip.h"
 #include "memorybuffer.hpp"
 #include "reader.hpp"
 #include "utf.hpp"

@@ -23,11 +23,11 @@ namespace eternal_lands
 	class FileSystem
 	{
 		private:
-			typedef std::map<String, Uint8Array16>
-				StringUint8Array16Map;
+			typedef std::map<String, Uint8Array20>
+				StringUint8Array20Map;
 
 			AbstractArchiveVector m_archives;
-			StringUint8Array16Map m_md5s;
+			StringUint8Array20Map m_sha1s;
 
 			String get_tmp_file();
 
@@ -37,14 +37,15 @@ namespace eternal_lands
 		public:
 			FileSystem();
 			~FileSystem() throw();
-			void add_dirs(const Uint16 major, const Uint16 minor,
+			void add_dirs(const String &config_dir,
+				const Uint16 major, const Uint16 minor,
 				const Uint16 release);
 			void add_dir(const String &dir_name);
 			void add_zip(const String &zip_name);
 			void add_zip(const String &zip_name,
-				const Uint8Array16 &md5);
+				const Uint8Array20 &sha1);
 			void add_zip(const String &zip_name,
-				const StringType &md5);
+				const char sha1[20]);
 			bool remove_archive(const String &file_name);
 			bool get_file_readable(const String &file_name);
 			ReaderSharedPtr get_file(const String &file_name);

@@ -44,7 +44,7 @@ namespace eternal_lands
 		sizes[2] = 1;
 
 		m_image = boost::make_shared<Image>(String(UTF8("Fonts")),
-			false, tft_r16, sizes, 0);
+			false, tft_rgb8, sizes, 0);
 
 		m_atlas = boost::make_shared<Atlas>(width, height);
 
@@ -279,12 +279,14 @@ namespace eternal_lands
 
 	Uint32 TextureFontCache::draw(StateManager &state_manager,
 		const Text &text, const glm::vec2 &position,
-		const Uint32 max_lines, const float max_width)
+		const Uint32 min_line, const Uint32 max_line,
+		const float max_width, const float max_height,
+		const WrapModeType wrap)
 	{
 		Uint32 count, line;
 
-		line = build_buffer(text, position, max_lines, max_width,
-			m_buffers, count);
+		line = build_buffer(text, position, min_line, max_line,
+			max_width, max_height, wrap, m_buffers, count);
 
 		m_mesh->update_vertex(m_buffers);
 
@@ -294,9 +296,10 @@ namespace eternal_lands
 	}
 
 	Uint32 TextureFontCache::build_buffer(const Text &text,
-		const glm::vec2 &position, const Uint32 max_lines,
-		const float max_width, VertexBuffersSharedPtr &buffers,
-		Uint32 &count) const
+		const glm::vec2 &position, const Uint32 min_line,
+		const Uint32 max_line, const float max_width,
+		const float max_height, const WrapModeType wrap,
+		VertexBuffersSharedPtr &buffers, Uint32 &count) const
 	{
 		StringTextureFontMap::const_iterator found;
 		glm::vec2 pos;
@@ -324,27 +327,16 @@ namespace eternal_lands
 		buffers->reset();
 
 		pos = position;
-		count = 0;
 		line = 0;
 
-		BOOST_FOREACH(const Utf32StringTextAttributePair &data,
-			text.get_text())
-		{
-			found = m_fonts.find(data.second.get_font());
+		assert(max_width > 0.0f);
+		assert(max_height > 0.0f);
+		assert(max_line >= min_line);
 
-			assert(found != m_fonts.end());
+		count = write_to_stream(text, buffers, pos, min_line, max_line,
+			max_width, max_height, wrap, line);
 
-			if (found == m_fonts.end())
-			{
-				continue;
-			}
-
-			count += data.first.length();
-
-			found->second->write_to_stream(data.first,
-				data.second, buffers, position, pos, line,
-				max_lines, max_width);
-		}
+		assert(count > 0);
 
 		if (count == 0)
 		{
@@ -355,15 +347,16 @@ namespace eternal_lands
 	}
 
 	Uint32 TextureFontCache::build_mesh(const Text &text,
-		const glm::vec2 &position, const Uint32 max_lines,
-		const float max_width, AbstractMeshSharedPtr &mesh,
-		Uint32 &count) const
+		const glm::vec2 &position, const Uint32 min_line,
+		const Uint32 max_line, const float max_width,
+		const float max_height, const WrapModeType wrap,
+		AbstractMeshSharedPtr &mesh, Uint32 &count) const
 	{
 		VertexBuffersSharedPtr buffers;
 		Uint32 line;
 
-		line = build_buffer(text, position, max_lines, max_width,
-			buffers, count);
+		line = build_buffer(text, position, min_line, max_line,
+			max_width, max_height, wrap, buffers, count);
 
 		if (count == 0)
 		{
@@ -378,6 +371,25 @@ namespace eternal_lands
 		mesh->init_vertex(buffers);
 
 		return line;
+	}
+
+	void TextureFontCache::build_mesh(const VertexBuffersSharedPtr &buffers,
+		const Uint32 count, AbstractMeshSharedPtr &mesh) const
+	{
+		if (mesh.get() == 0)
+		{
+			mesh = m_mesh->clone_index_data();
+		}
+
+		mesh->init_vertex(buffers);
+	}
+
+	void TextureFontCache::draw(StateManager &state_manager,
+		const VertexBuffersSharedPtr &buffers, const Uint32 count) const
+	{
+		m_mesh->update_vertex(buffers);
+
+		draw(state_manager, m_mesh, count);
 	}
 
 	void TextureFontCache::draw(StateManager &state_manager,
@@ -399,32 +411,306 @@ namespace eternal_lands
 		state_manager.draw(draw_data);
 	}
 
-	glm::vec2 TextureFontCache::get_size(const Text &text) const
+	float TextureFontCache::get_width(const Text &text) const
 	{
-		StringTextureFontMap::const_iterator found;
-		glm::vec2 result, size;
+		TextAttribute attribute;
+		StringTextureFontMap::const_iterator found, end;
+		glm::vec2 position;
+		Utf32Char last_char_code, char_code;
+		float width;
+		Uint32 i, j, count, size;
 
-		assert(m_fonts.begin() != m_fonts.end());
+		count = text.get_length();
 
-		BOOST_FOREACH(const Utf32StringTextAttributePair &data,
-			text.get_text())
+		if (count == 0)
 		{
-			found = m_fonts.find(data.second.get_font());
+			return 0;
+		}
 
-			assert(found != m_fonts.end());
+		width = 0.0f;
+		end = m_fonts.end();
+		last_char_code = L'\0';
+		i = 0;
 
-			if (found == m_fonts.end())
+		while (i < count)
+		{
+			const TextAttribute &attribute =
+				text.get_text_attribute(i, size);
+			found = m_fonts.find(attribute.get_font());
+
+			assert(found != end);
+			assert(size > 0);
+			assert((i + size) <= count);
+
+			if (found == end)
 			{
+				i += size;
 				continue;
 			}
 
-			size = found->second->get_size(data.first, data.second);
+			for (j = 0; j < size; ++j, ++i)
+			{
+				char_code = text.get_char(i);
 
-			result.x += size.x;
-			result.y = std::max(result.y, size.y);
+				if ((char_code == L'\n') ||
+					(char_code == L'\r') ||
+					(char_code == L'\0'))
+				{
+					return width;
+				}
+
+				width += found->second->get_width(attribute,
+					last_char_code, char_code);
+
+				last_char_code = char_code;
+			}
 		}
 
-		return result;
+		return width;
+	}
+
+	float TextureFontCache::get_height(const String &font) const
+	{
+		StringTextureFontMap::const_iterator found, end;
+
+		found = m_fonts.find(font);
+
+		if (found == end)
+		{
+			return 0.0f;
+		}
+
+		return found->second->get_height() -
+			found->second->get_line_gap();
+	}
+
+	Uint32 TextureFontCache::write_to_stream(const Text &text,
+		const VertexStreamsSharedPtr &streams,
+		const glm::vec2 &start_position, const Uint32 min_line,
+		const Uint32 max_line, const float max_width,
+		const float max_height, const WrapModeType wrap, Uint32 &line)
+		const
+	{
+		StringTextureFontMap::const_iterator found, end;
+		glm::vec2 position;
+		Utf32Char last_char_code, char_code;
+		float max_position, width, height, line_height;
+		Uint32 i, j, count, chars, split_index, size;
+		bool new_line;
+
+		assert(max_width > 0.0f);
+
+		count = text.get_length();
+
+		if (count == 0)
+		{
+			return 0;
+		}
+
+		position = start_position;
+		end = m_fonts.end();
+		max_position = max_width + start_position.x;
+		split_index = std::numeric_limits<Uint32>::max();
+		last_char_code = L'\0';
+		chars = 0;
+		new_line = true;
+		i = 0;
+
+		if (wrap != wmt_none)
+		{
+			split_index = check_line(text, 0, max_width,
+				last_char_code, wrap == wmt_word, new_line);
+		}
+
+		while (i < count)
+		{
+			const TextAttribute &attribute =
+				text.get_text_attribute(i, size);
+			found = m_fonts.find(attribute.get_font());
+
+			assert(found != end);
+			assert(size > 0);
+			assert((i + size) <= count);
+
+			if (found == end)
+			{
+				i += size;
+				continue;
+			}
+
+			line_height = found->second->get_height() -
+				found->second->get_line_gap();
+
+			height = max_height - line_height + start_position.y;
+
+			for (j = 0; j < size; ++j, ++i)
+			{
+				char_code = text.get_char(i);
+
+				if (char_code == L'\0')
+				{
+					continue;
+				}
+
+				if ((char_code == L'\n') ||
+					(char_code == L'\r') ||
+					(split_index == i))
+				{
+					if (wrap != wmt_none)
+					{
+						split_index = check_line(text,
+							i + 1, max_position -
+								position.x,
+							last_char_code,
+							wrap == wmt_word,
+							new_line);
+					}
+
+					position.y += line_height;
+					position.x = start_position.x;
+
+					line++;
+
+					if ((line > max_line) ||
+						(position.y > height))
+					{
+						return chars;
+					}
+
+					last_char_code = L'\0';
+					new_line = true;
+
+					continue;
+				}
+
+				width = found->second->get_width(attribute,
+					last_char_code, char_code);
+
+				if ((position.x + width) >= max_position)
+				{
+					position.y += line_height;
+					position.x = start_position.x;
+
+					line++;
+
+					if ((line > max_line) ||
+						(position.y > height))
+					{
+						return chars;
+					}
+
+					while (i < count)
+					{
+						if ((text.get_char(i) == L'\n')
+							|| (text.get_char(i) ==
+								L'\r'))
+						{
+							break;
+						}
+						++i;
+					}
+
+					last_char_code = L'\0';
+					new_line = true;
+
+					continue;
+				}
+
+				new_line = false;
+
+				if (min_line > line)
+				{
+					chars += found->second->advance(
+						attribute, last_char_code,
+						char_code, position);
+
+					last_char_code = char_code;
+
+					continue;
+				}
+
+				chars += found->second->write_to_stream(
+					attribute, streams, last_char_code,
+					char_code, position);
+
+				last_char_code = char_code;
+			}
+		}
+
+		return chars;
+	}
+
+	Uint32 TextureFontCache::check_line(const Text &text,
+		const Uint32 index, const float max_width,
+		const Utf32Char start_char_code, const bool word_wrap,
+		const bool new_line) const
+	{
+		TextAttribute attribute;
+		StringTextureFontMap::const_iterator found, end;
+		Utf32Char char_code, last_char_code;
+		float width;
+		Uint32 i, count, split_index, size;
+
+		end = m_fonts.end();
+		width = 0;
+		split_index = index;
+		count = text.get_length();
+		last_char_code = start_char_code;
+
+		for (i = index; i < count; ++i)
+		{
+			char_code = text.get_char(i);
+
+			if ((char_code == L'\n') ||
+				(char_code == L'\r'))
+			{
+				return i;
+			}
+
+			if ((char_code == L' ') ||
+				(char_code == L'\t'))
+			{
+				split_index = i;
+			}
+
+			if (size <= i)
+			{
+				attribute = text.get_text_attribute(i, size);
+
+				found = m_fonts.find(attribute.get_font());
+
+				last_char_code = L'\0';
+
+				size += i;
+
+				if (found == m_fonts.end())
+				{
+					i = size;
+
+					continue;
+				}
+			}
+
+			width += found->second->get_width(attribute,
+				char_code, last_char_code);
+
+			if (width >= max_width)
+			{
+				if (word_wrap && !new_line &&
+					(split_index != index))
+				{
+					return split_index;
+				} 
+				else
+				{
+					return i;
+				}
+			}
+
+			last_char_code = char_code;
+		}
+
+		return count;
 	}
 
 }

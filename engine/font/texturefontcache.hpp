@@ -22,6 +22,13 @@
 namespace eternal_lands
 {
 
+	enum WrapModeType
+	{
+		wmt_none = 0,
+		wmt_word = 1,
+		wmt_char = 2
+	};
+
 	/**
 	 * @brief @c class for texture glyphe.
 	 *
@@ -49,9 +56,16 @@ namespace eternal_lands
 				const xmlNodePtr node);
 			Uint32 build_buffer(const Text &text,
 				const glm::vec2 &position,
-				const Uint32 max_lines, const float max_width,
+				const Uint32 min_line, const Uint32 max_line,
+				const float max_width, const float max_height,
+				const WrapModeType wrap,
 				VertexBuffersSharedPtr &buffers, Uint32 &count)
 					const;
+			Uint32 check_line(const Text &text, const Uint32 index,
+				const float max_width,
+				const Utf32Char last_char_code,
+				const bool word_wrap, const bool new_line)
+				const;
 
 		public:
 			/**
@@ -73,19 +87,34 @@ namespace eternal_lands
 				const float size);
 			Uint32 draw(StateManager &state_manager,
 				const Text &text, const glm::vec2 &position,
-				const Uint32 max_lines = 1,
-				const float max_width =
-					std::numeric_limits<Uint32>::max());
+				const Uint32 min_line, const Uint32 max_line,
+				const float max_width, const float max_height,
+				const WrapModeType wrap = wmt_none);
 			void draw(StateManager &state_manager,
 				const AbstractMeshSharedPtr &mesh,
 				const Uint32 count) const;
+			void draw(StateManager &state_manager,
+				const VertexBuffersSharedPtr &buffers,
+				const Uint32 count) const;
 			Uint32 build_mesh(const Text &text,
 				const glm::vec2 &position,
-				const Uint32 max_lines, const float max_width,
+				const Uint32 min_line, const Uint32 max_line,
+				const float max_width, const float max_height,
+				const WrapModeType wrap,
 				AbstractMeshSharedPtr &mesh, Uint32 &count)
 				const;
-
-			glm::vec2 get_size(const Text &text) const;
+			void build_mesh(
+				const VertexBuffersSharedPtr &buffers,
+				const Uint32 count,
+				AbstractMeshSharedPtr &mesh) const;
+			Uint32 write_to_stream(const Text &text,
+				const VertexStreamsSharedPtr &streams,
+				const glm::vec2 &start_position,
+				const Uint32 min_line, const Uint32 max_line,
+				const float max_width, const float max_height,
+				const WrapModeType wrap, Uint32 &line) const;
+			float get_width(const Text &text) const;
+			float get_height(const String &font) const;
 
 			inline const GlslProgramSharedPtr &get_program() const
 			{

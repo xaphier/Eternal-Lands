@@ -5,8 +5,8 @@
 #include <string.h>
 #include "md5.h"
 #include "elc_private.h"
-#include "io/zip.h"
-#include "io/unzip.h"
+#include "engine/zip/zip.h"
+#include "engine/zip/unzip.h"
 #include "io/ziputil.h"
 #include "io/fileutil.h"
 #include "io/elfilewrapper.h"

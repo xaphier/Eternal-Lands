@@ -36,6 +36,7 @@
 
 #include "../client_serv.h"
 #include "font/text.hpp"
+#include "font/textattribute.hpp"
 
 namespace eternal_lands
 {
@@ -85,7 +86,7 @@ namespace eternal_lands
 
 		m_fonts.reset(new TextureFontCache(file_system,
 			m_scene_resources.get_mesh_builder(), 512, 512,
-				512));
+				4096));
 	}
 
 	Scene::~Scene() throw()
@@ -892,16 +893,20 @@ namespace eternal_lands
 
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-		m_fonts->draw(m_state_manager, text, glm::vec2(0.0f));
+		m_fonts->draw(m_state_manager, text, glm::vec2(0.0f), 0, 1,
+			std::numeric_limits<float>::max(),
+			std::numeric_limits<float>::max());
 	}
 
 	Uint32 Scene::draw_2d_text(const Text &text, const glm::vec2 &position,
-		const glm::mat4x3 &world_matrix, const Uint32 max_lines)
+		const glm::mat4x3 &world_matrix, const Uint32 min_line,
+		const Uint32 max_line, const float max_width,
+		const float max_height, const WrapModeType wrap)
 	{
 		StateManagerUtil state(m_state_manager);
 		glm::mat4 matrix, project, view;
 
-		if (text.get_text().size() == 0)
+		if (text.get_length() == 0)
 		{
 			return 0;
 		}
@@ -956,7 +961,7 @@ namespace eternal_lands
 		text_cache[index].mesh.reset();
 
 		text_cache[index].lines = m_fonts->build_mesh(text, position,
-			max_lines, std::numeric_limits<Uint32>::max(),
+			min_line, max_line, max_width, max_height, wrap,
 			text_cache[index].mesh, text_cache[index].count);
 
 		m_fonts->draw(m_state_manager, text_cache[index].mesh,
@@ -965,9 +970,36 @@ namespace eternal_lands
 		return text_cache[index].lines;
 	}
 
-	Uint32 Scene::get_text_width(const Text &text)
+	float Scene::get_text_width(const Text &text) const
 	{
-		return m_fonts->get_size(text).x;
+		return m_fonts->get_width(text);
+	}
+
+	float Scene::get_font_height(const String &font) const
+	{
+		return m_fonts->get_height(font);
+	}
+
+	void Scene::build_mesh(const VertexBuffersSharedPtr &buffers,
+		const Uint32 count, AbstractMeshSharedPtr &mesh) const
+	{
+		m_fonts->build_mesh(buffers, count, mesh);
+	}
+
+	Uint32 Scene::write_to_stream(const Text &text,
+		const VertexStreamsSharedPtr &streams,
+		const glm::vec2 &start_position, const Uint32 min_line,
+		const Uint32 max_line, const float max_width,
+		const float max_height, const WrapModeType wrap, Uint32 &line)
+		const
+	{
+		return m_fonts->write_to_stream(text, streams, start_position,
+			min_line, max_line, max_width, max_height, wrap, line);
+	}
+
+	void Scene::draw(const AbstractMeshSharedPtr &mesh, const Uint32 count)
+	{
+		m_fonts->draw(m_state_manager, mesh, count);
 	}
 
 	void Scene::pick_object(const ObjectSharedPtr &object,

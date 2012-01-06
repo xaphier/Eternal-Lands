@@ -620,11 +620,10 @@ namespace eternal_lands
 		assert(get_count() > 0);
 
 		calculate_enclosing_bounding_box();
-		new_node->calculate_enclosing_bounding_box();
 
 		assert(new_node->get_count() > 0);
 
-		assert(get_count() > 0);
+		new_node->calculate_enclosing_bounding_box();
 	}
 
 	bool RStarTreeNode::insert_element(RStarTreePtr tree,
@@ -643,6 +642,8 @@ namespace eternal_lands
 		{
 			if (!path_buffer.empty())
 			{
+				assert(get_count() > 0);
+
 				calculate_enclosing_bounding_box();
 				adjust_tree_add(path_buffer);
 
@@ -695,9 +696,9 @@ namespace eternal_lands
 						get_shared_from_this());
 					node->add_element(new_node);
 
-					node->calculate_enclosing_bounding_box();
-
 					assert(node->get_count() > 0);
+
+					node->calculate_enclosing_bounding_box();
 				}
 				else
 				{
@@ -712,8 +713,6 @@ namespace eternal_lands
 
 					assert(node->get_count() > 0);
 				}
-
-				assert(new_node->get_count() > 0);
 
 				return true;
 			}
@@ -762,6 +761,8 @@ namespace eternal_lands
 	{
 		RStarTreeNodeSharedPtr parent;
 
+		assert(get_count() > 0);
+
 		calculate_enclosing_bounding_box();
 
 		if (!path_buffer.empty())
@@ -805,6 +806,8 @@ namespace eternal_lands
 
 		if (!adjust)
 		{
+			assert(get_count() > 0);
+
 			calculate_enclosing_bounding_box();
 			adjust_tree_add(path_buffer);
 		}

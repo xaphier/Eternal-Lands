@@ -13,7 +13,6 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "textattribute.hpp"
 
 /**
  * @file
@@ -31,9 +30,9 @@ namespace eternal_lands
 	class Text
 	{
 		private:
-			Utf32StringTextAttributePairVector m_text;
+			Uint32TextAttributeUint32PairMap m_text_attributes;
+			Utf32String m_string;
 			std::size_t m_hash;
-			Uint32 m_length;
 
 		public:
 			/**
@@ -48,20 +47,24 @@ namespace eternal_lands
 
 			void add(const Utf32String &str,
 				const TextAttribute &attribute);
-
-			Utf32String get_string() const;
-
 			bool operator==(const Text &text) const;
+			void clear();
+			const TextAttribute &get_text_attribute(
+				const Uint32 index, Uint32 &size) const;
+
+			inline const Utf32String &get_string() const
+			{
+				return m_string;
+			}
+
+			inline Utf32Char get_char(const Uint32 index) const
+			{
+				return get_string()[index];
+			}
 
 			inline bool operator!=(const Text &text) const
 			{
 				return !operator==(text);
-			}
-
-			inline const Utf32StringTextAttributePairVector
-				&get_text() const
-			{
-				return m_text;
 			}
 
 			inline std::size_t get_hash() const
@@ -71,14 +74,7 @@ namespace eternal_lands
 
 			inline Uint32 get_length() const
 			{
-				return m_length;
-			}
-
-			inline void clear()
-			{
-				m_text.clear();
-				m_length = 0;
-				m_hash = 0;
+				return m_string.length();
 			}
 
 	};

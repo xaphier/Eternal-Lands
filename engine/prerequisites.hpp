@@ -129,6 +129,7 @@ namespace eternal_lands
 	ARRAY(Uint8, 6);
 	ARRAY(Uint8, 8);
 	ARRAY(Uint8, 16);
+	ARRAY(Uint8, 20);
 	ARRAY(Uint8, 32);
 	ARRAY(Sint8, 4);
 	ARRAY(Sint8, 8);
@@ -400,12 +401,13 @@ namespace eternal_lands
 	typedef boost::array<ConvexBody, 4> SubFrustumsConvexBodys;
 	typedef std::bitset<4> SubFrustumsMask;
 	typedef std::bitset<32> PlanesMask;
-	typedef std::pair<Utf32String, TextAttribute>
-		Utf32StringTextAttributePair;
-
-	typedef std::vector<Utf32StringTextAttributePair>
-		Utf32StringTextAttributePairVector;
-
+	typedef std::pair<TextAttribute, Uint32> TextAttributeUint32Pair;
+	typedef std::pair<Uint32, TextAttributeUint32Pair>
+		Uint32TextAttributeUint32PairPair;
+	typedef std::pair<Utf32Char, TextureGlyphe> Utf32CharTextureGlyphePair;
+	typedef std::map<Utf32Char, TextureGlyphe> Utf32CharTextureGlypheMap;
+	typedef std::map<Uint32, TextAttributeUint32Pair>
+		Uint32TextAttributeUint32PairMap;
 
 	typedef boost::shared_array<double> DoubleSharedArray;
 
