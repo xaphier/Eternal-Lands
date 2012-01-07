@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>normal_mapping</name>
+ <type>normal_mapping</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>world_normal</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_tangent</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_uv</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>normal_sampler_0</name>
+     <source></source>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>fragment_normal</name>
+     <source></source>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>fragment_uv</name>
+     <source></source>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	mat3 tbn_matrix;
+	vec3 normal;
+
+	tbn_matrix[0] = world_tangent;
+	tbn_matrix[1] = cross(world_normal, world_tangent);
+	tbn_matrix[2] = world_normal;
+
+	normal.xy = texture2D(normal_sampler_0, world_uv).rg;
+	normal.z = sqrt(dot(normal.xy, normal.xy));
+
+	fragment_normal = tbn_matrix * normal;
+	fragment_uv = world_uv;
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_130>true</glsl_130>
+   <glsl_140>true</glsl_140>
+   <glsl_150>true</glsl_150>
+   <glsl_330>true</glsl_330>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

@@ -6,10 +6,12 @@ find_package(Boost 1.40.0 COMPONENTS unit_test_framework REQUIRED)
 
 include(CheckCXXSourceCompiles)
 
+set(CMAKE_REQUIRED_LIBRARIES ${Boost_LIBRARIES})
+
 check_cxx_source_compiles("
 	#define BOOST_TEST_MODULE tes
 	#include <boost/test/unit_test.hpp>
-	}"
+	"
 	BOOST_STATIC_TEST_LIB)
 
 if (NOT BOOST_STATIC_TEST_LIB)

@@ -22,6 +22,7 @@ files = {
 	"shaders/sources/no_normal_mapping.xml",
 	"shaders/sources/no_normal_depth_mapping.xml",
 	"shaders/sources/no_specular_mapping.xml",
+	"shaders/sources/normal_mapping.xml",
 	"shaders/sources/parallax_slope_mapping.xml",
 	"shaders/sources/shadow_map.xml",
 	"shaders/sources/exp_shadow_map.xml",
