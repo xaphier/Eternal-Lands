@@ -168,17 +168,12 @@ namespace eternal_lands
 	void TextureFontCache::load_xml(const FileSystemSharedPtr &file_system,
 		const String &file_name)
 	{
-		XmlReaderSharedPtr reader;
+		XmlReaderSharedPtr xml_reader;
 
-		if (!file_system->get_file_readable(file_name))
-		{
-			return;
-		}
-
-		reader = XmlReaderSharedPtr(new XmlReader(file_system,
+		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
 			file_name));
 
-		load_xml(file_system, reader->get_root_node());
+		load_xml(file_system, xml_reader->get_root_node());
 	}
 
 	void TextureFontCache::add_font(const FileSystemSharedPtr &file_system,

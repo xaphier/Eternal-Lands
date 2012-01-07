@@ -101,7 +101,6 @@ void set_shadow_quality(const int value);
 void set_shadow_distance(const float value);
 void set_view_distance(const float value);
 void set_fog(const int value);
-void set_alpha_to_coverage(const int value);
 void set_optmize_shader_source(const int value);
 void set_opengl_version(const int value);
 void set_fog_data(const float* color, const float density);

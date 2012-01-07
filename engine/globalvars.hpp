@@ -49,7 +49,6 @@ namespace eternal_lands
 			Uint16 m_shadow_map_size;
 			ShadowQualityType m_shadow_quality;
 			OpenglVerionType m_opengl_version;
-			bool m_alpha_to_coverage;
 			bool m_fog;
 			bool m_optmize_shader_source;
 
@@ -90,13 +89,6 @@ namespace eternal_lands
 				const OpenglVerionType opengl_version)
 			{
 				m_opengl_version = opengl_version;
-			}
-
-			inline void set_alpha_to_coverage(
-				const bool alpha_to_coverage)
-			{
-				m_alpha_to_coverage =
-					alpha_to_coverage;
 			}
 
 			inline void set_fog(const bool fog)
@@ -189,11 +181,6 @@ namespace eternal_lands
 				}
 
 				return false;
-			}
-
-			inline bool get_alpha_to_coverage() const
-			{
-				return m_alpha_to_coverage;
 			}
 
 			inline bool get_filter_shadow_map() const

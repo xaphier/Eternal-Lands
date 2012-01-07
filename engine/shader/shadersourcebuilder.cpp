@@ -551,7 +551,6 @@ namespace eternal_lands
 		ssbot_fragment_uv,
 		ssbot_view_position,
 		ssbot_layer_index,
-		ssbot_alpha_to_coverage,
 		ssbot_fog
 	};
 
@@ -1194,11 +1193,8 @@ namespace eternal_lands
 			build_function(data, array_sizes, locals,
 				sst_diffuse_mapping, main, globals, values);
 
-			if (!data.get_option(ssbot_alpha_to_coverage))
-			{
-				build_function(data, array_sizes, locals,
-					sst_transparent, main, globals, values);
-			}
+			build_function(data, array_sizes, locals,
+				sst_transparent, main, globals, values);
 		}
 
 		if (data.get_shader_build_type() == sbt_color)
@@ -1295,16 +1291,7 @@ namespace eternal_lands
 		}
 
 		main << UTF8(";\n\t") << output << UTF8(".a = ");
-
-		if (data.get_option(ssbot_transparent) &&
-			data.get_option(ssbot_alpha_to_coverage))
-		{
-			main << cpt_diffuse << UTF8(".a");
-		}
-		else
-		{
-			main << UTF8("1.0");
-		}
+		main << UTF8("1.0");
 
 		main << UTF8(";\n}\n");
 	}
@@ -1584,20 +1571,6 @@ namespace eternal_lands
 			cpt_view_position));
 		data.set_option(ssbot_tangent, get_source_parameter(data,
 			cpt_world_tangent));
-
-		if (data.get_shader_build_type() == sbt_color)
-		{
-			data.set_option(ssbot_alpha_to_coverage,
-				data.get_option(ssbot_transparent) &&
-				get_global_vars()->get_alpha_to_coverage());
-		}
-
-		if (data.get_shader_build_type() == sbt_shadow)
-		{
-			data.set_option(ssbot_alpha_to_coverage,
-				data.get_option(ssbot_transparent) &&
-				get_global_vars()->get_msaa_shadows());
-		}
 
 		build_fragment_source(data, array_sizes, fragment_main,
 			fragment_globals, values);

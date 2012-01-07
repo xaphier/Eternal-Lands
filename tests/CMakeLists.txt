@@ -1,12 +1,20 @@
 ENABLE_TESTING()
 
-include(FindOpenAL)
-
 link_directories(${TESTS_BINARY_DIR})
 
 find_package(Boost 1.40.0 COMPONENTS unit_test_framework REQUIRED)
 
+include(CheckCXXSourceCompiles)
+
+check_cxx_source_compiles("
+	#define BOOST_TEST_MODULE tes
+	#include <boost/test/unit_test.hpp>
+	}"
+	BOOST_STATIC_TEST_LIB)
+
+if (NOT BOOST_STATIC_TEST_LIB)
 add_definitions(-DBOOST_TEST_DYN_LINK)
+endif (NOT BOOST_STATIC_TEST_LIB)
 
 file(GLOB default default/*.cpp)
 
@@ -100,3 +108,4 @@ foreach(NAME check_glm)
 
 	add_test(${NAME} ${EXECUTABLE_OUTPUT_PATH}/${NAME})
 endforeach(NAME)
+

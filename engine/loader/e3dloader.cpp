@@ -154,7 +154,8 @@ namespace eternal_lands
 		m_reader->set_position(position);
 	}
 
-	void E3dLoader::load(MeshDataToolSharedPtr &mesh_data_tool,
+	void E3dLoader::load(const FileSystemSharedPtr &file_system,
+		MeshDataToolSharedPtr &mesh_data_tool,
 		MaterialDescriptionVector &materials)
 	{
 		VertexSemanticTypeSet semantics;
@@ -192,21 +193,21 @@ namespace eternal_lands
 			std::numeric_limits<Uint32>::max(), pt_triangles,
 			false);
 
-		load_vertex(*mesh_data_tool, options, format, vertex_count,
+		load_vertex(mesh_data_tool, options, format, vertex_count,
 			vertex_size, vertex_offset);
 
-		load_index(*mesh_data_tool, index_count, index_size,
+		load_index(mesh_data_tool, index_count, index_size,
 			index_offset);
 
-		load_sub_meshs(*mesh_data_tool, material_count, material_size,
+		load_sub_meshs(mesh_data_tool, material_count, material_size,
 			material_offset);
 
 		materials.clear();
-		load_materials(materials, material_count, material_size,
-			material_offset);
+		load_materials(file_system, material_count, material_size,
+			material_offset, materials);
 	}
 
-	void E3dLoader::load_vertex(MeshDataTool &mesh_data_tool,
+	void E3dLoader::load_vertex(const MeshDataToolSharedPtr &mesh_data_tool,
 		const Uint32 options, const Uint32 format,
 		const Uint32 vertex_count, const Uint32 vertex_size,
 		const Uint32 vertex_offset)
@@ -316,19 +317,20 @@ namespace eternal_lands
 				color[3] = 1.0f;
 			}
 
-			mesh_data_tool.set_vertex_data(vst_texture_coordinate_0,
-				i, uv);
-			mesh_data_tool.set_vertex_data(vst_texture_coordinate_1,
-				i, extra_uv);
-			mesh_data_tool.set_vertex_data(vst_color, i, color);
-			mesh_data_tool.set_vertex_data(vst_normal, i, normal);
-			mesh_data_tool.set_vertex_data(vst_tangent, i, tangent);
-			mesh_data_tool.set_vertex_data(vst_position, i,
+			mesh_data_tool->set_vertex_data(
+				vst_texture_coordinate_0, i, uv);
+			mesh_data_tool->set_vertex_data(
+				vst_texture_coordinate_1, i, extra_uv);
+			mesh_data_tool->set_vertex_data(vst_color, i, color);
+			mesh_data_tool->set_vertex_data(vst_normal, i, normal);
+			mesh_data_tool->set_vertex_data(vst_tangent, i,
+				tangent);
+			mesh_data_tool->set_vertex_data(vst_position, i,
 				position);
 		}
 	}
 
-	void E3dLoader::load_index(MeshDataTool &mesh_data_tool,
+	void E3dLoader::load_index(const MeshDataToolSharedPtr &mesh_data_tool,
 		const Uint32 index_count, const Uint32 index_size,
 		const Uint32 index_offset)
 	{
@@ -347,7 +349,7 @@ namespace eternal_lands
 				index = m_reader->read_u32_le();
 			}
 
-			mesh_data_tool.set_index_data(i, index);
+			mesh_data_tool->set_index_data(i, index);
 		}
 	}
 
@@ -389,7 +391,8 @@ namespace eternal_lands
 		return SubMesh(box, offset, count, min_index, max_index);
 	}
 
-	void E3dLoader::load_sub_meshs(MeshDataTool &mesh_data_tool,
+	void E3dLoader::load_sub_meshs(
+		const MeshDataToolSharedPtr &mesh_data_tool,
 		const Uint32 material_count, const Uint32 material_size,
 		const Uint32 material_offset)
 	{
@@ -397,17 +400,20 @@ namespace eternal_lands
 
 		for (i = 0; i < material_count; ++i)
 		{
-			mesh_data_tool.set_sub_mesh_data(i, load_sub_mesh(
+			mesh_data_tool->set_sub_mesh_data(i, load_sub_mesh(
 				material_offset, material_size, i));
 		}
 	}
 
 	MaterialDescription E3dLoader::load_material(
+		const FileSystemSharedPtr &file_system,
 		const Uint32 material_offset, const Uint32 material_size,
 		const Uint32 material_index, const StringType &dir)
 	{
 		MaterialDescription material;
+		ReaderSharedPtr reader;
 		StringType name;
+		String file_name;
 		Uint32 options;
 
 		m_reader->set_position(material_offset + material_size *
@@ -417,7 +423,9 @@ namespace eternal_lands
 
 		name = m_reader->read_utf8_string(128);
 
-		material.set_texture(String(dir + name), stt_diffuse_0);
+		file_name = String(dir + name);
+
+		material.set_texture(file_name, stt_diffuse_0);
 
 		if (options != 0)
 		{
@@ -429,12 +437,26 @@ namespace eternal_lands
 			material.set_effect(String(UTF8("mesh_solid")));
 		}
 
+		file_name = FileSystem::get_file_name_without_extension(
+			file_name).get() + UTF8(".xml");
+
+		if (!file_system->get_file_if_readable(file_name, reader))
+		{
+			LOG_ERROR(UTF8("No material file '%1%' found"),
+				file_name);
+
+			return material;
+		}
+
+		material.load_xml(reader);
+
 		return material;
 	}
 
-	void E3dLoader::load_materials(MaterialDescriptionVector &materials,
+	void E3dLoader::load_materials(const FileSystemSharedPtr &file_system,
 		const Uint32 material_count, const Uint32 material_size,
-		const Uint32 material_offset)
+		const Uint32 material_offset,
+		MaterialDescriptionVector &materials)
 	{
 		StringType str;
 		Uint32 i;
@@ -448,8 +470,8 @@ namespace eternal_lands
 
 		for (i = 0; i < material_count; ++i)
 		{
-			materials.push_back(load_material(material_offset,
-				material_size, i, str));
+			materials.push_back(load_material(file_system,
+				material_offset, material_size, i, str));
 		}
 	}
 
@@ -651,41 +673,5 @@ namespace eternal_lands
 					m_reader->get_name()));
 		}
 	}
-/*
-	void E3dLoader::do_load(SubMeshVector &sub_meshs)
-	{
-		Uint32 vertex_count, vertex_size, vertex_offset;
-		Uint32 index_count, index_size, index_offset;
-		Uint32 material_count, material_size, material_offset;
-		Uint8 options, format;
 
-		LOG_DEBUG("loading mesh '%1%'", m_loader->get_file_name());
-
-		load_header();
-
-		vertex_count = m_loader->read_le<Uint32>();
-		vertex_size = m_loader->read_le<Uint32>();
-		vertex_offset = m_loader->read_le<Uint32>();
-
-		index_count = m_loader->read_le<Uint32>();
-		index_size = m_loader->read_le<Uint32>();
-		index_offset = m_loader->read_le<Uint32>();
-
-		material_count = m_loader->read_le<Uint32>();
-		material_size = m_loader->read_le<Uint32>();
-		material_offset = m_loader->read_le<Uint32>();
-
-		options = m_loader->read_le<Uint8>();
-		format = m_loader->read_le<Uint8>();
-
-		check_file_infos(options, format);
-		log_file_infos(options, format);
-		check_vertex_size(options, format, vertex_size);
-
-		load_sub_meshs(sub_meshs, material_count, material_size,
-			material_offset);
-
-		LOG_DEBUG("done loading mesh '%1%'", m_loader->get_file_name());
-	}
-*/
 }

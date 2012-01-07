@@ -192,7 +192,6 @@ int el_shadow_map_size = 2;
 float el_shadow_distance = 40.0f;
 float el_view_distance = 40.0f;
 float el_ambient_scale = 1.0f;
-int el_alpha_to_coverage = el_false;
 int el_fog = el_true;
 int el_optmize_shader_source = el_true;
 int el_shadow_map_filter = 0;
@@ -246,12 +245,6 @@ void change_el_view_distance(float* var, float* value)
 {
 	*var = *value;
 	set_view_distance(*var);
-}
-
-void change_el_alpha_to_coverage(int* var)
-{
-	*var = !*var;
-	set_alpha_to_coverage(*var);
 }
 
 void change_el_fog(int* var)
@@ -1790,7 +1783,6 @@ static void init_ELC_vars(void)
 	add_var(OPT_MULTI_H, "shadow_map_size", "shadow_map_size", &el_shadow_map_size, change_el_shadow_map_size, 0, "Shadow Map Size", "Shadow Map Size", GFX, "512", "1024", "1536", "2048", 0);
 	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &el_shadow_distance, change_el_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &el_view_distance, change_el_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
-	add_var(OPT_BOOL, "alpha_to_coverage", "alpha_to_coverage", &el_alpha_to_coverage, change_el_alpha_to_coverage, el_false, "Alpha to coverage", "Alpha to coverage", GFX);
 	add_var(OPT_BOOL, "fog", "fog", &el_fog, change_el_fog, el_true, "Fog", "Fog", GFX);
 	add_var(OPT_MULTI, "shadow_map_filter", "smf", &el_shadow_map_filter, change_el_shadow_map_filter, 0, "Shadow Map Filter", "Shadow Map Filter", GFX, "Gauss 5x5", "Gauss 9x9 using 5x5 inner values", "Gauss 9x9", "Gauss 13x13 using 9x9 inner values", "Gauss 13x13", "Gauss 17x17 using 13x13 inner values", "Box 5x5", "Box 9x9", "Box 13x13", 0);
 

@@ -369,45 +369,94 @@ namespace
 	};
 
 }
-//#define	EL_TIME_FRAME_DEBUG
-//#define	USE_GL_DEBUG_OUTPUT
+#define	USE_GL_DEBUG_OUTPUT
 
 #ifdef	USE_GL_DEBUG_OUTPUT
-FILE* debug_file = 0;
-
-static void DebugOutputToFile(GLuint id, GLenum category, GLenum severity,
-	GLsizei length, const GLchar* message, GLvoid* userParam)
+static void ARB_debug_output_to_file(GLenum source, GLenum type, GLuint id,
+	GLenum severity, GLsizei length, const GLchar* message,
+	GLvoid* userParam)
 {
-	if (debug_file)
+	std::string source_str, type_str, severity_str;
+	FILE* file;
+
+	file = fopen("debug.txt", "a");
+
+	printf("%s\n", message);
+
+	if (file)
 	{
-		char debCategory[64], debSev[16];
+		switch (source)
+		{
+			case GL_DEBUG_SOURCE_API_ARB:
+				source_str = "OpenGL";
+				break;
+			case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:
+				source_str = "Windows";
+				break;
+			case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB:
+				source_str = "Shader Compiler";
+				break;
+			case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:
+				source_str = "Third Party";
+				break;
+			case GL_DEBUG_SOURCE_APPLICATION_ARB:
+				source_str = "Application";
+				break;
+			case GL_DEBUG_SOURCE_OTHER_ARB:
+				source_str = "Other";
+				break;
+			default:
+				source_str = "Unkown";
+				break;
+		}
 
-		if(category == GL_DEBUG_CATEGORY_API_ERROR_AMD)
-			strcpy(debCategory, "API error");
-		else if(category == GL_DEBUG_CATEGORY_WINDOW_SYSTEM_AMD)
-			strcpy(debCategory, "Window system");
-		else if(category == GL_DEBUG_CATEGORY_DEPRECATION_AMD)
-			strcpy(debCategory, "Deprecation");
-		else if(category == GL_DEBUG_CATEGORY_UNDEFINED_BEHAVIOR_AMD)
-			strcpy(debCategory, "Undefined behavior");
-		else if(category == GL_DEBUG_CATEGORY_PERFORMANCE_AMD)
-			strcpy(debCategory, "Performance");
-		else if(category == GL_DEBUG_CATEGORY_SHADER_COMPILER_AMD)
-			strcpy(debCategory, "Shader compiler");
-		else if(category == GL_DEBUG_CATEGORY_APPLICATION_AMD)
-			strcpy(debCategory, "Application");
-		else if(category == GL_DEBUG_CATEGORY_OTHER_AMD)
-			strcpy(debCategory, "Other");
+		switch (type)
+		{
+			case GL_DEBUG_TYPE_ERROR_ARB:
+				type_str = "Error";
+				break;
+			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB:
+				type_str = "Deprecated behavior";
+				break;
+			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:
+				type_str = "Undefined behavior";
+				break;
+			case GL_DEBUG_TYPE_PORTABILITY_ARB:
+				type_str = "Portability";
+				break;
+			case GL_DEBUG_TYPE_PERFORMANCE_ARB:
+				type_str = "Performance";
+				break;
+			case GL_DEBUG_TYPE_OTHER_ARB:
+				type_str = "Other";
+				break;
+			default:
+				type_str = "Unkown";
+				break;
+		}
+ 
+		switch (severity)
+		{
+			case GL_DEBUG_SEVERITY_HIGH_ARB:
+				severity_str = "High";
+				break;
+			case GL_DEBUG_SEVERITY_MEDIUM_ARB:
+				severity_str = "Medium";
+				break;
+			case GL_DEBUG_SEVERITY_LOW_ARB:
+				severity_str = "Low";
+				break;
+			default:
+				severity_str = "Unkown";
+				break;
+		}
 
-		if(severity == GL_DEBUG_SEVERITY_HIGH_AMD)
-			strcpy(debSev, "High");
-		else if(severity == GL_DEBUG_SEVERITY_MEDIUM_AMD)
-			strcpy(debSev, "Medium");
-		else if(severity == GL_DEBUG_SEVERITY_LOW_AMD)
-			strcpy(debSev, "Low");
+		fprintf(file,
+			"Source:%s\tType:%s\tID:%d\tSeverity:%s\tMessage:%s\n",
+			source_str.c_str(), type_str.c_str(), id,
+			severity_str.c_str(), message);
 
-		fprintf(debug_file, "Category:%s\tID:%d\tSeverity:%s\tMessage:%s\n",
-			debCategory, id, debSev, message);
+		fclose(file);
 	}
 }
 #endif
@@ -555,10 +604,10 @@ extern "C" void init_engine()
 
 	CHECK_GL_ERROR();
 #ifdef	USE_GL_DEBUG_OUTPUT
-	if (GLEW_AMD_debug_output)
+	printf("%d\n", GLEW_ARB_debug_output);
+	if (GLEW_ARB_debug_output)
 	{
-		debug_file = fopen("/home/daniel/.elc/debug.log", "w");
-		glDebugMessageCallbackAMD(&DebugOutputToFile, 0);
+		glDebugMessageCallbackARB(&ARB_debug_output_to_file, 0);
 	}
 #endif
 	CHECK_GL_ERROR();
@@ -607,12 +656,7 @@ extern "C" void exit_engine()
 	glDeleteQueries(1, &el_timer_id);
 #endif
 	CHECK_GL_ERROR();
-#ifdef	USE_GL_DEBUG_OUTPUT
-	if (debug_file)
-	{
-		fclose(debug_file);
-	}
-#endif
+
 	CATCH_BLOCK
 }
 
@@ -896,6 +940,7 @@ extern "C" void clear_engine()
 extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 {
 	el::MaterialDescriptionVector materials;
+	el::MaterialDescription material;
 	el::StringStream str;
 	glm::mat4 matrix;
 	glm::vec3 offset;
@@ -922,27 +967,32 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 	{
 		str << UTF8("3dobjects/tile");
 		str << static_cast<Uint16>(tile) << UTF8(".dds");
-		materials.push_back(el::MaterialDescription(
-			el::String(str.str()), el::String(UTF8("mesh_solid"))));
+
+		material.set_texture(el::String(str.str()), el::stt_diffuse_0);
+		material.set_effect(el::String(UTF8("mesh_solid")));
 	}
 	else
 	{
 		if (tile == 240)
 		{
-			materials.push_back(el::MaterialDescription(
-				el::String(UTF8("textures/lava.dds")),
-				el::String(UTF8("textures/noise.dds")),
-				el::String(UTF8("lava"))));
+			material.set_texture(el::String(UTF8(
+				"textures/lava.dds")), el::stt_diffuse_0);
+			material.set_texture(el::String(UTF8(
+				"textures/noise.dds")), el::stt_diffuse_1);
+			material.set_effect(el::String(UTF8("lava")));
 		}
 		else
 		{
-			materials.push_back(el::MaterialDescription(
-				el::String(UTF8("3dobjects/tile0.dds")),
-				el::String(UTF8("textures/water_normal.dds")),
-				el::String(UTF8("")),
-				el::String(UTF8("mesh_solid"))));
+			material.set_texture(el::String(UTF8(
+				"3dobjects/tile0.dds")), el::stt_diffuse_0);
+			material.set_texture(el::String(UTF8(
+				"textures/water_normal.dds")),
+					el::stt_normal_0);
+			material.set_effect(el::String(UTF8("mesh_solid")));
 		}
 	}
+
+	materials.push_back(material);
 
 	if (global_vars->get_opengl_3_0())
 	{
@@ -1571,16 +1621,6 @@ extern "C" void set_shadow_quality(const int value)
 extern "C" void set_fog(const int value)
 {
 	global_vars->set_fog(value != 0);
-
-	if (scene.get() != 0)
-	{
-		scene->get_scene_resources().get_effect_cache()->reload();
-	}
-}
-
-extern "C" void set_alpha_to_coverage(const int value)
-{
-	global_vars->set_alpha_to_coverage(value != 0);
 
 	if (scene.get() != 0)
 	{

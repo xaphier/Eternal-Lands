@@ -18,6 +18,7 @@
 #include "indexbuilder.hpp"
 #include "submesh.hpp"
 #include "globalvars.hpp"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
@@ -242,18 +243,20 @@ namespace eternal_lands
 			e2d_loader.load(mesh_data_tool, materials);
 		}
 
-		void load_e3d(const ReaderSharedPtr &reader,
+		void load_e3d(const FileSystemSharedPtr &file_system,
+			const ReaderSharedPtr &reader,
 			MeshDataToolSharedPtr &mesh_data_tool,
 			MaterialDescriptionVector &materials)
 		{
 			E3dLoader e3d_loader(reader);
 
-			e3d_loader.load(mesh_data_tool, materials);
+			e3d_loader.load(file_system, mesh_data_tool, materials);
 
 			mesh_data_tool->update_sub_meshs_packed();
 		}
 
-		void do_load_mesh(const ReaderSharedPtr &reader,
+		void do_load_mesh(const FileSystemSharedPtr &file_system,
+			const ReaderSharedPtr &reader,
 			MeshDataToolSharedPtr &mesh_data_tool,
 			MaterialDescriptionVector &materials)
 		{
@@ -269,7 +272,8 @@ namespace eternal_lands
 
 			if (E3dLoader::check_format(id))
 			{
-				load_e3d(reader, mesh_data_tool, materials);
+				load_e3d(file_system, reader, mesh_data_tool,
+					materials);
 
 				assert(mesh_data_tool.get() != 0);
 				return;
@@ -282,6 +286,10 @@ namespace eternal_lands
 				assert(mesh_data_tool.get() != 0);
 				return;
 			}
+
+			EL_THROW_EXCEPTION(UnkownFormatException()
+				<< boost::errinfo_file_name(
+					reader->get_name()));
 		}
 
 		bool load_plane(const String &name,
@@ -378,7 +386,8 @@ namespace eternal_lands
 
 			reader = get_file_system()->get_file(name);
 
-			do_load_mesh(reader, mesh_data_tool, materials);
+			do_load_mesh(get_file_system(), reader, mesh_data_tool,
+				materials);
 
 			mesh_data_tool->optimize();
 

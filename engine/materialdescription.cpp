@@ -8,6 +8,8 @@
 #include "materialdescription.hpp"
 #include "exceptions.hpp"
 #include "texturearraycache.hpp"
+#include "xmlutil.hpp"
+#include "xmlreader.hpp"
 
 namespace eternal_lands
 {
@@ -17,54 +19,85 @@ namespace eternal_lands
 	{
 	}
 
-	MaterialDescription::MaterialDescription(const String &effect):
-		m_layer_index(0.0f), m_shadow(true), m_culling(true)
-	{
-		set_effect(effect);
-	}
-
-	MaterialDescription::MaterialDescription(const String &diffuse_0,
-		const String &effect): m_layer_index(0.0f), m_shadow(true),
-		m_culling(true)
-	{
-		set_texture(diffuse_0, stt_diffuse_0);
-		set_effect(effect);
-	}
-
-	MaterialDescription::MaterialDescription(const String &diffuse_0,
-		const String &diffuse_1, const String &effect):
-		m_layer_index(0.0f), m_shadow(true), m_culling(true)
-	{
-		set_texture(diffuse_0, stt_diffuse_0);
-		set_texture(diffuse_1, stt_diffuse_1);
-		set_effect(effect);
-	}
-
-	MaterialDescription::MaterialDescription(const String &diffuse_0,
-		const String &normal, const String &specular,
-		const String &effect): m_layer_index(0.0f), m_shadow(true),
-		m_culling(true)
-	{
-		set_texture(diffuse_0, stt_diffuse_0);
-		set_texture(normal, stt_normal_0);
-		set_texture(specular, stt_specular_0);
-		set_effect(effect);
-	}
-
-	MaterialDescription::MaterialDescription(const String &diffuse_0,
-		const String &diffuse_1, const String &normal,
-		const String &specular, const String &effect):
-		m_layer_index(0.0f), m_shadow(true), m_culling(true)
-	{
-		set_texture(diffuse_0, stt_diffuse_0);
-		set_texture(diffuse_1, stt_diffuse_1);
-		set_texture(normal, stt_normal_0);
-		set_texture(specular, stt_specular_0);
-		set_effect(effect);
-	}
-
 	MaterialDescription::~MaterialDescription() throw()
 	{
+	}
+
+	void MaterialDescription::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+		ShaderTextureType texture;
+		Uint16 i, count;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("material")) != 0)
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		count = m_textures.size();
+
+		do
+		{
+			for (i = 0; i < count; ++i)
+			{
+				texture = static_cast<ShaderTextureType>(i);
+
+				if (xmlStrcmp(it->name, BAD_CAST
+					ShaderTextureUtil::get_str(texture
+						).get().c_str()) == 0)
+				{
+					set_texture(
+						XmlUtil::get_string_value(it),
+						texture);
+				}
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("effect")) == 0)
+			{
+				set_effect(XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("shadow")) == 0)
+			{
+				set_shadow(XmlUtil::get_bool_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("culling")) == 0)
+			{
+				set_culling(XmlUtil::get_bool_value(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
+	void MaterialDescription::load_xml(
+		const FileSystemSharedPtr &file_system,
+		const String &file_name)
+	{
+		XmlReaderSharedPtr xml_reader;
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			file_name));
+
+		load_xml(xml_reader->get_root_node());
+	}
+
+	void MaterialDescription::load_xml(const ReaderSharedPtr &reader)
+	{
+		XmlReaderSharedPtr xml_reader;
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(reader));
+
+		load_xml(xml_reader->get_root_node());
 	}
 
 	bool MaterialDescription::compare_textures(

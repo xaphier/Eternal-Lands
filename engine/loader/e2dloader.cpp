@@ -292,6 +292,7 @@ namespace eternal_lands
 	void E2dLoader::load(MeshDataToolSharedPtr &mesh_data_tool,
 		MaterialDescriptionVector &materials)
 	{
+		MaterialDescription material;
 		glm::vec4 texture_coordinates;
 		glm::vec3 vmin, vmax;
 		glm::vec2 size;
@@ -351,11 +352,13 @@ namespace eternal_lands
 			str += UTF8("/");
 		}
 
+		material.set_texture(String(str + texture.get()),
+			stt_diffuse_0);
+		material.set_effect(String(UTF8("mesh_transparent")));
+		material.set_culling(false);
+
 		materials.clear();
-		materials.push_back(MaterialDescription(
-			String(str + texture.get()),
-			String(UTF8("mesh_transparent"))));
-		materials[0].set_culling(false);
+		materials.push_back(material);
 	}
 
 	bool E2dLoader::check_format(const Uint8Array8 &id)

@@ -797,9 +797,6 @@ namespace eternal_lands
 
 		m_state_manager.switch_multisample(true);
 
-		m_state_manager.switch_sample_alpha_to_coverage(
-			get_global_vars()->get_alpha_to_coverage());
-
 		DEBUG_CHECK_GL_ERROR();
 
 		glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);

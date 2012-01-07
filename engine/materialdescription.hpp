@@ -39,20 +39,13 @@ namespace eternal_lands
 			void build_layer_index(const TextureArrayCacheSharedPtr
 				&texture_array_cache,
 					const ShaderTextureType texture_type);
+			void load_xml(const xmlNodePtr node);
 
 		public:
 			MaterialDescription();
-			MaterialDescription(const String &effect);
-			MaterialDescription(const String &diffuse_0,
-				const String &effect);
-			MaterialDescription(const String &diffuse_0,
-				const String &diffuse_1, const String &effect);
-			MaterialDescription(const String &diffuse_0,
-				const String &normal, const String &specular,
-				const String &effect);
-			MaterialDescription(const String &diffuse_0,
-				const String &diffuse_1, const String &normal,
-				const String &specular, const String &effect);
+			MaterialDescription(
+				const FileSystemSharedPtr &file_system,
+				const String &file_name);
 			~MaterialDescription() throw();
 			bool operator==(const MaterialDescription &material)
 				const;
@@ -60,6 +53,9 @@ namespace eternal_lands
 				const;
 			bool operator<(const MaterialDescription &material)
 				const;
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
+			void load_xml(const ReaderSharedPtr &reader);
 
 			/**
 			 * @brief 

@@ -64,6 +64,22 @@ namespace eternal_lands
 		}
 	}
 
+	XmlReader::XmlReader(const ReaderSharedPtr &reader)
+	{
+		m_doc = xmlReadMemory(static_cast<const char*>(
+			reader->get_buffer()->get_ptr()),
+			reader->get_size(), "", 0, XML_PARSE_NOENT);
+
+		if (m_doc == 0)
+		{
+			EL_THROW_EXCEPTION(IoErrorException()
+				<< errinfo_message(UTF8("Error reading the xml "
+					"file"))
+				<< boost::errinfo_file_name(
+					reader->get_name()));
+		}
+	}
+
 	XmlReader::~XmlReader() throw()
 	{
 		xmlFreeDoc(m_doc);

@@ -475,7 +475,6 @@ namespace eternal_lands
 		m_shadow_quality = sqt_no;
 		m_shadow_map_size = 2;
 		m_opengl_version = ovt_2_1;
-		m_alpha_to_coverage = false;
 		m_fog = true;
 		m_optmize_shader_source = true;
 	}

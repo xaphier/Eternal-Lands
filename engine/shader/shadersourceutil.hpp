@@ -38,6 +38,7 @@ namespace eternal_lands
 		sst_normal_depth_mapping,
 		sst_diffuse_mapping,
 		sst_specular_mapping,
+		sst_glow_mapping,
 		sst_transparent,
 		sst_shadow_map,
 		sst_layer_index

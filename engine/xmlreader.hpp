@@ -32,6 +32,7 @@ namespace eternal_lands
 			XmlReader(const String &file_name);
 			XmlReader(const FileSystemSharedPtr &file_system,
 				const String &file_name);
+			XmlReader(const ReaderSharedPtr &reader);
 			~XmlReader() throw();
 			xmlNodePtr get_root_node();
 

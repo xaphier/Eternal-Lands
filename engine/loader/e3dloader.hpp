@@ -34,32 +34,37 @@ namespace eternal_lands
 			ReaderSharedPtr m_reader;
 
 			void load_header();
-			void load_vertex(MeshDataTool &mesh_data_tool,
+			void load_vertex(
+				const MeshDataToolSharedPtr &mesh_data_tool,
 				const Uint32 options, const Uint32 format,
 				const Uint32 vertex_count,
 				const Uint32 vertex_size,
 				const Uint32 vertex_offset);
-			void load_index(MeshDataTool &mesh_data_tool,
+			void load_index(
+				const MeshDataToolSharedPtr &mesh_data_tool,
 				const Uint32 index_count,
 				const Uint32 index_size,
 				const Uint32 index_offset);
 			SubMesh load_sub_mesh(const Uint32 material_offset,
 				const Uint32 material_size,
 				const Uint32 material_index);
-			void load_sub_meshs(MeshDataTool &mesh_data_tool,
+			void load_sub_meshs(
+				const MeshDataToolSharedPtr &mesh_data_tool,
 				const Uint32 material_count,
 				const Uint32 material_size,
 				const Uint32 material_offset);
 			MaterialDescription load_material(
+				const FileSystemSharedPtr &file_system,
 				const Uint32 material_offset,
 				const Uint32 material_size,
 				const Uint32 material_index,
 				const StringType &dir);
 			void load_materials(
-				MaterialDescriptionVector &materials,
+				const FileSystemSharedPtr &file_system,
 				const Uint32 material_count,
 				const Uint32 material_size,
-				const Uint32 material_offset);
+				const Uint32 material_offset,
+				MaterialDescriptionVector &materials);
 			void log_file_infos(const Uint8 options,
 				const Uint8 format) const;
 			void check_file_infos(Uint8 &options, Uint8 &format)
@@ -72,7 +77,8 @@ namespace eternal_lands
 		public:
 			E3dLoader(const ReaderSharedPtr &reader);
 			~E3dLoader() throw();
-			void load(MeshDataToolSharedPtr &mesh_data_tool,
+			void load(const FileSystemSharedPtr &file_system,
+				MeshDataToolSharedPtr &mesh_data_tool,
 				MaterialDescriptionVector &materials);
 			static bool check_format(const Uint8Array8 &id);
 

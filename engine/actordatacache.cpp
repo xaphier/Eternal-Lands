@@ -101,6 +101,7 @@ namespace eternal_lands
 		const SelectionType selection, const bool enhanced_actor)
 	{
 		MaterialDescriptionVector materials;
+		MaterialDescription material;
 		ActorDataCacheMap::const_iterator found;
 		std::auto_ptr<Actor> result;
 		bool blend;
@@ -117,15 +118,19 @@ namespace eternal_lands
 
 		if (enhanced_actor)
 		{
-			materials.push_back(MaterialDescription(
-				String(UTF8("animated_mesh_solid"))));
+			material.set_effect(String(
+				UTF8("animated_mesh_solid")));
 		}
 		else
 		{
-			materials.push_back(MaterialDescription(
-				found->second.m_skin_name,
-				String(UTF8("animated_mesh_solid"))));
+			material.set_texture(found->second.m_skin_name,
+				stt_diffuse_0);
+			material.set_effect(String(
+				UTF8("animated_mesh_solid")));
 		}
+
+		materials.clear();
+		materials.push_back(material);
 
 		if (found->second.m_ghost)
 		{
