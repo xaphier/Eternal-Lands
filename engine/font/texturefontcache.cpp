@@ -27,6 +27,15 @@
 namespace eternal_lands
 {
 
+	namespace
+	{
+
+		const Utf32String init_char_codes = L" abcdefghijklmnopqrstuv"
+			"wxyzäöüßABCDEFGHIJKLMNOPQRSTUVWXYZ!\"§$%&/()=?+-_.:,"
+			";<>|µ@^°{[]}\\1234567890#'~²³";
+
+	}
+
 	TextureFontCache::TextureFontCache(
 		const FileSystemSharedPtr &file_system,
 		const MeshBuilderSharedPtr &mesh_builder, const Uint16 width,
@@ -180,7 +189,7 @@ namespace eternal_lands
 		try
 		{
 			font.reset(new TextureFont(m_atlas, m_data,
-				file_system, file_name, size));
+				file_system, init_char_codes, file_name, size));
 
 			m_fonts.insert(name, font);
 

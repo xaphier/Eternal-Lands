@@ -33,6 +33,7 @@ namespace eternal_lands
 		private:
 			Utf32CharTextureGlypheMap m_glyphs;
 			String m_file_name;
+			Utf32CharTextureGlypheMap::const_iterator m_default_char;
 			float m_size;
 			float m_height;
 			float m_line_gap;
@@ -56,6 +57,7 @@ namespace eternal_lands
 			TextureFont(const AtlasSharedPtr &atlas,
 				const DoubleSharedArray &data,
 				const FileSystemSharedPtr &file_system,
+				const Utf32String &char_codes,
 				const String &file_name, const float size);
 
 			/**

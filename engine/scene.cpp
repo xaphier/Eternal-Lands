@@ -529,11 +529,6 @@ namespace eternal_lands
 		Uint32 light_count, materials, i;
 		bool object_data_set;
 
-#ifndef	NDEBUG
-		m_state_manager.unbind_mesh();
-		m_state_manager.unbind_program();
-		m_state_manager.unbind_textures();
-#endif /* NDEBUG */
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		materials = object->get_materials().size();
@@ -576,11 +571,6 @@ namespace eternal_lands
 		Uint32 materials, i;
 		bool object_data_set;
 
-#ifndef	NDEBUG
-		m_state_manager.unbind_mesh();
-		m_state_manager.unbind_program();
-		m_state_manager.unbind_textures();
-#endif /* NDEBUG */
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		materials = object->get_materials().size();
@@ -620,11 +610,6 @@ namespace eternal_lands
 		Uint32 materials, i;
 		bool object_data_set;
 
-#ifndef	NDEBUG
-		m_state_manager.unbind_mesh();
-		m_state_manager.unbind_program();
-		m_state_manager.unbind_textures();
-#endif /* NDEBUG */
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		materials = object->get_materials().size();

@@ -6,8 +6,6 @@ link_directories(${TESTS_BINARY_DIR})
 
 find_package(Boost 1.40.0 COMPONENTS unit_test_framework REQUIRED)
 
-set(Boost_USE_STATIC_RUNTIME ON)
-
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
 file(GLOB default default/*.cpp)
@@ -102,4 +100,3 @@ foreach(NAME check_glm)
 
 	add_test(${NAME} ${EXECUTABLE_OUTPUT_PATH}/${NAME})
 endforeach(NAME)
-

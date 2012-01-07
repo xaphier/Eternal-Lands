@@ -244,7 +244,7 @@ namespace eternal_lands
 			{
 				return m_used_mipmaps;
 			}
-
+		public:
 			inline GLuint get_texture_id() const
 			{
 				return m_texture_id;

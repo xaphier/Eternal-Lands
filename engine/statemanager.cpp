@@ -311,6 +311,7 @@ namespace eternal_lands
 	void StateManager::log_texture_units()
 	{
 		Uint32 i, count;
+		GLint id;
 
 		count = m_textures.size();
 
@@ -321,8 +322,27 @@ namespace eternal_lands
 				continue;
 			}
 
-			LOG_ERROR(UTF8("Texture '%1%' bound to unit %2%."),
-				m_textures[i]->get_name() % i);
+			LOG_ERROR(UTF8("Texture '%1%' with id %2% bound to "
+				"unit %3%."), m_textures[i]->get_name() %
+				m_textures[i]->get_texture_id() % i);
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			if (m_textures[i].get() == 0)
+			{
+				continue;
+			}
+
+			switch_texture_unit(i);
+
+			id = 0;
+
+			glGetIntegerv(GL_TEXTURE_BINDING_2D, &id);
+
+			LOG_ERROR(UTF8("Bound texture id: %1%"), id);
+			assert(static_cast<GLuint>(id) ==
+				m_textures[i]->get_texture_id());
 		}
 	}
 
@@ -342,7 +362,8 @@ namespace eternal_lands
 			LOG_ERROR(UTF8("Mesh '%1%' used."), m_mesh->get_name());
 		}
 
-		if ((m_program_used_texture_units & m_used_texture_units) != m_program_used_texture_units)
+		if ((m_program_used_texture_units & m_used_texture_units) !=
+			m_program_used_texture_units)
 		{
 			LOG_ERROR(UTF8("Used texture units %1%."),
 				m_used_texture_units);

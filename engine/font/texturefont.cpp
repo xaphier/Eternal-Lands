@@ -10,7 +10,11 @@
 #include "textureglyphe.hpp"
 #include "atlas.hpp"
 #include "exceptions.hpp"
+#ifdef OSX
+#include <FreeType/ft2build.h>
+#else
 #include <ft2build.h>
+#endif
 #include FT_FREETYPE_H 
 #include FT_LCD_FILTER_H
 
@@ -29,6 +33,8 @@ namespace eternal_lands
 
 	namespace
 	{
+
+		const Uint32 padd = 1;
 
 		class FtLibrary
 		{
@@ -169,15 +175,14 @@ namespace eternal_lands
 
 	TextureFont::TextureFont(const AtlasSharedPtr &atlas,
 		const DoubleSharedArray &data,
-		const FileSystemSharedPtr &file_system, const String &file_name,
+		const FileSystemSharedPtr &file_system,
+		const Utf32String &char_codes, const String &file_name,
 		const float size)
 	{
 		m_file_name = file_name;
 		m_size = size;
 
-		init(atlas, data, L" abcdefghijklmnopqrstuvwxyzäöüßABCDEFGHIJ"
-			"KLMNOPQRSTUVWXYZ!\"§$%&/()=?+-_.:,;<>|µ@^°{[]}\\1234"
-			"567890#'~²³");
+		init(atlas, data, char_codes);
 	}
 
 	TextureFont::~TextureFont() throw()
@@ -204,8 +209,6 @@ namespace eternal_lands
 
 		cache_glyphs(atlas, data, char_codes);
 	}
-
-	const Uint32 padd = 1;
 
 	void TextureFont::cache_glyphs(const AtlasSharedPtr &atlas,
 		const DoubleSharedArray &data, const Utf32String &char_codes)
