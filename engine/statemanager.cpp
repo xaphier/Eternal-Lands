@@ -205,10 +205,12 @@ namespace eternal_lands
 	{
 		assert(texture_unit < m_textures.size());
 
+#ifndef	NO_STATE_TRACKING
 		if (m_texture_unit == texture_unit)
 		{
 			return false;
 		}
+#endif	/* NO_STATE_TRACKING */
 
 		m_texture_unit = texture_unit;
 

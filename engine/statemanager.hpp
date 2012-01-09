@@ -36,7 +36,6 @@ namespace eternal_lands
 			BitSet32 m_program_used_texture_units;
 			BitSet32 m_used_texture_units;
 			BitSet32 m_used_attributes;
-			glm::vec4 m_layer_index;
 			glm::bvec4 m_color_mask;
 			Uint16 m_texture_unit;
 			bool m_multisample;
@@ -68,7 +67,6 @@ namespace eternal_lands
 				const bool polygon_offset_fill);
 			void set_sample_alpha_to_coverage(
 				const bool sample_alpha_to_coverage);
-			void set_layer_index(const glm::vec4 &layer_index);
 
 		public:
 			/**
@@ -84,10 +82,12 @@ namespace eternal_lands
 			inline bool switch_mesh(
 				const AbstractMeshSharedPtr &mesh)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_mesh == mesh)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_mesh(mesh);
 
@@ -97,10 +97,12 @@ namespace eternal_lands
 			inline bool switch_program(
 				const GlslProgramSharedPtr &program)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_program == program)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_program(program);
 
@@ -110,6 +112,7 @@ namespace eternal_lands
 			inline bool switch_texture(const Uint16 texture_unit,
 				const TextureSharedPtr &texture)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (!m_program_used_texture_units[texture_unit])
 				{
 					return false;
@@ -119,6 +122,7 @@ namespace eternal_lands
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_texture(texture_unit, texture);
 
@@ -127,10 +131,12 @@ namespace eternal_lands
 
 			inline bool switch_multisample(const bool multisample)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_multisample == multisample)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_multisample(multisample);
 
@@ -139,10 +145,12 @@ namespace eternal_lands
 
 			inline bool switch_blend(const bool blend)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_blend == blend)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_blend(blend);
 
@@ -151,10 +159,12 @@ namespace eternal_lands
 
 			inline bool switch_culling(const bool culling)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_culling == culling)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_culling(culling);
 
@@ -164,11 +174,13 @@ namespace eternal_lands
 			inline bool switch_color_mask(
 				const glm::bvec4 &color_mask)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (glm::all(glm::equal(m_color_mask,
 					color_mask)))
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_color_mask(color_mask);
 
@@ -177,10 +189,12 @@ namespace eternal_lands
 
 			inline bool switch_depth_mask(const bool depth_mask)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_depth_mask == depth_mask)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_depth_mask(depth_mask);
 
@@ -189,10 +203,12 @@ namespace eternal_lands
 
 			inline bool switch_depth_test(const bool depth_test)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_depth_test == depth_test)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_depth_test(depth_test);
 
@@ -201,10 +217,12 @@ namespace eternal_lands
 
 			inline bool switch_scissor_test(const bool scissor_test)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_scissor_test == scissor_test)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_scissor_test(scissor_test);
 
@@ -214,11 +232,13 @@ namespace eternal_lands
 			inline bool switch_polygon_offset_fill(
 				const bool polygon_offset_fill)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_polygon_offset_fill ==
 					polygon_offset_fill)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_polygon_offset_fill(polygon_offset_fill);
 
@@ -228,28 +248,16 @@ namespace eternal_lands
 			inline bool switch_sample_alpha_to_coverage(
 				const bool sample_alpha_to_coverage)
 			{
+#ifndef	NO_STATE_TRACKING
 				if (m_sample_alpha_to_coverage ==
 					sample_alpha_to_coverage)
 				{
 					return false;
 				}
+#endif	/* NO_STATE_TRACKING */
 
 				set_sample_alpha_to_coverage(
 					sample_alpha_to_coverage);
-
-				return true;
-			}
-
-			inline bool switch_layer_index(
-				const glm::vec4 &layer_index)
-			{
-				if (glm::all(glm::equal(m_layer_index,
-					layer_index)))
-				{
-					return false;
-				}
-
-				set_layer_index(layer_index);
 
 				return true;
 			}

@@ -51,8 +51,10 @@ namespace eternal_lands
 			boost::make_shared<ActorTextureBuilder>(codec_manager,
 				file_system, global_vars, get_name());
 
+#ifndef	ENHANCED_ACTOR_TEST
 		get_modifiable_materials()[0].set_texture(
 			m_actor_texture_builder->get_texture(), stt_diffuse_0);
+#endif	/* ENHANCED_ACTOR_TEST */
 	}
 
 	void Actor::set_parts(const ActorPartTextureTypeStringMap &parts)
