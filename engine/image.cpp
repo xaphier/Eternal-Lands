@@ -12,30 +12,6 @@
 namespace eternal_lands
 {
 
-	namespace
-	{
-
-		glm::vec4 shuffle_data(const GLenum format,
-			const glm::vec4 &data)
-		{
-			switch (format)
-			{
-				case GL_ALPHA:
-					return glm::vec4(0.0f, 0.0f, 0.0f,
-						data[0]);
-				case GL_LUMINANCE:
-					return glm::vec4(data[0], data[0],
-						data[0], 1.0f);
-				case GL_LUMINANCE_ALPHA:
-					return glm::vec4(data[0], data[0],
-						data[0], data[1]);
-			}
-
-			return data;
-		}
-
-	}
-
 	Uint32 Image::get_total_size() const
 	{
 		Uint32 i, face_count, size;
@@ -245,6 +221,7 @@ namespace eternal_lands
 		switch (format)
 		{
 			case GL_RED:
+			case GL_ALPHA:
 			case GL_LUMINANCE:
 				return 1;
 			case GL_RG:
@@ -474,7 +451,7 @@ namespace eternal_lands
 				return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		}
 
-		return shuffle_data(get_format(), result);
+		return result;
 	}
 
 	void Image::set_pixel(const Uint32 x, const Uint32 y, const Uint32 z,

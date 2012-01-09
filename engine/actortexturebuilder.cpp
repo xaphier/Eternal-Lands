@@ -465,7 +465,7 @@ namespace eternal_lands
 			glm::vec4 t0, t1, value, temp;
 			ImageSharedPtr texture_image, base_image, mask_image;
 			float blend;
-			Uint32 x, y, width, height, count;
+			Uint32 x, y, width, height;
 			Uint16 texture_mipmap, base_mipmap, mask_mipmap;
 
 			if ((base_reader.get() == 0) ||
@@ -491,9 +491,6 @@ namespace eternal_lands
 			width = sizes[0] * scale;
 			height = sizes[1] * scale;
 
-			count = TextureFormatUtil::get_count(
-				mask_image->get_texture_format());
-
 			for (y = 0; y < height; y++)
 			{
 				for (x = 0; x < width; x++)
@@ -505,14 +502,7 @@ namespace eternal_lands
 					value = mask_image->get_pixel(x, y, 0,
 						0, mask_mipmap);
 
-					if (count < 4)
-					{
-						blend = value.r;
-					}
-					else
-					{
-						blend = value.a;
-					}
+					blend = value.r;
 
 					temp = t0 * blend;
 					temp += t1 * (1.0f - blend);
