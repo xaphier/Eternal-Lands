@@ -14,9 +14,8 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	shadow_map_data = gl_FragCoord.zzz;
-}
+   <source>shadow_map_data = gl_FragCoord.zzz;
+
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

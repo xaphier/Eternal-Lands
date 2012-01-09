@@ -193,6 +193,7 @@ namespace eternal_lands
 				const bool transpose = false);
 			void check();
 			bool validate();
+			void log_validate_status();
 			void unbind();
 
 			inline void set_bool_parameter(

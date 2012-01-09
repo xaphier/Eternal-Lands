@@ -1675,7 +1675,7 @@ namespace eternal_lands
 		bind_attribute_location(vst_extra_bone_index);
 		bind_attribute_location(vst_texture_coordinate_0);
 		bind_attribute_location(vst_texture_coordinate_1);
-		bind_attribute_location(vst_layer_index);
+		bind_attribute_location(vst_mesh_index);
 		bind_attribute_location(vst_morph_position);
 		bind_attribute_location(vst_morph_normal);
 		bind_attribute_location(vst_morph_tangent);
@@ -1809,10 +1809,22 @@ namespace eternal_lands
 	{
 		glValidateProgram(m_program);
 
-		LOG_ERROR(UTF8("Program '%1%' validation: %2%"),
-			get_name() % get_program_log());
-
 		return program_validate_status();
+	}
+
+	void GlslProgram::log_validate_status()
+	{
+		glValidateProgram(m_program);
+
+		if (!program_validate_status())
+		{
+			LOG_ERROR(UTF8("Program '%1%' validation: %2%"),
+				get_name() % get_program_log());
+			return;
+		}
+
+		LOG_INFO(UTF8("Program '%1%' validate successful: %2%"),
+			get_name() % get_program_log());
 	}
 
 	void GlslProgram::unbind()

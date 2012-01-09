@@ -62,11 +62,10 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	world_position = world_matrix * vec4(position.xyz, 1.0);
-	world_normal = normalize(mat3(world_matrix) * normal);
-	world_tangent = normalize(mat3(world_matrix) * tangent);
-}
+   <source>world_position = world_matrix * vec4(position.xyz, 1.0);
+world_normal = normalize(mat3(world_matrix) * normal);
+world_tangent = normalize(mat3(world_matrix) * tangent);
+
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

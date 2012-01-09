@@ -251,10 +251,10 @@ namespace eternal_lands
 			t0 = texture_coords[1] - texture_coords[0];
 			t1 = texture_coords[2] - texture_coords[0];
 
-			r = 1.0f / (t0.x * t1.y - t0.y * t1.x);
+			r = 1.0f / (t0.x * t1.y - t1.x * t0.y);
 
-			tangent = glm::vec3(t1.y * p0 - t1.x * p1) * r;
-			bitangent = glm::vec3(t0.x * p1 - t0.y * p0) * r;
+			tangent = glm::vec3(t1.y * p0 - t0.y * p1) * r;
+			bitangent = glm::vec3(t0.x * p1 - t1.x * p0) * r;
 		}
 
 		glm::vec4 get_gram_schmidth_orthogonalize_tangent(
@@ -482,7 +482,7 @@ namespace eternal_lands
 			normal = vst_normal;
 		}
 
-		normals.resize(get_index_count(), glm::vec3(0.0f));
+		normals.resize(get_vertex_count(), glm::vec3(0.0f));
 
 		count = get_sub_meshs().size();
 
@@ -507,7 +507,7 @@ namespace eternal_lands
 				{
 					index = triangles.get_current_index(j);
 
-					normals[j] += v_normal;
+					normals[index] += v_normal;
 				}
 			}
 		}
@@ -517,7 +517,7 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			set_vertex_data(normal, i, glm::vec4(
-				glm::normalize(normals[i]), 0.0f));
+				glm::normalize(normals[i]), 1.0f));
 		}
 	}
 
@@ -566,8 +566,8 @@ namespace eternal_lands
 			}
 		}
 
-		tangents.resize(get_index_count(), glm::vec3(0.0f));
-		bitangents.resize(get_index_count(), glm::vec3(0.0f));
+		tangents.resize(get_vertex_count(), glm::vec3(0.0f));
+		bitangents.resize(get_vertex_count(), glm::vec3(0.0f));
 
 		count = get_sub_meshs().size();
 
@@ -596,8 +596,8 @@ namespace eternal_lands
 				{
 					index = triangles.get_current_index(j);
 
-					tangents[j] += v_tangent;
-					bitangents[j] += v_bitangent;
+					tangents[index] += v_tangent;
+					bitangents[index] += v_bitangent;
 				}
 			}
 		}
@@ -890,7 +890,7 @@ namespace eternal_lands
 			write_vertex_semantic_to_stream(vst_extra_bone_index, i, str);
 			write_vertex_semantic_to_stream(vst_texture_coordinate_0, i, str);
 			write_vertex_semantic_to_stream(vst_texture_coordinate_1, i, str);
-			write_vertex_semantic_to_stream(vst_layer_index, i, str);
+			write_vertex_semantic_to_stream(vst_mesh_index, i, str);
 			write_vertex_semantic_to_stream(vst_morph_position, i, str);
 			write_vertex_semantic_to_stream(vst_morph_normal, i, str);
 			write_vertex_semantic_to_stream(vst_morph_tangent, i, str);
@@ -1236,6 +1236,11 @@ namespace eternal_lands
 			m_indices[dest_index + i] = indices[source_index + i]
 				+ offset;
 		}
+	}
+
+	Uint32 MeshDataTool::get_sub_mesh_count() const
+	{
+		return m_sub_meshs.size();
 	}
 
 }

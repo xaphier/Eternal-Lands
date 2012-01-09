@@ -83,6 +83,7 @@ namespace eternal_lands
 		assert((size % 8) == 0);
 		info.set_size(size / 8);
 		info.set_swap_size(size / 8);
+		info.set_rg_format(false);
 
 		return info;
 	}
@@ -95,13 +96,16 @@ namespace eternal_lands
 		if (pixel_type.has_alpha())
 		{
 			info = pixel_type.build(GL_RGBA, false, false);
+			info.set_channels(4);
 			m_flast_load_infos.push_back(info);
 			info = pixel_type.build(GL_BGRA, true, false);
+			info.set_channels(4);
 			m_flast_load_infos.push_back(info);
 		}
 		else
 		{
 			info = pixel_type.build(GL_RGB, false, true);
+			info.set_channels(3);
 			m_flast_load_infos.push_back(info);
 		}
 	}
@@ -111,6 +115,9 @@ namespace eternal_lands
 	{
 		GlFastLoadInfo info;
 		Uint32 bits;
+
+		info.set_channels(1);
+		info.set_rg_format(true);
 
 		info.set_type(type);
 		info.set_format(GL_RED);
@@ -168,6 +175,9 @@ namespace eternal_lands
 		GlFastLoadInfo info;
 		Uint32 bits, green_mask;
 
+		info.set_channels(2);
+		info.set_rg_format(true);
+
 		bits = __builtin_popcount(mask);
 		green_mask = mask << bits;
 
@@ -178,36 +188,166 @@ namespace eternal_lands
 		info.set_swap_size(bits / 8);
 
 		info.set_red_mask(mask);
+		info.set_green_mask(0);
+		info.set_blue_mask(0);
+		info.set_alpha_mask(green_mask);
+
+		m_flast_load_infos.push_back(info);
+
+		info.set_red_mask(0);
+		info.set_green_mask(mask);
+		info.set_blue_mask(0);
+		info.set_alpha_mask(green_mask);
+
+		m_flast_load_infos.push_back(info);
+
+		info.set_red_mask(0);
+		info.set_green_mask(0);
+		info.set_blue_mask(mask);
+		info.set_alpha_mask(green_mask);
+
+		m_flast_load_infos.push_back(info);
+
+		info.set_red_mask(mask);
+		info.set_green_mask(mask);
+		info.set_blue_mask(mask);
+		info.set_alpha_mask(green_mask);
+
+		m_flast_load_infos.push_back(info);
+
+		info.set_red_mask(mask);
+		info.set_green_mask(green_mask);
+		info.set_blue_mask(0);
+		info.set_alpha_mask(0);
+
+		m_flast_load_infos.push_back(info);
+	}
+
+	void CodecManager::add_luminance_gl_pixel_type(const GLenum type,
+		const Uint32 mask)
+	{
+		GlFastLoadInfo info;
+		Uint32 bits;
+
+		info.set_channels(1);
+		info.set_rg_format(false);
+
+		info.set_type(type);
+		info.set_format(GL_LUMINANCE);
+		bits = __builtin_popcount(mask);
+		assert((bits % 8) == 0);
+		info.set_size(bits / 8);
+		info.set_swap_size(bits / 8);
+
+		info.set_red_mask(mask);
 		info.set_blue_mask(0);
 		info.set_green_mask(0);
-		info.set_alpha_mask(green_mask);
+		info.set_alpha_mask(0);
 
 		m_flast_load_infos.push_back(info);
 
 		info.set_red_mask(0);
 		info.set_blue_mask(mask);
 		info.set_green_mask(0);
-		info.set_alpha_mask(green_mask);
+		info.set_alpha_mask(0);
 
 		m_flast_load_infos.push_back(info);
 
 		info.set_red_mask(0);
 		info.set_blue_mask(0);
 		info.set_green_mask(mask);
-		info.set_alpha_mask(green_mask);
+		info.set_alpha_mask(0);
 
 		m_flast_load_infos.push_back(info);
 
 		info.set_red_mask(mask);
 		info.set_blue_mask(mask);
 		info.set_green_mask(mask);
+		info.set_alpha_mask(0);
+
+		m_flast_load_infos.push_back(info);
+
+		info.set_red_mask(mask);
+		info.set_blue_mask(mask);
+		info.set_green_mask(mask);
+		info.set_alpha_mask(mask);
+
+		m_flast_load_infos.push_back(info);
+	}
+
+	void CodecManager::add_alpha_gl_pixel_type(const GLenum type,
+		const Uint32 mask)
+	{
+		GlFastLoadInfo info;
+		Uint32 bits;
+
+		info.set_channels(1);
+		info.set_rg_format(false);
+
+		info.set_type(type);
+		info.set_format(GL_ALPHA);
+		bits = __builtin_popcount(mask);
+		assert((bits % 8) == 0);
+		info.set_size(bits / 8);
+		info.set_swap_size(bits / 8);
+
+		info.set_red_mask(0);
+		info.set_blue_mask(0);
+		info.set_green_mask(0);
+		info.set_alpha_mask(mask);
+
+		m_flast_load_infos.push_back(info);
+	}
+
+	void CodecManager::add_luminance_alpha_gl_pixel_type(const GLenum type,
+		const Uint32 mask)
+	{
+		GlFastLoadInfo info;
+		Uint32 bits, green_mask;
+
+		info.set_channels(2);
+		info.set_rg_format(false);
+
+		bits = __builtin_popcount(mask);
+		green_mask = mask << bits;
+
+		info.set_type(type);
+		info.set_format(GL_LUMINANCE_ALPHA);
+		assert((bits % 8) == 0);
+		info.set_size((bits / 8) * 2);
+		info.set_swap_size(bits / 8);
+
+		info.set_red_mask(mask);
+		info.set_green_mask(0);
+		info.set_blue_mask(0);
+		info.set_alpha_mask(green_mask);
+
+		m_flast_load_infos.push_back(info);
+
+		info.set_red_mask(0);
+		info.set_green_mask(mask);
+		info.set_blue_mask(0);
+		info.set_alpha_mask(green_mask);
+
+		m_flast_load_infos.push_back(info);
+
+		info.set_red_mask(0);
+		info.set_green_mask(0);
+		info.set_blue_mask(mask);
 		info.set_alpha_mask(green_mask);
 
 		m_flast_load_infos.push_back(info);
 
 		info.set_red_mask(mask);
-		info.set_blue_mask(green_mask);
-		info.set_green_mask(0);
+		info.set_green_mask(mask);
+		info.set_blue_mask(mask);
+		info.set_alpha_mask(green_mask);
+
+		m_flast_load_infos.push_back(info);
+
+		info.set_red_mask(mask);
+		info.set_green_mask(green_mask);
+		info.set_blue_mask(0);
 		info.set_alpha_mask(0);
 
 		m_flast_load_infos.push_back(info);
@@ -218,6 +358,9 @@ namespace eternal_lands
 	{
 		GlFastLoadInfo info;
 		Uint32 bits;
+
+		info.set_channels(3);
+		info.set_rg_format(false);
 
 		info.set_type(type);
 		info.set_format(GL_RGB);
@@ -248,6 +391,9 @@ namespace eternal_lands
 	{
 		GlFastLoadInfo info;
 		Uint32 bits;
+
+		info.set_channels(4);
+		info.set_rg_format(false);
 
 		info.set_type(type);
 		info.set_format(GL_RGBA);
@@ -291,11 +437,15 @@ namespace eternal_lands
 		add_color_alpha_gl_pixel_type(GL_UNSIGNED_BYTE, 0xFF);
 		add_red_gl_pixel_type(GL_UNSIGNED_BYTE, 0xFF);
 		add_red_green_gl_pixel_type(GL_UNSIGNED_BYTE, 0xFF);
+		add_luminance_gl_pixel_type(GL_UNSIGNED_BYTE, 0xFF);
+		add_alpha_gl_pixel_type(GL_UNSIGNED_BYTE, 0xFF);
+		add_luminance_alpha_gl_pixel_type(GL_UNSIGNED_BYTE, 0xFF);
 	}
 
 	CodecManager::CodecManager()
 	{
 		add_gl_pixel_types();
+		assert(m_flast_load_infos.size() > 0);
 	}
 
 	CodecManager::~CodecManager() throw()
@@ -329,8 +479,8 @@ namespace eternal_lands
 
 	bool CodecManager::is_fast_load_supported(const Uint32 red_mask,
 		const Uint32 green_mask, const Uint32 blue_mask,
-		const Uint32 alpha_mask, GLenum &type, GLenum &format,
-		Uint32 &size, Uint32 &swap_size) const
+		const Uint32 alpha_mask, const bool rg_formats, GLenum &type,
+		GLenum &format, Uint32 &size, Uint32 &swap_size) const
 	{
 		assert(m_flast_load_infos.size() > 0);
 
@@ -339,7 +489,10 @@ namespace eternal_lands
 			if ((info.get_red_mask() == red_mask) &&
 				(info.get_green_mask() == green_mask) &&
 				(info.get_blue_mask() == blue_mask) &&
-				(info.get_alpha_mask() == alpha_mask))
+				(info.get_alpha_mask() == alpha_mask) &&
+				((info.get_rg_format() == rg_formats) ||
+				(info.get_channels() > 2)))
+				
 			{
 				type = info.get_type();
 				format = info.get_format();
@@ -354,7 +507,7 @@ namespace eternal_lands
 
 	bool CodecManager::is_fast_load_supported(const Uint32 red_mask,
 		const Uint32 green_mask, const Uint32 blue_mask,
-		const Uint32 alpha_mask) const
+		const Uint32 alpha_mask, const bool rg_formats) const
 	{
 		assert(m_flast_load_infos.size() > 0);
 
@@ -363,7 +516,9 @@ namespace eternal_lands
 			if ((info.get_red_mask() == red_mask) &&
 				(info.get_green_mask() == green_mask) &&
 				(info.get_blue_mask() == blue_mask) &&
-				(info.get_alpha_mask() == alpha_mask))
+				(info.get_alpha_mask() == alpha_mask) &&
+				((info.get_rg_format() == rg_formats) ||
+				(info.get_channels() > 2)))
 			{
 				return true;
 			}
@@ -373,7 +528,8 @@ namespace eternal_lands
 
 	ImageSharedPtr CodecManager::load_image(const String &name,
 		const FileSystemSharedPtr &file_system,
-		const ImageCompressionTypeSet &compressions) const
+		const ImageCompressionTypeSet &compressions,
+		const bool rg_formats) const
 	{
 		Uint8Array32 magic;
 		boost::array<String, 5> file_names;
@@ -410,7 +566,8 @@ namespace eternal_lands
 				PngImage::check_load(magic) ||
 				JpegImage::check_load(magic))
 			{
-				return load_image(reader, compressions);
+				return load_image(reader, compressions,
+					rg_formats);
 			}
 		}
 
@@ -421,7 +578,8 @@ namespace eternal_lands
 	}
 
 	ImageSharedPtr CodecManager::load_image(const ReaderSharedPtr &reader,
-		const ImageCompressionTypeSet &compressions) const
+		const ImageCompressionTypeSet &compressions,
+		const bool rg_formats) const
 	{
 		Uint8Array32 magic;
 		StringStream str;
@@ -438,17 +596,17 @@ namespace eternal_lands
 		if (DdsImage::check_load(magic))
 		{
 			return DdsImage::load_image(*this, reader,
-				compressions);
+				compressions, rg_formats);
 		}
 
 		if (PngImage::check_load(magic))
 		{
-			return PngImage::load_image(reader);
+			return PngImage::load_image(reader, rg_formats);
 		}
 
 		if (JpegImage::check_load(magic))
 		{
-			return JpegImage::load_image(reader);
+			return JpegImage::load_image(reader, rg_formats);
 		}
 
 		BOOST_FOREACH(const Uint8 value, magic)
@@ -464,8 +622,8 @@ namespace eternal_lands
 	}
 
 	void CodecManager::get_image_information(const ReaderSharedPtr &reader,
-		TextureFormatType &texture_format, Uint32Array3 &sizes,
-		Uint16 &mipmaps) const
+		const bool rg_formats, TextureFormatType &texture_format,
+		Uint32Array3 &sizes, Uint16 &mipmaps) const
 	{
 		Uint8Array32 magic;
 		StringStream str;
@@ -481,7 +639,7 @@ namespace eternal_lands
 
 		if (DdsImage::check_load(magic))
 		{
-			DdsImage::get_image_information(reader,
+			DdsImage::get_image_information(reader, rg_formats,
 				texture_format, sizes, mipmaps);
 
 			return;
@@ -489,7 +647,7 @@ namespace eternal_lands
 
 		if (PngImage::check_load(magic))
 		{
-			PngImage::get_image_information(reader,
+			PngImage::get_image_information(reader, rg_formats,
 				texture_format, sizes, mipmaps);
 
 			return;
@@ -497,7 +655,7 @@ namespace eternal_lands
 
 		if (JpegImage::check_load(magic))
 		{
-			JpegImage::get_image_information(reader,
+			JpegImage::get_image_information(reader, rg_formats,
 				texture_format, sizes, mipmaps);
 
 			return;

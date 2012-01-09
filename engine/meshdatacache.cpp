@@ -12,8 +12,6 @@
 #include "reader.hpp"
 #include "meshdatatool.hpp"
 #include "materialdescription.hpp"
-#include "texturecache.hpp"
-#include "effectcache.hpp"
 #include "logging.hpp"
 #include "indexbuilder.hpp"
 #include "submesh.hpp"
@@ -222,7 +220,7 @@ namespace eternal_lands
 						vst_texture_coordinate_0,
 						index, data);
 
-					index++;
+					++index;
 				}
 			}
 
@@ -356,13 +354,10 @@ namespace eternal_lands
 	};
 
 	MeshDataCache::MeshDataCache(
-		const TextureArrayCacheWeakPtr &texture_array_cache,
 		const FileSystemWeakPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
-		m_texture_array_cache(texture_array_cache),
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
-		assert(!m_texture_array_cache.expired());
 		assert(!m_file_system.expired());
 		assert(m_global_vars.get() != 0);
 	}
@@ -394,17 +389,6 @@ namespace eternal_lands
 			if (!get_global_vars()->get_opengl_3_1())
 			{
 				mesh_data_tool->disable_restart_index();
-			}
-
-			if (!get_global_vars()->get_opengl_3_0())
-			{
-				return;
-			}
-
-			BOOST_FOREACH(MaterialDescription &material, materials)
-			{
-				material.build_layer_index(
-					get_texture_array_cache());
 			}
 
 			return;

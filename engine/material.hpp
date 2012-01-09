@@ -30,7 +30,6 @@ namespace eternal_lands
 			TextureCacheWeakPtr m_texture_cache;
 			EffectSharedPtr m_effect;
 			TextureSharedPtrArray12 m_textures;
-			glm::vec4 m_layer_index;
 			bool m_shadow;
 			bool m_culling;
 
@@ -89,12 +88,6 @@ namespace eternal_lands
 				return m_effect;
 			}
 
-			inline void set_layer_index(
-				const glm::vec4 &layer_index)
-			{
-				m_layer_index = layer_index;
-			}
-
 			inline void set_shadow(const bool shadow)
 			{
 				m_shadow = shadow;
@@ -103,11 +96,6 @@ namespace eternal_lands
 			inline void set_culling(const bool culling)
 			{
 				m_culling = culling;
-			}
-
-			inline const glm::vec4 &get_layer_index() const
-			{
-				return m_layer_index;
 			}
 
 			inline bool get_shadow() const

@@ -116,7 +116,8 @@ namespace eternal_lands
 				el_error_mgr m_jerr;
 
 				static TextureFormatType get_texture_format(
-					const J_COLOR_SPACE color_space);
+					const J_COLOR_SPACE color_space,
+					const bool rg_formats);
 				static J_COLOR_SPACE get_color_space(
 					const J_COLOR_SPACE color_space);
 
@@ -124,9 +125,11 @@ namespace eternal_lands
 				JpegDecompress();
 				~JpegDecompress();
 				ImageSharedPtr get_image(
-					const ReaderSharedPtr &reader);
+					const ReaderSharedPtr &reader,
+					const bool rg_formats);
 				void get_image_information(
 					const ReaderSharedPtr &reader,
+					const bool rg_formats,
 					TextureFormatType &texture_format,
 					Uint32Array3 &sizes, Uint16 &mipmaps);
 
@@ -149,7 +152,7 @@ namespace eternal_lands
 		}
 
 		ImageSharedPtr JpegDecompress::get_image(
-			const ReaderSharedPtr &reader)
+			const ReaderSharedPtr &reader, const bool rg_formats)
 		{
 			ImageSharedPtr image;
 			JSAMPROW rowptr[1];
@@ -181,7 +184,7 @@ namespace eternal_lands
 			jpeg_calc_output_dimensions(&m_cinfo);
 
 			texture_format = get_texture_format(
-				m_cinfo.jpeg_color_space);
+				m_cinfo.jpeg_color_space, rg_formats);
 
 			sizes[0] = m_cinfo.output_width;
 			sizes[1] = m_cinfo.output_height;
@@ -207,12 +210,18 @@ namespace eternal_lands
 		}
 
 		TextureFormatType JpegDecompress::get_texture_format(
-			const J_COLOR_SPACE color_space)
+			const J_COLOR_SPACE color_space,
+			const bool rg_formats)
 		{
 			switch (color_space)
 			{
 				case JCS_GRAYSCALE:
-					return tft_r8;
+					if (rg_formats)
+					{
+						return tft_r8;
+					}
+
+					return tft_l8;
 				case JCS_RGB:
 				case JCS_YCbCr:
 				case JCS_CMYK:
@@ -245,7 +254,7 @@ namespace eternal_lands
 		}
 
 		void JpegDecompress::get_image_information(
-			const ReaderSharedPtr &reader,
+			const ReaderSharedPtr &reader, const bool rg_formats,
 			TextureFormatType &texture_format, Uint32Array3 &sizes,
 			Uint16 &mipmaps)
 		{
@@ -267,7 +276,7 @@ namespace eternal_lands
 			jpeg_read_header(&m_cinfo, true);
 
 			texture_format = get_texture_format(
-				m_cinfo.jpeg_color_space);
+				m_cinfo.jpeg_color_space, rg_formats);
 
 			sizes[0] = m_cinfo.output_width;
 			sizes[1] = m_cinfo.output_height;
@@ -278,21 +287,22 @@ namespace eternal_lands
 
 	}
 
-	ImageSharedPtr JpegImage::load_image(const ReaderSharedPtr &reader)
+	ImageSharedPtr JpegImage::load_image(const ReaderSharedPtr &reader,
+		const bool rg_formats)
 	{
 		JpegDecompress jpeg_decompress;
 
-		return jpeg_decompress.get_image(reader);
+		return jpeg_decompress.get_image(reader, rg_formats);
 	}
 
 	void JpegImage::get_image_information(const ReaderSharedPtr &reader,
-		TextureFormatType &texture_format, Uint32Array3 &sizes,
-		Uint16 &mipmaps)
+		const bool rg_formats, TextureFormatType &texture_format,
+		Uint32Array3 &sizes, Uint16 &mipmaps)
 	{
 		JpegDecompress jpeg_decompress;
 
-		jpeg_decompress.get_image_information(reader, texture_format,
-			sizes, mipmaps);
+		jpeg_decompress.get_image_information(reader, rg_formats,
+			texture_format, sizes, mipmaps);
 	}
 
 	bool JpegImage::check_load(const Uint8Array32 &id)

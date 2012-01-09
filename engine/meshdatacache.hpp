@@ -35,22 +35,9 @@ namespace eternal_lands
 			typedef std::map<String, MeshDataCacheItem>
 				MeshDataCacheMap;
 
-			const TextureArrayCacheWeakPtr m_texture_array_cache;
 			const FileSystemWeakPtr m_file_system;
 			const GlobalVarsSharedPtr m_global_vars;
 			MeshDataCacheMap m_mesh_data_cache;
-
-			inline TextureArrayCacheSharedPtr
-				get_texture_array_cache() const
-			{
-				TextureArrayCacheSharedPtr result;
-
-				result = m_texture_array_cache.lock();
-
-				assert(result.get() != 0);
-
-				return result;
-			}
 
 			inline FileSystemSharedPtr get_file_system() const
 			{
@@ -77,9 +64,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			MeshDataCache(const TextureArrayCacheWeakPtr
-					&texture_array_cache,
-				const FileSystemWeakPtr &file_system,
+			MeshDataCache(const FileSystemWeakPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
 
 			/**

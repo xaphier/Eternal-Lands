@@ -152,6 +152,12 @@ namespace eternal_lands
 				const Uint32 index) const;
 
 			/**
+			 * Returns the number of sub meshs.
+			 * @result The sub mesh count.
+			 */
+			Uint32 get_sub_mesh_count() const;
+
+			/**
 			 * Disables the use of restart index and converts the
 			 * primitive type to pt_triangles when needed.
 			 */

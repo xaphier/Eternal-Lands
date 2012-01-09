@@ -411,7 +411,6 @@ namespace eternal_lands
 		const Uint32 material_index, const StringType &dir)
 	{
 		MaterialDescription material;
-		ReaderSharedPtr reader;
 		StringType name;
 		String file_name;
 		Uint32 options;
@@ -426,6 +425,10 @@ namespace eternal_lands
 		file_name = String(dir + name);
 
 		material.set_texture(file_name, stt_diffuse_0);
+		material.set_texture(String(UTF8("textures/gray.dds")),
+			stt_normal_0);
+		material.set_texture(String(UTF8("textures/white.dds")),
+			stt_specular_0);
 
 		if (options != 0)
 		{
@@ -440,7 +443,7 @@ namespace eternal_lands
 		file_name = FileSystem::get_file_name_without_extension(
 			file_name).get() + UTF8(".xml");
 
-		if (!file_system->get_file_if_readable(file_name, reader))
+		if (!file_system->get_file_readable(file_name))
 		{
 			LOG_ERROR(UTF8("No material file '%1%' found"),
 				file_name);
@@ -448,7 +451,7 @@ namespace eternal_lands
 			return material;
 		}
 
-		material.load_xml(reader);
+		material.load_xml(file_system, file_name);
 
 		return material;
 	}

@@ -354,6 +354,10 @@ namespace eternal_lands
 
 		material.set_texture(String(str + texture.get()),
 			stt_diffuse_0);
+		material.set_texture(String(UTF8("textures/gray.dds")),
+			stt_normal_0);
+		material.set_texture(String(UTF8("textures/white.dds")),
+			stt_specular_0);
 		material.set_effect(String(UTF8("mesh_transparent")));
 		material.set_culling(false);
 

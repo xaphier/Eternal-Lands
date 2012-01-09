@@ -28,16 +28,19 @@ namespace eternal_lands
 		public:
 			static void get_image_information(
 				const ReaderSharedPtr &reader,
+				const bool rg_formats,
 				TextureFormatType &texture_format,
 				Uint32Array3 &sizes, Uint16 &mipmaps);
 			static ImageSharedPtr load_image(
 				const CodecManager &codec_manager,
 				const ReaderSharedPtr &reader,
-				const ImageCompressionTypeSet &compression);
+				const ImageCompressionTypeSet &compression,
+				const bool rg_formats);
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();
 			static void check_all_fourcc_support(
-				const CodecManager &codec_manager);
+				const CodecManager &codec_manager,
+				const bool rg_formats);
 
 	};
 

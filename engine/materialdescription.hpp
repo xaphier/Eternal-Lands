@@ -28,7 +28,6 @@ namespace eternal_lands
 		private:
 			String m_effect;
 			StringArray12 m_textures;
-			glm::vec4 m_layer_index;
 			bool m_shadow;
 			bool m_culling;
 
@@ -36,10 +35,8 @@ namespace eternal_lands
 				const MaterialDescription &material) const;
 			bool compare_non_textures(
 				const MaterialDescription &material) const;
-			void build_layer_index(const TextureArrayCacheSharedPtr
-				&texture_array_cache,
-					const ShaderTextureType texture_type);
-			void load_xml(const xmlNodePtr node);
+			void load_xml(const String &dir,
+				const xmlNodePtr node);
 
 		public:
 			MaterialDescription();
@@ -55,7 +52,6 @@ namespace eternal_lands
 				const;
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
-			void load_xml(const ReaderSharedPtr &reader);
 
 			/**
 			 * @brief 
@@ -77,8 +73,6 @@ namespace eternal_lands
 			 */
 			bool can_merge(const MaterialDescription &material)
 				const;
-			void build_layer_index(const TextureArrayCacheSharedPtr
-				&texture_array_cache);
 
 			inline void set_effect(const String &effect)
 			{
@@ -106,12 +100,6 @@ namespace eternal_lands
 				return m_effect;
 			}
 
-			inline void set_layer_index(
-				const glm::vec4 &layer_index)
-			{
-				m_layer_index = layer_index;
-			}
-
 			inline void set_shadow(const bool shadow)
 			{
 				m_shadow = shadow;
@@ -120,11 +108,6 @@ namespace eternal_lands
 			inline void set_culling(const bool culling)
 			{
 				m_culling = culling;
-			}
-
-			inline const glm::vec4 &get_layer_index() const
-			{
-				return m_layer_index;
 			}
 
 			inline bool get_shadow() const

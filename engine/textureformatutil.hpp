@@ -176,13 +176,13 @@ namespace eternal_lands
 		 */
 		tft_r_rgtc1,
 		/**
-		 * RGTC2 compression
-		 */
-		tft_rg_rgtc2,
-		/**
 		 * Signed RGTC1 compression
 		 */
 		tft_signed_r_rgtc1,
+		/**
+		 * RGTC2 compression
+		 */
+		tft_rg_rgtc2,
 		/**
 		 * Signed RGTC2 compression
 		 */
@@ -234,7 +234,27 @@ namespace eternal_lands
 		/**
 		 * Red, green and blue sRGB color space values and alpha compressed with DXT5
 		 */
-		tft_srgb_a_dxt5
+		tft_srgb_a_dxt5,
+		/**
+		 * Luminance 8 bit, alpha 0
+		 */
+		tft_l8,
+		/**
+		 * Alpha 8
+		 */
+		tft_a8,
+		/**
+		 * Luminance 8 bit, alpha 8
+		 */
+		tft_la8,
+		/**
+		 * Luminance 16 bit, alpha 0
+		 */
+		tft_l16,
+		/**
+		 * Luminance 16 bit, alpha 16
+		 */
+		tft_la16
 	};
 	/**
 	 * @}

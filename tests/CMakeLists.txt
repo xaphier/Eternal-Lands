@@ -90,24 +90,3 @@ foreach(FILE_NAME ${enum})
 	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
 endforeach(FILE_NAME)
 
-foreach(NAME check_glm)
-	file(GLOB ${NAME}_header_files ${NAME}/*.hpp)
-	file(GLOB ${NAME}_cpp_files ${NAME}/*.cpp)
-
-	add_executable(${NAME} ${${NAME}_cpp_files} ${${NAME}_header_files})
-
-	target_link_libraries(${NAME} elengine)
-	target_link_libraries(${NAME} elluac++)
-	target_link_libraries(${NAME} ${CAL3D_LIBRARIES})
-	target_link_libraries(${NAME} ${JPEG_LIBRARIES})
-	target_link_libraries(${NAME} ${PNG_LIBRARIES})
-	target_link_libraries(${NAME} ${ZLIB_LIBRARIES})
-	target_link_libraries(${NAME} ${Boost_LIBRARIES})
-	target_link_libraries(${NAME} ${OPENGL_LIBRARIES})
-	target_link_libraries(${NAME} ${ICONV_LIBRARIES})
-	target_link_libraries(${NAME} ${LIBXML2_LIBRARIES})
-	target_link_libraries(${NAME} ${CMAKE_THREAD_LIBS_INIT})
-
-	add_test(${NAME} ${EXECUTABLE_OUTPUT_PATH}/${NAME})
-endforeach(NAME)
-

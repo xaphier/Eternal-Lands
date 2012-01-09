@@ -71,7 +71,8 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			TextureFontCache(const FileSystemSharedPtr &file_system,
+			TextureFontCache(const GlobalVarsSharedPtr &global_vars,
+				const FileSystemSharedPtr &file_system,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const Uint16 width, const Uint16 height,
 				const Uint16 max_char_count);

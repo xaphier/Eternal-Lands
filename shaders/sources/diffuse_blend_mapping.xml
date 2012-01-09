@@ -30,14 +30,6 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>vertex_color</name>
-     <source></source>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>diffuse</name>
      <source></source>
      <type>vec4</type>
@@ -47,7 +39,8 @@
     </parameter>
    </parameters>
    <source>{
-	diffuse = mix(texture2D(diffuse_sampler_0, fragment_uv), texture2D(diffuse_sampler_1, fragment_uv), vertex_color.a);
+	diffuse = texture2D(diffuse_sampler_1, fragment_uv);
+	diffuse = mix(texture2D(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
 }
 </source>
    <glsl_120>true</glsl_120>
@@ -69,7 +62,7 @@
     <parameter>
      <name>diffuse_sampler_0</name>
      <source></source>
-     <type>sampler2DArray</type>
+     <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -77,15 +70,7 @@
     <parameter>
      <name>diffuse_sampler_1</name>
      <source></source>
-     <type>sampler2DArray</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>vertex_color</name>
-     <source></source>
-     <type>vec4</type>
+     <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -94,13 +79,14 @@
      <name>diffuse</name>
      <source></source>
      <type>vec4</type>
-     <qualifier>out</qualifier>
+     <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
    <source>{
-	diffuse = mix(texture(diffuse_sampler_0, vec3(fragment_uv, layer.x)), texture(diffuse_sampler_1, vec3(fragment_uv, layer.x)), vertex_color.a);
+	diffuse = texture(diffuse_sampler_1, fragment_uv);
+	diffuse = mix(texture(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
 }
 </source>
    <glsl_120>false</glsl_120>

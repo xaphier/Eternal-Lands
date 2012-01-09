@@ -23,10 +23,12 @@ namespace eternal_lands
 		public:
 			static void get_image_information(
 				const ReaderSharedPtr &reader,
+				const bool rg_formats,
 				TextureFormatType &texture_format,
 				Uint32Array3 &sizes, Uint16 &mipmaps);
 			static ImageSharedPtr load_image(
-				const ReaderSharedPtr &reader);
+				const ReaderSharedPtr &reader,
+				const bool rg_formats);
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();
 
@@ -35,4 +37,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_5065f478_d8e2_4f81_b495_ef442b38f63e */
-

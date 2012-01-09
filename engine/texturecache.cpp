@@ -15,8 +15,6 @@
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
 #include "globalvars.hpp"
-#include "texturearray.hpp"
-#include "texturearraycache.hpp"
 
 namespace eternal_lands
 {
@@ -182,52 +180,13 @@ namespace eternal_lands
 
 	}
 
-	class TextureCache::TextureArrayLayer
-	{
-		private:
-			TextureSharedPtr m_texture;
-			Uint16 m_layer;
-
-		public:
-			inline TextureArrayLayer():
-				m_layer(std::numeric_limits<Uint16>::max())
-			{
-			}
-
-			inline TextureArrayLayer(
-				const TextureSharedPtr &texture,
-				const Uint16 layer): m_texture(texture),
-				m_layer(layer)
-			{
-				assert(texture.get() != 0);
-			}
-
-			inline ~TextureArrayLayer() throw()
-			{
-			}
-
-			inline const TextureSharedPtr &get_texture() const
-			{
-				return m_texture;
-			}
-
-			inline Uint16 get_layer() const
-			{
-				return m_layer;
-			}
-
-	};
-
 	TextureCache::TextureCache(const CodecManagerWeakPtr &codec_manager,
-		const TextureArrayCacheWeakPtr &texture_array_cache,
 		const FileSystemWeakPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
-		m_codec_manager(codec_manager),
-		m_texture_array_cache(texture_array_cache),
-		m_file_system(file_system), m_global_vars(global_vars)
+		m_codec_manager(codec_manager), m_file_system(file_system),
+		m_global_vars(global_vars)
 	{
 		assert(!m_codec_manager.expired());
-		assert(!m_texture_array_cache.expired());
 		assert(!m_file_system.expired());
 		assert(m_global_vars.get() != 0);
 	}
@@ -253,97 +212,30 @@ namespace eternal_lands
 		TextureSharedPtr texture;
 		ReaderSharedPtr reader;
 		ImageCompressionTypeSet compressions;
+		bool rg_formats;
 
 		if (GLEW_EXT_texture_compression_s3tc)
 		{
 			compressions.insert(ict_s3tc);
 		}
+
+		rg_formats = false;
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			compressions.insert(ict_rgtc);
+			rg_formats = true;
 		}
 
 		reader = get_file_system()->get_file(name);
 
-		image = get_codec_manager()->load_image(reader, compressions);
+		image = get_codec_manager()->load_image(reader, compressions,
+			rg_formats);
 		texture = boost::make_shared<Texture>(index);
-
-		if (get_global_vars()->get_opengl_3_0())
-		{
-			texture->set_target(ttt_2d_texture_array);
-		}
-
 		texture->set_format(image->get_texture_format());
 		texture->set_image(image);
 
 		return texture;
-	}
-
-	TextureSharedPtr TextureCache::load(const TextureArray &texture_array)
-		const
-	{
-		ImageSharedPtrVector images;
-		TextureSharedPtr texture;
-		ReaderSharedPtr reader;
-		ImageCompressionTypeSet compressions;
-
-		if (GLEW_EXT_texture_compression_s3tc)
-		{
-			compressions.insert(ict_s3tc);
-		}
-
-		compressions.insert(ict_rgtc);
-
-		BOOST_FOREACH(const String &file_name,
-			texture_array.get_file_names())
-		{
-			reader = get_file_system()->get_file(file_name);
-
-			images.push_back(get_codec_manager()->load_image(
-				reader, compressions));
-		}
-
-		texture = boost::make_shared<Texture>(texture_array.get_name());
-		texture->set_target(ttt_2d_texture_array);
-		texture->set_format(texture_array.get_format());
-		texture->set_width(texture_array.get_width());
-		texture->set_height(texture_array.get_height());
-		texture->set_images(texture_array.get_mipmaps(), images);
-
-		return texture;
-	}
-
-	void TextureCache::add(const TextureArray &array)
-	{
-		TextureSharedPtr texture;
-		String index;
-		Uint16 layer;
-
-		if (!get_global_vars()->get_opengl_3_0())
-		{
-			return;
-		}
-
-		texture = load(array);
-
-		assert(texture.get() != 0);
-		assert(array.get_name() == texture->get_name());
-
-		m_texture_cache[array.get_name()] = texture;
-
-		layer = 0;
-
-		BOOST_FOREACH(const String &file_name, array.get_file_names())
-		{
-			index = FileSystem::get_file_name_without_extension(
-				file_name);
-
-			m_texture_arrays[index] = TextureArrayLayer(texture,
-				layer);
-
-			++layer;
-		}
 	}
 
 	TextureSharedPtr TextureCache::load_texture(const String &name,
@@ -386,35 +278,6 @@ namespace eternal_lands
 		else
 		{
 			return found->second;
-		}
-	}
-
-	const TextureSharedPtr &TextureCache::get_texture(
-		const String &name, float &layer)
-	{
-		StringTextureArrayLayerMap::const_iterator found;
-		String index;
-
-		index = FileSystem::get_file_name_without_extension(name);
-
-		found = m_texture_arrays.find(index);
-
-		if (found != m_texture_arrays.end())
-		{
-			layer = found->second.get_layer();
-
-			return found->second.get_texture();
-		}
-
-		return get_texture(name);
-	}
-
-	void TextureCache::add_texture_arrays()
-	{
-		BOOST_FOREACH(const TextureArray &array,
-			get_texture_array_cache()->get_texture_arrays())
-		{
-			add(array);
 		}
 	}
 

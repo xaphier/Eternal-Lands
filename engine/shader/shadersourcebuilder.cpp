@@ -8,7 +8,6 @@
 #include "shadersourcebuilder.hpp"
 #include "exceptions.hpp"
 #include "autoparameterutil.hpp"
-#include "lua.hpp"
 #include "vertexelement.hpp"
 #include "logging.hpp"
 #include "globalvars.hpp"
@@ -21,6 +20,8 @@
 #include "glsl_optimizer/glsl/glsl_optimizer.h"
 #include "xmlreader.hpp"
 #include "effect.hpp"
+#include "xmlreader.hpp"
+#include "xmlutil.hpp"
 
 namespace eternal_lands
 {
@@ -550,7 +551,7 @@ namespace eternal_lands
 		ssbot_world_uv,
 		ssbot_fragment_uv,
 		ssbot_view_position,
-		ssbot_layer_index,
+		ssbot_tbn_matrix,
 		ssbot_fog
 	};
 
@@ -692,12 +693,10 @@ namespace eternal_lands
 	};
 
 	ShaderSourceBuilder::ShaderSourceBuilder(
-		const GlobalVarsSharedPtr &global_vars,
-		const FileSystemWeakPtr &file_system):
-		m_global_vars(global_vars), m_file_system(file_system)
+		const GlobalVarsSharedPtr &global_vars):
+		m_global_vars(global_vars)
 	{
 		assert(m_global_vars.get() != 0);
-		assert(!m_file_system.expired());
 
 		m_optimizer.reset(new ShaderSourceOptimizer());
 
@@ -712,7 +711,8 @@ namespace eternal_lands
 	{
 	}
 
-	void ShaderSourceBuilder::load_file(const String &file_name)
+	void ShaderSourceBuilder::load_shader_source(
+		const FileSystemSharedPtr &file_system, const String &file_name)
 	{
 		std::auto_ptr<ShaderSource> shader_source;
 		ShaderSourceTypeStringPair index;
@@ -721,7 +721,7 @@ namespace eternal_lands
 		{
 			shader_source.reset(new ShaderSource());
 
-			shader_source->load_xml(get_file_system(), file_name);
+			shader_source->load_xml(file_system, file_name);
 
 			index.first = shader_source->get_type();
 			index.second = shader_source->get_name();
@@ -736,86 +736,181 @@ namespace eternal_lands
 		}
 	}
 
-	void ShaderSourceBuilder::load(const String &file_name)
+	void ShaderSourceBuilder::load_shader_sources(
+		const FileSystemSharedPtr &file_system, const xmlNodePtr node)
 	{
-		Lua lua;
-		String file;
-		ShaderSource shader_source;
+		xmlNodePtr it;
+		String name, file_name;
 
-		lua.do_string(get_file_system()->get_file_string(file_name),
-			file_name);
-
-		/**
-		 * Fetch the string from the Lua context and make sure
-		 * it exists:
-		 */
-		lua.get_global("files");
-
-		if (!lua.is_table(-1))
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("shader_sources"))
+			!= 0)
 		{
-			lua.pop(1);
 			return;
 		}
 
-		lua.push_nil();
-
-		while (lua.next(-2))
+		if (!XmlUtil::has_children(node, true))
 		{
-			if (lua.is_string(-1))
-			{
-				file = lua.to_string(-1);
-				load_file(file);
-			}
-
-			lua.pop(1);
+			return;
 		}
 
-		lua.pop(1);
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("shader_source"))
+				== 0)
+			{
+				load_shader_source(file_system,
+					XmlUtil::get_string_value(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
 	}
 
-	void ShaderSourceBuilder::load_default(const String &file_name)
+	void ShaderSourceBuilder::load_source(const xmlNodePtr node)
 	{
-		Lua lua;
-		String tmp;
-		Uint32 i, count;
-		ShaderSourceType shader_source_type;
+		xmlNodePtr it;
+		String name, value;
 
-		lua.do_string(get_file_system()->get_file_string(file_name),
-			file_name);
-
-		m_sources.clear();
-
-		// Fetch the table from the Lua context and make sure it exists:
-		lua.get_global("defaults");
-
-		if (!lua.is_table(-1))
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("source")) != 0)
 		{
-			lua.pop(1);
-
 			return;
 		}
 
-		count = ShaderSourceUtil::get_shader_source_count();
-
-		for (i = 0; i < count; ++i)
+		if (!XmlUtil::has_children(node, true))
 		{
-			shader_source_type =
-				static_cast<ShaderSourceType>(i);
+			return;
+		}
 
-			tmp = ShaderSourceUtil::get_str(shader_source_type);
+		it = XmlUtil::children(node, true);
 
-			lua.push_string(tmp);
-			lua.get_table(-2);
-
-			if (lua.is_string(-1))
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
 			{
-				m_sources[shader_source_type] =
-					lua.to_string(-1);
+				name = XmlUtil::get_string_value(it);
 			}
 
-			lua.pop(1);
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("value")) == 0)
+			{
+				value = XmlUtil::get_string_value(it);
+			}
 		}
-		lua.pop(2);
+		while (XmlUtil::next(it, true));
+
+		m_sources[ShaderSourceUtil::get_shader_source(name)] = value;
+	}
+
+	void ShaderSourceBuilder::load_sources(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+		String name, file_name;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("sources")) != 0)
+		{
+			return;
+		}
+
+		if (!XmlUtil::has_children(node, true))
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("source")) == 0)
+			{
+				load_source(it);
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
+	void ShaderSourceBuilder::load_xml(
+		const FileSystemSharedPtr &file_system, const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+		String name, file_name;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("shaders")) != 0)
+		{
+			return;
+		}
+
+		if (!XmlUtil::has_children(node, true))
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		m_shadow_scale = 0.8f;
+		m_vertex_light_count = 4;
+		m_fragment_light_count = 4;
+		m_bone_count = 72;
+		m_dynamic_light_count = false;
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("shadow_scale"))
+				== 0)
+			{
+				m_shadow_scale = XmlUtil::get_float_value(it);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("vertex_light_count")) == 0)
+			{
+				m_vertex_light_count =
+					XmlUtil::get_uint16_value(it);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("fragment_light_count")) == 0)
+			{
+				m_fragment_light_count =
+					XmlUtil::get_uint16_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("bone_count"))
+				== 0)
+			{
+				m_bone_count = XmlUtil::get_uint16_value(it);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("dynamic_light_count")) == 0)
+			{
+				m_dynamic_light_count =
+					XmlUtil::get_bool_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("sources"))
+				== 0)
+			{
+				load_sources(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("shader_sources"))
+				== 0)
+			{
+				load_shader_sources(file_system, it);
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
+	void ShaderSourceBuilder::load_xml(
+		const FileSystemSharedPtr &file_system, const String &file_name)
+	{
+		XmlReaderSharedPtr xml_reader;
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			file_name));
+
+		load_xml(file_system, xml_reader->get_root_node());
 	}
 
 	bool ShaderSourceBuilder::build_function(
@@ -833,6 +928,8 @@ namespace eternal_lands
 
 		if (index == data.get_sources().end())
 		{
+			LOG_DEBUG(UTF8("Shader source type not found %1%"),
+				shader_source_type);
 			return false;
 		}
 
@@ -840,6 +937,8 @@ namespace eternal_lands
 
 		if (found == m_shader_sources.end())
 		{
+			LOG_DEBUG(UTF8("Shader source type not found "
+				"%1%-%2%"), index->first % index->second);
 			return false;
 		}
 
@@ -1141,13 +1240,6 @@ namespace eternal_lands
 				main, globals, values);
 		}
 
-
-		if (data.get_option(ssbot_layer_index))
-		{
-			build_function(data, array_sizes, locals,
-				sst_layer_index, main, globals, values);
-		}
-
 		main << UTF8("}\n");
 	}
 
@@ -1169,6 +1261,12 @@ namespace eternal_lands
 		{
 			build_function(data, array_sizes, locals,
 				sst_view_direction, main, globals, values);
+		}
+
+		if (data.get_option(ssbot_tbn_matrix))
+		{
+			build_function(data, array_sizes, locals,
+				sst_tbn_matrix, main, globals, values);
 		}
 
 		if ((data.get_shader_build_type() != sbt_color) ||
@@ -1384,9 +1482,9 @@ namespace eternal_lands
 				sst_view_direction);
 		}
 
-		if (data.get_option(ssbot_layer_index))
+		if (data.get_option(ssbot_tbn_matrix))
 		{
-			result |= check_function(data, name, sst_layer_index);
+			result |= check_function(data, name, sst_tbn_matrix);
 		}
 
 		if ((data.get_shader_build_type() != sbt_color) ||
@@ -1434,6 +1532,16 @@ namespace eternal_lands
 		if (data.get_shader_build_type() == sbt_shadow)
 		{
 			result |= check_function(data, name, sst_shadow_map);
+		}
+
+		if (result)
+		{
+			LOG_DEBUG(UTF8("Common parameter '%1%' used."), name);
+		}
+		else
+		{
+			LOG_DEBUG(UTF8("Common parameter '%1%' not used."),
+				name);
 		}
 
 		return result;
@@ -1565,8 +1673,8 @@ namespace eternal_lands
 			cpt_fragment_uv));
 		data.set_option(ssbot_world_uv, get_source_parameter(data,
 			cpt_world_uv));
-		data.set_option(ssbot_layer_index, get_source_parameter(data,
-			cpt_layer));
+		data.set_option(ssbot_tbn_matrix, get_source_parameter(data,
+			cpt_tbn_matrix));
 		data.set_option(ssbot_view_position, get_source_parameter(data,
 			cpt_view_position));
 		data.set_option(ssbot_tangent, get_source_parameter(data,

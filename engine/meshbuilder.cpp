@@ -20,24 +20,18 @@ namespace eternal_lands
 	namespace
 	{
 
+		const bool use_tangent = true;
+
 		const String vertex_format_type_names[] =
 		{
 			String(UTF8("mesh")),
 			String(UTF8("animated_mesh")),
 			String(UTF8("morph_mesh")),
 			String(UTF8("instanced_mesh")),
-			String(UTF8("mesh_tangent")),
-			String(UTF8("animated_mesh_tangent")),
-			String(UTF8("morph_mesh_tangent")),
-			String(UTF8("instanced_mesh_tangent")),
 			String(UTF8("mesh_extra_uv")),
 			String(UTF8("animated_mesh_extra_uv")),
 			String(UTF8("morph_mesh_extra_uv")),
 			String(UTF8("instanced_mesh_extra_uv")),
-			String(UTF8("mesh_tangent_extra_uv")),
-			String(UTF8("animated_mesh_tangent_extra_uv")),
-			String(UTF8("morph_mesh_tangent_extra_uv")),
-			String(UTF8("instanced_mesh_tangent_extra_uv")),
 			String(UTF8("sprite")),
 			String(UTF8("font"))
 		};
@@ -51,9 +45,7 @@ namespace eternal_lands
 		m_global_vars(global_vars)
 	{
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
-		VertexDescriptionMap instanced_mesh, mesh_tangent;
-		VertexDescriptionMap animated_mesh_tangent, morph_mesh_tangent;
-		VertexDescriptionMap instanced_mesh_tangent, sprite, font;
+		VertexDescriptionMap instanced_mesh, sprite, font;
 		VertexElementType position, texture_coordinate, normal;
 
 		if (get_global_vars()->get_opengl_3_0() || GLEW_ARB_half_float_vertex)
@@ -84,11 +76,6 @@ namespace eternal_lands
 		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
 		instanced_mesh[vst_color] = vet_ubyte4_normalized;
 
-		if (get_global_vars()->get_opengl_3_0())
-		{
-			instanced_mesh[vst_layer_index] = vet_ubyte4;
-		}
-
 		sprite[vst_position] = position;
 		sprite[vst_texture_coordinate_0] = vet_ushort2_normalized;
 
@@ -113,16 +100,14 @@ namespace eternal_lands
 		morph_mesh[vst_morph_normal] = normal;
 		instanced_mesh[vst_normal] = normal;
 
-		mesh_tangent = mesh;
-		animated_mesh_tangent = animated_mesh;
-		morph_mesh_tangent = morph_mesh;
-		instanced_mesh_tangent = instanced_mesh;
-
-		mesh_tangent[vst_tangent] = normal;
-		animated_mesh_tangent[vst_tangent] = normal;
-		morph_mesh_tangent[vst_tangent] = normal;
-		morph_mesh_tangent[vst_morph_tangent] = normal;
-		instanced_mesh_tangent[vst_tangent] = normal;
+		if (use_tangent)
+		{
+			mesh[vst_tangent] = normal;
+			animated_mesh[vst_tangent] = normal;
+			morph_mesh[vst_tangent] = normal;
+			morph_mesh[vst_morph_tangent] = normal;
+			instanced_mesh[vst_tangent] = normal;
+		}
 
 		set_format(vft_sprite, VertexElements(sprite));
 		set_format(vft_font, VertexElements(font));
@@ -132,29 +117,11 @@ namespace eternal_lands
 		set_format(vft_morph_mesh, VertexElements(morph_mesh));
 		set_format(vft_instanced_mesh, VertexElements(instanced_mesh));
 
-		set_format(vft_mesh_tangent, VertexElements(mesh_tangent));
-		set_format(vft_animated_mesh_tangent,
-			VertexElements(animated_mesh_tangent));
-		set_format(vft_morph_mesh_tangent,
-			VertexElements(morph_mesh_tangent));
-		set_format(vft_instanced_mesh_tangent,
-			VertexElements(instanced_mesh_tangent));
-
 		mesh[vst_texture_coordinate_1] = texture_coordinate;
 		animated_mesh[vst_texture_coordinate_1] = texture_coordinate;
 		morph_mesh[vst_texture_coordinate_1] = texture_coordinate;
 		morph_mesh[vst_morph_texture_coordinate_1] = texture_coordinate;
 		instanced_mesh[vst_texture_coordinate_1] = texture_coordinate;
-
-		mesh_tangent[vst_texture_coordinate_1] = texture_coordinate;
-		animated_mesh_tangent[vst_texture_coordinate_1] =
-			texture_coordinate;
-		morph_mesh_tangent[vst_texture_coordinate_1] =
-			texture_coordinate;
-		morph_mesh_tangent[vst_morph_texture_coordinate_1] =
-			texture_coordinate;
-		instanced_mesh_tangent[vst_texture_coordinate_1] =
-			texture_coordinate;
 
 		set_format(vft_mesh_extra_uv, VertexElements(mesh));
 		set_format(vft_animated_mesh_extra_uv,
@@ -163,15 +130,6 @@ namespace eternal_lands
 			VertexElements(morph_mesh));
 		set_format(vft_instanced_mesh_extra_uv,
 			VertexElements(instanced_mesh));
-
-		set_format(vft_mesh_tangent_extra_uv,
-			VertexElements(mesh_tangent));
-		set_format(vft_animated_mesh_tangent_extra_uv,
-			VertexElements(animated_mesh_tangent));
-		set_format(vft_morph_mesh_tangent_extra_uv,
-			VertexElements(morph_mesh_tangent));
-		set_format(vft_instanced_mesh_tangent_extra_uv,
-			VertexElements(instanced_mesh_tangent));
 	}
 
 	MeshBuilder::~MeshBuilder() throw()

@@ -64,17 +64,20 @@ namespace eternal_lands
 				TextureFormatType get_texture_format(
 					const Uint32 color_type,
 					const Uint32 bit_depth,
-					const bool sRGB) const;
+					const bool sRGB, const bool rg_formats)
+					const;
 
 			public:
 				PngDecompress();
 				~PngDecompress() throw();
 
 				ImageSharedPtr get_image(
-					const ReaderSharedPtr &reader);
+					const ReaderSharedPtr &reader,
+					const bool rg_formats);
 
 				void get_image_information(
 					const ReaderSharedPtr &reader,
+					const bool rg_formats,
 					TextureFormatType &texture_format,
 					Uint32Array3 &sizes, Uint16 &mipmaps);
 
@@ -112,7 +115,7 @@ namespace eternal_lands
 		}
 
 		ImageSharedPtr PngDecompress::get_image(
-			const ReaderSharedPtr &reader)
+			const ReaderSharedPtr &reader, const bool rg_formats)
 		{
 			ImageSharedPtr image;
 			boost::scoped_array<png_bytep> row_pointers;
@@ -145,7 +148,7 @@ namespace eternal_lands
 
 			texture_format = get_texture_format(color_type,
 				bit_depth, png_get_valid(m_png_ptr, m_info_ptr,
-					PNG_INFO_sRGB));
+					PNG_INFO_sRGB), rg_formats);
 
 			image = boost::make_shared<Image>(reader->get_name(),
 				false, texture_format, sizes, 0);
@@ -174,7 +177,7 @@ namespace eternal_lands
 		}
 
 		void PngDecompress::get_image_information(
-			const ReaderSharedPtr &reader,
+			const ReaderSharedPtr &reader, const bool rg_formats,
 			TextureFormatType &texture_format, Uint32Array3 &sizes,
 			Uint16 &mipmaps)
 		{
@@ -202,7 +205,7 @@ namespace eternal_lands
 
 			texture_format = get_texture_format(color_type,
 				bit_depth, png_get_valid(m_png_ptr, m_info_ptr,
-					PNG_INFO_sRGB));
+					PNG_INFO_sRGB), rg_formats);
 
 			sizes[0] = png_get_image_width(m_png_ptr, m_info_ptr);
 			sizes[1] = png_get_image_height(m_png_ptr, m_info_ptr);
@@ -213,7 +216,7 @@ namespace eternal_lands
 
 		TextureFormatType PngDecompress::get_texture_format(
 			const Uint32 color_type, const Uint32 bit_depth,
-			const bool sRGB) const
+			const bool sRGB, const bool rg_formats) const
 		{
 			if ((bit_depth != 8) && (bit_depth != 16))
 			{
@@ -223,55 +226,63 @@ namespace eternal_lands
 			switch (color_type)
 			{
 				case PNG_COLOR_TYPE_GRAY:
-					if (bit_depth == 8)
+					if (bit_depth <= 8)
 					{
-						return tft_r8;
+						if (rg_formats)
+						{
+							return tft_r8;
+						}
+
+						return tft_l8;
 					}
-					else
+
+					if (rg_formats)
 					{
-						return tft_r16;
+						return tft_l16;
 					}
+
+					return tft_r16;
 				case PNG_COLOR_TYPE_GRAY_ALPHA:
-					if (bit_depth == 8)
+					if (bit_depth <= 8)
 					{
-						return tft_rg8;
+						if (rg_formats)
+						{
+							return tft_rg8;
+						}
+
+						return tft_la8;
 					}
-					else
+
+					if (rg_formats)
 					{
-						return tft_rg16;
+						return tft_la16;
 					}
+
+					return tft_rg16;
 				case PNG_COLOR_TYPE_RGB:
-					if (bit_depth == 8)
+					if (bit_depth <= 8)
 					{
 						if (sRGB)
 						{
 							return tft_srgb8;
 						}
-						else
-						{
-							return tft_rgb8;
-						}
+
+						return tft_rgb8;
 					}
-					else
-					{
-						return tft_rgb16;
-					}
+
+					return tft_rgb16;
 				case PNG_COLOR_TYPE_RGB_ALPHA:
-					if (bit_depth == 8)
+					if (bit_depth <= 8)
 					{
 						if (sRGB)
 						{
 							return tft_srgb8_a8;
 						}
-						else
-						{
-							return tft_rgba8;
-						}
+
+						return tft_rgba8;
 					}
-					else
-					{
-						return tft_rgba16;
-					}
+
+					return tft_rgba16;
 			}
 
 			EL_THROW_EXCEPTION(PngUnkownFormatException());
@@ -279,21 +290,22 @@ namespace eternal_lands
 
 	}
 
-	ImageSharedPtr PngImage::load_image(const ReaderSharedPtr &reader)
+	ImageSharedPtr PngImage::load_image(const ReaderSharedPtr &reader,
+		const bool rg_formats)
 	{
 		PngDecompress png_decompress;
 
-		return png_decompress.get_image(reader);
+		return png_decompress.get_image(reader, rg_formats);
 	}
 
 	void PngImage::get_image_information(const ReaderSharedPtr &reader,
-		TextureFormatType &texture_format, Uint32Array3 &sizes,
-		Uint16 &mipmaps)
+		const bool rg_formats, TextureFormatType &texture_format,
+		Uint32Array3 &sizes, Uint16 &mipmaps)
 	{
 		PngDecompress png_decompress;
 
-		png_decompress.get_image_information(reader, texture_format,
-			sizes, mipmaps);
+		png_decompress.get_image_information(reader, rg_formats,
+			texture_format, sizes, mipmaps);
 	}
 
 	bool PngImage::check_load(const Uint8Array32 &id)

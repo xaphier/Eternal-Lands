@@ -625,7 +625,7 @@ namespace eternal_lands
 				}
 				if (index == 1)
 				{
-					get_data(cpt_world_normal, pqt_in, name,
+					get_data(cpt_tbn_matrix, pqt_in, name,
 						type, qualifier, size, scale);
 					return true;
 				}
@@ -702,18 +702,40 @@ namespace eternal_lands
 					return true;
 				}
 				return false;
-			case sst_layer_index:
+			case sst_tbn_matrix:
 				if (index == 0)
 				{
-					get_data(cpt_layer, pqt_out, name, type,
-						qualifier, size, scale);
+					get_data(cpt_world_normal, pqt_in,
+						name, type, qualifier, size,
+						scale);
 					return true;
 				}
 				if (index == 1)
 				{
-					get_data(vst_layer_index, pt_vec4,
+					get_data(cpt_world_tangent, pqt_in,
 						name, type, qualifier, size,
 						scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(cpt_tbn_matrix, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_glow_mapping:
+				if (index == 0)
+				{
+					get_data(cpt_fragment_uv, pqt_in, name,
+						type, qualifier, size, scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_glow, pqt_out, name,
+						type, qualifier, size, scale);
 					return true;
 				}
 				return false;

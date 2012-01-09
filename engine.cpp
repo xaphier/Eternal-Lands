@@ -271,11 +271,6 @@ namespace
 				UTF8("Got %d arguments expected 0"), n); 
 		}
 
-		scene->get_scene_resources().get_shader_source_builder()->load(
-			el::String(UTF8("shaders/shaders.lua")));
-		scene->get_scene_resources().get_shader_source_builder(
-			)->load_default(el::String(UTF8("shaders/shaders.lua")));
-
 		return 0;
 	}
 
@@ -369,7 +364,8 @@ namespace
 	};
 
 }
-//#define	USE_GL_DEBUG_OUTPUT
+
+#define	USE_GL_DEBUG_OUTPUT
 
 #ifdef	USE_GL_DEBUG_OUTPUT
 extern "C" void ARB_debug_output_to_file(GLenum source, GLenum type, GLuint id,
@@ -380,8 +376,6 @@ extern "C" void ARB_debug_output_to_file(GLenum source, GLenum type, GLuint id,
 	FILE* file;
 
 	file = fopen("debug.txt", "a");
-
-	printf("%s\n", message);
 
 	if (file)
 	{
@@ -604,10 +598,9 @@ extern "C" void init_engine()
 
 	CHECK_GL_ERROR();
 #ifdef	USE_GL_DEBUG_OUTPUT
-	printf("%d\n", GLEW_ARB_debug_output);
 	if (GLEW_ARB_debug_output)
 	{
-		glDebugMessageCallbackARB(&ARB_debug_output_to_file, 0);
+		glDebugMessageCallbackARB((GLDEBUGPROCARB)&ARB_debug_output_to_file, 0);
 	}
 #endif
 	CHECK_GL_ERROR();
@@ -942,6 +935,7 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 	el::MaterialDescriptionVector materials;
 	el::MaterialDescription material;
 	el::StringStream str;
+	el::String file_name;
 	glm::mat4 matrix;
 	glm::vec3 offset;
 
@@ -963,13 +957,26 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 	matrix[2][2] = 1.0f;
 	matrix[3] = glm::vec4(offset, 1.0f);
 
+	material.set_texture(el::String(UTF8("textures/gray.dds")),
+		el::stt_normal_0);
+	material.set_texture(el::String(UTF8("textures/white.dds")),
+		el::stt_specular_0);
+
 	if ((tile != 0) && (tile != 240))
 	{
 		str << UTF8("3dobjects/tile");
-		str << static_cast<Uint16>(tile) << UTF8(".dds");
+		str << static_cast<Uint16>(tile);
 
-		material.set_texture(el::String(str.str()), el::stt_diffuse_0);
+		material.set_texture(el::String(str.str() + UTF8(".dds")),
+			el::stt_diffuse_0);
 		material.set_effect(el::String(UTF8("mesh_solid")));
+
+		file_name = el::String(str.str() + UTF8(".xml"));
+
+		if (file_system->get_file_readable(file_name))
+		{
+			material.load_xml(file_system, file_name);
+		}
 	}
 	else
 	{
@@ -993,15 +1000,6 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 	}
 
 	materials.push_back(material);
-
-	if (global_vars->get_opengl_3_0())
-	{
-		BOOST_FOREACH(el::MaterialDescription &material, materials)
-		{
-			material.build_layer_index(scene->get_scene_resources(
-				).get_texture_array_cache());
-		}
-	}
 
 	instances_builder->add(el::ObjectData(glm::mat4x3(matrix),
 		glm::vec4(0.0f), el::String(UTF8("plane_4")), 0.0f,

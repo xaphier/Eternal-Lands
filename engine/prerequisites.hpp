@@ -244,8 +244,6 @@ namespace eternal_lands
 	class Text;
 	class TextAttribute;
 	class Texture;
-	class TextureArray;
-	class TextureArrayCache;
 	class TextureCache;
 	class TextureGlyphe;
 	class TextureFont;
@@ -315,7 +313,6 @@ namespace eternal_lands
 	SHARED_PTR(ShaderSourceDescription);
 	SHARED_PTR(ShaderSourceDescriptionLoader);
 	SHARED_PTR(Texture);
-	SHARED_PTR(TextureArrayCache);
 	SHARED_PTR(TextureCache);
 	SHARED_PTR(VertexFormat);
 	SHARED_PTR(VertexBuffers);
@@ -332,7 +329,6 @@ namespace eternal_lands
 	WEAK_PTR(MeshDataCache);
 	WEAK_PTR(SceneResources);
 	WEAK_PTR(ShaderSourceBuilder);
-	WEAK_PTR(TextureArrayCache);
 	WEAK_PTR(TextureCache);
 
 	VECTOR(ActorSharedPtr);
@@ -356,7 +352,6 @@ namespace eternal_lands
 	VECTOR(SubMesh);
 	VECTOR(SubObject);
 	VECTOR(SubObjectPtr);
-	VECTOR(TextureArray);
 	VECTOR(TextureSharedPtr);
 	VECTOR(VertexElement);
 

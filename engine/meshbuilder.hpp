@@ -28,18 +28,10 @@ namespace eternal_lands
 		vft_animated_mesh,
 		vft_morph_mesh,
 		vft_instanced_mesh,
-		vft_mesh_tangent,
-		vft_animated_mesh_tangent,
-		vft_morph_mesh_tangent,
-		vft_instanced_mesh_tangent,
 		vft_mesh_extra_uv,
 		vft_animated_mesh_extra_uv,
 		vft_morph_mesh_extra_uv,
 		vft_instanced_mesh_extra_uv,
-		vft_mesh_tangent_extra_uv,
-		vft_animated_mesh_tangent_extra_uv,
-		vft_morph_mesh_tangent_extra_uv,
-		vft_instanced_mesh_tangent_extra_uv,
 		vft_sprite,
 		vft_font
 	};

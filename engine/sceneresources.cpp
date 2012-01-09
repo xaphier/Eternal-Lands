@@ -16,7 +16,6 @@
 #include "shader/shadersourcebuilder.hpp"
 #include "filter.hpp"
 #include "framebufferbuilder.hpp"
-#include "texturearraycache.hpp"
 
 namespace eternal_lands
 {
@@ -26,17 +25,14 @@ namespace eternal_lands
 	{
 		m_mesh_builder = boost::make_shared<MeshBuilder>(global_vars);
 		m_shader_source_builder =
-			boost::make_shared<ShaderSourceBuilder>(global_vars,
-				file_system);
+			boost::make_shared<ShaderSourceBuilder>(global_vars);
 		m_effect_cache = boost::make_shared<EffectCache>(
 			get_shader_source_builder(), file_system);
-		m_texture_array_cache = boost::make_shared<TextureArrayCache>();
 		m_codec_manager = boost::make_shared<CodecManager>();
 		m_texture_cache = boost::make_shared<TextureCache>(
-			get_codec_manager(), get_texture_array_cache(),
-			file_system, global_vars);
+			get_codec_manager(), file_system, global_vars);
 		m_mesh_data_cache = boost::make_shared<MeshDataCache>(
-			get_texture_array_cache(), file_system, global_vars);
+			file_system, global_vars);
 		m_mesh_cache = boost::make_shared<MeshCache>(
 			get_mesh_builder(), get_mesh_data_cache());
 		m_actor_data_cache = boost::make_shared<ActorDataCache>(
@@ -66,13 +62,8 @@ namespace eternal_lands
 
 	void SceneResources::init(const FileSystemSharedPtr &file_system)
 	{
-		m_shader_source_builder->load(String(UTF8(
-			"shaders/shaders.lua")));
-		m_shader_source_builder->load_default(String(UTF8(
-			"shaders/shaders.lua")));
-		m_texture_array_cache->load_xml(file_system,
-			String(UTF8("textures/arrays.xml")));
-		m_texture_cache->add_texture_arrays();
+		m_shader_source_builder->load_xml(file_system, String(UTF8(
+			"shaders/shaders.xml")));
 	}
 
 }

@@ -30,13 +30,9 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	world_view_direction.xyz = world_position - camera.xyz;
-	world_view_direction.w = dot(world_view_direction.xyz,
-		world_view_direction.xyz);
-	world_view_direction *= inversesqrt(world_view_direction.w);
-}
-</source>
+   <source>world_view_direction.xyz = world_position - camera.xyz;
+world_view_direction.w = dot(world_view_direction.xyz, world_view_direction.xyz);
+world_view_direction *= inversesqrt(world_view_direction.w);</source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>

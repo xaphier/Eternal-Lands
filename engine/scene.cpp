@@ -84,7 +84,7 @@ namespace eternal_lands
 			m_scene_resources.get_effect_cache(),
 			m_scene_resources.get_texture_cache()));
 
-		m_fonts.reset(new TextureFontCache(file_system,
+		m_fonts.reset(new TextureFontCache(global_vars, file_system,
 			m_scene_resources.get_mesh_builder(), 512, 512,
 				4096));
 	}
@@ -317,8 +317,17 @@ namespace eternal_lands
 		else
 		{
 			m_light_position_array[0] = m_main_light_direction;
-			m_light_color_array[0] = m_main_light_color +
-				glm::vec4(glm::vec3(0.1f), 0.0f);
+
+			if (m_night)
+			{
+				m_light_color_array[0] = m_main_light_color +
+					glm::vec4(glm::vec3(0.3f), 0.0f);
+			}
+			else
+			{
+				m_light_color_array[0] = m_main_light_color +
+					glm::vec4(glm::vec3(0.1f), 0.0f);
+			}
 		}
 
 		m_visible_objects.next_frame();
@@ -507,7 +516,7 @@ namespace eternal_lands
 				if (m_night)
 				{
 					program->set_parameter(apt_ambient,
-						m_main_light_ambient + 0.2f);
+						m_main_light_ambient);
 				}
 				else
 				{

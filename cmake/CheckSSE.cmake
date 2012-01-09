@@ -42,5 +42,5 @@ if (HAS_SSE2_EXTENSIONS)
 	message(STATUS "Using SSE2 extensions")
 elseif (HAS_SSE_EXTENSIONS)
 	message(STATUS "Using SSE extensions")
-endif()
+endif(HAS_SSE2_EXTENSIONS)
 

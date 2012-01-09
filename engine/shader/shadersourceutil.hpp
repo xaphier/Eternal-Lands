@@ -41,7 +41,7 @@ namespace eternal_lands
 		sst_glow_mapping,
 		sst_transparent,
 		sst_shadow_map,
-		sst_layer_index
+		sst_tbn_matrix
 	};
 
 	typedef std::map<ShaderSourceType, String> ShaderSourceTypeStringMap;

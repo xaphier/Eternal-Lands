@@ -14,11 +14,9 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	if (diffuse.a &lt; 0.5)
-	{
-		discard;
-	}
+   <source>if (diffuse.a &lt; 0.5)
+{
+	discard;
 }
 </source>
    <glsl_120>true</glsl_120>

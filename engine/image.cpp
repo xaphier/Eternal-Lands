@@ -245,8 +245,10 @@ namespace eternal_lands
 		switch (format)
 		{
 			case GL_RED:
+			case GL_LUMINANCE:
 				return 1;
 			case GL_RG:
+			case GL_LUMINANCE_ALPHA:
 				return 2;
 			case GL_RGB:
 			case GL_BGR:
@@ -255,6 +257,7 @@ namespace eternal_lands
 			case GL_BGRA:
 				return 4;
 			case GL_NONE:
+				return 0;
 			default:
 				return 0;
 		}
@@ -297,6 +300,7 @@ namespace eternal_lands
 				return sizeof(Uint32) * 8;
 			case GL_NONE:
 			default:
+				assert(false);
 				return 0;
 		}
 	}
@@ -314,10 +318,15 @@ namespace eternal_lands
 			case GL_INT:
 			case GL_FLOAT:
 			case GL_HALF_FLOAT:
-				return (GL_RGB == format) || (GL_RGBA == format) ||
-					(GL_BGR == format) || (GL_BGRA == format) ||
+				return (GL_RGB == format) ||
+					(GL_RGBA == format) ||
+					(GL_BGR == format) ||
+					(GL_BGRA == format) ||
 					(GL_RED == format) ||
-					(GL_RG == format);
+					(GL_RG == format) ||
+					(GL_ALPHA == format) ||
+					(GL_LUMINANCE == format) ||
+					(GL_LUMINANCE_ALPHA == format);
 			case GL_UNSIGNED_BYTE_3_3_2:
 			case GL_UNSIGNED_BYTE_2_3_3_REV:
 			case GL_UNSIGNED_SHORT_5_6_5:
@@ -331,7 +340,8 @@ namespace eternal_lands
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
 			case GL_UNSIGNED_INT_10_10_10_2:
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
-				return (GL_RGBA == format) || (GL_BGRA == format);
+				return (GL_RGBA == format) ||
+					(GL_BGRA == format);
 			case GL_NONE:
 				return compressed && (GL_NONE == format);
 			default:
@@ -347,6 +357,9 @@ namespace eternal_lands
 		Uint32 i, count;
 
 		count = get_channel_count(get_format());
+
+		assert(count > 0);
+		assert(count < 5);
 
 		const void* const value = static_cast<const Uint8* const>(
 			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
@@ -457,6 +470,7 @@ namespace eternal_lands
 				break;
 			case GL_NONE:
 			default:
+				assert(false);
 				return glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		}
 
@@ -470,6 +484,9 @@ namespace eternal_lands
 		Uint32 i, count;
 
 		count = get_channel_count(get_format());
+
+		assert(count > 0);
+		assert(count < 5);
 
 		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
 			get_pixel_offset(x, y, z, face, mipmap_level);
@@ -587,6 +604,7 @@ namespace eternal_lands
 				return;
 			case GL_NONE:
 			default:
+				assert(false);
 				return;
 		}
 	}

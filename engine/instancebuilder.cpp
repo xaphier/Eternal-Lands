@@ -23,8 +23,7 @@ namespace eternal_lands
 			const MeshDataToolSharedPtr &source,
 			const glm::mat4x3 &world_matrix,
 			const glm::vec4 &color, const Uint32 source_index,
-			const Uint32 dest_index, glm::vec3 &min, glm::vec3 &max,
-			const glm::vec4 &layer_index)
+			const Uint32 dest_index, glm::vec3 &min, glm::vec3 &max)
 		{
 			glm::vec3 normal, tangent, position;
 
@@ -57,9 +56,6 @@ namespace eternal_lands
 					vst_texture_coordinate_0,
 					source_index));
 
-			mesh_data_tool.set_vertex_data(vst_layer_index,
-				dest_index, layer_index);
-
 			mesh_data_tool.set_vertex_data(vst_color,
 				dest_index, source->get_vertex_data(
 					vst_color, source_index));
@@ -69,7 +65,7 @@ namespace eternal_lands
 			const InstancingData &instancing_data,
 			const Uint32 sub_mesh_index, Uint32 &vertex_offset,
 			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max,
-			const glm::vec3 &center, const glm::vec4 &layer_index)
+			const glm::vec3 &center)
 		{
 			std::map<Uint32, Uint32> index_map;
 			glm::mat4x3 world_matrix;
@@ -120,8 +116,7 @@ namespace eternal_lands
 						instancing_data.get_mesh_data_tool(),
 						world_matrix,
 						instancing_data.get_color(),
-						index, vertex_offset, min, max,
-						layer_index);
+						index, vertex_offset, min, max);
 
 					vertex_offset++;
 				}
@@ -137,8 +132,7 @@ namespace eternal_lands
 			const InstancingData &instancing_data,
 			const Uint32 sub_mesh_index, Uint32 &vertex_offset,
 			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max,
-			const glm::vec3 &center,
-			const glm::vec4 &layer_index)
+			const glm::vec3 &center)
 		{
 			Uint32Vector indices;
 			glm::mat4x3 world_matrix;
@@ -235,9 +229,6 @@ namespace eternal_lands
 				*instancing_data.get_mesh_data_tool(),
 				vst_color, min_vertex, vertex_offset, count);
 
-			mesh_data_tool.fill_vertics(vst_layer_index,
-				vertex_offset, count, layer_index);
-
 			vertex_offset += count;
 
 			glm::vec3 tmin, tmax;
@@ -258,15 +249,6 @@ namespace eternal_lands
 			max = glm::max(max, glm::max(tmin, tmax));
 		}
 
-		bool get_material_index(const MaterialDescription &material,
-			const MaterialDescription &sub_material,
-			glm::vec4 &layer_index)
-		{
-			layer_index = sub_material.get_layer_index();
-
-			return material.can_merge(sub_material);
-		}
-
 		bool build_sub_mesh(const glm::vec3 &center,
 			const InstancingData &instancing_data,
 			const MeshDataToolSharedPtr &mesh_data_tool,
@@ -274,11 +256,7 @@ namespace eternal_lands
 			glm::vec3 &min, glm::vec3 &max, Uint32 &vertex_offset,
 			Uint32 &index_offset)
 		{
-			glm::vec4 layer_index;
-
-			if (!get_material_index(material,
-				instancing_data.get_materials()[index],
-				layer_index))
+			if (material != instancing_data.get_materials()[index])
 			{
 				return false;
 			}
@@ -288,15 +266,13 @@ namespace eternal_lands
 			{
 				build_sub_mesh_packed(*mesh_data_tool,
 					instancing_data, index, vertex_offset,
-					index_offset, min, max, center,
-					layer_index);
+					index_offset, min, max, center);
 			}
 			else
 			{
 				build_sub_mesh_unpacked(*mesh_data_tool,
 					instancing_data, index, vertex_offset,
-					index_offset, min, max, center,
-					layer_index);
+					index_offset, min, max, center);
 			}
 
 			return true;
@@ -391,7 +367,6 @@ namespace eternal_lands
 		SubMesh sub_mesh;
 		glm::mat4x3 world_matrix;
 		glm::vec3 center;
-		MaterialDescription zero_layer_material;
 		std::set<MaterialDescription> material_set;
 		MeshDataToolSharedPtr mesh_data_tool;
 		MaterialDescriptionVector materials;
@@ -423,12 +398,7 @@ namespace eternal_lands
 			BOOST_FOREACH(const MaterialDescription &material,
 				instancing_data.get_materials())
 			{
-				zero_layer_material = material;
-
-				zero_layer_material.set_layer_index(
-					glm::vec4(0.0f));
-
-				material_set.insert(zero_layer_material);
+				material_set.insert(material);
 			}
 		}
 
@@ -439,7 +409,6 @@ namespace eternal_lands
 		semantics.insert(vst_color);
 		semantics.insert(vst_tangent);
 		semantics.insert(vst_texture_coordinate_0);
-		semantics.insert(vst_layer_index);
 
 		mesh_data_tool = boost::make_shared<MeshDataTool>(vertex_count,
 			index_count, sub_mesh_count, semantics,

@@ -7,15 +7,15 @@
 
 #include "materialdescription.hpp"
 #include "exceptions.hpp"
-#include "texturearraycache.hpp"
 #include "xmlutil.hpp"
 #include "xmlreader.hpp"
+#include "filesystem.hpp"
 
 namespace eternal_lands
 {
 
-	MaterialDescription::MaterialDescription(): m_layer_index(0.0f),
-		m_shadow(true), m_culling(true)
+	MaterialDescription::MaterialDescription(): m_shadow(true),
+		m_culling(true)
 	{
 	}
 
@@ -23,11 +23,10 @@ namespace eternal_lands
 	{
 	}
 
-	void MaterialDescription::load_xml(const xmlNodePtr node)
+	void MaterialDescription::load_xml(const String &dir,
+		const xmlNodePtr node)
 	{
 		xmlNodePtr it;
-		ShaderTextureType texture;
-		Uint16 i, count;
 
 		if (node == 0)
 		{
@@ -43,22 +42,98 @@ namespace eternal_lands
 
 		it = XmlUtil::children(node, true);
 
-		count = m_textures.size();
-
 		do
 		{
-			for (i = 0; i < count; ++i)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_0"))
+				== 0)
 			{
-				texture = static_cast<ShaderTextureType>(i);
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_diffuse_0);
+			}
 
-				if (xmlStrcmp(it->name, BAD_CAST
-					ShaderTextureUtil::get_str(texture
-						).get().c_str()) == 0)
-				{
-					set_texture(
-						XmlUtil::get_string_value(it),
-						texture);
-				}
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_1"))
+				== 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_diffuse_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_2"))
+				== 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_diffuse_2);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_3"))
+				== 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_diffuse_3);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("normal_0"))
+				== 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_normal_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("normal_1"))
+				== 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_normal_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("specular_0"))
+				== 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_specular_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("specular_1"))
+				== 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_specular_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glow_0")) == 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_glow_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glow_1")) == 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_glow_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("blend_0")) == 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_blend_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("blend_1")) == 0)
+			{
+				set_texture(String(dir.get() + UTF8("/") +
+					XmlUtil::get_string_value(it).get()),
+					stt_blend_1);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("effect")) == 0)
@@ -88,16 +163,8 @@ namespace eternal_lands
 		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
 			file_name));
 
-		load_xml(xml_reader->get_root_node());
-	}
-
-	void MaterialDescription::load_xml(const ReaderSharedPtr &reader)
-	{
-		XmlReaderSharedPtr xml_reader;
-
-		xml_reader = XmlReaderSharedPtr(new XmlReader(reader));
-
-		load_xml(xml_reader->get_root_node());
+		load_xml(FileSystem::get_dir_name(file_name),
+			xml_reader->get_root_node());
 	}
 
 	bool MaterialDescription::compare_textures(
@@ -130,9 +197,7 @@ namespace eternal_lands
 		const MaterialDescription &material) const
 	{
 		return compare_textures(material) &&
-			compare_non_textures(material) &&
-			glm::all(glm::equal(get_layer_index(),
-				material.get_layer_index()));
+			compare_non_textures(material);
 	}
 
 	bool MaterialDescription::operator!=(
@@ -161,17 +226,6 @@ namespace eternal_lands
 			}
 		}
 
-		count = m_layer_index.length();
-
-		for (i = 0; i < count; ++i)
-		{
-			if (m_layer_index[i] != material.m_layer_index[i])
-			{
-				return m_layer_index[i] <
-					material.m_layer_index[i];
-			}
-		}
-
 		if (get_shadow() != material.get_shadow())
 		{
 			return get_shadow() < material.get_shadow();
@@ -185,40 +239,6 @@ namespace eternal_lands
 	{
 		return compare_textures(material) &&
 			compare_non_textures(material);
-	}
-
-	void MaterialDescription::build_layer_index(
-		const TextureArrayCacheSharedPtr &texture_array_cache,
-		const ShaderTextureType texture_type)
-	{
-		String name;
-		float layer;
-		Uint16 index;
-
-		if (ShaderTextureUtil::get_use_layer_index(texture_type)
-			&& texture_array_cache->get_texture_array_name(
-				get_texture(texture_type), name, layer))
-		{
-			index = ShaderTextureUtil::get_layer_index(
-				texture_type);
-
-			m_layer_index[index] = layer;
-			m_textures[texture_type] = name;
-		}
-	}
-
-	void MaterialDescription::build_layer_index(
-		const TextureArrayCacheSharedPtr &texture_array_cache)
-	{
-		Uint16 i, count;
-
-		count = m_textures.size();
-
-		for (i = 0; i < count; ++i)
-		{
-			build_layer_index(texture_array_cache,
-				static_cast<ShaderTextureType>(i));
-		}
 	}
 
 }

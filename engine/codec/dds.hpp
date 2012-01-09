@@ -174,21 +174,27 @@ namespace eternal_lands
 			Uint8Array6 m_indices;
 		};
 
-		void unpack_dxt1(const DXTColorBlock &block, Vec4Array16 &values);
+		void unpack_dxt1(const DXTColorBlock &block,
+			Vec4Array16 &values);
 		void unpack_dxt3(const DXTExplicitAlphaBlock &alpha_block,
 			const DXTColorBlock &color_block, Vec4Array16 &values);
 		void unpack_dxt5(const DXTInterpolatedAlphaBlock &alpha_block,
 			const DXTColorBlock &color_block, Vec4Array16 &values);
-		void unpack_ati1(const DXTInterpolatedAlphaBlock &block, Vec4Array16 &values);
+		void unpack_ati1(const DXTInterpolatedAlphaBlock &block,
+			Vec4Array16 &values);
 		void unpack_ati2(const DXTInterpolatedAlphaBlock &first_block,
-			const DXTInterpolatedAlphaBlock &second_block, Vec4Array16 &values);
+			const DXTInterpolatedAlphaBlock &second_block,
+			Vec4Array16 &values);
 		bool alpha_check_dxt1(const DXTColorBlock &block);
 
-		void build_dds_header(const Uint32 width, const Uint32 height, const Uint32 depth,
-			const Uint32 mipmaps, const Uint32 red_mask, const Uint32 green_mask,
-			const Uint32 blue_mask, const Uint32 alpha_mask, DdsHeader &header);
-		void build_dds_fourcc_header(const Uint32 width, const Uint32 height,
-			const Uint32 depth, const Uint32 mipmaps, const Uint32 fourcc,
+		void build_dds_header(const Uint32 width, const Uint32 height,
+			const Uint32 depth, const Uint32 mipmaps,
+			const Uint32 red_mask, const Uint32 green_mask,
+			const Uint32 blue_mask, const Uint32 alpha_mask,
+			DdsHeader &header);
+		void build_dds_fourcc_header(const Uint32 width,
+			const Uint32 height, const Uint32 depth,
+			const Uint32 mipmaps, const Uint32 fourcc,
 			const Uint32 bpp, DdsHeader &header);
 
 	}

@@ -23,6 +23,7 @@
 #include "logging.hpp"
 #include "edtaa3func.hpp"
 #include "text.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
@@ -37,6 +38,7 @@ namespace eternal_lands
 	}
 
 	TextureFontCache::TextureFontCache(
+		const GlobalVarsSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system,
 		const MeshBuilderSharedPtr &mesh_builder, const Uint16 width,
 		const Uint16 height, const Uint16 max_char_count)
@@ -52,8 +54,16 @@ namespace eternal_lands
 		sizes[1] = height;
 		sizes[2] = 1;
 
-		m_image = boost::make_shared<Image>(String(UTF8("Fonts")),
-			false, tft_rgb8, sizes, 0);
+		if (global_vars->get_opengl_3_0())
+		{
+			m_image = boost::make_shared<Image>(String(
+				UTF8("Fonts")), false, tft_r8, sizes, 0);
+		}
+		else
+		{
+			m_image = boost::make_shared<Image>(String(
+				UTF8("Fonts")), false, tft_l8, sizes, 0);
+		}
 
 		m_atlas = boost::make_shared<Atlas>(width, height);
 

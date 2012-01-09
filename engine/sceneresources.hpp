@@ -34,7 +34,6 @@ namespace eternal_lands
 			ActorDataCacheSharedPtr m_actor_data_cache;
 			ShaderSourceBuilderSharedPtr m_shader_source_builder;
 			FrameBufferBuilderSharedPtr m_framebuffer_builder;
-			TextureArrayCacheSharedPtr m_texture_array_cache;
 			boost::scoped_ptr<Filter> m_filter;
 
 		public:
@@ -95,12 +94,6 @@ namespace eternal_lands
 				&get_framebuffer_builder() const
 			{
 				return m_framebuffer_builder;
-			}
-
-			inline const TextureArrayCacheSharedPtr
-				&get_texture_array_cache() const
-			{
-				return m_texture_array_cache;
 			}
 
 			inline Filter &get_filter() const

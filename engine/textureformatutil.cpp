@@ -360,6 +360,28 @@ namespace eternal_lands
 				it_unsigned_normalized,
 				GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT, 4, 8,
 				true),
+			TextureFormatTypeData(String(UTF8("l8")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_byte_1, GL_LUMINANCE8,
+				GL_UNSIGNED_BYTE, GL_LUMINANCE, 1, 8),
+			TextureFormatTypeData(String(UTF8("a8")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_byte_1, GL_ALPHA8,
+				GL_UNSIGNED_BYTE, GL_ALPHA, 1, 8),
+			TextureFormatTypeData(String(UTF8("la8")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_byte_2,
+				GL_LUMINANCE8_ALPHA8,
+				GL_UNSIGNED_BYTE, GL_LUMINANCE_ALPHA, 2, 16),
+			TextureFormatTypeData(String(UTF8("l16")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_short_1, GL_LUMINANCE16,
+				GL_UNSIGNED_SHORT, GL_LUMINANCE, 1, 16),
+			TextureFormatTypeData(String(UTF8("la16")),
+				it_unsigned_normalized,
+				pft_unsigned_normalized_short_2,
+				GL_LUMINANCE16_ALPHA16,
+				GL_UNSIGNED_SHORT, GL_LUMINANCE_ALPHA, 2, 32)
 		};
 
 #undef EXPAND_INTEGER_TEXTURE_FORMAT_TYPE

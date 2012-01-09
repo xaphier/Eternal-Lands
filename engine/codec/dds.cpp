@@ -66,8 +66,8 @@ namespace eternal_lands
 			}
 		}
 
-		void unpack_dxt_alpha(const DXTExplicitAlphaBlock &block, const Uint16 channel,
-			Vec4Array16 &values)
+		void unpack_dxt_alpha(const DXTExplicitAlphaBlock &block,
+			const Uint16 channel, Vec4Array16 &values)
 		{
 			float value;
 			Uint32 i, j, index;
@@ -86,8 +86,8 @@ namespace eternal_lands
 			}
 		}
 
-		void unpack_dxt_alpha(const DXTInterpolatedAlphaBlock &block, const Uint16 channel,
-			Vec4Array16 &values)
+		void unpack_dxt_alpha(const DXTInterpolatedAlphaBlock &block,
+			const Uint16 channel, Vec4Array16 &values)
 		{
 			FloatArray8 alphas;
 			Uint32 i, index, idx0, idx1;
@@ -157,13 +157,15 @@ namespace eternal_lands
 			unpack_dxt_alpha(alpha_block, 3, values);
 		}
 
-		void unpack_ati1(const DXTInterpolatedAlphaBlock &block, Vec4Array16 &values)
+		void unpack_ati1(const DXTInterpolatedAlphaBlock &block,
+			Vec4Array16 &values)
 		{
 			unpack_dxt_alpha(block, 0, values);
 		}
 
 		void unpack_ati2(const DXTInterpolatedAlphaBlock &first_block,
-			const DXTInterpolatedAlphaBlock &second_block, Vec4Array16 &values)
+			const DXTInterpolatedAlphaBlock &second_block,
+			Vec4Array16 &values)
 		{
 			unpack_dxt_alpha(first_block, 0, values);
 			unpack_dxt_alpha(second_block, 1, values);

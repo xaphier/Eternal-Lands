@@ -42,24 +42,12 @@ namespace eternal_lands
 				m_shader_sources;
 			ShaderSourceTypeStringMap m_sources;
 			const GlobalVarsSharedPtr m_global_vars;
-			FileSystemWeakPtr m_file_system;
 			boost::scoped_ptr<ShaderSourceOptimizer> m_optimizer;
 			float m_shadow_scale;
 			Uint16 m_vertex_light_count;
 			Uint16 m_fragment_light_count;
 			Uint16 m_bone_count;
 			bool m_dynamic_light_count;
-
-			inline FileSystemSharedPtr get_file_system() const
-			{
-				FileSystemSharedPtr result;
-
-				result = m_file_system.lock();
-
-				assert(result.get() != 0);
-
-				return result;
-			}
 
 			bool check_function(const ShaderSourceBuildData &data,
 				const String &name,
@@ -99,20 +87,28 @@ namespace eternal_lands
 				OutStream &main,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
-			void load_file(const String &file_name);
+			void load_shader_source(
+				const FileSystemSharedPtr &file_system,
+				const String &file_name);
+			void load_shader_sources(
+				const FileSystemSharedPtr &file_system,
+				const xmlNodePtr node);
 			ShaderSourceTypeStringMap build_sources(
 				const ShaderSourceDescription &description)
 				const;
 			bool check(const ShaderSourceTypeStringPair &source,
 				const ShaderVersionType data_type) const;
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const xmlNodePtr node);
+			void load_source(const xmlNodePtr node);
+			void load_sources(const xmlNodePtr node);
 
 		public:
 			ShaderSourceBuilder(
-				const GlobalVarsSharedPtr &global_vars,
-				const FileSystemWeakPtr &file_system);
+				const GlobalVarsSharedPtr &global_vars);
 			~ShaderSourceBuilder() throw();
-			void load(const String &file_name);
-			void load_default(const String &file_name);
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
 			void build(const Uint16 light_count,
 				const ShaderBuildType shader_build_type,
 				const ShaderSourceDescription &description,

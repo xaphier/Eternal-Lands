@@ -116,18 +116,13 @@ namespace eternal_lands
 				<< errinfo_string_value(name));
 		}
 
-		if (enhanced_actor)
-		{
-			material.set_effect(String(
-				UTF8("animated_mesh_solid")));
-		}
-		else
+		if (!enhanced_actor)
 		{
 			material.set_texture(found->second.m_skin_name,
 				stt_diffuse_0);
-			material.set_effect(String(
-				UTF8("animated_mesh_solid")));
 		}
+
+		material.set_effect(String(UTF8("animated_mesh_solid")));
 
 		materials.clear();
 		materials.push_back(material);
