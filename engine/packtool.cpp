@@ -10,6 +10,7 @@
 #include "abstractwritememorybuffer.hpp"
 #include "alignedvec4array.hpp"
 #include "simd/simd.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -67,7 +68,24 @@ namespace eternal_lands
 				tmp += 0.5f;
 			}
 
-			return boost::numeric_cast<T>(tmp);
+			try
+			{
+				return boost::numeric_cast<T>(tmp);
+			}
+			catch (const boost::exception &exception)
+			{
+				LOG_ERROR(UTF8("Can't convert '%1%' to type "
+					"'%2%'"), tmp % typeid(T).name());
+				LOG_EXCEPTION(exception);
+			}
+			catch (const std::exception &exception)
+			{
+				LOG_ERROR(UTF8("Can't convert '%1%' to type "
+					"'%2%'"), tmp % typeid(T).name());
+				LOG_EXCEPTION(exception);
+			}
+
+			return static_cast<T>(0);
 		}
 
 		template <typename T, Uint16 count, bool normalize>
