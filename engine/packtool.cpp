@@ -74,14 +74,16 @@ namespace eternal_lands
 			}
 			catch (const boost::exception &exception)
 			{
-				LOG_ERROR(UTF8("Can't convert '%1%' to type "
-					"'%2%'"), tmp % typeid(T).name());
+				LOG_ERROR(UTF8("Can't convert %1%(%2%) to type"
+					" '%3%'(%4%)"), tmp % value %
+					typeid(T).name() % normalize);
 				LOG_EXCEPTION(exception);
 			}
 			catch (const std::exception &exception)
 			{
-				LOG_ERROR(UTF8("Can't convert '%1%' to type "
-					"'%2%'"), tmp % typeid(T).name());
+				LOG_ERROR(UTF8("Can't convert %1%(%2%) to type"
+					" '%3%'(%4%)"), tmp % value %
+					typeid(T).name() % normalize);
 				LOG_EXCEPTION(exception);
 			}
 
