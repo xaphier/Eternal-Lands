@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>parallax_slope_mapping</name>
+ <name>relief_mapping</name>
  <type>normal_mapping</type>
  <shader_source_datas>
   <shader_source_data>
@@ -56,22 +56,54 @@
    </parameters>
    <source>{
 	vec4 normal;
-	vec3 uv, view_dir;
 	float h;
 	int i;
-	const vec2 scale_bias = vec2(0.06, -0.03);
 
-	view_dir = transpose(tbn_matrix) * world_view_dir.xyz;
-	uv = vec3(world_uv, 0.0);
+	float depth_factor = 0.05;
 
-	for (i = 0; i &lt; 3; i++)
-	{
-		normal = texture2D(normal_sampler_0, uv.xy);
-		normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
-		h = normal.a * scale_bias.x + scale_bias.y;
-		uv += (h - uv.z) * normal.z * view_dir;
-	}
+	vec3 V = world_view_direction.xyz;
+	float a = dot(tbn_matrix[2], -V);
+	vec2 s = vec2(dot(V, tbn_matrix[0]), dot(V, tbn_matrix[1]));
+	s *= depth_factor / a;
+	vec2 ds = s;
+	vec2 dp = world_uv;
 
+   const int linear_search_steps = 15;
+
+   float size = 1.0 / float(linear_search_steps);
+   float depth = 0.0;
+   float best_depth = 1.0;
+
+   for(int i = 0; i &lt; linear_search_steps - 1; ++i)
+   {
+      depth += size;
+      float t = 1.0 - texture2D(normal_sampler_0, dp + ds * depth).a;
+      if(best_depth &gt; 0.996)
+         if(depth &gt;= t)
+            best_depth = depth;
+   }
+   depth = best_depth;
+
+   const int binary_search_steps = 6;
+
+   for(int i = 0; i &lt; binary_search_steps; ++i)
+   {
+      size *= 0.5;
+      float t = 1.0 - texture2D(normal_sampler_0, dp + ds * depth).a;
+      if(depth &gt;= t)
+      {
+         best_depth = depth;
+         depth -= 2.0 * size;
+      }
+      depth += size;
+   }
+
+	float d = best_depth;
+
+	vec2 uv = dp + ds * d;
+
+	normal = texture2D(normal_sampler_0, uv.xy);
+	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 	normal.xyz = normalize(tbn_matrix * normal.xyz);
 	fragment_normal = normal.xyz;
 	fragment_uv = uv.xy;
@@ -136,22 +168,54 @@
    </parameters>
    <source>{
 	vec4 normal;
-	vec3 uv, view_dir;
 	float h;
 	int i;
-	const vec2 scale_bias = vec2(0.06, -0.03);
 
-	view_dir = transpose(tbn_matrix) * world_view_dir.xyz;
-	uv = vec3(world_uv, 0.0);
+	float depth_factor = 0.05;
 
-	for (i = 0; i &lt; 3; i++)
-	{
-		normal = texture(normal_sampler_0, uv.xy);
-		normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
-		h = normal.a * scale_bias.x + scale_bias.y;
-		uv += (h - uv.z) * normal.z * view_dir;
-	}
+	vec3 V = world_view_direction.xyz;
+	float a = dot(tbn_matrix[2], -V);
+	vec2 s = vec2(dot(V, tbn_matrix[0]), dot(V, tbn_matrix[1]));
+	s *= depth_factor / a;
+	vec2 ds = s;
+	vec2 dp = world_uv;
 
+   const int linear_search_steps = 15;
+
+   float size = 1.0 / float(linear_search_steps);
+   float depth = 0.0;
+   float best_depth = 1.0;
+
+   for(int i = 0; i &lt; linear_search_steps - 1; ++i)
+   {
+      depth += size;
+      float t = 1.0 - texture(normal_sampler_0, dp + ds * depth).a;
+      if(best_depth &gt; 0.996)
+         if(depth &gt;= t)
+            best_depth = depth;
+   }
+   depth = best_depth;
+
+   const int binary_search_steps = 6;
+
+   for(int i = 0; i &lt; binary_search_steps; ++i)
+   {
+      size *= 0.5;
+      float t = 1.0 - texture(normal_sampler_0, dp + ds * depth).a;
+      if(depth &gt;= t)
+      {
+         best_depth = depth;
+         depth -= 2.0 * size;
+      }
+      depth += size;
+   }
+
+	float d = best_depth;
+
+	vec2 uv = dp + ds * d;
+
+	normal = texture(normal_sampler_0, uv.xy);
+	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 	normal.xyz = normalize(tbn_matrix * normal.xyz);
 	fragment_normal = normal.xyz;
 	fragment_uv = uv.xy;

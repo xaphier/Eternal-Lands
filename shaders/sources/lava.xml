@@ -95,7 +95,7 @@
      <name>diffuse</name>
      <source></source>
      <type>vec4</type>
-     <qualifier>in</qualifier>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>

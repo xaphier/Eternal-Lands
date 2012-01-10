@@ -119,6 +119,8 @@ namespace
 	{
 		Uint16 i;
 
+		CHECK_GL_ERRORS();
+
 		for (i = 0; i < 16; i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
@@ -146,6 +148,8 @@ namespace
 
 		glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glBlendFunc(GL_ZERO, GL_ONE);
+
+		CHECK_GL_ERRORS();
 	}
 
 	el::SelectionType get_selection_type(el::String name)
@@ -848,6 +852,8 @@ extern "C" void engine_cull_scene()
 
 	scene->cull();
 
+	CHECK_GL_ERROR();
+
 	CATCH_BLOCK
 }
 
@@ -909,11 +915,11 @@ extern "C" void engine_draw_scene()
 		pick_frame = 0;
 	}
 
-	disable_opengl2_stuff();
-
 	CHECK_GL_ERROR();
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void clear_engine()
@@ -928,6 +934,8 @@ extern "C" void clear_engine()
 	CHECK_GL_ERROR();
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
@@ -940,6 +948,8 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 	glm::vec3 offset;
 
 	TRY_BLOCK
+
+	DEBUG_CHECK_GL_ERROR();
 
 	if (IS_WATER_TILE(tile))
 	{
@@ -1005,7 +1015,11 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 		glm::vec4(0.0f), el::String(UTF8("plane_4")), 0.0f,
 		free_ids.get_next_free_id(), el::st_none, false), materials);
 
+	DEBUG_CHECK_GL_ERROR();
+
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void add_instanced_object_engine(const char* name, const float x_pos,
@@ -1015,6 +1029,8 @@ extern "C" void add_instanced_object_engine(const char* name, const float x_pos,
 	const SelectionType selection)
 {
 	TRY_BLOCK
+
+	DEBUG_CHECK_GL_ERROR();
 
 	if (blended != 1)
 	{
@@ -1033,7 +1049,11 @@ extern "C" void add_instanced_object_engine(const char* name, const float x_pos,
 			selection));
 	}
 
+	DEBUG_CHECK_GL_ERROR();
+
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void add_object_engine(const char* name, const float x_pos,
@@ -1043,6 +1063,8 @@ extern "C" void add_object_engine(const char* name, const float x_pos,
 	const SelectionType selection)
 {
 	TRY_BLOCK
+
+	DEBUG_CHECK_GL_ERROR();
 
 	if (blended != 1)
 	{
@@ -1061,7 +1083,11 @@ extern "C" void add_object_engine(const char* name, const float x_pos,
 			selection));
 	}
 
+	DEBUG_CHECK_GL_ERROR();
+
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void done_object_adding()
@@ -1071,19 +1097,29 @@ extern "C" void done_object_adding()
 
 	TRY_BLOCK
 
+	DEBUG_CHECK_GL_ERROR();
+
 	instances_builder->build(free_ids, instances, uninstanced);
 
 	BOOST_FOREACH(const el::InstanceData &instance_data, instances)
 	{
+		DEBUG_CHECK_GL_ERROR();
+
 		scene->add_object(instance_data);
 	}
 
 	BOOST_FOREACH(const el::ObjectData &object_data, uninstanced)
 	{
+		DEBUG_CHECK_GL_ERROR();
+
 		scene->add_object(object_data);
 	}
 
+	DEBUG_CHECK_GL_ERROR();
+
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void add_light_engine(const float x_pos, const float y_pos,
@@ -1113,6 +1149,8 @@ extern "C" void build_buffers(actor_types* a)
 {
 	TRY_BLOCK
 
+	DEBUG_CHECK_GL_ERROR();
+
 	scene->get_scene_resources().get_actor_data_cache()->add_actor(
 		a->actor_type, a->coremodel, 
 		el::String(el::utf8_to_string(a->actor_name)),
@@ -1120,9 +1158,11 @@ extern "C" void build_buffers(actor_types* a)
 		el::String(el::utf8_to_string(a->file_name)), a->actor_scale,
 		a->scale, a->mesh_scale, a->skel_scale, a->ghost);
 
-	disable_opengl2_stuff();
+	DEBUG_CHECK_GL_ERROR();
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void set_transformation_buffers(actor* actor)
@@ -1212,6 +1252,8 @@ extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 
 	TRY_BLOCK
 
+	DEBUG_CHECK_GL_ERROR();
+
 	if (kind_of_actor == NPC)
 	{
 		selection = el::st_npc;
@@ -1257,9 +1299,11 @@ extern "C" CalModel *model_new(const Uint32 type_id, const Uint32 id,
 
 	result->setUserData(actor.get());
 
-	disable_opengl2_stuff();
+	DEBUG_CHECK_GL_ERROR();
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 
 	return result;
 }
@@ -1280,6 +1324,8 @@ extern "C" void model_attach_mesh(actor *act, int mesh_id)
 
 	el::Actor* actor;
 
+	DEBUG_CHECK_GL_ERROR();
+
 	assert(act);
 	assert(act->calmodel);
 	assert(act->calmodel->getUserData());
@@ -1289,9 +1335,11 @@ extern "C" void model_attach_mesh(actor *act, int mesh_id)
 
 	actor->add_mesh(mesh_id);
 
-	disable_opengl2_stuff();
+	DEBUG_CHECK_GL_ERROR();
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void model_detach_mesh(actor *act, int mesh_id)
@@ -1302,6 +1350,8 @@ extern "C" void model_detach_mesh(actor *act, int mesh_id)
 	}
 
 	TRY_BLOCK
+
+	DEBUG_CHECK_GL_ERROR();
 
 	el::Actor* actor;
 
@@ -1314,9 +1364,11 @@ extern "C" void model_detach_mesh(actor *act, int mesh_id)
 
 	actor->remove_mesh(mesh_id);
 
-	disable_opengl2_stuff();
+	DEBUG_CHECK_GL_ERROR();
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void load_enhanced_actor_texture(actor *act)
@@ -1329,6 +1381,8 @@ extern "C" void load_enhanced_actor_texture(actor *act)
 	assert(act);
 	assert(act->calmodel);
 	assert(act->calmodel->getUserData());
+
+	DEBUG_CHECK_GL_ERROR();
 
 	actor = reinterpret_cast<el::Actor*>(act->calmodel->getUserData());
 
@@ -1389,11 +1443,15 @@ extern "C" void load_enhanced_actor_texture(actor *act)
 	parts[el::aptt_hands_tex_save] =
 		el::utf8_to_string(act->body_parts->hands_tex_save);
 
+	DEBUG_CHECK_GL_ERROR();
+
 	actor->set_parts(parts);
 
-	disable_opengl2_stuff();
+	DEBUG_CHECK_GL_ERROR();
 
 	CATCH_BLOCK
+
+	disable_opengl2_stuff();
 }
 
 extern "C" void engine_update_actor_buffs(actor *act, Uint32 buffs)
@@ -1405,6 +1463,8 @@ extern "C" void engine_update_actor_buffs(actor *act, Uint32 buffs)
 
 	TRY_BLOCK
 
+	DEBUG_CHECK_GL_ERROR();
+
 	el::Actor* actor;
 
 	assert(act);
@@ -1414,6 +1474,8 @@ extern "C" void engine_update_actor_buffs(actor *act, Uint32 buffs)
 	actor = reinterpret_cast<el::Actor*>(act->calmodel->getUserData());
 
 	actor->set_buffs(buffs);
+
+	DEBUG_CHECK_GL_ERROR();
 
 	CATCH_BLOCK
 }
