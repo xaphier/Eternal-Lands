@@ -16,8 +16,8 @@ namespace eternal_lands
 
 	VertexStreams::VertexStreams(const VertexFormatSharedPtr &format,
 		const AbstractWriteMemoryBufferSharedPtrArray &memory,
-		const Uint32 vertex_count): m_format(format),
-		m_vertex_count(vertex_count)
+		const Uint32 vertex_count, const bool use_simd):
+		m_format(format), m_vertex_count(vertex_count)
 	{
 		Uint32 i, count;
 
@@ -28,15 +28,15 @@ namespace eternal_lands
 			if (memory[i].get() != 0)
 			{
 				m_streams.push_back(new VertexStream(format,
-					memory[i], i));
+					memory[i], i, use_simd));
 			}
 		}
 	}
 
 	VertexStreams::VertexStreams(const VertexFormatSharedPtr &format,
 		const MemoryBufferSharedPtrVector &buffers,
-		const Uint32 vertex_count): m_format(format),
-		m_vertex_count(vertex_count)
+		const Uint32 vertex_count, const bool use_simd):
+		m_format(format), m_vertex_count(vertex_count)
 	{
 		Uint32 i, count;
 
@@ -47,7 +47,7 @@ namespace eternal_lands
 			if (buffers[i].get() != 0)
 			{
 				m_streams.push_back(new VertexStream(format,
-					buffers[i], i));
+					buffers[i], i, use_simd));
 			}
 		}
 	}

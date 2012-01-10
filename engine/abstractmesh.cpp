@@ -21,11 +21,11 @@ namespace eternal_lands
 {
 
 	AbstractMesh::AbstractMesh(const String &name,
-		const bool static_indices, const bool static_vertices):
-		m_name(name), m_vertex_count(0), m_index_count(0),
-		m_primitive_type(pt_triangles), m_use_16_bit_indices(true),
-		m_static_indices(static_indices),
-		m_static_vertices(static_vertices)
+		const bool static_indices, const bool static_vertices,
+		const bool use_simd): m_name(name), m_vertex_count(0),
+		m_index_count(0), m_primitive_type(pt_triangles),
+		m_use_16_bit_indices(true), m_static_indices(static_indices),
+		m_static_vertices(static_vertices), m_use_simd(use_simd)
 	{
 	}
 
@@ -87,18 +87,27 @@ namespace eternal_lands
 
 		init_vertices();
 
-		for (i = 0; i < vertex_stream_count; ++i)
+		try
 		{
-			if (get_vertex_elements(i).get_count() > 0)
+			for (i = 0; i < vertex_stream_count; ++i)
 			{
-				buffer = get_vertex_buffer(i);
+				if (get_vertex_elements(i).get_count() > 0)
+				{
+					buffer = get_vertex_buffer(i);
 
-				assert(buffer.get() != 0);
+					assert(buffer.get() != 0);
 
-				VertexStream stream(m_vertex_format, buffer, i);
+					VertexStream stream(m_vertex_format,
+						buffer, i, get_use_simd());
 
-				source->write_vertex_stream(stream);
+					source->write_vertex_stream(stream);
+				}
 			}
+		}
+		catch (boost::exception &exception)
+		{
+			exception << errinfo_name(get_name());
+			throw;
 		}
 
 		init_indices();
@@ -144,7 +153,8 @@ namespace eternal_lands
 
 				assert(buffer.get() != 0);
 
-				VertexStream stream(m_vertex_format, buffer, i);
+				VertexStream stream(m_vertex_format, buffer, i,
+					get_use_simd());
 
 				source->write_vertex_stream(stream);
 			}
@@ -240,7 +250,7 @@ namespace eternal_lands
 		}
 
 		result = boost::make_shared<VertexBuffers>(get_vertex_format(),
-			buffers, vertex_count);
+			buffers, vertex_count, get_use_simd());
 
 		return result;
 	}

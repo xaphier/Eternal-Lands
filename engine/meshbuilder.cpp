@@ -48,7 +48,8 @@ namespace eternal_lands
 		VertexDescriptionMap instanced_mesh, sprite, font;
 		VertexElementType position, texture_coordinate, normal;
 
-		if (get_global_vars()->get_opengl_3_0() || GLEW_ARB_half_float_vertex)
+		if (get_global_vars()->get_opengl_3_0() ||
+			GLEW_ARB_half_float_vertex)
 		{
 			position = vet_half4;
 			texture_coordinate = vet_half2;
@@ -149,17 +150,19 @@ namespace eternal_lands
 		if (get_global_vars()->get_opengl_3_1() && false)
 		{
 			return boost::make_shared<OpenGl31Mesh>(name,
-				static_indices, static_vertices);
+				static_indices, static_vertices,
+				get_global_vars()->get_use_simd());
 		}
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			return boost::make_shared<OpenGl3Mesh>(name,
-				static_indices, static_vertices);
+				static_indices, static_vertices,
+				get_global_vars()->get_use_simd());
 		}
 
 		return boost::make_shared<OpenGl2Mesh>(name, static_indices,
-			static_vertices);
+			static_vertices, get_global_vars()->get_use_simd());
 	}
 
 	AbstractMeshSharedPtr MeshBuilder::get_mesh(

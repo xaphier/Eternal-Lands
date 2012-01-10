@@ -13,8 +13,9 @@ namespace eternal_lands
 
 	VertexBuffers::VertexBuffers(const VertexFormatSharedPtr &format,
 		const MemoryBufferSharedPtrVector &buffers,
-		const Uint32 vertex_count): VertexStreams(format, buffers,
-			vertex_count), m_buffers(buffers)
+		const Uint32 vertex_count, const bool use_simd):
+		VertexStreams(format, buffers, vertex_count, use_simd),
+			m_buffers(buffers)
 	{
 	}
 

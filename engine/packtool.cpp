@@ -38,7 +38,7 @@ namespace eternal_lands
 		template <typename T, bool normalize>
 		static inline T convert_from_float(const float value)
 		{
-			float tmp;
+			float tmp, min, max;
 
 			BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
 
@@ -68,26 +68,43 @@ namespace eternal_lands
 				tmp += 0.5f;
 			}
 
+			if (normalize)
+			{
+				if (std::numeric_limits<T>::is_signed)
+				{
+					min = -1.0f;
+				}
+				else
+				{
+					min = 0.0f;
+				}
+
+				max = 1.0f;
+			}
+			else
+			{
+				min = std::numeric_limits<T>::min();
+				max = std::numeric_limits<T>::max();
+			}
+
 			try
 			{
 				return boost::numeric_cast<T>(tmp);
 			}
-			catch (const boost::exception &exception)
+			catch (boost::exception &exception)
 			{
-				LOG_ERROR(UTF8("Can't convert %1%(%2%) to type"
-					" '%3%'(%4%)"), tmp % value %
-					typeid(T).name() % normalize);
-				LOG_EXCEPTION(exception);
+				exception << errinfo_float_range_min(min);
+				exception << errinfo_float_range_max(max);
+				exception << errinfo_float_range_index(value);
+				throw;
 			}
 			catch (const std::exception &exception)
 			{
-				LOG_ERROR(UTF8("Can't convert %1%(%2%) to type"
-					" '%3%'(%4%)"), tmp % value %
-					typeid(T).name() % normalize);
-				LOG_EXCEPTION(exception);
+				EL_THROW_EXCEPTION(RangeErrorException()
+					<< errinfo_float_range_min(min)
+					<< errinfo_float_range_max(max)
+					<< errinfo_float_range_index(value));
 			}
-
-			return static_cast<T>(0);
 		}
 
 		template <typename T, Uint16 count, bool normalize>
@@ -1014,46 +1031,67 @@ namespace eternal_lands
 			true, true>(data);	\
 		return;
 
-	void PackTool::pack(const Uint64 offset,
-		const PackFormatType pack_format, const glm::vec4 &data,
+	void PackTool::pack(const glm::vec4 &data, const Uint64 offset,
+		const PackFormatType pack_format,
 		AbstractWriteMemoryBuffer &buffer)
 	{
 		void* ptr;
 
 		ptr = static_cast<Uint8*>(buffer.get_ptr()) + offset;
 
-		switch (pack_format)
+		try
 		{
-			PACK_FORMAT_INT(byte, char, data, ptr)
-			PACK_FORMAT_INT(short, short, data, ptr)
-			PACK_FORMAT_INT(int, int, data, ptr)
-			PACK_FORMAT_PACKED_3(byte, Uint8, 3, 3, 2, data, ptr)
-			PACK_FORMAT_PACKED_4(short, Uint16, 4, 4, 4, 4, data, ptr)
-			PACK_FORMAT_PACKED_3(short, Uint16, 5, 6, 5, data, ptr)
-			PACK_FORMAT_PACKED_4(short, Uint16, 5, 5, 5, 1, data, ptr)
-			PACK_FORMAT_PACKED_4(int, Uint32, 10, 10, 10, 2, data, ptr)
-			case pft_float_4:
-				static_cast<float*>(ptr)[3] = data[3];
-			case pft_float_3:
-				static_cast<float*>(ptr)[2] = data[2];
-			case pft_float_2:
-				static_cast<float*>(ptr)[1] = data[1];
-			case pft_float_1:
-				static_cast<float*>(ptr)[0] = data[0];
-				return;
-			case pft_half_4:
-				static_cast<glm::detail::hdata*>(ptr)[3] =
-					glm::detail::toFloat16(data[3]);
-			case pft_half_3:
-				static_cast<glm::detail::hdata*>(ptr)[2] =
-					glm::detail::toFloat16(data[2]);
-			case pft_half_2:
-				static_cast<glm::detail::hdata*>(ptr)[1] =
-					glm::detail::toFloat16(data[1]);
-			case pft_half_1:
-				static_cast<glm::detail::hdata*>(ptr)[0] =
-					glm::detail::toFloat16(data[0]);
-				return;
+			switch (pack_format)
+			{
+				PACK_FORMAT_INT(byte, char, data, ptr)
+				PACK_FORMAT_INT(short, short, data, ptr)
+				PACK_FORMAT_INT(int, int, data, ptr)
+				PACK_FORMAT_PACKED_3(byte, Uint8, 3, 3, 2,
+					data, ptr)
+				PACK_FORMAT_PACKED_4(short, Uint16, 4, 4, 4, 4,
+					data, ptr)
+				PACK_FORMAT_PACKED_3(short, Uint16, 5, 6, 5,
+					data, ptr)
+				PACK_FORMAT_PACKED_4(short, Uint16, 5, 5, 5, 1,
+					data, ptr)
+				PACK_FORMAT_PACKED_4(int, Uint32, 10, 10, 10, 2,
+					data, ptr)
+				case pft_float_4:
+					static_cast<float*>(ptr)[3] = data[3];
+				case pft_float_3:
+					static_cast<float*>(ptr)[2] = data[2];
+				case pft_float_2:
+					static_cast<float*>(ptr)[1] = data[1];
+				case pft_float_1:
+					static_cast<float*>(ptr)[0] = data[0];
+					return;
+				case pft_half_4:
+					static_cast<glm::detail::hdata*>(ptr)[3]
+						=
+						glm::detail::toFloat16(data[3]);
+				case pft_half_3:
+					static_cast<glm::detail::hdata*>(ptr)[2]
+						=
+						glm::detail::toFloat16(data[2]);
+				case pft_half_2:
+					static_cast<glm::detail::hdata*>(ptr)[1]
+						=
+						glm::detail::toFloat16(data[1]);
+				case pft_half_1:
+					static_cast<glm::detail::hdata*>(ptr)[0]
+						=
+						glm::detail::toFloat16(data[0]);
+					return;
+			}
+		}
+		catch (boost::exception &exception)
+		{
+			StringStream str;
+
+			str << pack_format;
+
+			exception << errinfo_type_name(str.str());
+			throw;
 		}
 	}
 
@@ -1062,22 +1100,24 @@ namespace eternal_lands
 #undef	PACK_FORMAT_PACKED_3
 #undef	PACK_FORMAT_PACKED_4
 
-	void PackTool::pack(const Uint64 offset, const Uint32 stride,
-		const Uint32 count, const PackFormatType pack_format,
-		const Vec4Vector &data, AbstractWriteMemoryBuffer &buffer)
+	void PackTool::pack(const Vec4Vector &data, const Uint64 offset,
+		const Uint32 stride, const Uint32 count,
+		const PackFormatType pack_format,
+		AbstractWriteMemoryBuffer &buffer)
 	{
 		Uint32 i;
 
 		for (i = 0; i < count; ++i)
 		{
-			pack(offset + i * stride, pack_format, data[i], buffer);
+			pack(data[i], offset + i * stride, pack_format, buffer);
 		}
 	}
 
 
-	void PackTool::pack(const Uint64 offset, const Uint32 stride,
-		const Uint32 count, const PackFormatType pack_format,
-		const AlignedVec4Array &data, AbstractWriteMemoryBuffer &buffer)
+	void PackTool::pack(const AlignedVec4Array &data, const Uint64 offset,
+		const Uint32 stride, const Uint32 count,
+		const PackFormatType pack_format, const bool use_simd,
+		AbstractWriteMemoryBuffer &buffer)
 	{
 		float* source;
 		Uint8* ptr;
@@ -1085,11 +1125,11 @@ namespace eternal_lands
 
 		ptr = static_cast<Uint8*>(buffer.get_ptr()) + offset;
 
-		if (!SIMD::get_supported())
+		if (!(SIMD::get_supported() && use_simd))
 		{
 			for (i = 0; i < count; ++i)
 			{
-				pack(offset + i * stride, pack_format, data[i],
+				pack(data[i], offset + i * stride, pack_format,
 					buffer);
 			}
 
@@ -1196,7 +1236,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			pack(offset + i * stride, pack_format, data[i], buffer);
+			pack(data[i], offset + i * stride, pack_format, buffer);
 		}
 	}
 

@@ -153,7 +153,6 @@ namespace eternal_lands
 				const Uint32 height, const Uint32 depth,
 				const CubeMapFaceType face,
 				const ImageSharedPtr &image);
-
 			void set_texture_image_2d_layer(const Uint16 mipmap,
 				const Uint32 width, const Uint32 height,
 				const Uint32 layer,
@@ -204,7 +203,6 @@ namespace eternal_lands
 				const ImageSharedPtr &image,
 				const Uint32Array3 &texture_position,
 				const Uint32Array3 &image_position);
-
 			void set_texture_image_1d(const Uint16 mipmap,
 				const Uint32 width);
 			void set_texture_image_2d(const Uint16 mipmap,

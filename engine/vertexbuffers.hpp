@@ -32,7 +32,8 @@ namespace eternal_lands
 		public:
 			VertexBuffers(const VertexFormatSharedPtr &format,
 				const MemoryBufferSharedPtrVector &buffers,
-				const Uint32 vertex_count);
+				const Uint32 vertex_count,
+				const bool use_simd);
 			~VertexBuffers() throw();
 
 			inline const MemoryBufferSharedPtrVector &get_buffers()

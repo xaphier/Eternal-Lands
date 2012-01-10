@@ -37,11 +37,13 @@ namespace eternal_lands
 			Uint64 m_offset;
 			Uint32 m_stride;
 			const Uint16 m_index;
+			const bool m_use_simd;
 
 		public:
 			VertexStream(const VertexFormatSharedPtr &format,
 				const AbstractWriteMemoryBufferSharedPtr
-					&buffer, const Uint16 index);
+					&buffer, const Uint16 index,
+					const bool use_simd);
 			~VertexStream() throw();
 			void set(const VertexSemanticType semantic,
 				const glm::vec4 &data);
@@ -82,6 +84,11 @@ namespace eternal_lands
 			inline Uint16 get_index() const
 			{
 				return m_index;
+			}
+
+			inline bool get_use_simd() const
+			{
+				return m_use_simd;
 			}
 
 	};

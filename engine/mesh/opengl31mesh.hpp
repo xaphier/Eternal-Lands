@@ -39,7 +39,8 @@ namespace eternal_lands
 			 */
 			OpenGl31Mesh(const String &name,
 				const bool static_indices,
-				const bool static_vertices);
+				const bool static_vertices,
+				const bool use_simd);
 
 			/**
 			 * Default destructor.

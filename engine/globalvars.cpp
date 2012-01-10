@@ -477,6 +477,7 @@ namespace eternal_lands
 		m_opengl_version = ovt_2_1;
 		m_fog = true;
 		m_optmize_shader_source = true;
+		m_use_simd = false;
 	}
 
 	GlobalVars::~GlobalVars() throw()

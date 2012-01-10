@@ -42,6 +42,7 @@ namespace eternal_lands
 			bool m_use_restart_index;
 			bool m_static_indices;
 			bool m_static_vertices;
+			const bool m_use_simd;
 
 		protected:
 			/**
@@ -49,7 +50,8 @@ namespace eternal_lands
 			 */
 			AbstractMesh(const String &name,
 				const bool static_indices,
-				const bool static_vertices);
+				const bool static_vertices,
+				const bool use_simd);
 
 			void copy_vertex_data(AbstractMesh &mesh) const;
 			void copy_index_data(AbstractMesh &mesh) const;
@@ -273,6 +275,11 @@ namespace eternal_lands
 			inline const String &get_name() const
 			{
 				return m_name;
+			}
+
+			inline bool get_use_simd() const
+			{
+				return m_use_simd;
 			}
 
 	};

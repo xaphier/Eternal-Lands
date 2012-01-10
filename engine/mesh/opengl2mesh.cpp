@@ -17,8 +17,8 @@ namespace eternal_lands
 {
 
 	OpenGl2Mesh::OpenGl2Mesh(const String &name, const bool static_indices,
-		const bool static_vertices):
-		AbstractMesh(name, static_indices, static_vertices)
+		const bool static_vertices, const bool use_simd):
+		AbstractMesh(name, static_indices, static_vertices, use_simd)
 	{
 	}
 
@@ -280,7 +280,8 @@ namespace eternal_lands
 		boost::shared_ptr<OpenGl2Mesh> result;
 
 		result = boost::make_shared<OpenGl2Mesh>(get_name(),
-			get_static_indices(), get_static_vertices());
+			get_static_indices(), get_static_vertices(),
+			get_use_simd());
 
 		copy_vertex_data(*result);
 
@@ -292,7 +293,8 @@ namespace eternal_lands
 		boost::shared_ptr<OpenGl2Mesh> result;
 
 		result = boost::make_shared<OpenGl2Mesh>(get_name(),
-			get_static_indices(), get_static_vertices());
+			get_static_indices(), get_static_vertices(),
+			get_use_simd());
 
 		copy_index_data(*result);
 

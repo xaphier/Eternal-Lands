@@ -51,6 +51,7 @@ namespace eternal_lands
 			OpenglVerionType m_opengl_version;
 			bool m_fog;
 			bool m_optmize_shader_source;
+			bool m_use_simd;
 
 		public:
 			GlobalVars();
@@ -101,6 +102,11 @@ namespace eternal_lands
 			{
 				m_optmize_shader_source =
 					optmize_shader_source;
+			}
+
+			inline void set_use_simd(const bool use_simd)
+			{
+				m_use_simd = use_simd;
 			}
 
 			inline const String &get_quality() const
@@ -248,9 +254,13 @@ namespace eternal_lands
 				return 110;
 			}
 
+			inline bool get_use_simd() const
+			{
+				return m_use_simd;
+			}
+
 	};
 
 }
 
 #endif	/* UUID_8462a53b_dda9_4345_9d1b_b0baf4406ee4 */
-

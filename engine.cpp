@@ -119,7 +119,7 @@ namespace
 	{
 		Uint16 i;
 
-		for (i = 0; i < 8; i++)
+		for (i = 0; i < 16; i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
 			glDisable(GL_TEXTURE_2D);
@@ -952,8 +952,8 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 
 	assert(glm::all(glm::lessThanEqual(glm::abs(offset), glm::vec3(1e7f))));
 
-	matrix[0][0] = 3.01f;
-	matrix[1][1] = 3.01f;
+	matrix[0][0] = 3.0f;
+	matrix[1][1] = 3.0f;
 	matrix[2][2] = 1.0f;
 	matrix[3] = glm::vec4(offset, 1.0f);
 

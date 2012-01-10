@@ -11,8 +11,9 @@ namespace eternal_lands
 {
 
 	OpenGl31Mesh::OpenGl31Mesh(const String &name,
-		const bool static_indices, const bool static_vertices):
-		OpenGl3Mesh(name, static_indices, static_vertices)
+		const bool static_indices, const bool static_vertices,
+		const bool use_simd): OpenGl3Mesh(name, static_indices,
+			static_vertices, use_simd)
 	{
 		assert(GLEW_VERSION_3_1);
 	}
@@ -47,7 +48,8 @@ namespace eternal_lands
 		boost::shared_ptr<OpenGl31Mesh> result;
 
 		result = boost::make_shared<OpenGl31Mesh>(get_name(),
-			get_static_indices(), get_static_vertices());
+			get_static_indices(), get_static_vertices(),
+			get_use_simd());
 
 		copy_vertex_data(*result);
 
@@ -59,7 +61,8 @@ namespace eternal_lands
 		boost::shared_ptr<OpenGl31Mesh> result;
 
 		result = boost::make_shared<OpenGl31Mesh>(get_name(),
-			get_static_indices(), get_static_vertices());
+			get_static_indices(), get_static_vertices(),
+			get_use_simd());
 
 		copy_index_data(*result);
 
