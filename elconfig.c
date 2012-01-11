@@ -191,9 +191,9 @@ int el_shadow_quality = 0;
 int el_shadow_map_size = 2;
 float el_shadow_distance = 40.0f;
 float el_view_distance = 40.0f;
-float el_ambient_scale = 1.0f;
 int el_fog = el_true;
 int el_optmize_shader_source = el_true;
+int el_use_simd = el_true;
 int el_shadow_map_filter = 0;
 
 void change_el_shadow_quality(int* var, int value)
@@ -201,29 +201,29 @@ void change_el_shadow_quality(int* var, int value)
 	if (value < 2)
 	{
 		if (!gl_extensions_loaded || GLEW_EXT_framebuffer_object ||
-			get_opengl_3_0() || (value == 0))
+			engine_get_opengl_3_0() || (value == 0))
 		{
 			*var = value;
-			set_shadow_quality(*var);
+			engine_set_shadow_quality(*var);
 		}
 		else
 		{
 			*var = 0;
-			set_shadow_quality(*var);
+			engine_set_shadow_quality(*var);
 			LOG_TO_CONSOLE(c_green2, "Framebuffer support needed");
 		}
 	}
 	else
 	{
-		if (!gl_extensions_loaded || get_opengl_3_0())
+		if (!gl_extensions_loaded || engine_get_opengl_3_0())
 		{
 			*var = value;
-			set_shadow_quality(*var);
+			engine_set_shadow_quality(*var);
 		}
 		else
 		{
 			*var = 0;
-			set_shadow_quality(*var);
+			engine_set_shadow_quality(*var);
 			LOG_TO_CONSOLE(c_green2, "OpenGL 3 needed");
 		}
 	}
@@ -232,25 +232,31 @@ void change_el_shadow_quality(int* var, int value)
 void change_el_shadow_map_size(int* var, int value)
 {
 	*var = value;
-	set_shadow_map_size(*var);
+	engine_set_shadow_map_size(*var);
 }
 
 void change_el_shadow_distance(float* var, float* value)
 {
 	*var = *value;
-	set_shadow_distance(*var);
+	engine_set_shadow_distance(*var);
 }
 
 void change_el_view_distance(float* var, float* value)
 {
 	*var = *value;
-	set_view_distance(*var);
+	engine_set_view_distance(*var);
 }
 
 void change_el_fog(int* var)
 {
 	*var = !*var;
-	set_fog(*var);
+	engine_set_fog(*var);
+}
+
+void change_el_use_simd(int* var)
+{
+	*var = !*var;
+	engine_set_use_simd(*var);
 }
 
 void change_el_optmize_shader_source(int* var)
@@ -258,20 +264,20 @@ void change_el_optmize_shader_source(int* var)
 	if (*var)
 	{
 		*var = el_false;
-		set_optmize_shader_source(*var);
+		engine_set_optmize_shader_source(*var);
 	}
 	else
 	{
-		if (gl_extensions_loaded && get_opengl_3_0())
+		if (gl_extensions_loaded && engine_get_opengl_3_0())
 		{
 			LOG_TO_CONSOLE(c_green2, "Only for OpenGL 2.1 mode");
 			*var = el_false;
-			set_optmize_shader_source(*var);
+			engine_set_optmize_shader_source(*var);
 		}
 		else
 		{
 			*var = el_true;
-			set_optmize_shader_source(*var);
+			engine_set_optmize_shader_source(*var);
 		}
 	}
 }
@@ -287,7 +293,7 @@ void change_el_shadow_map_filter(int* var, int value)
 {
 	*var = value;
 
-	set_shadow_map_filter(*var);
+	engine_set_shadow_map_filter(*var);
 }
 
 void options_loaded(void)
@@ -1781,7 +1787,7 @@ static void init_ELC_vars(void)
 
 	// GFX TAB
 	add_var(OPT_MULTI_H, "shadow_quality", "shadow_quality", &el_shadow_quality, change_el_shadow_quality, 0, "Shadow Quality", "Shadow Quality", GFX, "no", "low", "medium", "high", "ultra", 0);
-	add_var(OPT_MULTI_H, "shadow_map_size", "shadow_map_size", &el_shadow_map_size, change_el_shadow_map_size, 0, "Shadow Map Size", "Shadow Map Size", GFX, "512", "1024", "1536", "2048", 0);
+	add_var(OPT_MULTI_H, "shadow_map_size", "shadow_map_size", &el_shadow_map_size, change_el_shadow_map_size, 0, "Shadow Map Size", "Shadow Map Size", GFX, "512", "1024", "2048", "3072", "4096", 0);
 	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &el_shadow_distance, change_el_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &el_view_distance, change_el_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "fog", "fog", &el_fog, change_el_fog, el_true, "Fog", "Fog", GFX);
@@ -1868,6 +1874,7 @@ static void init_ELC_vars(void)
 	// TROUBLESHOOT TAB
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &el_optmize_shader_source, change_el_optmize_shader_source, el_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
 	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &el_opengl_version, change_el_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", 0);
+	add_var(OPT_BOOL, "use_simd", "simd", &el_use_simd, change_el_use_simd, el_true, "Use SIMD", "Use Intel SIMD instructions (SSE2).", TROUBLESHOOT);
 
 	// DEBUGTAB TAB
 #ifdef DEBUG

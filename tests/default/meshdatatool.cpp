@@ -21,8 +21,10 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	el::VertexSemanticTypeSet semantics;
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		2353, 845, 1, semantics, 65535, el::pt_triangles, true)));
+		el::String("test"), 2353, 845, 1, semantics, 65535,
+		el::pt_triangles, true, false)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "test");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 2353);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 845);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
@@ -30,11 +32,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangles);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		6572, 157, 674, semantics, 676789789, el::pt_triangles,
-		false)));
+		el::String("test"), 6572, 157, 674, semantics, 676789789,
+		el::pt_triangles, false, false)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "test");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 6572);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 157);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 674);
@@ -42,10 +46,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangles);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), false);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		134, 93567, 32, semantics, 546, el::pt_triangles, true)));
+		el::String("test"), 134, 93567, 32, semantics, 546,
+		el::pt_triangles, true, false)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "test");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 134);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 93567);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 32);
@@ -53,11 +60,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangles);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		36546020, 230576086, 787553, semantics, 36546021,
-		el::pt_triangles, true)));
+		el::String("test"), 36546020, 230576086, 787553, semantics,
+		36546021, el::pt_triangles, true, false)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "test");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 36546020);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 230576086);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 787553);
@@ -65,10 +74,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangles);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		2353, 845, 1, semantics, 65535, el::pt_triangle_strip, true)));
+		el::String("afs23"), 2353, 845, 1, semantics, 65535,
+		el::pt_triangle_strip, true, true)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "afs23");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 2353);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 845);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
@@ -76,11 +88,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangle_strip);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), true);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		6572, 157, 674, semantics, 676789789, el::pt_triangle_strip,
-		false)));
+		el::String("afs23"), 6572, 157, 674, semantics, 676789789,
+		el::pt_triangle_strip, false, true)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "afs23");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 6572);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 157);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 674);
@@ -88,10 +102,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangle_strip);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), false);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), true);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		134, 93567, 32, semantics, 546, el::pt_triangle_strip, true)));
+		el::String("afs23"), 134, 93567, 32, semantics, 546,
+		el::pt_triangle_strip, true, true)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "afs23");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 134);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 93567);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 32);
@@ -99,11 +116,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangle_strip);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), true);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		36546020, 230576086, 787553, semantics, 36546021,
-		el::pt_triangle_strip, true)));
+		el::String("afs23"), 36546020, 230576086, 787553, semantics,
+		36546021, el::pt_triangle_strip, true, true)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "afs23");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 36546020);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 230576086);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 787553);
@@ -111,11 +130,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangle_strip);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
-
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), true);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		2353, 845, 1, semantics, 65535, el::pt_triangle_fan, true)));
+		el::String("ge4it8eg"), 2353, 845, 1, semantics, 65535,
+		el::pt_triangle_fan, true, true)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "ge4it8eg");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 2353);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 845);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
@@ -123,11 +144,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangle_fan);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), true);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		6572, 157, 674, semantics, 676789789, el::pt_triangle_fan,
-			false)));
+		el::String("ge4it8eg"), 6572, 157, 674, semantics, 676789789,
+		el::pt_triangle_fan, false, false)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "ge4it8eg");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 6572);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 157);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 674);
@@ -135,10 +158,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangle_fan);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), false);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		134, 93567, 32, semantics, 546, el::pt_triangle_fan, true)));
+		el::String("ge4it8eg"), 134, 93567, 32, semantics, 546,
+		el::pt_triangle_fan, true, false)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "ge4it8eg");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 134);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 93567);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 32);
@@ -146,11 +172,13 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangle_fan);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool.reset(new el::MeshDataTool(
-		36546020, 230576086, 787553, semantics, 36546021,
-		el::pt_triangle_fan, true)));
+		el::String("ge4it8eg"), 36546020, 230576086, 787553, semantics,
+		36546021, el::pt_triangle_fan, true, false)));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "ge4it8eg");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), 36546020);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), 230576086);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 787553);
@@ -158,6 +186,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
 		el::pt_triangle_fan);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(), true);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 }
 
 BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane)
@@ -199,9 +228,9 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane)
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
-	mesh_data_tool = boost::make_shared<el::MeshDataTool>(vertex_count,
-		index_count, 1, semantics, restart_index, primitive_type,
-		use_restart_index);
+	mesh_data_tool = boost::make_shared<el::MeshDataTool>(
+		el::String("plane"), vertex_count, index_count, 1, semantics,
+		restart_index, primitive_type, use_restart_index, false);
 
 	for (i = 0; i < index_count; ++i)
 	{
@@ -240,6 +269,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane)
 	mesh_data_tool->set_sub_mesh_data(0, el::SubMesh(el::BoundingBox(vmin,
 		vmax), 0, index_count, 0, vertex_count - 1));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "plane");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
@@ -248,6 +278,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane)
 		primitive_type);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
 		use_restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	for (i = 0; i < index_count; ++i)
 	{
@@ -353,9 +384,9 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_normal)
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
-	mesh_data_tool = boost::make_shared<el::MeshDataTool>(vertex_count,
-		index_count, 1, semantics, restart_index, primitive_type,
-		use_restart_index);
+	mesh_data_tool = boost::make_shared<el::MeshDataTool>(
+		el::String("normals"), vertex_count, index_count, 1, semantics,
+		restart_index, primitive_type, use_restart_index, false);
 
 	for (i = 0; i < index_count; ++i)
 	{
@@ -403,6 +434,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_normal)
 
 	normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "normals");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
@@ -411,15 +443,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_normal)
 		primitive_type);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
 		use_restart_index);
-
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_restart_index(), restart_index);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
-		primitive_type);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
-		use_restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	for (i = 0; i < index_count; ++i)
 	{
@@ -525,9 +549,10 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent)
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
-	mesh_data_tool = boost::make_shared<el::MeshDataTool>(vertex_count,
-		index_count, 1, semantics, restart_index, primitive_type,
-		use_restart_index);
+	mesh_data_tool = boost::make_shared<el::MeshDataTool>(
+		el::String("tangents"), vertex_count, index_count, 1,
+		semantics, restart_index, primitive_type, use_restart_index,
+		false);
 
 	for (i = 0; i < index_count; ++i)
 	{
@@ -576,6 +601,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent)
 
 	tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "tangents");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
@@ -584,15 +610,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent)
 		primitive_type);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
 		use_restart_index);
-
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_restart_index(), restart_index);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
-		primitive_type);
-	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
-		use_restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
 
 	for (i = 0; i < index_count; ++i)
 	{
@@ -698,9 +716,10 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_gram_schmidth_ortho)
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
-	mesh_data_tool = boost::make_shared<el::MeshDataTool>(vertex_count,
+	mesh_data_tool = boost::make_shared<el::MeshDataTool>(
+		el::String("tangents_gram_schmidth"), vertex_count,
 		index_count, 1, semantics, restart_index, primitive_type,
-		use_restart_index);
+		use_restart_index, false);
 
 	for (i = 0; i < index_count; ++i)
 	{
@@ -749,6 +768,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_gram_schmidth_ortho)
 
 	tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "tangents_gram_schmidth");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);

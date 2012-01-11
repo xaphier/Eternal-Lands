@@ -325,14 +325,11 @@ void cal_actor_set_anim_delay(int id, struct cal_anim anim, float delay)
 	pActor->stop_animation = anim.kind;
 	
 	CalModel_Update(pActor->calmodel,0.0001);//Make changes take effect now
-	build_actor_bounding_box(pActor);
+	engine_build_actor_bounding_box(pActor);
 
 	missiles_rotate_actor_bones(pActor);
 
-	if (1) /* use_animation_program */
-	{
-		set_transformation_buffers(pActor);
-	}
+	engine_set_transformation_buffers(pActor);
 
 	if (pActor->cur_anim.anim_index==-1)
 		pActor->busy=0;

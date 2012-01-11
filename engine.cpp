@@ -44,6 +44,7 @@
 #include "engine/filter.hpp"
 #include "engine/font/text.hpp"
 #include "engine/font/textattribute.hpp"
+#include "engine/simd/simd.hpp"
 
 namespace el = eternal_lands;
 
@@ -616,7 +617,7 @@ extern "C" void init_engine()
 	CATCH_BLOCK
 }
 
-extern "C" void load_map_engine(const char* name, const float r, const float g,
+extern "C" void engine_load_map(const char* name, const float r, const float g,
 	const float b, const int dungeon)
 {
 	TRY_BLOCK
@@ -629,7 +630,8 @@ extern "C" void load_map_engine(const char* name, const float r, const float g,
 		glm::vec3(r, g, b), dungeon != 0);
 
 	instances_builder.reset(new el::InstancesBuilder(
-		scene->get_scene_resources().get_mesh_data_cache()));
+		scene->get_scene_resources().get_mesh_data_cache(),
+		8.0f, global_vars->get_use_simd()));
 
 	CHECK_GL_ERROR();
 
@@ -675,7 +677,7 @@ extern "C" void exit_file_system()
 	CATCH_BLOCK
 }
 
-extern "C" void draw_engine()
+extern "C" void engine_draw()
 {
 	glm::vec3 focus, main_light_ambient, main_light_color;
 	glm::vec3 main_light_direction;
@@ -922,7 +924,7 @@ extern "C" void engine_draw_scene()
 	disable_opengl2_stuff();
 }
 
-extern "C" void clear_engine()
+extern "C" void engine_clear()
 {
 	TRY_BLOCK
 
@@ -938,7 +940,7 @@ extern "C" void clear_engine()
 	disable_opengl2_stuff();
 }
 
-extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
+extern "C" void engine_add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 {
 	el::MaterialDescriptionVector materials;
 	el::MaterialDescription material;
@@ -1022,7 +1024,7 @@ extern "C" void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 	disable_opengl2_stuff();
 }
 
-extern "C" void add_instanced_object_engine(const char* name, const float x_pos,
+extern "C" void engine_add_instanced_object(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
 	const float y_rot, const float z_rot, const char blended, const float r,
 	const float g, const float b, const Uint32 id,
@@ -1056,7 +1058,7 @@ extern "C" void add_instanced_object_engine(const char* name, const float x_pos,
 	disable_opengl2_stuff();
 }
 
-extern "C" void add_object_engine(const char* name, const float x_pos,
+extern "C" void engine_add_object(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
 	const float y_rot, const float z_rot, const char blended, const float r,
 	const float g, const float b, const Uint32 id,
@@ -1090,7 +1092,7 @@ extern "C" void add_object_engine(const char* name, const float x_pos,
 	disable_opengl2_stuff();
 }
 
-extern "C" void done_object_adding()
+extern "C" void engine_done_object_adding()
 {
 	el::InstanceDataVector instances;
 	el::ObjectDataVector uninstanced;
@@ -1122,7 +1124,7 @@ extern "C" void done_object_adding()
 	disable_opengl2_stuff();
 }
 
-extern "C" void add_light_engine(const float x_pos, const float y_pos,
+extern "C" void engine_add_light(const float x_pos, const float y_pos,
 	const float z_pos, const float r, const float g, const float b,
 	const float radius, const Uint32 id)
 {
@@ -1145,7 +1147,7 @@ extern "C" void add_light_engine(const float x_pos, const float y_pos,
 	CATCH_BLOCK
 }
 
-extern "C" void build_buffers(actor_types* a)
+extern "C" void engine_build_buffers(actor_types* a)
 {
 	TRY_BLOCK
 
@@ -1153,9 +1155,9 @@ extern "C" void build_buffers(actor_types* a)
 
 	scene->get_scene_resources().get_actor_data_cache()->add_actor(
 		a->actor_type, a->coremodel, 
-		el::String(el::utf8_to_string(a->actor_name)),
-		el::String(el::utf8_to_string(a->skin_name)),
-		el::String(el::utf8_to_string(a->file_name)), a->actor_scale,
+		el::String(el::string_to_utf8(a->actor_name)),
+		el::String(el::string_to_utf8(a->skin_name)),
+		el::String(el::string_to_utf8(a->file_name)), a->actor_scale,
 		a->scale, a->mesh_scale, a->skel_scale, a->ghost);
 
 	DEBUG_CHECK_GL_ERROR();
@@ -1165,7 +1167,7 @@ extern "C" void build_buffers(actor_types* a)
 	disable_opengl2_stuff();
 }
 
-extern "C" void set_transformation_buffers(actor* actor)
+extern "C" void engine_set_transformation_buffers(actor* actor)
 {
 	glm::mat4 matrix;
 	glm::vec3 offset, attachment_shift;
@@ -1209,7 +1211,7 @@ extern "C" void set_transformation_buffers(actor* actor)
 	CATCH_BLOCK
 }
 
-extern "C" void build_actor_bounding_box(actor* a)
+extern "C" void engine_build_actor_bounding_box(actor* a)
 {
 	CalSkeleton* cs;
 	Uint32 i;
@@ -1371,7 +1373,7 @@ extern "C" void model_detach_mesh(actor *act, int mesh_id)
 	disable_opengl2_stuff();
 }
 
-extern "C" void load_enhanced_actor_texture(actor *act)
+extern "C" void engine_load_enhanced_actor_texture(actor *act)
 {
 	TRY_BLOCK
 
@@ -1485,7 +1487,7 @@ extern "C" Uint32 get_actor_texture_loaded(actor *act)
 	return 1;
 }
 
-extern "C" Uint32 get_object_under_mouse_pickable()
+extern "C" Uint32 engine_get_object_under_mouse_pickable()
 {
 	if (selection == el::st_pick)
 	{
@@ -1497,7 +1499,7 @@ extern "C" Uint32 get_object_under_mouse_pickable()
 	}
 }
 
-extern "C" Uint32 get_object_under_mouse_harvestable()
+extern "C" Uint32 engine_get_object_under_mouse_harvestable()
 {
 	if (selection == el::st_harvest)
 	{
@@ -1509,7 +1511,7 @@ extern "C" Uint32 get_object_under_mouse_harvestable()
 	}
 }
 
-extern "C" Uint32 get_object_under_mouse_entrable()
+extern "C" Uint32 engine_get_object_under_mouse_entrable()
 {
 	if (selection == el::st_enter)
 	{
@@ -1521,18 +1523,18 @@ extern "C" Uint32 get_object_under_mouse_entrable()
 	}
 }
 
-extern "C" void remove_object(const Uint32 id)
+extern "C" void engine_remove_object(const Uint32 id)
 {
 	free_ids.free_id(id);
 	scene->remove_object(id);
 }
 
-extern "C" void remove_light(const Uint32 id)
+extern "C" void engine_remove_light(const Uint32 id)
 {
 	scene->remove_light(id);
 }
 
-extern "C" void get_object_position(const Uint32 id, float* x, float* y,
+extern "C" void engine_get_object_position(const Uint32 id, float* x, float* y,
 	float* z)
 {
 	glm::vec3 position;
@@ -1544,12 +1546,12 @@ extern "C" void get_object_position(const Uint32 id, float* x, float* y,
 	*z = position.z;
 }
 
-extern "C" Uint32 get_next_free_id()
+extern "C" Uint32 engine_get_next_free_id()
 {
 	return free_ids.get_next_free_id();
 }
 
-extern "C" void set_next_free_id(const Uint32 id)
+extern "C" void engine_set_next_free_id(const Uint32 id)
 {
 	TRY_BLOCK
 
@@ -1616,7 +1618,7 @@ extern "C" int command_lua(char *text, int len)
 	return 1;
 }
 
-extern "C" void set_shadow_map_size(const int value)
+extern "C" void engine_set_shadow_map_size(const int value)
 {
 	global_vars->set_shadow_map_size(value);
 
@@ -1626,17 +1628,22 @@ extern "C" void set_shadow_map_size(const int value)
 	}
 }
 
-extern "C" void set_shadow_distance(const float value)
+extern "C" void engine_set_shadow_distance(const float value)
 {
 	global_vars->set_shadow_distance(value);
 }
 
-extern "C" void set_view_distance(const float value)
+extern "C" void engine_set_view_distance(const float value)
 {
 	global_vars->set_view_distance(value);
 }
 
-extern "C" void set_shadow_quality(const int value)
+extern "C" void engine_set_max_instance_size(const float value)
+{
+	global_vars->set_max_instance_size(value);
+}
+
+extern "C" void engine_set_shadow_quality(const int value)
 {
 	el::ShadowQualityType shadow_quality;
 
@@ -1678,7 +1685,7 @@ extern "C" void set_shadow_quality(const int value)
 	}
 }
 
-extern "C" void set_fog(const int value)
+extern "C" void engine_set_fog(const int value)
 {
 	global_vars->set_fog(value != 0);
 
@@ -1688,7 +1695,7 @@ extern "C" void set_fog(const int value)
 	}
 }
 
-extern "C" void set_optmize_shader_source(const int value)
+extern "C" void engine_set_optmize_shader_source(const int value)
 {
 	global_vars->set_optmize_shader_source(value != 0);
 
@@ -1698,7 +1705,7 @@ extern "C" void set_optmize_shader_source(const int value)
 	}
 }
 
-extern "C" void set_opengl_version(const int value)
+extern "C" void engine_set_opengl_version(const int value)
 {
 	el::OpenglVerionType version;
 
@@ -1721,7 +1728,12 @@ extern "C" void set_opengl_version(const int value)
 	global_vars->set_opengl_version(version);
 }
 
-extern "C" void set_shadow_map_filter(const int value)
+extern "C" void engine_set_use_simd(const int value)
+{
+	global_vars->set_fog(value != 0 && el::SIMD::get_supported());
+}
+
+extern "C" void engine_set_shadow_map_filter(const int value)
 {
 	el::FilterType shadow_map_filter;
 
@@ -1747,27 +1759,27 @@ extern "C" void set_shadow_map_filter(const int value)
 	}
 }
 
-extern "C" int get_opengl_3_0()
+extern "C" int engine_get_opengl_3_0()
 {
 	return global_vars->get_opengl_3_0();
 }	
 
-extern "C" int get_opengl_3_1()
+extern "C" int engine_get_opengl_3_1()
 {
 	return global_vars->get_opengl_3_1();
 }	
 
-extern "C" int get_opengl_3_2()
+extern "C" int engine_get_opengl_3_2()
 {
 	return global_vars->get_opengl_3_2();
 }	
 
-extern "C" int get_opengl_3_3()
+extern "C" int engine_get_opengl_3_3()
 {
 	return global_vars->get_opengl_3_3();
 }	
 
-extern "C" void set_fog_data(const float* color, const float density)
+extern "C" void engine_set_fog_data(const float* color, const float density)
 {
 	if (scene.get() != 0)
 	{
@@ -1942,7 +1954,7 @@ extern "C" float engine_font_height(const char* font)
 	return result;
 }
 
-extern "C" void set_window_size(const Uint32 width, const Uint32 height,
+extern "C" void engine_set_window_size(const Uint32 width, const Uint32 height,
 	const Uint32 hud_x, const Uint32 hud_y)
 {
 	TRY_BLOCK

@@ -33,38 +33,38 @@ void exit_engine();
 void exit_global_vars();
 void exit_file_system();
 void file_system_add_dir(const char* dir);
-void load_map_engine(const char* name, const float r, const float g,
+void engine_load_map(const char* name, const float r, const float g,
 	const float b, const int dungeon);
-void add_tile(const Uint16 x, const Uint16 y, const Uint8 tile);
-void add_instanced_object_engine(const char* name, const float x_pos,
+void engine_add_tile(const Uint16 x, const Uint16 y, const Uint8 tile);
+void engine_add_instanced_object(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
 	const float y_rot, const float z_rot, const char blended,
 	const float r, const float g, const float b, const Uint32 id,
 	const SelectionType selection);
-void add_object_engine(const char* name, const float x_pos, const float y_pos,
+void engine_add_object(const char* name, const float x_pos, const float y_pos,
 	const float z_pos, const float x_rot, const float y_rot,
 	const float z_rot, const char blended, const float r, const float g,
 	const float b, const Uint32 id, const SelectionType selection);
-void done_object_adding();
-void add_light_engine(const float x_pos, const float y_pos, const float z_pos,
+void engine_done_object_adding();
+void engine_add_light(const float x_pos, const float y_pos, const float z_pos,
 	const float r, const float g, const float b, const float radius,
 	const Uint32 id);
-void load_enhanced_actor_texture(actor *act);
-Uint32 get_actor_texture_loaded(actor *act);
-Uint32 get_object_under_mouse_pickable();
-Uint32 get_object_under_mouse_harvestable();
-Uint32 get_object_under_mouse_entrable();
-void remove_object(const Uint32 id);
-void get_object_position(const Uint32 id, float* x, float* y, float* z);
-void remove_light(const Uint32 id);
-Uint32 get_next_free_id();
-void set_next_free_id(const Uint32 id);
-void set_window_size(const Uint32 widht, const Uint32 height,
+void engine_load_enhanced_actor_texture(actor *act);
+Uint32 engine_get_actor_texture_loaded(actor *act);
+Uint32 engine_get_object_under_mouse_pickable();
+Uint32 engine_get_object_under_mouse_harvestable();
+Uint32 engine_get_object_under_mouse_entrable();
+void engine_remove_object(const Uint32 id);
+void engine_get_object_position(const Uint32 id, float* x, float* y, float* z);
+void engine_remove_light(const Uint32 id);
+Uint32 engine_get_next_free_id();
+void engine_set_next_free_id(const Uint32 id);
+void engine_set_window_size(const Uint32 widht, const Uint32 height,
 	const Uint32 hud_x, const Uint32 hud_y);
 
-void build_buffers(actor_types* a);
-void build_actor_bounding_box(actor* a);
-void set_transformation_buffers(actor* act);
+void engine_build_buffers(actor_types* a);
+void engine_build_actor_bounding_box(actor* a);
+void engine_set_transformation_buffers(actor* act);
 struct CalModel *model_new(const Uint32 type_id, const Uint32 id,
 	const char* name, const Uint32 kind_of_actor,
 	const Uint32 enhanced_actor, Uint32* client_id);
@@ -96,19 +96,20 @@ int command_lua(char *text, int len);
 void engine_cull_scene();
 void engine_draw_scene();
 
-void set_shadow_map_size(const int value);
-void set_shadow_quality(const int value);
-void set_shadow_distance(const float value);
-void set_view_distance(const float value);
-void set_fog(const int value);
-void set_optmize_shader_source(const int value);
-void set_opengl_version(const int value);
-void set_fog_data(const float* color, const float density);
-void set_shadow_map_filter(const int value);
-int get_opengl_3_0();
-int get_opengl_3_1();
-int get_opengl_3_2();
-int get_opengl_3_3();
+void engine_set_shadow_map_size(const int value);
+void engine_set_shadow_quality(const int value);
+void engine_set_shadow_distance(const float value);
+void engine_set_view_distance(const float value);
+void engine_set_fog(const int value);
+void engine_set_optmize_shader_source(const int value);
+void engine_set_opengl_version(const int value);
+void engine_set_fog_data(const float* color, const float density);
+void engine_set_shadow_map_filter(const int value);
+void engine_set_use_simd(const int value);
+int engine_get_opengl_3_0();
+int engine_get_opengl_3_1();
+int engine_get_opengl_3_2();
+int engine_get_opengl_3_3();
 
 #ifdef __cplusplus
 }

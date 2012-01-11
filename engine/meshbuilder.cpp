@@ -48,14 +48,14 @@ namespace eternal_lands
 		VertexDescriptionMap instanced_mesh, sprite, font;
 		VertexElementType position, texture_coordinate, normal;
 
-		if (get_global_vars()->get_opengl_3_0() ||
+/*		if (get_global_vars()->get_opengl_3_0() ||
 			GLEW_ARB_half_float_vertex)
 		{
 			position = vet_half4;
 			texture_coordinate = vet_half2;
 			font[vst_position] = vet_half2;
 		}
-		else
+		else*/
 		{
 			position = vet_float3;
 			texture_coordinate = vet_float2;

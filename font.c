@@ -24,7 +24,7 @@
 #endif // SKY_FPV_OPTIONAL
 #include "engine.h"
 
-#define NEW_FONTSYSTEM
+//#define NEW_FONTSYSTEM
 /* NOTE: This file contains implementations of the following, currently unused, and commented functions:
  *          Look at the end of the file.
  *

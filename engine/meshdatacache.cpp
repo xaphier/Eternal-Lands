@@ -95,7 +95,8 @@ namespace eternal_lands
 			10, 41
 		};
 
-		void load_error_sphere(MeshDataToolSharedPtr &mesh_data_tool)
+		void load_error_sphere(const bool use_simd,
+			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			VertexSemanticTypeSet semantics;
 			glm::vec3 position, normal;
@@ -108,9 +109,10 @@ namespace eternal_lands
 			semantics.insert(vst_color);
 
 			mesh_data_tool.reset(new MeshDataTool(
-				sphere_vertex_count, sphere_index_count, 1,
-				semantics, std::numeric_limits<Uint32>::max(),
-				pt_triangles, false));
+				String(UTF8("Sphere")), sphere_vertex_count,
+				sphere_index_count, 1, semantics,
+				std::numeric_limits<Uint32>::max(),
+				pt_triangles, false, use_simd));
 
 			for (i = 0; i < sphere_vertex_count; ++i)
 			{
@@ -146,7 +148,8 @@ namespace eternal_lands
 				sphere_vertex_count - 1));
 		}
 
-		void load_plane(const Uint16 tile_size, const bool split,
+		void load_plane(const String &name, const Uint16 tile_size,
+			const bool split, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			glm::vec4 normal, tangent, data;
@@ -186,10 +189,10 @@ namespace eternal_lands
 			semantics.insert(vst_normal);
 			semantics.insert(vst_tangent);
 
-			mesh_data_tool = boost::make_shared<MeshDataTool>(
+			mesh_data_tool = boost::make_shared<MeshDataTool>(name,
 				vertex_count, index_count, 1, semantics,
 				restart_index, primitive_type,
-				use_restart_index);
+				use_restart_index, use_simd);
 
 			for (i = 0; i < index_count; ++i)
 			{
@@ -233,28 +236,31 @@ namespace eternal_lands
 		}
 
 		void load_e2d(const ReaderSharedPtr &reader,
+			const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
 			MaterialDescriptionVector &materials)
 		{
 			E2dLoader e2d_loader(reader);
 
-			e2d_loader.load(mesh_data_tool, materials);
+			e2d_loader.load(use_simd, mesh_data_tool, materials);
 		}
 
 		void load_e3d(const FileSystemSharedPtr &file_system,
 			const ReaderSharedPtr &reader,
+			const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
 			MaterialDescriptionVector &materials)
 		{
 			E3dLoader e3d_loader(reader);
 
-			e3d_loader.load(file_system, mesh_data_tool, materials);
+			e3d_loader.load(file_system, use_simd, mesh_data_tool,
+				materials);
 
 			mesh_data_tool->update_sub_meshs_packed();
 		}
 
 		void do_load_mesh(const FileSystemSharedPtr &file_system,
-			const ReaderSharedPtr &reader,
+			const ReaderSharedPtr &reader, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
 			MaterialDescriptionVector &materials)
 		{
@@ -270,8 +276,8 @@ namespace eternal_lands
 
 			if (E3dLoader::check_format(id))
 			{
-				load_e3d(file_system, reader, mesh_data_tool,
-					materials);
+				load_e3d(file_system, reader, use_simd,
+					mesh_data_tool, materials);
 
 				assert(mesh_data_tool.get() != 0);
 				return;
@@ -279,7 +285,8 @@ namespace eternal_lands
 
 			if (E2dLoader::check_format(id))
 			{
-				load_e2d(reader, mesh_data_tool, materials);
+				load_e2d(reader, use_simd, mesh_data_tool,
+					materials);
 
 				assert(mesh_data_tool.get() != 0);
 				return;
@@ -290,54 +297,55 @@ namespace eternal_lands
 					reader->get_name()));
 		}
 
-		bool load_plane(const String &name,
+		bool load_plane(const String &name, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
-			if (name == UTF8("plane_1"))
-			{
-				load_plane(2, false, mesh_data_tool);
-				return true;
-			}
-
 			if (name == UTF8("plane_2"))
 			{
-				load_plane(2, true, mesh_data_tool);
+				load_plane(name, 2, true, use_simd,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_4"))
 			{
-				load_plane(4, true, mesh_data_tool);
+				load_plane(name, 4, true, use_simd,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_8"))
 			{
-				load_plane(8, true, mesh_data_tool);
+				load_plane(name, 8, true, use_simd,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_16"))
 			{
-				load_plane(16, true, mesh_data_tool);
+				load_plane(name, 16, true, use_simd,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_32"))
 			{
-				load_plane(32, true, mesh_data_tool);
+				load_plane(name, 32, true, use_simd,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_64"))
 			{
-				load_plane(64, true, mesh_data_tool);
+				load_plane(name, 64, true, use_simd,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_128"))
 			{
-				load_plane(128, true, mesh_data_tool);
+				load_plane(name, 128, true, use_simd,
+					mesh_data_tool);
 				return true;
 			}
 
@@ -374,15 +382,17 @@ namespace eternal_lands
 
 		try
 		{
-			if (load_plane(name, mesh_data_tool))
+			if (load_plane(name, get_global_vars()->get_use_simd(),
+				mesh_data_tool))
 			{
 				return;
 			}
 
 			reader = get_file_system()->get_file(name);
 
-			do_load_mesh(get_file_system(), reader, mesh_data_tool,
-				materials);
+			do_load_mesh(get_file_system(), reader,
+				get_global_vars()->get_use_simd(),
+				mesh_data_tool, materials);
 
 			mesh_data_tool->optimize();
 
@@ -402,7 +412,8 @@ namespace eternal_lands
 			LOG_EXCEPTION(exception);
 		}
 
-		load_error_sphere(mesh_data_tool);
+		load_error_sphere(get_global_vars()->get_use_simd(),
+			mesh_data_tool);
 	}
 
 	void MeshDataCache::get_mesh_data(const String &name,

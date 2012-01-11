@@ -33,14 +33,17 @@ namespace eternal_lands
 	{
 		private:
 			CalCoreModel* m_core_model;
+			String m_name;
 			Uint32 m_index_count;
 			Uint32 m_vertex_count;
 
 		public:
-			Cal3dLoader(CalCoreModel* core_model);
+			Cal3dLoader(CalCoreModel* core_model,
+				const String &name);
 			~Cal3dLoader() throw();
-			void load(MeshDataToolSharedPtr &mesh_data_tool,
-				const bool use_extra_weight);
+			void load(const bool use_extra_weight,
+				const bool use_simd,
+				MeshDataToolSharedPtr &mesh_data_tool);
 
 	};
 

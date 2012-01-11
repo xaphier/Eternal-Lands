@@ -376,7 +376,7 @@ int mouseover_game_handler (window_info *win, int mx, int my)
 		{
 			elwin_mouse = CURSOR_EYE;
 		}
-		else if(get_object_under_mouse_pickable())
+		else if(engine_get_object_under_mouse_pickable())
 		{
 			elwin_mouse = CURSOR_PICK;
 		}
@@ -395,12 +395,12 @@ int mouseover_game_handler (window_info *win, int mx, int my)
 			elwin_mouse = CURSOR_ATTACK;
 		}
 		//see if the object is a harvestable resource.
-		else if(get_object_under_mouse_harvestable()) 
+		else if(engine_get_object_under_mouse_harvestable()) 
 		{
 			elwin_mouse = CURSOR_HARVEST;
 		}
 		//see if the object is an entrable resource.
-		else if(get_object_under_mouse_entrable())
+		else if(engine_get_object_under_mouse_entrable())
 		{
 			elwin_mouse = CURSOR_ENTER;
 		}

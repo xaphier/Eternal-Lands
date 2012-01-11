@@ -41,13 +41,15 @@ namespace eternal_lands
 
 			normal = glm::vec3(source->get_vertex_data(
 				vst_normal, source_index));
-			normal = glm::mat3(world_matrix) * normal;
+			normal = glm::normalize(glm::mat3(world_matrix) *
+				normal);
 			mesh_data_tool.set_vertex_data(vst_normal, dest_index,
 				glm::vec4(normal, 0.0f));
 
 			tangent = glm::vec3(source->get_vertex_data(
 				vst_tangent, source_index));
-			tangent = glm::mat3(world_matrix) * tangent;
+			tangent = glm::normalize(glm::mat3(world_matrix) *
+				tangent);
 			mesh_data_tool.set_vertex_data(vst_tangent, dest_index,
 				glm::vec4(tangent, 1.0f));
 
@@ -281,8 +283,9 @@ namespace eternal_lands
 	}
 
 	InstanceBuilder::InstanceBuilder(
-		const InstancingDataVector &instancing_datas, const Uint32 id):
-		m_instancing_datas(instancing_datas), m_id(id)
+		const InstancingDataVector &instancing_datas, const Uint32 id,
+		const bool use_simd): m_instancing_datas(instancing_datas),
+		m_id(id), m_use_simd(use_simd)
 	{
 		assert(get_instancing_datas().size() > 1);
 	}
@@ -375,6 +378,7 @@ namespace eternal_lands
 		Uint32 index_count, vertex_count, sub_mesh_count;
 		Uint32 vertex_offset, index_offset, sub_mesh_index;
 		SelectionType selection;
+		StringStream str;
 
 		center = get_center();
 
@@ -400,6 +404,7 @@ namespace eternal_lands
 			{
 				material_set.insert(material);
 			}
+			str << instancing_data.get_name();
 		}
 
 		sub_mesh_count = material_set.size();
@@ -410,10 +415,11 @@ namespace eternal_lands
 		semantics.insert(vst_tangent);
 		semantics.insert(vst_texture_coordinate_0);
 
-		mesh_data_tool = boost::make_shared<MeshDataTool>(vertex_count,
+		mesh_data_tool = boost::make_shared<MeshDataTool>(
+			String(str.str()), vertex_count,
 			index_count, sub_mesh_count, semantics,
 			std::numeric_limits<Uint32>::max(), pt_triangles,
-			false);
+			false, get_use_simd());
 
 		index_offset = 0;
 		vertex_offset = 0;
@@ -435,8 +441,8 @@ namespace eternal_lands
 		world_matrix[3] = center;
 
 		m_instance_data.reset(new InstanceData(ObjectData(world_matrix,
-			glm::vec4(0.0f), String(UTF8("Instance")), 1.0f,
-			get_id(), selection, false), mesh_data_tool, materials,
+			glm::vec4(0.0f), String(str.str()), 1.0f, get_id(),
+			selection, false), mesh_data_tool, materials,
 			instanced_objects));
 	}
 

@@ -785,12 +785,14 @@ namespace eternal_lands
 		const glm::mat3x3 &matrix, float* dest)
 	{
 #ifdef	USE_SSE2
-		__m128 tmp, m0, m1, m2, x, y, z;
+		__m128 tmp, m0, m1, m2, x, y, z, w, mask, normal;
 		Uint32 i;
 
 		m0 = _mm_setr_ps(matrix[0].x, matrix[0].y, matrix[0].z, 0.0f);
 		m1 = _mm_setr_ps(matrix[1].x, matrix[1].y, matrix[1].z, 0.0f);
 		m2 = _mm_setr_ps(matrix[2].x, matrix[2].y, matrix[2].z, 0.0f);
+		mask = (__m128)_mm_setr_epi32(0x00000000, 0x00000000,
+			0x00000000, 0xFFFFFFFF);
 
 		for (i = 0; i < count; ++i)
 		{
@@ -802,15 +804,36 @@ namespace eternal_lands
 				_MM_SHUFFLE(1, 1, 1, 1));
 			z = (__m128)_mm_shuffle_epi32((__m128i)tmp,
 				_MM_SHUFFLE(2, 2, 2, 2));
+			w = _mm_and_ps(tmp, mask);
 
 			x = _mm_mul_ps(x, m0);
 			y = _mm_mul_ps(y, m1);
 			z = _mm_mul_ps(z, m2);
 
-			tmp = _mm_add_ps(x, y);
-			tmp = _mm_add_ps(tmp, z);
+			normal = _mm_add_ps(x, y);
+			normal = _mm_add_ps(normal, z);
 
-			_mm_stream_ps(dest + 4 * i, tmp);
+			tmp = _mm_mul_ps(normal, normal);
+
+			x = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			y = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(1, 1, 1, 1));
+			z = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(2, 2, 2, 2));
+
+			tmp = _mm_add_ss(x, y);
+			tmp = _mm_add_ss(tmp, z);
+			tmp = _mm_rsqrt_ss(tmp);
+
+			tmp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			normal = _mm_mul_ps(normal, tmp);
+
+			normal = _mm_or_ps(normal, w);
+
+			_mm_stream_ps(dest + 4 * i, normal);
 		}
 #endif	/* USE_SSE2 */
 	}

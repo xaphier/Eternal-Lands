@@ -310,9 +310,8 @@ void add_actor_attachment(int actor_id, int attachment_type)
 				model_attach_mesh(actors_list[id], actors_defs[attachment_type].shirt[0].mesh_index);
 				set_on_idle(id);
 
-				build_actor_bounding_box(actors_list[id]);
-				if (1) /* use_animation_program */
-					set_transformation_buffers(actors_list[id]);
+				engine_build_actor_bounding_box(actors_list[id]);
+				engine_set_transformation_buffers(actors_list[id]);
 			}
 		}
 		else
@@ -1454,11 +1453,8 @@ void add_actor_from_server (const char *in_data, int len)
                 set_on_idle(i);
                 /* CalModel_Update(actors_list[i]->calmodel,0); */
             }
-			build_actor_bounding_box(actors_list[i]);
-			if (1) /* use_animation_program */
-			{
-				set_transformation_buffers(actors_list[i]);
-			}
+			engine_build_actor_bounding_box(actors_list[i]);
+			engine_set_transformation_buffers(actors_list[i]);
             /* lines commented by Schmurk: we've set an animation just before
              * so we don't want do screw it up */
 			/* actors_list[i]->cur_anim.anim_index=-1; */

@@ -1107,6 +1107,8 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
+		assert(count <= data.size());
+
 		for (i = 0; i < count; ++i)
 		{
 			pack(data[i], offset + i * stride, pack_format, buffer);
@@ -1125,7 +1127,9 @@ namespace eternal_lands
 
 		ptr = static_cast<Uint8*>(buffer.get_ptr()) + offset;
 
-		if (!(SIMD::get_supported() && use_simd))
+		assert(count <= data.size());
+
+		if (!use_simd)
 		{
 			for (i = 0; i < count; ++i)
 			{

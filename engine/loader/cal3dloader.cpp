@@ -102,11 +102,13 @@ namespace eternal_lands
 				normal.x = core_sub_mesh->getVectorVertex()[i].normal.x;
 				normal.y = core_sub_mesh->getVectorVertex()[i].normal.y;
 				normal.z = core_sub_mesh->getVectorVertex()[i].normal.z;
+				assert(std::abs(glm::dot(normal, normal) - 1.0f) < 0.01f);
 
 				tangent.x = core_sub_mesh->getVectorVectorTangentSpace()[0][i].tangent.x;
 				tangent.y = core_sub_mesh->getVectorVectorTangentSpace()[0][i].tangent.y;
 				tangent.z = core_sub_mesh->getVectorVectorTangentSpace()[0][i].tangent.z;
 				tangent.w = core_sub_mesh->getVectorVectorTangentSpace()[0][i].crossFactor;
+				assert(std::abs(glm::dot(tangent, tangent) - 2.0f) < 0.01f);
 
 				uv.x = core_sub_mesh->getVectorVectorTextureCoordinate()[0][i].u;
 				uv.y = core_sub_mesh->getVectorVectorTextureCoordinate()[0][i].v;
@@ -177,9 +179,10 @@ namespace eternal_lands
 
 	}
 
-	Cal3dLoader::Cal3dLoader(CalCoreModel* core_model):
-		m_core_model(core_model)
+	Cal3dLoader::Cal3dLoader(CalCoreModel* core_model, const String &name):
+		m_core_model(core_model), m_name(name)
 	{
+		assert(!name.get().empty());
 		calculate_face_and_vertex_count(core_model, m_index_count,
 			m_vertex_count);
 	}
@@ -188,8 +191,8 @@ namespace eternal_lands
 	{
 	}
 
-	void Cal3dLoader::load(MeshDataToolSharedPtr &mesh_data_tool,
-		const bool use_extra_weight)
+	void Cal3dLoader::load(const bool use_extra_weight,
+		const bool use_simd, MeshDataToolSharedPtr &mesh_data_tool)
 	{
 		glm::vec3 min, max;
 		CalCoreMesh* core_mesh;
@@ -216,10 +219,10 @@ namespace eternal_lands
 			semantics.insert(vst_extra_bone_weight);
 		}
 
-		mesh_data_tool = boost::make_shared<MeshDataTool>(
+		mesh_data_tool = boost::make_shared<MeshDataTool>(m_name,
 			m_vertex_count, m_index_count, mesh_count, semantics,
 			std::numeric_limits<Uint32>::max(), pt_triangles,
-			false);
+			false, use_simd);
 
 		for (i = 0; i < mesh_count; ++i)
 		{
@@ -244,6 +247,8 @@ namespace eternal_lands
 				index_offset - offset, min_vertex,
 				vertex_offset - min_vertex - 1));
 		}
+
+		mesh_data_tool->build_tangent(false, false, true);
 	}
 
 }

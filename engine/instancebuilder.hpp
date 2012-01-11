@@ -32,6 +32,7 @@ namespace eternal_lands
 		private:
 			const InstancingDataVector &m_instancing_datas;
 			const Uint32 m_id;
+			const bool m_use_simd;
 			std::auto_ptr<InstanceData> m_instance_data;
 
 			inline Uint32 get_id() const
@@ -65,7 +66,7 @@ namespace eternal_lands
 			 */
 			InstanceBuilder(
 				const InstancingDataVector &instancing_datas,
-				const Uint32 id);
+				const Uint32 id, const bool use_simd);
 
 			/**
 			 * Default destructor.
@@ -77,6 +78,11 @@ namespace eternal_lands
 			inline void operator()()
 			{
 				build_instance();
+			}
+
+			inline bool get_use_simd() const
+			{
+				return m_use_simd;
 			}
 
 	};

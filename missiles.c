@@ -179,7 +179,7 @@ void missiles_add_lost(int obj_id)
 	else {
 		end_lost_missiles = (end_lost_missiles + 1) % MAX_LOST_MISSILES;
 		if (end_lost_missiles == begin_lost_missiles) {
-			remove_object(lost_missiles_list[begin_lost_missiles].obj_3d_id);
+			engine_remove_object(lost_missiles_list[begin_lost_missiles].obj_3d_id);
 			begin_lost_missiles = (begin_lost_missiles + 1) % MAX_LOST_MISSILES;
 		}
 	}
@@ -215,8 +215,8 @@ void missiles_remove(int missile_id)
 							 mis->position[1] - mis->direction[1] * dist, 
 							 mis->position[2] - mis->direction[2] * dist,
                              x_rot, y_rot, z_rot);
-		obj_3d_id = get_next_free_id();
-		add_object_engine(missiles_defs[mis->type].lost_mesh, 
+		obj_3d_id = engine_get_next_free_id();
+		engine_add_object(missiles_defs[mis->type].lost_mesh, 
 			mis->position[0] - mis->direction[0] * dist, 
 			mis->position[1] - mis->direction[1] * dist, 
 			mis->position[2] - mis->direction[2] * dist,
@@ -260,7 +260,7 @@ void missiles_update()
 
 	while (begin_lost_missiles >= 0 &&
 		   cur_time > lost_missiles_list[begin_lost_missiles].end_time) {
-		remove_object(lost_missiles_list[begin_lost_missiles].obj_3d_id);
+		engine_remove_object(lost_missiles_list[begin_lost_missiles].obj_3d_id);
 		if (begin_lost_missiles == end_lost_missiles)
 			begin_lost_missiles = end_lost_missiles = -1;
 		else

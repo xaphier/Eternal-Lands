@@ -37,6 +37,7 @@ namespace eternal_lands
 				m_instancing_datas;
 			const MeshDataCacheWeakPtr m_mesh_data_cache;
 			const float m_max_size;
+			const bool m_use_simd;
 
 			inline MeshDataCacheSharedPtr get_mesh_data_cache()
 				const
@@ -58,7 +59,7 @@ namespace eternal_lands
 			 */
 			InstancesBuilder(
 				const MeshDataCacheWeakPtr &mesh_data_cache,
-				const float max_size = 8.0f);
+				const float max_size, const bool use_simd);
 
 			/**
 			 * Default destructor.
@@ -71,10 +72,14 @@ namespace eternal_lands
 			void build(FreeIds &free_ids,
 				InstanceDataVector &instances,
 				ObjectDataVector &uninstanced);
+			void clear();
 			static InstanceData build(const glm::vec3 &center,
 				const ObjectDataVector &object_datas);
 
-			void clear();
+			inline bool get_use_simd() const
+			{
+				return m_use_simd;
+			}
 
 	};
 

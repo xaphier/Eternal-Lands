@@ -59,7 +59,8 @@ namespace eternal_lands
 
 				for (j = 0 ; j < cache_size; j++)
 				{
-					cache_hit |= (cache[j] == indices[offset + i]);
+					cache_hit |= (cache[j] ==
+						indices[offset + i]);
 				}
 
 				if (!cache_hit)
@@ -251,7 +252,12 @@ namespace eternal_lands
 			t0 = texture_coords[1] - texture_coords[0];
 			t1 = texture_coords[2] - texture_coords[0];
 
-			r = 1.0f / (t0.x * t1.y - t1.x * t0.y);
+			r = 1.0f;
+
+			if (std::abs(t0.x * t1.y - t1.x * t0.y) > 0.0f)
+			{
+				r = 1.0f / (t0.x * t1.y - t1.x * t0.y);
+			}
 
 			tangent = glm::vec3(t1.y * p0 - t0.y * p1) * r;
 			bitangent = glm::vec3(t0.x * p1 - t1.x * p0) * r;
@@ -276,12 +282,16 @@ namespace eternal_lands
 
 	}
 
-	MeshDataTool::MeshDataTool(const Uint32 vertex_count,
-		const Uint32 index_count, const Uint32 sub_mesh_count,
+	MeshDataTool::MeshDataTool(const String &name,
+		const Uint32 vertex_count, const Uint32 index_count,
+		const Uint32 sub_mesh_count,
 		const VertexSemanticTypeSet &semantics,
 		const Uint32 restart_index, const PrimitiveType primitive_type,
-		const bool use_restart_index)
+		const bool use_restart_index, const bool use_simd):
+		m_name(name), m_use_simd(use_simd)
 	{
+		assert(!get_name().get().empty());
+
 		if ((primitive_type != pt_triangles) &&
 			(primitive_type != pt_triangle_fan) &&
 			(primitive_type != pt_triangle_strip))
@@ -339,7 +349,12 @@ namespace eternal_lands
 
 		if (found != m_vertices.end())
 		{
+			assert(index < found->second.size());
+			assert(get_vertex_count() == found->second.size());
+
 			found->second[index] = data;
+
+			assert(found->second[index] == data);
 		}
 	}
 
@@ -355,6 +370,9 @@ namespace eternal_lands
 
 		if (found != m_vertices.end())
 		{
+			assert(index < found->second.size());
+			assert(get_vertex_count() == found->second.size());
+
 			return found->second[index];
 		}
 		else
@@ -531,6 +549,7 @@ namespace eternal_lands
 		Vec3Array3 positions;
 		Vec2Array3 texture_coords;
 		Vec3Vector tangents, bitangents;
+		glm::vec4 data;
 		glm::vec3 v_tangent, v_bitangent, v_normal;
 		Uint32 i, j, index, count;
 		VertexSemanticType position, normal, tangent, texture_coord;
@@ -606,21 +625,28 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			v_tangent = tangents[i];
+
+			if (glm::dot(v_tangent, v_tangent) < 0.0001f)
+			{
+				v_tangent = glm::vec3(1.0f, 0.0f, 0.0f);
+			}
+
 			if (gram_schmidth_orthogonalize)
 			{
 				v_normal = glm::vec3(get_vertex_data(normal,
 					i));
 
-				set_vertex_data(tangent, i,
-					get_gram_schmidth_orthogonalize_tangent(
-						v_normal, tangents[i],
-						bitangents[i]));
+				data = get_gram_schmidth_orthogonalize_tangent(
+					v_normal, v_tangent, bitangents[i]);
 			}
 			else
 			{
-				set_vertex_data(tangent, i, glm::vec4(
-					glm::normalize(tangents[i]), 1.0f));
+				data = glm::vec4(glm::normalize(v_tangent),
+					1.0f);
 			}
+
+			set_vertex_data(tangent, i, data);
 		}
 	}
 
@@ -874,6 +900,8 @@ namespace eternal_lands
 			get_use_restart_index());
 		Uint32 i, count;
 
+		str << "name: " << get_name() << std::endl;
+
 		count = get_vertex_count();
 
 		str << "vertex count: " << count << std::endl;
@@ -1045,7 +1073,7 @@ namespace eternal_lands
 		{
 			data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-			if (SIMD::get_supported())
+			if (get_use_simd())
 			{
 				SIMD::fill(data, count, glm::value_ptr(
 					dest->second[dest_index]));
@@ -1094,7 +1122,7 @@ namespace eternal_lands
 		{
 			data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-			if (SIMD::get_supported())
+			if (get_use_simd())
 			{
 				SIMD::fill(data, count, glm::value_ptr(
 					dest->second[dest_index]));
@@ -1112,7 +1140,7 @@ namespace eternal_lands
 
 		assert((source_index + count) <= source->second.size());
 
-		if (SIMD::get_supported())
+		if (get_use_simd())
 		{
 			SIMD::transform(
 				glm::value_ptr(source->second[source_index]),
@@ -1159,7 +1187,7 @@ namespace eternal_lands
 		{
 			data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-			if (SIMD::get_supported())
+			if (get_use_simd())
 			{
 				SIMD::fill(data, count, glm::value_ptr(
 					dest->second[dest_index]));
@@ -1177,7 +1205,7 @@ namespace eternal_lands
 
 		assert((source_index + count) <= source->second.size());
 
-		if (SIMD::get_supported())
+		if (get_use_simd())
 		{
 			SIMD::transform(
 				glm::value_ptr(source->second[source_index]),
@@ -1191,8 +1219,9 @@ namespace eternal_lands
 		{
 			data = source->second[source_index + i];
 
-			dest->second[dest_index + i] =
-				glm::vec4(matrix * glm::vec3(data), 1.0f);
+			dest->second[dest_index + i] = glm::vec4(
+				glm::normalize(matrix * glm::vec3(data)),
+				data.w);
 		}
 	}
 
@@ -1211,7 +1240,7 @@ namespace eternal_lands
 
 		assert((index + count) <= found->second.size());
 
-		if (SIMD::get_supported())
+		if (get_use_simd())
 		{
 			SIMD::fill(data, count,
 				glm::value_ptr(found->second[index]));
@@ -1230,6 +1259,9 @@ namespace eternal_lands
 		const Uint32 count, const Sint32 offset)
 	{
 		Uint32 i;
+
+		assert((dest_index + count) <= get_index_count());
+		assert((source_index + count) <= indices.size());
 
 		for (i = 0; i < count; ++i)
 		{

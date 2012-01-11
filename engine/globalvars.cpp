@@ -8,6 +8,7 @@
 #include "globalvars.hpp"
 #include "exceptions.hpp"
 #include "lua.hpp"
+#include "simd/simd.hpp"
 
 namespace eternal_lands
 {
@@ -477,7 +478,7 @@ namespace eternal_lands
 		m_opengl_version = ovt_2_1;
 		m_fog = true;
 		m_optmize_shader_source = true;
-		m_use_simd = false;
+		m_use_simd = SIMD::get_supported();
 	}
 
 	GlobalVars::~GlobalVars() throw()

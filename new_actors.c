@@ -200,7 +200,7 @@ Uint32 delay_texture_item_change(actor* a, const int which_part, const int which
 
 	if (a->delay_texture_item_changes != 0)
 	{
-		load_enhanced_actor_texture(a);
+		engine_load_enhanced_actor_texture(a);
 
 		if (a->delayed_item_changes_count < MAX_ITEM_CHANGES_QUEUE)
 		{
@@ -1123,7 +1123,7 @@ void add_enhanced_actor_from_server (const char *in_data, int len)
 			actors_list[i]->actor_id, actors_list[i]->actor_name,
 			actors_list[i]->kind_of_actor, 1,
 			&actors_list[i]->client_id);
-		load_enhanced_actor_texture(actors_list[i]);
+		engine_load_enhanced_actor_texture(actors_list[i]);
 
 		if (actors_list[i]->calmodel!=NULL) {
 			//Setup cal3d model
@@ -1168,11 +1168,8 @@ void add_enhanced_actor_from_server (const char *in_data, int len)
                 set_on_idle(i);
                 /* CalModel_Update(actors_list[i]->calmodel,0); */
             }
-			build_actor_bounding_box(actors_list[i]);
-			if (1) /* use_animation_program */
-			{
-				set_transformation_buffers(actors_list[i]);
-			}
+			engine_build_actor_bounding_box(actors_list[i]);
+			engine_set_transformation_buffers(actors_list[i]);
 			switch (weapon)
 			{
 				case SWORD_1_FIRE:
@@ -1327,15 +1324,12 @@ actor * add_actor_interface(float x, float y, float z_rot, float scale, int acto
 			a->anim_time=0.0;
 			a->last_anim_update= cur_time;
 			CalModel_Update(a->calmodel,0);
-			build_actor_bounding_box(a);
-			if (1) /* use_animation_program */
-			{
-				set_transformation_buffers(a);
-			}
+			engine_build_actor_bounding_box(a);
+			engine_set_transformation_buffers(a);
 		}
 	} else a->calmodel=NULL;
 
-	load_enhanced_actor_texture(a);
+	engine_load_enhanced_actor_texture(a);
 
 	UNLOCK_ACTORS_LISTS();  //unlock it
 

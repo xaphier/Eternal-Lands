@@ -143,11 +143,11 @@ static int do_load_map(const char *file_name, update_func *update_function)
 		return 0;
 	}
 
-	load_map_engine(map_file_name, cur_map_header.ambient_r,
+	engine_load_map(map_file_name, cur_map_header.ambient_r,
 		cur_map_header.ambient_g, cur_map_header.ambient_b,
 		cur_map_header.dungeon);
 
-	set_next_free_id(cur_map_header.obj_3d_no);
+	engine_set_next_free_id(cur_map_header.obj_3d_no);
 
 	update_function(load_map_str, 0);
 
@@ -173,7 +173,7 @@ static int do_load_map(const char *file_name, update_func *update_function)
 			cur_tile = tile_map[i*tile_map_size_x+j];
 			if (cur_tile != 255)
 			{
-				add_tile(j, i, cur_tile);
+				engine_add_tile(j, i, cur_tile);
 			}
 		}
 	}
@@ -340,7 +340,7 @@ static int do_load_map(const char *file_name, update_func *update_function)
 				cur_3d_obj_io.b = 0.0f;
 			}
 
-			add_instanced_object_engine(cur_3d_obj_io.file_name,
+			engine_add_instanced_object(cur_3d_obj_io.file_name,
 				cur_3d_obj_io.x_pos, cur_3d_obj_io.y_pos,
 				cur_3d_obj_io.z_pos, cur_3d_obj_io.x_rot,
 				cur_3d_obj_io.y_rot, cur_3d_obj_io.z_rot,
@@ -425,11 +425,11 @@ static int do_load_map(const char *file_name, update_func *update_function)
 #endif // CLUSTER_INSIDES
 #endif
 
-		add_instanced_object_engine(cur_2d_obj_io.file_name,
+		engine_add_instanced_object(cur_2d_obj_io.file_name,
 			cur_2d_obj_io.x_pos, cur_2d_obj_io.y_pos,
 			cur_2d_obj_io.z_pos, cur_2d_obj_io.x_rot,
 			cur_2d_obj_io.y_rot, cur_2d_obj_io.z_rot, 0, 0.0f,
-			0.0f, 0.0f, get_next_free_id(), st_none);
+			0.0f, 0.0f, engine_get_next_free_id(), st_none);
 
 
 #ifndef FASTER_MAP_LOAD
@@ -540,6 +540,7 @@ static int do_load_map(const char *file_name, update_func *update_function)
 	lights = (light_io *) (file_mem + cur_map_header.lights_offset);
 
 	ENTER_DEBUG_MARK("load lights");
+
 	for (i = 0; i < cur_map_header.lights_no; i++)
 	{
 		light_io cur_light_io = lights[i];
@@ -576,7 +577,7 @@ static int do_load_map(const char *file_name, update_func *update_function)
 		add_light (cur_light_io.pos_x, cur_light_io.pos_y, cur_light_io.pos_z,
 		           cur_light_io.r, cur_light_io.g, cur_light_io.b, 1.0f, 0);
 #endif
-		add_light_engine(cur_light_io.pos_x, cur_light_io.pos_y,
+		engine_add_light(cur_light_io.pos_x, cur_light_io.pos_y,
 			cur_light_io.pos_z, cur_light_io.r, cur_light_io.g,
 			cur_light_io.b, 2.5f, i);
 
@@ -611,6 +612,7 @@ static int do_load_map(const char *file_name, update_func *update_function)
 	particles = (particles_io *) (file_mem + cur_map_header.particles_offset);
 
 	ENTER_DEBUG_MARK("load particles");
+
 	for (i = 0; i < cur_map_header.particles_no; i++)
 	{
 		particles_io cur_particles_io = particles[i];
@@ -652,7 +654,7 @@ static int do_load_map(const char *file_name, update_func *update_function)
 
 	LOG_DEBUG("Building instances for map '%s'.", file_name);
 
-	done_object_adding();
+	engine_done_object_adding();
 
 	init_bbox_tree(main_bbox_tree, main_bbox_tree_items);
 	free_bbox_items(main_bbox_tree_items);

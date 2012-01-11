@@ -289,7 +289,8 @@ namespace eternal_lands
 		}
 	}
 
-	void E2dLoader::load(MeshDataToolSharedPtr &mesh_data_tool,
+	void E2dLoader::load(const bool use_simd,
+		MeshDataToolSharedPtr &mesh_data_tool,
 		MaterialDescriptionVector &materials)
 	{
 		MaterialDescription material;
@@ -327,10 +328,10 @@ namespace eternal_lands
 			throw;
 		}
 
-		mesh_data_tool = boost::make_shared<MeshDataTool>(vertex_count,
-			index_count, 1, semantics,
-			std::numeric_limits<Uint32>::max(), pt_triangles,
-			false);
+		mesh_data_tool = boost::make_shared<MeshDataTool>(
+			m_reader->get_name(), vertex_count, index_count, 1,
+			semantics, std::numeric_limits<Uint32>::max(),
+			pt_triangles, false, use_simd);
 
 		load_vertex_data(mesh_data_tool, texture_coordinates, size);
 

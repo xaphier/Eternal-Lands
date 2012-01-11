@@ -737,7 +737,7 @@ void init_stuff()
 	LOG_DEBUG("Init extensions done");
 
 	init_engine();
-	set_window_size(window_width, window_height, hud_x, hud_y);
+	engine_set_window_size(window_width, window_height, hud_x, hud_y);
 
 	update_loading_win(init_opengl_str, 5);
 

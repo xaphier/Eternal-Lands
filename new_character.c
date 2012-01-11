@@ -229,7 +229,7 @@ void change_actor ()
 		
 		my_strncp(our_actor.our_model->body_parts->boots_tex,actors_defs[our_actor.race].boots[our_actor.boots].boots_name,sizeof(our_actor.our_model->body_parts->boots_tex));
 
-		load_enhanced_actor_texture(our_actor.our_model);
+		engine_load_enhanced_actor_texture(our_actor.our_model);
 
 		// Move the actor. Could be a little disorienting, though.
 		our_actor.our_model->x_tile_pos = our_actor.def->x;
@@ -1623,7 +1623,7 @@ static void update_skin()
 		actors_defs[our_actor.race].skin[our_actor.skin].head_name,
 		sizeof(our_actor.our_model->body_parts->head_tex));
 
-	load_enhanced_actor_texture(our_actor.our_model);
+	engine_load_enhanced_actor_texture(our_actor.our_model);
 }
 
 static void update_hair()
@@ -1633,7 +1633,7 @@ static void update_hair()
 		actors_defs[our_actor.race].hair[our_actor.hair].hair_name,
 		sizeof(our_actor.our_model->body_parts->hair_tex));
 
-	load_enhanced_actor_texture(our_actor.our_model);
+	engine_load_enhanced_actor_texture(our_actor.our_model);
 }
 
 static void update_shirt()
@@ -1658,7 +1658,7 @@ static void update_shirt()
 			actors_defs[our_actor.race].shirt[our_actor.shirt].mesh_index;
 	}
 
-	load_enhanced_actor_texture(our_actor.our_model);
+	engine_load_enhanced_actor_texture(our_actor.our_model);
 }
 
 static void update_pants()
@@ -1680,7 +1680,7 @@ static void update_pants()
 			actors_defs[our_actor.race].legs[our_actor.pants].mesh_index;
 	}
 
-	load_enhanced_actor_texture(our_actor.our_model);
+	engine_load_enhanced_actor_texture(our_actor.our_model);
 }
 
 static void update_boots()
@@ -1702,7 +1702,7 @@ static void update_boots()
 			actors_defs[our_actor.race].boots[our_actor.boots].mesh_index;
 	}
 
-	load_enhanced_actor_texture(our_actor.our_model);
+	engine_load_enhanced_actor_texture(our_actor.our_model);
 }
 
 int head_dec_handler(widget_list *w, int mx, int my, Uint32 flags)

@@ -16,8 +16,9 @@ namespace eternal_lands
 
 	InstancesBuilder::InstancesBuilder(
 		const MeshDataCacheWeakPtr &mesh_data_cache,
-		const float max_size): m_mesh_data_cache(mesh_data_cache),
-		m_max_size(max_size)
+		const float max_size, const bool use_simd):
+		m_mesh_data_cache(mesh_data_cache), m_max_size(max_size),
+		m_use_simd(use_simd)
 	{
 		assert(!m_mesh_data_cache.expired());
 	}
@@ -77,7 +78,8 @@ namespace eternal_lands
 			{
 				builders.push_back(new InstanceBuilder(
 					it->second,
-					free_ids.get_next_free_id()));
+					free_ids.get_next_free_id(),
+					get_use_simd()));
 			}
 		}
 

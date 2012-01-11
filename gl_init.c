@@ -183,7 +183,7 @@ void setup_video_mode(int fs, int mode)
 #ifndef WINDOWS
 	bpp=0;//under X, we can't change the desktop BPP
 #endif
-	set_window_size(window_width, window_height, hud_x, hud_y);
+	engine_set_window_size(window_width, window_height, hud_x, hud_y);
 }
 
 void check_gl_mode()
@@ -1021,11 +1021,12 @@ void init_gl_extensions()
 
 	if (el_opengl_version == 0)
 	{
-		set_opengl_version(get_version());
+		engine_set_opengl_version(get_version());
 	}
 	else
 	{
-		set_opengl_version(min2i(get_version(), el_opengl_version - 1));
+		engine_set_opengl_version(min2i(get_version(),
+			el_opengl_version - 1));
 	}
 
 	CHECK_GL_ERRORS();

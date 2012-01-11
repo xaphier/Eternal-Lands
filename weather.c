@@ -468,7 +468,7 @@ void weather_update()
 
 void weather_render_fog()
 {
-	set_fog_data(skybox_fog_color, skybox_fog_density);
+	engine_set_fog_data(skybox_fog_color, skybox_fog_density);
 }
 
 void weather_render()

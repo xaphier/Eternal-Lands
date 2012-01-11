@@ -154,11 +154,8 @@ void cal_actor_set_random_idle(int id)
 	//actors_list[id]->cur_anim=anim;
 	//actors_list[id]->anim_time=0.0;
 	CalModel_Update(actors_list[id]->calmodel,0.0001);//Make changes take effect now
-	build_actor_bounding_box(actors_list[id]);
-	if (1) /* use_animation_program */
-	{
-		set_transformation_buffers(actors_list[id]);
-	}
+	engine_build_actor_bounding_box(actors_list[id]);
+	engine_set_transformation_buffers(actors_list[id]);
 	actors_list[id]->IsOnIdle= 1;
 	actors_list[id]->cur_anim.duration= 0;
 	actors_list[id]->anim_time= 0.0;
@@ -443,7 +440,7 @@ void animate_actors()
 #else	/* ANIMATION_SCALING */
 				CalModel_Update(actors_list[i]->calmodel, (((cur_time-last_update)*actors_list[i]->cur_anim.duration_scale)/1000.0));
 #endif	/* ANIMATION_SCALING */
-				build_actor_bounding_box(actors_list[i]);
+				engine_build_actor_bounding_box(actors_list[i]);
 				{
 				int wasbusy = ACTOR(i)->busy;
 				missiles_rotate_actor_bones(actors_list[i]);
@@ -453,10 +450,7 @@ void animate_actors()
 				}
 
 				}
-				if (1) /* use_animation_program */
-				{
-					set_transformation_buffers(actors_list[i]);
-				}
+				engine_set_transformation_buffers(actors_list[i]);
 			}
 #endif	//DYNAMIC_ANIMATIONS
 		}
@@ -1995,12 +1989,9 @@ void add_command_to_actor(int actor_id, unsigned char command)
 			{
 				//We may be on idle, update the actor so we can reduce the rendering lag
 				CalModel_Update(act->calmodel, 5.0f);
-				build_actor_bounding_box(act);
+				engine_build_actor_bounding_box(act);
 				missiles_rotate_actor_bones(get_actor_ptr_from_id(actor_id));
-				if (1) /* use_animation_program */
-				{
-					set_transformation_buffers(act);
-				}
+				engine_set_transformation_buffers(act);
 			}
 		}
 
@@ -4469,7 +4460,7 @@ int parse_actor_script(const xmlNode *cfg)
 			act->shirt[0].mesh_index= cal_load_mesh(act, act->file_name, NULL); //save the single meshindex as torso
 		}
 
-		build_buffers(act);
+		engine_build_buffers(act);
 	}
 
 	return ok;

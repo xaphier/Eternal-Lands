@@ -15,6 +15,7 @@
 #include "objectdata.hpp"
 #include "actor.hpp"
 #include "exceptions.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
@@ -66,11 +67,12 @@ namespace eternal_lands
 		const bool ghost)
 	{
 		ActorDataCacheItem data;
-		Cal3dLoader loader(core_model);
+		Cal3dLoader loader(core_model, name);
 		MeshDataToolSharedPtr mesh_data_tool;
 		bool use_16_bit_indices;
 
-		loader.load(mesh_data_tool, false);
+		loader.load(false, get_global_vars()->get_use_simd(),
+			mesh_data_tool);
 
 		data.m_mesh = get_mesh_builder()->get_mesh(vft_animated_mesh,
 			mesh_data_tool, name);

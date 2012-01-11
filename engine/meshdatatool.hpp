@@ -38,10 +38,12 @@ namespace eternal_lands
 			SubMeshVector m_sub_meshs;
 			VertexSemanticTypeAlignedVec4ArrayMap m_vertices;
 			Uint32Vector m_indices;
+			String m_name;
 			Uint32 m_vertex_count;
 			Uint32 m_restart_index;
 			PrimitiveType m_primitive_type;
 			bool m_use_restart_index;
+			const bool m_use_simd;
 
 			void vertex_optimize();
 
@@ -59,13 +61,15 @@ namespace eternal_lands
 			 * @param index_count The number of indices.
 			 * @param semantics The vertex semantics that are used.
 			 */
-			MeshDataTool(const Uint32 vertex_count,
+			MeshDataTool(const String &name,
+				const Uint32 vertex_count,
 				const Uint32 index_count,
 				const Uint32 sub_mesh_count,
 				const VertexSemanticTypeSet &semantics,
 				const Uint32 restart_index,
 				const PrimitiveType primitive_type,
-				const bool use_restart_index);
+				const bool use_restart_index,
+				const bool use_simd);
 
 			/**
 			 * Default destructor.
@@ -134,8 +138,12 @@ namespace eternal_lands
 				assert((data < get_vertex_count()) ||
 					((get_restart_index() == data) &&
 						get_use_restart_index()));
+				assert(index < m_indices.size());
+				assert(get_index_count() == m_indices.size());
 
 				m_indices[index] = data;
+
+				assert(m_indices[index] == data);
 			}
 
 			inline Uint32 get_index_data(const Uint32 index) const
@@ -261,6 +269,16 @@ namespace eternal_lands
 			inline const SubMeshVector &get_sub_meshs() const
 			{
 				return m_sub_meshs;
+			}
+
+			inline bool get_use_simd() const
+			{
+				return m_use_simd;
+			}
+
+			inline const String &get_name() const
+			{
+				return m_name;
 			}
 
 	};
