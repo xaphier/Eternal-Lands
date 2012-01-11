@@ -120,37 +120,47 @@ namespace
 	{
 		Uint16 i;
 
-		CHECK_GL_ERRORS();
-
-		for (i = 0; i < 16; i++)
+		try
 		{
-			glActiveTexture(GL_TEXTURE0 + i);
-			glDisable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, 0);
+			DEBUG_CHECK_GL_ERROR();
+
+			glActiveTexture(GL_TEXTURE0);
+			glEnable(GL_TEXTURE_2D);
+			glDisable(GL_ALPHA_TEST);
+			glDisable(GL_CULL_FACE);
+			glDisable(GL_BLEND);
+			bind_texture_id(0);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			glBindBufferARB(GL_ARRAY_BUFFER, 0);
+			glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+			glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
+			glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
+			glUseProgram(0);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			for (i = 0; i < 16; i++)
+			{
+				glDisableVertexAttribArray(i);
+			}
+
+			DEBUG_CHECK_GL_ERROR();
+
+			glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glBlendFunc(GL_ZERO, GL_ONE);
+
+			DEBUG_CHECK_GL_ERROR();
 		}
-
-		glActiveTexture(GL_TEXTURE0);
-		glEnable(GL_TEXTURE_2D);
-		glDisable(GL_ALPHA_TEST);
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_BLEND);
-		bind_texture_id(0);
-
-		glBindBufferARB(GL_ARRAY_BUFFER, 0);
-		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
-		glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
-		glUseProgram(0);
-
-		for (i = 0; i < 16; i++)
+		catch (const boost::exception &exception)
 		{
-			glDisableVertexAttribArray(i);
+			LOG_EXCEPTION(exception);
 		}
-
-		glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glBlendFunc(GL_ZERO, GL_ONE);
-
-		CHECK_GL_ERRORS();
+		catch (const std::exception &exception)
+		{
+			LOG_EXCEPTION(exception);
+		}
 	}
 
 	el::SelectionType get_selection_type(el::String name)
