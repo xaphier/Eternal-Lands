@@ -1638,11 +1638,6 @@ extern "C" void engine_set_view_distance(const float value)
 	global_vars->set_view_distance(value);
 }
 
-extern "C" void engine_set_max_instance_size(const float value)
-{
-	global_vars->set_max_instance_size(value);
-}
-
 extern "C" void engine_set_shadow_quality(const int value)
 {
 	el::ShadowQualityType shadow_quality;
