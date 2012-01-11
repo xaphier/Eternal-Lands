@@ -123,13 +123,6 @@ namespace eternal_lands
 			material.set_texture(found->second.m_skin_name,
 				stt_diffuse_0);
 		}
-#ifdef	ENHANCED_ACTOR_TEST
-		else
-		{
-			material.set_texture(String(UTF8("meshes/yeti.dds")),
-				stt_diffuse_0);
-		}
-#endif	/* ENHANCED_ACTOR_TEST */
 
 		material.set_effect(String(UTF8("animated_mesh_solid")));
 

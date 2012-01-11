@@ -54,7 +54,7 @@ namespace eternal_lands
 			Uint32 &vertex_offset, glm::vec3 &min, glm::vec3 &max,
 			const Uint16 mesh_index)
 		{
-			glm::vec4 position, normal, tangent, uv;
+			glm::vec4 position, normal, uv;
 			glm::vec4 index, weight, extra_index, extra_weight;
 			float tmp_index, tmp_weight;
 			Sint32 i, j, k, count, bone_count;
@@ -70,13 +70,16 @@ namespace eternal_lands
 			{
 				mesh_data_tool->set_index_data(
 					index_offset + i * 3 + 0,
-					vector_face[i].vertexId[0] + vertex_offset);
+					vector_face[i].vertexId[0] +
+						vertex_offset);
 				mesh_data_tool->set_index_data(
 					index_offset + i * 3 + 1,
-					vector_face[i].vertexId[1] + vertex_offset);
+					vector_face[i].vertexId[1] +
+						vertex_offset);
 				mesh_data_tool->set_index_data(
 					index_offset + i * 3 + 2,
-					vector_face[i].vertexId[2] + vertex_offset);
+					vector_face[i].vertexId[2] +
+						vertex_offset);
 			}
 
 			index_offset += count * 3;
@@ -91,24 +94,25 @@ namespace eternal_lands
 
 			for (i = 0; i < count; ++i)
 			{
-				position.x = core_sub_mesh->getVectorVertex()[i].position.x;
-				position.y = core_sub_mesh->getVectorVertex()[i].position.y;
-				position.z = core_sub_mesh->getVectorVertex()[i].position.z;
+				position.x = core_sub_mesh->getVectorVertex(
+					)[i].position.x;
+				position.y = core_sub_mesh->getVectorVertex(
+					)[i].position.y;
+				position.z = core_sub_mesh->getVectorVertex(
+					)[i].position.z;
 				position.w = mesh_index;
 
 				min = glm::min(min, glm::vec3(position));
 				max = glm::max(max, glm::vec3(position));
 
-				normal.x = core_sub_mesh->getVectorVertex()[i].normal.x;
-				normal.y = core_sub_mesh->getVectorVertex()[i].normal.y;
-				normal.z = core_sub_mesh->getVectorVertex()[i].normal.z;
-				assert(std::abs(glm::dot(normal, normal) - 1.0f) < 0.01f);
-
-				tangent.x = core_sub_mesh->getVectorVectorTangentSpace()[0][i].tangent.x;
-				tangent.y = core_sub_mesh->getVectorVectorTangentSpace()[0][i].tangent.y;
-				tangent.z = core_sub_mesh->getVectorVectorTangentSpace()[0][i].tangent.z;
-				tangent.w = core_sub_mesh->getVectorVectorTangentSpace()[0][i].crossFactor;
-				assert(std::abs(glm::dot(tangent, tangent) - 2.0f) < 0.01f);
+				normal.x = core_sub_mesh->getVectorVertex(
+					)[i].normal.x;
+				normal.y = core_sub_mesh->getVectorVertex(
+					)[i].normal.y;
+				normal.z = core_sub_mesh->getVectorVertex(
+					)[i].normal.z;
+				assert(std::abs(glm::dot(normal, normal) -
+					1.0f) < 0.01f);
 
 				uv.x = core_sub_mesh->getVectorVectorTextureCoordinate()[0][i].u;
 				uv.y = core_sub_mesh->getVectorVectorTextureCoordinate()[0][i].v;
@@ -117,7 +121,8 @@ namespace eternal_lands
 				weight = glm::vec4(0.0f);
 				extra_index = glm::vec4(0.0f);
 				extra_weight = glm::vec4(0.0f);
-				bone_count = core_sub_mesh->getVectorVertex()[i].vectorInfluence.size();
+				bone_count = core_sub_mesh->getVectorVertex(
+					)[i].vectorInfluence.size();
 
 				j = 0;
 				k = 0;
@@ -136,8 +141,10 @@ namespace eternal_lands
 						}
 						else
 						{
-							extra_index[j - 4] = tmp_index;
-							extra_weight[j - 4] = tmp_weight;
+							extra_index[j - 4] =
+								tmp_index;
+							extra_weight[j - 4] =
+								tmp_weight;
 						}
 						++j;
 					}
@@ -156,16 +163,12 @@ namespace eternal_lands
 				mesh_data_tool->set_vertex_data(
 					vst_normal, vertex_offset + i, normal);
 				mesh_data_tool->set_vertex_data(
-					vst_tangent, vertex_offset + i,
-					tangent);
-				mesh_data_tool->set_vertex_data(
 					vst_texture_coordinate_0,
 					vertex_offset + i, uv);
 				mesh_data_tool->set_vertex_data(vst_bone_index,
 					vertex_offset + i, index);
 				mesh_data_tool->set_vertex_data(vst_bone_weight,
 					vertex_offset + i, weight);
-
 				mesh_data_tool->set_vertex_data(
 					vst_extra_bone_index,
 					vertex_offset + i, extra_index);
