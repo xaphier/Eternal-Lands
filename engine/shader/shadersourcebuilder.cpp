@@ -1368,10 +1368,12 @@ namespace eternal_lands
 					main << sslt_fragment_color;
 				}
 
+				main << UTF8(";\n\t") << output;
+				main << UTF8(".a = ") << UTF8("1.0;\n");
 				break;
 			case sbt_depth:
 				main << UTF8("\t") << output;
-				main << UTF8(".rgb = vec3(1.0)");
+				main << UTF8(" = vec4(1.0);\n");
 
 				break;
 			case sbt_shadow:
@@ -1381,17 +1383,14 @@ namespace eternal_lands
 				add_parameter(cpt_shadow_map_data, pqt_in,
 					locals, globals);
 
-				main << UTF8("\t") << output;
-				main << UTF8(".rgb = ");
-				main << cpt_shadow_map_data;
+				main << UTF8("\t") << output << UTF8(".rgb = ");
+				main << cpt_shadow_map_data << UTF8(";\n\t");
+				main << output << UTF8(".a = ") << UTF8("1.0;\n");
 
 				break;
 		}
 
-		main << UTF8(";\n\t") << output << UTF8(".a = ");
-		main << UTF8("1.0");
-
-		main << UTF8(";\n}\n");
+		main << UTF8("}\n");
 	}
 
 	bool ShaderSourceBuilder::check_function(

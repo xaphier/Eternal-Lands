@@ -39,7 +39,8 @@ namespace eternal_lands
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);
 			virtual void blit();
-			virtual void clear(const glm::vec4 &color);
+			virtual void clear(const glm::vec4 &color,
+				const float depth);
 			virtual void unbind();
 
 	};

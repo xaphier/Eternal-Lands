@@ -9,6 +9,7 @@
 #include "framebuffer/extsimpleframebuffer.hpp"
 #include "framebuffer/simpleframebuffer.hpp"
 #include "framebuffer/multisampleframebuffer.hpp"
+#include "framebuffer/multisampledepthframebuffer.hpp"
 #include "framebuffer/filterframebuffer.hpp"
 #include "globalvars.hpp"
 #include "exceptions.hpp"
@@ -79,6 +80,14 @@ namespace eternal_lands
 			return AbstractFrameBufferSharedPtr(
 				new SimpleFrameBuffer(name, width, height,
 					layers, mipmaps, format));
+		}
+
+		if (TextureFormatUtil::get_depth(format))
+		{
+			return AbstractFrameBufferSharedPtr(
+				new MultiSampleDepthFrameBuffer(name, width,
+					height, layers, mipmaps, samples,
+					format));
 		}
 
 		return AbstractFrameBufferSharedPtr(

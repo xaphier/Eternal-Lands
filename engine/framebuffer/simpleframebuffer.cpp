@@ -36,8 +36,6 @@ namespace eternal_lands
 		get_texture()->set_mipmap_count(mipmaps);
 		get_texture()->init(get_width(), get_height(), layers, mipmaps);
 
-		m_depth = true;
-
 		if (TextureFormatUtil::get_depth(format))
 		{
 			m_stencil = false;
@@ -108,25 +106,14 @@ namespace eternal_lands
 	{
 	}
 
-	void SimpleFrameBuffer::clear(const glm::vec4 &color)
+	void SimpleFrameBuffer::clear(const glm::vec4 &color,
+		const float depth)
 	{
-		GLenum mask;
-
-		mask = 0;
-
-		if (m_depth)
-		{
-			mask |= GL_DEPTH_BUFFER_BIT;
-		}
+		glClearBufferfv(GL_DEPTH, 0, &depth);
 
 		if (m_stencil)
 		{
-			mask |= GL_STENCIL_BUFFER_BIT;
-		}
-
-		if (mask != 0)
-		{
-			glClear(mask);
+			glClear(GL_STENCIL_BUFFER_BIT);
 		}
 
 		if (m_color)

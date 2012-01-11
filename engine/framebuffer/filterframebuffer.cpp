@@ -61,7 +61,8 @@ namespace eternal_lands
 	{
 	}
 
-	void FilterFrameBuffer::clear(const glm::vec4 &color)
+	void FilterFrameBuffer::clear(const glm::vec4 &color,
+		const float depth)
 	{
 		glClearBufferfv(GL_COLOR, 0, glm::value_ptr(color));
 	}

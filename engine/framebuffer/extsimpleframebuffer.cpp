@@ -108,7 +108,8 @@ namespace eternal_lands
 	{
 	}
 
-	void ExtSimpleFrameBuffer::clear(const glm::vec4 &color)
+	void ExtSimpleFrameBuffer::clear(const glm::vec4 &color,
+		const float depth)
 	{
 		GLenum mask;
 

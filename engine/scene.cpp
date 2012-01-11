@@ -687,7 +687,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 
 		m_shadow_frame_buffer->bind(index);
-		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+		m_shadow_frame_buffer->clear(glm::vec4(1e38f), 1e38f);
 
 		draw_shadows(index);
 
@@ -707,7 +707,8 @@ namespace eternal_lands
 			m_state_manager.switch_depth_test(false);
 
 			m_shadow_filter_frame_buffer->bind(0);
-			m_shadow_filter_frame_buffer->clear(glm::vec4(1e38f));
+			m_shadow_filter_frame_buffer->clear(glm::vec4(1e38f),
+				1e38f);
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_frame_buffer->get_texture());
 			m_scene_resources.get_filter().bind(tmp, tmp, width,
@@ -715,7 +716,8 @@ namespace eternal_lands
 				false, m_state_manager);
 
 			m_shadow_frame_buffer->bind_texture(index);
-			m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+			m_shadow_frame_buffer->clear(glm::vec4(1e38f),
+				1e38f);
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_filter_frame_buffer->get_texture());
 			m_scene_resources.get_filter().bind(tmp, tmp, width,
@@ -740,6 +742,12 @@ namespace eternal_lands
 			glPolygonOffset(1.25f, 32.0f);
 		}
 
+		if (get_global_vars()->get_msaa_shadows() && GLEW_ARB_sample_shading)
+		{
+			glEnable(GL_SAMPLE_SHADING);
+			glMinSampleShadingARB(4.0f);
+		}
+
 		DEBUG_CHECK_GL_ERROR();
 
 		width = m_shadow_frame_buffer->get_width();
@@ -756,7 +764,8 @@ namespace eternal_lands
 			else
 			{
 				m_shadow_frame_buffer->bind_texture(i);
-				m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+				m_shadow_frame_buffer->clear(glm::vec4(1e38f),
+					1e38f);
 			}
 		}
 
@@ -785,6 +794,11 @@ namespace eternal_lands
 			m_scene_view.get_view_port()[2],
 			m_scene_view.get_view_port()[3]);
 
+		if (get_global_vars()->get_msaa_shadows() && GLEW_ARB_sample_shading)
+		{
+			glDisable(GL_SAMPLE_SHADING);
+		}
+
 		DEBUG_CHECK_GL_ERROR();
 	}
 
@@ -805,6 +819,12 @@ namespace eternal_lands
 		m_scene_view.set_default_view();
 
 		m_state_manager.switch_multisample(true);
+
+		if (GLEW_ARB_sample_shading)
+		{
+			glEnable(GL_SAMPLE_SHADING);
+			glMinSampleShadingARB(4.0f);
+		}
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -831,6 +851,11 @@ namespace eternal_lands
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		CHECK_GL_ERROR();
+
+		if (GLEW_ARB_sample_shading)
+		{
+			glDisable(GL_SAMPLE_SHADING);
+		}
 
 		m_program_vars_id++;
 		m_frame_id++;
