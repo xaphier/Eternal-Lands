@@ -1909,8 +1909,8 @@ static void init_ELC_vars(void)
 #if defined(NEW_WEATHER)
 	add_var(OPT_BOOL,"skybox_local_weather","skybox_local_weather", &skybox_local_weather, change_var,0,"Local Weather", "Show local weather areas on the sky. It allows to see distant weather but can reduce performance.", DEBUGTAB);
 #endif // NEW_WEATHER
-	add_var(OPT_BOOL, "draw_objects", "draw_objects", &engine_draw_objects, change_engine_draw_objects, engine_true, "Draw objects", "Draw objects.", TROUBLESHOOT);
-	add_var(OPT_BOOL, "draw_actors", "draw_actors", &engine_draw_actors, change_engine_draw_actors, engine_true, "Draw actors", "Draw actors.", TROUBLESHOOT);
+	add_var(OPT_BOOL, "draw_objects", "draw_objects", &engine_draw_objects, change_engine_draw_objects, engine_true, "Draw objects", "Draw objects.", DEBUGTAB);
+	add_var(OPT_BOOL, "draw_actors", "draw_actors", &engine_draw_actors, change_engine_draw_actors, engine_true, "Draw actors", "Draw actors.", DEBUGTAB);
 #endif // DEBUG
 	// DEBUGTAB TAB
 
