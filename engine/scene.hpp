@@ -79,7 +79,8 @@ namespace eternal_lands
 			void draw_object(const ObjectSharedPtr &object,
 				const bool shadow_receiver);
 			void draw_object_depth(const ObjectSharedPtr &object);
-			void draw_object_shadow(const ObjectSharedPtr &object);
+			void draw_object_shadow(const ObjectSharedPtr &object,
+				const glm::uvec4 &layers);
 			void pick_object(const ObjectSharedPtr &object,
 				PairUint32SelectionTypeVector &ids);
 			bool switch_program(

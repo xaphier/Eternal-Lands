@@ -89,70 +89,70 @@ namespace eternal_lands
 		{
 			if (split[dt_north])
 			{
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 0, 0, size));
 				m_indices.push_back(get_index(x, y, 1, 0, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 1, 0, size));
 				m_indices.push_back(get_index(x, y, 2, 0, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 			}
 			else
 			{
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 0, 0, size));
 				m_indices.push_back(get_index(x, y, 2, 0, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 			}
 
 			if (split[dt_east])
 			{
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 2, 0, size));
 				m_indices.push_back(get_index(x, y, 2, 1, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 2, 1, size));
 				m_indices.push_back(get_index(x, y, 2, 2, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 			}
 			else
 			{
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 2, 0, size));
 				m_indices.push_back(get_index(x, y, 2, 2, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 			}
 
 			if (split[dt_south])
 			{
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 2, 2, size));
 				m_indices.push_back(get_index(x, y, 1, 2, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 1, 2, size));
 				m_indices.push_back(get_index(x, y, 0, 2, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 			}
 			else
 			{
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 2, 2, size));
 				m_indices.push_back(get_index(x, y, 0, 2, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 			}
 
 			if (split[dt_west])
 			{
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 0, 2, size));
 				m_indices.push_back(get_index(x, y, 0, 1, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 0, 1, size));
 				m_indices.push_back(get_index(x, y, 0, 0, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 			}
 			else
 			{
+				m_indices.push_back(get_index(x, y, 1, 1, size));
 				m_indices.push_back(get_index(x, y, 0, 2, size));
 				m_indices.push_back(get_index(x, y, 0, 0, size));
-				m_indices.push_back(get_index(x, y, 1, 1, size));
 			}
 		}
 

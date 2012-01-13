@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
-# set default cmake build type to Release (None Debug Release RelWithDebInfo MinSizeRel)
-IF(NOT CMAKE_BUILD_TYPE)
+# set default cmake build type to RelWithDebInfo (None Debug Release RelWithDebInfo MinSizeRel)
+IF (NOT CMAKE_BUILD_TYPE)
 	SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
 		"Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel."
 		FORCE)
-ENDIF(NOT CMAKE_BUILD_TYPE)
+ENDIF (NOT CMAKE_BUILD_TYPE)
 
 project(el_client)
 
@@ -135,6 +135,10 @@ add_definitions(-DNEW_NEW_CHAR_WINDOW)
 add_definitions(-DNEW_TEXTURES)
 add_definitions(-DVEGETATION)
 add_definitions(-DELC)
+
+IF (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+	add_definitions(-DDEBUG)
+ENDIF (${CMAKE_BUILD_TYPE} MATCHES "Debug")
 
 file(GLOB el_cpp_header_files *.hpp)
 file(GLOB el_cpp_files *.cpp)

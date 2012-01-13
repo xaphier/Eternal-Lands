@@ -866,13 +866,15 @@ namespace eternal_lands
 		if (get_use_restart_index())
 		{
 			convert_to_triangles();
+
+			m_use_restart_index = false;
 		}
 	}
 
 	void MeshDataTool::convert_to_triangles()
 	{
 		Uint32Vector indices;
-		Uint32 i, count;
+		Uint32 i, count, offset;
 
 		if (get_primitive_type() == pt_triangles)
 		{
@@ -883,10 +885,18 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			offset = indices.size();
+
+			m_sub_meshs[i].set_offset(offset);
+
 			get_triangle_indices(i, indices, true);
+
+			m_sub_meshs[i].set_count(indices.size() - offset);
 		}
 
 		std::swap(indices, m_indices);
+
+		m_primitive_type = pt_triangles;
 	}
 
 	void MeshDataTool::get_triangle_indices(const Uint32 sub_mesh_index,

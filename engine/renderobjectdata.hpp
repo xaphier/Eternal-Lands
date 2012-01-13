@@ -31,10 +31,13 @@ namespace eternal_lands
 	{
 		private:
 			ObjectSharedPtr m_object;
+			glm::uvec4 m_layers;
 			float m_transparency;
 			float m_distance;
-			bool m_blend;
 			SubFrustumsMask m_sub_frustums_mask;
+			bool m_blend;
+
+			void update_layers();
 
 		public:
 			RenderObjectData();
@@ -43,7 +46,7 @@ namespace eternal_lands
 			RenderObjectData(const ObjectSharedPtr &object,
 				float transparency, bool blend,
 				const SubFrustumsMask sub_frustums_mask = 0x1);
-			virtual ~RenderObjectData() throw();
+			~RenderObjectData() throw();
 
 			inline void set_object(const ObjectSharedPtr &object)
 			{
@@ -69,6 +72,7 @@ namespace eternal_lands
 				const SubFrustumsMask &sub_frustums_mask)
 			{
 				m_sub_frustums_mask = sub_frustums_mask;
+				update_layers();
 			}
 
 			inline const ObjectSharedPtr &get_object() const
@@ -91,7 +95,8 @@ namespace eternal_lands
 				return m_blend;
 			}
 
-			inline SubFrustumsMask get_sub_frustums_mask() const
+			inline const SubFrustumsMask &get_sub_frustums_mask()
+				const
 			{
 				return m_sub_frustums_mask;
 			}
@@ -100,6 +105,11 @@ namespace eternal_lands
 				const
 			{
 				return m_sub_frustums_mask[index];
+			}
+
+			inline const glm::uvec4 &get_layers() const
+			{
+				return m_layers;
 			}
 
 	};

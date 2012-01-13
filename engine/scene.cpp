@@ -604,7 +604,8 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::draw_object_shadow(const ObjectSharedPtr &object)
+	void Scene::draw_object_shadow(const ObjectSharedPtr &object,
+		const glm::uvec4 &layers)
 	{
 		Uint32 materials, i;
 		bool object_data_set;
@@ -630,6 +631,8 @@ namespace eternal_lands
 
 			if (!object_data_set)
 			{
+				m_state_manager.get_program()->set_parameter(
+					apt_layers, layers);
 				m_state_manager.get_program()->set_parameter(
 					apt_world_matrix,
 					object->get_world_matrix());
@@ -697,7 +700,8 @@ namespace eternal_lands
 		{
 			if (object.get_sub_frustums_mask(index))
 			{
-				draw_object_shadow(object.get_object());
+				draw_object_shadow(object.get_object(),
+					object.get_layers());
 			}
 		}
 
