@@ -401,6 +401,11 @@ namespace eternal_lands
 				mesh_data_tool->disable_restart_index();
 			}
 
+			if (!get_global_vars()->get_opengl_3_2())
+			{
+				mesh_data_tool->disable_use_base_vertex();
+			}
+
 			return;
 		}
 		catch (boost::exception &exception)

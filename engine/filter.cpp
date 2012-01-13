@@ -215,7 +215,7 @@ namespace eternal_lands
 		const Uint16 half_taps_minus_one, const bool layer,
 		const bool vertical)
 	{
-		StringType name;
+		StringType name, geometry;
 		Uint16 index;
 
 		index = get_index(channel_count, half_taps_minus_one, layer,
@@ -236,9 +236,9 @@ namespace eternal_lands
 		}
 
 		m_programs[index] = boost::make_shared<GlslProgram>(
-			get_vertex_str(version), get_fragment_str(version,
-				channel_count, half_taps_minus_one, layer,
-				vertical), values, String(name));
+			get_vertex_str(version), geometry, get_fragment_str(
+				version, channel_count, half_taps_minus_one,
+				layer, vertical), values, String(name));
 	}
 
 	Filter::Filter(const MeshCacheSharedPtr &mesh_cache,
@@ -574,7 +574,7 @@ namespace eternal_lands
 			String(UTF8("dest_scale_offset")),
 			dest_scale_offset);
 		state_manager.switch_mesh(m_mesh);
-		state_manager.draw(0);
+		state_manager.draw(0, 1);
 	}
 
 	void Filter::bind(const glm::vec4 &source, const glm::vec4 &dest,
@@ -631,7 +631,7 @@ namespace eternal_lands
 			String(UTF8("dest_scale_offset")),
 			dest_scale_offset);
 		state_manager.switch_mesh(m_mesh);
-		state_manager.draw(0);
+		state_manager.draw(0, 1);
 	}
 
 }

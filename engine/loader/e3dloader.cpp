@@ -77,16 +77,8 @@ namespace eternal_lands
 
 				result.insert(vst_position);
 				result.insert(vst_texture_coordinate_0);
-
-				if (get_normal(options))
-				{
-					result.insert(vst_normal);
-				}
-
-				if (get_tangent(options))
-				{
-					result.insert(vst_tangent);
-				}
+				result.insert(vst_normal);
+				result.insert(vst_tangent);
 
 				if (get_secondary_texture_coordinate(options))
 				{
@@ -202,6 +194,16 @@ namespace eternal_lands
 
 		load_sub_meshs(mesh_data_tool, material_count, material_size,
 			material_offset);
+
+		if (!get_normal(options))
+		{
+			mesh_data_tool->build_normal(false);
+		}
+
+		if (!get_tangent(options))
+		{
+			mesh_data_tool->build_tangent(false, false, true);
+		}
 
 		materials.clear();
 		load_materials(file_system, material_count, material_size,

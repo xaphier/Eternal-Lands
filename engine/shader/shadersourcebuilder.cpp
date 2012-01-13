@@ -1622,7 +1622,8 @@ namespace eternal_lands
 	void ShaderSourceBuilder::build(const Uint16 light_count,
 		const ShaderBuildType shader_build_type,
 		const ShaderSourceDescription &description, StringType &vertex,
-		StringType &fragment, StringVariantMap &values) const
+		StringType &geometry, StringType &fragment,
+		StringVariantMap &values) const
 	{
 		ShaderSourceBuildData data;
 		ShaderSourceParameterVector attributes, varyings;
@@ -1725,6 +1726,8 @@ namespace eternal_lands
 		vertex_source << vertex_main.str();
 
 		LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex_source.str());
+
+		geometry = UTF8("");
 
 		fragment_source << UTF8("#version ") << version;
 		fragment_source << UTF8("\n");

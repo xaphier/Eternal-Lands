@@ -52,6 +52,10 @@ namespace eternal_lands
 			bool m_fog;
 			bool m_optmize_shader_source;
 			bool m_use_simd;
+#ifdef	DEBUG
+			bool m_draw_objects;
+			bool m_draw_actors;
+#endif	/* DEBUG */
 
 		public:
 			GlobalVars();
@@ -258,6 +262,28 @@ namespace eternal_lands
 			{
 				return m_use_simd;
 			}
+
+#ifdef	DEBUG
+			inline void set_draw_objects(const bool draw_objects)
+			{
+				m_draw_objects = draw_objects;
+			}
+
+			inline void set_draw_actors(const bool draw_actors)
+			{
+				m_draw_actors = draw_actors;
+			}
+
+			inline bool get_draw_objects() const
+			{
+				return m_draw_objects;
+			}
+
+			inline bool get_draw_actors() const
+			{
+				return m_draw_actors;
+			}
+#endif	/* DEBUG */
 
 	};
 

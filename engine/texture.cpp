@@ -1451,6 +1451,33 @@ namespace eternal_lands
 		CHECK_GL_ERROR();
 	}
 
+	void Texture::attach(const GLenum attachment, const Uint32 level)
+	{
+		CHECK_GL_ERROR();
+
+		switch (get_target())
+		{
+			case ttt_3d_texture:
+			case ttt_1d_texture_array:
+			case ttt_2d_texture_array:
+			case ttt_cube_map_texture:
+			case ttt_cube_map_texture_array:
+				glFramebufferTexture(GL_FRAMEBUFFER,
+					attachment, get_texture_id(), level);
+				CHECK_GL_ERROR();
+				break;
+			case ttt_1d_texture:
+			case ttt_2d_texture:
+			case ttt_texture_rectangle:
+			default:
+				assert(false);
+				CHECK_GL_ERROR();
+				break;
+		}
+
+		CHECK_GL_ERROR();
+	}
+
 	void Texture::attach(const GLenum attachment,
 		const CubeMapFaceType face, const Uint32 level)
 	{

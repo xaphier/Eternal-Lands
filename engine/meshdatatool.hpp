@@ -159,6 +159,11 @@ namespace eternal_lands
 			const SubMesh &get_sub_mesh_data(
 				const Uint32 index) const;
 
+			void enable_use_base_vertex();
+			void disable_use_base_vertex();
+			bool get_use_base_vertex() const;
+			bool get_16_bit_indices() const;
+
 			/**
 			 * Returns the number of sub meshs.
 			 * @result The sub mesh count.

@@ -71,6 +71,9 @@ namespace eternal_lands
 				pt_mat4x4),
 			AutoParameterTypeData(String(UTF8(
 				"projection_view_matrix")), pt_mat4x4),
+			AutoParameterTypeData(String(UTF8(
+				"projection_view_matrices")), pt_mat4x4,
+				pst_layer_count),
 			AutoParameterTypeData(String(UTF8("reflection_matrix")),
 				pt_mat4x4),
 			AutoParameterTypeData(String(UTF8(
@@ -92,7 +95,8 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("shadow_camera")),
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("split_distances")),
-				pt_vec4)
+				pt_vec4),
+			AutoParameterTypeData(String(UTF8("layers")), pt_uvec4)
 		};
 
 		const Uint32 auto_parameter_type_datas_count =

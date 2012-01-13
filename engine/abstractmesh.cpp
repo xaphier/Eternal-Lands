@@ -39,8 +39,7 @@ namespace eternal_lands
 	{
 		bool use_16_bit_indices;
 
-		use_16_bit_indices = source->get_vertex_count()
-			<= std::numeric_limits<Uint16>::max();
+		use_16_bit_indices = source->get_16_bit_indices();
 
 		init(use_16_bit_indices, vertex_format, source, static_indices,
 			static_vertices);
@@ -358,9 +357,9 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMesh::draw(const Uint32 index)
+	void AbstractMesh::draw(const Uint32 index, const Uint32 instances)
 	{
-		draw(get_sub_meshs()[index]);
+		draw(get_sub_meshs()[index], instances);
 	}
 
 	const VertexElements &AbstractMesh::get_vertex_elements(

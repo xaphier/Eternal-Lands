@@ -38,6 +38,7 @@ namespace eternal_lands
 			const MeshDataCacheWeakPtr m_mesh_data_cache;
 			const float m_max_size;
 			const bool m_use_simd;
+			const bool m_use_base_vertex;
 
 			inline MeshDataCacheSharedPtr get_mesh_data_cache()
 				const
@@ -59,7 +60,8 @@ namespace eternal_lands
 			 */
 			InstancesBuilder(
 				const MeshDataCacheWeakPtr &mesh_data_cache,
-				const float max_size, const bool use_simd);
+				const float max_size, const bool use_simd,
+				const bool use_base_vertex);
 
 			/**
 			 * Default destructor.
@@ -79,6 +81,11 @@ namespace eternal_lands
 			inline bool get_use_simd() const
 			{
 				return m_use_simd;
+			}
+
+			inline bool get_use_base_vertex() const
+			{
+				return m_use_base_vertex;
 			}
 
 	};

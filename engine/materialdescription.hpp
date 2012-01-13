@@ -52,6 +52,7 @@ namespace eternal_lands
 				const;
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
+			void load_xml(const xmlNodePtr node);
 
 			/**
 			 * @brief 

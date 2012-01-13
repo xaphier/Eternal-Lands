@@ -273,8 +273,9 @@ namespace eternal_lands
 			bool unbind_program();
 			bool unbind_texture(const Uint16 unit);
 			bool unbind_textures();
-			void draw(const Uint32 index);
-			void draw(const MeshDrawData &draw_data);
+			void draw(const Uint32 index, const Uint32 instances);
+			void draw(const MeshDrawData &draw_data,
+				const Uint32 instances);
 
 	};
 

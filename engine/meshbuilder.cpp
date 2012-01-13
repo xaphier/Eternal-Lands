@@ -9,6 +9,7 @@
 #include "mesh/opengl2mesh.hpp"
 #include "mesh/opengl3mesh.hpp"
 #include "mesh/opengl31mesh.hpp"
+#include "mesh/opengl32mesh.hpp"
 #include "vertexformat.hpp"
 #include "abstractmesh.hpp"
 #include "exceptions.hpp"
@@ -48,14 +49,14 @@ namespace eternal_lands
 		VertexDescriptionMap instanced_mesh, sprite, font;
 		VertexElementType position, texture_coordinate, normal;
 
-/*		if (get_global_vars()->get_opengl_3_0() ||
+		if (get_global_vars()->get_opengl_3_0() ||
 			GLEW_ARB_half_float_vertex)
 		{
 			position = vet_half4;
 			texture_coordinate = vet_half2;
 			font[vst_position] = vet_half2;
 		}
-		else*/
+		else
 		{
 			position = vet_float3;
 			texture_coordinate = vet_float2;
@@ -65,15 +66,15 @@ namespace eternal_lands
 		mesh[vst_position] = position;
 		mesh[vst_texture_coordinate_0] = texture_coordinate;
 		mesh[vst_color] = vet_ubyte4_normalized;
-		animated_mesh[vst_position] = position;
+		animated_mesh[vst_position] = vet_float3;
 		animated_mesh[vst_texture_coordinate_0] = texture_coordinate;
 		animated_mesh[vst_color] = vet_ubyte4_normalized;
-		morph_mesh[vst_position] = position;
+		morph_mesh[vst_position] = vet_float3;
 		morph_mesh[vst_texture_coordinate_0] = texture_coordinate;
 		morph_mesh[vst_color] = vet_ubyte4_normalized;
-		morph_mesh[vst_morph_position] = position;
+		morph_mesh[vst_morph_position] = vet_float3;
 		morph_mesh[vst_morph_texture_coordinate_0] = texture_coordinate;
-		instanced_mesh[vst_position] = position;
+		instanced_mesh[vst_position] = vet_float3;
 		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
 		instanced_mesh[vst_color] = vet_ubyte4_normalized;
 
@@ -147,13 +148,20 @@ namespace eternal_lands
 	AbstractMeshSharedPtr MeshBuilder::get_mesh(const String &name,
 		const bool static_indices, const bool static_vertices) const
 	{
+		if (get_global_vars()->get_opengl_3_2())
+		{
+			return boost::make_shared<OpenGl32Mesh>(name,
+				static_indices, static_vertices,
+				get_global_vars()->get_use_simd());
+		}
+/*
 		if (get_global_vars()->get_opengl_3_1() && false)
 		{
 			return boost::make_shared<OpenGl31Mesh>(name,
 				static_indices, static_vertices,
 				get_global_vars()->get_use_simd());
 		}
-
+*/
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			return boost::make_shared<OpenGl3Mesh>(name,

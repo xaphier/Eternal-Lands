@@ -65,9 +65,9 @@ namespace eternal_lands
 
 		void build_sub_mesh_unpacked(MeshDataTool &mesh_data_tool,
 			const InstancingData &instancing_data,
-			const Uint32 sub_mesh_index, Uint32 &vertex_offset,
-			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max,
-			const glm::vec3 &center)
+			const glm::vec3 &center, const Uint32 sub_mesh_index,
+			const Uint32 base_vertex, Uint32 &vertex_offset,
+			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max)
 		{
 			std::map<Uint32, Uint32> index_map;
 			glm::mat4x3 world_matrix;
@@ -79,11 +79,11 @@ namespace eternal_lands
 				false);
 
 			min_vertex = instancing_data.get_mesh_data_tool(
-				)->get_sub_meshs(
-					)[sub_mesh_index].get_min_vertex();
+				)->get_sub_meshs()[sub_mesh_index
+					].get_min_vertex_derived();
 			max_vertex = instancing_data.get_mesh_data_tool(
-				)->get_sub_meshs(
-					)[sub_mesh_index].get_max_vertex();
+				)->get_sub_meshs()[sub_mesh_index
+					].get_max_vertex_derived();
 
 			assert(max_vertex >= min_vertex);
 
@@ -123,8 +123,9 @@ namespace eternal_lands
 					vertex_offset++;
 				}
 
+				assert(base_vertex <= index_map[index]);
 				mesh_data_tool.set_index_data(index_offset,
-					index_map[index]);
+					index_map[index] - base_vertex);
 
 				index_offset++;
 			}
@@ -132,13 +133,14 @@ namespace eternal_lands
 
 		void build_sub_mesh_packed(MeshDataTool &mesh_data_tool,
 			const InstancingData &instancing_data,
-			const Uint32 sub_mesh_index, Uint32 &vertex_offset,
-			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max,
-			const glm::vec3 &center)
+			const glm::vec3 &center, const Uint32 sub_mesh_index,
+			const Uint32 base_vertex, Uint32 &vertex_offset,
+			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max)
 		{
 			Uint32Vector indices;
 			glm::mat4x3 world_matrix;
 			Uint32 count, min_vertex, max_vertex, size, offset;
+			Sint32 index_vertex_offset;
 			bool triangles;
 
 			triangles = instancing_data.get_mesh_data_tool(
@@ -152,6 +154,11 @@ namespace eternal_lands
 				offset = instancing_data.get_mesh_data_tool(
 					)->get_sub_mesh_data(
 						sub_mesh_index).get_offset();
+				index_vertex_offset =
+					instancing_data.get_mesh_data_tool(
+						)->get_sub_meshs()[
+							sub_mesh_index
+						].get_base_vertex();
 			}
 			else
 			{
@@ -160,14 +167,15 @@ namespace eternal_lands
 						indices, false);
 				count = indices.size();
 				offset = 0;
+				index_vertex_offset = 0;
 			}
 
 			min_vertex = instancing_data.get_mesh_data_tool(
-				)->get_sub_meshs(
-					)[sub_mesh_index].get_min_vertex();
+				)->get_sub_meshs()[sub_mesh_index
+					].get_min_vertex_derived();
 			max_vertex = instancing_data.get_mesh_data_tool(
-				)->get_sub_meshs(
-					)[sub_mesh_index].get_max_vertex();
+				)->get_sub_meshs()[sub_mesh_index
+					].get_max_vertex_derived();
 
 			assert(max_vertex >= min_vertex);
 
@@ -185,19 +193,22 @@ namespace eternal_lands
 				mesh_data_tool.resize_indices(size);
 			}
 
+			index_vertex_offset += vertex_offset - min_vertex -
+				base_vertex;
+
 			if (triangles)
 			{
 				mesh_data_tool.set_indices(
 					instancing_data.get_mesh_data_tool(
 						)->get_indices(),
 					offset, index_offset, count,
-					vertex_offset - min_vertex);
+					index_vertex_offset);
 			}
 			else
 			{
 				mesh_data_tool.set_indices(indices,
 					offset, index_offset, count,
-					vertex_offset - min_vertex);
+					index_vertex_offset);
 			}
 
 			index_offset += count;
@@ -236,13 +247,11 @@ namespace eternal_lands
 			glm::vec3 tmin, tmax;
 
 			tmin = instancing_data.get_mesh_data_tool(
-				)->get_sub_meshs(
-					)[sub_mesh_index].get_bounding_box(
-						).get_min();
+				)->get_sub_meshs()[sub_mesh_index
+					].get_bounding_box().get_min();
 			tmax = instancing_data.get_mesh_data_tool(
-				)->get_sub_meshs(
-					)[sub_mesh_index].get_bounding_box(
-						).get_max();
+				)->get_sub_meshs()[sub_mesh_index
+					].get_bounding_box().get_max();
 
 			tmin = world_matrix * glm::vec4(tmin, 1.0f);
 			tmax = world_matrix * glm::vec4(tmax, 1.0f);
@@ -255,7 +264,8 @@ namespace eternal_lands
 			const InstancingData &instancing_data,
 			const MeshDataToolSharedPtr &mesh_data_tool,
 			const MaterialDescription &material, const Uint32 index,
-			glm::vec3 &min, glm::vec3 &max, Uint32 &vertex_offset,
+			const Uint32 base_vertex, glm::vec3 &min,
+			glm::vec3 &max, Uint32 &vertex_offset,
 			Uint32 &index_offset)
 		{
 			if (material != instancing_data.get_materials()[index])
@@ -267,14 +277,16 @@ namespace eternal_lands
 				)->get_sub_mesh_data(index).get_packed())
 			{
 				build_sub_mesh_packed(*mesh_data_tool,
-					instancing_data, index, vertex_offset,
-					index_offset, min, max, center);
+					instancing_data, center, index,
+					base_vertex, vertex_offset,
+					index_offset, min, max);
 			}
 			else
 			{
 				build_sub_mesh_unpacked(*mesh_data_tool,
-					instancing_data, index, vertex_offset,
-					index_offset, min, max, center);
+					instancing_data, center, index,
+					base_vertex, vertex_offset,
+					index_offset, min, max);
 			}
 
 			return true;
@@ -284,8 +296,9 @@ namespace eternal_lands
 
 	InstanceBuilder::InstanceBuilder(
 		const InstancingDataVector &instancing_datas, const Uint32 id,
-		const bool use_simd): m_instancing_datas(instancing_datas),
-		m_id(id), m_use_simd(use_simd)
+		const bool use_simd, const bool use_base_vertex):
+		m_instancing_datas(instancing_datas), m_id(id),
+		m_use_simd(use_simd), m_use_base_vertex(use_base_vertex)
 	{
 		assert(get_instancing_datas().size() > 1);
 	}
@@ -315,8 +328,9 @@ namespace eternal_lands
 	void InstanceBuilder::build_instance_sub_mesh(const glm::vec3 &center,
 		const MeshDataToolSharedPtr &mesh_data_tool,
 		const MaterialDescription &material,
-		const Uint32 sub_mesh_index, Uint32 &vertex_offset,
-		Uint32 &index_offset, SubObjectVector &sub_objects)
+		const Uint32 sub_mesh_index, const Uint32 base_vertex,
+		Uint32 &vertex_offset, Uint32 &index_offset,
+		SubObjectVector &sub_objects)
 	{
 		SubMesh sub_mesh;
 		SubObject sub_object;
@@ -324,7 +338,7 @@ namespace eternal_lands
 		Uint32 count, i, min_vertex, max_vertex, offset;
 
 		sub_mesh.set_offset(index_offset);
-		sub_mesh.set_min_vertex(vertex_offset);
+		sub_mesh.set_min_vertex(vertex_offset - base_vertex);
 
 		sub_object.set_material(sub_mesh_index);
 
@@ -343,16 +357,20 @@ namespace eternal_lands
 				min_vertex = vertex_offset;
 
 				if (build_sub_mesh(center, instancing_data,
-					mesh_data_tool, material, i, min, max,
-					vertex_offset, index_offset))
+					mesh_data_tool, material, i,
+					base_vertex, min, max, vertex_offset,
+					index_offset))
 				{
 					max_vertex = vertex_offset - 1;
 
 					sub_object.set_offset(offset);
-					sub_object.set_min_vertex(min_vertex);
+					sub_object.set_min_vertex(min_vertex -
+						base_vertex);
 					sub_object.set_count(index_offset -
 						offset);
-					sub_object.set_max_vertex(max_vertex);
+					sub_object.set_max_vertex(max_vertex -
+						base_vertex);
+					sub_object.set_base_vertex(base_vertex);
 
 					sub_objects.push_back(sub_object);
 				}	
@@ -361,7 +379,8 @@ namespace eternal_lands
 
 		sub_mesh.set_bounding_box(BoundingBox(min, max));
 		sub_mesh.set_count(index_offset - sub_mesh.get_offset());
-		sub_mesh.set_max_vertex(vertex_offset - 1);
+		sub_mesh.set_max_vertex(vertex_offset - 1 - base_vertex);
+		sub_mesh.set_base_vertex(base_vertex);
 		mesh_data_tool->set_sub_mesh_data(sub_mesh_index, sub_mesh);
 	}
 
@@ -375,7 +394,7 @@ namespace eternal_lands
 		MaterialDescriptionVector materials;
 		SubObjectVector instanced_objects;
 		VertexSemanticTypeSet semantics;
-		Uint32 index_count, vertex_count, sub_mesh_count;
+		Uint32 index_count, vertex_count, sub_mesh_count, base_vertex;
 		Uint32 vertex_offset, index_offset, sub_mesh_index;
 		SelectionType selection;
 		StringStream str;
@@ -404,6 +423,12 @@ namespace eternal_lands
 			{
 				material_set.insert(material);
 			}
+
+			if (!str.str().empty())
+			{
+				str << std::endl;
+			}
+
 			str << instancing_data.get_name();
 		}
 
@@ -421,22 +446,26 @@ namespace eternal_lands
 			std::numeric_limits<Uint32>::max(), pt_triangles,
 			false, get_use_simd());
 
+		base_vertex = 0;
 		index_offset = 0;
 		vertex_offset = 0;
 		sub_mesh_index = 0;
 
 		BOOST_FOREACH(const MaterialDescription &material, material_set)
 		{
+			if (get_use_base_vertex())
+			{
+				base_vertex = vertex_offset;
+			}
+
 			build_instance_sub_mesh(center, mesh_data_tool,
-				material, sub_mesh_index, vertex_offset,
-				index_offset, instanced_objects);
+				material, sub_mesh_index, base_vertex,
+				vertex_offset, index_offset,
+				instanced_objects);
 
 			materials.push_back(material);
 			sub_mesh_index++;
 		}
-
-		mesh_data_tool->resize_indices(index_offset);
-		mesh_data_tool->resize_vertices(vertex_offset);
 
 		world_matrix[3] = center;
 

@@ -29,14 +29,14 @@ namespace eternal_lands
 			Uint32 m_count;
 			Uint32 m_min_vertex;
 			Uint32 m_max_vertex;
-			Uint32 m_base_vertex;
+			Sint32 m_base_vertex;
 
 		public:
 			MeshDrawData();
 			MeshDrawData(const Uint32 offset, const Uint32 count,
 				const Uint32 min_vertex,
 				const Uint32 max_vertex,
-				const Uint32 base_vertex = 0);
+				const Sint32 base_vertex = 0);
 			~MeshDrawData() throw();
 
 			inline Uint32 get_offset() const
@@ -59,7 +59,7 @@ namespace eternal_lands
 				return m_max_vertex;
 			}
 
-			inline Uint32 get_base_vertex() const
+			inline Sint32 get_base_vertex() const
 			{
 				return m_base_vertex;
 			}
@@ -84,9 +84,19 @@ namespace eternal_lands
 				m_max_vertex = max_vertex;
 			}
 
-			inline void set_base_vertex(const Uint32 base_vertex)
+			inline void set_base_vertex(const Sint32 base_vertex)
 			{
 				m_base_vertex = base_vertex;
+			}
+
+			inline Uint32 get_min_vertex_derived() const
+			{
+				return get_min_vertex() + get_base_vertex();
+			}
+
+			inline Uint32 get_max_vertex_derived() const
+			{
+				return get_max_vertex() + get_base_vertex();
 			}
 
 	};

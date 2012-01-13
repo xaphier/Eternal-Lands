@@ -72,6 +72,11 @@ namespace eternal_lands
 			void bind_index_buffers();
 			void unbind_index_buffers();
 
+			inline bool get_has_index_data() const
+			{
+				return m_index_data.get() != 0;
+			}
+
 			virtual AbstractWriteMemoryBufferSharedPtr
 				get_vertex_buffer(const Uint16 index);
 			virtual void set_vertex_buffer(
@@ -101,10 +106,16 @@ namespace eternal_lands
 
 			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();
-			virtual void draw(const MeshDrawData &draw_data);
+
+			/**
+			 * Draws the mesh using the given draw data.
+			 */
+			virtual void draw(const MeshDrawData &draw_data,
+				const Uint32 instances);
 			virtual AbstractMeshSharedPtr clone_vertex_data() const;
 			virtual AbstractMeshSharedPtr clone_index_data() const;
-			virtual bool get_supports_restart_index();
+			virtual bool get_supports_base_vertex() const;
+			virtual bool get_supports_restart_index() const;
 
 	};
 

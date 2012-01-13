@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "opengl31mesh.hpp"
+#include "meshdrawdata.hpp"
 
 namespace eternal_lands
 {
@@ -69,9 +70,30 @@ namespace eternal_lands
 		return result;
 	}
 
-	bool OpenGl31Mesh::get_supports_restart_index()
+	bool OpenGl31Mesh::get_supports_restart_index() const
 	{
 		return true;
+	}
+
+	void OpenGl31Mesh::draw(const MeshDrawData &draw_data,
+		const Uint32 instances)
+	{
+		assert(instances > 0);
+		assert(draw_data.get_base_vertex() == 0);
+
+		if (get_has_index_data())
+		{
+			glDrawElementsInstanced(get_primitive_type(),
+				draw_data.get_count(), get_index_type(),
+				get_index_offset(draw_data.get_offset()) +
+					static_cast<Uint8*>(0), instances);
+		}
+		else
+		{
+			glDrawArraysInstanced(get_primitive_type(),
+				draw_data.get_offset(), draw_data.get_count(),
+				instances);
+		}
 	}
 
 }

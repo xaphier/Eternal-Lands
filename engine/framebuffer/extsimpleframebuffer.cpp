@@ -17,6 +17,8 @@ namespace eternal_lands
 		const TextureFormatType format): AbstractFrameBuffer(name,
 			width, height)
 	{
+		DEBUG_CHECK_GL_ERROR();
+
 		m_frame_buffer.bind();
 
 		get_texture()->set_target(ttt_2d_texture);
@@ -26,7 +28,12 @@ namespace eternal_lands
 		get_texture()->set_wrap_r(twt_clamp);
 
 		get_texture()->set_mipmap_count(mipmaps);
+
+		DEBUG_CHECK_GL_ERROR();
+
 		get_texture()->init(get_width(), get_height(), 0, mipmaps);
+
+		DEBUG_CHECK_GL_ERROR();
 
 		m_depth = true;
 		m_stencil = false;
@@ -47,6 +54,8 @@ namespace eternal_lands
 			}
 
 			glDrawBuffer(GL_NONE);
+
+			DEBUG_CHECK_GL_ERROR();
 		}
 		else
 		{
@@ -54,6 +63,8 @@ namespace eternal_lands
 
 			get_texture()->attach_ext(GL_COLOR_ATTACHMENT0_EXT, 0,
 				0);
+
+			DEBUG_CHECK_GL_ERROR();
 
 			if (GLEW_EXT_packed_depth_stencil)
 			{
@@ -76,14 +87,19 @@ namespace eternal_lands
 					GL_DEPTH_ATTACHMENT_EXT);
 			}
 
+			DEBUG_CHECK_GL_ERROR();
+
 			glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
 		}
 
 		glReadBuffer(GL_NONE);
-		CHECK_GL_ERROR();
+
+		DEBUG_CHECK_GL_ERROR();
 
 		m_frame_buffer.check_status();
 		m_frame_buffer.unbind();
+
+		DEBUG_CHECK_GL_ERROR();
 	}
 
 	ExtSimpleFrameBuffer::~ExtSimpleFrameBuffer() throw()

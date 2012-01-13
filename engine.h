@@ -111,6 +111,11 @@ int engine_get_opengl_3_1();
 int engine_get_opengl_3_2();
 int engine_get_opengl_3_3();
 
+#ifdef	DEBUG
+void engine_set_draw_objects(const int value);
+void engine_set_draw_actors(const int value);
+#endif	/* DEBUG */
+
 #ifdef __cplusplus
 }
 #endif

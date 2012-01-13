@@ -112,8 +112,9 @@ namespace eternal_lands
 			void build(const Uint16 light_count,
 				const ShaderBuildType shader_build_type,
 				const ShaderSourceDescription &description,
-				StringType &vertex, StringType &fragment,
-				StringVariantMap &values) const;
+				StringType &vertex, StringType &geometry,
+				StringType &fragment, StringVariantMap &values)
+				const;
 			void set_shadow_map_type(const String &name);
 
 			inline const ShaderSourceTypeStringMap &get_sources()

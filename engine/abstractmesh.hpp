@@ -123,7 +123,8 @@ namespace eternal_lands
 			/**
 			 * Draws the mesh using the given draw data.
 			 */
-			virtual void draw(const MeshDrawData &draw_data) = 0;
+			virtual void draw(const MeshDrawData &draw_data,
+				const Uint32 instances) = 0;
 
 			/**
 			 * Clones the vertex data of the mesh. Used for
@@ -139,12 +140,14 @@ namespace eternal_lands
 			virtual AbstractMeshSharedPtr clone_index_data() const
 				= 0;
 
-			virtual bool get_supports_restart_index() = 0;
+			virtual bool get_supports_restart_index() const = 0;
+
+			virtual bool get_supports_base_vertex() const = 0;
 
 			/**
 			 * Draws the sub mesh with the given index.
 			 */
-			void draw(const Uint32 index);
+			void draw(const Uint32 index, const Uint32 instances);
 
 			void init(const VertexFormatSharedPtr &vertex_format,
 				const MeshDataToolSharedPtr &source,

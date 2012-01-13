@@ -442,6 +442,8 @@ namespace eternal_lands
 			void attach(const GLenum attachment,
 				const CubeMapFaceType face, const Uint32 level,
 				const Uint32 layer);
+			void attach(const GLenum attachment,
+				const Uint32 level);
 
 			inline const String &get_name() const
 			{

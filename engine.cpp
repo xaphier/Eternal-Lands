@@ -641,7 +641,8 @@ extern "C" void engine_load_map(const char* name, const float r, const float g,
 
 	instances_builder.reset(new el::InstancesBuilder(
 		scene->get_scene_resources().get_mesh_data_cache(),
-		8.0f, global_vars->get_use_simd()));
+		8.0f, global_vars->get_use_simd(),
+		global_vars->get_opengl_3_2()));
 
 	CHECK_GL_ERROR();
 
@@ -1641,11 +1642,21 @@ extern "C" void engine_set_shadow_map_size(const int value)
 extern "C" void engine_set_shadow_distance(const float value)
 {
 	global_vars->set_shadow_distance(value);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload();
+	}
 }
 
 extern "C" void engine_set_view_distance(const float value)
 {
 	global_vars->set_view_distance(value);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload();
+	}
 }
 
 extern "C" void engine_set_shadow_quality(const int value)
@@ -1983,3 +1994,15 @@ extern "C" void engine_set_window_size(const Uint32 width, const Uint32 height,
 
 	CATCH_BLOCK
 }
+
+#ifdef	DEBUG
+extern "C" void engine_set_draw_objects(const int value)
+{
+	global_vars->set_draw_objects(value != 0);
+}
+
+extern "C" void engine_set_draw_actors(const int value)
+{
+	global_vars->set_draw_actors(value != 0);
+}
+#endif	/* DEBUG */

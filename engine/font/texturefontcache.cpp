@@ -422,7 +422,7 @@ namespace eternal_lands
 
 		state_manager.switch_texture(stt_diffuse_0, m_texture);
 
-		state_manager.draw(draw_data);
+		state_manager.draw(draw_data, 1);
 	}
 
 	float TextureFontCache::get_width(const Text &text) const

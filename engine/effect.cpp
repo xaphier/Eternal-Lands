@@ -118,7 +118,7 @@ namespace eternal_lands
 	{
 		StringStream str;
 		GlslProgramSharedPtr program;
-		StringType vertex, fragment;
+		StringType vertex, geometry, fragment;
 		StringVariantMap values;
 		Uint16 light_count;
 
@@ -132,10 +132,10 @@ namespace eternal_lands
 		light_count = vertex_light_count + fragment_light_count;
 
 		get_shader_source_builder()->build(light_count, sbt_color,
-			description, vertex, fragment, values);
+			description, vertex, geometry, fragment, values);
 
-		program = boost::make_shared<GlslProgram>(vertex, fragment,
-			values, String(get_name().get() + str.str() +
+		program = boost::make_shared<GlslProgram>(vertex, geometry,
+			fragment, values, String(get_name().get() + str.str() +
 				UTF8("]")));
 
 		m_default_programs.push_back(program);
@@ -147,12 +147,13 @@ namespace eternal_lands
 			description.set_receives_shadows(false);
 
 			get_shader_source_builder()->build(light_count,
-				sbt_color, description, vertex, fragment,
-				values);
+				sbt_color, description, vertex, geometry,
+				fragment, values);
 
 			program = boost::make_shared<GlslProgram>(vertex,
-				fragment, values, String(get_name().get() +
-					str.str() + UTF8(" no-shadow]")));
+				geometry, fragment, values,
+				String(get_name().get() + str.str() +
+					UTF8(" no-shadow]")));
 		}
 
 		m_default_programs.push_back(program);
@@ -162,7 +163,7 @@ namespace eternal_lands
 	{
 		XmlReaderSharedPtr xml_reader;
 		ShaderSourceDescription description;
-		StringType vertex, fragment;
+		StringType vertex, geometry, fragment;
 		StringVariantMap values;
 		String file_name;
 		Uint16 light_count, i, fragment_light_count, vertex_light_count;
@@ -208,20 +209,20 @@ namespace eternal_lands
 
 		/* Depth shader */
 		get_shader_source_builder()->build(0, sbt_depth, description,
-			vertex, fragment, values);
+			vertex, geometry, fragment, values);
 
-		m_depth_program = boost::make_shared<GlslProgram>(
-			vertex, fragment, values, String(get_name().get() +
+		m_depth_program = boost::make_shared<GlslProgram>(vertex,
+			geometry, fragment, values, String(get_name().get() +
 				UTF8(" [depth]")));
 
 		values.clear();
 
 		/* Shadow shader */
 		get_shader_source_builder()->build(0, sbt_shadow, description,
-			vertex, fragment, values);
+			vertex, geometry, fragment, values);
 
-		m_shadow_program = boost::make_shared<GlslProgram>(
-			vertex, fragment, values, String(get_name().get() +
+		m_shadow_program = boost::make_shared<GlslProgram>(vertex,
+			geometry, fragment, values, String(get_name().get() +
 				UTF8(" [shadow]")));
 	}
 
@@ -229,6 +230,7 @@ namespace eternal_lands
 	{
 		GlslProgramSharedPtr program;
 		StringVariantMap values;
+		StringType geometry;
 
 		m_light_counts.clear();
 		m_default_programs.clear();
@@ -241,8 +243,8 @@ namespace eternal_lands
 		m_light_counts.push_back(glm::ivec2(0));
 
 		program = boost::make_shared<GlslProgram>(vertex_shader,
-			fragment_shader, values, String(get_name().get() +
-				UTF8(" [error]")));
+			geometry, fragment_shader, values,
+			String(get_name().get() + UTF8(" [error]")));
 
 		m_default_programs.push_back(program);
 		m_default_programs.push_back(program);
@@ -251,7 +253,7 @@ namespace eternal_lands
 
 		/* Depth shader */
 		m_depth_program = boost::make_shared<GlslProgram>(
-			depth_vertex_shader, depth_fragment_shader,
+			depth_vertex_shader, geometry, depth_fragment_shader,
 			StringVariantMap(), String(get_name().get() +
 				UTF8(" [depth, error]")));
 

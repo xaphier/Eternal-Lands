@@ -479,6 +479,10 @@ namespace eternal_lands
 		m_fog = true;
 		m_optmize_shader_source = true;
 		m_use_simd = SIMD::get_supported();
+#ifdef	DEBUG
+		m_draw_objects = true;
+		m_draw_actors = true;
+#endif	/* DEBUG */
 	}
 
 	GlobalVars::~GlobalVars() throw()

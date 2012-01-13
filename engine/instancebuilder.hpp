@@ -33,6 +33,7 @@ namespace eternal_lands
 			const InstancingDataVector &m_instancing_datas;
 			const Uint32 m_id;
 			const bool m_use_simd;
+			const bool m_use_base_vertex;
 			std::auto_ptr<InstanceData> m_instance_data;
 
 			inline Uint32 get_id() const
@@ -57,6 +58,7 @@ namespace eternal_lands
 				const MeshDataToolSharedPtr &mesh_data_tool,
 				const MaterialDescription &material,
 				const Uint32 sub_mesh_index,
+				const Uint32 base_vertex,
 				Uint32 &vertex_offset, Uint32 &index_offset,
 				SubObjectVector &sub_objects);
 
@@ -66,7 +68,8 @@ namespace eternal_lands
 			 */
 			InstanceBuilder(
 				const InstancingDataVector &instancing_datas,
-				const Uint32 id, const bool use_simd);
+				const Uint32 id, const bool use_simd,
+				const bool use_base_vertex);
 
 			/**
 			 * Default destructor.
@@ -83,6 +86,11 @@ namespace eternal_lands
 			inline bool get_use_simd() const
 			{
 				return m_use_simd;
+			}
+
+			inline bool get_use_base_vertex() const
+			{
+				return m_use_base_vertex;
 			}
 
 	};

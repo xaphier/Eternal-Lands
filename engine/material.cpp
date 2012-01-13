@@ -31,6 +31,7 @@ namespace eternal_lands
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
+		build_hash();
 	}
 
 	Material::Material(const EffectCacheWeakPtr &effect_cache,
@@ -80,11 +81,15 @@ namespace eternal_lands
 		{
 			m_textures[texture_type].reset();
 
+			build_hash();
+
 			return;
 		}
 
 		m_textures[texture_type] = get_texture_cache()->get_texture(
 			name);
+
+		build_hash();
 	}
 
 	const String &Material::get_texture_name(
@@ -106,6 +111,8 @@ namespace eternal_lands
 		assert(texture_type < m_textures.size());
 
 		m_textures[texture_type] = texture;
+
+		build_hash();
 	}
 
 	const TextureSharedPtr &Material::get_texture(
@@ -119,6 +126,8 @@ namespace eternal_lands
 	void Material::set_effect(const String &effect)
 	{
 		m_effect = get_effect_cache()->get_effect(effect);
+
+		build_hash();
 	}
 
 	void Material::bind(StateManager &state_manager) const
@@ -146,6 +155,95 @@ namespace eternal_lands
 		}
 
 		return get_effect()->get_name();
+	}
+
+	bool Material::operator==(const Material &material) const
+	{
+		Uint16 i, count;
+
+		if (get_hash() != material.get_hash())
+		{
+			return false;
+		}
+
+		if (get_effect().get() != material.get_effect().get())
+		{
+			return false;
+		}
+
+		count = m_textures.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			if (m_textures[i].get() != material.m_textures[i].get())
+			{
+				return false;
+			}
+		}
+
+		if (get_shadow() != material.get_shadow())
+		{
+			return get_shadow() == material.get_shadow();
+		}
+
+		return get_culling() == material.get_culling();
+	}
+
+	bool Material::operator!=(const Material &material) const
+	{
+		return !operator==(material);
+	}
+
+	bool Material::operator<(const Material &material) const
+	{
+		Uint16 i, count;
+
+		if (get_hash() != material.get_hash())
+		{
+			return get_hash() < material.get_hash();
+		}
+
+		if (get_effect().get() != material.get_effect().get())
+		{
+			return get_effect().get() < material.get_effect().get();
+		}
+
+		count = m_textures.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			if (m_textures[i].get() != material.m_textures[i].get())
+			{
+				return m_textures[i].get() <
+					material.m_textures[i].get();
+			}
+		}
+
+		if (get_shadow() != material.get_shadow())
+		{
+			return get_shadow() < material.get_shadow();
+		}
+
+		return get_culling() < material.get_culling();
+	}
+
+	void Material::build_hash()
+	{
+		Uint16 i, count;
+
+		m_hash = 0;
+
+		boost::hash_combine(m_hash, get_effect().get());
+
+		count = m_textures.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			boost::hash_combine(m_hash, m_textures[i].get());
+		}
+
+		boost::hash_combine(m_hash, get_shadow());
+		boost::hash_combine(m_hash, get_culling());
 	}
 
 }

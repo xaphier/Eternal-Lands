@@ -30,6 +30,7 @@ namespace eternal_lands
 			TextureCacheWeakPtr m_texture_cache;
 			EffectSharedPtr m_effect;
 			TextureSharedPtrArray12 m_textures;
+			std::size_t m_hash;
 			bool m_shadow;
 			bool m_culling;
 
@@ -58,6 +59,7 @@ namespace eternal_lands
 
 			void set_texture(const MaterialDescription &material,
 				const ShaderTextureType texture_type);
+			void build_hash();
 
 		public:
 			Material(const EffectCacheWeakPtr &effect_cache,
@@ -66,6 +68,9 @@ namespace eternal_lands
 				const TextureCacheWeakPtr &texture_cache,
 				const MaterialDescription &material);
 			~Material() throw();
+			bool operator==(const Material &material) const;
+			bool operator!=(const Material &material) const;
+			bool operator<(const Material &material) const;
 			void set_texture(const String &name,
 				const ShaderTextureType texture_type);
 			const String &get_texture_name(
@@ -81,6 +86,7 @@ namespace eternal_lands
 			inline void set_effect(const EffectSharedPtr &effect)
 			{
 				m_effect = effect;
+				build_hash();
 			}
 
 			inline const EffectSharedPtr &get_effect() const
@@ -91,11 +97,13 @@ namespace eternal_lands
 			inline void set_shadow(const bool shadow)
 			{
 				m_shadow = shadow;
+				build_hash();
 			}
 
 			inline void set_culling(const bool culling)
 			{
 				m_culling = culling;
+				build_hash();
 			}
 
 			inline bool get_shadow() const
@@ -106,6 +114,11 @@ namespace eternal_lands
 			inline bool get_culling() const
 			{
 				return m_culling;
+			}
+
+			inline std::size_t get_hash() const
+			{
+				return m_hash;
 			}
 
 	};

@@ -53,8 +53,10 @@ namespace eternal_lands
 			void log_attribute_locations();
 			void log_uniforms();
 			void do_build(const StringType &vertex_shader,
+				const StringType &geometry_shader,
 				const StringType &fragment_shader);
 			void build(const StringType &vertex_shader,
+				const StringType &geometry_shader,
 				const StringType &fragment_shader,
 				const StringVariantMap &values);
 			void update_used_texture_units();
@@ -70,6 +72,7 @@ namespace eternal_lands
 
 		public:
 			GlslProgram(const StringType &vertex_shader,
+				const StringType &geometry_shader,
 				const StringType &fragment_shader,
 				const StringVariantMap &values,
 				const String &name);

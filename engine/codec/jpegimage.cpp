@@ -11,8 +11,12 @@
 #include "memorybuffer.hpp"
 #include "reader.hpp"
 #include "image.hpp"
-#include <jpeglib.h>
-#include <setjmp.h>
+
+extern "C"
+{
+	#include <jpeglib.h>
+	#include <setjmp.h>
+}
 
 namespace eternal_lands
 {

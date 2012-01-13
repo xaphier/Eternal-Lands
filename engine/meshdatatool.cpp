@@ -230,12 +230,21 @@ namespace eternal_lands
 
 		glm::vec3 get_normal(const Vec3Array3 &positions)
 		{
-			glm::vec3 p0, p1;
+			glm::vec3 p0, p1, normal;
+			float len;
 
 			p0 = positions[1] - positions[0];
 			p1 = positions[2] - positions[0];
 
-			return glm::normalize(glm::cross(p0, p1));
+			normal = glm::cross(p0, p1);
+			len = glm::dot(normal, normal);
+
+			if (len < epsilon)
+			{
+				return glm::vec3(0.0f);
+			}
+
+			return normal /= std::sqrt(len);
 		}
 
 		void get_tangent(const Vec3Array3 &positions,
@@ -268,10 +277,21 @@ namespace eternal_lands
 			const glm::vec3 &bitangent)
 		{
 			glm::vec4 result;
+			glm::vec3 temp;
+			float len;
         
 			// Gram-Schmidt orthogonalize
-			result = glm::vec4(glm::normalize(tangent - normal *
-				glm::dot(normal, tangent)), 0.0f);
+			temp = tangent - normal * glm::dot(normal, tangent);
+			len = glm::dot(temp, temp);
+
+			if (len < epsilon)
+			{
+				result = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+			}
+			else
+			{
+				result = glm::vec4(temp / std::sqrt(len), 0.0f);
+			}
         
 			// Calculate handedness
 			result.w = (glm::dot(glm::cross(normal, tangent),
@@ -487,6 +507,7 @@ namespace eternal_lands
 		Vec3Vector normals;
 		glm::vec3 v_normal;
 		Uint32 i, j, index, count;
+		float len;
 		VertexSemanticType position, normal;
 
 		if (morph_target)
@@ -534,8 +555,19 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			set_vertex_data(normal, i, glm::vec4(
-				glm::normalize(normals[i]), 1.0f));
+			v_normal = normals[i];
+			len = glm::dot(v_normal, v_normal);
+
+			if (len < epsilon)
+			{
+				v_normal = glm::vec3(0.0f, 0.0f, 1.0f);
+			}
+			else
+			{
+				v_normal /= std::sqrt(len);
+			}
+
+			set_vertex_data(normal, i, glm::vec4(v_normal, 1.0f));
 		}
 	}
 
@@ -1265,6 +1297,8 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			assert((indices[source_index + i] + offset) >= 0);
+
 			m_indices[dest_index + i] = indices[source_index + i]
 				+ offset;
 		}
@@ -1273,6 +1307,101 @@ namespace eternal_lands
 	Uint32 MeshDataTool::get_sub_mesh_count() const
 	{
 		return m_sub_meshs.size();
+	}
+
+	void MeshDataTool::enable_use_base_vertex()
+	{
+		Uint32 i, count, max_vertex, offset, index, min_vertex, min;
+		Sint32 base_vertex;
+
+		BOOST_FOREACH(SubMesh &sub_mesh, m_sub_meshs)
+		{
+			count = sub_mesh.get_count();
+			offset = sub_mesh.get_offset();
+
+			min = std::numeric_limits<Uint32>::max();
+
+			for (i = 0; i < count; ++i)
+			{
+				min = std::min(min, get_index_data(offset + i));
+			}
+
+			base_vertex = 0;
+
+			if (count > 0)
+			{
+				base_vertex = min;
+			}
+
+			for (i = 0; i < count; ++i)
+			{
+				index = get_index_data(offset + i);
+				index -= base_vertex;
+				set_index_data(offset + i, index);
+			}
+
+			min_vertex = sub_mesh.get_min_vertex() - base_vertex;
+			max_vertex = sub_mesh.get_max_vertex() - base_vertex;
+			sub_mesh.set_min_vertex(min_vertex);
+			sub_mesh.set_max_vertex(max_vertex);
+			base_vertex += sub_mesh.get_base_vertex();
+			sub_mesh.set_base_vertex(base_vertex);
+		}
+	}
+
+	void MeshDataTool::disable_use_base_vertex()
+	{
+		Uint32 i, count, index, min_vertex, max_vertex, offset;
+		Sint32 base_vertex;
+
+		BOOST_FOREACH(SubMesh &sub_mesh, m_sub_meshs)
+		{
+			count = sub_mesh.get_count();
+			offset = sub_mesh.get_offset();
+
+			base_vertex = sub_mesh.get_base_vertex();
+
+			for (i = 0; i < count; ++i)
+			{
+				index = get_index_data(offset + i);
+				index += base_vertex;
+				set_index_data(offset + i, index);
+			}
+
+			min_vertex = sub_mesh.get_min_vertex() + base_vertex;
+			max_vertex = sub_mesh.get_max_vertex() + base_vertex;
+			sub_mesh.set_min_vertex(min_vertex);
+			sub_mesh.set_max_vertex(max_vertex);
+			sub_mesh.set_base_vertex(0);
+		}
+	}
+
+	bool MeshDataTool::get_use_base_vertex() const
+	{
+		BOOST_FOREACH(const SubMesh &sub_mesh, get_sub_meshs())
+		{
+			if (sub_mesh.get_base_vertex() != 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool MeshDataTool::get_16_bit_indices() const
+	{
+		BOOST_FOREACH(const Uint32 index, get_indices())
+		{
+			if ((!get_use_restart_index() ||
+				(index != get_restart_index())) &&
+				(index > std::numeric_limits<Uint16>::max()))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

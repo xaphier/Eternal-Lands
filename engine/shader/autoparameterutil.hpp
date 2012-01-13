@@ -34,6 +34,7 @@ namespace eternal_lands
 		apt_view_matrix,
 		apt_projection_matrix,
 		apt_projection_view_matrix,	
+		apt_projection_view_matrices,
 		apt_reflection_matrix,
 		apt_shadow_texture_matrix,
 		apt_light_positions,
@@ -54,7 +55,8 @@ namespace eternal_lands
 		apt_fog_data,
 		apt_camera,
 		apt_shadow_camera,
-		apt_split_distances
+		apt_split_distances,
+		apt_layers
 	};
 	/**
 	 * @}

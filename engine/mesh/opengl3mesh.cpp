@@ -6,7 +6,6 @@
  ****************************************************************************/
 
 #include "opengl3mesh.hpp"
-#include "submesh.hpp"
 
 namespace eternal_lands
 {

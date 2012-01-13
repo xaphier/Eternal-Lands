@@ -23,6 +23,124 @@ namespace eternal_lands
 	{
 	}
 
+	void MaterialDescription::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("material")) != 0)
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_0"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_diffuse_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_1"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_diffuse_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_2"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_diffuse_2);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_3"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_diffuse_3);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("normal_0"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_normal_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("normal_1"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_normal_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("specular_0"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_specular_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("specular_1"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_specular_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glow_0")) == 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_glow_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("glow_1")) == 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_glow_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("blend_0")) == 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_blend_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("blend_1")) == 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_blend_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("effect")) == 0)
+			{
+				set_effect(XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("shadow")) == 0)
+			{
+				set_shadow(XmlUtil::get_bool_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("culling")) == 0)
+			{
+				set_culling(XmlUtil::get_bool_value(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
 	void MaterialDescription::load_xml(const String &dir,
 		const xmlNodePtr node)
 	{

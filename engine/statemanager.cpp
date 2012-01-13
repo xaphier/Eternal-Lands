@@ -366,17 +366,18 @@ namespace eternal_lands
 		}
 	}
 
-	void StateManager::draw(const Uint32 index)
+	void StateManager::draw(const Uint32 index, const Uint32 instances)
 	{
-		m_mesh->draw(index);
+		m_mesh->draw(index, instances);
 #ifndef	NDEBUG
 		gl_error_check();
 #endif	/* NDEBUG */
 	}
 
-	void StateManager::draw(const MeshDrawData &draw_data)
+	void StateManager::draw(const MeshDrawData &draw_data,
+		const Uint32 instances)
 	{
-		m_mesh->draw(draw_data);
+		m_mesh->draw(draw_data, instances);
 #ifndef	NDEBUG
 		gl_error_check();
 #endif	/* NDEBUG */

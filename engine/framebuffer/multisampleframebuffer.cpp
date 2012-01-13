@@ -18,6 +18,8 @@ namespace eternal_lands
 		const TextureFormatType format): AbstractFrameBuffer(name,
 			width, height), m_layer(0)
 	{
+		DEBUG_CHECK_GL_ERROR();
+
 		if (layers > 0)
 		{
 			get_texture()->set_target(ttt_2d_texture_array);
@@ -33,9 +35,16 @@ namespace eternal_lands
 		get_texture()->set_wrap_r(twt_clamp);
 
 		get_texture()->set_mipmap_count(mipmaps);
+
+		DEBUG_CHECK_GL_ERROR();
+
 		get_texture()->init(get_width(), get_height(), layers, mipmaps);
 
+		DEBUG_CHECK_GL_ERROR();
+
 		m_multisample_frame_buffer.bind();
+
+		DEBUG_CHECK_GL_ERROR();
 
 		m_depth_render_buffer.reset(new RenderBuffer(width, height,
 			samples, tft_depth24_stencil8));
@@ -44,9 +53,16 @@ namespace eternal_lands
 		m_depth_render_buffer->bind_to_framebuffer(
 			GL_STENCIL_ATTACHMENT);
 
+		DEBUG_CHECK_GL_ERROR();
+
 		m_render_buffer.reset(new RenderBuffer(width, height, samples,
 			format));
+
+		DEBUG_CHECK_GL_ERROR();
+
 		m_render_buffer->bind_to_framebuffer(GL_COLOR_ATTACHMENT0);
+
+		DEBUG_CHECK_GL_ERROR();
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glReadBuffer(GL_COLOR_ATTACHMENT0);
@@ -54,15 +70,21 @@ namespace eternal_lands
 		m_multisample_frame_buffer.check_status();
 		m_multisample_frame_buffer.unbind();
 
+		DEBUG_CHECK_GL_ERROR();
+
 		m_frame_buffer.bind();
 		get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
 		m_layer = 0;
+
+		DEBUG_CHECK_GL_ERROR();
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glReadBuffer(GL_NONE);
 
 		m_frame_buffer.check_status();
 		m_frame_buffer.unbind();
+
+		DEBUG_CHECK_GL_ERROR();
 	}
 
 	MultiSampleFrameBuffer::~MultiSampleFrameBuffer() throw()

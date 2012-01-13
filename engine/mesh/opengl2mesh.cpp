@@ -9,7 +9,7 @@
 #include "mappedhardwarewritememorybuffer.hpp"
 #include "hardwarewritememorybuffer.hpp"
 #include "vertexelements.hpp"
-#include "submesh.hpp"
+#include "meshdrawdata.hpp"
 #include "vertexstream.hpp"
 #include "exceptions.hpp"
 
@@ -245,9 +245,13 @@ namespace eternal_lands
 		unbind_index_buffers();
 	}
 
-	void OpenGl2Mesh::draw(const MeshDrawData &draw_data)
+	void OpenGl2Mesh::draw(const MeshDrawData &draw_data,
+		const Uint32 instances)
 	{
-		if (m_index_data.get() != 0)
+		assert(instances == 1);
+		assert(draw_data.get_base_vertex() == 0);
+
+		if (get_has_index_data())
 		{
 			glDrawRangeElements(get_primitive_type(),
 				draw_data.get_min_vertex(),
@@ -301,7 +305,12 @@ namespace eternal_lands
 		return result;
 	}
 
-	bool OpenGl2Mesh::get_supports_restart_index()
+	bool OpenGl2Mesh::get_supports_base_vertex() const
+	{
+		return false;
+	}
+
+	bool OpenGl2Mesh::get_supports_restart_index() const
 	{
 		return false;
 	}

@@ -330,12 +330,27 @@ namespace eternal_lands
 			}
 		}
 
-		m_visible_objects.next_frame();
-		m_map->get_object_tree().intersect(frustum, m_visible_objects);
-
 		m_time = SDL_GetTicks() * 0.001f;
 
+		m_visible_objects.next_frame();
+
+#ifdef	DEBUG
+		if (get_global_vars()->get_draw_objects())
+		{
+			m_map->get_object_tree().intersect(frustum,
+				m_visible_objects);
+		}
+#else	/* DEBUG */
+		m_map->get_object_tree().intersect(frustum, m_visible_objects);
+#endif	/* DEBUG */
+
 		end = m_actors.end();
+#ifdef	DEBUG
+		if (!get_global_vars()->get_draw_actors())
+		{
+			end = m_actors.begin();
+		}
+#endif	/* DEBUG */
 
 		for (it = m_actors.begin(); it != end; ++it)
 		{
@@ -423,9 +438,23 @@ namespace eternal_lands
 			m_scene_view.get_shadow_projection_view_matrices());
 
 		m_shadow_objects.next_frame();
+#ifdef	DEBUG
+		if (get_global_vars()->get_draw_objects())
+		{
+			m_map->get_object_tree().intersect(frustum,
+				m_shadow_objects);
+		}
+#else	/* DEBUG */
 		m_map->get_object_tree().intersect(frustum, m_shadow_objects);
+#endif	/* DEBUG */
 
 		end = m_actors.end();
+#ifdef	DEBUG
+		if (!get_global_vars()->get_draw_actors())
+		{
+			end = m_actors.begin();
+		}
+#endif	/* DEBUG */
 
 		for (it = m_actors.begin(); it != end; ++it)
 		{
@@ -571,7 +600,7 @@ namespace eternal_lands
 
 			object->get_materials()[i].bind(m_state_manager);
 
-			m_state_manager.draw(i);
+			m_state_manager.draw(i, 1);
 		}
 	}
 
@@ -610,7 +639,7 @@ namespace eternal_lands
 			}
 
 			object->get_materials()[i].bind(m_state_manager);
-			m_state_manager.draw(i);
+			m_state_manager.draw(i, 1);
 		}
 	}
 
@@ -644,7 +673,7 @@ namespace eternal_lands
 			}
 
 			object->get_materials()[i].bind(m_state_manager);
-			m_state_manager.draw(i);
+			m_state_manager.draw(i, 1);
 		}
 	}
 
@@ -1087,7 +1116,7 @@ namespace eternal_lands
 			}
 
 			object->get_materials()[material].bind(m_state_manager);
-			m_state_manager.draw(object->get_sub_objects()[i]);
+			m_state_manager.draw(object->get_sub_objects()[i], 1);
 
 			glEndQuery(GL_SAMPLES_PASSED);
 

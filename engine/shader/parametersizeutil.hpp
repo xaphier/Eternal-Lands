@@ -27,7 +27,8 @@ namespace eternal_lands
 		pst_one = 0,
 		pst_light_count,
 		pst_bone_count,
-		pst_shadow_map_count
+		pst_shadow_map_count,
+		pst_layer_count
 	};
 
 	typedef std::map<ParameterSizeType, Uint16> ParameterSizeTypeUint16Map;

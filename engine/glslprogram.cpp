@@ -788,11 +788,12 @@ namespace eternal_lands
 	};
 
 	GlslProgram::GlslProgram(const StringType &vertex_shader,
+		const StringType &geometry_shader,
 		const StringType &fragment_shader,
 		const StringVariantMap &values, const String &name):
 		m_name(name), m_last_used(0), m_program(0)
 	{
-		build(vertex_shader, fragment_shader, values);
+		build(vertex_shader, geometry_shader, fragment_shader, values);
 	}
 
 	GlslProgram::GlslProgram(const FileSystemSharedPtr &file_system,
@@ -1838,6 +1839,7 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::do_build(const StringType &vertex_shader,
+		const StringType &geometry_shader,
 		const StringType &fragment_shader)
 	{
 		GlslShaderObject vertex(GL_VERTEX_SHADER);
@@ -1852,6 +1854,16 @@ namespace eternal_lands
 		fragment.load(fragment_shader);
 		fragment.compile();
 		glAttachShader(get_program(), fragment.get_shader());
+
+		if (!geometry_shader.empty())
+		{
+			GlslShaderObject geometry(GL_GEOMETRY_SHADER);
+
+			geometry.load(geometry_shader);
+			geometry.compile();
+
+			glAttachShader(get_program(), geometry.get_shader());
+		}
 
 		bind_attribute_locations();
 
@@ -1871,6 +1883,7 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::build(const StringType &vertex_shader,
+		const StringType &geometry_shader,
 		const StringType &fragment_shader,
 		const StringVariantMap &values)
 	{
@@ -1881,7 +1894,8 @@ namespace eternal_lands
 
 		try
 		{
-			do_build(vertex_shader, fragment_shader);
+			do_build(vertex_shader, geometry_shader,
+				fragment_shader);
 		}
 		catch (boost::exception &exception)
 		{
@@ -1938,7 +1952,7 @@ namespace eternal_lands
 
 	void GlslProgram::load_xml(const xmlNodePtr node)
 	{
-		String vertex_shader, fragment_shader;
+		String vertex_shader, geometry_shader, fragment_shader;
 		StringVariantMap values;
 		xmlNodePtr it;
 
@@ -1970,6 +1984,12 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("geometry_shader")) == 0)
+			{
+				geometry_shader = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("fragment_shader")) == 0)
 			{
 				fragment_shader = XmlUtil::get_string_value(it);
@@ -1983,7 +2003,7 @@ namespace eternal_lands
 		}
 		while (XmlUtil::next(it, true));
 
-		build(vertex_shader, fragment_shader, values);
+		build(vertex_shader, geometry_shader, fragment_shader, values);
 	}
 
 	void GlslProgram::load_xml(const FileSystemSharedPtr &file_system,

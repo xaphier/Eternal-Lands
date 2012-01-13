@@ -5,8 +5,8 @@
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_44cee017_6c76_4f62_ba04_4752efb0a6b6
-#define	UUID_44cee017_6c76_4f62_ba04_4752efb0a6b6
+#ifndef	UUID_cfbf3d73_d078_4803_ab3c_bdc9507a04c8
+#define	UUID_cfbf3d73_d078_4803_ab3c_bdc9507a04c8
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
@@ -24,12 +24,12 @@ namespace eternal_lands
 {
 
 	/**
-	 * @brief @c class for meshs in a format for OpenGL 3.1.
+	 * @brief @c class for meshs in a format for OpenGL 3.2.
 	 *
-	 * @c class for meshs in a format for OpenGL 3.1 using hardware
+	 * @c class for meshs in a format for OpenGL 3.2 using hardware
 	 * buffers, shaders and instancing.
 	 */
-	class OpenGl31Mesh: public OpenGl3Mesh
+	class OpenGl32Mesh: public OpenGl3Mesh
 	{
 		private:
 
@@ -37,7 +37,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl31Mesh(const String &name,
+			OpenGl32Mesh(const String &name,
 				const bool static_indices,
 				const bool static_vertices,
 				const bool use_simd);
@@ -45,13 +45,10 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~OpenGl31Mesh() throw();
-
-			virtual void bind(BitSet32 &used_attributes);
-			virtual void unbind();
+			virtual ~OpenGl32Mesh() throw();
 			virtual AbstractMeshSharedPtr clone_vertex_data() const;
 			virtual AbstractMeshSharedPtr clone_index_data() const;
-			virtual bool get_supports_restart_index() const;
+			virtual bool get_supports_base_vertex() const;
 
 			/**
 			 * Draws the mesh using the given draw data.
@@ -63,4 +60,4 @@ namespace eternal_lands
 
 }
 
-#endif	/* UUID_44cee017_6c76_4f62_ba04_4752efb0a6b6 */
+#endif	/* UUID_cfbf3d73_d078_4803_ab3c_bdc9507a04c8 */

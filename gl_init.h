@@ -44,7 +44,7 @@ extern int use_draw_range_elements;  /*!< specifies if we use glDrawRangeElement
 /*! @} */
 extern float anisotropic_filter;
 extern int gl_extensions_loaded; /*!< specifies if the OpenGL extensions were loaded or not */
-extern int el_opengl_version;
+extern int engine_opengl_version;
 /*!
  * \ingroup video
  * \brief   initializes the selected video mode
