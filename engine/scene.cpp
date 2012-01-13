@@ -35,8 +35,6 @@
 #include "convexbody.hpp"
 
 #include "../client_serv.h"
-#include "font/text.hpp"
-#include "font/textattribute.hpp"
 
 namespace eternal_lands
 {
@@ -83,10 +81,6 @@ namespace eternal_lands
 			m_scene_resources.get_mesh_cache(),
 			m_scene_resources.get_effect_cache(),
 			m_scene_resources.get_texture_cache()));
-
-		m_fonts.reset(new TextureFontCache(global_vars, file_system,
-			m_scene_resources.get_mesh_builder(), 512, 512,
-				4096));
 	}
 
 	Scene::~Scene() throw()
@@ -163,8 +157,6 @@ namespace eternal_lands
 		glGenQueries(m_querie_ids.size(), m_querie_ids.data());
 
 		m_scene_resources.init(file_system);
-
-		m_fonts->load_xml(file_system, String(UTF8("fonts.xml")));
 	}
 
 	void Scene::update_shadow_map()
@@ -892,163 +884,6 @@ namespace eternal_lands
 
 		m_program_vars_id++;
 		m_frame_id++;
-	}
-
-	void Scene::add_font(const FileSystemSharedPtr &file_system,
-		const String &file_name, const String &index, const float size)
-	{
-		m_fonts->add_font(file_system, index, file_name, size);
-	}
-
-	struct TextCacheItem
-	{
-		Text text;
-		AbstractMeshSharedPtr mesh;
-		Uint64 frame_id;
-		Uint32 count;
-		Uint32 lines;
-
-		TextCacheItem()
-		{
-			lines = 0;
-			count = 0;
-			frame_id = 0;
-		}
-	};
-
-	boost::array<TextCacheItem, 256> text_cache;
-
-	void Scene::draw_text(const Text &text,
-		const glm::mat4x3 &world_matrix)
-	{
-		StateManagerUtil state(m_state_manager);
-
-		m_state_manager.switch_depth_mask(false);
-		m_state_manager.switch_blend(true);
-
-		m_state_manager.switch_program(m_fonts->get_program());
-
-		m_state_manager.get_program()->set_parameter(apt_view_matrix,
-			m_scene_view.get_current_view_matrix());
-		m_state_manager.get_program()->set_parameter(
-			apt_projection_matrix,
-			m_scene_view.get_current_projection_matrix());
-		m_state_manager.get_program()->set_parameter(
-			apt_projection_view_matrix,
-			m_scene_view.get_current_projection_view_matrix());
-		m_state_manager.get_program()->set_parameter(apt_time, m_time);
-		m_state_manager.get_program()->set_parameter(apt_world_matrix,
-			world_matrix);
-
-		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-		m_fonts->draw(m_state_manager, text, glm::vec2(0.0f), 0, 1,
-			std::numeric_limits<float>::max(),
-			std::numeric_limits<float>::max());
-	}
-
-	Uint32 Scene::draw_2d_text(const Text &text, const glm::vec2 &position,
-		const glm::mat4x3 &world_matrix, const Uint32 min_line,
-		const Uint32 max_line, const float max_width,
-		const float max_height, const WrapModeType wrap)
-	{
-		StateManagerUtil state(m_state_manager);
-		glm::mat4 matrix, project, view;
-
-		if (text.get_length() == 0)
-		{
-			return 0;
-		}
-
-		glGetFloatv(GL_PROJECTION_MATRIX, glm::value_ptr(project));
-		glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(view));
-
-		matrix = project * view;
-
-		m_state_manager.switch_depth_mask(false);
-		m_state_manager.switch_blend(true);
-
-		m_state_manager.switch_program(m_fonts->get_program());
-
-		m_state_manager.get_program()->set_parameter(
-			apt_projection_view_matrix,
-			matrix);//m_scene_view.get_ortho_projection_matrix());
-		m_state_manager.get_program()->set_parameter(apt_time, m_time);
-		m_state_manager.get_program()->set_parameter(apt_world_matrix,
-			world_matrix);
-
-		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-		Uint64 frame_id;
-		Uint32 i, index;
-
-		index = 0;
-		frame_id = m_frame_id;
-
-		for (i = 0; i < text_cache.size(); ++i)
-		{
-			if (text_cache[i].text == text)
-			{
-				m_fonts->draw(m_state_manager,
-					text_cache[i].mesh,
-					text_cache[i].count);
-				text_cache[i].frame_id = frame_id;
-
-				return text_cache[i].lines;
-			}
-
-			if (text_cache[i].frame_id < frame_id)
-			{
-				index = i;
-				frame_id = text_cache[i].frame_id;
-			}
-		}
-
-		text_cache[index].text = text;
-		text_cache[index].frame_id = m_frame_id;
-		text_cache[index].count = 0;
-		text_cache[index].mesh.reset();
-
-		text_cache[index].lines = m_fonts->build_mesh(text, position,
-			min_line, max_line, max_width, max_height, wrap,
-			text_cache[index].mesh, text_cache[index].count);
-
-		m_fonts->draw(m_state_manager, text_cache[index].mesh,
-			text_cache[index].count);
-
-		return text_cache[index].lines;
-	}
-
-	float Scene::get_text_width(const Text &text) const
-	{
-		return m_fonts->get_width(text);
-	}
-
-	float Scene::get_font_height(const String &font) const
-	{
-		return m_fonts->get_height(font);
-	}
-
-	void Scene::build_mesh(const VertexBuffersSharedPtr &buffers,
-		const Uint32 count, AbstractMeshSharedPtr &mesh) const
-	{
-		m_fonts->build_mesh(buffers, count, mesh);
-	}
-
-	Uint32 Scene::write_to_stream(const Text &text,
-		const VertexStreamsSharedPtr &streams,
-		const glm::vec2 &start_position, const Uint32 min_line,
-		const Uint32 max_line, const float max_width,
-		const float max_height, const WrapModeType wrap, Uint32 &line)
-		const
-	{
-		return m_fonts->write_to_stream(text, streams, start_position,
-			min_line, max_line, max_width, max_height, wrap, line);
-	}
-
-	void Scene::draw(const AbstractMeshSharedPtr &mesh, const Uint32 count)
-	{
-		m_fonts->draw(m_state_manager, mesh, count);
 	}
 
 	void Scene::pick_object(const ObjectSharedPtr &object,

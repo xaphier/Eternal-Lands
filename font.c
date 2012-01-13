@@ -22,9 +22,7 @@
 #ifndef SKY_FPV_OPTIONAL
 #include "draw_scene.h"
 #endif // SKY_FPV_OPTIONAL
-#include "engine.h"
 
-//#define NEW_FONTSYSTEM
 /* NOTE: This file contains implementations of the following, currently unused, and commented functions:
  *          Look at the end of the file.
  *
@@ -484,10 +482,6 @@ int draw_string (int x, int y, const unsigned char * our_string, int max_lines)
 
 int draw_string_shadowed (int x, int y, const unsigned char * our_string, int max_lines, float fr,float fg,float fb, float br,float bg,float bb)
 {
-#ifdef	NEW_FONTSYSTEM
-	return engine_draw_2d_text_colored(our_string, "default", x, y, fr, fg,
-		fb, 1.0f, 0, max_lines - 1, 1e30f, 1e30f) + 1;
-#endif	/* NEW_FONTSYSTEM */
  	 int px,py,r;
  	 //set shadow colour
 	 glColor3f(br, bg, bb);
@@ -503,10 +497,6 @@ int draw_string_shadowed (int x, int y, const unsigned char * our_string, int ma
 
 int draw_string_shadowed_width (int x, int y, const unsigned char * our_string, int max_width, int max_lines, float fr,float fg,float fb, float br,float bg,float bb)
 {
-#ifdef	NEW_FONTSYSTEM
-	return engine_draw_2d_text_colored(our_string, "default", x, y, fr, fg,
-		fb, 1.0f, 0, max_lines - 1, max_width, 1e30f) + 1;
-#endif	/* NEW_FONTSYSTEM */
  	 int px,py,r;
 	 float zoom = ((float)max_width*12.0)/((float)get_string_width(our_string)*11.0);
  	 //set shadow colour
@@ -533,10 +523,6 @@ int draw_string_zoomed (int x, int y, const unsigned char * our_string, int max_
 
 int draw_string_zoomed_width (int x, int y, const unsigned char * our_string, int max_width, int max_lines, float text_zoom)
 {
-#ifdef	NEW_FONTSYSTEM
-	return engine_draw_2d_text(our_string, "default", x, y, text_zoom, 0,
-		max_lines - 1, max_width, 1e30f) + 1;
-#endif	/* NEW_FONTSYSTEM */
 	float displayed_font_x_size= 11.0*text_zoom;
 	float displayed_font_y_size= 18.0*text_zoom;
 
@@ -599,20 +585,11 @@ CHECK_GL_ERRORS();
 
 void draw_string_clipped(int x, int y, const unsigned char * our_string, int width, int height)
 {
-#ifdef	NEW_FONTSYSTEM
-	engine_draw_2d_text(our_string, "default", x, y, 1.0f, 0, 1, width, height);
-	return;
-#endif	/* NEW_FONTSYSTEM */
 	draw_string_zoomed_clipped (x, y, our_string, -1, width, height, 1.0f);
 }
 
 void draw_string_zoomed_clipped (int x, int y, const unsigned char* our_string, int cursor_pos, int width, int height, float text_zoom)
 {
-#ifdef	NEW_FONTSYSTEM
-	engine_draw_2d_text(our_string, "default", x, y, text_zoom, 0, 1, width, height);
-	return;
-#endif	/* NEW_FONTSYSTEM */
- 
 	float displayed_font_x_size = DEFAULT_FONT_X_LEN * text_zoom;
 	float displayed_font_y_size = DEFAULT_FONT_Y_LEN * text_zoom;
 
@@ -843,11 +820,6 @@ int reset_soft_breaks (char *str, int len, int size, float zoom, int width, int 
 
 void draw_string_small_shadowed(int x, int y,const unsigned char * our_string,int max_lines, float fr, float fg, float fb, float br, float bg, float bb)
 {
-#ifdef	NEW_FONTSYSTEM
-	engine_draw_2d_text_colored(our_string, "small", x, y, fr, fg, fb, 1.0f,
-		0, max_lines - 1, 1e30f, 1e30f);
-	return;
-#endif	/* NEW_FONTSYSTEM */
  	 int px,py;
  	 //set shadow colour
 	 glColor4f(br, bg, bb, 0.25f);
@@ -862,11 +834,6 @@ void draw_string_small_shadowed(int x, int y,const unsigned char * our_string,in
 
 void draw_string_small(int x, int y,const unsigned char * our_string,int max_lines)
 {
-#ifdef	NEW_FONTSYSTEM
-	engine_draw_2d_text(our_string, "small", x, y, 1.0f, 0, max_lines - 1,
-		1e30f, 1e30f);
-	return;
-#endif	/* NEW_FONTSYSTEM */
 	//int displayed_font_x_size=SMALL_FONT_X_LEN;
 	//int displayed_font_y_size=SMALL_FONT_Y_LEN;
 
@@ -1333,9 +1300,6 @@ int get_string_width(const unsigned char *str)
 
 int get_nstring_width(const unsigned char *str, int len)
 {
-#ifdef	NEW_FONTSYSTEM
-	return engine_text_width(str, "default", len);
-#endif	/* NEW_FONTSYSTEM */
 	int	i, wdt=0;
 
 	for(i=0; i<len; i++) {

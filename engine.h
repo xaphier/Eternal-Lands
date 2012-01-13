@@ -77,20 +77,6 @@ void engine_update_actor_buffs(actor *act, Uint32 buffs);
 void engine_set_shader_quality(const char* quality);
 void engine_resize_root_window(const float fov, const float aspect,
 	const float z_near, const float z_far);
-void engine_add_font(const char* file_name, const char* index,
-	const float size);
-void engine_draw_text(const unsigned char* str, const char* font,
-	const float x, const float y);
-Uint32 engine_draw_2d_text(const unsigned char* str, const char* font,
-	const float x, const float y, const float scale, const Uint32 min_line,
-	const Uint32 max_line, const float max_width, const float max_height);
-Uint32 engine_draw_2d_text_colored(const unsigned char* str, const char* font,
-	const float x, const float y, const float r, const float g,
-	const float b, const float scale, const Uint32 min_line,
-	const Uint32 max_line, const float max_width, const float max_height);
-float engine_text_width(const unsigned char* str, const char* font,
-	const Uint32 len);
-float engine_font_height(const char* font);
 int command_lua(char *text, int len);
 
 void engine_cull_scene();
