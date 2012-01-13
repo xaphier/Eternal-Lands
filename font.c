@@ -22,6 +22,7 @@
 #ifndef SKY_FPV_OPTIONAL
 #include "draw_scene.h"
 #endif // SKY_FPV_OPTIONAL
+#include "engine.h"
 
 /* NOTE: This file contains implementations of the following, currently unused, and commented functions:
  *          Look at the end of the file.
@@ -482,33 +483,14 @@ int draw_string (int x, int y, const unsigned char * our_string, int max_lines)
 
 int draw_string_shadowed (int x, int y, const unsigned char * our_string, int max_lines, float fr,float fg,float fb, float br,float bg,float bb)
 {
- 	 int px,py,r;
- 	 //set shadow colour
-	 glColor3f(br, bg, bb);
-	 for(px=-1;px<2;px++)
-  	     for(py=-1;py<2;py++)
-  	         if(px!=0 || py!=0)
-  	             r=draw_string(x+px, y+py, our_string, max_lines);
- 	 //set foreground colour
-	 glColor3f(fr, fg, fb);
-     r=draw_string(x, y, our_string, max_lines);
-     return r;
+	return engine_draw_2d_text_colored(our_string, "default", x, y, fr, fg,
+		fb, 1.0f, 0, max_lines - 1, 1e30f, 1e30f) + 1;
 }
 
 int draw_string_shadowed_width (int x, int y, const unsigned char * our_string, int max_width, int max_lines, float fr,float fg,float fb, float br,float bg,float bb)
 {
- 	 int px,py,r;
-	 float zoom = ((float)max_width*12.0)/((float)get_string_width(our_string)*11.0);
- 	 //set shadow colour
-	 glColor3f(br, bg, bb);
-	 for(px=-1;px<2;px++)
-  	     for(py=-1;py<2;py++)
-  	         if(px!=0 || py!=0)
-  	             r=draw_string_zoomed(x+px, y+py, our_string, max_lines, zoom);
- 	 //set foreground colour
-	 glColor3f(fr, fg, fb);
-     r=draw_string_zoomed(x, y, our_string, max_lines, zoom);
-     return r;
+	return engine_draw_2d_text_colored(our_string, "default", x, y, fr, fg,
+		fb, 1.0f, 0, max_lines - 1, max_width, 1e30f) + 1;
 }
 
 int draw_string_width(int x, int y, const unsigned char * our_string, int max_width, int max_lines)
@@ -523,149 +505,18 @@ int draw_string_zoomed (int x, int y, const unsigned char * our_string, int max_
 
 int draw_string_zoomed_width (int x, int y, const unsigned char * our_string, int max_width, int max_lines, float text_zoom)
 {
-	float displayed_font_x_size= 11.0*text_zoom;
-	float displayed_font_y_size= 18.0*text_zoom;
-
-	unsigned char cur_char;
-	int i;
-	int cur_x,cur_y;
-	int current_lines= 1;
-
-#ifdef OPENGL_TRACE
-CHECK_GL_ERRORS();
-#endif //OPENGL_TRACE
-	glEnable(GL_ALPHA_TEST);//enable alpha filtering, so we have some alpha key
-	glAlphaFunc(GL_GREATER,0.1f);
-#ifdef	NEW_TEXTURES
-	bind_texture(font_text);
-#else	/* NEW_TEXTURES */
-	get_and_set_texture_id(font_text);
-#endif	/* NEW_TEXTURES */
-
-	i=0;
-	cur_x=x;
-	cur_y=y;
-	glBegin(GL_QUADS);
-	while(1)
-		{
-			cur_char=our_string[i];
-			// watch for special characters
-			if(!cur_char)	// end of line
-				{
-					break;
-				}
-			else if (cur_char == '\n' || cur_char == '\r')	// newline
-				{
-					cur_y+=displayed_font_y_size;
-					cur_x=x;
-					i++;
-					current_lines++;
-					if(current_lines>max_lines)break;
-					continue;
-				}
-			else if (cur_x+displayed_font_x_size-x>=max_width){
-				cur_y+=displayed_font_y_size;
-				cur_x=x;
-				current_lines++;
-				if(current_lines>max_lines)break;
-			}
-
-			cur_x+=draw_char_scaled(cur_char, cur_x, cur_y, displayed_font_x_size, displayed_font_y_size);
-
-			i++;
-		}
-
-	glEnd();
-	glDisable(GL_ALPHA_TEST);
-#ifdef OPENGL_TRACE
-CHECK_GL_ERRORS();
-#endif //OPENGL_TRACE
-	return current_lines;
+	return engine_draw_2d_text(our_string, "default", x, y, text_zoom, 0,
+		max_lines - 1, max_width, 1e30f) + 1;
 }
 
 void draw_string_clipped(int x, int y, const unsigned char * our_string, int width, int height)
 {
-	draw_string_zoomed_clipped (x, y, our_string, -1, width, height, 1.0f);
+	engine_draw_2d_text(our_string, "default", x, y, 1.0f, 0, 1, width, height);
 }
 
 void draw_string_zoomed_clipped (int x, int y, const unsigned char* our_string, int cursor_pos, int width, int height, float text_zoom)
 {
-	float displayed_font_x_size = DEFAULT_FONT_X_LEN * text_zoom;
-	float displayed_font_y_size = DEFAULT_FONT_Y_LEN * text_zoom;
-
-	unsigned char cur_char;
-	int i;
-	int cur_x, cur_y;
-	int cursor_x = x-1, cursor_y = y-1;
-
-	if (width < displayed_font_x_size || height < displayed_font_y_size)
-		// no point in trying
-		return;
-
-	glEnable (GL_ALPHA_TEST);	// enable alpha filtering, so we have some alpha key
-	glAlphaFunc (GL_GREATER, 0.1f);
-#ifdef	NEW_TEXTURES
-	bind_texture(font_text);
-#else	/* NEW_TEXTURES */
-	get_and_set_texture_id(font_text);
-#endif	/* NEW_TEXTURES */
-
-	i = 0;
-	cur_x = x;
-	cur_y = y;
-	glBegin (GL_QUADS);
-	while (1)
-	{
-		if (i == cursor_pos)
-		{
-			cursor_x = cur_x;
-			cursor_y = cur_y;
-			if (cursor_x - x > width - displayed_font_x_size)
-			{
-				cursor_x = x;
-				cursor_y = cur_y + displayed_font_y_size;
-			}
-
-		}
-
-		cur_char = our_string[i];
-		// watch for special characters
-		if (!cur_char)
-		{
-			// end of string
-			break;
-		}
-		else if (cur_char == '\n' || cur_char == '\r')
-		{
-			// newline
-			cur_y += displayed_font_y_size;
-			if (cur_y - y > height - displayed_font_y_size) break;
-			cur_x = x;
-			i++;
-			continue;
-		}
-
-//		cur_x += draw_font_char_scaled (0, cur_char, cur_x, cur_y, text_zoom);
-		cur_x += draw_char_scaled (cur_char, cur_x, cur_y, displayed_font_x_size, displayed_font_y_size);
-
-		i++;
-		if (cur_x - x > width - displayed_font_x_size)
-		{
-			// ignore rest of this line
-			while (our_string[i] != '\0' && our_string[i] != '\n' && our_string[i] != '\r') i++;
-		}
-	}
-
-	if (cursor_x >= x && cursor_y >= y && cursor_y - y <= height - displayed_font_y_size)
-	{
-		draw_char_scaled ('_', cursor_x, cursor_y, displayed_font_x_size, displayed_font_y_size);
-	}
-
-	glEnd();
-	glDisable(GL_ALPHA_TEST);
-#ifdef OPENGL_TRACE
-CHECK_GL_ERRORS();
-#endif //OPENGL_TRACE
+	engine_draw_2d_text(our_string, "default", x, y, text_zoom, 0, 1, width, height);
 }
 
 #ifdef DEBUG
@@ -820,71 +671,14 @@ int reset_soft_breaks (char *str, int len, int size, float zoom, int width, int 
 
 void draw_string_small_shadowed(int x, int y,const unsigned char * our_string,int max_lines, float fr, float fg, float fb, float br, float bg, float bb)
 {
- 	 int px,py;
- 	 //set shadow colour
-	 glColor4f(br, bg, bb, 0.25f);
-	 for(px=-1;px<2;px++)
-  	     for(py=-1;py<2;py++)
-  	         if(px!=0 || py!=0)
-  	             draw_string_small(x+px, y+py, our_string, max_lines);
- 	 //set foreground colour
-	 glColor4f(fr, fg, fb, 1.0f);
-     draw_string_small(x, y, our_string, max_lines);
+	engine_draw_2d_text_colored(our_string, "small", x, y, fr, fg, fb, 1.0f,
+		0, max_lines - 1, 1e30f, 1e30f);
 }
 
 void draw_string_small(int x, int y,const unsigned char * our_string,int max_lines)
 {
-	//int displayed_font_x_size=SMALL_FONT_X_LEN;
-	//int displayed_font_y_size=SMALL_FONT_Y_LEN;
-
-	unsigned char cur_char;
-	int i;
-	int cur_x,cur_y;
-	int current_lines=0;
-
-#ifdef OPENGL_TRACE
-CHECK_GL_ERRORS();
-#endif //OPENGL_TRACE
-	glEnable(GL_ALPHA_TEST);//enable alpha filtering, so we have some alpha key
-	glAlphaFunc(GL_GREATER,0.1f);
-#ifdef	NEW_TEXTURES
-	bind_texture(font_text);
-#else	/* NEW_TEXTURES */
-	get_and_set_texture_id(font_text);
-#endif	/* NEW_TEXTURES */
-
-	i=0;
-	cur_x=x;
-	cur_y=y;
-	glBegin(GL_QUADS);
-	while(1)
-		{
-			cur_char=our_string[i];
-			if(!cur_char)
-				{
-					break;
-				}
-			else if(cur_char=='\n')
-				{
-					cur_y+=SMALL_FONT_Y_LEN;
-					cur_x=x;
-					i++;
-					current_lines++;
-					if(current_lines>=max_lines)break;
-					continue;
-				}
-
-			cur_x+=draw_char_scaled(cur_char, cur_x, cur_y, SMALL_FONT_X_LEN, SMALL_FONT_Y_LEN);
-
-			i++;
-		}
-
-
-	glEnd();
-	glDisable(GL_ALPHA_TEST);
-#ifdef OPENGL_TRACE
-CHECK_GL_ERRORS();
-#endif //OPENGL_TRACE
+	engine_draw_2d_text(our_string, "small", x, y, 1.0f, 0, max_lines - 1,
+		1e30f, 1e30f);
 }
 
 #ifdef	ELC
@@ -1300,16 +1094,7 @@ int get_string_width(const unsigned char *str)
 
 int get_nstring_width(const unsigned char *str, int len)
 {
-	int	i, wdt=0;
-
-	for(i=0; i<len; i++) {
-		wdt+= get_char_width(str[i]);
-	}
-
-	// adjust to ignore the final spacing
-	wdt-= fonts[cur_font_num]->spacing;
-
-	return wdt;
+	return engine_text_width(str, "default", len);
 }
 
 

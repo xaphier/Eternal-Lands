@@ -20,6 +20,7 @@
 #include "statemanager.hpp"
 #include "sceneview.hpp"
 #include "filter.hpp"
+#include "font/texturefontcache.hpp"
 
 /**
  * @file
@@ -61,6 +62,7 @@ namespace eternal_lands
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
+			boost::scoped_ptr<TextureFontCache> m_fonts;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
 			float m_time;
@@ -138,6 +140,31 @@ namespace eternal_lands
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
 				SelectionType &selection);
+			void add_font(const FileSystemSharedPtr &file_system,
+				const String &file_name, const String &index,
+				const float size);
+			void draw_text(const Text &text,
+				const glm::mat4x3 &world_matrix);
+			Uint32 draw_2d_text(const Text &text,
+				const glm::vec2 &position,
+				const glm::mat4x3 &world_matrix,
+				const Uint32 min_line, const Uint32 max_line,
+				const float max_width, const float max_height,
+				const WrapModeType wrap);
+			void build_mesh(
+				const VertexBuffersSharedPtr &buffers,
+				const Uint32 count,
+				AbstractMeshSharedPtr &mesh) const;
+			Uint32 write_to_stream(const Text &text,
+				const VertexStreamsSharedPtr &streams,
+				const glm::vec2 &start_position,
+				const Uint32 min_line, const Uint32 max_line,
+				const float max_width, const float max_height,
+				const WrapModeType wrap, Uint32 &line) const;
+			void draw(const AbstractMeshSharedPtr &mesh,
+				const Uint32 count);
+			float get_text_width(const Text &text) const;
+			float get_font_height(const String &font) const;
 
 			inline void shadow_map_change()
 			{

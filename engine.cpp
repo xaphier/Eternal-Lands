@@ -1668,6 +1668,172 @@ extern "C" void engine_set_fog_data(const float* color, const float density)
 	}
 }
 
+extern "C" void engine_add_font(const char* file_name, const char* index,
+	const float size)
+{
+	TRY_BLOCK
+
+	if (scene.get() != 0)
+	{
+		scene->add_font(file_system, el::String(file_name),
+			el::String(index), size);
+	}
+
+	CATCH_BLOCK
+}
+
+extern "C" void engine_draw_text(const unsigned char* str, const char* font,
+	const float x, const float y)
+{
+	TRY_BLOCK
+
+	el::Text text;
+	glm::mat4 world_matrix;
+	glm::vec4 color;
+
+	world_matrix = glm::translate(x, y, 0.0f);
+
+	color = glm::vec4(1.0f);
+
+	if (scene.get() != 0)
+	{
+		text = get_text(str, font, color);
+
+		scene->draw_text(text, glm::mat4x3(world_matrix));
+	}
+
+	CATCH_BLOCK
+
+	disable_opengl2_stuff();
+}
+
+extern "C" Uint32 engine_draw_2d_text(const unsigned char* str,
+	const char* font, const float x, const float y, const float scale,
+	const Uint32 min_line, const Uint32 max_line, const float max_width,
+	const float max_height)
+{
+	Uint32 result;
+
+	TRY_BLOCK
+
+	el::Text text;
+	glm::mat4 world_matrix;
+	glm::vec4 color;
+	glm::vec2 position;
+
+	position.x = 0;
+	position.y = 0;
+
+	world_matrix = glm::translate(x, y, 0.0f);
+	world_matrix = glm::scale(world_matrix, glm::vec3(scale));
+
+	color = glm::vec4(1.0f);
+
+	result = 0;
+
+	if (scene.get() != 0)
+	{
+		text = get_text(str, font, color);
+
+		result = scene->draw_2d_text(text, position,
+			glm::mat4x3(world_matrix), min_line, max_line,
+			max_width, max_height, el::wmt_none);
+	}
+
+	CATCH_BLOCK
+
+	disable_opengl2_stuff();
+
+	return result;
+}
+
+extern "C" Uint32 engine_draw_2d_text_colored(const unsigned char* str,
+	const char* font, const float x, const float y, const float r,
+	const float g, const float b, const float scale, const Uint32 min_line,
+	const Uint32 max_line, const float max_width, const float max_height)
+{
+	Uint32 result;
+
+	TRY_BLOCK
+
+	el::Text text;
+	glm::mat4 world_matrix;
+	glm::vec4 color;
+	glm::vec2 position;
+
+	position.x = 0;
+	position.y = 0;
+
+	world_matrix = glm::translate(x, y, 0.0f);
+	world_matrix = glm::scale(world_matrix, glm::vec3(scale));
+
+	color.r = r;
+	color.g = g;
+	color.b = b;
+	color.a = 1.0f;
+
+	result = 0;
+
+	if (scene.get() != 0)
+	{
+		text = get_text(str, font, color);
+
+		result = scene->draw_2d_text(text, position,
+			glm::mat4x3(world_matrix), min_line, max_line,
+			max_width, max_height, el::wmt_none);
+	}
+
+	CATCH_BLOCK
+
+	disable_opengl2_stuff();
+
+	return result;
+}
+
+extern "C" float engine_text_width(const unsigned char* str, const char* font,
+	const Uint32 len)
+{
+	float result;
+
+	TRY_BLOCK
+
+	el::Text text;
+	glm::vec4 color;
+
+	color = glm::vec4(1.0f);
+
+	result = 0;
+
+	if (scene.get() != 0)
+	{
+		text = get_text(str, font, color, len);
+
+		result = scene->get_text_width(text);
+	}
+
+	CATCH_BLOCK
+
+	return result;
+}
+
+extern "C" float engine_font_height(const char* font)
+{
+	float result;
+
+	TRY_BLOCK
+
+	result = 0;
+
+	if (scene.get() != 0)
+	{
+		result = scene->get_font_height(el::String(font));
+	}
+
+	CATCH_BLOCK
+
+	return result;
+}
+
 extern "C" void engine_set_window_size(const Uint32 width, const Uint32 height,
 	const Uint32 hud_x, const Uint32 hud_y)
 {
