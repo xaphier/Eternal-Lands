@@ -573,7 +573,8 @@ namespace eternal_lands
 		ssbot_fragment_uv,
 		ssbot_view_position,
 		ssbot_tbn_matrix,
-		ssbot_fog
+		ssbot_fog,
+		ssbot_layer
 	};
 
 	class ShaderSourceBuilder::ShaderSourceBuildData
