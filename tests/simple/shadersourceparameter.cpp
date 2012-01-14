@@ -11,9 +11,6 @@
 #include "xmlbuffer.hpp"
 #include "xmlwriter.hpp"
 #include "xmlreader.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
 #define BOOST_TEST_MODULE objectdata
 #include <boost/test/unit_test.hpp>
 
@@ -22,20 +19,28 @@ namespace el = eternal_lands;
 BOOST_AUTO_TEST_CASE(shader_source_parameter_default_creation)
 {
 	el::ShaderSourceParameter shader_source_parameter(
-		el::String(UTF8("3sfd23")), el::pt_uvec3, el::pqt_inout,
-		el::pst_bone_count, 14536u);
+		el::String(UTF8("346")), el::String(UTF8("3sfd23")),
+		el::pt_uvec3, el::pqt_inout, el::pst_bone_count, 14536u);
 
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_source(), UTF8("346"));
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("3sfd23"));
-
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_type(), el::pt_uvec3);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_qualifier(),
 		el::pqt_inout);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
 		el::pst_bone_count);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 14536u);
+}
+
+BOOST_AUTO_TEST_CASE(shader_source_parameter_source)
+{
+	el::ShaderSourceParameter shader_source_parameter;
+
+	shader_source_parameter.set_source(el::String(UTF8("fasd")));
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_source(), UTF8("fasd"));
+
+	shader_source_parameter.set_source(el::String(UTF8("znr6")));
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_source(), UTF8("znr6"));
 }
 
 BOOST_AUTO_TEST_CASE(shader_source_parameter_name)
@@ -142,8 +147,8 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_xml)
 	el::XmlBuffer buffer;
 	el::XmlWriterSharedPtr writer;
 	el::ShaderSourceParameter shader_source_parameter(
-		el::String(UTF8("3sfd23")), el::pt_uvec3, el::pqt_inout,
-		el::pst_bone_count, 14536u);
+		el::String(UTF8("fasd")), el::String(UTF8("3sfd23")),
+		el::pt_uvec3, el::pqt_inout, el::pst_bone_count, 14536u);
 
 	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
 
@@ -154,29 +159,26 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_xml)
 BOOST_AUTO_TEST_CASE(shader_source_parameter_load_xml)
 {
 	el::XmlBuffer buffer(UTF8("<?xml version=\"1.0\" encoding=\"utf8\"?>"
-		"<parameter><name>3sfd23</name><source></source>"
-		"<type>uvec3</type><qualifier>inout</qualifier>"
-		"<size>bone_count</size><scale>14536</scale></parameter>"));
+		"<parameter><name>3sfd23</name><type>uvec3</type>"
+		"<qualifier>inout</qualifier><size>bone_count</size>"
+		"<scale>14536</scale></parameter>"));
 	el::XmlReaderSharedPtr reader;
 	el::ShaderSourceParameter shader_source_parameter;
 
 	reader = el::XmlReaderSharedPtr(new el::XmlReader(buffer.get_buffer()));
 
 	BOOST_CHECK_NO_THROW(shader_source_parameter.load_xml(
-		reader->get_root_node()));
+		el::String(UTF8("fasd")), reader->get_root_node()));
 
 	reader.reset();
 
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_source(), UTF8("fasd"));
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("3sfd23"));
-
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_type(), el::pt_uvec3);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_qualifier(),
 		el::pqt_inout);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
 		el::pst_bone_count);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 14536u);
 }
 
@@ -187,8 +189,8 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 	el::XmlReaderSharedPtr reader;
 	el::ShaderSourceParameter shader_source_parameter_load;
 	el::ShaderSourceParameter shader_source_parameter_save(
-		el::String(UTF8("3sfd23")), el::pt_uvec3, el::pqt_inout,
-		el::pst_bone_count, 14536u);
+		el::String(UTF8("fasd")), el::String(UTF8("3sfd23")),
+		el::pt_uvec3, el::pqt_inout, el::pst_bone_count, 14536u);
 
 	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
 
@@ -199,21 +201,19 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 	reader = el::XmlReaderSharedPtr(new el::XmlReader(buffer.get_buffer()));
 
 	BOOST_CHECK_NO_THROW(shader_source_parameter_load.load_xml(
-		reader->get_root_node()));
+		el::String(UTF8("asdggrfgrf34")), reader->get_root_node()));
 
 	reader.reset();
 
+	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_source(),
+		UTF8("asdggrfgrf34"));
 	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_name(),
 		UTF8("3sfd23"));
-
 	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_type(),
 		el::pt_uvec3);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_qualifier(),
 		el::pqt_inout);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_size(),
 		el::pst_bone_count);
-
 	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_scale(), 14536u);
 }

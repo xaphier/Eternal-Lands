@@ -13,15 +13,6 @@
 namespace eternal_lands
 {
 
-	bool SIMD::get_supported()
-	{
-#ifdef	USE_SSE2
-		return SDL_HasSSE2();
-#else	/* USE_SSE2 */
-		return false;
-#endif	/* USE_SSE2 */
-	}
-
 	void SIMD::float_to_half_4(const float* source, const Uint32 count,
 		const Uint32 stride, unsigned char* dest)
 	{

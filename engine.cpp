@@ -1610,7 +1610,16 @@ extern "C" void engine_set_opengl_version(const int value)
 
 extern "C" void engine_set_use_simd(const int value)
 {
-	global_vars->set_fog(value != 0 && el::SIMD::get_supported());
+#ifdef	USE_SSE2
+	global_vars->set_fog(value != 0 && SDL_HasSSE2());
+#else	/* USE_SSE2 */
+	global_vars->set_fog(false);
+#endif	/* USE_SSE2 */
+}
+
+extern "C" void engine_set_sample_shading(const int value)
+{
+	global_vars->set_sample_shading(value != 0);
 }
 
 extern "C" void engine_set_shadow_map_filter(const int value)

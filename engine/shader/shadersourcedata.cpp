@@ -19,9 +19,10 @@ namespace eternal_lands
 	{
 	}
 
-	ShaderSourceData::ShaderSourceData(const xmlNodePtr node)
+	ShaderSourceData::ShaderSourceData(const String &source,
+		const xmlNodePtr node)
 	{
-		load_xml(node);
+		load_xml(source, node);
 	}
 
 	ShaderSourceData::~ShaderSourceData() throw()
@@ -57,7 +58,8 @@ namespace eternal_lands
 		return false;
 	}
 
-	void ShaderSourceData::load_parameters_xml(const xmlNodePtr node)
+	void ShaderSourceData::load_parameters_xml(const String &source,
+		const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 
@@ -76,13 +78,14 @@ namespace eternal_lands
 				== 0)
 			{
 				m_parameters.push_back(ShaderSourceParameter(
-					it));
+					source, it));
 			}
 		}
 		while (XmlUtil::next(it, true));
 	}
 
-	void ShaderSourceData::load_xml(const xmlNodePtr node)
+	void ShaderSourceData::load_xml(const String &source,
+		const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 
@@ -99,7 +102,7 @@ namespace eternal_lands
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("parameters"))
 				== 0)
 			{
-				load_parameters_xml(it);
+				load_parameters_xml(source, it);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("source")) == 0)

@@ -31,13 +31,16 @@ namespace eternal_lands
 			std::set<ShaderVersionType> m_versions;
 			String m_source;
 
-			void load_parameters_xml(const xmlNodePtr node);
+			void load_parameters_xml(const String &source,
+				const xmlNodePtr node);
 
 		public:
 			ShaderSourceData();
-			ShaderSourceData(const xmlNodePtr node);
+			ShaderSourceData(const String &source,
+				const xmlNodePtr node);
 			~ShaderSourceData() throw();
-			void load_xml(const xmlNodePtr node);
+			void load_xml(const String &source,
+				const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 			void build_source(
 				const ShaderSourceParameterVector &locals, 

@@ -48,8 +48,14 @@ namespace eternal_lands
 
 		m_depth_render_buffer.reset(new RenderBuffer(width, height,
 			samples, tft_depth24_stencil8));
+
+		DEBUG_CHECK_GL_ERROR();
+
 		m_depth_render_buffer->bind_to_framebuffer(
 			GL_DEPTH_ATTACHMENT);
+
+		DEBUG_CHECK_GL_ERROR();
+
 		m_depth_render_buffer->bind_to_framebuffer(
 			GL_STENCIL_ATTACHMENT);
 
@@ -73,6 +79,9 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 
 		m_frame_buffer.bind();
+
+		DEBUG_CHECK_GL_ERROR();
+
 		get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
 		m_layer = 0;
 

@@ -724,6 +724,8 @@ namespace eternal_lands
 
 		draw_shadows(index);
 
+		DEBUG_CHECK_GL_ERROR();
+
 		m_shadow_frame_buffer->blit();
 
 		DEBUG_CHECK_GL_ERROR();
@@ -775,7 +777,7 @@ namespace eternal_lands
 			glPolygonOffset(1.25f, 32.0f);
 		}
 
-		if (get_global_vars()->get_msaa_shadows() && GLEW_ARB_sample_shading)
+		if (get_global_vars()->get_msaa_shadows() && get_global_vars()->get_sample_shading())
 		{
 			glEnable(GL_SAMPLE_SHADING);
 			glMinSampleShadingARB(4.0f);
@@ -827,7 +829,7 @@ namespace eternal_lands
 			m_scene_view.get_view_port()[2],
 			m_scene_view.get_view_port()[3]);
 
-		if (get_global_vars()->get_msaa_shadows() && GLEW_ARB_sample_shading)
+		if (get_global_vars()->get_msaa_shadows() && get_global_vars()->get_sample_shading())
 		{
 			glDisable(GL_SAMPLE_SHADING);
 		}
@@ -853,7 +855,7 @@ namespace eternal_lands
 
 		m_state_manager.switch_multisample(true);
 
-		if (GLEW_ARB_sample_shading)
+		if (get_global_vars()->get_sample_shading())
 		{
 			glEnable(GL_SAMPLE_SHADING);
 			glMinSampleShadingARB(4.0f);
@@ -885,7 +887,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		if (GLEW_ARB_sample_shading)
+		if (get_global_vars()->get_sample_shading())
 		{
 			glDisable(GL_SAMPLE_SHADING);
 		}

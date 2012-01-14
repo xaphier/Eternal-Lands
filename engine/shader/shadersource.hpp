@@ -32,7 +32,8 @@ namespace eternal_lands
 			String m_name;
 			ShaderSourceDataVector m_datas;
 
-			void load_datas_xml(const xmlNodePtr node);
+			void load_datas_xml(const String &source,
+				const xmlNodePtr node);
 
 		public:
 			ShaderSource();

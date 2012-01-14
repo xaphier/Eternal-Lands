@@ -29,22 +29,22 @@ namespace eternal_lands
 	class ShaderSourceParameterBuilder
 	{
 		public:
-			static ShaderSourceParameter build(
+			static ShaderSourceParameter build(const String &source,
 				const String &name, const ParameterType type,
 				const ParameterQualifierType qualifier,
 				const Uint16 array_size = 1);
 
-			static ShaderSourceParameter build(
+			static ShaderSourceParameter build(const String &source,
 				const String &name, const ParameterType type,
 				const ParameterQualifierType qualifier,
 				const ParameterSizeType size,
 				const Uint16 array_size = 1);
 
-			static ShaderSourceParameter build(
+			static ShaderSourceParameter build(const String &source,
 				const CommonParameterType common_parameter,
 				const ParameterQualifierType qualifier);
 
-			static ShaderSourceParameter build(
+			static ShaderSourceParameter build(const String &source,
 				const AutoParameterType auto_parameter);
 
 			static void add_parameter(

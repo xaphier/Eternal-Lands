@@ -56,7 +56,8 @@ namespace eternal_lands
 	{
 	}
 
-	void ShaderSource::load_datas_xml(const xmlNodePtr node)
+	void ShaderSource::load_datas_xml(const String &source,
+		const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 
@@ -80,7 +81,7 @@ namespace eternal_lands
 			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("shader_source_data")) == 0)
 			{
-				m_datas.push_back(ShaderSourceData(it));
+				m_datas.push_back(ShaderSourceData(source, it));
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -89,6 +90,7 @@ namespace eternal_lands
 	void ShaderSource::load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
+		String source;
 
 		if (node == 0)
 		{
@@ -106,12 +108,6 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("shader_source_datas")) == 0)
-			{
-				load_datas_xml(it);
-			}
-
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
 			{
 				set_name(XmlUtil::get_string_value(it));
@@ -121,6 +117,20 @@ namespace eternal_lands
 			{
 				set_type(ShaderSourceUtil::get_shader_source(
 					XmlUtil::get_string_value(it)));
+			}
+		}
+		while (XmlUtil::next(it, true));
+
+		source = ShaderSourceUtil::get_str(get_type());
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("shader_source_datas")) == 0)
+			{
+				load_datas_xml(source, it);
 			}
 		}
 		while (XmlUtil::next(it, true));

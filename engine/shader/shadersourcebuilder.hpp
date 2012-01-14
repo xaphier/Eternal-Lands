@@ -81,6 +81,12 @@ namespace eternal_lands
 				OutStream &main,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
+			void build_geometry_source(
+				const ShaderSourceBuildData &data,
+				const ParameterSizeTypeUint16Map &array_sizes,
+				OutStream &main,
+				ShaderSourceParameterVector &globals,
+				StringVariantMap &values) const;
 			void build_fragment_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,

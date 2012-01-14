@@ -106,6 +106,7 @@ void engine_set_opengl_version(const int value);
 void engine_set_fog_data(const float* color, const float density);
 void engine_set_shadow_map_filter(const int value);
 void engine_set_use_simd(const int value);
+void engine_set_sample_shading(const int value);
 int engine_get_opengl_3_0();
 int engine_get_opengl_3_1();
 int engine_get_opengl_3_2();

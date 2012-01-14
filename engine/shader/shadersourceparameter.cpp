@@ -19,19 +19,19 @@ namespace eternal_lands
 	{
 	}
 
-	ShaderSourceParameter::ShaderSourceParameter(const xmlNodePtr node):
-		m_type(pt_vec4), m_qualifier(pqt_in), m_size(pst_one),
-		m_scale(0)
+	ShaderSourceParameter::ShaderSourceParameter(const String &source,
+		const xmlNodePtr node): m_source(source), m_type(pt_vec4),
+		m_qualifier(pqt_in), m_size(pst_one), m_scale(0)
 	{
-		load_xml(node);
+		load_xml(source, node);
 	}
 
-	ShaderSourceParameter::ShaderSourceParameter(const String &name,
-		const ParameterType type,
+	ShaderSourceParameter::ShaderSourceParameter(const String &source,
+		const String &name, const ParameterType type,
 		const ParameterQualifierType qualifier,
 		const ParameterSizeType size, const Uint16 scale):
-		m_name(name), m_type(type), m_qualifier(qualifier),
-		m_size(size), m_scale(scale)
+		m_source(source), m_name(name), m_type(type),
+		m_qualifier(qualifier), m_size(size), m_scale(scale)
 	{
 		assert(!get_name().get().empty());
 	}
@@ -44,6 +44,7 @@ namespace eternal_lands
 	{
 		assert(!get_name().get().empty());
 		str << UTF8("ShaderSourceParameter");
+		str << UTF8(" [source]: ") << get_source();
 		str << UTF8(" [name]: ") << get_name();
 		str << UTF8(" [type]: ") << get_type();
 		str << UTF8(" [qualifier]: ") << get_qualifier();
@@ -198,7 +199,8 @@ namespace eternal_lands
 		first = false;
 	}
 
-	void ShaderSourceParameter::load_xml(const xmlNodePtr node)
+	void ShaderSourceParameter::load_xml(const String &source,
+		const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 
@@ -209,16 +211,13 @@ namespace eternal_lands
 
 		it = XmlUtil::children(node, true);
 
+		set_source(source);
+
 		do
 		{
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
 			{
 				set_name(XmlUtil::get_string_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("source")) == 0)
-			{
-				set_source(XmlUtil::get_string_value(it));
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
@@ -254,7 +253,6 @@ namespace eternal_lands
 	{
 		writer->start_element(UTF8("parameter"));
 		writer->write_element(UTF8("name"), get_name());
-		writer->write_element(UTF8("source"), get_source());
 		writer->write_element(UTF8("type"), ParameterUtil::get_str(
 			get_type()));
 		writer->write_element(UTF8("qualifier"),

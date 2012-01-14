@@ -25,8 +25,6 @@ namespace eternal_lands
 	class SIMD
 	{
 		public:
-			static bool get_supported();
-
 			/**
 			 * Converts an array of floats to half floats using
 			 * SSE2. Floats are processed in blocks of four each
