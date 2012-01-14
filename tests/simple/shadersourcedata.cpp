@@ -115,7 +115,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 	reader = el::XmlReaderSharedPtr(new el::XmlReader(buffer.get_buffer()));
 
 	BOOST_CHECK_NO_THROW(shader_source_data_load.load_xml(
-		reader->get_root_node()));
+		el::String(UTF8("3sfd23")), reader->get_root_node()));
 
 	reader.reset();
 

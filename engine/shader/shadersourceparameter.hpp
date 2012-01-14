@@ -28,8 +28,8 @@ namespace eternal_lands
 	class ShaderSourceParameter
 	{
 		private:
-			String m_name;
 			String m_source;
+			String m_name;
 			ParameterType m_type;
 			ParameterQualifierType m_qualifier;
 			ParameterSizeType m_size;
@@ -37,14 +37,16 @@ namespace eternal_lands
 
 		public:
 			ShaderSourceParameter();
-			ShaderSourceParameter(const xmlNodePtr node);
-			ShaderSourceParameter(const String &name,
-				const ParameterType type,
+			ShaderSourceParameter(const String &source,
+				const xmlNodePtr node);
+			ShaderSourceParameter(const String &source,
+				const String &name, const ParameterType type,
 				const ParameterQualifierType qualifier,
 				const ParameterSizeType size,
 				const Uint16 array_size);
 			~ShaderSourceParameter() throw();
-			void load_xml(const xmlNodePtr node);
+			void load_xml(const String &source,
+				const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 
 			/**

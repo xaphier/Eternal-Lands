@@ -1125,41 +1125,271 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_gram_schmidth_ortho)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_bounding_box)
+{
+	el::MeshDataToolSharedPtr mesh_data_tool;
+	glm::vec4 normal, tangent, data;
+	glm::vec3 min, max;
+	glm::vec2 size, uv;
+	el::Uint32Vector indices;
+	el::VertexSemanticTypeSet semantics;
+	el::Uint32 vertex_count, index_count, i, index, x, y;
+	el::Uint32 restart_index, tile_size;
+	el::PrimitiveType primitive_type;
+	bool use_restart_index, split;
 
+	split = true;
+	tile_size = 16;
+	use_restart_index = false;
 
+	vertex_count = tile_size + 1;
+	vertex_count *= tile_size + 1;
 
+	if (use_restart_index)
+	{
+		primitive_type = el::pt_triangle_fan;
+	}
+	else
+	{
+		primitive_type = el::pt_triangles;
+	}
 
+	restart_index = el::IndexBuilder::build_plane_indices(indices,
+		tile_size, use_restart_index, 0, split, 0);
 
+	index_count = indices.size();
 
+	semantics.insert(el::vst_position);
+	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_normal);
+	semantics.insert(el::vst_tangent);
 
+	mesh_data_tool = boost::make_shared<el::MeshDataTool>(
+		el::String("plane"), vertex_count, index_count, 1, semantics,
+		restart_index, primitive_type, use_restart_index, false);
 
+	for (i = 0; i < index_count; ++i)
+	{
+		mesh_data_tool->set_index_data(i, indices[i]);
+	}
 
+	normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+	tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
+	index = 0;
 
+	for (y = 0; y <= tile_size; ++y)
+	{
+		for (x = 0; x <= tile_size; ++x)
+		{
+			uv = glm::vec2(x, y) / static_cast<float>(tile_size);
 
+			data = glm::vec4(uv, 0.0f, 1.0f);
 
+			mesh_data_tool->set_vertex_data(el::vst_position, index,
+				data);
+			mesh_data_tool->set_vertex_data(el::vst_normal, index,
+				normal);
+			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
+				tangent);
+			mesh_data_tool->set_vertex_data(
+				el::vst_texture_coordinate_0, index, data);
 
+			++index;
+		}
+	}
 
+	min = glm::vec3(235.0f, 12.0f, -0.541f);
+	max = glm::vec3(189097.0f, 23541.0f, 230.0f);
 
+	mesh_data_tool->set_sub_mesh_data(0, el::SubMesh(el::BoundingBox(min,
+		max), 0, index_count, 0, vertex_count - 1));
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "plane");
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_restart_index(), restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
+		primitive_type);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
+		use_restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[0], min[0], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[1], min[1], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[2], min[2], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[0], max[0], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[1], max[1], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[2], max[2], 0.001);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_offset(), 0);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_count(),
+		index_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_min_vertex(),
+		0);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_max_vertex(),
+		vertex_count - 1);
 
+	for (i = 0; i < index_count; ++i)
+	{
+		BOOST_CHECK_EQUAL(mesh_data_tool->get_index_data(i),
+			indices[i]);
+	}
 
+	index = 0;
 
+	for (y = 0; y <= tile_size; ++y)
+	{
+		for (x = 0; x <= tile_size; ++x)
+		{
+			uv = glm::vec2(x, y) / static_cast<float>(tile_size);
 
+			data = glm::vec4(uv, 0.0f, 1.0f);
 
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).x, data.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).y, data.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).z, data.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).w, data.w, 0.001);
 
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).x, normal.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).y, normal.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).z, normal.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).w, normal.w, 0.001);
 
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).x, tangent.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).y, tangent.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).z, tangent.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).w, tangent.w, 0.001);
 
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).x, data.x,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).y, data.y,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).z, data.z,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).w, data.w,
+				0.001);
 
+			++index;
+		}
+	}
 
+	min = glm::vec3(0.0f, 0.0f, 0.0f);
+	max = glm::vec3(1.0f, 1.0f, 0.0f);
 
+	BOOST_CHECK_NO_THROW(mesh_data_tool->update_sub_meshs_bounding_box());
 
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "plane");
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_restart_index(), restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
+		primitive_type);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
+		use_restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[0], min[0], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[1], min[1], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[2], min[2], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[0], max[0], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[1], max[1], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[2], max[2], 0.001);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_offset(), 0);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_count(),
+		index_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_min_vertex(),
+		0);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_max_vertex(),
+		vertex_count - 1);
 
+	for (i = 0; i < index_count; ++i)
+	{
+		BOOST_CHECK_EQUAL(mesh_data_tool->get_index_data(i),
+			indices[i]);
+	}
 
+	index = 0;
 
+	for (y = 0; y <= tile_size; ++y)
+	{
+		for (x = 0; x <= tile_size; ++x)
+		{
+			uv = glm::vec2(x, y) / static_cast<float>(tile_size);
 
+			data = glm::vec4(uv, 0.0f, 1.0f);
 
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).x, data.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).y, data.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).z, data.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).w, data.w, 0.001);
 
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).x, normal.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).y, normal.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).z, normal.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).w, normal.w, 0.001);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).x, tangent.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).y, tangent.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).z, tangent.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).w, tangent.w, 0.001);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).x, data.x,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).y, data.y,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).z, data.z,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).w, data.w,
+				0.001);
+
+			++index;
+		}
+	}
+}
 
 BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_use_restart)
 {
@@ -2066,6 +2296,272 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_disable_use_restart)
 	index_count = indices.size();
 
 	BOOST_CHECK_NO_THROW(mesh_data_tool->disable_restart_index());
+
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "plane");
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_restart_index(), restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
+		primitive_type);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
+		use_restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[0], min[0], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[1], min[1], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[2], min[2], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[0], max[0], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[1], max[1], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[2], max[2], 0.001);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_offset(), 0);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_count(),
+		index_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_min_vertex(),
+		0);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_max_vertex(),
+		vertex_count - 1);
+
+	for (i = 0; i < index_count; ++i)
+	{
+		BOOST_CHECK_EQUAL(mesh_data_tool->get_index_data(i),
+			indices[i]);
+	}
+
+	index = 0;
+
+	for (y = 0; y <= tile_size; ++y)
+	{
+		for (x = 0; x <= tile_size; ++x)
+		{
+			uv = glm::vec2(x, y) / static_cast<float>(tile_size);
+
+			data = glm::vec4(uv, 0.0f, 1.0f);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).x, data.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).y, data.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).z, data.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).w, data.w, 0.001);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).x, normal.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).y, normal.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).z, normal.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).w, normal.w, 0.001);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).x, tangent.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).y, tangent.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).z, tangent.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).w, tangent.w, 0.001);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).x, data.x,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).y, data.y,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).z, data.z,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).w, data.w,
+				0.001);
+
+			++index;
+		}
+	}
+}
+
+BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_bounding_box_use_restart)
+{
+	el::MeshDataToolSharedPtr mesh_data_tool;
+	glm::vec4 normal, tangent, data;
+	glm::vec3 min, max;
+	glm::vec2 size, uv;
+	el::Uint32Vector indices;
+	el::VertexSemanticTypeSet semantics;
+	el::Uint32 vertex_count, index_count, i, index, x, y;
+	el::Uint32 restart_index, tile_size;
+	el::PrimitiveType primitive_type;
+	bool use_restart_index, split;
+
+	split = true;
+	tile_size = 16;
+	use_restart_index = true;
+
+	vertex_count = tile_size + 1;
+	vertex_count *= tile_size + 1;
+
+	if (use_restart_index)
+	{
+		primitive_type = el::pt_triangle_fan;
+	}
+	else
+	{
+		primitive_type = el::pt_triangles;
+	}
+
+	restart_index = el::IndexBuilder::build_plane_indices(indices,
+		tile_size, use_restart_index, 0, split, 0);
+
+	index_count = indices.size();
+
+	semantics.insert(el::vst_position);
+	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_normal);
+	semantics.insert(el::vst_tangent);
+
+	mesh_data_tool = boost::make_shared<el::MeshDataTool>(
+		el::String("plane"), vertex_count, index_count, 1, semantics,
+		restart_index, primitive_type, use_restart_index, false);
+
+	for (i = 0; i < index_count; ++i)
+	{
+		mesh_data_tool->set_index_data(i, indices[i]);
+	}
+
+	normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+	tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	index = 0;
+
+	for (y = 0; y <= tile_size; ++y)
+	{
+		for (x = 0; x <= tile_size; ++x)
+		{
+			uv = glm::vec2(x, y) / static_cast<float>(tile_size);
+
+			data = glm::vec4(uv, 0.0f, 1.0f);
+
+			mesh_data_tool->set_vertex_data(el::vst_position, index,
+				data);
+			mesh_data_tool->set_vertex_data(el::vst_normal, index,
+				normal);
+			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
+				tangent);
+			mesh_data_tool->set_vertex_data(
+				el::vst_texture_coordinate_0, index, data);
+
+			++index;
+		}
+	}
+
+	min = glm::vec3(235.0f, 12.0f, -0.541f);
+	max = glm::vec3(189097.0f, 23541.0f, 230.0f);
+
+	mesh_data_tool->set_sub_mesh_data(0, el::SubMesh(el::BoundingBox(min,
+		max), 0, index_count, 0, vertex_count - 1));
+
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "plane");
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_index_count(), index_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_count(), 1);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_restart_index(), restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_primitive_type(),
+		primitive_type);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_restart_index(),
+		use_restart_index);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_use_simd(), false);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[0], min[0], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[1], min[1], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_min()[2], min[2], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[0], max[0], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[1], max[1], 0.001);
+	BOOST_CHECK_CLOSE(mesh_data_tool->get_sub_mesh_data(0).get_bounding_box(
+		).get_max()[2], max[2], 0.001);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_offset(), 0);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_count(),
+		index_count);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_min_vertex(),
+		0);
+	BOOST_CHECK_EQUAL(mesh_data_tool->get_sub_mesh_data(0).get_max_vertex(),
+		vertex_count - 1);
+
+	for (i = 0; i < index_count; ++i)
+	{
+		BOOST_CHECK_EQUAL(mesh_data_tool->get_index_data(i),
+			indices[i]);
+	}
+
+	index = 0;
+
+	for (y = 0; y <= tile_size; ++y)
+	{
+		for (x = 0; x <= tile_size; ++x)
+		{
+			uv = glm::vec2(x, y) / static_cast<float>(tile_size);
+
+			data = glm::vec4(uv, 0.0f, 1.0f);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).x, data.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).y, data.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).z, data.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_position, index).w, data.w, 0.001);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).x, normal.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).y, normal.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).z, normal.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_normal, index).w, normal.w, 0.001);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).x, tangent.x, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).y, tangent.y, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).z, tangent.z, 0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_tangent, index).w, tangent.w, 0.001);
+
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).x, data.x,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).y, data.y,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).z, data.z,
+				0.001);
+			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
+				el::vst_texture_coordinate_0, index).w, data.w,
+				0.001);
+
+			++index;
+		}
+	}
+
+	min = glm::vec3(0.0f, 0.0f, 0.0f);
+	max = glm::vec3(1.0f, 1.0f, 0.0f);
+
+	BOOST_CHECK_NO_THROW(mesh_data_tool->update_sub_meshs_bounding_box());
 
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_name(), "plane");
 	BOOST_CHECK_EQUAL(mesh_data_tool->get_vertex_count(), vertex_count);

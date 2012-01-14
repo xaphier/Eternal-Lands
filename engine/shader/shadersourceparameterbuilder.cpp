@@ -15,28 +15,31 @@ namespace eternal_lands
 {
 
 	ShaderSourceParameter ShaderSourceParameterBuilder::build(
-		const String &name, const ParameterType type,
+		const String &source, const String &name,
+		const ParameterType type,
 		const ParameterQualifierType qualifier,
 		const Uint16 array_size)
 	{
-		return ShaderSourceParameter(name, type, qualifier, pst_one,
-			array_size);
+		return ShaderSourceParameter(source, name, type, qualifier,
+			pst_one, array_size);
 	}
 
 	ShaderSourceParameter ShaderSourceParameterBuilder::build(
-		const String &name, const ParameterType type,
+		const String &source, const String &name,
+		const ParameterType type,
 		const ParameterQualifierType qualifier,
 		const ParameterSizeType size, const Uint16 array_size)
 	{
-		return ShaderSourceParameter(name, type, qualifier, size,
-			array_size);
+		return ShaderSourceParameter(source, name, type, qualifier,
+			size, array_size);
 	}
 
 	ShaderSourceParameter ShaderSourceParameterBuilder::build(
-			const CommonParameterType common_parameter,
-			const ParameterQualifierType qualifier)
+		const String &source,
+		const CommonParameterType common_parameter,
+		const ParameterQualifierType qualifier)
 	{
-		return ShaderSourceParameter(
+		return ShaderSourceParameter(source,
 			CommonParameterUtil::get_str(common_parameter),
 			CommonParameterUtil::get_type(common_parameter),
 			qualifier,
@@ -45,9 +48,9 @@ namespace eternal_lands
 	}
 
 	ShaderSourceParameter ShaderSourceParameterBuilder::build(
-			const AutoParameterType auto_parameter)
+		const String &source, const AutoParameterType auto_parameter)
 	{
-		return ShaderSourceParameter(
+		return ShaderSourceParameter(source,
 			AutoParameterUtil::get_str(auto_parameter),
 			AutoParameterUtil::get_type(auto_parameter), pqt_in,
 			AutoParameterUtil::get_size(auto_parameter),
