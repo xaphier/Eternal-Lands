@@ -17,6 +17,8 @@ namespace eternal_lands
 		const TextureFormatType format): AbstractFrameBuffer(name,
 			width, height)
 	{
+		DEBUG_CHECK_GL_ERROR();
+
 		get_texture()->set_target(ttt_2d_texture_array);
 
 		get_texture()->set_format(format);
@@ -27,16 +29,24 @@ namespace eternal_lands
 		get_texture()->set_mipmap_count(0);
 		get_texture()->init(get_width(), get_height(), 1, 0);
 
+		DEBUG_CHECK_GL_ERROR();
+
 		m_frame_buffer.bind();
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glReadBuffer(GL_COLOR_ATTACHMENT0);
 
+		DEBUG_CHECK_GL_ERROR();
+
 		get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
+
+		DEBUG_CHECK_GL_ERROR();
 
 		m_frame_buffer.check_status();
 
 		m_frame_buffer.unbind();
+
+		DEBUG_CHECK_GL_ERROR();
 	}
 
 	FilterFrameBuffer::~FilterFrameBuffer() throw()

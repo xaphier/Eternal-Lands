@@ -52,6 +52,7 @@ namespace eternal_lands
 			bool m_fog;
 			bool m_optmize_shader_source;
 			bool m_use_simd;
+			bool m_sample_shading;
 #ifdef	DEBUG
 			bool m_draw_objects;
 			bool m_draw_actors;
@@ -111,6 +112,11 @@ namespace eternal_lands
 			inline void set_use_simd(const bool use_simd)
 			{
 				m_use_simd = use_simd;
+			}
+
+			inline void set_sample_shading(const bool sample_shading)
+			{
+				m_sample_shading = sample_shading;
 			}
 
 			inline const String &get_quality() const
@@ -261,6 +267,11 @@ namespace eternal_lands
 			inline bool get_use_simd() const
 			{
 				return m_use_simd;
+			}
+
+			inline bool get_sample_shading() const
+			{
+				return m_sample_shading;
 			}
 
 #ifdef	DEBUG

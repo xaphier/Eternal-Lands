@@ -45,6 +45,8 @@ namespace eternal_lands
 			get_texture()->attach_ext(GL_DEPTH_ATTACHMENT_EXT, 0,
 				0);
 
+			DEBUG_CHECK_GL_ERROR();
+
 			if (TextureFormatUtil::get_stencil(format))
 			{
 				m_stencil = true;
@@ -73,8 +75,14 @@ namespace eternal_lands
 				m_render_buffer.reset(new ExtRenderBuffer(
 					get_width(), get_height(),
 					tft_depth24_stencil8));
+
+				DEBUG_CHECK_GL_ERROR();
+
 				m_render_buffer->bind_to_framebuffer(
 					GL_DEPTH_ATTACHMENT_EXT);
+
+				DEBUG_CHECK_GL_ERROR();
+
 				m_render_buffer->bind_to_framebuffer(
 					GL_STENCIL_ATTACHMENT_EXT);
 			}
@@ -83,6 +91,9 @@ namespace eternal_lands
 				m_render_buffer.reset(new ExtRenderBuffer(
 					get_width(), get_height(),
 					tft_depth32));
+
+				DEBUG_CHECK_GL_ERROR();
+
 				m_render_buffer->bind_to_framebuffer(
 					GL_DEPTH_ATTACHMENT_EXT);
 			}

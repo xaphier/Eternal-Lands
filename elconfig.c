@@ -192,6 +192,7 @@ int engine_shadow_map_size = 2;
 float engine_shadow_distance = 40.0f;
 float engine_view_distance = 40.0f;
 int engine_fog = engine_true;
+int engine_sample_shading = engine_true;
 int engine_optmize_shader_source = engine_true;
 int engine_use_simd = engine_true;
 int engine_shadow_map_filter = 0;
@@ -255,6 +256,29 @@ void change_engine_fog(int* var)
 {
 	*var = !*var;
 	engine_set_fog(*var);
+}
+
+void change_engine_sample_shading(int* var)
+{
+	if (*var)
+	{
+		*var = engine_false;
+		engine_set_sample_shading(*var);
+	}
+	else
+	{
+		if (gl_extensions_loaded && GLEW_ARB_sample_shading)
+		{
+			LOG_TO_CONSOLE(c_green2, "GL_ARB_sample_shading needed");
+			*var = engine_false;
+			engine_set_sample_shading(*var);
+		}
+		else
+		{
+			*var = engine_true;
+			engine_set_sample_shading(*var);
+		}
+	}
 }
 
 void change_engine_use_simd(int* var)
@@ -1353,6 +1377,8 @@ void check_options()
 	check_option_var("shadow_quality");
 	check_option_var("optmize_shader_source");
 	check_option_var("shadow_map_filter");
+	check_option_var("sample_shading");
+	check_option_var("use_simd");
 }
 
 int check_var (char *str, var_name_type type)
@@ -1809,6 +1835,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &engine_shadow_distance, change_engine_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &engine_view_distance, change_engine_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "fog", "fog", &engine_fog, change_engine_fog, engine_true, "Fog", "Fog", GFX);
+	add_var(OPT_BOOL, "sample_shading", "sample_shading", &engine_sample_shading, change_engine_sample_shading, engine_true, "Sample shading", "Use sample shading for high quality shadows", GFX);
 	add_var(OPT_MULTI, "shadow_map_filter", "smf", &engine_shadow_map_filter, change_engine_shadow_map_filter, 0, "Shadow Map Filter", "Shadow Map Filter", GFX, "Gauss 5x5", "Gauss 9x9 using 5x5 inner values", "Gauss 9x9", "Gauss 13x13 using 9x9 inner values", "Gauss 13x13", "Gauss 17x17 using 13x13 inner values", "Box 5x5", "Box 9x9", "Box 13x13", 0);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
@@ -1892,7 +1919,9 @@ static void init_ELC_vars(void)
 	// TROUBLESHOOT TAB
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &engine_optmize_shader_source, change_engine_optmize_shader_source, engine_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
 	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &engine_opengl_version, change_engine_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", 0);
+#ifdef	USE_SSE2
 	add_var(OPT_BOOL, "use_simd", "simd", &engine_use_simd, change_engine_use_simd, engine_true, "Use SIMD", "Use Intel SIMD instructions (SSE2).", TROUBLESHOOT);
+#endif	/* USE_SSE2 */
 
 	// DEBUGTAB TAB
 #ifdef DEBUG

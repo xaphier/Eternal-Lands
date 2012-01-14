@@ -478,7 +478,12 @@ namespace eternal_lands
 		m_opengl_version = ovt_2_1;
 		m_fog = true;
 		m_optmize_shader_source = true;
-		m_use_simd = SIMD::get_supported();
+#ifdef	USE_SSE2
+		m_use_simd = true;
+#else	/* USE_SSE2 */
+		m_use_simd = false;
+#endif	/* USE_SSE2 */
+		m_sample_shading = false;
 #ifdef	DEBUG
 		m_draw_objects = true;
 		m_draw_actors = true;
