@@ -267,7 +267,7 @@ void change_engine_sample_shading(int* var)
 	}
 	else
 	{
-		if (gl_extensions_loaded && GLEW_ARB_sample_shading)
+		if (!gl_extensions_loaded || GLEW_ARB_sample_shading)
 		{
 			LOG_TO_CONSOLE(c_green2, "GL_ARB_sample_shading needed");
 			*var = engine_false;
