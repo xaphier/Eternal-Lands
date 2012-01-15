@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>shadow_map_data</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
    </parameters>
    <source>shadow_map_data = gl_FragCoord.zzz;
-
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

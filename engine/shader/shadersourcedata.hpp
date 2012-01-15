@@ -44,7 +44,7 @@ namespace eternal_lands
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 			void build_source(
 				const ShaderSourceParameterVector &locals, 
-				OutStream &stream,
+				const String &indent, OutStream &stream,
 				ShaderSourceParameterVector &globals) const;
 			bool check_source_parameter(const String &name) const;
 			void set_parameters(

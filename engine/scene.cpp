@@ -712,7 +712,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 
 		m_shadow_frame_buffer->bind(index);
-		m_shadow_frame_buffer->clear(glm::vec4(1e38f), 1e38f);
+		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
 
 		draw_shadows(index);
 
@@ -734,8 +734,7 @@ namespace eternal_lands
 			m_state_manager.switch_depth_test(false);
 
 			m_shadow_filter_frame_buffer->bind(0);
-			m_shadow_filter_frame_buffer->clear(glm::vec4(1e38f),
-				1e38f);
+			m_shadow_filter_frame_buffer->clear(glm::vec4(1e38f));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_frame_buffer->get_texture());
 			m_scene_resources.get_filter().bind(tmp, tmp, width,
@@ -743,8 +742,7 @@ namespace eternal_lands
 				false, m_state_manager);
 
 			m_shadow_frame_buffer->bind_texture(index);
-			m_shadow_frame_buffer->clear(glm::vec4(1e38f),
-				1e38f);
+			m_shadow_frame_buffer->clear(glm::vec4(1e38f));
 			m_state_manager.switch_texture(stt_diffuse_0,
 				m_shadow_filter_frame_buffer->get_texture());
 			m_scene_resources.get_filter().bind(tmp, tmp, width,

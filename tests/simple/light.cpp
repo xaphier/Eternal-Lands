@@ -14,7 +14,7 @@
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(light_default_creation)
+BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
 		glm::vec3(34.5f, -214.012f, 0.234f), 0.54f, 10.9546f, 5435495);
@@ -34,7 +34,7 @@ BOOST_AUTO_TEST_CASE(light_default_creation)
 	BOOST_CHECK_EQUAL(light.get_id(), 5435495);
 }
 
-BOOST_AUTO_TEST_CASE(light_position)
+BOOST_AUTO_TEST_CASE(position)
 {
 	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
 		glm::vec3(34.5f, -214.012f, 0.234f), 0.54f, 10.9546f, 5435495);
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(light_position)
 	BOOST_CHECK_CLOSE(light.get_position()[2], 3.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(light_color)
+BOOST_AUTO_TEST_CASE(color)
 {
 	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
 		glm::vec3(34.5f, -214.012f, 0.234f), 0.54f, 10.9546f, 5435495);
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(light_color)
 	BOOST_CHECK_CLOSE(light.get_color()[2], 7893.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(light_ambient)
+BOOST_AUTO_TEST_CASE(ambient)
 {
 	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
 		glm::vec3(34.5f, -214.012f, 0.234f), 0.54f, 10.9546f, 5435495);
@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(light_ambient)
 	BOOST_CHECK_CLOSE(light.get_ambient(), 0.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(light_radius)
+BOOST_AUTO_TEST_CASE(radius)
 {
 	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
 		glm::vec3(34.5f, -214.012f, 0.234f), 0.54f, 10.9546f, 5435495);

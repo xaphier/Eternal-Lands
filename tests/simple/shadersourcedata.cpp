@@ -1,5 +1,5 @@
 /****************************************************************************
- *            shadersourceparameter.cpp
+ *            shadersourcedata.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,13 +13,12 @@
 #include "xmlreader.hpp"
 #include <glm/gtx/epsilon.hpp>
 #include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
-#define BOOST_TEST_MODULE objectdata
+#define BOOST_TEST_MODULE shader_source_data
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(shader_source_data_default_creation)
+BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ShaderSourceData shader_source_data;
 
@@ -33,7 +32,7 @@ BOOST_AUTO_TEST_CASE(shader_source_data_default_creation)
 	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_330(), false);
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_data_source)
+BOOST_AUTO_TEST_CASE(source)
 {
 	el::ShaderSourceData shader_source_data;
 
@@ -44,7 +43,7 @@ BOOST_AUTO_TEST_CASE(shader_source_data_source)
 	BOOST_CHECK_EQUAL(shader_source_data.get_source(), UTF8("w4tgi3"));
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_data_options)
+BOOST_AUTO_TEST_CASE(options)
 {
 	el::ShaderSourceData shader_source_data;
 

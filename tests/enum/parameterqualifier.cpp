@@ -9,10 +9,7 @@
 #include "exceptions.hpp"
 #include "shader/parameterqualifierutil.hpp"
 #include "utf.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
-#define BOOST_TEST_MODULE pack
+#define BOOST_TEST_MODULE parameter_qualifier
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
@@ -50,13 +47,10 @@ BOOST_AUTO_TEST_CASE(convert)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
-	BOOST_CHECK_EQUAL(
-		el::string_to_utf8(el::ParameterQualifierUtil::get_str(
-			el::pqt_in)), "in");
-	BOOST_CHECK_EQUAL(
-		el::string_to_utf8(el::ParameterQualifierUtil::get_str(
-			el::pqt_out)), "out");
-	BOOST_CHECK_EQUAL(
-		el::string_to_utf8(el::ParameterQualifierUtil::get_str(
-			el::pqt_inout)), "inout");
+	BOOST_CHECK_EQUAL(el::ParameterQualifierUtil::get_str(
+		el::pqt_in).get(), "in");
+	BOOST_CHECK_EQUAL(el::ParameterQualifierUtil::get_str(
+		el::pqt_out).get(), "out");
+	BOOST_CHECK_EQUAL(el::ParameterQualifierUtil::get_str(
+		el::pqt_inout).get(), "inout");
 }

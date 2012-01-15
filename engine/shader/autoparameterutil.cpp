@@ -66,13 +66,11 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("world_matrix")),
 				pt_mat4x3),
 			AutoParameterTypeData(String(UTF8("view_matrix")),
-				pt_mat4x4),
+				pt_mat4x4, pst_layer_count),
 			AutoParameterTypeData(String(UTF8("projection_matrix")),
-				pt_mat4x4),
+				pt_mat4x4, pst_layer_count),
 			AutoParameterTypeData(String(UTF8(
-				"projection_view_matrix")), pt_mat4x4),
-			AutoParameterTypeData(String(UTF8(
-				"projection_view_matrices")), pt_mat4x4,
+				"projection_view_matrix")), pt_mat4x4,
 				pst_layer_count),
 			AutoParameterTypeData(String(UTF8("reflection_matrix")),
 				pt_mat4x4),
@@ -96,7 +94,7 @@ namespace eternal_lands
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("split_distances")),
 				pt_vec4),
-			AutoParameterTypeData(String(UTF8("layers")), pt_uvec4)
+			AutoParameterTypeData(String(UTF8("layers")), pt_ivec4)
 		};
 
 		const Uint32 auto_parameter_type_datas_count =

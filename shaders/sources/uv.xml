@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>texture_coordinate_0</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,14 +14,14 @@
     </parameter>
     <parameter>
      <name>world_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>world_uv = texture_coordinate_0;</source>
+   <source>world_uv = texture_coordinate_0;
+</source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>

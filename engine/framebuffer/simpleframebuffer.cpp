@@ -130,6 +130,23 @@ namespace eternal_lands
 	{
 	}
 
+	void SimpleFrameBuffer::clear(const glm::vec4 &color)
+	{
+		if (m_stencil)
+		{
+			glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
+		else
+		{
+			glClear(GL_DEPTH_BUFFER_BIT);
+		}
+
+		if (m_color)
+		{
+			glClearBufferfv(GL_COLOR, 0, glm::value_ptr(color));
+		}
+	}
+
 	void SimpleFrameBuffer::clear(const glm::vec4 &color,
 		const float depth)
 	{

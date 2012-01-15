@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>world_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>normal_sampler_0</name>
-     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>fragment_normal</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -31,7 +28,6 @@
     </parameter>
     <parameter>
      <name>fragment_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -39,7 +35,6 @@
     </parameter>
     <parameter>
      <name>tbn_matrix</name>
-     <source></source>
      <type>mat3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -66,7 +61,6 @@
    <parameters>
     <parameter>
      <name>tbn_matrix</name>
-     <source></source>
      <type>mat3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -74,7 +68,6 @@
     </parameter>
     <parameter>
      <name>world_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -82,7 +75,6 @@
     </parameter>
     <parameter>
      <name>normal_sampler_0</name>
-     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -90,7 +82,6 @@
     </parameter>
     <parameter>
      <name>fragment_normal</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -98,7 +89,6 @@
     </parameter>
     <parameter>
      <name>fragment_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>one</size>

@@ -28,7 +28,10 @@ namespace eternal_lands
 		svt_130,
 		svt_140,
 		svt_150,
-		svt_330
+		svt_330,
+		svt_400,
+		svt_410,
+		svt_420
 	};
 
 	class ShaderVersionUtil

@@ -61,8 +61,8 @@ namespace eternal_lands
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
-				const bool vertex, const bool shadow,
-				OutStream &main,
+				const String &indent, const bool vertex,
+				const bool shadow, OutStream &main,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
 			bool build_function(
@@ -70,7 +70,7 @@ namespace eternal_lands
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
 				const ShaderSourceType shader_source_type,
-				OutStream &stream,
+				const String &indent, OutStream &stream,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
 			void load(Lua &lua, const String &name,
@@ -84,6 +84,7 @@ namespace eternal_lands
 			void build_geometry_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
+				const ShaderSourceParameterVector &varyings,
 				OutStream &main,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;

@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>shadow_camera</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>world_position</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>shadow_view_matrix</name>
-     <source></source>
      <type>mat4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -31,17 +28,14 @@
     </parameter>
     <parameter>
      <name>shadow_map_data</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-//	shadow_map_data = vec3(exp(distance(shadow_camera.xyz, world_position)));
-	shadow_map_data = vec3(exp(abs(shadow_camera.z - world_position.z)));
-}
+   <source>// shadow_map_data = vec3(exp(distance(shadow_camera.xyz, world_position)));
+shadow_map_data = vec3(exp(abs(shadow_camera.z - world_position.z)));
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

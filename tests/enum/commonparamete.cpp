@@ -9,10 +9,7 @@
 #include "exceptions.hpp"
 #include "shader/commonparameterutil.hpp"
 #include "utf.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
-#define BOOST_TEST_MODULE pack
+#define BOOST_TEST_MODULE common_parameter
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
@@ -78,15 +75,14 @@ BOOST_AUTO_TEST_CASE(get_scale)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::CommonParameterUtil::get_str(
-		el::cpt_diffuse_color)),
-		"diffuse_color");
+	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_str(
+		el::cpt_diffuse_color).get(), "diffuse_color");
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::CommonParameterUtil::get_str(
-		el::cpt_world_tangent)), "world_tangent");
+	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_str(
+		el::cpt_world_tangent).get(), "world_tangent");
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::CommonParameterUtil::get_str(
-		el::cpt_shadow_map_data)), "shadow_map_data");
+	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_str(
+		el::cpt_shadow_map_data).get(), "shadow_map_data");
 
 	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_type(
 		el::cpt_light_position), el::pt_vec4);

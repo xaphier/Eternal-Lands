@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>world_normal</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>world_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>fragment_normal</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -31,17 +28,14 @@
     </parameter>
     <parameter>
      <name>fragment_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	fragment_uv = world_uv;
-	fragment_normal = normalize(world_normal);
-}
+   <source>fragment_uv = world_uv;
+fragment_normal = normalize(world_normal);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

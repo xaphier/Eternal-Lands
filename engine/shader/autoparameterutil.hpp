@@ -34,7 +34,6 @@ namespace eternal_lands
 		apt_view_matrix,
 		apt_projection_matrix,
 		apt_projection_view_matrix,	
-		apt_projection_view_matrices,
 		apt_reflection_matrix,
 		apt_shadow_texture_matrix,
 		apt_light_positions,

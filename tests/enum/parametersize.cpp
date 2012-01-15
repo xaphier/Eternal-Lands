@@ -9,10 +9,7 @@
 #include "exceptions.hpp"
 #include "shader/parametersizeutil.hpp"
 #include "utf.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
-#define BOOST_TEST_MODULE pack
+#define BOOST_TEST_MODULE parameter_size
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
@@ -44,12 +41,12 @@ BOOST_AUTO_TEST_CASE(convert)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ParameterSizeUtil::get_str(
-		el::pst_one)), "one");
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ParameterSizeUtil::get_str(
-		el::pst_light_count)), "light_count");
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ParameterSizeUtil::get_str(
-		el::pst_bone_count)), "bone_count");
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ParameterSizeUtil::get_str(
-		el::pst_shadow_map_count)), "shadow_map_count");
+	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(el::pst_one).get(),
+		"one");
+	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
+		el::pst_light_count).get(), "light_count");
+	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
+		el::pst_bone_count).get(), "bone_count");
+	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
+		el::pst_shadow_map_count).get(), "shadow_map_count");
 }

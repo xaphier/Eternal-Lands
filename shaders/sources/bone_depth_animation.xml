@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>bone_index</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>bone_weight</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>position</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -31,7 +28,6 @@
     </parameter>
     <parameter>
      <name>world_matrix</name>
-     <source></source>
      <type>mat4x3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -39,7 +35,6 @@
     </parameter>
     <parameter>
      <name>bones</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>bone_count</size>
@@ -47,7 +42,6 @@
     </parameter>
     <parameter>
      <name>world_position</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>

@@ -10,13 +10,12 @@
 #include "utf.hpp"
 #include <glm/gtx/epsilon.hpp>
 #include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
-#define BOOST_TEST_MODULE objectdata
+#define BOOST_TEST_MODULE object_data
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(objectdata_default_creation)
+BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ObjectData object_data(glm::mat4x3(43.0f, 1234.56f, -34.0f,
 		-12445.34f, 0.04356f, -0.005467f, 1243.000013f, 98900000.0f,
@@ -62,7 +61,7 @@ BOOST_AUTO_TEST_CASE(objectdata_default_creation)
 	BOOST_CHECK_EQUAL(object_data.get_blend(), true);
 }
 
-BOOST_AUTO_TEST_CASE(objectdata_world_matrix)
+BOOST_AUTO_TEST_CASE(world_matrix)
 {
 	el::ObjectData object_data;
 
@@ -82,7 +81,7 @@ BOOST_AUTO_TEST_CASE(objectdata_world_matrix)
 	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[3][2], 12.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(objectdata_color)
+BOOST_AUTO_TEST_CASE(color)
 {
 	el::ObjectData object_data;
 
@@ -99,7 +98,7 @@ BOOST_AUTO_TEST_CASE(objectdata_color)
 	BOOST_CHECK_CLOSE(object_data.get_color()[3], 24465.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(objectdata_name)
+BOOST_AUTO_TEST_CASE(name)
 {
 	el::ObjectData object_data;
 
@@ -113,7 +112,7 @@ BOOST_AUTO_TEST_CASE(objectdata_name)
 	BOOST_CHECK_EQUAL(object_data.get_name(), UTF8("1246546"));
 }
 
-BOOST_AUTO_TEST_CASE(objectdata_transparency)
+BOOST_AUTO_TEST_CASE(transparency)
 {
 	el::ObjectData object_data;
 
@@ -133,7 +132,7 @@ BOOST_AUTO_TEST_CASE(objectdata_transparency)
 	BOOST_CHECK_CLOSE(object_data.get_transparency(), 0.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(objectdata_blend)
+BOOST_AUTO_TEST_CASE(blend)
 {
 	el::ObjectData object_data;
 
@@ -144,7 +143,7 @@ BOOST_AUTO_TEST_CASE(objectdata_blend)
 	BOOST_CHECK_EQUAL(object_data.get_blend(), false);
 }
 
-BOOST_AUTO_TEST_CASE(objectdata_selection)
+BOOST_AUTO_TEST_CASE(selection)
 {
 	el::ObjectData object_data;
 
@@ -173,7 +172,7 @@ BOOST_AUTO_TEST_CASE(objectdata_selection)
 	BOOST_CHECK_EQUAL(object_data.get_selection(), el::st_animal);
 }
 
-BOOST_AUTO_TEST_CASE(objectdata_id)
+BOOST_AUTO_TEST_CASE(id)
 {
 	el::ObjectData object_data;
 

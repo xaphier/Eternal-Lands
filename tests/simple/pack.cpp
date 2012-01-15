@@ -10,13 +10,12 @@
 #include "packtool.hpp"
 #include <glm/gtx/epsilon.hpp>
 #include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
 #define BOOST_TEST_MODULE pack
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(pack_unpack_3_3_2)
+BOOST_AUTO_TEST_CASE(unpack_3_3_2)
 {
 	glm::vec3 tmp;
 	Uint32 i, value;
@@ -38,7 +37,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_3_3_2)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_3_3_2_normalized)
+BOOST_AUTO_TEST_CASE(unpack_3_3_2_normalized)
 {
 	glm::vec3 tmp;
 	Uint32 i, value;
@@ -60,7 +59,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_3_3_2_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_2_3_3_rev)
+BOOST_AUTO_TEST_CASE(unpack_2_3_3_rev)
 {
 	glm::vec3 tmp;
 	Uint32 i, value;
@@ -82,7 +81,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_2_3_3_rev)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_2_3_3_rev_normalized)
+BOOST_AUTO_TEST_CASE(unpack_2_3_3_rev_normalized)
 {
 	glm::vec3 tmp;
 	Uint32 i, value;
@@ -104,7 +103,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_2_3_3_rev_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5)
+BOOST_AUTO_TEST_CASE(unpack_5_6_5)
 {
 	glm::vec3 tmp;
 	Uint32 i, value;
@@ -117,7 +116,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5_normalized)
+BOOST_AUTO_TEST_CASE(unpack_5_6_5_normalized)
 {
 	glm::vec3 tmp;
 	Uint32 i, value;
@@ -139,7 +138,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5_rev)
+BOOST_AUTO_TEST_CASE(unpack_5_6_5_rev)
 {
 	glm::vec3 tmp;
 	Uint32 i, value;
@@ -152,7 +151,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5_rev)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5_rev_normalized)
+BOOST_AUTO_TEST_CASE(unpack_5_6_5_rev_normalized)
 {
 	glm::vec3 tmp;
 	Uint32 i, value;
@@ -174,7 +173,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_6_5_rev_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_5_5_5_1)
+BOOST_AUTO_TEST_CASE(unpack_5_5_5_1)
 {
 	glm::vec4 tmp;
 	Uint32 i, value;
@@ -198,7 +197,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_5_5_1)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_5_5_5_1_normalized)
+BOOST_AUTO_TEST_CASE(unpack_5_5_5_1_normalized)
 {
 	glm::vec4 tmp;
 	Uint32 i, value;
@@ -222,7 +221,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_5_5_5_1_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_1_5_5_5_rev)
+BOOST_AUTO_TEST_CASE(unpack_1_5_5_5_rev)
 {
 	glm::vec4 tmp;
 	Uint32 i, value;
@@ -246,7 +245,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_1_5_5_5_rev)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_1_5_5_5_rev_normalized)
+BOOST_AUTO_TEST_CASE(unpack_1_5_5_5_rev_normalized)
 {
 	glm::vec4 tmp;
 	Uint32 i, value;
@@ -270,7 +269,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_1_5_5_5_rev_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4)
+BOOST_AUTO_TEST_CASE(unpack_4_4_4_4)
 {
 	glm::vec4 tmp;
 	Uint32 i, value;
@@ -294,7 +293,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_normalized)
+BOOST_AUTO_TEST_CASE(unpack_4_4_4_4_normalized)
 {
 	glm::vec4 tmp;
 	Uint32 i, value;
@@ -318,7 +317,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_rev)
+BOOST_AUTO_TEST_CASE(unpack_4_4_4_4_rev)
 {
 	glm::vec4 tmp;
 	Uint32 i, value;
@@ -342,7 +341,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_rev)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_rev_normalized)
+BOOST_AUTO_TEST_CASE(unpack_4_4_4_4_rev_normalized)
 {
 	glm::vec4 tmp;
 	Uint32 i, value;
@@ -366,7 +365,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_4_4_4_4_rev_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_uint_10_10_10_2)
+BOOST_AUTO_TEST_CASE(unpack_uint_10_10_10_2)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
@@ -395,7 +394,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_uint_10_10_10_2)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_uint_10_10_10_2_normalized)
+BOOST_AUTO_TEST_CASE(unpack_uint_10_10_10_2_normalized)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
@@ -424,7 +423,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_uint_10_10_10_2_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_uint_2_10_10_10_rev)
+BOOST_AUTO_TEST_CASE(unpack_uint_2_10_10_10_rev)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
@@ -453,7 +452,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_uint_2_10_10_10_rev)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_uint_2_10_10_10_rev_normalized)
+BOOST_AUTO_TEST_CASE(unpack_uint_2_10_10_10_rev_normalized)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
@@ -482,7 +481,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_uint_2_10_10_10_rev_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_sint_10_10_10_2)
+BOOST_AUTO_TEST_CASE(unpack_sint_10_10_10_2)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
@@ -511,7 +510,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_sint_10_10_10_2)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_sint_10_10_10_2_normalized)
+BOOST_AUTO_TEST_CASE(unpack_sint_10_10_10_2_normalized)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
@@ -540,7 +539,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_sint_10_10_10_2_normalized)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_sint_2_10_10_10_rev)
+BOOST_AUTO_TEST_CASE(unpack_sint_2_10_10_10_rev)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
@@ -569,7 +568,7 @@ BOOST_AUTO_TEST_CASE(pack_unpack_sint_2_10_10_10_rev)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(pack_unpack_sint_2_10_10_10_rev_normalized)
+BOOST_AUTO_TEST_CASE(unpack_sint_2_10_10_10_rev_normalized)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());

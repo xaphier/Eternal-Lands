@@ -11,12 +11,12 @@
 #include "xmlbuffer.hpp"
 #include "xmlwriter.hpp"
 #include "xmlreader.hpp"
-#define BOOST_TEST_MODULE objectdata
+#define BOOST_TEST_MODULE shader_source_parameter
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_default_creation)
+BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ShaderSourceParameter shader_source_parameter(
 		el::String(UTF8("346")), el::String(UTF8("3sfd23")),
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_default_creation)
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 14536u);
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_source)
+BOOST_AUTO_TEST_CASE(source)
 {
 	el::ShaderSourceParameter shader_source_parameter;
 
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_source)
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_source(), UTF8("znr6"));
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_name)
+BOOST_AUTO_TEST_CASE(name)
 {
 	el::ShaderSourceParameter shader_source_parameter;
 
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_name)
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("w4tgi3"));
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_type)
+BOOST_AUTO_TEST_CASE(type)
 {
 	el::ShaderSourceParameter shader_source_parameter;
 
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_type)
 		el::pt_usamplerBuffer);
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_qualifier)
+BOOST_AUTO_TEST_CASE(qualifier)
 {
 	el::ShaderSourceParameter shader_source_parameter;
 
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_qualifier)
 		el::pqt_inout);
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_size)
+BOOST_AUTO_TEST_CASE(size)
 {
 	el::ShaderSourceParameter shader_source_parameter;
 
@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_size)
 		el::pst_shadow_map_count);
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_scale)
+BOOST_AUTO_TEST_CASE(scale)
 {
 	el::ShaderSourceParameter shader_source_parameter;
 
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_scale)
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 65u);
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_save_xml)
+BOOST_AUTO_TEST_CASE(save_xml)
 {
 	el::XmlBuffer buffer;
 	el::XmlWriterSharedPtr writer;
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_xml)
 	writer.reset();
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_load_xml)
+BOOST_AUTO_TEST_CASE(load_xml)
 {
 	el::XmlBuffer buffer(UTF8("<?xml version=\"1.0\" encoding=\"utf8\"?>"
 		"<parameter><name>3sfd23</name><type>uvec3</type>"
@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_load_xml)
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 14536u);
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
+BOOST_AUTO_TEST_CASE(save_load_xml)
 {
 	el::XmlBuffer buffer;
 	el::XmlWriterSharedPtr writer;

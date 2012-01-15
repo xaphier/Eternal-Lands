@@ -48,6 +48,7 @@ namespace eternal_lands
 			m_shader(0)
 		{
 			assert((shader_type == GL_VERTEX_SHADER) ||
+				(shader_type == GL_GEOMETRY_SHADER) ||
 				(shader_type == GL_FRAGMENT_SHADER));
 
 			m_shader = glCreateShader(shader_type);
@@ -1902,6 +1903,8 @@ namespace eternal_lands
 			exception << errinfo_parameter_name(get_name().get());
 			exception << errinfo_vertex_shader_source(
 				vertex_shader);
+			exception << errinfo_geometry_shader_source(
+				geometry_shader);
 			exception << errinfo_fragment_shader_source(
 				fragment_shader);
 

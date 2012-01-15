@@ -148,6 +148,18 @@ namespace eternal_lands
 		glClearBufferfv(GL_DEPTH, 0, &depth);
 	}
 
+	void MultiSampleDepthFrameBuffer::clear(const glm::vec4 &color)
+	{
+		if (m_stencil)
+		{
+			glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
+		else
+		{
+			glClear(GL_DEPTH_BUFFER_BIT);
+		}
+	}
+
 	void MultiSampleDepthFrameBuffer::unbind()
 	{
 		m_multisample_frame_buffer.unbind();

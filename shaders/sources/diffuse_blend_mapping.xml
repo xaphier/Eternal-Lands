@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>fragment_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>diffuse_sampler_0</name>
-     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>diffuse_sampler_1</name>
-     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -31,17 +28,14 @@
     </parameter>
     <parameter>
      <name>diffuse</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	diffuse = texture2D(diffuse_sampler_1, fragment_uv);
-	diffuse = mix(texture2D(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
-}
+   <source>diffuse = texture2D(diffuse_sampler_1, fragment_uv);
+diffuse = mix(texture2D(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>false</glsl_130>
@@ -53,7 +47,6 @@
    <parameters>
     <parameter>
      <name>fragment_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -61,7 +54,6 @@
     </parameter>
     <parameter>
      <name>diffuse_sampler_0</name>
-     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -69,7 +61,6 @@
     </parameter>
     <parameter>
      <name>diffuse_sampler_1</name>
-     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -77,17 +68,14 @@
     </parameter>
     <parameter>
      <name>diffuse</name>
-     <source></source>
      <type>vec4</type>
-     <qualifier>in</qualifier>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	diffuse = texture(diffuse_sampler_1, fragment_uv);
-	diffuse = mix(texture(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
-}
+   <source>diffuse = texture(diffuse_sampler_1, fragment_uv);
+diffuse = mix(texture(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
 </source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

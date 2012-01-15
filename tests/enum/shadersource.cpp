@@ -9,10 +9,7 @@
 #include "exceptions.hpp"
 #include "shader/shadersourceutil.hpp"
 #include "utf.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
-#define BOOST_TEST_MODULE pack
+#define BOOST_TEST_MODULE shader_source
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
@@ -44,12 +41,12 @@ BOOST_AUTO_TEST_CASE(convert)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ShaderSourceUtil::get_str(
-		el::sst_world_depth_transform)), "world_depth_transform");
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ShaderSourceUtil::get_str(
-		el::sst_light)), "light");
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ShaderSourceUtil::get_str(
-		el::sst_normal_mapping)), "normal_mapping");
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ShaderSourceUtil::get_str(
-		el::sst_shadow_map)), "shadow_map");
+	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
+		el::sst_world_depth_transform).get(), "world_depth_transform");
+	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(el::sst_light).get(),
+		"light");
+	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
+		el::sst_normal_mapping).get(), "normal_mapping");
+	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
+		el::sst_shadow_map).get(), "shadow_map");
 }

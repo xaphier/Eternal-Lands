@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>view_position</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>fog_data</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,16 +21,13 @@
     </parameter>
     <parameter>
      <name>fog</name>
-     <source></source>
      <type>float</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	fog = min(exp2(dot(view_position, view_position) * fog_data.a), 1.0);
-}
+   <source>fog = min(exp2(dot(view_position, view_position) * fog_data.a), 1.0);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

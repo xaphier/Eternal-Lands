@@ -44,8 +44,7 @@ namespace eternal_lands
 		return shader_build_type_names[shader_build];
 	}
 
-	ShaderBuildType ShaderBuildUtil::get_shader_build_type(
-		const String &str)
+	ShaderBuildType ShaderBuildUtil::get_shader_build(const String &str)
 	{
 		Uint32 i;
 		ShaderBuildType shader_build_type;
@@ -66,6 +65,11 @@ namespace eternal_lands
 				"ShaderBuildType")));
 	}
 
+	Uint32 ShaderBuildUtil::get_shader_build_count()
+	{
+		return shader_build_type_names_count;
+	}
+
 	OutStream& operator<<(OutStream &str, const ShaderBuildType value)
 	{
 		str << ShaderBuildUtil::get_str(value);
@@ -79,8 +83,7 @@ namespace eternal_lands
 
 		str >> string;
 
-		value = ShaderBuildUtil::get_shader_build_type(String(
-			string));
+		value = ShaderBuildUtil::get_shader_build(String(string));
 
 		return str;
 	}

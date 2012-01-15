@@ -49,7 +49,10 @@ namespace eternal_lands
 			ShaderVersionTypeData(String(UTF8("glsl_130")), 130),
 			ShaderVersionTypeData(String(UTF8("glsl_140")), 140),
 			ShaderVersionTypeData(String(UTF8("glsl_150")), 150),
-			ShaderVersionTypeData(String(UTF8("glsl_330")), 330)
+			ShaderVersionTypeData(String(UTF8("glsl_330")), 330),
+			ShaderVersionTypeData(String(UTF8("glsl_400")), 400),
+			ShaderVersionTypeData(String(UTF8("glsl_410")), 410),
+			ShaderVersionTypeData(String(UTF8("glsl_420")), 420)
 		};
 
 		const Uint32 shader_version_type_datas_count =

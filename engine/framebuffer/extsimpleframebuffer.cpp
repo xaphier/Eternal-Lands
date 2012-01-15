@@ -35,7 +35,6 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_depth = true;
 		m_stencil = false;
 
 		if (TextureFormatUtil::get_depth(format))
@@ -135,17 +134,11 @@ namespace eternal_lands
 	{
 	}
 
-	void ExtSimpleFrameBuffer::clear(const glm::vec4 &color,
-		const float depth)
+	void ExtSimpleFrameBuffer::clear(const glm::vec4 &color)
 	{
 		GLenum mask;
 
-		mask = 0;
-
-		if (m_depth)
-		{
-			mask |= GL_DEPTH_BUFFER_BIT;
-		}
+		mask = GL_DEPTH_BUFFER_BIT;
 
 		if (m_stencil)
 		{
@@ -157,10 +150,27 @@ namespace eternal_lands
 			mask |= GL_COLOR_BUFFER_BIT;
 		}
 
-		if (mask != 0)
+		glClear(mask);
+	}
+
+	void ExtSimpleFrameBuffer::clear(const glm::vec4 &color,
+		const float depth)
+	{
+		GLenum mask;
+
+		mask = GL_DEPTH_BUFFER_BIT;
+
+		if (m_stencil)
 		{
-			glClear(mask);
+			mask |= GL_STENCIL_BUFFER_BIT;
 		}
+
+		if (m_color)
+		{
+			mask |= GL_COLOR_BUFFER_BIT;
+		}
+
+		glClear(mask);
 	}
 
 	void ExtSimpleFrameBuffer::unbind()

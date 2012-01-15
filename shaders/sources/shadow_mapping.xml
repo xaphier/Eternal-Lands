@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>shadow_uv</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>shadow_map_count</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>shadow_sampler</name>
-     <source></source>
      <type>sampler2DShadow</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>shadow</name>
-     <source></source>
      <type>float</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -44,7 +41,6 @@ shadow = clamp(shadow, 0.0, 1.0);
    <parameters>
     <parameter>
      <name>shadow_uv</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>shadow_map_count</size>
@@ -52,7 +48,6 @@ shadow = clamp(shadow, 0.0, 1.0);
     </parameter>
     <parameter>
      <name>shadow_sampler</name>
-     <source></source>
      <type>sampler2DShadow</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -60,7 +55,6 @@ shadow = clamp(shadow, 0.0, 1.0);
     </parameter>
     <parameter>
      <name>shadow</name>
-     <source></source>
      <type>float</type>
      <qualifier>out</qualifier>
      <size>one</size>

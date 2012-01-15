@@ -30,10 +30,19 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceData::build_source(
-		const ShaderSourceParameterVector &locals, 
-		OutStream &stream, ShaderSourceParameterVector &globals) const
+		const ShaderSourceParameterVector &locals,
+		const String &indent, OutStream &stream,
+		ShaderSourceParameterVector &globals) const
 	{
-		stream << get_source() << UTF8("\n");
+		StringTypeVector lines;
+
+		boost::split(lines, get_source().get(), boost::is_any_of(
+			UTF8("\n")), boost::token_compress_on);
+
+		BOOST_FOREACH(const StringType &line, lines)
+		{
+			stream << indent << line << std::endl;
+		}
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
 			get_parameters())

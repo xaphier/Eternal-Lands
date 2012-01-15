@@ -136,14 +136,14 @@ BOOST_AUTO_TEST_CASE(convert_gl)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ParameterUtil::get_str(
-		el::pt_bvec2)), "bvec2");
+	BOOST_CHECK_EQUAL(el::ParameterUtil::get_str(el::pt_bvec2).get(),
+		"bvec2");
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ParameterUtil::get_str(
-		el::pt_sampler1D)), "sampler1D");
+	BOOST_CHECK_EQUAL(el::ParameterUtil::get_str(el::pt_sampler1D).get(),
+		"sampler1D");
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(el::ParameterUtil::get_str(
-		el::pt_usamplerBuffer)), "usamplerBuffer");
+	BOOST_CHECK_EQUAL(el::ParameterUtil::get_str(
+		el::pt_usamplerBuffer).get(), "usamplerBuffer");
 
 	BOOST_CHECK_EQUAL(el::ParameterUtil::get_gl(el::pt_isampler1D), 
 		GL_INT_SAMPLER_1D);

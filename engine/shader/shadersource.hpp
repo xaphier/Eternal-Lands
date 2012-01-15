@@ -47,7 +47,7 @@ namespace eternal_lands
 			void load(const String &file_name);
 			void build_source(const ShaderVersionType &type,
 				const ShaderSourceParameterVector &locals, 
-				OutStream &stream,
+				const String &indent, OutStream &stream,
 				ShaderSourceParameterVector &globals) const;
 			bool check_source_parameter(
 				const ShaderVersionType &type,

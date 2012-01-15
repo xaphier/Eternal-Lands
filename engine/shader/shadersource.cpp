@@ -187,9 +187,12 @@ namespace eternal_lands
 
 	void ShaderSource::build_source(const ShaderVersionType &type,
 		const ShaderSourceParameterVector &locals,
-		OutStream &stream, ShaderSourceParameterVector &globals) const
+		const String &indent, OutStream &stream,
+		ShaderSourceParameterVector &globals) const
 	{
-		get_data(type).build_source(locals, stream, globals);
+		stream << indent << UTF8("/* ") << get_typed_name();
+		stream << UTF8(" */\n");
+		get_data(type).build_source(locals, indent, stream, globals);
 	}
 
 	bool ShaderSource::check_source_parameter(

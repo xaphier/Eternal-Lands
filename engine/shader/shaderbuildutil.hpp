@@ -41,8 +41,9 @@ namespace eternal_lands
 		public:
 			static const String &get_str(
 				const ShaderBuildType shader_build);
-			static ShaderBuildType get_shader_build_type(
+			static ShaderBuildType get_shader_build(
 				const String &str);
+			static Uint32 get_shader_build_count();
 
 	};
 

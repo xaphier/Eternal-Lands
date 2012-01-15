@@ -137,6 +137,12 @@ namespace eternal_lands
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 
+	void MultiSampleFrameBuffer::clear(const glm::vec4 &color)
+	{
+		glClear(GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearBufferfv(GL_COLOR, 0, glm::value_ptr(color));
+	}
+
 	void MultiSampleFrameBuffer::clear(const glm::vec4 &color,
 		const float depth)
 	{

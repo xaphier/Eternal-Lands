@@ -13,7 +13,7 @@
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(reader_default_creation)
+BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::MemoryBufferSharedPtr memory;
 	el::ReaderSharedPtr reader;
@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(reader_default_creation)
 	BOOST_CHECK_EQUAL(reader->get_name().get(), "test");
 }
 
-BOOST_AUTO_TEST_CASE(reader_zero_read)
+BOOST_AUTO_TEST_CASE(zero_read)
 {
 	el::MemoryBufferSharedPtr memory;
 	el::ReaderSharedPtr reader;

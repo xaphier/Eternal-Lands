@@ -40,6 +40,7 @@ namespace eternal_lands
 			virtual void blit() = 0;
 			virtual void clear(const glm::vec4 &color,
 				const float depth) = 0;
+			virtual void clear(const glm::vec4 &color) = 0;
 			virtual void unbind() = 0;
 
 			inline const TextureSharedPtr &get_texture() const

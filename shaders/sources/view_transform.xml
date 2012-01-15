@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>world_position</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>view_matrix</name>
-     <source></source>
      <type>mat4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,14 +21,14 @@
     </parameter>
     <parameter>
      <name>view_position</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>view_position = vec3(view_matrix * vec4(world_position, 1.0));</source>
+   <source>view_position = vec3(view_matrix * vec4(world_position, 1.0));
+</source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>
