@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>shadow_uv</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>shadow_map_count</size>
@@ -15,31 +14,13 @@
     </parameter>
     <parameter>
      <name>shadow_sampler</name>
-     <source></source>
      <type>sampler2DArray</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>split_distances</name>
-     <source></source>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>view_position</name>
-     <source></source>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>world_position</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -47,23 +28,13 @@
     </parameter>
     <parameter>
      <name>shadow_camera</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>shadow_projection_view_matrix</name>
-     <source></source>
-     <type>mat4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>shadow</name>
-     <source></source>
      <type>float</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -71,36 +42,33 @@
     </parameter>
    </parameters>
    <source>{
-	vec3 splits;
-	vec2 uv, scale_offset, lod_uv;
+	vec3 uv;
+	vec2 lod_uv;
 	float occluder, light_distance;
-	int index;
+	int i;
 
 	const float light_shadow_bias = -0.01;
-	const float over_darkening_factor = 3.0;
+	const float over_darkening_factor = 5.0;
 
-	index = 0;
+	shadow = 1.0;
 
-	splits = step(split_distances.xyz, -view_position.zzz);
-	index = int(splits.x + splits.y + splits.z);
+	for (i = 0; i &lt; shadow_map_count; ++i)
+	{
+		uv = shadow_uv[i].xyz / shadow_uv[i].w;
 
-	uv = shadow_uv[index].xy / shadow_uv[index].w;
-	lod_uv = shadow_uv[0].xy / shadow_uv[0].w;
+		if (all(lessThan(abs(uv - vec3(0.5)), vec3(0.5))))
+		{
+			lod_uv = shadow_uv[0].xy / shadow_uv[0].w;
 
-	vec3 shadow_view = vec3(shadow_projection_view_matrix * vec4(world_position, 1.0));
+			occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), dFdx(lod_uv.xy), dFdy(lod_uv.xy)).r;
 
-	occluder = textureGrad(shadow_sampler, vec3(uv, index), dFdx(lod_uv.xy), dFdy(lod_uv.xy)).r;
-//	occluder = textureGrad(shadow_sampler, vec3(uv, index), dFdx(shadow_uv[0].xy), dFdy(shadow_uv[0].xy)).r;
+			light_distance = abs(shadow_camera.z - world_position.z) + light_shadow_bias;
 
-	// compute distance from current fragment to the main light
-//	light_distance = distance(shadow_camera.xyz, world_position) + light_shadow_bias;
-	light_distance = abs(shadow_camera.z - world_position.z) + light_shadow_bias;
-
-	shadow = dot(vec2(1.0), step(vec2(0.5), abs(uv.xy - 0.5)));
-
-	shadow += exp(over_darkening_factor * (log(occluder) - light_distance));
-
-	shadow = clamp(shadow, 0.0, 1.0);
+			shadow = exp(over_darkening_factor * (log(occluder) - light_distance));
+			shadow = clamp(shadow, 0.0, 1.0);
+			break;
+		}
+	}
 }
 </source>
    <glsl_120>false</glsl_120>

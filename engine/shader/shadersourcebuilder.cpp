@@ -1845,12 +1845,6 @@ namespace eternal_lands
 			std::min(get_light_count(), light_count),
 			get_global_vars()->get_shadow_map_count());
 
-		array_sizes[pst_light_count] = data.get_light_count();
-		array_sizes[pst_bone_count] = get_bone_count();
-		array_sizes[pst_shadow_map_count] =
-			data.get_shadow_map_count();
-		array_sizes[pst_layer_count] = layer_count;
-
 		if (shader_build_type == sbt_shadow)
 		{
 			layer_count = std::max(static_cast<Uint16>(1),
@@ -1860,6 +1854,12 @@ namespace eternal_lands
 		{
 			layer_count = static_cast<Uint16>(1);
 		}
+
+		array_sizes[pst_light_count] = data.get_light_count();
+		array_sizes[pst_bone_count] = get_bone_count();
+		array_sizes[pst_shadow_map_count] =
+			data.get_shadow_map_count();
+		array_sizes[pst_layer_count] = layer_count;
 
 		data.set_option(ssbot_transparent,
 			description.get_transparent());

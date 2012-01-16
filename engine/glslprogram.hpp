@@ -82,7 +82,7 @@ namespace eternal_lands
 			~GlslProgram() throw();
 			void bind();
 			void set_variant_parameter(const String &name,
-				const Variant &value,
+				const Variant &value, const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const bool value);
@@ -101,13 +101,17 @@ namespace eternal_lands
 			void set_parameter(const AutoParameterType parameter,
 				const glm::ivec4 &value);
 			void set_parameter(const AutoParameterType parameter,
-				const Sint32Vector &value);
+				const Sint32Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Ivec2Vector &value);
+				const Ivec2Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Ivec3Vector &value);
+				const Ivec3Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Ivec4Vector &value);
+				const Ivec4Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
 				const Uint32 value);
 			void set_parameter(const AutoParameterType parameter,
@@ -117,23 +121,31 @@ namespace eternal_lands
 			void set_parameter(const AutoParameterType parameter,
 				const glm::uvec4 &value);
 			void set_parameter(const AutoParameterType parameter,
-				const Uint32Vector &value);
+				const Uint32Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Uvec2Vector &value);
+				const Uvec2Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Uvec3Vector &value);
+				const Uvec3Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Uvec4Vector &value);
+				const Uvec4Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
 				const float value);
 			void set_parameter(const AutoParameterType parameter,
-				const FloatVector &value);
+				const FloatVector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Vec2Vector &value);
+				const Vec2Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Vec3Vector &value);
+				const Vec3Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
-				const Vec4Vector &value);
+				const Vec4Vector &value,
+				const Uint32 offset = 0);
 			void set_parameter(const AutoParameterType parameter,
 				const glm::vec2 &value);
 			void set_parameter(const AutoParameterType parameter,
@@ -142,30 +154,39 @@ namespace eternal_lands
 				const glm::vec4 &value);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat2x2Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat2x3Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat2x4Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat3x2Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat3x3Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat3x4Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat4x2Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat4x3Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const Mat4x4Vector &value,
+				const Uint32 offset = 0,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
 				const glm::mat2x2 &value,

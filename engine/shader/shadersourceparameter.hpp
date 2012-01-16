@@ -125,6 +125,7 @@ namespace eternal_lands
 			 */
 			inline void set_scale(const Uint16 scale)
 			{
+				assert(scale > 0);
 				m_scale = scale;
 			}
 

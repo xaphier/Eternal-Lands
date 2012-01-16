@@ -182,35 +182,39 @@ namespace eternal_lands
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Sint32Vector &value)
+			const Uint32 offset, const Sint32Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform1iv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				&value[0]);
+				&value[offset]);
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Ivec2Vector &value)
+			const Uint32 offset, const Ivec2Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform2iv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Ivec3Vector &value)
+			const Uint32 offset, const Ivec3Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform3iv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Ivec4Vector &value)
+			const Uint32 offset, const Ivec4Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform4iv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 value)
@@ -234,35 +238,39 @@ namespace eternal_lands
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32Vector &value)
+			const Uint32 offset, const Uint32Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform1uiv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				&value[0]);
+				&value[offset]);
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uvec2Vector &value)
+			const Uint32 offset, const Uvec2Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform2uiv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uvec3Vector &value)
+			const Uint32 offset, const Uvec3Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform3uiv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uvec4Vector &value)
+			const Uint32 offset, const Uvec4Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform4uiv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const float value)
@@ -271,35 +279,39 @@ namespace eternal_lands
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const FloatVector &value)
+			const Uint32 offset, const FloatVector &value)
 		{
+			assert(offset < value.size());
 			glUniform1fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				&value[0]);
+				&value[offset]);
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Vec2Vector &value)
+			const Uint32 offset, const Vec2Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform2fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Vec3Vector &value)
+			const Uint32 offset, const Vec3Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform3fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Vec4Vector &value)
+			const Uint32 offset, const Vec4Vector &value)
 		{
+			assert(offset < value.size());
 			glUniform4fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				glm::value_ptr(value[0]));
+				glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const glm::vec2 &value)
@@ -318,75 +330,93 @@ namespace eternal_lands
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat2x2Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat2x2Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix2fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat2x3Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat2x3Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix2x3fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat2x4Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat2x4Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix2x4fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat3x2Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat3x2Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix3x2fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat3x3Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat3x3Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix3fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat3x4Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat3x4Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix3x4fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat4x2Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat4x2Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix4x2fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat4x3Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat4x3Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix4x3fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const Uint32 size,
-			const Mat4x4Vector &value, const GLboolean transpose)
+			const Uint32 offset, const Mat4x4Vector &value,
+			const GLboolean transpose)
 		{
+			assert(offset < value.size());
 			glUniformMatrix4fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
-				transpose, glm::value_ptr(value[0]));
+				transpose, glm::value_ptr(value[offset]));
 		}
 
 		void set_uniform(const Uint32 index, const glm::mat2x2 &value,
@@ -477,6 +507,7 @@ namespace eternal_lands
 				const String m_name;
 				const GLint m_index;
 				const Uint32 m_size;
+				const Uint32 m_offset;
 				const ParameterType m_parameter;
 				const GLboolean m_transpose;
 				StringUint16Map &m_samplers;
@@ -484,13 +515,14 @@ namespace eternal_lands
 
 			public:
 				GlUniformVariant(const String &name,
-					const GLint index,
-					const Uint32 size,
+					const GLint index, const Uint32 size,
+					const Uint32 offset, 
 					const ParameterType parameter,
 					const GLboolean transpose,
 					StringUint16Map &samplers,
 					bool &sampler_changed): m_name(name),
 					m_index(index), m_size(size),
+					m_offset(offset),
 					m_parameter(parameter),
 					m_transpose(transpose),
 					m_samplers(samplers),
@@ -507,6 +539,8 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_bool);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
@@ -514,12 +548,16 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_float);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
 				void operator()(const Sint64 value) const
 				{
 					StringUint16Map::iterator found;
+
+					assert(m_size == 1);
 
 					if (m_parameter == pt_int)
 					{
@@ -579,12 +617,16 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_vec2);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
 				void operator()(const glm::vec3 &value) const
 				{
 					CHECK_TYPE(pt_vec3);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value);
 				}
@@ -593,12 +635,16 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_vec4);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
 				void operator()(const glm::ivec2 &value) const
 				{
 					CHECK_TYPE(pt_ivec2);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value);
 				}
@@ -607,12 +653,16 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_ivec3);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
 				void operator()(const glm::ivec4 &value) const
 				{
 					CHECK_TYPE(pt_ivec4);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value);
 				}
@@ -621,12 +671,16 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_uvec2);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
 				void operator()(const glm::uvec3 &value) const
 				{
 					CHECK_TYPE(pt_uvec3);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value);
 				}
@@ -635,12 +689,16 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_uvec4);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
 				void operator()(const glm::bvec2 &value) const
 				{
 					CHECK_TYPE(pt_bvec2);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value);
 				}
@@ -649,6 +707,8 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_bvec3);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
@@ -656,12 +716,16 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_bvec4);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value);
 				}
 
 				void operator()(const glm::mat2x2 &value) const
 				{
 					CHECK_TYPE(pt_mat2x2);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value,
 						m_transpose);
@@ -671,6 +735,8 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_mat2x3);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value,
 						m_transpose);
 				}
@@ -678,6 +744,8 @@ namespace eternal_lands
 				void operator()(const glm::mat2x4 &value) const
 				{
 					CHECK_TYPE(pt_mat2x4);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value,
 						m_transpose);
@@ -687,6 +755,8 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_mat3x2);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value,
 						m_transpose);
 				}
@@ -694,6 +764,8 @@ namespace eternal_lands
 				void operator()(const glm::mat3x3 &value) const
 				{
 					CHECK_TYPE(pt_mat3x3);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value,
 						m_transpose);
@@ -703,6 +775,8 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_mat3x4);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value,
 						m_transpose);
 				}
@@ -710,6 +784,8 @@ namespace eternal_lands
 				void operator()(const glm::mat4x2 &value) const
 				{
 					CHECK_TYPE(pt_mat4x2);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value,
 						m_transpose);
@@ -719,6 +795,8 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_mat4x3);
 
+					assert(m_size == 1);
+
 					set_uniform(m_index, value,
 						m_transpose);
 				}
@@ -726,6 +804,8 @@ namespace eternal_lands
 				void operator()(const glm::mat4x4 &value) const
 				{
 					CHECK_TYPE(pt_mat4x4);
+
+					assert(m_size == 1);
 
 					set_uniform(m_index, value,
 						m_transpose);
@@ -735,45 +815,60 @@ namespace eternal_lands
 				{
 					CHECK_TYPE(pt_ivec4);
 
-					set_uniform(m_index, m_size, value);
+					assert(m_size >= 1);
+
+					set_uniform(m_index, m_size, m_offset,
+						value);
 				}
 
 				void operator()(const Uvec4Vector &value) const
 				{
 					CHECK_TYPE(pt_uvec4);
 
-					set_uniform(m_index, m_size, value);
+					assert(m_size >= 1);
+
+					set_uniform(m_index, m_size, m_offset,
+						value);
 				}
 
 				void operator()(const Vec4Vector &value) const
 				{
 					CHECK_TYPE(pt_vec4);
 
-					set_uniform(m_index, m_size, value);
+					assert(m_size >= 1);
+
+					set_uniform(m_index, m_size, m_offset,
+						value);
 				}
 
 				void operator()(const Mat2x4Vector &value) const
 				{
 					CHECK_TYPE(pt_mat2x4);
 
-					set_uniform(m_index, m_size, value,
-						m_transpose);
+					assert(m_size >= 1);
+
+					set_uniform(m_index, m_size, m_offset,
+						value, m_transpose);
 				}
 
 				void operator()(const Mat3x4Vector &value) const
 				{
 					CHECK_TYPE(pt_mat3x4);
 
-					set_uniform(m_index, m_size, value,
-						m_transpose);
+					assert(m_size >= 1);
+
+					set_uniform(m_index, m_size, m_offset,
+						value, m_transpose);
 				}
 
 				void operator()(const Mat4x4Vector &value) const
 				{
 					CHECK_TYPE(pt_mat4x4);
 
-					set_uniform(m_index, m_size, value,
-						m_transpose);
+					assert(m_size >= 1);
+
+					set_uniform(m_index, m_size, m_offset,
+						value, m_transpose);
 				}
 
 		};
@@ -820,7 +915,7 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::set_variant_parameter(const String &name,
-		const Variant &value, const bool transpose)
+		const Variant &value, const Uint32 offset, const bool transpose)
 	{
 		StringUniformMap::const_iterator found;
 		bool sampler_changed;
@@ -833,7 +928,7 @@ namespace eternal_lands
 		{
 			boost::apply_visitor(GlUniformVariant(found->first,
 				found->second.m_index, found->second.m_size,
-				found->second.m_parameter, transpose,
+				offset, found->second.m_parameter, transpose,
 				m_samplers, sampler_changed), value);
 
 			if (sampler_changed)
@@ -849,6 +944,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -865,6 +962,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -881,6 +980,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -897,6 +998,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -913,6 +1016,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -929,6 +1034,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -945,6 +1052,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -961,6 +1070,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -977,6 +1088,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -993,6 +1106,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1009,6 +1124,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1025,6 +1142,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1036,11 +1155,13 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Sint32Vector &value)
+		const Sint32Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1048,16 +1169,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_int);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Ivec2Vector &value)
+		const Ivec2Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1065,16 +1188,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_ivec2);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Ivec3Vector &value)
+		const Ivec3Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1082,16 +1207,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_ivec3);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Ivec4Vector &value)
+		const Ivec4Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1099,16 +1226,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_ivec4);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Uint32Vector &value)
+		const Uint32Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1116,16 +1245,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_unsigned_int);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Uvec2Vector &value)
+		const Uvec2Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1133,16 +1264,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_uvec2);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Uvec3Vector &value)
+		const Uvec3Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1150,16 +1283,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_uvec3);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Uvec4Vector &value)
+		const Uvec4Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1167,7 +1302,7 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_uvec4);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
@@ -1177,6 +1312,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1188,11 +1325,13 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const FloatVector &value)
+		const FloatVector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1200,16 +1339,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_float);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Vec2Vector &value)
+		const Vec2Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1217,16 +1358,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_vec2);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Vec3Vector &value)
+		const Vec3Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1234,16 +1377,18 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_vec3);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Vec4Vector &value)
+		const Vec4Vector &value, const Uint32 offset)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1251,7 +1396,7 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_vec4);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value);
+				found->second.m_size, offset, value);
 		}
 	}
 
@@ -1261,6 +1406,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1277,6 +1424,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1293,6 +1442,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1304,11 +1455,14 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat2x2Vector &value, const bool transpose)
+		const Mat2x2Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1316,16 +1470,19 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat2x2);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat2x3Vector &value, const bool transpose)
+		const Mat2x3Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1333,16 +1490,19 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat2x3);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat2x4Vector &value, const bool transpose)
+		const Mat2x4Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1350,16 +1510,19 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat2x4);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat3x2Vector &value, const bool transpose)
+		const Mat3x2Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1367,16 +1530,19 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat3x2);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat3x3Vector &value, const bool transpose)
+		const Mat3x3Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1384,16 +1550,19 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat3x3);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat3x4Vector &value, const bool transpose)
+		const Mat3x4Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1401,16 +1570,19 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat3x4);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat4x2Vector &value, const bool transpose)
+		const Mat4x2Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1418,16 +1590,19 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat4x2);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat4x3Vector &value, const bool transpose)
+		const Mat4x3Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1435,16 +1610,19 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat4x3);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat4x4Vector &value, const bool transpose)
+		const Mat4x4Vector &value, const Uint32 offset,
+		const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
+			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1452,7 +1630,7 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat4x4);
 			set_uniform(found->second.m_index,
-				found->second.m_size, value, transpose);
+				found->second.m_size, offset, value, transpose);
 		}
 	}
 
@@ -1462,6 +1640,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1478,6 +1658,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1494,6 +1676,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1510,6 +1694,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1526,6 +1712,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1558,6 +1746,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1574,6 +1764,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1590,6 +1782,8 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
+		assert(AutoParameterUtil::get_size(parameter) == pst_one);
+		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 

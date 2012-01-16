@@ -295,7 +295,8 @@ namespace eternal_lands
 
 		m_scene_view.update();
 
-		frustum = Frustum(m_scene_view.get_projection_view_matrix());
+		assert(m_scene_view.get_projection_view_matrix().size() > 0);
+		frustum = Frustum(m_scene_view.get_projection_view_matrix()[0]);
 
 		m_visible_lights.get_lights().clear();
 
@@ -366,7 +367,10 @@ namespace eternal_lands
 
 		m_visible_objects.sort(glm::vec3(m_scene_view.get_camera()));
 
-		cull_all_shadows();
+		if (m_scene_view.get_shadow_map_count() > 0)
+		{
+			cull_all_shadows();
+		}
 
 		m_map->get_light_tree().intersect(frustum, m_visible_lights);
 		m_visible_lights.sort(glm::vec3(m_scene_view.get_focus()));
@@ -389,7 +393,8 @@ namespace eternal_lands
 			m_shadow_map_change = false;
 		}
 
-		frustum = Frustum(m_scene_view.get_projection_view_matrices());
+		frustum = Frustum(
+			m_scene_view.get_split_projection_view_matrix());
 
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
@@ -422,12 +427,10 @@ namespace eternal_lands
 			glm::vec3(get_main_light_direction()), convex_bodys, 
 			m_map->get_object_tree().get_bounding_box().get_max().z);
 
-		camera = glm::vec4(0.0, 0.0, 0.0f, 1.0f);
-		camera = glm::inverse(
-			m_scene_view.get_shadow_view_matrix()) * camera;
+		camera = m_scene_view.get_camera();
 
 		frustum = Frustum(
-			m_scene_view.get_shadow_projection_view_matrices());
+			m_scene_view.get_shadow_projection_view_matrix());
 
 		m_shadow_objects.next_frame();
 #ifdef	DEBUG
@@ -496,7 +499,8 @@ namespace eternal_lands
 		m_scene_view.update_shadow_matrices(convex_bodys);
 	}
 
-	bool Scene::switch_program(const GlslProgramSharedPtr &program)
+	bool Scene::switch_program(const GlslProgramSharedPtr &program,
+		const Uint16 layer)
 	{
 		bool result;
 
@@ -510,12 +514,14 @@ namespace eternal_lands
 		if (m_program_vars_id != program->get_last_used())
 		{
 			program->set_parameter(apt_view_matrix,
-				m_scene_view.get_current_view_matrix());
+				m_scene_view.get_current_view_matrix(),
+				layer);
 			program->set_parameter(apt_projection_matrix,
-				m_scene_view.get_current_projection_matrix());
+				m_scene_view.get_current_projection_matrix(),
+				layer);
 			program->set_parameter(apt_projection_view_matrix,
 				m_scene_view.get_current_projection_view_matrix(
-					));
+					), layer);
 			program->set_parameter(apt_time, m_time);
 			program->set_parameter(apt_fog_data, m_fog);
 			program->set_parameter(apt_camera,
@@ -523,7 +529,7 @@ namespace eternal_lands
 			program->set_parameter(apt_shadow_camera,
 				m_scene_view.get_shadow_camera());
 			program->set_parameter(apt_shadow_texture_matrix,
-				m_scene_view.get_shadow_texture_matrices());
+				m_scene_view.get_shadow_texture_matrix());
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 
@@ -597,7 +603,7 @@ namespace eternal_lands
 	}
 
 	void Scene::draw_object_shadow(const ObjectSharedPtr &object,
-		const glm::uvec4 &layers)
+		const glm::ivec4 &layers)
 	{
 		Uint32 materials, i;
 		bool object_data_set;
@@ -625,6 +631,47 @@ namespace eternal_lands
 			{
 				m_state_manager.get_program()->set_parameter(
 					apt_layers, layers);
+				m_state_manager.get_program()->set_parameter(
+					apt_world_matrix,
+					object->get_world_matrix());
+				m_state_manager.get_program()->set_parameter(
+					apt_bones, object->get_bones());
+				object_data_set = true;
+			}
+
+			object->get_materials()[i].bind(m_state_manager);
+			m_state_manager.draw(i, 1);
+		}
+	}
+
+	void Scene::draw_object_shadow(const ObjectSharedPtr &object,
+		const Uint16 layer)
+	{
+		Uint32 materials, i;
+		bool object_data_set;
+
+		m_state_manager.switch_mesh(object->get_mesh());
+
+		materials = object->get_materials().size();
+
+		object_data_set = false;
+
+		for (i = 0; i < materials; ++i)
+		{
+			if (!object->get_materials()[i].get_shadow())
+			{
+				continue;
+			}
+
+			if (switch_program(object->get_materials(
+				)[i].get_effect()->get_shadow_program(),
+				layer))
+			{
+				object_data_set = false;
+			}
+
+			if (!object_data_set)
+			{
 				m_state_manager.get_program()->set_parameter(
 					apt_world_matrix,
 					object->get_world_matrix());
@@ -685,15 +732,15 @@ namespace eternal_lands
 		m_state_manager.switch_sample_alpha_to_coverage(
 			get_global_vars()->get_msaa_shadows());
 
-		m_scene_view.set_shadow_view(index);
+		m_scene_view.set_shadow_view(/*index*/);
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_shadow_objects.get_objects())
 		{
 			if (object.get_sub_frustums_mask(index))
 			{
-				draw_object_shadow(object.get_object(),
-					object.get_layers());
+				draw_object_shadow(object.get_object(), index);
+					//object.get_layers());
 			}
 		}
 
@@ -767,12 +814,6 @@ namespace eternal_lands
 			glPolygonOffset(1.25f, 32.0f);
 		}
 
-		if (get_global_vars()->get_msaa_shadows() && get_global_vars()->get_sample_shading())
-		{
-			glEnable(GL_SAMPLE_SHADING);
-			glMinSampleShadingARB(4.0f);
-		}
-
 		DEBUG_CHECK_GL_ERROR();
 
 		width = m_shadow_frame_buffer->get_width();
@@ -789,8 +830,7 @@ namespace eternal_lands
 			else
 			{
 				m_shadow_frame_buffer->bind_texture(i);
-				m_shadow_frame_buffer->clear(glm::vec4(1e38f),
-					1e38f);
+				m_shadow_frame_buffer->clear(glm::vec4(1e38f));
 			}
 		}
 
@@ -819,11 +859,6 @@ namespace eternal_lands
 			m_scene_view.get_view_port()[2],
 			m_scene_view.get_view_port()[3]);
 
-		if (get_global_vars()->get_msaa_shadows() && get_global_vars()->get_sample_shading())
-		{
-			glDisable(GL_SAMPLE_SHADING);
-		}
-
 		DEBUG_CHECK_GL_ERROR();
 	}
 
@@ -844,12 +879,6 @@ namespace eternal_lands
 		m_scene_view.set_default_view();
 
 		m_state_manager.switch_multisample(true);
-
-		if (get_global_vars()->get_sample_shading())
-		{
-			glEnable(GL_SAMPLE_SHADING);
-			glMinSampleShadingARB(4.0f);
-		}
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -876,11 +905,6 @@ namespace eternal_lands
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		CHECK_GL_ERROR();
-
-		if (get_global_vars()->get_sample_shading())
-		{
-			glDisable(GL_SAMPLE_SHADING);
-		}
 
 		m_program_vars_id++;
 		m_frame_id++;

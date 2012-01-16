@@ -78,11 +78,14 @@ namespace eternal_lands
 				const bool shadow_receiver);
 			void draw_object_depth(const ObjectSharedPtr &object);
 			void draw_object_shadow(const ObjectSharedPtr &object,
-				const glm::uvec4 &layers);
+				const glm::ivec4 &layers);
+			void draw_object_shadow(const ObjectSharedPtr &object,
+				const Uint16 layer);
 			void pick_object(const ObjectSharedPtr &object,
 				PairUint32SelectionTypeVector &ids);
 			bool switch_program(
-				const GlslProgramSharedPtr &program);
+				const GlslProgramSharedPtr &program,
+				const Uint16 layer = 0);
 			void cull_shadows(const glm::vec3 &camera,
 				const Uint16 index);
 			void cull_all_shadows();

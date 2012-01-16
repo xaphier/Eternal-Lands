@@ -20,13 +20,6 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>shadow_view_matrix</name>
-     <type>mat4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>shadow_map_data</name>
      <type>vec3</type>
      <qualifier>out</qualifier>

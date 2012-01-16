@@ -31,7 +31,7 @@ namespace eternal_lands
 	{
 		private:
 			ObjectSharedPtr m_object;
-			glm::uvec4 m_layers;
+			glm::ivec4 m_layers;
 			float m_transparency;
 			float m_distance;
 			SubFrustumsMask m_sub_frustums_mask;
@@ -107,7 +107,7 @@ namespace eternal_lands
 				return m_sub_frustums_mask[index];
 			}
 
-			inline const glm::uvec4 &get_layers() const
+			inline const glm::ivec4 &get_layers() const
 			{
 				return m_layers;
 			}

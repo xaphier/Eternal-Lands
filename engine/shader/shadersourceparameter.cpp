@@ -142,6 +142,8 @@ namespace eternal_lands
 
 		array_size = get_array_size(sizes);
 
+		assert(array_size > 0);
+
 		if ((array_size > 1) || (get_size() != pst_one))
 		{
 			str << UTF8("[") << array_size << UTF8("]");

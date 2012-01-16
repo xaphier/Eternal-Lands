@@ -16,7 +16,7 @@
      <name>view_matrix</name>
      <type>mat4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
+     <size>layer_count</size>
      <scale>1</scale>
     </parameter>
     <parameter>
@@ -27,7 +27,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>view_position = vec3(view_matrix * vec4(world_position, 1.0));
+   <source>view_position = vec3(view_matrix[0] * vec4(world_position, 1.0));
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
