@@ -376,6 +376,7 @@ void change_var(int * var)
 	*var= !*var;
 }
 
+#ifndef MAP_EDITOR
 static void change_show_action_bar(int * var)
 {
 	*var= !*var;
@@ -383,7 +384,6 @@ static void change_show_action_bar(int * var)
 		init_stats_display();
 }
 
-#ifndef MAP_EDITOR
 void change_minimap_scale(float * var, float * value)
 {
 	int shown = 0;
