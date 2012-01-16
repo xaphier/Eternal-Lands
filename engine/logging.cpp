@@ -548,7 +548,7 @@ namespace eternal_lands
 		}
 
 		log_message(llt_error, boost::diagnostic_information(
-			exception), throw_file, throw_line);
+			exception), file, line);
 	}
 
 	void log_exception(const std::exception &exception,
