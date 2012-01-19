@@ -2045,10 +2045,6 @@ namespace eternal_lands
 		ShaderVersionType version_type;
 		bool use_block, use_alias, use_in_out;
 
-		use_block = true;
-		use_alias = true;
-		use_in_out = true;
-
 		sources = build_sources(description);
 
 		vertex = UTF8("");
@@ -2084,6 +2080,12 @@ namespace eternal_lands
 			std::min(get_light_count(), light_count),
 			get_global_vars()->get_shadow_map_count(),
 			layer_count);
+
+		use_block = (data.get_version() >= svt_150) &&
+			get_global_vars()->get_use_block();
+		use_alias = get_global_vars()->get_use_alias();
+		use_in_out = (data.get_version() >= svt_130) &&
+			get_global_vars()->get_use_in_out();
 
 		array_sizes[pst_light_count] = data.get_light_count();
 		array_sizes[pst_bone_count] = get_bone_count();
@@ -2177,7 +2179,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			if ((data.get_version() >= svt_130) && use_in_out)
+			if (use_in_out)
 			{
 				prefix = UTF8("in ");
 			}
@@ -2197,7 +2199,7 @@ namespace eternal_lands
 		vertex_source << UTF8("\n");
 		vertex_source << UTF8("/* vertex shader output */\n");
 
-		if ((data.get_version() >= svt_150) && use_block)
+		if (use_block)
 		{
 			if ((varyings.size() > 0) ||
 				(geometry_in_parameters.size() > 0))
@@ -2223,7 +2225,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			if ((data.get_version() >= svt_130) && use_in_out)
+			if (use_in_out)
 			{
 				prefix = UTF8("out ");
 			}
@@ -2312,7 +2314,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			if ((data.get_version() >= svt_130) && use_in_out)
+			if (use_in_out)
 			{
 				prefix = UTF8("in ");
 			}
@@ -2351,7 +2353,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			if ((data.get_version() >= svt_130) && use_in_out)
+			if (use_in_out)
 			{
 				prefix = UTF8("out ");
 			}
@@ -2398,7 +2400,7 @@ namespace eternal_lands
 		fragment_source << UTF8("\n");
 		fragment_source << UTF8("/* fragment shader input */\n");
 
-		if ((data.get_version() >= svt_150) && use_block)
+		if (use_block)
 		{
 			if ((varyings.size() > 0) ||
 				(geometry_out_parameters.size() > 0))
@@ -2424,7 +2426,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			if ((data.get_version() >= svt_130) && use_in_out)
+			if (use_in_out)
 			{
 				prefix =  UTF8("in ");
 			}
