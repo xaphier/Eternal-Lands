@@ -81,8 +81,7 @@ namespace eternal_lands
 			0x00
 		};
 
-		void rle_decode(const Uint8* input,
-			AbstractWriteMemoryBuffer &buffer)
+		void rle_decode(const Uint8* input, AbstractWriteMemory &buffer)
 		{
 			Uint64 src, dst, len, size;
 			Uint8* ptr;

@@ -32,12 +32,12 @@ namespace eternal_lands
 
 		public:
 			VertexStreams(const VertexFormatSharedPtr &format,
-				const AbstractWriteMemoryBufferSharedPtrArray
+				const AbstractWriteMemorySharedPtrArray
 					&memory, const Uint32 vertex_count,
 					const bool use_simd);
 			VertexStreams(const VertexFormatSharedPtr &format,
-				const MemoryBufferSharedPtrVector &buffers,
-				const Uint32 vertex_count,
+				const AbstractReadWriteMemorySharedPtrVector
+					&buffers, const Uint32 vertex_count,
 				const bool use_simd);
 			~VertexStreams() throw();
 			void set(const VertexSemanticType semantic,

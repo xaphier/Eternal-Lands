@@ -9,7 +9,7 @@
 #include "exceptions.hpp"
 #include "filesystem.hpp"
 #include "reader.hpp"
-#include "abstractreadmemorybuffer.hpp"
+#include "abstractreadmemory.hpp"
 
 namespace eternal_lands
 {

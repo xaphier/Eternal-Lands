@@ -7,7 +7,7 @@
 
 #include "zipfile.hpp"
 #include "zip/unzip.h"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 #include "reader.hpp"
 #include "utf.hpp"
 #include "exceptions.hpp"
@@ -27,7 +27,7 @@ namespace eternal_lands
 				ZipFileReader(const unzFile file,
 					const unz64_file_pos &position);
 				~ZipFileReader() throw();
-				MemoryBufferSharedPtr get_buffer();
+				ReadWriteMemorySharedPtr get_buffer();
 				Uint64 get_size();
 
 		};
@@ -54,11 +54,12 @@ namespace eternal_lands
 			return info.uncompressed_size;
 		}
 
-		MemoryBufferSharedPtr ZipFileReader::get_buffer()
+		ReadWriteMemorySharedPtr ZipFileReader::get_buffer()
 		{
-			MemoryBufferSharedPtr buffer;
+			ReadWriteMemorySharedPtr buffer;
 
-			buffer = boost::make_shared<MemoryBuffer>(get_size());
+			buffer = boost::make_shared<ReadWriteMemory>(
+				get_size());
 
 			unzReadCurrentFile(m_file, buffer->get_ptr(),
 				buffer->get_size());

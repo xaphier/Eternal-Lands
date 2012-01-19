@@ -6,13 +6,13 @@
  ****************************************************************************/
 
 #include "vertexbuffers.hpp"
-#include "memorybuffer.hpp"
+#include "abstractreadwritememory.hpp"
 
 namespace eternal_lands
 {
 
 	VertexBuffers::VertexBuffers(const VertexFormatSharedPtr &format,
-		const MemoryBufferSharedPtrVector &buffers,
+		const AbstractReadWriteMemorySharedPtrVector &buffers,
 		const Uint32 vertex_count, const bool use_simd):
 		VertexStreams(format, buffers, vertex_count, use_simd),
 			m_buffers(buffers)

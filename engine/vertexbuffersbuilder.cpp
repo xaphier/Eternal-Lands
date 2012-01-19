@@ -7,7 +7,7 @@
 
 #include "vertexbuffersbuilder.hpp"
 #include "vertexformat.hpp"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 #include "vertexbuffers.hpp"
 
 namespace eternal_lands
@@ -17,8 +17,8 @@ namespace eternal_lands
 		const VertexFormatSharedPtr &vertex_format,
 		const Uint32 vertex_count, const bool use_simd)
 	{
-		MemoryBufferSharedPtr buffer;
-		MemoryBufferSharedPtrVector buffers;
+		ReadWriteMemorySharedPtr buffer;
+		AbstractReadWriteMemorySharedPtrVector buffers;
 		VertexBuffersSharedPtr result;
 		Uint32 i;
 		Uint64 size;
@@ -29,7 +29,8 @@ namespace eternal_lands
 			{
 				size = vertex_format->get_vertex_elements(
 					i).get_stride() * vertex_count;
-				buffer = boost::make_shared<MemoryBuffer>(size);
+				buffer = boost::make_shared<ReadWriteMemory>(
+					size);
 				buffers.push_back(buffer);
 			}
 		}

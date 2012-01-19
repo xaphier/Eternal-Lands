@@ -1,40 +1,48 @@
 /****************************************************************************
- *            abstractreadmemorybuffer.hpp
+ *            mappedhardwarewritememory.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_8a38dde6_edb3_4e7e_95bb_1dba5680411a
-#define	UUID_8a38dde6_edb3_4e7e_95bb_1dba5680411a
+#ifndef	UUID_6d5a0d7a_874e_4cea_b2aa_9c2dcc7ef07f
+#define	UUID_6d5a0d7a_874e_4cea_b2aa_9c2dcc7ef07f
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "abstractwritememory.hpp"
+#include "hardwarebuffer.hpp"
 
 /**
  * @file
- * @brief The @c class AbstractReadMemoryBuffer.
- * This file contains the @c class AbstractReadMemoryBuffer.
+ * @brief The @c class HardwareWriteMemory.
+ * This file contains the @c class HardwareWriteMemory.
  */
 namespace eternal_lands
 {
 
-	class AbstractReadMemoryBuffer: public boost::noncopyable
+	class MappedHardwareWriteMemory: public AbstractWriteMemory
 	{
-		protected:
-			/**
-			 * Default constructor.
-			 */
-			AbstractReadMemoryBuffer();
+		private:
+			HardwareBufferSharedPtr m_buffer;
+			void* m_ptr;
+			const HardwareBufferType m_type;
 
 		public:
 			/**
+			 * Default constructor.
+			 */
+			MappedHardwareWriteMemory(
+				const HardwareBufferSharedPtr &buffer,
+				const HardwareBufferType type);
+
+			/**
 			 * Default destructor.
 			 */
-			virtual ~AbstractReadMemoryBuffer() throw();
+			virtual ~MappedHardwareWriteMemory() throw();
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -42,7 +50,7 @@ namespace eternal_lands
 			 * Gets the pointer of the memory.
 			 * @return Returns the pointer of the memory.
 			 */
-			virtual const void* get_ptr() const = 0;
+			virtual void* get_ptr();
 
 			/**
 			 * @brief Gets the size of the memory.
@@ -50,10 +58,15 @@ namespace eternal_lands
 			 * Gets the size of the memory.
 			 * @return Returns the size of the memory.
 			 */
-			virtual Uint64 get_size() const = 0;
+			virtual Uint64 get_size() const;
+
+			inline HardwareBufferType get_type() const
+			{
+				return m_type;
+			}
 
 	};
 
 }
 
-#endif	/* UUID_8a38dde6_edb3_4e7e_95bb_1dba5680411a */
+#endif	/* UUID_6d5a0d7a_874e_4cea_b2aa_9c2dcc7ef07f */

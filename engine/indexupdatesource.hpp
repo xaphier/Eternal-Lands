@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 #include "primitiveutil.hpp"
 
 /**
@@ -32,7 +32,7 @@ namespace eternal_lands
 	class IndexUpdateSource
 	{
 		private:
-			MemoryBuffer m_indices;
+			ReadWriteMemory m_indices;
 			const SubMeshVector m_sub_meshs;
 			const Uint32 m_restart_index;
 			const PrimitiveType m_primitive_type;
@@ -84,7 +84,7 @@ namespace eternal_lands
 			 */
 			void write_index_buffer(
 				const Uint32Set &blocks,
-				const AbstractWriteMemoryBufferSharedPtr &buffer)
+				const AbstractWriteMemorySharedPtr &buffer)
 				const;
 
 	};

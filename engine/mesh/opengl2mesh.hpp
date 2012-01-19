@@ -77,16 +77,15 @@ namespace eternal_lands
 				return m_index_data.get() != 0;
 			}
 
-			virtual AbstractWriteMemoryBufferSharedPtr
+			virtual AbstractWriteMemorySharedPtr
 				get_vertex_buffer(const Uint16 index);
 			virtual void set_vertex_buffer(
-				const AbstractReadMemoryBufferSharedPtr &buffer,
+				const AbstractReadMemorySharedPtr &buffer,
 				const Uint16 index);
 			virtual void update_vertex_buffer(
-				const AbstractReadMemoryBufferSharedPtr &buffer,
+				const AbstractReadMemorySharedPtr &buffer,
 				const Uint16 index);
-			virtual AbstractWriteMemoryBufferSharedPtr
-				get_index_buffer();
+			virtual AbstractWriteMemorySharedPtr get_index_buffer();
 			virtual void init_vertices();
 			virtual void init_indices();
 

@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "textureformatutil.hpp"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 
 /**
  * @file
@@ -33,7 +33,7 @@ namespace eternal_lands
 	class Image
 	{
 		private:
-			MemoryBuffer m_buffer;
+			ReadWriteMemory m_buffer;
 			String m_name;
 			TextureFormatType m_texture_format;
 			Uint32Array3 m_sizes;
@@ -153,7 +153,7 @@ namespace eternal_lands
 					mipmap_level);
 			}
 
-			inline MemoryBuffer &get_buffer()
+			inline ReadWriteMemory &get_buffer()
 			{
 				return m_buffer;
 			}
@@ -349,14 +349,15 @@ namespace eternal_lands
 					mipmap_level);
 			}
 
-			inline const MemoryBuffer &get_buffer() const
+			inline const ReadWriteMemory &get_buffer() const
 			{
 				return m_buffer;
 			}
 
 			/**
 			 * @brief The number of channels.
-			 * Returns the number of channels, e.g. 3 for rgb, 4 for rgba etc.
+			 * Returns the number of channels, e.g. 3 for rgb,
+			 * 4 for rgba etc.
 			 * @return The number of channels.
 			 */
 			inline Uint16 get_channel_count() const
@@ -366,7 +367,8 @@ namespace eternal_lands
 
 			/**
 			 * @brief The size of the given mipmap level.
-			 * Returns the size of one face of the given mipmap level.
+			 * Returns the size of one face of the given mipmap
+			 * level.
 			 * @param mipmap_level The mipmap level to use.
 			 * @return The size of the given mipmap level.
 			 */

@@ -32,7 +32,7 @@ namespace eternal_lands
 				VertexSemanticTypePackDataMap;
 
 			const VertexFormatSharedPtr m_format;
-			const AbstractWriteMemoryBufferSharedPtr m_buffer;
+			const AbstractWriteMemorySharedPtr m_buffer;
 			VertexSemanticTypePackDataMap m_pack_datas;
 			Uint64 m_offset;
 			Uint32 m_stride;
@@ -41,9 +41,8 @@ namespace eternal_lands
 
 		public:
 			VertexStream(const VertexFormatSharedPtr &format,
-				const AbstractWriteMemoryBufferSharedPtr
-					&buffer, const Uint16 index,
-					const bool use_simd);
+				const AbstractWriteMemorySharedPtr &buffer,
+				const Uint16 index, const bool use_simd);
 			~VertexStream() throw();
 			void set(const VertexSemanticType semantic,
 				const glm::vec4 &data);
@@ -65,8 +64,8 @@ namespace eternal_lands
 				return m_format;
 			}
 
-			inline const AbstractWriteMemoryBufferSharedPtr
-				&get_buffer() const
+			inline const AbstractWriteMemorySharedPtr &get_buffer()
+				const
 			{
 				return m_buffer;
 			}

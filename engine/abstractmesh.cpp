@@ -51,7 +51,7 @@ namespace eternal_lands
 		const MeshDataToolSharedPtr &source, const bool static_indices,
 		const bool static_vertices)
 	{
-		AbstractWriteMemoryBufferSharedPtr buffer;
+		AbstractWriteMemorySharedPtr buffer;
 		Uint32 i;
 
 		if (source->get_vertex_count() == 0)
@@ -127,7 +127,7 @@ namespace eternal_lands
 		const VertexFormatSharedPtr &vertex_format,
 		const MeshDataToolSharedPtr &source, const bool static_vertices)
 	{
-		AbstractWriteMemoryBufferSharedPtr buffer;
+		AbstractWriteMemorySharedPtr buffer;
 		Uint32 i;
 
 		assert(source.get() != 0);
@@ -240,7 +240,7 @@ namespace eternal_lands
 		const IndexUpdateSourceSharedPtr &update,
 		const bool static_indices)
 	{
-		AbstractWriteMemoryBufferSharedPtr buffer;
+		AbstractWriteMemorySharedPtr buffer;
 
 		m_use_16_bit_indices = update->get_use_16_bit_indices();
 		m_index_count = update->get_count(blocks);
@@ -265,7 +265,7 @@ namespace eternal_lands
 		const SubMeshVector &sub_meshs,
 		const Uint32Vector &indices, const bool static_indices)
 	{
-		AbstractWriteMemoryBufferSharedPtr buffer;
+		AbstractWriteMemorySharedPtr buffer;
 		Uint32 i, count;
 
 		m_use_16_bit_indices = use_16_bit_indices;

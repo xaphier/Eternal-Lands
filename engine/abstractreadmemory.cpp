@@ -1,20 +1,20 @@
 /****************************************************************************
- *            abstractreadmemorybuffer.cpp
+ *            abstractreadmemory.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "abstractreadmemorybuffer.hpp"
+#include "abstractreadmemory.hpp"
 
 namespace eternal_lands
 {
 
-	AbstractReadMemoryBuffer::AbstractReadMemoryBuffer()
+	AbstractReadMemory::AbstractReadMemory()
 	{
 	}
 
-	AbstractReadMemoryBuffer::~AbstractReadMemoryBuffer() throw()
+	AbstractReadMemory::~AbstractReadMemory() throw()
 	{
 	}
 

@@ -1,5 +1,5 @@
 /****************************************************************************
- *            abstractwritememorybuffer.hpp
+ *            abstractwritememory.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -16,25 +16,25 @@
 
 /**
  * @file
- * @brief The @c class AbstractWriteMemoryBuffer.
- * This file contains the @c class AbstractWriteMemoryBuffer.
+ * @brief The @c class AbstractWriteMemory.
+ * This file contains the @c class AbstractWriteMemory.
  */
 namespace eternal_lands
 {
 
-	class AbstractWriteMemoryBuffer: public boost::noncopyable
+	class AbstractWriteMemory: public boost::noncopyable
 	{
 		protected:
 			/**
 			 * Default constructor.
 			 */
-			AbstractWriteMemoryBuffer();
+			AbstractWriteMemory();
 
 		public:
 			/**
 			 * Default destructor.
 			 */
-			virtual ~AbstractWriteMemoryBuffer() throw();
+			virtual ~AbstractWriteMemory() throw();
 
 			/**
 			 * @brief Gets the pointer of the memory.

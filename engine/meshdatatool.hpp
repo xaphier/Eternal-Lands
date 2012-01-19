@@ -219,7 +219,7 @@ namespace eternal_lands
 			 */
 			void write_index_buffer(
 				const bool use_16_bit_indices,
-				const AbstractWriteMemoryBufferSharedPtr &buffer)
+				const AbstractWriteMemorySharedPtr &buffer)
 				const;
 
 			/**

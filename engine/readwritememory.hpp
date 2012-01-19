@@ -1,5 +1,5 @@
 /****************************************************************************
- *            memorybuffer.hpp
+ *            readwritememory.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,17 +13,17 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractreadwritememorybuffer.hpp"
+#include "abstractreadwritememory.hpp"
 
 /**
  * @file
- * @brief The @c class MemoryBuffer.
- * This file contains the @c class MemoryBuffer.
+ * @brief The @c class ReadWriteMemory.
+ * This file contains the @c class ReadWriteMemory.
  */
 namespace eternal_lands
 {
 
-	class MemoryBuffer: public AbstractReadWriteMemoryBuffer
+	class ReadWriteMemory: public AbstractReadWriteMemory
 	{
 		private:
 			/**
@@ -44,12 +44,12 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			MemoryBuffer(const Uint64 size = 0);
+			ReadWriteMemory(const Uint64 size = 0);
 
 			/**
 			 * Default destructor.
 			 */
-			virtual ~MemoryBuffer() throw();
+			virtual ~ReadWriteMemory() throw();
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -82,10 +82,10 @@ namespace eternal_lands
 			 * @param size The new size of the memory.
 			 */
 			void resize(const Uint64 size);
-			void copy(const AbstractReadMemoryBuffer &memory_buffer,
+			void copy(const AbstractReadMemory &memory_buffer,
 				const Uint64 source_offset = 0,
 				const Uint64 dest_offset = 0);
-			void copy(const AbstractReadMemoryBuffer &memory_buffer,
+			void copy(const AbstractReadMemory &memory_buffer,
 				const Uint64 size,
 				const Uint64 source_offset = 0,
 				const Uint64 dest_offset = 0);

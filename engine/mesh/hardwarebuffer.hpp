@@ -121,11 +121,11 @@ namespace eternal_lands
 				const HardwareBufferUsageType usage);
 
 			void set(const HardwareBufferType type,
-				const AbstractReadMemoryBuffer	&buffer,
+				const AbstractReadMemory &buffer,
 				const HardwareBufferUsageType usage);
 
 			void update(const HardwareBufferType type,
-				const AbstractReadMemoryBuffer &buffer,
+				const AbstractReadMemory &buffer,
 				const Uint64 offset = 0);
 
 			/**

@@ -6,8 +6,8 @@
  ****************************************************************************/
 
 #include "packtool.hpp"
-#include "abstractreadmemorybuffer.hpp"
-#include "abstractwritememorybuffer.hpp"
+#include "abstractreadmemory.hpp"
+#include "abstractwritememory.hpp"
 #include "alignedvec4array.hpp"
 #include "simd/simd.hpp"
 #include "logging.hpp"
@@ -885,7 +885,7 @@ namespace eternal_lands
 		return unpack_values<type, w, z, y, x, true, true, true>(	\
 			*static_cast<const type*>(ptr));
 
-	glm::vec4 PackTool::unpack_vec4(const AbstractReadMemoryBuffer &buffer,
+	glm::vec4 PackTool::unpack_vec4(const AbstractReadMemory &buffer,
 		const Uint64 offset, const PackFormatType type)
 	{
 		glm::vec4 result;
@@ -1032,8 +1032,7 @@ namespace eternal_lands
 		return;
 
 	void PackTool::pack(const glm::vec4 &data, const Uint64 offset,
-		const PackFormatType pack_format,
-		AbstractWriteMemoryBuffer &buffer)
+		const PackFormatType pack_format, AbstractWriteMemory &buffer)
 	{
 		void* ptr;
 
@@ -1102,8 +1101,7 @@ namespace eternal_lands
 
 	void PackTool::pack(const Vec4Vector &data, const Uint64 offset,
 		const Uint32 stride, const Uint32 count,
-		const PackFormatType pack_format,
-		AbstractWriteMemoryBuffer &buffer)
+		const PackFormatType pack_format, AbstractWriteMemory &buffer)
 	{
 		Uint32 i;
 
@@ -1119,7 +1117,7 @@ namespace eternal_lands
 	void PackTool::pack(const AlignedVec4Array &data, const Uint64 offset,
 		const Uint32 stride, const Uint32 count,
 		const PackFormatType pack_format, const bool use_simd,
-		AbstractWriteMemoryBuffer &buffer)
+		AbstractWriteMemory &buffer)
 	{
 		float* source;
 		Uint8* ptr;

@@ -8,7 +8,7 @@
 #include "filesystem.hpp"
 #include "exceptions.hpp"
 #include "abstractarchive.hpp"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 #include "reader.hpp"
 #include "zipfile.hpp"
 #include "decompressutil.hpp"
@@ -66,7 +66,7 @@ namespace eternal_lands
 			const
 		{
 			ReaderSharedPtr reader;
-			MemoryBufferSharedPtr buffer;
+			ReadWriteMemorySharedPtr buffer;
 			Uint64 size;
 			std::ifstream stream;
 			StringType path, gz_path, xz_path;
@@ -103,7 +103,7 @@ namespace eternal_lands
 
 			stream.open(path.c_str(), std::ifstream::binary);
 
-			buffer = boost::make_shared<MemoryBuffer>(size);
+			buffer = boost::make_shared<ReadWriteMemory>(size);
 
 			stream.read(static_cast<char*>(buffer->get_ptr()),
 				buffer->get_size());
@@ -144,7 +144,7 @@ namespace eternal_lands
 		}
 
 		Uint8Array20 get_file_sha1(
-			const AbstractReadMemoryBufferSharedPtr &buffer)
+			const AbstractReadMemorySharedPtr &buffer)
 		{
 			Uint8Array20 digest;
 
@@ -156,7 +156,7 @@ namespace eternal_lands
 
 		Uint8Array20 get_file_sha1(const String &file_name)
 		{
-			MemoryBufferSharedPtr buffer;
+			ReadWriteMemorySharedPtr buffer;
 			Uint64 size;
 			std::ifstream stream;
 			StringType path, gz_path, xz_path;
@@ -174,7 +174,7 @@ namespace eternal_lands
 
 			stream.open(path.c_str(), std::ifstream::binary);
 
-			buffer = boost::make_shared<MemoryBuffer>(size);
+			buffer = boost::make_shared<ReadWriteMemory>(size);
 
 			stream.read(static_cast<char*>(buffer->get_ptr()),
 				buffer->get_size());

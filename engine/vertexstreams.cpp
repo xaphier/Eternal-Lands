@@ -6,16 +6,16 @@
  ****************************************************************************/
 
 #include "vertexstreams.hpp"
-#include "abstractwritememorybuffer.hpp"
+#include "abstractwritememory.hpp"
 #include "vertexformat.hpp"
 #include "vertexstream.hpp"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 
 namespace eternal_lands
 {
 
 	VertexStreams::VertexStreams(const VertexFormatSharedPtr &format,
-		const AbstractWriteMemoryBufferSharedPtrArray &memory,
+		const AbstractWriteMemorySharedPtrArray &memory,
 		const Uint32 vertex_count, const bool use_simd):
 		m_format(format), m_vertex_count(vertex_count)
 	{
@@ -34,7 +34,7 @@ namespace eternal_lands
 	}
 
 	VertexStreams::VertexStreams(const VertexFormatSharedPtr &format,
-		const MemoryBufferSharedPtrVector &buffers,
+		const AbstractReadWriteMemorySharedPtrVector &buffers,
 		const Uint32 vertex_count, const bool use_simd):
 		m_format(format), m_vertex_count(vertex_count)
 	{

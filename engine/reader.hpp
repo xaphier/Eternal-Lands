@@ -31,24 +31,24 @@ namespace eternal_lands
 	class Reader: public boost::enable_shared_from_this<Reader>
 	{
 		private:
-			AbstractReadMemoryBufferSharedPtr m_buffer;
+			AbstractReadMemorySharedPtr m_buffer;
 			String m_name;
 			Uint64 m_position;
 
 		public:
-			Reader(const AbstractReadMemoryBufferSharedPtr &buffer,
+			Reader(const AbstractReadMemorySharedPtr &buffer,
 				const String &name);
 			Reader(const Reader &reader);
 			~Reader() throw();
 
 			void read(void* buffer, const Uint64 size);
-			void read(MemoryBuffer &buffer);
-			void read_le(MemoryBuffer &buffer,
+			void read(ReadWriteMemory &buffer);
+			void read_le(ReadWriteMemory &buffer,
 				const Uint16 swap_size);
-			void read_be(MemoryBuffer &buffer,
+			void read_be(ReadWriteMemory &buffer,
 				const Uint16 swap_size);
 
-			const AbstractReadMemoryBufferSharedPtr &get_buffer()
+			const AbstractReadMemorySharedPtr &get_buffer()
 				const
 			{
 				return m_buffer;

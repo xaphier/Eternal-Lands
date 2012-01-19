@@ -1,48 +1,48 @@
 /****************************************************************************
- *            mappedhardwarewritememorybuffer.hpp
+ *            hardwarewritememory.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_6d5a0d7a_874e_4cea_b2aa_9c2dcc7ef07f
-#define	UUID_6d5a0d7a_874e_4cea_b2aa_9c2dcc7ef07f
+#ifndef	UUID_c0c47815_78b4_49c8_97b8_dfab11e205ad
+#define	UUID_c0c47815_78b4_49c8_97b8_dfab11e205ad
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractwritememorybuffer.hpp"
+#include "readwritememory.hpp"
 #include "hardwarebuffer.hpp"
 
 /**
  * @file
- * @brief The @c class HardwareWriteMemoryBuffer.
- * This file contains the @c class HardwareWriteMemoryBuffer.
+ * @brief The @c class HardwareWriteMemory.
+ * This file contains the @c class HardwareWriteMemory.
  */
 namespace eternal_lands
 {
 
-	class MappedHardwareWriteMemoryBuffer: public AbstractWriteMemoryBuffer
+	class HardwareWriteMemory: public AbstractWriteMemory
 	{
 		private:
+			ReadWriteMemory m_memory_buffer;
 			HardwareBufferSharedPtr m_buffer;
-			void* m_ptr;
 			const HardwareBufferType m_type;
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			MappedHardwareWriteMemoryBuffer(
+			HardwareWriteMemory(
 				const HardwareBufferSharedPtr &buffer,
 				const HardwareBufferType type);
 
 			/**
 			 * Default destructor.
 			 */
-			virtual ~MappedHardwareWriteMemoryBuffer() throw();
+			virtual ~HardwareWriteMemory() throw();
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -69,4 +69,4 @@ namespace eternal_lands
 
 }
 
-#endif	/* UUID_6d5a0d7a_874e_4cea_b2aa_9c2dcc7ef07f */
+#endif	/* UUID_c0c47815_78b4_49c8_97b8_dfab11e205ad */

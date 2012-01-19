@@ -8,7 +8,7 @@
 #include "jpegimage.hpp"
 #include "exceptions.hpp"
 #include "logging.hpp"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 #include "reader.hpp"
 #include "image.hpp"
 
@@ -160,7 +160,7 @@ namespace eternal_lands
 		{
 			ImageSharedPtr image;
 			JSAMPROW rowptr[1];
-			MemoryBuffer buffer;
+			ReadWriteMemory buffer;
 			Uint32Array3 sizes;
 			TextureFormatType texture_format;
 
@@ -262,7 +262,7 @@ namespace eternal_lands
 			TextureFormatType &texture_format, Uint32Array3 &sizes,
 			Uint16 &mipmaps)
 		{
-			MemoryBuffer buffer;
+			ReadWriteMemory buffer;
 
 			reader->read(buffer);
 

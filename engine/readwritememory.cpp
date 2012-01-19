@@ -1,41 +1,41 @@
 /****************************************************************************
- *            memorybuffer.cpp
+ *            readwritememory.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 #include "exceptions.hpp"
 
 namespace eternal_lands
 {
 
-	MemoryBuffer::MemoryBuffer(const Uint64 size): m_size(0)
+	ReadWriteMemory::ReadWriteMemory(const Uint64 size): m_size(0)
 	{
 		resize(size);
 	}
 
-	MemoryBuffer::~MemoryBuffer() throw()
+	ReadWriteMemory::~ReadWriteMemory() throw()
 	{
 	}
 
-	void* MemoryBuffer::get_ptr()
-	{
-		return m_ptr.get();
-	}
-
-	const void* MemoryBuffer::get_ptr() const
+	void* ReadWriteMemory::get_ptr()
 	{
 		return m_ptr.get();
 	}
 
-	Uint64 MemoryBuffer::get_size() const
+	const void* ReadWriteMemory::get_ptr() const
+	{
+		return m_ptr.get();
+	}
+
+	Uint64 ReadWriteMemory::get_size() const
 	{
 		return m_size;
 	}
 
-	void MemoryBuffer::resize(const Uint64 size)
+	void ReadWriteMemory::resize(const Uint64 size)
 	{
 		Uint8ScopedArray ptr;
 
@@ -66,7 +66,7 @@ namespace eternal_lands
 		m_size = size;
 	}
 
-	void MemoryBuffer::copy(const AbstractReadMemoryBuffer &memory_buffer,
+	void ReadWriteMemory::copy(const AbstractReadMemory &memory_buffer,
 		const Uint64 size, const Uint64 source_offset,
 		const Uint64 dest_offset)
 	{
@@ -87,7 +87,7 @@ namespace eternal_lands
 			memory_buffer.get_ptr()) + source_offset, size);
 	}
 
-	void MemoryBuffer::copy(const AbstractReadMemoryBuffer &memory_buffer,
+	void ReadWriteMemory::copy(const AbstractReadMemory &memory_buffer,
 		const Uint64 source_offset, const Uint64 dest_offset)
 	{
 		copy(memory_buffer, memory_buffer.get_size(), source_offset,

@@ -23,15 +23,12 @@ namespace eternal_lands
 	class DecompresszUtil
 	{
 		public:
-			static MemoryBufferSharedPtr decompress_xz(
-				const AbstractReadMemoryBufferSharedPtr
-					&buffer);
-			static MemoryBufferSharedPtr decompress_gz(
-				const AbstractReadMemoryBufferSharedPtr
-					&buffer);
-			static AbstractReadMemoryBufferSharedPtr decompress(
-				const AbstractReadMemoryBufferSharedPtr
-					&buffer);
+			static ReadWriteMemorySharedPtr decompress_xz(
+				const AbstractReadMemorySharedPtr &buffer);
+			static ReadWriteMemorySharedPtr decompress_gz(
+				const AbstractReadMemorySharedPtr &buffer);
+			static AbstractReadMemorySharedPtr decompress(
+				const AbstractReadMemorySharedPtr &buffer);
 
 	};
 

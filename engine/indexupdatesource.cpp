@@ -91,7 +91,7 @@ namespace eternal_lands
 	}
 
 	void IndexUpdateSource::write_index_buffer(const Uint32Set &blocks,
-		const AbstractWriteMemoryBufferSharedPtr &buffer) const
+		const AbstractWriteMemorySharedPtr &buffer) const
 	{
 		Uint64 offset, size, count;
 

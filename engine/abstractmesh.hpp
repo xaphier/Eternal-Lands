@@ -59,19 +59,19 @@ namespace eternal_lands
 			virtual void init_vertices() = 0;
 			virtual void init_indices() = 0;
 
-			virtual AbstractWriteMemoryBufferSharedPtr
+			virtual AbstractWriteMemorySharedPtr
 				get_vertex_buffer(const Uint16 index) = 0;
 
 			virtual void set_vertex_buffer(
-				const AbstractReadMemoryBufferSharedPtr &buffer,
+				const AbstractReadMemorySharedPtr &buffer,
 				const Uint16 index) = 0;
 
 			virtual void update_vertex_buffer(
-				const AbstractReadMemoryBufferSharedPtr &buffer,
+				const AbstractReadMemorySharedPtr &buffer,
 				const Uint16 index) = 0;
 
-			virtual AbstractWriteMemoryBufferSharedPtr
-				get_index_buffer() = 0;
+			virtual AbstractWriteMemorySharedPtr get_index_buffer()
+				= 0;
 
 			inline const VertexFormatSharedPtr &get_vertex_format()
 				const

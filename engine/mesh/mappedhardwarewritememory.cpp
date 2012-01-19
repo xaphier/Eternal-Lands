@@ -1,34 +1,34 @@
 /****************************************************************************
- *            mappedhardwarewritememorybuffer.cpp
+ *            mappedhardwarewritememory.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "mappedhardwarewritememorybuffer.hpp"
+#include "mappedhardwarewritememory.hpp"
 
 namespace eternal_lands
 {
 
-	MappedHardwareWriteMemoryBuffer::MappedHardwareWriteMemoryBuffer(
+	MappedHardwareWriteMemory::MappedHardwareWriteMemory(
 		const HardwareBufferSharedPtr &buffer,
 		const HardwareBufferType type): m_buffer(buffer), m_type(type)
 	{
 		m_ptr = m_buffer->map(get_type(), hbat_write_only);
 	}
 
-	MappedHardwareWriteMemoryBuffer::~MappedHardwareWriteMemoryBuffer()
+	MappedHardwareWriteMemory::~MappedHardwareWriteMemory()
 		throw()
 	{
 		m_buffer->unmap(get_type());
 	}
 
-	void* MappedHardwareWriteMemoryBuffer::get_ptr()
+	void* MappedHardwareWriteMemory::get_ptr()
 	{
 		return m_ptr;
 	}
 
-	Uint64 MappedHardwareWriteMemoryBuffer::get_size() const
+	Uint64 MappedHardwareWriteMemory::get_size() const
 	{
 		return m_buffer->get_size();
 	}

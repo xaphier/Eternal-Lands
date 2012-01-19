@@ -9,7 +9,7 @@
 #include "vertexelement.hpp"
 #include "vertexelements.hpp"
 #include "packtool.hpp"
-#include "abstractwritememorybuffer.hpp"
+#include "abstractwritememory.hpp"
 #include "triangles.hpp"
 #include "exceptions.hpp"
 #include "submesh.hpp"
@@ -1037,7 +1037,7 @@ namespace eternal_lands
 	}
 
 	void MeshDataTool::write_index_buffer(const bool use_16_bit_indices,
-		const AbstractWriteMemoryBufferSharedPtr &buffer) const
+		const AbstractWriteMemorySharedPtr &buffer) const
 	{
 		void* src;
 		Uint32 i;

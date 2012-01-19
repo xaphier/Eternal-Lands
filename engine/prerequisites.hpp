@@ -183,10 +183,10 @@ namespace eternal_lands
 	class AbstractArchive;
 	class AbstractFrameBuffer;
 	class AbstractMesh;
-	class AbstractReadMemoryBuffer;
-	class AbstractReadWriteMemoryBuffer;
+	class AbstractReadMemory;
+	class AbstractReadWriteMemory;
 	class AbstractRStarTreeVisitor;
-	class AbstractWriteMemoryBuffer;
+	class AbstractWriteMemory;
 	class Actor;
 	class ActorDataCache;
 	class ActorTextureBuilder;
@@ -215,7 +215,7 @@ namespace eternal_lands
 	class Light;
 	class Lua;
 	class Map;
-	class MemoryBuffer;
+	class ReadWriteMemory;
 	class Material;
 	class MaterialDescription;
 	class MeshBuilder;
@@ -282,9 +282,9 @@ namespace eternal_lands
 
 	SHARED_PTR(AbstractFrameBuffer);
 	SHARED_PTR(AbstractMesh);
-	SHARED_PTR(AbstractReadMemoryBuffer);
-	SHARED_PTR(AbstractReadWriteMemoryBuffer);
-	SHARED_PTR(AbstractWriteMemoryBuffer);
+	SHARED_PTR(AbstractReadMemory);
+	SHARED_PTR(AbstractReadWriteMemory);
+	SHARED_PTR(AbstractWriteMemory);
 	SHARED_PTR(Actor);
 	SHARED_PTR(ActorDataCache);
 	SHARED_PTR(ActorTextureBuilder);
@@ -302,7 +302,7 @@ namespace eternal_lands
 	SHARED_PTR(Image);
 	SHARED_PTR(IndexUpdateSource);
 	SHARED_PTR(Light);
-	SHARED_PTR(MemoryBuffer);
+	SHARED_PTR(ReadWriteMemory);
 	SHARED_PTR(MeshBuilder);
 	SHARED_PTR(MeshCache);
 	SHARED_PTR(MeshDataCache);
@@ -333,7 +333,7 @@ namespace eternal_lands
 	WEAK_PTR(ShaderSourceBuilder);
 	WEAK_PTR(TextureCache);
 
-	VECTOR(AbstractReadWriteMemoryBufferSharedPtr);
+	VECTOR(AbstractReadWriteMemorySharedPtr);
 	VECTOR(ActorSharedPtr);
 	VECTOR(BoundedObjectSharedPtr);
 	VECTOR(BoundingBox);
@@ -342,7 +342,7 @@ namespace eternal_lands
 	VECTOR(LightSharedPtr);
 	VECTOR(Material);
 	VECTOR(MaterialDescription);
-	VECTOR(MemoryBufferSharedPtr);
+	VECTOR(ReadWriteMemorySharedPtr);
 	VECTOR(MeshDrawData);
 	VECTOR(ObjectData);
 	VECTOR(ObjectDescription);
@@ -376,8 +376,8 @@ namespace eternal_lands
 	typedef boost::ptr_vector<AbstractArchive> AbstractArchiveVector;
 	typedef boost::ptr_array<VertexStream, vertex_stream_count>
 		VertexStreamArray;
-	typedef boost::array<AbstractWriteMemoryBufferSharedPtr,
-		vertex_stream_count> AbstractWriteMemoryBufferSharedPtrArray;
+	typedef boost::array<AbstractWriteMemorySharedPtr,
+		vertex_stream_count> AbstractWriteMemorySharedPtrArray;
 	typedef boost::ptr_vector<VertexStream> VertexStreamVector;
 
 	typedef boost::variant<bool, Sint64, float,

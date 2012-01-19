@@ -1,5 +1,5 @@
 /****************************************************************************
- *            abstractreadwritememorybuffer.hpp
+ *            abstractreadwritememory.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,31 +13,31 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractreadmemorybuffer.hpp"
-#include "abstractwritememorybuffer.hpp"
+#include "abstractreadmemory.hpp"
+#include "abstractwritememory.hpp"
 
 /**
  * @file
- * @brief The @c class AbstractReadWriteMemoryBuffer.
- * This file contains the @c class AbstractReadWriteMemoryBuffer.
+ * @brief The @c class AbstractReadWriteMemory.
+ * This file contains the @c class AbstractReadWriteMemory.
  */
 namespace eternal_lands
 {
 
-	class AbstractReadWriteMemoryBuffer: public AbstractReadMemoryBuffer,
-		public AbstractWriteMemoryBuffer
+	class AbstractReadWriteMemory: public AbstractReadMemory,
+		public AbstractWriteMemory
 	{
 		protected:
 			/**
 			 * Default constructor.
 			 */
-			AbstractReadWriteMemoryBuffer();
+			AbstractReadWriteMemory();
 
 		public:
 			/**
 			 * Default destructor.
 			 */
-			virtual ~AbstractReadWriteMemoryBuffer() throw();
+			virtual ~AbstractReadWriteMemory() throw();
 
 	};
 

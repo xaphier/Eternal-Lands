@@ -27,23 +27,23 @@ namespace eternal_lands
 	{
 		private:
 			const VertexFormatSharedPtr m_format;
-			MemoryBufferSharedPtrVector m_buffers;
+			AbstractReadWriteMemorySharedPtrVector m_buffers;
 
 		public:
 			VertexBuffers(const VertexFormatSharedPtr &format,
-				const MemoryBufferSharedPtrVector &buffers,
-				const Uint32 vertex_count,
+				const AbstractReadWriteMemorySharedPtrVector
+					&buffers, const Uint32 vertex_count,
 				const bool use_simd);
 			~VertexBuffers() throw();
 
-			inline const MemoryBufferSharedPtrVector &get_buffers()
-				const
+			inline const AbstractReadWriteMemorySharedPtrVector
+				&get_buffers() const
 			{
 				return m_buffers;
 			}
 
-			inline const MemoryBufferSharedPtr &get_buffer(
-				const Uint32 index) const
+			inline const AbstractReadWriteMemorySharedPtr
+				&get_buffer(const Uint32 index) const
 			{
 				assert(index < m_buffers.size());
 

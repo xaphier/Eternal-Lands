@@ -7,7 +7,7 @@
 
 #include "hardwarebuffer.hpp"
 #include "exceptions.hpp"
-#include "memorybuffer.hpp"
+#include "abstractreadmemory.hpp"
 
 namespace eternal_lands
 {
@@ -37,7 +37,7 @@ namespace eternal_lands
 	}
 
 	void HardwareBuffer::set(const HardwareBufferType type,
-		const AbstractReadMemoryBuffer &buffer,
+		const AbstractReadMemory &buffer,
 		const HardwareBufferUsageType usage)
 	{
 		m_size = buffer.get_size();
@@ -46,7 +46,7 @@ namespace eternal_lands
 	}
 
 	void HardwareBuffer::update(const HardwareBufferType type,
-		const AbstractReadMemoryBuffer &buffer, const Uint64 offset)
+		const AbstractReadMemory &buffer, const Uint64 offset)
 	{
 		assert(get_size() >= (offset + buffer.get_size()));
 

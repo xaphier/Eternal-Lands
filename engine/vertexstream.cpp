@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "vertexstream.hpp"
-#include "abstractwritememorybuffer.hpp"
+#include "abstractwritememory.hpp"
 #include "vertexformat.hpp"
 #include "exceptions.hpp"
 #include "alignedvec4array.hpp"
@@ -53,10 +53,9 @@ namespace eternal_lands
 	}
 
 	VertexStream::VertexStream(const VertexFormatSharedPtr &format,
-		const AbstractWriteMemoryBufferSharedPtr &buffer,
-		const Uint16 index, const bool use_simd): m_format(format),
-		m_buffer(buffer), m_offset(0), m_index(index),
-		m_use_simd(use_simd)
+		const AbstractWriteMemorySharedPtr &buffer, const Uint16 index,
+		const bool use_simd): m_format(format), m_buffer(buffer),
+		m_offset(0), m_index(index), m_use_simd(use_simd)
 	{
 		BOOST_FOREACH(const VertexElement &element,
 			m_format->get_vertex_elements(

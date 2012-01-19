@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "decompressutil.hpp"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 #include "exceptions.hpp"
 #include "../xz/Xz.h"
 #include "../xz/7zCrc.h"
@@ -42,10 +42,10 @@ namespace eternal_lands
 
 	}
 
-	MemoryBufferSharedPtr DecompresszUtil::decompress_gz(
-		const AbstractReadMemoryBufferSharedPtr &buffer)
+	ReadWriteMemorySharedPtr DecompresszUtil::decompress_gz(
+		const AbstractReadMemorySharedPtr &buffer)
 	{
-		MemoryBufferSharedPtr result;
+		ReadWriteMemorySharedPtr result;
 		z_stream stream;
 		Uint32 err;
 
@@ -69,7 +69,7 @@ namespace eternal_lands
 					"error")));
 		}
 
-		result = boost::make_shared<MemoryBuffer>();
+		result = boost::make_shared<ReadWriteMemory>();
 
 		do
 		{
@@ -99,10 +99,10 @@ namespace eternal_lands
 		return result;
 	}
 
-	MemoryBufferSharedPtr DecompresszUtil::decompress_xz(
-		const AbstractReadMemoryBufferSharedPtr &buffer)
+	ReadWriteMemorySharedPtr DecompresszUtil::decompress_xz(
+		const AbstractReadMemorySharedPtr &buffer)
 	{
-		MemoryBufferSharedPtr result;
+		ReadWriteMemorySharedPtr result;
 		CXzUnpacker state;
 		Uint64 uncompressed_size, dst_idx, src_idx;
 		SizeT dst_size, src_size;
@@ -125,7 +125,7 @@ namespace eternal_lands
 
 		uncompressed_size = 0;
 
-		result = boost::make_shared<MemoryBuffer>();
+		result = boost::make_shared<ReadWriteMemory>();
 
 		do
 		{
@@ -160,8 +160,8 @@ namespace eternal_lands
 		return result;
 	}
 
-	AbstractReadMemoryBufferSharedPtr DecompresszUtil::decompress(
-		const AbstractReadMemoryBufferSharedPtr &buffer)
+	AbstractReadMemorySharedPtr DecompresszUtil::decompress(
+		const AbstractReadMemorySharedPtr &buffer)
 	{
 		if ((memcmp(buffer->get_ptr(), XZ_SIG, XZ_SIG_SIZE) == 0) &&
 			(buffer->get_size() > XZ_SIG_SIZE))

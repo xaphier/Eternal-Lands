@@ -6,15 +6,15 @@
  ****************************************************************************/
 
 #include "reader.hpp"
-#include "abstractreadmemorybuffer.hpp"
-#include "memorybuffer.hpp"
+#include "abstractreadmemory.hpp"
+#include "readwritememory.hpp"
 #include "exceptions.hpp"
 #include "utf.hpp"
 
 namespace eternal_lands
 {
 
-	Reader::Reader(const AbstractReadMemoryBufferSharedPtr &buffer,
+	Reader::Reader(const AbstractReadMemorySharedPtr &buffer,
 		const String &name): m_buffer(buffer), m_name(name),
 		m_position(0)
 	{
@@ -39,7 +39,7 @@ namespace eternal_lands
 		skip(size);
 	}
 
-	void Reader::read(MemoryBuffer &buffer)
+	void Reader::read(ReadWriteMemory &buffer)
 	{
 		Uint64 size;
 
@@ -53,7 +53,7 @@ namespace eternal_lands
 		skip(size);
 	}
 
-	void Reader::read_le(MemoryBuffer &buffer, const Uint16 swap_size)
+	void Reader::read_le(ReadWriteMemory &buffer, const Uint16 swap_size)
 	{
 		Uint64 size, i;
 
@@ -105,7 +105,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Reader::read_be(MemoryBuffer &buffer, const Uint16 swap_size)
+	void Reader::read_be(ReadWriteMemory &buffer, const Uint16 swap_size)
 	{
 		Uint64 size, i;
 

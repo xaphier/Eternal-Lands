@@ -6,8 +6,8 @@
  ****************************************************************************/
 
 #include "opengl2mesh.hpp"
-#include "mappedhardwarewritememorybuffer.hpp"
-#include "hardwarewritememorybuffer.hpp"
+#include "mappedhardwarewritememory.hpp"
+#include "hardwarewritememory.hpp"
 #include "vertexelements.hpp"
 #include "meshdrawdata.hpp"
 #include "vertexstream.hpp"
@@ -26,10 +26,10 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractWriteMemoryBufferSharedPtr OpenGl2Mesh::get_vertex_buffer(
+	AbstractWriteMemorySharedPtr OpenGl2Mesh::get_vertex_buffer(
 		const Uint16 index)
 	{
-		AbstractWriteMemoryBufferSharedPtr result;
+		AbstractWriteMemorySharedPtr result;
 
 		assert(index < m_vertex_data.size());
 
@@ -37,17 +37,15 @@ namespace eternal_lands
 		{
 			m_vertex_data[index]->bind(hbt_vertex);
 
-			result = boost::make_shared<
-				HardwareWriteMemoryBuffer>(
-					m_vertex_data[index], hbt_vertex);
+			result = boost::make_shared<HardwareWriteMemory>(
+				m_vertex_data[index], hbt_vertex);
 		}
 
 		return result;
 	}
 
 	void OpenGl2Mesh::set_vertex_buffer(
-		const AbstractReadMemoryBufferSharedPtr &buffer,
-		const Uint16 index)
+		const AbstractReadMemorySharedPtr &buffer, const Uint16 index)
 	{
 		m_vertex_data[index]->bind(hbt_vertex);
 		m_vertex_data[index]->set(hbt_vertex, *buffer,
@@ -55,24 +53,22 @@ namespace eternal_lands
 	}
 
 	void OpenGl2Mesh::update_vertex_buffer(
-		const AbstractReadMemoryBufferSharedPtr &buffer,
-		const Uint16 index)
+		const AbstractReadMemorySharedPtr &buffer, const Uint16 index)
 	{
 		m_vertex_data[index]->bind(hbt_vertex);
 		m_vertex_data[index]->update(hbt_vertex, *buffer);
 	}
 
-	AbstractWriteMemoryBufferSharedPtr OpenGl2Mesh::get_index_buffer()
+	AbstractWriteMemorySharedPtr OpenGl2Mesh::get_index_buffer()
 	{
-		AbstractWriteMemoryBufferSharedPtr result;
+		AbstractWriteMemorySharedPtr result;
 
 		if (m_index_data.get() != 0)
 		{
 			m_index_data->bind(hbt_index);
 
-			result = boost::make_shared<
-				HardwareWriteMemoryBuffer>(
-					m_index_data, hbt_index);
+			result = boost::make_shared<HardwareWriteMemory>(
+				m_index_data, hbt_index);
 		}
 
 		return result;

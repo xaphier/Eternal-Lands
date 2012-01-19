@@ -8,7 +8,6 @@
 #include "pngimage.hpp"
 #include "exceptions.hpp"
 #include "logging.hpp"
-#include "memorybuffer.hpp"
 #include "reader.hpp"
 #include "image.hpp"
 #include <png.h>

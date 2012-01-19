@@ -7,7 +7,7 @@
 
 #include "prerequisites.hpp"
 #include "reader.hpp"
-#include "memorybuffer.hpp"
+#include "readwritememory.hpp"
 #define BOOST_TEST_MODULE reader
 #include <boost/test/unit_test.hpp>
 
@@ -15,10 +15,10 @@ namespace el = eternal_lands;
 
 BOOST_AUTO_TEST_CASE(default_creation)
 {
-	el::MemoryBufferSharedPtr memory;
+	el::ReadWriteMemorySharedPtr memory;
 	el::ReaderSharedPtr reader;
 
-	BOOST_CHECK_NO_THROW(memory.reset(new el::MemoryBuffer(128)));
+	BOOST_CHECK_NO_THROW(memory.reset(new el::ReadWriteMemory(128)));
 	BOOST_CHECK_NO_THROW(reader.reset(new el::Reader(memory,
 		el::String("test"))));
 
@@ -29,10 +29,10 @@ BOOST_AUTO_TEST_CASE(default_creation)
 
 BOOST_AUTO_TEST_CASE(zero_read)
 {
-	el::MemoryBufferSharedPtr memory;
+	el::ReadWriteMemorySharedPtr memory;
 	el::ReaderSharedPtr reader;
 
-	BOOST_CHECK_NO_THROW(memory.reset(new el::MemoryBuffer(128)));
+	BOOST_CHECK_NO_THROW(memory.reset(new el::ReadWriteMemory(128)));
 
 	memset(memory->get_ptr(), 0, 128);
 
