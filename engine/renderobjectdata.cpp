@@ -42,9 +42,9 @@ namespace eternal_lands
 
 	void RenderObjectData::update_layers()
 	{
-		Uint16 i, layer;
+		Uint16 i;
 
-		layer = 0;
+		m_layer_count = 0;
 
 		m_layers = glm::uvec4(0);
 
@@ -52,8 +52,8 @@ namespace eternal_lands
 		{
 			if (get_sub_frustums_mask(i))
 			{
-				m_layers[layer] = i;
-				++layer;
+				m_layers[get_layer_count()] = i;
+				++m_layer_count;
 			}
 		}
 	}

@@ -27,8 +27,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>// shadow_map_data = vec3(exp(distance(shadow_camera.xyz, world_position)));
-shadow_map_data = vec3(exp(abs(shadow_camera.z - world_position.z)));
+   <source>shadow_map_data = vec3(exp(abs(shadow_camera.z - world_position.z)));
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

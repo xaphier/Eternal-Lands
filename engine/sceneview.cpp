@@ -358,8 +358,8 @@ namespace eternal_lands
 				get_shadow_z_far(), i + 1,
 				get_shadow_map_count());
 
-			z_near = std::max(z_near - 1.5f, get_z_near());
-			z_far = std::min(z_far + 1.5f, get_shadow_z_far());
+			z_near = std::max(z_near - 0.5f, get_z_near());
+			z_far = std::min(z_far + 0.5f, get_shadow_z_far());
 
 			m_split_projection_view_matrix[i] =
 				glm::perspective(get_fov(), get_aspect(),

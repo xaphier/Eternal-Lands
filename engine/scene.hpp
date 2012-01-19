@@ -51,8 +51,6 @@ namespace eternal_lands
 			RStarTreeLightVisitor m_visible_lights;
 			boost::scoped_ptr<Map> m_map;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
-			AbstractFrameBufferSharedPtr
-				m_shadow_filter_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;
@@ -78,7 +76,7 @@ namespace eternal_lands
 				const bool shadow_receiver);
 			void draw_object_depth(const ObjectSharedPtr &object);
 			void draw_object_shadow(const ObjectSharedPtr &object,
-				const glm::ivec4 &layers);
+				const glm::ivec4 &layers, const Uint16 count);
 			void draw_object_shadow(const ObjectSharedPtr &object,
 				const Uint16 layer);
 			void pick_object(const ObjectSharedPtr &object,

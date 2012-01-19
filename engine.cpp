@@ -1506,21 +1506,11 @@ extern "C" void engine_set_shadow_map_size(const int value)
 extern "C" void engine_set_shadow_distance(const float value)
 {
 	global_vars->set_shadow_distance(value);
-
-	if (scene.get() != 0)
-	{
-		scene->get_scene_resources().get_effect_cache()->reload();
-	}
 }
 
 extern "C" void engine_set_view_distance(const float value)
 {
 	global_vars->set_view_distance(value);
-
-	if (scene.get() != 0)
-	{
-		scene->get_scene_resources().get_effect_cache()->reload();
-	}
 }
 
 extern "C" void engine_set_shadow_quality(const int value)
@@ -1611,40 +1601,50 @@ extern "C" void engine_set_opengl_version(const int value)
 extern "C" void engine_set_use_simd(const int value)
 {
 #ifdef	USE_SSE2
-	global_vars->set_fog(value != 0 && SDL_HasSSE2());
+	global_vars->set_use_simd(value != 0 && SDL_HasSSE2());
 #else	/* USE_SSE2 */
-	global_vars->set_fog(false);
+	global_vars->set_use_simd(false);
 #endif	/* USE_SSE2 */
 }
 
-extern "C" void engine_set_sample_shading(const int value)
+extern "C" void engine_set_use_block(const int value)
 {
-	global_vars->set_sample_shading(value != 0);
-}
-
-extern "C" void engine_set_shadow_map_filter(const int value)
-{
-	el::FilterType shadow_map_filter;
-
-	if (value <= el::ft_gauss_5_tap)
-	{
-		shadow_map_filter = el::ft_gauss_5_tap;
-	}
-	else
-	{
-		if (value >= el::ft_box_13_tap)
-		{
-			shadow_map_filter = el::ft_box_13_tap;
-		}
-		else
-		{
-			shadow_map_filter = static_cast<el::FilterType>(value);
-		}
-	}
+	global_vars->set_use_block(value != 0);
 
 	if (scene.get() != 0)
 	{
-		scene->set_shadow_map_filter(shadow_map_filter);
+		scene->get_scene_resources().get_effect_cache()->reload();
+	}
+}
+
+extern "C" void engine_set_use_alias(const int value)
+{
+	global_vars->set_use_alias(value != 0);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload();
+	}
+}
+
+extern "C" void engine_set_use_in_out(const int value)
+{
+	global_vars->set_use_in_out(value != 0);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload();
+	}
+}
+
+extern "C" void engine_set_use_layered_rendering(const int value)
+{
+	global_vars->set_use_layered_rendering(value != 0);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->shadow_map_change();
 	}
 }
 

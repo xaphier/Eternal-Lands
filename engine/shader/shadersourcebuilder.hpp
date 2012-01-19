@@ -85,6 +85,8 @@ namespace eternal_lands
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &varyings,
+				const String &in_prefix,
+				const String &out_prefix, const bool use_blocks,
 				OutStream &main,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;

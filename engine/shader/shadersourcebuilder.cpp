@@ -37,6 +37,7 @@ namespace eternal_lands
 			sslt_fragment_color,
 			sslt_shadow_values,
 			sslt_layer_index,
+			sslt_layer,
 			sslt_i
 		};
 
@@ -84,6 +85,8 @@ namespace eternal_lands
 			ShaderSourceLocalTypeData(String(UTF8("shadow_values")),
 				pt_vec3),
 			ShaderSourceLocalTypeData(String(UTF8("layer_index")),
+				pt_int),
+			ShaderSourceLocalTypeData(String(UTF8("layer_data")),
 				pt_int),
 			ShaderSourceLocalTypeData(String(UTF8("i")), pt_int)
 		};
@@ -399,44 +402,130 @@ namespace eternal_lands
 				geometry_out_parameters);
 		}
 
-		void write_parameter(
+		void write_parameter(const String &name_prefix,
 			const ShaderSourceParameter &parameter,
 			const ParameterSizeTypeUint16Map &array_sizes,
-			const StringType &prefix, OutStream &str)
+			const StringType &prefix, const StringType &suffix,
+			OutStream &stream)
 		{
-			str << prefix;
-			parameter.write(array_sizes, str);
-			str << UTF8("; /* ") << parameter.get_source();
-			str << UTF8(" */\n");
+			stream << prefix;
+			parameter.write(name_prefix, array_sizes, stream);
+			stream << suffix << UTF8("; /* ");
+			stream << parameter.get_source() << UTF8(" */\n");
 		}
 
-		void write_parameters(
+		void write_parameters(const String &name_prefix,
 			const ShaderSourceParameterVector &parameters,
 			const ParameterSizeTypeUint16Map &array_sizes,
-			const StringType &prefix, OutStream &str)
+			const StringType &prefix, const StringType &suffix,
+			OutStream &stream)
 		{
 			BOOST_FOREACH(const ShaderSourceParameter &parameter,
 				parameters)
 			{
-				write_parameter(parameter, array_sizes, prefix,
-					str);
+				write_parameter(name_prefix, parameter,
+					array_sizes, prefix, suffix, stream);
 			}
 		}
 
-		void write_parameters(const ParameterQualifierType qualifier,
+		void write_parameters(const String &name_prefix,
+			const ParameterQualifierType qualifier,
 			const ShaderSourceParameterVector &parameters,
 			const ParameterSizeTypeUint16Map &array_sizes,
-			const StringType &prefix, OutStream &str)
+			const StringType &prefix, const StringType &suffix,
+			OutStream &stream)
 		{
 			BOOST_FOREACH(const ShaderSourceParameter &parameter,
 				parameters)
 			{
 				if (parameter.get_qualifier() == qualifier)
 				{
-					write_parameter(parameter, array_sizes,
-						prefix, str);
+					write_parameter(name_prefix, parameter,
+						array_sizes, prefix, suffix,
+						stream);
 				}
 			}
+		}
+
+		void write_parameters_assign_in(const String &name_prefix,
+			const ShaderSourceParameterVector &parameters,
+			const StringType &prefix, const bool use_block,
+			OutStream &stream)
+		{
+			BOOST_FOREACH(const ShaderSourceParameter &parameter,
+				parameters)
+			{
+				stream << prefix << parameter.get_name();
+				stream << UTF8(" = ") << name_prefix;
+
+				if (use_block)
+				{
+					stream << UTF8(".");
+				}
+
+				stream << parameter.get_name();
+				stream << UTF8("; /* ");
+				stream << parameter.get_source();
+				stream << UTF8(" */\n");
+			}
+		}
+
+		void write_parameters_assign_out(const String &name_prefix,
+			const ShaderSourceParameterVector &parameters,
+			const StringType &prefix, const bool use_block,
+			OutStream &stream)
+		{
+			BOOST_FOREACH(const ShaderSourceParameter &parameter,
+				parameters)
+			{
+				stream << prefix << name_prefix;
+
+				if (use_block)
+				{
+					stream << UTF8(".");
+				}
+
+				stream << parameter.get_name() << UTF8(" = ");
+				stream << parameter.get_name();
+				stream << UTF8("; /* ");
+				stream << parameter.get_source();
+				stream << UTF8(" */\n");
+			}
+		}
+
+		void write_parameter_indexed(const String &name_prefix,
+			const ShaderSourceParameter &parameter,
+			const StringType &prefix, const String &index,
+			const bool use_block, OutStream &stream)
+		{
+			stream << prefix << name_prefix;
+
+			if (use_block)
+			{
+				stream << UTF8("[") << index << UTF8("].");
+			}
+
+			stream << parameter.get_name();
+
+			if (!use_block)
+			{
+				stream << UTF8("[") << index << UTF8("]");
+			}
+		}
+
+		void write_parameter(const String &name_prefix,
+			const ShaderSourceParameter &parameter,
+			const StringType &prefix, const bool use_block,
+			OutStream &stream)
+		{
+			stream << prefix << name_prefix;
+
+			if (use_block)
+			{
+				stream << UTF8(".");
+			}
+
+			stream << parameter.get_name();
 		}
 
 		void write_function(const StringType &name,
@@ -456,13 +545,14 @@ namespace eternal_lands
 			BOOST_FOREACH(const ShaderSourceParameter &parameter,
 				parameters)
 			{
-				parameter.write_parameter(array_sizes, str,
-					first);
+				parameter.write_parameter(String(),
+					array_sizes, str, first);
 			}
 
 			str << UTF8(")\n");
 			str << UTF8("{\n");
-			write_parameters(locals, array_sizes, UTF8("\t"), str);
+			write_parameters(String(), locals, array_sizes,
+				UTF8("\t"), UTF8(""), str);
 			str << UTF8("\n");
 			str << function;
 			str << UTF8("}\n\n");
@@ -482,7 +572,7 @@ namespace eternal_lands
 			BOOST_FOREACH(const ShaderSourceParameter &parameter,
 				parameters)
 			{
-				parameter.write_name(str, first);
+				parameter.write_name(String(), str, first);
 			}
 
 			str << UTF8(");\n");
@@ -562,6 +652,21 @@ namespace eternal_lands
 
 		ShaderVersionType get_shader_version_type(const Uint16 version)
 		{
+			if (version >= 420)
+			{
+				return svt_420;
+			}
+
+			if (version >= 410)
+			{
+				return svt_410;
+			}
+
+			if (version >= 400)
+			{
+				return svt_400;
+			}
+
 			if (version >= 330)
 			{
 				return svt_330;
@@ -583,6 +688,44 @@ namespace eternal_lands
 			}
 
 			return svt_120;
+		}
+
+		void write_defines(const StringType &prefix,
+			const ShaderSourceParameterVector &parameters,
+			OutStream &stream)
+		{
+			BOOST_FOREACH(const ShaderSourceParameter &parameter,
+				parameters)
+			{
+				stream << UTF8("#define ");
+				stream << parameter.get_name();
+				stream << UTF8(" ") << prefix;
+				stream << parameter.get_name() << UTF8("\n");
+			}
+		}
+
+		void write_attributes(const String &name_prefix,
+			const ShaderSourceParameterVector &attributes,
+			const ParameterSizeTypeUint16Map &array_sizes,
+			OutStream &stream)
+		{
+			VertexSemanticType vertex_semantic;
+
+			BOOST_FOREACH(const ShaderSourceParameter &attribute,
+				attributes)
+			{
+				if (VertexElement::get_vertex_semantic(
+					attribute.get_name(), vertex_semantic))
+				{
+					stream << UTF8("layout(location = ");
+					stream << static_cast<Uint16>(
+						vertex_semantic);
+					stream << UTF8(") ");
+					write_parameter(name_prefix, attribute,
+						array_sizes, UTF8("in "),
+						UTF8(""), stream);
+				}
+			}
 		}
 
 	}
@@ -635,13 +778,14 @@ namespace eternal_lands
 			Uint16 m_fragment_light_count;
 			Uint16 m_light_count;
 			Uint16 m_shadow_map_count;
+			Uint16 m_layer_count;
 
 		public:
 			inline ShaderSourceBuildData():	m_version(svt_120),
 				m_shader_build_type(sbt_color),
 				m_vertex_light_count(0),
 				m_fragment_light_count(0), m_light_count(0),
-				m_shadow_map_count(0)
+				m_shadow_map_count(0), m_layer_count(0)
 			{
 			}
 
@@ -652,13 +796,15 @@ namespace eternal_lands
 				const Uint16 vertex_light_count,
 				const Uint16 fragment_light_count,
 				const Uint16 light_count,
-				const Uint16 shadow_map_count):
+				const Uint16 shadow_map_count,
+				const Uint16 layer_count):
 				m_sources(sources), m_version(version),
 				m_shader_build_type(shader_build_type),
 				m_vertex_light_count(vertex_light_count),
 				m_fragment_light_count(fragment_light_count),
 				m_light_count(light_count),
-				m_shadow_map_count(shadow_map_count)
+				m_shadow_map_count(shadow_map_count),
+				m_layer_count(layer_count)
 			{
 				Sint32 tmp;
 
@@ -757,6 +903,14 @@ namespace eternal_lands
 			inline Uint16 get_shadow_map_count() const
 			{
 				return m_shadow_map_count;
+			}
+
+			/**
+			 * Returns the number of layer the shader uses.
+			 */
+			inline Uint16 get_layer_count() const
+			{
+				return m_layer_count;
 			}
 
 	};
@@ -1262,8 +1416,8 @@ namespace eternal_lands
 		main << indent << UTF8("/* lighting */\n");
 		main << indent << UTF8("{\n");
 
-		write_parameters(function_locals, array_sizes, local_indent,
-			main);
+		write_parameters(String(), function_locals, array_sizes,
+			local_indent, UTF8(""), main);
 
 		main << stream.str() << indent << UTF8("}\n");
 
@@ -1304,7 +1458,20 @@ namespace eternal_lands
 			}
 		}
 
-		if (!data.get_option(ssbot_layered_rendering))
+		if (data.get_option(ssbot_layered_rendering))
+		{
+#if	0
+			add_parameter(String(UTF8("vertex")), sslt_layer_index,
+				pqt_out, locals, globals);
+			add_parameter(String(UTF8("vertex")), apt_layers,
+				locals, globals);
+
+			main << indent << UTF8("/* building layer index */\n");
+			main << indent << sslt_layer_index << UTF8(" = ");
+			main << apt_layers << UTF8("[gl_InstanceID];\n");
+#endif
+		}
+		else
 		{
 			add_parameter(String(UTF8("vertex")),
 				apt_projection_view_matrix, locals, globals);
@@ -1312,7 +1479,7 @@ namespace eternal_lands
 				cpt_world_position, pqt_in, locals, globals);
 
 			main << indent << UTF8("/* gl_Position */\n");
-			main << UTF8("\t") << gl_Position;
+			main << indent << gl_Position;
 			main << UTF8(" = ") << apt_projection_view_matrix;
 			main << UTF8("[0] * vec4(") << cpt_world_position;
 			main << UTF8(", 1.0);\n");
@@ -1354,64 +1521,111 @@ namespace eternal_lands
 			build_function(data, array_sizes, locals, sst_uv,
 				indent, main, globals, values);
 		}
-
-		main << UTF8("}\n");
 	}
 
 	void ShaderSourceBuilder::build_geometry_source(
 		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
 		const ShaderSourceParameterVector &varyings,
-		OutStream &main, ShaderSourceParameterVector &globals,
-		StringVariantMap &values) const
+		const String &in_prefix, const String &out_prefix,
+		const bool use_block, OutStream &main,
+		ShaderSourceParameterVector &globals, StringVariantMap &values)
+		const
 	{
 		ShaderSourceParameterVector locals;
-		String gl_Position;
+		String gl_Position, index;
+		Uint16 i, j, count;
 
 		gl_Position = UTF8("gl_Position");
 
-		add_parameter(String(UTF8("geometry")),	apt_layers, locals,
-			globals);
-		add_parameter(String(UTF8("geometry")),
-			apt_projection_view_matrix, locals, globals);
+		add_parameter(String(UTF8("geometry")), sslt_i, pqt_out,
+			locals, globals);
 		add_parameter(String(UTF8("geometry")), cpt_world_position,
 			pqt_in, locals, globals);
-		add_parameter(String(UTF8("geometry")), sslt_i, pqt_out, locals,
-			globals);
-		add_parameter(String(UTF8("geometry")), sslt_layer_index,
-			pqt_out, locals, globals);
+		add_parameter(String(UTF8("geometry")),
+			apt_projection_view_matrix, locals, globals);
 
-		main << UTF8("\t") << sslt_layer_index << UTF8(" = ");
-		main << apt_layers;
-		main << UTF8("[gl_InstanceID];\n");
-		main << UTF8("\tgl_Layer = ") << sslt_layer_index;
-		main << UTF8(";\n");
-		main << UTF8("\tgl_PrimitiveID = gl_PrimitiveIDIn;\n");
 		main << UTF8("\n");
 		main << UTF8("\tfor (") << sslt_i << UTF8(" = 0; ") << sslt_i;
-		main << UTF8(" < 3; ++") << sslt_i << UTF8(")\n");
-		main << UTF8("\t{\n");
-		main << UTF8("\t\t") << gl_Position << UTF8(" = ");
-		main << apt_projection_view_matrix << UTF8("[");
-		main << sslt_layer_index << UTF8("] * ");
-		main << UTF8("vec4(In[") << sslt_i << UTF8("].");
-		main << cpt_world_position << UTF8(", 1.0);\n");
+		main << UTF8(" < ") << data.get_layer_count() << UTF8("; ++");
+		main << sslt_i << UTF8(")\n") << UTF8("\t{\n");
 
-		main << UTF8("\t\t/* copying vertex output to fragment input");
-		main << UTF8(" */\n");
-		BOOST_FOREACH(const ShaderSourceParameter &parameter, varyings)
+		main << UTF8("\tgl_PrimitiveID = gl_PrimitiveIDIn * ");
+		main << data.get_layer_count() << UTF8(" + ") << sslt_i;
+		main << UTF8(";\n");
+
+		for (i = 0; i < 3; ++i)
 		{
-			main << UTF8("\t\tOut.") << parameter.get_name();
-			main << UTF8(" = In[") << sslt_i << UTF8("].");
-			main << parameter.get_name() << UTF8(";\n");
+			StringStream str;
+
+			str << i;
+			index = String(str.str());
+
+			main << UTF8("\t\tgl_Layer = ") << sslt_i;
+			main << UTF8(";\n");
+
+			main << UTF8("\t\t") << gl_Position << UTF8(" = ");
+			main << apt_projection_view_matrix << UTF8("[");
+			main << sslt_i << UTF8("] * vec4(");
+
+			write_parameter_indexed(in_prefix,
+				ShaderSourceParameterBuilder::build(String(
+					UTF8("geometry")), cpt_world_position,
+					pqt_in), UTF8(""), index, use_block,
+				main);
+
+			main << UTF8(", 1.0);\n");
+
+			main << UTF8("\t\t/* copying vertex output to ");
+			main << UTF8("fragment input */\n");
+
+			BOOST_FOREACH(const ShaderSourceParameter &parameter,
+				varyings)
+			{
+				if ((parameter.get_size() == pst_one) &&
+					(parameter.get_scale() == 1))
+				{
+					write_parameter(out_prefix, parameter,
+						UTF8("\t\t"), use_block, main);
+
+					write_parameter_indexed(in_prefix,
+						parameter, UTF8(" = "),
+						index, use_block, main);
+
+					main << UTF8(";\n");
+
+					continue;
+				}
+
+				count = parameter.get_array_size(array_sizes);
+
+				for (j = 0; j < count; ++j)
+				{
+					StringStream str;
+
+					str << UTF8("[") << j << UTF8("]");
+
+					write_parameter(out_prefix, parameter,
+						UTF8("\t\t"), use_block, main);
+
+					main << str.str();
+
+					write_parameter_indexed(in_prefix,
+						parameter, UTF8(" = "), index,
+						use_block, main);
+
+					main << str.str() << UTF8(";\n");
+				}
+			}
+
+			main << UTF8("\n");
+			main << UTF8("\t\tEmitVertex();\n");
+			main << UTF8("\n");
 		}
 
 		main << UTF8("\n");
-		main << UTF8("\t\tEmitVertex();\n");
+		main << UTF8("\t\tEndPrimitive();\n");
 		main << UTF8("\t}\n");
-		main << UTF8("\n");
-		main << UTF8("\tEndPrimitive();\n");
-		main << UTF8("}\n");
 	}
 
 	void ShaderSourceBuilder::build_fragment_source(
@@ -1425,7 +1639,15 @@ namespace eternal_lands
 		bool shadows;
 
 		indent = UTF8("\t");
-		output = UTF8("gl_FragColor");
+
+		if (data.get_version() >= svt_150)
+		{
+			output = UTF8("FragColor");
+		}
+		else
+		{
+			output = UTF8("gl_FragColor");
+		}
 
 		shadows = false;
 
@@ -1572,8 +1794,6 @@ namespace eternal_lands
 
 				break;
 		}
-
-		main << UTF8("}\n");
 	}
 
 	bool ShaderSourceBuilder::check_function(
@@ -1819,8 +2039,15 @@ namespace eternal_lands
 		ShaderSourceTypeStringMap sources;
 		StringStream vertex_main, geometry_main, fragment_main;
 		StringStream vertex_source, geometry_source, fragment_source;
+		StringStream version_stream;
+		String vertex_data, fragment_data, prefix, name_prefix;
 		Uint16 version, layer_count;
 		ShaderVersionType version_type;
+		bool use_block, use_alias, use_in_out;
+
+		use_block = true;
+		use_alias = true;
+		use_in_out = true;
 
 		sources = build_sources(description);
 
@@ -1839,11 +2066,7 @@ namespace eternal_lands
 
 		version_type = get_shader_version_type(version);
 
-		data = ShaderSourceBuildData(sources, version_type,
-			shader_build_type, get_vertex_light_count(),
-			get_fragment_light_count(),
-			std::min(get_light_count(), light_count),
-			get_global_vars()->get_shadow_map_count());
+		version_stream << UTF8("#version ") << version << UTF8("\n");
 
 		if (shader_build_type == sbt_shadow)
 		{
@@ -1854,6 +2077,13 @@ namespace eternal_lands
 		{
 			layer_count = static_cast<Uint16>(1);
 		}
+
+		data = ShaderSourceBuildData(sources, version_type,
+			shader_build_type, get_vertex_light_count(),
+			get_fragment_light_count(),
+			std::min(get_light_count(), light_count),
+			get_global_vars()->get_shadow_map_count(),
+			layer_count);
 
 		array_sizes[pst_light_count] = data.get_light_count();
 		array_sizes[pst_bone_count] = get_bone_count();
@@ -1879,8 +2109,8 @@ namespace eternal_lands
 			cpt_world_tangent));
 		data.set_option(ssbot_transparent,
 			description.get_transparent());
-//		data.set_option(ssbot_layered_rendering, (layer_count > 1) &&
-//			(shader_build_type == sbt_shadow));
+		data.set_option(ssbot_layered_rendering, (layer_count > 1) &&
+			get_global_vars()->get_use_layered_rendering());
 
 		build_fragment_source(data, array_sizes, fragment_main,
 			fragment_globals, values);
@@ -1904,7 +2134,25 @@ namespace eternal_lands
 
 		if (data.get_option(ssbot_layered_rendering))
 		{
+			vertex_data = String(UTF8("vertex_data"));
+			fragment_data = String(UTF8("fragment_data"));
+		}
+		else
+		{
+			vertex_data = String(UTF8("data"));
+			fragment_data = vertex_data;
+		}
+
+		if (!use_block)
+		{
+			vertex_data = String(vertex_data.get() + UTF8("_"));
+			fragment_data = String(fragment_data.get() + UTF8("_"));
+		}
+
+		if (data.get_option(ssbot_layered_rendering))
+		{
 			build_geometry_source(data, array_sizes, varyings,
+				vertex_data, fragment_data, use_block,
 				geometry_main, geometry_globals, values);
 
 			build_in_outs(varyings, vertex_globals,
@@ -1913,162 +2161,329 @@ namespace eternal_lands
 				geometry_out_parameters);
 		}
 
-		vertex_source << UTF8("#version ") << version;
-		vertex_source << UTF8("\n");
+		vertex_source << version_stream.str();
 
 		vertex = vertex_source.str();
 
 		build_constants(array_sizes, vertex_source);
 		vertex_source << UTF8("\n");
 
-		vertex_source << UTF8("/* attributes */\n");
-		if (version_type >= svt_130)
+		vertex_source << UTF8("/* vertex shader input */\n");
+
+		if (data.get_version() >= svt_150)
 		{
-			write_parameters(pqt_in, attributes, array_sizes,
-				UTF8("in "), vertex_source);
+			write_attributes(String(), attributes, array_sizes,
+				vertex_source);
 		}
 		else
 		{
-			write_parameters(pqt_in, attributes, array_sizes,
-				UTF8("attribute "), vertex_source);
+			if ((data.get_version() >= svt_130) && use_in_out)
+			{
+				prefix = UTF8("in ");
+			}
+			else
+			{
+				prefix = UTF8("attribute ");
+			}
+
+			write_parameters(String(), attributes, array_sizes,
+				prefix, UTF8(""), vertex_source);
 		}
 
 		vertex_source << UTF8("\n");
 		vertex_source << UTF8("/* uniforms */\n");
-		write_parameters(pqt_in, vertex_globals, array_sizes,
-			UTF8("uniform "), vertex_source);
+		write_parameters(String(), pqt_in, vertex_globals, array_sizes,
+			UTF8("uniform "), UTF8(""), vertex_source);
 		vertex_source << UTF8("\n");
+		vertex_source << UTF8("/* vertex shader output */\n");
 
-		if (version_type >= svt_130)
+		if ((data.get_version() >= svt_150) && use_block)
 		{
-			vertex_source << UTF8("/* fragment shader input");
-			vertex_source << UTF8(" */\n");
-			write_parameters(varyings, array_sizes,
-				UTF8("out "), vertex_source);
-			vertex_source << UTF8("/* geometry shader input");
-			vertex_source << UTF8(" */\n");
-			write_parameters(geometry_in_parameters, array_sizes,
-				UTF8("out "), vertex_source);
+			if ((varyings.size() > 0) ||
+				(geometry_in_parameters.size() > 0))
+			{
+				vertex_source << UTF8("out ") << vertex_data;
+				vertex_source << UTF8("_block\n{\n");
+				write_parameters(String(), varyings,
+					array_sizes, UTF8("\t"), UTF8(""),
+					vertex_source);
+				write_parameters(String(),
+					geometry_in_parameters, array_sizes,
+					UTF8("\t"), UTF8(""), vertex_source);
+				vertex_source << UTF8("}");
+
+				if (use_alias)
+				{
+					vertex_source << UTF8(" ");
+					vertex_source << vertex_data;
+				}
+
+				vertex_source << UTF8(";\n");
+			}
 		}
 		else
 		{
-			vertex_source << UTF8("/* fragment shader input");
-			vertex_source << UTF8(" */\n");
-			write_parameters(varyings, array_sizes,
-				UTF8("varying "), vertex_source);
+			if ((data.get_version() >= svt_130) && use_in_out)
+			{
+				prefix = UTF8("out ");
+			}
+			else
+			{
+				prefix = UTF8("varying ");
+			}
+
+			if (use_alias)
+			{
+				name_prefix = vertex_data;
+			}
+			else
+			{
+				name_prefix = UTF8("");
+			}
+
+			write_parameters(name_prefix, varyings, array_sizes,
+				prefix, UTF8(""), vertex_source);
+			write_parameters(name_prefix, geometry_in_parameters, 
+				array_sizes, prefix, UTF8(""), vertex_source);
 		}
 
 		vertex_source << UTF8("\n");
 		vertex_source << UTF8("void main()\n");
 		vertex_source << UTF8("{\n");
-		write_parameters(pqt_out, vertex_globals, array_sizes,
-			UTF8("\t"), vertex_source);
+		write_parameters(String(), pqt_out, vertex_globals, array_sizes,
+			UTF8("\t"), UTF8(""), vertex_source);
+
+		if (use_alias)
+		{
+			vertex_source << UTF8("\t/* Aliases */\n");
+			write_parameters(String(), varyings, array_sizes,
+				UTF8("\t"), UTF8(""), vertex_source);
+			write_parameters(String(), geometry_in_parameters,
+				array_sizes, UTF8("\t"), UTF8(""),
+				vertex_source);
+		}
+
 		vertex_source << UTF8("\n");
 		vertex_source << vertex_main.str();
+		vertex_source << UTF8("\n");
+
+		if (use_alias)
+		{
+			vertex_source << UTF8("\t/* Assign from aliases */\n");
+			write_parameters_assign_out(vertex_data, varyings,
+				UTF8("\t"), use_block, vertex_source);
+			write_parameters_assign_out(vertex_data,
+				geometry_in_parameters, UTF8("\t"), use_block,
+				vertex_source);
+		}
+
+		vertex_source << UTF8("}\n");
 
 		LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex_source.str());
 
-		geometry_source << UTF8("#version ") << version;
-		geometry_source << UTF8("\n");
+		geometry_source << version_stream.str();
 		geometry_source << UTF8("layout(triangles) in;\n");
-//		geometry_source << UTF8("layout(invocations = 4) in;\n");
 		geometry_source << UTF8("layout(triangle_strip) out;\n");
-		geometry_source << UTF8("layout(max_vertices = 3) out;\n");
-		geometry_source << UTF8("\n");
+		geometry_source << UTF8("layout(max_vertices = ");
+		geometry_source << (data.get_layer_count() * 3);
+		geometry_source << UTF8(") out;\n");
 
 		build_constants(array_sizes, geometry_source);
 
 		geometry_source << UTF8("\n");
 		geometry_source << UTF8("/* geometry shader input */\n");
 
-		if ((varyings.size() != 0) ||
-			(geometry_in_parameters.size() != 0))
+		if (use_block)
 		{
-			geometry_source << UTF8("in block\n{\n");
-			geometry_source << UTF8("\t/* vertex shader output");
-			geometry_source << UTF8(" */\n");
-			write_parameters(varyings, array_sizes, UTF8("\t"),
+			if ((varyings.size() > 0) ||
+				(geometry_in_parameters.size() > 0))
+			{
+				geometry_source << UTF8("in ") << vertex_data;
+				geometry_source << UTF8("_block\n{\n");
+				write_parameters(String(), varyings,
+					array_sizes, UTF8("\t"), UTF8(""),
+					geometry_source);
+				write_parameters(String(),
+					geometry_in_parameters, array_sizes,
+					UTF8("\t"), UTF8(""), geometry_source);
+				geometry_source << UTF8("} ") << vertex_data;
+				geometry_source << UTF8("[];\n");
+			}
+		}
+		else
+		{
+			if ((data.get_version() >= svt_130) && use_in_out)
+			{
+				prefix = UTF8("in ");
+			}
+			else
+			{
+				prefix = UTF8("varying in ");
+			}
+
+			write_parameters(vertex_data, varyings, array_sizes,
+				prefix, UTF8("[]"), geometry_source);
+			write_parameters(vertex_data, geometry_in_parameters,
+				array_sizes, prefix, UTF8("[]"),
 				geometry_source);
-			geometry_source << UTF8("\t/* geometry shader input");
-			geometry_source << UTF8(" */\n");
-			write_parameters(geometry_in_parameters, array_sizes,
-				UTF8("\t"), geometry_source);
-			geometry_source << UTF8("} In[]\n");
 		}
 
 		geometry_source << UTF8("\n");
 		geometry_source << UTF8("/* geometry shader output */\n");
 
-		if ((varyings.size() != 0) ||
-			(geometry_out_parameters.size() != 0))
+		if (use_block)
 		{
-			geometry_source << UTF8("out block\n{\n");
-			geometry_source << UTF8("\t/* fragment shader input");
-			geometry_source << UTF8(" */\n");
-			write_parameters(varyings, array_sizes, UTF8("\t"),
-				geometry_source);
-			geometry_source << UTF8("\t/* geometry shader output");
-			geometry_source << UTF8(" */\n");
-			write_parameters(geometry_out_parameters, array_sizes,
-				UTF8("\t"), geometry_source);
-			geometry_source << UTF8("} Out\n");
+			if ((varyings.size() > 0) ||
+				(geometry_out_parameters.size() > 0))
+			{
+				geometry_source << UTF8("out ");
+				geometry_source << fragment_data;
+				geometry_source << UTF8("_block\n{\n");
+				write_parameters(String(), varyings,
+					array_sizes, UTF8("\t"), UTF8(""),
+					geometry_source);
+				write_parameters(String(),
+					geometry_out_parameters, array_sizes,
+					UTF8("\t"), UTF8(""), geometry_source);
+				geometry_source << UTF8("} ") << fragment_data;
+				geometry_source << UTF8(";\n");
+			}
+		}
+		else
+		{
+			if ((data.get_version() >= svt_130) && use_in_out)
+			{
+				prefix = UTF8("out ");
+			}
+			else
+			{
+				prefix = UTF8("varying out ");
+			}
+
+			write_parameters(fragment_data, varyings, array_sizes,
+				prefix, UTF8(""), geometry_source);
+			write_parameters(fragment_data, geometry_out_parameters,
+				array_sizes, prefix, UTF8(""), geometry_source);
 		}
 
 		geometry_source << UTF8("\n");
-		write_parameters(pqt_in, geometry_globals, array_sizes,
-			UTF8("uniform "), geometry_source);
+		write_parameters(String(), pqt_in, geometry_globals,
+			array_sizes, UTF8("uniform "), UTF8(""),
+			geometry_source);
 		geometry_source << UTF8("\n");
 		geometry_source << UTF8("\n");
 		geometry_source << UTF8("void main()\n");
 		geometry_source << UTF8("{\n");
-		write_parameters(pqt_out, geometry_globals, array_sizes,
-			UTF8("\t"), geometry_source);
+		write_parameters(String(), pqt_out, geometry_globals,
+			array_sizes, UTF8("\t"), UTF8(""), geometry_source);
 		geometry_source << UTF8("\n");
 		geometry_source << geometry_main.str();
+		geometry_source << UTF8("}\n");
 
 		if (data.get_option(ssbot_layered_rendering))
 		{
-			LOG_INFO(UTF8("Geometry Shader:\n%1%"),
+			LOG_DEBUG(UTF8("Geometry Shader:\n%1%"),
 				geometry_source.str());
 		}
 
-		fragment_source << UTF8("#version ") << version;
-		fragment_source << UTF8("\n");
+		fragment_source << version_stream.str();
 
 		fragment = fragment_source.str();
 
 		build_constants(array_sizes, fragment_source);
 		fragment_source << UTF8("\n");
-		write_parameters(pqt_in, fragment_globals, array_sizes,
-			UTF8("uniform "), fragment_source);
+		write_parameters(String(), pqt_in, fragment_globals,
+			array_sizes, UTF8("uniform "), UTF8(""),
+			fragment_source);
 		fragment_source << UTF8("\n");
+		fragment_source << UTF8("/* fragment shader input */\n");
 
-		if (version_type >= svt_130)
+		if ((data.get_version() >= svt_150) && use_block)
 		{
-			fragment_source << UTF8("/* vertex shader output");
-			fragment_source << UTF8(" */\n");
-			write_parameters(varyings, array_sizes,
-				UTF8("in "), fragment_source);
-			fragment_source << UTF8("/* geometry shader output");
-			fragment_source << UTF8(" */\n");
-			write_parameters(geometry_out_parameters, array_sizes,
-				UTF8("in "), fragment_source);
+			if ((varyings.size() > 0) ||
+				(geometry_out_parameters.size() > 0))
+			{
+				fragment_source << UTF8("in ") << fragment_data;
+				fragment_source << UTF8("_block\n{\n");
+				write_parameters(String(), varyings,
+					array_sizes, UTF8("\t"), UTF8(""),
+					fragment_source);
+				write_parameters(String(),
+					geometry_out_parameters, array_sizes,
+					UTF8("\t"), UTF8(""), fragment_source);
+				fragment_source << UTF8("}");
+
+				if (use_alias)
+				{
+					fragment_source << UTF8(" ");
+					fragment_source << fragment_data;
+				}
+
+				fragment_source << UTF8(";\n");
+			}
 		}
 		else
 		{
-			fragment_source << UTF8("/* vertex shader output");
-			fragment_source << UTF8(" */\n");
-			write_parameters(varyings, array_sizes,
-				UTF8("varying "), fragment_source);
+			if ((data.get_version() >= svt_130) && use_in_out)
+			{
+				prefix =  UTF8("in ");
+			}
+			else
+			{
+				prefix =  UTF8("varying ");
+			}
+
+			if (use_alias)
+			{
+				name_prefix = fragment_data;
+			}
+			else
+			{
+				name_prefix = UTF8("");
+			}
+
+			write_parameters(name_prefix, varyings, array_sizes,
+				prefix, UTF8(""), fragment_source);
+			write_parameters(name_prefix, geometry_out_parameters,
+				array_sizes, prefix, UTF8(""), fragment_source);
+		}
+
+		if (data.get_version() >= svt_150)
+		{
+			fragment_source << UTF8("\n");
+			fragment_source << UTF8("layout(location = 0, ");
+			fragment_source << UTF8("index = 0) out vec4 ");
+			fragment_source << UTF8("FragColor;\n");
 		}
 
 		fragment_source << UTF8("\n");
 		fragment_source << UTF8("void main()\n");
 		fragment_source << UTF8("{\n");
-		write_parameters(pqt_out, fragment_globals, array_sizes,
-			UTF8("\t"), fragment_source);
+		write_parameters(String(), pqt_out, fragment_globals,
+			array_sizes, UTF8("\t"), UTF8(""), fragment_source);
+
+		if (use_alias)
+		{
+			fragment_source << UTF8("\t/* Aliases */\n");
+			write_parameters(String(), varyings, array_sizes,
+				UTF8("\t"), UTF8(""), fragment_source);
+			write_parameters(String(), geometry_out_parameters,
+				array_sizes, UTF8("\t"), UTF8(""),
+				fragment_source);
+
+			fragment_source << UTF8("\n");
+
+			fragment_source << UTF8("\t/* Assign to aliases */\n");
+			write_parameters_assign_in(fragment_data, varyings,
+				UTF8("\t"), use_block, fragment_source);
+			write_parameters_assign_in(fragment_data,
+				geometry_out_parameters, UTF8("\t"), use_block,
+				fragment_source);
+		}
+
 		fragment_source << UTF8("\n");
 		fragment_source << fragment_main.str();
+		fragment_source << UTF8("}\n");
 
 		LOG_DEBUG(UTF8("Fragment Shader:\n%1%"), fragment_source.str());
 

@@ -14,6 +14,7 @@
 #include "abstractmesh.hpp"
 #include "exceptions.hpp"
 #include "globalvars.hpp"
+#include "vertexbuffersbuilder.hpp"
 
 namespace eternal_lands
 {
@@ -203,6 +204,15 @@ namespace eternal_lands
 		}
 
 		return found->second;
+	}
+
+	VertexBuffersSharedPtr MeshBuilder::get_vertex_buffers(
+		const VertexFormatType vertex_format,
+		const Uint32 vertex_count) const
+	{
+		return VertexBuffersBuilder::get_vertex_buffers(
+			get_vertex_format(vertex_format),
+			vertex_count, get_global_vars()->get_use_simd());
 	}
 
 	const String &MeshBuilder::get_str(const VertexFormatType vertex_format)

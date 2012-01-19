@@ -32,7 +32,6 @@ namespace eternal_lands
 			FrameBuffer m_frame_buffer;
 			boost::scoped_ptr<RenderBuffer> m_render_buffer;
 			Uint32 m_layer;
-			bool m_stencil;
 			bool m_color;
 
 			void do_bind(const Uint32 layer);

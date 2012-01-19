@@ -192,10 +192,12 @@ int engine_shadow_map_size = 2;
 float engine_shadow_distance = 40.0f;
 float engine_view_distance = 40.0f;
 int engine_fog = engine_true;
-int engine_sample_shading = engine_true;
 int engine_optmize_shader_source = engine_true;
 int engine_use_simd = engine_true;
-int engine_shadow_map_filter = 0;
+int engine_use_block = engine_true;
+int engine_use_alias = engine_false;
+int engine_use_in_out = engine_true;
+int engine_use_layered_rendering = engine_true;
 #ifdef	DEBUG
 int engine_draw_objects = engine_true;
 int engine_draw_actors = engine_true;
@@ -258,27 +260,28 @@ void change_engine_fog(int* var)
 	engine_set_fog(*var);
 }
 
-void change_engine_sample_shading(int* var)
+void change_engine_set_use_block(int* var)
 {
-	if (*var)
-	{
-		*var = engine_false;
-		engine_set_sample_shading(*var);
-	}
-	else
-	{
-		if (gl_extensions_loaded && !GLEW_ARB_sample_shading)
-		{
-			LOG_TO_CONSOLE(c_green2, "GL_ARB_sample_shading needed");
-			*var = engine_false;
-			engine_set_sample_shading(*var);
-		}
-		else
-		{
-			*var = engine_true;
-			engine_set_sample_shading(*var);
-		}
-	}
+	*var = !*var;
+	engine_set_use_block(*var);
+}
+
+void change_engine_set_use_alias(int* var)
+{
+	*var = !*var;
+	engine_set_use_alias(*var);
+}
+
+void change_engine_set_use_in_out(int* var)
+{
+	*var = !*var;
+	engine_set_use_in_out(*var);
+}
+
+void change_engine_set_use_layered_rendering(int* var)
+{
+	*var = !*var;
+	engine_set_use_layered_rendering(*var);
 }
 
 void change_engine_use_simd(int* var)
@@ -329,13 +332,6 @@ void change_engine_opengl_version(int* var, int value)
 	*var = value;
 
 	LOG_TO_CONSOLE(c_green2, video_restart_str);
-}
-
-void change_engine_shadow_map_filter(int* var, int value)
-{
-	*var = value;
-
-	engine_set_shadow_map_filter(*var);
 }
 
 void options_loaded(void)
@@ -1376,8 +1372,6 @@ void check_options()
 	check_option_var("water_shader_quality");
 	check_option_var("shadow_quality");
 	check_option_var("optmize_shader_source");
-	check_option_var("shadow_map_filter");
-	check_option_var("sample_shading");
 	check_option_var("use_simd");
 }
 
@@ -1835,8 +1829,6 @@ static void init_ELC_vars(void)
 	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &engine_shadow_distance, change_engine_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &engine_view_distance, change_engine_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "fog", "fog", &engine_fog, change_engine_fog, engine_true, "Fog", "Fog", GFX);
-	add_var(OPT_BOOL, "sample_shading", "sample_shading", &engine_sample_shading, change_engine_sample_shading, engine_true, "Sample shading", "Use sample shading for high quality shadows", GFX);
-	add_var(OPT_MULTI, "shadow_map_filter", "smf", &engine_shadow_map_filter, change_engine_shadow_map_filter, 0, "Shadow Map Filter", "Shadow Map Filter", GFX, "Gauss 5x5", "Gauss 9x9 using 5x5 inner values", "Gauss 9x9", "Gauss 13x13 using 9x9 inner values", "Gauss 13x13", "Gauss 17x17 using 13x13 inner values", "Box 5x5", "Box 9x9", "Box 13x13", 0);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */
@@ -1917,6 +1909,11 @@ static void init_ELC_vars(void)
 #endif
 	add_var(OPT_BOOL,"poor_man","poor",&poor_man,change_poor_man,0,"Poor Man","If the game is running very slow for you, toggle this setting.",TROUBLESHOOT);
 	// TROUBLESHOOT TAB
+
+	add_var(OPT_BOOL, "use_block", "use_block", &engine_use_block, change_engine_set_use_block, engine_true, "Use block", "Use interface block in shaders", TROUBLESHOOT);
+	add_var(OPT_BOOL, "use_alias", "use_alias", &engine_use_alias, change_engine_set_use_alias, engine_false, "Use alias", "Use alias in shaders", TROUBLESHOOT);
+	add_var(OPT_BOOL, "use_in_out", "use_in_out", &engine_use_in_out, change_engine_set_use_in_out, engine_true, "Use in/out", "Use in/out in shaders", TROUBLESHOOT);
+	add_var(OPT_BOOL, "use_layered_rendering", "use_layered_rendering", &engine_use_layered_rendering, change_engine_set_use_layered_rendering, engine_true, "Use layered rendering", "Use layered rendering in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &engine_optmize_shader_source, change_engine_optmize_shader_source, engine_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
 	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &engine_opengl_version, change_engine_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", 0);
 #ifdef	USE_SSE2

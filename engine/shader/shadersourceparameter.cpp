@@ -131,14 +131,14 @@ namespace eternal_lands
 			*this % parameter, InvalidParameterException());
 	}
 
-	void ShaderSourceParameter::write(
+	void ShaderSourceParameter::write(const String &name_prefix,
 		const ParameterSizeTypeUint16Map &sizes, OutStream &str) const
 	{
 		Uint16 array_size;
 
 		assert(!get_name().get().empty());
 
-		str << get_type() << UTF8(" ") << get_name();
+		str << get_type() << UTF8(" ") << name_prefix << get_name();
 
 		array_size = get_array_size(sizes);
 
@@ -150,7 +150,7 @@ namespace eternal_lands
 		}
 	}
 
-	void ShaderSourceParameter::write(
+	void ShaderSourceParameter::write(const String &name_prefix,
 		const ParameterSizeTypeUint16Map &sizes, const String &prefix,
 		OutStream &str, bool &first) const
 	{
@@ -163,13 +163,13 @@ namespace eternal_lands
 
 		str << prefix;
 
-		write(sizes, str);
+		write(name_prefix, sizes, str);
 
 		first = false;
 	}
 
-	void ShaderSourceParameter::write_name(OutStream &str, bool &first)
-		const
+	void ShaderSourceParameter::write_name(const String &name_prefix,
+		OutStream &str, bool &first) const
 	{
 		assert(!get_name().get().empty());
 
@@ -178,12 +178,12 @@ namespace eternal_lands
 			str << UTF8(", ");
 		}
 
-		str << get_name();
+		str << name_prefix << get_name();
 
 		first = false;
 	}
 
-	void ShaderSourceParameter::write_parameter(
+	void ShaderSourceParameter::write_parameter(const String &name_prefix,
 		const ParameterSizeTypeUint16Map &sizes, OutStream &str,
 		bool &first) const
 	{
@@ -196,7 +196,7 @@ namespace eternal_lands
 
 		str << get_qualifier() << UTF8(" ");
 
-		write(sizes, str);
+		write(name_prefix, sizes, str);
 
 		first = false;
 	}

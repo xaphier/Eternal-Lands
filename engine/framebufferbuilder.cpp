@@ -9,7 +9,7 @@
 #include "framebuffer/extsimpleframebuffer.hpp"
 #include "framebuffer/simpleframebuffer.hpp"
 #include "framebuffer/multisampleframebuffer.hpp"
-#include "framebuffer/multisampledepthframebuffer.hpp"
+#include "framebuffer/layeredframebuffer.hpp"
 #include "framebuffer/filterframebuffer.hpp"
 #include "globalvars.hpp"
 #include "exceptions.hpp"
@@ -67,7 +67,7 @@ namespace eternal_lands
 	AbstractFrameBufferSharedPtr FrameBufferBuilder::build(
 		const String &name, const Uint32 width, const Uint32 height,
 		const Uint32 layers, const Uint16 mipmaps, const Uint16 samples,
-		const TextureFormatType format)
+		const TextureFormatType format, const bool layered)
 	{
 		if (!get_global_vars()->get_opengl_3_0())
 		{
@@ -75,19 +75,18 @@ namespace eternal_lands
 				<< errinfo_message(UTF8("OpenGL 3.0 needed")));
 		}
 
+		if ((samples == 0) && layered)
+		{
+			return AbstractFrameBufferSharedPtr(
+				new LayeredFrameBuffer(name, width, height,
+					layers, mipmaps, format));
+		}
+
 		if (samples == 0)
 		{
 			return AbstractFrameBufferSharedPtr(
 				new SimpleFrameBuffer(name, width, height,
 					layers, mipmaps, format));
-		}
-
-		if (TextureFormatUtil::get_depth(format))
-		{
-			return AbstractFrameBufferSharedPtr(
-				new MultiSampleDepthFrameBuffer(name, width,
-					height, layers, mipmaps, samples,
-					format));
 		}
 
 		return AbstractFrameBufferSharedPtr(

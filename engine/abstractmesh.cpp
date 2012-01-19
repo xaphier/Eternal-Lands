@@ -16,6 +16,7 @@
 #include "exceptions.hpp"
 #include "vertexstream.hpp"
 #include "vertexbuffers.hpp"
+#include "vertexbuffersbuilder.hpp"
 
 namespace eternal_lands
 {
@@ -231,27 +232,8 @@ namespace eternal_lands
 	VertexBuffersSharedPtr AbstractMesh::get_vertex_buffers(
 		const Uint32 vertex_count) const
 	{
-		MemoryBufferSharedPtrVector buffers;
-		MemoryBufferSharedPtr buffer;
-		VertexBuffersSharedPtr result;
-		Uint32 i;
-		Uint64 size;
-
-		for (i = 0; i < vertex_stream_count; ++i)
-		{
-			if (get_vertex_elements(i).get_count() > 0)
-			{
-				size = get_vertex_elements(i).get_stride() *
-					vertex_count;
-				buffer = boost::make_shared<MemoryBuffer>(size);
-				buffers.push_back(buffer);
-			}
-		}
-
-		result = boost::make_shared<VertexBuffers>(get_vertex_format(),
-			buffers, vertex_count, get_use_simd());
-
-		return result;
+		return VertexBuffersBuilder::get_vertex_buffers(
+			get_vertex_format(), vertex_count, get_use_simd());
 	}
 
 	void AbstractMesh::init_indices(const Uint32Set &blocks,

@@ -192,13 +192,16 @@ namespace eternal_lands
 			Uint16 get_array_size(
 				const ParameterSizeTypeUint16Map &sizes) const;
 
-			void write(const ParameterSizeTypeUint16Map &sizes,
+			void write(const String &name_prefix,
+				const ParameterSizeTypeUint16Map &sizes,
 				OutStream &str) const;
-			void write(const ParameterSizeTypeUint16Map &sizes,
+			void write(const String &name_prefix,
+				const ParameterSizeTypeUint16Map &sizes,
 				const String &prefix, OutStream &str,
 				bool &first) const;
-			void write_name(OutStream &str, bool &first) const;
-			void write_parameter(
+			void write_name(const String &name_prefix,
+				OutStream &str, bool &first) const;
+			void write_parameter(const String &name_prefix,
 				const ParameterSizeTypeUint16Map &sizes,
 				OutStream &str, bool &first) const;
 

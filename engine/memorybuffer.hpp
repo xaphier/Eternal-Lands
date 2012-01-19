@@ -13,8 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractreadmemorybuffer.hpp"
-#include "abstractwritememorybuffer.hpp"
+#include "abstractreadwritememorybuffer.hpp"
 
 /**
  * @file
@@ -24,8 +23,7 @@
 namespace eternal_lands
 {
 
-	class MemoryBuffer: public AbstractReadMemoryBuffer,
-		public AbstractWriteMemoryBuffer
+	class MemoryBuffer: public AbstractReadWriteMemoryBuffer
 	{
 		private:
 			/**
@@ -59,7 +57,7 @@ namespace eternal_lands
 			 * Gets the pointer of the memory.
 			 * @return Returns the pointer of the memory.
 			 */
-			void* get_ptr();
+			virtual void* get_ptr();
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -67,7 +65,7 @@ namespace eternal_lands
 			 * Gets the pointer of the memory.
 			 * @return Returns the pointer of the memory.
 			 */
-			const void* get_ptr() const;
+			virtual const void* get_ptr() const;
 
 			/**
 			 * @brief Gets the size of the memory.
@@ -75,7 +73,7 @@ namespace eternal_lands
 			 * Gets the size of the memory.
 			 * @return Returns the size of the memory.
 			 */
-			Uint64 get_size() const;
+			virtual Uint64 get_size() const;
 
 			/**
 			 * @brief Resizes the memory.
@@ -97,4 +95,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_6c2398ea_1b52_4b71_bb17_647ed4d63575 */
-

@@ -483,7 +483,10 @@ namespace eternal_lands
 #else	/* USE_SSE2 */
 		m_use_simd = false;
 #endif	/* USE_SSE2 */
-		m_sample_shading = false;
+		m_use_block = true;
+		m_use_alias = false;
+		m_use_in_out = true;
+		m_use_layered_rendering = true;
 #ifdef	DEBUG
 		m_draw_objects = true;
 		m_draw_actors = true;

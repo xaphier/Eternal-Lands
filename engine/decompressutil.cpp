@@ -69,7 +69,7 @@ namespace eternal_lands
 					"error")));
 		}
 
-		result = MemoryBufferSharedPtr(new MemoryBuffer());
+		result = boost::make_shared<MemoryBuffer>();
 
 		do
 		{
@@ -125,7 +125,7 @@ namespace eternal_lands
 
 		uncompressed_size = 0;
 
-		result = MemoryBufferSharedPtr(new MemoryBuffer());
+		result = boost::make_shared<MemoryBuffer>();
 
 		do
 		{

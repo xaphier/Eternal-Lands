@@ -52,7 +52,10 @@ namespace eternal_lands
 			bool m_fog;
 			bool m_optmize_shader_source;
 			bool m_use_simd;
-			bool m_sample_shading;
+			bool m_use_block;
+			bool m_use_alias;
+			bool m_use_in_out;
+			bool m_use_layered_rendering;
 #ifdef	DEBUG
 			bool m_draw_objects;
 			bool m_draw_actors;
@@ -114,9 +117,25 @@ namespace eternal_lands
 				m_use_simd = use_simd;
 			}
 
-			inline void set_sample_shading(const bool sample_shading)
+			inline void set_use_block(const bool use_block)
 			{
-				m_sample_shading = sample_shading;
+				m_use_block = use_block;
+			}
+
+			inline void set_use_alias(const bool use_alias)
+			{
+				m_use_alias = use_alias;
+			}
+
+			inline void set_use_in_out(const bool use_in_out)
+			{
+				m_use_in_out = use_in_out;
+			}
+
+			inline void set_use_layered_rendering(
+				const bool use_layered_rendering)
+			{
+				m_use_layered_rendering = use_layered_rendering;
 			}
 
 			inline const String &get_quality() const
@@ -167,22 +186,6 @@ namespace eternal_lands
 				return m_opengl_version;
 			}
 
-			inline bool get_msaa_shadows() const
-			{
-				switch (get_shadow_quality())
-				{
-					case sqt_no:
-					case sqt_low:
-					case sqt_medium:
-					case sqt_high:
-						return false;
-					case sqt_ultra:
-						return true;
-				}
-
-				return false;
-			}
-
 			inline bool get_exponential_shadow_maps() const
 			{
 				switch (get_shadow_quality())
@@ -191,22 +194,6 @@ namespace eternal_lands
 					case sqt_low:
 						return false;
 					case sqt_medium:
-					case sqt_high:
-					case sqt_ultra:
-						return true;
-				}
-
-				return false;
-			}
-
-			inline bool get_filter_shadow_map() const
-			{
-				switch (get_shadow_quality())
-				{
-					case sqt_no:
-					case sqt_low:
-					case sqt_medium:
-						return false;
 					case sqt_high:
 					case sqt_ultra:
 						return true;
@@ -269,9 +256,24 @@ namespace eternal_lands
 				return m_use_simd;
 			}
 
-			inline bool get_sample_shading() const
+			inline bool get_use_block() const
 			{
-				return m_sample_shading;
+				return m_use_block;
+			}
+
+			inline bool get_use_alias() const
+			{
+				return m_use_alias;
+			}
+
+			inline bool get_use_in_out() const
+			{
+				return m_use_in_out;
+			}
+
+			inline bool get_use_layered_rendering() const
+			{
+				return m_use_layered_rendering;
 			}
 
 #ifdef	DEBUG

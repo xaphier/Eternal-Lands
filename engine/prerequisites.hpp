@@ -184,6 +184,7 @@ namespace eternal_lands
 	class AbstractFrameBuffer;
 	class AbstractMesh;
 	class AbstractReadMemoryBuffer;
+	class AbstractReadWriteMemoryBuffer;
 	class AbstractRStarTreeVisitor;
 	class AbstractWriteMemoryBuffer;
 	class Actor;
@@ -282,6 +283,7 @@ namespace eternal_lands
 	SHARED_PTR(AbstractFrameBuffer);
 	SHARED_PTR(AbstractMesh);
 	SHARED_PTR(AbstractReadMemoryBuffer);
+	SHARED_PTR(AbstractReadWriteMemoryBuffer);
 	SHARED_PTR(AbstractWriteMemoryBuffer);
 	SHARED_PTR(Actor);
 	SHARED_PTR(ActorDataCache);
@@ -331,6 +333,7 @@ namespace eternal_lands
 	WEAK_PTR(ShaderSourceBuilder);
 	WEAK_PTR(TextureCache);
 
+	VECTOR(AbstractReadWriteMemoryBufferSharedPtr);
 	VECTOR(ActorSharedPtr);
 	VECTOR(BoundedObjectSharedPtr);
 	VECTOR(BoundingBox);

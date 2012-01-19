@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @brief The @c class MeshCache.
- * This file contains the @c class MeshCache.
+ * @brief The @c class MeshBuilder.
+ * This file contains the @c class MeshBuilder.
  */
 namespace eternal_lands
 {
@@ -66,6 +66,9 @@ namespace eternal_lands
 				const String &name,
 				const bool static_indices = true,
 				const bool static_vertices = true) const;
+			VertexBuffersSharedPtr get_vertex_buffers(
+				const VertexFormatType vertex_format,
+				const Uint32 vertex_count) const;
 			VertexFormatSharedPtr get_vertex_format(
 				const VertexFormatType vertex_format) const;
 			static const String &get_str(

@@ -1,12 +1,12 @@
 /****************************************************************************
- *            multisampledepthframebuffer.hpp
+ *            layeredframebuffer.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_15feb442_dae9_4dad_8e20_a3311cd0f172
-#define	UUID_15feb442_dae9_4dad_8e20_a3311cd0f172
+#ifndef	UUID_5cdd664b_bfc8_4d5a_9b45_660fb3d8c7ef
+#define	UUID_5cdd664b_bfc8_4d5a_9b45_660fb3d8c7ef
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
@@ -20,28 +20,26 @@
 
 /**
  * @file
- * @brief The @c class MultiSampleDepthFrameBuffer.
- * This file contains the @c class MultiSampleDepthFrameBuffer.
+ * @brief The @c class LayeredFrameBuffer.
+ * This file contains the @c class LayeredFrameBuffer.
  */
 namespace eternal_lands
 {
 
-	class MultiSampleDepthFrameBuffer: public AbstractFrameBuffer
+	class LayeredFrameBuffer: public AbstractFrameBuffer
 	{
 		private:
 			FrameBuffer m_frame_buffer;
-			FrameBuffer m_multisample_frame_buffer;
 			boost::scoped_ptr<RenderBuffer> m_render_buffer;
-			Uint32 m_layer;
 			bool m_stencil;
+			bool m_color;
 
 		public:
-			MultiSampleDepthFrameBuffer(const String &name,
+			LayeredFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
 				const Uint32 layers, const Uint16 mipmaps,
-				const Uint16 samples,
 				const TextureFormatType format);
-			~MultiSampleDepthFrameBuffer() throw();
+			virtual ~LayeredFrameBuffer() throw();
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);
 			virtual void blit();
@@ -54,4 +52,4 @@ namespace eternal_lands
 
 }
 
-#endif	/* UUID_15feb442_dae9_4dad_8e20_a3311cd0f172 */
+#endif	/* UUID_5cdd664b_bfc8_4d5a_9b45_660fb3d8c7ef */

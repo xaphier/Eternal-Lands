@@ -27,6 +27,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_creation)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data = el::RenderObjectData(object, 0.1f, true);
 
@@ -39,6 +40,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_creation)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data = el::RenderObjectData(object, 0.7f, true, 0x0);
 
@@ -51,6 +53,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_creation)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 0);
 }
 
 BOOST_AUTO_TEST_CASE(render_object_data_transparency)
@@ -66,6 +69,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_transparency)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_transparency(0.3f);
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.3f, 0.001);
@@ -76,6 +80,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_transparency)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_transparency(0.0f);
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
@@ -86,6 +91,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_transparency)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_transparency(1.0f);
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 1.0f, 0.001);
@@ -96,6 +102,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_transparency)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 }
 
 BOOST_AUTO_TEST_CASE(render_object_data_distance)
@@ -111,6 +118,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_distance)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_distance(0.3f);
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
@@ -121,6 +129,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_distance)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_distance(0.0f);
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
@@ -131,6 +140,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_distance)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_distance(1.0f);
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
@@ -141,6 +151,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_distance)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_distance(234576.4543f);
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
@@ -152,6 +163,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_distance)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_distance(45.5346f);
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
@@ -162,6 +174,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_distance)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 }
 
 BOOST_AUTO_TEST_CASE(render_object_data_blend)
@@ -176,6 +189,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_blend)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_blend(true);
 	BOOST_CHECK_EQUAL(render_object_data.get_blend(), true);
@@ -187,6 +201,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_blend)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	render_object_data.set_blend(false);
 	BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
@@ -198,6 +213,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_blend)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 }
 
 BOOST_AUTO_TEST_CASE(render_object_data_sub_frustums_mask)
@@ -213,6 +229,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_sub_frustums_mask)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	for (i = 0; i < 16; ++i)
 	{
@@ -235,6 +252,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_layers)
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
 	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 	for (i = 0; i < 4; ++i)
 	{
@@ -248,6 +266,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_layers)
 		BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f,
 			0.001);
 		BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
 
 		render_object_data.set_sub_frustums_mask(0xF - (1 << i));
 		BOOST_CHECK_EQUAL(render_object_data.get_layers()[0],
@@ -262,6 +281,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_layers)
 		BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f,
 			0.001);
 		BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 3);
 	}
 
 	for (i = 0; i < 3; ++i)
@@ -276,6 +296,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_layers)
 		BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f,
 			0.001);
 		BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 2);
 	}
 
 	for (i = 0; i < 2; ++i)
@@ -290,6 +311,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_layers)
 		BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f,
 			0.001);
 		BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 3);
 
 		render_object_data.set_sub_frustums_mask(5 << i);
 		BOOST_CHECK_EQUAL(render_object_data.get_layers()[0], i);
@@ -301,6 +323,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_layers)
 		BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f,
 			0.001);
 		BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 2);
 	}
 
 	render_object_data.set_sub_frustums_mask(0xF);
@@ -311,4 +334,82 @@ BOOST_AUTO_TEST_CASE(render_object_data_layers)
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
 	BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f, 0.001);
 	BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 4);
+}
+
+BOOST_AUTO_TEST_CASE(render_object_data_layer_count)
+{
+	el::RenderObjectData render_object_data;
+	el::Uint16 i;
+
+	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
+	BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f, 0.001);
+	BOOST_CHECK_EQUAL(render_object_data.get_sub_frustums_mask(), 0x01);
+	BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+	BOOST_CHECK_EQUAL(render_object_data.get_layers()[0], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
+
+	for (i = 0; i < 4; ++i)
+	{
+		render_object_data.set_sub_frustums_mask(1 << i);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 1);
+
+		render_object_data.set_sub_frustums_mask(0xF - (1 << i));
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 3);
+	}
+
+	for (i = 0; i < 3; ++i)
+	{
+		render_object_data.set_sub_frustums_mask(3 << i);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[0], i);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], i + 1);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+		BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f,
+			0.001);
+		BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f,
+			0.001);
+		BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 2);
+	}
+
+	for (i = 0; i < 2; ++i)
+	{
+		render_object_data.set_sub_frustums_mask(7 << i);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[0], i);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], i + 1);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], i + 2);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+		BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f,
+			0.001);
+		BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f,
+			0.001);
+		BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 3);
+
+		render_object_data.set_sub_frustums_mask(5 << i);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[0], i);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], i + 2);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 0);
+		BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 0);
+		BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f,
+			0.001);
+		BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f,
+			0.001);
+		BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+		BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 2);
+	}
+
+	render_object_data.set_sub_frustums_mask(0xF);
+	BOOST_CHECK_EQUAL(render_object_data.get_layers()[0], 0);
+	BOOST_CHECK_EQUAL(render_object_data.get_layers()[1], 1);
+	BOOST_CHECK_EQUAL(render_object_data.get_layers()[2], 2);
+	BOOST_CHECK_EQUAL(render_object_data.get_layers()[3], 3);
+	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
+	BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f, 0.001);
+	BOOST_CHECK_EQUAL(render_object_data.get_blend(), false);
+	BOOST_CHECK_EQUAL(render_object_data.get_layer_count(), 4);
 }

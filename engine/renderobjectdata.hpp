@@ -35,6 +35,7 @@ namespace eternal_lands
 			float m_transparency;
 			float m_distance;
 			SubFrustumsMask m_sub_frustums_mask;
+			Uint16 m_layer_count;
 			bool m_blend;
 
 			void update_layers();
@@ -110,6 +111,11 @@ namespace eternal_lands
 			inline const glm::ivec4 &get_layers() const
 			{
 				return m_layers;
+			}
+
+			inline Uint16 get_layer_count() const
+			{
+				return m_layer_count;
 			}
 
 	};

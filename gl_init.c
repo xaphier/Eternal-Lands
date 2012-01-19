@@ -1094,7 +1094,6 @@ void resize_root_window()
 
 void set_new_video_mode(int fs,int mode)
 {
-	int i;
 #ifndef	NEW_TEXTURES
 	int alpha;
 #endif	/* NEW_TEXTURES */
