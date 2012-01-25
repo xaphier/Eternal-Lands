@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>specular</name>
- <type>light</type>
+ <type>fragment_light</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>lighting_position</name>
-     <source></source>
+     <name>world_position</name>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>lighting_normal</name>
-     <source></source>
+     <name>fragment_normal</name>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>light_position</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -31,7 +28,6 @@
     </parameter>
     <parameter>
      <name>light_color</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -39,29 +35,34 @@
     </parameter>
     <parameter>
      <name>diffuse_color</name>
-     <source></source>
      <type>vec3</type>
-     <qualifier>inout</qualifier>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
      <name>specular_color</name>
-     <source></source>
      <type>vec3</type>
-     <qualifier>inout</qualifier>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_view_direction</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
    <source>{
-	vec3 dir, half_vec;
+	vec3 dir, reflect_dir;
 	float dist, scale, nxdir, diffuse, specular, hxdir;
 
-	dir = light_position.xyz - lighting_position * light_color.a;
+	dir = light_position.xyz - world_position * light_color.a;
 	dist = dot(dir, dir);
 	dir = normalize(dir);
-	nxdir = max(0.0, dot(lighting_normal, dir));
+	nxdir = max(0.0, dot(fragment_normal, dir));
 	scale = max(0.0, 1.0 - dist * light_position.w);
 	diffuse = scale * nxdir;
 
@@ -70,8 +71,9 @@
 
 	if (diffuse &gt; 0.0)
 	{
-		hxdir = max(0.0, dot(lighting_normal, half_vec));
-		specular = pow(hxdir, 32) * scale;
+		reflect_dir = reflect(-dir, fragment_normal);
+		hxdir = max(0.0, dot(-world_view_direction.xyz, reflect_dir));
+		specular = pow(hxdir, 5) * scale;
 		diffuse_color += light_color.rgb * diffuse;
 		specular_color += light_color.rgb * specular;
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>diffuse</name>
- <type>fragment_light</type>
+ <type>vertex_light</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -14,7 +14,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>fragment_normal</name>
+     <name>world_normal</name>
      <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
@@ -61,7 +61,7 @@
 	dir = light_position.xyz - world_position * light_color.a;
 	dist = dot(dir, dir);
 	dir = normalize(dir);
-	nxdir = max(0.0, dot(fragment_normal, dir));
+	nxdir = max(0.0, dot(world_normal, dir));
 	scale = max(0.0, 1.0 - dist * light_position.w);
 	diffuse_color = light_color.rgb * scale * nxdir;
 	specular_color = vec3(0.0);

@@ -108,7 +108,6 @@ namespace eternal_lands
 				const ShaderVersionType data_type) const;
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const xmlNodePtr node);
-			void load_source(const xmlNodePtr node);
 			void load_sources(const xmlNodePtr node);
 
 		public:

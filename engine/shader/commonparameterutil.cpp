@@ -71,8 +71,6 @@ namespace eternal_lands
 				pt_vec4),
 			CommonParameterTypeData(String(UTF8("light_position")),
 				pt_vec4),
-			CommonParameterTypeData(String(UTF8("lighting_normal")),
-				pt_vec3),
 			CommonParameterTypeData(String(UTF8("world_position")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("world_normal")),

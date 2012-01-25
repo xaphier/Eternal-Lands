@@ -38,7 +38,7 @@ namespace eternal_lands
 			~MaterialDescriptionCache() throw();
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
-			void write_xml(const String &file_name);
+			void save_xml(const String &file_name) const;
 			StringVector get_material_description_names() const;
 			const MaterialDescription &get_material_description(
 				const String &name) const;

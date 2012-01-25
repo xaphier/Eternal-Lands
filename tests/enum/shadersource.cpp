@@ -43,10 +43,14 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
 		el::sst_world_depth_transform).get(), "world_depth_transform");
-	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(el::sst_light).get(),
-		"light");
+	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
+		el::sst_vertex_light).get(), "vertex_light");
+	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
+		el::sst_fragment_light).get(), "fragment_light");
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
 		el::sst_normal_mapping).get(), "normal_mapping");
+	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
+		el::sst_emission_mapping).get(), "emission_mapping");
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
 		el::sst_shadow_map).get(), "shadow_map");
 }

@@ -181,7 +181,7 @@ namespace eternal_lands
 		Uint16 i;
 
 		str << "material_name: " << value.get_material_name();
-		str << "world_transform: " << value.get_world_transform();
+		str << " world_transform: " << value.get_world_transform();
 		str << " texture_coodrinates: ";
 		str << value.get_texture_coodrinates() << std::endl;
 		str << " diffuse_mapping: " << value.get_diffuse_mapping();

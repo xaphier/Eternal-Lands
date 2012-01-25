@@ -22,7 +22,7 @@
     <parameter>
      <name>specular</name>
      <type>float</type>
-     <qualifier>in</qualifier>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -54,7 +54,7 @@
     <parameter>
      <name>specular</name>
      <type>float</type>
-     <qualifier>in</qualifier>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>

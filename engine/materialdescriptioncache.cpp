@@ -12,6 +12,7 @@
 #include "filesystem.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
@@ -102,6 +103,25 @@ namespace eternal_lands
 		}
 
 		return result;
+	}
+
+	void MaterialDescriptionCache::save_xml(const String &file_name) const
+	{
+		StringMaterialDescriptionMap::const_iterator it, end;
+		XmlWriterSharedPtr writer;
+
+		writer = XmlWriterSharedPtr(new XmlWriter(file_name));
+
+		writer->start_element(UTF8("materials"));
+
+		end = m_material_description_cache.end();
+
+		for (it = m_material_description_cache.begin(); it != end; ++it)
+		{
+			it->second.save_xml(writer);
+		}
+
+		writer->end_element();
 	}
 
 }

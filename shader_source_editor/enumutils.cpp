@@ -521,7 +521,7 @@ namespace eternal_lands
 					return true;
 				}
 				return false;
-			case sst_light:
+			case sst_vertex_light:
 				if (index == 0)
 				{
 					get_data(cpt_light_color, pqt_in,
@@ -538,7 +538,44 @@ namespace eternal_lands
 				}
 				if (index == 2)
 				{
-					get_data(cpt_lighting_normal, pqt_in,
+					get_data(cpt_world_normal, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 3)
+				{
+					get_data(cpt_world_position, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 4)
+				{
+					get_data(cpt_diffuse_color, pqt_out,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				return false;
+			case sst_fragment_light:
+				if (index == 0)
+				{
+					get_data(cpt_light_color, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 1)
+				{
+					get_data(cpt_light_position, pqt_in,
+						name, type, qualifier, size,
+						scale);
+					return true;
+				}
+				if (index == 2)
+				{
+					get_data(cpt_fragment_normal, pqt_in,
 						name, type, qualifier, size,
 						scale);
 					return true;

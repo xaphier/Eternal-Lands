@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>select.png</file>
+    <file>ambient.png</file>
+    <file>sun.png</file>
+    <file>time.png</file>
+  </qresource>
+</RCC>

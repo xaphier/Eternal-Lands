@@ -24,6 +24,7 @@
 		<shader_source>shaders/sources/shadow_mapping.xml</shader_source>
 		<shader_source>shaders/sources/shadow_filtering_mapping.xml</shader_source>
 		<shader_source>shaders/sources/transparent.xml</shader_source>
+		<shader_source>shaders/sources/simple_light.xml</shader_source>
 		<shader_source>shaders/sources/diffuse_light.xml</shader_source>
 		<shader_source>shaders/sources/specular_light.xml</shader_source>
 		<shader_source>shaders/sources/no_normal_mapping.xml</shader_source>
@@ -41,73 +42,24 @@
 		<shader_source>shaders/sources/tbn_matrix.xml</shader_source>
 	</shader_sources>
 	<sources>
-		<source>
-			<name>world_depth_transform</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>world_normal_transform</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>world_tangent_transform</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>view_direction</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>view_transform</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>diffuse_mapping</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>uv</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>shadow_uv</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>shadow_mapping</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>fog</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>transparent</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>light</name>
-			<value>diffuse</value>
-		</source>
-		<source>
-			<name>normal_mapping</name>
-			<value>normal_mapping</value>
-		</source>
-		<source>
-			<name>normal_depth_mapping</name>
-			<value>disabled</value>
-		</source>
-		<source>
-			<name>specular_mapping</name>
-			<value>disabled</value>
-		</source>
-		<source>
-			<name>shadow_map</name>
-			<value>default</value>
-		</source>
-		<source>
-			<name>tbn_matrix</name>
-			<value>default</value>
-		</source>
+		<world_depth_transform>default</world_depth_transform>
+		<world_normal_transform>default</world_normal_transform>
+		<world_tangent_transform>default</world_tangent_transform>
+		<view_direction>default</view_direction>
+		<view_transform>default</view_transform>
+		<shadow_uv>default</shadow_uv>
+		<shadow_mapping>default</shadow_mapping>
+		<fog>default</fog>
+		<transparent>default</transparent>
+		<vertex_light>diffuse</vertex_light>
+		<fragment_light>specular</fragment_light>
+		<shadow_map>default</shadow_map>
+		<tbn_matrix>default</tbn_matrix>
+		<diffuse_mapping>default</diffuse_mapping>
+		<uv>default</uv>
+		<normal_mapping>normal_mapping</normal_mapping>
+		<normal_depth_mapping>disabled</normal_depth_mapping>
+		<specular_mapping>default</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
 	</sources>
 </shaders>

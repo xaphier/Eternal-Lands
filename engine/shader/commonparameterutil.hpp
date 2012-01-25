@@ -35,7 +35,6 @@ namespace eternal_lands
 		cpt_shadow,
 		cpt_light_color,
 		cpt_light_position,
-		cpt_lighting_normal,
 		cpt_world_position,
 		cpt_world_normal,
 		cpt_world_tangent,

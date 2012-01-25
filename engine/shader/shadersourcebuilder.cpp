@@ -990,44 +990,11 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void ShaderSourceBuilder::load_source(const xmlNodePtr node)
-	{
-		xmlNodePtr it;
-		String name, value;
-
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("source")) != 0)
-		{
-			return;
-		}
-
-		if (!XmlUtil::has_children(node, true))
-		{
-			return;
-		}
-
-		it = XmlUtil::children(node, true);
-
-		do
-		{
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
-			{
-				name = XmlUtil::get_string_value(it);
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("value")) == 0)
-			{
-				value = XmlUtil::get_string_value(it);
-			}
-		}
-		while (XmlUtil::next(it, true));
-
-		m_sources[ShaderSourceUtil::get_shader_source(name)] = value;
-	}
-
 	void ShaderSourceBuilder::load_sources(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
-		String name, file_name;
+		Uint32 i, count;
+		ShaderSourceType type;
 
 		if (xmlStrcmp(node->name, BAD_CAST UTF8("sources")) != 0)
 		{
@@ -1041,11 +1008,23 @@ namespace eternal_lands
 
 		it = XmlUtil::children(node, true);
 
+		count = ShaderSourceUtil::get_shader_source_count();
+
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("source")) == 0)
+			for (i = 0; i < count; ++i)
 			{
-				load_source(it);
+				type = static_cast<ShaderSourceType>(i);
+
+				if (xmlStrcmp(it->name, BAD_CAST
+					ShaderSourceUtil::get_str(type).get(
+						).c_str()) == 0)
+				{
+					m_sources[type] =
+						XmlUtil::get_string_value(it);
+
+					break;
+				}
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -1152,8 +1131,6 @@ namespace eternal_lands
 
 		if (index == data.get_sources().end())
 		{
-			LOG_DEBUG(UTF8("Shader source type not found %1%"),
-				shader_source_type);
 			return false;
 		}
 
@@ -1161,7 +1138,7 @@ namespace eternal_lands
 
 		if (found == m_shader_sources.end())
 		{
-			LOG_DEBUG(UTF8("Shader source type not found "
+			LOG_ERROR(UTF8("Shader source type not found "
 				"%1%-%2%"), index->first % index->second);
 			return false;
 		}
@@ -1183,7 +1160,7 @@ namespace eternal_lands
 		ShaderSourceParameterVector function_locals;
 		ShaderSourceParameterVector function_parameters;
 		ShaderSourceLocalType output_color;
-		CommonParameterType input_normal;
+		ShaderSourceType light;
 		StringStream stream;
 		String local_indent, local_loop_indent;
 		StringType lighting;
@@ -1197,35 +1174,27 @@ namespace eternal_lands
 		if (vertex)
 		{
 			output_color = sslt_vertex_color;
-			input_normal = cpt_world_normal;
 			light_offset = get_fragment_light_count();
 			light_count = data.get_light_count();
 			dynamic_light_count = true;
+			light = sst_vertex_light;
 		}
 		else
 		{
-			input_normal = cpt_fragment_normal;
 			output_color = sslt_fragment_color;
 			light_offset = 0;
 			light_count = data.get_fragment_light_count();
 			dynamic_light_count =
 				get_dynamic_light_count();
+			light = sst_fragment_light;
 		}
 
 		add_local(String(UTF8("lighting")), sslt_i, pqt_out,
 			function_locals, function_parameters);
-		add_local(String(UTF8("lighting")), cpt_lighting_normal,
-			pqt_in, function_locals, function_parameters);
 		add_local(String(UTF8("lighting")), sslt_shadow_values,
 			pqt_out, function_locals, function_parameters);
-		add_parameter(String(UTF8("lighting")), input_normal, pqt_in,
-			function_locals, function_parameters);
-		add_parameter(String(UTF8("lighting")), cpt_world_position,
-			pqt_in, function_locals, function_parameters);
 
 		stream << UTF8("\n");
-		stream << local_indent << cpt_lighting_normal;
-		stream << UTF8(" = ") << input_normal << UTF8(";\n");
 
 		add_local(String(UTF8("lighting")), sslt_diffuse_colors_sum,
 			pqt_out, function_locals, function_parameters);
@@ -1251,9 +1220,15 @@ namespace eternal_lands
 
 		if (!vertex)
 		{
+			add_local(String(UTF8("lighting")), cpt_emission,
+				pqt_in, function_locals, function_parameters);
+
 			add_local(String(UTF8("lighting")),
 				sslt_specular_colors_sum, pqt_out,
 				function_locals, function_parameters);
+
+			stream << local_indent << sslt_diffuse_colors_sum;
+			stream << UTF8(" += ") << cpt_emission << UTF8(";\n");
 
 			stream << local_indent << sslt_specular_colors_sum;
 			stream << UTF8(" = vec3(0.0);\n");
@@ -1321,7 +1296,7 @@ namespace eternal_lands
 		stream << UTF8("[") << sslt_i << UTF8("];\n");
 
 		if (!build_function(data, array_sizes, function_locals,
-			sst_light, local_loop_indent, stream,
+			light, local_loop_indent, stream,
 			function_parameters, values))
 		{
 			add_parameter(String(UTF8("lighting")), cpt_diffuse,
@@ -1329,6 +1304,19 @@ namespace eternal_lands
 
 			add_parameter(String(UTF8("lighting")), output_color,
 				pqt_out, locals, globals);
+
+			if (!vertex)
+			{
+				add_parameter(String(UTF8("lighting")),
+					cpt_emission, pqt_in, locals, globals);
+
+				main << indent << UTF8("/* no lighting */\n");
+				main << indent << output_color << UTF8(" = ");
+				main << cpt_diffuse << UTF8(".rgb *");
+				main << cpt_emission << UTF8(";\n");
+
+				return;
+			}
 
 			main << indent << UTF8("/* no lighting */\n");
 			main << indent << output_color << UTF8(" = ");
@@ -1458,20 +1446,7 @@ namespace eternal_lands
 			}
 		}
 
-		if (data.get_option(ssbot_layered_rendering))
-		{
-#if	0
-			add_parameter(String(UTF8("vertex")), sslt_layer_index,
-				pqt_out, locals, globals);
-			add_parameter(String(UTF8("vertex")), apt_layers,
-				locals, globals);
-
-			main << indent << UTF8("/* building layer index */\n");
-			main << indent << sslt_layer_index << UTF8(" = ");
-			main << apt_layers << UTF8("[gl_InstanceID];\n");
-#endif
-		}
-		else
+		if (!data.get_option(ssbot_layered_rendering))
 		{
 			add_parameter(String(UTF8("vertex")),
 				apt_projection_view_matrix, locals, globals);
@@ -1695,6 +1670,10 @@ namespace eternal_lands
 
 		if (data.get_shader_build_type() == sbt_color)
 		{
+			build_function(data, array_sizes, locals,
+				sst_emission_mapping, indent, main, globals,
+				values);
+
 			if (data.get_fragment_light_count() > 0)
 			{
 				build_function(data, array_sizes, locals,
@@ -1722,7 +1701,7 @@ namespace eternal_lands
 
 				main << UTF8("\t") << sslt_fragment_color;
 				main << UTF8(" = ") << cpt_diffuse;
-				main << UTF8(".rgb * ");
+				main << UTF8(".rgb * (");
 
 				if (data.get_vertex_light_count() > 0)
 				{
@@ -1730,15 +1709,20 @@ namespace eternal_lands
 						sslt_vertex_color, pqt_in,
 						locals, globals);
 					main << sslt_vertex_color;
-					main << UTF8(";\n");
 				}
 				else
 				{
 					add_parameter(String(UTF8("fragment")),
 						apt_ambient, locals, globals);
 
-					main << apt_ambient << UTF8(".rgb;\n");
+					main << apt_ambient << UTF8(".rgb");
 				}
+
+				add_local(String(UTF8("fragment")),
+					cpt_emission, pqt_in, locals, globals);
+
+				main << UTF8(" + ") << cpt_emission;
+				main << UTF8(");\n");
 			}
 		}
 
@@ -1814,6 +1798,8 @@ namespace eternal_lands
 
 		if (found == m_shader_sources.end())
 		{
+			LOG_ERROR(UTF8("Shader source type not found "
+				"%1%-%2%"), index->first % index->second);
 			return false;
 		}
 
@@ -1862,7 +1848,8 @@ namespace eternal_lands
 
 			if (data.get_vertex_light_count() > 0)
 			{
-				result |= check_function(data, name, sst_light);
+				result |= check_function(data, name,
+					sst_vertex_light);
 			}
 
 			if ((data.get_shadow_map_count() > 0) &&
@@ -1927,7 +1914,7 @@ namespace eternal_lands
 				}
 
 				result |= check_function(data, name,
-					sst_light);
+					sst_fragment_light);
 			}
 		}
 
@@ -1972,20 +1959,13 @@ namespace eternal_lands
 		sources[sst_uv] = description.get_texture_coodrinates();
 		sources[sst_diffuse_mapping] =
 			description.get_diffuse_mapping();
-
-		if (!description.get_normal_mapping().get().empty())
-		{
-			sources[sst_normal_mapping] =
-				description.get_normal_mapping();
-			sources[sst_normal_depth_mapping] =
-				description.get_normal_mapping();
-		}
-
-		if (!description.get_specular_mapping().get().empty())
-		{
-			sources[sst_specular_mapping] =
-				description.get_specular_mapping();
-		}
+		sources[sst_normal_mapping] = description.get_normal_mapping();
+		sources[sst_normal_depth_mapping] =
+			description.get_normal_mapping();
+		sources[sst_specular_mapping] =
+			description.get_specular_mapping();
+		sources[sst_emission_mapping] =
+			description.get_emission_mapping();
 
 		if (!description.get_receives_shadows())
 		{
@@ -2016,7 +1996,14 @@ namespace eternal_lands
 
 		if (!description.get_lighting())
 		{
-			found = sources.find(sst_light);
+			found = sources.find(sst_vertex_light);
+
+			if (found != sources.end())
+			{
+				sources.erase(found);
+			}
+
+			found = sources.find(sst_fragment_light);
 
 			if (found != sources.end())
 			{

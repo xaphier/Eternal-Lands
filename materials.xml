@@ -2298,8 +2298,8 @@
 		<blend></blend>
 		<texture_coodrinates>default</texture_coodrinates>
 		<diffuse_mapping>default</diffuse_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
+		<normal_mapping>normal_mapping</normal_mapping>
+		<specular_mapping>default</specular_mapping>
 		<emission_mapping>disabled</emission_mapping>
 		<receives_shadows>true</receives_shadows>
 		<lighting>true</lighting>
