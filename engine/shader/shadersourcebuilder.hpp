@@ -103,8 +103,7 @@ namespace eternal_lands
 				const FileSystemSharedPtr &file_system,
 				const xmlNodePtr node);
 			ShaderSourceTypeStringMap build_sources(
-				const ShaderSourceDescription &description)
-				const;
+				const EffectDescription &description) const;
 			bool check(const ShaderSourceTypeStringPair &source,
 				const ShaderVersionType data_type) const;
 			void load_xml(const FileSystemSharedPtr &file_system,
@@ -120,11 +119,13 @@ namespace eternal_lands
 				const String &file_name);
 			void build(const Uint16 light_count,
 				const ShaderBuildType shader_build_type,
-				const ShaderSourceDescription &description,
+				const EffectDescription &description,
 				StringType &vertex, StringType &geometry,
 				StringType &fragment, StringVariantMap &values)
 				const;
 			void set_shadow_map_type(const String &name);
+			StringVector get_shader_source_names(
+				const ShaderSourceType shader_source) const;
 
 			inline const ShaderSourceTypeStringMap &get_sources()
 				const

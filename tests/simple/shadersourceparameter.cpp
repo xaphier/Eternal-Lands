@@ -7,7 +7,6 @@
 
 #include "prerequisites.hpp"
 #include "shader/shadersourceparameter.hpp"
-#include "utf.hpp"
 #include "xmlbuffer.hpp"
 #include "xmlwriter.hpp"
 #include "xmlreader.hpp"
@@ -162,15 +161,16 @@ BOOST_AUTO_TEST_CASE(load_xml)
 		"<parameter><name>3sfd23</name><type>uvec3</type>"
 		"<qualifier>inout</qualifier><size>bone_count</size>"
 		"<scale>14536</scale></parameter>"));
-	el::XmlReaderSharedPtr reader;
+	el::XmlReaderSharedPtr xml_reader;
 	el::ShaderSourceParameter shader_source_parameter;
 
-	reader = el::XmlReaderSharedPtr(new el::XmlReader(buffer.get_buffer()));
+	xml_reader = el::XmlReaderSharedPtr(new el::XmlReader(
+		buffer.get_buffer()));
 
 	BOOST_CHECK_NO_THROW(shader_source_parameter.load_xml(
-		el::String(UTF8("fasd")), reader->get_root_node()));
+		el::String(UTF8("fasd")), xml_reader->get_root_node()));
 
-	reader.reset();
+	xml_reader.reset();
 
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_source(), UTF8("fasd"));
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("3sfd23"));

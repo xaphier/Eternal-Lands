@@ -53,18 +53,20 @@ namespace eternal_lands
 				const Uint32 material_count,
 				const Uint32 material_size,
 				const Uint32 material_offset);
-			MaterialDescription load_material(
-				const FileSystemSharedPtr &file_system,
+			MaterialEffectDescription load_material(
+				const MaterialDescriptionCacheSharedPtr
+					&material_description_cache,
 				const Uint32 material_offset,
 				const Uint32 material_size,
 				const Uint32 material_index,
 				const StringType &dir);
 			void load_materials(
-				const FileSystemSharedPtr &file_system,
+				const MaterialDescriptionCacheSharedPtr
+					&material_description_cache,
 				const Uint32 material_count,
 				const Uint32 material_size,
 				const Uint32 material_offset,
-				MaterialDescriptionVector &materials);
+				MaterialEffectDescriptionVector &materials);
 			void log_file_infos(const Uint8 options,
 				const Uint8 format) const;
 			void check_file_infos(Uint8 &options, Uint8 &format)
@@ -77,10 +79,11 @@ namespace eternal_lands
 		public:
 			E3dLoader(const ReaderSharedPtr &reader);
 			~E3dLoader() throw();
-			void load(const FileSystemSharedPtr &file_system,
+			void load(const MaterialDescriptionCacheSharedPtr
+					&material_description_cache,
 				const bool use_simd,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialDescriptionVector &materials);
+				MaterialEffectDescriptionVector &materials);
 			static bool check_format(const Uint8Array8 &id);
 
 	};

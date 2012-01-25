@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf8"?>
-<shader_source_description>
+<effect_description>
  <world_transform>bone_animation</world_transform>
  <texture_coodrinates>default</texture_coodrinates>
  <diffuse_mapping>default</diffuse_mapping>
@@ -8,4 +8,4 @@
  <light></light>
  <receives_shadows>true</receives_shadows>
  <transparent>false</transparent>
-</shader_source_description>
+</effect_description>

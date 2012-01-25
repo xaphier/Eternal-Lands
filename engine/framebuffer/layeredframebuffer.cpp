@@ -47,18 +47,15 @@ namespace eternal_lands
 
 		if (TextureFormatUtil::get_depth(format))
 		{
-			m_stencil = false;
 			m_color = false;
 
-			get_texture()->attach(GL_DEPTH_ATTACHMENT, 0, 0);
+			get_texture()->attach(GL_DEPTH_ATTACHMENT, 0);
 
 			DEBUG_CHECK_GL_ERROR();
 
 			if (TextureFormatUtil::get_stencil(format))
 			{
-				m_stencil = true;
-
-				get_texture()->attach(GL_STENCIL_ATTACHMENT, 0,
+				get_texture()->attach(GL_STENCIL_ATTACHMENT,
 					0);
 			}
 
@@ -68,7 +65,6 @@ namespace eternal_lands
 		}
 		else
 		{
-			m_stencil = true;
 			m_color = true;
 
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0);

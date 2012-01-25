@@ -7,6 +7,7 @@
 
 #include "effectcache.hpp"
 #include "effect.hpp"
+#include "effectdescription.hpp"
 
 namespace eternal_lands
 {
@@ -24,22 +25,26 @@ namespace eternal_lands
 	{
 	}
 
-	const EffectSharedPtr &EffectCache::get_effect(const String &name)
+	const EffectSharedPtr &EffectCache::get_effect(
+		const EffectDescription &effect)
 	{
 		EffectCacheMap::iterator found;
 
-		found = m_effect_cache.find(name);
+		found = m_effect_cache.find(effect);
 
 		if (found == m_effect_cache.end())
 		{
-			m_effect_cache[name] = boost::make_shared<Effect>(
-				get_shader_source_builder(), get_file_system(),
-				name);
+			m_effect_cache[effect] = boost::make_shared<Effect>(
+				get_shader_source_builder(), effect);
 
-			return m_effect_cache[name];
+			assert(m_effect_cache[effect] != 0);
+
+			return m_effect_cache[effect];
 		}
 		else
 		{
+			assert(found->second.get() != 0);
+
 			return found->second;
 		}
 	}

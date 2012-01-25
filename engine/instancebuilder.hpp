@@ -56,7 +56,7 @@ namespace eternal_lands
 			glm::vec3 get_center() const;
 			void build_instance_sub_mesh(const glm::vec3 &center,
 				const MeshDataToolSharedPtr &mesh_data_tool,
-				const MaterialDescription &material,
+				const MaterialEffectDescription &material,
 				const Uint32 sub_mesh_index,
 				const Uint32 base_vertex,
 				Uint32 &vertex_offset, Uint32 &index_offset,

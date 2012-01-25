@@ -30,7 +30,8 @@ namespace eternal_lands
 	class EffectCache
 	{
 		private:
-			typedef std::map<String, EffectSharedPtr> EffectCacheMap;
+			typedef std::map<EffectDescription, EffectSharedPtr>
+				EffectCacheMap;
 
 			EffectCacheMap m_effect_cache;
 			ShaderSourceBuilderWeakPtr m_shader_source_builder;
@@ -61,7 +62,8 @@ namespace eternal_lands
 			 */
 			~EffectCache() throw();
 
-			const EffectSharedPtr &get_effect(const String &name);
+			const EffectSharedPtr &get_effect(
+				const EffectDescription &effect);
 			const EffectSharedPtr &get_simple_effect();
 
 			void reload();

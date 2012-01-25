@@ -7,14 +7,14 @@
 
 #include "actor.hpp"
 #include "abstractmesh.hpp"
-#include "material.hpp"
+#include "materialeffect.hpp"
 
 namespace eternal_lands
 {
 
 	Actor::Actor(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
+		const MaterialEffectDescriptionVector &materials,
 		const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache,
 		const IndexUpdateSourceSharedPtr &index_source,
@@ -51,28 +51,25 @@ namespace eternal_lands
 			boost::make_shared<ActorTextureBuilder>(codec_manager,
 				file_system, global_vars, get_name());
 
-		get_modifiable_materials()[0].set_texture(
+		get_modifiable_material_effects()[0].set_texture(
 			m_actor_texture_builder->get_texture(), stt_diffuse_0);
 	}
 
 	void Actor::set_parts(const ActorPartTextureTypeStringMap &parts)
 	{
+		EffectDescription effect;
 		assert(m_actor_texture_builder.get() != 0);
 
 		m_actor_texture_builder->set_parts(parts);
 		m_actor_texture_builder->build_actor_images();
 		m_actor_texture_builder->build_actor_texture();
 
-		if (m_actor_texture_builder->get_uses_alpha())
-		{
-			get_modifiable_materials()[0].set_effect(
-				String(UTF8("animated_mesh_transparent")));
-		}
-		else
-		{
-			get_modifiable_materials()[0].set_effect(
-				String(UTF8("animated_mesh_solid")));
-		}
+		effect = get_material_effects()[0].get_effect_description();
+
+		effect.set_transparent(
+			m_actor_texture_builder->get_uses_alpha());
+
+		get_modifiable_material_effects()[0].set_effect(effect);
 	}
 
 }

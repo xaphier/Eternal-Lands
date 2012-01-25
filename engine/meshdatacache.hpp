@@ -35,6 +35,8 @@ namespace eternal_lands
 			typedef std::map<String, MeshDataCacheItem>
 				MeshDataCacheMap;
 
+			const MaterialDescriptionCacheWeakPtr
+				m_material_description_cache;
 			const FileSystemWeakPtr m_file_system;
 			const GlobalVarsSharedPtr m_global_vars;
 			MeshDataCacheMap m_mesh_data_cache;
@@ -56,15 +58,29 @@ namespace eternal_lands
 				return m_global_vars;
 			}
 
+			inline MaterialDescriptionCacheSharedPtr
+				get_material_description_cache() const
+			{
+				MaterialDescriptionCacheSharedPtr result;
+
+				result = m_material_description_cache.lock();
+
+				assert(result.get() != 0);
+
+				return result;
+			}
+
 			void load_mesh(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialDescriptionVector &materials);
+				MaterialEffectDescriptionVector &materials);
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			MeshDataCache(const FileSystemWeakPtr &file_system,
+			MeshDataCache(const MaterialDescriptionCacheWeakPtr
+					&material_description_cache,
+				const FileSystemWeakPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
 
 			/**
@@ -74,7 +90,7 @@ namespace eternal_lands
 
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialDescriptionVector &materials);
+				MaterialEffectDescriptionVector &materials);
 
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool);

@@ -41,6 +41,8 @@ namespace eternal_lands
 			const EffectCacheWeakPtr m_effect_cache;
 			const TextureCacheWeakPtr m_texture_cache;
 			const CodecManagerWeakPtr m_codec_manager;
+			const MaterialDescriptionCacheWeakPtr
+				m_material_description_cache;
 			const FileSystemWeakPtr m_file_system;
 			const GlobalVarsSharedPtr m_global_vars;
 
@@ -73,6 +75,18 @@ namespace eternal_lands
 				return m_codec_manager;
 			}
 
+			inline MaterialDescriptionCacheSharedPtr
+				get_material_description_cache() const
+			{
+				MaterialDescriptionCacheSharedPtr result;
+
+				result = m_material_description_cache.lock();
+
+				assert(result.get() != 0);
+
+				return result;
+			}
+
 			inline const FileSystemWeakPtr &get_file_system() const
 			{
 				return m_file_system;
@@ -92,6 +106,8 @@ namespace eternal_lands
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
 				const CodecManagerWeakPtr &codec_manager,
+				const MaterialDescriptionCacheWeakPtr
+					&material_description_cache,
 				const FileSystemWeakPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
 

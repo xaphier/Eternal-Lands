@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_diffuse_3).get(), "diffuse_sampler_3");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
-		el::stt_glow_0).get(), "glow_sampler_0");
+		el::stt_emission_0).get(), "emission_sampler_0");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_blend_1).get(), "blend_sampler_1");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(

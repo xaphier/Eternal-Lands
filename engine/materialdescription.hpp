@@ -26,59 +26,60 @@ namespace eternal_lands
 	class MaterialDescription
 	{
 		private:
-			String m_effect;
-			StringArray12 m_textures;
-			bool m_shadow;
-			bool m_culling;
+			MaterialStringArray m_textures;
+			String m_material_name;
+			String m_texture_coodrinates;
+			String m_diffuse_mapping;
+			String m_normal_mapping;
+			String m_specular_mapping;
+			String m_emission_mapping;
+			bool m_receives_shadows;
+			bool m_lighting;
 
-			bool compare_textures(
-				const MaterialDescription &material) const;
-			bool compare_non_textures(
-				const MaterialDescription &material) const;
-			void load_xml(const String &dir,
-				const xmlNodePtr node);
+		protected:
+			inline const String &get_texture(const Uint16 index)
+				const
+			{
+				assert(index < m_textures.size());
+
+				return m_textures[index];
+			}
+
+			inline void set_texture(const String &texture,
+				const Uint16 index)
+			{
+				assert(index < m_textures.size());
+
+				m_textures[index] = texture;
+			}
+
+			inline void asign(const MaterialDescription &material)
+			{
+				m_textures = material.m_textures;
+
+				set_material_name(
+					material.get_material_name());
+				set_texture_coodrinates(
+					material.get_texture_coodrinates());
+				set_diffuse_mapping(
+					material.get_diffuse_mapping());
+				set_normal_mapping(
+					material.get_normal_mapping());
+				set_specular_mapping(
+					material.get_specular_mapping());
+				set_emission_mapping(
+					material.get_emission_mapping());
+				set_receives_shadows(
+					material.get_receives_shadows());
+				set_lighting(material.get_lighting());
+			}				
 
 		public:
 			MaterialDescription();
-			MaterialDescription(
-				const FileSystemSharedPtr &file_system,
-				const String &file_name);
+			MaterialDescription(const xmlNodePtr node);
 			~MaterialDescription() throw();
-			bool operator==(const MaterialDescription &material)
-				const;
-			bool operator!=(const MaterialDescription &material)
-				const;
-			bool operator<(const MaterialDescription &material)
-				const;
-			void load_xml(const FileSystemSharedPtr &file_system,
-				const String &file_name);
 			void load_xml(const xmlNodePtr node);
-
-			/**
-			 * @brief 
-			 * 
-			 * Returns true if this material description can be
-			 * merged with the given material using texture arrays.
-			 * @param diffuses vector of textures the texture array
-			 * bound to stt_diffuse_0 contains
-			 * @param normals vector of textures the texture array
-			 * bound to stt_diffuse_0 contains
-			 * @param speculars vector of textures the texture
-			 * array bound to stt_specular_0 contains
-			 * @param glows vector of textures the texture array
-			 * bound to stt_glow_0 contains
-			 * @param effect the effect
-			 * @param index the index of the textures,
-			 * ivec4(stt_diffuse_0, stt_normal_0, stt_specular_0,
-			 * stt_glow_0)
-			 */
-			bool can_merge(const MaterialDescription &material)
-				const;
-
-			inline void set_effect(const String &effect)
-			{
-				m_effect = effect;
-			}
+			void save_xml(const XmlWriterSharedPtr &writer) const;
 
 			inline void set_texture(const String &texture,
 				const ShaderTextureType texture_type)
@@ -96,29 +97,91 @@ namespace eternal_lands
 				return m_textures[texture_type];
 			}
 
-			inline const String &get_effect() const
+			inline const String &get_material_name() const
 			{
-				return m_effect;
+				return m_material_name;
 			}
 
-			inline void set_shadow(const bool shadow)
+			inline const String &get_texture_coodrinates() const
 			{
-				m_shadow = shadow;
+				return m_texture_coodrinates;
 			}
 
-			inline void set_culling(const bool culling)
+			inline const String &get_diffuse_mapping() const
 			{
-				m_culling = culling;
+				return m_diffuse_mapping;
 			}
 
-			inline bool get_shadow() const
+			inline const String &get_normal_mapping() const
 			{
-				return m_shadow;
+				return m_normal_mapping;
 			}
 
-			inline bool get_culling() const
+			inline const String &get_specular_mapping() const
 			{
-				return m_culling;
+				return m_specular_mapping;
+			}
+
+			inline const String &get_emission_mapping() const
+			{
+				return m_emission_mapping;
+			}
+
+			inline bool get_receives_shadows() const
+			{
+				return m_receives_shadows;
+			}
+
+			inline bool get_lighting() const
+			{
+				return m_lighting;
+			}
+
+			inline void set_material_name(
+				const String &material_name)
+			{
+				m_material_name = material_name;
+			}
+
+			inline void set_texture_coodrinates(
+				const String &texture_coodrinates)
+			{
+				m_texture_coodrinates = texture_coodrinates;
+			}
+
+			inline void set_diffuse_mapping(
+				const String &diffuse_mapping)
+			{
+				m_diffuse_mapping = diffuse_mapping;
+			}
+
+			inline void set_normal_mapping(
+				const String &normal_mapping)
+			{
+				m_normal_mapping = normal_mapping;
+			}
+
+			inline void set_specular_mapping(
+				const String &specular_mapping)
+			{
+				m_specular_mapping = specular_mapping;
+			}
+
+			inline void set_emission_mapping(
+				const String &emission_mapping)
+			{
+				m_emission_mapping = emission_mapping;
+			}
+
+			inline void set_receives_shadows(
+				const bool receives_shadows)
+			{
+				m_receives_shadows = receives_shadows;
+			}
+
+			inline void set_lighting(const bool lighting)
+			{
+				m_lighting = lighting;
 			}
 
 	};

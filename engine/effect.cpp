@@ -9,10 +9,8 @@
 #include "glslprogram.hpp"
 #include "exceptions.hpp"
 #include "shader/shadersourcebuilder.hpp"
-#include "shader/shadersourcedescription.hpp"
-#include "logging.hpp"
 #include "shader/shadertextureutil.hpp"
-#include "xmlreader.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -86,24 +84,17 @@ namespace eternal_lands
 
 	}
 
-	Effect::Effect(): m_name(UTF8("simple")), m_max_index(0)
+	Effect::Effect(): m_max_index(0)
 	{
 		error_load();
 	}
 
 	Effect::Effect(const ShaderSourceBuilderWeakPtr &shader_source_builder,
-		const FileSystemWeakPtr &file_system, const String &name):
+		const EffectDescription &description):
 		m_shader_source_builder(shader_source_builder),
-		m_file_system(file_system), m_name(name), m_max_index(0)
+		m_description(description), m_max_index(0)
 	{
 		assert(!m_shader_source_builder.expired());
-
-		if (name.get().empty())
-		{
-			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_parameter_name(UTF8("name"))
-				<< errinfo_message(UTF8("Paramter is empty")));
-		}
 
 		load();
 	}
@@ -112,7 +103,7 @@ namespace eternal_lands
 	{
 	}
 
-	void Effect::build_default_shader(ShaderSourceDescription description,
+	void Effect::build_default_shader(EffectDescription description,
 		const Uint16 vertex_light_count,
 		const Uint16 fragment_light_count)
 	{
@@ -122,7 +113,7 @@ namespace eternal_lands
 		StringVariantMap values;
 		Uint16 light_count;
 
-		str << UTF8(" [");
+		str << UTF8("[");
 		str << UTF8("vl-") << vertex_light_count;
 		str << UTF8(" fl-") << fragment_light_count;
 
@@ -135,8 +126,7 @@ namespace eternal_lands
 			description, vertex, geometry, fragment, values);
 
 		program = boost::make_shared<GlslProgram>(vertex, geometry,
-			fragment, values, String(get_name().get() + str.str() +
-				UTF8("]")));
+			fragment, values, String(str.str() + UTF8("]")));
 
 		m_default_programs.push_back(program);
 
@@ -152,8 +142,7 @@ namespace eternal_lands
 
 			program = boost::make_shared<GlslProgram>(vertex,
 				geometry, fragment, values,
-				String(get_name().get() + str.str() +
-					UTF8(" no-shadow]")));
+				String(str.str() + UTF8(" no-shadow]")));
 		}
 
 		m_default_programs.push_back(program);
@@ -161,8 +150,7 @@ namespace eternal_lands
 
 	void Effect::do_load()
 	{
-		XmlReaderSharedPtr xml_reader;
-		ShaderSourceDescription description;
+		StringStream str;
 		StringType vertex, geometry, fragment;
 		StringVariantMap values;
 		String file_name;
@@ -171,12 +159,6 @@ namespace eternal_lands
 		m_light_counts.clear();
 		m_default_programs.clear();
 		m_max_index = 0;
-
-		xml_reader = XmlReaderSharedPtr(new XmlReader(
-			get_file_system(), String(UTF8("shaders/") +
-			get_name().get() + UTF8(".xml"))));
-
-		description.load_xml(xml_reader->get_root_node());
 
 		fragment_light_count = get_shader_source_builder(
 			)->get_fragment_light_count();
@@ -200,30 +182,30 @@ namespace eternal_lands
 		/* Light shader for different light counts */
 		for (i = 0; i < light_count; ++i)
 		{
-			build_default_shader(description, 0, i);
+			build_default_shader(m_description, 0, i);
 		}
 
 		/* Max light shader */
-		build_default_shader(description, vertex_light_count,
+		build_default_shader(m_description, vertex_light_count,
 			fragment_light_count);
 
 		/* Depth shader */
-		get_shader_source_builder()->build(0, sbt_depth, description,
+		get_shader_source_builder()->build(0, sbt_depth, m_description,
 			vertex, geometry, fragment, values);
 
 		m_depth_program = boost::make_shared<GlslProgram>(vertex,
-			geometry, fragment, values, String(get_name().get() +
-				UTF8(" [depth]")));
+			geometry, fragment, values, String(str.str() +
+				UTF8("[depth]")));
 
 		values.clear();
 
 		/* Shadow shader */
-		get_shader_source_builder()->build(0, sbt_shadow, description,
+		get_shader_source_builder()->build(0, sbt_shadow, m_description,
 			vertex, geometry, fragment, values);
 
 		m_shadow_program = boost::make_shared<GlslProgram>(vertex,
-			geometry, fragment, values, String(get_name().get() +
-				UTF8(" [shadow]")));
+			geometry, fragment, values, String(str.str() +
+				UTF8("[shadow]")));
 	}
 
 	void Effect::error_load()
@@ -244,7 +226,7 @@ namespace eternal_lands
 
 		program = boost::make_shared<GlslProgram>(vertex_shader,
 			geometry, fragment_shader, values,
-			String(get_name().get() + UTF8(" [error]")));
+			String(UTF8("error")));
 
 		m_default_programs.push_back(program);
 		m_default_programs.push_back(program);
@@ -254,8 +236,7 @@ namespace eternal_lands
 		/* Depth shader */
 		m_depth_program = boost::make_shared<GlslProgram>(
 			depth_vertex_shader, geometry, depth_fragment_shader,
-			StringVariantMap(), String(get_name().get() +
-				UTF8(" [depth, error]")));
+			StringVariantMap(), String(UTF8("error [depth]")));
 
 		/* Shadow shader */
 		m_shadow_program = m_depth_program;
@@ -274,8 +255,6 @@ namespace eternal_lands
 		}
 		catch (boost::exception &exception)
 		{
-			exception << errinfo_item_name(get_name());
-
 			LOG_EXCEPTION(exception);
 		}
 		catch (std::exception &exception)

@@ -16,6 +16,7 @@
 #include "shader/shadersourcebuilder.hpp"
 #include "filter.hpp"
 #include "framebufferbuilder.hpp"
+#include "materialdescriptioncache.hpp"
 
 namespace eternal_lands
 {
@@ -31,17 +32,20 @@ namespace eternal_lands
 		m_codec_manager = boost::make_shared<CodecManager>();
 		m_texture_cache = boost::make_shared<TextureCache>(
 			get_codec_manager(), file_system, global_vars);
+		m_material_description_cache = boost::make_shared<
+			MaterialDescriptionCache>();
 		m_mesh_data_cache = boost::make_shared<MeshDataCache>(
+			get_material_description_cache(),
 			file_system, global_vars);
 		m_mesh_cache = boost::make_shared<MeshCache>(
 			get_mesh_builder(), get_mesh_data_cache());
 		m_actor_data_cache = boost::make_shared<ActorDataCache>(
 			get_mesh_builder(), get_effect_cache(),
 			get_texture_cache(), get_codec_manager(),
-			file_system, global_vars);
+			get_material_description_cache(), file_system,
+			global_vars);
 		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
 			global_vars);
-		m_filter.reset(new Filter(get_mesh_cache(), global_vars));
 	}
 
 	SceneResources::~SceneResources() throw()
@@ -64,6 +68,8 @@ namespace eternal_lands
 	{
 		m_shader_source_builder->load_xml(file_system, String(UTF8(
 			"shaders/shaders.xml")));
+		m_material_description_cache->load_xml(file_system, String(UTF8(
+			"materials.xml")));
 	}
 
 }

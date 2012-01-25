@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>lava_uv</name>
+ <name>lava</name>
  <type>uv</type>
  <shader_source_datas>
   <shader_source_data>

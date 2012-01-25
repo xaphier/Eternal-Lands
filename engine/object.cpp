@@ -9,34 +9,35 @@
 #include "instancedata.hpp"
 #include "abstractmesh.hpp"
 #include "subobject.hpp"
-#include "material.hpp"
-#include "materialdescription.hpp"
+#include "materialeffect.hpp"
+#include "materialeffectdescription.hpp"
 
 namespace eternal_lands
 {
 
 	Object::Object(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
+		const MaterialEffectDescriptionVector &materials,
 		const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache):
 		m_object_data(object_data), m_mesh(mesh)
 	{
 		update_bounding_box();
 
-		m_materials.clear();
-		m_materials.reserve(materials.size());
+		m_material_effects.clear();
+		m_material_effects.reserve(materials.size());
 
-		BOOST_FOREACH(const MaterialDescription &material, materials)
+		BOOST_FOREACH(const MaterialEffectDescription &material,
+			materials)
 		{
-			m_materials.push_back(Material(effect_cache,
-				texture_cache, material));
+			m_material_effects.push_back(MaterialEffect(
+				effect_cache, texture_cache, material));
 		}
 	}
 
 	Object::Object(const InstanceData &instance_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
+		const MaterialEffectDescriptionVector &materials,
 		const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache,
 		const SubObjectVector &sub_objects):
@@ -45,13 +46,14 @@ namespace eternal_lands
 	{
 		assert(get_sub_objects().size() > 0);
 
-		m_materials.clear();
-		m_materials.reserve(materials.size());
+		m_material_effects.clear();
+		m_material_effects.reserve(materials.size());
 
-		BOOST_FOREACH(const MaterialDescription &material, materials)
+		BOOST_FOREACH(const MaterialEffectDescription &material,
+			materials)
 		{
-			m_materials.push_back(Material(effect_cache,
-				texture_cache, material));
+			m_material_effects.push_back(MaterialEffect(
+				effect_cache, texture_cache, material));
 		}
 
 		update_bounding_box();
@@ -59,19 +61,20 @@ namespace eternal_lands
 
 	Object::Object(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
+		const MaterialEffectDescriptionVector &materials,
 		const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache,
 		CalCoreModel* core_model): m_object_data(object_data),
 		m_mesh(mesh)
 	{
-		m_materials.clear();
-		m_materials.reserve(materials.size());
+		m_material_effects.clear();
+		m_material_effects.reserve(materials.size());
 
-		BOOST_FOREACH(const MaterialDescription &material, materials)
+		BOOST_FOREACH(const MaterialEffectDescription &material,
+			materials)
 		{
-			m_materials.push_back(Material(effect_cache,
-				texture_cache, material));
+			m_material_effects.push_back(MaterialEffect(
+				effect_cache, texture_cache, material));
 		}
 
 		m_model.reset(new CalModel(core_model));

@@ -50,7 +50,7 @@ namespace eternal_lands
 		cpt_shadow_uv,
 		cpt_shadow_map_data,
 		cpt_tbn_matrix,
-		cpt_glow
+		cpt_emission
 	};
 	/**
 	 * @}

@@ -11,11 +11,13 @@
 #include "meshbuilder.hpp"
 #include "meshdatatool.hpp"
 #include "indexupdatesource.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
+#include "materialdescriptioncache.hpp"
 #include "objectdata.hpp"
 #include "actor.hpp"
 #include "exceptions.hpp"
 #include "globalvars.hpp"
+#include "filesystem.hpp"
 
 namespace eternal_lands
 {
@@ -28,7 +30,7 @@ namespace eternal_lands
 			CalCoreModel* m_core_model;
 			String m_name;
 			String m_file_name;
-			String m_skin_name;
+			String m_material_name;
 			float m_actor_scale;
 			float m_scale;
 			float m_mesh_scale;
@@ -41,10 +43,13 @@ namespace eternal_lands
 		const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache,
 		const CodecManagerWeakPtr &codec_manager,
+		const MaterialDescriptionCacheWeakPtr
+			&material_description_cache,
 		const FileSystemWeakPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
 		m_mesh_builder(mesh_builder), m_effect_cache(effect_cache),
 		m_texture_cache(texture_cache), m_codec_manager(codec_manager),
+		m_material_description_cache(material_description_cache),
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
 		assert(!m_mesh_builder.expired());
@@ -69,6 +74,7 @@ namespace eternal_lands
 		ActorDataCacheItem data;
 		Cal3dLoader loader(core_model, name);
 		MeshDataToolSharedPtr mesh_data_tool;
+		String material;
 		bool use_16_bit_indices;
 
 		loader.load(false, get_global_vars()->get_use_simd(),
@@ -85,9 +91,12 @@ namespace eternal_lands
 			mesh_data_tool->get_sub_meshs(),
 			0, pt_triangles, use_16_bit_indices, false);
 
+		material = FileSystem::get_file_name_without_extension(
+			skin_name);
+
 		data.m_core_model = core_model;
 		data.m_name = name;
-		data.m_skin_name = skin_name;
+		data.m_material_name = material;
 		data.m_file_name = file_name;
 		data.m_actor_scale = actor_scale;
 		data.m_scale = scale;
@@ -102,8 +111,8 @@ namespace eternal_lands
 		const Uint32 id, const String &name,
 		const SelectionType selection, const bool enhanced_actor)
 	{
-		MaterialDescriptionVector materials;
-		MaterialDescription material;
+		MaterialEffectDescriptionVector materials;
+		MaterialEffectDescription material;
 		ActorDataCacheMap::const_iterator found;
 		std::auto_ptr<Actor> result;
 		bool blend;
@@ -118,13 +127,12 @@ namespace eternal_lands
 				<< errinfo_string_value(name));
 		}
 
-		if (!enhanced_actor)
-		{
-			material.set_texture(found->second.m_skin_name,
-				stt_diffuse_0);
-		}
+		material.set_material_descriptiont(
+			get_material_description_cache(
+				)->get_material_description(
+					found->second.m_material_name));
 
-		material.set_effect(String(UTF8("animated_mesh_solid")));
+		material.set_world_transform(String(UTF8("bone_animation")));
 
 		materials.clear();
 		materials.push_back(material);

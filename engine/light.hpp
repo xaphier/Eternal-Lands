@@ -14,7 +14,6 @@
 
 #include "prerequisites.hpp"
 #include "boundedobject.hpp"
-#include "material.hpp"
 
 /**
  * @file
@@ -132,4 +131,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_44332907_0322_4e7c_8dac_20611701476a */
-

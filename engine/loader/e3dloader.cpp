@@ -9,10 +9,11 @@
 #include "reader.hpp"
 #include "meshdatatool.hpp"
 #include "submesh.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
 #include "exceptions.hpp"
 #include "packtool.hpp"
 #include "logging.hpp"
+#include "materialdescriptioncache.hpp"
 #include "filesystem.hpp"
 
 namespace eternal_lands
@@ -146,9 +147,10 @@ namespace eternal_lands
 		m_reader->set_position(position);
 	}
 
-	void E3dLoader::load(const FileSystemSharedPtr &file_system,
+	void E3dLoader::load(const MaterialDescriptionCacheSharedPtr
+			&material_description_cache,
 		const bool use_simd, MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialDescriptionVector &materials)
+		MaterialEffectDescriptionVector &materials)
 	{
 		VertexSemanticTypeSet semantics;
 		Uint32 vertex_count, vertex_size, vertex_offset;
@@ -206,8 +208,8 @@ namespace eternal_lands
 		}
 
 		materials.clear();
-		load_materials(file_system, material_count, material_size,
-			material_offset, materials);
+		load_materials(material_description_cache, material_count,
+			material_size, material_offset, materials);
 	}
 
 	void E3dLoader::load_vertex(const MeshDataToolSharedPtr &mesh_data_tool,
@@ -408,14 +410,15 @@ namespace eternal_lands
 		}
 	}
 
-	MaterialDescription E3dLoader::load_material(
-		const FileSystemSharedPtr &file_system,
+	MaterialEffectDescription E3dLoader::load_material(
+		const MaterialDescriptionCacheSharedPtr
+			&material_description_cache,
 		const Uint32 material_offset, const Uint32 material_size,
 		const Uint32 material_index, const StringType &dir)
 	{
-		MaterialDescription material;
-		StringType name;
-		String file_name;
+		MaterialEffectDescription material;
+		StringType file_name;
+		String name;
 		Uint32 options;
 
 		m_reader->set_position(material_offset + material_size *
@@ -423,46 +426,27 @@ namespace eternal_lands
 
 		options = m_reader->read_u32_le();
 
-		name = m_reader->read_utf8_string(128);
+		file_name = m_reader->read_utf8_string(128);
 
-		file_name = String(dir + name);
+		name = FileSystem::get_file_name_without_extension(
+			String(file_name));
 
-		material.set_texture(file_name, stt_diffuse_0);
-		material.set_texture(String(UTF8("textures/gray.dds")),
-			stt_normal_0);
-		material.set_texture(String(UTF8("textures/white.dds")),
-			stt_specular_0);
+		material.set_material_descriptiont(
+			material_description_cache->get_material_description(
+				name));
 
-		if (options != 0)
-		{
-			material.set_effect(String(UTF8("mesh_transparent")));
-			material.set_culling(false);
-		}
-		else
-		{
-			material.set_effect(String(UTF8("mesh_solid")));
-		}
-
-		file_name = FileSystem::get_file_name_without_extension(
-			file_name).get() + UTF8(".xml");
-
-		if (!file_system->get_file_readable(file_name))
-		{
-			LOG_ERROR(UTF8("No material file '%1%' found"),
-				file_name);
-
-			return material;
-		}
-
-		material.load_xml(file_system, file_name);
+		material.set_transparent(options != 0);
+		material.set_culling(options == 0);
+		material.set_world_transform(String(UTF8("default")));
 
 		return material;
 	}
 
-	void E3dLoader::load_materials(const FileSystemSharedPtr &file_system,
+	void E3dLoader::load_materials(const MaterialDescriptionCacheSharedPtr
+			&material_description_cache,
 		const Uint32 material_count, const Uint32 material_size,
 		const Uint32 material_offset,
-		MaterialDescriptionVector &materials)
+		MaterialEffectDescriptionVector &materials)
 	{
 		StringType str;
 		Uint32 i;
@@ -476,8 +460,9 @@ namespace eternal_lands
 
 		for (i = 0; i < material_count; ++i)
 		{
-			materials.push_back(load_material(file_system,
-				material_offset, material_size, i, str));
+			materials.push_back(load_material(
+				material_description_cache, material_offset,
+				material_size, i, str));
 		}
 	}
 

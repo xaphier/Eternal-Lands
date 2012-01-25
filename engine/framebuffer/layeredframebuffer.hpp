@@ -31,7 +31,6 @@ namespace eternal_lands
 		private:
 			FrameBuffer m_frame_buffer;
 			boost::scoped_ptr<RenderBuffer> m_render_buffer;
-			bool m_stencil;
 			bool m_color;
 
 		public:

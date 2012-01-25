@@ -262,7 +262,7 @@ namespace eternal_lands
 		TextureCacheMap::iterator found;
 		String index;
 
-		index = FileSystem::get_file_name_without_extension(name);
+		index = FileSystem::get_name_without_extension(name);
 
 		found = m_texture_cache.find(index);
 

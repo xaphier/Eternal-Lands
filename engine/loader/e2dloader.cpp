@@ -12,7 +12,8 @@
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "indexbuilder.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
+#include "materialdescriptioncache.hpp"
 #include "filesystem.hpp"
 
 namespace eternal_lands
@@ -289,16 +290,17 @@ namespace eternal_lands
 		}
 	}
 
-	void E2dLoader::load(const bool use_simd,
+	void E2dLoader::load(const MaterialDescriptionCacheSharedPtr
+			&material_description_cache, const bool use_simd,
 		MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialDescriptionVector &materials)
+		MaterialEffectDescriptionVector &materials)
 	{
-		MaterialDescription material;
+		MaterialEffectDescription material;
 		glm::vec4 texture_coordinates;
 		glm::vec3 vmin, vmax;
 		glm::vec2 size;
 		Uint32Vector indices;
-		String texture;
+		String texture, name;
 		VertexSemanticTypeSet semantics;
 		StringType str;
 		Uint32 vertex_count, index_count, i;
@@ -346,21 +348,15 @@ namespace eternal_lands
 		mesh_data_tool->set_sub_mesh_data(0, SubMesh(BoundingBox(vmin,
 			vmax), 0, index_count, 0, vertex_count - 1));
 
-		str = FileSystem::get_dir_name(m_reader->get_name());
+		name = FileSystem::get_file_name_without_extension(texture);
 
-		if (str.length() > 0)
-		{
-			str += UTF8("/");
-		}
+		material.set_material_descriptiont(
+			material_description_cache->get_material_description(
+				name));
 
-		material.set_texture(String(str + texture.get()),
-			stt_diffuse_0);
-		material.set_texture(String(UTF8("textures/gray.dds")),
-			stt_normal_0);
-		material.set_texture(String(UTF8("textures/white.dds")),
-			stt_specular_0);
-		material.set_effect(String(UTF8("mesh_transparent")));
+		material.set_transparent(true);
 		material.set_culling(false);
+		material.set_world_transform(String(UTF8("default")));
 
 		materials.clear();
 		materials.push_back(material);

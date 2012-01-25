@@ -147,7 +147,6 @@ namespace eternal_lands
 	ARRAY(String, 3);
 	ARRAY(String, 4);
 	ARRAY(String, 8);
-	ARRAY(String, 12);
 	ARRAY(String, 16);
 	ARRAY(String, 24);
 
@@ -198,6 +197,7 @@ namespace eternal_lands
 	class ConvexBody;
 	class Effect;
 	class EffectCache;
+	class EffectDescription;
 	class FileSystem;
 	class Filter;
 	class FrameBufferBuilder;
@@ -215,9 +215,10 @@ namespace eternal_lands
 	class Light;
 	class Lua;
 	class Map;
-	class ReadWriteMemory;
-	class Material;
 	class MaterialDescription;
+	class MaterialDescriptionCache;
+	class MaterialEffect;
+	class MaterialEffectDescription;
 	class MeshBuilder;
 	class MeshCache;
 	class MeshDataCache;
@@ -230,13 +231,13 @@ namespace eternal_lands
 	class Polygon;
 	class Ray;
 	class Reader;
+	class ReadWriteMemory;
 	class RenderObjectData;
 	class RStarTree;
 	class RStarTreeNode;
 	class SceneResources;
 	class ShaderSourceBuilder;
 	class ShaderSourceData;
-	class ShaderSourceDescription;
 	class ShaderSourceDescriptionLoader;
 	class ShaderSourceParameter;
 	class StateManager;
@@ -261,11 +262,14 @@ namespace eternal_lands
 	ARRAY(String, 2);
 	ARRAY(String, 4);
 	ARRAY(String, 8);
-	ARRAY(String, 12);
 	ARRAY(String, 16);
 
 	const Uint16 vertex_stream_count = 16;
+	const Uint16 material_texture_count = 12;
 	const float epsilon = 1e-5f;
+
+	typedef boost::array<String, material_texture_count>
+		MaterialStringArray;
 
 	typedef boost::array<VertexElements, vertex_stream_count>
 		VertexElementsArray;
@@ -302,17 +306,17 @@ namespace eternal_lands
 	SHARED_PTR(Image);
 	SHARED_PTR(IndexUpdateSource);
 	SHARED_PTR(Light);
-	SHARED_PTR(ReadWriteMemory);
+	SHARED_PTR(MaterialDescriptionCache);
 	SHARED_PTR(MeshBuilder);
 	SHARED_PTR(MeshCache);
 	SHARED_PTR(MeshDataCache);
 	SHARED_PTR(MeshDataTool);
 	SHARED_PTR(Object);
 	SHARED_PTR(Reader);
+	SHARED_PTR(ReadWriteMemory);
 	SHARED_PTR(RStarTreeNode);
 	SHARED_PTR(SceneResources);
 	SHARED_PTR(ShaderSourceBuilder);
-	SHARED_PTR(ShaderSourceDescription);
 	SHARED_PTR(ShaderSourceDescriptionLoader);
 	SHARED_PTR(Texture);
 	SHARED_PTR(TextureCache);
@@ -326,6 +330,7 @@ namespace eternal_lands
 	WEAK_PTR(CodecManager);
 	WEAK_PTR(EffectCache);
 	WEAK_PTR(FileSystem);
+	WEAK_PTR(MaterialDescriptionCache);
 	WEAK_PTR(MeshBuilder);
 	WEAK_PTR(MeshCache);
 	WEAK_PTR(MeshDataCache);
@@ -340,8 +345,9 @@ namespace eternal_lands
 	VECTOR(GlslProgramSharedPtr);
 	VECTOR(ImageSharedPtr);
 	VECTOR(LightSharedPtr);
-	VECTOR(Material);
 	VECTOR(MaterialDescription);
+	VECTOR(MaterialEffect);
+	VECTOR(MaterialEffectDescription);
 	VECTOR(ReadWriteMemorySharedPtr);
 	VECTOR(MeshDrawData);
 	VECTOR(ObjectData);
@@ -362,9 +368,11 @@ namespace eternal_lands
 	ARRAY(TextureSharedPtr, 3);
 	ARRAY(TextureSharedPtr, 4);
 	ARRAY(TextureSharedPtr, 8);
-	ARRAY(TextureSharedPtr, 12);
 	ARRAY(TextureSharedPtr, 16);
 	ARRAY(TextureSharedPtr, 32);
+
+	typedef boost::array<TextureSharedPtr, material_texture_count>
+		MaterialTextureSharedPtrArray;
 
 	typedef std::map<Uint32, ActorSharedPtr> Uint32ActorSharedPtrMap;
 	typedef std::map<Uint32, ObjectSharedPtr> Uint32ObjectSharedPtrMap;

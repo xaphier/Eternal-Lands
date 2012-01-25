@@ -19,7 +19,6 @@
 #include "sceneresources.hpp"
 #include "statemanager.hpp"
 #include "sceneview.hpp"
-#include "filter.hpp"
 
 /**
  * @file
@@ -63,7 +62,6 @@ namespace eternal_lands
 			Uint64 m_program_vars_id;
 			float m_time;
 			SubFrustumsMask m_shadow_objects_mask;
-			FilterType m_shadow_map_filter;
 			bool m_night;
 			bool m_shadow_map_change;
 
@@ -240,17 +238,6 @@ namespace eternal_lands
 			inline SceneResources &get_scene_resources()
 			{
 				return m_scene_resources;
-			}
-
-			inline void set_shadow_map_filter(
-				const FilterType shadow_map_filter)
-			{
-				m_shadow_map_filter = shadow_map_filter;
-			}
-
-			inline FilterType get_shadow_map_filter() const
-			{
-				return m_shadow_map_filter;
 			}
 
 	};

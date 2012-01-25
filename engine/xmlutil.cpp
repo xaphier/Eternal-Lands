@@ -111,7 +111,7 @@ namespace eternal_lands
 			return String(UTF8(""));
 		}
 
-		return String(utf8_to_string((char*)node->children->content));
+		return String((char*)node->children->content);
 	}
 
 	Variant XmlUtil::get_variant_value(const xmlNodePtr node)

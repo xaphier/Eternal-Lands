@@ -56,6 +56,8 @@ namespace eternal_lands
 			static String get_dir_name(const String &file_name);
 			static String get_strip_relative_path(
 				const String &file_name);
+			static String get_name_without_extension(
+				const String &file_name);
 			static String get_file_name_without_extension(
 				const String &file_name);
 

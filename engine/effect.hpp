@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "effectdescription.hpp"
 
 /**
  * @file
@@ -27,8 +28,7 @@ namespace eternal_lands
 		private:
 			const ShaderSourceBuilderWeakPtr
 				m_shader_source_builder;
-			const FileSystemWeakPtr m_file_system;
-			const String m_name;
+			const EffectDescription m_description;
 			GlslProgramSharedPtrVector m_default_programs;
 			GlslProgramSharedPtr m_depth_program;
 			GlslProgramSharedPtr m_shadow_program;
@@ -37,8 +37,7 @@ namespace eternal_lands
 
 			void error_load();
 			void do_load();
-			void build_default_shader(
-				ShaderSourceDescription description,
+			void build_default_shader(EffectDescription description,
 				const Uint16 vertex_light_count,
 				const Uint16 fragment_light_count);
 
@@ -48,17 +47,6 @@ namespace eternal_lands
 				ShaderSourceBuilderSharedPtr result;
 
 				result = m_shader_source_builder.lock();
-
-				assert(result.get() != 0);
-
-				return result;
-			}
-
-			inline FileSystemSharedPtr get_file_system() const
-			{
-				FileSystemSharedPtr result;
-
-				result = m_file_system.lock();
 
 				assert(result.get() != 0);
 
@@ -97,16 +85,10 @@ namespace eternal_lands
 		public:
 			Effect();
 			Effect(const ShaderSourceBuilderWeakPtr
-				&shader_source_builder,
-				const FileSystemWeakPtr &file_system,
-				const String &name);
+					&shader_source_builder,
+				const EffectDescription &description);
 			~Effect() throw();
 			void load();
-
-			inline const String &get_name() const
-			{
-				return m_name;
-			}
 
 			inline const GlslProgramSharedPtr &get_default_program(
 				const Uint16 light_count,
@@ -156,6 +138,11 @@ namespace eternal_lands
 				const
 			{
 				return m_shadow_program;
+			}
+
+			const EffectDescription &get_description() const
+			{
+				return m_description;
 			}
 
 	};

@@ -29,9 +29,12 @@
 		<shader_source>shaders/sources/no_normal_mapping.xml</shader_source>
 		<shader_source>shaders/sources/no_normal_depth_mapping.xml</shader_source>
 		<shader_source>shaders/sources/no_specular_mapping.xml</shader_source>
+		<shader_source>shaders/sources/no_emission_mapping.xml</shader_source>
 		<shader_source>shaders/sources/normal_mapping.xml</shader_source>
 		<shader_source>shaders/sources/relief_mapping.xml</shader_source>
 		<shader_source>shaders/sources/parallax_slope_mapping.xml</shader_source>
+		<shader_source>shaders/sources/specular_mapping.xml</shader_source>
+		<shader_source>shaders/sources/emission_mapping.xml</shader_source>
 		<shader_source>shaders/sources/shadow_map.xml</shader_source>
 		<shader_source>shaders/sources/exp_shadow_map.xml</shader_source>
 		<shader_source>shaders/sources/exp_shadow_mapping.xml</shader_source>

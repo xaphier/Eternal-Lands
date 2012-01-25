@@ -7,12 +7,9 @@
 
 #include "prerequisites.hpp"
 #include "shader/shadersourcedata.hpp"
-#include "utf.hpp"
 #include "xmlbuffer.hpp"
 #include "xmlwriter.hpp"
 #include "xmlreader.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
 #define BOOST_TEST_MODULE shader_source_data
 #include <boost/test/unit_test.hpp>
 
@@ -22,8 +19,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ShaderSourceData shader_source_data;
 
-	BOOST_CHECK_EQUAL(el::string_to_utf8(
-		shader_source_data.get_source()), "");
+	BOOST_CHECK_EQUAL(shader_source_data.get_source(), "");
 
 	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_120(), false);
 	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_120(), false);

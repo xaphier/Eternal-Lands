@@ -1,18 +1,18 @@
 /****************************************************************************
- *            material.cpp
+ *            materialeffect.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "material.hpp"
+#include "materialeffect.hpp"
 #include "effectcache.hpp"
 #include "effect.hpp"
 #include "texture.hpp"
 #include "texturecache.hpp"
 #include "shader/shadertextureutil.hpp"
 #include "statemanager.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
 
 namespace eternal_lands
 {
@@ -21,32 +21,32 @@ namespace eternal_lands
 	{
 
 		const String empty_str = String(UTF8(""));
+		const EffectDescription empty_material;
 
 	}
 
-	Material::Material(const EffectCacheWeakPtr &effect_cache,
+	MaterialEffect::MaterialEffect(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_shadow(true), m_culling(true)
+		m_cast_shadows(true), m_culling(true)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
-		build_hash();
 	}
 
-	Material::Material(const EffectCacheWeakPtr &effect_cache,
+	MaterialEffect::MaterialEffect(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache,
-		const MaterialDescription &material):
+		const MaterialEffectDescription &material):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_shadow(true), m_culling(true)
+		m_cast_shadows(true), m_culling(true)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
 
-		set_shadow(material.get_shadow());
+		set_cast_shadows(material.get_cast_shadows());
 		set_culling(material.get_culling());
 
-		set_effect(material.get_effect());
+		set_effect(EffectDescription(material));
 
 		set_texture(material, stt_diffuse_0);
 		set_texture(material, stt_diffuse_1);
@@ -56,23 +56,31 @@ namespace eternal_lands
 		set_texture(material, stt_specular_1);
 		set_texture(material, stt_normal_0);
 		set_texture(material, stt_normal_1);
-		set_texture(material, stt_glow_0);
-		set_texture(material, stt_glow_1);
+		set_texture(material, stt_emission_0);
+		set_texture(material, stt_emission_1);
 		set_texture(material, stt_blend_0);
 		set_texture(material, stt_blend_1);
 	}
 
-	Material::~Material() throw()
+	MaterialEffect::~MaterialEffect() throw()
 	{
 	}
 
-	void Material::set_texture(const MaterialDescription &material,
+	void MaterialEffect::set_effect(const EffectDescription &effect)
+	{
+		m_effect = get_effect_cache()->get_effect(effect);
+
+		assert(m_effect.get() != 0);
+	}
+
+	void MaterialEffect::set_texture(
+		const MaterialEffectDescription &material,
 		const ShaderTextureType texture_type)
 	{
 		set_texture(material.get_texture(texture_type), texture_type);
 	}
 
-	void Material::set_texture(const String &name,
+	void MaterialEffect::set_texture(const String &name,
 		const ShaderTextureType texture_type)
 	{
 		assert(texture_type < m_textures.size());
@@ -81,18 +89,14 @@ namespace eternal_lands
 		{
 			m_textures[texture_type].reset();
 
-			build_hash();
-
 			return;
 		}
 
 		m_textures[texture_type] = get_texture_cache()->get_texture(
 			name);
-
-		build_hash();
 	}
 
-	const String &Material::get_texture_name(
+	const String &MaterialEffect::get_texture_name(
 		const ShaderTextureType texture_type) const
 	{
 		assert(texture_type < m_textures.size());
@@ -105,17 +109,15 @@ namespace eternal_lands
 		return get_texture(texture_type)->get_name();
 	}
 
-	void Material::set_texture(const TextureSharedPtr &texture,
+	void MaterialEffect::set_texture(const TextureSharedPtr &texture,
 		const ShaderTextureType texture_type)
 	{
 		assert(texture_type < m_textures.size());
 
 		m_textures[texture_type] = texture;
-
-		build_hash();
 	}
 
-	const TextureSharedPtr &Material::get_texture(
+	const TextureSharedPtr &MaterialEffect::get_texture(
 		const ShaderTextureType texture_type) const
 	{
 		assert(texture_type < m_textures.size());
@@ -123,14 +125,7 @@ namespace eternal_lands
 		return m_textures[texture_type];
 	}
 
-	void Material::set_effect(const String &effect)
-	{
-		m_effect = get_effect_cache()->get_effect(effect);
-
-		build_hash();
-	}
-
-	void Material::bind(StateManager &state_manager) const
+	void MaterialEffect::bind(StateManager &state_manager) const
 	{
 		Uint16 i, count;
 
@@ -147,24 +142,9 @@ namespace eternal_lands
 		state_manager.switch_culling(get_culling());
 	}
 
-	const String &Material::get_effect_name() const
-	{
-		if (get_effect().get() == 0)
-		{
-			return empty_str;
-		}
-
-		return get_effect()->get_name();
-	}
-
-	bool Material::operator==(const Material &material) const
+	bool MaterialEffect::operator==(const MaterialEffect &material) const
 	{
 		Uint16 i, count;
-
-		if (get_hash() != material.get_hash())
-		{
-			return false;
-		}
 
 		if (get_effect().get() != material.get_effect().get())
 		{
@@ -181,69 +161,54 @@ namespace eternal_lands
 			}
 		}
 
-		if (get_shadow() != material.get_shadow())
+		if (get_cast_shadows() != material.get_cast_shadows())
 		{
-			return get_shadow() == material.get_shadow();
+			return false;
 		}
 
 		return get_culling() == material.get_culling();
 	}
 
-	bool Material::operator!=(const Material &material) const
+	bool MaterialEffect::operator!=(const MaterialEffect &material) const
 	{
 		return !operator==(material);
 	}
 
-	bool Material::operator<(const Material &material) const
+	bool MaterialEffect::operator<(const MaterialEffect &material) const
 	{
 		Uint16 i, count;
 
-		if (get_hash() != material.get_hash())
+		if (get_effect().get() < material.get_effect().get())
 		{
-			return get_hash() < material.get_hash();
-		}
-
-		if (get_effect().get() != material.get_effect().get())
-		{
-			return get_effect().get() < material.get_effect().get();
+			return true;
 		}
 
 		count = m_textures.size();
 
 		for (i = 0; i < count; ++i)
 		{
-			if (m_textures[i].get() != material.m_textures[i].get())
+			if (m_textures[i].get() < material.m_textures[i].get())
 			{
-				return m_textures[i].get() <
-					material.m_textures[i].get();
+				return true;
 			}
 		}
 
-		if (get_shadow() != material.get_shadow())
+		if (get_cast_shadows() < material.get_cast_shadows())
 		{
-			return get_shadow() < material.get_shadow();
+			return true;
 		}
 
 		return get_culling() < material.get_culling();
 	}
 
-	void Material::build_hash()
+	const EffectDescription &MaterialEffect::get_effect_description() const
 	{
-		Uint16 i, count;
-
-		m_hash = 0;
-
-		boost::hash_combine(m_hash, get_effect().get());
-
-		count = m_textures.size();
-
-		for (i = 0; i < count; ++i)
+		if (m_effect.get() != 0)
 		{
-			boost::hash_combine(m_hash, m_textures[i].get());
+			return m_effect->get_description();
 		}
 
-		boost::hash_combine(m_hash, get_shadow());
-		boost::hash_combine(m_hash, get_culling());
+		return empty_material;
 	}
 
 }

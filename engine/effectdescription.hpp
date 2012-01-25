@@ -1,5 +1,5 @@
 /****************************************************************************
- *            shadersourcedescription.hpp
+ *            effectdescription.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,26 +13,24 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "shadersource.hpp"
-#include "shaderbuildutil.hpp"
 
 /**
  * @file
- * @brief The @c class ShaderSourceDescription.
- * This file contains the @c class ShaderSourceDescription.
+ * @brief The @c class EffectDescription.
+ * This file contains the @c class EffectDescription.
  */
 namespace eternal_lands
 {
 
 	/**
-	 * @brief This class describes a shader source.
+	 * @brief This class describes an effect.
 	 *
-	 * A shader source description is defined throught its sources,
-	 * lighting informations, shadows, fog etc. All these informations are
-	 * used to build the shader source that is used to compile and link
+	 * An effect description is defined throught its world transform,
+	 * lighting informations, texture mappings etc. All these informations
+	 * are used to build the shader source that is used to compile and link
 	 * the opengl shader.
 	 */
-	class ShaderSourceDescription
+	class EffectDescription
 	{
 		private:
 			String m_world_transform;
@@ -40,23 +38,31 @@ namespace eternal_lands
 			String m_diffuse_mapping;
 			String m_normal_mapping;
 			String m_specular_mapping;
-			String m_light;
+			String m_emission_mapping;
 			bool m_receives_shadows;
 			bool m_transparent;
+			bool m_lighting;
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			ShaderSourceDescription();
+			EffectDescription();
+
+			/**
+			 * Default constructor.
+			 */
+			EffectDescription(
+				const MaterialEffectDescription &material);
 
 			/**
 			 * Default destructor.
 			 */
-			~ShaderSourceDescription() throw();
-
+			~EffectDescription() throw();
+			bool operator==(const EffectDescription &effect) const;
+			bool operator!=(const EffectDescription &effect) const;
+			bool operator<(const EffectDescription &effect) const;
 			void load_xml(const xmlNodePtr node);
-
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 
 			inline const String &get_world_transform() const
@@ -84,9 +90,9 @@ namespace eternal_lands
 				return m_specular_mapping;
 			}
 
-			inline const String &get_light() const
+			inline const String &get_emission_mapping() const
 			{
-				return m_light;
+				return m_emission_mapping;
 			}
 
 			inline bool get_receives_shadows() const
@@ -99,9 +105,9 @@ namespace eternal_lands
 				return m_transparent;
 			}
 
-			inline void set_light(const String &light)
+			inline bool get_lighting() const
 			{
-				m_light = light;
+				return m_lighting;
 			}
 
 			inline void set_world_transform(
@@ -134,6 +140,12 @@ namespace eternal_lands
 				m_specular_mapping = specular_mapping;
 			}
 
+			inline void set_emission_mapping(
+				const String &emission_mapping)
+			{
+				m_emission_mapping = emission_mapping;
+			}
+
 			inline void set_receives_shadows(
 				const bool receives_shadows)
 			{
@@ -145,7 +157,14 @@ namespace eternal_lands
 				m_transparent = transparent;
 			}
 
+			inline void set_lighting(const bool lighting)
+			{
+				m_lighting = lighting;
+			}
+
 	};
+
+	OutStream& operator<<(OutStream &str, const EffectDescription &value);
 
 }
 

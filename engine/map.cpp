@@ -14,7 +14,7 @@
 #include "instancedata.hpp"
 #include "objectdescription.hpp"
 #include "meshbuilder.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
 
 namespace eternal_lands
 {
@@ -42,7 +42,7 @@ namespace eternal_lands
 		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
 		ObjectSharedPtr object;
 		AbstractMeshSharedPtr mesh;
-		MaterialDescriptionVector materials;
+		MaterialEffectDescriptionVector materials;
 
 		get_mesh_cache()->get_mesh(object_data.get_name(), mesh,
 			materials);

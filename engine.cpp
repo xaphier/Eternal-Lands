@@ -29,7 +29,8 @@
 #include "engine/objectdata.hpp"
 #include "engine/instancedata.hpp"
 #include "engine/abstractmesh.hpp"
-#include "engine/materialdescription.hpp"
+#include "engine/materialeffectdescription.hpp"
+#include "engine/materialdescriptioncache.hpp"
 #include "engine/actordatacache.hpp"
 #include "engine/actortexturebuilder.hpp"
 #include "engine/freeids.hpp"
@@ -817,8 +818,8 @@ extern "C" void engine_clear()
 
 extern "C" void engine_add_tile(const Uint16 x, const Uint16 y, const Uint8 tile)
 {
-	el::MaterialDescriptionVector materials;
-	el::MaterialDescription material;
+	el::MaterialEffectDescriptionVector materials;
+	el::MaterialEffectDescription material;
 	el::StringStream str;
 	el::String file_name;
 	glm::mat4 matrix;
@@ -844,47 +845,27 @@ extern "C" void engine_add_tile(const Uint16 x, const Uint16 y, const Uint8 tile
 	matrix[2][2] = 1.0f;
 	matrix[3] = glm::vec4(offset, 1.0f);
 
-	material.set_texture(el::String(UTF8("textures/gray.dds")),
-		el::stt_normal_0);
-	material.set_texture(el::String(UTF8("textures/white.dds")),
-		el::stt_specular_0);
-
 	if ((tile != 0) && (tile != 240))
 	{
-		str << UTF8("3dobjects/tile");
-		str << static_cast<Uint16>(tile);
-
-		material.set_texture(el::String(str.str() + UTF8(".dds")),
-			el::stt_diffuse_0);
-		material.set_effect(el::String(UTF8("mesh_solid")));
-
-		file_name = el::String(str.str() + UTF8(".xml"));
-
-		if (file_system->get_file_readable(file_name))
-		{
-			material.load_xml(file_system, file_name);
-		}
+		str << UTF8("tile") << static_cast<Uint16>(tile);
 	}
 	else
 	{
 		if (tile == 240)
 		{
-			material.set_texture(el::String(UTF8(
-				"textures/lava.dds")), el::stt_diffuse_0);
-			material.set_texture(el::String(UTF8(
-				"textures/noise.dds")), el::stt_diffuse_1);
-			material.set_effect(el::String(UTF8("lava")));
+			str << UTF8("lava");
 		}
 		else
 		{
-			material.set_texture(el::String(UTF8(
-				"3dobjects/tile0.dds")), el::stt_diffuse_0);
-			material.set_texture(el::String(UTF8(
-				"textures/water_normal.dds")),
-					el::stt_normal_0);
-			material.set_effect(el::String(UTF8("mesh_solid")));
+			str << UTF8("water");
 		}
 	}
+
+	material.set_material_descriptiont(scene->get_scene_resources(
+		).get_material_description_cache()->get_material_description(
+		el::String(str.str())));
+
+	material.set_world_transform(el::String(UTF8("default")));
 
 	materials.push_back(material);
 

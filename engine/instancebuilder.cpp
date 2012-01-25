@@ -7,7 +7,7 @@
 
 #include "instancebuilder.hpp"
 #include "meshdatatool.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
 #include "instancedata.hpp"
 #include "instancingdata.hpp"
 #include "subobject.hpp"
@@ -263,9 +263,9 @@ namespace eternal_lands
 		bool build_sub_mesh(const glm::vec3 &center,
 			const InstancingData &instancing_data,
 			const MeshDataToolSharedPtr &mesh_data_tool,
-			const MaterialDescription &material, const Uint32 index,
-			const Uint32 base_vertex, glm::vec3 &min,
-			glm::vec3 &max, Uint32 &vertex_offset,
+			const MaterialEffectDescription &material,
+			const Uint32 index, const Uint32 base_vertex,
+			glm::vec3 &min, glm::vec3 &max, Uint32 &vertex_offset,
 			Uint32 &index_offset)
 		{
 			if (material != instancing_data.get_materials()[index])
@@ -327,7 +327,7 @@ namespace eternal_lands
 
 	void InstanceBuilder::build_instance_sub_mesh(const glm::vec3 &center,
 		const MeshDataToolSharedPtr &mesh_data_tool,
-		const MaterialDescription &material,
+		const MaterialEffectDescription &material,
 		const Uint32 sub_mesh_index, const Uint32 base_vertex,
 		Uint32 &vertex_offset, Uint32 &index_offset,
 		SubObjectVector &sub_objects)
@@ -377,6 +377,10 @@ namespace eternal_lands
 			}
 		}
 
+		assert(index_offset > 0);
+		assert(vertex_offset > 0);
+		assert(sub_objects.size() > 0);
+
 		sub_mesh.set_bounding_box(BoundingBox(min, max));
 		sub_mesh.set_count(index_offset - sub_mesh.get_offset());
 		sub_mesh.set_max_vertex(vertex_offset - 1 - base_vertex);
@@ -389,9 +393,9 @@ namespace eternal_lands
 		SubMesh sub_mesh;
 		glm::mat4x3 world_matrix;
 		glm::vec3 center;
-		std::set<MaterialDescription> material_set;
+		std::set<MaterialEffectDescription> material_set;
 		MeshDataToolSharedPtr mesh_data_tool;
-		MaterialDescriptionVector materials;
+		MaterialEffectDescriptionVector materials;
 		SubObjectVector instanced_objects;
 		VertexSemanticTypeSet semantics;
 		Uint32 index_count, vertex_count, sub_mesh_count, base_vertex;
@@ -418,7 +422,7 @@ namespace eternal_lands
 			index_count += mesh_data_tool->get_index_count();
 			vertex_count += mesh_data_tool->get_vertex_count();
 
-			BOOST_FOREACH(const MaterialDescription &material,
+			BOOST_FOREACH(const MaterialEffectDescription &material,
 				instancing_data.get_materials())
 			{
 				material_set.insert(material);
@@ -431,6 +435,8 @@ namespace eternal_lands
 
 			str << instancing_data.get_name();
 		}
+
+		assert(material_set.size() > 0);
 
 		sub_mesh_count = material_set.size();
 
@@ -451,7 +457,8 @@ namespace eternal_lands
 		vertex_offset = 0;
 		sub_mesh_index = 0;
 
-		BOOST_FOREACH(const MaterialDescription &material, material_set)
+		BOOST_FOREACH(const MaterialEffectDescription &material,
+			material_set)
 		{
 			if (get_use_base_vertex())
 			{
@@ -465,7 +472,12 @@ namespace eternal_lands
 
 			materials.push_back(material);
 			sub_mesh_index++;
+
+			assert(instanced_objects.size() > 0);
 		}
+
+		assert(materials.size() > 0);
+		assert(instanced_objects.size() > 0);
 
 		world_matrix[3] = center;
 

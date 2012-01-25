@@ -26,15 +26,17 @@ namespace eternal_lands
 	class ObjectDescription: public ObjectData
 	{
 		private:
-			MaterialDescriptionVector m_materials;
+			MaterialEffectDescriptionVector m_materials;
 
 		public:
 			ObjectDescription(const ObjectData &object_data,
-				const MaterialDescriptionVector &materials);
+				const MaterialEffectDescriptionVector
+					&materials);
 
 			~ObjectDescription() throw();
 
-			inline const MaterialDescriptionVector &get_materials() const
+			inline const MaterialEffectDescriptionVector
+				&get_materials() const
 			{
 				return m_materials;
 			}

@@ -34,7 +34,7 @@ namespace eternal_lands
 		private:
 			ObjectData m_object_data;
 			AbstractMeshSharedPtr m_mesh;
-			MaterialVector m_materials;
+			MaterialEffectVector m_material_effects;
 			/**
 			 * Data needed to draw instanced objects for selection.
 			 */
@@ -47,9 +47,10 @@ namespace eternal_lands
 
 		protected:
 
-			inline MaterialVector &get_modifiable_materials()
+			inline MaterialEffectVector
+				&get_modifiable_material_effects()
 			{
-				return m_materials;
+				return m_material_effects;
 			}
 
 		public:
@@ -58,7 +59,8 @@ namespace eternal_lands
 			 */
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
+				const MaterialEffectDescriptionVector
+					&materials,
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache);
 
@@ -67,7 +69,8 @@ namespace eternal_lands
 			 */
 			Object(const InstanceData &instance_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
+				const MaterialEffectDescriptionVector
+					&materials,
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
 				const SubObjectVector &sub_objects);
@@ -77,7 +80,8 @@ namespace eternal_lands
 			 */
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
+				const MaterialEffectDescriptionVector
+					&materials,
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
 				CalCoreModel *core_model);
@@ -138,9 +142,10 @@ namespace eternal_lands
 				return m_mesh;
 			}
 
-			inline const MaterialVector &get_materials() const
+			inline const MaterialEffectVector
+				&get_material_effects() const
 			{
-				return m_materials;
+				return m_material_effects;
 			}
 
 			inline float get_transparency() const

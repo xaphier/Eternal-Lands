@@ -725,7 +725,7 @@ namespace eternal_lands
 					return true;
 				}
 				return false;
-			case sst_glow_mapping:
+			case sst_emission_mapping:
 				if (index == 0)
 				{
 					get_data(cpt_fragment_uv, pqt_in, name,
@@ -734,7 +734,7 @@ namespace eternal_lands
 				}
 				if (index == 1)
 				{
-					get_data(cpt_glow, pqt_out, name,
+					get_data(cpt_emission, pqt_out, name,
 						type, qualifier, size, scale);
 					return true;
 				}

@@ -11,7 +11,7 @@
 #include "loader/e3dloader.hpp"
 #include "reader.hpp"
 #include "meshdatatool.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
 #include "logging.hpp"
 #include "indexbuilder.hpp"
 #include "submesh.hpp"
@@ -235,34 +235,37 @@ namespace eternal_lands
 				vertex_count - 1));
 		}
 
-		void load_e2d(const ReaderSharedPtr &reader,
-			const bool use_simd,
+		void load_e2d(const MaterialDescriptionCacheSharedPtr
+				&material_description_cache,
+			const ReaderSharedPtr &reader, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialDescriptionVector &materials)
+			MaterialEffectDescriptionVector &materials)
 		{
 			E2dLoader e2d_loader(reader);
 
-			e2d_loader.load(use_simd, mesh_data_tool, materials);
+			e2d_loader.load(material_description_cache, use_simd,
+				mesh_data_tool, materials);
 		}
 
-		void load_e3d(const FileSystemSharedPtr &file_system,
-			const ReaderSharedPtr &reader,
-			const bool use_simd,
+		void load_e3d(const MaterialDescriptionCacheSharedPtr
+				&material_description_cache,
+			const ReaderSharedPtr &reader, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialDescriptionVector &materials)
+			MaterialEffectDescriptionVector &materials)
 		{
 			E3dLoader e3d_loader(reader);
 
-			e3d_loader.load(file_system, use_simd, mesh_data_tool,
-				materials);
+			e3d_loader.load(material_description_cache, use_simd,
+				mesh_data_tool, materials);
 
 			mesh_data_tool->update_sub_meshs_packed();
 		}
 
-		void do_load_mesh(const FileSystemSharedPtr &file_system,
+		void do_load_mesh(const MaterialDescriptionCacheSharedPtr
+				&material_description_cache,
 			const ReaderSharedPtr &reader, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialDescriptionVector &materials)
+			MaterialEffectDescriptionVector &materials)
 		{
 			Uint8Array8 id;
 			Uint32 i;
@@ -276,8 +279,8 @@ namespace eternal_lands
 
 			if (E3dLoader::check_format(id))
 			{
-				load_e3d(file_system, reader, use_simd,
-					mesh_data_tool, materials);
+				load_e3d(material_description_cache, reader,
+					use_simd, mesh_data_tool, materials);
 
 				assert(mesh_data_tool.get() != 0);
 				return;
@@ -285,8 +288,8 @@ namespace eternal_lands
 
 			if (E2dLoader::check_format(id))
 			{
-				load_e2d(reader, use_simd, mesh_data_tool,
-					materials);
+				load_e2d(material_description_cache, reader,
+					use_simd, mesh_data_tool, materials);
 
 				assert(mesh_data_tool.get() != 0);
 				return;
@@ -358,12 +361,14 @@ namespace eternal_lands
 	{
 		public:
 			MeshDataToolSharedPtr m_mesh_data_tool;
-			MaterialDescriptionVector m_materials;
+			MaterialEffectDescriptionVector m_materials;
 	};
 
-	MeshDataCache::MeshDataCache(
+	MeshDataCache::MeshDataCache(const MaterialDescriptionCacheWeakPtr
+			&material_description_cache,
 		const FileSystemWeakPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
+		m_material_description_cache(material_description_cache),
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
 		assert(!m_file_system.expired());
@@ -376,7 +381,7 @@ namespace eternal_lands
 
 	void MeshDataCache::load_mesh(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialDescriptionVector &materials)
+		MaterialEffectDescriptionVector &materials)
 	{
 		ReaderSharedPtr reader;
 
@@ -390,7 +395,7 @@ namespace eternal_lands
 
 			reader = get_file_system()->get_file(name);
 
-			do_load_mesh(get_file_system(), reader,
+			do_load_mesh(get_material_description_cache(), reader,
 				get_global_vars()->get_use_simd(),
 				mesh_data_tool, materials);
 
@@ -423,7 +428,7 @@ namespace eternal_lands
 
 	void MeshDataCache::get_mesh_data(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialDescriptionVector &materials)
+		MaterialEffectDescriptionVector &materials)
 	{
 		MeshDataCache::MeshDataCacheItem tmp;
 		MeshDataCacheMap::iterator found;
@@ -449,7 +454,7 @@ namespace eternal_lands
 	void MeshDataCache::get_mesh_data(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool)
 	{
-		MaterialDescriptionVector materials;
+		MaterialEffectDescriptionVector materials;
 
 		get_mesh_data(name, mesh_data_tool, materials);
 	}

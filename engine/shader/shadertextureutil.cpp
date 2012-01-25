@@ -72,12 +72,14 @@ namespace eternal_lands
 				String(UTF8("normal_sampler_0")), 2),
 			ShaderTextureTypeData(
 				String(UTF8("specular_sampler_0")), 3),
-			ShaderTextureTypeData(String(UTF8("glow_sampler_0"))),
+			ShaderTextureTypeData(
+				String(UTF8("emission_sampler_0"))),
 			ShaderTextureTypeData(String(UTF8("blend_sampler_0"))),
 			ShaderTextureTypeData(String(UTF8("normal_sampler_1"))),
 			ShaderTextureTypeData(
 				String(UTF8("specular_sampler_1"))),
-			ShaderTextureTypeData(String(UTF8("glow_sampler_1"))),
+			ShaderTextureTypeData(
+				String(UTF8("emission_sampler_1"))),
 			ShaderTextureTypeData(String(UTF8("blend_sampler_1"))),
 			ShaderTextureTypeData(String(UTF8("extra_sampler_0"))),
 			ShaderTextureTypeData(String(UTF8("extra_sampler_1"))),

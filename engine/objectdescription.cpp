@@ -6,13 +6,13 @@
  ****************************************************************************/
 
 #include "objectdescription.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
 
 namespace eternal_lands
 {
 
 	ObjectDescription::ObjectDescription(const ObjectData &object_data,
-		const MaterialDescriptionVector &materials):
+		const MaterialEffectDescriptionVector &materials):
 		ObjectData(object_data), m_materials(materials)
 	{
 	}

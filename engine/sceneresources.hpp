@@ -34,7 +34,8 @@ namespace eternal_lands
 			ActorDataCacheSharedPtr m_actor_data_cache;
 			ShaderSourceBuilderSharedPtr m_shader_source_builder;
 			FrameBufferBuilderSharedPtr m_framebuffer_builder;
-			boost::scoped_ptr<Filter> m_filter;
+			MaterialDescriptionCacheSharedPtr
+				m_material_description_cache;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
@@ -96,9 +97,10 @@ namespace eternal_lands
 				return m_framebuffer_builder;
 			}
 
-			inline Filter &get_filter() const
+			inline const MaterialDescriptionCacheSharedPtr
+				&get_material_description_cache() const
 			{
-				return *m_filter;
+				return m_material_description_cache;
 			}
 
 	};

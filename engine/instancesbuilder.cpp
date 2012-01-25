@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "instancesbuilder.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
 #include "instancingdata.hpp"
 #include "freeids.hpp"
 #include "instancebuilder.hpp"
@@ -42,7 +42,7 @@ namespace eternal_lands
 	}
 
 	void InstancesBuilder::add(const ObjectData &object_data,
-		const MaterialDescriptionVector &materials)
+		const MaterialEffectDescriptionVector &materials)
 	{
 		std::auto_ptr<InstancingData> instancing_data;
 		Sint16Sint16Pair index;

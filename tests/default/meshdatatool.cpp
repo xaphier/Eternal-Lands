@@ -15,7 +15,7 @@
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
+BOOST_AUTO_TEST_CASE(create)
 {
 	el::MeshDataToolSharedPtr mesh_data_tool;
 	el::VertexSemanticTypeSet semantics;
@@ -409,7 +409,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_create)
 		0);
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane)
+BOOST_AUTO_TEST_CASE(add_plane)
 {
 	el::MeshDataToolSharedPtr mesh_data_tool;
 	glm::vec4 normal, tangent, data;
@@ -580,7 +580,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_normal)
+BOOST_AUTO_TEST_CASE(add_plane_build_normal)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Sint32> range(-16777216, 16777216);
@@ -764,7 +764,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_normal)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent)
+BOOST_AUTO_TEST_CASE(add_plane_build_tangent)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Sint32> range(-16777216, 16777216);
@@ -950,7 +950,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_gram_schmidth_ortho)
+BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Sint32> range(-16777216, 16777216);
@@ -1125,7 +1125,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_gram_schmidth_ortho)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_bounding_box)
+BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box)
 {
 	el::MeshDataToolSharedPtr mesh_data_tool;
 	glm::vec4 normal, tangent, data;
@@ -1391,7 +1391,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_bounding_box)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_use_restart)
+BOOST_AUTO_TEST_CASE(add_plane_use_restart)
 {
 	el::MeshDataToolSharedPtr mesh_data_tool;
 	glm::vec4 normal, tangent, data;
@@ -1562,7 +1562,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_use_restart)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_normal_use_restart)
+BOOST_AUTO_TEST_CASE(add_plane_build_normal_use_restart)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Sint32> range(-16777216, 16777216);
@@ -1746,7 +1746,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_normal_use_restart)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_use_restart)
+BOOST_AUTO_TEST_CASE(add_plane_build_tangent_use_restart)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Sint32> range(-16777216, 16777216);
@@ -1932,7 +1932,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_use_restart)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_gram_schmidth_ortho_use_restart)
+BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho_use_restart)
 {
 	boost::mt19937 rng;
 	boost::uniform_int<Sint32> range(-16777216, 16777216);
@@ -2107,7 +2107,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_tangent_gram_schmidth_ortho_
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_disable_use_restart)
+BOOST_AUTO_TEST_CASE(add_plane_disable_use_restart)
 {
 	el::MeshDataToolSharedPtr mesh_data_tool;
 	glm::vec4 normal, tangent, data;
@@ -2388,7 +2388,7 @@ BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_disable_use_restart)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(mesh_data_tool_add_plane_build_bounding_box_use_restart)
+BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box_use_restart)
 {
 	el::MeshDataToolSharedPtr mesh_data_tool;
 	glm::vec4 normal, tangent, data;

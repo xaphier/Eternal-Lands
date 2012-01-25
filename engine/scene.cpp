@@ -33,6 +33,7 @@
 #include "filter.hpp"
 #include "texture.hpp"
 #include "convexbody.hpp"
+#include "materialeffect.hpp"
 
 #include "../client_serv.h"
 
@@ -67,7 +68,6 @@ namespace eternal_lands
 		m_global_vars(global_vars), m_scene_resources(global_vars,
 			file_system), m_scene_view(global_vars),
 			m_frame_id(0), m_program_vars_id(0),
-			m_shadow_map_filter(ft_gauss_5_tap),
 			m_shadow_map_change(true)
 	{
 		m_light_position_array.resize(8);
@@ -546,7 +546,7 @@ namespace eternal_lands
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
-		materials = object->get_materials().size();
+		materials = object->get_material_effects().size();
 
 		get_lights(object->get_bounding_box(), light_count);
 
@@ -554,7 +554,7 @@ namespace eternal_lands
 
 		for (i = 0; i < materials; ++i)
 		{
-			if (switch_program(object->get_materials(
+			if (switch_program(object->get_material_effects(
 				)[i].get_effect()->get_default_program(
 					light_count, shadow_receiver,
 					dynamic_light_count)))
@@ -575,7 +575,7 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_materials()[i].bind(m_state_manager);
+			object->get_material_effects()[i].bind(m_state_manager);
 
 			m_state_manager.draw(i, 1);
 		}
@@ -589,18 +589,19 @@ namespace eternal_lands
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
-		materials = object->get_materials().size();
+		materials = object->get_material_effects().size();
 
 		object_data_set = false;
 
 		for (i = 0; i < materials; ++i)
 		{
-			if (!object->get_materials()[i].get_shadow())
+			if (!object->get_material_effects(
+				)[i].get_cast_shadows())
 			{
 				continue;
 			}
 
-			if (switch_program(object->get_materials(
+			if (switch_program(object->get_material_effects(
 				)[i].get_effect()->get_shadow_program()))
 			{
 				object_data_set = false;
@@ -618,7 +619,7 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_materials()[i].bind(m_state_manager);
+			object->get_material_effects()[i].bind(m_state_manager);
 			m_state_manager.draw(i, count);
 		}
 	}
@@ -631,18 +632,19 @@ namespace eternal_lands
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
-		materials = object->get_materials().size();
+		materials = object->get_material_effects().size();
 
 		object_data_set = false;
 
 		for (i = 0; i < materials; ++i)
 		{
-			if (!object->get_materials()[i].get_shadow())
+			if (!object->get_material_effects(
+				)[i].get_cast_shadows())
 			{
 				continue;
 			}
 
-			if (switch_program(object->get_materials(
+			if (switch_program(object->get_material_effects(
 				)[i].get_effect()->get_shadow_program(),
 				layer))
 			{
@@ -659,7 +661,7 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_materials()[i].bind(m_state_manager);
+			object->get_material_effects()[i].bind(m_state_manager);
 			m_state_manager.draw(i, 1);
 		}
 	}
@@ -671,13 +673,13 @@ namespace eternal_lands
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
-		materials = object->get_materials().size();
+		materials = object->get_material_effects().size();
 
 		object_data_set = false;
 
 		for (i = 0; i < materials; ++i)
 		{
-			if (switch_program(object->get_materials(
+			if (switch_program(object->get_material_effects(
 				)[i].get_effect()->get_depth_program()))
 			{
 				object_data_set = false;
@@ -693,7 +695,7 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_materials()[i].bind(m_state_manager);
+			object->get_material_effects()[i].bind(m_state_manager);
 			m_state_manager.draw(i, 1);
 		}
 	}
@@ -976,7 +978,7 @@ namespace eternal_lands
 
 			material = object->get_sub_objects()[i].get_material();
 
-			if (switch_program(object->get_materials(
+			if (switch_program(object->get_material_effects(
 				)[material].get_effect()->get_depth_program()))
 			{
 				object_data_set = false;
@@ -992,7 +994,8 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_materials()[material].bind(m_state_manager);
+			object->get_material_effects()[material].bind(
+				m_state_manager);
 			m_state_manager.draw(object->get_sub_objects()[i], 1);
 
 			glEndQuery(GL_SAMPLES_PASSED);

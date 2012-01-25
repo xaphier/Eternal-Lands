@@ -589,7 +589,7 @@ namespace eternal_lands
 		return str;
 	}
 
-	String FileSystem::get_file_name_without_extension(
+	String FileSystem::get_name_without_extension(
 		const String &file_name)
 	{
 		StringTypeVector path;
@@ -622,6 +622,24 @@ namespace eternal_lands
 		{
 			result += '/';
 			result += path[i];
+		}
+
+		return String(result);
+	}
+
+	String FileSystem::get_file_name_without_extension(
+		const String &file_name)
+	{
+		StringType result;
+		std::size_t pos;
+
+		result = get_file_name(file_name);
+
+		pos = result.rfind(UTF8("."));
+
+		if (pos != std::string::npos)
+		{
+			result.erase(result.begin() + pos, result.end());
 		}
 
 		return String(result);

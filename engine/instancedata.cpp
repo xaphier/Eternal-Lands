@@ -7,7 +7,7 @@
 
 #include "instancedata.hpp"
 #include "meshdatatool.hpp"
-#include "materialdescription.hpp"
+#include "materialeffectdescription.hpp"
 #include "subobject.hpp"
 
 namespace eternal_lands
@@ -15,7 +15,7 @@ namespace eternal_lands
 
 	InstanceData::InstanceData(const ObjectData &object_data,
 		const MeshDataToolSharedPtr &mesh_data_tool,
-		const MaterialDescriptionVector &materials,
+		const MaterialEffectDescriptionVector &materials,
 		const SubObjectVector &instanced_objects):
 		ObjectDescription(object_data, materials),
 		m_mesh_data_tool(mesh_data_tool),

@@ -1,5 +1,5 @@
 /****************************************************************************
- *            material.hpp
+ *            materialeffect.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,25 +13,25 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "effectdescription.hpp"
 #include "shader/shadertextureutil.hpp"
 
 /**
  * @file
- * @brief The @c class Material.
- * This file contains the @c class Material.
+ * @brief The @c class MaterialEffect.
+ * This file contains the @c class MaterialEffect.
  */
 namespace eternal_lands
 {
 
-	class Material
+	class MaterialEffect
 	{
 		private:
 			EffectCacheWeakPtr m_effect_cache;
 			TextureCacheWeakPtr m_texture_cache;
 			EffectSharedPtr m_effect;
-			TextureSharedPtrArray12 m_textures;
-			std::size_t m_hash;
-			bool m_shadow;
+			MaterialTextureSharedPtrArray m_textures;
+			bool m_cast_shadows;
 			bool m_culling;
 
 			inline EffectCacheSharedPtr get_effect_cache()
@@ -57,36 +57,35 @@ namespace eternal_lands
 				return result;
 			}
 
-			void set_texture(const MaterialDescription &material,
+			void set_texture(
+				const MaterialEffectDescription &material,
 				const ShaderTextureType texture_type);
-			void build_hash();
 
 		public:
-			Material(const EffectCacheWeakPtr &effect_cache,
+			MaterialEffect(const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache);
-			Material(const EffectCacheWeakPtr &effect_cache,
+			MaterialEffect(const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
-				const MaterialDescription &material);
-			~Material() throw();
-			bool operator==(const Material &material) const;
-			bool operator!=(const Material &material) const;
-			bool operator<(const Material &material) const;
+				const MaterialEffectDescription &material);
+			~MaterialEffect() throw();
+			bool operator==(const MaterialEffect &material) const;
+			bool operator!=(const MaterialEffect &material) const;
+			bool operator<(const MaterialEffect &material) const;
 			void set_texture(const String &name,
 				const ShaderTextureType texture_type);
 			const String &get_texture_name(
 				const ShaderTextureType texture_type) const;
-			const String &get_effect_name() const;
-			void set_effect(const String &effect);
+			void set_effect(const EffectDescription &effect);
 			void bind(StateManager &state_manager) const;
 			void set_texture(const TextureSharedPtr &texture,
 				const ShaderTextureType texture_type);
 			const TextureSharedPtr &get_texture(
 				const ShaderTextureType texture_type) const;
+			const EffectDescription &get_effect_description() const;
 
 			inline void set_effect(const EffectSharedPtr &effect)
 			{
 				m_effect = effect;
-				build_hash();
 			}
 
 			inline const EffectSharedPtr &get_effect() const
@@ -94,31 +93,24 @@ namespace eternal_lands
 				return m_effect;
 			}
 
-			inline void set_shadow(const bool shadow)
+			inline void set_cast_shadows(const bool cast_shadows)
 			{
-				m_shadow = shadow;
-				build_hash();
+				m_cast_shadows = cast_shadows;
 			}
 
 			inline void set_culling(const bool culling)
 			{
 				m_culling = culling;
-				build_hash();
 			}
 
-			inline bool get_shadow() const
+			inline bool get_cast_shadows() const
 			{
-				return m_shadow;
+				return m_cast_shadows;
 			}
 
 			inline bool get_culling() const
 			{
 				return m_culling;
-			}
-
-			inline std::size_t get_hash() const
-			{
-				return m_hash;
 			}
 
 	};

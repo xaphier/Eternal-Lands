@@ -536,7 +536,7 @@ namespace eternal_lands
 		String base_name;
 		ReaderSharedPtr reader;
 
-		base_name = file_system->get_file_name_without_extension(name);
+		base_name = file_system->get_name_without_extension(name);
 
 		file_names[0] = name;
 		file_names[1] = base_name.get() + UTF8(".dds");

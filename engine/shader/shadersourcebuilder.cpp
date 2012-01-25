@@ -11,7 +11,7 @@
 #include "vertexelement.hpp"
 #include "logging.hpp"
 #include "globalvars.hpp"
-#include "shadersourcedescription.hpp"
+#include "effectdescription.hpp"
 #include "commonparameterutil.hpp"
 #include "shadersourceparameterbuilder.hpp"
 #include "shadersourceparameter.hpp"
@@ -1956,7 +1956,7 @@ namespace eternal_lands
 	}
 
 	ShaderSourceTypeStringMap ShaderSourceBuilder::build_sources(
-		const ShaderSourceDescription &description) const
+		const EffectDescription &description) const
 	{
 		ShaderSourceTypeStringMap::iterator found;
 		ShaderSourceTypeStringMap sources;
@@ -1987,11 +1987,6 @@ namespace eternal_lands
 				description.get_specular_mapping();
 		}
 
-		if (!description.get_light().get().empty())
-		{
-			sources[sst_light] = description.get_light();
-		}
-
 		if (!description.get_receives_shadows())
 		{
 			found = sources.find(sst_shadow_uv);
@@ -2019,12 +2014,22 @@ namespace eternal_lands
 			}
 		}
 
+		if (!description.get_lighting())
+		{
+			found = sources.find(sst_light);
+
+			if (found != sources.end())
+			{
+				sources.erase(found);
+			}
+		}
+
 		return sources;
 	}
 
 	void ShaderSourceBuilder::build(const Uint16 light_count,
 		const ShaderBuildType shader_build_type,
-		const ShaderSourceDescription &description, StringType &vertex,
+		const EffectDescription &description, StringType &vertex,
 		StringType &geometry, StringType &fragment,
 		StringVariantMap &values) const
 	{
@@ -2537,6 +2542,26 @@ namespace eternal_lands
 				geometry = geometry_source.str();
 			}
 		}
+	}
+
+	StringVector ShaderSourceBuilder::get_shader_source_names(
+		const ShaderSourceType shader_source) const
+	{
+		ShaderSourceTypeStringPairShaderSourceMap::const_iterator it;
+		ShaderSourceTypeStringPairShaderSourceMap::const_iterator end;
+		StringVector result;
+
+		end = m_shader_sources.end();
+
+		for (it = m_shader_sources.begin(); it != end; ++it)
+		{
+			if (it->first.first == shader_source)
+			{
+				result.push_back(it->first.second);
+			}
+		}
+
+		return result;
 	}
 
 }
