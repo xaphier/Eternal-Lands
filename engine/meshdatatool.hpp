@@ -115,6 +115,12 @@ namespace eternal_lands
 				const Uint32 source_index,
 				const Uint32 dest_index, const Uint32 count,
 				const glm::mat3x3 &matrix);
+			void transform_vertics(
+				const MeshDataTool &mesh_data_tool,
+				const VertexSemanticType semantic,
+				const Uint32 source_index,
+				const Uint32 dest_index, const Uint32 count,
+				const glm::vec4 &scale_offset);
 			void set_indices(const Uint32Vector &indices,
 				const Uint32 source_index,
 				const Uint32 dest_index, const Uint32 count,

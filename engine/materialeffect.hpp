@@ -31,6 +31,7 @@ namespace eternal_lands
 			TextureCacheWeakPtr m_texture_cache;
 			EffectSharedPtr m_effect;
 			MaterialTextureSharedPtrArray m_textures;
+			glm::vec4 m_texture_scale_offset;
 			bool m_cast_shadows;
 			bool m_culling;
 
@@ -93,6 +94,13 @@ namespace eternal_lands
 				return m_effect;
 			}
 
+			inline void set_texture_scale_offset(
+				const glm::vec4 &texture_scale_offset)
+			{
+				m_texture_scale_offset =
+					texture_scale_offset;
+			}
+
 			inline void set_cast_shadows(const bool cast_shadows)
 			{
 				m_cast_shadows = cast_shadows;
@@ -101,6 +109,12 @@ namespace eternal_lands
 			inline void set_culling(const bool culling)
 			{
 				m_culling = culling;
+			}
+
+			inline const glm::vec4 &get_texture_scale_offset()
+				const
+			{
+				return m_texture_scale_offset;
 			}
 
 			inline bool get_cast_shadows() const

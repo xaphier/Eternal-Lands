@@ -48,11 +48,6 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			ObjectData(const ObjectData &object_data);
-
-			/**
-			 * Default constructor.
-			 */
 			ObjectData(const glm::mat4x3 &world_matrix,
 				const glm::vec4 &color, const String &name,
 				const float transparency, const Uint32 id,

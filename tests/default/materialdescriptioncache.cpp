@@ -14,34 +14,6 @@
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(load_small_xml)
-{
-	el::MaterialDescriptionCache material_description_cache;
-	el::FileSystemSharedPtr file_system;
-
-	file_system = el::FileSystemSharedPtr(new el::FileSystem());
-
-	BOOST_CHECK_NO_THROW(material_description_cache.load_xml(file_system,
-		el::String("materials_small.xml")));
-
-	BOOST_CHECK_NO_THROW(
-		material_description_cache.get_material_description(
-			el::String("grass1")));
-
-	BOOST_CHECK_NO_THROW(
-		material_description_cache.get_material_description(
-			el::String("target1")));
-
-	BOOST_CHECK_EQUAL(material_description_cache.get_material_description(
-		el::String("grass1")).get_texture(el::stt_diffuse_0),
-		"2dobjects/ground/grass1.dds");
-
-	BOOST_CHECK_EQUAL(material_description_cache.get_material_description(
-		el::String("target1")).get_texture(el::stt_diffuse_0),
-		"meshes/target1.dds");
-}
-
-
 BOOST_AUTO_TEST_CASE(load_xml)
 {
 	el::MaterialDescriptionCache material_description_cache;

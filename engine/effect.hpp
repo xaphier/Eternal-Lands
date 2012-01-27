@@ -29,17 +29,19 @@ namespace eternal_lands
 			const ShaderSourceBuilderWeakPtr
 				m_shader_source_builder;
 			const EffectDescription m_description;
-			GlslProgramSharedPtrVector m_default_programs;
+			GlslProgramSharedPtr m_default_program;
 			GlslProgramSharedPtr m_depth_program;
 			GlslProgramSharedPtr m_shadow_program;
-			Ivec2Vector m_light_counts;
-			Uint16 m_max_index;
+			glm::ivec2 m_light_count;
 
 			void error_load();
 			void do_load();
-			void build_default_shader(EffectDescription description,
+			void build_default_shader(
+				const EffectDescription &description,
 				const Uint16 vertex_light_count,
 				const Uint16 fragment_light_count);
+			void build_deferred_shader(
+				const EffectDescription &description);
 
 			inline ShaderSourceBuilderSharedPtr
 				get_shader_source_builder() const
@@ -53,35 +55,6 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline Uint16 get_max_index() const
-			{
-				return m_max_index;
-			}
-
-			inline Uint16 get_shadow_receiver_index(
-				const bool shadow_receiver) const
-			{
-				if (shadow_receiver)
-				{
-					return 0;
-				}
-
-				return 1;
-			}
-
-			inline Uint16 get_index(const Uint16 light_count) const
-			{
-				return std::min(light_count, get_max_index());
-			}
-
-			inline Uint16 get_index(const Uint16 light_count,
-				const bool shadow_receiver) const
-			{
-				return get_index(light_count) * 2 +
-					get_shadow_receiver_index(
-						shadow_receiver);
-			}
-
 		public:
 			Effect();
 			Effect(const ShaderSourceBuilderWeakPtr
@@ -91,11 +64,9 @@ namespace eternal_lands
 			void load();
 
 			inline const GlslProgramSharedPtr &get_default_program(
-				const Uint16 light_count,
-				const bool shadow_receiver) const
+				) const
 			{
-				return m_default_programs[get_index(
-					light_count, shadow_receiver)];
+				return m_default_program;
 			}
 
 			inline glm::ivec3 get_dynamic_light_count(
@@ -104,8 +75,7 @@ namespace eternal_lands
 				glm::ivec3 result;
 				glm::ivec2 tmp;
 
-				result = glm::vec3(m_light_counts[
-					get_index(light_count)], 0);
+				result = glm::vec3(m_light_count, 0);
 
 				result.z = result.x + result.y;
 				result.y = std::min(light_count,
@@ -118,14 +88,13 @@ namespace eternal_lands
 			}
 
 			inline const GlslProgramSharedPtr &get_default_program(
-				const Uint16 light_count, const bool shadowed,
+				const Uint16 light_count,
 				glm::ivec3 &dynamic_light_count) const
 			{
 				dynamic_light_count =
 					get_dynamic_light_count(light_count);
 
-				return get_default_program(light_count,
-					shadowed);
+				return get_default_program();
 			}
 
 			inline const GlslProgramSharedPtr &get_depth_program()

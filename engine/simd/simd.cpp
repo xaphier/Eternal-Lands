@@ -829,4 +829,28 @@ namespace eternal_lands
 #endif	/* USE_SSE2 */
 	}
 
+	void SIMD::transform(const float* source, const Uint32 count,
+		const glm::vec4 &scale_offset, float* dest)
+	{
+#ifdef	USE_SSE2
+		__m128 tmp, offset, scale;
+		Uint32 i;
+
+		scale = _mm_setr_ps(scale_offset.x, scale_offset.y, 1.0f,
+			1.0f);
+		offset = _mm_setr_ps(scale_offset.z, scale_offset.w, 0.0f,
+			0.0f);
+
+		for (i = 0; i < count; ++i)
+		{
+			tmp = _mm_load_ps(source + 4 * i);
+
+			tmp = _mm_mul_ps(tmp, scale);
+			tmp = _mm_add_ps(tmp, offset);
+
+			_mm_stream_ps(dest + 4 * i, tmp);
+		}
+#endif	/* USE_SSE2 */
+	}
+
 }

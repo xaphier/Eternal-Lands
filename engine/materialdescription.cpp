@@ -14,8 +14,9 @@
 namespace eternal_lands
 {
 
-	MaterialDescription::MaterialDescription(): m_receives_shadows(true),
-		m_lighting(true)
+	MaterialDescription::MaterialDescription():
+		m_texture_scale_offset(1.0f, 1.0f, 0.0f, 0.0f),
+		m_receives_shadows(true), m_lighting(true)
 	{
 	}
 
@@ -49,18 +50,32 @@ namespace eternal_lands
 					XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse"))
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_0"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
 					stt_diffuse_0);
 			}
 
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("second_diffuse")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_1"))
+				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
 					stt_diffuse_1);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_2"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_diffuse_2);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_3"))
+				== 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_diffuse_3);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("normal"))
@@ -87,6 +102,25 @@ namespace eternal_lands
 			{
 				set_texture(XmlUtil::get_string_value(it),
 					stt_blend_0);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("height")) == 0)
+			{
+				set_texture(XmlUtil::get_string_value(it),
+					stt_height);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
+			{
+				set_material_name(
+					XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("texture_scale_offset")) == 0)
+			{
+				set_texture_scale_offset(
+					XmlUtil::get_vec4_value(it));
 			}
 
 			if (xmlStrcmp(it->name,
@@ -144,10 +178,14 @@ namespace eternal_lands
 	{
 		writer->start_element(UTF8("material"));
 		writer->write_element(UTF8("name"), get_material_name());
-		writer->write_element(UTF8("diffuse"),
+		writer->write_element(UTF8("diffuse_0"),
 			get_texture(stt_diffuse_0));
-		writer->write_element(UTF8("second_diffuse"),
+		writer->write_element(UTF8("diffuse_1"),
 			get_texture(stt_diffuse_1));
+		writer->write_element(UTF8("diffuse_2"),
+			get_texture(stt_diffuse_2));
+		writer->write_element(UTF8("diffuse_3"),
+			get_texture(stt_diffuse_3));
 		writer->write_element(UTF8("normal"),
 			get_texture(stt_normal_0));
 		writer->write_element(UTF8("specular"),
@@ -155,6 +193,9 @@ namespace eternal_lands
 		writer->write_element(UTF8("emission"),
 			get_texture(stt_emission_0));
 		writer->write_element(UTF8("blend"), get_texture(stt_blend_0));
+		writer->write_element(UTF8("height"), get_texture(stt_height));
+		writer->write_vec4_element(UTF8("texture_scale_offset"),
+			get_texture_scale_offset());
 		writer->write_element(UTF8("texture_coodrinates"),
 			get_texture_coodrinates());
 		writer->write_element(UTF8("diffuse_mapping"),

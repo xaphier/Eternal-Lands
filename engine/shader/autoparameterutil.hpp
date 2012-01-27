@@ -55,7 +55,8 @@ namespace eternal_lands
 		apt_camera,
 		apt_shadow_camera,
 		apt_split_distances,
-		apt_layers
+		apt_layers,
+		apt_texture_scale_offset
 	};
 	/**
 	 * @}

@@ -15,15 +15,6 @@ namespace eternal_lands
 	{
 	}
 
-	ObjectData::ObjectData(const ObjectData &object_data):
-		m_world_matrix(object_data.m_world_matrix),
-		m_color(object_data.m_color), m_name(object_data.m_name),
-		m_transparency(object_data.m_transparency),
-		m_id(object_data.m_id), m_selection(object_data.m_selection),
-		m_blend(object_data.m_blend)
-	{
-	}
-
 	ObjectData::ObjectData(const glm::mat4x3 &world_matrix,
 		const glm::vec4 &color, const String &name,
 		const float transparency, const Uint32 id,
@@ -39,4 +30,3 @@ namespace eternal_lands
 	}
 
 }
-

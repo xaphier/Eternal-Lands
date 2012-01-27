@@ -2,7 +2,7 @@
 <shaders>
 	<shadow_scale>0.8</shadow_scale>
 	<vertex_light_count>4</vertex_light_count>
-	<fragment_light_count>4</fragment_light_count>
+	<fragment_light_count>8</fragment_light_count>
 	<bone_count>72</bone_count>
 	<dynamic_light_count>false</dynamic_light_count>
 	<shader_sources>
@@ -15,6 +15,7 @@
 		<shader_source>shaders/sources/view_direction.xml</shader_source>
 		<shader_source>shaders/sources/view_transform.xml</shader_source>
 		<shader_source>shaders/sources/diffuse_blend_mapping.xml</shader_source>
+		<shader_source>shaders/sources/diffuse_blend_4_mapping.xml</shader_source>
 		<shader_source>shaders/sources/diffuse_mapping.xml</shader_source>
 		<shader_source>shaders/sources/uv.xml</shader_source>
 		<shader_source>shaders/sources/lava.xml</shader_source>
@@ -40,6 +41,10 @@
 		<shader_source>shaders/sources/exp_shadow_map.xml</shader_source>
 		<shader_source>shaders/sources/exp_shadow_mapping.xml</shader_source>
 		<shader_source>shaders/sources/tbn_matrix.xml</shader_source>
+		<shader_source>shaders/sources/cook_torrance_light.xml</shader_source>
+		<shader_source>shaders/sources/terrain_depth_transform.xml</shader_source>
+		<shader_source>shaders/sources/terrain_normal_transform.xml</shader_source>
+		<shader_source>shaders/sources/terrain_tangent_transform.xml</shader_source>
 	</shader_sources>
 	<sources>
 		<world_depth_transform>default</world_depth_transform>
@@ -57,7 +62,7 @@
 		<tbn_matrix>default</tbn_matrix>
 		<diffuse_mapping>default</diffuse_mapping>
 		<uv>default</uv>
-		<normal_mapping>normal_mapping</normal_mapping>
+		<normal_mapping>disabled</normal_mapping>
 		<normal_depth_mapping>disabled</normal_depth_mapping>
 		<specular_mapping>default</specular_mapping>
 		<emission_mapping>disabled</emission_mapping>

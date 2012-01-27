@@ -70,8 +70,7 @@ namespace eternal_lands
 			void set_lights(const GlslProgramSharedPtr &program,
 				const glm::ivec3 &dynamic_light_count,
 				const glm::vec4 &color);
-			void draw_object(const ObjectSharedPtr &object,
-				const bool shadow_receiver);
+			void draw_object(const ObjectSharedPtr &object);
 			void draw_object_depth(const ObjectSharedPtr &object);
 			void draw_object_shadow(const ObjectSharedPtr &object,
 				const glm::ivec4 &layers, const Uint16 count);
@@ -117,6 +116,9 @@ namespace eternal_lands
 			void remove_actor(const Uint32 id);
 			void remove_all_actors();
 			void add_object(const ObjectData &object_data);
+			void add_object(const ObjectData &object_data,
+				const MaterialEffectDescriptionVector
+					&materials);
 			void add_object(const InstanceData &instance_data);
 			void remove_object(const Uint32 id);
 			bool get_object_position(const Uint32 id,

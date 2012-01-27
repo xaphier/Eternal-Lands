@@ -49,6 +49,7 @@ void engine_done_object_adding();
 void engine_add_light(const float x_pos, const float y_pos, const float z_pos,
 	const float r, const float g, const float b, const float radius,
 	const Uint32 id);
+void engine_terrain();
 void engine_load_enhanced_actor_texture(actor *act);
 Uint32 engine_get_actor_texture_loaded(actor *act);
 Uint32 engine_get_object_under_mouse_pickable();

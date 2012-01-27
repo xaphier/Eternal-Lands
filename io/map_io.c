@@ -166,18 +166,6 @@ static int do_load_map(const char *file_name, update_func *update_function)
 	height_map = calloc (tile_map_size_x*tile_map_size_y*6*6, 1);
 	memcpy(height_map, file_mem + cur_map_header.height_map_offset, tile_map_size_x*tile_map_size_y*6*6);
 
-	for(i = 0; i < tile_map_size_y; i++)
-	{
-		for(j = 0; j < tile_map_size_x; j++)
-		{
-			cur_tile = tile_map[i*tile_map_size_x+j];
-			if (cur_tile != 255)
-			{
-				engine_add_tile(j, i, cur_tile);
-			}
-		}
-	}
-
 #ifdef CLUSTER_INSIDES
 	// check if we need to compute the clusters, or if they're stored
 	// in the map
@@ -219,6 +207,39 @@ static int do_load_map(const char *file_name, update_func *update_function)
 /* 		water_tiles_extension = 500.0 - water_tiles_extension; */
 /* 	else */
 /* 		water_tiles_extension = 0.0; */
+
+	if ((strcmp(file_name, "./maps/mapnewbie.elm") == 0) && GLEW_VERSION_3_0)
+	{
+		update_function("Building terrain", 50.0f);
+
+		engine_terrain();
+
+		memset(height_map, 0, tile_map_size_x*tile_map_size_y*6*6);
+
+		// Everything copied, get rid of the file data
+		el_close(file);
+
+		init_bbox_tree(main_bbox_tree, main_bbox_tree_items);
+		free_bbox_items(main_bbox_tree_items);
+		main_bbox_tree_items = 0;
+		update_function(init_done_str, 50.0f);
+#ifdef EXTRA_DEBUG
+		ERR();//We finished loading the new map apparently...
+#endif
+		return 1;
+	}
+
+	for(i = 0; i < tile_map_size_y; i++)
+	{
+		for(j = 0; j < tile_map_size_x; j++)
+		{
+			cur_tile = tile_map[i*tile_map_size_x+j];
+			if (cur_tile != 255)
+			{
+				engine_add_tile(j, i, cur_tile);
+			}
+		}
+	}
 
 	LOG_DEBUG("Initializing buffers");
 #ifndef CLUSTER_INSIDES

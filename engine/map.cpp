@@ -58,6 +58,26 @@ namespace eternal_lands
 		m_object_tree->add(object);
 	}
 
+	void Map::add_object(const ObjectData &object_data,
+		const MaterialEffectDescriptionVector &materials)
+	{
+		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
+		ObjectSharedPtr object;
+		AbstractMeshSharedPtr mesh;
+
+		get_mesh_cache()->get_mesh(object_data.get_name(), mesh);
+
+		object = boost::make_shared<Object>(object_data, mesh,
+			materials, get_effect_cache(), get_texture_cache());
+
+		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
+			object_data.get_id(), object));
+
+		assert(temp.second);
+
+		m_object_tree->add(object);
+	}
+
 	void Map::add_object(const InstanceData &instance_data)
 	{
 		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;

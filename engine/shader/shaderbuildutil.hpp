@@ -29,6 +29,7 @@ namespace eternal_lands
 	enum ShaderBuildType
 	{
 		sbt_color = 0,
+		sbt_deferred,
 		sbt_depth,
 		sbt_shadow
 	};

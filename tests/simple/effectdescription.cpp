@@ -59,6 +59,11 @@ BOOST_AUTO_TEST_CASE(material_creation)
 		el::String(UTF8("345w")), el::stt_blend_0));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_texture(
 		el::String(UTF8("fs46wAFED§&%")), el::stt_blend_1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
+		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_world_transform(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(

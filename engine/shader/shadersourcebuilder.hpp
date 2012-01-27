@@ -116,12 +116,11 @@ namespace eternal_lands
 			~ShaderSourceBuilder() throw();
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
-			void build(const Uint16 light_count,
+			void build(const EffectDescription &description,
 				const ShaderBuildType shader_build_type,
-				const EffectDescription &description,
-				StringType &vertex, StringType &geometry,
-				StringType &fragment, StringVariantMap &values)
-				const;
+				const Uint16 light_count, StringType &vertex,
+				StringType &geometry, StringType &fragment,
+				StringVariantMap &values) const;
 			void set_shadow_map_type(const String &name);
 			StringVector get_shader_source_names(
 				const ShaderSourceType shader_source) const;

@@ -17,8 +17,9 @@ namespace eternal_lands
 		const String shader_build_type_names[] =
 		{
 			String(UTF8("color")),
+			String(UTF8("deferred")),
 			String(UTF8("depth")),
-			String(UTF8("shadow"))
+			String(UTF8("shadow")),
 		};
 
 		const Uint32 shader_build_type_names_count =

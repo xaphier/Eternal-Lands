@@ -18,6 +18,7 @@ if (NOT BOOST_STATIC_TEST_LIB)
 add_definitions(-DBOOST_TEST_DYN_LINK)
 endif (NOT BOOST_STATIC_TEST_LIB)
 
+file(COPY ../materials.xml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(GLOB default default/*.cpp)
 
 foreach(FILE_NAME ${default})

@@ -297,6 +297,25 @@ namespace eternal_lands
 				float* dest);
 
 			/**
+			 * Transforms an array of floats using SSE2. Floats are
+			 * processed in blocks of three each and transformed
+			 * using the scale offset and are stored as blocks of
+			 * four floats.
+			 * Be carefull when using these functions, no error
+			 * checking is done!
+			 * @param source The source memory must be 16 byte
+			 * aligned.
+			 * @param count The Number of four float blocks to
+			 * process.
+			 * @param matrix The transformation matrix to use.
+			 * @param dest The dest memory must be 16 byte
+			 * aligned.
+			 */
+			static void transform(const float* source,
+				const Uint32 count,
+				const glm::vec4 &scale_offset, float* dest);
+
+			/**
 			 * Fills the memory using the given data.
 			 * Be carefull when using these functions, no error
 			 * checking is done!

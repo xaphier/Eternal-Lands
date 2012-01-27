@@ -50,5 +50,7 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_blend_1).get(), "blend_sampler_1");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
+		el::stt_height).get(), "height_sampler_1");
+	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_shadow).get(), "shadow_sampler");
 }

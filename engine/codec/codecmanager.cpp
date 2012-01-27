@@ -621,6 +621,58 @@ namespace eternal_lands
 			<< errinfo_string_value(str.str()));
 	}
 
+	void CodecManager::get_image_information(const String &name,
+		const FileSystemSharedPtr &file_system,
+		const bool rg_formats, TextureFormatType &texture_format,
+		Uint32Array3 &sizes, Uint16 &mipmaps) const
+	{
+		Uint8Array32 magic;
+		boost::array<String, 5> file_names;
+		String base_name;
+		ReaderSharedPtr reader;
+
+		base_name = file_system->get_name_without_extension(name);
+
+		file_names[0] = name;
+		file_names[1] = base_name.get() + UTF8(".dds");
+		file_names[2] = base_name.get() + UTF8(".png");
+		file_names[3] = base_name.get() + UTF8(".jpg");
+		file_names[4] = base_name.get() + UTF8(".jpeg");
+
+		BOOST_FOREACH(const String &file_name, file_names)
+		{
+			if (!file_system->get_file_readable(file_name))
+			{
+				continue;
+			}
+
+			reader = file_system->get_file(file_name);
+
+			reader->set_position(0);
+
+			BOOST_FOREACH(Uint8 &value, magic)
+			{
+				value = reader->read_u8();
+			}
+
+			reader->set_position(0);
+
+			if (DdsImage::check_load(magic) ||
+				PngImage::check_load(magic) ||
+				JpegImage::check_load(magic))
+			{
+				get_image_information(reader, rg_formats,
+					texture_format, sizes, mipmaps);
+				return;
+			}
+		}
+
+		EL_THROW_MESSAGE_EXCEPTION(UTF8("Can't find file '%1%' or "
+			"'%2%'[.dds|.png|.jpg|.jpeg]"), name % base_name,
+			FileNotFoundException()
+				<< boost::errinfo_file_name(name));
+	}
+
 	void CodecManager::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, TextureFormatType &texture_format,
 		Uint32Array3 &sizes, Uint16 &mipmaps) const

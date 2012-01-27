@@ -8,6 +8,7 @@
 #include "xmlwriter.hpp"
 #include "exceptions.hpp"
 #include "variantutil.hpp"
+#include "glmutil.hpp"
 
 namespace eternal_lands
 {
@@ -182,6 +183,16 @@ namespace eternal_lands
 		}
 
 		end_element();
+	}
+
+	void XmlWriter::write_vec4_element(const StringType &name,
+		const glm::vec4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
 	}
 
 }

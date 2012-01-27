@@ -27,6 +27,7 @@ namespace eternal_lands
 	{
 		private:
 			MaterialStringArray m_textures;
+			glm::vec4 m_texture_scale_offset;
 			String m_material_name;
 			String m_texture_coodrinates;
 			String m_diffuse_mapping;
@@ -57,6 +58,8 @@ namespace eternal_lands
 			{
 				m_textures = material.m_textures;
 
+				set_texture_scale_offset(
+					material.get_texture_scale_offset());
 				set_material_name(
 					material.get_material_name());
 				set_texture_coodrinates(
@@ -97,6 +100,12 @@ namespace eternal_lands
 				return m_textures[texture_type];
 			}
 
+			inline const glm::vec4 &get_texture_scale_offset()
+				const
+			{
+				return m_texture_scale_offset;
+			}
+
 			inline const String &get_material_name() const
 			{
 				return m_material_name;
@@ -135,6 +144,13 @@ namespace eternal_lands
 			inline bool get_lighting() const
 			{
 				return m_lighting;
+			}
+
+			inline void set_texture_scale_offset(
+				const glm::vec4 &texture_scale_offset)
+			{
+				m_texture_scale_offset =
+					texture_scale_offset;
 			}
 
 			inline void set_material_name(

@@ -98,7 +98,7 @@
    <source>{
 	vec3 normal;
 
-	normal.xy = texture(normal_sampler_0, world_uv).rg * 2.0 - 1.0;
+	normal.xy = -(texture(normal_sampler_0, world_uv).rg * 2.0 - 1.0);
 	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 
 	fragment_normal = tbn_matrix * normal;

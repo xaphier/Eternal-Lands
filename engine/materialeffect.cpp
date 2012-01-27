@@ -28,6 +28,7 @@ namespace eternal_lands
 	MaterialEffect::MaterialEffect(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
+		m_texture_scale_offset(1.0f, 1.0f, 0.0f, 0.0f),
 		m_cast_shadows(true), m_culling(true)
 	{
 		assert(!m_effect_cache.expired());
@@ -38,11 +39,13 @@ namespace eternal_lands
 		const TextureCacheWeakPtr &texture_cache,
 		const MaterialEffectDescription &material):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
+		m_texture_scale_offset(1.0f, 1.0f, 0.0f, 0.0f),
 		m_cast_shadows(true), m_culling(true)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
 
+		set_texture_scale_offset(material.get_texture_scale_offset());
 		set_cast_shadows(material.get_cast_shadows());
 		set_culling(material.get_culling());
 
@@ -60,6 +63,8 @@ namespace eternal_lands
 		set_texture(material, stt_emission_1);
 		set_texture(material, stt_blend_0);
 		set_texture(material, stt_blend_1);
+		set_texture(material, stt_height);
+		set_texture(material, stt_dudv);
 	}
 
 	MaterialEffect::~MaterialEffect() throw()
@@ -161,6 +166,15 @@ namespace eternal_lands
 			}
 		}
 
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_texture_scale_offset()[i] !=
+				material.get_texture_scale_offset()[i])
+			{
+				return false;
+			}
+		}
+
 		if (get_cast_shadows() != material.get_cast_shadows())
 		{
 			return false;
@@ -178,24 +192,35 @@ namespace eternal_lands
 	{
 		Uint16 i, count;
 
-		if (get_effect().get() < material.get_effect().get())
+		if (get_effect().get() != material.get_effect().get())
 		{
-			return true;
+			return get_effect().get() < material.get_effect().get();
 		}
 
 		count = m_textures.size();
 
 		for (i = 0; i < count; ++i)
 		{
-			if (m_textures[i].get() < material.m_textures[i].get())
+			if (m_textures[i].get() != material.m_textures[i].get())
 			{
-				return true;
+				return m_textures[i].get() <
+					material.m_textures[i].get();
 			}
 		}
 
-		if (get_cast_shadows() < material.get_cast_shadows())
+		for (i = 0; i < 4; ++i)
 		{
-			return true;
+			if (get_texture_scale_offset()[i] !=
+				material.get_texture_scale_offset()[i])
+			{
+				return get_texture_scale_offset()[i] <
+					material.get_texture_scale_offset()[i];
+			}
+		}
+
+		if (get_cast_shadows() != material.get_cast_shadows())
+		{
+			return get_cast_shadows() < material.get_cast_shadows();
 		}
 
 		return get_culling() < material.get_culling();

@@ -1267,6 +1267,71 @@ namespace eternal_lands
 		}
 	}
 
+	void MeshDataTool::transform_vertics(
+		const MeshDataTool &mesh_data_tool,
+		const VertexSemanticType semantic, const Uint32 source_index,
+		const Uint32 dest_index, const Uint32 count,
+		const glm::vec4 &scale_offset)
+	{
+		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator source;
+		VertexSemanticTypeAlignedVec4ArrayMap::iterator dest;
+		glm::vec4 data;
+		glm::vec3 tmp;
+		Uint32 i;
+
+		dest = m_vertices.find(semantic);
+
+		if (dest == m_vertices.end())
+		{
+			return;
+		}
+
+		assert((dest_index + count) <= dest->second.size());
+
+		source = mesh_data_tool.m_vertices.find(semantic);
+
+		if (source == mesh_data_tool.m_vertices.end())
+		{
+			data = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+			if (get_use_simd())
+			{
+				SIMD::fill(data, count, glm::value_ptr(
+					dest->second[dest_index]));
+
+				return;
+			}
+
+			for (i = 0; i < count; ++i)
+			{
+				dest->second[dest_index + i] = data;
+			}
+
+			return;
+		}
+
+		assert((source_index + count) <= source->second.size());
+
+		if (get_use_simd())
+		{
+			SIMD::transform(
+				glm::value_ptr(source->second[source_index]),
+				count, scale_offset,
+				glm::value_ptr(dest->second[dest_index]));
+
+				return;
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			data = source->second[source_index + i];
+			data.x = data.x * scale_offset.x + scale_offset.z;
+			data.y = data.y * scale_offset.y + scale_offset.w;
+
+			dest->second[dest_index + i] = data;
+		}
+	}
+
 	void MeshDataTool::fill_vertics(const VertexSemanticType semantic,
 		const Uint32 index, const Uint32 count, const glm::vec4 &data)
 	{

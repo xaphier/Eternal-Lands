@@ -86,6 +86,16 @@ namespace eternal_lands
 			}
 		}
 
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_texture_scale_offset()[i] !=
+				material.get_texture_scale_offset()[i])
+			{
+				return get_texture_scale_offset()[i] <
+					material.get_texture_scale_offset()[i];
+			}
+		}
+
 		if (get_cast_shadows() != material.get_cast_shadows())
 		{
 			return get_cast_shadows() <
@@ -149,6 +159,15 @@ namespace eternal_lands
 		for (i = 0; i < material_texture_count; ++i)
 		{
 			if (get_texture(i) != material.get_texture(i))
+			{
+				return false;
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_texture_scale_offset()[i] !=
+				material.get_texture_scale_offset()[i])
 			{
 				return false;
 			}

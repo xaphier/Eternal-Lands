@@ -8,9 +8,33 @@
 #include "xmlutil.hpp"
 #include "exceptions.hpp"
 #include "variantutil.hpp"
+#include "glmutil.hpp"
 
 namespace eternal_lands
 {
+
+	glm::vec4 XmlUtil::get_vec4_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::vec4 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::vec4();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
 
 	float XmlUtil::get_float_value(const xmlNodePtr node)
 	{

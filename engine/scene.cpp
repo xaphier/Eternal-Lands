@@ -120,6 +120,12 @@ namespace eternal_lands
 		m_map->add_object(object_data);
 	}
 
+	void Scene::add_object(const ObjectData &object_data,
+		const MaterialEffectDescriptionVector &materials)
+	{
+		m_map->add_object(object_data, materials);
+	}
+
 	void Scene::add_object(const InstanceData &instance_data)
 	{
 		m_map->add_object(instance_data);
@@ -537,8 +543,7 @@ namespace eternal_lands
 		return result;
 	}
 
-	void Scene::draw_object(const ObjectSharedPtr &object,
-		const bool shadow_receiver)
+	void Scene::draw_object(const ObjectSharedPtr &object)
 	{
 		glm::ivec3 dynamic_light_count;
 		Uint32 light_count, materials, i;
@@ -556,8 +561,7 @@ namespace eternal_lands
 		{
 			if (switch_program(object->get_material_effects(
 				)[i].get_effect()->get_default_program(
-					light_count, shadow_receiver,
-					dynamic_light_count)))
+					light_count, dynamic_light_count)))
 			{
 				object_data_set = false;
 			}
@@ -576,6 +580,11 @@ namespace eternal_lands
 			}
 
 			object->get_material_effects()[i].bind(m_state_manager);
+
+			m_state_manager.get_program()->set_parameter(
+				apt_texture_scale_offset,
+				object->get_material_effects(
+					)[i].get_texture_scale_offset());
 
 			m_state_manager.draw(i, 1);
 		}
@@ -619,6 +628,11 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
+			m_state_manager.get_program()->set_parameter(
+				apt_texture_scale_offset,
+				object->get_material_effects(
+					)[i].get_texture_scale_offset());
+
 			object->get_material_effects()[i].bind(m_state_manager);
 			m_state_manager.draw(i, count);
 		}
@@ -661,6 +675,11 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
+			m_state_manager.get_program()->set_parameter(
+				apt_texture_scale_offset,
+				object->get_material_effects(
+					)[i].get_texture_scale_offset());
+
 			object->get_material_effects()[i].bind(m_state_manager);
 			m_state_manager.draw(i, 1);
 		}
@@ -694,6 +713,11 @@ namespace eternal_lands
 					apt_bones, object->get_bones());
 				object_data_set = true;
 			}
+
+			m_state_manager.get_program()->set_parameter(
+				apt_texture_scale_offset,
+				object->get_material_effects(
+					)[i].get_texture_scale_offset());
 
 			object->get_material_effects()[i].bind(m_state_manager);
 			m_state_manager.draw(i, 1);
@@ -912,8 +936,7 @@ namespace eternal_lands
 				}
 			}
 
-			draw_object(object.get_object(),
-				object.get_sub_frustums_mask().any());
+			draw_object(object.get_object());
 		}
 
 		DEBUG_CHECK_GL_ERROR();
