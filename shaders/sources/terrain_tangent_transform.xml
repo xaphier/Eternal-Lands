@@ -57,7 +57,7 @@
    </parameters>
    <source>world_position.xyz = position.xyz;
 world_position = world_matrix * vec4(world_position, 1.0);
-world_position.z = texture(height_sampler, position.xy * texture_scale_offset.xy + texture_scale_offset.zw).r;
+world_position.z = textureLod(height_sampler, position.xy * texture_scale_offset.xy + texture_scale_offset.zw, 0.0).r;
 world_normal = normalize(mat3(world_matrix) * vec3(0.0, 0.0, 1.0));
 world_tangent = normalize(mat3(world_matrix) * vec3(1.0, 0.0, 0.0));
 </source>

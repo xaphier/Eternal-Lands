@@ -49,7 +49,7 @@
     </parameter>
    </parameters>
    <source>world_position.xy = position.xy;
-world_position.z = texture2DLod(height_sampler, position.xy * texture_scale_offset.xy + texture_scale_offset.zw, 0.0).r;
+world_position.z = textureLod(height_sampler, position.xy * texture_scale_offset.xy + texture_scale_offset.zw, 0.0).r;
 world_position = world_matrix * vec4(world_position, 1.0);
 world_normal = normalize(mat3(world_matrix) * vec3(0.0, 0.0, 1.0));
 </source>
