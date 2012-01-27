@@ -852,6 +852,16 @@ extern "C" void engine_terrain()
 
 	size = 32;
 
+	if (((width - 4) % size) == 0)
+	{
+		width -= 3;
+	}
+
+	if (((height - 4) % size) == 0)
+	{
+		height -= 3;
+	}
+
 	matrix[0][0] = size;
 	matrix[1][1] = size;
 	matrix[2][2] = 16.0f;
