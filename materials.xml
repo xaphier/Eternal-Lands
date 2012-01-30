@@ -5036,6 +5036,25 @@
 		<lighting>true</lighting>
 	</material>
 	<material>
+		<name>goblinfarmed1</name>
+		<diffuse_0>meshes/goblinfarmed1.dds</diffuse_0>
+		<diffuse_1></diffuse_1>
+		<diffuse_2></diffuse_2>
+		<diffuse_3></diffuse_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<diffuse_mapping>default</diffuse_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
 		<name>animals5</name>
 		<diffuse_0>meshes/animals5.dds</diffuse_0>
 		<diffuse_1></diffuse_1>

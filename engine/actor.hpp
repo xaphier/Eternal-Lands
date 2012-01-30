@@ -54,7 +54,8 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~Actor() throw();
-
+			virtual void update_bounding_box();
+			virtual void update_bones();
 			void add_mesh(const Uint32 id);
 			void remove_mesh(const Uint32 id);
 			void init_enhanced_actor(

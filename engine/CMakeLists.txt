@@ -55,6 +55,12 @@ file(GLOB font_source_files font/*.cpp)
 list(APPEND engine_source_files ${font_source_files})
 list(APPEND engine_header_files ${font_header_files})
 
+#terrain dir
+file(GLOB terrain_header_files terrain/*.hpp)
+file(GLOB terrain_source_files terrain/*.cpp)
+list(APPEND engine_source_files ${terrain_source_files})
+list(APPEND engine_header_files ${terrain_header_files})
+
 #sha1 dir
 file(GLOB sha1_header_files sha1/*.h)
 file(GLOB sha1_source_files sha1/*.cpp)

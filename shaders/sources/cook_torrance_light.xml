@@ -119,8 +119,8 @@
     // Put all the parts together to generate
     // the final colour
     // --------------------------------------
-	diffuse_color += light_color.rgb * NdotL * scale;
-	specular_color += light_color.rgb * NdotL * Rs * scale;
+	diffuse_color = light_color.rgb * NdotL * scale;
+	specular_color = light_color.rgb * NdotL * Rs * scale;
  }</source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

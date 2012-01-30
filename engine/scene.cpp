@@ -543,25 +543,32 @@ namespace eternal_lands
 		return result;
 	}
 
-	void Scene::draw_object(const ObjectSharedPtr &object)
+	void Scene::draw_object(const ObjectSharedPtr &object,
+		const Uint16 distance)
 	{
 		glm::ivec3 dynamic_light_count;
-		Uint32 light_count, materials, i;
+		Uint32 light_count;
+		Uint16 count, material, mesh, i, lod;
 		bool object_data_set;
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
-		materials = object->get_material_effects().size();
+		lod = object->get_lod(distance);
+		count = object->get_lods_count(lod);
 
 		get_lights(object->get_bounding_box(), light_count);
 
 		object_data_set = false;
 
-		for (i = 0; i < materials; ++i)
+		for (i = 0; i < count; ++i)
 		{
+			mesh = object->get_mesh_index(lod, i);
+			material = object->get_material_effects_index(lod, i);
+
 			if (switch_program(object->get_material_effects(
-				)[i].get_effect()->get_default_program(
-					light_count, dynamic_light_count)))
+				)[material].get_effect(
+				)->get_default_program(light_count,
+					dynamic_light_count)))
 			{
 				object_data_set = false;
 			}
@@ -579,87 +586,44 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_material_effects()[i].bind(m_state_manager);
+			object->get_material_effects()[material].bind(
+				m_state_manager);
 
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_scale_offset,
 				object->get_material_effects(
-					)[i].get_texture_scale_offset());
+					)[material].get_texture_scale_offset());
 
-			m_state_manager.draw(i, 1);
+			m_state_manager.draw(mesh, 1);
 		}
 	}
 
 	void Scene::draw_object_shadow(const ObjectSharedPtr &object,
-		const glm::ivec4 &layers, const Uint16 count)
+		const Uint16 layer, const Uint16 distance)
 	{
-		Uint32 materials, i;
+		Uint16 count, material, mesh, i, lod;
 		bool object_data_set;
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
-		materials = object->get_material_effects().size();
+		lod = object->get_lod(distance);
+		count = object->get_lods_count(lod);
 
 		object_data_set = false;
 
-		for (i = 0; i < materials; ++i)
+		for (i = 0; i < count; ++i)
 		{
+			mesh = object->get_mesh_index(lod, i);
+			material = object->get_material_effects_index(lod, i);
+
 			if (!object->get_material_effects(
-				)[i].get_cast_shadows())
+				)[material].get_cast_shadows())
 			{
 				continue;
 			}
 
 			if (switch_program(object->get_material_effects(
-				)[i].get_effect()->get_shadow_program()))
-			{
-				object_data_set = false;
-			}
-
-			if (!object_data_set)
-			{
-				m_state_manager.get_program()->set_parameter(
-					apt_layers, layers);
-				m_state_manager.get_program()->set_parameter(
-					apt_world_matrix,
-					object->get_world_matrix());
-				m_state_manager.get_program()->set_parameter(
-					apt_bones, object->get_bones());
-				object_data_set = true;
-			}
-
-			m_state_manager.get_program()->set_parameter(
-				apt_texture_scale_offset,
-				object->get_material_effects(
-					)[i].get_texture_scale_offset());
-
-			object->get_material_effects()[i].bind(m_state_manager);
-			m_state_manager.draw(i, count);
-		}
-	}
-
-	void Scene::draw_object_shadow(const ObjectSharedPtr &object,
-		const Uint16 layer)
-	{
-		Uint32 materials, i;
-		bool object_data_set;
-
-		m_state_manager.switch_mesh(object->get_mesh());
-
-		materials = object->get_material_effects().size();
-
-		object_data_set = false;
-
-		for (i = 0; i < materials; ++i)
-		{
-			if (!object->get_material_effects(
-				)[i].get_cast_shadows())
-			{
-				continue;
-			}
-
-			if (switch_program(object->get_material_effects(
-				)[i].get_effect()->get_shadow_program(),
+				)[material].get_effect()->get_shadow_program(),
 				layer))
 			{
 				object_data_set = false;
@@ -678,28 +642,34 @@ namespace eternal_lands
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_scale_offset,
 				object->get_material_effects(
-					)[i].get_texture_scale_offset());
+					)[material].get_texture_scale_offset());
 
-			object->get_material_effects()[i].bind(m_state_manager);
-			m_state_manager.draw(i, 1);
+			object->get_material_effects()[material].bind(
+				m_state_manager);
+			m_state_manager.draw(mesh, 1);
 		}
 	}
 
-	void Scene::draw_object_depth(const ObjectSharedPtr &object)
+	void Scene::draw_object_depth(const ObjectSharedPtr &object,
+		const Uint16 distance)
 	{
-		Uint32 materials, i;
+		Uint16 count, material, mesh, i, lod;
 		bool object_data_set;
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
-		materials = object->get_material_effects().size();
+		lod = object->get_lod(distance);
+		count = object->get_lods_count(lod);
 
 		object_data_set = false;
 
-		for (i = 0; i < materials; ++i)
+		for (i = 0; i < count; ++i)
 		{
+			mesh = object->get_mesh_index(lod, i);
+			material = object->get_material_effects_index(lod, i);
+
 			if (switch_program(object->get_material_effects(
-				)[i].get_effect()->get_depth_program()))
+				)[material].get_effect()->get_depth_program()))
 			{
 				object_data_set = false;
 			}
@@ -717,10 +687,11 @@ namespace eternal_lands
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_scale_offset,
 				object->get_material_effects(
-					)[i].get_texture_scale_offset());
+					)[material].get_texture_scale_offset());
 
-			object->get_material_effects()[i].bind(m_state_manager);
-			m_state_manager.draw(i, 1);
+			object->get_material_effects()[material].bind(
+				m_state_manager);
+			m_state_manager.draw(mesh, 1);
 		}
 	}
 
@@ -740,7 +711,8 @@ namespace eternal_lands
 		{
 			if (object.get_sub_frustums_mask(index))
 			{
-				draw_object_shadow(object.get_object(), index);
+				draw_object_shadow(object.get_object(), index,
+					object.get_distance());
 			}
 		}
 
@@ -859,7 +831,8 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_shadow_objects.get_objects())
 		{
-			draw_object_shadow(object.get_object(), 0);
+			draw_object_shadow(object.get_object(), 0,
+				object.get_distance());
 		}
 
 		m_program_vars_id++;
@@ -936,7 +909,7 @@ namespace eternal_lands
 				}
 			}
 
-			draw_object(object.get_object());
+			draw_object(object.get_object(), object.get_distance());
 		}
 
 		DEBUG_CHECK_GL_ERROR();
@@ -969,7 +942,7 @@ namespace eternal_lands
 			glBeginQuery(GL_SAMPLES_PASSED,
 				m_querie_ids[ids.size()]);
 
-			draw_object_depth(object);
+			draw_object_depth(object, 0);
 
 			glEndQuery(GL_SAMPLES_PASSED);
 

@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "boundedobject.hpp"
 #include "objectdata.hpp"
+#include "loddata.hpp"
 
 /**
  * @file
@@ -33,6 +34,7 @@ namespace eternal_lands
 	{
 		private:
 			ObjectData m_object_data;
+			LodData m_lod_data;
 			AbstractMeshSharedPtr m_mesh;
 			MaterialEffectVector m_material_effects;
 			/**
@@ -52,6 +54,23 @@ namespace eternal_lands
 			{
 				return m_material_effects;
 			}
+
+			inline void set_bone(const Uint32 index,
+				const glm::vec4 &value)
+			{
+				m_bones[index] = value;
+			}
+
+			/**
+			 * Default constructor.
+			 */
+			Object(const ObjectData &object_data,
+				const AbstractMeshSharedPtr &mesh,
+				const MaterialEffectDescriptionVector
+					&materials,
+				const EffectCacheWeakPtr &effect_cache,
+				const TextureCacheWeakPtr &texture_cache,
+				CalCoreModel *core_model);
 
 		public:
 			/**
@@ -76,25 +95,41 @@ namespace eternal_lands
 				const SubObjectVector &sub_objects);
 
 			/**
-			 * Default constructor.
-			 */
-			Object(const ObjectData &object_data,
-				const AbstractMeshSharedPtr &mesh,
-				const MaterialEffectDescriptionVector
-					&materials,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache,
-				CalCoreModel *core_model);
-
-			/**
 			 * Default destructor.
 			 */
 			virtual ~Object() throw();
 
-			void update_bounding_box();
-			void update_skeleton_bounding_box(
-				const float scale = 1.0f);
-			void update_bones();
+			virtual void update_bounding_box();
+			virtual void update_bones();
+
+			inline Uint16 get_lod(const Uint16 distance) const
+			{
+				return m_lod_data.get_lod(distance);
+			}
+
+			inline Uint16 get_lods_count(const Uint16 lod) const
+			{
+				return m_lod_data.get_lods_count(lod);
+			}
+
+			inline Uint16 get_lods_offset(const Uint16 lod) const
+			{
+				return m_lod_data.get_lods_offset(lod);
+			}
+
+			inline Uint16 get_material_effects_index(
+				const Uint16 lod, const Uint16 index) const
+			{
+				return m_lod_data.get_material_effects_index(
+					lod, index);
+			}
+
+			inline Uint16 get_mesh_index(const Uint16 lod,
+				const Uint16 index) const
+			{
+				return m_lod_data.get_mesh_index(lod, index);
+			}
+
 
 			inline void set_world_matrix(
 				const glm::mat4x3 &world_matrix)

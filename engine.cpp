@@ -1172,7 +1172,7 @@ extern "C" void engine_build_actor_bounding_box(actor* a)
 	}
 
 	reinterpret_cast<el::Actor*>(a->calmodel->getUserData(
-		))->update_skeleton_bounding_box(0.5f);
+		))->update_bounding_box();
 
 	CATCH_BLOCK
 }

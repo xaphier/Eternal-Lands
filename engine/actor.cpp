@@ -72,4 +72,54 @@ namespace eternal_lands
 		get_modifiable_material_effects()[0].set_effect(effect);
 	}
 
+	void Actor::update_bounding_box()
+	{
+		BoundingBox bounding_box;
+		glm::vec3 min, max;
+
+		get_model()->getSkeleton()->getBoneBoundingBox(
+			glm::value_ptr(min), glm::value_ptr(max));
+
+		bounding_box = BoundingBox(min, max).transform(
+			get_world_matrix());
+
+		bounding_box.extend(0.5f);
+
+		set_bounding_box(bounding_box);
+	}
+
+	void Actor::update_bones()
+	{
+		glm::vec4 data;
+		Uint32 i, count;
+		const std::vector<CalBone *>& bones =
+			get_model()->getSkeleton()->getVectorBone();
+
+		count = bones.size();;
+
+		for (i = 0; i < count; ++i)
+		{
+			const CalVector &translationBoneSpace =
+				bones[i]->getTranslationBoneSpace();
+			const CalMatrix &rotationMatrix =
+				bones[i]->getTransformMatrix();
+
+			data.x = rotationMatrix.dxdx;
+			data.y = rotationMatrix.dxdy;
+			data.z = rotationMatrix.dxdz;
+			data.w = translationBoneSpace.x;
+			set_bone(i * 3 + 0, data);
+			data.x = rotationMatrix.dydx;
+			data.y = rotationMatrix.dydy;
+			data.z = rotationMatrix.dydz;
+			data.w = translationBoneSpace.y;
+			set_bone(i * 3 + 1, data);
+			data.x = rotationMatrix.dzdx;
+			data.y = rotationMatrix.dzdy;
+			data.z = rotationMatrix.dzdz;
+			data.w = translationBoneSpace.z;
+			set_bone(i * 3 + 2, data);
+		}
+	}
+
 }
