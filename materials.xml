@@ -5207,44 +5207,6 @@
 		<lighting>true</lighting>
 	</material>
 	<material>
-		<name>orcm1</name>
-		<albedo_0>meshes/orcm1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
-	</material>
-	<material>
-		<name>orcf1</name>
-		<albedo_0>meshes/orcf1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
-	</material>
-	<material>
 		<name>skeleton1</name>
 		<albedo_0>meshes/skeleton1.dds</albedo_0>
 		<albedo_1></albedo_1>
@@ -5285,6 +5247,25 @@
 	<material>
 		<name>trollm1</name>
 		<albedo_0>meshes/trollm1.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
+		<name>troll2</name>
+		<albedo_0>meshes/troll2.dds</albedo_0>
 		<albedo_1></albedo_1>
 		<albedo_2></albedo_2>
 		<albedo_3></albedo_3>
@@ -5701,6 +5682,25 @@
 		<lighting>true</lighting>
 	</material>
 	<material>
+		<name>dragon4</name>
+		<albedo_0>meshes/dragon4.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
 		<name>birds01</name>
 		<albedo_0>meshes/birds01.dds</albedo_0>
 		<albedo_1></albedo_1>
@@ -6100,8 +6100,141 @@
 		<lighting>true</lighting>
 	</material>
 	<material>
+		<name>bulangiu</name>
+		<albedo_0>meshes/bulangiu.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
+		<name>bulangiumare</name>
+		<albedo_0>meshes/bulangiumare.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
+		<name>castellan</name>
+		<albedo_0>meshes/castellan.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
 		<name>target1</name>
 		<albedo_0>meshes/target1.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
+		<name>orcf1_armed</name>
+		<albedo_0>meshes/orcf1_armed.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
+		<name>orcm1_armed</name>
+		<albedo_0>meshes/orcm1_armed.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
+		<name>orcf1</name>
+		<albedo_0>meshes/orcf1.dds</albedo_0>
+		<albedo_1></albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
+		<name>orcm1</name>
+		<albedo_0>meshes/orcm1.dds</albedo_0>
 		<albedo_1></albedo_1>
 		<albedo_2></albedo_2>
 		<albedo_3></albedo_3>
