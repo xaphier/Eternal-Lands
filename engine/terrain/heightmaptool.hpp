@@ -59,6 +59,15 @@ namespace eternal_lands
 
 			void buil_relaxed_uv();
 
+			inline const glm::vec2 &get_uv(const Uint16 x,
+				const Uint16 y) const
+			{
+				assert(x < m_width);
+				assert(y < m_height);
+
+				return m_uvs[x + y * m_width];
+			}
+
 	};
 
 }

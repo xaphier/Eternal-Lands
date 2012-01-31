@@ -1,12 +1,12 @@
 /****************************************************************************
- *            simpleterrainmanager.hpp
+ *            cdlodterrainmanager.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_bd8dfa8f_50ff_410f_b978_bffb88e599a0
-#define	UUID_bd8dfa8f_50ff_410f_b978_bffb88e599a0
+#ifndef	UUID_af0d2160_00a9_4a5b_b11e_2963cdb83743
+#define	UUID_af0d2160_00a9_4a5b_b11e_2963cdb83743
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
@@ -17,24 +17,26 @@
 
 /**
  * @file
- * @brief The @c class SimpleTerrainManager.
- * This file contains the @c class SimpleTerrainManager.
+ * @brief The @c class CdLodTerrainManager.
+ * This file contains the @c class CdLodTerrainManager.
  */
 namespace eternal_lands
 {
 
-	class SimpleTerrainManager: public AbstractTerrainManager
+	class CdLodTerrainManager: public AbstractTerrainManager
 	{
 		private:
 			ImageSharedPtr m_height_image;
+			ImageSharedPtr m_normal_image;
+			ImageSharedPtr m_dudv_image;
 
 		public:
-			SimpleTerrainManager(
+			CdLodTerrainManager(
 				const CodecManagerSharedPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
 				const String &name);
-			virtual ~SimpleTerrainManager() throw();
+			virtual ~CdLodTerrainManager() throw();
 
 //			get_visible_terrain_pages();
 //			get_visible_terrain_pages();
@@ -43,4 +45,4 @@ namespace eternal_lands
 
 }
 
-#endif	/* UUID_bd8dfa8f_50ff_410f_b978_bffb88e599a0 */
+#endif	/* UUID_af0d2160_00a9_4a5b_b11e_2963cdb83743 */
