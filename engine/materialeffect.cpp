@@ -42,14 +42,18 @@ namespace eternal_lands
 		m_texture_scale_offset(1.0f, 1.0f, 0.0f, 0.0f),
 		m_cast_shadows(true), m_culling(true)
 	{
+		EffectDescription effect;
+
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
+
+		material.get_effect_description(effect);
+
+		set_effect(effect);
 
 		set_texture_scale_offset(material.get_texture_scale_offset());
 		set_cast_shadows(material.get_cast_shadows());
 		set_culling(material.get_culling());
-
-		set_effect(EffectDescription(material));
 
 		set_texture(material, stt_albedo_0);
 		set_texture(material, stt_albedo_1);

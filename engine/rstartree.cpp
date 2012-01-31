@@ -276,7 +276,7 @@ namespace eternal_lands
 	}
 
 	void RStarTree::intersect(const Frustum &frustum,
-		AbstractRStarTreeVisitor &visitor) const
+		AbstractBoundedObjectVisitor &visitor) const
 	{
 		get_root_node()->intersect_tree(frustum,
 			frustum.get_planes_mask(), visitor);

@@ -50,12 +50,6 @@ namespace eternal_lands
 			EffectDescription();
 
 			/**
-			 * Default constructor.
-			 */
-			EffectDescription(
-				const MaterialEffectDescription &material);
-
-			/**
 			 * Default destructor.
 			 */
 			~EffectDescription() throw();

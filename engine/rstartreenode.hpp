@@ -168,7 +168,7 @@ namespace eternal_lands
 			 * the intersecting elements.
 			 */
 			void add_node(const SubFrustumsMask sub_frustums_mask,
-				AbstractRStarTreeVisitor &visitor) const;
+				AbstractBoundedObjectVisitor &visitor) const;
 
 			/**
 			 * @brief Removes an element.
@@ -194,7 +194,7 @@ namespace eternal_lands
 			 */
 			void intersect_node(const Frustum &frustum,
 				const PlanesMask in_mask,
-				AbstractRStarTreeVisitor &visitor) const;
+				AbstractBoundedObjectVisitor &visitor) const;
 
 			/**
 			 * @brief Tests all elements of the node and its
@@ -212,7 +212,7 @@ namespace eternal_lands
 			 */
 			void intersect_tree(const Frustum &frustum,
 				const PlanesMask in_mask,
-				AbstractRStarTreeVisitor &visitor) const;
+				AbstractBoundedObjectVisitor &visitor) const;
 
 			/**
 			 * @brief Number of items.

@@ -13,7 +13,6 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractrstartreevisitor.hpp"
 
 /**
  * @file

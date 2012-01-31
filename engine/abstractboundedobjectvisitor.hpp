@@ -1,5 +1,5 @@
 /****************************************************************************
- *            abstractrstartreevisitor.hpp
+ *            abstractboundedobjectvisitor.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @brief The @c class AbstractRStarTreeVisitor.
- * This file contains the @c class AbstractRStarTreeVisitor.
+ * @brief The @c class AbstractBoundedObjectVisitor.
+ * This file contains the @c class AbstractBoundedObjectVisitor.
  */
 namespace eternal_lands
 {
@@ -26,13 +26,13 @@ namespace eternal_lands
 	 * @brief abstract visitor for RStarTree.
 	 *
 	 */
-	class AbstractRStarTreeVisitor: public boost::noncopyable
+	class AbstractBoundedObjectVisitor: public boost::noncopyable
 	{
 		protected:
-			AbstractRStarTreeVisitor();
+			AbstractBoundedObjectVisitor();
 
 		public:
-			virtual ~AbstractRStarTreeVisitor() throw();
+			virtual ~AbstractBoundedObjectVisitor() throw();
 
 			virtual void operator()(
 				const BoundedObjectSharedPtr &bounded_object,
@@ -49,4 +49,3 @@ namespace eternal_lands
  */
 
 #endif	/* UUID_a4596af8_e295_4247_bad1_2b7c43c009f0 */
-

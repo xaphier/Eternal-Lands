@@ -1,5 +1,5 @@
 /****************************************************************************
- *            rstartreelightvisitor.hpp
+ *            lightvisitor.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractrstartreevisitor.hpp"
+#include "abstractboundedobjectvisitor.hpp"
 
 /**
  * @file
@@ -27,15 +27,15 @@ namespace eternal_lands
 	 * @brief visitor for objects of RStarTree.
 	 *
 	 */
-	class RStarTreeLightVisitor: public AbstractRStarTreeVisitor
+	class LightVisitor: public AbstractBoundedObjectVisitor
 	{
 		private:
 			LightSharedPtrVector m_lights;
 
 		public:
-			RStarTreeLightVisitor();
+			LightVisitor();
 
-			virtual ~RStarTreeLightVisitor() throw();
+			virtual ~LightVisitor() throw();
 
 			virtual void operator()(
 				const BoundedObjectSharedPtr &bounded_object,
@@ -64,4 +64,3 @@ namespace eternal_lands
  */
 
 #endif	/* UUID_5aeeb371_f944_4460_a5a1_f42c07e8ffd0 */
-

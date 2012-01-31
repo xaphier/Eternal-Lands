@@ -180,11 +180,11 @@ namespace eternal_lands
 	VECTOR_NAME(bool, Bool);
 
 	class AbstractArchive;
+	class AbstractBoundedObjectVisitor;
 	class AbstractFrameBuffer;
 	class AbstractMesh;
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
-	class AbstractRStarTreeVisitor;
 	class AbstractWriteMemory;
 	class Actor;
 	class ActorDataCache;
@@ -213,6 +213,7 @@ namespace eternal_lands
 	class InstancesBuilder;
 	class InstancingData;
 	class Light;
+	class LightVisitor;
 	class Lua;
 	class Map;
 	class MaterialDescription;
@@ -227,6 +228,7 @@ namespace eternal_lands
 	class Object;
 	class ObjectData;
 	class ObjectDescription;
+	class ObjectVisitor;
 	class Plane;
 	class Polygon;
 	class Ray;

@@ -272,7 +272,7 @@ namespace eternal_lands
 			 * intersecting items.
 			 */
 			void intersect(const Frustum &frustum,
-				AbstractRStarTreeVisitor &visitor) const;
+				AbstractBoundedObjectVisitor &visitor) const;
 
 			/**
 			 * @brief Clears the tree.

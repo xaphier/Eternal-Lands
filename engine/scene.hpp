@@ -13,8 +13,8 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "rstartreelightvisitor.hpp"
-#include "rstartreeobjectvisitor.hpp"
+#include "lightvisitor.hpp"
+#include "objectvisitor.hpp"
 #include "objectdata.hpp"
 #include "sceneresources.hpp"
 #include "statemanager.hpp"
@@ -45,9 +45,9 @@ namespace eternal_lands
 			GlobalVarsSharedPtr m_global_vars;
 			SceneResources m_scene_resources;
 			StateManager m_state_manager;
-			RStarTreeObjectVisitor m_visible_objects;
-			RStarTreeObjectVisitor m_shadow_objects;
-			RStarTreeLightVisitor m_visible_lights;
+			ObjectVisitor m_visible_objects;
+			ObjectVisitor m_shadow_objects;
+			LightVisitor m_visible_lights;
 			boost::scoped_ptr<Map> m_map;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;

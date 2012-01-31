@@ -7,7 +7,7 @@
 
 #include "rstartreenode.hpp"
 #include "rstartree.hpp"
-#include "abstractrstartreevisitor.hpp"
+#include "abstractboundedobjectvisitor.hpp"
 #include "exceptions.hpp"
 
 namespace eternal_lands
@@ -242,7 +242,7 @@ namespace eternal_lands
 	}
 
 	void RStarTreeNode::add_node(const SubFrustumsMask sub_frustums_mask,
-		AbstractRStarTreeVisitor &visitor) const
+		AbstractBoundedObjectVisitor &visitor) const
 	{
 		Uint32 i;
 
@@ -281,7 +281,7 @@ namespace eternal_lands
 	}
 
 	void RStarTreeNode::intersect_node(const Frustum &frustum,
-		const PlanesMask in_mask, AbstractRStarTreeVisitor &visitor)
+		const PlanesMask in_mask, AbstractBoundedObjectVisitor &visitor)
 		const
 	{
 		Uint32 i;
@@ -302,7 +302,8 @@ namespace eternal_lands
 	}
 
 	void RStarTreeNode::intersect_tree(const Frustum &frustum,
-		const PlanesMask mask, AbstractRStarTreeVisitor &visitor) const
+		const PlanesMask mask, AbstractBoundedObjectVisitor &visitor)
+		const
 	{
 		Uint32 i;
 		PlanesMask out_mask;

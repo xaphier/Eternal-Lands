@@ -1,11 +1,11 @@
 /****************************************************************************
- *            rstartreeobjectvisitor.cpp
+ *            objectvisitor.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "rstartreeobjectvisitor.hpp"
+#include "objectvisitor.hpp"
 #include "object.hpp"
 #include "renderobjectdata.hpp"
 
@@ -65,15 +65,15 @@ namespace eternal_lands
 
 	}
 
-	RStarTreeObjectVisitor::RStarTreeObjectVisitor()
+	ObjectVisitor::ObjectVisitor()
 	{
 	}
 
-	RStarTreeObjectVisitor::~RStarTreeObjectVisitor() throw()
+	ObjectVisitor::~ObjectVisitor() throw()
 	{
 	}
 
-	void RStarTreeObjectVisitor::sort(const glm::vec3 &position)
+	void ObjectVisitor::sort(const glm::vec3 &position)
 	{
 		float distance;
 
@@ -88,13 +88,13 @@ namespace eternal_lands
 			ObjectSort());
 	}
 
-	void RStarTreeObjectVisitor::add(const ObjectSharedPtr &object,
+	void ObjectVisitor::add(const ObjectSharedPtr &object,
 		const SubFrustumsMask mask)
 	{
 		m_objects.push_back(RenderObjectData(object, mask));
 	}
 
-	void RStarTreeObjectVisitor::add(const ObjectSharedPtr &object,
+	void ObjectVisitor::add(const ObjectSharedPtr &object,
 		const float transparency, const bool blend,
 		const SubFrustumsMask mask)
 	{
@@ -102,7 +102,7 @@ namespace eternal_lands
 			transparency, blend, mask));
 	}
 
-	void RStarTreeObjectVisitor::operator()(
+	void ObjectVisitor::operator()(
 		const BoundedObjectSharedPtr &bounded_object,
 		const SubFrustumsMask mask)
 	{
@@ -110,12 +110,12 @@ namespace eternal_lands
 			mask);
 	}
 
-	void RStarTreeObjectVisitor::next_frame()
+	void ObjectVisitor::next_frame()
 	{
 		clear();
 	}
 
-	void RStarTreeObjectVisitor::clear()
+	void ObjectVisitor::clear()
 	{
 		m_objects.clear();
 	}

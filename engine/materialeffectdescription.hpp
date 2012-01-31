@@ -45,6 +45,10 @@ namespace eternal_lands
 				const;
 			void set_material_descriptiont(
 				const MaterialDescription &material);
+			void set_effect_description(
+				const EffectDescription &effect);
+			void get_effect_description(EffectDescription &effect)
+				const;
 
 			inline const String &get_world_transform() const
 			{

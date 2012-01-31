@@ -6,7 +6,6 @@
  ****************************************************************************/
 
 #include "effectdescription.hpp"
-#include "materialeffectdescription.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
 
@@ -16,21 +15,6 @@ namespace eternal_lands
 	EffectDescription::EffectDescription(): m_receives_shadows(true),
 		m_transparent(false), m_lighting(true)
 	{
-	}
-
-	EffectDescription::EffectDescription(
-		const MaterialEffectDescription &material):
-		m_receives_shadows(true), m_transparent(false), m_lighting(true)
-	{
-		set_world_transform(material.get_world_transform());
-		set_texture_coodrinates(material.get_texture_coodrinates());
-		set_albedo_mapping(material.get_albedo_mapping());
-		set_normal_mapping(material.get_normal_mapping());
-		set_specular_mapping(material.get_specular_mapping());
-		set_emission_mapping(material.get_emission_mapping());
-		set_receives_shadows(material.get_receives_shadows());
-		set_transparent(material.get_transparent());
-		set_lighting(material.get_lighting());
 	}
 
 	EffectDescription::~EffectDescription() throw()

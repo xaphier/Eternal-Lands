@@ -1,5 +1,5 @@
 /****************************************************************************
- *            rstartreeobjectvisitor.hpp
+ *            objectvisitor.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,22 +13,21 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractrstartreevisitor.hpp"
-#include "boundingbox.hpp"
+#include "abstractboundedobjectvisitor.hpp"
 
 /**
  * @file
- * @brief The @c class RStarTreeObjectVisitor.
- * This file contains the @c class RStarTreeObjectVisitor.
+ * @brief The @c class ObjectVisitor.
+ * This file contains the @c class ObjectVisitor.
  */
 namespace eternal_lands
 {
 
 	/**
-	 * @brief visitor for objects of RStarTree.
+	 * @brief visitor for objects.
 	 *
 	 */
-	class RStarTreeObjectVisitor: public AbstractRStarTreeVisitor
+	class ObjectVisitor: public AbstractBoundedObjectVisitor
 	{
 		private:
 			RenderObjectDataVector m_objects;
@@ -36,8 +35,8 @@ namespace eternal_lands
 			void clear();
 
 		public:
-			RStarTreeObjectVisitor();
-			virtual ~RStarTreeObjectVisitor() throw();
+			ObjectVisitor();
+			virtual ~ObjectVisitor() throw();
 			virtual void operator()(
 				const BoundedObjectSharedPtr &bounded_object,
 				const SubFrustumsMask mask);

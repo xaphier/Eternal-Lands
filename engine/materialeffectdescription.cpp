@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "materialeffectdescription.hpp"
+#include "effectdescription.hpp"
 
 namespace eternal_lands
 {
@@ -191,6 +192,34 @@ namespace eternal_lands
 		const MaterialDescription &material)
 	{
 		asign(material);
+	}
+
+	void MaterialEffectDescription::set_effect_description(
+		const EffectDescription &effect)
+	{
+		set_world_transform(effect.get_world_transform());
+		set_texture_coodrinates(effect.get_texture_coodrinates());
+		set_albedo_mapping(effect.get_albedo_mapping());
+		set_normal_mapping(effect.get_normal_mapping());
+		set_specular_mapping(effect.get_specular_mapping());
+		set_emission_mapping(effect.get_emission_mapping());
+		set_receives_shadows(effect.get_receives_shadows());
+		set_transparent(effect.get_transparent());
+		set_lighting(effect.get_lighting());
+	}
+
+	void MaterialEffectDescription::get_effect_description(
+		EffectDescription &effect) const
+	{
+		effect.set_world_transform(get_world_transform());
+		effect.set_texture_coodrinates(get_texture_coodrinates());
+		effect.set_albedo_mapping(get_albedo_mapping());
+		effect.set_normal_mapping(get_normal_mapping());
+		effect.set_specular_mapping(get_specular_mapping());
+		effect.set_emission_mapping(get_emission_mapping());
+		effect.set_receives_shadows(get_receives_shadows());
+		effect.set_transparent(get_transparent());
+		effect.set_lighting(get_lighting());
 	}
 
 	OutStream& operator<<(OutStream &str,

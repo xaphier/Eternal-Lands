@@ -1,11 +1,11 @@
 /****************************************************************************
- *            rstartreelightvisitor.cpp
+ *            lightvisitor.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "rstartreelightvisitor.hpp"
+#include "lightvisitor.hpp"
 #include "light.hpp"
 
 namespace eternal_lands
@@ -46,15 +46,15 @@ namespace eternal_lands
 
 	}
 
-	RStarTreeLightVisitor::RStarTreeLightVisitor()
+	LightVisitor::LightVisitor()
 	{
 	}
 
-	RStarTreeLightVisitor::~RStarTreeLightVisitor() throw()
+	LightVisitor::~LightVisitor() throw()
 	{
 	}
 
-	void RStarTreeLightVisitor::operator()(
+	void LightVisitor::operator()(
 		const BoundedObjectSharedPtr &bounded_object,
 		const SubFrustumsMask mask)
 	{
@@ -62,11 +62,10 @@ namespace eternal_lands
 			bounded_object));
 	}
 
-	void RStarTreeLightVisitor::sort(const glm::vec3 &position)
+	void LightVisitor::sort(const glm::vec3 &position)
 	{
 		std::sort(m_lights.begin(), m_lights.end(),
 			LightSort(position));
 	}
 
 }
-
