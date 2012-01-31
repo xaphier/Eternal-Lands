@@ -454,8 +454,291 @@ namespace eternal_lands
 		return result;
 	}
 
+	glm::uvec4 Image::get_pixel_uint(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap_level)
+		const
+	{
+		glm::uvec4 result;
+		Uint32 i, count;
+
+		count = get_channel_count(get_format());
+
+		assert(count > 0);
+		assert(count < 5);
+
+		const void* const value = static_cast<const Uint8* const>(
+			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
+			face, mipmap_level);
+
+		result = glm::uvec4(0);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_BYTE:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Uint8*>(
+						value)[i];
+				}
+				break;
+			case GL_UNSIGNED_SHORT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Uint16*>(
+						value)[i];
+				}
+				break;
+			case GL_UNSIGNED_INT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Uint32*>(
+						value)[i];
+				}
+				break;
+			case GL_FLOAT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const float*>(
+						value)[i];
+				}
+				break;
+			case GL_HALF_FLOAT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = glm::detail::toFloat32(
+						static_cast<const Uint16*>(
+							value)[i]);
+				}
+				break;
+			case GL_UNSIGNED_BYTE_3_3_2:
+				return glm::uvec4(PackTool::unpack_uint_3_3_2(
+					false,
+					*static_cast<const Uint8*>(value)), 0);
+			case GL_UNSIGNED_BYTE_2_3_3_REV:
+				return glm::uvec4(
+					PackTool::unpack_uint_2_3_3_rev(false,
+					*static_cast<const Uint8*>(value)), 0);
+			case GL_UNSIGNED_SHORT_5_6_5:
+				return glm::uvec4(
+					PackTool::unpack_uint_5_6_5(false,
+					*static_cast<const Uint16*>(value)), 0);
+			case GL_UNSIGNED_SHORT_5_6_5_REV:
+				return glm::uvec4(
+					PackTool::unpack_uint_5_6_5_rev(false,
+					*static_cast<const Uint16*>(value)), 0);
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+				return glm::uvec4(
+					PackTool::unpack_uint_4_4_4_4(false,
+					*static_cast<const Uint16*>(value)));
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+				return glm::uvec4(
+					PackTool::unpack_uint_4_4_4_4_rev(false,
+					*static_cast<const Uint16*>(value)));
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+				return glm::uvec4(
+					PackTool::unpack_uint_5_5_5_1(false,
+					*static_cast<const Uint16*>(value)));
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+				return glm::uvec4(
+					PackTool::unpack_uint_1_5_5_5_rev(false,
+					*static_cast<const Uint16*>(value)));
+			case GL_UNSIGNED_INT_8_8_8_8:
+				for (i = 0; i < 4; ++i)
+				{
+					result[i] = static_cast<const Uint8*>(
+						value)[i];
+				}
+				return result;
+			case GL_UNSIGNED_INT_8_8_8_8_REV:
+				for (i = 0; i < 4; ++i)
+				{
+					result[i] = static_cast<const Uint8*>(
+						value)[3 - i];
+				}
+				return result;
+			case GL_UNSIGNED_INT_10_10_10_2:
+				return glm::uvec4(
+					PackTool::unpack_uint_10_10_10_2(false,
+					*static_cast<const Uint32*>(value)));
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				return glm::uvec4(
+					PackTool::unpack_uint_2_10_10_10_rev(
+					false,
+					*static_cast<const Uint32*>(value)));
+			case GL_BYTE:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Sint8*>(
+						value)[i];
+				}
+				break;
+			case GL_SHORT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Sint16*>(
+						value)[i];
+				}
+				break;
+			case GL_INT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Sint32*>(
+						value)[i];
+				}
+				break;
+			case GL_NONE:
+			default:
+				assert(false);
+				return glm::uvec4(0);
+		}
+
+		return result;
+	}
+
+	glm::ivec4 Image::get_pixel_int(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap_level)
+		const
+	{
+		glm::ivec4 result;
+		Uint32 i, count;
+
+		count = get_channel_count(get_format());
+
+		assert(count > 0);
+		assert(count < 5);
+
+		const void* const value = static_cast<const Uint8* const>(
+			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
+			face, mipmap_level);
+
+		result = glm::ivec4(0);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_BYTE:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Uint8*>(
+						value)[i];
+				}
+				break;
+			case GL_UNSIGNED_SHORT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Uint16*>(
+						value)[i];
+				}
+				break;
+			case GL_UNSIGNED_INT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Uint32*>(
+						value)[i];
+				}
+				break;
+			case GL_FLOAT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const float*>(
+						value)[i];
+				}
+				break;
+			case GL_HALF_FLOAT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = glm::detail::toFloat32(
+						static_cast<const Uint16*>(
+							value)[i]);
+				}
+				break;
+			case GL_UNSIGNED_BYTE_3_3_2:
+				return glm::ivec4(PackTool::unpack_uint_3_3_2(
+					false,
+					*static_cast<const Uint8*>(value)), 0);
+			case GL_UNSIGNED_BYTE_2_3_3_REV:
+				return glm::ivec4(
+					PackTool::unpack_uint_2_3_3_rev(false,
+					*static_cast<const Uint8*>(value)), 0);
+			case GL_UNSIGNED_SHORT_5_6_5:
+				return glm::ivec4(
+					PackTool::unpack_uint_5_6_5(false,
+					*static_cast<const Uint16*>(value)), 0);
+			case GL_UNSIGNED_SHORT_5_6_5_REV:
+				return glm::ivec4(
+					PackTool::unpack_uint_5_6_5_rev(false,
+					*static_cast<const Uint16*>(value)), 0);
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+				return glm::ivec4(
+					PackTool::unpack_uint_4_4_4_4(false,
+					*static_cast<const Uint16*>(value)));
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+				return glm::ivec4(
+					PackTool::unpack_uint_4_4_4_4_rev(false,
+					*static_cast<const Uint16*>(value)));
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+				return glm::ivec4(
+					PackTool::unpack_uint_5_5_5_1(false,
+					*static_cast<const Uint16*>(value)));
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+				return glm::ivec4(
+					PackTool::unpack_uint_1_5_5_5_rev(false,
+					*static_cast<const Uint16*>(value)));
+			case GL_UNSIGNED_INT_8_8_8_8:
+				for (i = 0; i < 4; ++i)
+				{
+					result[i] = static_cast<const Uint8*>(
+						value)[i];
+				}
+				return result;
+			case GL_UNSIGNED_INT_8_8_8_8_REV:
+				for (i = 0; i < 4; ++i)
+				{
+					result[i] = static_cast<const Uint8*>(
+						value)[3 - i];
+				}
+				return result;
+			case GL_UNSIGNED_INT_10_10_10_2:
+				return glm::ivec4(
+					PackTool::unpack_uint_10_10_10_2(false,
+					*static_cast<const Uint32*>(value)));
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				return glm::ivec4(
+					PackTool::unpack_uint_2_10_10_10_rev(
+					false,
+					*static_cast<const Uint32*>(value)));
+			case GL_BYTE:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Sint8*>(
+						value)[i];
+				}
+				break;
+			case GL_SHORT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Sint16*>(
+						value)[i];
+				}
+				break;
+			case GL_INT:
+				for (i = 0; i < count; ++i)
+				{
+					result[i] = static_cast<const Sint32*>(
+						value)[i];
+				}
+				break;
+			case GL_NONE:
+			default:
+				assert(false);
+				return glm::ivec4(0);
+		}
+
+		return result;
+	}
+
 	void Image::set_pixel(const Uint32 x, const Uint32 y, const Uint32 z,
-		const Uint16 face, const Uint16 mipmap_level, const glm::vec4 &data)
+		const Uint16 face, const Uint16 mipmap_level,
+		const glm::vec4 &data)
 	{
 		void* value;
 		Uint32 i, count;
@@ -577,6 +860,290 @@ namespace eternal_lands
 				{
 					static_cast<Sint32*>(value)[i] = data[i] *
 						std::numeric_limits<Sint32>::max();
+				}
+				return;
+			case GL_NONE:
+			default:
+				assert(false);
+				return;
+		}
+	}
+
+	void Image::set_pixel_uint(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap_level,
+		const glm::uvec4 &data)
+	{
+		void* value;
+		Uint32 i, count;
+
+		count = get_channel_count(get_format());
+
+		assert(count > 0);
+		assert(count < 5);
+
+		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
+			get_pixel_offset(x, y, z, face, mipmap_level);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_BYTE:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Uint8*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_UNSIGNED_SHORT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Uint16*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_UNSIGNED_INT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Uint32*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_FLOAT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<float*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_HALF_FLOAT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<glm::detail::hdata*>(value)[i] =
+						glm::detail::toFloat16(data[i]);
+				}
+				return;
+			case GL_UNSIGNED_BYTE_3_3_2:
+				*static_cast<Uint8*>(value) =
+					PackTool::pack_uint_3_3_2(false,
+						glm::vec3(data));
+				return;
+			case GL_UNSIGNED_BYTE_2_3_3_REV:
+				*static_cast<Uint8*>(value) =
+					PackTool::pack_uint_2_3_3_rev(false,
+						glm::vec3(data));
+				return;
+			case GL_UNSIGNED_SHORT_5_6_5:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_5_6_5(false,
+						glm::vec3(data));
+				return;
+			case GL_UNSIGNED_SHORT_5_6_5_REV:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_5_6_5_rev(false,
+						glm::vec3(data));
+				return;
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_4_4_4_4(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_4_4_4_4_rev(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_5_5_5_1(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_1_5_5_5_rev(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_INT_8_8_8_8:
+				for (i = 0; i < 4; ++i)
+				{
+					static_cast<Uint8*>(value)[i] = data[i];
+				}
+				return;
+			case GL_UNSIGNED_INT_8_8_8_8_REV:
+				for (i = 0; i < 4; ++i)
+				{
+					static_cast<Uint8*>(value)[i] =
+						data[3 - i];
+				}
+				return;
+			case GL_UNSIGNED_INT_10_10_10_2:
+				*static_cast<Uint32*>(value) =
+					PackTool::pack_uint_10_10_10_2(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				*static_cast<Uint32*>(value) =
+					PackTool::pack_uint_2_10_10_10_rev(
+						false, glm::vec4(data));
+				return;
+			case GL_BYTE:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Sint8*>(value)[i] = data[i];
+				}
+				return;
+			case GL_SHORT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Sint16*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_INT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Sint32*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_NONE:
+			default:
+				assert(false);
+				return;
+		}
+	}
+
+	void Image::set_pixel_int(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap_level,
+		const glm::ivec4 &data)
+	{
+		void* value;
+		Uint32 i, count;
+
+		count = get_channel_count(get_format());
+
+		assert(count > 0);
+		assert(count < 5);
+
+		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
+			get_pixel_offset(x, y, z, face, mipmap_level);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_BYTE:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Uint8*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_UNSIGNED_SHORT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Uint16*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_UNSIGNED_INT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Uint32*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_FLOAT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<float*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_HALF_FLOAT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<glm::detail::hdata*>(value)[i] =
+						glm::detail::toFloat16(data[i]);
+				}
+				return;
+			case GL_UNSIGNED_BYTE_3_3_2:
+				*static_cast<Uint8*>(value) =
+					PackTool::pack_uint_3_3_2(false,
+						glm::vec3(data));
+				return;
+			case GL_UNSIGNED_BYTE_2_3_3_REV:
+				*static_cast<Uint8*>(value) =
+					PackTool::pack_uint_2_3_3_rev(false,
+						glm::vec3(data));
+				return;
+			case GL_UNSIGNED_SHORT_5_6_5:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_5_6_5(false,
+						glm::vec3(data));
+				return;
+			case GL_UNSIGNED_SHORT_5_6_5_REV:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_5_6_5_rev(false,
+						glm::vec3(data));
+				return;
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_4_4_4_4(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_4_4_4_4_rev(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_5_5_5_1(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+				*static_cast<Uint16*>(value) =
+					PackTool::pack_uint_1_5_5_5_rev(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_INT_8_8_8_8:
+				for (i = 0; i < 4; ++i)
+				{
+					static_cast<Uint8*>(value)[i] = data[i];
+				}
+				return;
+			case GL_UNSIGNED_INT_8_8_8_8_REV:
+				for (i = 0; i < 4; ++i)
+				{
+					static_cast<Uint8*>(value)[i] =
+						data[3 - i];
+				}
+				return;
+			case GL_UNSIGNED_INT_10_10_10_2:
+				*static_cast<Uint32*>(value) =
+					PackTool::pack_uint_10_10_10_2(false,
+						glm::vec4(data));
+				return;
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				*static_cast<Uint32*>(value) =
+					PackTool::pack_uint_2_10_10_10_rev(
+						false, glm::vec4(data));
+				return;
+			case GL_BYTE:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Sint8*>(value)[i] = data[i];
+				}
+				return;
+			case GL_SHORT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Sint16*>(value)[i] =
+						data[i];
+				}
+				return;
+			case GL_INT:
+				for (i = 0; i < count; ++i)
+				{
+					static_cast<Sint32*>(value)[i] =
+						data[i];
 				}
 				return;
 			case GL_NONE:

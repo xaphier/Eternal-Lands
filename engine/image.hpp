@@ -404,6 +404,21 @@ namespace eternal_lands
 				const Uint32 z, const Uint16 face,
 				const Uint16 mipmap_level,
 				const glm::vec4 &data);
+			glm::uvec4 get_pixel_uint(const Uint32 x,
+				const Uint32 y, const Uint32 z,
+				const Uint16 face, const Uint16 mipmap_level)
+				const;
+			void set_pixel_uint(const Uint32 x, const Uint32 y,
+				const Uint32 z, const Uint16 face,
+				const Uint16 mipmap_level,
+				const glm::uvec4 &data);
+			glm::ivec4 get_pixel_int(const Uint32 x, const Uint32 y,
+				const Uint32 z, const Uint16 face,
+				const Uint16 mipmap_level) const;
+			void set_pixel_int(const Uint32 x, const Uint32 y,
+				const Uint32 z, const Uint16 face,
+				const Uint16 mipmap_level,
+				const glm::ivec4 &data);
 
 			/**
 			 * @brief Gets the texture format of the image.
