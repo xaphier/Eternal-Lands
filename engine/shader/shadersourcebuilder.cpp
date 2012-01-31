@@ -1303,7 +1303,7 @@ namespace eternal_lands
 			light, local_loop_indent, stream,
 			function_parameters, values))
 		{
-			add_parameter(String(UTF8("lighting")), cpt_diffuse,
+			add_parameter(String(UTF8("lighting")), cpt_albedo,
 				pqt_in, locals, globals);
 
 			add_parameter(String(UTF8("lighting")), output_color,
@@ -1316,7 +1316,7 @@ namespace eternal_lands
 
 				main << indent << UTF8("/* no lighting */\n");
 				main << indent << output_color << UTF8(" = ");
-				main << cpt_diffuse << UTF8(".rgb *");
+				main << cpt_albedo << UTF8(".rgb *");
 				main << cpt_emission << UTF8(";\n");
 
 				return;
@@ -1324,7 +1324,7 @@ namespace eternal_lands
 
 			main << indent << UTF8("/* no lighting */\n");
 			main << indent << output_color << UTF8(" = ");
-			main << cpt_diffuse << UTF8(".rgb;\n");
+			main << cpt_albedo << UTF8(".rgb;\n");
 
 			return;
 		}
@@ -1387,10 +1387,10 @@ namespace eternal_lands
 
 		if (!vertex)
 		{
-			add_parameter(String(UTF8("lighting")), cpt_diffuse,
+			add_parameter(String(UTF8("lighting")), cpt_albedo,
 				pqt_in, function_locals, function_parameters);
 
-			stream << UTF8(" * ") << cpt_diffuse << UTF8(".rgb");
+			stream << UTF8(" * ") << cpt_albedo << UTF8(".rgb");
 		}
 
 		stream << UTF8(";\n");
@@ -1686,7 +1686,7 @@ namespace eternal_lands
 			data.get_option(ssbot_transparent))
 		{
 			build_function(data, array_sizes, locals,
-				sst_diffuse_mapping, indent, main, globals,
+				sst_albedo_mapping, indent, main, globals,
 				values);
 
 			build_function(data, array_sizes, locals,
@@ -1731,10 +1731,10 @@ namespace eternal_lands
 					sslt_fragment_color, pqt_out, locals,
 					globals);
 				add_parameter(String(UTF8("fragment")),
-					cpt_diffuse, pqt_in, locals, globals);
+					cpt_albedo, pqt_in, locals, globals);
 
 				main << indent << sslt_fragment_color;
-				main << UTF8(" = ") << cpt_diffuse;
+				main << UTF8(" = ") << cpt_albedo;
 				main << UTF8(".rgb * (");
 
 				if (data.get_vertex_light_count() > 0)
@@ -1818,7 +1818,7 @@ namespace eternal_lands
 					cpt_fragment_normal, pqt_in, locals,
 					globals);
 				add_parameter(String(UTF8("fragment")),
-					cpt_diffuse, pqt_in, locals, globals);
+					cpt_albedo, pqt_in, locals, globals);
 				add_parameter(String(UTF8("fragment")),
 					cpt_specular, pqt_in, locals, globals);
 				add_parameter(String(UTF8("fragment")),
@@ -1833,7 +1833,7 @@ namespace eternal_lands
 				main << UTF8(";\n");
 
 				main << indent << output_array[2];
-				main << UTF8(".rgb = ") << cpt_diffuse;
+				main << UTF8(".rgb = ") << cpt_albedo;
 				main << UTF8(".rgb;\n");
 
 				main << indent << output_array[2];
@@ -1965,7 +1965,7 @@ namespace eternal_lands
 			data.get_option(ssbot_transparent))
 		{
 			result |= check_function(data, name,
-				sst_diffuse_mapping);
+				sst_albedo_mapping);
 			result |= check_function(data, name,
 				sst_transparent);
 		}
@@ -2037,8 +2037,7 @@ namespace eternal_lands
 		sources[sst_world_tangent_transform] =
 			description.get_world_transform();
 		sources[sst_uv] = description.get_texture_coodrinates();
-		sources[sst_diffuse_mapping] =
-			description.get_diffuse_mapping();
+		sources[sst_albedo_mapping] = description.get_albedo_mapping();
 		sources[sst_normal_mapping] = description.get_normal_mapping();
 		sources[sst_normal_depth_mapping] =
 			description.get_normal_mapping();

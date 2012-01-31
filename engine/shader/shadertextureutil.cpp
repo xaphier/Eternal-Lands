@@ -61,13 +61,13 @@ namespace eternal_lands
 		const ShaderTextureTypeData shader_texture_type_datas[] =
 		{
 			ShaderTextureTypeData(
-				String(UTF8("diffuse_sampler_0")), 0),
+				String(UTF8("albedo_sampler_0")), 0),
 			ShaderTextureTypeData(
-				String(UTF8("diffuse_sampler_1")), 1),
+				String(UTF8("albedo_sampler_1")), 1),
 			ShaderTextureTypeData(
-				String(UTF8("diffuse_sampler_2"))),
+				String(UTF8("albedo_sampler_2"))),
 			ShaderTextureTypeData(
-				String(UTF8("diffuse_sampler_3"))),
+				String(UTF8("albedo_sampler_3"))),
 			ShaderTextureTypeData(
 				String(UTF8("normal_sampler_0")), 2),
 			ShaderTextureTypeData(

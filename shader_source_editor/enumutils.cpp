@@ -694,7 +694,7 @@ namespace eternal_lands
 					return true;
 				}
 				return false;
-			case sst_diffuse_mapping:
+			case sst_albedo_mapping:
 				if (index == 0)
 				{
 					get_data(cpt_fragment_uv, pqt_in, name,
@@ -703,7 +703,7 @@ namespace eternal_lands
 				}
 				if (index == 1)
 				{
-					get_data(cpt_diffuse, pqt_out, name,
+					get_data(cpt_albedo, pqt_out, name,
 						type, qualifier, size, scale);
 					return true;
 				}
@@ -725,7 +725,7 @@ namespace eternal_lands
 			case sst_transparent:
 				if (index == 0)
 				{
-					get_data(cpt_diffuse, pqt_in, name,
+					get_data(cpt_albedo, pqt_in, name,
 						type, qualifier, size, scale);
 					return true;
 				}

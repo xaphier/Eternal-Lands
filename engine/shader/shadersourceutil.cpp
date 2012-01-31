@@ -31,7 +31,7 @@ namespace eternal_lands
 			String(UTF8("shadow_mapping")),
 			String(UTF8("normal_mapping")),
 			String(UTF8("normal_depth_mapping")),
-			String(UTF8("diffuse_mapping")),
+			String(UTF8("albedo_mapping")),
 			String(UTF8("specular_mapping")),
 			String(UTF8("emission_mapping")),
 			String(UTF8("transparent")),

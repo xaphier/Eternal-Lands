@@ -83,7 +83,7 @@ namespace eternal_lands
 				pt_vec2),
 			CommonParameterTypeData(String(UTF8("view_position")),
 				pt_vec3),
-			CommonParameterTypeData(String(UTF8("diffuse")),
+			CommonParameterTypeData(String(UTF8("albedo")),
 				pt_vec4),
 			CommonParameterTypeData(String(UTF8("specular")),
 				pt_float),

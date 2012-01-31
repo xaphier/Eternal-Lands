@@ -28,7 +28,7 @@ void main ()
 varying vec2 uv;
 varying vec3 font_color;
 
-uniform sampler2D diffuse_sampler_0;
+uniform sampler2D albedo_sampler_0;
 
 const vec3 outline_color = vec3(0.0);
 
@@ -36,7 +36,7 @@ void main ()
 {
 	float distance;
 
-	distance = texture2D(diffuse_sampler_0, uv).r;
+	distance = texture2D(albedo_sampler_0, uv).r;
 
 	gl_FragColor.rgb = mix(outline_color, font_color, smoothstep(0.45, 0.55, distance));
 	gl_FragColor.a = smoothstep(0.45, 0.55, distance);

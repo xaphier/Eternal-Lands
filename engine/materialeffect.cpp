@@ -51,10 +51,10 @@ namespace eternal_lands
 
 		set_effect(EffectDescription(material));
 
-		set_texture(material, stt_diffuse_0);
-		set_texture(material, stt_diffuse_1);
-		set_texture(material, stt_diffuse_2);
-		set_texture(material, stt_diffuse_3);
+		set_texture(material, stt_albedo_0);
+		set_texture(material, stt_albedo_1);
+		set_texture(material, stt_albedo_2);
+		set_texture(material, stt_albedo_3);
 		set_texture(material, stt_specular_0);
 		set_texture(material, stt_specular_1);
 		set_texture(material, stt_normal_0);

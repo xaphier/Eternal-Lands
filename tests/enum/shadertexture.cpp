@@ -42,9 +42,9 @@ BOOST_AUTO_TEST_CASE(convert)
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
-		el::stt_diffuse_0).get(), "diffuse_sampler_0");
+		el::stt_albedo_0).get(), "albedo_sampler_0");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
-		el::stt_diffuse_3).get(), "diffuse_sampler_3");
+		el::stt_albedo_3).get(), "albedo_sampler_3");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_emission_0).get(), "emission_sampler_0");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(

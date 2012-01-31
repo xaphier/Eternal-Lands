@@ -50,32 +50,32 @@ namespace eternal_lands
 					XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_0"))
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("albedo_0"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_diffuse_0);
+					stt_albedo_0);
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_1"))
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("albedo_1"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_diffuse_1);
+					stt_albedo_1);
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_2"))
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("albedo_2"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_diffuse_2);
+					stt_albedo_2);
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("diffuse_3"))
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("albedo_3"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_diffuse_3);
+					stt_albedo_3);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("normal"))
@@ -131,9 +131,9 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("diffuse_mapping")) == 0)
+				BAD_CAST UTF8("albedo_mapping")) == 0)
 			{
-				set_diffuse_mapping(
+				set_albedo_mapping(
 					XmlUtil::get_string_value(it));
 			}
 
@@ -178,14 +178,14 @@ namespace eternal_lands
 	{
 		writer->start_element(UTF8("material"));
 		writer->write_element(UTF8("name"), get_material_name());
-		writer->write_element(UTF8("diffuse_0"),
-			get_texture(stt_diffuse_0));
-		writer->write_element(UTF8("diffuse_1"),
-			get_texture(stt_diffuse_1));
-		writer->write_element(UTF8("diffuse_2"),
-			get_texture(stt_diffuse_2));
-		writer->write_element(UTF8("diffuse_3"),
-			get_texture(stt_diffuse_3));
+		writer->write_element(UTF8("albedo_0"),
+			get_texture(stt_albedo_0));
+		writer->write_element(UTF8("albedo_1"),
+			get_texture(stt_albedo_1));
+		writer->write_element(UTF8("albedo_2"),
+			get_texture(stt_albedo_2));
+		writer->write_element(UTF8("albedo_3"),
+			get_texture(stt_albedo_3));
 		writer->write_element(UTF8("normal"),
 			get_texture(stt_normal_0));
 		writer->write_element(UTF8("specular"),
@@ -198,8 +198,8 @@ namespace eternal_lands
 			get_texture_scale_offset());
 		writer->write_element(UTF8("texture_coodrinates"),
 			get_texture_coodrinates());
-		writer->write_element(UTF8("diffuse_mapping"),
-			get_diffuse_mapping());
+		writer->write_element(UTF8("albedo_mapping"),
+			get_albedo_mapping());
 		writer->write_element(UTF8("normal_mapping"),
 			get_normal_mapping());
 		writer->write_element(UTF8("specular_mapping"),

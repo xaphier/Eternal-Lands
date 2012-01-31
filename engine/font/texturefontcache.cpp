@@ -420,7 +420,7 @@ namespace eternal_lands
 
 		state_manager.switch_mesh(mesh);
 
-		state_manager.switch_texture(stt_diffuse_0, m_texture);
+		state_manager.switch_texture(stt_albedo_0, m_texture);
 
 		state_manager.draw(draw_data, 1);
 	}

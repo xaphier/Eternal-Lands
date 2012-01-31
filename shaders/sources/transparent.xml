@@ -6,7 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>diffuse</name>
+     <name>albedo</name>
      <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
@@ -14,7 +14,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>if (diffuse.a &lt; 0.5)
+   <source>if (albedo.a &lt; 0.5)
 {
 	discard;
 }

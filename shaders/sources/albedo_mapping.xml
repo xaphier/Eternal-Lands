@@ -1,41 +1,36 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>blend</name>
- <type>diffuse_mapping</type>
+ <name>default</name>
+ <type>albedo_mapping</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
     <parameter>
      <name>fragment_uv</name>
+     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_0</name>
+     <name>albedo_sampler_0</name>
+     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_1</name>
-     <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>diffuse</name>
+     <name>albedo</name>
+     <source></source>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>diffuse = texture2D(diffuse_sampler_1, fragment_uv);
-diffuse = mix(texture2D(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
+   <source>albedo = texture2D(albedo_sampler_0, fragment_uv);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>false</glsl_130>
@@ -47,35 +42,30 @@ diffuse = mix(texture2D(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
    <parameters>
     <parameter>
      <name>fragment_uv</name>
+     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_0</name>
+     <name>albedo_sampler_0</name>
+     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_1</name>
-     <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>diffuse</name>
+     <name>albedo</name>
+     <source></source>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>diffuse = texture(diffuse_sampler_1, fragment_uv);
-diffuse = mix(texture(diffuse_sampler_0, fragment_uv), diffuse, diffuse.a);
+   <source>albedo = texture(albedo_sampler_0, fragment_uv);
 </source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

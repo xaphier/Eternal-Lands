@@ -41,7 +41,7 @@ namespace eternal_lands
 		cpt_world_view_direction,
 		cpt_world_uv,
 		cpt_view_position,
-		cpt_diffuse,
+		cpt_albedo,
 		cpt_specular,
 		cpt_fragment_normal,
 		cpt_fragment_uv,

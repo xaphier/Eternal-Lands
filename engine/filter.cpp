@@ -249,8 +249,8 @@ namespace eternal_lands
 
 		mesh_cache->get_mesh(String(UTF8("plane_2")), m_mesh);
 
-		values[ShaderTextureUtil::get_str(stt_diffuse_0)] =
-			Variant(static_cast<Sint64>(stt_diffuse_0));
+		values[ShaderTextureUtil::get_str(stt_albedo_0)] =
+			Variant(static_cast<Sint64>(stt_albedo_0));
 
 		for (i = 1; i < 5; ++i)
 		{
@@ -321,11 +321,11 @@ namespace eternal_lands
 		if (layer)
 		{
 			str << UTF8("uniform float layer;\n");
-			str << UTF8("uniform sampler2DArray ") << stt_diffuse_0;
+			str << UTF8("uniform sampler2DArray ") << stt_albedo_0;
 		}
 		else
 		{
-			str << UTF8("uniform sampler2D ") << stt_diffuse_0;
+			str << UTF8("uniform sampler2D ") << stt_albedo_0;
 		}
 
 		str << UTF8(";\n");
@@ -355,7 +355,7 @@ namespace eternal_lands
 
 		if (layer)
 		{
-			tmp << UTF8("texture(") << stt_diffuse_0;
+			tmp << UTF8("texture(") << stt_albedo_0;
 			tmp << UTF8(", vec3(uv");
 			textures[0] = tmp.str() + UTF8(", layer))");
 			textures[1] = tmp.str();
@@ -388,12 +388,12 @@ namespace eternal_lands
 		{
 			if (version >= 130)
 			{
-				tmp << UTF8("texture(") << stt_diffuse_0;
+				tmp << UTF8("texture(") << stt_albedo_0;
 				tmp << UTF8(", uv");
 			}
 			else
 			{
-				tmp << UTF8("texture2D(") << stt_diffuse_0;
+				tmp << UTF8("texture2D(") << stt_albedo_0;
 				tmp << UTF8(", uv");
 			}
 

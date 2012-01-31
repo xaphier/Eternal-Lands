@@ -35,7 +35,7 @@ namespace eternal_lands
 		private:
 			String m_world_transform;
 			String m_texture_coodrinates;
-			String m_diffuse_mapping;
+			String m_albedo_mapping;
 			String m_normal_mapping;
 			String m_specular_mapping;
 			String m_emission_mapping;
@@ -75,9 +75,9 @@ namespace eternal_lands
 				return m_texture_coodrinates;
 			}
 
-			inline const String &get_diffuse_mapping() const
+			inline const String &get_albedo_mapping() const
 			{
-				return m_diffuse_mapping;
+				return m_albedo_mapping;
 			}
 
 			inline const String &get_normal_mapping() const
@@ -122,10 +122,10 @@ namespace eternal_lands
 				m_texture_coodrinates = texture_coodrinates;
 			}
 
-			inline void set_diffuse_mapping(
-				const String &diffuse_mapping)
+			inline void set_albedo_mapping(
+				const String &albedo_mapping)
 			{
-				m_diffuse_mapping = diffuse_mapping;
+				m_albedo_mapping = albedo_mapping;
 			}
 
 			inline void set_normal_mapping(

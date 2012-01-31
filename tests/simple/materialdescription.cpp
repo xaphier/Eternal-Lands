@@ -19,13 +19,13 @@ BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::MaterialDescription material_description;
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
 		"");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal_0),
 		"");
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		)[3], 0.0f);
 	BOOST_CHECK_EQUAL(material_description.get_material_name(), "");
 	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(), "");
-	BOOST_CHECK_EQUAL(material_description.get_diffuse_mapping(), "");
+	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(), "");
 	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "");
 	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(), "");
 	BOOST_CHECK_EQUAL(material_description.get_emission_mapping(), "");
@@ -70,13 +70,13 @@ BOOST_AUTO_TEST_CASE(textures)
 	el::MaterialDescription material_description;
 
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("df")), el::stt_diffuse_0));
+		el::String(UTF8("df")), el::stt_albedo_0));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("agaghrt")), el::stt_diffuse_1));
+		el::String(UTF8("agaghrt")), el::stt_albedo_1));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("5z5")), el::stt_diffuse_2));
+		el::String(UTF8("5z5")), el::stt_albedo_2));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("wj")), el::stt_diffuse_3));
+		el::String(UTF8("wj")), el::stt_albedo_3));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8("m120")), el::stt_normal_0));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
@@ -98,13 +98,13 @@ BOOST_AUTO_TEST_CASE(textures)
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8(".,welrf43")), el::stt_dudv));
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
 		"df");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
 		"agaghrt");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
 		"5z5");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
 		"wj");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal_0),
 		"m120");
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE(textures)
 		)[3], 0.0f);
 	BOOST_CHECK_EQUAL(material_description.get_material_name(), "");
 	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(), "");
-	BOOST_CHECK_EQUAL(material_description.get_diffuse_mapping(), "");
+	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(), "");
 	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "");
 	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(), "");
 	BOOST_CHECK_EQUAL(material_description.get_emission_mapping(), "");
@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(effect)
 
 	BOOST_CHECK_NO_THROW(material_description.set_texture_coodrinates(
 		el::String(UTF8("afdgsr!§$AFD54"))));
-	BOOST_CHECK_NO_THROW(material_description.set_diffuse_mapping(
+	BOOST_CHECK_NO_THROW(material_description.set_albedo_mapping(
 		el::String(UTF8("428rfu0sr4v"))));
 	BOOST_CHECK_NO_THROW(material_description.set_normal_mapping(
 		el::String(UTF8("AST%&%"))));
@@ -161,13 +161,13 @@ BOOST_AUTO_TEST_CASE(effect)
 	BOOST_CHECK_NO_THROW(material_description.set_receives_shadows(false));
 	BOOST_CHECK_NO_THROW(material_description.set_lighting(false));
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
 		"");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal_0),
 		"");
@@ -200,7 +200,7 @@ BOOST_AUTO_TEST_CASE(effect)
 	BOOST_CHECK_EQUAL(material_description.get_material_name(), "");
 	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
-	BOOST_CHECK_EQUAL(material_description.get_diffuse_mapping(),
+	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(),
 		"428rfu0sr4v");
 	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "AST%&%");
 	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(),
@@ -216,13 +216,13 @@ BOOST_AUTO_TEST_CASE(all)
 	el::MaterialDescription material_description;
 
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("df")), el::stt_diffuse_0));
+		el::String(UTF8("df")), el::stt_albedo_0));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("agaghrt")), el::stt_diffuse_1));
+		el::String(UTF8("agaghrt")), el::stt_albedo_1));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("5z5")), el::stt_diffuse_2));
+		el::String(UTF8("5z5")), el::stt_albedo_2));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("wj")), el::stt_diffuse_3));
+		el::String(UTF8("wj")), el::stt_albedo_3));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8("m120")), el::stt_normal_0));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
@@ -249,7 +249,7 @@ BOOST_AUTO_TEST_CASE(all)
 		el::String(UTF8("9230fsn45,.e.,"))));
 	BOOST_CHECK_NO_THROW(material_description.set_texture_coodrinates(
 		el::String(UTF8("afdgsr!§$AFD54"))));
-	BOOST_CHECK_NO_THROW(material_description.set_diffuse_mapping(
+	BOOST_CHECK_NO_THROW(material_description.set_albedo_mapping(
 		el::String(UTF8("428rfu0sr4v"))));
 	BOOST_CHECK_NO_THROW(material_description.set_normal_mapping(
 		el::String(UTF8("AST%&%"))));
@@ -260,13 +260,13 @@ BOOST_AUTO_TEST_CASE(all)
 	BOOST_CHECK_NO_THROW(material_description.set_receives_shadows(false));
 	BOOST_CHECK_NO_THROW(material_description.set_lighting(false));
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
 		"df");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
 		"agaghrt");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
 		"5z5");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
 		"wj");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal_0),
 		"m120");
@@ -300,7 +300,7 @@ BOOST_AUTO_TEST_CASE(all)
 		"9230fsn45,.e.,");
 	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
-	BOOST_CHECK_EQUAL(material_description.get_diffuse_mapping(),
+	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(),
 		"428rfu0sr4v");
 	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "AST%&%");
 	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(),
@@ -314,15 +314,15 @@ BOOST_AUTO_TEST_CASE(all)
 BOOST_AUTO_TEST_CASE(xml)
 {
 	el::XmlBuffer buffer(UTF8("<?xml version=\"1.0\" encoding=\"utf8\"?>"
-		"<material><name>tada</name><diffuse_0>df</diffuse_0>"
-		"<diffuse_1>agaghrt</diffuse_1><diffuse_2>5z5</diffuse_2>"
-		"<diffuse_3>wj</diffuse_3><normal>m120</normal>"
+		"<material><name>tada</name><albedo_0>df</albedo_0>"
+		"<albedo_1>agaghrt</albedo_1><albedo_2>5z5</albedo_2>"
+		"<albedo_3>wj</albedo_3><normal>m120</normal>"
 		"<specular>y&lt;bnj3e</specular>"
 		"<emission>ymbnjf!2r2!A</emission><blend>345w</blend>"
 		"<height>2556yvc23</height>"
 		"<texture_scale_offset>0.6787 4.342 345.0 76.0</texture_scale_offset>"
 		"<texture_coodrinates>afdgsr!§$AFD54</texture_coodrinates>"
-		"<diffuse_mapping>428rfu0sr4v</diffuse_mapping>"
+		"<albedo_mapping>428rfu0sr4v</albedo_mapping>"
 		"<normal_mapping>AST%&amp;%</normal_mapping>"
 		"<specular_mapping>53456675cas</specular_mapping>"
 		"<emission_mapping>F%$&amp;GRF3453rf</emission_mapping>"
@@ -339,13 +339,13 @@ BOOST_AUTO_TEST_CASE(xml)
 
 	xml_reader.reset();
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
 		"df");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
 		"agaghrt");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
 		"5z5");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_diffuse_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
 		"wj");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal_0),
 		"m120");
@@ -377,7 +377,7 @@ BOOST_AUTO_TEST_CASE(xml)
 		)[3], 76.0f, 0.001);
 	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
-	BOOST_CHECK_EQUAL(material_description.get_diffuse_mapping(),
+	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(),
 		"428rfu0sr4v");
 	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "AST%&%");
 	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(),

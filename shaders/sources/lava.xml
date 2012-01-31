@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>lava</name>
- <type>diffuse_mapping</type>
+ <type>albedo_mapping</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>diffuse_sampler_0</name>
+     <name>albedo_sampler_0</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_1</name>
+     <name>albedo_sampler_1</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -27,7 +27,7 @@
      <scale>3</scale>
     </parameter>
     <parameter>
-     <name>diffuse</name>
+     <name>albedo</name>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -40,20 +40,20 @@
 	vec2 tmp_uv[2];
 	float p;
 
-	noise = texture2D(diffuse_sampler_1, uv[0]);
+	noise = texture2D(albedo_sampler_1, uv[0]);
 
 	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
 	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
 
-	p = texture2D(diffuse_sampler_1, tmp_uv[0]).a;
-	color = texture2D(diffuse_sampler_0, tmp_uv[1]).rgb;
+	p = texture2D(albedo_sampler_1, tmp_uv[0]).a;
+	color = texture2D(albedo_sampler_0, tmp_uv[1]).rgb;
 	color = color * p * 2.0 + color * color - 0.1;
 
 	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
 	color.rb += clamp(color.g - 1.0, 0.0, 1.0);
 	color.rg += clamp(color.b - 1.0, 0.0, 1.0);
 
-	diffuse = vec4(color, 1.0);
+	albedo = vec4(color, 1.0);
 }
 </source>
    <glsl_120>true</glsl_120>
@@ -65,14 +65,14 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>diffuse_sampler_0</name>
+     <name>albedo_sampler_0</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_1</name>
+     <name>albedo_sampler_1</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -86,7 +86,7 @@
      <scale>3</scale>
     </parameter>
     <parameter>
-     <name>diffuse</name>
+     <name>albedo</name>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -99,20 +99,20 @@
 	vec2 tmp_uv[2];
 	float p;
 
-	noise = texture(diffuse_sampler_1, uv[0]);
+	noise = texture(albedo_sampler_1, uv[0]);
 
 	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
 	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
 
-	p = texture(diffuse_sampler_1, tmp_uv[0]).a;
-	color = texture(diffuse_sampler_0, tmp_uv[1]).rgb;
+	p = texture(albedo_sampler_1, tmp_uv[0]).a;
+	color = texture(albedo_sampler_0, tmp_uv[1]).rgb;
 	color = color * p * 2.0 + color * color - 0.1;
 
 	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
 	color.rb += clamp(color.g - 1.0, 0.0, 1.0);
 	color.rg += clamp(color.b - 1.0, 0.0, 1.0);
 
-	diffuse = vec4(color, 1.0);
+	albedo = vec4(color, 1.0);
 }
 </source>
    <glsl_120>false</glsl_120>

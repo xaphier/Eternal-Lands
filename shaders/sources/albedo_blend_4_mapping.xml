@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>blend_4</name>
- <type>diffuse_mapping</type>
+ <type>albedo_mapping</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -13,28 +13,28 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_0</name>
+     <name>albedo_sampler_0</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_1</name>
+     <name>albedo_sampler_1</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_2</name>
+     <name>albedo_sampler_2</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_3</name>
+     <name>albedo_sampler_3</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -48,7 +48,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse</name>
+     <name>albedo</name>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -67,10 +67,10 @@
 
 	blend = texture2D(blend_sampler_0, fragment_uv * texture_scale_offset.xy + texture_scale_offset.zw);
 
-	diffuse = texture2D(diffuse_sampler_0, fragment_uv) * blend.r;
-	diffuse += texture2D(diffuse_sampler_1, fragment_uv) * blend.g;
-	diffuse += texture2D(diffuse_sampler_2, fragment_uv) * blend.b;
-	diffuse += texture2D(diffuse_sampler_3, fragment_uv) * blend.a;
+	albedo = texture2D(albedo_sampler_0, fragment_uv) * blend.r;
+	albedo += texture2D(albedo_sampler_1, fragment_uv) * blend.g;
+	albedo += texture2D(albedo_sampler_2, fragment_uv) * blend.b;
+	albedo += texture2D(albedo_sampler_3, fragment_uv) * blend.a;
 }
 </source>
    <glsl_120>true</glsl_120>
@@ -89,28 +89,28 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_0</name>
+     <name>albedo_sampler_0</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_1</name>
+     <name>albedo_sampler_1</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_2</name>
+     <name>albedo_sampler_2</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_sampler_3</name>
+     <name>albedo_sampler_3</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -124,7 +124,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse</name>
+     <name>albedo</name>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -143,10 +143,10 @@
 
 	blend = texture(blend_sampler_0, fragment_uv * texture_scale_offset.xy + texture_scale_offset.zw);
 
-	diffuse = texture(diffuse_sampler_0, fragment_uv) * blend.r;
-	diffuse += texture(diffuse_sampler_1, fragment_uv) * blend.g;
-	diffuse += texture(diffuse_sampler_2, fragment_uv) * blend.b;
-	diffuse += texture(diffuse_sampler_3, fragment_uv) * blend.a;
+	albedo = texture(albedo_sampler_0, fragment_uv) * blend.r;
+	albedo += texture(albedo_sampler_1, fragment_uv) * blend.g;
+	albedo += texture(albedo_sampler_2, fragment_uv) * blend.b;
+	albedo += texture(albedo_sampler_3, fragment_uv) * blend.a;
 }
 </source>
    <glsl_120>false</glsl_120>

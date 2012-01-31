@@ -24,10 +24,10 @@ namespace eternal_lands
 
 	enum ShaderTextureType
 	{
-		stt_diffuse_0 = 0,
-		stt_diffuse_1 = 1,
-		stt_diffuse_2 = 2,
-		stt_diffuse_3 = 3,
+		stt_albedo_0 = 0,
+		stt_albedo_1 = 1,
+		stt_albedo_2 = 2,
+		stt_albedo_3 = 3,
 		stt_normal_0 = 4,
 		stt_normal_1 = 8,
 		stt_specular_0 = 5,

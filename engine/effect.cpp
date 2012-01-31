@@ -45,13 +45,13 @@ namespace eternal_lands
 			"\n"
 			"varying vec2 uv;\n"
 			"\n"
-			"uniform sampler2D diffuse_sampler_0;\n"
+			"uniform sampler2D albedo_sampler_0;\n"
 			"uniform vec4 ambient;\n"
 			"uniform float alpha_value;\n"
 			"\n"
 			"void main ()\n"
 			"{\n"
-			"\tgl_FragColor.rgb = texture2D(diffuse_sampler_0, "
+			"\tgl_FragColor.rgb = texture2D(albedo_sampler_0, "
 				"uv).rgb * ambient.rgb;\n"
 			"\tgl_FragColor.a = alpha_value;\n"
 			"}\n");
@@ -191,8 +191,8 @@ namespace eternal_lands
 		m_default_program.reset();
 
 		/* Default shader */
-		values[ShaderTextureUtil::get_str(stt_diffuse_0)] =
-			Variant(static_cast<Sint64>(stt_diffuse_0));
+		values[ShaderTextureUtil::get_str(stt_albedo_0)] =
+			Variant(static_cast<Sint64>(stt_albedo_0));
 
 		m_default_program = boost::make_shared<GlslProgram>(
 			vertex_shader, geometry, fragment_shader, values,

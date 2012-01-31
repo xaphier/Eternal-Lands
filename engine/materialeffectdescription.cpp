@@ -37,10 +37,10 @@ namespace eternal_lands
 				material.get_texture_coodrinates();
 		}
 
-		if (get_diffuse_mapping() != material.get_diffuse_mapping())
+		if (get_albedo_mapping() != material.get_albedo_mapping())
 		{
-			return get_diffuse_mapping() <
-				material.get_diffuse_mapping();
+			return get_albedo_mapping() <
+				material.get_albedo_mapping();
 		}
 
 		if (get_normal_mapping() != material.get_normal_mapping())
@@ -121,7 +121,7 @@ namespace eternal_lands
 			return false;
 		}
 
-		if (get_diffuse_mapping() != material.get_diffuse_mapping())
+		if (get_albedo_mapping() != material.get_albedo_mapping())
 		{
 			return false;
 		}
@@ -203,7 +203,7 @@ namespace eternal_lands
 		str << " world_transform: " << value.get_world_transform();
 		str << " texture_coodrinates: ";
 		str << value.get_texture_coodrinates() << std::endl;
-		str << " diffuse_mapping: " << value.get_diffuse_mapping();
+		str << " albedo_mapping: " << value.get_albedo_mapping();
 		str << " normal_mapping: " << value.get_normal_mapping();
 		str << " specular_mapping: " << value.get_specular_mapping();
 		str << " emission_mapping: " << value.get_emission_mapping();

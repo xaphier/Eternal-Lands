@@ -24,7 +24,7 @@ namespace eternal_lands
 	{
 		set_world_transform(material.get_world_transform());
 		set_texture_coodrinates(material.get_texture_coodrinates());
-		set_diffuse_mapping(material.get_diffuse_mapping());
+		set_albedo_mapping(material.get_albedo_mapping());
 		set_normal_mapping(material.get_normal_mapping());
 		set_specular_mapping(material.get_specular_mapping());
 		set_emission_mapping(material.get_emission_mapping());
@@ -73,9 +73,9 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("diffuse_mapping")) == 0)
+				BAD_CAST UTF8("albedo_mapping")) == 0)
 			{
-				set_diffuse_mapping(
+				set_albedo_mapping(
 					XmlUtil::get_string_value(it));
 			}
 
@@ -122,8 +122,8 @@ namespace eternal_lands
 			get_world_transform());
 		writer->write_element(UTF8("texture_coodrinates"),
 			get_texture_coodrinates());
-		writer->write_element(UTF8("diffuse_mapping"),
-			get_diffuse_mapping());
+		writer->write_element(UTF8("albedo_mapping"),
+			get_albedo_mapping());
 		writer->write_element(UTF8("normal_mapping"),
 			get_normal_mapping());
 		writer->write_element(UTF8("specular_mapping"),
@@ -152,7 +152,7 @@ namespace eternal_lands
 			return false;
 		}
 
-		if (get_diffuse_mapping() != effect.get_diffuse_mapping())
+		if (get_albedo_mapping() != effect.get_albedo_mapping())
 		{
 			return false;
 		}
@@ -207,10 +207,10 @@ namespace eternal_lands
 				effect.get_texture_coodrinates();
 		}
 
-		if (get_diffuse_mapping() != effect.get_diffuse_mapping())
+		if (get_albedo_mapping() != effect.get_albedo_mapping())
 		{
-			return get_diffuse_mapping() <
-				effect.get_diffuse_mapping();
+			return get_albedo_mapping() <
+				effect.get_albedo_mapping();
 		}
 
 		if (get_normal_mapping() != effect.get_normal_mapping())
@@ -250,7 +250,7 @@ namespace eternal_lands
 		str << "world_transform: " << value.get_world_transform();
 		str << " texture_coodrinates: ";
 		str << value.get_texture_coodrinates() << std::endl;
-		str << " diffuse_mapping: " << value.get_diffuse_mapping();
+		str << " albedo_mapping: " << value.get_albedo_mapping();
 		str << " normal_mapping: " << value.get_normal_mapping();
 		str << " specular_mapping: " << value.get_specular_mapping();
 		str << " emission_mapping: " << value.get_emission_mapping();
