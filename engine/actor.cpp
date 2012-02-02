@@ -81,7 +81,7 @@ namespace eternal_lands
 			glm::value_ptr(min), glm::value_ptr(max));
 
 		bounding_box = BoundingBox(min, max).transform(
-			get_world_matrix());
+			get_world_transform());
 
 		bounding_box.extend(0.5f);
 

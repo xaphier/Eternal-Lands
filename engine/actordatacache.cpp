@@ -146,7 +146,7 @@ namespace eternal_lands
 			blend = false;
 		}
 
-		result.reset(new Actor(ObjectData(glm::mat4x3(),
+		result.reset(new Actor(ObjectData(Transform(),
 			glm::vec4(0.0f), name, 0.7f, id, selection, blend),
 			found->second.m_mesh->clone_vertex_data(), materials,
 			get_effect_cache(), get_texture_cache(),

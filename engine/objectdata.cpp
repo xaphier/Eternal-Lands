@@ -15,13 +15,13 @@ namespace eternal_lands
 	{
 	}
 
-	ObjectData::ObjectData(const glm::mat4x3 &world_matrix,
+	ObjectData::ObjectData(const Transform &world_transform,
 		const glm::vec4 &color, const String &name,
 		const float transparency, const Uint32 id,
 		const SelectionType selection, const bool blend):
-		m_world_matrix(world_matrix), m_color(color), m_name(name),
-		m_transparency(transparency), m_id(id), m_selection(selection),
-		m_blend(blend)
+		m_world_transform(world_transform), m_color(color),
+		m_name(name), m_transparency(transparency), m_id(id),
+		m_selection(selection), m_blend(blend)
 	{
 	}
 

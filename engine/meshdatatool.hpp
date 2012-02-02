@@ -84,7 +84,7 @@ namespace eternal_lands
 			void build_normal(const bool morph_target);
 			void build_scale_morph(const float scale = 1.0f);
 			void optimize();
-			void get_bounding_box(const glm::mat4x3 &matrix,
+			void get_bounding_box(const Transform &transform,
 				BoundingBox &bounding_box);
 			void write_vertex_semantic_to_stream(
 				const VertexSemanticType semantic,

@@ -27,8 +27,8 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_matrix</name>
-     <type>mat4x3</type>
+     <name>world_transform</name>
+     <type>mat2x4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -55,9 +55,15 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>world_position = world_matrix * vec4(position.xyz, 1.0);
-world_normal = normalize(mat3(world_matrix) * normal);
-world_tangent = normalize(mat3(world_matrix) * tangent);
+   <source>world_position = position.xyz;
+world_normal = normal;
+world_tangent = tangent;
+
+world_position += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_position) + world_transform[0].w * world_position);
+world_position *= world_transform[1].w;
+world_position += world_transform[1].xyz;
+world_normal += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_normal) + world_transform[0].w * world_normal);
+world_tangent += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_tangent) + world_transform[0].w * world_tangent);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

@@ -315,11 +315,10 @@ namespace eternal_lands
 #ifdef	DEBUG
 		if (get_global_vars()->get_draw_objects())
 		{
-			m_map->get_object_tree().intersect(frustum,
-				m_visible_objects);
+			m_map->intersect(frustum, m_visible_objects);
 		}
 #else	/* DEBUG */
-		m_map->get_object_tree().intersect(frustum, m_visible_objects);
+		m_map->intersect(frustum, m_visible_objects);
 #endif	/* DEBUG */
 
 		end = m_actors.end();
@@ -357,7 +356,7 @@ namespace eternal_lands
 			cull_all_shadows();
 		}
 
-		m_map->get_light_tree().intersect(frustum, m_visible_lights);
+		m_map->intersect(frustum, m_visible_lights);
 		m_visible_lights.sort(glm::vec3(m_scene_view.get_focus()));
 	}
 
@@ -410,7 +409,7 @@ namespace eternal_lands
 
 		m_scene_view.build_shadow_matrices(
 			glm::vec3(get_main_light_direction()), convex_bodys, 
-			m_map->get_object_tree().get_bounding_box().get_max().z);
+			m_map->get_bounding_box().get_max().z);
 
 		camera = m_scene_view.get_camera();
 
@@ -421,11 +420,10 @@ namespace eternal_lands
 #ifdef	DEBUG
 		if (get_global_vars()->get_draw_objects())
 		{
-			m_map->get_object_tree().intersect(frustum,
-				m_shadow_objects);
+			m_map->intersect(frustum, m_shadow_objects);
 		}
 #else	/* DEBUG */
-		m_map->get_object_tree().intersect(frustum, m_shadow_objects);
+		m_map->intersect(frustum, m_shadow_objects);
 #endif	/* DEBUG */
 
 		end = m_actors.end();
@@ -576,8 +574,9 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_matrix,
-					object->get_world_matrix());
+					apt_world_transform,
+					object->get_world_transform(
+						).get_data());
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				set_lights(m_state_manager.get_program(),
@@ -632,8 +631,9 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_matrix,
-					object->get_world_matrix());
+					apt_world_transform,
+					object->get_world_transform(
+						).get_data());
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				object_data_set = true;
@@ -677,8 +677,9 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_matrix,
-					object->get_world_matrix());
+					apt_world_transform,
+					object->get_world_transform(
+						).get_data());
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				object_data_set = true;
@@ -983,8 +984,9 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_matrix,
-					object->get_world_matrix());
+					apt_world_transform,
+					object->get_world_transform(
+						).get_data());
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				object_data_set = true;

@@ -185,6 +185,7 @@ namespace eternal_lands
 	class AbstractMesh;
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
+	class AbstractTerrainManager;
 	class AbstractWriteMemory;
 	class Actor;
 	class ActorDataCache;
@@ -252,6 +253,7 @@ namespace eternal_lands
 	class TextureGlyphe;
 	class TextureFont;
 	class TextureFontCache;
+	class Transform;
 	class VertexElement;
 	class VertexElements;
 	class VertexFormat;

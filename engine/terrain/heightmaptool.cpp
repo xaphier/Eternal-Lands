@@ -72,7 +72,7 @@ namespace eternal_lands
 	}
 
 	void HeightMapTool::build_data(const ImageSharedPtr &height_map,
-		const float scale)
+		const float height_scale)
 	{
 		FloatArray8 half_distances;
 		BitSet8 dirs;
@@ -104,8 +104,8 @@ namespace eternal_lands
 				m_uvs.push_back(uv);
 				m_velocities.push_back(glm::vec2(0.0f));
 
-				h0 = height_map->get_pixel(x, y, 0, 0, 0.0f).r
-					* scale;
+				h0 = height_map->get_pixel_uint(x, y, 0, 0,
+					0.0f).r * height_scale;
 
 				for (i = 0; i < 8; ++i)
 				{
@@ -123,8 +123,8 @@ namespace eternal_lands
 						continue;
 					}
 
-					h1 = height_map->get_pixel(xx, yy, 0,
-						0, 0.0f).r * scale;
+					h1 = height_map->get_pixel_uint(xx, yy,
+						0, 0, 0.0f).r * height_scale;
 
 					dirs[i] = true;
 					half_distances[i] = 0.5f * std::sqrt(

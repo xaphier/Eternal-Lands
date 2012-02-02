@@ -1070,7 +1070,7 @@ namespace eternal_lands
 		}
 	}
 
-	void MeshDataTool::get_bounding_box(const glm::mat4x3 &matrix,
+	void MeshDataTool::get_bounding_box(const Transform &transform,
 		BoundingBox &bounding_box)
 	{
 		Uint32 i;
@@ -1082,12 +1082,12 @@ namespace eternal_lands
 		}
 
 		bounding_box = get_sub_meshs()[0].get_bounding_box().transform(
-			matrix);
+			transform);
 
 		for (i = 1; i < get_sub_meshs().size(); ++i)
 		{
 			bounding_box.merge(get_sub_meshs()[i].get_bounding_box(
-				).transform(matrix));
+				).transform(transform));
 		}
 	}
 

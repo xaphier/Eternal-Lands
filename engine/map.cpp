@@ -15,6 +15,9 @@
 #include "objectdescription.hpp"
 #include "meshbuilder.hpp"
 #include "materialeffectdescription.hpp"
+#include "lightvisitor.hpp"
+#include "objectvisitor.hpp"
+#include "terrain/simpleterrainmanager.hpp"
 
 namespace eternal_lands
 {
@@ -125,7 +128,8 @@ namespace eternal_lands
 			return false;
 		}
 
-		position = found->second->get_world_matrix()[3];
+		position = found->second->get_world_transform(
+			).get_translation();
 
 		return true;
 	}
@@ -178,6 +182,23 @@ namespace eternal_lands
 		m_object_tree->clear();
 		m_objects.clear();
 		m_lights.clear();
+	}
+
+	void Map::intersect(const Frustum &frustum, ObjectVisitor &visitor)
+		const
+	{
+		m_object_tree->intersect(frustum, visitor);
+	}
+
+	void Map::intersect(const Frustum &frustum, LightVisitor &visitor)
+		const
+	{
+		m_light_tree->intersect(frustum, visitor);
+	}
+
+	const BoundingBox &Map::get_bounding_box() const
+	{
+		return m_object_tree->get_bounding_box();
 	}
 
 }

@@ -371,8 +371,8 @@ namespace eternal_lands
 				}
 				if (index == 2)
 				{
-					get_data(apt_world_matrix, name, type,
-						qualifier, size, scale);
+					get_data(apt_world_transform, name,
+						type, qualifier, size, scale);
 					return true;
 				}
 				return false;
@@ -407,8 +407,8 @@ namespace eternal_lands
 				}
 				if (index == 4)
 				{
-					get_data(apt_world_matrix, name, type,
-						qualifier, size, scale);
+					get_data(apt_world_transform, name,
+						type, qualifier, size, scale);
 					return true;
 				}
 				return false;
@@ -457,8 +457,8 @@ namespace eternal_lands
 				}
 				if (index == 6)
 				{
-					get_data(apt_world_matrix, name, type,
-						qualifier, size, scale);
+					get_data(apt_world_transform, name,
+						type, qualifier, size, scale);
 					return true;
 				}
 				return false;

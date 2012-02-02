@@ -37,6 +37,7 @@ namespace eternal_lands
 			TextureCacheSharedPtr m_texture_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
+			boost::scoped_ptr<AbstractTerrainManager> m_terrain;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
 			glm::vec4 m_ambient;
@@ -97,16 +98,11 @@ namespace eternal_lands
 			void clear();
 			void load(const String &name, const glm::vec3 &ambient,
 				const bool dungeon);
-
-			inline const RStarTree &get_object_tree() const
-			{
-				return *m_object_tree;
-			}
-
-			inline const RStarTree &get_light_tree() const
-			{
-				return *m_light_tree;
-			}
+			void intersect(const Frustum &frustum,
+				ObjectVisitor &visitor) const;
+			void intersect(const Frustum &frustum,
+				LightVisitor &visitor) const;
+			const BoundingBox &get_bounding_box() const;
 
 			inline void set_ambient(const glm::vec3 &ambient)
 			{

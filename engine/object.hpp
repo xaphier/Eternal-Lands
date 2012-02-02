@@ -131,10 +131,11 @@ namespace eternal_lands
 			}
 
 
-			inline void set_world_matrix(
-				const glm::mat4x3 &world_matrix)
+			inline void set_world_transform(
+				const Transform &world_transform)
 			{
-				m_object_data.set_world_matrix(world_matrix);
+				m_object_data.set_world_transform(
+					world_transform);
 			}
 
 			inline void set_color(const glm::vec4 &color)
@@ -157,9 +158,9 @@ namespace eternal_lands
 				m_object_data.set_selection(selection);
 			}
 
-			inline const glm::mat4x3 &get_world_matrix() const
+			inline const Transform &get_world_transform() const
 			{
-				return m_object_data.get_world_matrix();
+				return m_object_data.get_world_transform();
 			}
 
 			inline const glm::vec4 &get_color() const

@@ -302,11 +302,12 @@ namespace eternal_lands
 			/**
 			 * @brief Gets a transformed box.
 			 *
-			 * Returns the transformed box using the given matrix.
-			 * @param matrix The transform matrix.
+			 * Returns the transformed box using the given
+			 * transform.
+			 * @param transform The transform to use.
 			 * @return The transformed box.
 			 */
-			BoundingBox transform(const glm::mat4x3 &matrix) const;
+			BoundingBox transform(const Transform &transform) const;
 
 			/**
 			 * @brief Gets a transformed box.

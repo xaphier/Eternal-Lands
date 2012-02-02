@@ -1,0 +1,255 @@
+/****************************************************************************
+ *            transform.cpp
+ *
+ * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Copyright: See COPYING file that comes with this distribution
+ ****************************************************************************/
+
+#include "prerequisites.hpp"
+#include "transform.hpp"
+#include <boost/random.hpp>
+#define BOOST_TEST_MODULE transform
+#include <boost/test/unit_test.hpp>
+
+namespace el = eternal_lands;
+
+BOOST_AUTO_TEST_CASE(default_creation)
+{
+	el::Transform transform;
+
+	BOOST_CHECK_CLOSE(transform.get_rotation().x, 0.0f, 0.001);
+	BOOST_CHECK_CLOSE(transform.get_rotation().y, 0.0f, 0.001);
+	BOOST_CHECK_CLOSE(transform.get_rotation().z, 0.0f, 0.001);
+	BOOST_CHECK_CLOSE(transform.get_rotation().w, 1.0f, 0.001);
+	BOOST_CHECK_CLOSE(transform.get_translation().x, 0.0f, 0.001);
+	BOOST_CHECK_CLOSE(transform.get_translation().y, 0.0f, 0.001);
+	BOOST_CHECK_CLOSE(transform.get_translation().z, 0.0f, 0.001);
+	BOOST_CHECK_CLOSE(transform.get_scale(), 1.0f, 0.001);
+}
+
+BOOST_AUTO_TEST_CASE(rotate)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Sint32> range(-16777216, 16777216);
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
+		random_int(rng, range);
+	el::Transform transform;
+	glm::quat rotation;
+	Uint16 i;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	{
+		rotation.x = random_int() * 0.01f;
+		rotation.y = random_int() * 0.01f;
+		rotation.z = random_int() * 0.01f;
+		rotation.w = random_int() * 0.01f;
+
+		BOOST_CHECK_NO_THROW(transform.set_rotation(rotation));
+
+		BOOST_CHECK_CLOSE(transform.get_rotation().x, rotation.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().y, rotation.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().z, rotation.z,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().w, rotation.w,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().x, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().y, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().z, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_scale(), 1.0f, 0.001);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(translate)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Sint32> range(-16777216, 16777216);
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
+		random_int(rng, range);
+	el::Transform transform;
+	glm::vec3 translation;
+	Uint16 i;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	{
+		translation.x = random_int() * 0.01f;
+		translation.y = random_int() * 0.01f;
+		translation.z = random_int() * 0.01f;
+
+		BOOST_CHECK_NO_THROW(transform.set_translation(translation));
+
+		BOOST_CHECK_CLOSE(transform.get_rotation().x, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().y, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().z, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().w, 1.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().x, translation.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().y, translation.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().z, translation.z,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_scale(), 1.0f, 0.001);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(scale)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Sint32> range(-16777216, 16777216);
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
+		random_int(rng, range);
+	el::Transform transform;
+	float scale;
+	Uint16 i;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	{
+		scale = random_int() * 0.01f;
+
+		BOOST_CHECK_NO_THROW(transform.set_scale(scale));
+
+		BOOST_CHECK_CLOSE(transform.get_rotation().x, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().y, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().z, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().w, 1.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().x, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().y, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().z, 0.0f, 0.001);
+		BOOST_CHECK_CLOSE(transform.get_scale(), scale, 0.001);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(all)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Sint32> range(-16777216, 16777216);
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
+		random_int(rng, range);
+	el::Transform transform;
+	glm::quat rotation;
+	glm::vec3 translation;
+	float scale;
+	Uint16 i;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	{
+		translation.x = random_int() * 0.01f;
+		translation.y = random_int() * 0.01f;
+		translation.z = random_int() * 0.01f;
+		rotation.x = random_int() * 0.01f;
+		rotation.y = random_int() * 0.01f;
+		rotation.z = random_int() * 0.01f;
+		rotation.w = random_int() * 0.01f;
+		scale = random_int() * 0.01f;
+
+		BOOST_CHECK_NO_THROW(transform.set_translation(translation));
+		BOOST_CHECK_NO_THROW(transform.set_rotation(rotation));
+		BOOST_CHECK_NO_THROW(transform.set_scale(scale));
+
+		BOOST_CHECK_CLOSE(transform.get_rotation().x, rotation.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().y, rotation.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().z, rotation.z,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().w, rotation.w,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().x, translation.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().y, translation.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().z, translation.z,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_scale(), scale, 0.001);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(transform)
+{
+	boost::mt19937 rng_0, rng_1, rng_2;
+	boost::uniform_int<Sint32> range(-16777216, 16777216);
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
+		random_int(rng_0, range);
+	boost::uniform_int<Sint32> range_angle(-36000, 36000);
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
+		random_angle(rng_1, range_angle);
+	boost::uniform_int<Sint32> range_scale(1, 10000);
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
+		random_scale(rng_2, range_scale);
+	el::Transform transform;
+	glm::mat4 tmp_matrix;
+	glm::mat4x3 matrix;
+	glm::quat rotation;
+	glm::vec3 translation, angle, point, p0, p1, p2;
+	float scale;
+	Uint32 i;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	{
+		translation.x = random_int() * 0.01f;
+		translation.y = random_int() * 0.01f;
+		translation.z = random_int() * 0.01f;
+		point.x = random_int() * 0.01f;
+		point.y = random_int() * 0.01f;
+		point.z = random_int() * 0.01f;
+		angle.x = random_angle() * 0.01f;
+		angle.y = random_angle() * 0.0f;
+		angle.z = random_angle() * 0.01f;
+		scale = random_scale() * 0.01f;
+
+		rotation = glm::quat();
+		rotation = glm::rotate(rotation, angle.z,
+			glm::vec3(0.0f, 0.0f, 1.0f));
+		rotation = glm::rotate(rotation, angle.x,
+			glm::vec3(1.0f, 0.0f, 0.0f));
+		rotation = glm::rotate(rotation, angle.y,
+			glm::vec3(0.0f, 1.0f, 0.0f));	
+
+		BOOST_CHECK_NO_THROW(transform.set_translation(translation));
+		BOOST_CHECK_NO_THROW(transform.set_rotation(rotation));
+		BOOST_CHECK_NO_THROW(transform.set_scale(scale));
+
+		BOOST_CHECK_CLOSE(transform.get_rotation().x, rotation.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().y, rotation.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().z, rotation.z,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_rotation().w, rotation.w,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().x, translation.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().y, translation.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_translation().z, translation.z,
+			0.001);
+		BOOST_CHECK_CLOSE(transform.get_scale(), scale, 0.001);
+
+		tmp_matrix = glm::rotate(angle.z, glm::vec3(0.0f, 0.0f, 1.0f));
+		tmp_matrix = glm::rotate(tmp_matrix, angle.x,
+			glm::vec3(1.0f, 0.0f, 0.0f));
+		tmp_matrix = glm::rotate(tmp_matrix, angle.y,
+			glm::vec3(0.0f, 1.0f, 0.0f));
+		tmp_matrix = glm::scale(tmp_matrix, glm::vec3(scale));
+		tmp_matrix[3] = glm::vec4(translation, 1.0f);
+
+		matrix = glm::mat4x3(tmp_matrix);
+
+		p0 = matrix * glm::vec4(point, 1.0f);
+		p1 = transform.get_matrix() * glm::vec4(point, 1.0f);
+		p2 = transform.transform_point(point);
+
+		BOOST_CHECK_CLOSE(p0.x, p1.x, 5.0);
+		BOOST_CHECK_CLOSE(p0.y, p1.y, 5.0);
+		BOOST_CHECK_CLOSE(p0.z, p1.z, 5.0);
+
+		BOOST_CHECK_CLOSE(p0.x, p2.x, 5.0);
+		BOOST_CHECK_CLOSE(p0.y, p2.y, 5.0);
+		BOOST_CHECK_CLOSE(p0.z, p2.z, 5.0);
+
+		BOOST_CHECK_CLOSE(p1.x, p2.x, 5.0);
+		BOOST_CHECK_CLOSE(p1.y, p2.y, 5.0);
+		BOOST_CHECK_CLOSE(p1.z, p2.z, 5.0);
+	}
+}

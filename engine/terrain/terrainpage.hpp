@@ -32,7 +32,6 @@ namespace eternal_lands
 	{
 		private:
 			float m_min_z, m_max_z;
-			Uint16 m_lod;
 
 		public:
 			/**

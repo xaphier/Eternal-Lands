@@ -183,7 +183,7 @@ namespace eternal_lands
 				const Uint32Vector &indices,
 				const bool static_indices = true);
 
-			void get_bounding_box(const glm::mat4x3 &matrix,
+			void get_bounding_box(const Transform &transform,
 				BoundingBox &bounding_box);
 
 			VertexBuffersSharedPtr get_vertex_buffers(

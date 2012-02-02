@@ -27,8 +27,8 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_matrix</name>
-     <type>mat4x3</type>
+     <name>world_transform</name>
+     <type>mat2x4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -50,21 +50,21 @@
    </parameters>
    <source>{
 	vec4 weight, index, tmp;
-	vec3 tmp_position;
+	vec3 temp;
 	int i, idx;
 
 	tmp = vec4(position.xyz, 1.0);
 	index = bone_index;
 	weight = bone_weight;
 
-	tmp_position = vec3(0.0);
+	world_position = vec3(0.0);
 
 	for (i = 0; i &lt; 4; i++)
 	{
 		idx = int(index.x);
-		tmp_position.x += dot(bones[idx * 3 + 0], tmp) * weight.x;
-		tmp_position.y += dot(bones[idx * 3 + 1], tmp) * weight.x;
-		tmp_position.z += dot(bones[idx * 3 + 2], tmp) * weight.x;
+		world_position.x += dot(bones[idx * 3 + 0], tmp) * weight.x;
+		world_position.y += dot(bones[idx * 3 + 1], tmp) * weight.x;
+		world_position.z += dot(bones[idx * 3 + 2], tmp) * weight.x;
 
 		if (weight.y &lt;= 0.0)
 		{
@@ -75,7 +75,9 @@
 		weight.xyz = weight.yzw;
 	}
 
-	world_position = world_matrix * vec4(tmp_position, 1.0);
+	world_position += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_position) + world_transform[0].w * world_position);
+	world_position *= world_transform[1].w;
+	world_position += world_transform[1].xyz;
 }
 </source>
    <glsl_120>true</glsl_120>

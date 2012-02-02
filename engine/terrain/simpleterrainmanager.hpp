@@ -26,18 +26,33 @@ namespace eternal_lands
 	class SimpleTerrainManager: public AbstractTerrainManager
 	{
 		private:
-			ImageSharedPtr m_height_image;
+			boost::scoped_ptr<RStarTree> m_object_tree;
+
+			void add_terrain_pages(
+				const ImageSharedPtr &height_map,
+				const MeshBuilderSharedPtr &mesh_builder,
+				const EffectCacheSharedPtr &effect_cache,
+				const TextureCacheSharedPtr &texture_cache, 
+				const bool use_simd);
+			void set_terrain_page(
+				const ImageSharedPtr &height_map,
+				const glm::uvec2 &tile_offset,
+				const Uint32Array2 index_count,
+				const Uint32 vertex_count,
+				MeshDataToolSharedPtr &mesh_data_tool);
 
 		public:
 			SimpleTerrainManager(
 				const CodecManagerSharedPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
+				const MeshBuilderSharedPtr &mesh_builder,
+				const EffectCacheSharedPtr &effect_cache,
+				const TextureCacheSharedPtr &texture_cache,
 				const String &name);
 			virtual ~SimpleTerrainManager() throw();
-
-//			get_visible_terrain_pages();
-//			get_visible_terrain_pages();
+			virtual void intersect(const Frustum &frustum,
+				ObjectVisitor &visitor) const;
 
 	};
 

@@ -17,33 +17,10 @@ namespace el = eternal_lands;
 
 BOOST_AUTO_TEST_CASE(default_creation)
 {
-	el::ObjectData object_data(glm::mat4x3(43.0f, 1234.56f, -34.0f,
-		-12445.34f, 0.04356f, -0.005467f, 1243.000013f, 98900000.0f,
-		-675786000.0f, 8903.0000324f, 1.0f, 0.0f),
+	el::ObjectData object_data(el::Transform(),
 		glm::vec4(34.5f, -214.012f, 0.234f, -0.43f),
 		el::String(UTF8("3sfd23")), 0.54f, 543549564, el::st_player,
 		true);
-
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[0][0], 43.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[0][1], 1234.56f,
-		0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[0][2], -34.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[1][0], -12445.34f,
-		0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[1][1], 0.04356f,
-		0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[1][2], -0.005467f,
-		0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[2][0], 1243.000013f,
-		0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[2][1], 98900000.0f,
-		0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[2][2], -675786000.0f,
-		0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[3][0], 8903.0000324f,
-		0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[3][1], 1.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[3][2], 0.0f, 0.001);
 
 	BOOST_CHECK_CLOSE(object_data.get_color()[0], 34.5f, 0.001);
 	BOOST_CHECK_CLOSE(object_data.get_color()[1], -214.012f, 0.001);
@@ -59,26 +36,6 @@ BOOST_AUTO_TEST_CASE(default_creation)
 	BOOST_CHECK_EQUAL(object_data.get_selection(), el::st_player);
 
 	BOOST_CHECK_EQUAL(object_data.get_blend(), true);
-}
-
-BOOST_AUTO_TEST_CASE(world_matrix)
-{
-	el::ObjectData object_data;
-
-	object_data.set_world_matrix(glm::mat4x3(1.0f, 2.0f, 3.0f, 4.0f, 5.0f,
-		6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f));
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[0][0], 1.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[0][1], 2.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[0][2], 3.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[1][0], 4.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[1][1], 5.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[1][2], 6.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[2][0], 7.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[2][1], 8.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[2][2], 9.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[3][0], 10.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[3][1], 11.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_world_matrix()[3][2], 12.0f, 0.001);
 }
 
 BOOST_AUTO_TEST_CASE(color)

@@ -43,14 +43,14 @@ namespace eternal_lands
 				const Uint32 line, Vec2Vector &uvs,
 				Vec2Vector &velocities);			
 			void build_data(const ImageSharedPtr &height_map,
-				const float scale);
+				const float height_scale);
 
 		public:
 			/**
 			 * Default constructor.
 			 */
 			HeightMapTool(const ImageSharedPtr &height_map,
-				const float scale);
+				const float height_scale);
 
 			/**
 			 * Default destructor.

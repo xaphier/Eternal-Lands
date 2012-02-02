@@ -30,10 +30,14 @@ namespace eternal_lands
 			String m_height_map;
 			const String m_name;
 			glm::vec3 m_offset;
-			glm::vec3 m_scale;
+			float m_height_scale;
+			float m_scale;
+			Uint16 m_tile_size;
 
 		protected:
 			void load_xml(const FileSystemSharedPtr &file_system);
+			void load_xml(const xmlNodePtr node);
+			void save_xml(const XmlWriterSharedPtr &writer) const;
 
 			inline void set_albedo_maps(
 				const StringArray4 &albedo_maps)
@@ -57,16 +61,26 @@ namespace eternal_lands
 				m_offset = offset;
 			}
 
-			inline void set_scale(const glm::vec3 &scale)
+			inline void set_scale(const float scale)
 			{
 				m_scale = scale;
+			}
+
+			inline void set_height_scale(const float height_scale)
+			{
+				m_height_scale = height_scale;
+			}
+
+			inline void set_tile_size(const Uint16 tile_size)
+			{
+				m_tile_size = tile_size;
 			}
 
 		public:
 			AbstractTerrainManager(const String &name);
 			virtual ~AbstractTerrainManager() throw();
-//			virtual void intersect(const Frustum &frustum,
-//				RStarTreeObjectVisitor &visitor) const = 0;
+			virtual void intersect(const Frustum &frustum,
+				ObjectVisitor &visitor) const = 0;
 
 			inline const String &get_name() const
 			{
@@ -99,9 +113,19 @@ namespace eternal_lands
 				return m_offset;
 			}
 
-			inline const glm::vec3 &get_scale() const
+			inline const float get_scale() const
 			{
 				return m_scale;
+			}
+
+			inline const float get_height_scale() const
+			{
+				return m_height_scale;
+			}
+
+			inline Uint16 get_tile_size() const
+			{
+				return m_tile_size;
 			}
 
 	};

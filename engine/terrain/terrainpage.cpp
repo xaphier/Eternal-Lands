@@ -31,8 +31,7 @@ namespace eternal_lands
 		BoundingBox bounding_box;
 		glm::vec3 min, max;
 
-		get_mesh()->get_bounding_box(get_world_matrix(),
-			bounding_box);
+		get_mesh()->get_bounding_box(Transform(), bounding_box);
 
 		min = bounding_box.get_min();
 		max = bounding_box.get_max();
@@ -42,7 +41,7 @@ namespace eternal_lands
 
 		bounding_box.set_min_max(min, max);
 
-		set_bounding_box(bounding_box);
+		set_bounding_box(bounding_box.transform(get_world_transform()));
 	}
 
 }

@@ -112,7 +112,8 @@ namespace eternal_lands
 				mesh_data_tool.resize_indices(size);
 			}
 
-			world_matrix = instancing_data.get_world_matrix();
+			world_matrix = instancing_data.get_world_transform(
+				).get_matrix();
 			world_matrix[3] -= center;
 
 			count = indices.size();
@@ -150,6 +151,7 @@ namespace eternal_lands
 			const Uint32 base_vertex, Uint32 &vertex_offset,
 			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max)
 		{
+			BoundingBox bounding_box;
 			Uint32Vector indices;
 			glm::mat4x3 world_matrix;
 			Uint32 count, min_vertex, max_vertex, size, offset;
@@ -228,7 +230,8 @@ namespace eternal_lands
 
 			count = max_vertex - min_vertex + 1;
 
-			world_matrix = instancing_data.get_world_matrix();
+			world_matrix = instancing_data.get_world_transform(
+				).get_matrix();
 			world_matrix[3] -= center;
 
 			mesh_data_tool.transform_vertics(
@@ -257,20 +260,15 @@ namespace eternal_lands
 
 			vertex_offset += count;
 
-			glm::vec3 tmin, tmax;
-
-			tmin = instancing_data.get_mesh_data_tool(
+			bounding_box = instancing_data.get_mesh_data_tool(
 				)->get_sub_meshs()[sub_mesh_index
-					].get_bounding_box().get_min();
-			tmax = instancing_data.get_mesh_data_tool(
-				)->get_sub_meshs()[sub_mesh_index
-					].get_bounding_box().get_max();
+					].get_bounding_box();
 
-			tmin = world_matrix * glm::vec4(tmin, 1.0f);
-			tmax = world_matrix * glm::vec4(tmax, 1.0f);
+			bounding_box = bounding_box.transform(
+				instancing_data.get_world_transform());
 
-			min = glm::min(min, glm::min(tmin, tmax));
-			max = glm::max(max, glm::max(tmin, tmax));
+			min = glm::min(min, bounding_box.get_min() - center);
+			max = glm::max(max, bounding_box.get_max() - center);
 		}
 
 		bool build_sub_mesh(const glm::vec3 &center,
@@ -330,7 +328,7 @@ namespace eternal_lands
 		BoundingBox bounding_box;
 		Uint32 i;
 
-		assert(get_instancing_datas().size() > 1);
+		assert(get_instancing_datas().size() > 0);
 
 		bounding_box = get_instancing_data(0).get_bounding_box();
 
@@ -409,7 +407,7 @@ namespace eternal_lands
 	void InstanceBuilder::build_instance()
 	{
 		SubMesh sub_mesh;
-		glm::mat4x3 world_matrix;
+		Transform transform;
 		glm::vec3 center;
 		std::set<MaterialEffectDescription> material_set;
 		MeshDataToolSharedPtr mesh_data_tool;
@@ -506,9 +504,9 @@ namespace eternal_lands
 		assert(materials.size() > 0);
 		assert(instanced_objects.size() > 0);
 
-		world_matrix[3] = center;
+		transform.set_translation(center);
 
-		m_instance_data.reset(new InstanceData(ObjectData(world_matrix,
+		m_instance_data.reset(new InstanceData(ObjectData(transform,
 			glm::vec4(0.0f), String(str.str()), 1.0f, get_id(),
 			selection, false), mesh_data_tool, materials,
 			instanced_objects));

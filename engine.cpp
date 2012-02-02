@@ -230,19 +230,24 @@ namespace
 		const bool transparent, const Uint32 id,
 		const SelectionType selection)
 	{
-		glm::mat4 matrix;
+		el::Transform transform;
+		glm::quat rotation;
 		float transparency;
 		el::SelectionType el_selection;
 
 		assert(glm::all(glm::lessThanEqual(glm::abs(pos),
 			glm::vec3(1e7f))));
 
-		matrix = glm::rotate(rot.z, glm::vec3(0.0f, 0.0f, 1.0f));
-		matrix = glm::rotate(matrix, rot.x,
+		rotation = glm::quat();
+		rotation = glm::rotate(rotation, rot.z,
+			glm::vec3(0.0f, 0.0f, 1.0f));
+		rotation = glm::rotate(rotation, rot.x,
 			glm::vec3(1.0f, 0.0f, 0.0f));
-		matrix = glm::rotate(matrix, rot.y,
+		rotation = glm::rotate(rotation, rot.y,
 			glm::vec3(0.0f, 1.0f, 0.0f));
-		matrix[3] = glm::vec4(pos, 1.0f);
+
+		transform.set_rotation(rotation);
+		transform.set_translation(pos);
 
 		el_selection = get_selection_type(name, selection);
 
@@ -255,8 +260,8 @@ namespace
 			transparency = 1.0f;
 		}
 
-		return el::ObjectData(glm::mat4x3(matrix), color, name,
-			transparency, id, el_selection, transparent);
+		return el::ObjectData(transform, color, name, transparency, id,
+			el_selection, transparent);
 	}
 
 	int el_rebuild_shader(lua_State *L)
@@ -871,7 +876,7 @@ extern "C" void engine_terrain()
 
 	width = (width - 1) / size;
 	height = (height - 1) / size;
-
+/*
 	for (y = 0; y < height; ++y)
 	{
 		for (x = 0; x < width; ++x)
@@ -889,7 +894,7 @@ extern "C" void engine_terrain()
 				false), materials);
 		}
 	}
-
+*/
 	DEBUG_CHECK_GL_ERROR();
 
 	CATCH_BLOCK
@@ -904,7 +909,7 @@ extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
 	el::MaterialEffectDescription material;
 	el::StringStream str;
 	el::String file_name;
-	glm::mat4 matrix;
+	el::Transform transform;
 	glm::vec3 offset;
 
 	TRY_BLOCK
@@ -923,10 +928,8 @@ extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
 	assert(glm::all(glm::lessThanEqual(glm::abs(offset),
 		glm::vec3(1e7f))));
 
-	matrix[0][0] = 3.0f;
-	matrix[1][1] = 3.0f;
-	matrix[2][2] = 1.0f;
-	matrix[3] = glm::vec4(offset, 1.0f);
+	transform.set_translation(offset);
+	transform.set_scale(3.0f);
 
 	if ((tile != 0) && (tile != 240))
 	{
@@ -952,9 +955,9 @@ extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
 
 	materials.push_back(material);
 
-	instances_builder->add(el::ObjectData(glm::mat4x3(matrix),
-		glm::vec4(0.0f), el::String(UTF8("plane_4")), 0.0f,
-		free_ids.get_next_free_id(), el::st_none, false), materials);
+	instances_builder->add(el::ObjectData(transform, glm::vec4(0.0f),
+		el::String(UTF8("plane_4")), 0.0f, free_ids.get_next_free_id(),
+		el::st_none, false), materials);
 
 	DEBUG_CHECK_GL_ERROR();
 
@@ -1108,8 +1111,9 @@ extern "C" void engine_build_buffers(actor_types* a)
 
 extern "C" void engine_set_transformation_buffers(actor* actor)
 {
-	glm::mat4 matrix;
-	glm::vec3 offset, attachment_shift;
+	el::Transform transform;
+	glm::quat rotation;
+	glm::vec3 offset, attachment_shift, translation;
 
 	TRY_BLOCK
 
@@ -1134,18 +1138,24 @@ extern "C" void engine_set_transformation_buffers(actor* actor)
 		attachment_shift.z = actor->attachment_shift[2];
 	}
 
-	matrix = glm::translate(offset);
-	matrix = glm::rotate(matrix, 180.0f - actor->z_rot, glm::vec3(0.0f, 0.0f, 1.0f));
-	matrix = glm::rotate(matrix, actor->x_rot, glm::vec3(1.0f, 0.0f, 0.0f));
-	matrix = glm::rotate(matrix, actor->y_rot, glm::vec3(0.0f, 1.0f, 0.0f));
-	matrix = glm::translate(matrix, attachment_shift);
-	matrix = glm::scale(matrix, glm::vec3(actors_defs[actor->actor_type].actor_scale));
-	matrix = glm::scale(matrix, glm::vec3(actor->scale));
+	rotation = glm::quat();
+	rotation = glm::rotate(rotation, 180.0f - actor->z_rot,
+		glm::vec3(0.0f, 0.0f, 1.0f));
+	rotation = glm::rotate(rotation, actor->x_rot,
+		glm::vec3(1.0f, 0.0f, 0.0f));
+	rotation = glm::rotate(rotation, actor->y_rot,
+		glm::vec3(0.0f, 1.0f, 0.0f));
+
+	transform.set_rotation(rotation);
+	translation = offset + rotation * attachment_shift;
+	transform.set_scale(actors_defs[actor->actor_type].actor_scale *
+		actor->scale);
+	transform.set_translation(translation);
 
 	reinterpret_cast<el::Actor*>(actor->calmodel->getUserData(
 		))->update_bones();
 	reinterpret_cast<el::Actor*>(actor->calmodel->getUserData(
-		))->set_world_matrix(glm::mat4x3(matrix));
+		))->set_world_transform(transform);
 
 	CATCH_BLOCK
 }

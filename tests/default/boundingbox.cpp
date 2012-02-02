@@ -15,7 +15,7 @@
 
 namespace el = eternal_lands;
 
-BOOST_AUTO_TEST_CASE(bounding_box_default_creation)
+BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::BoundingBox box(glm::vec3(23.0f, -1234.56f, -34.0f),
 		glm::vec3(34.5f, 214.012f, 0.234f));
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(bounding_box_default_creation)
 	BOOST_CHECK_CLOSE(box.get_max()[2], 0.234f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(bounding_box_min_max)
+BOOST_AUTO_TEST_CASE(min_max)
 {
 	el::BoundingBox box(glm::vec3(23.0f, -1234.56f, -34.0f),
 		glm::vec3(34.5f, 214.012f, 0.234f));
@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(bounding_box_min_max)
 	BOOST_CHECK_CLOSE(box.get_max()[2], 6.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(bounding_box_half_size)
+BOOST_AUTO_TEST_CASE(half_size)
 {
 	el::BoundingBox box(glm::vec3(23.0f, -1234.56f, -34.0f),
 		glm::vec3(34.5f, 214.012f, 0.234f));
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(bounding_box_half_size)
 	BOOST_CHECK_CLOSE(box.get_half_size()[2], 3.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(bounding_box_center)
+BOOST_AUTO_TEST_CASE(center)
 {
 	el::BoundingBox box(glm::vec3(23.0f, -1234.56f, -34.0f),
 		glm::vec3(34.5f, 214.012f, 0.234f));
@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(bounding_box_center)
 	BOOST_CHECK_CLOSE(box.get_center()[2], 3.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(bounding_box_volume)
+BOOST_AUTO_TEST_CASE(volume)
 {
 	el::BoundingBox box(glm::vec3(23.0f, -1234.56f, -34.0f),
 		glm::vec3(34.5f, 214.012f, 0.234f));
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(bounding_box_volume)
 	BOOST_CHECK_CLOSE(box.get_volume(), 48.0f, 0.001);
 }
 
-BOOST_AUTO_TEST_CASE(bounding_box_margin)
+BOOST_AUTO_TEST_CASE(margin)
 {
 	el::BoundingBox box(glm::vec3(23.0f, -1234.56f, -34.0f),
 		glm::vec3(34.5f, 214.012f, 0.234f));
