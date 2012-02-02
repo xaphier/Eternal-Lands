@@ -41,8 +41,14 @@ namespace eternal_lands
 				const float value);
 			void write_int_element(const StringType &name,
 				const Sint64 value);
+			void write_vec2_element(const StringType &name,
+				const glm::vec2 &value);
+			void write_vec3_element(const StringType &name,
+				const glm::vec3 &value);
 			void write_vec4_element(const StringType &name,
 				const glm::vec4 &value);
+			void write_quaternion_element(const StringType &name,
+				const glm::quat &value);
 			void write_variant_element(const StringType &element,
 				const Variant &variant);
 			void write_string_variant_element(

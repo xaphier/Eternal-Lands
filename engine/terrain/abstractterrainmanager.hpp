@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "transformation.hpp"
 
 /**
  * @file
@@ -25,11 +26,13 @@ namespace eternal_lands
 	class AbstractTerrainManager: public boost::noncopyable
 	{
 		private:
+			Transformation m_transformation;
 			StringArray4 m_albedo_maps;
 			String m_blend_map;
 			String m_height_map;
 			const String m_name;
-			glm::vec3 m_offset;
+			glm::vec4 m_rotation;
+			glm::vec3 m_translation;
 			float m_height_scale;
 			float m_scale;
 			Uint16 m_tile_size;
@@ -45,6 +48,12 @@ namespace eternal_lands
 				m_albedo_maps = albedo_maps;
 			}
 
+			inline void set_albedo_map(const String &albedo_map,
+				const Uint16 index)
+			{
+				m_albedo_maps[index] = albedo_map;
+			}
+
 			inline void set_blend_map(
 				const String &blend_map)
 			{
@@ -56,16 +65,6 @@ namespace eternal_lands
 				m_height_map = height_map;
 			}
 
-			inline void set_offset(const glm::vec3 &offset)
-			{
-				m_offset = offset;
-			}
-
-			inline void set_scale(const float scale)
-			{
-				m_scale = scale;
-			}
-
 			inline void set_height_scale(const float height_scale)
 			{
 				m_height_scale = height_scale;
@@ -74,6 +73,12 @@ namespace eternal_lands
 			inline void set_tile_size(const Uint16 tile_size)
 			{
 				m_tile_size = tile_size;
+			}
+
+			inline void set_transformation(
+				const Transformation &transformation)
+			{
+				m_transformation = transformation;
 			}
 
 		public:
@@ -108,14 +113,9 @@ namespace eternal_lands
 				return m_height_map;
 			}
 
-			inline const glm::vec3 &get_offset() const
+			inline const Transformation &get_transformation() const
 			{
-				return m_offset;
-			}
-
-			inline const float get_scale() const
-			{
-				return m_scale;
+				return m_transformation;
 			}
 
 			inline const float get_height_scale() const

@@ -25,10 +25,11 @@ namespace eternal_lands
 	{
 		Uint16 i;
 
-		if (get_world_transform() != material.get_world_transform())
+		if (get_world_transformation() !=
+			material.get_world_transformation())
 		{
-			return get_world_transform() <
-				material.get_world_transform();
+			return get_world_transformation() <
+				material.get_world_transformation();
 		}
 
 		if (get_texture_coodrinates() !=
@@ -111,7 +112,8 @@ namespace eternal_lands
 	{
 		Uint16 i;
 
-		if (get_world_transform() != material.get_world_transform())
+		if (get_world_transformation() !=
+			material.get_world_transformation())
 		{
 			return false;
 		}
@@ -197,7 +199,7 @@ namespace eternal_lands
 	void MaterialEffectDescription::set_effect_description(
 		const EffectDescription &effect)
 	{
-		set_world_transform(effect.get_world_transform());
+		set_world_transformation(effect.get_world_transformation());
 		set_texture_coodrinates(effect.get_texture_coodrinates());
 		set_albedo_mapping(effect.get_albedo_mapping());
 		set_normal_mapping(effect.get_normal_mapping());
@@ -211,7 +213,7 @@ namespace eternal_lands
 	void MaterialEffectDescription::get_effect_description(
 		EffectDescription &effect) const
 	{
-		effect.set_world_transform(get_world_transform());
+		effect.set_world_transformation(get_world_transformation());
 		effect.set_texture_coodrinates(get_texture_coodrinates());
 		effect.set_albedo_mapping(get_albedo_mapping());
 		effect.set_normal_mapping(get_normal_mapping());
@@ -229,7 +231,8 @@ namespace eternal_lands
 		Uint16 i;
 
 		str << "material_name: " << value.get_material_name();
-		str << " world_transform: " << value.get_world_transform();
+		str << " world_transformation: ";
+		str << value.get_world_transformation();
 		str << " texture_coodrinates: ";
 		str << value.get_texture_coodrinates() << std::endl;
 		str << " albedo_mapping: " << value.get_albedo_mapping();

@@ -56,7 +56,8 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		)[2], 0.0f);
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
 		)[3], 0.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description.get_world_transformation(),
 		"");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_coodrinates(),
 		"");
@@ -146,7 +147,8 @@ BOOST_AUTO_TEST_CASE(textures)
 		)[2], 0.0f);
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
 		)[3], 0.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description.get_world_transformation(),
 		"");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_coodrinates(),
 		"");
@@ -169,7 +171,8 @@ BOOST_AUTO_TEST_CASE(effect)
 {
 	el::MaterialEffectDescription material_effect_description;
 
-	BOOST_CHECK_NO_THROW(material_effect_description.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_coodrinates(
@@ -223,7 +226,8 @@ BOOST_AUTO_TEST_CASE(effect)
 		)[2], 0.0f);
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
 		)[3], 0.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description.get_world_transformation(),
 		"afsd5sf");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
@@ -280,7 +284,8 @@ BOOST_AUTO_TEST_CASE(all)
 			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
-	BOOST_CHECK_NO_THROW(material_effect_description.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_coodrinates(
@@ -341,7 +346,8 @@ BOOST_AUTO_TEST_CASE(all)
 		)[3], 76.0f, 0.001);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"hrtzn..,");
-	BOOST_CHECK_EQUAL(material_effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description.get_world_transformation(),
 		"afsd5sf");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
@@ -370,7 +376,8 @@ BOOST_AUTO_TEST_CASE(xml)
 		"<specular>y&lt;bnj3e</specular>"
 		"<emission>ymbnjf!2r2!A</emission><blend>345w</blend>"
 		"<height>2556yvc23</height>"
-		"<texture_scale_offset>0.6787 4.342 345.0 76.0</texture_scale_offset>"
+		"<texture_scale_offset>0.6787 4.342 345.0 76.0"
+		"</texture_scale_offset>"
 		"<texture_coodrinates>afdgsr!§$AFD54</texture_coodrinates>"
 		"<albedo_mapping>428rfu0sr4v</albedo_mapping>"
 		"<normal_mapping>AST%&amp;%</normal_mapping>"
@@ -427,7 +434,8 @@ BOOST_AUTO_TEST_CASE(xml)
 		)[3], 76.0f, 0.001);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"tada");
-	BOOST_CHECK_EQUAL(material_effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description.get_world_transformation(),
 		"");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
@@ -530,7 +538,8 @@ BOOST_AUTO_TEST_CASE(set_material_descriptiont)
 			glm::vec4(534.0f, -4.342f, -344.0f, 176.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
 		el::String(UTF8("fgrzj.-jhasdfk23r"))));
-	BOOST_CHECK_NO_THROW(material_effect_description.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_coodrinates(
@@ -595,7 +604,8 @@ BOOST_AUTO_TEST_CASE(set_material_descriptiont)
 		)[3], 76.0f, 0.001);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"hrtzn..,");
-	BOOST_CHECK_EQUAL(material_effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description.get_world_transformation(),
 		"afsd5sf");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
@@ -610,7 +620,8 @@ BOOST_AUTO_TEST_CASE(set_material_descriptiont)
 	BOOST_CHECK_EQUAL(material_effect_description.get_receives_shadows(),
 		false);
 	BOOST_CHECK_EQUAL(material_effect_description.get_lighting(), true);
-	BOOST_CHECK_EQUAL(material_effect_description.get_cast_shadows(), false);
+	BOOST_CHECK_EQUAL(material_effect_description.get_cast_shadows(),
+		false);
 	BOOST_CHECK_EQUAL(material_effect_description.get_culling(), false);
 	BOOST_CHECK_EQUAL(material_effect_description.get_transparent(), true);
 }
@@ -653,7 +664,8 @@ BOOST_AUTO_TEST_CASE(asign)
 			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_0.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
-	BOOST_CHECK_NO_THROW(material_effect_description_0.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_0.set_texture_coodrinates(
@@ -763,9 +775,11 @@ BOOST_AUTO_TEST_CASE(asign)
 		"hrtzn..,");
 	BOOST_CHECK_EQUAL(material_effect_description_1.get_material_name(),
 		"hrtzn..,");
-	BOOST_CHECK_EQUAL(material_effect_description_0.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description_0.get_world_transformation(),
 		"afsd5sf");
-	BOOST_CHECK_EQUAL(material_effect_description_1.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description_1.get_world_transformation(),
 		"afsd5sf");
 	BOOST_CHECK_EQUAL(
 		material_effect_description_0.get_texture_coodrinates(),
@@ -844,7 +858,8 @@ BOOST_AUTO_TEST_CASE(equal)
 			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_0.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
-	BOOST_CHECK_NO_THROW(material_effect_description_0.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_0.set_texture_coodrinates(
@@ -895,7 +910,8 @@ BOOST_AUTO_TEST_CASE(equal)
 			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_1.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
-	BOOST_CHECK_NO_THROW(material_effect_description_1.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_1.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_1.set_texture_coodrinates(
@@ -961,7 +977,8 @@ BOOST_AUTO_TEST_CASE(not_equal)
 			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_0.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
-	BOOST_CHECK_NO_THROW(material_effect_description_0.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_0.set_texture_coodrinates(
@@ -1021,7 +1038,8 @@ BOOST_AUTO_TEST_CASE(less)
 			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_0.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
-	BOOST_CHECK_NO_THROW(material_effect_description_0.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_0.set_texture_coodrinates(
@@ -1052,7 +1070,7 @@ BOOST_AUTO_TEST_CASE(set_effect_description)
 	el::MaterialEffectDescription material_effect_description;
 	el::EffectDescription effect_description;
 
-	BOOST_CHECK_NO_THROW(effect_description.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(effect_description.set_texture_coodrinates(
 			el::String(UTF8("afdgsr!§$AFD54"))));
@@ -1102,7 +1120,8 @@ BOOST_AUTO_TEST_CASE(set_effect_description)
 			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
-	BOOST_CHECK_NO_THROW(material_effect_description.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_world_transformation(
 		el::String(UTF8("t6o56z"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_coodrinates(
@@ -1166,7 +1185,8 @@ BOOST_AUTO_TEST_CASE(set_effect_description)
 		)[3], 76.0f, 0.001);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"hrtzn..,");
-	BOOST_CHECK_EQUAL(material_effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description.get_world_transformation(),
 		"afsd5sf");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
@@ -1224,7 +1244,8 @@ BOOST_AUTO_TEST_CASE(get_effect_description)
 			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
-	BOOST_CHECK_NO_THROW(material_effect_description.set_world_transform(
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_coodrinates(
@@ -1288,7 +1309,8 @@ BOOST_AUTO_TEST_CASE(get_effect_description)
 		)[3], 76.0f, 0.001);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"hrtzn..,");
-	BOOST_CHECK_EQUAL(material_effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(
+		material_effect_description.get_world_transformation(),
 		"afsd5sf");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
@@ -1303,11 +1325,12 @@ BOOST_AUTO_TEST_CASE(get_effect_description)
 	BOOST_CHECK_EQUAL(material_effect_description.get_receives_shadows(),
 		false);
 	BOOST_CHECK_EQUAL(material_effect_description.get_lighting(), false);
-	BOOST_CHECK_EQUAL(material_effect_description.get_cast_shadows(), false);
+	BOOST_CHECK_EQUAL(material_effect_description.get_cast_shadows(),
+		false);
 	BOOST_CHECK_EQUAL(material_effect_description.get_culling(), false);
 	BOOST_CHECK_EQUAL(material_effect_description.get_transparent(), true);
 
-	BOOST_CHECK_EQUAL(effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(effect_description.get_world_transformation(),
 		"afsd5sf");
 	BOOST_CHECK_EQUAL(effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");

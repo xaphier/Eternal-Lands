@@ -1431,7 +1431,7 @@ namespace eternal_lands
 		if (data.get_option(ssbot_tangent))
 		{
 			build_function(data, array_sizes, locals,
-				sst_world_tangent_transform, indent, main,
+				sst_world_tangent_transformation, indent, main,
 				globals, values);
 		}
 		else
@@ -1439,13 +1439,13 @@ namespace eternal_lands
 			if (data.get_option(ssbot_normal))
 			{
 				build_function(data, array_sizes,
-					locals, sst_world_normal_transform,
+					locals, sst_world_normal_transformation,
 					indent, main, globals, values);
 			}
 			else
 			{
 				build_function(data, array_sizes,
-					locals, sst_world_depth_transform,
+					locals, sst_world_depth_transformation,
 					indent, main, globals, values);
 			}
 		}
@@ -1467,7 +1467,7 @@ namespace eternal_lands
 		if (data.get_option(ssbot_view_position))
 		{
 			build_function(data, array_sizes, locals,
-				sst_view_transform, indent, main, globals,
+				sst_view_transformation, indent, main, globals,
 				values);
 		}
 
@@ -1904,7 +1904,7 @@ namespace eternal_lands
 		if (data.get_option(ssbot_view_position))
 		{
 			result |= check_function(data, name,
-				sst_view_transform);
+				sst_view_transformation);
 		}
 
 		if ((data.get_shader_build_type() == sbt_color))
@@ -2030,12 +2030,12 @@ namespace eternal_lands
 
 		sources = get_sources();
 
-		sources[sst_world_depth_transform] =
-			description.get_world_transform();
-		sources[sst_world_normal_transform] =
-			description.get_world_transform();
-		sources[sst_world_tangent_transform] =
-			description.get_world_transform();
+		sources[sst_world_depth_transformation] =
+			description.get_world_transformation();
+		sources[sst_world_normal_transformation] =
+			description.get_world_transformation();
+		sources[sst_world_tangent_transformation] =
+			description.get_world_transformation();
 		sources[sst_uv] = description.get_texture_coodrinates();
 		sources[sst_albedo_mapping] = description.get_albedo_mapping();
 		sources[sst_normal_mapping] = description.get_normal_mapping();

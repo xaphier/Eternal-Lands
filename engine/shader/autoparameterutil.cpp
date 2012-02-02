@@ -63,7 +63,8 @@ namespace eternal_lands
 
 		const AutoParameterTypeData auto_parameter_type_datas[] =
 		{
-			AutoParameterTypeData(String(UTF8("world_transform")),
+			AutoParameterTypeData(
+				String(UTF8("world_transformation")),
 				pt_mat2x4),
 			AutoParameterTypeData(String(UTF8("view_matrix")),
 				pt_mat4x4, pst_layer_count),

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>default</name>
- <type>world_depth_transform</type>
+ <type>world_depth_transformation</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -13,7 +13,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transform</name>
+     <name>world_transformation</name>
      <type>mat2x4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -29,9 +29,9 @@
    </parameters>
    <source>world_position = position.xyz;
 
-world_position += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_position) + world_transform[0].w * world_position);
-world_position *= world_transform[1].w;
-world_position += world_transform[1].xyz;
+world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

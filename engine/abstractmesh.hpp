@@ -183,7 +183,8 @@ namespace eternal_lands
 				const Uint32Vector &indices,
 				const bool static_indices = true);
 
-			void get_bounding_box(const Transform &transform,
+			void get_bounding_box(
+				const Transformation &transformation,
 				BoundingBox &bounding_box);
 
 			VertexBuffersSharedPtr get_vertex_buffers(

@@ -17,7 +17,7 @@ namespace el = eternal_lands;
 
 BOOST_AUTO_TEST_CASE(default_creation)
 {
-	el::ObjectData object_data(el::Transform(),
+	el::ObjectData object_data(el::Transformation(),
 		glm::vec4(34.5f, -214.012f, 0.234f, -0.43f),
 		el::String(UTF8("3sfd23")), 0.54f, 543549564, el::st_player,
 		true);

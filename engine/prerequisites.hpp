@@ -253,7 +253,7 @@ namespace eternal_lands
 	class TextureGlyphe;
 	class TextureFont;
 	class TextureFontCache;
-	class Transform;
+	class Transformation;
 	class VertexElement;
 	class VertexElements;
 	class VertexFormat;

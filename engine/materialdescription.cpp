@@ -44,12 +44,6 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
-			{
-				set_material_name(
-					XmlUtil::get_string_value(it));
-			}
-
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("albedo_0"))
 				== 0)
 			{

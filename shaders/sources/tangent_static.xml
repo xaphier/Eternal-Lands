@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>default</name>
- <type>world_tangent_transform</type>
+ <type>world_tangent_transformation</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -27,7 +27,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transform</name>
+     <name>world_transformation</name>
      <type>mat2x4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -59,11 +59,11 @@
 world_normal = normal;
 world_tangent = tangent;
 
-world_position += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_position) + world_transform[0].w * world_position);
-world_position *= world_transform[1].w;
-world_position += world_transform[1].xyz;
-world_normal += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_normal) + world_transform[0].w * world_normal);
-world_tangent += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_tangent) + world_transform[0].w * world_tangent);
+world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
+world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + world_transformation[0].w * world_tangent);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

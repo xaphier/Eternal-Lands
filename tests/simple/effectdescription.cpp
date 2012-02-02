@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::EffectDescription effect_description;
 
-	BOOST_CHECK_EQUAL(effect_description.get_world_transform(), "");
+	BOOST_CHECK_EQUAL(effect_description.get_world_transformation(), "");
 	BOOST_CHECK_EQUAL(effect_description.get_texture_coodrinates(), "");
 	BOOST_CHECK_EQUAL(effect_description.get_albedo_mapping(), "");
 	BOOST_CHECK_EQUAL(effect_description.get_normal_mapping(), "");
@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(get_set)
 {
 	el::EffectDescription effect_description;
 
-	BOOST_CHECK_NO_THROW(effect_description.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description.set_world_transformation(
 		el::String(UTF8("sfg345sfgv"))));
 	BOOST_CHECK_NO_THROW(effect_description.set_texture_coodrinates(
 		el::String(UTF8("afdgsr!§$AFD54"))));
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(get_set)
 	BOOST_CHECK_NO_THROW(effect_description.set_transparent(true));
 	BOOST_CHECK_NO_THROW(effect_description.set_lighting(false));
 
-	BOOST_CHECK_EQUAL(effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(effect_description.get_world_transformation(),
 		"sfg345sfgv");
 	BOOST_CHECK_EQUAL(effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
@@ -68,7 +68,8 @@ BOOST_AUTO_TEST_CASE(get_set)
 BOOST_AUTO_TEST_CASE(xml)
 {
 	el::XmlBuffer buffer(UTF8("<?xml version=\"1.0\" encoding=\"utf8\"?>"
-		"<effect><world_transform>sfg345sfgv</world_transform>"
+		"<effect>"
+		"<world_transformation>sfg345sfgv</world_transformation>"
 		"<texture_coodrinates>afdgsr!§$AFD54</texture_coodrinates>"
 		"<albedo_mapping>428rfu0sr4v</albedo_mapping>"
 		"<normal_mapping>AST%&amp;%</normal_mapping>"
@@ -88,7 +89,7 @@ BOOST_AUTO_TEST_CASE(xml)
 
 	xml_reader.reset();
 
-	BOOST_CHECK_EQUAL(effect_description.get_world_transform(),
+	BOOST_CHECK_EQUAL(effect_description.get_world_transformation(),
 		"sfg345sfgv");
 	BOOST_CHECK_EQUAL(effect_description.get_texture_coodrinates(),
 		"afdgsr!§$AFD54");
@@ -109,7 +110,7 @@ BOOST_AUTO_TEST_CASE(asign)
 	el::EffectDescription effect_description_0;
 	el::EffectDescription effect_description_1;
 
-	BOOST_CHECK_NO_THROW(effect_description_0.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description_0.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		effect_description_0.set_texture_coodrinates(
@@ -130,9 +131,9 @@ BOOST_AUTO_TEST_CASE(asign)
 
 	effect_description_1 = effect_description_0;
 
-	BOOST_CHECK_EQUAL(effect_description_0.get_world_transform(),
+	BOOST_CHECK_EQUAL(effect_description_0.get_world_transformation(),
 		"afsd5sf");
-	BOOST_CHECK_EQUAL(effect_description_1.get_world_transform(),
+	BOOST_CHECK_EQUAL(effect_description_1.get_world_transformation(),
 		"afsd5sf");
 	BOOST_CHECK_EQUAL(
 		effect_description_0.get_texture_coodrinates(),
@@ -176,7 +177,7 @@ BOOST_AUTO_TEST_CASE(equal)
 	el::EffectDescription effect_description_0;
 	el::EffectDescription effect_description_1;
 
-	BOOST_CHECK_NO_THROW(effect_description_0.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description_0.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		effect_description_0.set_texture_coodrinates(
@@ -195,7 +196,7 @@ BOOST_AUTO_TEST_CASE(equal)
 	BOOST_CHECK_NO_THROW(effect_description_0.set_transparent(
 		true));
 
-	BOOST_CHECK_NO_THROW(effect_description_1.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description_1.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		effect_description_1.set_texture_coodrinates(
@@ -230,7 +231,7 @@ BOOST_AUTO_TEST_CASE(not_equal)
 	el::EffectDescription effect_description_0;
 	el::EffectDescription effect_description_1;
 
-	BOOST_CHECK_NO_THROW(effect_description_0.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description_0.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		effect_description_0.set_texture_coodrinates(
@@ -255,7 +256,7 @@ BOOST_AUTO_TEST_CASE(not_equal)
 
 	effect_description_1 = effect_description_0;
 
-	BOOST_CHECK_NO_THROW(effect_description_1.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description_1.set_world_transformation(
 		el::String(UTF8(""))));
 
 	BOOST_CHECK_NE(effect_description_0, effect_description_1);
@@ -337,7 +338,7 @@ BOOST_AUTO_TEST_CASE(less)
 	el::EffectDescription effect_description_0;
 	el::EffectDescription effect_description_1;
 
-	BOOST_CHECK_NO_THROW(effect_description_0.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description_0.set_world_transformation(
 		el::String(UTF8("afsd5sf"))));
 	BOOST_CHECK_NO_THROW(
 		effect_description_0.set_texture_coodrinates(
@@ -362,7 +363,7 @@ BOOST_AUTO_TEST_CASE(less)
 
 	effect_description_1 = effect_description_0;
 
-	BOOST_CHECK_NO_THROW(effect_description_1.set_world_transform(
+	BOOST_CHECK_NO_THROW(effect_description_1.set_world_transformation(
 		el::String(UTF8(""))));
 
 	BOOST_CHECK_LT(effect_description_1, effect_description_0);

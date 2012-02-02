@@ -30,7 +30,7 @@ namespace eternal_lands
 	 */
 	enum AutoParameterType
 	{
-		apt_world_transform = 0,
+		apt_world_transformation = 0,
 		apt_view_matrix,
 		apt_projection_matrix,
 		apt_projection_view_matrix,	

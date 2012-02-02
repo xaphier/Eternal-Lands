@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>terrain</name>
- <type>world_depth_transform</type>
+ <type>world_normal_transformation</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -40,10 +40,18 @@
      <size>one</size>
      <scale>1</scale>
     </parameter>
+    <parameter>
+     <name>world_normal</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
    </parameters>
    <source>world_position.xy = position.xy;
 world_position.z = textureLod(height_sampler, position.xy * texture_scale_offset.xy + texture_scale_offset.zw, 0.0).r;
 world_position = world_matrix * vec4(world_position, 1.0);
+world_normal = normalize(mat3(world_matrix) * vec3(0.0, 0.0, 1.0));
 </source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

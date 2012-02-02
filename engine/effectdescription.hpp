@@ -25,7 +25,7 @@ namespace eternal_lands
 	/**
 	 * @brief This class describes an effect.
 	 *
-	 * An effect description is defined throught its world transform,
+	 * An effect description is defined throught its world transformation,
 	 * lighting informations, texture mappings etc. All these informations
 	 * are used to build the shader source that is used to compile and link
 	 * the opengl shader.
@@ -33,7 +33,7 @@ namespace eternal_lands
 	class EffectDescription
 	{
 		private:
-			String m_world_transform;
+			String m_world_transformation;
 			String m_texture_coodrinates;
 			String m_albedo_mapping;
 			String m_normal_mapping;
@@ -59,9 +59,9 @@ namespace eternal_lands
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 
-			inline const String &get_world_transform() const
+			inline const String &get_world_transformation() const
 			{
-				return m_world_transform;
+				return m_world_transformation;
 			}
 
 			inline const String &get_texture_coodrinates() const
@@ -104,10 +104,10 @@ namespace eternal_lands
 				return m_lighting;
 			}
 
-			inline void set_world_transform(
-				const String &world_transform)
+			inline void set_world_transformation(
+				const String &world_transformation)
 			{
-				m_world_transform = world_transform;
+				m_world_transformation = world_transformation;
 			}
 
 			inline void set_texture_coodrinates(

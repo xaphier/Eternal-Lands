@@ -7,7 +7,7 @@
 
 #include "boundingbox.hpp"
 #include "exceptions.hpp"
-#include "transform.hpp"
+#include "transformation.hpp"
 
 namespace eternal_lands
 {
@@ -126,7 +126,8 @@ namespace eternal_lands
 			get_half_size()[1] * get_half_size()[2] * 8.0f;
 	}
 
-	BoundingBox BoundingBox::transform(const Transform &transform) const
+	BoundingBox BoundingBox::transform(
+		const Transformation &transformation) const
 	{
 		glm::vec3 min, max, point;
 		Uint16 i;
@@ -136,7 +137,7 @@ namespace eternal_lands
 
 		for (i = 0; i < 8; ++i)
 		{
-			point = transform.transform_point(
+			point = transformation.transform_point(
 				get_point(std::bitset<3>(i)));
 
 			min = glm::min(min, point);

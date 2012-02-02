@@ -354,7 +354,7 @@ namespace eternal_lands
 	{
 		switch (source_type)
 		{
-			case sst_world_depth_transform:
+			case sst_world_depth_transformation:
 				if (index == 0)
 				{
 					get_data(cpt_world_position, pqt_out,
@@ -371,12 +371,12 @@ namespace eternal_lands
 				}
 				if (index == 2)
 				{
-					get_data(apt_world_transform, name,
+					get_data(apt_world_transformation, name,
 						type, qualifier, size, scale);
 					return true;
 				}
 				return false;
-			case sst_world_normal_transform:
+			case sst_world_normal_transformation:
 				if (index == 0)
 				{
 					get_data(cpt_world_position, pqt_out,
@@ -407,12 +407,12 @@ namespace eternal_lands
 				}
 				if (index == 4)
 				{
-					get_data(apt_world_transform, name,
+					get_data(apt_world_transformation, name,
 						type, qualifier, size, scale);
 					return true;
 				}
 				return false;
-			case sst_world_tangent_transform:
+			case sst_world_tangent_transformation:
 				if (index == 0)
 				{
 					get_data(cpt_world_position, pqt_out,
@@ -457,7 +457,7 @@ namespace eternal_lands
 				}
 				if (index == 6)
 				{
-					get_data(apt_world_transform, name,
+					get_data(apt_world_transformation, name,
 						type, qualifier, size, scale);
 					return true;
 				}
@@ -478,7 +478,7 @@ namespace eternal_lands
 					return true;
 				}
 				return false;
-			case sst_view_transform:
+			case sst_view_transformation:
 				if (index == 0)
 				{
 					get_data(cpt_world_position, pqt_in,

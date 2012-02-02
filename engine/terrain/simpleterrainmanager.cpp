@@ -75,8 +75,6 @@ namespace eternal_lands
 				position.x = x;
 				position.y = y;
 				position.z = height * get_height_scale();
-				position *= get_scale();
-				position += get_offset();
 
 				min = glm::min(min, position);
 				max = glm::max(max, position);

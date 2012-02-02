@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "selectionutil.hpp"
-#include "transform.hpp"
+#include "transformation.hpp"
 
 /**
  * @file
@@ -32,7 +32,7 @@ namespace eternal_lands
 	class ObjectData
 	{
 		private:
-			Transform m_world_transform;
+			Transformation m_world_transformation;
 			glm::vec4 m_color;
 			String m_name;
 			float m_transparency;
@@ -49,7 +49,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			ObjectData(const Transform &world_transform,
+			ObjectData(const Transformation &world_transformation,
 				const glm::vec4 &color, const String &name,
 				const float transparency, const Uint32 id,
 				const SelectionType selection,
@@ -60,10 +60,10 @@ namespace eternal_lands
 			 */
 			~ObjectData() throw();
 
-			inline void set_world_transform(
-				const Transform &world_transform)
+			inline void set_world_transformation(
+				const Transformation &world_transformation)
 			{
-				m_world_transform = world_transform;
+				m_world_transformation = world_transformation;
 			}
 
 			inline void set_color(const glm::vec4 &color)
@@ -96,9 +96,10 @@ namespace eternal_lands
 				m_id = id;
 			}
 
-			inline const Transform &get_world_transform() const
+			inline const Transformation &get_world_transformation()
+				const
 			{
-				return m_world_transform;
+				return m_world_transformation;
 			}
 
 			inline const glm::vec4 &get_color() const

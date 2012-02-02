@@ -574,8 +574,8 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_transform,
-					object->get_world_transform(
+					apt_world_transformation,
+					object->get_world_transformation(
 						).get_data());
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
@@ -631,8 +631,8 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_transform,
-					object->get_world_transform(
+					apt_world_transformation,
+					object->get_world_transformation(
 						).get_data());
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
@@ -677,8 +677,8 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_transform,
-					object->get_world_transform(
+					apt_world_transformation,
+					object->get_world_transformation(
 						).get_data());
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
@@ -984,8 +984,8 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_transform,
-					object->get_world_transform(
+					apt_world_transformation,
+					object->get_world_transformation(
 						).get_data());
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());

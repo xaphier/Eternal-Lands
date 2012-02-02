@@ -128,7 +128,7 @@ namespace eternal_lands
 			return false;
 		}
 
-		position = found->second->get_world_transform(
+		position = found->second->get_world_transformation(
 			).get_translation();
 
 		return true;

@@ -9,11 +9,11 @@
 		<shader_source>shaders/sources/bone_depth_animation.xml</shader_source>
 		<shader_source>shaders/sources/bone_normal_animation.xml</shader_source>
 		<shader_source>shaders/sources/bone_tangent_animation.xml</shader_source>
-		<shader_source>shaders/sources/depth_transform.xml</shader_source>
-		<shader_source>shaders/sources/normal_transform.xml</shader_source>
-		<shader_source>shaders/sources/tangent_transform.xml</shader_source>
+		<shader_source>shaders/sources/depth_static.xml</shader_source>
+		<shader_source>shaders/sources/normal_static.xml</shader_source>
+		<shader_source>shaders/sources/tangent_static.xml</shader_source>
 		<shader_source>shaders/sources/view_direction.xml</shader_source>
-		<shader_source>shaders/sources/view_transform.xml</shader_source>
+		<shader_source>shaders/sources/view_transformation.xml</shader_source>
 		<shader_source>shaders/sources/albedo_blend_mapping.xml</shader_source>
 		<shader_source>shaders/sources/albedo_blend_4_mapping.xml</shader_source>
 		<shader_source>shaders/sources/albedo_mapping.xml</shader_source>
@@ -42,16 +42,16 @@
 		<shader_source>shaders/sources/exp_shadow_mapping.xml</shader_source>
 		<shader_source>shaders/sources/tbn_matrix.xml</shader_source>
 		<shader_source>shaders/sources/cook_torrance_light.xml</shader_source>
-		<shader_source>shaders/sources/terrain_depth_transform.xml</shader_source>
-		<shader_source>shaders/sources/terrain_normal_transform.xml</shader_source>
-		<shader_source>shaders/sources/terrain_tangent_transform.xml</shader_source>
+		<shader_source>shaders/sources/terrain_depth_simple.xml</shader_source>
+		<shader_source>shaders/sources/terrain_normal_simple.xml</shader_source>
+		<shader_source>shaders/sources/terrain_tangent_simple.xml</shader_source>
 	</shader_sources>
 	<sources>
-		<world_depth_transform>default</world_depth_transform>
-		<world_normal_transform>default</world_normal_transform>
-		<world_tangent_transform>default</world_tangent_transform>
+		<world_depth_transformation>default</world_depth_transformation>
+		<world_normal_transformation>default</world_normal_transformation>
+		<world_tangent_transformation>default</world_tangent_transformation>
 		<view_direction>default</view_direction>
-		<view_transform>default</view_transform>
+		<view_transformation>default</view_transformation>
 		<shadow_uv>default</shadow_uv>
 		<shadow_mapping>default</shadow_mapping>
 		<fog>default</fog>

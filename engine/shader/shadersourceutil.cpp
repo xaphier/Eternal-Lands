@@ -18,11 +18,11 @@ namespace eternal_lands
 
 		const String shader_source_type_datas[] =
 		{
-			String(UTF8("world_depth_transform")),
-			String(UTF8("world_normal_transform")),
-			String(UTF8("world_tangent_transform")),
+			String(UTF8("world_depth_transformation")),
+			String(UTF8("world_normal_transformation")),
+			String(UTF8("world_tangent_transformation")),
 			String(UTF8("view_direction")),
-			String(UTF8("view_transform")),
+			String(UTF8("view_transformation")),
 			String(UTF8("fog")),
 			String(UTF8("vertex_light")),
 			String(UTF8("fragment_light")),

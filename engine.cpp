@@ -230,7 +230,7 @@ namespace
 		const bool transparent, const Uint32 id,
 		const SelectionType selection)
 	{
-		el::Transform transform;
+		el::Transformation transformation;
 		glm::quat rotation;
 		float transparency;
 		el::SelectionType el_selection;
@@ -246,8 +246,8 @@ namespace
 		rotation = glm::rotate(rotation, rot.y,
 			glm::vec3(0.0f, 1.0f, 0.0f));
 
-		transform.set_rotation(rotation);
-		transform.set_translation(pos);
+		transformation.set_rotation(rotation);
+		transformation.set_translation(pos);
 
 		el_selection = get_selection_type(name, selection);
 
@@ -260,8 +260,8 @@ namespace
 			transparency = 1.0f;
 		}
 
-		return el::ObjectData(transform, color, name, transparency, id,
-			el_selection, transparent);
+		return el::ObjectData(transformation, color, name,
+			transparency, id, el_selection, transparent);
 	}
 
 	int el_rebuild_shader(lua_State *L)
@@ -843,7 +843,7 @@ extern "C" void engine_terrain()
 		).get_material_description_cache()->get_material_description(
 		el::String(UTF8("terrain"))));
 
-	material.set_world_transform(el::String(UTF8("terrain")));
+	material.set_world_transformation(el::String(UTF8("terrain")));
 
 	materials.push_back(material);
 
@@ -909,7 +909,7 @@ extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
 	el::MaterialEffectDescription material;
 	el::StringStream str;
 	el::String file_name;
-	el::Transform transform;
+	el::Transformation transformation;
 	glm::vec3 offset;
 
 	TRY_BLOCK
@@ -928,8 +928,8 @@ extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
 	assert(glm::all(glm::lessThanEqual(glm::abs(offset),
 		glm::vec3(1e7f))));
 
-	transform.set_translation(offset);
-	transform.set_scale(3.0f);
+	transformation.set_translation(offset);
+	transformation.set_scale(3.0f);
 
 	if ((tile != 0) && (tile != 240))
 	{
@@ -951,11 +951,11 @@ extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
 		).get_material_description_cache()->get_material_description(
 		el::String(str.str())));
 
-	material.set_world_transform(el::String(UTF8("default")));
+	material.set_world_transformation(el::String(UTF8("default")));
 
 	materials.push_back(material);
 
-	instances_builder->add(el::ObjectData(transform, glm::vec4(0.0f),
+	instances_builder->add(el::ObjectData(transformation, glm::vec4(0.0f),
 		el::String(UTF8("plane_4")), 0.0f, free_ids.get_next_free_id(),
 		el::st_none, false), materials);
 
@@ -1111,7 +1111,7 @@ extern "C" void engine_build_buffers(actor_types* a)
 
 extern "C" void engine_set_transformation_buffers(actor* actor)
 {
-	el::Transform transform;
+	el::Transformation transformation;
 	glm::quat rotation;
 	glm::vec3 offset, attachment_shift, translation;
 
@@ -1146,16 +1146,16 @@ extern "C" void engine_set_transformation_buffers(actor* actor)
 	rotation = glm::rotate(rotation, actor->y_rot,
 		glm::vec3(0.0f, 1.0f, 0.0f));
 
-	transform.set_rotation(rotation);
+	transformation.set_rotation(rotation);
 	translation = offset + rotation * attachment_shift;
-	transform.set_scale(actors_defs[actor->actor_type].actor_scale *
+	transformation.set_scale(actors_defs[actor->actor_type].actor_scale *
 		actor->scale);
-	transform.set_translation(translation);
+	transformation.set_translation(translation);
 
 	reinterpret_cast<el::Actor*>(actor->calmodel->getUserData(
 		))->update_bones();
 	reinterpret_cast<el::Actor*>(actor->calmodel->getUserData(
-		))->set_world_transform(transform);
+		))->set_world_transformation(transformation);
 
 	CATCH_BLOCK
 }

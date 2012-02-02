@@ -185,8 +185,38 @@ namespace eternal_lands
 		end_element();
 	}
 
+	void XmlWriter::write_vec2_element(const StringType &name,
+		const glm::vec2 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_vec3_element(const StringType &name,
+		const glm::vec3 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
 	void XmlWriter::write_vec4_element(const StringType &name,
 		const glm::vec4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_quaternion_element(const StringType &name,
+		const glm::quat &value)
 	{
 		StringStream str;
 

@@ -91,7 +91,7 @@ namespace eternal_lands
 	{
 		BoundingBox bounding_box;
 
-		get_mesh()->get_bounding_box(get_world_transform(),
+		get_mesh()->get_bounding_box(get_world_transformation(),
 			bounding_box);
 		set_bounding_box(bounding_box);
 	}

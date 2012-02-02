@@ -24,11 +24,11 @@ namespace eternal_lands
 
 	enum ShaderSourceType
 	{
-		sst_world_depth_transform = 0,
-		sst_world_normal_transform,
-		sst_world_tangent_transform,
+		sst_world_depth_transformation = 0,
+		sst_world_normal_transformation,
+		sst_world_tangent_transformation,
 		sst_view_direction,
-		sst_view_transform,
+		sst_view_transformation,
 		sst_fog,
 		sst_vertex_light,
 		sst_fragment_light,

@@ -132,7 +132,8 @@ namespace eternal_lands
 				)->get_material_description(
 					found->second.m_material_name));
 
-		material.set_world_transform(String(UTF8("bone_animation")));
+		material.set_world_transformation(
+			String(UTF8("bone_animation")));
 
 		materials.clear();
 		materials.push_back(material);
@@ -146,7 +147,7 @@ namespace eternal_lands
 			blend = false;
 		}
 
-		result.reset(new Actor(ObjectData(Transform(),
+		result.reset(new Actor(ObjectData(Transformation(),
 			glm::vec4(0.0f), name, 0.7f, id, selection, blend),
 			found->second.m_mesh->clone_vertex_data(), materials,
 			get_effect_cache(), get_texture_cache(),

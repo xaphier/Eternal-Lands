@@ -42,7 +42,8 @@ BOOST_AUTO_TEST_CASE(convert)
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
-		el::sst_world_depth_transform).get(), "world_depth_transform");
+		el::sst_world_depth_transformation).get(),
+		"world_depth_transformation");
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
 		el::sst_vertex_light).get(), "vertex_light");
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(

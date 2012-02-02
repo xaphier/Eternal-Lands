@@ -26,7 +26,7 @@ namespace eternal_lands
 	class MaterialEffectDescription: public MaterialDescription
 	{
 		private:
-			String m_world_transform;
+			String m_world_transformation;
 			bool m_cast_shadows;
 			bool m_culling;
 			bool m_transparent;
@@ -50,9 +50,9 @@ namespace eternal_lands
 			void get_effect_description(EffectDescription &effect)
 				const;
 
-			inline const String &get_world_transform() const
+			inline const String &get_world_transformation() const
 			{
-				return m_world_transform;
+				return m_world_transformation;
 			}
 
 			inline bool get_cast_shadows() const
@@ -70,10 +70,10 @@ namespace eternal_lands
 				return m_transparent;
 			}
 
-			inline void set_world_transform(
-				const String &world_transform)
+			inline void set_world_transformation(
+				const String &world_transformation)
 			{
-				m_world_transform = world_transform;
+				m_world_transformation = world_transformation;
 			}
 
 			inline void set_cast_shadows(const bool cast_shadows)

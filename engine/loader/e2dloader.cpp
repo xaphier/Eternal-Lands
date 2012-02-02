@@ -356,7 +356,7 @@ namespace eternal_lands
 
 		material.set_transparent(true);
 		material.set_culling(false);
-		material.set_world_transform(String(UTF8("default")));
+		material.set_world_transformation(String(UTF8("default")));
 
 		materials.clear();
 		materials.push_back(material);

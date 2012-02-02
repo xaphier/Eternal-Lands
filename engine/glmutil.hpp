@@ -67,6 +67,7 @@ namespace eternal_lands
 		return glm::all(glm::lessThan(v0, v1));
 	}
 
+	OutStream& operator<<(OutStream &str, const glm::quat &value);
 	OutStream& operator<<(OutStream &str, const glm::vec2 &value);
 	OutStream& operator<<(OutStream &str, const glm::vec3 &value);
 	OutStream& operator<<(OutStream &str, const glm::vec4 &value);
@@ -88,6 +89,7 @@ namespace eternal_lands
 	OutStream& operator<<(OutStream &str, const glm::mat4x2 &value);
 	OutStream& operator<<(OutStream &str, const glm::mat4x3 &value);
 	OutStream& operator<<(OutStream &str, const glm::mat4x4 &value);
+	InStream& operator>>(InStream &str, glm::quat &value);
 	InStream& operator>>(InStream &str, glm::vec2 &value);
 	InStream& operator>>(InStream &str, glm::vec3 &value);
 	InStream& operator>>(InStream &str, glm::vec4 &value);

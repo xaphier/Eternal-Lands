@@ -25,7 +25,11 @@ namespace eternal_lands
 	class XmlUtil
 	{
 		public:
+			static glm::vec2 get_vec2_value(const xmlNodePtr node);
+			static glm::vec3 get_vec3_value(const xmlNodePtr node);
 			static glm::vec4 get_vec4_value(const xmlNodePtr node);
+			static glm::quat get_quaternion_value(
+				const xmlNodePtr node);
 			static float get_float_value(const xmlNodePtr node);
 			static Sint32 get_sint32_value(const xmlNodePtr node);
 			static Uint32 get_uint32_value(const xmlNodePtr node);

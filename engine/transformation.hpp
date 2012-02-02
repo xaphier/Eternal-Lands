@@ -1,5 +1,5 @@
 /****************************************************************************
- *            transform.hpp
+ *            transformation.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @brief The @c class Transform.
- * This file contains the @c class Transform.
+ * @brief The @c class Transformation.
+ * This file contains the @c class Transformation.
  */
 namespace eternal_lands
 {
@@ -27,20 +27,20 @@ namespace eternal_lands
 	 *
 	 * @c class for transformations.
 	 */
-	class Transform
+	class Transformation
 	{
 		private:
 			glm::mat2x4 m_data;
 
 		public:
-			inline Transform()
+			inline Transformation()
 			{
 				set_rotation(glm::quat());
 				set_translation(glm::vec3(0.0f));
 				set_scale(1.0f);
 			}
 
-			inline ~Transform() throw()
+			inline ~Transformation() throw()
 			{
 			}
 

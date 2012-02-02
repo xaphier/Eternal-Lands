@@ -10,6 +10,16 @@
 namespace eternal_lands
 {
 
+	OutStream& operator<<(OutStream &str, const glm::quat &value)
+	{
+		str << value.x;
+		str << L" " << value.y;
+		str << L" " << value.z;
+		str << L" " << value.w;
+
+		return str;
+	}
+
 	OutStream& operator<<(OutStream &str, const glm::vec2 &value)
 	{
 		str << value[0];
@@ -249,6 +259,16 @@ namespace eternal_lands
 		str << L" " << value[3][1];
 		str << L" " << value[3][2];
 		str << L" " << value[3][3];
+
+		return str;
+	}
+
+	InStream& operator>>(InStream &str, glm::quat &value)
+	{
+		str >> value.x;
+		str >> value.y;
+		str >> value.z;
+		str >> value.w;
 
 		return str;
 	}

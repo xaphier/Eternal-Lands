@@ -20,7 +20,7 @@ namespace eternal_lands
 		mesh_data_cache->get_mesh_data(get_name(), m_mesh_data_tool,
 			m_materials);
 
-		m_mesh_data_tool->get_bounding_box(get_world_transform(),
+		m_mesh_data_tool->get_bounding_box(get_world_transformation(),
 			m_bounding_box);
 	}
 
@@ -32,7 +32,7 @@ namespace eternal_lands
 	{
 		mesh_data_cache->get_mesh_data(get_name(), m_mesh_data_tool);
 
-		m_mesh_data_tool->get_bounding_box(get_world_transform(),
+		m_mesh_data_tool->get_bounding_box(get_world_transformation(),
 			m_bounding_box);
 	}
 

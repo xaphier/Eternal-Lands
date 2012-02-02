@@ -246,7 +246,7 @@ namespace eternal_lands
 				get_sha1("ff3e88bab4aff36cf607777e2ca8ba19");
 		m_sha1s[String(UTF8("shaders/sources/lava_uv.xml"))] =
 			get_sha1("9461805bc1e7441e7be16271aa0a5b16");
-		m_sha1s[String(UTF8("shaders/sources/view_transform.xml"))] =
+		m_sha1s[String(UTF8("shaders/sources/view_transformation.xml"))] =
 			get_sha1("a5c6cdc663fdb97639cf3830ec4db304");
 		m_sha1s[String(UTF8("shaders/sources/specular_light.xml"))] =
 			get_sha1("0c77090ea6b497979389a7db332f99a7");
@@ -257,14 +257,14 @@ namespace eternal_lands
 			UTF8("shaders/sources/shadow_filtering_mapping.xml"))] =
 				get_sha1("9c01596c489464186961215d2d7da67d");
 		m_sha1s[String(
-			UTF8("shaders/sources/normal_transform.xml"))] =
+			UTF8("shaders/sources/normal_transformation.xml"))] =
 				get_sha1("bb6b33e3604b7d664fb0e330cfaac82e");
 		m_sha1s[String(UTF8("shaders/sources/exp_shadow_map.xml"))] =
 			get_sha1("faedd619a5292c3f95695d15ecda14f5");
 		m_sha1s[String(
 			UTF8("shaders/sources/bone_tangent_animation.xml"))] =
 				get_sha1("753cfd95e2545ae0591c821e2d489802");
-		m_sha1s[String(UTF8("shaders/sources/tangent_transform.xml"))] =
+		m_sha1s[String(UTF8("shaders/sources/tangent_transformation.xml"))] =
 			get_sha1("c27a2acade4ddf84bb876a7e69d0b1e9");
 		m_sha1s[String(UTF8("shaders/sources/view_direction.xml"))] =
 			get_sha1("938c172d9e5fd066e4f6d2e3f517b3ff");
@@ -281,7 +281,7 @@ namespace eternal_lands
 			get_sha1("41c99ed71334ef6adcf360abe5ce0cdb");
 		m_sha1s[String(UTF8("shaders/sources/uv.xml"))] =
 			get_sha1("4e5c5bc36c053717dd0cbb7f256eea44");
-		m_sha1s[String(UTF8("shaders/sources/depth_transform.xml"))] =
+		m_sha1s[String(UTF8("shaders/sources/depth_transformation.xml"))] =
 			get_sha1("dc51638064f107a1ea79d4ce5c4e653e");
 		m_sha1s[String(
 			UTF8("shaders/sources/bone_depth_animation.xml"))] =
