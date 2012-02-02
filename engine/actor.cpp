@@ -90,7 +90,8 @@ namespace eternal_lands
 
 	void Actor::update_bones()
 	{
-		glm::vec4 data;
+		glm::mat2x4 data;
+		glm::quat nondual, dual;
 		Uint32 i, count;
 		const std::vector<CalBone *>& bones =
 			get_model()->getSkeleton()->getVectorBone();
@@ -99,26 +100,22 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			const CalVector &translationBoneSpace =
+			const CalVector &translation =
 				bones[i]->getTranslationBoneSpace();
-			const CalMatrix &rotationMatrix =
-				bones[i]->getTransformMatrix();
+			const CalQuaternion &rotation =
+				bones[i]->getRotationBoneSpace();
 
-			data.x = rotationMatrix.dxdx;
-			data.y = rotationMatrix.dxdy;
-			data.z = rotationMatrix.dxdz;
-			data.w = translationBoneSpace.x;
-			set_bone(i * 3 + 0, data);
-			data.x = rotationMatrix.dydx;
-			data.y = rotationMatrix.dydy;
-			data.z = rotationMatrix.dydz;
-			data.w = translationBoneSpace.y;
-			set_bone(i * 3 + 1, data);
-			data.x = rotationMatrix.dzdx;
-			data.y = rotationMatrix.dzdy;
-			data.z = rotationMatrix.dzdz;
-			data.w = translationBoneSpace.z;
-			set_bone(i * 3 + 2, data);
+			data[0].x = -rotation.x;
+			data[0].y = -rotation.y;
+			data[0].z = -rotation.z;
+			data[0].w = rotation.w;
+
+			data[1].w = -0.5f * ( translation.x * -rotation.x + translation.y * -rotation.y + translation.z * -rotation.z);
+			data[1].x =  0.5f * ( translation.x * rotation.w + translation.y * -rotation.z - translation.z * -rotation.y);
+			data[1].y =  0.5f * (-translation.x * -rotation.z + translation.y * rotation.w + translation.z * -rotation.x);
+			data[1].z =  0.5f * ( translation.x * -rotation.y - translation.y * -rotation.x + translation.z * rotation.w);
+
+			set_bone(i, data);
 		}
 	}
 

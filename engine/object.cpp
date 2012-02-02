@@ -80,8 +80,7 @@ namespace eternal_lands
 
 		m_model.reset(new CalModel(core_model));
 
-		m_bones.resize(3 *
-			m_model->getSkeleton()->getVectorBone().size());
+		m_bones.resize(m_model->getSkeleton()->getVectorBone().size());
 	}
 
 	Object::~Object() throw()

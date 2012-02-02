@@ -168,7 +168,7 @@ BOOST_AUTO_TEST_CASE(all)
 BOOST_AUTO_TEST_CASE(transform)
 {
 	boost::mt19937 rng_0, rng_1, rng_2;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
+	boost::uniform_int<Sint32> range(-65536, 65536);
 	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
 		random_int(rng_0, range);
 	boost::uniform_int<Sint32> range_angle(-36000, 36000);
@@ -187,9 +187,9 @@ BOOST_AUTO_TEST_CASE(transform)
 
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
 	{
-		translation.x = random_int() * 0.01f;
-		translation.y = random_int() * 0.01f;
-		translation.z = random_int() * 0.01f;
+		translation.x = random_int() * 0.1f;
+		translation.y = random_int() * 0.1f;
+		translation.z = random_int() * 0.1f;
 		point.x = random_int() * 0.01f;
 		point.y = random_int() * 0.01f;
 		point.z = random_int() * 0.01f;
@@ -240,16 +240,16 @@ BOOST_AUTO_TEST_CASE(transform)
 		p1 = transform.get_matrix() * glm::vec4(point, 1.0f);
 		p2 = transform.transform_point(point);
 
-		BOOST_CHECK_CLOSE(p0.x, p1.x, 5.0);
-		BOOST_CHECK_CLOSE(p0.y, p1.y, 5.0);
-		BOOST_CHECK_CLOSE(p0.z, p1.z, 5.0);
+		BOOST_CHECK_CLOSE(p0.x, p1.x, 7.5);
+		BOOST_CHECK_CLOSE(p0.y, p1.y, 7.5);
+		BOOST_CHECK_CLOSE(p0.z, p1.z, 7.5);
 
-		BOOST_CHECK_CLOSE(p0.x, p2.x, 5.0);
-		BOOST_CHECK_CLOSE(p0.y, p2.y, 5.0);
-		BOOST_CHECK_CLOSE(p0.z, p2.z, 5.0);
+		BOOST_CHECK_CLOSE(p0.x, p2.x, 7.5);
+		BOOST_CHECK_CLOSE(p0.y, p2.y, 7.5);
+		BOOST_CHECK_CLOSE(p0.z, p2.z, 7.5);
 
-		BOOST_CHECK_CLOSE(p1.x, p2.x, 5.0);
-		BOOST_CHECK_CLOSE(p1.y, p2.y, 5.0);
-		BOOST_CHECK_CLOSE(p1.z, p2.z, 5.0);
+		BOOST_CHECK_CLOSE(p1.x, p2.x, 7.5);
+		BOOST_CHECK_CLOSE(p1.y, p2.y, 7.5);
+		BOOST_CHECK_CLOSE(p1.z, p2.z, 7.5);
 	}
 }

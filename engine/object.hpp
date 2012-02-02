@@ -45,7 +45,7 @@ namespace eternal_lands
 			 * Data needed for optimized depth/shadow drawing.
 			 */
 			boost::scoped_ptr<CalModel> m_model;
-			Vec4Vector m_bones;
+			Mat2x4Vector m_bones;
 
 		protected:
 
@@ -56,7 +56,7 @@ namespace eternal_lands
 			}
 
 			inline void set_bone(const Uint32 index,
-				const glm::vec4 &value)
+				const glm::mat2x4 &value)
 			{
 				m_bones[index] = value;
 			}
@@ -204,7 +204,7 @@ namespace eternal_lands
 				return m_object_data.get_selection();
 			}
 
-			inline const Vec4Vector &get_bones() const
+			inline const Mat2x4Vector &get_bones() const
 			{
 				return m_bones;
 			}

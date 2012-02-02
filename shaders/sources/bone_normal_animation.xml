@@ -42,10 +42,10 @@
     </parameter>
     <parameter>
      <name>bones</name>
-     <type>vec4</type>
+     <type>mat2x4</type>
      <qualifier>in</qualifier>
      <size>bone_count</size>
-     <scale>3</scale>
+     <scale>1</scale>
     </parameter>
     <parameter>
      <name>world_position</name>
@@ -63,37 +63,54 @@
     </parameter>
    </parameters>
    <source>{
-	vec4 weight, index, tmp;
-	vec3 temp;
-	int i, idx;
+	mat2x4 dual, m;
+	vec4 pivot;
 
-	tmp = vec4(position.xyz, 1.0);
-	index = bone_index;
-	weight = bone_weight;
+	m = bones[int(bone_index.x)];
+	dual = m * bone_weight.x;
+	pivot = m[0];
 
-	world_position = vec3(0.0);
-	world_normal = vec3(0.0);
+	m = bones[int(bone_index.y)];
 
-	for (i = 0; i &lt; 4; i++)
+	if (dot(pivot, m[0]) &lt; 0.0)
 	{
-		idx = int(index.x);
-		world_position.x += dot(bones[idx * 3 + 0], tmp) * weight.x;
-		world_position.y += dot(bones[idx * 3 + 1], tmp) * weight.x;
-		world_position.z += dot(bones[idx * 3 + 2], tmp) * weight.x;
-		world_normal.x += dot(bones[idx * 3 + 0].xyz, normal) * weight.x;
-		world_normal.y += dot(bones[idx * 3 + 1].xyz, normal) * weight.x;
-		world_normal.z += dot(bones[idx * 3 + 2].xyz, normal) * weight.x;
-
-		if (weight.y &lt;= 0.0)
-		{
-			break;
-		}
-
-		index.xyz = index.yzw;
-		weight.xyz = weight.yzw;
+		dual -= m * bone_weight.y;
+	}
+	else
+	{
+		dual += m * bone_weight.y;
 	}
 
-	world_normal = normalize(world_normal);
+	m = bones[int(bone_index.z)];
+
+	if (dot(pivot, m[0]) &lt; 0.0)
+	{
+		dual -= m * bone_weight.z;
+	}
+	else
+	{
+		dual += m * bone_weight.z;
+	}
+
+	m = bones[int(bone_index.w)];
+
+	if (dot(pivot, m[0]) &lt; 0.0)
+	{
+		dual -= m * bone_weight.w;
+	}
+	else
+	{
+		dual += m * bone_weight.w;
+	}
+
+	dual *= inversesqrt(dot(dual[0], dual[0]));
+
+	world_position = position.xyz;
+	world_normal = normal;
+
+	world_position += 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, world_position) + dual[0].w * world_position);
+	world_position += 2.0 * (dual[0].w * dual[1].xyz - dual[1].w * dual[0].xyz + cross(dual[0].xyz, dual[1].xyz)) ;
+	world_normal += 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, world_normal) + dual[0].w * world_normal);
 
 	world_position += 2.0 * cross(world_transform[0].xyz, cross(world_transform[0].xyz, world_position) + world_transform[0].w * world_position);
 	world_position *= world_transform[1].w;

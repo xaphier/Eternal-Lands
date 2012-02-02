@@ -84,8 +84,8 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("ambient")), pt_vec4),
 			AutoParameterTypeData(String(UTF8(
 				"dynamic_light_count")), pt_ivec3),
-			AutoParameterTypeData(String(UTF8("bones")), pt_vec4,
-				pst_bone_count, 3),
+			AutoParameterTypeData(String(UTF8("bones")), pt_mat2x4,
+				pst_bone_count),
 			AutoParameterTypeData(String(UTF8("time")), pt_float),
 			AutoParameterTypeData(String(UTF8("fog_data")),
 				pt_vec4),
