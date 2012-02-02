@@ -36,9 +36,9 @@ namespace eternal_lands
 		do
 		{
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("world_transform")) == 0)
+				BAD_CAST UTF8("world_transformation")) == 0)
 			{
-				set_world_transform(
+				set_world_transformation(
 					XmlUtil::get_string_value(it));
 			}
 
@@ -102,8 +102,8 @@ namespace eternal_lands
 		const XmlWriterSharedPtr &writer) const
 	{
 		writer->start_element(UTF8("effect"));
-		writer->write_element(UTF8("world_transform"),
-			get_world_transform());
+		writer->write_element(UTF8("world_transformation"),
+			get_world_transformation());
 		writer->write_element(UTF8("texture_coodrinates"),
 			get_texture_coodrinates());
 		writer->write_element(UTF8("albedo_mapping"),
@@ -125,7 +125,8 @@ namespace eternal_lands
 	bool EffectDescription::operator==(const EffectDescription &effect)
 		const
 	{
-		if (get_world_transform() != effect.get_world_transform())
+		if (get_world_transformation() !=
+			effect.get_world_transformation())
 		{
 			return false;
 		}
@@ -178,10 +179,11 @@ namespace eternal_lands
 	bool EffectDescription::operator<(const EffectDescription &effect)
 		const
 	{
-		if (get_world_transform() != effect.get_world_transform())
+		if (get_world_transformation() !=
+			effect.get_world_transformation())
 		{
-			return get_world_transform() <
-				effect.get_world_transform();
+			return get_world_transformation() <
+				effect.get_world_transformation();
 		}
 
 		if (get_texture_coodrinates() !=
@@ -231,7 +233,8 @@ namespace eternal_lands
 
 	OutStream& operator<<(OutStream &str, const EffectDescription &value)
 	{
-		str << "world_transform: " << value.get_world_transform();
+		str << "world_transformation: ";
+		str << value.get_world_transformation();
 		str << " texture_coodrinates: ";
 		str << value.get_texture_coodrinates() << std::endl;
 		str << " albedo_mapping: " << value.get_albedo_mapping();
