@@ -6,8 +6,9 @@
  ****************************************************************************/
 
 #include "effectdescription.hpp"
-#include "xmlutil.hpp"
 #include "xmlwriter.hpp"
+#include "xmlreader.hpp"
+#include "xmlutil.hpp"
 
 namespace eternal_lands
 {
@@ -19,6 +20,17 @@ namespace eternal_lands
 
 	EffectDescription::~EffectDescription() throw()
 	{
+	}
+
+	void EffectDescription::load_xml(const FileSystemSharedPtr &file_system,
+		const String &file_name)
+	{
+		XmlReaderSharedPtr xml_reader;
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			file_name));
+
+		load_xml(xml_reader->get_root_node());
 	}
 
 	void EffectDescription::load_xml(const xmlNodePtr node)

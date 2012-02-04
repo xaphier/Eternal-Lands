@@ -64,13 +64,16 @@
    </parameters>
    <source>{
 	vec4 blend;
+	vec2 albedo_uv;
 
-	blend = texture2D(blend_sampler_0, fragment_uv * texture_scale_offset.xy + texture_scale_offset.zw);
+	blend = texture2D(blend_sampler_0, fragment_uv);
 
-	albedo = texture2D(albedo_sampler_0, fragment_uv) * blend.r;
-	albedo += texture2D(albedo_sampler_1, fragment_uv) * blend.g;
-	albedo += texture2D(albedo_sampler_2, fragment_uv) * blend.b;
-	albedo += texture2D(albedo_sampler_3, fragment_uv) * blend.a;
+	albedo_uv = fragment_uv * texture_scale_offset.xy + texture_scale_offset.zw;
+
+	albedo = texture2D(albedo_sampler_0, albedo_uv) * blend.r;
+	albedo += texture2D(albedo_sampler_1, albedo_uv) * blend.g;
+	albedo += texture2D(albedo_sampler_2, albedo_uv) * blend.b;
+	albedo += texture2D(albedo_sampler_3, albedo_uv) * blend.a;
 }
 </source>
    <glsl_120>true</glsl_120>
@@ -140,13 +143,16 @@
    </parameters>
    <source>{
 	vec4 blend;
+	vec2 albedo_uv;
 
-	blend = texture(blend_sampler_0, fragment_uv * texture_scale_offset.xy + texture_scale_offset.zw);
+	blend = texture(blend_sampler_0, fragment_uv);
 
-	albedo = texture(albedo_sampler_0, fragment_uv) * blend.r;
-	albedo += texture(albedo_sampler_1, fragment_uv) * blend.g;
-	albedo += texture(albedo_sampler_2, fragment_uv) * blend.b;
-	albedo += texture(albedo_sampler_3, fragment_uv) * blend.a;
+	albedo_uv = fragment_uv * texture_scale_offset.xy + texture_scale_offset.zw;
+
+	albedo = texture(albedo_sampler_0, albedo_uv) * blend.r;
+	albedo += texture(albedo_sampler_1, albedo_uv) * blend.g;
+	albedo += texture(albedo_sampler_2, albedo_uv) * blend.b;
+	albedo += texture(albedo_sampler_3, albedo_uv) * blend.a;
 }
 </source>
    <glsl_120>false</glsl_120>

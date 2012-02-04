@@ -1,11 +1,11 @@
 /****************************************************************************
- *            heightmaptool.cpp
+ *            heightmapuvtool.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "heightmaptool.hpp"
+#include "heightmapuvtool.hpp"
 #include "image.hpp"
 
 namespace eternal_lands
@@ -25,7 +25,7 @@ namespace eternal_lands
 
 	}
 
-	class HeightMapTool::Info
+	class HeightMapUvTool::Info
 	{
 		private:
 			FloatArray8 m_half_distances;
@@ -37,6 +37,7 @@ namespace eternal_lands
 			Info(const FloatArray8 &half_distances,
 				const BitSet8 &dirs, const bool u,
 				const bool v);
+			~Info() throw();
 
 			inline float get_half_distance(const Uint16 index)
 				const
@@ -61,17 +62,27 @@ namespace eternal_lands
 
 	};
 
-	HeightMapTool::HeightMapTool(const ImageSharedPtr &height_map,
+	HeightMapUvTool::Info::Info(const FloatArray8 &half_distances,
+		const BitSet8 &dirs, const bool u, const bool v):
+		m_half_distances(half_distances), m_dirs(dirs), m_u(u), m_v(v)
+	{
+	}
+
+	HeightMapUvTool::Info::~Info() throw()
+	{
+	}
+
+	HeightMapUvTool::HeightMapUvTool(const ImageSharedPtr &height_map,
 		const float scale)
 	{
 		build_data(height_map, scale);
 	}
 
-	HeightMapTool::~HeightMapTool() throw()
+	HeightMapUvTool::~HeightMapUvTool() throw()
 	{
 	}
 
-	void HeightMapTool::build_data(const ImageSharedPtr &height_map,
+	void HeightMapUvTool::build_data(const ImageSharedPtr &height_map,
 		const float height_scale)
 	{
 		FloatArray8 half_distances;
@@ -96,10 +107,8 @@ namespace eternal_lands
 		{
 			for (x = 0; x < width; ++x)
 			{
-				uv.s = static_cast<float>(x + 0.0) /
-					static_cast<float>(width - 1);
-				uv.t = static_cast<float>(y + 0.0) /
-					static_cast<float>(height - 1);
+				uv.s = x;
+				uv.t = y;
 
 				m_uvs.push_back(uv);
 				m_velocities.push_back(glm::vec2(0.0f));
@@ -141,13 +150,13 @@ namespace eternal_lands
 		}
 	}
 
-	float HeightMapTool::relax(const InfoVector &infos, const float damping,
-		const float clamping, const Uint32 width, Vec2Vector &uvs,
-		Vec2Vector &velocities)
+	float HeightMapUvTool::relax(const InfoVector &infos,
+		const float damping, const float clamping, const Uint32 width,
+		Vec2Vector &uvs, Vec2Vector &velocities)
 	{
 		glm::vec2 uv, dir;
 		float distance, factor, result;
-		Uint32 i, j, index, count;
+		Uint32 i, j, count, index;
 
 		result = 0.0f;
 		count = infos.size();
@@ -155,6 +164,7 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			uv = uvs[i];
+			velocities[i] = glm::vec2(0.0f);
 
 			for (j = 0; j < 8; ++j)
 			{
@@ -165,10 +175,9 @@ namespace eternal_lands
 					dir = uvs[index] - uv;
 					distance = glm::length(dir);
 					dir /= std::max(distance, 1e-7f);
-					factor = infos[i].get_half_distance(j)
-						- distance;
-					dir *= factor;
-					velocities[i] += dir;
+					factor = distance -
+						infos[i].get_half_distance(j);
+					velocities[i] += dir * factor;
 				}
 			}
 		}
@@ -178,35 +187,36 @@ namespace eternal_lands
 			uv = velocities[i] * damping;
 			uv = glm::clamp(uv, -clamping, clamping);
 			result += glm::length2(uv);
-			uv += uvs[i];
-			uv = glm::clamp(uv, 0.0f, 1.0f);		
 
-			if (infos[i].get_u())
+			uv += uvs[i];
+
+			if (!infos[i].get_u())
 			{
 				uvs[i].s = uv.s;
 			}
 
-			if (infos[i].get_v())
+			if (!infos[i].get_v())
 			{
 				uvs[i].t = uv.t;
 			}
 		}
 
-		return result;
+		return 1.0f;
  	}
 
-	void HeightMapTool::buil_relaxed_uv()
+	void HeightMapUvTool::buil_relaxed_uv()
 	{
 		Uint32 increasing;
 		float movement, last;
 
-		last = relax(m_infos, 0.2f, 0.00015f, m_width, m_uvs,
+		last = relax(m_infos, 0.05f, 10.0f, m_width, m_uvs,
 			m_velocities);
+
 		increasing = 0;
 
 		while (true)
 		{
-			movement = relax(m_infos, 0.2f, 0.00015f, m_width,
+			movement = relax(m_infos, 0.05f, 10.0f, m_width,
 				m_uvs, m_velocities);
 
 			if (movement >= last)
@@ -219,7 +229,7 @@ namespace eternal_lands
 				break;
 			}
 
-			if (increasing >= 100)
+			if (increasing >= 150)
 			{
 				break;
 			}

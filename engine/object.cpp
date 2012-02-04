@@ -36,6 +36,27 @@ namespace eternal_lands
 		}
 	}
 
+	Object::Object(const ObjectData &object_data,
+		const AbstractMeshSharedPtr &mesh,
+		const MaterialEffectDescriptionVector &materials,
+		const EffectCacheWeakPtr &effect_cache,
+		const TextureCacheWeakPtr &texture_cache,
+		const LodData &lod_data): m_object_data(object_data),
+		m_lod_data(lod_data), m_mesh(mesh)
+	{
+		update_bounding_box();
+
+		m_material_effects.clear();
+		m_material_effects.reserve(materials.size());
+
+		BOOST_FOREACH(const MaterialEffectDescription &material,
+			materials)
+		{
+			m_material_effects.push_back(MaterialEffect(
+				effect_cache, texture_cache, material));
+		}
+	}
+
 	Object::Object(const InstanceData &instance_data,
 		const AbstractMeshSharedPtr &mesh,
 		const MaterialEffectDescriptionVector &materials,

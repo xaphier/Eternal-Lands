@@ -822,86 +822,6 @@ extern "C" void engine_clear()
 	disable_opengl2_stuff();
 }
 
-
-extern "C" void engine_terrain()
-{
-	el::MaterialEffectDescriptionVector materials;
-	el::MaterialEffectDescription material;
-	glm::mat4 matrix;
-	glm::vec4 scale_offset;
-	el::Uint32Array3 sizes;
-	el::String name;
-	Uint32 x, y, width, height, size;
-	el::TextureFormatType texture_format;
-	Uint16 mipmaps;
-
-	TRY_BLOCK
-
-	DEBUG_CHECK_GL_ERROR();
-
-	material.set_material_descriptiont(scene->get_scene_resources(
-		).get_material_description_cache()->get_material_description(
-		el::String(UTF8("terrain"))));
-
-	material.set_world_transformation(el::String(UTF8("terrain")));
-
-	materials.push_back(material);
-
-	name = material.get_texture(el::stt_height);
-
-	scene->get_scene_resources().get_codec_manager()->get_image_information(
-		name, file_system, false, texture_format, sizes, mipmaps);
-
-	width = sizes[0];
-	height = sizes[1];
-
-	size = 32;
-
-	if (((width - 4) % size) == 0)
-	{
-		width -= 3;
-	}
-
-	if (((height - 4) % size) == 0)
-	{
-		height -= 3;
-	}
-
-	matrix[0][0] = size;
-	matrix[1][1] = size;
-	matrix[2][2] = 16.0f;
-
-	scale_offset.x = static_cast<float>(size) / width;
-	scale_offset.y = static_cast<float>(size) / height;
-
-	width = (width - 1) / size;
-	height = (height - 1) / size;
-/*
-	for (y = 0; y < height; ++y)
-	{
-		for (x = 0; x < width; ++x)
-		{
-			matrix[3] = glm::vec4(x * size, y * size, -20.0, 1.0f);
-
-			scale_offset.z = x * scale_offset.x;
-			scale_offset.w = y * scale_offset.y;
-
-			materials[0].set_texture_scale_offset(scale_offset);
-
-			scene->add_object(el::ObjectData(glm::mat4x3(matrix),
-				glm::vec4(0.0f), el::String(UTF8("plane_32")),
-				0.0f, free_ids.get_next_free_id(), el::st_none,
-				false), materials);
-		}
-	}
-*/
-	DEBUG_CHECK_GL_ERROR();
-
-	CATCH_BLOCK
-
-	disable_opengl2_stuff();
-}
-
 extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
 	const Uint8 tile)
 {
@@ -1720,6 +1640,11 @@ extern "C" void engine_set_use_layered_rendering(const int value)
 		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->shadow_map_change();
 	}
+}
+
+extern "C" void engine_set_low_quality_terrain(const int value)
+{
+	global_vars->set_low_quality_terrain(value != 0);
 }
 
 extern "C" int engine_get_opengl_3_0()

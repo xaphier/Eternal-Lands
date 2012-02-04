@@ -43,6 +43,7 @@ namespace eternal_lands
 
 			boost::array<GLuint, 0x10000> m_querie_ids;
 			GlobalVarsSharedPtr m_global_vars;
+			FileSystemSharedPtr m_file_system;
 			SceneResources m_scene_resources;
 			StateManager m_state_manager;
 			ObjectVisitor m_visible_objects;

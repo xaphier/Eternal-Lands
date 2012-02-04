@@ -97,7 +97,9 @@ namespace eternal_lands
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("layers")), pt_ivec4),
 			AutoParameterTypeData(
-				String(UTF8("texture_scale_offset")), pt_vec4)
+				String(UTF8("texture_scale_offset")), pt_vec4),
+			AutoParameterTypeData(
+				String(UTF8("terrain_height_scale")), pt_float)
 		};
 
 		const Uint32 auto_parameter_type_datas_count =

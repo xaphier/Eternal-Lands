@@ -32,6 +32,7 @@ namespace eternal_lands
 		vft_animated_mesh_extra_uv,
 		vft_morph_mesh_extra_uv,
 		vft_instanced_mesh_extra_uv,
+		vft_simple_terrain,
 		vft_sprite,
 		vft_font
 	};

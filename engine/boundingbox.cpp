@@ -197,20 +197,15 @@ namespace eternal_lands
 		return false;
 	}
 
-	float BoundingBox::sqr_distance(const glm::vec3 &point) const
-	{
-		glm::vec3 dist;
-
-		dist = glm::abs(get_center() - point);
-		dist -= get_half_size();
-		dist = glm::max(glm::vec3(0.0f), dist);
-
-		return glm::dot(dist, dist);
-	}
-
 	float BoundingBox::distance(const glm::vec3 &point) const
 	{
-		return std::sqrt(sqr_distance(point));
+		glm::vec3 tmp;
+
+		tmp = point;
+		tmp = glm::min(tmp, get_max());
+		tmp = glm::max(tmp, get_min());
+
+		return glm::distance(tmp, point);
 	}
 
 	OutStream& operator<<(OutStream &str, const BoundingBox &value)

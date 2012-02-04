@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractterrainmanager.hpp"
+#include "basicterrainmanager.hpp"
 
 /**
  * @file
@@ -23,21 +23,22 @@
 namespace eternal_lands
 {
 
-	class SimpleTerrainManager: public AbstractTerrainManager
+	class SimpleTerrainManager: public BasicTerrainManager
 	{
 		private:
 			boost::scoped_ptr<RStarTree> m_object_tree;
 
-			void add_terrain_pages(
+			void add_terrain_pages(const EffectDescription &effect,
 				const ImageSharedPtr &height_map,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const EffectCacheSharedPtr &effect_cache,
 				const TextureCacheSharedPtr &texture_cache, 
-				const bool use_simd);
-			void set_terrain_page(
+				const bool low_quality, const bool use_simd);
+			void set_terrain_page(const HeightMapUvTool &uvs,
 				const ImageSharedPtr &height_map,
 				const glm::uvec2 &tile_offset,
-				const Uint32Array2 index_count,
+				const glm::uvec2 &terrain_size,
+				const Uint32Vector &index_count,
 				const Uint32 vertex_count,
 				MeshDataToolSharedPtr &mesh_data_tool);
 

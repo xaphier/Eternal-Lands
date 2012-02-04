@@ -86,6 +86,17 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
+			Object(const ObjectData &object_data,
+				const AbstractMeshSharedPtr &mesh,
+				const MaterialEffectDescriptionVector
+					&materials,
+				const EffectCacheWeakPtr &effect_cache,
+				const TextureCacheWeakPtr &texture_cache,
+				const LodData &lod_data);
+
+			/**
+			 * Default constructor.
+			 */
 			Object(const InstanceData &instance_data,
 				const AbstractMeshSharedPtr &mesh,
 				const MaterialEffectDescriptionVector

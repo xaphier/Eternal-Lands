@@ -57,6 +57,8 @@ namespace eternal_lands
 			bool operator!=(const EffectDescription &effect) const;
 			bool operator<(const EffectDescription &effect) const;
 			void load_xml(const xmlNodePtr node);
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 
 			inline const String &get_world_transformation() const

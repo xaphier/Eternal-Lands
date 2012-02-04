@@ -487,6 +487,7 @@ namespace eternal_lands
 		m_use_alias = false;
 		m_use_in_out = true;
 		m_use_layered_rendering = true;
+		m_low_quality_terrain = false;
 #ifdef	DEBUG
 		m_draw_objects = true;
 		m_draw_actors = true;

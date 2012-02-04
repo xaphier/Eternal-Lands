@@ -65,10 +65,10 @@ namespace eternal_lands
 
 	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system):
-		m_global_vars(global_vars), m_scene_resources(global_vars,
-			file_system), m_scene_view(global_vars),
-			m_frame_id(0), m_program_vars_id(0),
-			m_shadow_map_change(true)
+		m_global_vars(global_vars), m_file_system(file_system),
+		m_scene_resources(global_vars, file_system),
+		m_scene_view(global_vars), m_frame_id(0), m_program_vars_id(0),
+		m_shadow_map_change(true)
 	{
 		m_light_position_array.resize(8);
 		m_light_color_array.resize(8);
@@ -76,11 +76,6 @@ namespace eternal_lands
 		set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
 		set_main_light_color(glm::vec3(0.2f));
 		set_main_light_ambient(glm::vec3(0.2f));
-
-		m_map.reset(new Map(m_scene_resources.get_mesh_builder(),
-			m_scene_resources.get_mesh_cache(),
-			m_scene_resources.get_effect_cache(),
-			m_scene_resources.get_texture_cache()));
 	}
 
 	Scene::~Scene() throw()
@@ -213,7 +208,14 @@ namespace eternal_lands
 	void Scene::load(const String &name, const glm::vec3 &ambient,
 		const bool dungeon)
 	{
-		m_map->load(name, ambient, dungeon);
+		m_map.reset(new Map(m_scene_resources.get_codec_manager(),
+			m_file_system, m_global_vars,
+			m_scene_resources.get_mesh_builder(),
+			m_scene_resources.get_mesh_cache(),
+			m_scene_resources.get_effect_cache(),
+			m_scene_resources.get_texture_cache(), name));
+
+		m_map->load(ambient, dungeon);
 	}
 
 	void Scene::clear()
@@ -515,6 +517,8 @@ namespace eternal_lands
 				m_scene_view.get_shadow_texture_matrix());
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
+			program->set_parameter(apt_terrain_height_scale,
+				m_map->get_terrain_height_scale());
 
 			if (m_map->get_dungeon())
 			{

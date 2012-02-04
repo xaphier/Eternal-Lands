@@ -1,33 +1,46 @@
 /****************************************************************************
- *            abstractterrainmanager.cpp
+ *            basicterrainmanager.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "abstractterrainmanager.hpp"
+#include "basicterrainmanager.hpp"
 #include "exceptions.hpp"
+#include "logging.hpp"
+#include "xmlreader.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
 
-	AbstractTerrainManager::AbstractTerrainManager(const String &name):
-		m_name(name)
+	BasicTerrainManager::BasicTerrainManager(const String &name):
+		m_name(name), m_height_scale(1.0f), m_tile_size(32)
 	{
 	}
 
-	AbstractTerrainManager::~AbstractTerrainManager() throw()
+	BasicTerrainManager::~BasicTerrainManager() throw()
 	{
 	}
 
-	void AbstractTerrainManager::load_xml(
+	void BasicTerrainManager::intersect(const Frustum &frustum,
+		ObjectVisitor &visitor) const
+	{
+	}
+
+	void BasicTerrainManager::load_xml(
 		const FileSystemSharedPtr &file_system)
 	{
+		XmlReaderSharedPtr xml_reader;
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			get_name()));
+
+		load_xml(xml_reader->get_root_node());
 	}
 
-	void AbstractTerrainManager::load_xml(const xmlNodePtr node)
+	void BasicTerrainManager::load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 
@@ -40,6 +53,9 @@ namespace eternal_lands
 
 		if (xmlStrcmp(node->name, BAD_CAST UTF8("terrain")) != 0)
 		{
+			LOG_WARNING(UTF8("Can't read node '%1%', expected "
+				"'%2%'."), ((char*)node->name) %
+				UTF8("terrain"));
 			return;
 		}
 
@@ -112,7 +128,7 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void AbstractTerrainManager::save_xml(const XmlWriterSharedPtr &writer)
+	void BasicTerrainManager::save_xml(const XmlWriterSharedPtr &writer)
 		const
 	{
 		writer->start_element(UTF8("terrain"));

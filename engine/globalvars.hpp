@@ -56,6 +56,7 @@ namespace eternal_lands
 			bool m_use_alias;
 			bool m_use_in_out;
 			bool m_use_layered_rendering;
+			bool m_low_quality_terrain;
 #ifdef	DEBUG
 			bool m_draw_objects;
 			bool m_draw_actors;
@@ -136,6 +137,12 @@ namespace eternal_lands
 				const bool use_layered_rendering)
 			{
 				m_use_layered_rendering = use_layered_rendering;
+			}
+
+			inline void set_low_quality_terrain(
+				const bool low_quality_terrain)
+			{
+				m_low_quality_terrain = low_quality_terrain;
 			}
 
 			inline const String &get_quality() const
@@ -274,6 +281,11 @@ namespace eternal_lands
 			inline bool get_use_layered_rendering() const
 			{
 				return m_use_layered_rendering;
+			}
+
+			inline bool get_low_quality_terrain() const
+			{
+				return m_low_quality_terrain;
 			}
 
 #ifdef	DEBUG

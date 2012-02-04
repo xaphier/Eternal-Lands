@@ -1,5 +1,5 @@
 /****************************************************************************
- *            abstractterrainmanager.hpp
+ *            basicterrainmanager.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -17,13 +17,13 @@
 
 /**
  * @file
- * @brief The @c class TerrainManager.
- * This file contains the @c class TerrainManager.
+ * @brief The @c class BasicTerrainManager.
+ * This file contains the @c class BasicTerrainManager.
  */
 namespace eternal_lands
 {
 
-	class AbstractTerrainManager: public boost::noncopyable
+	class BasicTerrainManager: public boost::noncopyable
 	{
 		private:
 			Transformation m_transformation;
@@ -34,7 +34,6 @@ namespace eternal_lands
 			glm::vec4 m_rotation;
 			glm::vec3 m_translation;
 			float m_height_scale;
-			float m_scale;
 			Uint16 m_tile_size;
 
 		protected:
@@ -82,10 +81,10 @@ namespace eternal_lands
 			}
 
 		public:
-			AbstractTerrainManager(const String &name);
-			virtual ~AbstractTerrainManager() throw();
+			BasicTerrainManager(const String &name);
+			virtual ~BasicTerrainManager() throw();
 			virtual void intersect(const Frustum &frustum,
-				ObjectVisitor &visitor) const = 0;
+				ObjectVisitor &visitor) const;
 
 			inline const String &get_name() const
 			{

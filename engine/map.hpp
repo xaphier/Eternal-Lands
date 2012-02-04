@@ -37,7 +37,7 @@ namespace eternal_lands
 			TextureCacheSharedPtr m_texture_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
-			boost::scoped_ptr<AbstractTerrainManager> m_terrain;
+			boost::scoped_ptr<BasicTerrainManager> m_terrain;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
 			glm::vec4 m_ambient;
@@ -73,10 +73,14 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			Map(const MeshBuilderSharedPtr &mesh_builder,
+			Map(const CodecManagerSharedPtr &codec_manager,
+				const FileSystemSharedPtr &file_system,
+				const GlobalVarsSharedPtr &global_vars,
+				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const EffectCacheSharedPtr &effect_cache,
-				const TextureCacheSharedPtr &texture_cache);
+				const TextureCacheSharedPtr &texture_cache,
+				const String &name);
 
 			/**
 			 * Default destructor.
@@ -96,13 +100,14 @@ namespace eternal_lands
 				const float radius, const Uint32 id);
 			void remove_light(const Uint32 id);
 			void clear();
-			void load(const String &name, const glm::vec3 &ambient,
+			void load(const glm::vec3 &ambient,
 				const bool dungeon);
 			void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
 			void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
 			const BoundingBox &get_bounding_box() const;
+			float get_terrain_height_scale() const;
 
 			inline void set_ambient(const glm::vec3 &ambient)
 			{

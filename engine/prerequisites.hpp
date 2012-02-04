@@ -185,13 +185,13 @@ namespace eternal_lands
 	class AbstractMesh;
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
-	class AbstractTerrainManager;
 	class AbstractWriteMemory;
 	class Actor;
 	class ActorDataCache;
 	class ActorTextureBuilder;
 	class AlignedVec4Array;
 	class Atlas;
+	class BasicTerrainManager;
 	class BoundedObject;
 	class BoundingBox;
 	class CodecManager;
@@ -207,6 +207,7 @@ namespace eternal_lands
 	class GlobalVars;
 	class GlslProgram;
 	class HardwareBuffer;
+	class HeightMapUvTool;
 	class Image;
 	class IndexUpdateSource;
 	class InstanceBuilder;

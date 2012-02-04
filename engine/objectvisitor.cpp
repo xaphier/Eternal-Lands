@@ -80,7 +80,7 @@ namespace eternal_lands
 		BOOST_FOREACH(RenderObjectData &rod, m_objects)
 		{
 			distance = rod.get_object()->get_bounding_box(
-				).sqr_distance(position);
+				).distance(position);
 			rod.set_distance(distance);
 		}
 

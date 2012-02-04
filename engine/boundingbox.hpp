@@ -330,17 +330,6 @@ namespace eternal_lands
 			float enlargement(const BoundingBox &box) const;
 
 			/**
-			 * @brief Gets the square distance.
-			 *
-			 * Returns the square distance of the box to the given
-			 * point.
-			 * @param point The point to use.
-			 * @return The square distance of the box to the given
-			 * point.
-			 */
-			float sqr_distance(const glm::vec3 &point) const;
-
-			/**
 			 * @brief Gets the distance.
 			 *
 			 * Returns the distance of the box to the given point.

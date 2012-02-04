@@ -15,8 +15,10 @@
 #include "indexbuilder.hpp"
 #include "object.hpp"
 #include "materialeffectdescription.hpp"
+#include "effectdescription.hpp"
 #include "meshbuilder.hpp"
 #include "globalvars.hpp"
+#include "heightmapuvtool.hpp"
 
 namespace eternal_lands
 {
@@ -28,32 +30,42 @@ namespace eternal_lands
 		const MeshBuilderSharedPtr &mesh_builder,
 		const EffectCacheSharedPtr &effect_cache,
 		const TextureCacheSharedPtr &texture_cache, const String &name):
-		AbstractTerrainManager(name)
+		BasicTerrainManager(name)
 	{
 		ImageSharedPtr height_map;
+		EffectDescription effect;
+
+		m_object_tree.reset(new RStarTree());
 
 		load_xml(file_system);
 
-		height_map = codec_manager->load_image(name, file_system,
-			ImageCompressionTypeSet(), true);
+		height_map = codec_manager->load_image(get_height_map(),
+			file_system, ImageCompressionTypeSet(), true);
 
-		add_terrain_pages(height_map, mesh_builder, effect_cache,
-			texture_cache, global_vars->get_use_simd());
+		effect.load_xml(file_system,
+			String(UTF8("shaders/simple_terrain.xml")));
+
+		add_terrain_pages(effect, height_map, mesh_builder,
+			effect_cache, texture_cache,
+			global_vars->get_low_quality_terrain(),
+			global_vars->get_use_simd());
 	}
 
 	SimpleTerrainManager::~SimpleTerrainManager() throw()
 	{
 	}
 
-	void SimpleTerrainManager::set_terrain_page(
+	void SimpleTerrainManager::set_terrain_page(const HeightMapUvTool &uvs,
 		const ImageSharedPtr &height_map, const glm::uvec2 &tile_offset,
-		const Uint32Array2 index_counts, const Uint32 vertex_count,
+		const glm::uvec2 &terrain_size,
+		const Uint32Vector &index_counts, const Uint32 vertex_count,
 		MeshDataToolSharedPtr &mesh_data_tool)
 	{
-		glm::vec4 normal, tangent, data;
+		glm::vec4 normal, tangent;
 		glm::vec3 min, max, position;
 		glm::vec2 uv;
-		Uint32 index, height;
+		float height;
+		Uint32 index, i, count, offset;
 		Uint16 x, y;
 
 		normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -72,17 +84,17 @@ namespace eternal_lands
 					x + tile_offset.x, y + tile_offset.y,
 					0, 0, 0).r;
 
-				position.x = x;
-				position.y = y;
-				position.z = height * get_height_scale();
+				position.x = x + tile_offset.x;
+				position.y = y + tile_offset.y;
+				position.z = height;// * get_height_scale();
 
 				min = glm::min(min, position);
 				max = glm::max(max, position);
 
-				uv = glm::vec2(x, y) /
-					static_cast<float>(get_tile_size());
-
-				data = glm::vec4(uv, 0.0f, 1.0f);
+				uv = uvs.get_uv(x + tile_offset.x,
+					y + tile_offset.y);
+				uv.s /= terrain_size.x - 1;
+				uv.t /= terrain_size.y - 1;
 
 				mesh_data_tool->set_vertex_data(vst_position,
 					index, glm::vec4(position, 1.0f));
@@ -91,70 +103,150 @@ namespace eternal_lands
 				mesh_data_tool->set_vertex_data(vst_tangent,
 					index, tangent);
 				mesh_data_tool->set_vertex_data(
-					vst_texture_coordinate_0, index, data);
+					vst_texture_coordinate_0, index,
+					glm::vec4(uv, 0.0f, 1.0f));
 
 				++index;
 			}
 		}
 
-		mesh_data_tool->set_sub_mesh_data(0, SubMesh(
-			BoundingBox(min, max), 0, index_counts[0], 0,
-			vertex_count - 1));
+		min = glm::min(min, max - 0.05f);
 
-		mesh_data_tool->set_sub_mesh_data(1, SubMesh(
-			BoundingBox(min, max), index_counts[0], index_counts[1],
-			0, vertex_count - 1));
+		count = index_counts.size();
+		offset = 0;
+
+		for (i = 0; i < count; ++i)
+		{
+			mesh_data_tool->set_sub_mesh_data(i, SubMesh(
+				BoundingBox(min, max), offset, index_counts[i],
+				0, vertex_count - 1));
+
+			offset += index_counts[i];
+		}
 	}
 
 	void SimpleTerrainManager::add_terrain_pages(
+		const EffectDescription &effect,
 		const ImageSharedPtr &height_map,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache, const bool use_simd)
+		const TextureCacheSharedPtr &texture_cache,
+		const bool low_quality, const bool use_simd)
 	{
 		MaterialEffectDescriptionVector materials;
+		MaterialEffectDescription material;
 		MeshDataToolSharedPtr mesh_data_tool;
 		AbstractMeshSharedPtr mesh;
 		ObjectSharedPtr object;
 		ObjectData object_data;
-		Uint32Vector indices;
-		glm::uvec2 tile_offset;
-		Uint32Array2 index_counts;
+		glm::vec4 scale_offset;
+		glm::uvec2 tile_offset, terrain_size;
+		Uint32Vector indices, index_counts;
+		Uint16Array2Vector lods;
+		Uint16Array4 lods_counts;
+		Uint16Array4 lods_offsets;
+		Uint16Array3 lods_distances;
+		Uint16Array2 lod;
 		Uint32 vertex_count, index_count, i, x, y, height, width;
-		Uint32 restart_index;
+		Uint32 restart_index, count;
 		VertexSemanticTypeSet semantics;
+		HeightMapUvTool uvs(height_map, get_height_scale());
 
 		vertex_count = get_tile_size() + 1;
 		vertex_count *= get_tile_size() + 1;
 
-		restart_index = IndexBuilder::build_plane_indices(
-			indices, get_tile_size(), false, 0, true, 0);
+		index_count = 0;
 
-		index_counts[0] = indices.size();
+		if (low_quality)
+		{
+			restart_index = IndexBuilder::build_plane_indices(
+				indices, get_tile_size(), false, 0, false, 0);
 
-		restart_index = IndexBuilder::build_plane_indices(
-			indices, get_tile_size(), false, 1, false, 0xF);
+			index_counts.push_back(indices.size() - index_count);
+			index_count = indices.size();
 
-		index_counts[1] = indices.size() - index_counts[0];
+			restart_index = IndexBuilder::build_plane_indices(
+				indices, get_tile_size(), false, 1, true, 0);
 
-		index_count = indices.size();
+			index_counts.push_back(indices.size() - index_count);
+			index_count = indices.size();
+
+			restart_index = IndexBuilder::build_plane_indices(
+				indices, get_tile_size(), false, 1, false, 0xF);
+
+			index_counts.push_back(indices.size() - index_count);
+			index_count = indices.size();
+		}
+		else
+		{
+			restart_index = IndexBuilder::build_plane_indices(
+				indices, get_tile_size(), false, 0, true, 0);
+
+			index_counts.push_back(indices.size() - index_count);
+			index_count = indices.size();
+
+			restart_index = IndexBuilder::build_plane_indices(
+				indices, get_tile_size(), false, 0, false, 0xF);
+
+			index_counts.push_back(indices.size() - index_count);
+			index_count = indices.size();
+		}
 
 		semantics.insert(vst_position);
 		semantics.insert(vst_texture_coordinate_0);
 		semantics.insert(vst_normal);
 		semantics.insert(vst_tangent);
 
-		mesh_data_tool = boost::make_shared<MeshDataTool>(get_name(),
-			vertex_count, index_count, 2, semantics, restart_index,
-			pt_triangles, false, use_simd);
-
-		for (i = 0; i < index_count; ++i)
-		{
-			mesh_data_tool->set_index_data(i, indices[i]);
-		}
-
 		width = height_map->get_width() / get_tile_size();
 		height = height_map->get_height() / get_tile_size();
+
+		terrain_size.x = width * get_tile_size() + 1;
+		terrain_size.y = height * get_tile_size() + 1;
+
+		object_data.set_world_transformation(get_transformation());
+
+		count = index_counts.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			lod[0] = 0;
+			lod[1] = std::max(1u, i);
+
+			lods.push_back(lod);
+		}
+
+		lods_counts[0] = 1;
+		lods_counts[1] = 1;
+		lods_counts[2] = 1;
+		lods_counts[3] = 1;
+		
+		lods_offsets[0] = std::min(0u, count - 1);
+		lods_offsets[1] = std::min(1u, count - 1);
+		lods_offsets[2] = std::min(2u, count - 1);
+		lods_offsets[3] = std::min(3u, count - 1);
+
+		lods_distances[0] = 10;
+		lods_distances[1] = 20;
+		lods_distances[2] = 40;
+
+		uvs.buil_relaxed_uv();
+
+		material.set_texture(get_albedo_map(0), stt_albedo_0);
+		material.set_texture(get_albedo_map(1), stt_albedo_1);
+		material.set_texture(get_albedo_map(2), stt_albedo_2);
+		material.set_texture(get_albedo_map(3), stt_albedo_3);
+		material.set_texture(get_blend_map(), stt_blend_0);
+
+		material.set_effect_description(effect);
+
+		scale_offset.x = width;
+		scale_offset.y = height;
+		scale_offset.z = 0.0f;
+		scale_offset.w = 0.0f;
+
+		material.set_texture_scale_offset(scale_offset);
+
+		materials.push_back(material);
 
 		for (y = 0; y < height; ++y)
 		{
@@ -162,24 +254,41 @@ namespace eternal_lands
 			{
 				StringStream str;
 
-				str << UTF8("terrain-") << x << UTF8("x") << y;
+				str << get_name() << UTF8(" terrain ") << x;
+				str << UTF8("x") << y;
+
+				mesh_data_tool =
+					boost::make_shared<MeshDataTool>(
+						String(str.str()), vertex_count,
+						index_count, count, semantics,
+						restart_index, pt_triangles,
+						false, use_simd);
+
+				for (i = 0; i < index_count; ++i)
+				{
+					mesh_data_tool->set_index_data(i,
+						indices[i]);
+				}
 
 				object_data.set_name(String(str.str()));
 
 				tile_offset.x = x;
 				tile_offset.y = y;
+				tile_offset *= get_tile_size();
 
-				set_terrain_page(height_map, tile_offset,
-					index_counts, vertex_count,
-					mesh_data_tool);
+				set_terrain_page(uvs, height_map, tile_offset,
+					terrain_size, index_counts,
+					vertex_count, mesh_data_tool);
 
 				mesh = mesh_builder->get_mesh(
-					vft_instanced_mesh, mesh_data_tool,
-					get_name());
+					vft_simple_terrain, mesh_data_tool,
+					String(str.str()));
 
 				object = boost::make_shared<Object>(object_data,
 					mesh, materials, effect_cache,
-					texture_cache);
+					texture_cache, LodData(lods,
+						lods_counts, lods_offsets,
+						lods_distances));
 
 				m_object_tree->add(object);
 			}

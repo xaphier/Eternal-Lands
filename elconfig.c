@@ -197,7 +197,8 @@ int engine_use_simd = engine_true;
 int engine_use_block = engine_true;
 int engine_use_alias = engine_false;
 int engine_use_in_out = engine_true;
-int engine_use_layered_rendering = engine_true;
+int engine_use_layered_rendering = engine_false;
+int engine_low_quality_terrain = engine_false;
 #ifdef	DEBUG
 int engine_draw_objects = engine_true;
 int engine_draw_actors = engine_true;
@@ -282,6 +283,12 @@ void change_engine_set_use_layered_rendering(int* var)
 {
 	*var = !*var;
 	engine_set_use_layered_rendering(*var);
+}
+
+void change_engine_set_low_quality_terrain(int* var)
+{
+	*var = !*var;
+	engine_set_low_quality_terrain(*var);
 }
 
 void change_engine_use_simd(int* var)
@@ -1830,6 +1837,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &engine_shadow_distance, change_engine_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &engine_view_distance, change_engine_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "fog", "fog", &engine_fog, change_engine_fog, engine_true, "Fog", "Fog", GFX);
+	add_var(OPT_BOOL, "low_quality_terrain", "low_quality_terrain", &engine_low_quality_terrain, change_engine_set_low_quality_terrain, engine_false, "Low quality terrain", "Low quality terrain", GFX);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */
@@ -1914,7 +1922,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "use_block", "use_block", &engine_use_block, change_engine_set_use_block, engine_true, "Use block", "Use interface block in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_alias", "use_alias", &engine_use_alias, change_engine_set_use_alias, engine_false, "Use alias", "Use alias in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_in_out", "use_in_out", &engine_use_in_out, change_engine_set_use_in_out, engine_true, "Use in/out", "Use in/out in shaders", TROUBLESHOOT);
-	add_var(OPT_BOOL, "use_layered_rendering", "use_layered_rendering", &engine_use_layered_rendering, change_engine_set_use_layered_rendering, engine_true, "Use layered rendering", "Use layered rendering in shaders", TROUBLESHOOT);
+	add_var(OPT_BOOL, "use_layered_rendering", "use_layered_rendering", &engine_use_layered_rendering, change_engine_set_use_layered_rendering, engine_false, "Use layered rendering", "Use layered rendering in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &engine_optmize_shader_source, change_engine_optmize_shader_source, engine_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
 	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &engine_opengl_version, change_engine_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", 0);
 #ifdef	USE_SSE2

@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractterrainmanager.hpp"
+#include "basicterrainmanager.hpp"
 
 /**
  * @file
@@ -23,7 +23,7 @@
 namespace eternal_lands
 {
 
-	class CdLodTerrainManager: public AbstractTerrainManager
+	class CdLodTerrainManager: public BasicTerrainManager
 	{
 		private:
 			ImageSharedPtr m_height_image;

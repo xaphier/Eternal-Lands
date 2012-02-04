@@ -18,22 +18,45 @@
 #include "lightvisitor.hpp"
 #include "objectvisitor.hpp"
 #include "terrain/simpleterrainmanager.hpp"
+#include "filesystem.hpp"
+#include "objectvisitor.hpp"
+#include "renderobjectdata.hpp"
 
 namespace eternal_lands
 {
 
-	Map::Map(const MeshBuilderSharedPtr &mesh_builder,
+	Map::Map(const CodecManagerSharedPtr &codec_manager,
+		const FileSystemSharedPtr &file_system,
+		const GlobalVarsSharedPtr &global_vars,
+		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache):
+		const TextureCacheSharedPtr &texture_cache, const String &name):
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_name(UTF8("")), m_id(0), m_dungeon(false)
+		m_name(name), m_id(0), m_dungeon(false)
 	{
+		String file_name;
+
 		m_light_tree.reset(new RStarTree());
 		m_object_tree.reset(new RStarTree());
 
 		set_ambient(glm::vec3(0.2f));
+
+		file_name = FileSystem::get_name_without_extension(name);
+
+		file_name = String(file_name.get() + UTF8(".xml"));
+
+		if (file_system->get_file_readable(file_name))
+		{
+			m_terrain.reset(new SimpleTerrainManager(codec_manager,
+				file_system, global_vars, mesh_builder,
+				effect_cache, texture_cache, file_name));
+		}
+		else
+		{
+			m_terrain.reset(new BasicTerrainManager(file_name));
+		}
 	}
 
 	Map::~Map() throw()
@@ -165,11 +188,8 @@ namespace eternal_lands
 		}
 	}
 
-	void Map::load(const String &name, const glm::vec3 &ambient,
-		const bool dungeon)
+	void Map::load(const glm::vec3 &ambient, const bool dungeon)
 	{
-		m_name = name;
-
 		set_dungeon(dungeon);
 		set_ambient(ambient);
 
@@ -188,6 +208,7 @@ namespace eternal_lands
 		const
 	{
 		m_object_tree->intersect(frustum, visitor);
+		m_terrain->intersect(frustum, visitor);
 	}
 
 	void Map::intersect(const Frustum &frustum, LightVisitor &visitor)
@@ -199,6 +220,11 @@ namespace eternal_lands
 	const BoundingBox &Map::get_bounding_box() const
 	{
 		return m_object_tree->get_bounding_box();
+	}
+
+	float Map::get_terrain_height_scale() const
+	{
+		return m_terrain->get_height_scale();
 	}
 
 }

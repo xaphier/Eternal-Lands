@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>terrain</name>
- <type>world_normal_transformation</type>
+ <type>world_tangent_transformation</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -13,8 +13,29 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal</name>
+     <name>world_matrix</name>
+     <type>mat4x3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
      <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>height_sampler</name>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>texture_scale_offset</name>
+     <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -27,37 +48,20 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
+     <name>world_tangent</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
-    <parameter>
-     <name>terrain_height_scale</name>
-     <type>float</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>world_transformation</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
    </parameters>
-   <source>world_position = position.xyz;
-world_position.z *= terrain_height_scale;
-world_normal = normal;
-
-world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
-world_position *= world_transformation[1].w;
-world_position += world_transformation[1].xyz;
-world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+   <source>world_position.xyz = position.xyz;
+world_position = world_matrix * vec4(world_position, 1.0);
+world_position.z = textureLod(height_sampler, position.xy * texture_scale_offset.xy + texture_scale_offset.zw, 0.0).r;
+world_normal = normalize(mat3(world_matrix) * vec3(0.0, 0.0, 1.0));
+world_tangent = normalize(mat3(world_matrix) * vec3(1.0, 0.0, 0.0));
 </source>
-   <glsl_120>true</glsl_120>
+   <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>
    <glsl_150>true</glsl_150>

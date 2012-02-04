@@ -208,27 +208,6 @@ static int do_load_map(const char *file_name, update_func *update_function)
 /* 	else */
 /* 		water_tiles_extension = 0.0; */
 
-	if ((strcmp(file_name, "./maps/mapnewbie.elm") == 0) && GLEW_VERSION_3_0)
-	{
-		update_function("Building terrain", 50.0f);
-
-		engine_terrain();
-
-		memset(height_map, 0, tile_map_size_x*tile_map_size_y*6*6);
-
-		// Everything copied, get rid of the file data
-		el_close(file);
-
-		init_bbox_tree(main_bbox_tree, main_bbox_tree_items);
-		free_bbox_items(main_bbox_tree_items);
-		main_bbox_tree_items = 0;
-		update_function(init_done_str, 50.0f);
-#ifdef EXTRA_DEBUG
-		ERR();//We finished loading the new map apparently...
-#endif
-		return 1;
-	}
-
 	for(i = 0; i < tile_map_size_y; i++)
 	{
 		for(j = 0; j < tile_map_size_x; j++)

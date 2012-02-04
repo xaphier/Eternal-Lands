@@ -1699,6 +1699,23 @@ int keypress_root_common (Uint32 key, Uint32 unikey)
 			new_second();
 		}
 	}
+	else if((keysym == SDLK_r) && shift_on && ctrl_on && alt_on)
+	{
+		GLint polygon_mode;
+
+		glGetIntegerv(GL_POLYGON_MODE, &polygon_mode);
+
+		if (polygon_mode == GL_FILL)
+		{
+			LOG_TO_CONSOLE(c_green2, "Wire frame mode on");
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else
+		{
+			LOG_TO_CONSOLE(c_green2, "Wire frame mode off");
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
 #ifdef DEBUG
     // scale the current actor
 	else if((keysym == SDLK_p) && shift_on && ctrl_on && !alt_on)

@@ -14,7 +14,7 @@ namespace eternal_lands
 		const CodecManagerSharedPtr &codec_manager,
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars, const String &name):
-		AbstractTerrainManager(name)
+		BasicTerrainManager(name)
 	{
 	}
 
