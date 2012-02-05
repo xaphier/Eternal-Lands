@@ -208,7 +208,7 @@ namespace eternal_lands
 	{
 		Uint32 increasing;
 		float movement, last;
-
+return;
 		last = relax(m_infos, 0.05f, 10.0f, m_width, m_uvs,
 			m_velocities);
 

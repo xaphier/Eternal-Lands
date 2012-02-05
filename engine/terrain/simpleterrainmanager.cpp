@@ -64,7 +64,6 @@ namespace eternal_lands
 		glm::vec4 normal, tangent;
 		glm::vec3 min, max, position;
 		glm::vec2 uv;
-		float height;
 		Uint32 index, i, count, offset;
 		Uint16 x, y;
 
@@ -80,13 +79,11 @@ namespace eternal_lands
 		{
 			for (x = 0; x <= get_tile_size(); ++x)
 			{
-				height = height_map->get_pixel_uint(
-					x + tile_offset.x, y + tile_offset.y,
-					0, 0, 0).r;
-
 				position.x = x + tile_offset.x;
 				position.y = y + tile_offset.y;
-				position.z = height;// * get_height_scale();
+				position.z = height_map->get_pixel_uint(
+					x + tile_offset.x, y + tile_offset.y,
+					0, 0, 0).r;
 
 				min = glm::min(min, position);
 				max = glm::max(max, position);
