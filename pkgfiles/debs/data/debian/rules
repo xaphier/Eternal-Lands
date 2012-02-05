@@ -1,13 +1,18 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	# Commands to configure the package.
-
 	touch configure-stamp
 
 build: build-arch build-indep
@@ -16,52 +21,43 @@ build-indep: build-stamp
 
 build-stamp: configure-stamp 
 	dh_testdir
-
-	# Cmmands to compile the package.
-	$(MAKE) -f Makefile.linux release
-
 	touch $@
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-
-	# Commands to clean up after the build process.
-	$(MAKE) -f Makefile.linux clean
-	rm -f .depend el.x86.linux.bin glinfo make.conf
-
 	dh_clean 
+
+PKGTAG = eternallands-data
+DEST = $(CURDIR)/debian/$(PKGTAG)/usr/share/games/EternalLands
+CACHE = $(CURDIR)/debian/$(PKGTAG)/var/cache/eternallands
 
 install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
+	install -d $(DEST) $(CACHE)
+	touch $(DEST)/$(PKGTAG).filelist $(DEST)/$(PKGTAG).dirlist
 
 # Build architecture-independent files here.
 binary-indep: build install
-# We have nothing to do by default.
-
-# Build architecture-dependent files here.
-binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs CHANGES
+	dh_installchangelogs 
 	dh_installdocs
-	dh_installexamples
 	dh_install
-	dh_installmenu
-	dh_installman pkgfiles/eternallands.6 pkgfiles/el.x86.linux.bin.6
 	dh_link
-	dh_strip
 	dh_compress
 	dh_fixperms
 	dh_installdeb
-	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
+
+# Build architecture-dependent files here.
+binary-arch: build install
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure
