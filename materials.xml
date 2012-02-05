@@ -1,25 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <materials>
 	<material>
-		<name>terrain</name>
-		<albedo_0>textures/terrain0.dds</albedo_0>
-		<albedo_1>textures/terrain1.dds</albedo_1>
-		<albedo_2>textures/terrain2.dds</albedo_2>
-		<albedo_3>textures/terrain3.dds</albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend>textures/blend.dds</blend>
-		<height>textures/height.dds</height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>blend_4</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
-	</material>
-	<material>
 		<name>lava</name>
 		<albedo_0>textures/lava.dds</albedo_0>
 		<albedo_1>textures/noise.dds</albedo_1>
@@ -709,7 +690,7 @@
 		<albedo_1></albedo_1>
 		<albedo_2></albedo_2>
 		<albedo_3></albedo_3>
-		<normal>3dobjects/shingles3_norm.dds</normal>
+		<normal></normal>
 		<specular></specular>
 		<emission></emission>
 		<blend></blend>
@@ -2742,8 +2723,8 @@
 		<albedo_1></albedo_1>
 		<albedo_2></albedo_2>
 		<albedo_3></albedo_3>
-		<normal>3dobjects/tile17_norm.dds</normal>
-		<specular>3dobjects/tile17_spec.dds</specular>
+		<normal></normal>
+		<specular></specular>
 		<emission></emission>
 		<blend></blend>
 		<height></height>
@@ -3350,7 +3331,7 @@
 		<albedo_1></albedo_1>
 		<albedo_2></albedo_2>
 		<albedo_3></albedo_3>
-		<normal>3dobjects/stonewall19_norm.dds</normal>
+		<normal></normal>
 		<specular></specular>
 		<emission></emission>
 		<blend></blend>
@@ -4699,7 +4680,7 @@
 		<albedo_1></albedo_1>
 		<albedo_2></albedo_2>
 		<albedo_3></albedo_3>
-		<normal>3dobjects/stonewall4_norm.dds</normal>
+		<normal></normal>
 		<specular></specular>
 		<emission></emission>
 		<blend></blend>
@@ -4889,7 +4870,7 @@
 		<albedo_1></albedo_1>
 		<albedo_2></albedo_2>
 		<albedo_3></albedo_3>
-		<normal>3dobjects/doorwindows2_norm.dds</normal>
+		<normal></normal>
 		<specular></specular>
 		<emission></emission>
 		<blend></blend>
