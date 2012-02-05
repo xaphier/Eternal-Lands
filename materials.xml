@@ -2730,8 +2730,8 @@
 		<height></height>
 		<texture_coodrinates>default</texture_coodrinates>
 		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>normal_mapping</normal_mapping>
-		<specular_mapping>default</specular_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
 		<emission_mapping>disabled</emission_mapping>
 		<receives_shadows>true</receives_shadows>
 		<lighting>true</lighting>
