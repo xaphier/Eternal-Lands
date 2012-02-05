@@ -581,14 +581,15 @@ extern "C" void file_system_add_dir(const char* dir)
 {
 	TRY_BLOCK
 
-	file_system->add_dir(el::String(el::utf8_to_string(dir)));
+	file_system->add_dir(el::String(el::string_to_utf8(dir)));
 
 	CATCH_BLOCK
 
 	try
 	{
-//		file_system->add_zip(el::String(el::utf8_to_string(dir) +
-//			UTF8("shaders.zip")));
+		file_system->add_zip(el::String(el::string_to_utf8(dir) +
+			UTF8("EL-GL2-data-only.zip")),
+				"3aa56449e2daa01696f646d412a517fac86e2a5c");
 	}
 	catch (...)
 	{
