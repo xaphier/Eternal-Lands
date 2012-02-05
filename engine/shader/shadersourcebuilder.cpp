@@ -1316,7 +1316,7 @@ namespace eternal_lands
 
 				main << indent << UTF8("/* no lighting */\n");
 				main << indent << output_color << UTF8(" = ");
-				main << cpt_albedo << UTF8(".rgb *");
+				main << cpt_albedo << UTF8(".rgb * ");
 				main << cpt_emission << UTF8(";\n");
 
 				return;

@@ -15,7 +15,7 @@
 		<albedo_mapping>lava</albedo_mapping>
 		<normal_mapping>disabled</normal_mapping>
 		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<emission_mapping>white</emission_mapping>
 		<receives_shadows>false</receives_shadows>
 		<lighting>false</lighting>
 	</material>

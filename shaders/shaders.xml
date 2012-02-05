@@ -45,6 +45,7 @@
 		<shader_source>shaders/sources/terrain_depth_simple.xml</shader_source>
 		<shader_source>shaders/sources/terrain_normal_simple.xml</shader_source>
 		<shader_source>shaders/sources/terrain_tangent_simple.xml</shader_source>
+		<shader_source>shaders/sources/full_emission.xml</shader_source>
 	</shader_sources>
 	<sources>
 		<world_depth_transformation>default</world_depth_transformation>
