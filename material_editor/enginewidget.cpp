@@ -75,7 +75,7 @@ void EngineWidget::initializeGL()
 	values.clear();
 
 	strings = scene->get_scene_resources().get_shader_source_builder(
-		)->get_shader_source_names(el::sst_diffuse_mapping);
+		)->get_shader_source_names(el::sst_albedo_mapping);
 
 	BOOST_FOREACH(const el::String &string, strings)
 	{
@@ -204,9 +204,9 @@ void EngineWidget::set_name(const QString value)
 	}
 
 	emit set_diffuse_map(QString::fromUtf8(
-		material.get_texture(el::stt_diffuse_0).get().c_str()));
+		material.get_texture(el::stt_albedo_0).get().c_str()));
 	emit set_second_diffuse_map(QString::fromUtf8(
-		material.get_texture(el::stt_diffuse_1).get().c_str()));
+		material.get_texture(el::stt_albedo_1).get().c_str()));
 	emit set_normal_map(QString::fromUtf8(
 		material.get_texture(el::stt_normal_0).get().c_str()));
 	emit set_specular_map(QString::fromUtf8(
@@ -218,7 +218,7 @@ void EngineWidget::set_name(const QString value)
 	emit set_uv_generation_name(QString::fromUtf8(
 		material.get_texture_coodrinates().get().c_str()));
 	emit set_diffuse_mapping_name(QString::fromUtf8(
-		material.get_diffuse_mapping().get().c_str()));
+		material.get_albedo_mapping().get().c_str()));
 	emit set_normal_mapping_name(QString::fromUtf8(
 		material.get_normal_mapping().get().c_str()));
 	emit set_specular_mapping_name(QString::fromUtf8(

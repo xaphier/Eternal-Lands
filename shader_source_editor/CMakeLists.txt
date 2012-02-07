@@ -26,6 +26,8 @@ file(GLOB shader_source_editor_cpp_files *.cpp)
 file(GLOB shader_source_editor_c_header_files *.h)
 file(GLOB shader_source_editor_c_files *.c)
 
+file(COPY main.xml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 add_executable(shader_source_editor WIN32
 	${shader_source_editor_cpp_header_files}
 	${shader_source_editor_cpp_files}
