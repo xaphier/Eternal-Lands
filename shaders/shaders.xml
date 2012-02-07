@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf8"?>
 <shaders>
 	<shadow_scale>0.8</shadow_scale>
-	<vertex_light_count>0</vertex_light_count>
+	<vertex_light_count>5</vertex_light_count>
 	<fragment_light_count>3</fragment_light_count>
-	<bone_count>72</bone_count>
+	<bone_count>80</bone_count>
 	<dynamic_light_count>false</dynamic_light_count>
 	<shader_sources>
 		<shader_source>shaders/sources/bone_depth_animation.xml</shader_source>
@@ -58,7 +58,8 @@
 		<fog>default</fog>
 		<transparent>default</transparent>
 		<vertex_light>diffuse</vertex_light>
-		<fragment_light>Cook-Torrance</fragment_light>
+<!--		<fragment_light>Cook-Torrance</fragment_light>	-->
+		<fragment_light>diffuse</fragment_light>
 		<shadow_map>default</shadow_map>
 		<tbn_matrix>default</tbn_matrix>
 		<albedo_mapping>default</albedo_mapping>
