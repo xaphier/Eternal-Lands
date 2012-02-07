@@ -237,7 +237,7 @@ namespace eternal_lands
 			last = movement;
 		}
 	}
-#if	0
+
 	/**
 	 * Converts to signed rg 8 but image
 	 */
@@ -307,5 +307,5 @@ namespace eternal_lands
 			}
 		}
 	}
-#endif
+
 }

@@ -243,6 +243,7 @@ namespace eternal_lands
 		lods_distances[2] = 40;
 
 		uvs.buil_relaxed_uv();
+		uvs.convert();
 
 		material.set_texture(get_albedo_map(0), stt_albedo_0);
 		material.set_texture(get_albedo_map(1), stt_albedo_1);

@@ -58,6 +58,7 @@ namespace eternal_lands
 			~HeightMapUvTool() throw();
 
 			void buil_relaxed_uv();
+			void convert();
 
 			inline const glm::vec2 &get_uv(const Uint16 x,
 				const Uint16 y) const

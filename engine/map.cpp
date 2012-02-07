@@ -21,6 +21,7 @@
 #include "filesystem.hpp"
 #include "objectvisitor.hpp"
 #include "renderobjectdata.hpp"
+#include "particledata.hpp"
 
 namespace eternal_lands
 {

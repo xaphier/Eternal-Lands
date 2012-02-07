@@ -40,6 +40,8 @@ namespace eternal_lands
 			boost::scoped_ptr<BasicTerrainManager> m_terrain;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
+			Uint16MultiArray2 m_height_map;
+			ParticleDataVector m_particles;
 			glm::vec4 m_ambient;
 			String m_name;
 			Uint32 m_id;

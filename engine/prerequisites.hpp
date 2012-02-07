@@ -43,6 +43,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/multi_array.hpp>
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/composite_key.hpp>
 #include <boost/multi_index/hashed_index.hpp>
@@ -109,6 +110,10 @@ namespace eternal_lands
 	typedef boost::scoped_array<Uint8> Uint8ScopedArray;
 	typedef std::set<Uint32> Uint32Set;
 	typedef std::set<String> StringSet;
+	typedef boost::multi_array<bool, 2> BoolMultiArray2;
+	typedef boost::multi_array<float, 2> FloatMultiArray2;
+	typedef boost::multi_array<Uint8, 2> Uint8MultiArray2;
+	typedef boost::multi_array<Uint16, 2> Uint16MultiArray2;
 
 	ARRAY_NAME(float, 2, Float);
 	ARRAY_NAME(float, 4, Float);
@@ -232,6 +237,7 @@ namespace eternal_lands
 	class ObjectData;
 	class ObjectDescription;
 	class ObjectVisitor;
+	class ParticleData;
 	class Plane;
 	class Polygon;
 	class Ray;
@@ -359,6 +365,7 @@ namespace eternal_lands
 	VECTOR(ObjectData);
 	VECTOR(ObjectDescription);
 	VECTOR(ObjectSharedPtr);
+	VECTOR(ParticleData);
 	VECTOR(Plane);
 	VECTOR(RenderObjectData);
 	VECTOR(RStarTreeNodeSharedPtr);
