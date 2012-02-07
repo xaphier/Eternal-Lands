@@ -98,8 +98,8 @@ namespace eternal_lands
 			bool get_object_position(const Uint32 id,
 				glm::vec3 &position);
 			void add_light(const glm::vec3 &position,
-				const glm::vec3 &color, const float ambient,
-				const float radius, const Uint32 id);
+				const glm::vec3 &color, const float radius,
+				const Uint32 id);
 			void remove_light(const Uint32 id);
 			void clear();
 			void load(const glm::vec3 &ambient,

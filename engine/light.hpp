@@ -28,7 +28,6 @@ namespace eternal_lands
 		private:
 			glm::vec3 m_position;
 			glm::vec3 m_color;
-			float m_ambient;
 			float m_radius;
 			float m_inv_sqr_radius;
 			Uint32 m_id;
@@ -43,8 +42,8 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			Light(const glm::vec3 &position,
-				const glm::vec3 &color, const float ambient,
-				const float radius, const Uint32 id);
+				const glm::vec3 &color, const float radius,
+				const Uint32 id);
 
 			/**
 			 * Default destructor.
@@ -74,14 +73,6 @@ namespace eternal_lands
 			}
 
 			/**
-			 * The ambient of the light.
-			 */
-			inline float get_ambient() const
-			{
-				return m_ambient;
-			}
-
-			/**
 			 * The radius of the light.
 			 */
 			inline float get_radius() const
@@ -98,11 +89,6 @@ namespace eternal_lands
 			inline float get_inv_sqr_radius() const
 			{
 				return m_inv_sqr_radius;
-			}
-
-			inline void set_ambient(const float ambient)
-			{
-				m_ambient = ambient;
 			}
 
 			inline void set_radius(const float radius)

@@ -11,9 +11,9 @@ namespace eternal_lands
 {
 
 	Light::Light(const glm::vec3 &position, const glm::vec3 &color,
-		const float ambient, const float radius, const Uint32 id):
-		m_position(position), m_color(color), m_ambient(ambient),
-		m_radius(radius), m_inv_sqr_radius(0.0f), m_id(id)
+		const float radius, const Uint32 id): m_position(position),
+		m_color(color), m_radius(radius), m_inv_sqr_radius(0.0f),
+		m_id(id)
 	{
 		set_inv_sqr_radius(radius);
 		update_bounding_box();

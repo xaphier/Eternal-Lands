@@ -159,13 +159,12 @@ namespace eternal_lands
 	}
 
 	void Map::add_light(const glm::vec3 &position, const glm::vec3 &color,
-		const float ambient, const float radius, const Uint32 id)
+		const float radius, const Uint32 id)
 	{
 		std::pair<Uint32LightSharedPtrMap::iterator, bool> temp;
 		LightSharedPtr light;
 
-		light = boost::make_shared<Light>(position, color, ambient,
-			radius, id);
+		light = boost::make_shared<Light>(position, color, radius, id);
 		assert(light->get_radius() == radius);
 		temp = m_lights.insert(Uint32LightSharedPtrMap::value_type(id,
 			light));
