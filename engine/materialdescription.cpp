@@ -14,10 +14,22 @@
 namespace eternal_lands
 {
 
-	MaterialDescription::MaterialDescription():
-		m_texture_scale_offset(1.0f, 1.0f, 0.0f, 0.0f),
-		m_receives_shadows(true), m_lighting(true)
+	MaterialDescription::MaterialDescription(): m_receives_shadows(true),
+		m_lighting(true)
 	{
+		Uint16 i;
+
+		for (i = 0; i < 4; ++i)
+		{
+			m_albedo_scale_offsets[i][0] = glm::vec4(1.0f);
+			m_albedo_scale_offsets[i][1] = glm::vec4(0.0f);
+			m_texture_scale_offsets[i] =
+				glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+		}
+
+		m_emission_scale_offset[0] = glm::vec4(1.0f);
+		m_emission_scale_offset[1] = glm::vec4(0.0f);
+		m_specular_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
 	}
 
 	MaterialDescription::~MaterialDescription() throw()
@@ -111,9 +123,72 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_scale_offset")) == 0)
+				BAD_CAST UTF8("albedo_scale_offset_0")) == 0)
+			{
+				set_albedo_scale_offset(
+					XmlUtil::get_mat2x4_value(it), 0);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("albedo_scale_offset_1")) == 0)
+			{
+				set_albedo_scale_offset(
+					XmlUtil::get_mat2x4_value(it), 1);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("albedo_scale_offset_2")) == 0)
+			{
+				set_albedo_scale_offset(
+					XmlUtil::get_mat2x4_value(it), 2);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("albedo_scale_offset_3")) == 0)
+			{
+				set_albedo_scale_offset(
+					XmlUtil::get_mat2x4_value(it), 3);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("texture_scale_offset_0")) == 0)
 			{
 				set_texture_scale_offset(
+					XmlUtil::get_vec4_value(it), 0);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("texture_scale_offset_1")) == 0)
+			{
+				set_texture_scale_offset(
+					XmlUtil::get_vec4_value(it), 1);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("texture_scale_offset_2")) == 0)
+			{
+				set_texture_scale_offset(
+					XmlUtil::get_vec4_value(it), 2);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("texture_scale_offset_3")) == 0)
+			{
+				set_texture_scale_offset(
+					XmlUtil::get_vec4_value(it), 3);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("emission_scale_offset")) == 0)
+			{
+				set_emission_scale_offset(
+					XmlUtil::get_mat2x4_value(it));
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("specular_scale_offset")) == 0)
+			{
+				set_specular_scale_offset(
 					XmlUtil::get_vec4_value(it));
 			}
 
@@ -188,8 +263,26 @@ namespace eternal_lands
 			get_texture(stt_emission_0));
 		writer->write_element(UTF8("blend"), get_texture(stt_blend_0));
 		writer->write_element(UTF8("height"), get_texture(stt_height));
-		writer->write_vec4_element(UTF8("texture_scale_offset"),
-			get_texture_scale_offset());
+		writer->write_mat2x4_element(UTF8("albedo_scale_offset_0"),
+			get_albedo_scale_offset(0));
+		writer->write_mat2x4_element(UTF8("albedo_scale_offset_1"),
+			get_albedo_scale_offset(1));
+		writer->write_mat2x4_element(UTF8("albedo_scale_offset_2"),
+			get_albedo_scale_offset(2));
+		writer->write_mat2x4_element(UTF8("albedo_scale_offset_3"),
+			get_albedo_scale_offset(3));
+		writer->write_vec4_element(UTF8("texture_scale_offset_0"),
+			get_texture_scale_offset(0));
+		writer->write_vec4_element(UTF8("texture_scale_offset_1"),
+			get_texture_scale_offset(1));
+		writer->write_vec4_element(UTF8("texture_scale_offset_2"),
+			get_texture_scale_offset(2));
+		writer->write_vec4_element(UTF8("texture_scale_offset_3"),
+			get_texture_scale_offset(3));
+		writer->write_mat2x4_element(UTF8("emission_scale_offset"),
+			get_emission_scale_offset());
+		writer->write_vec4_element(UTF8("specular_scale_offset"),
+			get_specular_scale_offset());
 		writer->write_element(UTF8("texture_coodrinates"),
 			get_texture_coodrinates());
 		writer->write_element(UTF8("albedo_mapping"),

@@ -56,7 +56,10 @@ namespace eternal_lands
 		apt_shadow_camera,
 		apt_split_distances,
 		apt_layers,
-		apt_texture_scale_offset,
+		apt_texture_scale_offsets,
+		apt_albedo_scale_offsets,
+		apt_emission_scale_offset,
+		apt_specular_scale_offset,
 		apt_terrain_height_scale
 	};
 	/**

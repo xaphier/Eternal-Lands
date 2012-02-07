@@ -48,14 +48,126 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		el::stt_height), "");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture(
 		el::stt_dudv), "");
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[0], 1.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[1], 1.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[2], 0.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[3], 0.0f);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[3], 0.0f, 1.0);
 	BOOST_CHECK_EQUAL(
 		material_effect_description.get_world_transformation(),
 		"");
@@ -139,14 +251,126 @@ BOOST_AUTO_TEST_CASE(textures)
 		el::stt_height), "2556yvc23");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture(
 		el::stt_dudv), ".,welrf43");
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[0], 1.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[1], 1.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[2], 0.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[3], 0.0f);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[3], 0.0f, 1.0);
 	BOOST_CHECK_EQUAL(
 		material_effect_description.get_world_transformation(),
 		"");
@@ -218,14 +442,126 @@ BOOST_AUTO_TEST_CASE(effect)
 		el::stt_height), "");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture(
 		el::stt_dudv), "");
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[0], 1.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[1], 1.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[2], 0.0f);
-	BOOST_CHECK_EQUAL(material_effect_description.get_texture_scale_offset(
-		)[3], 0.0f);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[3], 0.0f, 1.0);
 	BOOST_CHECK_EQUAL(
 		material_effect_description.get_world_transformation(),
 		"afsd5sf");
@@ -281,7 +617,19 @@ BOOST_AUTO_TEST_CASE(all)
 		el::String(UTF8(".,welrf43")), el::stt_dudv));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_scale_offset(
-			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(
@@ -336,14 +684,126 @@ BOOST_AUTO_TEST_CASE(all)
 		el::stt_height), "2556yvc23");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture(
 		el::stt_dudv), ".,welrf43");
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[0], 0.6787f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[1], 4.342f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[2], 345.0f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[3], 76.0f, 0.001);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[0], 0.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[1], 4.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[2], 345.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[3], 76.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[0], 0.356f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[1], 43.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[2], 5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[3], 176.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[0], -1.677f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[1], -0.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[2], -577.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[3], -878.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[0], -10.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[1], -444.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[2], -5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[3], -1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[0], -1.7f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[1], -4.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[2], -15.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[3], -21.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"hrtzn..,");
 	BOOST_CHECK_EQUAL(
@@ -376,8 +836,11 @@ BOOST_AUTO_TEST_CASE(xml)
 		"<specular>y&lt;bnj3e</specular>"
 		"<emission>ymbnjf!2r2!A</emission><blend>345w</blend>"
 		"<height>2556yvc23</height>"
-		"<texture_scale_offset>0.6787 4.342 345.0 76.0"
-		"</texture_scale_offset>"
+		"<texture_scale_offset_0>0.6787 4.342 345.0 76.0</texture_scale_offset_0>"
+		"<texture_scale_offset_1>0.356 43.3 5.0 176.0</texture_scale_offset_1>"
+		"<texture_scale_offset_2>-1.677 -0.342 -577.0 -878.0</texture_scale_offset_2>"
+		"<texture_scale_offset_3>-10.6787 -444.3 -5.0 -1.0</texture_scale_offset_3>"
+		"<specular_scale_offset>-1.7 -4.0 -15.0 -21.0</specular_scale_offset>"
 		"<texture_coodrinates>afdgsr!§$AFD54</texture_coodrinates>"
 		"<albedo_mapping>428rfu0sr4v</albedo_mapping>"
 		"<normal_mapping>AST%&amp;%</normal_mapping>"
@@ -424,14 +887,126 @@ BOOST_AUTO_TEST_CASE(xml)
 		el::stt_height), "2556yvc23");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture(
 		el::stt_dudv), "");
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[0], 0.6787f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[1], 4.342f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[2], 345.0f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[3], 76.0f, 0.001);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[0], 0.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[1], 4.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[2], 345.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[3], 76.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[0], 0.356f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[1], 43.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[2], 5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[3], 176.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[0], -1.677f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[1], -0.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[2], -577.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[3], -878.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[0], -10.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[1], -444.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[2], -5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[3], -1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[0], -1.7f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[1], -4.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[2], -15.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[3], -21.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"tada");
 	BOOST_CHECK_EQUAL(
@@ -489,7 +1064,15 @@ BOOST_AUTO_TEST_CASE(set_material_descriptiont)
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8(".,welrf43")), el::stt_dudv));
 	BOOST_CHECK_NO_THROW(material_description.set_texture_scale_offset(
-		glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(material_description.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(material_description.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(material_description.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(material_description.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_description.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(material_description.set_texture_coodrinates(
@@ -535,7 +1118,19 @@ BOOST_AUTO_TEST_CASE(set_material_descriptiont)
 		el::String(UTF8("?/=(j54r")), el::stt_dudv));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_scale_offset(
-			glm::vec4(534.0f, -4.342f, -344.0f, 176.0f)));
+			glm::vec4(534.0f, -4.342f, -344.0f, 176.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(30.356f, 1443.3f, 2145.0f, 12176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(-241.677f, -140.342f, -2577.0f, -88.40f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(-1.67f, -444.3f, -512.0f, -1.023f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_specular_scale_offset(
+			glm::vec4(-1.1f, -44.03f, -1.035f, -2.01f)));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
 		el::String(UTF8("fgrzj.-jhasdfk23r"))));
 	BOOST_CHECK_NO_THROW(
@@ -594,14 +1189,126 @@ BOOST_AUTO_TEST_CASE(set_material_descriptiont)
 		"2556yvc23");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_dudv),
 		".,welrf43");
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[0], 0.6787f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[1], 4.342f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[2], 345.0f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[3], 76.0f, 0.001);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[0], 0.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[1], 4.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[2], 345.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[3], 76.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[0], 0.356f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[1], 43.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[2], 5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[3], 176.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[0], -1.677f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[1], -0.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[2], -577.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[3], -878.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[0], -10.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[1], -444.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[2], -5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[3], -1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[0], -1.7f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[1], -4.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[2], -15.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[3], -21.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"hrtzn..,");
 	BOOST_CHECK_EQUAL(
@@ -661,7 +1368,19 @@ BOOST_AUTO_TEST_CASE(asign)
 		el::String(UTF8(".,welrf43")), el::stt_dudv));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_0.set_texture_scale_offset(
-			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_0.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(
@@ -748,29 +1467,365 @@ BOOST_AUTO_TEST_CASE(asign)
 	BOOST_CHECK_EQUAL(material_effect_description_1.get_texture(
 		el::stt_dudv), ".,welrf43");
 	BOOST_CHECK_CLOSE(
-		material_effect_description_0.get_texture_scale_offset(
-			)[0], 0.6787f, 0.001);
+		material_effect_description_0.get_albedo_scale_offset(0)[0][0],
+		1.0f, 1.0);
 	BOOST_CHECK_CLOSE(
-		material_effect_description_0.get_texture_scale_offset(
-			)[1], 4.342f, 0.001);
+		material_effect_description_0.get_albedo_scale_offset(0)[0][1],
+		1.0f, 1.0);
 	BOOST_CHECK_CLOSE(
-		material_effect_description_0.get_texture_scale_offset(
-			)[2], 345.0f, 0.001);
+		material_effect_description_0.get_albedo_scale_offset(0)[0][2],
+		1.0f, 1.0);
 	BOOST_CHECK_CLOSE(
-		material_effect_description_0.get_texture_scale_offset(
-			)[3], 76.0f, 0.001);
+		material_effect_description_0.get_albedo_scale_offset(0)[0][3],
+		1.0f, 1.0);
 	BOOST_CHECK_CLOSE(
-		material_effect_description_1.get_texture_scale_offset(
-			)[0], 0.6787f, 0.001);
+		material_effect_description_0.get_albedo_scale_offset(0)[1][0],
+		0.0f, 1.0);
 	BOOST_CHECK_CLOSE(
-		material_effect_description_1.get_texture_scale_offset(
-			)[1], 4.342f, 0.001);
+		material_effect_description_0.get_albedo_scale_offset(0)[1][1],
+		0.0f, 1.0);
 	BOOST_CHECK_CLOSE(
-		material_effect_description_1.get_texture_scale_offset(
-			)[2], 345.0f, 0.001);
+		material_effect_description_0.get_albedo_scale_offset(0)[1][2],
+		0.0f, 1.0);
 	BOOST_CHECK_CLOSE(
-		material_effect_description_1.get_texture_scale_offset(
-			)[3], 76.0f, 0.001);
+		material_effect_description_0.get_albedo_scale_offset(0)[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(1)[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(1)[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(1)[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(1)[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(1)[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(1)[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(1)[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(1)[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(2)[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(2)[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(2)[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(2)[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(2)[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(2)[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(2)[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(2)[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(3)[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(3)[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(3)[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(3)[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(3)[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(3)[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(3)[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_albedo_scale_offset(3)[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(0)[0],
+		0.6787f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(0)[1],
+		4.342f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(0)[2],
+		345.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(0)[3],
+		76.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(1)[0],
+		0.356f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(1)[1],
+		43.3f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(1)[2],
+		5.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(1)[3],
+		176.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(2)[0],
+		-1.677f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(2)[1],
+		-0.342f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(2)[2],
+		-577.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(2)[3],
+		-878.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(3)[0],
+		-10.6787f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(3)[1],
+		-444.3f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(3)[2],
+		-5.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_texture_scale_offset(3)[3],
+		-1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_emission_scale_offset()[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_emission_scale_offset()[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_emission_scale_offset()[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_emission_scale_offset()[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_emission_scale_offset()[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_emission_scale_offset()[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_emission_scale_offset()[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_emission_scale_offset()[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_specular_scale_offset()[0],
+		-1.7f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_specular_scale_offset()[1],
+		-4.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_specular_scale_offset()[2],
+		-15.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_0.get_specular_scale_offset()[3],
+		-21.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(0)[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(0)[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(0)[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(0)[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(0)[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(0)[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(0)[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(0)[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(1)[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(1)[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(1)[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(1)[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(1)[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(1)[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(1)[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(1)[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(2)[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(2)[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(2)[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(2)[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(2)[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(2)[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(2)[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(2)[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(3)[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(3)[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(3)[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(3)[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(3)[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(3)[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(3)[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_albedo_scale_offset(3)[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(0)[0],
+		0.6787f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(0)[1],
+		4.342f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(0)[2],
+		345.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(0)[3],
+		76.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(1)[0],
+		0.356f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(1)[1],
+		43.3f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(1)[2],
+		5.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(1)[3],
+		176.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(2)[0],
+		-1.677f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(2)[1],
+		-0.342f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(2)[2],
+		-577.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(2)[3],
+		-878.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(3)[0],
+		-10.6787f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(3)[1],
+		-444.3f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(3)[2],
+		-5.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_texture_scale_offset(3)[3],
+		-1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_emission_scale_offset()[0][0],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_emission_scale_offset()[0][1],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_emission_scale_offset()[0][2],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_emission_scale_offset()[0][3],
+		1.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_emission_scale_offset()[1][0],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_emission_scale_offset()[1][1],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_emission_scale_offset()[1][2],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_emission_scale_offset()[1][3],
+		0.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_specular_scale_offset()[0],
+		-1.7f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_specular_scale_offset()[1],
+		-4.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_specular_scale_offset()[2],
+		-15.0f, 1.0);
+	BOOST_CHECK_CLOSE(
+		material_effect_description_1.get_specular_scale_offset()[3],
+		-21.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_effect_description_0.get_material_name(),
 		"hrtzn..,");
 	BOOST_CHECK_EQUAL(material_effect_description_1.get_material_name(),
@@ -855,7 +1910,19 @@ BOOST_AUTO_TEST_CASE(equal)
 		el::String(UTF8("fs46wAFED§&%")), el::stt_blend_1));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_0.set_texture_scale_offset(
-			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_0.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(
@@ -907,7 +1974,19 @@ BOOST_AUTO_TEST_CASE(equal)
 		el::String(UTF8("fs46wAFED§&%")), el::stt_blend_1));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_1.set_texture_scale_offset(
-			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_1.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_1.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_1.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_1.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_1.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(
@@ -974,7 +2053,19 @@ BOOST_AUTO_TEST_CASE(not_equal)
 		el::String(UTF8("fs46wAFED§&%")), el::stt_blend_1));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_0.set_texture_scale_offset(
-			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_0.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(
@@ -1035,7 +2126,19 @@ BOOST_AUTO_TEST_CASE(less)
 		el::String(UTF8("fs46wAFED§&%")), el::stt_blend_1));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description_0.set_texture_scale_offset(
-			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description_0.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description_0.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(
@@ -1117,7 +2220,19 @@ BOOST_AUTO_TEST_CASE(set_effect_description)
 		el::String(UTF8(".,welrf43")), el::stt_dudv));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_scale_offset(
-			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(
@@ -1175,14 +2290,126 @@ BOOST_AUTO_TEST_CASE(set_effect_description)
 		el::stt_height), "2556yvc23");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture(
 		el::stt_dudv), ".,welrf43");
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[0], 0.6787f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[1], 4.342f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[2], 345.0f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[3], 76.0f, 0.001);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[0], 0.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[1], 4.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[2], 345.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[3], 76.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[0], 0.356f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[1], 43.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[2], 5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[3], 176.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[0], -1.677f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[1], -0.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[2], -577.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[3], -878.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[0], -10.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[1], -444.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[2], -5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[3], -1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[0], -1.7f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[1], -4.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[2], -15.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[3], -21.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"hrtzn..,");
 	BOOST_CHECK_EQUAL(
@@ -1241,7 +2468,19 @@ BOOST_AUTO_TEST_CASE(get_effect_description)
 		el::String(UTF8(".,welrf43")), el::stt_dudv));
 	BOOST_CHECK_NO_THROW(
 		material_effect_description.set_texture_scale_offset(
-			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f)));
+			glm::vec4(0.6787f, 4.342f, 345.0f, 76.0f), 0));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(0.356f, 43.3f, 5.0f, 176.0f), 1));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(-1.677f, -0.342f, -577.0f, -878.0f), 2));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_texture_scale_offset(
+			glm::vec4(-10.6787f, -444.3f, -5.0f, -1.0f), 3));
+	BOOST_CHECK_NO_THROW(
+		material_effect_description.set_specular_scale_offset(
+			glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
 	BOOST_CHECK_NO_THROW(material_effect_description.set_material_name(
 		el::String(UTF8("hrtzn..,"))));
 	BOOST_CHECK_NO_THROW(
@@ -1299,14 +2538,126 @@ BOOST_AUTO_TEST_CASE(get_effect_description)
 		el::stt_height), "2556yvc23");
 	BOOST_CHECK_EQUAL(material_effect_description.get_texture(
 		el::stt_dudv), ".,welrf43");
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[0], 0.6787f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[1], 4.342f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[2], 345.0f, 0.001);
-	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(
-		)[3], 76.0f, 0.001);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(0
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(1
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(2
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_albedo_scale_offset(3
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[0], 0.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[1], 4.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[2], 345.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(0
+		)[3], 76.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[0], 0.356f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[1], 43.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[2], 5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(1
+		)[3], 176.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[0], -1.677f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[1], -0.342f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[2], -577.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(2
+		)[3], -878.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[0], -10.6787f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[1], -444.3f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[2], -5.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_texture_scale_offset(3
+		)[3], -1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][0], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][1], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][2], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[0][3], 1.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][0], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][1], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][2], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_emission_scale_offset(
+		)[1][3], 0.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[0], -1.7f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[1], -4.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[2], -15.0f, 1.0);
+	BOOST_CHECK_CLOSE(material_effect_description.get_specular_scale_offset(
+		)[3], -21.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_effect_description.get_material_name(),
 		"hrtzn..,");
 	BOOST_CHECK_EQUAL(

@@ -51,6 +51,7 @@ namespace eternal_lands
 			LightVisitor m_visible_lights;
 			boost::scoped_ptr<Map> m_map;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
+			AbstractFrameBufferSharedPtr m_reflection_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;

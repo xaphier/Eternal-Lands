@@ -30,7 +30,7 @@ namespace eternal_lands
 	{
 		private:
 			FrameBuffer m_frame_buffer;
-			boost::scoped_ptr<RenderBuffer> m_render_buffer;
+			TextureSharedPtr m_depth_texture;
 			bool m_color;
 
 		public:
@@ -46,6 +46,11 @@ namespace eternal_lands
 			virtual void clear(const glm::vec4 &color,
 				const float depth);
 			virtual void unbind();
+
+			inline const TextureSharedPtr &get_depth_texture() const
+			{
+				return m_depth_texture;
+			}
 
 	};
 

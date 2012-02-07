@@ -71,18 +71,35 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_render_buffer.reset(new RenderBuffer(get_width(),
-				get_height(), 0, tft_depth24_stencil8));
+			m_depth_texture = boost::make_shared<Texture>(name);
+
+			if (layers > 0)
+			{
+				get_depth_texture()->set_target(ttt_2d_texture_array);
+			}
+			else
+			{
+				get_depth_texture()->set_target(ttt_2d_texture);
+			}
+
+			get_depth_texture()->set_format(tft_depth24_stencil8);
+			get_depth_texture()->set_wrap_s(twt_clamp);
+			get_depth_texture()->set_wrap_t(twt_clamp);
+			get_depth_texture()->set_wrap_r(twt_clamp);
+			get_depth_texture()->set_mipmap_count(0);
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_render_buffer->bind_to_framebuffer(
-				GL_DEPTH_ATTACHMENT);
+			get_depth_texture()->init(get_width(), get_height(),
+				layers, 0);
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_render_buffer->bind_to_framebuffer(
-				GL_STENCIL_ATTACHMENT);
+			get_depth_texture()->attach(GL_DEPTH_ATTACHMENT, 0);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			get_depth_texture()->attach(GL_STENCIL_ATTACHMENT, 0);
 
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
 

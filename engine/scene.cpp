@@ -593,9 +593,24 @@ namespace eternal_lands
 				m_state_manager);
 
 			m_state_manager.get_program()->set_parameter(
-				apt_texture_scale_offset,
+				apt_texture_scale_offsets,
 				object->get_material_effects(
-					)[material].get_texture_scale_offset());
+					)[material].get_texture_scale_offsets());
+
+			m_state_manager.get_program()->set_parameter(
+				apt_albedo_scale_offsets,
+				object->get_material_effects(
+					)[material].get_albedo_scale_offsets());
+
+			m_state_manager.get_program()->set_parameter(
+				apt_emission_scale_offset,
+				object->get_material_effects(
+					)[material].get_emission_scale_offset());
+
+			m_state_manager.get_program()->set_parameter(
+				apt_specular_scale_offset,
+				object->get_material_effects(
+					)[material].get_specular_scale_offset());
 
 			m_state_manager.draw(mesh, 1);
 		}
@@ -644,9 +659,9 @@ namespace eternal_lands
 			}
 
 			m_state_manager.get_program()->set_parameter(
-				apt_texture_scale_offset,
+				apt_texture_scale_offsets,
 				object->get_material_effects(
-					)[material].get_texture_scale_offset());
+					)[material].get_texture_scale_offsets());
 
 			object->get_material_effects()[material].bind(
 				m_state_manager);
@@ -690,9 +705,9 @@ namespace eternal_lands
 			}
 
 			m_state_manager.get_program()->set_parameter(
-				apt_texture_scale_offset,
+				apt_texture_scale_offsets,
 				object->get_material_effects(
-					)[material].get_texture_scale_offset());
+					)[material].get_texture_scale_offsets());
 
 			object->get_material_effects()[material].bind(
 				m_state_manager);

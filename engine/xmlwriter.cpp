@@ -215,6 +215,36 @@ namespace eternal_lands
 		write_element(name, str.str());
 	}
 
+	void XmlWriter::write_mat2x4_element(const StringType &name,
+		const glm::mat2x4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_mat3x4_element(const StringType &name,
+		const glm::mat3x4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_mat4_element(const StringType &name,
+		const glm::mat4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
 	void XmlWriter::write_quaternion_element(const StringType &name,
 		const glm::quat &value)
 	{

@@ -329,6 +329,15 @@ namespace eternal_lands
 			glUniform4fv(index, 1, glm::value_ptr(value));
 		}
 
+		template<Uint32 N>
+		void set_uniform(const Uint32 index, const Uint32 size,
+			const boost::array<glm::vec4, N> &value)
+		{
+			glUniform4fv(index, std::min(size,
+					static_cast<Uint32>(value.size())),
+				glm::value_ptr(value[0]));
+		}
+
 		void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat2x2Vector &value,
 			const GLboolean transpose)
@@ -440,6 +449,16 @@ namespace eternal_lands
 				glm::value_ptr(value));
 		}
 
+		template<Uint32 N>
+		void set_uniform(const Uint32 index, const Uint32 size,
+			const boost::array<glm::mat2x4, N> &value,
+			const GLboolean transpose)
+		{
+			glUniformMatrix2x4fv(index, std::min(size,
+					static_cast<Uint32>(value.size())),
+				transpose, glm::value_ptr(value[0]));
+		}
+
 		void set_uniform(const Uint32 index, const glm::mat3x2 &value,
 			const GLboolean transpose)
 		{
@@ -461,6 +480,16 @@ namespace eternal_lands
 				glm::value_ptr(value));
 		}
 
+		template<Uint32 N>
+		void set_uniform(const Uint32 index, const Uint32 size,
+			const boost::array<glm::mat3x4, N> &value,
+			const GLboolean transpose)
+		{
+			glUniformMatrix3x4fv(index, std::min(size,
+					static_cast<Uint32>(value.size())),
+				transpose, glm::value_ptr(value[0]));
+		}
+
 		void set_uniform(const Uint32 index, const glm::mat4x2 &value,
 			const GLboolean transpose)
 		{
@@ -480,6 +509,16 @@ namespace eternal_lands
 		{
 			glUniformMatrix4fv(index, 1, transpose,
 				glm::value_ptr(value));
+		}
+
+		template<Uint32 N>
+		void set_uniform(const Uint32 index, const Uint32 size,
+			const boost::array<glm::mat4x4, N> &value,
+			const GLboolean transpose)
+		{
+			glUniformMatrix4fv(index, std::min(size,
+					static_cast<Uint32>(value.size())),
+				transpose, glm::value_ptr(value[0]));
 		}
 
 		#define CHECK_TYPE(parameter)	\
@@ -1791,6 +1830,40 @@ namespace eternal_lands
 		{
 			assert(found->second.m_parameter == pt_mat4x4);
 			set_uniform(found->second.m_index, value, transpose);
+		}
+	}
+
+	void GlslProgram::set_parameter(const AutoParameterType parameter,
+		const Mat2x4Array4 &value, const bool transpose)
+	{
+		AutoParameterTypeUniformMap::const_iterator found;
+
+		assert(get_active());
+
+		found = m_auto_parameters.find(parameter);
+
+		if (found != m_auto_parameters.end())
+		{
+			assert(found->second.m_parameter == pt_mat2x4);
+			set_uniform<4>(found->second.m_index,
+				found->second.m_size, value, transpose);
+		}
+	}
+
+	void GlslProgram::set_parameter(const AutoParameterType parameter,
+		const Vec4Array4 &value)
+	{
+		AutoParameterTypeUniformMap::const_iterator found;
+
+		assert(get_active());
+
+		found = m_auto_parameters.find(parameter);
+
+		if (found != m_auto_parameters.end())
+		{
+			assert(found->second.m_parameter == pt_vec4);
+			set_uniform<4>(found->second.m_index,
+				found->second.m_size, value);
 		}
 	}
 

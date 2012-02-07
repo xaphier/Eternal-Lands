@@ -22,7 +22,6 @@ namespace eternal_lands
 		void add_vertex(MeshDataTool &mesh_data_tool,
 			const MeshDataToolSharedPtr &source,
 			const glm::mat4x3 &world_matrix,
-			const glm::vec4 &texture_scale_offset,
 			const glm::vec4 &color, const Uint32 source_index,
 			const Uint32 dest_index, glm::vec3 &min, glm::vec3 &max)
 		{
@@ -60,11 +59,6 @@ namespace eternal_lands
 			data = source->get_vertex_data(vst_texture_coordinate_0,
 				source_index);
 
-			data.x *= texture_scale_offset.x;
-			data.x += texture_scale_offset.z;
-			data.y *= texture_scale_offset.y;
-			data.y += texture_scale_offset.w;
-
 			mesh_data_tool.set_vertex_data(vst_texture_coordinate_0,
 				dest_index, data);
 
@@ -75,7 +69,6 @@ namespace eternal_lands
 
 		void build_sub_mesh_unpacked(MeshDataTool &mesh_data_tool,
 			const InstancingData &instancing_data,
-			const glm::vec4 &texture_scale_offset,
 			const glm::vec3 &center, const Uint32 sub_mesh_index,
 			const Uint32 base_vertex, Uint32 &vertex_offset,
 			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max)
@@ -129,7 +122,6 @@ namespace eternal_lands
 					add_vertex(mesh_data_tool,
 						instancing_data.get_mesh_data_tool(),
 						world_matrix,
-						texture_scale_offset,
 						instancing_data.get_color(),
 						index, vertex_offset, min, max);
 
@@ -146,7 +138,6 @@ namespace eternal_lands
 
 		void build_sub_mesh_packed(MeshDataTool &mesh_data_tool,
 			const InstancingData &instancing_data,
-			const glm::vec4 &texture_scale_offset,
 			const glm::vec3 &center, const Uint32 sub_mesh_index,
 			const Uint32 base_vertex, Uint32 &vertex_offset,
 			Uint32 &index_offset, glm::vec3 &min, glm::vec3 &max)
@@ -249,10 +240,10 @@ namespace eternal_lands
 				vst_tangent, min_vertex, vertex_offset, count,
 				glm::mat3x3(world_matrix));
 
-			mesh_data_tool.transform_vertics(
+			mesh_data_tool.copy_vertics(
 				*instancing_data.get_mesh_data_tool(),
 				vst_texture_coordinate_0, min_vertex,
-				vertex_offset, count, texture_scale_offset);
+				vertex_offset, count);
 
 			mesh_data_tool.copy_vertics(
 				*instancing_data.get_mesh_data_tool(),
@@ -279,30 +270,25 @@ namespace eternal_lands
 			glm::vec3 &min, glm::vec3 &max, Uint32 &vertex_offset,
 			Uint32 &index_offset)
 		{
-			glm::vec4 texture_scale_offset;
-
 			if (material != instancing_data.get_materials()[index])
 			{
 				return false;
 			}
 
-			texture_scale_offset = instancing_data.get_materials(
-				)[index].get_texture_scale_offset();
-
 			if (instancing_data.get_mesh_data_tool(
 				)->get_sub_mesh_data(index).get_packed())
 			{
 				build_sub_mesh_packed(*mesh_data_tool,
-					instancing_data, texture_scale_offset,
-					center, index, base_vertex,
-					vertex_offset, index_offset, min, max);
+					instancing_data, center, index,
+					base_vertex, vertex_offset,
+					index_offset, min, max);
 			}
 			else
 			{
 				build_sub_mesh_unpacked(*mesh_data_tool,
-					instancing_data, texture_scale_offset,
-					center, index, base_vertex,
-					vertex_offset, index_offset, min, max);
+					instancing_data, center, index,
+					base_vertex, vertex_offset,
+					index_offset, min, max);
 			}
 
 			return true;
@@ -412,7 +398,6 @@ namespace eternal_lands
 		std::set<MaterialEffectDescription> material_set;
 		MeshDataToolSharedPtr mesh_data_tool;
 		MaterialEffectDescriptionVector materials;
-		MaterialEffectDescription instanced_material;
 		SubObjectVector instanced_objects;
 		VertexSemanticTypeSet semantics;
 		glm::vec4 texture_scale_offset;
@@ -445,12 +430,7 @@ namespace eternal_lands
 			BOOST_FOREACH(const MaterialEffectDescription &material,
 				instancing_data.get_materials())
 			{
-				instanced_material = material;
-
-				instanced_material.set_texture_scale_offset(
-					texture_scale_offset);
-
-				material_set.insert(instanced_material);
+				material_set.insert(material);
 			}
 
 			if (!str.str().empty())

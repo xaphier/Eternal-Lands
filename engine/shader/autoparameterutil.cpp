@@ -97,7 +97,16 @@ namespace eternal_lands
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("layers")), pt_ivec4),
 			AutoParameterTypeData(
-				String(UTF8("texture_scale_offset")), pt_vec4),
+				String(UTF8("texture_scale_offset")), pt_vec4,
+				pst_one, 4),
+			AutoParameterTypeData(
+				String(UTF8("albedo_scale_offsets")),
+				pt_mat2x4, pst_one, 4),
+			AutoParameterTypeData(
+				String(UTF8("emission_scale_offset")),
+				pt_mat2x4),
+			AutoParameterTypeData(
+				String(UTF8("specular_scale_offset")), pt_vec4),
 			AutoParameterTypeData(
 				String(UTF8("terrain_height_scale")), pt_float)
 		};

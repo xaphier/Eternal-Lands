@@ -237,5 +237,75 @@ namespace eternal_lands
 			last = movement;
 		}
 	}
+#if	0
+	/**
+	 * Converts to signed rg 8 but image
+	 */
+	void HeightMapUvTool::convert()
+	{
+		glm::vec2 uv, max, tmp, diff;
+		glm::ivec2 temp;
+		Sint32 width, height, x, y, index;
 
+		width = m_width;
+		height = m_height;
+		index = 0;
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				uv.s = x;
+				uv.t = y;
+
+				tmp = m_uvs[index] - uv;
+				max = glm::max(max, tmp);
+				max = glm::max(max, glm::abs(tmp));
+
+				++index;
+			}
+		}
+
+		index = 0;
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				uv.s = x;
+				uv.t = y;
+
+				tmp = m_uvs[index] - uv;
+				tmp /= max;
+
+				if (tmp.s < 0.0f)
+				{
+					temp.s = tmp.s * 128.0f - 0.5f;
+					tmp.s = std::max(temp.s, -128) / 128.0f;
+				}
+				else
+				{
+					temp.s = tmp.s * 127.0f + 0.5f;
+					tmp.s = std::min(temp.s, 128) / 127.0f;
+				}
+
+				if (tmp.t < 0.0f)
+				{
+					temp.t = tmp.t * 128.0f - 0.5f;
+					tmp.t = std::max(temp.t, -128) / 128.0f;
+				}
+				else
+				{
+					temp.t = tmp.t * 127.0f + 0.5f;
+					tmp.t = std::min(temp.t, 128) / 127.0f;
+				}
+
+				diff = glm::max(diff, glm::abs(m_uvs[index] - (uv + tmp * max))); 
+				m_uvs[index] = uv + tmp * max;
+
+				++index;
+			}
+		}
+	}
+#endif
 }

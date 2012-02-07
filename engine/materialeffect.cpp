@@ -28,19 +28,30 @@ namespace eternal_lands
 	MaterialEffect::MaterialEffect(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_texture_scale_offset(1.0f, 1.0f, 0.0f, 0.0f),
 		m_cast_shadows(true), m_culling(true)
 	{
+		Uint16 i;
+
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
+
+		for (i = 0; i < 4; ++i)
+		{
+			m_albedo_scale_offsets[i][0] = glm::vec4(1.0f);
+			m_albedo_scale_offsets[i][1] = glm::vec4(0.0f);
+			m_texture_scale_offsets[i] =
+				glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+		}
+
+		m_emission_scale_offset[0] = glm::vec4(1.0f);
+		m_emission_scale_offset[1] = glm::vec4(0.0f);
+		m_specular_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
 	}
 
 	MaterialEffect::MaterialEffect(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache,
 		const MaterialEffectDescription &material):
-		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_texture_scale_offset(1.0f, 1.0f, 0.0f, 0.0f),
-		m_cast_shadows(true), m_culling(true)
+		m_effect_cache(effect_cache), m_texture_cache(texture_cache)
 	{
 		EffectDescription effect;
 
@@ -51,7 +62,10 @@ namespace eternal_lands
 
 		set_effect(effect);
 
-		set_texture_scale_offset(material.get_texture_scale_offset());
+		set_albedo_scale_offsets(material.get_albedo_scale_offsets());
+		set_texture_scale_offsets(material.get_texture_scale_offsets());
+		set_emission_scale_offset(material.get_emission_scale_offset());
+		set_specular_scale_offset(material.get_specular_scale_offset());
 		set_cast_shadows(material.get_cast_shadows());
 		set_culling(material.get_culling());
 
@@ -172,11 +186,32 @@ namespace eternal_lands
 
 		for (i = 0; i < 4; ++i)
 		{
-			if (get_texture_scale_offset()[i] !=
-				material.get_texture_scale_offset()[i])
+			if (get_albedo_scale_offset(i) !=
+				material.get_albedo_scale_offset(i))
 			{
 				return false;
 			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_texture_scale_offset(i) !=
+				material.get_texture_scale_offset(i))
+			{
+				return false;
+			}
+		}
+
+		if (get_emission_scale_offset() !=
+			material.get_emission_scale_offset())
+		{
+			return false;
+		}
+
+		if (get_specular_scale_offset() !=
+			material.get_specular_scale_offset())
+		{
+			return false;
 		}
 
 		if (get_cast_shadows() != material.get_cast_shadows())
@@ -194,7 +229,8 @@ namespace eternal_lands
 
 	bool MaterialEffect::operator<(const MaterialEffect &material) const
 	{
-		Uint16 i, count;
+		glm::bvec4 cmp;
+		Uint16 i, j, count;
 
 		if (get_effect().get() != material.get_effect().get())
 		{
@@ -214,11 +250,100 @@ namespace eternal_lands
 
 		for (i = 0; i < 4; ++i)
 		{
-			if (get_texture_scale_offset()[i] !=
-				material.get_texture_scale_offset()[i])
+			cmp = glm::equal(get_albedo_scale_offset(i)[0],
+				material.get_albedo_scale_offset(i)[0]);
+			
+			if (glm::all(cmp))
 			{
-				return get_texture_scale_offset()[i] <
-					material.get_texture_scale_offset()[i];
+				continue;
+			}
+
+			for (j = 0; j < 4; ++i)
+			{
+				if (cmp[j])
+				{
+					continue;
+				}
+
+				return get_albedo_scale_offset(i)[0][j] <
+					material.get_albedo_scale_offset(i)[0][j];
+			}
+
+			cmp = glm::equal(get_albedo_scale_offset(i)[1],
+				material.get_albedo_scale_offset(i)[1]);
+			
+			if (glm::all(cmp))
+			{
+				continue;
+			}
+
+			for (j = 0; j < 4; ++i)
+			{
+				if (cmp[j])
+				{
+					continue;
+				}
+
+				return get_albedo_scale_offset(i)[1][j] <
+					material.get_albedo_scale_offset(
+						i)[1][j];
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			cmp = glm::equal(get_texture_scale_offset(i),
+				material.get_texture_scale_offset(i));
+			
+			if (glm::all(cmp))
+			{
+				continue;
+			}
+
+			for (j = 0; j < 4; ++i)
+			{
+				if (cmp[j])
+				{
+					continue;
+				}
+
+				return get_texture_scale_offset(i)[j] <
+					material.get_texture_scale_offset(i)[j];
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_emission_scale_offset()[0][i] !=
+				material.get_emission_scale_offset()[0][i])
+			{
+				
+				return get_emission_scale_offset()[0][i] <
+					material.get_emission_scale_offset(
+						)[0][i];
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_emission_scale_offset()[1][i] !=
+				material.get_emission_scale_offset()[1][i])
+			{
+				
+				return get_emission_scale_offset()[1][i] <
+					material.get_emission_scale_offset(
+						)[1][i];
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_specular_scale_offset()[i] !=
+				material.get_specular_scale_offset()[i])
+			{
+				
+				return get_specular_scale_offset()[i] <
+					material.get_specular_scale_offset()[i];
 			}
 		}
 

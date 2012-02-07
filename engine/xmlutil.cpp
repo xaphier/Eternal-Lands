@@ -82,6 +82,75 @@ namespace eternal_lands
 		return result;
 	}
 
+	glm::mat2x4 XmlUtil::get_mat2x4_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::mat2x4 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::mat2x4();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::mat3x4 XmlUtil::get_mat3x4_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::mat3x4 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::mat3x4();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::mat4 XmlUtil::get_mat4_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::mat4 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::mat4();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
 	glm::quat XmlUtil::get_quaternion_value(const xmlNodePtr node)
 	{
 		StringStream str;

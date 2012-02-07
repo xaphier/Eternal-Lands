@@ -237,10 +237,10 @@ namespace eternal_lands
 
 					if (rg_formats)
 					{
-						return tft_l16;
+						return tft_r16;
 					}
 
-					return tft_r16;
+					return tft_l16;
 				case PNG_COLOR_TYPE_GRAY_ALPHA:
 					if (bit_depth <= 8)
 					{
@@ -254,10 +254,10 @@ namespace eternal_lands
 
 					if (rg_formats)
 					{
-						return tft_la16;
+						return tft_rg16;
 					}
 
-					return tft_rg16;
+					return tft_la16;
 				case PNG_COLOR_TYPE_RGB:
 					if (bit_depth <= 8)
 					{

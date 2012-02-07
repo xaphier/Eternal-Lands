@@ -38,7 +38,7 @@ namespace eternal_lands
 		stt_blend_1 = 11,
 		stt_height = 12,
 		stt_dudv = 13,
-		stt_extra = 14,
+		stt_reflection = 14,
 		stt_shadow = 15
 	};
 

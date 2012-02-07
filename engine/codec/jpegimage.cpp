@@ -204,7 +204,8 @@ namespace eternal_lands
 				rowptr[0] = static_cast<JSAMPROW>(
 					image->get_buffer().get_ptr()) +
 					m_cinfo.output_scanline *
-					m_cinfo.output_width * 3;
+					m_cinfo.output_width *
+					m_cinfo.out_color_components;
 				jpeg_read_scanlines(&m_cinfo, rowptr, 1);
 			}
 

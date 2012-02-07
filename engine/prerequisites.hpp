@@ -143,6 +143,7 @@ namespace eternal_lands
 	ARRAY_NAME(glm::vec4, 4, Vec4);
 	ARRAY_NAME(glm::vec4, 8, Vec4);
 	ARRAY_NAME(glm::vec4, 16, Vec4);
+	ARRAY_NAME(glm::mat2x4, 4, Mat2x4);
 	ARRAY(String, 2);
 	ARRAY(String, 3);
 	ARRAY(String, 4);

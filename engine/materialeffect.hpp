@@ -31,7 +31,10 @@ namespace eternal_lands
 			TextureCacheWeakPtr m_texture_cache;
 			EffectSharedPtr m_effect;
 			MaterialTextureSharedPtrArray m_textures;
-			glm::vec4 m_texture_scale_offset;
+			Mat2x4Array4 m_albedo_scale_offsets;
+			Vec4Array4 m_texture_scale_offsets;
+			glm::mat2x4 m_emission_scale_offset;
+			glm::vec4 m_specular_scale_offset;
 			bool m_cast_shadows;
 			bool m_culling;
 
@@ -94,11 +97,47 @@ namespace eternal_lands
 				return m_effect;
 			}
 
-			inline void set_texture_scale_offset(
-				const glm::vec4 &texture_scale_offset)
+			inline void set_albedo_scale_offsets(
+				const Mat2x4Array4 &albedo_scale_offsets)
 			{
-				m_texture_scale_offset =
+				m_albedo_scale_offsets = albedo_scale_offsets;
+			}
+
+			inline void set_albedo_scale_offset(
+				const glm::mat2x4 &albedo_scale_offset,
+				const Uint16 index)
+			{
+				m_albedo_scale_offsets[index] =
+					albedo_scale_offset;
+			}
+
+			inline void set_texture_scale_offsets(
+				const Vec4Array4 &texture_scale_offsets)
+			{
+				m_texture_scale_offsets =
+					texture_scale_offsets;
+			}
+
+			inline void set_texture_scale_offset(
+				const glm::vec4 &texture_scale_offset,
+				const Uint16 index)
+			{
+				m_texture_scale_offsets[index] =
 					texture_scale_offset;
+			}
+
+			inline void set_emission_scale_offset(
+				const glm::mat2x4 &emission_scale_offset)
+			{
+				m_emission_scale_offset =
+					emission_scale_offset;
+			}
+
+			inline void set_specular_scale_offset(
+				const glm::vec4 &specular_scale_offset)
+			{
+				m_specular_scale_offset =
+					specular_scale_offset;
 			}
 
 			inline void set_cast_shadows(const bool cast_shadows)
@@ -111,10 +150,40 @@ namespace eternal_lands
 				m_culling = culling;
 			}
 
-			inline const glm::vec4 &get_texture_scale_offset()
+			inline const Mat2x4Array4 &get_albedo_scale_offsets()
 				const
 			{
-				return m_texture_scale_offset;
+				return m_albedo_scale_offsets;
+			}
+
+			inline const glm::mat2x4 &get_albedo_scale_offset(
+				const Uint16 index) const
+			{
+				return m_albedo_scale_offsets[index];
+			}
+
+			inline const Vec4Array4 &get_texture_scale_offsets()
+				const
+			{
+				return m_texture_scale_offsets;
+			}
+
+			inline const glm::vec4 &get_texture_scale_offset(
+				const Uint16 index) const
+			{
+				return m_texture_scale_offsets[index];
+			}
+
+			inline const glm::mat2x4 &get_emission_scale_offset()
+				const
+			{
+				return m_emission_scale_offset;
+			}
+
+			inline const glm::vec4 &get_specular_scale_offset()
+				const
+			{
+				return m_specular_scale_offset;
 			}
 
 			inline bool get_cast_shadows() const
