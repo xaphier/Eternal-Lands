@@ -47,10 +47,22 @@ namespace eternal_lands
 				const glm::vec3 &value);
 			void write_vec4_element(const StringType &name,
 				const glm::vec4 &value);
+			void write_mat2_element(const StringType &name,
+				const glm::mat2 &value);
+			void write_mat2x3_element(const StringType &name,
+				const glm::mat2x3 &value);
 			void write_mat2x4_element(const StringType &name,
 				const glm::mat2x4 &value);
+			void write_mat3x2_element(const StringType &name,
+				const glm::mat3x2 &value);
+			void write_mat3_element(const StringType &name,
+				const glm::mat3 &value);
 			void write_mat3x4_element(const StringType &name,
 				const glm::mat3x4 &value);
+			void write_mat4x2_element(const StringType &name,
+				const glm::mat4x2 &value);
+			void write_mat4x3_element(const StringType &name,
+				const glm::mat4x3 &value);
 			void write_mat4_element(const StringType &name,
 				const glm::mat4 &value);
 			void write_quaternion_element(const StringType &name,

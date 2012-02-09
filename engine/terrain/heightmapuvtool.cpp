@@ -229,7 +229,7 @@ namespace eternal_lands
 				break;
 			}
 
-			if (increasing >= 150)
+			if (increasing >= 250)
 			{
 				break;
 			}

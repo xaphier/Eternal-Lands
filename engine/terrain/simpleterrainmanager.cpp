@@ -62,13 +62,13 @@ namespace eternal_lands
 		const Uint16 height_scale,
 		MeshDataToolSharedPtr &mesh_data_tool)
 	{
-		glm::vec4 normal, tangent;
-		glm::vec3 min, max, position;
+		glm::vec4 tangent, heights;
+		glm::vec3 min, max, position, normal;
 		glm::vec2 uv;
+		glm::ivec2 size, pos, cur_pos;
 		Uint32 index, i, count, offset;
 		Uint16 x, y;
 
-		normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 		tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 		index = 0;
@@ -76,25 +76,69 @@ namespace eternal_lands
 		min = glm::vec3(std::numeric_limits<float>::max());
 		max = -min;
 
+		size = glm::ivec2(terrain_size) - glm::ivec2(1);
+
 		for (y = 0; y <= get_tile_size(); ++y)
 		{
 			for (x = 0; x <= get_tile_size(); ++x)
 			{
-				position.x = x + tile_offset.x;
-				position.y = y + tile_offset.y;
-				position.z = height_map->get_pixel_uint(
-					x + tile_offset.x, y + tile_offset.y,
-					0, 0, 0).r * height_scale;
+				pos.x = x;
+				pos.y = y;
+				pos += tile_offset;
 
-				uv = uvs.get_uv(x + tile_offset.x,
-					y + tile_offset.y);
-				uv.s /= terrain_size.x - 1;
-				uv.t /= terrain_size.y - 1;
+				position.x = pos.x;
+				position.y = pos.y;
+				position.z = height_map->get_pixel_uint(
+					pos.x, pos.y, 0, 0, 0).r * height_scale;
+
+				cur_pos = pos;
+				cur_pos.x -= 1;
+				cur_pos = glm::clamp(cur_pos, glm::ivec2(0),
+					size - 1);
+
+				heights.x = height_map->get_pixel_uint(
+					cur_pos.x, cur_pos.y, 0, 0, 0).r *
+					height_scale;
+
+				cur_pos = pos;
+				cur_pos.x += 1;
+				cur_pos = glm::clamp(cur_pos, glm::ivec2(0),
+					size - 1);
+
+				heights.y = height_map->get_pixel_uint(
+					cur_pos.x, cur_pos.y, 0, 0, 0).r *
+					height_scale;
+
+				cur_pos = pos;
+				cur_pos.y -= 1;
+				cur_pos = glm::clamp(cur_pos, glm::ivec2(0),
+					size - 1);
+
+				heights.z = height_map->get_pixel_uint(
+					cur_pos.x, cur_pos.y, 0, 0, 0).r *
+					height_scale;
+
+				cur_pos = pos;
+				cur_pos.y += 1;
+				cur_pos = glm::clamp(cur_pos, glm::ivec2(0),
+					size - 1);
+
+				heights.w = height_map->get_pixel_uint(
+					cur_pos.x, cur_pos.y, 0, 0, 0).r *
+					height_scale;
+
+				normal.x = heights.x - heights.y;
+				normal.y = heights.z - heights.w;
+				normal.z = 2.0f;
+				normal = glm::normalize(normal);
+
+				uv = uvs.get_uv(pos.x, pos.y);
+				uv /= size;
 
 				mesh_data_tool->set_vertex_data(vst_position,
 					index, glm::vec4(position, 1.0f));
 				mesh_data_tool->set_vertex_data(vst_normal,
-					index, normal);
+					index, glm::vec4(normal, 1.0f));
 				mesh_data_tool->set_vertex_data(vst_tangent,
 					index, tangent);
 				mesh_data_tool->set_vertex_data(
@@ -138,7 +182,7 @@ namespace eternal_lands
 		AbstractMeshSharedPtr mesh;
 		ObjectSharedPtr object;
 		ObjectData object_data;
-		glm::vec4 scale_offset;
+		glm::mat2x3 texture_matrix;
 		glm::uvec2 tile_offset, terrain_size;
 		Uint32Vector indices, index_counts;
 		Uint16Array2Vector lods;
@@ -223,7 +267,7 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			lod[0] = 0;
-			lod[1] = std::max(1u, i);
+			lod[1] = i;
 
 			lods.push_back(lod);
 		}
@@ -253,12 +297,14 @@ namespace eternal_lands
 
 		material.set_effect_description(effect);
 
-		scale_offset.x = width;
-		scale_offset.y = height;
-		scale_offset.z = 0.0f;
-		scale_offset.w = 0.0f;
+		texture_matrix[0].x = height_map->get_width() / 8;
+		texture_matrix[0].y = 0.0f;
+		texture_matrix[0].z = 0.0f;
+		texture_matrix[1].x = 0.0f;
+		texture_matrix[1].y = height_map->get_height() / 8;
+		texture_matrix[1].z = 0.0f;
 
-		material.set_texture_scale_offset(scale_offset, 0);
+		material.set_texture_matrix(texture_matrix, 0);
 
 		materials.push_back(material);
 

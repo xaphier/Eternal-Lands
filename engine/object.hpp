@@ -149,11 +149,6 @@ namespace eternal_lands
 					world_transformation);
 			}
 
-			inline void set_color(const glm::vec4 &color)
-			{
-				m_object_data.set_color(color);
-			}
-
 			inline void set_transparency(const float transparency)
 			{
 				m_object_data.set_transparency(transparency);
@@ -173,11 +168,6 @@ namespace eternal_lands
 				const
 			{
 				return m_object_data.get_world_transformation();
-			}
-
-			inline const glm::vec4 &get_color() const
-			{
-				return m_object_data.get_color();
 			}
 
 			inline const String &get_name() const

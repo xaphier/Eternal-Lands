@@ -31,8 +31,6 @@ namespace eternal_lands
 			String m_blend_map;
 			String m_height_map;
 			const String m_name;
-			glm::vec4 m_rotation;
-			glm::vec3 m_translation;
 			float m_height_scale;
 			Uint16 m_tile_size;
 

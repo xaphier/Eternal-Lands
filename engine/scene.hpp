@@ -49,7 +49,7 @@ namespace eternal_lands
 			ObjectVisitor m_visible_objects;
 			ObjectVisitor m_shadow_objects;
 			LightVisitor m_visible_lights;
-			boost::scoped_ptr<Map> m_map;
+			MapSharedPtr m_map;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractFrameBufferSharedPtr m_reflection_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
@@ -70,8 +70,7 @@ namespace eternal_lands
 			void get_lights(const BoundingBox &bounding_box,
 				Uint32 &light_count);
 			void set_lights(const GlslProgramSharedPtr &program,
-				const glm::ivec3 &dynamic_light_count,
-				const glm::vec4 &color);
+				const glm::ivec3 &dynamic_light_count);
 			void draw_object(const ObjectSharedPtr &object,
 				const Uint16 distance);
 			void draw_object_depth(const ObjectSharedPtr &object,

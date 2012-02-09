@@ -215,6 +215,26 @@ namespace eternal_lands
 		write_element(name, str.str());
 	}
 
+	void XmlWriter::write_mat2_element(const StringType &name,
+		const glm::mat2 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_mat2x3_element(const StringType &name,
+		const glm::mat2x3 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
 	void XmlWriter::write_mat2x4_element(const StringType &name,
 		const glm::mat2x4 &value)
 	{
@@ -225,8 +245,48 @@ namespace eternal_lands
 		write_element(name, str.str());
 	}
 
+	void XmlWriter::write_mat3x2_element(const StringType &name,
+		const glm::mat3x2 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_mat3_element(const StringType &name,
+		const glm::mat3 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
 	void XmlWriter::write_mat3x4_element(const StringType &name,
 		const glm::mat3x4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_mat4x2_element(const StringType &name,
+		const glm::mat4x2 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_mat4x3_element(const StringType &name,
+		const glm::mat4x3 &value)
 	{
 		StringStream str;
 

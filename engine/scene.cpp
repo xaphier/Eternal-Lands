@@ -213,7 +213,9 @@ namespace eternal_lands
 			m_scene_resources.get_mesh_builder(),
 			m_scene_resources.get_mesh_cache(),
 			m_scene_resources.get_effect_cache(),
-			m_scene_resources.get_texture_cache(), name));
+			m_scene_resources.get_texture_cache(),
+			m_scene_resources.get_material_description_cache(),
+			name));
 
 		m_map->load(ambient, dungeon);
 	}
@@ -265,7 +267,7 @@ namespace eternal_lands
 	}
 
 	void Scene::set_lights(const GlslProgramSharedPtr &program,
-		const glm::ivec3 &dynamic_light_count, const glm::vec4 &color)
+		const glm::ivec3 &dynamic_light_count)
 	{
 		program->set_parameter(apt_dynamic_light_count,
 			dynamic_light_count);
@@ -584,8 +586,7 @@ namespace eternal_lands
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				set_lights(m_state_manager.get_program(),
-					dynamic_light_count,
-					object->get_color());
+					dynamic_light_count);
 				object_data_set = true;
 			}
 
@@ -593,9 +594,9 @@ namespace eternal_lands
 				m_state_manager);
 
 			m_state_manager.get_program()->set_parameter(
-				apt_texture_scale_offsets,
+				apt_texture_matrices,
 				object->get_material_effects(
-					)[material].get_texture_scale_offsets());
+					)[material].get_texture_matrices());
 
 			m_state_manager.get_program()->set_parameter(
 				apt_albedo_scale_offsets,
@@ -659,9 +660,9 @@ namespace eternal_lands
 			}
 
 			m_state_manager.get_program()->set_parameter(
-				apt_texture_scale_offsets,
+				apt_texture_matrices,
 				object->get_material_effects(
-					)[material].get_texture_scale_offsets());
+					)[material].get_texture_matrices());
 
 			object->get_material_effects()[material].bind(
 				m_state_manager);
@@ -705,9 +706,9 @@ namespace eternal_lands
 			}
 
 			m_state_manager.get_program()->set_parameter(
-				apt_texture_scale_offsets,
+				apt_texture_matrices,
 				object->get_material_effects(
-					)[material].get_texture_scale_offsets());
+					)[material].get_texture_matrices());
 
 			object->get_material_effects()[material].bind(
 				m_state_manager);
@@ -1013,6 +1014,10 @@ namespace eternal_lands
 
 			object->get_material_effects()[material].bind(
 				m_state_manager);
+			m_state_manager.get_program()->set_parameter(
+				apt_texture_matrices,
+				object->get_material_effects(
+					)[material].get_texture_matrices());
 			m_state_manager.draw(object->get_sub_objects()[i], 1);
 
 			glEndQuery(GL_SAMPLES_PASSED);

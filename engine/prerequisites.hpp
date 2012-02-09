@@ -149,6 +149,7 @@ namespace eternal_lands
 	ARRAY_NAME(glm::vec4, 8, Vec4);
 	ARRAY_NAME(glm::vec4, 16, Vec4);
 	ARRAY_NAME(glm::mat2x4, 4, Mat2x4);
+	ARRAY_NAME(glm::mat2x3, 4, Mat2x3);
 	ARRAY(String, 2);
 	ARRAY(String, 3);
 	ARRAY(String, 4);
@@ -318,6 +319,7 @@ namespace eternal_lands
 	SHARED_PTR(Image);
 	SHARED_PTR(IndexUpdateSource);
 	SHARED_PTR(Light);
+	SHARED_PTR(Map);
 	SHARED_PTR(MaterialDescriptionCache);
 	SHARED_PTR(MeshBuilder);
 	SHARED_PTR(MeshCache);

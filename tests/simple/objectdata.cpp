@@ -18,14 +18,8 @@ namespace el = eternal_lands;
 BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ObjectData object_data(el::Transformation(),
-		glm::vec4(34.5f, -214.012f, 0.234f, -0.43f),
 		el::String(UTF8("3sfd23")), 0.54f, 543549564, el::st_player,
 		true);
-
-	BOOST_CHECK_CLOSE(object_data.get_color()[0], 34.5f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[1], -214.012f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[2], 0.234f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[3], -0.43f, 0.001);
 
 	BOOST_CHECK_EQUAL(UTF8(object_data.get_name()), UTF8("3sfd23"));
 
@@ -36,23 +30,6 @@ BOOST_AUTO_TEST_CASE(default_creation)
 	BOOST_CHECK_EQUAL(object_data.get_selection(), el::st_player);
 
 	BOOST_CHECK_EQUAL(object_data.get_blend(), true);
-}
-
-BOOST_AUTO_TEST_CASE(color)
-{
-	el::ObjectData object_data;
-
-	object_data.set_color(glm::vec4(1.0f, 2.0f, 3.0f, 4.0f));
-	BOOST_CHECK_CLOSE(object_data.get_color()[0], 1.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[1], 2.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[2], 3.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[3], 4.0f, 0.001);
-
-	object_data.set_color(glm::vec4(341.0f, -2655.0f, 7893.0f, 24465.0f));
-	BOOST_CHECK_CLOSE(object_data.get_color()[0], 341.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[1], -2655.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[2], 7893.0f, 0.001);
-	BOOST_CHECK_CLOSE(object_data.get_color()[3], 24465.0f, 0.001);
 }
 
 BOOST_AUTO_TEST_CASE(name)

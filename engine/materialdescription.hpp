@@ -28,8 +28,8 @@ namespace eternal_lands
 		private:
 			MaterialStringArray m_textures;
 			Mat2x4Array4 m_albedo_scale_offsets;
-			Vec4Array4 m_texture_scale_offsets;
-			glm::mat2x4 m_emission_scale_offset;
+			Mat2x3Array4 m_texture_matrices;
+			glm::mat2x3 m_emission_scale_offset;
 			glm::vec4 m_specular_scale_offset;
 			String m_material_name;
 			String m_texture_coodrinates;
@@ -63,8 +63,8 @@ namespace eternal_lands
 
 				set_albedo_scale_offsets(
 					material.get_albedo_scale_offsets());
-				set_texture_scale_offsets(
-					material.get_texture_scale_offsets());
+				set_texture_matrices(
+					material.get_texture_matrices());
 				set_emission_scale_offset(
 					material.get_emission_scale_offset());
 				set_specular_scale_offset(
@@ -121,19 +121,19 @@ namespace eternal_lands
 				return m_albedo_scale_offsets[index];
 			}
 
-			inline const Vec4Array4 &get_texture_scale_offsets()
+			inline const Mat2x3Array4 &get_texture_matrices()
 				const
 			{
-				return m_texture_scale_offsets;
+				return m_texture_matrices;
 			}
 
-			inline const glm::vec4 &get_texture_scale_offset(
+			inline const glm::mat2x3 &get_texture_matrix(
 				const Uint16 index) const
 			{
-				return m_texture_scale_offsets[index];
+				return m_texture_matrices[index];
 			}
 
-			inline const glm::mat2x4 &get_emission_scale_offset()
+			inline const glm::mat2x3 &get_emission_scale_offset()
 				const
 			{
 				return m_emission_scale_offset;
@@ -199,23 +199,22 @@ namespace eternal_lands
 					albedo_scale_offset;
 			}
 
-			inline void set_texture_scale_offsets(
-				const Vec4Array4 &texture_scale_offsets)
+			inline void set_texture_matrices(
+				const Mat2x3Array4 &texture_matrices)
 			{
-				m_texture_scale_offsets =
-					texture_scale_offsets;
+				m_texture_matrices = texture_matrices;
 			}
 
-			inline void set_texture_scale_offset(
-				const glm::vec4 &texture_scale_offset,
+			inline void set_texture_matrix(
+				const glm::mat2x3 &texture_matrix,
 				const Uint16 index)
 			{
-				m_texture_scale_offsets[index] =
-					texture_scale_offset;
+				m_texture_matrices[index] =
+					texture_matrix;
 			}
 
 			inline void set_emission_scale_offset(
-				const glm::mat2x4 &emission_scale_offset)
+				const glm::mat2x3 &emission_scale_offset)
 			{
 				m_emission_scale_offset =
 					emission_scale_offset;

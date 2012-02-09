@@ -33,7 +33,6 @@ namespace eternal_lands
 	{
 		private:
 			Transformation m_world_transformation;
-			glm::vec4 m_color;
 			String m_name;
 			float m_transparency;
 			Uint32 m_id;
@@ -50,9 +49,8 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			ObjectData(const Transformation &world_transformation,
-				const glm::vec4 &color, const String &name,
-				const float transparency, const Uint32 id,
-				const SelectionType selection,
+				const String &name, const float transparency,
+				const Uint32 id, const SelectionType selection,
 				const bool blend);
 
 			/**
@@ -64,11 +62,6 @@ namespace eternal_lands
 				const Transformation &world_transformation)
 			{
 				m_world_transformation = world_transformation;
-			}
-
-			inline void set_color(const glm::vec4 &color)
-			{
-				m_color = color;
 			}
 
 			inline void set_name(const String &name)
@@ -100,11 +93,6 @@ namespace eternal_lands
 				const
 			{
 				return m_world_transformation;
-			}
-
-			inline const glm::vec4 &get_color() const
-			{
-				return m_color;
 			}
 
 			inline const String &get_name() const

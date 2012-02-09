@@ -60,7 +60,7 @@ namespace eternal_lands
 		/**
 		 * One float
 		 */
-		vet_float1,
+		vet_float1 = 0,
 		/**
 		 * Two floats
 		 */
@@ -431,6 +431,7 @@ namespace eternal_lands
 				const VertexElementType vertex_element);
 
 			static Uint32 get_vertex_semantic_count();
+			static Uint32 get_vertex_element_count();
 
 	};
 

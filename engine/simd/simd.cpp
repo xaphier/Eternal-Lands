@@ -276,8 +276,8 @@ namespace eternal_lands
 			t3 = _mm_shufflelo_epi16(t3, _MM_SHUFFLE(3, 1, 2, 0));
 			t3 = _mm_shufflehi_epi16(t3, _MM_SHUFFLE(3, 1, 2, 0));
 
-			t4 = _mm_shuffle_epi32(t2, _MM_SHUFFLE(1, 1, 1, 1));
-			t5 = _mm_shuffle_epi32(t3, _MM_SHUFFLE(1, 1, 1, 1));
+			t4 = _mm_shuffle_epi32(t2, _MM_SHUFFLE(2, 2, 2, 2));
+			t5 = _mm_shuffle_epi32(t3, _MM_SHUFFLE(2, 2, 2, 2));
 
 			_mm_store_ss((float*)(dest + (i * 4 + 0) * stride),
 				(__m128)t2);
@@ -300,7 +300,7 @@ namespace eternal_lands
 
 			t2 = _mm_shufflelo_epi16(t2, _MM_SHUFFLE(3, 1, 2, 0));
 
-			_mm_store_ss((float*)(dest + (i * 4 + 0) * stride),
+			_mm_store_ss((float*)(dest + (i * 4 + j) * stride),
 				(__m128)t2);
 		}
 #endif	/* USE_SSE2 */
@@ -386,8 +386,8 @@ namespace eternal_lands
 			t5 = _mm_shufflelo_epi16(t5, _MM_SHUFFLE(3, 1, 2, 0));
 			t5 = _mm_shufflehi_epi16(t5, _MM_SHUFFLE(3, 1, 2, 0));
 
-			t6 = _mm_shuffle_epi32(t4, _MM_SHUFFLE(1, 1, 1, 1));
-			t7 = _mm_shuffle_epi32(t5, _MM_SHUFFLE(1, 1, 1, 1));
+			t6 = _mm_shuffle_epi32(t4, _MM_SHUFFLE(2, 2, 2, 2));
+			t7 = _mm_shuffle_epi32(t5, _MM_SHUFFLE(2, 2, 2, 2));
 
 			_mm_store_ss((float*)(dest + (i * 4 + 0) * stride),
 				(__m128)t4);

@@ -31,7 +31,7 @@ namespace eternal_lands
 	class E3dLoader
 	{
 		private:
-			ReaderSharedPtr m_reader;
+			const ReaderSharedPtr m_reader;
 
 			void load_header();
 			void load_vertex(

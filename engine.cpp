@@ -260,7 +260,7 @@ namespace
 			transparency = 1.0f;
 		}
 
-		return el::ObjectData(transformation, color, name,
+		return el::ObjectData(transformation, name,
 			transparency, id, el_selection, transparent);
 	}
 
@@ -876,7 +876,7 @@ extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
 
 	materials.push_back(material);
 
-	instances_builder->add(el::ObjectData(transformation, glm::vec4(0.0f),
+	instances_builder->add(el::ObjectData(transformation,
 		el::String(UTF8("plane_4")), 0.0f, free_ids.get_next_free_id(),
 		el::st_none, false), materials);
 

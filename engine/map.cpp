@@ -21,7 +21,7 @@
 #include "filesystem.hpp"
 #include "objectvisitor.hpp"
 #include "renderobjectdata.hpp"
-#include "particledata.hpp"
+#include "materialdescriptioncache.hpp"
 
 namespace eternal_lands
 {
@@ -32,9 +32,12 @@ namespace eternal_lands
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache, const String &name):
+		const TextureCacheSharedPtr &texture_cache,
+		const MaterialDescriptionCacheSharedPtr
+			&material_description_cache, const String &name):
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
+		m_material_description_cache(material_description_cache),
 		m_name(name), m_id(0), m_dungeon(false)
 	{
 		String file_name;
@@ -121,6 +124,44 @@ namespace eternal_lands
 			instance_data.get_instanced_objects());
 		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
 			instance_data.get_id(), object));
+
+		assert(temp.second);
+
+		m_object_tree->add(object);
+	}
+
+	void Map::add_object(const ObjectData &object_data,
+		const StringVector &material_names)
+	{
+		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
+		ObjectSharedPtr object;
+		AbstractMeshSharedPtr mesh;
+		MaterialEffectDescriptionVector materials;
+		Uint32 i, count;
+
+		get_mesh_cache()->get_mesh(object_data.get_name(), mesh,
+			materials);
+
+		count = std::min(material_names.size(), materials.size());
+
+		for (i = 0; i < count; ++i)
+		{
+			if (material_names[i].get().empty())
+			{
+				continue;
+			}
+
+			materials[i].set_material_descriptiont(
+				get_material_description_cache(
+					)->get_material_description(
+						material_names[i]));
+		}
+
+		object = boost::make_shared<Object>(object_data, mesh,
+			materials, get_effect_cache(), get_texture_cache());
+
+		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
+			object_data.get_id(), object));
 
 		assert(temp.second);
 

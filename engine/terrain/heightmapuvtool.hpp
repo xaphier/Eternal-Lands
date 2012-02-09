@@ -65,6 +65,7 @@ namespace eternal_lands
 			{
 				assert(x < m_width);
 				assert(y < m_height);
+				assert((x + y * m_width) < m_uvs.size());
 
 				return m_uvs[x + y * m_width];
 			}

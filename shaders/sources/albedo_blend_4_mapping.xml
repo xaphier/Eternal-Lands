@@ -55,8 +55,8 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>texture_scale_offset</name>
-     <type>vec4</type>
+     <name>texture_matrices</name>
+     <type>mat2x3</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -68,7 +68,7 @@
 
 	blend = texture2D(blend_sampler_0, fragment_uv);
 
-	albedo_uv = fragment_uv * texture_scale_offset.xy + texture_scale_offset.zw;
+	albedo_uv = vec3(fragment_uv, 1.0) * texture_matrices;
 
 	albedo = texture2D(albedo_sampler_0, albedo_uv) * blend.r;
 	albedo += texture2D(albedo_sampler_1, albedo_uv) * blend.g;
@@ -134,8 +134,8 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>texture_scale_offset</name>
-     <type>vec4</type>
+     <name>texture_matrices</name>
+     <type>mat2x3</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -147,7 +147,7 @@
 
 	blend = texture(blend_sampler_0, fragment_uv);
 
-	albedo_uv = fragment_uv * texture_scale_offset.xy + texture_scale_offset.zw;
+	albedo_uv = vec3(fragment_uv, 1.0) * texture_matrices;
 
 	albedo = texture(albedo_sampler_0, albedo_uv) * blend.r;
 	albedo += texture(albedo_sampler_1, albedo_uv) * blend.g;

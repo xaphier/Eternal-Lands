@@ -16,7 +16,7 @@ namespace eternal_lands
 {
 
 	BasicTerrainManager::BasicTerrainManager(const String &name):
-		m_name(name), m_height_scale(1.0f), m_tile_size(32)
+		m_name(name), m_height_scale(1.0f), m_tile_size(4)
 	{
 	}
 

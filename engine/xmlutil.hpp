@@ -30,9 +30,19 @@ namespace eternal_lands
 			static glm::vec4 get_vec4_value(const xmlNodePtr node);
 			static glm::quat get_quaternion_value(
 				const xmlNodePtr node);
+			static glm::mat2 get_mat2_value(const xmlNodePtr node);
+			static glm::mat2x3 get_mat2x3_value(
+				const xmlNodePtr node);
 			static glm::mat2x4 get_mat2x4_value(
 				const xmlNodePtr node);
+			static glm::mat3x2 get_mat3x2_value(
+				const xmlNodePtr node);
+			static glm::mat3 get_mat3_value(const xmlNodePtr node);
 			static glm::mat3x4 get_mat3x4_value(
+				const xmlNodePtr node);
+			static glm::mat4x2 get_mat4x2_value(
+				const xmlNodePtr node);
+			static glm::mat4x3 get_mat4x3_value(
 				const xmlNodePtr node);
 			static glm::mat4 get_mat4_value(const xmlNodePtr node);
 			static float get_float_value(const xmlNodePtr node);

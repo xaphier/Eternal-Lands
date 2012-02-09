@@ -23,12 +23,12 @@ namespace eternal_lands
 		{
 			m_albedo_scale_offsets[i][0] = glm::vec4(1.0f);
 			m_albedo_scale_offsets[i][1] = glm::vec4(0.0f);
-			m_texture_scale_offsets[i] =
-				glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+			m_texture_matrices[i][0] = glm::vec3(1.0f, 0.0f, 0.0f);
+			m_texture_matrices[i][1] = glm::vec3(0.0f, 1.0f, 0.0f);
 		}
 
-		m_emission_scale_offset[0] = glm::vec4(1.0f);
-		m_emission_scale_offset[1] = glm::vec4(0.0f);
+		m_emission_scale_offset[0] = glm::vec3(1.0f);
+		m_emission_scale_offset[1] = glm::vec3(0.0f);
 		m_specular_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
 	}
 
@@ -151,38 +151,38 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_scale_offset_0")) == 0)
+				BAD_CAST UTF8("texture_matrix_0")) == 0)
 			{
-				set_texture_scale_offset(
-					XmlUtil::get_vec4_value(it), 0);
+				set_texture_matrix(
+					XmlUtil::get_mat2x3_value(it), 0);
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_scale_offset_1")) == 0)
+				BAD_CAST UTF8("texture_matrix_1")) == 0)
 			{
-				set_texture_scale_offset(
-					XmlUtil::get_vec4_value(it), 1);
+				set_texture_matrix(
+					XmlUtil::get_mat2x3_value(it), 1);
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_scale_offset_2")) == 0)
+				BAD_CAST UTF8("texture_matrix_2")) == 0)
 			{
-				set_texture_scale_offset(
-					XmlUtil::get_vec4_value(it), 2);
+				set_texture_matrix(
+					XmlUtil::get_mat2x3_value(it), 2);
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_scale_offset_3")) == 0)
+				BAD_CAST UTF8("texture_matrix_3")) == 0)
 			{
-				set_texture_scale_offset(
-					XmlUtil::get_vec4_value(it), 3);
+				set_texture_matrix(
+					XmlUtil::get_mat2x3_value(it), 3);
 			}
 
 			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("emission_scale_offset")) == 0)
 			{
 				set_emission_scale_offset(
-					XmlUtil::get_mat2x4_value(it));
+					XmlUtil::get_mat2x3_value(it));
 			}
 
 			if (xmlStrcmp(it->name,
@@ -271,15 +271,15 @@ namespace eternal_lands
 			get_albedo_scale_offset(2));
 		writer->write_mat2x4_element(UTF8("albedo_scale_offset_3"),
 			get_albedo_scale_offset(3));
-		writer->write_vec4_element(UTF8("texture_scale_offset_0"),
-			get_texture_scale_offset(0));
-		writer->write_vec4_element(UTF8("texture_scale_offset_1"),
-			get_texture_scale_offset(1));
-		writer->write_vec4_element(UTF8("texture_scale_offset_2"),
-			get_texture_scale_offset(2));
-		writer->write_vec4_element(UTF8("texture_scale_offset_3"),
-			get_texture_scale_offset(3));
-		writer->write_mat2x4_element(UTF8("emission_scale_offset"),
+		writer->write_mat2x3_element(UTF8("texture_matrix_0"),
+			get_texture_matrix(0));
+		writer->write_mat2x3_element(UTF8("texture_matrix_1"),
+			get_texture_matrix(1));
+		writer->write_mat2x3_element(UTF8("texture_matrix_2"),
+			get_texture_matrix(2));
+		writer->write_mat2x3_element(UTF8("texture_matrix_3"),
+			get_texture_matrix(3));
+		writer->write_mat2x3_element(UTF8("emission_scale_offset"),
 			get_emission_scale_offset());
 		writer->write_vec4_element(UTF8("specular_scale_offset"),
 			get_specular_scale_offset());

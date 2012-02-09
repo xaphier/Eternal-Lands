@@ -22,8 +22,8 @@ namespace eternal_lands
 		void add_vertex(MeshDataTool &mesh_data_tool,
 			const MeshDataToolSharedPtr &source,
 			const glm::mat4x3 &world_matrix,
-			const glm::vec4 &color, const Uint32 source_index,
-			const Uint32 dest_index, glm::vec3 &min, glm::vec3 &max)
+			const Uint32 source_index, const Uint32 dest_index,
+			glm::vec3 &min, glm::vec3 &max)
 		{
 			glm::vec4 data;
 			glm::vec3 normal, tangent, position;
@@ -122,7 +122,6 @@ namespace eternal_lands
 					add_vertex(mesh_data_tool,
 						instancing_data.get_mesh_data_tool(),
 						world_matrix,
-						instancing_data.get_color(),
 						index, vertex_offset, min, max);
 
 					vertex_offset++;
@@ -487,9 +486,9 @@ namespace eternal_lands
 		transformation.set_translation(center);
 
 		m_instance_data.reset(new InstanceData(ObjectData(
-			transformation, glm::vec4(0.0f), String(str.str()),
-			1.0f, get_id(), selection, false), mesh_data_tool,
-			materials, instanced_objects));
+			transformation, String(str.str()), 1.0f, get_id(),
+			selection, false), mesh_data_tool, materials,
+			instanced_objects));
 	}
 
 	void InstanceBuilder::set_instance(InstanceDataVector &instances)

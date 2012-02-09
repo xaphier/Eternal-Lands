@@ -518,6 +518,11 @@ namespace eternal_lands
 			vertex_element].get_pack_format();
 	}
 
+	Uint32 VertexElement::get_vertex_element_count()
+	{
+		return vertex_element_type_datas_count;
+	}
+
 	OutStream& operator<<(OutStream &str, const VertexElementType value)
 	{
 		str << VertexElement::get_str(value);

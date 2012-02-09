@@ -116,6 +116,8 @@ G_MODULE_EXPORT void name_changed(GtkComboBox* name_values,
 			size);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->scale_values),
 			scale);
+		gtk_spin_button_set_range(GTK_SPIN_BUTTON(data->scale_values),
+			1.0, scale);
 	}
 	else
 	{
@@ -126,6 +128,9 @@ G_MODULE_EXPORT void name_changed(GtkComboBox* name_values,
 				GTK_TREE_MODEL(data->no_sampler_types));
 			gtk_combo_box_set_active(data->type_values, 0);
 		}
+
+		gtk_spin_button_set_range(GTK_SPIN_BUTTON(data->scale_values),
+			1.0, 99999.0);
 	}
 
 	gtk_widget_set_sensitive(GTK_WIDGET(data->type_values),
@@ -133,7 +138,7 @@ G_MODULE_EXPORT void name_changed(GtkComboBox* name_values,
 	gtk_widget_set_sensitive(GTK_WIDGET(data->qualifier_values),
 		qualifier_sensitive);
 	gtk_widget_set_sensitive(GTK_WIDGET(data->size_values), sensitive);
-	gtk_widget_set_sensitive(GTK_WIDGET(data->scale_values), sensitive);
+//	gtk_widget_set_sensitive(GTK_WIDGET(data->scale_values), sensitive);
 }
 
 typedef struct

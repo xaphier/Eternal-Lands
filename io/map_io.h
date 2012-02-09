@@ -130,7 +130,7 @@ typedef struct
     /** @name Quadric attenuation of the light
      *  Will be used in the future
      * @{ */
-	float quadric_attenuation;
+	float radius;
     /** @} */
     
 	char reserved[12]; /**< reserved for future expansions */

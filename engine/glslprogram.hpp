@@ -216,6 +216,9 @@ namespace eternal_lands
 				const glm::mat4x4 &value,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,
+				const Mat2x3Array4 &value,
+				const bool transpose = false);
+			void set_parameter(const AutoParameterType parameter,
 				const Mat2x4Array4 &value,
 				const bool transpose = false);
 			void set_parameter(const AutoParameterType parameter,

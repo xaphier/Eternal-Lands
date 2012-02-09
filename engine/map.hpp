@@ -31,44 +31,77 @@ namespace eternal_lands
 	class Map
 	{
 		private:
-			MeshBuilderSharedPtr m_mesh_builder;
-			MeshCacheSharedPtr m_mesh_cache;
-			EffectCacheSharedPtr m_effect_cache;
-			TextureCacheSharedPtr m_texture_cache;
+			const MeshBuilderWeakPtr m_mesh_builder;
+			const MeshCacheWeakPtr m_mesh_cache;
+			const EffectCacheWeakPtr m_effect_cache;
+			const TextureCacheWeakPtr m_texture_cache;
+			const MaterialDescriptionCacheWeakPtr
+				m_material_description_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
 			boost::scoped_ptr<BasicTerrainManager> m_terrain;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
 			Uint16MultiArray2 m_height_map;
-			ParticleDataVector m_particles;
 			glm::vec4 m_ambient;
 			String m_name;
 			Uint32 m_id;
 			bool m_dungeon;
 
-			inline const MeshBuilderSharedPtr &get_mesh_builder()
-				const
+			inline MeshBuilderSharedPtr get_mesh_builder() const
 			{
-				return m_mesh_builder;
+				MeshBuilderSharedPtr result;
+
+				result = m_mesh_builder.lock();
+
+				assert(result.get() != 0);
+
+				return result;
 			}
 
-			inline const MeshCacheSharedPtr &get_mesh_cache()
-				const
+			inline MeshCacheSharedPtr get_mesh_cache() const
 			{
-				return m_mesh_cache;
+				MeshCacheSharedPtr result;
+
+				result = m_mesh_cache.lock();
+
+				assert(result.get() != 0);
+
+				return result;
 			}
 
-			inline const EffectCacheSharedPtr &get_effect_cache()
-				const
+			inline EffectCacheSharedPtr get_effect_cache() const
 			{
-				return m_effect_cache;
+				EffectCacheSharedPtr result;
+
+				result = m_effect_cache.lock();
+
+				assert(result.get() != 0);
+
+				return result;
 			}
 
-			inline const TextureCacheSharedPtr &get_texture_cache()
-				const
+			inline TextureCacheSharedPtr get_texture_cache() const
 			{
-				return m_texture_cache;
+				TextureCacheSharedPtr result;
+
+				result = m_texture_cache.lock();
+
+				assert(result.get() != 0);
+
+				return result;
+			}
+
+			inline MaterialDescriptionCacheSharedPtr
+				get_material_description_cache() const
+			{
+				MaterialDescriptionCacheSharedPtr result;
+
+				result = m_material_description_cache.lock();
+
+				assert(result.get() != 0);
+
+				return result;
 			}
 
 		public:
@@ -82,6 +115,8 @@ namespace eternal_lands
 				const MeshCacheSharedPtr &mesh_cache,
 				const EffectCacheSharedPtr &effect_cache,
 				const TextureCacheSharedPtr &texture_cache,
+				const MaterialDescriptionCacheSharedPtr
+					&material_description_cache,
 				const String &name);
 
 			/**
@@ -93,6 +128,8 @@ namespace eternal_lands
 			void add_object(const ObjectData &object_data,
 				const MaterialEffectDescriptionVector
 					&materials);
+			void add_object(const ObjectData &object_data,
+				const StringVector &material_names);
 			void add_object(const InstanceData &instance_data);
 			void remove_object(const Uint32 id);
 			bool get_object_position(const Uint32 id,

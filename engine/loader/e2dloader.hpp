@@ -31,7 +31,7 @@ namespace eternal_lands
 	class E2dLoader
 	{
 		private:
-			ReaderSharedPtr m_reader;
+			const ReaderSharedPtr m_reader;
 
 			void load_vertex_data(
 				const MeshDataToolSharedPtr &mesh_data_tool,
