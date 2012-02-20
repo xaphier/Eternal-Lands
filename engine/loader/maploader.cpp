@@ -115,6 +115,8 @@ namespace eternal_lands
 		m_material_description_cache(material_description_cache),
 		m_free_ids(free_ids)
 	{
+		m_harvestables = load_harvestables(file_system);
+		m_entrables = load_entrables(file_system);
 	}
 
 	MapLoader::~MapLoader() throw()
@@ -146,7 +148,7 @@ namespace eternal_lands
 		return true;
 	}
 
-	SelectionType MapLoader::get_selection_type(const String &name) const
+	SelectionType MapLoader::get_selection(const String &name) const
 	{
 		if (m_harvestables.count(name) > 0)
 		{
@@ -224,7 +226,7 @@ namespace eternal_lands
 			material_count = 0;
 			material_index = 0;
 			name = FileSystem::get_strip_relative_path(name);
-			selection = get_selection_type(name);
+			selection = get_selection(name);
 		}
 
 		id = get_free_ids().use_typeless_id(index, it_3d_object);
@@ -769,21 +771,6 @@ namespace eternal_lands
 		return ObjectData(get_transformation(translation,
 			rotation_angles, scale), name, transparency, id,
 				selection, transparent);
-	}
-
-	SelectionType MapLoader::get_selection(const String &name) const
-	{
-		if (m_harvestables.count(name) > 0)
-		{
-			return st_harvest;
-		}
-
-		if (m_entrables.count(name) > 0)
-		{
-			return st_enter;
-		}
-
-		return st_select;
 	}
 
 	StringVector MapLoader::get_material_names(const Uint32 index,

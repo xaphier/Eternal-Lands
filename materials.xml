@@ -53,9 +53,10 @@
 		<albedo_mapping>lava</albedo_mapping>
 		<normal_mapping>disabled</normal_mapping>
 		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>white</emission_mapping>
+		<emission_mapping>emission</emission_mapping>
 		<receives_shadows>false</receives_shadows>
 		<lighting>false</lighting>
+		<emission_scale_offset>1.0 1.0 1.0 1.0 1.0 1.0</emission_scale_offset>
 	</material>
 	<material>
 		<name>water</name>

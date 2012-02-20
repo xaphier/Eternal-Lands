@@ -159,8 +159,6 @@ namespace eternal_lands
 			SelectionType get_selection(const String &name) const;
 			StringVector get_material_names(const Uint32 index,
 				const Uint32 count) const;
-			SelectionType get_selection_type(const String &name)
-				const;
 
 			virtual void add_object(const glm::vec3 &position,
 				const glm::vec3 &rotation_angles,
