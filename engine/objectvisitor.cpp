@@ -106,8 +106,13 @@ namespace eternal_lands
 		const BoundedObjectSharedPtr &bounded_object,
 		const SubFrustumsMask mask)
 	{
-		add(boost::dynamic_pointer_cast<Object>(bounded_object),
-			mask);
+		ObjectSharedPtr object;
+
+		object = boost::dynamic_pointer_cast<Object>(bounded_object);
+
+		assert(object.get() != 0);
+
+		add(object, mask);
 	}
 
 	void ObjectVisitor::next_frame()

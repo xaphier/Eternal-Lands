@@ -47,6 +47,7 @@ namespace eternal_lands
 	{
 		ReadWriteMemorySharedPtr result;
 		z_stream stream;
+		Uint64 dest_idx;
 		Uint32 err;
 
 		stream.next_in = const_cast<Bytef*>(static_cast<const Bytef*>(
@@ -76,12 +77,15 @@ namespace eternal_lands
 			stream.avail_out += 0x40000;
 			stream.total_out += 0x40000;
 
+			dest_idx = stream.next_out - static_cast<Bytef*>(
+				result->get_ptr());
+
 			result->resize(stream.total_out);
 
 			stream.next_out = static_cast<Bytef*>(
-				result->get_ptr());
+				result->get_ptr()) + dest_idx;
 
-			err = inflate(&stream, 0);
+			err = inflate(&stream, Z_FULL_FLUSH);
 
 			if ((err != Z_STREAM_END) && (err != Z_OK))
 			{
@@ -94,7 +98,7 @@ namespace eternal_lands
 
 		result->resize(stream.total_out - stream.avail_out);
 
-		inflateEnd(&stream);
+		err = inflateEnd(&stream);
 
 		if (err != Z_OK)
 		{

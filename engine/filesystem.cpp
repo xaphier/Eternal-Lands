@@ -449,12 +449,21 @@ namespace eternal_lands
 
 		for (it = m_archives.rbegin(); it != end; ++it)
 		{
-			if (it->get_has_file(file_name))
+			try
 			{
-				reader = it->get_file(file_name);
+				if (it->get_has_file(file_name))
+				{
+					reader = it->get_file(file_name);
 
-				return true;
+					return true;
+				}
 			}
+			catch (boost::exception &exception)
+			{
+				exception <<
+					boost::errinfo_file_name(file_name);
+				throw;
+			}		
 		}
 
 		return false;
@@ -474,29 +483,40 @@ namespace eternal_lands
 
 		for (it = m_archives.rbegin(); it != end; ++it)
 		{
-			if (it->get_has_file(name))
+			try
 			{
-				reader = it->get_file(name);
-
-				found = m_sha1s.find(name);
-
-				if (found == m_sha1s.end())
+				if (it->get_has_file(name))
 				{
-					return reader;
+					reader = it->get_file(name);
+
+					found = m_sha1s.find(name);
+
+					if (found == m_sha1s.end())
+					{
+						return reader;
+					}
+
+					sha1 = get_file_sha1(
+						reader->get_buffer());
+
+					if (sha1 == found->second)
+					{
+						return reader;
+					}
+
+					LOG_WARNING(UTF8("File '%1%/%2%' had "
+						"sha1 %3% but %4% expected"),
+						it->get_name() % name %
+						get_sha1_str(sha1) %
+						get_sha1_str(found->second));
 				}
-
-				sha1 = get_file_sha1(reader->get_buffer());
-
-				if (sha1 == found->second)
-				{
-					return reader;
-				}
-
-				LOG_WARNING(UTF8("File '%1%/%2%' had sha1 "
-					"%3% but %4% expected"), it->get_name()
-					% name % get_sha1_str(sha1) %
-					get_sha1_str(found->second));
 			}
+			catch (boost::exception &exception)
+			{
+				exception <<
+					boost::errinfo_file_name(file_name);
+				throw;
+			}		
 		}
 
 		EL_THROW_EXCEPTION(FileNotFoundException()

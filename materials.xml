@@ -5551,7 +5551,7 @@
 	</material>
 	<material>
 		<name>sprites</name>
-		<albedo_0>sprites.dds</albedo_0>
+		<albedo_0>meshes/sprites.dds</albedo_0>
 		<albedo_1></albedo_1>
 		<albedo_2></albedo_2>
 		<albedo_3></albedo_3>

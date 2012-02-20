@@ -244,11 +244,11 @@ namespace eternal_lands
 		{
 			return do_load_texture(name, index);
 		}
-		catch (boost::exception &exception)
+		catch (const boost::exception &exception)
 		{
 			LOG_EXCEPTION(exception);
 		}
-		catch (std::exception &exception)
+		catch (const std::exception &exception)
 		{
 			LOG_EXCEPTION(exception);
 		}

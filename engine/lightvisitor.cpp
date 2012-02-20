@@ -58,8 +58,13 @@ namespace eternal_lands
 		const BoundedObjectSharedPtr &bounded_object,
 		const SubFrustumsMask mask)
 	{
-		m_lights.push_back(boost::dynamic_pointer_cast<Light>(
-			bounded_object));
+		LightSharedPtr light;
+
+		light = boost::dynamic_pointer_cast<Light>(bounded_object);
+
+		assert(light.get() != 0);
+
+		m_lights.push_back(light);
 	}
 
 	void LightVisitor::sort(const glm::vec3 &position)
