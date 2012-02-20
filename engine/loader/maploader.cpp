@@ -511,8 +511,20 @@ namespace eternal_lands
 
 		for (i = 0; i < material_name_count; ++i)
 		{
-			read_material_name(i, material_name_offset +
-				i * material_name_size);
+			try
+			{
+				read_material_name(i, material_name_offset +
+					i * material_name_size);
+			}
+			catch (boost::exception &exception)
+			{
+				exception << errinfo_item_id(i);
+				LOG_EXCEPTION(exception);
+			}
+			catch (const std::exception &exception)
+			{
+				LOG_EXCEPTION(exception);
+			}
 		}
 	}
 

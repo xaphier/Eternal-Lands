@@ -82,8 +82,15 @@ namespace eternal_lands
 				result->get_ptr());
 
 			err = inflate(&stream, 0);
+
+			if ((err != Z_STREAM_END) && (err != Z_OK))
+			{
+				EL_THROW_EXCEPTION(UncompressException()
+					<< errinfo_message(UTF8("gz uncompress"
+						" error")));
+			}
 		}
-		while (err == Z_STREAM_END);
+		while (err != Z_STREAM_END);
 
 		result->resize(stream.total_out - stream.avail_out);
 
