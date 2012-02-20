@@ -1141,7 +1141,7 @@ static int calc_stats_bar_len(int num_exp)
 {
 	// calculate the maximum length for stats bars given the current number of both bar types
 	int num_stat = (show_action_bar) ?5: 4;
-	int prosed_len = (window_width-hud_x-1) - (num_stat * stats_bar_text_len) - (num_exp * exp_bar_text_len);
+	int prosed_len = (window_width-HUD_MARGIN_X-1) - (num_stat * stats_bar_text_len) - (num_exp * exp_bar_text_len);
 	prosed_len /= num_stat + num_exp;
 
 	// constrain the maximum and minimum length of the skills bars to reasonable size
@@ -1157,7 +1157,7 @@ static int calc_stats_bar_len(int num_exp)
 static int calc_max_disp_stats(int suggested_stats_bar_len)
 {
 	int exp_offset = ((show_action_bar)?5:4) * (suggested_stats_bar_len + stats_bar_text_len);
-	int preposed_max_disp_stats = (window_width - hud_x - exp_offset) / (suggested_stats_bar_len + exp_bar_text_len);
+	int preposed_max_disp_stats = (window_width - HUD_MARGIN_X - exp_offset) / (suggested_stats_bar_len + exp_bar_text_len);
 	if (preposed_max_disp_stats > MAX_WATCH_STATS)
 		preposed_max_disp_stats = MAX_WATCH_STATS;
 	return preposed_max_disp_stats;
@@ -1271,12 +1271,18 @@ void init_stats_display()
 	//create the stats bar window
 	if(stats_bar_win < 0)
 	{
-		stats_bar_win= create_window("Stats Bar", -1, 0, 0, window_height-44, window_width-hud_x, 12, ELW_TITLE_NONE|ELW_SHOW_LAST);
+		static size_t cm_id_ap = CM_INIT_VALUE;
+		stats_bar_win= create_window("Stats Bar", -1, 0, 0, window_height-44, window_width-HUD_MARGIN_X, 12, ELW_TITLE_NONE|ELW_SHOW_LAST);
 		set_window_handler(stats_bar_win, ELW_HANDLER_DISPLAY, &display_stats_bar_handler);
 		set_window_handler(stats_bar_win, ELW_HANDLER_MOUSEOVER, &mouseover_stats_bar_handler);
+
+		// context menu to enable/disable the action points bar
+		cm_id_ap = cm_create(cm_action_points_str, NULL);
+		cm_add_window(cm_id_ap, stats_bar_win);
+		cm_bool_line(cm_id_ap, 0, &show_action_bar, "show_action_bar");
 	}
 	else
-		init_window(stats_bar_win, -1, 0, 0, window_height-44, window_width-hud_x, 12);
+		init_window(stats_bar_win, -1, 0, 0, window_height-44, window_width-HUD_MARGIN_X, 12);
 
 	// calculate the statsbar len given curent config
 	stats_bar_len = calc_stats_bar_len(num_exp);
@@ -1315,22 +1321,12 @@ void init_stats_display()
 	}
 	actual_num_exp = get_num_statsbar_exp();
 
-	free_statbar_space = (window_width-hud_x-1) -
+	free_statbar_space = (window_width-HUD_MARGIN_X-1) -
 		(exp_bar_start_x - exp_bar_text_len + actual_num_exp * (exp_bar_text_len + stats_bar_len));
 
 	// apologise if we had to reduce the number of exp bars
 	if (num_exp > actual_num_exp)
 		LOG_TO_CONSOLE(c_red2, remove_bar_message_str);
-
-	// context menu to enable/disable the action points bar - temporary during dev?
-	{
-		static size_t cm_id_x =  CM_INIT_VALUE;
-		if (cm_id_x != CM_INIT_VALUE)
-			cm_destroy(cm_id_x);
-		cm_id_x = cm_create(cm_action_points_str, NULL);
-		cm_add_window(cm_id_x, stats_bar_win);
-		cm_bool_line(cm_id_x, 0, &show_action_bar, "show_action_bar");
-	}
 
 	// create the exp bars context menu, used by all ative exp bars
 	if (!cm_valid(cm_id))
@@ -1656,7 +1652,7 @@ void init_misc_display(hud_interface type)
 	//create the misc window
 	if(misc_win < 0)
 		{
-			misc_win= create_window("Misc", -1, 0, window_width-hud_x, window_height-y_len, hud_x, y_len, ELW_TITLE_NONE|ELW_SHOW_LAST);
+			misc_win= create_window("Misc", -1, 0, window_width-HUD_MARGIN_X, window_height-y_len, HUD_MARGIN_X, y_len, ELW_TITLE_NONE|ELW_SHOW_LAST);
 			set_window_handler(misc_win, ELW_HANDLER_DISPLAY, &display_misc_handler);
 			set_window_handler(misc_win, ELW_HANDLER_CLICK, &click_misc_handler);
 			set_window_handler(misc_win, ELW_HANDLER_MOUSEOVER, &mouseover_misc_handler );
@@ -1676,7 +1672,7 @@ void init_misc_display(hud_interface type)
 		}
 	else
 		{
-			move_window(misc_win, -1, 0, window_width-hud_x, window_height-y_len);
+			move_window(misc_win, -1, 0, window_width-HUD_MARGIN_X, window_height-y_len);
 		}
 	
 	cm_grey_line(cm_hud_id, CMH_STATS, (type == HUD_INTERFACE_NEW_CHAR));
