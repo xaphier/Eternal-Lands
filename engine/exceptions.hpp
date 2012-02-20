@@ -170,6 +170,23 @@ namespace eternal_lands
 	while (false)
 #endif
 
+#ifdef	DEBUG
+#define RANGE_CECK(index, max, message) assert(((index) < (max)) && (message));
+#else
+#define RANGE_CECK(index, max, message)	\
+	do	\
+	{	\
+		if ((index) >= (max))	\
+		{	\
+			EL_THROW_EXCEPTION(::eternal_lands::RangeErrorException()	\
+				<< ::eternal_lands::errinfo_message((message))	\
+				<< ::eternal_lands::errinfo_range_index((index))	\
+				<< ::eternal_lands::errinfo_range_max((max)));	\
+		}	\
+	}	\
+	while (false)
+#endif
+
 }
 
 #endif	/* UUID_2895e87c_d039_42e6_8628_577d13de5d2a */

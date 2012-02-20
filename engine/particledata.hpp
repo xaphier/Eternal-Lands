@@ -27,10 +27,11 @@ namespace eternal_lands
 		private:
 			glm::vec3 m_position;
 			String m_name;
+			Uint32 m_id;
 
 		public:
 			ParticleData(const glm::vec3 &position,
-				const String &name);
+				const String &name, const Uint32 id);
 			~ParticleData() throw();
 
 			inline const String &get_name() const
@@ -51,6 +52,16 @@ namespace eternal_lands
 			inline void set_position(const glm::vec3 &position)
 			{
 				m_position = position;
+			}
+
+			inline Uint32 get_id() const
+			{
+				return m_id;
+			}
+
+			inline void set_id(const Uint32 id)
+			{
+				m_id = id;
 			}
 
 	};

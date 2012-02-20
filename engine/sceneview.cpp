@@ -229,9 +229,16 @@ namespace eternal_lands
 		m_shadow_camera = glm::inverse(shadow_view_matrix) *
 			m_shadow_camera;
 
+		m_shadow_view_matrix = shadow_view_matrix;
+
+		for (i = 0; i < 3; ++i)
+		{
+			m_shadow_view_rotation_matrix[i] =
+				glm::vec3(shadow_view_matrix[i]);
+		}
+
 		for (i = 0; i < get_shadow_map_count(); ++i)
 		{
-			m_shadow_view_matrix[i] = shadow_view_matrix;
 			build_shadow_matrix(shadow_view_matrix,
 				basic_projection_matrix,
 				basic_projection_view_matrix, convex_bodys[i],
@@ -249,15 +256,12 @@ namespace eternal_lands
 		basic_projection_matrix = glm::mat4x4(1.0f);
 		basic_projection_matrix[2][2] = -1.0f;
 
-		assert(m_shadow_view_matrix.size() > 0);
-		assert(m_shadow_view_matrix.size() == get_shadow_map_count());
-
 		basic_projection_view_matrix = basic_projection_matrix
-			* m_shadow_view_matrix[0];
+			* get_shadow_view_matrix();
 
 		for (i = 0; i < get_shadow_map_count(); ++i)
 		{
-			build_shadow_matrix(m_shadow_view_matrix[i],
+			build_shadow_matrix(get_shadow_view_matrix(),
 				basic_projection_matrix,
 				basic_projection_view_matrix, convex_bodys[i],
 				i);
@@ -287,13 +291,19 @@ namespace eternal_lands
 
 		m_layer_count = 4;
 
-		m_view_matrix.resize(get_layer_count());
 		m_projection_matrix.resize(get_layer_count());
 		m_projection_view_matrix.resize(get_layer_count());
 
+		m_view_matrix = view_matrix;
+
+		for (i = 0; i < 3; ++i)
+		{
+			m_view_rotation_matrix[i] =
+				glm::normalize(glm::vec3(view_matrix[i]));
+		}
+
 		for (i = 0; i < get_layer_count(); ++i)
 		{
-			m_view_matrix[i] = view_matrix;
 			m_projection_matrix[i] = projection_matrix;
 			m_projection_view_matrix[i] = projection_view_matrix;
 		}
@@ -340,7 +350,6 @@ namespace eternal_lands
 				static_cast<Uint16>(1));
 		}
 
-		m_shadow_view_matrix.resize(get_shadow_map_count());
 		m_shadow_projection_matrix.resize(get_shadow_map_count());
 		m_shadow_projection_view_matrix.resize(
 			get_shadow_map_count());

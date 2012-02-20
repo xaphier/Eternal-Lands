@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "boundedobject.hpp"
+#include "lightdata.hpp"
 
 /**
  * @file
@@ -26,11 +27,8 @@ namespace eternal_lands
 	class Light: public BoundedObject
 	{
 		private:
-			glm::vec3 m_position;
-			glm::vec3 m_color;
-			float m_radius;
+			LightData m_light_data;
 			float m_inv_sqr_radius;
-			Uint32 m_id;
 
 			inline void set_inv_sqr_radius(const float radius)
 			{
@@ -41,9 +39,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			Light(const glm::vec3 &position,
-				const glm::vec3 &color, const float radius,
-				const Uint32 id);
+			Light(const LightData &light_data);
 
 			/**
 			 * Default destructor.
@@ -64,12 +60,12 @@ namespace eternal_lands
 
 			inline const glm::vec3 &get_position() const
 			{
-				return m_position;
+				return m_light_data.get_position();
 			}
 
 			inline void set_position(const glm::vec3 &position)
 			{
-				m_position = position;
+				m_light_data.set_position(position);
 			}
 
 			/**
@@ -77,7 +73,7 @@ namespace eternal_lands
 			 */
 			inline float get_radius() const
 			{
-				return m_radius;
+				return m_light_data.get_radius();
 			}
 
 			/**
@@ -93,23 +89,23 @@ namespace eternal_lands
 
 			inline void set_radius(const float radius)
 			{
-				m_radius = radius;
+				m_light_data.set_radius(radius);
 				set_inv_sqr_radius(radius);
 			}
 
 			inline const glm::vec3 &get_color() const
 			{
-				return m_color;
+				return m_light_data.get_color();
 			}
 
 			inline void set_color(const glm::vec3 &color)
 			{
-				m_color = color;
+				m_light_data.set_color(color);
 			}
 
 			inline Uint32 get_id() const
 			{
-				return m_id;
+				return m_light_data.get_id();
 			}
 
 	};

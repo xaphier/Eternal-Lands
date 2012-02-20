@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "exceptions.hpp"
 
 /**
  * @file
@@ -63,8 +64,10 @@ namespace eternal_lands
 			inline const glm::vec2 &get_uv(const Uint16 x,
 				const Uint16 y) const
 			{
-				assert(x < m_width);
-				assert(y < m_height);
+				RANGE_CECK(x, m_width,
+					UTF8("x value too big"));
+				RANGE_CECK(y, m_height,
+					UTF8("y value too big"));
 				assert((x + y * m_width) < m_uvs.size());
 
 				return m_uvs[x + y * m_width];

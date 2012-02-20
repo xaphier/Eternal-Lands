@@ -1,23 +1,22 @@
 /****************************************************************************
- *            cdlodterrainmanager.cpp
+ *            lightdata.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "cdlodterrainmanager.hpp"
+#include "lightdata.hpp"
 
 namespace eternal_lands
 {
 
-	CdLodTerrainManager::CdLodTerrainManager(
-		const CodecManagerSharedPtr &codec_manager,
-		const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars)
+	LightData::LightData(const glm::vec3 &position, const glm::vec3 &color,
+		const float radius, const Uint32 id): m_position(position),
+		m_color(color), m_radius(radius), m_id(id)
 	{
 	}
 
-	CdLodTerrainManager::~CdLodTerrainManager() throw()
+	LightData::~LightData() throw()
 	{
 	}
 

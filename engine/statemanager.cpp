@@ -10,6 +10,7 @@
 #include "texture.hpp"
 #include "abstractmesh.hpp"
 #include "logging.hpp"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
@@ -203,7 +204,8 @@ namespace eternal_lands
 
 	bool StateManager::switch_texture_unit(const Uint16 texture_unit)
 	{
-		assert(texture_unit < m_textures.size());
+		RANGE_CECK(texture_unit, m_textures.size(),
+			UTF8("texture_unit value too big"));
 
 #ifndef	NO_STATE_TRACKING
 		if (m_texture_unit == texture_unit)

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>animated_extra</name>
+ <type>uv</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>texture_coordinate_0</name>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_uv</name>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>texture_matrices</name>
+     <type>mat2x3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>2</scale>
+    </parameter>
+    <parameter>
+     <name>world_extra_uv</name>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>time</name>
+     <type>float</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>world_uv = vec3(texture_coordinate_0, 1.0) * texture_matrices[0];
+world_extra_uv = vec3(texture_coordinate_0, time) * texture_matrices[1];
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_130>true</glsl_130>
+   <glsl_140>true</glsl_140>
+   <glsl_150>true</glsl_150>
+   <glsl_330>true</glsl_330>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

@@ -1,11 +1,11 @@
 /****************************************************************************
- *            basicterrainmanager.cpp
+ *            abstractterrainmanager.cpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "basicterrainmanager.hpp"
+#include "abstractterrainmanager.hpp"
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "xmlreader.hpp"
@@ -15,32 +15,27 @@
 namespace eternal_lands
 {
 
-	BasicTerrainManager::BasicTerrainManager(const String &name):
-		m_name(name), m_height_scale(1.0f), m_tile_size(4)
+	AbstractTerrainManager::AbstractTerrainManager()
 	{
 	}
 
-	BasicTerrainManager::~BasicTerrainManager() throw()
+	AbstractTerrainManager::~AbstractTerrainManager() throw()
 	{
 	}
 
-	void BasicTerrainManager::intersect(const Frustum &frustum,
-		ObjectVisitor &visitor) const
-	{
-	}
-
-	void BasicTerrainManager::load_xml(
-		const FileSystemSharedPtr &file_system)
+	void AbstractTerrainManager::load_xml(
+		const FileSystemSharedPtr &file_system,
+		const String &file_name)
 	{
 		XmlReaderSharedPtr xml_reader;
 
 		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
-			get_name()));
+			file_name));
 
 		load_xml(xml_reader->get_root_node());
 	}
 
-	void BasicTerrainManager::load_xml(const xmlNodePtr node)
+	void AbstractTerrainManager::load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 
@@ -118,17 +113,11 @@ namespace eternal_lands
 				m_transformation.set_scale(
 					XmlUtil::get_float_value(it));
 			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("height_scale"))
-				== 0)
-			{
-				set_height_scale(XmlUtil::get_float_value(it));
-			}
 		}
 		while (XmlUtil::next(it, true));
 	}
 
-	void BasicTerrainManager::save_xml(const XmlWriterSharedPtr &writer)
+	void AbstractTerrainManager::save_xml(const XmlWriterSharedPtr &writer)
 		const
 	{
 		writer->start_element(UTF8("terrain"));
@@ -144,8 +133,6 @@ namespace eternal_lands
 			get_transformation().get_translation());
 		writer->write_float_element(UTF8("scale"),
 			get_transformation().get_scale());
-		writer->write_float_element(UTF8("height_scale"),
-			get_height_scale());
 		writer->end_element();
 	}
 

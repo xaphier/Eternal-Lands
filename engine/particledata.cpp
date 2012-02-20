@@ -11,7 +11,8 @@ namespace eternal_lands
 {
 
 	ParticleData::ParticleData(const glm::vec3 &position,
-		const String &name): m_position(position), m_name(name)
+		const String &name, const Uint32 id): m_position(position),
+		m_name(name), m_id(id)
 	{
 	}
 

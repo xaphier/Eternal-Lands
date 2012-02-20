@@ -20,6 +20,7 @@
 #include "elc_private.h"
 #include "asc.h"
 #include "colors.h"
+#include "particles.h"
 #include "io/elpathwrapper.h"
 #include <sstream>
 #include "engine/scene.hpp"
@@ -46,7 +47,9 @@
 #include "engine/font/text.hpp"
 #include "engine/font/textattribute.hpp"
 #include "engine/simd/simd.hpp"
-#include "engine/codec/codecmanager.hpp"
+#include "engine/lightdata.hpp"
+#include "engine/freeidsmanager.hpp"
+#include "engine/particledata.hpp"
 
 namespace el = eternal_lands;
 
@@ -60,7 +63,6 @@ namespace
 	el::SelectionType selection = el::st_none;
 	el::StringSet harvestables;
 	el::StringSet entrables;
-	el::FreeIds free_ids;
 	boost::scoped_ptr<el::Lua> lua;
 	el::GlobalVarsSharedPtr global_vars;
 	el::FileSystemSharedPtr file_system;
@@ -635,26 +637,92 @@ extern "C" void init_engine()
 	CATCH_BLOCK
 }
 
-extern "C" void engine_load_map(const char* name, const float r, const float g,
-	const float b, const int dungeon)
+extern "C" Uint32 engine_load_map(const char* name)
 {
-	TRY_BLOCK
+	try
+	{
+		glm::uvec2 size;
+		Uint32 x, y;
 
-	CHECK_GL_ERROR();
+		CHECK_GL_ERROR();
 
-	free_ids.clear();
+		scene->load(el::String(el::utf8_to_string(name)));
 
-	scene->load(el::String(el::utf8_to_string(name)),
-		glm::vec3(r, g, b), dungeon != 0);
+		CHECK_GL_ERROR();
 
-	instances_builder.reset(new el::InstancesBuilder(
-		scene->get_scene_resources().get_mesh_data_cache(),
-		8.0f, global_vars->get_use_simd(),
-		global_vars->get_opengl_3_2()));
+		size = scene->get_tile_map_size();
 
-	CHECK_GL_ERROR();
+		tile_map_size_x = size.x;
+		tile_map_size_y = size.y;
 
-	CATCH_BLOCK
+		tile_map = (Uint8*)calloc(size.x * size.y, 1);
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				tile_map[x + y * size.x] =
+					scene->get_tile(x, y);
+			}
+		}
+
+		size = scene->get_height_map_size();
+
+		height_map = (Uint8*)calloc(size.x * size.y, 1);
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				height_map[x + y * size.x] =
+					scene->get_height(x, y);
+			}
+		}
+
+		BOOST_FOREACH(const el::ParticleData &particle,
+			scene->get_particles())
+		{
+			std::string particle_name;
+
+			particle_name = particle.get_name().get();
+
+			if (particle_name.compare(0, 5, UTF8("ec://")))
+			{
+				ec_create_effect_from_map_code(
+					particle_name.substr(5).c_str(),
+					particle.get_position().x,
+					particle.get_position().y,
+					particle.get_position().z,
+					poor_man ? 6 : 10);
+			}
+			else
+			{
+#ifdef NEW_SOUND
+				add_map_particle_sys(particle_name.c_str(),
+					particle.get_position().x,
+					particle.get_position().y,
+					particle.get_position().z, 0);
+#else
+				add_particle_sys(particle_name.c_str(),
+					particle.get_position().x,
+					particle.get_position().y,
+					particle.get_position().z, 0);
+#endif // NEW_SOUND
+			}
+		}
+	}
+	catch (const boost::exception &exception)
+	{
+		LOG_EXCEPTION(exception);
+		return 0;
+	}
+	catch (const std::exception &exception)	
+	{
+		LOG_EXCEPTION(exception);
+		return 0;
+	}
+
+	return 1;
 }
 
 extern "C" void exit_engine()
@@ -814,7 +882,6 @@ extern "C" void engine_clear()
 	CHECK_GL_ERROR();
 
 	scene->clear();
-	free_ids.clear();
 
 	CHECK_GL_ERROR();
 
@@ -823,71 +890,7 @@ extern "C" void engine_clear()
 	disable_opengl2_stuff();
 }
 
-extern "C" void engine_add_tile(const Uint16 x, const Uint16 y,
-	const Uint8 tile)
-{
-	el::MaterialEffectDescriptionVector materials;
-	el::MaterialEffectDescription material;
-	el::StringStream str;
-	el::String file_name;
-	el::Transformation transformation;
-	glm::vec3 offset;
-
-	TRY_BLOCK
-
-	DEBUG_CHECK_GL_ERROR();
-
-	if (IS_WATER_TILE(tile))
-	{
-		offset = glm::vec3(glm::vec2(x, y) * 3.0f, -0.2501f);
-	}
-	else
-	{
-		offset = glm::vec3(glm::vec2(x, y) * 3.0f, -0.0011f);
-	}
-
-	assert(glm::all(glm::lessThanEqual(glm::abs(offset),
-		glm::vec3(1e7f))));
-
-	transformation.set_translation(offset);
-	transformation.set_scale(3.0f);
-
-	if ((tile != 0) && (tile != 240))
-	{
-		str << UTF8("tile") << static_cast<Uint16>(tile);
-	}
-	else
-	{
-		if (tile == 240)
-		{
-			str << UTF8("lava");
-		}
-		else
-		{
-			str << UTF8("water");
-		}
-	}
-
-	material.set_material_descriptiont(scene->get_scene_resources(
-		).get_material_description_cache()->get_material_description(
-		el::String(str.str())));
-
-	material.set_world_transformation(el::String(UTF8("default")));
-
-	materials.push_back(material);
-
-	instances_builder->add(el::ObjectData(transformation,
-		el::String(UTF8("plane_4")), 0.0f, free_ids.get_next_free_id(),
-		el::st_none, false), materials);
-
-	DEBUG_CHECK_GL_ERROR();
-
-	CATCH_BLOCK
-
-	disable_opengl2_stuff();
-}
-
-extern "C" void engine_add_instanced_object(const char* name, const float x_pos,
+extern "C" void engine_add_dynamic_object(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
 	const float y_rot, const float z_rot, const char blended, const float r,
 	const float g, const float b, const Uint32 id,
@@ -897,22 +900,9 @@ extern "C" void engine_add_instanced_object(const char* name, const float x_pos,
 
 	DEBUG_CHECK_GL_ERROR();
 
-	if (blended != 1)
-	{
-		instances_builder->add(get_object_data(
-			glm::vec3(x_pos, y_pos, z_pos),
-			glm::vec3(x_rot, y_rot, z_rot),
-			glm::vec4(r, g, b, 1.0f), get_name(name), false, id,
-			selection));
-	}
-	else
-	{
-		scene->add_object(get_object_data(
-			glm::vec3(x_pos, y_pos, z_pos),
-			glm::vec3(x_rot, y_rot, z_rot),
-			glm::vec4(r, g, b, 1.0f), get_name(name), true, id,
-			selection));
-	}
+	scene->add_object(get_object_data(glm::vec3(x_pos, y_pos, z_pos),
+		glm::vec3(x_rot, y_rot, z_rot), glm::vec4(r, g, b, 1.0f),
+		get_name(name), blended != 0, id, selection));
 
 	DEBUG_CHECK_GL_ERROR();
 
@@ -955,38 +945,6 @@ extern "C" void engine_add_object(const char* name, const float x_pos,
 	disable_opengl2_stuff();
 }
 
-extern "C" void engine_done_object_adding()
-{
-	el::InstanceDataVector instances;
-	el::ObjectDataVector uninstanced;
-
-	TRY_BLOCK
-
-	DEBUG_CHECK_GL_ERROR();
-
-	instances_builder->build(free_ids, instances, uninstanced);
-
-	BOOST_FOREACH(const el::InstanceData &instance_data, instances)
-	{
-		DEBUG_CHECK_GL_ERROR();
-
-		scene->add_object(instance_data);
-	}
-
-	BOOST_FOREACH(const el::ObjectData &object_data, uninstanced)
-	{
-		DEBUG_CHECK_GL_ERROR();
-
-		scene->add_object(object_data);
-	}
-
-	DEBUG_CHECK_GL_ERROR();
-
-	CATCH_BLOCK
-
-	disable_opengl2_stuff();
-}
-
 extern "C" void engine_add_light(const float x_pos, const float y_pos,
 	const float z_pos, const float r, const float g, const float b,
 	const float radius, const Uint32 id)
@@ -1005,7 +963,7 @@ extern "C" void engine_add_light(const float x_pos, const float y_pos,
 	scale = std::max(std::max(r, g), std::max(b, 1.0f));
 	color /= scale;
 
-	scene->add_light(position, color, radius * scale, id);
+	scene->add_light(el::LightData(position, color, radius * scale, id));
 
 	CATCH_BLOCK
 }
@@ -1395,7 +1353,6 @@ extern "C" Uint32 engine_get_object_under_mouse_entrable()
 
 extern "C" void engine_remove_object(const Uint32 id)
 {
-	free_ids.free_id(id);
 	scene->remove_object(id);
 }
 
@@ -1416,18 +1373,9 @@ extern "C" void engine_get_object_position(const Uint32 id, float* x, float* y,
 	*z = position.z;
 }
 
-extern "C" Uint32 engine_get_next_free_id()
+extern "C" Uint32 engine_get_next_free_dynamic_object_id()
 {
-	return free_ids.get_next_free_id();
-}
-
-extern "C" void engine_set_next_free_id(const Uint32 id)
-{
-	TRY_BLOCK
-
-	free_ids.set_next_free_id(id);
-
-	CATCH_BLOCK
+	return scene->get_free_ids()->get_next_free_id(el::it_dynamic_object);
 }
 
 extern "C" void engine_set_shader_quality(const char* quality)

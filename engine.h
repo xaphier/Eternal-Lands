@@ -33,19 +33,12 @@ void exit_engine();
 void exit_global_vars();
 void exit_file_system();
 void file_system_add_dir(const char* dir);
-void engine_load_map(const char* name, const float r, const float g,
-	const float b, const int dungeon);
-void engine_add_tile(const Uint16 x, const Uint16 y, const Uint8 tile);
-void engine_add_instanced_object(const char* name, const float x_pos,
+Uint32 engine_load_map(const char* name);
+void engine_add_dynamic_object(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
 	const float y_rot, const float z_rot, const char blended,
 	const float r, const float g, const float b, const Uint32 id,
 	const SelectionType selection);
-void engine_add_object(const char* name, const float x_pos, const float y_pos,
-	const float z_pos, const float x_rot, const float y_rot,
-	const float z_rot, const char blended, const float r, const float g,
-	const float b, const Uint32 id, const SelectionType selection);
-void engine_done_object_adding();
 void engine_add_light(const float x_pos, const float y_pos, const float z_pos,
 	const float r, const float g, const float b, const float radius,
 	const Uint32 id);
@@ -57,8 +50,7 @@ Uint32 engine_get_object_under_mouse_entrable();
 void engine_remove_object(const Uint32 id);
 void engine_get_object_position(const Uint32 id, float* x, float* y, float* z);
 void engine_remove_light(const Uint32 id);
-Uint32 engine_get_next_free_id();
-void engine_set_next_free_id(const Uint32 id);
+Uint32 engine_get_next_free_dynamic_object_id();
 void engine_set_window_size(const Uint32 widht, const Uint32 height,
 	const Uint32 hud_x, const Uint32 hud_y);
 

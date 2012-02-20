@@ -71,8 +71,8 @@ void put_mine_on_ground(int mine_x, int mine_y, int mine_type, int mine_id)
 		return;
 	}
 	
-	obj_3d_id = engine_get_next_free_id();
-	engine_add_object(get_mine_e3d(mine_type), x, y, z, 0.0f, 0.0f, 0.0f, 0,
+	obj_3d_id = engine_get_next_free_dynamic_object_id();
+	engine_add_dynamic_object(get_mine_e3d(mine_type), x, y, z, 0.0f, 0.0f, 0.0f, 0,
 		1.0f, 1.0f, 1.0f, obj_3d_id, st_select);
 
 	mine_list[mine_id].x = mine_x;
@@ -134,8 +134,8 @@ void add_mines_from_list (const Uint8 *data)
 			return;
 		}
 
-		obj_3d_id = engine_get_next_free_id();
-		engine_add_object(get_mine_e3d(mine_type), x, y, z,
+		obj_3d_id = engine_get_next_free_dynamic_object_id();
+		engine_add_dynamic_object(get_mine_e3d(mine_type), x, y, z,
 			0, 0, 0, 0, 1.0f, 1.0f, 1.0f, obj_3d_id, st_select);
 		mine_list[mine_id].x = mine_x;
 		mine_list[mine_id].y = mine_y;

@@ -163,16 +163,20 @@ namespace eternal_lands
 	AbstractReadMemorySharedPtr DecompresszUtil::decompress(
 		const AbstractReadMemorySharedPtr &buffer)
 	{
-		if ((memcmp(buffer->get_ptr(), XZ_SIG, XZ_SIG_SIZE) == 0) &&
-			(buffer->get_size() > XZ_SIG_SIZE))
+		if (buffer->get_size() > XZ_SIG_SIZE)
 		{
-			return decompress_xz(buffer);
+			if (memcmp(buffer->get_ptr(), XZ_SIG, XZ_SIG_SIZE) == 0)
+			{
+				return decompress_xz(buffer);
+			}
 		}
 
-		if ((memcmp(buffer->get_ptr(), GZ_SIG, GZ_SIG_SIZE) == 0) &&
-			(buffer->get_size() > GZ_SIG_SIZE))
+		if (buffer->get_size() > GZ_SIG_SIZE)
 		{
-			return decompress_gz(buffer);
+			if (memcmp(buffer->get_ptr(), GZ_SIG, GZ_SIG_SIZE) == 0)
+			{
+				return decompress_gz(buffer);
+			}
 		}
 
 		return buffer;

@@ -96,9 +96,6 @@ namespace eternal_lands
 
 	}
 
-	class E3dLoadingException: public virtual InvalidParameterException,
-		public virtual IoErrorException {};
-
 	bool E3dLoader::check_format(const Uint8Array8 &id)
 	{
 		Uint32 i;
@@ -132,12 +129,16 @@ namespace eternal_lands
 
 		if (magic_number != e3d_magic_number)
 		{
-			EL_THROW_EXCEPTION(E3dLoadingException());
+			EL_THROW_EXCEPTION(IoErrorException()
+				<< boost::errinfo_file_name(
+					m_reader->get_name()));
 		}
 
 		if (version_number != e3d_version_number)
 		{
-			EL_THROW_EXCEPTION(E3dLoadingException());
+			EL_THROW_EXCEPTION(IoErrorException()
+				<< boost::errinfo_file_name(
+					m_reader->get_name()));
 		}
 
 		m_reader->skip(16);
@@ -390,7 +391,9 @@ namespace eternal_lands
 
 		if ((static_cast<Uint64>(min_index) + 1) >= max_index)
 		{
-			EL_THROW_EXCEPTION(E3dLoadingException());
+			EL_THROW_EXCEPTION(IoErrorException()
+				<< boost::errinfo_file_name(
+					m_reader->get_name()));
 		}
 
 		return SubMesh(box, offset, count, min_index, max_index);
@@ -646,7 +649,7 @@ namespace eternal_lands
 
 		if (vertex_size != size)
 		{
-			EL_THROW_EXCEPTION(E3dLoadingException()
+			EL_THROW_EXCEPTION(IoErrorException()
 				<< errinfo_value(vertex_size)
 				<< boost::errinfo_file_name(
 					m_reader->get_name()));
@@ -658,7 +661,7 @@ namespace eternal_lands
 		if ((index_size != sizeof(Uint16)) &&
 			(index_size != sizeof(Uint32)))
 		{
-			EL_THROW_EXCEPTION(E3dLoadingException()
+			EL_THROW_EXCEPTION(IoErrorException()
 				<< errinfo_value(index_size)
 				<< boost::errinfo_file_name(
 					m_reader->get_name()));

@@ -6,12 +6,15 @@
 	<bone_count>80</bone_count>
 	<dynamic_light_count>false</dynamic_light_count>
 	<shader_sources>
-		<shader_source>shaders/sources/bone_depth_animation.xml</shader_source>
-		<shader_source>shaders/sources/bone_normal_animation.xml</shader_source>
-		<shader_source>shaders/sources/bone_tangent_animation.xml</shader_source>
-		<shader_source>shaders/sources/depth_static.xml</shader_source>
-		<shader_source>shaders/sources/normal_static.xml</shader_source>
-		<shader_source>shaders/sources/tangent_static.xml</shader_source>
+		<shader_source>shaders/sources/bone_animation_depth.xml</shader_source>
+		<shader_source>shaders/sources/bone_animation_normal.xml</shader_source>
+		<shader_source>shaders/sources/bone_animation_tangent.xml</shader_source>
+		<shader_source>shaders/sources/static_depth.xml</shader_source>
+		<shader_source>shaders/sources/static_normal.xml</shader_source>
+		<shader_source>shaders/sources/static_tangent.xml</shader_source>
+		<shader_source>shaders/sources/billboard_depth.xml</shader_source>
+		<shader_source>shaders/sources/billboard_normal.xml</shader_source>
+		<shader_source>shaders/sources/billboard_tangent.xml</shader_source>
 		<shader_source>shaders/sources/view_direction.xml</shader_source>
 		<shader_source>shaders/sources/view_transformation.xml</shader_source>
 		<shader_source>shaders/sources/albedo_blend_mapping.xml</shader_source>
@@ -45,7 +48,14 @@
 		<shader_source>shaders/sources/terrain_depth_simple.xml</shader_source>
 		<shader_source>shaders/sources/terrain_normal_simple.xml</shader_source>
 		<shader_source>shaders/sources/terrain_tangent_simple.xml</shader_source>
-		<shader_source>shaders/sources/full_emission.xml</shader_source>
+		<shader_source>shaders/sources/emission.xml</shader_source>
+		<shader_source>shaders/sources/grass.xml</shader_source>
+		<shader_source>shaders/sources/animated_uv.xml</shader_source>
+		<shader_source>shaders/sources/animated_extra_uv.xml</shader_source>
+		<shader_source>shaders/sources/static_uv.xml</shader_source>
+		<shader_source>shaders/sources/static_extra_uv.xml</shader_source>
+		<shader_source>shaders/sources/grass_uv.xml</shader_source>
+		<shader_source>shaders/sources/grass_billboard.xml</shader_source>
 	</shader_sources>
 	<sources>
 		<world_depth_transformation>default</world_depth_transformation>

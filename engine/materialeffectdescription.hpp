@@ -30,6 +30,7 @@ namespace eternal_lands
 			bool m_cast_shadows;
 			bool m_culling;
 			bool m_transparent;
+			bool m_billboard;
 
 		public:
 			MaterialEffectDescription();
@@ -70,6 +71,11 @@ namespace eternal_lands
 				return m_transparent;
 			}
 
+			inline bool get_billboard() const
+			{
+				return m_billboard;
+			}
+
 			inline void set_world_transformation(
 				const String &world_transformation)
 			{
@@ -89,6 +95,11 @@ namespace eternal_lands
 			inline void set_transparent(const bool transparent)
 			{
 				m_transparent = transparent;
+			}
+
+			inline void set_billboard(const bool billboard)
+			{
+				m_billboard = billboard;
 			}
 
 	};

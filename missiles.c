@@ -215,8 +215,8 @@ void missiles_remove(int missile_id)
 							 mis->position[1] - mis->direction[1] * dist, 
 							 mis->position[2] - mis->direction[2] * dist,
                              x_rot, y_rot, z_rot);
-		obj_3d_id = engine_get_next_free_id();
-		engine_add_object(missiles_defs[mis->type].lost_mesh, 
+		obj_3d_id = engine_get_next_free_dynamic_object_id();
+		engine_add_dynamic_object(missiles_defs[mis->type].lost_mesh, 
 			mis->position[0] - mis->direction[0] * dist, 
 			mis->position[1] - mis->direction[1] * dist, 
 			mis->position[2] - mis->direction[2] * dist,

@@ -192,13 +192,13 @@ namespace eternal_lands
 	class AbstractMesh;
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
+	class AbstractTerrainManager;
 	class AbstractWriteMemory;
 	class Actor;
 	class ActorDataCache;
 	class ActorTextureBuilder;
 	class AlignedVec4Array;
 	class Atlas;
-	class BasicTerrainManager;
 	class BoundedObject;
 	class BoundingBox;
 	class CodecManager;
@@ -206,6 +206,7 @@ namespace eternal_lands
 	class Effect;
 	class EffectCache;
 	class EffectDescription;
+	class FreeIdsManager;
 	class FileSystem;
 	class Filter;
 	class FrameBufferBuilder;
@@ -222,6 +223,7 @@ namespace eternal_lands
 	class InstancesBuilder;
 	class InstancingData;
 	class Light;
+	class LightData;
 	class LightVisitor;
 	class Lua;
 	class Map;
@@ -310,6 +312,7 @@ namespace eternal_lands
 	SHARED_PTR(CodecManager);
 	SHARED_PTR(Effect);
 	SHARED_PTR(EffectCache);
+	SHARED_PTR(FreeIdsManager);
 	SHARED_PTR(FileSystem);
 	SHARED_PTR(Filter);
 	SHARED_PTR(FrameBufferBuilder);
@@ -402,6 +405,10 @@ namespace eternal_lands
 	typedef boost::array<AbstractWriteMemorySharedPtr,
 		vertex_stream_count> AbstractWriteMemorySharedPtrArray;
 	typedef boost::ptr_vector<VertexStream> VertexStreamVector;
+	typedef boost::ptr_vector<AbstractTerrainManager>
+		AbstractTerrainManagerVector;
+	typedef std::auto_ptr<AbstractTerrainManager>
+		AbstractTerrainManagerAutoPtr;
 
 	typedef boost::variant<bool, Sint64, float,
 		glm::ivec2, glm::ivec3, glm::ivec4,

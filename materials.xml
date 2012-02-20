@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="utf8"?>
 <materials>
 	<material>
+		<name>grass-billboard</name>
+		<albedo_0>textures/grass.dds</albedo_0>
+		<albedo_1>textures/windnoise.dds</albedo_1>
+		<albedo_2></albedo_2>
+		<albedo_3></albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>default</texture_coodrinates>
+		<albedo_mapping>grass_billboard</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
+		<name>grass</name>
+		<albedo_0>textures/grass_ground.dds</albedo_0>
+		<albedo_1>textures/grassblades.dds</albedo_1>
+		<albedo_2>textures/grass_halfz.dds</albedo_2>
+		<albedo_3>textures/windnoise.dds</albedo_3>
+		<normal></normal>
+		<specular></specular>
+		<emission></emission>
+		<blend></blend>
+		<height></height>
+		<texture_coodrinates>grass</texture_coodrinates>
+		<albedo_mapping>grass</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<lighting>true</lighting>
+	</material>
+	<material>
 		<name>lava</name>
 		<albedo_0>textures/lava.dds</albedo_0>
 		<albedo_1>textures/noise.dds</albedo_1>

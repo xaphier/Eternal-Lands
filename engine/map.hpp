@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "objectdata.hpp"
+#include "exceptions.hpp"
 
 /**
  * @file
@@ -39,10 +40,12 @@ namespace eternal_lands
 				m_material_description_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
-			boost::scoped_ptr<BasicTerrainManager> m_terrain;
+			AbstractTerrainManagerVector m_terrains;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
 			Uint16MultiArray2 m_height_map;
+			Uint16MultiArray2 m_tile_map;
+			ParticleDataVector m_particles;
 			glm::vec4 m_ambient;
 			String m_name;
 			Uint32 m_id;
@@ -134,9 +137,7 @@ namespace eternal_lands
 			void remove_object(const Uint32 id);
 			bool get_object_position(const Uint32 id,
 				glm::vec3 &position);
-			void add_light(const glm::vec3 &position,
-				const glm::vec3 &color, const float radius,
-				const Uint32 id);
+			void add_light(const LightData &light_data);
 			void remove_light(const Uint32 id);
 			void clear();
 			void load(const glm::vec3 &ambient,
@@ -146,7 +147,87 @@ namespace eternal_lands
 			void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
 			const BoundingBox &get_bounding_box() const;
-			float get_terrain_height_scale() const;
+			void add_terrain(
+				AbstractTerrainManagerAutoPtr &terrain);
+			void add_particle(const ParticleData &particle);
+
+			inline glm::uvec2 get_height_map_size() const
+			{
+				glm::uvec2 result;
+
+				result.x = m_height_map.shape()[0];
+				result.y = m_height_map.shape()[1];
+
+				return result;
+			}
+
+			void set_height_map_size(const Uint16 width,
+				const Uint16 height)
+			{
+				m_height_map.resize(
+					boost::extents[width][height]);
+			}
+
+			inline void set_height(const Uint16 x, const Uint16 y,
+				const Uint16 height)
+			{
+				RANGE_CECK(x, m_height_map.shape()[0],
+					UTF8("index value too big"));
+				RANGE_CECK(y, m_height_map.shape()[1],
+					UTF8("index value too big"));
+
+				m_height_map[x][y] = height;
+			}
+
+			inline Uint16 get_height(const Uint16 x, const Uint16 y)
+				const
+			{
+				RANGE_CECK(x, m_height_map.shape()[0],
+					UTF8("index value too big"));
+				RANGE_CECK(y, m_height_map.shape()[1],
+					UTF8("index value too big"));
+
+				return m_height_map[x][y];
+			}
+
+			inline glm::uvec2 get_tile_map_size() const
+			{
+				glm::uvec2 result;
+
+				result.x = m_tile_map.shape()[0];
+				result.y = m_tile_map.shape()[1];
+
+				return result;
+			}
+
+			void set_tile_map_size(const Uint16 width,
+				const Uint16 height)
+			{
+				m_tile_map.resize(
+					boost::extents[width][height]);
+			}
+
+			inline void set_tile(const Uint16 x, const Uint16 y,
+				const Uint16 tile)
+			{
+				RANGE_CECK(x, m_tile_map.shape()[0],
+					UTF8("index value too big"));
+				RANGE_CECK(y, m_tile_map.shape()[1],
+					UTF8("index value too big"));
+
+				m_tile_map[x][y] = tile;
+			}
+
+			inline Uint16 get_tile(const Uint16 x, const Uint16 y)
+				const
+			{
+				RANGE_CECK(x, m_tile_map.shape()[0],
+					UTF8("index value too big"));
+				RANGE_CECK(y, m_tile_map.shape()[1],
+					UTF8("index value too big"));
+
+				return m_tile_map[x][y];
+			}
 
 			inline void set_ambient(const glm::vec3 &ambient)
 			{
@@ -176,6 +257,11 @@ namespace eternal_lands
 			inline Uint32 get_id() const
 			{
 				return m_id;
+			}
+
+			inline const ParticleDataVector &get_particles() const
+			{
+				return m_particles;
 			}
 
 	};

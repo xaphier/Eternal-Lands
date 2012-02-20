@@ -12,7 +12,8 @@ namespace eternal_lands
 {
 
 	MaterialEffectDescription::MaterialEffectDescription():
-		m_cast_shadows(true), m_culling(true), m_transparent(false)
+		m_cast_shadows(true), m_culling(true), m_transparent(false),
+		m_billboard(false)
 	{
 	}
 
@@ -79,6 +80,11 @@ namespace eternal_lands
 		if (get_lighting() != material.get_lighting())
 		{
 			return get_lighting() < material.get_lighting();
+		}
+
+		if (get_billboard() != material.get_billboard())
+		{
+			return get_billboard() < material.get_billboard();
 		}
 
 		for (i = 0; i < material_texture_count; ++i)
@@ -269,6 +275,11 @@ namespace eternal_lands
 			return false;
 		}
 
+		if (get_billboard() != material.get_billboard())
+		{
+			return false;
+		}
+
 		for (i = 0; i < material_texture_count; ++i)
 		{
 			if (get_texture(i) != material.get_texture(i))
@@ -339,6 +350,7 @@ namespace eternal_lands
 		set_receives_shadows(effect.get_receives_shadows());
 		set_transparent(effect.get_transparent());
 		set_lighting(effect.get_lighting());
+		set_billboard(effect.get_billboard());
 	}
 
 	void MaterialEffectDescription::get_effect_description(
@@ -353,6 +365,7 @@ namespace eternal_lands
 		effect.set_receives_shadows(get_receives_shadows());
 		effect.set_transparent(get_transparent());
 		effect.set_lighting(get_lighting());
+		effect.set_billboard(get_billboard());
 	}
 
 	OutStream& operator<<(OutStream &str,
@@ -373,6 +386,7 @@ namespace eternal_lands
 		str << " receives_shadows: " << value.get_receives_shadows();
 		str << " transparent: " << value.get_transparent();
 		str << " lighting: " << value.get_lighting();
+		str << " billboard: " << value.get_billboard();
 
 		for (i = 0; i < material_texture_count; ++i)
 		{

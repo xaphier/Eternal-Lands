@@ -18,8 +18,8 @@
 
 /**
  * @file
- * @brief The @c class Object.
- * This file contains the @c class Object.
+ * @brief The @c class ObjectData.
+ * This file contains the @c class ObjectData.
  */
 namespace eternal_lands
 {

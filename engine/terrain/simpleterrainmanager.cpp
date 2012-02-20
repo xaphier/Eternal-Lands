@@ -29,15 +29,15 @@ namespace eternal_lands
 		const GlobalVarsSharedPtr &global_vars,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache, const String &name):
-		BasicTerrainManager(name)
+		const TextureCacheSharedPtr &texture_cache,
+		const String &file_name)
 	{
 		ImageSharedPtr height_map;
 		EffectDescription effect;
 
 		m_object_tree.reset(new RStarTree());
 
-		load_xml(file_system);
+		load_xml(file_system, file_name);
 
 		height_map = codec_manager->load_image(get_height_map(),
 			file_system, ImageCompressionTypeSet(), true);
@@ -46,6 +46,40 @@ namespace eternal_lands
 			String(UTF8("shaders/simple_terrain.xml")));
 
 		add_terrain_pages(effect, height_map, mesh_builder,
+			effect_cache, texture_cache,
+			global_vars->get_low_quality_terrain(),
+			global_vars->get_use_simd());
+	}
+
+	SimpleTerrainManager::SimpleTerrainManager(
+		const CodecManagerSharedPtr &codec_manager,
+		const FileSystemSharedPtr &file_system,
+		const GlobalVarsSharedPtr &global_vars,
+		const MeshBuilderSharedPtr &mesh_builder,
+		const EffectCacheSharedPtr &effect_cache,
+		const TextureCacheSharedPtr &texture_cache,
+		const Transformation &transformation,
+		const StringArray4 &albedo_maps, const String &blend_map,
+		const String &height_map, const String &dvdu_map)
+	{
+		ImageSharedPtr height_image;
+		EffectDescription effect;
+
+		m_object_tree.reset(new RStarTree());
+
+		set_transformation(transformation);
+		set_albedo_maps(albedo_maps);
+		set_blend_map(blend_map);
+		set_height_map(height_map);
+		set_dvdu_map(dvdu_map);
+
+		height_image = codec_manager->load_image(get_height_map(),
+			file_system, ImageCompressionTypeSet(), true);
+
+		effect.load_xml(file_system,
+			String(UTF8("shaders/simple_terrain.xml")));
+
+		add_terrain_pages(effect, height_image, mesh_builder,
 			effect_cache, texture_cache,
 			global_vars->get_low_quality_terrain(),
 			global_vars->get_use_simd());
@@ -297,14 +331,19 @@ namespace eternal_lands
 
 		material.set_effect_description(effect);
 
-		texture_matrix[0].x = height_map->get_width() / 8;
+		texture_matrix[0].x = 1.0f;
 		texture_matrix[0].y = 0.0f;
 		texture_matrix[0].z = 0.0f;
 		texture_matrix[1].x = 0.0f;
-		texture_matrix[1].y = height_map->get_height() / 8;
+		texture_matrix[1].y = 1.0f;
 		texture_matrix[1].z = 0.0f;
 
 		material.set_texture_matrix(texture_matrix, 0);
+
+		texture_matrix[0].x = height_map->get_width() / 8;
+		texture_matrix[1].y = height_map->get_height() / 8;
+
+		material.set_texture_matrix(texture_matrix, 1);
 
 		materials.push_back(material);
 
@@ -314,8 +353,8 @@ namespace eternal_lands
 			{
 				StringStream str;
 
-				str << get_name() << UTF8(" terrain ") << x;
-				str << UTF8("x") << y;
+				str << get_height_map() << UTF8(" terrain ");
+				str << x << UTF8("x") << y;
 
 				mesh_data_tool =
 					boost::make_shared<MeshDataTool>(

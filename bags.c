@@ -184,8 +184,8 @@ void put_bag_on_ground(int bag_x,int bag_y,int bag_id)
 	}
 #endif // NEW_SOUND
 
-	obj_3d_id = engine_get_next_free_id();
-	engine_add_object("./3dobjects/bag1.e3d", x, y, z,
+	obj_3d_id = engine_get_next_free_dynamic_object_id();
+	engine_add_dynamic_object("./3dobjects/bag1.e3d", x, y, z,
 		get_bag_tilt(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y), 0,
 		get_bag_rotation(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y),
 		0, 1.0f, 1.0f, 1.0f, obj_3d_id, st_pick);
@@ -255,8 +255,8 @@ void add_bags_from_list (const Uint8 *data)
 			return;
 		}
 
-		obj_3d_id = engine_get_next_free_id();
-		engine_add_object("./3dobjects/bag1.e3d", x, y, z,
+		obj_3d_id = engine_get_next_free_dynamic_object_id();
+		engine_add_dynamic_object("./3dobjects/bag1.e3d", x, y, z,
 			get_bag_tilt(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y), 0,
 			get_bag_rotation(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y),
 			0, 1.0f, 1.0f, 1.0f, obj_3d_id, st_pick);

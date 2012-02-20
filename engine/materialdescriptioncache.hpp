@@ -42,6 +42,8 @@ namespace eternal_lands
 			StringVector get_material_description_names() const;
 			const MaterialDescription &get_material_description(
 				const String &name) const;
+			bool get_has_material_description(const String &name)
+				const;
 
 	};
 

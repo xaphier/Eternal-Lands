@@ -100,6 +100,8 @@ namespace eternal_lands
 				pt_mat3x3),
 			CommonParameterTypeData(String(UTF8("emission")),
 				pt_vec3),
+			CommonParameterTypeData(String(UTF8("world_extra_uv")),
+				pt_vec2)
 		};
 
 		const Uint32 common_parameter_type_datas_count =

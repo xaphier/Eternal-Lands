@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>white</name>
+ <name>emission</name>
  <type>emission_mapping</type>
  <shader_source_datas>
   <shader_source_data>
@@ -12,8 +12,15 @@
      <size>one</size>
      <scale>1</scale>
     </parameter>
+    <parameter>
+     <name>emission_scale_offset</name>
+     <type>mat2x3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
    </parameters>
-   <source>emission = vec3(1.0);</source>
+   <source>emission = emission_scale_offset[1];</source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>

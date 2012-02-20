@@ -79,8 +79,10 @@ typedef struct
      * @{ */
 	float scale;
     /** @} */
+	int material_count;
+	int material_index;
 
-	char reserved[20]; /**< reserved for future expansions. */
+	char reserved[12]; /**< reserved for future expansions. */
 
 }object3d_io;
 
@@ -195,8 +197,8 @@ typedef struct
     /** @name Reserved for future expansions 
      * @{ */
 	char res_2;
-	char res_3;
-	char res_4;
+	char version_major;
+	char version_minor;
     /** @} */
     
     /** @name ambient color values 
@@ -220,15 +222,15 @@ typedef struct
 #endif
     /** @name Reserved for future use 
      * @{ */
-	int version_number; /**< Version number of the map file. */
-	int terrain_offset; /**< Offset to the terrain map data. */
+	int terrain_size; /**< Size of the terrain datas. */
+	int terrain_count; /**< Count of the terrain datas. */
+	int terrain_offset; /**< Offset to the terrain datas. */
+	int material_name_size; /**< Size of the material names data. */
+	int material_name_count; /**< Count of the material names data. */
+	int material_name_offset; /**< Offset to the material names data. */
     /** @} */
     /** @name Reserved for future expansions 
      * @{ */
-	int reserved_11;
-	int reserved_12;
-	int reserved_13;
-	int reserved_14;
 	int reserved_15;
 	int reserved_16;
 	int reserved_17;

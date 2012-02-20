@@ -225,8 +225,8 @@ extern "C"
 	void ec_add_target(ec_reference reference, float x, float y, float z);
 	int ec_change_target(ec_reference reference, int index, float x, float y,
 		float z);
-	ec_reference ec_create_effect_from_map_code(char* code, float x, float y,
-		float z, int LOD);
+	ec_reference ec_create_effect_from_map_code(const char* code, float x,
+		float y, float z, int LOD);
 	ec_reference ec_create_bag_pickup(float x, float y, float z, int LOD);
 	ec_reference ec_create_bag_drop(float x, float y, float z, int LOD);
 	ec_reference ec_create_breath_fire(float sx, float sy, float sz, float tx,

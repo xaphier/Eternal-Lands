@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>billboard</name>
+ <type>world_tangent_transformation</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_transformation</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>view_rotation_matrix</name>
+     <type>mat3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>texture_coordinate_0</name>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>normal</name>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_normal</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>ground_position</name>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>tangent</name>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_tangent</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>world_position = position.xyz;
+world_position += (texture_coordinate_0.x - 0.5) * transpose(view_rotation_matrix)[0] * 0.25 + (1.0 - texture_coordinate_0.y) * transpose(view_rotation_matrix)[1] *0.7;
+world_normal = normal;
+world_tangent = tangent;
+
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
+
+ground_position = position.xy;
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_130>false</glsl_130>
+   <glsl_140>false</glsl_140>
+   <glsl_150>false</glsl_150>
+   <glsl_330>false</glsl_330>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_transformation</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>view_rotation_matrix</name>
+     <type>mat3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>texture_coordinate_0</name>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>albedo_sampler_1</name>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>time</name>
+     <type>float</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>normal</name>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_normal</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>ground_position</name>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>tangent</name>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_tangent</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	vec2 wind, pos;
+
+	pos = (position.xy + world_transformation[1].xy) * 0.005 + time * 0.035;
+	wind = (textureLod(albedo_sampler_1, pos, 0).xy - 0.5) * 0.5;
+
+	world_position = position.xyz;
+	world_position += (texture_coordinate_0.x - 0.5) * transpose(view_rotation_matrix)[0] * 0.25 + (1.0 - texture_coordinate_0.y) * transpose(view_rotation_matrix)[1] *0.7;
+	world_position.xy += wind * (1.0 - texture_coordinate_0.y) * 0.5;
+	world_normal = normal;
+	world_tangent = tangent;
+
+	world_position *= world_transformation[1].w;
+	world_position += world_transformation[1].xyz;
+
+	ground_position = position.xy;
+}
+</source>
+   <glsl_120>false</glsl_120>
+   <glsl_130>true</glsl_130>
+   <glsl_140>true</glsl_140>
+   <glsl_150>true</glsl_150>
+   <glsl_330>true</glsl_330>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

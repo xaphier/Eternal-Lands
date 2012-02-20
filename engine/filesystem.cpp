@@ -343,6 +343,11 @@ namespace eternal_lands
 
 		m_archives.push_back(new DirArchive(String(update_dir)));
 
+		update_dir = config_dir;
+		update_dir += "/update/2_0_alpha";
+
+		m_archives.push_back(new DirArchive(String(update_dir)));
+
 		custom_dir = config_dir;
 		custom_dir += "/custom";
 

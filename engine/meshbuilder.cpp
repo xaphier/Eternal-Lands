@@ -108,7 +108,7 @@ namespace eternal_lands
 		morph_mesh[vst_normal] = normal;
 		morph_mesh[vst_morph_normal] = normal;
 		instanced_mesh[vst_normal] = normal;
-		simple_terrain[vst_normal] = normal;
+		simple_terrain[vst_normal] = vet_short2_normalized;
 
 		if (use_tangent)
 		{

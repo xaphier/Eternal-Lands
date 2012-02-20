@@ -1,5 +1,5 @@
 /****************************************************************************
- *            basicterrainmanager.hpp
+ *            abstractterrainmanager.hpp
  *
  * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -17,25 +17,24 @@
 
 /**
  * @file
- * @brief The @c class BasicTerrainManager.
- * This file contains the @c class BasicTerrainManager.
+ * @brief The @c class AbstractTerrainManager.
+ * This file contains the @c class AbstractTerrainManager.
  */
 namespace eternal_lands
 {
 
-	class BasicTerrainManager: public boost::noncopyable
+	class AbstractTerrainManager: public boost::noncopyable
 	{
 		private:
 			Transformation m_transformation;
 			StringArray4 m_albedo_maps;
 			String m_blend_map;
 			String m_height_map;
-			const String m_name;
-			float m_height_scale;
-			Uint16 m_tile_size;
+			String m_dvdu_map;
 
 		protected:
-			void load_xml(const FileSystemSharedPtr &file_system);
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 
@@ -51,8 +50,7 @@ namespace eternal_lands
 				m_albedo_maps[index] = albedo_map;
 			}
 
-			inline void set_blend_map(
-				const String &blend_map)
+			inline void set_blend_map(const String &blend_map)
 			{
 				m_blend_map = blend_map;
 			}
@@ -62,14 +60,9 @@ namespace eternal_lands
 				m_height_map = height_map;
 			}
 
-			inline void set_height_scale(const float height_scale)
+			inline void set_dvdu_map(const String &dvdu_map)
 			{
-				m_height_scale = height_scale;
-			}
-
-			inline void set_tile_size(const Uint16 tile_size)
-			{
-				m_tile_size = tile_size;
+				m_dvdu_map = dvdu_map;
 			}
 
 			inline void set_transformation(
@@ -79,15 +72,10 @@ namespace eternal_lands
 			}
 
 		public:
-			BasicTerrainManager(const String &name);
-			virtual ~BasicTerrainManager() throw();
+			AbstractTerrainManager();
+			virtual ~AbstractTerrainManager() throw();
 			virtual void intersect(const Frustum &frustum,
-				ObjectVisitor &visitor) const;
-
-			inline const String &get_name() const
-			{
-				return m_name;
-			}
+				ObjectVisitor &visitor) const = 0;
 
 			inline const StringArray4 &get_albedo_maps() const
 			{
@@ -110,19 +98,24 @@ namespace eternal_lands
 				return m_height_map;
 			}
 
+			inline const String &get_dvdu_map() const
+			{
+				return m_dvdu_map;
+			}
+
 			inline const Transformation &get_transformation() const
 			{
 				return m_transformation;
 			}
 
-			inline const float get_height_scale() const
+			static inline float get_height_scale()
 			{
-				return m_height_scale;
+				return 0.1f / 257.0f;
 			}
 
-			inline Uint16 get_tile_size() const
+			static inline Uint16 get_tile_size()
 			{
-				return m_tile_size;
+				return 16;
 			}
 
 	};

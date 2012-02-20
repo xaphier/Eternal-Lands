@@ -14,7 +14,7 @@ namespace eternal_lands
 {
 
 	EffectDescription::EffectDescription(): m_receives_shadows(true),
-		m_transparent(false), m_lighting(true)
+		m_transparent(false), m_lighting(true), m_billboard(false)
 	{
 	}
 
@@ -106,6 +106,11 @@ namespace eternal_lands
 			{
 				set_lighting(XmlUtil::get_bool_value(it));
 			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("billboard")) == 0)
+			{
+				set_billboard(XmlUtil::get_bool_value(it));
+			}
 		}
 		while (XmlUtil::next(it, true));
 	}
@@ -131,6 +136,7 @@ namespace eternal_lands
 		writer->write_bool_element(UTF8("transparent"),
 			get_transparent());
 		writer->write_bool_element(UTF8("lighting"), get_lighting());
+		writer->write_bool_element(UTF8("billboard"), get_billboard());
 		writer->end_element();
 	}
 
@@ -179,7 +185,12 @@ namespace eternal_lands
 			return false;
 		}
 
-		return get_lighting() == effect.get_lighting();
+		if (get_lighting() != effect.get_lighting())
+		{
+			return false;
+		}
+
+		return get_billboard() == effect.get_billboard();
 	}
 
 	bool EffectDescription::operator!=(const EffectDescription &effect)
@@ -240,7 +251,12 @@ namespace eternal_lands
 			return get_transparent() < effect.get_transparent();
 		}
 
-		return get_lighting() < effect.get_lighting();
+		if (get_lighting() != effect.get_lighting())
+		{
+			return get_lighting() < effect.get_lighting();
+		}
+
+		return get_billboard() < effect.get_billboard();
 	}
 
 	OutStream& operator<<(OutStream &str, const EffectDescription &value)
@@ -256,6 +272,7 @@ namespace eternal_lands
 		str << " receives_shadows: " << value.get_receives_shadows();
 		str << " transparent: " << value.get_transparent();
 		str << " lighting: " << value.get_lighting();
+		str << " billboard: " << value.get_billboard();
 
 		return str;
 	}

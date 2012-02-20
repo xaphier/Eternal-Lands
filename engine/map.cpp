@@ -17,11 +17,12 @@
 #include "materialeffectdescription.hpp"
 #include "lightvisitor.hpp"
 #include "objectvisitor.hpp"
-#include "terrain/simpleterrainmanager.hpp"
 #include "filesystem.hpp"
 #include "objectvisitor.hpp"
 #include "renderobjectdata.hpp"
 #include "materialdescriptioncache.hpp"
+#include "abstractterrainmanager.hpp"
+#include "particledata.hpp"
 
 namespace eternal_lands
 {
@@ -40,27 +41,24 @@ namespace eternal_lands
 		m_material_description_cache(material_description_cache),
 		m_name(name), m_id(0), m_dungeon(false)
 	{
-		String file_name;
+//		String file_name;
 
 		m_light_tree.reset(new RStarTree());
 		m_object_tree.reset(new RStarTree());
 
 		set_ambient(glm::vec3(0.2f));
-
+/*
 		file_name = FileSystem::get_name_without_extension(name);
 
 		file_name = String(file_name.get() + UTF8(".xml"));
 
 		if (file_system->get_file_readable(file_name))
 		{
-			m_terrain.reset(new SimpleTerrainManager(codec_manager,
-				file_system, global_vars, mesh_builder,
-				effect_cache, texture_cache, file_name));
+//			m_terrains.reset(new SimpleTerrainManager(codec_manager,
+//				file_system, global_vars, mesh_builder,
+//				effect_cache, texture_cache, file_name));
 		}
-		else
-		{
-			m_terrain.reset(new BasicTerrainManager(file_name));
-		}
+*/
 	}
 
 	Map::~Map() throw()
@@ -199,16 +197,16 @@ namespace eternal_lands
 		return true;
 	}
 
-	void Map::add_light(const glm::vec3 &position, const glm::vec3 &color,
-		const float radius, const Uint32 id)
+	void Map::add_light(const LightData &light_data)
 	{
 		std::pair<Uint32LightSharedPtrMap::iterator, bool> temp;
 		LightSharedPtr light;
+		
 
-		light = boost::make_shared<Light>(position, color, radius, id);
-		assert(light->get_radius() == radius);
-		temp = m_lights.insert(Uint32LightSharedPtrMap::value_type(id,
-			light));
+		light = boost::make_shared<Light>(light_data);
+
+		temp = m_lights.insert(Uint32LightSharedPtrMap::value_type(
+			light_data.get_id(), light));
 
 		assert(temp.second);
 
@@ -243,13 +241,23 @@ namespace eternal_lands
 		m_object_tree->clear();
 		m_objects.clear();
 		m_lights.clear();
+		m_terrains.clear();
+		m_particles.clear();
 	}
 
 	void Map::intersect(const Frustum &frustum, ObjectVisitor &visitor)
 		const
 	{
+		Uint32 i, count;
+
+		count = m_terrains.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			m_terrains[i].intersect(frustum, visitor);
+		}
+
 		m_object_tree->intersect(frustum, visitor);
-		m_terrain->intersect(frustum, visitor);
 	}
 
 	void Map::intersect(const Frustum &frustum, LightVisitor &visitor)
@@ -263,9 +271,14 @@ namespace eternal_lands
 		return m_object_tree->get_bounding_box();
 	}
 
-	float Map::get_terrain_height_scale() const
+	void Map::add_terrain(AbstractTerrainManagerAutoPtr &terrain)
 	{
-		return m_terrain->get_height_scale();
+		m_terrains.push_back(terrain);
+	}
+
+	void Map::add_particle(const ParticleData &particle)
+	{
+		m_particles.push_back(particle);
 	}
 
 }

@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "basicterrainmanager.hpp"
+#include "abstractterrainmanager.hpp"
 
 /**
  * @file
@@ -23,7 +23,7 @@
 namespace eternal_lands
 {
 
-	class CdLodTerrainManager: public BasicTerrainManager
+	class CdLodTerrainManager: public AbstractTerrainManager
 	{
 		private:
 			ImageSharedPtr m_height_image;
@@ -34,8 +34,7 @@ namespace eternal_lands
 			CdLodTerrainManager(
 				const CodecManagerSharedPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars,
-				const String &name);
+				const GlobalVarsSharedPtr &global_vars);
 			virtual ~CdLodTerrainManager() throw();
 
 //			get_visible_terrain_pages();

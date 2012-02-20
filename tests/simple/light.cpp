@@ -7,8 +7,6 @@
 
 #include "prerequisites.hpp"
 #include "light.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
 #define BOOST_TEST_MODULE light
 #include <boost/test/unit_test.hpp>
 
@@ -16,8 +14,8 @@ namespace el = eternal_lands;
 
 BOOST_AUTO_TEST_CASE(default_creation)
 {
-	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
-		glm::vec3(34.5f, -214.012f, 0.234f), 10.9546f, 5435495);
+	el::Light light(el::LightData(glm::vec3(43.0f, 1234.56f, -34.0f),
+		glm::vec3(34.5f, -214.012f, 0.234f), 10.9546f, 5435495));
 
 	BOOST_CHECK_CLOSE(light.get_position()[0], 43.0f, 0.001);
 	BOOST_CHECK_CLOSE(light.get_position()[1], 1234.56f, 0.001);
@@ -34,8 +32,8 @@ BOOST_AUTO_TEST_CASE(default_creation)
 
 BOOST_AUTO_TEST_CASE(position)
 {
-	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
-		glm::vec3(34.5f, -214.012f, 0.234f), 10.9546f, 5435495);
+	el::Light light(el::LightData(glm::vec3(43.0f, 1234.56f, -34.0f),
+		glm::vec3(34.5f, -214.012f, 0.234f), 10.9546f, 5435495));
 
 	light.set_position(glm::vec3(1.0f, 2.0f, 3.0f));
 	BOOST_CHECK_CLOSE(light.get_position()[0], 1.0f, 0.001);
@@ -45,8 +43,8 @@ BOOST_AUTO_TEST_CASE(position)
 
 BOOST_AUTO_TEST_CASE(color)
 {
-	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
-		glm::vec3(34.5f, -214.012f, 0.234f), 10.9546f, 5435495);
+	el::Light light(el::LightData(glm::vec3(43.0f, 1234.56f, -34.0f),
+		glm::vec3(34.5f, -214.012f, 0.234f), 10.9546f, 5435495));
 
 	light.set_color(glm::vec3(1.0f, 2.0f, 3.0f));
 	BOOST_CHECK_CLOSE(light.get_color()[0], 1.0f, 0.001);
@@ -61,8 +59,8 @@ BOOST_AUTO_TEST_CASE(color)
 
 BOOST_AUTO_TEST_CASE(radius)
 {
-	el::Light light(glm::vec3(43.0f, 1234.56f, -34.0f),
-		glm::vec3(34.5f, -214.012f, 0.234f), 10.9546f, 5435495);
+	el::Light light(el::LightData(glm::vec3(43.0f, 1234.56f, -34.0f),
+		glm::vec3(34.5f, -214.012f, 0.234f), 10.9546f, 5435495));
 
 	light.set_radius(-897.0f);
 	BOOST_CHECK_CLOSE(light.get_radius(), -897.0f, 0.001);

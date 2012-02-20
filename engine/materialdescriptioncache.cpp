@@ -43,6 +43,13 @@ namespace eternal_lands
 			<< errinfo_item_name(name));
 	}
 
+	bool MaterialDescriptionCache::get_has_material_description(
+		const String &name) const
+	{
+		return m_material_description_cache.find(name) !=
+			m_material_description_cache.end();
+	}
+
 	void MaterialDescriptionCache::load_xml(const xmlNodePtr node)
 	{
 		String name;

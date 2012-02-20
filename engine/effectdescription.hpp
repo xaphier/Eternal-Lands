@@ -42,6 +42,7 @@ namespace eternal_lands
 			bool m_receives_shadows;
 			bool m_transparent;
 			bool m_lighting;
+			bool m_billboard;
 
 		public:
 			/**
@@ -60,51 +61,6 @@ namespace eternal_lands
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
-
-			inline const String &get_world_transformation() const
-			{
-				return m_world_transformation;
-			}
-
-			inline const String &get_texture_coodrinates() const
-			{
-				return m_texture_coodrinates;
-			}
-
-			inline const String &get_albedo_mapping() const
-			{
-				return m_albedo_mapping;
-			}
-
-			inline const String &get_normal_mapping() const
-			{
-				return m_normal_mapping;
-			}
-
-			inline const String &get_specular_mapping() const
-			{
-				return m_specular_mapping;
-			}
-
-			inline const String &get_emission_mapping() const
-			{
-				return m_emission_mapping;
-			}
-
-			inline bool get_receives_shadows() const
-			{
-				return m_receives_shadows;
-			}
-
-			inline bool get_transparent() const
-			{
-				return m_transparent;
-			}
-
-			inline bool get_lighting() const
-			{
-				return m_lighting;
-			}
 
 			inline void set_world_transformation(
 				const String &world_transformation)
@@ -156,6 +112,61 @@ namespace eternal_lands
 			inline void set_lighting(const bool lighting)
 			{
 				m_lighting = lighting;
+			}
+
+			inline void set_billboard(const bool billboard)
+			{
+				m_billboard = billboard;
+			}
+
+			inline const String &get_world_transformation() const
+			{
+				return m_world_transformation;
+			}
+
+			inline const String &get_texture_coodrinates() const
+			{
+				return m_texture_coodrinates;
+			}
+
+			inline const String &get_albedo_mapping() const
+			{
+				return m_albedo_mapping;
+			}
+
+			inline const String &get_normal_mapping() const
+			{
+				return m_normal_mapping;
+			}
+
+			inline const String &get_specular_mapping() const
+			{
+				return m_specular_mapping;
+			}
+
+			inline const String &get_emission_mapping() const
+			{
+				return m_emission_mapping;
+			}
+
+			inline bool get_receives_shadows() const
+			{
+				return m_receives_shadows;
+			}
+
+			inline bool get_transparent() const
+			{
+				return m_transparent;
+			}
+
+			inline bool get_lighting() const
+			{
+				return m_lighting;
+			}
+
+			inline bool get_billboard() const
+			{
+				return m_billboard;
 			}
 
 	};

@@ -10,12 +10,10 @@
 namespace eternal_lands
 {
 
-	Light::Light(const glm::vec3 &position, const glm::vec3 &color,
-		const float radius, const Uint32 id): m_position(position),
-		m_color(color), m_radius(radius), m_inv_sqr_radius(0.0f),
-		m_id(id)
+	Light::Light(const LightData &light_data): m_light_data(light_data),
+		m_inv_sqr_radius(0.0f)
 	{
-		set_inv_sqr_radius(radius);
+		set_inv_sqr_radius(get_radius());
 		update_bounding_box();
 	}
 
@@ -49,4 +47,3 @@ namespace eternal_lands
 	}
 
 }
-

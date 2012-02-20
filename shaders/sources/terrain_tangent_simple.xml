@@ -50,7 +50,8 @@
    </parameters>
    <source>world_position = position.xyz;
 world_position.z *= terrain_height_scale;
-world_normal = normal;
+world_normal.xy = normal.xy;
+world_normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 world_tangent = tangent;
 
 world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);

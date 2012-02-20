@@ -30,14 +30,18 @@ namespace eternal_lands
 	class FreeIds
 	{
 		private:
-			Uint32Set m_free_ids;
-			Uint32 m_next_free_id;
+			Uint32Set m_free_typeless_ids;
+			Uint32 m_next_free_typeless_id;
+			Uint16 m_type;
+
+			static const Uint32 m_typeless_id_mask = 0x00FFFFFF;
+			static const Uint32 m_type_shift = 24;
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			FreeIds();
+			FreeIds(const Uint16 type = 0);
 
 			/**
 			 * Default destructor.
@@ -46,15 +50,44 @@ namespace eternal_lands
 
 			void clear();
 
-			void set_next_free_id(const Uint32 id);
-
 			Uint32 get_next_free_id();
 
 			void free_id(const Uint32 id);
+
+			void free_typeless_id(const Uint32 typeless_id);
+
+			void use_id(const Uint32 id);
+
+			inline Uint32 get_id(const Uint32 typeless_id) const
+			{
+				return (typeless_id & m_typeless_id_mask) |
+					(static_cast<Uint32>(m_type) <<
+						m_type_shift);
+			}
+
+			Uint32 use_typeless_id(const Uint32 typeless_id)
+			{
+				Uint32 id;
+
+				id = get_id(typeless_id);
+
+				use_id(id);
+
+				return id;
+			}
+
+			static inline Uint16 get_type_value(const Uint32 id)
+			{
+				return id >> m_type_shift;
+			}
+
+			static inline Uint32 get_typeless_id(const Uint32 id)
+			{
+				return id & m_typeless_id_mask;
+			}
 
 	};
 
 }
 
 #endif	/* UUID_e45574d7_2427_4327_b6c2_d1b4778579d5 */
-

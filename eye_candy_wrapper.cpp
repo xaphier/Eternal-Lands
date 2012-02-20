@@ -1034,7 +1034,7 @@ extern "C" int ec_change_target(ec_reference reference, int index, float x, floa
 	return true;
 }
 
-extern "C" ec_reference ec_create_effect_from_map_code(char* code, float x, float y, float z, int LOD)
+extern "C" ec_reference ec_create_effect_from_map_code(const char* code, float x, float y, float z, int LOD)
 {
 	unsigned char raw_code[54];
 	const unsigned char*const code2 = (const unsigned char*const) code;

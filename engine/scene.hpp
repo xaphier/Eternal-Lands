@@ -41,7 +41,7 @@ namespace eternal_lands
 			typedef std::vector<PairUint32SelectionType>
 				PairUint32SelectionTypeVector;
 
-			boost::array<GLuint, 0x10000> m_querie_ids;
+			boost::array<GLuint, 0x40000> m_querie_ids;
 			GlobalVarsSharedPtr m_global_vars;
 			FileSystemSharedPtr m_file_system;
 			SceneResources m_scene_resources;
@@ -60,6 +60,7 @@ namespace eternal_lands
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
+			FreeIdsManagerSharedPtr m_free_ids;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
 			float m_time;
@@ -124,9 +125,7 @@ namespace eternal_lands
 			void remove_object(const Uint32 id);
 			bool get_object_position(const Uint32 id,
 				glm::vec3 &position);
-			void add_light(const glm::vec3 &position,
-				const glm::vec3 &color, const float radius,
-				const Uint32 id);
+			void add_light(const LightData &light_data);
 			void remove_light(const Uint32 id);
 			void set_fog(const glm::vec3 &color,
 				const float density);
@@ -140,6 +139,12 @@ namespace eternal_lands
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
 				SelectionType &selection);
+			void load(const String &name);
+			const ParticleDataVector &get_particles() const;
+			Uint16 get_height(const Uint16 x, const Uint16 y) const;
+			Uint16 get_tile(const Uint16 x, const Uint16 y) const;
+			glm::uvec2 get_height_map_size() const;
+			glm::uvec2 get_tile_map_size() const;
 
 			inline void shadow_map_change()
 			{
@@ -241,6 +246,12 @@ namespace eternal_lands
 			inline SceneResources &get_scene_resources()
 			{
 				return m_scene_resources;
+			}
+
+			inline const FreeIdsManagerSharedPtr &get_free_ids()
+				const
+			{
+				return m_free_ids;
 			}
 
 	};

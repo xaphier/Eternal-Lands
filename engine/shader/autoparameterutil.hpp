@@ -30,8 +30,24 @@ namespace eternal_lands
 	 */
 	enum AutoParameterType
 	{
+		/**
+		 * 2x4 matrix with
+		 * { { translate_x, translate_y, translate_z, scale},
+		 * { rotation_quaternion_x, rotation_quaternion_y,
+		 * rotation_quaternion_z, rotation_quaternion_w } }
+		 */
 		apt_world_transformation = 0,
+		/**
+		 * 3x3 matrix with only the rotation part of the view matrix
+		 */
+		apt_view_rotation_matrix,
+		/**
+		 * 4x4 scene view matrix
+		 */
 		apt_view_matrix,
+		/**
+		 * 4x4 scene projection matrix
+		 */
 		apt_projection_matrix,
 		apt_projection_view_matrix,	
 		apt_reflection_matrix,

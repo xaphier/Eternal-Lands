@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "basicterrainmanager.hpp"
+#include "abstractterrainmanager.hpp"
 
 /**
  * @file
@@ -23,7 +23,7 @@
 namespace eternal_lands
 {
 
-	class SimpleTerrainManager: public BasicTerrainManager
+	class SimpleTerrainManager: public AbstractTerrainManager
 	{
 		private:
 			boost::scoped_ptr<RStarTree> m_object_tree;
@@ -51,7 +51,20 @@ namespace eternal_lands
 				const MeshBuilderSharedPtr &mesh_builder,
 				const EffectCacheSharedPtr &effect_cache,
 				const TextureCacheSharedPtr &texture_cache,
-				const String &name);
+				const String &file_name);
+			SimpleTerrainManager(
+				const CodecManagerSharedPtr &codec_manager,
+				const FileSystemSharedPtr &file_system,
+				const GlobalVarsSharedPtr &global_vars,
+				const MeshBuilderSharedPtr &mesh_builder,
+				const EffectCacheSharedPtr &effect_cache,
+				const TextureCacheSharedPtr &texture_cache,
+				const Transformation &transformation,
+				const StringArray4 &albedo_maps,
+				const String &blend_map,
+				const String &height_map,
+				const String &dvdu_map);
+
 			virtual ~SimpleTerrainManager() throw();
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;

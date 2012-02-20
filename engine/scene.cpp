@@ -34,6 +34,8 @@
 #include "texture.hpp"
 #include "convexbody.hpp"
 #include "materialeffect.hpp"
+#include "loader/maploader.hpp"
+#include "freeidsmanager.hpp"
 
 #include "../client_serv.h"
 
@@ -76,6 +78,8 @@ namespace eternal_lands
 		set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
 		set_main_light_color(glm::vec3(0.2f));
 		set_main_light_ambient(glm::vec3(0.2f));
+
+		m_free_ids = boost::make_shared<FreeIdsManager>();
 	}
 
 	Scene::~Scene() throw()
@@ -136,10 +140,9 @@ namespace eternal_lands
 		return m_map->get_object_position(id, position);
 	}
 
-	void Scene::add_light(const glm::vec3 &position, const glm::vec3 &color,
-		const float radius, const Uint32 id)
+	void Scene::add_light(const LightData &light_data)
 	{
-		m_map->add_light(position, color, radius, id);
+		m_map->add_light(light_data);
 	}
 
 	void Scene::remove_light(const Uint32 id)
@@ -222,8 +225,9 @@ namespace eternal_lands
 
 	void Scene::clear()
 	{
-		m_map->clear();
+		m_map.reset();
 		m_actors.clear();
+		m_free_ids->clear();
 	}
 
 	void Scene::get_lights(const BoundingBox &bounding_box,
@@ -501,8 +505,10 @@ namespace eternal_lands
 		if (m_program_vars_id != program->get_last_used())
 		{
 			program->set_parameter(apt_view_matrix,
-				m_scene_view.get_current_view_matrix(),
-				layer);
+				m_scene_view.get_current_view_matrix());
+			program->set_parameter(apt_view_rotation_matrix,
+				m_scene_view.get_current_view_rotation_matrix()
+				);
 			program->set_parameter(apt_projection_matrix,
 				m_scene_view.get_current_projection_matrix(),
 				layer);
@@ -520,7 +526,7 @@ namespace eternal_lands
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 			program->set_parameter(apt_terrain_height_scale,
-				m_map->get_terrain_height_scale());
+				0.1f / 257.0f);
 
 			if (m_map->get_dungeon())
 			{
@@ -1077,6 +1083,51 @@ namespace eternal_lands
 		CHECK_GL_ERROR();
 
 		return id;
+	}
+
+	void Scene::load(const String &name)
+	{
+		boost::scoped_ptr<MapLoader> map_loader;
+
+		clear();
+
+		map_loader.reset(new MapLoader(
+			m_scene_resources.get_codec_manager(),
+			m_file_system, m_global_vars,
+			m_scene_resources.get_mesh_builder(),
+			m_scene_resources.get_mesh_cache(),
+			m_scene_resources.get_mesh_data_cache(),
+			m_scene_resources.get_effect_cache(),
+			m_scene_resources.get_texture_cache(),
+			m_scene_resources.get_material_description_cache(),
+			m_free_ids));
+
+		m_map = map_loader->load(name);
+	}
+
+	const ParticleDataVector &Scene::get_particles() const
+	{
+		return m_map->get_particles();
+	}
+
+	Uint16 Scene::get_height(const Uint16 x, const Uint16 y) const
+	{
+		return m_map->get_height(x, y);
+	}
+
+	Uint16 Scene::get_tile(const Uint16 x, const Uint16 y) const
+	{
+		return m_map->get_tile(x, y);
+	}
+
+	glm::uvec2 Scene::get_height_map_size() const
+	{
+		return m_map->get_height_map_size();
+	}
+
+	glm::uvec2 Scene::get_tile_map_size() const
+	{
+		return m_map->get_tile_map_size();
 	}
 
 }

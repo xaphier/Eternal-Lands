@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "vertexelement.hpp"
+#include "exceptions.hpp"
 
 /**
  * @file
@@ -63,14 +64,16 @@ namespace eternal_lands
 			inline const VertexStream &get_stream(
 				const Uint32 index) const
 			{
-				assert(index < m_streams.size());
+				RANGE_CECK(index, m_streams.size(),
+					UTF8("index value too big"));
 
 				return m_streams[index];
 			}
 
 			inline VertexStream &get_streams(const Uint32 index)
 			{
-				assert(index < m_streams.size());
+				RANGE_CECK(index, m_streams.size(),
+					UTF8("index value too big"));
 
 				return m_streams[index];
 			}
