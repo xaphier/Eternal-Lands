@@ -199,9 +199,9 @@ namespace eternal_lands
 		material_count = get_reader()->read_u32_le();
 		material_index = get_reader()->read_u32_le();
 
-		LOG_DEBUG("Adding 3d object (%1%) '%2%' at <%3%> with "
+		LOG_DEBUG(UTF8("Adding 3d object (%1%) '%2%' at <%3%> with "
 			"rotation <%4%>, left lit %5%, blended %6% and "
-			"color <%7%>.", index % name %
+			"color <%7%>."), index % name %
 			glm::to_string(translation) %
 			glm::to_string(rotation_angles) % self_lit % blended %
 			glm::to_string(color));
@@ -257,6 +257,11 @@ namespace eternal_lands
 
 		id = get_free_ids().use_typeless_id(index, it_2d_object);
 
+		LOG_DEBUG(UTF8("Adding 2d object (%1%) '%2%' at <%3%> with "
+			"rotation <%4%>."), index % name %
+			glm::to_string(translation) %
+			glm::to_string(rotation_angles));
+
 		add_object(translation, rotation_angles, name, 1.0f,
 			0.0f, id, false, st_none, material_names);
 	}
@@ -264,7 +269,7 @@ namespace eternal_lands
 	void MapLoader::read_light(const Uint32 index, const Uint32 offset)
 	{
 		glm::vec3 color, position;
-		float radius;
+		float radius, scale;
 
 		get_reader()->set_position(offset);
 
@@ -277,6 +282,19 @@ namespace eternal_lands
 		color.b = get_reader()->read_float_le();
 
 		radius = get_reader()->read_float_le();
+
+		if (true)
+		{
+			scale = std::max(std::max(color.r, color.g),
+				std::max(color.b, 1.0f));
+			color /= scale;
+			radius = 5.0f * scale;
+		}
+
+		LOG_DEBUG(UTF8("Adding light (%1%) at <%2%> with "
+			"color <%3%> and radius %4%."), index %
+			glm::to_string(position) %
+			glm::to_string(color) % radius);
 
 		add_light(position, color, radius, index);
 	}

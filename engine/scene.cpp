@@ -42,6 +42,28 @@
 namespace eternal_lands
 {
 
+#ifdef	DEBUG
+#define	STRING_MARKER(description, arguments)	\
+	do	\
+	{	\
+		if (GLEW_GREMEDY_string_marker)	\
+		{	\
+			BoostFormat format_string(description);	\
+			\
+			format_string % arguments;	\
+			\
+			glStringMarkerGREMEDY(0, format_string.str().c_str());	\
+		}	\
+	}	\
+	while (false)
+#else
+#define	STRING_MARKER(description, arguments)	\
+	do	\
+	{	\
+	}	\
+	while (false)
+#endif
+
 	namespace
 	{
 
@@ -546,6 +568,9 @@ namespace eternal_lands
 		Uint16 count, material, mesh, i, lod;
 		bool object_data_set;
 
+		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
+			object->get_name() % object->get_mesh()->get_name());
+
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		lod = object->get_lod(distance);
@@ -614,6 +639,9 @@ namespace eternal_lands
 		Uint16 count, material, mesh, i, lod;
 		bool object_data_set;
 
+		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
+			object->get_name() % object->get_mesh()->get_name());
+
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		lod = object->get_lod(distance);
@@ -667,6 +695,9 @@ namespace eternal_lands
 		Uint16 count, material, mesh, i, lod;
 		bool object_data_set;
 
+		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
+			object->get_name() % object->get_mesh()->get_name());
+
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		lod = object->get_lod(distance);
@@ -710,6 +741,8 @@ namespace eternal_lands
 	void Scene::draw_shadows(const Uint16 index)
 	{
 		DEBUG_CHECK_GL_ERROR();
+
+		STRING_MARKER(UTF8("drawing shadows %1%"), index);
 
 		m_state_manager.switch_polygon_offset_fill(
 			!m_scene_view.get_exponential_shadow_maps());
@@ -903,6 +936,8 @@ namespace eternal_lands
 
 		m_scene_view.set_default_view();
 
+		STRING_MARKER(UTF8("drawing mode '%1'%"), UTF8("default"));
+
 		m_state_manager.switch_multisample(true);
 
 		DEBUG_CHECK_GL_ERROR();
@@ -977,6 +1012,8 @@ namespace eternal_lands
 				continue;
 			}
 
+			STRING_MARKER(UTF8("sub object index '%1%'"), i);
+
 			data.first = object->get_sub_objects()[i].get_id();
 			data.second = object->get_sub_objects(
 				)[i].get_selection();
@@ -1023,6 +1060,8 @@ namespace eternal_lands
 		PairUint32SelectionTypeVector ids;
 		Uint32 i, max_count, count, id;
 		StateManagerUtil state(m_state_manager);
+
+		STRING_MARKER(UTF8("drawing mode '%1'%"), UTF8("picking"));
 
 		m_state_manager.unbind_all();
 		m_state_manager.switch_scissor_test(true);
