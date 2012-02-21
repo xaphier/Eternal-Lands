@@ -3,7 +3,7 @@
 	<shadow_scale>0.8</shadow_scale>
 	<vertex_light_count>5</vertex_light_count>
 	<fragment_light_count>3</fragment_light_count>
-	<bone_count>35</bone_count>
+	<bone_count>80</bone_count>
 	<dynamic_light_count>false</dynamic_light_count>
 	<shader_sources>
 		<shader_source>shaders/sources/bone_animation_depth.xml</shader_source>
