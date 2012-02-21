@@ -134,8 +134,6 @@ namespace eternal_lands
 			void draw_debug();
 			void init(const FileSystemSharedPtr &file_system);
 			void cull();
-			void load(const String &name, const glm::vec3 &ambient,
-				const bool dungeon);
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
 				SelectionType &selection);
@@ -145,6 +143,8 @@ namespace eternal_lands
 			Uint16 get_tile(const Uint16 x, const Uint16 y) const;
 			glm::uvec2 get_height_map_size() const;
 			glm::uvec2 get_tile_map_size() const;
+			bool get_dungeon() const;
+			const glm::vec4 &get_ambient() const;
 
 			inline void shadow_map_change()
 			{

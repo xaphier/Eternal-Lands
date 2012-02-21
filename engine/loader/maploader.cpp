@@ -599,6 +599,8 @@ namespace eternal_lands
 
 		LOG_DEBUG(UTF8("dungeon %1%."), dungeon);
 
+		set_dungeon(dungeon);
+
 		get_reader()->skip(sizeof(Uint8));
 
 		version_number[0] = get_reader()->read_u8();
@@ -975,6 +977,11 @@ namespace eternal_lands
 		const Uint16 height)
 	{
 		m_map->set_tile_map_size(width, height);
+	}
+
+	void MapLoader::set_dungeon(const bool dungeon)
+	{
+		m_map->set_dungeon(dungeon);
 	}
 
 }

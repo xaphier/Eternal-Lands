@@ -22,6 +22,7 @@
 #include "colors.h"
 #include "particles.h"
 #include "io/elpathwrapper.h"
+#include "map.h"
 #include <sstream>
 #include "engine/scene.hpp"
 #include "engine/actor.hpp"
@@ -649,6 +650,19 @@ extern "C" Uint32 engine_load_map(const char* name)
 		scene->load(el::String(el::utf8_to_string(name)));
 
 		CHECK_GL_ERROR();
+
+		if (scene->get_dungeon())
+		{
+			dungeon = 1;
+		}
+		else
+		{
+			dungeon = 0;
+		}
+
+		ambient_r = scene->get_ambient().r;
+		ambient_g = scene->get_ambient().g;
+		ambient_b = scene->get_ambient().b;
 
 		size = scene->get_tile_map_size();
 

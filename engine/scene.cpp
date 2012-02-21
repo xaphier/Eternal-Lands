@@ -208,21 +208,6 @@ namespace eternal_lands
 				get_global_vars()->get_use_layered_rendering());
 	}
 
-	void Scene::load(const String &name, const glm::vec3 &ambient,
-		const bool dungeon)
-	{
-		m_map.reset(new Map(m_scene_resources.get_codec_manager(),
-			m_file_system, m_global_vars,
-			m_scene_resources.get_mesh_builder(),
-			m_scene_resources.get_mesh_cache(),
-			m_scene_resources.get_effect_cache(),
-			m_scene_resources.get_texture_cache(),
-			m_scene_resources.get_material_description_cache(),
-			name));
-
-		m_map->load(ambient, dungeon);
-	}
-
 	void Scene::clear()
 	{
 		m_map.reset();
@@ -1128,6 +1113,16 @@ namespace eternal_lands
 	glm::uvec2 Scene::get_tile_map_size() const
 	{
 		return m_map->get_tile_map_size();
+	}
+
+	bool Scene::get_dungeon() const
+	{
+		return m_map->get_dungeon();
+	}
+
+	const glm::vec4 &Scene::get_ambient() const
+	{
+		return m_map->get_ambient();
 	}
 
 }

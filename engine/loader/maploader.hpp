@@ -187,6 +187,7 @@ namespace eternal_lands
 				const Uint16 height);
 			virtual void set_tile_map_size(const Uint16 width,
 				const Uint16 height);
+			virtual void set_dungeon(const bool dungeon);
 			void instance();
 
 		public:

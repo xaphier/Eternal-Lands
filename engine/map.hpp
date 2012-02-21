@@ -140,8 +140,6 @@ namespace eternal_lands
 			void add_light(const LightData &light_data);
 			void remove_light(const Uint32 id);
 			void clear();
-			void load(const glm::vec3 &ambient,
-				const bool dungeon);
 			void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
 			void intersect(const Frustum &frustum,

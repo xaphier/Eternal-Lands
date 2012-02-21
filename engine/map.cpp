@@ -227,14 +227,6 @@ namespace eternal_lands
 		}
 	}
 
-	void Map::load(const glm::vec3 &ambient, const bool dungeon)
-	{
-		set_dungeon(dungeon);
-		set_ambient(ambient);
-
-		clear();
-	}
-
 	void Map::clear()
 	{
 		m_light_tree->clear();
