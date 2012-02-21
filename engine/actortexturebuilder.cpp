@@ -548,7 +548,7 @@ namespace eternal_lands
 		}
 
 		m_alphas.reset();
-		compressed = GLEW_EXT_texture_compression_s3tc;
+		compressed = m_global_vars->get_use_s3tc_for_actors();
 
 		if (parts[aptt_pants_tex].get() != 0)
 		{
@@ -849,7 +849,7 @@ namespace eternal_lands
 
 		m_scale = 4;
 		m_size = 128 * m_scale;
-		m_compression = GLEW_EXT_texture_compression_s3tc;
+		m_compression = m_global_vars->get_use_s3tc_for_actors();
 		m_alphas.reset();
 
 		m_texture = boost::make_shared<Texture>(name);

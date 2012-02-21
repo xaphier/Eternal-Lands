@@ -39,10 +39,75 @@ namespace eternal_lands
 		boost::split(lines, get_source().get(), boost::is_any_of(
 			UTF8("\n")), boost::token_compress_on);
 
+		stream << indent << UTF8("{") << std::endl;
+
 		BOOST_FOREACH(const StringType &line, lines)
 		{
-			stream << indent << line << std::endl;
+			stream << indent << UTF8("\t") << line << std::endl;
 		}
+
+		stream << indent << UTF8("}") << std::endl;
+
+		BOOST_FOREACH(const ShaderSourceParameter &parameter,
+			get_parameters())
+		{
+			ShaderSourceParameterBuilder::add_parameter(parameter,
+				locals, globals);
+		}
+	}
+
+	void ShaderSourceData::build_function_use(const String &indent,
+		const String &name, const String &parameter_prefix,
+		OutStream &stream) const
+	{
+		bool first;
+
+		stream << indent << name << UTF8("(");
+
+		first = true;
+
+		BOOST_FOREACH(const ShaderSourceParameter &parameter,
+			get_parameters())
+		{
+			parameter.write_name(parameter_prefix, stream, first);
+		}
+
+		stream << UTF8(");") << std::endl;
+	}
+
+	void ShaderSourceData::build_function_source(
+		const ShaderSourceParameterVector &locals,
+		const ParameterSizeTypeUint16Map &sizes, const String &indent,
+		const String &name, OutStream &stream,
+		ShaderSourceParameterVector &globals) const
+	{
+		StringTypeVector lines;
+		bool first;
+
+		stream << indent << UTF8("void ") << name << UTF8("(");
+
+		first = true;
+
+		BOOST_FOREACH(const ShaderSourceParameter &parameter,
+			get_parameters())
+		{
+			parameter.write_parameter(String(UTF8("")), sizes,
+				stream, first);
+		}
+
+		stream << UTF8(")") << std::endl;
+
+		boost::split(lines, get_source().get(), boost::is_any_of(
+			UTF8("\n")), boost::token_compress_on);
+
+		stream << indent << UTF8("{") << std::endl;
+
+		BOOST_FOREACH(const StringType &line, lines)
+		{
+			stream << indent << UTF8("\t") << line << std::endl;
+		}
+
+		stream << indent << UTF8("}") << std::endl;
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
 			get_parameters())
@@ -177,6 +242,21 @@ namespace eternal_lands
 		const ShaderSourceParameterVector &parameters)
 	{
 		m_parameters = parameters;
+	}
+
+	void ShaderSourceData::build_function(
+		const ShaderSourceParameterVector &locals,
+		const ParameterSizeTypeUint16Map &sizes, const String &indent,
+		const String &name, const String &parameter_prefix,
+		const String &use_indent, OutStream &stream,
+		OutStream &function, ShaderSourceParameterVector &globals)
+		const
+	{
+		build_function_source(locals, sizes, indent, name,
+			function, globals);
+
+		build_function_use(use_indent, name, parameter_prefix,
+			stream);
 	}
 
 }

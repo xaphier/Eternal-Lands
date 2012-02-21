@@ -195,6 +195,24 @@ namespace eternal_lands
 		get_data(type).build_source(locals, indent, stream, globals);
 	}
 
+	void ShaderSource::build_function(const ShaderVersionType &type,
+		const ShaderSourceParameterVector &locals,
+		const ParameterSizeTypeUint16Map &sizes,
+		const String &indent, const String &parameter_prefix,
+		const String &use_indent, OutStream &stream,
+		OutStream &function, ShaderSourceParameterVector &globals) const
+	{
+		function << indent << UTF8("/* ") << get_typed_name();
+		function << UTF8(" */\n");
+
+		stream << use_indent << UTF8("/* ") << get_typed_name();
+		stream << UTF8(" */\n");
+
+		get_data(type).build_function(locals, sizes, indent,
+			get_typed_name(), parameter_prefix, use_indent, stream,
+			function, globals);
+	}
+
 	bool ShaderSource::check_source_parameter(
 		const ShaderVersionType &type, const String &name) const
 	{

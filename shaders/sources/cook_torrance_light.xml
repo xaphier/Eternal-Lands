@@ -56,72 +56,70 @@
     </parameter>
    </parameters>
    <source>{    
-	vec3 dir, reflect_dir;
-	float dist, scale, nxdir, diffuse, specular, hxdir;
+vec3 dir, reflect_dir;
+float dist, scale, nxdir, diffuse, specular, hxdir;
 
-	dir = light_position.xyz - world_position * light_color.a;
-	dist = dot(dir, dir);
-	dir = normalize(dir);
-	scale = max(0.0, 1.0 - dist * light_position.w);
+dir = light_position.xyz - world_position * light_color.a;
+dist = dot(dir, dir);
+dir = normalize(dir);
+scale = max(0.0, 1.0 - dist * light_position.w);
 
-	float roughness_value = 0.9;
-	float ref_at_norm_incidence = 0.4;
+float roughness_value = 0.9;
+float ref_at_norm_incidence = 0.4;
 
-    // Compute any aliases and intermediary values
-    // -------------------------------------------
-    vec3 half_vector = normalize( dir + -world_view_direction.xyz );
-    float NdotL        = max(0.0, dot( fragment_normal, dir ) );
-    float NdotH        = max(0.0, dot( fragment_normal, half_vector ) );
-    float NdotV        = max(0.0, dot( fragment_normal, -world_view_direction.xyz ) );
-    float VdotH        = max(0.0, dot( -world_view_direction.xyz, half_vector ) );
-    float r_sq         = roughness_value * roughness_value;
+// Compute any aliases and intermediary values
+// -------------------------------------------
+vec3 half_vector = normalize( dir + -world_view_direction.xyz );
+float NdotL        = max(0.0, dot( fragment_normal, dir ) );
+float NdotH        = max(0.0, dot( fragment_normal, half_vector ) );
+float NdotV        = max(0.0, dot( fragment_normal, -world_view_direction.xyz ) );
+float VdotH        = max(0.0, dot( -world_view_direction.xyz, half_vector ) );
+float r_sq         = roughness_value * roughness_value;
  
  
  
-    // Evaluate the geometric term
-    // --------------------------------
-    float geo_numerator   = 2.0 * NdotH;
-    float geo_denominator = VdotH;
+// Evaluate the geometric term
+// --------------------------------
+float geo_numerator   = 2.0 * NdotH;
+float geo_denominator = VdotH;
  
-    float geo_b = (geo_numerator * NdotV ) / geo_denominator;
-    float geo_c = (geo_numerator * NdotL ) / geo_denominator;
-    float geo   = min(1.0, min( geo_b, geo_c ) );
- 
- 
- 
-    // Now evaluate the roughness term
-    // -------------------------------
-    float roughness;
- 
-    {        
-        float roughness_a = 1.0 / ( 4.0 * r_sq * pow( NdotH, 4 ) );
-        float roughness_b = NdotH * NdotH - 1.0;
-        float roughness_c = r_sq * NdotH * NdotH;
- 
-        roughness = roughness_a * exp( roughness_b / roughness_c );
-    }
- 
-    // Next evaluate the Fresnel value
-    // -------------------------------
-    float fresnel = pow(1.0 - VdotH, 5.0);
-    fresnel *= ( 1.0 - ref_at_norm_incidence );
-    fresnel += ref_at_norm_incidence;
+float geo_b = (geo_numerator * NdotV ) / geo_denominator;
+float geo_c = (geo_numerator * NdotL ) / geo_denominator;
+float geo   = min(1.0, min( geo_b, geo_c ) );
  
  
  
-    // Put all the terms together to compute
-    // the specular term in the equation
-    // -------------------------------------
-    float Rs_numerator   = ( fresnel * geo * roughness );
-    float Rs_denominator  = NdotV * NdotL;
-    float Rs             = Rs_numerator/ Rs_denominator;
+// Now evaluate the roughness term
+// -------------------------------
+float roughness;
  
-    // Put all the parts together to generate
-    // the final colour
-    // --------------------------------------
-	diffuse_color = light_color.rgb * NdotL * scale;
-	specular_color = light_color.rgb * NdotL * Rs * scale;
- }</source>
+float roughness_a = 1.0 / ( 4.0 * r_sq * pow( NdotH, 4 ) );
+float roughness_b = NdotH * NdotH - 1.0;
+float roughness_c = r_sq * NdotH * NdotH;
+ 
+roughness = roughness_a * exp( roughness_b / roughness_c );
+ 
+// Next evaluate the Fresnel value
+// -------------------------------
+float fresnel = pow(1.0 - VdotH, 5.0);
+fresnel *= ( 1.0 - ref_at_norm_incidence );
+fresnel += ref_at_norm_incidence;
+ 
+ 
+ 
+// Put all the terms together to compute
+// the specular term in the equation
+// -------------------------------------
+float Rs_numerator   = ( fresnel * geo * roughness );
+float Rs_denominator  = NdotV * NdotL;
+float Rs             = Rs_numerator/ Rs_denominator;
+ 
+// Put all the parts together to generate
+// the final colour
+// --------------------------------------
+diffuse_color = light_color.rgb * NdotL * scale;
+specular_color = light_color.rgb * NdotL * Rs * scale;
+</source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>

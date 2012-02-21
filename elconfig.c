@@ -197,8 +197,10 @@ int engine_use_simd = engine_true;
 int engine_use_block = engine_true;
 int engine_use_alias = engine_false;
 int engine_use_in_out = engine_true;
+int engine_use_functions = engine_false;
 int engine_use_layered_rendering = engine_false;
 int engine_low_quality_terrain = engine_false;
+int engine_use_s3tc_for_actors = engine_true;
 #ifdef	DEBUG
 int engine_draw_objects = engine_true;
 int engine_draw_actors = engine_true;
@@ -261,6 +263,30 @@ void change_engine_fog(int* var)
 	engine_set_fog(*var);
 }
 
+void change_engine_use_s3tc_for_actors(int* var)
+{
+	if (*var)
+	{
+		*var = engine_false;
+		engine_set_use_s3tc_for_actors(*var);
+	}
+	else
+	{
+		if (!gl_extensions_loaded || GLEW_EXT_texture_compression_s3tc)
+		{
+			*var = engine_true;
+			engine_set_use_s3tc_for_actors(*var);
+		}
+		else
+		{
+			*var = engine_false;
+			engine_set_use_s3tc_for_actors(*var);
+			LOG_TO_CONSOLE(c_green2,
+				"GL_EXT_texture_compression_s3tc needed");
+		}
+	}
+}
+
 void change_engine_set_use_block(int* var)
 {
 	*var = !*var;
@@ -277,6 +303,12 @@ void change_engine_set_use_in_out(int* var)
 {
 	*var = !*var;
 	engine_set_use_in_out(*var);
+}
+
+void change_engine_set_use_functions(int* var)
+{
+	*var = !*var;
+	engine_set_use_functions(*var);
 }
 
 void change_engine_set_use_layered_rendering(int* var)
@@ -1922,12 +1954,14 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "use_block", "use_block", &engine_use_block, change_engine_set_use_block, engine_true, "Use block", "Use interface block in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_alias", "use_alias", &engine_use_alias, change_engine_set_use_alias, engine_false, "Use alias", "Use alias in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_in_out", "use_in_out", &engine_use_in_out, change_engine_set_use_in_out, engine_true, "Use in/out", "Use in/out in shaders", TROUBLESHOOT);
+	add_var(OPT_BOOL, "use_functions", "use_functions", &engine_use_functions, change_engine_set_use_functions, engine_false, "Use functions", "Use functions in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_layered_rendering", "use_layered_rendering", &engine_use_layered_rendering, change_engine_set_use_layered_rendering, engine_false, "Use layered rendering", "Use layered rendering in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &engine_optmize_shader_source, change_engine_optmize_shader_source, engine_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
 	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &engine_opengl_version, change_engine_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", 0);
 #ifdef	USE_SSE2
 	add_var(OPT_BOOL, "use_simd", "simd", &engine_use_simd, change_engine_use_simd, engine_true, "Use SIMD", "Use Intel SIMD instructions (SSE2).", TROUBLESHOOT);
 #endif	/* USE_SSE2 */
+	add_var(OPT_BOOL, "use_s3tc_for_actors", "uatc", &engine_use_s3tc_for_actors, change_engine_use_s3tc_for_actors, engine_true, "Use s3tc for actors", "Use s3 texture compression for actors.", TROUBLESHOOT);
 
 	// DEBUGTAB TAB
 #ifdef DEBUG

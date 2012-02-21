@@ -112,21 +112,18 @@ world_position += world_transformation[1].xyz;
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	vec2 wind, pos;
+   <source>vec2 wind, pos;
 
-	pos = position.xy * 0.1 + time * 0.2;
-	wind = (textureLod(albedo_sampler_1, pos, 0).xy - 0.5) * 0.1;
-	wind += texture_coordinate_0.xy;
+pos = position.xy * 0.1 + time * 0.2;
+wind = (textureLod(albedo_sampler_1, pos, 0).xy - 0.5) * 0.1;
+wind += texture_coordinate_0.xy;
 
-	world_position = position.xyz;
-	world_position += (texture_coordinate_0.x - 0.5) * transpose(view_rotation_matrix)[0] * 0.25 + (1.0 - texture_coordinate_0.y) * transpose(view_rotation_matrix)[1] *0.7;
-	world_position.xy += wind * (1.0 - texture_coordinate_0.y) * 0.5;
+world_position = position.xyz;
+world_position += (texture_coordinate_0.x - 0.5) * transpose(view_rotation_matrix)[0] * 0.25 + (1.0 - texture_coordinate_0.y) * transpose(view_rotation_matrix)[1] *0.7;
+world_position.xy += wind * (1.0 - texture_coordinate_0.y) * 0.5;
 
-	world_position *= world_transformation[1].w;
-	world_position += world_transformation[1].xyz;
-
-}
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
 </source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

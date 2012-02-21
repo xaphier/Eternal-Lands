@@ -1564,6 +1564,11 @@ extern "C" void engine_set_use_simd(const int value)
 #endif	/* USE_SSE2 */
 }
 
+extern "C" void engine_set_use_s3tc_for_actors(const int value)
+{
+	global_vars->set_use_s3tc_for_actors(value != 0);
+}
+
 extern "C" void engine_set_use_block(const int value)
 {
 	global_vars->set_use_block(value != 0);
@@ -1587,6 +1592,16 @@ extern "C" void engine_set_use_alias(const int value)
 extern "C" void engine_set_use_in_out(const int value)
 {
 	global_vars->set_use_in_out(value != 0);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload();
+	}
+}
+
+extern "C" void engine_set_use_functions(const int value)
+{
+	global_vars->set_use_functions(value != 0);
 
 	if (scene.get() != 0)
 	{

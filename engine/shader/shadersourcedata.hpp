@@ -33,6 +33,16 @@ namespace eternal_lands
 
 			void load_parameters_xml(const String &source,
 				const xmlNodePtr node);
+			void build_function_source(
+				const ShaderSourceParameterVector &locals,
+				const ParameterSizeTypeUint16Map &sizes,
+				const String &indent, const String &name,
+				OutStream &stream,
+				ShaderSourceParameterVector &globals) const;
+			void build_function_use(const String &indent,
+				const String &name,
+				const String &parameter_prefix,
+				OutStream &stream) const;
 
 		public:
 			ShaderSourceData();
@@ -49,6 +59,14 @@ namespace eternal_lands
 			bool check_source_parameter(const String &name) const;
 			void set_parameters(
 				const ShaderSourceParameterVector &parameters);
+			void build_function(
+				const ShaderSourceParameterVector &locals,
+				const ParameterSizeTypeUint16Map &sizes,
+				const String &indent, const String &name,
+				const String &parameter_prefix,
+				const String &use_indent, OutStream &stream,
+				OutStream &function,
+				ShaderSourceParameterVector &globals) const;
 
 			inline void set_source(const String &source)
 			{

@@ -55,28 +55,26 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	vec3 dir, reflect_dir;
-	float dist, scale, nxdir, diffuse, specular, hxdir;
+   <source>vec3 dir, reflect_dir;
+float dist, scale, nxdir, diffuse, specular, hxdir;
 
-	dir = light_position.xyz - world_position * light_color.a;
-	dist = dot(dir, dir);
-	dir = normalize(dir);
-	nxdir = max(0.0, dot(fragment_normal, dir));
-	scale = max(0.0, 1.0 - dist * light_position.w);
-	diffuse = scale * nxdir;
+dir = light_position.xyz - world_position * light_color.a;
+dist = dot(dir, dir);
+dir *= inversesqrt(dist);
+nxdir = max(0.0, dot(fragment_normal, dir));
+scale = max(0.0, 1.0 - dist * light_position.w);
+diffuse = scale * nxdir;
 
-	diffuse_color = vec3(0.0);
-	specular_color = vec3(0.0);
+diffuse_color = vec3(0.0);
+specular_color = vec3(0.0);
 
-	if (diffuse &gt; 0.0)
-	{
-		reflect_dir = reflect(-dir, fragment_normal);
-		hxdir = max(0.0, dot(-world_view_direction.xyz, reflect_dir));
-		specular = pow(hxdir, 5) * scale;
-		diffuse_color += light_color.rgb * diffuse;
-		specular_color += light_color.rgb * specular;
-	}
+if (diffuse &gt; 0.0)
+{
+	reflect_dir = reflect(-dir, fragment_normal);
+	hxdir = max(0.0, dot(-world_view_direction.xyz, reflect_dir));
+	specular = pow(hxdir, 5) * scale;
+	diffuse_color += light_color.rgb * diffuse;
+	specular_color += light_color.rgb * specular;
 }
 </source>
    <glsl_120>true</glsl_120>

@@ -49,6 +49,14 @@ namespace eternal_lands
 				const ShaderSourceParameterVector &locals, 
 				const String &indent, OutStream &stream,
 				ShaderSourceParameterVector &globals) const;
+			void build_function(const ShaderVersionType &type,
+				const ShaderSourceParameterVector &locals,
+				const ParameterSizeTypeUint16Map &sizes,
+				const String &indent,
+				const String &parameter_prefix,
+				const String &use_indent, OutStream &stream,
+				OutStream &function,
+				ShaderSourceParameterVector &globals) const;
 			bool check_source_parameter(
 				const ShaderVersionType &type,
 				const String &name) const;

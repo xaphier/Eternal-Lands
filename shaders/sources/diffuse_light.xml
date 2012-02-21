@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>world_position</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>fragment_normal</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>light_position</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -31,7 +28,6 @@
     </parameter>
     <parameter>
      <name>light_color</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -39,7 +35,6 @@
     </parameter>
     <parameter>
      <name>diffuse_color</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -47,28 +42,24 @@
     </parameter>
     <parameter>
      <name>specular_color</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	vec3 dir;
-	float dist, scale, nxdir;
+   <source>vec3 dir;
+float dist, scale, nxdir;
 
-	dir = light_position.xyz - world_position * light_color.a;
-	dist = dot(dir, dir);
-	dir = normalize(dir);
-//	nxdir = max(0.0, dot(fragment_normal, dir));
-	nxdir = dot(fragment_normal, dir);
-	nxdir = nxdir * 0.5 + 0.5;
-	nxdir *= nxdir;
-	scale = max(0.0, 1.0 - dist * light_position.w);
-	diffuse_color = light_color.rgb * scale * nxdir;
-	specular_color = vec3(0.0);
-}
+dir = light_position.xyz - world_position * light_color.a;
+dist = dot(dir, dir);
+dir *= inversesqrt(dist);
+nxdir = dot(fragment_normal, dir);
+nxdir = nxdir * 0.5 + 0.5;
+nxdir *= nxdir;
+scale = max(0.0, 1.0 - dist * light_position.w);
+diffuse_color = light_color.rgb * scale * nxdir;
+specular_color = vec3(0.0);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

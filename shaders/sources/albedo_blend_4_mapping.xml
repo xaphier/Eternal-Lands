@@ -62,16 +62,14 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	vec4 blend;
+   <source>vec4 blend;
 
-	blend = texture2D(blend_sampler_0, fragment_uv);
+blend = texture2D(blend_sampler_0, fragment_uv);
 
-	albedo = texture2D(albedo_sampler_0, world_extra_uv) * blend.r;
-	albedo += texture2D(albedo_sampler_1, world_extra_uv) * blend.g;
-	albedo += texture2D(albedo_sampler_2, world_extra_uv) * blend.b;
-	albedo += texture2D(albedo_sampler_3, world_extra_uv) * blend.a;
-}
+albedo = texture2D(albedo_sampler_0, world_extra_uv) * blend.r;
+albedo += texture2D(albedo_sampler_1, world_extra_uv) * blend.g;
+albedo += texture2D(albedo_sampler_2, world_extra_uv) * blend.b;
+albedo += texture2D(albedo_sampler_3, world_extra_uv) * blend.a;
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>false</glsl_130>
@@ -138,16 +136,14 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>{
-	vec4 blend;
+   <source>vec4 blend;
 
-	blend = texture(blend_sampler_0, fragment_uv);
+blend = texture(blend_sampler_0, fragment_uv);
 
-	albedo = texture(albedo_sampler_0, world_extra_uv) * blend.r;
-	albedo += texture(albedo_sampler_1, world_extra_uv) * blend.g;
-	albedo += texture(albedo_sampler_2, world_extra_uv) * blend.b;
-	albedo += texture(albedo_sampler_3, world_extra_uv) * blend.a;
-}
+albedo = texture(albedo_sampler_0, world_extra_uv) * blend.r;
+albedo += texture(albedo_sampler_1, world_extra_uv) * blend.g;
+albedo += texture(albedo_sampler_2, world_extra_uv) * blend.b;
+albedo += texture(albedo_sampler_3, world_extra_uv) * blend.a;
 </source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

@@ -42,7 +42,7 @@
 namespace eternal_lands
 {
 
-#ifdef	DEBUG
+#ifndef	NDEBUG
 #define	STRING_MARKER(description, arguments)	\
 	do	\
 	{	\
@@ -241,6 +241,29 @@ namespace eternal_lands
 		Uint32 &light_count)
 	{
 		Uint32 i, size;
+
+		if (m_map->get_dungeon())
+		{
+			m_light_position_array[0] =
+				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+			m_light_color_array[0] =
+				glm::vec4(glm::vec3(0.2f), 0.0f);
+		}
+		else
+		{
+			m_light_position_array[0] = m_main_light_direction;
+
+			if (m_night)
+			{
+				m_light_color_array[0] = m_main_light_color +
+					glm::vec4(glm::vec3(0.3f), 0.0f);
+			}
+			else
+			{
+				m_light_color_array[0] = m_main_light_color +
+					glm::vec4(glm::vec3(0.1f), 0.0f);
+			}
+		}
 
 		light_count = 1;
 
@@ -923,6 +946,9 @@ namespace eternal_lands
 
 		if (m_scene_view.get_shadow_map_count() > 0)
 		{
+			STRING_MARKER(UTF8("drawing mode '%1%'"),
+				UTF8("shadows"));
+
 			if (get_global_vars()->get_use_layered_rendering() &&
 				(m_scene_view.get_shadow_map_count() > 1))
 			{
@@ -936,7 +962,7 @@ namespace eternal_lands
 
 		m_scene_view.set_default_view();
 
-		STRING_MARKER(UTF8("drawing mode '%1'%"), UTF8("default"));
+		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
 
 		m_state_manager.switch_multisample(true);
 
@@ -1061,7 +1087,7 @@ namespace eternal_lands
 		Uint32 i, max_count, count, id;
 		StateManagerUtil state(m_state_manager);
 
-		STRING_MARKER(UTF8("drawing mode '%1'%"), UTF8("picking"));
+		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("picking"));
 
 		m_state_manager.unbind_all();
 		m_state_manager.switch_scissor_test(true);

@@ -52,9 +52,11 @@ namespace eternal_lands
 			bool m_fog;
 			bool m_optmize_shader_source;
 			bool m_use_simd;
+			bool m_use_s3tc_for_actors;
 			bool m_use_block;
 			bool m_use_alias;
 			bool m_use_in_out;
+			bool m_use_functions;
 			bool m_use_layered_rendering;
 			bool m_low_quality_terrain;
 #ifdef	DEBUG
@@ -118,6 +120,12 @@ namespace eternal_lands
 				m_use_simd = use_simd;
 			}
 
+			inline void set_use_s3tc_for_actors(
+				const bool use_s3tc_for_actors)
+			{
+				m_use_s3tc_for_actors = use_s3tc_for_actors;
+			}
+
 			inline void set_use_block(const bool use_block)
 			{
 				m_use_block = use_block;
@@ -131,6 +139,11 @@ namespace eternal_lands
 			inline void set_use_in_out(const bool use_in_out)
 			{
 				m_use_in_out = use_in_out;
+			}
+
+			inline void set_use_functions(const bool use_functions)
+			{
+				m_use_functions = use_functions;
 			}
 
 			inline void set_use_layered_rendering(
@@ -263,6 +276,11 @@ namespace eternal_lands
 				return m_use_simd;
 			}
 
+			inline bool get_use_s3tc_for_actors() const
+			{
+				return m_use_s3tc_for_actors;
+			}
+
 			inline bool get_use_block() const
 			{
 				return m_use_block;
@@ -276,6 +294,11 @@ namespace eternal_lands
 			inline bool get_use_in_out() const
 			{
 				return m_use_in_out;
+			}
+
+			inline bool get_use_functions() const
+			{
+				return m_use_functions;
 			}
 
 			inline bool get_use_layered_rendering() const

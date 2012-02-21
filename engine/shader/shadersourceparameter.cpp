@@ -194,6 +194,11 @@ namespace eternal_lands
 			str << UTF8(", ");
 		}
 
+		if (get_qualifier() == pqt_in)
+		{
+			str << UTF8("const ");
+		}
+
 		str << get_qualifier() << UTF8(" ");
 
 		write(name_prefix, sizes, str);

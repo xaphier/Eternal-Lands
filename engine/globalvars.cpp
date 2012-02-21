@@ -483,9 +483,11 @@ namespace eternal_lands
 #else	/* USE_SSE2 */
 		m_use_simd = false;
 #endif	/* USE_SSE2 */
+		m_use_s3tc_for_actors = true;
 		m_use_block = true;
 		m_use_alias = false;
 		m_use_in_out = true;
+		m_use_functions = false;
 		m_use_layered_rendering = false;
 		m_low_quality_terrain = false;
 #ifdef	DEBUG
