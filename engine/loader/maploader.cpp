@@ -939,19 +939,9 @@ namespace eternal_lands
 		id = get_free_ids().use_typeless_id(x + (y << 10),
 			it_tile_object);
 
-		if (tile == 1)
-		{
-			m_map->add_object(ObjectData(transformation,
-				String(UTF8("tile")), 0.0f, id, st_none, false),
-				materials);
-			grass_loaded = true;
-		}
-		else
-		{
-			m_instances_builder->add(ObjectData(transformation,
-				String(UTF8("tile")), 0.0f, id, st_none, false),
-				materials);
-		}
+		m_instances_builder->add(ObjectData(transformation,
+			String(UTF8("tile")), 0.0f, id, st_none, false),
+			materials);
 
 		return;
 
