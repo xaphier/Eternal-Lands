@@ -52,7 +52,7 @@
 float dist, scale, nxdir;
 
 dir = light_position.xyz - world_position * light_color.a;
-dist = max(dot(dir, dir), 0.01);
+dist = dot(dir, dir);
 dir *= inversesqrt(dist);
 nxdir = dot(world_normal, dir);
 nxdir = nxdir * 0.5 + 0.5;

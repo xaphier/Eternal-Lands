@@ -242,29 +242,6 @@ namespace eternal_lands
 	{
 		Uint32 i, size;
 
-		if (m_map->get_dungeon())
-		{
-			m_light_position_array[0] =
-				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-			m_light_color_array[0] =
-				glm::vec4(glm::vec3(0.2f), 0.0f);
-		}
-		else
-		{
-			m_light_position_array[0] = m_main_light_direction;
-
-			if (m_night)
-			{
-				m_light_color_array[0] = m_main_light_color +
-					glm::vec4(glm::vec3(0.3f), 0.0f);
-			}
-			else
-			{
-				m_light_color_array[0] = m_main_light_color +
-					glm::vec4(glm::vec3(0.1f), 0.0f);
-			}
-		}
-
 		light_count = 1;
 
 		if (m_map->get_dungeon() || m_night)
@@ -296,7 +273,8 @@ namespace eternal_lands
 		for (i = light_count; i < size; ++i)
 		{
 			m_light_color_array[i] = glm::vec4(0.0f);
-			m_light_position_array[i] = glm::vec4(0.0f);
+			m_light_position_array[i] = glm::vec4(0.0f, 0.0f, 1.0f,
+				1.0f);
 		}
 	}
 

@@ -288,7 +288,7 @@ namespace eternal_lands
 			scale = std::max(std::max(color.r, color.g),
 				std::max(color.b, 1.0f));
 			color /= scale;
-			radius = 5.0f * scale;
+			radius = 2.5f * scale;
 		}
 
 		LOG_DEBUG(UTF8("Adding light (%1%) at <%2%> with "
