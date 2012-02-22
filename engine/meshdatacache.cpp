@@ -148,8 +148,9 @@ namespace eternal_lands
 				sphere_vertex_count - 1));
 		}
 
-		void load_plane(const String &name, const Uint16 tile_size,
-			const bool split, const bool use_simd,
+		void load_plane(const String &name, const float scale,
+			const Uint16 tile_size, const bool split,
+			const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			glm::vec4 normal, tangent, data;
@@ -211,10 +212,14 @@ namespace eternal_lands
 					uv = glm::vec2(x, y) /
 						static_cast<float>(tile_size);
 
-					data = glm::vec4(uv, 0.0f, 1.0f);
+					data = glm::vec4(uv * scale, 0.0f,
+						1.0f);
 
 					mesh_data_tool->set_vertex_data(
 						vst_position, index, data);
+
+					data = glm::vec4(uv, 0.0f, 1.0f);
+
 					mesh_data_tool->set_vertex_data(
 						vst_normal, index, normal);
 					mesh_data_tool->set_vertex_data(
@@ -228,7 +233,7 @@ namespace eternal_lands
 			}
 
 			vmin = glm::vec3(0.0f, 0.0f, -0.01f);
-			vmax = glm::vec3(1.0f, 1.0f, 0.0f);
+			vmax = glm::vec3(scale, scale, 0.0f);
 
 			mesh_data_tool->set_sub_mesh_data(0, SubMesh(
 				BoundingBox(vmin, vmax), 0, index_count, 0,
@@ -387,51 +392,58 @@ namespace eternal_lands
 				return true;
 			}
 
+			if (name == UTF8("tile"))
+			{
+				load_plane(name, 3.0f, 2, true, use_simd,
+					mesh_data_tool);
+				return true;
+			}
+
 			if (name == UTF8("plane_2"))
 			{
-				load_plane(name, 2, true, use_simd,
+				load_plane(name, 1.0f, 2, true, use_simd,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_4"))
 			{
-				load_plane(name, 4, true, use_simd,
+				load_plane(name, 1.0f, 4, true, use_simd,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_8"))
 			{
-				load_plane(name, 8, true, use_simd,
+				load_plane(name, 1.0f, 8, true, use_simd,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_16"))
 			{
-				load_plane(name, 16, true, use_simd,
+				load_plane(name, 1.0f, 16, true, use_simd,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_32"))
 			{
-				load_plane(name, 32, true, use_simd,
+				load_plane(name, 1.0f, 32, true, use_simd,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_64"))
 			{
-				load_plane(name, 64, true, use_simd,
+				load_plane(name, 1.0f, 64, true, use_simd,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_128"))
 			{
-				load_plane(name, 128, true, use_simd,
+				load_plane(name, 1.0f, 128, true, use_simd,
 					mesh_data_tool);
 				return true;
 			}

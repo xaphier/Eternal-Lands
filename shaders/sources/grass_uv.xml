@@ -20,13 +20,6 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>texture_matrices</name>
-     <type>mat2x3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>2</scale>
-    </parameter>
-    <parameter>
      <name>world_extra_uv</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
@@ -41,7 +34,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>world_uv = vec3(world_position.xy / 6, 1.0) * texture_matrices[0];
+   <source>world_uv = world_position.xy / 3;
 world_extra_uv = world_uv + vec2(time * 0.1);
 </source>
    <glsl_120>true</glsl_120>

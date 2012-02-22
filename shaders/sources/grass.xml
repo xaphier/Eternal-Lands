@@ -279,7 +279,7 @@
    </parameters>
    <source>#define MAX_RAYDEPTH 5 //Number of iterations.
 
-#define PLANE_NUM 4.0 //Number of grass slice grid planes per unit in tangent space.
+#define PLANE_NUM 32.0 //Number of grass slice grid planes per unit in tangent space.
 
 #define PLANE_NUM_INV (1.0/PLANE_NUM)
 #define PLANE_NUM_INV_DIV2 (PLANE_NUM_INV/2)
@@ -310,7 +310,7 @@
  	ray_entry = vec3(fragment_uv,0.0);
 	zOffset = 0.0;
 
-	view_dir = world_view_direction.xyz * tbn_matrix;
+	view_dir = normalize(world_view_direction.xyz);
 
  	//The signs of view_dir determines if we increment or decrement along the tangent space axis
 	//plane_correct, planemod and pre_dir_correct are used to avoid unneccessary if-conditions.
@@ -347,7 +347,7 @@
  		vec3 rayHitpointX = ray_entry + view_dir * distance.x;   
   		vec3 rayHitpointY = ray_entry + view_dir * distance.y;
   		vec3 rayHitpointZ = ray_entry + view_dir * min(distance.x, distance.y);
-/*
+
   		if ((rayHitpointZ.z &lt;= -GRASSDEPTH / 3) &amp;&amp; (depth &lt; 1))
   		{
 			vec4 wind = (textureGrad(albedo_sampler_3,world_extra_uv * 0.5, uv_dx[1], uv_dy[1])-0.5)/2;
@@ -373,7 +373,7 @@
   			zOffset = distanceZ; // write the distance from ray_entry to intersection
   			depth = 2;
   		}
-*/
+
 		//Check if we hit the ground. If so, calculate the intersection and look up the ground texture and blend colors.
 
 		if ((rayHitpointX.z &lt;= -GRASSDEPTH) &amp;&amp; (rayHitpointY.z &lt;= -GRASSDEPTH))
@@ -387,7 +387,7 @@
 			zOffset = distanceZ; // write the distance from ray_entry to intersection
 			break;	//Early exit here
   		}
-  		else
+		else
  		{
  			vec2 orthoLookup; //Will contain texture lookup coordinates for grassblades texture.
 
@@ -419,7 +419,7 @@
 			{
 				break;	//Early exit here
 			}
-  		}
+		}
 	}
 
 	albedo += (1.0-albedo.a)*AVERAGE_COLOR; //Fill remaining transparency in case there is some left. Can be replaced by a texture lookup
@@ -433,13 +433,10 @@
      //Divide by homogenous part.
      depth = positionView.z/positionView.w;
 #endif
-
-	vec4 pos = projection_view_matrix[0] * vec4(world_position + view_dir.xzy * vec3(zOffset, zOffset, -zOffset) * 2, 1.0);
+	vec4 pos = projection_view_matrix[0] * vec4(world_position + view_dir.xyz * zOffset * 3, 1.0);
 
 	//Divide by homogenous part.
 	gl_FragDepth = 0.5 + 0.5 * pos.z/pos.w;
-
-//	albedo = abs(vec4(pos.z/pos.w) - vec4(gl_FragCoord.z));
 }
 </source>
    <glsl_120>false</glsl_120>

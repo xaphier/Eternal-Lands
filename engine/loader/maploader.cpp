@@ -890,25 +890,35 @@ namespace eternal_lands
 		offset.x = x * get_tile_size();
 		offset.y = y * get_tile_size();
 
-		if ((tile == 0) || (tile > 230))
+		if (tile > 230)
 		{
 			offset.z = -0.2501f;
 		}
 		else
 		{
-			offset.z = -0.0011f;
+			if (tile == 1)
+			{
+				offset.z = 0.125f * 3 - 0.0011f;
+			}
+			else
+			{
+				offset.z = -0.0011f;
+			}
 		}
 
 		assert(glm::all(glm::lessThanEqual(glm::abs(offset),
 			glm::vec3(1e7f))));
 
 		transformation.set_translation(offset);
-		transformation.set_scale(3.0f);
+		transformation.set_scale(1.0f);
 
 		switch (tile)
 		{
 			case 0:
 				return;
+			case 1:
+				str << UTF8("grass");
+				break;
 			case 240:
 				str << UTF8("lava");
 				break;
@@ -929,9 +939,21 @@ namespace eternal_lands
 		id = get_free_ids().use_typeless_id(x + (y << 10),
 			it_tile_object);
 
-		m_instances_builder->add(ObjectData(transformation,
-			String(UTF8("plane_4")), 0.0f, id, st_none, false),
-			materials);
+		if (tile == 1)
+		{
+			m_map->add_object(ObjectData(transformation,
+				String(UTF8("tile")), 0.0f, id, st_none, false),
+				materials);
+			grass_loaded = true;
+		}
+		else
+		{
+			m_instances_builder->add(ObjectData(transformation,
+				String(UTF8("tile")), 0.0f, id, st_none, false),
+				materials);
+		}
+
+		return;
 
 		if (tile != 1)
 		{

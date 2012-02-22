@@ -7,7 +7,6 @@
    <parameters>
     <parameter>
      <name>fragment_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,7 +14,6 @@
     </parameter>
     <parameter>
      <name>albedo_sampler_0</name>
-     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -23,7 +21,6 @@
     </parameter>
     <parameter>
      <name>albedo</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -42,7 +39,6 @@
    <parameters>
     <parameter>
      <name>fragment_uv</name>
-     <source></source>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -50,7 +46,6 @@
     </parameter>
     <parameter>
      <name>albedo_sampler_0</name>
-     <source></source>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -58,7 +53,6 @@
     </parameter>
     <parameter>
      <name>albedo</name>
-     <source></source>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
