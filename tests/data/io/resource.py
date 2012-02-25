@@ -19,7 +19,7 @@ def dump(src, length, name):
 print '/****************************************************************************'
 print ' *            resourcedata.hpp'
 print ' *'
-print ' * Author: 2010  Daniel Jungmann <dsj@gmx.net>'
+print ' * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>'
 print ' * Copyright: See COPYING file that comes with this distribution'
 print ' ****************************************************************************/'
 print ''
