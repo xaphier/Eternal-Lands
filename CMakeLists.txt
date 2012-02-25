@@ -44,7 +44,7 @@ option(BUILD_EDITOR "Build editor for shader sources, needs gtk" off)
 option(BUILD_NATIVE "Optimize for native system, use only for private builds" off)
 option(BUILD_SSE "Build using optinal SSE support" on)
 option(BUILD_MATERIAL_EDITOR "Build editor for materials, needs Qt4" off)
-option(BUILD_MAP_EDITOR "Build editor for materials, needs Qt4" off)
+option(BUILD_MAP_EDITOR "Build map editor, needs Qt4" off)
 
 IF (MSVC)
 	CHECK_CXX_COMPILER_FLAG(/arch:SSE2 msvc_sse2)
