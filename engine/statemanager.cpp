@@ -18,7 +18,8 @@ namespace eternal_lands
 	StateManager::StateManager(): m_color_mask(true), m_texture_unit(0),
 		m_multisample(false), m_blend(false), m_culling(true),
 		m_depth_mask(true), m_depth_test(true), m_scissor_test(false),
-		m_sample_alpha_to_coverage(false), m_polygon_offset_fill(false)
+		m_sample_alpha_to_coverage(false), m_polygon_offset_fill(false),
+		m_stencil_test(false)
 	{
 		m_program_used_texture_units.set();
 	}
@@ -119,6 +120,20 @@ namespace eternal_lands
 		else
 		{
 			glDepthMask(GL_FALSE);
+		}
+	}
+
+	void StateManager::set_stencil_test(const bool stencil_test)
+	{
+		m_stencil_test = stencil_test;
+
+		if (m_stencil_test)
+		{
+			glEnable(GL_STENCIL_TEST);
+		}
+		else
+		{
+			glDisable(GL_STENCIL_TEST);
 		}
 	}
 
@@ -237,6 +252,7 @@ namespace eternal_lands
 		result |= switch_scissor_test(false);
 		result |= switch_polygon_offset_fill(false);
 		result |= switch_sample_alpha_to_coverage(false);
+		result |= switch_stencil_test(false);
 		switch_texture_unit(0);
 
 		return result;

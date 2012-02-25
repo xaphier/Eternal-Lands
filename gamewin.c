@@ -1097,7 +1097,7 @@ int display_game_handler (window_info *win)
 			update_scene_lights ();
 		}
 		CHECK_GL_ERRORS ();
-		glClear(GL_DEPTH_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		missiles_update();
 	

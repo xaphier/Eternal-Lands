@@ -264,7 +264,7 @@ namespace
 		}
 
 		return el::ObjectData(transformation, name,
-			transparency, id, el_selection, transparent);
+			transparency, id, el_selection, transparent, false, 0);
 	}
 
 	int el_rebuild_shader(lua_State *L)

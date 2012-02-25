@@ -27,7 +27,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>albedo = texture2D(albedo_sampler_0, fragment_uv);
+   <source>albedo = texture2D(albedo_sampler_0, vec2(fragment_uv.x, 1.0 - fragment_uv.y));
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>false</glsl_130>
@@ -66,7 +66,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>albedo = texture(albedo_sampler_0, fragment_uv);
+   <source>albedo = texture(albedo_sampler_0, vec2(fragment_uv.x, 1.0 - fragment_uv.y));
 
 vec2 P = ground_position * 3;
 vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);

@@ -24,6 +24,12 @@
 namespace eternal_lands
 {
 
+	enum StateType
+	{
+		st_blend = 0,
+		st_stencil = 1
+	};
+
 	/**
 	 * @brief @c class for object data.
 	 *
@@ -37,7 +43,8 @@ namespace eternal_lands
 			float m_transparency;
 			Uint32 m_id;
 			SelectionType m_selection;
-			bool m_blend;
+			BitSet16 m_states;
+			Uint8 m_stencil_value;
 
 		public:
 			/**
@@ -51,7 +58,8 @@ namespace eternal_lands
 			ObjectData(const Transformation &world_transformation,
 				const String &name, const float transparency,
 				const Uint32 id, const SelectionType selection,
-				const bool blend);
+				const bool blend, const bool stencil,
+				const Uint8 stencil_value);
 
 			/**
 			 * Default destructor.
@@ -74,9 +82,14 @@ namespace eternal_lands
 				m_transparency = transparency;
 			}
 
-			inline void set_blend(const bool blend)
+			inline void set_state_blend(const bool blend)
 			{
-				m_blend = blend;
+				m_states[st_blend] = blend;
+			}
+
+			inline void set_state_stencil(const bool stencil)
+			{
+				m_states[st_stencil] = stencil;
 			}
 
 			inline void set_selection(const SelectionType selection)
@@ -87,6 +100,11 @@ namespace eternal_lands
 			inline void set_id(const Uint32 id)
 			{
 				m_id = id;
+			}
+
+			inline void set_stencil_value(const Uint8 stencil_value)
+			{
+				m_stencil_value = stencil_value;
 			}
 
 			inline const Transformation &get_world_transformation()
@@ -110,9 +128,19 @@ namespace eternal_lands
 				return m_id;
 			}
 
-			inline bool get_blend() const
+			inline Uint8 get_stencil_value() const
 			{
-				return m_blend;
+				return m_stencil_value;
+			}
+
+			inline bool get_state_blend() const
+			{
+				return m_states[st_blend];
+			}
+
+			inline bool get_state_stencil() const
+			{
+				return m_states[st_stencil];
 			}
 
 			inline SelectionType get_selection() const

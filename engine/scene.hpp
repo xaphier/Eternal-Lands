@@ -61,6 +61,8 @@ namespace eternal_lands
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
 			FreeIdsManagerSharedPtr m_free_ids;
+			AbstractMeshSharedPtr m_quad;
+			GlslProgramSharedPtr m_single_color;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
 			float m_time;
@@ -90,7 +92,11 @@ namespace eternal_lands
 			void draw_shadows_array(const Uint16 index);
 			void draw_all_shadows();
 			void draw_all_shadows_array();
+			void draw_depth();
+			void draw_default();
 			void update_shadow_map();
+			void draw_stencil_quad(const glm::vec3 &color,
+				const Uint16 stencil);
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
 				const

@@ -46,6 +46,7 @@ namespace eternal_lands
 			bool m_scissor_test;
 			bool m_sample_alpha_to_coverage;
 			bool m_polygon_offset_fill;
+			bool m_stencil_test;
 
 			void log_texture_units();
 			void gl_error_check();
@@ -67,6 +68,7 @@ namespace eternal_lands
 				const bool polygon_offset_fill);
 			void set_sample_alpha_to_coverage(
 				const bool sample_alpha_to_coverage);
+			void set_stencil_test(const bool stencil);
 
 		public:
 			/**
@@ -153,6 +155,20 @@ namespace eternal_lands
 #endif	/* NO_STATE_TRACKING */
 
 				set_blend(blend);
+
+				return true;
+			}
+
+			inline bool switch_stencil_test(const bool stencil_test)
+			{
+#ifndef	NO_STATE_TRACKING
+				if (m_stencil_test == stencil_test)
+				{
+					return false;
+				}
+#endif	/* NO_STATE_TRACKING */
+
+				set_stencil_test(stencil_test);
 
 				return true;
 			}

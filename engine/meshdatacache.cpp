@@ -150,16 +150,14 @@ namespace eternal_lands
 
 		void load_plane(const String &name, const float scale,
 			const Uint16 tile_size, const bool split,
-			const bool use_simd,
+			const bool use_simd, const bool center,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
-			glm::vec4 normal, tangent, data;
+			glm::vec4 normal, tangent, data, position;
 			glm::vec3 vmin, vmax;
 			glm::vec2 size, uv;
 			Uint32Vector indices;
-			String dir, texture;
 			VertexSemanticTypeSet semantics;
-			StringType str;
 			Uint32 vertex_count, index_count, i, index, x, y;
 			Uint32 restart_index;
 			PrimitiveType primitive_type;
@@ -212,13 +210,25 @@ namespace eternal_lands
 					uv = glm::vec2(x, y) /
 						static_cast<float>(tile_size);
 
-					data = glm::vec4(uv * scale, 0.0f,
-						1.0f);
+					position.x = uv.x;
+					position.y = uv.y;
+					position.z = 0.0f;
+					position.w = 1.0f;
 
-					mesh_data_tool->set_vertex_data(
-						vst_position, index, data);
+					if (center)
+					{
+						position.x -= 0.5f;
+						position.y -= 0.5f;
+						normal = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+					}
+
+					position.x *= scale;
+					position.y *= scale;
 
 					data = glm::vec4(uv, 0.0f, 1.0f);
+
+					mesh_data_tool->set_vertex_data(
+						vst_position, index, position);
 
 					mesh_data_tool->set_vertex_data(
 						vst_normal, index, normal);
@@ -240,16 +250,77 @@ namespace eternal_lands
 				vertex_count - 1));
 		}
 
+		void load_quad(const String &name, const bool use_simd,
+			MeshDataToolSharedPtr &mesh_data_tool)
+		{
+			glm::vec4 normal, tangent, data, position;
+			glm::vec3 vmin, vmax;
+			glm::vec2 size, uv;
+			Uint32 index, x, y;
+			VertexSemanticTypeSet semantics;
+
+			semantics.insert(vst_position);
+			semantics.insert(vst_texture_coordinate_0);
+			semantics.insert(vst_normal);
+			semantics.insert(vst_tangent);
+
+			mesh_data_tool = boost::make_shared<MeshDataTool>(name,
+				4, 6, 1, semantics,
+				0xFFFFFFFF, pt_triangles, false, use_simd);
+
+			mesh_data_tool->set_index_data(0, 0);
+			mesh_data_tool->set_index_data(1, 1);
+			mesh_data_tool->set_index_data(2, 2);
+
+			mesh_data_tool->set_index_data(3, 1);
+			mesh_data_tool->set_index_data(4, 3);
+			mesh_data_tool->set_index_data(5, 2);
+
+			normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+			tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+			index = 0;
+
+			for (y = 0; y < 2; ++y)
+			{
+				for (x = 0; x < 2; ++x)
+				{
+					uv = glm::vec2(x, y);
+
+					data = glm::vec4(uv * 2.0f - 1.0f,
+						0.0f, 1.0f);
+
+					mesh_data_tool->set_vertex_data(
+						vst_position, index, data);
+
+					data = glm::vec4(uv, 0.0f, 1.0f);
+
+					mesh_data_tool->set_vertex_data(
+						vst_normal, index, normal);
+					mesh_data_tool->set_vertex_data(
+						vst_tangent, index, tangent);
+					mesh_data_tool->set_vertex_data(
+						vst_texture_coordinate_0,
+						index, data);
+
+					++index;
+				}
+			}
+
+			vmin = glm::vec3(-1.0f, -1.0f, -0.01f);
+			vmax = glm::vec3(1.0f, 1.0f, 0.0f);
+
+			mesh_data_tool->set_sub_mesh_data(0, SubMesh(
+				BoundingBox(vmin, vmax), 0, 6, 0, 3));
+		}
+
 		void load_billboard(const String &name, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			glm::vec4 normal, tangent, data;
 			glm::vec3 vmin, vmax;
 			glm::vec2 size, uv;
-			Uint32Vector indices;
-			String dir, texture;
 			VertexSemanticTypeSet semantics;
-			StringType str;
 			Uint32 vertex_count, index_count, index, x, y;
 			Uint32 restart_index;
 			PrimitiveType primitive_type;
@@ -392,30 +463,43 @@ namespace eternal_lands
 				return true;
 			}
 
+			if (name == UTF8("quad"))
+			{
+				load_quad(name, use_simd, mesh_data_tool);
+				return true;
+			}
+
 			if (name == UTF8("tile"))
 			{
-				load_plane(name, 3.0f, 2, true, use_simd,
+				load_plane(name, 3.0f, 2, true, use_simd, false,
+					mesh_data_tool);
+				return true;
+			}
+
+			if (name == UTF8("grass"))
+			{
+				load_plane(name, 1.0f, 2, true, use_simd, true,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_2"))
 			{
-				load_plane(name, 1.0f, 2, true, use_simd,
+				load_plane(name, 1.0f, 2, true, use_simd, false,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_4"))
 			{
-				load_plane(name, 1.0f, 4, true, use_simd,
+				load_plane(name, 1.0f, 4, true, use_simd, false,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_8"))
 			{
-				load_plane(name, 1.0f, 8, true, use_simd,
+				load_plane(name, 1.0f, 8, true, use_simd, false,
 					mesh_data_tool);
 				return true;
 			}
@@ -423,28 +507,28 @@ namespace eternal_lands
 			if (name == UTF8("plane_16"))
 			{
 				load_plane(name, 1.0f, 16, true, use_simd,
-					mesh_data_tool);
+					false, mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_32"))
 			{
 				load_plane(name, 1.0f, 32, true, use_simd,
-					mesh_data_tool);
+					 false, mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_64"))
 			{
 				load_plane(name, 1.0f, 64, true, use_simd,
-					mesh_data_tool);
+					 false, mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_128"))
 			{
 				load_plane(name, 1.0f, 128, true, use_simd,
-					mesh_data_tool);
+					 false, mesh_data_tool);
 				return true;
 			}
 

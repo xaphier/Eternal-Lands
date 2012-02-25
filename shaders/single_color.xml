@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf8"?>
+<glsl_program>
+ <name>font</name>
+ <vertex_shader>#version 120
+
+attribute vec3 position;
+
+void main ()
+{
+	gl_Position = vec4(position, 1.0);
+}
+</vertex_shader>
+ <fragment_shader>#version 120
+
+uniform vec3 color;
+
+void main ()
+{
+	gl_FragColor.rgb = color;
+	gl_FragColor.a = 1.0;
+}
+</fragment_shader>
+</glsl_program>

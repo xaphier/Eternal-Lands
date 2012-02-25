@@ -183,6 +183,12 @@ namespace eternal_lands
 		glGenQueries(m_querie_ids.size(), m_querie_ids.data());
 
 		m_scene_resources.init(file_system);
+
+		m_scene_resources.get_mesh_cache()->get_mesh(
+			String(UTF8("quad")), m_quad);
+
+		m_single_color = boost::make_shared<GlslProgram>(file_system,
+			String(UTF8("shaders/single_color.xml")));
 	}
 
 	void Scene::update_shadow_map()
@@ -913,6 +919,107 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 	}
 
+	void Scene::draw_depth()
+	{
+		bool stencil;
+
+		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("depth"));
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_scene_view.set_default_view();
+
+		m_state_manager.switch_color_mask(glm::bvec4(false));
+		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_visible_objects.get_objects())
+		{
+			stencil = object.get_object()->get_state_stencil();
+
+			m_state_manager.switch_stencil_test(stencil);
+
+			if (stencil)
+			{
+				glStencilFunc(GL_ALWAYS, object.get_object(
+					)->get_stencil_value(), 0xFFFFFFFF);
+			}
+
+			draw_object_depth(object.get_object(),
+				object.get_distance());
+		}
+
+		unbind_all();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_program_vars_id++;
+	}
+
+	void Scene::draw_default()
+	{
+		bool blend, stencil;
+
+		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_scene_view.set_default_view();
+
+		m_state_manager.switch_multisample(true);
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_visible_objects.get_objects())
+		{
+			blend = object.get_blend();
+			stencil = object.get_object()->get_state_stencil();
+
+			m_state_manager.switch_blend(blend);
+
+			if (blend)
+			{
+				glBlendColor(1.0f, 1.0f, 1.0f,
+					object.get_transparency());
+			}
+
+			m_state_manager.switch_stencil_test(stencil);
+
+			draw_object(object.get_object(), object.get_distance());
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		CHECK_GL_ERROR();
+
+		m_program_vars_id++;
+		m_frame_id++;
+	}
+
+	void Scene::draw_stencil_quad(const glm::vec3 &color,
+		const Uint16 stencil)
+	{
+		m_state_manager.switch_stencil_test(true);
+
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		glStencilFunc(GL_EQUAL, stencil, 0xFFFFFFFF);
+
+		m_state_manager.switch_program(m_single_color);
+
+		m_state_manager.get_program()->set_variant_parameter(
+			String(UTF8("color")), color);
+
+		m_state_manager.switch_mesh(m_quad);
+
+		m_state_manager.draw(0, 1);
+	}
+
 	void Scene::draw()
 	{
 		StateManagerUtil state(m_state_manager);
@@ -940,37 +1047,12 @@ namespace eternal_lands
 
 		m_scene_view.set_default_view();
 
-		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
+		draw_depth();
+		glDepthFunc(GL_LEQUAL);
+		draw_default();
 
-		m_state_manager.switch_multisample(true);
-
-		DEBUG_CHECK_GL_ERROR();
-
-		glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
-
-		BOOST_FOREACH(const RenderObjectData &object,
-			m_visible_objects.get_objects())
-		{
-			if (m_state_manager.switch_blend(object.get_blend()))
-			{
-				if (object.get_blend())
-				{
-					glBlendColor(1.0f, 1.0f, 1.0f,
-						object.get_transparency());
-				}
-			}
-
-			draw_object(object.get_object(), object.get_distance());
-		}
-
-		DEBUG_CHECK_GL_ERROR();
-
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		CHECK_GL_ERROR();
-
-		m_program_vars_id++;
-		m_frame_id++;
+		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 0.0f), 0x1);
+		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 1.0f), 0x2);
 	}
 
 	void Scene::pick_object(const ObjectSharedPtr &object,

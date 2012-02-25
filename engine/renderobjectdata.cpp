@@ -23,7 +23,7 @@ namespace eternal_lands
 		m_sub_frustums_mask(sub_frustums_mask), m_blend(false)
 	{
 		m_transparency = object->get_transparency();
-		m_blend = object->get_blend();
+		m_blend = object->get_state_blend();
 		update_layers();
 	}
 
