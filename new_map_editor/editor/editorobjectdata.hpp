@@ -1,7 +1,7 @@
 /****************************************************************************
  *            editorobjectdata.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -31,6 +31,7 @@ namespace eternal_lands
 	class EditorObjectData
 	{
 		private:
+			StringVector m_materials;
 			glm::vec3 m_translation;
 			glm::vec3 m_rotation_angles;
 			String m_name;
@@ -41,11 +42,6 @@ namespace eternal_lands
 			bool m_blend;
 
 		public:
-			/**
-			 * Default constructor.
-			 */
-			EditorObjectData();
-
 			/**
 			 * Default constructor.
 			 */

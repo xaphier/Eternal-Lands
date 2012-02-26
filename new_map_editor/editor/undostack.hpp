@@ -1,7 +1,7 @@
 /****************************************************************************
  *            undostack.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -26,7 +26,7 @@ namespace eternal_lands
 		public:
 			UndoStack(const Uint32 size);
 			void add(ModificationAutoPtr &ptr);
-			bool undo(Editor &editor);
+			bool undo(EditorMapData &editor);
 
 			inline void clear()
 			{

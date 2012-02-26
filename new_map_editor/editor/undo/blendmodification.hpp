@@ -1,7 +1,7 @@
 /****************************************************************************
  *            blendmodification.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "modification.hpp"
-#include "imagevalue.hpp"
+#include "../imagevalue.hpp"
 
 namespace eternal_lands
 {
@@ -23,17 +23,16 @@ namespace eternal_lands
 		private:
 			ImageValueVector m_blend_values;
 			ImageSharedPtr m_blend_image;
-			Uint32 m_id;
 			Uint16 m_page_id;
 
 		public:
 			BlendModification(const ImageValueVector &blend_values,
-				const ImageSharedPtr &blend_image, const Uint32 id,
+				const ImageSharedPtr &blend_image,
 				const Uint16 page_id);
 			virtual ~BlendModification();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
-			virtual bool undo(Editor &editor);
+			virtual bool undo(EditorMapData &editor);
 
 	};
 

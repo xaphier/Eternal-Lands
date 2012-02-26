@@ -1,7 +1,7 @@
 /****************************************************************************
  *            modification.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -25,28 +25,26 @@ namespace eternal_lands
 		mt_object_rotation_changed,
 		mt_object_scale_changed,
 		mt_object_blending_changed,
-		mt_object_color_changed,
-		mt_object_type_changed,
-		mt_object_server_id_changed,
+		mt_object_selection_changed,
+		mt_object_materials_changed,
 		mt_light_added,
 		mt_light_removed,
 		mt_light_position_changed,
 		mt_light_color_changed,
 		mt_light_radius_changed,
-		mt_terrain_diffuse_texture_changed,
-		mt_terrain_normal_texture_changed,
+		mt_terrain_albedo_map_changed,
+		mt_terrain_blend_map_changed,
+		mt_terrain_height_map_changed,
+		mt_terrain_dvdu_map_changed,
 		mt_terrain_scale_offset_changed,
 		mt_tile_texture_changed,
 		mt_scene_ambient_changed,
 		mt_terrain_height_changed,
 		mt_height_changed,
 		mt_blend_values_changed,
-		mt_terrain_height_map_changed,
-		mt_height_map_changed,
-		mt_terrain_height_scale_changed
 	};
 
-	class Editor;
+	class EditorMapData;
 
 	class Modification
 	{
@@ -57,7 +55,7 @@ namespace eternal_lands
 
 			virtual ModificationType get_type() const = 0;
 			virtual bool merge(Modification* modification) = 0;
-			virtual bool undo(Editor &editor) = 0;
+			virtual bool undo(EditorMapData &editor) = 0;
 
 	};
 

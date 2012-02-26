@@ -1,7 +1,7 @@
 /****************************************************************************
  *            terraintexturemodification.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -13,7 +13,6 @@
 #endif	/* __cplusplus */
 
 #include "modification.hpp"
-#include "globalid.hpp"
 
 namespace eternal_lands
 {
@@ -22,16 +21,15 @@ namespace eternal_lands
 	{
 		private:
 			String m_texture;
-			GlobalId m_global_id;
 			Uint16 m_index;
 
 		public:
 			TerrainTextureModification(const String &texture,
-				const GlobalId global_id, const Uint16 index);
+				const Uint16 index);
 			virtual ~TerrainTextureModification();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
-			virtual bool undo(Editor &editor);
+			virtual bool undo(EditorMapData &editor);
 
 	};
 

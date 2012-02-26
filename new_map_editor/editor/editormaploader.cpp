@@ -1,7 +1,7 @@
 /****************************************************************************
  *            editormaploader.cpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -139,11 +139,10 @@ namespace eternal_lands
 		materials.push_back(material);
 
 		id = x + (y << 10) + 0xF0000000;
-/*
+
 		m_map->add_object(ObjectData(transformation,
-			String(UTF8("plane_4")), 0.0f, id, st_none, false),
-			materials);
-*/
+			String(UTF8("plane_4")), 0.0f, id, st_none, false,
+			false, 0), materials);
 	}
 
 	void EditorMapLoader::set_height(const Uint16 x, const Uint16 y,

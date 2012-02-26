@@ -1,20 +1,18 @@
 /****************************************************************************
  *            objectmodification.cpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
 #include "objectmodification.hpp"
-#include "editor.hpp"
-#include "scenepagereadonly.hpp"
-#include "scenepagereadwrite.hpp"
+#include "../editormapdata.hpp"
 
 namespace eternal_lands
 {
 
-	ObjectModification::ObjectModification(const MeshObjectData &data, const GlobalId id,
-		const ModificationType type): m_data(data), m_id(id), m_type(type)
+	ObjectModification::ObjectModification(const EditorObjectData &data,
+		const ModificationType type): m_data(data), m_type(type)
 	{
 	}
 
@@ -31,9 +29,12 @@ namespace eternal_lands
 	{
 		if (get_type() == modification->get_type())
 		{
-			assert(dynamic_cast<ObjectModification*>(modification) != 0);
+			assert(dynamic_cast<ObjectModification*>(
+				modification) != 0);
 
-			return m_id == dynamic_cast<ObjectModification*>(modification)->m_id;
+			return m_data.get_id() == dynamic_cast<
+				ObjectModification*>(
+					modification)->m_data.get_id();
 		}
 		else
 		{
@@ -41,46 +42,38 @@ namespace eternal_lands
 		}
 	}
 
-	bool ObjectModification::undo(Editor &editor)
+	bool ObjectModification::undo(EditorMapData &editor)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-
-		editor.get_scene().get_scene_page_read_write(m_id.get_page_id(),
-			scene_page_read_write);
-
 		switch (get_type())
 		{
 			case mt_object_added:
-				scene_page_read_write->remove_object(m_id.get_id());
-				return editor.get_object_selected(m_id);
+				return editor.remove_object(m_data.get_id());
 			case mt_object_removed:
-				scene_page_read_write->add_object(m_data);
+				editor.add_object(m_data);
 				return false;
 			case mt_object_translation_changed:
 			case mt_object_rotation_changed:
 			case mt_object_scale_changed:
 			case mt_object_blending_changed:
-			case mt_object_color_changed:
-			case mt_object_type_changed:
-			case mt_object_server_id_changed:
-				scene_page_read_write->modify_object(m_id.get_id(), m_data);
+			case mt_object_selection_changed:
+			case mt_object_materials_changed:
+				editor.add_object(m_data);
 				return false;
 			case mt_light_added:
 			case mt_light_removed:
 			case mt_light_position_changed:
 			case mt_light_color_changed:
 			case mt_light_radius_changed:
-			case mt_terrain_diffuse_texture_changed:
-			case mt_terrain_normal_texture_changed:
+			case mt_terrain_albedo_map_changed:
+			case mt_terrain_blend_map_changed:
+			case mt_terrain_height_map_changed:
+			case mt_terrain_dvdu_map_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:
 			case mt_terrain_height_changed:
 			case mt_height_changed:
 			case mt_blend_values_changed:
-			case mt_terrain_height_map_changed:
-			case mt_height_map_changed:
-			case mt_terrain_height_scale_changed:
 				return false;
 		}
 

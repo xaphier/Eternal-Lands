@@ -1,7 +1,7 @@
 /****************************************************************************
  *            objectmodification.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -13,8 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "modification.hpp"
-#include "mesh/meshobjectdata.hpp"
-#include "globalid.hpp"
+#include "../editorobjectdata.hpp"
 
 namespace eternal_lands
 {
@@ -22,17 +21,16 @@ namespace eternal_lands
 	class ObjectModification: public Modification
 	{
 		private:
-			MeshObjectData m_data;
-			const GlobalId m_id;
+			EditorObjectData m_data;
 			const ModificationType m_type;
 
 		public:
-			ObjectModification(const MeshObjectData &data, const GlobalId id,
+			ObjectModification(const EditorObjectData &data,
 				const ModificationType type);
 			virtual ~ObjectModification();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
-			virtual bool undo(Editor &editor);
+			virtual bool undo(EditorMapData &editor);
 
 	};
 

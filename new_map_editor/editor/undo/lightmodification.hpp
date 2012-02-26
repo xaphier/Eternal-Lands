@@ -1,7 +1,7 @@
 /****************************************************************************
  *            lightmodification.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -30,7 +30,7 @@ namespace eternal_lands
 			virtual ~LightModification();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
-			virtual bool undo(Editor &editor);
+			virtual bool undo(EditorMapData &editor);
 
 	};
 

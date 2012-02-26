@@ -1,7 +1,7 @@
 /****************************************************************************
  *            undostack.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -28,7 +28,7 @@ namespace eternal_lands
 		m_buffer.push_back(ptr);
 	}
 
-	bool UndoStack::undo(Editor &editor)
+	bool UndoStack::undo(EditorMapData &editor)
 	{
 		bool result;
 

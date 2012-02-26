@@ -1,22 +1,19 @@
 /****************************************************************************
  *            terraintexturemodification.cpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
 #include "terraintexturemodification.hpp"
-#include "material.hpp"
-#include "editor.hpp"
-#include "scenepagereadonly.hpp"
-#include "scenepagereadwrite.hpp"
+#include "../editormapdata.hpp"
 
 namespace eternal_lands
 {
 
-	TerrainTextureModification::TerrainTextureModification(const String &texture,
-		const GlobalId global_id, const Uint16 index): m_texture(texture),
-		m_global_id(global_id), m_index(index)
+	TerrainTextureModification::TerrainTextureModification(
+		const String &texture, const Uint16 index): m_texture(texture),
+		m_index(index)
 	{
 	}
 
@@ -26,7 +23,7 @@ namespace eternal_lands
 
 	ModificationType TerrainTextureModification::get_type() const
 	{
-		return mt_terrain_diffuse_texture_changed;
+		return mt_terrain_albedo_map_changed;
 	}
 
 	bool TerrainTextureModification::merge(Modification* modification)
@@ -35,12 +32,13 @@ namespace eternal_lands
 
 		if (get_type() == modification->get_type())
 		{
-			terrain_texture_modification = dynamic_cast<TerrainTextureModification*>(modification);
+			terrain_texture_modification =
+				dynamic_cast<TerrainTextureModification*>(
+					modification);
 
 			assert(terrain_texture_modification != 0);
 
-			return (m_index == terrain_texture_modification->m_index) &&
-				(m_global_id == terrain_texture_modification->m_global_id);
+			return m_index == terrain_texture_modification->m_index;
 		}
 		else
 		{
@@ -48,17 +46,8 @@ namespace eternal_lands
 		}
 	}
 
-	bool TerrainTextureModification::undo(Editor &editor)
+	bool TerrainTextureModification::undo(EditorMapData &editor)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MaterialSharedPtr material;
-
-		editor.get_scene().get_scene_page_read_write(m_global_id.get_page_id(),
-			scene_page_read_write);
-
-		material = scene_page_read_write->get_object_materials(
-			m_global_id.get_id())[0];
-
 		switch (get_type())
 		{
 			case mt_light_added:
@@ -72,14 +61,20 @@ namespace eternal_lands
 			case mt_object_rotation_changed:
 			case mt_object_scale_changed:
 			case mt_object_blending_changed:
-			case mt_object_color_changed:
-			case mt_object_type_changed:
-			case mt_object_server_id_changed:
+			case mt_object_selection_changed:
+			case mt_object_materials_changed:
 				break;
-			case mt_terrain_diffuse_texture_changed:
-				material->set_diffuse_texture(m_texture, m_index);
-			case mt_terrain_normal_texture_changed:
-				material->set_normal_texture(m_texture, m_index);
+			case mt_terrain_albedo_map_changed:
+				editor.set_terrain_albedo_map(m_texture,
+					m_index);
+			case mt_terrain_blend_map_changed:
+				editor.set_terrain_blend_map(m_texture);
+				break;
+			case mt_terrain_height_map_changed:
+				editor.set_terrain_height_map(m_texture);
+				break;
+			case mt_terrain_dvdu_map_changed:
+				editor.set_terrain_dvdu_map(m_texture);
 				break;
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
@@ -87,9 +82,6 @@ namespace eternal_lands
 			case mt_terrain_height_changed:
 			case mt_height_changed:
 			case mt_blend_values_changed:
-			case mt_terrain_height_map_changed:
-			case mt_height_map_changed:
-			case mt_terrain_height_scale_changed:
 				return false;
 		}
 

@@ -1,7 +1,7 @@
 /****************************************************************************
  *            ambientmodification.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -20,15 +20,14 @@ namespace eternal_lands
 	class AmbientModification: public Modification
 	{
 		private:
-			glm::vec4 m_color;
-			Uint16 m_page_id;
+			glm::vec3 m_color;
 
 		public:
-			AmbientModification(const Uint16 page_id, const glm::vec4 &color);
+			AmbientModification(const glm::vec3 &color);
 			virtual ~AmbientModification();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
-			virtual bool undo(Editor &editor);
+			virtual bool undo(EditorMapData &editor);
 
 	};
 

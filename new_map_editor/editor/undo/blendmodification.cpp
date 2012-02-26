@@ -1,14 +1,12 @@
 /****************************************************************************
  *            blendmodification.cpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
 #include "blendmodification.hpp"
-#include "editor.hpp"
-#include "scenepagereadonly.hpp"
-#include "scenepagereadwrite.hpp"
+#include "../editormapdata.hpp"
 #include "image.hpp"
 
 namespace eternal_lands
@@ -26,8 +24,8 @@ namespace eternal_lands
 	};
 
 	BlendModification::BlendModification(const ImageValueVector &blend_values,
-		const ImageSharedPtr &blend_image, const Uint32 id, const Uint16 page_id):
-		m_blend_values(blend_values), m_blend_image(blend_image), m_id(id),
+		const ImageSharedPtr &blend_image, const Uint16 page_id):
+		m_blend_values(blend_values), m_blend_image(blend_image),
 		m_page_id(page_id)
 	{
 	}
@@ -54,8 +52,7 @@ namespace eternal_lands
 
 			assert(blend_modification != 0);
 
-			if ((blend_modification->m_page_id == m_page_id) &&
-				(blend_modification->m_id == m_id))
+			if (blend_modification->m_page_id == m_page_id)
 			{
 				size = m_blend_values.size();
 				begin = m_blend_values.begin();
@@ -90,7 +87,7 @@ namespace eternal_lands
 		}
 	}
 
-	bool BlendModification::undo(Editor &editor)
+	bool BlendModification::undo(EditorMapData &editor)
 	{
 		BOOST_FOREACH(const ImageValue &value, m_blend_values)
 		{
