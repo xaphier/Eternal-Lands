@@ -92,7 +92,7 @@ namespace eternal_lands
 			void read_tile_map(const Uint32 tile_map_widht,
 				const Uint32 tile_map_height,
 				const Uint32 tile_map_offset);
-			void read();
+			void read(const String &name);
 			ObjectData get_object_data(const glm::vec3 &pos,
 				const glm::vec3 &rotation_angles,
 				const String &name, const float scale,

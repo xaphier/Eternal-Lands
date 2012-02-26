@@ -513,7 +513,7 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read()
+	void AbstractMapLoader::read(const String &name)
 	{
 		glm::vec3 ambient;
 		Uint32 tile_map_offset;
@@ -545,6 +545,8 @@ namespace eternal_lands
 		Uint8Array2 version_number;
 		Uint16 version;
 		bool dungeon;
+
+		m_reader = get_file_system()->get_file(name);
 
 		LOG_DEBUG("Loading map '%1%'.", get_reader()->get_name());
 

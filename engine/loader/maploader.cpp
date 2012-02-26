@@ -58,15 +58,13 @@ namespace eternal_lands
 			get_global_vars()->get_use_simd(),
 			get_global_vars()->get_opengl_3_2()));
 
-		m_reader = get_file_system()->get_file(name);
-
 		m_map = boost::make_shared<Map>(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_mesh_cache(),
 			get_effect_cache(), get_texture_cache(),
 			get_material_description_cache(), name);
 
-		read();
+		read(name);
 
 		return m_map;
 	}
