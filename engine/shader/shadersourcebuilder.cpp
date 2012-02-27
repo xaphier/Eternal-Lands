@@ -2336,6 +2336,8 @@ namespace eternal_lands
 		}
 
 		vertex_source << version_stream.str();
+		vertex_source << UTF8("invariant gl_Position; /* make ");
+		vertex_source << UTF8("existing gl_Position be invariant*/\n");
 
 		vertex = vertex_source.str();
 
