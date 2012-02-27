@@ -921,7 +921,7 @@ namespace eternal_lands
 
 	void Scene::draw_depth()
 	{
-		bool stencil;
+//		bool stencil;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("depth"));
 
@@ -930,12 +930,12 @@ namespace eternal_lands
 		m_scene_view.set_default_view();
 
 		m_state_manager.switch_color_mask(glm::bvec4(false));
-		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
+//		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			stencil = object.get_object()->get_state_stencil();
+/*			stencil = object.get_object()->get_state_stencil();
 
 			m_state_manager.switch_stencil_test(stencil);
 
@@ -944,7 +944,7 @@ namespace eternal_lands
 				glStencilFunc(GL_ALWAYS, object.get_object(
 					)->get_stencil_value(), 0xFFFFFFFF);
 			}
-
+*/
 			draw_object_depth(object.get_object(),
 				object.get_distance());
 		}
@@ -958,7 +958,7 @@ namespace eternal_lands
 
 	void Scene::draw_default()
 	{
-		bool blend, stencil;
+		bool blend;//, stencil;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
 
@@ -971,13 +971,13 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 
 		glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
+//		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
 			blend = object.get_blend();
-			stencil = object.get_object()->get_state_stencil();
+//			stencil = object.get_object()->get_state_stencil();
 
 			m_state_manager.switch_blend(blend);
 
@@ -987,7 +987,7 @@ namespace eternal_lands
 					object.get_transparency());
 			}
 
-			m_state_manager.switch_stencil_test(stencil);
+//			m_state_manager.switch_stencil_test(stencil);
 
 			draw_object(object.get_object(), object.get_distance());
 		}
@@ -1051,8 +1051,8 @@ namespace eternal_lands
 		glDepthFunc(GL_LEQUAL);
 		draw_default();
 
-		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 0.0f), 0x1);
-		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 1.0f), 0x2);
+//		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 0.0f), 0x1);
+//		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 1.0f), 0x2);
 	}
 
 	void Scene::pick_object(const ObjectSharedPtr &object,
