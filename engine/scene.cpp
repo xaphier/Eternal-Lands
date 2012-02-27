@@ -1047,7 +1047,7 @@ namespace eternal_lands
 
 		m_scene_view.set_default_view();
 
-		draw_depth();
+//		draw_depth();
 		glDepthFunc(GL_LEQUAL);
 		draw_default();
 
