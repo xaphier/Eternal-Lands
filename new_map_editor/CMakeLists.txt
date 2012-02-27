@@ -25,9 +25,9 @@ file(GLOB editor_undo_source_files editor/undo/*.cpp)
 list(APPEND map_editor_source_files ${editor_undo_source_files})
 list(APPEND map_editor_header_files ${editor_undo_header_files})
 
-QT4_WRAP_CPP(material_editor_moc_files ${map_editor_header_files} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
-QT4_WRAP_UI(material_editor_form_files ${map_editor_ui_files})
-QT4_ADD_RESOURCES(material_editor_resource_files ${map_editor_qrc_files})
+QT4_WRAP_CPP(map_editor_moc_files ${map_editor_header_files} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
+QT4_WRAP_UI(map_editor_form_files ${map_editor_ui_files})
+QT4_ADD_RESOURCES(map_editor_resource_files ${map_editor_qrc_files})
 
 add_executable(map_editor WIN32 ${map_editor_header_files}
 	${map_editor_source_files}

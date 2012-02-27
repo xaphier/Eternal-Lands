@@ -1,0 +1,1239 @@
+#include "mainwindow.hpp"
+#include <QColorDialog>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QTimer>
+#include "materialdata.hpp"
+#include "newmapdialog.hpp"
+#include "lightdata.hpp"
+#include "objectdata.hpp"
+
+MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
+{
+	setupUi(this);
+
+	init_actions();
+
+	m_settings = new SettingsDialog(this);
+	m_objects = new ObjectsDialog(this, el_gl_widget);
+	m_preferences = new PreferencesDialog(this);
+
+	action_time = new QSpinBox(this);
+	action_time->setMaximum(359);
+	action_time->setWrapping(true);
+	action_time->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
+	tool_bar->insertWidget(action_ambient, action_time);
+
+	QObject::connect(action_add_object, SIGNAL(triggered(bool)), this, SLOT(add_object(bool)));
+	QObject::connect(action_add_light, SIGNAL(triggered(bool)), this, SLOT(add_light(bool)));
+	QObject::connect(action_wire_frame, SIGNAL(triggered(bool)), el_gl_widget, SLOT(set_wire_frame(bool)));
+
+	QObject::connect(el_gl_widget, SIGNAL(update_object(bool)), this, SLOT(update_object(bool)));
+	QObject::connect(el_gl_widget, SIGNAL(update_light(bool)), this, SLOT(update_light(bool)));
+	QObject::connect(el_gl_widget, SIGNAL(deselect()), this, SLOT(deselect()));
+
+	QObject::connect(x_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
+	QObject::connect(y_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
+	QObject::connect(z_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
+	QObject::connect(scale_value, SIGNAL(valueChanged(double)), this, SLOT(update_scale()));
+	QObject::connect(x_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
+	QObject::connect(y_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
+	QObject::connect(z_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
+	QObject::connect(object_color, SIGNAL(clicked()), this, SLOT(change_object_color()));
+
+	QObject::connect(radius, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_light_radius(double)));
+	QObject::connect(light_color, SIGNAL(clicked()), this, SLOT(change_light_color()));
+	QObject::connect(x_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
+	QObject::connect(y_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
+	QObject::connect(z_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
+
+	m_terrain_diffuse_texture_mapper = new QSignalMapper(this);
+	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_0, int(0));
+	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_1, int(1));
+	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_2, int(2));
+	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_3, int(3));
+	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_4, int(4));
+
+	QObject::connect(terrain_diffuse_texture_0, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
+	QObject::connect(terrain_diffuse_texture_1, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
+	QObject::connect(terrain_diffuse_texture_2, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
+	QObject::connect(terrain_diffuse_texture_3, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
+	QObject::connect(terrain_diffuse_texture_4, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
+	QObject::connect(m_terrain_diffuse_texture_mapper, SIGNAL(mapped(const int)), this,
+		SLOT(set_terrain_diffuse_texture(const int)));
+
+	m_terrain_normal_texture_mapper = new QSignalMapper(this);
+	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_0, int(0));
+	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_1, int(1));
+	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_2, int(2));
+	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_3, int(3));
+	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_4, int(4));
+
+	QObject::connect(terrain_normal_texture_0, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
+	QObject::connect(terrain_normal_texture_1, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
+	QObject::connect(terrain_normal_texture_2, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
+	QObject::connect(terrain_normal_texture_3, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
+	QObject::connect(terrain_normal_texture_4, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
+	QObject::connect(m_terrain_normal_texture_mapper, SIGNAL(mapped(const int)), this,
+		SLOT(set_terrain_normal_texture(const int)));
+	QObject::connect(el_gl_widget, SIGNAL(terrain_edit(const int, const int)), this,
+		SLOT(terrain_edit(const int, const int)));
+
+	QObject::connect(action_undo, SIGNAL(triggered()), el_gl_widget, SLOT(undo()));
+	QObject::connect(el_gl_widget, SIGNAL(can_undo(bool)), action_undo, SLOT(setEnabled(bool)));
+
+	QObject::connect(action_light, SIGNAL(triggered(bool)), el_gl_widget, SLOT(light_mode(bool)));
+	QObject::connect(action_height, SIGNAL(triggered(bool)), this, SLOT(height_mode(bool)));
+	QObject::connect(action_height, SIGNAL(triggered(bool)), el_gl_widget, SLOT(set_terrain_editing(bool)));
+
+	QObject::connect(action_remove, SIGNAL(triggered(bool)), this, SLOT(remove()));
+
+	QObject::connect(move_l, SIGNAL(clicked()), action_move_l, SLOT(trigger()));
+	QObject::connect(move_r, SIGNAL(clicked()), action_move_r, SLOT(trigger()));
+	QObject::connect(move_u, SIGNAL(clicked()), action_move_u, SLOT(trigger()));
+	QObject::connect(move_d, SIGNAL(clicked()), action_move_d, SLOT(trigger()));
+	QObject::connect(rotate_l, SIGNAL(clicked()), action_rotate_l, SLOT(trigger()));
+	QObject::connect(rotate_r, SIGNAL(clicked()), action_rotate_r, SLOT(trigger()));
+	QObject::connect(zoom_in, SIGNAL(clicked()), action_zoom_in, SLOT(trigger()));
+	QObject::connect(zoom_out, SIGNAL(clicked()), action_zoom_out, SLOT(trigger()));
+
+	QObject::connect(action_new, SIGNAL(triggered(bool)), this, SLOT(new_map()));
+	QObject::connect(action_open, SIGNAL(triggered(bool)), this, SLOT(open_map()));
+//	QObject::connect(action_settings, SIGNAL(triggered(bool)), this, SLOT(settings()));
+	QObject::connect(action_fog, SIGNAL(triggered(bool)), this, SLOT(set_fog()));
+	QObject::connect(action_ambient, SIGNAL(triggered(bool)), this, SLOT(change_ambient()));
+	QObject::connect(action_blend_image, SIGNAL(triggered(bool)), this,
+		SLOT(change_blend_image_name()));
+	QObject::connect(action_time, SIGNAL(valueChanged(int)), el_gl_widget,
+		SLOT(set_game_minute(int)));
+	QObject::connect(action_preferences, SIGNAL(triggered(bool)), this,
+		SLOT(change_preferences()));
+
+	QObject::connect(action_export_blend_image, SIGNAL(triggered(bool)), this,
+		SLOT(export_blend_image()));
+	QObject::connect(action_export_terrain_map, SIGNAL(triggered(bool)), this,
+		SLOT(export_terrain_map()));
+	QObject::connect(action_import_terrain_map, SIGNAL(triggered(bool)), this,
+		SLOT(import_terrain_map()));
+	QObject::connect(action_terrain_height_scale, SIGNAL(triggered(bool)), this,
+		SLOT(terrain_height_scale()));
+
+	m_object_type_mapper = new QSignalMapper(this);
+	m_object_type_mapper->setMapping(type_none, int(0));
+	m_object_type_mapper->setMapping(type_entrable, int(1));
+	m_object_type_mapper->setMapping(type_harvestable, int(2));
+	m_object_type_mapper->setMapping(type_usable, int(3));
+
+	QObject::connect(type_none, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
+	QObject::connect(type_entrable, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
+	QObject::connect(type_harvestable, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
+	QObject::connect(type_usable, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
+	QObject::connect(m_object_type_mapper, SIGNAL(mapped(const int)), el_gl_widget,
+		SLOT(set_object_type(const int)));
+
+	m_object_blending_mapper = new QSignalMapper(this);
+	m_object_blending_mapper->setMapping(blending_value_0, int(0));
+	m_object_blending_mapper->setMapping(blending_value_1, int(1));
+	m_object_blending_mapper->setMapping(blending_value_2, int(2));
+	m_object_blending_mapper->setMapping(blending_value_3, int(3));
+
+	QObject::connect(blending_value_0, SIGNAL(clicked()), m_object_blending_mapper,
+		SLOT(map()));
+	QObject::connect(blending_value_1, SIGNAL(clicked()), m_object_blending_mapper,
+		SLOT(map()));
+	QObject::connect(blending_value_2, SIGNAL(clicked()), m_object_blending_mapper,
+		SLOT(map()));
+	QObject::connect(blending_value_3, SIGNAL(clicked()), m_object_blending_mapper,
+		SLOT(map()));
+	QObject::connect(m_object_blending_mapper, SIGNAL(mapped(const int)), this,
+		SLOT(set_object_blending(const int)));
+
+	QObject::connect(server_id, SIGNAL(valueChanged(int)), el_gl_widget,
+		SLOT(set_object_server_id(int)));
+
+	QObject::connect(translate_x_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_x(bool)));
+	QObject::connect(translate_y_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_y(bool)));
+	QObject::connect(translate_z_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_z(bool)));
+	QObject::connect(translate_x_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_x_min(double)));
+	QObject::connect(translate_y_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_y_min(double)));
+	QObject::connect(translate_z_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_z_min(double)));
+	QObject::connect(translate_x_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_x_max(double)));
+	QObject::connect(translate_y_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_y_max(double)));
+	QObject::connect(translate_z_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_z_max(double)));
+
+	QObject::connect(rotate_x_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_rotation_x(bool)));
+	QObject::connect(rotate_y_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_rotation_y(bool)));
+	QObject::connect(rotate_z_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_rotation_z(bool)));
+	QObject::connect(rotate_x_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_rotation_x_min(double)));
+	QObject::connect(rotate_y_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_rotation_y_min(double)));
+	QObject::connect(rotate_z_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_rotation_z_min(double)));
+	QObject::connect(rotate_x_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_rotation_x_max(double)));
+	QObject::connect(rotate_y_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_rotation_y_max(double)));
+	QObject::connect(rotate_z_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_rotation_z_max(double)));
+
+	QObject::connect(scale_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_scale(bool)));
+	QObject::connect(scale_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_scale_min(double)));
+	QObject::connect(scale_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_scale_max(double)));
+
+	QObject::connect(action_save, SIGNAL(triggered()), this, SLOT(save()));
+	QObject::connect(action_save_as, SIGNAL(triggered()), this, SLOT(save_as()));
+	QObject::connect(action_info, SIGNAL(triggered()), this, SLOT(about_el()));
+	QObject::connect(action_qt_info, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
+	object_witdgets.push_back(x_translation);
+	object_witdgets.push_back(y_translation);
+	object_witdgets.push_back(z_translation);
+	object_witdgets.push_back(scale_value);
+	object_witdgets.push_back(x_rotation);
+	object_witdgets.push_back(y_rotation);
+	object_witdgets.push_back(z_rotation);
+	object_witdgets.push_back(blending_value_0);
+	object_witdgets.push_back(blending_value_1);
+	object_witdgets.push_back(blending_value_2);
+	object_witdgets.push_back(blending_value_3);
+	object_witdgets.push_back(server_id);
+	object_witdgets.push_back(type_none);
+	object_witdgets.push_back(type_entrable);
+	object_witdgets.push_back(type_harvestable);
+	object_witdgets.push_back(type_usable);
+
+	light_witdgets.push_back(x_position);
+	light_witdgets.push_back(y_position);
+	light_witdgets.push_back(z_position);
+	light_witdgets.push_back(radius);
+	light_witdgets.push_back(ambient);
+	object_witdgets.push_back(light_color);
+
+	set_light_color(glm::vec4(0.0f));
+
+	read_settings();
+
+	m_timer = new QTimer(this);
+	connect(m_timer, SIGNAL(timeout()), el_gl_widget, SLOT(updateGL()));
+	m_timer->start(100);
+
+	m_progress_bar = new QProgressBar(status_bar);
+	status_bar->addPermanentWidget(m_progress_bar, 1);
+	m_progress.reset(new QProgress);
+
+	QObject::connect(m_progress.get(), SIGNAL(set_range(const int, const int)), m_progress_bar, SLOT(setRange(const int, const int)), Qt::QueuedConnection);
+	QObject::connect(m_progress.get(), SIGNAL(set_value(const int)), m_progress_bar, SLOT(setValue(const int)), Qt::QueuedConnection);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	QSettings settings;
+
+	settings.beginGroup("window");
+	settings.setValue("geometry", saveGeometry());
+	settings.setValue("state", saveState());
+	settings.setValue("icon size", tool_bar->iconSize());
+	settings.endGroup();
+	save_shortcuts(settings);
+	save_mouse_settings(settings);
+	save_textures_settings(settings);
+
+	QMainWindow::closeEvent(event);
+}
+
+void MainWindow::read_settings()
+{
+	QSettings settings;
+
+	settings.beginGroup("window");
+	restoreGeometry(settings.value("geometry").toByteArray());
+	restoreState(settings.value("state").toByteArray());
+	tool_bar->setIconSize(settings.value("icon size", QSize(24, 24)).value<QSize>());
+	settings.endGroup();
+
+	load_shortcuts(settings);
+	load_mouse_settings(settings);
+	load_textures_settings(settings);
+}
+
+void MainWindow::update_object()
+{
+	MeshObjectData mesh_object_data;
+	unsigned int id;
+	Uint16 type;
+
+	el_gl_widget->get_object_data(mesh_object_data);
+
+	BOOST_FOREACH(QObject* object_widget, object_witdgets)
+	{
+		object_widget->blockSignals(true);
+	}
+
+	x_translation->setValue(mesh_object_data.get_translation()[0]);
+	y_translation->setValue(mesh_object_data.get_translation()[1]);
+	z_translation->setValue(mesh_object_data.get_translation()[2]);
+
+	x_rotation->setValue(mesh_object_data.get_rotation()[0]);
+	y_rotation->setValue(mesh_object_data.get_rotation()[1]);
+	z_rotation->setValue(mesh_object_data.get_rotation()[2]);
+
+	scale_value->setValue(mesh_object_data.get_scale() * 100.0f);
+
+	set_blending(mesh_object_data.get_blending());
+
+	set_object_color(glm::clamp(mesh_object_data.get_color(), 0.0f, 1.0));
+
+	type = mesh_object_data.get_type();
+
+	if (m_object_type_mapper->mapping(type) != 0)
+	{
+		dynamic_cast<QRadioButton*>(m_object_type_mapper->mapping(type))->setChecked(true);
+	}
+	else
+	{
+		dynamic_cast<QRadioButton*>(m_object_type_mapper->mapping(0))->setChecked(true);
+		type = 0;
+	}
+
+	server_id->setValue(mesh_object_data.get_server_id());
+	type_id_group->setEnabled(type != 0);
+
+	mesh_name->setText(QString::fromLatin1(mesh_object_data.get_mesh().c_str()));
+
+	id = mesh_object_data.get_server_id();
+
+	object_id->setText(QVariant(id).toString());
+
+	BOOST_FOREACH(QObject* object_widget, object_witdgets)
+	{
+		object_widget->blockSignals(false);
+	}
+}
+
+void MainWindow::add_item(const QString &str, QComboBox* combobox)
+{
+	QString selection;
+	int index;
+
+	selection = combobox->currentText();
+
+	combobox->addItem(str);
+
+	index = combobox->findText(selection);
+
+	combobox->setCurrentIndex(index);
+}
+
+void MainWindow::set_diffuse_terrain_texture(const QString &str, const int index)
+{
+	QComboBox* combobox;
+	int idx;
+
+	combobox = dynamic_cast<QComboBox*>(m_terrain_diffuse_texture_mapper->mapping(index));
+
+	idx = combobox->findText(str);
+
+	if (idx == -1)
+	{
+		add_item(str, terrain_diffuse_texture_0);
+		add_item(str, terrain_diffuse_texture_1);
+		add_item(str, terrain_diffuse_texture_2);
+		add_item(str, terrain_diffuse_texture_3);
+		add_item(str, terrain_diffuse_texture_4);
+		idx = combobox->findText(str);
+	}
+
+	combobox->setCurrentIndex(idx);
+}
+
+void MainWindow::set_normal_terrain_texture(const QString &str, const int index)
+{
+	QComboBox* combobox;
+	int idx;
+
+	combobox = dynamic_cast<QComboBox*>(m_terrain_normal_texture_mapper->mapping(index));
+
+	idx = combobox->findText(str);
+
+	if (idx == -1)
+	{
+		add_item(str, terrain_normal_texture_0);
+		add_item(str, terrain_normal_texture_1);
+		add_item(str, terrain_normal_texture_2);
+		add_item(str, terrain_normal_texture_3);
+		add_item(str, terrain_normal_texture_4);
+		idx = combobox->findText(str);
+	}
+
+	combobox->setCurrentIndex(idx);
+}
+
+void MainWindow::update_terrain()
+{
+	MaterialData terrain_material;
+	QString str;
+	int i;
+
+	for (i = 0; i < 5; i++)
+	{
+		m_terrain_diffuse_texture_mapper->mapping(i)->blockSignals(true);
+		m_terrain_normal_texture_mapper->mapping(i)->blockSignals(true);
+	}
+
+	el_gl_widget->get_terrain_material_data(terrain_material);
+
+	for (i = 0; i < 5; i++)
+	{
+		str = QString::fromStdString(terrain_material.get_diffuse_texture(i));
+		set_diffuse_terrain_texture(str, i);
+		str = QString::fromStdString(terrain_material.get_normal_texture(i));
+		set_normal_terrain_texture(str, i);
+	}
+
+	for (i = 0; i < 5; i++)
+	{
+		m_terrain_diffuse_texture_mapper->mapping(i)->blockSignals(false);
+		m_terrain_normal_texture_mapper->mapping(i)->blockSignals(false);
+	}
+}
+
+void MainWindow::update_object(const bool select)
+{
+	Uint16 renderable;
+	int i;
+
+	if (select && action_delete->isChecked())
+	{
+		el_gl_widget->remove_object();
+		deselect();
+	}
+	else
+	{
+		i = -1;
+		renderable = el_gl_widget->get_renderable();
+
+		if (renderable == rt_terrain)
+		{
+			i = 1;
+			update_terrain();
+		}
+		else
+		{
+			if (renderable == rt_mesh)
+			{
+				i = 0;
+				update_object();
+			}
+			else
+			{
+				return;
+			}
+		}
+
+		if (select)
+		{
+			properties->setCurrentIndex(i);
+		}
+
+		action_remove->setEnabled(properties->currentIndex() == i);
+	}
+}
+
+void MainWindow::update_light(const bool select)
+{
+	LightData light;
+	unsigned int id;
+
+	if (select && action_delete->isChecked())
+	{
+		el_gl_widget->remove_light();
+		deselect();
+	}
+	else
+	{
+		if (select)
+		{
+			properties->setCurrentIndex(2);
+		}
+
+		action_remove->setEnabled(properties->currentIndex() == 2);
+
+		el_gl_widget->get_light_data(light);
+
+		BOOST_FOREACH(QObject* light_widget, light_witdgets)
+		{
+			light_widget->blockSignals(true);
+		}
+
+		x_position->setValue(light.get_position()[0]);
+		y_position->setValue(light.get_position()[1]);
+		z_position->setValue(light.get_position()[2]);
+
+		radius->setValue(light.get_radius());
+
+		set_light_color(glm::clamp(light.get_color(), 0.0f, 1.0));
+
+		id = light.get_server_id();
+
+		light_id->setText(QVariant(id).toString());
+
+		BOOST_FOREACH(QObject* light_widget, light_witdgets)
+		{
+			light_widget->blockSignals(false);
+		}
+	}
+}
+
+void MainWindow::deselect()
+{
+	set_default_mode();
+	action_remove->setEnabled(false);
+}
+
+void MainWindow::update_translation()
+{
+	glm::vec3 translation;
+
+	translation[0] = x_translation->value();
+	translation[1] = y_translation->value();
+	translation[2] = z_translation->value();
+
+	el_gl_widget->set_object_translation(translation);
+}
+
+void MainWindow::update_rotation()
+{
+	glm::vec3 rotation;
+
+	rotation[0] = x_rotation->value();
+	rotation[1] = y_rotation->value();
+	rotation[2] = z_rotation->value();
+
+	el_gl_widget->set_object_rotation(rotation);
+}
+
+void MainWindow::update_scale()
+{
+	el_gl_widget->set_object_scale(scale_value->value() * 0.01f);
+}
+
+void MainWindow::update_position()
+{
+	glm::vec3 position;
+
+	position[0] = x_position->value();
+	position[1] = y_position->value();
+	position[2] = z_position->value();
+
+	el_gl_widget->set_light_position(position);
+}
+
+void MainWindow::set_light_color(const glm::vec4 &color)
+{
+	set_light_color(QColor::fromRgbF(color[0], color[1], color[2]));
+}
+
+void MainWindow::set_light_color(const QColor &color)
+{
+	QPixmap pixmap(100, 15);
+
+	pixmap.fill(color);
+
+	light_color->setIcon(QIcon(pixmap));
+}
+
+void MainWindow::set_object_color(const glm::vec4 &color)
+{
+	QColor tmp;
+
+	tmp.setRedF(color[0]);
+	tmp.setGreenF(color[1]);
+	tmp.setBlueF(color[2]);
+	tmp.setAlphaF(color[3]);
+
+	set_object_color(tmp);
+}
+
+void MainWindow::set_object_color(const QColor &color)
+{
+	QPixmap pixmap(180, 15);
+
+	pixmap.fill(color);
+
+	object_color->setIcon(QIcon(pixmap));
+}
+
+void MainWindow::change_light_color()
+{
+	QColor color;
+	glm::vec4 light_color;
+
+	light_color = el_gl_widget->get_light_color();
+	color = QColor::fromRgbF(light_color[0], light_color[1], light_color[2]);
+	color = QColorDialog::getColor(color, this);
+
+	if (color.isValid())
+	{
+		set_light_color(color);
+
+		el_gl_widget->set_light_color(glm::vec4(color.redF(), color.greenF(),
+			color.blueF(), 1.0f));
+	}
+}
+
+void MainWindow::change_object_color()
+{
+	QColor color;
+	glm::vec4 object_color;
+
+	object_color = el_gl_widget->get_object_color();
+
+	color.setRedF(object_color[0]);
+	color.setGreenF(object_color[1]);
+	color.setBlueF(object_color[2]);
+	color.setAlphaF(object_color[3]);
+
+	color = QColorDialog::getColor(color, this, tr("Object color"),
+		QColorDialog::ShowAlphaChannel);
+
+	if (color.isValid())
+	{
+		set_object_color(color);
+
+		el_gl_widget->set_object_color(glm::vec4(color.redF(), color.greenF(),
+			color.blueF(), color.alphaF()));
+	}
+}
+
+void MainWindow::add_object(const bool value)
+{
+	if (value)
+	{
+		if (m_objects->exec() == QDialog::Accepted)
+		{
+			el_gl_widget->add_object(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f),
+				m_objects->get_type(), m_objects->get_server_id(),
+				m_objects->get_object());
+		}
+		else
+		{
+			action_add_object->setChecked(false);
+			el_gl_widget->disable_object();
+		}
+	}
+	else
+	{
+		el_gl_widget->disable_object();
+	}
+}
+
+void MainWindow::add_light(const bool value)
+{
+	if (value)
+	{
+		el_gl_widget->add_light();
+	}
+	else
+	{
+		el_gl_widget->disable_light();
+	}
+}
+
+void MainWindow::remove()
+{
+	switch (el_gl_widget->get_renderable())
+	{
+		case rt_light:
+			el_gl_widget->remove_light();
+			break;
+		case rt_mesh:
+			el_gl_widget->remove_object();
+			break;
+		case rt_ground_tiles:
+		case rt_terrain:
+			return;
+	}
+
+	deselect();
+}
+
+void MainWindow::height_mode(const bool checked)
+{
+	if (checked)
+	{
+		action_remove->setEnabled(false);
+		properties->setCurrentIndex(3);
+	}
+	else
+	{
+		set_default_mode();
+	}
+}
+
+void MainWindow::set_terrain_diffuse_texture(const int index)
+{
+	QString file_name;
+
+	file_name = dynamic_cast<QComboBox*>(m_terrain_diffuse_texture_mapper->mapping(index))->currentText();
+
+	el_gl_widget->set_terrain_diffuse_texture(file_name.toStdString(), index);
+}
+
+void MainWindow::set_terrain_normal_texture(const int index)
+{
+	QString file_name;
+
+	file_name = dynamic_cast<QComboBox*>(m_terrain_normal_texture_mapper->mapping(index))->currentText();
+
+	el_gl_widget->set_terrain_normal_texture(file_name.toStdString(), index);
+}
+
+void MainWindow::set_fog()
+{
+	el_gl_widget->set_fog(glm::vec3(1.0f), 2.5f);
+}
+
+void MainWindow::open_map()
+{
+	QString file_name;
+
+	file_name = QFileDialog::getOpenFileName(this, tr("Open File"), ".", tr("EL-map (*.elm)"));
+
+	if (!file_name.isEmpty())
+	{
+		el_gl_widget->open_map(file_name, m_progress);
+	}
+}
+
+void MainWindow::set_default_mode()
+{
+	properties->setCurrentIndex(4);
+}
+
+void MainWindow::do_save()
+{
+	el_gl_widget->save(m_file_name);
+}
+
+void MainWindow::save()
+{
+	if (m_file_name.isEmpty())
+	{
+		save_as();
+	}
+	else
+	{
+		do_save();
+	}
+}
+
+void MainWindow::save_as()
+{
+	QString file_name;
+
+	file_name = QFileDialog::getSaveFileName(this, tr("Save map"), ".",
+		tr("Eternal land map files (*.elm)"), 0, 0);
+
+	if (!file_name.isEmpty())
+	{
+		m_file_name = file_name;
+		do_save();
+	}
+}
+
+void MainWindow::change_ambient()
+{
+	QColor color;
+	glm::vec4 ambient_color;
+
+	ambient_color = el_gl_widget->get_scene_ambient_color();
+
+	color = QColor::fromRgbF(ambient_color[0], ambient_color[1], ambient_color[2],
+		ambient_color[3]);
+
+	color = QColorDialog::getColor(color, this, tr("Scene ambient color"),
+		QColorDialog::ShowAlphaChannel);
+
+	if (color.isValid())
+	{
+		ambient_color[0] = color.redF();
+		ambient_color[1] = color.greenF();
+		ambient_color[2] = color.blueF();
+		ambient_color[3] = color.alphaF();
+
+		el_gl_widget->set_scene_ambient_color(ambient_color);
+	}
+}
+
+void MainWindow::change_blend_image_name()
+{
+	QString blend_image_name;
+	bool ok;
+
+	blend_image_name = el_gl_widget->get_blend_image_name();
+
+	blend_image_name = QInputDialog::getText(this, tr("Blend image"), tr("File name:"),
+		QLineEdit::Normal, blend_image_name, &ok);
+
+	if (ok && !blend_image_name.isEmpty())
+	{
+		el_gl_widget->set_blend_image_name(blend_image_name);
+	}
+}
+
+void MainWindow::new_map()
+{
+	QStringList textures;
+	QString image_name;
+	boost::scoped_ptr<NewMapDialog> new_map;
+	int map_size_x;
+	int map_size_y;
+	int blend_image_size_x;
+	int blend_image_size_y;
+
+	new_map.reset(new NewMapDialog(this));
+	new_map->set_diffuse_textures(m_textures);
+
+	if (new_map->exec() == QDialog::Accepted)
+	{
+		map_size_x = new_map->map_width->currentText().toInt();
+		map_size_y = new_map->map_height->currentText().toInt();
+		blend_image_size_x = new_map->blend_image_width->currentText().toInt();
+		blend_image_size_y = new_map->blend_image_height->currentText().toInt();
+		image_name = new_map->image_name->text();
+
+		textures.push_back(new_map->terrain_diffuse_texture_0->currentText());
+		textures.push_back(new_map->terrain_diffuse_texture_1->currentText());
+		textures.push_back(new_map->terrain_diffuse_texture_2->currentText());
+		textures.push_back(new_map->terrain_diffuse_texture_3->currentText());
+		textures.push_back(new_map->terrain_diffuse_texture_4->currentText());
+		textures.push_back(new_map->terrain_normal_texture_0->currentText());
+		textures.push_back(new_map->terrain_normal_texture_1->currentText());
+		textures.push_back(new_map->terrain_normal_texture_2->currentText());
+		textures.push_back(new_map->terrain_normal_texture_3->currentText());
+		textures.push_back(new_map->terrain_normal_texture_4->currentText());
+
+		if (image_name.isEmpty())
+		{
+			el_gl_widget->new_map(map_size_x, map_size_y, blend_image_size_x,
+				blend_image_size_y, textures);
+		}
+		else
+		{
+			el_gl_widget->new_map(image_name, blend_image_size_x,
+				blend_image_size_y, textures);
+		}
+	}
+}
+
+void MainWindow::change_preferences()
+{
+	m_preferences->set_actions(findChildren<QAction*>());
+	m_preferences->set_click_button(el_gl_widget->get_click_button());
+	m_preferences->set_wheel_zoom_x10(el_gl_widget->get_wheel_zoom_x10());
+	m_preferences->set_swap_wheel_zoom(el_gl_widget->get_swap_wheel_zoom());
+	m_preferences->set_toolbar_icon_size(tool_bar->iconSize());
+	m_preferences->set_textures(m_textures);
+
+	if (m_preferences->exec() == QDialog::Accepted)
+	{
+		el_gl_widget->set_click_button(m_preferences->get_click_button());
+		el_gl_widget->set_wheel_zoom_x10(m_preferences->get_wheel_zoom_x10());
+		el_gl_widget->set_swap_wheel_zoom(m_preferences->get_swap_wheel_zoom());
+		tool_bar->setIconSize(m_preferences->get_toolbar_icon_size());
+		set_textures(m_preferences->get_textures());
+	}
+}
+
+void MainWindow::init_actions()
+{
+	QAction* action;
+	QIcon icon;
+
+	icon.addFile(QString::fromUtf8(":/icons/gtk-execute.png"), QSize(), QIcon::Normal,
+		QIcon::Off);
+
+	action = tool_bar->toggleViewAction();
+	action->setIcon(icon);
+	action->setText("&Toolbar");
+	menu_windows->addAction(action);
+
+	foreach(QDockWidget* dock_widget, findChildren<QDockWidget*>())
+	{
+		action = dock_widget->toggleViewAction();
+		action->setIcon(dock_widget->windowIcon());
+		action->setText(dock_widget->windowTitle());
+		menu_windows->addAction(action);
+	}
+
+	action_move_l = new QAction(this);
+
+	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_move_l->setText("Move Left");
+	action_move_l->setIcon(move_l->icon());
+
+	action_move_r = new QAction(this);
+
+	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_move_r->setText("Move Right");
+	action_move_r->setIcon(move_r->icon());
+
+	action_move_u = new QAction(this);
+
+	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_move_u->setText("Move Up");
+	action_move_u->setIcon(move_u->icon());
+
+	action_move_d = new QAction(this);
+
+	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_move_d->setText("Move Down");
+	action_move_d->setIcon(move_d->icon());
+
+	action_rotate_l = new QAction(this);
+
+	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_rotate_l->setText("Rotate Left");
+	action_rotate_l->setIcon(rotate_l->icon());
+
+	action_rotate_r = new QAction(this);
+
+	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_rotate_r->setText("Rotate Right");
+	action_rotate_r->setIcon(rotate_r->icon());
+
+	action_zoom_in = new QAction(this);
+
+	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_zoom_in->setText("Zoom In");
+	action_zoom_in->setIcon(zoom_in->icon());
+
+	action_zoom_out = new QAction(this);
+
+	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_zoom_out->setText("Zoom Out");
+	action_zoom_out->setIcon(zoom_out->icon());
+
+	foreach (QAction* action, findChildren<QAction*>())
+	{
+		if (action != 0)
+		{
+			if (!action->isSeparator() && (action->menu() == 0))
+			{
+				action->setData(action->text().remove('&'));
+			}
+		}
+	}
+
+	addAction(action_move_l);
+	addAction(action_move_r);
+	addAction(action_move_u);
+	addAction(action_move_d);
+	addAction(action_rotate_l);
+	addAction(action_rotate_r);
+	addAction(action_zoom_in);
+	addAction(action_zoom_out);
+
+	QObject::connect(action_move_l, SIGNAL(triggered()), el_gl_widget, SLOT(move_left()));
+	QObject::connect(action_move_r, SIGNAL(triggered()), el_gl_widget, SLOT(move_right()));
+	QObject::connect(action_move_u, SIGNAL(triggered()), el_gl_widget, SLOT(move_up()));
+	QObject::connect(action_move_d, SIGNAL(triggered()), el_gl_widget, SLOT(move_down()));
+	QObject::connect(action_rotate_l, SIGNAL(triggered()), el_gl_widget, SLOT(rotate_left()));
+	QObject::connect(action_rotate_r, SIGNAL(triggered()), el_gl_widget, SLOT(rotate_right()));
+	QObject::connect(action_zoom_in, SIGNAL(triggered()), el_gl_widget, SLOT(zoom_in()));
+	QObject::connect(action_zoom_out, SIGNAL(triggered()), el_gl_widget, SLOT(zoom_out()));
+}
+
+void MainWindow::save_shortcuts(QSettings &settings)
+{
+	settings.beginGroup("shortcuts");
+
+	foreach (QAction* action, findChildren<QAction*>())
+	{
+		if (action != 0)
+		{
+			if (!action->isSeparator() && (action->menu() == 0))
+			{
+				settings.setValue(action->data().toString(),
+					action->shortcut().toString(QKeySequence::NativeText));
+			}
+		}
+	}
+
+	settings.endGroup();
+}
+
+void MainWindow::load_shortcuts(QSettings &settings)
+{
+	settings.beginGroup("shortcuts");
+
+	foreach (QAction* action, findChildren<QAction*>())
+	{
+		if (action != 0)
+		{
+			if (!action->isSeparator() && (action->menu() == 0))
+			{
+				action->setShortcut(QKeySequence(settings.value(
+					action->data().toString(), QKeySequence::mnemonic(
+					action->text()).toString()).toString()));
+			}
+		}
+	}
+
+	settings.endGroup();
+}
+
+void MainWindow::save_mouse_settings(QSettings &settings)
+{
+	settings.beginGroup("mouse");
+
+	settings.setValue("Click button", PreferencesDialog::mouse_button_to_str(el_gl_widget->get_click_button()));
+	settings.setValue("Wheel zoom x10", PreferencesDialog::key_mod_to_str(el_gl_widget->get_wheel_zoom_x10()));
+	settings.setValue("Swap wheel zoom", el_gl_widget->get_swap_wheel_zoom());
+
+	settings.endGroup();
+}
+
+void MainWindow::load_mouse_settings(QSettings &settings)
+{
+	settings.beginGroup("mouse");
+
+	el_gl_widget->set_click_button(PreferencesDialog::str_to_mouse_button(settings.value(
+		"Click button", PreferencesDialog::mouse_button_to_str(Qt::LeftButton)).toString()));
+	el_gl_widget->set_wheel_zoom_x10(PreferencesDialog::str_to_key_mod(settings.value(
+		"Wheel zoom x10", PreferencesDialog::key_mod_to_str(Qt::ShiftModifier)).toString()));
+	el_gl_widget->set_swap_wheel_zoom(settings.value("Swap wheel zoom", false).toBool());
+	
+	settings.endGroup();
+}
+
+void MainWindow::set_textures(const QStringList &textures)
+{
+	m_textures = textures;
+
+	m_preferences->set_textures(m_textures);
+
+	set_items(m_textures, terrain_diffuse_texture_0);
+	set_items(m_textures, terrain_diffuse_texture_1);
+	set_items(m_textures, terrain_diffuse_texture_2);
+	set_items(m_textures, terrain_diffuse_texture_3);
+}
+
+void MainWindow::set_items(const QStringList &strs, QComboBox* combobox)
+{
+	QString selection;
+	int index;
+
+	combobox->blockSignals(true);
+
+	selection = combobox->currentText();
+
+	combobox->clear();
+	combobox->addItems(strs);
+
+	index = combobox->findText(selection);
+
+	combobox->setCurrentIndex(index);
+
+	combobox->blockSignals(false);
+}
+
+void MainWindow::save_textures_settings(QSettings &settings)
+{
+	settings.beginGroup("textures");
+
+	settings.setValue("terrain", m_textures);
+
+	settings.endGroup();
+}
+
+void MainWindow::load_textures_settings(QSettings &settings)
+{
+	QStringList textures;
+	int i;
+
+	textures.append("textures/dirt.dds");
+	textures.append("textures/grass.dds");
+	textures.append("textures/mud.dds");
+	textures.append("textures/stone.dds");
+
+	for (i = 1; i <= 50; i++)
+	{
+		textures.append("3dobjects/tile" + QString::number(i) + ".dds");
+	}
+
+	for (i = 231; i <= 233; i++)
+	{
+		textures.append("3dobjects/tile" + QString::number(i) + ".dds");
+	}
+
+	for (i = 240; i <= 242; i++)
+	{
+		textures.append("3dobjects/tile" + QString::number(i) + ".dds");
+	}
+
+	settings.beginGroup("textures");
+
+	set_textures(settings.value("terrain", textures).toStringList());
+
+	settings.endGroup();
+}
+
+void MainWindow::terrain_edit(const int x, const int y)
+{
+	switch (paint_tool_box->currentIndex())
+	{
+		case 0:
+			el_gl_widget->terrain_height_edit(x, y, height_brush_strength->value()
+				* 0.01f, height_brush_radius->value(),
+				height_brush_type->currentIndex());
+			break;
+		case 1:
+			el_gl_widget->terrain_layer_edit(x, y, layer_index->value(),
+				layer_brush_strength->value() * 0.01f, layer_brush_radius->value(),
+				layer_brush_type->currentIndex());
+			break;
+		case 2:
+			el_gl_widget->ground_tile_edit(x, y, ground_tile->currentText().toInt());
+			break;
+		case 3:
+			el_gl_widget->water_tile_edit(x, y, 0);
+			break;
+		case 4:
+			el_gl_widget->height_edit(x, y, 0);
+			break;
+	}
+}
+
+void MainWindow::export_blend_image()
+{
+	QStringList codecs;
+	QString file_name, filter, extension, codec;
+	bool ok;
+
+	el_gl_widget->get_codecs(codecs);
+
+	codec = QInputDialog::getItem(this, tr("Select image format"), tr("Image format"), codecs,
+		0, false, &ok, 0);
+
+	if (ok)
+	{
+		el_gl_widget->get_file_extensions_filter(filter, extension, codec);
+
+		file_name = QFileDialog::getSaveFileName(this, tr("Export blend image"), ".",
+			filter, 0, 0);
+
+		if (!file_name.isEmpty())
+		{
+			QFileInfo file_info(file_name);
+
+			if (file_info.suffix().isEmpty())
+			{
+				file_name += tr(".") + extension;
+			}
+
+			el_gl_widget->export_blend_image(file_name, codec);
+		}
+	}
+}
+
+void MainWindow::export_terrain_map()
+{
+	QStringList codecs;
+	QString file_name, filter, extension, codec;
+	bool ok;
+
+	el_gl_widget->get_codecs(codecs);
+
+	codec = QInputDialog::getItem(this, tr("Select image format"), tr("Image format"), codecs,
+		0, false, &ok, 0);
+
+	if (ok)
+	{
+		el_gl_widget->get_file_extensions_filter(filter, extension, codec);
+
+		file_name = QFileDialog::getSaveFileName(this, tr("Export terrain map"), ".",
+			filter, 0, 0);
+
+		if (!file_name.isEmpty())
+		{
+			QFileInfo file_info(file_name);
+
+			if (file_info.suffix().isEmpty())
+			{
+				file_name += tr(".") + extension;
+			}
+
+			el_gl_widget->export_terrain_map(file_name, codec);
+		}
+	}
+}
+
+void MainWindow::import_terrain_map()
+{
+	QString file_name, filter;
+
+	el_gl_widget->get_file_extensions_filter(filter);
+
+	file_name = QFileDialog::getOpenFileName(this, tr("Import terrain map"), ".",
+		filter, 0, 0);
+
+	if (!file_name.isEmpty())
+	{
+		el_gl_widget->import_terrain_map(file_name);
+	}
+}
+
+void MainWindow::about_el()
+{
+
+}
+
+void MainWindow::terrain_height_scale()
+{
+	bool ok;
+	double old_value, value;
+
+	old_value = el_gl_widget->get_terrain_height_scale();
+
+	value = QInputDialog::getDouble(this, "Terrain height scale", "scale", old_value, 1.0,
+		255.0f, 1, &ok);
+
+	if (ok && (old_value != value))
+	{
+		el_gl_widget->set_terrain_height_scale(value);
+	}
+}
+
+void MainWindow::set_object_blending(const int value)
+{
+	switch (value)
+	{
+		case 0:
+			el_gl_widget->set_object_blending(bt_no_blending);
+			break;
+		case 1:
+			el_gl_widget->set_object_blending(bt_alpha_blending_texture);
+			break;
+		case 2:
+			el_gl_widget->set_object_blending(bt_alpha_blending_object);
+			break;
+		case 3:
+			el_gl_widget->set_object_blending(bt_additive_blending);
+			break;
+	}
+}
+
+void MainWindow::set_blending(const BlendType value)
+{
+	switch (value)
+	{
+		case bt_no_blending:
+			blending_value_0->setChecked(true);
+			break;
+		case bt_alpha_blending_texture:
+			blending_value_1->setChecked(true);
+			break;
+		case bt_alpha_blending_object:
+			blending_value_2->setChecked(true);
+			break;
+		case bt_additive_blending:
+			blending_value_3->setChecked(true);
+			break;
+	}
+}

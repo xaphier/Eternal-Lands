@@ -1,0 +1,109 @@
+#ifndef	UUID_dcc59537_9e69_4663_8cda_6ae09d1b3722
+#define UUID_dcc59537_9e69_4663_8cda_6ae09d1b3722
+
+#include "ui_mapeditor.h"
+#include <QSignalMapper>
+#include <QSettings>
+#include <QProgressBar>
+#include "settingsdialog.hpp"
+#include "objectsdialog.hpp"
+#include "timedialog.hpp"
+#include "preferencesdialog.hpp"
+#include "qprogress.hpp"
+
+class MainWindow: public QMainWindow, public Ui::MainWindow
+{
+	Q_OBJECT
+
+	private:
+		std::vector<QObject*> object_witdgets;
+		std::vector<QObject*> light_witdgets;
+		std::vector<QObject*> terrain_witdgets;
+		QSignalMapper* m_terrain_diffuse_texture_mapper;
+		QSignalMapper* m_terrain_normal_texture_mapper;
+		QSignalMapper* m_object_type_mapper;
+		QSignalMapper* m_object_blending_mapper;
+		QSpinBox* action_time;
+		SettingsDialog* m_settings;
+		ObjectsDialog* m_objects;
+		PreferencesDialog* m_preferences;
+		QString m_file_name;
+		QAction* action_move_l;
+		QAction* action_move_r;
+		QAction* action_move_u;
+		QAction* action_move_d;
+		QAction* action_rotate_l;
+		QAction* action_rotate_r;
+		QAction* action_zoom_in;
+		QAction* action_zoom_out;
+		QTimer* m_timer;
+		QProgressBar* m_progress_bar;
+		boost::shared_ptr<QProgress> m_progress;
+		QStringList m_textures;
+
+		void set_light_color(const glm::vec4 &color);
+		void set_light_color(const QColor &color);
+		void set_object_color(const glm::vec4 &color);
+		void set_object_color(const QColor &color);
+		void update_terrain();
+		void set_diffuse_terrain_texture(const QString &str, const int index);
+		void set_normal_terrain_texture(const QString &str, const int index);
+		void add_item(const QString &str, QComboBox* combobox);
+		void set_items(const QStringList &strs, QComboBox* combobox);
+		void set_default_mode();
+		void do_save();
+		void init_actions();
+		void read_settings();
+		void save_shortcuts(QSettings &settings);
+		void load_shortcuts(QSettings &settings);
+		void save_mouse_settings(QSettings &settings);
+		void load_mouse_settings(QSettings &settings);
+		void save_textures_settings(QSettings &settings);
+		void load_textures_settings(QSettings &settings);
+		void set_textures(const QStringList &textures);
+		void set_blending(const BlendType value);
+
+	private slots:
+		void update_object();
+		void about_el();
+		void terrain_height_scale();
+		void set_object_blending(const int);
+
+	protected:
+		virtual void closeEvent(QCloseEvent* event);
+
+	public:
+		MainWindow(QWidget* parent = 0);
+
+	public slots:
+		void update_translation();
+		void update_rotation();
+		void update_scale();
+		void update_position();
+		void update_object(const bool select);
+		void update_light(const bool select);
+		void deselect();
+		void change_light_color();
+		void change_object_color();
+		void add_object(const bool value);
+		void add_light(const bool value);
+		void remove();
+		void height_mode(const bool checked);
+		void set_terrain_diffuse_texture(const int index);
+		void set_terrain_normal_texture(const int index);
+		void set_fog();
+		void open_map();
+		void save();
+		void save_as();
+		void change_ambient();
+		void change_blend_image_name();
+		void new_map();
+		void change_preferences();
+		void terrain_edit(const int x, const int y);
+		void export_blend_image();
+		void export_terrain_map();
+		void import_terrain_map();
+
+};
+
+#endif	/* UUID_dcc59537_9e69_4663_8cda_6ae09d1b3722 */
