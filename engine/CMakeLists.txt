@@ -71,6 +71,10 @@ list(APPEND engine_source_files simd/simd.cpp)
 list(APPEND engine_header_files simd/simd.hpp)
 set_property(SOURCE simd/simd.cpp APPEND PROPERTY COMPILE_FLAGS ${SSE2_FLAGS})
 
+IF (ICONV_SECOND_ARGUMENT_IS_CONST)
+	add_definitions(-DICONV_SECOND_ARGUMENT_IS_CONST)
+ENDIF (ICONV_SECOND_ARGUMENT_IS_CONST)
+
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/buildinformations.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp" @ONLY)
 
 list(APPEND engine_source_files "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp")

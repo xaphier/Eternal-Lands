@@ -54,8 +54,13 @@ namespace eternal_lands
 				outbuf = output.get();
 				outleft = outlen;
 
+#ifdef	ICONV_SECOND_ARGUMENT_IS_CONST
+				converted = iconv(cd, (const char **)&inbuf,
+					&inleft, &outbuf, &outleft);
+#else	/* ICONV_SECOND_ARGUMENT_IS_CONST */
 				converted = iconv(cd, (char **)&inbuf, &inleft,
 					&outbuf, &outleft);
+#endif	/* ICONV_SECOND_ARGUMENT_IS_CONST */
 
 				if ((converted != (size_t)-1) ||
 					(errno == EINVAL))
