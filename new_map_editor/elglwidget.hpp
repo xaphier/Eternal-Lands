@@ -72,11 +72,10 @@ class ELGLWidget: public QGLWidget
 		BlendType get_object_blending() const;
 		void get_light_data(LightData &light) const;
 		void set_light_position(const glm::vec3 &position);
-		void set_light_color(const glm::vec4 &color);
+		void set_light_color(const glm::vec3 &color);
 		void set_object_translation(const glm::vec3 &translation);
 		void set_object_rotation(const glm::vec3 &rotation);
 		void set_object_scale(const float scale);
-		void set_object_color(const glm::vec4 &color);
 		void add_object(const glm::vec4 &color, const Uint16 type,
 			const Uint16 server_id, const String &object);
 		void add_light();
@@ -155,10 +154,10 @@ class ELGLWidget: public QGLWidget
 		void set_terrain_editing(const bool enabled);
 		void set_terrain_type_index(const int index);
 		void set_terrain_layer_index(const int index);
-		void set_terrain_albedo_map(const String &name,
+		void set_terrain_albedo_map(const QString &name,
 			const Uint32 index);
-		void set_object_type(const int type);
-		void set_object_server_id(const int server_id);
+		void set_object_selection(const int selection);
+		void set_object_blend(const int blend);
 		void set_random_translation_x(const bool value);
 		void set_random_translation_y(const bool value);
 		void set_random_translation_z(const bool value);

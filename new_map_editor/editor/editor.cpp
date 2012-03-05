@@ -15,12 +15,9 @@
 #include "undo/heightmodification.hpp"
 #include "undo/terraintexturemodification.hpp"
 #include "undo/groundtilemodification.hpp"
-#include "undo/terrainheightscalemodification.hpp"
 #include "sceneresources.hpp"
-#include "texturemanager.hpp"
 #include "codec/codecmanager.hpp"
 #include "image.hpp"
-#include "file/abstractfile.hpp"
 
 namespace eternal_lands
 {
@@ -41,7 +38,6 @@ namespace eternal_lands
 		m_random_rotation[1] = false;
 		m_random_rotation[2] = false;
 		m_random_scale = false;
-		m_page_id = 0;
 	}
 
 	bool Editor::undo()

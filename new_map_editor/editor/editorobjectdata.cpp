@@ -10,13 +10,17 @@
 namespace eternal_lands
 {
 
+	EditorObjectData::EditorObjectData()
+	{
+	}
+
 	EditorObjectData::EditorObjectData(const glm::vec3 &translation,
-		const glm::vec3 &rotation_angles, const String &name,
-		const float transparency, const float scale, const Uint32 id,
-		const SelectionType selection, const bool blend):
-		m_translation(translation), m_rotation_angles(rotation_angles),
-		m_name(name), m_transparency(transparency), m_scale(scale),
-		m_id(id), m_selection(selection), m_blend(blend)
+		const glm::vec3 &rotation_angles, const StringVector &materials,
+		const String &name, const float transparency, const float scale,
+		const Uint32 id, const SelectionType selection,
+		const BlendType blend): ObjectData(Transformation(), name,
+			transparency, id, selection, blend),
+		m_materials(materials), m_rotation_angles(rotation_angles)
 	{
 	}
 

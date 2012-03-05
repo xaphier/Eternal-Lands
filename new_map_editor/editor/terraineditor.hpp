@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "texture.hpp"
 #include "imagevalue.hpp"
+#include "height.hpp"
 
 namespace eternal_lands
 {

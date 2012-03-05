@@ -56,7 +56,7 @@ namespace eternal_lands
 //		scene_page_read_write->get_terrain_heights(heights);
 	}
 
-	void TerrainEditor::change_heights(const Uint16Array2 vertex,
+	void TerrainEditor::change_heights(const Uint16Array2 &vertex,
 		const float strength, const float radius,
 		const EditorBrushType brush_type, HeightVector &heights)
 	{
@@ -97,8 +97,8 @@ namespace eternal_lands
 			point[0] = heights[i].get_x();
 			point[1] = heights[i].get_y();
 
-			value = calc_brush_effect(centre, point, value, average, strength, radius,
-				brush_type);
+			value = calc_brush_effect(centre, point, value,
+				average, strength, radius, brush_type);
 
 			heights[i].set_value(value * 255.0f + 0.5f);
 		}
@@ -146,8 +146,8 @@ namespace eternal_lands
 		return std::max(0.0f, std::min(result, 1.0f));
 	}
 
-	void TerrainEditor::get_blend_values(ImageValueVector &blend_values,
-		const Uint16Array2 vertex, const float radius) const
+	void TerrainEditor::get_blend_values(const Uint16Array2 &vertex,
+		const float radius, ImageValueVector &blend_values) const
 	{
 		glm::vec2 centre, point;
 		Uint32 x, y;
@@ -184,16 +184,19 @@ namespace eternal_lands
 				{
 					ImageValue value(x, y);
 
-					value.set_value(m_blend_image->get_pixel(x, y, 0, 0, 0));
+					value.set_value(
+						m_blend_image->get_pixel(x, y,
+							0, 0, 0));
 					blend_values.push_back(value);
 				}
 			}
 		}
 	}
 
-	void TerrainEditor::change_blend_values(ImageValueVector &blend_values,
-		const Uint16Array2 position, const Uint32 index, const float strength,
-		const float radius, const EditorBrushType brush_type)
+	void TerrainEditor::change_blend_values(const Uint16Array2 &position,
+		const Uint32 index, const float strength, const float radius,
+		const EditorBrushType brush_type,
+		ImageValueVector &blend_values)
 	{
 		glm::vec2 centre;
 		float average;
@@ -201,7 +204,8 @@ namespace eternal_lands
 
 		centre = glm::vec2(position[0], position[1]);
 
-		if ((brush_type == ebt_linear_smooth) || (brush_type == ebt_quadratic_smooth))
+		if ((brush_type == ebt_linear_smooth) ||
+			(brush_type == ebt_quadratic_smooth))
 		{
 			if (blend_values.size() < 2)
 			{
@@ -212,7 +216,8 @@ namespace eternal_lands
 
 			BOOST_FOREACH(ImageValue &blend_value, blend_values)
 			{
-				average += get_blend_value(blend_value.get_value(), index);
+				average += get_blend_value(
+					blend_value.get_value(), index);
 			}
 
 			average /= blend_values.size();
@@ -233,10 +238,10 @@ namespace eternal_lands
 			point[0] = blend_values[i].get_x();
 			point[1] = blend_values[i].get_y();
 
-			value = calc_brush_effect(centre, point, value, average, strength, radius,
-				brush_type);
+			value = calc_brush_effect(centre, point, value,
+				average, strength, radius, brush_type);
 
-			set_blend_value(values, value, index);
+			set_blend_value(value, index, values);
 
 			blend_values[i].set_value(values);
 		}
@@ -273,8 +278,8 @@ namespace eternal_lands
 		return result;
 	}
 
-	void TerrainEditor::set_blend_value(glm::vec4 &blend, const float value,
-		const Uint32 index)
+	void TerrainEditor::set_blend_value(const float value,
+		const Uint32 index, glm::vec4 &blend)
 	{
 		glm::vec4 tmp;
 		float t0, t1, sum;
@@ -285,7 +290,7 @@ namespace eternal_lands
 
 		sum = tmp[0] + tmp[1] + tmp[2] + tmp[3];
 
-		if (sum > EPSILON)
+		if (sum > epsilon)
 		{
 			tmp *= (1.0f - value) / sum;
 		}
@@ -296,7 +301,8 @@ namespace eternal_lands
 
 		tmp[index] = value;
 
-		assert(std::abs(glm::dot(tmp, glm::vec4(1.0f)) - 1.0f) < EPSILON);
+		assert(std::abs(glm::dot(tmp, glm::vec4(1.0f)) - 1.0f) <
+			epsilon);
 
 		t0 = tmp[0] + tmp[1];
 		t1 = tmp[2] + tmp[3];
@@ -305,21 +311,22 @@ namespace eternal_lands
 		blend[1] += 1.0f - (tmp[0] + tmp[1]);
 		blend[1] *= 0.5f;
 
-		if (std::abs(t0) > EPSILON)
+		if (std::abs(t0) > epsilon)
 		{
 			blend[0] = tmp[1] / t0;
 			blend[0] += 1.0f - tmp[0] / t0;
 			blend[0] *= 0.5f;
 		}
 
-		if (std::abs(t1) > EPSILON)
+		if (std::abs(t1) > epsilon)
 		{
 			blend[2] = tmp[3] / t1;
 			blend[2] += 1.0f - tmp[2] / t1;
 			blend[2] *= 0.5f;
 		}
 
-		assert(std::abs(value - get_blend_value(blend, index)) < EPSILON);
+		assert(std::abs(value - get_blend_value(blend, index)) <
+			epsilon);
 	}
 
 	EditorBrushType TerrainEditor::get_brush_type(const int brush_type)
@@ -351,27 +358,16 @@ namespace eternal_lands
 		}
 		else
 		{
-			return "";
+			return String(UTF8(""));
 		}
 	}
 
 	void TerrainEditor::set_blend_image_name(const String &blend_image)
 	{
-		if ((m_blend_image.get() != 0) && !blend_image.empty())
+		if ((m_blend_image.get() != 0) && !blend_image.get().empty())
 		{
 			m_blend_image->set_name(blend_image);
 		}
-	}
-
-	void TerrainEditor::import_terrain(const ImageSharedPtr &image,
-		const ScenePageReadWriteIntrusivePtr &scene_page_read_write)
-	{
-		scene_page_read_write->set_terrain_map(image);
-	}
-
-	void TerrainEditor::export_terrain(ImageSharedPtr &image,
-		const ScenePageReadOnlyIntrusivePtr &scene_page_read_only)
-	{
 	}
 
 }

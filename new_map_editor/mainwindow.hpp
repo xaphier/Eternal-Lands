@@ -38,13 +38,11 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		boost::shared_ptr<QProgress> m_progress;
 		QStringList m_textures;
 
-		void set_light_color(const glm::vec4 &color);
+		void set_light_color(const glm::vec3 &color);
 		void set_light_color(const QColor &color);
-		void set_object_color(const glm::vec4 &color);
-		void set_object_color(const QColor &color);
 		void update_terrain();
-		void set_diffuse_terrain_texture(const QString &str, const int index);
-		void set_normal_terrain_texture(const QString &str, const int index);
+		void set_terrain_albedo_map(const QString &str,
+			const int index);
 		void add_item(const QString &str, QComboBox* combobox);
 		void set_items(const QStringList &strs, QComboBox* combobox);
 		void set_default_mode();
@@ -58,13 +56,13 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void save_textures_settings(QSettings &settings);
 		void load_textures_settings(QSettings &settings);
 		void set_textures(const QStringList &textures);
-		void set_blending(const BlendType value);
+		void set_blend(const BlendType value);
 
 	private slots:
 		void update_object();
 		void about_el();
 		void terrain_height_scale();
-		void set_object_blending(const int);
+		void set_object_blend(const int);
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

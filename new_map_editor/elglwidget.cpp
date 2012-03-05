@@ -6,32 +6,6 @@
 #include "editor/editorobjectdata.hpp"
 #include <QFileDialog>
 
-class QtGetProcAddress: public eternal_lands::GetProcAddress
-{
-	private:
-		const QGLContext* m_context;
-
-	public:
-		inline QtGetProcAddress(const QGLContext* context): m_context(context)
-		{
-		}
-
-		inline virtual ~QtGetProcAddress()
-		{
-		}
-
-		inline virtual void* operator()(String name) const
-		{
-			return m_context->getProcAddress(name.c_str());
-		}
-
-		inline virtual String get_name() const
-		{
-			return "Qt";
-		}
-
-};
-
 ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 {
 	m_width = 1;
@@ -45,17 +19,11 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_light = false;
 	m_rotate_z = 0.0f;
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
-	m_blending = bt_no_blending;
-
-	SceneResources::get_file_system().add_archive("dir", ".");
-	SceneResources::get_file_system().add_archive("dir", "");
-	SceneResources::get_file_system().add_archive("ela", "main.ela");
+	m_blending = bt_disabled;
 }
 
 ELGLWidget::~ELGLWidget()
 {
-	SceneResources::exit();
-	LogManager::exit();
 }
 
 void ELGLWidget::get_points(const Sint32 x, const Sint32 y, glm::vec3 &p0,
@@ -667,16 +635,9 @@ void ELGLWidget::get_terrain_material_data(MaterialData &terrain_material) const
 	m_editor.get_terrain_material_data(terrain_material);
 }
 
-void ELGLWidget::set_object_type(const int type)
+void ELGLWidget::set_object_selection(const SelectionType selection)
 {
-	m_editor.set_object_type(type);
-	emit can_undo(m_editor.get_can_undo());
-	updateGL();
-}
-
-void ELGLWidget::set_object_server_id(const int server_id)
-{
-	m_editor.set_object_server_id(server_id);
+	m_editor.set_object_selection(selection);
 	emit can_undo(m_editor.get_can_undo());
 	updateGL();
 }
@@ -817,7 +778,7 @@ void ELGLWidget::set_game_minute(const int game_minute)
 	updateGL();
 }
 
-glm::vec4 ELGLWidget::get_light_color() const
+glm::vec3 ELGLWidget::get_light_color() const
 {
 	LightData light;
 
@@ -826,22 +787,13 @@ glm::vec4 ELGLWidget::get_light_color() const
 	return light.get_color();
 }
 
-glm::vec4 ELGLWidget::get_object_color() const
+BlendType ELGLWidget::get_object_blend() const
 {
-	MeshObjectData mesh_object_data;
+	MeshObjectData object_data;
 
-	get_object_data(mesh_object_data);
+	get_object_data(object_data);
 
-	return mesh_object_data.get_color();
-}
-
-BlendType ELGLWidget::get_object_blending() const
-{
-	MeshObjectData mesh_object_data;
-
-	get_object_data(mesh_object_data);
-
-	return mesh_object_data.get_blending();
+	return object_data.get_blend();
 }
 
 void ELGLWidget::get_codecs(QStringList &codecs)
@@ -942,17 +894,17 @@ void ELGLWidget::get_file_extensions_filter(QString &filter, QString &default_ex
 
 void ELGLWidget::export_blend_image(const QString &file_name, const QString &codec) const
 {
-	m_editor.export_blend_image(file_name.toStdString(), codec.toStdString());
+	m_editor.export_blend_image(file_name.toUtf8(), codec.toUtf8());
 }
 
 void ELGLWidget::export_terrain_map(const QString &file_name, const QString &codec) const
 {
-	m_editor.export_terrain_map(file_name.toStdString(), codec.toStdString());
+	m_editor.export_terrain_map(file_name.toUtf8(), codec.toUtf8());
 }
 
 void ELGLWidget::import_terrain_map(const QString &file_name)
 {
-	m_editor.import_terrain_map(file_name.toStdString());
+	m_editor.import_terrain_map(file_name.toUtf8());
 
 	emit can_undo(m_editor.get_can_undo());
 

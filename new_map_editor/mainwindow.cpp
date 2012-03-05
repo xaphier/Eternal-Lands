@@ -108,17 +108,18 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SLOT(terrain_height_scale()));
 
 	m_object_selection_mapper = new QSignalMapper(this);
-	m_object_selection_mapper->setMapping(type_none, int(0));
-	m_object_selection_mapper->setMapping(type_entrable, int(1));
-	m_object_selection_mapper->setMapping(type_harvestable, int(2));
-	m_object_selection_mapper->setMapping(type_usable, int(3));
+	m_object_selection_mapper->setMapping(selection_usable, int(0));
+	m_object_selection_mapper->setMapping(selection_entrable, int(1));
+	m_object_selection_mapper->setMapping(selection_harvestable, int(2));
 
-	QObject::connect(type_none, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
-	QObject::connect(type_entrable, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
-	QObject::connect(type_harvestable, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
-	QObject::connect(type_usable, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
-	QObject::connect(m_object_type_mapper, SIGNAL(mapped(const int)), el_gl_widget,
-		SLOT(set_object_type(const int)));
+	QObject::connect(selection_usable, SIGNAL(clicked()),
+		m_object_selection_mapper, SLOT(map()));
+	QObject::connect(selection_entrable, SIGNAL(clicked()),
+		m_object_selection_mapper, SLOT(map()));
+	QObject::connect(selection_harvestable, SIGNAL(clicked()),
+		m_object_selection_mapper, SLOT(map()));
+	QObject::connect(m_object_selection_mapper, SIGNAL(mapped(const int)),
+		el_gl_widget, SLOT(set_object_selection(const int)));
 
 	m_object_transparency_mapper = new QSignalMapper(this);
 	m_object_transparency_mapper->setMapping(transparency_type_0, int(0));
@@ -134,9 +135,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(m_object_transparency_mapper,
 		SIGNAL(mapped(const int)), this,
 		SLOT(set_object_blending(const int)));
-
-	QObject::connect(server_id, SIGNAL(valueChanged(int)), el_gl_widget,
-		SLOT(set_object_server_id(int)));
 
 	QObject::connect(translate_x_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_x(bool)));
 	QObject::connect(translate_y_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_y(bool)));
@@ -174,24 +172,21 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	object_witdgets.push_back(x_rotation);
 	object_witdgets.push_back(y_rotation);
 	object_witdgets.push_back(z_rotation);
-	object_witdgets.push_back(blending_value_0);
-	object_witdgets.push_back(blending_value_1);
-	object_witdgets.push_back(blending_value_2);
-	object_witdgets.push_back(blending_value_3);
-	object_witdgets.push_back(server_id);
-	object_witdgets.push_back(type_none);
-	object_witdgets.push_back(type_entrable);
-	object_witdgets.push_back(type_harvestable);
-	object_witdgets.push_back(type_usable);
+	object_witdgets.push_back(transparency_type_0);
+	object_witdgets.push_back(transparency_type_1);
+	object_witdgets.push_back(transparency_type_2);
+	object_witdgets.push_back(transparency_value);
+	object_witdgets.push_back(selection_usable);
+	object_witdgets.push_back(selection_entrable);
+	object_witdgets.push_back(selection_harvestable);
 
 	light_witdgets.push_back(x_position);
 	light_witdgets.push_back(y_position);
 	light_witdgets.push_back(z_position);
 	light_witdgets.push_back(radius);
-	light_witdgets.push_back(ambient);
 	object_witdgets.push_back(light_color);
 
-	set_light_color(glm::vec4(0.0f));
+	set_light_color(glm::vec3(0.0f));
 
 	read_settings();
 
@@ -240,49 +235,79 @@ void MainWindow::read_settings()
 
 void MainWindow::update_object()
 {
-	MeshObjectData mesh_object_data;
-	unsigned int id;
-	Uint16 type;
+	EditorObjectData object_data;
+	unsigned int id, selection, blend;
 
-	el_gl_widget->get_object_data(mesh_object_data);
+	el_gl_widget->get_object_data(object_data);
 
 	BOOST_FOREACH(QObject* object_widget, object_witdgets)
 	{
 		object_widget->blockSignals(true);
 	}
 
-	x_translation->setValue(mesh_object_data.get_translation()[0]);
-	y_translation->setValue(mesh_object_data.get_translation()[1]);
-	z_translation->setValue(mesh_object_data.get_translation()[2]);
+	x_translation->setValue(object_data.get_world_transformation(
+		).get_translation()[0]);
+	y_translation->setValue(object_data.get_world_transformation(
+		).get_translation()[1]);
+	z_translation->setValue(object_data.get_world_transformation(
+		).get_translation()[2]);
 
-	x_rotation->setValue(mesh_object_data.get_rotation()[0]);
-	y_rotation->setValue(mesh_object_data.get_rotation()[1]);
-	z_rotation->setValue(mesh_object_data.get_rotation()[2]);
+	x_rotation->setValue(object_data.get_rotation_angles()[0]);
+	y_rotation->setValue(object_data.get_rotation_angles()[1]);
+	z_rotation->setValue(object_data.get_rotation_angles()[2]);
 
-	scale_value->setValue(mesh_object_data.get_scale() * 100.0f);
+	scale_value->setValue(object_data.get_world_transformation(
+		).get_scale() * 100.0f);
 
-	set_blending(mesh_object_data.get_blending());
+	set_blend(object_data.get_blend());
 
-	set_object_color(glm::clamp(mesh_object_data.get_color(), 0.0f, 1.0));
-
-	type = mesh_object_data.get_type();
-
-	if (m_object_type_mapper->mapping(type) != 0)
+	switch (object_data.get_selection())
 	{
-		dynamic_cast<QRadioButton*>(m_object_type_mapper->mapping(type))->setChecked(true);
+		case st_enter:
+			selection = 1;
+			break;
+		case st_harvest:
+			selection = 2;
+			break;
+		default:
+			selection = 0;
+			break;
+	}
+
+	if (m_object_selection_mapper->mapping(selection) != 0)
+	{
+		dynamic_cast<QRadioButton*>(m_object_selection_mapper->mapping(selection))->setChecked(true);
 	}
 	else
 	{
-		dynamic_cast<QRadioButton*>(m_object_type_mapper->mapping(0))->setChecked(true);
-		type = 0;
+		dynamic_cast<QRadioButton*>(m_object_selection_mapper->mapping(0))->setChecked(true);
 	}
 
-	server_id->setValue(mesh_object_data.get_server_id());
-	type_id_group->setEnabled(type != 0);
+	switch (object_data.get_blend())
+	{
+		case bt_alpha_transparency_value:
+			blend = 1;
+			break;
+		case bt_alpha_transparency_source_value:
+			blend = 2;
+			break;
+		default:
+			blend = 0;
+			break;
+	}
 
-	mesh_name->setText(QString::fromLatin1(mesh_object_data.get_mesh().c_str()));
+	if (m_object_transparency_mapper->mapping(selection) != 0)
+	{
+		dynamic_cast<QRadioButton*>(m_object_transparency_mapper->mapping(blend))->setChecked(true);
+	}
+	else
+	{
+		dynamic_cast<QRadioButton*>(m_object_transparency_mapper->mapping(0))->setChecked(true);
+	}
 
-	id = mesh_object_data.get_server_id();
+	mesh_name->setText(QString::fromUtf8(object_data.get_name().get().c_str()));
+
+	id = object_data.get_id();
 
 	object_id->setText(QVariant(id).toString());
 
@@ -306,44 +331,22 @@ void MainWindow::add_item(const QString &str, QComboBox* combobox)
 	combobox->setCurrentIndex(index);
 }
 
-void MainWindow::set_diffuse_terrain_texture(const QString &str, const int index)
+void MainWindow::set_terrain_albedo_map(const QString &str, const int index)
 {
 	QComboBox* combobox;
 	int idx;
 
-	combobox = dynamic_cast<QComboBox*>(m_terrain_diffuse_texture_mapper->mapping(index));
+	combobox = dynamic_cast<QComboBox*>(m_terrain_albedo_map_mapper->mapping(index));
 
 	idx = combobox->findText(str);
 
 	if (idx == -1)
 	{
-		add_item(str, terrain_diffuse_texture_0);
-		add_item(str, terrain_diffuse_texture_1);
-		add_item(str, terrain_diffuse_texture_2);
-		add_item(str, terrain_diffuse_texture_3);
-		add_item(str, terrain_diffuse_texture_4);
-		idx = combobox->findText(str);
-	}
-
-	combobox->setCurrentIndex(idx);
-}
-
-void MainWindow::set_normal_terrain_texture(const QString &str, const int index)
-{
-	QComboBox* combobox;
-	int idx;
-
-	combobox = dynamic_cast<QComboBox*>(m_terrain_normal_texture_mapper->mapping(index));
-
-	idx = combobox->findText(str);
-
-	if (idx == -1)
-	{
-		add_item(str, terrain_normal_texture_0);
-		add_item(str, terrain_normal_texture_1);
-		add_item(str, terrain_normal_texture_2);
-		add_item(str, terrain_normal_texture_3);
-		add_item(str, terrain_normal_texture_4);
+		add_item(str, terrain_albedo_map_0);
+		add_item(str, terrain_albedo_map_1);
+		add_item(str, terrain_albedo_map_2);
+		add_item(str, terrain_albedo_map_3);
+		add_item(str, terrain_albedo_map_4);
 		idx = combobox->findText(str);
 	}
 
@@ -358,24 +361,20 @@ void MainWindow::update_terrain()
 
 	for (i = 0; i < 5; i++)
 	{
-		m_terrain_diffuse_texture_mapper->mapping(i)->blockSignals(true);
-		m_terrain_normal_texture_mapper->mapping(i)->blockSignals(true);
+		m_terrain_albedo_map_mapper->mapping(i)->blockSignals(true);
 	}
 
 	el_gl_widget->get_terrain_material_data(terrain_material);
 
 	for (i = 0; i < 5; i++)
 	{
-		str = QString::fromStdString(terrain_material.get_diffuse_texture(i));
+		str = QString::fromUtf8(terrain_material.get_diffuse_texture(i));
 		set_diffuse_terrain_texture(str, i);
-		str = QString::fromStdString(terrain_material.get_normal_texture(i));
-		set_normal_terrain_texture(str, i);
 	}
 
 	for (i = 0; i < 5; i++)
 	{
-		m_terrain_diffuse_texture_mapper->mapping(i)->blockSignals(false);
-		m_terrain_normal_texture_mapper->mapping(i)->blockSignals(false);
+		m_terrain_albedo_map_mapper->mapping(i)->blockSignals(false);
 	}
 }
 
@@ -455,7 +454,7 @@ void MainWindow::update_light(const bool select)
 
 		set_light_color(glm::clamp(light.get_color(), 0.0f, 1.0));
 
-		id = light.get_server_id();
+		id = light.get_id();
 
 		light_id->setText(QVariant(id).toString());
 
@@ -510,7 +509,7 @@ void MainWindow::update_position()
 	el_gl_widget->set_light_position(position);
 }
 
-void MainWindow::set_light_color(const glm::vec4 &color)
+void MainWindow::set_light_color(const glm::vec3 &color)
 {
 	set_light_color(QColor::fromRgbF(color[0], color[1], color[2]));
 }
@@ -524,66 +523,22 @@ void MainWindow::set_light_color(const QColor &color)
 	light_color->setIcon(QIcon(pixmap));
 }
 
-void MainWindow::set_object_color(const glm::vec4 &color)
-{
-	QColor tmp;
-
-	tmp.setRedF(color[0]);
-	tmp.setGreenF(color[1]);
-	tmp.setBlueF(color[2]);
-	tmp.setAlphaF(color[3]);
-
-	set_object_color(tmp);
-}
-
-void MainWindow::set_object_color(const QColor &color)
-{
-	QPixmap pixmap(180, 15);
-
-	pixmap.fill(color);
-
-	object_color->setIcon(QIcon(pixmap));
-}
-
 void MainWindow::change_light_color()
 {
 	QColor color;
 	glm::vec4 light_color;
 
 	light_color = el_gl_widget->get_light_color();
-	color = QColor::fromRgbF(light_color[0], light_color[1], light_color[2]);
+	color = QColor::fromRgbF(light_color[0], light_color[1],
+		light_color[2]);
 	color = QColorDialog::getColor(color, this);
 
 	if (color.isValid())
 	{
 		set_light_color(color);
 
-		el_gl_widget->set_light_color(glm::vec4(color.redF(), color.greenF(),
-			color.blueF(), 1.0f));
-	}
-}
-
-void MainWindow::change_object_color()
-{
-	QColor color;
-	glm::vec4 object_color;
-
-	object_color = el_gl_widget->get_object_color();
-
-	color.setRedF(object_color[0]);
-	color.setGreenF(object_color[1]);
-	color.setBlueF(object_color[2]);
-	color.setAlphaF(object_color[3]);
-
-	color = QColorDialog::getColor(color, this, tr("Object color"),
-		QColorDialog::ShowAlphaChannel);
-
-	if (color.isValid())
-	{
-		set_object_color(color);
-
-		el_gl_widget->set_object_color(glm::vec4(color.redF(), color.greenF(),
-			color.blueF(), color.alphaF()));
+		el_gl_widget->set_light_color(glm::vec3(color.redF(),
+			color.greenF(), color.blueF()));
 	}
 }
 
@@ -659,8 +614,7 @@ void MainWindow::set_terrain_albedo_map(const int index)
 	file_name = dynamic_cast<QComboBox*>(
 		m_terrain_albedo_map_mapper->mapping(index))->currentText();
 
-	el_gl_widget->set_terrain_albedo_map(file_name.toStdString(),
-		index);
+	el_gl_widget->set_terrain_albedo_map(file_name, index);
 }
 
 void MainWindow::set_fog()
@@ -672,11 +626,12 @@ void MainWindow::open_map()
 {
 	QString file_name;
 
-	file_name = QFileDialog::getOpenFileName(this, tr("Open File"), ".", tr("EL-map (*.elm)"));
+	file_name = QFileDialog::getOpenFileName(this, tr("Open File"), ".",
+		tr("EL-map (*.elm)"));
 
 	if (!file_name.isEmpty())
 	{
-		el_gl_widget->open_map(file_name, m_progress);
+		el_gl_widget->open_map(file_name);
 	}
 }
 
@@ -988,10 +943,10 @@ void MainWindow::set_textures(const QStringList &textures)
 
 	m_preferences->set_textures(m_textures);
 
-	set_items(m_textures, terrain_diffuse_texture_0);
-	set_items(m_textures, terrain_diffuse_texture_1);
-	set_items(m_textures, terrain_diffuse_texture_2);
-	set_items(m_textures, terrain_diffuse_texture_3);
+	set_items(m_textures, terrain_albedo_map_0);
+	set_items(m_textures, terrain_albedo_map_1);
+	set_items(m_textures, terrain_albedo_map_2);
+	set_items(m_textures, terrain_albedo_map_3);
 }
 
 void MainWindow::set_items(const QStringList &strs, QComboBox* combobox)
@@ -1180,40 +1135,36 @@ void MainWindow::terrain_height_scale()
 	}
 }
 
-void MainWindow::set_object_blending(const int value)
+void MainWindow::set_object_blend(const int value)
 {
 	switch (value)
 	{
 		case 0:
-			el_gl_widget->set_object_blending(bt_no_blending);
+			el_gl_widget->set_object_blending(bt_disabled);
 			break;
 		case 1:
-			el_gl_widget->set_object_blending(bt_alpha_blending_texture);
+			el_gl_widget->set_object_blending(
+				bt_alpha_transparency_value);
 			break;
 		case 2:
-			el_gl_widget->set_object_blending(bt_alpha_blending_object);
-			break;
-		case 3:
-			el_gl_widget->set_object_blending(bt_additive_blending);
+			el_gl_widget->set_object_blending(
+				bt_alpha_transparency_source_value);
 			break;
 	}
 }
 
-void MainWindow::set_blending(const BlendType value)
+void MainWindow::set_blend(const BlendType value)
 {
 	switch (value)
 	{
-		case bt_no_blending:
-			blending_value_0->setChecked(true);
+		case bt_alpha_transparency_value:
+			transparency_type_1->setChecked(true);
 			break;
-		case bt_alpha_blending_texture:
-			blending_value_1->setChecked(true);
+		case bt_alpha_transparency_source_value:
+			transparency_type_2->setChecked(true);
 			break;
-		case bt_alpha_blending_object:
-			blending_value_2->setChecked(true);
-			break;
-		case bt_additive_blending:
-			blending_value_3->setChecked(true);
+		default:
+			transparency_type_0->setChecked(true);
 			break;
 	}
 }

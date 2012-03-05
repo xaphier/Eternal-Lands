@@ -43,12 +43,11 @@ namespace eternal_lands
 	void EditorMapLoader::add_object(const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles, const String &name,
 		const float scale, const float transparency,
-		const Uint32 id, const bool blended,
-		const SelectionType selection,
-		const StringVector &material_names)
+		const Uint32 id, const SelectionType selection,
+		const BlendType blend, const StringVector &material_names)
 	{
 		m_map->add_object(get_object_data(translation, rotation_angles,
-			name, scale, blended, id, selection));
+			name, scale, id, selection, blend));
 	}
 
 	void EditorMapLoader::add_light(const glm::vec3 &position,

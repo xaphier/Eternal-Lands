@@ -421,8 +421,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>365</width>
-              <height>463</height>
+              <width>121</width>
+              <height>364</height>
              </rect>
             </property>
             <attribute name="label">
@@ -806,7 +806,7 @@
               <x>0</x>
               <y>0</y>
               <width>365</width>
-              <height>463</height>
+              <height>435</height>
              </rect>
             </property>
             <attribute name="label">
@@ -861,7 +861,7 @@
                 <item row="2" column="0">
                  <widget class="QRadioButton" name="transparency_type_2">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="text">
                    <string>using texture alpha</string>
@@ -1239,8 +1239,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>365</width>
-              <height>451</height>
+              <width>272</width>
+              <height>156</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1399,8 +1399,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>365</width>
-              <height>451</height>
+              <width>272</width>
+              <height>190</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1573,8 +1573,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>365</width>
-              <height>451</height>
+              <width>103</width>
+              <height>88</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1908,8 +1908,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>365</width>
-              <height>451</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1921,8 +1921,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>365</width>
-              <height>451</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
