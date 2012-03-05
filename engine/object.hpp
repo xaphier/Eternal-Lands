@@ -154,24 +154,14 @@ namespace eternal_lands
 				m_object_data.set_transparency(transparency);
 			}
 
-			inline void set_state_blend(const bool blend)
+			inline void set_blend(const BlendType blend)
 			{
-				m_object_data.set_state_blend(blend);
-			}
-
-			inline void set_state_stencil(const bool stencil)
-			{
-				m_object_data.set_state_stencil(stencil);
+				m_object_data.set_blend(blend);
 			}
 
 			inline void set_selection(const SelectionType selection)
 			{
 				m_object_data.set_selection(selection);
-			}
-
-			inline void set_stencil_value(const Uint8 stencil_value)
-			{
-				m_object_data.set_stencil_value(stencil_value);
 			}
 
 			inline const Transformation &get_world_transformation()
@@ -206,19 +196,9 @@ namespace eternal_lands
 				return m_object_data.get_id();
 			}
 
-			inline Uint8 get_stencil_value() const
+			inline BlendType get_blend() const
 			{
-				return m_object_data.get_stencil_value();
-			}
-
-			inline bool get_state_blend() const
-			{
-				return m_object_data.get_state_blend();
-			}
-
-			inline bool get_state_stencil() const
-			{
-				return m_object_data.get_state_stencil();
+				return m_object_data.get_blend();
 			}
 
 			inline SelectionType get_selection() const

@@ -115,8 +115,7 @@ namespace eternal_lands
 		MaterialEffectDescription material;
 		ActorDataCacheMap::const_iterator found;
 		std::auto_ptr<Actor> result;
-		Uint8 stencil_value;
-		bool blend;
+		BlendType blend;
 
 		found = m_actor_data_cache.find(type_id);
 
@@ -141,24 +140,15 @@ namespace eternal_lands
 
 		if (found->second.m_ghost)
 		{
-			blend = true;
+			blend = bt_alpha_transparency_value;
 		}
 		else
 		{
-			blend = false;
-		}
-
-		if (enhanced_actor)
-		{
-			stencil_value = 0x1;
-		}
-		else
-		{
-			stencil_value = 0x2;
+			blend = bt_disabled;
 		}
 
 		result.reset(new Actor(ObjectData(Transformation(),
-			name, 0.7f, id, selection, blend, true, stencil_value),
+			name, 0.7f, id, selection, blend),
 			found->second.m_mesh->clone_vertex_data(), materials,
 			get_effect_cache(), get_texture_cache(),
 			found->second.m_index_source,

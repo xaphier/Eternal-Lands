@@ -1,7 +1,7 @@
 /****************************************************************************
  *            qprogress.hpp
  *
- * Author: 2010  Daniel Jungmann <dsj@gmx.net>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "progress.hpp"
+#include "abstractprogress.hpp"
 #include <QObject>
 
 /**
@@ -21,24 +21,23 @@
  * @brief The @c class QProgress.
  * This file contains the @c class QProgress.
  */
-
 using namespace eternal_lands;
 
-class QProgress: public QObject, public Progress
+class QProgress: public QObject, public AbstractProgress
 {
 	Q_OBJECT
 
 	private:
 		Uint32 m_value;
 
-		virtual void do_init(const Uint32 min_value, const Uint32 max_value);
-		virtual void do_set_text(const String &str);
-		virtual void do_stepp(const Uint32 count);
-		virtual bool do_get_canceled() const;
-
 	public:
 		QProgress();
-		virtual ~QProgress();
+		virtual ~QProgress() throw();
+		virtual void init(const Uint32 min_value,
+			const Uint32 max_value);
+		virtual void set_text(const String &str);
+		virtual void stepp(const Uint32 count);
+		virtual bool get_canceled() const;
 
 	signals:
 		void set_range(const int min_value, const int max_value);

@@ -12,7 +12,7 @@ namespace eternal_lands
 {
 
 	RenderObjectData::RenderObjectData(): m_transparency(0.0f),
-		m_distance(0.0f), m_sub_frustums_mask(0x1), m_blend(false)
+		m_distance(0.0f), m_sub_frustums_mask(0x1), m_blend(bt_disabled)
 	{
 		update_layers();
 	}
@@ -20,15 +20,15 @@ namespace eternal_lands
 	RenderObjectData::RenderObjectData(const ObjectSharedPtr &object,
 		const SubFrustumsMask sub_frustums_mask): m_object(object),
 		m_transparency(0.0f), m_distance(0.0f),
-		m_sub_frustums_mask(sub_frustums_mask), m_blend(false)
+		m_sub_frustums_mask(sub_frustums_mask), m_blend(bt_disabled)
 	{
 		m_transparency = object->get_transparency();
-		m_blend = object->get_state_blend();
+		m_blend = object->get_blend();
 		update_layers();
 	}
 
 	RenderObjectData::RenderObjectData(const ObjectSharedPtr &object,
-		float transparency, bool blend,
+		const float transparency, const BlendType blend,
 		const SubFrustumsMask sub_frustums_mask): m_object(object),
 		m_transparency(transparency), m_distance(0.0f),
 		m_sub_frustums_mask(sub_frustums_mask), m_blend(blend)

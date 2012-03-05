@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "abstractboundedobjectvisitor.hpp"
+#include "blendutil.hpp"
 
 /**
  * @file
@@ -44,7 +45,7 @@ namespace eternal_lands
 			void add(const ObjectSharedPtr &object,
 				const SubFrustumsMask mask);
 			void add(const ObjectSharedPtr &object,
-				const float transparency, const bool blend,
+				const float transparency, const BlendType blend,
 				const SubFrustumsMask mask);
 			void next_frame();
 

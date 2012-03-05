@@ -92,21 +92,20 @@ namespace eternal_lands
 	void MapLoader::add_object(const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles, const String &name,
 		const float scale, const float transparency,
-		const Uint32 id, const bool blended,
-		const SelectionType selection,
-		const StringVector &material_names)
+		const Uint32 id, const SelectionType selection,
+		const BlendType blend, const StringVector &material_names)
 	{
-		if (blended)
+		if (blend)
 		{
 			m_map->add_object(get_object_data(translation,
-				rotation_angles, name, scale, true, id,
-				selection));
+				rotation_angles, name, scale, id,
+				selection, blend));
 		}
 		else
 		{
 			m_instances_builder->add(get_object_data(translation,
-				rotation_angles, name, scale, false, id,
-				selection));
+				rotation_angles, name, scale, id,
+				selection, blend));
 		}
 	}
 
@@ -201,8 +200,8 @@ namespace eternal_lands
 			it_tile_object);
 
 		m_instances_builder->add(ObjectData(transformation,
-			String(UTF8("tile")), 0.0f, id, st_none, false, false,
-			0), materials);
+			String(UTF8("tile")), 0.0f, id, st_none, bt_disabled),
+			materials);
 
 //		if (tile != 1)
 		{
@@ -257,7 +256,7 @@ srand( (unsigned)time( NULL ) );
 
 				m_instances_builder->add(ObjectData(transformation,
 					String(UTF8("grass")), 0.0f, id,
-					st_none, false, false, 0), materials);
+					st_none, bt_disabled), materials);
 
 				rotation = glm::quat();
 				rotation = glm::rotate(rotation, 90.0f,
@@ -274,7 +273,7 @@ srand( (unsigned)time( NULL ) );
 
 				m_instances_builder->add(ObjectData(transformation,
 					String(UTF8("grass")), 0.0f, id,
-					st_none, false, false, 0), materials);
+					st_none, bt_disabled), materials);
 			}
 		}
 

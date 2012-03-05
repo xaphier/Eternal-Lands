@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "blendutil.hpp"
 
 /**
  * @file
@@ -35,7 +36,7 @@ namespace eternal_lands
 			float m_distance;
 			SubFrustumsMask m_sub_frustums_mask;
 			Uint16 m_layer_count;
-			bool m_blend;
+			BlendType m_blend;
 
 			void update_layers();
 
@@ -44,7 +45,7 @@ namespace eternal_lands
 			RenderObjectData(const ObjectSharedPtr &object,
 				const SubFrustumsMask sub_frustums_mask = 0x1);
 			RenderObjectData(const ObjectSharedPtr &object,
-				float transparency, bool blend,
+				const float transparency, const BlendType blend,
 				const SubFrustumsMask sub_frustums_mask = 0x1);
 			~RenderObjectData() throw();
 
@@ -63,7 +64,7 @@ namespace eternal_lands
 				m_distance = distance;
 			}
 
-			inline void set_blend(const bool blend)
+			inline void set_blend(const BlendType blend)
 			{
 				m_blend = blend;
 			}
@@ -90,7 +91,7 @@ namespace eternal_lands
 				return m_distance;
 			}
 
-			inline bool get_blend() const
+			inline BlendType get_blend() const
 			{
 				return m_blend;
 			}

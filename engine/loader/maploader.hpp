@@ -102,8 +102,8 @@ namespace eternal_lands
 				const glm::vec3 &rotation_angles,
 				const String &name, const float scale,
 				const float transparency, const Uint32 id,
-				const bool blended,
 				const SelectionType selection,
+				const BlendType blend,
 				const StringVector &material_names);
 			virtual void add_light(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,

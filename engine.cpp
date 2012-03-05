@@ -237,6 +237,7 @@ namespace
 		glm::quat rotation;
 		float transparency;
 		el::SelectionType el_selection;
+		el::BlendType el_blend;
 
 		assert(glm::all(glm::lessThanEqual(glm::abs(pos),
 			glm::vec3(1e7f))));
@@ -257,14 +258,16 @@ namespace
 		if (transparent)
 		{
 			transparency = 0.7f;
+			el_blend = el::bt_alpha_transparency_source_value;
 		}
 		else
 		{
 			transparency = 1.0f;
+			el_blend = el::bt_disabled;
 		}
 
 		return el::ObjectData(transformation, name,
-			transparency, id, el_selection, transparent, false, 0);
+			transparency, id, el_selection, el_blend);
 	}
 
 	int el_rebuild_shader(lua_State *L)

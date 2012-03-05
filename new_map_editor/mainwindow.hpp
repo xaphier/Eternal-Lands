@@ -6,7 +6,6 @@
 #include <QSettings>
 #include <QProgressBar>
 #include "settingsdialog.hpp"
-#include "objectsdialog.hpp"
 #include "timedialog.hpp"
 #include "preferencesdialog.hpp"
 #include "qprogress.hpp"
@@ -19,13 +18,11 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		std::vector<QObject*> object_witdgets;
 		std::vector<QObject*> light_witdgets;
 		std::vector<QObject*> terrain_witdgets;
-		QSignalMapper* m_terrain_diffuse_texture_mapper;
-		QSignalMapper* m_terrain_normal_texture_mapper;
-		QSignalMapper* m_object_type_mapper;
-		QSignalMapper* m_object_blending_mapper;
+		QSignalMapper* m_terrain_albedo_map_mapper;
+		QSignalMapper* m_object_selection_mapper;
+		QSignalMapper* m_object_transparency_mapper;
 		QSpinBox* action_time;
 		SettingsDialog* m_settings;
-		ObjectsDialog* m_objects;
 		PreferencesDialog* m_preferences;
 		QString m_file_name;
 		QAction* action_move_l;
@@ -89,8 +86,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void add_light(const bool value);
 		void remove();
 		void height_mode(const bool checked);
-		void set_terrain_diffuse_texture(const int index);
-		void set_terrain_normal_texture(const int index);
+		void set_terrain_albedo_map(const int index);
 		void set_fog();
 		void open_map();
 		void save();

@@ -95,7 +95,7 @@ namespace eternal_lands
 	}
 
 	void ObjectVisitor::add(const ObjectSharedPtr &object,
-		const float transparency, const bool blend,
+		const float transparency, const BlendType blend,
 		const SubFrustumsMask mask)
 	{
 		m_objects.push_back(RenderObjectData(object,

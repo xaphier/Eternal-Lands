@@ -138,6 +138,7 @@ namespace eternal_lands
 		float transparency, scale;
 		Uint32 id, blended, material_index, material_count;
 		SelectionType selection;
+		BlendType blend;
 		bool self_lit;
 
 		get_reader()->set_position(offset);
@@ -180,11 +181,13 @@ namespace eternal_lands
 
 		if (blended == 1)
 		{
-			transparency = 0.3f;
+			transparency = 0.7f;
+			blend = bt_alpha_transparency_source_value;
 		}
 		else
 		{
-			transparency = 0.0f;
+			transparency = 1.0f;
+			blend = bt_disabled;
 		}
 
 		if (true)
@@ -199,7 +202,7 @@ namespace eternal_lands
 		id = get_free_ids().use_typeless_id(index, it_3d_object);
 
 		add_object(translation, rotation_angles, name, scale,
-			transparency, id, blended == 1, selection,
+			transparency, id, selection, blend,
 			get_material_names(material_index, material_count));
 	}
 
@@ -230,7 +233,7 @@ namespace eternal_lands
 			glm::to_string(rotation_angles));
 
 		add_object(translation, rotation_angles, name, 1.0f,
-			0.0f, id, false, st_none, material_names);
+			0.0f, id, st_none, bt_disabled, material_names);
 	}
 
 	void AbstractMapLoader::read_light(const Uint32 index, const Uint32 offset)
@@ -734,17 +737,18 @@ namespace eternal_lands
 		return transformation;
 	}
 
-	ObjectData AbstractMapLoader::get_object_data(const glm::vec3 &translation,
+	ObjectData AbstractMapLoader::get_object_data(
+		const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles, const String &name,
-		const float scale, const bool transparent, const Uint32 id,
-		const SelectionType selection) const
+		const float scale, const Uint32 id,
+		const SelectionType selection, const BlendType blend) const
 	{
 		float transparency;
 
 		assert(glm::all(glm::lessThanEqual(glm::abs(translation),
 			glm::vec3(1e7f))));
 
-		if (transparent)
+		if (blend != bt_disabled)
 		{
 			transparency = 0.7f;
 		}
@@ -755,7 +759,7 @@ namespace eternal_lands
 
 		return ObjectData(get_transformation(translation,
 			rotation_angles, scale), name, transparency, id,
-				selection, transparent, false, 0);
+				selection, blend);
 	}
 
 	StringVector AbstractMapLoader::get_material_names(const Uint32 index,

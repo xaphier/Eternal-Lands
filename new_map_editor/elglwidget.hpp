@@ -2,6 +2,7 @@
 #define UUID_c7da8b8d_d0bd_44ad_a903_16889f710ce5
 
 #include "prerequisites.hpp"
+#include "editor/editor.hpp"
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QKeyEvent>
 
@@ -64,7 +65,7 @@ class ELGLWidget: public QGLWidget
 	public:
 		ELGLWidget(QWidget *parent = 0);
 		~ELGLWidget();
-		void get_object_data(MeshObjectData &mesh_object_data) const;
+		void get_object_data(EditorObjectData &mesh_object_data) const;
 		RenderableType get_renderable() const;
 		glm::vec4 get_light_color() const;
 		glm::vec4 get_object_color() const;
@@ -82,7 +83,6 @@ class ELGLWidget: public QGLWidget
 		void set_scene_ambient_color(const glm::vec4 &color);
 		const glm::vec4 &get_scene_ambient_color() const;
 		void set_fog(const glm::vec3 &color, const float density);
-		void get_terrain_material_data(MaterialData &terrain_material) const;
 		QString get_blend_image_name() const;
 		void terrain_height_edit(const int x, const int y, const float strength,
 			const float radius, const int brush_type);
@@ -155,8 +155,8 @@ class ELGLWidget: public QGLWidget
 		void set_terrain_editing(const bool enabled);
 		void set_terrain_type_index(const int index);
 		void set_terrain_layer_index(const int index);
-		void set_terrain_diffuse_texture(const String &name, const Uint32 index);
-		void set_terrain_normal_texture(const String &name, const Uint32 index);
+		void set_terrain_albedo_map(const String &name,
+			const Uint32 index);
 		void set_object_type(const int type);
 		void set_object_server_id(const int server_id);
 		void set_random_translation_x(const bool value);
@@ -183,7 +183,7 @@ class ELGLWidget: public QGLWidget
 		void disable_object();
 		void disable_light();
 		void save(const QString &name) const;
-		void open_map(const QString &file_name, const ProgressSharedPtr &shadow_progress);
+		void open_map(const QString &file_name);
 		void set_blend_image_name(const QString &blend_image_name);
 		void set_game_minute(const int game_minute);
 

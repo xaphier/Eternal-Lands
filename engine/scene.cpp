@@ -362,7 +362,8 @@ namespace eternal_lands
 					BUFF_INVISIBILITY) != 0)
 				{
 					m_visible_objects.add(it->second, 0.25f,
-						true, mask);
+						bt_alpha_transparency_value,
+						mask);
 				}
 				else
 				{
@@ -921,8 +922,6 @@ namespace eternal_lands
 
 	void Scene::draw_depth()
 	{
-//		bool stencil;
-
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("depth"));
 
 		DEBUG_CHECK_GL_ERROR();
@@ -930,7 +929,6 @@ namespace eternal_lands
 		m_scene_view.set_default_view();
 
 		m_state_manager.switch_color_mask(glm::bvec4(false));
-//		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP);
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
@@ -958,7 +956,7 @@ namespace eternal_lands
 
 	void Scene::draw_default()
 	{
-		bool blend;//, stencil;
+		BlendType blend;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
 
@@ -970,18 +968,40 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
 //		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
+
+		blend = bt_disabled;
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			blend = object.get_blend();
-//			stencil = object.get_object()->get_state_stencil();
+			if (blend != object.get_blend())
+			{
+				blend = object.get_blend();
 
-			m_state_manager.switch_blend(blend);
+				switch (blend)
+				{
+					case bt_disabled:
+						break;
+					case bt_alpha_transparency_source_value:
+						glBlendFunc(GL_SRC_ALPHA,
+							GL_ONE_MINUS_SRC_ALPHA);
+						break;
+					case bt_alpha_transparency_value:
+						glBlendFunc(GL_CONSTANT_ALPHA,
+							GL_ONE_MINUS_CONSTANT_ALPHA);
+						break;
+					case bt_additive:
+						glBlendFunc(GL_ONE,
+							GL_ONE_MINUS_SRC_ALPHA);
+						break;
+				}
 
-			if (blend)
+				m_state_manager.switch_blend(blend !=
+					bt_disabled);
+			}
+
+			if (blend == bt_alpha_transparency_value)
 			{
 				glBlendColor(1.0f, 1.0f, 1.0f,
 					object.get_transparency());

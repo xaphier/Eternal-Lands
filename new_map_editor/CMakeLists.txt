@@ -6,6 +6,7 @@ SET(QT_USE_QTOPENGL TRUE)
 FIND_PACKAGE(Qt4 REQUIRED)
 
 include(${QT_USE_FILE}) 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 file(GLOB map_editor_header_files *.hpp)

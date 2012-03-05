@@ -3,10 +3,10 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QTimer>
-#include "materialdata.hpp"
 #include "newmapdialog.hpp"
 #include "lightdata.hpp"
-#include "objectdata.hpp"
+#include "editor/editorobjectdata.hpp"
+#include "editor/editor.hpp"
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
@@ -15,7 +15,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	init_actions();
 
 	m_settings = new SettingsDialog(this);
-	m_objects = new ObjectsDialog(this, el_gl_widget);
 	m_preferences = new PreferencesDialog(this);
 
 	action_time = new QSpinBox(this);
@@ -39,7 +38,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(x_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
 	QObject::connect(y_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
 	QObject::connect(z_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
-	QObject::connect(object_color, SIGNAL(clicked()), this, SLOT(change_object_color()));
 
 	QObject::connect(radius, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_light_radius(double)));
 	QObject::connect(light_color, SIGNAL(clicked()), this, SLOT(change_light_color()));
@@ -47,35 +45,26 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(y_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 	QObject::connect(z_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 
-	m_terrain_diffuse_texture_mapper = new QSignalMapper(this);
-	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_0, int(0));
-	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_1, int(1));
-	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_2, int(2));
-	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_3, int(3));
-	m_terrain_diffuse_texture_mapper->setMapping(terrain_diffuse_texture_4, int(4));
+	m_terrain_albedo_map_mapper = new QSignalMapper(this);
+	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_0, int(0));
+	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_1, int(1));
+	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_2, int(2));
+	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_3, int(3));
+	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_4, int(4));
 
-	QObject::connect(terrain_diffuse_texture_0, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
-	QObject::connect(terrain_diffuse_texture_1, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
-	QObject::connect(terrain_diffuse_texture_2, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
-	QObject::connect(terrain_diffuse_texture_3, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
-	QObject::connect(terrain_diffuse_texture_4, SIGNAL(currentIndexChanged(int)), m_terrain_diffuse_texture_mapper, SLOT(map()));
-	QObject::connect(m_terrain_diffuse_texture_mapper, SIGNAL(mapped(const int)), this,
-		SLOT(set_terrain_diffuse_texture(const int)));
+	QObject::connect(terrain_albedo_map_0, SIGNAL(currentIndexChanged(int)),
+		m_terrain_albedo_map_mapper, SLOT(map()));
+	QObject::connect(terrain_albedo_map_1, SIGNAL(currentIndexChanged(int)),
+		m_terrain_albedo_map_mapper, SLOT(map()));
+	QObject::connect(terrain_albedo_map_2, SIGNAL(currentIndexChanged(int)),
+		m_terrain_albedo_map_mapper, SLOT(map()));
+	QObject::connect(terrain_albedo_map_3, SIGNAL(currentIndexChanged(int)),
+		m_terrain_albedo_map_mapper, SLOT(map()));
+	QObject::connect(terrain_albedo_map_4, SIGNAL(currentIndexChanged(int)),
+		m_terrain_albedo_map_mapper, SLOT(map()));
+	QObject::connect(m_terrain_albedo_map_mapper, SIGNAL(mapped(const int)),
+		this, SLOT(set_terrain_albedo_map(const int)));
 
-	m_terrain_normal_texture_mapper = new QSignalMapper(this);
-	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_0, int(0));
-	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_1, int(1));
-	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_2, int(2));
-	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_3, int(3));
-	m_terrain_normal_texture_mapper->setMapping(terrain_normal_texture_4, int(4));
-
-	QObject::connect(terrain_normal_texture_0, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
-	QObject::connect(terrain_normal_texture_1, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
-	QObject::connect(terrain_normal_texture_2, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
-	QObject::connect(terrain_normal_texture_3, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
-	QObject::connect(terrain_normal_texture_4, SIGNAL(currentIndexChanged(int)), m_terrain_normal_texture_mapper, SLOT(map()));
-	QObject::connect(m_terrain_normal_texture_mapper, SIGNAL(mapped(const int)), this,
-		SLOT(set_terrain_normal_texture(const int)));
 	QObject::connect(el_gl_widget, SIGNAL(terrain_edit(const int, const int)), this,
 		SLOT(terrain_edit(const int, const int)));
 
@@ -118,11 +107,11 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_terrain_height_scale, SIGNAL(triggered(bool)), this,
 		SLOT(terrain_height_scale()));
 
-	m_object_type_mapper = new QSignalMapper(this);
-	m_object_type_mapper->setMapping(type_none, int(0));
-	m_object_type_mapper->setMapping(type_entrable, int(1));
-	m_object_type_mapper->setMapping(type_harvestable, int(2));
-	m_object_type_mapper->setMapping(type_usable, int(3));
+	m_object_selection_mapper = new QSignalMapper(this);
+	m_object_selection_mapper->setMapping(type_none, int(0));
+	m_object_selection_mapper->setMapping(type_entrable, int(1));
+	m_object_selection_mapper->setMapping(type_harvestable, int(2));
+	m_object_selection_mapper->setMapping(type_usable, int(3));
 
 	QObject::connect(type_none, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
 	QObject::connect(type_entrable, SIGNAL(clicked()), m_object_type_mapper, SLOT(map()));
@@ -131,21 +120,19 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(m_object_type_mapper, SIGNAL(mapped(const int)), el_gl_widget,
 		SLOT(set_object_type(const int)));
 
-	m_object_blending_mapper = new QSignalMapper(this);
-	m_object_blending_mapper->setMapping(blending_value_0, int(0));
-	m_object_blending_mapper->setMapping(blending_value_1, int(1));
-	m_object_blending_mapper->setMapping(blending_value_2, int(2));
-	m_object_blending_mapper->setMapping(blending_value_3, int(3));
+	m_object_transparency_mapper = new QSignalMapper(this);
+	m_object_transparency_mapper->setMapping(transparency_type_0, int(0));
+	m_object_transparency_mapper->setMapping(transparency_type_1, int(1));
+	m_object_transparency_mapper->setMapping(transparency_type_2, int(2));
 
-	QObject::connect(blending_value_0, SIGNAL(clicked()), m_object_blending_mapper,
-		SLOT(map()));
-	QObject::connect(blending_value_1, SIGNAL(clicked()), m_object_blending_mapper,
-		SLOT(map()));
-	QObject::connect(blending_value_2, SIGNAL(clicked()), m_object_blending_mapper,
-		SLOT(map()));
-	QObject::connect(blending_value_3, SIGNAL(clicked()), m_object_blending_mapper,
-		SLOT(map()));
-	QObject::connect(m_object_blending_mapper, SIGNAL(mapped(const int)), this,
+	QObject::connect(transparency_type_0, SIGNAL(clicked()),
+		m_object_transparency_mapper, SLOT(map()));
+	QObject::connect(transparency_type_1, SIGNAL(clicked()),
+		m_object_transparency_mapper, SLOT(map()));
+	QObject::connect(transparency_type_2, SIGNAL(clicked()),
+		m_object_transparency_mapper, SLOT(map()));
+	QObject::connect(m_object_transparency_mapper,
+		SIGNAL(mapped(const int)), this,
 		SLOT(set_object_blending(const int)));
 
 	QObject::connect(server_id, SIGNAL(valueChanged(int)), el_gl_widget,
@@ -665,22 +652,15 @@ void MainWindow::height_mode(const bool checked)
 	}
 }
 
-void MainWindow::set_terrain_diffuse_texture(const int index)
+void MainWindow::set_terrain_albedo_map(const int index)
 {
 	QString file_name;
 
-	file_name = dynamic_cast<QComboBox*>(m_terrain_diffuse_texture_mapper->mapping(index))->currentText();
+	file_name = dynamic_cast<QComboBox*>(
+		m_terrain_albedo_map_mapper->mapping(index))->currentText();
 
-	el_gl_widget->set_terrain_diffuse_texture(file_name.toStdString(), index);
-}
-
-void MainWindow::set_terrain_normal_texture(const int index)
-{
-	QString file_name;
-
-	file_name = dynamic_cast<QComboBox*>(m_terrain_normal_texture_mapper->mapping(index))->currentText();
-
-	el_gl_widget->set_terrain_normal_texture(file_name.toStdString(), index);
+	el_gl_widget->set_terrain_albedo_map(file_name.toStdString(),
+		index);
 }
 
 void MainWindow::set_fog()

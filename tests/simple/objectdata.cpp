@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ObjectData object_data(el::Transformation(),
 		el::String(UTF8("3sfd23")), 0.54f, 543549564, el::st_player,
-		true, true, 244);
+		el::bt_disabled);
 
 	BOOST_CHECK_EQUAL(UTF8(object_data.get_name()), UTF8("3sfd23"));
 
@@ -29,11 +29,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 
 	BOOST_CHECK_EQUAL(object_data.get_selection(), el::st_player);
 
-	BOOST_CHECK_EQUAL(object_data.get_state_blend(), true);
-
-	BOOST_CHECK_EQUAL(object_data.get_state_stencil(), true);
-
-	BOOST_CHECK_EQUAL(object_data.get_stencil_value(), 244);
+	BOOST_CHECK_EQUAL(object_data.get_blend(), el::bt_disabled);
 }
 
 BOOST_AUTO_TEST_CASE(name)
@@ -74,22 +70,19 @@ BOOST_AUTO_TEST_CASE(state_blend)
 {
 	el::ObjectData object_data;
 
-	object_data.set_state_blend(true);
-	BOOST_CHECK_EQUAL(object_data.get_state_blend(), true);
+	object_data.set_blend(el::bt_disabled);
+	BOOST_CHECK_EQUAL(object_data.get_blend(), el::bt_disabled);
 
-	object_data.set_state_blend(false);
-	BOOST_CHECK_EQUAL(object_data.get_state_blend(), false);
-}
+	object_data.set_blend(el::bt_alpha_transparency_source_value);
+	BOOST_CHECK_EQUAL(object_data.get_blend(),
+		el::bt_alpha_transparency_source_value);
 
-BOOST_AUTO_TEST_CASE(state_stencil)
-{
-	el::ObjectData object_data;
+	object_data.set_blend(el::bt_alpha_transparency_value);
+	BOOST_CHECK_EQUAL(object_data.get_blend(),
+		el::bt_alpha_transparency_value);
 
-	object_data.set_state_stencil(true);
-	BOOST_CHECK_EQUAL(object_data.get_state_stencil(), true);
-
-	object_data.set_state_stencil(false);
-	BOOST_CHECK_EQUAL(object_data.get_state_stencil(), false);
+	object_data.set_blend(el::bt_additive);
+	BOOST_CHECK_EQUAL(object_data.get_blend(), el::bt_additive);
 }
 
 BOOST_AUTO_TEST_CASE(selection)

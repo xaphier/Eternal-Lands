@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "selectionutil.hpp"
+#include "blendutil.hpp"
 
 /**
  * @file
@@ -96,8 +97,8 @@ namespace eternal_lands
 			ObjectData get_object_data(const glm::vec3 &pos,
 				const glm::vec3 &rotation_angles,
 				const String &name, const float scale,
-				const bool transparent, const Uint32 id,
-				const SelectionType selection) const;
+				const Uint32 id, const SelectionType selection,
+				const BlendType blend) const;
 			SelectionType get_selection(const String &name) const;
 			StringVector get_material_names(const Uint32 index,
 				const Uint32 count) const;
@@ -106,8 +107,8 @@ namespace eternal_lands
 				const glm::vec3 &rotation_angles,
 				const String &name, const float scale,
 				const float transparency, const Uint32 id,
-				const bool blended,
 				const SelectionType selection,
+				const BlendType blend,
 				const StringVector &material_names) = 0;
 			virtual void add_light(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,

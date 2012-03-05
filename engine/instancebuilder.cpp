@@ -487,7 +487,7 @@ namespace eternal_lands
 
 		m_instance_data.reset(new InstanceData(ObjectData(
 			transformation, String(str.str()), 1.0f, get_id(),
-			selection, false, false, 0), mesh_data_tool, materials,
+			selection, bt_disabled), mesh_data_tool, materials,
 			instanced_objects));
 	}
 

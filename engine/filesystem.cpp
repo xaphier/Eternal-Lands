@@ -338,13 +338,13 @@ namespace eternal_lands
 		str << major << "_" << minor << "_" << release;
 
 		update_dir = config_dir;
-		update_dir += "/update";
+		update_dir += "/updates";
 		update_dir += str.str();
 
 		m_archives.push_back(new DirArchive(String(update_dir)));
 
 		update_dir = config_dir;
-		update_dir += "/update/2_0_alpha";
+		update_dir += "/updates/2_0_alpha";
 
 		m_archives.push_back(new DirArchive(String(update_dir)));
 

@@ -1,0 +1,64 @@
+/****************************************************************************
+ *            blendutil.hpp
+ *
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Copyright: See COPYING file that comes with this distribution
+ ****************************************************************************/
+
+#ifndef	UUID_ed53a8e0_87bd_4f64_a69c_3d5b01405c76
+#define	UUID_ed53a8e0_87bd_4f64_a69c_3d5b01405c76
+
+#ifndef	__cplusplus
+#error	"Including C++ header in C translation unit!"
+#endif	/* __cplusplus */
+
+#include "prerequisites.hpp"
+
+namespace eternal_lands
+{
+
+	/**
+	 * Types of blend modes.
+	 * @{
+	 */
+	enum BlendType
+	{
+		/**
+		 * Uses no blending.
+		 */
+		bt_disabled = 0,
+		/**
+		 * Make the object transparent based on the final alpha value
+		 * of the object.
+		 */
+		bt_alpha_transparency_source_value = 1,
+		/**
+		 * Make the object transparent based on the transparency value
+		 * of the object.
+		 */
+		bt_alpha_transparency_value = 2,
+		/**
+		 * Uses additive blending based on the final alpha values in
+		 * the object.
+		 */
+		bt_additive = 3
+	};
+	/**
+	 * @}
+	 */
+
+	class BlendUtil
+	{
+		public:
+			static const String &get_str(
+				const BlendType blend_type);
+			static BlendType get_blend(const String &str);
+			static Uint32 get_blend_type_count();
+
+	};
+
+	std::ostream& operator<< (std::ostream &str, const BlendType value);
+
+}
+
+#endif	/* UUID_ed53a8e0_87bd_4f64_a69c_3d5b01405c76 */

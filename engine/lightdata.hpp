@@ -34,6 +34,11 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
+			LightData();
+
+			/**
+			 * Default constructor.
+			 */
 			LightData(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,
 				const Uint32 id);

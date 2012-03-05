@@ -141,8 +141,8 @@ namespace eternal_lands
 		id = x + (y << 10) + 0xF0000000;
 
 		m_map->add_object(ObjectData(transformation,
-			String(UTF8("plane_4")), 0.0f, id, st_none, false,
-			false, 0), materials);
+			String(UTF8("plane_4")), 0.0f, id, st_none,
+			bt_disabled), materials);
 	}
 
 	void EditorMapLoader::set_height(const Uint16 x, const Uint16 y,
