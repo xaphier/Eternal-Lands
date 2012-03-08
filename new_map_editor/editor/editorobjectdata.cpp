@@ -15,17 +15,56 @@ namespace eternal_lands
 	}
 
 	EditorObjectData::EditorObjectData(const glm::vec3 &translation,
-		const glm::vec3 &rotation_angles, const StringVector &materials,
-		const String &name, const float transparency, const float scale,
+		const glm::vec3 &rotation_angles,
+		const StringVector &material_names, const String &name,
+		const float transparency, const float scale,
 		const Uint32 id, const SelectionType selection,
 		const BlendType blend): ObjectData(Transformation(), name,
 			transparency, id, selection, blend),
-		m_materials(materials), m_rotation_angles(rotation_angles)
+		m_material_names(material_names),
+		m_rotation_angles(rotation_angles)
 	{
 	}
 
 	EditorObjectData::~EditorObjectData() throw()
 	{
+	}
+
+	void EditorObjectData::set_translation(const glm::vec3 &translation)
+	{
+		Transformation m_world_transformation;
+
+		m_world_transformation = get_world_transformation();
+
+		m_world_transformation.set_translation(translation);
+
+		set_world_transformation(m_world_transformation);
+	}
+
+	void EditorObjectData::set_rotation_angles(
+		const glm::vec3 &rotation_angles)
+	{
+	}
+
+	void EditorObjectData::set_scale(const float scale)
+	{
+		Transformation m_world_transformation;
+
+		m_world_transformation = get_world_transformation();
+
+		m_world_transformation.set_scale(scale);
+
+		set_world_transformation(m_world_transformation);
+	}
+
+	glm::vec3 EditorObjectData::get_translation() const
+	{
+		return get_world_transformation().get_translation();
+	}
+
+	float EditorObjectData::get_scale() const
+	{
+		return get_world_transformation().get_scale();
 	}
 
 }

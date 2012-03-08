@@ -12,12 +12,12 @@ namespace eternal_lands
 {
 
 	GroundTileModification::GroundTileModification(
-		const Uint16Array2 &offset, const Uint8 material):
+		const Uint16Array2 &offset, const Uint16 material):
 		m_offset(offset), m_material(material)
 	{
 	}
 
-	GroundTileModification::~GroundTileModification()
+	GroundTileModification::~GroundTileModification() throw()
 	{
 	}
 

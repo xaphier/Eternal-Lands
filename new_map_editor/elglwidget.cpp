@@ -19,7 +19,7 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_light = false;
 	m_rotate_z = 0.0f;
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
-	m_blending = bt_disabled;
+	m_blend = bt_disabled;
 }
 
 ELGLWidget::~ELGLWidget()
@@ -36,10 +36,10 @@ void ELGLWidget::get_points(const Sint32 x, const Sint32 y, glm::vec3 &p0,
 	view_port[1] = 0;
 	view_port[2] = width();
 	view_port[3] = height();
-
+/*
 	project = m_editor.get_scene().get_camera().get_projection_matrix();
 	world = m_editor.get_scene().get_camera().get_view_matrix();
-
+*/
 	p0 = glm::unProject(glm::vec3(x, y, 0), world, project, view_port);
 	p1 = glm::unProject(glm::vec3(x, y, 1), world, project, view_port);
 }
@@ -59,7 +59,7 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 		}
 		else
 		{
-			if (!m_object.empty())
+/*			if (!m_object.empty())
 			{
 				get_points(event->x(), height() - event->y(), p0, p1);
 
@@ -73,7 +73,7 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 				emit can_undo(m_editor.get_can_undo());
 			}
 			else
-			{
+*/			{
 				if (m_light)
 				{
 					get_points(event->x(), height() - event->y(), p0, p1);
@@ -184,26 +184,24 @@ void ELGLWidget::wheelEvent(QWheelEvent *event)
 
 void ELGLWidget::initializeGL()
 {
-	LOG_DEBUG("%1%", "initializeGL");
-
 	m_pos = glm::vec3(10.0f, 10.0f, 50.0f);
 	m_half_size[0] = 1;
 	m_half_size[1] = 1;
 	m_select = false;
 
-	init_opengl_extensions(QtGetProcAddress(this->context()));
+#ifdef OSX
+	/* Test if that helps .... */
+	glewExperimental = GL_TRUE;
+#endif	/* OSX */
+	glewInit();
 
-	SceneResources::get_scene_quality().set_anti_aliasing(0);
-	SceneResources::get_scene_quality().set_anisotropic_filter(16);
-	SceneResources::get_scene_quality().set_filter(false);
-	SceneResources::get_scene_quality().set_quality(qt_low);
-	SceneResources::get_scene_quality().set_reflections(false);
-	SceneResources::get_scene_quality().set_alpha_to_coverage(false);
+	if (!GLEW_VERSION_3_0)
+	{
+//		LOG_ERROR( "OpenGL 3.0 needed, but onlny '%1%' found!",
+//			glGetString(GL_VERSION));
 
-	m_editor.get_scene().editor_init();
-	m_editor.get_scene().load_resources("md/default_arb.xml");
-//	SceneResources::get_scene_quality().disable_extension(oet_arb_vertex_array_object);
-	SceneResources::get_scene_quality().check();
+		exit(1);
+	}
 }
 
 void ELGLWidget::resizeGL(int width, int height)
@@ -215,12 +213,13 @@ void ELGLWidget::resizeGL(int width, int height)
 
 void ELGLWidget::rebuild_projection_frustum()
 {
-	m_editor.get_scene().set_projectiv_frustum(m_zoom, m_width, m_height, 5.0f, 5000.0f);
+//	m_editor.get_scene().set_projectiv_frustum(m_zoom, m_width, m_height, 5.0f, 5000.0f);
 	updateGL();
 }
 
 void ELGLWidget::paintGL()
 {
+/*
 	glm::mat4 view_matrix;
 	glm::vec3 dir, pos, offset;
 	float scale;
@@ -274,11 +273,13 @@ void ELGLWidget::paintGL()
 			emit deselect();
 		}
 	}
+*/
 }
 
-void ELGLWidget::get_object_data(MeshObjectData &mesh_object_data) const
+void ELGLWidget::get_object_data(EditorObjectData &object_data)
+	const
 {
-	m_editor.get_object_data(mesh_object_data);
+	m_editor.get_object_data(object_data);
 }
 
 RenderableType ELGLWidget::get_renderable() const
@@ -302,9 +303,9 @@ void ELGLWidget::remove_object()
 	}
 }
 
-void ELGLWidget::set_object_blending(const BlendType value)
+void ELGLWidget::set_object_blend(const BlendType value)
 {
-	m_editor.set_object_blending(value);
+	m_editor.set_object_blend(value);
 	emit can_undo(m_editor.get_can_undo());
 	updateGL();
 }
@@ -330,13 +331,6 @@ void ELGLWidget::set_object_scale(const float scale)
 	updateGL();
 }
 
-void ELGLWidget::set_object_color(const glm::vec4 &color)
-{
-	m_editor.set_object_color(color);
-	emit can_undo(m_editor.get_can_undo());
-	updateGL();
-}
-
 void ELGLWidget::remove_light()
 {
 	m_editor.remove_light();
@@ -358,7 +352,7 @@ void ELGLWidget::set_light_radius(const double radius)
 	updateGL();
 }
 
-void ELGLWidget::set_light_color(const glm::vec4 &color)
+void ELGLWidget::set_light_color(const glm::vec3 &color)
 {
 	m_editor.set_light_color(color);
 	emit can_undo(m_editor.get_can_undo());
@@ -415,19 +409,19 @@ void ELGLWidget::set_wire_frame(const bool enabled)
 
 void ELGLWidget::light_mode(const bool enabled)
 {
-	m_editor.get_scene().set_draw_lights(enabled);
+//	m_editor.get_scene().set_draw_lights(enabled);
 
 	updateGL();
 }
 
-void ELGLWidget::set_scene_ambient_color(const glm::vec4 &color)
+void ELGLWidget::set_ambient_color(const glm::vec3 &color)
 {
-	m_editor.set_scene_ambient_color(color);
+	m_editor.set_ambient_color(color);
 	emit can_undo(m_editor.get_can_undo());
 	updateGL();
 }
 
-const glm::vec4 &ELGLWidget::get_scene_ambient_color() const
+const glm::vec3 &ELGLWidget::get_ambient_color() const
 {
 	return m_editor.get_ambient_color();
 }
@@ -509,20 +503,53 @@ void ELGLWidget::add_object(const glm::vec4 &color, const Uint16 type, const Uin
 {
 	m_object = object;
 	m_color = color;
-	m_type = type;
-	m_server_id = server_id;
 	m_light = false;
 }
 
 void ELGLWidget::add_light()
 {
 	m_light = true;
-	m_object.clear();
+	m_object = String("");
+}
+
+QStringList ELGLWidget::get_terrain_albedo_maps() const
+{
+	QStringList result;
+
+	result << QString::fromUtf8(m_editor.get_terrain_albedo_map(0,
+		get_terrain_index()).get().c_str());
+	result << QString::fromUtf8(m_editor.get_terrain_albedo_map(1,
+		get_terrain_index()).get().c_str());
+	result << QString::fromUtf8(m_editor.get_terrain_albedo_map(2,
+		get_terrain_index()).get().c_str());
+	result << QString::fromUtf8(m_editor.get_terrain_albedo_map(3,
+		get_terrain_index()).get().c_str());
+
+	return result;
+}
+
+QString ELGLWidget::get_terrain_height_map() const
+{
+	return QString::fromUtf8(m_editor.get_terrain_height_map(
+		get_terrain_index()).get().c_str());
+}
+
+QString ELGLWidget::get_terrain_blend_map() const
+{
+	return QString::fromUtf8(m_editor.get_terrain_blend_map(
+		get_terrain_index()).get().c_str());
+}
+
+QString ELGLWidget::get_terrain_dudv_map() const
+{
+	return QString::fromUtf8(m_editor.get_terrain_dudv_map(
+		get_terrain_index()).get().c_str());
 }
 
 void ELGLWidget::new_map(const int map_size_x, const int map_size_y, const int blend_image_size_x,
 	const int blend_image_size_y, const QStringList textures)
 {
+/*
 	MaterialData terrain_material;
 	Uint16Array2 terrain_size;
 	Uint16Array2 blend_imgae_size;
@@ -552,11 +579,13 @@ void ELGLWidget::new_map(const int map_size_x, const int map_size_y, const int b
 
 	emit can_undo(m_editor.get_can_undo());
 	updateGL();
+*/
 }
 
 void ELGLWidget::new_map(const QString &image, const int blend_image_size_x,
 	const int blend_image_size_y, const QStringList textures)
 {
+/*
 	MaterialData terrain_material;
 	Uint16Array2 blend_imgae_size;
 	int i;
@@ -583,6 +612,7 @@ void ELGLWidget::new_map(const QString &image, const int blend_image_size_x,
 
 	emit can_undo(m_editor.get_can_undo());
 	updateGL();
+*/
 }
 
 void ELGLWidget::set_terrain_editing(const bool enabled)
@@ -600,11 +630,11 @@ void ELGLWidget::set_terrain_layer_index(const int index)
 	m_terrain_layer_index = boost::numeric_cast<Uint32>(index);
 }
 
-void ELGLWidget::open_map(const QString &file_name, const ProgressSharedPtr &shadow_progress)
+void ELGLWidget::open_map(const QString &file_name)
 {
 	if (!file_name.isEmpty())
 	{
-		m_editor.load_map(file_name.toStdString());
+		m_editor.load_map(String(file_name.toUtf8()));
 
 		emit can_undo(m_editor.get_can_undo());
 		updateGL();
@@ -613,26 +643,14 @@ void ELGLWidget::open_map(const QString &file_name, const ProgressSharedPtr &sha
 
 void ELGLWidget::set_fog(const glm::vec3 &color, const float density)
 {
-	m_editor.get_scene().set_fog(color, density);
+//	m_editor.get_scene().set_fog(color, density);
 }
 
-void ELGLWidget::set_terrain_diffuse_texture(const String &name, const Uint32 index)
+void ELGLWidget::set_terrain_albedo_map(const QString &name, const Uint32 index)
 {
-	m_editor.set_terrain_diffuse_texture(name, index);
+	m_editor.set_terrain_albedo_map(String(name.toUtf8()), index);
 	emit can_undo(m_editor.get_can_undo());
 	updateGL();
-}
-
-void ELGLWidget::set_terrain_normal_texture(const String &name, const Uint32 index)
-{
-	m_editor.set_terrain_normal_texture(name, index);
-	emit can_undo(m_editor.get_can_undo());
-	updateGL();
-}
-
-void ELGLWidget::get_terrain_material_data(MaterialData &terrain_material) const
-{
-	m_editor.get_terrain_material_data(terrain_material);
 }
 
 void ELGLWidget::set_object_selection(const SelectionType selection)
@@ -749,7 +767,7 @@ void ELGLWidget::set_random_scale_max(const double value)
 
 void ELGLWidget::disable_object()
 {
-	m_object.clear();
+	m_object = String("");
 }
 
 void ELGLWidget::disable_light()
@@ -759,7 +777,7 @@ void ELGLWidget::disable_light()
 
 void ELGLWidget::save(const QString &name) const
 {
-	m_editor.save(name.toStdString());
+	m_editor.save(String(name.toUtf8()));
 }
 
 QString ELGLWidget::get_blend_image_name() const
@@ -769,12 +787,12 @@ QString ELGLWidget::get_blend_image_name() const
 
 void ELGLWidget::set_blend_image_name(const QString &blend_image)
 {
-	m_editor.set_blend_image_name(blend_image.toStdString());
+	m_editor.set_blend_image_name(String(blend_image.toUtf8()));
 }
 
 void ELGLWidget::set_game_minute(const int game_minute)
 {
-	m_editor.get_scene().set_game_minute(game_minute);
+//	m_editor.get_scene().set_game_minute(game_minute);
 	updateGL();
 }
 
@@ -786,16 +804,7 @@ glm::vec3 ELGLWidget::get_light_color() const
 
 	return light.get_color();
 }
-
-BlendType ELGLWidget::get_object_blend() const
-{
-	MeshObjectData object_data;
-
-	get_object_data(object_data);
-
-	return object_data.get_blend();
-}
-
+/*
 void ELGLWidget::get_codecs(QStringList &codecs)
 {
 	StringVector tmp;
@@ -910,17 +919,4 @@ void ELGLWidget::import_terrain_map(const QString &file_name)
 
 	updateGL();
 }
-
-void ELGLWidget::set_terrain_height_scale(const float terrain_height_scale)
-{
-	m_editor.set_terrain_height_scale(terrain_height_scale);
-
-	emit can_undo(m_editor.get_can_undo());
-
-	updateGL();
-}
-
-float ELGLWidget::get_terrain_height_scale() const
-{
-	return m_editor.get_terrain_height_scale();
-}
+*/

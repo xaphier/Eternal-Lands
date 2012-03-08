@@ -30,48 +30,14 @@ namespace eternal_lands
 		const MeshBuilderSharedPtr &mesh_builder,
 		const EffectCacheSharedPtr &effect_cache,
 		const TextureCacheSharedPtr &texture_cache,
-		const String &file_name)
-	{
-		ImageSharedPtr height_map;
-		EffectDescription effect;
-
-		m_object_tree.reset(new RStarTree());
-
-		load_xml(file_system, file_name);
-
-		height_map = codec_manager->load_image(get_height_map(),
-			file_system, ImageCompressionTypeSet(), true);
-
-		effect.load_xml(file_system,
-			String(UTF8("shaders/simple_terrain.xml")));
-
-		add_terrain_pages(effect, height_map, mesh_builder,
-			effect_cache, texture_cache,
-			global_vars->get_low_quality_terrain(),
-			global_vars->get_use_simd());
-	}
-
-	SimpleTerrainManager::SimpleTerrainManager(
-		const CodecManagerSharedPtr &codec_manager,
-		const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars,
-		const MeshBuilderSharedPtr &mesh_builder,
-		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache,
-		const Transformation &transformation,
-		const StringArray4 &albedo_maps, const String &blend_map,
-		const String &height_map, const String &dvdu_map)
+		const TerrainData &terrain_data)
 	{
 		ImageSharedPtr height_image;
 		EffectDescription effect;
 
 		m_object_tree.reset(new RStarTree());
 
-		set_transformation(transformation);
-		set_albedo_maps(albedo_maps);
-		set_blend_map(blend_map);
-		set_height_map(height_map);
-		set_dvdu_map(dvdu_map);
+		set_data(terrain_data);
 
 		height_image = codec_manager->load_image(get_height_map(),
 			file_system, ImageCompressionTypeSet(), true);

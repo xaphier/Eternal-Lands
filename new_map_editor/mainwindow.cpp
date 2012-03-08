@@ -104,22 +104,20 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SLOT(export_terrain_map()));
 	QObject::connect(action_import_terrain_map, SIGNAL(triggered(bool)), this,
 		SLOT(import_terrain_map()));
-	QObject::connect(action_terrain_height_scale, SIGNAL(triggered(bool)), this,
-		SLOT(terrain_height_scale()));
 
 	m_object_selection_mapper = new QSignalMapper(this);
-	m_object_selection_mapper->setMapping(selection_usable, int(0));
-	m_object_selection_mapper->setMapping(selection_entrable, int(1));
-	m_object_selection_mapper->setMapping(selection_harvestable, int(2));
+	m_object_selection_mapper->setMapping(selection_type_0, int(0));
+	m_object_selection_mapper->setMapping(selection_type_1, int(1));
+	m_object_selection_mapper->setMapping(selection_type_2, int(2));
 
-	QObject::connect(selection_usable, SIGNAL(clicked()),
+	QObject::connect(selection_type_0, SIGNAL(clicked()),
 		m_object_selection_mapper, SLOT(map()));
-	QObject::connect(selection_entrable, SIGNAL(clicked()),
+	QObject::connect(selection_type_1, SIGNAL(clicked()),
 		m_object_selection_mapper, SLOT(map()));
-	QObject::connect(selection_harvestable, SIGNAL(clicked()),
+	QObject::connect(selection_type_2, SIGNAL(clicked()),
 		m_object_selection_mapper, SLOT(map()));
 	QObject::connect(m_object_selection_mapper, SIGNAL(mapped(const int)),
-		el_gl_widget, SLOT(set_object_selection(const int)));
+		this, SLOT(set_object_selection(const int)));
 
 	m_object_transparency_mapper = new QSignalMapper(this);
 	m_object_transparency_mapper->setMapping(transparency_type_0, int(0));
@@ -134,7 +132,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		m_object_transparency_mapper, SLOT(map()));
 	QObject::connect(m_object_transparency_mapper,
 		SIGNAL(mapped(const int)), this,
-		SLOT(set_object_blending(const int)));
+		SLOT(set_object_blend(const int)));
 
 	QObject::connect(translate_x_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_x(bool)));
 	QObject::connect(translate_y_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_y(bool)));
@@ -176,9 +174,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	object_witdgets.push_back(transparency_type_1);
 	object_witdgets.push_back(transparency_type_2);
 	object_witdgets.push_back(transparency_value);
-	object_witdgets.push_back(selection_usable);
-	object_witdgets.push_back(selection_entrable);
-	object_witdgets.push_back(selection_harvestable);
+	object_witdgets.push_back(selection_type_0);
+	object_witdgets.push_back(selection_type_1);
+	object_witdgets.push_back(selection_type_2);
 
 	light_witdgets.push_back(x_position);
 	light_witdgets.push_back(y_position);
@@ -236,7 +234,7 @@ void MainWindow::read_settings()
 void MainWindow::update_object()
 {
 	EditorObjectData object_data;
-	unsigned int id, selection, blend;
+	unsigned int id;
 
 	el_gl_widget->get_object_data(object_data);
 
@@ -260,50 +258,7 @@ void MainWindow::update_object()
 		).get_scale() * 100.0f);
 
 	set_blend(object_data.get_blend());
-
-	switch (object_data.get_selection())
-	{
-		case st_enter:
-			selection = 1;
-			break;
-		case st_harvest:
-			selection = 2;
-			break;
-		default:
-			selection = 0;
-			break;
-	}
-
-	if (m_object_selection_mapper->mapping(selection) != 0)
-	{
-		dynamic_cast<QRadioButton*>(m_object_selection_mapper->mapping(selection))->setChecked(true);
-	}
-	else
-	{
-		dynamic_cast<QRadioButton*>(m_object_selection_mapper->mapping(0))->setChecked(true);
-	}
-
-	switch (object_data.get_blend())
-	{
-		case bt_alpha_transparency_value:
-			blend = 1;
-			break;
-		case bt_alpha_transparency_source_value:
-			blend = 2;
-			break;
-		default:
-			blend = 0;
-			break;
-	}
-
-	if (m_object_transparency_mapper->mapping(selection) != 0)
-	{
-		dynamic_cast<QRadioButton*>(m_object_transparency_mapper->mapping(blend))->setChecked(true);
-	}
-	else
-	{
-		dynamic_cast<QRadioButton*>(m_object_transparency_mapper->mapping(0))->setChecked(true);
-	}
+	set_selection(object_data.get_selection());
 
 	mesh_name->setText(QString::fromUtf8(object_data.get_name().get().c_str()));
 
@@ -355,8 +310,7 @@ void MainWindow::set_terrain_albedo_map(const QString &str, const int index)
 
 void MainWindow::update_terrain()
 {
-	MaterialData terrain_material;
-	QString str;
+	QStringList terrain_albedo_maps;
 	int i;
 
 	for (i = 0; i < 5; i++)
@@ -364,13 +318,16 @@ void MainWindow::update_terrain()
 		m_terrain_albedo_map_mapper->mapping(i)->blockSignals(true);
 	}
 
-	el_gl_widget->get_terrain_material_data(terrain_material);
+	terrain_albedo_maps = el_gl_widget->get_terrain_albedo_maps();
 
-	for (i = 0; i < 5; i++)
+	for (i = 0; i < std::min(terrain_albedo_maps.size(), 5); i++)
 	{
-		str = QString::fromUtf8(terrain_material.get_diffuse_texture(i));
-		set_diffuse_terrain_texture(str, i);
+		set_terrain_albedo_map(terrain_albedo_maps[i], i);
 	}
+
+	height_map->setText(el_gl_widget->get_terrain_height_map());
+	blend_map->setText(el_gl_widget->get_terrain_blend_map());
+	dudv_map->setText(el_gl_widget->get_terrain_dudv_map());
 
 	for (i = 0; i < 5; i++)
 	{
@@ -526,7 +483,7 @@ void MainWindow::set_light_color(const QColor &color)
 void MainWindow::change_light_color()
 {
 	QColor color;
-	glm::vec4 light_color;
+	glm::vec3 light_color;
 
 	light_color = el_gl_widget->get_light_color();
 	color = QColor::fromRgbF(light_color[0], light_color[1],
@@ -544,6 +501,8 @@ void MainWindow::change_light_color()
 
 void MainWindow::add_object(const bool value)
 {
+#warning "not implemented"
+/*
 	if (value)
 	{
 		if (m_objects->exec() == QDialog::Accepted)
@@ -562,6 +521,7 @@ void MainWindow::add_object(const bool value)
 	{
 		el_gl_widget->disable_object();
 	}
+*/
 }
 
 void MainWindow::add_light(const bool value)
@@ -674,24 +634,22 @@ void MainWindow::save_as()
 void MainWindow::change_ambient()
 {
 	QColor color;
-	glm::vec4 ambient_color;
+	glm::vec3 ambient_color;
 
-	ambient_color = el_gl_widget->get_scene_ambient_color();
+	ambient_color = el_gl_widget->get_ambient_color();
 
-	color = QColor::fromRgbF(ambient_color[0], ambient_color[1], ambient_color[2],
-		ambient_color[3]);
+	color = QColor::fromRgbF(ambient_color[0], ambient_color[1],
+		ambient_color[2]);
 
-	color = QColorDialog::getColor(color, this, tr("Scene ambient color"),
-		QColorDialog::ShowAlphaChannel);
+	color = QColorDialog::getColor(color, this, tr("Scene ambient color"));
 
 	if (color.isValid())
 	{
 		ambient_color[0] = color.redF();
 		ambient_color[1] = color.greenF();
 		ambient_color[2] = color.blueF();
-		ambient_color[3] = color.alphaF();
 
-		el_gl_widget->set_scene_ambient_color(ambient_color);
+		el_gl_widget->set_ambient_color(ambient_color);
 	}
 }
 
@@ -1035,104 +993,9 @@ void MainWindow::terrain_edit(const int x, const int y)
 	}
 }
 
-void MainWindow::export_blend_image()
-{
-	QStringList codecs;
-	QString file_name, filter, extension, codec;
-	bool ok;
-
-	el_gl_widget->get_codecs(codecs);
-
-	codec = QInputDialog::getItem(this, tr("Select image format"), tr("Image format"), codecs,
-		0, false, &ok, 0);
-
-	if (ok)
-	{
-		el_gl_widget->get_file_extensions_filter(filter, extension, codec);
-
-		file_name = QFileDialog::getSaveFileName(this, tr("Export blend image"), ".",
-			filter, 0, 0);
-
-		if (!file_name.isEmpty())
-		{
-			QFileInfo file_info(file_name);
-
-			if (file_info.suffix().isEmpty())
-			{
-				file_name += tr(".") + extension;
-			}
-
-			el_gl_widget->export_blend_image(file_name, codec);
-		}
-	}
-}
-
-void MainWindow::export_terrain_map()
-{
-	QStringList codecs;
-	QString file_name, filter, extension, codec;
-	bool ok;
-
-	el_gl_widget->get_codecs(codecs);
-
-	codec = QInputDialog::getItem(this, tr("Select image format"), tr("Image format"), codecs,
-		0, false, &ok, 0);
-
-	if (ok)
-	{
-		el_gl_widget->get_file_extensions_filter(filter, extension, codec);
-
-		file_name = QFileDialog::getSaveFileName(this, tr("Export terrain map"), ".",
-			filter, 0, 0);
-
-		if (!file_name.isEmpty())
-		{
-			QFileInfo file_info(file_name);
-
-			if (file_info.suffix().isEmpty())
-			{
-				file_name += tr(".") + extension;
-			}
-
-			el_gl_widget->export_terrain_map(file_name, codec);
-		}
-	}
-}
-
-void MainWindow::import_terrain_map()
-{
-	QString file_name, filter;
-
-	el_gl_widget->get_file_extensions_filter(filter);
-
-	file_name = QFileDialog::getOpenFileName(this, tr("Import terrain map"), ".",
-		filter, 0, 0);
-
-	if (!file_name.isEmpty())
-	{
-		el_gl_widget->import_terrain_map(file_name);
-	}
-}
-
 void MainWindow::about_el()
 {
 
-}
-
-void MainWindow::terrain_height_scale()
-{
-	bool ok;
-	double old_value, value;
-
-	old_value = el_gl_widget->get_terrain_height_scale();
-
-	value = QInputDialog::getDouble(this, "Terrain height scale", "scale", old_value, 1.0,
-		255.0f, 1, &ok);
-
-	if (ok && (old_value != value))
-	{
-		el_gl_widget->set_terrain_height_scale(value);
-	}
 }
 
 void MainWindow::set_object_blend(const int value)
@@ -1140,15 +1003,31 @@ void MainWindow::set_object_blend(const int value)
 	switch (value)
 	{
 		case 0:
-			el_gl_widget->set_object_blending(bt_disabled);
+			el_gl_widget->set_object_blend(bt_disabled);
 			break;
 		case 1:
-			el_gl_widget->set_object_blending(
+			el_gl_widget->set_object_blend(
 				bt_alpha_transparency_value);
 			break;
 		case 2:
-			el_gl_widget->set_object_blending(
+			el_gl_widget->set_object_blend(
 				bt_alpha_transparency_source_value);
+			break;
+	}
+}
+
+void MainWindow::set_object_selection(const int value)
+{
+	switch (value)
+	{
+		case 0:
+			el_gl_widget->set_object_selection(st_select);
+			break;
+		case 1:
+			el_gl_widget->set_object_selection(st_enter);
+			break;
+		case 2:
+			el_gl_widget->set_object_selection(st_harvest);
 			break;
 	}
 }
@@ -1165,6 +1044,22 @@ void MainWindow::set_blend(const BlendType value)
 			break;
 		default:
 			transparency_type_0->setChecked(true);
+			break;
+	}
+}
+
+void MainWindow::set_selection(const SelectionType value)
+{
+	switch (value)
+	{
+		case st_enter:
+			selection_type_1->setChecked(true);
+			break;
+		case st_harvest:
+			selection_type_2->setChecked(true);
+			break;
+		default:
+			selection_type_0->setChecked(true);
 			break;
 	}
 }

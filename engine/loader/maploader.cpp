@@ -132,8 +132,8 @@ namespace eternal_lands
 		terrain.reset(new SimpleTerrainManager(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_effect_cache(),
-			get_texture_cache(), transformation, albedo, blend,
-			height, dudv));
+			get_texture_cache(), get_terrain_data(translation,
+			rotation_angles, albedo, blend, height, dudv, scale)));
 
 		m_map->add_terrain(terrain);
 	}

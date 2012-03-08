@@ -27,7 +27,7 @@ namespace eternal_lands
 		public:
 			ObjectModification(const EditorObjectData &data,
 				const ModificationType type);
-			virtual ~ObjectModification();
+			virtual ~ObjectModification() throw();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);

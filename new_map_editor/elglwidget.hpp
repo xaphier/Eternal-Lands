@@ -25,17 +25,17 @@ class ELGLWidget: public QGLWidget
 		Uint32 m_terrain_type_index;
 		Uint32 m_terrain_layer_index;
 		Uint32 m_edit_id;
-		Uint16 m_type;
-		Uint16 m_server_id;
+		Uint16 m_terrain_index;
 		bool m_select;
 		bool m_terrain_editing;
 		bool m_light;
-		BlendType m_blending;
+		BlendType m_blend;
 		Qt::MouseButton m_click_button;
 		Qt::KeyboardModifier m_wheel_zoom_x10;
 		bool m_swap_wheel_zoom;
 
-		void get_points(const Sint32 x, const Sint32 y, glm::vec3 &p0, glm::vec3 &p1);
+		void get_points(const Sint32 x, const Sint32 y,
+			glm::vec3 &p0, glm::vec3 &p1);
 		void rebuild_projection_frustum();
 
 		inline bool get_terrain_editing() const
@@ -53,6 +53,11 @@ class ELGLWidget: public QGLWidget
 			return m_terrain_layer_index;
 		}
 
+		inline Uint16 get_terrain_index() const
+		{
+			return m_terrain_index;
+		}
+
 	protected:
 		virtual void initializeGL();
 		virtual void resizeGL(int width, int height);
@@ -65,22 +70,22 @@ class ELGLWidget: public QGLWidget
 	public:
 		ELGLWidget(QWidget *parent = 0);
 		~ELGLWidget();
-		void get_object_data(EditorObjectData &mesh_object_data) const;
+		void get_object_data(EditorObjectData &object_data) const;
 		RenderableType get_renderable() const;
-		glm::vec4 get_light_color() const;
-		glm::vec4 get_object_color() const;
-		BlendType get_object_blending() const;
+		glm::vec3 get_light_color() const;
 		void get_light_data(LightData &light) const;
 		void set_light_position(const glm::vec3 &position);
 		void set_light_color(const glm::vec3 &color);
 		void set_object_translation(const glm::vec3 &translation);
 		void set_object_rotation(const glm::vec3 &rotation);
 		void set_object_scale(const float scale);
+		void set_object_selection(const SelectionType selection);
+		void set_object_blend(const BlendType blend);
 		void add_object(const glm::vec4 &color, const Uint16 type,
 			const Uint16 server_id, const String &object);
 		void add_light();
-		void set_scene_ambient_color(const glm::vec4 &color);
-		const glm::vec4 &get_scene_ambient_color() const;
+		void set_ambient_color(const glm::vec3 &color);
+		const glm::vec3 &get_ambient_color() const;
 		void set_fog(const glm::vec3 &color, const float density);
 		QString get_blend_image_name() const;
 		void terrain_height_edit(const int x, const int y, const float strength,
@@ -93,9 +98,10 @@ class ELGLWidget: public QGLWidget
 		void export_blend_image(const QString &file_name, const QString &codec) const;
 		void export_terrain_map(const QString &file_name, const QString &codec) const;
 		void import_terrain_map(const QString &file_name);
-		void set_terrain_height_scale(const float terrain_height_scale);
-		float get_terrain_height_scale() const;
-		void set_object_blending(const BlendType value);
+		QStringList get_terrain_albedo_maps() const;
+		QString get_terrain_height_map() const;
+		QString get_terrain_blend_map() const;
+		QString get_terrain_dudv_map() const;
 		static void get_codecs(QStringList &codecs);
 		static void get_file_extensions_filter(QString &filter);
 		static void get_file_extensions_filter(QString &filter, QString &default_extension,
@@ -156,8 +162,6 @@ class ELGLWidget: public QGLWidget
 		void set_terrain_layer_index(const int index);
 		void set_terrain_albedo_map(const QString &name,
 			const Uint32 index);
-		void set_object_selection(const int selection);
-		void set_object_blend(const int blend);
 		void set_random_translation_x(const bool value);
 		void set_random_translation_y(const bool value);
 		void set_random_translation_z(const bool value);

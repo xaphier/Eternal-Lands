@@ -16,7 +16,7 @@ namespace eternal_lands
 	{
 	}
 
-	AmbientModification::~AmbientModification()
+	AmbientModification::~AmbientModification() throw()
 	{
 	}
 

@@ -57,12 +57,13 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void load_textures_settings(QSettings &settings);
 		void set_textures(const QStringList &textures);
 		void set_blend(const BlendType value);
+		void set_selection(const SelectionType value);
 
 	private slots:
 		void update_object();
 		void about_el();
-		void terrain_height_scale();
 		void set_object_blend(const int);
+		void set_object_selection(const int);
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);
@@ -79,7 +80,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void update_light(const bool select);
 		void deselect();
 		void change_light_color();
-		void change_object_color();
 		void add_object(const bool value);
 		void add_light(const bool value);
 		void remove();
@@ -94,9 +94,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void new_map();
 		void change_preferences();
 		void terrain_edit(const int x, const int y);
-		void export_blend_image();
-		void export_terrain_map();
-		void import_terrain_map();
 
 };
 

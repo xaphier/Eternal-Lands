@@ -24,7 +24,7 @@ namespace eternal_lands
 		mt_object_translation_changed,
 		mt_object_rotation_changed,
 		mt_object_scale_changed,
-		mt_object_blending_changed,
+		mt_object_blend_changed,
 		mt_object_selection_changed,
 		mt_object_materials_changed,
 		mt_light_added,
@@ -35,7 +35,7 @@ namespace eternal_lands
 		mt_terrain_albedo_map_changed,
 		mt_terrain_blend_map_changed,
 		mt_terrain_height_map_changed,
-		mt_terrain_dvdu_map_changed,
+		mt_terrain_dudv_map_changed,
 		mt_terrain_scale_offset_changed,
 		mt_tile_texture_changed,
 		mt_scene_ambient_changed,
@@ -48,11 +48,11 @@ namespace eternal_lands
 
 	class Modification
 	{
-		public:
-			inline virtual ~Modification()
-			{
-			}
+		protected:
+			Modification();
 
+		public:
+			virtual ~Modification() throw();
 			virtual ModificationType get_type() const = 0;
 			virtual bool merge(Modification* modification) = 0;
 			virtual bool undo(EditorMapData &editor) = 0;

@@ -1,20 +1,20 @@
 /****************************************************************************
- *            abstractterrainmanager.cpp
+ *            modification.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "abstractterrainmanager.hpp"
+#include "modification.hpp"
 
 namespace eternal_lands
 {
 
-	AbstractTerrainManager::AbstractTerrainManager()
+	Modification::Modification()
 	{
 	}
 
-	AbstractTerrainManager::~AbstractTerrainManager() throw()
+	Modification::~Modification() throw()
 	{
 	}
 

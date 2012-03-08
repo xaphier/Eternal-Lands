@@ -31,7 +31,7 @@ namespace eternal_lands
 	class EditorObjectData: public ObjectData
 	{
 		private:
-			StringVector m_materials;
+			StringVector m_material_names;
 			glm::vec3 m_rotation_angles;
 
 		public:
@@ -45,7 +45,7 @@ namespace eternal_lands
 			 */
 			EditorObjectData(const glm::vec3 &translation,
 				const glm::vec3 &rotation_angles,
-				const StringVector &materials,
+				const StringVector &material_names,
 				const String &name, const float transparency,
 				const float scale, const Uint32 id,
 				const SelectionType selection,
@@ -55,26 +55,27 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~EditorObjectData() throw();
-
-			inline void set_rotation_angles(
-				const glm::vec3 &rotation_angles)
-			{
-				m_rotation_angles = rotation_angles;
-			}
-
-			inline void set_materials(const StringVector &materials)
-			{
-				m_materials = materials;
-			}
+			void set_translation(const glm::vec3 &translation);
+			void set_rotation_angles(
+				const glm::vec3 &rotation_angles);
+			void set_scale(const float scale);
+			glm::vec3 get_translation() const;
+			float get_scale() const;
 
 			inline const glm::vec3 &get_rotation_angles() const
 			{
 				return m_rotation_angles;
 			}
 
-			inline const StringVector &get_materials() const
+			inline void set_material_names(
+				const StringVector &material_names)
 			{
-				return m_materials;
+				m_material_names = material_names;
+			}
+
+			inline const StringVector &get_material_names() const
+			{
+				return m_material_names;
 			}
 
 	};

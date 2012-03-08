@@ -249,6 +249,7 @@ namespace eternal_lands
 	class RenderObjectData;
 	class RStarTree;
 	class RStarTreeNode;
+	class Scene;
 	class SceneResources;
 	class ShaderSourceBuilder;
 	class ShaderSourceData;
@@ -257,6 +258,7 @@ namespace eternal_lands
 	class StateManager;
 	class SubMesh;
 	class SubObject;
+	class TerrainData;
 	class Text;
 	class TextAttribute;
 	class Texture;

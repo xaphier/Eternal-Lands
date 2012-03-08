@@ -22,14 +22,13 @@ namespace eternal_lands
 	{
 		private:
 			HeightVector m_heights;
-			Uint16 m_page_id;
-			bool m_terrain;
+			const Uint16 m_id;
+			const ModificationType m_type;
 
 		public:
 			HeightModification(const HeightVector &heights,
-				const Uint16 page_id,
-				const bool terrain);
-			virtual ~HeightModification();
+				const Uint16 id, const ModificationType type);
+			virtual ~HeightModification() throw();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);

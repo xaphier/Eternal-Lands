@@ -27,7 +27,7 @@ namespace eternal_lands
 		public:
 			LightModification(const LightData &data,
 				const ModificationType type);
-			virtual ~LightModification();
+			virtual ~LightModification() throw();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);

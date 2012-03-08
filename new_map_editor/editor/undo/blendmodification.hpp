@@ -23,13 +23,13 @@ namespace eternal_lands
 		private:
 			ImageValueVector m_blend_values;
 			ImageSharedPtr m_blend_image;
-			Uint16 m_page_id;
+			const Uint16 m_id;
 
 		public:
 			BlendModification(const ImageValueVector &blend_values,
 				const ImageSharedPtr &blend_image,
-				const Uint16 page_id);
-			virtual ~BlendModification();
+				const Uint16 id);
+			virtual ~BlendModification() throw();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);

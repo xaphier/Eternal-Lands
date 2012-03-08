@@ -24,25 +24,18 @@ namespace eternal_lands
 	};
 
 	HeightModification::HeightModification(const HeightVector &heights,
-		const Uint16 page_id, const bool terrain): m_heights(heights),
-		m_page_id(page_id), m_terrain(terrain)
+		const Uint16 id, const ModificationType type):
+		m_heights(heights), m_id(id), m_type(type)
 	{
 	}
 
-	HeightModification::~HeightModification()
+	HeightModification::~HeightModification() throw()
 	{
 	}
 
 	ModificationType HeightModification::get_type() const
 	{
-		if (m_terrain)
-		{
-			return mt_terrain_height_changed;
-		}
-		else
-		{
-			return mt_height_changed;
-		}
+		return m_type;
 	}
 
 	bool HeightModification::merge(Modification* modification)
@@ -59,7 +52,7 @@ namespace eternal_lands
 
 			assert(height_modification != 0);
 
-			if (height_modification->m_page_id == m_page_id)
+			if (height_modification->m_id == m_id)
 			{
 				size = m_heights.size();
 				begin = m_heights.begin();
@@ -96,13 +89,37 @@ namespace eternal_lands
 
 	bool HeightModification::undo(EditorMapData &editor)
 	{
-		if (m_terrain)
+		switch (get_type())
 		{
-			editor.set_terrain_heights(m_heights);
-		}
-		else
-		{
-			editor.set_heights(m_heights);
+			case mt_light_added:
+			case mt_light_removed:
+			case mt_light_position_changed:
+			case mt_light_color_changed:
+			case mt_light_radius_changed:
+			case mt_object_added:
+			case mt_object_removed:
+			case mt_object_translation_changed:
+			case mt_object_rotation_changed:
+			case mt_object_scale_changed:
+			case mt_object_blend_changed:
+			case mt_object_selection_changed:
+			case mt_object_materials_changed:
+			case mt_terrain_albedo_map_changed:
+			case mt_terrain_blend_map_changed:
+			case mt_terrain_height_map_changed:
+			case mt_terrain_dudv_map_changed:
+			case mt_terrain_scale_offset_changed:
+			case mt_tile_texture_changed:
+			case mt_scene_ambient_changed:
+				return false;
+			case mt_terrain_height_changed:
+				editor.set_terrain_heights(m_heights, m_id);
+				break;
+			case mt_height_changed:
+				editor.set_heights(m_heights, m_id);
+				break;
+			case mt_blend_values_changed:
+				return false;
 		}
 
 		return false;

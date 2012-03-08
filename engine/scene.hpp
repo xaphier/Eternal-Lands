@@ -104,6 +104,14 @@ namespace eternal_lands
 				return m_global_vars;
 			}
 
+		protected:
+			virtual void intersect(const Frustum &frustum,
+				ObjectVisitor &visitor) const;
+			virtual void intersect(const Frustum &frustum,
+				LightVisitor &visitor) const;
+			virtual void intersect_shadow(const Frustum &frustum,
+				ObjectVisitor &visitor) const;
+
 		public:
 			/**
 			 * Default constructor.
@@ -114,7 +122,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~Scene() throw();
+			virtual ~Scene() throw();
 
 			ActorSharedPtr add_actor(const Uint32 type_id,
 				const Uint32 id, const Uint32 index,
@@ -128,6 +136,8 @@ namespace eternal_lands
 				const MaterialEffectDescriptionVector
 					&materials);
 			void add_object(const InstanceData &instance_data);
+			void add_object(const ObjectData &object_data,
+				const StringVector &material_names);
 			void remove_object(const Uint32 id);
 			bool get_object_position(const Uint32 id,
 				glm::vec3 &position);
@@ -150,7 +160,7 @@ namespace eternal_lands
 			glm::uvec2 get_height_map_size() const;
 			glm::uvec2 get_tile_map_size() const;
 			bool get_dungeon() const;
-			const glm::vec4 &get_ambient() const;
+			const glm::vec3 &get_ambient() const;
 
 			inline void shadow_map_change()
 			{

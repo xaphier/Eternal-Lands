@@ -24,7 +24,7 @@ namespace eternal_lands
 
 		public:
 			AmbientModification(const glm::vec3 &color);
-			virtual ~AmbientModification();
+			virtual ~AmbientModification() throw();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);

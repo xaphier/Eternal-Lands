@@ -102,7 +102,6 @@
     <addaction name="separator"/>
     <addaction name="action_ambient"/>
     <addaction name="action_blend_image"/>
-    <addaction name="action_terrain_height_scale"/>
     <addaction name="action_water_height"/>
     <addaction name="action_map_settings"/>
     <addaction name="separator"/>
@@ -355,7 +354,7 @@
      <item>
       <widget class="QStackedWidget" name="properties">
        <property name="currentIndex">
-        <number>0</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="object_page">
         <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -421,8 +420,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>121</width>
-              <height>364</height>
+              <width>365</width>
+              <height>435</height>
              </rect>
             </property>
             <attribute name="label">
@@ -878,7 +877,7 @@
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
                 <item>
-                 <widget class="QRadioButton" name="selection_usable">
+                 <widget class="QRadioButton" name="selection_type_0">
                   <property name="text">
                    <string>Usable</string>
                   </property>
@@ -888,14 +887,14 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="selection_entrable">
+                 <widget class="QRadioButton" name="selection_type_1">
                   <property name="text">
                    <string>Entrable</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="selection_harvestable">
+                 <widget class="QRadioButton" name="selection_type_2">
                   <property name="text">
                    <string>Harvestable</string>
                   </property>
@@ -1921,8 +1920,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>365</width>
+              <height>423</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2786,11 +2785,6 @@
   <action name="action_qt_info">
    <property name="text">
     <string>Qt info</string>
-   </property>
-  </action>
-  <action name="action_terrain_height_scale">
-   <property name="text">
-    <string>Terrain height scale</string>
    </property>
   </action>
  </widget>

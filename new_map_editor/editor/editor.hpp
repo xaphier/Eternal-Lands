@@ -40,6 +40,10 @@ namespace eternal_lands
 		private:
 			EditorMapData m_data;
 			UndoStack m_undo;
+			boost::mt19937 m_gen;
+			boost::uniform_real<> m_uni_dist;
+			boost::variate_generator<boost::mt19937&,
+				boost::uniform_real<> > m_random;
 			glm::vec3 m_random_translation_min;
 			glm::vec3 m_random_translation_max;
 			glm::vec3 m_random_rotation_min;
@@ -48,17 +52,15 @@ namespace eternal_lands
 			float m_random_scale_max;
 			glm::bvec3 m_random_translation;
 			glm::bvec3 m_random_rotation;
+			Uint32 m_id;
+			RenderableType m_renderable;
 			bool m_random_scale;
-			boost::mt19937 m_gen;
-			boost::uniform_real<> m_uni_dist;
-			boost::variate_generator<boost::mt19937&,
-				boost::uniform_real<> > m_random;
 
 			void change_object(const ModificationType type,
 				const EditorObjectData &object_data);
 			void change_light(const ModificationType type,
 				const LightData &light_data);
-			bool do_set_terrain_albedo_map(const String &texture,
+			bool do_set_terrain_albedo_map(const String &str,
 				const Uint16 index, const Uint16 id);
 			void remove_ground_tile(const Uint32 id);
 			static StringVector get_ground_tile_materials(
@@ -72,34 +74,40 @@ namespace eternal_lands
 				const float radius,
 				const EditorBrushType brush_type,
 				const Uint16 id);
-			Uint32 get_id() const;
+
+			inline Uint32 get_id() const
+			{
+				return m_id;
+			}
 
 		public:
 			Editor();
 			bool undo();
 			void set_terrain_albedo_map(const String &texture,
 				const Uint16 index, const Uint16 id);
-			void set_ground_tile_texture(const glm::vec2 &point,
-				const Uint8 index);
+			void set_ground_tile(const glm::vec2 &point,
+				const Uint16 tile);
 			void add_3d_object(const glm::vec3 &position,
-				const String &mesh, const Uint32 id,
+				const String &mesh,
 				const SelectionType selection);
 			void add_light(const glm::vec3 &position);
 			void add_ground_tile(const Uint32 x, const Uint32 y,
 				const Uint8 texture);
-			void set_scene_ambient_color(const glm::vec4 &color);
-			void terrain_height_edit(const Uint32 id, const glm::vec3 &p0,
-				const glm::vec3 &p1, const float strength,
+			void set_ambient_color(const glm::vec3 &color);
+			void terrain_height_edit(const Uint32 id,
+				const glm::vec3 &p0, const glm::vec3 &p1,
+				const float strength, const float radius,
+				const int brush_type);
+			void terrain_layer_edit(const Uint32 id,
+				const glm::vec3 &p0, const glm::vec3 &p1,
+				const Uint32 index, const float strength,
 				const float radius, const int brush_type);
-			void terrain_layer_edit(const Uint32 id, const glm::vec3 &p0,
-				const glm::vec3 &p1, const Uint32 index, const float strength,
-				const float radius, const int brush_type);
-			void ground_tile_edit(const glm::vec3 &p0, const glm::vec3 &p1,
-				const Uint8 tile);
-			void water_tile_edit(const glm::vec3 &p0, const glm::vec3 &p1,
-				const Uint8 water);
-			void height_edit(const glm::vec3 &p0, const glm::vec3 &p1,
-				const Uint8 height);
+			void ground_tile_edit(const glm::vec3 &p0,
+				const glm::vec3 &p1, const Uint8 tile);
+			void water_tile_edit(const glm::vec3 &p0,
+				const glm::vec3 &p1, const Uint8 water);
+			void height_edit(const glm::vec3 &p0,
+				const glm::vec3 &p1, const Uint8 height);
 /*			void set_terrain(const MaterialData &terrain_material,
 				const Uint16Array2 map_size, const Uint16Array2 blend_image_size);
 			void set_terrain(const MaterialData &terrain_material,
@@ -128,19 +136,41 @@ namespace eternal_lands
 				const float radius);
 			void set_light_color(const Uint32 id,
 				const glm::vec3 &color);
-			void get_object_data(EditorObjectData &object_data)
-				const;
-			void get_light_data(LightData &light) const;
-			const glm::vec4 &get_ambient_color() const;
+			void get_object_data(const Uint32 id,
+				EditorObjectData &object_data) const;
+			void get_light_data(const Uint32 id,
+				LightData &light_data) const;
+			const glm::vec3 &get_ambient_color() const;
 			void export_blend_image(const String &file_name,
 				const String &type) const;
 			void export_terrain_map(const String &file_name,
 				const String &type) const;
 			void import_terrain_map(const String &file_name);
-			void set_terrain_height_scale(const float terrain_height_scale);
-			float get_terrain_height_scale() const;
-			RenderableType get_renderable() const;
 			bool get_selected() const;
+			const String &get_terrain_albedo_map(
+				const Uint16 index, const Uint16 id) const;
+			const String &get_terrain_height_map(const Uint16 id)
+				const;
+			const String &get_terrain_blend_map(const Uint16 id)
+				const;
+			const String &get_terrain_dudv_map(const Uint16 id)
+				const;
+
+			inline void get_object_data(
+				EditorObjectData &object_data) const
+			{
+				get_object_data(get_id(), object_data);
+			}
+
+			inline void get_light_data(LightData &light_data) const
+			{
+				get_light_data(get_id(), light_data);
+			}
+
+			inline RenderableType get_renderable() const
+			{
+				return m_renderable;
+			}
 
 			inline bool get_object_selected() const
 			{

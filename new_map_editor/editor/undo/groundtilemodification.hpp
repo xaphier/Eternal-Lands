@@ -20,13 +20,13 @@ namespace eternal_lands
 	class GroundTileModification: public Modification
 	{
 		private:
-			Uint16Array2 m_offset;
-			Uint8 m_material;
+			const Uint16Array2 m_offset;
+			const Uint16 m_material;
 
 		public:
 			GroundTileModification(const Uint16Array2 &offset,
-				const Uint8 material);
-			virtual ~GroundTileModification();
+				const Uint16 material);
+			virtual ~GroundTileModification() throw();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);

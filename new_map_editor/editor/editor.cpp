@@ -13,9 +13,9 @@
 #include "undo/lightmodification.hpp"
 #include "undo/objectmodification.hpp"
 #include "undo/heightmodification.hpp"
-#include "undo/terraintexturemodification.hpp"
+#include "undo/terrainmapmodification.hpp"
 #include "undo/groundtilemodification.hpp"
-#include "sceneresources.hpp"
+#include "scene.hpp"
 #include "codec/codecmanager.hpp"
 #include "image.hpp"
 
@@ -42,183 +42,75 @@ namespace eternal_lands
 
 	bool Editor::undo()
 	{
-		return m_undo.undo(*this);
+		return m_undo.undo(m_data);
 	}
 
-	void Editor::change_object(const ModificationType type, const GlobalId id,
-		const MeshObjectData &mesh_object_data)
+	void Editor::change_object(const ModificationType type,
+		const EditorObjectData &object_data)
 	{
 		ModificationAutoPtr modification(new ObjectModification(
-			mesh_object_data, id, type));
+			object_data, type));
 
 		m_undo.add(modification);
-
-		get_scene().set_view_changed();
 	}
 
-	void Editor::change_light(const ModificationType type, const GlobalId id,
+	void Editor::change_light(const ModificationType type,
 		const LightData &light_data)
 	{
-		ModificationAutoPtr modification(new LightModification(light_data,
-			id, type));
+		ModificationAutoPtr modification(new LightModification(
+			light_data, type));
 
 		m_undo.add(modification);
 
-		get_scene().set_view_changed();
 	}
 
-	bool Editor::do_set_terrain_diffuse_texture(const GlobalId id,
-		const String &str, const Uint16 index)
+	void Editor::set_terrain_albedo_map(const String &str,
+		const Uint16 index, const Uint16 id)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MaterialSharedPtrVector materials;
+		String tmp;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
+		tmp = m_data.get_terrain_albedo_map(index, id);
 
-		materials = scene_page_read_write->get_object_materials(id.get_id());
-
-		if (materials[0]->get_diffuse_texture(index) != str)
+		if (str == tmp)
 		{
-			materials[0] = boost::make_shared<Material>(
-				materials[0]->get_name(), materials[0]->get_material_data());
-
-			materials[0]->set_diffuse_texture(str, index);
-			scene_page_read_write->set_object_materials(id.get_id(),
-				materials);
-
-			return true;
+			return;
 		}
-		else
-		{
-			return false;
-		}
+
+		ModificationAutoPtr modification(new TerrainMapModification(
+			tmp, index, id, mt_terrain_albedo_map_changed));
+
+		m_undo.add(modification);
+
+		m_data.set_terrain_albedo_map(str, index, id);
 	}
 
-	void Editor::set_terrain_diffuse_texture(const GlobalId id,
-		const String &texture, const Uint16 index)
+	void Editor::set_ground_tile(const glm::vec2 &point,
+		const Uint16 tile)
 	{
-		MaterialSharedPtr material;
-		String str;
+		Uint16Array2 offset;
+		Uint16 tmp;
 
+		offset = m_data.get_tile_offset(point);
+		tmp = m_data.get_tile(offset[0], offset[1]);
+
+		if (tile != tmp)
 		{
-			ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-
-			get_scene().get_scene_page_read_only(id.get_page_id(),
-				scene_page_read_only);
-
-			material = scene_page_read_only->get_object_materials(
-				id.get_id())[0];
-		}
-
-		str = material->get_diffuse_texture(index);
-
-		if (do_set_terrain_diffuse_texture(id, texture, index))
-		{
-			ModificationAutoPtr modification(new TerrainTextureModification(
-				str, id, index));
+			ModificationAutoPtr modification(
+				new GroundTileModification(offset, tmp));
 
 			m_undo.add(modification);
-
-			get_scene().set_view_changed();
-		}
-	}
-
-	bool Editor::do_set_terrain_normal_texture(const GlobalId id,
-		const String &str, const Uint16 index)
-	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MaterialSharedPtrVector materials;
-
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
-
-		materials = scene_page_read_write->get_object_materials(id.get_id());
-
-		if (materials[0]->get_normal_texture(index) != str)
-		{
-			materials[0] = boost::make_shared<Material>(
-				materials[0]->get_name(), materials[0]->get_material_data());
-
-			materials[0]->set_diffuse_texture(str, index);
-			scene_page_read_write->set_object_materials(id.get_id(),
-				materials);
-
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	void Editor::set_terrain_normal_texture(const GlobalId id,
-		const String &texture, const Uint16 index)
-	{
-		MaterialSharedPtr material;
-		String str;
-
-		{
-			ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-
-			get_scene().get_scene_page_read_only(id.get_page_id(),
-				scene_page_read_only);
-
-			material = scene_page_read_only->get_object_materials(
-				id.get_id())[0];
-		}
-
-		str = material->get_normal_texture(index);
-
-		if (do_set_terrain_normal_texture(id, texture, index))
-		{
-			ModificationAutoPtr modification(new TerrainTextureModification(
-				str, id, index));
-
-			m_undo.add(modification);
-
-			get_scene().set_view_changed();
-		}
-	}
-
-	void Editor::set_ground_tile_texture(const glm::vec2 &point,
-		const Uint8 index)
-	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		Uint32Array2 offset;
-		Uint8 material;
-
-		material = index;
-
-		get_scene().get_scene_page_read_write(get_page_id(),
-			scene_page_read_write);
-
-		offset = scene_page_read_write->get_ground_tile_offset(point);
-
-		scene_page_read_write->modify_ground_tile(offset, material);
-
-		if (material != index)
-		{
-			ModificationAutoPtr modification(new GroundTileModification(
-				get_page_id(), offset, material));
-
-			m_undo.add(modification);
-
-			get_scene().set_view_changed();
 		}
 	}
 
 	void Editor::add_3d_object(const glm::vec3 &position,
-		const glm::vec4 &color, const Uint16 type, const Uint16 server_id,
-		const String &mesh)
+		const String &mesh, const SelectionType selection)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		Selection selection;
-		MeshObjectData mesh_object_data;
+		EditorObjectData object_data;
 		glm::vec3 translation, rotation, vrandom;
-		GlobalId id;
 		float scale;
-		Uint32 i;
+		Uint32 i,id;
+
+		id = m_data.get_free_object_id();
 
 		for (i = 0; i < 3; i++)
 		{
@@ -259,74 +151,68 @@ namespace eternal_lands
 			scale = 1.0f;
 		}
 
-		mesh_object_data.set_translation(position + translation);
-		mesh_object_data.set_rotation(rotation);
-		mesh_object_data.set_scale(scale);
-		mesh_object_data.set_color(color);
-		mesh_object_data.set_type(type);
-		mesh_object_data.set_server_id(server_id);
+		object_data.set_translation(position + translation);
+		object_data.set_rotation_angles(rotation);
+		object_data.set_scale(scale);
+		object_data.set_selection(selection);
+		object_data.set_name(mesh);
+		object_data.set_id(id);
 
-		get_scene().get_scene_page_read_write(get_page_id(),
-			scene_page_read_write);
-
-		mesh_object_data.set_mesh(mesh);
-
-		id = scene_page_read_write->add_object(mesh_object_data);
-
-		change_object(mt_object_added, id, mesh_object_data);
-
-		selection.set_global_id(id);
-		m_scene.set_renderable(rt_mesh);
-		selection.set_valid(true);
-
-		m_scene.set_selection(selection);
+		change_object(mt_object_added, object_data);
 	}
 
 	void Editor::add_light(const glm::vec3 &position)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		Selection selection;
 		LightData light_data;
-		GlobalId id;
+		Uint32 id;
+
+		id = m_data.get_free_light_id();
 
 		light_data.set_position(position);
-		light_data.set_color(glm::vec4(1.0f));
+		light_data.set_color(glm::vec3(1.0f));
 		light_data.set_radius(5.0f);
+		light_data.set_id(id);
 
-		get_scene().get_scene_page_read_write(get_page_id(),
-			scene_page_read_write);
+		m_data.add_light(light_data);
 
-		id = scene_page_read_write->add_light(light_data);
-
-		change_light(mt_light_added, id, light_data);
-
-		selection.set_global_id(id);
-		m_scene.set_renderable(rt_light);
-		selection.set_valid(true);
-
-		m_scene.set_selection(selection);
+		change_light(mt_light_added, light_data);
 	}
 
-	void Editor::set_scene_ambient_color(const glm::vec4 &color)
+	void Editor::set_ambient_color(const glm::vec3 &color)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-
-		get_scene().get_scene_page_read_write(get_page_id(),
-			scene_page_read_write);
-
 		ModificationAutoPtr modification(new AmbientModification(
-			get_page_id(), scene_page_read_write->get_ambient_color()));
+			m_data.get_ambient_color()));
 
 		m_undo.add(modification);
 
-		scene_page_read_write->set_ambient_color(color);
-
-		get_scene().set_view_changed();
+		m_data.set_ambient_color(color);
 	}
 
-	void Editor::terrain_edit(const Uint32 id, const Uint16Array2 vertex,
+	const String &Editor::get_terrain_albedo_map(const Uint16 index,
+		const Uint16 id) const
+	{
+		return m_data.get_terrain_albedo_map(index, id);
+	}
+
+	const String &Editor::get_terrain_height_map(const Uint16 id) const
+	{
+		return m_data.get_terrain_height_map(id);
+	}
+
+	const String &Editor::get_terrain_blend_map(const Uint16 id) const
+	{
+		return m_data.get_terrain_blend_map(id);
+	}
+
+	const String &Editor::get_terrain_dudv_map(const Uint16 id) const
+	{
+		return m_data.get_terrain_dudv_map(id);
+	}
+
+/*
+	void Editor::terrain_edit(const Uint16Array2 &vertex,
 		const float strength, const float radius,
-		const EditorBrushType brush_type)
+		const EditorBrushType brush_type, const Uint16 id)
 	{
 		ScenePageReadWriteIntrusivePtr scene_page_read_write;
 		HeightVector heights;
@@ -430,7 +316,7 @@ namespace eternal_lands
 			get_scene().set_view_changed();
 		}
 	}
-
+*/
 	void Editor::ground_tile_edit(const glm::vec3 &p0, const glm::vec3 &p1,
 		const Uint8 height)
 	{
@@ -440,7 +326,7 @@ namespace eternal_lands
 
 		dir = p1 - p0;
 
-		if (std::abs(dir.z) > EPSILON)
+		if (std::abs(dir.z) > epsilon)
 		{
 			distance = -p0.z / dir.z;
 
@@ -448,9 +334,7 @@ namespace eternal_lands
 			{
 				point = glm::vec2(p0 + dir * distance);
 
-				set_ground_tile_texture(point, height);
-
-				get_scene().set_view_changed();
+				set_ground_tile(point, height);
 			}
 		}
 	}
@@ -464,7 +348,7 @@ namespace eternal_lands
 
 		dir = p1 - p0;
 
-		if (std::abs(dir.z) > EPSILON)
+		if (std::abs(dir.z) > epsilon)
 		{
 			distance = -p0.z / dir.z;
 
@@ -472,9 +356,7 @@ namespace eternal_lands
 			{
 				point = glm::vec2(p0 + dir * distance);
 
-				set_ground_tile_texture(point, water);
-
-				get_scene().set_view_changed();
+				set_ground_tile(point, water);
 			}
 		}
 	}
@@ -482,7 +364,7 @@ namespace eternal_lands
 	void Editor::height_edit(const glm::vec3 &p0, const glm::vec3 &p1,
 		const Uint8 height)
 	{
-		Ray ray;
+/*		Ray ray;
 
 		ray = Ray(p0, glm::normalize(p1 - p0));
 
@@ -490,8 +372,8 @@ namespace eternal_lands
 
 			get_scene().set_view_changed();
 		}
-	}
-
+*/	}
+/*
 	void Editor::set_terrain(const MaterialData &terrain_material,
 		const Uint16Array2 map_size, const Uint16Array2 blend_image_size)
 	{
@@ -534,22 +416,6 @@ namespace eternal_lands
 			get_global_id().get_id())[0];
 
 		terrain_material = material->get_material_data();
-	}
-
-	void Editor::remove_object(const GlobalId id)
-	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MeshObjectData mesh_object_data;
-
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
-
-		mesh_object_data = scene_page_read_write->get_mesh_data(id.get_id());
-
-		scene_page_read_write->remove_object(id.get_id());
-		change_object(mt_object_removed, id, mesh_object_data);
-
-		get_scene().set_view_changed();
 	}
 
 	void Editor::save(const String &name) const
@@ -599,7 +465,7 @@ namespace eternal_lands
 
 			m_blend_image = boost::make_shared<Image>(*image, 0, 0);
 
-			m_texture.reset(new ImageTexture(m_blend_image));
+			m_texture.reset(new Texture(m_blend_image));
 			m_texture->set_wrap_r(twt_clamp);
 			m_texture->set_wrap_s(twt_clamp);
 			m_texture->set_wrap_t(twt_clamp);
@@ -615,278 +481,181 @@ namespace eternal_lands
 
 		m_undo.clear();
 	}
-
-	void Editor::set_object_blending(const GlobalId id,
-		const BlendType blending)
+*/
+	void Editor::remove_object(const Uint32 id)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MeshObjectData mesh_object_data;
+		EditorObjectData object_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
+		m_data.get_object(id, object_data);
 
-		mesh_object_data = scene_page_read_write->get_object_data(
-			id.get_id());
+		change_object(mt_object_removed, object_data);
 
-		if (mesh_object_data.get_blending() != blending)
+		m_data.remove_object(id);
+	}
+
+	void Editor::set_object_blend(const Uint32 id, const BlendType blend)
+	{
+		EditorObjectData object_data;
+
+		m_data.get_object(id, object_data);
+
+		if (object_data.get_blend() != blend)
 		{
-			change_object(mt_object_blending_changed, id, mesh_object_data);
+			change_object(mt_object_blend_changed, object_data);
 
-			mesh_object_data.set_blending(blending);
+			object_data.set_blend(blend);
 
-			scene_page_read_write->modify_object(id.get_id(),
-				mesh_object_data);
+			m_data.modify_object(object_data);
 		}
 	}
 
-	void Editor::set_object_translation(const GlobalId id,
+	void Editor::set_object_translation(const Uint32 id,
 		const glm::vec3 &translation)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MeshObjectData mesh_object_data;
+		EditorObjectData object_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
+		m_data.get_object(id, object_data);
 
-		mesh_object_data = scene_page_read_write->get_object_data(
-			id.get_id());
-
-		if (glm::any(glm::notEqual(mesh_object_data.get_translation(),
+		if (glm::any(glm::notEqual(object_data.get_translation(),
 			translation)))
 		{
-			change_object(mt_object_translation_changed, id,
-				mesh_object_data);
+			change_object(mt_object_translation_changed,
+				object_data);
 
-			mesh_object_data.set_translation(translation);
+			object_data.set_translation(translation);
 
-			scene_page_read_write->modify_object(id.get_id(),
-				mesh_object_data);
+			m_data.modify_object(object_data);
 		}
 	}
 
-	void Editor::set_object_rotation(const GlobalId id,
+	void Editor::set_object_rotation(const Uint32 id,
 		const glm::vec3 &rotation)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MeshObjectData mesh_object_data;
+		EditorObjectData object_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
+		m_data.get_object(id, object_data);
 
-		mesh_object_data = scene_page_read_write->get_object_data(
-			id.get_id());
-
-		if (glm::any(glm::notEqual(mesh_object_data.get_rotation(),
+		if (glm::any(glm::notEqual(object_data.get_rotation_angles(),
 			rotation)))
 		{
-			change_object(mt_object_rotation_changed, id, mesh_object_data);
+			change_object(mt_object_rotation_changed, object_data);
 
-			mesh_object_data.set_rotation(rotation);
+			object_data.set_rotation_angles(rotation);
 
-			scene_page_read_write->modify_object(id.get_id(),
-				mesh_object_data);
+			m_data.modify_object(object_data);
 		}
 	}
 
-	void Editor::set_object_scale(const GlobalId id, const float scale)
+	void Editor::set_object_scale(const Uint32 id, const float scale)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MeshObjectData mesh_object_data;
+		EditorObjectData object_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
+		m_data.get_object(id, object_data);
 
-		mesh_object_data = scene_page_read_write->get_object_data(
-			id.get_id());
-
-		if (mesh_object_data.get_scale() != scale)
+		if (object_data.get_scale() != scale)
 		{
-			change_object(mt_object_scale_changed, id, mesh_object_data);
+			change_object(mt_object_scale_changed, object_data);
 
-			mesh_object_data.set_scale(scale);
+			object_data.set_scale(scale);
 
-			scene_page_read_write->modify_object(id.get_id(),
-				mesh_object_data);
+			m_data.modify_object(object_data);
 		}
 	}
 
-	void Editor::set_object_color(const GlobalId id, const glm::vec4 &color)
+	void Editor::set_object_selection(const Uint32 id,
+		const SelectionType selection)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MeshObjectData mesh_object_data;
+		EditorObjectData object_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
+		m_data.get_object(id, object_data);
 
-		mesh_object_data = scene_page_read_write->get_object_data(
-			id.get_id());
-
-		if (glm::any(glm::notEqual(mesh_object_data.get_color(), color)))
+		if (object_data.get_selection() != selection)
 		{
-			change_object(mt_object_color_changed, id, mesh_object_data);
+			change_object(mt_object_selection_changed, object_data);
 
-			mesh_object_data.set_color(color);
+			object_data.set_selection(selection);
 
-			scene_page_read_write->modify_object(id.get_id(),
-				mesh_object_data);
+			m_data.modify_object(object_data);
 		}
 	}
 
-	void Editor::set_object_type(const GlobalId id, const Uint16 type)
+	void Editor::remove_light(const Uint32 id)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MeshObjectData mesh_object_data;
-
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
-
-		mesh_object_data = scene_page_read_write->get_object_data(
-			id.get_id());
-
-		if (mesh_object_data.get_type() != type)
-		{
-			change_object(mt_object_type_changed, id, mesh_object_data);
-
-			mesh_object_data.set_type(type);
-
-			scene_page_read_write->modify_object(id.get_id(),
-				mesh_object_data);
-		}
-	}
-
-	void Editor::set_object_server_id(const GlobalId id,
-		const Uint16 server_id)
-	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		MeshObjectData mesh_object_data;
-
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
-
-		mesh_object_data = scene_page_read_write->get_object_data(
-			id.get_id());
-
-		if (mesh_object_data.get_server_id() != server_id)
-		{
-			change_object(mt_object_server_id_changed, id, mesh_object_data);
-
-			mesh_object_data.set_server_id(server_id);
-
-			scene_page_read_write->modify_object(id.get_id(),
-				mesh_object_data);
-		}
-	}
-
-	void Editor::remove_light(const GlobalId id)
-	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
 		LightData light_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
+		m_data.get_light(id, light_data);
 
-		scene_page_read_write->get_light_data(id.get_id(), light_data);
+		change_light(mt_light_removed, light_data);
 
-		change_light(mt_light_removed, id, light_data);
-
-		scene_page_read_write->remove_light(id.get_id());
+		m_data.remove_light(id);
 	}
 
-	void Editor::set_light_position(const GlobalId id,
+	void Editor::set_light_position(const Uint32 id,
 		const glm::vec3 &position)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
 		LightData light_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
-
-		scene_page_read_write->get_light_data(id.get_id(), light_data);
+		m_data.get_light(id, light_data);
 
 		if (glm::any(glm::notEqual(light_data.get_position(), position)))
 		{
-			change_light(mt_light_position_changed, id, light_data);
+			change_light(mt_light_position_changed, light_data);
 
 			light_data.set_position(position);
 
-			scene_page_read_write->modify_light(id.get_id(), light_data);
+			m_data.modify_light(light_data);
 		}
 	}
 
-	void Editor::set_light_radius(const GlobalId id, const float radius)
+	void Editor::set_light_radius(const Uint32 id, const float radius)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
 		LightData light_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
-
-		scene_page_read_write->get_light_data(id.get_id(), light_data);
+		m_data.get_light(id, light_data);
 
 		if (light_data.get_radius() != radius)
 		{
-			change_light(mt_light_radius_changed, id, light_data);
+			change_light(mt_light_radius_changed, light_data);
 
 			light_data.set_radius(radius);
 
-			scene_page_read_write->modify_light(id.get_id(), light_data);
+			m_data.modify_light(light_data);
 		}
 	}
 
-	void Editor::set_light_color(const GlobalId id, const glm::vec4 &color)
+	void Editor::set_light_color(const Uint32 id, const glm::vec3 &color)
 	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
 		LightData light_data;
 
-		get_scene().get_scene_page_read_write(id.get_page_id(),
-			scene_page_read_write);
-
-		scene_page_read_write->get_light_data(id.get_id(), light_data);
+		m_data.get_light(id, light_data);
 
 		if (glm::any(glm::notEqual(light_data.get_color(), color)))
 		{
-			change_light(mt_light_color_changed, id, light_data);
+			change_light(mt_light_color_changed, light_data);
 
 			light_data.set_color(color);
 
-			scene_page_read_write->modify_light(id.get_id(), light_data);
+			m_data.modify_light(light_data);
 		}
 	}
 
-	void Editor::get_object_data(MeshObjectData &mesh_object_data) const
+	void Editor::get_object_data(const Uint32 id,
+		EditorObjectData &object_data) const
 	{
-		ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-
-		assert(get_object_selected());
-
-		get_scene().get_scene_page_read_only(get_global_id().get_page_id(),
-			scene_page_read_only);
-
-		mesh_object_data = scene_page_read_only->get_object_data(
-			get_global_id().get_id());
+		m_data.get_object(id, object_data);
 	}
 
-	void Editor::get_light_data(LightData &light) const
+	void Editor::get_light_data(const Uint32 id, LightData &light_data)
+		const
 	{
-		ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-
-		assert(get_light_selected());
-
-		get_scene().get_scene_page_read_only(get_global_id().get_page_id(),
-			scene_page_read_only);
-		scene_page_read_only->get_light_data(get_global_id().get_id(), light);
+		m_data.get_light(id, light_data);
 	}
 
-	const glm::vec4 &Editor::get_ambient_color() const
+	const glm::vec3 &Editor::get_ambient_color() const
 	{
-		ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-
-		get_scene().get_scene_page_read_only(get_page_id(),
-			scene_page_read_only);
-
-		return scene_page_read_only->get_ambient_color();
+		return m_data.get_ambient_color();
 	}
-
+/*
 	void Editor::export_blend_image(const String &file_name,
 		const String &type) const
 	{
@@ -920,11 +689,11 @@ namespace eternal_lands
 		get_scene().get_scene_page_read_write(get_page_id(),
 			scene_page_read_write);
 #warning "Missing implementation"
-/*
+
 		ModificationAutoPtr modification(new HeightMapModification(
 			scene_page_read_write->get_terrain_height_map(), get_page_id(),
 			true));
-*/
+
 		import_terrain(image, scene_page_read_write);
 
 //		m_undo.add(modification);
@@ -957,22 +726,5 @@ namespace eternal_lands
 
 		m_undo.clear();
 	}
-
-	void Editor::set_terrain_height_scale(const float terrain_height_scale)
-	{
-		ModificationAutoPtr modification(new TerrainHeightScaleModification(
-			get_terrain_height_scale()));
-
-		m_undo.add(modification);
-
-		get_scene().set_terrain_height_scale(terrain_height_scale);
-
-		get_scene().set_view_changed();
-	}
-
-	float Editor::get_terrain_height_scale() const
-	{
-		return get_scene().get_terrain_height_scale();
-	}
-
+*/
 }

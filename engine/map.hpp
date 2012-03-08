@@ -46,7 +46,7 @@ namespace eternal_lands
 			Uint16MultiArray2 m_height_map;
 			Uint16MultiArray2 m_tile_map;
 			ParticleDataVector m_particles;
-			glm::vec4 m_ambient;
+			glm::vec3 m_ambient;
 			String m_name;
 			Uint32 m_id;
 			bool m_dungeon;
@@ -229,10 +229,10 @@ namespace eternal_lands
 
 			inline void set_ambient(const glm::vec3 &ambient)
 			{
-				m_ambient = glm::vec4(ambient, 0.0f);
+				m_ambient = ambient;
 			}
 
-			inline const glm::vec4 &get_ambient() const
+			inline const glm::vec3 &get_ambient() const
 			{
 				return m_ambient;
 			}

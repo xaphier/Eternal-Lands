@@ -16,7 +16,7 @@ namespace eternal_lands
 	{
 	}
 
-	LightModification::~LightModification()
+	LightModification::~LightModification() throw()
 	{
 	}
 
@@ -61,13 +61,13 @@ namespace eternal_lands
 			case mt_object_translation_changed:
 			case mt_object_rotation_changed:
 			case mt_object_scale_changed:
-			case mt_object_blending_changed:
+			case mt_object_blend_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
 			case mt_terrain_albedo_map_changed:
 			case mt_terrain_blend_map_changed:
 			case mt_terrain_height_map_changed:
-			case mt_terrain_dvdu_map_changed:
+			case mt_terrain_dudv_map_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:

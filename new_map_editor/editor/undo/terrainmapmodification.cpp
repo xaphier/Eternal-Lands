@@ -1,44 +1,46 @@
 /****************************************************************************
- *            terraintexturemodification.cpp
+ *            terrainmapmodification.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "terraintexturemodification.hpp"
+#include "terrainmapmodification.hpp"
 #include "../editormapdata.hpp"
 
 namespace eternal_lands
 {
 
-	TerrainTextureModification::TerrainTextureModification(
-		const String &texture, const Uint16 index): m_texture(texture),
-		m_index(index)
+	TerrainMapModification::TerrainMapModification(const String &map,
+		const Uint16 index, const Uint16 id,
+		const ModificationType type): m_map(map), m_index(index),
+		m_id(id), m_type(type)
 	{
 	}
 
-	TerrainTextureModification::~TerrainTextureModification()
+	TerrainMapModification::~TerrainMapModification() throw()
 	{
 	}
 
-	ModificationType TerrainTextureModification::get_type() const
+	ModificationType TerrainMapModification::get_type() const
 	{
-		return mt_terrain_albedo_map_changed;
+		return m_type;
 	}
 
-	bool TerrainTextureModification::merge(Modification* modification)
+	bool TerrainMapModification::merge(Modification* modification)
 	{
-		TerrainTextureModification* terrain_texture_modification;
+		TerrainMapModification* terrain_map_modification;
 
 		if (get_type() == modification->get_type())
 		{
-			terrain_texture_modification =
-				dynamic_cast<TerrainTextureModification*>(
+			terrain_map_modification =
+				dynamic_cast<TerrainMapModification*>(
 					modification);
 
-			assert(terrain_texture_modification != 0);
+			assert(terrain_map_modification != 0);
 
-			return m_index == terrain_texture_modification->m_index;
+			return (m_index == terrain_map_modification->m_index)
+				&& (m_id == terrain_map_modification->m_id);
 		}
 		else
 		{
@@ -46,7 +48,7 @@ namespace eternal_lands
 		}
 	}
 
-	bool TerrainTextureModification::undo(EditorMapData &editor)
+	bool TerrainMapModification::undo(EditorMapData &editor)
 	{
 		switch (get_type())
 		{
@@ -60,21 +62,21 @@ namespace eternal_lands
 			case mt_object_translation_changed:
 			case mt_object_rotation_changed:
 			case mt_object_scale_changed:
-			case mt_object_blending_changed:
+			case mt_object_blend_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
 				break;
 			case mt_terrain_albedo_map_changed:
-				editor.set_terrain_albedo_map(m_texture,
-					m_index);
+				editor.set_terrain_albedo_map(m_map, m_index,
+					m_id);
 			case mt_terrain_blend_map_changed:
-				editor.set_terrain_blend_map(m_texture);
+				editor.set_terrain_blend_map(m_map, m_id);
 				break;
 			case mt_terrain_height_map_changed:
-				editor.set_terrain_height_map(m_texture);
+				editor.set_terrain_height_map(m_map, m_id);
 				break;
-			case mt_terrain_dvdu_map_changed:
-				editor.set_terrain_dvdu_map(m_texture);
+			case mt_terrain_dudv_map_changed:
+				editor.set_terrain_dudv_map(m_map, m_id);
 				break;
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:

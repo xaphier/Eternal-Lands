@@ -741,7 +741,7 @@ namespace eternal_lands
 		const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles, const String &name,
 		const float scale, const Uint32 id,
-		const SelectionType selection, const BlendType blend) const
+		const SelectionType selection, const BlendType blend)
 	{
 		float transparency;
 
@@ -760,6 +760,18 @@ namespace eternal_lands
 		return ObjectData(get_transformation(translation,
 			rotation_angles, scale), name, transparency, id,
 				selection, blend);
+	}
+
+	TerrainData AbstractMapLoader::get_terrain_data(
+		const glm::vec3 &translation,
+		const glm::vec3 &rotation_angles,
+		const StringArray4 &albedo_maps, const String &blend_map,
+		const String &height_map, const String &dudv_map,
+		const float scale)
+	{
+		return TerrainData(get_transformation(translation,
+			rotation_angles, scale), albedo_maps, blend_map,
+			height_map, dudv_map);
 	}
 
 	StringVector AbstractMapLoader::get_material_names(const Uint32 index,

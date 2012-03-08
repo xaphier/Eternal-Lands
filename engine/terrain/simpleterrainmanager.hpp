@@ -51,20 +51,7 @@ namespace eternal_lands
 				const MeshBuilderSharedPtr &mesh_builder,
 				const EffectCacheSharedPtr &effect_cache,
 				const TextureCacheSharedPtr &texture_cache,
-				const String &file_name);
-			SimpleTerrainManager(
-				const CodecManagerSharedPtr &codec_manager,
-				const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars,
-				const MeshBuilderSharedPtr &mesh_builder,
-				const EffectCacheSharedPtr &effect_cache,
-				const TextureCacheSharedPtr &texture_cache,
-				const Transformation &transformation,
-				const StringArray4 &albedo_maps,
-				const String &blend_map,
-				const String &height_map,
-				const String &dvdu_map);
-
+				const TerrainData &terrain_data);
 			virtual ~SimpleTerrainManager() throw();
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;

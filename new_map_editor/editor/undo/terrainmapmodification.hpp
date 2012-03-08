@@ -1,5 +1,5 @@
 /****************************************************************************
- *            terraintexturemodification.hpp
+ *            terrainmapmodification.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -17,16 +17,19 @@
 namespace eternal_lands
 {
 
-	class TerrainTextureModification: public Modification
+	class TerrainMapModification: public Modification
 	{
 		private:
-			String m_texture;
-			Uint16 m_index;
+			const String m_map;
+			const Uint16 m_index;
+			const Uint16 m_id;
+			const ModificationType m_type;
 
 		public:
-			TerrainTextureModification(const String &texture,
-				const Uint16 index);
-			virtual ~TerrainTextureModification();
+			TerrainMapModification(const String &map,
+				const Uint16 index, const Uint16 id,
+				const ModificationType type);
+			virtual ~TerrainMapModification() throw();
 			virtual ModificationType get_type() const;
 			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);

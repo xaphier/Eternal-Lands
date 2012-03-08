@@ -152,6 +152,12 @@ namespace eternal_lands
 		m_map->add_object(instance_data);
 	}
 
+	void Scene::add_object(const ObjectData &object_data,
+		const StringVector &material_names)
+	{
+		m_map->add_object(object_data, material_names);
+	}
+
 	void Scene::remove_object(const Uint32 id)
 	{
 		m_map->remove_object(id);
@@ -294,11 +300,99 @@ namespace eternal_lands
 		program->set_parameter(apt_light_colors, m_light_color_array);
 	}
 
+	void Scene::intersect(const Frustum &frustum, ObjectVisitor &visitor)
+		const
+	{
+		Uint32ActorSharedPtrMap::const_iterator it, end;
+		SubFrustumsMask mask;
+
+#ifdef	DEBUG
+		if (get_global_vars()->get_draw_objects())
+		{
+			m_map->intersect(frustum, visitor);
+		}
+#else	/* DEBUG */
+		m_map->intersect(frustum, visitor);
+#endif	/* DEBUG */
+
+		end = m_actors.end();
+#ifdef	DEBUG
+		if (!get_global_vars()->get_draw_actors())
+		{
+			end = m_actors.begin();
+		}
+#endif	/* DEBUG */
+
+		for (it = m_actors.begin(); it != end; ++it)
+		{
+			mask = frustum.intersect_sub_frustums(
+				it->second->get_bounding_box());
+
+			if (mask.any())
+			{
+				if ((it->second->get_buffs().to_ulong() &
+					BUFF_INVISIBILITY) != 0)
+				{
+					visitor.add(it->second, 0.25f,
+						bt_alpha_transparency_value,
+						mask);
+				}
+				else
+				{
+					visitor.add(it->second, mask);
+				}
+			}
+		}
+	}
+
+	void Scene::intersect(const Frustum &frustum, LightVisitor &visitor)
+		const
+	{
+		m_map->intersect(frustum, visitor);
+	}
+
+	void Scene::intersect_shadow(const Frustum &frustum,
+		ObjectVisitor &visitor) const
+	{
+		Uint32ActorSharedPtrMap::const_iterator it, end;
+		SubFrustumsMask mask;
+
+#ifdef	DEBUG
+		if (get_global_vars()->get_draw_objects())
+		{
+			m_map->intersect(frustum, visitor);
+		}
+#else	/* DEBUG */
+		m_map->intersect(frustum, visitor);
+#endif	/* DEBUG */
+
+		end = m_actors.end();
+#ifdef	DEBUG
+		if (!get_global_vars()->get_draw_actors())
+		{
+			end = m_actors.begin();
+		}
+#endif	/* DEBUG */
+
+		for (it = m_actors.begin(); it != end; ++it)
+		{
+			mask = frustum.intersect_sub_frustums(
+				it->second->get_bounding_box());
+
+			if (mask.any())
+			{
+				if ((it->second->get_buffs().to_ulong() &
+					BUFF_INVISIBILITY) == 0)
+				{
+					visitor.add(it->second, mask);
+				}
+			}
+		}
+	}
+
 	void Scene::cull()
 	{
 		Frustum frustum;
-		Uint32ActorSharedPtrMap::iterator it, end;
-		SubFrustumsMask mask;
 
 		m_scene_view.update();
 
@@ -334,43 +428,7 @@ namespace eternal_lands
 
 		m_visible_objects.next_frame();
 
-#ifdef	DEBUG
-		if (get_global_vars()->get_draw_objects())
-		{
-			m_map->intersect(frustum, m_visible_objects);
-		}
-#else	/* DEBUG */
-		m_map->intersect(frustum, m_visible_objects);
-#endif	/* DEBUG */
-
-		end = m_actors.end();
-#ifdef	DEBUG
-		if (!get_global_vars()->get_draw_actors())
-		{
-			end = m_actors.begin();
-		}
-#endif	/* DEBUG */
-
-		for (it = m_actors.begin(); it != end; ++it)
-		{
-			mask = frustum.intersect_sub_frustums(
-				it->second->get_bounding_box());
-
-			if (mask.any())
-			{
-				if ((it->second->get_buffs().to_ulong() &
-					BUFF_INVISIBILITY) != 0)
-				{
-					m_visible_objects.add(it->second, 0.25f,
-						bt_alpha_transparency_value,
-						mask);
-				}
-				else
-				{
-					m_visible_objects.add(it->second, mask);
-				}
-			}
-		}
+		intersect(frustum, m_visible_objects);
 
 		m_visible_objects.sort(glm::vec3(m_scene_view.get_camera()));
 
@@ -379,7 +437,8 @@ namespace eternal_lands
 			cull_all_shadows();
 		}
 
-		m_map->intersect(frustum, m_visible_lights);
+		intersect(frustum, m_visible_lights);
+
 		m_visible_lights.sort(glm::vec3(m_scene_view.get_focus()));
 	}
 
@@ -390,7 +449,6 @@ namespace eternal_lands
 		SubFrustumsBoundingBoxes caster_boxes;
 		Frustum frustum;
 		glm::vec4 camera;
-		Uint32ActorSharedPtrMap::iterator it, end;
 		SubFrustumsMask mask;
 		Uint32 i, count;
 
@@ -440,37 +498,8 @@ namespace eternal_lands
 			m_scene_view.get_shadow_projection_view_matrix());
 
 		m_shadow_objects.next_frame();
-#ifdef	DEBUG
-		if (get_global_vars()->get_draw_objects())
-		{
-			m_map->intersect(frustum, m_shadow_objects);
-		}
-#else	/* DEBUG */
-		m_map->intersect(frustum, m_shadow_objects);
-#endif	/* DEBUG */
 
-		end = m_actors.end();
-#ifdef	DEBUG
-		if (!get_global_vars()->get_draw_actors())
-		{
-			end = m_actors.begin();
-		}
-#endif	/* DEBUG */
-
-		for (it = m_actors.begin(); it != end; ++it)
-		{
-			mask = frustum.intersect_sub_frustums(
-				it->second->get_bounding_box());
-
-			if (mask.any())
-			{
-				if ((it->second->get_buffs().to_ulong() &
-					BUFF_INVISIBILITY) == 0)
-				{
-					m_shadow_objects.add(it->second, mask);
-				}
-			}
-		}
+		intersect_shadow(frustum, m_shadow_objects);
 
 		m_shadow_objects.sort(glm::vec3(camera));
 
@@ -1265,7 +1294,7 @@ namespace eternal_lands
 		return m_map->get_dungeon();
 	}
 
-	const glm::vec4 &Scene::get_ambient() const
+	const glm::vec3 &Scene::get_ambient() const
 	{
 		return m_map->get_ambient();
 	}

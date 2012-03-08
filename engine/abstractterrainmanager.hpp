@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "transformation.hpp"
+#include "terraindata.hpp"
 
 /**
  * @file
@@ -26,49 +26,45 @@ namespace eternal_lands
 	class AbstractTerrainManager: public boost::noncopyable
 	{
 		private:
-			Transformation m_transformation;
-			StringArray4 m_albedo_maps;
-			String m_blend_map;
-			String m_height_map;
-			String m_dvdu_map;
+			TerrainData m_data;
 
 		protected:
-			void load_xml(const FileSystemSharedPtr &file_system,
-				const String &file_name);
-			void load_xml(const xmlNodePtr node);
-			void save_xml(const XmlWriterSharedPtr &writer) const;
+			inline void set_data(const TerrainData &data)
+			{
+				m_data = data;
+			}
 
 			inline void set_albedo_maps(
 				const StringArray4 &albedo_maps)
 			{
-				m_albedo_maps = albedo_maps;
+				m_data.set_albedo_maps(albedo_maps);
 			}
 
 			inline void set_albedo_map(const String &albedo_map,
 				const Uint16 index)
 			{
-				m_albedo_maps[index] = albedo_map;
+				m_data.set_albedo_map(albedo_map, index);
 			}
 
 			inline void set_blend_map(const String &blend_map)
 			{
-				m_blend_map = blend_map;
+				m_data.set_blend_map(blend_map);
 			}
 
 			inline void set_height_map(const String &height_map)
 			{
-				m_height_map = height_map;
+				m_data.set_height_map(height_map);
 			}
 
-			inline void set_dvdu_map(const String &dvdu_map)
+			inline void set_dudv_map(const String &dudv_map)
 			{
-				m_dvdu_map = dvdu_map;
+				m_data.set_dudv_map(dudv_map);
 			}
 
 			inline void set_transformation(
 				const Transformation &transformation)
 			{
-				m_transformation = transformation;
+				m_data.set_transformation(transformation);
 			}
 
 		public:
@@ -79,33 +75,38 @@ namespace eternal_lands
 
 			inline const StringArray4 &get_albedo_maps() const
 			{
-				return m_albedo_maps;
+				return m_data.get_albedo_maps();
 			}
 
 			inline const String &get_albedo_map(const Uint16 index)
 				const
 			{
-				return m_albedo_maps[index];
+				return m_data.get_albedo_map(index);
 			}
 
 			inline const String &get_blend_map() const
 			{
-				return m_blend_map;
+				return m_data.get_blend_map();
 			}
 
 			inline const String &get_height_map() const
 			{
-				return m_height_map;
+				return m_data.get_height_map();
 			}
 
-			inline const String &get_dvdu_map() const
+			inline const String &get_dudv_map() const
 			{
-				return m_dvdu_map;
+				return m_data.get_dudv_map();
 			}
 
 			inline const Transformation &get_transformation() const
 			{
-				return m_transformation;
+				return m_data.get_transformation();
+			}
+
+			inline const TerrainData &get_data() const
+			{
+				return m_data;
 			}
 
 			static inline float get_height_scale()
