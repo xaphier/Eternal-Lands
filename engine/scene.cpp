@@ -575,7 +575,7 @@ namespace eternal_lands
 			if (m_map->get_dungeon())
 			{
 				program->set_parameter(apt_ambient,
-					m_map->get_ambient());
+					glm::vec4(m_map->get_ambient(), 1.0f));
 			}
 			else
 			{
