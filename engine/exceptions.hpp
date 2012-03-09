@@ -109,6 +109,10 @@ namespace eternal_lands
 		errinfo_variant_type_name;
 	typedef boost::error_info<struct errinfo_vertex_shader_, StringType>
 		errinfo_vertex_shader_source;
+	typedef boost::error_info<struct errinfo_tess_control_shader_,
+		StringType> errinfo_tess_control_shader_source;
+	typedef boost::error_info<struct errinfo_tess_evaluation_shader_,
+		StringType> errinfo_tess_evaluation_shader_source;
 	typedef boost::error_info<struct errinfo_geometry_shader_, StringType>
 		errinfo_geometry_shader_source;
 	typedef boost::error_info<struct errinfo_fragment_shader_, StringType>

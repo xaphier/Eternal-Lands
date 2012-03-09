@@ -120,7 +120,8 @@ namespace eternal_lands
 		const Uint16 fragment_light_count)
 	{
 		StringStream str;
-		StringType vertex, geometry, fragment;
+		StringType vertex, tess_control, tess_evaluation, geometry;
+		StringType fragment;
 		StringVariantMap values;
 		Uint16 light_count;
 
@@ -134,31 +135,36 @@ namespace eternal_lands
 		light_count = vertex_light_count + fragment_light_count;
 
 		get_shader_source_builder()->build(description, sbt_color,
-			light_count, vertex, geometry, fragment, values);
+			light_count, vertex, tess_control, tess_evaluation,
+			geometry, fragment, values);
 
 		m_default_program = boost::make_shared<GlslProgram>(vertex,
-			geometry, fragment, values,
-			String(str.str() + UTF8("]")));
+			tess_control, tess_evaluation, geometry, fragment,
+			values, String(str.str() + UTF8("]")));
 	}
 
 	void Effect::build_deferred_shader(const EffectDescription &description)
 	{
-		StringType vertex, geometry, fragment;
+		StringType vertex, tess_control, tess_evaluation, geometry;
+		StringType fragment;
 		StringVariantMap values;
 
 		m_light_count = glm::ivec2(0, 0);
 
 		get_shader_source_builder()->build(description, sbt_deferred,
-			0, vertex, geometry, fragment, values);
+			0, vertex, tess_control, tess_evaluation, geometry,
+			fragment, values);
 
 		m_default_program = boost::make_shared<GlslProgram>(vertex,
-			geometry, fragment, values, String(UTF8("[deferred]")));
+			tess_control, tess_evaluation, geometry, fragment,
+			values, String(UTF8("[deferred]")));
 	}
 
 	void Effect::do_load()
 	{
 		StringStream str;
-		StringType vertex, geometry, fragment;
+		StringType vertex, tess_control, tess_evaluation, geometry;
+		StringType fragment;
 		StringVariantMap values;
 		String file_name;
 		Uint16 fragment_light_count, vertex_light_count;
@@ -177,27 +183,29 @@ namespace eternal_lands
 
 		/* Depth shader */
 		get_shader_source_builder()->build(m_description, sbt_depth, 0,
-			vertex, geometry, fragment, values);
+			vertex, tess_control, tess_evaluation, geometry,
+			fragment, values);
 
 		m_depth_program = boost::make_shared<GlslProgram>(vertex,
-			geometry, fragment, values, String(str.str() +
-				UTF8("[depth]")));
+			tess_control, tess_evaluation, geometry, fragment,
+			values, String(str.str() + UTF8("[depth]")));
 
 		values.clear();
 
 		/* Shadow shader */
 		get_shader_source_builder()->build(m_description, sbt_shadow, 0,
-			vertex, geometry, fragment, values);
+			vertex, tess_control, tess_evaluation, geometry,
+			fragment, values);
 
 		m_shadow_program = boost::make_shared<GlslProgram>(vertex,
-			geometry, fragment, values, String(str.str() +
-				UTF8("[shadow]")));
+			tess_control, tess_evaluation, geometry, fragment,
+			values, String(str.str() + UTF8("[shadow]")));
 	}
 
 	void Effect::error_load()
 	{
 		StringVariantMap values;
-		StringType geometry;
+		StringType none;
 
 		m_light_count = glm::ivec2(0, 0);
 		m_default_program.reset();
@@ -207,15 +215,16 @@ namespace eternal_lands
 			Variant(static_cast<Sint64>(stt_albedo_0));
 
 		m_default_program = boost::make_shared<GlslProgram>(
-			vertex_shader, geometry, fragment_shader, values,
-			String(UTF8("error")));
+			vertex_shader, none, none, none, fragment_shader,
+			values, String(UTF8("error")));
 
 		values.clear();
 
 		/* Depth shader */
 		m_depth_program = boost::make_shared<GlslProgram>(
-			depth_vertex_shader, geometry, depth_fragment_shader,
-			StringVariantMap(), String(UTF8("error [depth]")));
+			depth_vertex_shader, none, none, none,
+			depth_fragment_shader, StringVariantMap(),
+			String(UTF8("error [depth]")));
 
 		/* Shadow shader */
 		m_shadow_program = m_depth_program;

@@ -48,6 +48,8 @@ namespace eternal_lands
 			m_shader(0)
 		{
 			assert((shader_type == GL_VERTEX_SHADER) ||
+				(shader_type == GL_TESS_CONTROL_SHADER) ||
+				(shader_type == GL_TESS_EVALUATION_SHADER) ||
 				(shader_type == GL_GEOMETRY_SHADER) ||
 				(shader_type == GL_FRAGMENT_SHADER));
 
@@ -933,12 +935,16 @@ namespace eternal_lands
 	};
 
 	GlslProgram::GlslProgram(const StringType &vertex_shader,
+		const StringType &tess_control_shader,
+		const StringType &tess_evaluation_shader,
 		const StringType &geometry_shader,
 		const StringType &fragment_shader,
 		const StringVariantMap &values, const String &name):
 		m_name(name), m_last_used(0), m_program(0)
 	{
-		build(vertex_shader, geometry_shader, fragment_shader, values);
+		build(vertex_shader, tess_control_shader,
+			tess_evaluation_shader, geometry_shader,
+			fragment_shader, values);
 	}
 
 	GlslProgram::GlslProgram(const FileSystemSharedPtr &file_system,
@@ -2134,6 +2140,8 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::do_build(const StringType &vertex_shader,
+		const StringType &tess_control_shader,
+		const StringType &tess_evaluation_shader,
 		const StringType &geometry_shader,
 		const StringType &fragment_shader)
 	{
@@ -2149,6 +2157,29 @@ namespace eternal_lands
 		fragment.load(fragment_shader);
 		fragment.compile();
 		glAttachShader(get_program(), fragment.get_shader());
+
+		if (!tess_control_shader.empty())
+		{
+			GlslShaderObject tess_control(GL_TESS_CONTROL_SHADER);
+
+			tess_control.load(tess_control_shader);
+			tess_control.compile();
+
+			glAttachShader(get_program(),
+				tess_control.get_shader());
+		}
+
+		if (!tess_evaluation_shader.empty())
+		{
+			GlslShaderObject tess_evaluation(
+				GL_TESS_EVALUATION_SHADER);
+
+			tess_evaluation.load(tess_evaluation_shader);
+			tess_evaluation.compile();
+
+			glAttachShader(get_program(),
+				tess_evaluation.get_shader());
+		}
 
 		if (!geometry_shader.empty())
 		{
@@ -2178,6 +2209,8 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::build(const StringType &vertex_shader,
+		const StringType &tess_control_shader,
+		const StringType &tess_evaluation_shader,
 		const StringType &geometry_shader,
 		const StringType &fragment_shader,
 		const StringVariantMap &values)
@@ -2189,7 +2222,8 @@ namespace eternal_lands
 
 		try
 		{
-			do_build(vertex_shader, geometry_shader,
+			do_build(vertex_shader, tess_control_shader,
+				tess_evaluation_shader, geometry_shader,
 				fragment_shader);
 		}
 		catch (boost::exception &exception)
@@ -2197,6 +2231,10 @@ namespace eternal_lands
 			exception << errinfo_parameter_name(get_name().get());
 			exception << errinfo_vertex_shader_source(
 				vertex_shader);
+			exception << errinfo_tess_control_shader_source(
+				tess_control_shader);
+			exception << errinfo_tess_evaluation_shader_source(
+				tess_evaluation_shader);
 			exception << errinfo_geometry_shader_source(
 				geometry_shader);
 			exception << errinfo_fragment_shader_source(
@@ -2249,7 +2287,8 @@ namespace eternal_lands
 
 	void GlslProgram::load_xml(const xmlNodePtr node)
 	{
-		String vertex_shader, geometry_shader, fragment_shader;
+		String vertex_shader, tess_control_shader;
+		String tess_evaluation_shader, geometry_shader, fragment_shader;
 		StringVariantMap values;
 		xmlNodePtr it;
 
@@ -2281,6 +2320,20 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("tess_control_shader")) == 0)
+			{
+				tess_control_shader =
+					XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("tess_evaluation_shader")) == 0)
+			{
+				tess_evaluation_shader =
+					XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("geometry_shader")) == 0)
 			{
 				geometry_shader = XmlUtil::get_string_value(it);
@@ -2300,7 +2353,9 @@ namespace eternal_lands
 		}
 		while (XmlUtil::next(it, true));
 
-		build(vertex_shader, geometry_shader, fragment_shader, values);
+		build(vertex_shader, tess_control_shader,
+			tess_evaluation_shader, geometry_shader,
+			fragment_shader, values);
 	}
 
 	void GlslProgram::load_xml(const FileSystemSharedPtr &file_system,

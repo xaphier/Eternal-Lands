@@ -2190,6 +2190,7 @@ namespace eternal_lands
 	void ShaderSourceBuilder::build(const EffectDescription &description,
 		const ShaderBuildType shader_build_type,
 		const Uint16 light_count, StringType &vertex,
+		StringType &tess_control, StringType &tess_evaluation,
 		StringType &geometry, StringType &fragment,
 		StringVariantMap &values) const
 	{

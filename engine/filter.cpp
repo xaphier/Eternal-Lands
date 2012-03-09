@@ -215,7 +215,7 @@ namespace eternal_lands
 		const Uint16 half_taps_minus_one, const bool layer,
 		const bool vertical)
 	{
-		StringType name, geometry;
+		StringType name, none;
 		Uint16 index;
 
 		index = get_index(channel_count, half_taps_minus_one, layer,
@@ -236,9 +236,10 @@ namespace eternal_lands
 		}
 
 		m_programs[index] = boost::make_shared<GlslProgram>(
-			get_vertex_str(version), geometry, get_fragment_str(
-				version, channel_count, half_taps_minus_one,
-				layer, vertical), values, String(name));
+			get_vertex_str(version), none, none, none,
+			get_fragment_str(version, channel_count,
+				half_taps_minus_one, layer, vertical), values,
+				String(name));
 	}
 
 	Filter::Filter(const MeshCacheSharedPtr &mesh_cache,
