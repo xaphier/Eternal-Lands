@@ -26,11 +26,12 @@ namespace eternal_lands
 	class TerrainData
 	{
 		private:
-			Transformation m_transformation;
 			StringArray4 m_albedo_maps;
 			String m_blend_map;
 			String m_height_map;
 			String m_dudv_map;
+			glm::vec3 m_translation;
+			glm::vec2 m_dudv_scale;
 
 		protected:
 			void load_xml(const FileSystemSharedPtr &file_system,
@@ -40,11 +41,12 @@ namespace eternal_lands
 
 		public:
 			TerrainData();
-			TerrainData(const Transformation &transformation,
-				const StringArray4 &albedo_maps,
+			TerrainData(const StringArray4 &albedo_maps,
 				const String &blend_map,
 				const String &height_map,
-				const String &dudv_map);
+				const String &dudv_map,
+				const glm::vec3 &translation,
+				const glm::vec2 &dudv_scale);
 			~TerrainData() throw();
 
 			inline void set_albedo_maps(
@@ -74,10 +76,15 @@ namespace eternal_lands
 				m_dudv_map = dudv_map;
 			}
 
-			inline void set_transformation(
-				const Transformation &transformation)
+			inline void set_translation(
+				const glm::vec3 &translation)
 			{
-				m_transformation = transformation;
+				m_translation = translation;
+			}
+
+			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
+			{
+				m_dudv_scale = dudv_scale;
 			}
 
 			inline const StringArray4 &get_albedo_maps() const
@@ -106,9 +113,14 @@ namespace eternal_lands
 				return m_dudv_map;
 			}
 
-			inline const Transformation &get_transformation() const
+			inline const glm::vec3 &get_translation() const
 			{
-				return m_transformation;
+				return m_translation;
+			}
+
+			inline const glm::vec2 &get_dudv_scale() const
+			{
+				return m_dudv_scale;
 			}
 
 	};

@@ -179,6 +179,7 @@ namespace eternal_lands
 		MaterialEffectDescriptionVector materials;
 		MaterialEffectDescription material;
 		MeshDataToolSharedPtr mesh_data_tool;
+		Transformation transformation;
 		AbstractMeshSharedPtr mesh;
 		ObjectSharedPtr object;
 		ObjectData object_data;
@@ -260,7 +261,9 @@ namespace eternal_lands
 		terrain_size.x = width * get_tile_size() + 1;
 		terrain_size.y = height * get_tile_size() + 1;
 
-		object_data.set_world_transformation(get_transformation());
+		transformation.set_translation(get_translation());
+
+		object_data.set_world_transformation(transformation);
 
 		count = index_counts.size();
 

@@ -61,10 +61,10 @@ namespace eternal_lands
 				m_data.set_dudv_map(dudv_map);
 			}
 
-			inline void set_transformation(
-				const Transformation &transformation)
+			inline void set_translation(
+				const glm::vec3 &translation)
 			{
-				m_data.set_transformation(transformation);
+				m_data.set_translation(translation);
 			}
 
 		public:
@@ -99,9 +99,9 @@ namespace eternal_lands
 				return m_data.get_dudv_map();
 			}
 
-			inline const Transformation &get_transformation() const
+			inline const glm::vec3 &get_translation() const
 			{
-				return m_data.get_transformation();
+				return m_data.get_translation();
 			}
 
 			inline const TerrainData &get_data() const

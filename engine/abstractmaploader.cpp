@@ -285,12 +285,13 @@ namespace eternal_lands
 		add_particle(position, name, index);
 	}
 
-	void AbstractMapLoader::read_terrain(const Uint32 index, const Uint32 offset)
+	void AbstractMapLoader::read_terrain(const Uint32 index,
+		const Uint32 offset)
 	{
 		StringArray4 albedo;
 		String blend, height, dudv;
-		glm::vec3 translation, rotation_angles;
-		float scale;
+		glm::vec3 translation;
+		glm::vec2 dudv_scale;
 
 		get_reader()->set_position(offset);
 
@@ -305,13 +306,11 @@ namespace eternal_lands
 		translation.x = get_reader()->read_float_le();
 		translation.y = get_reader()->read_float_le();
 		translation.z = get_reader()->read_float_le();
-		rotation_angles.x = get_reader()->read_float_le();
-		rotation_angles.y = get_reader()->read_float_le();
-		rotation_angles.z = get_reader()->read_float_le();
-		scale = get_reader()->read_float_le();
+		dudv_scale.x = get_reader()->read_float_le();
+		dudv_scale.y = get_reader()->read_float_le();
 
 		add_terrain(albedo, blend, height, dudv, translation,
-			rotation_angles, scale);
+			dudv_scale);
 	}
 
 	void AbstractMapLoader::read_material_name(const Uint32 index,
@@ -709,40 +708,13 @@ namespace eternal_lands
 	{
 	}
 
-	glm::quat AbstractMapLoader::get_rotation(const glm::vec3 &rotation_angles)
-	{
-		glm::quat rotation;
-
-		rotation = glm::quat();
-		rotation = glm::rotate(rotation, rotation_angles.z,
-			glm::vec3(0.0f, 0.0f, 1.0f));
-		rotation = glm::rotate(rotation, rotation_angles.x,
-			glm::vec3(1.0f, 0.0f, 0.0f));
-		rotation = glm::rotate(rotation, rotation_angles.y,
-			glm::vec3(0.0f, 1.0f, 0.0f));
-
-		return rotation;
-	}
-
-	Transformation AbstractMapLoader::get_transformation(
-		const glm::vec3 &translation, const glm::vec3 &rotation_angles,
-		const float scale)
-	{
-		Transformation transformation;
-
-		transformation.set_rotation(get_rotation(rotation_angles));
-		transformation.set_translation(translation);
-		transformation.set_scale(scale);
-
-		return transformation;
-	}
-
 	ObjectData AbstractMapLoader::get_object_data(
 		const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles, const String &name,
 		const float scale, const Uint32 id,
 		const SelectionType selection, const BlendType blend)
 	{
+		Transformation transformation;
 		float transparency;
 
 		assert(glm::all(glm::lessThanEqual(glm::abs(translation),
@@ -757,21 +729,12 @@ namespace eternal_lands
 			transparency = 1.0f;
 		}
 
-		return ObjectData(get_transformation(translation,
-			rotation_angles, scale), name, transparency, id,
-				selection, blend);
-	}
+		transformation.set_translation(translation);
+		transformation.set_rotation_angles(rotation_angles);
+		transformation.set_scale(scale);
 
-	TerrainData AbstractMapLoader::get_terrain_data(
-		const glm::vec3 &translation,
-		const glm::vec3 &rotation_angles,
-		const StringArray4 &albedo_maps, const String &blend_map,
-		const String &height_map, const String &dudv_map,
-		const float scale)
-	{
-		return TerrainData(get_transformation(translation,
-			rotation_angles, scale), albedo_maps, blend_map,
-			height_map, dudv_map);
+		return ObjectData(transformation, name, transparency, id,
+			selection, blend);
 	}
 
 	StringVector AbstractMapLoader::get_material_names(const Uint32 index,

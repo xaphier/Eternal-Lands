@@ -31,6 +31,7 @@ namespace eternal_lands
 			Mat2x3Array4 m_texture_matrices;
 			glm::mat2x3 m_emission_scale_offset;
 			glm::vec4 m_specular_scale_offset;
+			glm::vec2 m_dudv_scale;
 			String m_material_name;
 			String m_texture_coodrinates;
 			String m_albedo_mapping;

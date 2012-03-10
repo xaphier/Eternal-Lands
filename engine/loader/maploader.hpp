@@ -114,8 +114,7 @@ namespace eternal_lands
 				const String &blend, const String &height,
 				const String &dudv,
 				const glm::vec3 &translation,
-				const glm::vec3 &rotation_angles,
-				const float scale);
+				const glm::vec2 &dudv_scale);
 			virtual void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile);
 			virtual void set_height(const Uint16 x, const Uint16 y,

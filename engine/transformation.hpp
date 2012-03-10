@@ -108,6 +108,28 @@ namespace eternal_lands
 				return result;
 			}
 
+			inline void set_rotation_angles(
+				const glm::vec3 &rotation_angles)
+			{
+				glm::quat rotation;
+
+				rotation = glm::quat();
+				rotation = glm::rotate(rotation,
+					rotation_angles.z,
+					glm::vec3(0.0f, 0.0f, 1.0f));
+				rotation = glm::rotate(rotation,
+					rotation_angles.x,
+					glm::vec3(1.0f, 0.0f, 0.0f));
+				rotation = glm::rotate(rotation,
+					rotation_angles.y,
+					glm::vec3(0.0f, 1.0f, 0.0f));
+
+				m_data[0].x = rotation.x;
+				m_data[0].y = rotation.y;
+				m_data[0].z = rotation.z;
+				m_data[0].w = rotation.w;
+			}
+
 	};
 
 }

@@ -15,16 +15,17 @@
 namespace eternal_lands
 {
 
-	TerrainData::TerrainData()
+	TerrainData::TerrainData(): m_dudv_scale(1.0f)
 	{
 	}
 
-	TerrainData::TerrainData(const Transformation &transformation,
-		const StringArray4 &albedo_maps, const String &blend_map,
-		const String &height_map, const String &dudv_map):
-		m_transformation(transformation), m_albedo_maps(albedo_maps),
+	TerrainData::TerrainData(const StringArray4 &albedo_maps,
+		const String &blend_map, const String &height_map,
+		const String &dudv_map, const glm::vec3 &translation,
+		const glm::vec2 &dudv_scale): m_albedo_maps(albedo_maps),
 		m_blend_map(blend_map), m_height_map(height_map),
-		m_dudv_map(dudv_map)
+		m_dudv_map(dudv_map), m_translation(translation),
+		m_dudv_scale(dudv_scale)
 	{
 	}
 
@@ -109,22 +110,16 @@ namespace eternal_lands
 				set_dudv_map(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name,	BAD_CAST UTF8("rotation")) == 0)
+			if (xmlStrcmp(it->name,	BAD_CAST UTF8("translation"))
+				== 0)
 			{
-				m_transformation.set_rotation(
-					XmlUtil::get_quaternion_value(it));
+				m_translation = XmlUtil::get_vec3_value(it);
 			}
 
-			if (xmlStrcmp(it->name,	BAD_CAST UTF8("translation")) == 0)
+			if (xmlStrcmp(it->name,	BAD_CAST UTF8("dudv_scale"))
+				== 0)
 			{
-				m_transformation.set_translation(
-					XmlUtil::get_vec3_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("scale")) == 0)
-			{
-				m_transformation.set_scale(
-					XmlUtil::get_float_value(it));
+				m_dudv_scale = XmlUtil::get_vec2_value(it);
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -141,12 +136,10 @@ namespace eternal_lands
 		writer->write_element(UTF8("blend"), get_blend_map());
 		writer->write_element(UTF8("height"), get_height_map());
 		writer->write_element(UTF8("dudv"), get_dudv_map());
-		writer->write_quaternion_element(UTF8("rotation"),
-			get_transformation().get_rotation());
 		writer->write_vec3_element(UTF8("translation"),
-			get_transformation().get_translation());
-		writer->write_float_element(UTF8("scale"),
-			get_transformation().get_scale());
+			get_translation());
+		writer->write_vec2_element(UTF8("dudv_scale"),
+			get_dudv_scale());
 		writer->end_element();
 	}
 

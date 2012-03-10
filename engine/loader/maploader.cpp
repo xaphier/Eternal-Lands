@@ -123,8 +123,7 @@ namespace eternal_lands
 
 	void MapLoader::add_terrain(const StringArray4 &albedo,
 		const String &blend, const String &height, const String &dudv,
-		const glm::vec3 &translation, const glm::vec3 &rotation_angles,
-		const float scale)
+		const glm::vec3 &translation, const glm::vec2 &dudv_scale)
 	{
 		AbstractTerrainManagerAutoPtr terrain;
 		Transformation transformation;
@@ -132,8 +131,8 @@ namespace eternal_lands
 		terrain.reset(new SimpleTerrainManager(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_effect_cache(),
-			get_texture_cache(), get_terrain_data(translation,
-			rotation_angles, albedo, blend, height, dudv, scale)));
+			get_texture_cache(), TerrainData(albedo, blend, height,
+				dudv, translation, dudv_scale)));
 
 		m_map->add_terrain(terrain);
 	}

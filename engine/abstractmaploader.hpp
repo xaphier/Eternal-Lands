@@ -100,13 +100,6 @@ namespace eternal_lands
 				const String &name, const float scale,
 				const Uint32 id, const SelectionType selection,
 				const BlendType blend);
-			static TerrainData get_terrain_data(
-				const glm::vec3 &translation,
-				const glm::vec3 &rotation_angles,
-				const StringArray4 &albedo_maps,
-				const String &blend_map,
-				const String &height_map,
-				const String &dudv_map, const float scale);
 			SelectionType get_selection(const String &name) const;
 			StringVector get_material_names(const Uint32 index,
 				const Uint32 count) const;
@@ -127,8 +120,7 @@ namespace eternal_lands
 				const String &blend, const String &height,
 				const String &dudv,
 				const glm::vec3 &translation,
-				const glm::vec3 &rotation_angles,
-				const float scale) = 0;
+				const glm::vec2 &dudv_scale) = 0;
 			virtual void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile) = 0;
 			virtual void set_height(const Uint16 x, const Uint16 y,
@@ -159,13 +151,6 @@ namespace eternal_lands
 				const FileSystemSharedPtr &file_system);
 			static StringSet load_entrables(
 				const FileSystemSharedPtr &file_system);
-
-			static glm::quat get_rotation(
-				const glm::vec3 &rotation_angles);
-			static Transformation get_transformation(
-				const glm::vec3 &translation,
-				const glm::vec3 &rotation_angles,
-				const float scale);
 
 			static inline Sint8Array4 get_magic_number()
 			{
