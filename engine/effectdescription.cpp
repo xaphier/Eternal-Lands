@@ -14,7 +14,7 @@ namespace eternal_lands
 {
 
 	EffectDescription::EffectDescription(): m_receives_shadows(true),
-		m_transparent(false), m_lighting(true), m_billboard(false)
+		m_transparent(false), m_lighting(true)
 	{
 	}
 
@@ -47,6 +47,11 @@ namespace eternal_lands
 
 		do
 		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
+			{
+				set_name(XmlUtil::get_string_value(it));
+			}
+
 			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("world_transformation")) == 0)
 			{
@@ -96,8 +101,8 @@ namespace eternal_lands
 					XmlUtil::get_bool_value(it));
 			}
 
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("transparent")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("transparent"))
+				== 0)
 			{
 				set_transparent(XmlUtil::get_bool_value(it));
 			}
@@ -105,11 +110,6 @@ namespace eternal_lands
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("lighting")) == 0)
 			{
 				set_lighting(XmlUtil::get_bool_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("billboard")) == 0)
-			{
-				set_billboard(XmlUtil::get_bool_value(it));
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -119,6 +119,7 @@ namespace eternal_lands
 		const XmlWriterSharedPtr &writer) const
 	{
 		writer->start_element(UTF8("effect"));
+		writer->write_element(UTF8("name"), get_name());
 		writer->write_element(UTF8("world_transformation"),
 			get_world_transformation());
 		writer->write_element(UTF8("texture_coodrinates"),
@@ -136,7 +137,6 @@ namespace eternal_lands
 		writer->write_bool_element(UTF8("transparent"),
 			get_transparent());
 		writer->write_bool_element(UTF8("lighting"), get_lighting());
-		writer->write_bool_element(UTF8("billboard"), get_billboard());
 		writer->end_element();
 	}
 
@@ -185,12 +185,7 @@ namespace eternal_lands
 			return false;
 		}
 
-		if (get_lighting() != effect.get_lighting())
-		{
-			return false;
-		}
-
-		return get_billboard() == effect.get_billboard();
+		return get_lighting() == effect.get_lighting();
 	}
 
 	bool EffectDescription::operator!=(const EffectDescription &effect)
@@ -251,20 +246,16 @@ namespace eternal_lands
 			return get_transparent() < effect.get_transparent();
 		}
 
-		if (get_lighting() != effect.get_lighting())
-		{
-			return get_lighting() < effect.get_lighting();
-		}
-
-		return get_billboard() < effect.get_billboard();
+		return get_lighting() < effect.get_lighting();
 	}
 
 	OutStream& operator<<(OutStream &str, const EffectDescription &value)
 	{
-		str << "world_transformation: ";
+		str << "name: " << value.get_name();
+		str << " world_transformation: ";
 		str << value.get_world_transformation();
 		str << " texture_coodrinates: ";
-		str << value.get_texture_coodrinates() << std::endl;
+		str << value.get_texture_coodrinates();
 		str << " albedo_mapping: " << value.get_albedo_mapping();
 		str << " normal_mapping: " << value.get_normal_mapping();
 		str << " specular_mapping: " << value.get_specular_mapping();
@@ -272,7 +263,6 @@ namespace eternal_lands
 		str << " receives_shadows: " << value.get_receives_shadows();
 		str << " transparent: " << value.get_transparent();
 		str << " lighting: " << value.get_lighting();
-		str << " billboard: " << value.get_billboard();
 
 		return str;
 	}

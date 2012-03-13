@@ -7,7 +7,7 @@
 
 #include "instancebuilder.hpp"
 #include "meshdatatool.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "instancedata.hpp"
 #include "instancingdata.hpp"
 #include "subobject.hpp"
@@ -264,7 +264,7 @@ namespace eternal_lands
 		bool build_sub_mesh(const glm::vec3 &center,
 			const InstancingData &instancing_data,
 			const MeshDataToolSharedPtr &mesh_data_tool,
-			const MaterialEffectDescription &material,
+			const MaterialDescription &material,
 			const Uint32 index, const Uint32 base_vertex,
 			glm::vec3 &min, glm::vec3 &max, Uint32 &vertex_offset,
 			Uint32 &index_offset)
@@ -328,7 +328,7 @@ namespace eternal_lands
 
 	void InstanceBuilder::build_instance_sub_mesh(const glm::vec3 &center,
 		const MeshDataToolSharedPtr &mesh_data_tool,
-		const MaterialEffectDescription &material,
+		const MaterialDescription &material,
 		const Uint32 sub_mesh_index, const Uint32 base_vertex,
 		Uint32 &vertex_offset, Uint32 &index_offset,
 		SubObjectVector &sub_objects)
@@ -394,9 +394,9 @@ namespace eternal_lands
 		SubMesh sub_mesh;
 		Transformation transformation;
 		glm::vec3 center;
-		std::set<MaterialEffectDescription> material_set;
+		std::set<MaterialDescription> material_set;
 		MeshDataToolSharedPtr mesh_data_tool;
-		MaterialEffectDescriptionVector materials;
+		MaterialDescriptionVector materials;
 		SubObjectVector instanced_objects;
 		VertexSemanticTypeSet semantics;
 		glm::vec4 texture_scale_offset;
@@ -426,7 +426,7 @@ namespace eternal_lands
 			index_count += mesh_data_tool->get_index_count();
 			vertex_count += mesh_data_tool->get_vertex_count();
 
-			BOOST_FOREACH(const MaterialEffectDescription &material,
+			BOOST_FOREACH(const MaterialDescription &material,
 				instancing_data.get_materials())
 			{
 				material_set.insert(material);
@@ -461,7 +461,7 @@ namespace eternal_lands
 		vertex_offset = 0;
 		sub_mesh_index = 0;
 
-		BOOST_FOREACH(const MaterialEffectDescription &material,
+		BOOST_FOREACH(const MaterialDescription &material,
 			material_set)
 		{
 			if (get_use_base_vertex())

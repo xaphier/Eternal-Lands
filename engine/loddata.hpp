@@ -84,8 +84,8 @@ namespace eternal_lands
 				return m_lods_offsets[lod];
 			}
 
-			inline Uint16 get_material_effects_index(
-				const Uint16 index) const
+			inline Uint16 get_materials_index(const Uint16 index)
+				const
 			{
 				return m_lods[index][0];
 			}
@@ -95,8 +95,8 @@ namespace eternal_lands
 				return m_lods[index][1];
 			}
 
-			inline Uint16 get_material_effects_index(
-				const Uint16 lod, const Uint16 index) const
+			inline Uint16 get_materials_index(const Uint16 lod,
+				const Uint16 index) const
 			{
 				return m_lods[m_lods_offsets[lod] + index][0];
 			}

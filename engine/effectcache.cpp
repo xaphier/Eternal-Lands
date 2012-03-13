@@ -8,6 +8,9 @@
 #include "effectcache.hpp"
 #include "effect.hpp"
 #include "effectdescription.hpp"
+#include "xmlreader.hpp"
+#include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
@@ -25,21 +28,15 @@ namespace eternal_lands
 	{
 	}
 
-	const EffectSharedPtr &EffectCache::get_effect(
-		const EffectDescription &effect)
+	const EffectSharedPtr &EffectCache::get_effect(const String &name)
 	{
 		EffectCacheMap::iterator found;
 
-		found = m_effect_cache.find(effect);
+		found = m_effect_cache.find(name);
 
 		if (found == m_effect_cache.end())
 		{
-			m_effect_cache[effect] = boost::make_shared<Effect>(
-				get_shader_source_builder(), effect);
-
-			assert(m_effect_cache[effect] != 0);
-
-			return m_effect_cache[effect];
+			return get_simple_effect();
 		}
 		else
 		{
@@ -69,6 +66,88 @@ namespace eternal_lands
 		{
 			it->second->load();
 		}
+	}
+
+	void EffectCache::load_xml(const xmlNodePtr node)
+	{
+		String name;
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("effects")) != 0)
+		{
+			return;
+		}
+
+		if (!XmlUtil::has_children(node, true))
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("effect"))
+				== 0)
+			{
+				EffectDescription effect_description;
+
+				effect_description.load_xml(it);
+
+				name = effect_description.get_name();
+
+				m_effect_cache[name] =
+					boost::make_shared<Effect>(
+						get_shader_source_builder(),
+						effect_description);
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
+	void EffectCache::load_xml(const FileSystemSharedPtr &file_system,
+		const String &file_name)
+	{
+		XmlReaderSharedPtr xml_reader;
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			file_name));
+
+		load_xml(xml_reader->get_root_node());
+	}
+
+	StringVector EffectCache::get_effect_names() const
+	{
+		EffectCacheMap::const_iterator it, end;
+		StringVector result;
+
+		end = m_effect_cache.end();
+
+		for (it = m_effect_cache.begin(); it != end; ++it)
+		{
+			result.push_back(it->first);
+		}
+
+		return result;
+	}
+
+	void EffectCache::save_xml(const String &file_name) const
+	{
+		EffectCacheMap::const_iterator it, end;
+		XmlWriterSharedPtr writer;
+
+		writer = XmlWriterSharedPtr(new XmlWriter(file_name));
+
+		writer->start_element(UTF8("effects"));
+
+		end = m_effect_cache.end();
+
+		for (it = m_effect_cache.begin(); it != end; ++it)
+		{
+			it->second->get_description().save_xml(writer);
+		}
+
+		writer->end_element();
 	}
 
 }

@@ -36,7 +36,7 @@ namespace eternal_lands
 			ObjectData m_object_data;
 			LodData m_lod_data;
 			AbstractMeshSharedPtr m_mesh;
-			MaterialEffectVector m_material_effects;
+			MaterialVector m_materials;
 			/**
 			 * Data needed to draw instanced objects for selection.
 			 */
@@ -49,10 +49,9 @@ namespace eternal_lands
 
 		protected:
 
-			inline MaterialEffectVector
-				&get_modifiable_material_effects()
+			inline MaterialVector &get_modifiable_materials()
 			{
-				return m_material_effects;
+				return m_materials;
 			}
 
 			inline void set_bone(const Uint32 index,
@@ -66,8 +65,7 @@ namespace eternal_lands
 			 */
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialEffectDescriptionVector
-					&materials,
+				const MaterialDescriptionVector &materials,
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
 				CalCoreModel *core_model);
@@ -78,8 +76,7 @@ namespace eternal_lands
 			 */
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialEffectDescriptionVector
-					&materials,
+				const MaterialDescriptionVector &materials,
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache);
 
@@ -88,8 +85,7 @@ namespace eternal_lands
 			 */
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialEffectDescriptionVector
-					&materials,
+				const MaterialDescriptionVector &materials,
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
 				const LodData &lod_data);
@@ -99,8 +95,7 @@ namespace eternal_lands
 			 */
 			Object(const InstanceData &instance_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialEffectDescriptionVector
-					&materials,
+				const MaterialDescriptionVector &materials,
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
 				const SubObjectVector &sub_objects);
@@ -128,11 +123,11 @@ namespace eternal_lands
 				return m_lod_data.get_lods_offset(lod);
 			}
 
-			inline Uint16 get_material_effects_index(
-				const Uint16 lod, const Uint16 index) const
+			inline Uint16 get_materials_index(const Uint16 lod,
+				const Uint16 index) const
 			{
-				return m_lod_data.get_material_effects_index(
-					lod, index);
+				return m_lod_data.get_materials_index(lod,
+					index);
 			}
 
 			inline Uint16 get_mesh_index(const Uint16 lod,
@@ -180,10 +175,9 @@ namespace eternal_lands
 				return m_mesh;
 			}
 
-			inline const MaterialEffectVector
-				&get_material_effects() const
+			inline const MaterialVector &get_materials() const
 			{
-				return m_material_effects;
+				return m_materials;
 			}
 
 			inline float get_transparency() const

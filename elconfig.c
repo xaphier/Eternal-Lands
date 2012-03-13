@@ -1957,7 +1957,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "use_functions", "use_functions", &engine_use_functions, change_engine_set_use_functions, engine_false, "Use functions", "Use functions in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_layered_rendering", "use_layered_rendering", &engine_use_layered_rendering, change_engine_set_use_layered_rendering, engine_false, "Use layered rendering", "Use layered rendering in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &engine_optmize_shader_source, change_engine_optmize_shader_source, engine_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
-	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &engine_opengl_version, change_engine_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", 0);
+	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &engine_opengl_version, change_engine_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", "4.0", 0);
 #ifdef	USE_SSE2
 	add_var(OPT_BOOL, "use_simd", "simd", &engine_use_simd, change_engine_use_simd, engine_true, "Use SIMD", "Use Intel SIMD instructions (SSE2).", TROUBLESHOOT);
 #endif	/* USE_SSE2 */

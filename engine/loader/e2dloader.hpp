@@ -50,7 +50,7 @@ namespace eternal_lands
 					&material_description_cache,
 				const bool use_simd,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialEffectDescriptionVector &materials);
+				MaterialDescriptionVector &materials);
 			static bool check_format(const Uint8Array8 &id);
 
 	};

@@ -84,8 +84,8 @@ class ELGLWidget: public QGLWidget
 		void add_object(const glm::vec4 &color, const Uint16 type,
 			const Uint16 server_id, const String &object);
 		void add_light();
-		void set_ambient_color(const glm::vec3 &color);
-		const glm::vec3 &get_ambient_color() const;
+		void set_ambient(const glm::vec3 &color);
+		const glm::vec3 &get_ambient() const;
 		void set_fog(const glm::vec3 &color, const float density);
 		QString get_blend_image_name() const;
 		void terrain_height_edit(const int x, const int y, const float strength,

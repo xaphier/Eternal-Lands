@@ -999,8 +999,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1017,8 +1015,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1035,8 +1031,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1053,8 +1047,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1071,8 +1063,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1089,8 +1079,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1107,8 +1095,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1125,8 +1111,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1143,8 +1127,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1161,8 +1143,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1179,8 +1159,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1197,8 +1175,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1215,8 +1191,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1234,8 +1208,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1253,8 +1225,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1272,8 +1242,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1291,8 +1259,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1310,8 +1276,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1329,8 +1293,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1348,8 +1310,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1367,8 +1327,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1385,8 +1343,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1404,8 +1360,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1423,8 +1377,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1442,8 +1394,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1461,8 +1411,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1479,8 +1427,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1497,8 +1443,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1516,8 +1460,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1536,8 +1478,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1556,8 +1496,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1576,8 +1514,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1596,8 +1532,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1616,8 +1550,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1636,8 +1568,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1656,8 +1586,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1676,8 +1604,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert((AutoParameterUtil::get_size(parameter) != pst_one) ||
-			(AutoParameterUtil::get_scale(parameter) > 1));
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1695,8 +1621,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1713,8 +1637,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1731,8 +1653,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1749,8 +1669,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1767,8 +1685,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1801,8 +1717,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1819,8 +1733,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 
@@ -1837,8 +1749,6 @@ namespace eternal_lands
 		AutoParameterTypeUniformMap::const_iterator found;
 
 		assert(get_active());
-		assert(AutoParameterUtil::get_size(parameter) == pst_one);
-		assert(AutoParameterUtil::get_scale(parameter) == 1);
 
 		found = m_auto_parameters.find(parameter);
 

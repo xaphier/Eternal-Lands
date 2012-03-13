@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <materials>
 	<material>
-		<name>grass-billboard</name>
-		<albedo_0>textures/grass.dds</albedo_0>
-		<albedo_1>textures/windnoise.dds</albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>grass_billboard</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
-	</material>
-	<material>
-		<name>grass</name>
-		<albedo_0>textures/grass_ground.dds</albedo_0>
-		<albedo_1>textures/grassblades.dds</albedo_1>
-		<albedo_2>textures/grass_halfz.dds</albedo_2>
-		<albedo_3>textures/windnoise.dds</albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<texture_coodrinates>grass</texture_coodrinates>
-		<albedo_mapping>grass</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
-	</material>
-	<material>
 		<name>lava</name>
 		<albedo_0>textures/lava.dds</albedo_0>
 		<albedo_1>textures/noise.dds</albedo_1>
@@ -49,13 +11,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>lava</texture_coodrinates>
-		<albedo_mapping>lava</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
-		<receives_shadows>false</receives_shadows>
-		<lighting>false</lighting>
+		<effect>lava</effect>
 		<emission_scale_offset>1.0 1.0 1.0 1.0 1.0 1.0</emission_scale_offset>
 	</material>
 	<material>
@@ -69,13 +25,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>grass1</name>
@@ -88,13 +38,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>leaves3</name>
@@ -107,13 +51,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>grass_edges</name>
@@ -126,13 +64,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>leaves2</name>
@@ -145,13 +77,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>dirt2_edges</name>
@@ -164,13 +90,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>dirt3</name>
@@ -183,13 +103,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>pineneedles</name>
@@ -202,13 +116,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>corners1</name>
@@ -221,13 +129,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>dirt2</name>
@@ -240,13 +142,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>snow</name>
@@ -259,13 +155,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>dirt4_edges</name>
@@ -278,13 +168,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>sand1</name>
@@ -297,13 +181,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>flowerpetals</name>
@@ -316,13 +194,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>hay</name>
@@ -335,13 +207,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>grass_edges2</name>
@@ -354,13 +220,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>leaves1</name>
@@ -373,13 +233,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>plants</name>
@@ -392,13 +246,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>sand2</name>
@@ -411,13 +259,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stones1</name>
@@ -430,13 +272,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>grass2</name>
@@ -449,13 +285,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>dirt4</name>
@@ -468,13 +298,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>dirt</name>
@@ -487,13 +311,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>dirt3_edges</name>
@@ -506,13 +324,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>bones</name>
@@ -525,13 +337,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile48</name>
@@ -544,13 +350,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile242</name>
@@ -563,13 +363,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-yew</name>
@@ -582,13 +376,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shingles5</name>
@@ -601,13 +389,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall7</name>
@@ -620,13 +402,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>design1</name>
@@ -639,13 +415,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile45</name>
@@ -658,13 +428,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile42</name>
@@ -677,13 +441,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall17</name>
@@ -696,13 +454,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile22</name>
@@ -715,13 +467,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles3</name>
@@ -734,13 +480,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shields1</name>
@@ -753,13 +493,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall10</name>
@@ -772,13 +506,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile6</name>
@@ -791,13 +519,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stucco1</name>
@@ -810,13 +532,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood10</name>
@@ -829,13 +545,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile21</name>
@@ -848,13 +558,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile24</name>
@@ -867,13 +571,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>ship_wood01</name>
@@ -886,13 +584,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows_orchan1</name>
@@ -905,13 +597,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners9</name>
@@ -924,13 +610,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile39</name>
@@ -943,13 +623,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood4</name>
@@ -962,13 +636,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile4</name>
@@ -981,13 +649,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>snow_rock</name>
@@ -1000,13 +662,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue2</name>
@@ -1019,13 +675,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows4</name>
@@ -1038,13 +688,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>ice_rocks</name>
@@ -1057,13 +701,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>snowblocks</name>
@@ -1076,13 +714,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves03</name>
@@ -1095,13 +727,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>banners8</name>
@@ -1114,13 +740,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles12</name>
@@ -1133,13 +753,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>rowboat1</name>
@@ -1152,13 +766,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects6</name>
@@ -1171,13 +779,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>forgebricks1</name>
@@ -1190,13 +792,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall15</name>
@@ -1209,13 +805,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tents1</name>
@@ -1228,13 +818,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>ruins</name>
@@ -1247,13 +831,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile10</name>
@@ -1266,13 +844,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>philospher_stone</name>
@@ -1285,13 +857,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners10</name>
@@ -1304,13 +870,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile232</name>
@@ -1323,13 +883,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>cobwebs</name>
@@ -1342,13 +896,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stonewall5</name>
@@ -1361,13 +909,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile9</name>
@@ -1380,13 +922,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves02</name>
@@ -1399,13 +935,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>plants02</name>
@@ -1418,13 +948,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>weapons2</name>
@@ -1437,13 +961,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-willow</name>
@@ -1456,13 +974,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stonewall13</name>
@@ -1475,13 +987,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile14</name>
@@ -1494,13 +1000,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile26</name>
@@ -1513,13 +1013,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall8</name>
@@ -1532,13 +1026,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile19</name>
@@ -1551,13 +1039,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>fountain</name>
@@ -1570,13 +1052,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall6</name>
@@ -1589,13 +1065,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles10</name>
@@ -1608,13 +1078,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>furniture2</name>
@@ -1627,13 +1091,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile34</name>
@@ -1646,13 +1104,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>furrugs</name>
@@ -1665,13 +1117,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shipparts01</name>
@@ -1684,13 +1130,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile11</name>
@@ -1703,13 +1143,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners5</name>
@@ -1722,13 +1156,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects4</name>
@@ -1741,13 +1169,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shingles1</name>
@@ -1760,13 +1182,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall3</name>
@@ -1779,13 +1195,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile32</name>
@@ -1798,13 +1208,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-swamp</name>
@@ -1817,13 +1221,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>beehive</name>
@@ -1836,13 +1234,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile8</name>
@@ -1855,13 +1247,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood5</name>
@@ -1874,13 +1260,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>balloon1</name>
@@ -1893,13 +1273,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall14</name>
@@ -1912,13 +1286,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows3</name>
@@ -1931,13 +1299,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows10</name>
@@ -1950,13 +1312,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile20</name>
@@ -1969,13 +1325,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile0</name>
@@ -1988,13 +1338,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>furs</name>
@@ -2007,13 +1351,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall20</name>
@@ -2026,13 +1364,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>weapons1</name>
@@ -2045,13 +1377,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile49</name>
@@ -2064,13 +1390,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood3</name>
@@ -2083,13 +1403,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark_treehouse1</name>
@@ -2102,13 +1416,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects5</name>
@@ -2121,13 +1429,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark4</name>
@@ -2140,13 +1442,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners4</name>
@@ -2159,13 +1455,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile31</name>
@@ -2178,13 +1468,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves05</name>
@@ -2197,13 +1481,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile241</name>
@@ -2216,13 +1494,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile41</name>
@@ -2235,13 +1507,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile1</name>
@@ -2254,13 +1520,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows1</name>
@@ -2273,13 +1533,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>haystack</name>
@@ -2292,13 +1546,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves01</name>
@@ -2311,13 +1559,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>doorwindows9</name>
@@ -2330,13 +1572,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile40</name>
@@ -2349,13 +1585,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark13</name>
@@ -2368,13 +1598,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects9</name>
@@ -2387,13 +1611,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>furrugs2</name>
@@ -2406,13 +1624,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>bark_treehouse2</name>
@@ -2425,13 +1637,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile16</name>
@@ -2444,13 +1650,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners3</name>
@@ -2463,13 +1663,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood7</name>
@@ -2482,13 +1676,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>rocks</name>
@@ -2501,13 +1689,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles7</name>
@@ -2520,13 +1702,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof3</name>
@@ -2539,13 +1715,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile5</name>
@@ -2558,13 +1728,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>dirtroad02</name>
@@ -2577,13 +1741,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stonewall9</name>
@@ -2596,13 +1754,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>ship_wood02</name>
@@ -2615,13 +1767,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects2</name>
@@ -2634,13 +1780,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shingles2</name>
@@ -2653,13 +1793,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile7</name>
@@ -2672,13 +1806,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark3</name>
@@ -2691,13 +1819,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tapestries1</name>
@@ -2710,13 +1832,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile33</name>
@@ -2729,13 +1845,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue3</name>
@@ -2748,13 +1858,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile17</name>
@@ -2767,13 +1871,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>dirtroad01</name>
@@ -2786,13 +1884,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile47</name>
@@ -2805,13 +1897,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>rock3</name>
@@ -2824,13 +1910,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile37</name>
@@ -2843,13 +1923,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall1</name>
@@ -2862,13 +1936,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile38</name>
@@ -2881,13 +1949,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>awnings</name>
@@ -2900,13 +1962,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>clothesline1</name>
@@ -2919,13 +1975,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>goldcoins</name>
@@ -2938,13 +1988,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>portal1</name>
@@ -2957,13 +2001,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile30</name>
@@ -2976,13 +2014,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows5</name>
@@ -2995,13 +2027,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark10</name>
@@ -3014,13 +2040,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>iceblock</name>
@@ -3033,13 +2053,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners2</name>
@@ -3052,13 +2066,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof1</name>
@@ -3071,13 +2079,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark1</name>
@@ -3090,13 +2092,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood2</name>
@@ -3109,13 +2105,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue4</name>
@@ -3128,13 +2118,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects7</name>
@@ -3147,13 +2131,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stucco2</name>
@@ -3166,13 +2144,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>rock7</name>
@@ -3185,13 +2157,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof5</name>
@@ -3204,13 +2170,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>columns</name>
@@ -3223,13 +2183,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile15</name>
@@ -3242,13 +2196,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches01</name>
@@ -3261,13 +2209,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile18</name>
@@ -3280,13 +2222,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile13</name>
@@ -3299,13 +2235,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark5</name>
@@ -3318,13 +2248,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue1</name>
@@ -3337,13 +2261,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners7</name>
@@ -3356,13 +2274,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall19</name>
@@ -3375,13 +2287,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark2</name>
@@ -3394,13 +2300,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood8</name>
@@ -3413,13 +2313,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners6</name>
@@ -3432,13 +2326,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile233</name>
@@ -3451,13 +2339,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile25</name>
@@ -3470,13 +2352,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall2</name>
@@ -3489,13 +2365,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof2</name>
@@ -3508,13 +2378,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>hedge</name>
@@ -3527,13 +2391,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>rock6</name>
@@ -3546,13 +2404,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>rockdark</name>
@@ -3565,13 +2417,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves07</name>
@@ -3584,13 +2430,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile36</name>
@@ -3603,13 +2443,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>rugs</name>
@@ -3622,13 +2456,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stonewall12</name>
@@ -3641,13 +2469,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile28</name>
@@ -3660,13 +2482,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>mudbrickwall1</name>
@@ -3679,13 +2495,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects1</name>
@@ -3698,13 +2508,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark11</name>
@@ -3717,13 +2521,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles11</name>
@@ -3736,13 +2534,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects10</name>
@@ -3755,13 +2547,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves06</name>
@@ -3774,13 +2560,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shingles9</name>
@@ -3793,13 +2573,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile23</name>
@@ -3812,13 +2586,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles8</name>
@@ -3831,13 +2599,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark12</name>
@@ -3850,13 +2612,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile29</name>
@@ -3869,13 +2625,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>ships1</name>
@@ -3888,13 +2638,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile27</name>
@@ -3907,13 +2651,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood6</name>
@@ -3926,13 +2664,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile2</name>
@@ -3945,13 +2677,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark6</name>
@@ -3964,13 +2690,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows8</name>
@@ -3983,13 +2703,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>marble3</name>
@@ -4002,13 +2716,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles6</name>
@@ -4021,13 +2729,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows_elf1</name>
@@ -4040,13 +2742,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall11</name>
@@ -4059,13 +2755,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile231</name>
@@ -4078,13 +2768,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>columndesign1</name>
@@ -4097,13 +2781,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile3</name>
@@ -4116,13 +2794,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tents2</name>
@@ -4135,13 +2807,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall18</name>
@@ -4154,13 +2820,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves04</name>
@@ -4173,13 +2833,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>banners1</name>
@@ -4192,13 +2846,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood9</name>
@@ -4211,13 +2859,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows_misc1</name>
@@ -4230,13 +2872,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile43</name>
@@ -4249,13 +2885,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof4</name>
@@ -4268,13 +2898,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows6</name>
@@ -4287,13 +2911,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>snowcave</name>
@@ -4306,13 +2924,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stalag</name>
@@ -4325,13 +2937,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue5</name>
@@ -4344,13 +2950,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects8</name>
@@ -4363,13 +2963,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile46</name>
@@ -4382,13 +2976,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile35</name>
@@ -4401,13 +2989,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows7</name>
@@ -4420,13 +3002,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>rock2</name>
@@ -4439,13 +3015,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stucco3</name>
@@ -4458,13 +3028,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects12</name>
@@ -4477,13 +3041,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bows</name>
@@ -4496,13 +3054,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bag</name>
@@ -4515,13 +3067,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>plants03</name>
@@ -4534,13 +3080,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stump</name>
@@ -4553,13 +3093,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile12</name>
@@ -4572,13 +3106,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile240</name>
@@ -4591,13 +3119,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark8</name>
@@ -4610,13 +3132,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile44</name>
@@ -4629,13 +3145,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>furniture1</name>
@@ -4648,13 +3158,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>miscobjects11</name>
@@ -4667,13 +3171,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark9</name>
@@ -4686,13 +3184,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles13</name>
@@ -4705,13 +3197,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall4</name>
@@ -4724,13 +3210,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall16</name>
@@ -4743,13 +3223,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stucco4</name>
@@ -4762,13 +3236,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>leather</name>
@@ -4781,13 +3249,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles4</name>
@@ -4800,13 +3262,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>plants01</name>
@@ -4819,13 +3275,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile50</name>
@@ -4838,13 +3288,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>stoneroad01</name>
@@ -4857,13 +3301,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>miscobjects3</name>
@@ -4876,13 +3314,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>bones</name>
@@ -4895,13 +3327,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows2</name>
@@ -4914,13 +3340,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>snowroad</name>
@@ -4933,13 +3353,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>doorwindows_dwarf1</name>
@@ -4952,13 +3366,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>badobject</name>
@@ -4971,13 +3379,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>default</effect>
 	</material>
 	<material>
 		<name>wraith1</name>
@@ -4990,13 +3392,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>cyclopsm1</name>
@@ -5009,13 +3405,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals2</name>
@@ -5028,13 +3418,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>goblinmarmed1</name>
@@ -5047,13 +3431,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>goblinfarmed1</name>
@@ -5066,13 +3444,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals5</name>
@@ -5085,13 +3457,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bear1</name>
@@ -5104,13 +3470,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals1</name>
@@ -5123,13 +3483,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals3</name>
@@ -5142,13 +3496,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bear2</name>
@@ -5161,13 +3509,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals4</name>
@@ -5180,13 +3522,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>ogrem1</name>
@@ -5199,13 +3535,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>goblinm1</name>
@@ -5218,13 +3548,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>skeleton1</name>
@@ -5237,13 +3561,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>gargoyle</name>
@@ -5256,13 +3574,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>trollm1</name>
@@ -5275,13 +3587,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>troll2</name>
@@ -5294,13 +3600,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>chimerans1</name>
@@ -5313,13 +3613,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals7</name>
@@ -5332,13 +3626,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>unicorn1</name>
@@ -5351,13 +3639,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>chimerans2</name>
@@ -5370,13 +3652,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bear3</name>
@@ -5389,13 +3665,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals7</name>
@@ -5408,13 +3678,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals8</name>
@@ -5427,13 +3691,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals9</name>
@@ -5446,13 +3704,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals10</name>
@@ -5465,13 +3717,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>phantom_warrior</name>
@@ -5484,13 +3730,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>imp_brownie</name>
@@ -5503,13 +3743,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>spider1</name>
@@ -5522,13 +3756,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>spider2</name>
@@ -5541,13 +3769,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>sprites</name>
@@ -5560,13 +3782,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>giant1</name>
@@ -5579,13 +3795,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>hobgoblin</name>
@@ -5598,13 +3808,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>yeti</name>
@@ -5617,13 +3821,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>feros</name>
@@ -5636,13 +3834,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon1</name>
@@ -5655,13 +3847,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon2</name>
@@ -5674,13 +3860,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon3</name>
@@ -5693,13 +3873,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon4</name>
@@ -5712,13 +3886,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>birds01</name>
@@ -5731,13 +3899,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals11</name>
@@ -5750,13 +3912,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>cockatrice</name>
@@ -5769,13 +3925,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>penguins1</name>
@@ -5788,13 +3938,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>penguins1</name>
@@ -5807,13 +3951,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>birds02</name>
@@ -5826,13 +3964,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon2_blue</name>
@@ -5845,13 +3977,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon2_gray</name>
@@ -5864,13 +3990,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon2_pink</name>
@@ -5883,13 +4003,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>mule1_black</name>
@@ -5902,13 +4016,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>mule1_brown</name>
@@ -5921,13 +4029,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>mule1_gray</name>
@@ -5940,13 +4042,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse01</name>
@@ -5959,13 +4055,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse02</name>
@@ -5978,13 +4068,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse03</name>
@@ -5997,13 +4081,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse04</name>
@@ -6016,13 +4094,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse05</name>
@@ -6035,13 +4107,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse06</name>
@@ -6054,13 +4120,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse07</name>
@@ -6073,13 +4133,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>nenorocit</name>
@@ -6092,13 +4146,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>nasparliu</name>
@@ -6111,13 +4159,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bulangiu</name>
@@ -6130,13 +4172,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bulangiumare</name>
@@ -6149,13 +4185,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>castellan</name>
@@ -6168,13 +4198,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>target1</name>
@@ -6187,13 +4211,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orcf1_armed</name>
@@ -6206,13 +4224,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orcm1_armed</name>
@@ -6225,13 +4237,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orcf1</name>
@@ -6244,13 +4250,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orcm1</name>
@@ -6263,13 +4263,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dwarf_female1</name>
@@ -6282,13 +4276,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dwarf_male1</name>
@@ -6301,13 +4289,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>elf_female1</name>
@@ -6320,13 +4302,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>elf_male1</name>
@@ -6339,13 +4315,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>human_female1</name>
@@ -6358,13 +4328,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>human_male1</name>
@@ -6377,13 +4341,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>draegoni_female</name>
@@ -6396,13 +4354,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>draegoni_male</name>
@@ -6415,13 +4367,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>gnome_female</name>
@@ -6434,13 +4380,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>gnome_male</name>
@@ -6453,13 +4393,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orchan_female</name>
@@ -6472,13 +4406,7 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orchan_male</name>
@@ -6491,12 +4419,6 @@
 		<emission></emission>
 		<blend></blend>
 		<height></height>
-		<texture_coodrinates>default</texture_coodrinates>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<lighting>true</lighting>
+		<effect>actor</effect>
 	</material>
 </materials>

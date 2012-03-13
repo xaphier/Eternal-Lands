@@ -1,18 +1,18 @@
 /****************************************************************************
- *            materialeffect.cpp
+ *            material.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "materialeffect.hpp"
+#include "material.hpp"
 #include "effectcache.hpp"
 #include "effect.hpp"
 #include "texture.hpp"
 #include "texturecache.hpp"
 #include "shader/shadertextureutil.hpp"
 #include "statemanager.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 
 namespace eternal_lands
 {
@@ -25,7 +25,7 @@ namespace eternal_lands
 
 	}
 
-	MaterialEffect::MaterialEffect(const EffectCacheWeakPtr &effect_cache,
+	Material::Material(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
 		m_cast_shadows(true), m_culling(true)
@@ -48,19 +48,15 @@ namespace eternal_lands
 		m_specular_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
 	}
 
-	MaterialEffect::MaterialEffect(const EffectCacheWeakPtr &effect_cache,
+	Material::Material(const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache,
-		const MaterialEffectDescription &material):
+		const MaterialDescription &material):
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache)
 	{
-		EffectDescription effect;
-
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
 
-		material.get_effect_description(effect);
-
-		set_effect(effect);
+		set_effect(material.get_effect());
 
 		set_albedo_scale_offsets(material.get_albedo_scale_offsets());
 		set_texture_matrices(material.get_texture_matrices());
@@ -85,25 +81,24 @@ namespace eternal_lands
 		set_texture(material, stt_dudv);
 	}
 
-	MaterialEffect::~MaterialEffect() throw()
+	Material::~Material() throw()
 	{
 	}
 
-	void MaterialEffect::set_effect(const EffectDescription &effect)
+	void Material::set_effect(const String &effect)
 	{
 		m_effect = get_effect_cache()->get_effect(effect);
 
 		assert(m_effect.get() != 0);
 	}
 
-	void MaterialEffect::set_texture(
-		const MaterialEffectDescription &material,
+	void Material::set_texture(const MaterialDescription &material,
 		const ShaderTextureType texture_type)
 	{
 		set_texture(material.get_texture(texture_type), texture_type);
 	}
 
-	void MaterialEffect::set_texture(const String &name,
+	void Material::set_texture(const String &name,
 		const ShaderTextureType texture_type)
 	{
 		assert(texture_type < m_textures.size());
@@ -119,7 +114,7 @@ namespace eternal_lands
 			name);
 	}
 
-	const String &MaterialEffect::get_texture_name(
+	const String &Material::get_texture_name(
 		const ShaderTextureType texture_type) const
 	{
 		assert(texture_type < m_textures.size());
@@ -132,7 +127,7 @@ namespace eternal_lands
 		return get_texture(texture_type)->get_name();
 	}
 
-	void MaterialEffect::set_texture(const TextureSharedPtr &texture,
+	void Material::set_texture(const TextureSharedPtr &texture,
 		const ShaderTextureType texture_type)
 	{
 		assert(texture_type < m_textures.size());
@@ -140,7 +135,7 @@ namespace eternal_lands
 		m_textures[texture_type] = texture;
 	}
 
-	const TextureSharedPtr &MaterialEffect::get_texture(
+	const TextureSharedPtr &Material::get_texture(
 		const ShaderTextureType texture_type) const
 	{
 		assert(texture_type < m_textures.size());
@@ -148,7 +143,7 @@ namespace eternal_lands
 		return m_textures[texture_type];
 	}
 
-	void MaterialEffect::bind(StateManager &state_manager) const
+	void Material::bind(StateManager &state_manager) const
 	{
 		Uint16 i, count;
 
@@ -165,7 +160,7 @@ namespace eternal_lands
 		state_manager.switch_culling(get_culling());
 	}
 
-	bool MaterialEffect::operator==(const MaterialEffect &material) const
+	bool Material::operator==(const Material &material) const
 	{
 		Uint16 i, count;
 
@@ -222,12 +217,12 @@ namespace eternal_lands
 		return get_culling() == material.get_culling();
 	}
 
-	bool MaterialEffect::operator!=(const MaterialEffect &material) const
+	bool Material::operator!=(const Material &material) const
 	{
 		return !operator==(material);
 	}
 
-	bool MaterialEffect::operator<(const MaterialEffect &material) const
+	bool Material::operator<(const Material &material) const
 	{
 		glm::bvec4 cmp4;
 		glm::bvec3 cmp3;
@@ -387,7 +382,7 @@ namespace eternal_lands
 		return get_culling() < material.get_culling();
 	}
 
-	const EffectDescription &MaterialEffect::get_effect_description() const
+	const EffectDescription &Material::get_effect_description() const
 	{
 		if (m_effect.get() != 0)
 		{

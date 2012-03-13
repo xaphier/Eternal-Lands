@@ -14,7 +14,7 @@
 #include "submesh.hpp"
 #include "indexbuilder.hpp"
 #include "object.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "effectdescription.hpp"
 #include "meshbuilder.hpp"
 #include "globalvars.hpp"
@@ -33,7 +33,6 @@ namespace eternal_lands
 		const TerrainData &terrain_data)
 	{
 		ImageSharedPtr height_image;
-		EffectDescription effect;
 
 		m_object_tree.reset(new RStarTree());
 
@@ -42,11 +41,8 @@ namespace eternal_lands
 		height_image = codec_manager->load_image(get_height_map(),
 			file_system, ImageCompressionTypeSet(), true);
 
-		effect.load_xml(file_system,
-			String(UTF8("shaders/simple_terrain.xml")));
-
-		add_terrain_pages(effect, height_image, mesh_builder,
-			effect_cache, texture_cache,
+		add_terrain_pages(String(UTF8("shaders/simple_terrain.xml")),
+			height_image, mesh_builder, effect_cache, texture_cache,
 			global_vars->get_low_quality_terrain(),
 			global_vars->get_use_simd());
 	}
@@ -168,16 +164,15 @@ namespace eternal_lands
 		}
 	}
 
-	void SimpleTerrainManager::add_terrain_pages(
-		const EffectDescription &effect,
+	void SimpleTerrainManager::add_terrain_pages(const String &effect,
 		const ImageSharedPtr &height_map,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const EffectCacheSharedPtr &effect_cache,
 		const TextureCacheSharedPtr &texture_cache,
 		const bool low_quality, const bool use_simd)
 	{
-		MaterialEffectDescriptionVector materials;
-		MaterialEffectDescription material;
+		MaterialDescriptionVector materials;
+		MaterialDescription material;
 		MeshDataToolSharedPtr mesh_data_tool;
 		Transformation transformation;
 		AbstractMeshSharedPtr mesh;
@@ -298,7 +293,7 @@ namespace eternal_lands
 		material.set_texture(get_albedo_map(3), stt_albedo_3);
 		material.set_texture(get_blend_map(), stt_blend_0);
 
-		material.set_effect_description(effect);
+		material.set_effect(effect);
 
 		texture_matrix[0].x = 1.0f;
 		texture_matrix[0].y = 0.0f;

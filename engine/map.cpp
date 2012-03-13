@@ -14,7 +14,7 @@
 #include "instancedata.hpp"
 #include "objectdescription.hpp"
 #include "meshbuilder.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "lightvisitor.hpp"
 #include "objectvisitor.hpp"
 #include "filesystem.hpp"
@@ -70,7 +70,7 @@ namespace eternal_lands
 		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
 		ObjectSharedPtr object;
 		AbstractMeshSharedPtr mesh;
-		MaterialEffectDescriptionVector materials;
+		MaterialDescriptionVector materials;
 
 		get_mesh_cache()->get_mesh(object_data.get_name(), mesh,
 			materials);
@@ -87,7 +87,7 @@ namespace eternal_lands
 	}
 
 	void Map::add_object(const ObjectData &object_data,
-		const MaterialEffectDescriptionVector &materials)
+		const MaterialDescriptionVector &materials)
 	{
 		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
 		ObjectSharedPtr object;
@@ -134,7 +134,7 @@ namespace eternal_lands
 		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
 		ObjectSharedPtr object;
 		AbstractMeshSharedPtr mesh;
-		MaterialEffectDescriptionVector materials;
+		MaterialDescriptionVector materials;
 		Uint32 i, count;
 
 		get_mesh_cache()->get_mesh(object_data.get_name(), mesh,
@@ -149,10 +149,8 @@ namespace eternal_lands
 				continue;
 			}
 
-			materials[i].set_material_descriptiont(
-				get_material_description_cache(
-					)->get_material_description(
-						material_names[i]));
+			materials[i] = get_material_description_cache(
+				)->get_material_description(material_names[i]);
 		}
 
 		object = boost::make_shared<Object>(object_data, mesh,

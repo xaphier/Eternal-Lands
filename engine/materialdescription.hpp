@@ -32,14 +32,10 @@ namespace eternal_lands
 			glm::mat2x3 m_emission_scale_offset;
 			glm::vec4 m_specular_scale_offset;
 			glm::vec2 m_dudv_scale;
-			String m_material_name;
-			String m_texture_coodrinates;
-			String m_albedo_mapping;
-			String m_normal_mapping;
-			String m_specular_mapping;
-			String m_emission_mapping;
-			bool m_receives_shadows;
-			bool m_lighting;
+			String m_name;
+			String m_effect;
+			bool m_cast_shadows;
+			bool m_culling;
 
 		protected:
 			inline const String &get_texture(const Uint16 index)
@@ -70,21 +66,8 @@ namespace eternal_lands
 					material.get_emission_scale_offset());
 				set_specular_scale_offset(
 					material.get_specular_scale_offset());
-				set_material_name(
-					material.get_material_name());
-				set_texture_coodrinates(
-					material.get_texture_coodrinates());
-				set_albedo_mapping(
-					material.get_albedo_mapping());
-				set_normal_mapping(
-					material.get_normal_mapping());
-				set_specular_mapping(
-					material.get_specular_mapping());
-				set_emission_mapping(
-					material.get_emission_mapping());
-				set_receives_shadows(
-					material.get_receives_shadows());
-				set_lighting(material.get_lighting());
+				set_name(material.get_name());
+				set_effect(material.get_effect());
 			}				
 
 		public:
@@ -93,6 +76,12 @@ namespace eternal_lands
 			~MaterialDescription() throw();
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
+			bool operator<(const MaterialDescription &material)
+				const;
+			bool operator==(const MaterialDescription &material)
+				const;
+			bool operator!=(const MaterialDescription &material)
+				const;
 
 			inline void set_texture(const String &texture,
 				const ShaderTextureType texture_type)
@@ -146,44 +135,29 @@ namespace eternal_lands
 				return m_specular_scale_offset;
 			}
 
-			inline const String &get_material_name() const
+			inline const glm::vec2 &get_dudv_scale() const
 			{
-				return m_material_name;
+				return m_dudv_scale;
 			}
 
-			inline const String &get_texture_coodrinates() const
+			inline const String &get_name() const
 			{
-				return m_texture_coodrinates;
+				return m_name;
 			}
 
-			inline const String &get_albedo_mapping() const
+			inline const String &get_effect() const
 			{
-				return m_albedo_mapping;
+				return m_effect;
 			}
 
-			inline const String &get_normal_mapping() const
+			inline bool get_cast_shadows() const
 			{
-				return m_normal_mapping;
+				return m_cast_shadows;
 			}
 
-			inline const String &get_specular_mapping() const
+			inline bool get_culling() const
 			{
-				return m_specular_mapping;
-			}
-
-			inline const String &get_emission_mapping() const
-			{
-				return m_emission_mapping;
-			}
-
-			inline bool get_receives_shadows() const
-			{
-				return m_receives_shadows;
-			}
-
-			inline bool get_lighting() const
-			{
-				return m_lighting;
+				return m_culling;
 			}
 
 			inline void set_albedo_scale_offsets(
@@ -228,51 +202,29 @@ namespace eternal_lands
 					specular_scale_offset;
 			}
 
-			inline void set_material_name(
-				const String &material_name)
+			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
 			{
-				m_material_name = material_name;
+				m_dudv_scale = dudv_scale;
 			}
 
-			inline void set_texture_coodrinates(
-				const String &texture_coodrinates)
+			inline void set_name(const String &name)
 			{
-				m_texture_coodrinates = texture_coodrinates;
+				m_name = name;
 			}
 
-			inline void set_albedo_mapping(
-				const String &albedo_mapping)
+			inline void set_effect(const String &effect)
 			{
-				m_albedo_mapping = albedo_mapping;
+				m_effect = effect;
 			}
 
-			inline void set_normal_mapping(
-				const String &normal_mapping)
+			inline void set_cast_shadows(const bool cast_shadows)
 			{
-				m_normal_mapping = normal_mapping;
+				m_cast_shadows = cast_shadows;
 			}
 
-			inline void set_specular_mapping(
-				const String &specular_mapping)
+			inline void set_culling(const bool culling)
 			{
-				m_specular_mapping = specular_mapping;
-			}
-
-			inline void set_emission_mapping(
-				const String &emission_mapping)
-			{
-				m_emission_mapping = emission_mapping;
-			}
-
-			inline void set_receives_shadows(
-				const bool receives_shadows)
-			{
-				m_receives_shadows = receives_shadows;
-			}
-
-			inline void set_lighting(const bool lighting)
-			{
-				m_lighting = lighting;
+				m_culling = culling;
 			}
 
 	};

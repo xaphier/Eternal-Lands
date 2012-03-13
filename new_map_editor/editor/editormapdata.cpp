@@ -24,6 +24,16 @@ namespace eternal_lands
 	{
 	}
 
+	void EditorMapData::set_ambient(const glm::vec3 &color)
+	{
+		m_scene->set_ambient(color);
+	}
+
+	const glm::vec3 &EditorMapData::get_ambient() const
+	{
+		return m_scene->get_ambient();
+	}
+
 	void EditorMapData::add_object(const EditorObjectData &object)
 	{
 		m_objects.insert(std::pair<Uint32,
@@ -168,10 +178,6 @@ namespace eternal_lands
 		return true;
 	}
 
-	void EditorMapData::set_ambient_color(const glm::vec3 &color)
-	{
-	}
-
 	void EditorMapData::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{
@@ -181,6 +187,17 @@ namespace eternal_lands
 	Uint16 EditorMapData::get_tile(const Uint16 x, const Uint16 y) const
 	{
 		return m_tiles[x][y];
+	}
+
+	Uint16Array2 EditorMapData::get_tile_offset(const glm::vec2 &point)
+		const
+	{
+		Uint16Array2 result;
+
+		result[0] = std::max(0.0f, point.x / 3);
+		result[1] = std::max(0.0f, point.y / 3);
+
+		return result;
 	}
 
 	void EditorMapData::set_heights(const HeightVector &heights,
@@ -225,15 +242,40 @@ namespace eternal_lands
 	{
 	}
 
+	String tmp;
+
 	const String &EditorMapData::get_terrain_albedo_map(const Uint16 index,
-		const Uint16 id) const;
+		const Uint16 id) const
+	{
+		return tmp;
+	}
+
 	const String &EditorMapData::get_terrain_blend_map(const Uint16 id)
-		const;
+		const
+	{
+		return tmp;
+	}
+
 	const String &EditorMapData::get_terrain_height_map(const Uint16 id)
-		const;
+		const
+	{
+		return tmp;
+	}
+
 	const String &EditorMapData::get_terrain_dudv_map(const Uint16 id)
-		const;
-	Uint32 EditorMapData::get_free_object_id() const;
-	Uint32 EditorMapData::get_free_light_id() const;
+		const
+	{
+		return tmp;
+	}
+
+	Uint32 EditorMapData::get_free_object_id() const
+	{
+		return 0;
+	}
+
+	Uint32 EditorMapData::get_free_light_id() const
+	{
+		return 0;
+	}
 
 }

@@ -118,6 +118,7 @@ namespace eternal_lands
 				const ActorPartTextureTypeStringMap &parts);
 			void build_actor_images();
 			void build_actor_texture();
+			String get_effect() const;
 
 			inline const TextureSharedPtr &get_texture() const
 			{

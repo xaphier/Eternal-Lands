@@ -29,7 +29,7 @@ namespace eternal_lands
 		private:
 			BoundingBox m_bounding_box;
 			MeshDataToolSharedPtr m_mesh_data_tool;
-			MaterialEffectDescriptionVector m_materials;
+			MaterialDescriptionVector m_materials;
 
 		public:
 			InstancingData(
@@ -38,8 +38,7 @@ namespace eternal_lands
 			InstancingData(
 				const MeshDataCacheSharedPtr &mesh_data_cache,
 				const ObjectData &object_data,
-				const MaterialEffectDescriptionVector
-					&materials);
+				const MaterialDescriptionVector &materials);
 
 			~InstancingData() throw();
 
@@ -56,8 +55,8 @@ namespace eternal_lands
 				return m_mesh_data_tool;
 			}
 
-			inline const MaterialEffectDescriptionVector
-				&get_materials() const
+			inline const MaterialDescriptionVector &get_materials()
+				const
 			{
 				return m_materials;
 			}

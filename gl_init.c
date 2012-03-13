@@ -597,11 +597,26 @@ void evaluate_extension()
 
 static int get_version()
 {
+/*	if (GLEW_VERSION_4_2)
+	{
+		return 7;
+	}
+*/
+	if (GLEW_VERSION_4_1)
+	{
+		return 6;
+	}
+
+	if (GLEW_VERSION_4_0)
+	{
+		return 5;
+	}
+
 	if (GLEW_VERSION_3_3)
 	{
 		return 4;
 	}
-	
+
 	if (GLEW_VERSION_3_2)
 	{
 		return 3;

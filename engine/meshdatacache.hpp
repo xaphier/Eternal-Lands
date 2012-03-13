@@ -72,7 +72,7 @@ namespace eternal_lands
 
 			void load_mesh(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialEffectDescriptionVector &materials);
+				MaterialDescriptionVector &materials);
 
 		public:
 			/**
@@ -90,7 +90,7 @@ namespace eternal_lands
 
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialEffectDescriptionVector &materials);
+				MaterialDescriptionVector &materials);
 
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool);

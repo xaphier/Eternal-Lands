@@ -28,7 +28,7 @@ namespace eternal_lands
 		private:
 			boost::scoped_ptr<RStarTree> m_object_tree;
 
-			void add_terrain_pages(const EffectDescription &effect,
+			void add_terrain_pages(const String &effect,
 				const ImageSharedPtr &height_map,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const EffectCacheSharedPtr &effect_cache,

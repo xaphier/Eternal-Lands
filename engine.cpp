@@ -31,7 +31,7 @@
 #include "engine/objectdata.hpp"
 #include "engine/instancedata.hpp"
 #include "engine/abstractmesh.hpp"
-#include "engine/materialeffectdescription.hpp"
+#include "engine/materialdescription.hpp"
 #include "engine/materialdescriptioncache.hpp"
 #include "engine/actordatacache.hpp"
 #include "engine/actortexturebuilder.hpp"
@@ -1631,22 +1631,37 @@ extern "C" void engine_set_low_quality_terrain(const int value)
 extern "C" int engine_get_opengl_3_0()
 {
 	return global_vars->get_opengl_3_0();
-}	
+}
 
 extern "C" int engine_get_opengl_3_1()
 {
 	return global_vars->get_opengl_3_1();
-}	
+}
 
 extern "C" int engine_get_opengl_3_2()
 {
 	return global_vars->get_opengl_3_2();
-}	
+}
 
 extern "C" int engine_get_opengl_3_3()
 {
 	return global_vars->get_opengl_3_3();
-}	
+}
+
+extern "C" int engine_get_opengl_4_0()
+{
+	return global_vars->get_opengl_4_0();
+}
+
+extern "C" int engine_get_opengl_4_1()
+{
+	return global_vars->get_opengl_4_1();
+}
+
+extern "C" int engine_get_opengl_4_2()
+{
+	return global_vars->get_opengl_4_2();
+}
 
 extern "C" void engine_set_fog_data(const float* color, const float density)
 {

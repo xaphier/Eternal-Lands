@@ -133,8 +133,7 @@ namespace eternal_lands
 			void remove_all_actors();
 			void add_object(const ObjectData &object_data);
 			void add_object(const ObjectData &object_data,
-				const MaterialEffectDescriptionVector
-					&materials);
+				const MaterialDescriptionVector &materials);
 			void add_object(const InstanceData &instance_data);
 			void add_object(const ObjectData &object_data,
 				const StringVector &material_names);
@@ -160,6 +159,7 @@ namespace eternal_lands
 			glm::uvec2 get_height_map_size() const;
 			glm::uvec2 get_tile_map_size() const;
 			bool get_dungeon() const;
+			void set_ambient(const glm::vec3 &color);
 			const glm::vec3 &get_ambient() const;
 
 			inline void shadow_map_change()

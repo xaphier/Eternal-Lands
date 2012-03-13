@@ -859,4 +859,16 @@ namespace eternal_lands
 	{
 	}
 
+	String ActorTextureBuilder::get_effect() const
+	{
+		if (get_uses_alpha())
+		{
+			return String(UTF8("actor-alpha"));
+		}
+		else
+		{
+			return String(UTF8("actor"));
+		}
+	}
+
 }

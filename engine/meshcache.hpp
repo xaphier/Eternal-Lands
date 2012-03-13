@@ -63,8 +63,7 @@ namespace eternal_lands
 
 			void load_mesh(const String &name,
 				AbstractMeshSharedPtr &mesh,
-				MaterialEffectDescriptionVector &materials)
-				const;
+				MaterialDescriptionVector &materials) const;
 
 		public:
 			/**
@@ -80,7 +79,7 @@ namespace eternal_lands
 
 			void get_mesh(const String &name,
 				AbstractMeshSharedPtr &mesh,
-				MaterialEffectDescriptionVector &materials);
+				MaterialDescriptionVector &materials);
 
 			void get_mesh(const String &name,
 				AbstractMeshSharedPtr &mesh);

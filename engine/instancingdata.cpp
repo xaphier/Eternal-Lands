@@ -7,7 +7,7 @@
 
 #include "instancingdata.hpp"
 #include "meshdatatool.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "meshdatacache.hpp"
 
 namespace eternal_lands
@@ -27,7 +27,7 @@ namespace eternal_lands
 	InstancingData::InstancingData(
 		const MeshDataCacheSharedPtr &mesh_data_cache,
 		const ObjectData &object_data,
-		const MaterialEffectDescriptionVector &materials):
+		const MaterialDescriptionVector &materials):
 		ObjectData(object_data), m_materials(materials)
 	{
 		mesh_data_cache->get_mesh_data(get_name(), m_mesh_data_tool);

@@ -32,7 +32,7 @@ namespace eternal_lands
 
 	bool AmbientModification::undo(EditorMapData &editor)
 	{
-		editor.set_ambient_color(m_color);
+		editor.set_ambient(m_color);
 
 		return false;
 	}

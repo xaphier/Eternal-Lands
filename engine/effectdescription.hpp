@@ -33,6 +33,7 @@ namespace eternal_lands
 	class EffectDescription
 	{
 		private:
+			String m_name;
 			String m_world_transformation;
 			String m_texture_coodrinates;
 			String m_albedo_mapping;
@@ -42,7 +43,6 @@ namespace eternal_lands
 			bool m_receives_shadows;
 			bool m_transparent;
 			bool m_lighting;
-			bool m_billboard;
 
 		public:
 			/**
@@ -61,6 +61,11 @@ namespace eternal_lands
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
+
+			inline void set_name(const String &name)
+			{
+				m_name = name;
+			}
 
 			inline void set_world_transformation(
 				const String &world_transformation)
@@ -114,9 +119,9 @@ namespace eternal_lands
 				m_lighting = lighting;
 			}
 
-			inline void set_billboard(const bool billboard)
+			inline const String &get_name() const
 			{
-				m_billboard = billboard;
+				return m_name;
 			}
 
 			inline const String &get_world_transformation() const
@@ -162,11 +167,6 @@ namespace eternal_lands
 			inline bool get_lighting() const
 			{
 				return m_lighting;
-			}
-
-			inline bool get_billboard() const
-			{
-				return m_billboard;
 			}
 
 	};

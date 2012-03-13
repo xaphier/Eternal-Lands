@@ -13,7 +13,7 @@
 #include "reader.hpp"
 #include "logging.hpp"
 #include "map.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "instancesbuilder.hpp"
 #include "materialdescriptioncache.hpp"
 #include "terrain/simpleterrainmanager.hpp"
@@ -140,13 +140,13 @@ namespace eternal_lands
 	void MapLoader::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{
-		MaterialEffectDescriptionVector materials;
-		MaterialEffectDescription material;
+		MaterialDescriptionVector materials;
+		MaterialDescription material;
 		StringStream str;
 		String file_name;
 		Transformation transformation;
 		glm::vec3 offset;
-		Uint32 id, i, j;
+		Uint32 id;
 
 		m_map->set_tile(x, y, tile);
 
@@ -187,13 +187,8 @@ namespace eternal_lands
 				break;
 		}
 
-		material.set_material_descriptiont(
-			get_material_description_cache(
-				)->get_material_description(String(str.str())));
-
-		material.set_world_transformation(String(UTF8("default")));
-
-		materials.push_back(material);
+		materials.push_back(get_material_description_cache(
+			)->get_material_description(String(str.str())));
 
 		id = get_free_ids().use_typeless_id(x + (y << 10),
 			it_tile_object);
@@ -201,136 +196,6 @@ namespace eternal_lands
 		m_instances_builder->add(ObjectData(transformation,
 			String(UTF8("tile")), 0.0f, id, st_none, bt_disabled),
 			materials);
-
-//		if (tile != 1)
-		{
-			return;
-		}
-
-		material.set_material_descriptiont(
-			get_material_description_cache(
-				)->get_material_description(String(UTF8("grass-billboard"))));
-
-		material.set_world_transformation(String(UTF8("default")));
-		material.set_culling(false);
-		material.set_transparent(true);
-
-		materials.clear();
-		materials.push_back(material);
-
-		transformation.set_scale(0.5f);
-srand( (unsigned)time( NULL ) );
-
-
-		for (i = 0; i < 24; ++i)
-		{
-			for (j = 0; j < 24; ++j)
-			{
-				offset.x = x * get_tile_size() + (rand() % 18) / 6.0f;
-				offset.y = y * get_tile_size() + (rand() % 18) / 6.0f;
-				offset.z = 0.125f;
-
-//				offset.x += SimplexNoise::noise(offset * 0.24123542f + glm::vec3(0.0f, 0.0f, 0.0f)) * 0.1f - 0.05f;
-//				offset.y += SimplexNoise::noise(offset * 0.24123542f + glm::vec3(0.0f, 0.0f, 1.0f)) * 0.1f - 0.05f;
-
-				transformation.set_translation(offset);
-
-				glm::quat rotation;
-				float tmp;
-
-				tmp = static_cast<float>(rand()) / RAND_MAX;
-
-				rotation = glm::quat();
-				rotation = glm::rotate(rotation, 90.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f));
-				rotation = glm::rotate(rotation, 0.0f,
-					glm::vec3(0.0f, 1.0f, 0.0f));
-				rotation = glm::rotate(rotation, 360.0f * tmp,
-					glm::vec3(0.0f, 1.0f, 0.0f));
-
-				transformation.set_rotation(rotation);
-
-				id = get_free_ids().get_next_free_id(
-					it_dynamic_object);
-
-				m_instances_builder->add(ObjectData(transformation,
-					String(UTF8("grass")), 0.0f, id,
-					st_none, bt_disabled), materials);
-
-				rotation = glm::quat();
-				rotation = glm::rotate(rotation, 90.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f));
-				rotation = glm::rotate(rotation, 0.0f,
-					glm::vec3(0.0f, 1.0f, 0.0f));
-				rotation = glm::rotate(rotation, 90.0f + 360.0f * tmp,
-					glm::vec3(0.0f, 1.0f, 0.0f));
-
-				transformation.set_rotation(rotation);
-
-				id = get_free_ids().get_next_free_id(
-					it_dynamic_object);
-
-				m_instances_builder->add(ObjectData(transformation,
-					String(UTF8("grass")), 0.0f, id,
-					st_none, bt_disabled), materials);
-			}
-		}
-
-/*
-		for (i = 0; i < 12; ++i)
-		{
-			for (j = 0; j < 12; ++j)
-			{
-				offset.x = x * get_tile_size() + i * 0.25f;// + (j % 2) * 0.5f);// * 0.25f;
-				offset.y = y * get_tile_size() + j * 0.25f;// + (i % 2) * 0.5f);// * 0.25f;
-				offset.z = 0.125f;
-
-//				offset.x += SimplexNoise::noise(offset * 0.24123542f + glm::vec3(0.0f, 0.0f, 0.0f)) * 0.1f - 0.05f;
-//				offset.y += SimplexNoise::noise(offset * 0.24123542f + glm::vec3(0.0f, 0.0f, 1.0f)) * 0.1f - 0.05f;
-
-				transformation.set_translation(offset);
-
-				glm::quat rotation;
-				float tmp;
-
-				tmp = static_cast<float>(rand()) / RAND_MAX;
-
-				rotation = glm::quat();
-				rotation = glm::rotate(rotation, 90.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f));
-				rotation = glm::rotate(rotation, 0.0f,
-					glm::vec3(0.0f, 1.0f, 0.0f));
-				rotation = glm::rotate(rotation, 90.0f * tmp,
-					glm::vec3(0.0f, 1.0f, 0.0f));
-
-				transformation.set_rotation(rotation);
-
-				id = get_free_ids().get_next_free_id(
-					it_dynamic_object);
-
-				m_instances_builder->add(ObjectData(transformation,
-					String(UTF8("grass")), 0.0f, id,
-					st_none, false), materials);
-
-				rotation = glm::quat();
-				rotation = glm::rotate(rotation, 90.0f,
-					glm::vec3(1.0f, 0.0f, 0.0f));
-				rotation = glm::rotate(rotation, 0.0f,
-					glm::vec3(0.0f, 1.0f, 0.0f));
-				rotation = glm::rotate(rotation, 90.0f * (1.0f + tmp),
-					glm::vec3(0.0f, 1.0f, 0.0f));
-
-				transformation.set_rotation(rotation);
-
-				id = get_free_ids().get_next_free_id(
-					it_dynamic_object);
-
-				m_instances_builder->add(ObjectData(transformation,
-					String(UTF8("grass")), 0.0f, id,
-					st_none, false), materials);
-			}
-		}
-*/
 	}
 
 	void MapLoader::set_height(const Uint16 x, const Uint16 y,

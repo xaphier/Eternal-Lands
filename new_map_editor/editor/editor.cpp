@@ -38,6 +38,7 @@ namespace eternal_lands
 		m_random_rotation[1] = false;
 		m_random_rotation[2] = false;
 		m_random_scale = false;
+		m_selected = false;
 	}
 
 	bool Editor::undo()
@@ -178,14 +179,14 @@ namespace eternal_lands
 		change_light(mt_light_added, light_data);
 	}
 
-	void Editor::set_ambient_color(const glm::vec3 &color)
+	void Editor::set_ambient(const glm::vec3 &color)
 	{
 		ModificationAutoPtr modification(new AmbientModification(
-			m_data.get_ambient_color()));
+			m_data.get_ambient()));
 
 		m_undo.add(modification);
 
-		m_data.set_ambient_color(color);
+		m_data.set_ambient(color);
 	}
 
 	const String &Editor::get_terrain_albedo_map(const Uint16 index,
@@ -208,6 +209,7 @@ namespace eternal_lands
 	{
 		return m_data.get_terrain_dudv_map(id);
 	}
+
 
 /*
 	void Editor::terrain_edit(const Uint16Array2 &vertex,
@@ -436,52 +438,14 @@ namespace eternal_lands
 			m_scene.save(name, "");
 		}
 	}
-
+*/
 	void Editor::load_map(const String &name)
 	{
-		ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-		ImageSharedPtr image;
-		String blend_texture;
-		Uint32Array3 size;
-
-		m_scene.load_map(name);
-
-		size[0] = 256;
-		size[1] = 256;
-		size[2] = 1;
-
-		m_blend_image = boost::make_shared<Image>("blend.dds", false,
-			tft_rgba8, size, 0);
-
-		get_scene().get_scene_page_read_only(get_page_id(),
-			scene_page_read_only);
-
-		blend_texture = scene_page_read_only->get_blend_texture();
-
-		if (!blend_texture.empty())
-		{
-			image = SceneResources::get_codec_manager().load_image(
-				blend_texture, tft_rgba8);
-
-			m_blend_image = boost::make_shared<Image>(*image, 0, 0);
-
-			m_texture.reset(new Texture(m_blend_image));
-			m_texture->set_wrap_r(twt_clamp);
-			m_texture->set_wrap_s(twt_clamp);
-			m_texture->set_wrap_t(twt_clamp);
-
-			if (SceneResources::get_texture_manager().has_texture(
-				blend_texture))
-			{
-				SceneResources::get_texture_manager().remove_texture(
-					blend_texture);
-			}
-			SceneResources::get_texture_manager().add_texture(m_texture);
-		}
+//		m_data.load(name);
 
 		m_undo.clear();
 	}
-*/
+
 	void Editor::remove_object(const Uint32 id)
 	{
 		EditorObjectData object_data;
@@ -651,10 +615,23 @@ namespace eternal_lands
 		m_data.get_light(id, light_data);
 	}
 
-	const glm::vec3 &Editor::get_ambient_color() const
+	const glm::vec3 &Editor::get_ambient() const
 	{
-		return m_data.get_ambient_color();
+		return m_data.get_ambient();
 	}
+
+	void Editor::terrain_height_edit(const Uint32 id, const glm::vec3 &p0,
+		const glm::vec3 &p1, const float strength, const float radius,
+		const int brush_type)
+	{
+	}
+
+	void Editor::terrain_layer_edit(const Uint32 id, const glm::vec3 &p0,
+		const glm::vec3 &p1, const Uint32 index, const float strength,
+		const float radius, const int brush_type)
+	{
+	}
+
 /*
 	void Editor::export_blend_image(const String &file_name,
 		const String &type) const

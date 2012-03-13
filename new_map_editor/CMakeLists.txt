@@ -12,7 +12,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 file(GLOB map_editor_header_files *.hpp)
 file(GLOB map_editor_source_files *.cpp)
 file(GLOB map_editor_ui_files *.ui)
-file(GLOB map_editor_qrc_files *.qrc)
+file(GLOB map_editor_qrc_files icons/*.qrc)
 
 QT4_WRAP_CPP(map_editor_moc_files ${map_editor_header_files} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
 QT4_WRAP_UI(map_editor_form_files ${map_editor_ui_files})

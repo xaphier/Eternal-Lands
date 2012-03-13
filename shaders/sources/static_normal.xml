@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>default</name>
+ <name>static</name>
  <type>world_normal_transformation</type>
  <shader_source_datas>
   <shader_source_data>
@@ -23,7 +23,7 @@
      <name>world_transformation</name>
      <type>mat2x4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
+     <size>instance_count</size>
      <scale>1</scale>
     </parameter>
     <parameter>
@@ -41,16 +41,76 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>world_position = position.xyz;
+   <source>mat2x4 transformation;
+
+world_position = position.xyz;
 world_normal = normal;
 
-world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
-world_position *= world_transformation[1].w;
-world_position += world_transformation[1].xyz;
-world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+transformation = world_transformation[0];
+
+world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
+world_position *= transformation[1].w;
+world_position += transformation[1].xyz;
+world_normal += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_normal) + transformation[0].w * world_normal);
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
+   <glsl_140>false</glsl_140>
+   <glsl_150>false</glsl_150>
+   <glsl_330>false</glsl_330>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>normal</name>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_transformation</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>instance_count</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_normal</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>mat2x4 transformation;
+
+world_position = position.xyz;
+world_normal = normal;
+
+transformation = world_transformation[gl_InstanceID];
+
+world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
+world_position *= transformation[1].w;
+world_position += transformation[1].xyz;
+world_normal += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_normal) + transformation[0].w * world_normal);
+</source>
+   <glsl_120>false</glsl_120>
+   <glsl_130>false</glsl_130>
    <glsl_140>true</glsl_140>
    <glsl_150>true</glsl_150>
    <glsl_330>true</glsl_330>

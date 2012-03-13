@@ -227,10 +227,9 @@ namespace eternal_lands
 	class LightVisitor;
 	class Lua;
 	class Map;
+	class Material;
 	class MaterialDescription;
 	class MaterialDescriptionCache;
-	class MaterialEffect;
-	class MaterialEffectDescription;
 	class MeshBuilder;
 	class MeshCache;
 	class MeshDataCache;
@@ -364,9 +363,8 @@ namespace eternal_lands
 	VECTOR(GlslProgramSharedPtr);
 	VECTOR(ImageSharedPtr);
 	VECTOR(LightSharedPtr);
+	VECTOR(Material);
 	VECTOR(MaterialDescription);
-	VECTOR(MaterialEffect);
-	VECTOR(MaterialEffectDescription);
 	VECTOR(ReadWriteMemorySharedPtr);
 	VECTOR(MeshDrawData);
 	VECTOR(ObjectData);

@@ -30,7 +30,7 @@ namespace eternal_lands
 	class EffectCache
 	{
 		private:
-			typedef std::map<EffectDescription, EffectSharedPtr>
+			typedef std::map<String, EffectSharedPtr>
 				EffectCacheMap;
 
 			EffectCacheMap m_effect_cache;
@@ -49,6 +49,8 @@ namespace eternal_lands
 				return m_file_system;
 			}
 
+			void load_xml(const xmlNodePtr node);
+
 		public:
 			/**
 			 * Default constructor.
@@ -61,16 +63,16 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~EffectCache() throw();
-
-			const EffectSharedPtr &get_effect(
-				const EffectDescription &effect);
+			const EffectSharedPtr &get_effect(const String &name);
 			const EffectSharedPtr &get_simple_effect();
-
 			void reload();
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
+			StringVector get_effect_names() const;
+			void save_xml(const String &file_name) const;
 
 	};
 
 }
 
 #endif	/* UUID_a5f5baae_126c_4cca_8fcd_e26eca3348d7 */
-

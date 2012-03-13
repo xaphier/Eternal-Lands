@@ -33,7 +33,7 @@
 #include "filter.hpp"
 #include "texture.hpp"
 #include "convexbody.hpp"
-#include "materialeffect.hpp"
+#include "material.hpp"
 #include "loader/maploader.hpp"
 #include "freeidsmanager.hpp"
 
@@ -142,7 +142,7 @@ namespace eternal_lands
 	}
 
 	void Scene::add_object(const ObjectData &object_data,
-		const MaterialEffectDescriptionVector &materials)
+		const MaterialDescriptionVector &materials)
 	{
 		m_map->add_object(object_data, materials);
 	}
@@ -620,9 +620,9 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			mesh = object->get_mesh_index(lod, i);
-			material = object->get_material_effects_index(lod, i);
+			material = object->get_materials_index(lod, i);
 
-			if (switch_program(object->get_material_effects(
+			if (switch_program(object->get_materials(
 				)[material].get_effect(
 				)->get_default_program(light_count,
 					dynamic_light_count)))
@@ -643,27 +643,27 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_material_effects()[material].bind(
+			object->get_materials()[material].bind(
 				m_state_manager);
 
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_matrices,
-				object->get_material_effects(
+				object->get_materials(
 					)[material].get_texture_matrices());
 
 			m_state_manager.get_program()->set_parameter(
 				apt_albedo_scale_offsets,
-				object->get_material_effects(
+				object->get_materials(
 					)[material].get_albedo_scale_offsets());
 
 			m_state_manager.get_program()->set_parameter(
 				apt_emission_scale_offset,
-				object->get_material_effects(
+				object->get_materials(
 					)[material].get_emission_scale_offset());
 
 			m_state_manager.get_program()->set_parameter(
 				apt_specular_scale_offset,
-				object->get_material_effects(
+				object->get_materials(
 					)[material].get_specular_scale_offset());
 
 			m_state_manager.draw(mesh, 1);
@@ -689,15 +689,15 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			mesh = object->get_mesh_index(lod, i);
-			material = object->get_material_effects_index(lod, i);
+			material = object->get_materials_index(lod, i);
 
-			if (!object->get_material_effects(
+			if (!object->get_materials(
 				)[material].get_cast_shadows())
 			{
 				continue;
 			}
 
-			if (switch_program(object->get_material_effects(
+			if (switch_program(object->get_materials(
 				)[material].get_effect()->get_shadow_program(),
 				layer))
 			{
@@ -717,10 +717,10 @@ namespace eternal_lands
 
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_matrices,
-				object->get_material_effects(
+				object->get_materials(
 					)[material].get_texture_matrices());
 
-			object->get_material_effects()[material].bind(
+			object->get_materials()[material].bind(
 				m_state_manager);
 			m_state_manager.draw(mesh, 1);
 		}
@@ -745,9 +745,9 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			mesh = object->get_mesh_index(lod, i);
-			material = object->get_material_effects_index(lod, i);
+			material = object->get_materials_index(lod, i);
 
-			if (switch_program(object->get_material_effects(
+			if (switch_program(object->get_materials(
 				)[material].get_effect()->get_depth_program()))
 			{
 				object_data_set = false;
@@ -766,10 +766,10 @@ namespace eternal_lands
 
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_matrices,
-				object->get_material_effects(
+				object->get_materials(
 					)[material].get_texture_matrices());
 
-			object->get_material_effects()[material].bind(
+			object->get_materials()[material].bind(
 				m_state_manager);
 			m_state_manager.draw(mesh, 1);
 		}
@@ -1096,7 +1096,7 @@ namespace eternal_lands
 
 		m_scene_view.set_default_view();
 
-		draw_depth();
+//		draw_depth();
 		glDepthFunc(GL_LEQUAL);
 		draw_default();
 
@@ -1158,7 +1158,7 @@ namespace eternal_lands
 
 			material = object->get_sub_objects()[i].get_material();
 
-			if (switch_program(object->get_material_effects(
+			if (switch_program(object->get_materials(
 				)[material].get_effect()->get_depth_program()))
 			{
 				object_data_set = false;
@@ -1175,12 +1175,11 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_material_effects()[material].bind(
+			object->get_materials()[material].bind(
 				m_state_manager);
 			m_state_manager.get_program()->set_parameter(
-				apt_texture_matrices,
-				object->get_material_effects(
-					)[material].get_texture_matrices());
+				apt_texture_matrices, object->get_materials(
+				)[material].get_texture_matrices());
 			m_state_manager.draw(object->get_sub_objects()[i], 1);
 
 			glEndQuery(GL_SAMPLES_PASSED);
@@ -1297,6 +1296,11 @@ namespace eternal_lands
 	const glm::vec3 &Scene::get_ambient() const
 	{
 		return m_map->get_ambient();
+	}
+
+	void Scene::set_ambient(const glm::vec3 &color)
+	{
+		m_map->set_ambient(color);
 	}
 
 }

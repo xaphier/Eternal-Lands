@@ -179,17 +179,13 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		)[2], 0.0f, 1.0);
 	BOOST_CHECK_CLOSE(material_description.get_specular_scale_offset(
 		)[3], 0.0f, 1.0);
-	BOOST_CHECK_EQUAL(material_description.get_material_name(), "");
-	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(), "");
-	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(), "");
-	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "");
-	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(), "");
-	BOOST_CHECK_EQUAL(material_description.get_emission_mapping(), "");
-	BOOST_CHECK_EQUAL(material_description.get_receives_shadows(), true);
-	BOOST_CHECK_EQUAL(material_description.get_lighting(), true);
+	BOOST_CHECK_EQUAL(material_description.get_name(), "");
+	BOOST_CHECK_EQUAL(material_description.get_effect(), "");
+	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), true);
+	BOOST_CHECK_EQUAL(material_description.get_culling(), true);
 }
 
-BOOST_AUTO_TEST_CASE(textures)
+BOOST_AUTO_TEST_CASE(all)
 {
 	el::MaterialDescription material_description;
 
@@ -382,61 +378,46 @@ BOOST_AUTO_TEST_CASE(textures)
 		)[2], 0.0f, 1.0);
 	BOOST_CHECK_CLOSE(material_description.get_specular_scale_offset(
 		)[3], 0.0f, 1.0);
-	BOOST_CHECK_EQUAL(material_description.get_material_name(), "");
-	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(), "");
-	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(), "");
-	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "");
-	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(), "");
-	BOOST_CHECK_EQUAL(material_description.get_emission_mapping(), "");
-	BOOST_CHECK_EQUAL(material_description.get_receives_shadows(), true);
-	BOOST_CHECK_EQUAL(material_description.get_lighting(), true);
-}
+	BOOST_CHECK_EQUAL(material_description.get_name(), "");
+	BOOST_CHECK_EQUAL(material_description.get_effect(), "");
+	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), true);
+	BOOST_CHECK_EQUAL(material_description.get_culling(), true);
 
-BOOST_AUTO_TEST_CASE(effect)
-{
-	el::MaterialDescription material_description;
-
-	BOOST_CHECK_NO_THROW(material_description.set_texture_coodrinates(
+	BOOST_CHECK_NO_THROW(material_description.set_name(
 		el::String(UTF8("afdgsr!§$AFD54"))));
-	BOOST_CHECK_NO_THROW(material_description.set_albedo_mapping(
+	BOOST_CHECK_NO_THROW(material_description.set_effect(
 		el::String(UTF8("428rfu0sr4v"))));
-	BOOST_CHECK_NO_THROW(material_description.set_normal_mapping(
-		el::String(UTF8("AST%&%"))));
-	BOOST_CHECK_NO_THROW(material_description.set_specular_mapping(
-		el::String(UTF8("53456675cas"))));
-	BOOST_CHECK_NO_THROW(material_description.set_emission_mapping(
-		el::String(UTF8("F%$&GRF3453rf"))));
-	BOOST_CHECK_NO_THROW(material_description.set_receives_shadows(false));
-	BOOST_CHECK_NO_THROW(material_description.set_lighting(false));
+	BOOST_CHECK_NO_THROW(material_description.set_cast_shadows(false));
+	BOOST_CHECK_NO_THROW(material_description.set_culling(false));
 
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
-		"");
+		"df");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
-		"");
+		"agaghrt");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
-		"");
+		"5z5");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
-		"");
+		"wj");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal_0),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal_1),
-		"");
+		"m120");
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal_1),	
+		"aw79dz");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_specular_0),
-		"");
+		"y<bnj3e");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_specular_1),
-		"");
+		"48fh");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_emission_0),
-		"");
+		"ymbnjf!2r2!A");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_emission_1),
-		"");
+		"SDFGSGDF");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_blend_0),
-		"");
+		"345w");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_blend_1),
-		"");
+		"fs46wAFED§&%");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_height),
-		"");
+		"2556yvc23");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_dudv),
-		"");
+		".,welrf43");
 	BOOST_CHECK_CLOSE(material_description.get_albedo_scale_offset(0
 		)[0][0], 1.0f, 1.0);
 	BOOST_CHECK_CLOSE(material_description.get_albedo_scale_offset(0
@@ -575,23 +556,12 @@ BOOST_AUTO_TEST_CASE(effect)
 		)[2], 0.0f, 1.0);
 	BOOST_CHECK_CLOSE(material_description.get_specular_scale_offset(
 		)[3], 0.0f, 1.0);
-	BOOST_CHECK_EQUAL(material_description.get_material_name(), "");
-	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(),
+	BOOST_CHECK_EQUAL(material_description.get_name(),
 		"afdgsr!§$AFD54");
-	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(),
+	BOOST_CHECK_EQUAL(material_description.get_effect(),
 		"428rfu0sr4v");
-	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "AST%&%");
-	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(),
-		"53456675cas");
-	BOOST_CHECK_EQUAL(material_description.get_emission_mapping(),
-		"F%$&GRF3453rf");
-	BOOST_CHECK_EQUAL(material_description.get_receives_shadows(), false);
-	BOOST_CHECK_EQUAL(material_description.get_lighting(), false);
-}
-
-BOOST_AUTO_TEST_CASE(all)
-{
-	el::MaterialDescription material_description;
+	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), false);
+	BOOST_CHECK_EQUAL(material_description.get_culling(), false);
 
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8("df")), el::stt_albedo_0));
@@ -634,20 +604,12 @@ BOOST_AUTO_TEST_CASE(all)
 			3));
 	BOOST_CHECK_NO_THROW(material_description.set_specular_scale_offset(
 		glm::vec4(-1.7f, -4.0f, -15.0f, -21.0f)));
-	BOOST_CHECK_NO_THROW(material_description.set_material_name(
+	BOOST_CHECK_NO_THROW(material_description.set_name(
 		el::String(UTF8("9230fsn45,.e.,"))));
-	BOOST_CHECK_NO_THROW(material_description.set_texture_coodrinates(
+	BOOST_CHECK_NO_THROW(material_description.set_effect(
 		el::String(UTF8("afdgsr!§$AFD54"))));
-	BOOST_CHECK_NO_THROW(material_description.set_albedo_mapping(
-		el::String(UTF8("428rfu0sr4v"))));
-	BOOST_CHECK_NO_THROW(material_description.set_normal_mapping(
-		el::String(UTF8("AST%&%"))));
-	BOOST_CHECK_NO_THROW(material_description.set_specular_mapping(
-		el::String(UTF8("53456675cas"))));
-	BOOST_CHECK_NO_THROW(material_description.set_emission_mapping(
-		el::String(UTF8("F%$&GRF3453rf"))));
-	BOOST_CHECK_NO_THROW(material_description.set_receives_shadows(false));
-	BOOST_CHECK_NO_THROW(material_description.set_lighting(false));
+	BOOST_CHECK_NO_THROW(material_description.set_cast_shadows(false));
+	BOOST_CHECK_NO_THROW(material_description.set_culling(false));
 
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
 		"df");
@@ -809,19 +771,10 @@ BOOST_AUTO_TEST_CASE(all)
 		)[2], -15.0f, 1.0);
 	BOOST_CHECK_CLOSE(material_description.get_specular_scale_offset(
 		)[3], -21.0f, 1.0);
-	BOOST_CHECK_EQUAL(material_description.get_material_name(),
-		"9230fsn45,.e.,");
-	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(),
-		"afdgsr!§$AFD54");
-	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(),
-		"428rfu0sr4v");
-	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "AST%&%");
-	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(),
-		"53456675cas");
-	BOOST_CHECK_EQUAL(material_description.get_emission_mapping(),
-		"F%$&GRF3453rf");
-	BOOST_CHECK_EQUAL(material_description.get_receives_shadows(), false);
-	BOOST_CHECK_EQUAL(material_description.get_lighting(), false);
+	BOOST_CHECK_EQUAL(material_description.get_name(), "9230fsn45,.e.,");
+	BOOST_CHECK_EQUAL(material_description.get_effect(), "afdgsr!§$AFD54");
+	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), false);
+	BOOST_CHECK_EQUAL(material_description.get_culling(), false);
 }
 
 BOOST_AUTO_TEST_CASE(xml)
@@ -838,13 +791,10 @@ BOOST_AUTO_TEST_CASE(xml)
 		"<texture_matrix_2>-1.677 -0.342 -577.0 -878.0 -0.002 0.0</texture_matrix_2>"
 		"<texture_matrix_3>-10.6787 -444.3 -5.0 -1.0 -122.0 -2.0</texture_matrix_3>"
 		"<specular_scale_offset>-1.7 -4.0 -15.0 -21.0</specular_scale_offset>"
-		"<texture_coodrinates>afdgsr!§$AFD54</texture_coodrinates>"
-		"<albedo_mapping>428rfu0sr4v</albedo_mapping>"
-		"<normal_mapping>AST%&amp;%</normal_mapping>"
-		"<specular_mapping>53456675cas</specular_mapping>"
-		"<emission_mapping>F%$&amp;GRF3453rf</emission_mapping>"
-		"<receives_shadows>false</receives_shadows>"
-		"<lighting>false</lighting></material>"));
+		"<dudv_scale>-1.7 -4.0</dudv_scale>"
+		"<effect>afdgsr!§$AFD54</effect>"
+		"<cast_shadows>false</cast_shadows>"
+		"<culling>false</culling></material>"));
 	el::MaterialDescription material_description;
 	el::XmlReaderSharedPtr xml_reader;
 
@@ -1016,15 +966,8 @@ BOOST_AUTO_TEST_CASE(xml)
 		)[2], -15.0f, 1.0);
 	BOOST_CHECK_CLOSE(material_description.get_specular_scale_offset(
 		)[3], -21.0f, 1.0);
-	BOOST_CHECK_EQUAL(material_description.get_texture_coodrinates(),
-		"afdgsr!§$AFD54");
-	BOOST_CHECK_EQUAL(material_description.get_albedo_mapping(),
-		"428rfu0sr4v");
-	BOOST_CHECK_EQUAL(material_description.get_normal_mapping(), "AST%&%");
-	BOOST_CHECK_EQUAL(material_description.get_specular_mapping(),
-		"53456675cas");
-	BOOST_CHECK_EQUAL(material_description.get_emission_mapping(),
-		"F%$&GRF3453rf");
-	BOOST_CHECK_EQUAL(material_description.get_receives_shadows(), false);
-	BOOST_CHECK_EQUAL(material_description.get_lighting(), false);
+	BOOST_CHECK_EQUAL(material_description.get_name(), "tada");
+	BOOST_CHECK_EQUAL(material_description.get_effect(), "afdgsr!§$AFD54");
+	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), false);
+	BOOST_CHECK_EQUAL(material_description.get_culling(), false);
 }

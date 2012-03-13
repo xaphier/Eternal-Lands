@@ -55,6 +55,7 @@ namespace eternal_lands
 			Uint32 m_id;
 			RenderableType m_renderable;
 			bool m_random_scale;
+			bool m_selected;
 
 			void change_object(const ModificationType type,
 				const EditorObjectData &object_data);
@@ -93,7 +94,7 @@ namespace eternal_lands
 			void add_light(const glm::vec3 &position);
 			void add_ground_tile(const Uint32 x, const Uint32 y,
 				const Uint8 texture);
-			void set_ambient_color(const glm::vec3 &color);
+			void set_ambient(const glm::vec3 &color);
 			void terrain_height_edit(const Uint32 id,
 				const glm::vec3 &p0, const glm::vec3 &p1,
 				const float strength, const float radius,
@@ -140,13 +141,12 @@ namespace eternal_lands
 				EditorObjectData &object_data) const;
 			void get_light_data(const Uint32 id,
 				LightData &light_data) const;
-			const glm::vec3 &get_ambient_color() const;
+			const glm::vec3 &get_ambient() const;
 			void export_blend_image(const String &file_name,
 				const String &type) const;
 			void export_terrain_map(const String &file_name,
 				const String &type) const;
 			void import_terrain_map(const String &file_name);
-			bool get_selected() const;
 			const String &get_terrain_albedo_map(
 				const Uint16 index, const Uint16 id) const;
 			const String &get_terrain_height_map(const Uint16 id)
@@ -155,6 +155,11 @@ namespace eternal_lands
 				const;
 			const String &get_terrain_dudv_map(const Uint16 id)
 				const;
+
+			inline bool get_selected() const
+			{
+				return m_selected;
+			}
 
 			inline void get_object_data(
 				EditorObjectData &object_data) const

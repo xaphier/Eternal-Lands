@@ -7,7 +7,7 @@
 
 #include "meshcache.hpp"
 #include "meshdatatool.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "meshdatacache.hpp"
 #include "meshbuilder.hpp"
 #include "submesh.hpp"
@@ -19,7 +19,7 @@ namespace eternal_lands
 	{
 		public:
 			AbstractMeshSharedPtr m_mesh;
-			MaterialEffectDescriptionVector m_materials;
+			MaterialDescriptionVector m_materials;
 	};
 
 	MeshCache::MeshCache(const MeshBuilderWeakPtr &mesh_builder,
@@ -39,7 +39,7 @@ namespace eternal_lands
 
 	void MeshCache::load_mesh(const String &name,
 		AbstractMeshSharedPtr &mesh,
-		MaterialEffectDescriptionVector &materials) const
+		MaterialDescriptionVector &materials) const
 	{
 		MeshDataToolSharedPtr mesh_data_tool;
 
@@ -52,7 +52,7 @@ namespace eternal_lands
 
 	void MeshCache::get_mesh(const String &name,
 		AbstractMeshSharedPtr &mesh,
-		MaterialEffectDescriptionVector &materials)
+		MaterialDescriptionVector &materials)
 	{
 		MeshCache::MeshCacheItem tmp;
 		MeshCacheMap::iterator found;
@@ -78,7 +78,7 @@ namespace eternal_lands
 	void MeshCache::get_mesh(const String &name,
 		AbstractMeshSharedPtr &mesh)
 	{
-		MaterialEffectDescriptionVector materials;
+		MaterialDescriptionVector materials;
 
 		get_mesh(name, mesh, materials);
 	}

@@ -9,7 +9,7 @@
 #include "map.hpp"
 #include "lightdata.hpp"
 #include "particledata.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "materialdescriptioncache.hpp"
 
 namespace eternal_lands
@@ -82,8 +82,7 @@ namespace eternal_lands
 	void EditorMapLoader::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{
-		MaterialEffectDescriptionVector materials;
-		MaterialEffectDescription material;
+		MaterialDescriptionVector materials;
 		StringStream str;
 		String file_name;
 		Transformation transformation;
@@ -129,13 +128,8 @@ namespace eternal_lands
 			}
 		}
 
-		material.set_material_descriptiont(
-			get_material_description_cache(
-				)->get_material_description(String(str.str())));
-
-		material.set_world_transformation(String(UTF8("default")));
-
-		materials.push_back(material);
+		materials.push_back(get_material_description_cache(
+			)->get_material_description(String(str.str())));
 
 		id = x + (y << 10) + 0xF0000000;
 

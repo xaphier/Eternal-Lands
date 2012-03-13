@@ -11,7 +11,7 @@
 #include "meshbuilder.hpp"
 #include "meshdatatool.hpp"
 #include "indexupdatesource.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "materialdescriptioncache.hpp"
 #include "objectdata.hpp"
 #include "actor.hpp"
@@ -111,8 +111,8 @@ namespace eternal_lands
 		const Uint32 id, const String &name,
 		const SelectionType selection, const bool enhanced_actor)
 	{
-		MaterialEffectDescriptionVector materials;
-		MaterialEffectDescription material;
+		MaterialDescriptionVector materials;
+		MaterialDescription material;
 		ActorDataCacheMap::const_iterator found;
 		std::auto_ptr<Actor> result;
 		BlendType blend;
@@ -127,13 +127,9 @@ namespace eternal_lands
 				<< errinfo_string_value(name));
 		}
 
-		material.set_material_descriptiont(
-			get_material_description_cache(
-				)->get_material_description(
-					found->second.m_material_name));
-
-		material.set_world_transformation(
-			String(UTF8("bone_animation")));
+		material = get_material_description_cache(
+			)->get_material_description(
+				found->second.m_material_name);
 
 		materials.clear();
 		materials.push_back(material);

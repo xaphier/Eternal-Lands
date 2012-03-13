@@ -76,7 +76,7 @@ namespace eternal_lands
 
 				material_description.load_xml(it);
 
-				name = material_description.get_material_name();
+				name = material_description.get_name();
 
 				m_material_description_cache[name] =
 					material_description;

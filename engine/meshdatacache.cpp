@@ -11,7 +11,7 @@
 #include "loader/e3dloader.hpp"
 #include "reader.hpp"
 #include "meshdatatool.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "logging.hpp"
 #include "indexbuilder.hpp"
 #include "submesh.hpp"
@@ -393,7 +393,7 @@ namespace eternal_lands
 				&material_description_cache,
 			const ReaderSharedPtr &reader, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialEffectDescriptionVector &materials)
+			MaterialDescriptionVector &materials)
 		{
 			E2dLoader e2d_loader(reader);
 
@@ -405,7 +405,7 @@ namespace eternal_lands
 				&material_description_cache,
 			const ReaderSharedPtr &reader, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialEffectDescriptionVector &materials)
+			MaterialDescriptionVector &materials)
 		{
 			E3dLoader e3d_loader(reader);
 
@@ -419,7 +419,7 @@ namespace eternal_lands
 				&material_description_cache,
 			const ReaderSharedPtr &reader, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialEffectDescriptionVector &materials)
+			MaterialDescriptionVector &materials)
 		{
 			Uint8Array8 id;
 			Uint32 i;
@@ -541,7 +541,7 @@ namespace eternal_lands
 	{
 		public:
 			MeshDataToolSharedPtr m_mesh_data_tool;
-			MaterialEffectDescriptionVector m_materials;
+			MaterialDescriptionVector m_materials;
 	};
 
 	MeshDataCache::MeshDataCache(const MaterialDescriptionCacheWeakPtr
@@ -561,7 +561,7 @@ namespace eternal_lands
 
 	void MeshDataCache::load_mesh(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialEffectDescriptionVector &materials)
+		MaterialDescriptionVector &materials)
 	{
 		ReaderSharedPtr reader;
 
@@ -608,7 +608,7 @@ namespace eternal_lands
 
 	void MeshDataCache::get_mesh_data(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialEffectDescriptionVector &materials)
+		MaterialDescriptionVector &materials)
 	{
 		MeshDataCache::MeshDataCacheItem tmp;
 		MeshDataCacheMap::iterator found;
@@ -634,7 +634,7 @@ namespace eternal_lands
 	void MeshDataCache::get_mesh_data(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool)
 	{
-		MaterialEffectDescriptionVector materials;
+		MaterialDescriptionVector materials;
 
 		get_mesh_data(name, mesh_data_tool, materials);
 	}

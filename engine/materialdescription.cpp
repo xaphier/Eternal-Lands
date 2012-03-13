@@ -14,8 +14,8 @@
 namespace eternal_lands
 {
 
-	MaterialDescription::MaterialDescription(): m_receives_shadows(true),
-		m_lighting(true)
+	MaterialDescription::MaterialDescription(): m_cast_shadows(true),
+		m_culling(true)
 	{
 		Uint16 i;
 
@@ -118,8 +118,12 @@ namespace eternal_lands
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
 			{
-				set_material_name(
-					XmlUtil::get_string_value(it));
+				set_name(XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("effect")) == 0)
+			{
+				set_effect(XmlUtil::get_string_value(it));
 			}
 
 			if (xmlStrcmp(it->name,
@@ -192,51 +196,21 @@ namespace eternal_lands
 					XmlUtil::get_vec4_value(it));
 			}
 
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_coodrinates")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("dudv_scale"))
+				== 0)
 			{
-				set_texture_coodrinates(
-					XmlUtil::get_string_value(it));
+				set_dudv_scale(XmlUtil::get_vec2_value(it));
 			}
 
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("albedo_mapping")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("cast_shadows"))
+				== 0)
 			{
-				set_albedo_mapping(
-					XmlUtil::get_string_value(it));
+				set_cast_shadows(XmlUtil::get_bool_value(it));
 			}
 
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("normal_mapping")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("culling")) == 0)
 			{
-				set_normal_mapping(
-					XmlUtil::get_string_value(it));
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("specular_mapping")) == 0)
-			{
-				set_specular_mapping(
-					XmlUtil::get_string_value(it));
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("emission_mapping")) == 0)
-			{
-				set_emission_mapping(
-					XmlUtil::get_string_value(it));
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("receives_shadows")) == 0)
-			{
-				set_receives_shadows(
-					XmlUtil::get_bool_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("lighting")) == 0)
-			{
-				set_lighting(XmlUtil::get_bool_value(it));
+				set_culling(XmlUtil::get_bool_value(it));
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -246,7 +220,8 @@ namespace eternal_lands
 		const XmlWriterSharedPtr &writer) const
 	{
 		writer->start_element(UTF8("material"));
-		writer->write_element(UTF8("name"), get_material_name());
+		writer->write_element(UTF8("name"), get_name());
+		writer->write_element(UTF8("effect"), get_effect());
 		writer->write_element(UTF8("albedo_0"),
 			get_texture(stt_albedo_0));
 		writer->write_element(UTF8("albedo_1"),
@@ -283,20 +258,272 @@ namespace eternal_lands
 			get_emission_scale_offset());
 		writer->write_vec4_element(UTF8("specular_scale_offset"),
 			get_specular_scale_offset());
-		writer->write_element(UTF8("texture_coodrinates"),
-			get_texture_coodrinates());
-		writer->write_element(UTF8("albedo_mapping"),
-			get_albedo_mapping());
-		writer->write_element(UTF8("normal_mapping"),
-			get_normal_mapping());
-		writer->write_element(UTF8("specular_mapping"),
-			get_specular_mapping());
-		writer->write_element(UTF8("emission_mapping"),
-			get_emission_mapping());
-		writer->write_bool_element(UTF8("receives_shadows"),
-			get_receives_shadows());
-		writer->write_bool_element(UTF8("lighting"), get_lighting());
+		writer->write_vec2_element(UTF8("dudv_scale"),
+			get_dudv_scale());
+		writer->write_bool_element(UTF8("cast_shadows"),
+			get_cast_shadows());
+		writer->write_bool_element(UTF8("culling"), get_culling());
 		writer->end_element();
+	}
+
+	bool MaterialDescription::operator<(const MaterialDescription &material)
+		const
+	{
+		glm::bvec4 cmp4;
+		glm::bvec3 cmp3;
+		Uint16 i, j;
+
+		if (get_effect() != material.get_effect())
+		{
+			return get_effect() < material.get_effect();
+		}
+
+		for (i = 0; i < material_texture_count; ++i)
+		{
+			if (get_texture(i) != material.get_texture(i))
+			{
+				return get_texture(i) <
+					material.get_texture(i);
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			cmp4 = glm::equal(get_albedo_scale_offset(i)[0],
+				material.get_albedo_scale_offset(i)[0]);
+			
+			if (glm::all(cmp4))
+			{
+				continue;
+			}
+
+			for (j = 0; j < 4; ++i)
+			{
+				if (cmp4[j])
+				{
+					continue;
+				}
+
+				return get_albedo_scale_offset(i)[0][j] <
+					material.get_albedo_scale_offset(i)[0][j];
+			}
+
+			cmp4 = glm::equal(get_albedo_scale_offset(i)[1],
+				material.get_albedo_scale_offset(i)[1]);
+			
+			if (glm::all(cmp4))
+			{
+				continue;
+			}
+
+			for (j = 0; j < 4; ++i)
+			{
+				if (cmp4[j])
+				{
+					continue;
+				}
+
+				return get_albedo_scale_offset(i)[1][j] <
+					material.get_albedo_scale_offset(
+						i)[1][j];
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			cmp3 = glm::equal(get_texture_matrix(i)[0],
+				material.get_texture_matrix(i)[0]);
+			
+			if (glm::all(cmp3))
+			{
+				continue;
+			}
+
+			for (j = 0; j < 3; ++i)
+			{
+				if (cmp3[j])
+				{
+					continue;
+				}
+
+				return get_texture_matrix(i)[0][j] <
+					material.get_texture_matrix(i)[0][j];
+			}
+
+			cmp3 = glm::equal(get_texture_matrix(i)[1],
+				material.get_texture_matrix(i)[1]);
+			
+			if (glm::all(cmp3))
+			{
+				continue;
+			}
+
+			for (j = 0; j < 3; ++i)
+			{
+				if (cmp3[j])
+				{
+					continue;
+				}
+
+				return get_texture_matrix(i)[1][j] <
+					material.get_texture_matrix(i)[1][j];
+			}
+		}
+
+		for (i = 0; i < 3; ++i)
+		{
+			if (get_emission_scale_offset()[0][i] !=
+				material.get_emission_scale_offset()[0][i])
+			{
+				
+				return get_emission_scale_offset()[0][i] <
+					material.get_emission_scale_offset(
+						)[0][i];
+			}
+		}
+
+		for (i = 0; i < 3; ++i)
+		{
+			if (get_emission_scale_offset()[1][i] !=
+				material.get_emission_scale_offset()[1][i])
+			{
+				
+				return get_emission_scale_offset()[1][i] <
+					material.get_emission_scale_offset(
+						)[1][i];
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_specular_scale_offset()[i] !=
+				material.get_specular_scale_offset()[i])
+			{
+				
+				return get_specular_scale_offset()[i] <
+					material.get_specular_scale_offset()[i];
+			}
+		}
+
+		if (get_cast_shadows() != material.get_cast_shadows())
+		{
+			return get_cast_shadows() < material.get_cast_shadows();
+		}
+
+		if (get_culling() != material.get_culling())
+		{
+			return get_culling() < material.get_culling();
+		}
+
+		return get_name() < material.get_name();
+	}
+
+	bool MaterialDescription::operator==(
+		const MaterialDescription &material) const
+	{
+		Uint16 i;
+
+		if (get_effect() != material.get_effect())
+		{
+			return false;
+		}
+
+		for (i = 0; i < material_texture_count; ++i)
+		{
+			if (get_texture(i) != material.get_texture(i))
+			{
+				return false;
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_albedo_scale_offset(i) !=
+				material.get_albedo_scale_offset(i))
+			{
+				return false;
+			}
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			if (get_texture_matrix(i) !=
+				material.get_texture_matrix(i))
+			{
+				return false;
+			}
+		}
+
+		if (get_emission_scale_offset() !=
+			material.get_emission_scale_offset())
+		{
+			return false;
+		}
+
+		if (get_specular_scale_offset() !=
+			material.get_specular_scale_offset())
+		{
+			return false;
+		}
+
+		if (get_cast_shadows() != material.get_cast_shadows())
+		{
+			return false;
+		}
+
+		if (get_culling() != material.get_culling())
+		{
+			return false;
+		}
+
+		return get_name() == material.get_name();
+	}
+
+	bool MaterialDescription::operator!=(
+		const MaterialDescription &material) const
+	{
+		return !operator==(material);
+	}
+
+	OutStream& operator<<(OutStream &str, const MaterialDescription &value)
+	{
+		ShaderTextureType type;
+		Uint16 i;
+
+		str << "name: " << value.get_name();
+		str << " effect: " << value.get_effect();
+
+		for (i = 0; i < material_texture_count; ++i)
+		{
+			type = static_cast<ShaderTextureType>(i);
+			str << " " << type << ": " << value.get_texture(type);
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			str << " albedo_scale: " << glm::to_string(
+				value.get_albedo_scale_offset(i)[0]);
+			str << " albedo_offset: " << glm::to_string(
+				value.get_albedo_scale_offset(i)[1]);
+		}
+
+		for (i = 0; i < 4; ++i)
+		{
+			str << " texture_scale_offset: " << glm::to_string(
+				value.get_texture_matrix(i));
+		}
+
+		str << " emission_scale: " << glm::to_string(
+			value.get_emission_scale_offset()[0]);
+		str << " emission_offset: " << glm::to_string(
+			value.get_emission_scale_offset()[1]);
+		str << " specular_scale_offset: " << glm::to_string(
+			value.get_specular_scale_offset());
+
+		str << " cast_shadows: " << value.get_cast_shadows();
+		str << " culling: " << value.get_culling();
+
+		return str;
 	}
 
 }

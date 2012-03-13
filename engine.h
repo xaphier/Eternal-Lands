@@ -95,6 +95,9 @@ int engine_get_opengl_3_0();
 int engine_get_opengl_3_1();
 int engine_get_opengl_3_2();
 int engine_get_opengl_3_3();
+int engine_get_opengl_4_0();
+int engine_get_opengl_4_1();
+int engine_get_opengl_4_2();
 
 #ifdef	DEBUG
 void engine_set_draw_objects(const int value);

@@ -20,7 +20,8 @@ namespace eternal_lands
 			String(UTF8("light_count")),
 			String(UTF8("bone_count")),
 			String(UTF8("shadow_map_count")),
-			String(UTF8("layer_count"))
+			String(UTF8("layer_count")),
+			String(UTF8("instance_count"))
 		};
 
 		const Uint32 parameter_size_type_datas_count =

@@ -129,8 +129,7 @@ namespace eternal_lands
 
 			void add_object(const ObjectData &object_data);
 			void add_object(const ObjectData &object_data,
-				const MaterialEffectDescriptionVector
-					&materials);
+				const MaterialDescriptionVector &materials);
 			void add_object(const ObjectData &object_data,
 				const StringVector &material_names);
 			void add_object(const InstanceData &instance_data);

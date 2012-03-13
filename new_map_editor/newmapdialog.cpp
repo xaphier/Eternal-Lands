@@ -32,7 +32,7 @@ void NewMapDialog::load_image()
 {
 	QString file_name, filter;
 
-	ELGLWidget::get_file_extensions_filter(filter);
+//	ELGLWidget::get_file_extensions_filter(filter);
 
 	file_name = QFileDialog::getOpenFileName(this, tr("Import terrain map"), ".",
 		filter, 0, 0);

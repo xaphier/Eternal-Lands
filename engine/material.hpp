@@ -1,5 +1,5 @@
 /****************************************************************************
- *            materialeffect.hpp
+ *            material.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,18 +13,17 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "effectdescription.hpp"
 #include "shader/shadertextureutil.hpp"
 
 /**
  * @file
- * @brief The @c class MaterialEffect.
- * This file contains the @c class MaterialEffect.
+ * @brief The @c class Material.
+ * This file contains the @c class Material.
  */
 namespace eternal_lands
 {
 
-	class MaterialEffect
+	class Material
 	{
 		private:
 			EffectCacheWeakPtr m_effect_cache;
@@ -61,25 +60,24 @@ namespace eternal_lands
 				return result;
 			}
 
-			void set_texture(
-				const MaterialEffectDescription &material,
+			void set_texture(const MaterialDescription &material,
 				const ShaderTextureType texture_type);
 
 		public:
-			MaterialEffect(const EffectCacheWeakPtr &effect_cache,
+			Material(const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache);
-			MaterialEffect(const EffectCacheWeakPtr &effect_cache,
+			Material(const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
-				const MaterialEffectDescription &material);
-			~MaterialEffect() throw();
-			bool operator==(const MaterialEffect &material) const;
-			bool operator!=(const MaterialEffect &material) const;
-			bool operator<(const MaterialEffect &material) const;
+				const MaterialDescription &material);
+			~Material() throw();
+			bool operator==(const Material &material) const;
+			bool operator!=(const Material &material) const;
+			bool operator<(const Material &material) const;
 			void set_texture(const String &name,
 				const ShaderTextureType texture_type);
 			const String &get_texture_name(
 				const ShaderTextureType texture_type) const;
-			void set_effect(const EffectDescription &effect);
+			void set_effect(const String &effect);
 			void bind(StateManager &state_manager) const;
 			void set_texture(const TextureSharedPtr &texture,
 				const ShaderTextureType texture_type);

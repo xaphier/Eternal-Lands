@@ -60,8 +60,8 @@ namespace eternal_lands
 			bool get_light(const Uint32 id, LightData &light) const;
 			bool get_particle(const Uint32 id,
 				ParticleData &particle) const;
-			void set_ambient_color(const glm::vec3 &color);
-			const glm::vec3 &get_ambient_color() const;
+			void set_ambient(const glm::vec3 &color);
+			const glm::vec3 &get_ambient() const;
 			void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile);
 			Uint16 get_tile(const Uint16 x, const Uint16 y) const;

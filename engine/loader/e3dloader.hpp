@@ -53,7 +53,7 @@ namespace eternal_lands
 				const Uint32 material_count,
 				const Uint32 material_size,
 				const Uint32 material_offset);
-			MaterialEffectDescription load_material(
+			const MaterialDescription &load_material(
 				const MaterialDescriptionCacheSharedPtr
 					&material_description_cache,
 				const Uint32 material_offset,
@@ -66,7 +66,7 @@ namespace eternal_lands
 				const Uint32 material_count,
 				const Uint32 material_size,
 				const Uint32 material_offset,
-				MaterialEffectDescriptionVector &materials);
+				MaterialDescriptionVector &materials);
 			void log_file_infos(const Uint8 options,
 				const Uint8 format) const;
 			void check_file_infos(Uint8 &options, Uint8 &format)
@@ -83,7 +83,7 @@ namespace eternal_lands
 					&material_description_cache,
 				const bool use_simd,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialEffectDescriptionVector &materials);
+				MaterialDescriptionVector &materials);
 			static bool check_format(const Uint8Array8 &id);
 
 	};

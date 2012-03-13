@@ -9,7 +9,7 @@
 #include "reader.hpp"
 #include "meshdatatool.hpp"
 #include "submesh.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "exceptions.hpp"
 #include "packtool.hpp"
 #include "logging.hpp"
@@ -151,7 +151,7 @@ namespace eternal_lands
 	void E3dLoader::load(const MaterialDescriptionCacheSharedPtr
 			&material_description_cache,
 		const bool use_simd, MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialEffectDescriptionVector &materials)
+		MaterialDescriptionVector &materials)
 	{
 		VertexSemanticTypeSet semantics;
 		Uint32 vertex_count, vertex_size, vertex_offset;
@@ -413,13 +413,12 @@ namespace eternal_lands
 		}
 	}
 
-	MaterialEffectDescription E3dLoader::load_material(
+	const MaterialDescription &E3dLoader::load_material(
 		const MaterialDescriptionCacheSharedPtr
 			&material_description_cache,
 		const Uint32 material_offset, const Uint32 material_size,
 		const Uint32 material_index, const StringType &dir)
 	{
-		MaterialEffectDescription material;
 		StringType file_name;
 		String name;
 		Uint32 options;
@@ -434,22 +433,15 @@ namespace eternal_lands
 		name = FileSystem::get_file_name_without_extension(
 			String(file_name));
 
-		material.set_material_descriptiont(
-			material_description_cache->get_material_description(
-				name));
-
-		material.set_transparent(options != 0);
-		material.set_culling(options == 0);
-		material.set_world_transformation(String(UTF8("default")));
-
-		return material;
+		return material_description_cache->get_material_description(
+			name);
 	}
 
 	void E3dLoader::load_materials(const MaterialDescriptionCacheSharedPtr
 			&material_description_cache,
 		const Uint32 material_count, const Uint32 material_size,
 		const Uint32 material_offset,
-		MaterialEffectDescriptionVector &materials)
+		MaterialDescriptionVector &materials)
 	{
 		StringType str;
 		Uint32 i;

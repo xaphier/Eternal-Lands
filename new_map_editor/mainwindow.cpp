@@ -636,7 +636,7 @@ void MainWindow::change_ambient()
 	QColor color;
 	glm::vec3 ambient_color;
 
-	ambient_color = el_gl_widget->get_ambient_color();
+	ambient_color = el_gl_widget->get_ambient();
 
 	color = QColor::fromRgbF(ambient_color[0], ambient_color[1],
 		ambient_color[2]);
@@ -649,7 +649,7 @@ void MainWindow::change_ambient()
 		ambient_color[1] = color.greenF();
 		ambient_color[2] = color.blueF();
 
-		el_gl_widget->set_ambient_color(ambient_color);
+		el_gl_widget->set_ambient(ambient_color);
 	}
 }
 

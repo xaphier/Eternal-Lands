@@ -28,7 +28,10 @@ namespace eternal_lands
 		ovt_3_0,
 		ovt_3_1,
 		ovt_3_2,
-		ovt_3_3
+		ovt_3_3,
+		ovt_4_0,
+		ovt_4_1,
+		ovt_4_2
 	};
 
 	enum ShadowQualityType
@@ -252,6 +255,21 @@ namespace eternal_lands
 				return get_opengl_version() >= ovt_3_3;
 			}
 
+			inline bool get_opengl_4_0() const
+			{
+				return get_opengl_version() >= ovt_4_0;
+			}
+
+			inline bool get_opengl_4_1() const
+			{
+				return get_opengl_version() >= ovt_4_1;
+			}
+
+			inline bool get_opengl_4_2() const
+			{
+				return get_opengl_version() >= ovt_4_2;
+			}
+
 			inline Uint16 get_glsl_version() const
 			{
 				switch (get_opengl_version())
@@ -266,6 +284,12 @@ namespace eternal_lands
 						return 150;
 					case ovt_3_3:
 						return 330;
+					case ovt_4_0:
+						return 400;
+					case ovt_4_1:
+						return 410;
+					case ovt_4_2:
+						return 420;
 				}
 
 				return 110;

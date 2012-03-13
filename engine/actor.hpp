@@ -43,8 +43,7 @@ namespace eternal_lands
 			 */
 			Actor(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialEffectDescriptionVector
-					&materials,
+				const MaterialDescriptionVector &materials,
 				const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
 				const IndexUpdateSourceSharedPtr &index_source,

@@ -70,8 +70,7 @@ namespace eternal_lands
 
 			void add(const ObjectData &object_data);
 			void add(const ObjectData &object_data,
-				const MaterialEffectDescriptionVector
-					&materials);
+				const MaterialDescriptionVector &materials);
 			void build(FreeIds &free_ids,
 				InstanceDataVector &instances,
 				ObjectDataVector &uninstanced);

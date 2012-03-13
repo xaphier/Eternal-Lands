@@ -121,15 +121,16 @@ void ELGLWidget::terrain_height_edit(const int x, const int y, const float stren
 	emit can_undo(m_editor.get_can_undo());
 }
 
-void ELGLWidget::terrain_layer_edit(const int x, const int y, const int terrain_layer_index,
-	const float strength, const float radius, const int brush_type)
+void ELGLWidget::terrain_layer_edit(const int x, const int y,
+	const int terrain_layer_index, const float strength,
+	const float radius, const int brush_type)
 {
 	glm::vec3 p0, p1;
 
 	get_points(x, y, p0, p1);
 
-	m_editor.terrain_layer_edit(m_edit_id, p0, p1, terrain_layer_index, strength, radius,
-		brush_type);
+	m_editor.terrain_layer_edit(m_edit_id, p0, p1, terrain_layer_index,
+		strength, radius, brush_type);
 
 	emit can_undo(m_editor.get_can_undo());
 }
@@ -219,6 +220,8 @@ void ELGLWidget::rebuild_projection_frustum()
 
 void ELGLWidget::paintGL()
 {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 /*
 	glm::mat4 view_matrix;
 	glm::vec3 dir, pos, offset;
@@ -414,16 +417,16 @@ void ELGLWidget::light_mode(const bool enabled)
 	updateGL();
 }
 
-void ELGLWidget::set_ambient_color(const glm::vec3 &color)
+void ELGLWidget::set_ambient(const glm::vec3 &color)
 {
-	m_editor.set_ambient_color(color);
+	m_editor.set_ambient(color);
 	emit can_undo(m_editor.get_can_undo());
 	updateGL();
 }
 
-const glm::vec3 &ELGLWidget::get_ambient_color() const
+const glm::vec3 &ELGLWidget::get_ambient() const
 {
-	return m_editor.get_ambient_color();
+	return m_editor.get_ambient();
 }
 
 void ELGLWidget::move_left()
@@ -777,7 +780,7 @@ void ELGLWidget::disable_light()
 
 void ELGLWidget::save(const QString &name) const
 {
-	m_editor.save(String(name.toUtf8()));
+//	m_editor.save(String(name.toUtf8()));
 }
 
 QString ELGLWidget::get_blend_image_name() const

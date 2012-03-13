@@ -13,7 +13,7 @@
 #include "reader.hpp"
 #include "logging.hpp"
 #include "map.hpp"
-#include "materialeffectdescription.hpp"
+#include "materialdescription.hpp"
 #include "instancesbuilder.hpp"
 #include "materialdescriptioncache.hpp"
 #include "terrain/simpleterrainmanager.hpp"
@@ -130,7 +130,8 @@ namespace eternal_lands
 		return st_select;
 	}
 
-	void AbstractMapLoader::read_3d_object(const Uint32 index, const Uint32 offset)
+	void AbstractMapLoader::read_3d_object(const Uint32 index,
+		const Uint32 offset)
 	{
 		glm::vec3 translation, rotation_angles, color;
 		String name;
@@ -206,7 +207,8 @@ namespace eternal_lands
 			get_material_names(material_index, material_count));
 	}
 
-	void AbstractMapLoader::read_2d_object(const Uint32 index, const Uint32 offset)
+	void AbstractMapLoader::read_2d_object(const Uint32 index,
+		const Uint32 offset)
 	{
 		glm::vec3 translation, rotation_angles;
 		String name;
@@ -236,7 +238,8 @@ namespace eternal_lands
 			0.0f, id, st_none, bt_disabled, material_names);
 	}
 
-	void AbstractMapLoader::read_light(const Uint32 index, const Uint32 offset)
+	void AbstractMapLoader::read_light(const Uint32 index,
+		const Uint32 offset)
 	{
 		glm::vec3 color, position;
 		float radius, scale;
@@ -269,7 +272,8 @@ namespace eternal_lands
 		add_light(position, color, radius, index);
 	}
 
-	void AbstractMapLoader::read_particle(const Uint32 index, const Uint32 offset)
+	void AbstractMapLoader::read_particle(const Uint32 index,
+		const Uint32 offset)
 	{
 		glm::vec3 position;
 		String name;
