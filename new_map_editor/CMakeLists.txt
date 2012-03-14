@@ -36,5 +36,16 @@ add_executable(map_editor WIN32 ${map_editor_header_files}
 	${map_editor_form_files}
 	${map_editor_resource_files})
 
+target_link_libraries(map_editor ${GLEW_LIBRARY})
+target_link_libraries(map_editor ${OPENGL_LIBRARIES})
+target_link_libraries(map_editor ${CAL3D_LIBRARIES})
+target_link_libraries(map_editor ${JPEG_LIBRARIES})
+target_link_libraries(map_editor ${PNG_LIBRARIES})
+#target_link_libraries(map_editor ${Boost_LIBRARIES})
+target_link_libraries(map_editor ${ICONV_LIBRARIES})
+target_link_libraries(map_editor ${LIBXML2_LIBRARIES})
+target_link_libraries(map_editor ${SDL_LIBRARIES})
+target_link_libraries(map_editor ${SDL_LIBRARY})
+target_link_libraries(map_editor ${FREETYPE_LIBRARY})
 target_link_libraries(map_editor elengine)
 target_link_libraries(map_editor ${QT_LIBRARIES})
