@@ -203,6 +203,11 @@ namespace eternal_lands
 	void EditorMapData::set_heights(const HeightVector &heights,
 		const Uint16 id)
 	{
+		BOOST_FOREACH(const Height &height, heights)
+		{
+			m_heights[height.get_x()][height.get_y()] =
+				height.get_value();
+		}
 	}
 
 	void EditorMapData::set_terrain_heights(const HeightVector &heights,

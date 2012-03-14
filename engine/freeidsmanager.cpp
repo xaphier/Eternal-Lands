@@ -17,7 +17,6 @@ namespace eternal_lands
 		m_free_ids[it_tile_object] = FreeIds(it_tile_object);
 		m_free_ids[it_water_object] = FreeIds(it_water_object);
 		m_free_ids[it_dynamic_object] = FreeIds(it_dynamic_object);
-		m_free_ids[it_light_object] = FreeIds(it_light_object);
 	}
 
 	FreeIdsManager::~FreeIdsManager() throw()
@@ -36,21 +35,14 @@ namespace eternal_lands
 		}
 	}
 
-	void FreeIdsManager::clear(const IdType type)
-	{
-		RANGE_CECK(type, m_free_ids.size(), UTF8("type value too big"));
-
-		m_free_ids[type].clear();
-	}
-
-	Uint32 FreeIdsManager::get_next_free_id(const IdType type)
+	Uint32 FreeIdsManager::get_next_free_object_id(const IdType type)
 	{
 		RANGE_CECK(type, m_free_ids.size(), UTF8("type value too big"));
 
 		return m_free_ids[type].get_next_free_id();
 	}
 
-	void FreeIdsManager::free_id(const Uint32 id)
+	void FreeIdsManager::free_object_id(const Uint32 id)
 	{
 		Uint16 type;
 
@@ -61,12 +53,42 @@ namespace eternal_lands
 		m_free_ids[type].free_id(id);
 	}
 
-	Uint32 FreeIdsManager::use_typeless_id(const Uint32 typeless_id,
+	Uint32 FreeIdsManager::use_typeless_object_id(const Uint32 typeless_id,
 		const IdType type)
 	{
 		RANGE_CECK(type, m_free_ids.size(), UTF8("type value too big"));
 
 		return m_free_ids[type].use_typeless_id(typeless_id);
 	}	
+
+	Uint32 FreeIdsManager::get_next_free_light_id()
+	{
+		return m_free_light_ids.get_next_free_id();
+	}
+
+	void FreeIdsManager::free_light_id(const Uint32 id)
+	{
+		m_free_light_ids.free_id(id);
+	}
+
+	void FreeIdsManager::use_light_id(const Uint32 id)
+	{
+		m_free_light_ids.use_id(id);
+	}
+
+	Uint32 FreeIdsManager::get_next_free_particle_id()
+	{
+		return m_free_particle_ids.get_next_free_id();
+	}
+
+	void FreeIdsManager::free_particle_id(const Uint32 id)
+	{
+		m_free_particle_ids.free_id(id);
+	}
+
+	void FreeIdsManager::use_particle_id(const Uint32 id)
+	{
+		m_free_particle_ids.use_id(id);
+	}
 
 }

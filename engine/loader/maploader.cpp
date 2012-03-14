@@ -75,8 +75,8 @@ namespace eternal_lands
 		ObjectDataVector uninstanced;
 
 		m_instances_builder->build(
-			get_free_ids().get_free_ids(it_3d_object), instances,
-			uninstanced);
+			get_free_ids().get_free_object_ids(it_3d_object),
+			instances, uninstanced);
 
 		BOOST_FOREACH(const InstanceData &instance_data, instances)
 		{
@@ -190,7 +190,7 @@ namespace eternal_lands
 		materials.push_back(get_material_description_cache(
 			)->get_material_description(String(str.str())));
 
-		id = get_free_ids().use_typeless_id(x + (y << 10),
+		id = get_free_ids().use_typeless_object_id(x + (y << 10),
 			it_tile_object);
 
 		m_instances_builder->add(ObjectData(transformation,

@@ -200,7 +200,7 @@ namespace eternal_lands
 			selection = get_selection(name);
 		}
 
-		id = get_free_ids().use_typeless_id(index, it_3d_object);
+		id = get_free_ids().use_typeless_object_id(index, it_3d_object);
 
 		add_object(translation, rotation_angles, name, scale,
 			transparency, id, selection, blend,
@@ -227,7 +227,7 @@ namespace eternal_lands
 		rotation_angles.y = get_reader()->read_float_le();
 		rotation_angles.z = get_reader()->read_float_le();
 
-		id = get_free_ids().use_typeless_id(index, it_2d_object);
+		id = get_free_ids().use_typeless_object_id(index, it_2d_object);
 
 		LOG_DEBUG(UTF8("Adding 2d object (%1%) '%2%' at <%3%> with "
 			"rotation <%4%>."), index % name %
@@ -269,6 +269,8 @@ namespace eternal_lands
 			glm::to_string(position) %
 			glm::to_string(color) % radius);
 
+		get_free_ids().use_light_id(index);
+
 		add_light(position, color, radius, index);
 	}
 
@@ -285,6 +287,12 @@ namespace eternal_lands
 		position.x = get_reader()->read_float_le();
 		position.y = get_reader()->read_float_le();
 		position.z = get_reader()->read_float_le();
+
+		LOG_DEBUG(UTF8("Adding particle (%1%) at <%2%> with "
+			"date '%3%'."), index % glm::to_string(position) %
+			name);
+
+		get_free_ids().use_particle_id(index);
 
 		add_particle(position, name, index);
 	}

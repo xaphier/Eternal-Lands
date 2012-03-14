@@ -206,6 +206,7 @@ namespace eternal_lands
 	class Effect;
 	class EffectCache;
 	class EffectDescription;
+	class FreeIds;
 	class FreeIdsManager;
 	class FileSystem;
 	class Filter;
@@ -313,6 +314,7 @@ namespace eternal_lands
 	SHARED_PTR(CodecManager);
 	SHARED_PTR(Effect);
 	SHARED_PTR(EffectCache);
+	SHARED_PTR(FreeIds);
 	SHARED_PTR(FreeIdsManager);
 	SHARED_PTR(FileSystem);
 	SHARED_PTR(Filter);

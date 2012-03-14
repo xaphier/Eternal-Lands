@@ -1392,7 +1392,8 @@ extern "C" void engine_get_object_position(const Uint32 id, float* x, float* y,
 
 extern "C" Uint32 engine_get_next_free_dynamic_object_id()
 {
-	return scene->get_free_ids()->get_next_free_id(el::it_dynamic_object);
+	return scene->get_free_ids()->get_next_free_object_id(
+		el::it_dynamic_object);
 }
 
 extern "C" void engine_set_shader_quality(const char* quality)

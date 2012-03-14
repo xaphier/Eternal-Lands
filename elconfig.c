@@ -1412,6 +1412,7 @@ void check_options()
 	check_option_var("shadow_quality");
 	check_option_var("optmize_shader_source");
 	check_option_var("use_simd");
+	check_option_var("use_s3tc_for_actors");
 }
 
 int check_var (char *str, var_name_type type)

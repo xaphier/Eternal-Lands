@@ -146,7 +146,6 @@ namespace eternal_lands
 				const float density);
 			void clear();
 			void draw();
-			void draw_debug();
 			void init(const FileSystemSharedPtr &file_system);
 			void cull();
 			Uint32 pick(const glm::vec2 &offset,
