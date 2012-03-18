@@ -140,8 +140,8 @@ namespace eternal_lands
 			void remove_object(const Uint32 id);
 			bool get_object_position(const Uint32 id,
 				glm::vec3 &position);
-			void add_light(const LightData &light_data);
-			void remove_light(const Uint32 id);
+			virtual void add_light(const LightData &light_data);
+			virtual void remove_light(const Uint32 id);
 			void set_fog(const glm::vec3 &color,
 				const float density);
 			void clear();
@@ -246,6 +246,12 @@ namespace eternal_lands
 			inline void set_focus(const glm::vec3 &focus)
 			{
 				m_scene_view.set_focus(focus);
+			}
+
+			inline void set_view_matrix(
+				const glm::mat4 &view_matrix)
+			{
+				m_scene_view.set_view_matrix(view_matrix);
 			}
 
 			inline void set_night(const bool night)

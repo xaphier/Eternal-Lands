@@ -14,7 +14,7 @@
    <string>Preferences</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icons/icons.qrc">
+   <iconset resource="icons/resourcen.qrc">
     <normaloff>:/icons/gtk-preferences.png</normaloff>:/icons/gtk-preferences.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -37,7 +37,7 @@
      </property>
      <widget class="QWidget" name="keyboard_tab">
       <attribute name="icon">
-       <iconset resource="icons/icons.qrc">
+       <iconset resource="icons/resourcen.qrc">
         <normaloff>:/icons/keyboard.png</normaloff>:/icons/keyboard.png</iconset>
       </attribute>
       <attribute name="title">
@@ -96,11 +96,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="shortcut">
-           <property name="focusPolicy">
-            <enum>Qt::StrongFocus</enum>
-           </property>
-          </widget>
+          <widget class="QLineEdit" name="shortcut"/>
          </item>
          <item>
           <widget class="QPushButton" name="clear_button">
@@ -111,7 +107,7 @@
             <string>Clear</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
            </property>
           </widget>
@@ -125,7 +121,7 @@
             <string>Reset</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/gtk-undo-ltr.png</normaloff>:/icons/gtk-undo-ltr.png</iconset>
            </property>
           </widget>
@@ -139,7 +135,7 @@
             <string>Default</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/go-jump.png</normaloff>:/icons/go-jump.png</iconset>
            </property>
           </widget>
@@ -166,7 +162,7 @@
        <bool>true</bool>
       </property>
       <attribute name="icon">
-       <iconset resource="icons/icons.qrc">
+       <iconset resource="icons/resourcen.qrc">
         <normaloff>:/icons/mouse.png</normaloff>:/icons/mouse.png</iconset>
       </attribute>
       <attribute name="title">
@@ -237,7 +233,7 @@
      </widget>
      <widget class="QWidget" name="toolbar_tab">
       <attribute name="icon">
-       <iconset resource="icons/icons.qrc">
+       <iconset resource="icons/resourcen.qrc">
         <normaloff>:/icons/gtk-execute.png</normaloff>:/icons/gtk-execute.png</iconset>
       </attribute>
       <attribute name="title">
@@ -251,12 +247,12 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QRadioButton" name="small">
+           <widget class="QRadioButton" name="icon_size_small">
             <property name="text">
              <string>Small (16x16)</string>
             </property>
             <property name="icon">
-             <iconset resource="icons/icons.qrc">
+             <iconset resource="icons/resourcen.qrc">
               <normaloff>:/icons/gtk-execute.png</normaloff>:/icons/gtk-execute.png</iconset>
             </property>
             <property name="iconSize">
@@ -271,23 +267,23 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="medium">
+           <widget class="QRadioButton" name="icon_size_medium">
             <property name="text">
              <string>Medium (24x24)</string>
             </property>
             <property name="icon">
-             <iconset resource="icons/icons.qrc">
+             <iconset resource="icons/resourcen.qrc">
               <normaloff>:/icons/gtk-execute.png</normaloff>:/icons/gtk-execute.png</iconset>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="big">
+           <widget class="QRadioButton" name="icon_size_big">
             <property name="text">
              <string>Big (32x32)</string>
             </property>
             <property name="icon">
-             <iconset resource="icons/icons.qrc">
+             <iconset resource="icons/resourcen.qrc">
               <normaloff>:/icons/gtk-execute.png</normaloff>:/icons/gtk-execute.png</iconset>
             </property>
             <property name="iconSize">
@@ -299,12 +295,12 @@
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="verry_big">
+           <widget class="QRadioButton" name="icon_size_verry_big">
             <property name="text">
              <string>Verry big (48x48)</string>
             </property>
             <property name="icon">
-             <iconset resource="icons/icons.qrc">
+             <iconset resource="icons/resourcen.qrc">
               <normaloff>:/icons/gtk-execute.png</normaloff>:/icons/gtk-execute.png</iconset>
             </property>
             <property name="iconSize">
@@ -322,7 +318,7 @@
      </widget>
      <widget class="QWidget" name="dirs_tab">
       <attribute name="icon">
-       <iconset resource="icons/icons.qrc">
+       <iconset resource="icons/resourcen.qrc">
         <normaloff>:/icons/folder.png</normaloff>:/icons/folder.png</iconset>
       </attribute>
       <attribute name="title">
@@ -359,7 +355,7 @@
             <string>Clear</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
            </property>
           </widget>
@@ -376,7 +372,7 @@
             <string>Add dir</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/gtk-add.png</normaloff>:/icons/gtk-add.png</iconset>
            </property>
           </widget>
@@ -393,7 +389,7 @@
             <string>Add archive</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/gtk-add.png</normaloff>:/icons/gtk-add.png</iconset>
            </property>
           </widget>
@@ -410,7 +406,7 @@
             <string>Remove</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/editclear.png</normaloff>:/icons/editclear.png</iconset>
            </property>
           </widget>
@@ -427,7 +423,7 @@
             <string>Up</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/gtk-go-up.png</normaloff>:/icons/gtk-go-up.png</iconset>
            </property>
           </widget>
@@ -444,7 +440,7 @@
             <string>Down</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/gtk-go-down.png</normaloff>:/icons/gtk-go-down.png</iconset>
            </property>
           </widget>
@@ -471,7 +467,7 @@
        <bool>true</bool>
       </property>
       <attribute name="icon">
-       <iconset resource="icons/icons.qrc">
+       <iconset resource="icons/resourcen.qrc">
         <normaloff>:/icons/googleearth-icon.png</normaloff>:/icons/googleearth-icon.png</iconset>
       </attribute>
       <attribute name="title">
@@ -502,7 +498,7 @@
             <string>Clear</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
            </property>
           </widget>
@@ -513,7 +509,7 @@
             <string>Add</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/gtk-add.png</normaloff>:/icons/gtk-add.png</iconset>
            </property>
           </widget>
@@ -524,7 +520,7 @@
             <string>Remove</string>
            </property>
            <property name="icon">
-            <iconset resource="icons/icons.qrc">
+            <iconset resource="icons/resourcen.qrc">
              <normaloff>:/icons/editclear.png</normaloff>:/icons/editclear.png</iconset>
            </property>
           </widget>
@@ -572,7 +568,7 @@
         <string>&amp;Cancel</string>
        </property>
        <property name="icon">
-        <iconset resource="icons/icons.qrc">
+        <iconset resource="icons/resourcen.qrc">
          <normaloff>:/icons/gtk-cancel.png</normaloff>:/icons/gtk-cancel.png</iconset>
        </property>
        <property name="shortcut">
@@ -589,7 +585,7 @@
         <string>&amp;Ok</string>
        </property>
        <property name="icon">
-        <iconset resource="icons/icons.qrc">
+        <iconset resource="icons/resourcen.qrc">
          <normaloff>:/icons/gtk-apply.png</normaloff>:/icons/gtk-apply.png</iconset>
        </property>
       </widget>
@@ -612,7 +608,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="icons/icons.qrc"/>
+  <include location="icons/resourcen.qrc"/>
  </resources>
  <connections>
   <connection>

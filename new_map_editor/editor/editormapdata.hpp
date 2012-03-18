@@ -44,7 +44,8 @@ namespace eternal_lands
 			bool m_selected;
 
 		public:
-			EditorMapData();
+			EditorMapData(const GlobalVarsSharedPtr &global_vars,
+				const FileSystemSharedPtr &file_system);
 			~EditorMapData() throw();
 			void add_object(const EditorObjectData &object);
 			void add_light(const LightData &light);

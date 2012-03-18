@@ -33,6 +33,9 @@ namespace eternal_lands
 		{
 			m_free_ids[i].clear();
 		}
+
+		m_free_light_ids.clear();
+		m_free_particle_ids.clear();
 	}
 
 	Uint32 FreeIdsManager::get_next_free_object_id(const IdType type)

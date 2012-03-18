@@ -13,7 +13,9 @@ class ELGLWidget: public QGLWidget
 	Q_OBJECT
 
 	private:
-		Editor m_editor;
+		boost::scoped_ptr<Editor> m_editor;
+		GlobalVarsSharedPtr m_global_vars;
+		FileSystemSharedPtr m_file_system;
 		glm::mat3 m_rotate;
 		glm::vec4 m_color;
 		glm::vec3 m_pos;

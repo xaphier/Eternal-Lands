@@ -29,7 +29,7 @@ namespace eternal_lands
 		private:
 			class Uniform;
 			typedef std::map<String, Uniform> StringUniformMap;
-			typedef boost::unordered_map<AutoParameterType,
+			typedef std::map<AutoParameterType,
 				Uniform> AutoParameterTypeUniformMap;
 			typedef std::map<String, Uint16> StringUint16Map;
 

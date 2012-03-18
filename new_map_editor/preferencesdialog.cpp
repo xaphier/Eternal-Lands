@@ -451,50 +451,50 @@ QString PreferencesDialog::key_mod_to_str(const Qt::KeyboardModifier value)
 
 QSize PreferencesDialog::get_toolbar_icon_size() const
 {
-	if (small->isChecked())
+	if (icon_size_small->isChecked())
 	{
-		return small->iconSize();
+		return icon_size_small->iconSize();
 	}
-	if (medium->isChecked())
+	if (icon_size_medium->isChecked())
 	{
-		return medium->iconSize();
+		return icon_size_medium->iconSize();
 	}
-	if (big->isChecked())
+	if (icon_size_big->isChecked())
 	{
-		return big->iconSize();
+		return icon_size_big->iconSize();
 	}
-	if (verry_big->isChecked())
+	if (icon_size_verry_big->isChecked())
 	{
-		return verry_big->iconSize();
+		return icon_size_verry_big->iconSize();
 	}
 
-	return medium->iconSize();
+	return icon_size_medium->iconSize();
 }
 
 void PreferencesDialog::set_toolbar_icon_size(const QSize &size)
 {
-	if (size == small->iconSize())
+	if (size == icon_size_small->iconSize())
 	{
-		small->setChecked(true);
+		icon_size_small->setChecked(true);
 		return;
 	}
-	if (size == medium->iconSize())
+	if (size == icon_size_medium->iconSize())
 	{
-		medium->setChecked(true);
+		icon_size_medium->setChecked(true);
 		return;
 	}
-	if (size == big->iconSize())
+	if (size == icon_size_big->iconSize())
 	{
-		big->setChecked(true);
+		icon_size_big->setChecked(true);
 		return;
 	}
-	if (size == verry_big->iconSize())
+	if (size == icon_size_verry_big->iconSize())
 	{
-		verry_big->setChecked(true);
+		icon_size_verry_big->setChecked(true);
 		return;
 	}
 
-	medium->setChecked(true);
+	icon_size_medium->setChecked(true);
 }
 
 void PreferencesDialog::set_textures(const QStringList &textures)

@@ -783,6 +783,7 @@ extern "C" void exit_file_system()
 
 extern "C" void engine_cull_scene()
 {
+	glm::mat4 view_matrix;
 	glm::vec3 focus, main_light_ambient, main_light_color;
 	glm::vec3 main_light_direction;
 	actor* me;
@@ -815,6 +816,9 @@ extern "C" void engine_cull_scene()
 		main_light_direction = -main_light_direction;
 	}
 
+	glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(view_matrix));
+
+	scene->set_view_matrix(view_matrix);
 	scene->set_main_light_ambient(main_light_ambient);
 	scene->set_main_light_color(main_light_color);
 	scene->set_main_light_direction(main_light_direction);

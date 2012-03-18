@@ -22,8 +22,10 @@
 namespace eternal_lands
 {
 
-	Editor::Editor(): m_undo(100), m_uni_dist(0.0f, 1.0f), m_random(m_gen,
-		m_uni_dist)
+	Editor::Editor(const GlobalVarsSharedPtr &global_vars,
+		const FileSystemSharedPtr &file_system):
+		m_data(global_vars, file_system), m_undo(100),
+		m_uni_dist(0.0f, 1.0f), m_random(m_gen, m_uni_dist)
 	{
 		m_random_translation_min = glm::vec3(0.0f);
 		m_random_translation_max = glm::vec3(0.0f);

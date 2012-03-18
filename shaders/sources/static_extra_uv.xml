@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>animated_extra</name>
+ <name>static_extra</name>
  <type>uv</type>
  <shader_source_datas>
   <shader_source_data>

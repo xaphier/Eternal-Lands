@@ -11,13 +11,15 @@
 #include "exceptions.hpp"
 #include "particledata.hpp"
 #include "image.hpp"
-#include "scene.hpp"
+#include "editorscene.hpp"
 
 namespace eternal_lands
 {
 
-	EditorMapData::EditorMapData()
+	EditorMapData::EditorMapData(const GlobalVarsSharedPtr &global_vars,
+		const FileSystemSharedPtr &file_system)
 	{
+		m_scene.reset(new EditorScene(global_vars, file_system));
 	}
 
 	EditorMapData::~EditorMapData() throw()

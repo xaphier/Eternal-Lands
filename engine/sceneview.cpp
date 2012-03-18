@@ -270,7 +270,7 @@ namespace eternal_lands
 
 	void SceneView::update()
 	{
-		glm::mat4 view_matrix, projection_matrix;
+		glm::mat4 projection_matrix;
 		glm::mat4 projection_view_matrix;
 		glm::vec2 window_size;
 		float z_near, z_far;
@@ -285,21 +285,17 @@ namespace eternal_lands
 		projection_matrix = glm::perspective(get_fov(),
 			get_aspect(), get_z_near(), get_z_far());
 
-		glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(view_matrix));
-
-		projection_view_matrix = projection_matrix * view_matrix;
+		projection_view_matrix = projection_matrix * m_view_matrix;
 
 		m_layer_count = 4;
 
 		m_projection_matrix.resize(get_layer_count());
 		m_projection_view_matrix.resize(get_layer_count());
 
-		m_view_matrix = view_matrix;
-
 		for (i = 0; i < 3; ++i)
 		{
 			m_view_rotation_matrix[i] =
-				glm::normalize(glm::vec3(view_matrix[i]));
+				glm::normalize(glm::vec3(m_view_matrix[i]));
 		}
 
 		for (i = 0; i < get_layer_count(); ++i)
@@ -309,10 +305,10 @@ namespace eternal_lands
 		}
 
 		m_camera = glm::vec4(0.0, 0.0, 0.0f, 1.0f);
-		m_camera = glm::inverse(view_matrix) * m_camera;
+		m_camera = glm::inverse(m_view_matrix) * m_camera;
 
 		m_view_dir = glm::vec4(0.0, 0.0, 1.0f, 1.0f);
-		m_view_dir = glm::inverse(view_matrix) * m_view_dir;
+		m_view_dir = glm::inverse(m_view_matrix) * m_view_dir;
 		m_view_dir = glm::vec4(glm::normalize(glm::vec3(m_view_dir) -
 			glm::vec3(m_camera)), 0.0f);
 
@@ -372,7 +368,7 @@ namespace eternal_lands
 
 			m_split_projection_view_matrix[i] =
 				glm::perspective(get_fov(), get_aspect(),
-					z_near, z_far) * view_matrix;
+					z_near, z_far) * m_view_matrix;
 		}
 
 		for (i = 0; i < 4; ++i)

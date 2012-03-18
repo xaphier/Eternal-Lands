@@ -37,8 +37,8 @@ void ELGLWidget::get_points(const Sint32 x, const Sint32 y, glm::vec3 &p0,
 	view_port[2] = width();
 	view_port[3] = height();
 /*
-	project = m_editor.get_scene().get_camera().get_projection_matrix();
-	world = m_editor.get_scene().get_camera().get_view_matrix();
+	project = m_editor->get_scene().get_camera().get_projection_matrix();
+	world = m_editor->get_scene().get_camera().get_view_matrix();
 */
 	p0 = glm::unProject(glm::vec3(x, y, 0), world, project, view_port);
 	p1 = glm::unProject(glm::vec3(x, y, 1), world, project, view_port);
@@ -67,10 +67,10 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 
 				position = p0 - dir * (p0[2] / dir[2]);
 
-				m_editor.add_3d_object(position, m_color, m_type,
+				m_editor->add_3d_object(position, m_color, m_type,
 					m_server_id, m_object);
 				emit update_object(false);
-				emit can_undo(m_editor.get_can_undo());
+				emit can_undo(m_editor->get_can_undo());
 			}
 			else
 */			{
@@ -82,9 +82,9 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 
 					position = p0 - dir * (p0[2] / dir[2]);
 
-					m_editor.add_light(position);
+					m_editor->add_light(position);
 					emit update_light(false);
-					emit can_undo(m_editor.get_can_undo());
+					emit can_undo(m_editor->get_can_undo());
 				}
 				else
 				{
@@ -116,9 +116,9 @@ void ELGLWidget::terrain_height_edit(const int x, const int y, const float stren
 
 	get_points(x, y, p0, p1);
 
-	m_editor.terrain_height_edit(m_edit_id, p0, p1, strength, radius, brush_type);
+	m_editor->terrain_height_edit(m_edit_id, p0, p1, strength, radius, brush_type);
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 }
 
 void ELGLWidget::terrain_layer_edit(const int x, const int y,
@@ -129,10 +129,10 @@ void ELGLWidget::terrain_layer_edit(const int x, const int y,
 
 	get_points(x, y, p0, p1);
 
-	m_editor.terrain_layer_edit(m_edit_id, p0, p1, terrain_layer_index,
+	m_editor->terrain_layer_edit(m_edit_id, p0, p1, terrain_layer_index,
 		strength, radius, brush_type);
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 }
 
 void ELGLWidget::ground_tile_edit(const int x, const int y, const int tile)
@@ -141,9 +141,9 @@ void ELGLWidget::ground_tile_edit(const int x, const int y, const int tile)
 
 	get_points(x, y, p0, p1);
 
-	m_editor.ground_tile_edit(p0, p1, tile);
+	m_editor->ground_tile_edit(p0, p1, tile);
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 }
 
 void ELGLWidget::water_tile_edit(const int x, const int y, const int water)
@@ -152,9 +152,9 @@ void ELGLWidget::water_tile_edit(const int x, const int y, const int water)
 
 	get_points(x, y, p0, p1);
 
-	m_editor.water_tile_edit(p0, p1, water);
+	m_editor->water_tile_edit(p0, p1, water);
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 }
 
 void ELGLWidget::height_edit(const int x, const int y, const int height)
@@ -163,9 +163,9 @@ void ELGLWidget::height_edit(const int x, const int y, const int height)
 
 	get_points(x, y, p0, p1);
 
-	m_editor.height_edit(p0, p1, height);
+	m_editor->height_edit(p0, p1, height);
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 }
 
 void ELGLWidget::wheelEvent(QWheelEvent *event)
@@ -214,7 +214,7 @@ void ELGLWidget::resizeGL(int width, int height)
 
 void ELGLWidget::rebuild_projection_frustum()
 {
-//	m_editor.get_scene().set_projectiv_frustum(m_zoom, m_width, m_height, 5.0f, 5000.0f);
+//	m_editor->get_scene().set_projectiv_frustum(m_zoom, m_width, m_height, 5.0f, 5000.0f);
 	updateGL();
 }
 
@@ -242,24 +242,24 @@ void ELGLWidget::paintGL()
 
 	view_matrix = glm::lookAt(pos, pos + dir, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
 
-	m_editor.get_scene().set_view_matrix(view_matrix);
+	m_editor->get_scene().set_view_matrix(view_matrix);
 
 	if (m_select)
 	{
-		m_editor.get_scene().select(m_select_pos, m_half_size);
+		m_editor->get_scene().select(m_select_pos, m_half_size);
 	}
 
-	m_editor.get_scene().draw();
+	m_editor->get_scene().draw();
 
 	if (m_select)
 	{
 		m_select = false;
 
-		selection = m_editor.get_selection();
+		selection = m_editor->get_selection();
 
 		if (selection.get_valid())
 		{
-			if (m_editor.get_renderable() == rt_light)
+			if (m_editor->get_renderable() == rt_light)
 			{
 				emit update_light(true);
 				updateGL();
@@ -272,7 +272,7 @@ void ELGLWidget::paintGL()
 		}
 		else
 		{
-			m_editor.set_deselect();
+			m_editor->set_deselect();
 			emit deselect();
 		}
 	}
@@ -282,25 +282,26 @@ void ELGLWidget::paintGL()
 void ELGLWidget::get_object_data(EditorObjectData &object_data)
 	const
 {
-	m_editor.get_object_data(object_data);
+	m_editor->get_object_data(object_data);
 }
 
 RenderableType ELGLWidget::get_renderable() const
 {
-	return m_editor.get_renderable();
+	return m_editor->get_renderable();
 }
 
 void ELGLWidget::get_light_data(LightData &light) const
 {
-	m_editor.get_light_data(light);
+	m_editor->get_light_data(light);
 }
 
 void ELGLWidget::remove_object()
 {
-	if ((m_editor.get_renderable() == rt_mesh) || (m_editor.get_renderable() == rt_light))
+	if ((m_editor->get_renderable() == rt_mesh) ||
+		(m_editor->get_renderable() == rt_light))
 	{
-		m_editor.remove_object();
-		emit can_undo(m_editor.get_can_undo());
+		m_editor->remove_object();
+		emit can_undo(m_editor->get_can_undo());
 		m_select = false;
 		updateGL();
 	}
@@ -308,57 +309,57 @@ void ELGLWidget::remove_object()
 
 void ELGLWidget::set_object_blend(const BlendType value)
 {
-	m_editor.set_object_blend(value);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_object_blend(value);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::set_object_translation(const glm::vec3 &translation)
 {
-	m_editor.set_object_translation(translation);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_object_translation(translation);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::set_object_rotation(const glm::vec3 &rotation)
 {
-	m_editor.set_object_rotation(rotation);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_object_rotation(rotation);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::set_object_scale(const float scale)
 {
-	m_editor.set_object_scale(scale);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_object_scale(scale);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::remove_light()
 {
-	m_editor.remove_light();
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->remove_light();
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::set_light_position(const glm::vec3 &position)
 {
-	m_editor.set_light_position(position);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_light_position(position);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::set_light_radius(const double radius)
 {
-	m_editor.set_light_radius(radius);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_light_radius(radius);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::set_light_color(const glm::vec3 &color)
 {
-	m_editor.set_light_color(color);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_light_color(color);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
@@ -366,9 +367,9 @@ void ELGLWidget::undo()
 {
 	bool result;
 
-	result = m_editor.undo();
+	result = m_editor->undo();
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 
 	if (result)
 	{
@@ -376,9 +377,9 @@ void ELGLWidget::undo()
 	}
 	else
 	{
-		if (m_editor.get_selected())
+		if (m_editor->get_selected())
 		{
-			switch (m_editor.get_renderable())
+			switch (m_editor->get_renderable())
 			{
 				case rt_ground_tiles:
 					break;
@@ -412,21 +413,21 @@ void ELGLWidget::set_wire_frame(const bool enabled)
 
 void ELGLWidget::light_mode(const bool enabled)
 {
-//	m_editor.get_scene().set_draw_lights(enabled);
+//	m_editor->get_scene().set_draw_lights(enabled);
 
 	updateGL();
 }
 
 void ELGLWidget::set_ambient(const glm::vec3 &color)
 {
-	m_editor.set_ambient(color);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_ambient(color);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 const glm::vec3 &ELGLWidget::get_ambient() const
 {
-	return m_editor.get_ambient();
+	return m_editor->get_ambient();
 }
 
 void ELGLWidget::move_left()
@@ -519,13 +520,13 @@ QStringList ELGLWidget::get_terrain_albedo_maps() const
 {
 	QStringList result;
 
-	result << QString::fromUtf8(m_editor.get_terrain_albedo_map(0,
+	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(0,
 		get_terrain_index()).get().c_str());
-	result << QString::fromUtf8(m_editor.get_terrain_albedo_map(1,
+	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(1,
 		get_terrain_index()).get().c_str());
-	result << QString::fromUtf8(m_editor.get_terrain_albedo_map(2,
+	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(2,
 		get_terrain_index()).get().c_str());
-	result << QString::fromUtf8(m_editor.get_terrain_albedo_map(3,
+	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(3,
 		get_terrain_index()).get().c_str());
 
 	return result;
@@ -533,19 +534,19 @@ QStringList ELGLWidget::get_terrain_albedo_maps() const
 
 QString ELGLWidget::get_terrain_height_map() const
 {
-	return QString::fromUtf8(m_editor.get_terrain_height_map(
+	return QString::fromUtf8(m_editor->get_terrain_height_map(
 		get_terrain_index()).get().c_str());
 }
 
 QString ELGLWidget::get_terrain_blend_map() const
 {
-	return QString::fromUtf8(m_editor.get_terrain_blend_map(
+	return QString::fromUtf8(m_editor->get_terrain_blend_map(
 		get_terrain_index()).get().c_str());
 }
 
 QString ELGLWidget::get_terrain_dudv_map() const
 {
-	return QString::fromUtf8(m_editor.get_terrain_dudv_map(
+	return QString::fromUtf8(m_editor->get_terrain_dudv_map(
 		get_terrain_index()).get().c_str());
 }
 
@@ -578,9 +579,9 @@ void ELGLWidget::new_map(const int map_size_x, const int map_size_y, const int b
 	blend_imgae_size[0] = blend_image_size_x;
 	blend_imgae_size[1] = blend_image_size_y;
 
-	m_editor.set_terrain(terrain_material, terrain_size, blend_imgae_size);
+	m_editor->set_terrain(terrain_material, terrain_size, blend_imgae_size);
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 */
 }
@@ -611,9 +612,9 @@ void ELGLWidget::new_map(const QString &image, const int blend_image_size_x,
 	blend_imgae_size[0] = blend_image_size_x;
 	blend_imgae_size[1] = blend_image_size_y;
 
-	m_editor.set_terrain(terrain_material, image.toStdString(), blend_imgae_size);
+	m_editor->set_terrain(terrain_material, image.toStdString(), blend_imgae_size);
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 */
 }
@@ -637,135 +638,135 @@ void ELGLWidget::open_map(const QString &file_name)
 {
 	if (!file_name.isEmpty())
 	{
-		m_editor.load_map(String(file_name.toUtf8()));
+		m_editor->load_map(String(file_name.toUtf8()));
 
-		emit can_undo(m_editor.get_can_undo());
+		emit can_undo(m_editor->get_can_undo());
 		updateGL();
 	}
 }
 
 void ELGLWidget::set_fog(const glm::vec3 &color, const float density)
 {
-//	m_editor.get_scene().set_fog(color, density);
+//	m_editor->get_scene().set_fog(color, density);
 }
 
 void ELGLWidget::set_terrain_albedo_map(const QString &name, const Uint32 index)
 {
-	m_editor.set_terrain_albedo_map(String(name.toUtf8()), index);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_terrain_albedo_map(String(name.toUtf8()), index);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::set_object_selection(const SelectionType selection)
 {
-	m_editor.set_object_selection(selection);
-	emit can_undo(m_editor.get_can_undo());
+	m_editor->set_object_selection(selection);
+	emit can_undo(m_editor->get_can_undo());
 	updateGL();
 }
 
 void ELGLWidget::set_random_translation_x(const bool value)
 {
-	m_editor.set_random_translation(value, 0);
+	m_editor->set_random_translation(value, 0);
 }
 
 void ELGLWidget::set_random_translation_y(const bool value)
 {
-	m_editor.set_random_translation(value, 1);
+	m_editor->set_random_translation(value, 1);
 }
 
 void ELGLWidget::set_random_translation_z(const bool value)
 {
-	m_editor.set_random_translation(value, 2);
+	m_editor->set_random_translation(value, 2);
 }
 
 void ELGLWidget::set_random_translation_x_min(const double value)
 {
-	m_editor.set_random_translation_min(value, 0);
+	m_editor->set_random_translation_min(value, 0);
 }
 
 void ELGLWidget::set_random_translation_y_min(const double value)
 {
-	m_editor.set_random_translation_min(value, 1);
+	m_editor->set_random_translation_min(value, 1);
 }
 
 void ELGLWidget::set_random_translation_z_min(const double value)
 {
-	m_editor.set_random_translation_min(value, 2);
+	m_editor->set_random_translation_min(value, 2);
 }
 
 void ELGLWidget::set_random_translation_x_max(const double value)
 {
-	m_editor.set_random_translation_max(value, 0);
+	m_editor->set_random_translation_max(value, 0);
 }
 
 void ELGLWidget::set_random_translation_y_max(const double value)
 {
-	m_editor.set_random_translation_max(value, 1);
+	m_editor->set_random_translation_max(value, 1);
 }
 
 void ELGLWidget::set_random_translation_z_max(const double value)
 {
-	m_editor.set_random_translation_max(value, 2);
+	m_editor->set_random_translation_max(value, 2);
 }
 
 void ELGLWidget::set_random_rotation_x(const bool value)
 {
-	m_editor.set_random_rotation(value, 0);
+	m_editor->set_random_rotation(value, 0);
 }
 
 void ELGLWidget::set_random_rotation_y(const bool value)
 {
-	m_editor.set_random_rotation(value, 1);
+	m_editor->set_random_rotation(value, 1);
 }
 
 void ELGLWidget::set_random_rotation_z(const bool value)
 {
-	m_editor.set_random_rotation(value, 2);
+	m_editor->set_random_rotation(value, 2);
 }
 
 void ELGLWidget::set_random_rotation_x_min(const double value)
 {
-	m_editor.set_random_rotation_min(value, 0);
+	m_editor->set_random_rotation_min(value, 0);
 }
 
 void ELGLWidget::set_random_rotation_y_min(const double value)
 {
-	m_editor.set_random_rotation_min(value, 1);
+	m_editor->set_random_rotation_min(value, 1);
 }
 
 void ELGLWidget::set_random_rotation_z_min(const double value)
 {
-	m_editor.set_random_rotation_min(value, 2);
+	m_editor->set_random_rotation_min(value, 2);
 }
 
 void ELGLWidget::set_random_rotation_x_max(const double value)
 {
-	m_editor.set_random_rotation_max(value, 0);
+	m_editor->set_random_rotation_max(value, 0);
 }
 
 void ELGLWidget::set_random_rotation_y_max(const double value)
 {
-	m_editor.set_random_rotation_max(value, 1);
+	m_editor->set_random_rotation_max(value, 1);
 }
 
 void ELGLWidget::set_random_rotation_z_max(const double value)
 {
-	m_editor.set_random_rotation_max(value, 2);
+	m_editor->set_random_rotation_max(value, 2);
 }
 
 void ELGLWidget::set_random_scale(const bool value)
 {
-	m_editor.set_random_scale(value);
+	m_editor->set_random_scale(value);
 }
 
 void ELGLWidget::set_random_scale_min(const double value)
 {
-	m_editor.set_random_scale_min(value / 100.0f);
+	m_editor->set_random_scale_min(value / 100.0f);
 }
 
 void ELGLWidget::set_random_scale_max(const double value)
 {
-	m_editor.set_random_scale_max(value / 100.0f);
+	m_editor->set_random_scale_max(value / 100.0f);
 }
 
 void ELGLWidget::disable_object()
@@ -780,22 +781,22 @@ void ELGLWidget::disable_light()
 
 void ELGLWidget::save(const QString &name) const
 {
-//	m_editor.save(String(name.toUtf8()));
+//	m_editor->save(String(name.toUtf8()));
 }
 
 QString ELGLWidget::get_blend_image_name() const
 {
-	return QString::fromStdString(m_editor.get_blend_image_name());
+	return QString::fromStdString(m_editor->get_blend_image_name());
 }
 
 void ELGLWidget::set_blend_image_name(const QString &blend_image)
 {
-	m_editor.set_blend_image_name(String(blend_image.toUtf8()));
+	m_editor->set_blend_image_name(String(blend_image.toUtf8()));
 }
 
 void ELGLWidget::set_game_minute(const int game_minute)
 {
-//	m_editor.get_scene().set_game_minute(game_minute);
+//	m_editor->get_scene().set_game_minute(game_minute);
 	updateGL();
 }
 
@@ -906,19 +907,19 @@ void ELGLWidget::get_file_extensions_filter(QString &filter, QString &default_ex
 
 void ELGLWidget::export_blend_image(const QString &file_name, const QString &codec) const
 {
-	m_editor.export_blend_image(file_name.toUtf8(), codec.toUtf8());
+	m_editor->export_blend_image(file_name.toUtf8(), codec.toUtf8());
 }
 
 void ELGLWidget::export_terrain_map(const QString &file_name, const QString &codec) const
 {
-	m_editor.export_terrain_map(file_name.toUtf8(), codec.toUtf8());
+	m_editor->export_terrain_map(file_name.toUtf8(), codec.toUtf8());
 }
 
 void ELGLWidget::import_terrain_map(const QString &file_name)
 {
-	m_editor.import_terrain_map(file_name.toUtf8());
+	m_editor->import_terrain_map(file_name.toUtf8());
 
-	emit can_undo(m_editor.get_can_undo());
+	emit can_undo(m_editor->get_can_undo());
 
 	updateGL();
 }

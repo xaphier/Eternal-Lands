@@ -82,7 +82,8 @@ namespace eternal_lands
 			}
 
 		public:
-			Editor();
+			Editor(const GlobalVarsSharedPtr &global_vars,
+				const FileSystemSharedPtr &file_system);
 			bool undo();
 			void set_terrain_albedo_map(const String &texture,
 				const Uint16 index, const Uint16 id);

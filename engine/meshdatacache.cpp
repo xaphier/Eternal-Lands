@@ -95,7 +95,7 @@ namespace eternal_lands
 			10, 41
 		};
 
-		void load_error_sphere(const bool use_simd,
+		void load_error_sphere(const String &name, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			VertexSemanticTypeSet semantics;
@@ -108,10 +108,9 @@ namespace eternal_lands
 			semantics.insert(vst_normal);
 			semantics.insert(vst_color);
 
-			mesh_data_tool.reset(new MeshDataTool(
-				String(UTF8("Sphere")), sphere_vertex_count,
-				sphere_index_count, 1, semantics,
-				std::numeric_limits<Uint32>::max(),
+			mesh_data_tool.reset(new MeshDataTool(name,
+				sphere_vertex_count, sphere_index_count, 1,
+				semantics, std::numeric_limits<Uint32>::max(),
 				pt_triangles, false, use_simd));
 
 			for (i = 0; i < sphere_vertex_count; ++i)
@@ -454,7 +453,7 @@ namespace eternal_lands
 					reader->get_name()));
 		}
 
-		bool load_plane(const String &name, const bool use_simd,
+		bool load_named_object(const String &name, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			if (name == UTF8("billboard"))
@@ -479,6 +478,13 @@ namespace eternal_lands
 			if (name == UTF8("grass"))
 			{
 				load_plane(name, 1.0f, 2, true, use_simd, true,
+					mesh_data_tool);
+				return true;
+			}
+
+			if (name == UTF8("sphere"))
+			{
+				load_error_sphere(name, use_simd,
 					mesh_data_tool);
 				return true;
 			}
@@ -567,7 +573,8 @@ namespace eternal_lands
 
 		try
 		{
-			if (load_plane(name, get_global_vars()->get_use_simd(),
+			if (load_named_object(name,
+				get_global_vars()->get_use_simd(),
 				mesh_data_tool))
 			{
 				return;
@@ -602,8 +609,8 @@ namespace eternal_lands
 			LOG_EXCEPTION(exception);
 		}
 
-		load_error_sphere(get_global_vars()->get_use_simd(),
-			mesh_data_tool);
+		load_error_sphere(String(UTF8("sphere")),
+			get_global_vars()->get_use_simd(), mesh_data_tool);
 	}
 
 	void MeshDataCache::get_mesh_data(const String &name,

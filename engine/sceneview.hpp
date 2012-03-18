@@ -143,6 +143,12 @@ namespace eternal_lands
 				m_focus = glm::vec4(focus, 1.0f);
 			}
 
+			inline void set_view_matrix(
+				const glm::mat4 &view_matrix)
+			{
+				m_view_matrix = view_matrix;
+			}
+
 			inline const glm::mat3x3
 				&get_current_view_rotation_matrix() const
 			{
