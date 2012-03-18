@@ -26,6 +26,22 @@ namespace eternal_lands
 	{
 	}
 
+	void EditorMapData::init(const FileSystemSharedPtr &file_system)
+	{
+		m_scene->init(file_system);
+	}
+
+	void EditorMapData::set_view_matrix(const glm::mat4 &view_matrix)
+	{
+		m_scene->set_view_matrix(view_matrix);
+	}
+
+	void EditorMapData::set_perspective(const float fov, const float aspect,
+		const float z_near, const float z_far)
+	{
+		m_scene->set_perspective(fov, aspect, z_near, z_far);
+	}
+
 	void EditorMapData::set_ambient(const glm::vec3 &color)
 	{
 		m_scene->set_ambient(color);

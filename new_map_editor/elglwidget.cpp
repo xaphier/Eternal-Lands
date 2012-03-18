@@ -214,19 +214,16 @@ void ELGLWidget::resizeGL(int width, int height)
 
 void ELGLWidget::rebuild_projection_frustum()
 {
-//	m_editor->get_scene().set_projectiv_frustum(m_zoom, m_width, m_height, 5.0f, 5000.0f);
+//	m_editor->set_perspective(m_zoom, m_width / m_height, 5.0f, 5000.0f);
 	updateGL();
 }
 
 void ELGLWidget::paintGL()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-/*
 	glm::mat4 view_matrix;
 	glm::vec3 dir, pos, offset;
 	float scale;
-	Selection selection;
+	SelectionType selection;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -241,9 +238,9 @@ void ELGLWidget::paintGL()
 	dir = m_rotate * dir;
 
 	view_matrix = glm::lookAt(pos, pos + dir, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
+//	m_editor->set_view_matrix(view_matrix);
 
-	m_editor->get_scene().set_view_matrix(view_matrix);
-
+/*
 	if (m_select)
 	{
 		m_editor->get_scene().select(m_select_pos, m_half_size);

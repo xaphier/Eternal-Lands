@@ -157,6 +157,25 @@ namespace eternal_lands
 			const String &get_terrain_dudv_map(const Uint16 id)
 				const;
 
+			inline void init(const FileSystemSharedPtr &file_system)
+			{
+				m_data.init(file_system);
+			}
+
+			inline void set_view_matrix(
+				const glm::mat4 &view_matrix)
+			{
+				m_data.set_view_matrix(view_matrix);
+			}
+
+			inline void set_perspective(const float fov,
+				const float aspect, const float z_near,
+				const float z_far)
+			{
+				m_data.set_perspective(fov, aspect, z_near,
+					z_far);
+			}
+
 			inline bool get_selected() const
 			{
 				return m_selected;

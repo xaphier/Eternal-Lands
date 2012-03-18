@@ -587,7 +587,7 @@ void MainWindow::open_map()
 	QString file_name;
 
 	file_name = QFileDialog::getOpenFileName(this, tr("Open File"), ".",
-		tr("EL-map (*.elm)"));
+		tr("EL-map (*.elm *.elm.gz *.elm.xz)"));
 
 	if (!file_name.isEmpty())
 	{
