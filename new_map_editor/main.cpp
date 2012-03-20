@@ -1,8 +1,6 @@
 #include <qapplication.h>
 #include <QMessageBox>
 #include "mainwindow.hpp"
-#include "exceptions.hpp"
-#include "logging.hpp"
 #include <boost/exception/diagnostic_information.hpp>
 
 class ElApplication: public QApplication
@@ -25,14 +23,12 @@ class ElApplication: public QApplication
 			}
 			catch (const boost::exception &exception)
 			{
-				LOG_EXCEPTION(exception);
 				QMessageBox::critical(0, "boost::exception",
 					boost::diagnostic_information(
 						exception).c_str());
 			}
 			catch (const std::exception &exception)
 			{
-				LOG_EXCEPTION(exception);
 				QMessageBox::critical(0, "std::exception",
 					exception.what());
 			}
@@ -64,13 +60,11 @@ int main(int argc, char *argv[])
 	}
 	catch (const boost::exception &exception)
 	{
-		LOG_EXCEPTION(exception);
 		QMessageBox::critical(0, "boost::exception",
 			boost::diagnostic_information(exception).c_str());
 	}
 	catch (const std::exception &exception)
 	{
-		LOG_EXCEPTION(exception);
 		QMessageBox::critical(0, "std::exception", exception.what());
 	}
 

@@ -327,33 +327,6 @@ namespace eternal_lands
 		return String(result);
 	}
 
-	void FileSystem::add_dirs(const String &config_dir,
-		const Uint16 major, const Uint16 minor,	const Uint16 release)
-	{
-		StringStream str;
-		StringType update_dir, custom_dir;
-
-		m_archives.push_back(new DirArchive(config_dir));
-
-		str << major << "_" << minor << "_" << release;
-
-		update_dir = config_dir;
-		update_dir += "/updates";
-		update_dir += str.str();
-
-		m_archives.push_back(new DirArchive(String(update_dir)));
-
-		update_dir = config_dir;
-		update_dir += "/updates/2_0_alpha";
-
-		m_archives.push_back(new DirArchive(String(update_dir)));
-
-		custom_dir = config_dir;
-		custom_dir += "/custom";
-
-		m_archives.push_back(new DirArchive(String(custom_dir)));
-	}
-
 	void FileSystem::add_dir(const String &dir_name)
 	{
 		m_archives.push_back(new DirArchive(dir_name));
@@ -589,6 +562,11 @@ namespace eternal_lands
 		}
 
 		return String(result);
+	}
+
+	void FileSystem::clear()
+	{
+		m_archives.clear();
 	}
 
 }

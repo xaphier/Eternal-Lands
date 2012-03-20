@@ -61,8 +61,6 @@ namespace eternal_lands
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
 			FreeIdsManagerSharedPtr m_free_ids;
-			AbstractMeshSharedPtr m_quad;
-			GlslProgramSharedPtr m_single_color;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
 			float m_time;
@@ -95,14 +93,6 @@ namespace eternal_lands
 			void draw_depth();
 			void draw_default();
 			void update_shadow_map();
-			void draw_stencil_quad(const glm::vec3 &color,
-				const Uint16 stencil);
-
-			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
-			{
-				return m_global_vars;
-			}
 
 		protected:
 			virtual void intersect(const Frustum &frustum,
@@ -111,6 +101,11 @@ namespace eternal_lands
 				LightVisitor &visitor) const;
 			virtual void intersect_shadow(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
+
+			inline void set_map(const MapSharedPtr &map)
+			{
+				m_map = map;
+			}
 
 		public:
 			/**
@@ -146,7 +141,7 @@ namespace eternal_lands
 				const float density);
 			void clear();
 			void draw();
-			void init(const FileSystemSharedPtr &file_system);
+			void init();
 			void cull();
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
@@ -273,6 +268,18 @@ namespace eternal_lands
 				const
 			{
 				return m_free_ids;
+			}
+
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
+			{
+				return m_global_vars;
+			}
+
+			inline const FileSystemSharedPtr &get_file_system()
+				const
+			{
+				return m_file_system;
 			}
 
 	};

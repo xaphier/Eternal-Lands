@@ -16,6 +16,7 @@ class ELGLWidget: public QGLWidget
 		boost::scoped_ptr<Editor> m_editor;
 		GlobalVarsSharedPtr m_global_vars;
 		FileSystemSharedPtr m_file_system;
+		QStringList m_dirs;
 		glm::mat3 m_rotate;
 		glm::vec4 m_color;
 		glm::vec3 m_pos;
@@ -108,6 +109,7 @@ class ELGLWidget: public QGLWidget
 		static void get_file_extensions_filter(QString &filter);
 		static void get_file_extensions_filter(QString &filter, QString &default_extension,
 			const QString &codec);
+		void set_dirs(const QStringList &dirs);
 
 		inline Qt::MouseButton get_click_button() const
 		{
@@ -137,6 +139,11 @@ class ELGLWidget: public QGLWidget
 		inline void set_swap_wheel_zoom(const bool swap_wheel_zoom)
 		{
 			m_swap_wheel_zoom = swap_wheel_zoom;
+		}
+
+		inline const QStringList &get_dirs() const
+		{
+			return m_dirs;
 		}
 
 	public slots:

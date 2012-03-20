@@ -322,11 +322,11 @@
         <normaloff>:/icons/folder.png</normaloff>:/icons/folder.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>&amp;Archives</string>
+       <string>&amp;Dirs</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
-        <widget class="QListView" name="archives"/>
+        <widget class="QListView" name="dirs"/>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -344,7 +344,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="archives_clear">
+          <widget class="QPushButton" name="dirs_clear">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -361,7 +361,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="archives_add_dir">
+          <widget class="QPushButton" name="dirs_add">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -369,7 +369,7 @@
             </size>
            </property>
            <property name="text">
-            <string>Add dir</string>
+            <string>Add</string>
            </property>
            <property name="icon">
             <iconset resource="icons/resourcen.qrc">
@@ -378,24 +378,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="archives_add_archive">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Add archive</string>
-           </property>
-           <property name="icon">
-            <iconset resource="icons/resourcen.qrc">
-             <normaloff>:/icons/gtk-add.png</normaloff>:/icons/gtk-add.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="archives_remove">
+          <widget class="QPushButton" name="dirs_remove">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -412,7 +395,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="archives_up">
+          <widget class="QPushButton" name="dirs_up">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -429,7 +412,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="archives_down">
+          <widget class="QPushButton" name="dirs_down">
            <property name="minimumSize">
             <size>
              <width>0</width>

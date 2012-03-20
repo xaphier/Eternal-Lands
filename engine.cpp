@@ -575,10 +575,32 @@ extern "C" void init_file_system()
 {
 	TRY_BLOCK
 
+	el::StringStream str;
+	el::StringType config_dir, update_dir, custom_dir;
+
 	file_system.reset(new el::FileSystem());
-	file_system->add_dirs(
-		el::String(el::string_to_utf8(get_path_config_base())),
-		VER_MAJOR, VER_MINOR, VER_RELEASE);
+
+	config_dir = el::string_to_utf8(get_path_config_base());
+
+	file_system->add_dir(el::String(config_dir));
+
+	str << VER_MAJOR << UTF8("_") << VER_MINOR << UTF8("_") << VER_RELEASE;
+
+	update_dir = config_dir;
+	update_dir += UTF8("/updates");
+	update_dir += str.str();
+
+	file_system->add_dir(el::String(update_dir));
+
+	update_dir = config_dir;
+	update_dir += UTF8("/updates/2_0_alpha");
+
+	file_system->add_dir(el::String(update_dir));
+
+	custom_dir = config_dir;
+	custom_dir += UTF8("/custom");
+
+	file_system->add_dir(el::String(custom_dir));
 
 	CATCH_BLOCK
 }
@@ -623,7 +645,7 @@ extern "C" void init_engine()
 	lua_setfield(lua->get(), -2, "__index");
 
 	scene.reset(new el::Scene(global_vars, file_system));
-	scene->init(file_system);
+	scene->init();
 
 	CHECK_GL_ERROR();
 #ifdef	USE_GL_DEBUG_OUTPUT

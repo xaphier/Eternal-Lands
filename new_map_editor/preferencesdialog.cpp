@@ -13,11 +13,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent)
 	QObject::connect(ok_button, SIGNAL(clicked()), this, SLOT(set_action_shortcuts()));
 	QObject::connect(action_list, SIGNAL(itemSelectionChanged()), this, SLOT(action_changed()));
 	QObject::connect(textures_remove, SIGNAL(clicked()), this, SLOT(remove_texture()));
-	QObject::connect(archives_add_dir, SIGNAL(clicked()), this, SLOT(add_dir()));
-	QObject::connect(archives_add_archive, SIGNAL(clicked()), this, SLOT(add_archive()));
-	QObject::connect(archives_remove, SIGNAL(clicked()), this, SLOT(remove_archive()));
-	QObject::connect(archives_up, SIGNAL(clicked()), this, SLOT(up_archive()));
-	QObject::connect(archives_down, SIGNAL(clicked()), this, SLOT(down_archive()));
+	QObject::connect(dirs_add, SIGNAL(clicked()), this, SLOT(add_dir()));
+	QObject::connect(dirs_remove, SIGNAL(clicked()), this, SLOT(remove_dir()));
+	QObject::connect(dirs_up, SIGNAL(clicked()), this, SLOT(up_dir()));
+	QObject::connect(dirs_down, SIGNAL(clicked()), this, SLOT(down_dir()));
 
 	click_button->addItem(mouse_button_to_str(Qt::LeftButton));
 	click_button->addItem(mouse_button_to_str(Qt::MidButton));
@@ -33,12 +32,12 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent)
 	m_textures_model = new QStringListModel(textures);
 	textures->setModel(m_textures_model);
 
-	m_archives_model = new QStringListModel(archives);
-	archives->setModel(m_archives_model);
+	m_dirs_model = new QStringListModel(dirs);
+	dirs->setModel(m_dirs_model);
 
-	m_archives_model->setStringList(m_archives);
+	m_dirs_model->setStringList(m_dirs);
 
-	check_archive_enable();
+	check_dir_enable();
 }
 
 void PreferencesDialog::add_dir()
@@ -49,94 +48,79 @@ void PreferencesDialog::add_dir()
 
 	if (!dir.isEmpty())
 	{
-		m_archives.append(dir);
+		m_dirs.append(dir);
 
-		m_archives_model->setStringList(m_archives);
+		m_dirs_model->setStringList(m_dirs);
 	}
 }
 
-void PreferencesDialog::add_archive()
+void PreferencesDialog::remove_dir()
 {
-	QString file_name;
-
-	file_name = QFileDialog::getOpenFileName(this, "Select archive", "",
-		"el archive file(*.ela)");
-
-	if (!file_name.isEmpty())
+	if (dirs->currentIndex().isValid())
 	{
-		m_archives.append(file_name);
+		m_dirs.removeAt(dirs->currentIndex().row());
 
-		m_archives_model->setStringList(m_archives);
+		m_dirs_model->setStringList(m_dirs);
+		check_dir_enable();
 	}
 }
 
-void PreferencesDialog::remove_archive()
-{
-	if (archives->currentIndex().isValid())
-	{
-		m_archives.removeAt(archives->currentIndex().row());
-
-		m_archives_model->setStringList(m_archives);
-		check_archive_enable();
-	}
-}
-
-void PreferencesDialog::up_archive()
+void PreferencesDialog::up_dir()
 {
 	int index;
 
-	if (archives->currentIndex().isValid())
+	if (dirs->currentIndex().isValid())
 	{
-		index = archives->currentIndex().row();
+		index = dirs->currentIndex().row();
 
 		if (index > 0)
 		{
-			m_archives.move(index, index - 1);
+			m_dirs.move(index, index - 1);
 
-			m_archives_model->setStringList(m_archives);
+			m_dirs_model->setStringList(m_dirs);
 
-			check_archive_enable();
+			check_dir_enable();
 		}
 	}
 }
 
-void PreferencesDialog::down_archive()
+void PreferencesDialog::down_dir()
 {
 	int index;
 
-	if (archives->currentIndex().isValid())
+	if (dirs->currentIndex().isValid())
 	{
-		index = archives->currentIndex().row();
+		index = dirs->currentIndex().row();
 
-		if (index < (m_archives.size() - 1))
+		if (index < (m_dirs.size() - 1))
 		{
-			m_archives.move(index, index + 1);
+			m_dirs.move(index, index + 1);
 
-			m_archives_model->setStringList(m_archives);
+			m_dirs_model->setStringList(m_dirs);
 
-			check_archive_enable();
+			check_dir_enable();
 		}
 	}
 }
 
-void PreferencesDialog::check_archive_enable()
+void PreferencesDialog::check_dir_enable()
 {
 	int index;
 
-	if (archives->currentIndex().isValid())
+	if (dirs->currentIndex().isValid())
 	{
-		index = archives->currentIndex().row();
+		index = dirs->currentIndex().row();
 
-		archives_remove->setEnabled(true);
+		dirs_remove->setEnabled(true);
 
-		archives_up->setEnabled(index > 0);
-		archives_down->setEnabled(index < (m_archives.size() - 1));
+		dirs_up->setEnabled(index > 0);
+		dirs_down->setEnabled(index < (m_dirs.size() - 1));
 	}
 	else
 	{
-		archives_remove->setEnabled(false);
-		archives_up->setEnabled(false);
-		archives_down->setEnabled(false);
+		dirs_remove->setEnabled(false);
+		dirs_up->setEnabled(false);
+		dirs_down->setEnabled(false);
 	}
 }
 
@@ -176,7 +160,8 @@ void PreferencesDialog::action_changed()
 {
 	if (action_list->selectedItems().size() == 1)
 	{
-		m_key_sequence = QKeySequence(action_list->selectedItems()[0]->text(1));
+		m_key_sequence =
+			QKeySequence(action_list->selectedItems()[0]->text(1));
 
 		set_shortcut();
 	}
@@ -212,7 +197,8 @@ void PreferencesDialog::action_default()
 
 		index = item->type();
 
-		m_key_sequence = QKeySequence::mnemonic(m_actions[index]->text());
+		m_key_sequence =
+			QKeySequence::mnemonic(m_actions[index]->text());
 
 		set_shortcut();
 	}
@@ -241,14 +227,16 @@ void PreferencesDialog::clear_shortcuts()
 	set_shortcut();
 }
 
-int PreferencesDialog::translate_modifiers(Qt::KeyboardModifiers state, const QString &text) const
+int PreferencesDialog::translate_modifiers(Qt::KeyboardModifiers state,
+	const QString &text) const
 {
 	int result;
 
 	result = 0;
 
-	if ((state & Qt::ShiftModifier) && ((text.size() == 0) || !text.at(0).isPrint() ||
-		text.at(0).isLetter() || text.at(0).isSpace()))
+	if ((state & Qt::ShiftModifier) && ((text.size() == 0) ||
+		!text.at(0).isPrint() || text.at(0).isLetter() ||
+		text.at(0).isSpace()))
 	{
 		result |= Qt::SHIFT;
 	}
@@ -284,7 +272,8 @@ void PreferencesDialog::handle_key_event(QKeyEvent *key_event)
 		return;
 	}
 
-	next_key |= translate_modifiers(key_event->modifiers(), key_event->text());
+	next_key |= translate_modifiers(key_event->modifiers(),
+		key_event->text());
 
 	m_key_sequence = QKeySequence(next_key);
 
@@ -354,12 +343,14 @@ bool PreferencesDialog::get_swap_wheel_zoom() const
 
 void PreferencesDialog::set_click_button(const Qt::MouseButton value)
 {
-	click_button->setCurrentIndex(click_button->findText(mouse_button_to_str(value)));
+	click_button->setCurrentIndex(click_button->findText(
+		mouse_button_to_str(value)));
 }
 
 void PreferencesDialog::set_wheel_zoom_x10(const Qt::KeyboardModifier value)
 {
-	wheel_zoom_x10->setCurrentIndex(wheel_zoom_x10->findText(key_mod_to_str(value)));
+	wheel_zoom_x10->setCurrentIndex(wheel_zoom_x10->findText(
+		key_mod_to_str(value)));
 }
 
 void PreferencesDialog::set_swap_wheel_zoom(const bool value)
@@ -495,6 +486,13 @@ void PreferencesDialog::set_toolbar_icon_size(const QSize &size)
 	}
 
 	icon_size_medium->setChecked(true);
+}
+
+void PreferencesDialog::set_dirs(const QStringList &dirs)
+{
+	m_dirs = dirs;
+	m_dirs_model->setStringList(m_dirs);
+	check_dir_enable();
 }
 
 void PreferencesDialog::set_textures(const QStringList &textures)

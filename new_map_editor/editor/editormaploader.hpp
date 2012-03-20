@@ -5,8 +5,8 @@
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_c299b4bb_40d2_4781_a02d_4fd650012aca
-#define	UUID_c299b4bb_40d2_4781_a02d_4fd650012aca
+#ifndef	UUID_a7e21ae9_d21e_423a_9bf8_e15b5cb3fc80
+#define	UUID_a7e21ae9_d21e_423a_9bf8_e15b5cb3fc80
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
@@ -22,6 +22,8 @@
  */
 namespace eternal_lands
 {
+
+	class EditorMapData;
 
 	/**
 	 * @brief @c class for loading maps.
@@ -42,11 +44,58 @@ namespace eternal_lands
 			const MaterialDescriptionCacheSharedPtr
 				m_material_description_cache;
 			ReaderSharedPtr m_reader;
+			EditorMapData &m_data;
 			MapSharedPtr m_map;
 			StringVector m_material_names;
 			StringSet m_harvestables, m_entrables;
 
 		protected:
+			inline const CodecManagerSharedPtr &get_codec_manager()
+				const
+			{
+				return m_codec_manager;
+			}
+
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const
+			{
+				return m_global_vars;
+			}
+
+			inline const MeshBuilderSharedPtr &get_mesh_builder()
+				const
+			{
+				return m_mesh_builder;
+			}
+
+			inline const MeshCacheSharedPtr &get_mesh_cache() const
+			{
+				return m_mesh_cache;
+			}
+
+			inline const MeshDataCacheSharedPtr
+				&get_mesh_data_cache() const
+			{
+				return m_mesh_data_cache;
+			}
+
+			inline const EffectCacheSharedPtr &get_effect_cache()
+				const
+			{
+				return m_effect_cache;
+			}
+
+			inline const TextureCacheSharedPtr &get_texture_cache()
+				const
+			{
+				return m_texture_cache;
+			}
+
+			inline const ReaderSharedPtr &get_reader() const
+			{
+				return m_reader;
+			}
+
 			inline const MaterialDescriptionCacheSharedPtr
 				&get_material_description_cache() const
 			{
@@ -69,8 +118,7 @@ namespace eternal_lands
 				const String &blend, const String &height,
 				const String &dudv,
 				const glm::vec3 &translation,
-				const glm::vec3 &rotation_angles,
-				const float scale);
+				const glm::vec2 &dudv_scale);
 			virtual void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile);
 			virtual void set_height(const Uint16 x, const Uint16 y,
@@ -78,6 +126,10 @@ namespace eternal_lands
 			virtual void set_ambient(const glm::vec3 &ambient);
 			virtual void set_height_map_size(const Uint16 width,
 				const Uint16 height);
+			virtual void set_tile_map_size(const Uint16 width,
+				const Uint16 height);
+			virtual void set_dungeon(const bool dungeon);
+			virtual void instance();
 
 		public:
 			/**
@@ -94,17 +146,18 @@ namespace eternal_lands
 				const TextureCacheSharedPtr &texture_cache,
 				const MaterialDescriptionCacheSharedPtr
 					&material_description_cache,
-				const FreeIdsManagerSharedPtr &free_ids);
+				const FreeIdsManagerSharedPtr &free_ids,
+				EditorMapData &data);
 
 			/**
 			 * Default destructor.
 			 */
 			virtual ~EditorMapLoader() throw();
-
-			MapSharedPtr load(const String &name);
+			void load(const String &name);
+			MapSharedPtr get_map(const String &name);
 
 	};
 
 }
 
-#endif	/* UUID_c299b4bb_40d2_4781_a02d_4fd650012aca */
+#endif	/* UUID_a7e21ae9_d21e_423a_9bf8_e15b5cb3fc80 */

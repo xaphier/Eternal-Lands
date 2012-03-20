@@ -13,17 +13,18 @@ class PreferencesDialog: public QDialog, public Ui::Preferences
 		QList<QAction*> m_actions;
 		QKeySequence m_key_sequence;
 		QStringListModel* m_textures_model;
-		QStringListModel* m_archives_model;
+		QStringListModel* m_dirs_model;
 		QStringList m_textures;
-		QStringList m_archives;
+		QStringList m_dirs;
 
 		bool eventFilter(QObject *obj, QEvent *event);
 		void handle_key_event(QKeyEvent *key_event);
-		int translate_modifiers(Qt::KeyboardModifiers state, const QString &text) const;
+		int translate_modifiers(Qt::KeyboardModifiers state,
+			const QString &text) const;
 		void set_shortcut();
 		void key_sequence_changed();
 		void remove_texture_enable();
-		void check_archive_enable();
+		void check_dir_enable();
 
 	public:
 		PreferencesDialog(QWidget *parent = 0);
@@ -37,10 +38,16 @@ class PreferencesDialog: public QDialog, public Ui::Preferences
 		void set_swap_wheel_zoom(const bool value);
 		void set_toolbar_icon_size(const QSize &size);
 		void set_textures(const QStringList &textures);
+		void set_dirs(const QStringList &dirs);
 
 		inline const QStringList &get_textures() const
 		{
 			return m_textures;
+		}
+
+		inline const QStringList &get_dirs() const
+		{
+			return m_dirs;
 		}
 
 		static Qt::MouseButton str_to_mouse_button(const QString &str);
@@ -56,10 +63,9 @@ class PreferencesDialog: public QDialog, public Ui::Preferences
 		void set_action_shortcuts();
 		void remove_texture();
 		void add_dir();
-		void add_archive();
-		void remove_archive();
-		void up_archive();
-		void down_archive();
+		void remove_dir();
+		void up_dir();
+		void down_dir();
 
 };
 

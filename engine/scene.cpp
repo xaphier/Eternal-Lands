@@ -184,17 +184,11 @@ namespace eternal_lands
 		m_fog = glm::vec4(color, -density * density * 1.442695f);
 	}
 
-	void Scene::init(const FileSystemSharedPtr &file_system)
+	void Scene::init()
 	{
 		glGenQueries(m_querie_ids.size(), m_querie_ids.data());
 
-		m_scene_resources.init(file_system);
-
-		m_scene_resources.get_mesh_cache()->get_mesh(
-			String(UTF8("quad")), m_quad);
-
-		m_single_color = boost::make_shared<GlslProgram>(file_system,
-			String(UTF8("shaders/single_color.xml")));
+		m_scene_resources.init(get_file_system());
 	}
 
 	void Scene::update_shadow_map()
@@ -440,6 +434,24 @@ namespace eternal_lands
 		intersect(frustum, m_visible_lights);
 
 		m_visible_lights.sort(glm::vec3(m_scene_view.get_focus()));
+
+		std::cout << "m_visible_objects.get_objects().size(): ";
+		std::cout << m_visible_objects.get_objects().size();
+		std::cout << std::endl;
+
+		std::cout << "m_scene_view.get_projection_view_matrix()[0]: ";
+		std::cout << glm::to_string(
+			m_scene_view.get_projection_view_matrix()[0]);
+		std::cout << std::endl;
+
+		std::cout << "m_scene_view.get_view_matrix(): ";
+		std::cout << glm::to_string(m_scene_view.get_view_matrix());
+		std::cout << std::endl;
+
+		std::cout << "m_scene_view.get_projection_matrix()[0]: ";
+		std::cout << glm::to_string(
+			m_scene_view.get_projection_matrix()[0]);
+		std::cout << std::endl;
 	}
 
 	void Scene::cull_all_shadows()
@@ -1051,24 +1063,6 @@ namespace eternal_lands
 		m_frame_id++;
 	}
 
-	void Scene::draw_stencil_quad(const glm::vec3 &color,
-		const Uint16 stencil)
-	{
-		m_state_manager.switch_stencil_test(true);
-
-		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-		glStencilFunc(GL_EQUAL, stencil, 0xFFFFFFFF);
-
-		m_state_manager.switch_program(m_single_color);
-
-		m_state_manager.get_program()->set_variant_parameter(
-			String(UTF8("color")), color);
-
-		m_state_manager.switch_mesh(m_quad);
-
-		m_state_manager.draw(0, 1);
-	}
-
 	void Scene::draw()
 	{
 		StateManagerUtil state(m_state_manager);
@@ -1260,7 +1254,7 @@ namespace eternal_lands
 			m_scene_resources.get_material_description_cache(),
 			m_free_ids));
 
-		m_map = map_loader->load(name);
+		set_map(map_loader->load(name));
 	}
 
 	const ParticleDataVector &Scene::get_particles() const

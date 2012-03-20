@@ -37,9 +37,6 @@ namespace eternal_lands
 		public:
 			FileSystem();
 			~FileSystem() throw();
-			void add_dirs(const String &config_dir,
-				const Uint16 major, const Uint16 minor,
-				const Uint16 release);
 			void add_dir(const String &dir_name);
 			void add_zip(const String &zip_name);
 			void add_zip(const String &zip_name,
@@ -52,6 +49,7 @@ namespace eternal_lands
 			bool get_file_if_readable(const String &file_name,
 				ReaderSharedPtr &reader);
 			String get_file_string(const String &file_name);
+			void clear();
 			static String get_file_name(const String &file_name);
 			static String get_dir_name(const String &file_name);
 			static String get_strip_relative_path(

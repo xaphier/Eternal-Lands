@@ -17,6 +17,7 @@
 #include "undo/groundtilemodification.hpp"
 #include "scene.hpp"
 #include "codec/codecmanager.hpp"
+#include "logging.hpp"
 #include "image.hpp"
 
 namespace eternal_lands
@@ -41,6 +42,8 @@ namespace eternal_lands
 		m_random_rotation[2] = false;
 		m_random_scale = false;
 		m_selected = false;
+
+		init_logging("log");
 	}
 
 	bool Editor::undo()
@@ -443,7 +446,7 @@ namespace eternal_lands
 */
 	void Editor::load_map(const String &name)
 	{
-//		m_data.load(name);
+		m_data.load_map(name);
 
 		m_undo.clear();
 	}
@@ -706,4 +709,15 @@ namespace eternal_lands
 		m_undo.clear();
 	}
 */
+	void Editor::draw()
+	{
+		m_data.draw();
+	}
+
+	void Editor::select(const Uint16Array2 &position,
+		const Uint16Array2 &half_size)
+	{
+		m_data.select(position, half_size);
+	}
+
 }

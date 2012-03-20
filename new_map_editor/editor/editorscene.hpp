@@ -23,13 +23,7 @@
 namespace eternal_lands
 {
 
-	enum LightModeType
-	{
-		lmt_disabled = 0,
-		lmt_small = 1,
-		lmt_selected = 2,
-		lmt_radius = 3
-	};
+	class EditorMapData;
 
 	/**
 	 * @brief @c class for scenes used in the editor.
@@ -58,6 +52,7 @@ namespace eternal_lands
 			virtual ~EditorScene() throw();
 			virtual void add_light(const LightData &light_data);
 			virtual void remove_light(const Uint32 id);
+			void load_map(const String &name, EditorMapData &data);
 
 	};
 

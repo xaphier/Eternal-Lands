@@ -12,6 +12,7 @@
 #include "particledata.hpp"
 #include "image.hpp"
 #include "editorscene.hpp"
+#include "freeidsmanager.hpp"
 
 namespace eternal_lands
 {
@@ -26,9 +27,9 @@ namespace eternal_lands
 	{
 	}
 
-	void EditorMapData::init(const FileSystemSharedPtr &file_system)
+	void EditorMapData::init()
 	{
-		m_scene->init(file_system);
+		m_scene->init();
 	}
 
 	void EditorMapData::set_view_matrix(const glm::mat4 &view_matrix)
@@ -293,12 +294,34 @@ namespace eternal_lands
 
 	Uint32 EditorMapData::get_free_object_id() const
 	{
-		return 0;
+		return m_scene->get_free_ids()->get_next_free_object_id(
+			it_3d_object);
 	}
 
 	Uint32 EditorMapData::get_free_light_id() const
 	{
-		return 0;
+		return m_scene->get_free_ids()->get_next_free_light_id();
+	}
+
+	void EditorMapData::load_map(const String &name)
+	{
+		m_scene->load_map(name, *this);
+	}
+
+	void EditorMapData::draw()
+	{
+		m_scene->cull();
+		m_scene->draw();
+	}
+
+	void EditorMapData::select(const Uint16Array2 &position,
+		const Uint16Array2 &half_size)
+	{
+		Uint32 id;
+		SelectionType selection;
+
+		id = m_scene->pick(glm::vec2(position[0], position[1]),
+			glm::vec2(half_size[0], half_size[1]), selection);
 	}
 
 }

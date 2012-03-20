@@ -186,7 +186,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	set_light_color(glm::vec3(0.0f));
 
-	read_settings();
+	load_settings();
 
 	m_timer = new QTimer(this);
 	connect(m_timer, SIGNAL(timeout()), el_gl_widget, SLOT(updateGL()));
@@ -202,6 +202,13 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+	save_settings();
+
+	QMainWindow::closeEvent(event);
+}
+
+void MainWindow::save_settings()
+{
 	QSettings settings;
 
 	settings.beginGroup("window");
@@ -211,12 +218,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	settings.endGroup();
 	save_shortcuts(settings);
 	save_mouse_settings(settings);
+	save_dirs_settings(settings);
 	save_textures_settings(settings);
-
-	QMainWindow::closeEvent(event);
 }
 
-void MainWindow::read_settings()
+void MainWindow::load_settings()
 {
 	QSettings settings;
 
@@ -228,6 +234,7 @@ void MainWindow::read_settings()
 
 	load_shortcuts(settings);
 	load_mouse_settings(settings);
+	load_dirs_settings(settings);
 	load_textures_settings(settings);
 }
 
@@ -587,7 +594,7 @@ void MainWindow::open_map()
 	QString file_name;
 
 	file_name = QFileDialog::getOpenFileName(this, tr("Open File"), ".",
-		tr("EL-map (*.elm *.elm.gz *.elm.xz)"));
+		tr("EL-map (*.elm *.elm.gz *.elm.xz); All files (*.*)"));
 
 	if (!file_name.isEmpty())
 	{
@@ -721,6 +728,7 @@ void MainWindow::change_preferences()
 	m_preferences->set_wheel_zoom_x10(el_gl_widget->get_wheel_zoom_x10());
 	m_preferences->set_swap_wheel_zoom(el_gl_widget->get_swap_wheel_zoom());
 	m_preferences->set_toolbar_icon_size(tool_bar->iconSize());
+	m_preferences->set_dirs(el_gl_widget->get_dirs());
 	m_preferences->set_textures(m_textures);
 
 	if (m_preferences->exec() == QDialog::Accepted)
@@ -729,7 +737,9 @@ void MainWindow::change_preferences()
 		el_gl_widget->set_wheel_zoom_x10(m_preferences->get_wheel_zoom_x10());
 		el_gl_widget->set_swap_wheel_zoom(m_preferences->get_swap_wheel_zoom());
 		tool_bar->setIconSize(m_preferences->get_toolbar_icon_size());
+		el_gl_widget->set_dirs(m_preferences->get_dirs());
 		set_textures(m_preferences->get_textures());
+		save_settings();
 	}
 }
 
@@ -893,6 +903,44 @@ void MainWindow::load_mouse_settings(QSettings &settings)
 	el_gl_widget->set_swap_wheel_zoom(settings.value("Swap wheel zoom", false).toBool());
 	
 	settings.endGroup();
+}
+
+void MainWindow::save_dirs_settings(QSettings &settings)
+{
+	QStringList dirs;
+	int i, size;
+
+	dirs = el_gl_widget->get_dirs();
+
+	size = dirs.size();
+
+	settings.beginWriteArray("dirs");
+
+	for (i = 0; i < size; ++i)
+	{
+		settings.setArrayIndex(i);
+		settings.setValue("dir", dirs.at(i));
+	}
+
+	settings.endArray();
+}
+
+void MainWindow::load_dirs_settings(QSettings &settings)
+{
+	QStringList dirs;
+	int i, size;
+
+	size = settings.beginReadArray("dirs");
+
+	for (i = 0; i < size; ++i)
+	{
+		settings.setArrayIndex(i);
+		dirs.append(settings.value("dir").toString());
+	}
+
+	settings.endArray();
+
+	el_gl_widget->set_dirs(dirs);
 }
 
 void MainWindow::set_textures(const QStringList &textures)

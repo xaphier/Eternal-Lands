@@ -5,8 +5,8 @@
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_6a19b8b7_ab72_4de0_a4a6_34c9d01035b7
-#define	UUID_6a19b8b7_ab72_4de0_a4a6_34c9d01035b7
+#ifndef	UUID_dd6047da_2207_47c6_8553_f0c2b368da93
+#define	UUID_dd6047da_2207_47c6_8553_f0c2b368da93
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
@@ -24,6 +24,8 @@
 namespace eternal_lands
 {
 
+	class EditorScene;
+
 	/**
 	 * @brief @c class for maps.
 	 *
@@ -35,7 +37,7 @@ namespace eternal_lands
 			std::map<Uint32, EditorObjectData> m_objects;
 			std::map<Uint32, LightData> m_lights;
 			std::map<Uint32, ParticleData> m_particles;
-			boost::scoped_ptr<Scene> m_scene;
+			boost::scoped_ptr<EditorScene> m_scene;
 			ImageSharedPtr m_terrain_heights;
 			ImageSharedPtr m_terrain_blend_values;
 			Uint16MultiArray2 m_heights;
@@ -90,14 +92,18 @@ namespace eternal_lands
 				const;
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
-			void init(const FileSystemSharedPtr &file_system);
+			void init();
 			void set_view_matrix(const glm::mat4 &view_matrix);
 			void set_perspective(const float fov,
 				const float aspect, const float z_near,
 				const float z_far);
+			void load_map(const String &name);
+			void draw();
+			void select(const Uint16Array2 &position,
+				const Uint16Array2 &half_size);
 
 	};
 
 }
 
-#endif	/* UUID_6a19b8b7_ab72_4de0_a4a6_34c9d01035b7 */
+#endif	/* UUID_dd6047da_2207_47c6_8553_f0c2b368da93 */

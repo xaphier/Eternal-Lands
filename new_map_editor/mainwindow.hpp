@@ -48,7 +48,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void set_default_mode();
 		void do_save();
 		void init_actions();
-		void read_settings();
+		void save_settings();
+		void load_settings();
 		void save_shortcuts(QSettings &settings);
 		void load_shortcuts(QSettings &settings);
 		void save_mouse_settings(QSettings &settings);
@@ -58,6 +59,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void set_textures(const QStringList &textures);
 		void set_blend(const BlendType value);
 		void set_selection(const SelectionType value);
+		void save_dirs_settings(QSettings &settings);
+		void load_dirs_settings(QSettings &settings);
 
 	private slots:
 		void update_object();

@@ -7,10 +7,12 @@
 
 #include "editormaploader.hpp"
 #include "map.hpp"
+#include "editormapdata.hpp"
 #include "lightdata.hpp"
 #include "particledata.hpp"
 #include "materialdescription.hpp"
 #include "materialdescriptioncache.hpp"
+#include "editorobjectdata.hpp"
 
 namespace eternal_lands
 {
@@ -26,13 +28,14 @@ namespace eternal_lands
 		const TextureCacheSharedPtr &texture_cache,
 		const MaterialDescriptionCacheSharedPtr
 			&material_description_cache,
-		const FreeIdsManagerSharedPtr &free_ids):
-		AbstractMapLoader(file_system, free_ids),
+		const FreeIdsManagerSharedPtr &free_ids,
+		EditorMapData &data): AbstractMapLoader(file_system, free_ids),
 		m_codec_manager(codec_manager), m_global_vars(global_vars),
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_mesh_data_cache(mesh_data_cache),
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_material_description_cache(material_description_cache)
+		m_material_description_cache(material_description_cache),
+		m_data(data)
 	{
 	}
 
@@ -46,42 +49,44 @@ namespace eternal_lands
 		const Uint32 id, const SelectionType selection,
 		const BlendType blend, const StringVector &material_names)
 	{
-		m_map->add_object(get_object_data(translation, rotation_angles,
-			name, scale, id, selection, blend));
+		m_data.add_object(EditorObjectData(translation, rotation_angles,
+			material_names, name, scale, transparency, id,
+			selection, blend));
 	}
 
 	void EditorMapLoader::add_light(const glm::vec3 &position,
 		const glm::vec3 &color, const float radius, const Uint32 id)
 	{
-		m_map->add_light(LightData(position, color, radius, id));
+		m_data.add_light(LightData(position, color, radius, id));
 	}
 
 	void EditorMapLoader::add_particle(const glm::vec3 &position,
 		const String &name, const Uint32 id)
 	{
-		m_map->add_particle(ParticleData(position, name, id));
+		m_data.add_particle(ParticleData(position, name, id));
 	}
 
 	void EditorMapLoader::add_terrain(const StringArray4 &albedo,
 		const String &blend, const String &height, const String &dudv,
-		const glm::vec3 &translation, const glm::vec3 &rotation_angles,
-		const float scale)
+		const glm::vec3 &translation, const glm::vec2 &dudv_scale)
 	{
-		AbstractTerrainManagerAutoPtr terrain;
-		Transformation transformation;
 /*
+		AbstractTerrainManagerAutoPtr terrain;
+
 		terrain.reset(new SimpleTerrainManager(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_effect_cache(),
 			get_texture_cache(), transformation, albedo, blend,
 			height, dudv));
-*/
+
 		m_map->add_terrain(terrain);
+*/
 	}
 
 	void EditorMapLoader::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{
+/*
 		MaterialDescriptionVector materials;
 		StringStream str;
 		String file_name;
@@ -136,23 +141,53 @@ namespace eternal_lands
 		m_map->add_object(ObjectData(transformation,
 			String(UTF8("plane_4")), 0.0f, id, st_none,
 			bt_disabled), materials);
+*/
 	}
 
 	void EditorMapLoader::set_height(const Uint16 x, const Uint16 y,
 		const Uint16 height)
 	{
-		m_map->set_height(x, y, height);
+//		m_data.set_height(x, y, height);
 	}
 
 	void EditorMapLoader::set_ambient(const glm::vec3 &ambient)
 	{
-		m_map->set_ambient(ambient);
+		m_data.set_ambient(ambient);
 	}
 
 	void EditorMapLoader::set_height_map_size(const Uint16 width,
 		const Uint16 height)
 	{
-		m_map->set_height_map_size(width, height);
+//		m_data.set_height_map_size(width, height);
+	}
+
+	void EditorMapLoader::set_tile_map_size(const Uint16 width,
+		const Uint16 height)
+	{
+//		m_data.set_tile_map_size(width, height);
+	}
+		
+	void EditorMapLoader::set_dungeon(const bool dungeon)
+	{
+//		m_data.set_dungeon(dungeon);
+	}
+
+	void EditorMapLoader::instance()
+	{
+	}
+
+	void EditorMapLoader::load(const String &name)
+	{
+		read(name);
+	}
+		
+	MapSharedPtr EditorMapLoader::get_map(const String &name)
+	{
+		return boost::make_shared<Map>(get_codec_manager(),
+			get_file_system(), get_global_vars(),
+			get_mesh_builder(), get_mesh_cache(),
+			get_effect_cache(), get_texture_cache(),
+			get_material_description_cache(), name);
 	}
 
 }

@@ -30,7 +30,9 @@ namespace eternal_lands
 		it_2d_object,
 		it_tile_object,
 		it_water_object,
-		it_dynamic_object
+		it_dynamic_object,
+		it_light_object,
+		it_particle_object
 	};
 
 	/**
@@ -41,7 +43,7 @@ namespace eternal_lands
 	class FreeIdsManager
 	{
 		private:
-			boost::array<FreeIds, 5> m_free_ids;
+			boost::array<FreeIds, 7> m_free_ids;
 			FreeIds m_free_light_ids;
 			FreeIds m_free_particle_ids;
 
@@ -59,6 +61,8 @@ namespace eternal_lands
 			Uint32 get_next_free_object_id(const IdType type);
 			void free_object_id(const Uint32 id);
 			Uint32 use_typeless_object_id(const Uint32 typeless_id,
+				const IdType type);
+			Uint32 get_object_id(const Uint32 typeless_id,
 				const IdType type);
 			Uint32 get_next_free_light_id();
 			void free_light_id(const Uint32 id);

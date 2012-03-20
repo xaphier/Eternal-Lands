@@ -1,6 +1,7 @@
 #include "elglwidget.hpp"
 #include <sceneresources.hpp>
 #include <filesystem.hpp>
+#include <globalvars.hpp>
 #include <codec/codecmanager.hpp>
 #include <lightdata.hpp>
 #include "editor/editorobjectdata.hpp"
@@ -20,6 +21,11 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_rotate_z = 0.0f;
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 	m_blend = bt_disabled;
+
+	m_global_vars = boost::make_shared<GlobalVars>();
+	m_file_system = boost::make_shared<FileSystem>();
+
+	m_editor.reset(new Editor(m_global_vars, m_file_system));
 }
 
 ELGLWidget::~ELGLWidget()
@@ -203,6 +209,8 @@ void ELGLWidget::initializeGL()
 
 		exit(1);
 	}
+
+//	m_editor->init();
 }
 
 void ELGLWidget::resizeGL(int width, int height)
@@ -214,7 +222,8 @@ void ELGLWidget::resizeGL(int width, int height)
 
 void ELGLWidget::rebuild_projection_frustum()
 {
-//	m_editor->set_perspective(m_zoom, m_width / m_height, 5.0f, 5000.0f);
+	m_editor->set_perspective(m_zoom, static_cast<float>(m_width) /
+		static_cast<float>(m_height), 5.0f, 5000.0f);
 	updateGL();
 }
 
@@ -238,16 +247,15 @@ void ELGLWidget::paintGL()
 	dir = m_rotate * dir;
 
 	view_matrix = glm::lookAt(pos, pos + dir, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
-//	m_editor->set_view_matrix(view_matrix);
+	m_editor->set_view_matrix(view_matrix);
 
-/*
+	m_editor->draw();
+
 	if (m_select)
 	{
-		m_editor->get_scene().select(m_select_pos, m_half_size);
+		m_editor->select(m_select_pos, m_half_size);
 	}
-
-	m_editor->get_scene().draw();
-
+/*
 	if (m_select)
 	{
 		m_select = false;
@@ -640,6 +648,20 @@ void ELGLWidget::open_map(const QString &file_name)
 		emit can_undo(m_editor->get_can_undo());
 		updateGL();
 	}
+}
+
+void ELGLWidget::set_dirs(const QStringList &dirs)
+{
+	m_file_system->clear();
+
+	m_file_system->add_dir(String(""));
+
+	BOOST_FOREACH(const QString &dir, dirs)
+	{
+		m_file_system->add_dir(String(dir.toUtf8()));
+	}
+
+	m_dirs = dirs;
 }
 
 void ELGLWidget::set_fog(const glm::vec3 &color, const float density)

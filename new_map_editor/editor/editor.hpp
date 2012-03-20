@@ -156,10 +156,13 @@ namespace eternal_lands
 				const;
 			const String &get_terrain_dudv_map(const Uint16 id)
 				const;
+			void draw();
+			void select(const Uint16Array2 &position,
+				const Uint16Array2 &half_size);
 
-			inline void init(const FileSystemSharedPtr &file_system)
+			inline void init()
 			{
-				m_data.init(file_system);
+				m_data.init();
 			}
 
 			inline void set_view_matrix(

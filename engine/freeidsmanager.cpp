@@ -62,7 +62,15 @@ namespace eternal_lands
 		RANGE_CECK(type, m_free_ids.size(), UTF8("type value too big"));
 
 		return m_free_ids[type].use_typeless_id(typeless_id);
-	}	
+	}
+
+	Uint32 FreeIdsManager::get_object_id(const Uint32 typeless_id,
+		const IdType type)
+	{
+		RANGE_CECK(type, m_free_ids.size(), UTF8("type value too big"));
+
+		return m_free_ids[type].get_id(typeless_id);
+	}
 
 	Uint32 FreeIdsManager::get_next_free_light_id()
 	{
