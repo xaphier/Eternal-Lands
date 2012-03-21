@@ -210,7 +210,31 @@ void ELGLWidget::initializeGL()
 		exit(1);
 	}
 
-//	m_editor->init();
+	if (GLEW_VERSION_3_0)
+	{
+		m_global_vars->set_opengl_version(ovt_3_0);
+	}
+
+	if (GLEW_VERSION_3_1)
+	{
+		m_global_vars->set_opengl_version(ovt_3_1);
+	}
+
+	if (GLEW_VERSION_3_2)
+	{
+		m_global_vars->set_opengl_version(ovt_3_2);
+	}
+
+	if (GLEW_VERSION_3_3)
+	{
+		m_global_vars->set_opengl_version(ovt_3_3);
+	}
+
+	m_global_vars->set_optmize_shader_source(false);
+
+	m_global_vars->set_view_distance(5000.0f);
+
+	m_editor->init();
 }
 
 void ELGLWidget::resizeGL(int width, int height)
@@ -222,8 +246,8 @@ void ELGLWidget::resizeGL(int width, int height)
 
 void ELGLWidget::rebuild_projection_frustum()
 {
-	m_editor->set_perspective(m_zoom, static_cast<float>(m_width) /
-		static_cast<float>(m_height), 5.0f, 5000.0f);
+	m_editor->set_perspective(60.0f, static_cast<float>(m_width) /
+		static_cast<float>(m_height), 0.1f, 5000.0f);
 	updateGL();
 }
 
@@ -236,17 +260,20 @@ void ELGLWidget::paintGL()
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	dir = glm::normalize(glm::vec3(0.0f, 1.0f, -2.5f));
-
+	dir = glm::normalize(glm::vec3(0.0f, 1.0f, 2.5f));
+/*
 	scale = m_pos[2] / dir[2];
 	offset = m_pos - dir * scale;
 	pos = dir * scale;
 
 	pos = (m_rotate * pos) + offset;
+*/
+	pos = m_pos;
+	pos.z = 0.0f;
 
-	dir = m_rotate * dir;
+	dir = m_rotate * dir * 150.0f;
 
-	view_matrix = glm::lookAt(pos, pos + dir, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
+	view_matrix = glm::lookAt(pos + dir, pos, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
 	m_editor->set_view_matrix(view_matrix);
 
 	m_editor->draw();

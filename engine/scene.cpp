@@ -434,24 +434,6 @@ namespace eternal_lands
 		intersect(frustum, m_visible_lights);
 
 		m_visible_lights.sort(glm::vec3(m_scene_view.get_focus()));
-
-		std::cout << "m_visible_objects.get_objects().size(): ";
-		std::cout << m_visible_objects.get_objects().size();
-		std::cout << std::endl;
-
-		std::cout << "m_scene_view.get_projection_view_matrix()[0]: ";
-		std::cout << glm::to_string(
-			m_scene_view.get_projection_view_matrix()[0]);
-		std::cout << std::endl;
-
-		std::cout << "m_scene_view.get_view_matrix(): ";
-		std::cout << glm::to_string(m_scene_view.get_view_matrix());
-		std::cout << std::endl;
-
-		std::cout << "m_scene_view.get_projection_matrix()[0]: ";
-		std::cout << glm::to_string(
-			m_scene_view.get_projection_matrix()[0]);
-		std::cout << std::endl;
 	}
 
 	void Scene::cull_all_shadows()

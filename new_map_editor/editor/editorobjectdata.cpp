@@ -24,6 +24,13 @@ namespace eternal_lands
 		m_material_names(material_names),
 		m_rotation_angles(rotation_angles)
 	{
+		Transformation m_world_transformation;
+
+		m_world_transformation.set_translation(translation);
+		m_world_transformation.set_rotation_angles(rotation_angles);
+		m_world_transformation.set_scale(scale);
+
+		set_world_transformation(m_world_transformation);
 	}
 
 	EditorObjectData::~EditorObjectData() throw()
@@ -44,6 +51,15 @@ namespace eternal_lands
 	void EditorObjectData::set_rotation_angles(
 		const glm::vec3 &rotation_angles)
 	{
+		Transformation m_world_transformation;
+
+		m_world_transformation = get_world_transformation();
+
+		m_world_transformation.set_rotation_angles(rotation_angles);
+
+		set_world_transformation(m_world_transformation);
+
+		m_rotation_angles = rotation_angles;
 	}
 
 	void EditorObjectData::set_scale(const float scale)

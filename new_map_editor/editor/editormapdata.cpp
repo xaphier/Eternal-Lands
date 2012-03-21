@@ -310,6 +310,10 @@ namespace eternal_lands
 
 	void EditorMapData::draw()
 	{
+		m_scene->set_main_light_ambient(glm::vec3(0.2f));
+		m_scene->set_main_light_color(glm::vec3(0.8f));
+		m_scene->set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
+		m_scene->set_night(false);
 		m_scene->cull();
 		m_scene->draw();
 	}

@@ -122,6 +122,7 @@ namespace eternal_lands
 		boost::scoped_ptr<EditorMapLoader> map_loader;
 
 		clear();
+		m_light_objects.clear();
 
 		map_loader.reset(new EditorMapLoader(
 			get_scene_resources().get_codec_manager(),
