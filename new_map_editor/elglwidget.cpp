@@ -6,6 +6,7 @@
 #include <lightdata.hpp>
 #include "editor/editorobjectdata.hpp"
 #include <QFileDialog>
+#include <QMessageBox>
 
 ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 {
@@ -204,8 +205,13 @@ void ELGLWidget::initializeGL()
 
 	if (!GLEW_VERSION_3_0)
 	{
-//		LOG_ERROR( "OpenGL 3.0 needed, but onlny '%1%' found!",
-//			glGetString(GL_VERSION));
+		BoostFormat format_string(UTF8("OpenGL 3.0 needed, but '%1%'"
+			" found!"));
+
+		format_string % (const char*)glGetString(GL_VERSION);
+
+		QMessageBox::critical(0, "Error", QString::fromUtf8(
+			format_string.str().c_str()));
 
 		exit(1);
 	}
