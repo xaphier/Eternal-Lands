@@ -26,6 +26,14 @@ namespace eternal_lands
 
 	class EditorScene;
 
+	enum RenderableType
+	{
+		rt_none,
+		rt_object,
+		rt_light,
+		rt_particle
+	};
+
 	/**
 	 * @brief @c class for maps.
 	 *
@@ -40,10 +48,10 @@ namespace eternal_lands
 			boost::scoped_ptr<EditorScene> m_scene;
 			ImageSharedPtr m_terrain_heights;
 			ImageSharedPtr m_terrain_blend_values;
-			Uint16MultiArray2 m_heights;
-			Uint8MultiArray2 m_tiles;
+			Uint16MultiArray2 m_height_map;
+			Uint8MultiArray2 m_tile_map;
 			Uint32 m_id;
-			bool m_selected;
+			RenderableType m_renderable;
 
 		public:
 			EditorMapData(const GlobalVarsSharedPtr &global_vars,
@@ -70,8 +78,9 @@ namespace eternal_lands
 			Uint16 get_tile(const Uint16 x, const Uint16 y) const;
 			Uint16Array2 get_tile_offset(const glm::vec2 &point)
 				const; 
-			void set_heights(const HeightVector &heights,
-				const Uint16 id);
+			void set_height(const Uint16 x, const Uint16 y,
+				const Uint16 height);
+			void set_heights(const HeightVector &heights);
 			void set_terrain_heights(const HeightVector &heights,
 				const Uint16 id);
 			void set_terrain_albedo_map(const String &name,
@@ -97,10 +106,42 @@ namespace eternal_lands
 			void set_perspective(const float fov,
 				const float aspect, const float z_near,
 				const float z_far);
+			void set_view_port(const glm::uvec4 &view_port);
+			const glm::mat4 &get_projection_matrix() const;
 			void load_map(const String &name);
 			void draw();
 			void select(const Uint16Array2 &position,
 				const Uint16Array2 &half_size);
+			void set_draw_lights(const bool draw_lights);
+			void set_draw_light_spheres(
+				const bool draw_light_spheres);
+			StringVector get_materials() const;
+			StringVector get_default_materials(const String &name)
+				const;
+
+			void set_height_map_size(const Uint16 width,
+				const Uint16 height)
+			{
+				m_height_map.resize(
+					boost::extents[width][height]);
+			}
+
+			void set_tile_map_size(const Uint16 width,
+				const Uint16 height)
+			{
+				m_tile_map.resize(
+					boost::extents[width][height]);
+			}
+
+			inline Uint32 get_id() const
+			{
+				return m_id;
+			}
+
+			inline RenderableType get_renderable() const
+			{
+				return m_renderable;
+			}
 
 	};
 

@@ -241,8 +241,18 @@ namespace eternal_lands
 				}
 			}
 
-			vmin = glm::vec3(0.0f, 0.0f, -0.01f);
-			vmax = glm::vec3(scale, scale, 0.0f);
+			if (center)
+			{
+				vmin = glm::vec3(-scale * 0.5f, -scale * 0.5f,
+					-0.01f);
+				vmax = glm::vec3(scale * 0.5f, scale * 0.5f,
+					0.0f);
+			}
+			else
+			{
+				vmin = glm::vec3(0.0f, 0.0f, -0.01f);
+				vmax = glm::vec3(scale, scale, 0.0f);
+			}
 
 			mesh_data_tool->set_sub_mesh_data(0, SubMesh(
 				BoundingBox(vmin, vmax), 0, index_count, 0,
@@ -644,6 +654,26 @@ namespace eternal_lands
 		MaterialDescriptionVector materials;
 
 		get_mesh_data(name, mesh_data_tool, materials);
+	}
+
+	const MaterialDescriptionVector &MeshDataCache::get_mesh_materials(
+		const String &name)
+	{
+		MeshDataCache::MeshDataCacheItem tmp;
+		MeshDataCacheMap::iterator found;
+
+		found = m_mesh_data_cache.find(name);
+
+		if (found == m_mesh_data_cache.end())
+		{
+			load_mesh(name, tmp.m_mesh_data_tool, tmp.m_materials);
+
+			m_mesh_data_cache[name] = tmp;
+
+			found = m_mesh_data_cache.find(name);
+		}
+
+		return found->second.m_materials;
 	}
 
 }

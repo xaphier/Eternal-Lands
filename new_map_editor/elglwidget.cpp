@@ -10,14 +10,11 @@
 
 ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 {
-	m_width = 1;
-	m_height = 1;
-	m_zoom = 60.0f;
 	m_select = false;
+	m_zoom = 10.0f;
 	m_terrain_editing = false;
 	m_terrain_type_index = 0;
 	m_terrain_layer_index = 0;
-	m_edit_id = 0;
 	m_light = false;
 	m_rotate_z = 0.0f;
 	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
@@ -36,19 +33,17 @@ ELGLWidget::~ELGLWidget()
 void ELGLWidget::get_points(const Sint32 x, const Sint32 y, glm::vec3 &p0,
 	glm::vec3 &p1)
 {
-	glm::mat4 project, world;
 	glm::ivec4 view_port;
 
 	view_port[0] = 0;
 	view_port[1] = 0;
 	view_port[2] = width();
 	view_port[3] = height();
-/*
-	project = m_editor->get_scene().get_camera().get_projection_matrix();
-	world = m_editor->get_scene().get_camera().get_view_matrix();
-*/
-	p0 = glm::unProject(glm::vec3(x, y, 0), world, project, view_port);
-	p1 = glm::unProject(glm::vec3(x, y, 1), world, project, view_port);
+
+	p0 = glm::unProject(glm::vec3(x, y, 0), m_view, m_projection,
+		view_port);
+	p1 = glm::unProject(glm::vec3(x, y, 1), m_view, m_projection,
+		view_port);
 }
 
 void ELGLWidget::mousePressEvent(QMouseEvent *event)
@@ -60,7 +55,7 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 
 		if (get_terrain_editing())
 		{
-			m_edit_id++;
+			m_terrain_index++;
 
 			emit terrain_edit(event->x(), height() - event->y());
 		}
@@ -97,7 +92,6 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 				{
 					m_select_pos[0] = event->x();
 					m_select_pos[1] = height() - event->y();
-
 					m_select = true;
 				}
 			}
@@ -123,7 +117,7 @@ void ELGLWidget::terrain_height_edit(const int x, const int y, const float stren
 
 	get_points(x, y, p0, p1);
 
-	m_editor->terrain_height_edit(m_edit_id, p0, p1, strength, radius, brush_type);
+	m_editor->terrain_height_edit(m_terrain_index, p0, p1, strength, radius, brush_type);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -136,7 +130,7 @@ void ELGLWidget::terrain_layer_edit(const int x, const int y,
 
 	get_points(x, y, p0, p1);
 
-	m_editor->terrain_layer_edit(m_edit_id, p0, p1, terrain_layer_index,
+	m_editor->terrain_layer_edit(m_terrain_index, p0, p1, terrain_layer_index,
 		strength, radius, brush_type);
 
 	emit can_undo(m_editor->get_can_undo());
@@ -186,16 +180,15 @@ void ELGLWidget::wheelEvent(QWheelEvent *event)
 		m_zoom += event->delta() / 120.0f * (m_swap_wheel_zoom ? -1.0f : 1.0f);
 	}
 
-	m_zoom = std::max(5.0f, std::min(180.0f, m_zoom));
-	rebuild_projection_frustum();
+	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
+	updateGL();
 }
 
 void ELGLWidget::initializeGL()
 {
-	m_pos = glm::vec3(10.0f, 10.0f, 50.0f);
+	m_pos = glm::vec3(10.0f, 10.0f, 0.0f);
 	m_half_size[0] = 1;
 	m_half_size[1] = 1;
-	m_select = false;
 
 #ifdef OSX
 	/* Test if that helps .... */
@@ -238,83 +231,94 @@ void ELGLWidget::initializeGL()
 
 	m_global_vars->set_optmize_shader_source(false);
 
-	m_global_vars->set_view_distance(5000.0f);
+	m_global_vars->set_view_distance(250.0f);
 
-	m_editor->init();
+	try
+	{
+		m_editor->init();
+	}
+	catch (...)
+	{
+	}
 }
 
 void ELGLWidget::resizeGL(int width, int height)
 {
-	m_width = width;
-	m_height = height;
-	rebuild_projection_frustum();
-}
+	glViewport(0, 0, width, height);
 
-void ELGLWidget::rebuild_projection_frustum()
-{
-	m_editor->set_perspective(60.0f, static_cast<float>(m_width) /
-		static_cast<float>(m_height), 0.1f, 5000.0f);
+	m_editor->set_view_port(glm::uvec4(0, 0, width, height));
+
+	m_editor->set_perspective(60.0f, static_cast<float>(width) /
+		static_cast<float>(height), 1.5f, 250.0f);
+
 	updateGL();
+
+	m_projection = m_editor->get_projection_matrix();
 }
 
 void ELGLWidget::paintGL()
 {
-	glm::mat4 view_matrix;
-	glm::vec3 dir, pos, offset;
-	float scale;
-	SelectionType selection;
+	glm::vec3 dir, pos;
+
+	glEnable(GL_CULL_FACE);
+	glDisable(GL_ALPHA_TEST);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	dir = glm::normalize(glm::vec3(0.0f, 1.0f, 2.5f));
-/*
-	scale = m_pos[2] / dir[2];
-	offset = m_pos - dir * scale;
-	pos = dir * scale;
+	dir = glm::normalize(glm::vec3(0.0f, -1.0f, 1.0f));
 
-	pos = (m_rotate * pos) + offset;
-*/
 	pos = m_pos;
-	pos.z = 0.0f;
 
-	dir = m_rotate * dir * 150.0f;
+	dir = m_rotate * dir * m_zoom;
 
-	view_matrix = glm::lookAt(pos + dir, pos, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
-	m_editor->set_view_matrix(view_matrix);
+	m_view = glm::lookAt(pos + dir, pos, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
+	m_editor->set_view_matrix(m_view);
 
 	m_editor->draw();
 
 	if (m_select)
 	{
-		m_editor->select(m_select_pos, m_half_size);
-	}
-/*
-	if (m_select)
-	{
 		m_select = false;
 
-		selection = m_editor->get_selection();
+		m_editor->select(m_select_pos, m_half_size);
 
-		if (selection.get_valid())
+		switch (m_editor->get_renderable())
 		{
-			if (m_editor->get_renderable() == rt_light)
-			{
+			default:
+			case rt_none:
+				emit deselect();
+				break;
+			case rt_light:
 				emit update_light(true);
 				updateGL();
-			}
-			else
-			{
+				break;
+			case rt_object:
 				emit update_object(true);
 				updateGL();
-			}
-		}
-		else
-		{
-			m_editor->set_deselect();
-			emit deselect();
+				break;
 		}
 	}
-*/
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindBufferARB(GL_ARRAY_BUFFER, 0);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
+	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
+	glUseProgram(0);
+
+	for (int i = 0; i < 16; i++)
+	{
+		glDisableVertexAttribArray(i);
+	}
+
+	glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glBlendFunc(GL_ZERO, GL_ONE);
 }
 
 void ELGLWidget::get_object_data(EditorObjectData &object_data)
@@ -335,13 +339,28 @@ void ELGLWidget::get_light_data(LightData &light) const
 
 void ELGLWidget::remove_object()
 {
-	if ((m_editor->get_renderable() == rt_mesh) ||
-		(m_editor->get_renderable() == rt_light))
+	switch (m_editor->get_renderable())
 	{
-		m_editor->remove_object();
-		emit can_undo(m_editor->get_can_undo());
-		m_select = false;
-		updateGL();
+		case rt_object:
+			m_editor->remove_object();
+			emit can_undo(m_editor->get_can_undo());
+			m_select = false;
+			updateGL();
+			break;
+		case rt_light:
+			m_editor->remove_light();
+			emit can_undo(m_editor->get_can_undo());
+			m_select = false;
+			updateGL();
+			break;
+		case rt_particle:
+//			m_editor->remove_particle();
+			emit can_undo(m_editor->get_can_undo());
+			m_select = false;
+			updateGL();
+			break;
+		default:
+			break;
 	}
 }
 
@@ -415,20 +434,17 @@ void ELGLWidget::undo()
 	}
 	else
 	{
-		if (m_editor->get_selected())
+		switch (m_editor->get_renderable())
 		{
-			switch (m_editor->get_renderable())
-			{
-				case rt_ground_tiles:
-					break;
-				case rt_mesh:
-				case rt_terrain:
-					emit update_object(false);
-					break;
-				case rt_light:
-					emit update_light(false);
-					break;
-			}
+			case rt_none:
+			case rt_particle:
+				break;
+			case rt_object:
+				emit update_object(false);
+				break;
+			case rt_light:
+				emit update_light(false);
+				break;
 		}
 	}
 
@@ -526,17 +542,15 @@ void ELGLWidget::rotate_right()
 
 void ELGLWidget::zoom_in()
 {
-	m_zoom -= 2.0f;
-	m_zoom = std::max(5.0f, std::min(180.0f, m_zoom));
-	rebuild_projection_frustum();
+	m_zoom -= 1.0f;
+	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
 	updateGL();
 }
 
 void ELGLWidget::zoom_out()
 {
-	m_zoom += 2.0f;
-	m_zoom = std::max(5.0f, std::min(180.0f, m_zoom));
-	rebuild_projection_frustum();
+	m_zoom += 1.0f;
+	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
 	updateGL();
 }
 
@@ -860,6 +874,54 @@ glm::vec3 ELGLWidget::get_light_color() const
 
 	return light.get_color();
 }
+
+void ELGLWidget::set_draw_lights(const bool draw_lights)
+{
+	m_editor->set_draw_lights(draw_lights);
+}
+
+void ELGLWidget::set_draw_light_spheres(const bool draw_light_spheres)
+{
+	m_editor->set_draw_light_spheres(draw_light_spheres);
+}
+
+QStringList ELGLWidget::get_materials() const
+{
+	StringVector materials;
+	QStringList result;
+
+	materials = m_editor->get_materials();
+
+	BOOST_FOREACH(const String &material, materials)
+	{
+		result.push_back(QString::fromUtf8(material.get().c_str()));
+	}
+
+	return result;
+}
+
+QStringList ELGLWidget::get_default_materials(const String &name) const
+{
+	StringVector materials;
+	QStringList result;
+
+	materials = m_editor->get_default_materials(name);
+
+	BOOST_FOREACH(const String &material, materials)
+	{
+		result.push_back(QString::fromUtf8(material.get().c_str()));
+	}
+
+	return result;
+}
+
+void ELGLWidget::set_object_materials(const StringVector &materials)
+{
+	m_editor->set_object_materials(materials);
+	emit can_undo(m_editor->get_can_undo());
+	updateGL();
+}
+
 /*
 void ELGLWidget::get_codecs(QStringList &codecs)
 {

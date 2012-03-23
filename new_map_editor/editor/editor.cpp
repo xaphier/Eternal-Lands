@@ -41,7 +41,6 @@ namespace eternal_lands
 		m_random_rotation[1] = false;
 		m_random_rotation[2] = false;
 		m_random_scale = false;
-		m_selected = false;
 
 		init_logging("log");
 	}
@@ -105,6 +104,8 @@ namespace eternal_lands
 				new GroundTileModification(offset, tmp));
 
 			m_undo.add(modification);
+
+			m_data.set_tile(offset[0], offset[1], tile);
 		}
 	}
 
@@ -548,6 +549,23 @@ namespace eternal_lands
 		}
 	}
 
+	void Editor::set_object_materials(const Uint32 id,
+		const StringVector &materials)
+	{
+		EditorObjectData object_data;
+
+		m_data.get_object(id, object_data);
+
+		if (object_data.get_material_names() != materials)
+		{
+			change_object(mt_object_materials_changed, object_data);
+
+			object_data.set_material_names(materials);
+
+			m_data.modify_object(object_data);
+		}
+	}
+
 	void Editor::remove_light(const Uint32 id)
 	{
 		LightData light_data;
@@ -718,6 +736,26 @@ namespace eternal_lands
 		const Uint16Array2 &half_size)
 	{
 		m_data.select(position, half_size);
+	}
+
+	Uint32 Editor::get_id() const
+	{
+		return m_data.get_id();
+	}
+
+	RenderableType Editor::get_renderable() const
+	{
+		return m_data.get_renderable();
+	}
+
+	StringVector Editor::get_materials() const
+	{
+		return m_data.get_materials();
+	}
+
+	StringVector Editor::get_default_materials(const String &name) const
+	{
+		return m_data.get_default_materials(name);
 	}
 
 }

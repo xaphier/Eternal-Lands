@@ -17,17 +17,17 @@ class ELGLWidget: public QGLWidget
 		GlobalVarsSharedPtr m_global_vars;
 		FileSystemSharedPtr m_file_system;
 		QStringList m_dirs;
+		glm::mat4 m_projection;
+		glm::mat4 m_view;
 		glm::mat3 m_rotate;
 		glm::vec4 m_color;
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
 		String m_object;
 		float m_zoom, m_rotate_z;
-		int m_width, m_height;
 		Uint16Array2  m_select_pos, m_half_size;
 		Uint32 m_terrain_type_index;
 		Uint32 m_terrain_layer_index;
-		Uint32 m_edit_id;
 		Uint16 m_terrain_index;
 		bool m_select;
 		bool m_terrain_editing;
@@ -39,7 +39,6 @@ class ELGLWidget: public QGLWidget
 
 		void get_points(const Sint32 x, const Sint32 y,
 			glm::vec3 &p0, glm::vec3 &p1);
-		void rebuild_projection_frustum();
 
 		inline bool get_terrain_editing() const
 		{
@@ -84,6 +83,7 @@ class ELGLWidget: public QGLWidget
 		void set_object_scale(const float scale);
 		void set_object_selection(const SelectionType selection);
 		void set_object_blend(const BlendType blend);
+		void set_object_materials(const StringVector &materials);
 		void add_object(const glm::vec4 &color, const Uint16 type,
 			const Uint16 server_id, const String &object);
 		void add_light();
@@ -91,6 +91,8 @@ class ELGLWidget: public QGLWidget
 		const glm::vec3 &get_ambient() const;
 		void set_fog(const glm::vec3 &color, const float density);
 		QString get_blend_image_name() const;
+		QStringList get_materials() const;
+		QStringList get_default_materials(const String &name) const;
 		void terrain_height_edit(const int x, const int y, const float strength,
 			const float radius, const int brush_type);
 		void terrain_layer_edit(const int x, const int y, const int terrain_layer_index,
@@ -198,6 +200,8 @@ class ELGLWidget: public QGLWidget
 		void open_map(const QString &file_name);
 		void set_blend_image_name(const QString &blend_image_name);
 		void set_game_minute(const int game_minute);
+		void set_draw_lights(const bool draw_lights);
+		void set_draw_light_spheres(const bool draw_light_spheres);
 
 	signals:
 		void update_object(const bool select);

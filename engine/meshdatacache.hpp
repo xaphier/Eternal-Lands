@@ -87,13 +87,13 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~MeshDataCache() throw();
-
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool,
 				MaterialDescriptionVector &materials);
-
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool);
+			const MaterialDescriptionVector &get_mesh_materials(
+				const String &name);
 
 	};
 

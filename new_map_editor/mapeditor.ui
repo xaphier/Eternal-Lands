@@ -173,6 +173,7 @@
    <addaction name="action_light"/>
    <addaction name="action_light_spheres"/>
    <addaction name="action_height"/>
+   <addaction name="action_day_night"/>
    <addaction name="separator"/>
    <addaction name="action_info"/>
   </widget>
@@ -340,6 +341,12 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="minimumSize">
+    <size>
+     <width>300</width>
+     <height>587</height>
+    </size>
+   </property>
    <property name="windowIcon">
     <iconset resource="icons/resourcen.qrc">
      <normaloff>:/icons/preferences-other.png</normaloff>:/icons/preferences-other.png</iconset>
@@ -355,7 +362,7 @@
      <item>
       <widget class="QStackedWidget" name="properties">
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="object_page">
         <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -414,15 +421,15 @@
          <item>
           <widget class="QToolBox" name="toolBox_2">
            <property name="currentIndex">
-            <number>1</number>
+            <number>2</number>
            </property>
            <widget class="QWidget" name="page">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>121</width>
-              <height>364</height>
+              <width>304</width>
+              <height>406</height>
              </rect>
             </property>
             <attribute name="label">
@@ -805,8 +812,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>303</width>
-              <height>269</height>
+              <width>304</width>
+              <height>406</height>
              </rect>
             </property>
             <attribute name="label">
@@ -818,8 +825,8 @@
                <property name="title">
                 <string>Transparency</string>
                </property>
-               <layout class="QGridLayout" name="gridLayout_9">
-                <item row="0" column="0">
+               <layout class="QFormLayout" name="formLayout">
+                <item row="0" column="0" colspan="2">
                  <widget class="QRadioButton" name="transparency_type_0">
                   <property name="text">
                    <string>no transparency</string>
@@ -858,7 +865,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
+                <item row="2" column="0" colspan="2">
                  <widget class="QRadioButton" name="transparency_type_2">
                   <property name="enabled">
                    <bool>true</bool>
@@ -913,6 +920,316 @@
                 <size>
                  <width>20</width>
                  <height>126</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="page_3">
+            <attribute name="label">
+             <string>Seite</string>
+            </attribute>
+            <layout class="QGridLayout" name="gridLayout_9">
+             <item row="0" column="0">
+              <widget class="QLabel" name="material_label_0">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 0</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="material_0">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="material_label_1">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 1</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="material_1">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="material_label_2">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 2</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="material_2">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="material_label_3">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 3</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="material_3">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="material_label_4">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 4</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QComboBox" name="material_4">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="material_label_5">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 5</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QComboBox" name="material_5">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="material_label_6">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 6</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QComboBox" name="material_6">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QLabel" name="material_label_7">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 7</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QComboBox" name="material_7">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QLabel" name="material_label_8">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 8</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QComboBox" name="material_8">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="0">
+              <widget class="QLabel" name="material_label_9">
+               <property name="maximumSize">
+                <size>
+                 <width>90</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="sizeIncrement">
+                <size>
+                 <width>1</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>material 9</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="1">
+              <widget class="QComboBox" name="material_9">
+               <property name="sizeIncrement">
+                <size>
+                 <width>4</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0" colspan="2">
+              <spacer name="verticalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
                 </size>
                </property>
               </spacer>
@@ -1239,7 +1556,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>272</width>
+              <width>254</width>
               <height>156</height>
              </rect>
             </property>
@@ -1253,6 +1570,15 @@
                 <string>Brush</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_4">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="spacing">
+                 <number>6</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_7">
                   <property name="text">
@@ -1292,6 +1618,37 @@
                  <widget class="QLabel" name="label_8">
                   <property name="text">
                    <string>Strength</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QSpinBox" name="height_brush_strength">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
+                  </property>
+                  <property name="suffix">
+                   <string>%</string>
+                  </property>
+                  <property name="prefix">
+                   <string/>
+                  </property>
+                  <property name="minimum">
+                   <number>-100</number>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                  <property name="value">
+                   <number>10</number>
                   </property>
                  </widget>
                 </item>
@@ -1345,37 +1702,6 @@
                   </item>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QSpinBox" name="height_brush_strength">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="buttonSymbols">
-                   <enum>QAbstractSpinBox::PlusMinus</enum>
-                  </property>
-                  <property name="suffix">
-                   <string>%</string>
-                  </property>
-                  <property name="prefix">
-                   <string/>
-                  </property>
-                  <property name="minimum">
-                   <number>-100</number>
-                  </property>
-                  <property name="maximum">
-                   <number>100</number>
-                  </property>
-                  <property name="value">
-                   <number>10</number>
-                  </property>
-                 </widget>
-                </item>
                </layout>
               </widget>
              </item>
@@ -1399,7 +1725,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>272</width>
+              <width>254</width>
               <height>190</height>
              </rect>
             </property>
@@ -1413,6 +1739,12 @@
                 <string>Brush</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_14">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_37">
                   <property name="text">
@@ -1452,6 +1784,37 @@
                  <widget class="QLabel" name="label_38">
                   <property name="text">
                    <string>Strength</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QSpinBox" name="layer_brush_strength">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
+                  </property>
+                  <property name="suffix">
+                   <string>%</string>
+                  </property>
+                  <property name="prefix">
+                   <string/>
+                  </property>
+                  <property name="minimum">
+                   <number>-100</number>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                  <property name="value">
+                   <number>10</number>
                   </property>
                  </widget>
                 </item>
@@ -1503,37 +1866,6 @@
                     <string>quadratic smooth</string>
                    </property>
                   </item>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QSpinBox" name="layer_brush_strength">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="buttonSymbols">
-                   <enum>QAbstractSpinBox::PlusMinus</enum>
-                  </property>
-                  <property name="suffix">
-                   <string>%</string>
-                  </property>
-                  <property name="prefix">
-                   <string/>
-                  </property>
-                  <property name="minimum">
-                   <number>-100</number>
-                  </property>
-                  <property name="maximum">
-                   <number>100</number>
-                  </property>
-                  <property name="value">
-                   <number>10</number>
-                  </property>
                  </widget>
                 </item>
                 <item row="4" column="0">
@@ -1908,8 +2240,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1921,8 +2253,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1941,6 +2273,12 @@
             <string>Randomized object placement</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_15">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
             <item>
              <widget class="QGroupBox" name="translate_x_group">
               <property name="title">
@@ -1953,6 +2291,15 @@
                <bool>false</bool>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>9</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_10">
                  <property name="text">
@@ -2026,6 +2373,12 @@
                <bool>false</bool>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_9">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_12">
                  <property name="text">
@@ -2099,6 +2452,12 @@
                <bool>false</bool>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_14">
                  <property name="text">
@@ -2172,6 +2531,12 @@
                <bool>false</bool>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_16">
                  <property name="text">
@@ -2245,6 +2610,12 @@
                <bool>false</bool>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_29">
                  <property name="text">
@@ -2318,6 +2689,12 @@
                <bool>false</bool>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_31">
                  <property name="text">
@@ -2391,6 +2768,12 @@
                <bool>false</bool>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_33">
                  <property name="text">
@@ -2414,6 +2797,9 @@
                  </property>
                  <property name="suffix">
                   <string>%</string>
+                 </property>
+                 <property name="decimals">
+                  <number>0</number>
                  </property>
                  <property name="minimum">
                   <double>1.000000000000000</double>
@@ -2449,6 +2835,9 @@
                  </property>
                  <property name="suffix">
                   <string>%</string>
+                 </property>
+                 <property name="decimals">
+                  <number>0</number>
                  </property>
                  <property name="minimum">
                   <double>1.000000000000000</double>
@@ -2655,8 +3044,8 @@
    </property>
    <property name="icon">
     <iconset resource="icons/resourcen.qrc">
-     <normaloff>:/icons/googleearth-icon.png</normaloff>
-     <normalon>:/icons/package_network.png</normalon>:/icons/googleearth-icon.png</iconset>
+     <normaloff>:/icons/terrain.jpg</normaloff>
+     <normalon>:/icons/package_network.png</normalon>:/icons/terrain.jpg</iconset>
    </property>
    <property name="text">
     <string>&amp;Height</string>
@@ -2804,6 +3193,16 @@
    </property>
    <property name="toolTip">
     <string>draw light spheres</string>
+   </property>
+  </action>
+  <action name="action_day_night">
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/weather-clear.png</normaloff>
+     <normalon>:/icons/weather-clear-night.png</normalon>:/icons/weather-clear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Day/Night</string>
    </property>
   </action>
  </widget>

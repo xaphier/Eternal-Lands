@@ -17,7 +17,7 @@ namespace eternal_lands
 	EditorObjectData::EditorObjectData(const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles,
 		const StringVector &material_names, const String &name,
-		const float transparency, const float scale,
+		const float scale, const float transparency,
 		const Uint32 id, const SelectionType selection,
 		const BlendType blend): ObjectData(Transformation(), name,
 			transparency, id, selection, blend),

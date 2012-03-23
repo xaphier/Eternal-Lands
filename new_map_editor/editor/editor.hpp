@@ -27,14 +27,6 @@
 namespace eternal_lands
 {
 
-	enum RenderableType
-	{
-		rt_mesh,
-		rt_ground_tiles,
-		rt_terrain,
-		rt_light
-	};
-
 	class Editor: public TerrainEditor
 	{
 		private:
@@ -52,10 +44,7 @@ namespace eternal_lands
 			float m_random_scale_max;
 			glm::bvec3 m_random_translation;
 			glm::bvec3 m_random_rotation;
-			Uint32 m_id;
-			RenderableType m_renderable;
 			bool m_random_scale;
-			bool m_selected;
 
 			void change_object(const ModificationType type,
 				const EditorObjectData &object_data);
@@ -75,11 +64,6 @@ namespace eternal_lands
 				const float radius,
 				const EditorBrushType brush_type,
 				const Uint16 id);
-
-			inline Uint32 get_id() const
-			{
-				return m_id;
-			}
 
 		public:
 			Editor(const GlobalVarsSharedPtr &global_vars,
@@ -131,6 +115,8 @@ namespace eternal_lands
 				const BlendType blend);
 			void set_object_selection(const Uint32 id,
 				const SelectionType selection);
+			void set_object_materials(const Uint32 id,
+				const StringVector &materials);
 			void remove_light(const Uint32 id);
 			void set_light_position(const Uint32 id,
 				const glm::vec3 &position);
@@ -156,9 +142,27 @@ namespace eternal_lands
 				const;
 			const String &get_terrain_dudv_map(const Uint16 id)
 				const;
+			StringVector get_materials() const;
+			StringVector get_default_materials(const String &name)
+				const;
 			void draw();
 			void select(const Uint16Array2 &position,
 				const Uint16Array2 &half_size);
+			Uint32 get_id() const;
+			bool get_selected() const;
+			RenderableType get_renderable() const;
+
+			inline void set_draw_lights(const bool draw_lights)
+			{
+				m_data.set_draw_lights(draw_lights);
+			}
+
+			inline void set_draw_light_spheres(
+				const bool draw_light_spheres)
+			{
+				m_data.set_draw_light_spheres(
+					draw_light_spheres);
+			}
 
 			inline void init()
 			{
@@ -179,9 +183,14 @@ namespace eternal_lands
 					z_far);
 			}
 
-			inline bool get_selected() const
+			inline void set_view_port(const glm::uvec4 &view_port)
 			{
-				return m_selected;
+				m_data.set_view_port(view_port);
+			}
+
+			inline const glm::mat4 &get_projection_matrix() const
+			{
+				return m_data.get_projection_matrix();
 			}
 
 			inline void get_object_data(
@@ -195,21 +204,14 @@ namespace eternal_lands
 				get_light_data(get_id(), light_data);
 			}
 
-			inline RenderableType get_renderable() const
-			{
-				return m_renderable;
-			}
-
 			inline bool get_object_selected() const
 			{
-				return get_selected() &&
-					(get_renderable() != rt_light);
+				return get_renderable() == rt_object;
 			}
 
 			inline bool get_light_selected() const
 			{
-				return get_selected() &&
-					(get_renderable() == rt_light);
+				return get_renderable() == rt_light;
 			}
 
 			inline bool get_object_selected(const Uint32 id) const
@@ -303,6 +305,13 @@ namespace eternal_lands
 			{
 				assert(get_object_selected());
 				set_object_selection(get_id(), selection);
+			}
+
+			inline void set_object_materials(
+				const StringVector &materials)
+			{
+				assert(get_object_selected());
+				set_object_materials(get_id(), materials);
 			}
 
 			inline void remove_light()

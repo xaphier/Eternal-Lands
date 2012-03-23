@@ -17,6 +17,7 @@
 		<shader_source>shaders/sources/albedo_blend_mapping.xml</shader_source>
 		<shader_source>shaders/sources/albedo_blend_4_mapping.xml</shader_source>
 		<shader_source>shaders/sources/albedo_mapping.xml</shader_source>
+		<shader_source>shaders/sources/albedo_disabled.xml</shader_source>
 		<shader_source>shaders/sources/uv.xml</shader_source>
 		<shader_source>shaders/sources/lava.xml</shader_source>
 		<shader_source>shaders/sources/lava_uv.xml</shader_source>

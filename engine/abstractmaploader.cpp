@@ -450,7 +450,21 @@ namespace eternal_lands
 		{
 			for (x = 0; x < height_map_width; x++)
 			{
-				set_height(x, y, get_reader()->read_u8());
+				try
+				{
+					set_height(x, y,
+						get_reader()->read_u8());
+				}
+				catch (boost::exception &exception)
+				{
+					exception << errinfo_array_index_0(x);
+					exception << errinfo_array_index_1(y);
+					LOG_EXCEPTION(exception);
+				}
+				catch (const std::exception &exception)
+				{
+					LOG_EXCEPTION(exception);
+				}
 			}
 		}
 	}
@@ -469,7 +483,20 @@ namespace eternal_lands
 		{
 			for (x = 0; x < tile_map_width; x++)
 			{
-				set_tile(x, y, get_reader()->read_u8());
+				try
+				{
+					set_tile(x, y, get_reader()->read_u8());
+				}
+				catch (boost::exception &exception)
+				{
+					exception << errinfo_array_index_0(x);
+					exception << errinfo_array_index_1(y);
+					LOG_EXCEPTION(exception);
+				}
+				catch (const std::exception &exception)
+				{
+					LOG_EXCEPTION(exception);
+				}
 			}
 		}
 	}

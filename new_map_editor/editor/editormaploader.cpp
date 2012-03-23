@@ -49,9 +49,18 @@ namespace eternal_lands
 		const Uint32 id, const SelectionType selection,
 		const BlendType blend, const StringVector &material_names)
 	{
+		SelectionType new_selection;
+
+		new_selection = selection;
+
+		if (new_selection == st_none)
+		{
+			new_selection = st_select;
+		}
+
 		m_data.add_object(EditorObjectData(translation, rotation_angles,
 			material_names, name, scale, transparency, id,
-			selection, blend));
+			new_selection, blend));
 	}
 
 	void EditorMapLoader::add_light(const glm::vec3 &position,
@@ -86,68 +95,13 @@ namespace eternal_lands
 	void EditorMapLoader::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{
-/*
-		MaterialDescriptionVector materials;
-		StringStream str;
-		String file_name;
-		Transformation transformation;
-		glm::vec3 offset;
-		Uint32 id;
-
-		if (tile == 255)
-		{
-			return;
-		}
-
-		offset.x = x * get_tile_size();
-		offset.y = y * get_tile_size();
-
-		if ((tile == 0) || (tile > 230))
-		{
-			offset.z = -0.2501f;
-		}
-		else
-		{
-			offset.z = -0.0011f;
-		}
-
-		assert(glm::all(glm::lessThanEqual(glm::abs(offset),
-			glm::vec3(1e7f))));
-
-		transformation.set_translation(offset);
-		transformation.set_scale(3.0f);
-
-		if ((tile != 0) && (tile != 240))
-		{
-			str << UTF8("tile") << static_cast<Uint16>(tile);
-		}
-		else
-		{
-			if (tile == 240)
-			{
-				str << UTF8("lava");
-			}
-			else
-			{
-				str << UTF8("water");
-			}
-		}
-
-		materials.push_back(get_material_description_cache(
-			)->get_material_description(String(str.str())));
-
-		id = x + (y << 10) + 0xF0000000;
-
-		m_map->add_object(ObjectData(transformation,
-			String(UTF8("plane_4")), 0.0f, id, st_none,
-			bt_disabled), materials);
-*/
+		m_data.set_tile(x, y, tile);
 	}
 
 	void EditorMapLoader::set_height(const Uint16 x, const Uint16 y,
 		const Uint16 height)
 	{
-//		m_data.set_height(x, y, height);
+		m_data.set_height(x, y, height);
 	}
 
 	void EditorMapLoader::set_ambient(const glm::vec3 &ambient)
@@ -158,13 +112,13 @@ namespace eternal_lands
 	void EditorMapLoader::set_height_map_size(const Uint16 width,
 		const Uint16 height)
 	{
-//		m_data.set_height_map_size(width, height);
+		m_data.set_height_map_size(width, height);
 	}
 
 	void EditorMapLoader::set_tile_map_size(const Uint16 width,
 		const Uint16 height)
 	{
-//		m_data.set_tile_map_size(width, height);
+		m_data.set_tile_map_size(width, height);
 	}
 		
 	void EditorMapLoader::set_dungeon(const bool dungeon)

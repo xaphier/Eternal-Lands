@@ -57,7 +57,7 @@ namespace eternal_lands
 			case mt_object_blend_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
-				editor.add_object(m_data);
+				editor.modify_object(m_data);
 				return false;
 			case mt_light_added:
 			case mt_light_removed:

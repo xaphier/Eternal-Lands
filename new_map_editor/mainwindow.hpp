@@ -5,6 +5,7 @@
 #include <QSignalMapper>
 #include <QSettings>
 #include <QProgressBar>
+#include <QListWidget>
 #include "settingsdialog.hpp"
 #include "timedialog.hpp"
 #include "preferencesdialog.hpp"
@@ -15,9 +16,11 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 	Q_OBJECT
 
 	private:
-		std::vector<QObject*> object_witdgets;
-		std::vector<QObject*> light_witdgets;
-		std::vector<QObject*> terrain_witdgets;
+		std::vector<QObject*> m_object_witdgets;
+		std::vector<QObject*> m_light_witdgets;
+		std::vector<QObject*> m_terrain_witdgets;
+		std::vector<QComboBox*> m_material_witdgets;
+		std::vector<QLabel*> m_material_label_witdgets;
 		QSignalMapper* m_terrain_albedo_map_mapper;
 		QSignalMapper* m_object_selection_mapper;
 		QSignalMapper* m_object_transparency_mapper;
@@ -37,6 +40,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		QProgressBar* m_progress_bar;
 		boost::shared_ptr<QProgress> m_progress;
 		QStringList m_textures;
+		size_t m_material_count;
 
 		void set_light_color(const glm::vec3 &color);
 		void set_light_color(const QColor &color);
@@ -79,6 +83,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void update_rotation();
 		void update_scale();
 		void update_position();
+		void update_materials();
 		void update_object(const bool select);
 		void update_light(const bool select);
 		void deselect();

@@ -249,6 +249,11 @@ namespace eternal_lands
 				m_scene_view.set_view_matrix(view_matrix);
 			}
 
+			inline const glm::mat4 &get_projection_matrix() const
+			{
+				return m_scene_view.get_projection_matrix()[0];
+			}
+
 			inline void set_night(const bool night)
 			{
 				m_night = night;

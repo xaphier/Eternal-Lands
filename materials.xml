@@ -4,4421 +4,4863 @@
 		<name>lava</name>
 		<albedo_0>textures/lava.dds</albedo_0>
 		<albedo_1>textures/noise.dds</albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>lava</effect>
 		<emission_scale_offset>1.0 1.0 1.0 1.0 1.0 1.0</emission_scale_offset>
 	</material>
 	<material>
 		<name>water</name>
 		<albedo_0>3dobjects/tile0.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
 		<normal>textures/water_normal.dds</normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
-		<name>grass1</name>
-		<albedo_0>2dobjects/ground/grass1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>leaves3</name>
-		<albedo_0>2dobjects/ground/leaves3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>grass_edges</name>
-		<albedo_0>2dobjects/ground/grass_edges.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>leaves2</name>
+		<name>ground/leaves2</name>
 		<albedo_0>2dobjects/ground/leaves2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
-		<name>dirt2_edges</name>
-		<albedo_0>2dobjects/ground/dirt2_edges.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>dirt3</name>
-		<albedo_0>2dobjects/ground/dirt3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>pineneedles</name>
-		<albedo_0>2dobjects/ground/pineneedles.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>corners1</name>
+		<name>ground/corners1</name>
 		<albedo_0>2dobjects/ground/corners1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<texture_matrix_0>0.334639 0 0 0 -0.247059 0.745098</texture_matrix_0>
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
-		<name>dirt2</name>
-		<albedo_0>2dobjects/ground/dirt2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<name>ground/dirt3</name>
+		<albedo_0>2dobjects/ground/dirt3.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
-		<name>snow</name>
-		<albedo_0>2dobjects/ground/snow.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>dirt4_edges</name>
-		<albedo_0>2dobjects/ground/dirt4_edges.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>sand1</name>
-		<albedo_0>2dobjects/ground/sand1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>flowerpetals</name>
-		<albedo_0>2dobjects/ground/flowerpetals.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>hay</name>
-		<albedo_0>2dobjects/ground/hay.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>grass_edges2</name>
-		<albedo_0>2dobjects/ground/grass_edges2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>leaves1</name>
-		<albedo_0>2dobjects/ground/leaves1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>plants</name>
-		<albedo_0>2dobjects/ground/plants.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>sand2</name>
-		<albedo_0>2dobjects/ground/sand2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>stones1</name>
-		<albedo_0>2dobjects/ground/stones1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>grass2</name>
-		<albedo_0>2dobjects/ground/grass2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
-		<effect>default-alpha</effect>
-	</material>
-	<material>
-		<name>dirt4</name>
+		<name>ground/dirt4</name>
 		<albedo_0>2dobjects/ground/dirt4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
-		<name>dirt</name>
-		<albedo_0>2dobjects/ground/dirt.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<name>ground/grass2</name>
+		<albedo_0>2dobjects/ground/grass2.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
-		<name>dirt3_edges</name>
-		<albedo_0>2dobjects/ground/dirt3_edges.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<name>ground/sand2</name>
+		<albedo_0>2dobjects/ground/sand2.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
-		<name>bones</name>
+		<name>ground/bones</name>
 		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<texture_matrix_0>0.12549 0 0.752941 0 -0.25098 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt4</name>
+		<albedo_0>2dobjects/ground/dirt4.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves2</name>
+		<albedo_0>2dobjects/ground/leaves2.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/plants</name>
+		<albedo_0>2dobjects/ground/plants.dds</albedo_0>
+		<texture_matrix_0>0.25098 0 0.25098 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/corners1</name>
+		<albedo_0>2dobjects/ground/corners1.dds</albedo_0>
+		<texture_matrix_0>0.328106 0 0.334639 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/hay</name>
+		<albedo_0>2dobjects/ground/hay.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves3</name>
+		<albedo_0>2dobjects/ground/leaves3.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass_edges2</name>
+		<albedo_0>2dobjects/ground/grass_edges2.dds</albedo_0>
+		<texture_matrix_0>0.32549 0 0.337255 0 -1 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass1</name>
+		<albedo_0>2dobjects/ground/grass1.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/hay</name>
+		<albedo_0>2dobjects/ground/hay.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves3</name>
+		<albedo_0>2dobjects/ground/leaves3.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.25098 0 0 0 -0.25098 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves1</name>
+		<albedo_0>2dobjects/ground/leaves1.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/plants</name>
+		<albedo_0>2dobjects/ground/plants.dds</albedo_0>
+		<texture_matrix_0>0.25098 0 0 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/hay</name>
+		<albedo_0>2dobjects/ground/hay.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt3_edges</name>
+		<albedo_0>2dobjects/ground/dirt3_edges.dds</albedo_0>
+		<texture_matrix_0>0.239216 0 0.509804 0 -1.00392 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2_edges</name>
+		<albedo_0>2dobjects/ground/dirt2_edges.dds</albedo_0>
+		<texture_matrix_0>0.231373 0 0.258824 0 -1.00392 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.25098 0 0.501961 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt</name>
+		<albedo_0>2dobjects/ground/dirt.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt4_edges</name>
+		<albedo_0>2dobjects/ground/dirt4_edges.dds</albedo_0>
+		<texture_matrix_0>0.239216 0 0.509804 0 -1.00392 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.25098 0 0 0 -0.25098 0.74902</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/sand2</name>
+		<albedo_0>2dobjects/ground/sand2.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.247059 0 0.752941 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/snow</name>
+		<albedo_0>2dobjects/ground/snow.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2</name>
+		<albedo_0>2dobjects/ground/dirt2.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/sand1</name>
+		<albedo_0>2dobjects/ground/sand1.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt3</name>
+		<albedo_0>2dobjects/ground/dirt3.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass2</name>
+		<albedo_0>2dobjects/ground/grass2.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2_edges</name>
+		<albedo_0>2dobjects/ground/dirt2_edges.dds</albedo_0>
+		<texture_matrix_0>0.234375 0 0.0078125 0 -0.996094 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt3_edges</name>
+		<albedo_0>2dobjects/ground/dirt3_edges.dds</albedo_0>
+		<texture_matrix_0>0.234375 0 0.0078125 0 -0.996094 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt</name>
+		<albedo_0>2dobjects/ground/dirt.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/flowerpetals</name>
+		<albedo_0>2dobjects/ground/flowerpetals.dds</albedo_0>
+		<texture_matrix_0>0.496063 0 0.503937 0 -0.503937 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt3</name>
+		<albedo_0>2dobjects/ground/dirt3.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass2</name>
+		<albedo_0>2dobjects/ground/grass2.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass_edges</name>
+		<albedo_0>2dobjects/ground/grass_edges.dds</albedo_0>
+		<texture_matrix_0>0.334639 0 0 0 -1 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/plants</name>
+		<albedo_0>2dobjects/ground/plants.dds</albedo_0>
+		<texture_matrix_0>0.25098 0 0.501961 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/stones1</name>
+		<albedo_0>2dobjects/ground/stones1.dds</albedo_0>
+		<texture_matrix_0>0.503937 0 0 0 -0.496063 0.496063</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.12549 0 0.501961 0 -0.25098 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2_edges</name>
+		<albedo_0>2dobjects/ground/dirt2_edges.dds</albedo_0>
+		<texture_matrix_0>0.247059 0 0.752941 0 -0.25098 0.74902</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/flowerpetals</name>
+		<albedo_0>2dobjects/ground/flowerpetals.dds</albedo_0>
+		<texture_matrix_0>0.496063 0 0.503937 0 -0.496063 0.496063</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/hay</name>
+		<albedo_0>2dobjects/ground/hay.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.74902 0 0.25098 0 -0.25098 0.74902</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves3</name>
+		<albedo_0>2dobjects/ground/leaves3.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt4_edges</name>
+		<albedo_0>2dobjects/ground/dirt4_edges.dds</albedo_0>
+		<texture_matrix_0>0.231373 0 0.258824 0 -1.00392 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves2</name>
+		<albedo_0>2dobjects/ground/leaves2.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass1</name>
+		<albedo_0>2dobjects/ground/grass1.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/sand2</name>
+		<albedo_0>2dobjects/ground/sand2.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt3</name>
+		<albedo_0>2dobjects/ground/dirt3.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.12549 0 0.627451 0 -0.25098 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/flowerpetals</name>
+		<albedo_0>2dobjects/ground/flowerpetals.dds</albedo_0>
+		<texture_matrix_0>0.503937 0 0 0 -0.503937 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/snow</name>
+		<albedo_0>2dobjects/ground/snow.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/stones1</name>
+		<albedo_0>2dobjects/ground/stones1.dds</albedo_0>
+		<texture_matrix_0>0.496063 0 0.503937 0 -0.503937 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/pineneedles</name>
+		<albedo_0>2dobjects/ground/pineneedles.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass_edges</name>
+		<albedo_0>2dobjects/ground/grass_edges.dds</albedo_0>
+		<texture_matrix_0>0.329412 0 0.337255 0 -1 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass1</name>
+		<albedo_0>2dobjects/ground/grass1.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves1</name>
+		<albedo_0>2dobjects/ground/leaves1.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2_edges</name>
+		<albedo_0>2dobjects/ground/dirt2_edges.dds</albedo_0>
+		<texture_matrix_0>0.247059 0 0.752941 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2_edges</name>
+		<albedo_0>2dobjects/ground/dirt2_edges.dds</albedo_0>
+		<texture_matrix_0>0.247059 0 0.752941 0 -0.25098 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt</name>
+		<albedo_0>2dobjects/ground/dirt.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt4</name>
+		<albedo_0>2dobjects/ground/dirt4.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves1</name>
+		<albedo_0>2dobjects/ground/leaves1.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass1</name>
+		<albedo_0>2dobjects/ground/grass1.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2_edges</name>
+		<albedo_0>2dobjects/ground/dirt2_edges.dds</albedo_0>
+		<texture_matrix_0>0.247059 0 0.752941 0 -0.247059 0.247059</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/sand2</name>
+		<albedo_0>2dobjects/ground/sand2.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/pineneedles</name>
+		<albedo_0>2dobjects/ground/pineneedles.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass_edges</name>
+		<albedo_0>2dobjects/ground/grass_edges.dds</albedo_0>
+		<texture_matrix_0>0.329412 0 0.670588 0 -1 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/sand1</name>
+		<albedo_0>2dobjects/ground/sand1.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/stones1</name>
+		<albedo_0>2dobjects/ground/stones1.dds</albedo_0>
+		<texture_matrix_0>0.503937 0 0 0 -0.503937 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass_edges2</name>
+		<albedo_0>2dobjects/ground/grass_edges2.dds</albedo_0>
+		<texture_matrix_0>0.333333 0 0 0 -1 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt3_edges</name>
+		<albedo_0>2dobjects/ground/dirt3_edges.dds</albedo_0>
+		<texture_matrix_0>0.231373 0 0.258824 0 -1.00392 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/pineneedles</name>
+		<albedo_0>2dobjects/ground/pineneedles.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves2</name>
+		<albedo_0>2dobjects/ground/leaves2.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/sand1</name>
+		<albedo_0>2dobjects/ground/sand1.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.121569 0 0.878431 0 -0.25098 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2_edges</name>
+		<albedo_0>2dobjects/ground/dirt2_edges.dds</albedo_0>
+		<texture_matrix_0>0.239216 0 0.509804 0 -1.00392 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/corners1</name>
+		<albedo_0>2dobjects/ground/corners1.dds</albedo_0>
+		<texture_matrix_0>0.334639 0 0 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/snow</name>
+		<albedo_0>2dobjects/ground/snow.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2</name>
+		<albedo_0>2dobjects/ground/dirt2.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves3</name>
+		<albedo_0>2dobjects/ground/leaves3.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt</name>
+		<albedo_0>2dobjects/ground/dirt.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/snow</name>
+		<albedo_0>2dobjects/ground/snow.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/flowerpetals</name>
+		<albedo_0>2dobjects/ground/flowerpetals.dds</albedo_0>
+		<texture_matrix_0>0.503937 0 0 0 -0.496063 0.496063</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/snow</name>
+		<albedo_0>2dobjects/ground/snow.dds</albedo_0>
+		<texture_matrix_0>0.5 0 0 0 -0.5 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/bones</name>
+		<albedo_0>2dobjects/ground/bones.dds</albedo_0>
+		<texture_matrix_0>0.25098 0 0.25098 0 -0.25098 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/leaves1</name>
+		<albedo_0>2dobjects/ground/leaves1.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/corners1</name>
+		<albedo_0>2dobjects/ground/corners1.dds</albedo_0>
+		<texture_matrix_0>0.333333 0 0.666667 0 -0.25098 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/pineneedles</name>
+		<albedo_0>2dobjects/ground/pineneedles.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2</name>
+		<albedo_0>2dobjects/ground/dirt2.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/snow</name>
+		<albedo_0>2dobjects/ground/snow.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt4</name>
+		<albedo_0>2dobjects/ground/dirt4.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/sand1</name>
+		<albedo_0>2dobjects/ground/sand1.dds</albedo_0>
+		<texture_matrix_0>0.498039 0 0.501961 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt4_edges</name>
+		<albedo_0>2dobjects/ground/dirt4_edges.dds</albedo_0>
+		<texture_matrix_0>0.234375 0 0.0078125 0 -0.996094 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/stones1</name>
+		<albedo_0>2dobjects/ground/stones1.dds</albedo_0>
+		<texture_matrix_0>0.496063 0 0.503937 0 -0.496063 0.496063</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass_edges2</name>
+		<albedo_0>2dobjects/ground/grass_edges2.dds</albedo_0>
+		<texture_matrix_0>0.329412 0 0.670588 0 -1 1</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/dirt2</name>
+		<albedo_0>2dobjects/ground/dirt2.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.498039 0.498039</texture_matrix_0>
+		<culling>false</culling>
+		<effect>default-alpha</effect>
+	</material>
+	<material>
+		<name>ground/grass2</name>
+		<albedo_0>2dobjects/ground/grass2.dds</albedo_0>
+		<texture_matrix_0>0.501961 0 0 0 -0.501961 1</texture_matrix_0>
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile48</name>
 		<albedo_0>3dobjects/tile48.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile242</name>
 		<albedo_0>3dobjects/tile242.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-yew</name>
 		<albedo_0>3dobjects/tree_branches-yew.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shingles5</name>
 		<albedo_0>3dobjects/shingles5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall7</name>
 		<albedo_0>3dobjects/stonewall7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>design1</name>
 		<albedo_0>3dobjects/design1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile45</name>
 		<albedo_0>3dobjects/tile45.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile42</name>
 		<albedo_0>3dobjects/tile42.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall17</name>
 		<albedo_0>3dobjects/stonewall17.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile22</name>
 		<albedo_0>3dobjects/tile22.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles3</name>
 		<albedo_0>3dobjects/shingles3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shields1</name>
 		<albedo_0>3dobjects/shields1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall10</name>
 		<albedo_0>3dobjects/stonewall10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile6</name>
 		<albedo_0>3dobjects/tile6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stucco1</name>
 		<albedo_0>3dobjects/stucco1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood10</name>
 		<albedo_0>3dobjects/wood10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile21</name>
 		<albedo_0>3dobjects/tile21.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile24</name>
 		<albedo_0>3dobjects/tile24.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>ship_wood01</name>
 		<albedo_0>3dobjects/ship_wood01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows_orchan1</name>
 		<albedo_0>3dobjects/doorwindows_orchan1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners9</name>
 		<albedo_0>3dobjects/banners9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile39</name>
 		<albedo_0>3dobjects/tile39.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood4</name>
 		<albedo_0>3dobjects/wood4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile4</name>
 		<albedo_0>3dobjects/tile4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>snow_rock</name>
 		<albedo_0>3dobjects/snow_rock.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue2</name>
 		<albedo_0>3dobjects/statue2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows4</name>
 		<albedo_0>3dobjects/doorwindows4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>ice_rocks</name>
 		<albedo_0>3dobjects/ice_rocks.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>snowblocks</name>
 		<albedo_0>3dobjects/snowblocks.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves03</name>
 		<albedo_0>3dobjects/tree_branches-leaves03.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>banners8</name>
 		<albedo_0>3dobjects/banners8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles12</name>
 		<albedo_0>3dobjects/shingles12.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>rowboat1</name>
 		<albedo_0>3dobjects/rowboat1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects6</name>
 		<albedo_0>3dobjects/miscobjects6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>forgebricks1</name>
 		<albedo_0>3dobjects/forgebricks1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall15</name>
 		<albedo_0>3dobjects/stonewall15.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tents1</name>
 		<albedo_0>3dobjects/tents1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>ruins</name>
 		<albedo_0>3dobjects/ruins.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile10</name>
 		<albedo_0>3dobjects/tile10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>philospher_stone</name>
 		<albedo_0>3dobjects/philospher_stone.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners10</name>
 		<albedo_0>3dobjects/banners10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile232</name>
 		<albedo_0>3dobjects/tile232.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>cobwebs</name>
 		<albedo_0>3dobjects/cobwebs.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stonewall5</name>
 		<albedo_0>3dobjects/stonewall5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile9</name>
 		<albedo_0>3dobjects/tile9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves02</name>
 		<albedo_0>3dobjects/tree_branches-leaves02.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>plants02</name>
 		<albedo_0>3dobjects/plants02.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>weapons2</name>
 		<albedo_0>3dobjects/weapons2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-willow</name>
 		<albedo_0>3dobjects/tree_branches-willow.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stonewall13</name>
 		<albedo_0>3dobjects/stonewall13.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile14</name>
 		<albedo_0>3dobjects/tile14.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile26</name>
 		<albedo_0>3dobjects/tile26.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall8</name>
 		<albedo_0>3dobjects/stonewall8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile19</name>
 		<albedo_0>3dobjects/tile19.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>fountain</name>
 		<albedo_0>3dobjects/fountain.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall6</name>
 		<albedo_0>3dobjects/stonewall6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles10</name>
 		<albedo_0>3dobjects/shingles10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>furniture2</name>
 		<albedo_0>3dobjects/furniture2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile34</name>
 		<albedo_0>3dobjects/tile34.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>furrugs</name>
 		<albedo_0>3dobjects/furrugs.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shipparts01</name>
 		<albedo_0>3dobjects/shipparts01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile11</name>
 		<albedo_0>3dobjects/tile11.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners5</name>
 		<albedo_0>3dobjects/banners5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects4</name>
 		<albedo_0>3dobjects/miscobjects4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shingles1</name>
 		<albedo_0>3dobjects/shingles1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall3</name>
 		<albedo_0>3dobjects/stonewall3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile32</name>
 		<albedo_0>3dobjects/tile32.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-swamp</name>
 		<albedo_0>3dobjects/tree_branches-swamp.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>beehive</name>
 		<albedo_0>3dobjects/beehive.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile8</name>
 		<albedo_0>3dobjects/tile8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood5</name>
 		<albedo_0>3dobjects/wood5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>balloon1</name>
 		<albedo_0>3dobjects/balloon1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall14</name>
 		<albedo_0>3dobjects/stonewall14.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows3</name>
 		<albedo_0>3dobjects/doorwindows3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows10</name>
 		<albedo_0>3dobjects/doorwindows10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile20</name>
 		<albedo_0>3dobjects/tile20.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile0</name>
 		<albedo_0>3dobjects/tile0.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>furs</name>
 		<albedo_0>3dobjects/furs.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall20</name>
 		<albedo_0>3dobjects/stonewall20.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>weapons1</name>
 		<albedo_0>3dobjects/weapons1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile49</name>
 		<albedo_0>3dobjects/tile49.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood3</name>
 		<albedo_0>3dobjects/wood3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark_treehouse1</name>
 		<albedo_0>3dobjects/bark_treehouse1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects5</name>
 		<albedo_0>3dobjects/miscobjects5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark4</name>
 		<albedo_0>3dobjects/bark4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners4</name>
 		<albedo_0>3dobjects/banners4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile31</name>
 		<albedo_0>3dobjects/tile31.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves05</name>
 		<albedo_0>3dobjects/tree_branches-leaves05.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile241</name>
 		<albedo_0>3dobjects/tile241.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile41</name>
 		<albedo_0>3dobjects/tile41.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile1</name>
 		<albedo_0>3dobjects/tile1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows1</name>
 		<albedo_0>3dobjects/doorwindows1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>haystack</name>
 		<albedo_0>3dobjects/haystack.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves01</name>
 		<albedo_0>3dobjects/tree_branches-leaves01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>doorwindows9</name>
 		<albedo_0>3dobjects/doorwindows9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile40</name>
 		<albedo_0>3dobjects/tile40.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark13</name>
 		<albedo_0>3dobjects/bark13.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects9</name>
 		<albedo_0>3dobjects/miscobjects9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>furrugs2</name>
 		<albedo_0>3dobjects/furrugs2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>bark_treehouse2</name>
 		<albedo_0>3dobjects/bark_treehouse2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile16</name>
 		<albedo_0>3dobjects/tile16.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners3</name>
 		<albedo_0>3dobjects/banners3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood7</name>
 		<albedo_0>3dobjects/wood7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>rocks</name>
 		<albedo_0>3dobjects/rocks.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles7</name>
 		<albedo_0>3dobjects/shingles7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof3</name>
 		<albedo_0>3dobjects/roof3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile5</name>
 		<albedo_0>3dobjects/tile5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>dirtroad02</name>
 		<albedo_0>3dobjects/dirtroad02.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stonewall9</name>
 		<albedo_0>3dobjects/stonewall9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>ship_wood02</name>
 		<albedo_0>3dobjects/ship_wood02.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects2</name>
 		<albedo_0>3dobjects/miscobjects2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shingles2</name>
 		<albedo_0>3dobjects/shingles2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile7</name>
 		<albedo_0>3dobjects/tile7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark3</name>
 		<albedo_0>3dobjects/bark3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tapestries1</name>
 		<albedo_0>3dobjects/tapestries1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile33</name>
 		<albedo_0>3dobjects/tile33.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue3</name>
 		<albedo_0>3dobjects/statue3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile17</name>
 		<albedo_0>3dobjects/tile17.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>dirtroad01</name>
 		<albedo_0>3dobjects/dirtroad01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile47</name>
 		<albedo_0>3dobjects/tile47.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>rock3</name>
 		<albedo_0>3dobjects/rock3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile37</name>
 		<albedo_0>3dobjects/tile37.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall1</name>
 		<albedo_0>3dobjects/stonewall1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile38</name>
 		<albedo_0>3dobjects/tile38.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>awnings</name>
 		<albedo_0>3dobjects/awnings.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>clothesline1</name>
 		<albedo_0>3dobjects/clothesline1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>goldcoins</name>
 		<albedo_0>3dobjects/goldcoins.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>portal1</name>
 		<albedo_0>3dobjects/portal1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile30</name>
 		<albedo_0>3dobjects/tile30.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows5</name>
 		<albedo_0>3dobjects/doorwindows5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark10</name>
 		<albedo_0>3dobjects/bark10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>iceblock</name>
 		<albedo_0>3dobjects/iceblock.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners2</name>
 		<albedo_0>3dobjects/banners2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof1</name>
 		<albedo_0>3dobjects/roof1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark1</name>
 		<albedo_0>3dobjects/bark1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood2</name>
 		<albedo_0>3dobjects/wood2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue4</name>
 		<albedo_0>3dobjects/statue4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects7</name>
 		<albedo_0>3dobjects/miscobjects7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stucco2</name>
 		<albedo_0>3dobjects/stucco2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>rock7</name>
 		<albedo_0>3dobjects/rock7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof5</name>
 		<albedo_0>3dobjects/roof5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>columns</name>
 		<albedo_0>3dobjects/columns.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile15</name>
 		<albedo_0>3dobjects/tile15.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches01</name>
 		<albedo_0>3dobjects/tree_branches01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile18</name>
 		<albedo_0>3dobjects/tile18.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile13</name>
 		<albedo_0>3dobjects/tile13.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark5</name>
 		<albedo_0>3dobjects/bark5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue1</name>
 		<albedo_0>3dobjects/statue1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners7</name>
 		<albedo_0>3dobjects/banners7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall19</name>
 		<albedo_0>3dobjects/stonewall19.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark2</name>
 		<albedo_0>3dobjects/bark2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood8</name>
 		<albedo_0>3dobjects/wood8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>banners6</name>
 		<albedo_0>3dobjects/banners6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile233</name>
 		<albedo_0>3dobjects/tile233.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile25</name>
 		<albedo_0>3dobjects/tile25.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall2</name>
 		<albedo_0>3dobjects/stonewall2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof2</name>
 		<albedo_0>3dobjects/roof2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>hedge</name>
 		<albedo_0>3dobjects/hedge.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>rock6</name>
 		<albedo_0>3dobjects/rock6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>rockdark</name>
 		<albedo_0>3dobjects/rockdark.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves07</name>
 		<albedo_0>3dobjects/tree_branches-leaves07.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile36</name>
 		<albedo_0>3dobjects/tile36.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>rugs</name>
 		<albedo_0>3dobjects/rugs.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stonewall12</name>
 		<albedo_0>3dobjects/stonewall12.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile28</name>
 		<albedo_0>3dobjects/tile28.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>mudbrickwall1</name>
 		<albedo_0>3dobjects/mudbrickwall1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects1</name>
 		<albedo_0>3dobjects/miscobjects1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark11</name>
 		<albedo_0>3dobjects/bark11.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles11</name>
 		<albedo_0>3dobjects/shingles11.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects10</name>
 		<albedo_0>3dobjects/miscobjects10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves06</name>
 		<albedo_0>3dobjects/tree_branches-leaves06.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>shingles9</name>
 		<albedo_0>3dobjects/shingles9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile23</name>
 		<albedo_0>3dobjects/tile23.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles8</name>
 		<albedo_0>3dobjects/shingles8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark12</name>
 		<albedo_0>3dobjects/bark12.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile29</name>
 		<albedo_0>3dobjects/tile29.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>ships1</name>
 		<albedo_0>3dobjects/ships1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile27</name>
 		<albedo_0>3dobjects/tile27.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood6</name>
 		<albedo_0>3dobjects/wood6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile2</name>
 		<albedo_0>3dobjects/tile2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark6</name>
 		<albedo_0>3dobjects/bark6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows8</name>
 		<albedo_0>3dobjects/doorwindows8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>marble3</name>
 		<albedo_0>3dobjects/marble3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles6</name>
 		<albedo_0>3dobjects/shingles6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows_elf1</name>
 		<albedo_0>3dobjects/doorwindows_elf1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall11</name>
 		<albedo_0>3dobjects/stonewall11.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile231</name>
 		<albedo_0>3dobjects/tile231.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>columndesign1</name>
 		<albedo_0>3dobjects/columndesign1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile3</name>
 		<albedo_0>3dobjects/tile3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tents2</name>
 		<albedo_0>3dobjects/tents2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall18</name>
 		<albedo_0>3dobjects/stonewall18.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tree_branches-leaves04</name>
 		<albedo_0>3dobjects/tree_branches-leaves04.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>banners1</name>
 		<albedo_0>3dobjects/banners1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wood9</name>
 		<albedo_0>3dobjects/wood9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows_misc1</name>
 		<albedo_0>3dobjects/doorwindows_misc1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile43</name>
 		<albedo_0>3dobjects/tile43.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>roof4</name>
 		<albedo_0>3dobjects/roof4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows6</name>
 		<albedo_0>3dobjects/doorwindows6.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>snowcave</name>
 		<albedo_0>3dobjects/snowcave.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stalag</name>
 		<albedo_0>3dobjects/stalag.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>statue5</name>
 		<albedo_0>3dobjects/statue5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects8</name>
 		<albedo_0>3dobjects/miscobjects8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile46</name>
 		<albedo_0>3dobjects/tile46.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile35</name>
 		<albedo_0>3dobjects/tile35.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows7</name>
 		<albedo_0>3dobjects/doorwindows7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>rock2</name>
 		<albedo_0>3dobjects/rock2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stucco3</name>
 		<albedo_0>3dobjects/stucco3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>miscobjects12</name>
 		<albedo_0>3dobjects/miscobjects12.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bows</name>
 		<albedo_0>3dobjects/bows.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bag</name>
 		<albedo_0>3dobjects/bag.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>plants03</name>
 		<albedo_0>3dobjects/plants03.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>stump</name>
 		<albedo_0>3dobjects/stump.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile12</name>
 		<albedo_0>3dobjects/tile12.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile240</name>
 		<albedo_0>3dobjects/tile240.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark8</name>
 		<albedo_0>3dobjects/bark8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>tile44</name>
 		<albedo_0>3dobjects/tile44.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>furniture1</name>
 		<albedo_0>3dobjects/furniture1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>miscobjects11</name>
 		<albedo_0>3dobjects/miscobjects11.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bark9</name>
 		<albedo_0>3dobjects/bark9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles13</name>
 		<albedo_0>3dobjects/shingles13.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall4</name>
 		<albedo_0>3dobjects/stonewall4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stonewall16</name>
 		<albedo_0>3dobjects/stonewall16.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stucco4</name>
 		<albedo_0>3dobjects/stucco4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>leather</name>
 		<albedo_0>3dobjects/leather.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>shingles4</name>
 		<albedo_0>3dobjects/shingles4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>plants01</name>
 		<albedo_0>3dobjects/plants01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>tile50</name>
 		<albedo_0>3dobjects/tile50.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>stoneroad01</name>
 		<albedo_0>3dobjects/stoneroad01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>miscobjects3</name>
 		<albedo_0>3dobjects/miscobjects3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>bones</name>
 		<albedo_0>3dobjects/bones.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>doorwindows2</name>
 		<albedo_0>3dobjects/doorwindows2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>snowroad</name>
 		<albedo_0>3dobjects/snowroad.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
+		<culling>false</culling>
 		<effect>default-alpha</effect>
 	</material>
 	<material>
 		<name>doorwindows_dwarf1</name>
 		<albedo_0>3dobjects/doorwindows_dwarf1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>badobject</name>
 		<albedo_0>3dobjects/badobject.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>default</effect>
 	</material>
 	<material>
 		<name>wraith1</name>
 		<albedo_0>meshes/wraith1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>cyclopsm1</name>
 		<albedo_0>meshes/cyclopsm1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals2</name>
 		<albedo_0>meshes/animals2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>goblinmarmed1</name>
 		<albedo_0>meshes/goblinmarmed1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>goblinfarmed1</name>
 		<albedo_0>meshes/goblinfarmed1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals5</name>
 		<albedo_0>meshes/animals5.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bear1</name>
 		<albedo_0>meshes/bear1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals1</name>
 		<albedo_0>meshes/animals1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals3</name>
 		<albedo_0>meshes/animals3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bear2</name>
 		<albedo_0>meshes/bear2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals4</name>
 		<albedo_0>meshes/animals4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>ogrem1</name>
 		<albedo_0>meshes/ogrem1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>goblinm1</name>
 		<albedo_0>meshes/goblinm1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>skeleton1</name>
 		<albedo_0>meshes/skeleton1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>gargoyle</name>
 		<albedo_0>meshes/gargoyle.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>trollm1</name>
 		<albedo_0>meshes/trollm1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>troll2</name>
 		<albedo_0>meshes/troll2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>chimerans1</name>
 		<albedo_0>meshes/chimerans1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals7</name>
 		<albedo_0>meshes/animals7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>unicorn1</name>
 		<albedo_0>meshes/unicorn1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>chimerans2</name>
 		<albedo_0>meshes/chimerans2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bear3</name>
 		<albedo_0>meshes/bear3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals7</name>
 		<albedo_0>meshes/animals7.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals8</name>
 		<albedo_0>meshes/animals8.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals9</name>
 		<albedo_0>meshes/animals9.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals10</name>
 		<albedo_0>meshes/animals10.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>phantom_warrior</name>
 		<albedo_0>meshes/phantom_warrior.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>imp_brownie</name>
 		<albedo_0>meshes/imp_brownie.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>spider1</name>
 		<albedo_0>meshes/spider1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>spider2</name>
 		<albedo_0>meshes/spider2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>sprites</name>
 		<albedo_0>meshes/sprites.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>giant1</name>
 		<albedo_0>meshes/giant1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>hobgoblin</name>
 		<albedo_0>meshes/hobgoblin.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>yeti</name>
 		<albedo_0>meshes/yeti.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>feros</name>
 		<albedo_0>meshes/feros.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon1</name>
 		<albedo_0>meshes/dragon1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon2</name>
 		<albedo_0>meshes/dragon2.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon3</name>
 		<albedo_0>meshes/dragon3.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon4</name>
 		<albedo_0>meshes/dragon4.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>birds01</name>
 		<albedo_0>meshes/birds01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>animals11</name>
 		<albedo_0>meshes/animals11.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>cockatrice</name>
 		<albedo_0>meshes/cockatrice.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>penguins1</name>
 		<albedo_0>meshes/penguins1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>penguins1</name>
 		<albedo_0>meshes/penguins1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>birds02</name>
 		<albedo_0>meshes/birds02.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon2_blue</name>
 		<albedo_0>meshes/dragon2_blue.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon2_gray</name>
 		<albedo_0>meshes/dragon2_gray.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dragon2_pink</name>
 		<albedo_0>meshes/dragon2_pink.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>mule1_black</name>
 		<albedo_0>meshes/mule1_black.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>mule1_brown</name>
 		<albedo_0>meshes/mule1_brown.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>mule1_gray</name>
 		<albedo_0>meshes/mule1_gray.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse01</name>
 		<albedo_0>meshes/horse01.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse02</name>
 		<albedo_0>meshes/horse02.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse03</name>
 		<albedo_0>meshes/horse03.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse04</name>
 		<albedo_0>meshes/horse04.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse05</name>
 		<albedo_0>meshes/horse05.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse06</name>
 		<albedo_0>meshes/horse06.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>horse07</name>
 		<albedo_0>meshes/horse07.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>nenorocit</name>
 		<albedo_0>meshes/nenorocit.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>nasparliu</name>
 		<albedo_0>meshes/nasparliu.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bulangiu</name>
 		<albedo_0>meshes/bulangiu.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>bulangiumare</name>
 		<albedo_0>meshes/bulangiumare.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>castellan</name>
 		<albedo_0>meshes/castellan.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>target1</name>
 		<albedo_0>meshes/target1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orcf1_armed</name>
 		<albedo_0>meshes/orcf1_armed.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orcm1_armed</name>
 		<albedo_0>meshes/orcm1_armed.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orcf1</name>
 		<albedo_0>meshes/orcf1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orcm1</name>
 		<albedo_0>meshes/orcm1.dds</albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dwarf_female1</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>dwarf_male1</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>elf_female1</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>elf_male1</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>human_female1</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>human_male1</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>draegoni_female</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>draegoni_male</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>gnome_female</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>gnome_male</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orchan_female</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 	<material>
 		<name>orchan_male</name>
-		<albedo_0></albedo_0>
-		<albedo_1></albedo_1>
-		<albedo_2></albedo_2>
-		<albedo_3></albedo_3>
-		<normal></normal>
-		<specular></specular>
-		<emission></emission>
-		<blend></blend>
-		<height></height>
+		<albedo_0 />
+		<albedo_1 />
+		<albedo_2 />
+		<albedo_3 />
+		<normal />
+		<specular />
+		<emission />
+		<blend />
+		<height />
 		<effect>actor</effect>
 	</material>
 </materials>

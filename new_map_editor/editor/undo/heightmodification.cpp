@@ -116,8 +116,7 @@ namespace eternal_lands
 				editor.set_terrain_heights(m_heights, m_id);
 				break;
 			case mt_height_changed:
-				editor.set_heights(m_heights, m_id);
-				break;
+				editor.set_heights(m_heights);
 			case mt_blend_values_changed:
 				return false;
 		}

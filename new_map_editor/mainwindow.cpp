@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	init_actions();
 
+	m_material_count = 0;
+
 	m_settings = new SettingsDialog(this);
 	m_preferences = new PreferencesDialog(this);
 
@@ -98,12 +100,17 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_preferences, SIGNAL(triggered(bool)), this,
 		SLOT(change_preferences()));
 
-	QObject::connect(action_export_blend_image, SIGNAL(triggered(bool)), this,
-		SLOT(export_blend_image()));
-	QObject::connect(action_export_terrain_map, SIGNAL(triggered(bool)), this,
-		SLOT(export_terrain_map()));
-	QObject::connect(action_import_terrain_map, SIGNAL(triggered(bool)), this,
-		SLOT(import_terrain_map()));
+	QObject::connect(action_export_blend_image, SIGNAL(triggered(bool)),
+		this, SLOT(export_blend_image()));
+	QObject::connect(action_export_terrain_map, SIGNAL(triggered(bool)),
+		this, SLOT(export_terrain_map()));
+	QObject::connect(action_import_terrain_map, SIGNAL(triggered(bool)),
+		this, SLOT(import_terrain_map()));
+
+	QObject::connect(action_light, SIGNAL(triggered(bool)),
+		el_gl_widget, SLOT(set_draw_lights(bool)));
+	QObject::connect(action_light_spheres, SIGNAL(triggered(bool)),
+		el_gl_widget, SLOT(set_draw_light_spheres(bool)));
 
 	m_object_selection_mapper = new QSignalMapper(this);
 	m_object_selection_mapper->setMapping(selection_type_0, int(0));
@@ -134,15 +141,45 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SIGNAL(mapped(const int)), this,
 		SLOT(set_object_blend(const int)));
 
-	QObject::connect(translate_x_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_x(bool)));
-	QObject::connect(translate_y_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_y(bool)));
-	QObject::connect(translate_z_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_translation_z(bool)));
-	QObject::connect(translate_x_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_x_min(double)));
-	QObject::connect(translate_y_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_y_min(double)));
-	QObject::connect(translate_z_min, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_z_min(double)));
-	QObject::connect(translate_x_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_x_max(double)));
-	QObject::connect(translate_y_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_y_max(double)));
-	QObject::connect(translate_z_max, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_random_translation_z_max(double)));
+	QObject::connect(material_0, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_1, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_2, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_3, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_4, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_5, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_6, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_7, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_8, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+	QObject::connect(material_9, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(update_materials()));
+
+	QObject::connect(translate_x_group, SIGNAL(clicked(bool)),
+		el_gl_widget, SLOT(set_random_translation_x(bool)));
+	QObject::connect(translate_y_group, SIGNAL(clicked(bool)),
+		el_gl_widget, SLOT(set_random_translation_y(bool)));
+	QObject::connect(translate_z_group, SIGNAL(clicked(bool)),
+		el_gl_widget, SLOT(set_random_translation_z(bool)));
+	QObject::connect(translate_x_min, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_random_translation_x_min(double)));
+	QObject::connect(translate_y_min, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_random_translation_y_min(double)));
+	QObject::connect(translate_z_min, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_random_translation_z_min(double)));
+	QObject::connect(translate_x_max, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_random_translation_x_max(double)));
+	QObject::connect(translate_y_max, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_random_translation_y_max(double)));
+	QObject::connect(translate_z_max, SIGNAL(valueChanged(double)),
+		el_gl_widget, SLOT(set_random_translation_z_max(double)));
 
 	QObject::connect(rotate_x_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_rotation_x(bool)));
 	QObject::connect(rotate_y_group, SIGNAL(clicked(bool)), el_gl_widget, SLOT(set_random_rotation_y(bool)));
@@ -163,26 +200,58 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_info, SIGNAL(triggered()), this, SLOT(about_el()));
 	QObject::connect(action_qt_info, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-	object_witdgets.push_back(x_translation);
-	object_witdgets.push_back(y_translation);
-	object_witdgets.push_back(z_translation);
-	object_witdgets.push_back(scale_value);
-	object_witdgets.push_back(x_rotation);
-	object_witdgets.push_back(y_rotation);
-	object_witdgets.push_back(z_rotation);
-	object_witdgets.push_back(transparency_type_0);
-	object_witdgets.push_back(transparency_type_1);
-	object_witdgets.push_back(transparency_type_2);
-	object_witdgets.push_back(transparency_value);
-	object_witdgets.push_back(selection_type_0);
-	object_witdgets.push_back(selection_type_1);
-	object_witdgets.push_back(selection_type_2);
+	m_object_witdgets.push_back(x_translation);
+	m_object_witdgets.push_back(y_translation);
+	m_object_witdgets.push_back(z_translation);
+	m_object_witdgets.push_back(scale_value);
+	m_object_witdgets.push_back(x_rotation);
+	m_object_witdgets.push_back(y_rotation);
+	m_object_witdgets.push_back(z_rotation);
+	m_object_witdgets.push_back(transparency_type_0);
+	m_object_witdgets.push_back(transparency_type_1);
+	m_object_witdgets.push_back(transparency_type_2);
+	m_object_witdgets.push_back(transparency_value);
+	m_object_witdgets.push_back(selection_type_0);
+	m_object_witdgets.push_back(selection_type_1);
+	m_object_witdgets.push_back(selection_type_2);
+	m_object_witdgets.push_back(material_0);
+	m_object_witdgets.push_back(material_1);
+	m_object_witdgets.push_back(material_2);
+	m_object_witdgets.push_back(material_3);
+	m_object_witdgets.push_back(material_4);
+	m_object_witdgets.push_back(material_5);
+	m_object_witdgets.push_back(material_6);
+	m_object_witdgets.push_back(material_7);
+	m_object_witdgets.push_back(material_8);
+	m_object_witdgets.push_back(material_9);
 
-	light_witdgets.push_back(x_position);
-	light_witdgets.push_back(y_position);
-	light_witdgets.push_back(z_position);
-	light_witdgets.push_back(radius);
-	object_witdgets.push_back(light_color);
+	m_material_witdgets.push_back(material_0);
+	m_material_witdgets.push_back(material_1);
+	m_material_witdgets.push_back(material_2);
+	m_material_witdgets.push_back(material_3);
+	m_material_witdgets.push_back(material_4);
+	m_material_witdgets.push_back(material_5);
+	m_material_witdgets.push_back(material_6);
+	m_material_witdgets.push_back(material_7);
+	m_material_witdgets.push_back(material_8);
+	m_material_witdgets.push_back(material_9);
+
+	m_material_label_witdgets.push_back(material_label_0);
+	m_material_label_witdgets.push_back(material_label_1);
+	m_material_label_witdgets.push_back(material_label_2);
+	m_material_label_witdgets.push_back(material_label_3);
+	m_material_label_witdgets.push_back(material_label_4);
+	m_material_label_witdgets.push_back(material_label_5);
+	m_material_label_witdgets.push_back(material_label_6);
+	m_material_label_witdgets.push_back(material_label_7);
+	m_material_label_witdgets.push_back(material_label_8);
+	m_material_label_witdgets.push_back(material_label_9);
+
+	m_light_witdgets.push_back(x_position);
+	m_light_witdgets.push_back(y_position);
+	m_light_witdgets.push_back(z_position);
+	m_light_witdgets.push_back(radius);
+	m_light_witdgets.push_back(light_color);
 
 	set_light_color(glm::vec3(0.0f));
 
@@ -240,14 +309,29 @@ void MainWindow::load_settings()
 
 void MainWindow::update_object()
 {
+	QStringList default_materials, materials, object_materials;
+	QString material;
 	EditorObjectData object_data;
-	unsigned int id;
+	unsigned int id, i;
+	int index, j;
 
 	el_gl_widget->get_object_data(object_data);
 
-	BOOST_FOREACH(QObject* object_widget, object_witdgets)
+	BOOST_FOREACH(QObject* object_widget, m_object_witdgets)
 	{
 		object_widget->blockSignals(true);
+	}
+
+	BOOST_FOREACH(QComboBox* material_witdget, m_material_witdgets)
+	{
+		material_witdget->setCurrentIndex(-1);
+		material_witdget->setEnabled(false);
+	}
+
+	BOOST_FOREACH(QLabel* material_label_witdget,
+		m_material_label_witdgets)
+	{
+		material_label_witdget->setEnabled(false);
 	}
 
 	x_translation->setValue(object_data.get_world_transformation(
@@ -273,7 +357,67 @@ void MainWindow::update_object()
 
 	object_id->setText(QVariant(id).toString());
 
-	BOOST_FOREACH(QObject* object_widget, object_witdgets)
+	default_materials = el_gl_widget->get_default_materials(
+		object_data.get_name());
+
+	object_materials = default_materials;
+
+	for (j = 0; j < default_materials.size(); ++j)
+	{
+		if (object_data.get_material_names().size() > j)
+		{
+			material = QString::fromUtf8(
+				object_data.get_material_names()[j].get(
+					).c_str());
+		}
+
+		if (!material.isEmpty())
+		{
+			object_materials[j] = material;
+		}
+	}
+
+	m_material_count = object_materials.size();
+
+	m_material_count = std::min(m_material_count,
+		m_material_witdgets.size());
+
+	materials = el_gl_widget->get_materials();
+
+	for (i = 0; i < m_material_count; ++i)
+	{
+		material = object_materials[i];
+		index = -1;
+
+		m_material_witdgets[i]->clear();
+
+		for (j = 0; j < materials.size(); ++j)
+		{
+			QColor color;
+
+			m_material_witdgets[i]->addItem(materials[j]);
+
+			if (materials[j] == default_materials[i])
+			{
+				color = QColor::fromRgbF(0.5f, 0.5f, 0.5f);
+
+				m_material_witdgets[i]->setItemData(j,
+					QBrush(color), Qt::BackgroundRole);
+			}
+
+			if (materials[j] == material)
+			{
+				index = j;
+			}
+		}
+
+		m_material_witdgets[i]->setCurrentIndex(index);
+
+		m_material_witdgets[i]->setEnabled(true);
+		m_material_label_witdgets[i]->setEnabled(true);
+	}
+
+	BOOST_FOREACH(QObject* object_widget, m_object_witdgets)
 	{
 		object_widget->blockSignals(false);
 	}
@@ -357,14 +501,14 @@ void MainWindow::update_object(const bool select)
 		i = -1;
 		renderable = el_gl_widget->get_renderable();
 
-		if (renderable == rt_terrain)
+/*		if (renderable == rt_terrain)
 		{
 			i = 1;
 			update_terrain();
 		}
 		else
-		{
-			if (renderable == rt_mesh)
+*/		{
+			if (renderable == rt_object)
 			{
 				i = 0;
 				update_object();
@@ -405,7 +549,7 @@ void MainWindow::update_light(const bool select)
 
 		el_gl_widget->get_light_data(light);
 
-		BOOST_FOREACH(QObject* light_widget, light_witdgets)
+		BOOST_FOREACH(QObject* light_widget, m_light_witdgets)
 		{
 			light_widget->blockSignals(true);
 		}
@@ -422,7 +566,7 @@ void MainWindow::update_light(const bool select)
 
 		light_id->setText(QVariant(id).toString());
 
-		BOOST_FOREACH(QObject* light_widget, light_witdgets)
+		BOOST_FOREACH(QObject* light_widget, m_light_witdgets)
 		{
 			light_widget->blockSignals(false);
 		}
@@ -460,6 +604,20 @@ void MainWindow::update_rotation()
 void MainWindow::update_scale()
 {
 	el_gl_widget->set_object_scale(scale_value->value() * 0.01f);
+}
+
+void MainWindow::update_materials()
+{
+	StringVector materials;
+	unsigned int i;
+
+	for (i = 0; i < m_material_count; ++i)
+	{
+		materials.push_back(String(m_material_witdgets[i]->currentText(
+			).toUtf8().data()));
+	}
+
+	el_gl_widget->set_object_materials(materials);
 }
 
 void MainWindow::update_position()
@@ -550,11 +708,11 @@ void MainWindow::remove()
 		case rt_light:
 			el_gl_widget->remove_light();
 			break;
-		case rt_mesh:
+		case rt_object:
 			el_gl_widget->remove_object();
 			break;
-		case rt_ground_tiles:
-		case rt_terrain:
+		case rt_particle:
+		case rt_none:
 			return;
 	}
 

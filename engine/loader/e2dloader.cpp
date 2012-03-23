@@ -263,9 +263,9 @@ namespace eternal_lands
 		t1[0] = texture_coordinates[2];
 		t1[1] = texture_coordinates[3];
 
-		for (y = 0; y <= get_tile_size(); y++)
+		for (y = 0; y <= get_tile_size(); ++y)
 		{
-			for (x = 0; x <= get_tile_size(); x++)
+			for (x = 0; x <= get_tile_size(); ++x)
 			{
 				scale = glm::vec2(x, y) /
 					static_cast<float>(get_tile_size());
@@ -335,12 +335,12 @@ namespace eternal_lands
 			semantics, std::numeric_limits<Uint32>::max(),
 			pt_triangles, false, use_simd);
 
-		load_vertex_data(mesh_data_tool, texture_coordinates, size);
-
 		for (i = 0; i < index_count; ++i)
 		{
 			mesh_data_tool->set_index_data(i, indices[i]);
 		}
+
+		load_vertex_data(mesh_data_tool, texture_coordinates, size);
 
 		vmin = glm::vec3(-size[0], -size[1], -0.01f);
 		vmax = glm::vec3(size[0], size[1], 0.0f);
@@ -351,7 +351,7 @@ namespace eternal_lands
 		name = FileSystem::get_file_name_without_extension(texture);
 
 		material = material_description_cache->get_material_description(
-			name);
+			String(UTF8("ground/") + name.get()));
 
 		materials.clear();
 		materials.push_back(material);

@@ -34,6 +34,9 @@ namespace eternal_lands
 	{
 		private:
 			Uint32ObjectSharedPtrMap m_light_objects;
+			Uint32ObjectSharedPtrMap m_light_sphere_objects;
+			bool m_draw_lights;
+			bool m_draw_light_spheres;
 
 		protected:
 			virtual void intersect(const Frustum &frustum,
@@ -53,6 +56,27 @@ namespace eternal_lands
 			virtual void add_light(const LightData &light_data);
 			virtual void remove_light(const Uint32 id);
 			void load_map(const String &name, EditorMapData &data);
+
+			inline bool get_draw_lights() const
+			{
+				return m_draw_lights;
+			}
+
+			inline bool get_draw_light_spheres() const
+			{
+				return m_draw_light_spheres;
+			}
+
+			inline void set_draw_lights(const bool draw_lights)
+			{
+				m_draw_lights = draw_lights;
+			}
+
+			inline void set_draw_light_spheres(
+				const bool draw_light_spheres)
+			{
+				m_draw_light_spheres = draw_light_spheres;
+			}
 
 	};
 

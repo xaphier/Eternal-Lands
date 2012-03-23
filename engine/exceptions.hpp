@@ -95,8 +95,12 @@ namespace eternal_lands
 		errinfo_table_size;
 	typedef boost::error_info<struct errinfo_table_index_, Uint64>
 		errinfo_table_index;
-	typedef boost::error_info<struct errinfo_array_index_, Uint64>
-		errinfo_array_index;
+	typedef boost::error_info<struct errinfo_array_index_0_, Uint64>
+		errinfo_array_index_0;
+	typedef boost::error_info<struct errinfo_array_index_1_, Uint64>
+		errinfo_array_index_1;
+	typedef boost::error_info<struct errinfo_array_index_2_, Uint64>
+		errinfo_array_index_2;
 	typedef boost::error_info<struct errinfo_lua_type_, Sint32>
 		errinfo_lua_type;
 	typedef boost::error_info<struct errinfo_lua_type_name_, StringType>

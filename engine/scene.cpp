@@ -161,6 +161,7 @@ namespace eternal_lands
 	void Scene::remove_object(const Uint32 id)
 	{
 		m_map->remove_object(id);
+		get_free_ids()->free_object_id(id);
 	}
 
 	bool Scene::get_object_position(const Uint32 id, glm::vec3 &position)
@@ -176,6 +177,7 @@ namespace eternal_lands
 	void Scene::remove_light(const Uint32 id)
 	{
 		m_map->remove_light(id);
+		get_free_ids()->free_light_id(id);
 	}
 
 	void Scene::set_fog(const glm::vec3 &color, const float density)
@@ -432,8 +434,6 @@ namespace eternal_lands
 		}
 
 		intersect(frustum, m_visible_lights);
-
-		m_visible_lights.sort(glm::vec3(m_scene_view.get_focus()));
 	}
 
 	void Scene::cull_all_shadows()
@@ -1022,6 +1022,8 @@ namespace eternal_lands
 
 				m_state_manager.switch_blend(blend !=
 					bt_disabled);
+//				m_state_manager.switch_depth_mask(blend =
+//					bt_disabled);
 			}
 
 			if (blend == bt_alpha_transparency_value)
@@ -1195,7 +1197,7 @@ namespace eternal_lands
 		m_program_vars_id++;
 
 		max_count = 0;
-		id = 0xFFFFFF;
+		id = 0xFFFFFFFF;
 		selection = st_none;
 
 		for (i = 0; i < ids.size(); ++i)

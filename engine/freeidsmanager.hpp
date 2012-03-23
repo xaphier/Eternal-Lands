@@ -62,6 +62,7 @@ namespace eternal_lands
 			void free_object_id(const Uint32 id);
 			Uint32 use_typeless_object_id(const Uint32 typeless_id,
 				const IdType type);
+			void use_object_id(const Uint32 id);
 			Uint32 get_object_id(const Uint32 typeless_id,
 				const IdType type);
 			Uint32 get_next_free_light_id();
@@ -74,6 +75,25 @@ namespace eternal_lands
 			FreeIds &get_free_object_ids(const IdType type)
 			{
 				return m_free_ids[type];
+			}
+
+			static inline bool get_id_type(const Uint32 id,
+				Uint32 &typeless_id, IdType &type)
+			{
+				Uint16 tmp;
+
+				tmp = FreeIds::get_type_value(id);
+
+				if (tmp >= it_particle_object)
+				{
+					return false;
+				}
+
+				typeless_id = FreeIds::get_typeless_id(id);
+
+				type = static_cast<IdType>(tmp);
+
+				return true;
 			}
 
 	};
