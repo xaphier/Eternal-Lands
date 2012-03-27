@@ -257,6 +257,29 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(m_progress.get(), SIGNAL(set_range(const int, const int)), m_progress_bar, SLOT(setRange(const int, const int)), Qt::QueuedConnection);
 	QObject::connect(m_progress.get(), SIGNAL(set_value(const int)), m_progress_bar, SLOT(setValue(const int)), Qt::QueuedConnection);
+/*
+
+
+
+	BOOST_FOREACH(const QString &str, ground_tile->currentText().toInt())
+	{
+		
+		("3dobjects/tile" + str + ".dds");
+	}
+*/
+	int i, count;
+
+	count = ground_tile->count();
+
+	for (i = 0; i < count; ++i)
+	{
+		QPixmap pixmap;
+
+		pixmap = QPixmap::fromImage(el_gl_widget->get_icon(
+			"3dobjects/tile" + ground_tile->itemText(i) + ".dds"));
+
+		ground_tile->setItemIcon(i, QIcon(pixmap));
+	}
 }
 
 MainWindow::~MainWindow()

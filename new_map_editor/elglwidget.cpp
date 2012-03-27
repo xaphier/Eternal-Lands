@@ -2,12 +2,13 @@
 #include <sceneresources.hpp>
 #include <filesystem.hpp>
 #include <globalvars.hpp>
-#include <codec/codecmanager.hpp>
+#include <image.hpp>
 #include <lightdata.hpp>
 #include "editor/editorobjectdata.hpp"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
+#include <QImage>
 
 ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 {
@@ -32,6 +33,59 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 
 ELGLWidget::~ELGLWidget()
 {
+}
+
+QImage ELGLWidget::get_icon(const QString &name)
+{
+	ImageSharedPtr image;
+	QImage result(32, 32, QImage::Format_ARGB32);
+	glm::vec4 color;
+	Uint32 x, y, height, width, mipmap, i, count;
+	bool scale;
+
+	scale = false;
+
+	try
+	{
+		image = m_editor->get_image(String(name.toUtf8()));
+
+		width = image->get_width();
+		height = image->get_height();
+		count = image->get_mipmap_count();
+		mipmap = 0;
+
+		for (i = 0; i < count; ++i)
+		{
+			if ((width <= 32) && (height <= 32))
+			{
+				break;
+			}
+
+			width = std::max(width / 2, 1u);
+			height = std::max(height / 2, 1u);
+			mipmap++;
+		}
+
+		result = QImage(std::max(width, 32u), std::max(height, 32u),
+			QImage::Format_ARGB32);
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				color = image->get_pixel(x, y, 0, 0, mipmap);
+
+				result.setPixel(x, y, QColor::fromRgbF(color[0],
+					color[1], color[2], color[3]).rgba());
+			}
+		}
+	}
+	catch (...)
+	{
+	}
+
+	return result.scaled(32, 32, Qt::KeepAspectRatio,
+		Qt::SmoothTransformation);
 }
 
 void ELGLWidget::get_points(const Sint32 x, const Sint32 y, glm::vec3 &p0,

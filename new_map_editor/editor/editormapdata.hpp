@@ -160,6 +160,7 @@ namespace eternal_lands
 			StringVector get_materials() const;
 			StringVector get_default_materials(const String &name)
 				const;
+			ImageSharedPtr get_image(const String &name) const;
 
 			void set_height_map_size(const Uint16 width,
 				const Uint16 height)

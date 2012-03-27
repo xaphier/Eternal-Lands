@@ -17,6 +17,7 @@
 #include "materialdescriptioncache.hpp"
 #include "meshdatacache.hpp"
 #include "abstractmaploader.hpp"
+#include "codec/codecmanager.hpp"
 
 namespace eternal_lands
 {
@@ -844,6 +845,13 @@ namespace eternal_lands
 			default:
 				return ebt_set;
 		}
+	}
+
+	ImageSharedPtr EditorMapData::get_image(const String &name) const
+	{
+		return m_scene->get_scene_resources().get_codec_manager(
+			)->load_image(name, m_scene->get_file_system(),
+			ImageCompressionTypeSet(), false);
 	}
 
 }

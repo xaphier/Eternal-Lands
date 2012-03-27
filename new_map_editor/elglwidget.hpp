@@ -113,6 +113,7 @@ class ELGLWidget: public QGLWidget
 		static void get_file_extensions_filter(QString &filter, QString &default_extension,
 			const QString &codec);
 		void set_dirs(const QStringList &dirs);
+		QImage get_icon(const QString &name);
 
 		inline Qt::MouseButton get_click_button() const
 		{

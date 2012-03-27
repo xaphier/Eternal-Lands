@@ -151,6 +151,12 @@ namespace eternal_lands
 			bool get_selected() const;
 			RenderableType get_renderable() const;
 
+			inline ImageSharedPtr get_image(const String &name)
+				const
+			{
+				return m_data.get_image(name);
+			}
+
 			inline void set_draw_lights(const bool draw_lights)
 			{
 				m_data.set_draw_lights(draw_lights);
