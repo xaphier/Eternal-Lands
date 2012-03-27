@@ -15,7 +15,6 @@
 #include "prerequisites.hpp"
 #include "undostack.hpp"
 #include "editormapdata.hpp"
-#include "terraineditor.hpp"
 #include "editorobjectdata.hpp"
 #include "editor.hpp"
 #include <boost/random.hpp>
@@ -27,7 +26,7 @@
 namespace eternal_lands
 {
 
-	class Editor: public TerrainEditor
+	class Editor
 	{
 		private:
 			EditorMapData m_data;
@@ -162,6 +161,11 @@ namespace eternal_lands
 			{
 				m_data.set_draw_light_spheres(
 					draw_light_spheres);
+			}
+
+			inline void set_lights_enabled(const bool enabled)
+			{
+				m_data.set_lights_enabled(enabled);
 			}
 
 			inline void init()

@@ -7,6 +7,7 @@
 #include "editor/editorobjectdata.hpp"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTimer>
 
 ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 {
@@ -24,6 +25,9 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_file_system = boost::make_shared<FileSystem>();
 
 	m_editor.reset(new Editor(m_global_vars, m_file_system));
+
+	m_timer = new QTimer(this);
+	connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
 }
 
 ELGLWidget::~ELGLWidget()
@@ -61,7 +65,7 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 		}
 		else
 		{
-/*			if (!m_object.empty())
+			if (!m_object.get().empty())
 			{
 				get_points(event->x(), height() - event->y(), p0, p1);
 
@@ -69,13 +73,13 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 
 				position = p0 - dir * (p0[2] / dir[2]);
 
-				m_editor->add_3d_object(position, m_color, m_type,
-					m_server_id, m_object);
+				m_editor->add_3d_object(position, m_object,
+					st_select);
 				emit update_object(false);
 				emit can_undo(m_editor->get_can_undo());
 			}
 			else
-*/			{
+			{
 				if (m_light)
 				{
 					get_points(event->x(), height() - event->y(), p0, p1);
@@ -96,7 +100,6 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 				}
 			}
 		}
-		updateGL();
 	}
 }
 
@@ -105,19 +108,18 @@ void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 	if (get_terrain_editing())
 	{
 		emit terrain_edit(event->x(), height() - event->y());
-
-		updateGL();
 	}
 }
 
-void ELGLWidget::terrain_height_edit(const int x, const int y, const float strength,
-	const float radius, const int brush_type)
+void ELGLWidget::terrain_height_edit(const int x, const int y,
+	const float strength, const float radius, const int brush_type)
 {
 	glm::vec3 p0, p1;
 
 	get_points(x, y, p0, p1);
 
-	m_editor->terrain_height_edit(m_terrain_index, p0, p1, strength, radius, brush_type);
+	m_editor->terrain_height_edit(m_terrain_index, p0, p1, strength,
+		radius, brush_type);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -181,7 +183,6 @@ void ELGLWidget::wheelEvent(QWheelEvent *event)
 	}
 
 	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
-	updateGL();
 }
 
 void ELGLWidget::initializeGL()
@@ -240,6 +241,8 @@ void ELGLWidget::initializeGL()
 	catch (...)
 	{
 	}
+
+	m_timer->start(50);
 }
 
 void ELGLWidget::resizeGL(int width, int height)
@@ -290,35 +293,12 @@ void ELGLWidget::paintGL()
 				break;
 			case rt_light:
 				emit update_light(true);
-				updateGL();
 				break;
 			case rt_object:
 				emit update_object(true);
-				updateGL();
 				break;
 		}
 	}
-
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glBindBufferARB(GL_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBufferARB(GL_PIXEL_PACK_BUFFER, 0);
-	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER, 0);
-	glUseProgram(0);
-
-	for (int i = 0; i < 16; i++)
-	{
-		glDisableVertexAttribArray(i);
-	}
-
-	glBlendColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glBlendFunc(GL_ZERO, GL_ONE);
 }
 
 void ELGLWidget::get_object_data(EditorObjectData &object_data)
@@ -345,19 +325,16 @@ void ELGLWidget::remove_object()
 			m_editor->remove_object();
 			emit can_undo(m_editor->get_can_undo());
 			m_select = false;
-			updateGL();
 			break;
 		case rt_light:
 			m_editor->remove_light();
 			emit can_undo(m_editor->get_can_undo());
 			m_select = false;
-			updateGL();
 			break;
 		case rt_particle:
 //			m_editor->remove_particle();
 			emit can_undo(m_editor->get_can_undo());
 			m_select = false;
-			updateGL();
 			break;
 		default:
 			break;
@@ -368,56 +345,48 @@ void ELGLWidget::set_object_blend(const BlendType value)
 {
 	m_editor->set_object_blend(value);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::set_object_translation(const glm::vec3 &translation)
 {
 	m_editor->set_object_translation(translation);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::set_object_rotation(const glm::vec3 &rotation)
 {
 	m_editor->set_object_rotation(rotation);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::set_object_scale(const float scale)
 {
 	m_editor->set_object_scale(scale);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::remove_light()
 {
 	m_editor->remove_light();
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::set_light_position(const glm::vec3 &position)
 {
 	m_editor->set_light_position(position);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::set_light_radius(const double radius)
 {
 	m_editor->set_light_radius(radius);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::set_light_color(const glm::vec3 &color)
 {
 	m_editor->set_light_color(color);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::undo()
@@ -447,8 +416,6 @@ void ELGLWidget::undo()
 				break;
 		}
 	}
-
-	updateGL();
 }
 
 void ELGLWidget::set_wire_frame(const bool enabled)
@@ -461,22 +428,12 @@ void ELGLWidget::set_wire_frame(const bool enabled)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
-
-	updateGL();
-}
-
-void ELGLWidget::light_mode(const bool enabled)
-{
-//	m_editor->get_scene().set_draw_lights(enabled);
-
-	updateGL();
 }
 
 void ELGLWidget::set_ambient(const glm::vec3 &color)
 {
 	m_editor->set_ambient(color);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 const glm::vec3 &ELGLWidget::get_ambient() const
@@ -487,29 +444,21 @@ const glm::vec3 &ELGLWidget::get_ambient() const
 void ELGLWidget::move_left()
 {
 	m_pos += m_rotate * glm::vec3(-5.0f, 0.0f, 0.0f);
-
-	updateGL();
 }
 
 void ELGLWidget::move_right()
 {
 	m_pos += m_rotate * glm::vec3(5.0f, 0.0f, 0.0f);
-
-	updateGL();
 }
 
 void ELGLWidget::move_up()
 {
 	m_pos += m_rotate * glm::vec3(0.0f, 5.0f, 0.0f);
-
-	updateGL();
 }
 
 void ELGLWidget::move_down()
 {
 	m_pos += m_rotate * glm::vec3(0.0f, -5.0f, 0.0f);
-
-	updateGL();
 }
 
 void ELGLWidget::rotate_left()
@@ -522,8 +471,6 @@ void ELGLWidget::rotate_left()
 	}
 
 	m_rotate = glm::mat3(glm::rotate(m_rotate_z, glm::vec3(0.0f, 0.0f, 1.0f)));
-
-	updateGL();
 }
 
 void ELGLWidget::rotate_right()
@@ -536,22 +483,18 @@ void ELGLWidget::rotate_right()
 	}
 
 	m_rotate = glm::mat3(glm::rotate(m_rotate_z, glm::vec3(0.0f, 0.0f, 1.0f)));
-
-	updateGL();
 }
 
 void ELGLWidget::zoom_in()
 {
 	m_zoom -= 1.0f;
 	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
-	updateGL();
 }
 
 void ELGLWidget::zoom_out()
 {
 	m_zoom += 1.0f;
 	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
-	updateGL();
 }
 
 void ELGLWidget::add_object(const glm::vec4 &color, const Uint16 type, const Uint16 server_id,
@@ -634,7 +577,6 @@ void ELGLWidget::new_map(const int map_size_x, const int map_size_y, const int b
 	m_editor->set_terrain(terrain_material, terrain_size, blend_imgae_size);
 
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 */
 }
 
@@ -667,7 +609,6 @@ void ELGLWidget::new_map(const QString &image, const int blend_image_size_x,
 	m_editor->set_terrain(terrain_material, image.toStdString(), blend_imgae_size);
 
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 */
 }
 
@@ -693,7 +634,6 @@ void ELGLWidget::open_map(const QString &file_name)
 		m_editor->load_map(String(file_name.toUtf8()));
 
 		emit can_undo(m_editor->get_can_undo());
-		updateGL();
 	}
 }
 
@@ -720,14 +660,12 @@ void ELGLWidget::set_terrain_albedo_map(const QString &name, const Uint32 index)
 {
 	m_editor->set_terrain_albedo_map(String(name.toUtf8()), index);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::set_object_selection(const SelectionType selection)
 {
 	m_editor->set_object_selection(selection);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 void ELGLWidget::set_random_translation_x(const bool value)
@@ -852,18 +790,18 @@ void ELGLWidget::save(const QString &name) const
 
 QString ELGLWidget::get_blend_image_name() const
 {
-	return QString::fromStdString(m_editor->get_blend_image_name());
+//	return QString::fromStdString(m_editor->get_blend_image_name());
+	return QString();
 }
 
 void ELGLWidget::set_blend_image_name(const QString &blend_image)
 {
-	m_editor->set_blend_image_name(String(blend_image.toUtf8()));
+//	m_editor->set_blend_image_name(String(blend_image.toUtf8()));
 }
 
 void ELGLWidget::set_game_minute(const int game_minute)
 {
 //	m_editor->get_scene().set_game_minute(game_minute);
-	updateGL();
 }
 
 glm::vec3 ELGLWidget::get_light_color() const
@@ -883,6 +821,11 @@ void ELGLWidget::set_draw_lights(const bool draw_lights)
 void ELGLWidget::set_draw_light_spheres(const bool draw_light_spheres)
 {
 	m_editor->set_draw_light_spheres(draw_light_spheres);
+}
+
+void ELGLWidget::set_lights_enabled(const bool enabled)
+{
+	m_editor->set_lights_enabled(enabled);
 }
 
 QStringList ELGLWidget::get_materials() const
@@ -919,7 +862,6 @@ void ELGLWidget::set_object_materials(const StringVector &materials)
 {
 	m_editor->set_object_materials(materials);
 	emit can_undo(m_editor->get_can_undo());
-	updateGL();
 }
 
 /*
@@ -1034,7 +976,5 @@ void ELGLWidget::import_terrain_map(const QString &file_name)
 	m_editor->import_terrain_map(file_name.toUtf8());
 
 	emit can_undo(m_editor->get_can_undo());
-
-	updateGL();
 }
 */

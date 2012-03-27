@@ -45,7 +45,7 @@ namespace eternal_lands
 	}
 
 	MeshBuilder::MeshBuilder(const GlobalVarsSharedPtr &global_vars):
-		m_global_vars(global_vars)
+		m_global_vars(global_vars), m_use_vao(true)
 	{
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
 		VertexDescriptionMap instanced_mesh, simple_terrain;
@@ -157,21 +157,21 @@ namespace eternal_lands
 	AbstractMeshSharedPtr MeshBuilder::get_mesh(const String &name,
 		const bool static_indices, const bool static_vertices) const
 	{
-		if (get_global_vars()->get_opengl_3_2())
+		if (get_global_vars()->get_opengl_3_2() && get_use_vao())
 		{
 			return boost::make_shared<OpenGl32Mesh>(name,
 				static_indices, static_vertices,
 				get_global_vars()->get_use_simd());
 		}
-/*
-		if (get_global_vars()->get_opengl_3_1() && false)
+
+		if (get_global_vars()->get_opengl_3_1() && get_use_vao())
 		{
 			return boost::make_shared<OpenGl31Mesh>(name,
 				static_indices, static_vertices,
 				get_global_vars()->get_use_simd());
 		}
-*/
-		if (get_global_vars()->get_opengl_3_0())
+
+		if (get_global_vars()->get_opengl_3_0() && get_use_vao())
 		{
 			return boost::make_shared<OpenGl3Mesh>(name,
 				static_indices, static_vertices,

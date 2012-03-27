@@ -69,15 +69,11 @@
      <property name="title">
       <string>&amp;Export</string>
      </property>
-     <addaction name="action_export_blend_image"/>
-     <addaction name="action_export_terrain_map"/>
-     <addaction name="action_export_height_map"/>
     </widget>
     <widget class="QMenu" name="menu_Import">
      <property name="title">
       <string>&amp;Import</string>
      </property>
-     <addaction name="action_import_terrain_map"/>
     </widget>
     <addaction name="action_new"/>
     <addaction name="action_open"/>
@@ -113,7 +109,9 @@
     </property>
     <addaction name="action_wire_frame"/>
     <addaction name="action_delete"/>
-    <addaction name="action_light"/>
+    <addaction name="action_lights"/>
+    <addaction name="action_light_spheres"/>
+    <addaction name="action_lights_enabled"/>
     <addaction name="action_height"/>
    </widget>
    <widget class="QMenu" name="menu_info">
@@ -170,10 +168,10 @@
    <addaction name="separator"/>
    <addaction name="action_wire_frame"/>
    <addaction name="action_delete"/>
-   <addaction name="action_light"/>
+   <addaction name="action_lights"/>
    <addaction name="action_light_spheres"/>
+   <addaction name="action_lights_enabled"/>
    <addaction name="action_height"/>
-   <addaction name="action_day_night"/>
    <addaction name="separator"/>
    <addaction name="action_info"/>
   </widget>
@@ -362,7 +360,7 @@
      <item>
       <widget class="QStackedWidget" name="properties">
        <property name="currentIndex">
-        <number>0</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="object_page">
         <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -428,8 +426,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>304</width>
-              <height>406</height>
+              <width>121</width>
+              <height>364</height>
              </rect>
             </property>
             <attribute name="label">
@@ -812,8 +810,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>304</width>
-              <height>406</height>
+              <width>242</width>
+              <height>269</height>
              </rect>
             </property>
             <attribute name="label">
@@ -927,6 +925,14 @@
             </layout>
            </widget>
            <widget class="QWidget" name="page_3">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>198</width>
+              <height>358</height>
+             </rect>
+            </property>
             <attribute name="label">
              <string>Seite</string>
             </attribute>
@@ -2240,8 +2246,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>100</width>
-              <height>30</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2253,8 +2259,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>100</width>
-              <height>30</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3005,7 +3011,7 @@
     <string>Delete mode</string>
    </property>
   </action>
-  <action name="action_light">
+  <action name="action_lights">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -3014,7 +3020,10 @@
      <normaloff>:/icons/help-hint.png</normaloff>:/icons/help-hint.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Light</string>
+    <string>Draw &amp;lights</string>
+   </property>
+   <property name="toolTip">
+    <string>Draw lights</string>
    </property>
   </action>
   <action name="action_info">
@@ -3044,8 +3053,7 @@
    </property>
    <property name="icon">
     <iconset resource="icons/resourcen.qrc">
-     <normaloff>:/icons/terrain.jpg</normaloff>
-     <normalon>:/icons/package_network.png</normalon>:/icons/terrain.jpg</iconset>
+     <normaloff>:/icons/terrain.png</normaloff>:/icons/terrain.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Height</string>
@@ -3146,32 +3154,6 @@
     <string>Water Height</string>
    </property>
   </action>
-  <action name="action_export_blend_image">
-   <property name="text">
-    <string>Blend image</string>
-   </property>
-  </action>
-  <action name="action_export_height_map">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Height map</string>
-   </property>
-  </action>
-  <action name="action_export_terrain_map">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Terrain map</string>
-   </property>
-  </action>
-  <action name="action_import_terrain_map">
-   <property name="text">
-    <string>Terrain map</string>
-   </property>
-  </action>
   <action name="action_qt_info">
    <property name="text">
     <string>Qt info</string>
@@ -3186,23 +3168,30 @@
    </property>
    <property name="icon">
     <iconset resource="icons/resourcen.qrc">
-     <normaloff>:/icons/gnome-web-browser.png</normaloff>:/icons/gnome-web-browser.png</iconset>
+     <normaloff>:/icons/Crystal sphere-256.png</normaloff>
+     <normalon>:/icons/Crystal sphere-256.png</normalon>:/icons/Crystal sphere-256.png</iconset>
    </property>
    <property name="text">
-    <string>light spheres</string>
+    <string>Draw light spheres</string>
    </property>
    <property name="toolTip">
-    <string>draw light spheres</string>
+    <string>Draw light spheres</string>
    </property>
   </action>
-  <action name="action_day_night">
+  <action name="action_lights_enabled">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons/resourcen.qrc">
-     <normaloff>:/icons/weather-clear.png</normaloff>
-     <normalon>:/icons/weather-clear-night.png</normalon>:/icons/weather-clear.png</iconset>
+     <normaloff>:/icons/Lightbulb-Off-32.png</normaloff>
+     <normalon>:/icons/Lightbulb-32.png</normalon>:/icons/Lightbulb-Off-32.png</iconset>
    </property>
    <property name="text">
-    <string>Day/Night</string>
+    <string>Lights enabled</string>
+   </property>
+   <property name="toolTip">
+    <string>Lights enabled</string>
    </property>
   </action>
  </widget>
@@ -3215,7 +3204,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="icons/resourcen.qrc"/>
   <include location="icons/resourcen.qrc"/>
  </resources>
  <connections>
@@ -3268,7 +3256,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_light</sender>
+   <sender>action_lights</sender>
    <signal>toggled(bool)</signal>
    <receiver>action_add_light</receiver>
    <slot>setEnabled(bool)</slot>
@@ -3300,7 +3288,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>action_light</sender>
+   <sender>action_lights</sender>
    <signal>toggled(bool)</signal>
    <receiver>action_light_spheres</receiver>
    <slot>setEnabled(bool)</slot>

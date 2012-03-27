@@ -45,6 +45,7 @@ namespace eternal_lands
 
 			const GlobalVarsSharedPtr m_global_vars;
 			VertexFormatsMap m_vertex_formats;
+			bool m_use_vao;
 
 			void set_format(const VertexFormatType format,
 				const VertexElements &elements);
@@ -75,6 +76,16 @@ namespace eternal_lands
 			static const String &get_str(
 				const VertexFormatType type);
 			static VertexFormatType get_type(const String &str);
+
+			inline bool get_use_vao() const
+			{
+				return m_use_vao;
+			}
+
+			inline void set_use_vao(const bool use_vao)
+			{
+				m_use_vao = use_vao;
+			}
 
 	};
 

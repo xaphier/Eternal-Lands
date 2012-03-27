@@ -24,15 +24,6 @@ namespace eternal_lands
 		Scene(global_vars, file_system), m_draw_lights(false),
 		m_draw_light_spheres(false)
 	{
-		set_map(boost::make_shared<Map>(
-			get_scene_resources().get_codec_manager(),
-			get_file_system(), get_global_vars(),
-			get_scene_resources().get_mesh_builder(),
-			get_scene_resources().get_mesh_cache(),
-			get_scene_resources().get_effect_cache(),
-			get_scene_resources().get_texture_cache(),
-			get_scene_resources().get_material_description_cache(),
-			String(UTF8("empty"))));
 	}
 
 	EditorScene::~EditorScene() throw()
@@ -59,6 +50,7 @@ namespace eternal_lands
 		object_data.set_selection(st_select);
 		object_data.set_world_transformation(transformation);
 		object_data.set_id(object_id);
+		material.set_cast_shadows(false);
 
 		get_scene_resources().get_mesh_cache()->get_mesh(
 			object_data.get_name(), mesh);
@@ -68,7 +60,6 @@ namespace eternal_lands
 		material.set_emission_scale_offset(emission_scale_offset);
 		material.set_name(String(UTF8("light")));
 		material.set_effect(String(UTF8("solid-color")));
-		material.set_cast_shadows(false);
 
 		materials.push_back(material);
 
@@ -81,6 +72,8 @@ namespace eternal_lands
 			object_data.get_id(), object));
 
 		assert(temp.second);
+
+		materials[0].set_culling(false);
 
 		transformation.set_scale(light_data.get_radius());
 		object_data.set_world_transformation(transformation);

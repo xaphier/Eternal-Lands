@@ -102,6 +102,16 @@ namespace eternal_lands
 		set_main_light_ambient(glm::vec3(0.2f));
 
 		m_free_ids = boost::make_shared<FreeIdsManager>();
+
+		set_map(boost::make_shared<Map>(
+			get_scene_resources().get_codec_manager(),
+			get_file_system(), get_global_vars(),
+			get_scene_resources().get_mesh_builder(),
+			get_scene_resources().get_mesh_cache(),
+			get_scene_resources().get_effect_cache(),
+			get_scene_resources().get_texture_cache(),
+			get_scene_resources().get_material_description_cache(),
+			String(UTF8("empty"))));
 	}
 
 	Scene::~Scene() throw()
@@ -240,7 +250,6 @@ namespace eternal_lands
 
 	void Scene::clear()
 	{
-		m_map.reset();
 		m_actors.clear();
 		m_free_ids->clear();
 	}
@@ -252,7 +261,7 @@ namespace eternal_lands
 
 		light_count = 1;
 
-		if (m_map->get_dungeon() || m_night)
+		if (m_map->get_dungeon() || get_lights())
 		{
 			BOOST_FOREACH(const LightSharedPtr &light,
 				m_visible_lights.get_lights())
@@ -408,7 +417,7 @@ namespace eternal_lands
 		{
 			m_light_position_array[0] = m_main_light_direction;
 
-			if (m_night)
+			if (get_lights())
 			{
 				m_light_color_array[0] = m_main_light_color +
 					glm::vec4(glm::vec3(0.3f), 0.0f);
@@ -573,7 +582,7 @@ namespace eternal_lands
 			}
 			else
 			{
-				if (m_night)
+				if (get_lights())
 				{
 					program->set_parameter(apt_ambient,
 						m_main_light_ambient);
@@ -599,10 +608,16 @@ namespace eternal_lands
 		Uint16 count, material, mesh, i, lod;
 		bool object_data_set;
 
+		DEBUG_CHECK_GL_ERROR();
+
 		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
 			object->get_name() % object->get_mesh()->get_name());
 
+		DEBUG_CHECK_GL_ERROR();
+
 		m_state_manager.switch_mesh(object->get_mesh());
+
+		DEBUG_CHECK_GL_ERROR();
 
 		lod = object->get_lod(distance);
 		count = object->get_lods_count(lod);
@@ -611,10 +626,14 @@ namespace eternal_lands
 
 		object_data_set = false;
 
+		DEBUG_CHECK_GL_ERROR();
+
 		for (i = 0; i < count; ++i)
 		{
 			mesh = object->get_mesh_index(lod, i);
 			material = object->get_materials_index(lod, i);
+
+			DEBUG_CHECK_GL_ERROR();
 
 			if (switch_program(object->get_materials(
 				)[material].get_effect(
@@ -623,6 +642,8 @@ namespace eternal_lands
 			{
 				object_data_set = false;
 			}
+
+			DEBUG_CHECK_GL_ERROR();
 
 			if (!object_data_set)
 			{
@@ -636,6 +657,8 @@ namespace eternal_lands
 					dynamic_light_count);
 				object_data_set = true;
 			}
+
+			DEBUG_CHECK_GL_ERROR();
 
 			object->get_materials()[material].bind(
 				m_state_manager);
@@ -660,8 +683,14 @@ namespace eternal_lands
 				object->get_materials(
 					)[material].get_specular_scale_offset());
 
+			DEBUG_CHECK_GL_ERROR();
+
 			m_state_manager.draw(mesh, 1);
+
+			DEBUG_CHECK_GL_ERROR();
 		}
+
+		DEBUG_CHECK_GL_ERROR();
 	}
 
 	void Scene::draw_object_shadow(const ObjectSharedPtr &object,
@@ -1033,6 +1062,8 @@ namespace eternal_lands
 			}
 
 //			m_state_manager.switch_stencil_test(stencil);
+
+			DEBUG_CHECK_GL_ERROR();
 
 			draw_object(object.get_object(), object.get_distance());
 		}

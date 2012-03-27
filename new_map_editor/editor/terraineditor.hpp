@@ -34,14 +34,17 @@ namespace eternal_lands
 	{
 		protected:
 			ImageSharedPtr m_blend_image;
-			TextureSharedPtr m_texture;
+			ImageSharedPtr m_height_image;
+			TextureSharedPtr m_blend_texture;
+			TextureSharedPtr m_height_texture;
 
-			static void get_heights(const Uint16Array2 &vertex,
-				const float radius, HeightVector &heights);
-			static void change_heights(const Uint16Array2 &vertex,
+			void get_heights(const Uint16Array2 &vertex,
+				const float radius, HeightVector &heights)
+				const;
+			void change_heights(const Uint16Array2 &vertex,
 				const float strength, const float radius,
 				const EditorBrushType brush_type,
-				HeightVector &heights);
+				HeightVector &heights) const;
 			void get_blend_values(const Uint16Array2 &vertex,
 				const float radius,
 				ImageValueVector &blend_values) const;

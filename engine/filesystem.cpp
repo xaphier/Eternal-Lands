@@ -51,10 +51,34 @@ namespace eternal_lands
 				virtual bool get_has_file(
 					const String &file_name) const;
 
+				inline static String get_dir(const String &name)
+				{
+					if (name.get().empty())
+					{
+						return name;
+					}
+
+#ifdef	WINDOWS
+					if (name.get().rbegin() != UTF8('\\'))
+					{
+						return String(name.get() +
+							UTF8('\\');
+					}			
+#else	/* WINDOWS */
+					if (*name.get().rbegin() != UTF8('/'))
+					{
+						return String(name.get() +
+							UTF8( '/'));
+					}
+#endif	/* WINDOWS */
+
+					return name;
+				}
+
 		};
 
 		DirArchive::DirArchive(const String &name):
-			AbstractArchive(name)
+			AbstractArchive(get_dir(name))
 		{
 		}
 
@@ -73,7 +97,6 @@ namespace eternal_lands
 			struct stat fstat;
 
 			path = get_name().get();
-			path += '/';
 			path += file_name.get();
 			path = utf8_to_string(path);
 
@@ -120,7 +143,6 @@ namespace eternal_lands
 			struct stat fstat;
 
 			path = get_name().get();
-			path += '/';
 			path += file_name.get();
 			path = utf8_to_string(path);
 
@@ -260,6 +282,7 @@ namespace eternal_lands
 				{
 					path.pop_back();
 				}
+
 				continue;
 			}
 
@@ -293,7 +316,11 @@ namespace eternal_lands
 
 		for (i = 1; i < count; ++i)
 		{
-			result += '/';
+#ifdef	WINDOWS
+			result += UTF8('\\');
+#else	/* WINDOWS */
+			result += UTF8('/');
+#endif	/* WINDOWS */
 			result += path[i];
 		}
 
@@ -320,7 +347,11 @@ namespace eternal_lands
 
 		for (i = 1; i < count; ++i)
 		{
-			result += '/';
+#ifdef	WINDOWS
+			result += UTF8('\\');
+#else	/* WINDOWS */
+			result += UTF8('/');
+#endif	/* WINDOWS */
 			result += path[i];
 		}
 
@@ -454,8 +485,13 @@ namespace eternal_lands
 
 		end = m_archives.rend();
 
+		LOG_DEBUG_VERBOSE(UTF8("Checking file '%1%'"), file_name);
+
 		for (it = m_archives.rbegin(); it != end; ++it)
 		{
+			LOG_DEBUG_VERBOSE(UTF8("Checking archive '%1%'"),
+				it->get_name());
+
 			try
 			{
 				if (it->get_has_file(name))

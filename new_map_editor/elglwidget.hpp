@@ -17,6 +17,7 @@ class ELGLWidget: public QGLWidget
 		GlobalVarsSharedPtr m_global_vars;
 		FileSystemSharedPtr m_file_system;
 		QStringList m_dirs;
+		QTimer* m_timer;
 		glm::mat4 m_projection;
 		glm::mat4 m_view;
 		glm::mat3 m_rotate;
@@ -71,7 +72,7 @@ class ELGLWidget: public QGLWidget
 
 	public:
 		ELGLWidget(QWidget *parent = 0);
-		~ELGLWidget();
+		virtual ~ELGLWidget();
 		void get_object_data(EditorObjectData &object_data) const;
 		RenderableType get_renderable() const;
 		glm::vec3 get_light_color() const;
@@ -148,13 +149,22 @@ class ELGLWidget: public QGLWidget
 			return m_dirs;
 		}
 
+		inline const GlobalVarsSharedPtr &get_global_vars() const
+		{
+			return m_global_vars;
+		}
+
+		inline const FileSystemSharedPtr &get_file_system() const
+		{
+			return m_file_system;
+		}
+
 	public slots:
 		void remove_object();
 		void remove_light();
 		void set_light_radius(const double radius);
 		void undo();
 		void set_wire_frame(const bool enabled);
-		void light_mode(const bool enabled);
 		void move_left();
 		void move_right();
 		void move_up();
@@ -202,6 +212,7 @@ class ELGLWidget: public QGLWidget
 		void set_game_minute(const int game_minute);
 		void set_draw_lights(const bool draw_lights);
 		void set_draw_light_spheres(const bool draw_light_spheres);
+		void set_lights_enabled(const bool enabled);
 
 	signals:
 		void update_object(const bool select);

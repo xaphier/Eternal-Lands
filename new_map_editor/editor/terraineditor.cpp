@@ -13,7 +13,7 @@ namespace eternal_lands
 {
 
 	void TerrainEditor::get_heights(const Uint16Array2 &vertex,
-		const float radius, HeightVector &heights)
+		const float radius, HeightVector &heights) const
 	{
 		glm::vec2 centre, point;
 		Uint32 x, y;
@@ -27,11 +27,11 @@ namespace eternal_lands
 		min_y = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
 
 		tmp = static_cast<float>(vertex[0]) + radius;
-//		temp = scene_page_read_write->get_terrain_width() - 1.0f;
+		temp = m_height_image->get_width() - 1.0f;
 		max_x = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
 		tmp = static_cast<float>(vertex[1]) + radius;
-//		temp = scene_page_read_write->get_terrain_height() - 1.0f;
+		temp = m_height_image->get_height() - 1.0f;
 		max_y = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
 		heights.clear();
@@ -48,17 +48,21 @@ namespace eternal_lands
 
 				if (glm::distance2(centre, point) <= sqr_radius)
 				{
-					heights.push_back(Height(x, y, 0));
+					Height value(x, y);
+
+					value.set_value(
+						m_blend_image->get_pixel(x, y,
+							0, 0, 0).r);
+
+					heights.push_back(value);
 				}
 			}
 		}
-
-//		scene_page_read_write->get_terrain_heights(heights);
 	}
 
 	void TerrainEditor::change_heights(const Uint16Array2 &vertex,
 		const float strength, const float radius,
-		const EditorBrushType brush_type, HeightVector &heights)
+		const EditorBrushType brush_type, HeightVector &heights) const
 	{
 		glm::vec2 centre;
 		float average;

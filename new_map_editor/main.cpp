@@ -51,10 +51,12 @@ int main(int argc, char *argv[])
 
 	try
 	{
+		MainWindow* window;
+
 		QCoreApplication::setOrganizationName("Eternal Lands");
 		QCoreApplication::setOrganizationDomain("eternal-lands.com");
 		QCoreApplication::setApplicationName("Map Editor");
-		MainWindow *window = new MainWindow();
+		window = new MainWindow();
 
 		window->show();
 	}

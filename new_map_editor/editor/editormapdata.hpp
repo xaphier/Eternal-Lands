@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "editorobjectdata.hpp"
+#include "imagevalue.hpp"
 #include "height.hpp"
 
 /**
@@ -34,6 +35,16 @@ namespace eternal_lands
 		rt_particle
 	};
 
+	enum EditorBrushType
+	{
+		ebt_set = 0,
+		ebt_const = 1,
+		ebt_linear = 2,
+		ebt_quadratic = 3,
+		ebt_linear_smooth = 4,
+		ebt_quadratic_smooth = 5
+	};
+
 	/**
 	 * @brief @c class for maps.
 	 *
@@ -46,12 +57,42 @@ namespace eternal_lands
 			std::map<Uint32, LightData> m_lights;
 			std::map<Uint32, ParticleData> m_particles;
 			boost::scoped_ptr<EditorScene> m_scene;
-			ImageSharedPtr m_terrain_heights;
-			ImageSharedPtr m_terrain_blend_values;
+			ImageSharedPtr m_height_image;
+			ImageSharedPtr m_blend_image;
 			Uint16MultiArray2 m_height_map;
 			Uint8MultiArray2 m_tile_map;
 			Uint32 m_id;
 			RenderableType m_renderable;
+
+			void get_heights(const Uint16Array2 &vertex,
+				const float radius, HeightVector &heights)
+				const;
+			void change_heights(const Uint16Array2 &vertex,
+				const float strength, const float radius,
+				const EditorBrushType brush_type,
+				HeightVector &heights) const;
+			void get_blend_values(const Uint16Array2 &vertex,
+				const float radius,
+				ImageValueVector &blend_values) const;
+			static void change_blend_values(
+				const Uint16Array2 &position,
+				const Uint32 index, const float strength,
+				const float radius,
+				const EditorBrushType brush_type,
+				ImageValueVector &blend_values);
+			static float calc_brush_effect(const glm::vec2 &centre,
+				const glm::vec2 &point, const float value,
+				const float average, const float strength,
+				const float radius,
+				const EditorBrushType brush_type);
+			static float get_blend_value(const glm::vec4 &blend,
+				const Uint32 index);
+			static void set_blend_value(const float value,
+				const Uint32 index, glm::vec4 &blend);
+			static glm::vec4 get_blend_values(
+				const glm::vec4 &blend);
+			static EditorBrushType get_brush_type(
+				const int brush_type);
 
 		public:
 			EditorMapData(const GlobalVarsSharedPtr &global_vars,
@@ -115,6 +156,7 @@ namespace eternal_lands
 			void set_draw_lights(const bool draw_lights);
 			void set_draw_light_spheres(
 				const bool draw_light_spheres);
+			void set_lights_enabled(const bool enabled);
 			StringVector get_materials() const;
 			StringVector get_default_materials(const String &name)
 				const;

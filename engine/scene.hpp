@@ -65,7 +65,7 @@ namespace eternal_lands
 			Uint64 m_program_vars_id;
 			float m_time;
 			SubFrustumsMask m_shadow_objects_mask;
-			bool m_night;
+			bool m_lights;
 			bool m_shadow_map_change;
 
 			void get_lights(const BoundingBox &bounding_box,
@@ -254,14 +254,14 @@ namespace eternal_lands
 				return m_scene_view.get_projection_matrix()[0];
 			}
 
-			inline void set_night(const bool night)
+			inline void set_lights(const bool lights)
 			{
-				m_night = night;
+				m_lights = lights;
 			}
 
-			inline bool get_night() const
+			inline bool get_lights() const
 			{
-				return m_night;
+				return m_lights;
 			}
 
 			inline SceneResources &get_scene_resources()

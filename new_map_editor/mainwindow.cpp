@@ -2,7 +2,6 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QInputDialog>
-#include <QTimer>
 #include "newmapdialog.hpp"
 #include "lightdata.hpp"
 #include "editor/editorobjectdata.hpp"
@@ -18,6 +17,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	m_settings = new SettingsDialog(this);
 	m_preferences = new PreferencesDialog(this);
+	m_objects = new ObjectsDialog(this);
 
 	action_time = new QSpinBox(this);
 	action_time->setMaximum(359);
@@ -73,7 +73,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_undo, SIGNAL(triggered()), el_gl_widget, SLOT(undo()));
 	QObject::connect(el_gl_widget, SIGNAL(can_undo(bool)), action_undo, SLOT(setEnabled(bool)));
 
-	QObject::connect(action_light, SIGNAL(triggered(bool)), el_gl_widget, SLOT(light_mode(bool)));
 	QObject::connect(action_height, SIGNAL(triggered(bool)), this, SLOT(height_mode(bool)));
 	QObject::connect(action_height, SIGNAL(triggered(bool)), el_gl_widget, SLOT(set_terrain_editing(bool)));
 
@@ -100,17 +99,12 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_preferences, SIGNAL(triggered(bool)), this,
 		SLOT(change_preferences()));
 
-	QObject::connect(action_export_blend_image, SIGNAL(triggered(bool)),
-		this, SLOT(export_blend_image()));
-	QObject::connect(action_export_terrain_map, SIGNAL(triggered(bool)),
-		this, SLOT(export_terrain_map()));
-	QObject::connect(action_import_terrain_map, SIGNAL(triggered(bool)),
-		this, SLOT(import_terrain_map()));
-
-	QObject::connect(action_light, SIGNAL(triggered(bool)),
+	QObject::connect(action_lights, SIGNAL(triggered(bool)),
 		el_gl_widget, SLOT(set_draw_lights(bool)));
 	QObject::connect(action_light_spheres, SIGNAL(triggered(bool)),
 		el_gl_widget, SLOT(set_draw_light_spheres(bool)));
+	QObject::connect(action_lights_enabled, SIGNAL(triggered(bool)),
+		el_gl_widget, SLOT(set_lights_enabled(bool)));
 
 	m_object_selection_mapper = new QSignalMapper(this);
 	m_object_selection_mapper->setMapping(selection_type_0, int(0));
@@ -257,16 +251,16 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	load_settings();
 
-	m_timer = new QTimer(this);
-	connect(m_timer, SIGNAL(timeout()), el_gl_widget, SLOT(updateGL()));
-	m_timer->start(100);
-
 	m_progress_bar = new QProgressBar(status_bar);
 	status_bar->addPermanentWidget(m_progress_bar, 1);
 	m_progress.reset(new QProgress);
 
 	QObject::connect(m_progress.get(), SIGNAL(set_range(const int, const int)), m_progress_bar, SLOT(setRange(const int, const int)), Qt::QueuedConnection);
 	QObject::connect(m_progress.get(), SIGNAL(set_value(const int)), m_progress_bar, SLOT(setValue(const int)), Qt::QueuedConnection);
+}
+
+MainWindow::~MainWindow()
+{
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -666,15 +660,15 @@ void MainWindow::change_light_color()
 
 void MainWindow::add_object(const bool value)
 {
-#warning "not implemented"
-/*
 	if (value)
 	{
 		if (m_objects->exec() == QDialog::Accepted)
 		{
+			/*
 			el_gl_widget->add_object(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f),
 				m_objects->get_type(), m_objects->get_server_id(),
 				m_objects->get_object());
+			*/
 		}
 		else
 		{
@@ -686,7 +680,6 @@ void MainWindow::add_object(const bool value)
 	{
 		el_gl_widget->disable_object();
 	}
-*/
 }
 
 void MainWindow::add_light(const bool value)
@@ -896,6 +889,7 @@ void MainWindow::change_preferences()
 		el_gl_widget->set_swap_wheel_zoom(m_preferences->get_swap_wheel_zoom());
 		tool_bar->setIconSize(m_preferences->get_toolbar_icon_size());
 		el_gl_widget->set_dirs(m_preferences->get_dirs());
+		m_objects->set_dirs(m_preferences->get_dirs());
 		set_textures(m_preferences->get_textures());
 		save_settings();
 	}
@@ -1099,6 +1093,7 @@ void MainWindow::load_dirs_settings(QSettings &settings)
 	settings.endArray();
 
 	el_gl_widget->set_dirs(dirs);
+	m_objects->set_dirs(dirs);
 }
 
 void MainWindow::set_textures(const QStringList &textures)

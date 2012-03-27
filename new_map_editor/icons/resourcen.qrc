@@ -1,7 +1,11 @@
 <RCC>
   <qresource prefix="icons">
-    <file>terrain.jpg</file>
+    <file>Crystal sphere-256.png</file>
+    <file>Lightbulb-32.png</file>
+    <file>Lightbulb-Off-32.png</file>
+    <file>heightmap.png</file>
     <file>add_light.png</file>
+    <file>terrain.png</file>
     <file>add_object.png</file>
     <file>application-x-desktop.png</file>
     <file>dialog-error.png</file>

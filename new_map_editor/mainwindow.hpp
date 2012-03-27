@@ -9,6 +9,7 @@
 #include "settingsdialog.hpp"
 #include "timedialog.hpp"
 #include "preferencesdialog.hpp"
+#include "objectsdialog.hpp"
 #include "qprogress.hpp"
 
 class MainWindow: public QMainWindow, public Ui::MainWindow
@@ -27,6 +28,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		QSpinBox* action_time;
 		SettingsDialog* m_settings;
 		PreferencesDialog* m_preferences;
+		ObjectsDialog* m_objects;
 		QString m_file_name;
 		QAction* action_move_l;
 		QAction* action_move_r;
@@ -36,7 +38,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		QAction* action_rotate_r;
 		QAction* action_zoom_in;
 		QAction* action_zoom_out;
-		QTimer* m_timer;
 		QProgressBar* m_progress_bar;
 		boost::shared_ptr<QProgress> m_progress;
 		QStringList m_textures;
@@ -77,6 +78,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 
 	public:
 		MainWindow(QWidget* parent = 0);
+		virtual ~MainWindow();
 
 	public slots:
 		void update_translation();

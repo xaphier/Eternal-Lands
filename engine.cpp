@@ -844,7 +844,7 @@ extern "C" void engine_cull_scene()
 	scene->set_main_light_ambient(main_light_ambient);
 	scene->set_main_light_color(main_light_color);
 	scene->set_main_light_direction(main_light_direction);
-	scene->set_night(!is_day);
+	scene->set_lights(!is_day);
 
 	scene->cull();
 
