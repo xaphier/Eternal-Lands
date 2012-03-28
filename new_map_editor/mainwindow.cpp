@@ -9,6 +9,8 @@
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
+	int i, count;
+
 	setupUi(this);
 
 	init_actions();
@@ -257,17 +259,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(m_progress.get(), SIGNAL(set_range(const int, const int)), m_progress_bar, SLOT(setRange(const int, const int)), Qt::QueuedConnection);
 	QObject::connect(m_progress.get(), SIGNAL(set_value(const int)), m_progress_bar, SLOT(setValue(const int)), Qt::QueuedConnection);
-/*
-
-
-
-	BOOST_FOREACH(const QString &str, ground_tile->currentText().toInt())
-	{
-		
-		("3dobjects/tile" + str + ".dds");
-	}
-*/
-	int i, count;
 
 	count = ground_tile->count();
 

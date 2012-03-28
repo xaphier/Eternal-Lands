@@ -80,7 +80,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/buildinformations.cpp.in" "${CMAKE_C
 list(APPEND engine_source_files "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp")
 
 add_subdirectory(zip)
-add_subdirectory(lua)
+add_subdirectory(angelscript)
 add_subdirectory(glsl_optimizer)
 
 add_library(elengine ${engine_source_files} ${engine_header_files})
@@ -97,7 +97,7 @@ target_link_libraries(elengine ${SDL_LIBRARIES})
 target_link_libraries(elengine ${SDL_LIBRARY})
 target_link_libraries(elengine ${FREETYPE_LIBRARY})
 target_link_libraries(elengine glsl_optimizer)
-target_link_libraries(elengine elluac++)
+target_link_libraries(elengine angelscript)
 target_link_libraries(elengine xz)
 target_link_libraries(elengine zip)
 target_link_libraries(elengine ${ZLIB_LIBRARIES})
@@ -107,3 +107,4 @@ IF (PCHSupport_FOUND AND BUILD_PCH)
 ENDIF (PCHSupport_FOUND AND BUILD_PCH)
 
 set_target_properties(elengine PROPERTIES VERSION ${${PROJECT_NAME}_VERSION_STRING})
+

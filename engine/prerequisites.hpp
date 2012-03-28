@@ -68,9 +68,7 @@
 #include <set>
 #include <cal3d/cal3d.h>
 #include <SDL.h>
-#include "lua/lua.h"
-#include "lua/lualib.h"
-#include "lua/lauxlib.h"
+#include "angelscript/include/angelscript.h"
 
 namespace eternal_lands
 {

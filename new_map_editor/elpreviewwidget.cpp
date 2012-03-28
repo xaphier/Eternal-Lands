@@ -79,8 +79,6 @@ void ELPreviewWidget::initializeGL()
 		m_global_vars->set_opengl_version(ovt_3_3);
 	}
 
-	m_scene.get_scene_resources().get_mesh_builder()->set_use_vao(false);
-
 	m_global_vars->set_optmize_shader_source(false);
 
 	m_global_vars->set_view_distance(250.0f);

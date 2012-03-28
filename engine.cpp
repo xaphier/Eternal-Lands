@@ -37,7 +37,6 @@
 #include "engine/actortexturebuilder.hpp"
 #include "engine/freeids.hpp"
 #include "engine/effectcache.hpp"
-#include "engine/lua.hpp"
 #include "engine/globalvars.hpp"
 #include "engine/exceptions.hpp"
 #include "engine/shader/shadersourcebuilder.hpp"
@@ -64,7 +63,6 @@ namespace
 	el::SelectionType selection = el::st_none;
 	el::StringSet harvestables;
 	el::StringSet entrables;
-	boost::scoped_ptr<el::Lua> lua;
 	el::GlobalVarsSharedPtr global_vars;
 	el::FileSystemSharedPtr file_system;
 
@@ -269,127 +267,6 @@ namespace
 		return el::ObjectData(transformation, name,
 			transparency, id, el_selection, el_blend);
 	}
-
-	int el_rebuild_shader(lua_State *L)
-	{
-		Sint32 n;
-
-		n = lua_gettop(L);  // Number of arguments
-
-		if (n != 0)
-		{
-			return luaL_error(L,
-				UTF8("Got %d arguments expected 0"), n); 
-		}
-
-		scene->get_scene_resources().get_effect_cache()->reload();
-
-		return 0;
-	}
-
-	int el_reload_shader(lua_State *L)
-	{
-		Sint32 n;
-
-		n = lua_gettop(L);  // Number of arguments
-
-		if (n != 0)
-		{
-			return luaL_error(L,
-				UTF8("Got %d arguments expected 0"), n); 
-		}
-
-		return 0;
-	}
-
-	int el_lua_print(lua_State *L)
-	{
-		std::string tmp;
-		const char *str;
-		Sint32 i, n;
-
-		n = lua_gettop(L);  /* number of arguments */
-
-		lua_getglobal(L, "tostring");
-
-		for (i = 1; i <= n; i++)
-		{
-			lua_pushvalue(L, -1);  /* function to be called */
-			lua_pushvalue(L, i);   /* value to print */
-			lua_call(L, 1, 1);
-			str = lua_tostring(L, -1);  /* get result */
-
-			if (str == 0)
-			{
-				return luaL_error(L, LUA_QL("tostring")
-					" must return a string to "
-					LUA_QL("print"));
-			}
-
-			if (i > 1)
-			{
-				tmp += "\t";
-			}
-
-			tmp += str;
-
-			lua_pop(L, 1);  /* pop result */
-		}
-
-		LOG_TO_CONSOLE(c_grey1, tmp.c_str());
-
-		return 0;
-	}
-
-	int el_lua_to_string(lua_State *l)
-	{
-		el::BasicLua lua(l);
-
-		luaL_checkany(lua.get(), 1);
-
-		if (luaL_callmeta(lua.get(), 1, "__tostring"))  /* is there a metafield? */
-		{
-			return 1;  /* use its value */
-		}
-	
-		switch (lua.type(1))
-		{
-			case LUA_TNONE:
-				lua.push_string("none");
-				break;
-			case LUA_TNIL:
-				lua.push_string("nil");
-				break;
-			case LUA_TNUMBER:
-				lua.push_string(lua.to_string(1));
-				break;
-			case LUA_TSTRING:
-				lua_pushvalue(lua.get(), 1);
-				break;
-			case LUA_TBOOLEAN:
-				lua.push_string(lua.to_bool(1) ?
-					"true" : "false");
-				break;
-			case LUA_TTABLE:
-				lua.push_string("table");
-				break;
-			default:
-				lua_pushfstring(lua.get(), "%s: %p",
-					luaL_typename(lua.get(), 1),
-					lua_topointer(lua.get(), 1));
-				break;
-		}
-
-		return 1;
-	}
-
-	const luaL_Reg el_lua_functions[] = {
-		{ "tostring", el_lua_to_string },
-		{ "print", el_lua_print },
-		{ "rebuild_shader", el_rebuild_shader },
-		{ "reload_shader", el_reload_shader },
-		{ 0, 0 }
-	};
 
 }
 
@@ -634,16 +511,6 @@ extern "C" void init_engine()
 
 	CHECK_GL_ERROR();
 
-	lua.reset(new el::Lua());
-
-	/* set global EL */
-	lua_pushvalue(lua->get(), LUA_GLOBALSINDEX);
-	lua_setglobal(lua->get(), "EL");
-	/* open lib into global table */
-	luaL_register(lua->get(), "EL", el_lua_functions);  
-	lua_pushvalue(lua->get(), -1);
-	lua_setfield(lua->get(), -2, "__index");
-
 	scene.reset(new el::Scene(global_vars, file_system));
 	scene->init();
 
@@ -772,7 +639,6 @@ extern "C" void exit_engine()
 
 	scene.reset();
 	instances_builder.reset();
-	lua.reset();
 	global_vars.reset();
 
 	CHECK_GL_ERROR();
@@ -1459,8 +1325,6 @@ extern "C" int command_lua(char *text, int len)
 
 	try
 	{
-		lua->do_string(el::String(el::utf8_to_string(std::string(text,
-			len))), el::String(UTF8("command")));
 	}
 	catch (const el::LuaException &exception)
 	{

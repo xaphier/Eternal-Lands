@@ -7,7 +7,6 @@
 
 #include "shadersource.hpp"
 #include "exceptions.hpp"
-#include "lua.hpp"
 #include "logging.hpp"
 #include "shadertextureutil.hpp"
 #include "shadersourceparameterbuilder.hpp"

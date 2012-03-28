@@ -389,6 +389,18 @@ namespace eternal_lands
 		mesh_data_tool->set_sub_mesh_data(sub_mesh_index, sub_mesh);
 	}
 
+static Uint32 single_count = 0;
+static Uint32 single_index_count = 0;
+static Uint32 single_vertex_count = 0;
+
+static Uint32 instance_count = 0;
+static Uint32 instance_index_count = 0;
+static Uint32 instance_vertex_count = 0;
+
+static Uint32 total_count = 0;
+static Uint32 total_index_count = 0;
+static Uint32 total_vertex_count = 0;
+
 	void InstanceBuilder::build_instance()
 	{
 		SubMesh sub_mesh;
@@ -414,6 +426,127 @@ namespace eternal_lands
 
 		texture_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
 
+		std::map<MaterialDescription, Uint32> material_map;
+		std::map<MaterialDescription, Uint32>::iterator found;
+		std::map<String, Uint32> mesh_map;
+		std::map<String, Uint32>::iterator mesh_found;
+		bool single, instance;
+
+		BOOST_FOREACH(const InstancingData &instancing_data,
+			get_instancing_datas())
+		{
+			mesh_found = mesh_map.find(instancing_data.get_name());
+
+			if (mesh_found != mesh_map.end())
+			{
+				mesh_found->second++;
+				continue;
+			}
+
+			mesh_map.insert(std::pair<String, Uint32>(
+				instancing_data.get_name(), 1));
+		}
+
+		BOOST_FOREACH(const InstancingData &instancing_data,
+			get_instancing_datas())
+		{
+			BOOST_FOREACH(const MaterialDescription &material,
+				instancing_data.get_materials())
+			{
+				found = material_map.find(material);
+
+				if (found != material_map.end())
+				{
+					found->second++;
+					continue;
+				}
+
+				material_map.insert(
+					std::pair<MaterialDescription, Uint32>(
+						material, 1));
+			}
+		}
+
+		BOOST_FOREACH(const InstancingData &instancing_data,
+			get_instancing_datas())
+		{
+			mesh_found = mesh_map.find(instancing_data.get_name());
+
+			if (mesh_found == mesh_map.end())
+			{
+				continue;
+			}
+
+			instance = true;
+
+			BOOST_FOREACH(const MaterialDescription &material,
+				instancing_data.get_materials())
+			{
+				found = material_map.find(material);
+
+				assert(found != material_map.end());
+
+				instance &= (found->second <= (mesh_found->second + 1)) && (found->second > 2);
+			}
+
+			if (instance)
+			{
+				BOOST_FOREACH(const MaterialDescription &material,
+					instancing_data.get_materials())
+				{
+					found = material_map.find(material);
+
+					assert(found != material_map.end());
+
+					found->second -= mesh_found->second;
+				}
+
+				instance_count += mesh_found->second;
+
+				mesh_data_tool =
+					instancing_data.get_mesh_data_tool();
+				instance_index_count +=
+					mesh_data_tool->get_index_count() * mesh_found->second;
+				instance_vertex_count +=
+					mesh_data_tool->get_vertex_count() * mesh_found->second;
+			}
+		}
+
+		BOOST_FOREACH(const InstancingData &instancing_data,
+			get_instancing_datas())
+		{
+			mesh_found = mesh_map.find(instancing_data.get_name());
+
+			if (mesh_found == mesh_map.end())
+			{
+				continue;
+			}
+
+			single = true;
+
+			BOOST_FOREACH(const MaterialDescription &material,
+				instancing_data.get_materials())
+			{
+				found = material_map.find(material);
+
+				assert(found != material_map.end());
+
+				single &= found->second == 1;
+			}
+
+			if (single)
+			{
+				single_count++;
+
+				mesh_data_tool =
+					instancing_data.get_mesh_data_tool();
+				single_index_count +=
+					mesh_data_tool->get_index_count();
+				single_vertex_count +=
+					mesh_data_tool->get_vertex_count();
+			}
+		}
+
 		BOOST_FOREACH(const InstancingData &instancing_data,
 			get_instancing_datas())
 		{
@@ -425,6 +558,10 @@ namespace eternal_lands
 			mesh_data_tool = instancing_data.get_mesh_data_tool();
 			index_count += mesh_data_tool->get_index_count();
 			vertex_count += mesh_data_tool->get_vertex_count();
+
+			total_count++;
+			total_index_count += mesh_data_tool->get_index_count();
+			total_vertex_count += mesh_data_tool->get_vertex_count();
 
 			BOOST_FOREACH(const MaterialDescription &material,
 				instancing_data.get_materials())
@@ -489,6 +626,18 @@ namespace eternal_lands
 			transformation, String(str.str()), 1.0f, get_id(),
 			selection, bt_disabled), mesh_data_tool, materials,
 			instanced_objects));
+
+		std::cout << "single_count: " << single_count << std::endl;
+		std::cout << "single_index_count: " << single_index_count << std::endl;
+		std::cout << "single_vertex_count: " << single_vertex_count << std::endl;
+
+		std::cout << "instance_count: " << instance_count << std::endl;
+		std::cout << "instance_index_count: " << instance_index_count << std::endl;
+		std::cout << "instance_vertex_count: " << instance_vertex_count << std::endl;
+
+		std::cout << "total_count: " << total_count << std::endl;
+		std::cout << "total_index_count: " << total_index_count << std::endl;
+		std::cout << "total_vertex_count: " << total_vertex_count << std::endl;
 	}
 
 	void InstanceBuilder::set_instance(InstanceDataVector &instances)
