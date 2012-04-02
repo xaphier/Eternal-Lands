@@ -148,10 +148,8 @@ namespace eternal_lands
 		m_reader->set_position(position);
 	}
 
-	void E3dLoader::load(const MaterialDescriptionCacheSharedPtr
-			&material_description_cache,
-		const bool use_simd, MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialDescriptionVector &materials)
+	void E3dLoader::load(const bool use_simd,
+		MeshDataToolSharedPtr &mesh_data_tool, StringVector &materials)
 	{
 		VertexSemanticTypeSet semantics;
 		Uint32 vertex_count, vertex_size, vertex_offset;
@@ -209,8 +207,8 @@ namespace eternal_lands
 		}
 
 		materials.clear();
-		load_materials(material_description_cache, material_count,
-			material_size, material_offset, materials);
+		load_materials(material_count, material_size, material_offset,
+			materials);
 	}
 
 	void E3dLoader::load_vertex(const MeshDataToolSharedPtr &mesh_data_tool,
@@ -413,9 +411,7 @@ namespace eternal_lands
 		}
 	}
 
-	const MaterialDescription &E3dLoader::load_material(
-		const MaterialDescriptionCacheSharedPtr
-			&material_description_cache,
+	String E3dLoader::load_material(
 		const Uint32 material_offset, const Uint32 material_size,
 		const Uint32 material_index, const StringType &dir)
 	{
@@ -430,18 +426,13 @@ namespace eternal_lands
 
 		file_name = m_reader->read_utf8_string(128);
 
-		name = FileSystem::get_file_name_without_extension(
+		return FileSystem::get_file_name_without_extension(
 			String(file_name));
-
-		return material_description_cache->get_material_description(
-			name);
 	}
 
-	void E3dLoader::load_materials(const MaterialDescriptionCacheSharedPtr
-			&material_description_cache,
-		const Uint32 material_count, const Uint32 material_size,
-		const Uint32 material_offset,
-		MaterialDescriptionVector &materials)
+	void E3dLoader::load_materials(const Uint32 material_count,
+		const Uint32 material_size, const Uint32 material_offset,
+		StringVector &materials)
 	{
 		StringType str;
 		Uint32 i;
@@ -455,8 +446,7 @@ namespace eternal_lands
 
 		for (i = 0; i < material_count; ++i)
 		{
-			materials.push_back(load_material(
-				material_description_cache, material_offset,
+			materials.push_back(load_material(material_offset,
 				material_size, i, str));
 		}
 	}

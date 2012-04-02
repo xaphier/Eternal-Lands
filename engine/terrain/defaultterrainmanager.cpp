@@ -171,7 +171,7 @@ namespace eternal_lands
 		const TextureCacheSharedPtr &texture_cache,
 		const bool low_quality, const bool use_simd)
 	{
-		MaterialDescriptionVector materials;
+		MaterialSharedPtrVector materials;
 		MaterialDescription material;
 		MeshDataToolSharedPtr mesh_data_tool;
 		Transformation transformation;
@@ -309,7 +309,7 @@ namespace eternal_lands
 
 		material.set_texture_matrix(texture_matrix, 1);
 
-		materials.push_back(material);
+//		materials.push_back(material);
 
 		for (y = 0; y < height; ++y)
 		{
@@ -349,8 +349,7 @@ namespace eternal_lands
 					String(str.str()));
 
 				object = boost::make_shared<Object>(object_data,
-					mesh, materials, effect_cache,
-					texture_cache, LodData(lods,
+					mesh, materials, LodData(lods,
 						lods_counts, lods_offsets,
 						lods_distances));
 

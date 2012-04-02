@@ -26,16 +26,15 @@ namespace eternal_lands
 	class ObjectDescription: public ObjectData
 	{
 		private:
-			MaterialDescriptionVector m_materials;
+			StringVector m_materials;
 
 		public:
 			ObjectDescription(const ObjectData &object_data,
-				const MaterialDescriptionVector &materials);
+				const StringVector &materials);
 
 			~ObjectDescription() throw();
 
-			inline const MaterialDescriptionVector &get_materials()
-				const
+			inline const StringVector &get_materials() const
 			{
 				return m_materials;
 			}
@@ -45,4 +44,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_433a4ca6_0618_4d5a_8271_09426d974392 */
-

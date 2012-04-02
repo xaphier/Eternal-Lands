@@ -19,7 +19,7 @@ namespace eternal_lands
 	{
 		public:
 			AbstractMeshSharedPtr m_mesh;
-			MaterialDescriptionVector m_materials;
+			StringVector m_materials;
 	};
 
 	MeshCache::MeshCache(const MeshBuilderWeakPtr &mesh_builder,
@@ -38,8 +38,7 @@ namespace eternal_lands
 	}
 
 	void MeshCache::load_mesh(const String &name,
-		AbstractMeshSharedPtr &mesh,
-		MaterialDescriptionVector &materials) const
+		AbstractMeshSharedPtr &mesh, StringVector &materials) const
 	{
 		MeshDataToolSharedPtr mesh_data_tool;
 
@@ -51,8 +50,7 @@ namespace eternal_lands
 	}
 
 	void MeshCache::get_mesh(const String &name,
-		AbstractMeshSharedPtr &mesh,
-		MaterialDescriptionVector &materials)
+		AbstractMeshSharedPtr &mesh, StringVector &materials)
 	{
 		MeshCache::MeshCacheItem tmp;
 		MeshCacheMap::iterator found;
@@ -78,7 +76,7 @@ namespace eternal_lands
 	void MeshCache::get_mesh(const String &name,
 		AbstractMeshSharedPtr &mesh)
 	{
-		MaterialDescriptionVector materials;
+		StringVector materials;
 
 		get_mesh(name, mesh, materials);
 	}

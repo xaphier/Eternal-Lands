@@ -14,13 +14,10 @@ namespace eternal_lands
 
 	Actor::Actor(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
-		const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache,
+		const MaterialSharedPtrVector &materials,
 		const IndexUpdateSourceSharedPtr &index_source,
 		CalCoreModel* core_model): Object(object_data, mesh,
-			materials, effect_cache, texture_cache, core_model),
-		m_index_source(index_source)
+			materials, core_model), m_index_source(index_source)
 	{
 	}
 
@@ -44,14 +41,14 @@ namespace eternal_lands
 
 	void Actor::init_enhanced_actor(
 		const CodecManagerWeakPtr &codec_manager,
-		const FileSystemWeakPtr &file_system,
+		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars)
 	{
 		m_actor_texture_builder =
 			boost::make_shared<ActorTextureBuilder>(codec_manager,
 				file_system, global_vars, get_name());
 
-		get_modifiable_materials()[0].set_texture(
+		get_materials()[0]->set_texture(
 			m_actor_texture_builder->get_texture(), stt_albedo_0);
 	}
 
@@ -63,7 +60,7 @@ namespace eternal_lands
 		m_actor_texture_builder->build_actor_images();
 		m_actor_texture_builder->build_actor_texture();
 
-		get_modifiable_materials()[0].set_effect(
+		get_materials()[0]->set_effect(
 			m_actor_texture_builder->get_effect());
 	}
 

@@ -15,10 +15,11 @@ namespace eternal_lands
 
 	InstancingData::InstancingData(
 		const MeshDataCacheSharedPtr &mesh_data_cache,
-		const ObjectData &object_data): ObjectData(object_data)
+		const ObjectData &object_data): ObjectDescription(object_data,
+			mesh_data_cache->get_mesh_materials(
+				object_data.get_name()))
 	{
-		mesh_data_cache->get_mesh_data(get_name(), m_mesh_data_tool,
-			m_materials);
+		mesh_data_cache->get_mesh_data(get_name(), m_mesh_data_tool);
 
 		m_mesh_data_tool->get_bounding_box(get_world_transformation(),
 			m_bounding_box);
@@ -26,9 +27,8 @@ namespace eternal_lands
 
 	InstancingData::InstancingData(
 		const MeshDataCacheSharedPtr &mesh_data_cache,
-		const ObjectData &object_data,
-		const MaterialDescriptionVector &materials):
-		ObjectData(object_data), m_materials(materials)
+		const ObjectData &object_data, const StringVector &materials):
+		ObjectDescription(object_data, materials)
 	{
 		mesh_data_cache->get_mesh_data(get_name(), m_mesh_data_tool);
 

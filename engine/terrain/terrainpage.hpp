@@ -39,9 +39,7 @@ namespace eternal_lands
 			 */
 			TerrainPage(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache,
+				const MaterialSharedPtrVector &materials,
 				const float min_z, const float max_z);
 
 			/**

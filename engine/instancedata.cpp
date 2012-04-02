@@ -15,7 +15,7 @@ namespace eternal_lands
 
 	InstanceData::InstanceData(const ObjectData &object_data,
 		const MeshDataToolSharedPtr &mesh_data_tool,
-		const MaterialDescriptionVector &materials,
+		const StringVector &materials,
 		const SubObjectVector &instanced_objects):
 		ObjectDescription(object_data, materials),
 		m_mesh_data_tool(mesh_data_tool),

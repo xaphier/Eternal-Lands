@@ -12,8 +12,8 @@ namespace eternal_lands
 {
 
 	ObjectDescription::ObjectDescription(const ObjectData &object_data,
-		const MaterialDescriptionVector &materials):
-		ObjectData(object_data), m_materials(materials)
+		const StringVector &materials): ObjectData(object_data),
+		m_materials(materials)
 	{
 	}
 

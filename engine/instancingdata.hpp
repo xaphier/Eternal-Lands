@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "objectdata.hpp"
+#include "objectdescription.hpp"
 #include "boundingbox.hpp"
 
 /**
@@ -24,12 +24,11 @@
 namespace eternal_lands
 {
 
-	class InstancingData: public ObjectData
+	class InstancingData: public ObjectDescription
 	{
 		private:
 			BoundingBox m_bounding_box;
 			MeshDataToolSharedPtr m_mesh_data_tool;
-			MaterialDescriptionVector m_materials;
 
 		public:
 			InstancingData(
@@ -38,7 +37,7 @@ namespace eternal_lands
 			InstancingData(
 				const MeshDataCacheSharedPtr &mesh_data_cache,
 				const ObjectData &object_data,
-				const MaterialDescriptionVector &materials);
+				const StringVector &materials);
 
 			~InstancingData() throw();
 
@@ -53,12 +52,6 @@ namespace eternal_lands
 				const
 			{
 				return m_mesh_data_tool;
-			}
-
-			inline const MaterialDescriptionVector &get_materials()
-				const
-			{
-				return m_materials;
 			}
 
 	};

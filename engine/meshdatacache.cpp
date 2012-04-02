@@ -244,13 +244,13 @@ namespace eternal_lands
 			if (center)
 			{
 				vmin = glm::vec3(-scale * 0.5f, -scale * 0.5f,
-					-0.01f);
+					-0.1f);
 				vmax = glm::vec3(scale * 0.5f, scale * 0.5f,
 					0.0f);
 			}
 			else
 			{
-				vmin = glm::vec3(0.0f, 0.0f, -0.01f);
+				vmin = glm::vec3(0.0f, 0.0f, -0.1f);
 				vmax = glm::vec3(scale, scale, 0.0f);
 			}
 
@@ -398,37 +398,32 @@ namespace eternal_lands
 				vertex_count - 1));
 		}
 
-		void load_e2d(const MaterialDescriptionCacheSharedPtr
-				&material_description_cache,
-			const ReaderSharedPtr &reader, const bool use_simd,
+		void load_e2d(const ReaderSharedPtr &reader,
+			const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialDescriptionVector &materials)
+			StringVector &materials)
 		{
 			E2dLoader e2d_loader(reader);
 
-			e2d_loader.load(material_description_cache, use_simd,
-				mesh_data_tool, materials);
+			e2d_loader.load(use_simd, mesh_data_tool, materials);
 		}
 
-		void load_e3d(const MaterialDescriptionCacheSharedPtr
-				&material_description_cache,
-			const ReaderSharedPtr &reader, const bool use_simd,
+		void load_e3d(const ReaderSharedPtr &reader,
+			const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialDescriptionVector &materials)
+			StringVector &materials)
 		{
 			E3dLoader e3d_loader(reader);
 
-			e3d_loader.load(material_description_cache, use_simd,
-				mesh_data_tool, materials);
+			e3d_loader.load(use_simd, mesh_data_tool, materials);
 
 			mesh_data_tool->update_sub_meshs_packed();
 		}
 
-		void do_load_mesh(const MaterialDescriptionCacheSharedPtr
-				&material_description_cache,
-			const ReaderSharedPtr &reader, const bool use_simd,
+		void do_load_mesh(const ReaderSharedPtr &reader,
+			const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
-			MaterialDescriptionVector &materials)
+			StringVector &materials)
 		{
 			Uint8Array8 id;
 			Uint32 i;
@@ -442,8 +437,8 @@ namespace eternal_lands
 
 			if (E3dLoader::check_format(id))
 			{
-				load_e3d(material_description_cache, reader,
-					use_simd, mesh_data_tool, materials);
+				load_e3d(reader, use_simd, mesh_data_tool,
+					materials);
 
 				assert(mesh_data_tool.get() != 0);
 				return;
@@ -451,8 +446,8 @@ namespace eternal_lands
 
 			if (E2dLoader::check_format(id))
 			{
-				load_e2d(material_description_cache, reader,
-					use_simd, mesh_data_tool, materials);
+				load_e2d(reader, use_simd, mesh_data_tool,
+					materials);
 
 				assert(mesh_data_tool.get() != 0);
 				return;
@@ -557,17 +552,14 @@ namespace eternal_lands
 	{
 		public:
 			MeshDataToolSharedPtr m_mesh_data_tool;
-			MaterialDescriptionVector m_materials;
+			StringVector m_materials;
 	};
 
-	MeshDataCache::MeshDataCache(const MaterialDescriptionCacheWeakPtr
-			&material_description_cache,
-		const FileSystemWeakPtr &file_system,
+	MeshDataCache::MeshDataCache(const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
-		m_material_description_cache(material_description_cache),
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
-		assert(!m_file_system.expired());
+		assert(m_file_system.get() != 0);
 		assert(m_global_vars.get() != 0);
 	}
 
@@ -577,7 +569,7 @@ namespace eternal_lands
 
 	void MeshDataCache::load_mesh(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialDescriptionVector &materials)
+		StringVector &materials)
 	{
 		ReaderSharedPtr reader;
 
@@ -587,13 +579,14 @@ namespace eternal_lands
 				get_global_vars()->get_use_simd(),
 				mesh_data_tool))
 			{
+				materials.resize(1);
+
 				return;
 			}
 
 			reader = get_file_system()->get_file(name);
 
-			do_load_mesh(get_material_description_cache(), reader,
-				get_global_vars()->get_use_simd(),
+			do_load_mesh(reader, get_global_vars()->get_use_simd(),
 				mesh_data_tool, materials);
 
 			mesh_data_tool->optimize();
@@ -621,11 +614,13 @@ namespace eternal_lands
 
 		load_error_sphere(String(UTF8("sphere")),
 			get_global_vars()->get_use_simd(), mesh_data_tool);
+
+		materials.resize(1);
 	}
 
 	void MeshDataCache::get_mesh_data(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialDescriptionVector &materials)
+		StringVector &materials)
 	{
 		MeshDataCache::MeshDataCacheItem tmp;
 		MeshDataCacheMap::iterator found;
@@ -651,12 +646,12 @@ namespace eternal_lands
 	void MeshDataCache::get_mesh_data(const String &name,
 		MeshDataToolSharedPtr &mesh_data_tool)
 	{
-		MaterialDescriptionVector materials;
+		StringVector materials;
 
 		get_mesh_data(name, mesh_data_tool, materials);
 	}
 
-	const MaterialDescriptionVector &MeshDataCache::get_mesh_materials(
+	const StringVector &MeshDataCache::get_mesh_materials(
 		const String &name)
 	{
 		MeshDataCache::MeshDataCacheItem tmp;

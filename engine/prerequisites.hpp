@@ -196,6 +196,7 @@ namespace eternal_lands
 	class ActorDataCache;
 	class ActorTextureBuilder;
 	class AlignedVec4Array;
+	class AngelScript;
 	class Atlas;
 	class BoundedObject;
 	class BoundingBox;
@@ -224,11 +225,15 @@ namespace eternal_lands
 	class Light;
 	class LightData;
 	class LightVisitor;
-	class Lua;
 	class Map;
 	class Material;
+	class MaterialCache;
+	class MaterialData;
 	class MaterialDescription;
 	class MaterialDescriptionCache;
+	class MaterialScript;
+	class MaterialScriptCache;
+	class MaterialScriptManager;
 	class MeshBuilder;
 	class MeshCache;
 	class MeshDataCache;
@@ -249,6 +254,7 @@ namespace eternal_lands
 	class RStarTreeNode;
 	class Scene;
 	class SceneResources;
+	class ScriptEngine;
 	class ShaderSourceBuilder;
 	class ShaderSourceData;
 	class ShaderSourceDescriptionLoader;
@@ -324,7 +330,12 @@ namespace eternal_lands
 	SHARED_PTR(IndexUpdateSource);
 	SHARED_PTR(Light);
 	SHARED_PTR(Map);
+	SHARED_PTR(Material);
+	SHARED_PTR(MaterialCache);
 	SHARED_PTR(MaterialDescriptionCache);
+	SHARED_PTR(MaterialScript);
+	SHARED_PTR(MaterialScriptCache);
+	SHARED_PTR(MaterialScriptManager);
 	SHARED_PTR(MeshBuilder);
 	SHARED_PTR(MeshCache);
 	SHARED_PTR(MeshDataCache);
@@ -334,6 +345,7 @@ namespace eternal_lands
 	SHARED_PTR(ReadWriteMemory);
 	SHARED_PTR(RStarTreeNode);
 	SHARED_PTR(SceneResources);
+	SHARED_PTR(ScriptEngine);
 	SHARED_PTR(ShaderSourceBuilder);
 	SHARED_PTR(ShaderSourceDescriptionLoader);
 	SHARED_PTR(Texture);
@@ -347,12 +359,15 @@ namespace eternal_lands
 	WEAK_PTR(ActorDataCache);
 	WEAK_PTR(CodecManager);
 	WEAK_PTR(EffectCache);
-	WEAK_PTR(FileSystem);
+	WEAK_PTR(MaterialCache);
 	WEAK_PTR(MaterialDescriptionCache);
+	WEAK_PTR(MaterialScriptCache);
+	WEAK_PTR(MaterialScriptManager);
 	WEAK_PTR(MeshBuilder);
 	WEAK_PTR(MeshCache);
 	WEAK_PTR(MeshDataCache);
 	WEAK_PTR(SceneResources);
+	WEAK_PTR(ScriptEngine);
 	WEAK_PTR(ShaderSourceBuilder);
 	WEAK_PTR(TextureCache);
 
@@ -363,7 +378,7 @@ namespace eternal_lands
 	VECTOR(GlslProgramSharedPtr);
 	VECTOR(ImageSharedPtr);
 	VECTOR(LightSharedPtr);
-	VECTOR(Material);
+	VECTOR(MaterialSharedPtr);
 	VECTOR(MaterialDescription);
 	VECTOR(ReadWriteMemorySharedPtr);
 	VECTOR(MeshDrawData);

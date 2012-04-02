@@ -59,10 +59,10 @@ namespace eternal_lands
 					}
 
 #ifdef	WINDOWS
-					if (name.get().rbegin() != UTF8('\\'))
+					if (*name.get().rbegin() != UTF8('\\'))
 					{
 						return String(name.get() +
-							UTF8('\\');
+							UTF8('\\'));
 					}			
 #else	/* WINDOWS */
 					if (*name.get().rbegin() != UTF8('/'))
@@ -575,7 +575,11 @@ namespace eternal_lands
 
 		for (i = 1; i < count; ++i)
 		{
-			result += '/';
+#ifdef	WINDOWS
+			result += UTF8('\\');
+#else	/* WINDOWS */
+			result += UTF8('/');
+#endif	/* WINDOWS */
 			result += path[i];
 		}
 

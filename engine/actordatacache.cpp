@@ -11,6 +11,8 @@
 #include "meshbuilder.hpp"
 #include "meshdatatool.hpp"
 #include "indexupdatesource.hpp"
+#include "material.hpp"
+#include "materialcache.hpp"
 #include "materialdescription.hpp"
 #include "materialdescriptioncache.hpp"
 #include "objectdata.hpp"
@@ -43,12 +45,14 @@ namespace eternal_lands
 		const EffectCacheWeakPtr &effect_cache,
 		const TextureCacheWeakPtr &texture_cache,
 		const CodecManagerWeakPtr &codec_manager,
+		const MaterialCacheWeakPtr &material_cache,
 		const MaterialDescriptionCacheWeakPtr
 			&material_description_cache,
-		const FileSystemWeakPtr &file_system,
+		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
 		m_mesh_builder(mesh_builder), m_effect_cache(effect_cache),
 		m_texture_cache(texture_cache), m_codec_manager(codec_manager),
+		m_material_cache(material_cache),
 		m_material_description_cache(material_description_cache),
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
@@ -56,7 +60,9 @@ namespace eternal_lands
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
 		assert(!m_codec_manager.expired());
-		assert(!m_file_system.expired());
+		assert(!m_material_cache.expired());
+		assert(!m_material_description_cache.expired());
+		assert(m_file_system.get() != 0);
 		assert(m_global_vars.get() != 0);
 	}
 
@@ -111,8 +117,9 @@ namespace eternal_lands
 		const Uint32 id, const String &name,
 		const SelectionType selection, const bool enhanced_actor)
 	{
-		MaterialDescriptionVector materials;
-		MaterialDescription material;
+		MaterialSharedPtrVector materials;
+		MaterialSharedPtr material;
+		MaterialDescription material_description;
 		ActorDataCacheMap::const_iterator found;
 		std::auto_ptr<Actor> result;
 		BlendType blend;
@@ -127,9 +134,21 @@ namespace eternal_lands
 				<< errinfo_string_value(name));
 		}
 
-		material = get_material_description_cache(
-			)->get_material_description(
+		if (enhanced_actor)
+		{
+			material_description = get_material_description_cache(
+				)->get_material_description(
 				found->second.m_material_name);
+
+			material = boost::make_shared<Material>(
+				get_effect_cache(), get_texture_cache(),
+				material_description);
+		}
+		else
+		{
+			material = get_material_cache()->get_material(
+				found->second.m_material_name);
+		}
 
 		materials.clear();
 		materials.push_back(material);
@@ -146,7 +165,6 @@ namespace eternal_lands
 		result.reset(new Actor(ObjectData(Transformation(),
 			name, 0.7f, id, selection, blend),
 			found->second.m_mesh->clone_vertex_data(), materials,
-			get_effect_cache(), get_texture_cache(),
 			found->second.m_index_source,
 			found->second.m_core_model));
 

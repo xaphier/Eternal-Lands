@@ -14,22 +14,8 @@
 namespace eternal_lands
 {
 
-	MaterialDescription::MaterialDescription(): m_cast_shadows(true),
-		m_culling(true)
+	MaterialDescription::MaterialDescription()
 	{
-		Uint16 i;
-
-		for (i = 0; i < 4; ++i)
-		{
-			m_albedo_scale_offsets[i][0] = glm::vec4(1.0f);
-			m_albedo_scale_offsets[i][1] = glm::vec4(0.0f);
-			m_texture_matrices[i][0] = glm::vec3(1.0f, 0.0f, 0.0f);
-			m_texture_matrices[i][1] = glm::vec3(0.0f, 1.0f, 0.0f);
-		}
-
-		m_emission_scale_offset[0] = glm::vec3(1.0f);
-		m_emission_scale_offset[1] = glm::vec3(0.0f);
-		m_specular_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
 	}
 
 	MaterialDescription::~MaterialDescription() throw()
@@ -124,6 +110,11 @@ namespace eternal_lands
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("effect")) == 0)
 			{
 				set_effect(XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("script")) == 0)
+			{
+				set_script(XmlUtil::get_string_value(it));
 			}
 
 			if (xmlStrcmp(it->name,
@@ -222,6 +213,7 @@ namespace eternal_lands
 		writer->start_element(UTF8("material"));
 		writer->write_element(UTF8("name"), get_name());
 		writer->write_element(UTF8("effect"), get_effect());
+		writer->write_element(UTF8("script"), get_script());
 		writer->write_element(UTF8("albedo_0"),
 			get_texture(stt_albedo_0));
 		writer->write_element(UTF8("albedo_1"),
@@ -415,6 +407,11 @@ namespace eternal_lands
 			return get_culling() < material.get_culling();
 		}
 
+		if (get_script() != material.get_script())
+		{
+			return get_script() < material.get_script();
+		}
+
 		return get_name() < material.get_name();
 	}
 
@@ -476,6 +473,11 @@ namespace eternal_lands
 			return false;
 		}
 
+		if (get_script() != material.get_script())
+		{
+			return false;
+		}
+
 		return get_name() == material.get_name();
 	}
 
@@ -492,6 +494,7 @@ namespace eternal_lands
 
 		str << "name: " << value.get_name();
 		str << " effect: " << value.get_effect();
+		str << " script: " << value.get_script();
 
 		for (i = 0; i < material_texture_count; ++i)
 		{

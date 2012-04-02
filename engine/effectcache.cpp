@@ -16,12 +16,10 @@ namespace eternal_lands
 {
 
 	EffectCache::EffectCache(const ShaderSourceBuilderWeakPtr
-		&shader_source_builder, const FileSystemWeakPtr &file_system):
-		m_shader_source_builder(shader_source_builder),
-		m_file_system(file_system)
+			&shader_source_builder):
+		m_shader_source_builder(shader_source_builder)
 	{
 		assert(!m_shader_source_builder.expired());
-		assert(!m_file_system.expired());
 	}
 
 	EffectCache::~EffectCache() throw()

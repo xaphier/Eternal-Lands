@@ -35,21 +35,14 @@ namespace eternal_lands
 			typedef std::map<String, MeshDataCacheItem>
 				MeshDataCacheMap;
 
-			const MaterialDescriptionCacheWeakPtr
-				m_material_description_cache;
-			const FileSystemWeakPtr m_file_system;
+			const FileSystemSharedPtr m_file_system;
 			const GlobalVarsSharedPtr m_global_vars;
 			MeshDataCacheMap m_mesh_data_cache;
 
-			inline FileSystemSharedPtr get_file_system() const
+			inline const FileSystemSharedPtr &get_file_system()
+				const
 			{
-				FileSystemSharedPtr result;
-
-				result = m_file_system.lock();
-
-				assert(result.get() != 0);
-
-				return result;
+				return m_file_system;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
@@ -58,29 +51,15 @@ namespace eternal_lands
 				return m_global_vars;
 			}
 
-			inline MaterialDescriptionCacheSharedPtr
-				get_material_description_cache() const
-			{
-				MaterialDescriptionCacheSharedPtr result;
-
-				result = m_material_description_cache.lock();
-
-				assert(result.get() != 0);
-
-				return result;
-			}
-
 			void load_mesh(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialDescriptionVector &materials);
+				StringVector &materials);
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			MeshDataCache(const MaterialDescriptionCacheWeakPtr
-					&material_description_cache,
-				const FileSystemWeakPtr &file_system,
+			MeshDataCache(const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
 
 			/**
@@ -89,10 +68,10 @@ namespace eternal_lands
 			~MeshDataCache() throw();
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialDescriptionVector &materials);
+				StringVector &materials);
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool);
-			const MaterialDescriptionVector &get_mesh_materials(
+			const StringVector &get_mesh_materials(
 				const String &name);
 
 	};

@@ -128,7 +128,7 @@ namespace eternal_lands
 			void remove_all_actors();
 			void add_object(const ObjectData &object_data);
 			void add_object(const ObjectData &object_data,
-				const MaterialDescriptionVector &materials);
+				const MaterialSharedPtrVector &materials);
 			void add_object(const InstanceData &instance_data);
 			void add_object(const ObjectData &object_data,
 				const StringVector &material_names);

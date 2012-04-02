@@ -36,7 +36,7 @@ namespace eternal_lands
 			ObjectData m_object_data;
 			LodData m_lod_data;
 			AbstractMeshSharedPtr m_mesh;
-			MaterialVector m_materials;
+			MaterialSharedPtrVector m_materials;
 			/**
 			 * Data needed to draw instanced objects for selection.
 			 */
@@ -49,11 +49,6 @@ namespace eternal_lands
 
 		protected:
 
-			inline MaterialVector &get_modifiable_materials()
-			{
-				return m_materials;
-			}
-
 			inline void set_bone(const Uint32 index,
 				const glm::mat2x4 &value)
 			{
@@ -65,9 +60,7 @@ namespace eternal_lands
 			 */
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache,
+				const MaterialSharedPtrVector &materials,
 				CalCoreModel *core_model);
 
 		public:
@@ -76,18 +69,14 @@ namespace eternal_lands
 			 */
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache);
+				const MaterialSharedPtrVector &materials);
 
 			/**
 			 * Default constructor.
 			 */
 			Object(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache,
+				const MaterialSharedPtrVector &materials,
 				const LodData &lod_data);
 
 			/**
@@ -95,9 +84,7 @@ namespace eternal_lands
 			 */
 			Object(const InstanceData &instance_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache,
+				const MaterialSharedPtrVector &materials,
 				const SubObjectVector &sub_objects);
 
 			/**
@@ -175,7 +162,8 @@ namespace eternal_lands
 				return m_mesh;
 			}
 
-			inline const MaterialVector &get_materials() const
+			inline const MaterialSharedPtrVector &get_materials()
+				const
 			{
 				return m_materials;
 			}

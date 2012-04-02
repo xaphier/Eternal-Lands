@@ -12,8 +12,6 @@
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "indexbuilder.hpp"
-#include "materialdescription.hpp"
-#include "materialdescriptioncache.hpp"
 #include "filesystem.hpp"
 
 namespace eternal_lands
@@ -290,12 +288,9 @@ namespace eternal_lands
 		}
 	}
 
-	void E2dLoader::load(const MaterialDescriptionCacheSharedPtr
-			&material_description_cache, const bool use_simd,
-		MeshDataToolSharedPtr &mesh_data_tool,
-		MaterialDescriptionVector &materials)
+	void E2dLoader::load(const bool use_simd,
+		MeshDataToolSharedPtr &mesh_data_tool, StringVector &materials)
 	{
-		MaterialDescription material;
 		glm::vec4 texture_coordinates;
 		glm::vec3 vmin, vmax;
 		glm::vec2 size;
@@ -350,11 +345,8 @@ namespace eternal_lands
 
 		name = FileSystem::get_file_name_without_extension(texture);
 
-		material = material_description_cache->get_material_description(
-			String(UTF8("ground/") + name.get()));
-
 		materials.clear();
-		materials.push_back(material);
+		materials.push_back(String(UTF8("ground/") + name.get()));
 	}
 
 	bool E2dLoader::check_format(const Uint8Array8 &id)

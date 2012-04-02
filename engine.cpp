@@ -50,6 +50,7 @@
 #include "engine/lightdata.hpp"
 #include "engine/freeidsmanager.hpp"
 #include "engine/particledata.hpp"
+#include "engine/script/scriptengine.hpp"
 
 namespace el = eternal_lands;
 
@@ -65,6 +66,7 @@ namespace
 	el::StringSet entrables;
 	el::GlobalVarsSharedPtr global_vars;
 	el::FileSystemSharedPtr file_system;
+	boost::scoped_ptr<el::ScriptEngine> script_engine;
 
 	el::Text get_text(const unsigned char* str, const char* font,
 		const glm::vec4 &start_color,
@@ -474,6 +476,11 @@ extern "C" void init_file_system()
 
 	file_system->add_dir(el::String(update_dir));
 
+	update_dir = config_dir;
+	update_dir += UTF8("/updates/data");
+
+	file_system->add_dir(el::String(update_dir));
+
 	custom_dir = config_dir;
 	custom_dir += UTF8("/custom");
 
@@ -513,6 +520,8 @@ extern "C" void init_engine()
 
 	scene.reset(new el::Scene(global_vars, file_system));
 	scene->init();
+
+	script_engine.reset(new el::ScriptEngine(file_system));
 
 	CHECK_GL_ERROR();
 #ifdef	USE_GL_DEBUG_OUTPUT
@@ -1318,15 +1327,17 @@ extern "C" void engine_resize_root_window(const float fov, const float aspect,
 
 extern "C" int command_lua(char *text, int len)
 {
-	if ((text == 0) || (len <= 0))
+	if ((text == 0) || (len <= 1))
 	{
 		return 0;
 	}
 
 	try
 	{
+		script_engine->run_main(el::String("console"),
+			el::String(text + 1, len - 1));
 	}
-	catch (const el::LuaException &exception)
+	catch (const el::ASException &exception)
 	{
 		LOG_TO_CONSOLE(c_red1,
 			boost::get_error_info<el::errinfo_message>(

@@ -48,10 +48,8 @@ namespace eternal_lands
 		public virtual InvalidParameterException {};
 	class OpenGlException: public virtual ::std::exception,
 		public virtual ::boost::exception {};
-	class LuaException: public virtual ::std::exception,
+	class ASException: public virtual ::std::exception,
 		public virtual ::boost::exception {};
-	class LuaVarTypeException: public virtual LuaException {};
-	class LuaTableSizeException: public virtual LuaException {};
 	class VariantException: public virtual ::std::exception,
 		public virtual ::boost::exception {};
 	class UncompressException: public virtual ::std::exception,

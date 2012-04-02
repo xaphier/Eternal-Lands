@@ -32,7 +32,7 @@ namespace eternal_lands
 		public:
 			InstanceData(const ObjectData &object_data,
 				const MeshDataToolSharedPtr &mesh_data_tool,
-				const MaterialDescriptionVector &materials,
+				const StringVector &materials,
 				const SubObjectVector &instanced_objects);
 
 			~InstanceData() throw();

@@ -46,11 +46,9 @@ namespace eternal_lands
 		public:
 			E2dLoader(const ReaderSharedPtr &reader);
 			~E2dLoader() throw();
-			void load(const MaterialDescriptionCacheSharedPtr
-					&material_description_cache,
-				const bool use_simd,
+			void load(const bool use_simd,
 				MeshDataToolSharedPtr &mesh_data_tool,
-				MaterialDescriptionVector &materials);
+				StringVector &materials);
 			static bool check_format(const Uint8Array8 &id);
 
 	};

@@ -17,84 +17,47 @@ namespace eternal_lands
 
 	Object::Object(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
-		const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache):
+		const MaterialSharedPtrVector &materials):
 		m_object_data(object_data), m_lod_data(materials.size()),
-		m_mesh(mesh)
+		m_mesh(mesh), m_materials(materials)
 	{
+		assert(materials.size() > 0);
+
 		update_bounding_box();
-
-		m_materials.clear();
-		m_materials.reserve(materials.size());
-
-		BOOST_FOREACH(const MaterialDescription &material, materials)
-		{
-			m_materials.push_back(Material(effect_cache,
-				texture_cache, material));
-		}
 	}
 
 	Object::Object(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
-		const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache,
+		const MaterialSharedPtrVector &materials,
 		const LodData &lod_data): m_object_data(object_data),
-		m_lod_data(lod_data), m_mesh(mesh)
+		m_lod_data(lod_data), m_mesh(mesh), m_materials(materials)
 	{
+		assert(materials.size() > 0);
+
 		update_bounding_box();
-
-		m_materials.clear();
-		m_materials.reserve(materials.size());
-
-		BOOST_FOREACH(const MaterialDescription &material, materials)
-		{
-			m_materials.push_back(Material(effect_cache,
-				texture_cache, material));
-		}
 	}
 
 	Object::Object(const InstanceData &instance_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
-		const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache,
+		const MaterialSharedPtrVector &materials,
 		const SubObjectVector &sub_objects):
 		m_object_data(instance_data), m_lod_data(materials.size()),
-		m_mesh(mesh), m_sub_objects(sub_objects)
+		m_mesh(mesh), m_materials(materials), m_sub_objects(sub_objects)
 	{
 		assert(get_sub_objects().size() > 0);
-
-		m_materials.clear();
-		m_materials.reserve(materials.size());
-
-		BOOST_FOREACH(const MaterialDescription &material, materials)
-		{
-			m_materials.push_back(Material(effect_cache,
-				texture_cache, material));
-		}
+		assert(materials.size() > 0);
 
 		update_bounding_box();
 	}
 
 	Object::Object(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
-		const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache,
+		const MaterialSharedPtrVector &materials,
 		CalCoreModel* core_model): m_object_data(object_data),
-		m_lod_data(materials.size()), m_mesh(mesh)
+		m_lod_data(materials.size()), m_mesh(mesh),
+		m_materials(materials)
 	{
-		m_materials.clear();
-		m_materials.reserve(materials.size());
-
-		BOOST_FOREACH(const MaterialDescription &material,
-			materials)
-		{
-			m_materials.push_back(Material(effect_cache,
-				texture_cache, material));
-		}
+		assert(materials.size() > 0);
 
 		m_model.reset(new CalModel(core_model));
 

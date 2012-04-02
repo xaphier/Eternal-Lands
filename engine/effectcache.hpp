@@ -34,19 +34,13 @@ namespace eternal_lands
 				EffectCacheMap;
 
 			EffectCacheMap m_effect_cache;
-			ShaderSourceBuilderWeakPtr m_shader_source_builder;
-			FileSystemWeakPtr m_file_system;
+			const ShaderSourceBuilderWeakPtr m_shader_source_builder;
 			EffectSharedPtr m_simple_effect;
 
 			inline const ShaderSourceBuilderWeakPtr
 				&get_shader_source_builder() const
 			{
 				return m_shader_source_builder;
-			}
-
-			inline const FileSystemWeakPtr &get_file_system() const
-			{
-				return m_file_system;
 			}
 
 			void load_xml(const xmlNodePtr node);
@@ -56,8 +50,7 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			EffectCache(const ShaderSourceBuilderWeakPtr
-				&shader_source_builder,
-				const FileSystemWeakPtr &file_system);
+				&shader_source_builder);
 
 			/**
 			 * Default destructor.

@@ -43,9 +43,7 @@ namespace eternal_lands
 			 */
 			Actor(const ObjectData &object_data,
 				const AbstractMeshSharedPtr &mesh,
-				const MaterialDescriptionVector &materials,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache,
+				const MaterialSharedPtrVector &materials,
 				const IndexUpdateSourceSharedPtr &index_source,
 				CalCoreModel *core_model);
 
@@ -59,7 +57,7 @@ namespace eternal_lands
 			void remove_mesh(const Uint32 id);
 			void init_enhanced_actor(
 				const CodecManagerWeakPtr &codec_manager,
-				const FileSystemWeakPtr &file_system,
+				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
 			void set_parts(
 				const ActorPartTextureTypeStringMap &parts);

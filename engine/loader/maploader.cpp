@@ -35,15 +35,14 @@ namespace eternal_lands
 		const MeshDataCacheSharedPtr &mesh_data_cache,
 		const EffectCacheSharedPtr &effect_cache,
 		const TextureCacheSharedPtr &texture_cache,
-		const MaterialDescriptionCacheSharedPtr
-			&material_description_cache,
+		const MaterialCacheSharedPtr &material_cache,
 		const FreeIdsManagerSharedPtr &free_ids):
 		AbstractMapLoader(file_system, free_ids),
 		m_codec_manager(codec_manager), m_global_vars(global_vars),
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_mesh_data_cache(mesh_data_cache),
 		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_material_description_cache(material_description_cache)
+		m_material_cache(material_cache)
 	{
 	}
 
@@ -61,8 +60,7 @@ namespace eternal_lands
 		m_map = boost::make_shared<Map>(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_mesh_cache(),
-			get_effect_cache(), get_texture_cache(),
-			get_material_description_cache(), name);
+			get_material_cache(), name);
 
 		read(name);
 
@@ -72,7 +70,7 @@ namespace eternal_lands
 	void MapLoader::instance()
 	{
 		InstanceDataVector instances;
-		ObjectDataVector uninstanced;
+		ObjectDescriptionVector uninstanced;
 
 		m_instances_builder->build(
 			get_free_ids().get_free_object_ids(it_3d_object),
@@ -83,9 +81,11 @@ namespace eternal_lands
 			m_map->add_object(instance_data);
 		}
 
-		BOOST_FOREACH(const ObjectData &object_data, uninstanced)
+		BOOST_FOREACH(const ObjectDescription &object_descritption,
+			uninstanced)
 		{
-			m_map->add_object(object_data);
+			m_map->add_object(object_descritption,
+				object_descritption.get_materials());
 		}
 	}
 
@@ -140,8 +140,7 @@ namespace eternal_lands
 	void MapLoader::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{
-		MaterialDescriptionVector materials;
-		MaterialDescription material;
+		StringVector materials;
 		StringStream str;
 		String file_name;
 		Transformation transformation;
@@ -187,8 +186,7 @@ namespace eternal_lands
 				break;
 		}
 
-		materials.push_back(get_material_description_cache(
-			)->get_material_description(String(str.str())));
+		materials.push_back(String(str.str()));
 
 		id = get_free_ids().use_typeless_object_id(x + (y << 10),
 			it_tile_object);

@@ -70,13 +70,13 @@ namespace eternal_lands
 
 			void add(const ObjectData &object_data);
 			void add(const ObjectData &object_data,
-				const MaterialDescriptionVector &materials);
+				const StringVector &materials);
 			void build(FreeIds &free_ids,
 				InstanceDataVector &instances,
-				ObjectDataVector &uninstanced);
+				ObjectDescriptionVector &uninstanced);
 			void clear();
 			static InstanceData build(const glm::vec3 &center,
-				const ObjectDataVector &object_datas);
+				const ObjectDescriptionVector &object_datas);
 
 			inline bool get_use_simd() const
 			{

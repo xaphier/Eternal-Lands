@@ -42,7 +42,7 @@ namespace eternal_lands
 	}
 
 	void InstancesBuilder::add(const ObjectData &object_data,
-		const MaterialDescriptionVector &materials)
+		const StringVector &materials)
 	{
 		std::auto_ptr<InstancingData> instancing_data;
 		Sint16Sint16Pair index;
@@ -57,7 +57,7 @@ namespace eternal_lands
 
 	void InstancesBuilder::build(FreeIds &free_ids,
 		InstanceDataVector &instances,
-		ObjectDataVector &uninstanced)
+		ObjectDescriptionVector &uninstanced)
 	{
 		boost::ptr_vector<InstanceBuilder> builders;
 		Sint16Sint16PairInstancingDataVectorMap::iterator it, end;
@@ -67,21 +67,24 @@ namespace eternal_lands
 
 		for (it = m_instancing_datas.begin(); it != end; ++it)
 		{ 
-			if (it->second.size() <= 1)
+			if (it->second.size() == 0)
 			{
-				BOOST_FOREACH(const InstancingData
-					&instancing_data, it->second)
-				{
-					uninstanced.push_back(instancing_data);
-				}
+				continue;
 			}
-			else
+
+			InstanceBuilder::remove_singles(it->second,
+				uninstanced);
+
+			if (it->second.size() == 1)
 			{
-				builders.push_back(new InstanceBuilder(
-					it->second,
-					free_ids.get_next_free_id(),
-					get_use_simd(), get_use_base_vertex()));
+				uninstanced.push_back(it->second[0]);
+
+				continue;
 			}
+
+			builders.push_back(new InstanceBuilder(it->second,
+				free_ids.get_next_free_id(), get_use_simd(),
+				get_use_base_vertex()));
 		}
 
 		count = builders.size();

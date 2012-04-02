@@ -34,12 +34,17 @@ namespace eternal_lands
 			ActorDataCacheSharedPtr m_actor_data_cache;
 			ShaderSourceBuilderSharedPtr m_shader_source_builder;
 			FrameBufferBuilderSharedPtr m_framebuffer_builder;
+			MaterialCacheSharedPtr m_material_cache;
 			MaterialDescriptionCacheSharedPtr
 				m_material_description_cache;
+			MaterialScriptCacheSharedPtr m_material_script_cache;
+			MaterialScriptManagerSharedPtr
+				m_material_script_manager;
+			ScriptEngineSharedPtr m_script_engine;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
-				const FileSystemWeakPtr &file_system);
+				const FileSystemSharedPtr &file_system);
 			~SceneResources() throw();
 			void clear();
 			void init(const FileSystemSharedPtr &file_system);
@@ -97,10 +102,34 @@ namespace eternal_lands
 				return m_framebuffer_builder;
 			}
 
+			inline const MaterialCacheSharedPtr
+				&get_material_cache() const
+			{
+				return m_material_cache;
+			}
+
 			inline const MaterialDescriptionCacheSharedPtr
 				&get_material_description_cache() const
 			{
 				return m_material_description_cache;
+			}
+
+			inline const MaterialScriptCacheSharedPtr
+				&get_material_script_cache() const
+			{
+				return m_material_script_cache;
+			}
+
+			inline const MaterialScriptManagerSharedPtr
+				&get_material_script_manager() const
+			{
+				return m_material_script_manager;
+			}
+
+			inline const ScriptEngineSharedPtr
+				&get_script_engine() const
+			{
+				return m_script_engine;
 			}
 
 	};

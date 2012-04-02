@@ -34,10 +34,7 @@ namespace eternal_lands
 		private:
 			const MeshBuilderWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
-			const EffectCacheWeakPtr m_effect_cache;
-			const TextureCacheWeakPtr m_texture_cache;
-			const MaterialDescriptionCacheWeakPtr
-				m_material_description_cache;
+			const MaterialCacheWeakPtr m_material_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
 			AbstractTerrainManagerVector m_terrains;
@@ -73,34 +70,11 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline EffectCacheSharedPtr get_effect_cache() const
+			inline MaterialCacheSharedPtr get_material_cache() const
 			{
-				EffectCacheSharedPtr result;
+				MaterialCacheSharedPtr result;
 
-				result = m_effect_cache.lock();
-
-				assert(result.get() != 0);
-
-				return result;
-			}
-
-			inline TextureCacheSharedPtr get_texture_cache() const
-			{
-				TextureCacheSharedPtr result;
-
-				result = m_texture_cache.lock();
-
-				assert(result.get() != 0);
-
-				return result;
-			}
-
-			inline MaterialDescriptionCacheSharedPtr
-				get_material_description_cache() const
-			{
-				MaterialDescriptionCacheSharedPtr result;
-
-				result = m_material_description_cache.lock();
+				result = m_material_cache.lock();
 
 				assert(result.get() != 0);
 
@@ -116,10 +90,7 @@ namespace eternal_lands
 				const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
-				const EffectCacheSharedPtr &effect_cache,
-				const TextureCacheSharedPtr &texture_cache,
-				const MaterialDescriptionCacheSharedPtr
-					&material_description_cache,
+				const MaterialCacheSharedPtr &material_cache,
 				const String &name);
 
 			/**
@@ -129,7 +100,7 @@ namespace eternal_lands
 
 			void add_object(const ObjectData &object_data);
 			void add_object(const ObjectData &object_data,
-				const MaterialDescriptionVector &materials);
+				const MaterialSharedPtrVector &materials);
 			void add_object(const ObjectData &object_data,
 				const StringVector &material_names);
 			void add_object(const InstanceData &instance_data);

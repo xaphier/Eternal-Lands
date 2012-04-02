@@ -1,11 +1,12 @@
 project(elengine)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(angelscript/include)
 
 # project options
 set(${PROJECT_NAME}_MAJOR_VERSION 0)
 set(${PROJECT_NAME}_MINOR_VERSION 9)
-set(${PROJECT_NAME}_PATCH_LEVEL 0)
+set(${PROJECT_NAME}_PATCH_LEVEL 3)
 
 math(EXPR ${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_MAJOR_VERSION} * 10000 + ${${PROJECT_NAME}_MINOR_VERSION} * 100 + ${${PROJECT_NAME}_PATCH_LEVEL}")
 set(${PROJECT_NAME}_VERSION_STRING "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${${PROJECT_NAME}_PATCH_LEVEL}")
@@ -66,6 +67,12 @@ file(GLOB sha1_header_files sha1/*.h)
 file(GLOB sha1_source_files sha1/*.cpp)
 list(APPEND engine_source_files ${sha1_source_files})
 list(APPEND engine_header_files ${sha1_header_files})
+
+#script dir
+file(GLOB script_header_files script/*.h)
+file(GLOB script_source_files script/*.cpp)
+list(APPEND engine_source_files ${script_header_files})
+list(APPEND engine_header_files ${script_source_files})
 
 list(APPEND engine_source_files simd/simd.cpp)
 list(APPEND engine_header_files simd/simd.hpp)

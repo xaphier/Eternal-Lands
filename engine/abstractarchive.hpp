@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @brief The @c class AbstractThreadTask.
- * This file contains the @c class AbstractThreadTask.
+ * @brief The @c class AbstractArchive.
+ * This file contains the @c class AbstractArchive.
  */
 namespace eternal_lands
 {

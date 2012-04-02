@@ -56,7 +56,7 @@ namespace eternal_lands
 			glm::vec3 get_center() const;
 			void build_instance_sub_mesh(const glm::vec3 &center,
 				const MeshDataToolSharedPtr &mesh_data_tool,
-				const MaterialDescription &material,
+				const String &material,
 				const Uint32 sub_mesh_index,
 				const Uint32 base_vertex,
 				Uint32 &vertex_offset, Uint32 &index_offset,
@@ -77,6 +77,9 @@ namespace eternal_lands
 			~InstanceBuilder() throw();
 			void build_instance();
 			void set_instance(InstanceDataVector &instances);
+			static void remove_singles(
+				InstancingDataVector &instancing_datas,
+				ObjectDescriptionVector &uninstanced);
 
 			inline void operator()()
 			{

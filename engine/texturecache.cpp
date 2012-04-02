@@ -180,13 +180,13 @@ namespace eternal_lands
 	}
 
 	TextureCache::TextureCache(const CodecManagerWeakPtr &codec_manager,
-		const FileSystemWeakPtr &file_system,
+		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
 		m_codec_manager(codec_manager), m_file_system(file_system),
 		m_global_vars(global_vars)
 	{
 		assert(!m_codec_manager.expired());
-		assert(!m_file_system.expired());
+		assert(m_file_system.get() != 0);
 		assert(m_global_vars.get() != 0);
 	}
 
@@ -266,18 +266,16 @@ namespace eternal_lands
 
 		found = m_texture_cache.find(index);
 
-		if (found == m_texture_cache.end())
-		{
-			texture = load_texture(name, index);
-
-			m_texture_cache[index] = texture;
-
-			return m_texture_cache[index];
-		}
-		else
+		if (found != m_texture_cache.end())
 		{
 			return found->second;
 		}
+
+		texture = load_texture(name, index);
+
+		m_texture_cache[index] = texture;
+
+		return m_texture_cache[index];
 	}
 
 }

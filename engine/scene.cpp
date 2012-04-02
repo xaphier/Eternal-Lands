@@ -85,6 +85,32 @@ namespace eternal_lands
 
 		};
 
+		class MaterialLock
+		{
+			private:
+				const MaterialSharedPtr m_material;
+
+			public:
+				inline MaterialLock(
+					const MaterialSharedPtr &material):
+					m_material(material)
+				{
+					//m_material.lock();
+				}
+
+				inline ~MaterialLock()
+				{
+					//m_material.unlock();
+				}
+
+				inline const MaterialSharedPtr &operator->()
+					const
+				{
+					return m_material;
+				}
+
+		};
+
 	}
 
 	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
@@ -108,9 +134,7 @@ namespace eternal_lands
 			get_file_system(), get_global_vars(),
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
-			get_scene_resources().get_effect_cache(),
-			get_scene_resources().get_texture_cache(),
-			get_scene_resources().get_material_description_cache(),
+			get_scene_resources().get_material_cache(),
 			String(UTF8("empty"))));
 	}
 
@@ -152,7 +176,7 @@ namespace eternal_lands
 	}
 
 	void Scene::add_object(const ObjectData &object_data,
-		const MaterialDescriptionVector &materials)
+		const MaterialSharedPtrVector &materials)
 	{
 		m_map->add_object(object_data, materials);
 	}
@@ -605,15 +629,13 @@ namespace eternal_lands
 	{
 		glm::ivec3 dynamic_light_count;
 		Uint32 light_count;
-		Uint16 count, material, mesh, i, lod;
+		Uint16 count, index, mesh, i, lod;
 		bool object_data_set;
 
 		DEBUG_CHECK_GL_ERROR();
 
 		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
 			object->get_name() % object->get_mesh()->get_name());
-
-		DEBUG_CHECK_GL_ERROR();
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
@@ -631,19 +653,16 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			mesh = object->get_mesh_index(lod, i);
-			material = object->get_materials_index(lod, i);
+			index = object->get_materials_index(lod, i);
 
-			DEBUG_CHECK_GL_ERROR();
+			MaterialLock material(object->get_materials()[index]);
 
-			if (switch_program(object->get_materials(
-				)[material].get_effect(
+			if (switch_program(material->get_effect(
 				)->get_default_program(light_count,
 					dynamic_light_count)))
 			{
 				object_data_set = false;
 			}
-
-			DEBUG_CHECK_GL_ERROR();
 
 			if (!object_data_set)
 			{
@@ -660,28 +679,22 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			object->get_materials()[material].bind(
-				m_state_manager);
+			material->bind(m_state_manager);
+
+			DEBUG_CHECK_GL_ERROR();
 
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_matrices,
-				object->get_materials(
-					)[material].get_texture_matrices());
-
+				material->get_texture_matrices());
 			m_state_manager.get_program()->set_parameter(
 				apt_albedo_scale_offsets,
-				object->get_materials(
-					)[material].get_albedo_scale_offsets());
-
+				material->get_albedo_scale_offsets());
 			m_state_manager.get_program()->set_parameter(
 				apt_emission_scale_offset,
-				object->get_materials(
-					)[material].get_emission_scale_offset());
-
+				material->get_emission_scale_offset());
 			m_state_manager.get_program()->set_parameter(
 				apt_specular_scale_offset,
-				object->get_materials(
-					)[material].get_specular_scale_offset());
+				material->get_specular_scale_offset());
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -689,14 +702,12 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 		}
-
-		DEBUG_CHECK_GL_ERROR();
 	}
 
 	void Scene::draw_object_shadow(const ObjectSharedPtr &object,
 		const Uint16 layer, const Uint16 distance)
 	{
-		Uint16 count, material, mesh, i, lod;
+		Uint16 count, index, mesh, i, lod;
 		bool object_data_set;
 
 		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
@@ -712,20 +723,24 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			mesh = object->get_mesh_index(lod, i);
-			material = object->get_materials_index(lod, i);
+			index = object->get_materials_index(lod, i);
 
-			if (!object->get_materials(
-				)[material].get_cast_shadows())
+			MaterialLock material(object->get_materials()[index]);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			if (!material->get_cast_shadows())
 			{
 				continue;
 			}
 
-			if (switch_program(object->get_materials(
-				)[material].get_effect()->get_shadow_program(),
-				layer))
+			if (switch_program(material->get_effect(
+				)->get_shadow_program(), layer))
 			{
 				object_data_set = false;
 			}
+
+			DEBUG_CHECK_GL_ERROR();
 
 			if (!object_data_set)
 			{
@@ -738,21 +753,29 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
+			material->bind(m_state_manager);
+
+			DEBUG_CHECK_GL_ERROR();
+
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_matrices,
-				object->get_materials(
-					)[material].get_texture_matrices());
+				material->get_texture_matrices());
+			m_state_manager.get_program()->set_parameter(
+				apt_albedo_scale_offsets,
+				material->get_albedo_scale_offsets());
 
-			object->get_materials()[material].bind(
-				m_state_manager);
+			DEBUG_CHECK_GL_ERROR();
+
 			m_state_manager.draw(mesh, 1);
+
+			DEBUG_CHECK_GL_ERROR();
 		}
 	}
 
 	void Scene::draw_object_depth(const ObjectSharedPtr &object,
 		const Uint16 distance)
 	{
-		Uint16 count, material, mesh, i, lod;
+		Uint16 count, index, mesh, i, lod;
 		bool object_data_set;
 
 		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
@@ -768,10 +791,12 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			mesh = object->get_mesh_index(lod, i);
-			material = object->get_materials_index(lod, i);
+			index = object->get_materials_index(lod, i);
 
-			if (switch_program(object->get_materials(
-				)[material].get_effect()->get_depth_program()))
+			MaterialLock material(object->get_materials()[index]);
+
+			if (switch_program(material->get_effect(
+				)->get_depth_program()))
 			{
 				object_data_set = false;
 			}
@@ -787,14 +812,24 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
+			DEBUG_CHECK_GL_ERROR();
+
+			material->bind(m_state_manager);
+
+			DEBUG_CHECK_GL_ERROR();
+
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_matrices,
-				object->get_materials(
-					)[material].get_texture_matrices());
+				material->get_texture_matrices());
+			m_state_manager.get_program()->set_parameter(
+				apt_albedo_scale_offsets,
+				material->get_albedo_scale_offsets());
 
-			object->get_materials()[material].bind(
-				m_state_manager);
+			DEBUG_CHECK_GL_ERROR();
+
 			m_state_manager.draw(mesh, 1);
+
+			DEBUG_CHECK_GL_ERROR();
 		}
 	}
 
@@ -1117,7 +1152,7 @@ namespace eternal_lands
 		PairUint32SelectionTypeVector &ids)
 	{
 		PairUint32SelectionType data;
-		Uint32 i, sub_objects, material;
+		Uint32 i, sub_objects, index;
 		bool object_data_set;
 
 		if (object->get_selection() == st_none)
@@ -1165,10 +1200,12 @@ namespace eternal_lands
 			glBeginQuery(GL_SAMPLES_PASSED,
 				m_querie_ids[ids.size()]);
 
-			material = object->get_sub_objects()[i].get_material();
+			index = object->get_sub_objects()[i].get_material();
 
-			if (switch_program(object->get_materials(
-				)[material].get_effect()->get_depth_program()))
+			MaterialLock material(object->get_materials()[index]);
+
+			if (switch_program(material->get_effect(
+				)->get_depth_program()))
 			{
 				object_data_set = false;
 			}
@@ -1184,11 +1221,17 @@ namespace eternal_lands
 				object_data_set = true;
 			}
 
-			object->get_materials()[material].bind(
-				m_state_manager);
+
+			material->bind(m_state_manager);
+
 			m_state_manager.get_program()->set_parameter(
-				apt_texture_matrices, object->get_materials(
-				)[material].get_texture_matrices());
+				apt_texture_matrices,
+				material->get_texture_matrices());
+
+			m_state_manager.get_program()->set_parameter(
+				apt_albedo_scale_offsets,
+				material->get_albedo_scale_offsets());
+
 			m_state_manager.draw(object->get_sub_objects()[i], 1);
 
 			glEndQuery(GL_SAMPLES_PASSED);
@@ -1266,7 +1309,7 @@ namespace eternal_lands
 			m_scene_resources.get_mesh_data_cache(),
 			m_scene_resources.get_effect_cache(),
 			m_scene_resources.get_texture_cache(),
-			m_scene_resources.get_material_description_cache(),
+			m_scene_resources.get_material_cache(),
 			m_free_ids));
 
 		set_map(map_loader->load(name));

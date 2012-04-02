@@ -17,35 +17,49 @@
 #include "filter.hpp"
 #include "framebufferbuilder.hpp"
 #include "materialdescriptioncache.hpp"
+#include "materialcache.hpp"
+#include "script/materialscriptcache.hpp"
+#include "script/materialscriptmanager.hpp"
+#include "script/scriptengine.hpp"
 
 namespace eternal_lands
 {
 
 	SceneResources::SceneResources(const GlobalVarsSharedPtr &global_vars,
-		const FileSystemWeakPtr &file_system)
+		const FileSystemSharedPtr &file_system)
 	{
 		m_mesh_builder = boost::make_shared<MeshBuilder>(global_vars);
 		m_shader_source_builder =
 			boost::make_shared<ShaderSourceBuilder>(global_vars);
 		m_effect_cache = boost::make_shared<EffectCache>(
-			get_shader_source_builder(), file_system);
+			get_shader_source_builder());
 		m_codec_manager = boost::make_shared<CodecManager>();
 		m_texture_cache = boost::make_shared<TextureCache>(
 			get_codec_manager(), file_system, global_vars);
-		m_material_description_cache = boost::make_shared<
-			MaterialDescriptionCache>();
-		m_mesh_data_cache = boost::make_shared<MeshDataCache>(
+		m_material_description_cache =
+			boost::make_shared<MaterialDescriptionCache>();
+		m_material_cache = boost::make_shared<MaterialCache>(
 			get_material_description_cache(),
+			get_effect_cache(), get_texture_cache());
+		m_mesh_data_cache = boost::make_shared<MeshDataCache>(
 			file_system, global_vars);
 		m_mesh_cache = boost::make_shared<MeshCache>(
 			get_mesh_builder(), get_mesh_data_cache());
 		m_actor_data_cache = boost::make_shared<ActorDataCache>(
 			get_mesh_builder(), get_effect_cache(),
 			get_texture_cache(), get_codec_manager(),
-			get_material_description_cache(), file_system,
-			global_vars);
+			get_material_cache(), get_material_description_cache(),
+			file_system, global_vars);
 		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
 			global_vars);
+
+		m_script_engine = boost::make_shared<ScriptEngine>(file_system);
+		m_material_script_manager =
+			boost::make_shared<MaterialScriptManager>(
+				get_script_engine());
+		m_material_script_cache =
+			boost::make_shared<MaterialScriptCache>(
+				get_script_engine());
 	}
 
 	SceneResources::~SceneResources() throw()

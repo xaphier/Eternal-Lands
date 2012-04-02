@@ -76,8 +76,6 @@ namespace eternal_lands
 				OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
-			void load(Lua &lua, const String &name,
-				ShaderSourceTypeStringMap &types) const;
 			void build_vertex_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,

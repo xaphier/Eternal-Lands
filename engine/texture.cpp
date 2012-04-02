@@ -13,20 +13,18 @@
 namespace eternal_lands
 {
 
-	Texture::Texture(const String &name): m_name(name), m_texture_id(0),
-		m_size(0), m_rebuild(true)
+	Texture::Texture(const String &name): m_name(name),
+		m_anisotropic_filter(16.0f), m_texture_id(0),
+		m_width(0), m_height(0), m_depth(0), m_size(0),
+		m_format(tft_rgb8), m_target(ttt_2d_texture),
+		m_mag_filter(tft_linear), m_min_filter(tft_linear),
+		m_mipmap_filter(tmt_linear), m_wrap_s(twt_repeat),
+		m_wrap_t(twt_repeat), m_wrap_r(twt_repeat),
+		m_mipmap_count(std::numeric_limits<Uint16>::max()),
+		m_used_mipmaps(std::numeric_limits<Uint16>::max()),
+		m_rebuild(true)
 	{
 		assert(!get_name().get().empty());
-		set_format(tft_rgb8);
-		set_target(ttt_2d_texture);
-		set_mag_filter(tft_linear);
-		set_min_filter(tft_linear);
-		set_mipmap_filter(tmt_linear);
-		set_anisotropic_filter(16.0f);
-		set_mipmap_count(std::numeric_limits<Uint16>::max());
-		set_wrap_s(twt_repeat);
-		set_wrap_t(twt_repeat);
-		set_wrap_r(twt_repeat);
 	}
 
 	Texture::~Texture() throw()
@@ -1542,11 +1540,14 @@ namespace eternal_lands
 	{
 		CHECK_GL_ERROR();
 
-		if (m_rebuild && (m_texture_id != 0))
+		if (m_rebuild)
 		{
-			glDeleteTextures(1, &m_texture_id);
-			m_texture_id = 0;
-			m_rebuild = false;
+			if (m_texture_id != 0)
+			{
+				glDeleteTextures(1, &m_texture_id);
+				m_texture_id = 0;
+				m_rebuild = false;
+			}
 		}
 
 		if (m_texture_id == 0)

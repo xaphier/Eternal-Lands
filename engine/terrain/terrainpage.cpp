@@ -13,12 +13,9 @@ namespace eternal_lands
 
 	TerrainPage::TerrainPage(const ObjectData &object_data,
 		const AbstractMeshSharedPtr &mesh,
-		const MaterialDescriptionVector &materials,
-		const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache,
+		const MaterialSharedPtrVector &materials,
 		const float min_z, const float max_z): Object(object_data, mesh,
-			materials, effect_cache, texture_cache, 0),
-		m_min_z(min_z), m_max_z(max_z)
+			materials, 0), m_min_z(min_z), m_max_z(max_z)
 	{
 	}
 
