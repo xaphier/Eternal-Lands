@@ -7,7 +7,7 @@
 
 #include "editormapdata.hpp"
 #include "lightdata.hpp"
-#include "objectdata.hpp"
+#include "objectdescription.hpp"
 #include "exceptions.hpp"
 #include "particledata.hpp"
 #include "image.hpp"
@@ -97,11 +97,13 @@ namespace eternal_lands
 		return m_scene->get_ambient();
 	}
 
-	void EditorMapData::add_object(const EditorObjectData &object)
+	void EditorMapData::add_object(
+		const EditorObjectDescription &object_description)
 	{
 		m_objects.insert(std::pair<Uint32,
-			EditorObjectData>(object.get_id(), object));
-		m_scene->add_object(object, object.get_material_names());
+			EditorObjectDescription>(object_description.get_id(),
+			object_description));
+		m_scene->add_object(object_description);
 	}
 
 	void EditorMapData::add_light(const LightData &light)
@@ -118,14 +120,16 @@ namespace eternal_lands
 //		m_scene->add_particle(particle);
 	}
 
-	void EditorMapData::modify_object(const EditorObjectData &object)
+	void EditorMapData::modify_object(
+		const EditorObjectDescription &object_description)
 	{
-		m_objects.erase(object.get_id());
-		m_scene->remove_object(object.get_id());
+		m_objects.erase(object_description.get_id());
+		m_scene->remove_object(object_description.get_id());
 
 		m_objects.insert(std::pair<Uint32,
-			EditorObjectData>(object.get_id(), object));
-		m_scene->add_object(object, object.get_material_names());
+			EditorObjectDescription>(object_description.get_id(),
+				object_description));
+		m_scene->add_object(object_description);
 	}
 
 	void EditorMapData::modify_light(const LightData &light)
@@ -194,9 +198,9 @@ namespace eternal_lands
 	}
 
 	bool EditorMapData::get_object(const Uint32 id,
-		EditorObjectData &object) const
+		EditorObjectDescription &object_description) const
 	{
-		std::map<Uint32, EditorObjectData>::const_iterator found;
+		std::map<Uint32, EditorObjectDescription>::const_iterator found;
 
 		found = m_objects.find(id);
 
@@ -205,7 +209,7 @@ namespace eternal_lands
 			return false;
 		}
 
-		object = found->second;
+		object_description = found->second;
 		return true;
 	}
 
@@ -244,7 +248,7 @@ namespace eternal_lands
 	void EditorMapData::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{
-		MaterialDescriptionVector materials;
+		StringVector materials;
 		StringStream str;
 		String file_name;
 		Transformation transformation;
@@ -304,13 +308,11 @@ namespace eternal_lands
 			}
 		}
 
-		materials.push_back(m_scene->get_scene_resources(
-			).get_material_description_cache(
-			)->get_material_description(String(str.str())));
+		materials.push_back(String(str.str()));
 
-		m_scene->add_object(ObjectData(transformation,
+		m_scene->add_object(ObjectDescription(transformation, materials,
 			String(UTF8("plane_4")), 0.0f, id, st_none,
-			bt_disabled), materials);
+			bt_disabled));
 	}
 
 	Uint16 EditorMapData::get_tile(const Uint16 x, const Uint16 y) const
@@ -491,18 +493,8 @@ namespace eternal_lands
 	StringVector EditorMapData::get_default_materials(const String &name)
 		const
 	{
-		MaterialDescriptionVector materials;
-		StringVector result;
-
-		materials = m_scene->get_scene_resources(
+		return m_scene->get_scene_resources(
 			).get_mesh_data_cache()->get_mesh_materials(name);
-
-		BOOST_FOREACH(const MaterialDescription &material, materials)
-		{
-			result.push_back(material.get_name());
-		}
-
-		return result;
 	}
 
 	void EditorMapData::get_heights(const Uint16Array2 &vertex,

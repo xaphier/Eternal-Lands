@@ -34,9 +34,19 @@ namespace eternal_lands
 			glm::vec3 m_direction;
 
 		public:
-			Ray();
-			Ray(const glm::vec3 origin, const glm::vec3 direction);
-			~Ray() throw();
+			inline Ray(): m_direction(0.0f, 0.0f, 1.0f)
+			{
+			}
+
+			inline Ray(const glm::vec3 origin,
+				const glm::vec3 direction): m_origin(origin),
+				m_direction(direction)
+			{
+			}
+
+			inline ~Ray() throw()
+			{
+			}
 
 			inline const glm::vec3 &get_origin() const
 			{

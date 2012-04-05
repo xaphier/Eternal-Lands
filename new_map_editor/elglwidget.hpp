@@ -73,7 +73,8 @@ class ELGLWidget: public QGLWidget
 	public:
 		ELGLWidget(QWidget *parent = 0);
 		virtual ~ELGLWidget();
-		void get_object_data(EditorObjectData &object_data) const;
+		void get_object_description(
+			EditorObjectDescription &object_description) const;
 		RenderableType get_renderable() const;
 		glm::vec3 get_light_color() const;
 		void get_light_data(LightData &light) const;

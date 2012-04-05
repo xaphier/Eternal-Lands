@@ -51,10 +51,10 @@ namespace eternal_lands
 	}
 
 	void Editor::change_object(const ModificationType type,
-		const EditorObjectData &object_data)
+		const EditorObjectDescription &object_description)
 	{
 		ModificationAutoPtr modification(new ObjectModification(
-			object_data, type));
+			object_description, type));
 
 		m_undo.add(modification);
 	}
@@ -112,7 +112,7 @@ namespace eternal_lands
 	void Editor::add_3d_object(const glm::vec3 &position,
 		const String &mesh, const SelectionType selection)
 	{
-		EditorObjectData object_data;
+		EditorObjectDescription object_description;
 		glm::vec3 translation, rotation, vrandom;
 		float scale;
 		Uint32 i,id;
@@ -158,14 +158,14 @@ namespace eternal_lands
 			scale = 1.0f;
 		}
 
-		object_data.set_translation(position + translation);
-		object_data.set_rotation_angles(rotation);
-		object_data.set_scale(scale);
-		object_data.set_selection(selection);
-		object_data.set_name(mesh);
-		object_data.set_id(id);
+		object_description.set_translation(position + translation);
+		object_description.set_rotation_angles(rotation);
+		object_description.set_scale(scale);
+		object_description.set_selection(selection);
+		object_description.set_name(mesh);
+		object_description.set_id(id);
 
-		change_object(mt_object_added, object_data);
+		change_object(mt_object_added, object_description);
 	}
 
 	void Editor::add_light(const glm::vec3 &position)
@@ -454,115 +454,119 @@ namespace eternal_lands
 
 	void Editor::remove_object(const Uint32 id)
 	{
-		EditorObjectData object_data;
+		EditorObjectDescription object_description;
 
-		m_data.get_object(id, object_data);
+		m_data.get_object(id, object_description);
 
-		change_object(mt_object_removed, object_data);
+		change_object(mt_object_removed, object_description);
 
 		m_data.remove_object(id);
 	}
 
 	void Editor::set_object_blend(const Uint32 id, const BlendType blend)
 	{
-		EditorObjectData object_data;
+		EditorObjectDescription object_description;
 
-		m_data.get_object(id, object_data);
+		m_data.get_object(id, object_description);
 
-		if (object_data.get_blend() != blend)
+		if (object_description.get_blend() != blend)
 		{
-			change_object(mt_object_blend_changed, object_data);
+			change_object(mt_object_blend_changed,
+				object_description);
 
-			object_data.set_blend(blend);
+			object_description.set_blend(blend);
 
-			m_data.modify_object(object_data);
+			m_data.modify_object(object_description);
 		}
 	}
 
 	void Editor::set_object_translation(const Uint32 id,
 		const glm::vec3 &translation)
 	{
-		EditorObjectData object_data;
+		EditorObjectDescription object_description;
 
-		m_data.get_object(id, object_data);
+		m_data.get_object(id, object_description);
 
-		if (glm::any(glm::notEqual(object_data.get_translation(),
+		if (glm::any(glm::notEqual(object_description.get_translation(),
 			translation)))
 		{
 			change_object(mt_object_translation_changed,
-				object_data);
+				object_description);
 
-			object_data.set_translation(translation);
+			object_description.set_translation(translation);
 
-			m_data.modify_object(object_data);
+			m_data.modify_object(object_description);
 		}
 	}
 
 	void Editor::set_object_rotation(const Uint32 id,
 		const glm::vec3 &rotation)
 	{
-		EditorObjectData object_data;
+		EditorObjectDescription object_description;
 
-		m_data.get_object(id, object_data);
+		m_data.get_object(id, object_description);
 
-		if (glm::any(glm::notEqual(object_data.get_rotation_angles(),
-			rotation)))
+		if (glm::any(glm::notEqual(
+			object_description.get_rotation_angles(), rotation)))
 		{
-			change_object(mt_object_rotation_changed, object_data);
+			change_object(mt_object_rotation_changed,
+				object_description);
 
-			object_data.set_rotation_angles(rotation);
+			object_description.set_rotation_angles(rotation);
 
-			m_data.modify_object(object_data);
+			m_data.modify_object(object_description);
 		}
 	}
 
 	void Editor::set_object_scale(const Uint32 id, const float scale)
 	{
-		EditorObjectData object_data;
+		EditorObjectDescription object_description;
 
-		m_data.get_object(id, object_data);
+		m_data.get_object(id, object_description);
 
-		if (object_data.get_scale() != scale)
+		if (object_description.get_scale() != scale)
 		{
-			change_object(mt_object_scale_changed, object_data);
+			change_object(mt_object_scale_changed,
+				object_description);
 
-			object_data.set_scale(scale);
+			object_description.set_scale(scale);
 
-			m_data.modify_object(object_data);
+			m_data.modify_object(object_description);
 		}
 	}
 
 	void Editor::set_object_selection(const Uint32 id,
 		const SelectionType selection)
 	{
-		EditorObjectData object_data;
+		EditorObjectDescription object_description;
 
-		m_data.get_object(id, object_data);
+		m_data.get_object(id, object_description);
 
-		if (object_data.get_selection() != selection)
+		if (object_description.get_selection() != selection)
 		{
-			change_object(mt_object_selection_changed, object_data);
+			change_object(mt_object_selection_changed,
+				object_description);
 
-			object_data.set_selection(selection);
+			object_description.set_selection(selection);
 
-			m_data.modify_object(object_data);
+			m_data.modify_object(object_description);
 		}
 	}
 
 	void Editor::set_object_materials(const Uint32 id,
 		const StringVector &materials)
 	{
-		EditorObjectData object_data;
+		EditorObjectDescription object_description;
 
-		m_data.get_object(id, object_data);
+		m_data.get_object(id, object_description);
 
-		if (object_data.get_material_names() != materials)
+		if (object_description.get_material_names() != materials)
 		{
-			change_object(mt_object_materials_changed, object_data);
+			change_object(mt_object_materials_changed, object_description);
 
-			object_data.set_material_names(materials);
+			object_description.set_material_names(materials);
 
-			m_data.modify_object(object_data);
+			m_data.modify_object(object_description);
 		}
 	}
 
@@ -626,10 +630,10 @@ namespace eternal_lands
 		}
 	}
 
-	void Editor::get_object_data(const Uint32 id,
-		EditorObjectData &object_data) const
+	void Editor::get_object_description(const Uint32 id,
+		EditorObjectDescription &object_description) const
 	{
-		m_data.get_object(id, object_data);
+		m_data.get_object(id, object_description);
 	}
 
 	void Editor::get_light_data(const Uint32 id, LightData &light_data)

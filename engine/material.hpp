@@ -24,12 +24,17 @@
 namespace eternal_lands
 {
 
-	class Material: public boost::noncopyable
+	class Material: public boost::enable_shared_from_this<Material>,
+		public boost::noncopyable
 	{
 		private:
 			MaterialData m_data;
-			EffectCacheWeakPtr m_effect_cache;
-			TextureCacheWeakPtr m_texture_cache;
+			const EffectCacheWeakPtr m_effect_cache;
+			const TextureCacheWeakPtr m_texture_cache;
+			const MaterialScriptCacheWeakPtr
+				m_material_script_cache;
+			const MaterialScriptManagerWeakPtr
+				m_material_script_manager;
 			EffectSharedPtr m_effect;
 			MaterialTextureSharedPtrArray m_textures;
 			MaterialScriptSharedPtr m_material_script;
@@ -57,16 +62,42 @@ namespace eternal_lands
 				return result;
 			}
 
+			inline MaterialScriptCacheSharedPtr
+				get_material_script_cache() const
+			{
+				MaterialScriptCacheSharedPtr result;
+
+				result = m_material_script_cache.lock();
+
+				assert(result.get() != 0);
+
+				return result;
+			}
+
+			inline MaterialScriptManagerSharedPtr
+				get_material_script_manager() const
+			{
+				MaterialScriptManagerSharedPtr result;
+
+				result = m_material_script_manager.lock();
+
+				assert(result.get() != 0);
+
+				return result;
+			}
+
 			void set_texture(const MaterialDescription &material,
 				const ShaderTextureType texture_type);
 
 		public:
 			Material(const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache);
-			Material(const EffectCacheWeakPtr &effect_cache,
 				const TextureCacheWeakPtr &texture_cache,
-				const MaterialDescription &material);
+				const MaterialScriptCacheWeakPtr
+					&material_script_cache,
+				const MaterialScriptManagerWeakPtr
+					&material_script_manager);
 			~Material() throw();
+			void init(const MaterialDescription &material);
 			void set_texture(const String &name,
 				const ShaderTextureType texture_type);
 			const String &get_texture_name(
@@ -78,8 +109,10 @@ namespace eternal_lands
 			const TextureSharedPtr &get_texture(
 				const ShaderTextureType texture_type) const;
 			const EffectDescription &get_effect_description() const;
-			const String &get_script_name() const;
-			bool execute_script(asIScriptContext* context);
+			const String &get_material_script_name() const;
+			void set_material_script(const String &material_script);
+			bool execute_script(const glm::vec4 &time,
+				asIScriptContext* context);
 			void lock();
 			void unlock();
 

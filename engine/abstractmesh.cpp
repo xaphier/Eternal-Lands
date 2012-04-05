@@ -28,6 +28,7 @@ namespace eternal_lands
 		m_use_16_bit_indices(true), m_static_indices(static_indices),
 		m_static_vertices(static_vertices), m_use_simd(use_simd)
 	{
+		assert(!get_name().get().empty());
 	}
 
 	AbstractMesh::~AbstractMesh() throw()
@@ -57,6 +58,7 @@ namespace eternal_lands
 		if (source->get_vertex_count() == 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_name(get_name())
 				<< errinfo_message(UTF8("Vertex count is "
 					"zero")));
 		}
@@ -65,6 +67,7 @@ namespace eternal_lands
 			!get_supports_restart_index())
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_name(get_name())
 				<< errinfo_message(UTF8("Restart index used "
 					"but not supported")));
 		}
@@ -80,10 +83,11 @@ namespace eternal_lands
 		m_static_indices = static_indices;
 		m_static_vertices = static_vertices;
 
-		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
-			" %2%, index_count: %3%, sub_mesh_count: %4%"),
-			get_use_16_bit_indices() % get_vertex_count() %
-			get_index_count() % get_sub_meshs().size());
+		LOG_DEBUG(UTF8("Mesh '%1%' use_16_bit_indices: %2%, "
+			"vertex_count: %3%, index_count: %4%, sub_mesh_count:"
+			" %5%"), get_name() % get_use_16_bit_indices() %
+			get_vertex_count() % get_index_count() %
+			get_sub_meshs().size());
 
 		init_vertices();
 
@@ -326,6 +330,7 @@ namespace eternal_lands
 		if (get_sub_meshs().size() == 0)
 		{
 			EL_THROW_EXCEPTION(ArraySizeErrorException()
+				<< errinfo_name(get_name())
 				<< errinfo_size(0));
 		}
 

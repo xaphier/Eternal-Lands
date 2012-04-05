@@ -94,9 +94,10 @@ namespace eternal_lands
 				const Uint32 tile_map_height,
 				const Uint32 tile_map_offset);
 			void read(const String &name);
-			static ObjectData get_object_data(
+			static ObjectDescription get_object_description(
 				const glm::vec3 &translation,
 				const glm::vec3 &rotation_angles,
+				const StringVector &material_names,
 				const String &name, const float scale,
 				const Uint32 id, const SelectionType selection,
 				const BlendType blend);

@@ -61,16 +61,32 @@ namespace eternal_lands
 	{
 	}
 
-	void Map::add_object(const ObjectData &object_data)
+	void Map::add_object(const ObjectDescription &object_description)
 	{
 		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
 		ObjectSharedPtr object;
 		AbstractMeshSharedPtr mesh;
 		StringVector material_names;
 		MaterialSharedPtrVector materials;
+		Uint32 i, count;
 
-		get_mesh_cache()->get_mesh(object_data.get_name(), mesh,
+		get_mesh_cache()->get_mesh(object_description.get_name(), mesh,
 			material_names);
+
+		count = std::min(material_names.size(),
+			object_description.get_material_names().size());
+
+		for (i = 0; i < count; ++i)
+		{
+			if (object_description.get_material_names()[i].get(
+				).empty())
+			{
+				continue;
+			}
+
+			material_names[i] =
+				object_description.get_material_names()[i];
+		}
 
 		BOOST_FOREACH(const String &material_name, material_names)
 		{
@@ -78,11 +94,11 @@ namespace eternal_lands
 				material_name));
 		}
 
-		object = boost::make_shared<Object>(object_data, mesh,
+		object = boost::make_shared<Object>(object_description, mesh,
 			materials);
 
 		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
-			object_data.get_id(), object));
+			object_description.get_id(), object));
 
 		assert(temp.second);
 
@@ -101,7 +117,7 @@ namespace eternal_lands
 			instance_data.get_name());
 
 		BOOST_FOREACH(const String &material_name,
-			instance_data.get_materials())
+			instance_data.get_material_names())
 		{
 			materials.push_back(get_material_cache()->get_material(
 				material_name));
@@ -125,49 +141,6 @@ namespace eternal_lands
 		AbstractMeshSharedPtr mesh;
 
 		get_mesh_cache()->get_mesh(object_data.get_name(), mesh);
-
-		object = boost::make_shared<Object>(object_data, mesh,
-			materials);
-
-		temp = m_objects.insert(Uint32ObjectSharedPtrMap::value_type(
-			object_data.get_id(), object));
-
-		assert(temp.second);
-
-		m_object_tree->add(object);
-	}
-
-	void Map::add_object(const ObjectData &object_data,
-		const StringVector &material_names)
-	{
-		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
-		ObjectSharedPtr object;
-		AbstractMeshSharedPtr mesh;
-		MaterialSharedPtrVector materials;
-		StringVector tmp_material_names;
-		Uint32 i, count;
-
-		get_mesh_cache()->get_mesh(object_data.get_name(), mesh,
-			tmp_material_names);
-
-		count = std::min(material_names.size(),
-			tmp_material_names.size());
-
-		for (i = 0; i < count; ++i)
-		{
-			if (material_names[i].get().empty())
-			{
-				continue;
-			}
-
-			tmp_material_names[i] = material_names[i];
-		}
-
-		BOOST_FOREACH(const String &material_name, tmp_material_names)
-		{
-			materials.push_back(get_material_cache()->get_material(
-				material_name));
-		}
 
 		object = boost::make_shared<Object>(object_data, mesh,
 			materials);

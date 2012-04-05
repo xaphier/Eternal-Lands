@@ -4,7 +4,7 @@
 #include <QInputDialog>
 #include "newmapdialog.hpp"
 #include "lightdata.hpp"
-#include "editor/editorobjectdata.hpp"
+#include "editor/editorobjectdescription.hpp"
 #include "editor/editor.hpp"
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
@@ -319,11 +319,11 @@ void MainWindow::update_object()
 {
 	QStringList default_materials, materials, object_materials;
 	QString material;
-	EditorObjectData object_data;
+	EditorObjectDescription object_description;
 	unsigned int id, i;
 	int index, j;
 
-	el_gl_widget->get_object_data(object_data);
+	el_gl_widget->get_object_description(object_description);
 
 	BOOST_FOREACH(QObject* object_widget, m_object_witdgets)
 	{
@@ -342,40 +342,41 @@ void MainWindow::update_object()
 		material_label_witdget->setEnabled(false);
 	}
 
-	x_translation->setValue(object_data.get_world_transformation(
+	x_translation->setValue(object_description.get_world_transformation(
 		).get_translation()[0]);
-	y_translation->setValue(object_data.get_world_transformation(
+	y_translation->setValue(object_description.get_world_transformation(
 		).get_translation()[1]);
-	z_translation->setValue(object_data.get_world_transformation(
+	z_translation->setValue(object_description.get_world_transformation(
 		).get_translation()[2]);
 
-	x_rotation->setValue(object_data.get_rotation_angles()[0]);
-	y_rotation->setValue(object_data.get_rotation_angles()[1]);
-	z_rotation->setValue(object_data.get_rotation_angles()[2]);
+	x_rotation->setValue(object_description.get_rotation_angles()[0]);
+	y_rotation->setValue(object_description.get_rotation_angles()[1]);
+	z_rotation->setValue(object_description.get_rotation_angles()[2]);
 
-	scale_value->setValue(object_data.get_world_transformation(
+	scale_value->setValue(object_description.get_world_transformation(
 		).get_scale() * 100.0f);
 
-	set_blend(object_data.get_blend());
-	set_selection(object_data.get_selection());
+	set_blend(object_description.get_blend());
+	set_selection(object_description.get_selection());
 
-	mesh_name->setText(QString::fromUtf8(object_data.get_name().get().c_str()));
+	mesh_name->setText(QString::fromUtf8(object_description.get_name(
+		).get().c_str()));
 
-	id = object_data.get_id();
+	id = object_description.get_id();
 
 	object_id->setText(QVariant(id).toString());
 
 	default_materials = el_gl_widget->get_default_materials(
-		object_data.get_name());
+		object_description.get_name());
 
 	object_materials = default_materials;
 
 	for (j = 0; j < default_materials.size(); ++j)
 	{
-		if (object_data.get_material_names().size() > j)
+		if (object_description.get_material_names().size() > j)
 		{
 			material = QString::fromUtf8(
-				object_data.get_material_names()[j].get(
+				object_description.get_material_names()[j].get(
 					).c_str());
 		}
 

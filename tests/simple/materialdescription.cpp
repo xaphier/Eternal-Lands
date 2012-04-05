@@ -181,6 +181,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		)[3], 0.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_description.get_name(), "");
 	BOOST_CHECK_EQUAL(material_description.get_effect(), "");
+	BOOST_CHECK_EQUAL(material_description.get_script(), "");
 	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), true);
 	BOOST_CHECK_EQUAL(material_description.get_culling(), true);
 }
@@ -380,6 +381,7 @@ BOOST_AUTO_TEST_CASE(all)
 		)[3], 0.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_description.get_name(), "");
 	BOOST_CHECK_EQUAL(material_description.get_effect(), "");
+	BOOST_CHECK_EQUAL(material_description.get_script(), "");
 	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), true);
 	BOOST_CHECK_EQUAL(material_description.get_culling(), true);
 
@@ -387,6 +389,8 @@ BOOST_AUTO_TEST_CASE(all)
 		el::String(UTF8("afdgsr!§$AFD54"))));
 	BOOST_CHECK_NO_THROW(material_description.set_effect(
 		el::String(UTF8("428rfu0sr4v"))));
+	BOOST_CHECK_NO_THROW(material_description.set_script(
+		el::String(UTF8("345078rgt34tewr32"))));
 	BOOST_CHECK_NO_THROW(material_description.set_cast_shadows(false));
 	BOOST_CHECK_NO_THROW(material_description.set_culling(false));
 
@@ -560,6 +564,8 @@ BOOST_AUTO_TEST_CASE(all)
 		"afdgsr!§$AFD54");
 	BOOST_CHECK_EQUAL(material_description.get_effect(),
 		"428rfu0sr4v");
+	BOOST_CHECK_EQUAL(material_description.get_script(),
+		"345078rgt34tewr32");
 	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), false);
 	BOOST_CHECK_EQUAL(material_description.get_culling(), false);
 
@@ -608,6 +614,8 @@ BOOST_AUTO_TEST_CASE(all)
 		el::String(UTF8("9230fsn45,.e.,"))));
 	BOOST_CHECK_NO_THROW(material_description.set_effect(
 		el::String(UTF8("afdgsr!§$AFD54"))));
+	BOOST_CHECK_NO_THROW(material_description.set_script(
+		el::String(UTF8("3453=)/&vrf"))));
 	BOOST_CHECK_NO_THROW(material_description.set_cast_shadows(false));
 	BOOST_CHECK_NO_THROW(material_description.set_culling(false));
 
@@ -773,6 +781,7 @@ BOOST_AUTO_TEST_CASE(all)
 		)[3], -21.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_description.get_name(), "9230fsn45,.e.,");
 	BOOST_CHECK_EQUAL(material_description.get_effect(), "afdgsr!§$AFD54");
+	BOOST_CHECK_EQUAL(material_description.get_script(), "3453=)/&vrf");
 	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), false);
 	BOOST_CHECK_EQUAL(material_description.get_culling(), false);
 }
@@ -793,6 +802,7 @@ BOOST_AUTO_TEST_CASE(xml)
 		"<specular_scale_offset>-1.7 -4.0 -15.0 -21.0</specular_scale_offset>"
 		"<dudv_scale>-1.7 -4.0</dudv_scale>"
 		"<effect>afdgsr!§$AFD54</effect>"
+		"<script>efw5463t4%§</script>"
 		"<cast_shadows>false</cast_shadows>"
 		"<culling>false</culling></material>"));
 	el::MaterialDescription material_description;
@@ -968,6 +978,7 @@ BOOST_AUTO_TEST_CASE(xml)
 		)[3], -21.0f, 1.0);
 	BOOST_CHECK_EQUAL(material_description.get_name(), "tada");
 	BOOST_CHECK_EQUAL(material_description.get_effect(), "afdgsr!§$AFD54");
+	BOOST_CHECK_EQUAL(material_description.get_script(), "efw5463t4%§");
 	BOOST_CHECK_EQUAL(material_description.get_cast_shadows(), false);
 	BOOST_CHECK_EQUAL(material_description.get_culling(), false);
 }

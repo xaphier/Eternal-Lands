@@ -4,7 +4,7 @@
 #include <globalvars.hpp>
 #include <image.hpp>
 #include <lightdata.hpp>
-#include "editor/editorobjectdata.hpp"
+#include "editor/editorobjectdescription.hpp"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
@@ -355,10 +355,10 @@ void ELGLWidget::paintGL()
 	}
 }
 
-void ELGLWidget::get_object_data(EditorObjectData &object_data)
-	const
+void ELGLWidget::get_object_description(
+	EditorObjectDescription &object_description) const
 {
-	m_editor->get_object_data(object_data);
+	m_editor->get_object_description(object_description);
 }
 
 RenderableType ELGLWidget::get_renderable() const

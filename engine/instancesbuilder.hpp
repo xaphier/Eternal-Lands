@@ -68,9 +68,7 @@ namespace eternal_lands
 			 */
 			~InstancesBuilder() throw();
 
-			void add(const ObjectData &object_data);
-			void add(const ObjectData &object_data,
-				const StringVector &materials);
+			void add(const ObjectDescription &object_description);
 			void build(FreeIds &free_ids,
 				InstanceDataVector &instances,
 				ObjectDescriptionVector &uninstanced);

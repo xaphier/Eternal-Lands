@@ -84,8 +84,7 @@ namespace eternal_lands
 		BOOST_FOREACH(const ObjectDescription &object_descritption,
 			uninstanced)
 		{
-			m_map->add_object(object_descritption,
-				object_descritption.get_materials());
+			m_map->add_object(object_descritption);
 		}
 	}
 
@@ -95,17 +94,17 @@ namespace eternal_lands
 		const Uint32 id, const SelectionType selection,
 		const BlendType blend, const StringVector &material_names)
 	{
-		if (blend)
+		if (blend != bt_disabled)
 		{
-			m_map->add_object(get_object_data(translation,
-				rotation_angles, name, scale, id,
-				selection, blend));
+			m_map->add_object(get_object_description(translation,
+				rotation_angles, material_names, name, scale,
+				id, selection, blend));
 		}
 		else
 		{
-			m_instances_builder->add(get_object_data(translation,
-				rotation_angles, name, scale, id,
-				selection, blend));
+			m_instances_builder->add(get_object_description(
+				translation, rotation_angles, material_names,
+				name, scale, id, selection, blend));
 		}
 	}
 
@@ -191,9 +190,9 @@ namespace eternal_lands
 		id = get_free_ids().use_typeless_object_id(x + (y << 10),
 			it_tile_object);
 
-		m_instances_builder->add(ObjectData(transformation,
-			String(UTF8("tile")), 0.0f, id, st_none, bt_disabled),
-			materials);
+		m_instances_builder->add(ObjectDescription(transformation,
+			materials, String(UTF8("tile")), 0.0f, id, st_none,
+			bt_disabled));
 	}
 
 	void MapLoader::set_height(const Uint16 x, const Uint16 y,

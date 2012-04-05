@@ -736,7 +736,7 @@ void register_operator(const ParameterType type, const ParameterType value,
 	std::cout << "\tr = engine->RegisterObjectMethod(\"";
 	std::cout << get_angelscript_string(type);
 	std::cout << "\"," << std::endl << "\t\t\"";
-	std::cout << get_angelscript_string(type) << " " << get_angelscript_string(uo);
+	std::cout << get_angelscript_string(type) << " &" << get_angelscript_string(uo);
 	std::cout << "(const " << get_angelscript_string(value) << " &in)\"," << std::endl;
 	std::cout << "\t\tasMETHODPR(" << get_string(type) << ", operator";
 	std::cout << get_string(uo) << ", (const " << get_string(value) << " &), ";
@@ -1349,8 +1349,6 @@ void register_mat(const ParameterType type)
 	register_function(type, get_parameter(value_type, col),
 		get_parameter(value_type, row), "outerProduct<float>", "outerProduct");
 
-	register_index_operator(type, get_parameter(value_type, col));
-
 	if (row == col)
 	{
 		register_function(type, type, "inverse", "inverse");
@@ -1514,6 +1512,7 @@ int main(int argc, char **argv)
 	uos.insert(uot_sub_assign);
 	uos.insert(uot_mul_assign);
 	uos.insert(uot_div_assign);
+
 	bos.insert(bot_add);
 	bos.insert(bot_sub);
 	bos.insert(bot_mul);

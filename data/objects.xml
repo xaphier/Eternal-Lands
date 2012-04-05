@@ -1,0 +1,6588 @@
+<?xml version="1.0" encoding="utf8"?>
+<objects>
+	<category>
+		<name>Trees</name>
+		<sub_category>
+			<name>Trees with Leaves</name>
+			<object>
+				<name>Tree Leaves 1</name>
+				<file>3dobjects/treeleaves1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.2</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 2</name>
+				<file>3dobjects/treeleaves2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 3</name>
+				<file>3dobjects/treeleaves3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.4</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 4</name>
+				<file>3dobjects/treeleaves4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 5</name>
+				<file>3dobjects/treeleaves5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.95</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 6</name>
+				<file>3dobjects/treeleaves6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.2</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 7</name>
+				<file>3dobjects/treeleaves7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 8</name>
+				<file>3dobjects/treeleaves8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 9</name>
+				<file>3dobjects/treeleaves9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 10</name>
+				<file>3dobjects/treeleaves10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.4</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 12</name>
+				<file>3dobjects/treeleaves12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.9</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 13</name>
+				<file>3dobjects/treeleaves13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.1</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 14</name>
+				<file>3dobjects/treeleaves14.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.4</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 15</name>
+				<file>3dobjects/treeleaves15.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 16</name>
+				<file>3dobjects/treeleaves16.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 17</name>
+				<file>3dobjects/treeleaves17.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 18</name>
+				<file>3dobjects/treeleaves18.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.05</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 19</name>
+				<file>3dobjects/treeleaves19.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 20</name>
+				<file>3dobjects/treeleaves20.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.9</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 21</name>
+				<file>3dobjects/treeleaves21.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 22</name>
+				<file>3dobjects/treeleaves22.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 23</name>
+				<file>3dobjects/treeleaves23.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.9</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 24</name>
+				<file>3dobjects/treeleaves24.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 25</name>
+				<file>3dobjects/treeleaves25.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 26</name>
+				<file>3dobjects/treeleaves26.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 27</name>
+				<file>3dobjects/treeleaves27.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.05</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 28</name>
+				<file>3dobjects/treeleaves28.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 29</name>
+				<file>3dobjects/treeleaves29.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.9</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 30</name>
+				<file>3dobjects/treeleaves30.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 31</name>
+				<file>3dobjects/treeleaves31.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree Leaves 32</name>
+				<file>3dobjects/treeleaves32.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.9</scale>
+			</object>
+			<object>
+				<name>Tree Flowers 1</name>
+				<file>3dobjects/treeflower1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.3</scale>
+			</object>
+			<object>
+				<name>Tree Flowers 2</name>
+				<file>3dobjects/treeflower2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.3</scale>
+			</object>
+			<object>
+				<name>Christmas Tree</name>
+				<file>3dobjects/tree_xmas.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Trees without leaves</name>
+			<object>
+				<name>Tree 1</name>
+				<file>3dobjects/tree1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.3</scale>
+			</object>
+			<object>
+				<name>Tree 2</name>
+				<file>3dobjects/tree2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.9</scale>
+			</object>
+			<object>
+				<name>Tree 3</name>
+				<file>3dobjects/tree3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.45</scale>
+			</object>
+			<object>
+				<name>Tree 4</name>
+				<file>3dobjects/tree4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.2</scale>
+			</object>
+			<object>
+				<name>Tree 5</name>
+				<file>3dobjects/tree5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tree 6</name>
+				<file>3dobjects/tree6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree 7</name>
+				<file>3dobjects/tree7.e3d</file>
+				<rotation>0.0 0.0 150.0</rotation>
+				<scale>0.9</scale>
+			</object>
+			<object>
+				<name>Tree 8</name>
+				<file>3dobjects/tree8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Tree 9</name>
+				<file>3dobjects/tree9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.1</scale>
+			</object>
+			<object>
+				<name>Tree 10</name>
+				<file>3dobjects/tree10.e3d</file>
+				<rotation>0.0 0.0 80.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree 11</name>
+				<file>3dobjects/tree11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tree 12</name>
+				<file>3dobjects/tree12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tree 13</name>
+				<file>3dobjects/tree13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tree 14</name>
+				<file>3dobjects/tree14.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree 15</name>
+				<file>3dobjects/tree15.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.1</scale>
+			</object>
+			<object>
+				<name>Tree 16</name>
+				<file>3dobjects/tree16.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tree 17</name>
+				<file>3dobjects/tree17.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tree 18</name>
+				<file>3dobjects/tree18.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tree 19</name>
+				<file>3dobjects/tree19.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree 20</name>
+				<file>3dobjects/tree20.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.1</scale>
+			</object>
+			<object>
+				<name>Tree 21</name>
+				<file>3dobjects/tree21.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.1</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Small Trees</name>
+			<object>
+				<name>Small Tree 1</name>
+				<file>3dobjects/tree_small1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.5</scale>
+			</object>
+			<object>
+				<name>Small Tree 2</name>
+				<file>3dobjects/tree_small2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.5</scale>
+			</object>
+			<object>
+				<name>Small Tree 3</name>
+				<file>3dobjects/tree_small3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.5</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Big Trees</name>
+			<object>
+				<name>Big Tree 1</name>
+				<file>3dobjects/treebig1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Big Tree 2</name>
+				<file>3dobjects/treebig2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Big Tree 3</name>
+				<file>3dobjects/treebig3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Leaves for trees</name>
+			<object>
+				<name>leaves 1</name>
+				<file>3dobjects/leaves1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>leaves 2</name>
+				<file>3dobjects/leaves2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Big Tree leaves</name>
+				<file>3dobjects/leaves_bigtree.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Firewood &amp; Logs</name>
+			<object>
+				<name>Fire wood 1</name>
+				<file>3dobjects/firewood1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Fire wood 2</name>
+				<file>3dobjects/firewood2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Fire spit</name>
+				<file>3dobjects/firespit1.e3d</file>
+				<rotation>0.0 0.0 -30.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Log 1</name>
+				<file>3dobjects/log1.e3d</file>
+				<rotation>0.0 0.0 -50.0</rotation>
+				<scale>1.45</scale>
+			</object>
+			<object>
+				<name>Log 2</name>
+				<file>3dobjects/log2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Stick 1</name>
+				<file>3dobjects/stick1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Stick 2</name>
+				<file>3dobjects/stick2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Stumps &amp; Branches</name>
+			<object>
+				<name>Stump 1</name>
+				<file>3dobjects/stump1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Stump 2</name>
+				<file>3dobjects/stump2.e3d</file>
+				<rotation>0.0 0.0 -100.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Branch 1</name>
+				<file>3dobjects/branch1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Branch 2</name>
+				<file>3dobjects/branch2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Branch 3</name>
+				<file>3dobjects/branch3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Branch 4</name>
+				<file>3dobjects/branch4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Branch 5</name>
+				<file>3dobjects/branch5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Branch 6</name>
+				<file>3dobjects/branch6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Branch 7</name>
+				<file>3dobjects/branch7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Vines</name>
+			<object>
+				<name>Vine 1</name>
+				<file>3dobjects/vine1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Vine 2</name>
+				<file>3dobjects/vine2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Vine 3</name>
+				<file>3dobjects/vine3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>VineLeaves 1</name>
+				<file>3dobjects/vineleaves1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>VineLeaves 2</name>
+				<file>3dobjects/vineleaves2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>VineLeaves 3</name>
+				<file>3dobjects/vineleaves3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Bushes</name>
+		<sub_category>
+			<name>bushes</name>
+			<object>
+				<name>Shrub1</name>
+				<file>3dobjects/shrub1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Shrub2</name>
+				<file>3dobjects/shrub2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Shrub3</name>
+				<file>3dobjects/shrub3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bush1</name>
+				<file>3dobjects/bush1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bush2</name>
+				<file>3dobjects/bush2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bush3</name>
+				<file>3dobjects/bush3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bush4</name>
+				<file>3dobjects/bush4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bush5</name>
+				<file>3dobjects/bush5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bush6</name>
+				<file>3dobjects/bush6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bush7</name>
+				<file>3dobjects/bush7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bush8</name>
+				<file>3dobjects/bush8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Plant7</name>
+				<file>3dobjects/plant7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Hedge1</name>
+				<file>3dobjects/Hedge1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Hedge2</name>
+				<file>3dobjects/hedge2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Thornbush 1</name>
+				<file>3dobjects/thornbush1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Thornbush 2</name>
+				<file>3dobjects/thornbush2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Grass-Plants-Vegetables</name>
+		<sub_category>
+			<name>Flowers</name>
+			<object>
+				<name>Chrysanthemum1</name>
+				<file>3dobjects/flowerblue1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Chrysanthemum2</name>
+				<file>3dobjects/flowerpink1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Chrysanthemum3</name>
+				<file>3dobjects/flowerpurple1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Blue Star Flower</name>
+				<file>3dobjects/flowerblue2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Lilacs1</name>
+				<file>3dobjects/flowerbush1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Lilacs2</name>
+				<file>3dobjects/flowerbush6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Red Snapdragons</name>
+				<file>3dobjects/flowerbush2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Blue Lupine1</name>
+				<file>3dobjects/flowerbush3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Blue Lupine2</name>
+				<file>3dobjects/flowerbush4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Blue Lupine3</name>
+				<file>3dobjects/flowerbush5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tiger Lillies1</name>
+				<file>3dobjects/flowerorange1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tiger Lillies2</name>
+				<file>3dobjects/flowerorange2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Orange Rose</name>
+				<file>3dobjects/flowerorange3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Black Rose</name>
+				<file>3dobjects/flowerpurple2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Red Rose</name>
+				<file>3dobjects/flowerred1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Sunflower1</name>
+				<file>3dobjects/flowersun1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Sunflower2</name>
+				<file>3dobjects/flowersun2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Impatiens1</name>
+				<file>3dobjects/flowerpurple3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Impatiens2</name>
+				<file>3dobjects/flowerwhite3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Asiatic Lilly1</name>
+				<file>3dobjects/flowerwhite1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Asiatic Lilly2</name>
+				<file>3dobjects/flowerwhite2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Daffofils</name>
+				<file>3dobjects/flower_daffodils.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Dandelions</name>
+				<file>3dobjects/flower_dandelion.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Poppies</name>
+				<file>3dobjects/flower_poppies.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tulips1</name>
+				<file>3dobjects/flower_tulips1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tulips2</name>
+				<file>3dobjects/flower_tulips2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tulips3</name>
+				<file>3dobjects/flower_tulips3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Herbs</name>
+			<object>
+				<name>Henbane</name>
+				<file>3dobjects/herb_henbane.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Mugwort</name>
+				<file>3dobjects/herb_mugwort.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Mullein</name>
+				<file>3dobjects/herb_mullein.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Nightshade</name>
+				<file>3dobjects/herb_nightshade.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rue</name>
+				<file>3dobjects/herb_rue.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Valerian</name>
+				<file>3dobjects/herb_Valerian.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Wormwood</name>
+				<file>3dobjects/herb_wormwood.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Yarrow</name>
+				<file>3dobjects/herb_yarrow.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Berries</name>
+			<object>
+				<name>BlueBerries</name>
+				<file>3dobjects/bush_blueberry.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>RedBerries</name>
+				<file>3dobjects/bush_redberry.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Mushrooms</name>
+			<object>
+				<name>Mushroom1</name>
+				<file>3dobjects/mushroom1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Mushroom2</name>
+				<file>3dobjects/mushroom2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Mushroom3</name>
+				<file>3dobjects/mushroom3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Mushroom4</name>
+				<file>3dobjects/mushroom4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Mushroom5</name>
+				<file>3dobjects/mushroom5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Mushroom6</name>
+				<file>3dobjects/mushroom6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Mushroom7</name>
+				<file>3dobjects/mushroom7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Mushroom8</name>
+				<file>3dobjects/mushroom8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Grass</name>
+			<object>
+				<name>Grass</name>
+				<file>3dobjects/grass1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass12</name>
+				<file>3dobjects/grass2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass3</name>
+				<file>3dobjects/grass3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass4</name>
+				<file>3dobjects/grass4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass5</name>
+				<file>3dobjects/grass5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass6</name>
+				<file>3dobjects/grass6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass7</name>
+				<file>3dobjects/grass7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass8</name>
+				<file>3dobjects/grass8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass9</name>
+				<file>3dobjects/grass9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass10</name>
+				<file>3dobjects/grass10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass11</name>
+				<file>3dobjects/grass11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grass12</name>
+				<file>3dobjects/grass12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tall Grass1</name>
+				<file>3dobjects/grasstall1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tall Grass2</name>
+				<file>3dobjects/grasstall2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tall Grass3</name>
+				<file>3dobjects/grasstall3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tall Grass4</name>
+				<file>3dobjects/grasstall4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Plants</name>
+			<object>
+				<name>Plant1</name>
+				<file>3dobjects/plant1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Plant2</name>
+				<file>3dobjects/plant2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Plant3</name>
+				<file>3dobjects/plant3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Plant5</name>
+				<file>3dobjects/plant5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Plant6</name>
+				<file>3dobjects/plant6_fern.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Plant8</name>
+				<file>3dobjects/plant8_fern.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Ivy1</name>
+				<file>3dobjects/ivy.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Cactus1</name>
+				<file>3dobjects/cactus1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Cactus2</name>
+				<file>3dobjects/cactus2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Cactus3</name>
+				<file>3dobjects/cactus3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Cotton1</name>
+				<file>3dobjects/cotton1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Cotton2</name>
+				<file>3dobjects/cotton2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Wheat1</name>
+				<file>3dobjects/wheat1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Wheat2</name>
+				<file>3dobjects/wheat2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Moss</name>
+				<file>3dobjects/moss.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Lillypad1</name>
+				<file>3dobjects/lillypad1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Lillypad2</name>
+				<file>3dobjects/lillypad2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Lillypad3</name>
+				<file>3dobjects/lillypad3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Cattails</name>
+				<file>3dobjects/cattails.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Triste1</name>
+				<file>3dobjects/triste1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Triste2</name>
+				<file>3dobjects/triste2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>SwampCandles</name>
+				<file>3dobjects/plant4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Vegetables</name>
+			<object>
+				<name>Carrot</name>
+				<file>3dobjects/food_carrot.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tomatoe</name>
+				<file>3dobjects/food_tomatoe.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Pumpkin</name>
+				<file>3dobjects/food_Pumpkin.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Cabbage</name>
+				<file>3dobjects/cabbage.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Corn1</name>
+				<file>3dobjects/corn1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Corn2</name>
+				<file>3dobjects/corn2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Corn3</name>
+				<file>3dobjects/corn3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Corn4</name>
+				<file>3dobjects/corn4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tomatoe Plant1</name>
+				<file>3dobjects/tomatoeplant1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Tomatoe Plant2</name>
+				<file>3dobjects/tomatoeplant2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Hay</name>
+			<object>
+				<name>Hay</name>
+				<file>3dobjects/hay.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Haystack1</name>
+				<file>3dobjects/haystack1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Haystack2</name>
+				<file>3dobjects/haystack2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Rocks-Cliffs-Mountains</name>
+		<sub_category>
+			<name>Arches</name>
+			<object>
+				<name>Arch_bridge1</name>
+				<file>3dobjects/arch_bridge1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Arch_cliff1</name>
+				<file>3dobjects/arch_cliff1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Arch_cliff2</name>
+				<file>3dobjects/arch_cliff2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Arch_cliff3</name>
+				<file>3dobjects/arch_cliff3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>arch_cliff4</name>
+				<file>3dobjects/arch_cliff4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Cliffs</name>
+			<object>
+				<name>cliff_low1</name>
+				<file>3dobjects/cliff_low1.e3d</file>
+				<rotation>0.0 0.0 90.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>cliff_low2</name>
+				<file>3dobjects/cliff_low2.e3d</file>
+				<rotation>0.0 0.0 90.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>mountain2</name>
+				<file>3dobjects/mountain2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>mountain3</name>
+				<file>3dobjects/mountain3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>mountain4</name>
+				<file>3dobjects/mountain4.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.8</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Mountains</name>
+			<object>
+				<name>rock_huge1</name>
+				<file>3dobjects/rock_huge1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge2</name>
+				<file>3dobjects/rock_huge2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge3</name>
+				<file>3dobjects/rock_huge3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge4</name>
+				<file>3dobjects/rock_huge4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge5</name>
+				<file>3dobjects/rock_huge5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge6</name>
+				<file>3dobjects/rock_huge6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge7</name>
+				<file>3dobjects/rock_huge7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge8</name>
+				<file>3dobjects/rock_huge8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge9</name>
+				<file>3dobjects/rock_huge9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge10</name>
+				<file>3dobjects/rock_huge10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge11</name>
+				<file>3dobjects/rock_huge11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge12</name>
+				<file>3dobjects/rock_huge12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge13</name>
+				<file>3dobjects/rock_huge13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge14</name>
+				<file>3dobjects/rock_huge14.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge15</name>
+				<file>3dobjects/rock_huge15.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge16</name>
+				<file>3dobjects/rock_huge16.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>rock_huge17</name>
+				<file>3dobjects/rock_huge17.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>mountain1</name>
+				<file>3dobjects/mountain1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>mountain5</name>
+				<file>3dobjects/mountain5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Boulders</name>
+			<object>
+				<name>rock_big1</name>
+				<file>3dobjects/rock_big1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big2</name>
+				<file>3dobjects/rock_big2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big3</name>
+				<file>3dobjects/rock_big3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big4</name>
+				<file>3dobjects/rock_big4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big5</name>
+				<file>3dobjects/rock_big5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big6</name>
+				<file>3dobjects/rock_big6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big7</name>
+				<file>3dobjects/rock_big7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big8</name>
+				<file>3dobjects/rock_big8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big9</name>
+				<file>3dobjects/rock_big9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big10</name>
+				<file>3dobjects/rock_big10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big11</name>
+				<file>3dobjects/rock_big11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big12</name>
+				<file>3dobjects/rock_big12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big13</name>
+				<file>3dobjects/rock_big13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big14</name>
+				<file>3dobjects/rock_big14.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big15</name>
+				<file>3dobjects/rock_big15.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>rock_big16</name>
+				<file>3dobjects/rock_big16.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Small Rocks</name>
+			<object>
+				<name>rock_small1</name>
+				<file>3dobjects/rock_small1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small2</name>
+				<file>3dobjects/rock_small2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small3</name>
+				<file>3dobjects/rock_small3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small4</name>
+				<file>3dobjects/rock_small4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small5</name>
+				<file>3dobjects/rock_small5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small6</name>
+				<file>3dobjects/rock_small6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small7</name>
+				<file>3dobjects/rock_small7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small8</name>
+				<file>3dobjects/rock_small8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small9</name>
+				<file>3dobjects/rock_small9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small10</name>
+				<file>3dobjects/rock_small10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small11</name>
+				<file>3dobjects/rock_small11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small12</name>
+				<file>3dobjects/rock_small12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small13</name>
+				<file>3dobjects/rock_small13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>rock_small14</name>
+				<file>3dobjects/rock_small14.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Stalagmites</name>
+			<object>
+				<name>stalagmite1</name>
+				<file>3dobjects/stalagmite1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>stalagmite2</name>
+				<file>3dobjects/stalagmite2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>stalagmite3</name>
+				<file>3dobjects/stalagmite3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Mounds-WaterBanks</name>
+		<sub_category>
+			<name>Mounds</name>
+			<object>
+				<name>Dirt Mound1</name>
+				<file>3dobjects/mound_dirt1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Dirt Mound2</name>
+				<file>3dobjects/mound_dirt2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Dirt Mound3</name>
+				<file>3dobjects/mound_dirt3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Dirt Mound4</name>
+				<file>3dobjects/mound_dirt4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Grass Mound1</name>
+				<file>3dobjects/mound_grass1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Grass Mound2</name>
+				<file>3dobjects/mound_grass2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Grass Mound3</name>
+				<file>3dobjects/mound_grass3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Grass Mound4</name>
+				<file>3dobjects/mound_grass4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound1</name>
+				<file>3dobjects/mound_sand1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound2</name>
+				<file>3dobjects/mound_sand2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound3</name>
+				<file>3dobjects/mound_sand3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound4</name>
+				<file>3dobjects/mound_sand4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound5</name>
+				<file>3dobjects/mound_sand5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound6</name>
+				<file>3dobjects/mound_sand6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound7</name>
+				<file>3dobjects/mound_sand7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound8</name>
+				<file>3dobjects/mound_sand8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound9</name>
+				<file>3dobjects/mound_sand9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound10</name>
+				<file>3dobjects/mound_sand10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound11</name>
+				<file>3dobjects/mound_sand11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound12</name>
+				<file>3dobjects/mound_sand12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound13</name>
+				<file>3dobjects/mound_sand13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound14</name>
+				<file>3dobjects/mound_sand14.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound15</name>
+				<file>3dobjects/mound_sand15.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Mound16</name>
+				<file>3dobjects/mound_sand16.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Sand Dune1</name>
+				<file>3dobjects/sanddune1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Water Banks</name>
+			<object>
+				<name>Water Bank1</name>
+				<file>3dobjects/waterbank1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Water Bank2</name>
+				<file>3dobjects/waterbank2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Water Bank3</name>
+				<file>3dobjects/waterbank3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Water Bank4</name>
+				<file>3dobjects/waterbank4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Water Bank5</name>
+				<file>3dobjects/waterbank5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.5</scale>
+			</object>
+			<object>
+				<name>Water Bank6</name>
+				<file>3dobjects/waterbank6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Water Bank7</name>
+				<file>3dobjects/waterbank7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Water Bank8</name>
+				<file>3dobjects/waterbank8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Water Bank9</name>
+				<file>3dobjects/waterbank9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Water Bank10</name>
+				<file>3dobjects/waterbank10.e3d</file>
+				<rotation>0.0 0.0 90.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Water Bank11</name>
+				<file>3dobjects/waterbank11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Roads-Paths</name>
+		<sub_category>
+			<name>Roads</name>
+			<object>
+				<name>Road1</name>
+				<file>3dobjects/road1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road2</name>
+				<file>3dobjects/road2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road3</name>
+				<file>3dobjects/road3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road4</name>
+				<file>3dobjects/road4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road5</name>
+				<file>3dobjects/road5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road6</name>
+				<file>3dobjects/road6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road7</name>
+				<file>3dobjects/road7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road8</name>
+				<file>3dobjects/road8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road9</name>
+				<file>3dobjects/road9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road10</name>
+				<file>3dobjects/road10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Road11</name>
+				<file>3dobjects/road11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Stone Road1</name>
+				<file>3dobjects/road_stone1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Stone Road2</name>
+				<file>3dobjects/road_stone2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Roadsides</name>
+			<object>
+				<name>Roadside 1</name>
+				<file>3dobjects/roadside1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Roadside 2</name>
+				<file>3dobjects/roadside2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Roadside 3</name>
+				<file>3dobjects/roadside3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Roadside 4</name>
+				<file>3dobjects/roadside4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Roadside 5</name>
+				<file>3dobjects/roadside5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Roadside 6</name>
+				<file>3dobjects/roadside6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Bridges</name>
+			<object>
+				<name>Bridge 1</name>
+				<file>3dobjects/bridge1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Bridge 2</name>
+				<file>3dobjects/bridge2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Buildings</name>
+		<sub_category>
+			<name>HumanHouses</name>
+			<object>
+				<name>House1</name>
+				<file>3dobjects/house1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House2</name>
+				<file>3dobjects/house2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House3</name>
+				<file>3dobjects/house3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House4</name>
+				<file>3dobjects/house4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House5</name>
+				<file>3dobjects/house5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House6</name>
+				<file>3dobjects/house6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House7</name>
+				<file>3dobjects/house7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House8</name>
+				<file>3dobjects/house8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House9</name>
+				<file>3dobjects/house9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House10</name>
+				<file>3dobjects/house10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House11</name>
+				<file>3dobjects/house11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House12</name>
+				<file>3dobjects/house12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House13</name>
+				<file>3dobjects/house13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House14</name>
+				<file>3dobjects/house14.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House15</name>
+				<file>3dobjects/house15.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House16</name>
+				<file>3dobjects/house16.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House17</name>
+				<file>3dobjects/house17.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House18</name>
+				<file>3dobjects/house18.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House19</name>
+				<file>3dobjects/house19.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House24</name>
+				<file>3dobjects/house24.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House25</name>
+				<file>3dobjects/house25.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House26</name>
+				<file>3dobjects/house26.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House27</name>
+				<file>3dobjects/house27.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House28</name>
+				<file>3dobjects/house28.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House29</name>
+				<file>3dobjects/house29.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House30</name>
+				<file>3dobjects/house30.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House31</name>
+				<file>3dobjects/house31.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House32</name>
+				<file>3dobjects/house32.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House33</name>
+				<file>3dobjects/house33.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House34</name>
+				<file>3dobjects/house34.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House35</name>
+				<file>3dobjects/house35.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House36</name>
+				<file>3dobjects/house36.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House37</name>
+				<file>3dobjects/house37.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House38</name>
+				<file>3dobjects/house38.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House39</name>
+				<file>3dobjects/house39.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>InsideHumanHouses</name>
+			<object>
+				<name>InsideHouse1</name>
+				<file>3dobjects/insidehouse1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse2</name>
+				<file>3dobjects/insidehouse2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse3</name>
+				<file>3dobjects/insidehouse3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse4</name>
+				<file>3dobjects/insidehouse4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse5</name>
+				<file>3dobjects/insidehouse5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse6&amp;7</name>
+				<file>3dobjects/insidehouse6_7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse8</name>
+				<file>3dobjects/insidehouse8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse9</name>
+				<file>3dobjects/insidehouse9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse9 BIG</name>
+				<file>3dobjects/insidehouse9_big.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse9 SMALL</name>
+				<file>3dobjects/insidehouse9_small.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse10</name>
+				<file>3dobjects/insidehouse10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse11</name>
+				<file>3dobjects/insidehouse11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse12</name>
+				<file>3dobjects/insidehouse12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse13</name>
+				<file>3dobjects/insidehouse13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse14</name>
+				<file>3dobjects/insidehouse14.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse15</name>
+				<file>3dobjects/insidehouse15.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse16</name>
+				<file>3dobjects/insidehouse16.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse17</name>
+				<file>3dobjects/insidehouse17.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse18</name>
+				<file>3dobjects/insidehouse18.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse24</name>
+				<file>3dobjects/insidehouse24.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse25</name>
+				<file>3dobjects/insidehouse25.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse26</name>
+				<file>3dobjects/insidehouse26.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse27</name>
+				<file>3dobjects/insidehouse27.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse28</name>
+				<file>3dobjects/insidehouse28.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse29</name>
+				<file>3dobjects/insidehouse29.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse30</name>
+				<file>3dobjects/insidehouse30.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse31</name>
+				<file>3dobjects/insidehouse31.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse32</name>
+				<file>3dobjects/insidehouse32.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse33</name>
+				<file>3dobjects/insidehouse33.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse34</name>
+				<file>3dobjects/insidehouse34.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse35</name>
+				<file>3dobjects/insidehouse35.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse36</name>
+				<file>3dobjects/insidehouse36.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse37</name>
+				<file>3dobjects/insidehouse37.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Dwarven Houses</name>
+			<object>
+				<name>House1</name>
+				<file>3dobjects/house_dwarf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House2</name>
+				<file>3dobjects/house_dwarf2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House3</name>
+				<file>3dobjects/house_dwarf3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House4</name>
+				<file>3dobjects/house_dwarf4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>House5</name>
+				<file>3dobjects/house_dwarf5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside1</name>
+				<file>3dobjects/insidehouse_dwarf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside2</name>
+				<file>3dobjects/insidehouse_dwarf2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside3</name>
+				<file>3dobjects/insidehouse_dwarf3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside4</name>
+				<file>3dobjects/insidehouse_dwarf4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>HouseInside5</name>
+				<file>3dobjects/insidehouse_dwarf5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Gnome Houses</name>
+			<object>
+				<name>House1</name>
+				<file>3dobjects/house_gnome1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House2</name>
+				<file>3dobjects/house_gnome2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>House3</name>
+				<file>3dobjects/house_gnome3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>House4</name>
+				<file>3dobjects/house_gnome4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House5</name>
+				<file>3dobjects/house_gnome5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside1&amp;3</name>
+				<file>3dobjects/insidehouse_gnome1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside2</name>
+				<file>3dobjects/insidehouse_gnome2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>HouseInside4</name>
+				<file>3dobjects/insidehouse_gnome4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside5</name>
+				<file>3dobjects/insidehouse_gnome5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Elven Houses</name>
+			<object>
+				<name>House1</name>
+				<file>3dobjects/house_elf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House2</name>
+				<file>3dobjects/house_elf2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House3</name>
+				<file>3dobjects/house_elf3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House4</name>
+				<file>3dobjects/house_elf4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House5</name>
+				<file>3dobjects/house_elf5.e3d</file>
+				<rotation>0.0 0.0 280.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House6</name>
+				<file>3dobjects/house_elf6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House7</name>
+				<file>3dobjects/house_elf7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>HouseInside1</name>
+				<file>3dobjects/insidehouse_elf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>HouseInside2</name>
+				<file>3dobjects/insidehouse_elf2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>HouseInside3</name>
+				<file>3dobjects/insidehouse_elf3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>HouseInside4</name>
+				<file>3dobjects/insidehouse_elf4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>HouseInside5</name>
+				<file>3dobjects/insidehouse_elf5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>HouseInside6</name>
+				<file>3dobjects/insidehouse_elf6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>HouseInside7</name>
+				<file>3dobjects/insidehouse_elf7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Orchan Houses</name>
+			<object>
+				<name>House1</name>
+				<file>3dobjects/house_orchan1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House2</name>
+				<file>3dobjects/house_orchan2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House3</name>
+				<file>3dobjects/house_orchan3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House4</name>
+				<file>3dobjects/house_orchan4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>House5</name>
+				<file>3dobjects/house_orchan5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>HouseInside1</name>
+				<file>3dobjects/insidehouse_orchan1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>HouseInside2</name>
+				<file>3dobjects/insidehouse_orchan2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>HouseInside3</name>
+				<file>3dobjects/insidehouse_orchan3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>HouseInside4</name>
+				<file>3dobjects/insidehouse_orchan4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>HouseInside5</name>
+				<file>3dobjects/insidehouse_orchan5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Snow Houses</name>
+			<object>
+				<name>House1</name>
+				<file>3dobjects/house_snow1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House2</name>
+				<file>3dobjects/house_snow2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House3</name>
+				<file>3dobjects/house_snow3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House4</name>
+				<file>3dobjects/house_snow4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House5</name>
+				<file>3dobjects/house_snow5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside1</name>
+				<file>3dobjects/insidehouse_snow1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside2</name>
+				<file>3dobjects/insidehouse_snow2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside3</name>
+				<file>3dobjects/insidehouse_snow3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside4</name>
+				<file>3dobjects/insidehouse_snow4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>HouseInside5</name>
+				<file>3dobjects/insidehouse_snow5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>TreeHouses</name>
+			<object>
+				<name>Tree 1</name>
+				<file>3dobjects/treehouse1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree 2</name>
+				<file>3dobjects/treehouse2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Tree 3</name>
+				<file>3dobjects/treehouse3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>InsideTree 1</name>
+				<file>3dobjects/insidetreehouse1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>InsideTree 2</name>
+				<file>3dobjects/insidetreehouse2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>InsideTree 3</name>
+				<file>3dobjects/insidetreehouse3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Tents</name>
+			<object>
+				<name>Tent 1</name>
+				<file>3dobjects/tent1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Tent 2</name>
+				<file>3dobjects/tent2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Tent 3</name>
+				<file>3dobjects/tent3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>BigTent 1</name>
+				<file>3dobjects/tent_big1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>BigTent 2</name>
+				<file>3dobjects/tent_big2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>BigTent 3</name>
+				<file>3dobjects/tent_big3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>InsideBigTent 1</name>
+				<file>3dobjects/insidetent1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>InsideBigTent 2</name>
+				<file>3dobjects/insidetent2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>InsideBigTent 3</name>
+				<file>3dobjects/insidetent3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>FurTent 1</name>
+				<file>3dobjects/tent_fur1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>InsideFurTent 1</name>
+				<file>3dobjects/tent_furinside1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>City Buildings</name>
+			<object>
+				<name>Building1</name>
+				<file>3dobjects/building1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>Bulding2</name>
+				<file>3dobjects/cityhouse1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>InsideBuilding1</name>
+				<file>3dobjects/insidebuilding1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Monsterhouses</name>
+			<object>
+				<name>House20</name>
+				<file>3dobjects/house20.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House21</name>
+				<file>3dobjects/house21.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House22</name>
+				<file>3dobjects/house22.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>House23</name>
+				<file>3dobjects/house23.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Hut 1</name>
+				<file>3dobjects/hut1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Hut 2</name>
+				<file>3dobjects/hut2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>InsideHouse20&amp;21</name>
+				<file>3dobjects/insidehouse20_21.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse22</name>
+				<file>3dobjects/insidehouse22.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHouse23</name>
+				<file>3dobjects/insidehouse23.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>InsideHut 1</name>
+				<file>3dobjects/insidehut1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>InsideHut 2</name>
+				<file>3dobjects/insidehut2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Temples</name>
+			<object>
+				<name>Temple</name>
+				<file>3dobjects/temple1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>InsideTemple</name>
+				<file>3dobjects/insidetemple1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Small Wooden Structures</name>
+			<object>
+				<name>Stall 1</name>
+				<file>3dobjects/marketstall1.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Stall 2</name>
+				<file>3dobjects/marketstall2.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Outhouse</name>
+				<file>3dobjects/outhouse1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Stables</name>
+				<file>3dobjects/stable1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Booth</name>
+				<file>3dobjects/ticketbooth.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Magic School</name>
+			<object>
+				<name>Piece 1</name>
+				<file>3dobjects/magicschool1.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.4</scale>
+			</object>
+			<object>
+				<name>Piece 2</name>
+				<file>3dobjects/magicschool_wall2.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>Wall-Bridge 1</name>
+				<file>3dobjects/magicschool_wall1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Stairs 1</name>
+				<file>3dobjects/magicschool_stairs1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 1</name>
+				<file>3dobjects/magicschool_tower1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.5</scale>
+			</object>
+			<object>
+				<name>Door 1</name>
+				<file>3dobjects/door_magics1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Door 2</name>
+				<file>3dobjects/door_magics2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Window 1</name>
+				<file>3dobjects/window_magics1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Window 2</name>
+				<file>3dobjects/window_magics2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Window 3</name>
+				<file>3dobjects/window_magics3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Column 1</name>
+				<file>3dobjects/column8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Column 2</name>
+				<file>3dobjects/column9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Column 3</name>
+				<file>3dobjects/column10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Building Parts</name>
+		<sub_category>
+			<name>Doors</name>
+			<object>
+				<name>Door 1</name>
+				<file>3dobjects/door1.e3d</file>
+				<rotation>0.0 0.0 90.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 2</name>
+				<file>3dobjects/door2.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 3</name>
+				<file>3dobjects/door3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 4</name>
+				<file>3dobjects/door4.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 5</name>
+				<file>3dobjects/door5.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 6</name>
+				<file>3dobjects/door6.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 7</name>
+				<file>3dobjects/door7.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 8</name>
+				<file>3dobjects/door8.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 13</name>
+				<file>3dobjects/door13.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 14</name>
+				<file>3dobjects/door14.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 15</name>
+				<file>3dobjects/door15.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 16</name>
+				<file>3dobjects/door16.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 17</name>
+				<file>3dobjects/door17.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 18</name>
+				<file>3dobjects/door18.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Double Doors 1</name>
+				<file>3dobjects/doors9.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>2.5</scale>
+			</object>
+			<object>
+				<name>Double Doors 2</name>
+				<file>3dobjects/doors10.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>2.5</scale>
+			</object>
+			<object>
+				<name>Double Doors 3</name>
+				<file>3dobjects/doors11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.5</scale>
+			</object>
+			<object>
+				<name>Double Doors 4</name>
+				<file>3dobjects/doors12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.5</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Dwarven Doors</name>
+			<object>
+				<name>Dwarf Door 1</name>
+				<file>3dobjects/door_dwarf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Dwarf Door 2</name>
+				<file>3dobjects/door_dwarf2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Elven Doors</name>
+			<object>
+				<name>Elf Door 1</name>
+				<file>3dobjects/door_elf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Elf Door 2</name>
+				<file>3dobjects/door_elf2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Gnome Doors</name>
+			<object>
+				<name>Gnome Door 1</name>
+				<file>3dobjects/door_gnome1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Gnome Door 2</name>
+				<file>3dobjects/door_gnome2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Orchan Doors</name>
+			<object>
+				<name>Orchan Door 1</name>
+				<file>3dobjects/door_orchan1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Orchan Door 2</name>
+				<file>3dobjects/door_orchan2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Orchan Door 3</name>
+				<file>3dobjects/door_orchan3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Misc. Doors</name>
+			<object>
+				<name>Door 1</name>
+				<file>3dobjects/door_magic1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 2</name>
+				<file>3dobjects/door_magic2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Door 3</name>
+				<file>3dobjects/door_magic3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Windows</name>
+			<object>
+				<name>Window 1</name>
+				<file>3dobjects/window1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Window 2</name>
+				<file>3dobjects/window2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Window 3</name>
+				<file>3dobjects/window_evilcastle1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Window 4</name>
+				<file>3dobjects/window_evilcastle2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Chimneys</name>
+			<object>
+				<name>Chimney 1</name>
+				<file>3dobjects/chimney1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Chimney Top 1</name>
+				<file>3dobjects/chimneytop1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Awnings</name>
+			<object>
+				<name>Awning 1</name>
+				<file>3dobjects/awning1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Awning 2</name>
+				<file>3dobjects/awning2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Awning 3</name>
+				<file>3dobjects/awning3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Awning 4</name>
+				<file>3dobjects/awning4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Awning 5</name>
+				<file>3dobjects/awning5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Awning 6</name>
+				<file>3dobjects/awning6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Awning 7</name>
+				<file>3dobjects/awning7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Stairs</name>
+			<object>
+				<name>Staircase</name>
+				<file>3dobjects/staircase1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Stairs</name>
+				<file>3dobjects/stairs1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Walls</name>
+			<object>
+				<name>Wall 1</name>
+				<file>3dobjects/wall1.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Wall 2</name>
+				<file>3dobjects/wall2.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Wall 3</name>
+				<file>3dobjects/wall3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>2.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Sewers</name>
+			<object>
+				<name>Sewer Wall 1</name>
+				<file>3dobjects/sewer_wall1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Sewer Floor 1</name>
+				<file>3dobjects/sewer_floor1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Walkway 1</name>
+				<file>3dobjects/sewer_walkway1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Archway 1</name>
+				<file>3dobjects/sewer_archway1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Archway 2</name>
+				<file>3dobjects/sewer_archway2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Column 1</name>
+				<file>3dobjects/sewer_column1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Drain 1</name>
+				<file>3dobjects/sewer_drain1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4</scale>
+			</object>
+			<object>
+				<name>Grate 1</name>
+				<file>3dobjects/sewer_grate1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Grate 2</name>
+				<file>3dobjects/sewer_grate2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Grate 3</name>
+				<file>3dobjects/sewer_grate3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4</scale>
+			</object>
+			<object>
+				<name>Ladder 1</name>
+				<file>3dobjects/sewer_ladder1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Ladder 2</name>
+				<file>3dobjects/sewer_ladder2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Furniture</name>
+		<sub_category>
+			<name>Misc</name>
+			<object>
+				<name>Drawers 1</name>
+				<file>3dobjects/drawers1.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Drawers 2</name>
+				<file>3dobjects/drawers2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Counter 1</name>
+				<file>3dobjects/counter1.e3d</file>
+				<rotation>0.0 0.0 -10.0</rotation>
+				<scale>2.7</scale>
+			</object>
+			<object>
+				<name>Counter 2</name>
+				<file>3dobjects/counter2.e3d</file>
+				<rotation>0.0 0.0 -10.0</rotation>
+				<scale>2.7</scale>
+			</object>
+			<object>
+				<name>Armoire 1</name>
+				<file>3dobjects/armoire1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.3</scale>
+			</object>
+			<object>
+				<name>Armoire 2</name>
+				<file>3dobjects/armoire2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.3</scale>
+			</object>
+			<object>
+				<name>Cupboard 1</name>
+				<file>3dobjects/cupboard1.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>2.3</scale>
+			</object>
+			<object>
+				<name>Cupboard 2</name>
+				<file>3dobjects/cupboard2.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>2.3</scale>
+			</object>
+			<object>
+				<name>Shelves 2</name>
+				<file>3dobjects/shelves2.e3d</file>
+				<rotation>0.0 0.0 -10.0</rotation>
+				<scale>2.3</scale>
+			</object>
+			<object>
+				<name>Pulpit</name>
+				<file>3dobjects/pulpit1.e3d</file>
+				<rotation>0.0 0.0 -10.0</rotation>
+				<scale>2.3</scale>
+			</object>
+			<object>
+				<name>Desk 1</name>
+				<file>3dobjects/desk1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4</scale>
+			</object>
+			<object>
+				<name>Desk 2</name>
+				<file>3dobjects/desk2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Seats</name>
+			<object>
+				<name>Stool 1</name>
+				<file>3dobjects/stool1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Stool 2</name>
+				<file>3dobjects/stool2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Chair 1</name>
+				<file>3dobjects/chair1.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Chair 2</name>
+				<file>3dobjects/chair2.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Chair 3</name>
+				<file>3dobjects/chair3.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Chair 4</name>
+				<file>3dobjects/chair4.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Bench 1</name>
+				<file>3dobjects/bench1.e3d</file>
+				<rotation>0.0 0.0 5.0</rotation>
+				<scale>3.7</scale>
+			</object>
+			<object>
+				<name>Throne</name>
+				<file>3dobjects/throne1.e3d</file>
+				<rotation>0.0 0.0 20.0</rotation>
+				<scale>2.8</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Tables</name>
+			<object>
+				<name>Table 1</name>
+				<file>3dobjects/table1.e3d</file>
+				<rotation>0.0 0.0 25.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Table 2</name>
+				<file>3dobjects/table2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.75</scale>
+			</object>
+			<object>
+				<name>Table 3</name>
+				<file>3dobjects/table3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.5</scale>
+			</object>
+			<object>
+				<name>Table 4</name>
+				<file>3dobjects/table4.e3d</file>
+				<rotation>0.0 0.0 35.0</rotation>
+				<scale>3.4</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Beds</name>
+			<object>
+				<name>Bed 1</name>
+				<file>3dobjects/bed1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bed 2</name>
+				<file>3dobjects/bed2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bed 3</name>
+				<file>3dobjects/bed3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Bed 4</name>
+				<file>3dobjects/bed4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Small Bed 5</name>
+				<file>3dobjects/bed5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Small Bed 6</name>
+				<file>3dobjects/bed6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Small Bed 7</name>
+				<file>3dobjects/bed7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>City Objects</name>
+		<sub_category>
+			<name>Citywalls Set 1</name>
+			<object>
+				<name>Entrance 1</name>
+				<file>3dobjects/cityentrance1.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 1</name>
+				<file>3dobjects/citytower1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 2</name>
+				<file>3dobjects/citytower2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 1</name>
+				<file>3dobjects/citywall1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 2</name>
+				<file>3dobjects/citywall2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Citywalls Set 2</name>
+			<object>
+				<name>Entrance 2</name>
+				<file>3dobjects/cityentrance2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 3</name>
+				<file>3dobjects/citytower3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 6</name>
+				<file>3dobjects/citytower6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 7</name>
+				<file>3dobjects/citywall7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 7 Corner</name>
+				<file>3dobjects/citywall7_corner.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 8</name>
+				<file>3dobjects/citywall8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Stairs 2</name>
+				<file>3dobjects/citywall_stairs2.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Citywalls Set 3</name>
+			<object>
+				<name>Entrance 3</name>
+				<file>3dobjects/cityentrance3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 7</name>
+				<file>3dobjects/citytower7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 9</name>
+				<file>3dobjects/citywall9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 10</name>
+				<file>3dobjects/citywall10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Stairs 3</name>
+				<file>3dobjects/citywall_stairs3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Arch 6</name>
+				<file>3dobjects/arch6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Elven Citywalls Set 1</name>
+			<object>
+				<name>Tower 1</name>
+				<file>3dobjects/citytower_elf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 2</name>
+				<file>3dobjects/citytower_elf2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 3</name>
+				<file>3dobjects/citytower_elf3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 4</name>
+				<file>3dobjects/citytower_elf4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 1</name>
+				<file>3dobjects/citywall_elf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Bridge 1</name>
+				<file>3dobjects/bridge_elf1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Misc Citywalls</name>
+			<object>
+				<name>Portculis</name>
+				<file>3dobjects/portculis.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Wall 3</name>
+				<file>3dobjects/citywall3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 4</name>
+				<file>3dobjects/citywall4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 5</name>
+				<file>3dobjects/citywall5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Wall 6</name>
+				<file>3dobjects/citywall6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 4</name>
+				<file>3dobjects/citytower4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Tower 5</name>
+				<file>3dobjects/citytower5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Stairs 1</name>
+				<file>3dobjects/citywall_stairs.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Arches</name>
+			<object>
+				<name>Arch 1</name>
+				<file>3dobjects/arch1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Arch 2</name>
+				<file>3dobjects/arch2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Arch 3</name>
+				<file>3dobjects/arch3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Arch 4</name>
+				<file>3dobjects/arch4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Arch 5</name>
+				<file>3dobjects/arch5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Castles/Palaces</name>
+			<object>
+				<name>Castle Entrance 1</name>
+				<file>3dobjects/castleentrance1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Castle 1</name>
+				<file>3dobjects/castleside1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Castle Entrance 2</name>
+				<file>3dobjects/castleentrance2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Castle 2</name>
+				<file>3dobjects/castleside2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Stone &amp; Wood Walls</name>
+			<object>
+				<name>Stone Wall1</name>
+				<file>3dobjects/stonewall1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Stone Wall2</name>
+				<file>3dobjects/stonewall2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Wood Wall</name>
+				<file>3dobjects/woodwall1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Wall 4</name>
+				<file>3dobjects/wall4.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Wall 5</name>
+				<file>3dobjects/wall5.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Wall 6</name>
+				<file>3dobjects/wall6.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>2.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Ruins</name>
+		<sub_category>
+			<name>Ruins</name>
+			<object>
+				<name>Rubble 1</name>
+				<file>3dobjects/rubble1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Rubble 2</name>
+				<file>3dobjects/rubble2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Rubble 3</name>
+				<file>3dobjects/rubble3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Rubble 4</name>
+				<file>3dobjects/rubble4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Rubble 5</name>
+				<file>3dobjects/rubble5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Rubble 6</name>
+				<file>3dobjects/rubble6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Long Wall 1</name>
+				<file>3dobjects/wall_long1.e3d</file>
+				<rotation>0.0 0.0 10.0</rotation>
+				<scale>1.3</scale>
+			</object>
+			<object>
+				<name>Long Wall 2</name>
+				<file>3dobjects/wall_long2.e3d</file>
+				<rotation>0.0 0.0 10.0</rotation>
+				<scale>1.3</scale>
+			</object>
+			<object>
+				<name>Small Wall 1</name>
+				<file>3dobjects/wall_small1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Small Wall 2</name>
+				<file>3dobjects/wall_small2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Small Wall 3</name>
+				<file>3dobjects/wall_small3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Small Wall 4</name>
+				<file>3dobjects/wall_small4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Small Wall 5</name>
+				<file>3dobjects/wall_small5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Small Wall 6</name>
+				<file>3dobjects/wall_small6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Small Wall 7</name>
+				<file>3dobjects/wall_small7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Small Wall 8</name>
+				<file>3dobjects/wall_small8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Tall Wall 1</name>
+				<file>3dobjects/wall_Tall1.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Tall Wall 2</name>
+				<file>3dobjects/wall_Tall2.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Tall Wall 3</name>
+				<file>3dobjects/wall_Tall3.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Tall Wall 4</name>
+				<file>3dobjects/wall_Tall4.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Window 1</name>
+				<file>3dobjects/wall_win1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Window 2</name>
+				<file>3dobjects/wall_win2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Window 3</name>
+				<file>3dobjects/wall_win3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Window 4</name>
+				<file>3dobjects/wall_win4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Door 1</name>
+				<file>3dobjects/wall_door1.e3d</file>
+				<rotation>0.0 0.0 40.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Door 2</name>
+				<file>3dobjects/wall_door2.e3d</file>
+				<rotation>0.0 0.0 40.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Door 3</name>
+				<file>3dobjects/wall_door3.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Door 4</name>
+				<file>3dobjects/wall_door4.e3d</file>
+				<rotation>0.0 0.0 40.0</rotation>
+				<scale>2.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Armor-Weapons</name>
+		<sub_category>
+			<name>armor</name>
+			<object>
+				<name>Wood Shield</name>
+				<file>3dobjects/shield1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Enhanced W. Shield</name>
+				<file>3dobjects/shield2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Iron Shield</name>
+				<file>3dobjects/shield3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Steel Shield</name>
+				<file>3dobjects/shield4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Iron Sword</name>
+				<file>3dobjects/sword1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Iron Broad Sword</name>
+				<file>3dobjects/sword2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Steel Long Sword</name>
+				<file>3dobjects/sword3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Steel 2edged Sword</name>
+				<file>3dobjects/sword4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Titanium Short</name>
+				<file>3dobjects/sword5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Titanium Long</name>
+				<file>3dobjects/sword6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Titanium Serpent</name>
+				<file>3dobjects/sword7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Lights-Decorations-Misc</name>
+		<sub_category>
+			<name>Lanterns &amp; Torches</name>
+			<object>
+				<name>Lantern 1</name>
+				<file>3dobjects/lantern1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Lantern 2</name>
+				<file>3dobjects/lantern2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Lantern 3</name>
+				<file>3dobjects/lantern3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Light Pole 1</name>
+				<file>3dobjects/light1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.9</scale>
+			</object>
+			<object>
+				<name>Light Pole 2</name>
+				<file>3dobjects/light2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.9</scale>
+			</object>
+			<object>
+				<name>Light Pole 3</name>
+				<file>3dobjects/light3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.6</scale>
+			</object>
+			<object>
+				<name>Torch</name>
+				<file>3dobjects/torch.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Torch Holder</name>
+				<file>3dobjects/torch_holder.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Candles</name>
+			<object>
+				<name>Candle 1</name>
+				<file>3dobjects/candle1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Candle 2</name>
+				<file>3dobjects/candle2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Candle 3</name>
+				<file>3dobjects/candle3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Candle Stand</name>
+				<file>3dobjects/candle_stand.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Crystal Balls</name>
+			<object>
+				<name>Blue Crystal Ball</name>
+				<file>3dobjects/crystalball1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Red Crystal Ball</name>
+				<file>3dobjects/crystalball2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>White Crystal Ball</name>
+				<file>3dobjects/crystalball3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Clear Crystal Ball</name>
+				<file>3dobjects/crystalball4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Crystal Ball Stand</name>
+				<file>3dobjects/crystalball_stand.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Feathers</name>
+			<object>
+				<name>Feather 1</name>
+				<file>3dobjects/feather1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Feather 2</name>
+				<file>3dobjects/feather2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Feather 3</name>
+				<file>3dobjects/feather3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Feather 4</name>
+				<file>3dobjects/feather4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>SeaShells</name>
+			<object>
+				<name>Shell 1</name>
+				<file>3dobjects/seashell1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Shell 2</name>
+				<file>3dobjects/seashell2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Shell 3</name>
+				<file>3dobjects/seashell3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Shell 4</name>
+				<file>3dobjects/seashell4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Shell 5</name>
+				<file>3dobjects/seashell5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Shell 6</name>
+				<file>3dobjects/seashell6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Shell 7</name>
+				<file>3dobjects/seashell7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Barnacle 1</name>
+				<file>3dobjects/seashell8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Eggs &amp; Nests</name>
+			<object>
+				<name>Egg 1</name>
+				<file>3dobjects/egg1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Egg 2</name>
+				<file>3dobjects/egg2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+			<object>
+				<name>Nest 1</name>
+				<file>3dobjects/nest1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>6.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Statues-Bricks-Signs</name>
+		<sub_category>
+			<name>Statues</name>
+			<object>
+				<name>Angel Statue</name>
+				<file>3dobjects/statue1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Druid Statue</name>
+				<file>3dobjects/statue2.e3d</file>
+				<rotation>0.0 0.0 -60.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Horseman Statue</name>
+				<file>3dobjects/statue3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Pegasus Statue</name>
+				<file>3dobjects/statue4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Snake Statue</name>
+				<file>3dobjects/statue5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Dolphin Statue</name>
+				<file>3dobjects/statue6.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Statue Base</name>
+				<file>3dobjects/statue_base1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Small Gargoyle</name>
+				<file>3dobjects/gargoyle3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Medium Gargoyle</name>
+				<file>3dobjects/gargoyle1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Large Gargoyle</name>
+				<file>3dobjects/gargoyle2.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Columns</name>
+			<object>
+				<name>Column 1</name>
+				<file>3dobjects/column1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.7</scale>
+			</object>
+			<object>
+				<name>Column 2</name>
+				<file>3dobjects/column2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.7</scale>
+			</object>
+			<object>
+				<name>Column 3</name>
+				<file>3dobjects/column3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.7</scale>
+			</object>
+			<object>
+				<name>Column 4</name>
+				<file>3dobjects/column4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.7</scale>
+			</object>
+			<object>
+				<name>Column 5</name>
+				<file>3dobjects/column5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.7</scale>
+			</object>
+			<object>
+				<name>Column 6</name>
+				<file>3dobjects/column6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.7</scale>
+			</object>
+			<object>
+				<name>BlackMarble Column</name>
+				<file>3dobjects/obelisk_blackmarble1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.6</scale>
+			</object>
+			<object>
+				<name>Column 1</name>
+				<file>3dobjects/column1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Bricks</name>
+			<object>
+				<name>Stone Brick 1</name>
+				<file>3dobjects/stonebrick1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Stone Brick 2</name>
+				<file>3dobjects/stonebrick2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Stone Brick 3</name>
+				<file>3dobjects/stonebrick3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>TombStones</name>
+			<object>
+				<name>Head Stone 1</name>
+				<file>3dobjects/tomb1.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Head Stone 2</name>
+				<file>3dobjects/tomb2.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Head Stone 3</name>
+				<file>3dobjects/tomb3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Portal</name>
+				<file>3dobjects/portal1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Banners</name>
+			<object>
+				<name>IslaPrima Banner</name>
+				<file>3dobjects/banner1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>WhiteStone Banner</name>
+				<file>3dobjects/banner2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>DesertPines Banner</name>
+				<file>3dobjects/banner3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>VOTD</name>
+				<file>3dobjects/banner4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Tirnym</name>
+				<file>3dobjects/banner5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Tahraji</name>
+				<file>3dobjects/banner6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Portland</name>
+				<file>3dobjects/banner7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Morcraven</name>
+				<file>3dobjects/banner8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Grubani P.</name>
+				<file>3dobjects/banner9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>South Kilaran</name>
+				<file>3dobjects/banner10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Nordcarn</name>
+				<file>3dobjects/banner11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Kilaran Field</name>
+				<file>3dobjects/banner12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Naralik</name>
+				<file>3dobjects/banner13.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Signs</name>
+			<object>
+				<name>Poll</name>
+				<file>3dobjects/poll_wood1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Sign</name>
+				<file>3dobjects/sign.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Arrow Sign 1</name>
+				<file>3dobjects/sign1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Arrow Sign 2</name>
+				<file>3dobjects/sign2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Arrow Sign 3</name>
+				<file>3dobjects/sign3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Sign Tavern</name>
+				<file>3dobjects/sign4_tavern.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Sign Grocer</name>
+				<file>3dobjects/sign5_grocer.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Sign Blacksmith</name>
+				<file>3dobjects/sign6_blacksmith.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Sign Magic</name>
+				<file>3dobjects/sign7_magic.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Sign Bank</name>
+				<file>3dobjects/sign8_bank.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Sign Flower</name>
+				<file>3dobjects/sign9_herbs.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Sign PK</name>
+				<file>3dobjects/sign_pkmaps.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.9</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Books-Scrolls-Maps</name>
+		<sub_category>
+			<name>books</name>
+			<object>
+				<name>Open Red Book</name>
+				<file>3dobjects/book_open1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Red Book</name>
+				<file>3dobjects/book4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Three Red Books</name>
+				<file>3dobjects/books2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Blue Book</name>
+				<file>3dobjects/book2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Three Blue Books</name>
+				<file>3dobjects/books1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Brown Book</name>
+				<file>3dobjects/book3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Three Brown Books</name>
+				<file>3dobjects/books4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Violet Book</name>
+				<file>3dobjects/book1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Three Green Books</name>
+				<file>3dobjects/books3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Spellbooks &amp; scrolls</name>
+			<object>
+				<name>Black Spell Book</name>
+				<file>3dobjects/spellbook1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Gold Spell Book</name>
+				<file>3dobjects/spellbook3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>White White Book</name>
+				<file>3dobjects/spellbook2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Scroll 1</name>
+				<file>3dobjects/scroll1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Scroll 2</name>
+				<file>3dobjects/scroll2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Maps &amp; Newspapers</name>
+			<object>
+				<name>Map of Seredia</name>
+				<file>3dobjects/map1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>News Paper 1</name>
+				<file>3dobjects/newspaper1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>News Paper 2</name>
+				<file>3dobjects/newspaper2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>News Paper 3</name>
+				<file>3dobjects/newspaper3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>News Paper 4</name>
+				<file>3dobjects/newspaper4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Paper &amp; Pen</name>
+			<object>
+				<name>Paper 1</name>
+				<file>3dobjects/paper1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Paper 2</name>
+				<file>3dobjects/paper2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>BurntPaper 1</name>
+				<file>3dobjects/paperburnt1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>BurntPaper 2</name>
+				<file>3dobjects/paperburnt2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Quillpen 1</name>
+				<file>3dobjects/quillpen1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+			<object>
+				<name>Ink Well 1</name>
+				<file>3dobjects/inkwell1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Clothes-Rugs-Tapestries</name>
+		<sub_category>
+			<name>Clothes</name>
+			<object>
+				<name>Blue Shirt</name>
+				<file>3dobjects/clothes_shirtblue.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Orange Shirt</name>
+				<file>3dobjects/clothes_shirtorange.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Brown Pants 1</name>
+				<file>3dobjects/clothes_pantsbrown1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Brown Pants 2</name>
+				<file>3dobjects/clothes_pantsbrown2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Green Towel</name>
+				<file>3dobjects/clothes_towelgreen.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>OrangeTowel</name>
+				<file>3dobjects/clothes_towelorange.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Pink Towel</name>
+				<file>3dobjects/clothes_towelpink.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Purple Towel</name>
+				<file>3dobjects/clothes_towelpurple.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Red Towel</name>
+				<file>3dobjects/clothes_towelred.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>White Towel</name>
+				<file>3dobjects/clothes_towelwhite.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Yellow Towel</name>
+				<file>3dobjects/clothes_towelyellow.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Clothes Line 1</name>
+				<file>3dobjects/clothesline1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Clothes Line 2</name>
+				<file>3dobjects/clothesline2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+			<object>
+				<name>Clothes Line 3</name>
+				<file>3dobjects/clothesline3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Rugs</name>
+			<object>
+				<name>Rug 1</name>
+				<file>3dobjects/rug1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 2</name>
+				<file>3dobjects/rug2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 3</name>
+				<file>3dobjects/rug3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 4</name>
+				<file>3dobjects/rug4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 5</name>
+				<file>3dobjects/rug5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 6</name>
+				<file>3dobjects/rug6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 7</name>
+				<file>3dobjects/rug7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 8</name>
+				<file>3dobjects/rug8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 9</name>
+				<file>3dobjects/rug9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Rug 10</name>
+				<file>3dobjects/rug10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.5</scale>
+			</object>
+			<object>
+				<name>Big Rug 1</name>
+				<file>3dobjects/rug_big1.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>1.8</scale>
+			</object>
+			<object>
+				<name>Big Rug 1</name>
+				<file>3dobjects/rug_big2.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>1.8</scale>
+			</object>
+			<object>
+				<name>Fur Rug 1</name>
+				<file>3dobjects/fur_rug1.e3d</file>
+				<rotation>0.0 0.0 15.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Fur Rug 2</name>
+				<file>3dobjects/fur_rug2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Fur Rug 3</name>
+				<file>3dobjects/fur_rug3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Fur Rug 4</name>
+				<file>3dobjects/fur_rug4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Fur Rug 5</name>
+				<file>3dobjects/fur_rug5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Tapestries</name>
+			<object>
+				<name>Tapestry 1</name>
+				<file>3dobjects/tapestry1.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tapestry 2</name>
+				<file>3dobjects/tapestry2.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tapestry 3</name>
+				<file>3dobjects/tapestry3.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Tapestry 4</name>
+				<file>3dobjects/tapestry4.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Tapestry 5</name>
+				<file>3dobjects/tapestry5.e3d</file>
+				<rotation>0.0 0.0 30.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Locks-Coffins-Bones-Web</name>
+		<sub_category>
+			<name>Locks</name>
+			<object>
+				<name>Lock 1</name>
+				<file>3dobjects/lock1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Open Lock 1</name>
+				<file>3dobjects/lock1_open.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Lock 2</name>
+				<file>3dobjects/lock2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Lock 3</name>
+				<file>3dobjects/lock3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Lock 4</name>
+				<file>3dobjects/lock4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Jail Bars</name>
+			<object>
+				<name>Jail Bars</name>
+				<file>3dobjects/jailbars.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Jail Door</name>
+				<file>3dobjects/jaildoor.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Coffins</name>
+			<object>
+				<name>Coffin 1</name>
+				<file>3dobjects/coffin1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Coffin Lid 1</name>
+				<file>3dobjects/coffin1_lid.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Coffin 2</name>
+				<file>3dobjects/coffin2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Coffin Lid 2</name>
+				<file>3dobjects/coffin2_lid.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>bones</name>
+			<object>
+				<name>Bone 1</name>
+				<file>3dobjects/bone1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Bone 2</name>
+				<file>3dobjects/bone2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Bone 3</name>
+				<file>3dobjects/bone3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Bone 4</name>
+				<file>3dobjects/bone4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Skull</name>
+				<file>3dobjects/bone_skull.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Dragon Skull</name>
+				<file>3dobjects/bone_dragonskull.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Dragon Jaw</name>
+				<file>3dobjects/bone_dragonjaw.e3d</file>
+				<rotation>0.0 0.0 -90.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Cobwebs</name>
+			<object>
+				<name>Web 1</name>
+				<file>3dobjects/web1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Web 2</name>
+				<file>3dobjects/web2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Web 3</name>
+				<file>3dobjects/web3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Web 4</name>
+				<file>3dobjects/web4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Food-Dishes-Drinks</name>
+		<sub_category>
+			<name>Food</name>
+			<object>
+				<name>Bread 1</name>
+				<file>3dobjects/food_bread1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Bread 2</name>
+				<file>3dobjects/food_bread2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Apple</name>
+				<file>3dobjects/food_Apple.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Banana</name>
+				<file>3dobjects/food_banana.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Orange</name>
+				<file>3dobjects/food_orange.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Grapes</name>
+				<file>3dobjects/food_grapes.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Pear</name>
+				<file>3dobjects/food_pear.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Raw Meat</name>
+				<file>3dobjects/meat1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Cooked Meat</name>
+				<file>3dobjects/meat2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Chicken leg</name>
+				<file>3dobjects/meat3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Fish</name>
+			<object>
+				<name>Fish 1</name>
+				<file>3dobjects/fish1.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Fish 2</name>
+				<file>3dobjects/fish2.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Fish 3</name>
+				<file>3dobjects/fish3.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Fish 4</name>
+				<file>3dobjects/fish4.e3d</file>
+				<rotation>0.0 0.0 180.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Drinks</name>
+			<object>
+				<name>Wine</name>
+				<file>3dobjects/bottle1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Ale</name>
+				<file>3dobjects/bottle2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Mead</name>
+				<file>3dobjects/bottle3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Plates &amp; Mugs</name>
+			<object>
+				<name>Mug</name>
+				<file>3dobjects/mug1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Plate</name>
+				<file>3dobjects/plate1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Mineable Objects</name>
+		<sub_category>
+			<name>Ores</name>
+			<object>
+				<name>Coal 1</name>
+				<file>3dobjects/coal1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Coal 2</name>
+				<file>3dobjects/coal2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Sulfur 1</name>
+				<file>3dobjects/sulfur1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Sulfur 2</name>
+				<file>3dobjects/sulfur2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Iron 1</name>
+				<file>3dobjects/iron1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Iron 2</name>
+				<file>3dobjects/iron2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Silver 1</name>
+				<file>3dobjects/silver1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Silver 2</name>
+				<file>3dobjects/silver2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Gold 1</name>
+				<file>3dobjects/gold1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Gold 2</name>
+				<file>3dobjects/gold2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Titanium 1</name>
+				<file>3dobjects/titanium1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Titanium 2</name>
+				<file>3dobjects/titanium2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Crystals</name>
+			<object>
+				<name>Quartz 1</name>
+				<file>3dobjects/crystal1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Quartz 2</name>
+				<file>3dobjects/crystal2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Blue Quartz 1</name>
+				<file>3dobjects/crystal3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Blue Quartz 2</name>
+				<file>3dobjects/crystal4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Red Quartz 1</name>
+				<file>3dobjects/crystal5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Red Quartz 2</name>
+				<file>3dobjects/crystal6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Emerald</name>
+				<file>3dobjects/gemstone1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Sapphire</name>
+				<file>3dobjects/gemstone2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Ruby</name>
+				<file>3dobjects/gemstone3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Diamond</name>
+				<file>3dobjects/gemstone4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Fences-Fountains-Wells</name>
+		<sub_category>
+			<name>Fences</name>
+			<object>
+				<name>Fence 1</name>
+				<file>3dobjects/fence1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Fence 2</name>
+				<file>3dobjects/fence2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Fence 3</name>
+				<file>3dobjects/fence3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Fence 4</name>
+				<file>3dobjects/fence4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Fence 5</name>
+				<file>3dobjects/fence5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Fence 6</name>
+				<file>3dobjects/fence6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Fence 7</name>
+				<file>3dobjects/fence7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Fence 8</name>
+				<file>3dobjects/fence8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Fence 9</name>
+				<file>3dobjects/fence9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Iron Fence</name>
+				<file>3dobjects/fence_iron1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Fountains</name>
+			<object>
+				<name>fountain 1</name>
+				<file>3dobjects/fountain1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>fountain 2</name>
+				<file>3dobjects/fountain2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>fountain 3</name>
+				<file>3dobjects/fountain3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>fountain 4</name>
+				<file>3dobjects/fountain4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>fountain 5</name>
+				<file>3dobjects/fountain5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>fountain 6</name>
+				<file>3dobjects/fountain6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>fountain 7</name>
+				<file>3dobjects/fountain7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>fountain 8</name>
+				<file>3dobjects/fountain8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Wells</name>
+			<object>
+				<name>Well 1</name>
+				<file>3dobjects/Well1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Well 2</name>
+				<file>3dobjects/Well2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Well 3</name>
+				<file>3dobjects/Well3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Ships-Boats-Docks</name>
+		<sub_category>
+			<name>Ships</name>
+			<object>
+				<name>Ship 1</name>
+				<file>3dobjects/ship1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Ship 2</name>
+				<file>3dobjects/ship2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Ship 3</name>
+				<file>3dobjects/ship3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.6</scale>
+			</object>
+			<object>
+				<name>Gangplank 1</name>
+				<file>3dobjects/gangplank1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Docks</name>
+			<object>
+				<name>Dock 1</name>
+				<file>3dobjects/dock1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Post 1</name>
+				<file>3dobjects/post1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Dock 2</name>
+				<file>3dobjects/dock2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>Post 2</name>
+				<file>3dobjects/post2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Boats</name>
+			<object>
+				<name>Boat 1</name>
+				<file>3dobjects/boat1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Boat 2</name>
+				<file>3dobjects/boat2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Boat 3</name>
+				<file>3dobjects/boat3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Oar 1</name>
+				<file>3dobjects/oar1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Tools and Containers</name>
+		<sub_category>
+			<name>Work Tools</name>
+			<object>
+				<name>Pitch Fork</name>
+				<file>3dobjects/pitchfork.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Shovel</name>
+				<file>3dobjects/shovel.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Broom</name>
+				<file>3dobjects/broom1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Blacksmith Hammer</name>
+				<file>3dobjects/hammer1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Anvil</name>
+				<file>3dobjects/anvil1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Horse Shoe</name>
+				<file>3dobjects/horseshoe1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Bellows</name>
+				<file>3dobjects/bellows1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Buckets</name>
+			<object>
+				<name>Bucket1</name>
+				<file>3dobjects/bucket1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Bucket2</name>
+				<file>3dobjects/bucket2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Trough1</name>
+				<file>3dobjects/trough_flowers.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4</scale>
+			</object>
+			<object>
+				<name>Trough2</name>
+				<file>3dobjects/trough_water.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Baskets</name>
+			<object>
+				<name>Basket1</name>
+				<file>3dobjects/basket1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Basket2</name>
+				<file>3dobjects/basket2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Basket3</name>
+				<file>3dobjects/basket3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Basket4</name>
+				<file>3dobjects/basket4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Basket5</name>
+				<file>3dobjects/basket5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Basket6</name>
+				<file>3dobjects/basket6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Fishing Nets &amp; Ropes</name>
+			<object>
+				<name>Fishing Net 1</name>
+				<file>3dobjects/fishingnet1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.6</scale>
+			</object>
+			<object>
+				<name>Fishing Net 2</name>
+				<file>3dobjects/fishingnet2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.6</scale>
+			</object>
+			<object>
+				<name>Fishing Net 3</name>
+				<file>3dobjects/fishingnet3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.6</scale>
+			</object>
+			<object>
+				<name>Fishing Pole</name>
+				<file>3dobjects/fishingpole1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.6</scale>
+			</object>
+			<object>
+				<name>Rope 1</name>
+				<file>3dobjects/rope1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2.5</scale>
+			</object>
+			<object>
+				<name>Rope 2</name>
+				<file>3dobjects/rope2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Barrels &amp; Crates &amp; Bags</name>
+			<object>
+				<name>Barrel 1</name>
+				<file>3dobjects/barrel1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Barrel 2</name>
+				<file>3dobjects/barrel2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Chest</name>
+				<file>3dobjects/chest1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Crate 1</name>
+				<file>3dobjects/crate.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Crate 2</name>
+				<file>3dobjects/crate2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Bag 1</name>
+				<file>3dobjects/bag1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Sack 1</name>
+				<file>3dobjects/sack1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Sack 2</name>
+				<file>3dobjects/sack2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Pots &amp; Pans</name>
+			<object>
+				<name>Pot 1</name>
+				<file>3dobjects/pot1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Pot 2</name>
+				<file>3dobjects/pot2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Pot 3</name>
+				<file>3dobjects/pot3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Pot 4</name>
+				<file>3dobjects/pot4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+			<object>
+				<name>Small Cauldron</name>
+				<file>3dobjects/pot_cooking1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>4.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Ladders &amp; Wood</name>
+			<object>
+				<name>Ladder</name>
+				<file>3dobjects/ladder.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Plank</name>
+				<file>3dobjects/board1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Post 3</name>
+				<file>3dobjects/post3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Post 4</name>
+				<file>3dobjects/post4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+			<object>
+				<name>Post 5</name>
+				<file>3dobjects/post5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>2</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Vials</name>
+			<object>
+				<name>Vial Holder</name>
+				<file>3dobjects/vial_holder1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Cork</name>
+				<file>3dobjects/vialcork1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Mortar</name>
+				<file>3dobjects/mortar.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Pedstle</name>
+				<file>3dobjects/pedstle.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>10.0</scale>
+			</object>
+			<object>
+				<name>Vial1</name>
+				<file>3dobjects/vial1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial2</name>
+				<file>3dobjects/vial2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial3</name>
+				<file>3dobjects/vial3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial4</name>
+				<file>3dobjects/vial4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial5</name>
+				<file>3dobjects/vial5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial6</name>
+				<file>3dobjects/vial6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial7</name>
+				<file>3dobjects/vial7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial8</name>
+				<file>3dobjects/vial8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial9</name>
+				<file>3dobjects/vial9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial10</name>
+				<file>3dobjects/vial10.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial11</name>
+				<file>3dobjects/vial11.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+			<object>
+				<name>Vial12</name>
+				<file>3dobjects/vial12.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>5</scale>
+			</object>
+		</sub_category>
+	</category>
+	<category>
+		<name>Snow Map Objects</name>
+		<sub_category>
+			<name>Igloos</name>
+			<object>
+				<name>Ice Brick</name>
+				<file>3dobjects/ice_brick.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Snow Brick</name>
+				<file>3dobjects/snowbrick1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3</scale>
+			</object>
+			<object>
+				<name>Igloo small</name>
+				<file>3dobjects/igloo1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Igloo big</name>
+				<file>3dobjects/igloo2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Inside Igloo small</name>
+				<file>3dobjects/inside_igloo1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Inside Igloo big</name>
+				<file>3dobjects/inside_igloo2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Igloo entrance small</name>
+				<file>3dobjects/igloo_entrance1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Igloo entrance big</name>
+				<file>3dobjects/igloo_entrance2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Rocks</name>
+			<object>
+				<name>snow_rockbig1</name>
+				<file>3dobjects/snow_rockbig1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snow_rockbig2</name>
+				<file>3dobjects/snow_rockbig2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snow_rockbig3</name>
+				<file>3dobjects/snow_rockbig3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge1</name>
+				<file>3dobjects/snow_rockhuge1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge2</name>
+				<file>3dobjects/snow_rockhuge2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge3</name>
+				<file>3dobjects/snow_rockhuge3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge4</name>
+				<file>3dobjects/snow_rockhuge4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge5</name>
+				<file>3dobjects/snow_rockhuge5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge6</name>
+				<file>3dobjects/snow_rockhuge6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge7</name>
+				<file>3dobjects/snow_rockhuge7.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge8</name>
+				<file>3dobjects/snow_rockhuge8.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>snow_rockhuge9</name>
+				<file>3dobjects/snow_rockhuge9.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Arches &amp; Caves</name>
+			<object>
+				<name>snowarch1</name>
+				<file>3dobjects/snowarch1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snowarch2</name>
+				<file>3dobjects/snowarch2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snowarch3</name>
+				<file>3dobjects/snowarch3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snowcave1</name>
+				<file>3dobjects/snowcave1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+			<object>
+				<name>snowcave2</name>
+				<file>3dobjects/snowcave2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Ice Rocks</name>
+			<object>
+				<name>ice_rockbig1</name>
+				<file>3dobjects/ice_rockbig1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>ice_rockbig2</name>
+				<file>3dobjects/ice_rockbig2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>ice_rockbig3</name>
+				<file>3dobjects/ice_rockbig3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>ice_rockhuge1</name>
+				<file>3dobjects/ice_rockhuge1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>ice_rockhuge2</name>
+				<file>3dobjects/ice_rockhuge2.e3d</file>
+				<rotation>0.0 0.0 90.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>ice_rockhuge3</name>
+				<file>3dobjects/ice_rockhuge3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>ice_wall1</name>
+				<file>3dobjects/icewall1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>ice_wall2</name>
+				<file>3dobjects/icewall2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Iceburgs</name>
+			<object>
+				<name>iceburg1</name>
+				<file>3dobjects/iceburg1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>iceburg2</name>
+				<file>3dobjects/iceburg2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>iceburg3</name>
+				<file>3dobjects/iceburg3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>iceburg4</name>
+				<file>3dobjects/iceburg4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>iceburg5</name>
+				<file>3dobjects/iceburg5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>iceburg6</name>
+				<file>3dobjects/iceburg6.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Icicles</name>
+			<object>
+				<name>icicle1</name>
+				<file>3dobjects/icicle1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>icicle2</name>
+				<file>3dobjects/icicle2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>icicle3</name>
+				<file>3dobjects/icicle3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Snow mounds</name>
+			<object>
+				<name>mound_snow1</name>
+				<file>3dobjects/mound_snow1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>mound_snow2</name>
+				<file>3dobjects/mound_snow2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>mound_snow3</name>
+				<file>3dobjects/mound_snow3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>mound_snow4</name>
+				<file>3dobjects/mound_snow4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Columns &amp; Statues</name>
+			<object>
+				<name>Ice Column 1</name>
+				<file>3dobjects/ice_column1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.1</scale>
+			</object>
+			<object>
+				<name>Ice Column 2</name>
+				<file>3dobjects/ice_column2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.7</scale>
+			</object>
+			<object>
+				<name>Ice Obelisk 1</name>
+				<file>3dobjects/ice_obelisk1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Ice Obelisk 2</name>
+				<file>3dobjects/ice_obelisk2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.6</scale>
+			</object>
+			<object>
+				<name>Ice Obelisk 3</name>
+				<file>3dobjects/ice_obelisk3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.6</scale>
+			</object>
+			<object>
+				<name>Ice Dragon Statue 1</name>
+				<file>3dobjects/dragon_icestatue1.e3d</file>
+				<rotation>0.0 0.0 -10.0</rotation>
+				<scale>0.95</scale>
+			</object>
+			<object>
+				<name>Ice Dragon Statue 2</name>
+				<file>3dobjects/dragon_icestatue2.e3d</file>
+				<rotation>0.0 0.0 -20.0</rotation>
+				<scale>0.7</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Roads</name>
+			<object>
+				<name>Snow Road1</name>
+				<file>3dobjects/road_snow1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Snow Road2</name>
+				<file>3dobjects/road_snow2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Snow Road3</name>
+				<file>3dobjects/road_snow3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+		</sub_category>
+		<sub_category>
+			<name>Trees &amp; Bushes</name>
+			<object>
+				<name>Snow Tree 1</name>
+				<file>3dobjects/tree_snow1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Snow Tree 2</name>
+				<file>3dobjects/tree_snow2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.2</scale>
+			</object>
+			<object>
+				<name>Snow Tree 3</name>
+				<file>3dobjects/tree_snow3.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.7</scale>
+			</object>
+			<object>
+				<name>Snow Tree 4</name>
+				<file>3dobjects/tree_snow4.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>0.8</scale>
+			</object>
+			<object>
+				<name>Snow Tree 5</name>
+				<file>3dobjects/tree_snow5.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>1.0</scale>
+			</object>
+			<object>
+				<name>Snow Bush1</name>
+				<file>3dobjects/bush_snow1.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+			<object>
+				<name>Snow Bush2</name>
+				<file>3dobjects/bush_snow2.e3d</file>
+				<rotation>0.0 0.0 0.0</rotation>
+				<scale>3.0</scale>
+			</object>
+		</sub_category>
+	</category>
+</objects>

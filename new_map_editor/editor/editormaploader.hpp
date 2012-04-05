@@ -39,10 +39,7 @@ namespace eternal_lands
 			const MeshBuilderSharedPtr m_mesh_builder;
 			const MeshCacheSharedPtr m_mesh_cache;
 			const MeshDataCacheSharedPtr m_mesh_data_cache;
-			const EffectCacheSharedPtr m_effect_cache;
-			const TextureCacheSharedPtr m_texture_cache;
-			const MaterialDescriptionCacheSharedPtr
-				m_material_description_cache;
+			const MaterialCacheSharedPtr m_material_cache;
 			ReaderSharedPtr m_reader;
 			EditorMapData &m_data;
 			MapSharedPtr m_map;
@@ -79,27 +76,15 @@ namespace eternal_lands
 				return m_mesh_data_cache;
 			}
 
-			inline const EffectCacheSharedPtr &get_effect_cache()
-				const
-			{
-				return m_effect_cache;
-			}
-
-			inline const TextureCacheSharedPtr &get_texture_cache()
-				const
-			{
-				return m_texture_cache;
-			}
-
 			inline const ReaderSharedPtr &get_reader() const
 			{
 				return m_reader;
 			}
 
-			inline const MaterialDescriptionCacheSharedPtr
-				&get_material_description_cache() const
+			inline const MaterialCacheSharedPtr
+				&get_material_cache() const
 			{
-				return m_material_description_cache;
+				return m_material_cache;
 			}
 
 			virtual void add_object(const glm::vec3 &position,
@@ -142,10 +127,7 @@ namespace eternal_lands
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MeshDataCacheSharedPtr &mesh_data_cache,
-				const EffectCacheSharedPtr &effect_cache,
-				const TextureCacheSharedPtr &texture_cache,
-				const MaterialDescriptionCacheSharedPtr
-					&material_description_cache,
+				const MaterialCacheSharedPtr &material_cache,
 				const FreeIdsManagerSharedPtr &free_ids,
 				EditorMapData &data);
 

@@ -12,7 +12,7 @@
 #include "particledata.hpp"
 #include "materialdescription.hpp"
 #include "materialdescriptioncache.hpp"
-#include "editorobjectdata.hpp"
+#include "editorobjectdescription.hpp"
 
 namespace eternal_lands
 {
@@ -24,18 +24,13 @@ namespace eternal_lands
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const MeshDataCacheSharedPtr &mesh_data_cache,
-		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache,
-		const MaterialDescriptionCacheSharedPtr
-			&material_description_cache,
+		const MaterialCacheSharedPtr &material_cache,
 		const FreeIdsManagerSharedPtr &free_ids,
 		EditorMapData &data): AbstractMapLoader(file_system, free_ids),
 		m_codec_manager(codec_manager), m_global_vars(global_vars),
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_mesh_data_cache(mesh_data_cache),
-		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_material_description_cache(material_description_cache),
-		m_data(data)
+		m_material_cache(material_cache), m_data(data)
 	{
 	}
 
@@ -58,9 +53,9 @@ namespace eternal_lands
 			new_selection = st_select;
 		}
 
-		m_data.add_object(EditorObjectData(translation, rotation_angles,
-			material_names, name, scale, transparency, id,
-			new_selection, blend));
+		m_data.add_object(EditorObjectDescription(translation,
+			rotation_angles, material_names, name, scale,
+			transparency, id, new_selection, blend));
 	}
 
 	void EditorMapLoader::add_light(const glm::vec3 &position,
@@ -140,8 +135,7 @@ namespace eternal_lands
 		return boost::make_shared<Map>(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_mesh_cache(),
-			get_effect_cache(), get_texture_cache(),
-			get_material_description_cache(), name);
+			get_material_cache(), name);
 	}
 
 }

@@ -27,7 +27,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>world_uv = vec3(texture_coordinate_0, 1.0) * texture_matrices[0];
+   <source>world_uv = vec3(texture_coordinate_0, 1.0) * texture_matrices;
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

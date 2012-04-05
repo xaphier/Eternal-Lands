@@ -34,19 +34,26 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			LightData();
+			inline LightData(): m_radius(0.0f), m_id(0)
+			{
+			}
 
 			/**
 			 * Default constructor.
 			 */
-			LightData(const glm::vec3 &position,
+			inline LightData(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,
-				const Uint32 id);
+				const Uint32 id): m_position(position),
+				m_color(color), m_radius(radius), m_id(id)
+			{
+			}
 
 			/**
 			 * Default destructor.
 			 */
-			virtual ~LightData() throw();
+			inline ~LightData() throw()
+			{
+			}
 
 			inline const glm::vec3 &get_position() const
 			{

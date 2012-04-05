@@ -1,5 +1,5 @@
 /****************************************************************************
- *            editorobjectdata.hpp
+ *            editorobjectdescription.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,12 +13,12 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "objectdata.hpp"
+#include "objectdescription.hpp"
 
 /**
  * @file
- * @brief The @c class EditorObjectData.
- * This file contains the @c class EditorObjectData.
+ * @brief The @c class EditorObjectDescription.
+ * This file contains the @c class EditorObjectDescription.
  */
 namespace eternal_lands
 {
@@ -28,22 +28,21 @@ namespace eternal_lands
 	 *
 	 * @c class for object data.
 	 */
-	class EditorObjectData: public ObjectData
+	class EditorObjectDescription: public ObjectDescription
 	{
 		private:
-			StringVector m_material_names;
 			glm::vec3 m_rotation_angles;
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			EditorObjectData();
+			EditorObjectDescription();
 
 			/**
 			 * Default constructor.
 			 */
-			EditorObjectData(const glm::vec3 &translation,
+			EditorObjectDescription(const glm::vec3 &translation,
 				const glm::vec3 &rotation_angles,
 				const StringVector &material_names,
 				const String &name, const float scale,
@@ -54,7 +53,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~EditorObjectData() throw();
+			~EditorObjectDescription() throw();
 			void set_translation(const glm::vec3 &translation);
 			void set_rotation_angles(
 				const glm::vec3 &rotation_angles);
@@ -65,17 +64,6 @@ namespace eternal_lands
 			inline const glm::vec3 &get_rotation_angles() const
 			{
 				return m_rotation_angles;
-			}
-
-			inline void set_material_names(
-				const StringVector &material_names)
-			{
-				m_material_names = material_names;
-			}
-
-			inline const StringVector &get_material_names() const
-			{
-				return m_material_names;
 			}
 
 	};

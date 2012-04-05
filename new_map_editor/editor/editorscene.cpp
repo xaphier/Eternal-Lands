@@ -8,6 +8,7 @@
 #include "editorscene.hpp"
 #include "frustum.hpp"
 #include "object.hpp"
+#include "materialbuilder.hpp"
 #include "materialdescription.hpp"
 #include "lightdata.hpp"
 #include "meshcache.hpp"
@@ -35,8 +36,8 @@ namespace eternal_lands
 		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
 		ObjectSharedPtr object;
 		AbstractMeshSharedPtr mesh;
-		MaterialDescriptionVector materials;
-		MaterialDescription material;
+		MaterialSharedPtrVector materials;
+		MaterialDescription material_description;
 		ObjectData object_data;
 		Transformation transformation;
 		glm::mat2x3 emission_scale_offset;
@@ -50,22 +51,23 @@ namespace eternal_lands
 		object_data.set_selection(st_select);
 		object_data.set_world_transformation(transformation);
 		object_data.set_id(object_id);
-		material.set_cast_shadows(false);
+		material_description.set_cast_shadows(false);
 
 		get_scene_resources().get_mesh_cache()->get_mesh(
 			object_data.get_name(), mesh);
 
 		emission_scale_offset[1] = light_data.get_color();
 
-		material.set_emission_scale_offset(emission_scale_offset);
-		material.set_name(String(UTF8("light")));
-		material.set_effect(String(UTF8("solid-color")));
+		material_description.set_emission_scale_offset(
+			emission_scale_offset);
+		material_description.set_name(String(UTF8("light")));
+		material_description.set_effect(String(UTF8("solid-color")));
 
-		materials.push_back(material);
+		materials.push_back(get_scene_resources().get_material_builder(
+			)->get_material(material_description));
 
 		object = boost::make_shared<Object>(object_data, mesh,
-			materials, get_scene_resources().get_effect_cache(),
-			get_scene_resources().get_texture_cache());
+			materials);
 
 		temp = m_light_objects.insert(
 			Uint32ObjectSharedPtrMap::value_type(
@@ -73,15 +75,16 @@ namespace eternal_lands
 
 		assert(temp.second);
 
-		materials[0].set_culling(false);
+		materials.clear();
+		materials.push_back(get_scene_resources().get_material_builder(
+			)->get_material(material_description));
 
 		transformation.set_scale(light_data.get_radius());
 		object_data.set_world_transformation(transformation);
 		object_data.set_selection(st_none);
 
 		object = boost::make_shared<Object>(object_data, mesh,
-			materials, get_scene_resources().get_effect_cache(),
-			get_scene_resources().get_texture_cache());
+			materials);
 
 		temp = m_light_sphere_objects.insert(
 			Uint32ObjectSharedPtrMap::value_type(
@@ -175,9 +178,7 @@ namespace eternal_lands
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_mesh_data_cache(),
-			get_scene_resources().get_effect_cache(),
-			get_scene_resources().get_texture_cache(),
-			get_scene_resources().get_material_description_cache(),
+			get_scene_resources().get_material_cache(),
 			get_free_ids(), data));
 
 		set_map(map_loader->get_map(name));

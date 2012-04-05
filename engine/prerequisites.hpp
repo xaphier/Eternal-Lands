@@ -227,6 +227,7 @@ namespace eternal_lands
 	class LightVisitor;
 	class Map;
 	class Material;
+	class MaterialBuilder;
 	class MaterialCache;
 	class MaterialData;
 	class MaterialDescription;
@@ -331,6 +332,7 @@ namespace eternal_lands
 	SHARED_PTR(Light);
 	SHARED_PTR(Map);
 	SHARED_PTR(Material);
+	SHARED_PTR(MaterialBuilder);
 	SHARED_PTR(MaterialCache);
 	SHARED_PTR(MaterialDescriptionCache);
 	SHARED_PTR(MaterialScript);
@@ -359,6 +361,7 @@ namespace eternal_lands
 	WEAK_PTR(ActorDataCache);
 	WEAK_PTR(CodecManager);
 	WEAK_PTR(EffectCache);
+	WEAK_PTR(MaterialBuilder);
 	WEAK_PTR(MaterialCache);
 	WEAK_PTR(MaterialDescriptionCache);
 	WEAK_PTR(MaterialScriptCache);

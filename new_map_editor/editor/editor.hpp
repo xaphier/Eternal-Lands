@@ -15,7 +15,7 @@
 #include "prerequisites.hpp"
 #include "undostack.hpp"
 #include "editormapdata.hpp"
-#include "editorobjectdata.hpp"
+#include "editorobjectdescription.hpp"
 #include "editor.hpp"
 #include <boost/random.hpp>
 #include <boost/random/linear_congruential.hpp>
@@ -46,7 +46,8 @@ namespace eternal_lands
 			bool m_random_scale;
 
 			void change_object(const ModificationType type,
-				const EditorObjectData &object_data);
+				const EditorObjectDescription
+					&object_description);
 			void change_light(const ModificationType type,
 				const LightData &light_data);
 			bool do_set_terrain_albedo_map(const String &str,
@@ -123,8 +124,9 @@ namespace eternal_lands
 				const float radius);
 			void set_light_color(const Uint32 id,
 				const glm::vec3 &color);
-			void get_object_data(const Uint32 id,
-				EditorObjectData &object_data) const;
+			void get_object_description(const Uint32 id,
+				EditorObjectDescription &object_description)
+				const;
 			void get_light_data(const Uint32 id,
 				LightData &light_data) const;
 			const glm::vec3 &get_ambient() const;
@@ -203,10 +205,12 @@ namespace eternal_lands
 				return m_data.get_projection_matrix();
 			}
 
-			inline void get_object_data(
-				EditorObjectData &object_data) const
+			inline void get_object_description(
+				EditorObjectDescription &object_description)
+				const
 			{
-				get_object_data(get_id(), object_data);
+				get_object_description(get_id(),
+					object_description);
 			}
 
 			inline void get_light_data(LightData &light_data) const

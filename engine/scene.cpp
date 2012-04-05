@@ -36,6 +36,7 @@
 #include "material.hpp"
 #include "loader/maploader.hpp"
 #include "freeidsmanager.hpp"
+#include "thread/materiallock.hpp"
 
 #include "../client_serv.h"
 
@@ -81,32 +82,6 @@ namespace eternal_lands
 				inline ~StateManagerUtil() throw()
 				{
 					m_manager.unbind_all();
-				}
-
-		};
-
-		class MaterialLock
-		{
-			private:
-				const MaterialSharedPtr m_material;
-
-			public:
-				inline MaterialLock(
-					const MaterialSharedPtr &material):
-					m_material(material)
-				{
-					//m_material.lock();
-				}
-
-				inline ~MaterialLock()
-				{
-					//m_material.unlock();
-				}
-
-				inline const MaterialSharedPtr &operator->()
-					const
-				{
-					return m_material;
 				}
 
 		};
@@ -170,9 +145,9 @@ namespace eternal_lands
 		m_actors.clear();
 	}
 
-	void Scene::add_object(const ObjectData &object_data)
+	void Scene::add_object(const ObjectDescription &object)
 	{
-		m_map->add_object(object_data);
+		m_map->add_object(object);
 	}
 
 	void Scene::add_object(const ObjectData &object_data,
@@ -184,12 +159,6 @@ namespace eternal_lands
 	void Scene::add_object(const InstanceData &instance_data)
 	{
 		m_map->add_object(instance_data);
-	}
-
-	void Scene::add_object(const ObjectData &object_data,
-		const StringVector &material_names)
-	{
-		m_map->add_object(object_data, material_names);
 	}
 
 	void Scene::remove_object(const Uint32 id)

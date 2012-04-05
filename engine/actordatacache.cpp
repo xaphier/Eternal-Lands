@@ -12,6 +12,7 @@
 #include "meshdatatool.hpp"
 #include "indexupdatesource.hpp"
 #include "material.hpp"
+#include "materialbuilder.hpp"
 #include "materialcache.hpp"
 #include "materialdescription.hpp"
 #include "materialdescriptioncache.hpp"
@@ -42,25 +43,23 @@ namespace eternal_lands
 	};
 
 	ActorDataCache::ActorDataCache(const MeshBuilderWeakPtr &mesh_builder,
-		const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache,
 		const CodecManagerWeakPtr &codec_manager,
 		const MaterialCacheWeakPtr &material_cache,
+		const MaterialBuilderWeakPtr &material_builder,
 		const MaterialDescriptionCacheWeakPtr
 			&material_description_cache,
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
-		m_mesh_builder(mesh_builder), m_effect_cache(effect_cache),
-		m_texture_cache(texture_cache), m_codec_manager(codec_manager),
+		m_mesh_builder(mesh_builder), m_codec_manager(codec_manager),
 		m_material_cache(material_cache),
+		m_material_builder(material_builder),
 		m_material_description_cache(material_description_cache),
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
 		assert(!m_mesh_builder.expired());
-		assert(!m_effect_cache.expired());
-		assert(!m_texture_cache.expired());
 		assert(!m_codec_manager.expired());
 		assert(!m_material_cache.expired());
+		assert(!m_material_builder.expired());
 		assert(!m_material_description_cache.expired());
 		assert(m_file_system.get() != 0);
 		assert(m_global_vars.get() != 0);
@@ -140,8 +139,7 @@ namespace eternal_lands
 				)->get_material_description(
 				found->second.m_material_name);
 
-			material = boost::make_shared<Material>(
-				get_effect_cache(), get_texture_cache(),
+			material = get_material_builder()->get_material(
 				material_description);
 		}
 		else

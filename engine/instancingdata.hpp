@@ -33,11 +33,7 @@ namespace eternal_lands
 		public:
 			InstancingData(
 				const MeshDataCacheSharedPtr &mesh_data_cache,
-				const ObjectData &object_data);
-			InstancingData(
-				const MeshDataCacheSharedPtr &mesh_data_cache,
-				const ObjectData &object_data,
-				const StringVector &materials);
+				const ObjectDescription &object_descrition);
 
 			~InstancingData() throw();
 

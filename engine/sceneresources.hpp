@@ -34,6 +34,7 @@ namespace eternal_lands
 			ActorDataCacheSharedPtr m_actor_data_cache;
 			ShaderSourceBuilderSharedPtr m_shader_source_builder;
 			FrameBufferBuilderSharedPtr m_framebuffer_builder;
+			MaterialBuilderSharedPtr m_material_builder;
 			MaterialCacheSharedPtr m_material_cache;
 			MaterialDescriptionCacheSharedPtr
 				m_material_description_cache;
@@ -100,6 +101,12 @@ namespace eternal_lands
 				&get_framebuffer_builder() const
 			{
 				return m_framebuffer_builder;
+			}
+
+			inline const MaterialBuilderSharedPtr
+				&get_material_builder() const
+			{
+				return m_material_builder;
 			}
 
 			inline const MaterialCacheSharedPtr

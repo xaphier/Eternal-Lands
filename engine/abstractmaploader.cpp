@@ -747,9 +747,10 @@ namespace eternal_lands
 	{
 	}
 
-	ObjectData AbstractMapLoader::get_object_data(
+	ObjectDescription AbstractMapLoader::get_object_description(
 		const glm::vec3 &translation,
-		const glm::vec3 &rotation_angles, const String &name,
+		const glm::vec3 &rotation_angles,
+		const StringVector &material_names, const String &name,
 		const float scale, const Uint32 id,
 		const SelectionType selection, const BlendType blend)
 	{
@@ -772,8 +773,8 @@ namespace eternal_lands
 		transformation.set_rotation_angles(rotation_angles);
 		transformation.set_scale(scale);
 
-		return ObjectData(transformation, name, transparency, id,
-			selection, blend);
+		return ObjectDescription(transformation, material_names, name,
+			transparency, id, selection, blend);
 	}
 
 	StringVector AbstractMapLoader::get_material_names(const Uint32 index,

@@ -51,6 +51,7 @@
 #include "engine/freeidsmanager.hpp"
 #include "engine/particledata.hpp"
 #include "engine/script/scriptengine.hpp"
+#include "engine/script/materialscriptmanager.hpp"
 
 namespace el = eternal_lands;
 
@@ -228,7 +229,7 @@ namespace
 		return el::String(str);
 	}
 
-	el::ObjectData get_object_data(const glm::vec3 &pos,
+	el::ObjectDescription get_object_description(const glm::vec3 &pos,
 		const glm::vec3 &rot, const glm::vec4 &color, el::String name,
 		const bool transparent, const Uint32 id,
 		const SelectionType selection)
@@ -266,8 +267,8 @@ namespace
 			el_blend = el::bt_disabled;
 		}
 
-		return el::ObjectData(transformation, name,
-			transparency, id, el_selection, el_blend);
+		return el::ObjectDescription(transformation, el::StringVector(),
+			name, transparency, id, el_selection, el_blend);
 	}
 
 }
@@ -818,43 +819,9 @@ extern "C" void engine_add_dynamic_object(const char* name, const float x_pos,
 
 	DEBUG_CHECK_GL_ERROR();
 
-	scene->add_object(get_object_data(glm::vec3(x_pos, y_pos, z_pos),
+	scene->add_object(get_object_description(glm::vec3(x_pos, y_pos, z_pos),
 		glm::vec3(x_rot, y_rot, z_rot), glm::vec4(r, g, b, 1.0f),
 		get_name(name), blended != 0, id, selection));
-
-	DEBUG_CHECK_GL_ERROR();
-
-	CATCH_BLOCK
-
-	disable_opengl2_stuff();
-}
-
-extern "C" void engine_add_object(const char* name, const float x_pos,
-	const float y_pos, const float z_pos, const float x_rot,
-	const float y_rot, const float z_rot, const char blended, const float r,
-	const float g, const float b, const Uint32 id,
-	const SelectionType selection)
-{
-	TRY_BLOCK
-
-	DEBUG_CHECK_GL_ERROR();
-
-	if (blended != 1)
-	{
-		scene->add_object(get_object_data(
-			glm::vec3(x_pos, y_pos, z_pos),
-			glm::vec3(x_rot, y_rot, z_rot),
-			glm::vec4(r, g, b, 1.0f), get_name(name), false, id,
-			selection));
-	}
-	else
-	{
-		scene->add_object(get_object_data(
-			glm::vec3(x_pos, y_pos, z_pos),
-			glm::vec3(x_rot, y_rot, z_rot),
-			glm::vec4(r, g, b, 1.0f), get_name(name), true, id,
-			selection));
-	}
 
 	DEBUG_CHECK_GL_ERROR();
 
@@ -1595,6 +1562,22 @@ extern "C" void engine_set_window_size(const Uint32 width, const Uint32 height,
 		scene->set_view_port(view_port);
 		scene->set_window_size(window_size);
 	}
+
+	CATCH_BLOCK
+}
+
+extern "C" void engine_update_materials()
+{
+	TRY_BLOCK
+
+	glm::vec4 time;
+
+	time.x = real_game_minute / 60;
+	time.y = real_game_minute % 60;
+	time.z = real_game_second % 60;
+	time.w = cur_time * 0.001f;
+
+	scene->get_scene_resources().get_material_script_manager()->execute_scripts(time);
 
 	CATCH_BLOCK
 }

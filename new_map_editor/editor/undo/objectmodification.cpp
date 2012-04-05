@@ -11,8 +11,10 @@
 namespace eternal_lands
 {
 
-	ObjectModification::ObjectModification(const EditorObjectData &data,
-		const ModificationType type): m_data(data), m_type(type)
+	ObjectModification::ObjectModification(
+		const EditorObjectDescription &object_description,
+		const ModificationType type):
+		m_object_description(object_description), m_type(type)
 	{
 	}
 
@@ -32,9 +34,9 @@ namespace eternal_lands
 			assert(dynamic_cast<ObjectModification*>(
 				modification) != 0);
 
-			return m_data.get_id() == dynamic_cast<
-				ObjectModification*>(
-					modification)->m_data.get_id();
+			return m_object_description.get_id() == dynamic_cast<
+				ObjectModification*>(modification
+				)->m_object_description.get_id();
 		}
 		else
 		{
@@ -47,9 +49,10 @@ namespace eternal_lands
 		switch (get_type())
 		{
 			case mt_object_added:
-				return editor.remove_object(m_data.get_id());
+				return editor.remove_object(
+					m_object_description.get_id());
 			case mt_object_removed:
-				editor.add_object(m_data);
+				editor.add_object(m_object_description);
 				return false;
 			case mt_object_translation_changed:
 			case mt_object_rotation_changed:
@@ -57,7 +60,7 @@ namespace eternal_lands
 			case mt_object_blend_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
-				editor.modify_object(m_data);
+				editor.modify_object(m_object_description);
 				return false;
 			case mt_light_added:
 			case mt_light_removed:

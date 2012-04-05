@@ -191,6 +191,8 @@ int start_rendering()
 				next_second_time += 1000;
 			}
 
+			engine_update_materials();
+
 #if defined(NEW_WEATHER) && defined(NEW_SOUND)
 			weather_sound_control();
 #endif // NEW_WEATHER

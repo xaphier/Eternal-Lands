@@ -26,8 +26,15 @@
      <size>one</size>
      <scale>1</scale>
     </parameter>
+    <parameter>
+     <name>albedo_scale_offsets</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
    </parameters>
-   <source>albedo = texture2D(albedo_sampler_0, fragment_uv);
+   <source>albedo = texture2D(albedo_sampler_0, fragment_uv) * albedo_scale_offsets[0] + albedo_scale_offsets[1];
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>false</glsl_130>
@@ -58,8 +65,15 @@
      <size>one</size>
      <scale>1</scale>
     </parameter>
+    <parameter>
+     <name>albedo_scale_offsets</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
    </parameters>
-   <source>albedo = texture(albedo_sampler_0, fragment_uv);
+   <source>albedo = texture(albedo_sampler_0, fragment_uv) * albedo_scale_offsets[0] + albedo_scale_offsets[1];
 </source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

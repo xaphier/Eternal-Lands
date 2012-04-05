@@ -26,17 +26,45 @@ namespace eternal_lands
 	class ObjectDescription: public ObjectData
 	{
 		private:
-			StringVector m_materials;
+			StringVector m_material_names;
 
 		public:
-			ObjectDescription(const ObjectData &object_data,
-				const StringVector &materials);
-
-			~ObjectDescription() throw();
-
-			inline const StringVector &get_materials() const
+			inline ObjectDescription()
 			{
-				return m_materials;
+			}
+
+			inline ObjectDescription(const ObjectData &object_data,
+				const StringVector &material_names):
+				ObjectData(object_data),
+				m_material_names(material_names)
+			{
+			}
+
+			inline ObjectDescription(
+				const Transformation &world_transformation,
+				const StringVector &material_names,
+				const String &name, const float transparency,
+				const Uint32 id, const SelectionType selection,
+				const BlendType blend): ObjectData(
+					world_transformation, name,
+					transparency, id, selection, blend),
+				m_material_names(material_names)
+			{
+			}
+
+			inline ~ObjectDescription() throw()
+			{
+			}
+
+			inline const StringVector &get_material_names() const
+			{
+				return m_material_names;
+			}
+
+			inline void set_material_names(
+				const StringVector &material_names)
+			{
+				m_material_names = material_names;
 			}
 
 	};

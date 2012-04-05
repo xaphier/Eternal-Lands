@@ -7,18 +7,20 @@
 
 #include "materialcache.hpp"
 #include "materialdescriptioncache.hpp"
-#include "material.hpp"
+#include "materialbuilder.hpp"
 
 namespace eternal_lands
 {
 
-	MaterialCache::MaterialCache(const MaterialDescriptionCacheWeakPtr
-			&material_description_cache,
-		const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache):
-		m_material_description_cache(material_description_cache),
-		m_effect_cache(effect_cache), m_texture_cache(texture_cache)
+	MaterialCache::MaterialCache(
+		const MaterialBuilderWeakPtr &material_builder,
+		const MaterialDescriptionCacheWeakPtr
+			&material_description_cache):
+		m_material_builder(material_builder),
+		m_material_description_cache(material_description_cache)
 	{
+		assert(!m_material_builder.expired());
+		assert(!m_material_description_cache.expired());
 	}
 
 	MaterialCache::~MaterialCache() throw()
@@ -37,8 +39,8 @@ namespace eternal_lands
 			return found->second;
 		}
 
-		material = boost::make_shared<Material>(get_effect_cache(),
-			get_texture_cache(), get_material_description_cache(
+		material = get_material_builder()->get_material(
+			get_material_description_cache(
 				)->get_material_description(name));
 
 		m_material_cache[name] = material;

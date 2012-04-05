@@ -93,6 +93,8 @@ namespace eternal_lands
 		r = get_engine()->SetMessageCallback(
 			asFUNCTION(message_callback), 0, asCALL_CDECL);
 		assert(r >= 0);
+
+		init();
 	}
 
 	void ScriptEngine::init()
@@ -103,6 +105,7 @@ namespace eternal_lands
 		RegisterStdString(get_engine());
 		RegisterStdStringUtils(get_engine());
 		RegisterGlm(get_engine());
+		register_material_data();
 
 		r = get_engine()->RegisterGlobalFunction(
 			"void print(const string &in)", asFUNCTION(as_print),
@@ -110,13 +113,24 @@ namespace eternal_lands
 		assert(r >= 0);
 	}
 
+void constructor_material_data(MaterialData *self)
+{
+	new(self) MaterialData();
+}
+
 	void ScriptEngine::register_material_data()
 	{
 		int r;
 
 		r = get_engine()->RegisterObjectType("MaterialData",
 			sizeof(MaterialData),
-			asOBJ_VALUE | asOBJ_APP_CLASS_CDAK);
+			asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CAK);
+		assert(r >= 0);
+
+		r = get_engine()->RegisterObjectBehaviour("MaterialData",
+			asBEHAVE_CONSTRUCT, "void f()",
+			asFUNCTION(constructor_material_data),
+			asCALL_CDECL_OBJLAST);
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",

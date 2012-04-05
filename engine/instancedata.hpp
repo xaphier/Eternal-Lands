@@ -14,6 +14,8 @@
 
 #include "prerequisites.hpp"
 #include "objectdescription.hpp"
+#include "subobject.hpp"
+#include "meshdatatool.hpp"
 
 /**
  * @file
@@ -30,12 +32,19 @@ namespace eternal_lands
 			SubObjectVector m_instanced_objects;
 
 		public:
-			InstanceData(const ObjectData &object_data,
+			inline InstanceData(
+				const ObjectDescription &object_description,
 				const MeshDataToolSharedPtr &mesh_data_tool,
-				const StringVector &materials,
-				const SubObjectVector &instanced_objects);
+				const SubObjectVector &instanced_objects):
+				ObjectDescription(object_description),
+				m_mesh_data_tool(mesh_data_tool),
+				m_instanced_objects(instanced_objects)
+			{
+			}
 
-			~InstanceData() throw();
+			inline ~InstanceData() throw()
+			{
+			}
 
 			inline const MeshDataToolSharedPtr
 				&get_mesh_data_tool() const

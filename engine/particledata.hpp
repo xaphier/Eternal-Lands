@@ -30,9 +30,15 @@ namespace eternal_lands
 			Uint32 m_id;
 
 		public:
-			ParticleData(const glm::vec3 &position,
-				const String &name, const Uint32 id);
-			~ParticleData() throw();
+			inline ParticleData(const glm::vec3 &position,
+				const String &name, const Uint32 id):
+				m_position(position), m_name(name), m_id(id)
+			{
+			}
+
+			inline ~ParticleData() throw()
+			{
+			}
 
 			inline const String &get_name() const
 			{

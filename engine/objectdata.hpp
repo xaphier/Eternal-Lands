@@ -44,20 +44,31 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			ObjectData();
+			inline ObjectData(): m_transparency(1.0f), m_id(0),
+				m_selection(st_none), m_blend(bt_disabled)
+			{
+			}
 
 			/**
 			 * Default constructor.
 			 */
-			ObjectData(const Transformation &world_transformation,
+			inline ObjectData(
+				const Transformation &world_transformation,
 				const String &name, const float transparency,
 				const Uint32 id, const SelectionType selection,
-				const BlendType blend);
+				const BlendType blend):
+				m_world_transformation(world_transformation),
+				m_name(name), m_transparency(transparency),
+				m_id(id), m_selection(selection), m_blend(blend)
+			{
+			}
 
 			/**
 			 * Default destructor.
 			 */
-			~ObjectData() throw();
+			inline ~ObjectData() throw()
+			{
+			}
 
 			inline void set_world_transformation(
 				const Transformation &world_transformation)

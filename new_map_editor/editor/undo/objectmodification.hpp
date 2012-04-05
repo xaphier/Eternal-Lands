@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "modification.hpp"
-#include "../editorobjectdata.hpp"
+#include "../editorobjectdescription.hpp"
 
 namespace eternal_lands
 {
@@ -21,11 +21,13 @@ namespace eternal_lands
 	class ObjectModification: public Modification
 	{
 		private:
-			EditorObjectData m_data;
+			EditorObjectDescription m_object_description;
 			const ModificationType m_type;
 
 		public:
-			ObjectModification(const EditorObjectData &data,
+			ObjectModification(
+				const EditorObjectDescription
+					&object_description,
 				const ModificationType type);
 			virtual ~ObjectModification() throw();
 			virtual ModificationType get_type() const;

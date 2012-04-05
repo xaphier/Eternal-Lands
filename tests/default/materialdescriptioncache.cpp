@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(load_xml)
 
 	BOOST_CHECK_NO_THROW(
 		material_description_cache.get_material_description(
-			el::String("grass1")));
+			el::String("ground/grass1")));
 
 	BOOST_CHECK_NO_THROW(
 		material_description_cache.get_material_description(
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(load_xml)
 			el::String("target1")));
 
 	BOOST_CHECK_EQUAL(material_description_cache.get_material_description(
-		el::String("grass1")).get_texture(el::stt_albedo_0),
+		el::String("ground/grass1")).get_texture(el::stt_albedo_0),
 		"2dobjects/ground/grass1.dds");
 
 	BOOST_CHECK_EQUAL(material_description_cache.get_material_description(

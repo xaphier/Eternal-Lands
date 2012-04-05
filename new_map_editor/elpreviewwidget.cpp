@@ -1,6 +1,6 @@
 #include "elpreviewwidget.hpp"
 #include <exceptions.hpp>
-#include <objectdata.hpp>
+#include <objectdescription.hpp>
 #include <logging.hpp>
 #include <globalvars.hpp>
 #include <filesystem.hpp>
@@ -166,7 +166,8 @@ void ELPreviewWidget::update_object()
 			world_transformation.set_translation(
 				-bounding_box.get_center() / max);
 
-			m_scene.add_object(ObjectData(world_transformation,
+			m_scene.add_object(ObjectDescription(
+				world_transformation, StringVector(),
 				name, 1.0f, 0, st_select, bt_disabled));
 		}
 	}

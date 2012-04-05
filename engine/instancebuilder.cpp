@@ -264,12 +264,13 @@ namespace eternal_lands
 		bool build_sub_mesh(const glm::vec3 &center,
 			const InstancingData &instancing_data,
 			const MeshDataToolSharedPtr &mesh_data_tool,
-			const String &material, const Uint32 index,
+			const String &material_name, const Uint32 index,
 			const Uint32 base_vertex, glm::vec3 &min,
 			glm::vec3 &max, Uint32 &vertex_offset,
 			Uint32 &index_offset)
 		{
-			if (material != instancing_data.get_materials()[index])
+			if (material_name !=
+				instancing_data.get_material_names()[index])
 			{
 				return false;
 			}
@@ -345,7 +346,7 @@ namespace eternal_lands
 		BOOST_FOREACH(const InstancingData &instancing_data,
 			get_instancing_datas())
 		{
-			count = instancing_data.get_materials().size();
+			count = instancing_data.get_material_names().size();
 
 			sub_object.set_selection(
 				instancing_data.get_selection());
@@ -393,9 +394,9 @@ namespace eternal_lands
 		SubMesh sub_mesh;
 		Transformation transformation;
 		glm::vec3 center;
-		StringSet material_set;
+		StringSet material_names_set;
 		MeshDataToolSharedPtr mesh_data_tool;
-		StringVector materials;
+		StringVector material_names;
 		SubObjectVector instanced_objects;
 		VertexSemanticTypeSet semantics;
 		glm::vec4 texture_scale_offset;
@@ -425,10 +426,10 @@ namespace eternal_lands
 			index_count += mesh_data_tool->get_index_count();
 			vertex_count += mesh_data_tool->get_vertex_count();
 
-			BOOST_FOREACH(const String &material,
-				instancing_data.get_materials())
+			BOOST_FOREACH(const String &material_name,
+				instancing_data.get_material_names())
 			{
-				material_set.insert(material);
+				material_names_set.insert(material_name);
 			}
 
 			if (!str.str().empty())
@@ -439,9 +440,9 @@ namespace eternal_lands
 			str << instancing_data.get_name();
 		}
 
-		assert(material_set.size() > 0);
+		assert(material_names_set.size() > 0);
 
-		sub_mesh_count = material_set.size();
+		sub_mesh_count = material_names_set.size();
 
 		semantics.insert(vst_position);
 		semantics.insert(vst_normal);
@@ -460,7 +461,7 @@ namespace eternal_lands
 		vertex_offset = 0;
 		sub_mesh_index = 0;
 
-		BOOST_FOREACH(const String &material, material_set)
+		BOOST_FOREACH(const String &material_name, material_names_set)
 		{
 			if (get_use_base_vertex())
 			{
@@ -468,25 +469,25 @@ namespace eternal_lands
 			}
 
 			build_instance_sub_mesh(center, mesh_data_tool,
-				material, sub_mesh_index, base_vertex,
+				material_name, sub_mesh_index, base_vertex,
 				vertex_offset, index_offset,
 				instanced_objects);
 
-			materials.push_back(material);
+			material_names.push_back(material_name);
 			sub_mesh_index++;
 
 			assert(instanced_objects.size() > 0);
 		}
 
-		assert(materials.size() > 0);
+		assert(material_names.size() > 0);
 		assert(instanced_objects.size() > 0);
 
 		transformation.set_translation(center);
 
-		m_instance_data.reset(new InstanceData(ObjectData(
-			transformation, String(str.str()), 1.0f, get_id(),
-			selection, bt_disabled), mesh_data_tool, materials,
-			instanced_objects));
+		m_instance_data.reset(new InstanceData(ObjectDescription(
+			transformation, material_names, String(str.str()),
+			1.0f, get_id(), selection, bt_disabled),
+			mesh_data_tool, instanced_objects));
 	}
 
 	void InstanceBuilder::set_instance(InstanceDataVector &instances)
@@ -498,7 +499,7 @@ namespace eternal_lands
 		InstancingDataVector &instancing_datas,
 		ObjectDescriptionVector &uninstanced)
 	{
-		StringUint32Map material_map;
+		StringUint32Map material_names_map;
 		StringUint32Map::iterator found;
 		Uint32 i;
 		bool single;
@@ -506,19 +507,20 @@ namespace eternal_lands
 		BOOST_FOREACH(const InstancingData &instancing_data,
 			instancing_datas)
 		{
-			BOOST_FOREACH(const String &material,
-				instancing_data.get_materials())
+			BOOST_FOREACH(const String &material_name,
+				instancing_data.get_material_names())
 			{
-				found = material_map.find(material);
+				found = material_names_map.find(material_name);
 
-				if (found != material_map.end())
+				if (found != material_names_map.end())
 				{
 					found->second++;
 					continue;
 				}
 
-				material_map.insert(std::pair<String, Uint32>(
-					material, 1));
+				material_names_map.insert(
+					std::pair<String, Uint32>(
+						material_name, 1));
 			}
 		}
 
@@ -526,12 +528,12 @@ namespace eternal_lands
 		{
 			single = true;
 
-			BOOST_FOREACH(const String &material,
-				instancing_datas[i].get_materials())
+			BOOST_FOREACH(const String &material_name,
+				instancing_datas[i].get_material_names())
 			{
-				found = material_map.find(material);
+				found = material_names_map.find(material_name);
 
-				assert(found != material_map.end());
+				assert(found != material_names_map.end());
 
 				single = found->second == 1;
 

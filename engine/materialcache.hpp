@@ -29,10 +29,21 @@ namespace eternal_lands
 				StringMaterialSharedPtrMap;
 
 			StringMaterialSharedPtrMap m_material_cache;
+			const MaterialBuilderWeakPtr m_material_builder;
 			const MaterialDescriptionCacheWeakPtr
 				m_material_description_cache;
-			const EffectCacheWeakPtr m_effect_cache;
-			const TextureCacheWeakPtr m_texture_cache;
+
+			inline MaterialBuilderSharedPtr get_material_builder()
+				const
+			{
+				MaterialBuilderSharedPtr result;
+
+				result = m_material_builder.lock();
+
+				assert(result.get() != 0);
+
+				return result;
+			}
 
 			inline MaterialDescriptionCacheSharedPtr
 				get_material_description_cache() const
@@ -46,23 +57,11 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline const EffectCacheWeakPtr &get_effect_cache()
-				const
-			{
-				return m_effect_cache;
-			}
-
-			inline const TextureCacheWeakPtr &get_texture_cache()
-				const
-			{
-				return m_texture_cache;
-			}
-
 		public:
-			MaterialCache(const MaterialDescriptionCacheWeakPtr
-					&material_description_cache,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache);
+			MaterialCache(
+				const MaterialBuilderWeakPtr &material_builder,
+				const MaterialDescriptionCacheWeakPtr
+					&material_description_cache);
 			~MaterialCache() throw();
 			StringVector get_material_names() const;
 			const MaterialSharedPtr &get_material(

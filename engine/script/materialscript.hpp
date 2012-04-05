@@ -35,7 +35,8 @@ namespace eternal_lands
 				const ScriptEngineSharedPtr &script_engine,
 				const String &name);
 			~MaterialScript() throw();
-			bool execute(MaterialData &material,
+			bool execute(const glm::vec4 &time,
+				MaterialData &material,
 				asIScriptContext* context);
 			void lock();
 			void unlock();

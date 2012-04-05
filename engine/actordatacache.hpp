@@ -38,10 +38,9 @@ namespace eternal_lands
 
 			ActorDataCacheMap m_actor_data_cache;
 			const MeshBuilderWeakPtr m_mesh_builder;
-			const EffectCacheWeakPtr m_effect_cache;
-			const TextureCacheWeakPtr m_texture_cache;
 			const CodecManagerWeakPtr m_codec_manager;
 			const MaterialCacheWeakPtr m_material_cache;
+			const MaterialBuilderWeakPtr m_material_builder;
 			const MaterialDescriptionCacheWeakPtr
 				m_material_description_cache;
 			const FileSystemSharedPtr m_file_system;
@@ -58,18 +57,6 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline const EffectCacheWeakPtr &get_effect_cache()
-				const
-			{
-				return m_effect_cache;
-			}
-
-			inline const TextureCacheWeakPtr &get_texture_cache()
-				const
-			{
-				return m_texture_cache;
-			}
-
 			inline const CodecManagerWeakPtr &get_codec_manager()
 				const
 			{
@@ -81,6 +68,18 @@ namespace eternal_lands
 				MaterialCacheSharedPtr result;
 
 				result = m_material_cache.lock();
+
+				assert(result.get() != 0);
+
+				return result;
+			}
+
+			inline MaterialBuilderSharedPtr get_material_builder()
+				const
+			{
+				MaterialBuilderSharedPtr result;
+
+				result = m_material_builder.lock();
 
 				assert(result.get() != 0);
 
@@ -116,10 +115,9 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			ActorDataCache(const MeshBuilderWeakPtr &mesh_builder,
-				const EffectCacheWeakPtr &effect_cache,
-				const TextureCacheWeakPtr &texture_cache,
 				const CodecManagerWeakPtr &codec_manager,
 				const MaterialCacheWeakPtr &material_cache,
+				const MaterialBuilderWeakPtr &material_builder,
 				const MaterialDescriptionCacheWeakPtr
 					&material_description_cache,
 				const FileSystemSharedPtr &file_system,

@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "threadstateutil.hpp"
 
 /**
  * @file
@@ -25,19 +26,35 @@ namespace eternal_lands
 	class MaterialScriptManager: public boost::noncopyable
 	{
 		private:
-			const ScriptEngineWeakPtr m_script_engine;
+			typedef std::set<MaterialSharedPtr>
+				MaterialSharedPtrSet;
+
+			asIScriptContext* m_context;
+			SDL_mutex* m_mutex;
+			SDL_cond* m_condition;
+			SDL_Thread* m_thread;
+			MaterialSharedPtrSet m_materials;
+			glm::vec4 m_time;
+			volatile ThreadStateType m_state;
+
+			void run();
+			static int thread_main(void* material_script_manager); 
 
 		public:
 			/**
 			 * Default constructor.
 			 */
 			MaterialScriptManager(
-				const ScriptEngineWeakPtr &script_engine);
+				const ScriptEngineSharedPtr &script_engine);
 
 			/**
 			 * Default destructor.
 			 */
 			~MaterialScriptManager() throw();
+
+			void add_material(const MaterialSharedPtr &material);
+			void remove_material(const MaterialSharedPtr &material);
+			void execute_scripts(const glm::vec4 &time);
 
 	};
 

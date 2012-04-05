@@ -74,6 +74,12 @@ file(GLOB script_source_files script/*.cpp)
 list(APPEND engine_source_files ${script_header_files})
 list(APPEND engine_header_files ${script_source_files})
 
+#thread dir
+file(GLOB thread_header_files thread/*.h)
+file(GLOB thread_source_files thread/*.cpp)
+list(APPEND engine_source_files ${thread_header_files})
+list(APPEND engine_header_files ${thread_source_files})
+
 list(APPEND engine_source_files simd/simd.cpp)
 list(APPEND engine_header_files simd/simd.hpp)
 set_property(SOURCE simd/simd.cpp APPEND PROPERTY COMPILE_FLAGS ${SSE2_FLAGS})

@@ -14,6 +14,8 @@
 #include "statemanager.hpp"
 #include "materialdescription.hpp"
 #include "script/materialscript.hpp"
+#include "script/materialscriptcache.hpp"
+#include "script/materialscriptmanager.hpp"
 
 namespace eternal_lands
 {
@@ -27,22 +29,35 @@ namespace eternal_lands
 	}
 
 	Material::Material(const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache):
-		m_effect_cache(effect_cache), m_texture_cache(texture_cache)
+		const TextureCacheWeakPtr &texture_cache,
+		const MaterialScriptCacheWeakPtr &material_script_cache,
+		const MaterialScriptManagerWeakPtr &material_script_manager):
+		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
+		m_material_script_cache(material_script_cache),
+		m_material_script_manager(material_script_manager)
 	{
 		assert(!m_effect_cache.expired());
 		assert(!m_texture_cache.expired());
+		assert(!m_material_script_cache.expired());
+		assert(!m_material_script_manager.expired());
 	}
 
-	Material::Material(const EffectCacheWeakPtr &effect_cache,
-		const TextureCacheWeakPtr &texture_cache,
-		const MaterialDescription &material):
-		m_effect_cache(effect_cache), m_texture_cache(texture_cache)
+	Material::~Material() throw()
 	{
-		assert(!m_effect_cache.expired());
-		assert(!m_texture_cache.expired());
+		if (!m_material_script_manager.expired() &&
+			(m_material_script.get() != 0))
+		{
+			m_material_script.reset();
 
+			get_material_script_manager()->remove_material(
+				shared_from_this());
+		}
+	}
+
+	void Material::init(const MaterialDescription &material)
+	{
 		set_effect(material.get_effect());
+		set_material_script(material.get_script());
 
 		m_data = material;
 
@@ -62,8 +77,25 @@ namespace eternal_lands
 		set_texture(material, stt_dudv);
 	}
 
-	Material::~Material() throw()
+	void Material::set_material_script(const String &material_script)
 	{
+		if (material_script.get().empty())
+		{
+			m_material_script.reset();
+
+			get_material_script_manager()->remove_material(
+				shared_from_this());
+
+			return;
+		}
+
+		m_material_script = get_material_script_cache(
+			)->get_material_script(material_script);
+
+		get_material_script_manager()->add_material(
+			shared_from_this());
+
+		assert(m_material_script.get() != 0);
 	}
 
 	void Material::set_effect(const String &effect)
@@ -151,7 +183,7 @@ namespace eternal_lands
 		return empty_material;
 	}
 
-	const String &Material::get_script_name() const
+	const String &Material::get_material_script_name() const
 	{
 		if (get_material_script().get() == 0)
 		{
@@ -161,11 +193,13 @@ namespace eternal_lands
 		return get_material_script()->get_name();
 	}
 
-	bool Material::execute_script(asIScriptContext* context)
+	bool Material::execute_script(const glm::vec4 &time,
+		asIScriptContext* context)
 	{
 		if (get_material_script().get() != 0)
 		{
-			return get_material_script()->execute(m_data, context);
+			return get_material_script()->execute(time, m_data,
+				context);
 		}
 
 		return true;

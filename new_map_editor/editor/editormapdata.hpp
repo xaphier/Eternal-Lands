@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "editorobjectdata.hpp"
+#include "editorobjectdescription.hpp"
 #include "imagevalue.hpp"
 #include "height.hpp"
 
@@ -53,7 +53,7 @@ namespace eternal_lands
 	class EditorMapData
 	{
 		private:
-			std::map<Uint32, EditorObjectData> m_objects;
+			std::map<Uint32, EditorObjectDescription> m_objects;
 			std::map<Uint32, LightData> m_lights;
 			std::map<Uint32, ParticleData> m_particles;
 			boost::scoped_ptr<EditorScene> m_scene;
@@ -98,17 +98,17 @@ namespace eternal_lands
 			EditorMapData(const GlobalVarsSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
 			~EditorMapData() throw();
-			void add_object(const EditorObjectData &object);
+			void add_object(const EditorObjectDescription &object);
 			void add_light(const LightData &light);
 			void add_particle(const ParticleData &particle);
-			void modify_object(const EditorObjectData &object);
+			void modify_object(const EditorObjectDescription &object);
 			void modify_light(const LightData &light);
 			void modify_particle(const ParticleData &particle);
 			bool remove_object(const Uint32 id);
 			bool remove_light(const Uint32 id);
 			bool remove_particle(const Uint32 id);
 			bool get_object(const Uint32 id,
-				EditorObjectData &object) const;
+				EditorObjectDescription &object) const;
 			bool get_light(const Uint32 id, LightData &light) const;
 			bool get_particle(const Uint32 id,
 				ParticleData &particle) const;

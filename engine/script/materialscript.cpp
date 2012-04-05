@@ -8,6 +8,7 @@
 #include "materialscript.hpp"
 #include "scriptengine.hpp"
 #include "logging.hpp"
+#include "materialdata.hpp"
 
 namespace eternal_lands
 {
@@ -16,7 +17,7 @@ namespace eternal_lands
 	{
 
 		const String material_function = String(UTF8("void main("
-			"MaterialData & in material)"));
+			"vec4 & in time, MaterialData & out material)"));
 
 	}
 
@@ -50,15 +51,21 @@ namespace eternal_lands
 		SDL_UnlockMutex(m_mutex);
 	}
 
-	bool MaterialScript::execute(MaterialData &material,
-		asIScriptContext* context)
+	bool MaterialScript::execute(const glm::vec4 &time,
+		MaterialData &material, asIScriptContext* context)
 	{
 		StringStream str;
+		glm::vec4 tmp;
 		const char* section;
 		Uint32 i, count;
 		int r, line, column;
 
 		context->Prepare(m_func);
+
+		tmp = time;
+
+		context->SetArgObject(0, glm::value_ptr(tmp));
+		context->SetArgObject(1, &material);
 
 		r = context->Execute();
 

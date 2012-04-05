@@ -18,8 +18,6 @@ namespace eternal_lands
 		{
 			m_albedo_scale_offsets[i][0] = glm::vec4(1.0f);
 			m_albedo_scale_offsets[i][1] = glm::vec4(0.0f);
-			m_texture_matrices[i][0] = glm::vec3(1.0f, 0.0f, 0.0f);
-			m_texture_matrices[i][1] = glm::vec3(0.0f, 1.0f, 0.0f);
 		}
 
 		m_emission_scale_offset[0] = glm::vec3(1.0f);

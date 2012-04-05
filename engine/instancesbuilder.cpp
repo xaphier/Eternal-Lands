@@ -28,27 +28,13 @@ namespace eternal_lands
 	{
 	}
 
-	void InstancesBuilder::add(const ObjectData &object_data)
+	void InstancesBuilder::add(const ObjectDescription &object_description)
 	{
 		std::auto_ptr<InstancingData> instancing_data;
 		Sint16Sint16Pair index;
 
 		instancing_data.reset(new InstancingData(
-			get_mesh_data_cache(), object_data));
-
-		index = instancing_data->get_index(m_max_size);
-
-		m_instancing_datas[index].push_back(instancing_data);
-	}
-
-	void InstancesBuilder::add(const ObjectData &object_data,
-		const StringVector &materials)
-	{
-		std::auto_ptr<InstancingData> instancing_data;
-		Sint16Sint16Pair index;
-
-		instancing_data.reset(new InstancingData(
-			get_mesh_data_cache(), object_data, materials));
+			get_mesh_data_cache(), object_description));
 
 		index = instancing_data->get_index(m_max_size);
 
@@ -74,6 +60,11 @@ namespace eternal_lands
 
 			InstanceBuilder::remove_singles(it->second,
 				uninstanced);
+
+			if (it->second.size() == 0)
+			{
+				continue;
+			}
 
 			if (it->second.size() == 1)
 			{
