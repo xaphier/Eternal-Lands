@@ -723,7 +723,6 @@ void init_stuff()
 	//now load the font textures
 	load_font_textures ();
 	CHECK_GL_ERRORS();
-	init_colors();
 
 	// read the continent map info
 	read_mapinfo();
