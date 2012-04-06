@@ -8,7 +8,6 @@
 #include "prerequisites.hpp"
 #include "exceptions.hpp"
 #include "packtool.hpp"
-#include <glm/gtx/epsilon.hpp>
 #include <boost/random.hpp>
 #define BOOST_TEST_MODULE pack
 #include <boost/test/unit_test.hpp>

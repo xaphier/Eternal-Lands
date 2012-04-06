@@ -7,9 +7,7 @@
 
 #include "prerequisites.hpp"
 #include "rstartree.hpp"
-#include <glm/gtx/epsilon.hpp>
 #include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
 #define BOOST_TEST_MODULE rstartree
 #include <boost/test/unit_test.hpp>
 

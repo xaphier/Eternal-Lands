@@ -7,9 +7,6 @@
 
 #include "prerequisites.hpp"
 #include "vertexelement.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
 #define BOOST_TEST_MODULE vertex_element
 #include <boost/test/unit_test.hpp>
 

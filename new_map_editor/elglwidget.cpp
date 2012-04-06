@@ -286,7 +286,7 @@ void ELGLWidget::initializeGL()
 
 	m_global_vars->set_optmize_shader_source(false);
 
-	m_global_vars->set_view_distance(250.0f);
+	m_global_vars->set_view_distance(550.0f);
 
 	try
 	{
@@ -306,7 +306,7 @@ void ELGLWidget::resizeGL(int width, int height)
 	m_editor->set_view_port(glm::uvec4(0, 0, width, height));
 
 	m_editor->set_perspective(60.0f, static_cast<float>(width) /
-		static_cast<float>(height), 1.5f, 250.0f);
+		static_cast<float>(height), 1.5f, 550.0f);
 
 	updateGL();
 
@@ -542,13 +542,13 @@ void ELGLWidget::rotate_right()
 void ELGLWidget::zoom_in()
 {
 	m_zoom -= 1.0f;
-	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
+	m_zoom = std::max(1.0f, std::min(500.0f, m_zoom));
 }
 
 void ELGLWidget::zoom_out()
 {
 	m_zoom += 1.0f;
-	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
+	m_zoom = std::max(1.0f, std::min(500.0f, m_zoom));
 }
 
 void ELGLWidget::add_object(const glm::vec4 &color, const Uint16 type, const Uint16 server_id,

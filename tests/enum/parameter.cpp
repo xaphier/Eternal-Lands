@@ -8,9 +8,6 @@
 #include "prerequisites.hpp"
 #include "exceptions.hpp"
 #include "shader/parameterutil.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
 #define BOOST_TEST_MODULE pack
 #include <boost/test/unit_test.hpp>
 
