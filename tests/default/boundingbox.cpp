@@ -7,9 +7,6 @@
 
 #include "prerequisites.hpp"
 #include "boundingbox.hpp"
-#include <glm/gtx/epsilon.hpp>
-#include <boost/random.hpp>
-#include <boost/exception/diagnostic_information.hpp>
 #define BOOST_TEST_MODULE bounding_box
 #include <boost/test/unit_test.hpp>
 

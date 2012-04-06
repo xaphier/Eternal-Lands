@@ -110,4 +110,3 @@ void engine_set_draw_actors(const int value);
 #endif
 
 #endif	/* UUID_2db3c541_2d94_44a5_83de_ce6a4cf1f7ed */
-
