@@ -10,12 +10,24 @@
 namespace eternal_lands
 {
 
+	namespace
+	{
+
+		const glm::vec3 terrain_offset_scale = glm::vec3(0.01f);
+
+	}
+
 	AbstractTerrainManager::AbstractTerrainManager()
 	{
 	}
 
 	AbstractTerrainManager::~AbstractTerrainManager() throw()
 	{
+	}
+
+	const glm::vec3 &AbstractTerrainManager::get_terrain_offset_scale()
+	{
+		return terrain_offset_scale;
 	}
 
 }

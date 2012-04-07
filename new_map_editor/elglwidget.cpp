@@ -41,9 +41,6 @@ QImage ELGLWidget::get_icon(const QString &name)
 	QImage result(32, 32, QImage::Format_ARGB32);
 	glm::vec4 color;
 	Uint32 x, y, height, width, mipmap, i, count;
-	bool scale;
-
-	scale = false;
 
 	try
 	{

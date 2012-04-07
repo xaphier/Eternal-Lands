@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "editorobjectdescription.hpp"
 #include "imagevalue.hpp"
+#include "terrainvalue.hpp"
 #include "height.hpp"
 
 /**
@@ -57,20 +58,20 @@ namespace eternal_lands
 			std::map<Uint32, LightData> m_lights;
 			std::map<Uint32, ParticleData> m_particles;
 			boost::scoped_ptr<EditorScene> m_scene;
-			ImageSharedPtr m_height_image;
+			ImageSharedPtr m_terrain_values_image;
 			ImageSharedPtr m_blend_image;
 			Uint16MultiArray2 m_height_map;
 			Uint8MultiArray2 m_tile_map;
 			Uint32 m_id;
 			RenderableType m_renderable;
 
-			void get_heights(const Uint16Array2 &vertex,
-				const float radius, HeightVector &heights)
-				const;
-			void change_heights(const Uint16Array2 &vertex,
+			void get_terrain_values(const Uint16Array2 &vertex,
+				const float radius,
+				TerrainValueVector &terrain_values) const;
+			void change_terrain_values(const Uint16Array2 &vertex,
 				const float strength, const float radius,
 				const EditorBrushType brush_type,
-				HeightVector &heights) const;
+				TerrainValueVector &terrain_values) const;
 			void get_blend_values(const Uint16Array2 &vertex,
 				const float radius,
 				ImageValueVector &blend_values) const;
@@ -122,8 +123,8 @@ namespace eternal_lands
 			void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height);
 			void set_heights(const HeightVector &heights);
-			void set_terrain_heights(const HeightVector &heights,
-				const Uint16 id);
+			void set_terrain_values(
+				const TerrainValueVector &terrain_values);
 			void set_terrain_albedo_map(const String &name,
 				const Uint16 index, const Uint16 id);
 			void set_terrain_blend_map(const String &name,

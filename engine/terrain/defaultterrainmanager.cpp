@@ -55,7 +55,6 @@ namespace eternal_lands
 		const ImageSharedPtr &height_map, const glm::uvec2 &tile_offset,
 		const glm::uvec2 &terrain_size,
 		const Uint32Vector &index_counts, const Uint32 vertex_count,
-		const Uint16 height_scale,
 		MeshDataToolSharedPtr &mesh_data_tool)
 	{
 		glm::vec4 tangent, heights;
@@ -84,49 +83,9 @@ namespace eternal_lands
 
 				position.x = pos.x;
 				position.y = pos.y;
-				position.z = height_map->get_pixel_uint(
-					pos.x, pos.y, 0, 0, 0).r * height_scale;
-
-				cur_pos = pos;
-				cur_pos.x -= 1;
-				cur_pos = glm::clamp(cur_pos, glm::ivec2(0),
-					size - 1);
-
-				heights.x = height_map->get_pixel_uint(
-					cur_pos.x, cur_pos.y, 0, 0, 0).r *
-					height_scale;
-
-				cur_pos = pos;
-				cur_pos.x += 1;
-				cur_pos = glm::clamp(cur_pos, glm::ivec2(0),
-					size - 1);
-
-				heights.y = height_map->get_pixel_uint(
-					cur_pos.x, cur_pos.y, 0, 0, 0).r *
-					height_scale;
-
-				cur_pos = pos;
-				cur_pos.y -= 1;
-				cur_pos = glm::clamp(cur_pos, glm::ivec2(0),
-					size - 1);
-
-				heights.z = height_map->get_pixel_uint(
-					cur_pos.x, cur_pos.y, 0, 0, 0).r *
-					height_scale;
-
-				cur_pos = pos;
-				cur_pos.y += 1;
-				cur_pos = glm::clamp(cur_pos, glm::ivec2(0),
-					size - 1);
-
-				heights.w = height_map->get_pixel_uint(
-					cur_pos.x, cur_pos.y, 0, 0, 0).r *
-					height_scale;
-
-				normal.x = heights.x - heights.y;
-				normal.y = heights.z - heights.w;
-				normal.z = 2.0f;
-				normal = glm::normalize(normal);
+				position += get_terrain_offset(
+					height_map->get_pixel_uint(
+						pos.x, pos.y, 0, 0, 0));
 
 				uv = uvs.get_uv(pos.x, pos.y);
 				uv /= size;
@@ -141,7 +100,6 @@ namespace eternal_lands
 					vst_texture_coordinate_0, index,
 					glm::vec4(uv, 0.0f, 1.0f));
 
-				position.z *= get_height_scale();
 				min = glm::min(min, position);
 				max = glm::max(max, position);
 
@@ -188,22 +146,8 @@ namespace eternal_lands
 		Uint16Array2 lod;
 		Uint32 vertex_count, index_count, i, x, y, height, width;
 		Uint32 restart_index, count;
-		Uint16 height_scale;
 		VertexSemanticTypeSet semantics;
-		HeightMapUvTool uvs(height_map, get_height_scale());
-
-		if ((TextureFormatUtil::get_size(
-			height_map->get_texture_format()) /
-			TextureFormatUtil::get_count(
-				height_map->get_texture_format()))
-				> 8)
-		{
-			height_scale = 1;
-		}
-		else
-		{
-			height_scale = 257;
-		}
+		HeightMapUvTool uvs(height_map, get_terrain_offset_scale());
 
 		vertex_count = get_tile_size() + 1;
 		vertex_count *= get_tile_size() + 1;
@@ -341,8 +285,7 @@ namespace eternal_lands
 
 				set_terrain_page(uvs, height_map, tile_offset,
 					terrain_size, index_counts,
-					vertex_count, height_scale,
-					mesh_data_tool);
+					vertex_count, mesh_data_tool);
 
 				mesh = mesh_builder->get_mesh(
 					vft_simple_terrain, mesh_data_tool,

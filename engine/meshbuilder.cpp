@@ -81,7 +81,7 @@ namespace eternal_lands
 		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
 		instanced_mesh[vst_color] = vet_ubyte4_normalized;
 
-		simple_terrain[vst_position] = vet_ushort4;
+		simple_terrain[vst_position] = vet_float3;
 		simple_terrain[vst_texture_coordinate_0] =
 			vet_ushort2_normalized;
 

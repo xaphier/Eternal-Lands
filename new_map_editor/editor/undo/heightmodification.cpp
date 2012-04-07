@@ -23,9 +23,8 @@ namespace eternal_lands
 
 	};
 
-	HeightModification::HeightModification(const HeightVector &heights,
-		const Uint16 id, const ModificationType type):
-		m_heights(heights), m_id(id), m_type(type)
+	HeightModification::HeightModification(const HeightVector &heights):
+		m_heights(heights)
 	{
 	}
 
@@ -35,7 +34,7 @@ namespace eternal_lands
 
 	ModificationType HeightModification::get_type() const
 	{
-		return m_type;
+		return mt_height_changed;
 	}
 
 	bool HeightModification::merge(Modification* modification)
@@ -52,34 +51,27 @@ namespace eternal_lands
 
 			assert(height_modification != 0);
 
-			if (height_modification->m_id == m_id)
+			size = m_heights.size();
+			begin = m_heights.begin();
+			end = begin + size;
+
+			std::sort(begin, end, CompareHeightIndex());
+
+			BOOST_FOREACH(const Height &height,
+				height_modification->m_heights)
 			{
-				size = m_heights.size();
-				begin = m_heights.begin();
-				end = begin + size;
+				found = std::binary_search(begin, end, height,
+					CompareHeightIndex());
 
-				std::sort(begin, end, CompareHeightIndex());
-
-				BOOST_FOREACH(const Height &height,
-					height_modification->m_heights)
+				if (!found)
 				{
-					found = std::binary_search(begin, end,
-						height, CompareHeightIndex());
-
-					if (!found)
-					{
-						m_heights.push_back(height);
-						begin = m_heights.begin();
-						end = begin + size;
-					}
+					m_heights.push_back(height);
+					begin = m_heights.begin();
+					end = begin + size;
 				}
+			}
 
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return true;
 		}
 		else
 		{
@@ -111,10 +103,8 @@ namespace eternal_lands
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:
+			case mt_terrain_value_changed:
 				return false;
-			case mt_terrain_height_changed:
-				editor.set_terrain_heights(m_heights, m_id);
-				break;
 			case mt_height_changed:
 				editor.set_heights(m_heights);
 			case mt_blend_values_changed:

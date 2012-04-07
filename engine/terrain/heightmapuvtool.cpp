@@ -7,6 +7,7 @@
 
 #include "heightmapuvtool.hpp"
 #include "image.hpp"
+#include "abstractterrainmanager.hpp"
 
 namespace eternal_lands
 {
@@ -73,9 +74,9 @@ namespace eternal_lands
 	}
 
 	HeightMapUvTool::HeightMapUvTool(const ImageSharedPtr &height_map,
-		const float scale)
+		const glm::vec3 &offset_scale)
 	{
-		build_data(height_map, scale);
+		build_data(height_map, offset_scale);
 	}
 
 	HeightMapUvTool::~HeightMapUvTool() throw()
@@ -83,15 +84,61 @@ namespace eternal_lands
 	}
 
 	void HeightMapUvTool::build_data(const ImageSharedPtr &height_map,
-		const float height_scale)
+		const glm::vec3 &offset_scale, const Sint32 x, const Sint32 y)
 	{
 		FloatArray8 half_distances;
 		BitSet8 dirs;
+		glm::vec3 p0, p1;
 		glm::ivec2 offset;
 		glm::vec2 uv;
-		Sint32 width, height, x, y, xx, yy, i;
-		float h0, h1;
+		Sint32 width, height, xx, yy, i;
 		bool u, v;
+
+		width = m_width;
+		height = m_height;
+
+		uv.s = x;
+		uv.t = y;
+
+		m_uvs.push_back(uv);
+
+		p0 = AbstractTerrainManager::get_terrain_offset(
+			height_map->get_pixel_uint(x, y, 0, 0, 0.0f),
+			offset_scale);
+
+		for (i = 0; i < 8; ++i)
+		{
+			offset = direction_indices[i];
+			xx = x + offset.x;
+			yy = y + offset.y;
+
+			if ((xx < 0) || (yy < 0) || (xx > (width - 1)) ||
+				(yy > (height - 1)))
+			{
+				dirs[i] = false;
+				half_distances[i] = 0.0f;
+
+				continue;
+			}
+
+			p1 = AbstractTerrainManager::get_terrain_offset(
+				height_map->get_pixel_uint(xx, yy, 0, 0, 0.0f),
+				offset_scale);
+
+			dirs[i] = true;
+			half_distances[i] = 0.5f * glm::distance(p0, p1);
+		}
+
+		u = (x == 0) || (x == (width - 1));
+		v = (y == 0) || (y == (height - 1));
+
+		m_infos.push_back(Info(half_distances, dirs, u, v));
+	}
+
+	void HeightMapUvTool::build_data(const ImageSharedPtr &height_map,
+		const glm::vec3 &offset_scale)
+	{
+		Sint32 width, height, x, y;
 
 		m_width = height_map->get_width();
 		m_height = height_map->get_height();
@@ -101,60 +148,21 @@ namespace eternal_lands
 
 		m_uvs.reserve(width * height);
 		m_infos.reserve(width * height);
-		m_velocities.reserve(width * height);
 
 		for (y = 0; y < height; ++y)
 		{
 			for (x = 0; x < width; ++x)
 			{
-				uv.s = x;
-				uv.t = y;
-
-				m_uvs.push_back(uv);
-				m_velocities.push_back(glm::vec2(0.0f));
-
-				h0 = height_map->get_pixel_uint(x, y, 0, 0,
-					0.0f).r * height_scale;
-
-				for (i = 0; i < 8; ++i)
-				{
-					offset = direction_indices[i];
-					xx = x + offset.x;
-					yy = y + offset.y;
-
-					if ((xx < 0) || (yy < 0) ||
-						(xx > (width - 1)) ||
-						(yy > (height - 1)))
-					{
-						dirs[i] = false;
-						half_distances[i] = 0.0f;
-
-						continue;
-					}
-
-					h1 = height_map->get_pixel_uint(xx, yy,
-						0, 0, 0.0f).r * height_scale;
-
-					dirs[i] = true;
-					half_distances[i] = 0.5f * std::sqrt(
-						glm::length2(glm::vec2(offset))
-						+ (h0 - h1) * (h0 - h1));
-				}
-
-				u = (x == 0) || (x == (width - 1));
-				v = (y == 0) || (y == (height - 1));
-
-				m_infos.push_back(Info(half_distances,
-					dirs, u, v));
+				build_data(height_map, offset_scale, x, y);
 			}
 		}
 	}
 
 	float HeightMapUvTool::relax(const InfoVector &infos,
 		const float damping, const float clamping, const Uint32 width,
-		Vec2Vector &uvs, Vec2Vector &velocities)
+		Vec2Vector &uvs)
 	{
-		glm::vec2 uv, dir;
+		glm::vec2 uv, dir, velocity, offset;
 		float distance, factor, result;
 		Uint32 i, j, count, index;
 
@@ -164,7 +172,7 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			uv = uvs[i];
-			velocities[i] = glm::vec2(0.0f);
+			velocity = glm::vec2(0.0f);
 
 			for (j = 0; j < 8; ++j)
 			{
@@ -177,18 +185,15 @@ namespace eternal_lands
 					dir /= std::max(distance, 1e-7f);
 					factor = distance -
 						infos[i].get_half_distance(j);
-					velocities[i] += dir * factor;
+					velocity += dir * factor;
 				}
 			}
-		}
 
- 		for (i = 0; i < count; ++i)
-		{
-			uv = velocities[i] * damping;
-			uv = glm::clamp(uv, -clamping, clamping);
-			result += glm::length2(uv);
+			offset = velocity * damping;
+			offset = glm::clamp(offset, -clamping, clamping);
+			result += glm::length2(offset);
 
-			uv += uvs[i];
+			uv += offset;
 
 			if (!infos[i].get_u())
 			{
@@ -209,15 +214,14 @@ namespace eternal_lands
 		Uint32 increasing;
 		float movement, last;
 
-		last = relax(m_infos, 0.05f, 10.0f, m_width, m_uvs,
-			m_velocities);
+		last = relax(m_infos, 0.05f, 10.0f, m_width, m_uvs);
 
 		increasing = 0;
 
 		while (true)
 		{
 			movement = relax(m_infos, 0.05f, 10.0f, m_width,
-				m_uvs, m_velocities);
+				m_uvs);
 
 			if (movement >= last)
 			{
@@ -300,7 +304,8 @@ namespace eternal_lands
 					tmp.t = std::min(temp.t, 128) / 127.0f;
 				}
 
-				diff = glm::max(diff, glm::abs(m_uvs[index] - (uv + tmp * max))); 
+				diff = glm::max(diff, glm::abs(m_uvs[index] -
+					(uv + tmp * max))); 
 				m_uvs[index] = uv + tmp * max;
 
 				++index;

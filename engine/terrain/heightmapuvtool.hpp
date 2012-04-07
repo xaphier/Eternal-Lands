@@ -35,23 +35,24 @@ namespace eternal_lands
 			typedef std::vector<Info> InfoVector;
 
 			Vec2Vector m_uvs;
-			Vec2Vector m_velocities;
 			InfoVector m_infos;
 			Uint32 m_width, m_height;
 
 			static float relax(const InfoVector &infos,
 				const float damping, const float clamping,
-				const Uint32 line, Vec2Vector &uvs,
-				Vec2Vector &velocities);			
+				const Uint32 line, Vec2Vector &uvs);			
 			void build_data(const ImageSharedPtr &height_map,
-				const float height_scale);
+				const glm::vec3 &offset_scale);
+			void build_data(const ImageSharedPtr &height_map,
+				const glm::vec3 &offset_scale, const Sint32 x,
+				const Sint32 y);
 
 		public:
 			/**
 			 * Default constructor.
 			 */
 			HeightMapUvTool(const ImageSharedPtr &height_map,
-				const float height_scale);
+				const glm::vec3 &offset_scale);
 
 			/**
 			 * Default destructor.

@@ -356,20 +356,14 @@ namespace eternal_lands
 		}
 	}
 
-	void EditorMapData::set_terrain_heights(const HeightVector &heights,
-		const Uint16 id)
+	void EditorMapData::set_terrain_values(
+		const TerrainValueVector &terrain_values)
 	{
-		glm::uvec4 data;
-
-		BOOST_FOREACH(const Height &height, heights)
+		BOOST_FOREACH(const TerrainValue &terrain_value, terrain_values)
 		{
-			data = m_height_image->get_pixel_uint(height.get_x(),
-				height.get_y(), 0, 0, 0);
-
-			data.x = height.get_value();
-
-			m_height_image->set_pixel_uint(height.get_x(),
-				height.get_y(), 0, 0, 0, data);
+			m_terrain_values_image->set_pixel_uint(
+				terrain_value.get_x(), terrain_value.get_y(),
+				0, 0, 0, terrain_value.get_value());
 		}
 	}
 
@@ -432,6 +426,8 @@ namespace eternal_lands
 
 	void EditorMapData::load_map(const String &name)
 	{
+		m_renderable = rt_none;
+
 		m_scene->load_map(name, *this);
 	}
 
@@ -497,8 +493,8 @@ namespace eternal_lands
 			).get_mesh_data_cache()->get_mesh_materials(name);
 	}
 
-	void EditorMapData::get_heights(const Uint16Array2 &vertex,
-		const float radius, HeightVector &heights) const
+	void EditorMapData::get_terrain_values(const Uint16Array2 &vertex,
+		const float radius, TerrainValueVector &terrain_values) const
 	{
 		glm::vec2 centre, point;
 		Uint32 x, y;
@@ -512,14 +508,14 @@ namespace eternal_lands
 		min_y = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
 
 		tmp = static_cast<float>(vertex[0]) + radius;
-		temp = m_height_image->get_width() - 1.0f;
+		temp = m_terrain_values_image->get_width() - 1.0f;
 		max_x = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
 		tmp = static_cast<float>(vertex[1]) + radius;
-		temp = m_height_image->get_height() - 1.0f;
+		temp = m_terrain_values_image->get_height() - 1.0f;
 		max_y = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
-		heights.clear();
+		terrain_values.clear();
 
 		centre = glm::vec2(vertex[0], vertex[1]);
 
@@ -533,24 +529,25 @@ namespace eternal_lands
 
 				if (glm::distance2(centre, point) <= sqr_radius)
 				{
-					Height value(x, y);
+					TerrainValue value(x, y);
 
 					value.set_value(
-						m_blend_image->get_pixel(x, y,
-							0, 0, 0).r);
+						m_terrain_values_image->get_pixel_uint(x, y,
+							0, 0, 0));
 
-					heights.push_back(value);
+					terrain_values.push_back(value);
 				}
 			}
 		}
 	}
 
-	void EditorMapData::change_heights(const Uint16Array2 &vertex,
+	void EditorMapData::change_terrain_values(const Uint16Array2 &vertex,
 		const float strength, const float radius,
-		const EditorBrushType brush_type, HeightVector &heights) const
+		const EditorBrushType brush_type,
+		TerrainValueVector &terrain_values) const
 	{
+		glm::vec3 average;
 		glm::vec2 centre;
-		float average;
 		Uint32 i;
 
 		centre = glm::vec2(vertex[0], vertex[1]);
@@ -558,39 +555,41 @@ namespace eternal_lands
 		if ((brush_type == ebt_linear_smooth) ||
 			(brush_type == ebt_quadratic_smooth))
 		{
-			if (heights.size() < 2)
+			if (terrain_values.size() < 2)
 			{
 				return;
 			}
 
-			average = 0.0f;
+			average = glm::vec3(0.0f);
 
-			BOOST_FOREACH(Height &height, heights)
+			BOOST_FOREACH(const TerrainValue &terrain_value,
+				terrain_values)
 			{
-				average += height.get_value();
+				average += glm::vec3(terrain_value.get_value());
 			}
 
-			average /= heights.size() * 255.0f;
+			average /= terrain_values.size();
 		}
 		else
 		{
-			average = 0.0f;
+			average = glm::vec3(0.0f);
 		}
-
-		for (i = 0; i < heights.size(); i++)
+/*
+		for (i = 0; i < terrain_values.size(); i++)
 		{
+			glm::vec3 value;
 			glm::vec2 point;
-			float value;
 
-			value = heights[i].get_value() / 255.0f;
-			point[0] = heights[i].get_x();
-			point[1] = heights[i].get_y();
+			value = terrain_values[i].get_value();
+			point[0] = terrain_values[i].get_x();
+			point[1] = terrain_values[i].get_y();
 
 			value = calc_brush_effect(centre, point, value,
 				average, strength, radius, brush_type);
 
 			heights[i].set_value(value * 255.0f + 0.5f);
 		}
+*/
 	}
 
 	float EditorMapData::calc_brush_effect(const glm::vec2 &centre,

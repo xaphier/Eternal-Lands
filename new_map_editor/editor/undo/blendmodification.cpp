@@ -12,17 +12,23 @@
 namespace eternal_lands
 {
 
-	class CompareImageValueIndex
+	namespace
 	{
-		public:
-			inline bool operator() (const ImageValue &image_value1,
-				const ImageValue &image_value2) const
-			{
-				return image_value1.get_index() <
-					image_value2.get_index();
-			}
 
-	};
+		class CompareImageValueIndex
+		{
+			public:
+				inline bool operator() (
+					const ImageValue &image_value1,
+					const ImageValue &image_value2) const
+				{
+					return image_value1.get_index() <
+						image_value2.get_index();
+				}
+
+		};
+
+	}
 
 	BlendModification::BlendModification(
 		const ImageValueVector &blend_values,

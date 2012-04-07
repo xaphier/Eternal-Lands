@@ -72,6 +72,7 @@ namespace eternal_lands
 			virtual ~AbstractTerrainManager() throw();
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const = 0;
+			static const glm::vec3 &get_terrain_offset_scale();
 
 			inline const StringArray4 &get_albedo_maps() const
 			{
@@ -109,14 +110,40 @@ namespace eternal_lands
 				return m_data;
 			}
 
-			static inline float get_height_scale()
-			{
-				return 0.1f / 257.0f;
-			}
-
 			static inline Uint16 get_tile_size()
 			{
 				return 16;
+			}
+
+			static inline glm::vec3 get_terrain_offset(
+				const glm::uvec4 &offset, const glm::vec3 &scale)
+			{
+				glm::vec3 result;
+
+				result = glm::vec3(offset) * scale;
+
+				switch (offset.w)
+				{
+					case 1:
+						result.x = -result.x;
+						break;
+					case 2:
+						result.y = -result.y;
+						break;
+					case 3:
+						result.x = -result.x;
+						result.y = -result.y;
+						break;
+				}
+
+				return result;
+			}
+
+			static inline glm::vec3 get_terrain_offset(
+				const glm::uvec4 &offset)
+			{
+				return get_terrain_offset(offset,
+					get_terrain_offset_scale());
 			}
 
 	};

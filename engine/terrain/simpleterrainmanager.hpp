@@ -40,7 +40,6 @@ namespace eternal_lands
 				const glm::uvec2 &terrain_size,
 				const Uint32Vector &index_count,
 				const Uint32 vertex_count,
-				const Uint16 height_scale,
 				MeshDataToolSharedPtr &mesh_data_tool);
 
 		public:
