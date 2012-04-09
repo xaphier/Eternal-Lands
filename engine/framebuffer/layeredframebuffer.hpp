@@ -31,13 +31,15 @@ namespace eternal_lands
 		private:
 			FrameBuffer m_frame_buffer;
 			TextureSharedPtr m_depth_texture;
+			bool m_depth;
 			bool m_color;
 
 		public:
 			LayeredFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
 				const Uint32 layers, const Uint16 mipmaps,
-				const TextureFormatType format);
+				const TextureFormatType format,
+				const bool depth);
 			virtual ~LayeredFrameBuffer() throw();
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);

@@ -29,20 +29,21 @@ namespace eternal_lands
 
 	AbstractFrameBufferSharedPtr FrameBufferBuilder::build(
 		const String &name, const Uint32 width, const Uint32 height,
-		const Uint16 mipmaps, const TextureFormatType format)
+		const Uint16 mipmaps, const TextureFormatType format,
+		const bool depth)
 	{
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			return AbstractFrameBufferSharedPtr(
 				new SimpleFrameBuffer(name, width, height, 0,
-					mipmaps, format));
+					mipmaps, format, depth));
 		}
 
 		if (GLEW_EXT_framebuffer_object)
 		{
 			return AbstractFrameBufferSharedPtr(
 				new ExtSimpleFrameBuffer(name, width, height,
-					mipmaps, format));
+					mipmaps, format, depth));
 		}
 
 		EL_THROW_EXCEPTION(OpenGlException()
@@ -67,7 +68,8 @@ namespace eternal_lands
 	AbstractFrameBufferSharedPtr FrameBufferBuilder::build(
 		const String &name, const Uint32 width, const Uint32 height,
 		const Uint32 layers, const Uint16 mipmaps, const Uint16 samples,
-		const TextureFormatType format, const bool layered)
+		const TextureFormatType format, const bool layered,
+		const bool depth)
 	{
 		if (!get_global_vars()->get_opengl_3_0())
 		{
@@ -79,14 +81,14 @@ namespace eternal_lands
 		{
 			return AbstractFrameBufferSharedPtr(
 				new LayeredFrameBuffer(name, width, height,
-					layers, mipmaps, format));
+					layers, mipmaps, format, depth));
 		}
 
 		if (samples == 0)
 		{
 			return AbstractFrameBufferSharedPtr(
 				new SimpleFrameBuffer(name, width, height,
-					layers, mipmaps, format));
+					layers, mipmaps, format, depth));
 		}
 
 		return AbstractFrameBufferSharedPtr(

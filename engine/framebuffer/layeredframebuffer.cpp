@@ -14,8 +14,8 @@ namespace eternal_lands
 
 	LayeredFrameBuffer::LayeredFrameBuffer(const String &name,
 		const Uint32 width, const Uint32 height, const Uint32 layers,
-		const Uint16 mipmaps, const TextureFormatType format):
-		AbstractFrameBuffer(name, width, height)
+		const Uint16 mipmaps, const TextureFormatType format,
+		const bool depth): AbstractFrameBuffer(name, width, height)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
@@ -47,6 +47,7 @@ namespace eternal_lands
 
 		if (TextureFormatUtil::get_depth(format))
 		{
+			m_depth = true;
 			m_color = false;
 
 			get_texture()->attach(GL_DEPTH_ATTACHMENT, 0);
@@ -65,41 +66,51 @@ namespace eternal_lands
 		}
 		else
 		{
+			m_depth = depth;
 			m_color = true;
 
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0);
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_depth_texture = boost::make_shared<Texture>(name);
-
-			if (layers > 0)
+			if (m_depth)
 			{
-				get_depth_texture()->set_target(ttt_2d_texture_array);
+				m_depth_texture = boost::make_shared<Texture>(
+					name);
+
+				if (layers > 0)
+				{
+					get_depth_texture()->set_target(
+						ttt_2d_texture_array);
+				}
+				else
+				{
+					get_depth_texture()->set_target(
+						ttt_2d_texture);
+				}
+
+				get_depth_texture()->set_format(
+					tft_depth24_stencil8);
+				get_depth_texture()->set_wrap_s(twt_clamp);
+				get_depth_texture()->set_wrap_t(twt_clamp);
+				get_depth_texture()->set_wrap_r(twt_clamp);
+				get_depth_texture()->set_mipmap_count(0);
+
+				DEBUG_CHECK_GL_ERROR();
+
+				get_depth_texture()->init(get_width(),
+					get_height(), layers, 0);
+
+				DEBUG_CHECK_GL_ERROR();
+
+				get_depth_texture()->attach(
+					GL_DEPTH_ATTACHMENT, 0);
+
+				DEBUG_CHECK_GL_ERROR();
+
+				get_depth_texture()->attach(
+					GL_STENCIL_ATTACHMENT, 0);
 			}
-			else
-			{
-				get_depth_texture()->set_target(ttt_2d_texture);
-			}
-
-			get_depth_texture()->set_format(tft_depth24_stencil8);
-			get_depth_texture()->set_wrap_s(twt_clamp);
-			get_depth_texture()->set_wrap_t(twt_clamp);
-			get_depth_texture()->set_wrap_r(twt_clamp);
-			get_depth_texture()->set_mipmap_count(0);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			get_depth_texture()->init(get_width(), get_height(),
-				layers, 0);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			get_depth_texture()->attach(GL_DEPTH_ATTACHMENT, 0);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			get_depth_texture()->attach(GL_STENCIL_ATTACHMENT, 0);
 
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -134,7 +145,10 @@ namespace eternal_lands
 
 	void LayeredFrameBuffer::clear(const glm::vec4 &color)
 	{
-		glClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0);
+		if (m_depth)
+		{
+			glClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0);
+		}
 
 		if (m_color)
 		{
@@ -145,7 +159,10 @@ namespace eternal_lands
 	void LayeredFrameBuffer::clear(const glm::vec4 &color,
 		const float depth)
 	{
-		glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, 0);
+		if (m_depth)
+		{
+			glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, 0);
+		}
 
 		if (m_color)
 		{

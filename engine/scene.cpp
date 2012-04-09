@@ -220,7 +220,7 @@ namespace eternal_lands
 				).get_framebuffer_builder()->build(
 					String(UTF8("Shadow")),
 					shadow_map_width, shadow_map_height, 0,
-					tft_depth32);
+					tft_depth32, true);
 
 			return;
 		}
@@ -238,7 +238,8 @@ namespace eternal_lands
 				String(UTF8("Shadow")),	shadow_map_width,
 				shadow_map_height, shadow_map_count,
 				mipmaps, samples, tft_r32f,
-				get_global_vars()->get_use_layered_rendering());
+				get_global_vars()->get_use_layered_rendering(),
+				true);
 	}
 
 	void Scene::clear()

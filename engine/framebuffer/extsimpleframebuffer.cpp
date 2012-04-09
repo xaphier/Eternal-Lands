@@ -14,8 +14,8 @@ namespace eternal_lands
 
 	ExtSimpleFrameBuffer::ExtSimpleFrameBuffer(const String &name,
 		const Uint32 width, const Uint32 height, const Uint16 mipmaps,
-		const TextureFormatType format): AbstractFrameBuffer(name,
-			width, height)
+		const TextureFormatType format, const bool depth):
+		AbstractFrameBuffer(name, width, height)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
@@ -35,10 +35,12 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
+		m_depth = depth;
 		m_stencil = false;
 
 		if (TextureFormatUtil::get_depth(format))
 		{
+			m_depth = true;
 			m_color = false;
 
 			get_texture()->attach_ext(GL_DEPTH_ATTACHMENT_EXT, 0,
@@ -60,6 +62,7 @@ namespace eternal_lands
 		}
 		else
 		{
+			m_depth = depth;
 			m_color = true;
 
 			get_texture()->attach_ext(GL_COLOR_ATTACHMENT0_EXT, 0,
@@ -67,34 +70,41 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			if (GLEW_EXT_packed_depth_stencil)
+			if (m_depth)
 			{
-				m_stencil = true;
+				if (GLEW_EXT_packed_depth_stencil)
+				{
+					m_stencil = true;
 
-				m_render_buffer.reset(new ExtRenderBuffer(
-					get_width(), get_height(),
-					tft_depth24_stencil8));
+					m_render_buffer.reset(
+						new ExtRenderBuffer(
+							get_width(),
+							get_height(),
+							tft_depth24_stencil8));
 
-				DEBUG_CHECK_GL_ERROR();
+					DEBUG_CHECK_GL_ERROR();
 
-				m_render_buffer->bind_to_framebuffer(
-					GL_DEPTH_ATTACHMENT_EXT);
+					m_render_buffer->bind_to_framebuffer(
+						GL_DEPTH_ATTACHMENT_EXT);
 
-				DEBUG_CHECK_GL_ERROR();
+					DEBUG_CHECK_GL_ERROR();
 
-				m_render_buffer->bind_to_framebuffer(
-					GL_STENCIL_ATTACHMENT_EXT);
-			}
-			else
-			{
-				m_render_buffer.reset(new ExtRenderBuffer(
-					get_width(), get_height(),
-					tft_depth32));
+					m_render_buffer->bind_to_framebuffer(
+						GL_STENCIL_ATTACHMENT_EXT);
+				}
+				else
+				{
+					m_render_buffer.reset(
+						new ExtRenderBuffer(
+							get_width(),
+							get_height(),
+							tft_depth32));
 
-				DEBUG_CHECK_GL_ERROR();
+					DEBUG_CHECK_GL_ERROR();
 
-				m_render_buffer->bind_to_framebuffer(
-					GL_DEPTH_ATTACHMENT_EXT);
+					m_render_buffer->bind_to_framebuffer(
+						GL_DEPTH_ATTACHMENT_EXT);
+				}
 			}
 
 			DEBUG_CHECK_GL_ERROR();
@@ -138,7 +148,12 @@ namespace eternal_lands
 	{
 		GLenum mask;
 
-		mask = GL_DEPTH_BUFFER_BIT;
+		mask = 0;
+
+		if (m_depth)
+		{
+			mask |= GL_DEPTH_BUFFER_BIT;
+		}
 
 		if (m_stencil)
 		{
@@ -158,7 +173,12 @@ namespace eternal_lands
 	{
 		GLenum mask;
 
-		mask = GL_DEPTH_BUFFER_BIT;
+		mask = 0;
+
+		if (m_depth)
+		{
+			mask |= GL_DEPTH_BUFFER_BIT;
+		}
 
 		if (m_stencil)
 		{

@@ -39,7 +39,8 @@ namespace eternal_lands
 			ExtSimpleFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
 				const Uint16 mipmaps,
-				const TextureFormatType format);
+				const TextureFormatType format,
+				const bool depth);
 			virtual ~ExtSimpleFrameBuffer() throw();
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);

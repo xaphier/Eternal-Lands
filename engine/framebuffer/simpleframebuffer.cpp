@@ -14,8 +14,9 @@ namespace eternal_lands
 
 	SimpleFrameBuffer::SimpleFrameBuffer(const String &name,
 		const Uint32 width, const Uint32 height, const Uint32 layers,
-		const Uint16 mipmaps, const TextureFormatType format):
-		AbstractFrameBuffer(name, width, height), m_layer(0)
+		const Uint16 mipmaps, const TextureFormatType format,
+		const bool depth): AbstractFrameBuffer(name, width, height),
+		m_layer(0)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
@@ -45,8 +46,11 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
+		m_depth = depth;
+
 		if (TextureFormatUtil::get_depth(format))
 		{
+			m_depth = true;
 			m_color = false;
 
 			get_texture()->attach(GL_DEPTH_ATTACHMENT, 0, 0);
@@ -65,24 +69,29 @@ namespace eternal_lands
 		}
 		else
 		{
+			m_depth = depth;
 			m_color = true;
 
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_render_buffer.reset(new RenderBuffer(get_width(),
-				get_height(), 0, tft_depth24_stencil8));
+			if (m_depth)
+			{
+				m_render_buffer.reset(new RenderBuffer(
+					get_width(), get_height(), 0,
+					tft_depth24_stencil8));
 
-			DEBUG_CHECK_GL_ERROR();
+				DEBUG_CHECK_GL_ERROR();
 
-			m_render_buffer->bind_to_framebuffer(
-				GL_DEPTH_ATTACHMENT);
+				m_render_buffer->bind_to_framebuffer(
+					GL_DEPTH_ATTACHMENT);
 
-			DEBUG_CHECK_GL_ERROR();
+				DEBUG_CHECK_GL_ERROR();
 
-			m_render_buffer->bind_to_framebuffer(
-				GL_STENCIL_ATTACHMENT);
+				m_render_buffer->bind_to_framebuffer(
+					GL_STENCIL_ATTACHMENT);
+			}
 
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -128,7 +137,10 @@ namespace eternal_lands
 
 	void SimpleFrameBuffer::clear(const glm::vec4 &color)
 	{
-		glClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0);
+		if (m_depth)
+		{
+			glClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0);
+		}
 
 		if (m_color)
 		{
@@ -139,7 +151,10 @@ namespace eternal_lands
 	void SimpleFrameBuffer::clear(const glm::vec4 &color,
 		const float depth)
 	{
-		glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, 0);
+		if (m_depth)
+		{
+			glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, 0);
+		}
 
 		if (m_color)
 		{

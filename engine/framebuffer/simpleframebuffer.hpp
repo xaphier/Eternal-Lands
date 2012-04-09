@@ -32,6 +32,7 @@ namespace eternal_lands
 			FrameBuffer m_frame_buffer;
 			boost::scoped_ptr<RenderBuffer> m_render_buffer;
 			Uint32 m_layer;
+			bool m_depth;
 			bool m_color;
 
 			void do_bind(const Uint32 layer);
@@ -40,7 +41,8 @@ namespace eternal_lands
 			SimpleFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
 				const Uint32 layers, const Uint16 mipmaps,
-				const TextureFormatType format);
+				const TextureFormatType format,
+				const bool depth);
 			virtual ~SimpleFrameBuffer() throw();
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);
