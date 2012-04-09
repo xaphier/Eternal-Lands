@@ -177,8 +177,8 @@ namespace eternal_lands
 			}
 
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, tile_size, use_restart_index, 0, split,
-				0);
+				indices, tile_size, use_restart_index, 0,
+				split);
 
 			index_count = indices.size();
 

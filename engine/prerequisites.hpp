@@ -310,6 +310,7 @@ namespace eternal_lands
 	SHARED_PTR(AbstractMesh);
 	SHARED_PTR(AbstractReadMemory);
 	SHARED_PTR(AbstractReadWriteMemory);
+	SHARED_PTR(AbstractTerrainManager);
 	SHARED_PTR(AbstractWriteMemory);
 	SHARED_PTR(Actor);
 	SHARED_PTR(ActorDataCache);
@@ -423,10 +424,6 @@ namespace eternal_lands
 	typedef boost::array<AbstractWriteMemorySharedPtr,
 		vertex_stream_count> AbstractWriteMemorySharedPtrArray;
 	typedef boost::ptr_vector<VertexStream> VertexStreamVector;
-	typedef boost::ptr_vector<AbstractTerrainManager>
-		AbstractTerrainManagerVector;
-	typedef std::auto_ptr<AbstractTerrainManager>
-		AbstractTerrainManagerAutoPtr;
 
 	typedef boost::variant<bool, Sint64, float,
 		glm::ivec2, glm::ivec3, glm::ivec4,

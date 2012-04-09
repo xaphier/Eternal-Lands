@@ -37,7 +37,7 @@ namespace eternal_lands
 			const MaterialCacheWeakPtr m_material_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
-			AbstractTerrainManagerVector m_terrains;
+			AbstractTerrainManagerSharedPtr m_terrain;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
 			Uint16MultiArray2 m_height_map;
@@ -115,7 +115,7 @@ namespace eternal_lands
 				LightVisitor &visitor) const;
 			const BoundingBox &get_bounding_box() const;
 			void add_terrain(
-				AbstractTerrainManagerAutoPtr &terrain);
+				const AbstractTerrainManagerSharedPtr &terrain);
 			void add_particle(const ParticleData &particle);
 
 			inline glm::uvec2 get_height_map_size() const

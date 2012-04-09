@@ -146,6 +146,7 @@ namespace eternal_lands
 		Uint16Array2 lod;
 		Uint32 vertex_count, index_count, i, x, y, height, width;
 		Uint32 restart_index, count;
+		Uint8Array4 splits_outside;
 		VertexSemanticTypeSet semantics;
 		HeightMapUvTool uvs(height_map, get_terrain_offset_scale());
 
@@ -156,34 +157,54 @@ namespace eternal_lands
 
 		if (low_quality)
 		{
+			splits_outside[0] = 0;
+			splits_outside[1] = 0;
+			splits_outside[2] = 0;
+			splits_outside[3] = 0;
+
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 0, false, 0);
+				indices, get_tile_size(), false, 0,
+				splits_outside, false);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 1, true, 0);
+				indices, get_tile_size(), false, 1,
+				splits_outside, true);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 
+			splits_outside[0] = 1;
+			splits_outside[1] = 1;
+			splits_outside[2] = 1;
+			splits_outside[3] = 1;
+
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 1, false, 0xF);
+				indices, get_tile_size(), false, 1,
+				splits_outside, false);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 		}
 		else
 		{
+			splits_outside[0] = 1;
+			splits_outside[1] = 1;
+			splits_outside[2] = 1;
+			splits_outside[3] = 1;
+
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 0, true, 0);
+				indices, get_tile_size(), false, 0,
+				splits_outside, true);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 0, false, 0xF);
+				indices, get_tile_size(), false, 0,
+				splits_outside, false);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();

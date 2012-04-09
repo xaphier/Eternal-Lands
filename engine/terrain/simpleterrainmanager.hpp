@@ -31,8 +31,7 @@ namespace eternal_lands
 			void add_terrain_pages(const String &effect,
 				const ImageSharedPtr &height_map,
 				const MeshBuilderSharedPtr &mesh_builder,
-				const EffectCacheSharedPtr &effect_cache,
-				const TextureCacheSharedPtr &texture_cache, 
+				const MaterialSharedPtrVector &materials,
 				const bool low_quality, const bool use_simd);
 			void set_terrain_page(const HeightMapUvTool &uvs,
 				const ImageSharedPtr &height_map,
@@ -48,8 +47,7 @@ namespace eternal_lands
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
-				const EffectCacheSharedPtr &effect_cache,
-				const TextureCacheSharedPtr &texture_cache,
+				const MaterialSharedPtrVector &materials,
 				const TerrainData &terrain_data);
 			virtual ~SimpleTerrainManager() throw();
 			virtual void intersect(const Frustum &frustum,

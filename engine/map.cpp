@@ -23,6 +23,7 @@
 #include "materialcache.hpp"
 #include "abstractterrainmanager.hpp"
 #include "particledata.hpp"
+#include "terrain/simpleterrainmanager.hpp"
 
 namespace eternal_lands
 {
@@ -37,24 +38,30 @@ namespace eternal_lands
 		m_mesh_cache(mesh_cache), m_material_cache(material_cache),
 		m_name(name), m_id(0), m_dungeon(false)
 	{
-//		String file_name;
+		MaterialSharedPtrVector materials;
+		TerrainData data;
+		String file_name;
 
 		m_light_tree.reset(new RStarTree());
 		m_object_tree.reset(new RStarTree());
 
 		set_ambient(glm::vec3(0.2f));
-/*
+
 		file_name = FileSystem::get_name_without_extension(name);
 
-		file_name = String(file_name.get() + UTF8(".xml"));
+		file_name = String(file_name.get() + UTF8("_terrain.dds"));
 
 		if (file_system->get_file_readable(file_name))
 		{
-//			m_terrains.reset(new SimpleTerrainManager(codec_manager,
-//				file_system, global_vars, mesh_builder,
-//				effect_cache, texture_cache, file_name));
+			materials.push_back(get_material_cache()->get_material(
+				String(UTF8("tile1"))));
+
+			data.set_height_map(file_name);
+
+			m_terrain.reset(new SimpleTerrainManager(
+				codec_manager, file_system, global_vars,
+				mesh_builder, materials, data));
 		}
-*/
 	}
 
 	Map::~Map() throw()
@@ -220,20 +227,16 @@ namespace eternal_lands
 		m_object_tree->clear();
 		m_objects.clear();
 		m_lights.clear();
-		m_terrains.clear();
+		m_terrain.reset();
 		m_particles.clear();
 	}
 
 	void Map::intersect(const Frustum &frustum, ObjectVisitor &visitor)
 		const
 	{
-		Uint32 i, count;
-
-		count = m_terrains.size();
-
-		for (i = 0; i < count; ++i)
+		if (m_terrain.get() != 0)
 		{
-			m_terrains[i].intersect(frustum, visitor);
+			m_terrain->intersect(frustum, visitor);
 		}
 
 		m_object_tree->intersect(frustum, visitor);
@@ -250,9 +253,9 @@ namespace eternal_lands
 		return m_object_tree->get_bounding_box();
 	}
 
-	void Map::add_terrain(AbstractTerrainManagerAutoPtr &terrain)
+	void Map::add_terrain(const AbstractTerrainManagerSharedPtr &terrain)
 	{
-		m_terrains.push_back(terrain);
+		m_terrain = terrain;
 	}
 
 	void Map::add_particle(const ParticleData &particle)

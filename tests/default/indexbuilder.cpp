@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(index_builder_no_restart_split)
 		index_count = tile_size * tile_size * 24 / 4;
 
 		el::IndexBuilder::build_plane_indices(indices, tile_size,
-			use_restart_index, 0, split, 0);
+			use_restart_index, 0, split);
 
 		BOOST_FOREACH(const el::Uint32 index, indices)
 		{
@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE(index_builder_no_restart_no_split)
 		index_count = tile_size * tile_size * 12 / 4;
 
 		el::IndexBuilder::build_plane_indices(indices, tile_size,
-			use_restart_index, 0, split, 0);
+			use_restart_index, 0, split);
 
 		BOOST_FOREACH(const el::Uint32 index, indices)
 		{
@@ -136,7 +136,7 @@ BOOST_AUTO_TEST_CASE(index_builder_restart_split)
 		index_count = tile_size * tile_size * 11 / 4;
 
 		restart_index = el::IndexBuilder::build_plane_indices(
-			indices, tile_size, use_restart_index, 0, split, 0);
+			indices, tile_size, use_restart_index, 0, split);
 
 		BOOST_CHECK_EQUAL(restart_index, 65535);
 
@@ -191,7 +191,7 @@ BOOST_AUTO_TEST_CASE(index_builder_restart_no_split)
 		index_count = tile_size * tile_size * 7 / 4;
 
 		restart_index = el::IndexBuilder::build_plane_indices(
-			indices, tile_size, use_restart_index, 0, split, 0);
+			indices, tile_size, use_restart_index, 0, split);
 
 		BOOST_CHECK_EQUAL(restart_index, 65535);
 

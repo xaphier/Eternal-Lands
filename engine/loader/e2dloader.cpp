@@ -304,7 +304,7 @@ namespace eternal_lands
 		vertex_count *= get_tile_size() + 1;
 
 		IndexBuilder::build_plane_indices(indices, get_tile_size(),
-			false, 0, true, 0);
+			false, 0, true);
 
 		index_count = indices.size();
 

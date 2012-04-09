@@ -84,7 +84,7 @@ namespace eternal_lands
 			ShaderTextureTypeData(String(UTF8("height_sampler"))),
 			ShaderTextureTypeData(String(UTF8("dudv_sampler"))),
 			ShaderTextureTypeData(
-				String(UTF8("reflection_sampler"))),
+				String(UTF8("terrain_sampler"))),
 			ShaderTextureTypeData(String(UTF8("shadow_sampler")))
 		};
 

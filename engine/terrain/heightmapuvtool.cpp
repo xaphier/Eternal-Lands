@@ -228,7 +228,7 @@ namespace eternal_lands
 				increasing += 1;
 			}
 
-			if (movement < 0.0001f)
+			if (movement < 0.001f)
 			{
 				break;
 			}

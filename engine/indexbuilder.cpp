@@ -22,18 +22,17 @@ namespace eternal_lands
 				bool m_use_restart_index;
 
 				Uint32 get_index(const Uint32 x, const Uint32 y,
-					const Uint32 scale_x,
-					const Uint32 scale_y,
-					const Uint32 size) const;
+					const Uint32 offset_x,
+					const Uint32 offset_y) const;
 				void build_indices(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const BitSet4 split);
+					const Uint8Array4 splits);
 				void build_triangles(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const BitSet4 split);
+					const Uint8Array4 splits);
 				void build_triangle_fan(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const BitSet4 split);
+					const Uint8Array4 splits);
 				Uint32 get_index(const Uint32 x,
 					const Uint32 y) const;
 
@@ -47,16 +46,16 @@ namespace eternal_lands
 				Uint32 get_tile_size() const;
 				Uint32 get_tile_index_size() const;
 				void build_indices(const Uint32 skip,
-					const bool invert,
-					const BitSet4 connected);
+					const Uint8Array4 splits_outside,
+					const bool split_inside);
 
 		};
 
 		Uint32 PlaneIndexBuilder::get_index(const Uint32 x,
-			const Uint32 y,	const Uint32 scale_x,
-			const Uint32 scale_y, const Uint32 size) const
+			const Uint32 y,	const Uint32 offset_x,
+			const Uint32 offset_y) const
 		{
-			return get_index(x + scale_x * size, y + scale_y * size);
+			return get_index(x + offset_x, y + offset_y);
 		}
 
 		Uint32 PlaneIndexBuilder::get_index(const Uint32 x,
@@ -70,137 +69,121 @@ namespace eternal_lands
 
 		void PlaneIndexBuilder::build_indices(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const BitSet4 split)
+			const Uint8Array4 splits)
 		{
 			if (get_use_restart_index())
 			{
-				build_triangle_fan(x, y, size, split);
+				build_triangle_fan(x, y, size, splits);
 				m_indices.push_back(get_restart_index());
 			}
 			else
 			{
-				build_triangles(x, y, size, split);
+				build_triangles(x, y, size, splits);
 			}
 		}
 
 		void PlaneIndexBuilder::build_triangles(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const BitSet4 split)
+			const Uint8Array4 splits)
 		{
-			if (split[dt_north])
-			{
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 0, 0, size));
-				m_indices.push_back(get_index(x, y, 1, 0, size));
+			Uint32 i, count, step;
 
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 1, 0, size));
-				m_indices.push_back(get_index(x, y, 2, 0, size));
-			}
-			else
+			count = 1 << splits[dt_north];
+			step = (size * 2) >> splits[dt_north];
+
+			for (i = 0; i < count; ++i)
 			{
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 0, 0, size));
-				m_indices.push_back(get_index(x, y, 2, 0, size));
+				m_indices.push_back(get_index(x, y, size,
+					size));
+				m_indices.push_back(get_index(x, y, step * i,
+					0));
+				m_indices.push_back(get_index(x, y,
+					step * (i + 1), 0));
 			}
 
-			if (split[dt_east])
-			{
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 2, 0, size));
-				m_indices.push_back(get_index(x, y, 2, 1, size));
+			count = 1 << splits[dt_east];
+			step = (size * 2) >> splits[dt_east];
 
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 2, 1, size));
-				m_indices.push_back(get_index(x, y, 2, 2, size));
-			}
-			else
+			for (i = 0; i < count; ++i)
 			{
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 2, 0, size));
-				m_indices.push_back(get_index(x, y, 2, 2, size));
+				m_indices.push_back(get_index(x, y, size,
+					size));
+				m_indices.push_back(get_index(x, y, size * 2,
+					step * i));
+				m_indices.push_back(get_index(x, y, size * 2,
+					step * (i + 1)));
 			}
 
-			if (split[dt_south])
-			{
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 2, 2, size));
-				m_indices.push_back(get_index(x, y, 1, 2, size));
+			count = 1 << splits[dt_south];
+			step = (size * 2) >> splits[dt_south];
 
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 1, 2, size));
-				m_indices.push_back(get_index(x, y, 0, 2, size));
-			}
-			else
+			for (i = 0; i < count; ++i)
 			{
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 2, 2, size));
-				m_indices.push_back(get_index(x, y, 0, 2, size));
+				m_indices.push_back(get_index(x, y, size,
+					size));
+				m_indices.push_back(get_index(x, y,
+					step * (count - i), size * 2));
+				m_indices.push_back(get_index(x, y,
+					step * (count - i - 1), size * 2));
 			}
 
-			if (split[dt_west])
-			{
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 0, 2, size));
-				m_indices.push_back(get_index(x, y, 0, 1, size));
+			count = 1 << splits[dt_west];
+			step = (size * 2) >> splits[dt_west];
 
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 0, 1, size));
-				m_indices.push_back(get_index(x, y, 0, 0, size));
-			}
-			else
+			for (i = 0; i < count; ++i)
 			{
-				m_indices.push_back(get_index(x, y, 1, 1, size));
-				m_indices.push_back(get_index(x, y, 0, 2, size));
-				m_indices.push_back(get_index(x, y, 0, 0, size));
+				m_indices.push_back(get_index(x, y, size,
+					size));
+				m_indices.push_back(get_index(x, y, 0,
+					step * (count - i)));
+				m_indices.push_back(get_index(x, y, 0,
+					step * (count - i - 1)));
 			}
 		}
 
 		void PlaneIndexBuilder::build_triangle_fan(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const BitSet4 split)
+			const Uint8Array4 splits)
 		{
-			m_indices.push_back(get_index(x, y, 1, 1, size));
-			m_indices.push_back(get_index(x, y, 0, 0, size));
+			Uint32 i, count, step;
 
-			if (split[dt_north])
-			{
-				m_indices.push_back(get_index(x, y, 1, 0, size));
-				m_indices.push_back(get_index(x, y, 2, 0, size));
-			}
-			else
-			{
-				m_indices.push_back(get_index(x, y, 2, 0, size));
-			}
+			m_indices.push_back(get_index(x, y, size, size));
+			m_indices.push_back(get_index(x, y, 0, 0));
 
-			if (split[dt_east])
+			count = 1 << splits[dt_north];
+			step = (size * 2) >> splits[dt_north];
+
+			for (i = 0; i < count; ++i)
 			{
-				m_indices.push_back(get_index(x, y, 2, 1, size));
-				m_indices.push_back(get_index(x, y, 2, 2, size));
-			}
-			else
-			{
-				m_indices.push_back(get_index(x, y, 2, 2, size));
+				m_indices.push_back(get_index(x, y,
+					step * (i + 1), 0));
 			}
 
-			if (split[dt_south])
+			count = 1 << splits[dt_east];
+			step = (size * 2) >> splits[dt_east];
+
+			for (i = 0; i < count; ++i)
 			{
-				m_indices.push_back(get_index(x, y, 1, 2, size));
-				m_indices.push_back(get_index(x, y, 0, 2, size));
-			}
-			else
-			{
-				m_indices.push_back(get_index(x, y, 0, 2, size));
+				m_indices.push_back(get_index(x, y, size * 2,
+					step * (i + 1)));
 			}
 
-			if (split[dt_west])
+			count = 1 << splits[dt_south];
+			step = (size * 2) >> splits[dt_south];
+
+			for (i = 0; i < count; ++i)
 			{
-				m_indices.push_back(get_index(x, y, 0, 1, size));
-				m_indices.push_back(get_index(x, y, 0, 0, size));
+				m_indices.push_back(get_index(x, y,
+					step * (count - i - 1), size * 2));
 			}
-			else
+
+			count = 1 << splits[dt_west];
+			step = (size * 2) >> splits[dt_west];
+
+			for (i = 0; i < count; ++i)
 			{
-				m_indices.push_back(get_index(x, y, 0, 0, size));
+				m_indices.push_back(get_index(x, y, 0,
+					step * (count - i - 1)));
 			}
 		}
 
@@ -225,34 +208,70 @@ namespace eternal_lands
 		}
 
 		void PlaneIndexBuilder::build_indices(const Uint32 skip,
-			const bool invert, const BitSet4 connected)
+			const Uint8Array4 splits_outside,
+			const bool split_inside)
 		{
-			Uint32 i, j, count, step;
-			BitSet4 mask, split;
+			Uint32 i, j, count, step, split;
+			Uint8Array4 splits;
 
 			count = get_tile_size() >> (skip + 1);
 			step = 1 << skip;
 
 			assert((count * step * 2) == get_tile_size());
 
+			split = 0;
+
+			if (split_inside)
+			{
+				split = 1;
+			}
+
 			for (j = 0; j < count; ++j)
 			{
 				for (i = 0; i < count; ++i)
 				{
-					mask[dt_north] = (j == 0);
-					mask[dt_east] = (i == (count - 1));
-					mask[dt_south] = (j == (count - 1));
-					mask[dt_west] = (i == 0);
-
-					split = connected & mask;
-
-					if (invert)
+					if (j == 0)
 					{
-						split = split.flip();
+						splits[dt_north] =
+							splits_outside[dt_north];
+					}
+					else
+					{
+						splits[dt_north] = split;
+					}
+
+					if (i == (count - 1))
+					{
+						splits[dt_east] =
+							splits_outside[dt_east];
+					}
+					else
+					{
+						splits[dt_east] = split;
+					}
+
+					if (j == (count - 1))
+					{
+						splits[dt_south] =
+							splits_outside[dt_south];
+					}
+					else
+					{
+						splits[dt_south] = split;
+					}
+
+					if (i == 0)
+					{
+						splits[dt_west] =
+							splits_outside[dt_west];
+					}
+					else
+					{
+						splits[dt_west] = split;
 					}
 
 					build_indices(i * step * 2,
-						j * step * 2, step, split);
+						j * step * 2, step, splits);
 				}
 			}
 		}
@@ -288,13 +307,42 @@ namespace eternal_lands
 
 	Uint32 IndexBuilder::build_plane_indices(Uint32Vector &indices,
 		const Uint32 tile_size, const bool use_restart_index,
-		const Uint32 skip, const bool invert,
-		const BitSet4 connected)
+		const Uint32 skip, const bool split)
+	{
+		PlaneIndexBuilder plane_index_builder(indices, tile_size,
+			use_restart_index);
+		Uint8Array4 splits_outside;
+
+		if (split)
+		{
+			splits_outside[0] = 1;
+			splits_outside[1] = 1;
+			splits_outside[2] = 1;
+			splits_outside[3] = 1;
+		}
+		else
+		{
+			splits_outside[0] = 0;
+			splits_outside[1] = 0;
+			splits_outside[2] = 0;
+			splits_outside[3] = 0;
+		}
+
+		plane_index_builder.build_indices(skip, splits_outside, split);
+
+		return plane_index_builder.get_restart_index();
+	}
+
+	Uint32 IndexBuilder::build_plane_indices(Uint32Vector &indices,
+		const Uint32 tile_size, const bool use_restart_index,
+		const Uint32 skip, const Uint8Array4 splits_outside,
+		const bool split_inside)
 	{
 		PlaneIndexBuilder plane_index_builder(indices, tile_size,
 			use_restart_index);
 
-		plane_index_builder.build_indices(skip, invert, connected);
+		plane_index_builder.build_indices(skip, splits_outside,
+			split_inside);
 
 		return plane_index_builder.get_restart_index();
 	}

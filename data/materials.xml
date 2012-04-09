@@ -1203,7 +1203,7 @@
 		<name>tile1</name>
 		<albedo_0>3dobjects/tile1.dds</albedo_0>
 		<effect>default</effect>
-		<script>scripts/test.as</script>
+<!--		<script>scripts/test.as</script>-->
 	</material>
 	<material>
 		<name>doorwindows1</name>

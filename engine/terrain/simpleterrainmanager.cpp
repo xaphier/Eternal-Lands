@@ -20,6 +20,8 @@
 #include "globalvars.hpp"
 #include "heightmapuvtool.hpp"
 
+#include "logging.hpp"
+
 namespace eternal_lands
 {
 
@@ -28,8 +30,7 @@ namespace eternal_lands
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars,
 		const MeshBuilderSharedPtr &mesh_builder,
-		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache,
+		const MaterialSharedPtrVector &materials,
 		const TerrainData &terrain_data)
 	{
 		ImageSharedPtr height_image;
@@ -41,8 +42,13 @@ namespace eternal_lands
 		height_image = codec_manager->load_image(get_height_map(),
 			file_system, ImageCompressionTypeSet(), true);
 
+		LOG_INFO(UTF8("Terrain image %1%."), height_image->get_log_str());
+		LOG_INFO(UTF8("Terrain image channels: %1%."), height_image->get_channel_count());
+		LOG_INFO(UTF8("Terrain image gl type: %1%."), height_image->get_type());
+		LOG_INFO(UTF8("Terrain image gl format: %1%."), height_image->get_format());
+
 		add_terrain_pages(String(UTF8("shaders/simple_terrain.xml")),
-			height_image, mesh_builder, effect_cache, texture_cache,
+			height_image, mesh_builder, materials,
 			global_vars->get_low_quality_terrain(),
 			global_vars->get_use_simd());
 	}
@@ -81,11 +87,13 @@ namespace eternal_lands
 				pos.y = y;
 				pos += tile_offset;
 
-				position.x = pos.x;
-				position.y = pos.y;
-				position += get_terrain_offset(
+				position = get_terrain_offset(
 					height_map->get_pixel_uint(
 						pos.x, pos.y, 0, 0, 0));
+
+				position.x += pos.x;
+				position.y += pos.y;
+				position.z -= 0.5f;
 
 				uv = uvs.get_uv(pos.x, pos.y);
 				uv /= size;
@@ -125,18 +133,14 @@ namespace eternal_lands
 	void SimpleTerrainManager::add_terrain_pages(const String &effect,
 		const ImageSharedPtr &height_map,
 		const MeshBuilderSharedPtr &mesh_builder,
-		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache,
+		const MaterialSharedPtrVector &materials,
 		const bool low_quality, const bool use_simd)
 	{
-		MaterialSharedPtrVector materials;
-		MaterialDescription material;
 		MeshDataToolSharedPtr mesh_data_tool;
 		Transformation transformation;
 		AbstractMeshSharedPtr mesh;
 		ObjectSharedPtr object;
 		ObjectData object_data;
-		glm::mat2x3 texture_matrix;
 		glm::uvec2 tile_offset, terrain_size;
 		Uint32Vector indices, index_counts;
 		Uint16Array2Vector lods;
@@ -146,6 +150,7 @@ namespace eternal_lands
 		Uint16Array2 lod;
 		Uint32 vertex_count, index_count, i, x, y, height, width;
 		Uint32 restart_index, count;
+		Uint8Array4 splits_outside;
 		VertexSemanticTypeSet semantics;
 		HeightMapUvTool uvs(height_map, get_terrain_offset_scale());
 
@@ -156,34 +161,54 @@ namespace eternal_lands
 
 		if (low_quality)
 		{
+			splits_outside[0] = 0;
+			splits_outside[1] = 0;
+			splits_outside[2] = 0;
+			splits_outside[3] = 0;
+
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 0, false, 0);
+				indices, get_tile_size(), false, 0,
+				splits_outside, false);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 1, true, 0);
+				indices, get_tile_size(), false, 1,
+				splits_outside, true);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 
+			splits_outside[0] = 1;
+			splits_outside[1] = 1;
+			splits_outside[2] = 1;
+			splits_outside[3] = 1;
+
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 1, false, 0xF);
+				indices, get_tile_size(), false, 1,
+				splits_outside, false);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 		}
 		else
 		{
+			splits_outside[0] = 1;
+			splits_outside[1] = 1;
+			splits_outside[2] = 1;
+			splits_outside[3] = 1;
+
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 0, true, 0);
+				indices, get_tile_size(), false, 0,
+				splits_outside, true);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 
 			restart_index = IndexBuilder::build_plane_indices(
-				indices, get_tile_size(), false, 0, false, 0xF);
+				indices, get_tile_size(), false, 0,
+				splits_outside, false);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
@@ -230,30 +255,6 @@ namespace eternal_lands
 
 		uvs.buil_relaxed_uv();
 		uvs.convert();
-
-		material.set_texture(get_albedo_map(0), stt_albedo_0);
-		material.set_texture(get_albedo_map(1), stt_albedo_1);
-		material.set_texture(get_albedo_map(2), stt_albedo_2);
-		material.set_texture(get_albedo_map(3), stt_albedo_3);
-		material.set_texture(get_blend_map(), stt_blend_0);
-
-		material.set_effect(effect);
-
-		texture_matrix[0].x = 1.0f;
-		texture_matrix[0].y = 0.0f;
-		texture_matrix[0].z = 0.0f;
-		texture_matrix[1].x = 0.0f;
-		texture_matrix[1].y = 1.0f;
-		texture_matrix[1].z = 0.0f;
-
-		material.set_texture_matrix(texture_matrix, 0);
-
-		texture_matrix[0].x = height_map->get_width() / 8;
-		texture_matrix[1].y = height_map->get_height() / 8;
-
-		material.set_texture_matrix(texture_matrix, 1);
-
-//		materials.push_back(material);
 
 		for (y = 0; y < height; ++y)
 		{
