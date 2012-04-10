@@ -202,6 +202,8 @@ namespace eternal_lands
 	class BoundingBox;
 	class CodecManager;
 	class ConvexBody;
+	class Decal;
+	class DecalDescription;
 	class Effect;
 	class EffectCache;
 	class EffectDescription;

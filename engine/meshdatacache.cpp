@@ -297,7 +297,7 @@ namespace eternal_lands
 					uv = glm::vec2(x, y);
 
 					data = glm::vec4(uv * 2.0f - 1.0f,
-						0.0f, 1.0f);
+						0.5f, 1.0f);
 
 					mesh_data_tool->set_vertex_data(
 						vst_position, index, data);
@@ -316,86 +316,11 @@ namespace eternal_lands
 				}
 			}
 
-			vmin = glm::vec3(-1.0f, -1.0f, -0.01f);
-			vmax = glm::vec3(1.0f, 1.0f, 0.0f);
+			vmin = glm::vec3(-1.0f, -1.0f, 0.49f);
+			vmax = glm::vec3(1.0f, 1.0f, 0.5f);
 
 			mesh_data_tool->set_sub_mesh_data(0, SubMesh(
 				BoundingBox(vmin, vmax), 0, 6, 0, 3));
-		}
-
-		void load_billboard(const String &name, const bool use_simd,
-			MeshDataToolSharedPtr &mesh_data_tool)
-		{
-			glm::vec4 normal, tangent, data;
-			glm::vec3 vmin, vmax;
-			glm::vec2 size, uv;
-			VertexSemanticTypeSet semantics;
-			Uint32 vertex_count, index_count, index, x, y;
-			Uint32 restart_index;
-			PrimitiveType primitive_type;
-			bool use_restart_index;
-
-			vertex_count = 4;
-			use_restart_index = false;
-			primitive_type = pt_triangles;
-			restart_index = 0xFFFFFFFF;
-			index_count = 6;
-
-			semantics.insert(vst_position);
-			semantics.insert(vst_texture_coordinate_0);
-			semantics.insert(vst_normal);
-			semantics.insert(vst_tangent);
-
-			mesh_data_tool = boost::make_shared<MeshDataTool>(name,
-				vertex_count, index_count, 1, semantics,
-				restart_index, primitive_type,
-				use_restart_index, use_simd);
-
-			mesh_data_tool->set_index_data(0, 0);
-			mesh_data_tool->set_index_data(1, 1);
-			mesh_data_tool->set_index_data(2, 2);
-
-			mesh_data_tool->set_index_data(3, 1);
-			mesh_data_tool->set_index_data(4, 3);
-			mesh_data_tool->set_index_data(5, 2);
-
-			normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-			tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-			index = 0;
-
-			for (y = 0; y < 2; ++y)
-			{
-				for (x = 0; x < 2; ++x)
-				{
-					uv = glm::vec2(x, y);
-
-					data = glm::vec4(0.0f, 0.0f, 0.0f,
-						1.0f);
-
-					mesh_data_tool->set_vertex_data(
-						vst_position, index, data);
-
-					data = glm::vec4(uv, 0.0f, 1.0f);
-
-					mesh_data_tool->set_vertex_data(
-						vst_normal, index, normal);
-					mesh_data_tool->set_vertex_data(
-						vst_tangent, index, tangent);
-					mesh_data_tool->set_vertex_data(
-						vst_texture_coordinate_0,
-						index, data);
-
-					++index;
-				}
-			}
-
-			vmin = glm::vec3(-1.0f, -1.0f, -1.0f);
-			vmax = glm::vec3(1.0f, 1.0f, 1.0f);
-
-			mesh_data_tool->set_sub_mesh_data(0, SubMesh(
-				BoundingBox(vmin, vmax), 0, index_count, 0,
-				vertex_count - 1));
 		}
 
 		void load_e2d(const ReaderSharedPtr &reader,
@@ -461,12 +386,6 @@ namespace eternal_lands
 		bool load_named_object(const String &name, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
-			if (name == UTF8("billboard"))
-			{
-				load_billboard(name, use_simd, mesh_data_tool);
-				return true;
-			}
-
 			if (name == UTF8("quad"))
 			{
 				load_quad(name, use_simd, mesh_data_tool);

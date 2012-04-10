@@ -102,6 +102,8 @@ namespace eternal_lands
 		m_exponential_shadow_maps(false)
 	{
 		set_default_view();
+
+		m_ortho_matrix.push_back(glm::mat4x4());
 	}
 
 	SceneView::~SceneView() throw()

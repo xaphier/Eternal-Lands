@@ -74,14 +74,38 @@
 	</effect>
 	<effect>
 		<name>simple-terrain</name>
-		<world_transformation>terrain</world_transformation>
-		<texture_coodrinates>static_extra</texture_coodrinates>
-		<albedo_mapping>blend_4</albedo_mapping>
+		<world_transformation>static</world_transformation>
+		<texture_coodrinates>static</texture_coodrinates>
+		<albedo_mapping>terrain</albedo_mapping>
 		<normal_mapping>disabled</normal_mapping>
 		<specular_mapping>disabled</specular_mapping>
 		<emission_mapping>disabled</emission_mapping>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>true</lighting>
+	</effect>
+	<effect>
+		<name>textured-screen-quad</name>
+		<world_transformation>none</world_transformation>
+		<texture_coodrinates>static</texture_coodrinates>
+		<albedo_mapping>default</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>emission</emission_mapping>
+		<receives_shadows>false</receives_shadows>
+		<transparent>false</transparent>
+		<lighting>false</lighting>
+	</effect>
+	<effect>
+		<name>textured-blend-4-screen-quad</name>
+		<world_transformation>none</world_transformation>
+		<texture_coodrinates>static_extra</texture_coodrinates>
+		<albedo_mapping>blend_4</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>emission</emission_mapping>
+		<receives_shadows>false</receives_shadows>
+		<transparent>false</transparent>
+		<lighting>false</lighting>
 	</effect>
 </effects>

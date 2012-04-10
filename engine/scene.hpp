@@ -50,8 +50,12 @@ namespace eternal_lands
 			ObjectVisitor m_shadow_objects;
 			LightVisitor m_visible_lights;
 			MapSharedPtr m_map;
+			AbstractMeshSharedPtr m_screen_quad;
+			MaterialSharedPtrVector m_materials;
+			Mat2x3Vector m_texture_matrices;
+			float m_scale;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
-			AbstractFrameBufferSharedPtr m_reflection_frame_buffer;
+			AbstractFrameBufferSharedPtr m_terrain_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;
@@ -63,6 +67,7 @@ namespace eternal_lands
 			FreeIdsManagerSharedPtr m_free_ids;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
+			Uint32 m_terrain_texture_size;
 			float m_time;
 			SubFrustumsMask m_shadow_objects_mask;
 			bool m_lights;
@@ -93,6 +98,12 @@ namespace eternal_lands
 			void draw_depth();
 			void draw_default();
 			void update_shadow_map();
+			void update_terrain_map();
+			void draw_terrain_texture(
+				const MaterialSharedPtrVector &materials,
+				const Mat2x3Vector &texture_matrices,
+				const Uint16 index);
+			void draw_terrain_texture();
 
 		protected:
 			virtual void intersect(const Frustum &frustum,

@@ -38,6 +38,8 @@
 #include "freeidsmanager.hpp"
 #include "thread/materiallock.hpp"
 
+#include "materialcache.hpp"
+
 #include "../client_serv.h"
 
 namespace eternal_lands
@@ -194,6 +196,9 @@ namespace eternal_lands
 		glGenQueries(m_querie_ids.size(), m_querie_ids.data());
 
 		m_scene_resources.init(get_file_system());
+
+		get_scene_resources().get_mesh_cache()->get_mesh(
+			String(UTF8("quad")), m_screen_quad);
 	}
 
 	void Scene::update_shadow_map()
@@ -240,6 +245,29 @@ namespace eternal_lands
 				mipmaps, samples, tft_r32f,
 				get_global_vars()->get_use_layered_rendering(),
 				true);
+	}
+
+	void Scene::update_terrain_map()
+	{
+		m_terrain_texture_size = 2048;
+
+		m_terrain_frame_buffer = get_scene_resources(
+			).get_framebuffer_builder()->build(
+				String(UTF8("terrain")), m_terrain_texture_size,
+				m_terrain_texture_size, 0, tft_rgb8, true);
+
+		m_scale = m_terrain_texture_size / 512;
+
+		m_materials.clear();
+
+		m_materials.push_back(get_scene_resources().get_material_cache(
+			)->get_material(String(UTF8("terrain_0"))));
+		m_materials.push_back(get_scene_resources().get_material_cache(
+			)->get_material(String(UTF8("terrain_1"))));
+		m_materials.push_back(get_scene_resources().get_material_cache(
+			)->get_material(String(UTF8("terrain_2"))));
+		m_materials.push_back(get_scene_resources().get_material_cache(
+			)->get_material(String(UTF8("terrain_3"))));
 	}
 
 	void Scene::clear()
@@ -653,6 +681,14 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
+			if (object->get_name() == String(UTF8("terrain")))
+			{
+				m_state_manager.get_program()->set_parameter(
+					apt_texture_matrices,
+					m_texture_matrices);
+			}
+			else
+			{
 			m_state_manager.get_program()->set_parameter(
 				apt_texture_matrices,
 				material->get_texture_matrices());
@@ -665,6 +701,7 @@ namespace eternal_lands
 			m_state_manager.get_program()->set_parameter(
 				apt_specular_scale_offset,
 				material->get_specular_scale_offset());
+			}
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -1083,6 +1120,173 @@ namespace eternal_lands
 		m_frame_id++;
 	}
 
+	void Scene::draw_terrain_texture(
+		const MaterialSharedPtrVector &materials,
+		const Mat2x3Vector &texture_matrices, const Uint16 index)
+	{
+		Uint32 i, count, width, height;
+
+		m_scene_view.set_ortho_view();
+
+		m_state_manager.switch_multisample(false);
+
+		width = m_terrain_frame_buffer->get_width();
+		height = m_terrain_frame_buffer->get_height();
+
+		m_terrain_frame_buffer->bind(0);
+		m_terrain_frame_buffer->clear(glm::vec4(0.0f));
+
+		glViewport(0, 0, width, height);
+		DEBUG_CHECK_GL_ERROR();
+
+		m_state_manager.switch_depth_mask(false);
+		m_state_manager.switch_depth_test(false);
+		m_state_manager.switch_blend(true);
+
+		m_state_manager.switch_mesh(m_screen_quad);
+
+		count = materials.size();
+
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		for (i = 0; i < count; ++i)
+		{
+			MaterialLock material(materials[i]);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			switch_program(material->get_effect(
+				)->get_default_program(), 0);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			material->bind(m_state_manager);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_state_manager.get_program()->set_parameter(
+				apt_texture_matrices, texture_matrices);
+			m_state_manager.get_program()->set_parameter(
+				apt_albedo_scale_offsets,
+				material->get_albedo_scale_offsets());
+			m_state_manager.get_program()->set_parameter(
+				apt_emission_scale_offset,
+				material->get_emission_scale_offset());
+			m_state_manager.get_program()->set_parameter(
+				apt_specular_scale_offset,
+				material->get_specular_scale_offset());
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_state_manager.draw(0, 1);
+
+			DEBUG_CHECK_GL_ERROR();
+		}
+/*
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		for (i = 0; i < count; ++i)
+		{
+			MaterialLock material(materials[i]);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			switch_program(material->get_effect(
+				)->get_default_program(), 0);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			material->bind(m_state_manager);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_state_manager.get_program()->set_parameter(
+				apt_texture_matrices,
+				material->get_texture_matrices());
+			m_state_manager.get_program()->set_parameter(
+				apt_albedo_scale_offsets,
+				material->get_albedo_scale_offsets());
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_state_manager.draw(0, 1);
+
+			DEBUG_CHECK_GL_ERROR();
+		}
+*/
+		m_program_vars_id++;
+
+		DEBUG_CHECK_GL_ERROR();
+
+		unbind_all();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_terrain_frame_buffer->unbind();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		m_state_manager.switch_texture(stt_terrain,
+			m_terrain_frame_buffer->get_texture());
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glViewport(m_scene_view.get_view_port()[0],
+			m_scene_view.get_view_port()[1],
+			m_scene_view.get_view_port()[2],
+			m_scene_view.get_view_port()[3]);
+	}
+
+	void Scene::draw_terrain_texture()
+	{
+		Mat2x3Vector texture_matrices;
+		glm::mat2x3 texture_matrix;
+		glm::vec2 pos, offset;
+		float terrain_size, terrain_texture_size, scale;
+		Uint32 i;
+
+		pos = glm::vec2(m_scene_view.get_camera());
+
+		terrain_size = (1024 / 16) * 512;
+
+		m_texture_matrices.clear();
+
+		scale = m_scale;
+		terrain_texture_size = m_terrain_texture_size;
+
+		for (i = 0; i < 1; ++i)
+		{
+			texture_matrices.clear();
+
+			offset = (pos - 0.5f * terrain_texture_size)
+				/ terrain_size;
+			scale = terrain_texture_size / terrain_size;
+
+			texture_matrix[0] = glm::vec3(scale, 0.0f, offset.x);
+			texture_matrix[1] = glm::vec3(0.0f, scale, offset.y);
+
+			texture_matrices.push_back(texture_matrix);
+
+			texture_matrix[0] = glm::vec3(scale, 0.0f, 0.0f);
+			texture_matrix[1] = glm::vec3(0.0f, scale, 0.0f);
+
+			texture_matrices.push_back(texture_matrix);
+
+			offset = pos / terrain_texture_size - 0.5f;
+			scale = terrain_size / terrain_texture_size;
+
+			texture_matrix[0] = glm::vec3(scale, 0.0f, -offset.x);
+			texture_matrix[1] = glm::vec3(0.0f, scale, -offset.y);
+
+			m_texture_matrices.push_back(texture_matrix);
+
+			draw_terrain_texture(m_materials, texture_matrices, i);
+
+			scale *= 2.0f;
+			terrain_texture_size *= 2.0f;
+		}
+	}
+
 	void Scene::draw()
 	{
 		StateManagerUtil state(m_state_manager);
@@ -1107,6 +1311,8 @@ namespace eternal_lands
 				draw_all_shadows_array();
 			}
 		}
+
+		draw_terrain_texture();
 
 		m_scene_view.set_default_view();
 
@@ -1190,7 +1396,6 @@ namespace eternal_lands
 					apt_bones, object->get_bones());
 				object_data_set = true;
 			}
-
 
 			material->bind(m_state_manager);
 
@@ -1283,6 +1488,8 @@ namespace eternal_lands
 			m_free_ids));
 
 		set_map(map_loader->load(name));
+
+		update_terrain_map();
 	}
 
 	const ParticleDataVector &Scene::get_particles() const

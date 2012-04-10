@@ -51,6 +51,10 @@
 		<shader_source>shaders/sources/animated_extra_uv.xml</shader_source>
 		<shader_source>shaders/sources/static_uv.xml</shader_source>
 		<shader_source>shaders/sources/static_extra_uv.xml</shader_source>
+		<shader_source>shaders/sources/none_depth.xml</shader_source>
+		<shader_source>shaders/sources/none_normal.xml</shader_source>
+		<shader_source>shaders/sources/none_tangent.xml</shader_source>
+		<shader_source>shaders/sources/albedo_terrain_mapping.xml</shader_source>
 	</shader_sources>
 	<sources>
 		<world_depth_transformation>default</world_depth_transformation>

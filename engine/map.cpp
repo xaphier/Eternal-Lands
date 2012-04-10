@@ -54,7 +54,7 @@ namespace eternal_lands
 		if (file_system->get_file_readable(file_name))
 		{
 			materials.push_back(get_material_cache()->get_material(
-				String(UTF8("tile1"))));
+				String(UTF8("terrain"))));
 
 			data.set_height_map(file_name);
 

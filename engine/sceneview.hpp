@@ -45,6 +45,8 @@ namespace eternal_lands
 			glm::mat4x4 *m_current_view_matrix;
 			Mat4x4Vector *m_current_projection_matrix;
 			Mat4x4Vector *m_current_projection_view_matrix;
+			glm::mat3x3 m_ortho_rotation_matrix;
+			Mat4x4Vector m_ortho_matrix;
 			glm::vec4 m_camera;
 			glm::vec4 m_shadow_camera;
 			glm::vec4 m_view_dir;
@@ -96,6 +98,17 @@ namespace eternal_lands
 				const float scene_max_height);
 			void update_shadow_matrices(
 				const SubFrustumsConvexBodys &convex_bodys);
+
+			inline void set_ortho_view()
+			{
+				m_current_view_rotation_matrix =
+					&m_ortho_rotation_matrix;
+				m_current_view_matrix = &m_ortho_matrix[0];
+				m_current_projection_matrix =
+					&m_ortho_matrix;
+				m_current_projection_view_matrix =
+					&m_ortho_matrix;
+			}
 
 			inline void set_default_view()
 			{
@@ -234,6 +247,11 @@ namespace eternal_lands
 			inline const glm::vec4 &get_camera() const
 			{
 				return m_camera;
+			}
+
+			inline const glm::vec4 &get_view_dir() const
+			{
+				return m_view_dir;
 			}
 
 			inline const glm::vec4 &get_shadow_camera() const
