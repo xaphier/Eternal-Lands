@@ -298,7 +298,7 @@ namespace eternal_lands
 						indices[i]);
 				}
 
-				object_data.set_name(String(UTF8("terrain")));
+				object_data.set_name(String(str.str()));
 
 				tile_offset.x = x;
 				tile_offset.y = y;

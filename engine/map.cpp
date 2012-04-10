@@ -239,7 +239,7 @@ namespace eternal_lands
 			m_terrain->intersect(frustum, visitor);
 		}
 
-		m_object_tree->intersect(frustum, visitor);
+//		m_object_tree->intersect(frustum, visitor);
 	}
 
 	void Map::intersect(const Frustum &frustum, LightVisitor &visitor)

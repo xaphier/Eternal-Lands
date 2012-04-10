@@ -6,8 +6,9 @@
 		<albedo_1>3dobjects/tile2.dds</albedo_1>
 		<albedo_2>3dobjects/tile3.dds</albedo_2>
 		<albedo_3>3dobjects/tile4.dds</albedo_3>
-		<blend>textures/blend0.dds</blend>
+		<blend>textures/blend2.dds</blend>
 		<effect>textured-blend-4-screen-quad</effect>
+		<emission_scale_offset>1.0 1.0 1.0 1.0 1.0 1.0</emission_scale_offset>
 	</material>
 	<material>
 		<name>terrain_1</name>
@@ -15,8 +16,9 @@
 		<albedo_1>3dobjects/tile6.dds</albedo_1>
 		<albedo_2>3dobjects/tile7.dds</albedo_2>
 		<albedo_3>3dobjects/tile8.dds</albedo_3>
-		<blend>textures/blend1.dds</blend>
+		<blend>textures/blend3.dds</blend>
 		<effect>textured-blend-4-screen-quad</effect>
+		<emission_scale_offset>1.0 1.0 1.0 1.0 1.0 1.0</emission_scale_offset>
 	</material>
 	<material>
 		<name>terrain_2</name>
@@ -24,8 +26,9 @@
 		<albedo_1>3dobjects/tile10.dds</albedo_1>
 		<albedo_2>3dobjects/tile11.dds</albedo_2>
 		<albedo_3>3dobjects/tile12.dds</albedo_3>
-		<blend>textures/blend1.dds</blend>
+		<blend>textures/blend3.dds</blend>
 		<effect>textured-blend-4-screen-quad</effect>
+		<emission_scale_offset>1.0 1.0 1.0 1.0 1.0 1.0</emission_scale_offset>
 	</material>
 	<material>
 		<name>terrain_3</name>
@@ -33,13 +36,13 @@
 		<albedo_1>3dobjects/tile14.dds</albedo_1>
 		<albedo_2>3dobjects/tile15.dds</albedo_2>
 		<albedo_3>3dobjects/tile16.dds</albedo_3>
-		<blend>textures/blend1.dds</blend>
+		<blend>textures/blend3.dds</blend>
 		<effect>textured-blend-4-screen-quad</effect>
+		<emission_scale_offset>1.0 1.0 1.0 1.0 1.0 1.0</emission_scale_offset>
 	</material>
 	<material>
 		<name>terrain</name>
 		<effect>simple-terrain</effect>
-		<emission_scale_offset>1.0 1.0 1.0 1.0 1.0 1.0</emission_scale_offset>
 	</material>
 	<material>
 		<name>lava</name>

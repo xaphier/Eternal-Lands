@@ -27,7 +27,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>albedo = texture(terrain_sampler, fragment_uv);
+   <source>albedo = texture(terrain_sampler, vec3(fragment_uv, 0.0).xy);
 </source>
    <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>

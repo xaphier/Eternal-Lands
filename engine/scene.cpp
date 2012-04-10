@@ -249,14 +249,10 @@ namespace eternal_lands
 
 	void Scene::update_terrain_map()
 	{
-		m_terrain_texture_size = 2048;
-
 		m_terrain_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
-				String(UTF8("terrain")), m_terrain_texture_size,
-				m_terrain_texture_size, 0, tft_rgb8, true);
-
-		m_scale = m_terrain_texture_size / 512;
+				String(UTF8("terrain")), 2048,
+				2048, 0, tft_rgb8, false);
 
 		m_materials.clear();
 
@@ -1241,49 +1237,49 @@ namespace eternal_lands
 	{
 		Mat2x3Vector texture_matrices;
 		glm::mat2x3 texture_matrix;
-		glm::vec2 pos, offset;
-		float terrain_size, terrain_texture_size, scale;
+		glm::vec2 pos, offset, scale;
+		glm::vec2 clipmap_texture_size, clipmap_world_size;
+		glm::vec2 tile_texture_size, tile_world_size;
+		glm::vec2 terrain_texture_size, terrain_world_size;
 		Uint32 i;
 
-		pos = glm::vec2(m_scene_view.get_camera());
+		clipmap_texture_size = glm::vec2(2048.0f);
+		tile_texture_size = glm::vec2(512.0f);
+		tile_world_size = glm::vec2(8.0f);
+		terrain_texture_size = glm::vec2(1024.0f);
+		terrain_world_size = glm::vec2(256.0f);
+		clipmap_world_size = (clipmap_texture_size / tile_texture_size) * tile_world_size;
 
-		terrain_size = (1024 / 16) * 512;
+		pos = glm::vec2(m_scene_view.get_focus());
 
 		m_texture_matrices.clear();
-
-		scale = m_scale;
-		terrain_texture_size = m_terrain_texture_size;
 
 		for (i = 0; i < 1; ++i)
 		{
 			texture_matrices.clear();
 
-			offset = (pos - 0.5f * terrain_texture_size)
-				/ terrain_size;
-			scale = terrain_texture_size / terrain_size;
+			offset = pos - clipmap_world_size * 0.5f;
+			offset /= terrain_world_size;
+			scale = terrain_world_size / clipmap_world_size;
+			offset *= scale;
 
-			texture_matrix[0] = glm::vec3(scale, 0.0f, offset.x);
-			texture_matrix[1] = glm::vec3(0.0f, scale, offset.y);
-
-			texture_matrices.push_back(texture_matrix);
-
-			texture_matrix[0] = glm::vec3(scale, 0.0f, 0.0f);
-			texture_matrix[1] = glm::vec3(0.0f, scale, 0.0f);
-
-			texture_matrices.push_back(texture_matrix);
-
-			offset = pos / terrain_texture_size - 0.5f;
-			scale = terrain_size / terrain_texture_size;
-
-			texture_matrix[0] = glm::vec3(scale, 0.0f, -offset.x);
-			texture_matrix[1] = glm::vec3(0.0f, scale, -offset.y);
+			texture_matrix[0] = glm::vec3(scale.x, 0.0f, -offset.x);
+			texture_matrix[1] = glm::vec3(0.0f, scale.y, -offset.y);
 
 			m_texture_matrices.push_back(texture_matrix);
 
+			texture_matrix = glm::mat2x3(glm::inverse(glm::mat3(texture_matrix)));
+
+			texture_matrices.push_back(texture_matrix);
+
+			texture_matrix[0] *= clipmap_world_size.x;
+			texture_matrix[1] *= clipmap_world_size.y;
+
+			texture_matrices.push_back(texture_matrix);
+
 			draw_terrain_texture(m_materials, texture_matrices, i);
 
-			scale *= 2.0f;
-			terrain_texture_size *= 2.0f;
+			clipmap_world_size *= 2;
 		}
 	}
 

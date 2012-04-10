@@ -53,7 +53,6 @@ namespace eternal_lands
 			AbstractMeshSharedPtr m_screen_quad;
 			MaterialSharedPtrVector m_materials;
 			Mat2x3Vector m_texture_matrices;
-			float m_scale;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractFrameBufferSharedPtr m_terrain_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
@@ -67,7 +66,6 @@ namespace eternal_lands
 			FreeIdsManagerSharedPtr m_free_ids;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
-			Uint32 m_terrain_texture_size;
 			float m_time;
 			SubFrustumsMask m_shadow_objects_mask;
 			bool m_lights;
