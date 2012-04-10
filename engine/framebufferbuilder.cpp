@@ -29,21 +29,24 @@ namespace eternal_lands
 
 	AbstractFrameBufferSharedPtr FrameBufferBuilder::build(
 		const String &name, const Uint32 width, const Uint32 height,
-		const Uint16 mipmaps, const TextureFormatType format,
-		const bool depth)
+		const Uint32 depth, const Uint16 mipmaps,
+		const TextureTargetType target,	const TextureFormatType format,
+		const bool depth_buffer)
 	{
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			return AbstractFrameBufferSharedPtr(
-				new SimpleFrameBuffer(name, width, height, 0,
-					mipmaps, format, depth));
+				new SimpleFrameBuffer(name, width, height,
+					depth, mipmaps, target, format,
+					depth_buffer));
 		}
 
 		if (GLEW_EXT_framebuffer_object)
 		{
 			return AbstractFrameBufferSharedPtr(
 				new ExtSimpleFrameBuffer(name, width, height,
-					mipmaps, format, depth));
+					depth, mipmaps, target, format,
+					depth_buffer));
 		}
 
 		EL_THROW_EXCEPTION(OpenGlException()
@@ -67,9 +70,9 @@ namespace eternal_lands
 
 	AbstractFrameBufferSharedPtr FrameBufferBuilder::build(
 		const String &name, const Uint32 width, const Uint32 height,
-		const Uint32 layers, const Uint16 mipmaps, const Uint16 samples,
-		const TextureFormatType format, const bool layered,
-		const bool depth)
+		const Uint32 depth, const Uint16 mipmaps, const Uint16 samples,
+		const TextureTargetType target, const TextureFormatType format,
+		const bool layered, const bool depth_buffer)
 	{
 		if (!get_global_vars()->get_opengl_3_0())
 		{
@@ -81,19 +84,22 @@ namespace eternal_lands
 		{
 			return AbstractFrameBufferSharedPtr(
 				new LayeredFrameBuffer(name, width, height,
-					layers, mipmaps, format, depth));
+					depth, mipmaps, target, format,
+					depth_buffer));
 		}
 
 		if (samples == 0)
 		{
 			return AbstractFrameBufferSharedPtr(
 				new SimpleFrameBuffer(name, width, height,
-					layers, mipmaps, format, depth));
+					depth, mipmaps, target, format,
+					depth_buffer));
 		}
 
 		return AbstractFrameBufferSharedPtr(
 			new MultiSampleFrameBuffer(name, width, height,
-				layers, mipmaps, samples, format));
+				depth, mipmaps, samples, target, format,
+				depth_buffer));
 	}
 
 }

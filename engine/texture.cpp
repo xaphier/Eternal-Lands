@@ -16,7 +16,7 @@ namespace eternal_lands
 	Texture::Texture(const String &name): m_name(name),
 		m_anisotropic_filter(16.0f), m_texture_id(0),
 		m_width(0), m_height(0), m_depth(0), m_size(0),
-		m_format(tft_rgb8), m_target(ttt_2d_texture),
+		m_format(tft_rgb8), m_target(ttt_texture_2d),
 		m_mag_filter(tft_linear), m_min_filter(tft_linear),
 		m_mipmap_filter(tmt_linear), m_wrap_s(twt_repeat),
 		m_wrap_t(twt_repeat), m_wrap_r(twt_repeat),
@@ -82,26 +82,26 @@ namespace eternal_lands
 
 	void Texture::set_texture_filter()
 	{
-		glTexParameteri(get_target(), GL_TEXTURE_MAG_FILTER,
+		glTexParameteri(get_gl_target(), GL_TEXTURE_MAG_FILTER,
 			get_mag_filter());
 
 		if (get_use_mipmaps())
 		{
-			glTexParameteri(get_target(), GL_TEXTURE_MIN_FILTER,
+			glTexParameteri(get_gl_target(), GL_TEXTURE_MIN_FILTER,
 				get_min_filter(get_min_filter(),
 				get_mipmap_filter()));
 
 			if ((get_anisotropic_filter() >= 1.0f) &&
 				(get_mipmap_filter() != tmt_none))
 			{
-				glTexParameterf(get_target(),
+				glTexParameterf(get_gl_target(),
 					GL_TEXTURE_MAX_ANISOTROPY_EXT,
 					get_anisotropic_filter());
 			}
 		}
 		else
 		{
-			glTexParameteri(get_target(), GL_TEXTURE_MIN_FILTER,
+			glTexParameteri(get_gl_target(), GL_TEXTURE_MIN_FILTER,
 				get_min_filter());
 		}
 	}
@@ -110,19 +110,19 @@ namespace eternal_lands
 	{
 		switch (get_target())
 		{
-			case ttt_3d_texture:
-			case ttt_2d_texture_array:
-			case ttt_cube_map_texture_array:
-				glTexParameteri(get_target(),
+			case ttt_texture_3d:
+			case ttt_texture_2d_array:
+			case ttt_texture_cube_map_array:
+				glTexParameteri(get_gl_target(),
 					GL_TEXTURE_WRAP_R, get_wrap_r());
-			case ttt_2d_texture:
-			case ttt_1d_texture_array:
-			case ttt_cube_map_texture:
+			case ttt_texture_2d:
+			case ttt_texture_1d_array:
+			case ttt_texture_cube_map:
 			case ttt_texture_rectangle:
-				glTexParameteri(get_target(),
+				glTexParameteri(get_gl_target(),
 					GL_TEXTURE_WRAP_T, get_wrap_t());
-			case ttt_1d_texture:
-				glTexParameteri(get_target(),
+			case ttt_texture_1d:
+				glTexParameteri(get_gl_target(),
 					GL_TEXTURE_WRAP_S, get_wrap_s());
 				return;
 		}
@@ -168,10 +168,11 @@ namespace eternal_lands
 
 		if (TextureFormatUtil::get_depth(get_format()))
 		{
-			glTexParameteri(get_target(), GL_TEXTURE_COMPARE_MODE,
+			glTexParameteri(get_gl_target(),
+				GL_TEXTURE_COMPARE_MODE,
 				GL_COMPARE_R_TO_TEXTURE);
-			glTexParameteri(get_target(), GL_TEXTURE_COMPARE_FUNC,
-				GL_LEQUAL);
+			glTexParameteri(get_gl_target(),
+				GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 		}
 	}
 
@@ -197,13 +198,13 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexImage1D(get_target(), mipmap,
+			glCompressedTexImage1D(get_gl_target(), mipmap,
 				get_gl_format(), width, 0, size,
 				image->get_data(0, mipmap));
 		}
 		else
 		{
-			glTexImage1D(get_target(), mipmap, get_gl_format(),
+			glTexImage1D(get_gl_target(), mipmap, get_gl_format(),
 				width, 0, image_format,
 				image_type, image->get_data(0, mipmap));
 		}
@@ -234,13 +235,13 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexImage2D(get_target(), mipmap,
+			glCompressedTexImage2D(get_gl_target(), mipmap,
 				get_gl_format(), width, height,
 				0, size, image->get_data(0, mipmap));
 		}
 		else
 		{
-			glTexImage2D(get_target(), mipmap, get_gl_format(),
+			glTexImage2D(get_gl_target(), mipmap, get_gl_format(),
 				width, height, 0, image_format, image_type,
 				image->get_data(0, mipmap));
 		}
@@ -271,13 +272,13 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexImage3D(get_target(), mipmap,
+			glCompressedTexImage3D(get_gl_target(), mipmap,
 				get_gl_format(), width, height,
 				depth, 0, size, image->get_data(0, mipmap));
 		}
 		else
 		{
-			glTexImage3D(get_target(), mipmap, get_gl_format(),
+			glTexImage3D(get_gl_target(), mipmap, get_gl_format(),
 				width, height, depth, 0, image_format,
 				image_type, image->get_data(0, mipmap));
 		}
@@ -428,13 +429,13 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexSubImage3D(get_target(), mipmap, 0, 0,
+			glCompressedTexSubImage3D(get_gl_target(), mipmap, 0, 0,
 				layer, width, height, 1, get_gl_format(), size,
 				image->get_data(0, mipmap));
 		}
 		else
 		{
-			glTexSubImage3D(get_target(), mipmap, 0, 0, layer,
+			glTexSubImage3D(get_gl_target(), mipmap, 0, 0, layer,
 				width, height, 1, image_format, image_type,
 				image->get_data(0, mipmap));
 		}
@@ -468,14 +469,14 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexSubImage1D(get_target(),
+			glCompressedTexSubImage1D(get_gl_target(),
 				texture_mipmap, texture_position[0], width,
 				get_gl_format(), size, image->get_pixel_data(
 				image_position[0], 0, 0, 0, image_mipmap));
 		}
 		else
 		{
-			glTexSubImage1D(get_target(), texture_mipmap,
+			glTexSubImage1D(get_gl_target(), texture_mipmap,
 				texture_position[0], width, image_format,
 				image_type, image->get_pixel_data(
 				image_position[0], 0, 0, 0, image_mipmap));
@@ -510,7 +511,7 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexSubImage2D(get_target(),
+			glCompressedTexSubImage2D(get_gl_target(),
 				texture_mipmap, texture_position[0],
 				texture_position[1], width, height,
 				get_gl_format(), size,
@@ -519,7 +520,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			glTexSubImage2D(get_target(), texture_mipmap,
+			glTexSubImage2D(get_gl_target(), texture_mipmap,
 				texture_position[0], texture_position[1],
 				width, height, image_format, image_type,
 				image->get_pixel_data(image_position[0],
@@ -556,7 +557,7 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexSubImage3D(get_target(),
+			glCompressedTexSubImage3D(get_gl_target(),
 				texture_mipmap, texture_position[0],
 				texture_position[1], texture_position[2],
 				width, height, depth, get_gl_format(), size,
@@ -566,7 +567,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			glTexSubImage3D(get_target(), texture_mipmap,
+			glTexSubImage3D(get_gl_target(), texture_mipmap,
 				texture_position[0], texture_position[1],
 				texture_position[2], width, height, depth,
 				image_format, image_type,
@@ -747,7 +748,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		TextureFormatUtil::get_source_format_type(get_format(), format,
+		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
 
 		compressed = TextureFormatUtil::get_compressed(get_format());
@@ -755,12 +756,12 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexImage1D(get_target(), mipmap,
+			glCompressedTexImage1D(get_gl_target(), mipmap,
 				get_gl_format(), width, 0, size, 0);
 		}
 		else
 		{
-			glTexImage1D(get_target(), mipmap, get_gl_format(),
+			glTexImage1D(get_gl_target(), mipmap, get_gl_format(),
 				width, 0, format, type, 0);
 		}
 
@@ -779,7 +780,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		TextureFormatUtil::get_source_format_type(get_format(), format,
+		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
 
 		compressed = TextureFormatUtil::get_compressed(get_format());
@@ -787,12 +788,12 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexImage2D(get_target(), mipmap,
+			glCompressedTexImage2D(get_gl_target(), mipmap,
 				get_gl_format(), width, height, 0, size, 0);
 		}
 		else
 		{
-			glTexImage2D(get_target(), mipmap, get_gl_format(),
+			glTexImage2D(get_gl_target(), mipmap, get_gl_format(),
 				width, height, 0, format, type, 0);
 		}
 
@@ -811,7 +812,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		TextureFormatUtil::get_source_format_type(get_format(), format,
+		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
 
 		compressed = TextureFormatUtil::get_compressed(get_format());
@@ -819,13 +820,13 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexImage3D(get_target(), mipmap,
+			glCompressedTexImage3D(get_gl_target(), mipmap,
 				get_gl_format(), width, height,
 				depth, 0, size, 0);
 		}
 		else
 		{
-			glTexImage3D(get_target(), mipmap, get_gl_format(),
+			glTexImage3D(get_gl_target(), mipmap, get_gl_format(),
 				width, height, depth, 0, format, type, 0);
 		}
 
@@ -862,7 +863,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		TextureFormatUtil::get_source_format_type(get_format(), format,
+		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
 
 		compressed = TextureFormatUtil::get_compressed(get_format());
@@ -870,12 +871,12 @@ namespace eternal_lands
 
 		if (compressed)
 		{
-			glCompressedTexImage2D(get_target(), mipmap,
+			glCompressedTexImage2D(get_gl_target(), mipmap,
 				get_gl_format(), width, height, 0, size, 0);
 		}
 		else
 		{
-			glTexImage2D(get_target(), mipmap, get_gl_format(),
+			glTexImage2D(get_gl_target(), mipmap, get_gl_format(),
 				width, height, 0, format, type, 0);
 		}
 
@@ -912,7 +913,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		TextureFormatUtil::get_source_format_type(get_format(), format,
+		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
 
 		compressed = TextureFormatUtil::get_compressed(get_format());
@@ -953,7 +954,7 @@ namespace eternal_lands
 				get_mipmap_count());
 			level = mipmaps + 1;
 
-			glTexParameteri(get_target(), GL_TEXTURE_MAX_LEVEL,
+			glTexParameteri(get_gl_target(), GL_TEXTURE_MAX_LEVEL,
 				mipmaps);
 		}
 		else
@@ -962,11 +963,11 @@ namespace eternal_lands
 			{
 				glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
 
-				glTexParameteri(get_target(),
+				glTexParameteri(get_gl_target(),
 					GL_TEXTURE_MAX_LEVEL,
 					get_mipmap_count());
 
-				glTexParameteri(get_target(),
+				glTexParameteri(get_gl_target(),
 					GL_GENERATE_MIPMAP, GL_TRUE);
 				mipmaps = get_mipmap_count();
 			}
@@ -992,31 +993,31 @@ namespace eternal_lands
 		{
 			switch (get_target())
 			{
-				case ttt_1d_texture:
+				case ttt_texture_1d:
 					set_texture_image_1d(mip, width, image);
 					break;
-				case ttt_1d_texture_array:
+				case ttt_texture_1d_array:
 					set_texture_image_2d(mip, width, layer,
 						image);
 					break;
-				case ttt_2d_texture:
+				case ttt_texture_2d:
 				case ttt_texture_rectangle:
 					set_texture_image_2d(mip, width, height,
 						image);
 					break;
-				case ttt_3d_texture:
+				case ttt_texture_3d:
 					set_texture_image_3d(mip, width, height,
 						depth, image);
 					break;
-				case ttt_2d_texture_array:
+				case ttt_texture_2d_array:
 					set_texture_image_3d(mip, width, height,
 						layer, image);
 					break;
-				case ttt_cube_map_texture:
+				case ttt_texture_cube_map:
 					set_texture_image_cube_map(mip, width,
 						height, image);
 					break;
-				case ttt_cube_map_texture_array:
+				case ttt_texture_cube_map_array:
 					set_texture_image_cube_map(mip, width,
 						height, layer, image);
 					break;
@@ -1091,7 +1092,7 @@ namespace eternal_lands
 
 		if (mipmaps > 0)
 		{
-			glTexParameteri(get_target(), GL_TEXTURE_MAX_LEVEL,
+			glTexParameteri(get_gl_target(), GL_TEXTURE_MAX_LEVEL,
 				get_used_mipmaps());
 		}
 		else
@@ -1100,11 +1101,11 @@ namespace eternal_lands
 			{
 				glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
 
-				glTexParameteri(get_target(),
+				glTexParameteri(get_gl_target(),
 					GL_TEXTURE_MAX_LEVEL,
 					get_mipmap_count());
 
-				glTexParameteri(get_target(),
+				glTexParameteri(get_gl_target(),
 					GL_GENERATE_MIPMAP, GL_TRUE);
 			}
 		}
@@ -1183,31 +1184,31 @@ namespace eternal_lands
 
 		switch (get_target())
 		{
-			case ttt_1d_texture:
+			case ttt_texture_1d:
 				set_texture_image_1d(texture_mipmap,
 					image_mipmap, size[0], image,
 					texture_position, image_position);
 				break;
-			case ttt_2d_texture:
-			case ttt_1d_texture_array:
+			case ttt_texture_2d:
+			case ttt_texture_1d_array:
 			case ttt_texture_rectangle:
 				set_texture_image_2d(texture_mipmap,
 					image_mipmap, size[0], size[1], image,
 					texture_position, image_position);
 				break;
-			case ttt_3d_texture:
-			case ttt_2d_texture_array:
+			case ttt_texture_3d:
+			case ttt_texture_2d_array:
 				set_texture_image_3d(texture_mipmap,
 					image_mipmap, size[0], size[1],
 					size[2], image, texture_position,
 					image_position);
 				break;
-			case ttt_cube_map_texture:
+			case ttt_texture_cube_map:
 				set_texture_image_cube_map(texture_mipmap,
 					image_mipmap, size[0], 	size[1], image,
 					texture_position, image_position);
 				break;
-			case ttt_cube_map_texture_array:
+			case ttt_texture_cube_map_array:
 				set_texture_image_cube_map(texture_mipmap,
 					image_mipmap, size[0], size[1],
 					size[2], image, texture_position,
@@ -1236,30 +1237,30 @@ namespace eternal_lands
 
 		switch (get_target())
 		{
-			case ttt_1d_texture:
+			case ttt_texture_1d:
 				height = 1;
 				depth = 1;
 				break;
-			case ttt_2d_texture:
+			case ttt_texture_2d:
 			case ttt_texture_rectangle:
 				depth = 1;
 				break;
-			case ttt_1d_texture_array:
+			case ttt_texture_1d_array:
 				layer = depth;
 				height = 1;
 				depth = 1;
 				break;
-			case ttt_3d_texture:
+			case ttt_texture_3d:
 				break;
-			case ttt_2d_texture_array:
+			case ttt_texture_2d_array:
 				layer = depth;
 				depth = 1;
 				break;
-			case ttt_cube_map_texture:
+			case ttt_texture_cube_map:
 				depth = 1;
 				faces = 6;
 				break;
-			case ttt_cube_map_texture_array:
+			case ttt_texture_cube_map_array:
 				layer = depth;
 				depth = 1;
 				faces = 6;
@@ -1317,24 +1318,24 @@ namespace eternal_lands
 		{
 			switch (get_target())
 			{
-				case ttt_1d_texture:
+				case ttt_texture_1d:
 					set_texture_image_1d(mip, w);
 					break;
-				case ttt_2d_texture:
-				case ttt_1d_texture_array:
+				case ttt_texture_2d:
+				case ttt_texture_1d_array:
 				case ttt_texture_rectangle:
 					set_texture_image_2d(mip, w, h);
 					break;
-				case ttt_3d_texture:
+				case ttt_texture_3d:
 					set_texture_image_3d(mip, w, h, d);
 					break;
-				case ttt_2d_texture_array:
+				case ttt_texture_2d_array:
 					set_texture_image_3d(mip, w, h, layer);
 					break;
-				case ttt_cube_map_texture:
+				case ttt_texture_cube_map:
 					set_texture_image_cube_map(mip, w, h);
 					break;
-				case ttt_cube_map_texture_array:
+				case ttt_texture_cube_map_array:
 					set_texture_image_cube_map(mip, w, h,
 						layer);
 					break;
@@ -1373,29 +1374,29 @@ namespace eternal_lands
 
 		switch (get_target())
 		{
-			case ttt_1d_texture:
+			case ttt_texture_1d:
 				glFramebufferTexture1DEXT(GL_FRAMEBUFFER_EXT,
-					attachment, get_target(),
+					attachment, get_gl_target(),
 					get_texture_id(), level);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_2d_texture:
+			case ttt_texture_2d:
 			case ttt_texture_rectangle:
 				glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
-					attachment, get_target(),
+					attachment, get_gl_target(),
 					get_texture_id(), level);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_3d_texture:
+			case ttt_texture_3d:
 				glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT,
-					attachment, get_target(),
+					attachment, get_gl_target(),
 					get_texture_id(), level, layer);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_1d_texture_array:
-			case ttt_2d_texture_array:
-			case ttt_cube_map_texture:
-			case ttt_cube_map_texture_array:
+			case ttt_texture_1d_array:
+			case ttt_texture_2d_array:
+			case ttt_texture_cube_map:
+			case ttt_texture_cube_map_array:
 			default:
 				assert(false);
 				CHECK_GL_ERROR();
@@ -1412,34 +1413,34 @@ namespace eternal_lands
 
 		switch (get_target())
 		{
-			case ttt_1d_texture:
+			case ttt_texture_1d:
 				glFramebufferTexture1D(GL_FRAMEBUFFER,
-					attachment, get_target(),
+					attachment, get_gl_target(),
 					get_texture_id(), level);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_2d_texture:
+			case ttt_texture_2d:
 			case ttt_texture_rectangle:
 				glFramebufferTexture2D(GL_FRAMEBUFFER,
-					attachment, get_target(),
+					attachment, get_gl_target(),
 					get_texture_id(), level);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_3d_texture:
+			case ttt_texture_3d:
 				glFramebufferTexture3D(GL_FRAMEBUFFER,
-					attachment, get_target(),
+					attachment, get_gl_target(),
 					get_texture_id(), level, layer);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_1d_texture_array:
-			case ttt_2d_texture_array:
+			case ttt_texture_1d_array:
+			case ttt_texture_2d_array:
 				glFramebufferTextureLayer(GL_FRAMEBUFFER,
 					attachment, get_texture_id(), level,
 					layer);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_cube_map_texture:
-			case ttt_cube_map_texture_array:
+			case ttt_texture_cube_map:
+			case ttt_texture_cube_map_array:
 			default:
 				assert(false);
 				CHECK_GL_ERROR();
@@ -1455,17 +1456,17 @@ namespace eternal_lands
 
 		switch (get_target())
 		{
-			case ttt_3d_texture:
-			case ttt_1d_texture_array:
-			case ttt_2d_texture_array:
-			case ttt_cube_map_texture:
-			case ttt_cube_map_texture_array:
+			case ttt_texture_3d:
+			case ttt_texture_1d_array:
+			case ttt_texture_2d_array:
+			case ttt_texture_cube_map:
+			case ttt_texture_cube_map_array:
 				glFramebufferTexture(GL_FRAMEBUFFER,
 					attachment, get_texture_id(), level);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_1d_texture:
-			case ttt_2d_texture:
+			case ttt_texture_1d:
+			case ttt_texture_2d:
 			case ttt_texture_rectangle:
 			default:
 				assert(false);
@@ -1483,22 +1484,22 @@ namespace eternal_lands
 
 		switch (get_target())
 		{
-			case ttt_1d_texture:
-			case ttt_2d_texture:
-			case ttt_1d_texture_array:
+			case ttt_texture_1d:
+			case ttt_texture_2d:
+			case ttt_texture_1d_array:
 			case ttt_texture_rectangle:
-			case ttt_3d_texture:
-			case ttt_2d_texture_array:
+			case ttt_texture_3d:
+			case ttt_texture_2d_array:
 				assert(false);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_cube_map_texture:
+			case ttt_texture_cube_map:
 				glFramebufferTexture2D(GL_FRAMEBUFFER,
 					attachment, face, get_texture_id(),
 					level);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_cube_map_texture_array:
+			case ttt_texture_cube_map_array:
 				assert(false);
 				CHECK_GL_ERROR();
 				break;
@@ -1515,17 +1516,17 @@ namespace eternal_lands
 
 		switch (get_target())
 		{
-			case ttt_1d_texture:
-			case ttt_2d_texture:
-			case ttt_1d_texture_array:
+			case ttt_texture_1d:
+			case ttt_texture_2d:
+			case ttt_texture_1d_array:
 			case ttt_texture_rectangle:
-			case ttt_3d_texture:
-			case ttt_2d_texture_array:
-			case ttt_cube_map_texture:
+			case ttt_texture_3d:
+			case ttt_texture_2d_array:
+			case ttt_texture_cube_map:
 				assert(false);
 				CHECK_GL_ERROR();
 				break;
-			case ttt_cube_map_texture_array:
+			case ttt_texture_cube_map_array:
 				glFramebufferTexture3D(GL_FRAMEBUFFER,
 					attachment, face, get_texture_id(),
 					level, layer);
@@ -1592,35 +1593,6 @@ namespace eternal_lands
 		VALUE_NOT_IN_SWITCH(value, UTF8("CubeMapFaceType"));
 	}
 
-	String Texture::get_str(const TextureTargetType value)
-	{
-		switch (value)
-		{
-			case ttt_1d_texture:
-				return String(UTF8("1d_texture"));
-			case ttt_2d_texture:
-				return String(UTF8("2d_texture"));
-			case ttt_3d_texture:
-				return String(UTF8("3d_texture"));
-			case ttt_cube_map_texture:
-				return String(UTF8("cube_map_texture"));
-			case ttt_1d_texture_array:
-				return String(UTF8("1d_texture_array"));
-			case ttt_2d_texture_array:
-				return String(UTF8("2d_texture_array"));
-			case ttt_cube_map_texture_array:
-				return String(UTF8("cube_map_texture_array"));
-			case ttt_texture_rectangle:
-				return String(UTF8("texture_rectangle"));
-		}
-		/**
-		 * We should be never here. If so, it's a programming error,
-		 * because we forgot to add all types to the switch or an
-		 * invalid int was used (with a type cast)!
-		 */
-		VALUE_NOT_IN_SWITCH(value, UTF8("TextureTargetType"));
-	}
-
 	String Texture::get_str(const TextureFilterType value)
 	{
 		switch (value)
@@ -1677,13 +1649,6 @@ namespace eternal_lands
 	}
 
 	OutStream& operator<<(OutStream &str, const CubeMapFaceType value)
-	{
-		str << Texture::get_str(value);
-
-		return str;
-	}
-
-	OutStream& operator<<(OutStream &str, const TextureTargetType value)
 	{
 		str << Texture::get_str(value);
 

@@ -50,14 +50,14 @@ namespace eternal_lands
 	class BlendUtil
 	{
 		public:
-			static const String &get_str(
-				const BlendType blend_type);
+			static const String &get_str(const BlendType blend);
 			static BlendType get_blend(const String &str);
-			static Uint32 get_blend_type_count();
+			static Uint32 get_blend_count();
 
 	};
 
-	std::ostream& operator<< (std::ostream &str, const BlendType value);
+	OutStream& operator<<(OutStream &str, const BlendType value);
+	InStream& operator>>(InStream &str, BlendType &value);
 
 }
 

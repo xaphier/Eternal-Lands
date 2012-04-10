@@ -73,7 +73,7 @@ namespace eternal_lands
 		};
 
 		const ShaderSourceLocalTypeData
-			shader_source_local_type_datas[] =
+			shader_source_local_datas[] =
 		{
 			ShaderSourceLocalTypeData(
 				String(UTF8("diffuse_colors_sum")), pt_vec3),
@@ -94,22 +94,22 @@ namespace eternal_lands
 				pt_vec3)
 		};
 
-		const Uint32 shader_source_local_type_datas_count =
-			sizeof(shader_source_local_type_datas) /
+		const Uint32 shader_source_local_datas_count =
+			sizeof(shader_source_local_datas) /
 			sizeof(ShaderSourceLocalTypeData);
 
 		const String &get_str(const ShaderSourceLocalType local)
 		{
-			if (shader_source_local_type_datas_count > local)
+			if (shader_source_local_datas_count > local)
 			{
-				return shader_source_local_type_datas[
+				return shader_source_local_datas[
 					local].get_name();
 			}
 
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					shader_source_local_type_datas_count
+					shader_source_local_datas_count
 						 - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					local))
@@ -120,16 +120,16 @@ namespace eternal_lands
 		ParameterType get_parameter_type(
 			const ShaderSourceLocalType local)
 		{
-			if (shader_source_local_type_datas_count > local)
+			if (shader_source_local_datas_count > local)
 			{
-				return shader_source_local_type_datas[
+				return shader_source_local_datas[
 					local].get_type();
 			}
 
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					shader_source_local_type_datas_count
+					shader_source_local_datas_count
 						 - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					local))
@@ -141,12 +141,12 @@ namespace eternal_lands
 			const ShaderSourceLocalType local,
 			const ParameterQualifierType qualifier)
 		{
-			if (shader_source_local_type_datas_count > local)
+			if (shader_source_local_datas_count > local)
 			{
 				return ShaderSourceParameterBuilder::build(
-					source,	shader_source_local_type_datas[
+					source,	shader_source_local_datas[
 						local].get_name(),
-					shader_source_local_type_datas[
+					shader_source_local_datas[
 						local].get_type(),
 					qualifier, 1);
 			}
@@ -154,7 +154,7 @@ namespace eternal_lands
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					shader_source_local_type_datas_count
+					shader_source_local_datas_count
 						 - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					local))

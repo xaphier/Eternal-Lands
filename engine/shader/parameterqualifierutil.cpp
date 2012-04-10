@@ -14,15 +14,15 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String parameter_qualifier_type_datas[] =
+		const String parameter_qualifier_names[] =
 		{
 			String(UTF8("in")),
 			String(UTF8("out")),
 			String(UTF8("inout"))
 		};
 
-		const Uint32 parameter_qualifier_type_datas_count =
-			sizeof(parameter_qualifier_type_datas) /
+		const Uint32 parameter_qualifier_names_count =
+			sizeof(parameter_qualifier_names) /
 			sizeof(String);
 
 	}
@@ -30,12 +30,12 @@ namespace eternal_lands
 	const String &ParameterQualifierUtil::get_str(
 		const ParameterQualifierType parameter)
 	{
-		if (parameter_qualifier_type_datas_count <= parameter)
+		if (parameter_qualifier_names_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_qualifier_type_datas_count
+					parameter_qualifier_names_count
 						- 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
@@ -43,7 +43,7 @@ namespace eternal_lands
 					"ParameterQualifierType")));
 		}
 
-		return parameter_qualifier_type_datas[parameter];
+		return parameter_qualifier_names[parameter];
 	}
 
 	ParameterQualifierType ParameterQualifierUtil::get_parameter_qualifier(
@@ -52,7 +52,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterQualifierType parameter_qualifier;
 
-		for (i = 0; i < parameter_qualifier_type_datas_count; ++i)
+		for (i = 0; i < parameter_qualifier_names_count; ++i)
 		{
 			parameter_qualifier =
 				static_cast<ParameterQualifierType>(i);
@@ -75,7 +75,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterQualifierType tmp;
 
-		for (i = 0; i < parameter_qualifier_type_datas_count; ++i)
+		for (i = 0; i < parameter_qualifier_names_count; ++i)
 		{
 			tmp = static_cast<ParameterQualifierType>(i);
 
@@ -92,7 +92,7 @@ namespace eternal_lands
 
 	Uint32 ParameterQualifierUtil::get_parameter_qualifier_count()
 	{
-		return parameter_qualifier_type_datas_count;
+		return parameter_qualifier_names_count;
 	}
 
 	OutStream& operator<<(OutStream &str,

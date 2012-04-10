@@ -225,7 +225,7 @@ namespace eternal_lands
 				).get_framebuffer_builder()->build(
 					String(UTF8("Shadow")),
 					shadow_map_width, shadow_map_height, 0,
-					tft_depth32, true);
+					0, ttt_texture_2d, tft_depth32, true);
 
 			return;
 		}
@@ -242,7 +242,8 @@ namespace eternal_lands
 			).get_framebuffer_builder()->build(
 				String(UTF8("Shadow")),	shadow_map_width,
 				shadow_map_height, shadow_map_count,
-				mipmaps, samples, tft_r32f,
+				mipmaps, samples, ttt_texture_2d_array,
+				tft_r32f,
 				get_global_vars()->get_use_layered_rendering(),
 				true);
 	}
@@ -929,7 +930,7 @@ namespace eternal_lands
 
 		if (m_scene_view.get_exponential_shadow_maps())
 		{
-			glGenerateMipmap(ttt_2d_texture_array);
+			glGenerateMipmap(ttt_texture_2d_array);
 		}
 
 		DEBUG_CHECK_GL_ERROR();
@@ -997,7 +998,7 @@ namespace eternal_lands
 
 		if (m_scene_view.get_exponential_shadow_maps())
 		{
-			glGenerateMipmap(ttt_2d_texture_array);
+			glGenerateMipmap(ttt_texture_2d_array);
 		}
 
 		DEBUG_CHECK_GL_ERROR();

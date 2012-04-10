@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_CASE(get_str)
 {
 	Uint32 i, count;
 
-	count = el::BlendUtil::get_blend_type_count();
+	count = el::BlendUtil::get_blend_count();
 
 	for (i = 0; i < count; ++i)
 	{
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(convert)
 	Uint32 i, count;
 	el::BlendType type;
 
-	count = el::BlendUtil::get_blend_type_count();
+	count = el::BlendUtil::get_blend_count();
 
 	for (i = 0; i < count; ++i)
 	{

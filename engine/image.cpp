@@ -230,8 +230,8 @@ namespace eternal_lands
 		assert(sizes[1] > 0);
 		assert(sizes[2] > 0);
 
-		TextureFormatUtil::get_source_format_type(texture_format,
-			m_format, m_type);
+		TextureFormatUtil::get_source_format(texture_format, m_format,
+			m_type);
 
 		m_name = name;
 		m_cube_map = cube_map;
@@ -1258,8 +1258,8 @@ namespace eternal_lands
 				m_texture_format = tft_rgba_dxt5;
 			}
 
-			TextureFormatUtil::get_source_format_type(
-				m_texture_format, m_format, m_type);
+			TextureFormatUtil::get_source_format(m_texture_format,
+				m_format, m_type);
 
 			m_pixel_size = TextureFormatUtil::get_size(
 				m_texture_format);

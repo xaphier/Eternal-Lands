@@ -13,15 +13,16 @@ namespace eternal_lands
 {
 
 	ExtSimpleFrameBuffer::ExtSimpleFrameBuffer(const String &name,
-		const Uint32 width, const Uint32 height, const Uint16 mipmaps,
-		const TextureFormatType format, const bool depth):
-		AbstractFrameBuffer(name, width, height)
+		const Uint32 width, const Uint32 height, const Uint32 depth,
+		const Uint16 mipmaps, const TextureTargetType target,
+		const TextureFormatType format, const bool depth_buffer):
+		AbstractFrameBuffer(name, width, height, depth)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
 		m_frame_buffer.bind();
 
-		get_texture()->set_target(ttt_2d_texture);
+		get_texture()->set_target(target);
 		get_texture()->set_format(format);
 		get_texture()->set_wrap_s(twt_clamp);
 		get_texture()->set_wrap_t(twt_clamp);
@@ -35,13 +36,12 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_depth = depth;
-		m_stencil = false;
+		set_stencil_buffer(false);
 
 		if (TextureFormatUtil::get_depth(format))
 		{
-			m_depth = true;
-			m_color = false;
+			set_depth_buffer(true);
+			set_color_buffer(false);
 
 			get_texture()->attach_ext(GL_DEPTH_ATTACHMENT_EXT, 0,
 				0);
@@ -50,7 +50,7 @@ namespace eternal_lands
 
 			if (TextureFormatUtil::get_stencil(format))
 			{
-				m_stencil = true;
+				set_stencil_buffer(true);
 
 				get_texture()->attach_ext(
 					GL_STENCIL_ATTACHMENT_EXT, 0, 0);
@@ -62,19 +62,19 @@ namespace eternal_lands
 		}
 		else
 		{
-			m_depth = depth;
-			m_color = true;
+			set_depth_buffer(depth_buffer);
+			set_color_buffer(true);
 
 			get_texture()->attach_ext(GL_COLOR_ATTACHMENT0_EXT, 0,
 				0);
 
 			DEBUG_CHECK_GL_ERROR();
 
-			if (m_depth)
+			if (get_depth_buffer())
 			{
 				if (GLEW_EXT_packed_depth_stencil)
 				{
-					m_stencil = true;
+					set_stencil_buffer(true);
 
 					m_render_buffer.reset(
 						new ExtRenderBuffer(
@@ -150,17 +150,17 @@ namespace eternal_lands
 
 		mask = 0;
 
-		if (m_depth)
+		if (get_depth_buffer())
 		{
 			mask |= GL_DEPTH_BUFFER_BIT;
 		}
 
-		if (m_stencil)
+		if (get_stencil_buffer())
 		{
 			mask |= GL_STENCIL_BUFFER_BIT;
 		}
 
-		if (m_color)
+		if (get_color_buffer())
 		{
 			mask |= GL_COLOR_BUFFER_BIT;
 		}
@@ -175,17 +175,17 @@ namespace eternal_lands
 
 		mask = 0;
 
-		if (m_depth)
+		if (get_depth_buffer())
 		{
 			mask |= GL_DEPTH_BUFFER_BIT;
 		}
 
-		if (m_stencil)
+		if (get_stencil_buffer())
 		{
 			mask |= GL_STENCIL_BUFFER_BIT;
 		}
 
-		if (m_color)
+		if (get_color_buffer())
 		{
 			mask |= GL_COLOR_BUFFER_BIT;
 		}

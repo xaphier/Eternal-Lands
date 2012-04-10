@@ -19,34 +19,6 @@
 namespace eternal_lands
 {
 
-	namespace
-	{
-
-		const String shader_source_type_datas[] =
-		{
-			String(UTF8("world_depth_transformation")),
-			String(UTF8("world_normal_transformation")),
-			String(UTF8("world_tangent_transformation")),
-			String(UTF8("view_direction")),
-			String(UTF8("view_transformation")),
-			String(UTF8("fog")),
-			String(UTF8("light")),
-			String(UTF8("uv")),
-			String(UTF8("shadow_uv")),
-			String(UTF8("shadow_mapping")),
-			String(UTF8("normal_mapping")),
-			String(UTF8("normal_depth_mapping")),
-			String(UTF8("albedo_mapping")),
-			String(UTF8("specular_mapping")),
-			String(UTF8("transparent")),
-			String(UTF8("depth_color"))
-		};
-
-		const Uint32 shader_source_type_datas_count =
-			sizeof(shader_source_type_datas) / sizeof(String);
-
-	}
-
 	ShaderSource::ShaderSource(): m_type(sst_world_depth_transformation)
 	{
 	}

@@ -13,21 +13,15 @@ namespace eternal_lands
 {
 
 	MultiSampleFrameBuffer::MultiSampleFrameBuffer(const String &name,
-		const Uint32 width, const Uint32 height, const Uint32 layers,
+		const Uint32 width, const Uint32 height, const Uint32 depth,
 		const Uint16 mipmaps, const Uint16 samples,
-		const TextureFormatType format): AbstractFrameBuffer(name,
-			width, height), m_layer(0)
+		const TextureTargetType target,	const TextureFormatType format,
+		const bool depth_buffer): AbstractFrameBuffer(name, width,
+			height, depth), m_layer(0)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
-		if (layers > 0)
-		{
-			get_texture()->set_target(ttt_2d_texture_array);
-		}
-		else
-		{
-			get_texture()->set_target(ttt_2d_texture);
-		}
+		get_texture()->set_target(target);
 
 		get_texture()->set_format(format);
 		get_texture()->set_wrap_s(twt_clamp);
@@ -36,9 +30,14 @@ namespace eternal_lands
 
 		get_texture()->set_mipmap_count(mipmaps);
 
+		set_depth_buffer(true);
+		set_color_buffer(true);
+		set_stencil_buffer(true);
+
 		DEBUG_CHECK_GL_ERROR();
 
-		get_texture()->init(get_width(), get_height(), layers, mipmaps);
+		get_texture()->init(get_width(), get_height(), get_depth(),
+			mipmaps);
 
 		DEBUG_CHECK_GL_ERROR();
 

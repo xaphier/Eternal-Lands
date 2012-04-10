@@ -16,6 +16,7 @@
 #include "abstractframebuffer.hpp"
 #include "extframebuffer.hpp"
 #include "textureformatutil.hpp"
+#include "texturetargetutil.hpp"
 #include "extrenderbuffer.hpp"
 
 /**
@@ -31,16 +32,14 @@ namespace eternal_lands
 		private:
 			ExtFrameBuffer m_frame_buffer;
 			boost::scoped_ptr<ExtRenderBuffer> m_render_buffer;
-			bool m_depth;
-			bool m_stencil;
-			bool m_color;
 
 		public:
 			ExtSimpleFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
-				const Uint16 mipmaps,
+				const Uint32 depth, const Uint16 mipmaps,
+				const TextureTargetType target,
 				const TextureFormatType format,
-				const bool depth);
+				const bool depth_buffer);
 			virtual ~ExtSimpleFrameBuffer() throw();
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);

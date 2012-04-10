@@ -43,7 +43,7 @@ namespace eternal_lands
 
 		};
 
-		const ShaderVersionTypeData shader_version_type_datas[] =
+		const ShaderVersionTypeData shader_version_datas[] =
 		{
 			ShaderVersionTypeData(String(UTF8("glsl_120")), 120),
 			ShaderVersionTypeData(String(UTF8("glsl_130")), 130),
@@ -55,8 +55,8 @@ namespace eternal_lands
 			ShaderVersionTypeData(String(UTF8("glsl_420")), 420)
 		};
 
-		const Uint32 shader_version_type_datas_count =
-			sizeof(shader_version_type_datas) /
+		const Uint32 shader_version_datas_count =
+			sizeof(shader_version_datas) /
 				sizeof(ShaderVersionTypeData);
 
 	}
@@ -64,37 +64,37 @@ namespace eternal_lands
 	const String &ShaderVersionUtil::get_str(
 		const ShaderVersionType version)
 	{
-		if (shader_version_type_datas_count <= version)
+		if (shader_version_datas_count <= version)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					shader_version_type_datas_count - 1)
+					shader_version_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					version))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ShaderVersionType")));
 		}
 
-		return shader_version_type_datas[version].get_name();
+		return shader_version_datas[version].get_name();
 	}
 
 	Uint16 ShaderVersionUtil::get_shader_version_number(
 		const ShaderVersionType version)
 	{
-		if (shader_version_type_datas_count <= version)
+		if (shader_version_datas_count <= version)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					shader_version_type_datas_count - 1)
+					shader_version_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					version))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ShaderVersionType")));
 		}
 
-		return shader_version_type_datas[version].get_number();
+		return shader_version_datas[version].get_number();
 	}
 
 	ShaderVersionType ShaderVersionUtil::get_shader_version(
@@ -103,7 +103,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderVersionType shader_version;
 
-		for (i = 0; i < shader_version_type_datas_count; ++i)
+		for (i = 0; i < shader_version_datas_count; ++i)
 		{
 			shader_version = static_cast<ShaderVersionType>(i);
 
@@ -125,7 +125,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderVersionType tmp;
 
-		for (i = 0; i < shader_version_type_datas_count; ++i)
+		for (i = 0; i < shader_version_datas_count; ++i)
 		{
 			tmp = static_cast<ShaderVersionType>(i);
 
@@ -142,7 +142,7 @@ namespace eternal_lands
 
 	Uint32 ShaderVersionUtil::get_shader_version_count()
 	{
-		return shader_version_type_datas_count;
+		return shader_version_datas_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const ShaderVersionType value)

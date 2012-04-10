@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "textureformatutil.hpp"
+#include "texturetargetutil.hpp"
 
 /**
  * @file
@@ -35,25 +36,6 @@ namespace eternal_lands
 		cmft_positive_x = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
 		cmft_positive_y = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
 		cmft_positive_z = GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-	};
-	/**
-	 * @}
-	 */
-
-	/**
-	 * Types of texture targets.
-	 * @{
-	 */
-	enum TextureTargetType
-	{
-		ttt_1d_texture = GL_TEXTURE_1D,
-		ttt_2d_texture = GL_TEXTURE_2D,
-		ttt_3d_texture = GL_TEXTURE_3D,
-		ttt_cube_map_texture = GL_TEXTURE_CUBE_MAP,
-		ttt_1d_texture_array = GL_TEXTURE_1D_ARRAY,
-		ttt_2d_texture_array = GL_TEXTURE_2D_ARRAY,
-		ttt_cube_map_texture_array = GL_TEXTURE_CUBE_MAP_ARRAY,
-		ttt_texture_rectangle = GL_TEXTURE_RECTANGLE
 	};
 	/**
 	 * @}
@@ -253,7 +235,6 @@ namespace eternal_lands
 			~Texture() throw();
 			void unload() throw();
 			static String get_str(const CubeMapFaceType value);
-			static String get_str(const TextureTargetType value);
 			static String get_str(const TextureFilterType value);
 			static String get_str(const TextureMipmapType value);
 			static String get_str(const TextureWrapType value);
@@ -262,7 +243,8 @@ namespace eternal_lands
 			{
 				assert(!m_rebuild);
 
-				glBindTexture(get_target(), get_texture_id());
+				glBindTexture(get_gl_target(),
+					get_texture_id());
 			}
 
 			inline Uint64 get_size() const
@@ -278,6 +260,12 @@ namespace eternal_lands
 			inline TextureTargetType get_target() const
 			{
 				return m_target;
+			}
+
+			inline GLenum get_gl_target() const
+			{
+				return TextureTargetUtil::get_gl_type(
+					get_target());
 			}
 
 			inline TextureFilterType get_mag_filter() const
@@ -453,7 +441,6 @@ namespace eternal_lands
 	};
 
 	OutStream& operator<<(OutStream &str, const CubeMapFaceType value);
-	OutStream& operator<<(OutStream &str, const TextureTargetType value);
 	OutStream& operator<<(OutStream &str, const TextureFilterType value);
 	OutStream& operator<<(OutStream &str, const TextureMipmapType value);
 	OutStream& operator<<(OutStream &str, const TextureWrapType value);

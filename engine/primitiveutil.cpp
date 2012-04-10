@@ -53,7 +53,7 @@ namespace eternal_lands
 
 		};
 
-		const PrimitiveTypeData primitive_type_datas[] =
+		const PrimitiveTypeData primitive_datas[] =
 		{
 			PrimitiveTypeData(String(UTF8("points")), 1, 0),
 			PrimitiveTypeData(String(UTF8("lines")), 2, 0),
@@ -62,8 +62,8 @@ namespace eternal_lands
 			PrimitiveTypeData(String(UTF8("triangle_fan")), 1, 2)
 		};
 
-		const Uint32 primitive_type_datas_count =
-			sizeof(primitive_type_datas) /
+		const Uint32 primitive_datas_count =
+			sizeof(primitive_datas) /
 			sizeof(PrimitiveTypeData);
 
 	}
@@ -71,37 +71,37 @@ namespace eternal_lands
 	Uint32 PrimitiveUtil::get_index_count(const PrimitiveType primitive,
 		const Uint32 count)
 	{
-		if (primitive_type_datas_count <= primitive)
+		if (primitive_datas_count <= primitive)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					primitive_type_datas_count - 1)
+					primitive_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					primitive))
 				<< boost::errinfo_type_info_name(UTF8(
 					"PrimitiveType")));
 		}
 
-		return primitive_type_datas[primitive].get_scale() * count +
-			primitive_type_datas[primitive].get_offset();
+		return primitive_datas[primitive].get_scale() * count +
+			primitive_datas[primitive].get_offset();
 	}
 
 	String PrimitiveUtil::get_str(const PrimitiveType primitive)
 	{
-		if (primitive_type_datas_count <= primitive)
+		if (primitive_datas_count <= primitive)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					primitive_type_datas_count - 1)
+					primitive_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					primitive))
 				<< boost::errinfo_type_info_name(UTF8(
 					"PrimitiveType")));
 		}
 
-		return primitive_type_datas[primitive].get_name();
+		return primitive_datas[primitive].get_name();
 	}
 
 	PrimitiveType PrimitiveUtil::get_type(const String &str)
@@ -109,7 +109,7 @@ namespace eternal_lands
 		Uint32 i;
 		PrimitiveType primitive_type;
 
-		for (i = 0; i < primitive_type_datas_count; ++i)
+		for (i = 0; i < primitive_datas_count; ++i)
 		{
 			primitive_type = static_cast<PrimitiveType>(i);
 

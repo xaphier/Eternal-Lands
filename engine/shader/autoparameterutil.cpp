@@ -61,7 +61,7 @@ namespace eternal_lands
 
 		};
 
-		const AutoParameterTypeData auto_parameter_type_datas[] =
+		const AutoParameterTypeData auto_parameter_datas[] =
 		{
 			AutoParameterTypeData(
 				String(UTF8("world_transformation")),
@@ -114,8 +114,8 @@ namespace eternal_lands
 				String(UTF8("terrain_height_scale")), pt_float)
 		};
 
-		const Uint32 auto_parameter_type_datas_count =
-			sizeof(auto_parameter_type_datas) /
+		const Uint32 auto_parameter_datas_count =
+			sizeof(auto_parameter_datas) /
 			sizeof(AutoParameterTypeData);
 
 	}
@@ -123,73 +123,73 @@ namespace eternal_lands
 	const String &AutoParameterUtil::get_str(
 		const AutoParameterType auto_parameter)
 	{
-		if (auto_parameter_type_datas_count <= auto_parameter)
+		if (auto_parameter_datas_count <= auto_parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					auto_parameter_type_datas_count - 1)
+					auto_parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					auto_parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"AutoParameterType")));
 		}
 
-		return auto_parameter_type_datas[auto_parameter].get_name();
+		return auto_parameter_datas[auto_parameter].get_name();
 	}
 
 	ParameterType AutoParameterUtil::get_type(
 		const AutoParameterType auto_parameter)
 	{
-		if (auto_parameter_type_datas_count <= auto_parameter)
+		if (auto_parameter_datas_count <= auto_parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					auto_parameter_type_datas_count - 1)
+					auto_parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					auto_parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"AutoParameterType")));
 		}
 
-		return auto_parameter_type_datas[auto_parameter].get_type();
+		return auto_parameter_datas[auto_parameter].get_type();
 	}
 
 	ParameterSizeType AutoParameterUtil::get_size(
 		const AutoParameterType auto_parameter)
 	{
-		if (auto_parameter_type_datas_count <= auto_parameter)
+		if (auto_parameter_datas_count <= auto_parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					auto_parameter_type_datas_count - 1)
+					auto_parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					auto_parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"AutoParameterType")));
 		}
 
-		return auto_parameter_type_datas[auto_parameter].get_size();
+		return auto_parameter_datas[auto_parameter].get_size();
 	}
 
 	Uint16 AutoParameterUtil::get_scale(
 		const AutoParameterType auto_parameter)
 	{
-		if (auto_parameter_type_datas_count <= auto_parameter)
+		if (auto_parameter_datas_count <= auto_parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					auto_parameter_type_datas_count - 1)
+					auto_parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					auto_parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"AutoParameterType")));
 		}
 
-		return auto_parameter_type_datas[auto_parameter].get_scale();
+		return auto_parameter_datas[auto_parameter].get_scale();
 	}
 
 	AutoParameterType AutoParameterUtil::get_auto_parameter(
@@ -198,7 +198,7 @@ namespace eternal_lands
 		Uint32 i;
 		AutoParameterType auto_parameter;
 
-		for (i = 0; i < auto_parameter_type_datas_count; ++i)
+		for (i = 0; i < auto_parameter_datas_count; ++i)
 		{
 			auto_parameter = static_cast<AutoParameterType>(i);
 
@@ -220,7 +220,7 @@ namespace eternal_lands
 		Uint32 i;
 		AutoParameterType tmp;
 
-		for (i = 0; i < auto_parameter_type_datas_count; ++i)
+		for (i = 0; i < auto_parameter_datas_count; ++i)
 		{
 			tmp = static_cast<AutoParameterType>(i);
 
@@ -237,7 +237,7 @@ namespace eternal_lands
 
 	Uint32 AutoParameterUtil::get_auto_parameter_count()
 	{
-		return auto_parameter_type_datas_count;
+		return auto_parameter_datas_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const AutoParameterType value)
