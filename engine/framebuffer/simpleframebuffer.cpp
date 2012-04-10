@@ -112,7 +112,7 @@ namespace eternal_lands
 	{
 		m_frame_buffer.bind();
 
-		if (layer != m_layer)
+		if (layer != get_layer())
 		{
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, layer);
 			m_layer = layer;

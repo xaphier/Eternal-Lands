@@ -126,18 +126,26 @@ namespace eternal_lands
 	{
 	}
 
+	void ExtSimpleFrameBuffer::do_bind(const Uint32 layer)
+	{
+		m_frame_buffer.bind();
+
+		if (layer != get_layer())
+		{
+			get_texture()->attach_ext(GL_COLOR_ATTACHMENT0_EXT, 0,
+				layer);
+			m_layer = layer;
+		}
+	}
+
 	void ExtSimpleFrameBuffer::bind(const Uint32 layer)
 	{
-		assert(layer == 0);
-
-		m_frame_buffer.bind();
+		do_bind(layer);
 	}
 
 	void ExtSimpleFrameBuffer::bind_texture(const Uint32 layer)
 	{
-		assert(layer == 0);
-
-		m_frame_buffer.bind();
+		do_bind(layer);
 	}
 
 	void ExtSimpleFrameBuffer::blit()

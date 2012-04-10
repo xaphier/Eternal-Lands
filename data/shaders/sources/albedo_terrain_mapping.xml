@@ -14,7 +14,7 @@
     </parameter>
     <parameter>
      <name>terrain_sampler</name>
-     <type>sampler2D</type>
+     <type>sampler2DArray</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -27,9 +27,9 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>albedo = texture(terrain_sampler, vec3(fragment_uv, 0.0).xy);
+   <source>albedo = texture(terrain_sampler, vec3(fragment_uv, 0.0));
 </source>
-   <glsl_120>false</glsl_120>
+   <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>
    <glsl_150>true</glsl_150>

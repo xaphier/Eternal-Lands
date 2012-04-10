@@ -253,7 +253,8 @@ namespace eternal_lands
 		m_terrain_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
 				String(UTF8("terrain")), 2048,
-				2048, 0, tft_rgb8, false);
+				2048, 4, 0, ttt_texture_2d_array, tft_rgb8,
+				false);
 
 		m_materials.clear();
 
@@ -1130,7 +1131,7 @@ namespace eternal_lands
 		width = m_terrain_frame_buffer->get_width();
 		height = m_terrain_frame_buffer->get_height();
 
-		m_terrain_frame_buffer->bind(0);
+		m_terrain_frame_buffer->bind(index);
 		m_terrain_frame_buffer->clear(glm::vec4(0.0f));
 
 		glViewport(0, 0, width, height);
@@ -1255,7 +1256,7 @@ namespace eternal_lands
 
 		m_texture_matrices.clear();
 
-		for (i = 0; i < 1; ++i)
+		for (i = 0; i < 4; ++i)
 		{
 			texture_matrices.clear();
 

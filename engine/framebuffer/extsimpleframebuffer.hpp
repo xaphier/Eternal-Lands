@@ -32,6 +32,9 @@ namespace eternal_lands
 		private:
 			ExtFrameBuffer m_frame_buffer;
 			boost::scoped_ptr<ExtRenderBuffer> m_render_buffer;
+			Uint32 m_layer;
+
+			void do_bind(const Uint32 layer);
 
 		public:
 			ExtSimpleFrameBuffer(const String &name,
@@ -48,6 +51,11 @@ namespace eternal_lands
 			virtual void clear(const glm::vec4 &color,
 				const float depth);
 			virtual void unbind();
+
+			inline Uint32 get_layer() const
+			{
+				return m_layer;
+			}
 
 	};
 
