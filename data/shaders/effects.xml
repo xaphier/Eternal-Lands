@@ -63,7 +63,7 @@
 	<effect>
 		<name>actor-alpha</name>
 		<world_transformation>bone_animation</world_transformation>
-		<texture_coodrinates>static</texture_coodrinates>
+		<texture_coodrinates>static_extra_4</texture_coodrinates>
 		<albedo_mapping>default</albedo_mapping>
 		<normal_mapping>disabled</normal_mapping>
 		<specular_mapping>disabled</specular_mapping>

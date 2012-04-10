@@ -101,7 +101,7 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("emission")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("world_extra_uv")),
-				pt_vec2)
+				pt_vec2, pst_one, 4)
 		};
 
 		const Uint32 common_parameter_datas_count =
