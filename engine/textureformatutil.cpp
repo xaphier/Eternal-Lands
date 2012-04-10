@@ -208,7 +208,7 @@ namespace eternal_lands
 		pft_signed_normalized_##packed##_##count, gl_type##_SNORM,	\
 		GL_##source_type, source_format, count, size)
 
-		const TextureFormatTypeData texture_format_type_datas[] =
+		const TextureFormatTypeData texture_format_datas[] =
 		{
 			TextureFormatTypeData(String(UTF8("rgba4")),
 				it_unsigned_normalized,
@@ -386,155 +386,155 @@ namespace eternal_lands
 
 #undef EXPAND_INTEGER_TEXTURE_FORMAT_TYPE
 
-		const Uint32 texture_format_type_datas_count =
-			sizeof(texture_format_type_datas) /
+		const Uint32 texture_format_datas_count =
+			sizeof(texture_format_datas) /
 			sizeof(TextureFormatTypeData);
 
 	};
 
-	void TextureFormatUtil::get_source_format_type(
+	void TextureFormatUtil::get_source_format(
 		const TextureFormatType texture_format, GLenum &format,
 		GLenum &type)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		type = texture_format_type_datas[
+		type = texture_format_datas[
 			texture_format].get_source_type();
-		format = texture_format_type_datas[
+		format = texture_format_datas[
 			texture_format].get_format_type();
 	}
 
 	Uint16 TextureFormatUtil::get_count(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[texture_format].get_count();
+		return texture_format_datas[texture_format].get_count();
 	}
 
 	const String &TextureFormatUtil::get_str(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[texture_format].get_name();
+		return texture_format_datas[texture_format].get_name();
 	}
 
 	bool TextureFormatUtil::get_sRGB(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[texture_format].get_sRGB();
+		return texture_format_datas[texture_format].get_sRGB();
 	}
 
 
 	bool TextureFormatUtil::get_depth(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[texture_format].get_depth();
+		return texture_format_datas[texture_format].get_depth();
 	}
 
 
 	bool TextureFormatUtil::get_stencil(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[texture_format].get_stencil();
+		return texture_format_datas[texture_format].get_stencil();
 	}
 
 
 	bool TextureFormatUtil::get_compressed(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[
+		return texture_format_datas[
 			texture_format].get_compressed();
 	}
 
 	bool TextureFormatUtil::get_format_supported(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
@@ -580,7 +580,7 @@ namespace eternal_lands
 		}
 
 		const TextureFormatTypeData &format =
-			texture_format_type_datas[texture_format];
+			texture_format_datas[texture_format];
 
 		if (format.get_integer())
 		{
@@ -616,57 +616,57 @@ namespace eternal_lands
 	Uint32 TextureFormatUtil::get_size(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[texture_format].get_size();
+		return texture_format_datas[texture_format].get_size();
 	}
 
 
 	GLenum TextureFormatUtil::get_gl_format(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[texture_format].get_gl_type();
+		return texture_format_datas[texture_format].get_gl_type();
 	}
 
 
-	IntegerType TextureFormatUtil::get_integer_type(
+	IntegerType TextureFormatUtil::get_integer(
 		const TextureFormatType texture_format)
 	{
-		if (texture_format_type_datas_count <= texture_format)
+		if (texture_format_datas_count <= texture_format)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					texture_format_type_datas_count - 1)
+					texture_format_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					texture_format))
 				<< boost::errinfo_type_info_name(UTF8(
 					"TextureFormatType")));
 		}
 
-		return texture_format_type_datas[
+		return texture_format_datas[
 			texture_format].get_integer_type();
 	}
 
@@ -676,7 +676,7 @@ namespace eternal_lands
 		Uint32 i;
 		TextureFormatType texture_format_type;
 
-		for (i = 0; i < texture_format_type_datas_count; ++i)
+		for (i = 0; i < texture_format_datas_count; ++i)
 		{
 			texture_format_type =
 				static_cast<TextureFormatType>(i);

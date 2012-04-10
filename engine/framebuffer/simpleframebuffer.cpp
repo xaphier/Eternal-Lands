@@ -13,23 +13,16 @@ namespace eternal_lands
 {
 
 	SimpleFrameBuffer::SimpleFrameBuffer(const String &name,
-		const Uint32 width, const Uint32 height, const Uint32 layers,
-		const Uint16 mipmaps, const TextureFormatType format,
-		const bool depth): AbstractFrameBuffer(name, width, height),
-		m_layer(0)
+		const Uint32 width, const Uint32 height, const Uint32 depth,
+		const Uint16 mipmaps, const TextureTargetType target,
+		const TextureFormatType format, const bool depth_buffer):
+		AbstractFrameBuffer(name, width, height, depth), m_layer(0)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
 		m_frame_buffer.bind();
 
-		if (layers > 0)
-		{
-			get_texture()->set_target(ttt_2d_texture_array);
-		}
-		else
-		{
-			get_texture()->set_target(ttt_2d_texture);
-		}
+		get_texture()->set_target(target);
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -42,16 +35,17 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		get_texture()->init(get_width(), get_height(), layers, mipmaps);
+		get_texture()->init(get_width(), get_height(), get_depth(),
+			mipmaps);
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_depth = depth;
+		set_stencil_buffer(false);
 
 		if (TextureFormatUtil::get_depth(format))
 		{
-			m_depth = true;
-			m_color = false;
+			set_depth_buffer(true);
+			set_color_buffer(false);
 
 			get_texture()->attach(GL_DEPTH_ATTACHMENT, 0, 0);
 
@@ -59,6 +53,8 @@ namespace eternal_lands
 
 			if (TextureFormatUtil::get_stencil(format))
 			{
+				set_stencil_buffer(true);
+
 				get_texture()->attach(GL_STENCIL_ATTACHMENT, 0,
 					0);
 			}
@@ -69,15 +65,17 @@ namespace eternal_lands
 		}
 		else
 		{
-			m_depth = depth;
-			m_color = true;
+			set_depth_buffer(depth_buffer);
+			set_color_buffer(true);
 
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
 
 			DEBUG_CHECK_GL_ERROR();
 
-			if (m_depth)
+			if (get_depth_buffer())
 			{
+				set_stencil_buffer(true);
+
 				m_render_buffer.reset(new RenderBuffer(
 					get_width(), get_height(), 0,
 					tft_depth24_stencil8));
@@ -137,12 +135,12 @@ namespace eternal_lands
 
 	void SimpleFrameBuffer::clear(const glm::vec4 &color)
 	{
-		if (m_depth)
+		if (get_depth_buffer())
 		{
 			glClearBufferfi(GL_DEPTH_STENCIL, 0, 1.0f, 0);
 		}
 
-		if (m_color)
+		if (get_color_buffer())
 		{
 			glClearBufferfv(GL_COLOR, 0, glm::value_ptr(color));
 		}
@@ -151,12 +149,12 @@ namespace eternal_lands
 	void SimpleFrameBuffer::clear(const glm::vec4 &color,
 		const float depth)
 	{
-		if (m_depth)
+		if (get_depth_buffer())
 		{
 			glClearBufferfi(GL_DEPTH_STENCIL, 0, depth, 0);
 		}
 
-		if (m_color)
+		if (get_color_buffer())
 		{
 			glClearBufferfv(GL_COLOR, 0, glm::value_ptr(color));
 		}

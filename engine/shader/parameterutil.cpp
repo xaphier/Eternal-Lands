@@ -116,7 +116,7 @@ namespace eternal_lands
 
 		};
 
-		const ParameterTypeData parameter_type_datas[] =
+		const ParameterTypeData parameter_datas[] =
 		{
 			ParameterTypeData(String(UTF8("bool")), 1,
 				GL_BOOL, pvt_bool, pft_none),
@@ -245,168 +245,168 @@ namespace eternal_lands
 				pvt_unsigned_int, pft_buffer)
 		};
 
-		const Uint32 parameter_type_datas_count =
-			sizeof(parameter_type_datas) /
+		const Uint32 parameter_datas_count =
+			sizeof(parameter_datas) /
 			sizeof(ParameterTypeData);
 
 	}
 
 	Uint32 ParameterUtil::get_count(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_count();
+		return parameter_datas[parameter].get_count();
 	}
 
 	bool ParameterUtil::get_sampler(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_sampler();
+		return parameter_datas[parameter].get_sampler();
 	}
 
 	bool ParameterUtil::get_int(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_value_type() ==
+		return parameter_datas[parameter].get_value_type() ==
 			pvt_int;
 	}
 
 	bool ParameterUtil::get_uint(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_value_type() ==
+		return parameter_datas[parameter].get_value_type() ==
 			pvt_unsigned_int;
 	}
 
 	bool ParameterUtil::get_bool(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_value_type() ==
+		return parameter_datas[parameter].get_value_type() ==
 			pvt_bool;
 	}
 
 	bool ParameterUtil::get_float(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_value_type() ==
+		return parameter_datas[parameter].get_value_type() ==
 			pvt_float;
 	}
 
 	bool ParameterUtil::get_matrix(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_format_type() ==
+		return parameter_datas[parameter].get_format_type() ==
 			pft_matrix;
 	}
 
 	GLenum ParameterUtil::get_gl(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_gl_type();
+		return parameter_datas[parameter].get_gl_type();
 	}
 
 	const String &ParameterUtil::get_str(const ParameterType parameter)
 	{
-		if (parameter_type_datas_count <= parameter)
+		if (parameter_datas_count <= parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_type_datas_count - 1)
+					parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterType")));
 		}
 
-		return parameter_type_datas[parameter].get_name();
+		return parameter_datas[parameter].get_name();
 	}
 
 	ParameterType ParameterUtil::get_parameter(const GLenum parameter)
@@ -414,7 +414,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterType parameter_type;
 
-		for (i = 0; i < parameter_type_datas_count; ++i)
+		for (i = 0; i < parameter_datas_count; ++i)
 		{
 			parameter_type = static_cast<ParameterType>(i);
 
@@ -435,7 +435,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterType parameter;
 
-		for (i = 0; i < parameter_type_datas_count; ++i)
+		for (i = 0; i < parameter_datas_count; ++i)
 		{
 			parameter = static_cast<ParameterType>(i);
 
@@ -457,7 +457,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterType tmp;
 
-		for (i = 0; i < parameter_type_datas_count; ++i)
+		for (i = 0; i < parameter_datas_count; ++i)
 		{
 			tmp = static_cast<ParameterType>(i);
 
@@ -474,7 +474,7 @@ namespace eternal_lands
 
 	Uint32 ParameterUtil::get_parameter_count()
 	{
-		return parameter_type_datas_count;
+		return parameter_datas_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const ParameterType value)

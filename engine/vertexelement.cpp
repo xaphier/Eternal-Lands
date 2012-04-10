@@ -106,7 +106,7 @@ namespace eternal_lands
 
 		};
 
-		const VertexElementTypeData vertex_element_type_datas[] =
+		const VertexElementTypeData vertex_element_datas[] =
 		{
 			VertexElementTypeData(String(UTF8("float1")),
 				1 * sizeof(GLfloat), GL_FLOAT, 1, pft_float_1,
@@ -188,8 +188,8 @@ namespace eternal_lands
 				false, false, true)
 		};
 
-		const Uint32 vertex_element_type_datas_count =
-			sizeof(vertex_element_type_datas) /
+		const Uint32 vertex_element_datas_count =
+			sizeof(vertex_element_datas) /
 			sizeof(VertexElementTypeData);
 
 		const String vertex_semantic_type_names[] =
@@ -234,19 +234,19 @@ namespace eternal_lands
 	const String &VertexElement::get_str(
 		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element)
+		if (vertex_element_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					vertex_element_type_datas_count - 1)
+					vertex_element_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[vertex_element].get_name();
+		return vertex_element_datas[vertex_element].get_name();
 	}
 
 	const String &VertexElement::get_str(
@@ -272,7 +272,7 @@ namespace eternal_lands
 		Uint32 i;
 		VertexElementType vertex_element;
 
-		for (i = 0; i < vertex_element_type_datas_count; ++i)
+		for (i = 0; i < vertex_element_datas_count; ++i)
 		{
 			vertex_element = static_cast<VertexElementType>(i);
 
@@ -339,55 +339,55 @@ namespace eternal_lands
 
 	Uint32 VertexElement::get_size(const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element)
+		if (vertex_element_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					vertex_element_type_datas_count - 1)
+					vertex_element_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[vertex_element].get_size();
+		return vertex_element_datas[vertex_element].get_size();
 	}
 
 	Uint32 VertexElement::get_count(const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element)
+		if (vertex_element_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					vertex_element_type_datas_count - 1)
+					vertex_element_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[
+		return vertex_element_datas[
 			vertex_element].get_element_count();
 	}
 
 	GLenum VertexElement::get_gl_type(
 		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element)
+		if (vertex_element_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					vertex_element_type_datas_count - 1)
+					vertex_element_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[vertex_element].get_gl_type();
+		return vertex_element_datas[vertex_element].get_gl_type();
 	}
 
 	bool VertexElement::get_supported(
@@ -432,57 +432,57 @@ namespace eternal_lands
 	bool VertexElement::get_signed_elements(
 		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element)
+		if (vertex_element_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					vertex_element_type_datas_count - 1)
+					vertex_element_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[
+		return vertex_element_datas[
 			vertex_element].get_signed_elements();
 	}
 
 	bool VertexElement::get_dynamic_range(
 		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element)
+		if (vertex_element_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					vertex_element_type_datas_count - 1)
+					vertex_element_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[
+		return vertex_element_datas[
 			vertex_element].get_dynamic_range();
 	}
 
 	bool VertexElement::get_normalized(
 		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element)
+		if (vertex_element_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					vertex_element_type_datas_count - 1)
+					vertex_element_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[
+		return vertex_element_datas[
 			vertex_element].get_normalized();
 	}
 
@@ -502,25 +502,25 @@ namespace eternal_lands
 	PackFormatType VertexElement::get_pack_format(
 		const VertexElementType vertex_element)
 	{
-		if (vertex_element_type_datas_count <= vertex_element)
+		if (vertex_element_datas_count <= vertex_element)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					vertex_element_type_datas_count - 1)
+					vertex_element_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					vertex_element))
 				<< boost::errinfo_type_info_name(UTF8(
 					"VertexElementType")));
 		}
 
-		return vertex_element_type_datas[
+		return vertex_element_datas[
 			vertex_element].get_pack_format();
 	}
 
 	Uint32 VertexElement::get_vertex_element_count()
 	{
-		return vertex_element_type_datas_count;
+		return vertex_element_datas_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const VertexElementType value)

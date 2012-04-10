@@ -16,6 +16,7 @@
 #include "abstractframebuffer.hpp"
 #include "framebuffer.hpp"
 #include "textureformatutil.hpp"
+#include "texturetargetutil.hpp"
 #include "renderbuffer.hpp"
 
 /**
@@ -38,9 +39,11 @@ namespace eternal_lands
 		public:
 			MultiSampleFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
-				const Uint32 layers, const Uint16 mipmaps,
+				const Uint32 depth, const Uint16 mipmaps,
 				const Uint16 samples,
-				const TextureFormatType format);
+				const TextureTargetType target,
+				const TextureFormatType format,
+				const bool depth_buffer);
 			~MultiSampleFrameBuffer() throw();
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);
@@ -49,6 +52,11 @@ namespace eternal_lands
 			virtual void clear(const glm::vec4 &color,
 				const float depth);
 			virtual void unbind();
+
+			inline Uint32 get_layer() const
+			{
+				return m_layer;
+			}
 
 	};
 

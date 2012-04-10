@@ -15,11 +15,11 @@ namespace eternal_lands
 	FilterFrameBuffer::FilterFrameBuffer(const String &name,
 		const Uint32 width, const Uint32 height,
 		const TextureFormatType format): AbstractFrameBuffer(name,
-			width, height)
+			width, height, 1)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
-		get_texture()->set_target(ttt_2d_texture_array);
+		get_texture()->set_target(ttt_texture_2d_array);
 
 		get_texture()->set_format(format);
 		get_texture()->set_wrap_s(twt_clamp);

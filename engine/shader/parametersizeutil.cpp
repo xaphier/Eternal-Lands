@@ -14,7 +14,7 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String parameter_size_type_datas[] =
+		const String parameter_size_names[] =
 		{
 			String(UTF8("one")),
 			String(UTF8("light_count")),
@@ -24,27 +24,27 @@ namespace eternal_lands
 			String(UTF8("instance_count"))
 		};
 
-		const Uint32 parameter_size_type_datas_count =
-			sizeof(parameter_size_type_datas) / sizeof(String);
+		const Uint32 parameter_size_names_count =
+			sizeof(parameter_size_names) / sizeof(String);
 
 	}
 
 	const String &ParameterSizeUtil::get_str(
 		const ParameterSizeType parameter_size)
 	{
-		if (parameter_size_type_datas_count <= parameter_size)
+		if (parameter_size_names_count <= parameter_size)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_size_type_datas_count - 1)
+					parameter_size_names_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter_size))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterSizeType")));
 		}
 
-		return parameter_size_type_datas[parameter_size];
+		return parameter_size_names[parameter_size];
 	}
 
 	ParameterSizeType ParameterSizeUtil::get_parameter_size(
@@ -53,7 +53,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterSizeType parameter_size;
 
-		for (i = 0; i < parameter_size_type_datas_count; ++i)
+		for (i = 0; i < parameter_size_names_count; ++i)
 		{
 			parameter_size = static_cast<ParameterSizeType>(i);
 
@@ -75,7 +75,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterSizeType tmp;
 
-		for (i = 0; i < parameter_size_type_datas_count; ++i)
+		for (i = 0; i < parameter_size_names_count; ++i)
 		{
 			tmp = static_cast<ParameterSizeType>(i);
 
@@ -92,7 +92,7 @@ namespace eternal_lands
 
 	Uint32 ParameterSizeUtil::get_parameter_size_count()
 	{
-		return parameter_size_type_datas_count;
+		return parameter_size_names_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const ParameterSizeType value)

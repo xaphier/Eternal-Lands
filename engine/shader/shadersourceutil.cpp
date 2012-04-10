@@ -16,7 +16,7 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String shader_source_type_datas[] =
+		const String shader_source_names[] =
 		{
 			String(UTF8("world_depth_transformation")),
 			String(UTF8("world_normal_transformation")),
@@ -40,26 +40,26 @@ namespace eternal_lands
 			String(UTF8("color_correction"))
 		};
 
-		const Uint32 shader_source_type_datas_count =
-			sizeof(shader_source_type_datas) / sizeof(String);
+		const Uint32 shader_source_names_count =
+			sizeof(shader_source_names) / sizeof(String);
 
 	}
 
 	const String &ShaderSourceUtil::get_str(const ShaderSourceType source)
 	{
-		if (shader_source_type_datas_count <= source)
+		if (shader_source_names_count <= source)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					shader_source_type_datas_count - 1)
+					shader_source_names_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					source))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ShaderSourceType")));
 		}
 
-		return shader_source_type_datas[source];
+		return shader_source_names[source];
 	}
 
 	ShaderSourceType ShaderSourceUtil::get_shader_source(const String &str)
@@ -67,7 +67,7 @@ namespace eternal_lands
 		Uint32 i;
 		ShaderSourceType shader_source_type;
 
-		for (i = 0; i < shader_source_type_datas_count; ++i)
+		for (i = 0; i < shader_source_names_count; ++i)
 		{
 			shader_source_type =
 				static_cast<ShaderSourceType>(i);
@@ -86,7 +86,7 @@ namespace eternal_lands
 
 	Uint32 ShaderSourceUtil::get_shader_source_count()
 	{
-		return shader_source_type_datas_count;
+		return shader_source_names_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const ShaderSourceType value)

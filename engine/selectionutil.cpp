@@ -14,7 +14,7 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String selection_type_datas[] =
+		const String selection_names[] =
 		{
 			String(UTF8("none")),
 			String(UTF8("select")),
@@ -27,26 +27,26 @@ namespace eternal_lands
 			String(UTF8("animal"))
 		};
 
-		const Uint32 selection_type_datas_count =
-			sizeof(selection_type_datas) / sizeof(String);
+		const Uint32 selection_names_count =
+			sizeof(selection_names) / sizeof(String);
 
 	}
 
 	const String &SelectionUtil::get_str(const SelectionType selection)
 	{
-		if (selection_type_datas_count <= selection)
+		if (selection_names_count <= selection)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					selection_type_datas_count - 1)
+					selection_names_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					selection))
 				<< boost::errinfo_type_info_name(UTF8(
 					"SelectionType")));
 		}
 
-		return selection_type_datas[selection];
+		return selection_names[selection];
 	}
 
 	SelectionType SelectionUtil::get_selection_type(const String &str)
@@ -54,7 +54,7 @@ namespace eternal_lands
 		Uint32 i;
 		SelectionType selection_type;
 
-		for (i = 0; i < selection_type_datas_count; ++i)
+		for (i = 0; i < selection_names_count; ++i)
 		{
 			selection_type = static_cast<SelectionType>(i);
 

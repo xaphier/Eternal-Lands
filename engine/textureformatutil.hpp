@@ -281,7 +281,7 @@ namespace eternal_lands
 	class TextureFormatUtil
 	{
 		public:
-			static void get_source_format_type(
+			static void get_source_format(
 				const TextureFormatType texture_format,
 				GLenum &format, GLenum &type);
 			static Uint16 get_count(
@@ -302,13 +302,13 @@ namespace eternal_lands
 				const TextureFormatType texture_format);
 			static GLenum get_gl_format(
 				const TextureFormatType texture_format);
-			static IntegerType get_integer_type(
+			static IntegerType get_integer(
 				const TextureFormatType texture_format);
 			static TextureFormatType get_texture_format(
 				const String &str);
 			static PackFormatType get_pack_format_type(
 				const TextureFormatType texture_format);
-			static bool get_has_format_type(
+			static bool get_has_format(
 				const TextureFormatType texture_format);
 
 	};

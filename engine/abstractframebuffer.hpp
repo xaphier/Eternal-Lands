@@ -28,10 +28,31 @@ namespace eternal_lands
 			TextureSharedPtr m_texture;
 			const Uint32 m_width;
 			const Uint32 m_height;
+			const Uint32 m_depth;
+			bool m_depth_buffer;
+			bool m_stencil_buffer;
+			bool m_color_buffer;
 
 		protected:
 			AbstractFrameBuffer(const String &name,
-				const Uint32 width, const Uint32 height);
+				const Uint32 width, const Uint32 height,
+				const Uint32 depth);
+
+			inline void set_depth_buffer(const bool depth_buffer)
+			{
+				m_depth_buffer = depth_buffer;
+			}
+
+			inline void set_stencil_buffer(
+				const bool stencil_buffer)
+			{
+				m_stencil_buffer = stencil_buffer;
+			}
+
+			inline void set_color_buffer(const bool color_buffer)
+			{
+				m_color_buffer = color_buffer;
+			}
 
 		public:
 			virtual ~AbstractFrameBuffer() throw();
@@ -56,6 +77,26 @@ namespace eternal_lands
 			inline Uint32 get_height() const
 			{
 				return m_height;
+			}
+
+			inline Uint32 get_depth() const
+			{
+				return m_depth;
+			}
+
+			inline bool get_depth_buffer() const
+			{
+				return m_depth_buffer;
+			}
+
+			inline bool get_stencil_buffer() const
+			{
+				return m_stencil_buffer;
+			}
+
+			inline bool get_color_buffer() const
+			{
+				return m_color_buffer;
 			}
 
 	};

@@ -59,7 +59,7 @@ namespace eternal_lands
 
 		};
 
-		const CommonParameterTypeData common_parameter_type_datas[] =
+		const CommonParameterTypeData common_parameter_datas[] =
 		{
 			CommonParameterTypeData(String(UTF8("diffuse_color")),
 				pt_vec3),
@@ -104,8 +104,8 @@ namespace eternal_lands
 				pt_vec2)
 		};
 
-		const Uint32 common_parameter_type_datas_count =
-			sizeof(common_parameter_type_datas) /
+		const Uint32 common_parameter_datas_count =
+			sizeof(common_parameter_datas) /
 			sizeof(CommonParameterTypeData);
 
 	}
@@ -113,73 +113,73 @@ namespace eternal_lands
 	const String &CommonParameterUtil::get_str(
 		const CommonParameterType common_parameter)
 	{
-		if (common_parameter_type_datas_count <= common_parameter)
+		if (common_parameter_datas_count <= common_parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					common_parameter_type_datas_count - 1)
+					common_parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					common_parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"CommonParameterType")));
 		}
 
-		return common_parameter_type_datas[common_parameter].get_name();
+		return common_parameter_datas[common_parameter].get_name();
 	}
 
 	ParameterType CommonParameterUtil::get_type(
 		const CommonParameterType common_parameter)
 	{
-		if (common_parameter_type_datas_count <= common_parameter)
+		if (common_parameter_datas_count <= common_parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					common_parameter_type_datas_count - 1)
+					common_parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					common_parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"CommonParameterType")));
 		}
 
-		return common_parameter_type_datas[common_parameter].get_type();
+		return common_parameter_datas[common_parameter].get_type();
 	}
 
 	ParameterSizeType CommonParameterUtil::get_size(
 		const CommonParameterType common_parameter)
 	{
-		if (common_parameter_type_datas_count <= common_parameter)
+		if (common_parameter_datas_count <= common_parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					common_parameter_type_datas_count - 1)
+					common_parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					common_parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"CommonParameterType")));
 		}
 
-		return common_parameter_type_datas[common_parameter].get_size();
+		return common_parameter_datas[common_parameter].get_size();
 	}
 
 	Uint16 CommonParameterUtil::get_scale(
 		const CommonParameterType common_parameter)
 	{
-		if (common_parameter_type_datas_count <= common_parameter)
+		if (common_parameter_datas_count <= common_parameter)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					common_parameter_type_datas_count - 1)
+					common_parameter_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					common_parameter))
 				<< boost::errinfo_type_info_name(UTF8(
 					"CommonParameterType")));
 		}
 
-		return common_parameter_type_datas[
+		return common_parameter_datas[
 			common_parameter].get_scale();
 	}
 
@@ -189,7 +189,7 @@ namespace eternal_lands
 		Uint32 i;
 		CommonParameterType common_parameter;
 
-		for (i = 0; i < common_parameter_type_datas_count; ++i)
+		for (i = 0; i < common_parameter_datas_count; ++i)
 		{
 			common_parameter = static_cast<CommonParameterType>(i);
 
@@ -211,7 +211,7 @@ namespace eternal_lands
 		Uint32 i;
 		CommonParameterType tmp;
 
-		for (i = 0; i < common_parameter_type_datas_count; ++i)
+		for (i = 0; i < common_parameter_datas_count; ++i)
 		{
 			tmp = static_cast<CommonParameterType>(i);
 
@@ -228,7 +228,7 @@ namespace eternal_lands
 
 	Uint32 CommonParameterUtil::get_common_parameter_count()
 	{
-		return common_parameter_type_datas_count;
+		return common_parameter_datas_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const CommonParameterType value)
