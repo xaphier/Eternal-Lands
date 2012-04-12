@@ -231,6 +231,30 @@ namespace eternal_lands
 		image = get_codec_manager()->load_image(reader, compressions,
 			rg_formats);
 		texture = boost::make_shared<Texture>(index);
+
+		if (image->get_height() == 1)
+		{
+			texture->set_target(ttt_texture_1d);
+		}
+		else
+		{
+			if (image->get_cube_map())
+			{
+				texture->set_target(ttt_texture_cube_map);
+			}
+			else
+			{
+				if (image->get_depth() == 1)
+				{
+					texture->set_target(ttt_texture_2d);
+				}
+				else
+				{
+					texture->set_target(ttt_texture_3d);
+				}
+			}
+		}
+
 		texture->set_format(image->get_texture_format());
 		texture->set_image(image);
 
