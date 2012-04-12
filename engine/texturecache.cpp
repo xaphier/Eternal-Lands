@@ -125,7 +125,7 @@ namespace eternal_lands
 
 		TextureSharedPtr build_error_texture()
 		{
-			Uint32Array3 sizes;
+			glm::uvec3 sizes;
 			ImageSharedPtr image;
 			TextureSharedPtr texture;
 

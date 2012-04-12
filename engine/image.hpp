@@ -36,7 +36,7 @@ namespace eternal_lands
 			ReadWriteMemory m_buffer;
 			String m_name;
 			TextureFormatType m_texture_format;
-			Uint32Array3 m_sizes;
+			glm::uvec3 m_sizes;
 			Uint16 m_mipmap_count;
 			Uint16 m_pixel_size;
 			GLenum m_format;
@@ -47,12 +47,12 @@ namespace eternal_lands
 			Uint32 get_total_size() const;
 			Uint32 get_buffer_pixel_offset(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 mipmap_level) const;
+				const Uint16 mipmap) const;
 			Uint32 get_buffer_block_offset(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 mipmap_level) const;
+				const Uint16 mipmap) const;
 			Uint32 get_offset(const Uint16 face,
-				const Uint16 mipmap_level) const;
+				const Uint16 mipmap) const;
 			static bool is_valid(const GLenum type,
 				const GLenum format, const bool compressed);
 			static Uint16 get_channel_count(const GLenum format);
@@ -62,14 +62,14 @@ namespace eternal_lands
 		public:
 			Image(const String &name, const bool cube_map,
 				const TextureFormatType texture_format,
-				const Uint32Array3 &sizes,
+				const glm::uvec3 &sizes,
 				const Uint16 mipmap_count,
 				const Uint16 pixel_size, const GLenum format,
 				const GLenum type, const bool sRGB);
 
 			Image(const String &name, const bool cube_map,
 				const TextureFormatType texture_format,
-				const Uint32Array3 &sizes,
+				const glm::uvec3 &sizes,
 				const Uint16 mipmap_count);
 
 			/**
@@ -123,34 +123,32 @@ namespace eternal_lands
 
 			inline Uint32 get_pixel_offset(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 face, const Uint16 mipmap_level)
-				const
+				const Uint16 face, const Uint16 mipmap) const
 			{
-				assert(x < get_width());
-				assert(y < get_height());
-				assert(z < get_depth());
+				assert(x < get_width(mipmap));
+				assert(y < get_height(mipmap));
+				assert(z < get_depth(mipmap));
 				assert(face < get_face_count());
-				assert(mipmap_level <= get_mipmap_count());
+				assert(mipmap <= get_mipmap_count());
 
-				return get_offset(face, mipmap_level) +
+				return get_offset(face, mipmap) +
 					get_buffer_pixel_offset(x, y, z,
-					mipmap_level);
+						mipmap);
 			}
 
 			inline Uint32 get_block_offset(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 face, const Uint16 mipmap_level)
-				const
+				const Uint16 face, const Uint16 mipmap) const
 			{
 				assert(x < (get_width() / 4));
 				assert(y < (get_height() / 4));
 				assert(z < get_depth());
 				assert(face < get_face_count());
-				assert(mipmap_level <= get_mipmap_count());
+				assert(mipmap <= get_mipmap_count());
 
-				return get_offset(face, mipmap_level) +
+				return get_offset(face, mipmap) +
 					get_buffer_block_offset(x, y, z,
-					mipmap_level);
+						mipmap);
 			}
 
 			inline ReadWriteMemory &get_buffer()
@@ -165,16 +163,16 @@ namespace eternal_lands
 			 * @param y The y position.
 			 * @param z The z position.
 			 * @param face The face to use.
-			 * @param mipmap_level The mipmap level to use.
+			 * @param mipmap The mipmap level to use.
 			 * @return The pointer to the data.
 			 */
 			inline void* get_pixel_data(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 face, const Uint16 mipmap_level)
+				const Uint16 face, const Uint16 mipmap)
 			{
 				return static_cast<Uint8*>(get_buffer(
 					).get_ptr()) + get_pixel_offset(x, y, z,
-					face, mipmap_level);
+					face, mipmap);
 			}
 
 			/**
@@ -184,16 +182,16 @@ namespace eternal_lands
 			 * @param y The y position.
 			 * @param z The z position.
 			 * @param face The face to use.
-			 * @param mipmap_level The mipmap level to use.
+			 * @param mipmap The mipmap level to use.
 			 * @return The pointer to the data.
 			 */
 			inline void* get_block_data(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 face, const Uint16 mipmap_level)
+				const Uint16 face, const Uint16 mipmap)
 			{
 				return static_cast<Uint8*>(get_buffer(
 					).get_ptr()) + get_block_offset(x, y, z,
-					face, mipmap_level);
+					face, mipmap);
 			}
 
 			inline void set_name(const String &name)
@@ -220,7 +218,7 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_width() const
 			{
-				return m_sizes[0];
+				return m_sizes.x;
 			}
 
 			/**
@@ -231,7 +229,7 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_height() const
 			{
-				return m_sizes[1];
+				return m_sizes.y;
 			}
 
 			/**
@@ -242,7 +240,7 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_depth() const
 			{
-				return m_sizes[2];
+				return m_sizes.z;
 			}
 
 			/**
@@ -251,9 +249,60 @@ namespace eternal_lands
 			 * They are always greater than zero.
 			 * @return The sizes of the image.
 			 */
-			inline const Uint32Array3 &get_sizes() const
+			inline const glm::uvec3 &get_sizes() const
 			{
 				return m_sizes;
+			}
+
+			/**
+			 * @brief The image width.
+			 * Returns the width of the image at the given mipmap
+			 * level. This is always greater than zero.
+			 * @param mipmap The mipmap level to use.
+			 * @return The width of the image.
+			 */
+			inline Uint32 get_width(const Uint16 mipmap) const
+			{
+				return get_sizes(mipmap).x;
+			}
+
+			/**
+			 * @brief The image height.
+			 * Returns the height of the image at the given mipmap
+			 * level. This is always greater than zero and one for
+			 * 1d images.
+			 * @param mipmap The mipmap level to use.
+			 * @return The height of the image.
+			 */
+			inline Uint32 get_height(const Uint16 mipmap) const
+			{
+				return get_sizes(mipmap).y;
+			}
+
+			/**
+			 * @brief The image depth.
+			 * Returns the depth of the image at the given mipmap
+			 * level. This is always greater than zero and one for
+			 * 1d and 2d images.
+			 * @param mipmap The mipmap level to use.
+			 * @return The depth of the image.
+			 */
+			inline Uint32 get_depth(const Uint16 mipmap) const
+			{
+				return get_sizes(mipmap).z;
+			}
+
+			/**
+			 * @brief The image sizes.
+			 * Returns the width, height and depth of the image at
+			 * the given mipmap level. This is always greater than
+			 * zero.
+			 * @return The sizes of the image.
+			 */
+			inline glm::uvec3 get_sizes(const Uint16 mipmap) const
+			{
+				return glm::max(m_sizes >> glm::uvec3(mipmap),
+					1);
 			}
 
 			/**
@@ -296,15 +345,15 @@ namespace eternal_lands
 			 * Returns the pointer to the data of the given mipmap level and
 			 * face.
 			 * @param face The face to use.
-			 * @param mipmap_level The mipmap level to use.
+			 * @param mipmap The mipmap level to use.
 			 * @return The pointer to the data.
 			 */
 			inline const void* get_data(const Uint16 face,
-				const Uint16 mipmap_level) const
+				const Uint16 mipmap) const
 			{
 				return static_cast<const Uint8* const>(
 					get_buffer().get_ptr()) +
-					get_offset(face, mipmap_level);
+					get_offset(face, mipmap);
 			}
 
 			/**
@@ -314,18 +363,16 @@ namespace eternal_lands
 			 * @param y The y position.
 			 * @param z The z position.
 			 * @param face The face to use.
-			 * @param mipmap_level The mipmap level to use.
+			 * @param mipmap The mipmap level to use.
 			 * @return The pointer to the data.
 			 */
 			inline const void* get_pixel_data(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 face, const Uint16 mipmap_level)
-				const
+				const Uint16 face, const Uint16 mipmap) const
 			{
 				return static_cast<const Uint8* const>(
 					get_buffer().get_ptr()) +
-					get_pixel_offset(x, y, z, face,
-					mipmap_level);
+					get_pixel_offset(x, y, z, face, mipmap);
 			}
 
 			/**
@@ -335,18 +382,16 @@ namespace eternal_lands
 			 * @param y The y position.
 			 * @param z The z position.
 			 * @param face The face to use.
-			 * @param mipmap_level The mipmap level to use.
+			 * @param mipmap The mipmap level to use.
 			 * @return The pointer to the data.
 			 */
 			inline const void* get_block_data(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 face, const Uint16 mipmap_level)
-				const
+				const Uint16 face, const Uint16 mipmap) const
 			{
 				return static_cast<const Uint8* const>(
 					get_buffer().get_ptr()) +
-					get_block_offset(x, y, z, face,
-					mipmap_level);
+					get_block_offset(x, y, z, face, mipmap);
 			}
 
 			inline const ReadWriteMemory &get_buffer() const
@@ -369,10 +414,10 @@ namespace eternal_lands
 			 * @brief The size of the given mipmap level.
 			 * Returns the size of one face of the given mipmap
 			 * level.
-			 * @param mipmap_level The mipmap level to use.
+			 * @param mipmap The mipmap level to use.
 			 * @return The size of the given mipmap level.
 			 */
-			Uint32 get_size(const Uint16 mipmap_level) const;
+			Uint32 get_size(const Uint16 mipmap) const;
 
 			/**
 			 * @brief The size of the given volume.
@@ -399,26 +444,22 @@ namespace eternal_lands
 
 			glm::vec4 get_pixel(const Uint32 x, const Uint32 y,
 				const Uint32 z, const Uint16 face,
-				const Uint16 mipmap_level) const;
+				const Uint16 mipmap) const;
 			void set_pixel(const Uint32 x, const Uint32 y,
 				const Uint32 z, const Uint16 face,
-				const Uint16 mipmap_level,
-				const glm::vec4 &data);
+				const Uint16 mipmap, const glm::vec4 &data);
 			glm::uvec4 get_pixel_uint(const Uint32 x,
 				const Uint32 y, const Uint32 z,
-				const Uint16 face, const Uint16 mipmap_level)
-				const;
+				const Uint16 face, const Uint16 mipmap) const;
 			void set_pixel_uint(const Uint32 x, const Uint32 y,
 				const Uint32 z, const Uint16 face,
-				const Uint16 mipmap_level,
-				const glm::uvec4 &data);
+				const Uint16 mipmap, const glm::uvec4 &data);
 			glm::ivec4 get_pixel_int(const Uint32 x, const Uint32 y,
 				const Uint32 z, const Uint16 face,
-				const Uint16 mipmap_level) const;
+				const Uint16 mipmap) const;
 			void set_pixel_int(const Uint32 x, const Uint32 y,
 				const Uint32 z, const Uint16 face,
-				const Uint16 mipmap_level,
-				const glm::ivec4 &data);
+				const Uint16 mipmap, const glm::ivec4 &data);
 
 			/**
 			 * @brief Gets the texture format of the image.

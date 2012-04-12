@@ -25,12 +25,15 @@ namespace eternal_lands
 				const ReaderSharedPtr &reader,
 				const bool rg_formats,
 				TextureFormatType &texture_format,
-				Uint32Array3 &sizes, Uint16 &mipmaps);
+				glm::uvec3 &sizes, Uint16 &mipmaps);
 			static ImageSharedPtr load_image(
 				const ReaderSharedPtr &reader,
 				const bool rg_formats);
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();
+			static void save_image(const ImageSharedPtr &image,
+				OutStream &saver);
+			static bool can_save(const ImageSharedPtr &image);
 
 	};
 

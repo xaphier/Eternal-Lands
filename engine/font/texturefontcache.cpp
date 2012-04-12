@@ -44,7 +44,7 @@ namespace eternal_lands
 		const Uint16 height, const Uint16 max_char_count)
 	{
 		StringVariantMap values;
-		Uint32Array3 sizes;
+		glm::uvec3 sizes;
 		SubMeshVector sub_meshs;
 		Uint32Vector indices;
 		Uint32 i;

@@ -1,12 +1,12 @@
 /****************************************************************************
- *            materialscript.hpp
+ *            imagescript.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_b114765b_0a36_423f_971b_64efd2cb81fe
-#define	UUID_b114765b_0a36_423f_971b_64efd2cb81fe
+#ifndef	UUID_7ce59ed1_de48_43e9_8326_c219d7e5f12e
+#define	UUID_7ce59ed1_de48_43e9_8326_c219d7e5f12e
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
@@ -17,30 +17,24 @@
 
 /**
  * @file
- * @brief The @c class MaterialScript.
- * This file contains the @c class MaterialScript.
+ * @brief The @c class ImageScript.
+ * This file contains the @c class ImageScript.
  */
 namespace eternal_lands
 {
 
-	class MaterialScript: public BasicScript
+	class ImageScript: public BasicScript
 	{
-		private:
-			SDL_mutex* m_mutex;
-
 		public:
-			MaterialScript(
-				const ScriptEngineSharedPtr &script_engine,
+			ImageScript(const ScriptEngineSharedPtr &script_engine,
 				const String &name);
-			~MaterialScript() throw();
-			bool execute(const glm::vec4 &time,
-				MaterialData &material,
+			~ImageScript() throw();
+			bool execute(const ImageSharedPtr &image,
+				const Uint16 face, const Uint16 mipmap,
 				asIScriptContext* context);
-			void lock();
-			void unlock();
 
 	};
 
 }
 
-#endif	/* UUID_b114765b_0a36_423f_971b_64efd2cb81fe */
+#endif	/* UUID_7ce59ed1_de48_43e9_8326_c219d7e5f12e */

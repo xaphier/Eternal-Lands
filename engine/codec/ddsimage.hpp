@@ -30,7 +30,7 @@ namespace eternal_lands
 				const ReaderSharedPtr &reader,
 				const bool rg_formats,
 				TextureFormatType &texture_format,
-				Uint32Array3 &sizes, Uint16 &mipmaps);
+				glm::uvec3 &sizes, Uint16 &mipmaps);
 			static ImageSharedPtr load_image(
 				const CodecManager &codec_manager,
 				const ReaderSharedPtr &reader,

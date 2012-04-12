@@ -23,27 +23,33 @@
 namespace eternal_lands
 {
 
-	class BasicScript
+	class BasicScript: public boost::noncopyable
 	{
 		private:
 			asIScriptFunction* m_func;
+			const String m_name;
 
 		protected:
 			/**
 			 * Default constructor.
 			 */
-			BasicScript();
+			BasicScript(const String &name);
 			void set_function(const String &module,
 				const String &function,
-				asIScriptEngine* engine);
-			void prepare(asIScriptContext* ctx);
-			bool execute(asIScriptContext* ctx);
+				const ScriptEngineSharedPtr &script_engine);
+			void prepare(asIScriptContext* context);
+			void log_exception(asIScriptContext* context);
 
 		public:
 			/**
 			 * Default destructor.
 			 */
 			~BasicScript() throw();
+
+			inline const String &get_name() const
+			{
+				return m_name;
+			}
 
 	};
 

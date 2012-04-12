@@ -135,7 +135,7 @@ namespace eternal_lands
 					const ReaderSharedPtr &reader,
 					const bool rg_formats,
 					TextureFormatType &texture_format,
-					Uint32Array3 &sizes, Uint16 &mipmaps);
+					glm::uvec3 &sizes, Uint16 &mipmaps);
 
 		};
 
@@ -161,7 +161,7 @@ namespace eternal_lands
 			ImageSharedPtr image;
 			JSAMPROW rowptr[1];
 			ReadWriteMemory buffer;
-			Uint32Array3 sizes;
+			glm::uvec3 sizes;
 			TextureFormatType texture_format;
 
 			reader->read(buffer);
@@ -260,7 +260,7 @@ namespace eternal_lands
 
 		void JpegDecompress::get_image_information(
 			const ReaderSharedPtr &reader, const bool rg_formats,
-			TextureFormatType &texture_format, Uint32Array3 &sizes,
+			TextureFormatType &texture_format, glm::uvec3 &sizes,
 			Uint16 &mipmaps)
 		{
 			ReadWriteMemory buffer;
@@ -290,6 +290,110 @@ namespace eternal_lands
 			mipmaps = 0;
 		}
 
+		class JpegCompress
+		{
+			private:
+				jpeg_compress_struct m_cinfo;
+				el_error_mgr m_jerr;
+
+			public:
+				JpegCompress();
+				~JpegCompress();
+				void set_image(const ImageSharedPtr &image,
+					OutStream &saver);
+				static bool can_save(
+					const ImageSharedPtr &image);
+
+		};
+
+		JpegCompress::JpegCompress()
+		{
+			memset(m_jerr.m_buffer, 0, sizeof(m_jerr.m_buffer));
+
+			m_cinfo.err = jpeg_std_error(&m_jerr.m_errmgr);
+			m_jerr.m_errmgr.error_exit = el_error_exit;
+			m_jerr.m_errmgr.output_message = el_output_message;
+
+			jpeg_create_compress(&m_cinfo);
+		}
+
+		JpegCompress::~JpegCompress()
+		{
+			jpeg_destroy_compress(&m_cinfo);
+		}
+
+		void JpegCompress::set_image(const ImageSharedPtr &image,
+			OutStream &saver)
+		{
+			boost::scoped_array<JSAMPROW> row_pointers;
+			unsigned char *buffer;
+			unsigned long size;
+			Uint32 i;
+
+			if (!can_save(image))
+			{
+				EL_THROW_EXCEPTION(
+					JpegFormatNotSupportedException());
+			}
+
+			buffer = 0;
+			size = 0;
+
+			jpeg_mem_dest(&m_cinfo, &buffer, &size);
+
+			m_cinfo.image_width = image->get_width();
+			m_cinfo.image_height = image->get_height();
+			m_cinfo.input_components = image->get_channel_count();
+
+			if (image->get_channel_count() == 1)
+			{
+				m_cinfo.in_color_space = JCS_GRAYSCALE;
+			}
+			else
+			{
+				m_cinfo.in_color_space = JCS_RGB;
+			}
+
+			jpeg_set_defaults(&m_cinfo);
+			jpeg_start_compress(&m_cinfo, TRUE);
+
+			/* write bytes */
+			row_pointers.reset(new JSAMPROW[image->get_height()]);
+
+			for (i = 0; i < image->get_height(); i++)
+			{
+				row_pointers[i] = static_cast<JSAMPROW>(
+					const_cast<void*>(image->get_pixel_data(
+						0, i, 0, 0, 0)));
+			}
+
+			jpeg_write_scanlines(&m_cinfo, row_pointers.get(),
+				image->get_height());
+
+			jpeg_finish_compress(&m_cinfo);
+
+			saver.write((const char*)buffer, size);
+		}
+
+		bool JpegCompress::can_save(const ImageSharedPtr &image)
+		{
+			if (image->get_type() != GL_UNSIGNED_BYTE)
+			{
+				return false;
+			}
+
+			switch (image->get_format())
+			{
+				case GL_LUMINANCE:
+				case GL_LUMINANCE8:
+				case GL_RGB:
+				case GL_RGB8:
+					return true;
+				default:
+					return false;
+			}
+		}
+
 	}
 
 	ImageSharedPtr JpegImage::load_image(const ReaderSharedPtr &reader,
@@ -302,7 +406,7 @@ namespace eternal_lands
 
 	void JpegImage::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, TextureFormatType &texture_format,
-		Uint32Array3 &sizes, Uint16 &mipmaps)
+		glm::uvec3 &sizes, Uint16 &mipmaps)
 	{
 		JpegDecompress jpeg_decompress;
 
@@ -318,6 +422,27 @@ namespace eternal_lands
 	String JpegImage::get_image_str()
 	{
 		return String(UTF8("jpeg-image"));
+	}
+
+	void JpegImage::save_image(const ImageSharedPtr &image,
+		OutStream &saver)
+	{
+		try
+		{
+			JpegCompress jpeg_compress;
+
+			jpeg_compress.set_image(image, saver);
+		}
+		catch (boost::exception &exception)
+		{
+			exception << errinfo_name(image->get_name());
+			throw;
+		}
+	}
+
+	bool JpegImage::can_save(const ImageSharedPtr &image)
+	{
+		return JpegCompress::can_save(image);
 	}
 
 }

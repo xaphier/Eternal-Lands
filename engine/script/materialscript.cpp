@@ -6,8 +6,6 @@
  ****************************************************************************/
 
 #include "materialscript.hpp"
-#include "scriptengine.hpp"
-#include "logging.hpp"
 #include "materialdata.hpp"
 
 namespace eternal_lands
@@ -23,12 +21,12 @@ namespace eternal_lands
 
 	MaterialScript::MaterialScript(
 		const ScriptEngineSharedPtr &script_engine, const String &name):
-		m_mutex(SDL_CreateMutex()), m_func(0), m_name(name)
+		BasicScript(name), m_mutex(SDL_CreateMutex())
 	{
 		assert(m_mutex != 0);
 
-		m_func = script_engine->get_function(String(UTF8("Material")),
-			get_name(), material_function);
+		set_function(String(UTF8("Material")), material_function,
+			script_engine);
 	}
 
 	MaterialScript::~MaterialScript() throw()
@@ -54,13 +52,10 @@ namespace eternal_lands
 	bool MaterialScript::execute(const glm::vec4 &time,
 		MaterialData &material, asIScriptContext* context)
 	{
-		StringStream str;
 		glm::vec4 tmp;
-		const char* section;
-		Uint32 i, count;
-		int r, line, column;
+		int r;
 
-		context->Prepare(m_func);
+		prepare(context);
 
 		tmp = time;
 
@@ -71,26 +66,7 @@ namespace eternal_lands
 
 		if (r == asEXECUTION_EXCEPTION)
 		{
-			line = context->GetExceptionLineNumber(&column,
-				&section);
-
-			LOG_ERROR(UTF8("Script exception '%1%' at section "
-				"'%2%', line %3%:%4%."),
-				context->GetExceptionString() % section % line
-				% column);
-
-			count = context->GetCallstackSize();
-
-			for (i = 0; i < count; ++i)
-			{
-				line = context->GetLineNumber(i, 0, &section);
-				str << section << ":" << line << "; ";
-				str << context->GetFunction(i
-					)->GetDeclaration();
-				str << std::endl;
-			}
-
-			LOG_DEBUG(UTF8("Callstack: %1%"), str.str());
+			log_exception(context);
 
 			return false;
 		}
