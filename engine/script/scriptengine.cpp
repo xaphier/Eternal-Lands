@@ -113,10 +113,10 @@ namespace eternal_lands
 		assert(r >= 0);
 	}
 
-void constructor_material_data(MaterialData *self)
-{
-	new(self) MaterialData();
-}
+	void constructor_material_data(MaterialData *self)
+	{
+		new(self) MaterialData();
+	}
 
 	void ScriptEngine::register_material_data()
 	{
@@ -325,59 +325,6 @@ void constructor_material_data(MaterialData *self)
 			return;
 		}
 	}
-#if	0
-	void ScriptEngine::run_main(const String &name)
-	{
-		asIScriptContext* ctx;
-		asIScriptModule* mod;
-		asIScriptFunction* func;
-		Sint32 r;
-
-		// Find the function that is to be called. 
-		mod = get_engine()->GetModule(name.get().c_str());
-
-		assert(mod != 0);
-
-		int i, count;
-
-		count = mod->GetFunctionCount();
-
-		for (i = 0; i < count; ++i)
-		{
-			func = mod->GetFunctionByIndex(i);
-			printf("%d: %s\n", i, func->GetDeclaration());
-		}	
-
-		func = mod->GetFunctionByDecl("void main()");
-
-		if (func == 0)
-		{
-			// The function couldn't be found. Instruct the script writer
-			// to include the expected function in the script.
-			printf("The script must have the function 'void main()'. Please add it and try again.\n");
-			return;
-		}
-
-		// Create our context, prepare it, and then execute
-		ctx = get_engine()->CreateContext();
-
-		ctx->Prepare(func);
-
-		r = ctx->Execute();
-
-		if (r != asEXECUTION_FINISHED)
-		{
-			// The execution didn't complete as expected. Determine what happened.
-			if( r == asEXECUTION_EXCEPTION )
-			{
-				// An exception occurred, let the script writer know what happened so it can be corrected.
-				printf("An exception '%s' occurred. Please correct the code and try again.\n", ctx->GetExceptionString());
-			}
-		}
-
-		ctx->Release();
-	}
-#endif
 
 	void ScriptEngine::run_main(const String &name, const String &file)
 	{

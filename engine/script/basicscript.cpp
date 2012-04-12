@@ -8,11 +8,12 @@
 #include "basicscript.hpp"
 #include "logging.hpp"
 #include "exceptions.hpp"
+#include "scriptengine.hpp"
 
 namespace eternal_lands
 {
 
-	BasicScript::BasicScript(): m_func(0)
+	BasicScript::BasicScript(const String &name): m_func(0), m_name(name)
 	{
 	}
 
@@ -25,22 +26,11 @@ namespace eternal_lands
 	}
 
 	void BasicScript::set_function(const String &module,
-		const String &function, asIScriptEngine* engine)
+		const String &function,
+		const ScriptEngineSharedPtr &script_engine)
 	{
-		asIScriptModule* mod;
-
-		mod = engine->GetModule(module.get().c_str());
-
-		if (mod == 0)
-		{
-			EL_THROW_EXCEPTION(ItemNotFoundException()
-				<< errinfo_message(UTF8("module not found"))
-				<< errinfo_item_name(module));
-		}
-
-		assert(mod != 0);
-
-		m_func = mod->GetFunctionByDecl(function.get().c_str());
+		m_func = script_engine->get_function(module, get_name(),
+			function);
 
 		if (m_func == 0)
 		{
@@ -50,47 +40,35 @@ namespace eternal_lands
 		}
 	}
 
-	void BasicScript::prepare(asIScriptContext* ctx)
+	void BasicScript::prepare(asIScriptContext* context)
 	{
-		ctx->Prepare(m_func);
+		context->Prepare(m_func);
 	}
 
-	bool BasicScript::execute(asIScriptContext* ctx)
+	void BasicScript::log_exception(asIScriptContext* context)
 	{
 		StringStream str;
 		const char* section;
 		Uint32 i, count;
-		int r, line, column;
+		int line, column;
 
-		ctx->Prepare(m_func);
+		line = context->GetExceptionLineNumber(&column, &section);
 
-		r = ctx->Execute();
+		LOG_ERROR(UTF8("Script exception '%1%' at section '%2%', line"
+			" %3%:%4%."), context->GetExceptionString() % section %
+			line % column);
 
-		if (r == asEXECUTION_EXCEPTION)
+		count = context->GetCallstackSize();
+
+		for (i = 0; i < count; ++i)
 		{
-			line = ctx->GetExceptionLineNumber(&column, &section);
-
-			LOG_ERROR(UTF8("Script exception '%1%' at section "
-				"'%2%', line %3%:%4%."),
-				ctx->GetExceptionString() % section % line %
-				column);
-
-			count = ctx->GetCallstackSize();
-
-			for (i = 0; i < count; ++i)
-			{
-				line = ctx->GetLineNumber(i, 0, &section);
-				str << section << ":" << line << "; ";
-				str << ctx->GetFunction(i)->GetDeclaration();
-				str << std::endl;
-			}
-
-			LOG_DEBUG(UTF8("Callstack: %1%"), str.str());
-
-			return false;
+			line = context->GetLineNumber(i, 0, &section);
+			str << section << ":" << line << "; ";
+			str << context->GetFunction(i)->GetDeclaration();
+			str << std::endl;
 		}
 
-		return r == asEXECUTION_FINISHED;
+		LOG_DEBUG(UTF8("Callstack: %1%"), str.str());
 	}
 
 }

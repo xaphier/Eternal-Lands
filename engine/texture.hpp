@@ -142,49 +142,49 @@ namespace eternal_lands
 			void set_texture_image_1d(const Uint16 texture_mipmap,
 				const Uint16 image_mipmap, const Uint32 width,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &texture_position,
-				const Uint32Array3 &image_position);
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
 			void set_texture_image_2d(const Uint16 texture_mipmap,
 				const Uint16 image_mipmap, const Uint32 width,
 				const Uint32 height,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &texture_position,
-				const Uint32Array3 &image_position);
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
 			void set_texture_image_3d(const Uint16 texture_mipmap,
 				const Uint16 image_mipmap, const Uint32 width,
 				const Uint32 height, const Uint32 depth,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &texture_position,
-				const Uint32Array3 &image_position);
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
 			void set_texture_image_cube_map(
 				const Uint16 texture_mipmap,
 				const Uint16 image_mipmap, const Uint32 width,
 				const Uint32 height,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &texture_position,
-				const Uint32Array3 &image_position);
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
 			void set_texture_image_cube_map_face(
 				const Uint16 texture_mipmap,
 				const Uint16 image_mipmap, const Uint32 width,
 				const Uint32 height, const CubeMapFaceType face,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &texture_position,
-				const Uint32Array3 &image_position);
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
 			void set_texture_image_cube_map(
 				const Uint16 texture_mipmap,
 				const Uint16 image_mipmap, const Uint32 width,
 				const Uint32 height, const Uint32 depth,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &texture_position,
-				const Uint32Array3 &image_position);
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
 			void set_texture_image_cube_map_face(
 				const Uint16 texture_mipmap,
 				const Uint16 image_mipmap, const Uint32 width,
 				const Uint32 height, const Uint32 depth,
 				const CubeMapFaceType face,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &texture_position,
-				const Uint32Array3 &image_position);
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
 			void set_texture_image_1d(const Uint16 mipmap,
 				const Uint32 width);
 			void set_texture_image_2d(const Uint16 mipmap,
@@ -412,13 +412,13 @@ namespace eternal_lands
 				const ImageSharedPtrVector &images);
 			void sub_texture(const Uint16 mipmap,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &position);
+				const glm::uvec3 &position);
 			void sub_texture(const Uint16 texture_mipmap,
 				const Uint16 image_mipmap,
 				const ImageSharedPtr &image,
-				const Uint32Array3 &texture_position,
-				const Uint32Array3 &image_position,
-				const Uint32Array3 &size);
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position,
+				const glm::uvec3 &size);
 			void init(const Uint32 width, const Uint32 height,
 				const Uint32 depth, const Uint16 mipmaps);
 			void attach_ext(const GLenum attachment,

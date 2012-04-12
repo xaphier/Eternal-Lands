@@ -977,7 +977,7 @@ namespace eternal_lands
 			const Uint32 green_mask, const Uint32 blue_mask,
 			const Uint32 alpha_mask, const bool rg_formats)
 		{
-			Uint32Array3 size;
+			glm::uvec3 size;
 			Uint32 pixel_size;
 			Uint32 swap_size;
 			GLenum format;
@@ -1037,7 +1037,7 @@ namespace eternal_lands
 			const GLenum format, const GLenum type,
 			const Uint16 swap_size, const bool rg_formats)
 		{
-			Uint32Array3 size;
+			glm::uvec3 size;
 
 			size[0] = m_header.m_width;
 			size[1] = m_header.m_height;
@@ -1055,7 +1055,7 @@ namespace eternal_lands
 		void DdsImageLoader::set_format(const TextureFormatType tft,
 			const bool rg_formats)
 		{
-			Uint32Array3 size;
+			glm::uvec3 size;
 
 			size[0] = m_header.m_width;
 			size[1] = m_header.m_height;
@@ -1203,7 +1203,7 @@ namespace eternal_lands
 		void DdsImageLoader::uncompress(const TextureFormatType format,
 			const bool rg_formats)
 		{
-			Uint32Array3 size;
+			glm::uvec3 size;
 			Uint32 width, height, depth, face_count, mipmap_count;
 			Uint32 i, j;
 			Uint32 dst_bpp;
@@ -1450,7 +1450,7 @@ namespace eternal_lands
 
 	void DdsImage::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, TextureFormatType &texture_format,
-		Uint32Array3 &sizes, Uint16 &mipmaps)
+		glm::uvec3 &sizes, Uint16 &mipmaps)
 	{
 		dds::DdsHeader header;
 

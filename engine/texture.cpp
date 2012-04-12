@@ -446,8 +446,8 @@ namespace eternal_lands
 	void Texture::set_texture_image_1d(const Uint16 texture_mipmap,
 		const Uint16 image_mipmap, const Uint32 width,
 		const ImageSharedPtr &image,
-		const Uint32Array3 &texture_position,
-		const Uint32Array3 &image_position)
+		const glm::uvec3 &texture_position,
+		const glm::uvec3 &image_position)
 	{
 		GLenum image_format, image_type;
 		Uint64 size;
@@ -488,8 +488,8 @@ namespace eternal_lands
 	void Texture::set_texture_image_2d(const Uint16 texture_mipmap,
 		const Uint16 image_mipmap, const Uint32 width,
 		const Uint32 height, const ImageSharedPtr &image,
-		const Uint32Array3 &texture_position,
-		const Uint32Array3 &image_position)
+		const glm::uvec3 &texture_position,
+		const glm::uvec3 &image_position)
 	{
 		GLenum image_format, image_type;
 		Uint64 size;
@@ -534,8 +534,8 @@ namespace eternal_lands
 		const Uint16 image_mipmap, const Uint32 width,
 		const Uint32 height, const Uint32 depth,
 		const ImageSharedPtr &image,
-		const Uint32Array3 &texture_position,
-		const Uint32Array3 &image_position)
+		const glm::uvec3 &texture_position,
+		const glm::uvec3 &image_position)
 	{
 		GLenum image_format, image_type;
 		Uint32 size;
@@ -582,8 +582,8 @@ namespace eternal_lands
 	void Texture::set_texture_image_cube_map(const Uint16 texture_mipmap,
 		const Uint16 image_mipmap, const Uint32 width,
 		const Uint32 height, const ImageSharedPtr &image,
-		const Uint32Array3 &texture_position,
-		const Uint32Array3 &image_position)
+		const glm::uvec3 &texture_position,
+		const glm::uvec3 &image_position)
 	{
 		bool compressed;
 
@@ -620,8 +620,8 @@ namespace eternal_lands
 		const Uint16 texture_mipmap, const Uint16 image_mipmap,
 		const Uint32 width, const Uint32 height,
 		const CubeMapFaceType face, const ImageSharedPtr &image,
-		const Uint32Array3 &texture_position,
-		const Uint32Array3 &image_position)
+		const glm::uvec3 &texture_position,
+		const glm::uvec3 &image_position)
 	{
 		GLenum image_format, image_type;
 		Uint32 size;
@@ -659,8 +659,8 @@ namespace eternal_lands
 		const Uint16 image_mipmap, const Uint32 width,
 		const Uint32 height, const Uint32 depth,
 		const ImageSharedPtr &image,
-		const Uint32Array3 &texture_position,
-		const Uint32Array3 &image_position)
+		const glm::uvec3 &texture_position,
+		const glm::uvec3 &image_position)
 	{
 		bool compressed;
 
@@ -697,8 +697,8 @@ namespace eternal_lands
 		const Uint16 texture_mipmap, const Uint16 image_mipmap,
 		const Uint32 width, const Uint32 height, const Uint32 depth,
 		const CubeMapFaceType face, const ImageSharedPtr &image,
-		const Uint32Array3 &texture_position,
-		const Uint32Array3 &image_position)
+		const glm::uvec3 &texture_position,
+		const glm::uvec3 &image_position)
 	{
 		GLenum image_format, image_type;
 		Uint32 size;
@@ -1165,9 +1165,9 @@ namespace eternal_lands
 	}
 
 	void Texture::sub_texture(const Uint16 mipmap,
-		const ImageSharedPtr &image, const Uint32Array3 &position)
+		const ImageSharedPtr &image, const glm::uvec3 &position)
 	{
-		Uint32Array3 zero = { { 0, 0, 0 } };
+		glm::uvec3 zero = glm::uvec3(0);
 
 		sub_texture(mipmap, 0, image, position, zero,
 			image->get_sizes());
@@ -1175,8 +1175,8 @@ namespace eternal_lands
 
 	void Texture::sub_texture(const Uint16 texture_mipmap,
 		const Uint16 image_mipmap, const ImageSharedPtr &image,
-		const Uint32Array3 &texture_position,
-		const Uint32Array3 &image_position, const Uint32Array3 &size)
+		const glm::uvec3 &texture_position,
+		const glm::uvec3 &image_position, const glm::uvec3 &size)
 	{
 		bind();
 

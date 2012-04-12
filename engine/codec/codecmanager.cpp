@@ -624,7 +624,7 @@ namespace eternal_lands
 	void CodecManager::get_image_information(const String &name,
 		const FileSystemSharedPtr &file_system,
 		const bool rg_formats, TextureFormatType &texture_format,
-		Uint32Array3 &sizes, Uint16 &mipmaps) const
+		glm::uvec3 &sizes, Uint16 &mipmaps) const
 	{
 		Uint8Array32 magic;
 		boost::array<String, 5> file_names;
@@ -675,7 +675,7 @@ namespace eternal_lands
 
 	void CodecManager::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, TextureFormatType &texture_format,
-		Uint32Array3 &sizes, Uint16 &mipmaps) const
+		glm::uvec3 &sizes, Uint16 &mipmaps) const
 	{
 		Uint8Array32 magic;
 		StringStream str;
@@ -734,6 +734,32 @@ namespace eternal_lands
 		extensions.push_back(String(UTF8("*.png")));
 		extensions.push_back(String(UTF8("*.jpg")));
 		extensions.push_back(String(UTF8("*.jpeg")));
+	}
+
+	void CodecManager::save_image_as_png(const ImageSharedPtr &image,
+		const String &file_name)
+	{
+		std::fstream saver;
+
+		saver.open(file_name.get().c_str(), std::ios::out |
+			std::ios::binary | std::ios::trunc);
+		saver.exceptions(std::ios::eofbit | std::ios::failbit |
+			std::ios::badbit);
+
+		PngImage::save_image(image, saver);
+	}
+
+	void CodecManager::save_image_as_jpeg(const ImageSharedPtr &image,
+		const String &file_name)
+	{
+		std::fstream saver;
+
+		saver.open(file_name.get().c_str(), std::ios::out |
+			std::ios::binary | std::ios::trunc);
+		saver.exceptions(std::ios::eofbit | std::ios::failbit |
+			std::ios::badbit);
+
+		JpegImage::save_image(image, saver);
 	}
 
 }

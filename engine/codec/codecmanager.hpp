@@ -286,16 +286,22 @@ namespace eternal_lands
 				const ReaderSharedPtr &reader,
 				const bool rg_formats,
 				TextureFormatType &texture_format,
-				Uint32Array3 &sizes, Uint16 &mipmaps) const;
+				glm::uvec3 &sizes, Uint16 &mipmaps) const;
 
 			void get_image_information(const String &name,
 				const FileSystemSharedPtr &file_system,
 				const bool rg_formats,
 				TextureFormatType &texture_format,
-				Uint32Array3 &sizes, Uint16 &mipmaps) const;
+				glm::uvec3 &sizes, Uint16 &mipmaps) const;
 
 			void get_supported_file_extensions(
 				StringVector &extensions) const;
+
+			void save_image_as_png(const ImageSharedPtr &image,
+				const String &file_name);
+
+			void save_image_as_jpeg(const ImageSharedPtr &image,
+				const String &file_name);
 
 	};
 

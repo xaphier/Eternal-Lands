@@ -63,7 +63,7 @@ namespace eternal_lands
 			const bool rg_formats)
 		{
 			TextureFormatType texture_format;
-			Uint32Array3 image_sizes;
+			glm::uvec3 image_sizes;
 			Uint32 width, height;
 			Uint16 mipmap, mipmap_count;
 
@@ -520,7 +520,7 @@ namespace eternal_lands
 	{
 		ActorPartTextureTypeStringMap::iterator it, end;
 		std::map<ActorPartTextureType, ReaderSharedPtr> parts;
-		Uint32Array3 sizes;
+		glm::uvec3 sizes;
 		ImageCompressionTypeSet compressions;
 		bool compressed;
 

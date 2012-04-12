@@ -52,6 +52,10 @@
 #include "engine/particledata.hpp"
 #include "engine/script/scriptengine.hpp"
 #include "engine/script/materialscriptmanager.hpp"
+#include "engine/script/imagescript.hpp"
+
+#include "engine/image.hpp"
+#include "engine/codec/codecmanager.hpp"
 
 namespace el = eternal_lands;
 
@@ -67,7 +71,7 @@ namespace
 	el::StringSet entrables;
 	el::GlobalVarsSharedPtr global_vars;
 	el::FileSystemSharedPtr file_system;
-	boost::scoped_ptr<el::ScriptEngine> script_engine;
+	boost::shared_ptr<el::ScriptEngine> script_engine;
 
 	el::Text get_text(const unsigned char* str, const char* font,
 		const glm::vec4 &start_color,
@@ -272,7 +276,25 @@ namespace
 	}
 
 }
+/*
+void write_image()
+{
+	el::ImageSharedPtr image;
+	boost::scoped_ptr<el::ImageScript> script;
+	std::fstream data;
 
+	image = boost::make_shared<el::Image>(el::String("filter"), false,
+		el::tft_rgb8, glm::uvec3(128, 1, 1), 0);
+
+	script_engine->build_module(el::String("Image"), el::String("scripts/cubic_lookup.as"));
+
+	script.reset(new el::ImageScript(script_engine, el::String("scripts/cubic_lookup.as")));
+
+	script->execute(image, 0, 0, script_engine->get_context());
+
+	scene->get_scene_resources().get_codec_manager()->save_image_as_png(image, el::String("/home/daniel/data.png"));
+}
+*/
 #define	USE_GL_DEBUG_OUTPUT
 
 #ifdef	USE_GL_DEBUG_OUTPUT
@@ -536,6 +558,8 @@ extern "C" void init_engine()
 	glGenQueries(1, &el_timer_id);
 #endif
 	CHECK_GL_ERROR();
+
+//	write_image();
 
 	CATCH_BLOCK
 }

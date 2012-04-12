@@ -77,18 +77,18 @@ namespace eternal_lands
 		return offset;
 	}
 
-	Uint32 Image::get_size(const Uint16 mipmap_level) const
+	Uint32 Image::get_size(const Uint16 mipmap) const
 	{
 		Uint32 width, height, depth;
 
-		assert(mipmap_level <= get_mipmap_count());
+		assert(mipmap <= get_mipmap_count());
 
 		width = std::max(static_cast<Uint32>(1),
-			get_width() >> mipmap_level);
+			get_width() >> mipmap);
 		height = std::max(static_cast<Uint32>(1),
-			get_height() >> mipmap_level);
+			get_height() >> mipmap);
 		depth = std::max(static_cast<Uint32>(1),
-			get_depth() >> mipmap_level);
+			get_depth() >> mipmap);
 
 		assert(width > 0);
 		assert(height > 0);
@@ -130,16 +130,13 @@ namespace eternal_lands
 	}
 
 	Uint32 Image::get_buffer_pixel_offset(const Uint32 x, const Uint32 y,
-		const Uint32 z, const Uint16 mipmap_level) const
+		const Uint32 z, const Uint16 mipmap) const
 	{
 		Uint32 width, height, depth;
 
-		width = std::max(static_cast<Uint32>(1),
-			get_width() >> mipmap_level);
-		height = std::max(static_cast<Uint32>(1),
-			get_height() >> mipmap_level);
-		depth = std::max(static_cast<Uint32>(1),
-			get_depth() >> mipmap_level);
+		width = get_width(mipmap);
+		height = get_height(mipmap);
+		depth = get_depth(mipmap);
 
 		assert(width > 0);
 		assert(height > 0);
@@ -153,16 +150,13 @@ namespace eternal_lands
 	}
 
 	Uint32 Image::get_buffer_block_offset(const Uint32 x, const Uint32 y,
-		const Uint32 z, const Uint16 mipmap_level) const
+		const Uint32 z, const Uint16 mipmap) const
 	{
 		Uint32 width, height, depth;
 
-		width = std::max(static_cast<Uint32>(1),
-			get_width() >> mipmap_level);
-		height = std::max(static_cast<Uint32>(1),
-			get_height() >> mipmap_level);
-		depth = std::max(static_cast<Uint32>(1),
-			get_depth() >> mipmap_level);
+		width = get_width(mipmap);
+		height = get_height(mipmap);
+		depth = get_depth(mipmap);
 
 		assert(width > 0);
 		assert(height > 0);
@@ -196,7 +190,7 @@ namespace eternal_lands
 
 	Image::Image(const String &name, const bool cube_map,
 		const TextureFormatType texture_format,
-		const Uint32Array3 &sizes, const Uint16 mipmap_count,
+		const glm::uvec3 &sizes, const Uint16 mipmap_count,
 		const Uint16 pixel_size, const GLenum format,
 		const GLenum type, const bool sRGB)
 	{
@@ -224,7 +218,7 @@ namespace eternal_lands
 
 	Image::Image(const String &name, const bool cube_map,
 		const TextureFormatType texture_format,
-		const Uint32Array3 &sizes, const Uint16 mipmap_count)
+		const glm::uvec3 &sizes, const Uint16 mipmap_count)
 	{
 		assert(sizes[0] > 0);
 		assert(sizes[1] > 0);
@@ -358,8 +352,7 @@ namespace eternal_lands
 	}
 
 	glm::vec4 Image::get_pixel(const Uint32 x, const Uint32 y,
-		const Uint32 z, const Uint16 face, const Uint16 mipmap_level)
-		const
+		const Uint32 z, const Uint16 face, const Uint16 mipmap) const
 	{
 		glm::vec4 result;
 		Uint32 i, count;
@@ -371,7 +364,7 @@ namespace eternal_lands
 
 		const void* const value = static_cast<const Uint8* const>(
 			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
-			face, mipmap_level);
+			face, mipmap);
 
 		result = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -496,8 +489,7 @@ namespace eternal_lands
 	}
 
 	glm::uvec4 Image::get_pixel_uint(const Uint32 x, const Uint32 y,
-		const Uint32 z, const Uint16 face, const Uint16 mipmap_level)
-		const
+		const Uint32 z, const Uint16 face, const Uint16 mipmap) const
 	{
 		glm::uvec4 result;
 		Uint32 i, count;
@@ -509,7 +501,7 @@ namespace eternal_lands
 
 		const void* const value = static_cast<const Uint8* const>(
 			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
-			face, mipmap_level);
+			face, mipmap);
 
 		result = glm::uvec4(0);
 
@@ -647,8 +639,7 @@ namespace eternal_lands
 	}
 
 	glm::ivec4 Image::get_pixel_int(const Uint32 x, const Uint32 y,
-		const Uint32 z, const Uint16 face, const Uint16 mipmap_level)
-		const
+		const Uint32 z, const Uint16 face, const Uint16 mipmap) const
 	{
 		glm::ivec4 result;
 		Uint32 i, count;
@@ -660,7 +651,7 @@ namespace eternal_lands
 
 		const void* const value = static_cast<const Uint8* const>(
 			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
-			face, mipmap_level);
+			face, mipmap);
 
 		result = glm::ivec4(0);
 
@@ -798,8 +789,7 @@ namespace eternal_lands
 	}
 
 	void Image::set_pixel(const Uint32 x, const Uint32 y, const Uint32 z,
-		const Uint16 face, const Uint16 mipmap_level,
-		const glm::vec4 &data)
+		const Uint16 face, const Uint16 mipmap, const glm::vec4 &data)
 	{
 		glm::vec4 tmp;
 		void* value;
@@ -811,7 +801,7 @@ namespace eternal_lands
 		assert(count < 5);
 
 		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
-			get_pixel_offset(x, y, z, face, mipmap_level);
+			get_pixel_offset(x, y, z, face, mipmap);
 
 		tmp = swizzel_channels(get_format(), data);
 
@@ -934,7 +924,7 @@ namespace eternal_lands
 	}
 
 	void Image::set_pixel_uint(const Uint32 x, const Uint32 y,
-		const Uint32 z, const Uint16 face, const Uint16 mipmap_level,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap,
 		const glm::uvec4 &data)
 	{
 		glm::uvec4 tmp;
@@ -947,7 +937,7 @@ namespace eternal_lands
 		assert(count < 5);
 
 		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
-			get_pixel_offset(x, y, z, face, mipmap_level);
+			get_pixel_offset(x, y, z, face, mipmap);
 
 		tmp = swizzel_channels(get_format(), data);
 
@@ -1079,7 +1069,7 @@ namespace eternal_lands
 	}
 
 	void Image::set_pixel_int(const Uint32 x, const Uint32 y,
-		const Uint32 z, const Uint16 face, const Uint16 mipmap_level,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap,
 		const glm::ivec4 &data)
 	{
 		glm::ivec4 tmp;
@@ -1092,7 +1082,7 @@ namespace eternal_lands
 		assert(count < 5);
 
 		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
-			get_pixel_offset(x, y, z, face, mipmap_level);
+			get_pixel_offset(x, y, z, face, mipmap);
 
 		tmp = swizzel_channels(get_format(), data);
 
