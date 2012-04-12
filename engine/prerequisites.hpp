@@ -138,6 +138,8 @@ namespace eternal_lands
 	ARRAY(Sint8, 8);
 	ARRAY_NAME(glm::vec2, 2, Vec2);
 	ARRAY_NAME(glm::vec2, 3, Vec2);
+	ARRAY_NAME(glm::vec2, 4, Vec2);
+	ARRAY_NAME(glm::vec2, 8, Vec2);
 	ARRAY_NAME(glm::vec3, 2, Vec3);
 	ARRAY_NAME(glm::vec3, 3, Vec3);
 	ARRAY_NAME(glm::vec3, 8, Vec3);
@@ -148,6 +150,7 @@ namespace eternal_lands
 	ARRAY_NAME(glm::vec4, 16, Vec4);
 	ARRAY_NAME(glm::mat2x4, 4, Mat2x4);
 	ARRAY_NAME(glm::mat2x3, 4, Mat2x3);
+	ARRAY_NAME(glm::mat2x3, 8, Mat2x3);
 	ARRAY(String, 2);
 	ARRAY(String, 3);
 	ARRAY(String, 4);

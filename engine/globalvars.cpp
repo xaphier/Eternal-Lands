@@ -19,6 +19,9 @@ namespace eternal_lands
 		m_view_distance = 40.0f;
 		m_shadow_quality = sqt_no;
 		m_shadow_map_size = 2;
+		m_terrain_clipmap_size = 1;
+		m_terrain_clipmap_world_size = 16;
+		m_terrain_tile_world_size = 4;
 		m_opengl_version = ovt_2_1;
 		m_fog = true;
 		m_optmize_shader_source = true;

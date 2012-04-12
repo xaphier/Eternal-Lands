@@ -76,7 +76,8 @@ namespace eternal_lands
 		apt_albedo_scale_offsets,
 		apt_emission_scale_offset,
 		apt_specular_scale_offset,
-		apt_terrain_height_scale
+		apt_terrain_scale,
+		apt_terrain_texture_size
 	};
 	/**
 	 * @}

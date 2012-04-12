@@ -50,6 +50,9 @@ namespace eternal_lands
 			float m_shadow_distance;
 			float m_view_distance;
 			Uint16 m_shadow_map_size;
+			Uint16 m_terrain_clipmap_size;
+			Uint16 m_terrain_clipmap_world_size;
+			Uint16 m_terrain_tile_world_size;
 			ShadowQualityType m_shadow_quality;
 			OpenglVerionType m_opengl_version;
 			bool m_fog;
@@ -98,6 +101,26 @@ namespace eternal_lands
 				const Uint16 shadow_map_size)
 			{
 				m_shadow_map_size = shadow_map_size;
+			}
+
+			inline void set_terrain_clipmap_size(
+				const Uint16 terrain_clipmap_size)
+			{
+				m_terrain_clipmap_size = terrain_clipmap_size;
+			}
+
+			inline void set_terrain_clipmap_world_size(
+				const Uint16 terrain_clipmap_world_size)
+			{
+				m_terrain_clipmap_world_size =
+					terrain_clipmap_world_size;
+			}
+
+			inline void set_terrain_tile_world_size(
+				const Uint16 terrain_tile_world_size)
+			{
+				m_terrain_tile_world_size =
+					terrain_tile_world_size;
 			}
 
 			inline void set_opengl_version(
@@ -202,6 +225,21 @@ namespace eternal_lands
 			inline Uint16 get_shadow_map_size() const
 			{
 				return m_shadow_map_size;
+			}
+
+			inline Uint16 get_terrain_clipmap_size() const
+			{
+				return m_terrain_clipmap_size;
+			}
+
+			inline Uint16 get_terrain_clipmap_world_size() const
+			{
+				return m_terrain_clipmap_world_size;
+			}
+
+			inline Uint16 get_terrain_tile_world_size() const
+			{
+				return m_terrain_tile_world_size;
 			}
 
 			inline OpenglVerionType get_opengl_version() const

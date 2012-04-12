@@ -763,12 +763,12 @@ namespace eternal_lands
 		ssbot_transparent,
 		ssbot_view_direction,
 		ssbot_world_uv,
+		ssbot_world_extra_uv,
 		ssbot_fragment_uv,
 		ssbot_view_position,
 		ssbot_tbn_matrix,
 		ssbot_fog,
 		ssbot_layered_rendering,
-		ssbot_billboard,
 		ssbot_use_functions
 	};
 
@@ -1478,8 +1478,7 @@ namespace eternal_lands
 			}
 		}
 
-		if (!data.get_option(ssbot_layered_rendering) &&
-			!data.get_option(ssbot_billboard))
+		if (!data.get_option(ssbot_layered_rendering))
 		{
 			add_parameter(String(UTF8("vertex")),
 				apt_projection_view_matrix, locals, globals);
@@ -1525,8 +1524,8 @@ namespace eternal_lands
 			}
 		}
 
-		if (data.get_option(ssbot_world_uv) &&
-			!data.get_option(ssbot_billboard))
+		if (data.get_option(ssbot_world_uv) ||
+			data.get_option(ssbot_world_extra_uv))
 		{
 			build_function(data, array_sizes, locals, sst_uv,
 				indent, main, functions, globals, values);
@@ -1555,24 +1554,7 @@ namespace eternal_lands
 		add_parameter(String(UTF8("geometry")),
 			apt_projection_view_matrix, locals, globals);
 
-		if (data.get_option(ssbot_billboard))
-		{
-			add_parameter(String(UTF8("geometry")), sslt_position,
-				pqt_out, locals, globals);
-/*
-			if (data.get_option(ssbot_world_uv))
-			{
-				add_parameter(String(UTF8("geometry")),
-					vst_texture_coordinate_0,
-					pqt_out, locals, globals);
-			}
-*/
-			count = 4;
-		}
-		else
-		{
-			count = 3;
-		}
+		count = 3;
 
 		indent = UTF8("\t\t");
 
@@ -1591,22 +1573,7 @@ namespace eternal_lands
 
 			str << i;
 
-			if (data.get_option(ssbot_billboard))
-			{
-				index = String(UTF8("0"));
-			}
-			else
-			{
-				index = String(str.str());
-			}
-
-			if (data.get_option(ssbot_world_uv) &&
-				data.get_option(ssbot_billboard))
-			{
-				build_function(data, array_sizes, locals,
-					sst_uv, indent, main, functions,
-					globals, values);
-			}
+			index = String(str.str());
 
 			main << indent << UTF8("gl_Layer = ") << sslt_i;
 			main << UTF8(";\n");
@@ -1615,22 +1582,11 @@ namespace eternal_lands
 			main << apt_projection_view_matrix << UTF8("[");
 			main << sslt_i << UTF8("] * vec4(");
 
-			if (data.get_option(ssbot_billboard))
-			{
-				write_parameter_indexed(in_prefix,
-					build_parameter(
-						String(UTF8("geometry")),
-						sslt_position, pqt_in),
-					UTF8(""), index, use_block, main);
-			}
-			else
-			{
-				write_parameter_indexed(in_prefix,
-					ShaderSourceParameterBuilder::build(
-						String(UTF8("geometry")),
-						cpt_world_position, pqt_in),
-					UTF8(""), index, use_block, main);
-			}
+			write_parameter_indexed(in_prefix,
+				ShaderSourceParameterBuilder::build(
+					String(UTF8("geometry")),
+					cpt_world_position, pqt_in),
+				UTF8(""), index, use_block, main);
 
 			main << UTF8(", 1.0);\n");
 
@@ -2030,7 +1986,8 @@ namespace eternal_lands
 			}
 		}
 
-		if (data.get_option(ssbot_world_uv))
+		if (data.get_option(ssbot_world_uv) ||
+			data.get_option(ssbot_world_extra_uv))
 		{
 			result |= check_function(data, name, sst_uv);
 		}
@@ -2278,6 +2235,8 @@ namespace eternal_lands
 			cpt_fragment_uv));
 		data.set_option(ssbot_world_uv, get_source_parameter(data,
 			cpt_world_uv));
+		data.set_option(ssbot_world_extra_uv, get_source_parameter(data,
+			cpt_world_extra_uv));
 		data.set_option(ssbot_tbn_matrix, get_source_parameter(data,
 			cpt_tbn_matrix));
 		data.set_option(ssbot_view_position, get_source_parameter(data,
@@ -2313,8 +2272,7 @@ namespace eternal_lands
 		build_in_out(fragment_globals, vertex_globals, varyings);
 		build_attributes(vertex_globals, attributes);
 
-		if (data.get_option(ssbot_layered_rendering) ||
-			data.get_option(ssbot_billboard))
+		if (data.get_option(ssbot_layered_rendering))
 		{
 			vertex_data = String(UTF8("vertex_data"));
 			fragment_data = String(UTF8("fragment_data"));
@@ -2331,8 +2289,7 @@ namespace eternal_lands
 			fragment_data = String(fragment_data.get() + UTF8("_"));
 		}
 
-		if (data.get_option(ssbot_layered_rendering) ||
-			data.get_option(ssbot_billboard))
+		if (data.get_option(ssbot_layered_rendering))
 		{
 			build_geometry_source(data, array_sizes, varyings,
 				vertex_data, fragment_data, use_block,
@@ -2576,8 +2533,7 @@ namespace eternal_lands
 		geometry_source << geometry_main.str();
 		geometry_source << UTF8("}\n");
 
-		if (data.get_option(ssbot_layered_rendering) ||
-			data.get_option(ssbot_billboard))
+		if (data.get_option(ssbot_layered_rendering))
 		{
 			LOG_DEBUG(UTF8("Geometry Shader:\n%1%"),
 				geometry_source.str());
@@ -2748,8 +2704,7 @@ namespace eternal_lands
 			vertex = vertex_source.str();
 			fragment = fragment_source.str();
 
-			if (data.get_option(ssbot_layered_rendering) ||
-				data.get_option(ssbot_billboard))
+			if (data.get_option(ssbot_layered_rendering))
 			{
 				geometry = geometry_source.str();
 			}

@@ -88,12 +88,12 @@ namespace eternal_lands
 				pos += tile_offset;
 
 				position = get_terrain_offset(
-					height_map->get_pixel_uint(
-						pos.x, pos.y, 0, 0, 0));
+					height_map->get_pixel_uint(pos.x,
+						pos.y, 0, 0, 0));
 
 				position.x += pos.x;
 				position.y += pos.y;
-				position.z -= 0.005f;
+				position.z += 0.015f;
 
 				uv = uvs.get_uv(pos.x, pos.y);
 				uv /= size;

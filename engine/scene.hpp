@@ -59,10 +59,12 @@ namespace eternal_lands
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;
 			SceneView m_scene_view;
+			Vec2Array8 m_terrain_pos;
 			glm::vec4 m_main_light_direction;
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
+			glm::vec2 m_terrain_texture_size;
 			FreeIdsManagerSharedPtr m_free_ids;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
@@ -163,6 +165,16 @@ namespace eternal_lands
 			bool get_dungeon() const;
 			void set_ambient(const glm::vec3 &color);
 			const glm::vec3 &get_ambient() const;
+
+			inline void terrain_change()
+			{
+				BOOST_FOREACH(glm::vec2 &pos, m_terrain_pos)
+				{
+					pos = glm::vec2(-1e7f);
+				}
+
+				update_terrain_map();
+			}
 
 			inline void shadow_map_change()
 			{

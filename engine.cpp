@@ -1497,6 +1497,36 @@ extern "C" void engine_set_low_quality_terrain(const int value)
 	global_vars->set_low_quality_terrain(value != 0);
 }
 
+extern "C" void engine_set_terrain_clipmap_size(const int value)
+{
+	global_vars->set_terrain_clipmap_size(512 << value);
+
+	if (scene.get() != 0)
+	{
+		scene->terrain_change();
+	}
+}
+
+extern "C" void engine_set_terrain_clipmap_world_size(const int value)
+{
+	global_vars->set_terrain_clipmap_world_size(value);
+
+	if (scene.get() != 0)
+	{
+		scene->terrain_change();
+	}
+}
+
+extern "C" void engine_set_terrain_tile_world_size(const int value)
+{
+	global_vars->set_terrain_tile_world_size(value);
+
+	if (scene.get() != 0)
+	{
+		scene->terrain_change();
+	}
+}
+
 extern "C" int engine_get_opengl_3_0()
 {
 	return global_vars->get_opengl_3_0();

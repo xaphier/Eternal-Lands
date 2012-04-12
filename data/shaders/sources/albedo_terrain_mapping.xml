@@ -6,11 +6,11 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>fragment_uv</name>
+     <name>world_extra_uv</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
-     <scale>1</scale>
+     <scale>8</scale>
     </parameter>
     <parameter>
      <name>terrain_sampler</name>
@@ -26,10 +26,86 @@
      <size>one</size>
      <scale>1</scale>
     </parameter>
+    <parameter>
+     <name>world_uv</name>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
    </parameters>
-   <source>albedo = texture(terrain_sampler, vec3(fragment_uv, 0.0));
+   <source>vec4 c0, c1;
+vec2 uv, ddx, ddy;
+float lod, blend;
+int i, index;
+
+uv = world_uv * 0.75;
+
+ddx = dFdx(uv);
+ddy = dFdy(uv);
+
+blend = 0.0;
+
+//#define	MAX_ANISOTROPY 16
+
+#ifdef	MAX_ANISOTROPY
+#if	0
+	float det, squared_length_major, length_major, ratio_of_anisotropy, length_minor;
+
+	squared_length_major = max(dot(ddx, ddx), dot(ddy, ddy));
+	det = abs(ddx.x * ddy.y - ddx.y * ddy.x);
+	length_major = sqrt(squared_length_major);
+	ratio_of_anisotropy = squared_length_major / det;
+	length_minor = max((ratio_of_anisotropy &gt; MAX_ANISOTROPY) ? length_major / ratio_of_anisotropy : det / length_major, 1.0);
+	lod = log2(length_minor);
+#else
+	vec2 scaleHalf = vec2(0.5,0.5);
+	ddx = scaleHalf * abs(ddx);
+	ddy = scaleHalf * abs(ddy);
+	float lddx = ddx.x + ddx.y;
+	float lddy = ddy.x + ddy.y;
+	float pMax = max(lddx, lddy);
+	float pMin = min(lddx, lddy);
+	pMin = max(pMin,1.0e-10);
+	pMax = max(pMax,1.0e-10);
+	float Aspect = min( (pMax/pMin), MAX_ANISOTROPY);
+	lod = - log2( pMax/Aspect );
+#endif
+#else
+	lod = log2(max(length(ddx), length(ddy)));
+#endif
+
+index = 7;
+
+for (i = 0; i &lt; 7; ++i)
+{
+	uv = world_extra_uv[i];
+
+	if (all(lessThan(abs(uv - vec2(0.5)), vec2(0.4995))))
+	{
+		index = i;
+
+		break;
+	}
+}
+
+lod = clamp(lod, index, 7.0);
+index = int(lod);
+blend = fract(lod);
+
+c0 = textureLod(terrain_sampler, vec3(world_extra_uv[index], index), 0);
+
+if (index &lt; 7)
+{
+	c1 = textureLod(terrain_sampler, vec3(world_extra_uv[index + 1], index + 1), 0);
+	albedo = mix(c1, c0, blend);
+}
+else
+{
+	albedo = c0;
+}
 </source>
-   <glsl_120>true</glsl_120>
+   <glsl_120>false</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>
    <glsl_150>true</glsl_150>

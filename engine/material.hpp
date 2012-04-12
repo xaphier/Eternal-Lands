@@ -148,7 +148,7 @@ namespace eternal_lands
 			}
 
 			inline void set_texture_matrices(
-				const Mat2x3Array4 &texture_matrices)
+				const Mat2x3Array8 &texture_matrices)
 			{
 				m_data.set_texture_matrices(texture_matrices);
 			}
@@ -196,7 +196,7 @@ namespace eternal_lands
 				return m_data.get_albedo_scale_offset(index);
 			}
 
-			inline const Mat2x3Array4 &get_texture_matrices()
+			inline const Mat2x3Array8 &get_texture_matrices()
 				const
 			{
 				return m_data.get_texture_matrices();

@@ -26,7 +26,7 @@ namespace eternal_lands
 	{
 		private:
 			Mat2x4Array4 m_albedo_scale_offsets;
-			Mat2x3Array4 m_texture_matrices;
+			Mat2x3Array8 m_texture_matrices;
 			glm::mat2x3 m_emission_scale_offset;
 			glm::vec4 m_specular_scale_offset;
 			glm::vec2 m_dudv_scale;
@@ -49,7 +49,7 @@ namespace eternal_lands
 				return m_albedo_scale_offsets[index];
 			}
 
-			inline const Mat2x3Array4 &get_texture_matrices()
+			inline const Mat2x3Array8 &get_texture_matrices()
 				const
 			{
 				return m_texture_matrices;
@@ -103,7 +103,7 @@ namespace eternal_lands
 			}
 
 			inline void set_texture_matrices(
-				const Mat2x3Array4 &texture_matrices)
+				const Mat2x3Array8 &texture_matrices)
 			{
 				m_texture_matrices = texture_matrices;
 			}

@@ -91,6 +91,10 @@ void engine_set_use_in_out(const int value);
 void engine_set_use_functions(const int value);
 void engine_set_use_layered_rendering(const int value);
 void engine_set_low_quality_terrain(const int value);
+void engine_set_terrain_clipmap_size(const int value);
+void engine_set_terrain_clipmap_world_size(const int value);
+void engine_set_terrain_tile_world_size(const int value);
+
 int engine_get_opengl_3_0();
 int engine_get_opengl_3_1();
 int engine_get_opengl_3_2();

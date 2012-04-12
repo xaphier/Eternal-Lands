@@ -101,7 +101,7 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("layers")), pt_ivec4),
 			AutoParameterTypeData(
 				String(UTF8("texture_matrices")), pt_mat2x3,
-				pst_one, 4),
+				pst_one, 8),
 			AutoParameterTypeData(
 				String(UTF8("albedo_scale_offsets")),
 				pt_mat2x4, pst_one, 4),
@@ -111,7 +111,9 @@ namespace eternal_lands
 			AutoParameterTypeData(
 				String(UTF8("specular_scale_offset")), pt_vec4),
 			AutoParameterTypeData(
-				String(UTF8("terrain_height_scale")), pt_float)
+				String(UTF8("terrain_scale")), pt_vec3),
+			AutoParameterTypeData(
+				String(UTF8("terrain_texture_size")), pt_vec2)
 		};
 
 		const Uint32 auto_parameter_datas_count =
