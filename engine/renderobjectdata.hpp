@@ -31,14 +31,11 @@ namespace eternal_lands
 	{
 		private:
 			ObjectSharedPtr m_object;
-			glm::ivec4 m_layers;
 			float m_transparency;
 			float m_distance;
 			SubFrustumsMask m_sub_frustums_mask;
-			Uint16 m_layer_count;
+			Uint16 m_lod;
 			BlendType m_blend;
-
-			void update_layers();
 
 		public:
 			RenderObjectData();
@@ -64,6 +61,11 @@ namespace eternal_lands
 				m_distance = distance;
 			}
 
+			inline void set_lod(const Uint16 lod)
+			{
+				m_lod = lod;
+			}
+
 			inline void set_blend(const BlendType blend)
 			{
 				m_blend = blend;
@@ -73,7 +75,6 @@ namespace eternal_lands
 				const SubFrustumsMask &sub_frustums_mask)
 			{
 				m_sub_frustums_mask = sub_frustums_mask;
-				update_layers();
 			}
 
 			inline const ObjectSharedPtr &get_object() const
@@ -108,14 +109,9 @@ namespace eternal_lands
 				return m_sub_frustums_mask[index];
 			}
 
-			inline const glm::ivec4 &get_layers() const
+			inline Uint16 get_lod() const
 			{
-				return m_layers;
-			}
-
-			inline Uint16 get_layer_count() const
-			{
-				return m_layer_count;
+				return m_lod;
 			}
 
 	};

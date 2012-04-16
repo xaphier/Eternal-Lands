@@ -19,6 +19,7 @@
 #include "sceneresources.hpp"
 #include "statemanager.hpp"
 #include "sceneview.hpp"
+#include "clipmap.hpp"
 
 /**
  * @file
@@ -42,6 +43,7 @@ namespace eternal_lands
 				PairUint32SelectionTypeVector;
 
 			boost::array<GLuint, 0x40000> m_querie_ids;
+			Clipmap m_clipmap;
 			GlobalVarsSharedPtr m_global_vars;
 			FileSystemSharedPtr m_file_system;
 			SceneResources m_scene_resources;
@@ -50,21 +52,18 @@ namespace eternal_lands
 			ObjectVisitor m_shadow_objects;
 			LightVisitor m_visible_lights;
 			MapSharedPtr m_map;
+			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractMeshSharedPtr m_screen_quad;
 			MaterialSharedPtrVector m_materials;
-			Mat2x3Vector m_texture_matrices;
-			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractFrameBufferSharedPtr m_terrain_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;
 			SceneView m_scene_view;
-			Vec2Array8 m_terrain_pos;
 			glm::vec4 m_main_light_direction;
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_main_light_ambient;
 			glm::vec4 m_fog;
-			glm::vec2 m_terrain_texture_size;
 			FreeIdsManagerSharedPtr m_free_ids;
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
@@ -168,11 +167,6 @@ namespace eternal_lands
 
 			inline void terrain_change()
 			{
-				BOOST_FOREACH(glm::vec2 &pos, m_terrain_pos)
-				{
-					pos = glm::vec2(-1e7f);
-				}
-
 				update_terrain_map();
 			}
 

@@ -12,50 +12,32 @@ namespace eternal_lands
 {
 
 	RenderObjectData::RenderObjectData(): m_transparency(0.0f),
-		m_distance(0.0f), m_sub_frustums_mask(0x1), m_blend(bt_disabled)
+		m_distance(0.0f), m_sub_frustums_mask(0x1), m_lod(0),
+		m_blend(bt_disabled)
 	{
-		update_layers();
 	}
 
 	RenderObjectData::RenderObjectData(const ObjectSharedPtr &object,
 		const SubFrustumsMask sub_frustums_mask): m_object(object),
 		m_transparency(0.0f), m_distance(0.0f),
-		m_sub_frustums_mask(sub_frustums_mask), m_blend(bt_disabled)
+		m_sub_frustums_mask(sub_frustums_mask), m_lod(0),
+		m_blend(bt_disabled)
 	{
 		m_transparency = object->get_transparency();
 		m_blend = object->get_blend();
-		update_layers();
 	}
 
 	RenderObjectData::RenderObjectData(const ObjectSharedPtr &object,
 		const float transparency, const BlendType blend,
 		const SubFrustumsMask sub_frustums_mask): m_object(object),
 		m_transparency(transparency), m_distance(0.0f),
-		m_sub_frustums_mask(sub_frustums_mask), m_blend(blend)
+		m_sub_frustums_mask(sub_frustums_mask), m_lod(0),
+		m_blend(blend)
 	{
-		update_layers();
 	}
 
 	RenderObjectData::~RenderObjectData() throw()
 	{
-	}
-
-	void RenderObjectData::update_layers()
-	{
-		Uint16 i;
-
-		m_layer_count = 0;
-
-		m_layers = glm::uvec4(0);
-
-		for (i = 0; i < 4; ++i)
-		{
-			if (get_sub_frustums_mask(i))
-			{
-				m_layers[get_layer_count()] = i;
-				++m_layer_count;
-			}
-		}
 	}
 
 }

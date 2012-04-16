@@ -35,7 +35,7 @@
     </parameter>
     <parameter>
      <name>terrain_texture_size</name>
-     <type>vec2</type>
+     <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -48,7 +48,7 @@ for (i = 0; i &lt; 8; ++i)
 	world_extra_uv[i] = vec3(texture_coordinate_0, 1.0) * texture_matrices[i];
 }
 
-world_uv = texture_coordinate_0 * terrain_texture_size;</source>
+world_uv = texture_coordinate_0;// * terrain_texture_size.xy;</source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>
    <glsl_140>true</glsl_140>

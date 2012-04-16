@@ -328,6 +328,11 @@ namespace eternal_lands
 			static void fill(const glm::vec4 &data,
 				const Uint32 count, float* dest);
 
+			static void relax_uv_line(const float* uv,
+				const float* distances, const float damping,
+				const float clamping, const Uint32 width,
+				float* new_uv);
+
 	};
 
 }

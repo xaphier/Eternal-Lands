@@ -276,7 +276,7 @@ namespace
 	}
 
 }
-/*
+
 void write_image()
 {
 	el::ImageSharedPtr image;
@@ -284,7 +284,7 @@ void write_image()
 	std::fstream data;
 
 	image = boost::make_shared<el::Image>(el::String("filter"), false,
-		el::tft_rgb8, glm::uvec3(128, 1, 1), 0);
+		el::tft_rgb16, glm::uvec3(128, 1, 1), 0);
 
 	script_engine->build_module(el::String("Image"), el::String("scripts/cubic_lookup.as"));
 
@@ -294,7 +294,7 @@ void write_image()
 
 	scene->get_scene_resources().get_codec_manager()->save_image_as_png(image, el::String("/home/daniel/data.png"));
 }
-*/
+
 #define	USE_GL_DEBUG_OUTPUT
 
 #ifdef	USE_GL_DEBUG_OUTPUT
@@ -559,7 +559,7 @@ extern "C" void init_engine()
 #endif
 	CHECK_GL_ERROR();
 
-//	write_image();
+	write_image();
 
 	CATCH_BLOCK
 }
@@ -1364,6 +1364,11 @@ extern "C" void engine_set_shadow_distance(const float value)
 extern "C" void engine_set_view_distance(const float value)
 {
 	global_vars->set_view_distance(value);
+
+	if (scene.get() != 0)
+	{
+		scene->terrain_change();
+	}
 }
 
 extern "C" void engine_set_shadow_quality(const int value)
@@ -1521,9 +1526,9 @@ extern "C" void engine_set_low_quality_terrain(const int value)
 	global_vars->set_low_quality_terrain(value != 0);
 }
 
-extern "C" void engine_set_terrain_clipmap_size(const int value)
+extern "C" void engine_set_clipmap_size(const int value)
 {
-	global_vars->set_terrain_clipmap_size(512 << value);
+	global_vars->set_clipmap_size(512 << value);
 
 	if (scene.get() != 0)
 	{
@@ -1531,9 +1536,9 @@ extern "C" void engine_set_terrain_clipmap_size(const int value)
 	}
 }
 
-extern "C" void engine_set_terrain_clipmap_world_size(const int value)
+extern "C" void engine_set_clipmap_world_size(const int value)
 {
-	global_vars->set_terrain_clipmap_world_size(value);
+	global_vars->set_clipmap_world_size(value);
 
 	if (scene.get() != 0)
 	{
@@ -1541,9 +1546,19 @@ extern "C" void engine_set_terrain_clipmap_world_size(const int value)
 	}
 }
 
-extern "C" void engine_set_terrain_tile_world_size(const int value)
+extern "C" void engine_set_tile_world_size(const int value)
 {
-	global_vars->set_terrain_tile_world_size(value);
+	global_vars->set_tile_world_size(value);
+
+	if (scene.get() != 0)
+	{
+		scene->terrain_change();
+	}
+}
+
+extern "C" void engine_set_clipmap_centered(const int value)
+{
+	global_vars->set_clipmap_centered(value != 0);
 
 	if (scene.get() != 0)
 	{

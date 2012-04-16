@@ -42,11 +42,6 @@ namespace eternal_lands
 		height_image = codec_manager->load_image(get_height_map(),
 			file_system, ImageCompressionTypeSet(), true);
 
-		LOG_INFO(UTF8("Terrain image %1%."), height_image->get_log_str());
-		LOG_INFO(UTF8("Terrain image channels: %1%."), height_image->get_channel_count());
-		LOG_INFO(UTF8("Terrain image gl type: %1%."), height_image->get_type());
-		LOG_INFO(UTF8("Terrain image gl format: %1%."), height_image->get_format());
-
 		add_terrain_pages(String(UTF8("shaders/simple_terrain.xml")),
 			height_image, mesh_builder, materials,
 			global_vars->get_low_quality_terrain(),
@@ -253,8 +248,15 @@ namespace eternal_lands
 		lods_distances[1] = 20;
 		lods_distances[2] = 40;
 
-		uvs.buil_relaxed_uv();
-		uvs.convert();
+Uint32 t0, t1;
+
+t0 = SDL_GetTicks();
+
+		uvs.relaxed_uv(use_simd);
+
+t1 = SDL_GetTicks();
+
+		std::cout << "time: " << ((t1 - t0) * 0.001f) << std::endl;
 
 		for (y = 0; y < height; ++y)
 		{

@@ -250,20 +250,40 @@ namespace eternal_lands
 
 	void Scene::update_terrain_map()
 	{
-		m_terrain_frame_buffer = get_scene_resources(
-			).get_framebuffer_builder()->build(
-				String(UTF8("terrain")), get_global_vars(
-					)->get_terrain_clipmap_size(),
-				get_global_vars(
-					)->get_terrain_clipmap_size(), 8, 0,
-				ttt_texture_2d_array, tft_rgb8, false);
+		Uint16 mipmaps;
+		TextureTargetType target;
 
-		for (int i = 0; i < 8; ++i)
+		if (true)
 		{
-			m_terrain_pos[i] = glm::vec2(-1e7f);
+			target = ttt_texture_2d_array;
+		}
+		else
+		{
+			target = ttt_texture_3d;
 		}
 
-		m_texture_matrices.resize(8);
+		mipmaps = 0;
+
+		while ((1 << mipmaps) < get_global_vars()->get_clipmap_size())
+		{
+			mipmaps++;
+		}
+
+		m_clipmap.rebuild(glm::vec2(256.0f),
+			get_global_vars()->get_view_distance(),
+			get_global_vars()->get_clipmap_world_size(),
+			get_global_vars()->get_clipmap_size());
+
+		m_terrain_frame_buffer = get_scene_resources(
+			).get_framebuffer_builder()->build(
+				String(UTF8("terrain")),
+				get_global_vars()->get_clipmap_size(),
+				get_global_vars()->get_clipmap_size(),
+				m_clipmap.get_slices(), mipmaps, target, tft_rgb8,
+				false);
+
+		m_clipmap.set_centered(get_global_vars(
+			)->get_clipmap_centered());
 
 		m_materials.clear();
 
@@ -604,7 +624,7 @@ namespace eternal_lands
 			program->set_parameter(apt_terrain_scale,
 				glm::vec3(0.1f));
 			program->set_parameter(apt_terrain_texture_size,
-				m_terrain_texture_size);
+				m_clipmap.get_terrain_texture_size());
 
 			if (m_map->get_dungeon())
 			{
@@ -694,7 +714,7 @@ namespace eternal_lands
 			{
 				m_state_manager.get_program()->set_parameter(
 					apt_texture_matrices,
-					m_texture_matrices);
+					m_clipmap.get_texture_matrices());
 			}
 			else
 			{
@@ -942,7 +962,7 @@ namespace eternal_lands
 
 		if (m_scene_view.get_exponential_shadow_maps())
 		{
-			glGenerateMipmap(ttt_texture_2d_array);
+			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 		}
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1010,7 +1030,7 @@ namespace eternal_lands
 
 		if (m_scene_view.get_exponential_shadow_maps())
 		{
-			glGenerateMipmap(ttt_texture_2d_array);
+			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 		}
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1174,6 +1194,7 @@ namespace eternal_lands
 			m_state_manager.draw(0, 1);
 
 			DEBUG_CHECK_GL_ERROR();
+			break;
 		}
 /*
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1206,6 +1227,8 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 		}
+
+		m_terrain_frame_buffer->blit();
 */
 	}
 
@@ -1213,22 +1236,11 @@ namespace eternal_lands
 	{
 		Mat2x3Vector texture_matrices;
 		glm::mat2x3 texture_matrix;
-		glm::vec2 pos, offset, scale;
-		glm::vec2 clipmap_texture_size, clipmap_world_size;
-		glm::vec2 tile_scale, terrain_world_size;
-		Uint32 i, width, height;
+		glm::vec2 tile_scale;
+		Uint32 i, width, height, count;
 
-		clipmap_texture_size = glm::vec2(get_global_vars(
-			)->get_terrain_clipmap_size());
-		terrain_world_size = glm::vec2(256.0f);
-		clipmap_world_size = glm::vec2(get_global_vars(
-			)->get_terrain_clipmap_world_size());
-		tile_scale = terrain_world_size / glm::vec2(get_global_vars(
-			)->get_terrain_tile_world_size());
-		m_terrain_texture_size = (terrain_world_size * clipmap_texture_size) / clipmap_world_size;
-//		m_terrain_texture_size = terrain_world_size / clipmap_world_size;
-
-		pos = glm::vec2(m_scene_view.get_focus());
+		tile_scale = 256.0f /
+			glm::vec2(get_global_vars()->get_tile_world_size());
 
 		texture_matrices.resize(2);
 
@@ -1245,25 +1257,14 @@ namespace eternal_lands
 		m_state_manager.switch_multisample(false);
 		m_state_manager.switch_mesh(m_screen_quad);
 
-		for (i = 0; i < 8; ++i)
+		count = m_clipmap.get_slices();
+
+		for (i = 0; i < count; ++i)
 		{
-			if (glm::distance(m_terrain_pos[i], glm::vec2(m_scene_view.get_focus())) <= (1 << i))
-			{
-				break;
-			}
+			m_clipmap.update_slice(i);
 
-			m_terrain_pos[i] = pos;
-
-			offset = pos - clipmap_world_size * 0.5f;
-			offset /= clipmap_world_size;
-			scale = terrain_world_size / clipmap_world_size;
-
-			texture_matrix[0] = glm::vec3(scale.x, 0.0f, -offset.x);
-			texture_matrix[1] = glm::vec3(0.0f, scale.y, -offset.y);
-
-			m_texture_matrices[i] = texture_matrix;
-
-			texture_matrix = glm::mat2x3(glm::inverse(glm::mat3(texture_matrix)));
+			texture_matrix = glm::mat2x3(glm::inverse(glm::mat3(
+				m_clipmap.get_texture_matrices()[i])));
 
 			texture_matrices[0] = texture_matrix;
 
@@ -1273,8 +1274,6 @@ namespace eternal_lands
 			texture_matrices[1] = texture_matrix;
 
 			draw_terrain_texture(m_materials, texture_matrices, i);
-
-			clipmap_world_size *= 2;
 		}
 
 		m_program_vars_id++;
@@ -1291,6 +1290,8 @@ namespace eternal_lands
 
 		m_state_manager.switch_texture(stt_terrain,
 			m_terrain_frame_buffer->get_texture());
+
+		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1325,10 +1326,21 @@ namespace eternal_lands
 			}
 		}
 
-		if (glm::distance(m_terrain_pos[0], glm::vec2(m_scene_view.get_focus())) > 1.0f)
+		if (m_clipmap.update(glm::vec3(m_scene_view.get_camera()),
+			glm::vec3(m_scene_view.get_view_dir()),
+			glm::vec2(m_scene_view.get_focus())))
 		{
 			draw_terrain_texture();
 		}
+
+		if (m_scene_view.get_shadow_map_count() > 0)
+		{
+			m_state_manager.switch_texture(stt_shadow,
+				m_shadow_frame_buffer->get_texture());
+		}
+
+		m_state_manager.switch_texture(stt_terrain,
+			m_terrain_frame_buffer->get_texture());
 
 		m_scene_view.set_default_view();
 

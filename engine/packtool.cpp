@@ -1119,7 +1119,6 @@ namespace eternal_lands
 		const PackFormatType pack_format, const bool use_simd,
 		AbstractWriteMemory &buffer)
 	{
-		float* source;
 		Uint8* ptr;
 		Uint32 i;
 
@@ -1138,7 +1137,7 @@ namespace eternal_lands
 			return;
 		}
 
-		source = static_cast<float*>(data.get_ptr());
+		const float* source = data.get_ptr_at(0);
 
 		assert((((size_t)source) & 0xF) == 0);
 

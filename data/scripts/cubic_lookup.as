@@ -21,9 +21,9 @@ void main(vec3 & in position, vec4 & out color)
 	h0 = 1.0 - (w1 / (w0 + w1)) + p;
 	h1 = 1.0 + (w3 / (w2 + w3)) - p;
 
-	color.r = g0;
-	color.g = g1;
-	color.b = h0;
-	color.a = h1;
+	color.r = h0;
+	color.g = h1;
+	color.b = g0;
+	color.a = g1;
 }
 

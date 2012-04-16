@@ -9,6 +9,9 @@
 #ifdef	USE_SSE2
 #include <emmintrin.h>
 #endif	/* USE_SSE2 */
+#ifdef	USE_SSE3
+#include <pmmintrin.h>
+#endif	/* USE_SSE3 */
 
 namespace eternal_lands
 {
@@ -850,6 +853,181 @@ namespace eternal_lands
 
 			_mm_stream_ps(dest + 4 * i, tmp);
 		}
+#endif	/* USE_SSE2 */
+	}
+
+#ifdef	USE_SSE2
+	namespace
+	{
+
+		__m128 relax_uv_simd(const __m128 t0, const __m128 t1,
+			const __m128 t2, const __m128 t3, const __m128 t4,
+			const float* distances, const __m128 damping,
+			const __m128 clamping)
+		{
+			__m128 t5, t6, t7, t8, t9, t10, t11, t12, t13, t14;
+
+			/* direction */
+			t5 = _mm_sub_ps(t4, t0);
+			t6 = _mm_sub_ps(t4, t1);
+			t7 = _mm_sub_ps(t4, t2);
+			t8 = _mm_sub_ps(t4, t3);
+
+			/* dot */
+			t9 = _mm_mul_ps(t5, t5);
+			t10 = _mm_mul_ps(t6, t6);
+			t11 = _mm_mul_ps(t7, t7);
+			t12 = _mm_mul_ps(t8, t8);
+#ifdef	USE_SSE3
+			t9 = _mm_hadd_ps(t9, t10);
+			t10 = _mm_hadd_ps(t11, t12);
+#else	/* USE_SSE3 */
+			__m128 tmp0, tmp1, tmp2, tmp3;
+
+			tmp0 = _mm_shuffle_ps(t9, t10, _MM_SHUFFLE(3, 1, 3, 1));
+			tmp1 = _mm_shuffle_ps(t9, t10, _MM_SHUFFLE(2, 0, 2, 0));
+
+			tmp2 = _mm_shuffle_ps(t11, t12,
+				_MM_SHUFFLE(3, 1, 3, 1));
+			tmp3 = _mm_shuffle_ps(t11, t12,
+				_MM_SHUFFLE(2, 0, 2, 0));
+
+			t9 = _mm_add_ps(tmp0, tmp1);
+			t10 = _mm_add_ps(tmp2, tmp3);
+#endif	/* USE_SSE3 */
+			/* distance */
+			t9 = _mm_sqrt_ps(t9);
+			t10 = _mm_sqrt_ps(t10);
+
+			/* factor */
+			t13 = _mm_load_ps(distances);
+			t14 = _mm_load_ps(distances + 4);
+
+			t11 = _mm_sub_ps(t13, t9);
+			t12 = _mm_sub_ps(t14, t10);
+
+			t9 = _mm_max_ps(t9, _mm_set1_ps(1e-7f));
+			t10 = _mm_max_ps(t10, _mm_set1_ps(1e-7f));
+
+			t9 = _mm_div_ps(t11, t9);
+			t10 = _mm_div_ps(t12, t10);
+
+			t11 = _mm_unpacklo_ps(t9, t9);
+			t12 = _mm_unpackhi_ps(t9, t9);
+			t13 = _mm_unpacklo_ps(t10, t10);
+			t14 = _mm_unpackhi_ps(t10, t10);
+
+			t5 = _mm_mul_ps(t5, t11);
+			t6 = _mm_mul_ps(t6, t12);
+			t7 = _mm_mul_ps(t7, t13);
+			t8 = _mm_mul_ps(t8, t14);
+
+			t9 = _mm_add_ps(t5, t6);
+			t10 = _mm_add_ps(t7, t8);
+			t11 = _mm_add_ps(t9, t10);
+			t12 = (__m128)_mm_unpackhi_pd((__m128d)t11,
+				(__m128d)t11);
+			t13 = _mm_add_ps(t11, t12);
+
+			t13 = _mm_mul_ps(t13, damping);
+			t13 = _mm_min_ps(t13, clamping);
+			t13 = _mm_max_ps(t13, -clamping);
+
+			/* store */
+			return t13;
+		}
+
+		void default_line_shuffle_simd(__m128 &t0, __m128 &t1,
+			__m128 &t2, __m128 &t3, __m128 &t4, __m128 t5,
+			__m128 t6, __m128 t7)
+		{
+			t0 = (__m128)_mm_shuffle_pd((__m128d)t0, (__m128d)t2,
+				_MM_SHUFFLE2(0, 1));
+			t1 = (__m128)_mm_unpackhi_pd((__m128d)t1, (__m128d)t2);
+			t2 = (__m128)_mm_unpacklo_pd((__m128d)t5, (__m128d)t7);
+			t7 = (__m128)_mm_unpacklo_pd((__m128d)t4, (__m128d)t6);
+			t4 = (__m128)_mm_unpackhi_pd((__m128d)t3, (__m128d)t3);
+			t3 = t7;
+		}
+
+	}
+#endif	/* USE_SSE2 */
+
+	void SIMD::relax_uv_line(const float* uv, const float* distances,
+		const float damping, const float clamping, const Uint32 width,
+		float* new_uv)
+	{
+#ifdef	USE_SSE2
+		__m128 t0, t1, t2, t3, t4, t5, t6, t7;
+		__m128 t_damping, t_clamping, result;
+		unsigned int i, count;
+
+		const float* uv0 = uv - width * 2;
+		const float* uv1 = uv;
+		const float* uv2 = uv + width * 2;
+
+		t_damping = _mm_set1_ps(damping);
+		t_clamping = _mm_set1_ps(clamping);
+
+		t2 = (__m128)_mm_load_sd((double*)uv0);
+#ifdef	USE_SSE3
+		t4 = (__m128)_mm_loaddup_pd((double*)uv1);
+#else	/* USE_SSE3 */
+		t4 = (__m128)_mm_load_sd((double*)uv1);
+		t4 = (__m128)_mm_unpacklo_pd((__m128d)t4, (__m128d)t4);
+#endif	/* USE_SSE3 */
+		t3 = (__m128)_mm_load_sd((double*)uv2);
+
+		t2 = (__m128)_mm_unpacklo_pd((__m128d)t2, (__m128d)t3);
+
+		t3 = t4;
+		t0 = t4;
+		t1 = t4;
+
+		count = width - 1;
+
+		t5 = (__m128)_mm_load_sd(((double*)uv0) + 1);
+		t6 = (__m128)_mm_load_sd(((double*)uv1) + 1);
+		t7 = (__m128)_mm_load_sd(((double*)uv2) + 1);
+
+		default_line_shuffle_simd(t0, t1, t2, t3, t4, t5, t6, t7);
+		result = relax_uv_simd(t0, t1, t2, t3, t4, distances,
+			t_damping, t_clamping);
+
+		result = _mm_and_ps(result, (__m128)_mm_setr_epi32(0, -1, 0, -1));
+		result = _mm_add_ps(result, t4);
+
+		_mm_store_sd((double*)new_uv, (__m128d)result);
+
+		for (i = 1; i < count; i++)
+		{
+			t5 = (__m128)_mm_load_sd(((double*)uv0) + i + 1);
+			t6 = (__m128)_mm_load_sd(((double*)uv1) + i + 1);
+			t7 = (__m128)_mm_load_sd(((double*)uv2) + i + 1);
+
+			default_line_shuffle_simd(t0, t1, t2, t3, t4, t5, t6,
+				t7);
+			result = relax_uv_simd(t0, t1, t2, t3, t4,
+				distances + i * 8, t_damping, t_clamping);
+
+			result = _mm_add_ps(result, t4);
+
+			_mm_store_sd(((double*)new_uv) + i, (__m128d)result);
+		}
+
+		t5 = (__m128)_mm_unpackhi_pd((__m128d)t3, (__m128d)t3);
+		t6 = t5;
+		t7 = t5;
+
+		default_line_shuffle_simd(t0, t1, t2, t3, t4, t5, t6, t7);
+	
+		result = relax_uv_simd(t0, t1, t2, t3, t4,
+			distances + count * 8, t_damping, t_clamping);
+
+		result = _mm_and_ps(result, (__m128)_mm_setr_epi32(0, -1, 0, -1));
+		result = _mm_add_ps(result, t4);
+
+		_mm_store_sd(((double*)new_uv) + count, (__m128d)result);
 #endif	/* USE_SSE2 */
 	}
 

@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "exceptions.hpp"
+#include "alignedvec4array.hpp"
 
 /**
  * @file
@@ -31,21 +31,44 @@ namespace eternal_lands
 	class HeightMapUvTool
 	{
 		private:
-			class Info;
-			typedef std::vector<Info> InfoVector;
-
 			Vec2Vector m_uvs;
-			InfoVector m_infos;
+			AlignedVec4Array m_half_distances;
 			Uint32 m_width, m_height;
 
-			static float relax(const InfoVector &infos,
-				const float damping, const float clamping,
-				const Uint32 line, Vec2Vector &uvs);			
+			static void relax_edge(
+				const AlignedVec4Array &half_distances,
+				const Vec2Vector &uvs,
+				const glm::uvec2 &position,
+				const glm::uvec2 &size, const float damping,
+				const float clamping, Vec2Vector &new_uv);
+			static void relax(
+				const AlignedVec4Array &half_distances,
+				const Vec2Vector &uvs, const float damping,
+				const float clamping, const Uint32 width,
+				const Uint32 index, Vec2Vector &new_uv);
+			static void relax_default(
+				const AlignedVec4Array &half_distances,
+				const Vec2Vector &uvs, const float damping,
+				const float clamping, const Uint32 width,
+				const Uint32 height, Vec2Vector &new_uvs);
+			static void relax_sse2(
+				const AlignedVec4Array &half_distances,
+				const Vec2Vector &uvs, const float damping,
+				const float clamping, const Uint32 width,
+				const Uint32 height, Vec2Vector &new_uvs);
 			void build_data(const ImageSharedPtr &height_map,
 				const glm::vec3 &offset_scale);
 			void build_data(const ImageSharedPtr &height_map,
 				const glm::vec3 &offset_scale, const Sint32 x,
 				const Sint32 y);
+
+			static inline float get_half_distance(
+				const AlignedVec4Array &half_distances,
+				const Uint32 index, const Uint16 direction)
+			{
+				return half_distances[index * 2 +
+					direction / 4][direction % 4];
+			}
 
 		public:
 			/**
@@ -59,7 +82,7 @@ namespace eternal_lands
 			 */
 			~HeightMapUvTool() throw();
 
-			void buil_relaxed_uv();
+			void relaxed_uv(const bool use_simd);
 			void convert();
 
 			inline const glm::vec2 &get_uv(const Uint16 x,

@@ -8,6 +8,7 @@
 #include "heightmapuvtool.hpp"
 #include "image.hpp"
 #include "abstractterrainmanager.hpp"
+#include "simd/simd.hpp"
 
 namespace eternal_lands
 {
@@ -26,53 +27,6 @@ namespace eternal_lands
 
 	}
 
-	class HeightMapUvTool::Info
-	{
-		private:
-			FloatArray8 m_half_distances;
-			BitSet8 m_dirs;
-			bool m_u;
-			bool m_v;
-
-		public:
-			Info(const FloatArray8 &half_distances,
-				const BitSet8 &dirs, const bool u,
-				const bool v);
-			~Info() throw();
-
-			inline float get_half_distance(const Uint16 index)
-				const
-			{
-				return m_half_distances[index];
-			}
-
-			inline bool get_dir(const Uint16 index) const
-			{
-				return m_dirs[index];
-			}
-
-			inline bool get_u() const
-			{
-				return m_u;
-			}
-
-			inline bool get_v() const
-			{
-				return m_v;
-			}
-
-	};
-
-	HeightMapUvTool::Info::Info(const FloatArray8 &half_distances,
-		const BitSet8 &dirs, const bool u, const bool v):
-		m_half_distances(half_distances), m_dirs(dirs), m_u(u), m_v(v)
-	{
-	}
-
-	HeightMapUvTool::Info::~Info() throw()
-	{
-	}
-
 	HeightMapUvTool::HeightMapUvTool(const ImageSharedPtr &height_map,
 		const glm::vec3 &offset_scale)
 	{
@@ -86,13 +40,11 @@ namespace eternal_lands
 	void HeightMapUvTool::build_data(const ImageSharedPtr &height_map,
 		const glm::vec3 &offset_scale, const Sint32 x, const Sint32 y)
 	{
-		FloatArray8 half_distances;
-		BitSet8 dirs;
+		Vec4Array2 half_distances;
 		glm::vec3 p0, p1;
 		glm::ivec2 offset;
 		glm::vec2 uv;
 		Sint32 width, height, xx, yy, i;
-		bool u, v;
 
 		width = m_width;
 		height = m_height;
@@ -115,8 +67,7 @@ namespace eternal_lands
 			if ((xx < 0) || (yy < 0) || (xx > (width - 1)) ||
 				(yy > (height - 1)))
 			{
-				dirs[i] = false;
-				half_distances[i] = 0.0f;
+				half_distances[i / 4][i % 4] = 0.0f;
 
 				continue;
 			}
@@ -125,14 +76,12 @@ namespace eternal_lands
 				height_map->get_pixel_uint(xx, yy, 0, 0, 0.0f),
 				offset_scale);
 
-			dirs[i] = true;
-			half_distances[i] = 0.5f * glm::distance(p0, p1);
+			half_distances[i / 4][i % 4] = 0.5f *
+				glm::distance(p0, p1);
 		}
 
-		u = (x == 0) || (x == (width - 1));
-		v = (y == 0) || (y == (height - 1));
-
-		m_infos.push_back(Info(half_distances, dirs, u, v));
+		m_half_distances.push_back(half_distances[0]);
+		m_half_distances.push_back(half_distances[1]);
 	}
 
 	void HeightMapUvTool::build_data(const ImageSharedPtr &height_map,
@@ -147,7 +96,7 @@ namespace eternal_lands
 		height = m_height;
 
 		m_uvs.reserve(width * height);
-		m_infos.reserve(width * height);
+		m_half_distances.reserve(width * height * 2);
 
 		for (y = 0; y < height; ++y)
 		{
@@ -158,87 +107,201 @@ namespace eternal_lands
 		}
 	}
 
-	float HeightMapUvTool::relax(const InfoVector &infos,
-		const float damping, const float clamping, const Uint32 width,
-		Vec2Vector &uvs)
+	void HeightMapUvTool::relax(const AlignedVec4Array &half_distances,
+		const Vec2Vector &uvs, const float damping,
+		const float clamping, const Uint32 width, const Uint32 index,
+		Vec2Vector &new_uvs)
 	{
 		glm::vec2 uv, dir, velocity, offset;
-		float distance, factor, result;
-		Uint32 i, j, count, index;
+		float distance, factor;
+		Uint32 i, idx;
 
-		result = 0.0f;
-		count = infos.size();
+		uv = uvs[index];
+		velocity = glm::vec2(0.0f);
 
-		for (i = 0; i < count; ++i)
+		for (i = 0; i < 8; ++i)
 		{
-			uv = uvs[i];
-			velocity = glm::vec2(0.0f);
+			idx = index + direction_indices[i].x +
+				direction_indices[i].y * width;
+			dir = uvs[idx] - uv;
+			distance = glm::length(dir);
+			dir /= std::max(distance, 1e-7f);
+			factor = distance - half_distances[i / 4][i % 4];
+			velocity += dir * factor;
+		}
 
-			for (j = 0; j < 8; ++j)
+		offset = velocity * damping;
+		offset = glm::clamp(offset, -clamping, clamping);
+
+		uv += offset;
+
+		new_uvs[index] = uv;
+	}
+
+	void HeightMapUvTool::relax_edge(
+		const AlignedVec4Array &half_distances, const Vec2Vector &uvs,
+		const glm::uvec2 &position, const glm::uvec2 &size,
+		const float damping, const float clamping, Vec2Vector &new_uvs)
+	{
+		glm::vec2 uv, dir, velocity, offset;
+		glm::ivec2 pos;
+		float distance, factor;
+		Uint32 i, index, idx;
+
+		index = position.x + position.y * size.x;
+
+		uv = uvs[index];
+		velocity = glm::vec2(0.0f);
+
+		for (i = 0; i < 8; ++i)
+		{
+			pos = glm::ivec2(position) + direction_indices[i];
+
+			if (glm::all(glm::greaterThanEqual(pos, glm::ivec2(0)))
+				&&
+				glm::all(glm::lessThan(pos, glm::ivec2(size))))
 			{
-				if (infos[i].get_dir(j))
-				{
-					index = i + direction_indices[j].x +
-						direction_indices[j].y * width;
-					dir = uvs[index] - uv;
-					distance = glm::length(dir);
-					dir /= std::max(distance, 1e-7f);
-					factor = distance -
-						infos[i].get_half_distance(j);
-					velocity += dir * factor;
-				}
-			}
-
-			offset = velocity * damping;
-			offset = glm::clamp(offset, -clamping, clamping);
-			result += glm::length2(offset);
-
-			uv += offset;
-
-			if (!infos[i].get_u())
-			{
-				uvs[i].s = uv.s;
-			}
-
-			if (!infos[i].get_v())
-			{
-				uvs[i].t = uv.t;
+				idx = pos.x + pos.y * size.x;
+				dir = uvs[idx] - uv;
+				distance = glm::length(dir);
+				dir /= std::max(distance, 1e-7f);
+				factor = distance - get_half_distance(
+					half_distances, index, i);
+				velocity += dir * factor;
 			}
 		}
 
-		return 1.0f;
+		offset = velocity * damping;
+		offset = glm::clamp(offset, -clamping, clamping);
+
+		uv += offset;
+
+		if (!((position.x == 0) || (position.x == (size.x - 1))))
+		{
+			new_uvs[index].s = uv.s;
+		}
+
+		if (!((position.y == 0) || (position.y == (size.y - 1))))
+		{
+			new_uvs[index].t = uv.t;
+		}
+	}
+
+	void HeightMapUvTool::relax_default(
+		const AlignedVec4Array &half_distances, const Vec2Vector &uvs,
+		const float damping, const float clamping, const Uint32 width,
+		const Uint32 height, Vec2Vector &new_uvs)
+	{
+		glm::uvec2 position, size;
+		Uint32 i, j;
+
+		size = glm::uvec2(width, height);
+		position = glm::uvec2(0);
+
+		for (i = 0; i < width; ++i)
+		{
+			position.x = i;
+
+			relax_edge(half_distances, uvs, position, size,
+				damping, clamping, new_uvs);
+		}
+
+		for (j = 1; j < (height - 1); ++j)
+		{
+			position.x = 0;
+			position.y = j;
+
+			relax_edge(half_distances, uvs, position, size,
+				damping, clamping, new_uvs);
+
+			#pragma omp parallel for
+			for (i = 1; i < (width - 1); ++i)
+			{
+				relax(half_distances, uvs, damping, clamping,
+					width, i + j * width, new_uvs);
+			}
+
+			position.x = width - 1;
+			position.y = j;
+
+			relax_edge(half_distances, uvs, position, size,
+				damping, clamping, new_uvs);
+		}
+
+		for (i = 0; i < width; ++i)
+		{
+			position.x = i;
+			position.y = height - 1;
+
+			relax_edge(half_distances, uvs, position, size,
+				damping, clamping, new_uvs);
+		}
  	}
 
-	void HeightMapUvTool::buil_relaxed_uv()
+	void HeightMapUvTool::relax_sse2(
+		const AlignedVec4Array &half_distances, const Vec2Vector &uvs,
+		const float damping, const float clamping, const Uint32 width,
+		const Uint32 height, Vec2Vector &new_uvs)
 	{
-		Uint32 increasing;
-		float movement, last;
+		glm::uvec2 position, size;
+		Uint32 i;
 
-		last = relax(m_infos, 0.05f, 10.0f, m_width, m_uvs);
+		size = glm::uvec2(width, height);
+		position = glm::uvec2(0);
 
-		increasing = 0;
-
-		while (true)
+		for (i = 0; i < width; ++i)
 		{
-			movement = relax(m_infos, 0.05f, 10.0f, m_width,
-				m_uvs);
+			position.x = i;
 
-			if (movement >= last)
+			relax_edge(half_distances, uvs, position, size,
+				damping, clamping, new_uvs);
+		}
+
+		#pragma omp parallel for
+		for (i = 1; i < (height - 1); ++i)
+		{
+			SIMD::relax_uv_line(glm::value_ptr(uvs[i * width]),
+				half_distances.get_ptr_at(i * width * 2),
+				damping, clamping, width,
+				glm::value_ptr(new_uvs[i * width]));
+		}
+
+		for (i = 0; i < width; ++i)
+		{
+			position.x = i;
+			position.y = height - 1;
+
+			relax_edge(half_distances, uvs, position, size,
+				damping, clamping, new_uvs);
+		}
+	}
+
+	void HeightMapUvTool::relaxed_uv(const bool use_simd)
+	{
+		Vec2Vector new_uvs;
+		Uint32 i;
+
+		new_uvs.resize(m_uvs.size());
+
+		if (use_simd)
+		{
+			for (i = 0; i < 2048; ++i)
 			{
-				increasing += 1;
+				relax_sse2(m_half_distances, m_uvs, 0.015f,
+					1.0f, m_width, m_height, new_uvs);
+
+				std::swap(new_uvs, m_uvs);
 			}
 
-			if (movement < 0.001f)
-			{
-				break;
-			}
+			return;
+		}
 
-			if (increasing >= 250)
-			{
-				break;
-			}
+		for (i = 0; i < 2048; ++i)
+		{
+			relax_default(m_half_distances, m_uvs, 0.015f, 1.0f,
+				m_width, m_height, new_uvs);
 
-			last = movement;
+			std::swap(new_uvs, m_uvs);
 		}
 	}
 

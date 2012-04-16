@@ -50,9 +50,9 @@ namespace eternal_lands
 			float m_shadow_distance;
 			float m_view_distance;
 			Uint16 m_shadow_map_size;
-			Uint16 m_terrain_clipmap_size;
-			Uint16 m_terrain_clipmap_world_size;
-			Uint16 m_terrain_tile_world_size;
+			Uint16 m_clipmap_size;
+			Uint16 m_clipmap_world_size;
+			Uint16 m_tile_world_size;
 			ShadowQualityType m_shadow_quality;
 			OpenglVerionType m_opengl_version;
 			bool m_fog;
@@ -65,6 +65,7 @@ namespace eternal_lands
 			bool m_use_functions;
 			bool m_use_layered_rendering;
 			bool m_low_quality_terrain;
+			bool m_clipmap_centered;
 #ifdef	DEBUG
 			bool m_draw_objects;
 			bool m_draw_actors;
@@ -103,24 +104,27 @@ namespace eternal_lands
 				m_shadow_map_size = shadow_map_size;
 			}
 
-			inline void set_terrain_clipmap_size(
-				const Uint16 terrain_clipmap_size)
+			inline void set_clipmap_size(const Uint16 clipmap_size)
 			{
-				m_terrain_clipmap_size = terrain_clipmap_size;
+				m_clipmap_size = clipmap_size;
 			}
 
-			inline void set_terrain_clipmap_world_size(
-				const Uint16 terrain_clipmap_world_size)
+			inline void set_clipmap_world_size(
+				const Uint16 clipmap_world_size)
 			{
-				m_terrain_clipmap_world_size =
-					terrain_clipmap_world_size;
+				m_clipmap_world_size = clipmap_world_size;
 			}
 
-			inline void set_terrain_tile_world_size(
-				const Uint16 terrain_tile_world_size)
+			inline void set_tile_world_size(
+				const Uint16 tile_world_size)
 			{
-				m_terrain_tile_world_size =
-					terrain_tile_world_size;
+				m_tile_world_size = tile_world_size;
+			}
+
+			inline void set_clipmap_centered(
+				const bool clipmap_centered)
+			{
+				m_clipmap_centered = clipmap_centered;
 			}
 
 			inline void set_opengl_version(
@@ -227,19 +231,24 @@ namespace eternal_lands
 				return m_shadow_map_size;
 			}
 
-			inline Uint16 get_terrain_clipmap_size() const
+			inline Uint16 get_clipmap_size() const
 			{
-				return m_terrain_clipmap_size;
+				return m_clipmap_size;
 			}
 
-			inline Uint16 get_terrain_clipmap_world_size() const
+			inline Uint16 get_clipmap_world_size() const
 			{
-				return m_terrain_clipmap_world_size;
+				return m_clipmap_world_size;
 			}
 
-			inline Uint16 get_terrain_tile_world_size() const
+			inline Uint16 get_tile_world_size() const
 			{
-				return m_terrain_tile_world_size;
+				return m_tile_world_size;
+			}
+
+			inline bool get_clipmap_centered() const
+			{
+				return m_clipmap_centered;
 			}
 
 			inline OpenglVerionType get_opengl_version() const

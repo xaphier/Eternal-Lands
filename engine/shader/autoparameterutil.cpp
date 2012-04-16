@@ -113,7 +113,7 @@ namespace eternal_lands
 			AutoParameterTypeData(
 				String(UTF8("terrain_scale")), pt_vec3),
 			AutoParameterTypeData(
-				String(UTF8("terrain_texture_size")), pt_vec2)
+				String(UTF8("terrain_texture_size")), pt_vec4)
 		};
 
 		const Uint32 auto_parameter_datas_count =

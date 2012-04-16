@@ -232,9 +232,10 @@ int engine_use_functions = engine_false;
 int engine_use_layered_rendering = engine_false;
 int engine_low_quality_terrain = engine_false;
 int engine_use_s3tc_for_actors = engine_true;
-int engine_terrain_clipmap_size = 1;
-int engine_terrain_clipmap_world_size = 16;
-int engine_terrain_tile_world_size = 4;
+int engine_clipmap_size = 1;
+int engine_clipmap_world_size = 16;
+int engine_tile_world_size = 4;
+int engine_clipmap_centered = engine_true;
 #ifdef	DEBUG
 int engine_draw_objects = engine_true;
 int engine_draw_actors = engine_true;
@@ -291,22 +292,28 @@ void change_engine_view_distance(float* var, float* value)
 	engine_set_view_distance(*var);
 }
 
-void change_engine_terrain_clipmap_size(int* var, int value)
+void change_engine_clipmap_size(int* var, int value)
 {
 	*var = value;
-	engine_set_terrain_clipmap_size(*var);
+	engine_set_clipmap_size(*var);
 }
 
-void change_engine_terrain_clipmap_world_size(int* var, int value)
+void change_engine_clipmap_world_size(int* var, int value)
 {
 	*var = value;
-	engine_set_terrain_clipmap_world_size(*var);
+	engine_set_clipmap_world_size(*var);
 }
 
-void change_terrain_tile_world_size(int* var, int value)
+void change_tile_world_size(int* var, int value)
 {
 	*var = value;
-	engine_set_terrain_tile_world_size(*var);
+	engine_set_tile_world_size(*var);
+}
+
+void change_clipmap_centered(int* var)
+{
+	*var = !*var;
+	engine_set_clipmap_centered(*var);
 }
 
 void change_engine_fog(int* var)
@@ -1924,9 +1931,10 @@ static void init_ELC_vars(void)
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &engine_view_distance, change_engine_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "fog", "fog", &engine_fog, change_engine_fog, engine_true, "Fog", "Fog", GFX);
 	add_var(OPT_BOOL, "low_quality_terrain", "low_quality_terrain", &engine_low_quality_terrain, change_engine_set_low_quality_terrain, engine_false, "Low quality terrain", "Low quality terrain", GFX);
-	add_var(OPT_MULTI_H, "terrain_clipmap_size", "terrain_clipmap_size", &engine_terrain_clipmap_size, change_engine_terrain_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", "4096", 0);
-	add_var(OPT_INT, "terrain_clipmap_world_size", "terrain_clipmap_world_size", &engine_terrain_clipmap_world_size, change_engine_terrain_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
-	add_var(OPT_INT, "terrain_tile_world_size", "terrain_tile_world_size", &engine_terrain_tile_world_size, change_terrain_tile_world_size, 4, "Tile world size", "Tile used for terrain texturing world size", GFX, 1, 16);
+	add_var(OPT_MULTI_H, "clipmap_size", "clipmap_size", &engine_clipmap_size, change_engine_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", "4096", 0);
+	add_var(OPT_INT, "clipmap_world_size", "clipmap_world_size", &engine_clipmap_world_size, change_engine_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
+	add_var(OPT_INT, "tile_world_size", "tile_world_size", &engine_tile_world_size, change_tile_world_size, 4, "Tile world size", "Tile used for terrain texturing world size", GFX, 1, 16);
+	add_var(OPT_BOOL, "clipmap_centered", "clipmap_centered", &engine_clipmap_centered, change_clipmap_centered, engine_true, "Climap centered", "Climap centered around focus point", GFX);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */

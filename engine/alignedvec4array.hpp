@@ -49,9 +49,26 @@ namespace eternal_lands
 			void clear();
 			void reserve(const Uint32 new_capacity);
 
-			inline void* get_ptr() const
+			inline void* get_ptr()
 			{
 				return m_data;
+			}
+
+			inline const void* get_ptr() const
+			{
+				return m_data;
+			}
+
+			inline float* get_ptr_at(const Uint32 index)
+			{
+				assert(index < m_size);
+				return glm::value_ptr(m_data[index]);
+			}
+
+			inline const float* get_ptr_at(const Uint32 index) const
+			{
+				assert(index < m_size);
+				return glm::value_ptr(m_data[index]);
 			}
 
 			inline Uint32 size() const
