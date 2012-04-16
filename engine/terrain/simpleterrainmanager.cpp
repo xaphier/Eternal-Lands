@@ -248,15 +248,7 @@ namespace eternal_lands
 		lods_distances[1] = 20;
 		lods_distances[2] = 40;
 
-Uint32 t0, t1;
-
-t0 = SDL_GetTicks();
-
 		uvs.relaxed_uv(use_simd);
-
-t1 = SDL_GetTicks();
-
-		std::cout << "time: " << ((t1 - t0) * 0.001f) << std::endl;
 
 		for (y = 0; y < height; ++y)
 		{

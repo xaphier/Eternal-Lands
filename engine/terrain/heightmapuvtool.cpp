@@ -285,7 +285,7 @@ namespace eternal_lands
 
 		if (use_simd)
 		{
-			for (i = 0; i < 2048; ++i)
+			for (i = 0; i < 512; ++i)
 			{
 				relax_sse2(m_half_distances, m_uvs, 0.015f,
 					1.0f, m_width, m_height, new_uvs);
@@ -296,7 +296,7 @@ namespace eternal_lands
 			return;
 		}
 
-		for (i = 0; i < 2048; ++i)
+		for (i = 0; i < 512; ++i)
 		{
 			relax_default(m_half_distances, m_uvs, 0.015f, 1.0f,
 				m_width, m_height, new_uvs);

@@ -253,20 +253,21 @@ namespace eternal_lands
 		Uint16 mipmaps;
 		TextureTargetType target;
 
-		if (true)
+		mipmaps = 0;
+
+		if (get_global_vars()->get_opengl_3_0())
 		{
 			target = ttt_texture_2d_array;
+
+			while ((1 << mipmaps) <
+				get_global_vars()->get_clipmap_size())
+			{
+				mipmaps++;
+			}
 		}
 		else
 		{
 			target = ttt_texture_3d;
-		}
-
-		mipmaps = 0;
-
-		while ((1 << mipmaps) < get_global_vars()->get_clipmap_size())
-		{
-			mipmaps++;
 		}
 
 		m_clipmap.rebuild(glm::vec2(256.0f),
@@ -279,8 +280,8 @@ namespace eternal_lands
 				String(UTF8("terrain")),
 				get_global_vars()->get_clipmap_size(),
 				get_global_vars()->get_clipmap_size(),
-				m_clipmap.get_slices(), mipmaps, target, tft_rgb8,
-				false);
+				m_clipmap.get_slices(), mipmaps, target,
+				tft_rgb8, false);
 
 		m_clipmap.set_centered(get_global_vars(
 			)->get_clipmap_centered());
@@ -1291,7 +1292,10 @@ namespace eternal_lands
 		m_state_manager.switch_texture(stt_terrain,
 			m_terrain_frame_buffer->get_texture());
 
-		glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+		}
 
 		DEBUG_CHECK_GL_ERROR();
 

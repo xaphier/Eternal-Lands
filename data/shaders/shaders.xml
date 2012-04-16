@@ -55,6 +55,7 @@
 		<shader_source>shaders/sources/none_normal.xml</shader_source>
 		<shader_source>shaders/sources/none_tangent.xml</shader_source>
 		<shader_source>shaders/sources/static_extra_uv_4.xml</shader_source>
+		<shader_source>shaders/sources/static_extra_uv_6.xml</shader_source>
 		<shader_source>shaders/sources/albedo_terrain_mapping.xml</shader_source>
 		<shader_source>shaders/sources/no_normal_mapping_terrain.xml</shader_source>
 	</shader_sources>

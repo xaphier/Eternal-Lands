@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>static_extra_4</name>
+ <name>static_extra_6</name>
  <type>uv</type>
  <shader_source_datas>
   <shader_source_data>
@@ -17,14 +17,14 @@
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>one</size>
-     <scale>4</scale>
+     <scale>6</scale>
     </parameter>
     <parameter>
      <name>texture_matrices</name>
      <type>mat2x3</type>
      <qualifier>in</qualifier>
      <size>one</size>
-     <scale>4</scale>
+     <scale>6</scale>
     </parameter>
     <parameter>
      <name>world_uv</name>
@@ -43,10 +43,12 @@
    </parameters>
    <source>int i;
 
-for (i = 0; i &lt; 4; ++i)
+for (i = 0; i &lt; 6; ++i)
 {
 	world_extra_uv[i] = vec3(texture_coordinate_0, 1.0) * texture_matrices[i];
 }
+
+world_uv = texture_coordinate_0 * terrain_texture_size.xy;
 </source>
    <glsl_120>true</glsl_120>
    <glsl_130>true</glsl_130>

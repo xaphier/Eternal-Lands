@@ -134,7 +134,8 @@ namespace eternal_lands
 					clipmap_world_size * 0.25f;
 			}
 
-			offset += dir[get_dir_index()] * (get_clipmap_world_size() * 0.5f - m_distance);
+			offset += dir[get_dir_index()] *
+				(get_clipmap_world_size() * 0.5f - m_distance);
 		}
 
 		offset /= clipmap_world_size;

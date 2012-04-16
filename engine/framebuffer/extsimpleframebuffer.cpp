@@ -32,7 +32,8 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		get_texture()->init(get_width(), get_height(), 0, mipmaps);
+		get_texture()->init(get_width(), get_height(), get_depth(),
+			mipmaps);
 
 		DEBUG_CHECK_GL_ERROR();
 

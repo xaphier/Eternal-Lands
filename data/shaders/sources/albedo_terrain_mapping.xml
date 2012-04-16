@@ -10,11 +10,11 @@
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
-     <scale>8</scale>
+     <scale>6</scale>
     </parameter>
     <parameter>
      <name>terrain_sampler</name>
-     <type>sampler2DArray</type>
+     <type>sampler3D</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -33,17 +33,76 @@
      <size>one</size>
      <scale>1</scale>
     </parameter>
+   </parameters>
+   <source>vec4 tmp;
+vec2 uv, ddx, ddy;
+float lod, blend;
+int i, index;
+
+ddx = dFdx(world_uv);
+ddy = dFdy(world_uv);
+
+lod = log2(max(length(ddx), length(ddy)));
+
+index = 5;
+
+for (i = 0; i &lt; 5; ++i)
+{
+	uv = world_extra_uv[i];
+
+	if (all(lessThan(abs(uv - vec2(0.5)), vec2(0.4995))))
+	{
+		index = i;
+
+		break;
+	}
+}
+
+lod = clamp(lod, index, 5.0);
+index = int(lod);
+blend = fract(lod);
+
+albedo = texture3D(terrain_sampler, vec3(world_extra_uv[index], (index + 0.5) / 6.0));
+
+if (blend &gt; 0.0)
+{
+	tmp = texture3D(terrain_sampler, vec3(world_extra_uv[index + 1], (index + 1.5) / 6.0));
+	albedo = mix(albedo, tmp, blend);
+}
+</source>
+   <glsl_120>true</glsl_120>
+   <glsl_130>false</glsl_130>
+   <glsl_140>false</glsl_140>
+   <glsl_150>false</glsl_150>
+   <glsl_330>false</glsl_330>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
     <parameter>
-     <name>albedo_sampler_0</name>
-     <type>sampler1D</type>
+     <name>world_extra_uv</name>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>6</scale>
+    </parameter>
+    <parameter>
+     <name>world_uv</name>
+     <type>vec2</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>terrain_texture_size</name>
-     <type>vec4</type>
+     <name>terrain_sampler</name>
+     <type>sampler2DArray</type>
      <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>albedo</name>
+     <type>vec4</type>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -51,43 +110,19 @@
    <source>vec4 tmp;
 vec2 uv, ddx, ddy;
 float lod, blend;
+float det, squared_length_major, length_major;
+float ratio_of_anisotropy, length_minor;
 int i, index;
 
-uv = world_uv * terrain_texture_size.xy;
+ddx = dFdx(world_uv);
+ddy = dFdy(world_uv);
 
-ddx = dFdx(uv);
-ddy = dFdy(uv);
-
-blend = 0.0;
-
-#define	MAX_ANISOTROPY 16
-
-#ifdef	MAX_ANISOTROPY
-#if	1
-	float det, squared_length_major, length_major, ratio_of_anisotropy, length_minor;
-
-	squared_length_major = max(dot(ddx, ddx), dot(ddy, ddy));
-	det = abs(ddx.x * ddy.y - ddx.y * ddy.x);
-	length_major = sqrt(squared_length_major);
-	ratio_of_anisotropy = squared_length_major / det;
-	length_minor = max((ratio_of_anisotropy &gt; MAX_ANISOTROPY) ? length_major / ratio_of_anisotropy : det / length_major, 1.0);
-	lod = log2(length_minor);
-#else
-	vec2 scaleHalf = vec2(0.5,0.5);
-	ddx = scaleHalf * abs(ddx);
-	ddy = scaleHalf * abs(ddy);
-	float lddx = ddx.x + ddx.y;
-	float lddy = ddy.x + ddy.y;
-	float pMax = max(lddx, lddy);
-	float pMin = min(lddx, lddy);
-	pMin = max(pMin,1.0e-10);
-	pMax = max(pMax,1.0e-10);
-	float Aspect = min((pMax/pMin), MAX_ANISOTROPY);
-	lod = - log2( pMax/Aspect );
-#endif
-#else
-	lod = log2(max(length(ddx), length(ddy)));
-#endif
+squared_length_major = max(dot(ddx, ddx), dot(ddy, ddy));
+det = abs(ddx.x * ddy.y - ddx.y * ddy.x);
+length_major = sqrt(squared_length_major);
+ratio_of_anisotropy = squared_length_major / det;
+length_minor = max((ratio_of_anisotropy &gt; 16.0) ? length_major / ratio_of_anisotropy : det / length_major, 1.0);
+lod = log2(length_minor);
 
 ddx = dFdx(world_extra_uv[0]);
 ddy = dFdy(world_extra_uv[0]);
@@ -129,215 +164,6 @@ if (blend &gt; 0.0)
    <glsl_140>true</glsl_140>
    <glsl_150>true</glsl_150>
    <glsl_330>true</glsl_330>
-  </shader_source_data>
-  <shader_source_data>
-   <parameters>
-    <parameter>
-     <name>world_extra_uv</name>
-     <type>vec2</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>8</scale>
-    </parameter>
-    <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-   </parameters>
-   <source>vec4 c0, c1;
-vec2 uv, ddxa[8], ddya[8], ddx, ddy;
-float lod, blend;
-int i, index;
-
-uv = world_uv * terrain_texture_size.xy;
-
-ddx = dFdx(uv);
-ddy = dFdy(uv);
-
-blend = 0.0;
-
-#define	MAX_ANISOTROPY 16
-
-#ifdef	MAX_ANISOTROPY
-#if	1
-	float det, squared_length_major, length_major, ratio_of_anisotropy, length_minor;
-
-	squared_length_major = max(dot(ddx, ddx), dot(ddy, ddy));
-	det = abs(ddx.x * ddy.y - ddx.y * ddy.x);
-	length_major = sqrt(squared_length_major);
-	ratio_of_anisotropy = squared_length_major / det;
-	length_minor = max((ratio_of_anisotropy &gt; MAX_ANISOTROPY) ? length_major / ratio_of_anisotropy : det / length_major, 1.0);
-	lod = log2(length_minor);
-#else
-	vec2 scaleHalf = vec2(0.5,0.5);
-	ddx = scaleHalf * abs(ddx);
-	ddy = scaleHalf * abs(ddy);
-	float lddx = ddx.x + ddx.y;
-	float lddy = ddy.x + ddy.y;
-	float pMax = max(lddx, lddy);
-	float pMin = min(lddx, lddy);
-	pMin = max(pMin,1.0e-10);
-	pMax = max(pMax,1.0e-10);
-	float Aspect = min((pMax/pMin), MAX_ANISOTROPY);
-	lod = - log2( pMax/Aspect );
-#endif
-#else
-	lod = log2(max(length(ddx), length(ddy)));
-#endif
-
-ddx = dFdx(world_uv);
-ddy = dFdy(world_uv);
-
-ddxa[0] = dFdx(world_extra_uv[0]);
-ddya[0] = dFdy(world_extra_uv[0]);
-
-ddxa[1] = dFdx(world_extra_uv[1]);
-ddya[1] = dFdy(world_extra_uv[1]);
-
-ddxa[2] = dFdx(world_extra_uv[2]);
-ddya[2] = dFdy(world_extra_uv[2]);
-
-ddxa[3] = dFdx(world_extra_uv[3]);
-ddya[3] = dFdy(world_extra_uv[3]);
-
-ddxa[4] = dFdx(world_extra_uv[4]);
-ddya[4] = dFdy(world_extra_uv[4]);
-
-ddxa[5] = dFdx(world_extra_uv[5]);
-ddya[5] = dFdy(world_extra_uv[5]);
-
-index = 5;
-
-for (i = 0; i &lt; 5; ++i)
-{
-	uv = world_extra_uv[i];
-
-	if (all(lessThan(abs(uv - vec2(0.5)), vec2(0.4995))))
-	{
-		index = i;
-
-		break;
-	}
-}
-
-lod = clamp(lod, index, 5.0);
-//index = int(lod);
-//blend = fract(lod);
-
-ddx = ddxa[index];// / exp2(index);
-ddy = ddya[index];// / exp2(index);
-
-/*
-vec4 texture_size;
-texture_size.xy = textureSize(terrain_sampler, 0).xy;
-texture_size.zw = 1.0 / texture_size.xy;
-
-vec2 e_x = vec2(texture_size.z, 0.0);
-vec2 e_y = vec2(0.0, texture_size.w);
-
-// calc filter texture coordinates where [0,1] is a single texel
-// (can be done in vertex program instead)
-vec2 coord_hg = world_extra_uv[index] * texture_size.xy - vec2(0.5f, 0.5f);
-
-vec2 tex = (fract(coord_hg) * 127.0 + 0.5) / 128.0;
-
-// fetch offsets and weights from filter texture
-vec3 hg_x = texture(albedo_sampler_0, tex.x).xyz;
-vec3 hg_y = texture(albedo_sampler_0, tex.y).xyz;
-
-// determine linear sampling coordinates
-vec2 coord_source10 = world_extra_uv[index] + hg_x.x * e_x;
-vec2 coord_source00 = world_extra_uv[index] - hg_x.y * e_x;
-vec2 coord_source11 = coord_source10 + hg_y.x * e_y;
-vec2 coord_source01 = coord_source00 + hg_y.x * e_y;
-
-coord_source10 = coord_source10 - hg_y.y * e_y;
-coord_source00 = coord_source00 - hg_y.y * e_y;
-
-// fetch four linearly interpolated inputs
-vec4 tex_source00 = textureGrad(terrain_sampler, vec3(coord_source00, index), ddx, ddy);
-vec4 tex_source10 = textureGrad(terrain_sampler, vec3(coord_source10, index), ddx, ddy);
-vec4 tex_source01 = textureGrad(terrain_sampler, vec3(coord_source01, index), ddx, ddy);
-vec4 tex_source11 = textureGrad(terrain_sampler, vec3(coord_source11, index), ddx, ddy);
-
-// weight along y direction
-tex_source00 = mix(tex_source00, tex_source01, hg_y.z);
-tex_source10 = mix(tex_source10, tex_source11, hg_y.z);
-
-// weight along x direction
-c0 = mix(tex_source00, tex_source10, hg_x.z);
-
-if (index &lt; 5)
-{
-	// calc filter texture coordinates where [0,1] is a single texel
-	// (can be done in vertex program instead)
-	coord_hg = world_extra_uv[index + 1] * texture_size.xy - vec2(0.5f, 0.5f);
-
-	ddx = ddxa[index + 1];
-	ddy = ddya[index + 1];
-
-	tex = (fract(coord_hg) * 127.0 + 0.5) / 128.0;
-
-	// fetch offsets and weights from filter texture
-	hg_x = texture(albedo_sampler_0, tex.x).xyz;
-	hg_y = texture(albedo_sampler_0, tex.y).xyz;
-
-	// determine linear sampling coordinates
-	coord_source10 = world_extra_uv[index + 1] + hg_x.x * e_x;
-	coord_source00 = world_extra_uv[index + 1] - hg_x.y * e_x;
-	coord_source11 = coord_source10 + hg_y.x * e_y;
-	coord_source01 = coord_source00 + hg_y.x * e_y;
-
-	coord_source10 = coord_source10 - hg_y.y * e_y;
-	coord_source00 = coord_source00 - hg_y.y * e_y;
-
-	// fetch four linearly interpolated inputs
-	tex_source00 = textureGrad(terrain_sampler, vec3(coord_source00, index + 1), ddx, ddy);
-	tex_source10 = textureGrad(terrain_sampler, vec3(coord_source10, index + 1), ddx, ddy);
-	tex_source01 = textureGrad(terrain_sampler, vec3(coord_source01, index + 1), ddx, ddy);
-	tex_source11 = textureGrad(terrain_sampler, vec3(coord_source11, index + 1), ddx, ddy);
-
-	// weight along y direction
-	tex_source00 = mix(tex_source00, tex_source01, hg_y.z);
-	tex_source10 = mix(tex_source10, tex_source11, hg_y.z);
-
-	// weight along x direction
-	c1 = mix(tex_source00, tex_source10, hg_x.z);
-
-	albedo = mix(c0, c1, blend);
-}
-else
-{
-	albedo = c0;
-}
-*/
-
-c0 = textureGrad(terrain_sampler, vec3(world_extra_uv[index], index), ddx, ddy);
-
-if (index &lt; 5)
-{
-	ddx = ddxa[0] / exp2(index + 1);
-	ddy = ddya[0] / exp2(index + 1);
-
-	ddx = ddxa[index + 1];
-	ddy = ddya[index + 1];
-
-	c1 = textureGrad(terrain_sampler, vec3(world_extra_uv[index + 1], index + 1), ddx, ddy);
-	albedo = mix(c0, c1, blend);
-}
-else
-{
-	albedo = c0;
-}
-</source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>false</glsl_130>
-   <glsl_140>false</glsl_140>
-   <glsl_150>false</glsl_150>
-   <glsl_330>false</glsl_330>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

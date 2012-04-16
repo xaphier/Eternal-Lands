@@ -23,9 +23,6 @@ namespace eternal_lands
 		m_frame_buffer.bind();
 
 		get_texture()->set_target(target);
-
-		DEBUG_CHECK_GL_ERROR();
-
 		get_texture()->set_format(format);
 		get_texture()->set_wrap_s(twt_clamp);
 		get_texture()->set_wrap_t(twt_clamp);
