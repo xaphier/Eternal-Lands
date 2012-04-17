@@ -73,6 +73,37 @@ namespace
 	el::FileSystemSharedPtr file_system;
 	boost::shared_ptr<el::ScriptEngine> script_engine;
 
+	el::String get_string(const char* str,
+		const Uint32 len = std::numeric_limits<Uint32>::max())
+	{
+		std::string result;
+		Uint32 i;
+
+		if (str == 0)
+		{
+			return el::String("(null)");
+		}
+
+		i = 0;
+
+		while (i < len)
+		{
+			if (str[i] == 0)
+			{
+				break;
+			}
+
+			if (str[i] < 127)
+			{
+				result += '\0' + str[i];
+			}
+
+			++i;
+		}
+
+		return el::String(result);
+	}
+
 	el::Text get_text(const unsigned char* str, const char* font,
 		const glm::vec4 &start_color,
 		const Uint32 len = std::numeric_limits<Uint32>::max())
@@ -1187,6 +1218,28 @@ extern "C" void engine_update_actor_buffs(actor *act, Uint32 buffs)
 {
 	if (act == 0)
 	{
+		LOG_ERROR(el::lt_default, el::String("%1%"),
+			el::String("Actor is null"));
+		return;
+	}
+
+	if (act->calmodel == 0)
+	{
+		LOG_ERROR(el::lt_default, el::String("Actor '%1%'('%2%') "
+			"calmodel null"), get_string(act->skin_name,
+				sizeof(act->skin_name)) %
+			get_string(act->actor_name,
+				sizeof(act->actor_name)));
+		return;
+	}
+
+	if (act->calmodel->getUserData() == 0)
+	{
+		LOG_ERROR(el::lt_default, el::String("Actor '%1%'('%2%') "
+			"calmodel user data null"), get_string(act->skin_name,
+				sizeof(act->skin_name)) %
+			get_string(act->actor_name,
+				sizeof(act->actor_name)));
 		return;
 	}
 
