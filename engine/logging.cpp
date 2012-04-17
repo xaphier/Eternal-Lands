@@ -578,8 +578,14 @@ namespace eternal_lands
 	void log_exception(const std::exception &exception,
 		const std::string &file, const Uint32 line)
 	{
-		
-		log_message(llt_error, exception.what(), file, line);
+		if (exception.what() == 0)
+		{
+			log_message(llt_error, "invalid exception", file, line);
+		}
+		else
+		{		
+			log_message(llt_error, exception.what(), file, line);
+		}
 	}
 
 }
