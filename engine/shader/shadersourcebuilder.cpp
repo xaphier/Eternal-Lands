@@ -2307,7 +2307,7 @@ namespace eternal_lands
 
 		vertex_source << UTF8("/* vertex shader input */\n");
 
-		if (data.get_version() >= svt_150)
+		if (data.get_version() > svt_150)
 		{
 			write_attributes(String(), attributes, array_sizes,
 				vertex_source);

@@ -1462,6 +1462,8 @@ namespace eternal_lands
 			2 * size.y);
 		m_state_manager.switch_color_mask(glm::bvec4(false));
 		m_state_manager.switch_multisample(false);
+		m_state_manager.switch_polygon_offset_fill(true);
+		glPolygonOffset(0.99f, -4.0f);
 
 		glDepthFunc(GL_LEQUAL);
 
