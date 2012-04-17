@@ -307,7 +307,7 @@ namespace
 	}
 
 }
-
+/*
 void write_image()
 {
 	el::ImageSharedPtr image;
@@ -325,7 +325,7 @@ void write_image()
 
 	scene->get_scene_resources().get_codec_manager()->save_image_as_png(image, el::String("/home/daniel/data.png"));
 }
-
+*/
 #define	USE_GL_DEBUG_OUTPUT
 
 #ifdef	USE_GL_DEBUG_OUTPUT
@@ -580,7 +580,7 @@ extern "C" void init_engine()
 #endif
 	CHECK_GL_ERROR();
 
-	write_image();
+//	write_image();
 
 	CATCH_BLOCK
 }
