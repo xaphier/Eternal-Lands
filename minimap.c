@@ -705,7 +705,7 @@ void load_exploration_map ()
 		if (fread(exploration_map, sizeof(GLubyte), 256 * 256, fp) != 256 * 256)
 		{
 			memset(exploration_map, 0, 256 * 256 * sizeof(GLubyte));
-			LOG_ERROR("%s() read failed for file [%s]\n", __FUNCTION__, exploration_map_filename);
+			LOG_ERROR_OLD("%s() read failed for file [%s]\n", __FUNCTION__, exploration_map_filename);
 		}
 		fclose(fp);
 	}

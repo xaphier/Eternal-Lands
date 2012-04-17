@@ -1429,7 +1429,7 @@ int load_font_textures ()
 #else //!WINDOWS
 	ret = glob(glob_pattern, 0, NULL, &glob_res);
 	if(ret != 0) {
-		LOG_ERROR("Unable to find any font textures\n");
+		LOG_ERROR_OLD("Unable to find any font textures\n");
 		free(glob_pattern);
 		return 0;
 	}
@@ -1504,7 +1504,7 @@ int set_font_parameters (int num)
 			fonts[num]=(font_info *)calloc(1, sizeof(font_info));
 			if(fonts[num] == NULL)
 				{
-					LOG_ERROR(cant_load_font);
+					LOG_ERROR_OLD(cant_load_font);
 					return -1;
 				}
 		}

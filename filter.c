@@ -80,7 +80,7 @@ int add_to_filter_list (const char *name, char local, char save_name)
 			{
 				FILE *f = open_file_config("local_filters.txt", "a");
 				if (f == NULL){
-					LOG_ERROR("%s: %s \"local_filters.txt\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+					LOG_ERROR_OLD("%s: %s \"local_filters.txt\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 				} else {
 					fprintf (f, "%s = %s\n", left, right);
 					fclose(f);
@@ -133,7 +133,7 @@ int remove_from_filter_list (const char *name)
 	{
 		f = open_file_config ("local_filters.txt", "w");
 		if (f == NULL){
-			LOG_ERROR("%s: %s \"local_filters.txt\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+			LOG_ERROR_OLD("%s: %s \"local_filters.txt\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		} else {
 			for (i = 0; i < MAX_FILTERS; i++)
 			{
@@ -423,7 +423,7 @@ void load_filters_list (const char *file_name, char local)
 	if (ret != f_size)
 	{
 		free (filter_list_mem);
-		LOG_ERROR("%s read failed for file [%s]\n", __FUNCTION__, file_name);
+		LOG_ERROR_OLD("%s read failed for file [%s]\n", __FUNCTION__, file_name);
 		return;
 	}
 

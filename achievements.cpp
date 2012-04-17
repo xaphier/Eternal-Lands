@@ -275,21 +275,21 @@ Achievements_System::Achievements_System(void)
 		const char *path = "languages/en/achievements.xml";
 		if ((doc = xmlReadFile(path, NULL, 0)) == NULL)
 		{
-			LOG_ERROR("%sCan't open file [%s]\n", error_prefix, path );
+			LOG_ERROR_OLD("%sCan't open file [%s]\n", error_prefix, path );
 			return;
 		}
 	}
 
 	if ((cur = xmlDocGetRootElement (doc)) == NULL)
 	{
-		LOG_ERROR("%sEmpty xml document\n", error_prefix );
+		LOG_ERROR_OLD("%sEmpty xml document\n", error_prefix );
 		xmlFreeDoc(doc);
 		return;
 	}
 
 	if (xmlStrcasecmp (cur->name, (const xmlChar *) "achievements_system"))
 	{
-		LOG_ERROR("%sNot achievements system.\n", error_prefix );
+		LOG_ERROR_OLD("%sNot achievements system.\n", error_prefix );
 		xmlFreeDoc(doc);
 		return;
 	}
@@ -308,7 +308,7 @@ Achievements_System::Achievements_System(void)
 
 			if ((text == NULL) || (achievement_id < 0) || (image_id < 0) || (title == NULL))
 			{
-				LOG_WARNING("%sInvalid achievements node\n", error_prefix );
+				LOG_WARNING_OLD("%sInvalid achievements node\n", error_prefix );
 				continue;
 			}
 
@@ -319,12 +319,12 @@ Achievements_System::Achievements_System(void)
 			xmlFree(title);
 
 			if ((achievement_id < 0) || (achievement_id >= MAX_ACHIEVEMENTS))
-				LOG_ERROR("%sInvalid achievement id=%lu\n", error_prefix, achievement_id );
+				LOG_ERROR_OLD("%sInvalid achievement id=%lu\n", error_prefix, achievement_id );
 			else
 			{
 				achievements.resize(achievement_id+1, 0);
 				if (achievements[achievement_id])
-					LOG_ERROR("%sDuplicate achievement id=%lu\n", error_prefix, achievement_id );
+					LOG_ERROR_OLD("%sDuplicate achievement id=%lu\n", error_prefix, achievement_id );
 				else
 				{
 					achievements[achievement_id] = new Achievement(achievement_id, image_id, proc_title, proc_text);

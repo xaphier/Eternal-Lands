@@ -380,7 +380,7 @@ struct cal_anim cal_load_anim(actor_types *act, const char *str, int duration)
 
 	if (sscanf (str, "%254s %d", fname, (int*)(&res.kind)) != 2)
 	{
-		LOG_ERROR("Bad animation formation: %s", str);
+		LOG_ERROR_OLD("Bad animation formation: %s", str);
 		return res;
 	}
 
@@ -389,7 +389,7 @@ struct cal_anim cal_load_anim(actor_types *act, const char *str, int duration)
 	{
 		i = get_index_for_sound_type_name(sound);
 		if (i == -1)
-			LOG_ERROR("Unknown sound (%s) in actor def: %s", sound, act->actor_name);
+			LOG_ERROR_OLD("Unknown sound (%s) in actor def: %s", sound, act->actor_name);
 		else
 			res.sound = i;
 	}
@@ -404,7 +404,7 @@ struct cal_anim cal_load_anim(actor_types *act, const char *str, int duration)
 
 	res.anim_index=CalCoreModel_ELLoadCoreAnimation(act->coremodel,fname,act->scale);
 	if(res.anim_index == -1) {
-		LOG_ERROR("Cal3d error: %s: %s\n", fname, CalError_GetLastErrorDescription());
+		LOG_ERROR_OLD("Cal3d error: %s: %s\n", fname, CalError_GetLastErrorDescription());
 		return res;
 	}
 	coreanim=CalCoreModel_GetCoreAnimation(act->coremodel,res.anim_index);
@@ -414,7 +414,7 @@ struct cal_anim cal_load_anim(actor_types *act, const char *str, int duration)
 		if (duration > 0) res.duration_scale = res.duration/(duration*0.001f);
 		else res.duration_scale = 1.0f;
 	} else {
-		LOG_ERROR(no_animation_err_str, fname);
+		LOG_ERROR_OLD(no_animation_err_str, fname);
 	}
 	return res;
 }

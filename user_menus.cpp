@@ -480,7 +480,7 @@ namespace UserMenus
 		std::ifstream in(file_name.c_str());
 		if (!in)
 		{
-			LOG_ERROR("%s: Failed to open [%s]\n", __FILE__, file_name.c_str() );
+			LOG_ERROR_OLD("%s: Failed to open [%s]\n", __FILE__, file_name.c_str() );
 			return;
 		}
 
@@ -488,7 +488,7 @@ namespace UserMenus
 		getline(in, menu_name);
 		if (menu_name.empty())
 		{
-			LOG_ERROR("%s: Failed while reading [%s]\n", __FILE__, file_name.c_str() );
+			LOG_ERROR_OLD("%s: Failed while reading [%s]\n", __FILE__, file_name.c_str() );
 			in.close();
 			return;
 		}

@@ -10,7 +10,7 @@ int queue_initialise (queue_t **queue)
 	(*queue) = malloc(sizeof(queue_t));
 	if (((*queue) = malloc(sizeof(queue_t))) == 0)
 	{
-		LOG_ERROR("Failed to allocate memory for queue");
+		LOG_ERROR_OLD("Failed to allocate memory for queue");
 
 		return 0;
 	}
@@ -18,7 +18,7 @@ int queue_initialise (queue_t **queue)
 	/* Create a dummy node that's always at the front of our queue */
 	if (((*queue)->front = malloc(sizeof(node_t))) == 0)
 	{
-		LOG_ERROR("Failed to allocate memory for queue node");
+		LOG_ERROR_OLD("Failed to allocate memory for queue node");
 
 		return 0;
 	}
@@ -39,14 +39,14 @@ int queue_push (queue_t *queue, void *item)
 
 	if (queue == 0)
 	{
-		LOG_ERROR("Null pointer for queue");
+		LOG_ERROR_OLD("Null pointer for queue");
 
 		return 0;
 	}
 
 	if ((newnode = malloc(sizeof(node_t))) == 0)
 	{
-		LOG_ERROR("Failed to allocate memory for queue node");
+		LOG_ERROR_OLD("Failed to allocate memory for queue node");
 
 		return 0;
 	}
@@ -198,7 +198,7 @@ int queue_push_signal(queue_t *queue, void *item)
 	{
 		CHECK_AND_UNLOCK_MUTEX(queue->mutex);
 
-		LOG_ERROR("Failed to allocate memory for queue");
+		LOG_ERROR_OLD("Failed to allocate memory for queue");
 
 		return 0;
 	}

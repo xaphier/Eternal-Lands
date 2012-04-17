@@ -439,7 +439,7 @@ void ReadCategoryXML(xmlNode * a_node)
 					y=2;
 					ParsePage(cur_node->properties);
 				} else {
-					LOG_ERROR("Too many Enc Pages, limit of %d hit", MAX_ENC_PAGES);
+					LOG_ERROR_OLD("Too many Enc Pages, limit of %d hit", MAX_ENC_PAGES);
 					return;
 				}
 			}

@@ -132,26 +132,26 @@ int command_log_level(char *text, int len);
 
 void init_thread_log(const char* name);
 
-#define LOG_ERROR(msg, args ...) log_error(__FILE__, __LINE__, msg, ## args)
-#define LOG_WARNING(msg, args ...) log_warning(__FILE__, __LINE__, msg,	\
+#define LOG_ERROR_OLD(msg, args ...) log_error(__FILE__, __LINE__, msg, ## args)
+#define LOG_WARNING_OLD(msg, args ...) log_warning(__FILE__, __LINE__, msg,	\
 	## args)
-#define LOG_INFO(msg, args ...) log_info(__FILE__, __LINE__, msg, ## args)
+#define LOG_INFO_OLD(msg, args ...) log_info(__FILE__, __LINE__, msg, ## args)
 #ifdef FASTER_MAP_LOAD
-#define LOG_DEBUG(msg, args ...)\
+#define LOG_DEBUG_OLD(msg, args ...)\
 	do\
 	{\
 		if (get_log_level() >= llt_debug)\
 			log_debug(__FILE__, __LINE__, msg, ## args);\
 	} while(0)
-#define LOG_DEBUG_VERBOSE(msg, args ...)\
+#define LOG_DEBUG_VERBOSE_OLD(msg, args ...)\
 	do\
 	{\
 		if (get_log_level() >= llt_debug_verbose)\
 			log_debug_verbose(__FILE__, __LINE__, msg, ## args);\
 	} while(0)
 #else  // FASTER_MAP_LOAD
-#define LOG_DEBUG(msg, args ...) log_debug(__FILE__, __LINE__, msg, ## args)
-#define LOG_DEBUG_VERBOSE(msg, args ...) log_debug_verbose(__FILE__,	\
+#define LOG_DEBUG_OLD(msg, args ...) log_debug(__FILE__, __LINE__, msg, ## args)
+#define LOG_DEBUG_VERBOSE_OLD(msg, args ...) log_debug_verbose(__FILE__,	\
 	__LINE__, msg, ## args)
 #endif // FASTER_MAP_LOAD
 #define ENTER_DEBUG_MARK(name) enter_debug_mark(__FILE__, __LINE__, name)

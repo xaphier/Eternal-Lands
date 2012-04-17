@@ -86,7 +86,7 @@ void    init_update()
 	update_server[0]= '\0';
 	fp = open_file_data("mirrors.lst", "r");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"mirrors.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"mirrors.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 	} else {
 		char    buffer[1024];
 		char	*ptr;
@@ -153,7 +153,7 @@ static void do_handle_update_download(struct http_get_struct *get)
 			if(!sts){
 				do_updates();
 			} else {
-				LOG_ERROR("Unable to finish %s processing (%d)", files_lst, errno);
+				LOG_ERROR_OLD("Unable to finish %s processing (%d)", files_lst, errno);
 			}
 			
 			// and go back to normal processing
@@ -197,14 +197,14 @@ static void do_handle_update_download(struct http_get_struct *get)
 			}
 			safe_strncpy(update_server, update_servers[num], sizeof(update_server));
 			update_server[127]= '\0';
-			LOG_DEBUG("downloading from mirror %d of %d %s", num+1, num_update_servers, update_server);
+			LOG_DEBUG_OLD("downloading from mirror %d of %d %s", num+1, num_update_servers, update_server);
 		} else {
 			safe_strncpy(update_server, update_servers[0], sizeof(update_server));
 		}
 		++temp_counter;
 		fp = open_file_config("tmp/temp000.dat", "wb+");
 		if(fp == NULL){
-			LOG_ERROR("%s: %s \"tmp/temp000.dat\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+			LOG_ERROR_OLD("%s: %s \"tmp/temp000.dat\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		} else {
 			if(is_this_files_lst)	//files.lst
 			{
@@ -212,7 +212,7 @@ static void do_handle_update_download(struct http_get_struct *get)
 			} else {	//custom_files.lst
 			     safe_snprintf(filename, sizeof(filename), "http://%s/updates/%s", update_server, files_lst);
 			}
-			LOG_DEBUG("* server %s filename %s", update_server, filename);
+			LOG_DEBUG_OLD("* server %s filename %s", update_server, filename);
 			http_threaded_get_file(update_server, filename, fp, NULL, EVENT_UPDATES_DOWNLOADED);
 		}
 		// and keep running until we get a response
@@ -220,7 +220,7 @@ static void do_handle_update_download(struct http_get_struct *get)
 	}
 
 	// total failure, error and clear the busy flag
-	LOG_DEBUG("Failed to download (%s) 3 times. Giving up.", files_lst);
+	LOG_DEBUG_OLD("Failed to download (%s) 3 times. Giving up.", files_lst);
 	update_busy= 0;
 }
 
@@ -338,7 +338,7 @@ void add_to_download(const char *filename, const Uint8 *md5)
 			buffer[sizeof(buffer)-1]= '\0';
 			fp = open_file_config(download_temp_file, "wb+");
 			if(fp == NULL){
-				LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, download_temp_file, strerror(errno));
+				LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, download_temp_file, strerror(errno));
 			} else {
 				// build the proper URL to download
 				download_cur_file= download_queue[--download_queue_size];
@@ -349,7 +349,7 @@ void add_to_download(const char *filename, const Uint8 *md5)
 					safe_snprintf(buffer, sizeof(buffer), "http://%s/updates/%s", update_server, download_cur_file);
 				}
 				buffer[sizeof(buffer)-1]= '\0';
-				LOG_DEBUG("@@ %s %s",update_server,buffer);
+				LOG_DEBUG_OLD("@@ %s %s",update_server,buffer);
 				http_threaded_get_file(update_server, buffer, fp, download_cur_md5, EVENT_DOWNLOAD_COMPLETE);
 			}
 		}
@@ -372,7 +372,7 @@ void    handle_file_download(struct http_get_struct *get)
 	if(get->status == 0){
 		// replace the current file (creates all required directories)
 		sts = move_file_to_updates(download_temp_file, download_cur_file, doing_custom);
- 		LOG_DEBUG("Moved \"%s\" to \"%s\"", download_temp_file, download_cur_file);
+ 		LOG_DEBUG_OLD("Moved \"%s\" to \"%s\"", download_temp_file, download_cur_file);
 		// check for errors
 		if(!sts){
 			// TODO: make the restart more intelligent
@@ -380,7 +380,7 @@ void    handle_file_download(struct http_get_struct *get)
 				restart_required++;
 			}
 		} else {
-			LOG_ERROR("Unable to finish processing of %s (%d)", download_cur_file, errno);
+			LOG_ERROR_OLD("Unable to finish processing of %s (%d)", download_cur_file, errno);
 			// the final renamed failed, no restart permitted
 			allow_restart= 0;
 			restart_required= 0;
@@ -417,7 +417,7 @@ void    handle_file_download(struct http_get_struct *get)
 		safe_snprintf(download_temp_file, sizeof(download_temp_file), "tmp/temp%03d.dat", ++temp_counter);
 		fp = open_file_config(download_temp_file, "wb+");
 		if(fp == NULL){
-			LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, download_temp_file, strerror(errno));
+			LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, download_temp_file, strerror(errno));
 		} else {
 			// build the proper URL to download
 			download_cur_file= download_queue[--download_queue_size];
@@ -435,7 +435,7 @@ void    handle_file_download(struct http_get_struct *get)
 	// check to see if this was the last file && a restart is required
 	if(!update_busy && restart_required && allow_restart && download_queue_size <= 0 && !download_cur_file){
 		// yes, now trigger a restart
-		LOG_INFO("Restart required because of update");
+		LOG_INFO_OLD("Restart required because of update");
 		// Display something on the screen for a little bit before restarting
 		create_update_root_window (window_width, window_height, 10);
 		show_window (update_root_win);
@@ -451,7 +451,7 @@ void http_threaded_get_file(char *server, char *path, FILE *fp, Uint8 *md5, Uint
 {
 	struct http_get_struct  *spec;
 
-	LOG_DEBUG("Downloading %s from %s", path, server);
+	LOG_DEBUG_OLD("Downloading %s from %s", path, server);
 	// allocate & fill the spec structure
 	spec= (struct http_get_struct  *)calloc(1, sizeof(struct http_get_struct));
 	safe_strncpy(spec->server, server, sizeof(spec->server));
@@ -499,7 +499,7 @@ int http_get_file_thread_handler(void *specs){
 		// get the MD5 for the file
 		if (file_temp_check(download_temp_file, spec->md5) != 0)
 		{
-			LOG_ERROR("Download of %s does not match the MD5 sum in the update file!", spec->path);
+			LOG_ERROR_OLD("Download of %s does not match the MD5 sum in the update file!", spec->path);
 			spec->status= 404;
 			// remove the temp-file
 			file_remove_config(download_temp_file);
@@ -509,7 +509,7 @@ int http_get_file_thread_handler(void *specs){
 		}
 	}
 
-	LOG_DEBUG("Finished downloading %s\n", spec->path);
+	LOG_DEBUG_OLD("Finished downloading %s\n", spec->path);
 
 	// signal we are done
 	event.type= SDL_USEREVENT;

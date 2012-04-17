@@ -204,7 +204,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 
 	if (header->m_size != DDS_HEADER_SIZE)
 	{
-		LOG_ERROR("File '%s' is invalid. Size of header is"
+		LOG_ERROR_OLD("File '%s' is invalid. Size of header is"
 			" %d bytes, but must be %d bytes for valid DDS files.",
 			file_name, header->m_size, DDS_HEADER_SIZE);
 		return 0;
@@ -212,7 +212,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 
 	if (header->m_pixel_format.m_size != DDS_PIXEL_FORMAT_SIZE)
 	{
-		LOG_ERROR("File '%s' is invalid. Size of pixe format header is"
+		LOG_ERROR_OLD("File '%s' is invalid. Size of pixe format header is"
 			" %d bytes, but must be %3% bytes for valid DDS files.",
 			file_name, header->m_pixel_format.m_size,
 			DDS_PIXEL_FORMAT_SIZE);
@@ -221,7 +221,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 
 	if ((header->m_flags & DDSD_MIN_FLAGS) != DDSD_MIN_FLAGS)
 	{
-		LOG_ERROR("File '%s' is invalid. At least the "
+		LOG_ERROR_OLD("File '%s' is invalid. At least the "
 			"DDSD_CAPS, DDSD_PIXELFORMAT, DDSD_WIDTH and "
 			"DDSD_HEIGHT flags must be set for a valid DDS file.",
 			file_name);
@@ -230,7 +230,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 
 	if ((header->m_caps.m_caps1 & DDSCAPS_TEXTURE) != DDSCAPS_TEXTURE)
 	{
-		LOG_ERROR("File '%' is invalid. At least DDSCAPS_TEXTURE cap "
+		LOG_ERROR_OLD("File '%' is invalid. At least DDSCAPS_TEXTURE cap "
 			"must be set for a valid DDS file.", file_name);
 		return 0;
 	}
@@ -238,7 +238,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 	if (((header->m_caps.m_caps2 & DDSCAPS2_CUBEMAP) == DDSCAPS2_CUBEMAP) &&
 		((header->m_caps.m_caps2 & DDSCAPS2_CUBEMAP_ALL_FACES) == 0))
 	{
-		LOG_ERROR("File '%s' is invalid. At least one cube"
+		LOG_ERROR_OLD("File '%s' is invalid. At least one cube"
 			" map face must be set for a valid cube map DDS file.",
 			file_name);
 		return 0;
@@ -247,7 +247,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 	if (((header->m_caps.m_caps2 & DDSCAPS2_CUBEMAP) == DDSCAPS2_CUBEMAP) &&
 		((header->m_caps.m_caps2 & DDSCAPS2_VOLUME) == DDSCAPS2_VOLUME))
 	{
-		LOG_ERROR("File '%s' is invalid. A valid DDS file "
+		LOG_ERROR_OLD("File '%s' is invalid. A valid DDS file "
 			"can only be a cube map or a volume, not both.", file_name);
 		return 0;
 	}
@@ -255,7 +255,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 	if (((header->m_flags & DDSD_DEPTH) == DDSD_DEPTH) &&
 		((header->m_caps.m_caps2 & DDSCAPS2_VOLUME) != DDSCAPS2_VOLUME))
 	{
-		LOG_ERROR("File '%s' is invalid. Only volmue images can have"
+		LOG_ERROR_OLD("File '%s' is invalid. Only volmue images can have"
 			" a detph value in a valid DDS file.", file_name);
 		return 0;
 	}
@@ -263,21 +263,21 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 	if (((header->m_caps.m_caps2 & DDSCAPS2_CUBEMAP) == DDSCAPS2_CUBEMAP) &&
 		((header->m_caps.m_caps1 & DDSCAPS_COMPLEX) != DDSCAPS_COMPLEX))
 	{
-		LOG_ERROR("File '%s' is invalid. DDSCAPS_COMPLEX cap "
+		LOG_ERROR_OLD("File '%s' is invalid. DDSCAPS_COMPLEX cap "
 			"should be set for a valid cube map DDS file.", file_name);
 	}
 
 	if (((header->m_caps.m_caps2 & DDSCAPS2_VOLUME) == DDSCAPS2_VOLUME) &&
 		((header->m_caps.m_caps1 & DDSCAPS_COMPLEX) != DDSCAPS_COMPLEX))
 	{
-		LOG_ERROR("File '%s' is invalid. DDSCAPS_COMPLEX cap "
+		LOG_ERROR_OLD("File '%s' is invalid. DDSCAPS_COMPLEX cap "
 			"should be set for a valid volume DDS file.", file_name);
 	}
 
 	if (((header->m_caps.m_caps1 & DDSCAPS_MIPMAP) == DDSCAPS_MIPMAP) &&
 		((header->m_caps.m_caps1 & DDSCAPS_COMPLEX) != DDSCAPS_COMPLEX))
 	{
-		LOG_ERROR("File '%s' is invalid. DDSCAPS_COMPLEX cap "
+		LOG_ERROR_OLD("File '%s' is invalid. DDSCAPS_COMPLEX cap "
 			"should be set for a valid DDS file with mipmaps.", file_name);
 	}
 
@@ -286,7 +286,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 		((header->m_caps.m_caps2 & DDSCAPS2_VOLUME) != DDSCAPS2_VOLUME)
 		&& ((header->m_caps.m_caps2 & DDSCAPS2_CUBEMAP) != DDSCAPS2_CUBEMAP))
 	{
-		LOG_ERROR("File '%s' is invalid. DDSCAPS_COMPLEX cap should "
+		LOG_ERROR_OLD("File '%s' is invalid. DDSCAPS_COMPLEX cap should "
 			"be set only if the DDS file is a cube map, a volume "
 			"and/or has mipmaps.", file_name);
 	}
@@ -294,7 +294,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 	if (((header->m_pixel_format.m_flags & DDPF_FOURCC) == DDPF_FOURCC) &&
 		((header->m_pixel_format.m_flags & DDPF_RGB) == DDPF_RGB))
 	{
-		LOG_ERROR("File '%s' is invalid. A valid DDS file must set "
+		LOG_ERROR_OLD("File '%s' is invalid. A valid DDS file must set "
 			"either DDPF_FORCC or DDPF_RGB as pixel format flags.",
 			file_name);
 		return 0;
@@ -312,7 +312,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 		{
 			if ((header->m_pixel_format.m_flags & DDPF_ALPHA) != DDPF_ALPHA)
 			{
-				LOG_ERROR("File '%s' is invalid. A valid DDS file must"
+				LOG_ERROR_OLD("File '%s' is invalid. A valid DDS file must"
 					" set either DDPF_FORCC or DDPF_RGB as pixe"
 					" format flags.", file_name);
 				return 0;
@@ -328,7 +328,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 	{
 		if (header->m_mipmap_count == 0)
 		{
-			LOG_ERROR("File '%s' is invalid. Mipmaped images must"
+			LOG_ERROR_OLD("File '%s' is invalid. Mipmaped images must"
 				" have a mipmap count greather than zero.",
 				file_name);
 			return 0;
@@ -343,7 +343,7 @@ static Uint32 validate_header(DdsHeader *header, const char* file_name)
 	{
 		if (header->m_depth == 0)
 		{
-			LOG_ERROR("File '%s' is invalid. Volmue images must "
+			LOG_ERROR_OLD("File '%s' is invalid. Volmue images must "
 				"have a depth greather than zero.", file_name);
 			return 0;
 		}
@@ -371,7 +371,7 @@ static Uint32 init_dds_image(el_file_ptr file, DdsHeader *header)
 
 	if (!check_dds(magic))
 	{
-		LOG_ERROR("File '%s' is invalid. Wrong magic number for a "
+		LOG_ERROR_OLD("File '%s' is invalid. Wrong magic number for a "
 			"valid DDS.", el_file_name(file));
 		return 0;
 	}
@@ -650,7 +650,7 @@ static void* decompress_dds(el_file_ptr file, DdsHeader *header,
 
 	if ((header->m_height % 4) != 0)
 	{
-		LOG_ERROR("Can`t decompressed DDS file %s because height is"
+		LOG_ERROR_OLD("Can`t decompressed DDS file %s because height is"
 			" %d and not a multiple of four.", el_file_name(file),
 			header->m_height);
 		return 0;
@@ -658,7 +658,7 @@ static void* decompress_dds(el_file_ptr file, DdsHeader *header,
 
 	if ((header->m_width % 4) != 0)
 	{
-		LOG_ERROR("Can`t decompressed DDS file %s because width is"
+		LOG_ERROR_OLD("Can`t decompressed DDS file %s because width is"
 			" %d and not a multiple of four.", el_file_name(file),
 			header->m_width);
 		return 0;

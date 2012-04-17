@@ -1616,7 +1616,7 @@ void init_commands(const char *filename)
 {
 	FILE *fp = open_file_data(filename, "r");
 	if(fp == NULL) {
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, filename, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, filename, strerror(errno));
 	} else {
 	/* Read keywords from commands.lst */
 		char buffer[255];

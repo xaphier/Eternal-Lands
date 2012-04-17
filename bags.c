@@ -148,7 +148,7 @@ void put_bag_on_ground(int bag_x,int bag_y,int bag_id)
 	//now, get the Z position
 	if(bag_y*tile_map_size_x*6+bag_x>tile_map_size_x*tile_map_size_y*6*6) {
 		//Warn about this error:
-		LOG_WARNING("A bag was placed OUTSIDE the map!\n");
+		LOG_WARNING_OLD("A bag was placed OUTSIDE the map!\n");
 		return;
 	}
 
@@ -222,7 +222,7 @@ void add_bags_from_list (const Uint8 *data)
 		//now, get the Z position
 		if(bag_y*tile_map_size_x*6+bag_x>tile_map_size_x*tile_map_size_y*6*6)  {
 			//Warn about this error!
-			LOG_WARNING("A bag was located OUTSIDE the map!\n");
+			LOG_WARNING_OLD("A bag was located OUTSIDE the map!\n");
 			continue;
 		}
 
@@ -235,7 +235,7 @@ void add_bags_from_list (const Uint8 *data)
 		y = y + 0.25f; // + get_bag_offset_y(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y);
 
 		// DEBUG
-		LOG_DEBUG_VERBOSE("bag <%i> (%f,%f) rot %f tilt %f\n", bag_id, x, y,
+		LOG_DEBUG_VERBOSE_OLD("bag <%i> (%f,%f) rot %f tilt %f\n", bag_id, x, y,
 			get_bag_rotation(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y),
 			get_bag_tilt(bag_x, bag_y, bag_id, tile_map_size_x, tile_map_size_y));
 
@@ -251,7 +251,7 @@ void add_bags_from_list (const Uint8 *data)
 			char buf[256];
 			// oops, slot already taken!
 			safe_snprintf(buf, sizeof(buf), "Oops, trying to add an existing bag! id=%d\n", bag_id);
-			LOG_ERROR(buf);
+			LOG_ERROR_OLD(buf);
 			return;
 		}
 
@@ -283,7 +283,7 @@ void remove_bag(int bag_id)
 
 	if (bag_list[bag_id].obj_3d_id == -1) {
 		// oops, no bag in that slot!
-		LOG_ERROR("Oops, double-removal of bag!\n");
+		LOG_ERROR_OLD("Oops, double-removal of bag!\n");
 		return;
 	}
 

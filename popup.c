@@ -101,7 +101,7 @@ static void popup_send_to_server( popup_t *popup );
 
 #define POPUP_NETWORK_ASSERT(x) \
 	if (!(x)) { \
-	LOG_ERROR("CAUTION: %s: assertion %s failed\n", __FUNCTION__, #x);\
+	LOG_ERROR_OLD("CAUTION: %s: assertion %s failed\n", __FUNCTION__, #x);\
 	return;\
 	}
 
@@ -1212,7 +1212,7 @@ void popup_create_from_network( const unsigned char *payload, size_t size )
 	FETCH_SIZESTRING( text );
 
 	if (flags)
-		LOG_ERROR("%s: flags=%d set but not yet supported\n", __FUNCTION__, flags );
+		LOG_ERROR_OLD("%s: flags=%d set but not yet supported\n", __FUNCTION__, flags );
 
 	/* Ensure there is no popup with this ID */
 	if ( popup_node_find_by_id( popup_id ) != NULL ) {
@@ -1261,7 +1261,7 @@ void popup_create_from_network( const unsigned char *payload, size_t size )
 
 			break;
 		default:
-			LOG_ERROR("CAUTION: invalid popup option type received (%d)\n", option_type );
+			LOG_ERROR_OLD("CAUTION: invalid popup option type received (%d)\n", option_type );
 			popup_free( new_popup );
 			return;
 		}

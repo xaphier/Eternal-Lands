@@ -2086,7 +2086,7 @@ int skybox_parse_color_properties(xmlNode *node, float container[360][4])
 			else if (xmlStrcasecmp (attr->name, (xmlChar*)"a") == 0)
 				a =  atof((char*)attr->children->content);
 			else {
-				LOG_ERROR("unknown attribute for color: %s", (char*)attr->name);
+				LOG_ERROR_OLD("unknown attribute for color: %s", (char*)attr->name);
 				ok = 0;
 			}
 		}
@@ -2101,7 +2101,7 @@ int skybox_parse_color_properties(xmlNode *node, float container[360][4])
 	}
 	else
 	{
-		LOG_ERROR("the time attribute of the color doesn't exist or is wrong!");
+		LOG_ERROR_OLD("the time attribute of the color doesn't exist or is wrong!");
 		ok = 0;
 	}
 
@@ -2125,7 +2125,7 @@ int skybox_parse_colors(xmlNode *node, float container[360][4])
 			reset = XML_BOOL(attr->children->content);
 		}
 		else {
-			LOG_ERROR("unknown attribute for element: %s", (char*)attr->name);
+			LOG_ERROR_OLD("unknown attribute for element: %s", (char*)attr->name);
 			ok = 0;
 		}
 	}
@@ -2149,7 +2149,7 @@ int skybox_parse_colors(xmlNode *node, float container[360][4])
 				ok &= skybox_parse_color_properties(item, container);
 			}
 			else {
-				LOG_ERROR("unknown node for element: %s", item->name);
+				LOG_ERROR_OLD("unknown node for element: %s", item->name);
 				ok = 0;
 			}
 		}
@@ -2189,7 +2189,7 @@ int skybox_parse_properties(xmlNode *node)
 							skybox_clouds_detail_tex = load_texture_cache((char*)attr->children->content, 0);
 #endif	/* NEW_TEXTURES */
 						else {
-							LOG_ERROR("unknown attribute for clouds: %s", (char*)attr->name);
+							LOG_ERROR_OLD("unknown attribute for clouds: %s", (char*)attr->name);
 							ok = 0;
 						}
 					}
@@ -2201,7 +2201,7 @@ int skybox_parse_properties(xmlNode *node)
 						if (!xmlStrcasecmp (attr->name, (xmlChar*)"show"))
 							skybox_no_sun = !XML_BOOL(attr->children->content);
 						else {
-							LOG_ERROR("unknown attribute for sun: %s", (char*)attr->name);
+							LOG_ERROR_OLD("unknown attribute for sun: %s", (char*)attr->name);
 							ok = 0;
 						}
 					}
@@ -2212,7 +2212,7 @@ int skybox_parse_properties(xmlNode *node)
 						if (!xmlStrcasecmp (attr->name, (xmlChar*)"show"))
 							skybox_no_moons = !XML_BOOL(attr->children->content);
 						else {
-							LOG_ERROR("unknown attribute for moons: %s", (char*)attr->name);
+							LOG_ERROR_OLD("unknown attribute for moons: %s", (char*)attr->name);
 							ok = 0;
 						}
 					}
@@ -2223,7 +2223,7 @@ int skybox_parse_properties(xmlNode *node)
 						if (!xmlStrcasecmp (attr->name, (xmlChar*)"show"))
 							skybox_no_stars = !XML_BOOL(attr->children->content);
 						else {
-							LOG_ERROR("unknown attribute for stars: %s", (char*)attr->name);
+							LOG_ERROR_OLD("unknown attribute for stars: %s", (char*)attr->name);
 							ok = 0;
 						}
 					}
@@ -2242,7 +2242,7 @@ int skybox_parse_properties(xmlNode *node)
 				}
 			}
 			else {
-				LOG_ERROR("unknown node for properties: %s", item->name);
+				LOG_ERROR_OLD("unknown node for properties: %s", item->name);
 				ok = 0;
 			}
 		}
@@ -2345,7 +2345,7 @@ int skybox_parse_defs(xmlNode *node, const char *map_name)
 				}
 			}
 			else {
-				LOG_ERROR("unknown element for skybox: %s", def->name);
+				LOG_ERROR_OLD("unknown element for skybox: %s", def->name);
 				ok = 0;
 			}
 		}
@@ -2365,16 +2365,16 @@ int skybox_read_defs(const char *file_name, const char *map_name)
 
 	doc = xmlReadFile(file_name, NULL, 0);
 	if (doc == NULL) {
-		LOG_ERROR("Unable to read skybox definition file %s", file_name);
+		LOG_ERROR_OLD("Unable to read skybox definition file %s", file_name);
 		return 0;
 	}
 
 	root = xmlDocGetRootElement(doc);
 	if (root == NULL) {
-		LOG_ERROR("Unable to parse skybox definition file %s", file_name);
+		LOG_ERROR_OLD("Unable to parse skybox definition file %s", file_name);
 		ok = 0;
 	} else if (xmlStrcasecmp(root->name, (xmlChar*)"skybox") != 0) {
-		LOG_ERROR("Unknown key \"%s\" (\"skybox\" expected).", root->name);
+		LOG_ERROR_OLD("Unknown key \"%s\" (\"skybox\" expected).", root->name);
 		ok = 0;
 	} else {
 		ok = skybox_parse_defs(root, map_name);
@@ -2497,56 +2497,56 @@ void skybox_init_defs(const char *map_name)
 
     //printf("Loading sky defs for map '%s'\n", last_map);
 	if (!skybox_read_defs("skybox/skybox_defs.xml", last_map))
-		LOG_ERROR("Error while loading the skybox definitions.");
+		LOG_ERROR_OLD("Error while loading the skybox definitions.");
 	
 	if (!skybox_build_gradients(skybox_clouds))
-		LOG_ERROR("no color key defined for 'clouds' element!");
+		LOG_ERROR_OLD("no color key defined for 'clouds' element!");
 	if (!skybox_build_gradients(skybox_clouds_detail))
-		LOG_ERROR("no color key defined for 'clouds_detail' element!");
+		LOG_ERROR_OLD("no color key defined for 'clouds_detail' element!");
 	if (!skybox_build_gradients(skybox_clouds_sunny))
-		LOG_ERROR("no color key defined for 'clouds_sunny' element!");
+		LOG_ERROR_OLD("no color key defined for 'clouds_sunny' element!");
 	if (!skybox_build_gradients(skybox_clouds_detail_sunny))
-		LOG_ERROR("no color key defined for 'clouds_detail_sunny' element!");
+		LOG_ERROR_OLD("no color key defined for 'clouds_detail_sunny' element!");
 	if (!skybox_build_gradients(skybox_clouds_rainy))
-		LOG_ERROR("no color key defined for 'clouds_rainy' element!");
+		LOG_ERROR_OLD("no color key defined for 'clouds_rainy' element!");
 	if (!skybox_build_gradients(skybox_clouds_detail_rainy))
-		LOG_ERROR("no color key defined for 'clouds_detail_rainy' element!");
+		LOG_ERROR_OLD("no color key defined for 'clouds_detail_rainy' element!");
 	if (!skybox_build_gradients(skybox_sky1))
-		LOG_ERROR("no color key defined for 'sky1' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky1' element!");
 	if (!skybox_build_gradients(skybox_sky2))
-		LOG_ERROR("no color key defined for 'sky2' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky2' element!");
 	if (!skybox_build_gradients(skybox_sky3))
-		LOG_ERROR("no color key defined for 'sky3' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky3' element!");
 	if (!skybox_build_gradients(skybox_sky4))
-		LOG_ERROR("no color key defined for 'sky4' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky4' element!");
 	if (!skybox_build_gradients(skybox_sky5))
-		LOG_ERROR("no color key defined for 'sky5' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky5' element!");
 	if (!skybox_build_gradients(skybox_sky1_sunny))
-		LOG_ERROR("no color key defined for 'sky1_sunny' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky1_sunny' element!");
 	if (!skybox_build_gradients(skybox_sky2_sunny))
-		LOG_ERROR("no color key defined for 'sky2_sunny' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky2_sunny' element!");
 	if (!skybox_build_gradients(skybox_sky3_sunny))
-		LOG_ERROR("no color key defined for 'sky3_sunny' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky3_sunny' element!");
 	if (!skybox_build_gradients(skybox_sky4_sunny))
-		LOG_ERROR("no color key defined for 'sky4_sunny' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky4_sunny' element!");
 	if (!skybox_build_gradients(skybox_sky5_sunny))
-		LOG_ERROR("no color key defined for 'sky5_sunny' element!");
+		LOG_ERROR_OLD("no color key defined for 'sky5_sunny' element!");
 	if (!skybox_build_gradients(skybox_sun))
-		LOG_ERROR("no color key defined for 'sun' element!");
+		LOG_ERROR_OLD("no color key defined for 'sun' element!");
 	if (!skybox_build_gradients(skybox_fog))
-		LOG_ERROR("no color key defined for 'fog' element!");
+		LOG_ERROR_OLD("no color key defined for 'fog' element!");
 	if (!skybox_build_gradients(skybox_fog_sunny))
-		LOG_ERROR("no color key defined for 'fog_sunny' element!");
+		LOG_ERROR_OLD("no color key defined for 'fog_sunny' element!");
 	if (!skybox_build_gradients(skybox_fog_rainy))
-		LOG_ERROR("no color key defined for 'fog_rainy' element!");
+		LOG_ERROR_OLD("no color key defined for 'fog_rainy' element!");
 	if (!skybox_build_gradients(skybox_light_ambient))
-		LOG_ERROR("no color key defined for 'light_ambient' element!");
+		LOG_ERROR_OLD("no color key defined for 'light_ambient' element!");
 	if (!skybox_build_gradients(skybox_light_diffuse))
-		LOG_ERROR("no color key defined for 'light_diffuse' element!");
+		LOG_ERROR_OLD("no color key defined for 'light_diffuse' element!");
 	if (!skybox_build_gradients(skybox_light_ambient_rainy))
-		LOG_ERROR("no color key defined for 'light_ambient_rainy' element!");
+		LOG_ERROR_OLD("no color key defined for 'light_ambient_rainy' element!");
 	if (!skybox_build_gradients(skybox_light_diffuse_rainy))
-		LOG_ERROR("no color key defined for 'light_diffuse_rainy' element!");
+		LOG_ERROR_OLD("no color key defined for 'light_diffuse_rainy' element!");
 
 	skybox_update_positions();
 	skybox_update_colors();

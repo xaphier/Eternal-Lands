@@ -229,7 +229,7 @@ void weather_get_from_server(const Uint8* data)
 #ifdef DEBUG
 		LOG_TO_CONSOLE(c_red1, "Server sent an unknown weather type");
 #endif // DEBUG
-		LOG_ERROR("Server sent unknown weather type %d", data[0]);
+		LOG_ERROR_OLD("Server sent unknown weather type %d", data[0]);
 		return;
 		//from now on, deal with the set of precipitations
 	} else if(data[2] == 0 && !weather_active()){
@@ -804,7 +804,7 @@ int weather_parse_effect(xmlNode *node)
 			if (!xmlStrcasecmp (attr->name, (xmlChar*)"id"))
 				id = atoi((char*)attr->children->content);
 			else {
-				LOG_ERROR("unknown attribute for effect: %s", (char*)attr->name);
+				LOG_ERROR_OLD("unknown attribute for effect: %s", (char*)attr->name);
 				ok = 0;
 			}
 		}
@@ -812,7 +812,7 @@ int weather_parse_effect(xmlNode *node)
 
 	if (id < 1)
 	{
-		LOG_ERROR("wrong or missing id for weather effect");
+		LOG_ERROR_OLD("wrong or missing id for weather effect");
 		return 0;
 	}
 
@@ -842,7 +842,7 @@ int weather_parse_effect(xmlNode *node)
 						else if (!xmlStrcasecmp (attr->name, (xmlChar*)"a"))
 							weather_defs[id].color[3] = atof((char*)attr->children->content);
 						else {
-							LOG_ERROR("unknown attribute for weather effect color: %s", (char*)attr->name);
+							LOG_ERROR_OLD("unknown attribute for weather effect color: %s", (char*)attr->name);
 							ok = 0;
 						}
 					}
@@ -869,7 +869,7 @@ int weather_parse_effect(xmlNode *node)
 #endif	/* NEW_TEXTURES */
 			}
 			else {
-				LOG_ERROR("unknown node for weather effect: %s", item->name);
+				LOG_ERROR_OLD("unknown node for weather effect: %s", item->name);
 				ok = 0;
 			}
 		}
@@ -912,7 +912,7 @@ int weather_parse_lightning(xmlNode *node)
 			else if (!xmlStrcasecmp (attr->name, (xmlChar*)"y2"))
 				lightnings_defs[id].coords[3] = atof((char*)attr->children->content);
 			else {
-				LOG_ERROR("unknown attribute for weather effect color: %s", (char*)attr->name);
+				LOG_ERROR_OLD("unknown attribute for weather effect color: %s", (char*)attr->name);
 				ok = 0;
 			}
 		}
@@ -935,7 +935,7 @@ int weather_parse_defs(xmlNode *node)
 				ok &= weather_parse_lightning(def);
 			}
 			else {
-				LOG_ERROR("unknown element for weather: %s", def->name);
+				LOG_ERROR_OLD("unknown element for weather: %s", def->name);
 				ok = 0;
 			}
 		else if (def->type == XML_ENTITY_REF_NODE) {
@@ -954,16 +954,16 @@ int weather_read_defs(const char *file_name)
 
 	doc = xmlReadFile(file_name, NULL, 0);
 	if (doc == NULL) {
-		LOG_ERROR("Unable to read weather definition file %s", file_name);
+		LOG_ERROR_OLD("Unable to read weather definition file %s", file_name);
 		return 0;
 	}
 
 	root = xmlDocGetRootElement(doc);
 	if (root == NULL) {
-		LOG_ERROR("Unable to parse weather definition file %s", file_name);
+		LOG_ERROR_OLD("Unable to parse weather definition file %s", file_name);
 		ok = 0;
 	} else if (xmlStrcasecmp(root->name, (xmlChar*)"weather") != 0) {
-		LOG_ERROR("Unknown key \"%s\" (\"weather\" expected).", root->name);
+		LOG_ERROR_OLD("Unknown key \"%s\" (\"weather\" expected).", root->name);
 		ok = 0;
 	} else {
 		ok = weather_parse_defs(root);

@@ -316,7 +316,7 @@ namespace ItemLists
 		// a name without data is not a list!
 		if (image_id_line.empty() || cnt_line.empty() || item_uid_line.empty())
 		{
-			LOG_ERROR("%s: %s [%s]\n", __FILE__, item_list_format_error, name_line.c_str() );
+			LOG_ERROR_OLD("%s: %s [%s]\n", __FILE__, item_list_format_error, name_line.c_str() );
 			return false;
 		}
 
@@ -343,7 +343,7 @@ namespace ItemLists
 		// don't use a list with unequal or empty data sets
 		if ((quantities.size() != image_ids.size()) || (quantities.size() != item_ids.size()) || quantities.empty())
 		{
-			LOG_ERROR("%s: %s name=[%s] #id=%d #cnts=%d #uid=%d\n", __FILE__, item_list_format_error, name_line.c_str(), image_ids.size(), quantities.size(), item_ids.size() );
+			LOG_ERROR_OLD("%s: %s name=[%s] #id=%d #cnts=%d #uid=%d\n", __FILE__, item_list_format_error, name_line.c_str(), image_ids.size(), quantities.size(), item_ids.size() );
 			return false;
 		}
 
@@ -461,7 +461,7 @@ namespace ItemLists
 		std::ofstream out(fullpath.c_str());
 		if (!out)
 		{
-			LOG_ERROR("%s: %s [%s]\n", __FILE__, item_list_save_error_str, fullpath.c_str() );
+			LOG_ERROR_OLD("%s: %s [%s]\n", __FILE__, item_list_save_error_str, fullpath.c_str() );
 			LOG_TO_CONSOLE(c_red2, item_list_save_error_str);
 			return;
 		}
@@ -552,7 +552,7 @@ namespace ItemLists
 			if ((category<0) || (actual_num_image_ids != expected_num_image_ids) || (actual_num_item_ids != expected_num_item_ids))
 			{
 				LOG_TO_CONSOLE(c_red2, item_list_cat_format_error_str);
-				LOG_ERROR("%s: %s cat=%d expected/actual image=%d/%d item %d/%d\n",
+				LOG_ERROR_OLD("%s: %s cat=%d expected/actual image=%d/%d item %d/%d\n",
 					__FILE__, item_list_cat_format_error_str, category,
 					expected_num_image_ids, actual_num_image_ids,
 					expected_num_item_ids, actual_num_item_ids );
@@ -608,7 +608,7 @@ namespace ItemLists
 		std::ofstream out(fullpath.c_str());
 		if (!out)
 		{
-			LOG_ERROR("%s: %s [%s]\n", __FILE__, item_list_save_error_str, fullpath.c_str() );
+			LOG_ERROR_OLD("%s: %s [%s]\n", __FILE__, item_list_save_error_str, fullpath.c_str() );
 			LOG_TO_CONSOLE(c_red2, item_list_save_error_str);
 			return;
 		}
@@ -637,7 +637,7 @@ namespace ItemLists
 		in >> revision;
 		if (revision != FILE_REVISION)
 		{
-			LOG_ERROR("%s: %s [%s]\n", __FILE__, item_list_version_error_str, fullpath.c_str() );
+			LOG_ERROR_OLD("%s: %s [%s]\n", __FILE__, item_list_version_error_str, fullpath.c_str() );
 			return;
 		}
 		while (!in.eof())

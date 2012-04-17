@@ -457,7 +457,7 @@ int get_file_digest(const char * filename, Uint8 digest[16])
 
 	if (file == NULL)
 	{
-		LOG_ERROR("MD5Digest: Unable to open %s (%d)", filename, errno);
+		LOG_ERROR_OLD("MD5Digest: Unable to open %s (%d)", filename, errno);
 		return 0;
 	}
 	
@@ -520,7 +520,7 @@ int find_description_index (const dict_elem dict[], const char *elem, const char
 		idx++;
 	}
 
-	LOG_ERROR("Unknown %s \"%s\"\n", desc, elem);
+	LOG_ERROR_OLD("Unknown %s \"%s\"\n", desc, elem);
 	return -1;
 }
 
@@ -528,7 +528,7 @@ void get_string_value(char *buf, size_t maxlen, const xmlNode *node)
 {
 	if (!node)
 	{
-		LOG_ERROR("Node is null!");
+		LOG_ERROR_OLD("Node is null!");
 		buf[0] = '\0';
 		return;
 	}
@@ -546,7 +546,7 @@ void get_item_string_value(char *buf, size_t maxlen, const xmlNode *item,
 
 	if (!item)
 	{
-		LOG_ERROR("Item is null!");
+		LOG_ERROR_OLD("Item is null!");
 		buf[0] = '\0';
 		return;
 	}
@@ -569,7 +569,7 @@ int get_bool_value(const xmlNode *node)
 
 	if (!node)
 	{
-		LOG_ERROR("Node is null!");
+		LOG_ERROR_OLD("Node is null!");
 		return 0;
 	}
 
@@ -586,7 +586,7 @@ int get_int_value(const xmlNode *node)
 {
 	if (!node)
 	{
-		LOG_ERROR("Node is null!");
+		LOG_ERROR_OLD("Node is null!");
 		return 0;
 	}
 
@@ -600,7 +600,7 @@ double get_float_value(const xmlNode *node)
 {
 	if (!node)
 	{
-		LOG_ERROR("Node is null!");
+		LOG_ERROR_OLD("Node is null!");
 		return 0.0;
 	}
 
@@ -616,7 +616,7 @@ int get_int_property(const xmlNode *node, const char *prop)
 
 	if (!node)
 	{
-		LOG_ERROR("Node is null!");
+		LOG_ERROR_OLD("Node is null!");
 		return 0;
 	}
 
@@ -639,7 +639,7 @@ int get_property(const xmlNode *node, const char *prop, const char *desc,
 
 	if (!node)
 	{
-		LOG_ERROR("Node is null!");
+		LOG_ERROR_OLD("Node is null!");
 		return 0;
 	}
 
@@ -653,7 +653,7 @@ int get_property(const xmlNode *node, const char *prop, const char *desc,
 		}
 	}
 
-	LOG_ERROR("Unable to find property %s in node %s\n", prop, node->name);
+	LOG_ERROR_OLD("Unable to find property %s in node %s\n", prop, node->name);
 	return -1;
 }
 
@@ -663,7 +663,7 @@ const char *get_string_property(const xmlNode *node, const char *prop)
 
 	if (node == NULL)
 	{
-		LOG_ERROR("Node is null!");
+		LOG_ERROR_OLD("Node is null!");
 		return "";
 	}
 
@@ -678,7 +678,7 @@ const char *get_string_property(const xmlNode *node, const char *prop)
 
 #ifdef	DEBUG_XML
 	// don't normally report this, or optional properties will report errors
-	LOG_ERROR("Unable to find property %s in node %s\n", prop, node->name);
+	LOG_ERROR_OLD("Unable to find property %s in node %s\n", prop, node->name);
 #endif	//DEBUG_XML
 	return "";
 }

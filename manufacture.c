@@ -118,7 +118,7 @@ static void save_recipe_names(void)
 	fp = open_file_config(fname,"w");
 	if(fp == NULL)
 	{
-		LOG_ERROR("%s() %s \"%s\": %s\n", __FUNCTION__, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s() %s \"%s\": %s\n", __FUNCTION__, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
@@ -139,7 +139,7 @@ static void save_recipe_names(void)
 		}
 	}
 	if (errorflag)
-		LOG_ERROR("%s() %s \"%s\": %s\n", __FUNCTION__, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s() %s \"%s\": %s\n", __FUNCTION__, cant_open_file, fname, strerror(errno));
 
 	fclose(fp);
 }
@@ -160,7 +160,7 @@ static void load_recipe_names(void)
 	fp = open_file_config(fname,"r");
 	if(fp == NULL)
 	{
-		LOG_ERROR("%s() %s \"%s\": %s\n", __FUNCTION__, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s() %s \"%s\": %s\n", __FUNCTION__, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
@@ -339,7 +339,7 @@ void load_recipes (){
 	my_tolower(fname);
 	fp = open_file_config(fname,"rb");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
@@ -350,7 +350,7 @@ void load_recipes (){
 		{
 			if (!logged)
 			{
-				LOG_ERROR("%s() fail during read of file [%s] : %s\n", __FUNCTION__, fname, strerror(errno));
+				LOG_ERROR_OLD("%s() fail during read of file [%s] : %s\n", __FUNCTION__, fname, strerror(errno));
 				logged = 1;
 			}
 			memset(recipes_store[i].items, 0, sizeof(item)*NUM_MIX_SLOTS);
@@ -384,7 +384,7 @@ void save_recipes(){
 	my_tolower(fname);
 	fp=open_file_config(fname,"wb");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
@@ -393,7 +393,7 @@ void save_recipes(){
 		item *store = (i<num_recipe_entries) ?recipes_store[i].items :manu_recipe.items;
 		if (fwrite (store,sizeof(item)*NUM_MIX_SLOTS,1, fp) != 1)
 		{
-			LOG_ERROR("%s() fail during write of file [%s] : %s\n", __FUNCTION__, fname, strerror(errno));
+			LOG_ERROR_OLD("%s() fail during write of file [%s] : %s\n", __FUNCTION__, fname, strerror(errno));
 			break;
 		}
 	}

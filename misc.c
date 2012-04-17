@@ -142,7 +142,7 @@ FILE *my_fopen (const char *fname, const char *mode)
 	FILE *file = fopen (fname, mode);
 	if (file == NULL)
 	{
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 	}
 	return file;
 }
@@ -161,7 +161,7 @@ int file_exists(const char *fname)
 	if(statres != ENOENT && statres != 0)
 	{
 		//something went wrong...
-		LOG_ERROR("Error when checking file or directory %s (error code %d)\n", fname, statres);
+		LOG_ERROR_OLD("Error when checking file or directory %s (error code %d)\n", fname, statres);
 		return -1;
 	}
 	else
@@ -195,7 +195,7 @@ gzFile * my_gzopen(const char * filename, const char * mode)
 		result= gzopen(filename, mode);
 	}
 	if(result == NULL) {
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, filename, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, filename, strerror(errno));
 	}
 
 	return result;
@@ -233,13 +233,13 @@ static int png_colortype_from_surface(SDL_Surface *surface)
 static void png_user_warn (png_structp ctx, png_const_charp str)
 {
 	//fprintf(stderr, "libpng: warning: %s\n", str);
-	LOG_WARNING("libpng: %s\n", str);
+	LOG_WARNING_OLD("libpng: %s\n", str);
 }
 
 static void png_user_error(png_structp ctx, png_const_charp str)
 {
 	//fprintf(stderr, "libpng: error: %s\n", str);
-	LOG_ERROR("libpng: %s\n", str);
+	LOG_ERROR_OLD("libpng: %s\n", str);
 }
 
 int IMG_SavePNG_RW (SDL_Surface *face, SDL_RWops *src)
@@ -366,7 +366,7 @@ void makeScreenShot ()
 	{
 		if(MKDIR(fname) < 0)
 		{
-			LOG_ERROR ("Unable to create directory \"%s\"\n", fname);
+			LOG_ERROR_OLD ("Unable to create directory \"%s\"\n", fname);
 			return;
 		}
 	}

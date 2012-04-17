@@ -304,7 +304,7 @@ int close_channel (window_info *win)
 	}
 	
 	// we shouldn't get here
-	LOG_ERROR ("Trying to close non-existant channel\n");
+	LOG_ERROR_OLD ("Trying to close non-existant channel\n");
 	return 0;
 }
 
@@ -558,7 +558,7 @@ void switch_to_chat_tab(int id, char click)
 	if (active_tab >= MAX_CHAT_TABS)
 	{
 		// This shouldn't be happening
-		LOG_ERROR ("Trying to switch to non-existant channel");
+		LOG_ERROR_OLD ("Trying to switch to non-existant channel");
 		active_tab = 0;
 	}
 	current_line = channels[active_tab].nr_lines - nr_displayed_lines;
@@ -1057,7 +1057,7 @@ void add_chan_name(int no, char * name, char * desc)
 	if(((entry = malloc(sizeof(*entry))) == NULL)
 		||((entry->description = malloc(strlen(desc)+1)) == NULL)
 		||((entry->name = malloc(strlen(name)+1)) == NULL)) {
-		LOG_ERROR("Memory allocation error reading channel list");
+		LOG_ERROR_OLD("Memory allocation error reading channel list");
 		return;
 	}
 	entry->channel = no;
@@ -1076,7 +1076,7 @@ void add_spec_chan_name(int no, char * name, char * desc)
 	if(((entry = malloc(sizeof(*entry))) == NULL)
 		||((entry->description = malloc(strlen(desc)+1)) == NULL)
 		||((entry->name = malloc(strlen(name)+1)) == NULL)){
-			LOG_ERROR("Memory allocation error reading channel list");
+			LOG_ERROR_OLD("Memory allocation error reading channel list");
 			return;
 		}
 	entry->channel = no;
@@ -1133,19 +1133,19 @@ void init_channel_names(void)
 	if (doc == NULL ) {
 		doc = xmlParseFile("languages/en/strings/channels.xml");
 		if (doc == NULL) { //darn, don't have that either?
-			LOG_ERROR (using_builtin_chanlist);
+			LOG_ERROR_OLD (using_builtin_chanlist);
 			generic_chans();
 			return;
 		}
 		//well the localised version didn't load, but the 'en' version did
-		LOG_ERROR (using_eng_chanlist, lang);
+		LOG_ERROR_OLD (using_eng_chanlist, lang);
 	}
 
 	// Get the root element, if it exists.
 	cur = xmlDocGetRootElement (doc);
 	if (cur == NULL) {
 		// Use generics. Defaulting to english, then using the fallbacks makes obfuscated, messy code.
-		LOG_ERROR (using_builtin_chanlist);
+		LOG_ERROR_OLD (using_builtin_chanlist);
 		generic_chans();
 		xmlFreeDoc(doc);
 		return;
@@ -1153,7 +1153,7 @@ void init_channel_names(void)
 
 	// Check the root element.
 	if (xmlStrcasecmp (cur->name, (const xmlChar *) "CHANNELS")) {
-		LOG_ERROR (xml_bad_root_node, file);
+		LOG_ERROR_OLD (xml_bad_root_node, file);
 		xmlFreeDoc(doc);
 		generic_chans();
 		return;
@@ -1170,13 +1170,13 @@ void init_channel_names(void)
 			// Get the name.
 			attrib = xmlGetProp (cur, (xmlChar*)"name");
 			if (attrib == NULL) {
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				xmlFree (attrib);
 				continue;
 			}
 			attriblen = strlen ((char*)attrib);
 			if (attriblen < 1) {
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				xmlFree (attrib);
 				continue;
 			}
@@ -1188,13 +1188,13 @@ void init_channel_names(void)
 			// Get the index number
 			attrib = xmlGetProp (cur, (xmlChar*)"index");
 			if (attrib == NULL) {
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				xmlFree (attrib);
 				continue;
 			}
 			attriblen = strlen ((char*)attrib);
 			if (attriblen < 1) {
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				xmlFree (attrib);
 				continue;
 			}
@@ -1204,7 +1204,7 @@ void init_channel_names(void)
 			// Get the description.
 			if ((cur->children == NULL) || (strlen ((char*)cur->children->content) < 1)) {
 				free (channelname);
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				continue;
 			}
 			attrib = cur->children->content;
@@ -1219,13 +1219,13 @@ void init_channel_names(void)
 			// Get the channel.
 			attrib = xmlGetProp (cur, (xmlChar*)"number");
 			if (attrib == NULL){
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				xmlFree (attrib);
 				continue;
 			}
 			attriblen = strlen ((char*)attrib);
 			if (attriblen < 1){
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				xmlFree (attrib);
 				continue;
 			}
@@ -1235,13 +1235,13 @@ void init_channel_names(void)
 			// Get the name.
 			attrib = xmlGetProp (cur, (xmlChar*)"name");
 			if (attrib == NULL){
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				xmlFree (attrib);
 				continue;
 			}
 			attriblen = strlen ((char*)attrib);
 			if (attriblen < 1){
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				xmlFree (attrib);
 				continue;
 			}
@@ -1253,11 +1253,11 @@ void init_channel_names(void)
 			// Get the description.
 			if (cur->children == NULL) {
 				free (channelname);
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				continue;
 			} else if (strlen ((char*)cur->children->content) < 1) {
 				free (channelname);
-				LOG_ERROR (xml_bad_node);
+				LOG_ERROR_OLD (xml_bad_node);
 				continue;
 			}
 			attrib = cur->children->content;
@@ -1269,13 +1269,13 @@ void init_channel_names(void)
 			// Add it.
 			add_chan_name(channelno, channelname, channeldesc);
 		} else {
-			LOG_ERROR (xml_undefined_node, file, (cur->name != NULL && strlen((char*)cur->name) < 100) ? cur->name	: (const xmlChar *)"not a string");
+			LOG_ERROR_OLD (xml_undefined_node, file, (cur->name != NULL && strlen((char*)cur->name) < 100) ? cur->name	: (const xmlChar *)"not a string");
 		}
 		cur = cur->next;         // Advance to the next node.
 	}
 	if(queue_isempty(chan_name_queue)) {
 		//how did we not get any channels from it?
-		LOG_ERROR(using_builtin_chanlist);
+		LOG_ERROR_OLD(using_builtin_chanlist);
 		generic_chans();
 	}
 }

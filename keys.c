@@ -223,7 +223,7 @@ Uint32 get_key_value(const char* name)
 	size_t i;
 	if ((name == NULL) || strlen(name) == 0)
 	{
-		LOG_ERROR("%s() empty name\n", __FUNCTION__);
+		LOG_ERROR_OLD("%s() empty name\n", __FUNCTION__);
 		return 0;
 	}
 	for (i=0; i<num_keys; i++)
@@ -568,7 +568,7 @@ void read_key_config()
 	fclose(f);
 	if (ret != key_file_size)
 	{
-		LOG_ERROR("%s() read failed %zu %d\n", __FUNCTION__, ret ,key_file_size+1);
+		LOG_ERROR_OLD("%s() read failed %zu %d\n", __FUNCTION__, ret ,key_file_size+1);
 		free(file_mem);
 		return;
 	}

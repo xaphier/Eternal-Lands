@@ -426,7 +426,7 @@ static int notepad_load_file()
 	doc = xmlParseFile ("notes.xml");
 	if (doc == NULL)
 	{
-		LOG_ERROR (cant_parse_notes);
+		LOG_ERROR_OLD (cant_parse_notes);
 		return 0;
 	}
 
@@ -434,14 +434,14 @@ static int notepad_load_file()
 	if (cur == NULL)
 	{
 		// Not an error, just an empty notepad
-		//LOG_ERROR ("Empty xml notepad. It will be overwritten.");
+		//LOG_ERROR_OLD ("Empty xml notepad. It will be overwritten.");
 		xmlFreeDoc(doc);
 		return 0;
 	}
 
 	if (xmlStrcasecmp (cur->name, (const xmlChar *) "PAD"))
 	{
-		LOG_ERROR (notes_wrong);
+		LOG_ERROR_OLD (notes_wrong);
 		xmlFreeDoc(doc);
 		return 0;
 	}
@@ -478,7 +478,7 @@ static int notepad_load_file()
 		}
 		else if(cur->type == XML_ELEMENT_NODE)
 		{
-			LOG_ERROR ("%s: [%s]", wrong_note_node, cur->name);
+			LOG_ERROR_OLD ("%s: [%s]", wrong_note_node, cur->name);
 		}
 		cur = cur->next;         // Advance to the next node.
 	}
@@ -537,10 +537,10 @@ int notepad_save_file()
 		safe_snprintf (file, sizeof (file), "%s/%s", datadir, "notes.xml");
 		if (xmlSaveFormatFileEnc(file, doc, "UTF-8", 1) < 0)
 		{
-			LOG_ERROR(cant_save_notes, file);
+			LOG_ERROR_OLD(cant_save_notes, file);
 		}
 #else
-		LOG_ERROR(cant_save_notes, file);
+		LOG_ERROR_OLD(cant_save_notes, file);
 #endif
 		return 0;
 	}

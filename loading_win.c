@@ -160,13 +160,13 @@ void take_snapshot (int width, int height)
 #endif //OPENGL_TRACE
 	if (glGetError() != GL_NO_ERROR)
 	{
-		LOG_ERROR("%s: %d glReadBuffer(GL_BACK) problem.\n", __FUNCTION__, __LINE__);
+		LOG_ERROR_OLD("%s: %d glReadBuffer(GL_BACK) problem.\n", __FUNCTION__, __LINE__);
 		glReadBuffer(GL_FRONT);
 	}
 	
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bg_width, bg_height, 0, GL_RGBA, GL_BYTE, &loading_texture);
 	if (glIsTexture(loading_texture) == GL_FALSE)
-		LOG_ERROR("%s: %d texture problem.\n", __FUNCTION__, __LINE__);
+		LOG_ERROR_OLD("%s: %d texture problem.\n", __FUNCTION__, __LINE__);
 	else
 		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, bg_width, bg_height);		
 	
@@ -223,10 +223,10 @@ void update_loading_win (char *text, float progress_increase)
 {
 	if(loading_win != -1) {
 		total_progress += progress_increase;
-		LOG_DEBUG("%s (%.0f%%)", text, total_progress);
+		LOG_DEBUG_OLD("%s (%.0f%%)", text, total_progress);
 		if (total_progress > 100.1f)
 		{
-			LOG_ERROR("Loading window progress > 100%%! (%g)", total_progress);
+			LOG_ERROR_OLD("Loading window progress > 100%%! (%g)", total_progress);
 			total_progress = 100.0f;
 		}
 

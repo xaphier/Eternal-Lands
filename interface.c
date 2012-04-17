@@ -579,7 +579,7 @@ void read_mapinfo ()
 	
 	fin = open_file_data ("mapinfo.lst", "r");
 	if (fin == NULL){
-		LOG_ERROR("%s: %s \"mapinfo.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"mapinfo.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 	} else {
 		while (fgets (line, sizeof (line), fin) != NULL)
 		{

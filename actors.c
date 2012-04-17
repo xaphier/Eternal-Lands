@@ -104,7 +104,7 @@ int add_actor (int actor_type, char * skin_name, float x_pos, float y_pos, float
 		}
 		else
 		{
-			LOG_ERROR("remapped skin for %s", skin_name);
+			LOG_ERROR_OLD("remapped skin for %s", skin_name);
 			exit(-1);
 		}
 	}
@@ -113,7 +113,7 @@ int add_actor (int actor_type, char * skin_name, float x_pos, float y_pos, float
 	else if(!remappable)texture_id= load_texture_cache_deferred(skin_name, -1);
 	else
 		{
-			LOG_ERROR("remapped skin for %s", skin_name);
+			LOG_ERROR_OLD("remapped skin for %s", skin_name);
 			//texture_id=load_bmp8_remapped_skin(skin_name,150,skin_color,hair_color,shirt_color,pants_color,boots_color);
 			exit(-1);
 		}
@@ -253,9 +253,9 @@ void add_actor_attachment(int actor_id, int attachment_type)
 		}
 
 	if (!parent)
-		LOG_ERROR("unable to add an attached actor: actor with id %d doesn't exist!", actor_id);
+		LOG_ERROR_OLD("unable to add an attached actor: actor with id %d doesn't exist!", actor_id);
 	else if(attachment_type < 0 || attachment_type >= MAX_ACTOR_DEFS || (attachment_type > 0 && actors_defs[attachment_type].actor_type != attachment_type) )
-		LOG_ERROR("unable to add an attached actor: illegal/missing actor definition %d", attachment_type);
+		LOG_ERROR_OLD("unable to add an attached actor: illegal/missing actor definition %d", attachment_type);
 	else
 	{
 		int id = add_actor(attachment_type, actors_defs[attachment_type].skin_name,
@@ -1289,7 +1289,7 @@ void add_actor_from_server (const char *in_data, int len)
 	}
 
 	if(actor_type < 0 || actor_type >= MAX_ACTOR_DEFS || (actor_type > 0 && actors_defs[actor_type].actor_type != actor_type) ){
-		LOG_ERROR("Illegal/missing actor definition %d", actor_type);
+		LOG_ERROR_OLD("Illegal/missing actor definition %d", actor_type);
 	}
 
 	//translate from tile to world
@@ -1342,12 +1342,12 @@ void add_actor_from_server (const char *in_data, int len)
 			//we have a pose, get it! (frame is the emote_id)
 			hash_entry *he;
 			he=hash_get(emotes,(void*)(NULL+frame));
-			if(!he) LOG_ERROR("unknown pose %d", frame);
+			if(!he) LOG_ERROR_OLD("unknown pose %d", frame);
 			else pose = he->item;
 			break;
 		}
 
-			LOG_ERROR("%s %d - %s\n", unknown_frame, frame, &in_data[17]);
+			LOG_ERROR_OLD("%s %d - %s\n", unknown_frame, frame, &in_data[17]);
 		}
 	}
 
@@ -1363,7 +1363,7 @@ void add_actor_from_server (const char *in_data, int len)
 			if(actors_list[i])
 				if(actors_list[i]->actor_id==actor_id)
 					{
-						LOG_ERROR(duplicate_actors_str,actor_id, actors_list[i]->actor_name, &in_data[17]);
+						LOG_ERROR_OLD(duplicate_actors_str,actor_id, actors_list[i]->actor_name, &in_data[17]);
 						destroy_actor(actors_list[i]->actor_id);//we don't want two actors with the same ID
 						i--;// last actor was put here, he needs to be checked too
 					}
@@ -1426,7 +1426,7 @@ void add_actor_from_server (const char *in_data, int len)
 	actors_list[i]->kind_of_actor=kind_of_actor;
 	if(strlen(&in_data[17]) >= 30)
 		{
-			LOG_ERROR("%s (%d): %s/%d\n", bad_actor_name_length, actors_list[i]->actor_type,&in_data[17], (int)strlen(&in_data[17]));
+			LOG_ERROR_OLD("%s (%d): %s/%d\n", bad_actor_name_length, actors_list[i]->actor_type,&in_data[17], (int)strlen(&in_data[17]));
 		}
 	else my_strncp(actors_list[i]->actor_name,&in_data[17],30);
 

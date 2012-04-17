@@ -170,13 +170,13 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 			}
 			break;
 		default:
-			LOG_ERROR("Unsupported image format (%i)", image->format);
+			LOG_ERROR_OLD("Unsupported image format (%i)", image->format);
 			return 0;
 	}
 
 	if ((compressed != 0) && (!have_extension(arb_texture_compression)))
 	{
-		LOG_ERROR("Can't use compressed source formats because "
+		LOG_ERROR_OLD("Can't use compressed source formats because "
 			"GL_ARB_texture_compression is not supported.");
 		return 0;
 	}
@@ -184,7 +184,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 	if ((!have_extension(ext_texture_compression_s3tc)) &&
 		((compressed & tct_s3tc) == tct_s3tc))
 	{
-		LOG_ERROR("Can't use s3tc compressed source formats because "
+		LOG_ERROR_OLD("Can't use s3tc compressed source formats because "
 			"GL_EXT_texture_compression_s3tc is not supported.");
 		return 0;
 	}
@@ -192,7 +192,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 	if ((!have_extension(ext_texture_compression_latc)) &&
 		((compressed & tct_latc) == tct_latc))
 	{
-		LOG_ERROR("Can't use s3tc compressed source formats because "
+		LOG_ERROR_OLD("Can't use s3tc compressed source formats because "
 			"GL_EXT_texture_compression_latc is not supported.");
 		return 0;
 	}
@@ -200,7 +200,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 	if ((!have_extension(ati_texture_compression_3dc)) &&
 		((compressed & tct_3dc) == tct_3dc))
 	{
-		LOG_ERROR("Can't use s3tc compressed source formats because "
+		LOG_ERROR_OLD("Can't use s3tc compressed source formats because "
 			"GL_ATI_texture_compression_3dc is not supported.");
 		return 0;
 	}
@@ -265,7 +265,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 				}
 				break;
 			default:
-				LOG_ERROR("Unsupported texture format (%i)",
+				LOG_ERROR_OLD("Unsupported texture format (%i)",
 					format);
 				return 0;
 		}
@@ -273,7 +273,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 
 	if ((compression != 0) && (!have_extension(arb_texture_compression)))
 	{
-		LOG_ERROR("Can't use compressed texture format, because "
+		LOG_ERROR_OLD("Can't use compressed texture format, because "
 			"GL_ARB_texture_compression is not supported.");
 		return 0;
 	}
@@ -281,7 +281,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 	if ((!have_extension(ext_texture_compression_s3tc)) &&
 		((compression & tct_s3tc) == tct_s3tc))
 	{
-		LOG_ERROR("Can't use s3tc compressed texture format, because "
+		LOG_ERROR_OLD("Can't use s3tc compressed texture format, because "
 			"GL_EXT_texture_compression_s3tc is not supported.");
 		return 0;
 	}
@@ -289,7 +289,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 	if ((!have_extension(ext_texture_compression_latc)) &&
 		((compression & tct_latc) == tct_latc))
 	{
-		LOG_ERROR("Can't use s3tc compressed texture format, because "
+		LOG_ERROR_OLD("Can't use s3tc compressed texture format, because "
 			"GL_EXT_texture_compression_latc is not supported.");
 		return 0;
 	}
@@ -297,7 +297,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 	if ((!have_extension(ati_texture_compression_3dc)) &&
 		((compression & tct_3dc) == tct_3dc))
 	{
-		LOG_ERROR("Can't use s3tc compressed texture format, because "
+		LOG_ERROR_OLD("Can't use s3tc compressed texture format, because "
 			"GL_ATI_texture_compression_3dc is not supported.");
 		return 0;
 	}
@@ -436,7 +436,7 @@ Uint32 load_texture_cached(const char* file_name, const texture_type type)
 	}
 	else
 	{
-		LOG_ERROR("Error: out of texture space\n");
+		LOG_ERROR_OLD("Error: out of texture space\n");
 		return TEXTURE_CACHE_MAX;	// ERROR!
 	}
 }
@@ -496,7 +496,7 @@ Uint32 load_texture_cached(const char* file_name, const texture_type type)
 	}
 	else
 	{
-		LOG_ERROR("Error: out of texture space\n");
+		LOG_ERROR_OLD("Error: out of texture space\n");
 
 		return TEXTURE_CACHE_MAX;	// ERROR!
 	}
@@ -590,7 +590,7 @@ static Uint32 load_texture(texture_cache_t* texture_handle)
 	{
 		texture_handle->load_err = 1;
 
-		LOG_ERROR("Error loading image '%s'",
+		LOG_ERROR_OLD("Error loading image '%s'",
 			texture_handle->file_name);
 
 		return 0;
@@ -618,7 +618,7 @@ static Uint32 load_texture_handle(const Uint32 handle)
 {
 	if (handle >= texture_handles_used)
 	{
-		LOG_ERROR("handle: %i, max_handle: %i\n", handle,
+		LOG_ERROR_OLD("handle: %i, max_handle: %i\n", handle,
 			texture_handles_used);
 
 		return 0;
@@ -650,7 +650,7 @@ static GLuint get_texture_id(const Uint32 handle)
 {
 	if (handle >= texture_handles_used)
 	{
-		LOG_ERROR("handle: %i, max_handle: %i\n", handle,
+		LOG_ERROR_OLD("handle: %i, max_handle: %i\n", handle,
 			texture_handles_used);
 
 		return 0;
@@ -673,7 +673,7 @@ Uint32 get_texture_alpha(const Uint32 handle)
 {
 	if (handle >= texture_handles_used)
 	{
-		LOG_ERROR("handle: %i, max_handle: %i\n", handle,
+		LOG_ERROR_OLD("handle: %i, max_handle: %i\n", handle,
 			texture_handles_used);
 
 		return 0;
@@ -691,7 +691,7 @@ void bind_texture(const Uint32 handle)
 {
 	if (handle >= texture_handles_used)
 	{
-		LOG_ERROR("handle: %i, max_handle: %i\n", handle,
+		LOG_ERROR_OLD("handle: %i, max_handle: %i\n", handle,
 			texture_handles_used);
 
 		return;
@@ -704,7 +704,7 @@ void bind_texture_unbuffered(const Uint32 handle)
 {
 	if (handle >= texture_handles_used)
 	{
-		LOG_ERROR("handle: %i, max_handle: %i\n", handle,
+		LOG_ERROR_OLD("handle: %i, max_handle: %i\n", handle,
 			texture_handles_used);
 
 		return;
@@ -812,7 +812,7 @@ __inline__ static void set_texture_filter(texture_filter filter, float anisotrop
 				anisotropic_filter);
 			break;
 		default:
-			LOG_ERROR("Unsupported texture filter (%d)", filter);
+			LOG_ERROR_OLD("Unsupported texture filter (%d)", filter);
 			break;
 	}
 }
@@ -869,7 +869,7 @@ static texture_struct *load_texture_SDL(el_file_ptr file, const char * file_name
 
 	if (texture_surface == 0)
 	{
-		LOG_ERROR("load_texture() error: [%s] [%s]", file_name, IMG_GetError());
+		LOG_ERROR_OLD("load_texture() error: [%s] [%s]", file_name, IMG_GetError());
 		return 0;
 	}
 
@@ -1274,7 +1274,7 @@ int get_and_set_texture_id(int i)
 
 #ifdef	DEBUG
 	if(i<0||i>TEXTURE_CACHE_MAX) {
-		LOG_ERROR("We tried binding a texture ID of %d\n", i);
+		LOG_ERROR_OLD("We tried binding a texture ID of %d\n", i);
 		return 0;
 	}
 #endif	//DEBUG
@@ -1336,7 +1336,7 @@ int load_alphamap(const char * FileName, Uint8 * texture_mem, int orig_x_size, i
 	y_size= tex->y_size;
 
 	if(x_size != orig_x_size || y_size != orig_y_size){
-		LOG_ERROR("The alphamap for %s was not the same size as the original - we didn't load the alphamap...", FileName);
+		LOG_ERROR_OLD("The alphamap for %s was not the same size as the original - we didn't load the alphamap...", FileName);
 		free(tex->texture);
 		return 0;
 	}
@@ -1699,7 +1699,7 @@ int load_texture_cache_deferred(const char* file_name, int alpha)
 	}
 	else
 	{
-		LOG_ERROR("Error: out of texture space\n");
+		LOG_ERROR_OLD("Error: out of texture space\n");
 		return 0;	// ERROR!
 	}
 }
@@ -1740,7 +1740,7 @@ int load_texture_cache_deferred(const char* file_name, int alpha)
         texture_cache[texture_slot].has_alpha = 0;
 		return texture_slot;
 	} else {	
-		LOG_ERROR("Error: out of texture space\n");
+		LOG_ERROR_OLD("Error: out of texture space\n");
 		return 0;	// ERROR!
 	}
 }
@@ -1831,7 +1831,7 @@ int load_bmp8_to_coordinates_mask2 (const char *filename, const char *basename, 
 		// yes, either the mask or the base is missing, just do a load
 		return load_bmp8_to_coordinates(filename, texture_space, x_pos, y_pos, alpha);
 	}
-//LOG_ERROR("%s %s %s", filename, basename, maskname);
+//LOG_ERROR_OLD("%s %s %s", filename, basename, maskname);
 	tex= load_bmp8_alpha(filename, &texture, alpha);
 	if(!tex){	// oops, failed
 		return 0;

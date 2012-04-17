@@ -96,14 +96,14 @@ static void clear_zip(el_zip_file_t* zip)
 
 	if (zip == 0)
 	{
-		LOG_ERROR("Invalid zip");
+		LOG_ERROR_OLD("Invalid zip");
 
 		return;
 	}
 
 	CHECK_AND_LOCK_MUTEX(zip->mutex);
 
-	LOG_DEBUG("Clearing zip file '%s'", zip->file_name);
+	LOG_DEBUG_OLD("Clearing zip file '%s'", zip->file_name);
 
 	for (i = 0; i < zip->count; i++)
 	{
@@ -137,12 +137,12 @@ static Uint32 find_in_zip(el_zip_file_t* zip, const el_zip_file_entry_t* key)
 {
 	if ((zip == 0) || (key == 0))
 	{
-		LOG_ERROR("Invalid key or zip");
+		LOG_ERROR_OLD("Invalid key or zip");
 
 		return 0;
 	}
 
-	LOG_DEBUG("Searching file '%s' in zip file '%s'.", zip->file_name,
+	LOG_DEBUG_OLD("Searching file '%s' in zip file '%s'.", zip->file_name,
 		key->file_name);
 
 	if (zip->count == 0)
@@ -167,7 +167,7 @@ static Uint32 locate_in_zip(el_zip_file_t* zip, const el_zip_file_entry_t* key)
 
 	if ((zip == 0) || (key == 0))
 	{
-		LOG_ERROR("Invalid key or zip");
+		LOG_ERROR_OLD("Invalid key or zip");
 
 		return 0;
 	}
@@ -200,7 +200,7 @@ static void init_key(const char* file_name, el_zip_file_entry_t* key,
 
 	if ((key == 0) || (file_name == 0))
 	{
-		LOG_ERROR("Invalid key or file_name");
+		LOG_ERROR_OLD("Invalid key or file_name");
 
 		return;
 	}
@@ -290,14 +290,14 @@ void load_zip_archive(const char* file_name)
 
 	if (file_name == 0)
 	{
-		LOG_ERROR("Empty zip file name", file_name);
+		LOG_ERROR_OLD("Empty zip file name", file_name);
 
 		return;
 	}
 
 	if (num_zip_files >= MAX_NUM_ZIP_FILES)
 	{
-		LOG_ERROR("Can't add zip file %s", file_name);
+		LOG_ERROR_OLD("Can't add zip file %s", file_name);
 
 		return;
 	}
@@ -306,7 +306,7 @@ void load_zip_archive(const char* file_name)
 
 	if (unzGetGlobalInfo64(file, &global_info) != UNZ_OK)
 	{
-		LOG_ERROR("Can't load zip file %s", file_name);
+		LOG_ERROR_OLD("Can't load zip file %s", file_name);
 
 		unzClose(file);
 
@@ -317,7 +317,7 @@ void load_zip_archive(const char* file_name)
 
 	if (unzGoToFirstFile(file) != UNZ_OK)
 	{
-		LOG_ERROR("Can't load zip file %s", file_name);
+		LOG_ERROR_OLD("Can't load zip file %s", file_name);
 
 		unzClose(file);
 
@@ -326,7 +326,7 @@ void load_zip_archive(const char* file_name)
 
 	ENTER_DEBUG_MARK("load zip");
 
-	LOG_DEBUG("Loading zip file '%s' with %d files", file_name, count);
+	LOG_DEBUG_OLD("Loading zip file '%s' with %d files", file_name, count);
 
 	files = malloc(count * sizeof(el_zip_file_entry_t));
 
@@ -343,7 +343,7 @@ void load_zip_archive(const char* file_name)
 		unzGetCurrentFileInfo64(file, 0, files[i].file_name, size,
 			0, 0, 0, 0);
 
-		LOG_DEBUG("Loading file (%d) '%s' from zip file '%s'.", i,
+		LOG_DEBUG_OLD("Loading file (%d) '%s' from zip file '%s'.", i,
 			files[i].file_name, file_name);
 
 		files[i].hash = mem_hash(files[i].file_name, size);
@@ -355,7 +355,7 @@ void load_zip_archive(const char* file_name)
 	name = calloc(size + 1, 1);
 	memcpy(name, file_name, size);
 
-	LOG_DEBUG("Sorting files from zip file '%s'.", file_name);
+	LOG_DEBUG_OLD("Sorting files from zip file '%s'.", file_name);
 
 	qsort(files, count, sizeof(el_zip_file_entry_t),
 		compare_el_zip_file_entry);
@@ -380,7 +380,7 @@ void load_zip_archive(const char* file_name)
 
 	CHECK_AND_UNLOCK_MUTEX(zip_mutex);
 
-	LOG_DEBUG("Adding zip file '%s' at position %d.", file_name, index);
+	LOG_DEBUG_OLD("Adding zip file '%s' at position %d.", file_name, index);
 
 	zip_files[index].file_name = name;
 	zip_files[index].file = file;
@@ -391,7 +391,7 @@ void load_zip_archive(const char* file_name)
 
 	LEAVE_DEBUG_MARK("load zip");
 
-	LOG_DEBUG("Loaded zip file '%s' with %d files", file_name, count);
+	LOG_DEBUG_OLD("Loaded zip file '%s' with %d files", file_name, count);
 }
 
 void unload_zip_archive(const char* file_name)
@@ -400,14 +400,14 @@ void unload_zip_archive(const char* file_name)
 
 	if (file_name == 0)
 	{
-		LOG_ERROR("Invalid file name");
+		LOG_ERROR_OLD("Invalid file name");
 
 		return;
 	}
 
 	ENTER_DEBUG_MARK("unload zip");
 
-	LOG_DEBUG("Unloading zip '%s'.", file_name);
+	LOG_DEBUG_OLD("Unloading zip '%s'.", file_name);
 
 	CHECK_AND_LOCK_MUTEX(zip_mutex);
 
@@ -415,13 +415,13 @@ void unload_zip_archive(const char* file_name)
 
 	CHECK_AND_UNLOCK_MUTEX(zip_mutex);
 
-	LOG_DEBUG("Checking %d zip files", count);
+	LOG_DEBUG_OLD("Checking %d zip files", count);
 
 	for (i = 0; i < count; i++)
 	{
 		CHECK_AND_LOCK_MUTEX(zip_files[i].mutex);
 
-		LOG_DEBUG("Checking zip file '%s'", zip_files[i].file_name);
+		LOG_DEBUG_OLD("Checking zip file '%s'", zip_files[i].file_name);
 
 		if (zip_files[i].file_name != 0)
 		{
@@ -455,7 +455,7 @@ static Uint32 do_file_exists(const char* file_name, const char* path,
 
 	found = stat(buffer, &fstat) == 0;
 
-	LOG_DEBUG("Checking file '%s': %s.", buffer, found ? "found" :
+	LOG_DEBUG_OLD("Checking file '%s': %s.", buffer, found ? "found" :
 		"not found");
 
 	if (found)
@@ -469,7 +469,7 @@ static Uint32 do_file_exists(const char* file_name, const char* path,
 
 	found = stat(buffer, &fstat) == 0;
 
-	LOG_DEBUG("Checking file '%s': %s.", buffer, found ? "found" :
+	LOG_DEBUG_OLD("Checking file '%s': %s.", buffer, found ? "found" :
 		"not found");
 
 	if (found)
@@ -482,7 +482,7 @@ static Uint32 do_file_exists(const char* file_name, const char* path,
 
 	found = stat(buffer, &fstat) == 0;
 
-	LOG_DEBUG("Checking file '%s': %s.", buffer, found ? "found" :
+	LOG_DEBUG_OLD("Checking file '%s': %s.", buffer, found ? "found" :
 		"not found");
 
 	if (found)
@@ -558,7 +558,7 @@ static el_file_ptr xz_file_open(const char* file_name)
 
 	if (file == 0)
 	{
-		LOG_ERROR("Can't open file '%s': %s", file_name, strerror(errno));
+		LOG_ERROR_OLD("Can't open file '%s': %s", file_name, strerror(errno));
 
 		return 0;
 	}
@@ -582,12 +582,12 @@ static el_file_ptr xz_file_open(const char* file_name)
 		safe_strncpy(result->file_name, file_name, file_name_len);
 
 #ifdef FASTER_MAP_LOAD
-		LOG_DEBUG("File '%s' [crc:0x%08X] opened.", file_name,
+		LOG_DEBUG_OLD("File '%s' [crc:0x%08X] opened.", file_name,
 			el_crc32(result));
 #else
 		result->crc32 = CrcCalc(result->buffer, result->size);
 
-		LOG_DEBUG("File '%s' [crc:0x%08X] opened.", file_name,
+		LOG_DEBUG_OLD("File '%s' [crc:0x%08X] opened.", file_name,
 			result->crc32);
 #endif
 
@@ -609,7 +609,7 @@ static el_file_ptr gz_file_open(const char* file_name)
 	file = gzopen(file_name, "rb");
 	if (!file)
 	{
-		LOG_ERROR("Can't open file '%s': %s", file_name, strerror(errno));
+		LOG_ERROR_OLD("Can't open file '%s': %s", file_name, strerror(errno));
 		return NULL;
 	}
 
@@ -643,10 +643,10 @@ static el_file_ptr gz_file_open(const char* file_name)
 	gzclose(file);
 
 #ifdef FASTER_MAP_LOAD
-	LOG_DEBUG_VERBOSE("File '%s' [crc:0x%08X] opened.", file_name,
+	LOG_DEBUG_VERBOSE_OLD("File '%s' [crc:0x%08X] opened.", file_name,
 		el_crc32(result));
 #else
-	LOG_DEBUG_VERBOSE("File '%s' [crc:0x%08X] opened.", file_name,
+	LOG_DEBUG_VERBOSE_OLD("File '%s' [crc:0x%08X] opened.", file_name,
 		result->crc32);
 #endif
 
@@ -729,13 +729,13 @@ static el_file_ptr zip_file_open(unzFile file)
 
 	if (result->crc32 != crc)
 	{
-		LOG_ERROR("crc value is 0x%08X, but should be 0x%08X", crc,
+		LOG_ERROR_OLD("crc value is 0x%08X, but should be 0x%08X", crc,
 			result->crc32);
 		free_el_file(result);
 		return NULL;
 	}
 
-	LOG_DEBUG_VERBOSE("File '%s' [crc:0x%08X] opened.", result->file_name,
+	LOG_DEBUG_VERBOSE_OLD("File '%s' [crc:0x%08X] opened.", result->file_name,
 		result->crc32);
 
 	return result;
@@ -793,7 +793,7 @@ static el_file_ptr file_open(const char* file_name, const char* extra_path)
 		return xz_gz_file_open(str);
 	}
 
-	LOG_ERROR("Can't open file '%s'.", file_name);
+	LOG_ERROR_OLD("Can't open file '%s'.", file_name);
 
 	return NULL;
 }

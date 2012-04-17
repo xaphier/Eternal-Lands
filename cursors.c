@@ -56,7 +56,7 @@ void load_harvestable_list()
 	f = open_file_data("harvestable.lst", "rb");
 	if (f == NULL)
 	{
-		LOG_ERROR("%s: %s \"harvestable.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"harvestable.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return;
 	}
 	while (nr_harvestable_objects < MAX_HARVESTABLE_OBJECTS)
@@ -95,7 +95,7 @@ void load_entrable_list()
 	f=open_file_data("entrable.lst", "rb");
 	if(f == NULL)
 	{
-		LOG_ERROR("%s: %s \"entrable.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"entrable.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return;
 	}
 	while (nr_entrable_objects < MAX_ENTRABLE_OBJECTS)
@@ -135,14 +135,14 @@ void load_cursors()
 
 	if (file == NULL)
 	{
-		LOG_ERROR("%s: %s [%s]\n", reg_error_str, cursors_file_str, "textures/cursors.bmp");
+		LOG_ERROR_OLD("%s: %s [%s]\n", reg_error_str, cursors_file_str, "textures/cursors.bmp");
 		return;
 	}
 
 	if ((cursors_mem_bmp = el_get_pointer(file)) == NULL)
 	{
 		el_close(file);
-		LOG_ERROR("%s: %s (read) [%s]\n", reg_error_str, cursors_file_str, "textures/cursors.bmp");
+		LOG_ERROR_OLD("%s: %s (read) [%s]\n", reg_error_str, cursors_file_str, "textures/cursors.bmp");
 		return;
 	}
 

@@ -52,14 +52,14 @@ Uint32 check_image_name(const char* file_name, const Uint32 size, char* str)
 
 	if (str == 0)
 	{
-		LOG_ERROR("Buffer is zero!");
+		LOG_ERROR_OLD("Buffer is zero!");
 
 		return 0;
 	}
 
 	if ((len + 5) >= sizeof(buffer))
 	{
-		LOG_ERROR("Buffer too small! %d bytes needed, but buffer is "
+		LOG_ERROR_OLD("Buffer too small! %d bytes needed, but buffer is "
 			"only %d bytes big!", len + 5, size);
 
 		return 0;
@@ -91,7 +91,7 @@ Uint32 check_alpha_image_name(const char* file_name, const Uint32 size,
 
 	if (file_name == 0)
 	{
-		LOG_ERROR("Zero file name!");
+		LOG_ERROR_OLD("Zero file name!");
 
 		return 0;
 	}
@@ -100,14 +100,14 @@ Uint32 check_alpha_image_name(const char* file_name, const Uint32 size,
 
 	if (str == 0)
 	{
-		LOG_ERROR("Buffer is zero!");
+		LOG_ERROR_OLD("Buffer is zero!");
 
 		return 0;
 	}
 
 	if ((len + 11) >= sizeof(buffer))
 	{
-		LOG_ERROR("Buffer too small! %d bytes needed, but buffer is "
+		LOG_ERROR_OLD("Buffer too small! %d bytes needed, but buffer is "
 			"only %d bytes big!", len + 11, size);
 
 		return 0;
@@ -139,7 +139,7 @@ static Uint32 get_sdl_image_information(el_file_ptr file, image_t* image)
 
 	if (file == 0)
 	{
-		LOG_ERROR("Invalid file!");
+		LOG_ERROR_OLD("Invalid file!");
 		return 0;
 	}
 
@@ -149,7 +149,7 @@ static Uint32 get_sdl_image_information(el_file_ptr file, image_t* image)
 
 	if (image_surface == 0)
 	{
-		LOG_ERROR("load_image() error: [%s] [%s]", el_file_name(file),
+		LOG_ERROR_OLD("load_image() error: [%s] [%s]", el_file_name(file),
 			IMG_GetError());
 		return 0;
 	}
@@ -197,14 +197,14 @@ static Uint32 load_image_SDL(el_file_ptr file, image_t* image)
 
 	if (file == 0)
 	{
-		LOG_ERROR("Invalid file!");
+		LOG_ERROR_OLD("Invalid file!");
 
 		return 0;
 	}
 
 	if (image == 0)
 	{
-		LOG_ERROR("Invalid image for file '%s'!", el_file_name(file));
+		LOG_ERROR_OLD("Invalid image for file '%s'!", el_file_name(file));
 
 		return 0;
 	}
@@ -215,7 +215,7 @@ static Uint32 load_image_SDL(el_file_ptr file, image_t* image)
 
 	if (image_surface == 0)
 	{
-		LOG_ERROR("load_image() error: [%s] [%s]", el_file_name(file),
+		LOG_ERROR_OLD("load_image() error: [%s] [%s]", el_file_name(file),
 			IMG_GetError());
 		return 0;
 	}
@@ -341,21 +341,21 @@ static Uint32 load_image_SDL_alpha(el_file_ptr file, image_t* image)
 
 	if (file == 0)
 	{
-		LOG_ERROR("Invalid file!");
+		LOG_ERROR_OLD("Invalid file!");
 
 		return 0;
 	}
 
 	if (image == 0)
 	{
-		LOG_ERROR("Invalid image for file '%s'.", el_file_name(file));
+		LOG_ERROR_OLD("Invalid image for file '%s'.", el_file_name(file));
 
 		return 0;
 	}
 
 	if (image->format != ift_rgba8)
 	{
-		LOG_ERROR("Alpha map '%s' can't be used for formats other than"
+		LOG_ERROR_OLD("Alpha map '%s' can't be used for formats other than"
 			" RGBA8.", el_file_name(file));
 
 		return 0;
@@ -366,7 +366,7 @@ static Uint32 load_image_SDL_alpha(el_file_ptr file, image_t* image)
 
 	if (image_surface == 0)
 	{
-		LOG_ERROR("load_image() error: [%s] [%s]", el_file_name(file),
+		LOG_ERROR_OLD("load_image() error: [%s] [%s]", el_file_name(file),
 			IMG_GetError());
 		return 0;
 	}
@@ -380,7 +380,7 @@ static Uint32 load_image_SDL_alpha(el_file_ptr file, image_t* image)
 
 	if (image->width != image_width)
 	{
-		LOG_ERROR("Alpha map '%s' had wrong width %i, expected width"
+		LOG_ERROR_OLD("Alpha map '%s' had wrong width %i, expected width"
 			" is %i.", el_file_name(file), image_width,
 			image->width);
 
@@ -389,7 +389,7 @@ static Uint32 load_image_SDL_alpha(el_file_ptr file, image_t* image)
 
 	if (image->height != image_height)
 	{
-		LOG_ERROR("Alpha map '%s' had wrong width %i, expected width"
+		LOG_ERROR_OLD("Alpha map '%s' had wrong width %i, expected width"
 			" is %i.", el_file_name(file), image_height,
 			image->height);
 
@@ -463,7 +463,7 @@ Uint32 load_image_data_file(el_file_ptr file, const Uint32 compression,
 
 	if (file == 0)
 	{
-		LOG_ERROR("Invalid file!");
+		LOG_ERROR_OLD("Invalid file!");
 
 		return 0;
 	}
@@ -490,7 +490,7 @@ Uint32 load_image_data_file(el_file_ptr file, const Uint32 compression,
 
 	if ((result == 0) || (image->image == 0))
 	{
-		LOG_ERROR("Can't load file '%s'!", el_file_name(file));
+		LOG_ERROR_OLD("Can't load file '%s'!", el_file_name(file));
 
 		el_close(file);
 
@@ -504,7 +504,7 @@ Uint32 load_image_data_file(el_file_ptr file, const Uint32 compression,
 
 		if (alpha_file == 0)
 		{
-			LOG_ERROR("Can't load file '%s'!", buffer);
+			LOG_ERROR_OLD("Can't load file '%s'!", buffer);
 
 			el_close(file);
 
@@ -530,7 +530,7 @@ Uint32 load_image_data(const char* file_name, const Uint32 compression,
 
 	if (check_image_name(file_name, sizeof(buffer), buffer) == 0)
 	{
-		LOG_ERROR("File '%s' not found!", file_name);
+		LOG_ERROR_OLD("File '%s' not found!", file_name);
 		return 0;
 	}
 
@@ -538,7 +538,7 @@ Uint32 load_image_data(const char* file_name, const Uint32 compression,
 
 	if (file == 0)
 	{
-		LOG_ERROR("Can't load file '%s'!", file_name);
+		LOG_ERROR_OLD("Can't load file '%s'!", file_name);
 
 		return 0;
 	}
@@ -553,7 +553,7 @@ Uint32 get_image_information(el_file_ptr file, image_t* image)
 
 	if (file == 0)
 	{
-		LOG_ERROR("Invalid file!");
+		LOG_ERROR_OLD("Invalid file!");
 
 		return 0;
 	}
@@ -586,7 +586,7 @@ void free_image(image_t* image)
 {
 	if (image == 0)
 	{
-		LOG_ERROR("Invalid image!");
+		LOG_ERROR_OLD("Invalid image!");
 
 		return;
 	}

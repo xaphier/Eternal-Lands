@@ -339,7 +339,7 @@ void Quest_List::save(void)
 	{
 		std::string error_str = std::string(file_write_error_str) + ' ' + list_filename;
 		LOG_TO_CONSOLE(c_red2, error_str.c_str());
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, file_write_error_str, list_filename.c_str());
+		LOG_ERROR_OLD("%s: %s \"%s\"\n", reg_error_str, file_write_error_str, list_filename.c_str());
 		return;
 	}
 	for (std::map<Uint16,Quest,QuestCompare>::const_iterator i=quests.begin(); i!=quests.end(); ++i)
@@ -784,7 +784,7 @@ static void save_questlog(void)
 	{
 		std::string error_str = std::string(file_write_error_str) + ' ' + filename;
 		LOG_TO_CONSOLE(c_red2, error_str.c_str());
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, file_write_error_str, filename.c_str());
+		LOG_ERROR_OLD("%s: %s \"%s\"\n", reg_error_str, file_write_error_str, filename.c_str());
 		return;
 	}
 	for (std::vector<Quest_Entry>::const_iterator entry=quest_entries.begin(); entry!=quest_entries.end(); ++entry)
@@ -792,7 +792,7 @@ static void save_questlog(void)
 			entry->save(out);
 	need_to_save = false;
 
-	LOG_DEBUG("Wrote questlog to file '%s'", filename.c_str());
+	LOG_DEBUG_OLD("Wrote questlog to file '%s'", filename.c_str());
 }
 
 
@@ -1708,7 +1708,7 @@ extern "C" void add_questlog (char *t, int len)
 	{
 		std::string error_str = std::string(file_write_error_str) + ' ' + filename;
 		LOG_TO_CONSOLE(c_red2, error_str.c_str());
-		LOG_ERROR("%s: %s \"%s\"\n", reg_error_str, file_write_error_str, filename.c_str());
+		LOG_ERROR_OLD("%s: %s \"%s\"\n", reg_error_str, file_write_error_str, filename.c_str());
 		return;
 	}
     quest_entries.back().save(out);
@@ -1758,7 +1758,7 @@ extern "C" void load_questlog()
 		}
 	}
 
-	LOG_DEBUG("Read questlog from file '%s'", filename.c_str());
+	LOG_DEBUG_OLD("Read questlog from file '%s'", filename.c_str());
 
 	rebuild_active_entries(quest_entries.size()-1);
 }

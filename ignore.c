@@ -44,7 +44,7 @@ int add_to_ignore_list(char *name, char save_name)
 						{
 							FILE * f=open_file_config("local_ignores.txt", "a");
 							if (f == NULL){
-								LOG_ERROR("%s: %s \"local_ignores.txt\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+								LOG_ERROR_OLD("%s: %s \"local_ignores.txt\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 							} else {
 								fwrite(name, strlen(name), 1, f);
 								fwrite("\n", 1, 1, f);
@@ -81,7 +81,7 @@ int remove_from_ignore_list(char *name)
 		{
 			f=open_file_config("local_ignores.txt", "w");
 			if (f == NULL){
-				LOG_ERROR("%s: %s \"local_ignores.txt\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+				LOG_ERROR_OLD("%s: %s \"local_ignores.txt\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 			} else {
 				for(i=0;i<MAX_IGNORES;i++)
 				{
@@ -296,7 +296,7 @@ void load_ignores_list(char * file_name)
 	if (ret != f_size)
 	{
 		free (ignore_list_mem);
-		LOG_ERROR("%s() read failed for file [%s]\n", __FUNCTION__, file_name);
+		LOG_ERROR_OLD("%s() read failed for file [%s]\n", __FUNCTION__, file_name);
 		return;
 	}
 

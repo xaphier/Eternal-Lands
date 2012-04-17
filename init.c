@@ -147,7 +147,7 @@ void load_knowledge_list()
 	// try the language specific knowledge list
 	f=open_file_lang("knowledge.lst", "rb");
 	if(f == NULL){
-		LOG_ERROR("%s: %s \"knowledge.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"knowledge.lst\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return;
 	}
 	while(1)
@@ -176,7 +176,7 @@ void read_config()
 	if ( !read_el_ini () )
 	{
 		// oops, the file doesn't exist, give up
-		LOG_ERROR("Failure reading el.ini");
+		LOG_ERROR_OLD("Failure reading el.ini");
 		SDL_Quit ();
 		exit (1);
 	}
@@ -186,13 +186,13 @@ void read_config()
 	{
 		no_lang_in_config = 1;
 		safe_strncpy(lang, "en", sizeof(lang));
-		LOG_INFO("No language set so defaulting to [%s] and using language selection window", lang );
+		LOG_INFO_OLD("No language set so defaulting to [%s] and using language selection window", lang );
 	}
 
 #ifndef WINDOWS
 	if (chdir(datadir) != 0)
 	{
-		LOG_ERROR("%s() chdir(\"%s\") failed: %s\n", __FUNCTION__, datadir, strerror(errno));
+		LOG_ERROR_OLD("%s() chdir(\"%s\") failed: %s\n", __FUNCTION__, datadir, strerror(errno));
 	}
 #endif //!WINDOWS
 
@@ -227,7 +227,7 @@ void read_bin_cfg()
 	fclose(f);
 	if (ret != sizeof(cfg_mem))
 	{
-		LOG_ERROR("%s() failed to read %s\n", __FUNCTION__, fname);
+		LOG_ERROR_OLD("%s() failed to read %s\n", __FUNCTION__, fname);
 		return;
 	}
 
@@ -378,7 +378,7 @@ void save_bin_cfg()
 
 	f=open_file_config("el.cfg","wb");
 	if(f == NULL){
-		LOG_ERROR("%s: %s \"el.cfg\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"el.cfg\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return;//blah, whatever
 	}
 	memset(&cfg_mem, 0, sizeof(cfg_mem));	// make sure its clean
@@ -646,7 +646,7 @@ void init_stuff()
 
 	if (chdir(datadir) != 0)
 	{
-		LOG_ERROR("%s() chdir(\"%s\") failed: %s\n", __FUNCTION__, datadir, strerror(errno));
+		LOG_ERROR_OLD("%s() chdir(\"%s\") failed: %s\n", __FUNCTION__, datadir, strerror(errno));
 	}
 
 	init_crc_tables();
@@ -699,7 +699,7 @@ void init_stuff()
 	//if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE | SDL_INIT_EVENTTHREAD) == -1)	// experimental
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE) == -1)
 		{
-			LOG_ERROR("%s: %s\n", no_sdl_str, SDL_GetError());
+			LOG_ERROR_OLD("%s: %s\n", no_sdl_str, SDL_GetError());
 			SDL_Quit();
 			exit(1);
 		}
@@ -740,9 +740,9 @@ void init_stuff()
 	create_loading_win (window_width, window_height, 0);
 	show_window(loading_win);
 
-	LOG_DEBUG("Init extensions.");
+	LOG_DEBUG_OLD("Init extensions.");
 	init_gl_extensions();
-	LOG_DEBUG("Init extensions done");
+	LOG_DEBUG_OLD("Init extensions done");
 
 	init_engine();
 	engine_set_window_size(window_width, window_height, hud_x, hud_y);
@@ -750,9 +750,9 @@ void init_stuff()
 	update_loading_win(init_opengl_str, 5);
 
 	// Setup the new eye candy system
-	LOG_DEBUG("Init eyecandy");
+	LOG_DEBUG_OLD("Init eyecandy");
 	ec_init();
-	LOG_DEBUG("Init eyecandy done");
+	LOG_DEBUG_OLD("Init eyecandy done");
 
 #ifdef  CUSTOM_UPDATE
 	init_custom_update();
@@ -795,9 +795,9 @@ void init_stuff()
 	update_loading_win(init_actor_defs_str, 4);
 	memset(actors_defs, 0, sizeof(actors_defs));
 
-	LOG_DEBUG("Init actor defs");
+	LOG_DEBUG_OLD("Init actor defs");
 	init_actor_defs();
-	LOG_DEBUG("Init actor defs done");
+	LOG_DEBUG_OLD("Init actor defs done");
 	read_emotes_defs("", "emotes.xml");
 
 	missiles_init_defs();
@@ -813,9 +813,9 @@ void init_stuff()
 	build_sun_pos_table();
 	reset_material();
 
-	LOG_DEBUG("Init lights");
+	LOG_DEBUG_OLD("Init lights");
 	init_lights();
-	LOG_DEBUG("Init done");
+	LOG_DEBUG_OLD("Init done");
 
 	disable_local_lights();
 	update_loading_win(init_logs_str, 4);
@@ -922,7 +922,7 @@ void init_stuff()
 
 	update_loading_win(init_network_str, 5);
 	if(SDLNet_Init()<0){
-		LOG_ERROR("%s: %s\n", failed_sdl_net_init, SDLNet_GetError());
+		LOG_ERROR_OLD("%s: %s\n", failed_sdl_net_init, SDLNet_GetError());
 		SDLNet_Quit();
 		SDL_Quit();
 		exit(2);
@@ -930,7 +930,7 @@ void init_stuff()
 	update_loading_win(init_timers_str, 5);
 
 	if(SDL_InitSubSystem(SDL_INIT_TIMER)<0){
-		LOG_ERROR("%s: %s\n", failed_sdl_timer_init, SDL_GetError());
+		LOG_ERROR_OLD("%s: %s\n", failed_sdl_timer_init, SDL_GetError());
 		SDL_Quit();
 	 	exit(1);
 	}
@@ -957,7 +957,7 @@ void init_stuff()
 
 	have_rules=read_rules();
 	if(!have_rules){
-		LOG_ERROR(rules_not_found);
+		LOG_ERROR_OLD(rules_not_found);
 		SDL_Quit();
 		exit(3);
 	}
@@ -1028,5 +1028,5 @@ void init_stuff()
 	skybox_init_gl();
 	popup_init();
 
-	LOG_DEBUG("Init done!");
+	LOG_DEBUG_OLD("Init done!");
 }

@@ -90,11 +90,11 @@ static __inline__ void log_shader_compile_log(GLhandleARB object, const char* sh
 		CHECK_GL_ERRORS();
 		if (error == 1)
 		{
-			LOG_DEBUG("Compiling shader '%s' successful: %s", shader_file_name, info_log);
+			LOG_DEBUG_OLD("Compiling shader '%s' successful: %s", shader_file_name, info_log);
 		}
 		else
 		{
-			LOG_ERROR("Compiling shader '%s' failed: %s", shader_file_name, info_log);
+			LOG_ERROR_OLD("Compiling shader '%s' failed: %s", shader_file_name, info_log);
 		}
 		free(info_log);
 	}
@@ -102,11 +102,11 @@ static __inline__ void log_shader_compile_log(GLhandleARB object, const char* sh
 	{
 		if (error == 1)
 		{
-			LOG_DEBUG("Compiling shader '%s' successful", shader_file_name);
+			LOG_DEBUG_OLD("Compiling shader '%s' successful", shader_file_name);
 		}
 		else
 		{
-			LOG_ERROR("Compiling shader '%s' failed", shader_file_name);
+			LOG_ERROR_OLD("Compiling shader '%s' failed", shader_file_name);
 		}
 	}
 }
@@ -126,11 +126,11 @@ static __inline__ void log_shader_linking_log(GLhandleARB object, GLint error)
 		CHECK_GL_ERRORS();
 		if (error == 1)
 		{
-			LOG_DEBUG("Linking shaders successful: %s", info_log);
+			LOG_DEBUG_OLD("Linking shaders successful: %s", info_log);
 		}
 		else
 		{
-			LOG_ERROR("Linking shaders failed: %s", info_log);
+			LOG_ERROR_OLD("Linking shaders failed: %s", info_log);
 		}
 		free(info_log);
 	}
@@ -138,11 +138,11 @@ static __inline__ void log_shader_linking_log(GLhandleARB object, GLint error)
 	{
 		if (error == 1)
 		{
-			LOG_DEBUG("Linking shaders successful");
+			LOG_DEBUG_OLD("Linking shaders successful");
 		}
 		else
 		{
-			LOG_ERROR("Linking shaders failed");
+			LOG_ERROR_OLD("Linking shaders failed");
 		}
 	}
 }
@@ -319,7 +319,7 @@ static __inline__ GLuint build_filter_lut(const Uint32 size)
 		x += 1.0f / (size - 1);
 	}
 
-	LOG_DEBUG("Filter lookup texture\n");
+	LOG_DEBUG_OLD("Filter lookup texture\n");
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_1D, texture);
 

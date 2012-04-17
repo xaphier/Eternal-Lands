@@ -37,7 +37,7 @@ static int save_aliases ()
 	FILE *fp = open_file_config (NUMERIC_ALIASES_FILENAME, "w");
 	if (fp == NULL)
 	{
-		LOG_ERROR ("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file,
+		LOG_ERROR_OLD ("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file,
 				   NUMERIC_ALIASES_FILENAME, strerror(errno));
 		return -1;
 	}
@@ -182,7 +182,7 @@ static char *unescape_octal_string (const unsigned char *text, int len, int *new
 					value = strtoul (octal_value, &endp, 8);
 					if (*endp)
 					{
-						LOG_ERROR ("%s: %s \\%s\n", reg_error_str,
+						LOG_ERROR_OLD ("%s: %s \\%s\n", reg_error_str,
 								   "Invalid alias escape sequence",
 								   octal_value);
 						free (retval);
@@ -196,7 +196,7 @@ static char *unescape_octal_string (const unsigned char *text, int len, int *new
 			}
 			else
 			{
-				LOG_ERROR ("%s: %s '%c'\n", reg_error_str,
+				LOG_ERROR_OLD ("%s: %s '%c'\n", reg_error_str,
 						   "Invalid alias escape sequence char", *text);
 				free (retval);
 				return NULL;
@@ -229,16 +229,16 @@ static dbuffer_t *expand_alias_parameters( char *parameters, const char *aliaste
 	if (NULL==return_text) {
 		ENTER_DEBUG_MARK("expand text aliases");
 
-		LOG_ERROR("Cannot allocate buffer %d", alias_size);
+		LOG_ERROR_OLD("Cannot allocate buffer %d", alias_size);
 		return NULL;
 	}
 
 	state = PARAM_NORMAL_CHAR;
 
-	LOG_DEBUG("Starting expansion, size is %d", alias_size);
+	LOG_DEBUG_OLD("Starting expansion, size is %d", alias_size);
 
 	while (alias_size) {
-        LOG_DEBUG("Handling char '%c', state %d", *cptr, state);
+        LOG_DEBUG_OLD("Handling char '%c', state %d", *cptr, state);
 		switch (state) {
 		case PARAM_NORMAL_CHAR:
 			if (*cptr == '$') {
@@ -252,12 +252,12 @@ static dbuffer_t *expand_alias_parameters( char *parameters, const char *aliaste
 				/* Ok, try to expand this */
 				param_index = ((unsigned char)(*cptr)) - '0';
 
-				LOG_DEBUG("Index for expansion is %d, params %s", param_index, parameters);
+				LOG_DEBUG_OLD("Index for expansion is %d, params %s", param_index, parameters);
 
 				if (NULL==argv) {
 					argc = makeargv( parameters, &argv);
 
-					LOG_DEBUG("Argc is %d", argc);
+					LOG_DEBUG_OLD("Argc is %d", argc);
 					if (NULL==argv || argc == 0) {
 						LOG_TO_CONSOLE( c_orange1, "Text alias requires parameters, but none given");
 						free( return_text );
@@ -291,7 +291,7 @@ static dbuffer_t *expand_alias_parameters( char *parameters, const char *aliaste
 			}
 			// Invalid $ sequence
 			LOG_TO_CONSOLE( c_orange1, "Invalid sequence found");
-            LOG_DEBUG("Invalid sequence");
+            LOG_DEBUG_OLD("Invalid sequence");
 			dbuffer_destroy( return_text );
 			if (NULL!=argv)
 				freemakeargv(argv);
@@ -313,7 +313,7 @@ static dbuffer_t *expand_alias_parameters( char *parameters, const char *aliaste
 
 	return_text = dbuffer_append_data(return_text, &nullchar, 1);
 
-	LOG_DEBUG("Finished, text is '%s', len %d\n", return_text->data, return_text->current_size);
+	LOG_DEBUG_OLD("Finished, text is '%s', len %d\n", return_text->data, return_text->current_size);
 
 	LEAVE_DEBUG_MARK("expand text aliases");
 
@@ -351,12 +351,12 @@ int init_text_aliases ()
 		numeric_aliases[i] = NULL;
 
 	/* Load file */
-	LOG_DEBUG("Loading aliases");
+	LOG_DEBUG_OLD("Loading aliases");
 
 	fp = open_file_config (NUMERIC_ALIASES_FILENAME, "r");
 	if (fp == NULL)
 	{
-		LOG_DEBUG("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file,
+		LOG_DEBUG_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file,
 				   NUMERIC_ALIASES_FILENAME, strerror(errno));
 		error = 0;
 	}
@@ -367,17 +367,17 @@ int init_text_aliases ()
 			endl = strpbrk (line, "\n\r");
 			if (endl)
 				*endl = 0;
-			LOG_DEBUG("Line %s", line);
+			LOG_DEBUG_OLD("Line %s", line);
 
 			if (generic_numeric_process(line, strlen (line), read_alias_line) < 0)
 			{
-				LOG_ERROR ("%s: %s \"%s\"\n", reg_error_str,
+				LOG_ERROR_OLD ("%s: %s \"%s\"\n", reg_error_str,
 					"Invalid line read in file ",
 					NUMERIC_ALIASES_FILENAME);
 				error = -1;
 				break;
 			}
-			LOG_DEBUG("Loaded alias from %s", line);
+			LOG_DEBUG_OLD("Loaded alias from %s", line);
 			error = 0;
 		}
 		fclose (fp);
@@ -489,13 +489,13 @@ static int generic_numeric_process (char *text, int len, int (*callback) (int in
 				{
 					/* This should never happen, but just to be sure... */
 					//fprintf(stderr,"Out of bounds\n");
-                    LOG_ERROR("Index %lu out of bounds\n", index);
+                    LOG_ERROR_OLD("Index %lu out of bounds\n", index);
 					return -1;
 				}
 				//fprintf(stderr,"Cb index %d\n", index);
 				return callback (index, text, len);
 			}
-            LOG_ERROR("Invalid number '%s'\n", num_to_process);
+            LOG_ERROR_OLD("Invalid number '%s'\n", num_to_process);
 			return -1;
 		}
 		return -1;		/* Invalid */

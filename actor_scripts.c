@@ -1021,7 +1021,7 @@ void next_command()
 				{
 					actor *a = actors_list[i];
 
-					LOG_ERROR("%s: %d: command incompatible with range mode detected: %d", __FUNCTION__, __LINE__, actors_list[i]->que[0]);
+					LOG_ERROR_OLD("%s: %d: command incompatible with range mode detected: %d", __FUNCTION__, __LINE__, actors_list[i]->que[0]);
 					missiles_log_message("%s (%d): forcing aim mode exit", a->actor_name, a->actor_id);
 					a->cal_h_rot_start = 0.0;
 					a->cal_v_rot_start = 0.0;
@@ -1320,7 +1320,7 @@ void next_command()
 						actors_list[i]->cal_h_rot_start = 0.0;
 						actors_list[i]->cal_v_rot_start = 0.0;
 						if (actors_list[i]->range_actions_count != 1) {
-							LOG_ERROR("%s (%d): entering in range mode with an non empty range action queue!",
+							LOG_ERROR_OLD("%s (%d): entering in range mode with an non empty range action queue!",
 									  actors_list[i]->actor_name, actors_list[i]->actor_id);
 						}
 					}
@@ -1391,13 +1391,13 @@ void next_command()
 						if (actors_list[i]->cal_rotation_blend < 0.0 ||
 							(actors_list[i]->cal_h_rot_end == 0.0 &&
 							 actors_list[i]->cal_v_rot_end == 0.0)) {
-							LOG_ERROR("next_command: trying to leave range mode while we are not in it => aborting safely...");
+							LOG_ERROR_OLD("next_command: trying to leave range mode while we are not in it => aborting safely...");
 							no_action = 1;
 							if (ACTOR(i)->horse_rotated) {rotate_actor_and_horse_range(i,1); ACTOR(i)->horse_rotated=0;}
 							break;
 						}
 						else {
-							LOG_ERROR("next_command: trying to leave range mode while we are not in it => continuing because of a wrong actor bones rotation!");
+							LOG_ERROR_OLD("next_command: trying to leave range mode while we are not in it => continuing because of a wrong actor bones rotation!");
 						}
 					}
 
@@ -1438,7 +1438,7 @@ void next_command()
 						action->state = 3;
 
 						if (actors_list[i]->in_aim_mode != 1) {
-							LOG_ERROR("next_command: trying to fire an arrow out of range mode => aborting!");
+							LOG_ERROR_OLD("next_command: trying to fire an arrow out of range mode => aborting!");
 							no_action = 1;
 							missiles_log_message("%s (%d): cleaning the queue from aim_mode_fire command (error)",
 												 actors_list[i]->actor_name, actors_list[i]->actor_id);
@@ -1877,7 +1877,7 @@ void add_command_to_actor(int actor_id, unsigned char command)
 	if(!act){
 		//Resync
 		//if we got here, it means we don't have this actor, so get it from the server...
-		LOG_ERROR("%s %d - %d\n", cant_add_command, command, actor_id);
+		LOG_ERROR_OLD("%s %d - %d\n", cant_add_command, command, actor_id);
 	} else {
 		LOCK_ACTORS_LISTS();
 
@@ -1890,7 +1890,7 @@ void add_command_to_actor(int actor_id, unsigned char command)
 				act->range_actions_count > 0)
 				act->range_actions[act->range_actions_count-1].shot_type = MISSED_SHOT;
 			else
-				LOG_ERROR("%s (%d): unable to add a missed shot action, the queue is empty!", act->actor_name, actor_id);
+				LOG_ERROR_OLD("%s (%d): unable to add a missed shot action, the queue is empty!", act->actor_name, actor_id);
 			UNLOCK_ACTORS_LISTS();
 			return;
 		}
@@ -1900,7 +1900,7 @@ void add_command_to_actor(int actor_id, unsigned char command)
 				act->range_actions_count > 0)
 				act->range_actions[act->range_actions_count-1].shot_type = CRITICAL_SHOT;
 			else
-				LOG_ERROR("%s (%d): unable to add a critical shot action, the queue is empty!", act->actor_name, actor_id);
+				LOG_ERROR_OLD("%s (%d): unable to add a critical shot action, the queue is empty!", act->actor_name, actor_id);
 			UNLOCK_ACTORS_LISTS();
 			return;
 		}
@@ -1910,7 +1910,7 @@ void add_command_to_actor(int actor_id, unsigned char command)
 				act->range_actions_count > 0)
 				act->range_actions[act->range_actions_count-1].reload = 1;
 			else
-				LOG_ERROR("%s (%d): unable to add a reload action, the queue is empty!", act->actor_name, actor_id);
+				LOG_ERROR_OLD("%s (%d): unable to add a reload action, the queue is empty!", act->actor_name, actor_id);
 			UNLOCK_ACTORS_LISTS();
 			return;
 		}
@@ -2163,7 +2163,7 @@ void add_command_to_actor(int actor_id, unsigned char command)
 		UNLOCK_ACTORS_LISTS();
 
 		if (k != k2) {
-			LOG_ERROR("Inconsistency between queues of attached actors %s (%d) and %s (%d)!",
+			LOG_ERROR_OLD("Inconsistency between queues of attached actors %s (%d) and %s (%d)!",
 					  act->actor_name,
 					  act->actor_id,
 					  actors_list[act->attached_actor]->actor_name,
@@ -2173,7 +2173,7 @@ void add_command_to_actor(int actor_id, unsigned char command)
 		if(k>MAX_CMD_QUEUE-2){
 			int i;
 			int k;
-			LOG_ERROR("Too much commands in the queue for actor %d (%s) => skip emotes!",
+			LOG_ERROR_OLD("Too much commands in the queue for actor %d (%s) => skip emotes!",
 					  act->actor_id, act->actor_name);
 			for(i=MAX_CMD_QUEUE-1;i>=0;i--) {
 				if(act->que[i]>=emote_cmd&&act->que[i]<wait_cmd) {
@@ -2190,13 +2190,13 @@ void add_command_to_actor(int actor_id, unsigned char command)
 				}
 			}
 			//if we are here no emotes have been skipped
-			LOG_ERROR("Too much commands in the queue for actor %d (%s) => resync!\n",
+			LOG_ERROR_OLD("Too much commands in the queue for actor %d (%s) => resync!\n",
 					  act->actor_id, act->actor_name);
 #ifdef	ANIMATION_SCALING
-			LOG_ERROR("animation_scale: %f\n", act->animation_scale);
+			LOG_ERROR_OLD("animation_scale: %f\n", act->animation_scale);
 #endif	/* ANIMATION_SCALING */
 			for (i = 0; i < MAX_CMD_QUEUE; ++i)
-				LOG_ERROR("%dth command in the queue: %d\n", i, (int)act->que[i]);
+				LOG_ERROR_OLD("%dth command in the queue: %d\n", i, (int)act->que[i]);
 			update_all_actors();
 		}
 	}
@@ -2220,7 +2220,7 @@ void queue_emote(actor *act, emote_data *emote){
 		}
 	}
 	if (k > MAX_EMOTE_QUEUE - 2)
-		LOG_ERROR("Too many commands in the emote queue for actor %d (%s)", act->actor_id, act->actor_name);
+		LOG_ERROR_OLD("Too many commands in the emote queue for actor %d (%s)", act->actor_id, act->actor_name);
 
 
 }
@@ -2239,7 +2239,7 @@ void add_emote_to_actor(int actor_id, int emote_id){
 		//dirty, but avoids warnings :P
 		he=hash_get(emotes,(void*)(NULL+emote_id));
 		if(!he) {
-			LOG_ERROR("%s (Emote) %i- NULL emote passed", cant_add_command,emote_id);
+			LOG_ERROR_OLD("%s (Emote) %i- NULL emote passed", cant_add_command,emote_id);
 			UNLOCK_ACTORS_LISTS();
 			return;
 		}
@@ -2258,7 +2258,7 @@ void add_emote_to_actor(int actor_id, int emote_id){
 	
 	//printf("emote message to be added %p\n",emote);
 	if (!act) {
-		LOG_ERROR("%s (Emote) %d - NULL actor passed", cant_add_command, emote);
+		LOG_ERROR_OLD("%s (Emote) %d - NULL actor passed", cant_add_command, emote);
 	} else {
 		queue_emote(act,emote);
 	}
@@ -2440,7 +2440,7 @@ void actor_check_string(actor_types *act, const char *section, const char *type,
 	if (value == NULL || *value=='\0')
 	{
 #ifdef DEBUG
-		LOG_ERROR("Data Error in %s(%d): Missing %s.%s", act->actor_name, act->actor_type, section, type);
+		LOG_ERROR_OLD("Data Error in %s(%d): Missing %s.%s", act->actor_name, act->actor_type, section, type);
 #endif // DEBUG
 	}
 }
@@ -2450,7 +2450,7 @@ void actor_check_int(actor_types *act, const char *section, const char *type, in
 	if (value < 0)
 	{
 #ifdef DEBUG
-		LOG_ERROR("Data Error in %s(%d): Missing %s.%s", act->actor_name, act->actor_type, section, type);
+		LOG_ERROR_OLD("Data Error in %s(%d): Missing %s.%s", act->actor_name, act->actor_type, section, type);
 #endif // DEBUG
 	}
 }
@@ -2639,7 +2639,7 @@ emote_frame *get_emote_frames(const xmlNode *node)
 				} while(tmp[i]&&k<MAX_EMOTE_FRAME);
 				frames->nframes=k;
 			} else {
-				LOG_ERROR("unknown emote property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown emote property \"%s\"", item->name);
 			}
 		}
 	}
@@ -2699,7 +2699,7 @@ int parse_emote_def(emote_data *emote, const xmlNode *node)
 				get_emote_props(item,&s,&r,&h);
 				set_emote_anim(emote,get_emote_frames(item),s,r,h,EMOTE_RUNNING);
 			} else {
-				LOG_ERROR("unknown emote property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown emote property \"%s\"", item->name);
 				ok = 0;
 			}
 		}
@@ -2720,7 +2720,7 @@ int parse_emotes_defs(const xmlNode *node)
 			if (xmlStrcasecmp(def->name, (xmlChar*)"emote") == 0) {
 				int id = get_int_property(def, "id");
 				if (id < 0) {
-					LOG_ERROR("Unable to find id property %s\n", def->name);
+					LOG_ERROR_OLD("Unable to find id property %s\n", def->name);
 					ok=0;
 				} else {
 					emote=new_emote(id);
@@ -2743,7 +2743,7 @@ int parse_emotes_defs(const xmlNode *node)
 					ok&=parse_actor_frames(&actors_defs[draegoni_male], def->children, NULL);
 				} else ok &= parse_actor_frames(&actors_defs[act_type], def->children, NULL);
 			} else{
-				LOG_ERROR("parse error: emote or include expected");
+				LOG_ERROR_OLD("parse error: emote or include expected");
 				ok = 0;
 			}
 		else if (def->type == XML_ENTITY_REF_NODE) {
@@ -2765,16 +2765,16 @@ int read_emotes_defs(const char *dir, const char *index)
 
 	doc = xmlReadFile(fname, NULL, 0);
 	if (doc == NULL) {
-		LOG_ERROR("Unable to read emotes definition file %s", fname);
+		LOG_ERROR_OLD("Unable to read emotes definition file %s", fname);
 		return 0;
 	}
 
 	root = xmlDocGetRootElement(doc);
 	if (root == NULL) {
-		LOG_ERROR("Unable to parse emotes definition file %s", fname);
+		LOG_ERROR_OLD("Unable to parse emotes definition file %s", fname);
 		ok = 0;
 	} else if (xmlStrcasecmp(root->name, (xmlChar*)"emotes") != 0) {
-		LOG_ERROR("Unknown key \"%s\" (\"emotes\" expected).", root->name);
+		LOG_ERROR_OLD("Unknown key \"%s\" (\"emotes\" expected).", root->name);
 		ok = 0;
 	} else {
 		ok = parse_emotes_defs(root);
@@ -2841,7 +2841,7 @@ int parse_actor_shirt(actor_types *act, const xmlNode *cfg, const xmlNode *defau
 	}
 */
 	if(col_idx < 0 || col_idx >= actor_part_sizes[ACTOR_SHIRT_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -2867,7 +2867,7 @@ int parse_actor_shirt(actor_types *act, const xmlNode *cfg, const xmlNode *defau
 			} else if(xmlStrcasecmp(item->name, (xmlChar*)"torsomask") == 0) {
 				get_string_value(shirt->torso_mask, sizeof(shirt->torso_mask), item);
 			} else {
-				LOG_ERROR("unknown shirt property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown shirt property \"%s\"", item->name);
 				ok= 0;
 			}
 		}
@@ -2912,7 +2912,7 @@ int parse_actor_skin (actor_types *act, const xmlNode *cfg, const xmlNode *defau
 	}
 
 	if(col_idx < 0 || col_idx >= actor_part_sizes[ACTOR_SKIN_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -2939,7 +2939,7 @@ int parse_actor_skin (actor_types *act, const xmlNode *cfg, const xmlNode *defau
 			} else if (xmlStrcasecmp (item->name, (xmlChar*)"feet") == 0) {
 				get_string_value (skin->feet_name, sizeof (skin->feet_name), item);
 			} else {
-				LOG_ERROR("unknown skin property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown skin property \"%s\"", item->name);
 				ok = 0;
 			}
 		}
@@ -2979,7 +2979,7 @@ int parse_actor_legs (actor_types *act, const xmlNode *cfg, const xmlNode *defau
 	}
 */
 	if(col_idx < 0 || col_idx >= actor_part_sizes[ACTOR_LEGS_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -3005,7 +3005,7 @@ int parse_actor_legs (actor_types *act, const xmlNode *cfg, const xmlNode *defau
 				if (mode < 0) mode = GLOW_NONE;
 				legs->glow = mode;
 			} else {
-				LOG_ERROR("unknown legs property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown legs property \"%s\"", item->name);
 				ok = 0;
 			}
 		}
@@ -3240,7 +3240,7 @@ int parse_actor_weapon_detail (actor_types *act, weapon_part *weapon, const xmlN
 				}
 				else
 				{
-					LOG_ERROR("unknown weapon property \"%s\"", item->name);
+					LOG_ERROR_OLD("unknown weapon property \"%s\"", item->name);
 					ok = 0;
 				}
 			}
@@ -3268,7 +3268,7 @@ int parse_actor_weapon(actor_types *act, const xmlNode *cfg, const xmlNode *defa
 	}
 */
 	if(type_idx < 0 || type_idx >= actor_part_sizes[ACTOR_WEAPON_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -3346,7 +3346,7 @@ int parse_actor_body_part (actor_types *act, body_part *part, const xmlNode *cfg
 				if(mode < 0) mode = GLOW_NONE;
 				part->glow= mode;
 			} else {
-				LOG_ERROR("unknown %s property \"%s\"", part_name, item->name);
+				LOG_ERROR_OLD("unknown %s property \"%s\"", part_name, item->name);
 				ok = 0;
 			}
 		}
@@ -3392,7 +3392,7 @@ int parse_actor_helmet (actor_types *act, const xmlNode *cfg, const xmlNode *def
 	}
 */
 	if(type_idx < 0 || type_idx >= actor_part_sizes[ACTOR_HELMET_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -3419,7 +3419,7 @@ int parse_actor_neck (actor_types *act, const xmlNode *cfg, const xmlNode *defau
 	type_idx= get_int_property(cfg, "id");
 
 	if(type_idx < 0 || type_idx >= actor_part_sizes[ACTOR_NECK_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -3479,7 +3479,7 @@ int parse_actor_sounds(actor_types *act, const xmlNode *cfg)
 			} else if (xmlStrcasecmp (item->name, (xmlChar*)"battlecry") == 0) {
 				i = get_index_for_sound_type_name(str);
 				if (i == -1)
-					LOG_ERROR("Unknown battlecry sound (%s) in actor def: %s", str, act->actor_name);
+					LOG_ERROR_OLD("Unknown battlecry sound (%s) in actor def: %s", str, act->actor_name);
 				else
 				{
 					act->battlecry.sound = i;
@@ -3490,7 +3490,7 @@ int parse_actor_sounds(actor_types *act, const xmlNode *cfg)
 						act->battlecry.scale = 1.0f;
 				}
 			} else {
-				LOG_ERROR("Unknown sound \"%s\"", item->name);
+				LOG_ERROR_OLD("Unknown sound \"%s\"", item->name);
 				ok = 0;
 			}
 		}
@@ -3514,7 +3514,7 @@ int parse_actor_cape (actor_types *act, const xmlNode *cfg, const xmlNode *defau
 	}
 */
 	if(type_idx < 0 || type_idx >= actor_part_sizes[ACTOR_CAPE_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -3544,7 +3544,7 @@ int parse_actor_head (actor_types *act, const xmlNode *cfg, const xmlNode *defau
 	}
 
 	if(type_idx < 0 || type_idx >= actor_part_sizes[ACTOR_HEAD_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -3584,7 +3584,7 @@ int parse_actor_shield_part (actor_types *act, shield_part *part, const xmlNode 
 			} else if(xmlStrcasecmp(item->name, (xmlChar*)"missile") == 0) {
 				part->missile_type = get_int_value(item);
 			} else {
-				LOG_ERROR("unknown shield property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown shield property \"%s\"", item->name);
 				ok = 0;
 			}
 		}
@@ -3620,7 +3620,7 @@ int parse_actor_shield (actor_types *act, const xmlNode *cfg, const xmlNode *def
 	}
 */
 	if(type_idx < 0 || type_idx >= actor_part_sizes[ACTOR_SHIELD_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -3653,7 +3653,7 @@ int parse_actor_hair (actor_types *act, const xmlNode *cfg, const xmlNode *defau
 	}
 */
 	if(col_idx < 0 || col_idx >= actor_part_sizes[ACTOR_HAIR_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -3702,7 +3702,7 @@ struct cal_anim cal_load_idle(actor_types *act, char *str)
 
 	res.anim_index=CalCoreModel_ELLoadCoreAnimation(act->coremodel,str,act->scale);
 	if(res.anim_index == -1) {
-		LOG_ERROR("Cal3d error: %s: %s\n", str, CalError_GetLastErrorDescription());
+		LOG_ERROR_OLD("Cal3d error: %s: %s\n", str, CalError_GetLastErrorDescription());
 		return res;
 	}
 	coreanim=CalCoreModel_GetCoreAnimation(act->coremodel,res.anim_index);
@@ -3710,7 +3710,7 @@ struct cal_anim cal_load_idle(actor_types *act, char *str)
 	if (coreanim) {
 		res.duration=CalCoreAnimation_GetDuration(coreanim);
 	} else {
-		LOG_ERROR("No Anim: %s\n",str);
+		LOG_ERROR_OLD("No Anim: %s\n",str);
 	}
 
 	return res;
@@ -3933,7 +3933,7 @@ int parse_actor_frames (actor_types *act, const xmlNode *cfg, const xmlNode *def
 			}
 			else if (index != -2)
 			{
-				LOG_ERROR("unknown frame property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown frame property \"%s\"", item->name);
 				ok = 0;
 			}
 		}
@@ -3967,12 +3967,12 @@ int parse_actor_attachment (actor_types *act, const xmlNode *cfg, int actor_type
 				if (skel) {
 					att->actor_type[actor_type].parent_bone_id = find_core_bone_id(skel, str);
 					if (att->actor_type[actor_type].parent_bone_id < 0) {
-						LOG_ERROR("bone %s was not found in skeleton of actor type %d", str, actor_type);
+						LOG_ERROR_OLD("bone %s was not found in skeleton of actor type %d", str, actor_type);
 						ok = 0;
 					}
 				}
 				else {
-					LOG_ERROR("the skeleton for actor type %d doesn't exist!", actor_type);
+					LOG_ERROR_OLD("the skeleton for actor type %d doesn't exist!", actor_type);
 					ok = 0;
 				}
 			} else if (xmlStrcasecmp (item->name, (xmlChar*)"local_bone") == 0) {
@@ -3981,12 +3981,12 @@ int parse_actor_attachment (actor_types *act, const xmlNode *cfg, int actor_type
 				if (skel) {
 					att->actor_type[actor_type].local_bone_id = find_core_bone_id(skel, str);
 					if (att->actor_type[actor_type].local_bone_id < 0) {
-						LOG_ERROR("bone %s was not found in skeleton of actor type %d", str, act->actor_type);
+						LOG_ERROR_OLD("bone %s was not found in skeleton of actor type %d", str, act->actor_type);
 						ok = 0;
 					}
 				}
 				else {
-					LOG_ERROR("the skeleton for actor type %d doesn't exist!", act->actor_type);
+					LOG_ERROR_OLD("the skeleton for actor type %d doesn't exist!", act->actor_type);
 					ok = 0;
 				}
 			} else if (xmlStrcasecmp (item->name, (xmlChar*)"held_shift") == 0) {
@@ -4001,7 +4001,7 @@ int parse_actor_attachment (actor_types *act, const xmlNode *cfg, int actor_type
 						else if (xmlStrcasecmp (attr->name, (xmlChar*)"z") == 0)
 							att->actor_type[actor_type].shift[2] = atof((char*)attr->children->content);
 						else {
-							LOG_ERROR("unknown attachment shift attribute \"%s\"", attr->name);
+							LOG_ERROR_OLD("unknown attachment shift attribute \"%s\"", attr->name);
 							ok = 0;
 						}
 					}
@@ -4051,7 +4051,7 @@ int parse_actor_attachment (actor_types *act, const xmlNode *cfg, int actor_type
 					, get_int_property(item, "duration")
 					);
 			} else {
-				LOG_ERROR("unknown attachment property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown attachment property \"%s\"", item->name);
 				ok = 0;
 			}
 		} else if (item->type == XML_ENTITY_REF_NODE) {
@@ -4076,7 +4076,7 @@ int parse_actor_boots (actor_types *act, const xmlNode *cfg, const xmlNode *defa
 	}
 */
 	if(col_idx < 0 || col_idx >= actor_part_sizes[ACTOR_BOOTS_SIZE]){
-		LOG_ERROR("Unable to find id/property node %s\n", cfg->name);
+		LOG_ERROR_OLD("Unable to find id/property node %s\n", cfg->name);
 		return 0;
 	}
 
@@ -4102,7 +4102,7 @@ int parse_actor_boots (actor_types *act, const xmlNode *cfg, const xmlNode *defa
 				if (mode < 0) mode = GLOW_NONE;
 				boots->glow = mode;
 			} else {
-				LOG_ERROR("unknown legs property \"%s\"", item->name);
+				LOG_ERROR_OLD("unknown legs property \"%s\"", item->name);
 				ok = 0;
 			}
 		}
@@ -4236,7 +4236,7 @@ int cal_load_mesh(actor_types *act, const char *fn, const char *kind)
 		mesh=CalCoreModel_GetCoreMesh(act->coremodel,res);
 		if ((mesh)&&(act->mesh_scale!=1.0)) CalCoreMesh_Scale(mesh,act->mesh_scale);
 	} else {
-		LOG_ERROR("Cal3d error: %s: %s\n", fn, CalError_GetLastErrorDescription());
+		LOG_ERROR_OLD("Cal3d error: %s: %s\n", fn, CalError_GetLastErrorDescription());
 	}
 
 	return res;
@@ -4265,7 +4265,7 @@ int cal_load_weapon_mesh (actor_types *act, const char *fn, const char *kind)
 		mesh=CalCoreModel_GetCoreMesh(act->coremodel,res);
 		if ((mesh)&&(act->skel_scale!=1.0)) CalCoreMesh_Scale(mesh,act->skel_scale);
 	} else {
-		LOG_ERROR("Cal3d error: %s: %s\n", fn, CalError_GetLastErrorDescription());
+		LOG_ERROR_OLD("Cal3d error: %s: %s\n", fn, CalError_GetLastErrorDescription());
 	}
 
 	return res;
@@ -4303,7 +4303,7 @@ int parse_actor_nodes(actor_types *act, const xmlNode *cfg, const xmlNode *defau
 				get_string_value(skeleton_name, sizeof(skeleton_name), item);
 				act->coremodel= CalCoreModel_New("Model");
 				if(!CalCoreModel_ELLoadCoreSkeleton(act->coremodel, skeleton_name)) {
-					LOG_ERROR("Cal3d error: %s: %s\n", skeleton_name, CalError_GetLastErrorDescription());
+					LOG_ERROR_OLD("Cal3d error: %s: %s\n", skeleton_name, CalError_GetLastErrorDescription());
 					act->skeleton_type = -1;
 				}
 				else {
@@ -4348,13 +4348,13 @@ int parse_actor_nodes(actor_types *act, const xmlNode *cfg, const xmlNode *defau
 			} else if (!strcmp(name, "actor_attachment")) {
 				int id = get_int_property(item, "id");
 				if (id < 0 || id >= MAX_ACTOR_DEFS) {
-					LOG_ERROR("Unable to find id/property node %s\n", item->name);
+					LOG_ERROR_OLD("Unable to find id/property node %s\n", item->name);
 					ok = 0;
 				}
 				else
 					ok &= parse_actor_attachment(act, item, id);
 			} else {
-				LOG_ERROR("Unknown actor attribute \"%s\"", item->name);
+				LOG_ERROR_OLD("Unknown actor attribute \"%s\"", item->name);
 				ok= 0;
 			}
 		} else if (item->type == XML_ENTITY_REF_NODE) {
@@ -4386,7 +4386,7 @@ int parse_actor_script(const xmlNode *cfg)
 		safe_snprintf(str, sizeof(str), "Data Error in %s(%d): Actor ID out of range %d",
 			name, act_idx, act_idx
 		);
-		LOG_ERROR(str);
+		LOG_ERROR_OLD(str);
 		return 0;
 	}
 
@@ -4400,7 +4400,7 @@ int parse_actor_script(const xmlNode *cfg)
 		safe_snprintf(str, sizeof(str), "Data Error in %s(%d): Already loaded %s(%d)",
 			name, act_idx, act->actor_name, act->actor_type
 		);
-		LOG_ERROR(str);
+		LOG_ERROR_OLD(str);
 	}
 	ok= 1;
 	act->actor_type= act_idx;	// memorize the ID & name to help in debugging
@@ -4481,7 +4481,7 @@ int parse_actor_defs(const xmlNode *node)
 			}
 			else
 			{
-				LOG_ERROR("parse error: actor or include expected");
+				LOG_ERROR_OLD("parse error: actor or include expected");
 				ok = 0;
 			}
 		}
@@ -4512,7 +4512,7 @@ int parse_skin_colours(const xmlNode *node)
 				skin_color_dict[num_skin_colors].index = get_int_value(data);
 				num_skin_colors++;
 			} else {
-				LOG_ERROR("parse error: skin or include expected");
+				LOG_ERROR_OLD("parse error: skin or include expected");
 				ok = 0;
 			}
 		} else if (data->type == XML_ENTITY_REF_NODE) {
@@ -4540,7 +4540,7 @@ int parse_glow_modes(const xmlNode *node)
 				glow_mode_dict[num_glow_modes].index = get_int_value(data);
 				num_glow_modes++;
 			} else {
-				LOG_ERROR("parse error: glow or include expected");
+				LOG_ERROR_OLD("parse error: glow or include expected");
 				ok = 0;
 			}
 		} else if (data->type == XML_ENTITY_REF_NODE) {
@@ -4568,7 +4568,7 @@ int parse_head_numbers(const xmlNode *node)
 				head_number_dict[num_head_numbers].index = get_int_value(data);
 				num_head_numbers++;
 			} else {
-				LOG_ERROR("parse error: head or include expected");
+				LOG_ERROR_OLD("parse error: head or include expected");
 				ok = 0;
 			}
 		} else if (data->type == XML_ENTITY_REF_NODE) {
@@ -4593,7 +4593,7 @@ int parse_actor_dict(const xmlNode *node)
 			} else if (xmlStrcasecmp(data->name, (xmlChar*)"head_numbers") == 0) {
 				ok &= parse_head_numbers(data);
 			} else {
-				LOG_ERROR("parse error: skin_colors, glow_modes, head_numbers or include expected");
+				LOG_ERROR_OLD("parse error: skin_colors, glow_modes, head_numbers or include expected");
 				ok = 0;
 			}
 		} else if (data->type == XML_ENTITY_REF_NODE) {
@@ -4638,7 +4638,7 @@ int parse_actor_part_sizes(const xmlNode *node)
 					actor_part_sizes[ACTOR_LEGS_SIZE] = get_int_value(data);
 				}
 			} else {
-				LOG_ERROR("parse error: max or include expected");
+				LOG_ERROR_OLD("parse error: max or include expected");
 				ok = 0;
 			}
 		} else if (data->type == XML_ENTITY_REF_NODE) {
@@ -4663,7 +4663,7 @@ int parse_actor_data(const xmlNode *node)
 					ok &= parse_actor_defs(data);
 				else
 				{
-					LOG_ERROR("parse error: actor_dict (%d) and actor_part_maximums (%d) *must* be parsed before actors", dict, parts);
+					LOG_ERROR_OLD("parse error: actor_dict (%d) and actor_part_maximums (%d) *must* be parsed before actors", dict, parts);
 					ok = 0;
 				}
 			} else if (xmlStrcasecmp(data->name, (xmlChar*)"actor_dict") == 0) {
@@ -4671,7 +4671,7 @@ int parse_actor_data(const xmlNode *node)
 			} else if (xmlStrcasecmp(data->name, (xmlChar*)"actor_part_maximums") == 0) {
 				ok &= parts = parse_actor_part_sizes(data);
 			} else {
-				LOG_ERROR("parse error: actors, actor_dict, actor_part_maximums or include expected");
+				LOG_ERROR_OLD("parse error: actors, actor_dict, actor_part_maximums or include expected");
 				ok = 0;
 			}
 		} else if (data->type == XML_ENTITY_REF_NODE) {
@@ -4694,20 +4694,20 @@ int read_actor_defs (const char *dir, const char *index)
 
 	doc = xmlReadFile (fname, NULL, 0);
 	if (doc == NULL) {
-		LOG_ERROR("Unable to read actor definition file %s", fname);
+		LOG_ERROR_OLD("Unable to read actor definition file %s", fname);
 		return 0;
 	}
 
 	root = xmlDocGetRootElement (doc);
 	if (root == NULL) {
-		LOG_ERROR("Unable to parse actor definition file %s", fname);
+		LOG_ERROR_OLD("Unable to parse actor definition file %s", fname);
 		ok = 0;
 #ifndef EXT_ACTOR_DICT
 	} else if (xmlStrcasecmp (root->name, (xmlChar*)"actors") != 0) {
-		LOG_ERROR("Unknown key \"%s\" (\"actors\" expected).", root->name);
+		LOG_ERROR_OLD("Unknown key \"%s\" (\"actors\" expected).", root->name);
 #else // EXT_ACTOR_DICT
 	} else if (xmlStrcasecmp (root->name, (xmlChar*)"actor_data") != 0) {
-		LOG_ERROR("Unknown key \"%s\" (\"actor_data\" expected).", root->name);
+		LOG_ERROR_OLD("Unknown key \"%s\" (\"actor_data\" expected).", root->name);
 #endif // EXT_ACTOR_DICT
 		ok = 0;
 	} else {

@@ -56,7 +56,7 @@ static Uint32 download_file(const char* file_name, FILE* file,
 	// resolve the hostname
 	if ((file_size == 0) || (buffer == 0) || (size == 0))
 	{
-		LOG_ERROR("buffer: %p, size: %d", buffer, size);
+		LOG_ERROR_OLD("buffer: %p, size: %d", buffer, size);
 
 		return 1;  // can't resolve the hostname
 	}
@@ -281,7 +281,7 @@ static int download_files_thread(void* _data)
 
 			if (result != 0)
 			{
-				LOG_ERROR("Download error %d while updating "
+				LOG_ERROR_OLD("Download error %d while updating "
 					"file '%s' from server '%s', retrying"
 					" it", result, info->file_name,
 					data->server);
@@ -293,7 +293,7 @@ static int download_files_thread(void* _data)
 			if (file_read(file, size, &file_buffer, &file_size) !=
 				0)
 			{
-				LOG_ERROR("Read error while updating file '%s' "
+				LOG_ERROR_OLD("Read error while updating file '%s' "
 					"from server '%s', retrying it",
 					info->file_name, data->server);
 
@@ -689,7 +689,7 @@ static Uint32 build_update_list(const char* server, const char* file,
 
 	if (tmp_file == 0)
 	{
-		LOG_ERROR("Can't get tmp file");
+		LOG_ERROR_OLD("Can't get tmp file");
 		return 3;
 	}
 
@@ -751,7 +751,7 @@ static Uint32 build_update_list(const char* server, const char* file,
 			" file '%s' from server '%s' using path '%s', error %d.",
 			file, server, path, result);
 
-		LOG_ERROR(error_str);
+		LOG_ERROR_OLD(error_str);
 
 		update_progress_function(error_str, 0, 0, user_data);
 
@@ -774,7 +774,7 @@ static Uint32 build_update_list(const char* server, const char* file,
 			" file '%s' from server '%s' using path '%s' has wrong"
 			" magic number in first line.", file, server, path);
 
-		LOG_ERROR(error_str);
+		LOG_ERROR_OLD(error_str);
 
 		update_progress_function(error_str, 0, 0, user_data);
 

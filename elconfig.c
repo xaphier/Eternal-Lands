@@ -1339,7 +1339,7 @@ int set_var_unsaved(const char *str, var_name_type type)
 
 	if (var_index == -1)
 	{
-		LOG_ERROR("Can't find var '%s', type %d", str, type);
+		LOG_ERROR_OLD("Can't find var '%s', type %d", str, type);
 		return 0;
 	}
 	our_vars.var[var_index]->saved = 0;
@@ -1385,7 +1385,7 @@ int set_var_OPT_INT(const char *str, int new_value)
 		return 0;
 	}
 
-	LOG_ERROR("Can't find var '%s', type 'OPT_INT'", str);
+	LOG_ERROR_OLD("Can't find var '%s', type 'OPT_INT'", str);
 	return 0;
 }
 #endif
@@ -1394,7 +1394,7 @@ void change_language(const char *new_lang)
 {
 	int var_index;
 
-	LOG_ERROR("Language changed, was [%s] now [%s]\n",  lang, new_lang);
+	LOG_ERROR_OLD("Language changed, was [%s] now [%s]\n",  lang, new_lang);
 	/* guard against being the same string */
 	if (strcmp(lang, new_lang) != 0)
 		safe_strncpy(lang, new_lang, sizeof(lang));
@@ -1407,7 +1407,7 @@ void change_language(const char *new_lang)
 	}
 	else
 	{
-		LOG_ERROR("Can't find var '%s', type 'OPT_STRING'", "language");
+		LOG_ERROR_OLD("Can't find var '%s', type 'OPT_STRING'", "language");
 	}
 }
 
@@ -1421,7 +1421,7 @@ static __inline__ void check_option_var(char* name)
 	i= find_var(name, IN_GAME_VAR);
 	if (i < 0)
 	{
-		LOG_ERROR("Can't find var '%s', type 'IN_GAME_VAR'", name);
+		LOG_ERROR_OLD("Can't find var '%s', type 'IN_GAME_VAR'", name);
 		return;
 	}
 
@@ -1483,7 +1483,7 @@ int check_var (char *str, var_name_type type)
 	i= find_var (str, type);
 	if (i < 0)
 	{
-		LOG_WARNING("Can't find var '%s', type %d", str, type);
+		LOG_WARNING_OLD("Can't find var '%s', type %d", str, type);
 		return -1;
 	}
 
@@ -1721,7 +1721,7 @@ void add_multi_option(char * name, char * str)
 
 	if (var_index == -1)
 	{
-		LOG_ERROR("Can't find var '%s', type 'INI_FILE_VAR'", name);
+		LOG_ERROR_OLD("Can't find var '%s', type 'INI_FILE_VAR'", name);
 	}
 	else
 	{
@@ -2136,7 +2136,7 @@ int read_el_ini ()
 #endif //MAP_EDITOR
 
 	if (fin == NULL){
-		LOG_ERROR("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return 0;
 	}
 
@@ -2196,7 +2196,7 @@ int write_el_ini ()
 	// read the ini file
 	file = open_file_config("el.ini", "r");
 	if(file == NULL){
-		LOG_ERROR("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 	} else {
 		maxlines= 300;
 	 	cont= malloc (maxlines * sizeof (input_line));
@@ -2214,7 +2214,7 @@ int write_el_ini ()
 	// Now write the contents of the file, updating those variables that have been changed
 	file = open_file_config("el.ini", "w");
 	if(file == NULL){
-		LOG_ERROR("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"el.ini\": %s\n", reg_error_str, cant_open_file, strerror(errno));
 		return 0;
 	}
 

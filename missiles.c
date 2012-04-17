@@ -124,7 +124,7 @@ int missiles_add(int type,
 	float dist;
         
 	if (missiles_count >= MAX_MISSILES) {
-		LOG_ERROR("too many missiles, can't add the last one!");
+		LOG_ERROR_OLD("too many missiles, can't add the last one!");
 		return MAX_MISSILES;
 	}
 
@@ -139,7 +139,7 @@ int missiles_add(int type,
 				 direction[2]*direction[2]);
 
 	if (fabs(dist) < EPSILON) {
-		LOG_ERROR("null length shot detected between (%f,%f,%f) and (%f,%f,%f), not adding the missile!",
+		LOG_ERROR_OLD("null length shot detected between (%f,%f,%f) and (%f,%f,%f), not adding the missile!",
 				  origin[0], origin[1], origin[2],
 				  target[0], target[1], target[2]);
 		return MAX_MISSILES;
@@ -192,7 +192,7 @@ void missiles_remove(int missile_id)
 	missile *mis = get_missile_ptr_from_id(missile_id);
 
 	if (!mis) {
-		LOG_ERROR("missile id %i is out of range!", missile_id);
+		LOG_ERROR_OLD("missile id %i is out of range!", missile_id);
 		return;
 	}
 
@@ -454,7 +454,7 @@ int missiles_fire_arrow(actor *a, float target[3], MissileShotType shot_type)
 	mis_type_id = actors_defs[a->actor_type].shield[a->cur_shield].missile_type;
 
 	if (mis_type_id < 0 || mis_type_id >= MAX_MISSILES_DEFS) {
-		LOG_ERROR("%d is not a valid missile type for shield %d of actor type %d\n", mis_type_id, a->cur_shield, a->actor_type);
+		LOG_ERROR_OLD("%d is not a valid missile type for shield %d of actor type %d\n", mis_type_id, a->cur_shield, a->actor_type);
 		mis_type_id = 0;
 	}
 
@@ -619,7 +619,7 @@ void missiles_test_target_validity(float target[3], char *msg)
 {
 	if (target[0] < 0.0 || target[0] > tile_map_size_x*3.0 ||
 		target[1] < 0.0 || target[1] > tile_map_size_y*3.0)
-		LOG_ERROR("%s: target (%f,%f,%f) is out of the map!",
+		LOG_ERROR_OLD("%s: target (%f,%f,%f) is out of the map!",
 				  msg, target[0], target[1], target[2]);
 }
 
@@ -655,12 +655,12 @@ void missiles_aim_at_b(int actor1_id, int actor2_id)
 	act2 = get_actor_ptr_from_id(actor2_id);
 
 	if (!act1) {
-		LOG_ERROR("the actor %d does not exists!", actor1_id);
+		LOG_ERROR_OLD("the actor %d does not exists!", actor1_id);
 		UNLOCK_ACTORS_LISTS();
 		return;
 	}
 	if (!act2) {
-		LOG_ERROR("the actor %d does not exists!", actor2_id);
+		LOG_ERROR_OLD("the actor %d does not exists!", actor2_id);
 		UNLOCK_ACTORS_LISTS();
 		return;
 	}
@@ -688,7 +688,7 @@ void missiles_aim_at_b(int actor1_id, int actor2_id)
 		add_command_to_actor(actor1_id, enter_aim_mode);
 	}
 	else	{
-		LOG_ERROR("%s (%d): unable to add a new aim action, the queue is full!",
+		LOG_ERROR_OLD("%s (%d): unable to add a new aim action, the queue is full!",
 				  act1->actor_name, actor1_id);
 		UNLOCK_ACTORS_LISTS();
 	}
@@ -702,7 +702,7 @@ void missiles_aim_at_xyz(int actor_id, float *target)
 	act = get_actor_ptr_from_id(actor_id);
 
 	if (!act) {
-		LOG_ERROR("the actor %d does not exists!", actor_id);
+		LOG_ERROR_OLD("the actor %d does not exists!", actor_id);
 		UNLOCK_ACTORS_LISTS();
 		return;
 	}
@@ -730,7 +730,7 @@ void missiles_aim_at_xyz(int actor_id, float *target)
 		add_command_to_actor(actor_id, enter_aim_mode);
 	}
 	else {
-		LOG_ERROR("%s (%d): unable to add a new aim action, the queue is full!",
+		LOG_ERROR_OLD("%s (%d): unable to add a new aim action, the queue is full!",
 				  act->actor_name, actor_id);
 		UNLOCK_ACTORS_LISTS();
 	}
@@ -745,12 +745,12 @@ void missiles_fire_a_to_b(int actor1_id, int actor2_id)
 	act2 = get_actor_ptr_from_id(actor2_id);
         
 	if (!act1) {
-		LOG_ERROR("missiles_fire_a_to_b: the actor %d does not exists!", actor1_id);
+		LOG_ERROR_OLD("missiles_fire_a_to_b: the actor %d does not exists!", actor1_id);
 		UNLOCK_ACTORS_LISTS();
 		return;
 	}
 	if (!act2) {
-		LOG_ERROR("missiles_fire_a_to_b: the actor %d does not exists!", actor2_id);
+		LOG_ERROR_OLD("missiles_fire_a_to_b: the actor %d does not exists!", actor2_id);
 		UNLOCK_ACTORS_LISTS();
 		return;
 	}
@@ -778,7 +778,7 @@ void missiles_fire_a_to_b(int actor1_id, int actor2_id)
 		}
 	}
 	else {
-		LOG_ERROR("%s (%d): unable to add a fire action, the queue is empty!",
+		LOG_ERROR_OLD("%s (%d): unable to add a fire action, the queue is empty!",
 				  act1->actor_name, actor1_id);
 		UNLOCK_ACTORS_LISTS();
 	}
@@ -792,7 +792,7 @@ void missiles_fire_a_to_xyz(int actor_id, float *target)
 	act = get_actor_ptr_from_id(actor_id);
 
 	if (!act) {
-		LOG_ERROR("missiles_fire_a_to_xyz: the actor %d does not exists!", actor_id);
+		LOG_ERROR_OLD("missiles_fire_a_to_xyz: the actor %d does not exists!", actor_id);
 		UNLOCK_ACTORS_LISTS();
 		return;
 	}
@@ -813,7 +813,7 @@ void missiles_fire_a_to_xyz(int actor_id, float *target)
 		add_command_to_actor(actor_id, aim_mode_fire);
 	}
 	else {
-		LOG_ERROR("%s (%d): unable to add a fire action, the queue is empty!",
+		LOG_ERROR_OLD("%s (%d): unable to add a fire action, the queue is empty!",
 				  act->actor_name, actor_id);
 		UNLOCK_ACTORS_LISTS();
 	}
@@ -830,7 +830,7 @@ void missiles_fire_xyz_to_b(float *origin, int actor_id)
 	act = get_actor_ptr_from_id(actor_id);
 
 	if (!act) {
-		LOG_ERROR("the actor %d does not exists!", actor_id);
+		LOG_ERROR_OLD("the actor %d does not exists!", actor_id);
 		UNLOCK_ACTORS_LISTS();
 		return;
 	}
@@ -856,7 +856,7 @@ int missiles_parse_nodes(xmlNode *node)
 	mis_idx = get_int_property(node, "id");
 
 	if (mis_idx < 0 || mis_idx >= MAX_MISSILES_DEFS) {
-		LOG_ERROR("missiles_parse_node: no ID found for node %s or ID out of range: id=%d\n", get_string_property(node, "type"), mis_idx);
+		LOG_ERROR_OLD("missiles_parse_node: no ID found for node %s or ID out of range: id=%d\n", get_string_property(node, "type"), mis_idx);
 		return 0;
 	}
 
@@ -896,11 +896,11 @@ int missiles_parse_nodes(xmlNode *node)
 				}
 				else {
 					mis->effect = REGULAR_MISSILE;
-					LOG_ERROR("missiles_parse_node: \"%s\" is an unknown effect", effect_name);
+					LOG_ERROR_OLD("missiles_parse_node: \"%s\" is an unknown effect", effect_name);
 				}
 			}
 			else {
-				LOG_ERROR("missiles_parse_node: unknown attribute \"%s\"", item->name);
+				LOG_ERROR_OLD("missiles_parse_node: unknown attribute \"%s\"", item->name);
 				ok = 0;
 			}
 		}
@@ -922,7 +922,7 @@ int missiles_parse_defs(xmlNode *node)
 			if (xmlStrcasecmp(def->name, (xmlChar*)"missile") == 0) {
 				ok &= missiles_parse_nodes(def);
 			} else {
-				LOG_ERROR("parse error: missile or include expected");
+				LOG_ERROR_OLD("parse error: missile or include expected");
 				ok = 0;
 			}
 		else if (def->type == XML_ENTITY_REF_NODE) {
@@ -941,16 +941,16 @@ int missiles_read_defs(const char *file_name)
 
 	doc = xmlReadFile(file_name, NULL, 0);
 	if (doc == NULL) {
-		LOG_ERROR("Unable to read missiles definition file %s", file_name);
+		LOG_ERROR_OLD("Unable to read missiles definition file %s", file_name);
 		return 0;
 	}
 
 	root = xmlDocGetRootElement(doc);
 	if (root == NULL) {
-		LOG_ERROR("Unable to parse missiles definition file %s", file_name);
+		LOG_ERROR_OLD("Unable to parse missiles definition file %s", file_name);
 		ok = 0;
 	} else if (xmlStrcasecmp(root->name, (xmlChar*)"missiles") != 0) {
-		LOG_ERROR("Unknown key \"%s\" (\"missiles\" expected).", root->name);
+		LOG_ERROR_OLD("Unknown key \"%s\" (\"missiles\" expected).", root->name);
 		ok = 0;
 	} else {
 		ok = missiles_parse_defs(root);

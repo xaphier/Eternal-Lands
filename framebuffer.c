@@ -172,7 +172,7 @@ void check_fbo_formats()
 	glGetIntegerv (GL_DRAW_BUFFER, &old_drawbuffer);
 	glGetIntegerv (GL_READ_BUFFER, &old_readbuffer);
 
-	LOG_INFO("Checking supported framebuffe formats....");
+	LOG_INFO_OLD("Checking supported framebuffe formats....");
 	for (i = 0; i < COLOR_FORMAT_COUNT; i++)
 	{
 		GLuint status;
@@ -216,7 +216,7 @@ void check_fbo_formats()
 				{
 					if (try_format(depth_formats[j], stencil_formats[k]))
 					{
-						LOG_INFO(fbo_supported_format, color_format_strs[i], depth_bits[j], stencil_bits[k]);
+						LOG_INFO_OLD(fbo_supported_format, color_format_strs[i], depth_bits[j], stencil_bits[k]);
 					}
 				}
 			}

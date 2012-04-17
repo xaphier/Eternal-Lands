@@ -58,7 +58,7 @@ static Uint32 progress_function(const char* str, const Uint32 max,
 			"%s custom updates: %s", data->name, str);
 	}
 
-	LOG_INFO("%s", data->str);
+	LOG_INFO_OLD("%s", data->str);
 
 	if (data->running == 0)
 	{
@@ -231,7 +231,7 @@ static int custom_update_thread(void* thread_data)
 			data->running = 1;
 		}
 
-		LOG_INFO("%s", data->str);
+		LOG_INFO_OLD("%s", data->str);
 
 		CHECK_AND_UNLOCK_MUTEX(data->mutex);
 

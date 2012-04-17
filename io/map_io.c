@@ -49,7 +49,7 @@ static int do_load_map(const char *file_name, update_func *update_function)
 {
 	my_strcp(map_file_name, file_name);
 
-	LOG_DEBUG("Loading map '%s'.", file_name);
+	LOG_DEBUG_OLD("Loading map '%s'.", file_name);
 
 	main_bbox_tree_items = create_bbox_items(1024);
 

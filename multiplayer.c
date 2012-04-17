@@ -463,7 +463,7 @@ void connect_to_server()
 	set= SDLNet_AllocSocketSet(1);
 	if(!set)
         {
-            LOG_ERROR("SDLNet_AllocSocketSet: %s\n", SDLNet_GetError());
+            LOG_ERROR_OLD("SDLNet_AllocSocketSet: %s\n", SDLNet_GetError());
             do_error_sound();
 			SDLNet_Quit();
 			SDL_Quit();
@@ -489,7 +489,7 @@ void connect_to_server()
 
 	if(SDLNet_TCP_AddSocket(set,my_socket)==-1)
 		{
-			LOG_ERROR("SDLNet_TCP_AddSocket: %s\n", SDLNet_GetError());
+			LOG_ERROR_OLD("SDLNet_TCP_AddSocket: %s\n", SDLNet_GetError());
 			SDLNet_Quit();
 			SDL_Quit();
 			exit(2);
@@ -604,7 +604,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 
 	if (data_length <= 2)
 	{
-		LOG_WARNING("CAUTION: Possibly forged packet received.\n");
+		LOG_WARNING_OLD("CAUTION: Possibly forged packet received.\n");
 		return;
 	}
 
@@ -617,7 +617,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 				
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged RAW_TEXT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged RAW_TEXT packet received.\n");
 				  break;
 				}
 
@@ -660,7 +660,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 17)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged ADD_NEW_ACTOR packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged ADD_NEW_ACTOR packet received.\n");
 				  break;
 				}
 				add_actor_from_server((char*)&in_data[3], data_length-3);
@@ -675,7 +675,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 				//print_packet(in_data,data_length);
 				if (data_length <= 32)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged ADD_ENHANCED_ACTOR packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged ADD_ENHANCED_ACTOR packet received.\n");
 				  break;
 				}
 				add_enhanced_actor_from_server((char*)&in_data[3], data_length-3);
@@ -742,7 +742,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 4)
 				{
-					LOG_WARNING("CAUTION: Possibly forged NEW_MINUTE packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged NEW_MINUTE packet received.\n");
 					break;
 				}
 				real_game_minute= SDL_SwapLE16(*((short *)(in_data+3)));
@@ -802,7 +802,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 167)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged HERE_YOUR_STATS packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged HERE_YOUR_STATS packet received.\n");
 				  break;
 				}
 				get_the_stats((Sint16 *)(in_data+3), data_length-3);
@@ -826,13 +826,13 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 				Uint16 size;
 				if (data_length <= 1)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_KNOWLEDGE_LIST packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_KNOWLEDGE_LIST packet received.\n");
 				  break;
 				}
 				size = SDL_SwapLE16(*(Uint16 *)(in_data+1))-1;
 				if (data_length <= size + 2)
 				{
-				  LOG_WARNING("CAUTION(2): Possibly forged GET_KNOWLEDGE_LIST packet received.\n");
+				  LOG_WARNING_OLD("CAUTION(2): Possibly forged GET_KNOWLEDGE_LIST packet received.\n");
 				  break;
 				}
 				get_knowledge_list(size, (char*)in_data+3);
@@ -843,7 +843,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_NEW_KNOWLEDGE packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_NEW_KNOWLEDGE packet received.\n");
 				  break;
 				}
 				get_new_knowledge(SDL_SwapLE16(*(Uint16 *)(in_data+3)));
@@ -857,7 +857,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 		
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged HERE_YOUR_INVENTORY packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged HERE_YOUR_INVENTORY packet received.\n");
 				  break;
 				}
 				items = in_data[3];
@@ -876,7 +876,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 
 				if (data_length - 4 != items * plen)
 				{
-				  LOG_WARNING("CAUTION(2): Possibly forged HERE_YOUR_INVENTORY packet received.\n");
+				  LOG_WARNING_OLD("CAUTION(2): Possibly forged HERE_YOUR_INVENTORY packet received.\n");
 				  break;
 				}
 				inventory_item_string[0]=0;
@@ -918,7 +918,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged INVENTORY_ITEM_TEXT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged INVENTORY_ITEM_TEXT packet received.\n");
 				  break;
 				}
 				safe_strncpy2(inventory_item_string, (const char *)&in_data[3], sizeof(inventory_item_string)-1, data_length - 3);
@@ -978,7 +978,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged SPELL_ITEM_TEXT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged SPELL_ITEM_TEXT packet received.\n");
 				  break;
 				}
 				put_small_text_in_box(in_data+3, data_length-3, 6*51+100, (char*)spell_text);
@@ -992,7 +992,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_KNOWLEDGE_TEXT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_KNOWLEDGE_TEXT packet received.\n");
 				  break;
 				}
 				put_small_text_in_box(&in_data[3],data_length-3,6*51+150,knowledge_string);
@@ -1004,7 +1004,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			        char mapname[1024];
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged CHANGE_MAP packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged CHANGE_MAP packet received.\n");
 				  break;
 				}
 				safe_strncpy2(mapname, (char*)in_data + 3, sizeof(mapname), data_length - 3);
@@ -1020,13 +1020,13 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 4)
 				{
-					LOG_WARNING("CAUTION: Possibly forged GET_TELEPORTERS_LIST packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged GET_TELEPORTERS_LIST packet received.\n");
 					break;
 				}
 				teleporters_no = SDL_SwapLE16 (*((Uint16 *)(in_data + 3)));
 				if (data_length <= teleporters_no * 5 + 4)
 				{
-					LOG_WARNING("CAUTION(2): Possibly forged GET_TELEPORTERS_LIST packet received.\n");
+					LOG_WARNING_OLD("CAUTION(2): Possibly forged GET_TELEPORTERS_LIST packet received.\n");
 					break;
 				}
 				add_teleporters_from_list (in_data+3);
@@ -1041,7 +1041,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #ifdef NEW_SOUND
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged PLAY_MUSIC packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged PLAY_MUSIC packet received.\n");
 				  break;
 				}
 				if(music_on)play_music(SDL_SwapLE16(*((short *)(in_data+3))));
@@ -1057,7 +1057,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #ifdef NEW_SOUND
 				if (data_length <= 8)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged PLAY_SOUND packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged PLAY_SOUND packet received.\n");
 				  break;
 				}
 				if (sound_on) add_server_sound(SDL_SwapLE16(*((short *)(in_data+3))), SDL_SwapLE16(*((short *)(in_data+5))), SDL_SwapLE16(*((short *)(in_data+7))), 1.0f);
@@ -1073,7 +1073,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged TELEPORT_OUT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged TELEPORT_OUT packet received.\n");
 				  break;
 				}
 				add_particle_sys_at_tile("./particles/teleport_out.part", SDL_SwapLE16(*((short *)(in_data+3))), SDL_SwapLE16 (*((short *)(in_data+5))), 1);
@@ -1088,7 +1088,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged TELEPORT_IN packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged TELEPORT_IN packet received.\n");
 				  break;
 				}
 				add_particle_sys_at_tile("./particles/teleport_in.part", SDL_SwapLE16(*((short *)(in_data+3))), SDL_SwapLE16(*((short *)(in_data+5))), 1);
@@ -1098,7 +1098,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged LOG_IN_NOT_OK packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged LOG_IN_NOT_OK packet received.\n");
 				  break;
 				}
 				set_login_error ((char*)&in_data[3], data_length - 3, 1);
@@ -1122,7 +1122,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged CREATE_CHAR_NOT_OKAY packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged CREATE_CHAR_NOT_OKAY packet received.\n");
 				  break;
 				}
 				set_create_char_error ((char*)&in_data[3], data_length - 3);
@@ -1144,7 +1144,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged YOU_ARE packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged YOU_ARE packet received.\n");
 				  break;
 				}
 				LOCK_ACTORS_LISTS();
@@ -1162,7 +1162,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 3)
 				{
-					LOG_WARNING("CAUTION: Possibly forged START_RAIN packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged START_RAIN packet received.\n");
 					break;
 				}
 
@@ -1182,7 +1182,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 3)
 				{
-					LOG_WARNING("CAUTION: Possibly forged STOP_RAIN packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged STOP_RAIN packet received.\n");
 					break;
 				}
 
@@ -1197,7 +1197,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 3)
 				{
-					LOG_WARNING("CAUTION: Possibly forged THUNDER packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged THUNDER packet received.\n");
 					break;
 				}
 				weather_add_lightning(rand()%5,
@@ -1221,7 +1221,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged SYNC_CLOCK packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged SYNC_CLOCK packet received.\n");
 				  break;
 				}
 				server_time_stamp= SDL_SwapLE32(*((int *)(in_data+3)));
@@ -1235,7 +1235,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 				char str[160];
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged SYNC_CLOCK packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged SYNC_CLOCK packet received.\n");
 				  break;
 				}
 				safe_snprintf(str, sizeof(str), "%s: %i ms",server_latency, SDL_GetTicks()-SDL_SwapLE32(*((Uint32 *)(in_data+3))));
@@ -1265,7 +1265,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 7)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_NEW_BAG packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_NEW_BAG packet received.\n");
 				  break;
 				}
 				put_bag_on_ground(SDL_SwapLE16(*((Uint16 *)(in_data+3))), SDL_SwapLE16(*((Uint16 *)(in_data+5))), in_data[7]);
@@ -1280,13 +1280,13 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 3)
 				{
-					LOG_WARNING("CAUTION: Possibly forged GET_BAGS_LIST packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged GET_BAGS_LIST packet received.\n");
 					break;
 				}
 				bags_no = in_data[3];
 				if (data_length <= bags_no * 5 + 3)
 				{
-					LOG_WARNING("CAUTION(2): Possibly forged GET_BAGS_LIST packet received.\n");
+					LOG_WARNING_OLD("CAUTION(2): Possibly forged GET_BAGS_LIST packet received.\n");
 					break;
 				}
 				add_bags_from_list(&in_data[3]);
@@ -1300,7 +1300,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged SPAWN_BAG_PARTICLES packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged SPAWN_BAG_PARTICLES packet received.\n");
 				  break;
 				}
 
@@ -1314,7 +1314,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged FIRE_PARTICLES packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged FIRE_PARTICLES packet received.\n");
 				  break;
 				}
 				add_fire_at_tile (SDL_SwapLE16(*(Uint16 *)(in_data+7)), SDL_SwapLE16(*((Uint16 *)(in_data+3))), SDL_SwapLE16(*((Uint16 *)(in_data+5))));
@@ -1328,7 +1328,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged REMOVE_FIRE_AT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged REMOVE_FIRE_AT packet received.\n");
 				  break;
 				}
 				remove_fire_at_tile (SDL_SwapLE16(*((Uint16 *)(in_data+3))),SDL_SwapLE16(*((Uint16 *)(in_data+5))));
@@ -1342,7 +1342,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_NEW_GROUND_ITEM packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_NEW_GROUND_ITEM packet received.\n");
 				  break;
 				}
 				get_bag_item(in_data+3);
@@ -1357,13 +1357,13 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 3)
 				{
-					LOG_WARNING("CAUTION: Possibly forged HERE_YOUR_GROUND_ITEMS packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged HERE_YOUR_GROUND_ITEMS packet received.\n");
 					break;
 				}
 				bags_no = in_data[3];
 				if (data_length <= bags_no * 7 + 3)
 				{
-					LOG_WARNING("CAUTION(2): Possibly forged HERE_YOUR_GROUND_ITEMS packet received.\n");
+					LOG_WARNING_OLD("CAUTION(2): Possibly forged HERE_YOUR_GROUND_ITEMS packet received.\n");
 					break;
 				}
 				get_bags_items_list(&in_data[3]);
@@ -1386,7 +1386,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged REMOVE_ITEM_FROM_GROUND packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged REMOVE_ITEM_FROM_GROUND packet received.\n");
 				  break;
 				}
 				remove_item_from_ground(in_data[3]);
@@ -1406,7 +1406,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged NPC_TEXT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged NPC_TEXT packet received.\n");
 				  break;
 				}
 				put_small_text_in_box(&in_data[3], data_length-3, dialogue_menu_x_len-70, (char*)dialogue_string);
@@ -1431,7 +1431,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 23)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged NPC_INFO packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged NPC_INFO packet received.\n");
 				  break;
 				}
 				safe_strncpy2((char*)npc_name, (char*)&in_data[3], sizeof(npc_name), 20);
@@ -1453,7 +1453,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_TRADE_ACCEPT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_TRADE_ACCEPT packet received.\n");
 				  break;
 				}
 				if(!in_data[3])
@@ -1467,7 +1467,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_TRADE_REJECT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_TRADE_REJECT packet received.\n");
 				  break;
 				}
 				if(!in_data[3])trade_you_accepted=0;
@@ -1493,13 +1493,13 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_YOUR_TRADEOBJECTS packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_YOUR_TRADEOBJECTS packet received.\n");
 				  break;
 				}
 				items = in_data[3];
 				if (data_length <= items * plen + 3)
 				{
-				  LOG_WARNING("CAUTION(2): Possibly forged GET_YOUR_TRADEOBJECTS packet received.\n");
+				  LOG_WARNING_OLD("CAUTION(2): Possibly forged GET_YOUR_TRADEOBJECTS packet received.\n");
 				  break;
 				}
 				get_your_trade_objects(in_data+3);
@@ -1516,7 +1516,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			
 				if (data_length <= 3+plen)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_TRADE_OBJECT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_TRADE_OBJECT packet received.\n");
 				  break;
 				}
 				put_item_on_trade(in_data+3);
@@ -1527,7 +1527,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 8)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged REMOVE_TRADE_OBJECT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged REMOVE_TRADE_OBJECT packet received.\n");
 				  break;
 				}
 				remove_item_from_trade(in_data+3);
@@ -1545,7 +1545,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 				// future support for more sigils
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_YOUR_SIGILS packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_YOUR_SIGILS packet received.\n");
 				  break;
 				}
 				if(data_length < 11){
@@ -1560,7 +1560,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_ACTIVE_SPELL packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_ACTIVE_SPELL packet received.\n");
 				  break;
 				}
 				get_active_spell(in_data[3],in_data[4]);
@@ -1571,7 +1571,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged REMOVE_ACTIVE_SPELL packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged REMOVE_ACTIVE_SPELL packet received.\n");
 				  break;
 				}
 				remove_active_spell(in_data[3]);
@@ -1582,7 +1582,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 2+NUM_ACTIVE_SPELLS)
 				{
-					LOG_WARNING("CAUTION: Possibly forged GET_ACTIVE_SPELL_LIST packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged GET_ACTIVE_SPELL_LIST packet received.\n");
 					break;
 				}
 				get_active_spell_list (in_data+3);
@@ -1596,7 +1596,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_ACTOR_HEALTH packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_ACTOR_HEALTH packet received.\n");
 				  break;
 				}
 				get_actor_health(SDL_SwapLE16(*((Uint16 *)(in_data+3))),SDL_SwapLE16(*((Uint16*)(in_data+5))));
@@ -1619,7 +1619,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #else
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_ACTOR_DAMAGE packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_ACTOR_DAMAGE packet received.\n");
 				  break;
 				}
 				get_actor_damage(SDL_SwapLE16(*((Uint16 *)(in_data+3))),SDL_SwapLE16(*((Uint16*)(in_data+5))));
@@ -1643,7 +1643,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #else
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_ACTOR_HEAL packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_ACTOR_HEAL packet received.\n");
 				  break;
 				}
 				get_actor_heal(SDL_SwapLE16(*((Uint16 *)(in_data+3))),SDL_SwapLE16(*((Uint16*)(in_data+5))));
@@ -1658,7 +1658,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 5)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged ACTOR_UNWEAR_ITEM packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged ACTOR_UNWEAR_ITEM packet received.\n");
 				  break;
 				}
 				unwear_item_from_actor(SDL_SwapLE16(*((Uint16 *)(in_data+3))),in_data[5]);
@@ -1672,7 +1672,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 6)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged ACTOR_WEAR_ITEM packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged ACTOR_WEAR_ITEM packet received.\n");
 				  break;
 				}
 				actor_wear_item(SDL_SwapLE16(*((Uint16 *)(in_data+3))),in_data[5],in_data[6]);
@@ -1684,7 +1684,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 				char buf[1024];
 				if (data_length <= 5)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged NPC_SAY_OVERTEXT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged NPC_SAY_OVERTEXT packet received.\n");
 				  break;
 				}
 				safe_strncpy2(buf, (char*)in_data + 5, sizeof(buf), data_length - 5);
@@ -1713,7 +1713,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 5)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged BUDDY_EVENT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged BUDDY_EVENT packet received.\n");
 				  break;
 				}
 				if(in_data[3]==1)
@@ -1727,7 +1727,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged DISPLAY_CLIENT_WINDOW packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged DISPLAY_CLIENT_WINDOW packet received.\n");
 				  break;
 				}
 				switch(in_data[3]){
@@ -1753,7 +1753,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged OPEN_BOOK packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged OPEN_BOOK packet received.\n");
 				  break;
 				}
 				open_book(SDL_SwapLE16(*((Uint16*)(in_data+3))));
@@ -1764,7 +1764,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 7)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged READ_BOOK packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged READ_BOOK packet received.\n");
 				  break;
 				}
 				read_network_book((char*)in_data+3, data_length-3);
@@ -1775,7 +1775,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged CLOSE_BOOK packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged CLOSE_BOOK packet received.\n");
 				  break;
 				}
 				close_book(SDL_SwapLE16(*((Uint16*)(in_data+3))));
@@ -1785,7 +1785,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged STORAGE_LIST packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged STORAGE_LIST packet received.\n");
 				  break;
 				}
 				get_storage_categories((char*)in_data+3, data_length-3);
@@ -1796,7 +1796,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged STORAGE_ITEMS packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged STORAGE_ITEMS packet received.\n");
 				  break;
 				}
 				get_storage_items(in_data+3, data_length-3);
@@ -1807,7 +1807,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged STORAGE_TEXT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged STORAGE_TEXT packet received.\n");
 				  break;
 				}
 				get_storage_text(in_data+3, data_length-3);
@@ -1817,12 +1817,12 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged SPELL_CAST packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged SPELL_CAST packet received.\n");
 				  break;
 				}
 				if (((in_data[3] == S_SUCCES) || (in_data[3] == S_NAME)) && (data_length <= 4))
 				{
-				  LOG_WARNING("CAUTION(2): Possibly forged SPELL_CAST packet received.\n");
+				  LOG_WARNING_OLD("CAUTION(2): Possibly forged SPELL_CAST packet received.\n");
 				  break;
 				}
 				process_network_spell((char*)in_data+3, data_length-3);
@@ -1835,7 +1835,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 		case GET_ACTIVE_CHANNELS:
 			if (data_length <= 3)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged GET_ACTIVE_CHANNELS packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged GET_ACTIVE_CHANNELS packet received.\n");
 			  break;
 			}
 			set_active_channels (in_data[3], (Uint32*)(in_data+4), (data_length-2)/4);
@@ -1844,7 +1844,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 		case GET_3D_OBJ_LIST:
 			if (data_length <= 3)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged GET_3D_OBJ_LIST packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged GET_3D_OBJ_LIST packet received.\n");
 			  break;
 			}
 			get_3d_objects_from_server (in_data[3], &in_data[4], data_length - 4);
@@ -1857,7 +1857,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 		case REMOVE_3D_OBJ:
 			if (data_length <= 4)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged REMOVE_3D_OBJ packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged REMOVE_3D_OBJ packet received.\n");
 			  break;
 			}
 			remove_3d_object_from_server (SDL_SwapLE16 (*((Uint16 *)(&in_data[3]))));
@@ -1867,7 +1867,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 		case MAP_SET_OBJECTS:
 			if (data_length <= 4)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged MAP_SET_OBJECTS packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged MAP_SET_OBJECTS packet received.\n");
 			  break;
 			}
 #if	0
@@ -1880,7 +1880,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 					break;
 			}
 #else
-			LOG_WARNING("MAP_SET_OBJECTS not implemented (type %d, value %d).\n", in_data[3], in_data[4]);
+			LOG_WARNING_OLD("MAP_SET_OBJECTS not implemented (type %d, value %d).\n", in_data[3], in_data[4]);
 #endif
 			break;
 
@@ -1888,7 +1888,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 		case MAP_STATE_OBJECTS:
 			if (data_length <= 8)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged MAP_STATE_OBJECTS packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged MAP_STATE_OBJECTS packet received.\n");
 			  break;
 			}
 #if	0
@@ -1901,14 +1901,14 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 					break;
 			}
 #else
-			LOG_WARNING("MAP_STATE_OBJECTS not implemented (type %d, value %d).\n", in_data[3], in_data[4]);
+			LOG_WARNING_OLD("MAP_STATE_OBJECTS not implemented (type %d, value %d).\n", in_data[3], in_data[4]);
 #endif
 			break;
 
 		case MAP_FLAGS:
 			if (data_length <= 6)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged MAP_FLAGS packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged MAP_FLAGS packet received.\n");
 			  break;
 			}
 			map_flags=SDL_SwapLE32(*((Uint32 *)(in_data+3)));
@@ -1919,7 +1919,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 				// in case the function signature changes
 			if (data_length <= 3)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged GET_ITEMS_COOLDOWN packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged GET_ITEMS_COOLDOWN packet received.\n");
 			  break;
 			}
 			get_items_cooldown (&in_data[3], data_length - 3);
@@ -1931,7 +1931,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 			if (data_length < 9)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged SEND_BUFFS packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged SEND_BUFFS packet received.\n");
 			  break;
 			}
 #ifdef BUFF_DEBUG
@@ -1952,7 +1952,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 		case SEND_SPECIAL_EFFECT:
 			if (data_length <= 5)
 			{
-			  LOG_WARNING("CAUTION: Possibly forged SEND_SPECIAL_EFFECT packet received.\n");
+			  LOG_WARNING_OLD("CAUTION: Possibly forged SEND_SPECIAL_EFFECT packet received.\n");
 			  break;
 			}
 			if (
@@ -1966,7 +1966,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 7)
 				{
-				  LOG_WARNING("CAUTION(2): Possibly forged SEND_SPECIAL_EFFECT packet received.\n");
+				  LOG_WARNING_OLD("CAUTION(2): Possibly forged SEND_SPECIAL_EFFECT packet received.\n");
 				  break;
 				}
 			}
@@ -1991,7 +1991,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 8)
 				{
-					LOG_WARNING("CAUTION: Possibly forged GET_NEW_MINE packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged GET_NEW_MINE packet received.\n");
 					break;
 				}
 				put_mine_on_ground(SDL_SwapLE16(*((Uint16 *)(in_data+3))), SDL_SwapLE16(*((Uint16 *)(in_data+5))), in_data[8], in_data[7]);
@@ -2006,13 +2006,13 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 #endif
 				if (data_length <= 3)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged GET_MINES_LIST packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged GET_MINES_LIST packet received.\n");
 				  break;
 				}
 				mines_no = in_data[3];
 				if (data_length <= mines_no * 6 + 3)
 				{
-				  LOG_WARNING("CAUTION(2): Possibly forged GET_MINES_LIST packet received.\n");
+				  LOG_WARNING_OLD("CAUTION(2): Possibly forged GET_MINES_LIST packet received.\n");
 				  break;
 				}
 				add_mines_from_list(&in_data[3]);
@@ -2022,7 +2022,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 8) /* At least one char title and one char text */
 				{
-					LOG_WARNING("CAUTION: Possibly forged DISPLAY_POPUP packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged DISPLAY_POPUP packet received.\n");
 					break;
 				}
 				popup_create_from_network(&in_data[3], data_length - 3);
@@ -2081,7 +2081,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 
 			if (data_length <= 10)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged SEND_MAP_MARKER packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged SEND_MAP_MARKER packet received.\n");
 				  break;
 				}
 			sm = calloc(1,sizeof(server_mark));//memory is set to zero
@@ -2106,7 +2106,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			int id;
 			if (data_length <= 4)
 				{
-				  LOG_WARNING("CAUTION: Possibly forged REMOVE_MAP_MARKER packet received.\n");
+				  LOG_WARNING_OLD("CAUTION: Possibly forged REMOVE_MAP_MARKER packet received.\n");
 				  break;
 				}
 			id=SDL_SwapLE16(*((short *)(in_data+3)));
@@ -2119,7 +2119,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-					LOG_WARNING("CAUTION: Possibly forged NEXT_NPC_MESSAGE_IS_QUEST packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged NEXT_NPC_MESSAGE_IS_QUEST packet received.\n");
 					break;
 				}
 				set_next_quest_entry_id(SDL_SwapLE16(*((short *)(in_data+3))));
@@ -2129,7 +2129,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 3)
 				{
-					LOG_WARNING("CAUTION: Possibly forged HERE_IS_QUEST_ID packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged HERE_IS_QUEST_ID packet received.\n");
 					break;
 				}
 				set_quest_title((const char *)&in_data[3], data_length - 3);
@@ -2139,7 +2139,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 			{
 				if (data_length <= 4)
 				{
-					LOG_WARNING("CAUTION: Possibly forged QUEST_FINISHED packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged QUEST_FINISHED packet received.\n");
 					break;
 				}
 				set_quest_finished(SDL_SwapLE16(*((short *)(in_data+3))));
@@ -2152,7 +2152,7 @@ void process_message_from_server (const Uint8 *in_data, int data_length)
 				size_t i;
 				if ((word_count < 1) && (word_count < MAX_ACHIEVEMENTS/32))
 				{
-					LOG_WARNING("CAUTION: Possibly forged SEND_ACHIEVEMENTS packet received.\n");
+					LOG_WARNING_OLD("CAUTION: Possibly forged SEND_ACHIEVEMENTS packet received.\n");
 					break;
 				}
 				achievement_data = (Uint32 *)calloc(word_count, sizeof(Uint32));
@@ -2210,7 +2210,7 @@ static void process_data_from_server(queue_t *queue)
 
 				LOG_TO_CONSOLE(c_red2, disconnected_from_server);
 				LOG_TO_CONSOLE(c_red2, alt_x_quit);
-				LOG_ERROR ("Packet overrun, protocol = %d, size = %u\n", pData[0], size);
+				LOG_ERROR_OLD ("Packet overrun, protocol = %d, size = %u\n", pData[0], size);
 				in_data_used = 0;
 				disconnected = 1;
 #ifdef NEW_SOUND

@@ -7,8 +7,8 @@
 #include "client_serv.h"
 #include "init.h"
 #include "errors.h"
-#include "sendvideoinfo.h"
 #include "io/elfilewrapper.h"
+#include "sendvideoinfo.h"
 
 namespace eternal_lands
 {
@@ -181,7 +181,7 @@ namespace eternal_lands
 					if (my_tcp_send(my_socket, data, sizeof(data)) <
 						static_cast<int>(sizeof(data)))
 					{
-						LOG_ERROR("Error sending video info");
+						LOG_ERROR_OLD("Error sending video info");
 					}
 					else
 					{

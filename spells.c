@@ -250,19 +250,19 @@ int init_spells ()
 	//parse xml
 	doc = xmlReadFile(fname, NULL, 0);
 	if (doc == 0) {
-		LOG_ERROR("Unable to read spells definition file %s: %s", fname, strerror(errno));
+		LOG_ERROR_OLD("Unable to read spells definition file %s: %s", fname, strerror(errno));
 		ok = 0;
 	}
 
 	root = xmlDocGetRootElement (doc);
 	if (root == 0)
 	{
-		LOG_ERROR("Unable to parse spells definition file %s", fname);
+		LOG_ERROR_OLD("Unable to parse spells definition file %s", fname);
 		ok = 0;
 	}
 	else if (xmlStrcasecmp (root->name, (xmlChar*)"Magic") != 0)
 	{
-		LOG_ERROR("Unknown key \"%s\" (\"Magic\" expected).", root->name);
+		LOG_ERROR_OLD("Unknown key \"%s\" (\"Magic\" expected).", root->name);
 		ok = 0;
 	}
 	else
@@ -286,7 +286,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No name for %d spell", i);
+				LOG_ERROR_OLD("No name for %d spell", i);
 			}
 
 			get_string_value(name, sizeof(name), data);	
@@ -297,7 +297,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No desc for spell '%s'[%d]",
+				LOG_ERROR_OLD("No desc for spell '%s'[%d]",
 					name, i);
 			}
 
@@ -309,7 +309,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No id for spell '%s'[%d]",
+				LOG_ERROR_OLD("No id for spell '%s'[%d]",
 					name, i);
 			}
 
@@ -319,7 +319,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No icon for spell '%s'[%d]",
+				LOG_ERROR_OLD("No icon for spell '%s'[%d]",
 					name, i);
 			}
 
@@ -329,7 +329,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No mana for spell '%s'[%d]",
+				LOG_ERROR_OLD("No mana for spell '%s'[%d]",
 					name, i);
 			}
 
@@ -339,7 +339,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No lvl for spell '%s'[%d]",
+				LOG_ERROR_OLD("No lvl for spell '%s'[%d]",
 					name, i);
 			}
 
@@ -357,7 +357,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No group for spell '%s'[%d]",
+				LOG_ERROR_OLD("No group for spell '%s'[%d]",
 					name, i);
 			}
 
@@ -375,7 +375,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No sigil for spell '%s'[%d]",
+				LOG_ERROR_OLD("No sigil for spell '%s'[%d]",
 					name, i);
 			}
 
@@ -391,7 +391,7 @@ int init_spells ()
 
 			if (data == 0)
 			{
-				LOG_ERROR("No reagent for spell '%s'[%d]",
+				LOG_ERROR_OLD("No reagent for spell '%s'[%d]",
 					name, i);
 			}
 
@@ -1583,7 +1583,7 @@ static mqbdata* build_quickspell_data(const Uint32 spell_id)
 
 	if (index == 0xFFFFFFFF)
 	{
-		LOG_WARNING("Invalid spell id %d", spell_id);
+		LOG_WARNING_OLD("Invalid spell id %d", spell_id);
 
 		return 0;
 	}
@@ -1608,7 +1608,7 @@ static mqbdata* build_quickspell_data(const Uint32 spell_id)
 
 	if (result == 0)
 	{
-		LOG_WARNING("Can't allocate memory for spell");
+		LOG_WARNING_OLD("Can't allocate memory for spell");
 
 		return 0;
 	}
@@ -1657,14 +1657,14 @@ void load_quickspells ()
 
 	if (fp == NULL)
 	{
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file,
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file,
 			fname, strerror(errno));
 		return;
 	}
 
 	if (fread(&num_spells, sizeof(num_spells), 1, fp) != 1)
 	{
-		LOG_ERROR("%s() read failed for [%s] \n", __FUNCTION__, fname);
+		LOG_ERROR_OLD("%s() read failed for [%s] \n", __FUNCTION__, fname);
 		fclose (fp);
 		return;
 	}
@@ -1678,7 +1678,7 @@ void load_quickspells ()
 
 	if (num_spells > MAX_QUICKBAR_SLOTS)
 	{
-		LOG_WARNING("Too many spells (%d), only %d spells allowed",
+		LOG_WARNING_OLD("Too many spells (%d), only %d spells allowed",
 			num_spells, MAX_QUICKBAR_SLOTS);
 
 		num_spells = MAX_QUICKBAR_SLOTS;
@@ -1686,7 +1686,7 @@ void load_quickspells ()
 
 	memset(mqb_data, 0, sizeof (mqb_data));
 
-	LOG_DEBUG("Reading %d spells from file '%s'", num_spells, fname);
+	LOG_DEBUG_OLD("Reading %d spells from file '%s'", num_spells, fname);
 
 	index = 1;
 
@@ -1696,7 +1696,7 @@ void load_quickspells ()
 
 		if (fread(&tmp, sizeof(mqbdata), 1, fp) != 1)
 		{
-			LOG_ERROR("Failed reading spell %d from file '%s'", i,
+			LOG_ERROR_OLD("Failed reading spell %d from file '%s'", i,
 				fname);
 			continue;
 		}
@@ -1708,7 +1708,7 @@ void load_quickspells ()
 			continue;
 		}
 
-		LOG_DEBUG("Added quickspell %d '%s' at index %d", i,
+		LOG_DEBUG_OLD("Added quickspell %d '%s' at index %d", i,
 			mqb_data[index]->spell_name, index);
 
 		index++;
@@ -1734,7 +1734,7 @@ void save_quickspells()
 	my_tolower(fname);
 	fp=open_file_config(fname,"wb");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
@@ -1749,7 +1749,7 @@ void save_quickspells()
 	// write the number of spells + 1
 	fwrite(&i, sizeof(i), 1, fp);
 
-	LOG_DEBUG("Writing %d spells to file '%s'", i, fname);
+	LOG_DEBUG_OLD("Writing %d spells to file '%s'", i, fname);
 
 	for (i = 1; i < (MAX_QUICKBAR_SLOTS + 1); i++)
 	{
@@ -1760,12 +1760,12 @@ void save_quickspells()
 
 		if (fwrite(mqb_data[i], sizeof(mqbdata), 1, fp) != 1)
 		{
-			LOG_ERROR("Failed writing spell '%s' to file '%s'",
+			LOG_ERROR_OLD("Failed writing spell '%s' to file '%s'",
 				mqb_data[i]->spell_name, fname);
 			break;
 		}
 		
-		LOG_DEBUG("Wrote spell '%s' to file '%s'",
+		LOG_DEBUG_OLD("Wrote spell '%s' to file '%s'",
 			mqb_data[i]->spell_name, fname);
 	}
 

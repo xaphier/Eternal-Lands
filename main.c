@@ -226,7 +226,7 @@ int start_rendering()
 	if(!done) {
 		done = 1;
 	}
-	LOG_INFO("Client closed");
+	LOG_INFO_OLD("Client closed");
 	SDL_WaitThread(network_thread,&done);
 	queue_destroy(message_queue);
 	if(pm_log.ppl)free_pm_log();
@@ -260,7 +260,7 @@ int start_rendering()
 /*#ifdef WINDOWS
 	// attempt to restart if requested
 	if(restart_required > 0){
-		LOG_INFO("Restarting %s", win_command_line);
+		LOG_INFO_OLD("Restarting %s", win_command_line);
 		SDL_CreateThread(system, win_command_line);
 	}
 #endif  //WINDOWS
@@ -447,7 +447,7 @@ int main(int argc, char **argv)
 #ifndef WINDOWS
 	// attempt to restart if requested
 	if(restart_required > 0){
-		LOG_INFO("Restarting %s\n", *argv);
+		LOG_INFO_OLD("Restarting %s\n", *argv);
 		execv(*argv, argv);
 	}
 #endif  //WINDOWS
@@ -517,7 +517,7 @@ int APIENTRY WinMain (HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nShow)
 		STARTUPINFO si;
 		PROCESS_INFORMATION pi;
 
-		LOG_INFO("Restarting %s", win_command_line);
+		LOG_INFO_OLD("Restarting %s", win_command_line);
 		ZeroMemory( &si, sizeof(si) );
 		si.cb = sizeof(si);
 		ZeroMemory( &pi, sizeof(pi) );

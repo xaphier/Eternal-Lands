@@ -225,7 +225,7 @@ void change_map (const char *mapname)
 		safe_snprintf(error, sizeof(error), cant_change_map, mapname);
 		LOG_TO_CONSOLE(c_red4, error);
 		LOG_TO_CONSOLE(c_red4, empty_map_str);
-		LOG_ERROR(cant_change_map, mapname);
+		LOG_ERROR_OLD(cant_change_map, mapname);
 		load_empty_map();
 	} else {
 		locked_to_console = 0;
@@ -256,7 +256,7 @@ void change_map (const char *mapname)
 		safe_snprintf(error, sizeof(error), cant_change_map, mapname);
 		LOG_TO_CONSOLE(c_red4, error);
 		LOG_TO_CONSOLE(c_red4, empty_map_str);
-		LOG_ERROR(cant_change_map, mapname);
+		LOG_ERROR_OLD(cant_change_map, mapname);
 		load_empty_map();
 	}
 
@@ -282,7 +282,7 @@ int load_empty_map()
 		hide_window (game_root_win);
 		show_window (console_root_win);
 		LOG_TO_CONSOLE(c_red4, no_nomap_str);
-		LOG_ERROR(cant_change_map, "./maps/nomap.elm");
+		LOG_ERROR_OLD(cant_change_map, "./maps/nomap.elm");
 		SDLNet_TCP_Close(my_socket);
 		disconnected = 1;
 #ifdef NEW_SOUND
@@ -380,7 +380,7 @@ void load_marks_to_buffer(char* mapname, marking* buffer, int* max)
 			buffer[*max].server_side=0;
 			text[strlen(text)-1] = '\0'; //remove the newline
 			if ((strstr(text, " ") == NULL) || (strstr(strstr(text, " ")+1, " ") == NULL)) {
- 				LOG_ERROR("Bad map mark file=[%s] text=[%s]", marks_file, text);
+ 				LOG_ERROR_OLD("Bad map mark file=[%s] text=[%s]", marks_file, text);
 			}
 			else {
 				safe_strncpy(buffer[*max].text, strstr(strstr(text, " ")+1, " ") + 1, sizeof(buffer[*max].text));
@@ -395,7 +395,7 @@ void load_marks_to_buffer(char* mapname, marking* buffer, int* max)
 	
 	fclose(fp);
 
-	LOG_DEBUG("Read map markings from file '%s'", marks_file);
+	LOG_DEBUG_OLD("Read map markings from file '%s'", marks_file);
 
 }
 
@@ -419,7 +419,7 @@ void save_markings()
 
 	fp = open_file_config(marks_file,"w");
 	if ( fp == NULL ){
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, marks_file, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, marks_file, strerror(errno));
 	} else {
 		for ( i = 0 ; i < max_mark ; i ++){
 			if ( marks[i].x > 0 && !marks[i].server_side){
@@ -429,7 +429,7 @@ void save_markings()
 		fclose(fp);
 	}
 
-	LOG_DEBUG("Wrote map markings to file '%s'", marks_file);
+	LOG_DEBUG_OLD("Wrote map markings to file '%s'", marks_file);
 }
 
 
@@ -448,7 +448,7 @@ void load_server_markings(){
 	my_tolower(fname);
 	fp = open_file_config(fname,"r");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
@@ -460,7 +460,7 @@ void load_server_markings(){
 	
 	fclose (fp);
 
-	LOG_DEBUG("Read server markings from file '%s'", fname);
+	LOG_DEBUG_OLD("Read server markings from file '%s'", fname);
 
 	add_server_markers();
 }
@@ -479,7 +479,7 @@ void save_server_markings(){
 	my_tolower(fname);
 	fp = open_file_config(fname,"w");
 	if(fp == NULL){
-		LOG_ERROR("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 
@@ -492,7 +492,7 @@ void save_server_markings(){
 	
 	fclose (fp);	
 
-	LOG_DEBUG("Wrote server markings to file '%s'", fname);
+	LOG_DEBUG_OLD("Wrote server markings to file '%s'", fname);
 }
 
 //called in elconfig.c when turning markers on/off
@@ -521,7 +521,7 @@ int get_3d_objects_from_server (int nr_objs, const Uint8 *data, int len)
 		if (nb_left < 14)
 		{
 			// Warn about this error!
-                        LOG_WARNING("Incomplete 3D objects list!");
+                        LOG_WARNING_OLD("Incomplete 3D objects list!");
 			all_ok = 0;
                         break;
 		}
@@ -533,7 +533,7 @@ int get_3d_objects_from_server (int nr_objs, const Uint8 *data, int len)
 		if (obj_x > tile_map_size_x * 6 || obj_y > tile_map_size_y * 6)
 		{
 			// Warn about this error!
-			LOG_WARNING("A 3D object was located OUTSIDE the map!");
+			LOG_WARNING_OLD("A 3D object was located OUTSIDE the map!");
 			offset += 8;
 			obj_err = 1;
                 }
@@ -559,7 +559,7 @@ int get_3d_objects_from_server (int nr_objs, const Uint8 *data, int len)
 		if (name_len < 0 || name_len >= sizeof (obj_name))
 		{
 			// Warn about this error!
-                        LOG_WARNING("3D object has invalid or too long file name!");
+                        LOG_WARNING_OLD("3D object has invalid or too long file name!");
 			all_ok = 0;
                         break;
 		}

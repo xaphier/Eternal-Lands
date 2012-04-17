@@ -357,7 +357,7 @@ int parse_text_for_emote_commands(const char *text, int len)
 	act = get_actor_ptr_from_id(yourself);
 	if (!act){
 		UNLOCK_ACTORS_LISTS();
-		LOG_ERROR("Unable to find actor who just said local text?? name: %s", name);
+		LOG_ERROR_OLD("Unable to find actor who just said local text?? name: %s", name);
 		return 1;		// Eek! We don't have an actor match... o.O
 	}
 
@@ -473,7 +473,7 @@ int filter_or_ignore_text (char *text_to_add, int len, int size, Uint8 channel)
 			offset++;
 			if (offset >= sizeof(new_str))
 			{
-				LOG_ERROR("error (1) parsing date string: %s",text_to_add);
+				LOG_ERROR_OLD("error (1) parsing date string: %s",text_to_add);
 				//something evil this way comes...
 				return 0;
 			}
@@ -484,7 +484,7 @@ int filter_or_ignore_text (char *text_to_add, int len, int size, Uint8 channel)
 		    || day <= 0 || month <= 0
 		    || day > 30 || month > 12 || year > 9999)
 		{
-			LOG_ERROR("error (2) parsing date string: %s",text_to_add);
+			LOG_ERROR_OLD("error (2) parsing date string: %s",text_to_add);
 			//something evil this way comes...
 		}
 		else

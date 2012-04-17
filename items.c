@@ -210,7 +210,7 @@ void reset_quantity (int pos)
 			val = 100;
 			break;
 		default:
-			LOG_ERROR ("Trying to reset invalid element of quantities, pos = %d", pos);
+			LOG_ERROR_OLD ("Trying to reset invalid element of quantities, pos = %d", pos);
 			return;
 	}
 
