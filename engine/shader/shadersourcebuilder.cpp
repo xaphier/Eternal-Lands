@@ -956,9 +956,9 @@ namespace eternal_lands
 
 			m_shader_sources.insert(index, shader_source);
 
-			LOG_INFO(UTF8("Shader source type %1%-%2% loaded "
-				"from file '%3%'"), index.first % index.second
-					% file_name);
+			LOG_INFO(lt_shader_source, UTF8("Shader source type "
+				"%1%-%2% loaded from file '%3%'"), index.first
+				% index.second % file_name);
 		}
 		catch (boost::exception &exception)
 		{
@@ -1155,13 +1155,13 @@ namespace eternal_lands
 
 		if (found == m_shader_sources.end())
 		{
-			LOG_ERROR(UTF8("Shader source type not found "
-				"%1%-%2%"), index->first % index->second);
+			LOG_ERROR(lt_shader_source, UTF8("Shader source type "
+				"not found %1%-%2%"), index->first %
+				index->second);
 			return false;
 		}
 
-		// Disabled because AMD is not able to inline functions :S
-		if (data.get_option(ssbot_use_functions) && !GLEW_AMD_name_gen_delete)
+		if (data.get_option(ssbot_use_functions))
 		{
 			found->second->build_function(data.get_version(),
 				locals, array_sizes, String(UTF8("")),
@@ -1924,8 +1924,9 @@ namespace eternal_lands
 
 		if (found == m_shader_sources.end())
 		{
-			LOG_ERROR(UTF8("Shader source type not found "
-				"%1%-%2%"), index->first % index->second);
+			LOG_ERROR(lt_shader_source, UTF8("Shader source type "
+				"not found %1%-%2%"), index->first %
+				index->second);
 			return false;
 		}
 
@@ -2064,12 +2065,13 @@ namespace eternal_lands
 
 		if (result)
 		{
-			LOG_DEBUG(UTF8("Common parameter '%1%' used."), name);
+			LOG_DEBUG(lt_shader_source, UTF8("Common parameter "
+				"'%1%' used."), name);
 		}
 		else
 		{
-			LOG_DEBUG(UTF8("Common parameter '%1%' not used."),
-				name);
+			LOG_DEBUG(lt_shader_source, UTF8("Common parameter "
+				"'%1%' not used."), name);
 		}
 
 		return result;
@@ -2257,18 +2259,6 @@ namespace eternal_lands
 		build_vertex_source(data, array_sizes, vertex_main,
 			vertex_functions, vertex_globals, values);
 
-		BOOST_FOREACH(const ShaderSourceParameter &global,
-			vertex_globals)
-		{
-			LOG_DEBUG("Vertex global: %1%", global);
-		}
-
-		BOOST_FOREACH(const ShaderSourceParameter &global,
-			fragment_globals)
-		{
-			LOG_DEBUG("Fragment global: %1%", global);
-		}
-
 		build_in_out(fragment_globals, vertex_globals, varyings);
 		build_attributes(vertex_globals, attributes);
 
@@ -2427,7 +2417,8 @@ namespace eternal_lands
 
 		vertex_source << UTF8("}\n");
 
-		LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex_source.str());
+		LOG_DEBUG(lt_shader_source, UTF8("Vertex Shader:\n%1%"),
+			vertex_source.str());
 
 		geometry_source << version_stream.str();
 		geometry_source << UTF8("layout(triangles) in;\n");
@@ -2535,7 +2526,8 @@ namespace eternal_lands
 
 		if (data.get_option(ssbot_layered_rendering))
 		{
-			LOG_DEBUG(UTF8("Geometry Shader:\n%1%"),
+			LOG_DEBUG(lt_shader_source,
+				UTF8("Geometry Shader:\n%1%"),
 				geometry_source.str());
 		}
 
@@ -2659,7 +2651,8 @@ namespace eternal_lands
 		fragment_source << fragment_main.str();
 		fragment_source << UTF8("}\n");
 
-		LOG_DEBUG(UTF8("Fragment Shader:\n%1%"), fragment_source.str());
+		LOG_DEBUG(lt_shader_source, UTF8("Fragment Shader:\n%1%"),
+			fragment_source.str());
 
 		geometry = UTF8("");
 
@@ -2680,7 +2673,8 @@ namespace eternal_lands
 				throw;
 			}
 
-			LOG_DEBUG(UTF8("Vertex Shader:\n%1%"), vertex);
+			LOG_DEBUG(lt_shader_source, UTF8("Vertex Shader:\n%1%"),
+				vertex);
 
 			try
 			{
@@ -2697,7 +2691,8 @@ namespace eternal_lands
 				throw;
 			}
 
-			LOG_DEBUG(UTF8("Fragment Shader:\n%1%"), fragment);
+			LOG_DEBUG(lt_shader_source,
+				UTF8("Fragment Shader:\n%1%"), fragment);
 		}
 		else
 		{

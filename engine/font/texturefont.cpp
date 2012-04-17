@@ -66,7 +66,8 @@ namespace eternal_lands
 			if (error != 0)
 			{
 				EL_THROW_EXCEPTION(InternalErrorException()
-					<< errinfo_code(FT_Errors[error].code)
+					<< boost::errinfo_errno(
+						FT_Errors[error].code)
 					<< errinfo_message(
 						FT_Errors[error].message));
 			}
@@ -112,7 +113,8 @@ namespace eternal_lands
 			if (error != 0)
 			{
 				EL_THROW_EXCEPTION(FileNotFoundException()
-					<< errinfo_code(FT_Errors[error].code)
+					<< boost::errinfo_errno(
+						FT_Errors[error].code)
 					<< errinfo_message(
 						FT_Errors[error].message)
 					<< boost::errinfo_file_name(file_name));
@@ -149,7 +151,8 @@ namespace eternal_lands
 			if (error != 0)
 			{
 				EL_THROW_EXCEPTION(InternalErrorException()
-					<< errinfo_code(FT_Errors[error].code)
+					<< boost::errinfo_errno(
+						FT_Errors[error].code)
 					<< errinfo_message(
 						FT_Errors[error].message));
 			}
@@ -162,7 +165,8 @@ namespace eternal_lands
 			if (error != 0)
 			{
 				EL_THROW_EXCEPTION(InternalErrorException()
-					<< errinfo_code(FT_Errors[error].code)
+					<< boost::errinfo_errno(
+						FT_Errors[error].code)
 					<< errinfo_message(
 						FT_Errors[error].message));
 			}
@@ -259,7 +263,8 @@ namespace eternal_lands
 			if (error != 0)
 			{
 				EL_THROW_EXCEPTION(InternalErrorException()
-					<< errinfo_code(FT_Errors[error].code)
+					<< boost::errinfo_errno(
+						FT_Errors[error].code)
 					<< errinfo_message(
 						FT_Errors[error].message));
 			}

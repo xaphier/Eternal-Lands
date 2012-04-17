@@ -189,12 +189,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of 1d texture"
-			" '%2%' using %3% data."), mipmap % get_name() %
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 1d "
+			"texture '%2%' using %3% data."), mipmap % get_name() %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -209,7 +209,7 @@ namespace eternal_lands
 				image_type, image->get_data(0, mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_2d(const Uint16 mipmap,
@@ -226,12 +226,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of 2d texture"
-			" '%2%' using %3% data."), mipmap % get_name() %
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 2d "
+			"texture '%2%' using %3% data."), mipmap % get_name() %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -246,7 +246,7 @@ namespace eternal_lands
 				image->get_data(0, mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_3d(const Uint16 mipmap,
@@ -263,12 +263,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of 3d texture"
-			" '%2%' using %3% data."), mipmap % get_name() %
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 3d "
+			"texture '%2%' using %3% data."), mipmap % get_name() %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -283,7 +283,7 @@ namespace eternal_lands
 				image_type, image->get_data(0, mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_cube_map(const Uint16 mipmap,
@@ -295,9 +295,9 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of cube map "
-			"texture '%2%' using %3% data."), mipmap % get_name() %
-			(compressed ? UTF8("compressed") :
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of cube "
+			"map texture '%2%' using %3% data."), mipmap %
+			get_name() % (compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
 		set_texture_image_cube_map_face(mipmap, width, height,
@@ -328,7 +328,7 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -343,7 +343,7 @@ namespace eternal_lands
 				image->get_data(face, mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_cube_map(const Uint16 mipmap,
@@ -355,8 +355,8 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(UTF8("Initializing texture leve %1% of %3% "
-			" cube map texture."), mipmap % get_name() %
+		LOG_DEBUG(lt_texture, UTF8("Initializing texture leve %1% of "
+			" %3% cube map texture."), mipmap % get_name() %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
@@ -388,7 +388,7 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -403,7 +403,7 @@ namespace eternal_lands
 				image->get_data(face, mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_2d_layer(const Uint16 mipmap,
@@ -420,12 +420,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(UTF8("Setting texture leve %1%, layer %2% of 2d "
-			"texture array '%3%' using %4% data."), mipmap % layer
-			% get_name() % (compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1%, layer "
+			"%2% of 2d texture array '%3%' using %4% data."),
+			mipmap % layer % get_name() % (compressed ?
+				UTF8("compressed") : UTF8("uncompressed")));
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -440,7 +440,7 @@ namespace eternal_lands
 				image->get_data(0, mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_1d(const Uint16 texture_mipmap,
@@ -459,13 +459,13 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, 1, 1);
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of 1d texture"
-			" '%2%' using level %3% of %4% data."), texture_mipmap
-			% get_name() % image_mipmap %
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 1d "
+			"texture '%2%' using level %3% of %4% data."),
+			texture_mipmap % get_name() % image_mipmap %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -482,7 +482,7 @@ namespace eternal_lands
 				image_position[0], 0, 0, 0, image_mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_2d(const Uint16 texture_mipmap,
@@ -501,13 +501,13 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, height, 1);
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of 2d texture"
-			" '%2%' using level %3% of %4% data."), texture_mipmap
-			% get_name() % image_mipmap %
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 2d "
+			"texture '%2%' using level %3% of %4% data."),
+			texture_mipmap % get_name() % image_mipmap %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -527,7 +527,7 @@ namespace eternal_lands
 				image_position[1], 0, 0, image_mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_3d(const Uint16 texture_mipmap,
@@ -547,13 +547,13 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, height, depth);
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of 3d texture"
-			" '%2%' using level %3% of %4% data."), texture_mipmap
-			% get_name() % image_mipmap %
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 3d "
+			"texture '%2%' using level %3% of %4% data."),
+			texture_mipmap % get_name() % image_mipmap %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -576,7 +576,7 @@ namespace eternal_lands
 				image_mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_cube_map(const Uint16 texture_mipmap,
@@ -590,8 +590,8 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of cube map "
-			"texture '%2%' using level %3% of %4% data."),
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of cube "
+			"map texture '%2%' using level %3% of %4% data."),
 			texture_mipmap % get_name() % image_mipmap %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
@@ -633,7 +633,7 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, height, 1);
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -652,7 +652,7 @@ namespace eternal_lands
 				image_position[1], 0, 0, image_mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_cube_map(const Uint16 texture_mipmap,
@@ -667,9 +667,9 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(UTF8("Setting texture leve %1% of 1d texture"
-			" '%2%' using level %3% of %4% data."), texture_mipmap
-			% get_name() % image_mipmap %
+		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 1d "
+			"texture '%2%' using level %3% of %4% data."),
+			texture_mipmap % get_name() % image_mipmap %
 			(compressed ? UTF8("compressed") :
 				UTF8("uncompressed")));
 
@@ -710,7 +710,7 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, height, depth);
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -733,7 +733,7 @@ namespace eternal_lands
 				image_mipmap));
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_1d(const Uint16 mipmap,
@@ -743,10 +743,10 @@ namespace eternal_lands
 		GLenum format, type;
 		bool compressed;
 
-		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
-			" 1d texture '%2%'."), mipmap % get_name());
+		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
+			" of 1d texture '%2%'."), mipmap % get_name());
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
@@ -765,7 +765,7 @@ namespace eternal_lands
 				width, 0, format, type, 0);
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_2d(const Uint16 mipmap,
@@ -775,10 +775,10 @@ namespace eternal_lands
 		GLenum format, type;
 		bool compressed;
 
-		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
-			" 2d texture '%2%'."), mipmap % get_name());
+		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
+			" of 2d texture '%2%'."), mipmap % get_name());
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
@@ -797,7 +797,7 @@ namespace eternal_lands
 				width, height, 0, format, type, 0);
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_3d(const Uint16 mipmap,
@@ -807,10 +807,10 @@ namespace eternal_lands
 		GLenum format, type;
 		bool compressed;
 
-		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
-			" 3d texture '%2%'."), mipmap % get_name());
+		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
+			" of 3d texture '%2%'."), mipmap % get_name());
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
@@ -830,14 +830,14 @@ namespace eternal_lands
 				width, height, depth, 0, format, type, 0);
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_cube_map(const Uint16 mipmap,
 		const Uint32 width, const Uint32 height)
 	{
-		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
-			" cube map texture '%2%'."), mipmap % get_name());
+		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
+			" of cube map texture '%2%'."), mipmap % get_name());
 
 		set_texture_image_cube_map_face(mipmap, width, height,
 			cmft_positive_x);
@@ -861,7 +861,7 @@ namespace eternal_lands
 		GLenum format, type;
 		bool compressed;
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
@@ -880,14 +880,14 @@ namespace eternal_lands
 				width, height, 0, format, type, 0);
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_texture_image_cube_map(const Uint16 mipmap,
 		const Uint32 width, const Uint32 height, const Uint32 depth)
 	{
-		LOG_DEBUG(UTF8("Initializationing texture leve %1% of"
-			" cube map texture '%2%'."), mipmap % get_name());
+		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
+			" of cube map texture '%2%'."), mipmap % get_name());
 
 		set_texture_image_cube_map_face(mipmap, width, height, depth,
 			cmft_positive_x);
@@ -911,7 +911,7 @@ namespace eternal_lands
 		GLenum format, type;
 		bool compressed;
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
@@ -930,7 +930,7 @@ namespace eternal_lands
 				height, depth, 0, format, type, 0);
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_image(const ImageSharedPtr &image)
@@ -946,7 +946,7 @@ namespace eternal_lands
 		build_texture_id();
 		bind();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (image->has_mipmaps())
 		{
@@ -986,8 +986,8 @@ namespace eternal_lands
 		depth = get_depth();
 		layer = get_depth();
 
-		LOG_DEBUG(UTF8("Loading texture %1% of format %2%."),
-			get_name() % get_format());
+		LOG_DEBUG(lt_texture, UTF8("Loading texture %1% of format "
+			"%2%."), get_name() % get_format());
 
 		for (mip = 0; mip < level; mip++)
 		{
@@ -1038,21 +1038,23 @@ namespace eternal_lands
 
 		calc_size();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		set_texture_parameter();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		unbind();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::set_images(const Uint16 mipmaps,
 		const ImageSharedPtrVector &images)
 	{
 		Uint32 layer, i, w, h, mip, level, used_mipmaps;
+
+		CHECK_GL_ERROR();
 
 		if (mipmaps > 0)
 		{
@@ -1083,7 +1085,7 @@ namespace eternal_lands
 
 		set_depth(images.size());
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		build_texture_id();
 		bind();
@@ -1110,7 +1112,7 @@ namespace eternal_lands
 			}
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		w = get_width();
 		h = get_height();
@@ -1153,15 +1155,15 @@ namespace eternal_lands
 
 		calc_size();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		set_texture_parameter();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		unbind();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::sub_texture(const Uint16 mipmap,
@@ -1178,9 +1180,11 @@ namespace eternal_lands
 		const glm::uvec3 &texture_position,
 		const glm::uvec3 &image_position, const glm::uvec3 &size)
 	{
+		CHECK_GL_ERROR();
+
 		bind();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		switch (get_target())
 		{
@@ -1216,11 +1220,11 @@ namespace eternal_lands
 				break;
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		unbind();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::calc_size()
@@ -1296,16 +1300,18 @@ namespace eternal_lands
 	{
 		Uint32 w, h, d, mip, layer;
 
+		CHECK_GL_ERROR();
+
 		set_width(width);
 		set_height(height);
 		set_depth(depth);
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		build_texture_id();
 		bind();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_used_mipmaps = mipmaps;
 
@@ -1356,15 +1362,15 @@ namespace eternal_lands
 
 		calc_size();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		set_texture_parameter();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		unbind();
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::attach_ext(const GLenum attachment, const Uint32 level,
@@ -1378,20 +1384,17 @@ namespace eternal_lands
 				glFramebufferTexture1DEXT(GL_FRAMEBUFFER_EXT,
 					attachment, get_gl_target(),
 					get_texture_id(), level);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_2d:
 			case ttt_texture_rectangle:
 				glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,
 					attachment, get_gl_target(),
 					get_texture_id(), level);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_3d:
 				glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT,
 					attachment, get_gl_target(),
 					get_texture_id(), level, layer);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_1d_array:
 			case ttt_texture_2d_array:
@@ -1399,11 +1402,10 @@ namespace eternal_lands
 			case ttt_texture_cube_map_array:
 			default:
 				assert(false);
-				CHECK_GL_ERROR();
 				break;
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::attach(const GLenum attachment, const Uint32 level,
@@ -1417,37 +1419,32 @@ namespace eternal_lands
 				glFramebufferTexture1D(GL_FRAMEBUFFER,
 					attachment, get_gl_target(),
 					get_texture_id(), level);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_2d:
 			case ttt_texture_rectangle:
 				glFramebufferTexture2D(GL_FRAMEBUFFER,
 					attachment, get_gl_target(),
 					get_texture_id(), level);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_3d:
 				glFramebufferTexture3D(GL_FRAMEBUFFER,
 					attachment, get_gl_target(),
 					get_texture_id(), level, layer);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_1d_array:
 			case ttt_texture_2d_array:
 				glFramebufferTextureLayer(GL_FRAMEBUFFER,
 					attachment, get_texture_id(), level,
 					layer);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_cube_map:
 			case ttt_texture_cube_map_array:
 			default:
 				assert(false);
-				CHECK_GL_ERROR();
 				break;
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::attach(const GLenum attachment, const Uint32 level)
@@ -1463,18 +1460,16 @@ namespace eternal_lands
 			case ttt_texture_cube_map_array:
 				glFramebufferTexture(GL_FRAMEBUFFER,
 					attachment, get_texture_id(), level);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_1d:
 			case ttt_texture_2d:
 			case ttt_texture_rectangle:
 			default:
 				assert(false);
-				CHECK_GL_ERROR();
 				break;
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::attach(const GLenum attachment,
@@ -1491,21 +1486,18 @@ namespace eternal_lands
 			case ttt_texture_3d:
 			case ttt_texture_2d_array:
 				assert(false);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_cube_map:
 				glFramebufferTexture2D(GL_FRAMEBUFFER,
 					attachment, face, get_texture_id(),
 					level);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_cube_map_array:
 				assert(false);
-				CHECK_GL_ERROR();
 				break;
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::attach(const GLenum attachment,
@@ -1524,17 +1516,15 @@ namespace eternal_lands
 			case ttt_texture_2d_array:
 			case ttt_texture_cube_map:
 				assert(false);
-				CHECK_GL_ERROR();
 				break;
 			case ttt_texture_cube_map_array:
 				glFramebufferTexture3D(GL_FRAMEBUFFER,
 					attachment, face, get_texture_id(),
 					level, layer);
-				CHECK_GL_ERROR();
 				break;
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::build_texture_id()
@@ -1557,7 +1547,7 @@ namespace eternal_lands
 			m_rebuild = false;
 		}
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void Texture::unload() throw()

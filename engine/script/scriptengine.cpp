@@ -28,21 +28,24 @@ namespace eternal_lands
 			switch (message->type)
 			{
 				case asMSGTYPE_ERROR:
-					LOG_ERROR(UTF8("Script error at line "
+					LOG_ERROR(lt_angel_script,
+						UTF8("Script error at line "
 						"%1% [%2%], section '%3%': "
 						"%4%"), message->row %
 						message->col % message->section
 						% message->message);
 					break;
 				case asMSGTYPE_WARNING:
-					LOG_WARNING(UTF8("Script warning at "
+					LOG_WARNING(lt_angel_script,
+						UTF8("Script warning at "
 						"line %1% [%2%], section '%3%'"
 						": %4%"), message->row %
 						message->col % message->section
 						% message->message);
 					break;
 				case asMSGTYPE_INFORMATION:
-					LOG_INFO(UTF8("Script info at line "
+					LOG_INFO(lt_angel_script,
+						UTF8("Script info at line "
 						"%1% [%2%], section '%3%': "
 						"%4%"), message->row %
 						message->col % message->section

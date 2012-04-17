@@ -415,6 +415,30 @@ namespace eternal_lands
 		SDL_UnlockMutex(log_mutex);
 	}
 
+	void log_message(const LogLevelType log_level, const LogType type,
+		const std::string &message, const std::string &file,
+		const Uint32 line)
+	{
+		ThreadDatas::iterator found;
+
+		if (log_levels < log_level)
+		{
+			return;
+		}
+
+		SDL_LockMutex(log_mutex);
+
+		found = thread_datas.find(SDL_ThreadID());
+
+		if (found != thread_datas.end())
+		{
+			do_log_message(log_level, message, file, line,
+				found->second);
+		}
+
+		SDL_UnlockMutex(log_mutex);
+	}
+
 	void log_message(const LogLevelType log_level,
 		const std::string &message, const std::string &file,
 		const Uint32 line)

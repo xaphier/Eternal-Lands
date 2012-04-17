@@ -121,8 +121,8 @@ namespace eternal_lands
 					<< errinfo_message(get_shader_log()));
 			}
 
-			LOG_DEBUG(UTF8("GlslShader compiled successful: %1%"),
-				get_shader_log());
+			LOG_DEBUG(lt_glsl_program, UTF8("GlslShader compiled "
+				"successful: %1%"), get_shader_log());
 		}
 
 		String get_base_name(const StringType &name)
@@ -1898,6 +1898,7 @@ namespace eternal_lands
 	void GlslProgram::log_uniforms()
 	{
 		Uniform uniform;
+		StringStream str;
 		String name;
 		GLcharSharedArray buffer;
 		GLint count, max_buffer_size;
@@ -1933,13 +1934,16 @@ namespace eternal_lands
 
 			if (index >= 0)
 			{
+				BoostFormat format(UTF8("\t%1% of type "
+					"%2% has size %3% and index %4%."));
+
 				uniform.m_index = index;
 				uniform.m_size = array_size;
 				uniform.m_parameter = parameter;
 
-				LOG_DEBUG(UTF8("\tUniform %1% of type %2% has "
-					"size %3% and index %4%."), name %
-					parameter % array_size % index);
+				format % name % parameter % array_size % index;
+
+				str << format.str() << std::endl;
 
 				m_uniforms[name] = uniform;
 
@@ -1959,10 +1963,13 @@ namespace eternal_lands
 				}
 			}
 		}
+
+		LOG_DEBUG(lt_glsl_program, UTF8("Uniforms:\n%1%"), str.str());
 	}
 
 	void GlslProgram::log_attribute_locations()
 	{
+		StringStream str;
 		String name;
 		ParameterType parameter;
 		GLcharSharedArray buffer;
@@ -1982,6 +1989,9 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			BoostFormat format(UTF8("\t%1% of type %2% has size "
+				"%3% and index %4%."));
+
 			type = 0;
 			length = 0;
 			array_size = 0;
@@ -1997,10 +2007,12 @@ namespace eternal_lands
 
 			m_used_attributes[index] = true;
 
-			LOG_DEBUG(UTF8("\tAttribute %1% of type %2% has size "
-				"%3% and index %4%."), name % parameter %
-				array_size % index);
+			format % name % parameter % array_size % index;
+
+			str << format.str() << std::endl;
 		}
+
+		LOG_DEBUG(lt_glsl_program, UTF8("Attributes:\n%1%"), str.str());
 	}
 
 	void GlslProgram::check()
@@ -2013,8 +2025,8 @@ namespace eternal_lands
 				<< errinfo_message(get_program_log()));
 		}
 
-		LOG_INFO(UTF8("Program validate successful: %1%"),
-			get_program_log());
+		LOG_DEBUG(lt_glsl_program, UTF8("Program validate successful:"
+			" %1%"), get_program_log());
 	}
 
 	bool GlslProgram::validate()
@@ -2030,13 +2042,14 @@ namespace eternal_lands
 
 		if (!program_validate_status())
 		{
-			LOG_ERROR(UTF8("Program '%1%' validation: %2%"),
-				get_name() % get_program_log());
+			LOG_ERROR(lt_glsl_program, UTF8("Program '%1%' "
+				"validation: %2%"), get_name() %
+				get_program_log());
 			return;
 		}
 
-		LOG_INFO(UTF8("Program '%1%' validate successful: %2%"),
-			get_name() % get_program_log());
+		LOG_INFO(lt_glsl_program, UTF8("Program '%1%' validate "
+			"successful: %2%"), get_name() % get_program_log());
 	}
 
 	void GlslProgram::unbind()
@@ -2111,8 +2124,8 @@ namespace eternal_lands
 				<< errinfo_message(get_program_log()));
 		}
 
-		LOG_DEBUG(UTF8("Program linked successful: %1%"),
-			get_program_log());
+		LOG_DEBUG(lt_glsl_program, UTF8("Program linked successful: "
+			"%1%"), get_program_log());
 
 		log_attribute_locations();
 		log_uniforms();
@@ -2128,7 +2141,8 @@ namespace eternal_lands
 		StringVariantMap::const_iterator it, end;
 		Uint32 i, count;
 
-		LOG_DEBUG(UTF8("Building Shader %1%"), get_name());
+		LOG_DEBUG(lt_glsl_program, UTF8("Building Shader %1%"),
+			get_name());
 
 		try
 		{

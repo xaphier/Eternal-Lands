@@ -43,7 +43,8 @@ namespace eternal_lands
 		void png_warning(png_structp png_ptr,
 			png_const_charp warning_message)
 		{
-			LOG_WARNING(UTF8("PNG: %1%"), warning_message);
+			LOG_WARNING(lt_png_image, UTF8("PNG: %1%"),
+				warning_message);
 		}
 
 		void png_read(png_structp png_ptr, png_bytep buffer,

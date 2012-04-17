@@ -125,6 +125,11 @@ namespace eternal_lands
 				return m_alphas.any();
 			}
 
+			inline const String &get_name() const
+			{
+				return m_name;
+			}
+
 	};
 
 }

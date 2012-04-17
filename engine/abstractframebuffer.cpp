@@ -13,9 +13,10 @@ namespace eternal_lands
 
 	AbstractFrameBuffer::AbstractFrameBuffer(const String &name,
 		const Uint32 width, const Uint32 height, const Uint32 depth):
-		m_texture(boost::make_shared<Texture>(name)), m_width(width),
-		m_height(height), m_depth(depth), m_depth_buffer(false),
-		m_stencil_buffer(false), m_color_buffer(false)
+		m_name(name), m_texture(boost::make_shared<Texture>(name)),
+		m_width(width), m_height(height), m_depth(depth),
+		m_depth_buffer(false), m_stencil_buffer(false),
+		m_color_buffer(false)
 	{
 	}
 

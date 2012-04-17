@@ -94,11 +94,11 @@ namespace eternal_lands
 			Widget(const WidgetWeakPtr m_parent);
 			void on_active_event(const ApplicationStateType state,
 				const bool status);
-			void on_key_down(const SDLKey sym,
+/*			void on_key_down(const SDLKey sym,
 				const KeyState key_mod, const wchar_t key);
 			void on_key_up(const SDLKey sym,
 				const KeyState key_mod, const wchar_t key);
-			void on_mouse_motion(const Uint16 x, const Uint16 y,
+*/			void on_mouse_motion(const Uint16 x, const Uint16 y,
 				const MouseButtonState buttons,
 				const KeyState keys);
 			void on_mouse_button_down(const Uint16 x,
@@ -111,11 +111,11 @@ namespace eternal_lands
 			virtual void active_event(
 				const ApplicationStateType state,
 				const bool status);
-			virtual void key_down(const SDLKey sym,
+/*			virtual void key_down(const SDLKey sym,
 				const KeyState key_mod, const wchar_t key);
 			virtual void key_up(const SDLKey sym,
 				const KeyState key_mod, const wchar_t key);
-			virtual void mouse_motion(const Uint16 x,
+*/			virtual void mouse_motion(const Uint16 x,
 				const Uint16 y, const MouseButtonState buttons,
 				const KeyState keys);
 			virtual void mouse_button_down(const Uint16 x,

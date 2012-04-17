@@ -39,12 +39,6 @@ namespace eternal_lands
 		m_slices = std::min(m_slices, static_cast<Uint16>(6));
 		m_slices = std::max(m_slices, static_cast<Uint16>(1));
 
-/*
-		m_terrain_frame_buffer = get_scene_resources(
-			).get_framebuffer_builder()->build(
-			String(UTF8("terrain")), clipmap_size, clipmap_size,
-			m_slices, 0, ttt_texture_2d_array, tft_rgb8, false);
-*/
 		m_texture_matrices.resize(m_slices);
 
 		m_focus = glm::vec2(-1e7f);

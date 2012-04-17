@@ -27,9 +27,9 @@ namespace eternal_lands
 
 		if (static_cast<GLint>(samples) > max_samples)
 		{
-			LOG_WARNING(UTF8("Can`t use '%1%' samples for"
-				" frame buffer multisample, because "
-				"extensions no more than '%2%' samples"
+			LOG_WARNING(lt_framebuffer, UTF8("Can`t use '%1%' "
+				"samples for frame buffer multisample, because"
+				" extensions no more than '%2%' samples"
 				" are supported."), samples % max_samples);
 			m_samples = max_samples;
 		}

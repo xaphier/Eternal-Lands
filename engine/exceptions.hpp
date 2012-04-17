@@ -61,8 +61,6 @@ namespace eternal_lands
 		errinfo_parameter_name;
 	typedef boost::error_info<struct errinfo_message_, StringType>
 		errinfo_message;
-	typedef boost::error_info<struct errinfo_code_, Uint64>
-		errinfo_code;
 	typedef boost::error_info<struct errinfo_file_position_, Uint64>
 		errinfo_file_position;
 	typedef boost::error_info<struct errinfo_value_, Uint32> errinfo_value;
@@ -146,7 +144,6 @@ namespace eternal_lands
 	}	\
 	while (false)
 
-
 #define CHECK_GL_ERROR()	\
 	do	\
 	{	\
@@ -161,15 +158,41 @@ namespace eternal_lands
 					::eternal_lands::string_to_utf8(	\
 						reinterpret_cast<const char*>(	\
 							gluErrorString(gl_error))))	\
-				<< ::eternal_lands::errinfo_code(gl_error));	\
+				<< ::boost::errinfo_errno(gl_error));	\
+		}	\
+	}	\
+	while (false)
+
+#define CHECK_GL_ERROR_NAME(name)	\
+	do	\
+	{	\
+		GLint gl_error;	\
+	\
+		gl_error = glGetError();	\
+	\
+		if (gl_error != GL_NO_ERROR)	\
+		{	\
+			EL_THROW_EXCEPTION(::eternal_lands::OpenGlException()	\
+				<< ::eternal_lands::errinfo_message(	\
+					::eternal_lands::string_to_utf8(	\
+						reinterpret_cast<const char*>(	\
+							gluErrorString(gl_error))))	\
+				<< ::boost::errinfo_errno(gl_error)	\
+				<< ::eternal_lands::errinfo_name(name));	\
 		}	\
 	}	\
 	while (false)
 
 #ifndef	NDEBUG
 #define DEBUG_CHECK_GL_ERROR() CHECK_GL_ERROR()
+#define DEBUG_CHECK_GL_ERROR_NAME(name) CHECK_GL_ERROR_NAME(name)
 #else
 #define DEBUG_CHECK_GL_ERROR()	\
+	do	\
+	{	\
+	}	\
+	while (false)
+#define DEBUG_CHECK_GL_ERROR_NAME(name)	\
 	do	\
 	{	\
 	}	\

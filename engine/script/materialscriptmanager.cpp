@@ -16,7 +16,9 @@ namespace eternal_lands
 
 	int MaterialScriptManager::thread_main(void* material_script_manager)
 	{
-		static_cast<MaterialScriptManager*>(material_script_manager)->run();
+		static_cast<MaterialScriptManager*>(
+			material_script_manager)->run();
+
 		return 1;
 	}
 
@@ -28,7 +30,12 @@ namespace eternal_lands
 		m_condition = SDL_CreateCond();
 		m_state = tst_waiting;
 
+#if	SDL_VERSION_ATLEAST(2, 0, 0)
+		m_thread = SDL_CreateThread(thread_main,
+			UTF8("MaterialScriptManager"), this);
+#else	/* SDL_VERSION_ATLEAST(2, 0, 0) */
 		m_thread = SDL_CreateThread(thread_main, this);
+#endif	/* SDL_VERSION_ATLEAST(2, 0, 0) */
 	}
 
 	MaterialScriptManager::~MaterialScriptManager() throw()

@@ -453,7 +453,8 @@ namespace eternal_lands
 
 	E3dLoader::E3dLoader(const ReaderSharedPtr &reader): m_reader(reader)
 	{
-		LOG_DEBUG(UTF8("Loading file '%1%'."), m_reader->get_name());
+		LOG_DEBUG(lt_e3d_loader, UTF8("Loading file '%1%'."),
+			m_reader->get_name());
 	}
 
 	E3dLoader::~E3dLoader() throw()
@@ -561,8 +562,8 @@ namespace eternal_lands
 			str += UTF8("short_index");
 		}
 
-		LOG_DEBUG(UTF8("Formats [%1%] for file '%2%'."), str %
-			m_reader->get_name());
+		LOG_DEBUG(lt_e3d_loader, UTF8("Formats [%1%] for file '%2%'."),
+			str % m_reader->get_name());
 	}
 
 	void E3dLoader::check_vertex_size(const Uint8 options,

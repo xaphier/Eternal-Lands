@@ -110,7 +110,8 @@ namespace eternal_lands
 			(*cinfo->err->format_message)(cinfo, el_err->m_buffer);
 
 			// send it to user's message proc
-			LOG_WARNING(UTF8("JPEG: %1%"), el_err->m_buffer);
+			LOG_WARNING(lt_jpeg_image, UTF8("JPEG: %1%"),
+				el_err->m_buffer);
 		}
 
 		class JpegDecompress

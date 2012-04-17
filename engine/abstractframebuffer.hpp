@@ -25,6 +25,7 @@ namespace eternal_lands
 	class AbstractFrameBuffer: public boost::noncopyable
 	{
 		private:
+			const String m_name;
 			TextureSharedPtr m_texture;
 			const Uint32 m_width;
 			const Uint32 m_height;
@@ -97,6 +98,11 @@ namespace eternal_lands
 			inline bool get_color_buffer() const
 			{
 				return m_color_buffer;
+			}
+
+			inline const String &get_name() const
+			{
+				return m_name;
 			}
 
 	};

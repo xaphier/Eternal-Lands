@@ -168,9 +168,9 @@ namespace eternal_lands
 		material_count = get_reader()->read_u32_le();
 		material_index = get_reader()->read_u32_le();
 
-		LOG_DEBUG(UTF8("Adding 3d object (%1%) '%2%' at <%3%> with "
-			"rotation <%4%>, left lit %5%, blended %6% and "
-			"color <%7%>."), index % name %
+		LOG_DEBUG(lt_map_loader, UTF8("Adding 3d object (%1%) '%2%' at"
+			" <%3%> with rotation <%4%>, left lit %5%, blended %6%"
+			" and color <%7%>."), index % name %
 			glm::to_string(translation) %
 			glm::to_string(rotation_angles) % self_lit % blended %
 			glm::to_string(color));
@@ -229,8 +229,8 @@ namespace eternal_lands
 
 		id = get_free_ids().use_typeless_object_id(index, it_2d_object);
 
-		LOG_DEBUG(UTF8("Adding 2d object (%1%) '%2%' at <%3%> with "
-			"rotation <%4%>."), index % name %
+		LOG_DEBUG(lt_map_loader, UTF8("Adding 2d object (%1%) '%2%' at"
+			"<%3%> with rotation <%4%>."), index % name %
 			glm::to_string(translation) %
 			glm::to_string(rotation_angles));
 
@@ -264,8 +264,8 @@ namespace eternal_lands
 			radius = 2.5f * scale;
 		}
 
-		LOG_DEBUG(UTF8("Adding light (%1%) at <%2%> with "
-			"color <%3%> and radius %4%."), index %
+		LOG_DEBUG(lt_map_loader, UTF8("Adding light (%1%) at <%2%> "
+			"with color <%3%> and radius %4%."), index %
 			glm::to_string(position) %
 			glm::to_string(color) % radius);
 
@@ -288,8 +288,8 @@ namespace eternal_lands
 		position.y = get_reader()->read_float_le();
 		position.z = get_reader()->read_float_le();
 
-		LOG_DEBUG(UTF8("Adding particle (%1%) at <%2%> with "
-			"date '%3%'."), index % glm::to_string(position) %
+		LOG_DEBUG(lt_map_loader, UTF8("Adding particle (%1%) at <%2%> "
+			"with date '%3%'."), index % glm::to_string(position) %
 			name);
 
 		get_free_ids().use_particle_id(index);
@@ -338,7 +338,8 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
-		LOG_DEBUG("Loading %1% 3d objects.", obj_3d_count);
+		LOG_DEBUG(lt_map_loader, UTF8("Loading %1% 3d objects."),
+			obj_3d_count);
 
 		for (i = 0; i < obj_3d_count; ++i)
 		{
@@ -364,7 +365,8 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
-		LOG_DEBUG("Loading %1% 2d objects.", obj_2d_count);
+		LOG_DEBUG(lt_map_loader, UTF8("Loading %1% 2d objects."),
+			obj_2d_count);
 
 		for (i = 0; i < obj_2d_count; ++i)
 		{
@@ -390,7 +392,8 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
-		LOG_DEBUG("Loading %1% lights.", light_count);
+		LOG_DEBUG(lt_map_loader, UTF8("Loading %1% lights."),
+			light_count);
 
 		for (i = 0; i < light_count; ++i)
 		{
@@ -415,7 +418,8 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
-		LOG_DEBUG("Loading %1% particles.", particle_count);
+		LOG_DEBUG(lt_map_loader, UTF8("Loading %1% particles."),
+			particle_count);
 
 		for (i = 0; i < particle_count; ++i)
 		{
@@ -441,8 +445,8 @@ namespace eternal_lands
 	{
 		Uint32 x, y;
 
-		LOG_DEBUG("Height size <%1%, %2%>.", height_map_width %
-			height_map_height);
+		LOG_DEBUG(lt_map_loader, UTF8("Height size <%1%, %2%>."),
+			height_map_width % height_map_height);
 
 		get_reader()->set_position(height_map_offset);
 
@@ -474,8 +478,8 @@ namespace eternal_lands
 	{
 		Uint32 x, y;
 
-		LOG_DEBUG("Tile size <%1%, %2%>.", tile_map_width %
-			tile_map_height);
+		LOG_DEBUG(lt_map_loader, UTF8("Tile size <%1%, %2%>."),
+			tile_map_width % tile_map_height);
 
 		get_reader()->set_position(tile_map_offset);
 
@@ -531,7 +535,8 @@ namespace eternal_lands
 	{
 		Uint32 i;
 
-		LOG_DEBUG("Loading %1% material names.", material_name_count);
+		LOG_DEBUG(lt_map_loader, UTF8("Loading %1% material names."),
+			material_name_count);
 
 		m_material_names.resize(material_name_count);
 
@@ -589,7 +594,8 @@ namespace eternal_lands
 
 		m_reader = get_file_system()->get_file(name);
 
-		LOG_DEBUG("Loading map '%1%'.", get_reader()->get_name());
+		LOG_DEBUG(lt_map_loader, UTF8("Loading map '%1%'."),
+			get_reader()->get_name());
 
 		get_reader()->set_position(0);
 
@@ -619,13 +625,13 @@ namespace eternal_lands
 		light_count = get_reader()->read_u32_le();
 		light_offset = get_reader()->read_u32_le();
 
-		LOG_DEBUG(UTF8("map size <%1%, %2%>."),
+		LOG_DEBUG(lt_map_loader, UTF8("map size <%1%, %2%>."),
 			(tile_map_width * get_tile_size())%
 			(tile_map_height * get_tile_size()));
 
 		dungeon = get_reader()->read_u8() != 0;
 
-		LOG_DEBUG(UTF8("dungeon %1%."), dungeon);
+		LOG_DEBUG(lt_map_loader, UTF8("dungeon %1%."), dungeon);
 
 		set_dungeon(dungeon);
 
@@ -638,7 +644,7 @@ namespace eternal_lands
 		ambient.g = get_reader()->read_float_le();
 		ambient.b = get_reader()->read_float_le();
 
-		LOG_DEBUG(UTF8("ambient color <%1%, %2%, %3%>."),
+		LOG_DEBUG(lt_map_loader, UTF8("ambient color <%1%, %2%, %3%>."),
 			ambient.r % ambient.g % ambient.b);
 
 		set_ambient(ambient);
@@ -655,7 +661,7 @@ namespace eternal_lands
 		material_name_count = get_reader()->read_u32_le();
 		material_name_offset = get_reader()->read_u32_le();
 
-		LOG_DEBUG("Map version %1%.%2%.",
+		LOG_DEBUG(lt_map_loader, UTF8("Map version %1%.%2%."),
 			static_cast<Uint16>(version_number[0]) %
 			static_cast<Uint16>(version_number[1]));
 
@@ -681,48 +687,48 @@ namespace eternal_lands
 
 		if (obj_3d_size != get_3d_object_size())
 		{
-			LOG_ERROR(UTF8("File '%1%' has wrong 3d object"
-				" size of %2% instead of %3%."),
+			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong 3d"
+				" object size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				obj_3d_size % get_3d_object_size());
 		}
 
 		if (obj_2d_size != get_2d_object_size())
 		{
-			LOG_ERROR(UTF8("File '%1%' has wrong 2d object"
-				" size of %2% instead of %3%."),
+			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong 2d"
+				" object size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				obj_2d_size % get_2d_object_size());
 		}
 
 		if (light_size != get_light_size())
 		{
-			LOG_ERROR(UTF8("File '%1%' has wrong light"
-				" size of %2% instead of %3%."),
+			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
+				"light size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				light_size % get_light_size());
 		}
 
 		if (particle_size != get_particle_size())
 		{
-			LOG_ERROR(UTF8("File '%1%' has wrong particle"
-				" size of %2% instead of %3%."),
+			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
+				"particle size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				particle_size % get_particle_size());
 		}
 
 		if (terrain_size != get_terrain_size())
 		{
-			LOG_ERROR(UTF8("File '%1%' has wrong terrain"
-				" size of %2% instead of %3%."),
+			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
+				"terrain size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				terrain_size % get_terrain_size());
 		}
 
 		if (material_name_size != get_material_name_size())
 		{
-			LOG_ERROR(UTF8("File '%1%' has wrong material name"
-				" size of %2% instead of %3%."),
+			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
+				"material name size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				material_name_size % get_material_name_size());
 		}
@@ -738,7 +744,8 @@ namespace eternal_lands
 		read_tile_map(tile_map_width, tile_map_height, tile_map_offset);
 		read_terrains(terrain_size, terrain_count, terrain_offset);
 
-		LOG_DEBUG("Done loading map '%1%'.", get_reader()->get_name());
+		LOG_DEBUG(lt_map_loader, UTF8("Done loading map '%1%'."),
+			get_reader()->get_name());
 
 		instance();
 	}

@@ -226,7 +226,8 @@ namespace eternal_lands
 
 	E2dLoader::E2dLoader(const ReaderSharedPtr &reader): m_reader(reader)
 	{
-		LOG_DEBUG(UTF8("Loading file '%1%'."), m_reader->get_name());
+		LOG_DEBUG(lt_e2d_loader, UTF8("Loading file '%1%'."),
+			m_reader->get_name());
 	}
 
 	E2dLoader::~E2dLoader() throw()

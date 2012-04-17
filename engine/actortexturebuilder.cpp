@@ -184,10 +184,10 @@ namespace eternal_lands
 
 			if (count > 1)
 			{
-				LOG_WARNING(UTF8("Only one channel for mask "
-					"image needed, but file '%1%' has %2% "
-					"channels."), mask_reader->get_name() %
-					count);
+				LOG_WARNING(lt_actor_texture, UTF8("Only one "
+					"channel for mask image needed, but "
+					"file '%1%' has %2% channels."),
+					mask_reader->get_name() % count);
 			}
 
 			if (count > 0)
@@ -822,12 +822,9 @@ namespace eternal_lands
 		CHECK_GL_ERROR();
 
 		m_texture->set_format(texture_format);
-
-		CHECK_GL_ERROR();
-
 		m_texture->set_image(m_image);
 
-		CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void ActorTextureBuilder::set_parts(

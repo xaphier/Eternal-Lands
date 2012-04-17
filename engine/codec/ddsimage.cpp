@@ -39,31 +39,48 @@ namespace eternal_lands
 				(ID[2] == 'S') && (ID[3] == ' ');
 		}
 
-		void validate_header(dds::DdsHeader &header)
+		void validate_header(const String &name, dds::DdsHeader &header)
 		{
 			Uint32 bit_count;
 
 			if (header.m_size != dds::DDS_HEADER_SIZE)
 			{
-				EL_THROW_EXCEPTION(DdsErrorException());
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("DDS file "
+					"'%1%' has invalid header size %2% "
+					"instead of %3%."), name %
+					header.m_size % dds::DDS_HEADER_SIZE,
+					DdsErrorException()
+					<< boost::errinfo_file_name(name));
 			}
 
 			if (header.m_pixel_format.m_size !=
 				dds::DDS_PIXEL_FORMAT_SIZE)
 			{
-				EL_THROW_EXCEPTION(DdsErrorException());
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("DDS file "
+					"'%1%' has invalid pixel format size "
+					"%2% instead of %3%."), name %
+					header.m_pixel_format.m_size %
+					dds::DDS_PIXEL_FORMAT_SIZE,
+					DdsErrorException()
+					<< boost::errinfo_file_name(name));
 			}
 
 			if ((header.m_flags & dds::DDSD_MIN_FLAGS) !=
 				dds::DDSD_MIN_FLAGS)
 			{
-				EL_THROW_EXCEPTION(DdsErrorException());
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("DDS file "
+					"'%1%' has texture flag not set"),
+					name, DdsErrorException()
+					<< boost::errinfo_file_name(name));
 			}
 
 			if ((header.m_caps.m_caps1 & dds::DDSCAPS_TEXTURE) !=
 				dds::DDSCAPS_TEXTURE)
 			{
-				EL_THROW_EXCEPTION(DdsErrorException());
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("DDS file "
+					"'%1%' has texture flag not set"),
+					name, DdsErrorException()
+					<< boost::errinfo_file_name(name));
 			}
 
 			if (((header.m_caps.m_caps2 & dds::DDSCAPS2_CUBEMAP) ==
@@ -71,7 +88,10 @@ namespace eternal_lands
 				((header.m_caps.m_caps2 &
 				dds::DDSCAPS2_CUBEMAP_ALL_FACES) == 0))
 			{
-				EL_THROW_EXCEPTION(DdsErrorException());
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("DDS file "
+					"'%1%' is a cube map but has no cube "
+					"faces."), name, DdsErrorException()
+					<< boost::errinfo_file_name(name));
 			}
 
 			if (((header.m_caps.m_caps2 & dds::DDSCAPS2_CUBEMAP) ==
@@ -79,7 +99,10 @@ namespace eternal_lands
 				((header.m_caps.m_caps2 & dds::DDSCAPS2_VOLUME)
 				== dds::DDSCAPS2_VOLUME))
 			{
-				EL_THROW_EXCEPTION(DdsErrorException());
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("DDS file "
+					"'%1%' is a cube map and a volume "
+					"texture."), name, DdsErrorException()
+					<< boost::errinfo_file_name(name));
 			}
 
 			if (((header.m_flags & dds::DDSD_DEPTH) ==
@@ -87,7 +110,10 @@ namespace eternal_lands
 				((header.m_caps.m_caps2 & dds::DDSCAPS2_VOLUME)
 				!= dds::DDSCAPS2_VOLUME))
 			{
-				EL_THROW_EXCEPTION(DdsErrorException());
+				LOG_WARNING(lt_dds_image, UTF8("DDS file is "
+					"'%1%' invalid. DDSCAPS2_VOLUME cap "
+					"should be set for a valid volume "
+					"DDS file."), name);
 			}
 
 			if (((header.m_caps.m_caps2 & dds::DDSCAPS2_CUBEMAP) ==
@@ -95,9 +121,10 @@ namespace eternal_lands
 				((header.m_caps.m_caps1 & dds::DDSCAPS_COMPLEX)
 				!= dds::DDSCAPS_COMPLEX))
 			{
-				LOG_WARNING(UTF8("%s%"), UTF8("File is invalid."
-					" DDSCAPS_COMPLEX cap should be set for"
-					" a valid cube map DDS file."));
+				LOG_WARNING(lt_dds_image, UTF8("DDS file '%1%'"
+					" is invalid. DDSCAPS_COMPLEX cap "
+					"should be set for a valid cube map "
+					"DDS file."), name);
 			}
 
 			if (((header.m_caps.m_caps2 & dds::DDSCAPS2_VOLUME) ==
@@ -105,9 +132,10 @@ namespace eternal_lands
 				((header.m_caps.m_caps1 & dds::DDSCAPS_COMPLEX)
 				!= dds::DDSCAPS_COMPLEX))
 			{
-				LOG_WARNING(UTF8("%s%"), UTF8("File is invalid."
-					" DDSCAPS_COMPLEX cap should be set"
-					" for a valid volume DDS file."));
+				LOG_WARNING(lt_dds_image, UTF8("DDS file '%1%'"
+					" is invalid. DDSCAPS_COMPLEX cap "
+					"should be set for a valid volume DDS "
+					"file."), name);
 			}
 
 			if (((header.m_caps.m_caps1 & dds::DDSCAPS_MIPMAP) ==
@@ -115,9 +143,10 @@ namespace eternal_lands
 				((header.m_caps.m_caps1 & dds::DDSCAPS_COMPLEX)
 				!= dds::DDSCAPS_COMPLEX))
 			{
-				LOG_WARNING(UTF8("%s%"), UTF8("File is invalid."
-					" DDSCAPS_COMPLEX cap should be set"
-					" for a valid DDS file with mipmaps."));
+				LOG_WARNING(lt_dds_image, UTF8("DDS file '%1%'"
+					" is invalid. DDSCAPS_COMPLEX cap "
+					"should be set for a valid DDS file "
+					"with mipmaps."), name);
 			}
 
 			if (((header.m_caps.m_caps1 & dds::DDSCAPS_COMPLEX) ==
@@ -130,10 +159,11 @@ namespace eternal_lands
 				dds::DDSCAPS2_CUBEMAP) !=
 				dds::DDSCAPS2_CUBEMAP))
 			{
-				LOG_WARNING(UTF8("%s%"), UTF8("File is invalid."
-					" DDSCAPS_COMPLEX cap should be set "
-					"only if the DDS file is a cube map, a"
-					" volume and/or has mipmaps."));
+				LOG_WARNING(lt_dds_image, UTF8("DDS file '%1%'"
+					" is invalid. DDSCAPS_COMPLEX cap "
+					"should be set only if the DDS file is"
+					" a cube map, a volume and/or has "
+					"mipmaps."), name);
 			}
 
 			if (((header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
@@ -141,7 +171,10 @@ namespace eternal_lands
 				((header.m_pixel_format.m_flags & dds::DDPF_RGB)
 				== dds::DDPF_RGB))
 			{
-				EL_THROW_EXCEPTION(DdsErrorException());
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("DDS file "
+					"'%1%' has fourcc and rgb flag set"),
+					name, DdsErrorException()
+					<< boost::errinfo_file_name(name));
 			}
 
 			if (((header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
@@ -385,7 +418,7 @@ namespace eternal_lands
 
 			header.m_reserved2 = reader->read_u32_le();
 
-			validate_header(header);
+			validate_header(reader->get_name(), header);
 		}
 
 		bool get_cube_map(const dds::DdsHeader &header)
@@ -801,7 +834,7 @@ namespace eternal_lands
 		}
 
 		void check_fourcc_support(const CodecManager &codec_manager,
-			const Uint32 fourcc, String format_str,
+			const Uint32 fourcc, const String &format_str,
 			const Uint32 pixel_size, const bool rg_formats)
 		{
 			Uint32 red_mask, green_mask, blue_mask, alpha_mask;
@@ -838,8 +871,8 @@ namespace eternal_lands
 				EL_THROW_EXCEPTION(DdsUnkownFormatException());
 			}
 
-			LOG_DEBUG_VERBOSE(UTF8("Loading of DDS FourCC %1% is "
-				"supported."), format_str);
+			LOG_DEBUG_VERBOSE(lt_dds_image, UTF8("Loading of DDS "
+				"FourCC %1% is supported."), format_str);
 		}
 
 		Uint32 get_fourcc(const Image &image, Uint32 &swap_size)
@@ -1014,7 +1047,7 @@ namespace eternal_lands
 			const ImageCompressionTypeSet &compression,
 			const bool rg_formats)
 		{
-			LOG_DEBUG(UTF8("Loading file '%1%'."),
+			LOG_DEBUG(lt_dds_image, UTF8("Loading file '%1%'."),
 				m_reader->get_name());
 
 			if ((m_header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
@@ -1211,8 +1244,8 @@ namespace eternal_lands
 			GLenum gl_type;
 			TextureFormatType uncompressed_format;
 
-			LOG_DEBUG(UTF8("Uncompressing DDS file '%1%'."),
-				m_reader->get_name());
+			LOG_DEBUG(lt_dds_image, UTF8("Uncompressing DDS file "
+				"'%1%'."), m_reader->get_name());
 
 			if ((m_header.m_height % 4) != 0)
 			{

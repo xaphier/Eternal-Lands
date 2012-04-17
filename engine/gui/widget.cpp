@@ -35,7 +35,7 @@ namespace eternal_lands
 		const bool status)
 	{
 	}
-
+/*
 	void Widget::on_key_down(const SDLKey sym, const KeyState key_mod,
 		const wchar_t key)
 	{
@@ -45,7 +45,7 @@ namespace eternal_lands
 		const wchar_t key)
 	{
 	}
-
+*/
 	void Widget::on_mouse_motion(const Uint16 x, const Uint16 y,
 		const MouseButtonState buttons, const KeyState keys)
 	{

@@ -210,7 +210,7 @@ namespace eternal_lands
 		m_type = type;
 		m_sRGB = sRGB;
 
-		LOG_DEBUG(UTF8("Setting image %1%."), get_log_str());
+		LOG_DEBUG(lt_image, UTF8("Setting image %1%."), get_log_str());
 
 		get_buffer().resize(get_total_size());
 		memset(get_buffer().get_ptr(), 0, get_buffer().get_size());
@@ -235,7 +235,7 @@ namespace eternal_lands
 		m_pixel_size = TextureFormatUtil::get_size(texture_format);
 		m_sRGB = TextureFormatUtil::get_sRGB(texture_format);
 
-		LOG_DEBUG(UTF8("Setting image %1%."), get_log_str());
+		LOG_DEBUG(lt_image, UTF8("Setting image %1%."), get_log_str());
 
 		get_buffer().resize(get_total_size());
 		memset(get_buffer().get_ptr(), 0, get_buffer().get_size());

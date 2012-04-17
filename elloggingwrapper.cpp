@@ -69,7 +69,7 @@ extern "C" void log_error(const char* file, const int line,
 		va_end(ap);
 	}
 
-	el::log_message(el::llt_error, err_msg, file, line);
+	el::log_message(el::llt_error, el::lt_default, err_msg, file, line);
 }
 
 extern "C" void log_warning(const char* file, const int line,
@@ -98,7 +98,7 @@ extern "C" void log_warning(const char* file, const int line,
 		va_end(ap);
 	}
 
-	el::log_message(el::llt_warning, err_msg, file, line);
+	el::log_message(el::llt_warning, el::lt_default, err_msg, file, line);
 }
 
 extern "C" void log_info(const char* file, const int line,
@@ -127,7 +127,7 @@ extern "C" void log_info(const char* file, const int line,
 		va_end(ap);
 	}
 
-	el::log_message(el::llt_info, err_msg, file, line);
+	el::log_message(el::llt_info, el::lt_default, err_msg, file, line);
 }
 
 extern "C" void log_debug(const char* file, const int line,
@@ -156,7 +156,7 @@ extern "C" void log_debug(const char* file, const int line,
 		va_end(ap);
 	}
 
-	el::log_message(el::llt_debug, err_msg, file, line);
+	el::log_message(el::llt_debug, el::lt_default, err_msg, file, line);
 }
 
 extern "C" void log_debug_verbose(const char* file, const int line,
@@ -185,7 +185,8 @@ extern "C" void log_debug_verbose(const char* file, const int line,
 		va_end(ap);
 	}
 
-	el::log_message(el::llt_debug_verbose, err_msg, file, line);
+	el::log_message(el::llt_debug_verbose, el::lt_default, err_msg, file,
+		line);
 }
 
 extern "C" void enter_debug_mark(const char* file, const int line,

@@ -29,11 +29,31 @@ namespace eternal_lands
 		llt_debug_verbose = 4
 	};
 
+	enum LogType
+	{
+		lt_default = 0,
+		lt_io,
+		lt_texture,
+		lt_glsl_program,
+		lt_actor_texture,
+		lt_image,
+		lt_dds_image,
+		lt_png_image,
+		lt_jpeg_image,
+		lt_e3d_loader,
+		lt_e2d_loader,
+		lt_map_loader,
+		lt_mesh,
+		lt_shader_source,
+		lt_angel_script,
+		lt_framebuffer		
+	};
+
 	void init_logging(const std::string &log_file_name);
 	void exit_logging();
 	LogLevelType get_log_level();
 	void set_log_level(const LogLevelType log_level);
-	void log_message(const LogLevelType log_level,
+	void log_message(const LogLevelType log_level, const LogType type,
 		const std::string &message, const std::string &file,
 		const Uint32 line);
 	void log_exception(const std::exception &exception,
@@ -75,55 +95,55 @@ namespace eternal_lands
 #define LOG_EXCEPTION(exception)	\
 	eternal_lands::log_exception(exception, __FILE__, __LINE__)
 
-#define LOG_ERROR(description, arguments)	\
+#define LOG_ERROR(type, description, arguments)	\
 	do	\
 	{	\
 		::eternal_lands::BoostFormat format_string(description);	\
 	\
 		format_string % arguments;	\
 	\
-		eternal_lands::log_message(eternal_lands::llt_error,	\
+		eternal_lands::log_message(eternal_lands::llt_error, type,	\
 			format_string.str(), __FILE__, __LINE__);	\
 	}	\
 	while (false)
 
-#define LOG_WARNING(description, arguments)	\
+#define LOG_WARNING(type, description, arguments)	\
 	do	\
 	{	\
 		::eternal_lands::BoostFormat format_string(description);	\
 	\
 		format_string % arguments;	\
 	\
-		eternal_lands::log_message(eternal_lands::llt_warning,	\
+		eternal_lands::log_message(eternal_lands::llt_warning, type,	\
 			format_string.str(), __FILE__, __LINE__);	\
 	}	\
 	while (false)
 
-#define LOG_INFO(description, arguments)	\
+#define LOG_INFO(type, description, arguments)	\
 	do	\
 	{	\
 		::eternal_lands::BoostFormat format_string(description);	\
 	\
 		format_string % arguments;	\
 	\
-		eternal_lands::log_message(eternal_lands::llt_info,	\
+		eternal_lands::log_message(eternal_lands::llt_info, type,	\
 			format_string.str(), __FILE__, __LINE__);	\
 	}	\
 	while (false)
 
-#define LOG_DEBUG(description, arguments)	\
+#define LOG_DEBUG(type, description, arguments)	\
 	do	\
 	{	\
 		::eternal_lands::BoostFormat format_string(description);	\
 	\
 		format_string % arguments;	\
 	\
-		eternal_lands::log_message(eternal_lands::llt_debug,	\
+		eternal_lands::log_message(eternal_lands::llt_debug, type,	\
 			format_string.str(), __FILE__, __LINE__);	\
 	}	\
 	while (false)
 
-#define LOG_DEBUG_VERBOSE(description, arguments)	\
+#define LOG_DEBUG_VERBOSE(type, description, arguments)	\
 	do	\
 	{	\
 		::eternal_lands::BoostFormat format_string(description);	\
@@ -131,7 +151,7 @@ namespace eternal_lands
 		format_string % arguments;	\
 	\
 		eternal_lands::log_message(eternal_lands::llt_debug_verbose,	\
-			format_string.str(), __FILE__, __LINE__);	\
+			type, format_string.str(), __FILE__, __LINE__);	\
 	}	\
 	while (false)
 

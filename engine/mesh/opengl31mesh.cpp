@@ -7,6 +7,7 @@
 
 #include "opengl31mesh.hpp"
 #include "meshdrawdata.hpp"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
@@ -36,23 +37,31 @@ namespace eternal_lands
 		{
 			glDisable(GL_PRIMITIVE_RESTART);
 		}
+
+		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void OpenGl31Mesh::unbind()
 	{
 		OpenGl3Mesh::unbind();
 		glDisable(GL_PRIMITIVE_RESTART);
+
+		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	AbstractMeshSharedPtr OpenGl31Mesh::clone_vertex_data() const
 	{
 		boost::shared_ptr<OpenGl31Mesh> result;
 
+		CHECK_GL_ERROR();
+
 		result = boost::make_shared<OpenGl31Mesh>(get_name(),
 			get_static_indices(), get_static_vertices(),
 			get_use_simd());
 
 		copy_vertex_data(*result);
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		return result;
 	}
@@ -61,11 +70,15 @@ namespace eternal_lands
 	{
 		boost::shared_ptr<OpenGl31Mesh> result;
 
+		CHECK_GL_ERROR();
+
 		result = boost::make_shared<OpenGl31Mesh>(get_name(),
 			get_static_indices(), get_static_vertices(),
 			get_use_simd());
 
 		copy_index_data(*result);
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		return result;
 	}

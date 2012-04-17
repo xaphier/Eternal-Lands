@@ -54,9 +54,10 @@ namespace eternal_lands
 
 		line = context->GetExceptionLineNumber(&column, &section);
 
-		LOG_ERROR(UTF8("Script exception '%1%' at section '%2%', line"
-			" %3%:%4%."), context->GetExceptionString() % section %
-			line % column);
+		LOG_ERROR(lt_angel_script, UTF8("Script exception '%1%' at "
+			"section '%2%', line %3%:%4%."),
+			context->GetExceptionString() % section % line %
+			column);
 
 		count = context->GetCallstackSize();
 
@@ -68,7 +69,7 @@ namespace eternal_lands
 			str << std::endl;
 		}
 
-		LOG_DEBUG(UTF8("Callstack: %1%"), str.str());
+		LOG_DEBUG(lt_angel_script, UTF8("Callstack: %1%"), str.str());
 	}
 
 }

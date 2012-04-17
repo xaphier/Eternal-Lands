@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "opengl3mesh.hpp"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
@@ -57,9 +58,13 @@ namespace eternal_lands
 
 	void OpenGl3Mesh::init_vertices()
 	{
+		CHECK_GL_ERROR();
+
 		m_id.reset();
 
 		OpenGl2Mesh::init_vertices();
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_id = boost::make_shared<VertexArrayObject>();
 
@@ -68,20 +73,36 @@ namespace eternal_lands
 		bind_vertex_buffers(m_used_attributes);
 
 		m_id->unbind();
+
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void OpenGl3Mesh::bind(BitSet32 &used_attributes)
 	{
+		DEBUG_CHECK_GL_ERROR();
+
 		m_id->bind();
+
+		DEBUG_CHECK_GL_ERROR_NAME(get_name());
+
 		bind_index_buffers();
 
 		used_attributes = m_used_attributes;
+
+		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void OpenGl3Mesh::unbind()
 	{
+		DEBUG_CHECK_GL_ERROR();
+
 		m_id->unbind();
+
+		DEBUG_CHECK_GL_ERROR_NAME(get_name());
+
 		unbind_index_buffers();
+
+		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void OpenGl3Mesh::copy_vertex_data(OpenGl3Mesh &mesh) const
@@ -94,11 +115,17 @@ namespace eternal_lands
 	{
 		boost::shared_ptr<OpenGl3Mesh> result;
 
+		CHECK_GL_ERROR();
+
 		result = boost::make_shared<OpenGl3Mesh>(get_name(),
 			get_static_indices(), get_static_vertices(),
 			get_use_simd());
 
+		CHECK_GL_ERROR_NAME(get_name());
+
 		copy_vertex_data(*result);
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		return result;
 	}
@@ -107,11 +134,17 @@ namespace eternal_lands
 	{
 		boost::shared_ptr<OpenGl3Mesh> result;
 
+		CHECK_GL_ERROR();
+
 		result = boost::make_shared<OpenGl3Mesh>(get_name(),
 			get_static_indices(), get_static_vertices(),
 			get_use_simd());
 
+		CHECK_GL_ERROR_NAME(get_name());
+
 		copy_index_data(*result);
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		return result;
 	}

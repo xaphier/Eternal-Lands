@@ -377,9 +377,9 @@ namespace eternal_lands
 
 		if (sha1 != file_sha1)
 		{
-			LOG_WARNING(UTF8("File '%1%' sha1 should be '%2%', but "
-				"is '%3%'"), zip_name % get_sha1_str(sha1) %
-					get_sha1_str(file_sha1));
+			LOG_WARNING(lt_io, UTF8("File '%1%' sha1 should be "
+				"'%2%', but is '%3%'"), zip_name %
+				get_sha1_str(sha1) % get_sha1_str(file_sha1));
 		}
 
 		m_archives.push_back(new ZipFile(zip_name));
@@ -394,9 +394,9 @@ namespace eternal_lands
 
 		if (sha1 != get_sha1_str(file_sha1))
 		{
-			LOG_WARNING(UTF8("File '%1%' sha1 should be '%2%', but "
-				"is '%3%'"), zip_name % sha1 %
-					get_sha1_str(file_sha1));
+			LOG_WARNING(lt_io, UTF8("File '%1%' sha1 should be "
+				"'%2%', but is '%3%'"), zip_name % sha1 %
+				get_sha1_str(file_sha1));
 		}
 
 		m_archives.push_back(new ZipFile(zip_name));
@@ -485,11 +485,11 @@ namespace eternal_lands
 
 		end = m_archives.rend();
 
-		LOG_DEBUG_VERBOSE(UTF8("Checking file '%1%'"), file_name);
+		LOG_DEBUG(lt_io, UTF8("Checking file '%1%'"), file_name);
 
 		for (it = m_archives.rbegin(); it != end; ++it)
 		{
-			LOG_DEBUG_VERBOSE(UTF8("Checking archive '%1%'"),
+			LOG_DEBUG(lt_io, UTF8("Checking archive '%1%'"),
 				it->get_name());
 
 			try
@@ -513,10 +513,10 @@ namespace eternal_lands
 						return reader;
 					}
 
-					LOG_WARNING(UTF8("File '%1%/%2%' had "
-						"sha1 %3% but %4% expected"),
-						it->get_name() % name %
-						get_sha1_str(sha1) %
+					LOG_WARNING(lt_io, UTF8("File '%1%/%2%'"
+						" had sha1 %3% but %4% "
+						"expected"), it->get_name() %
+						name % get_sha1_str(sha1) %
 						get_sha1_str(found->second));
 				}
 			}

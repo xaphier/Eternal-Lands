@@ -83,7 +83,7 @@ namespace eternal_lands
 		m_static_indices = static_indices;
 		m_static_vertices = static_vertices;
 
-		LOG_DEBUG(UTF8("Mesh '%1%' use_16_bit_indices: %2%, "
+		LOG_DEBUG(lt_mesh, UTF8("Mesh '%1%' use_16_bit_indices: %2%, "
 			"vertex_count: %3%, index_count: %4%, sub_mesh_count:"
 			" %5%"), get_name() % get_use_16_bit_indices() %
 			get_vertex_count() % get_index_count() %
@@ -142,7 +142,7 @@ namespace eternal_lands
 		m_vertex_count = source->get_vertex_count();
 		m_static_vertices = static_vertices;
 
-		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+		LOG_DEBUG(lt_mesh, UTF8("use_16_bit_indices: %1%, vertex_count:"
 			" %2%, index_count: %3%, sub_mesh_count: %4%"),
 			get_use_16_bit_indices() % get_vertex_count() %
 			get_index_count() % get_sub_meshs().size());
@@ -177,7 +177,7 @@ namespace eternal_lands
 		m_vertex_count = buffers->get_vertex_count();
 		m_static_vertices = static_vertices;
 
-		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+		LOG_DEBUG(lt_mesh, UTF8("use_16_bit_indices: %1%, vertex_count:"
 			" %2%, index_count: %3%, sub_mesh_count: %4%"),
 			get_use_16_bit_indices() % get_vertex_count() %
 			get_index_count() % get_sub_meshs().size());
@@ -204,7 +204,7 @@ namespace eternal_lands
 		m_vertex_count = vertex_count;
 		m_static_vertices = static_vertices;
 
-		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+		LOG_DEBUG(lt_mesh, UTF8("use_16_bit_indices: %1%, vertex_count:"
 			" %2%, index_count: %3%, sub_mesh_count: %4%"),
 			get_use_16_bit_indices() % get_vertex_count() %
 			get_index_count() % get_sub_meshs().size());
@@ -219,7 +219,7 @@ namespace eternal_lands
 		assert(buffers.get() != 0);
 		assert(buffers->get_vertex_count() > 0);
 
-		LOG_DEBUG(UTF8("use_16_bit_indices: %1%, vertex_count:"
+		LOG_DEBUG(lt_mesh, UTF8("use_16_bit_indices: %1%, vertex_count:"
 			" %2%, index_count: %3%, sub_mesh_count: %4%"),
 			get_use_16_bit_indices() % get_vertex_count() %
 			get_index_count() % get_sub_meshs().size());

@@ -18,14 +18,11 @@ namespace eternal_lands
 		const TextureFormatType format, const bool depth_buffer):
 		AbstractFrameBuffer(name, width, height, depth)
 	{
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR();
 
 		m_frame_buffer.bind();
 
 		get_texture()->set_target(target);
-
-		DEBUG_CHECK_GL_ERROR();
-
 		get_texture()->set_format(format);
 		get_texture()->set_wrap_s(twt_clamp);
 		get_texture()->set_wrap_t(twt_clamp);
@@ -33,12 +30,12 @@ namespace eternal_lands
 
 		get_texture()->set_mipmap_count(mipmaps);
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		get_texture()->init(get_width(), get_height(), get_depth(),
 			mipmaps);
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		set_stencil_buffer(false);
 
@@ -49,7 +46,7 @@ namespace eternal_lands
 
 			get_texture()->attach(GL_DEPTH_ATTACHMENT, 0);
 
-			DEBUG_CHECK_GL_ERROR();
+			CHECK_GL_ERROR_NAME(get_name());
 
 			if (TextureFormatUtil::get_stencil(format))
 			{
@@ -61,7 +58,7 @@ namespace eternal_lands
 
 			glDrawBuffer(GL_NONE);
 
-			DEBUG_CHECK_GL_ERROR();
+			CHECK_GL_ERROR_NAME(get_name());
 		}
 		else
 		{
@@ -70,7 +67,7 @@ namespace eternal_lands
 
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0);
 
-			DEBUG_CHECK_GL_ERROR();
+			CHECK_GL_ERROR_NAME(get_name());
 
 			if (get_depth_buffer())
 			{
@@ -88,17 +85,17 @@ namespace eternal_lands
 				get_depth_texture()->set_wrap_r(twt_clamp);
 				get_depth_texture()->set_mipmap_count(0);
 
-				DEBUG_CHECK_GL_ERROR();
+				CHECK_GL_ERROR_NAME(get_name());
 
 				get_depth_texture()->init(get_width(),
 					get_height(), get_depth(), 0);
 
-				DEBUG_CHECK_GL_ERROR();
+				CHECK_GL_ERROR_NAME(get_name());
 
 				get_depth_texture()->attach(
 					GL_DEPTH_ATTACHMENT, 0);
 
-				DEBUG_CHECK_GL_ERROR();
+				CHECK_GL_ERROR_NAME(get_name());
 
 				get_depth_texture()->attach(
 					GL_STENCIL_ATTACHMENT, 0);
@@ -106,7 +103,7 @@ namespace eternal_lands
 
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
-			DEBUG_CHECK_GL_ERROR();
+			CHECK_GL_ERROR_NAME(get_name());
 		}
 
 		glReadBuffer(GL_NONE);
@@ -114,7 +111,7 @@ namespace eternal_lands
 		m_frame_buffer.check_status();
 		m_frame_buffer.unbind();
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	LayeredFrameBuffer::~LayeredFrameBuffer() throw()

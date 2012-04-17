@@ -331,10 +331,11 @@ namespace eternal_lands
 			{
 				continue;
 			}
-
+/*
 			LOG_ERROR(UTF8("Texture '%1%' with id %2% bound to "
 				"unit %3%."), m_textures[i]->get_name() %
 				m_textures[i]->get_texture_id() % i);
+*/
 		}
 
 		for (i = 0; i < count; ++i)
@@ -350,7 +351,7 @@ namespace eternal_lands
 
 			glGetIntegerv(GL_TEXTURE_BINDING_2D, &id);
 
-			LOG_ERROR(UTF8("Bound texture id: %1%"), id);
+//			LOG_ERROR(UTF8("Bound texture id: %1%"), id);
 			assert(static_cast<GLuint>(id) ==
 				m_textures[i]->get_texture_id());
 		}
@@ -364,23 +365,26 @@ namespace eternal_lands
 
 		if (gl_error != GL_NO_ERROR)
 		{
-			LOG_ERROR(UTF8("GL error %1%: '%2%'"), gl_error %
-				reinterpret_cast<const char*>(
+/*			LOG_ERROR(UTF8("GL error %1%: '%2%'"),
+				gl_error % reinterpret_cast<const char*>(
 					gluErrorString(gl_error)));
 			log_texture_units();
 			m_program->validate();
 			LOG_ERROR(UTF8("Mesh '%1%' used."), m_mesh->get_name());
-		}
+*/		}
 
 		if (!m_program->validate())
 		{
-			LOG_ERROR(UTF8("Used texture units %1%."),
+			LOG_ERROR(lt_glsl_program,
+				UTF8("Used texture units %1%."),
 				m_used_texture_units);
-			LOG_ERROR(UTF8("Program used texture units %1%."),
+			LOG_ERROR(lt_glsl_program,
+				UTF8("Program used texture units %1%."),
 				m_program_used_texture_units);
 			log_texture_units();
 			m_program->log_validate_status();
-			LOG_ERROR(UTF8("Mesh '%1%' used."), m_mesh->get_name());
+			LOG_ERROR(lt_glsl_program, UTF8("Mesh '%1%' used."),
+				m_mesh->get_name());
 		}
 	}
 

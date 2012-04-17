@@ -19,7 +19,7 @@ namespace eternal_lands
 		const bool depth_buffer): AbstractFrameBuffer(name, width,
 			height, depth), m_layer(0)
 	{
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR();
 
 		get_texture()->set_target(target);
 
@@ -34,40 +34,40 @@ namespace eternal_lands
 		set_color_buffer(true);
 		set_stencil_buffer(true);
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		get_texture()->init(get_width(), get_height(), get_depth(),
 			mipmaps);
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_multisample_frame_buffer.bind();
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_depth_render_buffer.reset(new RenderBuffer(width, height,
 			samples, tft_depth24_stencil8));
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_depth_render_buffer->bind_to_framebuffer(
 			GL_DEPTH_ATTACHMENT);
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_depth_render_buffer->bind_to_framebuffer(
 			GL_STENCIL_ATTACHMENT);
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_render_buffer.reset(new RenderBuffer(width, height, samples,
 			format));
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_render_buffer->bind_to_framebuffer(GL_COLOR_ATTACHMENT0);
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glReadBuffer(GL_COLOR_ATTACHMENT0);
@@ -75,16 +75,16 @@ namespace eternal_lands
 		m_multisample_frame_buffer.check_status();
 		m_multisample_frame_buffer.unbind();
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		m_frame_buffer.bind();
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, 0);
 		m_layer = 0;
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glReadBuffer(GL_NONE);
@@ -92,7 +92,7 @@ namespace eternal_lands
 		m_frame_buffer.check_status();
 		m_frame_buffer.unbind();
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	MultiSampleFrameBuffer::~MultiSampleFrameBuffer() throw()
