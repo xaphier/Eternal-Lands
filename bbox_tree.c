@@ -1405,7 +1405,7 @@ static __inline__ void get_point_from_aabbox(VECTOR3 point, const AABBOX bbox, U
 		default:
 			VMakeI(mask, 0x00000000, 0x00000000, 0x00000000);
 #ifdef	DEBUG
-			LOG_ERROR("Wrong number (%d) for get_point_from_aabbox!", number);
+			LOG_ERROR_OLD("Wrong number (%d) for get_point_from_aabbox!", number);
 #endif
 			break;
 	}

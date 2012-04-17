@@ -32,7 +32,7 @@ unsigned int get_fsaa_modes()
 	unsigned int multisample, pixel_format;
 	int query, samples, format;
 
-	LOG_DEBUG("Using wgl to get fsaa modes");
+	LOG_DEBUG_OLD("Using wgl to get fsaa modes");
 
 	result = 1;
 
@@ -53,7 +53,7 @@ unsigned int get_fsaa_modes()
 
 	if (hwnd == 0)
 	{
-		LOG_ERROR("Can't create dummy window");
+		LOG_ERROR_OLD("Can't create dummy window");
 
 		return result;
 	}

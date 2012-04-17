@@ -421,7 +421,7 @@ static __inline__ Uint32 is_blend_3d_object(Uint32 type)
 		case TYPE_3D_NO_BLEND_NO_GROUND_NO_ALPHA_NO_SELF_LIT_OBJECT: return 0;
 		default:
 #ifdef	DEBUG
-			LOG_ERROR("Wrong type (%d) for is_blend_3d_object!", type);
+			LOG_ERROR_OLD("Wrong type (%d) for is_blend_3d_object!", type);
 #endif
 			return 0;
 	}
@@ -449,7 +449,7 @@ static __inline__ Uint32 is_ground_3d_object(Uint32 type)
 		case TYPE_3D_NO_BLEND_NO_GROUND_NO_ALPHA_NO_SELF_LIT_OBJECT: return 0;
 		default:
 #ifdef	DEBUG
-		LOG_ERROR("Wrong type (%d) for is_ground_3d_object!", type);
+		LOG_ERROR_OLD("Wrong type (%d) for is_ground_3d_object!", type);
 #endif
 			return 0;
 	}
@@ -477,7 +477,7 @@ static __inline__ Uint32 is_alpha_3d_object(Uint32 type)
 		case TYPE_3D_NO_BLEND_NO_GROUND_NO_ALPHA_NO_SELF_LIT_OBJECT: return 0;
 		default:
 #ifdef	DEBUG
-		LOG_ERROR("Wrong type (%d) for is_alpha_3d_object!", type);
+		LOG_ERROR_OLD("Wrong type (%d) for is_alpha_3d_object!", type);
 #endif
 			return 0;
 	}
@@ -505,7 +505,7 @@ static __inline__ Uint32 is_self_lit_3d_object(Uint32 type)
 		case TYPE_3D_NO_BLEND_NO_GROUND_NO_ALPHA_NO_SELF_LIT_OBJECT: return 0;
 		default:
 #ifdef	DEBUG
-		LOG_ERROR("Wrong type (%d) for is_self_lit_3d_object!", type);
+		LOG_ERROR_OLD("Wrong type (%d) for is_self_lit_3d_object!", type);
 #endif
 			return 0;
 	}
@@ -563,7 +563,7 @@ static __inline__ Uint32 get_type_mask_from_type(Uint32 type)
 			return TYPE_MASK_REFLECTIV_WATER;
 		default:
 #ifdef	DEBUG
-		LOG_ERROR("Wrong type (%d) for get_type_mask_from_type!", type);
+		LOG_ERROR_OLD("Wrong type (%d) for get_type_mask_from_type!", type);
 #endif
 			return 0;
 	}

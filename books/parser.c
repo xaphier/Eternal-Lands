@@ -150,7 +150,7 @@ void bp_discardElement(xmlNodePtr node) {
         snprintf(errmsg, sizeof(errmsg), "%s: element of type \"%s\""
                         " not allowed here!\n", node->doc->name, node->name);
 #endif
-	LOG_ERROR(errmsg);
+	LOG_ERROR_OLD(errmsg);
 	exit(1);
 }
 
@@ -250,7 +250,7 @@ void bp_linkReferences(bp_Context * context, bp_Node * node) {
 					char errmsg[500];
 					snprintf(errmsg, sizeof(errmsg), "book parser: unknown label \"%s\" "
 							"in reference\n", (char *) ref->label);
-					LOG_ERROR(errmsg);
+					LOG_ERROR_OLD(errmsg);
 					exit(1);
 				}
 				break;
@@ -288,7 +288,7 @@ bp_Document * bp_parseDoc(bp_Context * context, xmlDocPtr doc) {
 		char errmsg[500];
 		snprintf(errmsg, sizeof(errmsg), "%s: root element must be \"book\""
 				, doc->name);
-		LOG_ERROR(errmsg);
+		LOG_ERROR_OLD(errmsg);
 		exit(1);
 	}
 
@@ -328,7 +328,7 @@ bp_Book * bp_parseBook(bp_Context * context, xmlNodePtr node) {
 	if (fontSym != NULL) {
 		result->fontFace = fontSym->num;
 	} else {
-		LOG_ERROR("FATAL: default font missing in font symbol table\n");
+		LOG_ERROR_OLD("FATAL: default font missing in font symbol table\n");
 		exit(1);
 	}
 	result->layout = BPL_BOOK;
@@ -671,7 +671,7 @@ bp_Label * bp_parseLabel(bp_Context * context, xmlNodePtr node) {
                 snprintf(errmsg, sizeof(errmsg), "%s: \"label\" element "
                                 "requires \"name\" attribute", node->doc->name);
 #endif
-		LOG_ERROR(errmsg);
+		LOG_ERROR_OLD(errmsg);
 		exit(1);
 	}
 
@@ -697,7 +697,7 @@ void bp_parseNavRef(bp_Context * context, xmlNodePtr node, bp_Page * page) {
                         snprintf(errmsg, sizeof(errmsg), "%s: Unknown reference type \"%s\"\n"
                                         , node->doc->name, cdata);
 #endif
-			LOG_ERROR(errmsg);
+			LOG_ERROR_OLD(errmsg);
 			// non-fatal
 		}
 	} else {
@@ -709,7 +709,7 @@ void bp_parseNavRef(bp_Context * context, xmlNodePtr node, bp_Page * page) {
                 snprintf(errmsg, sizeof(errmsg), "%s: only navigation references allowed"
                                 " outside block elements\n", node->doc->name);
 #endif
-		LOG_ERROR(errmsg);
+		LOG_ERROR_OLD(errmsg);
 		// non-fatal
 	}
 }
@@ -745,7 +745,7 @@ bp_Ref * bp_parseRef(bp_Context * context, xmlNodePtr node) {
                 snprintf(errmsg, sizeof(errmsg), "%s: \"ref\" element requires \"to\" "
                                 "attribute", node->doc->name);
 #endif
-		LOG_ERROR(errmsg);
+		LOG_ERROR_OLD(errmsg);
 		exit(1);
 	}
 
@@ -1018,7 +1018,7 @@ void bp_parseFloatAttribute(bp_Context * context, bp_FloatAttributes * _float, x
                                                 snprintf(errmsg, sizeof(errmsg), "%s: invalid value for \"align"
                                                                 "\" attribute\n", attr->doc->name);
 #endif
-						LOG_ERROR(errmsg);
+						LOG_ERROR_OLD(errmsg);
 						exit(1);
 					}
 			}
@@ -1047,7 +1047,7 @@ bp_Mirroring bp_parseMirroring(bp_Context * context, xmlNodePtr data) {
 		char errmsg[500];
 		snprintf(errmsg, sizeof(errmsg), "error: invalid value for \"mirror\" "
 				"attribute: %s\n", data->content);
-		LOG_ERROR(errmsg);
+		LOG_ERROR_OLD(errmsg);
 		exit(1);
 	}
 }
@@ -1060,7 +1060,7 @@ bp_Rotation  bp_parseRotation(bp_Context * context, xmlNodePtr data) {
 		char errmsg[500];
 		snprintf(errmsg, sizeof(errmsg), "error: invalid value for \"rotate\" "
 				"attribute: %s\n", data->content);
-		LOG_ERROR(errmsg);
+		LOG_ERROR_OLD(errmsg);
 		exit(1);
 	}
 }
@@ -1087,7 +1087,7 @@ bp_Color bp_parseColor(bp_Context * context, xmlNodePtr data) {
 					char errmsg[500];
 					snprintf(errmsg, sizeof(errmsg), "error: invalid color value: %s\n", 
 							--cdata);
-					LOG_ERROR(errmsg);
+					LOG_ERROR_OLD(errmsg);
 					exit(1);
 				}
 		}
@@ -1099,7 +1099,7 @@ bp_Color bp_parseColor(bp_Context * context, xmlNodePtr data) {
 			char errmsg[500];
 			snprintf(errmsg, sizeof(errmsg), "error: invalid color value: %s\n", 
 					cdata);
-			LOG_ERROR(errmsg);
+			LOG_ERROR_OLD(errmsg);
 			exit(1);
 		}
 	}
@@ -1114,7 +1114,7 @@ bp_Alignment bp_parseAlignment(bp_Context * context, xmlNodePtr data) {
 		char errmsg[500];
 		snprintf(errmsg, sizeof(errmsg), "error: invalid value for \"align\" "
 				"or \"alignment\" attribute: \"%s\"\n", data->content);
-		LOG_ERROR(errmsg);
+		LOG_ERROR_OLD(errmsg);
 		exit(1);
 	}
 }

@@ -43,7 +43,7 @@ ts_Topic * ts_setTopic(ts_Context * context, bp_Book * book, bp_Page * topic) {
 	context->page = NULL;
 
 	if (!context->font) {
-		LOG_ERROR("WTH? Bad font id!\n");
+		LOG_ERROR_OLD("WTH? Bad font id!\n");
 		exit(1);
 	}
 
@@ -73,7 +73,7 @@ ts_Topic * ts_setTopic(ts_Context * context, bp_Book * book, bp_Page * topic) {
 			context->blockMove  = &ts_sub;
 			break;
 		default:
-			LOG_ERROR("Typesetter encountered illegal block progression!\n");
+			LOG_ERROR_OLD("Typesetter encountered illegal block progression!\n");
 			exit(1);
 	}
 
@@ -103,7 +103,7 @@ ts_Topic * ts_setTopic(ts_Context * context, bp_Book * book, bp_Page * topic) {
 			context->inlineMove = &ts_sub;
 			break;
 		default:
-			LOG_ERROR("Typesetter encountered illegal inline progression!\n");
+			LOG_ERROR_OLD("Typesetter encountered illegal inline progression!\n");
 			exit(1);
 	}
 
@@ -185,7 +185,7 @@ ts_Page * ts_startPage(ts_Context * context) {
 			}
 			break;
 		default:
-			LOG_ERROR("Typesetter encountered illegal book layout!\n");
+			LOG_ERROR_OLD("Typesetter encountered illegal book layout!\n");
 			exit(1);
 	}
 

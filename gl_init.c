@@ -21,7 +21,6 @@
 #include "eye_candy_wrapper.h"
 #include "minimap.h"
 #include "sky.h"
-#include "shader/shader.h"
 #ifdef	FSAA
 #include "fsaa/fsaa.h"
 #endif	/* FSAA */

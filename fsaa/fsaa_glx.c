@@ -33,7 +33,7 @@ unsigned int get_fsaa_modes()
 	int i, count, caveat, samples;
 	unsigned int result;
 
-	LOG_DEBUG("Using glx to get fsaa modes");
+	LOG_DEBUG_OLD("Using glx to get fsaa modes");
 
 	_glXChooseFBConfig = (PFNGLXCHOOSEFBCONFIGPROC)glXGetProcAddressARB((const GLubyte*)"glXChooseFBConfig");
 	_glXGetFBConfigAttrib = (PFNGLXGETFBCONFIGATTRIBPROC)glXGetProcAddressARB((const GLubyte*)"glXGetFBConfigAttrib");

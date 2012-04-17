@@ -64,12 +64,12 @@ void fd_load() {
 						if (linesize > 0) {
 							font->linesize = linesize;
 						} else {
-							LOG_ERROR("fontdef: 'linesize' attribute needs to be positive");
+							LOG_ERROR_OLD("fontdef: 'linesize' attribute needs to be positive");
 							free(font);
 							continue;
 						}
 					} else {
-						LOG_ERROR("fontdef: font needs to carry 'linesize' attribute");
+						LOG_ERROR_OLD("fontdef: font needs to carry 'linesize' attribute");
 						free(font);
 						continue;
 					}
@@ -80,7 +80,7 @@ void fd_load() {
 						if (baseline >= 0) {
 							font->baseline = baseline;
 						} else {
-							LOG_ERROR("fontdef: 'baseline' attribute needs to be non-negative");
+							LOG_ERROR_OLD("fontdef: 'baseline' attribute needs to be non-negative");
 							free(font);
 							continue;
 						}
@@ -94,7 +94,7 @@ void fd_load() {
 						font->name = malloc(size);
 						memcpy(font->name, strval, size);
 					} else {
-						LOG_ERROR("fontdef: font needs to carry 'name' attribute");
+						LOG_ERROR_OLD("fontdef: font needs to carry 'name' attribute");
 						free(font);
 						continue;
 					}
@@ -110,7 +110,7 @@ void fd_load() {
 
 						xmlFree(strval);
 					} else {
-						LOG_ERROR("fontdef: font needs to carry 'id' attribute");
+						LOG_ERROR_OLD("fontdef: font needs to carry 'id' attribute");
 						free(font->name);
 						free(font);
 						continue;
@@ -156,7 +156,7 @@ void fd_load() {
 								tex = load_texture_cache_deferred(texPath,0);
 								xmlFree(texPath);
 							} else {
-								LOG_ERROR("fontdef: texture element needs to carry 'src' attribute");
+								LOG_ERROR_OLD("fontdef: texture element needs to carry 'src' attribute");
 								continue;
 							}
 
@@ -165,7 +165,7 @@ void fd_load() {
 								texWidth = atof(strval);
 								xmlFree(strval);
 							} else {
-								LOG_ERROR("fontdef: texture element needs to carry 'width' attribute");
+								LOG_ERROR_OLD("fontdef: texture element needs to carry 'width' attribute");
 								continue;
 							}
 
@@ -174,7 +174,7 @@ void fd_load() {
 								texHeight = atof(strval);
 								xmlFree(strval);
 							} else {
-								LOG_ERROR("fontdef: texture element needs to carry 'height' attribute");
+								LOG_ERROR_OLD("fontdef: texture element needs to carry 'height' attribute");
 								continue;
 							}
 
