@@ -21,6 +21,7 @@ namespace eternal_lands
 		m_shadow_map_size = 2;
 		m_clipmap_size = 1;
 		m_clipmap_world_size = 16;
+		m_clipmap_slices = 4;
 		m_tile_world_size = 4;
 		m_opengl_version = ovt_2_1;
 		m_fog = true;
@@ -38,10 +39,6 @@ namespace eternal_lands
 		m_use_layered_rendering = false;
 		m_low_quality_terrain = false;
 		m_clipmap_centered = true;
-#ifdef	DEBUG
-		m_draw_objects = true;
-		m_draw_actors = true;
-#endif	/* DEBUG */
 	}
 
 	GlobalVars::~GlobalVars() throw()

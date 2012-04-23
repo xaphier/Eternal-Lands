@@ -28,7 +28,7 @@ namespace eternal_lands
 	{
 		private:
 			ShaderSourceParameterVector m_parameters;
-			std::set<ShaderVersionType> m_versions;
+			ShaderVersionType m_version;
 			String m_source;
 
 			void load_parameters_xml(const String &source,
@@ -73,75 +73,9 @@ namespace eternal_lands
 				m_source = source;
 			}
 
-			inline void add_version(const ShaderVersionType version)
+			inline void set_version(const ShaderVersionType version)
 			{
-				m_versions.insert(version);
-			}
-
-			inline void erase_version(
-				const ShaderVersionType version)
-			{
-				m_versions.erase(version);
-			}
-
-			inline void set_glsl_120(const bool glsl_120)
-			{
-				if (glsl_120)
-				{
-					add_version(svt_120);
-				}
-				else
-				{
-					erase_version(svt_120);
-				}
-			}
-
-			inline void set_glsl_130(const bool glsl_130)
-			{
-				if (glsl_130)
-				{
-					add_version(svt_130);
-				}
-				else
-				{
-					erase_version(svt_130);
-				}
-			}
-
-			inline void set_glsl_140(const bool glsl_140)
-			{
-				if (glsl_140)
-				{
-					add_version(svt_140);
-				}
-				else
-				{
-					erase_version(svt_140);
-				}
-			}
-
-			inline void set_glsl_150(const bool glsl_150)
-			{
-				if (glsl_150)
-				{
-					add_version(svt_150);
-				}
-				else
-				{
-					erase_version(svt_150);
-				}
-			}
-
-			inline void set_glsl_330(const bool glsl_330)
-			{
-				if (glsl_330)
-				{
-					add_version(svt_330);
-				}
-				else
-				{
-					erase_version(svt_330);
-				}
+				m_version = version;
 			}
 
 			inline const ShaderSourceParameterVector
@@ -155,35 +89,9 @@ namespace eternal_lands
 				return m_source;
 			}
 
-			inline bool get_version(
-				const ShaderVersionType version) const
+			inline ShaderVersionType get_version() const
 			{
-				return m_versions.count(version) > 0;
-			}
-
-			inline bool get_glsl_120() const
-			{
-				return m_versions.count(svt_120) > 0;
-			}
-
-			inline bool get_glsl_130() const
-			{
-				return m_versions.count(svt_130) > 0;
-			}
-
-			inline bool get_glsl_140() const
-			{
-				return m_versions.count(svt_140) > 0;
-			}
-
-			inline bool get_glsl_150() const
-			{
-				return m_versions.count(svt_150) > 0;
-			}
-
-			inline bool get_glsl_330() const
-			{
-				return m_versions.count(svt_330) > 0;
+				return m_version;
 			}
 
 	};

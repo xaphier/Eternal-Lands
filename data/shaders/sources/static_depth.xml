@@ -13,17 +13,17 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformation</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>instance_count</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>world_position</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_transformations</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>instance_count</size>
      <scale>1</scale>
     </parameter>
    </parameters>
@@ -31,17 +31,13 @@
 
 world_position = position.xyz;
 
-transformation = world_transformation[0];
+transformation = world_transformations[gl_InstanceID];
 
 world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
 world_position *= transformation[1].w;
 world_position += transformation[1].xyz;
 </source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>false</glsl_140>
-   <glsl_150>false</glsl_150>
-   <glsl_330>false</glsl_330>
+   <version>130</version>
   </shader_source_data>
   <shader_source_data>
    <parameters>
@@ -53,17 +49,17 @@ world_position += transformation[1].xyz;
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformation</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>instance_count</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>world_position</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_transformations</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>instance_count</size>
      <scale>1</scale>
     </parameter>
    </parameters>
@@ -71,17 +67,13 @@ world_position += transformation[1].xyz;
 
 world_position = position.xyz;
 
-transformation = world_transformation[gl_InstanceID];
+transformation = world_transformations[0];
 
 world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
 world_position *= transformation[1].w;
 world_position += transformation[1].xyz;
 </source>
-   <glsl_120>false</glsl_120>
-   <glsl_130>false</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

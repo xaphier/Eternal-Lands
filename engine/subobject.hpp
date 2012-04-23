@@ -29,6 +29,7 @@ namespace eternal_lands
 		private:
 			Uint32 m_id;
 			Uint32 m_material;
+			float m_max_distance;
 			SelectionType m_selection;
 
 		public:
@@ -42,7 +43,8 @@ namespace eternal_lands
 			 */
 			SubObject(const MeshDrawData &mesh_draw,
 				const Uint32 id, const Uint32 material,
-				SelectionType m_selection);
+				const float max_distance,
+				const SelectionType selection);
 
 			/**
 			 * Default destructor.
@@ -59,6 +61,11 @@ namespace eternal_lands
 				return m_material;
 			}
 
+			inline Uint32 get_max_distance() const
+			{
+				return m_max_distance;
+			}
+
 			inline SelectionType get_selection() const
 			{
 				return m_selection;
@@ -72,6 +79,11 @@ namespace eternal_lands
 			inline void set_material(const Uint32 material)
 			{
 				m_material = material;
+			}
+
+			inline void set_max_distance(const Uint32 max_distance)
+			{
+				m_max_distance = max_distance;
 			}
 
 			inline void set_selection(const SelectionType selection)

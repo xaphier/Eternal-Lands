@@ -1569,6 +1569,17 @@ extern "C" void engine_set_clipmap_world_size(const int value)
 	}
 }
 
+extern "C" void engine_set_clipmap_slices(const int value)
+{
+	global_vars->set_clipmap_slices(value);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->terrain_change();
+	}
+}
+
 extern "C" void engine_set_tile_world_size(const int value)
 {
 	global_vars->set_tile_world_size(value);
@@ -1673,15 +1684,3 @@ extern "C" void engine_update_materials()
 
 	CATCH_BLOCK
 }
-
-#ifdef	DEBUG
-extern "C" void engine_set_draw_objects(const int value)
-{
-	global_vars->set_draw_objects(value != 0);
-}
-
-extern "C" void engine_set_draw_actors(const int value)
-{
-	global_vars->set_draw_actors(value != 0);
-}
-#endif	/* DEBUG */

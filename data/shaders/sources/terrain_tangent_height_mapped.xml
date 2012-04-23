@@ -6,7 +6,21 @@
   <shader_source_data>
    <parameters>
     <parameter>
+     <name>height_sampler</name>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
      <name>position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>texture_scale_offset</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -20,28 +34,14 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
+     <name>world_normal</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>height_sampler</name>
-     <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>texture_scale_offset</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>world_normal</name>
+     <name>world_position</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -61,11 +61,7 @@ world_position.z = textureLod(height_sampler, position.xy * texture_scale_offset
 world_normal = normalize(mat3(world_matrix) * vec3(0.0, 0.0, 1.0));
 world_tangent = normalize(mat3(world_matrix) * vec3(1.0, 0.0, 0.0));
 </source>
-   <glsl_120>false</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>130</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

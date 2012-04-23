@@ -1,0 +1,898 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>853</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>5</number>
+    </property>
+    <property name="margin">
+     <number>5</number>
+    </property>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Properties</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="name_value"/>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Source datas</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QSpinBox" name="source_data_count">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>4</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="type_value"/>
+       </item>
+       <item row="0" column="4" rowspan="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTabWidget" name="source_datas">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="source_data_0">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <attribute name="title">
+        <string>Source data 0</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <property name="margin">
+         <number>2</number>
+        </property>
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox_14">
+          <property name="title">
+           <string>parameter</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item row="0" column="0" rowspan="5">
+            <widget class="QTreeWidget" name="parameters_0">
+             <attribute name="headerVisible">
+              <bool>true</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string notr="true">1</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="add_0">
+             <property name="text">
+              <string>add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="edit_0">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>edit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="remove_0">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>remove</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QPushButton" name="copy_0">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>copy</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="clear_0">
+             <property name="text">
+              <string>clear</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox_15">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>options</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>glsl version</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="glsl_version_0"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>80</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_10">
+          <property name="title">
+           <string>source</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QPlainTextEdit" name="source_0"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="source_data_1">
+       <attribute name="title">
+        <string>Source data 1</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <property name="margin">
+         <number>2</number>
+        </property>
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox_5">
+          <property name="title">
+           <string>parameter</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item row="0" column="0" rowspan="5">
+            <widget class="QTreeWidget" name="parameters_1">
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string notr="true">1</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="add_1">
+             <property name="text">
+              <string>add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="edit_1">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>edit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="remove_1">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>remove</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QPushButton" name="copy_1">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>copy</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="clear_1">
+             <property name="text">
+              <string>clear</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox_11">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>options</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>glsl version</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="glsl_version_1"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>80</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_4">
+          <property name="title">
+           <string>source</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QPlainTextEdit" name="source_1"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="source_data_2">
+       <attribute name="title">
+        <string>Source data 2</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_7">
+        <property name="margin">
+         <number>2</number>
+        </property>
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox_7">
+          <property name="title">
+           <string>parameter</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item row="0" column="0" rowspan="5">
+            <widget class="QTreeWidget" name="parameters_2">
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string notr="true">1</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="add_2">
+             <property name="text">
+              <string>add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="edit_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>edit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="remove_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>remove</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QPushButton" name="copy_2">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>copy</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="clear_2">
+             <property name="text">
+              <string>clear</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox_12">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>options</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>glsl version</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="glsl_version_2"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>80</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_6">
+          <property name="title">
+           <string>source</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QPlainTextEdit" name="source_2"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="source_data_3">
+       <attribute name="title">
+        <string>Source data 3</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_9">
+        <property name="margin">
+         <number>2</number>
+        </property>
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox_9">
+          <property name="title">
+           <string>parameter</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item row="0" column="0" rowspan="5">
+            <widget class="QTreeWidget" name="parameters_3">
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string notr="true">1</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="add_3">
+             <property name="text">
+              <string>add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="edit_3">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>edit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="remove_3">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>remove</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QPushButton" name="copy_3">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>copy</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="clear_3">
+             <property name="text">
+              <string>clear</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox_13">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>options</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>glsl version</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="glsl_version_3"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>80</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_8">
+          <property name="title">
+           <string>source</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QPlainTextEdit" name="source_3"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>853</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_new"/>
+    <addaction name="action_open"/>
+    <addaction name="action_save"/>
+    <addaction name="action_save_as"/>
+    <addaction name="separator"/>
+    <addaction name="action_exit"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_new"/>
+   <addaction name="action_open"/>
+   <addaction name="action_save"/>
+  </widget>
+  <action name="action_new">
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+  </action>
+  <action name="action_open">
+   <property name="text">
+    <string>&amp;Open</string>
+   </property>
+  </action>
+  <action name="action_save">
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+  </action>
+  <action name="action_save_as">
+   <property name="text">
+    <string>Save &amp;as</string>
+   </property>
+  </action>
+  <action name="action_exit">
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>name_value</tabstop>
+  <tabstop>type_value</tabstop>
+  <tabstop>source_data_count</tabstop>
+  <tabstop>source_datas</tabstop>
+  <tabstop>parameters_0</tabstop>
+  <tabstop>add_0</tabstop>
+  <tabstop>edit_0</tabstop>
+  <tabstop>remove_0</tabstop>
+  <tabstop>clear_0</tabstop>
+  <tabstop>copy_0</tabstop>
+  <tabstop>glsl_version_0</tabstop>
+  <tabstop>source_0</tabstop>
+  <tabstop>parameters_1</tabstop>
+  <tabstop>add_1</tabstop>
+  <tabstop>edit_1</tabstop>
+  <tabstop>remove_1</tabstop>
+  <tabstop>clear_1</tabstop>
+  <tabstop>copy_1</tabstop>
+  <tabstop>glsl_version_1</tabstop>
+  <tabstop>source_1</tabstop>
+  <tabstop>parameters_2</tabstop>
+  <tabstop>add_2</tabstop>
+  <tabstop>edit_2</tabstop>
+  <tabstop>remove_2</tabstop>
+  <tabstop>clear_2</tabstop>
+  <tabstop>copy_2</tabstop>
+  <tabstop>glsl_version_2</tabstop>
+  <tabstop>source_2</tabstop>
+  <tabstop>parameters_3</tabstop>
+  <tabstop>add_3</tabstop>
+  <tabstop>edit_3</tabstop>
+  <tabstop>remove_3</tabstop>
+  <tabstop>clear_3</tabstop>
+  <tabstop>copy_3</tabstop>
+  <tabstop>glsl_version_3</tabstop>
+  <tabstop>source_3</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>clear_0</sender>
+   <signal>clicked()</signal>
+   <receiver>parameters_0</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>666</x>
+     <y>272</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clear_1</sender>
+   <signal>clicked()</signal>
+   <receiver>parameters_1</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>666</x>
+     <y>272</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clear_2</sender>
+   <signal>clicked()</signal>
+   <receiver>parameters_2</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>666</x>
+     <y>272</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clear_3</sender>
+   <signal>clicked()</signal>
+   <receiver>parameters_3</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>666</x>
+     <y>272</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>320</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_exit</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>410</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

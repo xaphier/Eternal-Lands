@@ -6,27 +6,6 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>tbn_matrix</name>
-     <type>mat3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>world_view_direction</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>normal_sampler_0</name>
-     <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>fragment_normal</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
@@ -41,8 +20,29 @@
      <scale>1</scale>
     </parameter>
     <parameter>
+     <name>normal_sampler_0</name>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>tbn_matrix</name>
+     <type>mat3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
      <name>world_uv</name>
      <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_view_direction</name>
+     <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -69,35 +69,10 @@ normal.xyz = normalize(tbn_matrix * normal.xyz);
 fragment_normal = normal.xyz;
 fragment_uv = uv.xy;
 </source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>false</glsl_130>
-   <glsl_140>false</glsl_140>
-   <glsl_150>false</glsl_150>
-   <glsl_330>false</glsl_330>
+   <version>120</version>
   </shader_source_data>
   <shader_source_data>
    <parameters>
-    <parameter>
-     <name>tbn_matrix</name>
-     <type>mat3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>world_view_direction</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>normal_sampler_0</name>
-     <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
     <parameter>
      <name>fragment_normal</name>
      <type>vec3</type>
@@ -113,8 +88,29 @@ fragment_uv = uv.xy;
      <scale>1</scale>
     </parameter>
     <parameter>
+     <name>normal_sampler_0</name>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>tbn_matrix</name>
+     <type>mat3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
      <name>world_uv</name>
      <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_view_direction</name>
+     <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -141,11 +137,7 @@ normal.xyz = normalize(tbn_matrix * normal.xyz);
 fragment_normal = normal.xyz;
 fragment_uv = uv.xy;
 </source>
-   <glsl_120>false</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

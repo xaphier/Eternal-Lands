@@ -44,9 +44,11 @@ namespace eternal_lands
 		lt_e2d_loader,
 		lt_map_loader,
 		lt_mesh,
+		lt_material,
 		lt_shader_source,
 		lt_angel_script,
-		lt_framebuffer		
+		lt_framebuffer,
+		lt_rendering
 	};
 
 	void init_logging(const std::string &log_file_name);
@@ -65,6 +67,8 @@ namespace eternal_lands
 		const Uint32 line);
 	void leave_debug_mark(const std::string &name, const std::string &file,
 		const Uint32 line);
+	void log_exception_str(const std::string &message,
+		const std::string &file, const Uint32 line);
 
 }
 
@@ -94,6 +98,18 @@ namespace eternal_lands
 
 #define LOG_EXCEPTION(exception)	\
 	eternal_lands::log_exception(exception, __FILE__, __LINE__)
+
+#define LOG_EXCEPTION_STR(description, arguments)	\
+	do	\
+	{	\
+		::eternal_lands::BoostFormat format_string(description);	\
+	\
+		format_string % arguments;	\
+	\
+		eternal_lands::log_exception_str(format_string.str(), __FILE__,	\
+			__LINE__);	\
+	}	\
+	while (false)
 
 #define LOG_ERROR(type, description, arguments)	\
 	do	\

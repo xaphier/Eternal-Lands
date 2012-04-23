@@ -75,7 +75,7 @@
 	<effect>
 		<name>simple-terrain</name>
 		<world_transformation>static</world_transformation>
-		<texture_coodrinates>static_extra_6</texture_coodrinates>
+		<texture_coodrinates>terrain</texture_coodrinates>
 		<albedo_mapping>terrain</albedo_mapping>
 		<normal_mapping>terrain</normal_mapping>
 		<specular_mapping>disabled</specular_mapping>

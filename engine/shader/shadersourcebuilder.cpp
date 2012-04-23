@@ -1161,7 +1161,11 @@ namespace eternal_lands
 			return false;
 		}
 
-		if (data.get_option(ssbot_use_functions))
+		/**
+		 * AMD driver doesn't like functions with array arguments.
+		 */
+		if (data.get_option(ssbot_use_functions) &&
+			!GLEW_AMD_name_gen_delete)
 		{
 			found->second->build_function(data.get_version(),
 				locals, array_sizes, String(UTF8("")),
@@ -1281,22 +1285,13 @@ namespace eternal_lands
 		stream << UTF8(" = ") << light_offset << UTF8("; ") << sslt_i;
 		stream << UTF8(" < ");
 
-		if (dynamic_light_count)
+		if (dynamic_light_count && !vertex)
 		{
 			add_parameter(String(UTF8("lighting")),
 				apt_dynamic_light_count, function_locals,
 				function_parameters);
 
 			stream << apt_dynamic_light_count;
-
-			if (vertex)
-			{
-				stream << UTF8(".z");
-			}
-			else
-			{
-				stream << UTF8(".y");
-			}
 		}
 		else
 		{
@@ -1481,13 +1476,13 @@ namespace eternal_lands
 		if (!data.get_option(ssbot_layered_rendering))
 		{
 			add_parameter(String(UTF8("vertex")),
-				apt_projection_view_matrix, locals, globals);
+				apt_projection_view_matrices, locals, globals);
 			add_parameter(String(UTF8("vertex")),
 				cpt_world_position, pqt_in, locals, globals);
 
 			main << indent << UTF8("/* gl_Position */\n");
 			main << indent << gl_Position;
-			main << UTF8(" = ") << apt_projection_view_matrix;
+			main << UTF8(" = ") << apt_projection_view_matrices;
 			main << UTF8("[0] * vec4(") << cpt_world_position;
 			main << UTF8(", 1.0);\n");
 		}
@@ -1552,7 +1547,7 @@ namespace eternal_lands
 		add_parameter(String(UTF8("geometry")), cpt_world_position,
 			pqt_in, locals, globals);
 		add_parameter(String(UTF8("geometry")),
-			apt_projection_view_matrix, locals, globals);
+			apt_projection_view_matrices, locals, globals);
 
 		count = 3;
 
@@ -1579,7 +1574,7 @@ namespace eternal_lands
 			main << UTF8(";\n");
 
 			main << indent << gl_Position << UTF8(" = ");
-			main << apt_projection_view_matrix << UTF8("[");
+			main << apt_projection_view_matrices << UTF8("[");
 			main << sslt_i << UTF8("] * vec4(");
 
 			write_parameter_indexed(in_prefix,
@@ -2202,7 +2197,7 @@ namespace eternal_lands
 		if (shader_build_type == sbt_shadow)
 		{
 			layer_count = std::max(static_cast<Uint16>(1),
-				data.get_shadow_map_count());
+				get_global_vars()->get_shadow_map_count());
 		}
 		else
 		{
@@ -2228,6 +2223,8 @@ namespace eternal_lands
 			data.get_shadow_map_count();
 		array_sizes[pst_layer_count] = layer_count;
 		array_sizes[pst_instance_count] = get_instance_count();
+		array_sizes[pst_clipmap_slices] =
+			get_global_vars()->get_clipmap_slices();
 
 		data.set_option(ssbot_transparent,
 			description.get_transparent());

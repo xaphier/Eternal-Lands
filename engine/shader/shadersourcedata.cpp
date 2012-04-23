@@ -15,12 +15,12 @@
 namespace eternal_lands
 {
 
-	ShaderSourceData::ShaderSourceData()
+	ShaderSourceData::ShaderSourceData(): m_version(svt_120)
 	{
 	}
 
 	ShaderSourceData::ShaderSourceData(const String &source,
-		const xmlNodePtr node)
+		const xmlNodePtr node): m_version(svt_120)
 	{
 		load_xml(source, node);
 	}
@@ -184,29 +184,11 @@ namespace eternal_lands
 				set_source(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_120")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("version")) == 0)
 			{
-				set_glsl_120(XmlUtil::get_bool_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_130")) == 0)
-			{
-				set_glsl_130(XmlUtil::get_bool_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_140")) == 0)
-			{
-				set_glsl_140(XmlUtil::get_bool_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_150")) == 0)
-			{
-				set_glsl_150(XmlUtil::get_bool_value(it));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("glsl_330")) == 0)
-			{
-				set_glsl_330(XmlUtil::get_bool_value(it));
+				set_version(
+					ShaderVersionUtil::get_shader_version(
+						XmlUtil::get_string_value(it)));
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -229,11 +211,8 @@ namespace eternal_lands
 		writer->end_element();
 
 		writer->write_element(UTF8("source"), get_source());
-		writer->write_bool_element(UTF8("glsl_120"), get_glsl_120());
-		writer->write_bool_element(UTF8("glsl_130"), get_glsl_130());
-		writer->write_bool_element(UTF8("glsl_140"), get_glsl_140());
-		writer->write_bool_element(UTF8("glsl_150"), get_glsl_150());
-		writer->write_bool_element(UTF8("glsl_330"), get_glsl_330());
+		writer->write_element(UTF8("version"),
+			ShaderVersionUtil::get_str(get_version()));
 
 		writer->end_element();
 	}

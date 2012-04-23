@@ -64,22 +64,23 @@ namespace eternal_lands
 		const AutoParameterTypeData auto_parameter_datas[] =
 		{
 			AutoParameterTypeData(
-				String(UTF8("world_transformation")),
+				String(UTF8("world_transformations")),
 				pt_mat2x4, pst_instance_count),
 			AutoParameterTypeData(
 				String(UTF8("view_rotation_matrix")),
 				pt_mat3x3),
 			AutoParameterTypeData(String(UTF8("view_matrix")),
 				pt_mat4x4),
-			AutoParameterTypeData(String(UTF8("projection_matrix")),
+			AutoParameterTypeData(
+				String(UTF8("projection_matrices")),
 				pt_mat4x4, pst_layer_count),
 			AutoParameterTypeData(String(UTF8(
-				"projection_view_matrix")), pt_mat4x4,
+				"projection_view_matrices")), pt_mat4x4,
 				pst_layer_count),
 			AutoParameterTypeData(String(UTF8("reflection_matrix")),
 				pt_mat4x4),
 			AutoParameterTypeData(String(UTF8(
-				"shadow_texture_matrix")), pt_mat4x4,
+				"shadow_texture_matrices")), pt_mat4x4,
 				pst_shadow_map_count),
 			AutoParameterTypeData(String(UTF8("light_positions")),
 				pt_vec4, pst_light_count),
@@ -87,7 +88,7 @@ namespace eternal_lands
 				pt_vec4, pst_light_count),
 			AutoParameterTypeData(String(UTF8("ambient")), pt_vec4),
 			AutoParameterTypeData(String(UTF8(
-				"dynamic_light_count")), pt_ivec3),
+				"dynamic_light_count")), pt_int),
 			AutoParameterTypeData(String(UTF8("bones")), pt_mat2x4,
 				pst_bone_count),
 			AutoParameterTypeData(String(UTF8("time")), pt_float),
@@ -101,7 +102,7 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("layers")), pt_ivec4),
 			AutoParameterTypeData(
 				String(UTF8("texture_matrices")), pt_mat2x3,
-				pst_one, 8),
+				pst_one, 2),
 			AutoParameterTypeData(
 				String(UTF8("albedo_scale_offsets")),
 				pt_mat2x4, pst_one, 4),
@@ -110,10 +111,14 @@ namespace eternal_lands
 				pt_mat2x3),
 			AutoParameterTypeData(
 				String(UTF8("specular_scale_offset")), pt_vec4),
+			AutoParameterTypeData(String(UTF8("dudv_scale")),
+				pt_vec2),
 			AutoParameterTypeData(
 				String(UTF8("terrain_scale")), pt_vec3),
 			AutoParameterTypeData(
-				String(UTF8("terrain_texture_size")), pt_vec4)
+				String(UTF8("terrain_texture_size")), pt_vec4),
+			AutoParameterTypeData(String(UTF8("clipmap_matrices")),
+				pt_mat2x3, pst_clipmap_slices),
 		};
 
 		const Uint32 auto_parameter_datas_count =

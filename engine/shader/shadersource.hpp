@@ -45,11 +45,11 @@ namespace eternal_lands
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 			void load(const String &file_name);
-			void build_source(const ShaderVersionType &type,
+			void build_source(const ShaderVersionType &version,
 				const ShaderSourceParameterVector &locals, 
 				const String &indent, OutStream &stream,
 				ShaderSourceParameterVector &globals) const;
-			void build_function(const ShaderVersionType &type,
+			void build_function(const ShaderVersionType &version,
 				const ShaderSourceParameterVector &locals,
 				const ParameterSizeTypeUint16Map &sizes,
 				const String &indent,
@@ -58,12 +58,12 @@ namespace eternal_lands
 				OutStream &function,
 				ShaderSourceParameterVector &globals) const;
 			bool check_source_parameter(
-				const ShaderVersionType &type,
+				const ShaderVersionType &version,
 				const String &name) const;
-			bool get_has_data(
-				const ShaderVersionType shader_version) const;
+			bool get_has_data(const ShaderVersionType version)
+				const;
 			const ShaderSourceData &get_data(
-				const ShaderVersionType shader_version) const;
+				const ShaderVersionType version) const;
 			void set_datas(const ShaderSourceDataVector &datas);
 			String get_typed_name() const;
 

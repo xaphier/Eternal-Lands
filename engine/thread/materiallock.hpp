@@ -40,6 +40,11 @@ namespace eternal_lands
 				return m_material;
 			}
 
+			inline const MaterialSharedPtr &get_material() const
+			{
+				return m_material;
+			}
+
 	};
 
 }

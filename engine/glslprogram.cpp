@@ -1760,7 +1760,7 @@ namespace eternal_lands
 	}
 
 	void GlslProgram::set_parameter(const AutoParameterType parameter,
-		const Mat2x3Array8 &value, const bool transpose)
+		const Mat2x3Array2 &value, const bool transpose)
 	{
 		AutoParameterTypeUniformMap::const_iterator found;
 
@@ -1771,7 +1771,7 @@ namespace eternal_lands
 		if (found != m_auto_parameters.end())
 		{
 			assert(found->second.m_parameter == pt_mat2x3);
-			set_uniform<8>(found->second.m_index,
+			set_uniform<2>(found->second.m_index,
 				found->second.m_size, value, transpose);
 		}
 	}

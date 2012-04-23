@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "effectdescription.hpp"
+#include "effectprogramutil.hpp"
 
 /**
  * @file
@@ -29,10 +30,8 @@ namespace eternal_lands
 			const ShaderSourceBuilderWeakPtr
 				m_shader_source_builder;
 			const EffectDescription m_description;
-			GlslProgramSharedPtr m_default_program;
-			GlslProgramSharedPtr m_depth_program;
-			GlslProgramSharedPtr m_shadow_program;
-			glm::ivec2 m_light_count;
+			boost::array<GlslProgramSharedPtr, 3> m_programs;
+			Uint16 m_max_light_count;
 
 			void error_load();
 			void do_load();
@@ -63,55 +62,20 @@ namespace eternal_lands
 			~Effect() throw();
 			void load();
 
-			inline const GlslProgramSharedPtr &get_default_program(
-				) const
+			inline const GlslProgramSharedPtr &get_program(
+				const EffectProgramType type) const
 			{
-				return m_default_program;
+				return m_programs[type];
 			}
 
-			inline glm::ivec3 get_dynamic_light_count(
-				const Uint16 light_count) const
-			{
-				glm::ivec3 result;
-				glm::ivec2 tmp;
-
-				result = glm::vec3(m_light_count, 0);
-
-				result.z = result.x + result.y;
-				result.y = std::min(light_count,
-					static_cast<Uint16>(result.y));
-				result.z = std::min(light_count,
-					static_cast<Uint16>(result.z));
-				result.x = std::max(result.z - result.y, 0);
-
-				return result;
-			}
-
-			inline const GlslProgramSharedPtr &get_default_program(
-				const Uint16 light_count,
-				glm::ivec3 &dynamic_light_count) const
-			{
-				dynamic_light_count =
-					get_dynamic_light_count(light_count);
-
-				return get_default_program();
-			}
-
-			inline const GlslProgramSharedPtr &get_depth_program()
-				const
-			{
-				return m_depth_program;
-			}
-
-			inline const GlslProgramSharedPtr &get_shadow_program()
-				const
-			{
-				return m_shadow_program;
-			}
-
-			const EffectDescription &get_description() const
+			inline const EffectDescription &get_description() const
 			{
 				return m_description;
+			}
+
+			inline Uint16 get_max_light_count() const
+			{
+				return m_max_light_count;
 			}
 
 	};

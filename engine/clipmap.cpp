@@ -20,7 +20,8 @@ namespace eternal_lands
 
 	}
 
-	Clipmap::Clipmap()
+	Clipmap::Clipmap(): m_world_size(16.0f), m_distance(0.0f), m_size(512),
+		m_dir_index(0), m_slices(4), m_centered(true)
 	{
 	}
 
@@ -29,26 +30,22 @@ namespace eternal_lands
 	}
 
 	void Clipmap::rebuild(const glm::vec2 &terrain_world_size,
-		const float view_distance, const float clipmap_world_size,
-		const Uint16 clipmap_size)
+		const float view_distance, const float world_size,
+		const Uint16 size, const Uint16 slices)
 	{
 		glm::vec2 terrain_texture_size;
 
-		m_slices = (std::log(view_distance / clipmap_world_size) /
-			std::log(2.0f)) + 3;
-		m_slices = std::min(m_slices, static_cast<Uint16>(6));
-		m_slices = std::max(m_slices, static_cast<Uint16>(1));
+		m_focus = glm::vec2(-1e7f);
+		m_terrain_world_size = terrain_world_size;
+		m_world_size = world_size;
+		m_size = size;
+		m_slices = slices;
+		m_dir_index = 0;
 
 		m_texture_matrices.resize(m_slices);
 
-		m_focus = glm::vec2(-1e7f);
-		m_terrain_world_size = terrain_world_size;
-		m_clipmap_world_size = clipmap_world_size;
-		m_clipmap_size = clipmap_size;
-		m_dir_index = 0;
-
 		terrain_texture_size = (glm::vec2(terrain_world_size) *
-			static_cast<float>(clipmap_size)) / clipmap_world_size;
+			static_cast<float>(size)) / world_size;
 
 		m_terrain_texture_size.x = terrain_texture_size.x;
 		m_terrain_texture_size.y = terrain_texture_size.y;
@@ -63,7 +60,7 @@ namespace eternal_lands
 
 		dir_index = get_dir_index(glm::normalize(glm::vec2(view_dir)));
 
-		if ((dir_index != get_dir_index()) ||
+		if (((dir_index != get_dir_index()) && !get_centered()) ||
 			(glm::distance(focus, get_focus()) > 1.0f))
 		{
 			m_focus = focus;
@@ -82,28 +79,30 @@ namespace eternal_lands
 
 		dir_index = get_dir_index();
 
-		if (glm::dot(view_dir, dir[dir_index]) <= std::cos(45.5f))
+		assert(dir_index < 4);
+
+		if (glm::dot(view_dir, dir[dir_index]) >= 0.7f)
 		{
 			return dir_index;
 		}
 
 		dir_index = (get_dir_index() + 1) % 4;
 
-		if (glm::dot(view_dir, dir[dir_index]) <= std::cos(45.5f))
+		if (glm::dot(view_dir, dir[dir_index]) >= 0.7f)
 		{
 			return dir_index;
 		}
 
 		dir_index = (get_dir_index() + 3) % 4;
 
-		if (glm::dot(view_dir, dir[dir_index]) <= std::cos(45.5f))
+		if (glm::dot(view_dir, dir[dir_index]) >= 0.7f)
 		{
 			return dir_index;
 		}
 
 		dir_index = (get_dir_index() + 2) % 4;
 
-		assert(glm::dot(view_dir, dir[dir_index]) <= std::cos(45.5f));
+		assert(glm::dot(view_dir, dir[dir_index]) >= 0.7f);
 
 		return dir_index;
 	}
@@ -112,36 +111,28 @@ namespace eternal_lands
 	{
 		glm::mat2x3 texture_matrix;
 		glm::vec2 offset, scale;
-		float clipmap_world_size;
+		float world_size;
 
-		clipmap_world_size = get_clipmap_world_size() *
-			static_cast<float>(1 << slice);
+		world_size = get_world_size() *	static_cast<float>(1 << slice);
 
-		offset = get_focus() - clipmap_world_size * 0.5f;
+		offset = get_focus() - world_size * 0.5f;
 
 		if (!get_centered())
 		{
-
-			if (slice > 0)
-			{
-				offset += dir[get_dir_index()] *
-					clipmap_world_size * 0.25f;
-			}
-
-			offset += dir[get_dir_index()] *
-				(get_clipmap_world_size() * 0.5f - m_distance);
+			offset -= dir[get_dir_index()] * world_size * 0.5f;
+//			offset += dir[get_dir_index()] * get_world_size() * 0.5f;
+//			offset -= dir[get_dir_index()] *
+//				(get_world_size() * 0.5f - m_distance);
+			offset += dir[get_dir_index()] * m_distance;
 		}
 
-		offset /= clipmap_world_size;
-		scale = get_terrain_world_size() / clipmap_world_size;
+		offset /= world_size;
+		scale = get_terrain_world_size() / world_size;
 
 		texture_matrix[0] = glm::vec3(scale.x, 0.0f, -offset.x);
 		texture_matrix[1] = glm::vec3(0.0f, scale.y, -offset.y);
 
 		m_texture_matrices[slice] = texture_matrix;
-
-		texture_matrix = glm::mat2x3(glm::inverse(glm::mat3(
-			texture_matrix)));
 	}
 
 }

@@ -6,10 +6,17 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>shadow_uv</name>
+     <name>shadow</name>
+     <type>float</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>shadow_camera</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>shadow_map_count</size>
+     <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
@@ -17,6 +24,13 @@
      <type>sampler2DArray</type>
      <qualifier>in</qualifier>
      <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>shadow_uv</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>shadow_map_count</size>
      <scale>1</scale>
     </parameter>
     <parameter>
@@ -34,23 +48,9 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>shadow_camera</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>world_position</name>
      <type>vec3</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>shadow</name>
-     <type>float</type>
-     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -83,11 +83,7 @@ shadow = exp(over_darkening_factor * (log(occluder) - light_distance));
 
 shadow = clamp(shadow, 0.0, 1.0);
 </source>
-   <glsl_120>false</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>130</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

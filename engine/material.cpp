@@ -16,6 +16,7 @@
 #include "script/materialscript.hpp"
 #include "script/materialscriptcache.hpp"
 #include "script/materialscriptmanager.hpp"
+#include "glslprogram.hpp"
 
 namespace eternal_lands
 {
@@ -171,6 +172,17 @@ namespace eternal_lands
 		}
 
 		state_manager.switch_culling(get_culling());
+
+		state_manager.get_program()->set_parameter(apt_texture_matrices,
+			get_texture_matrices());
+		state_manager.get_program()->set_parameter(
+			apt_albedo_scale_offsets, get_albedo_scale_offsets());
+		state_manager.get_program()->set_parameter(
+			apt_emission_scale_offset, get_emission_scale_offset());
+		state_manager.get_program()->set_parameter(
+			apt_specular_scale_offset, get_specular_scale_offset());
+		state_manager.get_program()->set_parameter(apt_dudv_scale,
+			get_dudv_scale());
 	}
 
 	const EffectDescription &Material::get_effect_description() const

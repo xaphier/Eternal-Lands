@@ -20,6 +20,7 @@
 #include "statemanager.hpp"
 #include "sceneview.hpp"
 #include "clipmap.hpp"
+#include "effectprogramutil.hpp"
 
 /**
  * @file
@@ -73,16 +74,16 @@ namespace eternal_lands
 			bool m_shadow_map_change;
 
 			void get_lights(const BoundingBox &bounding_box,
-				Uint32 &light_count);
-			void set_lights(const GlslProgramSharedPtr &program,
-				const glm::ivec3 &dynamic_light_count);
+				Uint16 &light_count);
+			void do_draw_object(const ObjectSharedPtr &object,
+				const EffectProgramType type,
+				const Uint16 layer, const Uint16 distance,
+				const bool lights);
 			void draw_object(const ObjectSharedPtr &object,
-				const Uint16 distance);
-			void draw_object_depth(const ObjectSharedPtr &object,
-				const Uint16 distance);
-			void draw_object_shadow(const ObjectSharedPtr &object,
-				const Uint16 layer, const Uint16 distance);
-			void pick_object(const ObjectSharedPtr &object,
+				const EffectProgramType type,
+				const Uint16 layer, const Uint16 distance,
+				const bool lights);
+			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids);
 			bool switch_program(
 				const GlslProgramSharedPtr &program,
@@ -100,7 +101,7 @@ namespace eternal_lands
 			void update_terrain_map();
 			void draw_terrain_texture(
 				const MaterialSharedPtrVector &materials,
-				const Mat2x3Vector &texture_matrices,
+				const Mat2x3Array2 &texture_matrices,
 				const Uint16 index);
 			void draw_terrain_texture();
 
@@ -265,7 +266,8 @@ namespace eternal_lands
 
 			inline const glm::mat4 &get_projection_matrix() const
 			{
-				return m_scene_view.get_projection_matrix()[0];
+				return m_scene_view.get_projection_matrices(
+					)[0];
 			}
 
 			inline void set_lights(const bool lights)

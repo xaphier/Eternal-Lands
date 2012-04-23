@@ -34,16 +34,25 @@ namespace eternal_lands
 		const MeshCacheSharedPtr &mesh_cache,
 		const MeshDataCacheSharedPtr &mesh_data_cache,
 		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache,
 		const MaterialCacheSharedPtr &material_cache,
+		const MaterialDescriptionCacheSharedPtr
+			&material_description_cache,
 		const FreeIdsManagerSharedPtr &free_ids):
 		AbstractMapLoader(file_system, free_ids),
 		m_codec_manager(codec_manager), m_global_vars(global_vars),
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_mesh_data_cache(mesh_data_cache),
-		m_effect_cache(effect_cache), m_texture_cache(texture_cache),
-		m_material_cache(material_cache)
+		m_effect_cache(effect_cache), m_material_cache(material_cache),
+		m_material_description_cache(material_description_cache)
 	{
+		assert(m_codec_manager.get() != 0);
+		assert(m_global_vars.get() != 0);
+		assert(m_mesh_builder.get() != 0);
+		assert(m_mesh_cache.get() != 0);
+		assert(m_mesh_data_cache.get() != 0);
+		assert(m_effect_cache.get() != 0);
+		assert(m_material_cache.get() != 0);
+		assert(m_material_description_cache.get() != 0);
 	}
 
 	MapLoader::~MapLoader() throw()
@@ -53,7 +62,8 @@ namespace eternal_lands
 	MapSharedPtr MapLoader::load(const String &name)
 	{
 		m_instances_builder.reset(new InstancesBuilder(
-			get_mesh_data_cache(), 8.0f,
+			get_mesh_data_cache(),
+			get_material_description_cache(), 8.0f,
 			get_global_vars()->get_use_simd(),
 			get_global_vars()->get_opengl_3_2()));
 
@@ -130,8 +140,8 @@ namespace eternal_lands
 		terrain.reset(new DefaultTerrainManager(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_effect_cache(),
-			get_texture_cache(), TerrainData(albedo, blend, height,
-				dudv, translation, dudv_scale)));
+			TerrainData(albedo, blend, height, dudv, translation,
+				dudv_scale)));
 
 		m_map->add_terrain(terrain);
 	}
@@ -146,7 +156,7 @@ namespace eternal_lands
 		glm::vec3 offset;
 		Uint32 id;
 
-		m_map->set_tile(x, y, tile);
+		m_map->set_tile(x, y, 255);
 
 		if (tile == 255)
 		{
@@ -193,6 +203,8 @@ namespace eternal_lands
 		m_instances_builder->add(ObjectDescription(transformation,
 			materials, String(UTF8("tile")), 0.0f, id, st_none,
 			bt_disabled));
+
+		m_map->set_tile(x, y, tile);
 	}
 
 	void MapLoader::set_height(const Uint16 x, const Uint16 y,

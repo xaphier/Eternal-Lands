@@ -6,13 +6,6 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>time</name>
      <type>float</type>
      <qualifier>in</qualifier>
@@ -26,16 +19,19 @@
      <size>one</size>
      <scale>3</scale>
     </parameter>
+    <parameter>
+     <name>world_position</name>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
    </parameters>
    <source>uv[0] = world_position.xy * 0.1 + vec2(-2.5, -1.0) * time * 0.01;
 uv[1] = world_position.xy * 0.15 + vec2(1.5, -1.5) * time * 0.02;
 uv[2] = world_position.xy * 0.2 + vec2(-0.5, 2.0) * time * 0.015;
 </source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

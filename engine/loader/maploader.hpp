@@ -37,8 +37,9 @@ namespace eternal_lands
 			const MeshCacheSharedPtr m_mesh_cache;
 			const MeshDataCacheSharedPtr m_mesh_data_cache;
 			const EffectCacheSharedPtr m_effect_cache;
-			const TextureCacheSharedPtr m_texture_cache;
 			const MaterialCacheSharedPtr m_material_cache;
+			const MaterialDescriptionCacheSharedPtr
+				m_material_description_cache;
 			ReaderSharedPtr m_reader;
 			MapSharedPtr m_map;
 			boost::scoped_ptr<InstancesBuilder> m_instances_builder;
@@ -80,16 +81,16 @@ namespace eternal_lands
 				return m_effect_cache;
 			}
 
-			inline const TextureCacheSharedPtr &get_texture_cache()
-				const
-			{
-				return m_texture_cache;
-			}
-
 			inline const MaterialCacheSharedPtr
 				&get_material_cache() const
 			{
 				return m_material_cache;
+			}
+
+			inline const MaterialDescriptionCacheSharedPtr
+				&get_material_description_cache() const
+			{
+				return m_material_description_cache;
 			}
 
 			inline const ReaderSharedPtr &get_reader() const
@@ -137,8 +138,9 @@ namespace eternal_lands
 				const MeshCacheSharedPtr &mesh_cache,
 				const MeshDataCacheSharedPtr &mesh_data_cache,
 				const EffectCacheSharedPtr &effect_cache,
-				const TextureCacheSharedPtr &texture_cache,
 				const MaterialCacheSharedPtr &material_cache,
+				const MaterialDescriptionCacheSharedPtr
+					&material_description_cache,
 				const FreeIdsManagerSharedPtr &free_ids);
 
 			/**

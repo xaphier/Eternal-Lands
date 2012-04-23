@@ -23,6 +23,7 @@ namespace eternal_lands
 		m_emission_scale_offset[0] = glm::vec3(1.0f);
 		m_emission_scale_offset[1] = glm::vec3(0.0f);
 		m_specular_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
+		m_dudv_scale = glm::vec2(1.0f);
 	}
 
 	MaterialData::~MaterialData() throw()

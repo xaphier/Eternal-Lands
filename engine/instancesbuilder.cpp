@@ -6,22 +6,27 @@
  ****************************************************************************/
 
 #include "instancesbuilder.hpp"
-#include "materialdescription.hpp"
+#include "materialdescriptioncache.hpp"
 #include "instancingdata.hpp"
 #include "freeids.hpp"
 #include "instancebuilder.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
 
 	InstancesBuilder::InstancesBuilder(
 		const MeshDataCacheWeakPtr &mesh_data_cache,
+		const MaterialDescriptionCacheWeakPtr
+			&material_description_cache,
 		const float max_size, const bool use_simd,
 		const bool use_base_vertex): m_mesh_data_cache(mesh_data_cache),
+		m_material_description_cache(material_description_cache),
 		m_max_size(max_size), m_use_simd(use_simd),
 		m_use_base_vertex(use_base_vertex)
 	{
 		assert(!m_mesh_data_cache.expired());
+		assert(!m_material_description_cache.expired());
 	}
 
 	InstancesBuilder::~InstancesBuilder() throw()
@@ -32,13 +37,53 @@ namespace eternal_lands
 	{
 		std::auto_ptr<InstancingData> instancing_data;
 		Sint16Sint16Pair index;
+		bool ok;
 
-		instancing_data.reset(new InstancingData(
-			get_mesh_data_cache(), object_description));
+		ok = true;
 
-		index = instancing_data->get_index(m_max_size);
+		try
+		{
+			instancing_data.reset(new InstancingData(
+				get_mesh_data_cache(), object_description));
 
-		m_instancing_datas[index].push_back(instancing_data);
+			BOOST_FOREACH(const String &name,
+				instancing_data->get_material_names())
+			{
+				if (!get_material_description_cache(
+					)->get_has_material_description(name))
+				{
+					LOG_ERROR(lt_material, UTF8("Object "
+						"'%1%' using invalid material"
+						" '%2%'."),
+						object_description.get_name() %
+						name);
+					ok = false;
+				}
+			}
+
+			if (!ok)
+			{
+				return;
+			}
+
+			index = instancing_data->get_index(m_max_size);
+
+			m_instancing_datas[index].push_back(instancing_data);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While checking object '%1%' "
+				"caught exception '%2%'"),
+				object_description.get_name() %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While checking object '%1%' "
+				"caught exception '%2%'"),
+				object_description.get_name() %
+				exception.what());
+		}
 	}
 
 	void InstancesBuilder::build(FreeIds &free_ids,

@@ -30,9 +30,9 @@ namespace eternal_lands
 			glm::vec4 m_terrain_texture_size;
 			glm::vec2 m_focus;
 			glm::vec2 m_terrain_world_size;
-			float m_clipmap_world_size;
+			float m_world_size;
 			float m_distance;
-			Uint16 m_clipmap_size;
+			Uint16 m_size;
 			Uint16 m_dir_index;
 			Uint16 m_slices;
 			bool m_centered;
@@ -49,8 +49,8 @@ namespace eternal_lands
 			~Clipmap() throw();
 			void rebuild(const glm::vec2 &terrain_world_size,
 				const float view_distance,
-				const float clipmap_world_size,
-				const Uint16 clipmap_size);
+				const float world_size,	const Uint16 size,
+				const Uint16 slices);
 			bool update(const glm::vec3 &camera,
 				const glm::vec3 &view_dir,
 				const glm::vec2 &focus);
@@ -81,9 +81,9 @@ namespace eternal_lands
 				return m_focus;
 			}
 
-			inline float get_clipmap_world_size() const
+			inline float get_world_size() const
 			{
-				return m_clipmap_world_size;
+				return m_world_size;
 			}
 
 			inline Uint16 get_slices() const

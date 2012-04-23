@@ -6,6 +6,13 @@
   <shader_source_data>
    <parameters>
     <parameter>
+     <name>normal</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
      <name>position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
@@ -13,9 +20,16 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
-     <qualifier>out</qualifier>
+     <name>tangent</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>terrain_height_scale</name>
+     <type>float</type>
+     <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -27,16 +41,16 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_tangent</name>
+     <name>world_position</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>terrain_height_scale</name>
-     <type>float</type>
-     <qualifier>in</qualifier>
+     <name>world_tangent</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -52,7 +66,7 @@
 world_position.z *= terrain_height_scale;
 world_normal.xy = normal.xy;
 world_normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
-world_tangent = tangent;
+world_tangent = tangent.xyz;
 
 world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
 world_position *= world_transformation[1].w;
@@ -60,11 +74,7 @@ world_position += world_transformation[1].xyz;
 world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
 world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + world_transformation[0].w * world_tangent);
 </source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

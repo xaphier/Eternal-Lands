@@ -46,15 +46,21 @@ BOOST_AUTO_TEST_CASE(convert)
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_120).get(),
-		"glsl_120");
+		"120");
 	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_130).get(),
-		"glsl_130");
+		"130");
 	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_140).get(),
-		"glsl_140");
+		"140");
 	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_150).get(),
-		"glsl_150");
+		"150");
 	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_330).get(),
-		"glsl_330");
+		"330");
+	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_400).get(),
+		"400");
+	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_410).get(),
+		"410");
+	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_420).get(),
+		"420");
 }
 
 BOOST_AUTO_TEST_CASE(get_shader_version_number)
@@ -69,4 +75,10 @@ BOOST_AUTO_TEST_CASE(get_shader_version_number)
 		el::svt_150), 150);
 	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_shader_version_number(
 		el::svt_330), 330);
+	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_shader_version_number(
+		el::svt_400), 400);
+	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_shader_version_number(
+		el::svt_410), 410);
+	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_shader_version_number(
+		el::svt_420), 420);
 }

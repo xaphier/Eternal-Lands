@@ -92,7 +92,7 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("fragment_uv")),
 				pt_vec2),
 			CommonParameterTypeData(String(UTF8("fog")), pt_float),
-			CommonParameterTypeData(String(UTF8("shadow_uv")),
+			CommonParameterTypeData(String(UTF8("shadow_uvs")),
 				pt_vec4, pst_shadow_map_count),
 			CommonParameterTypeData(String(UTF8("shadow_map_data")),
 				pt_vec3),
@@ -101,7 +101,7 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("emission")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("world_extra_uv")),
-				pt_vec2, pst_one, 8)
+				pt_vec2)
 		};
 
 		const Uint32 common_parameter_datas_count =

@@ -37,6 +37,7 @@
 #include "loader/maploader.hpp"
 #include "freeidsmanager.hpp"
 #include "thread/materiallock.hpp"
+#include "logging.hpp"
 
 #include "materialcache.hpp"
 
@@ -273,8 +274,10 @@ namespace eternal_lands
 		m_clipmap.rebuild(glm::vec2(256.0f),
 			get_global_vars()->get_view_distance(),
 			get_global_vars()->get_clipmap_world_size(),
-			get_global_vars()->get_clipmap_size());
+			get_global_vars()->get_clipmap_size(),
+			get_global_vars()->get_clipmap_slices());
 
+		m_terrain_frame_buffer.reset();
 		m_terrain_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
 				String(UTF8("terrain")),
@@ -305,7 +308,7 @@ namespace eternal_lands
 	}
 
 	void Scene::get_lights(const BoundingBox &bounding_box,
-		Uint32 &light_count)
+		Uint16 &light_count)
 	{
 		Uint32 i, size;
 
@@ -345,38 +348,15 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::set_lights(const GlslProgramSharedPtr &program,
-		const glm::ivec3 &dynamic_light_count)
-	{
-		program->set_parameter(apt_dynamic_light_count,
-			dynamic_light_count);
-		program->set_parameter(apt_light_positions,
-			m_light_position_array);
-		program->set_parameter(apt_light_colors, m_light_color_array);
-	}
-
 	void Scene::intersect(const Frustum &frustum, ObjectVisitor &visitor)
 		const
 	{
 		Uint32ActorSharedPtrMap::const_iterator it, end;
 		SubFrustumsMask mask;
 
-#ifdef	DEBUG
-		if (get_global_vars()->get_draw_objects())
-		{
-			m_map->intersect(frustum, visitor);
-		}
-#else	/* DEBUG */
 		m_map->intersect(frustum, visitor);
-#endif	/* DEBUG */
 
 		end = m_actors.end();
-#ifdef	DEBUG
-		if (!get_global_vars()->get_draw_actors())
-		{
-			end = m_actors.begin();
-		}
-#endif	/* DEBUG */
 
 		for (it = m_actors.begin(); it != end; ++it)
 		{
@@ -451,8 +431,9 @@ namespace eternal_lands
 
 		m_scene_view.update();
 
-		assert(m_scene_view.get_projection_view_matrix().size() > 0);
-		frustum = Frustum(m_scene_view.get_projection_view_matrix()[0]);
+		assert(m_scene_view.get_projection_view_matrices().size() > 0);
+		frustum = Frustum(m_scene_view.get_projection_view_matrices(
+			)[0]);
 
 		m_visible_lights.get_lights().clear();
 
@@ -512,7 +493,7 @@ namespace eternal_lands
 		}
 
 		frustum = Frustum(
-			m_scene_view.get_split_projection_view_matrix());
+			m_scene_view.get_split_projection_view_matrices());
 
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
@@ -548,7 +529,7 @@ namespace eternal_lands
 		camera = m_scene_view.get_camera();
 
 		frustum = Frustum(
-			m_scene_view.get_shadow_projection_view_matrix());
+			m_scene_view.get_shadow_projection_view_matrices());
 
 		m_shadow_objects.next_frame();
 
@@ -606,11 +587,11 @@ namespace eternal_lands
 			program->set_parameter(apt_view_rotation_matrix,
 				m_scene_view.get_current_view_rotation_matrix()
 				);
-			program->set_parameter(apt_projection_matrix,
-				m_scene_view.get_current_projection_matrix(),
+			program->set_parameter(apt_projection_matrices,
+				m_scene_view.get_current_projection_matrices(),
 				layer);
-			program->set_parameter(apt_projection_view_matrix,
-				m_scene_view.get_current_projection_view_matrix(
+			program->set_parameter(apt_projection_view_matrices,
+				m_scene_view.get_current_projection_view_matrices(
 					), layer);
 			program->set_parameter(apt_time, m_time);
 			program->set_parameter(apt_fog_data, m_fog);
@@ -618,14 +599,17 @@ namespace eternal_lands
 				m_scene_view.get_camera());
 			program->set_parameter(apt_shadow_camera,
 				m_scene_view.get_shadow_camera());
-			program->set_parameter(apt_shadow_texture_matrix,
-				m_scene_view.get_shadow_texture_matrix());
+			program->set_parameter(apt_shadow_texture_matrices,
+				m_scene_view.get_shadow_texture_matrices());
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 			program->set_parameter(apt_terrain_scale,
 				glm::vec3(0.1f));
 			program->set_parameter(apt_terrain_texture_size,
 				m_clipmap.get_terrain_texture_size());
+			m_state_manager.get_program()->set_parameter(
+				apt_clipmap_matrices,
+				m_clipmap.get_texture_matrices());
 
 			if (m_map->get_dungeon())
 			{
@@ -652,221 +636,99 @@ namespace eternal_lands
 		return result;
 	}
 
+	void Scene::do_draw_object(const ObjectSharedPtr &object,
+		const EffectProgramType type, const Uint16 layer,
+		const Uint16 distance, const bool lights)
+	{
+		Uint16 count, index, mesh, i, lod, light_count;
+		bool object_data_set;
+
+		m_state_manager.switch_mesh(object->get_mesh());
+
+		DEBUG_CHECK_GL_ERROR();
+
+		lod = object->get_lod(distance);
+		count = object->get_lods_count(lod);
+
+		if (lights)
+		{
+			get_lights(object->get_bounding_box(), light_count);
+		}
+
+		object_data_set = false;
+
+		DEBUG_CHECK_GL_ERROR();
+
+		for (i = 0; i < count; ++i)
+		{
+			mesh = object->get_mesh_index(lod, i);
+			index = object->get_materials_index(lod, i);
+
+			MaterialLock material(object->get_materials()[index]);
+
+			if (switch_program(material->get_effect()->get_program(
+				type), layer))
+			{
+				object_data_set = false;
+			}
+
+			if (!object_data_set)
+			{
+				light_count = std::min(light_count,
+					material->get_effect(
+						)->get_max_light_count());
+				m_state_manager.get_program()->set_parameter(
+					apt_world_transformations,
+					object->get_world_transformation(
+						).get_data());
+				m_state_manager.get_program()->set_parameter(
+					apt_bones, object->get_bones());
+				m_state_manager.get_program()->set_parameter(
+					apt_dynamic_light_count, light_count);
+				m_state_manager.get_program()->set_parameter(
+					apt_light_positions,
+					m_light_position_array);
+				m_state_manager.get_program()->set_parameter(
+					apt_light_colors, m_light_color_array);
+
+				object_data_set = true;
+			}
+
+			DEBUG_CHECK_GL_ERROR();
+
+			material->bind(m_state_manager);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_state_manager.draw(mesh, 1);
+
+			DEBUG_CHECK_GL_ERROR();
+		}
+	}
+
 	void Scene::draw_object(const ObjectSharedPtr &object,
-		const Uint16 distance)
+		const EffectProgramType type, const Uint16 layer,
+		const Uint16 distance, const bool lights)
 	{
-		glm::ivec3 dynamic_light_count;
-		Uint32 light_count;
-		Uint16 count, index, mesh, i, lod;
-		bool object_data_set;
-
-		DEBUG_CHECK_GL_ERROR();
-
-		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
-			object->get_name() % object->get_mesh()->get_name());
-
-		m_state_manager.switch_mesh(object->get_mesh());
-
-		DEBUG_CHECK_GL_ERROR();
-
-		lod = object->get_lod(distance);
-		count = object->get_lods_count(lod);
-
-		get_lights(object->get_bounding_box(), light_count);
-
-		object_data_set = false;
-
-		DEBUG_CHECK_GL_ERROR();
-
-		for (i = 0; i < count; ++i)
+		try
 		{
-			mesh = object->get_mesh_index(lod, i);
-			index = object->get_materials_index(lod, i);
+			STRING_MARKER(UTF8("object name '%1%', mesh name "
+				"'%2%'"), object->get_name() %
+				object->get_mesh()->get_name());
 
-			MaterialLock material(object->get_materials()[index]);
-
-			if (switch_program(material->get_effect(
-				)->get_default_program(light_count,
-					dynamic_light_count)))
-			{
-				object_data_set = false;
-			}
-
-			if (!object_data_set)
-			{
-				m_state_manager.get_program()->set_parameter(
-					apt_world_transformation,
-					object->get_world_transformation(
-						).get_data());
-				m_state_manager.get_program()->set_parameter(
-					apt_bones, object->get_bones());
-				set_lights(m_state_manager.get_program(),
-					dynamic_light_count);
-				object_data_set = true;
-			}
-
-			DEBUG_CHECK_GL_ERROR();
-
-			material->bind(m_state_manager);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			if (object->get_name() == String(UTF8("terrain")))
-			{
-				m_state_manager.get_program()->set_parameter(
-					apt_texture_matrices,
-					m_clipmap.get_texture_matrices());
-			}
-			else
-			{
-			m_state_manager.get_program()->set_parameter(
-				apt_texture_matrices,
-				material->get_texture_matrices());
-			m_state_manager.get_program()->set_parameter(
-				apt_albedo_scale_offsets,
-				material->get_albedo_scale_offsets());
-			m_state_manager.get_program()->set_parameter(
-				apt_emission_scale_offset,
-				material->get_emission_scale_offset());
-			m_state_manager.get_program()->set_parameter(
-				apt_specular_scale_offset,
-				material->get_specular_scale_offset());
-			}
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.draw(mesh, 1);
-
-			DEBUG_CHECK_GL_ERROR();
+			do_draw_object(object, type, layer, distance, lights);
 		}
-	}
-
-	void Scene::draw_object_shadow(const ObjectSharedPtr &object,
-		const Uint16 layer, const Uint16 distance)
-	{
-		Uint16 count, index, mesh, i, lod;
-		bool object_data_set;
-
-		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
-			object->get_name() % object->get_mesh()->get_name());
-
-		m_state_manager.switch_mesh(object->get_mesh());
-
-		lod = object->get_lod(distance);
-		count = object->get_lods_count(lod);
-
-		object_data_set = false;
-
-		for (i = 0; i < count; ++i)
+		catch (boost::exception &exception)
 		{
-			mesh = object->get_mesh_index(lod, i);
-			index = object->get_materials_index(lod, i);
-
-			MaterialLock material(object->get_materials()[index]);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			if (!material->get_cast_shadows())
-			{
-				continue;
-			}
-
-			if (switch_program(material->get_effect(
-				)->get_shadow_program(), layer))
-			{
-				object_data_set = false;
-			}
-
-			DEBUG_CHECK_GL_ERROR();
-
-			if (!object_data_set)
-			{
-				m_state_manager.get_program()->set_parameter(
-					apt_world_transformation,
-					object->get_world_transformation(
-						).get_data());
-				m_state_manager.get_program()->set_parameter(
-					apt_bones, object->get_bones());
-				object_data_set = true;
-			}
-
-			material->bind(m_state_manager);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.get_program()->set_parameter(
-				apt_texture_matrices,
-				material->get_texture_matrices());
-			m_state_manager.get_program()->set_parameter(
-				apt_albedo_scale_offsets,
-				material->get_albedo_scale_offsets());
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.draw(mesh, 1);
-
-			DEBUG_CHECK_GL_ERROR();
+			LOG_EXCEPTION_STR(UTF8("While rendering object '%1%' "
+				"caught exception '%2%'"), object->get_name() %
+				boost::diagnostic_information(exception));
 		}
-	}
-
-	void Scene::draw_object_depth(const ObjectSharedPtr &object,
-		const Uint16 distance)
-	{
-		Uint16 count, index, mesh, i, lod;
-		bool object_data_set;
-
-		STRING_MARKER(UTF8("object name '%1%', mesh name '%2%'"),
-			object->get_name() % object->get_mesh()->get_name());
-
-		m_state_manager.switch_mesh(object->get_mesh());
-
-		lod = object->get_lod(distance);
-		count = object->get_lods_count(lod);
-
-		object_data_set = false;
-
-		for (i = 0; i < count; ++i)
+		catch (std::exception &exception)
 		{
-			mesh = object->get_mesh_index(lod, i);
-			index = object->get_materials_index(lod, i);
-
-			MaterialLock material(object->get_materials()[index]);
-
-			if (switch_program(material->get_effect(
-				)->get_depth_program()))
-			{
-				object_data_set = false;
-			}
-
-			if (!object_data_set)
-			{
-				m_state_manager.get_program()->set_parameter(
-					apt_world_transformation,
-					object->get_world_transformation(
-						).get_data());
-				m_state_manager.get_program()->set_parameter(
-					apt_bones, object->get_bones());
-				object_data_set = true;
-			}
-
-			DEBUG_CHECK_GL_ERROR();
-
-			material->bind(m_state_manager);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.get_program()->set_parameter(
-				apt_texture_matrices,
-				material->get_texture_matrices());
-			m_state_manager.get_program()->set_parameter(
-				apt_albedo_scale_offsets,
-				material->get_albedo_scale_offsets());
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.draw(mesh, 1);
-
-			DEBUG_CHECK_GL_ERROR();
+			LOG_EXCEPTION_STR(UTF8("While rendering object '%1%' "
+				"caught exception '%2%'"), object->get_name() %
+				exception.what());
 		}
 	}
 
@@ -888,8 +750,8 @@ namespace eternal_lands
 		{
 			if (object.get_sub_frustums_mask(index))
 			{
-				draw_object_shadow(object.get_object(), index,
-					object.get_distance());
+				draw_object(object.get_object(), ept_shadow,
+					index, object.get_distance(), false);
 			}
 		}
 
@@ -1008,8 +870,8 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_shadow_objects.get_objects())
 		{
-			draw_object_shadow(object.get_object(), 0,
-				object.get_distance());
+			draw_object(object.get_object(), ept_shadow, 0,
+				object.get_distance(), false);
 		}
 
 		m_program_vars_id++;
@@ -1067,8 +929,8 @@ namespace eternal_lands
 					)->get_stencil_value(), 0xFFFFFFFF);
 			}
 */
-			draw_object_depth(object.get_object(),
-				object.get_distance());
+			draw_object(object.get_object(), ept_depth, 0,
+				object.get_distance(), false);
 		}
 
 		unbind_all();
@@ -1137,7 +999,8 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			draw_object(object.get_object(), object.get_distance());
+			draw_object(object.get_object(), ept_default, 0,
+				object.get_distance(), true);
 		}
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1152,7 +1015,7 @@ namespace eternal_lands
 
 	void Scene::draw_terrain_texture(
 		const MaterialSharedPtrVector &materials,
-		const Mat2x3Vector &texture_matrices, const Uint16 index)
+		const Mat2x3Array2 &texture_matrices, const Uint16 index)
 	{
 		Uint32 i, count;
 
@@ -1170,7 +1033,7 @@ namespace eternal_lands
 			DEBUG_CHECK_GL_ERROR();
 
 			switch_program(material->get_effect(
-				)->get_default_program(), 0);
+				)->get_program(ept_default), 0);
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -1235,15 +1098,13 @@ namespace eternal_lands
 
 	void Scene::draw_terrain_texture()
 	{
-		Mat2x3Vector texture_matrices;
+		Mat2x3Array2 texture_matrices;
 		glm::mat2x3 texture_matrix;
 		glm::vec2 tile_scale;
 		Uint32 i, width, height, count;
 
 		tile_scale = 256.0f /
 			glm::vec2(get_global_vars()->get_tile_world_size());
-
-		texture_matrices.resize(2);
 
 		width = m_terrain_frame_buffer->get_width();
 		height = m_terrain_frame_buffer->get_height();
@@ -1264,15 +1125,14 @@ namespace eternal_lands
 		{
 			m_clipmap.update_slice(i);
 
-			texture_matrix = glm::mat2x3(glm::inverse(glm::mat3(
-				m_clipmap.get_texture_matrices()[i])));
+			texture_matrices[0] = glm::mat2x3(glm::inverse(
+				glm::mat3(m_clipmap.get_texture_matrices(
+					)[i])));
 
-			texture_matrices[0] = texture_matrix;
+			texture_matrices[1] = texture_matrices[0];
 
-			texture_matrix[0] *= tile_scale.x;
-			texture_matrix[1] *= tile_scale.y;
-
-			texture_matrices[1] = texture_matrix;
+			texture_matrices[1][0] *= tile_scale.x;
+			texture_matrices[1][1] *= tile_scale.y;
 
 			draw_terrain_texture(m_materials, texture_matrices, i);
 		}
@@ -1356,27 +1216,28 @@ namespace eternal_lands
 //		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 1.0f), 0x2);
 	}
 
-	void Scene::pick_object(const ObjectSharedPtr &object,
+	void Scene::pick_object(const RenderObjectData &object,
 		PairUint32SelectionTypeVector &ids)
 	{
 		PairUint32SelectionType data;
 		Uint32 i, sub_objects, index;
 		bool object_data_set;
 
-		if (object->get_selection() == st_none)
+		if (object.get_object()->get_selection() == st_none)
 		{
 			return;
 		}
 
-		if (object->get_sub_objects().size() == 0)
+		if (object.get_object()->get_sub_objects().size() == 0)
 		{
-			data.first = object->get_id();
-			data.second = object->get_selection();
+			data.first = object.get_object()->get_id();
+			data.second = object.get_object()->get_selection();
 
 			glBeginQuery(GL_SAMPLES_PASSED,
 				m_querie_ids[ids.size()]);
 
-			draw_object_depth(object, 0);
+			draw_object(object.get_object(), ept_depth,
+				0, object.get_distance(), false);
 
 			glEndQuery(GL_SAMPLES_PASSED);
 
@@ -1385,15 +1246,15 @@ namespace eternal_lands
 			return;
 		}
 
-		m_state_manager.switch_mesh(object->get_mesh());
+		m_state_manager.switch_mesh(object.get_object()->get_mesh());
 
-		sub_objects = object->get_sub_objects().size();
+		sub_objects = object.get_object()->get_sub_objects().size();
 
 		object_data_set = false;
 
 		for (i = 0; i < sub_objects; ++i)
 		{
-			if (object->get_sub_objects()[i].get_selection()
+			if (object.get_object()->get_sub_objects()[i].get_selection()
 				== st_none)
 			{
 				continue;
@@ -1401,19 +1262,21 @@ namespace eternal_lands
 
 			STRING_MARKER(UTF8("sub object index '%1%'"), i);
 
-			data.first = object->get_sub_objects()[i].get_id();
-			data.second = object->get_sub_objects(
+			data.first = object.get_object()->get_sub_objects()[i].get_id();
+			data.second = object.get_object()->get_sub_objects(
 				)[i].get_selection();
 
 			glBeginQuery(GL_SAMPLES_PASSED,
 				m_querie_ids[ids.size()]);
 
-			index = object->get_sub_objects()[i].get_material();
+			index = object.get_object()->get_sub_objects(
+				)[i].get_material();
 
-			MaterialLock material(object->get_materials()[index]);
+			MaterialLock material(object.get_object(
+				)->get_materials()[index]);
 
-			if (switch_program(material->get_effect(
-				)->get_depth_program()))
+			if (switch_program(material->get_effect()->get_program(
+				ept_depth)))
 			{
 				object_data_set = false;
 			}
@@ -1421,11 +1284,13 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_transformation,
-					object->get_world_transformation(
+					apt_world_transformations,
+					object.get_object(
+						)->get_world_transformation(
 						).get_data());
 				m_state_manager.get_program()->set_parameter(
-					apt_bones, object->get_bones());
+					apt_bones, object.get_object(
+						)->get_bones());
 				object_data_set = true;
 			}
 
@@ -1435,11 +1300,8 @@ namespace eternal_lands
 				apt_texture_matrices,
 				material->get_texture_matrices());
 
-			m_state_manager.get_program()->set_parameter(
-				apt_albedo_scale_offsets,
-				material->get_albedo_scale_offsets());
-
-			m_state_manager.draw(object->get_sub_objects()[i], 1);
+			m_state_manager.draw(object.get_object(
+				)->get_sub_objects()[i], 1);
 
 			glEndQuery(GL_SAMPLES_PASSED);
 
@@ -1462,8 +1324,8 @@ namespace eternal_lands
 			2 * size.y);
 		m_state_manager.switch_color_mask(glm::bvec4(false));
 		m_state_manager.switch_multisample(false);
-		m_state_manager.switch_polygon_offset_fill(true);
-		glPolygonOffset(0.99f, -4.0f);
+//		m_state_manager.switch_polygon_offset_fill(true);
+//		glPolygonOffset(0.99f, -4.0f);
 
 		glDepthFunc(GL_LEQUAL);
 
@@ -1474,7 +1336,7 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			pick_object(object.get_object(), ids);
+			pick_object(object, ids);
 		}
 
 		m_program_vars_id++;
@@ -1517,8 +1379,8 @@ namespace eternal_lands
 			m_scene_resources.get_mesh_cache(),
 			m_scene_resources.get_mesh_data_cache(),
 			m_scene_resources.get_effect_cache(),
-			m_scene_resources.get_texture_cache(),
 			m_scene_resources.get_material_cache(),
+			m_scene_resources.get_material_description_cache(),
 			m_free_ids));
 
 		set_map(map_loader->load(name));

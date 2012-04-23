@@ -117,6 +117,10 @@ namespace eternal_lands
 		errinfo_geometry_shader_source;
 	typedef boost::error_info<struct errinfo_fragment_shader_, StringType>
 		errinfo_fragment_shader_source;
+	typedef boost::error_info<struct errinfo_object_name_, StringType>
+		errinfo_object_name;
+	typedef boost::error_info<struct errinfo_opengl_error_, GLint>
+		errinfo_opengl_error;
 
 #define EL_THROW_EXCEPTION(exception)	\
 	throw exception <<\
@@ -158,7 +162,7 @@ namespace eternal_lands
 					::eternal_lands::string_to_utf8(	\
 						reinterpret_cast<const char*>(	\
 							gluErrorString(gl_error))))	\
-				<< ::boost::errinfo_errno(gl_error));	\
+				<< ::eternal_lands::errinfo_opengl_error(gl_error));	\
 		}	\
 	}	\
 	while (false)
@@ -177,7 +181,7 @@ namespace eternal_lands
 					::eternal_lands::string_to_utf8(	\
 						reinterpret_cast<const char*>(	\
 							gluErrorString(gl_error))))	\
-				<< ::boost::errinfo_errno(gl_error)	\
+				<< ::eternal_lands::errinfo_opengl_error(gl_error)	\
 				<< ::eternal_lands::errinfo_name(name));	\
 		}	\
 	}	\

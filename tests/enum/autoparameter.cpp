@@ -76,23 +76,24 @@ BOOST_AUTO_TEST_CASE(get_scale)
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
-		el::apt_world_transformation).get(), "world_transformation");
+		el::apt_world_transformations).get(), "world_transformations");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
 		el::apt_view_matrix).get(), "view_matrix");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
-		el::apt_projection_matrix).get(), "projection_matrix");
+		el::apt_projection_matrices).get(), "projection_matrices");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
-		el::apt_projection_view_matrix).get(),
-		"projection_view_matrix");
+		el::apt_projection_view_matrices).get(),
+		"projection_view_matrices");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
 		el::apt_reflection_matrix).get(), "reflection_matrix");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
-		el::apt_shadow_texture_matrix).get(), "shadow_texture_matrix");
+		el::apt_shadow_texture_matrices).get(),
+		"shadow_texture_matrices");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
 		el::apt_light_colors).get(), "light_colors");

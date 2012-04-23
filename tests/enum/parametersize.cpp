@@ -49,4 +49,6 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 		el::pst_bone_count).get(), "bone_count");
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
 		el::pst_shadow_map_count).get(), "shadow_map_count");
+	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
+		el::pst_clipmap_slices).get(), "clipmap_slices");
 }

@@ -36,7 +36,7 @@ namespace eternal_lands
 		 * { rotation_quaternion_x, rotation_quaternion_y,
 		 * rotation_quaternion_z, rotation_quaternion_w } }
 		 */
-		apt_world_transformation = 0,
+		apt_world_transformations = 0,
 		/**
 		 * 3x3 matrix with only the rotation part of the view matrix
 		 */
@@ -48,10 +48,10 @@ namespace eternal_lands
 		/**
 		 * 4x4 scene projection matrix
 		 */
-		apt_projection_matrix,
-		apt_projection_view_matrix,	
+		apt_projection_matrices,
+		apt_projection_view_matrices,
 		apt_reflection_matrix,
-		apt_shadow_texture_matrix,
+		apt_shadow_texture_matrices,
 		apt_light_positions,
 		apt_light_colors,
 		/**
@@ -76,8 +76,10 @@ namespace eternal_lands
 		apt_albedo_scale_offsets,
 		apt_emission_scale_offset,
 		apt_specular_scale_offset,
+		apt_dudv_scale,
 		apt_terrain_scale,
-		apt_terrain_texture_size
+		apt_terrain_texture_size,
+		apt_clipmap_matrices
 	};
 	/**
 	 * @}

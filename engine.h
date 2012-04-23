@@ -93,6 +93,7 @@ void engine_set_use_layered_rendering(const int value);
 void engine_set_low_quality_terrain(const int value);
 void engine_set_clipmap_size(const int value);
 void engine_set_clipmap_world_size(const int value);
+void engine_set_clipmap_slices(const int value);
 void engine_set_tile_world_size(const int value);
 void engine_set_clipmap_centered(const int value);
 
@@ -104,11 +105,6 @@ int engine_get_opengl_4_0();
 int engine_get_opengl_4_1();
 int engine_get_opengl_4_2();
 void engine_update_materials();
-
-#ifdef	DEBUG
-void engine_set_draw_objects(const int value);
-void engine_set_draw_actors(const int value);
-#endif	/* DEBUG */
 
 #ifdef __cplusplus
 }

@@ -29,7 +29,6 @@ namespace eternal_lands
 		const GlobalVarsSharedPtr &global_vars,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache,
 		const TerrainData &terrain_data)
 	{
 		ImageSharedPtr height_image;
@@ -42,7 +41,7 @@ namespace eternal_lands
 			file_system, ImageCompressionTypeSet(), true);
 
 		add_terrain_pages(String(UTF8("shaders/simple_terrain.xml")),
-			height_image, mesh_builder, effect_cache, texture_cache,
+			height_image, mesh_builder, effect_cache,
 			global_vars->get_low_quality_terrain(),
 			global_vars->get_use_simd());
 	}
@@ -126,7 +125,6 @@ namespace eternal_lands
 		const ImageSharedPtr &height_map,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const EffectCacheSharedPtr &effect_cache,
-		const TextureCacheSharedPtr &texture_cache,
 		const bool low_quality, const bool use_simd)
 	{
 		MaterialSharedPtrVector materials;

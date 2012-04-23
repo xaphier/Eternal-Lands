@@ -103,7 +103,7 @@ namespace eternal_lands
 	{
 		set_default_view();
 
-		m_ortho_matrix.push_back(glm::mat4x4());
+		m_ortho_matrices.push_back(glm::mat4x4());
 	}
 
 	SceneView::~SceneView() throw()
@@ -124,10 +124,10 @@ namespace eternal_lands
 
 		if (convex_body.get_bounding_box().get_empty())
 		{
-			m_shadow_projection_matrix[index] = glm::mat4x4();
-			m_shadow_projection_view_matrix[index] =
+			m_shadow_projection_matrices[index] = glm::mat4x4();
+			m_shadow_projection_view_matrices[index] =
 				glm::mat4x4();
-			m_shadow_texture_matrix[index] = glm::mat4x4();
+			m_shadow_texture_matrices[index] = glm::mat4x4();
 
 			return;
 		}
@@ -146,10 +146,10 @@ namespace eternal_lands
 		shadow_texture_matrix = glm::scale(shadow_texture_matrix,
 			scale);
 
-		m_shadow_projection_matrix[index] = shadow_projection_matrix;
-		m_shadow_projection_view_matrix[index] =
+		m_shadow_projection_matrices[index] = shadow_projection_matrix;
+		m_shadow_projection_view_matrices[index] =
 			shadow_projection_view_matrix;
-		m_shadow_texture_matrix[index] = shadow_texture_matrix *
+		m_shadow_texture_matrices[index] = shadow_texture_matrix *
 			shadow_projection_view_matrix;
 	}
 
@@ -166,10 +166,10 @@ namespace eternal_lands
 
 		if (convex_body.get_bounding_box().get_empty())
 		{
-			m_shadow_projection_matrix[index] = glm::mat4x4();
-			m_shadow_projection_view_matrix[index] =
+			m_shadow_projection_matrices[index] = glm::mat4x4();
+			m_shadow_projection_view_matrices[index] =
 				glm::mat4x4();
-			m_shadow_texture_matrix[index] = glm::mat4x4();
+			m_shadow_texture_matrices[index] = glm::mat4x4();
 
 			return;
 		}
@@ -188,10 +188,10 @@ namespace eternal_lands
 		shadow_texture_matrix = glm::scale(shadow_texture_matrix,
 			scale);
 
-		m_shadow_projection_matrix[index] = shadow_projection_matrix;
-		m_shadow_projection_view_matrix[index] =
+		m_shadow_projection_matrices[index] = shadow_projection_matrix;
+		m_shadow_projection_view_matrices[index] =
 			shadow_projection_view_matrix;
-		m_shadow_texture_matrix[index] = shadow_texture_matrix *
+		m_shadow_texture_matrices[index] = shadow_texture_matrix *
 			shadow_projection_view_matrix;
 	}
 
@@ -291,8 +291,8 @@ namespace eternal_lands
 
 		m_layer_count = 4;
 
-		m_projection_matrix.resize(get_layer_count());
-		m_projection_view_matrix.resize(get_layer_count());
+		m_projection_matrices.resize(get_layer_count());
+		m_projection_view_matrices.resize(get_layer_count());
 
 		for (i = 0; i < 3; ++i)
 		{
@@ -302,8 +302,8 @@ namespace eternal_lands
 
 		for (i = 0; i < get_layer_count(); ++i)
 		{
-			m_projection_matrix[i] = projection_matrix;
-			m_projection_view_matrix[i] = projection_view_matrix;
+			m_projection_matrices[i] = projection_matrix;
+			m_projection_view_matrices[i] = projection_view_matrix;
 		}
 
 		m_camera = glm::vec4(0.0, 0.0, 0.0f, 1.0f);
@@ -348,11 +348,11 @@ namespace eternal_lands
 				static_cast<Uint16>(1));
 		}
 
-		m_shadow_projection_matrix.resize(get_shadow_map_count());
-		m_shadow_projection_view_matrix.resize(
+		m_shadow_projection_matrices.resize(get_shadow_map_count());
+		m_shadow_projection_view_matrices.resize(
 			get_shadow_map_count());
-		m_shadow_texture_matrix.resize(get_shadow_map_count());
-		m_split_projection_view_matrix.resize(get_shadow_map_count());
+		m_shadow_texture_matrices.resize(get_shadow_map_count());
+		m_split_projection_view_matrices.resize(get_shadow_map_count());
 
 		m_shadow_map_size = glm::uvec2(shadow_map_size);
 
@@ -368,7 +368,7 @@ namespace eternal_lands
 			z_near = std::max(z_near - 0.5f, get_z_near());
 			z_far = std::min(z_far + 0.5f, get_shadow_z_far());
 
-			m_split_projection_view_matrix[i] =
+			m_split_projection_view_matrices[i] =
 				glm::perspective(get_fov(), get_aspect(),
 					z_near, z_far) * m_view_matrix;
 		}

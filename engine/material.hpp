@@ -148,7 +148,7 @@ namespace eternal_lands
 			}
 
 			inline void set_texture_matrices(
-				const Mat2x3Array8 &texture_matrices)
+				const Mat2x3Array2 &texture_matrices)
 			{
 				m_data.set_texture_matrices(texture_matrices);
 			}
@@ -174,6 +174,11 @@ namespace eternal_lands
 					specular_scale_offset);
 			}
 
+			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
+			{
+				m_data.set_dudv_scale(dudv_scale);
+			}
+
 			inline void set_cast_shadows(const bool cast_shadows)
 			{
 				m_data.set_cast_shadows(cast_shadows);
@@ -196,7 +201,7 @@ namespace eternal_lands
 				return m_data.get_albedo_scale_offset(index);
 			}
 
-			inline const Mat2x3Array8 &get_texture_matrices()
+			inline const Mat2x3Array2 &get_texture_matrices()
 				const
 			{
 				return m_data.get_texture_matrices();
@@ -218,6 +223,11 @@ namespace eternal_lands
 				const
 			{
 				return m_data.get_specular_scale_offset();
+			}
+
+			inline const glm::vec2 &get_dudv_scale() const
+			{
+				return m_data.get_dudv_scale();
 			}
 
 			inline bool get_cast_shadows() const

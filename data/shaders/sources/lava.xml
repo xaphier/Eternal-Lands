@@ -6,64 +6,12 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>albedo_sampler_0</name>
-     <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>albedo_sampler_1</name>
-     <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>uv</name>
-     <type>vec2</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>3</scale>
-    </parameter>
-    <parameter>
      <name>albedo</name>
      <type>vec4</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
-   </parameters>
-   <source>{
-	vec4 noise;
-	vec3 color;
-	vec2 tmp_uv[2];
-	float p;
-
-	noise = texture2D(albedo_sampler_1, uv[0]);
-
-	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
-	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
-
-	p = texture2D(albedo_sampler_1, tmp_uv[0]).a;
-	color = texture2D(albedo_sampler_0, tmp_uv[1]).rgb;
-	color = color * p * 2.0 + color * color - 0.1;
-
-	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
-	color.rb += clamp(color.g - 1.0, 0.0, 1.0);
-	color.rg += clamp(color.b - 1.0, 0.0, 1.0);
-
-	albedo = vec4(color, 1.0);
-}
-</source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>false</glsl_130>
-   <glsl_140>false</glsl_140>
-   <glsl_150>false</glsl_150>
-   <glsl_330>false</glsl_330>
-  </shader_source_data>
-  <shader_source_data>
-   <parameters>
     <parameter>
      <name>albedo_sampler_0</name>
      <type>sampler2D</type>
@@ -84,13 +32,6 @@
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>3</scale>
-    </parameter>
-    <parameter>
-     <name>albedo</name>
-     <type>vec4</type>
-     <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>{
@@ -115,11 +56,62 @@
 	albedo = vec4(color, 1.0);
 }
 </source>
-   <glsl_120>false</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>130</version>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>albedo</name>
+     <type>vec4</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>albedo_sampler_0</name>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>albedo_sampler_1</name>
+     <type>sampler2D</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>uv</name>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>3</scale>
+    </parameter>
+   </parameters>
+   <source>{
+	vec4 noise;
+	vec3 color;
+	vec2 tmp_uv[2];
+	float p;
+
+	noise = texture2D(albedo_sampler_1, uv[0]);
+
+	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
+	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
+
+	p = texture2D(albedo_sampler_1, tmp_uv[0]).a;
+	color = texture2D(albedo_sampler_0, tmp_uv[1]).rgb;
+	color = color * p * 2.0 + color * color - 0.1;
+
+	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
+	color.rb += clamp(color.g - 1.0, 0.0, 1.0);
+	color.rg += clamp(color.b - 1.0, 0.0, 1.0);
+
+	albedo = vec4(color, 1.0);
+}
+</source>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

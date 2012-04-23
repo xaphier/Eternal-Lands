@@ -21,11 +21,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 
 	BOOST_CHECK_EQUAL(shader_source_data.get_source(), "");
 
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_120(), false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_120(), false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_140(), false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_150(), false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_330(), false);
+	BOOST_CHECK_EQUAL(shader_source_data.get_version(), el::svt_120);
 }
 
 BOOST_AUTO_TEST_CASE(source)
@@ -43,35 +39,14 @@ BOOST_AUTO_TEST_CASE(options)
 {
 	el::ShaderSourceData shader_source_data;
 
-	shader_source_data.set_glsl_120(false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_120(), false);
+	shader_source_data.set_version(el::svt_120);
+	BOOST_CHECK_EQUAL(shader_source_data.get_version(), el::svt_120);
 
-	shader_source_data.set_glsl_120(true);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_120(), true);
+	shader_source_data.set_version(el::svt_330);
+	BOOST_CHECK_EQUAL(shader_source_data.get_version(), el::svt_330);
 
-	shader_source_data.set_glsl_130(false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_130(), false);
-
-	shader_source_data.set_glsl_130(true);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_130(), true);
-
-	shader_source_data.set_glsl_140(false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_140(), false);
-
-	shader_source_data.set_glsl_140(true);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_140(), true);
-
-	shader_source_data.set_glsl_150(false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_150(), false);
-
-	shader_source_data.set_glsl_150(true);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_150(), true);
-
-	shader_source_data.set_glsl_330(false);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_330(), false);
-
-	shader_source_data.set_glsl_330(true);
-	BOOST_CHECK_EQUAL(shader_source_data.get_glsl_330(), true);
+	shader_source_data.set_version(el::svt_420);
+	BOOST_CHECK_EQUAL(shader_source_data.get_version(), el::svt_420);
 }
 
 BOOST_AUTO_TEST_CASE(shader_source_parameter_save_xml)
@@ -97,11 +72,8 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
 
 	shader_source_data_save.set_source(el::String(UTF8("3sfd23")));
-	shader_source_data_save.set_glsl_120(false);
-	shader_source_data_save.set_glsl_130(true);
-	shader_source_data_save.set_glsl_140(false);
-	shader_source_data_save.set_glsl_150(true);
-	shader_source_data_save.set_glsl_330(false);
+	shader_source_data_save.set_version(el::svt_150);
+	BOOST_CHECK_EQUAL(shader_source_data_save.get_version(), el::svt_150);
 
 	BOOST_CHECK_NO_THROW(shader_source_data_save.save_xml(writer));
 
@@ -116,9 +88,5 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 
 	BOOST_CHECK_EQUAL(shader_source_data_load.get_source(),
 		UTF8("3sfd23"));
-	BOOST_CHECK_EQUAL(shader_source_data_load.get_glsl_120(), false);
-	BOOST_CHECK_EQUAL(shader_source_data_load.get_glsl_130(), true);
-	BOOST_CHECK_EQUAL(shader_source_data_load.get_glsl_140(), false);
-	BOOST_CHECK_EQUAL(shader_source_data_load.get_glsl_150(), true);
-	BOOST_CHECK_EQUAL(shader_source_data_load.get_glsl_330(), false);
+	BOOST_CHECK_EQUAL(shader_source_data_load.get_version(), el::svt_150);
 }

@@ -160,48 +160,6 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_matrix_2")) == 0)
-			{
-				set_texture_matrix(
-					XmlUtil::get_mat2x3_value(it), 2);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_matrix_3")) == 0)
-			{
-				set_texture_matrix(
-					XmlUtil::get_mat2x3_value(it), 3);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_matrix_4")) == 0)
-			{
-				set_texture_matrix(
-					XmlUtil::get_mat2x3_value(it), 4);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_matrix_5")) == 0)
-			{
-				set_texture_matrix(
-					XmlUtil::get_mat2x3_value(it), 5);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_matrix_6")) == 0)
-			{
-				set_texture_matrix(
-					XmlUtil::get_mat2x3_value(it), 6);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("texture_matrix_7")) == 0)
-			{
-				set_texture_matrix(
-					XmlUtil::get_mat2x3_value(it), 7);
-			}
-
-			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("emission_scale_offset")) == 0)
 			{
 				set_emission_scale_offset(
@@ -270,18 +228,6 @@ namespace eternal_lands
 			get_texture_matrix(0));
 		writer->write_mat2x3_element(UTF8("texture_matrix_1"),
 			get_texture_matrix(1));
-		writer->write_mat2x3_element(UTF8("texture_matrix_2"),
-			get_texture_matrix(2));
-		writer->write_mat2x3_element(UTF8("texture_matrix_3"),
-			get_texture_matrix(3));
-		writer->write_mat2x3_element(UTF8("texture_matrix_4"),
-			get_texture_matrix(4));
-		writer->write_mat2x3_element(UTF8("texture_matrix_5"),
-			get_texture_matrix(5));
-		writer->write_mat2x3_element(UTF8("texture_matrix_6"),
-			get_texture_matrix(6));
-		writer->write_mat2x3_element(UTF8("texture_matrix_7"),
-			get_texture_matrix(7));
 		writer->write_mat2x3_element(UTF8("emission_scale_offset"),
 			get_emission_scale_offset());
 		writer->write_vec4_element(UTF8("specular_scale_offset"),
@@ -357,7 +303,7 @@ namespace eternal_lands
 			}
 		}
 
-		for (i = 0; i < 8; ++i)
+		for (i = 0; i < 2; ++i)
 		{
 			cmp3 = glm::equal(get_texture_matrix(i)[0],
 				material.get_texture_matrix(i)[0]);
@@ -478,7 +424,7 @@ namespace eternal_lands
 			}
 		}
 
-		for (i = 0; i < 8; ++i)
+		for (i = 0; i < 2; ++i)
 		{
 			if (get_texture_matrix(i) !=
 				material.get_texture_matrix(i))
@@ -546,7 +492,7 @@ namespace eternal_lands
 				value.get_albedo_scale_offset(i)[1]);
 		}
 
-		for (i = 0; i < 8; ++i)
+		for (i = 0; i < 2; ++i)
 		{
 			str << " texture_matrix: " << glm::to_string(
 				value.get_texture_matrix(i));

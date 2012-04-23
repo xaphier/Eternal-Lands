@@ -52,6 +52,7 @@ namespace eternal_lands
 			Uint16 m_shadow_map_size;
 			Uint16 m_clipmap_size;
 			Uint16 m_clipmap_world_size;
+			Uint16 m_clipmap_slices;
 			Uint16 m_tile_world_size;
 			ShadowQualityType m_shadow_quality;
 			OpenglVerionType m_opengl_version;
@@ -66,10 +67,6 @@ namespace eternal_lands
 			bool m_use_layered_rendering;
 			bool m_low_quality_terrain;
 			bool m_clipmap_centered;
-#ifdef	DEBUG
-			bool m_draw_objects;
-			bool m_draw_actors;
-#endif	/* DEBUG */
 
 		public:
 			GlobalVars();
@@ -119,6 +116,12 @@ namespace eternal_lands
 				const Uint16 tile_world_size)
 			{
 				m_tile_world_size = tile_world_size;
+			}
+
+			inline void set_clipmap_slices(
+				const Uint16 clipmap_slices)
+			{
+				m_clipmap_slices = clipmap_slices;
 			}
 
 			inline void set_clipmap_centered(
@@ -239,6 +242,11 @@ namespace eternal_lands
 			inline Uint16 get_clipmap_world_size() const
 			{
 				return m_clipmap_world_size;
+			}
+
+			inline Uint16 get_clipmap_slices() const
+			{
+				return m_clipmap_slices;
 			}
 
 			inline Uint16 get_tile_world_size() const
@@ -381,28 +389,6 @@ namespace eternal_lands
 			{
 				return m_low_quality_terrain;
 			}
-
-#ifdef	DEBUG
-			inline void set_draw_objects(const bool draw_objects)
-			{
-				m_draw_objects = draw_objects;
-			}
-
-			inline void set_draw_actors(const bool draw_actors)
-			{
-				m_draw_actors = draw_actors;
-			}
-
-			inline bool get_draw_objects() const
-			{
-				return m_draw_objects;
-			}
-
-			inline bool get_draw_actors() const
-			{
-				return m_draw_actors;
-			}
-#endif	/* DEBUG */
 
 	};
 

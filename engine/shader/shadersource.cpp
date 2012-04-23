@@ -19,6 +19,19 @@
 namespace eternal_lands
 {
 
+	namespace
+	{
+
+		inline bool sort_shader_source_data(
+			const ShaderSourceData &shader_source_data_0,
+			const ShaderSourceData &shader_source_data_1)
+		{
+			return  shader_source_data_0.get_version() >
+				shader_source_data_1.get_version();
+		}
+
+	}
+
 	ShaderSource::ShaderSource(): m_type(sst_world_depth_transformation)
 	{
 	}
@@ -56,6 +69,9 @@ namespace eternal_lands
 			}
 		}
 		while (XmlUtil::next(it, true));
+
+		std::sort(m_datas.begin(), m_datas.end(),
+			sort_shader_source_data);
 	}
 
 	void ShaderSource::load_xml(const xmlNodePtr node)
@@ -156,17 +172,17 @@ namespace eternal_lands
 		save_xml(writer);
 	}
 
-	void ShaderSource::build_source(const ShaderVersionType &type,
+	void ShaderSource::build_source(const ShaderVersionType &version,
 		const ShaderSourceParameterVector &locals,
 		const String &indent, OutStream &stream,
 		ShaderSourceParameterVector &globals) const
 	{
 		stream << indent << UTF8("/* ") << get_typed_name();
 		stream << UTF8(" */\n");
-		get_data(type).build_source(locals, indent, stream, globals);
+		get_data(version).build_source(locals, indent, stream, globals);
 	}
 
-	void ShaderSource::build_function(const ShaderVersionType &type,
+	void ShaderSource::build_function(const ShaderVersionType &version,
 		const ShaderSourceParameterVector &locals,
 		const ParameterSizeTypeUint16Map &sizes,
 		const String &indent, const String &parameter_prefix,
@@ -179,23 +195,23 @@ namespace eternal_lands
 		stream << use_indent << UTF8("/* ") << get_typed_name();
 		stream << UTF8(" */\n");
 
-		get_data(type).build_function(locals, sizes, indent,
+		get_data(version).build_function(locals, sizes, indent,
 			get_typed_name(), parameter_prefix, use_indent, stream,
 			function, globals);
 	}
 
 	bool ShaderSource::check_source_parameter(
-		const ShaderVersionType &type, const String &name) const
+		const ShaderVersionType &version, const String &name) const
 	{
-		return get_data(type).check_source_parameter(name);
+		return get_data(version).check_source_parameter(name);
 	}
 
-	bool ShaderSource::get_has_data(const ShaderVersionType shader_version)
+	bool ShaderSource::get_has_data(const ShaderVersionType version)
 		const
 	{
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{
-			if (data.get_version(shader_version))
+			if (data.get_version() <= version)
 			{
 				return true;
 			}
@@ -205,11 +221,11 @@ namespace eternal_lands
 	}
 
 	const ShaderSourceData &ShaderSource::get_data(
-		const ShaderVersionType shader_version) const
+		const ShaderVersionType version) const
 	{
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{
-			if (data.get_version(shader_version))
+			if (data.get_version() <= version)
 			{
 				return data;
 			}
@@ -217,13 +233,16 @@ namespace eternal_lands
 
 		EL_THROW_MESSAGE_EXCEPTION(UTF8("No shader source data with "
 			"shader version %1% in '[%2%]: %3%' found."),
-			shader_version % get_type() % get_name(),
+			version % get_type() % get_name(),
 			ItemNotFoundException());
 	}
 
 	void ShaderSource::set_datas(const ShaderSourceDataVector &datas)
 	{
 		m_datas = datas;
+
+		std::sort(m_datas.begin(), m_datas.end(),
+			sort_shader_source_data);
 	}
 
 	String ShaderSource::get_typed_name() const

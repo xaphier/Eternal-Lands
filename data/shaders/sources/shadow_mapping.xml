@@ -6,10 +6,10 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>shadow_uv</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>shadow_map_count</size>
+     <name>shadow</name>
+     <type>float</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
@@ -20,30 +20,26 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>shadow</name>
-     <type>float</type>
-     <qualifier>out</qualifier>
-     <size>one</size>
+     <name>shadow_uvs</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>shadow_map_count</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>shadow = dot(vec2(1.0), step(vec2(0.5), abs(shadow_uv[0].xy - 0.5)));
-shadow += shadow2DProj(shadow_sampler, shadow_uv[0]).r;
+   <source>shadow = dot(vec2(1.0), step(vec2(0.5), abs(shadow_uvs[0].xy - 0.5)));
+shadow += textureProj(shadow_sampler, shadow_uvs[0]);
 shadow = clamp(shadow, 0.0, 1.0);
 </source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>false</glsl_130>
-   <glsl_140>false</glsl_140>
-   <glsl_150>false</glsl_150>
-   <glsl_330>false</glsl_330>
+   <version>130</version>
   </shader_source_data>
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>shadow_uv</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>shadow_map_count</size>
+     <name>shadow</name>
+     <type>float</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
@@ -54,22 +50,18 @@ shadow = clamp(shadow, 0.0, 1.0);
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>shadow</name>
-     <type>float</type>
-     <qualifier>out</qualifier>
-     <size>one</size>
+     <name>shadow_uvs</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>shadow_map_count</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>shadow = dot(vec2(1.0), step(vec2(0.5), abs(shadow_uv[0].xy - 0.5)));
-shadow += textureProj(shadow_sampler, shadow_uv[0]);
+   <source>shadow = dot(vec2(1.0), step(vec2(0.5), abs(shadow_uvs[0].xy - 0.5)));
+shadow += shadow2DProj(shadow_sampler, shadow_uvs[0]).r;
 shadow = clamp(shadow, 0.0, 1.0);
 </source>
-   <glsl_120>false</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

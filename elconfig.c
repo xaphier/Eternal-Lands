@@ -234,12 +234,9 @@ int engine_low_quality_terrain = engine_false;
 int engine_use_s3tc_for_actors = engine_true;
 int engine_clipmap_size = 1;
 int engine_clipmap_world_size = 16;
+int engine_clipmap_slices = 4;
 int engine_tile_world_size = 4;
 int engine_clipmap_centered = engine_true;
-#ifdef	DEBUG
-int engine_draw_objects = engine_true;
-int engine_draw_actors = engine_true;
-#endif	/* DEBUG */
 
 void change_engine_shadow_quality(int* var, int value)
 {
@@ -304,13 +301,19 @@ void change_engine_clipmap_world_size(int* var, int value)
 	engine_set_clipmap_world_size(*var);
 }
 
-void change_tile_world_size(int* var, int value)
+void change_engine_tile_world_size(int* var, int value)
 {
 	*var = value;
 	engine_set_tile_world_size(*var);
 }
 
-void change_clipmap_centered(int* var)
+void change_engine_clipmap_slices(int* var, int value)
+{
+	*var = value;
+	engine_set_clipmap_slices(*var);
+}
+
+void change_engine_clipmap_centered(int* var)
 {
 	*var = !*var;
 	engine_set_clipmap_centered(*var);
@@ -387,20 +390,6 @@ void change_engine_use_simd(int* var)
 	*var = !*var;
 	engine_set_use_simd(*var);
 }
-
-#ifdef	DEBUG
-void change_engine_draw_objects(int* var)
-{
-	*var = !*var;
-	engine_set_draw_objects(*var);
-}
-
-void change_engine_draw_actors(int* var)
-{
-	*var = !*var;
-	engine_set_draw_actors(*var);
-}
-#endif	/* DEBUG */
 
 void change_engine_optmize_shader_source(int* var)
 {
@@ -1933,8 +1922,9 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "low_quality_terrain", "low_quality_terrain", &engine_low_quality_terrain, change_engine_set_low_quality_terrain, engine_false, "Low quality terrain", "Low quality terrain", GFX);
 	add_var(OPT_MULTI_H, "clipmap_size", "clipmap_size", &engine_clipmap_size, change_engine_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", "4096", 0);
 	add_var(OPT_INT, "clipmap_world_size", "clipmap_world_size", &engine_clipmap_world_size, change_engine_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
-	add_var(OPT_INT, "tile_world_size", "tile_world_size", &engine_tile_world_size, change_tile_world_size, 4, "Tile world size", "Tile used for terrain texturing world size", GFX, 1, 16);
-	add_var(OPT_BOOL, "clipmap_centered", "clipmap_centered", &engine_clipmap_centered, change_clipmap_centered, engine_true, "Climap centered", "Climap centered around focus point", GFX);
+	add_var(OPT_INT, "clipmap_slices", "clipmap_slices", &engine_clipmap_slices, change_engine_clipmap_slices, 4, "Climap slices", "Clipmap slices for terrain", GFX, 1, 16);
+	add_var(OPT_INT, "tile_world_size", "tile_world_size", &engine_tile_world_size, change_engine_tile_world_size, 4, "Tile world size", "Tile used for terrain texturing world size", GFX, 1, 16);
+	add_var(OPT_BOOL, "clipmap_centered", "clipmap_centered", &engine_clipmap_centered, change_engine_clipmap_centered, engine_true, "Climap centered", "Climap centered around focus point", GFX);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */
@@ -2043,8 +2033,6 @@ static void init_ELC_vars(void)
 #if defined(NEW_WEATHER)
 	add_var(OPT_BOOL,"skybox_local_weather","skybox_local_weather", &skybox_local_weather, change_var,0,"Local Weather", "Show local weather areas on the sky. It allows to see distant weather but can reduce performance.", DEBUGTAB);
 #endif // NEW_WEATHER
-	add_var(OPT_BOOL, "draw_objects", "draw_objects", &engine_draw_objects, change_engine_draw_objects, engine_true, "Draw objects", "Draw objects.", DEBUGTAB);
-	add_var(OPT_BOOL, "draw_actors", "draw_actors", &engine_draw_actors, change_engine_draw_actors, engine_true, "Draw actors", "Draw actors.", DEBUGTAB);
 #endif // DEBUG
 	// DEBUGTAB TAB
 

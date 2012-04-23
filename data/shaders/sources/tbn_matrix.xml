@@ -6,8 +6,14 @@
   <shader_source_data>
    <parameters>
     <parameter>
+     <name>tbn_matrix</name>
+     <type>mat3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
      <name>world_normal</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -15,17 +21,8 @@
     </parameter>
     <parameter>
      <name>world_tangent</name>
-     <source></source>
      <type>vec3</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>tbn_matrix</name>
-     <source></source>
-     <type>mat3</type>
-     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -34,11 +31,7 @@
 tbn_matrix[1] = cross(world_normal, world_tangent);
 tbn_matrix[2] = world_normal;
 </source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

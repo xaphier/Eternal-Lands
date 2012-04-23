@@ -6,23 +6,9 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>shadow_uv</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>shadow_map_count</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>shadow_sampler</name>
-     <type>sampler2DArray</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
+     <name>shadow</name>
+     <type>float</type>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -34,9 +20,23 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>shadow</name>
-     <type>float</type>
-     <qualifier>out</qualifier>
+     <name>shadow_sampler</name>
+     <type>sampler2DArray</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>shadow_uvs</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>shadow_map_count</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -51,14 +51,14 @@ const float over_darkening_factor = 5.0;
 
 shadow = 1.0;
 
-lod_uv = shadow_uv[shadow_map_count - 1].xy / shadow_uv[shadow_map_count - 1].w;
+lod_uv = shadow_uvs[shadow_map_count - 1].xy / shadow_uvs[shadow_map_count - 1].w;
 
 ddx = dFdx(lod_uv);
 ddy = dFdy(lod_uv);
 
 for (i = 0; i &lt; shadow_map_count; ++i)
 {
-	uv = shadow_uv[i].xyz / shadow_uv[i].w;
+	uv = shadow_uvs[i].xyz / shadow_uvs[i].w;
 
 	if (all(lessThan(abs(uv - vec3(0.5)), vec3(0.4995))))
 	{
@@ -72,11 +72,7 @@ for (i = 0; i &lt; shadow_map_count; ++i)
 	}
 }
 </source>
-   <glsl_120>false</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>130</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

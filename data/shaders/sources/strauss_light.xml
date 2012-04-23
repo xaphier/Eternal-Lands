@@ -6,22 +6,15 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>world_position</name>
+     <name>diffuse_color</name>
      <type>vec3</type>
-     <qualifier>in</qualifier>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
      <name>fragment_normal</name>
      <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>light_position</name>
-     <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
@@ -34,9 +27,9 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>diffuse_color</name>
-     <type>vec3</type>
-     <qualifier>out</qualifier>
+     <name>light_position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -44,6 +37,13 @@
      <name>specular_color</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <type>vec3</type>
+     <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -119,11 +119,7 @@ float Rs             = Rs_numerator/ Rs_denominator;
 diffuse_color += light_color.rgb * NdotL * scale;
 specular_color += light_color.rgb * NdotL * Rs * scale;
 </source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

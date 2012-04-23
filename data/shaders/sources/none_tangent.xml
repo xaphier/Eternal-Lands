@@ -6,6 +6,13 @@
   <shader_source_data>
    <parameters>
     <parameter>
+     <name>normal</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
      <name>position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
@@ -13,28 +20,21 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal</name>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>tangent</name>
-     <type>vec3</type>
+     <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
+     <name>world_normal</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_normal</name>
+     <name>world_position</name>
      <type>vec3</type>
      <qualifier>out</qualifier>
      <size>one</size>
@@ -49,14 +49,10 @@
     </parameter>
    </parameters>
    <source>world_position = position.xyz;
-world_normal = normal;
-world_tangent = tangent;
+world_normal = normal.xyz;
+world_tangent = tangent.xyz;
 </source>
-   <glsl_120>true</glsl_120>
-   <glsl_130>true</glsl_130>
-   <glsl_140>true</glsl_140>
-   <glsl_150>true</glsl_150>
-   <glsl_330>true</glsl_330>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

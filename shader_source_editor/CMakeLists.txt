@@ -2,38 +2,40 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(shader_source_editor)
 
-find_package(PkgConfig)
+SET(QT_USE_QTOPENGL TRUE)
+FIND_PACKAGE(Qt4 REQUIRED)
 
-if (PKG_CONFIG_FOUND)
-	pkg_check_modules(PC_GTK QUIET gtk+-3.0)
+include(${QT_USE_FILE}) 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-	set(GTK_DEFINITIONS ${PC_GTK_CFLAGS_OTHER})
-	set(GTK_LIBRARIES ${PC_GTK_LIBRARIES})
-	set(GTK_INCLUDE_DIRS ${PC_GTK_INCLUDE_DIRS})
-else (PKG_CONFIG_FOUND)
-	include(FindGTK2)
+file(GLOB shader_source_editor_header_files *.hpp)
+file(GLOB shader_source_editor_source_files *.cpp)
+file(GLOB shader_source_editor_ui_files *.ui)
+file(GLOB shader_source_editor_qrc_files icons/*.qrc)
 
-	set(GTK_DEFINITIONS)
-	set(GTK_LIBRARIES ${GTK2_LIBRARIES})
-	set(GTK_INCLUDE_DIR ${GTK2_INCLUDE_DIRS})
-endif (PKG_CONFIG_FOUND)
+QT4_WRAP_CPP(shader_source_editor_moc_files ${shader_source_editor_header_files} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
+QT4_WRAP_UI(shader_source_editor_form_files ${shader_source_editor_ui_files})
+QT4_ADD_RESOURCES(shader_source_editor_resource_files ${shader_source_editor_qrc_files})
 
-include_directories(${GTK_INCLUDE_DIRS})
-add_definitions(${GTK_DEFINITIONS})
+add_executable(shader_source_editor WIN32 ${shader_source_editor_header_files}
+	${shader_source_editor_source_files}
+	${shader_source_editor_moc_files}
+	${shader_source_editor_form_files}
+	${shader_source_editor_resource_files})
 
-file(GLOB shader_source_editor_cpp_header_files *.hpp)
-file(GLOB shader_source_editor_cpp_files *.cpp)
-file(GLOB shader_source_editor_c_header_files *.h)
-file(GLOB shader_source_editor_c_files *.c)
-
-file(COPY main.xml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
-add_executable(shader_source_editor WIN32
-	${shader_source_editor_cpp_header_files}
-	${shader_source_editor_cpp_files}
-	${shader_source_editor_c_header_files}
-	${shader_source_editor_c_files})
-
+target_link_libraries(shader_source_editor ${GLEW_LIBRARY})
+target_link_libraries(shader_source_editor ${OPENGL_LIBRARIES})
+target_link_libraries(shader_source_editor ${CAL3D_LIBRARIES})
+target_link_libraries(shader_source_editor ${JPEG_LIBRARIES})
+target_link_libraries(shader_source_editor ${PNG_LIBRARIES})
+#target_link_libraries(shader_source_editor ${Boost_LIBRARIES})
+target_link_libraries(shader_source_editor ${ICONV_LIBRARIES})
+target_link_libraries(shader_source_editor ${LIBXML2_LIBRARIES})
+target_link_libraries(shader_source_editor ${SDL_LIBRARIES})
+target_link_libraries(shader_source_editor ${SDL_LIBRARY})
+target_link_libraries(shader_source_editor ${FREETYPE_LIBRARY})
 target_link_libraries(shader_source_editor elengine)
-target_link_libraries(shader_source_editor ${GTK_LIBRARIES})
+target_link_libraries(shader_source_editor ${QT_LIBRARIES})
+target_link_libraries(shader_source_editor ${ZLIB_LIBRARIES})
 
