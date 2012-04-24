@@ -51,7 +51,7 @@ namespace eternal_lands
 		const RStarTreeNodeSharedPtr &node)
 	{
 		RStarTreeNodeSharedPtr parent;
-		Uint32 minimum_load, index;
+		Uint32 minimum_load;
 
 		assert(node.get() != 0);
 
@@ -75,9 +75,7 @@ namespace eternal_lands
 
 			if (node->get_count() <= minimum_load)
 			{
-				index = parent->get_index(node);
-
-				parent->remove_element(index);
+				parent->delete_sub_node(node);
 
 				reinsert.push_back(node);
 			}
@@ -316,6 +314,59 @@ namespace eternal_lands
 	bool RStarTree::check_tree() const
 	{
 		return get_root_node()->check_nodes();
+	}
+
+	void RStarTree::select_objects(AbstractNodeVisitor &visitor,
+		BoundedObjectSharedPtrVector &objects) const
+	{
+		get_root_node()->select_objects(visitor, objects);
+	}
+
+	void RStarTree::select_and_remove_objects(AbstractNodeVisitor &visitor,
+		BoundedObjectSharedPtrVector &objects)
+	{
+		RStarTreeNodeSharedPtrStack path_buffer;
+		RStarTreeNodeSharedPtrVector reinsert;
+		RStarTreeNodeSharedPtr node, parent;
+
+		node = get_root_node()->select_objects(visitor, objects,
+			path_buffer);
+
+		if (node.get() == 0)
+		{
+			return;
+		}
+
+		if (path_buffer.size() == 0)
+		{
+			add_new_root_node(0);
+
+			return;
+		}
+
+		parent = path_buffer.top();
+		path_buffer.pop();
+
+		parent->delete_sub_node(node);
+
+		node = condense_tree(reinsert, path_buffer, parent);
+
+		if (node.get() != 0)
+		{
+			set_root_node(node);
+		}
+
+		reinsert_nodes(reinsert);
+
+		if (get_root_node()->get_count() > 0)
+		{
+			get_root_node()->calculate_enclosing_bounding_box();
+		}
+		else
+		{
+			get_root_node()->set_bounding_box(BoundingBox(
+				glm::vec3(0.0f), glm::vec3(0.0f)));
+		}
 	}
 
 }

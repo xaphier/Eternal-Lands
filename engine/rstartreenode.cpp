@@ -7,6 +7,7 @@
 
 #include "rstartreenode.hpp"
 #include "rstartree.hpp"
+#include "abstractnodevisitor.hpp"
 #include "abstractboundedobjectvisitor.hpp"
 #include "exceptions.hpp"
 
@@ -241,7 +242,7 @@ namespace eternal_lands
 		}
 	}
 
-	void RStarTreeNode::add_node(const SubFrustumsMask sub_frustums_mask,
+	void RStarTreeNode::view_node(const SubFrustumsMask sub_frustums_mask,
 		AbstractBoundedObjectVisitor &visitor) const
 	{
 		Uint32 i;
@@ -258,7 +259,28 @@ namespace eternal_lands
 
 		for (i = 0; i < get_count(); ++i)
 		{
-			get_node(i)->add_node(sub_frustums_mask, visitor);
+			get_node(i)->view_node(sub_frustums_mask, visitor);
+		}
+	}
+
+	void RStarTreeNode::add_node(BoundedObjectSharedPtrVector &objects)
+		const
+	{
+		Uint32 i;
+
+		if (get_leaf())
+		{
+			for (i = 0; i < get_count(); ++i)
+			{
+				objects.push_back(get_element(i));
+			}
+
+			return;
+		}
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			get_node(i)->add_node(objects);
 		}
 	}
 
@@ -324,7 +346,7 @@ namespace eternal_lands
 			{
 				case it_inside:
 				{
-					get_node(i)->add_node(
+					get_node(i)->view_node(
 						frustum.get_sub_frustums_mask(
 							out_mask), visitor);
 					break;
@@ -393,7 +415,7 @@ namespace eternal_lands
 				found = get_node(i)->find_leaf(element,
 					path_buffer);
 
-				if (found != 0)
+				if (found.get() != 0)
 				{
 					return found;
 				}
@@ -534,6 +556,7 @@ namespace eternal_lands
 
 	void RStarTreeNode::calculate_enclosing_bounding_box()
 	{
+		BoundingBox bounding_box;
 		glm::vec3 min, max;
 		Uint32 i;
 
@@ -550,7 +573,11 @@ namespace eternal_lands
 				get_element_bounding_box(i).get_max());
 		}
 
-		set_bounding_box(BoundingBox(min, max));
+		bounding_box.set_min_max(min, max);
+
+		bounding_box.scale(1.01f);
+
+		set_bounding_box(bounding_box);
 	}
 
 	void RStarTreeNode::update_enclosing_bounding_box(
@@ -564,11 +591,17 @@ namespace eternal_lands
 
 			bounding_box.merge(element->get_bounding_box());
 
+			bounding_box.scale(1.01f);
+
 			set_bounding_box(bounding_box);
 		}
 		else
 		{
-			set_bounding_box(element->get_bounding_box());
+			bounding_box = element->get_bounding_box();
+
+			bounding_box.scale(1.01f);
+
+			set_bounding_box(bounding_box);
 		}
 	}
 
@@ -932,6 +965,74 @@ namespace eternal_lands
 				return 2;
 			}
 		}
+	}
+
+	RStarTreeNodeSharedPtr RStarTreeNode::select_objects(
+		AbstractNodeVisitor &visitor,
+		BoundedObjectSharedPtrVector &objects,
+		RStarTreeNodeSharedPtrStack &path_buffer)
+	{
+		RStarTreeNodeSharedPtr node;
+		Uint32 i;
+
+		if (visitor(get_shared_from_this()))
+		{
+			add_node(objects);
+
+			return get_shared_from_this();
+		}
+
+		if (get_leaf())
+		{
+			return RStarTreeNodeSharedPtr();
+		}
+
+		path_buffer.push(get_shared_from_this());
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			node = get_node(i)->select_objects(visitor, objects,
+				path_buffer);
+
+			if (node.get() != 0)
+			{
+				return node;
+			}
+		}
+
+		path_buffer.pop();
+
+		return RStarTreeNodeSharedPtr();
+	}
+
+	bool RStarTreeNode::select_objects(
+		AbstractNodeVisitor &visitor,
+		BoundedObjectSharedPtrVector &objects)
+	{
+		RStarTreeNodeSharedPtr node;
+		Uint32 i;
+
+		if (visitor(shared_from_this()))
+		{
+			add_node(objects);
+
+			return true;
+		}
+
+		if (get_leaf())
+		{
+			return false;
+		}
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			if (get_node(i)->select_objects(visitor, objects))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

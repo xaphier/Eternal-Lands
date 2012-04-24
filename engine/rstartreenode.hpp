@@ -110,13 +110,13 @@ namespace eternal_lands
 			 * @param index The index of the node.
 			 * @return The pointer of the node.
 			 */
-			inline RStarTreeNodeSharedPtr get_node(const Uint32 index)
-				const
+			inline RStarTreeNodeSharedPtr get_node(
+				const Uint32 index) const
 			{
 				assert(!get_leaf());
 
-				return boost::dynamic_pointer_cast<RStarTreeNode>(
-					get_element(index));
+				return boost::dynamic_pointer_cast<
+					RStarTreeNode>(get_element(index));
 			}
 
 			/**
@@ -155,20 +155,28 @@ namespace eternal_lands
 			bool add_element(const BoundedObjectSharedPtr &element);
 
 			/**
-			 * @brief Adds all elements of the node and its
-			 * children to the intersection list.
+			 * @brief Views the node and all sub nodes.
 			 *
-			 * Adds all elements of the node and its children to
-			 * the intersection list. The pointers of the
-			 * intersecting elements (only elements in leafs) are
-			 * saved in the vector intersects.
+			 * Views the node and all sub nodes.
 			 * @param sub_frustums_mask The mask of the sub
 			 * frustums.
 			 * @param visitor The visitor that gets the pointers of
 			 * the intersecting elements.
 			 */
-			void add_node(const SubFrustumsMask sub_frustums_mask,
+			void view_node(const SubFrustumsMask sub_frustums_mask,
 				AbstractBoundedObjectVisitor &visitor) const;
+
+			/**
+			 * @brief Adds all elements of the node and its
+			 * children to the objects vector.
+			 *
+			 * Adds all elements of the node and its children to
+			 * the objects vector.
+			 * @param visitor The visitor that gets the pointers of
+			 * the intersecting elements.
+			 */
+			void add_node(BoundedObjectSharedPtrVector &objects)
+				const;
 
 			/**
 			 * @brief Removes an element.
@@ -474,6 +482,9 @@ namespace eternal_lands
 				const Uint32 minimum_load,
 				RStarTreeNodeSharedPtrStack &path_buffer);
 
+			/**
+			 * Check node and all sub nodes, returns true if all ok.
+			 */
 			bool check_nodes() const;
 
 			/**
@@ -493,6 +504,23 @@ namespace eternal_lands
 			}
 
 			/**
+			 * @brief Deletes a sub node.
+			 *
+			 * Deletes a sub node from the node.
+			 * @param sub_node The pointer of the sub node to
+			 * delete.
+			 */
+			inline void delete_sub_node(
+				const RStarTreeNodeSharedPtr &sub_node)
+			{
+				assert(!get_leaf());
+
+				remove_element(get_index(sub_node));
+
+				assert(find_element(sub_node) == -1);
+			}
+
+			/**
 			 * @brief Removes all elements.
 			 *
 			 * Removes alls element from the node.
@@ -507,6 +535,38 @@ namespace eternal_lands
 					element.reset();
 				}
 			}
+
+			/**
+			 * @brief Select objects.
+			 *
+			 * Checks the node using the visitor. If the visitor
+			 * returns true, all objects of the leaf node(s) are
+			 * added to the objects vector.
+			 * @param visitor The visitor that checks the nodes.
+			 * @param objects The objects vector for the selected
+			 * objects.
+			 * @param path_buffer The path to the selected node.
+			 * @return The selected node. Is 0 when no node is
+			 * selected.
+			 */
+			RStarTreeNodeSharedPtr select_objects(
+				AbstractNodeVisitor &visitor,
+				BoundedObjectSharedPtrVector &objects,
+				RStarTreeNodeSharedPtrStack &path_buffer);
+
+			/**
+			 * @brief Select objects.
+			 *
+			 * Checks the node using the visitor. If the visitor
+			 * returns true, all objects of the leaf node(s) are
+			 * added to the objects vector.
+			 * @param visitor The visitor that checks the nodes.
+			 * @param objects The objects vector for the selected
+			 * objects.
+			 * @return The true if a node was selected.
+			 */
+			bool select_objects(AbstractNodeVisitor &visitor,
+				BoundedObjectSharedPtrVector &objects);
 
 		public:
 			/**

@@ -323,6 +323,34 @@ namespace eternal_lands
 			 */
 			Uint32 get_memory_usage() const throw();
 
+			/**
+			 * @brief Select objects.
+			 *
+			 * Checks the nodes of the tree using the visitor.
+			 * If the visitor returns true, all objects of the leaf
+			 * node(s) are added to the objects vector.
+			 * @param visitor The visitor that checks the nodes.
+			 * @param objects The objects vector for the selected
+			 * objects.
+			 */
+			void select_objects(AbstractNodeVisitor &visitor,
+				BoundedObjectSharedPtrVector &objects) const;
+
+			/**
+			 * @brief Select and remove objects.
+			 *
+			 * Checks the nodes of the tree using the visitor.
+			 * If the visitor returns true, all objects of the leaf
+			 * node(s) are added to the objects vector. The objects
+			 * are also deleted from the tree.
+			 * @param visitor The visitor that checks the nodes.
+			 * @param objects The objects vector for the selected
+			 * objects.
+			 */
+			void select_and_remove_objects(
+				AbstractNodeVisitor &visitor,
+				BoundedObjectSharedPtrVector &objects);
+
 			bool check_tree() const;
 
 	};

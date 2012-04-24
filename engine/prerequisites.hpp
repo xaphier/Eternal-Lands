@@ -193,6 +193,7 @@ namespace eternal_lands
 	class AbstractBoundedObjectVisitor;
 	class AbstractFrameBuffer;
 	class AbstractMesh;
+	class AbstractNodeVisitor;
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
 	class AbstractTerrainManager;
