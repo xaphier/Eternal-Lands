@@ -405,7 +405,7 @@ void add_teleporters_from_list (const Uint8 *teleport_list)
 		add_particle_sys ("./particles/teleporter.part", x, y, z, 1);
 		engine_add_dynamic_object("./3dobjects/portal1.e3d", x, y, z, 0.0f,
 			0.0f, 0.0f, 0, 1.0f, 1.0f, 1.0f,
-			engine_get_next_free_dynamic_object_id(), st_detect);
+			engine_get_next_free_dynamic_object_id(), est_detect);
 			
 		//mark the teleporter as an unwalkable so that the pathfinder
 		//won't try to plot a path through it

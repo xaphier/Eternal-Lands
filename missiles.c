@@ -221,7 +221,7 @@ void missiles_remove(int missile_id)
 			mis->position[1] - mis->direction[1] * dist, 
 			mis->position[2] - mis->direction[2] * dist,
 			x_rot, y_rot, z_rot, 0, 1.0f, 1.0f, 1.0f, obj_3d_id,
-			st_select);
+			est_select);
 
 		if (obj_3d_id >= 0)
 			missiles_add_lost(obj_3d_id);

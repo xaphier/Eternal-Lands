@@ -18,12 +18,12 @@
 namespace eternal_lands
 {
 
-	class IoErrorException: public virtual ::std::exception,
-		public virtual ::boost::exception {};
+	class IoErrorException: public virtual std::exception,
+		public virtual boost::exception {};
 	class FileNotFoundException: public virtual IoErrorException {};
 	class ReadErrorException: public virtual IoErrorException {};
-	class InvalidParameterException: public virtual ::std::exception,
-		public virtual ::boost::exception {};
+	class InvalidParameterException: public virtual std::exception,
+		public virtual boost::exception {};
 	class ItemNotFoundException:
 		public virtual InvalidParameterException {};
 	class DuplicateItemException:
@@ -31,8 +31,8 @@ namespace eternal_lands
 	class BufferTooSmallException:
 		public virtual InvalidParameterException {};
 	class NullPtrException: public virtual InvalidParameterException {};
-	class InternalErrorException: public virtual ::std::exception,
-		public virtual ::boost::exception {};
+	class InternalErrorException: public virtual std::exception,
+		public virtual boost::exception {};
 	class EnumNotInSwitchException:
 		public virtual InternalErrorException {};
 	class NotImplementedException:
@@ -40,22 +40,22 @@ namespace eternal_lands
 	class UnkownFormatException: public virtual InvalidParameterException,
 		public virtual IoErrorException,
 		public virtual NotImplementedException {};
-	class BadCastException: public virtual ::std::bad_cast,
-		public virtual ::boost::exception {};
+	class BadCastException: public virtual std::bad_cast,
+		public virtual boost::exception {};
 	class RangeErrorException: public virtual InvalidParameterException {};
 	class ArraySizeErrorException: public virtual RangeErrorException {};
 	class InvalidTokenException:
 		public virtual InvalidParameterException {};
-	class OpenGlException: public virtual ::std::exception,
-		public virtual ::boost::exception {};
-	class ASException: public virtual ::std::exception,
-		public virtual ::boost::exception {};
-	class VariantException: public virtual ::std::exception,
-		public virtual ::boost::exception {};
-	class UncompressException: public virtual ::std::exception,
-		public virtual ::boost::exception {};
-	class BadAllocException: public virtual ::std::bad_alloc,
-		public virtual ::boost::exception {};
+	class OpenGlException: public virtual std::exception,
+		public virtual boost::exception {};
+	class ASException: public virtual std::exception,
+		public virtual boost::exception {};
+	class VariantException: public virtual std::exception,
+		public virtual boost::exception {};
+	class UncompressException: public virtual std::exception,
+		public virtual boost::exception {};
+	class BadAllocException: public virtual std::bad_alloc,
+		public virtual boost::exception {};
 
 	typedef boost::error_info<struct errinfo_parameter_name_, StringType>
 		errinfo_parameter_name;
@@ -124,14 +124,14 @@ namespace eternal_lands
 
 #define EL_THROW_EXCEPTION(exception)	\
 	throw exception <<\
-	::boost::throw_function(BOOST_CURRENT_FUNCTION) <<\
-	::boost::throw_file(__FILE__) <<\
-	::boost::throw_line((int)__LINE__)
+	boost::throw_function(BOOST_CURRENT_FUNCTION) <<\
+	boost::throw_file(__FILE__) <<\
+	boost::throw_line((int)__LINE__)
 
 #define	VALUE_NOT_IN_SWITCH(type, name)	\
-	EL_THROW_EXCEPTION(::eternal_lands::BadCastException()	\
-		<< ::eternal_lands::errinfo_value(static_cast<Uint32>(type))	\
-		<< ::boost::errinfo_type_info_name(name))
+	EL_THROW_EXCEPTION(BadCastException()	\
+		<< errinfo_value(static_cast<Uint32>(type))	\
+		<< boost::errinfo_type_info_name(name))
 
 #define EL_THROW_MESSAGE_EXCEPTION(description, arguments, exception)	\
 	do	\
@@ -141,10 +141,10 @@ namespace eternal_lands
 		format_string % arguments;	\
 	\
 		throw exception <<\
-			::boost::throw_function(BOOST_CURRENT_FUNCTION) <<\
-			::boost::throw_file(__FILE__) <<\
-			::boost::throw_line((int)__LINE__)	<<\
-			::eternal_lands::errinfo_message(format_string.str());	\
+			boost::throw_function(BOOST_CURRENT_FUNCTION) <<\
+			boost::throw_file(__FILE__) <<\
+			boost::throw_line((int)__LINE__)	<<\
+			errinfo_message(format_string.str());	\
 	}	\
 	while (false)
 
@@ -152,17 +152,23 @@ namespace eternal_lands
 	do	\
 	{	\
 		GLint gl_error;	\
+		String str;	\
 	\
 		gl_error = glGetError();	\
 	\
 		if (gl_error != GL_NO_ERROR)	\
 		{	\
-			EL_THROW_EXCEPTION(::eternal_lands::OpenGlException()	\
-				<< ::eternal_lands::errinfo_message(	\
-					::eternal_lands::string_to_utf8(	\
-						reinterpret_cast<const char*>(	\
-							gluErrorString(gl_error))))	\
-				<< ::eternal_lands::errinfo_opengl_error(gl_error));	\
+			const GLubyte* error_str = gluErrorString(gl_error);	\
+	\
+			if (error_str != 0)	\
+			{	\
+				str = String(reinterpret_cast<const char*>(	\
+					error_str));	\
+			}	\
+	\
+			EL_THROW_EXCEPTION(OpenGlException()	\
+				<< errinfo_message(str)	\
+				<< errinfo_opengl_error(gl_error));	\
 		}	\
 	}	\
 	while (false)
@@ -171,18 +177,24 @@ namespace eternal_lands
 	do	\
 	{	\
 		GLint gl_error;	\
+		String str;	\
 	\
 		gl_error = glGetError();	\
 	\
 		if (gl_error != GL_NO_ERROR)	\
 		{	\
-			EL_THROW_EXCEPTION(::eternal_lands::OpenGlException()	\
-				<< ::eternal_lands::errinfo_message(	\
-					::eternal_lands::string_to_utf8(	\
-						reinterpret_cast<const char*>(	\
-							gluErrorString(gl_error))))	\
-				<< ::eternal_lands::errinfo_opengl_error(gl_error)	\
-				<< ::eternal_lands::errinfo_name(name));	\
+			const GLubyte* error_str = gluErrorString(gl_error);	\
+	\
+			if (error_str != 0)	\
+			{	\
+				str = String(reinterpret_cast<const char*>(	\
+					error_str));	\
+			}	\
+	\
+			EL_THROW_EXCEPTION(OpenGlException()	\
+				<< errinfo_message(str)	\
+				<< errinfo_opengl_error(gl_error)	\
+				<< errinfo_name(name));	\
 		}	\
 	}	\
 	while (false)
@@ -211,10 +223,10 @@ namespace eternal_lands
 	{	\
 		if ((index) >= (max))	\
 		{	\
-			EL_THROW_EXCEPTION(::eternal_lands::RangeErrorException()	\
-				<< ::eternal_lands::errinfo_message((message))	\
-				<< ::eternal_lands::errinfo_range_index((index))	\
-				<< ::eternal_lands::errinfo_range_max((max)));	\
+			EL_THROW_EXCEPTION(RangeErrorException()	\
+				<< errinfo_message((message))	\
+				<< errinfo_range_index((index))	\
+				<< errinfo_range_max((max)));	\
 		}	\
 	}	\
 	while (false)

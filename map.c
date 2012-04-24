@@ -568,7 +568,7 @@ int get_3d_objects_from_server (int nr_objs, const Uint8 *data, int len)
 		nb_left -= name_len + 1;
 		
 		if (!obj_err)
-			engine_add_dynamic_object(obj_name, x, y, z, rx, ry, rz, 0, 0.0f, 0.0f, 0.0f, id, st_detect);
+			engine_add_dynamic_object(obj_name, x, y, z, rx, ry, rz, 0, 0.0f, 0.0f, 0.0f, id, est_detect);
 		else
 			all_ok = 0;
 	}

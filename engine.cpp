@@ -57,23 +57,23 @@
 #include "engine/image.hpp"
 #include "engine/codec/codecmanager.hpp"
 
-namespace el = eternal_lands;
+using namespace eternal_lands;
 
 namespace
 {
 	// equivalent to calling flyweight<std::string>::init()
-	el::String::initializer fwinit;
-	boost::scoped_ptr<el::Scene> scene;
-	boost::scoped_ptr<el::InstancesBuilder> instances_builder;
+	String::initializer fwinit;
+	boost::scoped_ptr<Scene> scene;
+	boost::scoped_ptr<InstancesBuilder> instances_builder;
 	Sint32 pick_frame = 0;
-	el::SelectionType selection = el::st_none;
-	el::StringSet harvestables;
-	el::StringSet entrables;
-	el::GlobalVarsSharedPtr global_vars;
-	el::FileSystemSharedPtr file_system;
-	boost::shared_ptr<el::ScriptEngine> script_engine;
+	eternal_lands::SelectionType selection = eternal_lands::st_none;
+	StringSet harvestables;
+	StringSet entrables;
+	GlobalVarsSharedPtr global_vars;
+	FileSystemSharedPtr file_system;
+	boost::shared_ptr<ScriptEngine> script_engine;
 
-	el::String get_string(const char* str,
+	String get_string(const char* str,
 		const Uint32 len = std::numeric_limits<Uint32>::max())
 	{
 		std::string result;
@@ -81,7 +81,7 @@ namespace
 
 		if (str == 0)
 		{
-			return el::String("(null)");
+			return String("(null)");
 		}
 
 		i = 0;
@@ -101,24 +101,24 @@ namespace
 			++i;
 		}
 
-		return el::String(result);
+		return String(result);
 	}
 
-	el::Text get_text(const unsigned char* str, const char* font,
+	Text get_text(const unsigned char* str, const char* font,
 		const glm::vec4 &start_color,
 		const Uint32 len = std::numeric_limits<Uint32>::max())
 	{
-		el::Text text;
-		el::TextAttribute attribute;
+		Text text;
+		TextAttribute attribute;
 		glm::vec4 color;
-		el::Utf32String utf32_str;
+		Utf32String utf32_str;
 		Uint32 i, count, index;
 
 		count = strlen(reinterpret_cast<const char*>(str));
 		count = std::min(count, len);
 
 		attribute.set_size(12.0f);
-		attribute.set_font(el::String(font));
+		attribute.set_font(String(font));
 
 		color = start_color;
 
@@ -204,54 +204,54 @@ namespace
 		}
 	}
 
-	el::SelectionType get_selection_type(el::String name)
+	SelectionType get_selection_type(String name)
 	{
 		if (harvestables.count(name) > 0)
 		{
-			return el::st_harvest;
+			return st_harvest;
 		}
 
 		if (entrables.count(name) > 0)
 		{
-			return el::st_enter;
+			return st_enter;
 		}
 
-		return el::st_select;
+		return st_select;
 	}
 
-	el::SelectionType get_selection_type(el::String name,
-		const SelectionType selection)
+	SelectionType get_selection_type(String name,
+		const ElSelectionType selection)
 	{
 		switch (selection)
 		{
-			case st_none:
-				return el::st_none;
-			case st_select:
-				return el::st_select;
-			case st_harvest:
-				return el::st_harvest;
-			case st_pick:
-				return el::st_pick;
-			case st_enter:
-				return el::st_enter;
-			case st_detect:
+			case est_none:
+				return st_none;
+			case est_select:
+				return st_select;
+			case est_harvest:
+				return st_harvest;
+			case est_pick:
+				return st_pick;
+			case est_enter:
+				return st_enter;
+			case est_detect:
 				return get_selection_type(name);
 		}
 
-		return el::st_none;
+		return st_none;
 	}
 
-	el::String get_name(const char* name)
+	String get_name(const char* name)
 	{
-		el::StringType str;
+		StringType str;
 		std::size_t pos;
 
 		if (name == 0)
 		{
-			return el::String();
+			return String();
 		}
 
-		str = el::utf8_to_string(name);
+		str = utf8_to_string(name);
 
 		pos = str.find(UTF8("./"));
 
@@ -261,19 +261,19 @@ namespace
 			pos = str.find(UTF8("./"));
 		}
 
-		return el::String(str);
+		return String(str);
 	}
 
-	el::ObjectDescription get_object_description(const glm::vec3 &pos,
-		const glm::vec3 &rot, const glm::vec4 &color, el::String name,
+	ObjectDescription get_object_description(const glm::vec3 &pos,
+		const glm::vec3 &rot, const glm::vec4 &color, String name,
 		const bool transparent, const Uint32 id,
-		const SelectionType selection)
+		const ElSelectionType selection)
 	{
-		el::Transformation transformation;
+		Transformation transformation;
 		glm::quat rotation;
 		float transparency;
-		el::SelectionType el_selection;
-		el::BlendType el_blend;
+		SelectionType el_selection;
+		BlendType el_blend;
 
 		assert(glm::all(glm::lessThanEqual(glm::abs(pos),
 			glm::vec3(1e7f))));
@@ -294,15 +294,15 @@ namespace
 		if (transparent)
 		{
 			transparency = 0.7f;
-			el_blend = el::bt_alpha_transparency_source_value;
+			el_blend = bt_alpha_transparency_source_value;
 		}
 		else
 		{
 			transparency = 1.0f;
-			el_blend = el::bt_disabled;
+			el_blend = bt_disabled;
 		}
 
-		return el::ObjectDescription(transformation, el::StringVector(),
+		return ObjectDescription(transformation, StringVector(),
 			name, transparency, id, el_selection, el_blend);
 	}
 
@@ -419,13 +419,13 @@ extern "C" void ARB_debug_output_to_file(GLenum source, GLenum type, GLuint id,
 
 extern "C" void load_harvestable_list()
 {
-	std::vector<el::StringType> lines, line;
-	std::vector<el::StringType>::iterator it;
-	el::StringType str;
-	el::String harvestables_str;
+	std::vector<StringType> lines, line;
+	std::vector<StringType>::iterator it;
+	StringType str;
+	String harvestables_str;
 
 	harvestables_str = file_system->get_file_string(
-		el::String(UTF8("harvestable.lst")));
+		String(UTF8("harvestable.lst")));
 
 	boost::split(lines, harvestables_str.get(), boost::is_any_of(
 		UTF8("\n")), boost::token_compress_on);
@@ -440,7 +440,7 @@ extern "C" void load_harvestable_list()
 		{
 			str = UTF8("3dobjects/");
 			str += *it;
-			harvestables.insert(el::String(str));
+			harvestables.insert(String(str));
 		}
 
 		it++;
@@ -449,13 +449,13 @@ extern "C" void load_harvestable_list()
 
 extern "C" void load_entrable_list()
 {
-	std::vector<el::StringType> lines, line;
-	std::vector<el::StringType>::iterator it;
-	el::StringType str;
-	el::String entrable_str;
+	std::vector<StringType> lines, line;
+	std::vector<StringType>::iterator it;
+	StringType str;
+	String entrable_str;
 
 	entrable_str = file_system->get_file_string(
-		el::String(UTF8("entrable.lst")));
+		String(UTF8("entrable.lst")));
 
 	boost::split(lines, entrable_str.get(), boost::is_any_of(
 		UTF8("\n")), boost::token_compress_on);
@@ -470,7 +470,7 @@ extern "C" void load_entrable_list()
 		{
 			str = UTF8("3dobjects");
 			str += *it;
-			entrables.insert(el::String(str));
+			entrables.insert(String(str));
 		}
 
 		it++;
@@ -481,7 +481,7 @@ extern "C" void init_global_vars()
 {
 	TRY_BLOCK
 
-	global_vars.reset(new el::GlobalVars());
+	global_vars.reset(new GlobalVars());
 
 	CATCH_BLOCK
 }
@@ -838,7 +838,7 @@ extern "C" void engine_add_dynamic_object(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
 	const float y_rot, const float z_rot, const char blended, const float r,
 	const float g, const float b, const Uint32 id,
-	const SelectionType selection)
+	const ElSelectionType selection)
 {
 	TRY_BLOCK
 

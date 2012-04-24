@@ -18,13 +18,13 @@ extern "C"
 
 typedef enum
 {
-	st_none = 0,
-	st_select = 1,
-	st_harvest = 2,
-	st_pick = 3,
-	st_enter = 4,
-	st_detect = 5
-} SelectionType;
+	est_none = 0,
+	est_select = 1,
+	est_harvest = 2,
+	est_pick = 3,
+	est_enter = 4,
+	est_detect = 5
+} ElSelectionType;
 
 void init_engine();
 void init_global_vars();
@@ -38,7 +38,7 @@ void engine_add_dynamic_object(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
 	const float y_rot, const float z_rot, const char blended,
 	const float r, const float g, const float b, const Uint32 id,
-	const SelectionType selection);
+	const ElSelectionType selection);
 void engine_add_light(const float x_pos, const float y_pos, const float z_pos,
 	const float r, const float g, const float b, const float radius,
 	const Uint32 id);
