@@ -26,13 +26,13 @@ namespace eternal_lands
 					const Uint32 offset_y) const;
 				void build_indices(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const Uint8Array4 splits);
+					const Uint16Array4 &splits);
 				void build_triangles(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const Uint8Array4 splits);
+					const Uint16Array4 &splits);
 				void build_triangle_fan(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const Uint8Array4 splits);
+					const Uint16Array4 &splits);
 				Uint32 get_index(const Uint32 x,
 					const Uint32 y) const;
 
@@ -46,7 +46,7 @@ namespace eternal_lands
 				Uint32 get_tile_size() const;
 				Uint32 get_tile_index_size() const;
 				void build_indices(const Uint32 skip,
-					const Uint8Array4 splits_outside,
+					const Uint16Array4 &splits_outside,
 					const bool split_inside);
 
 		};
@@ -69,7 +69,7 @@ namespace eternal_lands
 
 		void PlaneIndexBuilder::build_indices(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const Uint8Array4 splits)
+			const Uint16Array4 &splits)
 		{
 			if (get_use_restart_index())
 			{
@@ -84,7 +84,7 @@ namespace eternal_lands
 
 		void PlaneIndexBuilder::build_triangles(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const Uint8Array4 splits)
+			const Uint16Array4 &splits)
 		{
 			Uint32 i, count, step;
 
@@ -143,7 +143,7 @@ namespace eternal_lands
 
 		void PlaneIndexBuilder::build_triangle_fan(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const Uint8Array4 splits)
+			const Uint16Array4 &splits)
 		{
 			Uint32 i, count, step;
 
@@ -208,11 +208,11 @@ namespace eternal_lands
 		}
 
 		void PlaneIndexBuilder::build_indices(const Uint32 skip,
-			const Uint8Array4 splits_outside,
+			const Uint16Array4 &splits_outside,
 			const bool split_inside)
 		{
 			Uint32 i, j, count, step, split;
-			Uint8Array4 splits;
+			Uint16Array4 splits;
 
 			count = get_tile_size() >> (skip + 1);
 			step = 1 << skip;
@@ -311,7 +311,7 @@ namespace eternal_lands
 	{
 		PlaneIndexBuilder plane_index_builder(indices, tile_size,
 			use_restart_index);
-		Uint8Array4 splits_outside;
+		Uint16Array4 splits_outside;
 
 		if (split)
 		{
@@ -335,7 +335,7 @@ namespace eternal_lands
 
 	Uint32 IndexBuilder::build_plane_indices(Uint32Vector &indices,
 		const Uint32 tile_size, const bool use_restart_index,
-		const Uint32 skip, const Uint8Array4 splits_outside,
+		const Uint32 skip, const Uint16Array4 &splits_outside,
 		const bool split_inside)
 	{
 		PlaneIndexBuilder plane_index_builder(indices, tile_size,

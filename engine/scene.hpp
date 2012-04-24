@@ -99,11 +99,12 @@ namespace eternal_lands
 			void draw_default();
 			void update_shadow_map();
 			void update_terrain_map();
-			void draw_terrain_texture(
+			void update_terrain_texture(
 				const MaterialSharedPtrVector &materials,
 				const Mat2x3Array2 &texture_matrices,
 				const Uint16 index);
-			void draw_terrain_texture();
+			void update_terrain_texture(const Uint16 slice);
+			void update_terrain_texture();
 
 		protected:
 			virtual void intersect(const Frustum &frustum,

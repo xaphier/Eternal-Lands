@@ -33,9 +33,20 @@ namespace eternal_lands
 	{
 	}
 
+	Sint16Sint16Pair InstancesBuilder::get_index(const glm::vec2 &pos) const
+	{
+		Sint16Sint16Pair result;
+
+		result.first = std::floor(pos.x / m_max_size);
+		result.second = std::floor(pos.y / m_max_size);
+
+		return result;
+	}
+
 	void InstancesBuilder::add(const ObjectDescription &object_description)
 	{
 		std::auto_ptr<InstancingData> instancing_data;
+		glm::vec3 pos;
 		Sint16Sint16Pair index;
 		bool ok;
 
@@ -66,7 +77,9 @@ namespace eternal_lands
 				return;
 			}
 
-			index = instancing_data->get_index(m_max_size);
+			pos = instancing_data->get_bounding_box().get_center();
+
+			index = get_index(glm::vec2(pos));
 
 			m_instancing_datas[index].push_back(instancing_data);
 		}

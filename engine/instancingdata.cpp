@@ -49,16 +49,4 @@ namespace eternal_lands
 	{
 	}
 
-	Sint16Sint16Pair InstancingData::get_index(const float max_size) const
-	{
-		Sint16Sint16Pair result;
-
-		result.first = std::floor(get_bounding_box().get_center().x /
-			max_size);
-		result.second = std::floor(get_bounding_box().get_center().y /
-			max_size);
-
-		return result;
-	}
-
 }

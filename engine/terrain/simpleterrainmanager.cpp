@@ -145,7 +145,7 @@ namespace eternal_lands
 		Uint16Array2 lod;
 		Uint32 vertex_count, index_count, i, x, y, height, width;
 		Uint32 restart_index, count;
-		Uint8Array4 splits_outside;
+		Uint16Array4 splits_outside;
 		VertexSemanticTypeSet semantics;
 		HeightMapUvTool uvs(height_map, get_terrain_offset_scale());
 

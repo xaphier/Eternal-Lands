@@ -61,7 +61,7 @@ namespace eternal_lands
 				Uint32Vector &indices, const Uint32 tile_size,
 				const bool use_restart_index,
 				const Uint32 skip,
-				const Uint8Array4 splits_outside,
+				const Uint16Array4 &splits_outside,
 				const bool split_inside);
 
 	};

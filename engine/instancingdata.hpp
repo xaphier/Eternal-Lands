@@ -37,8 +37,6 @@ namespace eternal_lands
 
 			~InstancingData() throw();
 
-			Sint16Sint16Pair get_index(const float max_size) const;
-
 			inline const BoundingBox &get_bounding_box() const
 			{
 				return m_bounding_box;

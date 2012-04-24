@@ -67,6 +67,7 @@ namespace eternal_lands
 			}
 
 			void do_add(const InstancingData &instancing_data);
+			Sint16Sint16Pair get_index(const glm::vec2 &pos) const;
 
 		public:
 			/**

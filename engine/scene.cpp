@@ -1013,7 +1013,7 @@ namespace eternal_lands
 		m_frame_id++;
 	}
 
-	void Scene::draw_terrain_texture(
+	void Scene::update_terrain_texture(
 		const MaterialSharedPtrVector &materials,
 		const Mat2x3Array2 &texture_matrices, const Uint16 index)
 	{
@@ -1096,7 +1096,49 @@ namespace eternal_lands
 */
 	}
 
-	void Scene::draw_terrain_texture()
+	void Scene::update_terrain_texture(const Uint16 slice)
+	{
+		Mat2x3Array2 texture_matrices;
+		glm::mat2x3 texture_matrix;
+		glm::vec2 tile_scale;
+
+		try
+		{
+			STRING_MARKER(UTF8("Updating terrain slice %1%"),
+				slice);
+
+			tile_scale = 256.0f / glm::vec2(get_global_vars(
+				)->get_tile_world_size());
+
+			m_clipmap.update_slice(slice);
+
+			texture_matrices[0] = glm::mat2x3(glm::inverse(
+				glm::mat3(m_clipmap.get_texture_matrices(
+					)[slice])));
+
+			texture_matrices[1] = texture_matrices[0];
+
+			texture_matrices[1][0] *= tile_scale.x;
+			texture_matrices[1][1] *= tile_scale.y;
+
+			update_terrain_texture(m_materials, texture_matrices,
+				slice);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating terrain slice "
+				"%1% caught exception '%2%'"), slice %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating terrain slice "
+				"%1% caught exception '%2%'"), slice %
+				exception.what());
+		}
+	}
+
+	void Scene::update_terrain_texture()
 	{
 		Mat2x3Array2 texture_matrices;
 		glm::mat2x3 texture_matrix;
@@ -1123,18 +1165,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			m_clipmap.update_slice(i);
-
-			texture_matrices[0] = glm::mat2x3(glm::inverse(
-				glm::mat3(m_clipmap.get_texture_matrices(
-					)[i])));
-
-			texture_matrices[1] = texture_matrices[0];
-
-			texture_matrices[1][0] *= tile_scale.x;
-			texture_matrices[1][1] *= tile_scale.y;
-
-			draw_terrain_texture(m_materials, texture_matrices, i);
+			update_terrain_texture(i);
 		}
 
 		m_program_vars_id++;
@@ -1194,7 +1225,7 @@ namespace eternal_lands
 			glm::vec3(m_scene_view.get_view_dir()),
 			glm::vec2(m_scene_view.get_focus())))
 		{
-			draw_terrain_texture();
+			update_terrain_texture();
 		}
 
 		if (m_scene_view.get_shadow_map_count() > 0)
@@ -1203,8 +1234,11 @@ namespace eternal_lands
 				m_shadow_frame_buffer->get_texture());
 		}
 
-		m_state_manager.switch_texture(stt_terrain,
-			m_terrain_frame_buffer->get_texture());
+		if (m_terrain_frame_buffer.get() != 0)
+		{
+			m_state_manager.switch_texture(stt_terrain,
+				m_terrain_frame_buffer->get_texture());
+		}
 
 		m_scene_view.set_default_view();
 
