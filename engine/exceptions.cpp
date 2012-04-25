@@ -40,7 +40,7 @@ namespace eternal_lands
 
 	String get_gl_error_string(const GLenum error)
 	{
-		BoostFormat format_string(UTF8("%1%:%2X"));
+		BoostFormat format_string(UTF8("%1%:%2$x"));
 
 		format_string % get_gl_error_str(error) % error;
 
@@ -66,7 +66,7 @@ namespace eternal_lands
 		// skip first stack frame (points here)
 		for (i = 1; i < size; ++i)
 		{
-			BoostFormat format_string(UTF8("bt[%1%]: %2%+%3%%4%"));
+			BoostFormat format(UTF8("bt[%1%]: %2% {%3%}"));
 
 			message = messages[i];
 
@@ -80,17 +80,19 @@ namespace eternal_lands
 				offset_end - offset_begin - 1);
 			address = message.substr(offset_end + 1);
 
-			demangled_name = abi::__cxa_demangle(name.c_str(), 0,
-				0, &status);
+			demangled_name = abi::__cxa_demangle(name.c_str(), 0, 0,
+				&status);
 
 			if ((status == 0) && (demangled_name != 0))
 			{
 				name = demangled_name;
 			}
 
-			format_string % i % name % offset % address;
+			free(demangled_name);
 
-			str << format_string.str() << std::endl;
+			format % i % name % message;
+
+			str << format.str() << std::endl;
 		}
 
 		free(messages);

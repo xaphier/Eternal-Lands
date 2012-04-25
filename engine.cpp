@@ -544,6 +544,8 @@ extern "C" void init_engine()
 
 	CHECK_GL_ERROR();
 
+//	set_log_level(eternal_lands::llt_debug);
+
 	scene.reset(new el::Scene(global_vars, file_system));
 	scene->init();
 

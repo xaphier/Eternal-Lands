@@ -769,7 +769,7 @@ namespace eternal_lands
 
 		LOG_DEBUG(lt_texture, UTF8("Initializing texture mipmap level "
 			"%1% of 1d texture '%2%' with width %3% using "
-			"%5%compressed format."), mipmap % get_name() % width %
+			"%4%compressed format."), mipmap % get_name() % width %
 			(compressed ? UTF8("") : UTF8("un")));
 
 		CHECK_GL_ERROR_NAME(get_name());
