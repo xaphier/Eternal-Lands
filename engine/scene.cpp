@@ -392,22 +392,9 @@ namespace eternal_lands
 		Uint32ActorSharedPtrMap::const_iterator it, end;
 		SubFrustumsMask mask;
 
-#ifdef	DEBUG
-		if (get_global_vars()->get_draw_objects())
-		{
-			m_map->intersect(frustum, visitor);
-		}
-#else	/* DEBUG */
 		m_map->intersect(frustum, visitor);
-#endif	/* DEBUG */
 
 		end = m_actors.end();
-#ifdef	DEBUG
-		if (!get_global_vars()->get_draw_actors())
-		{
-			end = m_actors.begin();
-		}
-#endif	/* DEBUG */
 
 		for (it = m_actors.begin(); it != end; ++it)
 		{

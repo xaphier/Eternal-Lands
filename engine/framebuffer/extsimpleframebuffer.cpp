@@ -137,6 +137,8 @@ namespace eternal_lands
 				layer);
 			m_layer = layer;
 		}
+
+		m_frame_buffer.check_status();
 	}
 
 	void ExtSimpleFrameBuffer::bind(const Uint32 layer)

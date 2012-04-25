@@ -106,9 +106,13 @@ namespace eternal_lands
 			m_frame_buffer.bind();
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, layer);
 			m_layer = layer;
+
+			m_frame_buffer.check_status();
 		}
 
 		m_multisample_frame_buffer.bind();
+
+		m_multisample_frame_buffer.check_status();
 	}
 
 	void MultiSampleFrameBuffer::bind_texture(const Uint32 layer)
@@ -120,6 +124,8 @@ namespace eternal_lands
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, layer);
 			m_layer = layer;
 		}
+
+		m_frame_buffer.check_status();
 	}
 
 	void MultiSampleFrameBuffer::blit()

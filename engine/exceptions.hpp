@@ -1,5 +1,5 @@
 /****************************************************************************
- *            extendedexception.hpp
+ *            exceptions.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,7 +13,6 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -121,12 +120,17 @@ namespace eternal_lands
 		errinfo_object_name;
 	typedef boost::error_info<struct errinfo_opengl_error_, GLint>
 		errinfo_opengl_error;
+	typedef boost::error_info<struct errinfo_stack_string_, StringType>
+		errinfo_stack_string;
 
-#define EL_THROW_EXCEPTION(exception)	\
-	throw exception <<\
-	boost::throw_function(BOOST_CURRENT_FUNCTION) <<\
-	boost::throw_file(__FILE__) <<\
-	boost::throw_line((int)__LINE__)
+	String get_gl_error_string(const GLenum error);
+	String get_stack_string();
+
+#define EL_THROW_EXCEPTION(exception) throw exception	\
+	<< boost::throw_function(BOOST_CURRENT_FUNCTION)	\
+	<< boost::throw_file(__FILE__)	\
+	<< boost::throw_line((int)__LINE__)	\
+	<< errinfo_stack_string(get_stack_string())
 
 #define	VALUE_NOT_IN_SWITCH(type, name)	\
 	EL_THROW_EXCEPTION(BadCastException()	\
@@ -140,35 +144,23 @@ namespace eternal_lands
 	\
 		format_string % arguments;	\
 	\
-		throw exception <<\
-			boost::throw_function(BOOST_CURRENT_FUNCTION) <<\
-			boost::throw_file(__FILE__) <<\
-			boost::throw_line((int)__LINE__)	<<\
-			errinfo_message(format_string.str());	\
+		EL_THROW_EXCEPTION(exception	\
+			<< errinfo_message(format_string.str()));	\
 	}	\
 	while (false)
 
 #define CHECK_GL_ERROR()	\
 	do	\
 	{	\
-		GLint gl_error;	\
-		String str;	\
+		GLint error;	\
 	\
-		gl_error = glGetError();	\
+		error = glGetError();	\
 	\
-		if (gl_error != GL_NO_ERROR)	\
+		if (error != GL_NO_ERROR)	\
 		{	\
-			const GLubyte* error_str = gluErrorString(gl_error);	\
-	\
-			if (error_str != 0)	\
-			{	\
-				str = String(reinterpret_cast<const char*>(	\
-					error_str));	\
-			}	\
-	\
 			EL_THROW_EXCEPTION(OpenGlException()	\
-				<< errinfo_message(str)	\
-				<< errinfo_opengl_error(gl_error));	\
+				<< errinfo_message(get_gl_error_string(error))	\
+				<< errinfo_opengl_error(error));	\
 		}	\
 	}	\
 	while (false)
@@ -176,24 +168,15 @@ namespace eternal_lands
 #define CHECK_GL_ERROR_NAME(name)	\
 	do	\
 	{	\
-		GLint gl_error;	\
-		String str;	\
+		GLint error;	\
 	\
-		gl_error = glGetError();	\
+		error = glGetError();	\
 	\
-		if (gl_error != GL_NO_ERROR)	\
+		if (error != GL_NO_ERROR)	\
 		{	\
-			const GLubyte* error_str = gluErrorString(gl_error);	\
-	\
-			if (error_str != 0)	\
-			{	\
-				str = String(reinterpret_cast<const char*>(	\
-					error_str));	\
-			}	\
-	\
 			EL_THROW_EXCEPTION(OpenGlException()	\
-				<< errinfo_message(str)	\
-				<< errinfo_opengl_error(gl_error)	\
+				<< errinfo_message(get_gl_error_string(error))	\
+				<< errinfo_opengl_error(error)	\
 				<< errinfo_name(name));	\
 		}	\
 	}	\

@@ -9,6 +9,7 @@
 #include "exceptions.hpp"
 #include "variantutil.hpp"
 #include "glmutil.hpp"
+#include "utf.hpp"
 
 namespace eternal_lands
 {

@@ -14,6 +14,7 @@
 #include "decompressutil.hpp"
 #include "sha1/sha1.h"
 #include "logging.hpp"
+#include "utf.hpp"
 #include <sys/stat.h>
 
 namespace eternal_lands

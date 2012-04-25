@@ -114,6 +114,8 @@ namespace eternal_lands
 			get_texture()->attach(GL_COLOR_ATTACHMENT0, 0, layer);
 			m_layer = layer;
 		}
+
+		m_frame_buffer.check_status();
 	}
 
 	void SimpleFrameBuffer::bind(const Uint32 layer)

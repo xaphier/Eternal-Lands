@@ -121,11 +121,15 @@ namespace eternal_lands
 	void LayeredFrameBuffer::bind(const Uint32 layer)
 	{
 		m_frame_buffer.bind();
+
+		m_frame_buffer.check_status();
 	}
 
 	void LayeredFrameBuffer::bind_texture(const Uint32 layer)
 	{
 		m_frame_buffer.bind();
+
+		m_frame_buffer.check_status();
 	}
 
 	void LayeredFrameBuffer::blit()

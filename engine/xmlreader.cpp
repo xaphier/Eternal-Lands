@@ -10,6 +10,7 @@
 #include "filesystem.hpp"
 #include "reader.hpp"
 #include "abstractreadmemory.hpp"
+#include "utf.hpp"
 
 namespace eternal_lands
 {

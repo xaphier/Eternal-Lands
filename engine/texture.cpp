@@ -189,10 +189,11 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 1d "
-			"texture '%2%' using %3% data."), mipmap % get_name() %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" 1d texture '%2%' with width %3% using %4%compressed "
+			"data from image '%5%'."), mipmap % get_name() % width %
+			(compressed ? UTF8("") : UTF8("un")) %
+			image->get_name());
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -226,10 +227,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 2d "
-			"texture '%2%' using %3% data."), mipmap % get_name() %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" 2d texture '%2%' with width %3% and height %4% "
+			"using %5%compressed data from image '%6%'."), mipmap % 
+			get_name() % width % height %
+			(compressed ? UTF8("") : UTF8("un")) %
+			image->get_name());
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -263,10 +266,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 3d "
-			"texture '%2%' using %3% data."), mipmap % get_name() %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" 3d texture '%2%' with width %3%, height %4% and "
+			"depth %5% using %6%compressed data from image '%7%'."),
+			mipmap % get_name() % width % height % depth %
+			(compressed ? UTF8("") : UTF8("un")) %
+			image->get_name());
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -295,10 +300,12 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of cube "
-			"map texture '%2%' using %3% data."), mipmap %
-			get_name() % (compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" cube map texture '%2%' with width %3% and height %4% "
+			" using %5%compressed data from image '%6%'."), mipmap
+			% get_name() % width % height %
+			(compressed ? UTF8("") : UTF8("un")) %
+			image->get_name());
 
 		set_texture_image_cube_map_face(mipmap, width, height,
 			cmft_positive_x, image);
@@ -355,10 +362,12 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(lt_texture, UTF8("Initializing texture leve %1% of "
-			" %3% cube map texture."), mipmap % get_name() %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" cube map array texture '%2%' with width %3%, height "
+			"%4% and depth %5% using %6%compressed data from image"
+			" '%7%'."), mipmap % get_name() % width % height %
+			depth % (compressed ? UTF8("") : UTF8("un")) %
+			image->get_name());
 
 		set_texture_image_cube_map_face(mipmap, width, height, depth,
 			cmft_positive_x, image);
@@ -420,10 +429,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(mipmap);
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1%, layer "
-			"%2% of 2d texture array '%3%' using %4% data."),
-			mipmap % layer % get_name() % (compressed ?
-				UTF8("compressed") : UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" 2d array texture '%2%' with width %3%, height %4% and"
+			" layer %5% using %6%compressed data from image "
+			"'%7%'."), mipmap %  get_name() % width % height %
+			layer % (compressed ? UTF8("") : UTF8("un")) %
+			image->get_name());
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -459,11 +470,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, 1, 1);
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 1d "
-			"texture '%2%' using level %3% of %4% data."),
-			texture_mipmap % get_name() % image_mipmap %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" 1d texture '%2%' with width %3% using %4%compressed "
+			"data from image mipmap %5% '%6%'."), texture_mipmap %
+			get_name() % width %
+			(compressed ? UTF8("") : UTF8("un")) % image_mipmap %
+			image->get_name());
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -501,11 +513,12 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, height, 1);
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 2d "
-			"texture '%2%' using level %3% of %4% data."),
-			texture_mipmap % get_name() % image_mipmap %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" 2d texture '%2%' with width %3% and height %4% using"
+			" %5%compressed data from image mipmap %6% '%7%'."),
+			texture_mipmap % get_name() % width % height %
+			(compressed ? UTF8("") : UTF8("un")) % image_mipmap %
+			image->get_name());
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -547,11 +560,13 @@ namespace eternal_lands
 		image_type = image->get_type();
 		size = image->get_size(width, height, depth);
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 3d "
-			"texture '%2%' using level %3% of %4% data."),
-			texture_mipmap % get_name() % image_mipmap %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" 3d texture '%2%' with width %3%, height %4% and depth"
+			" %5% using %6%compressed data from image mipmap %7% "
+			"'%8%'."), texture_mipmap %  get_name() % width %
+			height % depth %
+			(compressed ? UTF8("") : UTF8("un")) % image_mipmap %
+			image->get_name());
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -590,11 +605,12 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of cube "
-			"map texture '%2%' using level %3% of %4% data."),
-			texture_mipmap % get_name() % image_mipmap %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" cube map texture '%2%' with width %3% and height %4%"
+			" using %5%compressed data from image mipmap %6% "
+			"'%7%'."), texture_mipmap % get_name() % width % height
+			% (compressed ? UTF8("") : UTF8("un")) % image_mipmap %
+			image->get_name());
 
 		set_texture_image_cube_map_face(texture_mipmap, image_mipmap,
 			width, height, cmft_positive_x, image, texture_position,
@@ -667,11 +683,13 @@ namespace eternal_lands
 		compressed = TextureFormatUtil::get_compressed(
 			image->get_texture_format());
 
-		LOG_DEBUG(lt_texture, UTF8("Setting texture leve %1% of 1d "
-			"texture '%2%' using level %3% of %4% data."),
-			texture_mipmap % get_name() % image_mipmap %
-			(compressed ? UTF8("compressed") :
-				UTF8("uncompressed")));
+		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
+			" cube map array texture '%2%' with width %3%, height "
+			"%4% and depth %5% using %6%compressed data from image"
+			" mipmap %7% '%8%'."), texture_mipmap % get_name() %
+			width % height % depth %
+			(compressed ? UTF8("") : UTF8("un")) % image_mipmap %
+			image->get_name());
 
 		set_texture_image_cube_map_face(texture_mipmap, image_mipmap,
 			width, height, depth, cmft_positive_x, image,
@@ -743,16 +761,18 @@ namespace eternal_lands
 		GLenum format, type;
 		bool compressed;
 
-		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
-			" of 1d texture '%2%'."), mipmap % get_name());
-
-		CHECK_GL_ERROR_NAME(get_name());
-
 		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
 
 		compressed = TextureFormatUtil::get_compressed(get_format());
 		size = Image::get_size(width, 1, 1, get_format());
+
+		LOG_DEBUG(lt_texture, UTF8("Initializing texture mipmap level "
+			"%1% of 1d texture '%2%' with width %3% using "
+			"%5%compressed format."), mipmap % get_name() % width %
+			(compressed ? UTF8("") : UTF8("un")));
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -775,16 +795,18 @@ namespace eternal_lands
 		GLenum format, type;
 		bool compressed;
 
-		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
-			" of 2d texture '%2%'."), mipmap % get_name());
-
-		CHECK_GL_ERROR_NAME(get_name());
-
 		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
 
 		compressed = TextureFormatUtil::get_compressed(get_format());
 		size = Image::get_size(width, height, 1, get_format());
+
+		LOG_DEBUG(lt_texture, UTF8("Initializing texture mipmap level "
+			"%1% of 2d texture '%2%' with width %3% and height %4%"
+			" using %5%compressed format."), mipmap % get_name() %
+			width % height % (compressed ? UTF8("") : UTF8("un")));
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -807,16 +829,19 @@ namespace eternal_lands
 		GLenum format, type;
 		bool compressed;
 
-		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
-			" of 3d texture '%2%'."), mipmap % get_name());
-
-		CHECK_GL_ERROR_NAME(get_name());
-
 		TextureFormatUtil::get_source_format(get_format(), format,
 			type);
 
 		compressed = TextureFormatUtil::get_compressed(get_format());
 		size = Image::get_size(width, height, depth, get_format());
+
+		LOG_DEBUG(lt_texture, UTF8("Initializing texture mipmap level "
+			"%1% of 3d texture '%2%' with width %3%, height %4% "
+			"and depth %5% using %6%compressed format."), mipmap %
+			get_name() % width % height % depth %
+			(compressed ? UTF8("") : UTF8("un")));
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		if (compressed)
 		{
@@ -836,8 +861,17 @@ namespace eternal_lands
 	void Texture::set_texture_image_cube_map(const Uint16 mipmap,
 		const Uint32 width, const Uint32 height)
 	{
-		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
-			" of cube map texture '%2%'."), mipmap % get_name());
+		bool compressed;
+
+		compressed = TextureFormatUtil::get_compressed(get_format());
+
+		LOG_DEBUG(lt_texture, UTF8("Initializing texture mipmap level "
+			"%1% of cube map texture '%2%' with width %3% and "
+			"height %4% using %5%compressed format."), mipmap %
+			get_name() % width % height %
+			(compressed ? UTF8("") : UTF8("un")));
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		set_texture_image_cube_map_face(mipmap, width, height,
 			cmft_positive_x);
@@ -886,8 +920,17 @@ namespace eternal_lands
 	void Texture::set_texture_image_cube_map(const Uint16 mipmap,
 		const Uint32 width, const Uint32 height, const Uint32 depth)
 	{
-		LOG_DEBUG(lt_texture, UTF8("Initializationing texture leve %1%"
-			" of cube map texture '%2%'."), mipmap % get_name());
+		bool compressed;
+
+		compressed = TextureFormatUtil::get_compressed(get_format());
+
+		LOG_DEBUG(lt_texture, UTF8("Initializing texture mipmap level "
+			"%1% of cube map texture '%2%' with width %3%, height "
+			"%4% and depth %5% using %6%compressed format."),
+			mipmap % get_name() % width % height % depth %
+			(compressed ? UTF8("") : UTF8("un")));
+
+		CHECK_GL_ERROR_NAME(get_name());
 
 		set_texture_image_cube_map_face(mipmap, width, height, depth,
 			cmft_positive_x);
