@@ -16,7 +16,7 @@ namespace eternal_lands
 		const Uint32 width, const Uint32 height, const Uint32 depth,
 		const Uint16 mipmaps, const TextureTargetType target,
 		const TextureFormatType format, const bool depth_buffer):
-		AbstractFrameBuffer(name, width, height, depth)
+		AbstractFrameBuffer(name, width, height, depth), m_layer(0)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
