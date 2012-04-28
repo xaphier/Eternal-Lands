@@ -224,8 +224,7 @@ namespace eternal_lands
 
 		mesh_data_tool = boost::make_shared<MeshDataTool>(m_name,
 			m_vertex_count, m_index_count, mesh_count, semantics,
-			std::numeric_limits<Uint32>::max(), pt_triangles,
-			false, use_simd);
+			pt_triangles, false, use_simd);
 
 		for (i = 0; i < mesh_count; ++i)
 		{

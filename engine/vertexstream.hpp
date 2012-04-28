@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "vertexelement.hpp"
+#include "vertexelements.hpp"
 
 /**
  * @file
@@ -31,18 +31,24 @@ namespace eternal_lands
 			typedef std::map<VertexSemanticType, PackData>
 				VertexSemanticTypePackDataMap;
 
-			const VertexFormatSharedPtr m_format;
+			const VertexElements m_vertex_elements;
 			const AbstractWriteMemorySharedPtr m_buffer;
 			VertexSemanticTypePackDataMap m_pack_datas;
 			Uint64 m_offset;
 			Uint32 m_stride;
-			const Uint16 m_index;
+			const Uint32 m_vertex_count;
 			const bool m_use_simd;
+
+			void init();
 
 		public:
 			VertexStream(const VertexFormatSharedPtr &format,
 				const AbstractWriteMemorySharedPtr &buffer,
-				const Uint16 index, const bool use_simd);
+				const Uint32 vertex_count, const Uint16 index,
+				const bool use_simd);
+			VertexStream(const VertexElements &vertex_elements,
+				const AbstractWriteMemorySharedPtr &buffer,
+				const Uint32 vertex_count, const bool use_simd);
 			~VertexStream() throw();
 			void set(const VertexSemanticType semantic,
 				const glm::vec4 &data);
@@ -50,18 +56,21 @@ namespace eternal_lands
 				const Vec4Vector &data);
 			void set(const VertexSemanticType semantic,
 				const AlignedVec4Array &data);
-			const VertexElements &get_vertex_elements() const;
-			Uint16 get_vertex_elements_count() const;
 			void push_vertex();
+
+			inline Uint16 get_vertex_elements_count() const
+			{
+				return get_vertex_elements().get_count();
+			}
 
 			inline void reset()
 			{
 				m_offset = 0;
 			}
 
-			inline const VertexFormatSharedPtr &get_format() const
+			inline const VertexElements &get_vertex_elements() const
 			{
-				return m_format;
+				return m_vertex_elements;
 			}
 
 			inline const AbstractWriteMemorySharedPtr &get_buffer()
@@ -80,9 +89,9 @@ namespace eternal_lands
 				return m_stride;
 			}
 
-			inline Uint16 get_index() const
+			inline Uint32 get_vertex_count() const
 			{
-				return m_index;
+				return m_vertex_count;
 			}
 
 			inline bool get_use_simd() const

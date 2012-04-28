@@ -50,11 +50,11 @@ file(GLOB gui_source_files gui/*.cpp)
 list(APPEND engine_source_files ${gui_source_files})
 list(APPEND engine_header_files ${gui_header_files})
 
-#font dir
-file(GLOB font_header_files font/*.hpp)
-file(GLOB font_source_files font/*.cpp)
-list(APPEND engine_source_files ${font_source_files})
-list(APPEND engine_header_files ${font_header_files})
+##font dir
+#file(GLOB font_header_files font/*.hpp)
+#file(GLOB font_source_files font/*.cpp)
+#list(APPEND engine_source_files ${font_source_files})
+#list(APPEND engine_header_files ${font_header_files})
 
 #terrain dir
 file(GLOB terrain_header_files terrain/*.hpp)

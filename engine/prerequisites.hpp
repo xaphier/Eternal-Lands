@@ -304,6 +304,8 @@ namespace eternal_lands
 	typedef boost::array<VertexElements, vertex_stream_count>
 		VertexElementsArray;
 
+	typedef std::bitset<vertex_stream_count> VertexStreamBitset;
+
 	typedef RStarTree* RStarTreePtr;
 	typedef SubObject* SubObjectPtr;
 	typedef VertexElements* VertexElementsPtr;

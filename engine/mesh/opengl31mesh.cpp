@@ -49,7 +49,9 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	AbstractMeshSharedPtr OpenGl31Mesh::clone_vertex_data() const
+	AbstractMeshSharedPtr OpenGl31Mesh::clone(
+		const BitSet16 shared_vertex_datas,
+		const bool shared_index_data) const
 	{
 		boost::shared_ptr<OpenGl31Mesh> result;
 
@@ -59,24 +61,8 @@ namespace eternal_lands
 			get_static_indices(), get_static_vertices(),
 			get_use_simd());
 
-		copy_vertex_data(*result);
-
-		CHECK_GL_ERROR_NAME(get_name());
-
-		return result;
-	}
-
-	AbstractMeshSharedPtr OpenGl31Mesh::clone_index_data() const
-	{
-		boost::shared_ptr<OpenGl31Mesh> result;
-
-		CHECK_GL_ERROR();
-
-		result = boost::make_shared<OpenGl31Mesh>(get_name(),
-			get_static_indices(), get_static_vertices(),
-			get_use_simd());
-
-		copy_index_data(*result);
+		copy_data(*result);
+		clone_buffers(shared_vertex_datas, shared_index_data, *result);
 
 		CHECK_GL_ERROR_NAME(get_name());
 
@@ -89,23 +75,22 @@ namespace eternal_lands
 	}
 
 	void OpenGl31Mesh::draw(const MeshDrawData &draw_data,
-		const Uint32 instances)
+		const Uint32 instances, const PrimitiveType primitive)
 	{
 		assert(instances > 0);
 		assert(draw_data.get_base_vertex() == 0);
 
 		if (get_has_index_data())
 		{
-			glDrawElementsInstanced(get_primitive_type(),
+			glDrawElementsInstanced(primitive,
 				draw_data.get_count(), get_index_type(),
 				get_index_offset(draw_data.get_offset()) +
 					static_cast<Uint8*>(0), instances);
 		}
 		else
 		{
-			glDrawArraysInstanced(get_primitive_type(),
-				draw_data.get_offset(), draw_data.get_count(),
-				instances);
+			glDrawArraysInstanced(primitive, draw_data.get_offset(),
+				draw_data.get_count(), instances);
 		}
 	}
 

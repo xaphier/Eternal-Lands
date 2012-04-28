@@ -28,7 +28,7 @@ namespace eternal_lands
 			if (memory[i].get() != 0)
 			{
 				m_streams.push_back(new VertexStream(format,
-					memory[i], i, use_simd));
+					memory[i], i, vertex_count, use_simd));
 			}
 		}
 	}
@@ -47,7 +47,7 @@ namespace eternal_lands
 			if (buffers[i].get() != 0)
 			{
 				m_streams.push_back(new VertexStream(format,
-					buffers[i], i, use_simd));
+					buffers[i], i, vertex_count, use_simd));
 			}
 		}
 	}

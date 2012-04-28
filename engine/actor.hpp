@@ -48,6 +48,14 @@ namespace eternal_lands
 				CalCoreModel *core_model);
 
 			/**
+			 * Default constructor.
+			 */
+			Actor(const ObjectData &object_data,
+				const AbstractMeshSharedPtr &mesh,
+				const MaterialSharedPtrVector &materials,
+				CalCoreModel *core_model);
+
+			/**
 			 * Default destructor.
 			 */
 			~Actor() throw();
@@ -61,6 +69,11 @@ namespace eternal_lands
 				const GlobalVarsSharedPtr &global_vars);
 			void set_parts(
 				const ActorPartTextureTypeStringMap &parts);
+
+			inline bool get_enhanced_actor() const
+			{
+				return m_index_source.get() != 0;
+			}
 
 			inline BitSet32 get_buffs() const
 			{

@@ -40,8 +40,7 @@ namespace eternal_lands
 			Uint32Vector m_indices;
 			String m_name;
 			Uint32 m_vertex_count;
-			Uint32 m_restart_index;
-			PrimitiveType m_primitive_type;
+			PrimitiveType m_primitive;
 			bool m_use_restart_index;
 			const bool m_use_simd;
 
@@ -66,8 +65,7 @@ namespace eternal_lands
 				const Uint32 index_count,
 				const Uint32 sub_mesh_count,
 				const VertexSemanticTypeSet &semantics,
-				const Uint32 restart_index,
-				const PrimitiveType primitive_type,
+				const PrimitiveType primitive,
 				const bool use_restart_index,
 				const bool use_simd);
 
@@ -251,9 +249,9 @@ namespace eternal_lands
 			 * Return the primitive type.
 			 * @result The primitive type.
 			 */
-			inline PrimitiveType get_primitive_type() const
+			inline PrimitiveType get_primitive() const
 			{
-				return m_primitive_type;
+				return m_primitive;
 			}
 
 			/**
@@ -262,7 +260,7 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_restart_index() const
 			{
-				return m_restart_index;
+				return std::numeric_limits<Uint32>::max();
 			}
 
 			/**

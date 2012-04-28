@@ -110,8 +110,7 @@ namespace eternal_lands
 
 			mesh_data_tool.reset(new MeshDataTool(name,
 				sphere_vertex_count, sphere_index_count, 1,
-				semantics, std::numeric_limits<Uint32>::max(),
-				pt_triangles, false, use_simd));
+				semantics, pt_triangles, false, use_simd));
 
 			for (i = 0; i < sphere_vertex_count; ++i)
 			{
@@ -158,8 +157,7 @@ namespace eternal_lands
 			Uint32Vector indices;
 			VertexSemanticTypeSet semantics;
 			Uint32 vertex_count, index_count, i, index, x, y;
-			Uint32 restart_index;
-			PrimitiveType primitive_type;
+			PrimitiveType primitive;
 			bool use_restart_index;
 
 			vertex_count = tile_size + 1;
@@ -169,16 +167,15 @@ namespace eternal_lands
 
 			if (use_restart_index)
 			{
-				primitive_type = pt_triangle_fan;
+				primitive = pt_triangle_fan;
 			}
 			else
 			{
-				primitive_type = pt_triangles;
+				primitive = pt_triangles;
 			}
 
-			restart_index = IndexBuilder::build_plane_indices(
-				indices, tile_size, use_restart_index, 0,
-				split);
+			IndexBuilder::build_plane_indices(indices, tile_size,
+				use_restart_index, 0, split);
 
 			index_count = indices.size();
 
@@ -189,8 +186,7 @@ namespace eternal_lands
 
 			mesh_data_tool = boost::make_shared<MeshDataTool>(name,
 				vertex_count, index_count, 1, semantics,
-				restart_index, primitive_type,
-				use_restart_index, use_simd);
+				primitive, use_restart_index, use_simd);
 
 			for (i = 0; i < index_count; ++i)
 			{
@@ -274,8 +270,8 @@ namespace eternal_lands
 			semantics.insert(vst_tangent);
 
 			mesh_data_tool = boost::make_shared<MeshDataTool>(name,
-				4, 6, 1, semantics,
-				0xFFFFFFFF, pt_triangles, false, use_simd);
+				4, 6, 1, semantics, pt_triangles, false,
+				use_simd);
 
 			mesh_data_tool->set_index_data(0, 0);
 			mesh_data_tool->set_index_data(1, 1);

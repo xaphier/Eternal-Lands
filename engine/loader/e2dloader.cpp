@@ -328,8 +328,7 @@ namespace eternal_lands
 
 		mesh_data_tool = boost::make_shared<MeshDataTool>(
 			m_reader->get_name(), vertex_count, index_count, 1,
-			semantics, std::numeric_limits<Uint32>::max(),
-			pt_triangles, false, use_simd);
+			semantics, pt_triangles, false, use_simd);
 
 		for (i = 0; i < index_count; ++i)
 		{

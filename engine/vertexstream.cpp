@@ -53,24 +53,41 @@ namespace eternal_lands
 	}
 
 	VertexStream::VertexStream(const VertexFormatSharedPtr &format,
-		const AbstractWriteMemorySharedPtr &buffer, const Uint16 index,
-		const bool use_simd): m_format(format), m_buffer(buffer),
-		m_offset(0), m_index(index), m_use_simd(use_simd)
+		const AbstractWriteMemorySharedPtr &buffer,
+		const Uint32 vertex_count, const Uint16 index,
+		const bool use_simd):
+		m_vertex_elements(format->get_vertex_elements(index)),
+		m_buffer(buffer), m_offset(0), m_stride(0),
+		m_vertex_count(vertex_count), m_use_simd(use_simd)
+	{
+		init();
+	}
+
+	VertexStream::VertexStream(const VertexElements &vertex_elements,
+		const AbstractWriteMemorySharedPtr &buffer,
+		const Uint32 vertex_count, const bool use_simd):
+		m_vertex_elements(vertex_elements), m_buffer(buffer),
+		m_offset(0), m_stride(0), m_vertex_count(vertex_count),
+		m_use_simd(use_simd)
+	{
+		init();
+	}
+
+	VertexStream::~VertexStream() throw()
+	{
+	}
+
+	void VertexStream::init()
 	{
 		BOOST_FOREACH(const VertexElement &element,
-			m_format->get_vertex_elements(
-				index).get_vertex_elements())
+			get_vertex_elements().get_vertex_elements())
 		{
 			m_pack_datas[element.get_semantic()] =
 				PackData(element.get_pack_format(),
 					element.get_offset());
 		}
 
-		m_stride = m_format->get_vertex_elements(index).get_stride();
-	}
-
-	VertexStream::~VertexStream() throw()
-	{
+		m_stride = get_vertex_elements().get_stride();
 	}
 
 	void VertexStream::set(const VertexSemanticType semantic,
@@ -94,17 +111,15 @@ namespace eternal_lands
 		catch (boost::exception &exception)
 		{
 			BoostFormat format_string(UTF8("Range error while "
-				"writing to vertex format '%1%' at semantic "
-				"%2% of type %3%."));
+				"writing at semantic %2% of type %3%."));
 
 			BOOST_FOREACH(const VertexElement &element,
-				get_format()->get_vertex_elements(
-					get_index()).get_vertex_elements())
+				get_vertex_elements().get_vertex_elements())
 			{
 				if (element.get_semantic() == semantic)
 				{
-					format_string % get_format()->get_name()
-						% semantic % element.get_type();
+					format_string % semantic %
+						element.get_type();
 					break;
 				}
 			}
@@ -141,17 +156,15 @@ namespace eternal_lands
 		catch (boost::exception &exception)
 		{
 			BoostFormat format_string(UTF8("Range error while "
-				"writing to vertex format '%1%' at semantic "
-				"%2% of type %3%."));
+				"writing at semantic %2% of type %3%."));
 
 			BOOST_FOREACH(const VertexElement &element,
-				get_format()->get_vertex_elements(
-					get_index()).get_vertex_elements())
+				get_vertex_elements().get_vertex_elements())
 			{
 				if (element.get_semantic() == semantic)
 				{
-					format_string % get_format()->get_name()
-						% semantic % element.get_type();
+					format_string % semantic %
+						element.get_type();
 					break;
 				}
 			}
@@ -190,17 +203,15 @@ namespace eternal_lands
 		catch (boost::exception &exception)
 		{
 			BoostFormat format_string(UTF8("Range error while "
-				"writing to vertex format '%1%' at semantic "
-				"%2% of type %3%."));
+				"writing at semantic %2% of type %3%."));
 
 			BOOST_FOREACH(const VertexElement &element,
-				get_format()->get_vertex_elements(
-					get_index()).get_vertex_elements())
+				get_vertex_elements().get_vertex_elements())
 			{
 				if (element.get_semantic() == semantic)
 				{
-					format_string % get_format()->get_name()
-						% semantic % element.get_type();
+					format_string % semantic %
+						element.get_type();
 					break;
 				}
 			}
@@ -209,16 +220,6 @@ namespace eternal_lands
 
 			throw;
 		}
-	}
-
-	const VertexElements &VertexStream::get_vertex_elements() const
-	{
-		return m_format->get_vertex_elements(get_index());
-	}
-
-	Uint16 VertexStream::get_vertex_elements_count() const
-	{
-		return get_vertex_elements().get_count();
 	}
 
 	void VertexStream::push_vertex()

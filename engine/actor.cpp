@@ -8,6 +8,8 @@
 #include "actor.hpp"
 #include "abstractmesh.hpp"
 #include "material.hpp"
+#include "indexupdatesource.hpp"
+#include "submesh.hpp"
 
 namespace eternal_lands
 {
@@ -21,22 +23,44 @@ namespace eternal_lands
 	{
 	}
 
+	Actor::Actor(const ObjectData &object_data,
+		const AbstractMeshSharedPtr &mesh,
+		const MaterialSharedPtrVector &materials,
+		CalCoreModel* core_model): Object(object_data, mesh,
+			materials, core_model)
+	{
+	}
+
 	Actor::~Actor() throw()
 	{
 	}
 
 	void Actor::add_mesh(const Uint32 id)
 	{
-		m_meshs.insert(id);
+		if (m_index_source.get() != 0)
+		{
+			m_meshs.insert(id);
 
-		get_mesh()->init_indices(m_meshs, m_index_source);
+			m_index_source->write_index_buffer(m_meshs,
+				get_mesh()->get_index_buffer());
+
+			get_mesh()->set_sub_meshs(
+				m_index_source->get_sub_meshs(m_meshs));
+		}
 	}
 
 	void Actor::remove_mesh(const Uint32 id)
 	{
-		m_meshs.erase(id);
+		if (m_index_source.get() != 0)
+		{
+			m_meshs.erase(id);
 
-		get_mesh()->init_indices(m_meshs, m_index_source);
+			m_index_source->write_index_buffer(m_meshs,
+				get_mesh()->get_index_buffer());
+
+			get_mesh()->set_sub_meshs(
+				m_index_source->get_sub_meshs(m_meshs));
+		}
 	}
 
 	void Actor::init_enhanced_actor(
@@ -44,6 +68,8 @@ namespace eternal_lands
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars)
 	{
+		assert(m_index_source.get() != 0);
+
 		m_actor_texture_builder =
 			boost::make_shared<ActorTextureBuilder>(codec_manager,
 				file_system, global_vars, get_name());

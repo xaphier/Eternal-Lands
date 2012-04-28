@@ -65,12 +65,14 @@ namespace eternal_lands
 				BitSet32 &used_attributes);
 
 		protected:
-			void copy_vertex_data(OpenGl2Mesh &mesh) const;
-			void copy_index_data(OpenGl2Mesh &mesh) const;
+			void clone_buffers(
+				const VertexStreamBitset shared_vertex_datas,
+				const bool shared_index_data,
+				OpenGl2Mesh &mesh) const;
 			void bind_vertex_buffers(BitSet32 &used_attributes);
 			void unbind_vertex_buffers();
-			void bind_index_buffers();
-			void unbind_index_buffers();
+			void bind_index_buffer();
+			void unbind_index_buffer();
 
 			inline bool get_has_index_data() const
 			{
@@ -82,12 +84,10 @@ namespace eternal_lands
 			virtual void set_vertex_buffer(
 				const AbstractReadMemorySharedPtr &buffer,
 				const Uint16 index);
-			virtual void update_vertex_buffer(
-				const AbstractReadMemorySharedPtr &buffer,
-				const Uint16 index);
 			virtual AbstractWriteMemorySharedPtr get_index_buffer();
-			virtual void init_vertices();
-			virtual void init_indices();
+			virtual void init_vertex_buffers(
+				const VertexStreamBitset vertex_buffers);
+			virtual void init_index_buffer();
 
 		public:
 			/**
@@ -110,9 +110,23 @@ namespace eternal_lands
 			 * Draws the mesh using the given draw data.
 			 */
 			virtual void draw(const MeshDrawData &draw_data,
-				const Uint32 instances);
-			virtual AbstractMeshSharedPtr clone_vertex_data() const;
-			virtual AbstractMeshSharedPtr clone_index_data() const;
+				const Uint32 instances,
+				const PrimitiveType primitive);
+			/**
+			 * Clones the data of the mesh. Used for animated
+			 * actors and terrain.
+			 * @param shared_vertex_datas If true for a stream,
+			 * the data is shared, else the data is cloned.
+			 * @param shared_index_data If true, the index data is
+			 * shared, else the data is cloned.
+			 * @return The new mesh.
+			 */
+			virtual AbstractMeshSharedPtr clone(
+				const VertexStreamBitset shared_vertex_datas,
+				const bool shared_index_data) const;
+			virtual void update_vertex_buffer(
+				const AbstractReadMemorySharedPtr &buffer,
+				 const Uint16 index);
 			virtual bool get_supports_base_vertex() const;
 			virtual bool get_supports_restart_index() const;
 

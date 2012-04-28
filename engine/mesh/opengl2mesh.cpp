@@ -109,7 +109,8 @@ namespace eternal_lands
 		}
 	}
 
-	void OpenGl2Mesh::init_vertices()
+	void OpenGl2Mesh::init_vertex_buffers(
+		const VertexStreamBitset vertex_buffers)
 	{
 		Uint32 i, size, count;
 
@@ -119,6 +120,11 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			if (!vertex_buffers[i])
+			{
+				continue;
+			}
+
 			if (get_vertex_elements(i).get_count() > 0)
 			{
 				m_vertex_data[i] =
@@ -140,7 +146,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void OpenGl2Mesh::init_indices()
+	void OpenGl2Mesh::init_index_buffer()
 	{
 		Uint32 size;
 
@@ -224,7 +230,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void OpenGl2Mesh::bind_index_buffers()
+	void OpenGl2Mesh::bind_index_buffer()
 	{
 		if (m_index_data.get() != 0)
 		{
@@ -232,7 +238,7 @@ namespace eternal_lands
 		}
 	}
 
-	void OpenGl2Mesh::unbind_index_buffers()
+	void OpenGl2Mesh::unbind_index_buffer()
 	{
 		HardwareBuffer::unbind(hbt_index);
 	}
@@ -240,24 +246,24 @@ namespace eternal_lands
 	void OpenGl2Mesh::bind(BitSet32 &used_attributes)
 	{
 		bind_vertex_buffers(used_attributes);
-		bind_index_buffers();
+		bind_index_buffer();
 	}
 
 	void OpenGl2Mesh::unbind()
 	{
 		unbind_vertex_buffers();
-		unbind_index_buffers();
+		unbind_index_buffer();
 	}
 
 	void OpenGl2Mesh::draw(const MeshDrawData &draw_data,
-		const Uint32 instances)
+		const Uint32 instances, const PrimitiveType primitive)
 	{
 		assert(instances == 1);
 		assert(draw_data.get_base_vertex() == 0);
 
 		if (get_has_index_data())
 		{
-			glDrawRangeElements(get_primitive_type(),
+			glDrawRangeElements(primitive,
 				draw_data.get_min_vertex(),
 				draw_data.get_max_vertex(),
 				draw_data.get_count(), get_index_type(),
@@ -266,24 +272,42 @@ namespace eternal_lands
 		}
 		else
 		{
-			glDrawArrays(get_primitive_type(),
-				draw_data.get_offset(), draw_data.get_count());
+			glDrawArrays(primitive, draw_data.get_offset(),
+				draw_data.get_count());
 		}
 	}
 
-	void OpenGl2Mesh::copy_vertex_data(OpenGl2Mesh &mesh) const
+	void OpenGl2Mesh::clone_buffers(const BitSet16 shared_vertex_datas,
+		const bool shared_index_data, OpenGl2Mesh &mesh) const
 	{
-		AbstractMesh::copy_vertex_data(mesh);
-		mesh.m_vertex_data = m_vertex_data;
+		Uint16 i;
+
+		for (i = 0; i < vertex_stream_count; ++i)
+		{
+			if (shared_vertex_datas[i])
+			{
+				mesh.m_vertex_data[i] = m_vertex_data[i];
+			}
+		}
+
+		if (shared_vertex_datas != get_used_vertex_buffers())
+		{
+			mesh.init_vertex_buffers(~shared_vertex_datas);
+		}
+
+		if (shared_index_data)
+		{
+			mesh.m_index_data = m_index_data;
+		}
+		else
+		{
+			mesh.init_index_buffer();
+		}
 	}
 
-	void OpenGl2Mesh::copy_index_data(OpenGl2Mesh &mesh) const
-	{
-		AbstractMesh::copy_index_data(mesh);
-		mesh.m_index_data = m_index_data;
-	}
-
-	AbstractMeshSharedPtr OpenGl2Mesh::clone_vertex_data() const
+	AbstractMeshSharedPtr OpenGl2Mesh::clone(
+		const VertexStreamBitset shared_vertex_datas,
+		const bool shared_index_data) const
 	{
 		boost::shared_ptr<OpenGl2Mesh> result;
 
@@ -293,24 +317,8 @@ namespace eternal_lands
 			get_static_indices(), get_static_vertices(),
 			get_use_simd());
 
-		copy_vertex_data(*result);
-
-		CHECK_GL_ERROR_NAME(get_name());
-
-		return result;
-	}
-
-	AbstractMeshSharedPtr OpenGl2Mesh::clone_index_data() const
-	{
-		boost::shared_ptr<OpenGl2Mesh> result;
-
-		CHECK_GL_ERROR();
-
-		result = boost::make_shared<OpenGl2Mesh>(get_name(),
-			get_static_indices(), get_static_vertices(),
-			get_use_simd());
-
-		copy_index_data(*result);
+		copy_data(*result);
+		clone_buffers(shared_vertex_datas, shared_index_data, *result);
 
 		CHECK_GL_ERROR_NAME(get_name());
 

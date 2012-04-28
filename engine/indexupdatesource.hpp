@@ -34,8 +34,6 @@ namespace eternal_lands
 		private:
 			ReadWriteMemory m_indices;
 			const SubMeshVector m_sub_meshs;
-			const Uint32 m_restart_index;
-			const PrimitiveType m_primitive_type;
 			const bool m_use_16_bit_indices;
 			const bool m_use_restart_index;
 
@@ -44,15 +42,11 @@ namespace eternal_lands
 			 * @brief Default constructor.
 			 * Default constructor initializes the index buffer.
 			 * @param index_blocks The blocks of indices.
-			 * @param restart_index The restart index.
-			 * @param primitive_type The primitive type.
 			 * @param use_16_bit_index Use 16 bit index.
 			 * @param use_restart_index Use restart index.
 			 */
 			IndexUpdateSource(const Uint32Vector &indices,
 				const SubMeshVector &sub_meshs,
-				const Uint32 restart_index,
-				const PrimitiveType primitive_type,
 				const bool use_16_bit_indices,
 				const bool use_restart_index);
 
@@ -65,10 +59,6 @@ namespace eternal_lands
 			 * @param index_blocks The blocks of indices.
 			 */
 			Uint32 get_count(const Uint32Set &blocks) const;
-
-			Uint32 get_restart_index() const;
-
-			PrimitiveType get_primitive_type() const;
 
 			bool get_use_16_bit_indices() const;
 

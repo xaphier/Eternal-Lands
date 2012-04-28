@@ -149,7 +149,7 @@ namespace eternal_lands
 			bool triangles;
 
 			triangles = instancing_data.get_mesh_data_tool(
-				)->get_primitive_type() != pt_triangles;
+				)->get_primitive() != pt_triangles;
 
 			if (triangles)
 			{
@@ -451,10 +451,9 @@ namespace eternal_lands
 		semantics.insert(vst_texture_coordinate_0);
 
 		mesh_data_tool = boost::make_shared<MeshDataTool>(
-			String(str.str()), vertex_count,
-			index_count, sub_mesh_count, semantics,
-			std::numeric_limits<Uint32>::max(), pt_triangles,
-			false, get_use_simd());
+			String(str.str()), vertex_count, index_count,
+			sub_mesh_count, semantics, pt_triangles, false,
+			get_use_simd());
 
 		base_vertex = 0;
 		index_offset = 0;

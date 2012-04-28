@@ -306,27 +306,26 @@ namespace eternal_lands
 		const Uint32 vertex_count, const Uint32 index_count,
 		const Uint32 sub_mesh_count,
 		const VertexSemanticTypeSet &semantics,
-		const Uint32 restart_index, const PrimitiveType primitive_type,
+		const PrimitiveType primitive,
 		const bool use_restart_index, const bool use_simd):
 		m_name(name), m_use_simd(use_simd)
 	{
 		assert(!get_name().get().empty());
 
-		if ((primitive_type != pt_triangles) &&
-			(primitive_type != pt_triangle_fan) &&
-			(primitive_type != pt_triangle_strip))
+		if ((primitive != pt_triangles) &&
+			(primitive != pt_triangle_fan) &&
+			(primitive != pt_triangle_strip))
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_message(UTF8("Only triangle "
 					"primitives supported"))
 				<< errinfo_string_value(
 					PrimitiveUtil::get_str(
-					primitive_type)));
+					primitive)));
 		}
 
 		m_vertex_count = vertex_count;
-		m_restart_index = restart_index;
-		m_primitive_type = primitive_type;
+		m_primitive = primitive;
 		m_use_restart_index = use_restart_index;
 
 		BOOST_FOREACH(const VertexSemanticType semantic, semantics)
@@ -421,7 +420,7 @@ namespace eternal_lands
 	{
 		Uint32 i, count;
 
-		if (get_primitive_type() == pt_triangles)
+		if (get_primitive() == pt_triangles)
 		{
 			count = get_sub_meshs().size();
 
@@ -439,7 +438,7 @@ namespace eternal_lands
 	void MeshDataTool::vertex_optimize()
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
-			get_primitive_type(), get_restart_index(),
+			get_primitive(), get_restart_index(),
 			get_use_restart_index());
 		VertexSemanticTypeAlignedVec4ArrayMap::iterator it, end;
 		AlignedVec4Array vertices;
@@ -501,7 +500,7 @@ namespace eternal_lands
 	void MeshDataTool::build_normal(const bool morph_target)
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
-			get_primitive_type(), get_restart_index(),
+			get_primitive(), get_restart_index(),
 			get_use_restart_index());
 		Vec3Array3 positions;
 		Vec3Vector normals;
@@ -576,7 +575,7 @@ namespace eternal_lands
 		const bool gram_schmidth_orthogonalize)
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
-			get_primitive_type(), get_restart_index(),
+			get_primitive(), get_restart_index(),
 			get_use_restart_index());
 		Vec3Array3 positions;
 		Vec2Array3 texture_coords;
@@ -685,7 +684,7 @@ namespace eternal_lands
 	void MeshDataTool::build_scale_morph(const float scale)
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
-			get_primitive_type(), get_restart_index(),
+			get_primitive(), get_restart_index(),
 			get_use_restart_index());
 		Vec3Array3 position;
 		Vec3Vector direction, positions;
@@ -787,7 +786,7 @@ namespace eternal_lands
 	void MeshDataTool::update_sub_meshs_bounding_box()
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
-			get_primitive_type(), get_restart_index(),
+			get_primitive(), get_restart_index(),
 			get_use_restart_index());
 		glm::vec3 min, max, position;
 		Uint32 i, j, index, count;
@@ -820,7 +819,7 @@ namespace eternal_lands
 	void MeshDataTool::update_sub_meshs_packed()
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
-			get_primitive_type(), get_restart_index(),
+			get_primitive(), get_restart_index(),
 			get_use_restart_index());
 		Uint32Set indices;
 		Uint32 i, j, count, min_vertex, max_vertex;
@@ -876,7 +875,7 @@ namespace eternal_lands
 		Uint32Vector indices;
 		Uint32 i, count, offset;
 
-		if (get_primitive_type() == pt_triangles)
+		if (get_primitive() == pt_triangles)
 		{
 			return;
 		}
@@ -896,14 +895,14 @@ namespace eternal_lands
 
 		std::swap(indices, m_indices);
 
-		m_primitive_type = pt_triangles;
+		m_primitive = pt_triangles;
 	}
 
 	void MeshDataTool::get_triangle_indices(const Uint32 sub_mesh_index,
 		Uint32Vector &indices, const bool use_base_vertex) const
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
-			get_primitive_type(), get_restart_index(),
+			get_primitive(), get_restart_index(),
 			get_use_restart_index());
 
 		triangles.start(sub_mesh_index, use_base_vertex);
@@ -938,7 +937,7 @@ namespace eternal_lands
 	void MeshDataTool::write_to_stream(OutStream &str)
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
-			get_primitive_type(), get_restart_index(),
+			get_primitive(), get_restart_index(),
 			get_use_restart_index());
 		Uint32 i, count;
 
@@ -968,7 +967,7 @@ namespace eternal_lands
 			write_vertex_semantic_to_stream(vst_morph_texture_coordinate_1, i, str);
 		}
 
-		str << "primitive: " << get_primitive_type() << std::endl;
+		str << "primitive: " << get_primitive() << std::endl;
 		str << "restart index: " << get_restart_index() << std::endl;
 		str << "use restart index: " << get_use_restart_index() << std::endl;
 
@@ -1040,7 +1039,7 @@ namespace eternal_lands
 		const AbstractWriteMemorySharedPtr &buffer) const
 	{
 		void* src;
-		Uint32 i;
+		Uint32 i, max;
 
 		src = buffer->get_ptr();
 
@@ -1055,12 +1054,14 @@ namespace eternal_lands
 				get_index_count()));
 		}
 
+		max = std::numeric_limits<Uint16>::max();
+
 		for (i = 0; i < get_index_count(); ++i)
 		{
 			if (use_16_bit_indices)
 			{
 				static_cast<Uint16*>(src)[i] =
-					get_index_data(i);
+					std::min(get_index_data(i), max);
 			}
 			else
 			{

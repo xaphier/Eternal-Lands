@@ -94,7 +94,7 @@ namespace eternal_lands
 		data.m_index_source = boost::make_shared<IndexUpdateSource>(
 			mesh_data_tool->get_indices(),
 			mesh_data_tool->get_sub_meshs(),
-			0, pt_triangles, use_16_bit_indices, false);
+			use_16_bit_indices, false);
 
 		material = FileSystem::get_file_name_without_extension(
 			skin_name);
@@ -121,6 +121,7 @@ namespace eternal_lands
 		MaterialDescription material_description;
 		ActorDataCacheMap::const_iterator found;
 		std::auto_ptr<Actor> result;
+		VertexStreamBitset all;
 		BlendType blend;
 
 		found = m_actor_data_cache.find(type_id);
@@ -160,16 +161,25 @@ namespace eternal_lands
 			blend = bt_disabled;
 		}
 
-		result.reset(new Actor(ObjectData(Transformation(),
-			name, 0.7f, id, selection, blend),
-			found->second.m_mesh->clone_vertex_data(), materials,
-			found->second.m_index_source,
-			found->second.m_core_model));
+		all.set();
 
 		if (enhanced_actor)
 		{
+			result.reset(new Actor(ObjectData(Transformation(),
+				name, 0.7f, id, selection, blend),
+				found->second.m_mesh->clone(all, false),
+				materials, found->second.m_index_source,
+				found->second.m_core_model));
+
 			result->init_enhanced_actor(get_codec_manager(),
 				get_file_system(), get_global_vars());
+		}
+		else
+		{
+			result.reset(new Actor(ObjectData(Transformation(),
+				name, 0.7f, id, selection, blend),
+				found->second.m_mesh, materials,
+				found->second.m_core_model));
 		}
 
 		return result;

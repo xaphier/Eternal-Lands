@@ -46,15 +46,26 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			virtual ~OpenGl32Mesh() throw();
-			virtual AbstractMeshSharedPtr clone_vertex_data() const;
-			virtual AbstractMeshSharedPtr clone_index_data() const;
+			/**
+			 * Clones the data of the mesh. Used for animated
+			 * actors and terrain.
+			 * @param shared_vertex_datas If true for a stream,
+			 * the data is shared, else the data is cloned.
+			 * @param shared_index_data If true, the index data is
+			 * shared, else the data is cloned.
+			 * @return The new mesh.
+			 */
+			virtual AbstractMeshSharedPtr clone(
+				const VertexStreamBitset shared_vertex_datas,
+				const bool shared_index_data) const;
 			virtual bool get_supports_base_vertex() const;
 
 			/**
 			 * Draws the mesh using the given draw data.
 			 */
 			virtual void draw(const MeshDrawData &draw_data,
-				const Uint32 instances);
+				const Uint32 instances,
+				const PrimitiveType primitive);
 
 	};
 

@@ -18,7 +18,6 @@ namespace eternal_lands
 			private:
 				Uint32Vector &m_indices;
 				Uint32 m_tile_size;
-				Uint32 m_restart_index;
 				bool m_use_restart_index;
 
 				Uint32 get_index(const Uint32 x, const Uint32 y,
@@ -194,7 +193,7 @@ namespace eternal_lands
 
 		Uint32 PlaneIndexBuilder::get_restart_index() const
 		{
-			return m_restart_index;
+			return std::numeric_limits<Uint32>::max();
 		}
 
 		Uint32 PlaneIndexBuilder::get_tile_size() const
@@ -281,22 +280,6 @@ namespace eternal_lands
 			m_indices(indices), m_tile_size(tile_size),
 			m_use_restart_index(use_restart_index)
 		{
-			Uint32 max_index;
-
-			max_index = get_tile_index_size();
-			max_index *= get_tile_index_size();
-			max_index -= 1;
-
-			if (max_index < std::numeric_limits<Uint16>::max())
-			{
-				m_restart_index =
-					std::numeric_limits<Uint16>::max();
-			}
-			else
-			{
-				m_restart_index =
-					std::numeric_limits<Uint32>::max();
-			}
 		}
 
 		PlaneIndexBuilder::~PlaneIndexBuilder() throw()
@@ -305,7 +288,7 @@ namespace eternal_lands
 
 	}
 
-	Uint32 IndexBuilder::build_plane_indices(Uint32Vector &indices,
+	void IndexBuilder::build_plane_indices(Uint32Vector &indices,
 		const Uint32 tile_size, const bool use_restart_index,
 		const Uint32 skip, const bool split)
 	{
@@ -329,11 +312,9 @@ namespace eternal_lands
 		}
 
 		plane_index_builder.build_indices(skip, splits_outside, split);
-
-		return plane_index_builder.get_restart_index();
 	}
 
-	Uint32 IndexBuilder::build_plane_indices(Uint32Vector &indices,
+	void IndexBuilder::build_plane_indices(Uint32Vector &indices,
 		const Uint32 tile_size, const bool use_restart_index,
 		const Uint32 skip, const Uint16Array4 &splits_outside,
 		const bool split_inside)
@@ -343,8 +324,6 @@ namespace eternal_lands
 
 		plane_index_builder.build_indices(skip, splits_outside,
 			split_inside);
-
-		return plane_index_builder.get_restart_index();
 	}
 
 }

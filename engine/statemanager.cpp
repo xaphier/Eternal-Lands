@@ -399,7 +399,7 @@ namespace eternal_lands
 	void StateManager::draw(const MeshDrawData &draw_data,
 		const Uint32 instances)
 	{
-		m_mesh->draw(draw_data, instances);
+		m_mesh->draw(draw_data, instances, m_mesh->get_primitive());
 #ifndef	NDEBUG
 		gl_error_check();
 #endif	/* NDEBUG */

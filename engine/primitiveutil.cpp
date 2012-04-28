@@ -107,15 +107,15 @@ namespace eternal_lands
 	PrimitiveType PrimitiveUtil::get_type(const String &str)
 	{
 		Uint32 i;
-		PrimitiveType primitive_type;
+		PrimitiveType primitive;
 
 		for (i = 0; i < primitive_datas_count; ++i)
 		{
-			primitive_type = static_cast<PrimitiveType>(i);
+			primitive = static_cast<PrimitiveType>(i);
 
-			if (str == get_str(primitive_type))
+			if (str == get_str(primitive))
 			{
-				return primitive_type;
+				return primitive;
 			}
 		}
 

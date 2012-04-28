@@ -52,12 +52,12 @@ namespace eternal_lands
 	class IndexBuilder
 	{
 		public:
-			static Uint32 build_plane_indices(
+			static void build_plane_indices(
 				Uint32Vector &indices, const Uint32 tile_size,
 				const bool use_restart_index,
 				const Uint32 skip, const bool split);
 
-			static Uint32 build_plane_indices(
+			static void build_plane_indices(
 				Uint32Vector &indices, const Uint32 tile_size,
 				const bool use_restart_index,
 				const Uint32 skip,

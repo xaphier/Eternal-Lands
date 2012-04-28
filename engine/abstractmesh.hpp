@@ -36,8 +36,7 @@ namespace eternal_lands
 			const String m_name;
 			Uint32 m_vertex_count;
 			Uint32 m_index_count;
-			Uint32 m_restart_index;
-			PrimitiveType m_primitive_type;
+			PrimitiveType m_primitive;
 			bool m_use_16_bit_indices;
 			bool m_use_restart_index;
 			bool m_static_indices;
@@ -53,31 +52,10 @@ namespace eternal_lands
 				const bool static_vertices,
 				const bool use_simd);
 
-			void copy_vertex_data(AbstractMesh &mesh) const;
-			void copy_index_data(AbstractMesh &mesh) const;
-
-			virtual void init_vertices() = 0;
-			virtual void init_indices() = 0;
-
-			virtual AbstractWriteMemorySharedPtr
-				get_vertex_buffer(const Uint16 index) = 0;
-
-			virtual void set_vertex_buffer(
-				const AbstractReadMemorySharedPtr &buffer,
-				const Uint16 index) = 0;
-
-			virtual void update_vertex_buffer(
-				const AbstractReadMemorySharedPtr &buffer,
-				const Uint16 index) = 0;
-
-			virtual AbstractWriteMemorySharedPtr get_index_buffer()
-				= 0;
-
-			inline const VertexFormatSharedPtr &get_vertex_format()
-				const
-			{
-				return m_vertex_format;
-			}
+			void copy_data(AbstractMesh &mesh) const;
+			virtual void init_vertex_buffers(
+				const VertexStreamBitset vertex_buffers) = 0;
+			virtual void init_index_buffer() = 0;
 
 			inline GLenum get_index_type() const
 			{
@@ -124,24 +102,32 @@ namespace eternal_lands
 			 * Draws the mesh using the given draw data.
 			 */
 			virtual void draw(const MeshDrawData &draw_data,
-				const Uint32 instances) = 0;
+				const Uint32 instances,
+				const PrimitiveType primitive) = 0;
 
 			/**
-			 * Clones the vertex data of the mesh. Used for
-			 * animated actors.
+			 * Clones the data of the mesh. Used for animated
+			 * actors and terrain.
+			 * @param shared_vertex_datas If true for a stream,
+			 * the data is shared, else the data is cloned.
+			 * @param shared_index_data If true, the index data is
+			 * shared, else the data is cloned.
+			 * @return The new mesh.
 			 */
-			virtual AbstractMeshSharedPtr clone_vertex_data() const
-				= 0;
+			virtual AbstractMeshSharedPtr clone(
+				const VertexStreamBitset shared_vertex_datas,
+				const bool shared_index_data) const = 0;
 
 			/**
-			 * Clones the index data of the mesh. Used for fonts
-			 * and particles.
+			 * Returns true if the mesh supports restart index
+			 * (e.g. OpenGL 3.1)
 			 */
-			virtual AbstractMeshSharedPtr clone_index_data() const
-				= 0;
-
 			virtual bool get_supports_restart_index() const = 0;
 
+			/**
+			 * Returns true if the mesh supports base vertex
+			 * (e.g. OpenGL 3.2)
+			 */
 			virtual bool get_supports_base_vertex() const = 0;
 
 			/**
@@ -154,46 +140,52 @@ namespace eternal_lands
 				const bool static_indices = true,
 				const bool static_vertices = true);
 
-			void init(const bool use_16_bit_indices,
-				const VertexFormatSharedPtr &vertex_format,
-				const MeshDataToolSharedPtr &source,
+			void init(const VertexFormatSharedPtr &vertex_format,
+				const Uint32 vertex_count,
+				const Uint32 index_count,
+				const bool use_16_bit_indices,
 				const bool static_indices = true,
 				const bool static_vertices = true);
 
-			void init_vertex(
-				const VertexFormatSharedPtr &vertex_format,
-				const MeshDataToolSharedPtr &source,
-				const bool static_vertices = true);
-			void init_vertex(const VertexBuffersSharedPtr &buffers,
-				const bool static_vertices = true);
-			void init_vertex(
-				const VertexFormatSharedPtr &vertex_format,
-				const Uint32 vertex_count,
-				const bool static_vertices = true);
-			void update_vertex(
-				const VertexBuffersSharedPtr &buffers);
+			void update_vertex_buffer(
+				const AbstractReadMemorySharedPtr &buffer,
+				const Uint16 index);
 
-			void init_indices(const Uint32Set &blocks,
-				const IndexUpdateSourceSharedPtr &update,
-				const bool static_indices = true);
+			void update_index_buffer(
+				const AbstractReadMemorySharedPtr &buffer);
 
-			void init_indices(const bool use_16_bit_indices,
-				const PrimitiveType primitive_type,
-				const SubMeshVector &sub_meshs,
-				const Uint32Vector &indices,
-				const bool static_indices = true);
+			virtual AbstractWriteMemorySharedPtr
+				get_vertex_buffer(const Uint16 index) = 0;
+
+			virtual AbstractWriteMemorySharedPtr get_index_buffer()
+				= 0;
 
 			void get_bounding_box(
 				const Transformation &transformation,
 				BoundingBox &bounding_box);
 
-			VertexBuffersSharedPtr get_vertex_buffers(
-				const Uint32 vertex_count) const;
+			inline const VertexFormatSharedPtr &get_vertex_format()
+				const
+			{
+				return m_vertex_format;
+			}
+
+			VertexStreamBitset get_used_vertex_buffers() const;
 
 			/**
 			 */
 			const VertexElements &get_vertex_elements(
 				const Uint16 index) const;
+
+			void set_sub_meshs(const SubMeshVector &sub_meshs);
+
+			/**
+			 * Sets if the restart index is used.
+			 * @param use_restart_index True if the restart index
+			 * is used
+			 */
+			void set_use_restart_index(
+				const bool use_restart_index);
 
 			/**
 			 * Returns the sub meshs.
@@ -223,11 +215,19 @@ namespace eternal_lands
 			}
 
 			/**
+			 * Sets the OpenGL primitive type (points, lines, ..)
+			 */
+			inline void set_primitive(const PrimitiveType primitive)
+			{
+				m_primitive = primitive;
+			}
+
+			/**
 			 * Returns the OpenGL primitive type (points, lines, ..)
 			 */
-			inline PrimitiveType get_primitive_type() const
+			inline PrimitiveType get_primitive() const
 			{
-				return m_primitive_type;
+				return m_primitive;
 			}
 
 			/**
@@ -244,7 +244,17 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_restart_index() const
 			{
-				return m_restart_index;
+				if (get_use_16_bit_indices() &&
+					get_use_restart_index())
+				{
+					return std::numeric_limits<
+						Uint16>::max();
+				}
+				else
+				{
+					return std::numeric_limits<
+						Uint32>::max();
+				}
 			}
 
 			/**

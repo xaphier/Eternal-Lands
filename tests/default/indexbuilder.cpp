@@ -33,12 +33,13 @@ BOOST_AUTO_TEST_CASE(index_builder_no_restart_split)
 		vertex_count = tile_size + 1;
 		vertex_count *= tile_size + 1;
 
-		BOOST_CHECK_LT(vertex_count, 65536);
+		BOOST_CHECK_LE(vertex_count,
+			std::numeric_limits<Uint16>::max());
 		BOOST_CHECK_EQUAL(vertex_count % 2, 1);
 
 		max_vertex = vertex_count - 1;
 
-		BOOST_CHECK_LT(max_vertex, 65536);
+		BOOST_CHECK_LT(max_vertex, std::numeric_limits<Uint16>::max());
 
 		index_count = tile_size * tile_size * 24 / 4;
 
@@ -78,12 +79,13 @@ BOOST_AUTO_TEST_CASE(index_builder_no_restart_no_split)
 		vertex_count = tile_size + 1;
 		vertex_count *= tile_size + 1;
 
-		BOOST_CHECK_LT(vertex_count, 65536);
+		BOOST_CHECK_LE(vertex_count,
+			std::numeric_limits<Uint16>::max());
 		BOOST_CHECK_EQUAL(vertex_count % 2, 1);
 
 		max_vertex = vertex_count * 2 - 1;
 
-		BOOST_CHECK_LT(max_vertex, 65536);
+		BOOST_CHECK_LT(max_vertex, std::numeric_limits<Uint16>::max());
 
 		vertex_count = vertex_count / 2 + 1;
 
@@ -107,8 +109,7 @@ BOOST_AUTO_TEST_CASE(index_builder_no_restart_no_split)
 BOOST_AUTO_TEST_CASE(index_builder_restart_split)
 {
 	el::Uint32Vector indices;
-	el::Uint32 vertex_count, index_count, tile_size;
-	el::Uint32 restart_index, max_vertex, i;
+	el::Uint32 vertex_count, index_count, tile_size, max_vertex, i;
 	std::bitset<65536> vertices;
 	bool use_restart_index, split;
 
@@ -126,23 +127,22 @@ BOOST_AUTO_TEST_CASE(index_builder_restart_split)
 		vertex_count = tile_size + 1;
 		vertex_count *= tile_size + 1;
 
-		BOOST_CHECK_LT(vertex_count, 65536);
+		BOOST_CHECK_LE(vertex_count,
+			std::numeric_limits<Uint16>::max());
 		BOOST_CHECK_EQUAL(vertex_count % 2, 1);
 
 		max_vertex = vertex_count - 1;
 
-		BOOST_CHECK_LT(max_vertex, 65536);
+		BOOST_CHECK_LE(max_vertex, std::numeric_limits<Uint16>::max());
 
 		index_count = tile_size * tile_size * 11 / 4;
 
-		restart_index = el::IndexBuilder::build_plane_indices(
+		el::IndexBuilder::build_plane_indices(
 			indices, tile_size, use_restart_index, 0, split);
-
-		BOOST_CHECK_EQUAL(restart_index, 65535);
 
 		BOOST_FOREACH(const el::Uint32 index, indices)
 		{
-			if (index == restart_index)
+			if (index == std::numeric_limits<Uint32>::max())
 			{
 				continue;
 			}
@@ -160,8 +160,7 @@ BOOST_AUTO_TEST_CASE(index_builder_restart_split)
 BOOST_AUTO_TEST_CASE(index_builder_restart_no_split)
 {
 	el::Uint32Vector indices;
-	el::Uint32 vertex_count, index_count, tile_size;
-	el::Uint32 restart_index, max_vertex, i;
+	el::Uint32 vertex_count, index_count, tile_size, max_vertex, i;
 	std::bitset<65536> vertices;
 	bool use_restart_index, split;
 
@@ -179,25 +178,24 @@ BOOST_AUTO_TEST_CASE(index_builder_restart_no_split)
 		vertex_count = tile_size + 1;
 		vertex_count *= tile_size + 1;
 
-		BOOST_CHECK_LT(vertex_count, 65536);
+		BOOST_CHECK_LE(vertex_count,
+			std::numeric_limits<Uint16>::max());
 		BOOST_CHECK_EQUAL(vertex_count % 2, 1);
 
 		max_vertex = vertex_count - 1;
 
-		BOOST_CHECK_LT(max_vertex, 65536);
+		BOOST_CHECK_LT(max_vertex, std::numeric_limits<Uint16>::max());
 
 		vertex_count = vertex_count / 2 + 1;
 
 		index_count = tile_size * tile_size * 7 / 4;
 
-		restart_index = el::IndexBuilder::build_plane_indices(
-			indices, tile_size, use_restart_index, 0, split);
-
-		BOOST_CHECK_EQUAL(restart_index, 65535);
+		el::IndexBuilder::build_plane_indices(indices, tile_size,
+			use_restart_index, 0, split);
 
 		BOOST_FOREACH(const el::Uint32 index, indices)
 		{
-			if (index == restart_index)
+			if (index == std::numeric_limits<Uint32>::max())
 			{
 				continue;
 			}

@@ -12,11 +12,9 @@ namespace eternal_lands
 {
 
 	IndexUpdateSource::IndexUpdateSource(const Uint32Vector &indices,
-		const SubMeshVector &sub_meshs, const Uint32 restart_index,
-		const PrimitiveType primitive_type,
+		const SubMeshVector &sub_meshs,
 		const bool use_16_bit_indices, const bool use_restart_index):
-		m_sub_meshs(sub_meshs), m_restart_index(restart_index),
-		m_primitive_type(primitive_type),
+		m_sub_meshs(sub_meshs),
 		m_use_16_bit_indices(use_16_bit_indices),
 		m_use_restart_index(use_restart_index)
 	{
@@ -68,16 +66,6 @@ namespace eternal_lands
 		}
 
 		return result;
-	}
-
-	Uint32 IndexUpdateSource::get_restart_index() const
-	{
-		return m_restart_index;
-	}
-
-	PrimitiveType IndexUpdateSource::get_primitive_type() const
-	{
-		return m_primitive_type;
 	}
 
 	bool IndexUpdateSource::get_use_16_bit_indices() const
