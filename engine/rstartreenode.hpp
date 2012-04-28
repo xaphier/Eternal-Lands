@@ -485,7 +485,8 @@ namespace eternal_lands
 			/**
 			 * Check node and all sub nodes, returns true if all ok.
 			 */
-			bool check_nodes() const;
+			bool check_nodes(const Uint16 level,
+				const bool root_node) const;
 
 			/**
 			 * @brief Deletes an element.

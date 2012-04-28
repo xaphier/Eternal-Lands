@@ -410,6 +410,7 @@ namespace eternal_lands
 	VECTOR(SubObjectPtr);
 	VECTOR(TextureSharedPtr);
 	VECTOR(VertexElement);
+	VECTOR(VertexElements);
 
 	ARRAY(TextureSharedPtr, 2);
 	ARRAY(TextureSharedPtr, 3);

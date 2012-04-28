@@ -12,10 +12,12 @@
 #define BOOST_TEST_MODULE rstartree
 #include <boost/test/unit_test.hpp>
 
-namespace eternal_lands
+namespace el = eternal_lands;
+
+namespace
 {
 
-	class SimpleBoundedObject: public BoundedObject
+	class SimpleBoundedObject: public el::BoundedObject
 	{
 		public:
 			SimpleBoundedObject(const glm::vec3 &min,
@@ -27,7 +29,7 @@ namespace eternal_lands
 	SimpleBoundedObject::SimpleBoundedObject(const glm::vec3 &min,
 		const glm::vec3 &max)
 	{
-		set_bounding_box(BoundingBox(min, max));
+		set_bounding_box(el::BoundingBox(min, max));
 	}
 
 	SimpleBoundedObject::~SimpleBoundedObject() throw()
@@ -37,17 +39,18 @@ namespace eternal_lands
 	typedef boost::shared_ptr<SimpleBoundedObject>
 		SimpleBoundedObjectSharedPtr;
 
-	class ContainsNodeVisitor: public AbstractNodeVisitor
+	class ContainsNodeVisitor: public el::AbstractNodeVisitor
 	{
 		private:
-			BoundingBox m_bounding_box;
+			el::BoundingBox m_bounding_box;
 
 		public:
 			ContainsNodeVisitor();
 			virtual ~ContainsNodeVisitor() throw();
 			virtual bool operator()(
-				const BoundedObjectSharedPtr &node);
-			void set_bounding_box(const BoundingBox &bounding_box);
+				const el::BoundedObjectSharedPtr &node);
+			void set_bounding_box(
+				const el::BoundingBox &bounding_box);
 
 	};
 
@@ -59,21 +62,22 @@ namespace eternal_lands
 	{
 	}
 
-	bool ContainsNodeVisitor::operator()(const BoundedObjectSharedPtr &node)
+	bool ContainsNodeVisitor::operator()(
+		const el::BoundedObjectSharedPtr &node)
 	{
 		return m_bounding_box.contains(node->get_bounding_box());
 	}
 
 	void ContainsNodeVisitor::set_bounding_box(
-		const BoundingBox &bounding_box)
+		const el::BoundingBox &bounding_box)
 	{
 		m_bounding_box = bounding_box;
 	}
 
-	class CountBoundedBoxNodeVisitor: public AbstractNodeVisitor
+	class CountBoundedBoxNodeVisitor: public el::AbstractNodeVisitor
 	{
 		private:
-			BoundingBox m_bounding_box;
+			el::BoundingBox m_bounding_box;
 			Uint32 m_count;
 			Uint32 m_index;
 
@@ -81,10 +85,10 @@ namespace eternal_lands
 			CountBoundedBoxNodeVisitor();
 			virtual ~CountBoundedBoxNodeVisitor() throw();
 			virtual bool operator()(
-				const BoundedObjectSharedPtr &node);
+				const el::BoundedObjectSharedPtr &node);
 			void set_count(const Uint32 count);
 			void reset_index();
-			const BoundingBox &get_bounding_box() const;
+			const el::BoundingBox &get_bounding_box() const;
 
 	};
 
@@ -97,7 +101,7 @@ namespace eternal_lands
 	}
 
 	bool CountBoundedBoxNodeVisitor::operator()(
-		const BoundedObjectSharedPtr &node)
+		const el::BoundedObjectSharedPtr &node)
 	{
 		if (m_count == m_index)
 		{
@@ -121,14 +125,72 @@ namespace eternal_lands
 		m_index = 0;
 	}
 
-	const BoundingBox &CountBoundedBoxNodeVisitor::get_bounding_box() const
+	const el::BoundingBox &CountBoundedBoxNodeVisitor::get_bounding_box()
+		const
 	{
 		return m_bounding_box;
 	}
 
+	typedef	std::vector<SimpleBoundedObjectSharedPtr>
+		SimpleBoundedObjectSharedPtrVector;
+
+	class BoundingBoxBuilder
+	{
+		private:
+			SimpleBoundedObjectSharedPtrVector m_boxes;
+
+		public:
+			BoundingBoxBuilder();
+
+			inline const SimpleBoundedObjectSharedPtrVector
+				&get_boxes() const
+			{
+				return m_boxes;
+			}
+
+			inline const SimpleBoundedObjectSharedPtr
+				&get_box(const Uint32 index) const
+			{
+				return m_boxes[index];
+			}
+
+			static inline Uint32 get_count()
+			{
+				return 16384;
+			}
+
+	};
+
+	BoundingBoxBuilder::BoundingBoxBuilder()
+	{
+		boost::mt19937 rng;
+		boost::uniform_int<Sint32> range(-16777216, 16777216);
+		boost::variate_generator<boost::mt19937&,
+			boost::uniform_int<Sint32> > random_int(rng, range);
+		SimpleBoundedObjectSharedPtr box;
+		glm::vec3 min, max;
+		Uint32 i;
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			min.x = random_int() * 0.01f;
+			min.y = random_int() * 0.01f;
+			min.z = random_int() * 0.01f;
+
+			max = min;
+			max.x += std::abs(random_int() * 0.01f) + 1e-7f;
+			max.y += std::abs(random_int() * 0.01f) + 1e-7f;
+			max.z += std::abs(random_int() * 0.01f) + 1e-7f;
+
+			box = boost::make_shared<SimpleBoundedObject>(min, max);
+			m_boxes.push_back(box);
+			box.reset();
+		}
+	}
+
 }
 
-namespace el = eternal_lands;
+BOOST_FIXTURE_TEST_SUITE(random_boxes, BoundingBoxBuilder)
 
 BOOST_AUTO_TEST_CASE(default_creation)
 {
@@ -139,304 +201,227 @@ BOOST_AUTO_TEST_CASE(default_creation)
 
 BOOST_AUTO_TEST_CASE(add_objects)
 {
-	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	el::SimpleBoundedObjectSharedPtr box;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	glm::vec3 min, max;
 	Uint32 i;
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(add_remove_objects)
 {
-	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	el::SimpleBoundedObjectSharedPtr box;
-	glm::vec3 min, max;
 	Uint32 i;
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
-		BOOST_CHECK_NO_THROW(tree->remove(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->remove(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
 		BOOST_CHECK(tree->check_tree());
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(random_add_remove_objects)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
-	boost::uniform_int<Uint16> index_range(0, 16383);
+	boost::uniform_int<Uint16> index_range(0, get_count() - 1);
 	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint16> >
 		random_index(rng, index_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	el::SimpleBoundedObjectSharedPtr box;
-	glm::vec3 min, max;
-	Uint32 i, idx0, idx1;
+	el::Uint32Vector index;
+	Uint32 i, idx0, idx1, idx;
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	index.reserve(get_count());
+
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
+
+		index.push_back(i);
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
 		idx0 = random_index();
 		idx1 = random_index();
 
-		BOOST_CHECK_EQUAL(boxes[idx0].use_count(), 2);
-		BOOST_CHECK_EQUAL(boxes[idx1].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(idx0).use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(idx1).use_count(), 2);
 
-		boost::swap(boxes[idx0], boxes[idx1]);
+		boost::swap(index[idx0], index[idx1]);
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
-		BOOST_CHECK_NO_THROW(tree->remove(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+		idx = index[i];
+
+		BOOST_CHECK_EQUAL(get_box(idx).use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->remove(get_box(idx)));
+		BOOST_CHECK_EQUAL(get_box(idx).use_count(), 1);
 		BOOST_CHECK(tree->check_tree());
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(bounding_box)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
-	boost::uniform_int<Uint16> index_range(0, 16383);
+	boost::uniform_int<Uint16> index_range(0, get_count() - 1);
 	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint16> >
 		random_index(rng, index_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	el::SimpleBoundedObjectSharedPtr box;
-	glm::vec3 min, max;
-	Uint32 i, idx0, idx1;
+	el::Uint32Vector index;
+	Uint32 i, idx0, idx1, idx;
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	index.reserve(get_count());
+
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 		BOOST_CHECK(tree->get_bounding_box().contains(
-			boxes[i]->get_bounding_box()));
+			get_box(i)->get_bounding_box()));
+
+		index.push_back(i);
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
 		idx0 = random_index();
 		idx1 = random_index();
 
-		BOOST_CHECK_EQUAL(boxes[idx0].use_count(), 2);
-		BOOST_CHECK_EQUAL(boxes[idx1].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(idx0).use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(idx1).use_count(), 2);
 
-		boost::swap(boxes[idx0], boxes[idx1]);
+		boost::swap(index[idx0], index[idx1]);
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
+		idx = index[i];
+
 		BOOST_CHECK(tree->get_bounding_box().contains(
-			boxes[i]->get_bounding_box()));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
-		BOOST_CHECK_NO_THROW(tree->remove(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+			get_box(idx)->get_bounding_box()));
+		BOOST_CHECK_EQUAL(get_box(idx).use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->remove(get_box(idx)));
+		BOOST_CHECK_EQUAL(get_box(idx).use_count(), 1);
 		BOOST_CHECK(tree->check_tree());
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(random_add_remove_optimize_objects)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
-	boost::uniform_int<Uint16> index_range(0, 16383);
+	boost::uniform_int<Uint16> index_range(0, get_count() - 1);
 	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint16> >
 		random_index(rng, index_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	el::SimpleBoundedObjectSharedPtr box;
-	glm::vec3 min, max;
-	Uint32 i, idx0, idx1;
+	el::Uint32Vector index;
+	Uint32 i, idx0, idx1, idx;
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	index.reserve(get_count());
+
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
+		BOOST_CHECK(tree->get_bounding_box().contains(
+			get_box(i)->get_bounding_box()));
+
+		index.push_back(i);
 	}
 
 	BOOST_CHECK_NO_THROW(tree->optimize(1024));
 
 	BOOST_CHECK(tree->check_tree());
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
 		idx0 = random_index();
 		idx1 = random_index();
 
-		BOOST_CHECK_EQUAL(boxes[idx0].use_count(), 2);
-		BOOST_CHECK_EQUAL(boxes[idx1].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(idx0).use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(idx1).use_count(), 2);
 
-		boost::swap(boxes[idx0], boxes[idx1]);
+		boost::swap(index[idx0], index[idx1]);
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
-		BOOST_CHECK_NO_THROW(tree->remove(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+		idx = index[i];
+
+		BOOST_CHECK(tree->get_bounding_box().contains(
+			get_box(idx)->get_bounding_box()));
+		BOOST_CHECK_EQUAL(get_box(idx).use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->remove(get_box(idx)));
+		BOOST_CHECK_EQUAL(get_box(idx).use_count(), 1);
 		BOOST_CHECK(tree->check_tree());
 	}
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(add_select_all_objects)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
 	boost::uniform_real<float> float_range(0.0f, 1.0f);
 	boost::variate_generator<boost::mt19937&, boost::uniform_real<float> >
 		random_float(rng, float_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	el::SimpleBoundedObjectSharedPtr box;
 	el::BoundingBox bounding_box;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	boost::scoped_ptr<el::ContainsNodeVisitor> visitor;
+	boost::scoped_ptr<ContainsNodeVisitor> visitor;
 	el::BoundedObjectSharedPtrVector objects;
 	glm::vec3 min, max;
 	glm::vec3 size, offset, center, half_size;
@@ -444,37 +429,24 @@ BOOST_AUTO_TEST_CASE(add_select_all_objects)
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 	}
 
 	min = tree->get_bounding_box().get_min();
 	max = tree->get_bounding_box().get_max();
 
-	BOOST_CHECK_NO_THROW(visitor.reset(new el::ContainsNodeVisitor()));
+	BOOST_CHECK_NO_THROW(visitor.reset(new ContainsNodeVisitor()));
 
 	bounding_box = el::BoundingBox(min, max);
 
 	BOOST_CHECK_NO_THROW(visitor->set_bounding_box(bounding_box));
 	BOOST_CHECK_NO_THROW(tree->select_objects(*visitor, objects));
 	BOOST_CHECK(tree->check_tree());
-	BOOST_CHECK_EQUAL(objects.size(), boxes.size());
+	BOOST_CHECK_EQUAL(objects.size(), get_boxes().size());
 
 	count = objects.size();
 
@@ -487,28 +459,21 @@ BOOST_AUTO_TEST_CASE(add_select_all_objects)
 
 	objects.clear();
 
-	count = boxes.size();
-
-	for (i = 0; i < count; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(add_random_select_objects)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
 	boost::uniform_real<float> float_range(0.0f, 1.0f);
 	boost::variate_generator<boost::mt19937&, boost::uniform_real<float> >
 		random_float(rng, float_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	el::SimpleBoundedObjectSharedPtr box;
 	el::BoundingBox bounding_box;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	boost::scoped_ptr<el::ContainsNodeVisitor> visitor;
+	boost::scoped_ptr<ContainsNodeVisitor> visitor;
 	el::BoundedObjectSharedPtrVector objects;
 	glm::vec3 min, max;
 	glm::vec3 size, offset, center, half_size;
@@ -516,30 +481,17 @@ BOOST_AUTO_TEST_CASE(add_random_select_objects)
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 	}
 
 	min = tree->get_bounding_box().get_min();
 	max = tree->get_bounding_box().get_max();
 
-	BOOST_CHECK_NO_THROW(visitor.reset(new el::ContainsNodeVisitor()));
+	BOOST_CHECK_NO_THROW(visitor.reset(new ContainsNodeVisitor()));
 
 	size = max - min;
 
@@ -574,59 +526,36 @@ BOOST_AUTO_TEST_CASE(add_random_select_objects)
 
 		objects.clear();
 
-		count = boxes.size();
-
-		for (j = 0; j < count; ++j)
+		for (j = 0; j < get_count(); ++j)
 		{
-			BOOST_CHECK_EQUAL(boxes[j].use_count(), 2);
+			BOOST_CHECK_EQUAL(get_box(j).use_count(), 2);
 		}
-
-		BOOST_CHECK(tree->check_tree());
 	}
 }
 
 BOOST_AUTO_TEST_CASE(add_random_select_count_objects)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
 	boost::uniform_real<float> float_range(0.0f, 1.0f);
 	boost::variate_generator<boost::mt19937&, boost::uniform_real<float> >
 		random_float(rng, float_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	el::SimpleBoundedObjectSharedPtr box;
 	el::BoundingBox bounding_box;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	boost::scoped_ptr<el::CountBoundedBoxNodeVisitor> visitor;
+	boost::scoped_ptr<CountBoundedBoxNodeVisitor> visitor;
 	el::BoundedObjectSharedPtrVector objects;
 	glm::vec3 min, max;
 	Uint32 i, j, count;
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 	}
 
-	BOOST_CHECK_NO_THROW(visitor.reset(
-		new el::CountBoundedBoxNodeVisitor()));
+	BOOST_CHECK_NO_THROW(visitor.reset(new CountBoundedBoxNodeVisitor()));
 
 	for (i = 0; i < 256; ++i)
 	{
@@ -650,31 +579,22 @@ BOOST_AUTO_TEST_CASE(add_random_select_count_objects)
 
 		objects.clear();
 
-		count = boxes.size();
-
-		for (j = 0; j < count; ++j)
+		for (j = 0; j < get_count(); ++j)
 		{
-			BOOST_CHECK_EQUAL(boxes[j].use_count(), 2);
+			BOOST_CHECK_EQUAL(get_box(j).use_count(), 2);
 		}
-
-		BOOST_CHECK(tree->check_tree());
 	}
 }
 
 BOOST_AUTO_TEST_CASE(add_select_and_remove_all_objects)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
 	boost::uniform_real<float> float_range(0.0f, 1.0f);
 	boost::variate_generator<boost::mt19937&, boost::uniform_real<float> >
 		random_float(rng, float_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	el::SimpleBoundedObjectSharedPtr box;
 	el::BoundingBox bounding_box;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	boost::scoped_ptr<el::ContainsNodeVisitor> visitor;
+	boost::scoped_ptr<ContainsNodeVisitor> visitor;
 	el::BoundedObjectSharedPtrVector objects;
 	glm::vec3 min, max;
 	glm::vec3 size, offset, center, half_size;
@@ -682,30 +602,17 @@ BOOST_AUTO_TEST_CASE(add_select_and_remove_all_objects)
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 	}
 
 	min = tree->get_bounding_box().get_min();
 	max = tree->get_bounding_box().get_max();
 
-	BOOST_CHECK_NO_THROW(visitor.reset(new el::ContainsNodeVisitor()));
+	BOOST_CHECK_NO_THROW(visitor.reset(new ContainsNodeVisitor()));
 
 	bounding_box = el::BoundingBox(min, max);
 
@@ -713,7 +620,7 @@ BOOST_AUTO_TEST_CASE(add_select_and_remove_all_objects)
 	BOOST_CHECK_NO_THROW(tree->select_and_remove_objects(*visitor,
 		objects));
 	BOOST_CHECK(tree->check_tree());
-	BOOST_CHECK_EQUAL(objects.size(), boxes.size());
+	BOOST_CHECK_EQUAL(objects.size(), get_boxes().size());
 
 	count = objects.size();
 
@@ -726,30 +633,21 @@ BOOST_AUTO_TEST_CASE(add_select_and_remove_all_objects)
 
 	objects.clear();
 
-	count = boxes.size();
-
-	for (i = 0; i < count; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 1);
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 1);
 	}
-
-	BOOST_CHECK(tree->check_tree());
 }
 
 BOOST_AUTO_TEST_CASE(add_random_select_and_remove_objects)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
 	boost::uniform_real<float> float_range(0.0f, 1.0f);
 	boost::variate_generator<boost::mt19937&, boost::uniform_real<float> >
 		random_float(rng, float_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	el::SimpleBoundedObjectSharedPtr box;
 	el::BoundingBox bounding_box;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	boost::scoped_ptr<el::ContainsNodeVisitor> visitor;
+	boost::scoped_ptr<ContainsNodeVisitor> visitor;
 	el::BoundedObjectSharedPtrVector objects;
 	glm::vec3 min, max;
 	glm::vec3 size, offset, center, half_size;
@@ -757,30 +655,17 @@ BOOST_AUTO_TEST_CASE(add_random_select_and_remove_objects)
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 	}
 
 	min = tree->get_bounding_box().get_min();
 	max = tree->get_bounding_box().get_max();
 
-	BOOST_CHECK_NO_THROW(visitor.reset(new el::ContainsNodeVisitor()));
+	BOOST_CHECK_NO_THROW(visitor.reset(new ContainsNodeVisitor()));
 
 	size = max - min;
 
@@ -816,59 +701,36 @@ BOOST_AUTO_TEST_CASE(add_random_select_and_remove_objects)
 
 		objects.clear();
 
-		count = boxes.size();
-
-		for (j = 0; j < count; ++j)
+		for (j = 0; j < get_count(); ++j)
 		{
-			BOOST_CHECK_LE(boxes[j].use_count(), 2);
+			BOOST_CHECK_LE(get_box(j).use_count(), 2);
 		}
-
-		BOOST_CHECK(tree->check_tree());
 	}
 }
 
 BOOST_AUTO_TEST_CASE(add_random_select_and_remove_count_objects)
 {
 	boost::mt19937 rng;
-	boost::uniform_int<Sint32> range(-16777216, 16777216);
-	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
-		random_int(rng, range);
 	boost::uniform_real<float> float_range(0.0f, 1.0f);
 	boost::variate_generator<boost::mt19937&, boost::uniform_real<float> >
 		random_float(rng, float_range);
 	boost::scoped_ptr<el::RStarTree> tree;
-	el::SimpleBoundedObjectSharedPtr box;
 	el::BoundingBox bounding_box;
-	std::vector<el::SimpleBoundedObjectSharedPtr> boxes;
-	boost::scoped_ptr<el::CountBoundedBoxNodeVisitor> visitor;
+	boost::scoped_ptr<CountBoundedBoxNodeVisitor> visitor;
 	el::BoundedObjectSharedPtrVector objects;
 	glm::vec3 min, max;
 	Uint32 i, j, count;
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::RStarTree()));
 
-	for (i = 0; i < 16384; ++i)
+	for (i = 0; i < get_count(); ++i)
 	{
-		min.x = random_int() * 0.01f;
-		min.y = random_int() * 0.01f;
-		min.z = random_int() * 0.01f;
-
-		max = min;
-		max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-		max.z += std::abs(random_int() * 0.01f) + 1e-7f;
-
-		box.reset(new el::SimpleBoundedObject(min, max));
-		boxes.push_back(box);
-		box.reset();
-
-		BOOST_CHECK_NO_THROW(tree->add(boxes[i]));
-		BOOST_CHECK_EQUAL(boxes[i].use_count(), 2);
+		BOOST_CHECK_NO_THROW(tree->add(get_box(i)));
+		BOOST_CHECK_EQUAL(get_box(i).use_count(), 2);
 		BOOST_CHECK(tree->check_tree());
 	}
 
-	BOOST_CHECK_NO_THROW(visitor.reset(
-		new el::CountBoundedBoxNodeVisitor()));
+	BOOST_CHECK_NO_THROW(visitor.reset(new CountBoundedBoxNodeVisitor()));
 
 	for (i = 0; i < 256; ++i)
 	{
@@ -893,13 +755,11 @@ BOOST_AUTO_TEST_CASE(add_random_select_and_remove_count_objects)
 
 		objects.clear();
 
-		count = boxes.size();
-
-		for (j = 0; j < count; ++j)
+		for (j = 0; j < get_count(); ++j)
 		{
-			BOOST_CHECK_LE(boxes[j].use_count(), 2);
+			BOOST_CHECK_LE(get_box(j).use_count(), 2);
 		}
-
-		BOOST_CHECK(tree->check_tree());
 	}
 }
+
+BOOST_AUTO_TEST_SUITE_END()

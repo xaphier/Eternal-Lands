@@ -651,6 +651,8 @@ namespace eternal_lands
 			add_element(split_data[i]);
 		}
 
+		assert(get_count() > 0);
+
 		calculate_enclosing_bounding_box();
 
 		new_node->calculate_enclosing_bounding_box();
@@ -909,9 +911,15 @@ namespace eternal_lands
 		EL_THROW_EXCEPTION(ItemNotFoundException());
 	}
 
-	bool RStarTreeNode::check_nodes() const
+	bool RStarTreeNode::check_nodes(const Uint16 level,
+		const bool root_node) const
 	{
 		Uint32 i;
+
+		if (get_level() != level)
+		{
+			return false;
+		}
 
 		for (i = 0; i < get_count(); ++i)
 		{
@@ -923,14 +931,15 @@ namespace eternal_lands
 
 			if (!get_leaf())
 			{
-				if (!get_node(i)->check_nodes())
+				if (!get_node(i)->check_nodes(get_level() - 1,
+					false))
 				{
 					return false;
 				}
 			}
 		}
 
-		return true;
+		return (get_count() > 0) || root_node;
 	}
 
 	Uint32 RStarTreeNode::get_main_axe(

@@ -70,6 +70,11 @@ namespace eternal_lands
 			void set_parts(
 				const ActorPartTextureTypeStringMap &parts);
 
+			inline void clear_mesh()
+			{
+				m_meshs.clear();
+			}
+
 			inline bool get_enhanced_actor() const
 			{
 				return m_index_source.get() != 0;

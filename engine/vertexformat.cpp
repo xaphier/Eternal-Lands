@@ -17,6 +17,20 @@ namespace eternal_lands
 	}
 
 	VertexFormat::VertexFormat(const String &name,
+		const VertexElementsVector &vertex_elements): m_name(name)
+	{
+		Uint32 i, count;
+
+		count = std::min(m_vertex_elements.size(),
+			vertex_elements.size());
+
+		for (i = 0; i < count; ++i)
+		{
+			m_vertex_elements[i] = vertex_elements[i];
+		}
+	}
+
+	VertexFormat::VertexFormat(const String &name,
 		const VertexElementsArray &vertex_elements):
 		m_vertex_elements(vertex_elements), m_name(name)
 	{

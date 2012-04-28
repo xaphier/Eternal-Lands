@@ -48,8 +48,10 @@ namespace eternal_lands
 		m_global_vars(global_vars)
 	{
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
-		VertexDescriptionMap instanced_mesh, simple_terrain;
+		VertexDescriptionMap instanced_mesh, simple_terrain_0;
+		VertexDescriptionMap simple_terrain_1;
 		VertexDescriptionMap sprite, font;
+		VertexElementsVector simple_terrain;
 		VertexElementType position, texture_coordinate, normal;
 
 		if (get_global_vars()->get_opengl_3_0() ||
@@ -81,8 +83,8 @@ namespace eternal_lands
 		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
 		instanced_mesh[vst_color] = vet_ubyte4_normalized;
 
-		simple_terrain[vst_position] = vet_float3;
-		simple_terrain[vst_texture_coordinate_0] =
+		simple_terrain_0[vst_position] = vet_ushort2;
+		simple_terrain_0[vst_texture_coordinate_0] =
 			vet_ushort2_normalized;
 
 		sprite[vst_position] = position;
@@ -108,7 +110,9 @@ namespace eternal_lands
 		morph_mesh[vst_normal] = normal;
 		morph_mesh[vst_morph_normal] = normal;
 		instanced_mesh[vst_normal] = normal;
-		simple_terrain[vst_normal] = vet_short2_normalized;
+
+		simple_terrain_1[vst_morph_position] = vet_byte4_normalized;
+		simple_terrain_1[vst_normal] = vet_byte4_normalized;
 
 		if (use_tangent)
 		{
@@ -126,7 +130,11 @@ namespace eternal_lands
 		set_format(vft_animated_mesh, VertexElements(animated_mesh));
 		set_format(vft_morph_mesh, VertexElements(morph_mesh));
 		set_format(vft_instanced_mesh, VertexElements(instanced_mesh));
-		set_format(vft_simple_terrain, VertexElements(simple_terrain));
+
+		simple_terrain.push_back(VertexElements(simple_terrain_0));
+		simple_terrain.push_back(VertexElements(simple_terrain_1));
+
+		set_format(vft_simple_terrain, simple_terrain);
 
 		mesh[vst_texture_coordinate_1] = texture_coordinate;
 		animated_mesh[vst_texture_coordinate_1] = texture_coordinate;
@@ -149,6 +157,13 @@ namespace eternal_lands
 
 	void MeshBuilder::set_format(const VertexFormatType format,
 		const VertexElements &elements)
+	{
+		m_vertex_formats[format] = boost::make_shared<VertexFormat>(
+			get_str(format), elements);
+	}
+
+	void MeshBuilder::set_format(const VertexFormatType format,
+		const VertexElementsVector &elements)
 	{
 		m_vertex_formats[format] = boost::make_shared<VertexFormat>(
 			get_str(format), elements);

@@ -49,6 +49,9 @@ namespace eternal_lands
 			void set_format(const VertexFormatType format,
 				const VertexElements &elements);
 
+			void set_format(const VertexFormatType format,
+				const VertexElementsVector &elements);
+
 			inline const GlobalVarsSharedPtr &get_global_vars()
 				const
 			{

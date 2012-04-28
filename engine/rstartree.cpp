@@ -313,7 +313,8 @@ namespace eternal_lands
 
 	bool RStarTree::check_tree() const
 	{
-		return get_root_node()->check_nodes();
+		return get_root_node()->check_nodes(
+			get_root_node()->get_level(), true);
 	}
 
 	void RStarTree::select_objects(AbstractNodeVisitor &visitor,

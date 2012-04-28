@@ -44,6 +44,12 @@ namespace eternal_lands
 			 * @brief Default constructor.
 			 */
 			VertexFormat(const String &name,
+				const VertexElementsVector &vertex_elements);
+
+			/**
+			 * @brief Default constructor.
+			 */
+			VertexFormat(const String &name,
 				const VertexElementsArray &vertex_elements);
 
 			/**
