@@ -18,7 +18,6 @@
 #include "effectdescription.hpp"
 #include "meshbuilder.hpp"
 #include "globalvars.hpp"
-#include "heightmapuvtool.hpp"
 
 #include "logging.hpp"
 
@@ -26,25 +25,18 @@ namespace eternal_lands
 {
 
 	SimpleTerrainManager::SimpleTerrainManager(
-		const CodecManagerSharedPtr &codec_manager,
-		const FileSystemSharedPtr &file_system,
+		const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
 		const GlobalVarsSharedPtr &global_vars,
 		const MeshBuilderSharedPtr &mesh_builder,
-		const MaterialSharedPtrVector &materials,
-		const TerrainData &terrain_data)
+		const MaterialSharedPtrVector &materials)
 	{
-		ImageSharedPtr height_image;
-
 		m_object_tree.reset(new RStarTree());
 
-		set_data(terrain_data);
-
-		height_image = codec_manager->load_image(get_height_map(),
-			file_system, ImageCompressionTypeSet(), true);
-
 		add_terrain_pages(String(UTF8("shaders/simple_terrain.xml")),
-			height_image, mesh_builder, materials,
-			global_vars->get_low_quality_terrain(),
+			vector_map, normal_map, dudv_map, mesh_builder,
+			materials, global_vars->get_low_quality_terrain(),
 			global_vars->get_use_simd());
 	}
 
@@ -52,20 +44,20 @@ namespace eternal_lands
 	{
 	}
 
-	void SimpleTerrainManager::set_terrain_page(const HeightMapUvTool &uvs,
-		const ImageSharedPtr &height_map, const glm::uvec2 &tile_offset,
-		const glm::uvec2 &terrain_size,
+	void SimpleTerrainManager::set_terrain_page(
+		const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map, const glm::uvec2 &tile_offset,
+		const glm::uvec2 &terrain_size, const glm::vec2 &dudv_scale,
 		const Uint32Vector &index_counts, const Uint32 vertex_count,
 		MeshDataToolSharedPtr &mesh_data_tool)
 	{
-		glm::vec4 tangent, heights;
-		glm::vec3 min, max, position, normal;
+		glm::vec4 vector, normal;
+		glm::vec3 min, max, position;
 		glm::vec2 uv;
 		glm::ivec2 size, pos, cur_pos;
 		Uint32 index, i, count, offset;
 		Uint16 x, y;
-
-		tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
 		index = 0;
 
@@ -78,30 +70,26 @@ namespace eternal_lands
 		{
 			for (x = 0; x <= get_tile_size(); ++x)
 			{
-				pos.x = x;
-				pos.y = y;
-				pos += tile_offset;
+				vector = vector_map->get_pixel(pos.x, pos.y,
+					0, 0, 0);
 
-				position = get_terrain_offset(
-					height_map->get_pixel_uint(pos.x,
-						pos.y, 0, 0, 0));
+				normal = vector_map->get_pixel(pos.x, pos.y,
+					0, 0, 0);
 
-				position.x += pos.x;
-				position.y += pos.y;
-				position.z += 0.015f;
+				uv = glm::vec2(dudv_map->get_pixel(pos.x,
+					pos.y, 0, 0, 0));;
 
-				uv = uvs.get_uv(pos.x, pos.y);
-				uv /= size;
+				vector.w = uv.x;
+				normal.w = uv.y;
 
-				mesh_data_tool->set_vertex_data(vst_position,
-					index, glm::vec4(position, 1.0f));
-				mesh_data_tool->set_vertex_data(vst_normal,
-					index, glm::vec4(normal, 1.0f));
-				mesh_data_tool->set_vertex_data(vst_tangent,
-					index, tangent);
 				mesh_data_tool->set_vertex_data(
-					vst_texture_coordinate_0, index,
-					glm::vec4(uv, 0.0f, 1.0f));
+					vst_morph_position, index, vector);
+				mesh_data_tool->set_vertex_data(
+					vst_morph_normal, index, normal);
+
+//				position = glm::vec3(glm::vec2(x, y) * position_scale, 0.0f);
+				position += glm::vec3(vector) *
+					get_terrain_offset_scale();
 
 				min = glm::min(min, position);
 				max = glm::max(max, position);
@@ -126,7 +114,9 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrainManager::add_terrain_pages(const String &effect,
-		const ImageSharedPtr &height_map,
+		const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MaterialSharedPtrVector &materials,
 		const bool low_quality, const bool use_simd)
@@ -147,7 +137,6 @@ namespace eternal_lands
 		Uint32 count;
 		Uint16Array4 splits_outside;
 		VertexSemanticTypeSet semantics;
-		HeightMapUvTool uvs(height_map, get_terrain_offset_scale());
 
 		vertex_count = get_tile_size() + 1;
 		vertex_count *= get_tile_size() + 1;
@@ -214,13 +203,13 @@ namespace eternal_lands
 		semantics.insert(vst_normal);
 		semantics.insert(vst_tangent);
 
-		width = height_map->get_width() / get_tile_size();
-		height = height_map->get_height() / get_tile_size();
+		width = vector_map->get_width() / get_tile_size();
+		height = vector_map->get_height() / get_tile_size();
 
 		terrain_size.x = width * get_tile_size() + 1;
 		terrain_size.y = height * get_tile_size() + 1;
 
-		transformation.set_translation(get_translation());
+//		transformation.set_translation(get_translation());
 
 		object_data.set_world_transformation(transformation);
 
@@ -248,8 +237,6 @@ namespace eternal_lands
 		lods_distances[1] = 20;
 		lods_distances[2] = 40;
 
-		uvs.relaxed_uv(use_simd);
-
 		for (y = 0; y < height; ++y)
 		{
 			for (x = 0; x < width; ++x)
@@ -276,11 +263,11 @@ namespace eternal_lands
 				tile_offset.x = x;
 				tile_offset.y = y;
 				tile_offset *= get_tile_size();
-
+/*
 				set_terrain_page(uvs, height_map, tile_offset,
 					terrain_size, index_counts,
 					vertex_count, mesh_data_tool);
-
+*/
 				mesh = mesh_builder->get_mesh(
 					vft_simple_terrain, mesh_data_tool,
 					String(str.str()));

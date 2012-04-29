@@ -29,26 +29,29 @@ namespace eternal_lands
 			boost::scoped_ptr<RStarTree> m_object_tree;
 
 			void add_terrain_pages(const String &effect,
-				const ImageSharedPtr &height_map,
+				const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MaterialSharedPtrVector &materials,
 				const bool low_quality, const bool use_simd);
-			void set_terrain_page(const HeightMapUvTool &uvs,
-				const ImageSharedPtr &height_map,
+			void set_terrain_page(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
 				const glm::uvec2 &tile_offset,
 				const glm::uvec2 &terrain_size,
+				const glm::vec2 &dudv_scale,
 				const Uint32Vector &index_count,
 				const Uint32 vertex_count,
 				MeshDataToolSharedPtr &mesh_data_tool);
 
 		public:
-			SimpleTerrainManager(
-				const CodecManagerSharedPtr &codec_manager,
-				const FileSystemSharedPtr &file_system,
+			SimpleTerrainManager(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
 				const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
-				const MaterialSharedPtrVector &materials,
-				const TerrainData &terrain_data);
+				const MaterialSharedPtrVector &materials);
 			virtual ~SimpleTerrainManager() throw();
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;

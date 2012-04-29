@@ -46,7 +46,7 @@ namespace eternal_lands
 		m_object_tree.reset(new RStarTree());
 
 		set_ambient(glm::vec3(0.2f));
-
+/*
 		file_name = FileSystem::get_name_without_extension(name);
 
 		file_name = String(file_name.get() + UTF8("_terrain.dds"));
@@ -62,6 +62,7 @@ namespace eternal_lands
 				codec_manager, file_system, global_vars,
 				mesh_builder, materials, data));
 		}
+*/
 	}
 
 	Map::~Map() throw()
