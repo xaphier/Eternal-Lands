@@ -920,7 +920,6 @@ namespace eternal_lands
 
 		if (get_level() != level)
 		{
-			std::cerr << "level test failed at: " << this << " "  << level << std::endl;
 			return false;
 		}
 
@@ -929,7 +928,6 @@ namespace eternal_lands
 			if (!get_bounding_box().contains(
 				get_element_bounding_box(i)))
 			{
-				std::cerr << "contains test failed at: " << this << " "  << i << std::endl;
 				return false;
 			}
 

@@ -261,11 +261,6 @@ namespace eternal_lands
 			{
 				set_root_node(node);
 			}
-			else
-			{
-				get_root_node(
-					)->calculate_enclosing_bounding_box();
-			}
 
 			assert(check_tree());
 
@@ -317,20 +312,8 @@ namespace eternal_lands
 
 	bool RStarTree::check_tree() const
 	{
-#ifndef	NDEBUG
-		if (!get_root_node()->check_nodes(
-			get_root_node()->get_level(), true))
-		{
-			log(std::cerr);
-
-			return false;
-		}
-
-		return true;
-#else	/* NDEBUG */
 		return get_root_node()->check_nodes(
 			get_root_node()->get_level(), true);
-#endif	/* NDEBUG */
 	}
 
 	void RStarTree::select_objects(AbstractNodeVisitor &visitor,
