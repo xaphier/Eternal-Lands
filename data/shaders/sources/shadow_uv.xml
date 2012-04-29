@@ -15,7 +15,7 @@
     <parameter>
      <name>shadow_uvs</name>
      <type>vec4</type>
-     <qualifier>in</qualifier>
+     <qualifier>out</qualifier>
      <size>shadow_map_count</size>
      <scale>1</scale>
     </parameter>
