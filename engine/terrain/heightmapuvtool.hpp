@@ -57,10 +57,12 @@ namespace eternal_lands
 				const float clamping, const Uint32 width,
 				const Uint32 height, Vec2Vector &new_uvs);
 			void build_data(const ImageSharedPtr &height_map,
-				const glm::vec3 &offset_scale);
+				const glm::vec3 &offset_scale,
+				const glm::vec2 &position_scale);
 			void build_data(const ImageSharedPtr &height_map,
-				const glm::vec3 &offset_scale, const Sint32 x,
-				const Sint32 y);
+				const glm::vec3 &offset_scale,
+				const glm::vec2 &position_scale,
+				const Sint32 x, const Sint32 y);
 
 			static inline float get_half_distance(
 				const AlignedVec4Array &half_distances,
@@ -74,8 +76,9 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			HeightMapUvTool(const ImageSharedPtr &height_map,
-				const glm::vec3 &offset_scale);
+			HeightMapUvTool(const ImageSharedPtr &vector_map,
+				const glm::vec3 &offset_scale,
+				const glm::vec2 &position_scale);
 
 			/**
 			 * Default destructor.

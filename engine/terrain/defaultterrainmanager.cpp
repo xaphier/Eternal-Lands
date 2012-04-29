@@ -146,7 +146,7 @@ namespace eternal_lands
 		Uint32 count;
 		Uint16Array4 splits_outside;
 		VertexSemanticTypeSet semantics;
-		HeightMapUvTool uvs(height_map, get_terrain_offset_scale());
+//		HeightMapUvTool uvs(height_map, get_terrain_offset_scale());
 
 		vertex_count = get_tile_size() + 1;
 		vertex_count *= get_tile_size() + 1;
@@ -247,7 +247,7 @@ namespace eternal_lands
 		lods_distances[1] = 20;
 		lods_distances[2] = 40;
 
-		uvs.relaxed_uv(use_simd);
+//		uvs.relaxed_uv(use_simd);
 
 		material.set_texture(get_albedo_map(0), stt_albedo_0);
 		material.set_texture(get_albedo_map(1), stt_albedo_1);
@@ -299,11 +299,11 @@ namespace eternal_lands
 				tile_offset.x = x;
 				tile_offset.y = y;
 				tile_offset *= get_tile_size();
-
+/*
 				set_terrain_page(uvs, height_map, tile_offset,
 					terrain_size, index_counts,
 					vertex_count, mesh_data_tool);
-
+*/
 				mesh = mesh_builder->get_mesh(
 					vft_simple_terrain, mesh_data_tool,
 					String(str.str()));

@@ -13,7 +13,8 @@ namespace eternal_lands
 	namespace
 	{
 
-		const glm::vec3 terrain_offset_scale = glm::vec3(0.01f);
+		const glm::vec3 terrain_offset_scale = glm::vec3(4.0f, 4.0f,
+			32.0f);
 
 	}
 
