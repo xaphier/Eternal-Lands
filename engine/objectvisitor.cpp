@@ -110,7 +110,7 @@ namespace eternal_lands
 
 		object = boost::dynamic_pointer_cast<Object>(bounded_object);
 
-		assert(object.get() != 0);
+		assert(object.get() != nullptr);
 
 		add(object, mask);
 	}

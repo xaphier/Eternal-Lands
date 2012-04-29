@@ -78,7 +78,7 @@ namespace eternal_lands
 				const Uint32 index) const
 			{
 				assert(check_index(index));
-				assert(m_elements[index].get() != 0);
+				assert(m_elements[index].get() != nullptr);
 
 				return m_elements[index];
 			}
@@ -96,8 +96,8 @@ namespace eternal_lands
 				const Uint32 index)
 			{
 				assert(check_index(index));
-				assert(element.get() != 0);
-				assert(m_elements[index].get() == 0);
+				assert(element.get() != nullptr);
+				assert(m_elements[index].get() == nullptr);
 
 				m_elements[index] = element;
 			}
@@ -635,6 +635,9 @@ namespace eternal_lands
 
 			Uint32 get_main_axe(
 				const BoundedObjectSharedPtr &element) const;
+
+			void log(const Uint16 indent, OutStream &log) const;
+
 	};
 	/**
 	 * @}

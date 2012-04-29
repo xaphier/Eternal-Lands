@@ -45,14 +45,14 @@ namespace eternal_lands
 		m_effect_cache(effect_cache), m_material_cache(material_cache),
 		m_material_description_cache(material_description_cache)
 	{
-		assert(m_codec_manager.get() != 0);
-		assert(m_global_vars.get() != 0);
-		assert(m_mesh_builder.get() != 0);
-		assert(m_mesh_cache.get() != 0);
-		assert(m_mesh_data_cache.get() != 0);
-		assert(m_effect_cache.get() != 0);
-		assert(m_material_cache.get() != 0);
-		assert(m_material_description_cache.get() != 0);
+		assert(m_codec_manager.get() != nullptr);
+		assert(m_global_vars.get() != nullptr);
+		assert(m_mesh_builder.get() != nullptr);
+		assert(m_mesh_cache.get() != nullptr);
+		assert(m_mesh_data_cache.get() != nullptr);
+		assert(m_effect_cache.get() != nullptr);
+		assert(m_material_cache.get() != nullptr);
+		assert(m_material_description_cache.get() != nullptr);
 	}
 
 	MapLoader::~MapLoader() throw()

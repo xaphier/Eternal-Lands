@@ -212,7 +212,7 @@ namespace eternal_lands
 		const Uint32 index) const
 	{
 		assert(check_index(index));
-		assert(m_elements[index].get() != 0);
+		assert(m_elements[index].get() != nullptr);
 
 		return m_elements[index]->get_bounding_box();
 	}
@@ -222,7 +222,7 @@ namespace eternal_lands
 	{
 		Uint32 index;
 
-		assert(element.get() != 0);
+		assert(element.get() != nullptr);
 
 		if (get_count() < get_max_count())
 		{
@@ -391,7 +391,7 @@ namespace eternal_lands
 		RStarTreeNodeSharedPtr found;
 		Uint32 i;
 
-		assert(element.get() != 0);
+		assert(element.get() != nullptr);
 
 		if (get_leaf())
 		{
@@ -415,7 +415,7 @@ namespace eternal_lands
 				found = get_node(i)->find_leaf(element,
 					path_buffer);
 
-				if (found.get() != 0)
+				if (found.get() != nullptr)
 				{
 					return found;
 				}
@@ -454,7 +454,7 @@ namespace eternal_lands
 			node = find_least_enlargement(bounding_box);
 		}
 
-		assert(node.get() != 0);
+		assert(node.get() != nullptr);
 
 		return node->choose_sub_tree(bounding_box, insertion_level,
 			path_buffer);
@@ -614,8 +614,8 @@ namespace eternal_lands
 		Uint32 j, split_axe;
 
 		assert(get_count() == get_max_count());
-		assert(new_node.get() != 0);
-		assert(element.get() != 0);
+		assert(new_node.get() != nullptr);
+		assert(element.get() != nullptr);
 		assert(tree);
 
 		new_size = get_max_count() + 1;
@@ -668,7 +668,7 @@ namespace eternal_lands
 		Uint32 i;
 
 		assert(tree);
-		assert(element.get() != 0);
+		assert(element.get() != nullptr);
 
 		if (add_element(element))
 		{
@@ -711,7 +711,7 @@ namespace eternal_lands
 
 				split(tree, element, new_node);
 
-				assert(new_node.get() != 0);
+				assert(new_node.get() != nullptr);
 				assert(new_node->get_count() > 0);
 				assert(get_count() > 0);
 
@@ -720,7 +720,7 @@ namespace eternal_lands
 					node = tree->add_new_root_node(
 						get_level() + 1);
 
-					assert(node.get() != 0);
+					assert(node.get() != nullptr);
 
 					node->add_element(
 						get_shared_from_this());
@@ -734,7 +734,7 @@ namespace eternal_lands
 
 					path_buffer.pop();
 
-					assert(node.get() != 0);
+					assert(node.get() != nullptr);
 
 					node->adjust_tree(tree, new_node,
 						path_buffer, oft);
@@ -807,6 +807,8 @@ namespace eternal_lands
 		RStarTreeNodeSharedPtrStack &path_buffer)
 	{
 		RStarTreeNodeSharedPtr parent;
+
+		assert(get_count() > 0);
 
 		if (!path_buffer.empty())
 		{
@@ -1003,7 +1005,7 @@ namespace eternal_lands
 			node = get_node(i)->select_objects(visitor, objects,
 				path_buffer);
 
-			if (node.get() != 0)
+			if (node.get() != nullptr)
 			{
 				return node;
 			}
@@ -1042,6 +1044,31 @@ namespace eternal_lands
 		}
 
 		return false;
+	}
+
+	void RStarTreeNode::log(const Uint16 indent, OutStream &log) const
+	{
+		BoostFormat str(UTF8("node %1%, level %2%, count %3%"));
+		Uint32 i;
+
+		str % this % get_level() % get_count();
+
+		for (i = 0; i < indent; ++i)
+		{
+			log << UTF8("\t");
+		}
+
+		log << str.str() << std::endl;
+
+		if (get_leaf())
+		{
+			return;
+		}
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			get_node(i)->log(indent + 1, log);
+		}
 	}
 
 }

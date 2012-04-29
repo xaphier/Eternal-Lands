@@ -46,7 +46,7 @@ namespace eternal_lands
 	Material::~Material() throw()
 	{
 		if (!m_material_script_manager.expired() &&
-			(m_material_script.get() != 0))
+			(m_material_script.get() != nullptr))
 		{
 			m_material_script.reset();
 
@@ -96,14 +96,14 @@ namespace eternal_lands
 		get_material_script_manager()->add_material(
 			shared_from_this());
 
-		assert(m_material_script.get() != 0);
+		assert(m_material_script.get() != nullptr);
 	}
 
 	void Material::set_effect(const String &effect)
 	{
 		m_effect = get_effect_cache()->get_effect(effect);
 
-		assert(m_effect.get() != 0);
+		assert(m_effect.get() != nullptr);
 	}
 
 	void Material::set_texture(const MaterialDescription &material,
@@ -133,7 +133,7 @@ namespace eternal_lands
 	{
 		assert(texture_type < m_textures.size());
 
-		if (get_texture(texture_type).get() == 0)
+		if (get_texture(texture_type).get() == nullptr)
 		{
 			return empty_str;
 		}
@@ -165,7 +165,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			if (m_textures[i].get() != 0)
+			if (m_textures[i].get() != nullptr)
 			{
 				state_manager.switch_texture(i, m_textures[i]);
 			}
@@ -187,7 +187,7 @@ namespace eternal_lands
 
 	const EffectDescription &Material::get_effect_description() const
 	{
-		if (m_effect.get() != 0)
+		if (m_effect.get() != nullptr)
 		{
 			return m_effect->get_description();
 		}
@@ -197,7 +197,7 @@ namespace eternal_lands
 
 	const String &Material::get_material_script_name() const
 	{
-		if (get_material_script().get() == 0)
+		if (get_material_script().get() == nullptr)
 		{
 			return empty_str;
 		}
@@ -208,7 +208,7 @@ namespace eternal_lands
 	bool Material::execute_script(const glm::vec4 &time,
 		asIScriptContext* context)
 	{
-		if (get_material_script().get() != 0)
+		if (get_material_script().get() != nullptr)
 		{
 			return get_material_script()->execute(time, m_data,
 				context);
@@ -219,7 +219,7 @@ namespace eternal_lands
 
 	void Material::lock()
 	{
-		if (get_material_script().get() != 0)
+		if (get_material_script().get() != nullptr)
 		{
 			get_material_script()->lock();
 		}
@@ -227,7 +227,7 @@ namespace eternal_lands
 
 	void Material::unlock()
 	{
-		if (get_material_script().get() != 0)
+		if (get_material_script().get() != nullptr)
 		{
 			get_material_script()->unlock();
 		}

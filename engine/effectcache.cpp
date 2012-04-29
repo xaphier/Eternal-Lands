@@ -38,7 +38,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			assert(found->second.get() != 0);
+			assert(found->second.get() != nullptr);
 
 			return found->second;
 		}
@@ -46,7 +46,7 @@ namespace eternal_lands
 
 	const EffectSharedPtr &EffectCache::get_simple_effect()
 	{
-		if (m_simple_effect.get() == 0)
+		if (m_simple_effect.get() == nullptr)
 		{
 			m_simple_effect = boost::make_shared<Effect>();
 		}

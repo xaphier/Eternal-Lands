@@ -13,7 +13,7 @@ namespace eternal_lands
 
 	void RStarTree::set_root_node(const RStarTreeNodeSharedPtr &node)
 	{
-		assert(node.get() != 0);
+		assert(node.get() != nullptr);
 
 		m_root_node = node;
 	}
@@ -37,12 +37,14 @@ namespace eternal_lands
 		RStarTreeNodeSharedPtrStack path_buffer;
 		RStarTreeNodeSharedPtr node;
 
-		assert(element.get() != 0);
+		assert(element.get() != nullptr);
 
 		node = get_root_node()->choose_sub_tree(
 			element->get_bounding_box(), level, path_buffer);
 
 		node->insert_element(this, element, path_buffer, oft);
+
+		assert(check_tree());
 	}
 
 	RStarTreeNodeSharedPtr RStarTree::condense_tree(
@@ -53,7 +55,7 @@ namespace eternal_lands
 		RStarTreeNodeSharedPtr parent;
 		Uint32 minimum_load;
 
-		assert(node.get() != 0);
+		assert(node.get() != nullptr);
 
 		minimum_load = node->get_max_count() * get_fill_factor();
 
@@ -173,7 +175,7 @@ namespace eternal_lands
 		RStarTreeNodeSharedPtr node;
 		BitSet32 oft;
 
-		if (element.get() == 0)
+		if (element.get() == nullptr)
 		{
 			EL_THROW_EXCEPTION(NullPtrException());
 		}
@@ -185,7 +187,7 @@ namespace eternal_lands
 			node = get_root_node()->choose_sub_tree(
 				element->get_bounding_box(), 0, path_buffer);
 
-			assert(node.get() != 0);
+			assert(node.get() != nullptr);
 
 			node->insert_element(this, element, path_buffer, oft);
 		}
@@ -203,14 +205,14 @@ namespace eternal_lands
 		RStarTreeNodeSharedPtrVector reinsert;
 		RStarTreeNodeSharedPtr node;
 
-		if (element.get() == 0)
+		if (element.get() == nullptr)
 		{
 			EL_THROW_EXCEPTION(NullPtrException());
 		}
 
 		node = get_root_node()->find_leaf(element, path_buffer);
 
-		if (node.get() == 0)
+		if (node.get() == nullptr)
 		{
 			EL_THROW_EXCEPTION(ItemNotFoundException());
 		}
@@ -219,7 +221,7 @@ namespace eternal_lands
 
 		node = condense_tree(reinsert, path_buffer, node);
 
-		if (node.get() != 0)
+		if (node.get() != nullptr)
 		{
 			set_root_node(node);
 		}
@@ -256,14 +258,14 @@ namespace eternal_lands
 			node = get_root_node()->find_small_leaf(minimum_load,
 				path_buffer);
 
-			if (node.get() == 0)
+			if (node.get() == nullptr)
 			{
 				return i;
 			}
 
 			node = condense_tree(reinsert, path_buffer, node);
 
-			if (node.get() != 0)
+			if (node.get() != nullptr)
 			{
 				set_root_node(node);
 			}
@@ -334,8 +336,20 @@ namespace eternal_lands
 
 	bool RStarTree::check_tree() const
 	{
+#ifndef	NDEBUG
+		if (!get_root_node()->check_nodes(
+			get_root_node()->get_level(), true))
+		{
+			log(std::cerr);
+
+			return false;
+		}
+
+		return true;
+#else	/* NDEBUG */
 		return get_root_node()->check_nodes(
 			get_root_node()->get_level(), true);
+#endif	/* NDEBUG */
 	}
 
 	void RStarTree::select_objects(AbstractNodeVisitor &visitor,
@@ -354,7 +368,7 @@ namespace eternal_lands
 		node = get_root_node()->select_objects(visitor, objects,
 			path_buffer);
 
-		if (node.get() == 0)
+		if (node.get() == nullptr)
 		{
 			return;
 		}
@@ -373,7 +387,7 @@ namespace eternal_lands
 
 		node = condense_tree(reinsert, path_buffer, parent);
 
-		if (node.get() != 0)
+		if (node.get() != nullptr)
 		{
 			set_root_node(node);
 		}
@@ -393,6 +407,19 @@ namespace eternal_lands
 		}
 
 		assert(check_tree());
+	}
+
+	void RStarTree::log(OutStream &log) const
+	{
+		BoostFormat str(UTF8("split distribution %1%, reinsert %2%, "
+			"fill %3%"));
+
+		str % get_split_distribution_factor() % get_reinsert_factor();
+		str % get_reinsert_factor();
+
+		log << str.str() << std::endl;
+
+		get_root_node()->log(0, log);
 	}
 
 }

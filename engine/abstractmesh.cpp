@@ -88,7 +88,7 @@ namespace eternal_lands
 				{
 					buffer = get_vertex_buffer(i);
 
-					assert(buffer.get() != 0);
+					assert(buffer.get() != nullptr);
 
 					VertexStream stream(m_vertex_format,
 						buffer, get_vertex_count(), i,
@@ -104,7 +104,7 @@ namespace eternal_lands
 			{
 				buffer = get_index_buffer();
 
-				assert(buffer.get() != 0);
+				assert(buffer.get() != nullptr);
 
 				source->write_index_buffer(
 					get_use_16_bit_indices(), buffer);

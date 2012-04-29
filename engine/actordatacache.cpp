@@ -61,8 +61,8 @@ namespace eternal_lands
 		assert(!m_material_cache.expired());
 		assert(!m_material_builder.expired());
 		assert(!m_material_description_cache.expired());
-		assert(m_file_system.get() != 0);
-		assert(m_global_vars.get() != 0);
+		assert(m_file_system.get() != nullptr);
+		assert(m_global_vars.get() != nullptr);
 	}
 
 	ActorDataCache::~ActorDataCache() throw()

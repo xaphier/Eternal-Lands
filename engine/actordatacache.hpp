@@ -52,7 +52,7 @@ namespace eternal_lands
 
 				result = m_mesh_builder.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}
@@ -69,7 +69,7 @@ namespace eternal_lands
 
 				result = m_material_cache.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}
@@ -81,7 +81,7 @@ namespace eternal_lands
 
 				result = m_material_builder.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}
@@ -93,7 +93,7 @@ namespace eternal_lands
 
 				result = m_material_description_cache.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}

@@ -262,7 +262,7 @@ namespace eternal_lands
 	{
 		m_used_attributes.reset();
 
-		if (m_mesh.get() != 0)
+		if (m_mesh.get() != nullptr)
 		{
 			m_mesh->unbind();
 			m_mesh.reset();
@@ -275,7 +275,7 @@ namespace eternal_lands
 
 	bool StateManager::unbind_program()
 	{
-		if (m_program.get() != 0)
+		if (m_program.get() != nullptr)
 		{
 			m_program->unbind();
 			m_program.reset();
@@ -289,7 +289,7 @@ namespace eternal_lands
 
 	bool StateManager::unbind_texture(const Uint16 texture_unit)
 	{
-		if (m_textures[texture_unit].get() != 0)
+		if (m_textures[texture_unit].get() != nullptr)
 		{
 			switch_texture_unit(texture_unit);
 
@@ -327,7 +327,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			if (m_textures[i].get() == 0)
+			if (m_textures[i].get() == nullptr)
 			{
 				continue;
 			}
@@ -340,7 +340,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			if (m_textures[i].get() == 0)
+			if (m_textures[i].get() == nullptr)
 			{
 				continue;
 			}

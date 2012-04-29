@@ -924,7 +924,7 @@ namespace eternal_lands
 		const GlobalVarsSharedPtr &global_vars):
 		m_global_vars(global_vars)
 	{
-		assert(m_global_vars.get() != 0);
+		assert(m_global_vars.get() != nullptr);
 
 		m_optimizer.reset(new ShaderSourceOptimizer());
 

@@ -328,7 +328,7 @@ namespace eternal_lands
 			return 0;
 		}
 
-		if (buffers.get() == 0)
+		if (buffers.get() == nullptr)
 		{
 			buffers = m_mesh->get_vertex_buffers(count);
 		}
@@ -377,7 +377,7 @@ namespace eternal_lands
 			return 0;
 		}
 
-		if (mesh.get() == 0)
+		if (mesh.get() == nullptr)
 		{
 			mesh = m_mesh->clone_index_data();
 		}
@@ -390,7 +390,7 @@ namespace eternal_lands
 	void TextureFontCache::build_mesh(const VertexBuffersSharedPtr &buffers,
 		const Uint32 count, AbstractMeshSharedPtr &mesh) const
 	{
-		if (mesh.get() == 0)
+		if (mesh.get() == nullptr)
 		{
 			mesh = m_mesh->clone_index_data();
 		}

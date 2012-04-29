@@ -70,6 +70,11 @@
 #include <SDL.h>
 #include "angelscript/include/angelscript.h"
 
+#if	1
+#define nullptr 0
+#define override
+#endif
+
 namespace eternal_lands
 {
 

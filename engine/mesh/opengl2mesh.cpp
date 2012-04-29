@@ -33,7 +33,7 @@ namespace eternal_lands
 
 		assert(index < m_vertex_data.size());
 
-		if (m_vertex_data[index].get() != 0)
+		if (m_vertex_data[index].get() != nullptr)
 		{
 			m_vertex_data[index]->bind(hbt_vertex);
 
@@ -63,7 +63,7 @@ namespace eternal_lands
 	{
 		AbstractWriteMemorySharedPtr result;
 
-		if (m_index_data.get() != 0)
+		if (m_index_data.get() != nullptr)
 		{
 			m_index_data->bind(hbt_index);
 
@@ -232,7 +232,7 @@ namespace eternal_lands
 
 	void OpenGl2Mesh::bind_index_buffer()
 	{
-		if (m_index_data.get() != 0)
+		if (m_index_data.get() != nullptr)
 		{
 			m_index_data->bind(hbt_index);
 		}

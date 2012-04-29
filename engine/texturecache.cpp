@@ -186,8 +186,8 @@ namespace eternal_lands
 		m_global_vars(global_vars)
 	{
 		assert(!m_codec_manager.expired());
-		assert(m_file_system.get() != 0);
-		assert(m_global_vars.get() != 0);
+		assert(m_file_system.get() != nullptr);
+		assert(m_global_vars.get() != nullptr);
 	}
 
 	TextureCache::~TextureCache() throw()
@@ -196,7 +196,7 @@ namespace eternal_lands
 
 	const TextureSharedPtr &TextureCache::get_error_texture()
 	{
-		if (m_error_texture.get() == 0)
+		if (m_error_texture.get() == nullptr)
 		{
 			m_error_texture = build_error_texture();
 		}

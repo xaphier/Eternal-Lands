@@ -62,7 +62,7 @@ namespace eternal_lands
 
 		light = boost::dynamic_pointer_cast<Light>(bounded_object);
 
-		assert(light.get() != 0);
+		assert(light.get() != nullptr);
 
 		m_lights.push_back(light);
 	}

@@ -165,8 +165,8 @@ namespace eternal_lands
 			TextureFormatType texture_format;
 			bool alpha;
 
-			if ((base_reader.get() == 0) ||
-				(mask_reader.get() == 0))
+			if ((base_reader.get() == nullptr) ||
+				(mask_reader.get() == nullptr))
 			{
 				return get_alpha(codec_manager, texture_reader,
 					sizes, scale, compressed);
@@ -468,8 +468,8 @@ namespace eternal_lands
 			Uint32 x, y, width, height;
 			Uint16 texture_mipmap, base_mipmap, mask_mipmap;
 
-			if ((base_reader.get() == 0) ||
-				(mask_reader.get() == 0))
+			if ((base_reader.get() == nullptr) ||
+				(mask_reader.get() == nullptr))
 			{
 				return set_image(codec_manager, texture_reader,
 					sizes, scale, offsets, image,
@@ -550,7 +550,7 @@ namespace eternal_lands
 		m_alphas.reset();
 		compressed = m_global_vars->get_use_s3tc_for_actors();
 
-		if (parts[aptt_pants_tex].get() != 0)
+		if (parts[aptt_pants_tex].get() != nullptr)
 		{
 			m_alphas[apt_pants] = get_alpha(get_codec_manager(),
 				parts[aptt_pants_tex], parts[aptt_legs_base],
@@ -559,7 +559,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_boots_tex].get() != 0)
+		if (parts[aptt_boots_tex].get() != nullptr)
 		{
 			m_alphas[apt_boots] = get_alpha(get_codec_manager(),
 				parts[aptt_boots_tex], parts[aptt_boots_base],
@@ -568,7 +568,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_torso_tex].get() != 0)
+		if (parts[aptt_torso_tex].get() != nullptr)
 		{
 			m_alphas[apt_torso] = get_alpha(get_codec_manager(),
 				parts[aptt_torso_tex], parts[aptt_body_base],
@@ -577,7 +577,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_arms_tex].get() != 0)
+		if (parts[aptt_arms_tex].get() != nullptr)
 		{
 			m_alphas[apt_arms] = get_alpha(get_codec_manager(),
 				parts[aptt_arms_tex], parts[aptt_arms_base],
@@ -586,7 +586,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_hands_tex].get() != 0)
+		if (parts[aptt_hands_tex].get() != nullptr)
 		{
 			m_alphas[apt_pants] = get_alpha(get_codec_manager(),
 				parts[aptt_hands_tex],
@@ -596,7 +596,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_head_tex].get() != 0)
+		if (parts[aptt_head_tex].get() != nullptr)
 		{
 			m_alphas[apt_head] = get_alpha(get_codec_manager(),
 				parts[aptt_head_tex], parts[aptt_head_base],
@@ -605,7 +605,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_hair_tex].get() != 0)
+		if (parts[aptt_hair_tex].get() != nullptr)
 		{
 			m_alphas[apt_hair] = get_alpha(get_codec_manager(),
 				parts[aptt_hair_tex],
@@ -613,7 +613,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_weapon_tex].get() != 0)
+		if (parts[aptt_weapon_tex].get() != nullptr)
 		{
 			m_alphas[apt_weapon] = get_alpha(get_codec_manager(),
 				parts[aptt_weapon_tex],
@@ -621,7 +621,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_shield_tex].get() != 0)
+		if (parts[aptt_shield_tex].get() != nullptr)
 		{
 			m_alphas[apt_shield] = get_alpha(get_codec_manager(),
 				parts[aptt_shield_tex],
@@ -629,7 +629,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_helmet_tex].get() != 0)
+		if (parts[aptt_helmet_tex].get() != nullptr)
 		{
 			m_alphas[apt_helmet] = get_alpha(get_codec_manager(),
 				parts[aptt_helmet_tex],
@@ -637,7 +637,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_neck_tex].get() != 0)
+		if (parts[aptt_neck_tex].get() != nullptr)
 		{
 			m_alphas[apt_neck] = get_alpha(get_codec_manager(),
 				parts[aptt_neck_tex],
@@ -645,7 +645,7 @@ namespace eternal_lands
 				compressed);
 		}
 
-		if (parts[aptt_cape_tex].get() != 0)
+		if (parts[aptt_cape_tex].get() != nullptr)
 		{
 			m_alphas[apt_cape] = get_alpha(get_codec_manager(),
 				parts[aptt_cape_tex],
@@ -688,7 +688,7 @@ namespace eternal_lands
 			}
 		}
 
-		if (parts[aptt_pants_tex].get() != 0)
+		if (parts[aptt_pants_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_pants_tex],
 				parts[aptt_legs_base], parts[aptt_pants_mask],
@@ -697,7 +697,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_boots_tex].get() != 0)
+		if (parts[aptt_boots_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_boots_tex],
 				parts[aptt_boots_base], parts[aptt_boots_mask],
@@ -706,7 +706,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_torso_tex].get() != 0)
+		if (parts[aptt_torso_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_torso_tex],
 				parts[aptt_body_base], parts[aptt_torso_mask],
@@ -715,7 +715,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_arms_tex].get() != 0)
+		if (parts[aptt_arms_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_arms_tex],
 				parts[aptt_arms_base], parts[aptt_arms_mask],
@@ -724,7 +724,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_hands_tex].get() != 0)
+		if (parts[aptt_hands_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_hands_tex],
 				parts[aptt_hands_tex_save],
@@ -734,7 +734,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_head_tex].get() != 0)
+		if (parts[aptt_head_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_head_tex],
 				parts[aptt_head_base], parts[aptt_head_mask],
@@ -743,7 +743,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_hair_tex].get() != 0)
+		if (parts[aptt_hair_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_hair_tex],
 				actor_part_sizes[apt_hair], m_scale,
@@ -751,7 +751,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_weapon_tex].get() != 0)
+		if (parts[aptt_weapon_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_weapon_tex],
 				actor_part_sizes[apt_weapon], m_scale,
@@ -759,7 +759,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_shield_tex].get() != 0)
+		if (parts[aptt_shield_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_shield_tex],
 				actor_part_sizes[apt_shield], m_scale,
@@ -767,7 +767,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_helmet_tex].get() != 0)
+		if (parts[aptt_helmet_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_helmet_tex],
 				actor_part_sizes[apt_helmet], m_scale,
@@ -775,7 +775,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_neck_tex].get() != 0)
+		if (parts[aptt_neck_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_neck_tex],
 				actor_part_sizes[apt_neck], m_scale,
@@ -783,7 +783,7 @@ namespace eternal_lands
 				compressions);
 		}
 
-		if (parts[aptt_cape_tex].get() != 0)
+		if (parts[aptt_cape_tex].get() != nullptr)
 		{
 			set_image(get_codec_manager(), parts[aptt_cape_tex],
 				actor_part_sizes[apt_cape], m_scale,
@@ -841,8 +841,8 @@ namespace eternal_lands
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
 		assert(!m_codec_manager.expired());
-		assert(m_file_system.get() != 0);
-		assert(m_global_vars.get() != 0);
+		assert(m_file_system.get() != nullptr);
+		assert(m_global_vars.get() != nullptr);
 
 		m_scale = 4;
 		m_size = 128 * m_scale;

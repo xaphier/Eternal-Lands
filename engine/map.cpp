@@ -234,7 +234,7 @@ namespace eternal_lands
 	void Map::intersect(const Frustum &frustum, ObjectVisitor &visitor)
 		const
 	{
-		if (m_terrain.get() != 0)
+		if (m_terrain.get() != nullptr)
 		{
 			m_terrain->intersect(frustum, visitor);
 		}

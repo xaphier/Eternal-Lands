@@ -37,7 +37,7 @@ namespace eternal_lands
 
 				result = m_script_engine.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}

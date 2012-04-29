@@ -361,7 +361,7 @@ namespace eternal_lands
 				load_e3d(reader, use_simd, mesh_data_tool,
 					materials);
 
-				assert(mesh_data_tool.get() != 0);
+				assert(mesh_data_tool.get() != nullptr);
 				return;
 			}
 
@@ -370,7 +370,7 @@ namespace eternal_lands
 				load_e2d(reader, use_simd, mesh_data_tool,
 					materials);
 
-				assert(mesh_data_tool.get() != 0);
+				assert(mesh_data_tool.get() != nullptr);
 				return;
 			}
 
@@ -474,8 +474,8 @@ namespace eternal_lands
 		const GlobalVarsSharedPtr &global_vars):
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
-		assert(m_file_system.get() != 0);
-		assert(m_global_vars.get() != 0);
+		assert(m_file_system.get() != nullptr);
+		assert(m_global_vars.get() != nullptr);
 	}
 
 	MeshDataCache::~MeshDataCache() throw()

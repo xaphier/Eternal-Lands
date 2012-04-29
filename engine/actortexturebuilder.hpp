@@ -85,7 +85,7 @@ namespace eternal_lands
 
 				result = m_codec_manager.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}

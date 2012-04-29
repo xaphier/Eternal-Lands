@@ -562,7 +562,7 @@ namespace eternal_lands
 
 		result = m_state_manager.switch_program(program);
 
-		if (program.get() == 0)
+		if (program.get() == nullptr)
 		{
 			return result;
 		}
@@ -1221,7 +1221,7 @@ namespace eternal_lands
 				m_shadow_frame_buffer->get_texture());
 		}
 
-		if (m_terrain_frame_buffer.get() != 0)
+		if (m_terrain_frame_buffer.get() != nullptr)
 		{
 			m_state_manager.switch_texture(stt_terrain,
 				m_terrain_frame_buffer->get_texture());

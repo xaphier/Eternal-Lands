@@ -37,7 +37,7 @@ namespace eternal_lands
 
 	void Actor::add_mesh(const Uint32 id)
 	{
-		if (m_index_source.get() != 0)
+		if (m_index_source.get() != nullptr)
 		{
 			m_meshs.insert(id);
 
@@ -51,7 +51,7 @@ namespace eternal_lands
 
 	void Actor::remove_mesh(const Uint32 id)
 	{
-		if (m_index_source.get() != 0)
+		if (m_index_source.get() != nullptr)
 		{
 			m_meshs.erase(id);
 
@@ -68,7 +68,7 @@ namespace eternal_lands
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars)
 	{
-		assert(m_index_source.get() != 0);
+		assert(m_index_source.get() != nullptr);
 
 		m_actor_texture_builder =
 			boost::make_shared<ActorTextureBuilder>(codec_manager,
@@ -80,7 +80,7 @@ namespace eternal_lands
 
 	void Actor::set_parts(const ActorPartTextureTypeStringMap &parts)
 	{
-		assert(m_actor_texture_builder.get() != 0);
+		assert(m_actor_texture_builder.get() != nullptr);
 
 		m_actor_texture_builder->set_parts(parts);
 		m_actor_texture_builder->build_actor_images();

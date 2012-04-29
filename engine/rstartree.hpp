@@ -353,6 +353,8 @@ namespace eternal_lands
 
 			bool check_tree() const;
 
+			void log(OutStream &log) const;
+
 	};
 
 }

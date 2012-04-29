@@ -76,7 +76,7 @@ namespace eternal_lands
 
 			inline bool get_has_index_data() const
 			{
-				return m_index_data.get() != 0;
+				return m_index_data.get() != nullptr;
 			}
 
 			virtual AbstractWriteMemorySharedPtr

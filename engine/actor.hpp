@@ -77,7 +77,7 @@ namespace eternal_lands
 
 			inline bool get_enhanced_actor() const
 			{
-				return m_index_source.get() != 0;
+				return m_index_source.get() != nullptr;
 			}
 
 			inline BitSet32 get_buffs() const

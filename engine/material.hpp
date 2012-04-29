@@ -46,7 +46,7 @@ namespace eternal_lands
 
 				result = m_effect_cache.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}
@@ -57,7 +57,7 @@ namespace eternal_lands
 
 				result = m_texture_cache.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}
@@ -69,7 +69,7 @@ namespace eternal_lands
 
 				result = m_material_script_cache.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}
@@ -81,7 +81,7 @@ namespace eternal_lands
 
 				result = m_material_script_manager.lock();
 
-				assert(result.get() != 0);
+				assert(result.get() != nullptr);
 
 				return result;
 			}

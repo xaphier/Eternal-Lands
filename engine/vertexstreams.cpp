@@ -25,7 +25,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; i++)
 		{
-			if (memory[i].get() != 0)
+			if (memory[i].get() != nullptr)
 			{
 				m_streams.push_back(new VertexStream(format,
 					memory[i], i, vertex_count, use_simd));
@@ -44,7 +44,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; i++)
 		{
-			if (buffers[i].get() != 0)
+			if (buffers[i].get() != nullptr)
 			{
 				m_streams.push_back(new VertexStream(format,
 					buffers[i], i, vertex_count, use_simd));
