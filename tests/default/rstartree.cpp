@@ -178,9 +178,9 @@ namespace
 			min.z = random_int() * 0.01f;
 
 			max = min;
-			max.x += std::abs(random_int() * 0.01f) + 1e-7f;
-			max.y += std::abs(random_int() * 0.01f) + 1e-7f;
-			max.z += std::abs(random_int() * 0.01f) + 1e-7f;
+			max.x += std::abs(random_int() * 0.01f) + 1e-5f;
+			max.y += std::abs(random_int() * 0.01f) + 1e-5f;
+			max.z += std::abs(random_int() * 0.01f) + 1e-5f;
 
 			box = boost::make_shared<SimpleBoundedObject>(min, max);
 			m_boxes.push_back(box);

@@ -193,6 +193,8 @@ namespace eternal_lands
 		{
 			get_root_node()->update_enclosing_bounding_box(element);
 		}
+
+		assert(check_tree());
 	}
 
 	void RStarTree::remove(const BoundedObjectSharedPtr &element)
@@ -222,6 +224,8 @@ namespace eternal_lands
 			set_root_node(node);
 		}
 
+		assert(check_tree());
+
 		reinsert_nodes(reinsert);
 
 		if (get_root_node()->get_count() > 0)
@@ -233,6 +237,8 @@ namespace eternal_lands
 			get_root_node()->set_bounding_box(BoundingBox(
 				glm::vec3(0.0f), glm::vec3(0.0f)));
 		}
+
+		assert(check_tree());
 	}
 
 	Uint32 RStarTree::optimize(const Uint32 count)
@@ -267,7 +273,22 @@ namespace eternal_lands
 					)->calculate_enclosing_bounding_box();
 			}
 
+			assert(check_tree());
+
 			reinsert_nodes(reinsert);
+
+			if (get_root_node()->get_count() > 0)
+			{
+				get_root_node(
+					)->calculate_enclosing_bounding_box();
+			}
+			else
+			{
+				get_root_node()->set_bounding_box(BoundingBox(
+					glm::vec3(0.0f), glm::vec3(0.0f)));
+			}
+
+			assert(check_tree());
 		}
 
 		return count;
@@ -357,6 +378,8 @@ namespace eternal_lands
 			set_root_node(node);
 		}
 
+		assert(check_tree());
+
 		reinsert_nodes(reinsert);
 
 		if (get_root_node()->get_count() > 0)
@@ -368,6 +391,8 @@ namespace eternal_lands
 			get_root_node()->set_bounding_box(BoundingBox(
 				glm::vec3(0.0f), glm::vec3(0.0f)));
 		}
+
+		assert(check_tree());
 	}
 
 }
