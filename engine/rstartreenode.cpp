@@ -920,6 +920,7 @@ namespace eternal_lands
 
 		if (get_level() != level)
 		{
+			std::cerr << "level test failed at: " << this << " "  << level << std::endl;
 			return false;
 		}
 
@@ -928,6 +929,7 @@ namespace eternal_lands
 			if (!get_bounding_box().contains(
 				get_element_bounding_box(i)))
 			{
+				std::cerr << "contains test failed at: " << this << " "  << i << std::endl;
 				return false;
 			}
 
@@ -1048,10 +1050,11 @@ namespace eternal_lands
 
 	void RStarTreeNode::log(const Uint16 indent, OutStream &log) const
 	{
-		BoostFormat str(UTF8("node %1%, level %2%, count %3%"));
-		Uint32 i;
+		BoostFormat str(UTF8("node %1%, level %2%, count %3%, box "
+			"%4%"));
+		Uint32 i, j;
 
-		str % this % get_level() % get_count();
+		str % this % get_level() % get_count() % get_bounding_box();
 
 		for (i = 0; i < indent; ++i)
 		{
@@ -1062,6 +1065,17 @@ namespace eternal_lands
 
 		if (get_leaf())
 		{
+			for (i = 0; i < get_count(); ++i)
+			{
+				for (j = 0; j <= indent; ++j)
+				{
+					log << UTF8("\t");
+				}
+
+				log << get_element(i)->get_bounding_box();
+				log << std::endl;
+			}
+
 			return;
 		}
 

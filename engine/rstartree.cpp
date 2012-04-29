@@ -44,6 +44,8 @@ namespace eternal_lands
 
 		node->insert_element(this, element, path_buffer, oft);
 
+		update_root_node_bounding_box();
+
 		assert(check_tree());
 	}
 
@@ -230,16 +232,6 @@ namespace eternal_lands
 
 		reinsert_nodes(reinsert);
 
-		if (get_root_node()->get_count() > 0)
-		{
-			get_root_node()->calculate_enclosing_bounding_box();
-		}
-		else
-		{
-			get_root_node()->set_bounding_box(BoundingBox(
-				glm::vec3(0.0f), glm::vec3(0.0f)));
-		}
-
 		assert(check_tree());
 	}
 
@@ -278,17 +270,6 @@ namespace eternal_lands
 			assert(check_tree());
 
 			reinsert_nodes(reinsert);
-
-			if (get_root_node()->get_count() > 0)
-			{
-				get_root_node(
-					)->calculate_enclosing_bounding_box();
-			}
-			else
-			{
-				get_root_node()->set_bounding_box(BoundingBox(
-					glm::vec3(0.0f), glm::vec3(0.0f)));
-			}
 
 			assert(check_tree());
 		}
@@ -396,6 +377,11 @@ namespace eternal_lands
 
 		reinsert_nodes(reinsert);
 
+		assert(check_tree());
+	}
+
+	void RStarTree::update_root_node_bounding_box()
+	{
 		if (get_root_node()->get_count() > 0)
 		{
 			get_root_node()->calculate_enclosing_bounding_box();
@@ -405,8 +391,6 @@ namespace eternal_lands
 			get_root_node()->set_bounding_box(BoundingBox(
 				glm::vec3(0.0f), glm::vec3(0.0f)));
 		}
-
-		assert(check_tree());
 	}
 
 	void RStarTree::log(OutStream &log) const

@@ -96,7 +96,8 @@ namespace eternal_lands
 			 * Gets the root node.
 			 * @return The root node.
 			 */
-			inline const RStarTreeNodeSharedPtr &get_root_node() const
+			inline const RStarTreeNodeSharedPtr &get_root_node()
+				const
 			{
 				return m_root_node;
 			}
@@ -141,6 +142,8 @@ namespace eternal_lands
 			 */
 			void reinsert_nodes(
 				const RStarTreeNodeSharedPtrVector &reinsert);
+
+			void update_root_node_bounding_box();
 
 		public:
 			/**
