@@ -1670,7 +1670,7 @@ namespace eternal_lands
 
 		indent = UTF8("\t");
 
-		if (data.get_version() >= svt_150)
+		if (data.get_version() > svt_150)
 		{
 			output = UTF8("FragColor");
 		}
@@ -1685,7 +1685,7 @@ namespace eternal_lands
 		{
 			StringStream str;
 
-			if (data.get_version() >= svt_150)
+			if (data.get_version() > svt_150)
 			{
 				str << UTF8("FragData_") << i;
 			}
@@ -2595,7 +2595,7 @@ namespace eternal_lands
 				array_sizes, prefix, UTF8(""), fragment_source);
 		}
 
-		if (data.get_version() >= svt_150)
+		if (data.get_version() > svt_150)
 		{
 			fragment_source << UTF8("\n");
 
