@@ -599,7 +599,6 @@ BOOST_AUTO_TEST_CASE(unpack_sint_2_10_10_10_rev_normalized)
 BOOST_AUTO_TEST_CASE(compress_uncompress_normalized)
 {
 	glm::vec3 normal, similar;
-	float l;
 	Uint32 i, value, duplicates, max_duplicates;
 
 	duplicates = 0;
@@ -607,8 +606,7 @@ BOOST_AUTO_TEST_CASE(compress_uncompress_normalized)
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
 		normal = el::PackTool::uncompress_normalized(i);
-		l = glm::length(normal);
-		BOOST_CHECK_CLOSE(l, 1.0, 0.01);
+		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
 
 		value = el::PackTool::compress_normalized(normal);
 
@@ -624,4 +622,52 @@ BOOST_AUTO_TEST_CASE(compress_uncompress_normalized)
 	max_duplicates = std::numeric_limits<Uint16>::max() * 0.035f;
 
 	BOOST_CHECK_LT(duplicates, (max_duplicates));
+}
+
+BOOST_AUTO_TEST_CASE(encode_decode_normal)
+{
+	glm::vec3 normal;
+	glm::vec2 temp, tmp, min, max;
+	Uint32 i;
+
+	min = glm::vec2(std::numeric_limits<float>::max());
+	max = glm::vec2(-std::numeric_limits<float>::max());
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		temp.x = i % 256;
+		temp.y = static_cast<Uint32>(i / 256);
+
+		tmp = temp;
+
+		tmp /= 255.0f;
+
+		BOOST_CHECK_LE(tmp.x, 1.0);
+		BOOST_CHECK_LE(tmp.y, 1.0);
+		BOOST_CHECK_GE(tmp.x, 0.0);
+		BOOST_CHECK_GE(tmp.y, 0.0);
+
+		normal = el::PackTool::decode_normal(tmp);
+
+		if (!glm::all(glm::lessThanEqual(glm::abs(normal),
+			glm::vec3(1.0f))))
+		{
+			continue;
+		}
+
+		std::cout << glm::to_string(normal) << std::endl;
+
+		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+
+		tmp = el::PackTool::encode_normal(normal);
+
+		BOOST_CHECK_LE(tmp.x, 1.0);
+		BOOST_CHECK_LE(tmp.y, 1.0);
+		BOOST_CHECK_GE(tmp.x, 0.0);
+		BOOST_CHECK_GE(tmp.y, 0.0);
+
+		normal = el::PackTool::decode_normal(tmp);
+
+		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+	}
 }

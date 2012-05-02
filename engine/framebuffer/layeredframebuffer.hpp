@@ -32,6 +32,7 @@ namespace eternal_lands
 		private:
 			FrameBuffer m_frame_buffer;
 			TextureSharedPtr m_depth_texture;
+			boost::scoped_ptr<RenderBuffer> m_render_buffer;
 
 		public:
 			LayeredFrameBuffer(const String &name,

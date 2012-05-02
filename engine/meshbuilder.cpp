@@ -60,12 +60,14 @@ namespace eternal_lands
 			position = vet_half4;
 			texture_coordinate = vet_half2;
 			font[vst_position] = vet_half2;
+			simple_terrain_0[vst_position] = vet_half2;
 		}
 		else
 		{
 			position = vet_float3;
 			texture_coordinate = vet_float2;
 			font[vst_position] = vet_float2;
+			simple_terrain_0[vst_position] = vet_float2;
 		}
 
 		mesh[vst_position] = position;
@@ -82,10 +84,6 @@ namespace eternal_lands
 		instanced_mesh[vst_position] = vet_float3;
 		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
 		instanced_mesh[vst_color] = vet_ubyte4_normalized;
-
-		simple_terrain_0[vst_position] = vet_ushort2;
-		simple_terrain_0[vst_texture_coordinate_0] =
-			vet_ushort2_normalized;
 
 		sprite[vst_position] = position;
 		sprite[vst_texture_coordinate_0] = vet_ushort2_normalized;
@@ -111,8 +109,8 @@ namespace eternal_lands
 		morph_mesh[vst_morph_normal] = normal;
 		instanced_mesh[vst_normal] = normal;
 
-		simple_terrain_1[vst_morph_position] = vet_byte4_normalized;
-		simple_terrain_1[vst_normal] = vet_byte4_normalized;
+		simple_terrain_1[vst_morph_position] = vet_ubyte4_normalized;
+		simple_terrain_1[vst_morph_normal] = vet_ubyte4_normalized;
 
 		if (use_tangent)
 		{

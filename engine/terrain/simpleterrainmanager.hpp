@@ -39,11 +39,10 @@ namespace eternal_lands
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const glm::uvec2 &tile_offset,
-				const glm::uvec2 &terrain_size,
-				const glm::vec2 &dudv_scale,
-				const Uint32Vector &index_count,
+				const glm::vec2 &position_scale,
 				const Uint32 vertex_count,
-				MeshDataToolSharedPtr &mesh_data_tool);
+				const Uint32 index_count,
+				const AbstractMeshSharedPtr &mesh);
 
 		public:
 			SimpleTerrainManager(const ImageSharedPtr &vector_map,
@@ -55,6 +54,9 @@ namespace eternal_lands
 			virtual ~SimpleTerrainManager() throw();
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
+
+			static const glm::vec2 &get_position_scale(
+				const bool low_quality);
 
 	};
 

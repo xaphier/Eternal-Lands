@@ -95,8 +95,8 @@ namespace eternal_lands
 		const FileSystemSharedPtr &file_system):
 		m_global_vars(global_vars), m_file_system(file_system),
 		m_scene_resources(global_vars, file_system),
-		m_scene_view(global_vars), m_frame_id(0), m_program_vars_id(0),
-		m_shadow_map_change(true)
+		m_state_manager(global_vars), m_scene_view(global_vars),
+		m_frame_id(0), m_program_vars_id(0), m_shadow_map_change(true)
 	{
 		m_light_position_array.resize(8);
 		m_light_color_array.resize(8);
@@ -591,7 +591,8 @@ namespace eternal_lands
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 			program->set_parameter(apt_terrain_scale,
-				glm::vec3(0.1f));
+				glm::vec4(256.0f, 256.0f,
+					1.0f / 256.0f, 1.0f / 256.0f));
 			program->set_parameter(apt_terrain_texture_size,
 				m_clipmap.get_terrain_texture_size());
 			m_state_manager.get_program()->set_parameter(

@@ -14,7 +14,7 @@ namespace eternal_lands
 
 	OpenGl32Mesh::OpenGl32Mesh(const String &name,
 		const bool static_indices, const bool static_vertices,
-		const bool use_simd): OpenGl3Mesh(name, static_indices,
+		const bool use_simd): OpenGl31Mesh(name, static_indices,
 			static_vertices, use_simd)
 	{
 		assert(GLEW_VERSION_3_2);

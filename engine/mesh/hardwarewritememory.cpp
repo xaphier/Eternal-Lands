@@ -19,6 +19,7 @@ namespace eternal_lands
 
 	HardwareWriteMemory::~HardwareWriteMemory() throw()
 	{
+		m_buffer->bind(get_type());
 		m_buffer->update(get_type(), m_memory_buffer);
 	}
 

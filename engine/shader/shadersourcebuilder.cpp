@@ -22,6 +22,8 @@
 #include "effect.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
+#include "abstractterrainmanager.hpp"
+#include "glmutil.hpp"
 
 namespace eternal_lands
 {
@@ -592,6 +594,14 @@ namespace eternal_lands
 				str << parameter.first << UTF8(" = ");
 				str << parameter.second << UTF8(";\n");
 			}
+
+			str << UTF8("const vec3 terrain_vector_scale = vec3(");
+			str << AbstractTerrainManager::get_vector_scale().x;
+			str << ", ";
+			str << AbstractTerrainManager::get_vector_scale().y;
+			str << ", ";
+			str << AbstractTerrainManager::get_vector_scale().z;
+			str << UTF8(");\n");
 		}
 
 		class OptimizeShaderSource
@@ -1591,24 +1601,6 @@ namespace eternal_lands
 			BOOST_FOREACH(const ShaderSourceParameter &parameter,
 				varyings)
 			{
-				if (parameter.get_name() ==
-					CommonParameterUtil::get_str(
-						cpt_world_position))
-				{
-					write_parameter(out_prefix, parameter,
-						indent, use_block, main);
-
-					write_parameter(in_prefix,
-						build_parameter(String(
-							UTF8("geometry")),
-						sslt_position, pqt_in),
-						UTF8(" = "), use_block, main);
-
-					main << UTF8(";\n");
-
-					continue;
-				}
-
 				if ((parameter.get_size() == pst_one) &&
 					(parameter.get_scale() == 1))
 				{

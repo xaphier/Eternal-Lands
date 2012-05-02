@@ -24,6 +24,7 @@
 #include "abstractterrainmanager.hpp"
 #include "particledata.hpp"
 #include "terrain/simpleterrainmanager.hpp"
+#include "codec/codecmanager.hpp"
 
 namespace eternal_lands
 {
@@ -38,31 +39,44 @@ namespace eternal_lands
 		m_mesh_cache(mesh_cache), m_material_cache(material_cache),
 		m_name(name), m_id(0), m_dungeon(false)
 	{
+		ImageSharedPtr vector_map, normal_map, dudv_map;
 		MaterialSharedPtrVector materials;
-		TerrainData data;
-		String file_name;
+		String file_name, vector_map_name, normal_map_name;
+		String dudv_map_name;
 
 		m_light_tree.reset(new RStarTree());
 		m_object_tree.reset(new RStarTree());
 
 		set_ambient(glm::vec3(0.2f));
-/*
+
 		file_name = FileSystem::get_name_without_extension(name);
 
-		file_name = String(file_name.get() + UTF8("_terrain.dds"));
+		vector_map_name = String(file_name.get() + UTF8("_vector.dds"));
+		normal_map_name = String(file_name.get() + UTF8("_normal.dds"));
+		dudv_map_name = String(file_name.get() + UTF8("_dudv.dds"));
 
-		if (file_system->get_file_readable(file_name))
+		if (file_system->get_file_readable(vector_map_name) &&
+			file_system->get_file_readable(normal_map_name) &&
+			file_system->get_file_readable(dudv_map_name))
 		{
+			vector_map = codec_manager->load_image(vector_map_name,
+				file_system, ImageCompressionTypeSet(), true);
+
+			normal_map = codec_manager->load_image(normal_map_name,
+				file_system, ImageCompressionTypeSet(), true);
+
+			dudv_map = codec_manager->load_image(dudv_map_name,
+				file_system, ImageCompressionTypeSet(), true);
+
 			materials.push_back(get_material_cache()->get_material(
 				String(UTF8("terrain"))));
 
-			data.set_height_map(file_name);
+			m_terrain.reset(new SimpleTerrainManager(vector_map,
+				normal_map, dudv_map, global_vars,
+				mesh_builder, materials));
 
-			m_terrain.reset(new SimpleTerrainManager(
-				codec_manager, file_system, global_vars,
-				mesh_builder, materials, data));
+			std::cout << "terrain build" << std::endl;
 		}
-*/
 	}
 
 	Map::~Map() throw()

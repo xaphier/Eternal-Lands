@@ -13,6 +13,20 @@
      <scale>1</scale>
     </parameter>
     <parameter>
+     <name>terrain_scale</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>terrain_texture_coodrinate</name>
+     <type>vec2</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
      <name>terrain_texture_size</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
@@ -27,13 +41,6 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>texture_coordinate_0</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>world_uv</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
@@ -41,14 +48,18 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>int i;
+   <source>vec3 uv;
+int i;
+
+uv.xy =  terrain_texture_coodrinate * terrain_scale.zw;
+uv.z = 1.0;
 
 for (i = 0; i &lt; clipmap_slices; ++i)
 {
-	terrain_uvs[i] = vec3(texture_coordinate_0.xy, 1.0) * clipmap_matrices[i];
+	terrain_uvs[i] = uv * clipmap_matrices[i];
 }
 
-world_uv = texture_coordinate_0.xy * terrain_texture_size.xy;
+world_uv = uv.xy * terrain_texture_size.xy;
 </source>
    <version>120</version>
   </shader_source_data>

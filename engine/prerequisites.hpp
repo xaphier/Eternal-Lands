@@ -370,6 +370,7 @@ namespace eternal_lands
 	SHARED_PTR(TextureCache);
 	SHARED_PTR(VertexFormat);
 	SHARED_PTR(VertexBuffers);
+	SHARED_PTR(VertexStream);
 	SHARED_PTR(VertexStreams);
 	SHARED_PTR(XmlReader);
 	SHARED_PTR(XmlWriter);

@@ -6,7 +6,14 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>normal</name>
+     <name>morph_normal</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>morph_position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -20,9 +27,9 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>terrain_height_scale</name>
-     <type>float</type>
-     <qualifier>in</qualifier>
+     <name>terrain_texture_coodrinate</name>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
@@ -41,22 +48,96 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformation</name>
+     <name>world_transformations</name>
      <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>instance_count</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>mat2x4 transformation;
+
+world_position = morph_position.xyz;
+world_position.xy = world_position.xy * 2.0 - 1.0;
+world_position = world_position * terrain_vector_scale + position.xyz;
+world_normal = morph_normal.xyz * 2.0 - 1.0;
+
+transformation = world_transformations[gl_InstanceID];
+
+world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
+world_position *= transformation[1].w;
+world_position += transformation[1].xyz;
+world_normal += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_normal) + transformation[0].w * world_normal);
+terrain_texture_coodrinate = position.xy + transformation[1].xy;
+</source>
+   <version>140</version>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>morph_normal</name>
+     <type>vec4</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>
     </parameter>
+    <parameter>
+     <name>morph_position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>terrain_texture_coodrinate</name>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_normal</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_transformations</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>instance_count</size>
+     <scale>1</scale>
+    </parameter>
    </parameters>
-   <source>world_position = position.xyz;
-world_position.z *= terrain_height_scale;
-world_normal.xy = normal.xy;
-world_normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
+   <source>mat2x4 transformation;
 
-world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
-world_position *= world_transformation[1].w;
-world_position += world_transformation[1].xyz;
-world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+world_position = morph_position.xyz;
+world_position.xy = world_position.xy * 2.0 - 1.0;
+world_position = world_position * terrain_vector_scale + position.xyz;
+world_normal = morph_normal.xyz * 2.0 - 1.0;
+
+transformation = world_transformations[0];
+
+world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
+world_position *= transformation[1].w;
+world_position += transformation[1].xyz;
+world_normal += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_normal) + transformation[0].w * world_normal);
+terrain_texture_coodrinate = position.xy + transformation[1].xy;
 </source>
    <version>120</version>
   </shader_source_data>

@@ -114,7 +114,7 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("dudv_scale")),
 				pt_vec2),
 			AutoParameterTypeData(
-				String(UTF8("terrain_scale")), pt_vec3),
+				String(UTF8("terrain_scale")), pt_vec4),
 			AutoParameterTypeData(
 				String(UTF8("terrain_texture_size")), pt_vec4),
 			AutoParameterTypeData(String(UTF8("clipmap_matrices")),

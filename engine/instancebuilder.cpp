@@ -149,7 +149,7 @@ namespace eternal_lands
 			bool triangles;
 
 			triangles = instancing_data.get_mesh_data_tool(
-				)->get_primitive() != pt_triangles;
+				)->get_primitive() == pt_triangles;
 
 			if (triangles)
 			{

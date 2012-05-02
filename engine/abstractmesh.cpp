@@ -231,4 +231,16 @@ namespace eternal_lands
 		m_use_restart_index = use_restart_index;
 	}
 
+	VertexStreamSharedPtr AbstractMesh::get_vertex_stream(
+		const Uint16 index)
+	{
+		VertexStreamSharedPtr result;
+
+		result = boost::make_shared<VertexStream>(
+			get_vertex_elements(index), get_vertex_buffer(index),
+			get_vertex_count(), get_use_simd());
+
+		return result;
+	}
+
 }

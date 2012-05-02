@@ -82,9 +82,9 @@ namespace eternal_lands
 
 				position.x = pos.x;
 				position.y = pos.y;
-				position += get_terrain_offset(
-					height_map->get_pixel_uint(
-						pos.x, pos.y, 0, 0, 0));
+				position += glm::vec3(height_map->get_pixel(
+					pos.x, pos.y, 0, 0, 0)) *
+					get_vector_scale();
 
 				uv = uvs.get_uv(pos.x, pos.y);
 				uv /= size;

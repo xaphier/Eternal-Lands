@@ -157,6 +157,9 @@ namespace eternal_lands
 			virtual AbstractWriteMemorySharedPtr
 				get_vertex_buffer(const Uint16 index) = 0;
 
+			VertexStreamSharedPtr get_vertex_stream(
+				const Uint16 index);
+
 			virtual AbstractWriteMemorySharedPtr get_index_buffer()
 				= 0;
 

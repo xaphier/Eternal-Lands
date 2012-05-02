@@ -148,7 +148,8 @@ namespace eternal_lands
 
 		void load_plane(const String &name, const float scale,
 			const Uint16 tile_size, const bool split,
-			const bool use_simd, const bool center,
+			const bool use_restart_index, const bool use_simd,
+			const bool center,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			glm::vec4 normal, tangent, data, position;
@@ -158,12 +159,9 @@ namespace eternal_lands
 			VertexSemanticTypeSet semantics;
 			Uint32 vertex_count, index_count, i, index, x, y;
 			PrimitiveType primitive;
-			bool use_restart_index;
 
 			vertex_count = tile_size + 1;
 			vertex_count *= tile_size + 1;
-
-			use_restart_index = false;//GLEW_VERSION_3_1;
 
 			if (use_restart_index)
 			{
@@ -176,6 +174,8 @@ namespace eternal_lands
 
 			IndexBuilder::build_plane_indices(indices, tile_size,
 				use_restart_index, 0, split);
+
+			indices.pop_back();
 
 			index_count = indices.size();
 
@@ -379,7 +379,8 @@ namespace eternal_lands
 					reader->get_name()));
 		}
 
-		bool load_named_object(const String &name, const bool use_simd,
+		bool load_named_object(const String &name,
+			const bool use_restart_index, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			if (name == UTF8("quad"))
@@ -390,14 +391,16 @@ namespace eternal_lands
 
 			if (name == UTF8("tile"))
 			{
-				load_plane(name, 3.0f, 2, true, use_simd, false,
+				load_plane(name, 3.0f, 2, true,
+					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("grass"))
 			{
-				load_plane(name, 1.0f, 2, true, use_simd, true,
+				load_plane(name, 1.0f, 2, true,
+					use_restart_index, use_simd, true,
 					mesh_data_tool);
 				return true;
 			}
@@ -411,50 +414,57 @@ namespace eternal_lands
 
 			if (name == UTF8("plane_2"))
 			{
-				load_plane(name, 1.0f, 2, true, use_simd, false,
+				load_plane(name, 1.0f, 2, true, 
+					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_4"))
 			{
-				load_plane(name, 1.0f, 4, true, use_simd, false,
+				load_plane(name, 1.0f, 4, true, 
+					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_8"))
 			{
-				load_plane(name, 1.0f, 8, true, use_simd, false,
+				load_plane(name, 1.0f, 8, true, 
+					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_16"))
 			{
-				load_plane(name, 1.0f, 16, true, use_simd,
-					false, mesh_data_tool);
+				load_plane(name, 1.0f, 16, true,
+					use_restart_index, use_simd, false,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_32"))
 			{
-				load_plane(name, 1.0f, 32, true, use_simd,
-					 false, mesh_data_tool);
+				load_plane(name, 1.0f, 32, true,
+					use_restart_index, use_simd, false,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_64"))
 			{
-				load_plane(name, 1.0f, 64, true, use_simd,
-					 false, mesh_data_tool);
+				load_plane(name, 1.0f, 64, true,
+					use_restart_index, use_simd, false,
+					mesh_data_tool);
 				return true;
 			}
 
 			if (name == UTF8("plane_128"))
 			{
-				load_plane(name, 1.0f, 128, true, use_simd,
-					 false, mesh_data_tool);
+				load_plane(name, 1.0f, 128, true,
+					use_restart_index, use_simd, false,
+					mesh_data_tool);
 				return true;
 			}
 
@@ -491,6 +501,7 @@ namespace eternal_lands
 		try
 		{
 			if (load_named_object(name,
+				get_global_vars()->get_opengl_3_1(),
 				get_global_vars()->get_use_simd(),
 				mesh_data_tool))
 			{

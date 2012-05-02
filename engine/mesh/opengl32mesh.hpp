@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "opengl3mesh.hpp"
+#include "opengl31mesh.hpp"
 
 /**
  * @file
@@ -29,7 +29,7 @@ namespace eternal_lands
 	 * @c class for meshs in a format for OpenGL 3.2 using hardware
 	 * buffers, shaders and instancing.
 	 */
-	class OpenGl32Mesh: public OpenGl3Mesh
+	class OpenGl32Mesh: public OpenGl31Mesh
 	{
 		private:
 

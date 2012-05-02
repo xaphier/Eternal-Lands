@@ -11,15 +11,18 @@
 #include "abstractmesh.hpp"
 #include "logging.hpp"
 #include "exceptions.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
 
-	StateManager::StateManager(): m_color_mask(true), m_texture_unit(0),
-		m_multisample(false), m_blend(false), m_culling(true),
-		m_depth_mask(true), m_depth_test(true), m_scissor_test(false),
-		m_sample_alpha_to_coverage(false), m_polygon_offset_fill(false),
-		m_stencil_test(false)
+	StateManager::StateManager(const GlobalVarsSharedPtr &global_vars):
+		m_global_vars(global_vars), m_color_mask(true),
+		m_restart_index(std::numeric_limits<Uint32>::max()),
+		m_texture_unit(0), m_multisample(false), m_blend(false),
+		m_culling(true), m_depth_mask(true), m_depth_test(true),
+		m_scissor_test(false), m_sample_alpha_to_coverage(false),
+		m_polygon_offset_fill(false), m_stencil_test(false)
 	{
 		m_program_used_texture_units.set();
 	}
@@ -40,6 +43,12 @@ namespace eternal_lands
 		set_sample_alpha_to_coverage(false);
 		set_polygon_offset_fill(false);
 		glCullFace(GL_BACK);
+
+		if (get_global_vars()->get_opengl_3_1())
+		{
+			glEnable(GL_PRIMITIVE_RESTART);
+			set_restart_index(std::numeric_limits<Uint32>::max());
+		}
 	}
 
 	void StateManager::set_mesh(const AbstractMeshSharedPtr &mesh)
@@ -47,6 +56,8 @@ namespace eternal_lands
 		m_mesh = mesh;
 
 		m_mesh->bind(m_used_attributes);
+
+		switch_restart_index(m_mesh->get_restart_index());
 	}
 
 	void StateManager::set_program(const GlslProgramSharedPtr &program)
@@ -217,17 +228,22 @@ namespace eternal_lands
 		}
 	}
 
+	void StateManager::set_restart_index(const Uint32 restart_index)
+	{
+		m_restart_index = restart_index;
+
+		glPrimitiveRestartIndex(m_restart_index);
+	}
+
 	bool StateManager::switch_texture_unit(const Uint16 texture_unit)
 	{
 		RANGE_CECK(texture_unit, m_textures.size(),
 			UTF8("texture_unit value too big"));
 
-#ifndef	NO_STATE_TRACKING
 		if (m_texture_unit == texture_unit)
 		{
 			return false;
 		}
-#endif	/* NO_STATE_TRACKING */
 
 		m_texture_unit = texture_unit;
 
@@ -254,6 +270,11 @@ namespace eternal_lands
 		result |= switch_sample_alpha_to_coverage(false);
 		result |= switch_stencil_test(false);
 		switch_texture_unit(0);
+
+		if (get_global_vars()->get_opengl_3_1())
+		{
+			glDisable(GL_PRIMITIVE_RESTART);
+		}
 
 		return result;
 	}

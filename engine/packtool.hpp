@@ -80,7 +80,7 @@ namespace eternal_lands
 			 * Compress a normalized vector into a 16 bit unsigned
 			 * int.
 			 * @param value The normalized vector to compress.
-			 * @result The compressed normalized vector.
+			 * @return The compressed normalized vector.
 			 */
 			static Uint16 compress_normalized(
 				const glm::vec3 &value);
@@ -89,10 +89,27 @@ namespace eternal_lands
 			 * Uncompress a 16 bit unsigned int into a normalized
 			 * vector.
 			 * @param value The 16 bit unsigned int to uncompress.
-			 * @result The normalized vector.
+			 * @return The normalized vector.
 			 */
 			static glm::vec3 uncompress_normalized(
 				const Uint16 value);
+
+			/**
+			 * Converts to Lambert Azimuthal Equal-Area projection.
+			 * @param value The normalized vector to use.
+			 * @return The Lambert Azimuthal Equal-Area projection
+			 * vector.
+			 */
+			static glm::vec2 encode_normal(const glm::vec3 &value);
+
+			/**
+			 * Converts from Lambert Azimuthal Equal-Area
+			 * projection.
+			 * @param value The Lambert Azimuthal Equal-Area
+			 * projection vector to use.
+			 * @return The normalized vector to use
+			 */
+			static glm::vec3 decode_normal(const glm::vec2 &value);			
 
 			/**
 			 * Unpacks an 8 bit 3_3_2-value into three unsigned
@@ -100,7 +117,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 8 bit unsigned int to unpack.
-			 * @result Vector of three unsigned normalized floats.
+			 * @return Vector of three unsigned normalized floats.
 			 */
 			static glm::vec3 unpack_uint_3_3_2(const bool normalize,
 				const Uint8 value);
@@ -111,7 +128,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 8 bit unsigned int to unpack.
-			 * @result Vector of three unsigned normalized floats.
+			 * @return Vector of three unsigned normalized floats.
 			 */
 			static glm::vec3 unpack_uint_2_3_3_rev(
 				const bool normalize, const Uint8 value);
@@ -122,7 +139,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 16 bit unsigned int to unpack.
-			 * @result Vector of three unsigned normalized floats.
+			 * @return Vector of three unsigned normalized floats.
 			 */
 			static glm::vec3 unpack_uint_5_6_5(const bool normalize,
 				const Uint16 value);
@@ -133,7 +150,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 16 bit unsigned int to unpack.
-			 * @result Vector of three unsigned normalized floats.
+			 * @return Vector of three unsigned normalized floats.
 			 */
 			static glm::vec3 unpack_uint_5_6_5_rev(
 				const bool normalize, const Uint16 value);
@@ -144,7 +161,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 16 bit unsigned int to unpack.
-			 * @result Vector of four unsigned normalized floats.
+			 * @return Vector of four unsigned normalized floats.
 			 */
 			static glm::vec4 unpack_uint_5_5_5_1(
 				const bool normalize, const Uint16 value);
@@ -155,7 +172,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 16 bit unsigned int to unpack.
-			 * @result Vector of four unsigned normalized floats.
+			 * @return Vector of four unsigned normalized floats.
 			 */
 			static glm::vec4 unpack_uint_1_5_5_5_rev(
 				const bool normalize, const Uint16 value);
@@ -166,7 +183,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 16 bit unsigned int to unpack.
-			 * @result Vector of four unsigned normalized floats.
+			 * @return Vector of four unsigned normalized floats.
 			 */
 			static glm::vec4 unpack_uint_4_4_4_4(
 				const bool normalize, const Uint16 value);
@@ -177,7 +194,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 16 bit unsigned int to unpack.
-			 * @result Vector of four unsigned normalized floats.
+			 * @return Vector of four unsigned normalized floats.
 			 */
 			static glm::vec4 unpack_uint_4_4_4_4_rev(
 				const bool normalize, const Uint16 value);
@@ -188,7 +205,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 32 bit unsigned int to unpack.
-			 * @result Vector of four unsigned normalized floats.
+			 * @return Vector of four unsigned normalized floats.
 			 */
 			static glm::vec4 unpack_uint_10_10_10_2(
 				const bool normalize, const Uint32 value);
@@ -199,7 +216,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 32 bit unsigned int to unpack.
-			 * @result Vector of four unsigned normalized floats.
+			 * @return Vector of four unsigned normalized floats.
 			 */
 			static glm::vec4 unpack_uint_2_10_10_10_rev(
 				const bool normalize, const Uint32 value);
@@ -210,7 +227,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 32 bit unsigned int to unpack.
-			 * @result Vector of four signed normalized floats.
+			 * @return Vector of four signed normalized floats.
 			 */
 			static glm::vec4 unpack_sint_10_10_10_2(
 				const bool normalize, const Uint32 value);
@@ -221,7 +238,7 @@ namespace eternal_lands
 			 * @param normalize When true the result values get
 			 * normalized.
 			 * @param value The 32 bit unsigned int to unpack.
-			 * @result Vector of four signed normalized floats.
+			 * @return Vector of four signed normalized floats.
 			 */
 			static glm::vec4 unpack_sint_2_10_10_10_rev(
 				const bool normalize, const Uint32 value);
@@ -233,7 +250,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of three unsigned normalized floats to
 			 * pack.
-			 * @result The packed 8 bit unsigned int.
+			 * @return The packed 8 bit unsigned int.
 			 */
 			static Uint8 pack_uint_3_3_2(const bool normalize,
 				const glm::vec3 &value);
@@ -245,7 +262,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of three unsigned normalized floats to
 			 * pack.
-			 * @result The packed 8 bit unsigned int.
+			 * @return The packed 8 bit unsigned int.
 			 */
 			static Uint8 pack_uint_2_3_3_rev(const bool normalize,
 				const glm::vec3 &value);
@@ -257,7 +274,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of three unsigned normalized floats to
 			 * pack.
-			 * @result The packed 16 bit unsigned int.
+			 * @return The packed 16 bit unsigned int.
 			 */
 			static Uint16 pack_uint_5_6_5(const bool normalize,
 				const glm::vec3 &value);
@@ -269,7 +286,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of three unsigned normalized floats to
 			 * pack.
-			 * @result The packed 16 bit unsigned int.
+			 * @return The packed 16 bit unsigned int.
 			 */
 			static Uint16 pack_uint_5_6_5_rev(const bool normalize,
 				const glm::vec3 &value);
@@ -281,7 +298,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of four unsigned normalized floats to
 			 * pack.
-			 * @result The packed 16 bit unsigned int.
+			 * @return The packed 16 bit unsigned int.
 			 */
 			static Uint16 pack_uint_5_5_5_1(const bool normalize,
 				const glm::vec4 &value);
@@ -293,7 +310,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of four unsigned normalized floats to
 			 * pack.
-			 * @result The packed 16 bit unsigned int.
+			 * @return The packed 16 bit unsigned int.
 			 */
 			static Uint16 pack_uint_1_5_5_5_rev(
 				const bool normalize, const glm::vec4 &value);
@@ -305,7 +322,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of four unsigned normalized floats to
 			 * pack.
-			 * @result The packed 16 bit unsigned int.
+			 * @return The packed 16 bit unsigned int.
 			 */
 			static Uint16 pack_uint_4_4_4_4(const bool normalize,
 				const glm::vec4 &value);
@@ -317,7 +334,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of four unsigned normalized floats to
 			 * pack.
-			 * @result The packed 16 bit unsigned int.
+			 * @return The packed 16 bit unsigned int.
 			 */
 			static Uint16 pack_uint_4_4_4_4_rev(
 				const bool normalize, const glm::vec4 &value);
@@ -329,7 +346,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of four unsigned normalized floats to
 			 * pack.
-			 * @result The packed 32 bit unsigned int.
+			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_uint_10_10_10_2(const bool normalize,
 				const glm::vec4 &value);
@@ -341,7 +358,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of four unsigned normalized floats to
 			 * pack.
-			 * @result The packed 32 bit unsigned int.
+			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_uint_2_10_10_10_rev(
 				const bool normalize, const glm::vec4 &value);
@@ -353,7 +370,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of four signed normalized floats to
 			 * pack.
-			 * @result The packed 32 bit unsigned int.
+			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_sint_10_10_10_2(const bool normalize,
 				const glm::vec4 &value);
@@ -365,7 +382,7 @@ namespace eternal_lands
 			 * normalized.
 			 * @param Vector of four signed normalized floats to
 			 * pack.
-			 * @result The packed 32 bit unsigned int.
+			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_sint_2_10_10_10_rev(
 				const bool normalize, const glm::vec4 &value);

@@ -28,23 +28,12 @@ namespace eternal_lands
 	{
 		OpenGl3Mesh::bind(used_attributes);
 
-		if (get_use_restart_index())
-		{
-			glEnable(GL_PRIMITIVE_RESTART);
-			glPrimitiveRestartIndex(get_restart_index());
-		}
-		else
-		{
-			glDisable(GL_PRIMITIVE_RESTART);
-		}
-
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
 
 	void OpenGl31Mesh::unbind()
 	{
 		OpenGl3Mesh::unbind();
-		glDisable(GL_PRIMITIVE_RESTART);
 
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}

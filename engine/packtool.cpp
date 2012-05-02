@@ -1241,4 +1241,25 @@ namespace eternal_lands
 		}
 	}
 
+	glm::vec2 PackTool::encode_normal(const glm::vec3 &value)
+	{
+		float f;
+
+		f = std::sqrt(8.0f * value.z + 8.0f);
+
+		return glm::vec2(value) / f + 0.5f;
+	}
+
+	glm::vec3 PackTool::decode_normal(const glm::vec2 &value)
+	{
+		glm::vec2 fenc;
+		float f, g;
+
+		fenc = value * 4.0f - 2.0f;
+		f = glm::dot(fenc, fenc);
+		g = std::sqrt(1.0f - f / 4.0f);
+
+		return glm::vec3(fenc * g, 1.0f - f / 2.0f);
+	}
+
 }
