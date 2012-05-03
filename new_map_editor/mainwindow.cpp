@@ -320,8 +320,8 @@ void MainWindow::update_object()
 	QStringList default_materials, materials, object_materials;
 	QString material;
 	EditorObjectDescription object_description;
-	unsigned int id, i;
-	int index, j;
+	unsigned int id, i, index;
+	int j;
 
 	el_gl_widget->get_object_description(object_description);
 

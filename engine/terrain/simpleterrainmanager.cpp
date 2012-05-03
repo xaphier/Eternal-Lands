@@ -94,7 +94,7 @@ namespace eternal_lands
 				vector = vector_map->get_pixel(pos.x, pos.y,
 					0, 0, 0);
 
-				normal = vector_map->get_pixel(pos.x, pos.y,
+				normal = normal_map->get_pixel(pos.x, pos.y,
 					0, 0, 0);
 
 				uv = glm::vec2(dudv_map->get_pixel(pos.x,

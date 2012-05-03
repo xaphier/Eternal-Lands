@@ -228,7 +228,6 @@ namespace eternal_lands
 	class GlobalVars;
 	class GlslProgram;
 	class HardwareBuffer;
-	class HeightMapUvTool;
 	class Image;
 	class IndexUpdateSource;
 	class InstanceBuilder;
@@ -285,6 +284,7 @@ namespace eternal_lands
 	class TextureFont;
 	class TextureFontCache;
 	class Transformation;
+	class UvTool;
 	class VertexElement;
 	class VertexElements;
 	class VertexFormat;

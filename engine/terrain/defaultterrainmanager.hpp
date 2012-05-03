@@ -33,7 +33,7 @@ namespace eternal_lands
 				const MeshBuilderSharedPtr &mesh_builder,
 				const EffectCacheSharedPtr &effect_cache,
 				const bool low_quality, const bool use_simd);
-			void set_terrain_page(const HeightMapUvTool &uvs,
+			void set_terrain_page(const UvTool &uvs,
 				const ImageSharedPtr &height_map,
 				const glm::uvec2 &tile_offset,
 				const glm::uvec2 &terrain_size,

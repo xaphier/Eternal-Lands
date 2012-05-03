@@ -1,5 +1,5 @@
 /****************************************************************************
- *            heightmapuvtool.hpp
+ *            uvtool.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -28,7 +28,7 @@ namespace eternal_lands
 	 *
 	 * @c class for height map.
 	 */
-	class HeightMapUvTool
+	class UvTool
 	{
 		private:
 			Vec2Vector m_uvs;
@@ -76,14 +76,14 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			HeightMapUvTool(const ImageSharedPtr &vector_map,
+			UvTool(const ImageSharedPtr &vector_map,
 				const glm::vec3 &offset_scale,
 				const glm::vec2 &position_scale);
 
 			/**
 			 * Default destructor.
 			 */
-			~HeightMapUvTool() throw();
+			~UvTool() throw();
 
 			void relaxed_uv(const bool use_simd);
 			void convert();

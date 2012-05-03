@@ -18,7 +18,7 @@
 #include "effectdescription.hpp"
 #include "meshbuilder.hpp"
 #include "globalvars.hpp"
-#include "heightmapuvtool.hpp"
+#include "uvtool.hpp"
 
 namespace eternal_lands
 {
@@ -50,7 +50,7 @@ namespace eternal_lands
 	{
 	}
 
-	void DefaultTerrainManager::set_terrain_page(const HeightMapUvTool &uvs,
+	void DefaultTerrainManager::set_terrain_page(const UvTool &uvs,
 		const ImageSharedPtr &height_map, const glm::uvec2 &tile_offset,
 		const glm::uvec2 &terrain_size,
 		const Uint32Vector &index_counts, const Uint32 vertex_count,

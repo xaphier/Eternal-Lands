@@ -1,11 +1,11 @@
 /****************************************************************************
- *            heightmapuvtool.cpp
+ *            uvtool.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "heightmapuvtool.hpp"
+#include "uvtool.hpp"
 #include "image.hpp"
 #include "abstractterrainmanager.hpp"
 #include "simd/simd.hpp"
@@ -27,17 +27,17 @@ namespace eternal_lands
 
 	}
 
-	HeightMapUvTool::HeightMapUvTool(const ImageSharedPtr &vector_map,
+	UvTool::UvTool(const ImageSharedPtr &vector_map,
 		const glm::vec3 &offset_scale, const glm::vec2 &position_scale)
 	{
 		build_data(vector_map, offset_scale, position_scale);
 	}
 
-	HeightMapUvTool::~HeightMapUvTool() throw()
+	UvTool::~UvTool() throw()
 	{
 	}
 
-	void HeightMapUvTool::build_data(const ImageSharedPtr &vector_map,
+	void UvTool::build_data(const ImageSharedPtr &vector_map,
 		const glm::vec3 &offset_scale, const glm::vec2 &position_scale,
 		const Sint32 x, const Sint32 y)
 	{
@@ -85,7 +85,7 @@ namespace eternal_lands
 		m_half_distances.push_back(half_distances[1]);
 	}
 
-	void HeightMapUvTool::build_data(const ImageSharedPtr &vector_map,
+	void UvTool::build_data(const ImageSharedPtr &vector_map,
 		const glm::vec3 &offset_scale, const glm::vec2 &position_scale)
 	{
 		Sint32 width, height, x, y;
@@ -109,7 +109,7 @@ namespace eternal_lands
 		}
 	}
 
-	void HeightMapUvTool::relax(const AlignedVec4Array &half_distances,
+	void UvTool::relax(const AlignedVec4Array &half_distances,
 		const Vec2Vector &uvs, const float damping,
 		const float clamping, const Uint32 width, const Uint32 index,
 		Vec2Vector &new_uvs)
@@ -140,7 +140,7 @@ namespace eternal_lands
 		new_uvs[index] = uv;
 	}
 
-	void HeightMapUvTool::relax_edge(
+	void UvTool::relax_edge(
 		const AlignedVec4Array &half_distances, const Vec2Vector &uvs,
 		const glm::uvec2 &position, const glm::uvec2 &size,
 		const float damping, const float clamping, Vec2Vector &new_uvs)
@@ -189,7 +189,7 @@ namespace eternal_lands
 		}
 	}
 
-	void HeightMapUvTool::relax_default(
+	void UvTool::relax_default(
 		const AlignedVec4Array &half_distances, const Vec2Vector &uvs,
 		const float damping, const float clamping, const Uint32 width,
 		const Uint32 height, Vec2Vector &new_uvs)
@@ -240,7 +240,7 @@ namespace eternal_lands
 		}
  	}
 
-	void HeightMapUvTool::relax_sse2(
+	void UvTool::relax_sse2(
 		const AlignedVec4Array &half_distances, const Vec2Vector &uvs,
 		const float damping, const float clamping, const Uint32 width,
 		const Uint32 height, Vec2Vector &new_uvs)
@@ -278,7 +278,7 @@ namespace eternal_lands
 		}
 	}
 
-	void HeightMapUvTool::relaxed_uv(const bool use_simd)
+	void UvTool::relaxed_uv(const bool use_simd)
 	{
 		Vec2Vector new_uvs;
 		Uint32 i;
@@ -310,7 +310,7 @@ namespace eternal_lands
 	/**
 	 * Converts to signed rg 8 but image
 	 */
-	void HeightMapUvTool::convert()
+	void UvTool::convert()
 	{
 		glm::vec2 uv, max, tmp, diff;
 		glm::ivec2 temp;
