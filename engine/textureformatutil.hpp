@@ -310,6 +310,7 @@ namespace eternal_lands
 				const TextureFormatType texture_format);
 			static bool get_has_format(
 				const TextureFormatType texture_format);
+			static Uint32 get_texture_format_count();
 
 	};
 

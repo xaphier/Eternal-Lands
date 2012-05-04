@@ -693,6 +693,11 @@ namespace eternal_lands
 				"TextureFormatUtil")));
 	}
 
+	Uint32 TextureFormatUtil::get_texture_format_count()
+	{
+		return texture_format_datas_count;
+	}
+
 	OutStream& operator<<(OutStream &str, const TextureFormatType value)
 	{
 		str << TextureFormatUtil::get_str(value);
