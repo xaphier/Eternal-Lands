@@ -329,7 +329,7 @@ namespace eternal_lands
 				GL_DEPTH_COMPONENT, 0, 32, false),
 			TextureFormatTypeData(String(UTF8("depth24_stencil8")),
 				GL_DEPTH24_STENCIL8, GL_UNSIGNED_INT_24_8,
-				GL_DEPTH_COMPONENT, 0, 32, true),
+				GL_DEPTH_STENCIL, 0, 32, true),
 			TextureFormatTypeData(String(UTF8("depth32f")),
 				GL_DEPTH_COMPONENT32F, GL_FLOAT,
 				GL_DEPTH_COMPONENT, 0, 32, false),
