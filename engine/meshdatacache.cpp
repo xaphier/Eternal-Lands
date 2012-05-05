@@ -175,8 +175,6 @@ namespace eternal_lands
 			IndexBuilder::build_plane_indices(indices, tile_size,
 				use_restart_index, 0, split);
 
-			indices.pop_back();
-
 			index_count = indices.size();
 
 			semantics.insert(vst_position);

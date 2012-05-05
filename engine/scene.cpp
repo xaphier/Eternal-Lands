@@ -253,6 +253,7 @@ namespace eternal_lands
 	{
 		Uint16 mipmaps;
 		TextureTargetType target;
+		TextureFormatType format;
 
 		mipmaps = 0;
 
@@ -265,10 +266,13 @@ namespace eternal_lands
 			{
 				mipmaps++;
 			}
+
+			format = tft_rgb8;
 		}
 		else
 		{
 			target = ttt_texture_3d;
+			format = tft_r5g6b5;
 		}
 
 		m_clipmap.rebuild(glm::vec2(256.0f),
@@ -284,7 +288,7 @@ namespace eternal_lands
 				get_global_vars()->get_clipmap_size(),
 				get_global_vars()->get_clipmap_size(),
 				m_clipmap.get_slices(), mipmaps, target,
-				tft_rgb8, false);
+				format, false);
 
 		m_clipmap.set_centered(get_global_vars(
 			)->get_clipmap_centered());

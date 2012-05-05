@@ -22,7 +22,7 @@ namespace eternal_lands
 				case GL_INVALID_ENUM:
 					return String(UTF8("invalid enum"));
 				case GL_INVALID_VALUE:
-					return String(UTF8("invalid enum"));
+					return String(UTF8("invalid value"));
 				case GL_INVALID_OPERATION:
 					return String(
 						UTF8("invalid operation"));
