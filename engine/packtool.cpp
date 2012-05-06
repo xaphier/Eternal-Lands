@@ -1262,4 +1262,49 @@ namespace eternal_lands
 		return glm::vec3(fenc * g, 1.0f - f / 2.0f);
 	}
 
+	glm::vec2 PackTool::encode_normal_optimized(const glm::vec3 &value)
+	{
+		float f;
+
+		f = std::sqrt(8.0f * value.z + 8.0f);
+
+		return 1.007843137f * glm::vec2(value) / f + 0.5f;
+	}
+
+	glm::vec3 PackTool::decode_normal_optimized(const glm::vec2 &value)
+	{
+		glm::vec2 fenc;
+		float f, g;
+
+		fenc = value * 3.968871595f - 1.984435798f;
+		f = glm::dot(fenc, fenc);
+		g = std::sqrt(1.0f - f / 4.0f);
+
+		return glm::vec3(fenc * g, 1.0f - f / 2.0f);
+	}
+
+	glm::uvec2 PackTool::encode_normal_optimized_uint8(
+		const glm::vec3 &value)
+	{
+		glm::uvec2 result;
+		float f;
+
+		f = std::sqrt(8.0f * value.z + 8.0f);
+
+		return glm::uvec2(257.0f * glm::vec2(value) / f + 128.0f);
+	}
+
+	glm::vec3 PackTool::decode_normal_optimized_uint8(
+		const glm::uvec2 &value)
+	{
+		glm::vec2 fenc;
+		float f, g;
+
+		fenc = glm::vec2(value) * 0.015564202f - 1.984435798f;
+		f = glm::dot(fenc, fenc);
+		g = std::sqrt(1.0f - f / 4.0f);
+
+		return glm::vec3(fenc * g, 1.0f - f / 2.0f);
+	}
+
 }

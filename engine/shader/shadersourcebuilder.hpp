@@ -67,6 +67,14 @@ namespace eternal_lands
 				OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				StringVariantMap &values) const;
+			void build_light_index_lights(
+				const ShaderSourceBuildData &data,
+				const ParameterSizeTypeUint16Map &array_sizes,
+				const ShaderSourceParameterVector &locals, 
+				const String &indent, const bool shadow,
+				OutStream &main, OutStream &functions,
+				ShaderSourceParameterVector &globals,
+				StringVariantMap &values) const;
 			bool build_function(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,

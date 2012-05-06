@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <glsl_program>
- <name>font</name>
+ <name>single color</name>
  <vertex_shader>#version 120
 
 attribute vec3 position;

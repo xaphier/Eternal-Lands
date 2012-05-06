@@ -237,16 +237,14 @@ namespace eternal_lands
 		}
 
 		shadow_map_count = m_scene_view.get_shadow_map_count();
-		samples = 0;
+		samples = 4;
 
 		m_shadow_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
 				String(UTF8("Shadow")),	shadow_map_width,
 				shadow_map_height, shadow_map_count,
 				mipmaps, samples, ttt_texture_2d_array,
-				tft_r32f,
-				get_global_vars()->get_use_layered_rendering(),
-				true);
+				tft_r32f, false, true);
 	}
 
 	void Scene::update_terrain_map()
@@ -781,6 +779,11 @@ namespace eternal_lands
 		{
 			glPolygonOffset(1.25f, 32.0f);
 		}
+		else
+		{
+			m_state_manager.switch_multisample(true);
+			glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+		}
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -804,73 +807,7 @@ namespace eternal_lands
 
 		unbind_all();
 
-		DEBUG_CHECK_GL_ERROR();
-
-		m_shadow_frame_buffer->unbind();
-
-		DEBUG_CHECK_GL_ERROR();
-
-		m_state_manager.switch_texture(stt_shadow,
-			m_shadow_frame_buffer->get_texture());
-
-		DEBUG_CHECK_GL_ERROR();
-
-		if (m_scene_view.get_exponential_shadow_maps())
-		{
-			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-		}
-
-		DEBUG_CHECK_GL_ERROR();
-
-		glViewport(m_scene_view.get_view_port()[0],
-			m_scene_view.get_view_port()[1],
-			m_scene_view.get_view_port()[2],
-			m_scene_view.get_view_port()[3]);
-
-		DEBUG_CHECK_GL_ERROR();
-	}
-
-	void Scene::draw_all_shadows()
-	{
-		Uint32 width, height;
-
-		DEBUG_CHECK_GL_ERROR();
-
-		if (!m_scene_view.get_exponential_shadow_maps())
-		{
-			glPolygonOffset(1.25f, 32.0f);
-		}
-
-		DEBUG_CHECK_GL_ERROR();
-
-		width = m_shadow_frame_buffer->get_width();
-		height = m_shadow_frame_buffer->get_height();
-
-		m_shadow_frame_buffer->bind(0);
-		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
-
-		glViewport(0, 0, width, height);
-		DEBUG_CHECK_GL_ERROR();
-
-		m_state_manager.switch_polygon_offset_fill(
-			!m_scene_view.get_exponential_shadow_maps());
-		m_state_manager.switch_color_mask(glm::bvec4(
-			m_scene_view.get_exponential_shadow_maps()));
-
-		m_scene_view.set_shadow_view();
-
-		BOOST_FOREACH(const RenderObjectData &object,
-			m_shadow_objects.get_objects())
-		{
-			draw_object(object.get_object(), ept_shadow, 0,
-				object.get_distance(), false);
-		}
-
-		m_program_vars_id++;
-
-		DEBUG_CHECK_GL_ERROR();
-
-		unbind_all();
+		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1201,16 +1138,7 @@ namespace eternal_lands
 		{
 			STRING_MARKER(UTF8("drawing mode '%1%'"),
 				UTF8("shadows"));
-
-			if (get_global_vars()->get_use_layered_rendering() &&
-				(m_scene_view.get_shadow_map_count() > 1))
-			{
-				draw_all_shadows();
-			}
-			else
-			{
-				draw_all_shadows_array();
-			}
+			draw_all_shadows_array();
 		}
 
 		if (m_clipmap.update(glm::vec3(m_scene_view.get_camera()),

@@ -67,12 +67,19 @@ namespace eternal_lands
 		private:
 			AbstractMeshSharedPtr m_mesh;
 			boost::array<GlslProgramSharedPtr, 64> m_programs;
+			boost::array<GlslProgramSharedPtr, 16>
+				m_multisample_programs;
 
 			void build_filter(const StringVariantMap &values,
 				const Uint16 version,
 				const Uint16 channel_count,
 				const Uint16 half_taps_minus_one,
 				const bool layer, const bool vertical);
+			void build_multisample_filter(
+				const StringVariantMap &values,
+				const Uint16 version,
+				const Uint16 channel_count,
+				const Uint16 sample_count);
 			static String get_vertex_str(const Uint16 version);
 			static String get_fragment_str(const Uint16 version,
 				const Uint16 channel_count,
@@ -80,6 +87,12 @@ namespace eternal_lands
 				const bool layer, const bool vertical);
 			static Uint16 get_scale_offset(const FilterType type,
 				glm::vec4 &scale, glm::vec4 &offset);
+			static String get_multisample_vertex_str(
+				const Uint16 version);
+			static String get_multisample_fragment_str(
+				const Uint16 version,
+				const Uint16 channel_count,
+				const Uint16 sample_count);
 
 			static inline Uint16 get_index(
 				const Uint16 channel_count,
@@ -93,7 +106,7 @@ namespace eternal_lands
 				assert(half_taps_minus_one < 4);
 
 				result = channel_count - 1;
-				result = half_taps_minus_one << 2;
+				result += half_taps_minus_one << 2;
 
 				if (layer)
 				{
@@ -103,6 +116,40 @@ namespace eternal_lands
 				if (vertical)
 				{
 					result += 1 << 5;
+				}
+
+				return result;
+			}
+
+			static inline Uint16 get_multisample_index(
+				const Uint16 channel_count,
+				const Uint16 sample_count)
+			{
+				Uint16 result;
+
+				assert(channel_count > 0);
+				assert(channel_count < 5);
+				assert((sample_count != 2) &&
+					(sample_count != 4) &&
+					(sample_count != 8) &&
+					(sample_count != 16));
+
+				result = channel_count - 1;
+
+				switch (sample_count)
+				{
+					case 2:
+						result += 0 << 2;
+						break;
+					case 4:
+						result += 1 << 2;
+						break;
+					case 8:
+						result += 2 << 2;
+						break;
+					case 16:
+						result += 3 << 2;
+						break;
 				}
 
 				return result;
@@ -122,6 +169,9 @@ namespace eternal_lands
 				const glm::vec4 &dest, const Uint32 width,
 				const Uint32 height, const Uint16 channel_count,
 				const FilterType type, const bool vertical,
+				StateManager &state_manager);
+			void bind(const Uint16 channel_count,
+				const Uint16 sample_count,
 				StateManager &state_manager);
 
 	};

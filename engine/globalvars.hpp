@@ -64,7 +64,6 @@ namespace eternal_lands
 			bool m_use_alias;
 			bool m_use_in_out;
 			bool m_use_functions;
-			bool m_use_layered_rendering;
 			bool m_low_quality_terrain;
 			bool m_clipmap_centered;
 
@@ -177,12 +176,6 @@ namespace eternal_lands
 			inline void set_use_functions(const bool use_functions)
 			{
 				m_use_functions = use_functions;
-			}
-
-			inline void set_use_layered_rendering(
-				const bool use_layered_rendering)
-			{
-				m_use_layered_rendering = use_layered_rendering;
 			}
 
 			inline void set_low_quality_terrain(
@@ -379,11 +372,6 @@ namespace eternal_lands
 			inline bool get_use_functions() const
 			{
 				return m_use_functions;
-			}
-
-			inline bool get_use_layered_rendering() const
-			{
-				return m_use_layered_rendering;
 			}
 
 			inline bool get_low_quality_terrain() const

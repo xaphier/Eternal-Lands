@@ -14,7 +14,7 @@
 	</effect>
 	<effect>
 		<name>lava</name>
-		<world_transformation>terrain</world_transformation>
+		<world_transformation>static</world_transformation>
 		<texture_coodrinates>lava</texture_coodrinates>
 		<albedo_mapping>lava</albedo_mapping>
 		<normal_mapping>disabled</normal_mapping>
@@ -77,7 +77,7 @@
 		<world_transformation>terrain</world_transformation>
 		<texture_coodrinates>terrain</texture_coodrinates>
 		<albedo_mapping>terrain</albedo_mapping>
-		<normal_mapping>terrain</normal_mapping>
+		<normal_mapping>disabled</normal_mapping>
 		<specular_mapping>disabled</specular_mapping>
 		<emission_mapping>disabled</emission_mapping>
 		<receives_shadows>true</receives_shadows>

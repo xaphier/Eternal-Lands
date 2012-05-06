@@ -63,6 +63,12 @@ namespace eternal_lands
 				GL_TEXTURE_CUBE_MAP_ARRAY),
 			TextureTargetTypeData(String(UTF8("texture_rectangle")),
 				GL_TEXTURE_RECTANGLE),
+			TextureTargetTypeData(
+				String(UTF8("texture_2d_multisample")),
+				GL_TEXTURE_2D_MULTISAMPLE),
+			TextureTargetTypeData(
+				String(UTF8("texture_2d_multisample_array")),
+				GL_TEXTURE_2D_MULTISAMPLE_ARRAY)
 		};
 
 		const Uint32 texture_target_datas_count =

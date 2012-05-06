@@ -45,6 +45,7 @@ option(BUILD_NATIVE "Optimize for native system, use only for private builds" of
 option(BUILD_SSE "Build using optinal SSE support" on)
 option(BUILD_MATERIAL_EDITOR "Build editor for materials, needs Qt4" off)
 option(BUILD_MAP_EDITOR "Build map editor, needs Qt4" off)
+option(BUILD_TERRAIN_TOOL "Build terrain tool" on)
 
 IF (MSVC)
 	CHECK_CXX_COMPILER_FLAG(/arch:SSE2 msvc_sse2)
@@ -197,6 +198,10 @@ ENDIF (BUILD_MATERIAL_EDITOR)
 IF (BUILD_MAP_EDITOR)
 	add_subdirectory(new_map_editor)
 ENDIF (BUILD_MAP_EDITOR)
+
+IF (BUILD_TERRAIN_TOOL)
+	add_subdirectory(terrain_tool)
+ENDIF (BUILD_TERRAIN_TOOL)
 
 IF (BUILD_TESTS)
 	add_subdirectory(tests)

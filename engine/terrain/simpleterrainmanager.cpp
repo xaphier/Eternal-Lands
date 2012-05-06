@@ -20,25 +20,10 @@
 #include "globalvars.hpp"
 #include "vertexstream.hpp"
 #include "abstractmesh.hpp"
-
-#include "logging.hpp"
 #include "alignedvec4array.hpp"
 
 namespace eternal_lands
 {
-
-	namespace
-	{
-
-		static const glm::vec2 position_scales = glm::vec2(0.25f);
-
-	}
-
-	const glm::vec2 &SimpleTerrainManager::get_position_scale(
-		const bool low_quality)
-	{
-		return position_scales;
-	}
 
 	SimpleTerrainManager::SimpleTerrainManager(
 		const ImageSharedPtr &vector_map,
@@ -63,10 +48,12 @@ namespace eternal_lands
 	void SimpleTerrainManager::set_terrain_page(
 		const ImageSharedPtr &vector_map,
 		const ImageSharedPtr &normal_map,
-		const ImageSharedPtr &dudv_map, const glm::uvec2 &tile_offset,
+		const ImageSharedPtr &dudv_map,
+		const AbstractMeshSharedPtr &mesh,
+		const glm::uvec2 &tile_offset,
 		const glm::vec2 &position_scale,
 		const Uint32 vertex_count, const Uint32 index_count,
-		const AbstractMeshSharedPtr &mesh)
+		const bool low_quality)
 	{
 		VertexStreamSharedPtr vertex_stream;
 		AlignedVec4Array vectors, normals;
@@ -75,7 +62,7 @@ namespace eternal_lands
 		glm::vec3 min, max, position;
 		glm::vec2 uv;
 		glm::ivec2 pos;
-		Uint16 x, y;
+		Uint16 x, y, tile_size;
 
 		vertex_stream = mesh->get_vertex_stream(1);
 
@@ -85,9 +72,11 @@ namespace eternal_lands
 		vectors.reserve(vertex_stream->get_vertex_count());
 		normals.reserve(vertex_stream->get_vertex_count());
 
-		for (y = 0; y <= get_tile_size(); ++y)
+		tile_size = get_tile_size();
+
+		for (y = 0; y <= tile_size; ++y)
 		{
-			for (x = 0; x <= get_tile_size(); ++x)
+			for (x = 0; x <= tile_size; ++x)
 			{
 				pos = tile_offset + glm::uvec2(x, y);
 
@@ -150,7 +139,7 @@ namespace eternal_lands
 		Uint32 index;
 		VertexSemanticTypeSet semantics;
 
-		position_scale = get_position_scale(low_quality);
+		position_scale = get_position_scale();
 
 		vertex_count = get_tile_size() + 1;
 		vertex_count *= get_tile_size() + 1;
@@ -226,8 +215,9 @@ namespace eternal_lands
 				mesh_clone = mesh->clone(0x01, true);
 
 				set_terrain_page(vector_map, normal_map,
-					dudv_map, tile_offset, position_scale,
-					vertex_count, index_count, mesh_clone);
+					dudv_map, mesh_clone, tile_offset,
+					position_scale, vertex_count,
+					index_count, low_quality);
 
 				transformation.set_translation(
 					glm::vec3(glm::vec2(tile_offset) *

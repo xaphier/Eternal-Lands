@@ -93,7 +93,6 @@ namespace eternal_lands
 			void cull_all_shadows();
 			void draw_shadows(const Uint16 index);
 			void draw_shadows_array(const Uint16 index);
-			void draw_all_shadows();
 			void draw_all_shadows_array();
 			void draw_depth();
 			void draw_default();

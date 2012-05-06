@@ -46,7 +46,7 @@ vec2 lod_uv, ddx, ddy;
 float occluder, light_distance;
 int i;
 
-const float light_shadow_bias = -0.01;
+const float light_shadow_bias = 0.05;
 const float over_darkening_factor = 5.0;
 
 shadow = 1.0;
@@ -63,6 +63,11 @@ for (i = 0; i &lt; shadow_map_count; ++i)
 	if (all(lessThan(abs(uv - vec3(0.5)), vec3(0.4995))))
 	{
 		occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), ddx, ddy).r;
+		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2(-1, -1)).r;
+		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2(-1,  1)).r;
+		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2( 1, -1)).r;
+		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2( 1,  1)).r;
+		occluder *= 0.2;
 
 		light_distance = abs(shadow_camera.z - world_position.z) + light_shadow_bias;
 

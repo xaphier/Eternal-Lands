@@ -1535,17 +1535,6 @@ extern "C" void engine_set_use_functions(const int value)
 	}
 }
 
-extern "C" void engine_set_use_layered_rendering(const int value)
-{
-	global_vars->set_use_layered_rendering(value != 0);
-
-	if (scene.get() != 0)
-	{
-		scene->get_scene_resources().get_effect_cache()->reload();
-		scene->shadow_map_change();
-	}
-}
-
 extern "C" void engine_set_low_quality_terrain(const int value)
 {
 	global_vars->set_low_quality_terrain(value != 0);

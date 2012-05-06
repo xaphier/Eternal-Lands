@@ -327,12 +327,6 @@ namespace eternal_lands
 			case 2:
 				shadow_map_size = 2048;
 				break;
-			case 3:
-				shadow_map_size = 3072;
-				break;
-			case 4:
-				shadow_map_size = 4096;
-				break;
 			default:
 				shadow_map_size = 512;
 				break;

@@ -25,7 +25,6 @@
 		<shader_source>shaders/sources/shadow_uv.xml</shader_source>
 		<shader_source>shaders/sources/shadow_mapping.xml</shader_source>
 		<shader_source>shaders/sources/shadow_filtering_mapping.xml</shader_source>
-		<shader_source>shaders/sources/transparent.xml</shader_source>
 		<shader_source>shaders/sources/simple_light.xml</shader_source>
 		<shader_source>shaders/sources/diffuse_light.xml</shader_source>
 		<shader_source>shaders/sources/specular_light.xml</shader_source>
@@ -69,7 +68,7 @@
 		<fog>default</fog>
 		<transparent>default</transparent>
 		<vertex_light>diffuse</vertex_light>
-<!--		<fragment_light>Cook-Torrance</fragment_light>	-->
+<!--		<fragment_light>Cook-Torrance</fragment_light>-->
 		<fragment_light>diffuse</fragment_light>
 		<shadow_map>default</shadow_map>
 		<tbn_matrix>default</tbn_matrix>

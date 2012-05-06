@@ -98,7 +98,7 @@ namespace eternal_lands
 			 * Converts to Lambert Azimuthal Equal-Area projection.
 			 * @param value The normalized vector to use.
 			 * @return The Lambert Azimuthal Equal-Area projection
-			 * vector.
+			 * vector (0..1).
 			 */
 			static glm::vec2 encode_normal(const glm::vec3 &value);
 
@@ -106,10 +106,50 @@ namespace eternal_lands
 			 * Converts from Lambert Azimuthal Equal-Area
 			 * projection.
 			 * @param value The Lambert Azimuthal Equal-Area
-			 * projection vector to use.
+			 * projection vector to use (0..1).
 			 * @return The normalized vector to use
 			 */
-			static glm::vec3 decode_normal(const glm::vec2 &value);			
+			static glm::vec3 decode_normal(const glm::vec2 &value);
+
+			/**
+			 * Converts to Lambert Azimuthal Equal-Area projection.
+			 * Optimized for Uint8 values (0..255)
+			 * @param value The normalized vector to use.
+			 * @return The Lambert Azimuthal Equal-Area projection
+			 * vector (0..1).
+			 */
+			static glm::vec2 encode_normal_optimized(
+				const glm::vec3 &value);
+
+			/**
+			 * Converts from Lambert Azimuthal Equal-Area
+			 * projection. Optimized for Uint8 values (0..255)
+			 * @param value The Lambert Azimuthal Equal-Area
+			 * projection vector to use (0..1).
+			 * @return The normalized vector.
+			 */
+			static glm::vec3 decode_normal_optimized(
+				const glm::vec2 &value);
+
+			/**
+			 * Converts to Lambert Azimuthal Equal-Area projection.
+			 * Optimized for Uint8 values (0..255)
+			 * @param value The normalized vector to use.
+			 * @return The Lambert Azimuthal Equal-Area projection
+			 * vector as Uint8 values (0..255)
+			 */
+			static glm::uvec2 encode_normal_optimized_uint8(
+				const glm::vec3 &value);
+
+			/**
+			 * Converts from Lambert Azimuthal Equal-Area
+			 * projection. Optimized for Uint8 values (0..255)
+			 * @param value The Lambert Azimuthal Equal-Area
+			 * projection vector to use as Uint8 values (0..255)
+			 * @return The normalized vector to use
+			 */
+			static glm::vec3 decode_normal_optimized_uint8(
+				const glm::uvec2 &value);
 
 			/**
 			 * Unpacks an 8 bit 3_3_2-value into three unsigned

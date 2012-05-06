@@ -107,104 +107,109 @@ namespace eternal_lands
 			TextureWrapType m_wrap_r;
 			Uint16 m_mipmap_count;
 			Uint16 m_used_mipmaps;
+			Uint16 m_samples;
 			bool m_rebuild;
 
-			void set_texture_image_1d(const Uint16 mipmap,
-				const Uint32 width,
+			void set_texture_image_1d(const Uint32 width,
+				const Uint16 mipmap,
 				const ImageSharedPtr &image);
-			void set_texture_image_2d(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height,
+			void set_texture_image_2d(const Uint32 width,
+				const Uint32 height, const Uint16 mipmap,
 				const ImageSharedPtr &image);
-			void set_texture_image_3d(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height,
-				const Uint32 depth,
-				const ImageSharedPtr &image);
-			void set_texture_image_cube_map(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height,
-				const ImageSharedPtr &image);
-			void set_texture_image_cube_map_face(
-				const Uint16 mipmap, const Uint32 width,
-				const Uint32 height, const CubeMapFaceType face,
-				const ImageSharedPtr &image);
-			void set_texture_image_cube_map(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height,
-				const Uint32 depth,
-				const ImageSharedPtr &image);
-			void set_texture_image_cube_map_face(
-				const Uint16 mipmap, const Uint32 width,
+			void set_texture_image_3d(const Uint32 width,
 				const Uint32 height, const Uint32 depth,
+				const Uint16 mipmap,
+				const ImageSharedPtr &image);
+			void set_texture_image_cube_map(const Uint32 width,
+				const Uint32 height, const Uint16 mipmap,
+				const ImageSharedPtr &image);
+			void set_texture_image_cube_map_face(const Uint32 width,
+				const Uint32 height, const Uint16 mipmap,
 				const CubeMapFaceType face,
 				const ImageSharedPtr &image);
-			void set_texture_image_2d_layer(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height,
-				const Uint32 layer,
+			void set_texture_image_cube_map(const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const Uint16 mipmap,
 				const ImageSharedPtr &image);
-			void set_texture_image_1d(const Uint16 texture_mipmap,
-				const Uint16 image_mipmap, const Uint32 width,
+			void set_texture_image_cube_map_face(const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const Uint16 mipmap, const CubeMapFaceType face,
+				const ImageSharedPtr &image);
+			void set_texture_image_2d_layer(const Uint32 width,
+				const Uint32 height, const Uint32 layer,
+				const Uint16 mipmap,
+				const ImageSharedPtr &image);
+			void set_texture_image_1d(const Uint32 width,
+				const Uint16 texture_mipmap,
+				const Uint16 image_mipmap,
 				const ImageSharedPtr &image,
 				const glm::uvec3 &texture_position,
 				const glm::uvec3 &image_position);
-			void set_texture_image_2d(const Uint16 texture_mipmap,
-				const Uint16 image_mipmap, const Uint32 width,
+			void set_texture_image_2d(const Uint32 width,
 				const Uint32 height,
-				const ImageSharedPtr &image,
-				const glm::uvec3 &texture_position,
-				const glm::uvec3 &image_position);
-			void set_texture_image_3d(const Uint16 texture_mipmap,
-				const Uint16 image_mipmap, const Uint32 width,
-				const Uint32 height, const Uint32 depth,
-				const ImageSharedPtr &image,
-				const glm::uvec3 &texture_position,
-				const glm::uvec3 &image_position);
-			void set_texture_image_cube_map(
 				const Uint16 texture_mipmap,
-				const Uint16 image_mipmap, const Uint32 width,
+				const Uint16 image_mipmap,
+				const ImageSharedPtr &image,
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
+			void set_texture_image_3d(const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const Uint16 texture_mipmap,
+				const Uint16 image_mipmap,
+				const ImageSharedPtr &image,
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
+			void set_texture_image_cube_map(const Uint32 width,
 				const Uint32 height,
+				const Uint16 texture_mipmap,
+				const Uint16 image_mipmap,
 				const ImageSharedPtr &image,
 				const glm::uvec3 &texture_position,
 				const glm::uvec3 &image_position);
-			void set_texture_image_cube_map_face(
+			void set_texture_image_cube_map_face(const Uint32 width,
+				const Uint32 height,
 				const Uint16 texture_mipmap,
-				const Uint16 image_mipmap, const Uint32 width,
-				const Uint32 height, const CubeMapFaceType face,
-				const ImageSharedPtr &image,
-				const glm::uvec3 &texture_position,
-				const glm::uvec3 &image_position);
-			void set_texture_image_cube_map(
-				const Uint16 texture_mipmap,
-				const Uint16 image_mipmap, const Uint32 width,
-				const Uint32 height, const Uint32 depth,
-				const ImageSharedPtr &image,
-				const glm::uvec3 &texture_position,
-				const glm::uvec3 &image_position);
-			void set_texture_image_cube_map_face(
-				const Uint16 texture_mipmap,
-				const Uint16 image_mipmap, const Uint32 width,
-				const Uint32 height, const Uint32 depth,
+				const Uint16 image_mipmap,
 				const CubeMapFaceType face,
 				const ImageSharedPtr &image,
 				const glm::uvec3 &texture_position,
 				const glm::uvec3 &image_position);
-			void set_texture_image_1d(const Uint16 mipmap,
-				const Uint32 width);
-			void set_texture_image_2d(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height);
-			void set_texture_image_3d(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height,
-				const Uint32 depth);
-			void set_texture_image_cube_map(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height);
-			void set_texture_image_cube_map_face(
-				const Uint16 mipmap, const Uint32 width,
-				const Uint32 height,
-				const CubeMapFaceType face);
-			void set_texture_image_cube_map(const Uint16 mipmap,
-				const Uint32 width, const Uint32 height,
-				const Uint32 depth);
-			void set_texture_image_cube_map_face(
-				const Uint16 mipmap, const Uint32 width,
+			void set_texture_image_cube_map(const Uint32 width,
 				const Uint32 height, const Uint32 depth,
+				const Uint16 texture_mipmap,
+				const Uint16 image_mipmap,
+				const ImageSharedPtr &image,
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
+			void set_texture_image_cube_map_face(const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const Uint16 texture_mipmap,
+				const Uint16 image_mipmap,
+				const CubeMapFaceType face,
+				const ImageSharedPtr &image,
+				const glm::uvec3 &texture_position,
+				const glm::uvec3 &image_position);
+			void set_texture_image_1d(const Uint32 width,
+				const Uint16 mipmap);
+			void set_texture_image_2d(const Uint32 width,
+				const Uint32 height, const Uint16 mipmap);
+			void set_texture_image_3d(const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const Uint16 mipmap);
+			void set_texture_image_cube_map(const Uint32 width,
+				const Uint32 height, const Uint16 mipmap);
+			void set_texture_image_cube_map_face(const Uint32 width,
+				const Uint32 height, const Uint16 mipmap,
 				const CubeMapFaceType face);
+			void set_texture_image_cube_map(const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const Uint16 mipmap);
+			void set_texture_image_cube_map_face(const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const Uint16 mipmap,
+				const CubeMapFaceType face);
+			void set_texture_image_2d_multisample();
+			void set_texture_image_3d_multisample();
 
 			static GLenum get_min_filter(
 				const TextureFilterType texture_filter,
@@ -224,6 +229,31 @@ namespace eternal_lands
 			{
 				return m_used_mipmaps;
 			}
+
+			inline void set_width(const Uint32 width)
+			{
+				m_rebuild = m_width != width;
+				m_width = width;
+			}
+
+			inline void set_height(const Uint32 height)
+			{
+				m_rebuild = m_height != height;
+				m_height = height;
+			}
+
+			inline void set_depth(const Uint32 depth)
+			{
+				m_rebuild = m_depth != depth;
+				m_depth = depth;
+			}
+
+			inline void set_samples(const Uint32 samples)
+			{
+				m_rebuild = m_samples != samples;
+				m_samples = samples;
+			}
+
 		public:
 			inline GLuint get_texture_id() const
 			{
@@ -293,6 +323,11 @@ namespace eternal_lands
 				return m_mipmap_count;
 			}
 
+			inline Uint16 get_samples() const
+			{
+				return m_samples;
+			}
+
 			inline TextureWrapType get_wrap_s() const
 			{
 				return m_wrap_s;
@@ -327,24 +362,6 @@ namespace eternal_lands
 			{
 				return TextureFormatUtil::get_gl_format(
 					get_format());
-			}
-
-			inline void set_width(const Uint32 width)
-			{
-				m_rebuild = m_width != width;
-				m_width = width;
-			}
-
-			inline void set_height(const Uint32 height)
-			{
-				m_rebuild = m_height != height;
-				m_height = height;
-			}
-
-			inline void set_depth(const Uint32 depth)
-			{
-				m_rebuild = m_depth != depth;
-				m_depth = depth;
 			}
 
 			inline void set_format(const TextureFormatType value)
@@ -420,7 +437,8 @@ namespace eternal_lands
 				const glm::uvec3 &image_position,
 				const glm::uvec3 &size);
 			void init(const Uint32 width, const Uint32 height,
-				const Uint32 depth, const Uint16 mipmaps);
+				const Uint32 depth, const Uint16 mipmaps,
+				const Uint16 samples = 0);
 			void attach_ext(const GLenum attachment,
 				const Uint32 level, const Uint32 layer);
 			void attach(const GLenum attachment, const Uint32 level,

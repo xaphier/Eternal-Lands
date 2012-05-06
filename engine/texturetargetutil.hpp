@@ -35,7 +35,9 @@ namespace eternal_lands
 		ttt_texture_1d_array,
 		ttt_texture_2d_array,
 		ttt_texture_cube_map_array,
-		ttt_texture_rectangle
+		ttt_texture_rectangle,
+		ttt_texture_2d_multisample,
+		ttt_texture_2d_multisample_array
 	};
 	/**
 	 * @}

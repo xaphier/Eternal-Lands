@@ -73,6 +73,7 @@ namespace eternal_lands
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const = 0;
 			static const glm::vec3 &get_vector_scale();
+			static const glm::vec2 &get_position_scale();
 
 			inline const StringArray4 &get_albedo_maps() const
 			{

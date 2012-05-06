@@ -229,7 +229,6 @@ int engine_use_block = engine_true;
 int engine_use_alias = engine_false;
 int engine_use_in_out = engine_true;
 int engine_use_functions = engine_false;
-int engine_use_layered_rendering = engine_false;
 int engine_low_quality_terrain = engine_false;
 int engine_use_s3tc_for_actors = engine_true;
 int engine_clipmap_size = 1;
@@ -371,12 +370,6 @@ void change_engine_set_use_functions(int* var)
 {
 	*var = !*var;
 	engine_set_use_functions(*var);
-}
-
-void change_engine_set_use_layered_rendering(int* var)
-{
-	*var = !*var;
-	engine_set_use_layered_rendering(*var);
 }
 
 void change_engine_set_low_quality_terrain(int* var)
@@ -1916,12 +1909,12 @@ static void init_ELC_vars(void)
 
 	// GFX TAB
 	add_var(OPT_MULTI_H, "shadow_quality", "shadow_quality", &engine_shadow_quality, change_engine_shadow_quality, 0, "Shadow Quality", "Shadow Quality", GFX, "no", "low", "medium", "high", "ultra", 0);
-	add_var(OPT_MULTI_H, "shadow_map_size", "shadow_map_size", &engine_shadow_map_size, change_engine_shadow_map_size, 0, "Shadow Map Size", "Shadow Map Size", GFX, "512", "1024", "2048", "3072", "4096", 0);
+	add_var(OPT_MULTI_H, "shadow_map_size", "shadow_map_size", &engine_shadow_map_size, change_engine_shadow_map_size, 0, "Shadow Map Size", "Shadow Map Size", GFX, "512", "1024", "2048", 0);
 	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &engine_shadow_distance, change_engine_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &engine_view_distance, change_engine_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "fog", "fog", &engine_fog, change_engine_fog, engine_true, "Fog", "Fog", GFX);
 	add_var(OPT_BOOL, "low_quality_terrain", "low_quality_terrain", &engine_low_quality_terrain, change_engine_set_low_quality_terrain, engine_false, "Low quality terrain", "Low quality terrain", GFX);
-	add_var(OPT_MULTI_H, "clipmap_size", "clipmap_size", &engine_clipmap_size, change_engine_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", "4096", 0);
+	add_var(OPT_MULTI_H, "clipmap_size", "clipmap_size", &engine_clipmap_size, change_engine_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", 0);
 	add_var(OPT_INT, "clipmap_world_size", "clipmap_world_size", &engine_clipmap_world_size, change_engine_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
 	add_var(OPT_INT, "clipmap_slices", "clipmap_slices", &engine_clipmap_slices, change_engine_clipmap_slices, 4, "Climap slices", "Clipmap slices for terrain", GFX, 1, 16);
 	add_var(OPT_INT, "tile_world_size", "tile_world_size", &engine_tile_world_size, change_engine_tile_world_size, 4, "Tile world size", "Tile used for terrain texturing world size", GFX, 1, 16);
@@ -2011,7 +2004,6 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "use_alias", "use_alias", &engine_use_alias, change_engine_set_use_alias, engine_false, "Use alias", "Use alias in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_in_out", "use_in_out", &engine_use_in_out, change_engine_set_use_in_out, engine_true, "Use in/out", "Use in/out in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_functions", "use_functions", &engine_use_functions, change_engine_set_use_functions, engine_false, "Use functions", "Use functions in shaders", TROUBLESHOOT);
-	add_var(OPT_BOOL, "use_layered_rendering", "use_layered_rendering", &engine_use_layered_rendering, change_engine_set_use_layered_rendering, engine_false, "Use layered rendering", "Use layered rendering in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &engine_optmize_shader_source, change_engine_optmize_shader_source, engine_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);
 	add_var(OPT_MULTI_H, "opengl_version", "gl_version", &engine_opengl_version, change_engine_opengl_version, 0, "OpenGL", "OpenGL version used", TROUBLESHOOT, "auto", "2.1", "3.0", "3.1", "3.2", "3.3", "4.0", 0);
 #ifdef	USE_SSE2

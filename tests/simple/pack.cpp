@@ -638,9 +638,7 @@ BOOST_AUTO_TEST_CASE(encode_decode_normal)
 		temp.x = i % 256;
 		temp.y = static_cast<Uint32>(i / 256);
 
-		tmp = temp;
-
-		tmp /= 255.0f;
+		tmp = temp / 255.0f;
 
 		BOOST_CHECK_LE(tmp.x, 1.0);
 		BOOST_CHECK_LE(tmp.y, 1.0);
@@ -655,8 +653,6 @@ BOOST_AUTO_TEST_CASE(encode_decode_normal)
 			continue;
 		}
 
-		std::cout << glm::to_string(normal) << std::endl;
-
 		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
 
 		tmp = el::PackTool::encode_normal(normal);
@@ -667,6 +663,93 @@ BOOST_AUTO_TEST_CASE(encode_decode_normal)
 		BOOST_CHECK_GE(tmp.y, 0.0);
 
 		normal = el::PackTool::decode_normal(tmp);
+
+		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(encode_decode_normal_optimized)
+{
+	glm::vec3 normal;
+	glm::vec2 temp, tmp, min, max;
+	Uint32 i;
+
+	min = glm::vec2(std::numeric_limits<float>::max());
+	max = glm::vec2(-std::numeric_limits<float>::max());
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		temp.x = i % 256;
+		temp.y = static_cast<Uint32>(i / 256);
+
+		tmp = temp / 255.0f;
+
+		BOOST_CHECK_LE(tmp.x, 1.0);
+		BOOST_CHECK_LE(tmp.y, 1.0);
+		BOOST_CHECK_GE(tmp.x, 0.0);
+		BOOST_CHECK_GE(tmp.y, 0.0);
+
+		normal = el::PackTool::decode_normal_optimized(tmp);
+
+		if (!glm::all(glm::lessThanEqual(glm::abs(normal),
+			glm::vec3(1.0f))))
+		{
+			continue;
+		}
+
+		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+
+		tmp = el::PackTool::encode_normal_optimized(normal);
+
+		BOOST_CHECK_LE(tmp.x, 1.0);
+		BOOST_CHECK_LE(tmp.y, 1.0);
+		BOOST_CHECK_GE(tmp.x, 0.0);
+		BOOST_CHECK_GE(tmp.y, 0.0);
+
+		normal = el::PackTool::decode_normal_optimized(tmp);
+
+		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(encode_decode_normal_optimized_uint8)
+{
+	glm::vec3 normal;
+	glm::vec2 min, max;
+	glm::uvec2 tmp;
+	Uint32 i;
+
+	min = glm::vec2(std::numeric_limits<float>::max());
+	max = glm::vec2(-std::numeric_limits<float>::max());
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		tmp.x = i % 256;
+		tmp.y = static_cast<Uint32>(i / 256);
+
+		BOOST_CHECK_LE(tmp.x, 255);
+		BOOST_CHECK_LE(tmp.y, 255);
+		BOOST_CHECK_GE(tmp.x, 0);
+		BOOST_CHECK_GE(tmp.y, 0);
+
+		normal = el::PackTool::decode_normal_optimized_uint8(tmp);
+
+		if (!glm::all(glm::lessThanEqual(glm::abs(normal),
+			glm::vec3(1.0f))))
+		{
+			continue;
+		}
+
+		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+
+		tmp = el::PackTool::encode_normal_optimized_uint8(normal);
+
+		BOOST_CHECK_LE(tmp.x, 255);
+		BOOST_CHECK_LE(tmp.y, 255);
+		BOOST_CHECK_GE(tmp.x, 0);
+		BOOST_CHECK_GE(tmp.y, 0);
+
+		normal = el::PackTool::decode_normal_optimized_uint8(tmp);
 
 		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
 	}

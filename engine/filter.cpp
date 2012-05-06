@@ -223,16 +223,16 @@ namespace eternal_lands
 
 		if (vertical)
 		{
-			name = UTF8("filter_vertical");
+			name = UTF8("filter vertical");
 		}
 		else
 		{
-			name = UTF8("filter_horizontal");
+			name = UTF8("filter horizontal");
 		}
 
 		if (layer)
 		{
-			name += UTF8("_layer");
+			name += UTF8(" layer");
 		}
 
 		m_programs[index] = boost::make_shared<GlslProgram>(
@@ -273,10 +273,137 @@ namespace eternal_lands
 				build_filter(values, 130, i, j, true, true);
 			}
 		}
+
+		for (i = 1; i < 5; ++i)
+		{
+			build_multisample_filter(values, 130, i, 2);
+			build_multisample_filter(values, 130, i, 4);
+		}
 	}
 
 	Filter::~Filter() throw()
 	{
+	}
+	
+	String Filter::get_multisample_vertex_str(const Uint16 version)
+	{
+		StringStream str;
+
+		str << UTF8("#version ") << version << UTF8("\n");
+		str << UTF8("\n");
+		str << UTF8("attribute vec2 ") << vst_position << UTF8(";\n");
+		str << UTF8("\n");
+		str << UTF8("\n");
+		str << UTF8("void main()\n");
+		str << UTF8("{\n");
+		str << UTF8("\tgl_Position = vec4(position, 0.5, 1.0);\n");
+		str << UTF8("}\n");
+
+		return String(str.str());
+	}
+
+	String Filter::get_multisample_fragment_str(const Uint16 version,
+		const Uint16 channel_count, const Uint16 sample_count)
+	{
+		StringStream str;
+		StringType channels, offset;
+		Uint32 i, j;
+
+		str << UTF8("#version ") << version << UTF8("\n");
+		str << UTF8("\n");
+
+		str << UTF8("uniform sampler2DMS ") << stt_albedo_0;
+
+		str << UTF8(";\n");
+		str << UTF8("\n");
+		str << UTF8("void main()\n");
+		str << UTF8("{\n");
+
+		switch (channel_count)
+		{
+			case 1:
+				str << UTF8("\tfloat color;\n");
+				channels = UTF8(".r");
+				break;
+			case 2:
+				str << UTF8("\tvec2 color;\n");
+				channels = UTF8(".rg");
+				break;
+			case 3:
+				str << UTF8("\tvec3 color;\n");
+				channels = UTF8(".rgb");
+				break;
+			case 4:
+				str << UTF8("\tvec4 color;\n");
+				channels = UTF8("");
+				break;
+		}
+
+		for (j = 0; j < 9; ++j)
+		{
+			StringStream tmp;
+
+			tmp << UTF8("vec2(") << ((j % 3) - 1.5f) << UTF8(", ");
+			tmp << ((j / 3) - 1.5f) << UTF8(")");
+			offset = tmp.str();
+
+			for (i = 0; i < sample_count; ++i)
+			{
+				if ((i == 0) && (j == 0))
+				{
+					str << UTF8("\tcolor = ");
+				}
+				else
+				{
+					str << UTF8("\tcolor += ");
+				}
+
+				str << UTF8("texelFetch(") << stt_albedo_0;
+				str << UTF8(", ivec2(gl_FragCoord.xy + ");
+				str << offset << UTF8("), ") << i << UTF8(")");
+				str << channels << UTF8(";\n");
+			}
+		}
+
+		str << UTF8("\n");
+		str << UTF8("\tgl_FragColor = ");
+
+		switch (channel_count)
+		{
+			case 1:
+				str << UTF8("vec4(color, 0.0f, 0.0f, 0.0f);\n");
+				break;
+			case 2:
+				str << UTF8("vec4(color, 0.0f, 0.0f);\n");
+				break;
+			case 3:
+				str << UTF8("vec4(color, 0.0f);\n");
+				break;
+			case 4:
+				str << UTF8("color;\n");
+				break;
+		}
+
+		str << UTF8("}\n");
+
+		return String(str.str());
+	}
+
+	void Filter::build_multisample_filter(const StringVariantMap &values,
+		const Uint16 version, const Uint16 channel_count,
+		const Uint16 sample_count)
+	{
+		StringType name, none;
+		Uint16 index;
+
+		index = get_multisample_index(channel_count, sample_count);
+
+		name = UTF8("filter multisample");
+
+		m_multisample_programs[index] = boost::make_shared<GlslProgram>(
+			get_multisample_vertex_str(version), none, none, none,
+			get_multisample_fragment_str(version, channel_count,
+				sample_count), values, String(name));
 	}
 
 	String Filter::get_vertex_str(const Uint16 version)
@@ -631,6 +758,18 @@ namespace eternal_lands
 		state_manager.get_program()->set_variant_parameter(
 			String(UTF8("dest_scale_offset")),
 			dest_scale_offset);
+		state_manager.switch_mesh(m_mesh);
+		state_manager.draw(0, 1);
+	}
+
+	void Filter::bind(const Uint16 channel_count,
+		const Uint16 sample_count, StateManager &state_manager)
+	{
+		Uint32 index;
+
+		index = get_multisample_index(channel_count, sample_count);
+
+		state_manager.switch_program(m_multisample_programs[index]);
 		state_manager.switch_mesh(m_mesh);
 		state_manager.draw(0, 1);
 	}

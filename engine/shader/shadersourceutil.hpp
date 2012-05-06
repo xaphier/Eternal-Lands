@@ -40,7 +40,6 @@ namespace eternal_lands
 		sst_albedo_mapping,
 		sst_specular_mapping,
 		sst_emission_mapping,
-		sst_transparent,
 		sst_shadow_map,
 		sst_tbn_matrix,
 		sst_color_correction

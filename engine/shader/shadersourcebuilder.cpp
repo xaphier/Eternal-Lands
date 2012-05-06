@@ -778,7 +778,7 @@ namespace eternal_lands
 		ssbot_view_position,
 		ssbot_tbn_matrix,
 		ssbot_fog,
-		ssbot_layered_rendering,
+		ssbot_alpha_test,
 		ssbot_use_functions
 	};
 
@@ -1483,19 +1483,16 @@ namespace eternal_lands
 			}
 		}
 
-		if (!data.get_option(ssbot_layered_rendering))
-		{
-			add_parameter(String(UTF8("vertex")),
-				apt_projection_view_matrices, locals, globals);
-			add_parameter(String(UTF8("vertex")),
-				cpt_world_position, pqt_in, locals, globals);
+		add_parameter(String(UTF8("vertex")),
+			apt_projection_view_matrices, locals, globals);
+		add_parameter(String(UTF8("vertex")), cpt_world_position,
+			pqt_in, locals, globals);
 
-			main << indent << UTF8("/* gl_Position */\n");
-			main << indent << gl_Position;
-			main << UTF8(" = ") << apt_projection_view_matrices;
-			main << UTF8("[0] * vec4(") << cpt_world_position;
-			main << UTF8(", 1.0);\n");
-		}
+		main << indent << UTF8("/* gl_Position */\n");
+		main << indent << gl_Position;
+		main << UTF8(" = ") << apt_projection_view_matrices;
+		main << UTF8("[0] * vec4(") << cpt_world_position;
+		main << UTF8(", 1.0);\n");
 
 		if (data.get_option(ssbot_view_position))
 		{
@@ -1732,9 +1729,18 @@ namespace eternal_lands
 				sst_albedo_mapping, indent, main, functions,
 				globals, values);
 
-			build_function(data, array_sizes, locals,
-				sst_transparent, indent, main, functions,
-				globals, values);
+			if (data.get_option(ssbot_transparent) &&
+				data.get_option(ssbot_alpha_test))
+			{
+				add_parameter(String(UTF8("fragment")),
+					cpt_albedo, pqt_in, locals, globals);
+
+				main << indent << UTF8("if (") << cpt_albedo;
+				main << UTF8(".a < 0.5)\n") << indent;
+				main << UTF8("{\n") << indent;
+				main << UTF8("\tdiscard;\n") << indent;
+				main << UTF8("}\n");
+			}
 		}
 
 		if ((data.get_shader_build_type() == sbt_color) ||
@@ -1833,8 +1839,8 @@ namespace eternal_lands
 					main << sslt_fragment_color;
 				}
 
-				main << UTF8(";\n") << indent << output;
-				main << UTF8(".a = ") << UTF8("1.0;\n");
+				main << UTF8(";\n");
+
 				break;
 			case sbt_depth:
 				main << indent << output;
@@ -1852,7 +1858,6 @@ namespace eternal_lands
 
 				main << indent << output << UTF8(".rgb = ");
 				main << cpt_shadow_map_data << UTF8(";\n");
-				main << indent << output << UTF8(".a = 1.0;\n");
 
 				break;
 			case sbt_deferred:
@@ -1890,6 +1895,28 @@ namespace eternal_lands
 				main << UTF8(";\n");
 
 				break;
+		}
+
+		if ((data.get_shader_build_type() == sbt_color) ||
+			(data.get_shader_build_type() == sbt_shadow))
+		{
+			main << indent << output << UTF8(".a = ");
+
+			if (data.get_option(ssbot_transparent) &&
+				!data.get_option(ssbot_alpha_test))
+			{
+				add_parameter(String(UTF8("fragment")),
+					cpt_albedo, pqt_in, locals,
+					globals);
+
+				main << cpt_albedo << UTF8(".a");
+			}
+			else
+			{
+				main << UTF8("1.0");
+			}
+
+			main << UTF8(";\n");
 		}
 	}
 
@@ -2013,8 +2040,11 @@ namespace eternal_lands
 		{
 			result |= check_function(data, name,
 				sst_albedo_mapping);
-			result |= check_function(data, name,
-				sst_transparent);
+
+			if (common_parameter == cpt_albedo)
+			{
+				result = true;
+			}
 		}
 
 		if ((data.get_shader_build_type() == sbt_color) ||
@@ -2104,16 +2134,6 @@ namespace eternal_lands
 			}
 
 			found = sources.find(sst_shadow_mapping);
-
-			if (found != sources.end())
-			{
-				sources.erase(found);
-			}
-		}
-
-		if (!description.get_transparent())
-		{
-			found = sources.find(sst_transparent);
 
 			if (found != sources.end())
 			{
@@ -2238,8 +2258,9 @@ namespace eternal_lands
 			cpt_world_tangent));
 		data.set_option(ssbot_transparent,
 			description.get_transparent());
-		data.set_option(ssbot_layered_rendering, (layer_count > 1) &&
-			get_global_vars()->get_use_layered_rendering());
+		data.set_option(ssbot_alpha_test,
+			!(get_global_vars()->get_exponential_shadow_maps() &&
+			(shader_build_type == sbt_shadow)));
 		data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());
 
@@ -2251,34 +2272,13 @@ namespace eternal_lands
 		build_in_out(fragment_globals, vertex_globals, varyings);
 		build_attributes(vertex_globals, attributes);
 
-		if (data.get_option(ssbot_layered_rendering))
-		{
-			vertex_data = String(UTF8("vertex_data"));
-			fragment_data = String(UTF8("fragment_data"));
-		}
-		else
-		{
-			vertex_data = String(UTF8("data"));
-			fragment_data = vertex_data;
-		}
+		vertex_data = String(UTF8("data"));
+		fragment_data = vertex_data;
 
 		if (!use_block)
 		{
 			vertex_data = String(vertex_data.get() + UTF8("_"));
 			fragment_data = String(fragment_data.get() + UTF8("_"));
-		}
-
-		if (data.get_option(ssbot_layered_rendering))
-		{
-			build_geometry_source(data, array_sizes, varyings,
-				vertex_data, fragment_data, use_block,
-				geometry_main, geometry_functions,
-				geometry_globals, values);
-
-			build_in_outs(varyings, vertex_globals,
-				geometry_globals, fragment_globals,
-				geometry_in_parameters,
-				geometry_out_parameters);
 		}
 
 		vertex_source << version_stream.str();
@@ -2513,13 +2513,6 @@ namespace eternal_lands
 		geometry_source << geometry_main.str();
 		geometry_source << UTF8("}\n");
 
-		if (data.get_option(ssbot_layered_rendering))
-		{
-			LOG_DEBUG(lt_shader_source,
-				UTF8("Geometry Shader:\n%1%"),
-				geometry_source.str());
-		}
-
 		fragment_source << version_stream.str();
 
 		fragment = fragment_source.str();
@@ -2687,11 +2680,6 @@ namespace eternal_lands
 		{
 			vertex = vertex_source.str();
 			fragment = fragment_source.str();
-
-			if (data.get_option(ssbot_layered_rendering))
-			{
-				geometry = geometry_source.str();
-			}
 		}
 	}
 

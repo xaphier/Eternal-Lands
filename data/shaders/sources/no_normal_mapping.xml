@@ -36,6 +36,11 @@
    </parameters>
    <source>fragment_uv = world_uv;
 fragment_normal = normalize(world_normal);
+
+if (!gl_FrontFacing)
+{
+	fragment_normal = -fragment_normal;
+}
 </source>
    <version>120</version>
   </shader_source_data>
