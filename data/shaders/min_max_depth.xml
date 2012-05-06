@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf8"?>
+<glsl_program>
+ <name>min max depth</name>
+ <vertex_shader>#version 120
+
+attribute vec2 position;
+
+void main ()
+{
+	gl_Position = vec4(position, 0.0, 1.0);
+}
+</vertex_shader>
+ <fragment_shader>#version 130
+
+uniform sampler2D albedo_sampler_0;
+
+void main ()
+{
+	int i, j;
+	float min_depth, max_depth, depth;
+
+	min_depth = 1e7f;
+	max_depth = -1e7f;
+
+	for (i = 0; i &lt; 16; ++i)
+	{
+		for (j = 0; j &lt; 16; ++j)
+		{
+			depth = textureFetch(depth_map, (gl_FragCoord.xy - vec2(0.5)) * 16 + ivec2(i, j)).r;
+
+			min_depth = min(min_depth, depth);
+			max_depth = max(max_depth, depth);
+		}
+	}
+
+	gl_FragColor.r = min_depth;
+	gl_FragColor.g = max_depth;
+	gl_FragColor.b = 0.0;
+	gl_FragColor.a = 1.0;
+}
+</fragment_shader>
+</glsl_program>
