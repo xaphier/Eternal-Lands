@@ -14,6 +14,11 @@
 
 namespace el = eternal_lands;
 
+BOOST_AUTO_TEST_CASE(get_effect_program_count)
+{
+	BOOST_CHECK_GT(el::EffectProgramUtil::get_effect_program_count(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(get_str)
 {
 	Uint32 i, count;

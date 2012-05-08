@@ -701,10 +701,10 @@ BOOST_AUTO_TEST_CASE(encode_decode_normal_optimized)
 
 		tmp = el::PackTool::encode_normal_optimized(normal);
 
-		BOOST_CHECK_LE(tmp.x, 1.0);
-		BOOST_CHECK_LE(tmp.y, 1.0);
-		BOOST_CHECK_GE(tmp.x, 0.0);
-		BOOST_CHECK_GE(tmp.y, 0.0);
+		BOOST_CHECK_LE(tmp.x, 1.0 + el::epsilon);
+		BOOST_CHECK_LE(tmp.y, 1.0 + el::epsilon);
+		BOOST_CHECK_GE(tmp.x, -el::epsilon);
+		BOOST_CHECK_GE(tmp.y, -el::epsilon);
 
 		normal = el::PackTool::decode_normal_optimized(tmp);
 

@@ -6,19 +6,24 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "exceptions.hpp"
 #include "shader/parametersizeutil.hpp"
-#include "utf.hpp"
 #define BOOST_TEST_MODULE parameter_size
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
 
+BOOST_AUTO_TEST_CASE(get_parameter_size_count)
+{
+	BOOST_CHECK_GT(el::ParameterSizeUtil::get_parameter_size_count(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(get_str)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterSizeUtil::get_parameter_size_count(); i++)
+	count = el::ParameterSizeUtil::get_parameter_size_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterSizeUtil::get_str(
 			static_cast<el::ParameterSizeType>(i)));
@@ -27,15 +32,35 @@ BOOST_AUTO_TEST_CASE(get_str)
 
 BOOST_AUTO_TEST_CASE(convert)
 {
-	Uint32 i;
+	Uint32 i, count;
 	el::ParameterSizeType type;
 
-	for (i = 0; i < el::ParameterSizeUtil::get_parameter_size_count(); i++)
+	count = el::ParameterSizeUtil::get_parameter_size_count();
+
+	for (i = 0; i < count; i++)
 	{
 		type = static_cast<el::ParameterSizeType>(i);
 
 		BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_parameter_size(
 			el::ParameterSizeUtil::get_str(type)), type);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(get_parameter_qualifier)
+{
+	Uint32 i, count;
+	el::ParameterSizeType type, tmp;
+
+	count = el::ParameterSizeUtil::get_parameter_size_count();
+
+	for (i = 0; i < count; i++)
+	{
+		type = static_cast<el::ParameterSizeType>(i);
+
+		BOOST_CHECK(el::ParameterSizeUtil::get_parameter_size(
+			el::ParameterSizeUtil::get_str(type), tmp));
+
+		BOOST_CHECK_EQUAL(type, tmp);
 	}
 }
 

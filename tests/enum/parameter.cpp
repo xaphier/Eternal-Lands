@@ -6,18 +6,24 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "exceptions.hpp"
 #include "shader/parameterutil.hpp"
 #define BOOST_TEST_MODULE pack
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
 
+BOOST_AUTO_TEST_CASE(get_parameter_count)
+{
+	BOOST_CHECK_GT(el::ParameterUtil::get_parameter_count(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(get_str)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_str(
 			static_cast<el::ParameterType>(i)));
@@ -26,9 +32,11 @@ BOOST_AUTO_TEST_CASE(get_str)
 
 BOOST_AUTO_TEST_CASE(get_count)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_count(
 			static_cast<el::ParameterType>(i)));
@@ -37,9 +45,11 @@ BOOST_AUTO_TEST_CASE(get_count)
 
 BOOST_AUTO_TEST_CASE(get_sampler)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_sampler(
 			static_cast<el::ParameterType>(i)));
@@ -48,9 +58,11 @@ BOOST_AUTO_TEST_CASE(get_sampler)
 
 BOOST_AUTO_TEST_CASE(get_uint)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_uint(
 			static_cast<el::ParameterType>(i)));
@@ -59,9 +71,11 @@ BOOST_AUTO_TEST_CASE(get_uint)
 
 BOOST_AUTO_TEST_CASE(get_int)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_int(
 			static_cast<el::ParameterType>(i)));
@@ -70,9 +84,11 @@ BOOST_AUTO_TEST_CASE(get_int)
 
 BOOST_AUTO_TEST_CASE(get_bool)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_bool(
 			static_cast<el::ParameterType>(i)));
@@ -81,9 +97,11 @@ BOOST_AUTO_TEST_CASE(get_bool)
 
 BOOST_AUTO_TEST_CASE(get_float)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_float(
 			static_cast<el::ParameterType>(i)));
@@ -92,9 +110,11 @@ BOOST_AUTO_TEST_CASE(get_float)
 
 BOOST_AUTO_TEST_CASE(get_matrix)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_matrix(
 			static_cast<el::ParameterType>(i)));
@@ -103,10 +123,12 @@ BOOST_AUTO_TEST_CASE(get_matrix)
 
 BOOST_AUTO_TEST_CASE(convert)
 {
-	Uint32 i;
+	Uint32 i, count;
 	el::ParameterType type;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		type = static_cast<el::ParameterType>(i);
 
@@ -118,10 +140,12 @@ BOOST_AUTO_TEST_CASE(convert)
 
 BOOST_AUTO_TEST_CASE(convert_gl)
 {
-	Uint32 i;
+	Uint32 i, count;
 	el::ParameterType type;
 
-	for (i = 0; i < el::ParameterUtil::get_parameter_count(); i++)
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		type = static_cast<el::ParameterType>(i);
 

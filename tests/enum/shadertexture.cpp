@@ -14,6 +14,11 @@
 
 namespace el = eternal_lands;
 
+BOOST_AUTO_TEST_CASE(get_shader_texture_count)
+{
+	BOOST_CHECK_GT(el::ShaderTextureUtil::get_shader_texture_count(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(get_str)
 {
 	Uint32 i;
@@ -36,6 +41,24 @@ BOOST_AUTO_TEST_CASE(convert)
 
 		BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_shader_texture(
 			el::ShaderTextureUtil::get_str(type)), type);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(get_parameter_qualifier)
+{
+	Uint32 i, count;
+	el::ShaderTextureType type, tmp;
+
+	count = el::ShaderTextureUtil::get_shader_texture_count();
+
+	for (i = 0; i < count; i++)
+	{
+		type = static_cast<el::ShaderTextureType>(i);
+
+		BOOST_CHECK(el::ShaderTextureUtil::get_shader_texture(
+			el::ShaderTextureUtil::get_str(type), tmp));
+
+		BOOST_CHECK_EQUAL(type, tmp);
 	}
 }
 

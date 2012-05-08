@@ -6,31 +6,54 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "exceptions.hpp"
 #include "shader/autoparameterutil.hpp"
-#include "utf.hpp"
 #define BOOST_TEST_MODULE auto_parameter
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
 
+BOOST_AUTO_TEST_CASE(get_auto_parameter_count)
+{
+	BOOST_CHECK_GT(el::AutoParameterUtil::get_auto_parameter_count(), 0);
+}
+
 BOOST_AUTO_TEST_CASE(get_str)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::AutoParameterUtil::get_auto_parameter_count(); i++)
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::AutoParameterUtil::get_str(
 			static_cast<el::AutoParameterType>(i)));
 	}
 }
 
+BOOST_AUTO_TEST_CASE(get_parameter_type)
+{
+	Uint32 i, count;
+	el::ParameterType type;
+
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
+	{
+		BOOST_CHECK_NO_THROW(type = el::AutoParameterUtil::get_type(
+			static_cast<el::AutoParameterType>(i)));
+
+		BOOST_CHECK(!el::ParameterUtil::get_sampler(type));
+	}
+}
+
 BOOST_AUTO_TEST_CASE(convert)
 {
-	Uint32 i;
+	Uint32 i, count;
 	el::AutoParameterType type;
 
-	for (i = 0; i < el::AutoParameterUtil::get_auto_parameter_count(); i++)
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		type = static_cast<el::AutoParameterType>(i);
 
@@ -40,33 +63,65 @@ BOOST_AUTO_TEST_CASE(convert)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(get_auto_parameter)
+{
+	Uint32 i, count;
+	el::AutoParameterType type, tmp;
+
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
+	{
+		type = static_cast<el::AutoParameterType>(i);
+
+		BOOST_CHECK(el::AutoParameterUtil::get_auto_parameter(
+			el::AutoParameterUtil::get_str(type), tmp));
+
+		BOOST_CHECK_EQUAL(type, tmp);
+	}
+}
+
 BOOST_AUTO_TEST_CASE(get_type)
 {
-	Uint32 i;
+	Uint32 i, count;
+	el::ParameterType type;
 
-	for (i = 0; i < el::AutoParameterUtil::get_auto_parameter_count(); i++)
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
-		BOOST_CHECK_NO_THROW(el::AutoParameterUtil::get_type(
+		BOOST_CHECK_NO_THROW(type = el::AutoParameterUtil::get_type(
 			static_cast<el::AutoParameterType>(i)));
+
+		BOOST_CHECK_NO_THROW(el::ParameterUtil::get_str(type));
+
+		BOOST_CHECK(!el::ParameterUtil::get_sampler(type));
 	}
 }
 
 BOOST_AUTO_TEST_CASE(get_size)
 {
-	Uint32 i;
+	Uint32 i, count;
+	el::ParameterSizeType type;
 
-	for (i = 0; i < el::AutoParameterUtil::get_auto_parameter_count(); i++)
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
-		BOOST_CHECK_NO_THROW(el::AutoParameterUtil::get_size(
+		BOOST_CHECK_NO_THROW(type = el::AutoParameterUtil::get_size(
 			static_cast<el::AutoParameterType>(i)));
+
+		BOOST_CHECK_NO_THROW(el::ParameterSizeUtil::get_str(type));
 	}
 }
 
 BOOST_AUTO_TEST_CASE(get_scale)
 {
-	Uint32 i;
+	Uint32 i, count;
 
-	for (i = 0; i < el::AutoParameterUtil::get_auto_parameter_count(); i++)
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(el::AutoParameterUtil::get_scale(
 			static_cast<el::AutoParameterType>(i)));
