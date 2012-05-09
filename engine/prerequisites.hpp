@@ -74,11 +74,11 @@
 #define override
 #endif
 
-#ifdef BOOST_NO_NOEXCEPT
+#ifndef BOOST_NO_NOEXCEPT
 #define noexcept throw()
 #endif /* BOOST_NO_NOEXCEPT */
 
-#ifdef BOOST_NO_NULLPTR
+#ifndef BOOST_NO_NULLPTR
 #define nullptr 0
 #endif /* BOOST_NO_NULLPTR */
 
