@@ -39,12 +39,12 @@ namespace eternal_lands
 		set_min_max(min, max);
 	}
 
-	BoundingBox::~BoundingBox() throw()
+	BoundingBox::~BoundingBox() noexcept
 	{
 	}
 
 	void BoundingBox::set_min_max(const glm::vec3 &min,
-		const glm::vec3 &max)
+		const glm::vec3 &max) noexcept
 	{
 		if (!glm::all(glm::lessThanEqual(min, max)))
 		{
@@ -57,7 +57,7 @@ namespace eternal_lands
 		set_half_size((max - min) * 0.5f);
 	}
 
-	void BoundingBox::set_half_size(const glm::vec3 &half_size)
+	void BoundingBox::set_half_size(const glm::vec3 &half_size) noexcept
 	{
 		if (!glm::all(glm::greaterThanEqual(half_size,
 			glm::vec3(0.0f))))
@@ -70,7 +70,7 @@ namespace eternal_lands
 		m_half_size = half_size;
 	}
 
-	void BoundingBox::merge(const BoundingBox &box)
+	void BoundingBox::merge(const BoundingBox &box) noexcept
 	{
 		glm::vec3 min, max;
 
@@ -80,7 +80,7 @@ namespace eternal_lands
 		set_min_max(min, max);
 	}
 
-	void BoundingBox::clamp(const BoundingBox &box)
+	void BoundingBox::clamp(const BoundingBox &box) noexcept
 	{
 		glm::vec3 min, max;
 
@@ -90,7 +90,7 @@ namespace eternal_lands
 		set_min_max(min, max);
 	}
 
-	float BoundingBox::overlap(const BoundingBox &box) const
+	float BoundingBox::overlap(const BoundingBox &box) const noexcept
 	{
 		glm::vec3 t, t0, t1;
 
@@ -102,7 +102,7 @@ namespace eternal_lands
 		return t[0] * t[1] * t[2];
 	}
 
-	bool BoundingBox::contains(const BoundingBox &box) const
+	bool BoundingBox::contains(const BoundingBox &box) const noexcept
 	{
 		glm::vec3 dist;
 
@@ -113,7 +113,7 @@ namespace eternal_lands
 			1.0001f));
 	}
 
-	float BoundingBox::enlargement(const BoundingBox &box) const
+	float BoundingBox::enlargement(const BoundingBox &box) const noexcept
 	{
 		glm::vec3 min, max, size;
 
@@ -127,7 +127,7 @@ namespace eternal_lands
 	}
 
 	BoundingBox BoundingBox::transform(
-		const Transformation &transformation) const
+		const Transformation &transformation) const noexcept
 	{
 		glm::vec3 min, max, point;
 		Uint16 i;
@@ -148,6 +148,7 @@ namespace eternal_lands
 	}
 
 	BoundingBox BoundingBox::transform(const glm::mat4x4 &matrix) const
+		noexcept
 	{
 		glm::vec4 point;
 		glm::vec3 min, max, tmp;
@@ -171,7 +172,7 @@ namespace eternal_lands
 
 	bool BoundingBox::intersect(const glm::mat4 &view_matrix,
 		const glm::mat4 &projection_matrix, const glm::ivec4 &viewport,
-		const glm::vec2 &min, const glm::vec2 &max) const
+		const glm::vec2 &min, const glm::vec2 &max) const noexcept
 	{
 		glm::vec2 point;
 		Uint32 i;
@@ -197,7 +198,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	float BoundingBox::distance(const glm::vec3 &point) const
+	float BoundingBox::distance(const glm::vec3 &point) const noexcept
 	{
 		glm::vec3 tmp;
 

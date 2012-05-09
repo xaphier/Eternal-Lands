@@ -48,7 +48,7 @@ namespace eternal_lands
 			ShaderSourceData();
 			ShaderSourceData(const String &source,
 				const xmlNodePtr node);
-			~ShaderSourceData() throw();
+			~ShaderSourceData() noexcept;
 			void load_xml(const String &source,
 				const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
@@ -68,28 +68,29 @@ namespace eternal_lands
 				OutStream &function,
 				ShaderSourceParameterVector &globals) const;
 
-			inline void set_source(const String &source)
+			inline void set_source(const String &source) noexcept
 			{
 				m_source = source;
 			}
 
 			inline void set_version(const ShaderVersionType version)
+				noexcept
 			{
 				m_version = version;
 			}
 
 			inline const ShaderSourceParameterVector
-				&get_parameters() const
+				&get_parameters() const noexcept
 			{
 				return m_parameters;
 			}
 
-			inline const String &get_source() const
+			inline const String &get_source() const noexcept
 			{
 				return m_source;
 			}
 
-			inline ShaderVersionType get_version() const
+			inline ShaderVersionType get_version() const noexcept
 			{
 				return m_version;
 			}

@@ -46,8 +46,8 @@ namespace eternal_lands
 			static ShaderVersionType get_shader_version(
 				const String &str);
 			static bool get_shader_version(const String &str,
-				ShaderVersionType &shader_version);
-			static Uint32 get_shader_version_count();
+				ShaderVersionType &shader_version) noexcept;
+			static Uint32 get_shader_version_count() noexcept;
 
 	};
 

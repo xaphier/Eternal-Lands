@@ -17,7 +17,7 @@ namespace eternal_lands
 		update_bounding_box();
 	}
 
-	Light::~Light() throw()
+	Light::~Light() noexcept
 	{
 	}
 

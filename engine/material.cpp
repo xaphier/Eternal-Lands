@@ -43,7 +43,7 @@ namespace eternal_lands
 		assert(!m_material_script_manager.expired());
 	}
 
-	Material::~Material() throw()
+	Material::~Material() noexcept
 	{
 		if (!m_material_script_manager.expired() &&
 			(m_material_script.get() != nullptr))
@@ -186,6 +186,7 @@ namespace eternal_lands
 	}
 
 	const EffectDescription &Material::get_effect_description() const
+		noexcept
 	{
 		if (m_effect.get() != nullptr)
 		{
@@ -195,7 +196,7 @@ namespace eternal_lands
 		return empty_material;
 	}
 
-	const String &Material::get_material_script_name() const
+	const String &Material::get_material_script_name() const noexcept
 	{
 		if (get_material_script().get() == nullptr)
 		{
@@ -217,7 +218,7 @@ namespace eternal_lands
 		return true;
 	}
 
-	void Material::lock()
+	void Material::lock() noexcept
 	{
 		if (get_material_script().get() != nullptr)
 		{
@@ -225,7 +226,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Material::unlock()
+	void Material::unlock() noexcept
 	{
 		if (get_material_script().get() != nullptr)
 		{

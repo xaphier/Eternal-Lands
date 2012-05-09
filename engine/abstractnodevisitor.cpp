@@ -14,7 +14,7 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractNodeVisitor::~AbstractNodeVisitor() throw()
+	AbstractNodeVisitor::~AbstractNodeVisitor() noexcept
 	{
 	}
 

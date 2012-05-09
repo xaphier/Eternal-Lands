@@ -36,7 +36,7 @@ namespace eternal_lands
 		assert(!get_name().get().empty());
 	}
 
-	ShaderSourceParameter::~ShaderSourceParameter() throw()
+	ShaderSourceParameter::~ShaderSourceParameter() noexcept
 	{
 	}
 

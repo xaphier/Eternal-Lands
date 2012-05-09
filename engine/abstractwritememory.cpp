@@ -14,7 +14,7 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractWriteMemory::~AbstractWriteMemory() throw()
+	AbstractWriteMemory::~AbstractWriteMemory() noexcept
 	{
 	}
 

@@ -31,7 +31,7 @@ namespace eternal_lands
 		assert(!get_name().get().empty());
 	}
 
-	AbstractMesh::~AbstractMesh() throw()
+	AbstractMesh::~AbstractMesh() noexcept
 	{
 	}
 

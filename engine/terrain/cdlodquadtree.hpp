@@ -30,7 +30,7 @@ namespace eternal_lands
 			CdLodQuadTree(const ImageSharedPtr height_map,
 				const glm::vec3 &scale,
 				const glm::vec3 &offset);
-			~CdLodQuadTree() throw();
+			~CdLodQuadTree() noexcept;
 
 	};
 

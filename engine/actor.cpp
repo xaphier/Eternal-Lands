@@ -31,7 +31,7 @@ namespace eternal_lands
 	{
 	}
 
-	Actor::~Actor() throw()
+	Actor::~Actor() noexcept
 	{
 	}
 

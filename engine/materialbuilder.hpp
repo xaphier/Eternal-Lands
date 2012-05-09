@@ -63,7 +63,7 @@ namespace eternal_lands
 					&material_script_cache,
 				const MaterialScriptManagerWeakPtr
 					&material_script_manager);
-			~MaterialBuilder() throw();
+			~MaterialBuilder() noexcept;
 			MaterialSharedPtr get_material(
 				const MaterialDescription &material) const;
 

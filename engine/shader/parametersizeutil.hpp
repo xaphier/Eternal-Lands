@@ -45,8 +45,8 @@ namespace eternal_lands
 			static ParameterSizeType get_parameter_size(
 				const String &str);
 			static bool get_parameter_size(const String &str,
-				ParameterSizeType &parameter_size);
-			static Uint32 get_parameter_size_count();
+				ParameterSizeType &parameter_size) noexcept;
+			static Uint32 get_parameter_size_count() noexcept;
 
 	};
 

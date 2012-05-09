@@ -36,36 +36,37 @@ namespace eternal_lands
 			{
 			}
 
-			inline ~ParticleData() throw()
+			inline ~ParticleData() noexcept
 			{
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}
 
-			inline void set_name(const String &name)
+			inline void set_name(const String &name) noexcept
 			{
 				m_name = name;
 			}
 
-			inline const glm::vec3 &get_position() const
+			inline const glm::vec3 &get_position() const noexcept
 			{
 				return m_position;
 			}
 
 			inline void set_position(const glm::vec3 &position)
+				noexcept
 			{
 				m_position = position;
 			}
 
-			inline Uint32 get_id() const
+			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
 			}
 
-			inline void set_id(const Uint32 id)
+			inline void set_id(const Uint32 id) noexcept
 			{
 				m_id = id;
 			}

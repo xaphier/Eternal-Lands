@@ -43,7 +43,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~OpenGl31Mesh() throw();
+			virtual ~OpenGl31Mesh() noexcept;
 
 			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();

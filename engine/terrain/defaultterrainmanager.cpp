@@ -46,7 +46,7 @@ namespace eternal_lands
 			global_vars->get_use_simd());
 	}
 
-	DefaultTerrainManager::~DefaultTerrainManager() throw()
+	DefaultTerrainManager::~DefaultTerrainManager() noexcept
 	{
 	}
 

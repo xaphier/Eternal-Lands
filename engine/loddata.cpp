@@ -49,7 +49,7 @@ namespace eternal_lands
 	{
 	}
 
-	LodData::~LodData() throw()
+	LodData::~LodData() noexcept
 	{
 	}
 

@@ -49,7 +49,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	FilterFrameBuffer::~FilterFrameBuffer() throw()
+	FilterFrameBuffer::~FilterFrameBuffer() noexcept
 	{
 	}
 

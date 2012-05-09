@@ -123,7 +123,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 	}
 
-	ExtSimpleFrameBuffer::~ExtSimpleFrameBuffer() throw()
+	ExtSimpleFrameBuffer::~ExtSimpleFrameBuffer() noexcept
 	{
 	}
 

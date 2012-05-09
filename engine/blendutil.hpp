@@ -52,7 +52,7 @@ namespace eternal_lands
 		public:
 			static const String &get_str(const BlendType blend);
 			static BlendType get_blend(const String &str);
-			static Uint32 get_blend_count();
+			static Uint32 get_blend_count() noexcept;
 
 	};
 

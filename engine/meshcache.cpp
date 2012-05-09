@@ -33,7 +33,7 @@ namespace eternal_lands
 		assert(!m_mesh_data_cache.expired());
 	}
 
-	MeshCache::~MeshCache() throw()
+	MeshCache::~MeshCache() noexcept
 	{
 	}
 

@@ -131,63 +131,70 @@ namespace eternal_lands
 				{
 				}
 
-				inline const String &get_name() const
+				inline ~TextureFormatTypeData() noexcept
+				{
+				}
+
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
 				inline const IntegerType get_integer_type()
-					const
+					const noexcept
 				{
 					return m_integer_type;
 				}
 
-				inline const GLenum get_gl_type() const
+				inline const GLenum get_gl_type() const noexcept
 				{
 					return m_gl_type;
 				}
 
 				inline const GLenum get_source_type() const
+					noexcept
 				{
 					return m_source_type;
 				}
 
 				inline const GLenum get_format_type() const
+					noexcept
 				{
 					return m_format_type;
 				}
 
-				inline const Uint16 get_count() const
+				inline const Uint16 get_count() const noexcept
 				{
 					return m_count;
 				}
 
-				inline const Uint16 get_size() const
+				inline const Uint16 get_size() const noexcept
 				{
 					return m_size;
 				}
 
 				inline const bool get_compressed() const
+					noexcept
 				{
 					return m_compressed;
 				}
 
-				inline const bool get_sRGB() const
+				inline const bool get_sRGB() const noexcept
 				{
 					return m_sRGB;
 				}
 
-				inline const bool get_depth() const
+				inline const bool get_depth() const noexcept
 				{
 					return m_depth;
 				}
 
-				inline const bool get_stencil() const
+				inline const bool get_stencil() const noexcept
 				{
 					return m_stencil;
 				}
 
-				inline const bool get_integer() const
+				inline const bool get_integer() const noexcept
 				{
 					return m_integer;
 				}
@@ -693,7 +700,7 @@ namespace eternal_lands
 				"TextureFormatUtil")));
 	}
 
-	Uint32 TextureFormatUtil::get_texture_format_count()
+	Uint32 TextureFormatUtil::get_texture_format_count() noexcept
 	{
 		return texture_format_datas_count;
 	}

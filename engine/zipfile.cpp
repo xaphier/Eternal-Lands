@@ -26,7 +26,7 @@ namespace eternal_lands
 			public:
 				ZipFileReader(const unzFile file,
 					const unz64_file_pos &position);
-				~ZipFileReader() throw();
+				~ZipFileReader() noexcept;
 				ReadWriteMemorySharedPtr get_buffer();
 				Uint64 get_size();
 
@@ -39,7 +39,7 @@ namespace eternal_lands
 			unzOpenCurrentFile(m_file);
 		}
 
-		ZipFileReader::~ZipFileReader() throw()
+		ZipFileReader::~ZipFileReader() noexcept
 		{
 			unzCloseCurrentFile(m_file);
 		}
@@ -197,21 +197,23 @@ namespace eternal_lands
 				set_position(position);
 			}
 
-			inline ~ZipFileEntry() throw()
+			inline ~ZipFileEntry() noexcept
 			{
 			}
 
-			inline unz64_file_pos &get_position()
+			inline unz64_file_pos &get_position() noexcept
 			{
 				return m_position;
 			}
 
 			inline const unz64_file_pos &get_position() const
+				noexcept
 			{
 				return m_position;
 			}
 
 			inline void set_position(const unz64_file_pos &position)
+				noexcept
 			{
 				m_position = position;
 			}
@@ -222,7 +224,7 @@ namespace eternal_lands
 		init();
 	}
 
-	ZipFile::~ZipFile() throw()
+	ZipFile::~ZipFile() noexcept
 	{
 		unzClose(m_file);
 	}

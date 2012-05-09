@@ -21,7 +21,7 @@ namespace eternal_lands
 		m_free_ids[it_particle_object] = FreeIds(it_particle_object);
 	}
 
-	FreeIdsManager::~FreeIdsManager() throw()
+	FreeIdsManager::~FreeIdsManager() noexcept
 	{
 	}
 

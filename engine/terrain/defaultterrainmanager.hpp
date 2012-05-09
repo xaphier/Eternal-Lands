@@ -49,7 +49,7 @@ namespace eternal_lands
 				const MeshBuilderSharedPtr &mesh_builder,
 				const EffectCacheSharedPtr &effect_cache,
 				const TerrainData &terrain_data);
-			virtual ~DefaultTerrainManager() throw();
+			virtual ~DefaultTerrainManager() noexcept;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
 

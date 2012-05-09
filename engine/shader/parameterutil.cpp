@@ -78,38 +78,38 @@ namespace eternal_lands
 					assert(get_format_type() != pft_matrix);
 				}
 
-				inline ~ParameterTypeData() throw()
+				inline ~ParameterTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline Uint32 get_count() const
+				inline Uint32 get_count() const noexcept
 				{
 					return m_count;
 				}
 
-				inline GLenum get_gl_type() const
+				inline GLenum get_gl_type() const noexcept
 				{
 					return m_gl_type;
 				}
 
-				inline bool get_sampler() const
+				inline bool get_sampler() const noexcept
 				{
 					return m_sampler;
 				}
 
 				inline ParameterValueType get_value_type()
-					const
+					const noexcept
 				{
 					return m_value_type;
 				}
 
 				inline ParameterFormatType get_format_type()
-					const
+					const noexcept
 				{
 					return m_format_type;
 				}
@@ -452,7 +452,7 @@ namespace eternal_lands
 	}
 
 	bool ParameterUtil::get_parameter(const String &str,
-		ParameterType &parameter)
+		ParameterType &parameter) noexcept
 	{
 		Uint32 i;
 		ParameterType tmp;
@@ -472,7 +472,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 ParameterUtil::get_parameter_count()
+	Uint32 ParameterUtil::get_parameter_count() noexcept
 	{
 		return parameter_datas_count;
 	}

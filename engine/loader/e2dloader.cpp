@@ -230,7 +230,7 @@ namespace eternal_lands
 			m_reader->get_name());
 	}
 
-	E2dLoader::~E2dLoader() throw()
+	E2dLoader::~E2dLoader() noexcept
 	{
 	}
 

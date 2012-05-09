@@ -70,12 +70,12 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~BoundingBox() throw();
+			~BoundingBox() noexcept;
 
 			/**
 			 * Sets the bounding box to an empty volume.
 			 */
-			inline void set_empty()
+			inline void set_empty() noexcept
 			{
 				m_center = glm::vec3(0.0f);
 				m_half_size = glm::vec3(-1e30f);
@@ -91,7 +91,7 @@ namespace eternal_lands
 			 * @param max The maximal extend of the bounding box.
 			 */
 			void set_min_max(const glm::vec3 &min,
-				const glm::vec3 &max);
+				const glm::vec3 &max) noexcept;
 
 			/**
 			 * @brief Half size set.
@@ -102,7 +102,7 @@ namespace eternal_lands
 			 * @param half_size The minimal extend of the bounding
 			 * box.
 			 */
-			void set_half_size(const glm::vec3 &half_size);
+			void set_half_size(const glm::vec3 &half_size) noexcept;
 
 			/**
 			 * @brief Get minimum.
@@ -110,7 +110,7 @@ namespace eternal_lands
 			 * Gets the minimun of the box.
 			 * @return The minimum of the box.
 			 */
-			inline glm::vec3 get_min() const
+			inline glm::vec3 get_min() const noexcept
 			{
 				return get_center() - get_half_size();
 			}
@@ -121,7 +121,7 @@ namespace eternal_lands
 			 * Gets the maximum of the box.
 			 * @return The maximum of the box.
 			 */
-			inline glm::vec3 get_max() const
+			inline glm::vec3 get_max() const noexcept
 			{
 				return get_center() + get_half_size();
 			}
@@ -134,7 +134,7 @@ namespace eternal_lands
 			 * @return The corner point indexed by index.
 			 */
 			inline glm::vec3 get_point(const std::bitset<3> index)
-				const
+				const noexcept
 			{
 				glm::vec3 result;
 				Uint16 i;
@@ -154,7 +154,7 @@ namespace eternal_lands
 				return result;
 			}
 
-			Vec3Array8 get_corner_points() const
+			Vec3Array8 get_corner_points() const noexcept
 			{
 				Vec3Array8 result;
 				Uint16 i;
@@ -174,7 +174,7 @@ namespace eternal_lands
 			 * Sets the center of the bounding box.
 			 * @param center The new center of the box.
 			 */
-			inline void set_center(const glm::vec3 &center)
+			inline void set_center(const glm::vec3 &center) noexcept
 			{
 				assert(std::abs(center[0]) < 1e7f);
 				assert(std::abs(center[1]) < 1e7f);
@@ -188,7 +188,7 @@ namespace eternal_lands
 			 * Returns the center of the bounding box.
 			 * @return The center of the box.
 			 */
-			inline const glm::vec3 &get_center() const
+			inline const glm::vec3 &get_center() const noexcept
 			{
 				return m_center;
 			}
@@ -199,7 +199,7 @@ namespace eternal_lands
 			 * Returns the half sizes of the bounding box.
 			 * @return The half sizes of the box.
 			 */
-			inline const glm::vec3 &get_half_size() const
+			inline const glm::vec3 &get_half_size() const noexcept
 			{
 				return m_half_size;
 			}
@@ -210,7 +210,7 @@ namespace eternal_lands
 			 * Returns the half sizes of the bounding box.
 			 * @return The half sizes of the box.
 			 */
-			inline bool get_empty() const
+			inline bool get_empty() const noexcept
 			{
 				return !glm::all(glm::greaterThanEqual(
 					m_half_size, glm::vec3(0.0f)));
@@ -222,7 +222,7 @@ namespace eternal_lands
 			 * Scales the box using the given value.
 			 * @param s The scale value.
 			 */
-			inline void scale(const float s)
+			inline void scale(const float s) noexcept
 			{
 				m_half_size *= s;
 			}
@@ -233,7 +233,7 @@ namespace eternal_lands
 			 * Extends the box using the given value.
 			 * @param s The extend value.
 			 */
-			inline void extend(const float e)
+			inline void extend(const float e) noexcept
 			{
 				m_half_size += e;
 			}
@@ -244,7 +244,7 @@ namespace eternal_lands
 			 * Calculates the volume of this bounding box.
 			 * @return The volume of this boundign box.
 			 */
-			inline float get_volume() const
+			inline float get_volume() const noexcept
 			{
 				return get_half_size()[0] * get_half_size()[1]
 					* get_half_size()[2] * 8.0f;
@@ -256,7 +256,7 @@ namespace eternal_lands
 			 * Calculates the margin of this bounding box.
 			 * @return The margin of this boundign box.
 			 */
-			inline float get_margin() const
+			inline float get_margin() const noexcept
 			{
 				return (get_half_size()[0] + get_half_size()[1]
 					+ get_half_size()[2]) * 2.0f;
@@ -268,7 +268,7 @@ namespace eternal_lands
 			 * Clamps this bounding boxes with the given one.
 			 * @param box Bounding box for merge.
 			 */
-			void clamp(const BoundingBox &box);
+			void clamp(const BoundingBox &box) noexcept;
 
 			/**
 			 * @brief Merge.
@@ -276,7 +276,7 @@ namespace eternal_lands
 			 * Merges this bounding boxes with the given one.
 			 * @param box Bounding box for merge.
 			 */
-			void merge(const BoundingBox &box);
+			void merge(const BoundingBox &box) noexcept;
 
 			/**
 			 * @brief Overlap calculation.
@@ -287,7 +287,7 @@ namespace eternal_lands
 			 * @return The overlap of this bounding boxes with the
 			 * given one.
 			 */
-			float overlap(const BoundingBox &box) const;
+			float overlap(const BoundingBox &box) const noexcept;
 
 			/**
 			 * @brief Contains test.
@@ -297,7 +297,7 @@ namespace eternal_lands
 			 * @return Returns true if it contains the bounding box,
 			 * else false.
 			 */
-			bool contains(const BoundingBox &box) const;
+			bool contains(const BoundingBox &box) const noexcept;
 
 			/**
 			 * @brief Gets a transformed box.
@@ -308,7 +308,8 @@ namespace eternal_lands
 			 * @return The transformed box.
 			 */
 			BoundingBox transform(
-				const Transformation &transformation) const;
+				const Transformation &transformation) const
+				noexcept;
 
 			/**
 			 * @brief Gets a transformed box.
@@ -317,7 +318,8 @@ namespace eternal_lands
 			 * @param matrix The transformation matrix.
 			 * @return The transformed box.
 			 */
-			BoundingBox transform(const glm::mat4x4 &matrix) const;
+			BoundingBox transform(const glm::mat4x4 &matrix) const
+				noexcept;
 
 			/**
 			 * @brief Gets the enlargment.
@@ -327,7 +329,8 @@ namespace eternal_lands
 			 * @param box The box that would be merged.
 			 * @return The enlargement if the boxes would be merged.
 			 */
-			float enlargement(const BoundingBox &box) const;
+			float enlargement(const BoundingBox &box) const
+				noexcept;
 
 			/**
 			 * @brief Gets the distance.
@@ -336,13 +339,13 @@ namespace eternal_lands
 			 * @param point The point to use.
 			 * @return The distance of the box to the given point.
 			 */
-			float distance(const glm::vec3 &point) const;
+			float distance(const glm::vec3 &point) const noexcept;
 
 			bool intersect(const glm::mat4 &view_matrix,
 				const glm::mat4 &projection_matrix,
 				const glm::ivec4 &viewport,
 				const glm::vec2 &center,
-				const glm::vec2 &half_size) const;
+				const glm::vec2 &half_size) const noexcept;
 
 	};
 

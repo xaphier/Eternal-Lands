@@ -42,109 +42,121 @@ namespace eternal_lands
 
 				public:
 					inline Uint32 get_red_mask() const
+						noexcept
 					{
 						return m_red_mask;
 					}
 
 					inline Uint32 get_blue_mask() const
+						noexcept
 					{
 						return m_blue_mask;
 					}
 
 					inline Uint32 get_green_mask() const
+						noexcept
 					{
 						return m_green_mask;
 					}
 
 					inline Uint32 get_alpha_mask() const
+						noexcept
 					{
 						return m_alpha_mask;
 					}
 
-					inline Uint32 get_size() const
+					inline Uint32 get_size() const noexcept
 					{
 						return m_size;
 					}
 
 					inline Uint32 get_swap_size() const
+						noexcept
 					{
 						return m_swap_size;
 					}
 
-					inline GLenum get_type() const
+					inline GLenum get_type() const noexcept
 					{
 						return m_type;
 					}
 
 					inline GLenum get_format() const
+						noexcept
 					{
 						return m_format;
 					}
 
 					inline Uint16 get_channels() const
+						noexcept
 					{
 						return m_channels;
 					}
 
 					inline bool get_rg_format() const
+						noexcept
 					{
 						return m_rg_format;
 					}
 
 					inline void set_red_mask(
-						const Uint32 red_mask)
+						const Uint32 red_mask) noexcept
 					{
 						m_red_mask = red_mask;
 					}
 
 					inline void set_blue_mask(
-						const Uint32 blue_mask)
+						const Uint32 blue_mask) noexcept
 					{
 						m_blue_mask = blue_mask;
 					}
 
 					inline void set_green_mask(
 						const Uint32 green_mask)
+						noexcept
 					{
 						m_green_mask = green_mask;
 					}
 
 					inline void set_alpha_mask(
 						const Uint32 alpha_mask)
+						noexcept
 					{
 						m_alpha_mask = alpha_mask;
 					}
 
 					inline void set_size(const Uint32 size)
+						noexcept
 					{
 						m_size = size;
 					}
 
 					inline void set_swap_size(
-						const Uint32 swap_size)
+						const Uint32 swap_size) noexcept
 					{
 						m_swap_size = swap_size;
 					}
 
 					inline void set_type(const GLenum type)
+						noexcept
 					{
 						m_type = type;
 					}
 
 					inline void set_format(
-						const GLenum format)
+						const GLenum format) noexcept
 					{
 						m_format = format;
 					}
 
 					inline void set_rg_format(
-						const bool rg_format)
+						const bool rg_format) noexcept
 					{
 						m_rg_format = rg_format;
 					}
 
 					inline void set_channels(
-						const Uint16 channels)
+						const Uint16 channels) noexcept
 					{
 						m_channels = channels;
 					}
@@ -160,7 +172,7 @@ namespace eternal_lands
 					Uint32 m_alpha_mask;
 					GLenum m_type;
 
-					Uint32 get_size() const;
+					Uint32 get_size() const noexcept;
 
 				public:
 					GlPackedPixelType(const Uint32 red_mask,
@@ -168,36 +180,37 @@ namespace eternal_lands
 						const Uint32 blue_mask,
 						const Uint32 alpha_mask,
 						const GLenum type);
-					bool has_alpha() const;
+					bool has_alpha() const noexcept;
 					GlFastLoadInfo build(
 						const GLenum format,
 						const bool swap_colors,
-						const bool ignore_alpha) const;
+						const bool ignore_alpha) const
+						noexcept;
 			};
 
 			std::vector<GlFastLoadInfo> m_flast_load_infos;
 
 			void add_packed_gl_pixel_type(
-				const GlPackedPixelType &pixel_type);
+				const GlPackedPixelType &pixel_type) noexcept;
 			void add_red_gl_pixel_type(const GLenum type,
-				const Uint32 mask);
+				const Uint32 mask) noexcept;
 			void add_red_green_gl_pixel_type(const GLenum type,
-				const Uint32 mask);
+				const Uint32 mask) noexcept;
 			void add_luminance_gl_pixel_type(const GLenum type,
-				const Uint32 mask);
+				const Uint32 mask) noexcept;
 			void add_alpha_gl_pixel_type(const GLenum type,
-				const Uint32 mask);
+				const Uint32 mask) noexcept;
 			void add_luminance_alpha_gl_pixel_type(
-				const GLenum type, const Uint32 mask);
+				const GLenum type, const Uint32 mask) noexcept;
 			void add_color_gl_pixel_type(const GLenum type,
-				const Uint32 mask);
+				const Uint32 mask) noexcept;
 			void add_color_alpha_gl_pixel_type(const GLenum type,
-				const Uint32 mask);
+				const Uint32 mask) noexcept;
 			void add_gl_pixel_types();
 
 		public:
 			CodecManager();
-			~CodecManager() throw();
+			~CodecManager() noexcept;
 
 			/**
 			 * Tries to find a combination of opengl format and
@@ -217,7 +230,7 @@ namespace eternal_lands
 				const Uint32 green_mask,
 				const Uint32 blue_mask,
 				const Uint32 alpha_mask, const bool rga_formats)
-				const;
+				const noexcept;
 
 			/**
 			 * Tries to find a combination of opengl format and
@@ -246,7 +259,7 @@ namespace eternal_lands
 				const Uint32 blue_mask,
 				const Uint32 alpha_mask, const bool rg_formats,
 				GLenum &type, GLenum &format, Uint32 &size,
-				Uint32 &swap_size) const;
+				Uint32 &swap_size) const noexcept;
 
 			/**
 			 * Tries to find for a combination of opengl format and
@@ -270,7 +283,7 @@ namespace eternal_lands
 				const GLenum format, Uint32 &red_mask,
 				Uint32 &green_mask, Uint32 &blue_mask,
 				Uint32 &alpha_mask, Uint32 &size,
-				Uint32 &swap_size) const;
+				Uint32 &swap_size) const noexcept;
 
 			ImageSharedPtr load_image(
 				const ReaderSharedPtr &reader,
@@ -295,7 +308,7 @@ namespace eternal_lands
 				glm::uvec3 &sizes, Uint16 &mipmaps) const;
 
 			void get_supported_file_extensions(
-				StringVector &extensions) const;
+				StringVector &extensions) const noexcept;
 
 			void save_image_as_png(const ImageSharedPtr &image,
 				const String &file_name);

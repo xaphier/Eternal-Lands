@@ -25,7 +25,7 @@ namespace eternal_lands
 		memcpy(m_data, array.m_data, size() * 4 * sizeof(float));
 	}
 
-	AlignedVec4Array::~AlignedVec4Array() throw()
+	AlignedVec4Array::~AlignedVec4Array() noexcept
 	{
 		clear();
 	}

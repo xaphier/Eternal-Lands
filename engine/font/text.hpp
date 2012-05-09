@@ -43,7 +43,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~Text() throw();
+			~Text() noexcept;
 
 			void add(const Utf32String &str,
 				const TextAttribute &attribute);
@@ -52,27 +52,28 @@ namespace eternal_lands
 			const TextAttribute &get_text_attribute(
 				const Uint32 index, Uint32 &size) const;
 
-			inline const Utf32String &get_string() const
+			inline const Utf32String &get_string() const noexcept
 			{
 				return m_string;
 			}
 
 			inline Utf32Char get_char(const Uint32 index) const
+				noexcept
 			{
 				return get_string()[index];
 			}
 
-			inline bool operator!=(const Text &text) const
+			inline bool operator!=(const Text &text) const noexcept
 			{
 				return !operator==(text);
 			}
 
-			inline std::size_t get_hash() const
+			inline std::size_t get_hash() const noexcept
 			{
 				return m_hash;
 			}
 
-			inline Uint32 get_length() const
+			inline Uint32 get_length() const noexcept
 			{
 				return m_string.length();
 			}

@@ -32,21 +32,21 @@ namespace eternal_lands
 					assert(get_scale() > 0);
 				}
 
-				inline ~PrimitiveTypeData() throw()
+				inline ~PrimitiveTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline Uint32 get_scale() const
+				inline Uint32 get_scale() const noexcept
 				{
 					return m_scale;
 				}
 
-				inline Uint32 get_offset() const
+				inline Uint32 get_offset() const noexcept
 				{
 					return m_offset;
 				}

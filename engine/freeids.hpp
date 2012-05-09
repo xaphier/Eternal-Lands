@@ -46,7 +46,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~FreeIds() throw();
+			~FreeIds() noexcept;
 
 			void clear();
 
@@ -77,11 +77,13 @@ namespace eternal_lands
 			}
 
 			static inline Uint16 get_type_value(const Uint32 id)
+				noexcept
 			{
 				return id >> m_type_shift;
 			}
 
 			static inline Uint32 get_typeless_id(const Uint32 id)
+				noexcept
 			{
 				return id & m_typeless_id_mask;
 			}

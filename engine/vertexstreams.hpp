@@ -40,23 +40,25 @@ namespace eternal_lands
 				const AbstractReadWriteMemorySharedPtrVector
 					&buffers, const Uint32 vertex_count,
 				const bool use_simd);
-			~VertexStreams() throw();
+			~VertexStreams() noexcept;
 			void set(const VertexSemanticType semantic,
-				const glm::vec4 &data);
-			void reset();
-			void push_vertex();
+				const glm::vec4 &data) noexcept;
+			void reset() noexcept;
+			void push_vertex() noexcept;
 
 			inline const VertexFormatSharedPtr &get_format() const
+				noexcept
 			{
 				return m_format;
 			}
 
 			inline const VertexStreamVector &get_streams() const
+				noexcept
 			{
 				return m_streams;
 			}
 
-			inline VertexStreamVector &get_streams()
+			inline VertexStreamVector &get_streams() noexcept
 			{
 				return m_streams;
 			}
@@ -78,7 +80,7 @@ namespace eternal_lands
 				return m_streams[index];
 			}
 
-			inline Uint32 get_vertex_count() const
+			inline Uint32 get_vertex_count() const noexcept
 			{
 				return m_vertex_count;
 			}

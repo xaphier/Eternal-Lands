@@ -17,18 +17,18 @@ namespace eternal_lands
 		m_memory_buffer.resize(buffer->get_size());
 	}
 
-	HardwareWriteMemory::~HardwareWriteMemory() throw()
+	HardwareWriteMemory::~HardwareWriteMemory() noexcept
 	{
 		m_buffer->bind(get_type());
 		m_buffer->update(get_type(), m_memory_buffer);
 	}
 
-	void* HardwareWriteMemory::get_ptr()
+	void* HardwareWriteMemory::get_ptr() noexcept
 	{
 		return m_memory_buffer.get_ptr();
 	}
 
-	Uint64 HardwareWriteMemory::get_size() const
+	Uint64 HardwareWriteMemory::get_size() const noexcept
 	{
 		return m_memory_buffer.get_size();
 	}

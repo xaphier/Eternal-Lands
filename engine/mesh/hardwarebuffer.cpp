@@ -23,7 +23,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR();
 	}
 
-	HardwareBuffer::~HardwareBuffer() throw()
+	HardwareBuffer::~HardwareBuffer() noexcept
 	{
 		glDeleteBuffers(1, &m_id);
 	}

@@ -28,7 +28,7 @@ namespace eternal_lands
 			AbstractProgress();
 
 		public:
-			virtual ~AbstractProgress() throw();
+			virtual ~AbstractProgress() noexcept;
 			virtual void init(const Uint32 min_value,
 				const Uint32 max_value) = 0;
 			virtual void set_text(const String &str) = 0;

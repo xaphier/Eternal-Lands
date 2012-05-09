@@ -45,7 +45,7 @@ namespace eternal_lands
 			m_bounding_box);
 	}
 
-	InstancingData::~InstancingData() throw()
+	InstancingData::~InstancingData() noexcept
 	{
 	}
 

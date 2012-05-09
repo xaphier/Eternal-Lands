@@ -81,7 +81,7 @@ namespace eternal_lands
 		}
 	}
 
-	XmlReader::~XmlReader() throw()
+	XmlReader::~XmlReader() noexcept
 	{
 		xmlFreeDoc(m_doc);
 	}

@@ -32,7 +32,7 @@ namespace eternal_lands
 			MaterialScript(
 				const ScriptEngineSharedPtr &script_engine,
 				const String &name);
-			~MaterialScript() throw();
+			~MaterialScript() noexcept;
 			bool execute(const glm::vec4 &time,
 				MaterialData &material,
 				asIScriptContext* context);

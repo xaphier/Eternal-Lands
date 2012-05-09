@@ -51,7 +51,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~TextureGlyphe() throw();
+			~TextureGlyphe() noexcept;
 
 			void write_to_stream(const TextAttribute &attribute,
 				const float height, const float kerning,
@@ -63,49 +63,49 @@ namespace eternal_lands
 				const float kerning) const;
 
 			inline void set_kerning(
-				const Utf32CharFloatMap &kerning)
+				const Utf32CharFloatMap &kerning) noexcept
 			{
 				m_kerning = kerning;
 			}
 
-			inline Utf32Char get_char_code() const
+			inline Utf32Char get_char_code() const noexcept
 			{
 				return m_char_code;
 			}
 
-			inline Uint16 get_width() const
+			inline Uint16 get_width() const noexcept
 			{
 				return m_width;
 			}
 
-			inline Uint16 get_height() const
+			inline Uint16 get_height() const noexcept
 			{
 				return m_height;
 			}
 
-			inline const glm::vec2 &get_offset() const
+			inline const glm::vec2 &get_offset() const noexcept
 			{
 				return m_offset;
 			}
 
-			inline const glm::vec2 &get_advance() const
+			inline const glm::vec2 &get_advance() const noexcept
 			{
 				return m_advance;
 			}
 
-			inline const glm::vec4 &get_uv() const
+			inline const glm::vec4 &get_uv() const noexcept
 			{
 				return m_uv;
 			}
 
 			inline float get_kerning(const TextureGlyphe &glyphe)
-				const
+				const noexcept
 			{
 				return get_kerning(glyphe.get_char_code());
 			}
 
 			inline float get_kerning(const Utf32Char char_code)
-				const
+				const noexcept
 			{
 				Utf32CharFloatMap::const_iterator found;
 

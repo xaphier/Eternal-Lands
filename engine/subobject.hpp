@@ -49,44 +49,46 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~SubObject() throw();
+			~SubObject() noexcept;
 
-			inline Uint32 get_id() const
+			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
 			}
 
-			inline Uint32 get_material() const
+			inline Uint32 get_material() const noexcept
 			{
 				return m_material;
 			}
 
-			inline Uint32 get_max_distance() const
+			inline Uint32 get_max_distance() const noexcept
 			{
 				return m_max_distance;
 			}
 
-			inline SelectionType get_selection() const
+			inline SelectionType get_selection() const noexcept
 			{
 				return m_selection;
 			}
 
-			inline void set_id(const Uint32 id)
+			inline void set_id(const Uint32 id) noexcept
 			{
 				m_id = id;
 			}
 
-			inline void set_material(const Uint32 material)
+			inline void set_material(const Uint32 material) noexcept
 			{
 				m_material = material;
 			}
 
 			inline void set_max_distance(const Uint32 max_distance)
+				noexcept
 			{
 				m_max_distance = max_distance;
 			}
 
 			inline void set_selection(const SelectionType selection)
+				noexcept
 			{
 				m_selection = selection;
 			}

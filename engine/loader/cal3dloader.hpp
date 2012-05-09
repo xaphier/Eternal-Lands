@@ -40,7 +40,7 @@ namespace eternal_lands
 		public:
 			Cal3dLoader(CalCoreModel* core_model,
 				const String &name);
-			~Cal3dLoader() throw();
+			~Cal3dLoader() noexcept;
 			void load(const bool use_extra_weight,
 				const bool use_simd,
 				MeshDataToolSharedPtr &mesh_data_tool);

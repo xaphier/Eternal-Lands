@@ -36,7 +36,7 @@ namespace eternal_lands
 	{
 	}
 
-	ShaderSource::~ShaderSource() throw()
+	ShaderSource::~ShaderSource() noexcept
 	{
 	}
 

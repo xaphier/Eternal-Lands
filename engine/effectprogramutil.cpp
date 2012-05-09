@@ -66,7 +66,7 @@ namespace eternal_lands
 				UTF8("EffectProgramType")));
 	}
 
-	Uint32 EffectProgramUtil::get_effect_program_count()
+	Uint32 EffectProgramUtil::get_effect_program_count() noexcept
 	{
 		return effect_program_names_count;
 	}

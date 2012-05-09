@@ -17,7 +17,7 @@ namespace eternal_lands
 		m_vertices.reserve(4);
 	}
 
-	Polygon::~Polygon() throw()
+	Polygon::~Polygon() noexcept
 	{
 	}
 

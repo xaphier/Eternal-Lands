@@ -49,7 +49,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~ReadWriteMemory() throw();
+			virtual ~ReadWriteMemory() noexcept;
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -57,7 +57,7 @@ namespace eternal_lands
 			 * Gets the pointer of the memory.
 			 * @return Returns the pointer of the memory.
 			 */
-			virtual void* get_ptr();
+			virtual void* get_ptr() noexcept;
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -65,7 +65,7 @@ namespace eternal_lands
 			 * Gets the pointer of the memory.
 			 * @return Returns the pointer of the memory.
 			 */
-			virtual const void* get_ptr() const;
+			virtual const void* get_ptr() const noexcept;
 
 			/**
 			 * @brief Gets the size of the memory.
@@ -73,7 +73,7 @@ namespace eternal_lands
 			 * Gets the size of the memory.
 			 * @return Returns the size of the memory.
 			 */
-			virtual Uint64 get_size() const;
+			virtual Uint64 get_size() const noexcept;
 
 			/**
 			 * @brief Resizes the memory.

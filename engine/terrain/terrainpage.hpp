@@ -45,15 +45,15 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~TerrainPage() throw();
+			~TerrainPage() noexcept;
 			virtual void update_bounding_box();
 
-			inline float get_min_z() const
+			inline float get_min_z() const noexcept
 			{
 				return m_min_z;
 			}
 
-			inline float get_max_z() const
+			inline float get_max_z() const noexcept
 			{
 				return m_max_z;
 			}

@@ -27,7 +27,7 @@ namespace eternal_lands
 	{
 	}
 
-	TerrainData::~TerrainData() throw()
+	TerrainData::~TerrainData() noexcept
 	{
 	}
 

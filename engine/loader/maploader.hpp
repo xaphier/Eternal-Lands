@@ -47,53 +47,56 @@ namespace eternal_lands
 
 		protected:
 			inline const CodecManagerSharedPtr &get_codec_manager()
-				const
+				const noexcept
 			{
 				return m_codec_manager;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
 
 			inline const MeshBuilderSharedPtr &get_mesh_builder()
-				const
+				const noexcept
 			{
 				return m_mesh_builder;
 			}
 
 			inline const MeshCacheSharedPtr &get_mesh_cache() const
+				noexcept
 			{
 				return m_mesh_cache;
 			}
 
 			inline const MeshDataCacheSharedPtr
-				&get_mesh_data_cache() const
+				&get_mesh_data_cache() const noexcept
 			{
 				return m_mesh_data_cache;
 			}
 
 			inline const EffectCacheSharedPtr &get_effect_cache()
-				const
+				const noexcept
 			{
 				return m_effect_cache;
 			}
 
 			inline const MaterialCacheSharedPtr
-				&get_material_cache() const
+				&get_material_cache() const noexcept
 			{
 				return m_material_cache;
 			}
 
 			inline const MaterialDescriptionCacheSharedPtr
 				&get_material_description_cache() const
+				noexcept
 			{
 				return m_material_description_cache;
 			}
 
 			inline const ReaderSharedPtr &get_reader() const
+				noexcept
 			{
 				return m_reader;
 			}
@@ -146,7 +149,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~MapLoader() throw();
+			virtual ~MapLoader() noexcept;
 
 			MapSharedPtr load(const String &name);
 

@@ -36,7 +36,7 @@ namespace eternal_lands
 
 		public:
 			FileSystem();
-			~FileSystem() throw();
+			~FileSystem() noexcept;
 			void add_dir(const String &dir_name);
 			void add_zip(const String &zip_name);
 			void add_zip(const String &zip_name,

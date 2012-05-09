@@ -18,7 +18,7 @@ namespace eternal_lands
 	{
 	}
 
-	MaterialDescription::~MaterialDescription() throw()
+	MaterialDescription::~MaterialDescription() noexcept
 	{
 	}
 

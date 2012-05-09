@@ -55,7 +55,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~EffectCache() throw();
+			~EffectCache() noexcept;
 			const EffectSharedPtr &get_effect(const String &name);
 			const EffectSharedPtr &get_simple_effect();
 			void reload();

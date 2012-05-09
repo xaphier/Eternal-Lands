@@ -35,26 +35,27 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~AutoParameterTypeData() throw()
+				inline ~AutoParameterTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline ParameterType get_type() const
+				inline ParameterType get_type() const noexcept
 				{
 					return m_type;
 				}
 
 				inline ParameterSizeType get_size() const
+					noexcept
 				{
 					return m_size;
 				}
 
-				inline Uint16 get_scale() const
+				inline Uint16 get_scale() const noexcept
 				{
 					return m_scale;
 				}
@@ -222,7 +223,7 @@ namespace eternal_lands
 	}
 
 	bool AutoParameterUtil::get_auto_parameter(const String &str,
-		AutoParameterType &auto_parameter)
+		AutoParameterType &auto_parameter) noexcept
 	{
 		Uint32 i;
 		AutoParameterType tmp;
@@ -242,7 +243,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 AutoParameterUtil::get_auto_parameter_count()
+	Uint32 AutoParameterUtil::get_auto_parameter_count() noexcept
 	{
 		return auto_parameter_datas_count;
 	}

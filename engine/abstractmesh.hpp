@@ -57,7 +57,7 @@ namespace eternal_lands
 				const VertexStreamBitset vertex_buffers) = 0;
 			virtual void init_index_buffer() = 0;
 
-			inline GLenum get_index_type() const
+			inline GLenum get_index_type() const noexcept
 			{
 				if (get_use_16_bit_indices())
 				{
@@ -70,7 +70,7 @@ namespace eternal_lands
 			}
 
 			inline Uint32 get_index_offset(const Uint32 offset)
-				const
+				const noexcept
 			{
 				if (get_use_16_bit_indices())
 				{
@@ -86,7 +86,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~AbstractMesh() throw();
+			virtual ~AbstractMesh() noexcept;
 
 			/**
 			 * Binds the mesh to OpenGL, using vertex buffers etc.
@@ -168,7 +168,7 @@ namespace eternal_lands
 				BoundingBox &bounding_box);
 
 			inline const VertexFormatSharedPtr &get_vertex_format()
-				const
+				const noexcept
 			{
 				return m_vertex_format;
 			}
@@ -195,6 +195,7 @@ namespace eternal_lands
 			 * @result The sub meshs.
 			 */
 			inline const SubMeshVector &get_sub_meshs() const
+				noexcept
 			{
 				return m_sub_meshs;
 			}
@@ -203,7 +204,7 @@ namespace eternal_lands
 			 * Returns the number of vertexes.
 			 * @result The vertex count.
 			 */
-			inline Uint32 get_vertex_count() const
+			inline Uint32 get_vertex_count() const noexcept
 			{
 				return m_vertex_count;
 			}
@@ -212,7 +213,7 @@ namespace eternal_lands
 			 * Returns the number of indexes.
 			 * @result The index count.
 			 */
-			inline Uint32 get_index_count() const
+			inline Uint32 get_index_count() const noexcept
 			{
 				return m_index_count;
 			}
@@ -221,6 +222,7 @@ namespace eternal_lands
 			 * Sets the OpenGL primitive type (points, lines, ..)
 			 */
 			inline void set_primitive(const PrimitiveType primitive)
+				noexcept
 			{
 				m_primitive = primitive;
 			}
@@ -228,7 +230,7 @@ namespace eternal_lands
 			/**
 			 * Returns the OpenGL primitive type (points, lines, ..)
 			 */
-			inline PrimitiveType get_primitive() const
+			inline PrimitiveType get_primitive() const noexcept
 			{
 				return m_primitive;
 			}
@@ -236,7 +238,7 @@ namespace eternal_lands
 			/**
 			 * Returns true if 16 bit indices are used.
 			 */
-			inline bool get_use_16_bit_indices() const
+			inline bool get_use_16_bit_indices() const noexcept
 			{
 				return m_use_16_bit_indices;
 			}
@@ -245,7 +247,7 @@ namespace eternal_lands
 			 * Return the restart index.
 			 * @result The restart index.
 			 */
-			inline Uint32 get_restart_index() const
+			inline Uint32 get_restart_index() const noexcept
 			{
 				if (get_use_16_bit_indices() &&
 					get_use_restart_index())
@@ -264,7 +266,7 @@ namespace eternal_lands
 			 * Returns if the restart index is used.
 			 * @result If the restart index is used.
 			 */
-			inline bool get_use_restart_index() const
+			inline bool get_use_restart_index() const noexcept
 			{
 				return m_use_restart_index;
 			}
@@ -273,7 +275,7 @@ namespace eternal_lands
 			 * Returns if the indices are mostly static.
 			 * @result If the indices are mostly static.
 			 */
-			inline bool get_static_indices() const
+			inline bool get_static_indices() const noexcept
 			{
 				return m_static_indices;
 			}
@@ -282,19 +284,19 @@ namespace eternal_lands
 			 * Returns if the vertices are mostly static.
 			 * @result If the vertices are mostly static.
 			 */
-			inline bool get_static_vertices() const
+			inline bool get_static_vertices() const noexcept
 			{
 				return m_static_vertices;
 			}
 
 			/**
 			 */
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}
 
-			inline bool get_use_simd() const
+			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;
 			}

@@ -35,20 +35,21 @@ namespace eternal_lands
 		public:
 			LightVisitor();
 
-			virtual ~LightVisitor() throw();
+			virtual ~LightVisitor() noexcept;
 
 			virtual void operator()(
 				const BoundedObjectSharedPtr &bounded_object,
-				const SubFrustumsMask mask);
+				const SubFrustumsMask mask) noexcept;
 		
-			void sort(const glm::vec3 &position);
+			void sort(const glm::vec3 &position) noexcept;
 
-			inline LightSharedPtrVector &get_lights()
+			inline LightSharedPtrVector &get_lights() noexcept
 			{
 				return m_lights;
 			}
 
 			inline const LightSharedPtrVector &get_lights() const
+				noexcept
 			{
 				return m_lights;
 			}

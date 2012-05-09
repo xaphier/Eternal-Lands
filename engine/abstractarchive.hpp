@@ -37,7 +37,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~AbstractArchive() throw();
+			virtual ~AbstractArchive() noexcept;
 
 			/**
 			 * Opens the file for reading.
@@ -58,7 +58,7 @@ namespace eternal_lands
 			 * Gets the name of the archive.
 			 * @return The name of the archive.
 			 */
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}

@@ -44,7 +44,7 @@ namespace eternal_lands
 				const ParameterQualifierType qualifier,
 				const ParameterSizeType size,
 				const Uint16 array_size);
-			~ShaderSourceParameter() throw();
+			~ShaderSourceParameter() noexcept;
 			void load_xml(const String &source,
 				const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
@@ -54,6 +54,7 @@ namespace eternal_lands
 			 */
 			inline bool operator<(
 				const ShaderSourceParameter &parameter) const
+				noexcept
 			{
 				return get_name() < parameter.get_name();
 			}
@@ -72,7 +73,7 @@ namespace eternal_lands
 			 * Sets the name of the parameter.
 			 * @param name the name of the parameter.
 			 */
-			inline void set_name(const String &name)
+			inline void set_name(const String &name) noexcept
 			{
 				m_name = name;
 			}
@@ -82,7 +83,7 @@ namespace eternal_lands
 			 * Sets the source of the parameter.
 			 * @param source the source of the parameter.
 			 */
-			inline void set_source(const String &source)
+			inline void set_source(const String &source) noexcept
 			{
 				m_source = source;
 			}
@@ -92,7 +93,7 @@ namespace eternal_lands
 			 * Sets the type of the parameter.
 			 * @param type the type of the parameter.
 			 */
-			inline void set_type(const ParameterType type)
+			inline void set_type(const ParameterType type) noexcept
 			{
 				m_type = type;
 			}
@@ -103,7 +104,7 @@ namespace eternal_lands
 			 * @param qualifier the qualifier of the parameter.
 			 */
 			inline void set_qualifier(
-				const ParameterQualifierType qualifier)
+				const ParameterQualifierType qualifier) noexcept
 			{
 				m_qualifier = qualifier;
 			}
@@ -114,6 +115,7 @@ namespace eternal_lands
 			 * @param size the size type of the parameter.
 			 */
 			inline void set_size(const ParameterSizeType size)
+				noexcept
 			{
 				m_size = size;
 			}
@@ -123,7 +125,7 @@ namespace eternal_lands
 			 * Sets the scale of the parameter.
 			 * @param scale the scale of the parameter.
 			 */
-			inline void set_scale(const Uint16 scale)
+			inline void set_scale(const Uint16 scale) noexcept
 			{
 				assert(scale > 0);
 				m_scale = scale;
@@ -134,7 +136,7 @@ namespace eternal_lands
 			 * Gets the name of the parameter.
 			 * @return the name of the parameter.
 			 */
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}
@@ -144,7 +146,7 @@ namespace eternal_lands
 			 * Gets the source of the parameter.
 			 * @return the source of the parameter.
 			 */
-			inline const String &get_source() const
+			inline const String &get_source() const noexcept
 			{
 				return m_source;
 			}
@@ -154,7 +156,7 @@ namespace eternal_lands
 			 * Gets the type of the parameter.
 			 * @return the type of the parameter.
 			 */
-			inline ParameterType get_type() const
+			inline ParameterType get_type() const noexcept
 			{
 				return m_type;
 			}
@@ -165,6 +167,7 @@ namespace eternal_lands
 			 * @return the qualifier of the parameter.
 			 */
 			inline ParameterQualifierType get_qualifier() const
+				noexcept
 			{
 				return m_qualifier;
 			}
@@ -174,7 +177,7 @@ namespace eternal_lands
 			 * Gets the size type of the parameter.
 			 * @return the size type of the parameter.
 			 */
-			inline ParameterSizeType get_size() const
+			inline ParameterSizeType get_size() const noexcept
 			{
 				return m_size;
 			}
@@ -184,7 +187,7 @@ namespace eternal_lands
 			 * Gets the scale of the parameter.
 			 * @return the scale of the parameter.
 			 */
-			inline Uint16 get_scale() const
+			inline Uint16 get_scale() const noexcept
 			{
 				return m_scale;
 			}

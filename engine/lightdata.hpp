@@ -51,16 +51,17 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			inline ~LightData() throw()
+			inline ~LightData() noexcept
 			{
 			}
 
-			inline const glm::vec3 &get_position() const
+			inline const glm::vec3 &get_position() const noexcept
 			{
 				return m_position;
 			}
 
 			inline void set_position(const glm::vec3 &position)
+				noexcept
 			{
 				m_position = position;
 			}
@@ -68,32 +69,32 @@ namespace eternal_lands
 			/**
 			 * The radius of the light.
 			 */
-			inline float get_radius() const
+			inline float get_radius() const noexcept
 			{
 				return m_radius;
 			}
 
-			inline void set_radius(const float radius)
+			inline void set_radius(const float radius) noexcept
 			{
 				m_radius = radius;
 			}
 
-			inline const glm::vec3 &get_color() const
+			inline const glm::vec3 &get_color() const noexcept
 			{
 				return m_color;
 			}
 
-			inline void set_color(const glm::vec3 &color)
+			inline void set_color(const glm::vec3 &color) noexcept
 			{
 				m_color = color;
 			}
 
-			inline Uint32 get_id() const
+			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
 			}
 
-			inline void set_id(const Uint32 id)
+			inline void set_id(const Uint32 id) noexcept
 			{
 				m_id = id;
 			}

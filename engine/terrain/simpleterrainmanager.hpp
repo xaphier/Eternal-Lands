@@ -52,7 +52,7 @@ namespace eternal_lands
 				const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MaterialSharedPtrVector &materials);
-			virtual ~SimpleTerrainManager() throw();
+			virtual ~SimpleTerrainManager() noexcept;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
 

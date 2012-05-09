@@ -53,16 +53,22 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~IndexUpdateSource() throw();
+			~IndexUpdateSource() noexcept;
 
 			/**
 			 * @param index_blocks The blocks of indices.
 			 */
 			Uint32 get_count(const Uint32Set &blocks) const;
 
-			bool get_use_16_bit_indices() const;
+			inline bool get_use_16_bit_indices() const noexcept
+			{
+				return m_use_16_bit_indices;
+			}
 
-			bool get_use_restart_index() const;
+			inline bool get_use_restart_index() const noexcept
+			{
+				return m_use_restart_index;
+			}
 
 			SubMeshVector get_sub_meshs(const Uint32Set &blocks)
 				const;

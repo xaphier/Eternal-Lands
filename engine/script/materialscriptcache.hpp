@@ -52,7 +52,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~MaterialScriptCache() throw();
+			~MaterialScriptCache() noexcept;
 
 			const MaterialScriptSharedPtr &get_material_script(
 				const String &name);

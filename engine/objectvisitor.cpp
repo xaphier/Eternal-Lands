@@ -22,13 +22,13 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~ObjectSort() throw()
+				inline ~ObjectSort() noexcept
 				{
 				}
 
 				inline bool operator()(
 					const RenderObjectData &rod0,
-					const RenderObjectData &rod1)
+					const RenderObjectData &rod1) noexcept
 				{
 					float distance0, distance1;
 
@@ -69,7 +69,7 @@ namespace eternal_lands
 	{
 	}
 
-	ObjectVisitor::~ObjectVisitor() throw()
+	ObjectVisitor::~ObjectVisitor() noexcept
 	{
 	}
 
@@ -115,12 +115,12 @@ namespace eternal_lands
 		add(object, mask);
 	}
 
-	void ObjectVisitor::next_frame()
+	void ObjectVisitor::next_frame() noexcept
 	{
 		clear();
 	}
 
-	void ObjectVisitor::clear()
+	void ObjectVisitor::clear() noexcept
 	{
 		m_objects.clear();
 	}

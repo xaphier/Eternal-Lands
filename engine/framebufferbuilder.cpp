@@ -23,7 +23,7 @@ namespace eternal_lands
 	{
 	}
 
-	FrameBufferBuilder::~FrameBufferBuilder() throw()
+	FrameBufferBuilder::~FrameBufferBuilder() noexcept
 	{
 	}
 

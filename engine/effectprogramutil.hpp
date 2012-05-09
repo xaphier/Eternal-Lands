@@ -36,7 +36,7 @@ namespace eternal_lands
 				const EffectProgramType effect_program);
 			static EffectProgramType get_effect_program(
 				const String &str);
-			static Uint32 get_effect_program_count();
+			static Uint32 get_effect_program_count() noexcept;
 
 	};
 

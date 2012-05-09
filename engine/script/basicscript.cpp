@@ -17,7 +17,7 @@ namespace eternal_lands
 	{
 	}
 
-	BasicScript::~BasicScript() throw()
+	BasicScript::~BasicScript() noexcept
 	{
 		if (m_func != 0)
 		{

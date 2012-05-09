@@ -45,10 +45,10 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~TextAttribute() throw();
+			~TextAttribute() noexcept;
 
 			inline bool operator==(const TextAttribute &attribute)
-				const
+				const noexcept
 			{
 				return get_color() == attribute.get_color() &&
 					get_size() == attribute.get_size() &&
@@ -58,57 +58,57 @@ namespace eternal_lands
 			}
 
 			inline bool operator!=(const TextAttribute &attribute)
-				const
+				const noexcept
 			{
 				return !operator==(attribute);
 			}
 
-			inline void set_color(const glm::vec4 &color)
+			inline void set_color(const glm::vec4 &color) noexcept
 			{
 				m_color = color;
 			}
 
-			inline void set_size(const float size)
+			inline void set_size(const float size) noexcept
 			{
 				m_size = size;
 			}
 
-			inline void set_spacing(const float spacing)
+			inline void set_spacing(const float spacing) noexcept
 			{
 				m_spacing = spacing;
 			}
 
-			inline void set_rise(const float rise)
+			inline void set_rise(const float rise) noexcept
 			{
 				m_rise = rise;
 			}
 
-			inline void set_font(const String font)
+			inline void set_font(const String font) noexcept
 			{
 				m_font = font;
 			}
 
-			inline const glm::vec4 &get_color() const
+			inline const glm::vec4 &get_color() const noexcept
 			{
 				return m_color;
 			}
 
-			inline float get_size() const
+			inline float get_size() const noexcept
 			{
 				return m_size;
 			}
 
-			inline float get_spacing() const
+			inline float get_spacing() const noexcept
 			{
 				return m_spacing;
 			}
 
-			inline float get_rise() const
+			inline float get_rise() const noexcept
 			{
 				return m_rise;
 			}
 
-			inline const String &get_font() const
+			inline const String &get_font() const noexcept
 			{
 				return m_font;
 			}

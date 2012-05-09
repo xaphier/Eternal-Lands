@@ -33,11 +33,11 @@ namespace eternal_lands
 		private:
 			RenderObjectDataVector m_objects;
 
-			void clear();
+			void clear() noexcept;
 
 		public:
 			ObjectVisitor();
-			virtual ~ObjectVisitor() throw();
+			virtual ~ObjectVisitor() noexcept;
 			virtual void operator()(
 				const BoundedObjectSharedPtr &bounded_object,
 				const SubFrustumsMask mask);
@@ -47,14 +47,15 @@ namespace eternal_lands
 			void add(const ObjectSharedPtr &object,
 				const float transparency, const BlendType blend,
 				const SubFrustumsMask mask);
-			void next_frame();
+			void next_frame() noexcept;
 
-			inline RenderObjectDataVector &get_objects()
+			inline RenderObjectDataVector &get_objects() noexcept
 			{
 				return m_objects;
 			}
 
 			inline const RenderObjectDataVector &get_objects() const
+				noexcept
 			{
 				return m_objects;
 			}

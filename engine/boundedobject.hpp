@@ -35,7 +35,7 @@ namespace eternal_lands
 
 		protected:
 			inline void set_bounding_box(
-				const BoundingBox &bounding_box)
+				const BoundingBox &bounding_box) noexcept
 			{
 				m_bounding_box = bounding_box;
 			}
@@ -49,9 +49,10 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~BoundedObject() throw();
+			virtual ~BoundedObject() noexcept;
 
 			inline const BoundingBox &get_bounding_box() const
+				noexcept
 			{
 				return m_bounding_box;
 			}

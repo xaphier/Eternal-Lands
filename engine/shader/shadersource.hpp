@@ -37,7 +37,7 @@ namespace eternal_lands
 
 		public:
 			ShaderSource();
-			~ShaderSource() throw();
+			~ShaderSource() noexcept;
 			void load_xml(const String &file_name);
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
@@ -68,26 +68,28 @@ namespace eternal_lands
 			String get_typed_name() const;
 
 			inline void set_type(const ShaderSourceType type)
+				noexcept
 			{
 				m_type = type;
 			}
 
-			inline void set_name(const String &name)
+			inline void set_name(const String &name) noexcept
 			{
 				m_name = name;
 			}
 
 			inline const ShaderSourceDataVector &get_datas() const
+				noexcept
 			{
 				return m_datas;
 			}
 
-			inline ShaderSourceType get_type() const
+			inline ShaderSourceType get_type() const noexcept
 			{
 				return m_type;
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}

@@ -15,7 +15,7 @@ namespace eternal_lands
 	{
 	}
 
-	TextAttribute::~TextAttribute() throw()
+	TextAttribute::~TextAttribute() noexcept
 	{
 	}
 

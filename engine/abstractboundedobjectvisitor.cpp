@@ -14,7 +14,7 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractBoundedObjectVisitor::~AbstractBoundedObjectVisitor() throw()
+	AbstractBoundedObjectVisitor::~AbstractBoundedObjectVisitor() noexcept
 	{
 	}
 

@@ -93,24 +93,24 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~Plane() throw();
+			~Plane() noexcept;
 
-			inline const glm::vec4 &get_data() const
+			inline const glm::vec4 &get_data() const noexcept
 			{
 				return m_normal_and_distance;
 			}
 
-			inline glm::vec3 get_normal() const
+			inline glm::vec3 get_normal() const noexcept
 			{
 				return glm::vec3(m_normal_and_distance);
 			}
 
-			inline glm::vec3 get_abs_normal() const
+			inline glm::vec3 get_abs_normal() const noexcept
 			{
 				return glm::abs(get_normal());
 			}
 
-			inline float get_distance() const
+			inline float get_distance() const noexcept
 			{
 				return m_normal_and_distance.w;
 			}
@@ -118,19 +118,20 @@ namespace eternal_lands
 			/**
 			 * Gets a member point of the plane.
 			 */
-			inline glm::vec3 get_member_point() const
+			inline glm::vec3 get_member_point() const noexcept
 			{
 				return get_normal() * -get_distance();
 			}
 
 			inline float get_distance(const glm::vec3 &point) const
+				noexcept
 			{
 				return glm::dot(get_normal(), point) +
 					get_distance();
 			}
 
 			inline IntersectionType intersect(
-				const glm::vec3 &point) const
+				const glm::vec3 &point) const noexcept
 			{
 				float dist;
 
@@ -154,6 +155,7 @@ namespace eternal_lands
 			}
 
 			inline bool intersect(const Ray &ray, float &t) const
+				noexcept
 			{
 				float angle, distance;
 
@@ -175,6 +177,7 @@ namespace eternal_lands
 			}
 
 			inline float get_distance(const BoundingBox &box) const
+				noexcept
 			{
 				float dist, size;
 
@@ -187,7 +190,7 @@ namespace eternal_lands
 			}
 
 			inline IntersectionType intersect(
-				const BoundingBox &box) const
+				const BoundingBox &box) const noexcept
 			{
 				float dist, size;
 
@@ -227,7 +230,7 @@ namespace eternal_lands
 			Plane get_transformed(const glm::mat4x3 &matrix) const;
 
 			inline bool intersection_point(const Plane p0,
-				const Plane p1, glm::vec3 &point) const
+				const Plane p1, glm::vec3 &point) const noexcept
 			{
 				return intersection_point(p0, p1, *this,
 					point);

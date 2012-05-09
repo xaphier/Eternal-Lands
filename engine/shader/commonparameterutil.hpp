@@ -70,8 +70,8 @@ namespace eternal_lands
 			static CommonParameterType get_common_parameter(
 				const String &str);
 			static bool get_common_parameter(const String &str,
-				CommonParameterType &common_parameter);
-			static Uint32 get_common_parameter_count();
+				CommonParameterType &common_parameter) noexcept;
+			static Uint32 get_common_parameter_count() noexcept;
 
 	};
 

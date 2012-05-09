@@ -22,7 +22,7 @@ namespace eternal_lands
 	{
 	}
 
-	OpenGl2Mesh::~OpenGl2Mesh() throw()
+	OpenGl2Mesh::~OpenGl2Mesh() noexcept
 	{
 	}
 

@@ -33,7 +33,7 @@ namespace eternal_lands
 		build_data(vector_map, offset_scale, position_scale);
 	}
 
-	UvTool::~UvTool() throw()
+	UvTool::~UvTool() noexcept
 	{
 	}
 

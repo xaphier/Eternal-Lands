@@ -14,7 +14,7 @@ namespace eternal_lands
 	{
 	}
 
-	BoundedObject::~BoundedObject() throw()
+	BoundedObject::~BoundedObject() noexcept
 	{
 	}
 

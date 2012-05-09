@@ -35,28 +35,28 @@ namespace eternal_lands
 
 		public:
 			Polygon();
-			~Polygon() throw();
+			~Polygon() noexcept;
 			void remove_duplicates();
 			void transform(const glm::mat4x3 &matrix);
 			Polygon get_transformed(const glm::mat4x3 &matrix)
 				const;
 
-			inline void clear()
+			inline void clear() noexcept
 			{
 				m_vertices.clear();
 			}
 
-			inline void add_vertex(const glm::vec3 &vertex)
+			inline void add_vertex(const glm::vec3 &vertex) noexcept
 			{
 				m_vertices.push_back(vertex);
 			}
 
-			inline Uint32 get_vertex_count() const
+			inline Uint32 get_vertex_count() const noexcept
 			{
 				return m_vertices.size();
 			}
 
-			inline const Vec3Vector &get_vertices() const
+			inline const Vec3Vector &get_vertices() const noexcept
 			{
 				return m_vertices;
 			}

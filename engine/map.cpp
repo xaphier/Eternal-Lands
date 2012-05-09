@@ -79,7 +79,7 @@ namespace eternal_lands
 		}
 	}
 
-	Map::~Map() throw()
+	Map::~Map() noexcept
 	{
 	}
 

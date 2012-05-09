@@ -99,8 +99,8 @@ namespace eternal_lands
 			static AutoParameterType get_auto_parameter(
 				const String &str);
 			static bool get_auto_parameter(const String &str,
-				AutoParameterType &auto_parameter);
-			static Uint32 get_auto_parameter_count();
+				AutoParameterType &auto_parameter) noexcept;
+			static Uint32 get_auto_parameter_count() noexcept;
 
 	};
 

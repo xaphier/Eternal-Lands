@@ -52,9 +52,10 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~LodData() throw();
+			~LodData() noexcept;
 
 			inline Uint16 get_lod(const Uint16 distance) const
+				noexcept
 			{
 				if (distance < m_lods_distances[0])
 				{

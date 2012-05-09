@@ -49,7 +49,7 @@ namespace eternal_lands
 		glGenFramebuffers(1, &m_id);
 	}
 
-	FrameBuffer::~FrameBuffer() throw()
+	FrameBuffer::~FrameBuffer() noexcept
 	{
 		if (m_id != 0)
 		{

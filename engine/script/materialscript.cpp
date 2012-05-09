@@ -29,7 +29,7 @@ namespace eternal_lands
 			script_engine);
 	}
 
-	MaterialScript::~MaterialScript() throw()
+	MaterialScript::~MaterialScript() noexcept
 	{
 		if (m_mutex != 0)
 		{

@@ -852,11 +852,11 @@ namespace eternal_lands
 		m_texture = boost::make_shared<Texture>(name);
 	}
 
-	ActorTextureBuilder::~ActorTextureBuilder() throw()
+	ActorTextureBuilder::~ActorTextureBuilder() noexcept
 	{
 	}
 
-	String ActorTextureBuilder::get_effect() const
+	String ActorTextureBuilder::get_effect() const noexcept
 	{
 		if (get_uses_alpha())
 		{

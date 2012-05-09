@@ -34,7 +34,7 @@ namespace eternal_lands
 				bool operator()(
 					const BoundedObjectSharedPtr &split_1,
 					const BoundedObjectSharedPtr &split_2)
-					const throw ();
+					const noexcept;
 
 		};
 
@@ -46,7 +46,7 @@ namespace eternal_lands
 
 		bool BoundedObjectSplitCmp::operator()(
 			const BoundedObjectSharedPtr &split_1,
-			const BoundedObjectSharedPtr &split_2) const throw ()
+			const BoundedObjectSharedPtr &split_2) const noexcept
 		{
 			if (m_max_split)
 			{
@@ -219,6 +219,7 @@ namespace eternal_lands
 
 
 	bool RStarTreeNode::add_element(const BoundedObjectSharedPtr &element)
+		noexcept
 	{
 		Uint32 index;
 
@@ -284,7 +285,7 @@ namespace eternal_lands
 		}
 	}
 
-	void RStarTreeNode::remove_element(const Uint32 index)
+	void RStarTreeNode::remove_element(const Uint32 index) noexcept
 	{
 		Uint32 end;
 
@@ -875,11 +876,11 @@ namespace eternal_lands
 	{
 	}
 
-	RStarTreeNode::~RStarTreeNode() throw()
+	RStarTreeNode::~RStarTreeNode() noexcept
 	{
 	}
 
-	Uint32 RStarTreeNode::get_sub_nodes_count() const throw()
+	Uint32 RStarTreeNode::get_sub_nodes_count() const noexcept
 	{
 		Uint32 i, result;
 

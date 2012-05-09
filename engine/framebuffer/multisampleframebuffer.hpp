@@ -44,7 +44,7 @@ namespace eternal_lands
 				const TextureTargetType target,
 				const TextureFormatType format,
 				const bool depth_buffer);
-			~MultiSampleFrameBuffer() throw();
+			~MultiSampleFrameBuffer() noexcept;
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);
 			virtual void blit();
@@ -53,7 +53,7 @@ namespace eternal_lands
 				const float depth);
 			virtual void unbind();
 
-			inline Uint32 get_layer() const
+			inline Uint32 get_layer() const noexcept
 			{
 				return m_layer;
 			}

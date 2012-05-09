@@ -31,7 +31,15 @@ namespace eternal_lands
 			float m_inv_sqr_radius;
 
 			inline void set_inv_sqr_radius(const float radius)
+				noexcept
 			{
+				if (radius < epsilon)
+				{
+					m_inv_sqr_radius = 0.0f;
+
+					return;
+				}
+
 				m_inv_sqr_radius = 1.0f / (radius * radius);
 			}
 
@@ -44,7 +52,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~Light() throw();
+			virtual ~Light() noexcept;
 
 			void update_bounding_box(const float scale = 1.0f);
 
@@ -58,12 +66,13 @@ namespace eternal_lands
 			 */
 			bool intersect(const BoundingBox &box) const;
 
-			inline const glm::vec3 &get_position() const
+			inline const glm::vec3 &get_position() const noexcept
 			{
 				return m_light_data.get_position();
 			}
 
 			inline void set_position(const glm::vec3 &position)
+				noexcept
 			{
 				m_light_data.set_position(position);
 			}
@@ -71,7 +80,7 @@ namespace eternal_lands
 			/**
 			 * The radius of the light.
 			 */
-			inline float get_radius() const
+			inline float get_radius() const noexcept
 			{
 				return m_light_data.get_radius();
 			}
@@ -82,28 +91,28 @@ namespace eternal_lands
 			 * attenuation = max(0.0, 1.0 - (light_pos - pos)^2 *
 			 * inv_sqr_radius)
 			 */
-			inline float get_inv_sqr_radius() const
+			inline float get_inv_sqr_radius() const noexcept
 			{
 				return m_inv_sqr_radius;
 			}
 
-			inline void set_radius(const float radius)
+			inline void set_radius(const float radius) noexcept
 			{
 				m_light_data.set_radius(radius);
 				set_inv_sqr_radius(radius);
 			}
 
-			inline const glm::vec3 &get_color() const
+			inline const glm::vec3 &get_color() const noexcept
 			{
 				return m_light_data.get_color();
 			}
 
-			inline void set_color(const glm::vec3 &color)
+			inline void set_color(const glm::vec3 &color) noexcept
 			{
 				m_light_data.set_color(color);
 			}
 
-			inline Uint32 get_id() const
+			inline Uint32 get_id() const noexcept
 			{
 				return m_light_data.get_id();
 			}

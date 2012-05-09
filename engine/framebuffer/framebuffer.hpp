@@ -29,7 +29,7 @@ namespace eternal_lands
 
 		public:
 			FrameBuffer();
-			~FrameBuffer() throw();
+			~FrameBuffer() noexcept;
 			void bind();
 			void bind(const bool draw);
 			void unbind();

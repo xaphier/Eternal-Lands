@@ -22,7 +22,7 @@ namespace eternal_lands
 	namespace
 	{
 
-		const bool use_tangent = true;
+		const bool use_tangent = false;
 
 		const String vertex_format_type_names[] =
 		{
@@ -149,7 +149,7 @@ namespace eternal_lands
 			VertexElements(instanced_mesh));
 	}
 
-	MeshBuilder::~MeshBuilder() throw()
+	MeshBuilder::~MeshBuilder() noexcept
 	{
 	}
 

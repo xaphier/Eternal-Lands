@@ -52,7 +52,7 @@ namespace eternal_lands
 				const PrimitiveType primitive,
 				const Uint32 restart_index,
 				const bool use_restart_index);
-			~Triangles() throw();
+			~Triangles() noexcept;
 
 			void get_triangles(const Uint32 sub_mesh_index,
 				Uint32Vector &indices);
@@ -61,6 +61,7 @@ namespace eternal_lands
 			bool next_triangle();
 
 			inline const Uint32Array3 &get_current_indices() const
+				noexcept
 			{
 				return m_current_indices;
 			}

@@ -74,7 +74,7 @@ namespace eternal_lands
 	{
 	}
 
-	VertexElements::~VertexElements() throw()
+	VertexElements::~VertexElements() noexcept
 	{
 	}
 

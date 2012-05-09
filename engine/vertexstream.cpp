@@ -24,14 +24,14 @@ namespace eternal_lands
 			PackData();
 			PackData(const PackFormatType pack_format,
 				const Uint32 offset);
-			~PackData() throw();
+			~PackData() noexcept;
 
-			inline PackFormatType get_pack_format() const
+			inline PackFormatType get_pack_format() const noexcept
 			{
 				return m_pack_format;
 			}
 
-			inline Uint32 get_offset() const
+			inline Uint32 get_offset() const noexcept
 			{
 				return m_offset;
 			}
@@ -48,7 +48,7 @@ namespace eternal_lands
 	{
 	}
 
-	VertexStream::PackData::~PackData() throw()
+	VertexStream::PackData::~PackData() noexcept
 	{
 	}
 
@@ -73,7 +73,7 @@ namespace eternal_lands
 		init();
 	}
 
-	VertexStream::~VertexStream() throw()
+	VertexStream::~VertexStream() noexcept
 	{
 	}
 

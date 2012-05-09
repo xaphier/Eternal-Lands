@@ -56,7 +56,7 @@ namespace eternal_lands
 			}
 
 		public:
-			virtual ~AbstractFrameBuffer() throw();
+			virtual ~AbstractFrameBuffer() noexcept;
 			virtual void bind(const Uint32 layer) = 0;
 			virtual void bind_texture(const Uint32 layer) = 0;
 			virtual void blit() = 0;
@@ -66,41 +66,42 @@ namespace eternal_lands
 			virtual void unbind() = 0;
 
 			inline const TextureSharedPtr &get_texture() const
+				noexcept
 			{
 				return m_texture;
 			}
 
-			inline Uint32 get_width() const
+			inline Uint32 get_width() const noexcept
 			{
 				return m_width;
 			}
 
-			inline Uint32 get_height() const
+			inline Uint32 get_height() const noexcept
 			{
 				return m_height;
 			}
 
-			inline Uint32 get_depth() const
+			inline Uint32 get_depth() const noexcept
 			{
 				return m_depth;
 			}
 
-			inline bool get_depth_buffer() const
+			inline bool get_depth_buffer() const noexcept
 			{
 				return m_depth_buffer;
 			}
 
-			inline bool get_stencil_buffer() const
+			inline bool get_stencil_buffer() const noexcept
 			{
 				return m_stencil_buffer;
 			}
 
-			inline bool get_color_buffer() const
+			inline bool get_color_buffer() const noexcept
 			{
 				return m_color_buffer;
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}

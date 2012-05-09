@@ -78,7 +78,7 @@ namespace eternal_lands
 		}
 	}
 
-	XmlWriter::~XmlWriter() throw()
+	XmlWriter::~XmlWriter() noexcept
 	{
 		xmlTextWriterEndDocument(m_writer);
 

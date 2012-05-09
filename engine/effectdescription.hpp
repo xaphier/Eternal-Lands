@@ -53,7 +53,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~EffectDescription() throw();
+			~EffectDescription() noexcept;
 			bool operator==(const EffectDescription &effect) const;
 			bool operator!=(const EffectDescription &effect) const;
 			bool operator<(const EffectDescription &effect) const;
@@ -62,109 +62,116 @@ namespace eternal_lands
 				const String &file_name);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 
-			inline void set_name(const String &name)
+			inline void set_name(const String &name) noexcept
 			{
 				m_name = name;
 			}
 
 			inline void set_world_transformation(
-				const String &world_transformation)
+				const String &world_transformation) noexcept
 			{
 				m_world_transformation = world_transformation;
 			}
 
 			inline void set_texture_coodrinates(
-				const String &texture_coodrinates)
+				const String &texture_coodrinates) noexcept
 			{
 				m_texture_coodrinates = texture_coodrinates;
 			}
 
 			inline void set_albedo_mapping(
-				const String &albedo_mapping)
+				const String &albedo_mapping) noexcept
 			{
 				m_albedo_mapping = albedo_mapping;
 			}
 
 			inline void set_normal_mapping(
-				const String &normal_mapping)
+				const String &normal_mapping) noexcept
 			{
 				m_normal_mapping = normal_mapping;
 			}
 
 			inline void set_specular_mapping(
-				const String &specular_mapping)
+				const String &specular_mapping) noexcept
 			{
 				m_specular_mapping = specular_mapping;
 			}
 
 			inline void set_emission_mapping(
-				const String &emission_mapping)
+				const String &emission_mapping) noexcept
 			{
 				m_emission_mapping = emission_mapping;
 			}
 
 			inline void set_receives_shadows(
-				const bool receives_shadows)
+				const bool receives_shadows) noexcept
 			{
 				m_receives_shadows = receives_shadows;
 			}
 
 			inline void set_transparent(const bool transparent)
+				noexcept
 			{
 				m_transparent = transparent;
 			}
 
-			inline void set_lighting(const bool lighting)
+			inline void set_lighting(const bool lighting) noexcept
 			{
 				m_lighting = lighting;
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}
 
 			inline const String &get_world_transformation() const
+				noexcept
 			{
 				return m_world_transformation;
 			}
 
 			inline const String &get_texture_coodrinates() const
+				noexcept
 			{
 				return m_texture_coodrinates;
 			}
 
 			inline const String &get_albedo_mapping() const
+				noexcept
 			{
 				return m_albedo_mapping;
 			}
 
 			inline const String &get_normal_mapping() const
+				noexcept
 			{
 				return m_normal_mapping;
 			}
 
 			inline const String &get_specular_mapping() const
+				noexcept
 			{
 				return m_specular_mapping;
 			}
 
 			inline const String &get_emission_mapping() const
+				noexcept
 			{
 				return m_emission_mapping;
 			}
 
-			inline bool get_receives_shadows() const
+			inline bool get_receives_shadows() const noexcept
 			{
 				return m_receives_shadows;
 			}
 
-			inline bool get_transparent() const
+			inline bool get_transparent() const noexcept
 			{
 				return m_transparent;
 			}
 
-			inline bool get_lighting() const
+			inline bool get_lighting() const noexcept
 			{
 				return m_lighting;
 			}

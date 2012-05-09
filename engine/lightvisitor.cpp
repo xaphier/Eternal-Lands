@@ -25,12 +25,12 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~LightSort() throw()
+				inline ~LightSort() noexcept
 				{
 				}
 
 				inline bool operator()(const LightSharedPtr &l0,
-					const LightSharedPtr &l1)
+					const LightSharedPtr &l1) noexcept
 				{
 					float dist0, dist1;
 
@@ -50,13 +50,13 @@ namespace eternal_lands
 	{
 	}
 
-	LightVisitor::~LightVisitor() throw()
+	LightVisitor::~LightVisitor() noexcept
 	{
 	}
 
 	void LightVisitor::operator()(
 		const BoundedObjectSharedPtr &bounded_object,
-		const SubFrustumsMask mask)
+		const SubFrustumsMask mask) noexcept
 	{
 		LightSharedPtr light;
 
@@ -67,7 +67,7 @@ namespace eternal_lands
 		m_lights.push_back(light);
 	}
 
-	void LightVisitor::sort(const glm::vec3 &position)
+	void LightVisitor::sort(const glm::vec3 &position) noexcept
 	{
 		std::sort(m_lights.begin(), m_lights.end(),
 			LightSort(position));

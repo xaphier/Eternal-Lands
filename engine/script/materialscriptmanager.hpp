@@ -50,7 +50,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~MaterialScriptManager() throw();
+			~MaterialScriptManager() noexcept;
 
 			void add_material(const MaterialSharedPtr &material);
 			void remove_material(const MaterialSharedPtr &material);

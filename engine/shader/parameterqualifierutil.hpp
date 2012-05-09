@@ -44,8 +44,9 @@ namespace eternal_lands
 			static ParameterQualifierType get_parameter_qualifier(
 				const String &str);
 			static bool get_parameter_qualifier(const String &str,
-				ParameterQualifierType &parameter_qualifier);
-			static Uint32 get_parameter_qualifier_count();
+				ParameterQualifierType &parameter_qualifier)
+				noexcept;
+			static Uint32 get_parameter_qualifier_count() noexcept;
 
 	};
 

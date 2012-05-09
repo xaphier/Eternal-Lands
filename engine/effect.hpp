@@ -43,7 +43,7 @@ namespace eternal_lands
 				const EffectDescription &description);
 
 			inline ShaderSourceBuilderSharedPtr
-				get_shader_source_builder() const
+				get_shader_source_builder() const noexcept
 			{
 				ShaderSourceBuilderSharedPtr result;
 
@@ -59,8 +59,9 @@ namespace eternal_lands
 			Effect(const ShaderSourceBuilderWeakPtr
 					&shader_source_builder,
 				const EffectDescription &description);
-			~Effect() throw();
+			~Effect() noexcept;
 			void load();
+			bool get_simple_shadow() const;
 
 			inline const GlslProgramSharedPtr &get_program(
 				const EffectProgramType type) const
@@ -69,11 +70,12 @@ namespace eternal_lands
 			}
 
 			inline const EffectDescription &get_description() const
+				noexcept
 			{
 				return m_description;
 			}
 
-			inline Uint16 get_max_light_count() const
+			inline Uint16 get_max_light_count() const noexcept
 			{
 				return m_max_light_count;
 			}

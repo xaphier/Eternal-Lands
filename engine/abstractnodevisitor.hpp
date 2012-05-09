@@ -32,7 +32,7 @@ namespace eternal_lands
 			AbstractNodeVisitor();
 
 		public:
-			virtual ~AbstractNodeVisitor() throw();
+			virtual ~AbstractNodeVisitor() noexcept;
 			virtual bool operator()(
 				const BoundedObjectSharedPtr &node) = 0;
 

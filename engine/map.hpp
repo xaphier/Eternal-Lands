@@ -49,6 +49,7 @@ namespace eternal_lands
 			bool m_dungeon;
 
 			inline MeshBuilderSharedPtr get_mesh_builder() const
+				noexcept
 			{
 				MeshBuilderSharedPtr result;
 
@@ -60,6 +61,7 @@ namespace eternal_lands
 			}
 
 			inline MeshCacheSharedPtr get_mesh_cache() const
+				noexcept
 			{
 				MeshCacheSharedPtr result;
 
@@ -71,6 +73,7 @@ namespace eternal_lands
 			}
 
 			inline MaterialCacheSharedPtr get_material_cache() const
+				noexcept
 			{
 				MaterialCacheSharedPtr result;
 
@@ -96,7 +99,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~Map() throw();
+			~Map() noexcept;
 
 			void add_object(
 				const ObjectDescription &object_description);
@@ -118,7 +121,7 @@ namespace eternal_lands
 				const AbstractTerrainManagerSharedPtr &terrain);
 			void add_particle(const ParticleData &particle);
 
-			inline glm::uvec2 get_height_map_size() const
+			inline glm::uvec2 get_height_map_size() const noexcept
 			{
 				glm::uvec2 result;
 
@@ -157,7 +160,7 @@ namespace eternal_lands
 				return m_height_map[x][y];
 			}
 
-			inline glm::uvec2 get_tile_map_size() const
+			inline glm::uvec2 get_tile_map_size() const noexcept
 			{
 				glm::uvec2 result;
 
@@ -197,36 +200,38 @@ namespace eternal_lands
 			}
 
 			inline void set_ambient(const glm::vec3 &ambient)
+				noexcept
 			{
 				m_ambient = ambient;
 			}
 
-			inline const glm::vec3 &get_ambient() const
+			inline const glm::vec3 &get_ambient() const noexcept
 			{
 				return m_ambient;
 			}
 
-			inline void set_dungeon(const bool dungeon)
+			inline void set_dungeon(const bool dungeon) noexcept
 			{
 				m_dungeon = dungeon;
 			}
 
-			inline bool get_dungeon() const
+			inline bool get_dungeon() const noexcept
 			{
 				return m_dungeon;
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}
 
-			inline Uint32 get_id() const
+			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
 			}
 
 			inline const ParticleDataVector &get_particles() const
+				noexcept
 			{
 				return m_particles;
 			}

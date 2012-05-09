@@ -43,25 +43,26 @@ namespace eternal_lands
 				const Uint32 base_vertex,
 				const bool packed = true);
 			SubMesh();
-			~SubMesh() throw();
+			~SubMesh() noexcept;
 
 			inline const BoundingBox &get_bounding_box() const
+				noexcept
 			{
 				return m_bounding_box;
 			}
 
-			inline bool get_packed() const
+			inline bool get_packed() const noexcept
 			{
 				return m_packed;
 			}
 
 			inline void set_bounding_box(
-				const BoundingBox &bounding_box)
+				const BoundingBox &bounding_box) noexcept
 			{
 				m_bounding_box = bounding_box;
 			}
 
-			inline void set_packed(const bool packed)
+			inline void set_packed(const bool packed) noexcept
 			{
 				m_packed = packed;
 			}

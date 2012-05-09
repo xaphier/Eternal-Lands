@@ -38,7 +38,7 @@ namespace eternal_lands
 #endif	/* SDL_VERSION_ATLEAST(2, 0, 0) */
 	}
 
-	MaterialScriptManager::~MaterialScriptManager() throw()
+	MaterialScriptManager::~MaterialScriptManager() noexcept
 	{
 		m_state = tst_exit;
 

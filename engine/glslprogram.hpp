@@ -69,7 +69,7 @@ namespace eternal_lands
 				const String &file_name);
 			void load_xml(const String &file_name);
 
-			inline GLuint get_program() const
+			inline GLuint get_program() const noexcept
 			{
 				return m_program;
 			}
@@ -85,7 +85,7 @@ namespace eternal_lands
 			GlslProgram(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			GlslProgram(const String &file_name);
-			~GlslProgram() throw();
+			~GlslProgram() noexcept;
 			void bind();
 			void set_variant_parameter(const String &name,
 				const Variant &value, const Uint32 offset = 0,
@@ -262,27 +262,28 @@ namespace eternal_lands
 				set_parameter(parameter, value);
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}
 
 			inline void set_last_used(const Uint64 last_used)
+				noexcept
 			{
 				m_last_used = last_used;
 			}
 
-			inline Uint64 get_last_used() const
+			inline Uint64 get_last_used() const noexcept
 			{
 				return m_last_used;
 			}
 
-			inline BitSet32 get_used_texture_units() const
+			inline BitSet32 get_used_texture_units() const noexcept
 			{
 				return m_used_texture_units;
 			}
 
-			inline BitSet32 get_used_attributes() const
+			inline BitSet32 get_used_attributes() const noexcept
 			{
 				return m_used_attributes;
 			}

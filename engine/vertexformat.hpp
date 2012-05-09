@@ -55,10 +55,10 @@ namespace eternal_lands
 			/**
 			 * @brief Default destructor.
 			 */
-			~VertexFormat() throw();
+			~VertexFormat() noexcept;
 
 			inline const VertexElementsArray &get_vertex_elements()
-				const
+				const noexcept
 			{
 				return m_vertex_elements;
 			}
@@ -69,7 +69,7 @@ namespace eternal_lands
 				return m_vertex_elements[index];
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}

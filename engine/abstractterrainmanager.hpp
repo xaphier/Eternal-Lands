@@ -69,51 +69,53 @@ namespace eternal_lands
 
 		public:
 			AbstractTerrainManager();
-			virtual ~AbstractTerrainManager() throw();
+			virtual ~AbstractTerrainManager() noexcept;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const = 0;
-			static const glm::vec3 &get_vector_scale();
-			static const glm::vec2 &get_position_scale();
+			static const glm::vec3 &get_vector_scale() noexcept;
+			static const glm::vec2 &get_position_scale() noexcept;
 
 			inline const StringArray4 &get_albedo_maps() const
+				noexcept
 			{
 				return m_data.get_albedo_maps();
 			}
 
 			inline const String &get_albedo_map(const Uint16 index)
-				const
+				const noexcept
 			{
 				return m_data.get_albedo_map(index);
 			}
 
-			inline const String &get_blend_map() const
+			inline const String &get_blend_map() const noexcept
 			{
 				return m_data.get_blend_map();
 			}
 
-			inline const String &get_height_map() const
+			inline const String &get_height_map() const noexcept
 			{
 				return m_data.get_height_map();
 			}
 
-			inline const String &get_dudv_map() const
+			inline const String &get_dudv_map() const noexcept
 			{
 				return m_data.get_dudv_map();
 			}
 
 			inline const glm::vec3 &get_translation() const
+				noexcept
 			{
 				return m_data.get_translation();
 			}
 
-			inline const TerrainData &get_data() const
+			inline const TerrainData &get_data() const noexcept
 			{
 				return m_data;
 			}
 
-			static inline Uint16 get_tile_size()
+			static inline Uint16 get_tile_size() noexcept
 			{
-				return 16;
+				return 32;
 			}
 
 	};

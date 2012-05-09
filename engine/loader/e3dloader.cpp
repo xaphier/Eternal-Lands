@@ -456,7 +456,7 @@ namespace eternal_lands
 			m_reader->get_name());
 	}
 
-	E3dLoader::~E3dLoader() throw()
+	E3dLoader::~E3dLoader() noexcept
 	{
 	}
 

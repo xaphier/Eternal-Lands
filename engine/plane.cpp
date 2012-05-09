@@ -48,7 +48,7 @@ namespace eternal_lands
 		set_data(data);
 	}
 
-	Plane::~Plane() throw()
+	Plane::~Plane() noexcept
 	{
 	}
 

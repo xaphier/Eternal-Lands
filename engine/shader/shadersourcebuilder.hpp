@@ -122,7 +122,7 @@ namespace eternal_lands
 		public:
 			ShaderSourceBuilder(
 				const GlobalVarsSharedPtr &global_vars);
-			~ShaderSourceBuilder() throw();
+			~ShaderSourceBuilder() noexcept;
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			void build(const EffectDescription &description,
@@ -137,13 +137,13 @@ namespace eternal_lands
 				const ShaderSourceType shader_source) const;
 
 			inline const ShaderSourceTypeStringMap &get_sources()
-				const
+				const noexcept
 			{
 				return m_sources;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
@@ -152,7 +152,7 @@ namespace eternal_lands
 			 * Returns the darkening of the diffuse light when it's
 			 * in shadow the shader uses.
 			 */
-			inline float get_shadow_scale() const
+			inline float get_shadow_scale() const noexcept
 			{
 				return m_shadow_scale;
 			}
@@ -160,7 +160,7 @@ namespace eternal_lands
 			/**
 			 * Returns the number of vertex lights the shader uses.
 			 */
-			inline Uint16 get_vertex_light_count() const
+			inline Uint16 get_vertex_light_count() const noexcept
 			{
 				return m_vertex_light_count;
 			}
@@ -169,7 +169,7 @@ namespace eternal_lands
 			 * Returns the number of fragment lights the shader
 			 * uses.
 			 */
-			inline Uint16 get_fragment_light_count() const
+			inline Uint16 get_fragment_light_count() const noexcept
 			{
 				return m_fragment_light_count;
 			}
@@ -178,7 +178,7 @@ namespace eternal_lands
 			 * Returns the number of fragment lights the shader
 			 * uses.
 			 */
-			inline Uint16 get_light_count() const
+			inline Uint16 get_light_count() const noexcept
 			{
 				return get_fragment_light_count() +
 					get_vertex_light_count();
@@ -187,7 +187,7 @@ namespace eternal_lands
 			/**
 			 * Returns the number of bones the shader uses.
 			 */
-			inline Uint16 get_bone_count() const
+			inline Uint16 get_bone_count() const noexcept
 			{
 				return m_bone_count;
 			}
@@ -195,7 +195,7 @@ namespace eternal_lands
 			/**
 			 * Returns the number of instances the shader uses.
 			 */
-			inline Uint16 get_instance_count() const
+			inline Uint16 get_instance_count() const noexcept
 			{
 				return m_instance_count;
 			}
@@ -204,7 +204,7 @@ namespace eternal_lands
 			 * Returns true if dynamic flow control should be used
 			 * for fragment lights, else false.
 			 */
-			inline bool get_dynamic_light_count() const
+			inline bool get_dynamic_light_count() const noexcept
 			{
 				return m_dynamic_light_count;
 			}

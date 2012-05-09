@@ -66,68 +66,71 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			inline ~ObjectData() throw()
+			inline ~ObjectData() noexcept
 			{
 			}
 
 			inline void set_world_transformation(
 				const Transformation &world_transformation)
+				noexcept
 			{
 				m_world_transformation = world_transformation;
 			}
 
-			inline void set_name(const String &name)
+			inline void set_name(const String &name) noexcept
 			{
 				m_name = name;
 			}
 
 			inline void set_transparency(const float transparency)
+				noexcept
 			{
 				m_transparency = transparency;
 			}
 
-			inline void set_blend(const BlendType blend)
+			inline void set_blend(const BlendType blend) noexcept
 			{
 				m_blend = blend;
 			}
 
 			inline void set_selection(const SelectionType selection)
+				noexcept
 			{
 				m_selection = selection;
 			}
 
-			inline void set_id(const Uint32 id)
+			inline void set_id(const Uint32 id) noexcept
 			{
 				m_id = id;
 			}
 
 			inline const Transformation &get_world_transformation()
-				const
+				const noexcept
 			{
 				return m_world_transformation;
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}
 
-			inline float get_transparency() const
+			inline float get_transparency() const noexcept
 			{
 				return m_transparency;
 			}
 
-			inline Uint32 get_id() const
+			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
 			}
 
-			inline BlendType get_blend() const
+			inline BlendType get_blend() const noexcept
 			{
 				return m_blend;
 			}
 
-			inline SelectionType get_selection() const
+			inline SelectionType get_selection() const noexcept
 			{
 				return m_selection;
 			}

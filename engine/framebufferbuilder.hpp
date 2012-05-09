@@ -30,7 +30,7 @@ namespace eternal_lands
 			const GlobalVarsSharedPtr m_global_vars;
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
@@ -38,7 +38,7 @@ namespace eternal_lands
 		public:
 			FrameBufferBuilder(
 				const GlobalVarsSharedPtr &global_vars);
-			~FrameBufferBuilder() throw();
+			~FrameBufferBuilder() noexcept;
 			AbstractFrameBufferSharedPtr build(
 				const String &name, const Uint32 width,
 				const Uint32 height, const Uint32 depth,

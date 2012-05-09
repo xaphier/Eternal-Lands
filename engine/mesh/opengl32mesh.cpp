@@ -20,7 +20,7 @@ namespace eternal_lands
 		assert(GLEW_VERSION_3_2);
 	}
 
-	OpenGl32Mesh::~OpenGl32Mesh() throw()
+	OpenGl32Mesh::~OpenGl32Mesh() noexcept
 	{
 	}
 

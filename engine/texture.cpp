@@ -27,7 +27,7 @@ namespace eternal_lands
 		assert(!get_name().get().empty());
 	}
 
-	Texture::~Texture() throw()
+	Texture::~Texture() noexcept
 	{
 		unload();
 	}
@@ -1679,7 +1679,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void Texture::unload() throw()
+	void Texture::unload() noexcept
 	{
 		glDeleteTextures(1, &m_texture_id);
 

@@ -55,7 +55,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~OpenGl3Mesh() throw();
+			virtual ~OpenGl3Mesh() noexcept;
 
 			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();

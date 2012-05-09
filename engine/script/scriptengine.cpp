@@ -213,7 +213,7 @@ namespace eternal_lands
 		assert(r >= 0);
 	}
 
-	ScriptEngine::~ScriptEngine() throw()
+	ScriptEngine::~ScriptEngine() noexcept
 	{
 		get_engine()->Release();
 	}

@@ -18,17 +18,17 @@ namespace eternal_lands
 	}
 
 	MappedHardwareWriteMemory::~MappedHardwareWriteMemory()
-		throw()
+		noexcept
 	{
 		m_buffer->unmap(get_type());
 	}
 
-	void* MappedHardwareWriteMemory::get_ptr()
+	void* MappedHardwareWriteMemory::get_ptr() noexcept
 	{
 		return m_ptr;
 	}
 
-	Uint64 MappedHardwareWriteMemory::get_size() const
+	Uint64 MappedHardwareWriteMemory::get_size() const noexcept
 	{
 		return m_buffer->get_size();
 	}

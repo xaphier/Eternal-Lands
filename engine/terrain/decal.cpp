@@ -21,7 +21,7 @@ namespace eternal_lands
 			description.get_texture());
 	}
 
-	Decal::~Decal() throw()
+	Decal::~Decal() noexcept
 	{
 	}
 

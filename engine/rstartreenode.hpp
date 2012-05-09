@@ -61,6 +61,7 @@ namespace eternal_lands
 			Uint32 m_count;
 
 			inline RStarTreeNodeSharedPtr get_shared_from_this()
+				noexcept
 			{
 				return shared_from_this();
 			}
@@ -75,7 +76,7 @@ namespace eternal_lands
 			 * @return The pointer of the element.
 			 */
 			inline const BoundedObjectSharedPtr &get_element(
-				const Uint32 index) const
+				const Uint32 index) const noexcept
 			{
 				assert(check_index(index));
 				assert(m_elements[index].get() != nullptr);
@@ -93,7 +94,7 @@ namespace eternal_lands
 			 */
 			inline void set_element(
 				const BoundedObjectSharedPtr &element,
-				const Uint32 index)
+				const Uint32 index) noexcept
 			{
 				assert(check_index(index));
 				assert(element.get() != nullptr);
@@ -111,7 +112,7 @@ namespace eternal_lands
 			 * @return The pointer of the node.
 			 */
 			inline RStarTreeNodeSharedPtr get_node(
-				const Uint32 index) const
+				const Uint32 index) const noexcept
 			{
 				assert(!get_leaf());
 
@@ -127,7 +128,7 @@ namespace eternal_lands
 			 * @return True if the index is valid, else false.
 			 */
 			inline bool check_index(const Uint32 index) const
-				throw ()
+				noexcept
 			{
 				return index < get_count();
 			}
@@ -152,7 +153,8 @@ namespace eternal_lands
 			 * @param element The pointer of the element.
 			 * @return True if successful, else false.
 			 */
-			bool add_element(const BoundedObjectSharedPtr &element);
+			bool add_element(const BoundedObjectSharedPtr &element)
+				noexcept;
 
 			/**
 			 * @brief Views the node and all sub nodes.
@@ -185,7 +187,7 @@ namespace eternal_lands
 			 * node.
 			 * @param index Index where to remove the element.
 			 */
-			void remove_element(const Uint32 index);
+			void remove_element(const Uint32 index) noexcept;
 
 			/**
 			 * @brief Tests all elements of the node for
@@ -400,6 +402,7 @@ namespace eternal_lands
 			 */
 			inline Sint32 find_element(
 				const BoundedObjectSharedPtr &element) const
+				noexcept
 			{
 				Uint32 i;
 
@@ -440,7 +443,7 @@ namespace eternal_lands
 			 */
 			static inline BoundingBox enclose(
 				const BoundingBox &bounding_box_1,
-				const BoundingBox &bounding_box_2)
+				const BoundingBox &bounding_box_2) noexcept
 			{
 				BoundingBox result;
 
@@ -526,7 +529,7 @@ namespace eternal_lands
 			 *
 			 * Removes alls element from the node.
 			 */
-			inline void clear() throw ()
+			inline void clear() noexcept
 			{
 				m_count = 0;
 
@@ -578,7 +581,7 @@ namespace eternal_lands
 			 * @param level The level of this node.
 			 */
 			RStarTreeNode(const Uint32 level);
-			virtual ~RStarTreeNode() throw();
+			virtual ~RStarTreeNode() noexcept;
 
 			/**
 			 * @brief Returns true if this is this a leaf node.
@@ -586,7 +589,7 @@ namespace eternal_lands
 			 * Returns true if this node is a leaf.
 			 * @return True if this node is a leaf else false.
 			 */
-			inline bool get_leaf() const throw ()
+			inline bool get_leaf() const noexcept
 			{
 				return get_level() == 0;
 			}
@@ -598,7 +601,7 @@ namespace eternal_lands
 			 * can hold.
 			 * @return The maximum item count.
 			 */
-			static inline Uint32 get_max_count() throw ()
+			static inline Uint32 get_max_count() noexcept
 			{
 				return BoundedObjectSharedPtrElements::size();
 			}
@@ -609,7 +612,7 @@ namespace eternal_lands
 			 * Returns the number of items that the node holds.
 			 * @return The item count.
 			 */
-			inline Uint32 get_count() const throw ()
+			inline Uint32 get_count() const noexcept
 			{
 				return m_count;
 			}
@@ -620,7 +623,7 @@ namespace eternal_lands
 			 * Returns the level of the node.
 			 * @return The level of the node.
 			 */
-			inline Uint32 get_level() const throw ()
+			inline Uint32 get_level() const noexcept
 			{
 				return m_level;
 			}
@@ -631,7 +634,7 @@ namespace eternal_lands
 			 * Returns the number of sub nodes that the node holds.
 			 * @return The sub nodes count.
 			 */
-			Uint32 get_sub_nodes_count() const throw();
+			Uint32 get_sub_nodes_count() const noexcept;
 
 			Uint32 get_main_axe(
 				const BoundedObjectSharedPtr &element) const;

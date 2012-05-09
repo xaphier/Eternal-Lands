@@ -66,7 +66,7 @@ namespace eternal_lands
 				"ShaderBuildType")));
 	}
 
-	Uint32 ShaderBuildUtil::get_shader_build_count()
+	Uint32 ShaderBuildUtil::get_shader_build_count() noexcept
 	{
 		return shader_build_type_names_count;
 	}

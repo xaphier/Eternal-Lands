@@ -63,7 +63,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~TextureFont() throw();
+			~TextureFont() noexcept;
 
 			Uint32 write_to_stream(const TextAttribute &attribute,
 				const VertexStreamsSharedPtr &streams,
@@ -78,47 +78,47 @@ namespace eternal_lands
 				const Utf32Char last_char_code,
 				const Utf32Char char_code) const;
 
-			inline const String &get_file_name() const
+			inline const String &get_file_name() const noexcept
 			{
 				return m_file_name;
 			}
 
-			inline float get_size() const
+			inline float get_size() const noexcept
 			{
 				return m_size;
 			}
 
-			inline float get_height() const
+			inline float get_height() const noexcept
 			{
 				return m_height;
 			}
 
-			inline float get_line_gap() const
+			inline float get_line_gap() const noexcept
 			{
 				return m_line_gap;
 			}
 
-			inline float get_ascender() const
+			inline float get_ascender() const noexcept
 			{
 				return m_ascender;
 			}
 
-			inline float get_descender() const
+			inline float get_descender() const noexcept
 			{
 				return m_descender;
 			}
 
-			inline bool get_antialias() const
+			inline bool get_antialias() const noexcept
 			{
 				return m_antialias;
 			}
 
-			inline bool get_sub_pixel() const
+			inline bool get_sub_pixel() const noexcept
 			{
 				return m_sub_pixel;
 			}
 
-			inline bool get_hinting() const
+			inline bool get_hinting() const noexcept
 			{
 				return m_hinting;
 			}

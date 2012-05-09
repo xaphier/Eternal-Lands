@@ -22,16 +22,16 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractTerrainManager::~AbstractTerrainManager() throw()
+	AbstractTerrainManager::~AbstractTerrainManager() noexcept
 	{
 	}
 
-	const glm::vec3 &AbstractTerrainManager::get_vector_scale()
+	const glm::vec3 &AbstractTerrainManager::get_vector_scale() noexcept
 	{
 		return vector_scale;
 	}
 
-	const glm::vec2 &AbstractTerrainManager::get_position_scale()
+	const glm::vec2 &AbstractTerrainManager::get_position_scale() noexcept
 	{
 		return position_scales;
 	}

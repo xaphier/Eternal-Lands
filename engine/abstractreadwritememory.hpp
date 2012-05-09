@@ -37,7 +37,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~AbstractReadWriteMemory() throw();
+			virtual ~AbstractReadWriteMemory() noexcept;
 
 	};
 

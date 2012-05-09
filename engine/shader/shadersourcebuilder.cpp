@@ -58,16 +58,16 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~ShaderSourceLocalTypeData() throw()
+				inline ~ShaderSourceLocalTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline ParameterType get_type() const
+				inline ParameterType get_type() const noexcept
 				{
 					return m_type;
 				}
@@ -615,7 +615,7 @@ namespace eternal_lands
 					glslopt_shader_type type,
 					const StringType &shader_source);
 
-				~OptimizeShaderSource() throw();
+				~OptimizeShaderSource() noexcept;
 
 				StringType get_source();
 
@@ -630,7 +630,7 @@ namespace eternal_lands
 				source.c_str(), 0);
 		}
 
-		OptimizeShaderSource::~OptimizeShaderSource() throw()
+		OptimizeShaderSource::~OptimizeShaderSource() noexcept
 		{
 			glslopt_shader_delete(m_shader);
 		}
@@ -754,12 +754,12 @@ namespace eternal_lands
 				m_optimizer = glslopt_initialize(false, false);
 			}
 
-			inline ~ShaderSourceOptimizer() throw()
+			inline ~ShaderSourceOptimizer() noexcept
 			{
 				glslopt_cleanup(m_optimizer);
 			}
 
-			inline glslopt_ctx* get_optimizer()
+			inline glslopt_ctx* get_optimizer() noexcept
 			{
 				return m_optimizer;
 			}
@@ -835,7 +835,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			inline ~ShaderSourceBuildData() throw()
+			inline ~ShaderSourceBuildData() noexcept
 			{
 			}
 
@@ -844,7 +844,7 @@ namespace eternal_lands
 			 */
 			inline void set_option(
 				const ShaderSourceBuildOptionTypes option,
-				const bool enabled)
+				const bool enabled) noexcept
 			{
 				if (enabled)
 				{
@@ -860,7 +860,7 @@ namespace eternal_lands
 			 * Returns the sources of the different shader parts.
 			 */
 			inline const ShaderSourceTypeStringMap &get_sources()
-				const
+				const noexcept
 			{
 				return m_sources;
 			}
@@ -869,11 +869,12 @@ namespace eternal_lands
 			 * Returns the shader build type.
 			 */
 			inline ShaderBuildType get_shader_build_type() const
+				noexcept
 			{
 				return m_shader_build_type;
 			}
 
-			inline ShaderVersionType get_version() const
+			inline ShaderVersionType get_version() const noexcept
 			{
 				return m_version;
 			}
@@ -883,6 +884,7 @@ namespace eternal_lands
 			 */
 			inline bool get_option(
 				const ShaderSourceBuildOptionTypes option) const
+				noexcept
 			{
 				return m_options.count(option);
 			}
@@ -890,7 +892,7 @@ namespace eternal_lands
 			/**
 			 * Returns the number of lights the shader uses.
 			 */
-			inline Uint16 get_light_count() const
+			inline Uint16 get_light_count() const noexcept
 			{
 				return m_light_count;
 			}
@@ -898,7 +900,7 @@ namespace eternal_lands
 			/**
 			 * Returns the number of vertex lights the shader uses.
 			 */
-			inline Uint16 get_vertex_light_count() const
+			inline Uint16 get_vertex_light_count() const noexcept
 			{
 				return m_vertex_light_count;
 			}
@@ -907,7 +909,7 @@ namespace eternal_lands
 			 * Returns the number of fragment lights the shader
 			 * uses.
 			 */
-			inline Uint16 get_fragment_light_count() const
+			inline Uint16 get_fragment_light_count() const noexcept
 			{
 				return m_fragment_light_count;
 			}
@@ -915,7 +917,7 @@ namespace eternal_lands
 			/**
 			 * Returns the number of shadow maps the shader uses.
 			 */
-			inline Uint16 get_shadow_map_count() const
+			inline Uint16 get_shadow_map_count() const noexcept
 			{
 				return m_shadow_map_count;
 			}
@@ -923,7 +925,7 @@ namespace eternal_lands
 			/**
 			 * Returns the number of layer the shader uses.
 			 */
-			inline Uint16 get_layer_count() const
+			inline Uint16 get_layer_count() const noexcept
 			{
 				return m_layer_count;
 			}
@@ -945,7 +947,7 @@ namespace eternal_lands
 		m_dynamic_light_count = false;
 	}
 
-	ShaderSourceBuilder::~ShaderSourceBuilder() throw()
+	ShaderSourceBuilder::~ShaderSourceBuilder() noexcept
 	{
 	}
 

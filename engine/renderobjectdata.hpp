@@ -44,61 +44,65 @@ namespace eternal_lands
 			RenderObjectData(const ObjectSharedPtr &object,
 				const float transparency, const BlendType blend,
 				const SubFrustumsMask sub_frustums_mask = 0x1);
-			~RenderObjectData() throw();
+			~RenderObjectData() noexcept;
 
 			inline void set_object(const ObjectSharedPtr &object)
+				noexcept
 			{
 				m_object = object;
 			}
 
 			inline void set_transparency(const float transparency)
+				noexcept
 			{
 				m_transparency = transparency;
 			}
 
-			inline void set_distance(const float distance)
+			inline void set_distance(const float distance) noexcept
 			{
 				m_distance = distance;
 			}
 
-			inline void set_lod(const Uint16 lod)
+			inline void set_lod(const Uint16 lod) noexcept
 			{
 				m_lod = lod;
 			}
 
-			inline void set_blend(const BlendType blend)
+			inline void set_blend(const BlendType blend) noexcept
 			{
 				m_blend = blend;
 			}
 
 			inline void set_sub_frustums_mask(
 				const SubFrustumsMask &sub_frustums_mask)
+				noexcept
 			{
 				m_sub_frustums_mask = sub_frustums_mask;
 			}
 
 			inline const ObjectSharedPtr &get_object() const
+				noexcept
 			{
 				return m_object;
 			}
 
-			inline float get_transparency() const
+			inline float get_transparency() const noexcept
 			{
 				return m_transparency;
 			}
 
-			inline float get_distance() const
+			inline float get_distance() const noexcept
 			{
 				return m_distance;
 			}
 
-			inline BlendType get_blend() const
+			inline BlendType get_blend() const noexcept
 			{
 				return m_blend;
 			}
 
 			inline const SubFrustumsMask &get_sub_frustums_mask()
-				const
+				const noexcept
 			{
 				return m_sub_frustums_mask;
 			}
@@ -109,7 +113,7 @@ namespace eternal_lands
 				return m_sub_frustums_mask[index];
 			}
 
-			inline Uint16 get_lod() const
+			inline Uint16 get_lod() const noexcept
 			{
 				return m_lod;
 			}

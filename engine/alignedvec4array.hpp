@@ -43,18 +43,18 @@ namespace eternal_lands
 		public:
 			AlignedVec4Array();
 			AlignedVec4Array(const AlignedVec4Array &array);
-			~AlignedVec4Array() throw();
+			~AlignedVec4Array() noexcept;
 			AlignedVec4Array &operator=(
 				const AlignedVec4Array &array);
 			void clear();
 			void reserve(const Uint32 new_capacity);
 
-			inline void* get_ptr()
+			inline void* get_ptr() noexcept
 			{
 				return m_data;
 			}
 
-			inline const void* get_ptr() const
+			inline const void* get_ptr() const noexcept
 			{
 				return m_data;
 			}
@@ -71,12 +71,12 @@ namespace eternal_lands
 				return glm::value_ptr(m_data[index]);
 			}
 
-			inline Uint32 size() const
+			inline Uint32 size() const noexcept
 			{
 				return m_size;
 			}
 
-			inline Uint32 capacity() const
+			inline Uint32 capacity() const noexcept
 			{
 				return m_capacity;
 			}

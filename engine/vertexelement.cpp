@@ -48,51 +48,53 @@ namespace eternal_lands
 						get_dynamic_range()));
 				}
 
-				inline ~VertexElementTypeData() throw()
+				inline ~VertexElementTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline Uint32 get_size() const
+				inline Uint32 get_size() const noexcept
 				{
 					return m_size;
 				}
 
-				inline GLenum get_gl_type() const
+				inline GLenum get_gl_type() const noexcept
 				{
 					return m_gl_type;
 				}
 
-				inline Uint16 get_element_count() const
+				inline Uint16 get_element_count() const noexcept
 				{
 					return m_element_count;
 				}
 
 				inline PackFormatType get_pack_format() const
+					noexcept
 				{
 					return m_pack_format;
 				}
 
-				inline bool get_dynamic_range() const
+				inline bool get_dynamic_range() const noexcept
 				{
 					return m_dynamic_range;
 				}
 
-				inline bool get_signed_elements() const
+				inline bool get_signed_elements() const noexcept
 				{
 					return m_signed_elements;
 				}
 
-				inline bool get_normalized() const
+				inline bool get_normalized() const noexcept
 				{
 					return m_normalized;
 				}
 
 				inline GLboolean get_gl_normalized() const
+					noexcept
 				{
 					if (m_normalized)
 					{
@@ -227,7 +229,7 @@ namespace eternal_lands
 	{
 	}
 
-	VertexElement::~VertexElement() throw()
+	VertexElement::~VertexElement() noexcept
 	{
 	}
 
@@ -332,7 +334,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 VertexElement::get_vertex_semantic_count()
+	Uint32 VertexElement::get_vertex_semantic_count() noexcept
 	{
 		return vertex_semantic_type_names_count;
 	}
@@ -518,7 +520,7 @@ namespace eternal_lands
 			vertex_element].get_pack_format();
 	}
 
-	Uint32 VertexElement::get_vertex_element_count()
+	Uint32 VertexElement::get_vertex_element_count() noexcept
 	{
 		return vertex_element_datas_count;
 	}

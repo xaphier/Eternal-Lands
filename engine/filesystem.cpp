@@ -34,7 +34,7 @@ namespace eternal_lands
 				/**
 				 * Default destructor.
 				 */
-				virtual ~DirArchive() throw();
+				virtual ~DirArchive() noexcept;
 
 				/**
 				 * Opens the file for reading.
@@ -83,7 +83,7 @@ namespace eternal_lands
 		{
 		}
 
-		DirArchive::~DirArchive() throw()
+		DirArchive::~DirArchive() noexcept
 		{
 		}
 
@@ -246,7 +246,7 @@ namespace eternal_lands
 		add_dir(String(UTF8(".")));
 	}
 
-	FileSystem::~FileSystem() throw()
+	FileSystem::~FileSystem() noexcept
 	{
 	}
 

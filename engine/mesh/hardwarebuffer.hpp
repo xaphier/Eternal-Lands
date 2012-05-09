@@ -100,12 +100,12 @@ namespace eternal_lands
 			 * Default destructor, frees the memory and the
 			 * OpenGL id.
 			 */
-			~HardwareBuffer() throw();
+			~HardwareBuffer() noexcept;
 
 			/**
 			 * Returns the size of the buffer in bytes.
 			 */
-			inline Uint64 get_size() const
+			inline Uint64 get_size() const noexcept
 			{
 				return m_size;
 			}

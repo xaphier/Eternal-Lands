@@ -18,7 +18,7 @@ namespace eternal_lands
 	{
 	}
 
-	EffectDescription::~EffectDescription() throw()
+	EffectDescription::~EffectDescription() noexcept
 	{
 	}
 

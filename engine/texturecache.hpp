@@ -41,6 +41,7 @@ namespace eternal_lands
 				const String &index) const;
 
 			inline CodecManagerSharedPtr get_codec_manager() const
+				noexcept
 			{
 				CodecManagerSharedPtr result;
 
@@ -52,13 +53,13 @@ namespace eternal_lands
 			}
 
 			inline const FileSystemSharedPtr &get_file_system()
-				const
+				const noexcept
 			{
 				return m_file_system;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
@@ -67,7 +68,7 @@ namespace eternal_lands
 			TextureCache(const CodecManagerWeakPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
-			~TextureCache() throw();
+			~TextureCache() noexcept;
 			const TextureSharedPtr &get_texture(const String &name);
 			const TextureSharedPtr &get_error_texture();
 

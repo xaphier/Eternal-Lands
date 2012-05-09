@@ -97,7 +97,7 @@ namespace eternal_lands
 			static inline Uint16 get_index(
 				const Uint16 channel_count,
 				const Uint16 half_taps_minus_one,
-				const bool layer, const bool vertical)
+				const bool layer, const bool vertical) noexcept
 			{
 				Uint16 result;
 
@@ -123,7 +123,7 @@ namespace eternal_lands
 
 			static inline Uint16 get_multisample_index(
 				const Uint16 channel_count,
-				const Uint16 sample_count)
+				const Uint16 sample_count) noexcept
 			{
 				Uint16 result;
 
@@ -158,7 +158,7 @@ namespace eternal_lands
 		public:
 			Filter(const MeshCacheSharedPtr &mesh_cache,
 				const GlobalVarsSharedPtr &global_vars);
-			~Filter() throw();
+			~Filter() noexcept;
 			void bind(const glm::vec4 &source,
 				const glm::vec4 &dest, const Uint32 width,
 				const Uint32 height, const Uint32 layer,

@@ -106,8 +106,8 @@ namespace eternal_lands
 			static ParameterType get_parameter(
 				const GLenum parameter);
 			static bool get_parameter(const String &str,
-				ParameterType &parameter);
-			static Uint32 get_parameter_count();
+				ParameterType &parameter) noexcept;
+			static Uint32 get_parameter_count() noexcept;
 
 	};
 

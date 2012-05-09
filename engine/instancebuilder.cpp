@@ -305,7 +305,7 @@ namespace eternal_lands
 		assert(get_instancing_datas().size() > 1);
 	}
 
-	InstanceBuilder::~InstanceBuilder() throw()
+	InstanceBuilder::~InstanceBuilder() noexcept
 	{
 	}
 

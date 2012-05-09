@@ -37,21 +37,21 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~ShaderTextureTypeData() throw()
+				inline ~ShaderTextureTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline Uint16 get_layer_index() const
+				inline Uint16 get_layer_index() const noexcept
 				{
 					return m_layer_index;
 				}
 
-				inline bool get_use_layer_index() const
+				inline bool get_use_layer_index() const noexcept
 				{
 					return m_use_layer_index;
 				}
@@ -136,7 +136,7 @@ namespace eternal_lands
 	}
 
 	bool ShaderTextureUtil::get_shader_texture(const String &str,
-		ShaderTextureType &shader_texture)
+		ShaderTextureType &shader_texture) noexcept
 	{
 		Uint32 i;
 		ShaderTextureType tmp;
@@ -192,7 +192,7 @@ namespace eternal_lands
 		return shader_texture_datas[texture].get_use_layer_index();
 	}
 
-	Uint32 ShaderTextureUtil::get_shader_texture_count()
+	Uint32 ShaderTextureUtil::get_shader_texture_count() noexcept
 	{
 		return shader_texture_datas_count;
 	}

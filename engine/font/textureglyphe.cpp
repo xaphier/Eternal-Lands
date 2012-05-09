@@ -21,7 +21,7 @@ namespace eternal_lands
 	{
 	}
 
-	TextureGlyphe::~TextureGlyphe() throw()
+	TextureGlyphe::~TextureGlyphe() noexcept
 	{
 	}
 

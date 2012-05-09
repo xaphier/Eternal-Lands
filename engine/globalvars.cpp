@@ -40,7 +40,7 @@ namespace eternal_lands
 		m_clipmap_centered = true;
 	}
 
-	GlobalVars::~GlobalVars() throw()
+	GlobalVars::~GlobalVars() noexcept
 	{
 	}
 

@@ -45,7 +45,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~OpenGl32Mesh() throw();
+			virtual ~OpenGl32Mesh() noexcept;
 			/**
 			 * Clones the data of the mesh. Used for animated
 			 * actors and terrain.

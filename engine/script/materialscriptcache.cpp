@@ -18,7 +18,7 @@ namespace eternal_lands
 	{
 	}
 
-	MaterialScriptCache::~MaterialScriptCache() throw()
+	MaterialScriptCache::~MaterialScriptCache() noexcept
 	{
 	}
 

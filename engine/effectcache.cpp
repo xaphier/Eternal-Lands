@@ -22,7 +22,7 @@ namespace eternal_lands
 		assert(!m_shader_source_builder.expired());
 	}
 
-	EffectCache::~EffectCache() throw()
+	EffectCache::~EffectCache() noexcept
 	{
 	}
 

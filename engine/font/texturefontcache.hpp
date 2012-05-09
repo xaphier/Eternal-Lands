@@ -80,7 +80,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~TextureFontCache() throw();
+			~TextureFontCache() noexcept;
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			void add_font(const FileSystemSharedPtr &file_system,
@@ -118,6 +118,7 @@ namespace eternal_lands
 			float get_height(const String &font) const;
 
 			inline const GlslProgramSharedPtr &get_program() const
+				noexcept
 			{
 				return m_program;
 			}

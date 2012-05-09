@@ -70,10 +70,17 @@
 #include <SDL.h>
 #include "angelscript/include/angelscript.h"
 
-#if	1
-#define nullptr 0
+#if (__cplusplus < 201103L)
 #define override
 #endif
+
+#ifdef BOOST_NO_NOEXCEPT
+#define noexcept throw()
+#endif /* BOOST_NO_NOEXCEPT */
+
+#ifdef BOOST_NO_NULLPTR
+#define nullptr 0
+#endif /* BOOST_NO_NULLPTR */
 
 namespace eternal_lands
 {
@@ -272,6 +279,7 @@ namespace eternal_lands
 	class ShaderSourceData;
 	class ShaderSourceDescriptionLoader;
 	class ShaderSourceParameter;
+	class ShadowObject;
 	class StateManager;
 	class SubMesh;
 	class SubObject;
@@ -411,6 +419,7 @@ namespace eternal_lands
 	VECTOR(RStarTreeNodeSharedPtr);
 	VECTOR(ShaderSourceData);
 	VECTOR(ShaderSourceParameter);
+	VECTOR(ShadowObject);
 	VECTOR(SubMesh);
 	VECTOR(SubObject);
 	VECTOR(SubObjectPtr);

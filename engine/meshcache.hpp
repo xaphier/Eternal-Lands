@@ -39,7 +39,7 @@ namespace eternal_lands
 			const MeshDataCacheWeakPtr m_mesh_data_cache;
 
 			inline MeshDataCacheSharedPtr get_mesh_data_cache()
-				const
+				const noexcept
 			{
 				MeshDataCacheSharedPtr result;
 
@@ -51,6 +51,7 @@ namespace eternal_lands
 			}
 
 			inline MeshBuilderSharedPtr get_mesh_builder() const
+				noexcept
 			{
 				MeshBuilderSharedPtr result;
 
@@ -75,7 +76,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~MeshCache() throw();
+			~MeshCache() noexcept;
 
 			void get_mesh(const String &name,
 				AbstractMeshSharedPtr &mesh,

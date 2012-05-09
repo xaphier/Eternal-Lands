@@ -37,16 +37,17 @@ namespace eternal_lands
 			Uint16 m_slices;
 			bool m_centered;
 
-			Uint16 get_dir_index(const glm::vec2 &view_dir) const;
+			Uint16 get_dir_index(const glm::vec2 &view_dir) const
+				noexcept;
 
-			inline Uint16 get_dir_index() const
+			inline Uint16 get_dir_index() const noexcept
 			{
 				return m_dir_index;
 			}
 
 		public:
 			Clipmap();
-			~Clipmap() throw();
+			~Clipmap() noexcept;
 			void rebuild(const glm::vec2 &terrain_world_size,
 				const float view_distance,
 				const float world_size,	const Uint16 size,
@@ -56,42 +57,45 @@ namespace eternal_lands
 				const glm::vec2 &focus);
 			void update_slice(const Uint16 slice);
 
-			inline void set_centered(const bool centered)
+			inline void set_centered(const bool centered) noexcept
 			{
 				m_centered = centered;
 			}
 
 			inline const Mat2x3Vector &get_texture_matrices() const
+				noexcept
 			{
 				return m_texture_matrices;
 			}
 
 			inline const glm::vec4 &get_terrain_texture_size() const
+				noexcept
 			{
 				return m_terrain_texture_size;
 			}
 
 			inline const glm::vec2 &get_terrain_world_size() const
+				noexcept
 			{
 				return m_terrain_world_size;
 			}
 
-			inline const glm::vec2 &get_focus() const
+			inline const glm::vec2 &get_focus() const noexcept
 			{
 				return m_focus;
 			}
 
-			inline float get_world_size() const
+			inline float get_world_size() const noexcept
 			{
 				return m_world_size;
 			}
 
-			inline Uint16 get_slices() const
+			inline Uint16 get_slices() const noexcept
 			{
 				return m_slices;
 			}
 
-			inline bool get_centered() const
+			inline bool get_centered() const noexcept
 			{
 				return m_centered;
 			}

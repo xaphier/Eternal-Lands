@@ -69,7 +69,7 @@ namespace eternal_lands
 
 		public:
 			GlobalVars();
-			~GlobalVars() throw();
+			~GlobalVars() noexcept;
 
 			inline void set_quality(const String quality)
 			{

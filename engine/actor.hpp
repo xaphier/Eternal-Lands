@@ -58,7 +58,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~Actor() throw();
+			~Actor() noexcept;
 			virtual void update_bounding_box();
 			virtual void update_bones();
 			void add_mesh(const Uint32 id);
@@ -70,22 +70,22 @@ namespace eternal_lands
 			void set_parts(
 				const ActorPartTextureTypeStringMap &parts);
 
-			inline void clear_mesh()
+			inline void clear_mesh() noexcept
 			{
 				m_meshs.clear();
 			}
 
-			inline bool get_enhanced_actor() const
+			inline bool get_enhanced_actor() const noexcept
 			{
 				return m_index_source.get() != nullptr;
 			}
 
-			inline BitSet32 get_buffs() const
+			inline BitSet32 get_buffs() const noexcept
 			{
 				return m_buffs;
 			}
 
-			inline void set_buffs(const BitSet32 buffs)
+			inline void set_buffs(const BitSet32 buffs) noexcept
 			{
 				m_buffs = buffs;
 			}

@@ -48,19 +48,19 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~Atlas() throw();
+			~Atlas() noexcept;
 
 			void clear();
 
 			bool get_region(const Uint32 width,
 				const Uint32 height, glm::uvec2 &offset);
 
-			inline Uint32 get_width() const
+			inline Uint32 get_width() const noexcept
 			{
 				return m_width;
 			}
 
-			inline Uint32 get_height() const
+			inline Uint32 get_height() const noexcept
 			{
 				return m_height;
 			}

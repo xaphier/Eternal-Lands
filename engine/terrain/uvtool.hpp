@@ -83,7 +83,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~UvTool() throw();
+			~UvTool() noexcept;
 
 			void relaxed_uv(const bool use_simd);
 			void convert();

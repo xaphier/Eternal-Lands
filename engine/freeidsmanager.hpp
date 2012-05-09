@@ -56,7 +56,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~FreeIdsManager() throw();
+			~FreeIdsManager() noexcept;
 			void clear();
 			Uint32 get_next_free_object_id(const IdType type);
 			void free_object_id(const Uint32 id);

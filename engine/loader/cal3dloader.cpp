@@ -190,7 +190,7 @@ namespace eternal_lands
 			m_vertex_count);
 	}
 
-	Cal3dLoader::~Cal3dLoader() throw()
+	Cal3dLoader::~Cal3dLoader() noexcept
 	{
 	}
 

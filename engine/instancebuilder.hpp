@@ -36,13 +36,13 @@ namespace eternal_lands
 			const bool m_use_base_vertex;
 			std::auto_ptr<InstanceData> m_instance_data;
 
-			inline Uint32 get_id() const
+			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
 			}
 
 			inline const InstancingDataVector
-				&get_instancing_datas() const
+				&get_instancing_datas() const noexcept
 			{
 				return m_instancing_datas;
 			}
@@ -74,24 +74,24 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~InstanceBuilder() throw();
+			~InstanceBuilder() noexcept;
 			void build_instance();
 			void set_instance(InstanceDataVector &instances);
 			static void remove_singles(
 				InstancingDataVector &instancing_datas,
 				ObjectDescriptionVector &uninstanced);
 
-			inline void operator()()
+			inline void operator()() noexcept
 			{
 				build_instance();
 			}
 
-			inline bool get_use_simd() const
+			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;
 			}
 
-			inline bool get_use_base_vertex() const
+			inline bool get_use_base_vertex() const noexcept
 			{
 				return m_use_base_vertex;
 			}

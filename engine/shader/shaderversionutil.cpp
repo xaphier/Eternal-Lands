@@ -27,16 +27,16 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~ShaderVersionTypeData() throw()
+				inline ~ShaderVersionTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline Uint16 get_number() const
+				inline Uint16 get_number() const noexcept
 				{
 					return m_number;
 				}
@@ -143,7 +143,7 @@ namespace eternal_lands
 	}
 
 	bool ShaderVersionUtil::get_shader_version(const String &str,
-		ShaderVersionType &shader_version)
+		ShaderVersionType &shader_version) noexcept
 	{
 		Uint32 i;
 		ShaderVersionType tmp;
@@ -163,7 +163,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 ShaderVersionUtil::get_shader_version_count()
+	Uint32 ShaderVersionUtil::get_shader_version_count() noexcept
 	{
 		return shader_version_datas_count;
 	}

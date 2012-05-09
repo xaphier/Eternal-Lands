@@ -43,7 +43,7 @@ namespace eternal_lands
 		public:
 			MaterialDescription();
 			MaterialDescription(const xmlNodePtr node);
-			~MaterialDescription() throw();
+			~MaterialDescription() noexcept;
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 			bool operator<(const MaterialDescription &material)
@@ -69,32 +69,32 @@ namespace eternal_lands
 				return m_textures[texture_type];
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}
 
-			inline const String &get_effect() const
+			inline const String &get_effect() const noexcept
 			{
 				return m_effect;
 			}
 
-			inline const String &get_script() const
+			inline const String &get_script() const noexcept
 			{
 				return m_script;
 			}
 
-			inline void set_name(const String &name)
+			inline void set_name(const String &name) noexcept
 			{
 				m_name = name;
 			}
 
-			inline void set_effect(const String &effect)
+			inline void set_effect(const String &effect) noexcept
 			{
 				m_effect = effect;
 			}
 
-			inline void set_script(const String &script)
+			inline void set_script(const String &script) noexcept
 			{
 				m_script = script;
 			}

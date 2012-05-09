@@ -29,7 +29,7 @@ namespace eternal_lands
 		assert(!m_material_description_cache.expired());
 	}
 
-	InstancesBuilder::~InstancesBuilder() throw()
+	InstancesBuilder::~InstancesBuilder() noexcept
 	{
 	}
 

@@ -35,7 +35,7 @@ namespace eternal_lands
 
 		public:
 			MaterialDescriptionCache();
-			~MaterialDescriptionCache() throw();
+			~MaterialDescriptionCache() noexcept;
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			void save_xml(const String &file_name) const;
@@ -44,6 +44,7 @@ namespace eternal_lands
 				const String &name) const;
 			bool get_has_material_description(const String &name)
 				const;
+			bool get_simple_shadow(const String &name) const;
 
 	};
 

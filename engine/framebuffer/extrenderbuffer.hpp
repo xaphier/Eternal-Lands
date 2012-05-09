@@ -35,7 +35,7 @@ namespace eternal_lands
 		public:
 			ExtRenderBuffer(const Uint32 width, const Uint32 height,
 				const TextureFormatType format);
-			~ExtRenderBuffer() throw();
+			~ExtRenderBuffer() noexcept;
 			void bind_to_framebuffer(const GLenum attachment);
 
 			inline Uint32 get_width() const

@@ -14,7 +14,7 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractReadMemory::~AbstractReadMemory() throw()
+	AbstractReadMemory::~AbstractReadMemory() noexcept
 	{
 	}
 

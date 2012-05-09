@@ -23,7 +23,7 @@ namespace eternal_lands
 	{
 	}
 
-	MeshDrawData::~MeshDrawData() throw()
+	MeshDrawData::~MeshDrawData() noexcept
 	{
 	}
 

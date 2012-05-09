@@ -36,7 +36,7 @@ namespace eternal_lands
 	{
 	}
 
-	RenderObjectData::~RenderObjectData() throw()
+	RenderObjectData::~RenderObjectData() noexcept
 	{
 	}
 

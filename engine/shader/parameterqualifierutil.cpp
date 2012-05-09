@@ -70,7 +70,7 @@ namespace eternal_lands
 	}
 
 	bool ParameterQualifierUtil::get_parameter_qualifier(const String &str,
-		ParameterQualifierType &parameter_qualifier)
+		ParameterQualifierType &parameter_qualifier) noexcept
 	{
 		Uint32 i;
 		ParameterQualifierType tmp;
@@ -90,7 +90,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 ParameterQualifierUtil::get_parameter_qualifier_count()
+	Uint32 ParameterQualifierUtil::get_parameter_qualifier_count() noexcept
 	{
 		return parameter_qualifier_names_count;
 	}

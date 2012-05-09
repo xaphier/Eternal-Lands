@@ -33,26 +33,27 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~CommonParameterTypeData() throw()
+				inline ~CommonParameterTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline ParameterType get_type() const
+				inline ParameterType get_type() const noexcept
 				{
 					return m_type;
 				}
 
 				inline ParameterSizeType get_size() const
+					noexcept
 				{
 					return m_size;
 				}
 
-				inline Uint16 get_scale() const
+				inline Uint16 get_scale() const noexcept
 				{
 					return m_scale;
 				}
@@ -206,7 +207,7 @@ namespace eternal_lands
 	}
 
 	bool CommonParameterUtil::get_common_parameter(const String &str,
-		CommonParameterType &common_parameter)
+		CommonParameterType &common_parameter) noexcept
 	{
 		Uint32 i;
 		CommonParameterType tmp;
@@ -226,7 +227,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 CommonParameterUtil::get_common_parameter_count()
+	Uint32 CommonParameterUtil::get_common_parameter_count() noexcept
 	{
 		return common_parameter_datas_count;
 	}

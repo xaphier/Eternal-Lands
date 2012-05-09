@@ -34,7 +34,7 @@ namespace eternal_lands
 				m_material_description_cache;
 
 			inline MaterialBuilderSharedPtr get_material_builder()
-				const
+				const noexcept
 			{
 				MaterialBuilderSharedPtr result;
 
@@ -46,7 +46,7 @@ namespace eternal_lands
 			}
 
 			inline MaterialDescriptionCacheSharedPtr
-				get_material_description_cache() const
+				get_material_description_cache() const noexcept
 			{
 				MaterialDescriptionCacheSharedPtr result;
 
@@ -62,7 +62,7 @@ namespace eternal_lands
 				const MaterialBuilderWeakPtr &material_builder,
 				const MaterialDescriptionCacheWeakPtr
 					&material_description_cache);
-			~MaterialCache() throw();
+			~MaterialCache() noexcept;
 			StringVector get_material_names() const;
 			const MaterialSharedPtr &get_material(
 				const String &name);

@@ -27,7 +27,7 @@ namespace eternal_lands
 		m_program_used_texture_units.set();
 	}
 
-	StateManager::~StateManager() throw()
+	StateManager::~StateManager() noexcept
 	{
 	}
 
@@ -78,7 +78,7 @@ namespace eternal_lands
 		m_used_texture_units[texture_unit] = true;
 	}
 
-	void StateManager::set_multisample(const bool multisample)
+	void StateManager::set_multisample(const bool multisample) noexcept
 	{
 		m_multisample = multisample;
 
@@ -92,7 +92,7 @@ namespace eternal_lands
 		}
 	}
 
-	void StateManager::set_blend(const bool blend)
+	void StateManager::set_blend(const bool blend) noexcept
 	{
 		m_blend = blend;
 
@@ -106,7 +106,7 @@ namespace eternal_lands
 		}
 	}
 
-	void StateManager::set_culling(const bool culling)
+	void StateManager::set_culling(const bool culling) noexcept
 	{
 		m_culling = culling;
 
@@ -120,7 +120,7 @@ namespace eternal_lands
 		}
 	}
 
-	void StateManager::set_depth_mask(const bool depth_mask)
+	void StateManager::set_depth_mask(const bool depth_mask) noexcept
 	{
 		m_depth_mask = depth_mask;
 
@@ -134,7 +134,7 @@ namespace eternal_lands
 		}
 	}
 
-	void StateManager::set_stencil_test(const bool stencil_test)
+	void StateManager::set_stencil_test(const bool stencil_test) noexcept
 	{
 		m_stencil_test = stencil_test;
 
@@ -148,7 +148,7 @@ namespace eternal_lands
 		}
 	}
 
-	void StateManager::set_depth_test(const bool depth_test)
+	void StateManager::set_depth_test(const bool depth_test) noexcept
 	{
 		m_depth_test = depth_test;
 
@@ -162,7 +162,7 @@ namespace eternal_lands
 		}
 	}
 
-	void StateManager::set_scissor_test(const bool scissor_test)
+	void StateManager::set_scissor_test(const bool scissor_test) noexcept
 	{
 		m_scissor_test = scissor_test;
 
@@ -176,7 +176,7 @@ namespace eternal_lands
 		}
 	}
 
-	void StateManager::set_color_mask(const glm::bvec4 &color_mask)
+	void StateManager::set_color_mask(const glm::bvec4 &color_mask) noexcept
 	{
 		glm::ivec4 mask;
 		Uint16 i;
@@ -199,7 +199,7 @@ namespace eternal_lands
 	}
 
 	void StateManager::set_polygon_offset_fill(
-		const bool polygon_offset_fill)
+		const bool polygon_offset_fill) noexcept
 	{
 		m_polygon_offset_fill = polygon_offset_fill;
 
@@ -214,7 +214,7 @@ namespace eternal_lands
 	}
 
 	void StateManager::set_sample_alpha_to_coverage(
-		const bool sample_alpha_to_coverage)
+		const bool sample_alpha_to_coverage) noexcept
 	{
 		m_sample_alpha_to_coverage = sample_alpha_to_coverage;
 
@@ -229,6 +229,7 @@ namespace eternal_lands
 	}
 
 	void StateManager::set_restart_index(const Uint32 restart_index)
+		noexcept
 	{
 		m_restart_index = restart_index;
 
@@ -269,6 +270,7 @@ namespace eternal_lands
 		result |= switch_polygon_offset_fill(false);
 		result |= switch_sample_alpha_to_coverage(false);
 		result |= switch_stencil_test(false);
+		result |= switch_sample_alpha_to_coverage(false);
 		switch_texture_unit(0);
 
 		if (get_global_vars()->get_opengl_3_1())

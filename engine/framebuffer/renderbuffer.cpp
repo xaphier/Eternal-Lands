@@ -49,7 +49,7 @@ namespace eternal_lands
 		}
 	}
 
-	RenderBuffer::~RenderBuffer() throw()
+	RenderBuffer::~RenderBuffer() noexcept
 	{
 		if (m_id != 0)
 		{

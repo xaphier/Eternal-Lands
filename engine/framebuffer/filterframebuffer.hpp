@@ -35,7 +35,7 @@ namespace eternal_lands
 			FilterFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
 				const TextureFormatType format);
-			~FilterFrameBuffer() throw();
+			~FilterFrameBuffer() noexcept;
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);
 			virtual void blit();

@@ -140,7 +140,7 @@ namespace eternal_lands
 		build_frustum(box);
 	}
 
-	Frustum::~Frustum() throw()
+	Frustum::~Frustum() noexcept
 	{
 	}
 

@@ -40,27 +40,28 @@ namespace eternal_lands
 			{
 			}
 
-			inline ~DecalDescription() throw()
+			inline ~DecalDescription() noexcept
 			{
 			}
 
-			inline const String &get_texture() const
+			inline const String &get_texture() const noexcept
 			{
 				return m_texture;
 			}
 
 			inline const glm::mat2x3 &get_transform_matrix() const
+				noexcept
 			{
 				return m_transform_matrix;
 			}
 
-			inline void set_texture(const String &texture)
+			inline void set_texture(const String &texture) noexcept
 			{
 				m_texture = texture;
 			}
 
 			inline void set_transform_matrix(
-				const glm::mat2x3 &transform_matrix)
+				const glm::mat2x3 &transform_matrix) noexcept
 			{
 				m_transform_matrix = transform_matrix;
 			}

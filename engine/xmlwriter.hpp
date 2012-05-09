@@ -30,7 +30,7 @@ namespace eternal_lands
 		public:
 			XmlWriter(xmlBufferPtr buffer);
 			XmlWriter(const String &file_name);
-			~XmlWriter() throw();
+			~XmlWriter() noexcept;
 			void start_element(const StringType &name);
 			void end_element();
 			void write_element(const StringType &name,

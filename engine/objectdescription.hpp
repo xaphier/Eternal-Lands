@@ -52,17 +52,18 @@ namespace eternal_lands
 			{
 			}
 
-			inline ~ObjectDescription() throw()
+			inline ~ObjectDescription() noexcept
 			{
 			}
 
 			inline const StringVector &get_material_names() const
+				noexcept
 			{
 				return m_material_names;
 			}
 
 			inline void set_material_names(
-				const StringVector &material_names)
+				const StringVector &material_names) noexcept
 			{
 				m_material_names = material_names;
 			}

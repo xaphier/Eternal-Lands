@@ -20,7 +20,7 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractFrameBuffer::~AbstractFrameBuffer() throw()
+	AbstractFrameBuffer::~AbstractFrameBuffer() noexcept
 	{
 	}
 

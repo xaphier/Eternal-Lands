@@ -23,7 +23,7 @@ namespace eternal_lands
 	{
 	}
 
-	SubObject::~SubObject() throw()
+	SubObject::~SubObject() noexcept
 	{
 	}
 

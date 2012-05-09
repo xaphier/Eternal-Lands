@@ -31,26 +31,29 @@ namespace eternal_lands
 		public:
 			Decal(const TextureCacheSharedPtr &texture_cache,
 				const DecalDescription &description);
-			~Decal() throw();
+			~Decal() noexcept;
 			glm::vec4 get_decal_rect() const;
 
 			inline const TextureSharedPtr &get_texture() const
+				noexcept
 			{
 				return m_texture;
 			}
 
 			inline const glm::mat2x3 &get_transform_matrix() const
+				noexcept
 			{
 				return m_transform_matrix;
 			}
 
 			inline void set_texture(const TextureSharedPtr &texture)
+				noexcept
 			{
 				m_texture = texture;
 			}
 
 			inline void set_transform_matrix(
-				const glm::mat2x3 &transform_matrix)
+				const glm::mat2x3 &transform_matrix) noexcept
 			{
 				m_transform_matrix = transform_matrix;
 			}

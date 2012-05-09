@@ -23,7 +23,7 @@ namespace eternal_lands
 		assert(!m_material_description_cache.expired());
 	}
 
-	MaterialCache::~MaterialCache() throw()
+	MaterialCache::~MaterialCache() noexcept
 	{
 	}
 

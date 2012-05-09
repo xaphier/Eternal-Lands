@@ -95,7 +95,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	MultiSampleFrameBuffer::~MultiSampleFrameBuffer() throw()
+	MultiSampleFrameBuffer::~MultiSampleFrameBuffer() noexcept
 	{
 	}
 

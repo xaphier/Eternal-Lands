@@ -338,7 +338,7 @@ namespace eternal_lands
 		resize_indices(index_count);
 	}
 
-	MeshDataTool::~MeshDataTool() throw()
+	MeshDataTool::~MeshDataTool() noexcept
 	{
 	}
 
@@ -1452,7 +1452,7 @@ namespace eternal_lands
 		}
 	}
 
-	bool MeshDataTool::get_use_base_vertex() const
+	bool MeshDataTool::get_use_base_vertex() const noexcept
 	{
 		BOOST_FOREACH(const SubMesh &sub_mesh, get_sub_meshs())
 		{
@@ -1465,7 +1465,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	bool MeshDataTool::get_16_bit_indices() const
+	bool MeshDataTool::get_16_bit_indices() const noexcept
 	{
 		BOOST_FOREACH(const Uint32 index, get_indices())
 		{

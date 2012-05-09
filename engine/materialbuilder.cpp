@@ -25,7 +25,7 @@ namespace eternal_lands
 		assert(!m_material_script_manager.expired());
 	}
 
-	MaterialBuilder::~MaterialBuilder() throw()
+	MaterialBuilder::~MaterialBuilder() noexcept
 	{
 	}
 

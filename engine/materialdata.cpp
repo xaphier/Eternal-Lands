@@ -26,7 +26,7 @@ namespace eternal_lands
 		m_dudv_scale = glm::vec2(1.0f);
 	}
 
-	MaterialData::~MaterialData() throw()
+	MaterialData::~MaterialData() noexcept
 	{
 	}
 

@@ -47,7 +47,7 @@ namespace eternal_lands
 				const ThreadStateType thread_state);
 			static ThreadStateType get_thread_state(
 				const String &str);
-			static Uint32 get_thread_state_count();
+			static Uint32 get_thread_state_count() noexcept;
 
 	};
 

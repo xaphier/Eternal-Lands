@@ -113,7 +113,7 @@ namespace eternal_lands
 			virtual void intersect_shadow(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
 
-			inline void set_map(const MapSharedPtr &map)
+			inline void set_map(const MapSharedPtr &map) noexcept
 			{
 				m_map = map;
 			}
@@ -128,7 +128,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~Scene() throw();
+			virtual ~Scene() noexcept;
 
 			ActorSharedPtr add_actor(const Uint32 type_id,
 				const Uint32 id, const Uint32 index,
@@ -171,7 +171,7 @@ namespace eternal_lands
 				update_terrain_map();
 			}
 
-			inline void shadow_map_change()
+			inline void shadow_map_change() noexcept
 			{
 				m_shadow_map_change = true;
 			}
@@ -183,64 +183,67 @@ namespace eternal_lands
 
 			inline void set_perspective(const float fov,
 				const float aspect, const float z_near,
-				const float z_far)
+				const float z_far) noexcept
 			{
 				m_scene_view.set_perspective(fov, aspect,
 					z_near);
 			}
 
 			inline void set_view_port(const glm::uvec4 &view_port)
+				noexcept
 			{
 				m_scene_view.set_view_port(view_port);
 			}
 
 			inline void set_window_size(
-				const glm::uvec2 &window_size)
+				const glm::uvec2 &window_size) noexcept
 			{
 				m_scene_view.set_window_size(window_size);
 			}
 
-			inline float get_fov() const
+			inline float get_fov() const noexcept
 			{
 				return m_scene_view.get_fov();
 			}
 
-			inline float get_aspect() const
+			inline float get_aspect() const noexcept
 			{
 				return m_scene_view.get_aspect();
 			}
 
-			inline float get_z_near() const
+			inline float get_z_near() const noexcept
 			{
 				return m_scene_view.get_z_near();
 			}
 
 			inline void set_main_light_ambient(
-				const glm::vec3 &main_light_ambient)
+				const glm::vec3 &main_light_ambient) noexcept
 			{
 				m_main_light_ambient =
 					glm::vec4(main_light_ambient, 0.0f);
 			}
 
 			inline const glm::vec4 &get_main_light_ambient() const
+				noexcept
 			{
 				return m_main_light_ambient;
 			}
 
 			inline void set_main_light_color(
-				const glm::vec3 &main_light_color)
+				const glm::vec3 &main_light_color) noexcept
 			{
 				m_main_light_color =
 					glm::vec4(main_light_color, 0.0f);
 			}
 
 			inline const glm::vec4 &get_main_light_color() const
+				noexcept
 			{
 				return m_main_light_color;
 			}
 
 			inline void set_main_light_direction(
-				const glm::vec3 &main_light_direction)
+				const glm::vec3 &main_light_direction) noexcept
 			{
 				m_main_light_direction = glm::vec4(
 					glm::normalize(main_light_direction),
@@ -248,57 +251,58 @@ namespace eternal_lands
 			}
 
 			inline const glm::vec4 &get_main_light_direction()
-				const
+				const noexcept
 			{
 				return m_main_light_direction;
 			}
 
-			inline void set_focus(const glm::vec3 &focus)
+			inline void set_focus(const glm::vec3 &focus) noexcept
 			{
 				m_scene_view.set_focus(focus);
 			}
 
 			inline void set_view_matrix(
-				const glm::mat4 &view_matrix)
+				const glm::mat4 &view_matrix) noexcept
 			{
 				m_scene_view.set_view_matrix(view_matrix);
 			}
 
 			inline const glm::mat4 &get_projection_matrix() const
+				noexcept
 			{
 				return m_scene_view.get_projection_matrices(
 					)[0];
 			}
 
-			inline void set_lights(const bool lights)
+			inline void set_lights(const bool lights) noexcept
 			{
 				m_lights = lights;
 			}
 
-			inline bool get_lights() const
+			inline bool get_lights() const noexcept
 			{
 				return m_lights;
 			}
 
-			inline SceneResources &get_scene_resources()
+			inline SceneResources &get_scene_resources() noexcept
 			{
 				return m_scene_resources;
 			}
 
 			inline const FreeIdsManagerSharedPtr &get_free_ids()
-				const
+				const noexcept
 			{
 				return m_free_ids;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
 
 			inline const FileSystemSharedPtr &get_file_system()
-				const
+				const noexcept
 			{
 				return m_file_system;
 			}

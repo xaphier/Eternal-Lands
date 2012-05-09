@@ -35,7 +35,7 @@ namespace eternal_lands
 				const CodecManagerSharedPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
-			virtual ~CdLodTerrainManager() throw();
+			virtual ~CdLodTerrainManager() noexcept;
 
 //			get_visible_terrain_pages();
 //			get_visible_terrain_pages();

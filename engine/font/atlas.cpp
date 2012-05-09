@@ -16,7 +16,7 @@ namespace eternal_lands
 		m_nodes.push_back(glm::uvec3(0, 0, get_width()));
 	}
 
-	Atlas::~Atlas() throw()
+	Atlas::~Atlas() noexcept
 	{
 	}
 

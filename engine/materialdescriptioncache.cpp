@@ -21,7 +21,7 @@ namespace eternal_lands
 	{
 	}
 
-	MaterialDescriptionCache::~MaterialDescriptionCache() throw()
+	MaterialDescriptionCache::~MaterialDescriptionCache() noexcept
 	{
 	}
 

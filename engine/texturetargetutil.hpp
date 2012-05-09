@@ -57,7 +57,7 @@ namespace eternal_lands
 				const String &str);
 			static GLenum get_gl_type(
 				const TextureTargetType texture_target);
-			static Uint32 get_texture_target_count();
+			static Uint32 get_texture_target_count() noexcept;
 
 	};
 

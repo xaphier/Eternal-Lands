@@ -31,7 +31,7 @@ namespace eternal_lands
 	{
 	}
 
-	SubMesh::~SubMesh() throw()
+	SubMesh::~SubMesh() noexcept
 	{
 	}
 

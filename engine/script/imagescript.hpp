@@ -28,7 +28,7 @@ namespace eternal_lands
 		public:
 			ImageScript(const ScriptEngineSharedPtr &script_engine,
 				const String &name);
-			~ImageScript() throw();
+			~ImageScript() noexcept;
 			bool execute(const ImageSharedPtr &image,
 				const Uint16 face, const Uint16 mipmap,
 				asIScriptContext* context);

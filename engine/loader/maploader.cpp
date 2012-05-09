@@ -55,7 +55,7 @@ namespace eternal_lands
 		assert(m_material_description_cache.get() != nullptr);
 	}
 
-	MapLoader::~MapLoader() throw()
+	MapLoader::~MapLoader() noexcept
 	{
 	}
 

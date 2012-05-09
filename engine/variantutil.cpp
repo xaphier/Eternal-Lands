@@ -27,156 +27,186 @@ namespace eternal_lands
 				{
 				}
 
-				~VariantParameterTypes() throw()
+				~VariantParameterTypes() noexcept
 				{ 
 				}
 
 				void operator()(const bool value) const
+					noexcept
 				{
 					m_type = pt_bool;
 				}
 
 				void operator()(const float value) const
+					noexcept
 				{
 					m_type = pt_float;
 				}
 
 				void operator()(const Sint64 value) const
+					noexcept
 				{
 					m_type = pt_int;
 				}
 
 				void operator()(const glm::vec2 &value) const
+					noexcept
 				{
 					m_type = pt_vec2;
 				}
 
 				void operator()(const glm::vec3 &value) const
+					noexcept
 				{
 					m_type = pt_vec3;
 				}
 
 				void operator()(const glm::vec4 &value) const
+					noexcept
 				{
 					m_type = pt_vec4;
 				}
 
 				void operator()(const glm::ivec2 &value) const
+					noexcept
 				{
 					m_type = pt_ivec2;
 				}
 
 				void operator()(const glm::ivec3 &value) const
+					noexcept
 				{
 					m_type = pt_ivec3;
 				}
 
 				void operator()(const glm::ivec4 &value) const
+					noexcept
 				{
 					m_type = pt_ivec4;
 				}
 
 				void operator()(const glm::uvec2 &value) const
+					noexcept
 				{
 					m_type = pt_uvec2;
 				}
 
 				void operator()(const glm::uvec3 &value) const
+					noexcept
 				{
 					m_type = pt_uvec3;
 				}
 
 				void operator()(const glm::uvec4 &value) const
+					noexcept
 				{
 					m_type = pt_uvec4;
 				}
 
 				void operator()(const glm::bvec2 &value) const
+					noexcept
 				{
 					m_type = pt_bvec2;
 				}
 
 				void operator()(const glm::bvec3 &value) const
+					noexcept
 				{
 					m_type = pt_bvec3;
 				}
 
 				void operator()(const glm::bvec4 &value) const
+					noexcept
 				{
 					m_type = pt_bvec4;
 				}
 
 				void operator()(const glm::mat2x2 &value) const
+					noexcept
 				{
 					m_type = pt_mat2x2;
 				}
 
 				void operator()(const glm::mat2x3 &value) const
+					noexcept
 				{
 					m_type = pt_mat2x3;
 				}
 
 				void operator()(const glm::mat2x4 &value) const
+					noexcept
 				{
 					m_type = pt_mat2x4;
 				}
 
 				void operator()(const glm::mat3x2 &value) const
+					noexcept
 				{
 					m_type = pt_mat3x2;
 				}
 
 				void operator()(const glm::mat3x3 &value) const
+					noexcept
 				{
 					m_type = pt_mat3x3;
 				}
 
 				void operator()(const glm::mat3x4 &value) const
+					noexcept
 				{
 					m_type = pt_mat3x4;
 				}
 
 				void operator()(const glm::mat4x2 &value) const
+					noexcept
 				{
 					m_type = pt_mat4x2;
 				}
 
 				void operator()(const glm::mat4x3 &value) const
+					noexcept
 				{
 					m_type = pt_mat4x3;
 				}
 
 				void operator()(const glm::mat4x4 &value) const
+					noexcept
 				{
 					m_type = pt_mat4x4;
 				}
 
 				void operator()(const Ivec4Vector &value) const
+					noexcept
 				{
 					m_type = pt_ivec4;
 				}
 
 				void operator()(const Uvec4Vector &value) const
+					noexcept
 				{
 					m_type = pt_uvec4;
 				}
 
 				void operator()(const Vec4Vector &value) const
+					noexcept
 				{
 					m_type = pt_vec4;
 				}
 
 				void operator()(const Mat2x4Vector &value) const
+					noexcept
 				{
 					m_type = pt_mat2x4;
 				}
 
 				void operator()(const Mat3x4Vector &value) const
+					noexcept
 				{
 					m_type = pt_mat3x4;
 				}
 
 				void operator()(const Mat4x4Vector &value) const
+					noexcept
 				{
 					m_type = pt_mat4x4;
 				}
@@ -194,156 +224,186 @@ namespace eternal_lands
 					m_size = 0;
 				}
 
-				~VariantVectorSize() throw()
+				~VariantVectorSize() noexcept
 				{
 				}
 
 				void operator()(const bool value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const float value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const Sint64 value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::vec2 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::vec3 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::vec4 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::ivec2 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::ivec3 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::ivec4 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::uvec2 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::uvec3 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::uvec4 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::bvec2 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::bvec3 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::bvec4 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat2x2 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat2x3 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat2x4 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat3x2 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat3x3 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat3x4 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat4x2 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat4x3 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const glm::mat4x4 &value) const
+					noexcept
 				{
 					m_size = 1;
 				}
 
 				void operator()(const Ivec4Vector &value) const
+					noexcept
 				{
 					m_size = value.size();
 				}
 
 				void operator()(const Uvec4Vector &value) const
+					noexcept
 				{
 					m_size = value.size();
 				}
 
 				void operator()(const Vec4Vector &value) const
+					noexcept
 				{
 					m_size = value.size();
 				}
 
 				void operator()(const Mat2x4Vector &value) const
+					noexcept
 				{
 					m_size = value.size();
 				}
 
 				void operator()(const Mat3x4Vector &value) const
+					noexcept
 				{
 					m_size = value.size();
 				}
 
 				void operator()(const Mat4x4Vector &value) const
+					noexcept
 				{
 					m_size = value.size();
 				}
@@ -361,131 +421,156 @@ namespace eternal_lands
 					m_str << std::boolalpha;
 				}
 
-				~VariantToOutStream() throw()
+				~VariantToOutStream() noexcept
 				{
 				}
 
 				void operator()(const bool value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const float value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const Sint64 value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::vec2 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::vec3 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::vec4 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::ivec2 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::ivec3 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::ivec4 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::uvec2 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::uvec3 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::uvec4 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::bvec2 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::bvec3 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::bvec4 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat2x2 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat2x3 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat2x4 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat3x2 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat3x3 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat3x4 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat4x2 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat4x3 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const glm::mat4x4 &value) const
+					noexcept
 				{
 					m_str << value;
 				}
 
 				void operator()(const Ivec4Vector &value) const
+					noexcept
 				{
 					Uint32 i, count;
 
@@ -505,6 +590,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Uvec4Vector &value) const
+					noexcept
 				{
 					Uint32 i, count;
 
@@ -524,6 +610,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Vec4Vector &value) const
+					noexcept
 				{
 					Uint32 i, count;
 
@@ -543,6 +630,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Mat2x4Vector &value) const
+					noexcept
 				{
 					Uint32 i, count;
 
@@ -562,6 +650,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Mat3x4Vector &value) const
+					noexcept
 				{
 					Uint32 i, count;
 
@@ -581,6 +670,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Mat4x4Vector &value) const
+					noexcept
 				{
 					Uint32 i, count;
 
@@ -602,7 +692,7 @@ namespace eternal_lands
 		};
 
 		template<typename T>
-		T get_data(const String &values)
+		T get_data(const String &values) noexcept
 		{
 			T result;
 			StringStream str;

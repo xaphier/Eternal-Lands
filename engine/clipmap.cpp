@@ -25,7 +25,7 @@ namespace eternal_lands
 	{
 	}
 
-	Clipmap::~Clipmap() throw()
+	Clipmap::~Clipmap() noexcept
 	{
 	}
 
@@ -73,7 +73,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint16 Clipmap::get_dir_index(const glm::vec2 &view_dir) const
+	Uint16 Clipmap::get_dir_index(const glm::vec2 &view_dir) const noexcept
 	{
 		Uint16 dir_index;
 

@@ -32,7 +32,7 @@ namespace eternal_lands
 			AbstractBoundedObjectVisitor();
 
 		public:
-			virtual ~AbstractBoundedObjectVisitor() throw();
+			virtual ~AbstractBoundedObjectVisitor() noexcept;
 
 			virtual void operator()(
 				const BoundedObjectSharedPtr &bounded_object,

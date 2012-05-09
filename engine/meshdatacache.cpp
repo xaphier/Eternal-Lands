@@ -486,7 +486,7 @@ namespace eternal_lands
 		assert(m_global_vars.get() != nullptr);
 	}
 
-	MeshDataCache::~MeshDataCache() throw()
+	MeshDataCache::~MeshDataCache() noexcept
 	{
 	}
 

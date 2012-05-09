@@ -44,31 +44,33 @@ namespace eternal_lands
 			{
 			}
 
-			inline ~Ray() throw()
+			inline ~Ray() noexcept
 			{
 			}
 
-			inline const glm::vec3 &get_origin() const
+			inline const glm::vec3 &get_origin() const noexcept
 			{
 				return m_origin;
 			}
 
-			inline void set_origin(const glm::vec3 &origin)
+			inline void set_origin(const glm::vec3 &origin) noexcept
 			{
 				m_origin = origin;
 			}
 
-			inline const glm::vec3 &get_direction() const
+			inline const glm::vec3 &get_direction() const noexcept
 			{
 				return m_direction;
 			}
 
 			inline void set_direction(const glm::vec3 &direction)
+				noexcept
 			{
 				m_direction = direction;
 			}
 
-			inline glm::vec3 get_point(const float t)
+			inline glm::vec3 get_point(const float t) const 
+				noexcept
 			{
 				return get_origin() + get_direction() * t;
 			}

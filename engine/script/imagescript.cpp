@@ -28,7 +28,7 @@ namespace eternal_lands
 			script_engine);
 	}
 
-	ImageScript::~ImageScript() throw()
+	ImageScript::~ImageScript() noexcept
 	{
 	}
 

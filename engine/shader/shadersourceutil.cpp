@@ -83,7 +83,7 @@ namespace eternal_lands
 				"ShaderSourceType")));
 	}
 
-	Uint32 ShaderSourceUtil::get_shader_source_count()
+	Uint32 ShaderSourceUtil::get_shader_source_count() noexcept
 	{
 		return shader_source_names_count;
 	}

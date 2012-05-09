@@ -106,16 +106,17 @@ namespace eternal_lands
 		m_entrables = load_entrables(file_system);
 	}
 
-	AbstractMapLoader::~AbstractMapLoader() throw()
+	AbstractMapLoader::~AbstractMapLoader() noexcept
 	{
 	}
 
-	bool AbstractMapLoader::check_format(const Uint8Array8 &id)
+	bool AbstractMapLoader::check_format(const Uint8Array8 &id) noexcept
 	{
 		return true;
 	}
 
 	SelectionType AbstractMapLoader::get_selection(const String &name) const
+		noexcept
 	{
 		if (m_harvestables.count(name) > 0)
 		{

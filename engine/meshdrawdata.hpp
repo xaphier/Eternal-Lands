@@ -37,64 +37,67 @@ namespace eternal_lands
 				const Uint32 min_vertex,
 				const Uint32 max_vertex,
 				const Sint32 base_vertex = 0);
-			~MeshDrawData() throw();
+			~MeshDrawData() noexcept;
 
-			inline Uint32 get_offset() const
+			inline Uint32 get_offset() const noexcept
 			{
 				return m_offset;
 			}
 
-			inline Uint32 get_count() const
+			inline Uint32 get_count() const noexcept
 			{
 				return m_count;
 			}
 
-			inline Uint32 get_min_vertex() const
+			inline Uint32 get_min_vertex() const noexcept
 			{
 				return m_min_vertex;
 			}
 
-			inline Uint32 get_max_vertex() const
+			inline Uint32 get_max_vertex() const noexcept
 			{
 				return m_max_vertex;
 			}
 
-			inline Sint32 get_base_vertex() const
+			inline Sint32 get_base_vertex() const noexcept
 			{
 				return m_base_vertex;
 			}
 
-			inline void set_offset(const Uint32 offset)
+			inline void set_offset(const Uint32 offset) noexcept
 			{
 				m_offset = offset;
 			}
 
-			inline void set_count(const Uint32 count)
+			inline void set_count(const Uint32 count) noexcept
 			{
 				m_count = count;
 			}
 
 			inline void set_min_vertex(const Uint32 min_vertex)
+				noexcept
 			{
 				m_min_vertex = min_vertex;
 			}
 
 			inline void set_max_vertex(const Uint32 max_vertex)
+				noexcept
 			{
 				m_max_vertex = max_vertex;
 			}
 
 			inline void set_base_vertex(const Sint32 base_vertex)
+				noexcept
 			{
 				m_base_vertex = base_vertex;
 			}
 
-			inline Uint32 get_min_vertex_derived() const
+			inline Uint32 get_min_vertex_derived() const noexcept
 			{
 				return get_min_vertex() + get_base_vertex();
 			}
 
-			inline Uint32 get_max_vertex_derived() const
+			inline Uint32 get_max_vertex_derived() const noexcept
 			{
 				return get_max_vertex() + get_base_vertex();
 			}

@@ -25,7 +25,7 @@ namespace eternal_lands
 			get_width(), get_height());
 	}
 
-	ExtRenderBuffer::~ExtRenderBuffer() throw()
+	ExtRenderBuffer::~ExtRenderBuffer() noexcept
 	{
 		if (m_id != 0)
 		{

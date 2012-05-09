@@ -49,18 +49,18 @@ namespace eternal_lands
 		return selection_names[selection];
 	}
 
-	SelectionType SelectionUtil::get_selection_type(const String &str)
+	SelectionType SelectionUtil::get_selection(const String &str)
 	{
 		Uint32 i;
-		SelectionType selection_type;
+		SelectionType selection;
 
 		for (i = 0; i < selection_names_count; ++i)
 		{
-			selection_type = static_cast<SelectionType>(i);
+			selection = static_cast<SelectionType>(i);
 
-			if (str == get_str(selection_type))
+			if (str == get_str(selection))
 			{
-				return selection_type;
+				return selection;
 			}
 		}
 
@@ -68,6 +68,11 @@ namespace eternal_lands
 			<< errinfo_string_value(str)
 			<< boost::errinfo_type_info_name(UTF8(
 				"SelectionType")));
+	}
+
+	Uint32 SelectionUtil::get_selection_count() noexcept
+	{
+		return selection_names_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const SelectionType value)
@@ -83,7 +88,7 @@ namespace eternal_lands
 
 		str >> string;
 
-		value = SelectionUtil::get_selection_type(String(string));
+		value = SelectionUtil::get_selection(String(string));
 
 		return str;
 	}

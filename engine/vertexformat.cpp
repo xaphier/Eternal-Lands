@@ -36,7 +36,7 @@ namespace eternal_lands
 	{
 	}
 
-	VertexFormat::~VertexFormat() throw()
+	VertexFormat::~VertexFormat() noexcept
 	{
 	}
 

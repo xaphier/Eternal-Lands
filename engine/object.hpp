@@ -90,35 +90,38 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~Object() throw();
+			virtual ~Object() noexcept;
 
 			virtual void update_bounding_box();
 			virtual void update_bones();
 
 			inline Uint16 get_lod(const Uint16 distance) const
+				noexcept
 			{
 				return m_lod_data.get_lod(distance);
 			}
 
 			inline Uint16 get_lods_count(const Uint16 lod) const
+				noexcept
 			{
 				return m_lod_data.get_lods_count(lod);
 			}
 
 			inline Uint16 get_lods_offset(const Uint16 lod) const
+				noexcept
 			{
 				return m_lod_data.get_lods_offset(lod);
 			}
 
 			inline Uint16 get_materials_index(const Uint16 lod,
-				const Uint16 index) const
+				const Uint16 index) const noexcept
 			{
 				return m_lod_data.get_materials_index(lod,
 					index);
 			}
 
 			inline Uint16 get_mesh_index(const Uint16 lod,
-				const Uint16 index) const
+				const Uint16 index) const noexcept
 			{
 				return m_lod_data.get_mesh_index(lod, index);
 			}
@@ -126,79 +129,84 @@ namespace eternal_lands
 
 			inline void set_world_transformation(
 				const Transformation &world_transformation)
+				noexcept
 			{
 				m_object_data.set_world_transformation(
 					world_transformation);
 			}
 
 			inline void set_transparency(const float transparency)
+				noexcept
 			{
 				m_object_data.set_transparency(transparency);
 			}
 
-			inline void set_blend(const BlendType blend)
+			inline void set_blend(const BlendType blend) noexcept
 			{
 				m_object_data.set_blend(blend);
 			}
 
 			inline void set_selection(const SelectionType selection)
+				noexcept
 			{
 				m_object_data.set_selection(selection);
 			}
 
 			inline const Transformation &get_world_transformation()
-				const
+				const noexcept
 			{
 				return m_object_data.get_world_transformation();
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_object_data.get_name();
 			}
 
 			inline const AbstractMeshSharedPtr &get_mesh() const
+				noexcept
 			{
 				return m_mesh;
 			}
 
 			inline const MaterialSharedPtrVector &get_materials()
-				const
+				const noexcept
 			{
 				return m_materials;
 			}
 
-			inline float get_transparency() const
+			inline float get_transparency() const noexcept
 			{
 				return m_object_data.get_transparency();
 			}
 
-			inline Uint32 get_id() const
+			inline Uint32 get_id() const noexcept
 			{
 				return m_object_data.get_id();
 			}
 
-			inline BlendType get_blend() const
+			inline BlendType get_blend() const noexcept
 			{
 				return m_object_data.get_blend();
 			}
 
-			inline SelectionType get_selection() const
+			inline SelectionType get_selection() const noexcept
 			{
 				return m_object_data.get_selection();
 			}
 
-			inline const Mat2x4Vector &get_bones() const
+			inline const Mat2x4Vector &get_bones() const noexcept
 			{
 				return m_bones;
 			}
 
-			inline CalModel* get_model()
+			inline CalModel* get_model() noexcept
 			{
 				return m_model.get();
 			}
 
 			inline const SubObjectVector &get_sub_objects() const
+				noexcept
 			{
 				return m_sub_objects;
 			}

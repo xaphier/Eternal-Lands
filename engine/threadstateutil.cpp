@@ -65,7 +65,7 @@ namespace eternal_lands
 				"ThreadStateType")));
 	}
 
-	Uint32 ThreadStateUtil::get_thread_state_count()
+	Uint32 ThreadStateUtil::get_thread_state_count() noexcept
 	{
 		return thread_state_names_count;
 	}

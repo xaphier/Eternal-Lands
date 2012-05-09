@@ -16,7 +16,7 @@ namespace eternal_lands
 		m_next_free_typeless_id = 0;
 	}
 
-	FreeIds::~FreeIds() throw()
+	FreeIds::~FreeIds() noexcept
 	{
 	}
 

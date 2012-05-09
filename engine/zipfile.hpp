@@ -43,7 +43,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~ZipFile() throw();
+			virtual ~ZipFile() noexcept;
 
 			/**
 			 * Opens the file for reading.

@@ -101,7 +101,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	SimpleFrameBuffer::~SimpleFrameBuffer() throw()
+	SimpleFrameBuffer::~SimpleFrameBuffer() noexcept
 	{
 	}
 

@@ -47,6 +47,7 @@ namespace eternal_lands
 			const GlobalVarsSharedPtr m_global_vars;
 
 			inline MeshBuilderSharedPtr get_mesh_builder() const
+				noexcept
 			{
 				MeshBuilderSharedPtr result;
 
@@ -58,12 +59,13 @@ namespace eternal_lands
 			}
 
 			inline const CodecManagerWeakPtr &get_codec_manager()
-				const
+				const noexcept
 			{
 				return m_codec_manager;
 			}
 
 			inline MaterialCacheSharedPtr get_material_cache() const
+				noexcept
 			{
 				MaterialCacheSharedPtr result;
 
@@ -75,7 +77,7 @@ namespace eternal_lands
 			}
 
 			inline MaterialBuilderSharedPtr get_material_builder()
-				const
+				const noexcept
 			{
 				MaterialBuilderSharedPtr result;
 
@@ -87,7 +89,7 @@ namespace eternal_lands
 			}
 
 			inline MaterialDescriptionCacheSharedPtr
-				get_material_description_cache() const
+				get_material_description_cache() const noexcept
 			{
 				MaterialDescriptionCacheSharedPtr result;
 
@@ -99,13 +101,13 @@ namespace eternal_lands
 			}
 
 			inline const FileSystemSharedPtr &get_file_system()
-				const
+				const noexcept
 			{
 				return m_file_system;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
@@ -126,7 +128,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~ActorDataCache() throw();
+			~ActorDataCache() noexcept;
 
 			void add_actor(const Uint32 id,
 				CalCoreModel *core_model, const String &name,

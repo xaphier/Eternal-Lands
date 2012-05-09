@@ -76,6 +76,7 @@ namespace eternal_lands
 				const Uint16 index);
 
 			inline GlobalVarsSharedPtr get_global_vars() const
+				noexcept
 			{
 				return m_global_vars;
 			}
@@ -89,7 +90,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~SceneView() throw();
+			~SceneView() noexcept;
 
 			void update();
 			void build_shadow_matrices(
@@ -99,7 +100,7 @@ namespace eternal_lands
 			void update_shadow_matrices(
 				const SubFrustumsConvexBodys &convex_bodys);
 
-			inline void set_ortho_view()
+			inline void set_ortho_view() noexcept
 			{
 				m_current_view_rotation_matrix =
 					&m_ortho_rotation_matrix;
@@ -110,7 +111,7 @@ namespace eternal_lands
 					&m_ortho_matrices;
 			}
 
-			inline void set_default_view()
+			inline void set_default_view() noexcept
 			{
 				m_current_view_rotation_matrix =
 					&m_view_rotation_matrix;
@@ -121,7 +122,7 @@ namespace eternal_lands
 					&m_projection_view_matrices;
 			}
 
-			inline void set_shadow_view()
+			inline void set_shadow_view() noexcept
 			{
 				m_current_view_rotation_matrix =
 					&m_shadow_view_rotation_matrix;
@@ -133,7 +134,7 @@ namespace eternal_lands
 			}
 
 			inline void set_perspective(const float fov,
-				const float aspect, const float z_near)
+				const float aspect, const float z_near) noexcept
 			{
 				m_fov = fov;
 				m_aspect = aspect;
@@ -141,180 +142,192 @@ namespace eternal_lands
 			}
 
 			inline void set_view_port(const glm::uvec4 &view_port)
+				noexcept
 			{
 				m_view_port = view_port;
 			}
 
 			inline void set_window_size(
-				const glm::uvec2 &window_size)
+				const glm::uvec2 &window_size) noexcept
 			{
 				m_window_size = window_size;
 			}
 
-			inline void set_focus(const glm::vec3 &focus)
+			inline void set_focus(const glm::vec3 &focus) noexcept
 			{
 				m_focus = glm::vec4(focus, 1.0f);
 			}
 
 			inline void set_view_matrix(
-				const glm::mat4 &view_matrix)
+				const glm::mat4 &view_matrix) noexcept
 			{
 				m_view_matrix = view_matrix;
 			}
 
 			inline const glm::mat3x3
 				&get_current_view_rotation_matrix() const
+				noexcept
 			{
 				return *m_current_view_rotation_matrix;
 			}
 
 			inline const glm::mat4x4 &get_current_view_matrix()
-				const
+				const noexcept
 			{
 				return *m_current_view_matrix;
 			}
 
 			inline const Mat4x4Vector
 				&get_current_projection_matrices() const
+				noexcept
 			{
 				return *m_current_projection_matrices;
 			}
 
 			inline const Mat4x4Vector
 				&get_current_projection_view_matrices() const
+				noexcept
 			{
 				return *m_current_projection_view_matrices;
 			}
 
 			inline const glm::mat3x3 &get_view_rotation_matrix()
-				const
+				const noexcept
 			{
 				return m_view_rotation_matrix;
 			}
 
 			inline const glm::mat4x4 &get_view_matrix() const
+				noexcept
 			{
 				return m_view_matrix;
 			}
 
 			inline const Mat4x4Vector &get_projection_matrices()
-				const
+				const noexcept
 			{
 				return m_projection_matrices;
 			}
 
 			inline const Mat4x4Vector
-				&get_projection_view_matrices() const
+				&get_projection_view_matrices() const noexcept
 			{
 				return m_projection_view_matrices;
 			}
 
 			inline const Mat4x4Vector
 				&get_split_projection_view_matrices() const
+				noexcept
 			{
 				return m_split_projection_view_matrices;
 			}
 
 			inline const glm::mat3x3
 				&get_shadow_view_rotation_matrix() const
+				noexcept
 			{
 				return m_shadow_view_rotation_matrix;
 			}
 
 			inline const glm::mat4x4 &get_shadow_view_matrix()
-				const
+				const noexcept
 			{
 				return m_shadow_view_matrix;
 			}
 
 			inline const Mat4x4Vector
 				&get_shadow_projection_view_matrices() const
+				noexcept
 			{
 				return m_shadow_projection_view_matrices;
 			}
 
 			inline const Mat4x4Vector
-				&get_shadow_texture_matrices() const
+				&get_shadow_texture_matrices() const noexcept
 			{
 				return m_shadow_texture_matrices;
 			}
 
-			inline const glm::ivec4 &get_view_port() const
+			inline const glm::ivec4 &get_view_port() const noexcept
 			{
 				return m_view_port;
 			}
 
-			inline const glm::vec4 &get_camera() const
+			inline const glm::vec4 &get_camera() const noexcept
 			{
 				return m_camera;
 			}
 
-			inline const glm::vec4 &get_view_dir() const
+			inline const glm::vec4 &get_view_dir() const noexcept
 			{
 				return m_view_dir;
 			}
 
 			inline const glm::vec4 &get_shadow_camera() const
+				noexcept
 			{
 				return m_shadow_camera;
 			}
 
 			inline const glm::vec4 &get_split_distances() const
+				noexcept
 			{
 				return m_split_distances;
 			}
 
-			inline const glm::vec4 &get_focus() const
+			inline const glm::vec4 &get_focus() const noexcept
 			{
 				return m_focus;
 			}
 
-			inline float get_fov() const
+			inline float get_fov() const noexcept
 			{
 				return m_fov;
 			}
 
-			inline float get_aspect() const
+			inline float get_aspect() const noexcept
 			{
 				return m_aspect;
 			}
 
-			inline float get_z_near() const
+			inline float get_z_near() const noexcept
 			{
 				return m_z_near;
 			}
 
-			inline float get_z_far() const
+			inline float get_z_far() const noexcept
 			{
 				return m_z_far;
 			}
 
-			inline float get_shadow_z_far() const
+			inline float get_shadow_z_far() const noexcept
 			{
 				return m_shadow_z_far;
 			}
 
 			inline const glm::uvec2 &get_window_size() const
+				noexcept
 			{
 				return m_window_size;
 			}
 
 			inline const glm::uvec2 &get_shadow_map_size() const
+				noexcept
 			{
 				return m_shadow_map_size;
 			}
 
-			inline Uint16 get_shadow_map_count() const
+			inline Uint16 get_shadow_map_count() const noexcept
 			{
 				return m_shadow_map_count;
 			}
 
-			inline Uint16 get_layer_count() const
+			inline Uint16 get_layer_count() const noexcept
 			{
 				return m_layer_count;
 			}
 
-			inline bool get_exponential_shadow_maps() const
+			inline bool get_exponential_shadow_maps() const noexcept
 			{
 				return m_exponential_shadow_maps;
 			}

@@ -47,10 +47,10 @@ namespace eternal_lands
 				const String &dudv_map,
 				const glm::vec3 &translation,
 				const glm::vec2 &dudv_scale);
-			~TerrainData() throw();
+			~TerrainData() noexcept;
 
 			inline void set_albedo_maps(
-				const StringArray4 &albedo_maps)
+				const StringArray4 &albedo_maps) noexcept
 			{
 				m_albedo_maps = albedo_maps;
 			}
@@ -62,32 +62,37 @@ namespace eternal_lands
 			}
 
 			inline void set_blend_map(const String &blend_map)
+				noexcept
 			{
 				m_blend_map = blend_map;
 			}
 
 			inline void set_height_map(const String &height_map)
+				noexcept
 			{
 				m_height_map = height_map;
 			}
 
 			inline void set_dudv_map(const String &dudv_map)
+				noexcept
 			{
 				m_dudv_map = dudv_map;
 			}
 
 			inline void set_translation(
-				const glm::vec3 &translation)
+				const glm::vec3 &translation) noexcept
 			{
 				m_translation = translation;
 			}
 
 			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
+				noexcept
 			{
 				m_dudv_scale = dudv_scale;
 			}
 
 			inline const StringArray4 &get_albedo_maps() const
+				noexcept
 			{
 				return m_albedo_maps;
 			}
@@ -98,27 +103,27 @@ namespace eternal_lands
 				return m_albedo_maps[index];
 			}
 
-			inline const String &get_blend_map() const
+			inline const String &get_blend_map() const noexcept
 			{
 				return m_blend_map;
 			}
 
-			inline const String &get_height_map() const
+			inline const String &get_height_map() const noexcept
 			{
 				return m_height_map;
 			}
 
-			inline const String &get_dudv_map() const
+			inline const String &get_dudv_map() const noexcept
 			{
 				return m_dudv_map;
 			}
 
-			inline const glm::vec3 &get_translation() const
+			inline const glm::vec3 &get_translation() const noexcept
 			{
 				return m_translation;
 			}
 
-			inline const glm::vec2 &get_dudv_scale() const
+			inline const glm::vec2 &get_dudv_scale() const noexcept
 			{
 				return m_dudv_scale;
 			}

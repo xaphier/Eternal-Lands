@@ -97,7 +97,7 @@ namespace eternal_lands
 			 * @return The root node.
 			 */
 			inline const RStarTreeNodeSharedPtr &get_root_node()
-				const
+				const noexcept
 			{
 				return m_root_node;
 			}
@@ -158,7 +158,7 @@ namespace eternal_lands
 			 *
 			 * Default destructor.
 			 */
-			~RStarTree() throw();
+			~RStarTree() noexcept;
 
 			/**
 			 * @brief Split distribution factor.
@@ -168,6 +168,7 @@ namespace eternal_lands
 			 * @return The split distribution factor.
 			 */
 			inline float get_split_distribution_factor() const
+				noexcept
 			{
 				return m_split_distribution_factor;
 			}
@@ -189,7 +190,7 @@ namespace eternal_lands
 			 * Returns the reinsert factor. Is between 0.0 and 1.0.
 			 * @return The reinsert factor.
 			 */
-			inline float get_reinsert_factor() const
+			inline float get_reinsert_factor() const noexcept
 			{
 				return m_reinsert_factor;
 			}
@@ -211,7 +212,7 @@ namespace eternal_lands
 			 * Returns the fill factor. Is between 0.0 and 1.0.
 			 * @return The fill factor.
 			 */
-			inline float get_fill_factor() const
+			inline float get_fill_factor() const noexcept
 			{
 				return m_fill_factor;
 			}
@@ -291,7 +292,7 @@ namespace eternal_lands
 			 * Returns the maximun of elements per node.
 			 * @return The maximun of elements per node.
 			 */
-			static Uint32 get_max_elements_per_node() throw();
+			static Uint32 get_max_elements_per_node() noexcept;
 
 			/**
 			 * @brief Axis aligned bounding box of the tree.
@@ -300,7 +301,7 @@ namespace eternal_lands
 			 * encloses all items of the tree.
 			 * @return The axis aligned bounding box of the tree.
 			 */
-			const BoundingBox &get_bounding_box() const;
+			const BoundingBox &get_bounding_box() const noexcept;
 
 			/**
 			 * @brief Returns if the tree is empty.
@@ -308,7 +309,7 @@ namespace eternal_lands
 			 * Returns true if the tree contains no items, else false.
 			 * @return True if the tree contains no items, else false.
 			 */
-			bool get_empty() const;
+			bool get_empty() const noexcept;
 
 			/**
 			 * @brief Nodes count.
@@ -316,7 +317,7 @@ namespace eternal_lands
 			 * Returns the number of nodes in the tree.
 			 * @return The nodes count.
 			 */
-			Uint32 get_nodes_count() const throw();
+			Uint32 get_nodes_count() const noexcept;
 
 			/**
 			 * @brief Memory usage.
@@ -324,7 +325,7 @@ namespace eternal_lands
 			 * Returns the memory usage of the tree and all its nodes.
 			 * @return The memory usage.
 			 */
-			Uint32 get_memory_usage() const throw();
+			Uint32 get_memory_usage() const noexcept;
 
 			/**
 			 * @brief Select objects.

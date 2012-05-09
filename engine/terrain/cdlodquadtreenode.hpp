@@ -32,37 +32,37 @@ namespace eternal_lands
 			Uint16 m_min_z, m_max_z;
 
 		public:
-			inline Uint16 get_level() const
+			inline Uint16 get_level() const noexcept
 			{
 				return m_level & 0x7FFF;
 			}
 
-			inline bool get_is_leaf() const
+			inline bool get_is_leaf() const noexcept
 			{
 				return (m_level & 0x8000) != 0;
 			}
 
-			inline Uint16 get_size() const
+			inline Uint16 get_size() const noexcept
 			{
 				return m_size;
 			}
 
-			inline Uint16 get_x() const
+			inline Uint16 get_x() const noexcept
 			{
 				return m_x;
 			}
 
-			inline Uint16 get_y() const
+			inline Uint16 get_y() const noexcept
 			{
 				return m_y;
 			}
 
-			inline Uint16 get_min_z() const
+			inline Uint16 get_min_z() const noexcept
 			{
 				return m_min_z;
 			}
 
-			inline Uint16 get_max_z() const
+			inline Uint16 get_max_z() const noexcept
 			{
 				return m_max_z;
 			}
@@ -83,7 +83,7 @@ namespace eternal_lands
 				const glm::vec3 &offset, const Uint16 x,
 				const Uint16 y, const Uint16 size,
 				const Uint16 level);
-			~CdLodQuadTreeNode() throw();
+			~CdLodQuadTreeNode() noexcept;
 
 	};
 

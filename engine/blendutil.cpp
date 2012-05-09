@@ -63,7 +63,7 @@ namespace eternal_lands
 			<< boost::errinfo_type_info_name(UTF8("BlendType")));
 	}
 
-	Uint32 BlendUtil::get_blend_count()
+	Uint32 BlendUtil::get_blend_count() noexcept
 	{
 		return blend_names_count;
 	}

@@ -100,7 +100,7 @@ namespace eternal_lands
 			String(UTF8("shaders/font.xml")));
 	}
 
-	TextureFontCache::~TextureFontCache() throw()
+	TextureFontCache::~TextureFontCache() noexcept
 	{
 	}
 

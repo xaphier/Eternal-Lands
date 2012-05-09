@@ -37,7 +37,7 @@ namespace eternal_lands
 			RenderBuffer(const Uint32 width, const Uint32 height,
 				const Uint32 samples,
 				const TextureFormatType format);
-			~RenderBuffer() throw();
+			~RenderBuffer() noexcept;
 			void bind_to_framebuffer(const GLenum attachment);
 
 			inline Uint32 get_width() const

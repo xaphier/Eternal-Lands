@@ -101,7 +101,8 @@ namespace eternal_lands
 				const String &name, const float scale,
 				const Uint32 id, const SelectionType selection,
 				const BlendType blend);
-			SelectionType get_selection(const String &name) const;
+			SelectionType get_selection(const String &name) const
+				noexcept;
 			StringVector get_material_names(const Uint32 index,
 				const Uint32 count) const;
 
@@ -145,15 +146,16 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~AbstractMapLoader() throw();
+			virtual ~AbstractMapLoader() noexcept;
 
-			static bool check_format(const Uint8Array8 &id);
+			static bool check_format(const Uint8Array8 &id)
+				noexcept;
 			static StringSet load_harvestables(
 				const FileSystemSharedPtr &file_system);
 			static StringSet load_entrables(
 				const FileSystemSharedPtr &file_system);
 
-			static inline Sint8Array4 get_magic_number()
+			static inline Sint8Array4 get_magic_number() noexcept
 			{
 				Sint8Array4 result;
 
@@ -165,37 +167,37 @@ namespace eternal_lands
 				return result;
 			}
 
-			static inline Uint32 get_3d_object_size()
+			static inline Uint32 get_3d_object_size() noexcept
 			{
 				return 144;
 			}
 
-			static inline Uint32 get_2d_object_size()
+			static inline Uint32 get_2d_object_size() noexcept
 			{
 				return 128;
 			}
 
-			static inline Uint32 get_light_size()
+			static inline Uint32 get_light_size() noexcept
 			{
 				return 40;
 			}
 
-			static inline Uint32 get_particle_size()
+			static inline Uint32 get_particle_size() noexcept
 			{
 				return 104;
 			}
 
-			static inline Uint32 get_terrain_size()
+			static inline Uint32 get_terrain_size() noexcept
 			{
 				return 1024;
 			}
 
-			static inline Uint32 get_material_name_size()
+			static inline Uint32 get_material_name_size() noexcept
 			{
 				return 128;
 			}
 
-			static inline Uint32 get_tile_size()
+			static inline Uint32 get_tile_size() noexcept
 			{
 				return 3;
 			}

@@ -19,7 +19,7 @@ namespace eternal_lands
 	{
 	}
 
-	TerrainPage::~TerrainPage() throw()
+	TerrainPage::~TerrainPage() noexcept
 	{
 	}
 

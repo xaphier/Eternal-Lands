@@ -52,12 +52,12 @@ namespace eternal_lands
 		}
 	}
 
-	VertexStreams::~VertexStreams() throw()
+	VertexStreams::~VertexStreams() noexcept
 	{
 	}
 
 	void VertexStreams::set(const VertexSemanticType semantic,
-		const glm::vec4 &data)
+		const glm::vec4 &data) noexcept
 	{
 		BOOST_FOREACH(VertexStream &stream, get_streams())
 		{
@@ -65,7 +65,7 @@ namespace eternal_lands
 		}
 	}
 
-	void VertexStreams::reset()
+	void VertexStreams::reset() noexcept
 	{
 		BOOST_FOREACH(VertexStream &stream, get_streams())
 		{
@@ -73,7 +73,7 @@ namespace eternal_lands
 		}
 	}
 
-	void VertexStreams::push_vertex()
+	void VertexStreams::push_vertex() noexcept
 	{
 		BOOST_FOREACH(VertexStream &stream, get_streams())
 		{

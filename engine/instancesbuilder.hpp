@@ -43,7 +43,7 @@ namespace eternal_lands
 			const bool m_use_base_vertex;
 
 			inline MeshDataCacheSharedPtr get_mesh_data_cache()
-				const
+				const noexcept
 			{
 				MeshDataCacheSharedPtr result;
 
@@ -55,7 +55,7 @@ namespace eternal_lands
 			}
 
 			inline MaterialDescriptionCacheSharedPtr
-				get_material_description_cache() const
+				get_material_description_cache() const noexcept
 			{
 				MaterialDescriptionCacheSharedPtr result;
 
@@ -83,7 +83,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~InstancesBuilder() throw();
+			~InstancesBuilder() noexcept;
 
 			void add(const ObjectDescription &object_description);
 			void build(FreeIds &free_ids,
@@ -93,12 +93,12 @@ namespace eternal_lands
 			static InstanceData build(const glm::vec3 &center,
 				const ObjectDescriptionVector &object_datas);
 
-			inline bool get_use_simd() const
+			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;
 			}
 
-			inline bool get_use_base_vertex() const
+			inline bool get_use_base_vertex() const noexcept
 			{
 				return m_use_base_vertex;
 			}

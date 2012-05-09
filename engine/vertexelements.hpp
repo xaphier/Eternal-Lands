@@ -72,14 +72,14 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~VertexElements() throw();
+			~VertexElements() noexcept;
 
 			/**
 			 * Returns the vertex elements.
 			 * @return The vertex elements.
 			 */
 			inline const VertexElementVector &get_vertex_elements()
-				const
+				const noexcept
 			{
 				return m_vertex_elements;
 			}
@@ -88,7 +88,7 @@ namespace eternal_lands
 			 * Returns the divisor.
 			 * @return The divisor.
 			 */
-			inline Uint16 get_divisor() const
+			inline Uint16 get_divisor() const noexcept
 			{
 				return m_divisor;
 			}
@@ -97,7 +97,7 @@ namespace eternal_lands
 			 * Returns the stride.
 			 * @return The stride.
 			 */
-			inline Uint16 get_stride() const
+			inline Uint16 get_stride() const noexcept
 			{
 				return m_stride;
 			}
@@ -106,7 +106,7 @@ namespace eternal_lands
 			 * Returns the stride.
 			 * @return The stride.
 			 */
-			inline Uint16 get_count() const
+			inline Uint16 get_count() const noexcept
 			{
 				return m_vertex_elements.size();
 			}

@@ -52,7 +52,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~ScriptEngine() throw();
+			~ScriptEngine() noexcept;
 			void init();
 			void build_module(const String &name,
 				const String &file);

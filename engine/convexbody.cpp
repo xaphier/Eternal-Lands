@@ -172,7 +172,7 @@ namespace eternal_lands
 		add_polygon(polygon);
 	}
 
-	ConvexBody::~ConvexBody() throw()
+	ConvexBody::~ConvexBody() noexcept
 	{
 	}
 

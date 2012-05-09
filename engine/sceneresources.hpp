@@ -46,95 +46,96 @@ namespace eternal_lands
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
-			~SceneResources() throw();
+			~SceneResources() noexcept;
 			void clear();
 			void init(const FileSystemSharedPtr &file_system);
 
 			inline const MeshBuilderSharedPtr &get_mesh_builder()
-				const
+				const noexcept
 			{
 				return m_mesh_builder;
 			}
 
 			inline const MeshCacheSharedPtr &get_mesh_cache() const
+				noexcept
 			{
 				return m_mesh_cache;
 			}
 
 			inline const EffectCacheSharedPtr &get_effect_cache()
-				const
+				const noexcept
 			{
 				return m_effect_cache;
 			}
 
 			inline const TextureCacheSharedPtr &get_texture_cache()
-				const
+				const noexcept
 			{
 				return m_texture_cache;
 			}
 
 			inline const CodecManagerSharedPtr &get_codec_manager()
-				const
+				const noexcept
 			{
 				return m_codec_manager;
 			}
 
 			inline const MeshDataCacheSharedPtr
-				&get_mesh_data_cache() const
+				&get_mesh_data_cache() const noexcept
 			{
 				return m_mesh_data_cache;
 			}
 
 			inline const ActorDataCacheSharedPtr
-				&get_actor_data_cache() const
+				&get_actor_data_cache() const noexcept
 			{
 				return m_actor_data_cache;
 			}
 
 			inline const ShaderSourceBuilderSharedPtr
-				&get_shader_source_builder() const
+				&get_shader_source_builder() const noexcept
 			{
 				return m_shader_source_builder;
 			}
 
 			inline const FrameBufferBuilderSharedPtr
-				&get_framebuffer_builder() const
+				&get_framebuffer_builder() const noexcept
 			{
 				return m_framebuffer_builder;
 			}
 
 			inline const MaterialBuilderSharedPtr
-				&get_material_builder() const
+				&get_material_builder() const noexcept
 			{
 				return m_material_builder;
 			}
 
 			inline const MaterialCacheSharedPtr
-				&get_material_cache() const
+				&get_material_cache() const noexcept
 			{
 				return m_material_cache;
 			}
 
 			inline const MaterialDescriptionCacheSharedPtr
-				&get_material_description_cache() const
+				&get_material_description_cache() const noexcept
 			{
 				return m_material_description_cache;
 			}
 
 			inline const MaterialScriptCacheSharedPtr
-				&get_material_script_cache() const
+				&get_material_script_cache() const noexcept
 			{
 				return m_material_script_cache;
 			}
 
 			inline const MaterialScriptManagerSharedPtr
-				&get_material_script_manager() const
+				&get_material_script_manager() const noexcept
 			{
 				return m_material_script_manager;
 			}
 
 			inline const ScriptEngineSharedPtr
-				&get_script_engine() const
+				&get_script_engine() const noexcept
 			{
 				return m_script_engine;
 			}

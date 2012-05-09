@@ -82,7 +82,7 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~StateManagerUtil() throw()
+				inline ~StateManagerUtil() noexcept
 				{
 					m_manager.unbind_all();
 				}
@@ -116,7 +116,7 @@ namespace eternal_lands
 			String(UTF8("empty"))));
 	}
 
-	Scene::~Scene() throw()
+	Scene::~Scene() noexcept
 	{
 	}
 

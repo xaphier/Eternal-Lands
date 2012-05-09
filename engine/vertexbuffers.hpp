@@ -34,10 +34,10 @@ namespace eternal_lands
 				const AbstractReadWriteMemorySharedPtrVector
 					&buffers, const Uint32 vertex_count,
 				const bool use_simd);
-			~VertexBuffers() throw();
+			~VertexBuffers() noexcept;
 
 			inline const AbstractReadWriteMemorySharedPtrVector
-				&get_buffers() const
+				&get_buffers() const noexcept
 			{
 				return m_buffers;
 			}

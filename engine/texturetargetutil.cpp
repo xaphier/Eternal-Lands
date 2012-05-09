@@ -28,16 +28,16 @@ namespace eternal_lands
 				{
 				}
 
-				inline ~TextureTargetTypeData() throw()
+				inline ~TextureTargetTypeData() noexcept
 				{
 				}
 
-				inline const String &get_name() const
+				inline const String &get_name() const noexcept
 				{
 					return m_name;
 				}
 
-				inline GLenum get_gl_type() const
+				inline GLenum get_gl_type() const noexcept
 				{
 					return m_gl_type;
 				}
@@ -135,7 +135,7 @@ namespace eternal_lands
 				UTF8("TextureTargetType")));
 	}
 
-	Uint32 TextureTargetUtil::get_texture_target_count()
+	Uint32 TextureTargetUtil::get_texture_target_count() noexcept
 	{
 		return texture_target_datas_count;
 	}

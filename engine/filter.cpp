@@ -281,7 +281,7 @@ namespace eternal_lands
 		}
 	}
 
-	Filter::~Filter() throw()
+	Filter::~Filter() noexcept
 	{
 	}
 	

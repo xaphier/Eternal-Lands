@@ -17,7 +17,7 @@ namespace eternal_lands
 	{
 	}
 
-	CdLodTerrainManager::~CdLodTerrainManager() throw()
+	CdLodTerrainManager::~CdLodTerrainManager() noexcept
 	{
 	}
 

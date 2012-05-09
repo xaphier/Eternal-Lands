@@ -43,14 +43,15 @@ namespace eternal_lands
 
 			public:
 				FtLibrary();
-				~FtLibrary() throw();
+				~FtLibrary() noexcept;
 
-				inline FT_Library &get_library()
+				inline FT_Library &get_library() noexcept
 				{
 					return m_library;
 				}
 
 				inline const FT_Library &get_library() const
+					noexcept
 				{
 					return m_library;
 				}
@@ -73,7 +74,7 @@ namespace eternal_lands
 			}
 		}
 
-		FtLibrary::~FtLibrary() throw()
+		FtLibrary::~FtLibrary() noexcept
 		{
 			FT_Done_FreeType(m_library);
 		}
@@ -89,14 +90,14 @@ namespace eternal_lands
 			public:
 				FtFace(const FtLibrarySharedPtr &library,
 					const String &file_name);
-				~FtFace() throw();
+				~FtFace() noexcept;
 
-				inline FT_Face &get_face()
+				inline FT_Face &get_face() noexcept
 				{
 					return m_face;
 				}
 
-				inline const FT_Face &get_face() const
+				inline const FT_Face &get_face() const noexcept
 				{
 					return m_face;
 				}
@@ -121,7 +122,7 @@ namespace eternal_lands
 			}
 		}
 
-		FtFace::~FtFace() throw()
+		FtFace::~FtFace() noexcept
 		{
 			FT_Done_Face(m_face);
 		}
@@ -189,7 +190,7 @@ namespace eternal_lands
 		init(atlas, data, char_codes);
 	}
 
-	TextureFont::~TextureFont() throw()
+	TextureFont::~TextureFont() noexcept
 	{
 	}
 

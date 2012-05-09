@@ -40,13 +40,13 @@ namespace eternal_lands
 			MeshDataCacheMap m_mesh_data_cache;
 
 			inline const FileSystemSharedPtr &get_file_system()
-				const
+				const noexcept
 			{
 				return m_file_system;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
@@ -65,7 +65,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~MeshDataCache() throw();
+			~MeshDataCache() noexcept;
 			void get_mesh_data(const String &name,
 				MeshDataToolSharedPtr &mesh_data_tool,
 				StringVector &materials);

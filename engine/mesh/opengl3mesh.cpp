@@ -18,9 +18,9 @@ namespace eternal_lands
 
 		public:
 			VertexArrayObject();
-			~VertexArrayObject() throw();
-			void bind() const;
-			void unbind() const;
+			~VertexArrayObject() noexcept;
+			void bind() const noexcept;
+			void unbind() const noexcept;
 
 	};
 
@@ -30,17 +30,17 @@ namespace eternal_lands
 		glGenVertexArrays(1, &m_id);
 	}
 
-	OpenGl3Mesh::VertexArrayObject::~VertexArrayObject() throw()
+	OpenGl3Mesh::VertexArrayObject::~VertexArrayObject() noexcept
 	{
 		glDeleteVertexArrays(1, &m_id);
 	}
 
-	void OpenGl3Mesh::VertexArrayObject::bind() const
+	void OpenGl3Mesh::VertexArrayObject::bind() const noexcept
 	{
 		glBindVertexArray(m_id);
 	}
 
-	void OpenGl3Mesh::VertexArrayObject::unbind() const
+	void OpenGl3Mesh::VertexArrayObject::unbind() const noexcept
 	{
 		glBindVertexArray(0);
 	}
@@ -52,7 +52,7 @@ namespace eternal_lands
 		assert(GLEW_VERSION_3_0 || GLEW_ARB_vertex_array_object);
 	}
 
-	OpenGl3Mesh::~OpenGl3Mesh() throw()
+	OpenGl3Mesh::~OpenGl3Mesh() noexcept
 	{
 	}
 

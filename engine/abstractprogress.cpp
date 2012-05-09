@@ -14,7 +14,7 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractProgress::~AbstractProgress() throw()
+	AbstractProgress::~AbstractProgress() noexcept
 	{
 	}
 

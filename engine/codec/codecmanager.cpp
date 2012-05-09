@@ -18,7 +18,7 @@
 namespace eternal_lands
 {
 
-	Uint32 CodecManager::GlPackedPixelType::get_size() const
+	Uint32 CodecManager::GlPackedPixelType::get_size() const noexcept
 	{
 		return __builtin_popcount(m_red_mask | m_green_mask |
 			m_blue_mask | m_alpha_mask);
@@ -43,14 +43,14 @@ namespace eternal_lands
 		m_type = type;
 	}
 
-	bool CodecManager::GlPackedPixelType::has_alpha() const
+	bool CodecManager::GlPackedPixelType::has_alpha() const noexcept
 	{
 		return __builtin_popcount(m_alpha_mask) > 0;
 	}
 
 	CodecManager::GlFastLoadInfo CodecManager::GlPackedPixelType::build(
 		const GLenum format, const bool swap_colors,
-		const bool ignore_alpha) const
+		const bool ignore_alpha) const noexcept
 	{
 		GlFastLoadInfo info;
 		Uint32 size;
@@ -89,7 +89,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::add_packed_gl_pixel_type(
-		const GlPackedPixelType &pixel_type)
+		const GlPackedPixelType &pixel_type) noexcept
 	{
 		GlFastLoadInfo info;
 
@@ -111,7 +111,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::add_red_gl_pixel_type(const GLenum type,
-		const Uint32 mask)
+		const Uint32 mask) noexcept
 	{
 		GlFastLoadInfo info;
 		Uint32 bits;
@@ -170,7 +170,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::add_red_green_gl_pixel_type(const GLenum type,
-		const Uint32 mask)
+		const Uint32 mask) noexcept
 	{
 		GlFastLoadInfo info;
 		Uint32 bits, green_mask;
@@ -224,7 +224,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::add_luminance_gl_pixel_type(const GLenum type,
-		const Uint32 mask)
+		const Uint32 mask) noexcept
 	{
 		GlFastLoadInfo info;
 		Uint32 bits;
@@ -276,7 +276,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::add_alpha_gl_pixel_type(const GLenum type,
-		const Uint32 mask)
+		const Uint32 mask) noexcept
 	{
 		GlFastLoadInfo info;
 		Uint32 bits;
@@ -300,7 +300,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::add_luminance_alpha_gl_pixel_type(const GLenum type,
-		const Uint32 mask)
+		const Uint32 mask) noexcept
 	{
 		GlFastLoadInfo info;
 		Uint32 bits, green_mask;
@@ -354,7 +354,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::add_color_gl_pixel_type(const GLenum type,
-		const Uint32 mask)
+		const Uint32 mask) noexcept
 	{
 		GlFastLoadInfo info;
 		Uint32 bits;
@@ -387,7 +387,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::add_color_alpha_gl_pixel_type(const GLenum type,
-		const Uint32 mask)
+		const Uint32 mask) noexcept
 	{
 		GlFastLoadInfo info;
 		Uint32 bits;
@@ -448,14 +448,14 @@ namespace eternal_lands
 		assert(m_flast_load_infos.size() > 0);
 	}
 
-	CodecManager::~CodecManager() throw()
+	CodecManager::~CodecManager() noexcept
 	{
 	}
 
 	bool CodecManager::has_color_bit_mask(const GLenum type,
 		const GLenum format, Uint32 &red_mask, Uint32 &green_mask,
 		Uint32 &blue_mask, Uint32 &alpha_mask, Uint32 &size,
-		Uint32 &swap_size) const
+		Uint32 &swap_size) const noexcept
 	{
 		assert(m_flast_load_infos.size() > 0);
 
@@ -480,7 +480,7 @@ namespace eternal_lands
 	bool CodecManager::is_fast_load_supported(const Uint32 red_mask,
 		const Uint32 green_mask, const Uint32 blue_mask,
 		const Uint32 alpha_mask, const bool rg_formats, GLenum &type,
-		GLenum &format, Uint32 &size, Uint32 &swap_size) const
+		GLenum &format, Uint32 &size, Uint32 &swap_size) const noexcept
 	{
 		assert(m_flast_load_infos.size() > 0);
 
@@ -507,7 +507,7 @@ namespace eternal_lands
 
 	bool CodecManager::is_fast_load_supported(const Uint32 red_mask,
 		const Uint32 green_mask, const Uint32 blue_mask,
-		const Uint32 alpha_mask, const bool rg_formats) const
+		const Uint32 alpha_mask, const bool rg_formats) const noexcept
 	{
 		assert(m_flast_load_infos.size() > 0);
 
@@ -726,7 +726,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::get_supported_file_extensions(
-		StringVector &extensions) const
+		StringVector &extensions) const noexcept
 	{
 		extensions.clear();
 

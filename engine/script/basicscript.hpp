@@ -44,7 +44,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~BasicScript() throw();
+			~BasicScript() noexcept;
 
 			inline const String &get_name() const
 			{

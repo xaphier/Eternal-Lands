@@ -28,7 +28,7 @@ namespace eternal_lands
 				SDL_LockMutex(m_mutex);
 			}
 
-			inline ~AutoLock() throw()
+			inline ~AutoLock() noexcept
 			{
 				SDL_UnlockMutex(m_mutex);
 			}

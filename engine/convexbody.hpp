@@ -36,6 +36,7 @@ namespace eternal_lands
 				public:
 					bool operator()(const glm::vec3 &v0,
 						const glm::vec3 &v1) const
+						noexcept
 					{
 						return glm::all(glm::lessThan(
 							v0, v1));
@@ -58,7 +59,7 @@ namespace eternal_lands
 			ConvexBody();
 			ConvexBody(const Frustum &frustum, const Uint16 index);
 			ConvexBody(const BoundingBox &box);
-			~ConvexBody() throw();
+			~ConvexBody() noexcept;
 			void clip(const Frustum &frustum, const Uint16 index);
 			void clip(const BoundingBox &box);
 			void clip(const Plane &plane);
@@ -67,18 +68,18 @@ namespace eternal_lands
 				const;
 			BoundingBox get_bounding_box() const;
 
-			inline void add_polygon(const Polygon &polygon)
+			inline void add_polygon(const Polygon &polygon) noexcept
 			{
 				m_polygons.push_back(polygon);
 			}
 
-			inline Uint32 get_polygon_count() const
+			inline Uint32 get_polygon_count() const noexcept
 			{
 				return m_polygons.size();
 			}
 
 			inline const Polygon &get_polygon(const Uint32 index)
-				const
+				const noexcept
 			{
 				return m_polygons[index];
 			}

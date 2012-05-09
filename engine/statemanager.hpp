@@ -65,19 +65,21 @@ namespace eternal_lands
 				const GlslProgramSharedPtr &program);
 			void set_texture(const Uint16 texture_unit,
 				const TextureSharedPtr &texture);
-			void set_multisample(const bool multisample);
-			void set_blend(const bool blend);
-			void set_culling(const bool culling);
-			void set_color_mask(const glm::bvec4 &color_mask);
-			void set_depth_mask(const bool depth_mask);
-			void set_depth_test(const bool depth_test);
-			void set_scissor_test(const bool scissor_test);
+			void set_multisample(const bool multisample) noexcept;
+			void set_blend(const bool blend) noexcept;
+			void set_culling(const bool culling) noexcept;
+			void set_color_mask(const glm::bvec4 &color_mask)
+				noexcept;
+			void set_depth_mask(const bool depth_mask) noexcept;
+			void set_depth_test(const bool depth_test) noexcept;
+			void set_scissor_test(const bool scissor_test) noexcept;
 			void set_polygon_offset_fill(
-				const bool polygon_offset_fill);
+				const bool polygon_offset_fill) noexcept;
 			void set_sample_alpha_to_coverage(
-				const bool sample_alpha_to_coverage);
-			void set_stencil_test(const bool stencil);
-			void set_restart_index(const Uint32 restart_index);
+				const bool sample_alpha_to_coverage) noexcept;
+			void set_stencil_test(const bool stencil) noexcept;
+			void set_restart_index(const Uint32 restart_index)
+				noexcept;
 
 		public:
 			/**
@@ -88,7 +90,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~StateManager() throw();
+			~StateManager() noexcept;
 
 			inline bool switch_mesh(
 				const AbstractMeshSharedPtr &mesh)
@@ -135,6 +137,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_multisample(const bool multisample)
+				noexcept
 			{
 				if (m_multisample == multisample)
 				{
@@ -146,7 +149,7 @@ namespace eternal_lands
 				return true;
 			}
 
-			inline bool switch_blend(const bool blend)
+			inline bool switch_blend(const bool blend) noexcept
 			{
 				if (m_blend == blend)
 				{
@@ -159,6 +162,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_stencil_test(const bool stencil_test)
+				noexcept
 			{
 				if (m_stencil_test == stencil_test)
 				{
@@ -170,7 +174,7 @@ namespace eternal_lands
 				return true;
 			}
 
-			inline bool switch_culling(const bool culling)
+			inline bool switch_culling(const bool culling) noexcept
 			{
 				if (m_culling == culling)
 				{
@@ -183,7 +187,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_color_mask(
-				const glm::bvec4 &color_mask)
+				const glm::bvec4 &color_mask) noexcept
 			{
 				if (glm::all(glm::equal(m_color_mask,
 					color_mask)))
@@ -197,6 +201,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_depth_mask(const bool depth_mask)
+				noexcept
 			{
 				if (m_depth_mask == depth_mask)
 				{
@@ -209,6 +214,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_depth_test(const bool depth_test)
+				noexcept
 			{
 				if (m_depth_test == depth_test)
 				{
@@ -221,6 +227,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_scissor_test(const bool scissor_test)
+				noexcept
 			{
 				if (m_scissor_test == scissor_test)
 				{
@@ -233,7 +240,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_polygon_offset_fill(
-				const bool polygon_offset_fill)
+				const bool polygon_offset_fill) noexcept
 			{
 				if (m_polygon_offset_fill ==
 					polygon_offset_fill)
@@ -247,7 +254,7 @@ namespace eternal_lands
 			}
 
 			inline bool switch_sample_alpha_to_coverage(
-				const bool sample_alpha_to_coverage)
+				const bool sample_alpha_to_coverage) noexcept
 			{
 				if (m_sample_alpha_to_coverage ==
 					sample_alpha_to_coverage)
@@ -261,13 +268,8 @@ namespace eternal_lands
 				return true;
 			}
 
-			inline const GlslProgramSharedPtr &get_program() const
-			{
-				return m_program;
-			}
-
 			inline bool switch_restart_index(
-				const Uint32 restart_index)
+				const Uint32 restart_index) noexcept
 			{
 				if (m_restart_index == restart_index)
 				{
@@ -277,6 +279,12 @@ namespace eternal_lands
 				set_restart_index(restart_index);
 
 				return true;
+			}
+
+			inline const GlslProgramSharedPtr &get_program() const
+				noexcept
+			{
+				return m_program;
 			}
 
 			void init();

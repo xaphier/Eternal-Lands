@@ -72,7 +72,7 @@ namespace eternal_lands
 
 		public:
 			E3dLoader(const ReaderSharedPtr &reader);
-			~E3dLoader() throw();
+			~E3dLoader() noexcept;
 			void load(const bool use_simd,
 				MeshDataToolSharedPtr &mesh_data_tool,
 				StringVector &materials);

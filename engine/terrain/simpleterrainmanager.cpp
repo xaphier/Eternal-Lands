@@ -41,7 +41,7 @@ namespace eternal_lands
 			global_vars->get_use_simd());
 	}
 
-	SimpleTerrainManager::~SimpleTerrainManager() throw()
+	SimpleTerrainManager::~SimpleTerrainManager() noexcept
 	{
 	}
 

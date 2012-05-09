@@ -49,7 +49,7 @@ namespace eternal_lands
 			VertexStream(const VertexElements &vertex_elements,
 				const AbstractWriteMemorySharedPtr &buffer,
 				const Uint32 vertex_count, const bool use_simd);
-			~VertexStream() throw();
+			~VertexStream() noexcept;
 			void set(const VertexSemanticType semantic,
 				const glm::vec4 &data);
 			void set(const VertexSemanticType semantic,
@@ -63,38 +63,39 @@ namespace eternal_lands
 				return get_vertex_elements().get_count();
 			}
 
-			inline void reset()
+			inline void reset() noexcept
 			{
 				m_offset = 0;
 			}
 
 			inline const VertexElements &get_vertex_elements() const
+				noexcept
 			{
 				return m_vertex_elements;
 			}
 
 			inline const AbstractWriteMemorySharedPtr &get_buffer()
-				const
+				const noexcept
 			{
 				return m_buffer;
 			}
 
-			inline Uint64 get_offset() const
+			inline Uint64 get_offset() const noexcept
 			{
 				return m_offset;
 			}
 
-			inline Uint32 get_stride() const
+			inline Uint32 get_stride() const noexcept
 			{
 				return m_stride;
 			}
 
-			inline Uint32 get_vertex_count() const
+			inline Uint32 get_vertex_count() const noexcept
 			{
 				return m_vertex_count;
 			}
 
-			inline bool get_use_simd() const
+			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;
 			}

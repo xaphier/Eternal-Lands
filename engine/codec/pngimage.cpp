@@ -80,7 +80,7 @@ namespace eternal_lands
 
 			public:
 				PngDecompress();
-				~PngDecompress() throw();
+				~PngDecompress() noexcept;
 
 				ImageSharedPtr get_image(
 					const ReaderSharedPtr &reader,
@@ -116,7 +116,7 @@ namespace eternal_lands
 			}
 		}
 
-		PngDecompress::~PngDecompress() throw()
+		PngDecompress::~PngDecompress() noexcept
 		{
 			if (m_png_ptr)
 			{

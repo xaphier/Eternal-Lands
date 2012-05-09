@@ -54,7 +54,7 @@ namespace eternal_lands
 				const String &str);
 			static const String &get_str(
 				const ShaderSourceType source);
-			static Uint32 get_shader_source_count();
+			static Uint32 get_shader_source_count() noexcept;
 
 	};
 

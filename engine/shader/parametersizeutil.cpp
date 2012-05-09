@@ -71,7 +71,7 @@ namespace eternal_lands
 	}
 
 	bool ParameterSizeUtil::get_parameter_size(const String &str,
-		ParameterSizeType &parameter_size)
+		ParameterSizeType &parameter_size) noexcept
 	{
 		Uint32 i;
 		ParameterSizeType tmp;
@@ -91,7 +91,7 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 ParameterSizeUtil::get_parameter_size_count()
+	Uint32 ParameterSizeUtil::get_parameter_size_count() noexcept
 	{
 		return parameter_size_names_count;
 	}

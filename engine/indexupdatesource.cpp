@@ -49,7 +49,7 @@ namespace eternal_lands
 		}
 	}
 
-	IndexUpdateSource::~IndexUpdateSource() throw()
+	IndexUpdateSource::~IndexUpdateSource() noexcept
 	{
 	}
 
@@ -66,16 +66,6 @@ namespace eternal_lands
 		}
 
 		return result;
-	}
-
-	bool IndexUpdateSource::get_use_16_bit_indices() const
-	{
-		return m_use_16_bit_indices;
-	}
-
-	bool IndexUpdateSource::get_use_restart_index() const
-	{
-		return m_use_restart_index;
 	}
 
 	void IndexUpdateSource::write_index_buffer(const Uint32Set &blocks,

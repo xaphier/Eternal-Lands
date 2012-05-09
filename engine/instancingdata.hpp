@@ -35,15 +35,16 @@ namespace eternal_lands
 				const MeshDataCacheSharedPtr &mesh_data_cache,
 				const ObjectDescription &object_descrition);
 
-			~InstancingData() throw();
+			~InstancingData() noexcept;
 
 			inline const BoundingBox &get_bounding_box() const
+				noexcept
 			{
 				return m_bounding_box;
 			}
 
 			inline const MeshDataToolSharedPtr &get_mesh_data_tool()
-				const
+				const noexcept
 			{
 				return m_mesh_data_tool;
 			}

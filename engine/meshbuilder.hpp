@@ -53,14 +53,14 @@ namespace eternal_lands
 				const VertexElementsVector &elements);
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
 
 		public:
 			MeshBuilder(const GlobalVarsSharedPtr &global_vars);
-			~MeshBuilder() throw();
+			~MeshBuilder() noexcept;
 			AbstractMeshSharedPtr get_mesh(const String &name,
 				const bool static_indices = true,
 				const bool static_vertices = true) const;

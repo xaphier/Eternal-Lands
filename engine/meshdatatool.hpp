@@ -72,7 +72,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~MeshDataTool() throw();
+			~MeshDataTool() noexcept;
 
 			void update_sub_meshs_packed();
 			void update_sub_meshs_bounding_box();
@@ -166,8 +166,8 @@ namespace eternal_lands
 
 			void enable_use_base_vertex();
 			void disable_use_base_vertex();
-			bool get_use_base_vertex() const;
-			bool get_16_bit_indices() const;
+			bool get_use_base_vertex() const noexcept;
+			bool get_16_bit_indices() const noexcept;
 
 			/**
 			 * Returns the number of sub meshs.
@@ -199,7 +199,7 @@ namespace eternal_lands
 				Uint32Vector &indices,
 				const bool use_base_vertex) const;
 
-			inline const Uint32Vector &get_indices() const
+			inline const Uint32Vector &get_indices() const noexcept
 			{
 				return m_indices;
 			}
@@ -231,7 +231,7 @@ namespace eternal_lands
 			 * Returns the number of vertices.
 			 * @result The vertex count.
 			 */
-			inline Uint32 get_vertex_count() const
+			inline Uint32 get_vertex_count() const noexcept
 			{
 				return m_vertex_count;
 			}
@@ -240,7 +240,7 @@ namespace eternal_lands
 			 * Returns the number of indices.
 			 * @result The index count.
 			 */
-			inline Uint32 get_index_count() const
+			inline Uint32 get_index_count() const noexcept
 			{
 				return m_indices.size();
 			}
@@ -249,7 +249,7 @@ namespace eternal_lands
 			 * Return the primitive type.
 			 * @result The primitive type.
 			 */
-			inline PrimitiveType get_primitive() const
+			inline PrimitiveType get_primitive() const noexcept
 			{
 				return m_primitive;
 			}
@@ -258,7 +258,7 @@ namespace eternal_lands
 			 * Return the restart index.
 			 * @result The restart index.
 			 */
-			inline Uint32 get_restart_index() const
+			inline Uint32 get_restart_index() const noexcept
 			{
 				return std::numeric_limits<Uint32>::max();
 			}
@@ -267,7 +267,7 @@ namespace eternal_lands
 			 * Returns if the restart index is used.
 			 * @result If the restart index is used.
 			 */
-			inline bool get_use_restart_index() const
+			inline bool get_use_restart_index() const noexcept
 			{
 				return m_use_restart_index;
 			}
@@ -277,16 +277,17 @@ namespace eternal_lands
 			 * @result The sub meshs.
 			 */
 			inline const SubMeshVector &get_sub_meshs() const
+				noexcept
 			{
 				return m_sub_meshs;
 			}
 
-			inline bool get_use_simd() const
+			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}

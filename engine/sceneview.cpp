@@ -106,7 +106,7 @@ namespace eternal_lands
 		m_ortho_matrices.push_back(glm::mat4x4());
 	}
 
-	SceneView::~SceneView() throw()
+	SceneView::~SceneView() noexcept
 	{
 	}
 

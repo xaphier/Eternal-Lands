@@ -65,7 +65,7 @@ namespace eternal_lands
 		assert(m_global_vars.get() != nullptr);
 	}
 
-	ActorDataCache::~ActorDataCache() throw()
+	ActorDataCache::~ActorDataCache() noexcept
 	{
 	}
 

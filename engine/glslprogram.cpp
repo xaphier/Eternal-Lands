@@ -31,13 +31,13 @@ namespace eternal_lands
 
 			public:
 				GlslShaderObject(const GLenum shader_type);
-				~GlslShaderObject() throw();
+				~GlslShaderObject() noexcept;
 				void load(const StringType &source);
 				StringType get_shader_log() const;
 				bool get_shader_compile_status() const;
 				void compile();
 
-				inline GLuint get_shader() const
+				inline GLuint get_shader() const noexcept
 				{
 					return m_shader;
 				}
@@ -58,7 +58,7 @@ namespace eternal_lands
 			assert(m_shader != 0);
 		}
 
-		GlslShaderObject::~GlslShaderObject() throw()
+		GlslShaderObject::~GlslShaderObject() noexcept
 		{
 			assert(m_shader != 0);
 
@@ -582,11 +582,12 @@ namespace eternal_lands
 					m_sampler_changed = false;
 				}
 
-				~GlUniformVariant() throw()
+				~GlUniformVariant() noexcept
 				{
 				}
 
 				void operator()(const bool value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_bool);
 
@@ -596,6 +597,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const float value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_float);
 
@@ -605,6 +607,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Sint64 value) const
+					noexcept
 				{
 					StringUint16Map::iterator found;
 
@@ -665,6 +668,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::vec2 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_vec2);
 
@@ -674,6 +678,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::vec3 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_vec3);
 
@@ -683,6 +688,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::vec4 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_vec4);
 
@@ -692,6 +698,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::ivec2 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_ivec2);
 
@@ -701,6 +708,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::ivec3 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_ivec3);
 
@@ -710,6 +718,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::ivec4 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_ivec4);
 
@@ -719,6 +728,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::uvec2 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_uvec2);
 
@@ -728,6 +738,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::uvec3 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_uvec3);
 
@@ -737,6 +748,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::uvec4 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_uvec4);
 
@@ -746,6 +758,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::bvec2 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_bvec2);
 
@@ -755,6 +768,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::bvec3 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_bvec3);
 
@@ -764,6 +778,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::bvec4 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_bvec4);
 
@@ -773,6 +788,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat2x2 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat2x2);
 
@@ -783,6 +799,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat2x3 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat2x3);
 
@@ -793,6 +810,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat2x4 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat2x4);
 
@@ -803,6 +821,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat3x2 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat3x2);
 
@@ -813,6 +832,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat3x3 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat3x3);
 
@@ -823,6 +843,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat3x4 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat3x4);
 
@@ -833,6 +854,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat4x2 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat4x2);
 
@@ -843,6 +865,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat4x3 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat4x3);
 
@@ -853,6 +876,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const glm::mat4x4 &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat4x4);
 
@@ -863,6 +887,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Ivec4Vector &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_ivec4);
 
@@ -873,6 +898,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Uvec4Vector &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_uvec4);
 
@@ -883,6 +909,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Vec4Vector &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_vec4);
 
@@ -893,6 +920,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Mat2x4Vector &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat2x4);
 
@@ -903,6 +931,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Mat3x4Vector &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat3x4);
 
@@ -913,6 +942,7 @@ namespace eternal_lands
 				}
 
 				void operator()(const Mat4x4Vector &value) const
+					noexcept
 				{
 					CHECK_TYPE(pt_mat4x4);
 
@@ -959,7 +989,7 @@ namespace eternal_lands
 		load_xml(file_name);
 	}
 
-	GlslProgram::~GlslProgram() throw()
+	GlslProgram::~GlslProgram() noexcept
 	{
 		if (m_program != 0)
 		{

@@ -44,8 +44,8 @@ namespace eternal_lands
 		public:
 			static const String &get_str(
 				const SelectionType selection);
-			static SelectionType get_selection_type(
-				const String &str);
+			static SelectionType get_selection(const String &str);
+			static Uint32 get_selection_count() noexcept;
 
 	};
 

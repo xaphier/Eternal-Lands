@@ -64,7 +64,7 @@ namespace eternal_lands
 		m_bones.resize(m_model->getSkeleton()->getVectorBone().size());
 	}
 
-	Object::~Object() throw()
+	Object::~Object() noexcept
 	{
 	}
 

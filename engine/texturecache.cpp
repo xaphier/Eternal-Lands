@@ -82,6 +82,7 @@ namespace eternal_lands
 		};
 
 		void rle_decode(const Uint8* input, AbstractWriteMemory &buffer)
+			noexcept
 		{
 			Uint64 src, dst, len, size;
 			Uint8* ptr;
@@ -123,7 +124,7 @@ namespace eternal_lands
 			}
 		}
 
-		TextureSharedPtr build_error_texture()
+		TextureSharedPtr build_error_texture() noexcept
 		{
 			glm::uvec3 sizes;
 			ImageSharedPtr image;
@@ -190,7 +191,7 @@ namespace eternal_lands
 		assert(m_global_vars.get() != nullptr);
 	}
 
-	TextureCache::~TextureCache() throw()
+	TextureCache::~TextureCache() noexcept
 	{
 	}
 

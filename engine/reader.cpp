@@ -25,7 +25,7 @@ namespace eternal_lands
 	{
 	}
 
-	Reader::~Reader() throw()
+	Reader::~Reader() noexcept
 	{
 	}
 

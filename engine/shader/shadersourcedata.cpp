@@ -25,7 +25,7 @@ namespace eternal_lands
 		load_xml(source, node);
 	}
 
-	ShaderSourceData::~ShaderSourceData() throw()
+	ShaderSourceData::~ShaderSourceData() noexcept
 	{
 	}
 

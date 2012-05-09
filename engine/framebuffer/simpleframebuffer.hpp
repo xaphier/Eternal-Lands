@@ -43,7 +43,7 @@ namespace eternal_lands
 				const TextureTargetType target,
 				const TextureFormatType format,
 				const bool depth_buffer);
-			virtual ~SimpleFrameBuffer() throw();
+			virtual ~SimpleFrameBuffer() noexcept;
 			virtual void bind(const Uint32 layer);
 			virtual void bind_texture(const Uint32 layer);
 			virtual void blit();

@@ -262,8 +262,8 @@ namespace eternal_lands
 
 		public:
 			Texture(const String &name);
-			~Texture() throw();
-			void unload() throw();
+			~Texture() noexcept;
+			void unload() noexcept;
 			static String get_str(const CubeMapFaceType value);
 			static String get_str(const TextureFilterType value);
 			static String get_str(const TextureMipmapType value);
@@ -277,149 +277,157 @@ namespace eternal_lands
 					get_texture_id());
 			}
 
-			inline Uint64 get_size() const
+			inline Uint64 get_size() const noexcept
 			{
 				return m_size;
 			}
 
-			inline TextureFormatType get_format() const
+			inline TextureFormatType get_format() const noexcept
 			{
 				return m_format;
 			}
 
-			inline TextureTargetType get_target() const
+			inline TextureTargetType get_target() const noexcept
 			{
 				return m_target;
 			}
 
-			inline GLenum get_gl_target() const
+			inline GLenum get_gl_target() const noexcept
 			{
 				return TextureTargetUtil::get_gl_type(
 					get_target());
 			}
 
-			inline TextureFilterType get_mag_filter() const
+			inline TextureFilterType get_mag_filter() const noexcept
 			{
 				return m_mag_filter;
 			}
 
-			inline TextureFilterType get_min_filter() const
+			inline TextureFilterType get_min_filter() const noexcept
 			{
 				return m_min_filter;
 			}
 
 			inline TextureMipmapType get_mipmap_filter() const
+				noexcept
 			{
 				return m_mipmap_filter;
 			}
 
-			inline GLfloat get_anisotropic_filter() const
+			inline GLfloat get_anisotropic_filter() const noexcept
 			{
 				return m_anisotropic_filter;
 			}
 
-			inline Uint16 get_mipmap_count() const
+			inline Uint16 get_mipmap_count() const noexcept
 			{
 				return m_mipmap_count;
 			}
 
-			inline Uint16 get_samples() const
+			inline Uint16 get_samples() const noexcept
 			{
 				return m_samples;
 			}
 
-			inline TextureWrapType get_wrap_s() const
+			inline TextureWrapType get_wrap_s() const noexcept
 			{
 				return m_wrap_s;
 			}
 
-			inline TextureWrapType get_wrap_t() const
+			inline TextureWrapType get_wrap_t() const noexcept
 			{
 				return m_wrap_t;
 			}
 
-			inline TextureWrapType get_wrap_r() const
+			inline TextureWrapType get_wrap_r() const noexcept
 			{
 				return m_wrap_r;
 			}
 
-			inline Uint32 get_width() const
+			inline Uint32 get_width() const noexcept
 			{
 				return m_width;
 			}
 
-			inline Uint32 get_height() const
+			inline Uint32 get_height() const noexcept
 			{
 				return m_height;
 			}
 
-			inline Uint32 get_depth() const
+			inline Uint32 get_depth() const noexcept
 			{
 				return m_depth;
 			}
 
-			inline GLenum get_gl_format() const
+			inline GLenum get_gl_format() const noexcept
 			{
 				return TextureFormatUtil::get_gl_format(
 					get_format());
 			}
 
 			inline void set_format(const TextureFormatType value)
+				noexcept
 			{
 				m_rebuild = m_format != value;
 				m_format = value;
 			}
 
 			inline void set_target(const TextureTargetType value)
+				noexcept
 			{
 				m_rebuild = m_target != value;
 				m_target = value;
 			}
 
 			inline void set_mag_filter(
-				const TextureFilterType value)
+				const TextureFilterType value) noexcept
 			{
 				m_mag_filter = value;
 			}
 
 			inline void set_min_filter(
-				const TextureFilterType value)
+				const TextureFilterType value) noexcept
 			{
 				m_min_filter = value;
 			}
 
 			inline void set_mipmap_filter(
-				const TextureMipmapType value)
+				const TextureMipmapType value) noexcept
 			{
 				m_mipmap_filter = value;
 			}
 
 			inline void set_anisotropic_filter(const GLfloat value)
+				noexcept
 			{
 				m_anisotropic_filter = value;
 			}
 
 			inline void set_mipmap_count(const Uint16 value)
+				noexcept
 			{
 				m_mipmap_count = value;
 			}
 
 			inline void set_wrap_s(const TextureWrapType value)
+				noexcept
 			{
 				m_wrap_s = value;
 			}
 
 			inline void set_wrap_t(const TextureWrapType value)
+				noexcept
 			{
 				m_wrap_t = value;
 			}
 
 			inline void set_wrap_r(const TextureWrapType value)
+				noexcept
 			{
 				m_wrap_r = value;
 			}
 
-			static inline void unbind()
+			static inline void unbind() noexcept
 			{
 				glBindTexture(GL_TEXTURE_2D, 0);
 			}
@@ -451,7 +459,7 @@ namespace eternal_lands
 			void attach(const GLenum attachment,
 				const Uint32 level);
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}

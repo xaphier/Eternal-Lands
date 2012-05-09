@@ -190,13 +190,13 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			~VertexElement() throw();
+			~VertexElement() noexcept;
 
 			/**
 			 * Returns the semantic of the vertex element.
 			 * @return The semantic of the vertex element.
 			 */
-			inline VertexSemanticType get_semantic() const
+			inline VertexSemanticType get_semantic() const noexcept
 			{
 				return m_semantic;
 			}
@@ -205,7 +205,7 @@ namespace eternal_lands
 			 * Returns the type of the vertex element.
 			 * @return The type of the vertex element.
 			 */
-			inline VertexElementType get_type() const
+			inline VertexElementType get_type() const noexcept
 			{
 				return m_type;
 			}
@@ -215,7 +215,7 @@ namespace eternal_lands
 			 * vertex buffer.
 			 * @return The offset of the vertex element.
 			 */
-			inline Uint32 get_offset() const
+			inline Uint32 get_offset() const noexcept
 			{
 				return m_offset;
 			}
@@ -226,7 +226,7 @@ namespace eternal_lands
 			 * @return The count of values the vertex element
 			 * contains.
 			 */
-			inline Uint32 get_count() const
+			inline Uint32 get_count() const noexcept
 			{
 				return m_count;
 			}
@@ -235,7 +235,7 @@ namespace eternal_lands
 			 * Returns the size of the vertex element (in bytes).
 			 * @return The size of the vertex element (in bytes).
 			 */
-			inline Uint32 get_size() const
+			inline Uint32 get_size() const noexcept
 			{
 				return m_size;
 			}
@@ -244,7 +244,7 @@ namespace eternal_lands
 			 * Returns the OpenGL tpye of the vertex element.
 			 * @return The OpenGL tpye of the vertex element.
 			 */
-			inline GLenum get_gl_type() const
+			inline GLenum get_gl_type() const noexcept
 			{
 				return m_gl_type;
 			}
@@ -256,7 +256,7 @@ namespace eternal_lands
 			 * the 0.0 .. 1.0 range. False otherwise.
 			 * @return True if normalization is used, else false.
 			 */
-			inline bool get_normalized() const
+			inline bool get_normalized() const noexcept
 			{
 				return m_gl_normalized == GL_TRUE;
 			}
@@ -269,7 +269,7 @@ namespace eternal_lands
 			 * @return GL_TRUE if normalization is used, else
 			 * GL_FALSE.
 			 */
-			inline GLboolean get_gl_normalized() const
+			inline GLboolean get_gl_normalized() const noexcept
 			{
 				return m_gl_normalized;
 			}
@@ -278,7 +278,7 @@ namespace eternal_lands
 			 * Returns the pack format of the vertex element type.
 			 * @return The pack format of the vertex element type.
 			 */
-			inline PackFormatType get_pack_format() const
+			inline PackFormatType get_pack_format() const noexcept
 			{
 				return m_pack_format;
 			}
@@ -430,8 +430,8 @@ namespace eternal_lands
 			static PackFormatType get_pack_format(
 				const VertexElementType vertex_element);
 
-			static Uint32 get_vertex_semantic_count();
-			static Uint32 get_vertex_element_count();
+			static Uint32 get_vertex_semantic_count() noexcept;
+			static Uint32 get_vertex_element_count() noexcept;
 
 	};
 

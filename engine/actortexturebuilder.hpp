@@ -80,6 +80,7 @@ namespace eternal_lands
 			bool m_compression;
 
 			inline CodecManagerSharedPtr get_codec_manager() const
+				noexcept
 			{
 				CodecManagerSharedPtr result;
 
@@ -91,13 +92,13 @@ namespace eternal_lands
 			}
 
 			inline const FileSystemSharedPtr &get_file_system()
-				const
+				const noexcept
 			{
 				return m_file_system;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
-				const
+				const noexcept
 			{
 				return m_global_vars;
 			}
@@ -108,24 +109,25 @@ namespace eternal_lands
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
 				const String &name);
-			~ActorTextureBuilder() throw();
+			~ActorTextureBuilder() noexcept;
 			void set_parts(
 				const ActorPartTextureTypeStringMap &parts);
 			void build_actor_images();
 			void build_actor_texture();
-			String get_effect() const;
+			String get_effect() const noexcept;
 
 			inline const TextureSharedPtr &get_texture() const
+				noexcept
 			{
 				return m_texture;
 			}
 
-			inline bool get_uses_alpha() const
+			inline bool get_uses_alpha() const noexcept
 			{
 				return m_alphas.any();
 			}
 
-			inline const String &get_name() const
+			inline const String &get_name() const noexcept
 			{
 				return m_name;
 			}

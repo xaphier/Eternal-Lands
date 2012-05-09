@@ -16,21 +16,21 @@ namespace eternal_lands
 		resize(size);
 	}
 
-	ReadWriteMemory::~ReadWriteMemory() throw()
+	ReadWriteMemory::~ReadWriteMemory() noexcept
 	{
 	}
 
-	void* ReadWriteMemory::get_ptr()
-	{
-		return m_ptr.get();
-	}
-
-	const void* ReadWriteMemory::get_ptr() const
+	void* ReadWriteMemory::get_ptr() noexcept
 	{
 		return m_ptr.get();
 	}
 
-	Uint64 ReadWriteMemory::get_size() const
+	const void* ReadWriteMemory::get_ptr() const noexcept
+	{
+		return m_ptr.get();
+	}
+
+	Uint64 ReadWriteMemory::get_size() const noexcept
 	{
 		return m_size;
 	}

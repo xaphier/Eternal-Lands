@@ -114,7 +114,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	LayeredFrameBuffer::~LayeredFrameBuffer() throw()
+	LayeredFrameBuffer::~LayeredFrameBuffer() noexcept
 	{
 	}
 

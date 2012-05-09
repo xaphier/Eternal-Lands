@@ -22,43 +22,43 @@ namespace eternal_lands
 
 				Uint32 get_index(const Uint32 x, const Uint32 y,
 					const Uint32 offset_x,
-					const Uint32 offset_y) const;
+					const Uint32 offset_y) const noexcept;
 				void build_indices(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const Uint16Array4 &splits);
+					const Uint16Array4 &splits) noexcept;
 				void build_triangles(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const Uint16Array4 &splits);
+					const Uint16Array4 &splits) noexcept;
 				void build_triangle_fan(const Uint32 x,
 					const Uint32 y, const Uint32 size,
-					const Uint16Array4 &splits);
+					const Uint16Array4 &splits) noexcept;
 				Uint32 get_index(const Uint32 x,
-					const Uint32 y) const;
+					const Uint32 y) const noexcept;
 
 			public:
 				PlaneIndexBuilder(Uint32Vector &indices,
 					const Uint32 tile_size,
 					const bool use_restart_index);
-				~PlaneIndexBuilder() throw();
-				bool get_use_restart_index() const;
-				Uint32 get_restart_index() const;
-				Uint32 get_tile_size() const;
-				Uint32 get_tile_index_size() const;
+				~PlaneIndexBuilder() noexcept;
+				bool get_use_restart_index() const noexcept;
+				Uint32 get_restart_index() const noexcept;
+				Uint32 get_tile_size() const noexcept;
+				Uint32 get_tile_index_size() const noexcept;
 				void build_indices(const Uint32 skip,
 					const Uint16Array4 &splits_outside,
-					const bool split_inside);
+					const bool split_inside) noexcept;
 
 		};
 
 		Uint32 PlaneIndexBuilder::get_index(const Uint32 x,
 			const Uint32 y,	const Uint32 offset_x,
-			const Uint32 offset_y) const
+			const Uint32 offset_y) const noexcept
 		{
 			return get_index(x + offset_x, y + offset_y);
 		}
 
 		Uint32 PlaneIndexBuilder::get_index(const Uint32 x,
-			const Uint32 y) const
+			const Uint32 y) const noexcept
 		{
 			assert(x < get_tile_index_size());
 			assert(y < get_tile_index_size());
@@ -68,7 +68,7 @@ namespace eternal_lands
 
 		void PlaneIndexBuilder::build_indices(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const Uint16Array4 &splits)
+			const Uint16Array4 &splits) noexcept
 		{
 			if (get_use_restart_index())
 			{
@@ -83,7 +83,7 @@ namespace eternal_lands
 
 		void PlaneIndexBuilder::build_triangles(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const Uint16Array4 &splits)
+			const Uint16Array4 &splits) noexcept
 		{
 			Uint32 i, count, step;
 
@@ -142,7 +142,7 @@ namespace eternal_lands
 
 		void PlaneIndexBuilder::build_triangle_fan(const Uint32 x,
 			const Uint32 y, const Uint32 size,
-			const Uint16Array4 &splits)
+			const Uint16Array4 &splits) noexcept
 		{
 			Uint32 i, count, step;
 
@@ -186,29 +186,29 @@ namespace eternal_lands
 			}
 		}
 
-		bool PlaneIndexBuilder::get_use_restart_index() const
+		bool PlaneIndexBuilder::get_use_restart_index() const noexcept
 		{
 			return m_use_restart_index;
 		}
 
-		Uint32 PlaneIndexBuilder::get_restart_index() const
+		Uint32 PlaneIndexBuilder::get_restart_index() const noexcept
 		{
 			return std::numeric_limits<Uint32>::max();
 		}
 
-		Uint32 PlaneIndexBuilder::get_tile_size() const
+		Uint32 PlaneIndexBuilder::get_tile_size() const noexcept
 		{
 			return m_tile_size;
 		}
 
-		Uint32 PlaneIndexBuilder::get_tile_index_size() const
+		Uint32 PlaneIndexBuilder::get_tile_index_size() const noexcept
 		{
 			return get_tile_size() + 1;
 		}
 
 		void PlaneIndexBuilder::build_indices(const Uint32 skip,
 			const Uint16Array4 &splits_outside,
-			const bool split_inside)
+			const bool split_inside) noexcept
 		{
 			Uint32 i, j, count, step, split;
 			Uint16Array4 splits;
@@ -282,7 +282,7 @@ namespace eternal_lands
 		{
 		}
 
-		PlaneIndexBuilder::~PlaneIndexBuilder() throw()
+		PlaneIndexBuilder::~PlaneIndexBuilder() noexcept
 		{
 		}
 

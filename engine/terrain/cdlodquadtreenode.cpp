@@ -17,7 +17,7 @@ namespace eternal_lands
 	{
 	}
 
-	CdLodQuadTreeNode::~CdLodQuadTreeNode() throw()
+	CdLodQuadTreeNode::~CdLodQuadTreeNode() noexcept
 	{
 	}
 

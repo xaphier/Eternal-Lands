@@ -14,7 +14,7 @@ namespace eternal_lands
 	{
 	}
 
-	AbstractArchive::~AbstractArchive() throw()
+	AbstractArchive::~AbstractArchive() noexcept
 	{
 	}
 

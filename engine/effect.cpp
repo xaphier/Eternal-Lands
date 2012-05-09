@@ -111,7 +111,7 @@ namespace eternal_lands
 		load();
 	}
 
-	Effect::~Effect() throw()
+	Effect::~Effect() noexcept
 	{
 	}
 
@@ -251,6 +251,11 @@ namespace eternal_lands
 		}
 
 		error_load();
+	}
+
+	bool Effect::get_simple_shadow() const
+	{
+		return get_program(ept_shadow)->get_used_texture_units().none();
 	}
 
 }

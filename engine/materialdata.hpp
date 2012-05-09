@@ -35,22 +35,22 @@ namespace eternal_lands
 
 		public:
 			MaterialData();
-			~MaterialData() throw();
+			~MaterialData() noexcept;
 
 			inline const Mat2x4Array4 &get_albedo_scale_offsets()
-				const
+				const noexcept
 			{
 				return m_albedo_scale_offsets;
 			}
 
 			inline const glm::mat2x4 &get_albedo_scale_offset(
-				const Uint16 index) const
+				const Uint16 index) const noexcept
 			{
 				return m_albedo_scale_offsets[index];
 			}
 
 			inline const Mat2x3Array2 &get_texture_matrices()
-				const
+				const noexcept
 			{
 				return m_texture_matrices;
 			}
@@ -62,34 +62,35 @@ namespace eternal_lands
 			}
 
 			inline const glm::mat2x3 &get_emission_scale_offset()
-				const
+				const noexcept
 			{
 				return m_emission_scale_offset;
 			}
 
 			inline const glm::vec4 &get_specular_scale_offset()
-				const
+				const noexcept
 			{
 				return m_specular_scale_offset;
 			}
 
-			inline const glm::vec2 &get_dudv_scale() const
+			inline const glm::vec2 &get_dudv_scale() const noexcept
 			{
 				return m_dudv_scale;
 			}
 
-			inline bool get_cast_shadows() const
+			inline bool get_cast_shadows() const noexcept
 			{
 				return m_cast_shadows;
 			}
 
-			inline bool get_culling() const
+			inline bool get_culling() const noexcept
 			{
 				return m_culling;
 			}
 
 			inline void set_albedo_scale_offsets(
 				const Mat2x4Array4 &albedo_scale_offsets)
+				noexcept
 			{
 				m_albedo_scale_offsets = albedo_scale_offsets;
 			}
@@ -103,7 +104,7 @@ namespace eternal_lands
 			}
 
 			inline void set_texture_matrices(
-				const Mat2x3Array2 &texture_matrices)
+				const Mat2x3Array2 &texture_matrices) noexcept
 			{
 				m_texture_matrices = texture_matrices;
 			}
@@ -118,29 +119,32 @@ namespace eternal_lands
 
 			inline void set_emission_scale_offset(
 				const glm::mat2x3 &emission_scale_offset)
+				noexcept
 			{
 				m_emission_scale_offset =
 					emission_scale_offset;
 			}
 
 			inline void set_specular_scale_offset(
-				const glm::vec4 &specular_scale_offset)
+				const glm::vec4 &specular_scale_offset) noexcept
 			{
 				m_specular_scale_offset =
 					specular_scale_offset;
 			}
 
 			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
+				noexcept
 			{
 				m_dudv_scale = dudv_scale;
 			}
 
 			inline void set_cast_shadows(const bool cast_shadows)
+				noexcept
 			{
 				m_cast_shadows = cast_shadows;
 			}
 
-			inline void set_culling(const bool culling)
+			inline void set_culling(const bool culling) noexcept
 			{
 				m_culling = culling;
 			}

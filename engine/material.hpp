@@ -40,7 +40,7 @@ namespace eternal_lands
 			MaterialScriptSharedPtr m_material_script;
 
 			inline EffectCacheSharedPtr get_effect_cache()
-				const
+				const noexcept
 			{
 				EffectCacheSharedPtr result;
 
@@ -52,6 +52,7 @@ namespace eternal_lands
 			}
 
 			inline TextureCacheSharedPtr get_texture_cache() const
+				noexcept
 			{
 				TextureCacheSharedPtr result;
 
@@ -63,7 +64,7 @@ namespace eternal_lands
 			}
 
 			inline MaterialScriptCacheSharedPtr
-				get_material_script_cache() const
+				get_material_script_cache() const noexcept
 			{
 				MaterialScriptCacheSharedPtr result;
 
@@ -75,7 +76,7 @@ namespace eternal_lands
 			}
 
 			inline MaterialScriptManagerSharedPtr
-				get_material_script_manager() const
+				get_material_script_manager() const noexcept
 			{
 				MaterialScriptManagerSharedPtr result;
 
@@ -96,7 +97,7 @@ namespace eternal_lands
 					&material_script_cache,
 				const MaterialScriptManagerWeakPtr
 					&material_script_manager);
-			~Material() throw();
+			~Material() noexcept;
 			void init(const MaterialDescription &material);
 			void set_texture(const String &name,
 				const ShaderTextureType texture_type);
@@ -108,26 +109,29 @@ namespace eternal_lands
 				const ShaderTextureType texture_type);
 			const TextureSharedPtr &get_texture(
 				const ShaderTextureType texture_type) const;
-			const EffectDescription &get_effect_description() const;
-			const String &get_material_script_name() const;
+			const EffectDescription &get_effect_description() const
+				noexcept;
+			const String &get_material_script_name() const noexcept;
 			void set_material_script(const String &material_script);
 			bool execute_script(const glm::vec4 &time,
 				asIScriptContext* context);
-			void lock();
-			void unlock();
+			void lock() noexcept;
+			void unlock() noexcept;
 
 			inline void set_effect(const EffectSharedPtr &effect)
+				noexcept
 			{
 				m_effect = effect;
 			}
 
 			inline const EffectSharedPtr &get_effect() const
+				noexcept
 			{
 				return m_effect;
 			}
 
 			inline const MaterialScriptSharedPtr
-				&get_material_script() const
+				&get_material_script() const noexcept
 			{
 				return m_material_script;
 			}

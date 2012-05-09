@@ -33,18 +33,19 @@ namespace eternal_lands
 			glm::mat2x4 m_data;
 
 		public:
-			inline Transformation()
+			inline Transformation() noexcept
 			{
 				set_rotation(glm::quat());
 				set_translation(glm::vec3(0.0f));
 				set_scale(1.0f);
 			}
 
-			inline ~Transformation() throw()
+			inline ~Transformation() noexcept
 			{
 			}
 
 			inline void set_rotation(const glm::quat &rotation)
+				noexcept
 			{
 				m_data[0].x = rotation.x;
 				m_data[0].y = rotation.y;
@@ -53,34 +54,35 @@ namespace eternal_lands
 			}
 
 			inline void set_translation(const glm::vec3 &translate)
+				noexcept
 			{
 				m_data[1].x = translate.x;
 				m_data[1].y = translate.y;
 				m_data[1].z = translate.z;
 			}
 
-			inline void set_scale(const float scale)
+			inline void set_scale(const float scale) noexcept
 			{
 				m_data[1].w = scale;
 			}
 
-			inline glm::quat get_rotation() const
+			inline glm::quat get_rotation() const noexcept
 			{
 				return glm::quat(m_data[0].w, m_data[0].x,
 					m_data[0].y, m_data[0].z);
 			}
 
-			inline glm::vec3 get_translation() const
+			inline glm::vec3 get_translation() const noexcept
 			{
 				return glm::vec3(m_data[1]);
 			}
 
-			inline float get_scale() const
+			inline float get_scale() const noexcept
 			{
 				return m_data[1].w;
 			}
 
-			inline glm::mat4x3 get_matrix() const
+			inline glm::mat4x3 get_matrix() const noexcept
 			{
 				glm::mat4x3 result;
 
@@ -91,13 +93,13 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline const glm::mat2x4 &get_data() const
+			inline const glm::mat2x4 &get_data() const noexcept
 			{
 				return m_data;
 			}
 
 			inline glm::vec3 transform_point(const glm::vec3 &point)
-				const
+				const noexcept
 			{
 				glm::vec3 result;
 
@@ -109,7 +111,7 @@ namespace eternal_lands
 			}
 
 			inline void set_rotation_angles(
-				const glm::vec3 &rotation_angles)
+				const glm::vec3 &rotation_angles) noexcept
 			{
 				glm::quat rotation;
 

@@ -101,7 +101,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~OpenGl2Mesh() throw();
+			virtual ~OpenGl2Mesh() noexcept;
 
 			virtual void bind(BitSet32 &used_attributes);
 			virtual void unbind();

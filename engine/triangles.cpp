@@ -100,7 +100,7 @@ namespace eternal_lands
 	{
 	}
 
-	Triangles::~Triangles() throw()
+	Triangles::~Triangles() noexcept
 	{
 	}
 

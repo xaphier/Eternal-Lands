@@ -62,7 +62,7 @@ namespace eternal_lands
 			Frustum(const glm::mat4x4 &matrix);
 			Frustum(const Mat4x4Vector &matrices);
 			Frustum(const BoundingBox &box);
-			~Frustum() throw();
+			~Frustum() noexcept;
 			static Plane get_plane(const glm::mat4 &matrix,
 				const PlaneType plane);
 			static const String get_str(const PlaneType plane);
@@ -70,17 +70,19 @@ namespace eternal_lands
 			PlaneVector get_planes(const Uint16 sub_frustum) const;
 
 			inline const PlanesMask &get_planes_mask() const
+				noexcept
 			{
 				return m_planes_mask;
 			}
 
 			inline const Plane &get_plane(const Uint16 index) const
+				noexcept
 			{
 				return m_planes[index];
 			}
 
 			inline IntersectionType intersect(
-				const BoundingBox &box) const
+				const BoundingBox &box) const noexcept
 			{
 				PlanesMask out_mask;
 
@@ -90,7 +92,7 @@ namespace eternal_lands
 
 			inline IntersectionType intersect(
 				const BoundingBox &box,
-				const PlanesMask in_mask) const
+				const PlanesMask in_mask) const noexcept
 			{
 				PlanesMask out_mask;
 

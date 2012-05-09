@@ -39,7 +39,7 @@ namespace eternal_lands
 			Reader(const AbstractReadMemorySharedPtr &buffer,
 				const String &name);
 			Reader(const Reader &reader);
-			~Reader() throw();
+			~Reader() noexcept;
 
 			void read(void* buffer, const Uint64 size);
 			void read(ReadWriteMemory &buffer);

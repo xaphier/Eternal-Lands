@@ -122,7 +122,7 @@ namespace eternal_lands
 		add_new_root_node(0);
 	}
 
-	RStarTree::~RStarTree() throw()
+	RStarTree::~RStarTree() noexcept
 	{
 	}
 
@@ -284,27 +284,27 @@ namespace eternal_lands
 		add_new_root_node(0);
 	}
 
-	Uint32 RStarTree::get_max_elements_per_node() throw()
+	Uint32 RStarTree::get_max_elements_per_node() noexcept
 	{
 		return RStarTreeNode::get_max_count();
 	}
 
-	const BoundingBox &RStarTree::get_bounding_box() const
+	const BoundingBox &RStarTree::get_bounding_box() const noexcept
 	{
 		return get_root_node()->get_bounding_box();
 	}
 
-	Uint32 RStarTree::get_nodes_count() const throw()
+	Uint32 RStarTree::get_nodes_count() const noexcept
 	{
 		return get_root_node()->get_sub_nodes_count() + 1;
 	}
 
-	bool RStarTree::get_empty() const
+	bool RStarTree::get_empty() const noexcept
 	{
 		return get_root_node()->get_count() == 0;
 	}
 
-	Uint32 RStarTree::get_memory_usage() const throw()
+	Uint32 RStarTree::get_memory_usage() const noexcept
 	{
 		return sizeof(RStarTree) + get_nodes_count() *
 			sizeof(RStarTreeNode);
