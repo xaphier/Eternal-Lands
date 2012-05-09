@@ -72,13 +72,7 @@
 
 #if (__cplusplus < 201103L)
 #define override
-#endif
-
-#ifndef BOOST_NO_NOEXCEPT
 #define noexcept throw()
-#endif /* BOOST_NO_NOEXCEPT */
-
-#ifndef BOOST_NO_NULLPTR
 #define nullptr 0
 #endif /* BOOST_NO_NULLPTR */
 
