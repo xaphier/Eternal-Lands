@@ -127,10 +127,8 @@ namespace eternal_lands
 				const String &file_name);
 			void build(const EffectDescription &description,
 				const ShaderBuildType shader_build_type,
-				const Uint16 light_count, StringType &vertex,
-				StringType &tess_control,
-				StringType &tess_evaluation,
-				StringType &geometry, StringType &fragment,
+				const Uint16 light_count,
+				GlslProgramDescription &program_description,
 				StringVariantMap &values) const;
 			void set_shadow_map_type(const String &name);
 			StringVector get_shader_source_names(

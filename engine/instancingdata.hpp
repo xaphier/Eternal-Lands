@@ -29,6 +29,8 @@ namespace eternal_lands
 		private:
 			BoundingBox m_bounding_box;
 			MeshDataToolSharedPtr m_mesh_data_tool;
+			StringVector m_effect_names;
+			BoolVector m_simple_shadows;
 
 		public:
 			InstancingData(
@@ -47,6 +49,40 @@ namespace eternal_lands
 				const noexcept
 			{
 				return m_mesh_data_tool;
+			}
+
+			inline const StringVector &get_effect_names() const noexcept
+			{
+				return m_effect_names;
+			}
+
+			inline const String &get_effect_name(const Uint32 index)
+				const
+			{
+				return m_effect_names[index];
+			}
+
+			inline void set_effect_name(const Uint32 index,
+				const String &effect)
+			{
+				m_effect_names[index] = effect;
+			}
+
+			inline const BoolVector &get_simple_shadows() const
+				noexcept
+			{
+				return m_simple_shadows;
+			}
+
+			inline bool get_simple_shadow(const Uint32 index) const
+			{
+				return m_simple_shadows[index];
+			}
+
+			inline void set_simple_shadow(const Uint32 index,
+				const bool enabled)
+			{
+				m_simple_shadows[index] = enabled;
 			}
 
 	};

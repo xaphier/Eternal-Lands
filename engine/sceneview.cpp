@@ -31,16 +31,16 @@ namespace eternal_lands
 			return glm::mix(split_uni, split_log, 0.15f);
 		}
 
-		glm::mat4x4 build_shadow_cropp_matrix(const glm::mat4x3 &matrix,
+		glm::dmat4x4 build_shadow_cropp_matrix(const glm::dmat4x3 &matrix,
 			const ConvexBody &convex_body, const glm::vec3 &dir,
 			const float max_height)
 		{
 			BoundingBox bounding_box;
-			glm::mat4x4 result;
-			glm::vec3 min, max, offset, scale;
+			glm::dmat4x4 result;
+			glm::dvec3 min, max, offset, scale;
 
 			bounding_box = convex_body.get_transformed(
-				matrix).get_bounding_box();
+				glm::mat4x3(matrix)).get_bounding_box();
 
 			min = bounding_box.get_min();
 			max = bounding_box.get_max();
@@ -65,15 +65,15 @@ namespace eternal_lands
 			return result;
 		}
 
-		glm::mat4x4 build_shadow_cropp_matrix(const glm::mat4x3 &matrix,
+		glm::dmat4x4 build_shadow_cropp_matrix(const glm::dmat4x3 &matrix,
 			const ConvexBody &convex_body)
 		{
 			BoundingBox bounding_box;
-			glm::mat4x4 result;
-			glm::vec3 min, max, offset, scale;
+			glm::dmat4x4 result;
+			glm::dvec3 min, max, offset, scale;
 
 			bounding_box = convex_body.get_transformed(
-				matrix).get_bounding_box();
+				glm::mat4x3(matrix)).get_bounding_box();
 
 			min = bounding_box.get_min();
 			max = bounding_box.get_max();
@@ -111,29 +111,28 @@ namespace eternal_lands
 	}
 
 	void SceneView::build_shadow_matrix(
-		const glm::mat4x4 &shadow_view_matrix,
-		const glm::mat4x4 &basic_projection_matrix,
-		const glm::mat4x4 &basic_projection_view_matrix,
+		const glm::dmat4x4 &shadow_view_matrix,
+		const glm::dmat4x4 &basic_projection_matrix,
+		const glm::dmat4x4 &basic_projection_view_matrix,
 		const ConvexBody &convex_body, const glm::vec3 &dir,
 		const float max_height, const Uint16 index)
 	{
-		glm::mat4x4 shadow_projection_matrix;
-		glm::mat4x4 shadow_projection_view_matrix;
-		glm::mat4x4 shadow_texture_matrix;
-		glm::vec3 scale, offset;
+		glm::dmat4x4 shadow_projection_matrix;
+		glm::dmat4x4 shadow_projection_view_matrix;
+		glm::dmat4x4 shadow_texture_matrix;
+		glm::dvec3 scale, offset;
 
 		if (convex_body.get_bounding_box().get_empty())
 		{
 			m_shadow_projection_matrices[index] = glm::mat4x4();
 			m_shadow_projection_view_matrices[index] =
 				glm::mat4x4();
-			m_shadow_texture_matrices[index] = glm::mat4x4();
 
 			return;
 		}
 
 		shadow_projection_matrix = build_shadow_cropp_matrix(
-			glm::mat4x3(basic_projection_view_matrix), convex_body,
+			glm::dmat4x3(basic_projection_view_matrix), convex_body,
 			dir, max_height) * basic_projection_matrix;
 
 		shadow_projection_view_matrix =	shadow_projection_matrix *
@@ -149,20 +148,18 @@ namespace eternal_lands
 		m_shadow_projection_matrices[index] = shadow_projection_matrix;
 		m_shadow_projection_view_matrices[index] =
 			shadow_projection_view_matrix;
-		m_shadow_texture_matrices[index] = shadow_texture_matrix *
-			shadow_projection_view_matrix;
 	}
 
 	void SceneView::build_shadow_matrix(
-		const glm::mat4x4 &shadow_view_matrix,
-		const glm::mat4x4 &basic_projection_matrix,
-		const glm::mat4x4 &basic_projection_view_matrix,
+		const glm::dmat4x4 &shadow_view_matrix,
+		const glm::dmat4x4 &basic_projection_matrix,
+		const glm::dmat4x4 &basic_projection_view_matrix,
 		const ConvexBody &convex_body, const Uint16 index)
 	{
-		glm::mat4x4 shadow_projection_matrix;
-		glm::mat4x4 shadow_projection_view_matrix;
-		glm::mat4x4 shadow_texture_matrix;
-		glm::vec3 scale, offset;
+		glm::dmat4x4 shadow_projection_matrix;
+		glm::dmat4x4 shadow_projection_view_matrix;
+		glm::dmat4x4 shadow_texture_matrix;
+		glm::dvec3 scale, offset;
 
 		if (convex_body.get_bounding_box().get_empty())
 		{
@@ -175,7 +172,7 @@ namespace eternal_lands
 		}
 
 		shadow_projection_matrix = build_shadow_cropp_matrix(
-			glm::mat4x3(basic_projection_view_matrix), convex_body)
+			glm::dmat4x3(basic_projection_view_matrix), convex_body)
 				* basic_projection_matrix;
 
 		shadow_projection_view_matrix =	shadow_projection_matrix *
@@ -199,12 +196,15 @@ namespace eternal_lands
 		const SubFrustumsConvexBodys &convex_bodys,
 		const float scene_max_height)
 	{
-		glm::mat4x4 shadow_view_matrix, basic_projection_matrix;
-		glm::mat4x4 basic_projection_view_matrix;
-		glm::vec3 dir, up, left, target, pos;
+		glm::dmat4x4 shadow_view_matrix, basic_projection_matrix;
+		glm::dmat4x4 basic_projection_view_matrix;
+		glm::dvec3 dir, up, left, target, pos, view_pos;
+		glm::dvec2 translation;
+		double world_texel_size;
 		Uint16 i;
 
-		dir = glm::normalize(light_direction);
+		dir = glm::normalize(glm::dvec3(light_direction));
+		dir = glm::round(dir * 100.0) / 100.0;
 
 		up = glm::vec3(0.0f, 0.0f, 1.0);
 
@@ -216,20 +216,59 @@ namespace eternal_lands
 		left = glm::normalize(glm::cross(dir, up));
 		up = glm::normalize(glm::cross(dir, left));
 
-		target = glm::vec3(m_focus);
-		pos = target + dir * 50.0f;
+		target = glm::dvec3(m_focus);
+		pos = target + dir * 50.0;
 
-		shadow_view_matrix = glm::lookAt(pos, target, -up);
+		shadow_view_matrix = glm::dmat4x4(1);
 
-		basic_projection_matrix = glm::mat4x4(1.0f);
-		basic_projection_matrix[2][2] = -1.0f;
+		shadow_view_matrix[0][0] = -left.x;
+		shadow_view_matrix[1][0] = -left.y;
+		shadow_view_matrix[2][0] = -left.z;
+		shadow_view_matrix[0][1] = -up.x;
+		shadow_view_matrix[1][1] = -up.y;
+		shadow_view_matrix[2][1] = -up.z;
+		shadow_view_matrix[0][2] = dir.x;
+		shadow_view_matrix[1][2] = dir.y;
+		shadow_view_matrix[2][2] = dir.z;
+#if	0
+/**/
+		std::cout << "pos 1: " << glm::to_string(pos) << std::endl;
+		world_texel_size = (get_shadow_z_far() * 2.0) / m_shadow_map_size.x;
+		std::cout << "world_texel_size: " << world_texel_size << std::endl;
+
+		view_pos = glm::dvec3(glm::dvec4(pos, 0.0) * shadow_view_matrix);
+		view_pos.x -= fmodf(view_pos.x, world_texel_size);
+		view_pos.y -= fmodf(view_pos.y, world_texel_size);
+		pos = glm::dvec3(shadow_view_matrix * glm::dvec4(view_pos, 0.0));
+		std::cout << "pos 2: " << glm::to_string(pos) << std::endl;
+/**/
+#endif
+		shadow_view_matrix = glm::translate(shadow_view_matrix, -glm::dvec3(pos));
+#if	0
+/**/
+		translation = glm::dvec2(shadow_view_matrix[3]);
+		translation *= glm::dvec2(m_shadow_map_size) * 0.5;
+//		std::cout << "translation 1: " << glm::to_string(translation) << std::endl;
+		translation = glm::round(translation);
+		translation /= glm::dvec2(m_shadow_map_size) * 0.5;
+/**/
+		shadow_view_matrix[3].x = translation.x;
+		shadow_view_matrix[3].y = translation.y;
+
+		translation = glm::dvec2(shadow_view_matrix[3]);
+		translation *= glm::dvec2(m_shadow_map_size) * 0.5;
+//		std::cout << "translation 2: " << glm::to_string(translation) << std::endl;
+//		std::cout << "matrix: " << glm::to_string(shadow_view_matrix) << std::endl;
+#endif
+
+		basic_projection_matrix = glm::mat4x4(1.0);
+		basic_projection_matrix[2][2] = -1.0;
 
 		basic_projection_view_matrix = basic_projection_matrix
 			* shadow_view_matrix;
 
-		m_shadow_camera = glm::vec4(0.0, 0.0, 0.0f, 1.0f);
 		m_shadow_camera = glm::inverse(shadow_view_matrix) *
-			m_shadow_camera;
+			glm::dvec4(0.0, 0.0, 0.0, 1.0);
 
 		m_shadow_view_matrix = shadow_view_matrix;
 
@@ -244,26 +283,32 @@ namespace eternal_lands
 			build_shadow_matrix(shadow_view_matrix,
 				basic_projection_matrix,
 				basic_projection_view_matrix, convex_bodys[i],
-				dir, scene_max_height, i);
+				glm::vec3(dir), scene_max_height, i);
 		}
 	}
 
 	void SceneView::update_shadow_matrices(
-		const SubFrustumsConvexBodys &convex_bodys)
+		const SubFrustumsConvexBodys &convex_bodys,
+		const SubFrustumsMask &mask)
 	{
-		glm::mat4x4 basic_projection_matrix;
-		glm::mat4x4 basic_projection_view_matrix;
+		glm::dmat4x4 basic_projection_matrix;
+		glm::dmat4x4 basic_projection_view_matrix;
 		Uint16 i;
 
 		basic_projection_matrix = glm::mat4x4(1.0f);
 		basic_projection_matrix[2][2] = -1.0f;
 
 		basic_projection_view_matrix = basic_projection_matrix
-			* get_shadow_view_matrix();
+			* glm::dmat4x4(get_shadow_view_matrix());
 
 		for (i = 0; i < get_shadow_map_count(); ++i)
 		{
-			build_shadow_matrix(get_shadow_view_matrix(),
+			if (!mask[i])
+			{
+				continue;
+			}
+
+			build_shadow_matrix(glm::dmat4x4(get_shadow_view_matrix()),
 				basic_projection_matrix,
 				basic_projection_view_matrix, convex_bodys[i],
 				i);

@@ -44,6 +44,7 @@ namespace eternal_lands
 			/**
 			 * Data needed for optimized depth/shadow drawing.
 			 */
+			ShadowObjectVector m_shadow_objects;
 			boost::scoped_ptr<CalModel> m_model;
 			Mat2x4Vector m_bones;
 
@@ -96,32 +97,29 @@ namespace eternal_lands
 			virtual void update_bones();
 
 			inline Uint16 get_lod(const Uint16 distance) const
-				noexcept
 			{
 				return m_lod_data.get_lod(distance);
 			}
 
 			inline Uint16 get_lods_count(const Uint16 lod) const
-				noexcept
 			{
 				return m_lod_data.get_lods_count(lod);
 			}
 
 			inline Uint16 get_lods_offset(const Uint16 lod) const
-				noexcept
 			{
 				return m_lod_data.get_lods_offset(lod);
 			}
 
 			inline Uint16 get_materials_index(const Uint16 lod,
-				const Uint16 index) const noexcept
+				const Uint16 index) const
 			{
 				return m_lod_data.get_materials_index(lod,
 					index);
 			}
 
 			inline Uint16 get_mesh_index(const Uint16 lod,
-				const Uint16 index) const noexcept
+				const Uint16 index) const
 			{
 				return m_lod_data.get_mesh_index(lod, index);
 			}
@@ -209,6 +207,12 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_sub_objects;
+			}
+
+			inline const ShadowObjectVector &get_shadow_objects()
+				const noexcept
+			{
+				return m_shadow_objects;
 			}
 
 	};

@@ -66,7 +66,7 @@ namespace eternal_lands
 			global_vars);
 	}
 
-	SceneResources::~SceneResources() noexcept
+	SceneResources::~SceneResources() throw()
 	{
 	}
 

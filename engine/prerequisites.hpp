@@ -228,6 +228,7 @@ namespace eternal_lands
 	class Frustum;
 	class GlobalVars;
 	class GlslProgram;
+	class GlslProgramDescription;
 	class HardwareBuffer;
 	class Image;
 	class IndexUpdateSource;

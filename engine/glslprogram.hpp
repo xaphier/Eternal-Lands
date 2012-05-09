@@ -52,16 +52,9 @@ namespace eternal_lands
 			bool program_validate_status();
 			void log_attribute_locations();
 			void log_uniforms();
-			void do_build(const StringType &vertex_shader,
-				const StringType &tess_control_shader,
-				const StringType &tess_evaluation_shader,
-				const StringType &geometry_shader,
-				const StringType &fragment_shader);
-			void build(const StringType &vertex_shader,
-				const StringType &tess_control_shader,
-				const StringType &tess_evaluation_shader,
-				const StringType &geometry_shader,
-				const StringType &fragment_shader,
+			void do_build(
+				const GlslProgramDescription &description);
+			void build(const GlslProgramDescription &description,
 				const StringVariantMap &values);
 			void update_used_texture_units();
 			void load_xml(const xmlNodePtr node);
@@ -75,11 +68,7 @@ namespace eternal_lands
 			}
 
 		public:
-			GlslProgram(const StringType &vertex_shader,
-				const StringType &tess_control_shader,
-				const StringType &tess_evaluation_shader,
-				const StringType &geometry_shader,
-				const StringType &fragment_shader,
+			GlslProgram(const GlslProgramDescription &description,
 				const StringVariantMap &values,
 				const String &name);
 			GlslProgram(const FileSystemSharedPtr &file_system,

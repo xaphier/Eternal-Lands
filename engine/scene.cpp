@@ -40,6 +40,7 @@
 #include "logging.hpp"
 
 #include "materialcache.hpp"
+#include "shadowobject.hpp"
 
 #include "../client_serv.h"
 
@@ -100,6 +101,7 @@ namespace eternal_lands
 	{
 		m_light_position_array.resize(8);
 		m_light_color_array.resize(8);
+		m_shadow_update_mask = 0x55;
 
 		set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
 		set_main_light_color(glm::vec3(0.2f));
@@ -206,6 +208,8 @@ namespace eternal_lands
 	{
 		Uint32 shadow_map_width, shadow_map_height, shadow_map_size;
 		Uint16 mipmaps, samples, shadow_map_count;
+
+		m_shadow_update_mask = 0xFF;
 
 		shadow_map_width = m_scene_view.get_shadow_map_size().x;
 		shadow_map_height = m_scene_view.get_shadow_map_size().y;
@@ -554,7 +558,8 @@ namespace eternal_lands
 			convex_bodys[i].clip(caster_boxes[i]);
 		}
 
-		m_scene_view.update_shadow_matrices(convex_bodys);
+		m_scene_view.update_shadow_matrices(convex_bodys,
+			m_shadow_update_mask);
 	}
 
 	bool Scene::switch_program(const GlslProgramSharedPtr &program,
@@ -630,7 +635,7 @@ namespace eternal_lands
 		const EffectProgramType type, const Uint16 layer,
 		const Uint16 distance, const bool lights)
 	{
-		Uint16 count, index, mesh, i, lod, light_count;
+		Uint16 count, index, mesh, i, lod, light_count, mesh_count;
 		bool object_data_set;
 
 		m_state_manager.switch_mesh(object->get_mesh());
@@ -649,7 +654,14 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		for (i = 0; i < count; ++i)
+		mesh_count = 0;
+
+		if (type == ept_shadow)
+		{
+//			mesh_count = object->get_shadow_mesh_count();
+		}
+
+		for (i = mesh_count; i < count; ++i)
 		{
 			mesh = object->get_mesh_index(lod, i);
 			index = object->get_materials_index(lod, i);
@@ -661,6 +673,10 @@ namespace eternal_lands
 			{
 				object_data_set = false;
 			}
+
+			m_state_manager.switch_sample_alpha_to_coverage(
+				material->get_effect()->get_description(
+					).get_transparent());
 
 			if (!object_data_set)
 			{
@@ -691,6 +707,40 @@ namespace eternal_lands
 			DEBUG_CHECK_GL_ERROR();
 
 			m_state_manager.draw(mesh, 1);
+
+			DEBUG_CHECK_GL_ERROR();
+		}
+
+		if (type != ept_shadow)
+		{
+			return;
+		}
+
+		m_state_manager.switch_sample_alpha_to_coverage(false);
+
+		BOOST_FOREACH(const ShadowObject &shadow_object,
+			object->get_shadow_objects())
+		{
+			if (switch_program(shadow_object.get_program(),	layer))
+			{
+				object_data_set = false;
+			}
+
+			if (!object_data_set)
+			{
+				m_state_manager.get_program()->set_parameter(
+					apt_world_transformations,
+					object->get_world_transformation(
+						).get_data());
+				m_state_manager.get_program()->set_parameter(
+					apt_bones, object->get_bones());
+
+				object_data_set = true;
+			}
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_state_manager.draw(shadow_object, 1);
 
 			DEBUG_CHECK_GL_ERROR();
 		}
@@ -726,12 +776,22 @@ namespace eternal_lands
 	{
 		DEBUG_CHECK_GL_ERROR();
 
+		m_state_manager.init();
+
 		STRING_MARKER(UTF8("drawing shadows %1%"), index);
 
 		m_state_manager.switch_polygon_offset_fill(
 			!m_scene_view.get_exponential_shadow_maps());
 		m_state_manager.switch_color_mask(glm::bvec4(
 			m_scene_view.get_exponential_shadow_maps()));
+
+		if (!m_scene_view.get_exponential_shadow_maps())
+		{
+			glPolygonOffset(1.05f, 8.0f);
+			glCullFace(GL_FRONT);
+		}
+
+		DEBUG_CHECK_GL_ERROR();
 
 		m_scene_view.set_shadow_view();
 
@@ -749,7 +809,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		unbind_all();
+		m_state_manager.unbind_all();
 	}
 
 	void Scene::draw_shadows_array(const Uint16 index)
@@ -775,18 +835,6 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		if (!m_scene_view.get_exponential_shadow_maps())
-		{
-			glPolygonOffset(1.25f, 32.0f);
-		}
-		else
-		{
-			m_state_manager.switch_multisample(true);
-			glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-		}
-
-		DEBUG_CHECK_GL_ERROR();
-
 		width = m_shadow_frame_buffer->get_width();
 		height = m_shadow_frame_buffer->get_height();
 
@@ -794,6 +842,11 @@ namespace eternal_lands
 
 		for (i = 0; i < m_scene_view.get_shadow_map_count(); ++i)
 		{
+			if (!m_shadow_update_mask[i])
+			{
+				continue;
+			}
+
 			if (m_shadow_objects_mask[i])
 			{
 				draw_shadows_array(i);
@@ -806,8 +859,6 @@ namespace eternal_lands
 		}
 
 		unbind_all();
-
-		glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -833,6 +884,15 @@ namespace eternal_lands
 			m_scene_view.get_view_port()[3]);
 
 		DEBUG_CHECK_GL_ERROR();
+
+		m_shadow_update_mask = 0x55;
+
+		if ((m_frame_id % 2) == 0)
+		{
+			m_shadow_update_mask.flip();
+		}
+
+		m_shadow_update_mask[0] = true;
 	}
 
 	void Scene::draw_depth()

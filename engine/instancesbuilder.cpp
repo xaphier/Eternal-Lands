@@ -6,6 +6,9 @@
  ****************************************************************************/
 
 #include "instancesbuilder.hpp"
+#include "effect.hpp"
+#include "effectcache.hpp"
+#include "materialdescription.hpp"
 #include "materialdescriptioncache.hpp"
 #include "instancingdata.hpp"
 #include "freeids.hpp"
@@ -16,15 +19,18 @@ namespace eternal_lands
 {
 
 	InstancesBuilder::InstancesBuilder(
+		const EffectCacheWeakPtr &effect_cache,
 		const MeshDataCacheWeakPtr &mesh_data_cache,
 		const MaterialDescriptionCacheWeakPtr
 			&material_description_cache,
 		const float max_size, const bool use_simd,
-		const bool use_base_vertex): m_mesh_data_cache(mesh_data_cache),
+		const bool use_base_vertex): m_effect_cache(effect_cache),
+		m_mesh_data_cache(mesh_data_cache),
 		m_material_description_cache(material_description_cache),
 		m_max_size(max_size), m_use_simd(use_simd),
 		m_use_base_vertex(use_base_vertex)
 	{
+		assert(!m_effect_cache.expired());
 		assert(!m_mesh_data_cache.expired());
 		assert(!m_material_description_cache.expired());
 	}
@@ -45,9 +51,12 @@ namespace eternal_lands
 
 	void InstancesBuilder::add(const ObjectDescription &object_description)
 	{
+		String material_name, effect_name;
+		EffectSharedPtr effect;
 		std::auto_ptr<InstancingData> instancing_data;
 		glm::vec3 pos;
 		Sint16Sint16Pair index;
+		Uint32 i, count;
 		bool ok;
 
 		ok = true;
@@ -57,19 +66,40 @@ namespace eternal_lands
 			instancing_data.reset(new InstancingData(
 				get_mesh_data_cache(), object_description));
 
-			BOOST_FOREACH(const String &name,
-				instancing_data->get_material_names())
+			count = instancing_data->get_material_names().size();
+
+			for (i = 0; i < count; ++i)
 			{
+				material_name =
+					instancing_data->get_material_names(
+						)[i];
+
 				if (!get_material_description_cache(
-					)->get_has_material_description(name))
+					)->get_has_material_description(
+					material_name))
 				{
 					LOG_ERROR(lt_material, UTF8("Object "
 						"'%1%' using invalid material"
 						" '%2%'."),
 						object_description.get_name() %
-						name);
+						material_name);
 					ok = false;
+
+					continue;
 				}
+
+				effect_name = get_material_description_cache(
+					)->get_material_description(
+						material_name).get_effect();
+
+				instancing_data->set_effect_name(i,
+					effect_name);
+
+				effect = get_effect_cache()->get_effect(
+					effect_name);
+
+				instancing_data->set_simple_shadow(i,
+					effect->get_simple_shadow());
 			}
 
 			if (!ok)
@@ -149,7 +179,7 @@ namespace eternal_lands
 		}
 	}
 
-	void InstancesBuilder::clear()
+	void InstancesBuilder::clear() noexcept
 	{
 		m_instancing_datas.clear();
 	}

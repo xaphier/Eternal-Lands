@@ -7,6 +7,7 @@
 
 #include "filter.hpp"
 #include "glslprogram.hpp"
+#include "glslprogramdescription.hpp"
 #include "shader/shadertextureutil.hpp"
 #include "meshcache.hpp"
 #include "statemanager.hpp"
@@ -215,7 +216,8 @@ namespace eternal_lands
 		const Uint16 half_taps_minus_one, const bool layer,
 		const bool vertical)
 	{
-		StringType name, none;
+		StringType name;
+		String none;
 		Uint16 index;
 
 		index = get_index(channel_count, half_taps_minus_one, layer,
@@ -236,10 +238,11 @@ namespace eternal_lands
 		}
 
 		m_programs[index] = boost::make_shared<GlslProgram>(
-			get_vertex_str(version), none, none, none,
-			get_fragment_str(version, channel_count,
-				half_taps_minus_one, layer, vertical), values,
-				String(name));
+			GlslProgramDescription(get_vertex_str(version), none,
+				none, none, get_fragment_str(version,
+					channel_count, half_taps_minus_one,
+					layer, vertical)), values,
+			String(name));
 	}
 
 	Filter::Filter(const MeshCacheSharedPtr &mesh_cache,
@@ -393,7 +396,7 @@ namespace eternal_lands
 		const Uint16 version, const Uint16 channel_count,
 		const Uint16 sample_count)
 	{
-		StringType name, none;
+		String name, none;
 		Uint16 index;
 
 		index = get_multisample_index(channel_count, sample_count);
@@ -401,9 +404,11 @@ namespace eternal_lands
 		name = UTF8("filter multisample");
 
 		m_multisample_programs[index] = boost::make_shared<GlslProgram>(
-			get_multisample_vertex_str(version), none, none, none,
-			get_multisample_fragment_str(version, channel_count,
-				sample_count), values, String(name));
+			GlslProgramDescription(get_multisample_vertex_str(
+					version), none, none, none,
+				get_multisample_fragment_str(version,
+					channel_count, sample_count)), values,
+			String(name));
 	}
 
 	String Filter::get_vertex_str(const Uint16 version)

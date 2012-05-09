@@ -272,6 +272,7 @@ namespace eternal_lands
 		result |= switch_stencil_test(false);
 		result |= switch_sample_alpha_to_coverage(false);
 		switch_texture_unit(0);
+		glCullFace(GL_BACK);
 
 		if (get_global_vars()->get_opengl_3_1())
 		{

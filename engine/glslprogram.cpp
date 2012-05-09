@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "glslprogram.hpp"
+#include "glslprogramdescription.hpp"
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "shader/parameterutil.hpp"
@@ -964,17 +965,11 @@ namespace eternal_lands
 			Uint32 m_size;
 	};
 
-	GlslProgram::GlslProgram(const StringType &vertex_shader,
-		const StringType &tess_control_shader,
-		const StringType &tess_evaluation_shader,
-		const StringType &geometry_shader,
-		const StringType &fragment_shader,
+	GlslProgram::GlslProgram(const GlslProgramDescription &description,
 		const StringVariantMap &values, const String &name):
 		m_name(name), m_last_used(0), m_program(0)
 	{
-		build(vertex_shader, tess_control_shader,
-			tess_evaluation_shader, geometry_shader,
-			fragment_shader, values);
+		build(description, values);
 	}
 
 	GlslProgram::GlslProgram(const FileSystemSharedPtr &file_system,
@@ -2092,53 +2087,51 @@ namespace eternal_lands
 		return m_program == get_current_program();
 	}
 
-	void GlslProgram::do_build(const StringType &vertex_shader,
-		const StringType &tess_control_shader,
-		const StringType &tess_evaluation_shader,
-		const StringType &geometry_shader,
-		const StringType &fragment_shader)
+	void GlslProgram::do_build(const GlslProgramDescription &description)
 	{
 		GlslShaderObject vertex(GL_VERTEX_SHADER);
 		GlslShaderObject fragment(GL_FRAGMENT_SHADER);
 
 		m_program = glCreateProgram();
 
-		vertex.load(vertex_shader);
+		vertex.load(description.get_vertex_shader());
 		vertex.compile();
 		glAttachShader(get_program(), vertex.get_shader());
 
-		fragment.load(fragment_shader);
+		fragment.load(description.get_fragment_shader());
 		fragment.compile();
 		glAttachShader(get_program(), fragment.get_shader());
 
-		if (!tess_control_shader.empty())
+		if (!description.get_tess_control_shader().get().empty())
 		{
 			GlslShaderObject tess_control(GL_TESS_CONTROL_SHADER);
 
-			tess_control.load(tess_control_shader);
+			tess_control.load(
+				description.get_tess_control_shader());
 			tess_control.compile();
 
 			glAttachShader(get_program(),
 				tess_control.get_shader());
 		}
 
-		if (!tess_evaluation_shader.empty())
+		if (!description.get_tess_evaluation_shader().get().empty())
 		{
 			GlslShaderObject tess_evaluation(
 				GL_TESS_EVALUATION_SHADER);
 
-			tess_evaluation.load(tess_evaluation_shader);
+			tess_evaluation.load(
+				description.get_tess_evaluation_shader());
 			tess_evaluation.compile();
 
 			glAttachShader(get_program(),
 				tess_evaluation.get_shader());
 		}
 
-		if (!geometry_shader.empty())
+		if (!description.get_geometry_shader().get().empty())
 		{
 			GlslShaderObject geometry(GL_GEOMETRY_SHADER);
 
-			geometry.load(geometry_shader);
+			geometry.load(description.get_geometry_shader());
 			geometry.compile();
 
 			glAttachShader(get_program(), geometry.get_shader());
@@ -2161,11 +2154,7 @@ namespace eternal_lands
 		log_uniforms();
 	}
 
-	void GlslProgram::build(const StringType &vertex_shader,
-		const StringType &tess_control_shader,
-		const StringType &tess_evaluation_shader,
-		const StringType &geometry_shader,
-		const StringType &fragment_shader,
+	void GlslProgram::build(const GlslProgramDescription &description,
 		const StringVariantMap &values)
 	{
 		StringVariantMap::const_iterator it, end;
@@ -2176,23 +2165,21 @@ namespace eternal_lands
 
 		try
 		{
-			do_build(vertex_shader, tess_control_shader,
-				tess_evaluation_shader, geometry_shader,
-				fragment_shader);
+			do_build(description);
 		}
 		catch (boost::exception &exception)
 		{
 			exception << errinfo_parameter_name(get_name().get());
 			exception << errinfo_vertex_shader_source(
-				vertex_shader);
+				description.get_vertex_shader());
 			exception << errinfo_tess_control_shader_source(
-				tess_control_shader);
+				description.get_tess_control_shader());
 			exception << errinfo_tess_evaluation_shader_source(
-				tess_evaluation_shader);
+				description.get_tess_evaluation_shader());
 			exception << errinfo_geometry_shader_source(
-				geometry_shader);
+				description.get_geometry_shader());
 			exception << errinfo_fragment_shader_source(
-				fragment_shader);
+				description.get_fragment_shader());
 
 			throw;
 		}
@@ -2307,9 +2294,9 @@ namespace eternal_lands
 		}
 		while (XmlUtil::next(it, true));
 
-		build(vertex_shader, tess_control_shader,
+		build(GlslProgramDescription(vertex_shader, tess_control_shader,
 			tess_evaluation_shader, geometry_shader,
-			fragment_shader, values);
+			fragment_shader), values);
 	}
 
 	void GlslProgram::load_xml(const FileSystemSharedPtr &file_system,

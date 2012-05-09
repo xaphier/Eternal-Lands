@@ -36,13 +36,13 @@ namespace eternal_lands
 			const bool m_use_base_vertex;
 			std::auto_ptr<InstanceData> m_instance_data;
 
-			inline Uint32 get_id() const noexcept
+			inline Uint32 get_id() const
 			{
 				return m_id;
 			}
 
 			inline const InstancingDataVector
-				&get_instancing_datas() const noexcept
+				&get_instancing_datas() const
 			{
 				return m_instancing_datas;
 			}
@@ -81,7 +81,7 @@ namespace eternal_lands
 				InstancingDataVector &instancing_datas,
 				ObjectDescriptionVector &uninstanced);
 
-			inline void operator()() noexcept
+			inline void operator()()
 			{
 				build_instance();
 			}

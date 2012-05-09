@@ -42,18 +42,18 @@ namespace eternal_lands
 			{
 			}
 
-			inline ~InstanceData() noexcept
+			inline ~InstanceData() throw()
 			{
 			}
 
 			inline const MeshDataToolSharedPtr
-				&get_mesh_data_tool() const noexcept
+				&get_mesh_data_tool() const
 			{
 				return m_mesh_data_tool;
 			}
 
 			inline const SubObjectVector &get_instanced_objects()
-				const noexcept
+				const
 			{
 				return m_instanced_objects;
 			}

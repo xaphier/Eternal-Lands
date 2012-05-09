@@ -70,6 +70,7 @@ namespace eternal_lands
 			Uint64 m_program_vars_id;
 			float m_time;
 			SubFrustumsMask m_shadow_objects_mask;
+			SubFrustumsMask m_shadow_update_mask;
 			bool m_lights;
 			bool m_shadow_map_change;
 
@@ -268,7 +269,6 @@ namespace eternal_lands
 			}
 
 			inline const glm::mat4 &get_projection_matrix() const
-				noexcept
 			{
 				return m_scene_view.get_projection_matrices(
 					)[0];

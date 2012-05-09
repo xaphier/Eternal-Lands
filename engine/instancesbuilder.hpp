@@ -35,12 +35,25 @@ namespace eternal_lands
 
 			Sint16Sint16PairInstancingDataVectorMap
 				m_instancing_datas;
+			const EffectCacheWeakPtr m_effect_cache;
 			const MeshDataCacheWeakPtr m_mesh_data_cache;
 			const MaterialDescriptionCacheWeakPtr
 				m_material_description_cache;
 			const float m_max_size;
 			const bool m_use_simd;
 			const bool m_use_base_vertex;
+
+			inline EffectCacheSharedPtr get_effect_cache() const
+				noexcept
+			{
+				EffectCacheSharedPtr result;
+
+				result = m_effect_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
 
 			inline MeshDataCacheSharedPtr get_mesh_data_cache()
 				const noexcept
@@ -73,7 +86,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			InstancesBuilder(
+			InstancesBuilder(const EffectCacheWeakPtr &effect_cache,
 				const MeshDataCacheWeakPtr &mesh_data_cache,
 				const MaterialDescriptionCacheWeakPtr
 					&material_description_cache,
@@ -89,7 +102,7 @@ namespace eternal_lands
 			void build(FreeIds &free_ids,
 				InstanceDataVector &instances,
 				ObjectDescriptionVector &uninstanced);
-			void clear();
+			void clear() noexcept;
 			static InstanceData build(const glm::vec3 &center,
 				const ObjectDescriptionVector &object_datas);
 

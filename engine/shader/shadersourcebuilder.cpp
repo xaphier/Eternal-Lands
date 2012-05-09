@@ -24,6 +24,7 @@
 #include "xmlutil.hpp"
 #include "abstractterrainmanager.hpp"
 #include "glmutil.hpp"
+#include "glslprogramdescription.hpp"
 
 namespace eternal_lands
 {
@@ -2165,9 +2166,8 @@ namespace eternal_lands
 
 	void ShaderSourceBuilder::build(const EffectDescription &description,
 		const ShaderBuildType shader_build_type,
-		const Uint16 light_count, StringType &vertex,
-		StringType &tess_control, StringType &tess_evaluation,
-		StringType &geometry, StringType &fragment,
+		const Uint16 light_count,
+		GlslProgramDescription &program_description,
 		StringVariantMap &values) const
 	{
 		ShaderSourceBuildData data;
@@ -2185,14 +2185,19 @@ namespace eternal_lands
 		StringStream vertex_source, geometry_source, fragment_source;
 		StringStream version_stream;
 		String vertex_data, fragment_data, prefix, name_prefix;
+		String vertex, geometry, fragment;
 		Uint16 i, version, layer_count;
 		ShaderVersionType version_type;
 		bool use_block, use_alias, use_in_out;
 
 		sources = build_sources(description);
 
-		vertex = UTF8("");
-		fragment = UTF8("");
+		program_description.set_vertex_shader(String(UTF8("")));
+		program_description.set_tess_control_shader(String(UTF8("")));
+		program_description.set_tess_evaluation_shader(String(
+			UTF8("")));
+		program_description.set_geometry_shader(String(UTF8("")));
+		program_description.set_fragment_shader(String(UTF8("")));
 		values.clear();
 
 		if (get_global_vars()->get_optmize_shader_source())
@@ -2287,7 +2292,7 @@ namespace eternal_lands
 		vertex_source << UTF8("invariant gl_Position; /* make ");
 		vertex_source << UTF8("existing gl_Position be invariant*/\n");
 
-		vertex = vertex_source.str();
+		vertex = String(vertex_source.str());
 
 		build_constants(array_sizes, vertex_source);
 		vertex_source << UTF8("\n");
@@ -2517,7 +2522,7 @@ namespace eternal_lands
 
 		fragment_source << version_stream.str();
 
-		fragment = fragment_source.str();
+		fragment = String(fragment_source.str());
 
 		build_constants(array_sizes, fragment_source);
 		fragment_source << UTF8("\n");
@@ -2683,6 +2688,10 @@ namespace eternal_lands
 			vertex = vertex_source.str();
 			fragment = fragment_source.str();
 		}
+
+		program_description.set_vertex_shader(vertex);
+		program_description.set_geometry_shader(geometry);
+		program_description.set_fragment_shader(fragment);
 	}
 
 	StringVector ShaderSourceBuilder::get_shader_source_names(

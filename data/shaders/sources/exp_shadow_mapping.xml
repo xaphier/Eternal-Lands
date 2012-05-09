@@ -46,7 +46,7 @@ vec2 lod_uv, ddx, ddy;
 float occluder, light_distance;
 int i;
 
-const float light_shadow_bias = 0.05;
+const float light_shadow_bias = -0.01;
 const float over_darkening_factor = 5.0;
 
 shadow = 1.0;

@@ -61,16 +61,16 @@ namespace eternal_lands
 			bool m_exponential_shadow_maps;
 
 			void build_shadow_matrix(
-				const glm::mat4x4 &shadow_view_matrix,
-				const glm::mat4x4 &basic_projection_matrix,
-				const glm::mat4x4 &basic_projection_view_matrix,
+				const glm::dmat4x4 &shadow_view_matrix,
+				const glm::dmat4x4 &basic_projection_matrix,
+				const glm::dmat4x4 &basic_projection_view_matrix,
 				const ConvexBody &convex_body,
 				const Uint16 index);
 
 			void build_shadow_matrix(
-				const glm::mat4x4 &shadow_view_matrix,
-				const glm::mat4x4 &basic_projection_matrix,
-				const glm::mat4x4 &basic_projection_view_matrix,
+				const glm::dmat4x4 &shadow_view_matrix,
+				const glm::dmat4x4 &basic_projection_matrix,
+				const glm::dmat4x4 &basic_projection_view_matrix,
 				const ConvexBody &convex_body,
 				const glm::vec3 &dir, const float max_height,
 				const Uint16 index);
@@ -98,7 +98,8 @@ namespace eternal_lands
 				const SubFrustumsConvexBodys &convex_bodys,
 				const float scene_max_height);
 			void update_shadow_matrices(
-				const SubFrustumsConvexBodys &convex_bodys);
+				const SubFrustumsConvexBodys &convex_bodys,
+				const SubFrustumsMask &mask);
 
 			inline void set_ortho_view() noexcept
 			{

@@ -43,6 +43,9 @@ namespace eternal_lands
 
 		m_mesh_data_tool->get_bounding_box(get_world_transformation(),
 			m_bounding_box);
+
+		m_effect_names.resize(material_names.size());
+		m_simple_shadows.resize(material_names.size(), false);
 	}
 
 	InstancingData::~InstancingData() noexcept
