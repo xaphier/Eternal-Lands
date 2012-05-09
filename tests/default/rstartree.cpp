@@ -156,7 +156,7 @@ namespace
 
 			static inline Uint32 get_count()
 			{
-				return 16384;
+				return 1024;
 			}
 
 	};
