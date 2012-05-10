@@ -212,7 +212,8 @@ namespace eternal_lands
 					{
 						position.x -= 0.5f;
 						position.y -= 0.5f;
-						normal = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+						normal = glm::vec4(0.0f, 1.0f,
+							0.0f, 1.0f);
 					}
 
 					position.x *= scale;
@@ -499,7 +500,7 @@ namespace eternal_lands
 		try
 		{
 			if (load_named_object(name,
-				get_global_vars()->get_opengl_3_1(),
+				get_global_vars()->get_opengl_3_1() && false,
 				get_global_vars()->get_use_simd(),
 				mesh_data_tool))
 			{

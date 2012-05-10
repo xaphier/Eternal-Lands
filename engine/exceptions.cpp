@@ -49,7 +49,54 @@ namespace eternal_lands
 
 	String get_stack_string()
 	{
-		void* array[50];
+#ifdef	WIN32
+		/**
+		 * Using windows api to get stacktrace.
+		 **/
+		void* array[150];
+		StringStream str;
+		Uint32 i;
+		Uint16 frames;
+		SYMBOL_INFO* symbol;
+		HANDLE process;
+		IMAGEHLP_LINE64 line;
+
+		process = GetCurrentProcess();
+
+		SymSetOptions(SYMOPT_LOAD_LINES);
+
+		SymInitialize(process, NULL, TRUE);
+
+		frames = CaptureStackBackTrace(0, 150, stack, 0);
+
+		symbol = (SYMBOL_INFO*)calloc(sizeof(SYMBOL_INFO) +
+			256 * sizeof(char), 1 );
+		symbol->MaxNameLen = 255;
+		symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+
+		line.SizeOfStruct = sizeof(IMAGEHLP_LINE64);
+
+		for (i = 0; i < frames; ++i)
+		{
+			BoostFormat format(UTF8("bt[%1%]: %2%:%3% {%4%}"));
+
+			SymFromAddr(process, (DWORD64)(stack[i]), 0, symbol);
+			SymGetLineFromAddr64(process, (DWORD64)(stack[i]), 0,
+				&line))
+
+			format % i % symbol->Name % line % symbol->Address;
+
+			str << format.str() << std::endl;
+		}
+
+		free(symbol);
+
+		return String(str.str());
+#else	/* WIN32 */
+		/**
+		 * Using GNU backtrace to get the stacktrace.
+		 **/
+		void* array[150];
 		char** messages;
 		char* demangled_name;
 		StringStream str;
@@ -57,7 +104,7 @@ namespace eternal_lands
 		std::size_t mangled_name, offset_begin, offset_end;
 		int i, size, status;
 
-		size = backtrace(array, 50);
+		size = backtrace(array, 150);
 
 		messages = backtrace_symbols(array, size);    
 
@@ -98,6 +145,7 @@ namespace eternal_lands
 		free(messages);
 
 		return String(str.str());
+#endif	/* WIN32 */
 	}
 
 }
