@@ -6,8 +6,10 @@
  ****************************************************************************/
 
 #include "exceptions.hpp"
+#ifndef	WIN32
 #include <execinfo.h>
 #include <cxxabi.h>
+#endif	/* WIN32 */
 
 namespace eternal_lands
 {
