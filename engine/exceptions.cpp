@@ -400,8 +400,6 @@ namespace eternal_lands
 		StringStream str;
 		bfd_set* set;
 		CONTEXT context;
-		HINSTANCE kernel32;
-		RtlCaptureContextFunc RtlCaptureContext;
 
 		if (!SymInitialize(GetCurrentProcess(), 0, TRUE))
 		{
