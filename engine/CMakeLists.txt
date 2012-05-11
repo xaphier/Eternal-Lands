@@ -116,9 +116,9 @@ target_link_libraries(elengine zip)
 target_link_libraries(elengine ${ZLIB_LIBRARIES})
 
 if (WIN32)
-	target_link_libraries(el_client bfd)
-	target_link_libraries(el_client iberty)
-	target_link_libraries(el_client imagehlp)
+	target_link_libraries(elengine bfd)
+	target_link_libraries(elengine iberty)
+	target_link_libraries(elengine imagehlp)
 endif (WIN32)
 
 if (PCHSupport_FOUND AND BUILD_PCH)
