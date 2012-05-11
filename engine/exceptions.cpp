@@ -264,7 +264,7 @@ namespace eternal_lands
 			char procname[MAX_PATH];
 			bfd_ctx* bc;
 			IMAGEHLP_SYMBOL *symbol;
-			STACKFRAME frame;
+			STACKFRAME64 frame;
 			HANDLE process;
 			HANDLE thread;
 			DWORD module_base;
@@ -290,7 +290,7 @@ namespace eternal_lands
 			process = GetCurrentProcess();
 			thread = GetCurrentThread();
 
-			while (StackWalk(IMAGE_FILE_MACHINE_I386, process, 
+			while (StackWalk64(IMAGE_FILE_MACHINE_I386, process, 
 				thread, &frame, context, 0,
 				SymFunctionTableAccess, SymGetModuleBase, 0))
 			{
