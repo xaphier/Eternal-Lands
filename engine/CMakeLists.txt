@@ -84,9 +84,9 @@ list(APPEND engine_source_files simd/simd.cpp)
 list(APPEND engine_header_files simd/simd.hpp)
 set_property(SOURCE simd/simd.cpp APPEND PROPERTY COMPILE_FLAGS ${SSE2_FLAGS})
 
-IF (ICONV_SECOND_ARGUMENT_IS_CONST)
+if (ICONV_SECOND_ARGUMENT_IS_CONST)
 	add_definitions(-DICONV_SECOND_ARGUMENT_IS_CONST)
-ENDIF (ICONV_SECOND_ARGUMENT_IS_CONST)
+endif (ICONV_SECOND_ARGUMENT_IS_CONST)
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/buildinformations.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp" @ONLY)
 
@@ -115,9 +115,15 @@ target_link_libraries(elengine xz)
 target_link_libraries(elengine zip)
 target_link_libraries(elengine ${ZLIB_LIBRARIES})
 
-IF (PCHSupport_FOUND AND BUILD_PCH)
+if (WIN32)
+	target_link_libraries(el_client bfd)
+	target_link_libraries(el_client iberty)
+	target_link_libraries(el_client imagehlp)
+endif (WIN32)
+
+if (PCHSupport_FOUND AND BUILD_PCH)
 	ADD_PRECOMPILED_HEADER(elengine prerequisites.hpp)
-ENDIF (PCHSupport_FOUND AND BUILD_PCH)
+endif (PCHSupport_FOUND AND BUILD_PCH)
 
 set_target_properties(elengine PROPERTIES VERSION ${${PROJECT_NAME}_VERSION_STRING})
 

@@ -39,3 +39,8 @@ target_link_libraries(shader_source_editor elengine)
 target_link_libraries(shader_source_editor ${QT_LIBRARIES})
 target_link_libraries(shader_source_editor ${ZLIB_LIBRARIES})
 
+if (WIN32)
+	target_link_libraries(el_client bfd)
+	target_link_libraries(el_client iberty)
+	target_link_libraries(el_client imagehlp)
+endif (WIN32)

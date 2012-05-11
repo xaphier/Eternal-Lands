@@ -15,7 +15,7 @@ check_cxx_source_compiles("
 	BOOST_STATIC_TEST_LIB)
 
 if (NOT BOOST_STATIC_TEST_LIB)
-add_definitions(-DBOOST_TEST_DYN_LINK)
+	add_definitions(-DBOOST_TEST_DYN_LINK)
 endif (NOT BOOST_STATIC_TEST_LIB)
 
 file(COPY ../data/materials.xml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
@@ -40,6 +40,12 @@ foreach(FILE_NAME ${default})
 	target_link_libraries(${PROG_NAME} ${CMAKE_THREAD_LIBS_INIT})
 	target_link_libraries(${PROG_NAME} ${ZLIB_LIBRARIES})
 	target_link_libraries(${PROG_NAME} elengine)
+
+	if (WIN32)
+		target_link_libraries(el_client bfd)
+		target_link_libraries(el_client iberty)
+		target_link_libraries(el_client imagehlp)
+	endif (WIN32)
 
 	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
 endforeach(FILE_NAME)
@@ -66,6 +72,12 @@ foreach(FILE_NAME ${simple})
 	target_link_libraries(${PROG_NAME} ${ZLIB_LIBRARIES})
 	target_link_libraries(${PROG_NAME} elengine)
 
+	if (WIN32)
+		target_link_libraries(el_client bfd)
+		target_link_libraries(el_client iberty)
+		target_link_libraries(el_client imagehlp)
+	endif (WIN32)
+
 	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
 endforeach(FILE_NAME)
 
@@ -91,6 +103,11 @@ foreach(FILE_NAME ${enum})
 	target_link_libraries(${PROG_NAME} ${ZLIB_LIBRARIES})
 	target_link_libraries(${PROG_NAME} elengine)
 
+	if (WIN32)
+		target_link_libraries(el_client bfd)
+		target_link_libraries(el_client iberty)
+		target_link_libraries(el_client imagehlp)
+	endif (WIN32)
+
 	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
 endforeach(FILE_NAME)
-

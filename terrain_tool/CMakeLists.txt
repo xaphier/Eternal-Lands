@@ -24,3 +24,8 @@ target_link_libraries(terrain_tool ${FREETYPE_LIBRARY})
 target_link_libraries(terrain_tool elengine)
 target_link_libraries(terrain_tool ${ZLIB_LIBRARIES})
 
+if (WIN32)
+	target_link_libraries(el_client bfd)
+	target_link_libraries(el_client iberty)
+	target_link_libraries(el_client imagehlp)
+endif (WIN32)
