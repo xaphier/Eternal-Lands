@@ -228,7 +228,7 @@ namespace eternal_lands
 				return nullptr;
 			}
 
-			set->next = static_cast<fd_set*>(
+			set->next = static_cast<bfd_set*>(
 				calloc(1, sizeof(*set)));
 			set->bc = static_cast<bfd_ctx*>(
 				malloc(sizeof(bfd_ctx)));
