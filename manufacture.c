@@ -161,7 +161,7 @@ static void load_recipe_names(void)
 	fp = open_file_config(fname,"r");
 	if(fp == NULL)
 	{
-		LOG_ERROR_OLD("%s() %s \"%s\": %s\n", __FUNCTION__, cant_open_file, fname, strerror(errno));
+		LOG_DEBUG_OLD("%s() %s \"%s\": %s\n", __FUNCTION__, cant_open_file, fname, strerror(errno));
 		return;
 	}
 

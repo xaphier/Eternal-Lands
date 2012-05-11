@@ -448,7 +448,7 @@ void load_server_markings(){
 	my_tolower(fname);
 	fp = open_file_config(fname,"r");
 	if(fp == NULL){
-		LOG_ERROR_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
+		LOG_DEBUG_OLD("%s: %s \"%s\": %s\n", reg_error_str, cant_open_file, fname, strerror(errno));
 		return;
 	}
 

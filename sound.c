@@ -4779,7 +4779,7 @@ int validate_boundary(map_sound_boundary_def * bounds, char * map_name)
 		if (bounds->p[0].x != -1 || bounds->p[0].y != -1 || bounds->p[1].x != -1 || bounds->p[1].y != -1
 			|| bounds->p[2].x != -1 || bounds->p[2].y != -1 || bounds->p[3].x != -1 || bounds->p[3].y != -1)
 		{
-			LOG_ERROR_OLD("Warning: Points defined for default boundary. Points will be ignored.\n");
+			LOG_WARNING_OLD("Warning: Points defined for default boundary. Points will be ignored.\n");
 		}
 		return 1;		// Points are ignored for defaults
 	}

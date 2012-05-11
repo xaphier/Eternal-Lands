@@ -1376,7 +1376,7 @@ void change_language(const char *new_lang)
 {
 	int var_index;
 
-	LOG_ERROR_OLD("Language changed, was [%s] now [%s]\n",  lang, new_lang);
+	LOG_INFO_OLD("Language changed, was [%s] now [%s]\n",  lang, new_lang);
 	/* guard against being the same string */
 	if (strcmp(lang, new_lang) != 0)
 		safe_strncpy(lang, new_lang, sizeof(lang));
@@ -1403,7 +1403,7 @@ static __inline__ void check_option_var(char* name)
 	i= find_var(name, IN_GAME_VAR);
 	if (i < 0)
 	{
-		LOG_ERROR_OLD("Can't find var '%s', type 'IN_GAME_VAR'", name);
+		LOG_WARNING_OLD("Can't find var '%s', type 'IN_GAME_VAR'", name);
 		return;
 	}
 
