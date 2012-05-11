@@ -26,6 +26,7 @@ target_link_libraries(terrain_tool ${ZLIB_LIBRARIES})
 
 if (WIN32)
 	target_link_libraries(terrain_tool bfd)
+	target_link_libraries(terrain_tool intl)
 	target_link_libraries(terrain_tool iberty)
 	target_link_libraries(terrain_tool imagehlp)
 endif (WIN32)

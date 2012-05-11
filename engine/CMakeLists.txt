@@ -117,6 +117,7 @@ target_link_libraries(elengine ${ZLIB_LIBRARIES})
 
 if (WIN32)
 	target_link_libraries(elengine bfd)
+	target_link_libraries(elengine intl)
 	target_link_libraries(elengine iberty)
 	target_link_libraries(elengine imagehlp)
 endif (WIN32)

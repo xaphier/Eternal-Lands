@@ -41,6 +41,7 @@ target_link_libraries(shader_source_editor ${ZLIB_LIBRARIES})
 
 if (WIN32)
 	target_link_libraries(shader_source_editor bfd)
+	target_link_libraries(shader_source_editor intl)
 	target_link_libraries(shader_source_editor iberty)
 	target_link_libraries(shader_source_editor imagehlp)
 endif (WIN32)

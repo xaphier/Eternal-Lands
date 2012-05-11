@@ -53,6 +53,7 @@ target_link_libraries(map_editor ${ZLIB_LIBRARIES})
 
 if (WIN32)
 	target_link_libraries(map_editor bfd)
+	target_link_libraries(map_editor intl)
 	target_link_libraries(map_editor iberty)
 	target_link_libraries(map_editor imagehlp)
 endif (WIN32)
