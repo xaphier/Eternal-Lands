@@ -351,6 +351,8 @@ namespace eternal_lands
 
 					format % depth % frame.AddrPC.Offset %
 						module_name % file;
+
+					str << format << std::endl;
 				}
 				else
 				{
@@ -360,9 +362,9 @@ namespace eternal_lands
 					format % depth % frame.AddrPC.Offset %
 						module_name % file % func %
 						line;
-				}
 
-				str << format << std::endl;
+					str << format << std::endl;
+				}
 			}
 		}
 
