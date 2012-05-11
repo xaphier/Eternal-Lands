@@ -51,12 +51,10 @@ namespace eternal_lands
 
 #ifdef	WIN32
 
-#define BUFFER_MAX (16*1024)
-
 		struct bfd_ctx
 		{
 			bfd * handle;
-			asymbol ** symbol;
+			asymbol** symbol;
 		};
 
 		struct bfd_set
@@ -75,9 +73,10 @@ namespace eternal_lands
 			unsigned line;
 		};
 
-		void  lookup_section(bfd *abfd, asection *sec, void *opaque_data)
+		void  lookup_section(bfd *abfd, asection *sec,
+			void *opaque_data)
 		{
-			find_info *data = opaque_data;
+			find_info* data = static_cast<find_info*>(opaque_data);
 
 			if (data->func)
 			{
@@ -188,12 +187,12 @@ namespace eternal_lands
 			}
 
 			bc->handle = b;
-			bc->symbol = symbol_table;
+			bc->symbol = static_cast<asymbol**>(symbol_table);
 
 			return 0;
 		}
 
-		void lose_bfd_ctx(bfd_ctx* bc)
+		void close_bfd_ctx(bfd_ctx* bc)
 		{
 			if (bc)
 			{
@@ -229,8 +228,10 @@ namespace eternal_lands
 				return nullptr;
 			}
 
-			set->next = calloc(1, sizeof(*set));
-			set->bc = malloc(sizeof(bfd_ctx));
+			set->next = static_cast<fd_set*>(
+				calloc(1, sizeof(*set)));
+			set->bc = static_cast<bfd_ctx*>(
+				malloc(sizeof(bfd_ctx)));
 			memcpy(set->bc, &bc, sizeof(bc));
 			set->name = strdup(procname);
 
@@ -362,6 +363,9 @@ namespace eternal_lands
 				}
 			}
 		}
+
+		typedef void (*RtlCaptureContextFunc) (CONTEXT* ContextRecord);
+
 #endif	/* WIN32 */
 
 	}
@@ -380,7 +384,9 @@ namespace eternal_lands
 #ifdef	WIN32
 		StringStream str;
 		bfd_set* set;
-		LPCONTEXT context;
+		CONTEXT context;
+		HINSTANCE kernel32;
+		RtlCaptureContextFunc RtlCaptureContext;
 
 		if (!SymInitialize(GetCurrentProcess(), 0, TRUE))
 		{
@@ -390,11 +396,22 @@ namespace eternal_lands
 		{
 			bfd_init();
 
-			set = calloc(1, sizeof(bfd_set));
+			set = static_cast<bfd_set*>(calloc(1, sizeof(bfd_set)));
 
-			RtlCaptureContext(context);
+			memset(&context, 0, sizeof(CONTEXT));
 
-			backtrace(set, 150, context, str);
+			context.ContextFlags = CONTEXT_FULL;
+
+			// Load the RTLCapture context function:
+			kernel32 = LoadLibrary("Kernel32.dll");
+
+			RtlCaptureContext = (RtlCaptureContextFunc)
+				GetProcAddress(kernel32, "RtlCaptureContext");
+
+			// Capture the thread context
+			RtlCaptureContext(&context);
+
+			backtrace(set, 150, &context, str);
 
 			release_set(set);
 
