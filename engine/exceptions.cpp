@@ -361,11 +361,24 @@ namespace eternal_lands
 						module_name % file % func %
 						line;
 				}
+
+				str << format << std::endl;
 			}
 		}
 
-		typedef void (*RtlCaptureContextFunc) (CONTEXT* ContextRecord);
-
+		// The following should be enough for walking the callstack...
+		#define GET_CURRENT_CONTEXT(c, contextFlags) \
+			do { \
+				memset(&c, 0, sizeof(CONTEXT)); \
+				c.ContextFlags = contextFlags; \
+				__asm__("call x\n\t"	\
+					"x: pop %%eax\n\t"	\
+					"movl %%eax, %0\n\t"	\
+					"movl %%ebp, %1\n\t"	\
+					"movl %%esp, %2\n\t"	\
+					: "=r"(c.Eip), "=r"(c.Ebp), "=r"(c.Esp)	\
+					: /**/ : "%eax");	\
+			} while (false);
 #endif	/* WIN32 */
 
 	}
@@ -398,18 +411,7 @@ namespace eternal_lands
 
 			set = static_cast<bfd_set*>(calloc(1, sizeof(bfd_set)));
 
-			memset(&context, 0, sizeof(CONTEXT));
-
-			context.ContextFlags = CONTEXT_FULL;
-
-			// Load the RTLCapture context function:
-			kernel32 = LoadLibrary("Kernel32.dll");
-
-			RtlCaptureContext = (RtlCaptureContextFunc)
-				GetProcAddress(kernel32, "RtlCaptureContext");
-
-			// Capture the thread context
-			RtlCaptureContext(&context);
+			GET_CURRENT_CONTEXT(context, CONTEXT_FULL);
 
 			backtrace(set, 150, &context, str);
 
