@@ -66,16 +66,13 @@ namespace eternal_lands
 		set_texture(material, stt_albedo_1);
 		set_texture(material, stt_albedo_2);
 		set_texture(material, stt_albedo_3);
-		set_texture(material, stt_specular_0);
-		set_texture(material, stt_specular_1);
-		set_texture(material, stt_normal_0);
-		set_texture(material, stt_normal_1);
-		set_texture(material, stt_emission_0);
-		set_texture(material, stt_emission_1);
-		set_texture(material, stt_blend_0);
-		set_texture(material, stt_blend_1);
-		set_texture(material, stt_height);
-		set_texture(material, stt_dudv);
+		set_texture(material, stt_specular);
+		set_texture(material, stt_normal);
+		set_texture(material, stt_emission);
+		set_texture(material, stt_blend);
+		set_texture(material, stt_vertex_vector_field);
+		set_texture(material, stt_vertex_normal);
+		set_texture(material, stt_vertex_dudv);
 	}
 
 	void Material::set_material_script(const String &material_script)

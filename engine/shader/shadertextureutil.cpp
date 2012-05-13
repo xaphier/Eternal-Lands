@@ -69,22 +69,25 @@ namespace eternal_lands
 			ShaderTextureTypeData(
 				String(UTF8("albedo_sampler_3"))),
 			ShaderTextureTypeData(
-				String(UTF8("normal_sampler_0")), 2),
+				String(UTF8("normal_sampler")), 2),
 			ShaderTextureTypeData(
-				String(UTF8("specular_sampler_0")), 3),
+				String(UTF8("specular_sampler")), 3),
 			ShaderTextureTypeData(
-				String(UTF8("emission_sampler_0"))),
-			ShaderTextureTypeData(String(UTF8("blend_sampler_0"))),
-			ShaderTextureTypeData(String(UTF8("normal_sampler_1"))),
+				String(UTF8("emission_sampler"))),
+			ShaderTextureTypeData(String(UTF8("blend_sampler"))),
 			ShaderTextureTypeData(
-				String(UTF8("specular_sampler_1"))),
+				String(UTF8("vertex_vector_field_sampler"))),
 			ShaderTextureTypeData(
-				String(UTF8("emission_sampler_1"))),
-			ShaderTextureTypeData(String(UTF8("blend_sampler_1"))),
-			ShaderTextureTypeData(String(UTF8("height_sampler"))),
-			ShaderTextureTypeData(String(UTF8("dudv_sampler"))),
+				String(UTF8("vertex_normal_sampler"))),
 			ShaderTextureTypeData(
-				String(UTF8("terrain_sampler"))),
+				String(UTF8("vertex_dudv_sampler"))),
+			ShaderTextureTypeData(
+				String(UTF8("light_positions_sampler"))),
+			ShaderTextureTypeData(
+				String(UTF8("light_colors_sampler"))),
+			ShaderTextureTypeData(
+				String(UTF8("reflection_sampler"))),
+			ShaderTextureTypeData(String(UTF8("clipmap_sampler"))),
 			ShaderTextureTypeData(String(UTF8("shadow_sampler")))
 		};
 

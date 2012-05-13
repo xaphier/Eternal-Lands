@@ -69,11 +69,11 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_albedo_3).get(), "albedo_sampler_3");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
-		el::stt_emission_0).get(), "emission_sampler_0");
+		el::stt_emission).get(), "emission_sampler");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
-		el::stt_blend_1).get(), "blend_sampler_1");
+		el::stt_blend).get(), "blend_sampler");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
-		el::stt_height).get(), "height_sampler");
+		el::stt_light_colors).get(), "light_colors_sampler");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_shadow).get(), "shadow_sampler");
 }
