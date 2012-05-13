@@ -226,11 +226,7 @@ static void do_handle_update_download(struct http_get_struct *get)
 
 void handle_update_download(struct http_get_struct *get)
 {
-	ENTER_DEBUG_MARK("update download");
-
 	do_handle_update_download(get);
-
-	LEAVE_DEBUG_MARK("update download");
 }
 
 // start the background checking of updates
@@ -252,7 +248,7 @@ int    do_threaded_update(void *ptr)
 	gzFile *fp= NULL;
 	char filename[1024];
 
-	init_thread_log("update");
+	LOG_DEBUG_OLD("init thread update");
 
 	// open the update file
 	safe_snprintf(filename, sizeof(filename), "%s%s", doing_custom ? get_path_custom() : get_path_updates(), files_lst);
@@ -262,8 +258,6 @@ int    do_threaded_update(void *ptr)
 		update_busy= 0;
 		return(0);
 	}
-
-	ENTER_DEBUG_MARK("update");
 
 	buf= gzgets(fp, buffer, 1024);
 	while(buf && buf != Z_NULL){
@@ -311,8 +305,6 @@ int    do_threaded_update(void *ptr)
 		gzclose(fp);
 	}
 	update_busy= 0;
-
-	LEAVE_DEBUG_MARK("update");
 
 	// all done
 	return(0);
@@ -486,7 +478,7 @@ int http_get_file_thread_handler(void *specs){
 	struct http_get_struct *spec= (struct http_get_struct *) specs;
 	SDL_Event event;
 
-	init_thread_log("get_file");
+	LOG_DEBUG_OLD("init thread get_file");
 
 	// load the file
 	spec->status= http_get_file(spec->server, spec->path, spec->fp);

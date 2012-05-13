@@ -60,15 +60,11 @@ int load_map(const char *file_name, update_func *update_function)
 {
 	int result;
 
-	ENTER_DEBUG_MARK("load map");
-
 	update_function(load_map_str, 0.0f);
 
 	result = do_load_map(file_name, update_function);
 
 	update_function(init_done_str, 100.0f);
-
-	LEAVE_DEBUG_MARK("load map");
 
 	return result;
 }

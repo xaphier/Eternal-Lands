@@ -19,16 +19,12 @@ class ElDataSource: public CalDataSource
 	public:
 		ElDataSource(const std::string &file_name)
 		{
-			ENTER_DEBUG_MARK("load cal3d");
-
 			m_file = el_open(file_name.c_str());
 		}
 
 		virtual ~ElDataSource()
 		{
 			el_close(m_file);
-
-			LEAVE_DEBUG_MARK("load cal3d");
 		}
 
 		virtual bool ok() const

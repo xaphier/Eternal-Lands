@@ -35,12 +35,12 @@ extern "C" void exit_logging()
 
 extern "C" LogLevelType get_log_level()
 {
-	return static_cast<LogLevelType>(el::get_log_level());
+	return static_cast<LogLevelType>(el::get_log_level(el::lt_default));
 }
 
 extern "C" void set_log_level(const LogLevelType log_level)
 {
-	el::set_log_level(static_cast<el::LogLevelType>(log_level));
+	el::set_log_level(el::lt_default, static_cast<el::LogLevelType>(log_level));
 }
 
 extern "C" void log_error(const char* file, const int line,
@@ -52,7 +52,7 @@ extern "C" void log_error(const char* file, const int line,
 	assert(message != 0);
 	assert(strlen(message) > 0);
 
-	if (el::get_log_level() < el::llt_error)
+	if (el::get_log_level(el::lt_default) < el::llt_error)
 	{
 		return;
 	}
@@ -81,7 +81,7 @@ extern "C" void log_warning(const char* file, const int line,
 	assert(message != 0);
 	assert(strlen(message) > 0);
 
-	if (el::get_log_level() < el::llt_warning)
+	if (el::get_log_level(el::lt_default) < el::llt_warning)
 	{
 		return;
 	}
@@ -110,7 +110,7 @@ extern "C" void log_info(const char* file, const int line,
 	assert(message != 0);
 	assert(strlen(message) > 0);
 
-	if (el::get_log_level() < el::llt_info)
+	if (el::get_log_level(el::lt_default) < el::llt_info)
 	{
 		return;
 	}
@@ -139,7 +139,7 @@ extern "C" void log_debug(const char* file, const int line,
 	assert(message != 0);
 	assert(strlen(message) > 0);
 
-	if (el::get_log_level() < el::llt_debug)
+	if (el::get_log_level(el::lt_default) < el::llt_debug)
 	{
 		return;
 	}
@@ -168,7 +168,7 @@ extern "C" void log_debug_verbose(const char* file, const int line,
 	assert(message != 0);
 	assert(strlen(message) > 0);
 
-	if (el::get_log_level() < el::llt_debug_verbose)
+	if (el::get_log_level(el::lt_default) < el::llt_debug_verbose)
 	{
 		return;
 	}
@@ -187,30 +187,4 @@ extern "C" void log_debug_verbose(const char* file, const int line,
 
 	el::log_message(el::llt_debug_verbose, el::lt_default, err_msg, file,
 		line);
-}
-
-extern "C" void enter_debug_mark(const char* file, const int line,
-	const char* name)
-{
-	assert(name != 0);
-	assert(strlen(name) > 0);
-
-	el::enter_debug_mark(name, file, line);
-}
-
-extern "C" void leave_debug_mark(const char* file, const int line,
-	const char* name)
-{
-	assert(name != 0);
-	assert(strlen(name) > 0);
-
-	el::leave_debug_mark(name, file, line);
-}
-
-extern "C" void init_thread_log(const char* name)
-{
-	assert(name != 0);
-	assert(strlen(name) > 0);
-
-	el::init_thread_log(name);
 }

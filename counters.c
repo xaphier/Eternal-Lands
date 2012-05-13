@@ -206,8 +206,6 @@ void load_counters()
 		return;
 	}
 
-	ENTER_DEBUG_MARK("load counters");
-
 	for (i = 0; i < NUM_COUNTERS; i++) {
 		counters[i] = NULL;
 		entries[i] = 0;
@@ -231,9 +229,6 @@ void load_counters()
 	
 	if (!(f = open_counters_file("rb"))) {
 		counters_initialized = 1;
-
-		LEAVE_DEBUG_MARK("load counters");
-
 		return;
 	}
 
@@ -273,8 +268,6 @@ void load_counters()
 	fclose(f);
 	
 	counters_initialized = 1;
-
-	LEAVE_DEBUG_MARK("load counters");
 }
 
 void flush_counters()
@@ -291,8 +284,6 @@ void flush_counters()
 	if (!(f = open_counters_file("wb"))) {
 		return;
 	}
-
-	ENTER_DEBUG_MARK("flush counters");
 
 	for (i = 0; i < NUM_COUNTERS; i++) {
 		io_counter_id = i + 1;
@@ -312,8 +303,6 @@ void flush_counters()
 	}
 
 	fclose(f);
-
-	LEAVE_DEBUG_MARK("flush counters");
 }
 
 void cleanup_counters()

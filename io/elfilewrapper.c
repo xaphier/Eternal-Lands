@@ -245,8 +245,6 @@ void clear_zip_archives()
 {
 	Uint32 i;
 
-	ENTER_DEBUG_MARK("unload zips");
-
 	CHECK_AND_LOCK_MUTEX(zip_mutex);
 
 	for (i = 0; i < MAX_NUM_ZIP_FILES; i++)
@@ -261,8 +259,6 @@ void clear_zip_archives()
 	CHECK_AND_UNLOCK_MUTEX(zip_mutex);
 
 	SDL_DestroyMutex(zip_mutex);
-
-	LEAVE_DEBUG_MARK("unload zips");
 }
 
 void init_zip_archives()
@@ -323,8 +319,6 @@ void load_zip_archive(const char* file_name)
 
 		return;
 	}
-
-	ENTER_DEBUG_MARK("load zip");
 
 	LOG_DEBUG_OLD("Loading zip file '%s' with %d files", file_name, count);
 
@@ -389,8 +383,6 @@ void load_zip_archive(const char* file_name)
 
 	CHECK_AND_UNLOCK_MUTEX(zip_files[index].mutex);
 
-	LEAVE_DEBUG_MARK("load zip");
-
 	LOG_DEBUG_OLD("Loaded zip file '%s' with %d files", file_name, count);
 }
 
@@ -404,8 +396,6 @@ void unload_zip_archive(const char* file_name)
 
 		return;
 	}
-
-	ENTER_DEBUG_MARK("unload zip");
 
 	LOG_DEBUG_OLD("Unloading zip '%s'.", file_name);
 
@@ -431,16 +421,12 @@ void unload_zip_archive(const char* file_name)
 
 				CHECK_AND_UNLOCK_MUTEX(zip_files[i].mutex);
 
-				LEAVE_DEBUG_MARK("unload zip");
-
 				return;
 			}
 		}
 
 		CHECK_AND_UNLOCK_MUTEX(zip_files[i].mutex);
 	}
-
-	LEAVE_DEBUG_MARK("unload zip");
 }
 
 static Uint32 do_file_exists(const char* file_name, const char* path,
@@ -802,11 +788,7 @@ el_file_ptr el_open(const char* file_name)
 {
 	el_file_ptr result;
 
-	ENTER_DEBUG_MARK("file open");
-
 	result = file_open(file_name, 0);
-
-	LEAVE_DEBUG_MARK("file open");
 
 	return result;
 }
@@ -815,11 +797,7 @@ el_file_ptr el_open_custom(const char* file_name)
 {
 	el_file_ptr result;
 
-	ENTER_DEBUG_MARK("file open");
-
 	result = file_open(file_name, get_path_config_base());
-
-	LEAVE_DEBUG_MARK("file open");
 
 	return result;
 }
@@ -828,11 +806,7 @@ el_file_ptr el_open_anywhere(const char* file_name)
 {
 	el_file_ptr result;
 
-	ENTER_DEBUG_MARK("file open");
-
 	result = file_open(file_name, get_path_config());
-
-	LEAVE_DEBUG_MARK("file open");
 
 	return result;
 }
@@ -1005,11 +979,7 @@ int el_file_exists(const char* file_name)
 {
 	int result;
 
-	ENTER_DEBUG_MARK("file exists");
-
 	result = file_exists_path(file_name, 0);
-
-	LEAVE_DEBUG_MARK("file exists");
 
 	return result;
 }
@@ -1018,11 +988,7 @@ int el_custom_file_exists(const char* file_name)
 {
 	int result;
 
-	ENTER_DEBUG_MARK("file exists");
-
 	result = file_exists_path(file_name, get_path_config_base());
-
-	LEAVE_DEBUG_MARK("file exists");
 
 	return result;
 }
@@ -1031,11 +997,7 @@ int el_file_exists_anywhere(const char* file_name)
 {
 	int result;
 
-	ENTER_DEBUG_MARK("file exists");
-
 	result = file_exists_path(file_name, get_path_config());
-
-	LEAVE_DEBUG_MARK("file exists");
 
 	return result;
 }

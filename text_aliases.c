@@ -222,13 +222,9 @@ static dbuffer_t *expand_alias_parameters( char *parameters, const char *aliaste
 		PARAM_INDEX
 	} state;
 
-	ENTER_DEBUG_MARK("expand text aliases");
-
 	return_text = dbuffer_new( alias_size );
 
 	if (NULL==return_text) {
-		ENTER_DEBUG_MARK("expand text aliases");
-
 		LOG_ERROR_OLD("Cannot allocate buffer %d", alias_size);
 		return NULL;
 	}
@@ -273,7 +269,6 @@ static dbuffer_t *expand_alias_parameters( char *parameters, const char *aliaste
 					dbuffer_destroy( return_text );
 					if (NULL!=argv)
 						freemakeargv(argv);
-					LEAVE_DEBUG_MARK("expand text aliases");
 					return NULL;
 				}
 
@@ -295,7 +290,6 @@ static dbuffer_t *expand_alias_parameters( char *parameters, const char *aliaste
 			dbuffer_destroy( return_text );
 			if (NULL!=argv)
 				freemakeargv(argv);
-			LEAVE_DEBUG_MARK("expand text aliases");
 			return NULL;
 		}
 		alias_size--;
@@ -314,8 +308,6 @@ static dbuffer_t *expand_alias_parameters( char *parameters, const char *aliaste
 	return_text = dbuffer_append_data(return_text, &nullchar, 1);
 
 	LOG_DEBUG_OLD("Finished, text is '%s', len %d\n", return_text->data, return_text->current_size);
-
-	LEAVE_DEBUG_MARK("expand text aliases");
 
 	return return_text;
 }
@@ -344,8 +336,6 @@ int init_text_aliases ()
 	int error = -1;
 	char *endl;
 	FILE *fp;
-
-	ENTER_DEBUG_MARK("init text aliases");
 
 	for (i = 0; i < 100; i++)
 		numeric_aliases[i] = NULL;
@@ -382,8 +372,6 @@ int init_text_aliases ()
 		}
 		fclose (fp);
 	}
-
-	LEAVE_DEBUG_MARK("init text aliases");
 
 	return error;
 }

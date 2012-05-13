@@ -1669,8 +1669,6 @@ void load_quickspells ()
 		return;
 	}
 
-	ENTER_DEBUG_MARK("load spells");
-
 	if (num_spells > 0)
 	{
 		num_spells--;
@@ -1716,8 +1714,6 @@ void load_quickspells ()
 	fclose (fp);
 
 	cm_update_quickspells();
-
-	LEAVE_DEBUG_MARK("load spells");
 }
 
 void save_quickspells()
@@ -1744,8 +1740,6 @@ void save_quickspells()
 			break;
 	}
 
-	ENTER_DEBUG_MARK("save spells");
-
 	// write the number of spells + 1
 	fwrite(&i, sizeof(i), 1, fp);
 
@@ -1770,8 +1764,6 @@ void save_quickspells()
 	}
 
 	fclose(fp);
-
-	LEAVE_DEBUG_MARK("save spells");
 }
 
 // Quickspell window start

@@ -34,32 +34,12 @@ namespace eternal_lands
 	namespace
 	{
 
-		class DebugMark
-		{
-			public:
-				std::string m_name;
-				Uint64 m_log_file_pos;
-
-		};
-
-		class ThreadData
-		{
-			public:
-				std::vector<DebugMark> m_debug_marks;
-				std::string m_name;
-				std::string m_last_message;
-				Uint32 m_last_message_count;
-				Uint32 m_message_level;
-				int m_log_file;
-
-		};
-
-		typedef std::map<Uint32, ThreadData> ThreadDatas;
-
 		std::string log_dir;
 		SDL_mutex* log_mutex;
-		ThreadDatas thread_datas;
-		volatile LogLevelType log_levels = llt_info;
+		std::string m_last_message;
+		Uint32 m_last_message_count;
+		std::fstream m_log_file;
+		std::map<LogType, LogLevelType> log_levels;
 
 		std::string get_str(const LogLevelType log_level)
 		{
@@ -81,16 +61,11 @@ namespace eternal_lands
 
 		void log_message(const std::string &type,
 			const std::string &message, const std::string &file,
-			const Uint32 line, ThreadData &thread)
+			const Uint32 line)
 		{
 			char buffer[128];
 			std::stringstream str, log_stream;
 			std::time_t raw_time;
-
-			if (thread.m_log_file == -1)
-			{
-				return;
-			}
 
 			std::time(&raw_time);
 			memset(buffer, 0, sizeof(buffer));
@@ -100,17 +75,17 @@ namespace eternal_lands
 			str << ", " << file << ":" << line << "] " << type;
 			str << ": " << message;
 
-			if (str.str() == thread.m_last_message)
+			if (str.str() == m_last_message)
 			{
-				thread.m_last_message_count++;
+				m_last_message_count++;
 				return;
 			}
 
-			if (thread.m_last_message_count > 0)
+			if (m_last_message_count > 0)
 			{
 				log_stream << "[" << buffer;
 
-				if (log_levels >= llt_debug_verbose)
+				if (log_levels[lt_default] >= llt_debug_verbose)
 				{
 					log_stream << ", " << __FILE__ << ":";
 					log_stream << __LINE__;
@@ -118,10 +93,10 @@ namespace eternal_lands
 
 				log_stream << "]";
 				log_stream << "Last message repeated ";
-				log_stream << thread.m_last_message_count;
+				log_stream << m_last_message_count;
 				log_stream << "time";
 
-				if (thread.m_last_message_count > 1)
+				if (m_last_message_count > 1)
 				{
 					log_stream << "s";
 				}
@@ -143,129 +118,11 @@ namespace eternal_lands
 				log_stream << "\n";
 			}
 
-			thread.m_last_message = str.str();
-			thread.m_last_message_count = 0;
+			m_last_message = str.str();
+			m_last_message_count = 0;
 
-			ssize_t ret = write(thread.m_log_file,
-				log_stream.str().c_str(), log_stream.str().length());
-
-			if (ret != static_cast<ssize_t>(log_stream.str().length()))
-				std::cerr << "Failed to write the log file: "
-					<< log_stream.str(); // newline included
-		}
-
-		void do_log_message(const LogLevelType log_level,
-			const std::string &message, const std::string &file,
-			const Uint32 line, ThreadData &thread_data)
-		{
-			Uint32 level;
-
-			log_message(get_str(log_level), message, file,
-				line, thread_data);
-
-			if (log_level < llt_debug)
-			{
-				level = thread_data.m_debug_marks.size();
-				thread_data.m_message_level = std::max(level,
-					thread_data.m_message_level);
-			}
-		}
-
-		void do_enter_debug_mark(const std::string &name,
-			const std::string &file, const Uint32 line,
-			ThreadData &thread_data)
-		{
-			DebugMark debug_mark;
-			std::stringstream str;
-
-			debug_mark.m_name = name;
-			debug_mark.m_log_file_pos = lseek(
-				thread_data.m_log_file, 0, SEEK_CUR);
-
-			thread_data.m_debug_marks.push_back(debug_mark);
-
-			str << "Enter debug mark '" << name << "'";
-
-			do_log_message(llt_debug, str.str(), file, line,
-				thread_data);
-		}
-
-		void do_leave_debug_mark(const std::string &name,
-			const std::string &file, const Uint32 line,
-			ThreadData &thread_data)
-		{
-			std::stringstream str;
-			Uint64 size, pos;
-			Uint32 level;
-
-			if (thread_data.m_debug_marks.rbegin() ==
-				thread_data.m_debug_marks.rend())
-			{
-				if (log_levels >= llt_debug)
-				{
-					str << "Can't leave debug mark '";
-					str << name << "', because no debug ";
-					str << "mark " << "entered.";
-
-					do_log_message(llt_error, str.str(),
-						file, line, thread_data);
-				}
-
-				return;
-			}
-
-			if (thread_data.m_debug_marks.rbegin()->m_name != name)
-			{
-				str << "Can't leave debug mark '";
-				str << name << "', because current debug mark";
-				str << " is '";
-				str << thread_data.m_debug_marks.rbegin(
-					)->m_name << "'.";
-
-				do_log_message(llt_error, str.str(), file,
-					line, thread_data);
-
-				thread_data.m_debug_marks.pop_back();
-
-				return;
-			}
-
-			if (log_levels < llt_debug_verbose)
-			{
-				size = thread_data.m_debug_marks.rbegin(
-					)->m_log_file_pos;
-
-				if (thread_data.m_message_level <
-					thread_data.m_debug_marks.size())
-				{
-					pos = lseek(thread_data.m_log_file, 0,
-						SEEK_CUR);
-					lseek(thread_data.m_log_file, size,
-						SEEK_SET);
-
-					if ((pos + 1024) < size)
-					{
-						if (ftruncate(
-							thread_data.m_log_file,
-							size) < 0)
-						std::cerr << "Failed to truncate log file: "
-							<< strerror(errno) << std::endl;
-					}
-				}
-			}
-			else
-			{
-				str << "Leave debug mark '" << name << "'";
-
-				do_log_message(llt_debug_verbose, str.str(),
-					file, line, thread_data);
-			}
-
-			thread_data.m_debug_marks.pop_back();
-
-			level = thread_data.m_debug_marks.size();
-			thread_data.m_message_level = std::min(level,
-				thread_data.m_message_level);
+			m_log_file.write(log_stream.str().c_str(),
+				log_stream.str().length());
 		}
 
 		std::string get_local_time_string()
@@ -284,48 +141,52 @@ namespace eternal_lands
 
 		void init(const std::string &name)
 		{
-			ThreadDatas::iterator found;
 			std::stringstream file_name;
 			std::stringstream str;
-			Uint32 id;
 
-			id = SDL_ThreadID();
+			log_levels[lt_default] = llt_info;
+			log_levels[lt_io] = llt_info;
+			log_levels[lt_texture] = llt_debug;
+			log_levels[lt_glsl_program] = llt_debug;
+			log_levels[lt_actor_texture] = llt_debug;
+			log_levels[lt_image] = llt_debug;
+			log_levels[lt_dds_image] = llt_debug;
+			log_levels[lt_png_image] = llt_debug;
+			log_levels[lt_jpeg_image] = llt_debug;
+			log_levels[lt_e3d_loader] = llt_debug;
+			log_levels[lt_e2d_loader] = llt_debug;
+			log_levels[lt_map_loader] = llt_debug;
+			log_levels[lt_mesh] = llt_debug;
+			log_levels[lt_material] = llt_debug;
+			log_levels[lt_shader_source] = llt_debug;
+			log_levels[lt_angel_script] = llt_debug;
+			log_levels[lt_framebuffer] = llt_debug;
+			log_levels[lt_rendering] = llt_debug;
 
-			str << name << " (" << std::hex << id << ")";
-			str << std::dec;
+			file_name << log_dir << name << ".log";
 
-			found = thread_datas.find(id);
+			m_last_message_count = 0;
 
-			if (found != thread_datas.end())
-			{
-				found->second.m_name = str.str();
+			m_log_file.exceptions(std::ios::failbit |
+				std::ios::badbit);
 
-				return;
-			}
-
-			file_name << log_dir << "new_" << name << "_";
-			file_name << std::hex << id << ".log" << std::dec;
-
-			thread_datas[id].m_name = str.str();
-			thread_datas[id].m_last_message_count = 0;
-			thread_datas[id].m_message_level = 0;
-			thread_datas[id].m_log_file = open(file_name.str(
-				).c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			m_log_file.open(file_name.str().c_str(),
+				std::ios::out);
 
 			log_message("Git sha1", git_sha1_str,
-				__FILE__, __LINE__, thread_datas[id]);
+				__FILE__, __LINE__);
 
 			log_message("Git tag", git_tag_str,
-				__FILE__, __LINE__, thread_datas[id]);
+				__FILE__, __LINE__);
 
 			log_message("CMAKE_BUILD_TYPE", cmake_build_type_str,
-				__FILE__, __LINE__, thread_datas[id]);
+				__FILE__, __LINE__);
 
 			log_message("Log started at", get_local_time_string(),
-				__FILE__, __LINE__, thread_datas[id]);
+				__FILE__, __LINE__);
 
 			log_message("version", FILE_VERSION, __FILE__,
-				__LINE__, thread_datas[id]);
+				__LINE__);
 		}
 
 		void clear_dir(const std::string &dir)
@@ -372,137 +233,62 @@ namespace eternal_lands
 		mkdir(dir.c_str(), S_IRWXU | S_IRWXG);
 #endif	/* WINDOWS */
 
-		init_thread_log("main");
+		init("main");
 	}
 
 	void exit_logging()
 	{
-		ThreadDatas::iterator it, end;
-		Uint64 pos;
-
-		end = thread_datas.end();
-
-		for (it = thread_datas.begin(); it != end; ++it)
-		{
-			pos = lseek(it->second.m_log_file, 0, SEEK_CUR);
-
-			if (ftruncate(it->second.m_log_file, pos) < 0)
-				std::cerr << "Failed to truncate log file: "
-					<< strerror(errno) << std::endl;
-
-			close(it->second.m_log_file);
-		}
+		m_log_file.close();
 
 		SDL_DestroyMutex(log_mutex);
 	}
 
-	LogLevelType get_log_level()
+	LogLevelType get_log_level(const LogType log)
 	{
-		return log_levels;
+		LogLevelType result;
+
+		SDL_LockMutex(log_mutex);
+
+		result = log_levels[log];
+
+		SDL_UnlockMutex(log_mutex);
+
+		return result;
 	}
 
-	void set_log_level(const LogLevelType log_level)
-	{
-		log_levels = log_level;
-	}
-
-	void init_thread_log(const std::string &name)
+	void set_log_level(const LogType log, const LogLevelType log_level)
 	{
 		SDL_LockMutex(log_mutex);
 
-		init(name);
+		log_levels[log] = log_level;
 
 		SDL_UnlockMutex(log_mutex);
 	}
 
-	void log_message(const LogLevelType log_level, const LogType type,
+	void log_message(const LogLevelType log_level, const LogType log,
 		const std::string &message, const std::string &file,
 		const Uint32 line)
 	{
-		ThreadDatas::iterator found;
+		SDL_LockMutex(log_mutex);
 
-		if (log_levels < log_level)
+		if (log_levels[log] < log_level)
 		{
+			SDL_UnlockMutex(log_mutex);
+
 			return;
 		}
 
-		SDL_LockMutex(log_mutex);
-
-		found = thread_datas.find(SDL_ThreadID());
-
-		if (found != thread_datas.end())
-		{
-			do_log_message(log_level, message, file, line,
-				found->second);
-		}
+		log_message(get_str(log_level), message, file, line);
 
 		SDL_UnlockMutex(log_mutex);
 	}
 
-	void log_message(const LogLevelType log_level,
-		const std::string &message, const std::string &file,
-		const Uint32 line)
-	{
-		ThreadDatas::iterator found;
-
-		if (log_levels < log_level)
-		{
-			return;
-		}
-
-		SDL_LockMutex(log_mutex);
-
-		found = thread_datas.find(SDL_ThreadID());
-
-		if (found != thread_datas.end())
-		{
-			do_log_message(log_level, message, file, line,
-				found->second);
-		}
-
-		SDL_UnlockMutex(log_mutex);
-	}
-
-	void enter_debug_mark(const std::string &name,
+	void log_exception_message(const std::string &message,
 		const std::string &file, const Uint32 line)
 	{
-		ThreadDatas::iterator found;
-
-		if (log_levels < llt_debug)
-		{
-			return;
-		}
-
 		SDL_LockMutex(log_mutex);
 
-		found = thread_datas.find(SDL_ThreadID());
-
-		if (found != thread_datas.end())
-		{
-			do_enter_debug_mark(name, file, line, found->second);
-		}
-
-		SDL_UnlockMutex(log_mutex);
-	}
-
-	void leave_debug_mark(const std::string &name,
-		const std::string &file, const Uint32 line)
-	{
-		ThreadDatas::iterator found;
-
-		if (log_levels < llt_debug)
-		{
-			return;
-		}
-
-		SDL_LockMutex(log_mutex);
-
-		found = thread_datas.find(SDL_ThreadID());
-
-		if (found != thread_datas.end())
-		{
-			do_leave_debug_mark(name, file, line, found->second);
-		}
+		log_message(UTF8("exception"), message, file, line);
 
 		SDL_UnlockMutex(log_mutex);
 	}
@@ -544,7 +330,7 @@ namespace eternal_lands
 
 			format_string % str;
 
-			log_message(llt_error, String(format_string.str()),
+			log_exception_message(String(format_string.str()),
 				throw_file, throw_line);
 
 			return;
@@ -565,7 +351,7 @@ namespace eternal_lands
 
 			format_string % str;
 
-			log_message(llt_error, String(format_string.str()),
+			log_exception_message(String(format_string.str()),
 				throw_file, throw_line);
 
 			return;
@@ -586,13 +372,13 @@ namespace eternal_lands
 
 			format_string % str;
 
-			log_message(llt_error, String(format_string.str()),
+			log_exception_message(String(format_string.str()),
 				throw_file, throw_line);
 
 			return;
 		}
 
-		log_message(llt_error, boost::diagnostic_information(
+		log_exception_message(boost::diagnostic_information(
 			exception), file, line);
 	}
 
@@ -601,18 +387,18 @@ namespace eternal_lands
 	{
 		if (exception.what() == 0)
 		{
-			log_message(llt_error, "invalid exception", file, line);
+			log_exception_message("invalid exception", file, line);
 		}
 		else
 		{		
-			log_message(llt_error, exception.what(), file, line);
+			log_exception_message(exception.what(), file, line);
 		}
 	}
 
 	void log_exception_str(const std::string &message,
 		const std::string &file, const Uint32 line)
 	{
-		log_message(llt_error, message, file, line);
+		log_exception_message(message, file, line);
 	}
 
 }

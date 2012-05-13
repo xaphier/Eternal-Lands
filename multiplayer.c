@@ -2236,7 +2236,7 @@ int get_message_from_server(void *thread_args)
 	void *queue = ((void **) thread_args)[0];
 	int *done = ((void **) thread_args)[1];
 
-	init_thread_log("server_message");
+	LOG_DEBUG_OLD("init thread server_message");
 
 	while(!*done)
 	{

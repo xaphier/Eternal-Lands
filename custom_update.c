@@ -196,7 +196,7 @@ static int custom_update_thread(void* thread_data)
 	result = 0;
 	data = (UpdateThreaData_t*)thread_data;
 
-	init_thread_log("custom_update");
+	LOG_DEBUG_OLD("init thread custom_update");
 
 	while (1)
 	{

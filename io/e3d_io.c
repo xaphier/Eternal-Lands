@@ -687,11 +687,7 @@ e3d_object* load_e3d_detail(e3d_object* cur_object)
 {
 	e3d_object* result;
 
-	ENTER_DEBUG_MARK("load e3d");
-
 	result = do_load_e3d_detail(cur_object);
-
-	LEAVE_DEBUG_MARK("load e3d");
 
 	return result;
 }

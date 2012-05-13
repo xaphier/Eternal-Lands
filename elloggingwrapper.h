@@ -104,26 +104,6 @@ void log_debug_verbose(const char* file, const int line, const char* message,
 /**
  * @ingroup logging
  *
- * Enters the given debug mark.
- * @param file File of the debug mark.
- * @param line Line of the debug mark.
- * @param name Name of the debug mark.
- */
-void enter_debug_mark(const char* file, const int line, const char* name);
-
-/**
- * @ingroup logging
- *
- * Leaves the given debug mark.
- * @param file File of the debug mark.
- * @param line Line of the debug mark.
- * @param name Name of the debug mark.
- */
-void leave_debug_mark(const char* file, const int line, const char* name);
-
-/**
- * @ingroup logging
- *
  * Prints and changes the current log level.
  * @param text The new log level to use or empty
  * @param len The length of the text.
@@ -154,8 +134,6 @@ void init_thread_log(const char* name);
 #define LOG_DEBUG_VERBOSE_OLD(msg, args ...) log_debug_verbose(__FILE__,	\
 	__LINE__, msg, ## args)
 #endif // FASTER_MAP_LOAD
-#define ENTER_DEBUG_MARK(name) enter_debug_mark(__FILE__, __LINE__, name)
-#define LEAVE_DEBUG_MARK(name) leave_debug_mark(__FILE__, __LINE__, name)
 
 #ifdef __cplusplus
 } /* extern "C" */

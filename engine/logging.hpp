@@ -53,20 +53,15 @@ namespace eternal_lands
 
 	void init_logging(const std::string &log_file_name);
 	void exit_logging();
-	LogLevelType get_log_level();
-	void set_log_level(const LogLevelType log_level);
-	void log_message(const LogLevelType log_level, const LogType type,
+	LogLevelType get_log_level(const LogType log);
+	void set_log_level(const LogType log, const LogLevelType log_level);
+	void log_message(const LogLevelType log_level, const LogType log,
 		const std::string &message, const std::string &file,
 		const Uint32 line);
 	void log_exception(const std::exception &exception,
 		const std::string &file, const Uint32 line);
 	void log_exception(const boost::exception &exception,
 		const std::string &file, const Uint32 line);
-	void init_thread_log(const std::string &name);
-	void enter_debug_mark(const std::string &name, const std::string &file,
-		const Uint32 line);
-	void leave_debug_mark(const std::string &name, const std::string &file,
-		const Uint32 line);
 	void log_exception_str(const std::string &message,
 		const std::string &file, const Uint32 line);
 

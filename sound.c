@@ -1393,7 +1393,7 @@ int update_streams(void * dummy)
 
    	sleep = SLEEP_TIME;
 
-	init_thread_log("update_streams");
+	LOG_DEBUG_OLD("init thread update_streams");
 
 #ifdef _EXTRA_SOUND_DEBUG
 	printf("Starting streams thread\n");

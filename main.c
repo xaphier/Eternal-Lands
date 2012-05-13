@@ -428,11 +428,7 @@ int main(int argc, char **argv)
 #endif	/* FSAA */
 	init_vars();
 
-	ENTER_DEBUG_MARK("init stuff");
-
 	init_stuff();
-
-	LEAVE_DEBUG_MARK("init stuff");
 
 	start_rendering();
 #ifdef MEMORY_DEBUG
