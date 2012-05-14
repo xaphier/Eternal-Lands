@@ -42,6 +42,7 @@ namespace eternal_lands
 			MaterialScriptManagerSharedPtr
 				m_material_script_manager;
 			ScriptEngineSharedPtr m_script_engine;
+			GlslProgramCacheSharedPtr m_glsl_program_cache;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
@@ -137,6 +138,12 @@ namespace eternal_lands
 				&get_script_engine() const
 			{
 				return m_script_engine;
+			}
+
+			inline const GlslProgramCacheSharedPtr
+				&get_glsl_program_cache() const
+			{
+				return m_glsl_program_cache;
 			}
 
 	};

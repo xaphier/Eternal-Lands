@@ -4,7 +4,7 @@
 	<vertex_light_count>3</vertex_light_count>
 	<fragment_light_count>5</fragment_light_count>
 	<bone_count>80</bone_count>
-	<dynamic_light_count>true</dynamic_light_count>
+	<dynamic_light_count>false</dynamic_light_count>
 	<shader_sources>
 		<shader_source>shaders/sources/bone_animation_depth.xml</shader_source>
 		<shader_source>shaders/sources/bone_animation_normal.xml</shader_source>

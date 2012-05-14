@@ -41,7 +41,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>blend_sampler_0</name>
+     <name>blend_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -64,7 +64,7 @@
    </parameters>
    <source>vec4 blend;
 
-blend = texture(blend_sampler_0, world_uv);
+blend = texture(blend_sampler, world_uv);
 
 albedo = texture(albedo_sampler_0, world_extra_uv) * blend.r;
 albedo += texture(albedo_sampler_1, world_extra_uv) * blend.g;
@@ -111,7 +111,7 @@ albedo += texture(albedo_sampler_3, world_extra_uv) * blend.a;
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>blend_sampler_0</name>
+     <name>blend_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -134,7 +134,7 @@ albedo += texture(albedo_sampler_3, world_extra_uv) * blend.a;
    </parameters>
    <source>vec4 blend;
 
-blend = texture2D(blend_sampler_0, world_uv);
+blend = texture2D(blend_sampler, world_uv);
 
 albedo = texture2D(albedo_sampler_0, world_extra_uv) * blend.r;
 albedo += texture2D(albedo_sampler_1, world_extra_uv) * blend.g;

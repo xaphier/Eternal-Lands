@@ -36,7 +36,7 @@ namespace eternal_lands
 			StringUniformMap m_uniforms;
 			AutoParameterTypeUniformMap m_auto_parameters;
 			StringUint16Map m_samplers;
-			String m_name;
+			const boost::uuids::uuid m_uuid;
 			Uint64 m_last_used;
 			GLuint m_program;
 			BitSet32 m_used_texture_units;
@@ -54,8 +54,7 @@ namespace eternal_lands
 			void log_uniforms();
 			void do_build(
 				const GlslProgramDescription &description);
-			void build(const GlslProgramDescription &description,
-				const StringVariantMap &values);
+			void build(const GlslProgramDescription &description);
 			void update_used_texture_units();
 			void load_xml(const xmlNodePtr node);
 			void load_xml(const FileSystemSharedPtr &file_system,
@@ -69,11 +68,12 @@ namespace eternal_lands
 
 		public:
 			GlslProgram(const GlslProgramDescription &description,
-				const StringVariantMap &values,
-				const String &name);
+				const boost::uuids::uuid &uuid);
 			GlslProgram(const FileSystemSharedPtr &file_system,
-				const String &file_name);
-			GlslProgram(const String &file_name);
+				const String &file_name,
+				const boost::uuids::uuid &uuid);
+			GlslProgram(const String &file_name,
+				const boost::uuids::uuid &uuid);
 			~GlslProgram() noexcept;
 			void bind();
 			void set_variant_parameter(const String &name,
@@ -251,9 +251,10 @@ namespace eternal_lands
 				set_parameter(parameter, value);
 			}
 
-			inline const String &get_name() const noexcept
+			inline const boost::uuids::uuid &get_uuid() const
+				noexcept
 			{
-				return m_name;
+				return m_uuid;
 			}
 
 			inline void set_last_used(const Uint64 last_used)

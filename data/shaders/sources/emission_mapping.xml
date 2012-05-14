@@ -13,7 +13,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>emission_sampler_0</name>
+     <name>emission_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -27,7 +27,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>emission = texture(emission_sampler_0, fragment_uv).rgb;</source>
+   <source>emission = texture(emission_sampler, fragment_uv).rgb;</source>
    <version>130</version>
   </shader_source_data>
   <shader_source_data>
@@ -40,7 +40,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>emission_sampler_0</name>
+     <name>emission_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -54,7 +54,7 @@
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>emission = texture2D(emission_sampler_0, fragment_uv).rgb;</source>
+   <source>emission = texture2D(emission_sampler, fragment_uv).rgb;</source>
    <version>120</version>
   </shader_source_data>
  </shader_source_datas>

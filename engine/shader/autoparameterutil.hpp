@@ -79,7 +79,11 @@ namespace eternal_lands
 		apt_dudv_scale,
 		apt_terrain_scale,
 		apt_terrain_texture_size,
-		apt_clipmap_matrices
+		apt_clipmap_matrices,
+		/**
+		 * vec4(z_near, z_far, z_near + z_far, z_far - z_near)
+		 */
+		apt_z_params
 	};
 	/**
 	 * @}

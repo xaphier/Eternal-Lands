@@ -120,6 +120,7 @@ namespace eternal_lands
 				String(UTF8("terrain_texture_size")), pt_vec4),
 			AutoParameterTypeData(String(UTF8("clipmap_matrices")),
 				pt_mat2x3, pst_clipmap_slices),
+			AutoParameterTypeData(String(UTF8("z_params")), pt_vec4)
 		};
 
 		const Uint32 auto_parameter_datas_count =

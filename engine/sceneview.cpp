@@ -200,7 +200,6 @@ namespace eternal_lands
 		glm::dmat4x4 basic_projection_view_matrix;
 		glm::dvec3 dir, up, left, target, pos, view_pos;
 		glm::dvec2 translation;
-		double world_texel_size;
 		Uint16 i;
 
 		dir = glm::normalize(glm::dvec3(light_direction));
@@ -230,36 +229,9 @@ namespace eternal_lands
 		shadow_view_matrix[0][2] = dir.x;
 		shadow_view_matrix[1][2] = dir.y;
 		shadow_view_matrix[2][2] = dir.z;
-#if	0
-/**/
-		std::cout << "pos 1: " << glm::to_string(pos) << std::endl;
-		world_texel_size = (get_shadow_z_far() * 2.0) / m_shadow_map_size.x;
-		std::cout << "world_texel_size: " << world_texel_size << std::endl;
 
-		view_pos = glm::dvec3(glm::dvec4(pos, 0.0) * shadow_view_matrix);
-		view_pos.x -= fmodf(view_pos.x, world_texel_size);
-		view_pos.y -= fmodf(view_pos.y, world_texel_size);
-		pos = glm::dvec3(shadow_view_matrix * glm::dvec4(view_pos, 0.0));
-		std::cout << "pos 2: " << glm::to_string(pos) << std::endl;
-/**/
-#endif
-		shadow_view_matrix = glm::translate(shadow_view_matrix, -glm::dvec3(pos));
-#if	0
-/**/
-		translation = glm::dvec2(shadow_view_matrix[3]);
-		translation *= glm::dvec2(m_shadow_map_size) * 0.5;
-//		std::cout << "translation 1: " << glm::to_string(translation) << std::endl;
-		translation = glm::round(translation);
-		translation /= glm::dvec2(m_shadow_map_size) * 0.5;
-/**/
-		shadow_view_matrix[3].x = translation.x;
-		shadow_view_matrix[3].y = translation.y;
-
-		translation = glm::dvec2(shadow_view_matrix[3]);
-		translation *= glm::dvec2(m_shadow_map_size) * 0.5;
-//		std::cout << "translation 2: " << glm::to_string(translation) << std::endl;
-//		std::cout << "matrix: " << glm::to_string(shadow_view_matrix) << std::endl;
-#endif
+		shadow_view_matrix = glm::translate(shadow_view_matrix,
+			-glm::dvec3(pos));
 
 		basic_projection_matrix = glm::mat4x4(1.0);
 		basic_projection_matrix[2][2] = -1.0;
@@ -325,6 +297,10 @@ namespace eternal_lands
 		Uint16 i;
 
 		m_z_far = get_global_vars()->get_view_distance();
+		m_z_params.x = m_z_near;
+		m_z_params.y = m_z_far;
+		m_z_params.z = m_z_near + m_z_far;
+		m_z_params.w = m_z_far - m_z_near;
 
 		m_shadow_z_far = std::min(get_global_vars(
 			)->get_shadow_distance(), get_z_far());

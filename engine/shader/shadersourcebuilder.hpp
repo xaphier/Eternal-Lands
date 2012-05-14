@@ -65,16 +65,14 @@ namespace eternal_lands
 				const String &indent, const bool vertex,
 				const bool shadow, OutStream &main,
 				OutStream &functions,
-				ShaderSourceParameterVector &globals,
-				StringVariantMap &values) const;
+				ShaderSourceParameterVector &globals) const;
 			void build_light_index_lights(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
 				const String &indent, const bool shadow,
 				OutStream &main, OutStream &functions,
-				ShaderSourceParameterVector &globals,
-				StringVariantMap &values) const;
+				ShaderSourceParameterVector &globals) const;
 			bool build_function(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
@@ -82,14 +80,12 @@ namespace eternal_lands
 				const ShaderSourceType shader_source_type,
 				const String &indent, OutStream &stream,
 				OutStream &functions,
-				ShaderSourceParameterVector &globals,
-				StringVariantMap &values) const;
+				ShaderSourceParameterVector &globals) const;
 			void build_vertex_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				OutStream &main, OutStream &functions,
-				ShaderSourceParameterVector &globals,
-				StringVariantMap &values) const;
+				ShaderSourceParameterVector &globals) const;
 			void build_geometry_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
@@ -97,14 +93,12 @@ namespace eternal_lands
 				const String &in_prefix,
 				const String &out_prefix, const bool use_blocks,
 				OutStream &main, OutStream &functions,
-				ShaderSourceParameterVector &globals,
-				StringVariantMap &values) const;
+				ShaderSourceParameterVector &globals) const;
 			void build_fragment_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				OutStream &main, OutStream &functions,
-				ShaderSourceParameterVector &globals,
-				StringVariantMap &values) const;
+				ShaderSourceParameterVector &globals) const;
 			void load_shader_source(
 				const FileSystemSharedPtr &file_system,
 				const String &file_name);
@@ -128,8 +122,8 @@ namespace eternal_lands
 			void build(const EffectDescription &description,
 				const ShaderBuildType shader_build_type,
 				const Uint16 light_count,
-				GlslProgramDescription &program_description,
-				StringVariantMap &values) const;
+				GlslProgramDescription &program_description)
+				const;
 			void set_shadow_map_type(const String &name);
 			StringVector get_shader_source_names(
 				const ShaderSourceType shader_source) const;

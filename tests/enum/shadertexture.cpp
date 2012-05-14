@@ -73,6 +73,8 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_blend).get(), "blend_sampler");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
+		el::stt_clipmap).get(), "clipmap_sampler");
+	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_light_colors).get(), "light_colors_sampler");
 	BOOST_CHECK_EQUAL(el::ShaderTextureUtil::get_str(
 		el::stt_shadow).get(), "shadow_sampler");

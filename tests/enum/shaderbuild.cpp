@@ -45,10 +45,18 @@ BOOST_AUTO_TEST_CASE(convert)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
-	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(el::sbt_color).get(),
-		"color");
+	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(el::sbt_default).get(),
+		"default");
+	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(
+		el::sbt_light_index).get(), "light_index");
 	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(el::sbt_depth).get(),
 		"depth");
 	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(el::sbt_shadow).get(),
 		"shadow");
+	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(
+		el::sbt_debug_depth).get(), "debug_depth");
+	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(
+		el::sbt_debug_normal).get(), "debug_normal");
+	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(
+		el::sbt_debug_emissive).get(), "debug_emissive");
 }

@@ -12,6 +12,7 @@
 #include "shader/shadersourcebuilder.hpp"
 #include "shader/shadertextureutil.hpp"
 #include "logging.hpp"
+#include "glslprogramcache.hpp"
 
 namespace eternal_lands
 {
@@ -97,19 +98,24 @@ namespace eternal_lands
 
 	}
 
-	Effect::Effect()
+	Effect::Effect(const GlslProgramCacheWeakPtr &glsl_program_cache):
+		m_glsl_program_cache(glsl_program_cache)
 	{
+		assert(!m_shader_source_builder.expired());
+
 		error_load();
 	}
 
-	Effect::Effect(const ShaderSourceBuilderWeakPtr &shader_source_builder,
+	Effect::Effect(const GlslProgramCacheWeakPtr &glsl_program_cache,
+		const ShaderSourceBuilderWeakPtr &shader_source_builder,
 		const EffectDescription &description):
+		m_glsl_program_cache(glsl_program_cache),
 		m_shader_source_builder(shader_source_builder),
 		m_description(description)
 	{
 		assert(!m_shader_source_builder.expired());
 
-		load();
+		load(0);
 	}
 
 	Effect::~Effect() noexcept
@@ -118,48 +124,50 @@ namespace eternal_lands
 
 	void Effect::build_default_shader(const EffectDescription &description,
 		const Uint16 vertex_light_count,
-		const Uint16 fragment_light_count)
+		const Uint16 fragment_light_count, const Uint16 debug)
 	{
 		GlslProgramDescription program_description;
-		StringStream str;
-		String vertex, tess_control, tess_evaluation, geometry;
-		String fragment;
-		StringVariantMap values;
 		Uint16 light_count;
-
-		str << description.get_name() << UTF8(" [");
-		str << UTF8("vl-") << vertex_light_count;
-		str << UTF8(" fl-") << fragment_light_count;
-		str << UTF8("]");
+		ShaderBuildType shader_build;
 
 		light_count = vertex_light_count + fragment_light_count;
 
-		get_shader_source_builder()->build(description, sbt_color,
-			light_count, program_description, values);
+		shader_build = sbt_default;
 
-		m_programs[ept_default] = boost::make_shared<GlslProgram>(
-			program_description, values, String(str.str()));
+		if (debug > 0)
+		{
+			shader_build = static_cast<ShaderBuildType>(
+				sbt_debug_uv + debug - 1);
+		}
+
+		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
+			shader_build % m_description.get_name());
+
+		get_shader_source_builder()->build(description, shader_build,
+			light_count, program_description);
+
+		m_programs[ept_default] = get_glsl_program_cache()->get_program(
+			program_description);
 	}
 
-	void Effect::build_deferred_shader(const EffectDescription &description)
+	void Effect::build_light_index_shader(
+		const EffectDescription &description)
 	{
 		GlslProgramDescription program_description;
-		StringVariantMap values;
 
-		get_shader_source_builder()->build(description, sbt_deferred,
-			0, program_description, values);
+		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
+			sbt_light_index % m_description.get_name());
 
-		m_programs[ept_default] = boost::make_shared<GlslProgram>(
-			program_description, values,
-			String(description.get_name().get() +
-				UTF8("[deferred]")));
+		get_shader_source_builder()->build(description, sbt_light_index,
+			0, program_description);
+
+		m_programs[ept_default] = get_glsl_program_cache()->get_program(
+			program_description);
 	}
 
-	void Effect::do_load()
+	void Effect::do_load(const Uint16 debug)
 	{
 		GlslProgramDescription program_description;
-		StringVariantMap values;
-		String file_name;
 		Uint16 fragment_light_count, vertex_light_count;
 
 		m_programs[ept_default].reset();
@@ -173,32 +181,31 @@ namespace eternal_lands
 
 		/* Light shader */
 		build_default_shader(m_description, vertex_light_count,
-			fragment_light_count);
+			fragment_light_count, debug);
 
 		/* Depth shader */
+		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
+			sbt_depth % m_description.get_name());
+
 		get_shader_source_builder()->build(m_description, sbt_depth, 0,
-			program_description, values);
+			program_description);
 
-		m_programs[ept_depth] = boost::make_shared<GlslProgram>(
-			program_description, values,
-			String(m_description.get_name().get() +
-				UTF8("[depth]")));
-
-		values.clear();
+		m_programs[ept_depth] = get_glsl_program_cache()->get_program(
+			program_description);
 
 		/* Shadow shader */
-		get_shader_source_builder()->build(m_description, sbt_shadow, 0,
-			program_description, values);
+		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
+			sbt_shadow % m_description.get_name());
 
-		m_programs[ept_shadow] = boost::make_shared<GlslProgram>(
-			program_description, values,
-			String(m_description.get_name().get() +
-				UTF8("[shadow]")));
+		get_shader_source_builder()->build(m_description, sbt_shadow, 0,
+			program_description);
+
+		m_programs[ept_shadow] = get_glsl_program_cache()->get_program(
+			program_description);
 	}
 
 	void Effect::error_load()
 	{
-		StringVariantMap values;
 		String none;
 
 		m_programs[ept_default].reset();
@@ -206,33 +213,26 @@ namespace eternal_lands
 		m_programs[ept_depth].reset();
 
 		/* Default shader */
-		values[ShaderTextureUtil::get_str(stt_albedo_0)] =
-			Variant(static_cast<Sint64>(stt_albedo_0));
-
-		m_programs[ept_default] = boost::make_shared<GlslProgram>(
+		m_programs[ept_default] = get_glsl_program_cache()->get_program(
 			GlslProgramDescription(vertex_shader, none, none, none,
-				fragment_shader), values,
-			String(UTF8("error")));
-
-		values.clear();
+				fragment_shader));
 
 		/* Depth shader */
-		m_programs[ept_depth] = boost::make_shared<GlslProgram>(
+		m_programs[ept_depth] = get_glsl_program_cache()->get_program(
 			GlslProgramDescription(depth_vertex_shader, none, none,
-				none, depth_fragment_shader),
-			StringVariantMap(), String(UTF8("error [depth]")));
+				none, depth_fragment_shader));
 
 		/* Shadow shader */
 		m_programs[ept_shadow] = m_programs[ept_depth];
 	}
 
-	void Effect::load()
+	void Effect::load(const Uint16 debug)
 	{
 		try
 		{
 			if (!m_shader_source_builder.expired())
 			{
-				do_load();
+				do_load(debug);
 
 				return;
 			}

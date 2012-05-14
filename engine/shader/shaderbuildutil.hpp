@@ -28,10 +28,20 @@ namespace eternal_lands
 	 */
 	enum ShaderBuildType
 	{
-		sbt_color = 0,
-		sbt_deferred,
+		sbt_default = 0,
+		sbt_light_index,
 		sbt_depth,
-		sbt_shadow
+		sbt_shadow,
+		sbt_debug_uv,
+		sbt_debug_depth,
+		sbt_debug_alpha,
+		sbt_debug_albedo,
+		sbt_debug_normal,
+		sbt_debug_shadow,
+		sbt_debug_specular,
+		sbt_debug_emissive,
+		sbt_debug_diffuse_light,
+		sbt_debug_specular_light
 	};
 	/**
 	 * @}

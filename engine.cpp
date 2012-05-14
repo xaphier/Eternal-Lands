@@ -72,6 +72,7 @@ namespace
 	GlobalVarsSharedPtr global_vars;
 	FileSystemSharedPtr file_system;
 	boost::shared_ptr<ScriptEngine> script_engine;
+	Uint16 effect_debug = 0;
 
 	String get_string(const char* str,
 		const Uint32 len = std::numeric_limits<Uint32>::max())
@@ -1433,7 +1434,8 @@ extern "C" void engine_set_shadow_quality(const int value)
 					UTF8("default")));
 		}
 
-		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
 		scene->shadow_map_change();
 	}
 }
@@ -1444,7 +1446,8 @@ extern "C" void engine_set_fog(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
 	}
 }
 
@@ -1454,7 +1457,8 @@ extern "C" void engine_set_optmize_shader_source(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
 	}
 }
 
@@ -1501,7 +1505,8 @@ extern "C" void engine_set_use_block(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
 	}
 }
 
@@ -1511,7 +1516,8 @@ extern "C" void engine_set_use_alias(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
 	}
 }
 
@@ -1521,7 +1527,8 @@ extern "C" void engine_set_use_in_out(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
 	}
 }
 
@@ -1531,7 +1538,8 @@ extern "C" void engine_set_use_functions(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
 	}
 }
 
@@ -1566,7 +1574,8 @@ extern "C" void engine_set_clipmap_slices(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
 		scene->terrain_change();
 	}
 }
@@ -1671,7 +1680,19 @@ extern "C" void engine_update_materials()
 	time.z = real_game_second % 60;
 	time.w = cur_time * 0.001f;
 
-	scene->get_scene_resources().get_material_script_manager()->execute_scripts(time);
+	scene->get_scene_resources().get_material_script_manager(
+		)->execute_scripts(time);
 
 	CATCH_BLOCK
+}
+
+extern "C" void engine_set_effect_debug(const int value)
+{
+	effect_debug = value;
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
+	}
 }

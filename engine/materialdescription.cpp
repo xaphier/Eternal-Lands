@@ -74,32 +74,26 @@ namespace eternal_lands
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_normal_0);
+					stt_normal);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("specular"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_specular_0);
+					stt_specular);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("emission")) == 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_emission_0);
+					stt_emission);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("blend")) == 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_blend_0);
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("height")) == 0)
-			{
-				set_texture(XmlUtil::get_string_value(it),
-					stt_height);
+					stt_blend);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
@@ -209,13 +203,12 @@ namespace eternal_lands
 		writer->write_element(UTF8("albedo_3"),
 			get_texture(stt_albedo_3));
 		writer->write_element(UTF8("normal"),
-			get_texture(stt_normal_0));
+			get_texture(stt_normal));
 		writer->write_element(UTF8("specular"),
-			get_texture(stt_specular_0));
+			get_texture(stt_specular));
 		writer->write_element(UTF8("emission"),
-			get_texture(stt_emission_0));
-		writer->write_element(UTF8("blend"), get_texture(stt_blend_0));
-		writer->write_element(UTF8("height"), get_texture(stt_height));
+			get_texture(stt_emission));
+		writer->write_element(UTF8("blend"), get_texture(stt_blend));
 		writer->write_mat2x4_element(UTF8("albedo_scale_offset_0"),
 			get_albedo_scale_offset(0));
 		writer->write_mat2x4_element(UTF8("albedo_scale_offset_1"),

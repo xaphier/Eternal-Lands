@@ -51,6 +51,8 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/ptr_container/ptr_container.hpp>
 #include <boost/format.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <boost/variant.hpp>
 #include <cmath>
 #include <glm/glm.hpp>
@@ -228,6 +230,7 @@ namespace eternal_lands
 	class Frustum;
 	class GlobalVars;
 	class GlslProgram;
+	class GlslProgramCache;
 	class GlslProgramDescription;
 	class HardwareBuffer;
 	class Image;
@@ -303,7 +306,7 @@ namespace eternal_lands
 	ARRAY(String, 16);
 
 	const Uint16 vertex_stream_count = 16;
-	const Uint16 material_texture_count = 14;
+	const Uint16 material_texture_count = 11;
 	const float epsilon = 1e-5f;
 
 	typedef boost::array<String, material_texture_count>
@@ -345,6 +348,7 @@ namespace eternal_lands
 	SHARED_PTR(FrameBufferBuilder);
 	SHARED_PTR(GlobalVars);
 	SHARED_PTR(GlslProgram);
+	SHARED_PTR(GlslProgramCache);
 	SHARED_PTR(HardwareBuffer);
 	SHARED_PTR(Image);
 	SHARED_PTR(IndexUpdateSource);
@@ -381,6 +385,7 @@ namespace eternal_lands
 	WEAK_PTR(ActorDataCache);
 	WEAK_PTR(CodecManager);
 	WEAK_PTR(EffectCache);
+	WEAK_PTR(GlslProgramCache);
 	WEAK_PTR(MaterialBuilder);
 	WEAK_PTR(MaterialCache);
 	WEAK_PTR(MaterialDescriptionCache);

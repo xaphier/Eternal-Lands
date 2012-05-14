@@ -20,7 +20,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal_sampler_0</name>
+     <name>normal_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -59,7 +59,7 @@ uv = vec3(world_uv, 0.0);
 
 for (i = 0; i &lt; 3; i++)
 {
-	normal = texture2D(normal_sampler_0, uv.xy);
+	normal = texture2D(normal_sampler, uv.xy);
 	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 	h = normal.a * scale_bias.x + scale_bias.y;
 	uv += (h - uv.z) * normal.z * view_dir;
@@ -88,7 +88,7 @@ fragment_uv = uv.xy;
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal_sampler_0</name>
+     <name>normal_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -127,7 +127,7 @@ uv = vec3(world_uv, 0.0);
 
 for (i = 0; i &lt; 3; i++)
 {
-	normal = texture(normal_sampler_0, uv.xy);
+	normal = texture(normal_sampler, uv.xy);
 	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 	h = normal.a * scale_bias.x + scale_bias.y;
 	uv += (h - uv.z) * normal.z * view_dir;

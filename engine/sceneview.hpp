@@ -52,6 +52,7 @@ namespace eternal_lands
 			glm::vec4 m_view_dir;
 			glm::vec4 m_focus;
 			glm::vec4 m_split_distances;
+			glm::vec4 m_z_params;
 			glm::ivec4 m_view_port;
 			glm::uvec2 m_window_size;
 			glm::uvec2 m_shadow_map_size;
@@ -279,6 +280,11 @@ namespace eternal_lands
 			inline const glm::vec4 &get_focus() const noexcept
 			{
 				return m_focus;
+			}
+
+			inline const glm::vec4 &get_z_params() const noexcept
+			{
+				return m_z_params;
 			}
 
 			inline float get_fov() const noexcept

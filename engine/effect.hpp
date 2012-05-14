@@ -27,6 +27,7 @@ namespace eternal_lands
 	class Effect: public boost::noncopyable
 	{
 		private:
+			const GlslProgramCacheWeakPtr m_glsl_program_cache;
 			const ShaderSourceBuilderWeakPtr
 				m_shader_source_builder;
 			const EffectDescription m_description;
@@ -34,13 +35,26 @@ namespace eternal_lands
 			Uint16 m_max_light_count;
 
 			void error_load();
-			void do_load();
+			void do_load(const Uint16 debug);
 			void build_default_shader(
 				const EffectDescription &description,
 				const Uint16 vertex_light_count,
-				const Uint16 fragment_light_count);
-			void build_deferred_shader(
+				const Uint16 fragment_light_count,
+				const Uint16 debug);
+			void build_light_index_shader(
 				const EffectDescription &description);
+
+			inline GlslProgramCacheSharedPtr
+				get_glsl_program_cache() const noexcept
+			{
+				GlslProgramCacheSharedPtr result;
+
+				result = m_glsl_program_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
 
 			inline ShaderSourceBuilderSharedPtr
 				get_shader_source_builder() const noexcept
@@ -55,12 +69,15 @@ namespace eternal_lands
 			}
 
 		public:
-			Effect();
-			Effect(const ShaderSourceBuilderWeakPtr
+			Effect(const GlslProgramCacheWeakPtr
+				&glsl_program_cache);
+			Effect(const GlslProgramCacheWeakPtr
+					&glsl_program_cache,
+				const ShaderSourceBuilderWeakPtr
 					&shader_source_builder,
 				const EffectDescription &description);
 			~Effect() noexcept;
-			void load();
+			void load(const Uint16 debug);
 			bool get_simple_shadow() const;
 
 			inline const GlslProgramSharedPtr &get_program(

@@ -20,7 +20,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal_sampler_0</name>
+     <name>normal_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -43,7 +43,7 @@
    </parameters>
    <source>vec3 normal;
 
-normal.xy = texture(normal_sampler_0, world_uv).rg * 2.0 - 1.0;
+normal.xy = texture(normal_sampler, world_uv).rg * 2.0 - 1.0;
 normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 
 fragment_normal = tbn_matrix * normal;
@@ -68,7 +68,7 @@ fragment_uv = world_uv;
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal_sampler_0</name>
+     <name>normal_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -91,7 +91,7 @@ fragment_uv = world_uv;
    </parameters>
    <source>vec3 normal;
 
-normal.xy = texture2D(normal_sampler_0, world_uv).ga * 2.0 - 1.0;
+normal.xy = texture2D(normal_sampler, world_uv).ga * 2.0 - 1.0;
 normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 
 fragment_normal = tbn_matrix * normal;

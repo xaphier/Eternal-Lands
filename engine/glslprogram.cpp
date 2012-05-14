@@ -966,19 +966,21 @@ namespace eternal_lands
 	};
 
 	GlslProgram::GlslProgram(const GlslProgramDescription &description,
-		const StringVariantMap &values, const String &name):
-		m_name(name), m_last_used(0), m_program(0)
+		const boost::uuids::uuid &uuid): m_uuid(uuid), m_last_used(0),
+		m_program(0)
 	{
-		build(description, values);
+		build(description);
 	}
 
 	GlslProgram::GlslProgram(const FileSystemSharedPtr &file_system,
-		const String &file_name): m_last_used(0), m_program(0)
+		const String &file_name, const boost::uuids::uuid &uuid):
+		m_uuid(uuid), m_last_used(0), m_program(0)
 	{
 		load_xml(file_system, file_name);
 	}
 
-	GlslProgram::GlslProgram(const String &file_name): m_last_used(0),
+	GlslProgram::GlslProgram(const String &file_name,
+		const boost::uuids::uuid &uuid): m_uuid(uuid), m_last_used(0),
 		m_program(0)
 	{
 		load_xml(file_name);
@@ -2068,13 +2070,13 @@ namespace eternal_lands
 		if (!program_validate_status())
 		{
 			LOG_ERROR(lt_glsl_program, UTF8("Program '%1%' "
-				"validation: %2%"), get_name() %
+				"validation: %2%"), get_uuid() %
 				get_program_log());
 			return;
 		}
 
 		LOG_INFO(lt_glsl_program, UTF8("Program '%1%' validate "
-			"successful: %2%"), get_name() % get_program_log());
+			"successful: %2%"), get_uuid() % get_program_log());
 	}
 
 	void GlslProgram::unbind()
@@ -2139,7 +2141,16 @@ namespace eternal_lands
 
 		bind_attribute_locations();
 
+/*
+		glProgramParameteri(get_program(),
+			GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE);
+*/
 		glLinkProgram(get_program());
+/*
+		glGetProgramiv(get_program(), GL_PROGRAM_BINARY_LENGTH, &size);
+		SetLength(binary, size);
+		glGetProgramBinary(get_program(), size, 0, &format, &binary);
+*/
 
 		if (!program_link_status())
 		{
@@ -2154,14 +2165,12 @@ namespace eternal_lands
 		log_uniforms();
 	}
 
-	void GlslProgram::build(const GlslProgramDescription &description,
-		const StringVariantMap &values)
+	void GlslProgram::build(const GlslProgramDescription &description)
 	{
-		StringVariantMap::const_iterator it, end;
 		Uint32 i, count;
 
 		LOG_DEBUG(lt_glsl_program, UTF8("Building Shader %1%"),
-			get_name());
+			get_uuid());
 
 		try
 		{
@@ -2169,7 +2178,8 @@ namespace eternal_lands
 		}
 		catch (boost::exception &exception)
 		{
-			exception << errinfo_parameter_name(get_name().get());
+			exception << errinfo_parameter_name(
+				boost::uuids::to_string(get_uuid()));
 			exception << errinfo_vertex_shader_source(
 				description.get_vertex_shader());
 			exception << errinfo_tess_control_shader_source(
@@ -2185,13 +2195,6 @@ namespace eternal_lands
 		}
 
 		bind();
-
-		end = values.end();
-
-		for (it = values.begin(); it != end; ++it)
-		{
-			set_variant_parameter(it->first, it->second);
-		}
 
 		count = ShaderTextureUtil::get_shader_texture_count();
 
@@ -2249,11 +2252,6 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
-			{
-				m_name = XmlUtil::get_string_value(it);
-			}
-
 			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("vertex_shader")) == 0)
 			{
@@ -2296,7 +2294,7 @@ namespace eternal_lands
 
 		build(GlslProgramDescription(vertex_shader, tess_control_shader,
 			tess_evaluation_shader, geometry_shader,
-			fragment_shader), values);
+			fragment_shader));
 	}
 
 	void GlslProgram::load_xml(const FileSystemSharedPtr &file_system,

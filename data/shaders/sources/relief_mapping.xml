@@ -20,7 +20,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal_sampler_0</name>
+     <name>normal_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -71,7 +71,7 @@
    for(int i = 0; i &lt; linear_search_steps - 1; ++i)
    {
       depth += size;
-      float t = 1.0 - texture2D(normal_sampler_0, dp + ds * depth).a;
+      float t = 1.0 - texture2D(normal_sampler, dp + ds * depth).a;
       if(best_depth &gt; 0.996)
          if(depth &gt;= t)
             best_depth = depth;
@@ -83,7 +83,7 @@
    for(int i = 0; i &lt; binary_search_steps; ++i)
    {
       size *= 0.5;
-      float t = 1.0 - texture2D(normal_sampler_0, dp + ds * depth).a;
+      float t = 1.0 - texture2D(normal_sampler, dp + ds * depth).a;
       if(depth &gt;= t)
       {
          best_depth = depth;
@@ -96,7 +96,7 @@
 
 	vec2 uv = dp + ds * d;
 
-	normal = texture2D(normal_sampler_0, uv.xy);
+	normal = texture2D(normal_sampler, uv.xy);
 	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 	normal.xyz = normalize(tbn_matrix * normal.xyz);
 	fragment_normal = normal.xyz;
@@ -122,7 +122,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal_sampler_0</name>
+     <name>normal_sampler</name>
      <type>sampler2D</type>
      <qualifier>in</qualifier>
      <size>one</size>
@@ -173,7 +173,7 @@
    for(int i = 0; i &lt; linear_search_steps - 1; ++i)
    {
       depth += size;
-      float t = 1.0 - texture(normal_sampler_0, dp + ds * depth).a;
+      float t = 1.0 - texture(normal_sampler, dp + ds * depth).a;
       if(best_depth &gt; 0.996)
          if(depth &gt;= t)
             best_depth = depth;
@@ -185,7 +185,7 @@
    for(int i = 0; i &lt; binary_search_steps; ++i)
    {
       size *= 0.5;
-      float t = 1.0 - texture(normal_sampler_0, dp + ds * depth).a;
+      float t = 1.0 - texture(normal_sampler, dp + ds * depth).a;
       if(depth &gt;= t)
       {
          best_depth = depth;
@@ -198,7 +198,7 @@
 
 	vec2 uv = dp + ds * d;
 
-	normal = texture(normal_sampler_0, uv.xy);
+	normal = texture(normal_sampler, uv.xy);
 	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 	normal.xyz = normalize(tbn_matrix * normal.xyz);
 	fragment_normal = normal.xyz;

@@ -283,8 +283,8 @@ namespace eternal_lands
 			get_global_vars()->get_clipmap_size(),
 			get_global_vars()->get_clipmap_slices());
 
-		m_terrain_frame_buffer.reset();
-		m_terrain_frame_buffer = get_scene_resources(
+		m_clipmap_frame_buffer.reset();
+		m_clipmap_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
 				String(UTF8("terrain")),
 				get_global_vars()->get_clipmap_size(),
@@ -319,6 +319,29 @@ namespace eternal_lands
 		Uint32 i, size;
 
 		light_count = 1;
+
+		if (m_map->get_dungeon())
+		{
+			m_light_position_array[0] =
+				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
+			m_light_color_array[0] =
+				glm::vec4(glm::vec3(0.2f), 0.0f);
+		}
+		else
+		{
+			m_light_position_array[0] = m_main_light_direction;
+
+			if (get_lights())
+			{
+				m_light_color_array[0] = m_main_light_color +
+					glm::vec4(glm::vec3(0.3f), 0.0f);
+			}
+			else
+			{
+				m_light_color_array[0] = m_main_light_color +
+					glm::vec4(glm::vec3(0.1f), 0.0f);
+			}
+		}
 
 		if (m_map->get_dungeon() || get_lights())
 		{
@@ -602,6 +625,8 @@ namespace eternal_lands
 					1.0f / 256.0f, 1.0f / 256.0f));
 			program->set_parameter(apt_terrain_texture_size,
 				m_clipmap.get_terrain_texture_size());
+			program->set_parameter(apt_z_params,
+				m_scene_view.get_z_params());
 			m_state_manager.get_program()->set_parameter(
 				apt_clipmap_matrices,
 				m_clipmap.get_texture_matrices());
@@ -635,15 +660,14 @@ namespace eternal_lands
 		const EffectProgramType type, const Uint16 layer,
 		const Uint16 distance, const bool lights)
 	{
-		Uint16 count, index, mesh, i, lod, light_count, mesh_count;
+		Uint16 count, i, light_count, mesh_count;
 		bool object_data_set;
 
 		m_state_manager.switch_mesh(object->get_mesh());
 
 		DEBUG_CHECK_GL_ERROR();
 
-		lod = object->get_lod(distance);
-		count = object->get_lods_count(lod);
+		count = object->get_materials().size();
 
 		if (lights)
 		{
@@ -663,10 +687,7 @@ namespace eternal_lands
 
 		for (i = mesh_count; i < count; ++i)
 		{
-			mesh = object->get_mesh_index(lod, i);
-			index = object->get_materials_index(lod, i);
-
-			MaterialLock material(object->get_materials()[index]);
+			MaterialLock material(object->get_materials()[i]);
 
 			if (switch_program(material->get_effect()->get_program(
 				type), layer))
@@ -706,7 +727,7 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_state_manager.draw(mesh, 1);
+			m_state_manager.draw(i, 1);
 
 			DEBUG_CHECK_GL_ERROR();
 		}
@@ -1008,8 +1029,8 @@ namespace eternal_lands
 	{
 		Uint32 i, count;
 
-		m_terrain_frame_buffer->bind(index);
-		m_terrain_frame_buffer->clear(glm::vec4(0.0f));
+		m_clipmap_frame_buffer->bind(index);
+		m_clipmap_frame_buffer->clear(glm::vec4(0.0f));
 
 		count = materials.size();
 
@@ -1081,7 +1102,7 @@ namespace eternal_lands
 			DEBUG_CHECK_GL_ERROR();
 		}
 
-		m_terrain_frame_buffer->blit();
+		m_clipmap_frame_buffer->blit();
 */
 	}
 
@@ -1137,8 +1158,8 @@ namespace eternal_lands
 		tile_scale = 256.0f /
 			glm::vec2(get_global_vars()->get_tile_world_size());
 
-		width = m_terrain_frame_buffer->get_width();
-		height = m_terrain_frame_buffer->get_height();
+		width = m_clipmap_frame_buffer->get_width();
+		height = m_clipmap_frame_buffer->get_height();
 
 		glViewport(0, 0, width, height);
 		DEBUG_CHECK_GL_ERROR();
@@ -1165,12 +1186,12 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_terrain_frame_buffer->unbind();
+		m_clipmap_frame_buffer->unbind();
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.switch_texture(stt_terrain,
-			m_terrain_frame_buffer->get_texture());
+		m_state_manager.switch_texture(stt_clipmap,
+			m_clipmap_frame_buffer->get_texture());
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
@@ -1214,10 +1235,10 @@ namespace eternal_lands
 				m_shadow_frame_buffer->get_texture());
 		}
 
-		if (m_terrain_frame_buffer.get() != nullptr)
+		if (m_clipmap_frame_buffer.get() != nullptr)
 		{
-			m_state_manager.switch_texture(stt_terrain,
-				m_terrain_frame_buffer->get_texture());
+			m_state_manager.switch_texture(stt_clipmap,
+				m_clipmap_frame_buffer->get_texture());
 		}
 
 		m_scene_view.set_default_view();

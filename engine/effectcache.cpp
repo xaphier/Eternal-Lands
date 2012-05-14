@@ -15,10 +15,13 @@
 namespace eternal_lands
 {
 
-	EffectCache::EffectCache(const ShaderSourceBuilderWeakPtr
+	EffectCache::EffectCache(const GlslProgramCacheWeakPtr
+			&glsl_program_cache, const ShaderSourceBuilderWeakPtr
 			&shader_source_builder):
+		m_glsl_program_cache(glsl_program_cache),
 		m_shader_source_builder(shader_source_builder)
 	{
+		assert(!m_glsl_program_cache.expired());
 		assert(!m_shader_source_builder.expired());
 	}
 
@@ -48,13 +51,14 @@ namespace eternal_lands
 	{
 		if (m_simple_effect.get() == nullptr)
 		{
-			m_simple_effect = boost::make_shared<Effect>();
+			m_simple_effect = boost::make_shared<Effect>(
+				get_glsl_program_cache());
 		}
 
 		return m_simple_effect;
 	}
 
-	void EffectCache::reload()
+	void EffectCache::reload(const Uint16 debug)
 	{
 		EffectCacheMap::iterator it, end;
 
@@ -62,7 +66,7 @@ namespace eternal_lands
 
 		for (it = m_effect_cache.begin(); it != end; ++it)
 		{
-			it->second->load();
+			it->second->load(debug);
 		}
 	}
 
@@ -96,6 +100,7 @@ namespace eternal_lands
 
 				m_effect_cache[name] =
 					boost::make_shared<Effect>(
+						get_glsl_program_cache(),
 						get_shader_source_builder(),
 						effect_description);
 			}

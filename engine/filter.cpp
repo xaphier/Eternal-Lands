@@ -13,6 +13,7 @@
 #include "statemanager.hpp"
 #include "abstractmesh.hpp"
 #include "globalvars.hpp"
+#include "glslprogramcache.hpp"
 
 namespace eternal_lands
 {
@@ -211,7 +212,8 @@ namespace eternal_lands
 
 	}
 
-	void Filter::build_filter(const StringVariantMap &values,
+	void Filter::build_filter(
+		const GlslProgramCacheSharedPtr &glsl_program_cache,
 		const Uint16 version, const Uint16 channel_count,
 		const Uint16 half_taps_minus_one, const bool layer,
 		const bool vertical)
@@ -237,24 +239,20 @@ namespace eternal_lands
 			name += UTF8(" layer");
 		}
 
-		m_programs[index] = boost::make_shared<GlslProgram>(
+		m_programs[index] = glsl_program_cache->get_program(
 			GlslProgramDescription(get_vertex_str(version), none,
 				none, none, get_fragment_str(version,
 					channel_count, half_taps_minus_one,
-					layer, vertical)), values,
-			String(name));
+					layer, vertical)));
 	}
 
-	Filter::Filter(const MeshCacheSharedPtr &mesh_cache,
+	Filter::Filter(const GlslProgramCacheSharedPtr &glsl_program_cache,
+		const MeshCacheSharedPtr &mesh_cache,
 		const GlobalVarsSharedPtr &global_vars)
 	{
-		StringVariantMap values;
 		Uint32 i, j;
 
 		mesh_cache->get_mesh(String(UTF8("plane_2")), m_mesh);
-
-		values[ShaderTextureUtil::get_str(stt_albedo_0)] =
-			Variant(static_cast<Sint64>(stt_albedo_0));
 
 		for (i = 1; i < 5; ++i)
 		{
@@ -262,25 +260,29 @@ namespace eternal_lands
 			{
 				if (!global_vars->get_opengl_3_0())
 				{
-					build_filter(values, 120, i, j, false,
-						false);
-					build_filter(values, 120, i, j, false,
-						true);
+					build_filter(glsl_program_cache, 120,
+						i, j, false, false);
+					build_filter(glsl_program_cache, 120,
+						i, j, false, true);
 
 					continue;
 				}
 
-				build_filter(values, 130, i, j, false, false);
-				build_filter(values, 130, i, j, false, true);
-				build_filter(values, 130, i, j, true, false);
-				build_filter(values, 130, i, j, true, true);
+				build_filter(glsl_program_cache, 130, i, j,
+					false, false);
+				build_filter(glsl_program_cache, 130, i, j,
+					false, true);
+				build_filter(glsl_program_cache, 130, i, j,
+					true, false);
+				build_filter(glsl_program_cache, 130, i, j,
+					true, true);
 			}
 		}
 
 		for (i = 1; i < 5; ++i)
 		{
-			build_multisample_filter(values, 130, i, 2);
-			build_multisample_filter(values, 130, i, 4);
+			build_multisample_filter(glsl_program_cache, 130, i, 2);
+			build_multisample_filter(glsl_program_cache, 130, i, 4);
 		}
 	}
 
@@ -392,7 +394,8 @@ namespace eternal_lands
 		return String(str.str());
 	}
 
-	void Filter::build_multisample_filter(const StringVariantMap &values,
+	void Filter::build_multisample_filter(
+		const GlslProgramCacheSharedPtr &glsl_program_cache,
 		const Uint16 version, const Uint16 channel_count,
 		const Uint16 sample_count)
 	{
@@ -403,12 +406,11 @@ namespace eternal_lands
 
 		name = UTF8("filter multisample");
 
-		m_multisample_programs[index] = boost::make_shared<GlslProgram>(
+		m_multisample_programs[index] = glsl_program_cache->get_program(
 			GlslProgramDescription(get_multisample_vertex_str(
 					version), none, none, none,
 				get_multisample_fragment_str(version,
-					channel_count, sample_count)), values,
-			String(name));
+					channel_count, sample_count)));
 	}
 
 	String Filter::get_vertex_str(const Uint16 version)

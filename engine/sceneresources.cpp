@@ -19,6 +19,7 @@
 #include "materialdescriptioncache.hpp"
 #include "materialbuilder.hpp"
 #include "materialcache.hpp"
+#include "glslprogramcache.hpp"
 #include "script/materialscriptcache.hpp"
 #include "script/materialscriptmanager.hpp"
 #include "script/scriptengine.hpp"
@@ -39,8 +40,9 @@ namespace eternal_lands
 		m_mesh_builder = boost::make_shared<MeshBuilder>(global_vars);
 		m_shader_source_builder =
 			boost::make_shared<ShaderSourceBuilder>(global_vars);
+		m_glsl_program_cache = boost::make_shared<GlslProgramCache>();
 		m_effect_cache = boost::make_shared<EffectCache>(
-			get_shader_source_builder());
+			get_glsl_program_cache(), get_shader_source_builder());
 		m_codec_manager = boost::make_shared<CodecManager>();
 		m_texture_cache = boost::make_shared<TextureCache>(
 			get_codec_manager(), file_system, global_vars);

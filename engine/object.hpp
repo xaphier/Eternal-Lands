@@ -34,7 +34,6 @@ namespace eternal_lands
 	{
 		private:
 			ObjectData m_object_data;
-			LodData m_lod_data;
 			AbstractMeshSharedPtr m_mesh;
 			MaterialSharedPtrVector m_materials;
 			/**
@@ -95,35 +94,6 @@ namespace eternal_lands
 
 			virtual void update_bounding_box();
 			virtual void update_bones();
-
-			inline Uint16 get_lod(const Uint16 distance) const
-			{
-				return m_lod_data.get_lod(distance);
-			}
-
-			inline Uint16 get_lods_count(const Uint16 lod) const
-			{
-				return m_lod_data.get_lods_count(lod);
-			}
-
-			inline Uint16 get_lods_offset(const Uint16 lod) const
-			{
-				return m_lod_data.get_lods_offset(lod);
-			}
-
-			inline Uint16 get_materials_index(const Uint16 lod,
-				const Uint16 index) const
-			{
-				return m_lod_data.get_materials_index(lod,
-					index);
-			}
-
-			inline Uint16 get_mesh_index(const Uint16 lod,
-				const Uint16 index) const
-			{
-				return m_lod_data.get_mesh_index(lod, index);
-			}
-
 
 			inline void set_world_transformation(
 				const Transformation &world_transformation)

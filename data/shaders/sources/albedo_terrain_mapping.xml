@@ -81,14 +81,14 @@ blend = fract(lod);
 ddx /= exp2(index);
 ddy /= exp2(index);
 
-albedo = textureGrad(terrain_sampler, vec3(terrain_uvs[index], index), ddx, ddy);
+albedo = textureGrad(clipmap_sampler, vec3(terrain_uvs[index], index), ddx, ddy);
 
 if (blend &gt; 0.0)
 {
 	ddx *= 0.5;
 	ddy *= 0.5;
 
-	tmp = textureGrad(terrain_sampler, vec3(terrain_uvs[index + 1], index + 1), ddx, ddy);
+	tmp = textureGrad(clipmap_sampler, vec3(terrain_uvs[index + 1], index + 1), ddx, ddy);
 	albedo = mix(albedo, tmp, blend);
 }
 </source>
@@ -153,11 +153,11 @@ lod = clamp(lod, index, clipmap_slices - 1);
 index = int(lod);
 blend = fract(lod);
 
-albedo = texture3D(terrain_sampler, vec3(terrain_uvs[index], (index + 0.5) / clipmap_slices));
+albedo = texture3D(clipmap_sampler, vec3(terrain_uvs[index], (index + 0.5) / clipmap_slices));
 
 if (blend &gt; 0.0)
 {
-	tmp = texture3D(terrain_sampler, vec3(terrain_uvs[index + 1], (index + 1.5) / clipmap_slices));
+	tmp = texture3D(clipmap_sampler, vec3(terrain_uvs[index + 1], (index + 1.5) / clipmap_slices));
 	albedo = mix(albedo, tmp, blend);
 }
 </source>

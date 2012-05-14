@@ -18,50 +18,62 @@ namespace eternal_lands
 		class ObjectSort
 		{
 			public:
-				inline ObjectSort()
-				{
-				}
-
-				inline ~ObjectSort() noexcept
-				{
-				}
-
-				inline bool operator()(
-					const RenderObjectData &rod0,
-					const RenderObjectData &rod1) noexcept
-				{
-					float distance0, distance1;
-
-					distance0 = rod0.get_distance();
-					distance1 = rod1.get_distance();
-
-					if (rod0.get_blend())
-					{
-						if (rod1.get_blend())
-						{
-							return distance0 >
-								distance1;
-						}
-						else
-						{
-							return false;
-						}
-					}
-					else
-					{
-						if (rod1.get_blend())
-						{
-							return true;
-						}
-						else
-						{
-							return distance0 <
-								distance1;
-						}
-					}
-				}
+				ObjectSort();
+				~ObjectSort() noexcept;
+				bool operator()(const RenderObjectData &rod0,
+					const RenderObjectData &rod1) const
+					noexcept;
 
 		};
+
+		ObjectSort::ObjectSort()
+		{
+		}
+
+		ObjectSort::~ObjectSort() noexcept
+		{
+		}
+
+		bool ObjectSort::operator()(
+			const RenderObjectData &rod0,
+			const RenderObjectData &rod1) const noexcept
+		{
+			float distance0, distance1;
+
+			distance0 = rod0.get_distance();
+			distance1 = rod1.get_distance();
+
+			if (rod0.get_blend())
+			{
+				if (!rod1.get_blend())
+				{
+					return false;
+				}
+
+				return distance0 > distance1;
+			}
+
+			if (rod1.get_blend())
+			{
+				return true;
+			}
+
+			if ((rod0.get_object()->get_materials().size() == 0) ||
+				(rod1.get_object()->get_materials().size()
+					== 0))
+			{
+				return distance0 < distance1;
+			}
+
+			if (rod0.get_object()->get_materials()[0] !=
+				rod1.get_object()->get_materials()[0])
+			{
+				return rod0.get_object()->get_materials()[0] <
+					rod1.get_object()->get_materials()[0];
+			}
+
+			return distance0 < distance1;
+		}
 
 	}
 

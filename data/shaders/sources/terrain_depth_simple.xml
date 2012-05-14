@@ -20,13 +20,6 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>terrain_scale</name>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
      <name>terrain_texture_coodrinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
@@ -75,13 +68,6 @@ terrain_texture_coodrinate = position.xy + transformation[1].xy;
     <parameter>
      <name>position</name>
      <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
-    </parameter>
-    <parameter>
-     <name>terrain_scale</name>
-     <type>vec3</type>
      <qualifier>in</qualifier>
      <size>one</size>
      <scale>1</scale>

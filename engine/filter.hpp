@@ -70,13 +70,15 @@ namespace eternal_lands
 			boost::array<GlslProgramSharedPtr, 16>
 				m_multisample_programs;
 
-			void build_filter(const StringVariantMap &values,
+			void build_filter(const GlslProgramCacheSharedPtr
+					&glsl_program_cache,
 				const Uint16 version,
 				const Uint16 channel_count,
 				const Uint16 half_taps_minus_one,
 				const bool layer, const bool vertical);
 			void build_multisample_filter(
-				const StringVariantMap &values,
+				const GlslProgramCacheSharedPtr
+					&glsl_program_cache,
 				const Uint16 version,
 				const Uint16 channel_count,
 				const Uint16 sample_count);
@@ -156,7 +158,9 @@ namespace eternal_lands
 			}
 
 		public:
-			Filter(const MeshCacheSharedPtr &mesh_cache,
+			Filter(const GlslProgramCacheSharedPtr
+					&glsl_program_cache,
+				const MeshCacheSharedPtr &mesh_cache,
 				const GlobalVarsSharedPtr &global_vars);
 			~Filter() noexcept;
 			void bind(const glm::vec4 &source,
