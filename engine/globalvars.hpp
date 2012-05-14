@@ -213,11 +213,11 @@ namespace eternal_lands
 					case sqt_low:
 						return 1;
 					case sqt_medium:
-						return 2;
+						return 1;
 					case sqt_high:
-						return 3;
+						return 2;
 					case sqt_ultra:
-						return 4;
+						return 3;
 				}
 
 				return 0;

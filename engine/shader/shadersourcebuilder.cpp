@@ -1075,7 +1075,6 @@ namespace eternal_lands
 		m_vertex_light_count = 4;
 		m_fragment_light_count = 4;
 		m_bone_count = 72;
-		m_instance_count = 1;
 		m_dynamic_light_count = false;
 
 		do
@@ -1104,13 +1103,6 @@ namespace eternal_lands
 				== 0)
 			{
 				m_bone_count = XmlUtil::get_uint16_value(it);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("instance_count")) == 0)
-			{
-				m_instance_count =
-					XmlUtil::get_uint16_value(it);
 			}
 
 			if (xmlStrcmp(it->name,
@@ -2372,7 +2364,6 @@ namespace eternal_lands
 		array_sizes[pst_shadow_map_count] =
 			data.get_shadow_map_count();
 		array_sizes[pst_layer_count] = layer_count;
-		array_sizes[pst_instance_count] = get_instance_count();
 		array_sizes[pst_clipmap_slices] =
 			get_global_vars()->get_clipmap_slices();
 

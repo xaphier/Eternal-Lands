@@ -34,6 +34,7 @@ namespace eternal_lands
 			float m_transparency;
 			float m_distance;
 			SubFrustumsMask m_sub_frustums_mask;
+			Uint32 m_occlusion_culling;
 			Uint16 m_lod;
 			BlendType m_blend;
 
@@ -80,6 +81,12 @@ namespace eternal_lands
 				m_sub_frustums_mask = sub_frustums_mask;
 			}
 
+			inline void set_occlusion_culling(
+				const Uint32 occlusion_culling) noexcept
+			{
+				m_occlusion_culling = occlusion_culling;
+			}
+
 			inline const ObjectSharedPtr &get_object() const
 				noexcept
 			{
@@ -116,6 +123,11 @@ namespace eternal_lands
 			inline Uint16 get_lod() const noexcept
 			{
 				return m_lod;
+			}
+
+			inline Uint32 get_occlusion_culling() const noexcept
+			{
+				return m_occlusion_culling;
 			}
 
 	};

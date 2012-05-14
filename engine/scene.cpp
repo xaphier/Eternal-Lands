@@ -705,7 +705,7 @@ namespace eternal_lands
 					material->get_effect(
 						)->get_max_light_count());
 				m_state_manager.get_program()->set_parameter(
-					apt_world_transformations,
+					apt_world_transformation,
 					object->get_world_transformation(
 						).get_data());
 				m_state_manager.get_program()->set_parameter(
@@ -750,7 +750,7 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_transformations,
+					apt_world_transformation,
 					object->get_world_transformation(
 						).get_data());
 				m_state_manager.get_program()->set_parameter(
@@ -916,8 +916,13 @@ namespace eternal_lands
 		m_shadow_update_mask[0] = true;
 	}
 
+#define	OCCLUSION_CULLING
+
 	void Scene::draw_depth()
 	{
+#ifdef	OCCLUSION_CULLING
+		Uint32 index;
+#endif
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("depth"));
 
 		DEBUG_CHECK_GL_ERROR();
@@ -926,21 +931,31 @@ namespace eternal_lands
 
 		m_state_manager.switch_color_mask(glm::bvec4(false));
 
-		BOOST_FOREACH(const RenderObjectData &object,
+#ifdef	OCCLUSION_CULLING
+		index = 0;
+
+#endif
+		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-/*			stencil = object.get_object()->get_state_stencil();
-
-			m_state_manager.switch_stencil_test(stencil);
-
-			if (stencil)
+			if (object.get_blend() != bt_disabled)
 			{
-				glStencilFunc(GL_ALWAYS, object.get_object(
-					)->get_stencil_value(), 0xFFFFFFFF);
+				continue;
 			}
-*/
+#ifdef	OCCLUSION_CULLING
+			object.set_occlusion_culling(index);
+
+			glBeginQuery(GL_SAMPLES_PASSED, m_querie_ids[index]);
+
+#endif
 			draw_object(object.get_object(), ept_depth, 0,
 				object.get_distance(), false);
+#ifdef	OCCLUSION_CULLING
+
+			glEndQuery(GL_SAMPLES_PASSED);
+
+			index++;
+#endif
 		}
 
 		unbind_all();
@@ -948,10 +963,14 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 
 		m_program_vars_id++;
+
 	}
 
 	void Scene::draw_default()
 	{
+#ifdef	OCCLUSION_CULLING
+		Uint32 index, count;
+#endif
 		BlendType blend;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
@@ -964,13 +983,27 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-//		glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
-
 		blend = bt_disabled;
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
+#ifdef	OCCLUSION_CULLING
+			index = object.get_occlusion_culling();
+
+			if (index < m_querie_ids.size())
+			{
+				count = 0;
+
+				glGetQueryObjectuiv(m_querie_ids[index],
+					GL_QUERY_RESULT, &count);
+
+				if (count < 25)
+				{
+					continue;
+				}
+			}
+#endif
 			if (blend != object.get_blend())
 			{
 				blend = object.get_blend();
@@ -995,8 +1028,6 @@ namespace eternal_lands
 
 				m_state_manager.switch_blend(blend !=
 					bt_disabled);
-//				m_state_manager.switch_depth_mask(blend =
-//					bt_disabled);
 			}
 
 			if (blend == bt_alpha_transparency_value)
@@ -1004,8 +1035,6 @@ namespace eternal_lands
 				glBlendColor(1.0f, 1.0f, 1.0f,
 					object.get_transparency());
 			}
-
-//			m_state_manager.switch_stencil_test(stencil);
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -1215,6 +1244,10 @@ namespace eternal_lands
 
 		m_state_manager.init();
 
+		m_scene_view.set_default_view();
+		glDepthFunc(GL_LEQUAL);
+		draw_depth();
+
 		if (m_scene_view.get_shadow_map_count() > 0)
 		{
 			STRING_MARKER(UTF8("drawing mode '%1%'"),
@@ -1241,14 +1274,8 @@ namespace eternal_lands
 				m_clipmap_frame_buffer->get_texture());
 		}
 
-		m_scene_view.set_default_view();
-
-//		draw_depth();
-		glDepthFunc(GL_LEQUAL);
+		m_state_manager.switch_depth_mask(false);
 		draw_default();
-
-//		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 0.0f), 0x1);
-//		draw_stencil_quad(glm::vec3(1.0f, 1.0f, 1.0f), 0x2);
 	}
 
 	void Scene::pick_object(const RenderObjectData &object,
@@ -1319,7 +1346,7 @@ namespace eternal_lands
 			if (!object_data_set)
 			{
 				m_state_manager.get_program()->set_parameter(
-					apt_world_transformations,
+					apt_world_transformation,
 					object.get_object(
 						)->get_world_transformation(
 						).get_data());

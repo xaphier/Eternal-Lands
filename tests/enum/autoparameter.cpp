@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(get_scale)
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
-		el::apt_world_transformations).get(), "world_transformations");
+		el::apt_world_transformation).get(), "world_transformation");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
 		el::apt_view_matrix).get(), "view_matrix");

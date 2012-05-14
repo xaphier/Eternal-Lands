@@ -36,7 +36,7 @@ namespace eternal_lands
 		 * { rotation_quaternion_x, rotation_quaternion_y,
 		 * rotation_quaternion_z, rotation_quaternion_w } }
 		 */
-		apt_world_transformations = 0,
+		apt_world_transformation = 0,
 		/**
 		 * 3x3 matrix with only the rotation part of the view matrix
 		 */

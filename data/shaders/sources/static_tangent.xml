@@ -48,26 +48,22 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformations</name>
+     <name>world_transformation</name>
      <type>mat2x4</type>
      <qualifier>in</qualifier>
-     <size>instance_count</size>
+     <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>mat2x4 transformation;
-
-world_position = position.xyz;
+   <source>world_position = position.xyz;
 world_normal = normal;
 world_tangent = tangent;
 
-transformation = world_transformations[gl_InstanceID];
-
-world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
-world_position *= transformation[1].w;
-world_position += transformation[1].xyz;
-world_normal += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_normal) + transformation[0].w * world_normal);
-world_tangent += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_tangent) + transformationation[0].w * world_tangent);</source>
+world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
+world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + world_transformation[0].w * world_tangent);</source>
    <version>140</version>
   </shader_source_data>
   <shader_source_data>
@@ -115,26 +111,22 @@ world_tangent += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz,
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformations</name>
+     <name>world_transformation</name>
      <type>mat2x4</type>
      <qualifier>in</qualifier>
-     <size>instance_count</size>
+     <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>mat2x4 transformation;
-
-world_position = position.xyz;
+   <source>world_position = position.xyz;
 world_normal = normal;
 world_tangent = tangent;
 
-transformation = world_transformations[0];
-
-world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
-world_position *= transformation[1].w;
-world_position += transformation[1].xyz;
-world_normal += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_normal) + transformation[0].w * world_normal);
-world_tangent += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_tangent) + transformationation[0].w * world_tangent);
+world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
+world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + world_transformation[0].w * world_tangent);
 </source>
    <version>120</version>
   </shader_source_data>

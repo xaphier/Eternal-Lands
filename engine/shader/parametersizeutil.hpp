@@ -29,7 +29,6 @@ namespace eternal_lands
 		pst_bone_count,
 		pst_shadow_map_count,
 		pst_layer_count,
-		pst_instance_count,
 		pst_clipmap_slices
 	};
 

@@ -21,7 +21,6 @@ namespace eternal_lands
 			String(UTF8("bone_count")),
 			String(UTF8("shadow_map_count")),
 			String(UTF8("layer_count")),
-			String(UTF8("instance_count")),
 			String(UTF8("clipmap_slices"))
 		};
 

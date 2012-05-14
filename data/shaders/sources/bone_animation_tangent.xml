@@ -69,14 +69,14 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformations</name>
+     <name>world_transformation</name>
      <type>mat2x4</type>
      <qualifier>in</qualifier>
-     <size>instance_count</size>
+     <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>mat2x4 dual, m, transformation;
+   <source>mat2x4 dual, m;
 vec4 pivot;
 
 m = bones[int(bone_index.x)];
@@ -127,13 +127,11 @@ world_position += 2.0 * (dual[0].w * dual[1].xyz - dual[1].w * dual[0].xyz + cro
 world_normal += 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, world_normal) + dual[0].w * world_normal);
 world_tangent += 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, world_tangent) + dual[0].w * world_tangent);
 
-transformation = world_transformations[gl_InstanceID];
-
-world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
-world_position *= transformation[1].w;
-world_position += transformation[1].xyz;
-world_normal += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_normal) + transformation[0].w * world_normal);
-world_tangent += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_tangent) + transformationation[0].w * world_tangent);
+world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
+world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + transformationation[0].w * world_tangent);
 </source>
    <version>140</version>
   </shader_source_data>
@@ -203,14 +201,14 @@ world_tangent += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz,
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformations</name>
+     <name>world_transformation</name>
      <type>mat2x4</type>
      <qualifier>in</qualifier>
-     <size>instance_count</size>
+     <size>one</size>
      <scale>1</scale>
     </parameter>
    </parameters>
-   <source>mat2x4 dual, m, transformation;
+   <source>mat2x4 dual, m;
 vec4 pivot;
 
 m = bones[int(bone_index.x)];
@@ -261,13 +259,11 @@ world_position += 2.0 * (dual[0].w * dual[1].xyz - dual[1].w * dual[0].xyz + cro
 world_normal += 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, world_normal) + dual[0].w * world_normal);
 world_tangent += 2.0 * cross(dual[0].xyz, cross(dual[0].xyz, world_tangent) + dual[0].w * world_tangent);
 
-transformation = world_transformations[0];
-
-world_position += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_position) + transformation[0].w * world_position);
-world_position *= transformation[1].w;
-world_position += transformation[1].xyz;
-world_normal += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_normal) + transformation[0].w * world_normal);
-world_tangent += 2.0 * cross(transformation[0].xyz, cross(transformation[0].xyz, world_tangent) + transformationation[0].w * world_tangent);
+world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
+world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + transformationation[0].w * world_tangent);
 </source>
    <version>120</version>
   </shader_source_data>

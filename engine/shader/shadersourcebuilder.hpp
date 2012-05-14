@@ -47,7 +47,6 @@ namespace eternal_lands
 			Uint16 m_vertex_light_count;
 			Uint16 m_fragment_light_count;
 			Uint16 m_bone_count;
-			Uint16 m_instance_count;
 			bool m_dynamic_light_count;
 
 			bool check_function(const ShaderSourceBuildData &data,
@@ -182,14 +181,6 @@ namespace eternal_lands
 			inline Uint16 get_bone_count() const noexcept
 			{
 				return m_bone_count;
-			}
-
-			/**
-			 * Returns the number of instances the shader uses.
-			 */
-			inline Uint16 get_instance_count() const noexcept
-			{
-				return m_instance_count;
 			}
 
 			/**
