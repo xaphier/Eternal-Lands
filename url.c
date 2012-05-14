@@ -344,7 +344,7 @@ static int only_call_from_open_web_link__go_to_url(void * url)
 {
 	char browser_command[400];
 
-	init_thread_log("web_link");
+	LOG_DEBUG_OLD("init thread web_link");
 
 	// build the command line and execute it
 	safe_snprintf (browser_command, sizeof (browser_command), "%s \"%s\"", browser_name, url),
