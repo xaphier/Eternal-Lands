@@ -22,15 +22,64 @@
 namespace eternal_lands
 {
 
+	struct PatchData;
+
 	class CdLodQuadTree
 	{
 		private:
+			struct LodDescription
+			{
+				glm::vec2 morph_params;
+				float range_start;
+				Uint32 patch_size;
+			};
+
+			boost::array<LodDescription, 8> m_lods;
+			glm::uvec2 m_grid_size;
+			glm::vec2 m_start;
+			float m_cell_size;
+			float m_morph_zone_ratio;
+			Uint32 m_lod_count;
+			Uint32 m_patch_size;
+
+		protected:
+			void calculate_lod_params();
+			void add_patch_to_queue(const glm::uvec2 &position,
+				const Uint16 level) const;
+			void select_quads_for_drawing(const Frustum &frustum,
+				const glm::vec3 &camera_position,
+				const glm::uvec2 &position,
+				const PlanesMask mask, const Uint16 level)
+				const;
+			static Uint16 get_quad_order(const glm::vec2 &dir)
+				noexcept;
+			static const glm::uvec2 &get_quad_order(
+				const Uint16 quad_order, const Uint16 index)
+				noexcept;
+
+			static inline glm::uvec2 get_quad_order(
+				const Uint32 offset, const Uint16 quad_order,
+				const Uint16 index) noexcept
+			{
+				return get_quad_order(quad_order, index) *
+					offset;
+			}
 
 		public:
 			CdLodQuadTree(const ImageSharedPtr height_map,
 				const glm::vec3 &scale,
 				const glm::vec3 &offset);
 			~CdLodQuadTree() noexcept;
+
+			inline Uint32 get_max_lod_count() const noexcept
+			{
+				return m_lods.size();
+			}
+
+			static inline Uint32 get_max_patch_count() noexcept
+			{
+				return 4096;
+			}
 
 	};
 
