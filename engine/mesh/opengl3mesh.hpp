@@ -42,6 +42,8 @@ namespace eternal_lands
 		protected:
 			virtual void init_vertex_buffers(
 				const VertexStreamBitset vertex_buffers);
+			virtual void init_vertex_buffers(
+				BitSet32 &used_attributes);
 
 		public:
 			/**
@@ -50,6 +52,7 @@ namespace eternal_lands
 			OpenGl3Mesh(const String &name,
 				const bool static_indices,
 				const bool static_vertices,
+				const bool static_instances,
 				const bool use_simd);
 
 			/**
@@ -77,3 +80,4 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_ed58a002_ed47_43c1_acda_0bd30dbb9d7a */
+

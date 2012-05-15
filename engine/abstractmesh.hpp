@@ -34,13 +34,15 @@ namespace eternal_lands
 			SubMeshVector m_sub_meshs;
 			VertexFormatSharedPtr m_vertex_format;
 			const String m_name;
-			Uint32 m_vertex_count;
 			Uint32 m_index_count;
+			Uint32 m_vertex_count;
+			Uint32 m_instance_count;
 			PrimitiveType m_primitive;
 			bool m_use_16_bit_indices;
 			bool m_use_restart_index;
 			bool m_static_indices;
 			bool m_static_vertices;
+			bool m_static_instances;
 			const bool m_use_simd;
 
 		protected:
@@ -50,6 +52,7 @@ namespace eternal_lands
 			AbstractMesh(const String &name,
 				const bool static_indices,
 				const bool static_vertices,
+				const bool static_instances,
 				const bool use_simd);
 
 			void copy_data(AbstractMesh &mesh) const;
@@ -131,6 +134,13 @@ namespace eternal_lands
 			virtual bool get_supports_base_vertex() const = 0;
 
 			/**
+			 * Returns true if the mesh supports vertex attribute
+			 * divisor (e.g. OpenGL 3.3)
+			 */
+			virtual bool get_supports_vertex_attribute_divisor()
+				const = 0;
+
+			/**
 			 * Draws the sub mesh with the given index.
 			 */
 			void draw(const Uint32 index, const Uint32 instances);
@@ -138,14 +148,17 @@ namespace eternal_lands
 			void init(const VertexFormatSharedPtr &vertex_format,
 				const MeshDataToolSharedPtr &source,
 				const bool static_indices = true,
-				const bool static_vertices = true);
+				const bool static_vertices = true,
+				const bool static_instances = true);
 
 			void init(const VertexFormatSharedPtr &vertex_format,
-				const Uint32 vertex_count,
 				const Uint32 index_count,
+				const Uint32 vertex_count,
+				const Uint32 instance_count,
 				const bool use_16_bit_indices,
 				const bool static_indices = true,
-				const bool static_vertices = true);
+				const bool static_vertices = true,
+				const bool static_instances = true);
 
 			void update_vertex_buffer(
 				const AbstractReadMemorySharedPtr &buffer,
@@ -219,6 +232,15 @@ namespace eternal_lands
 			}
 
 			/**
+			 * Returns the number of instances.
+			 * @result The instance count.
+			 */
+			inline Uint32 get_instance_count() const noexcept
+			{
+				return m_instance_count;
+			}
+
+			/**
 			 * Sets the OpenGL primitive type (points, lines, ..)
 			 */
 			inline void set_primitive(const PrimitiveType primitive)
@@ -287,6 +309,15 @@ namespace eternal_lands
 			inline bool get_static_vertices() const noexcept
 			{
 				return m_static_vertices;
+			}
+
+			/**
+			 * Returns if the instanced vertices are mostly static.
+			 * @result If the instanced vertices are mostly static.
+			 */
+			inline bool get_static_instances() const noexcept
+			{
+				return m_static_instances;
 			}
 
 			/**

@@ -33,6 +33,7 @@ namespace eternal_lands
 		vft_morph_mesh_extra_uv,
 		vft_instanced_mesh_extra_uv,
 		vft_simple_terrain,
+		vft_terrain,
 		vft_sprite,
 		vft_font
 	};
@@ -63,13 +64,15 @@ namespace eternal_lands
 			~MeshBuilder() noexcept;
 			AbstractMeshSharedPtr get_mesh(const String &name,
 				const bool static_indices = true,
-				const bool static_vertices = true) const;
+				const bool static_vertices = true,
+				const bool static_instances = true) const;
 			AbstractMeshSharedPtr get_mesh(
 				const VertexFormatType vertex_format,
 				const MeshDataToolSharedPtr &mesh_data_tool,
 				const String &name,
 				const bool static_indices = true,
-				const bool static_vertices = true) const;
+				const bool static_vertices = true,
+				const bool static_instances = true) const;
 			VertexBuffersSharedPtr get_vertex_buffers(
 				const VertexFormatType vertex_format,
 				const Uint32 vertex_count) const;
