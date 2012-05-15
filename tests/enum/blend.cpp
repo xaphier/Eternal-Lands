@@ -6,13 +6,16 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "exceptions.hpp"
 #include "blendutil.hpp"
-#include "utf.hpp"
 #define BOOST_TEST_MODULE blend
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;
+
+BOOST_AUTO_TEST_CASE(get_blend_count)
+{
+	BOOST_CHECK_GT(el::BlendUtil::get_blend_count(), 0);
+}
 
 BOOST_AUTO_TEST_CASE(get_str)
 {

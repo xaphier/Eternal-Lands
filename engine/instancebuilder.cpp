@@ -563,7 +563,32 @@ namespace eternal_lands
 
 			assert(instanced_objects.size() > 0);
 		}
+#if	0
+/////////////////////////////////
+		SimpleShadowDataSet::const_iterator it, end, last;
+		Uint32 merge_count;
+		static Uint32 total_merge_count = 0;
 
+
+		end = simple_shadow_data_set.end();
+		last = end;
+
+		merge_count = 0;
+
+		for (it = simple_shadow_data_set.begin(); it != end; ++it)
+		{
+			if (it->can_merge_for_shadows(*last))
+			{
+				merge_count++;
+			}
+
+			last = it;
+		}
+		std::cout << "merge_count: " << merge_count << std::endl;
+		total_merge_count += merge_count;
+		std::cout << "total_merge_count: " << total_merge_count << std::endl;
+/////////////////////////////////
+#endif
 		assert(material_names.size() > 0);
 		assert(instanced_objects.size() > 0);
 
