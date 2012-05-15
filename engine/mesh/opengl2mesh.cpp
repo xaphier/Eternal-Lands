@@ -17,8 +17,9 @@ namespace eternal_lands
 {
 
 	OpenGl2Mesh::OpenGl2Mesh(const String &name, const bool static_indices,
-		const bool static_vertices, const bool use_simd):
-		AbstractMesh(name, static_indices, static_vertices, use_simd)
+		const bool static_vertices, const bool static_instances,
+		const bool use_simd): AbstractMesh(name, static_indices,
+			static_vertices, static_instances, use_simd)
 	{
 	}
 
@@ -125,21 +126,29 @@ namespace eternal_lands
 				continue;
 			}
 
-			if (get_vertex_elements(i).get_count() > 0)
+			m_vertex_data[i].reset();
+
+			if ((get_vertex_elements(i).get_count() > 0) &&
+				((get_vertex_elements(i).get_divisor() == 0) ||
+				get_supports_vertex_attribute_divisor()))
 			{
 				m_vertex_data[i] =
 					boost::make_shared<HardwareBuffer>();
 
-				size = get_vertex_count();
+				if (get_vertex_elements(i).get_divisor() > 0)
+				{
+					size = get_instance_count();
+				}
+				else
+				{
+					size = get_vertex_count();
+				}
+
 				size *= get_vertex_elements(i).get_stride();
 
 				m_vertex_data[i]->bind(hbt_vertex);
 				m_vertex_data[i]->set_size(hbt_vertex, size,
 					get_vertices_usage());
-			}
-			else
-			{
-				m_vertex_data[i].reset();
 			}
 		}
 
@@ -180,13 +189,11 @@ namespace eternal_lands
 	void OpenGl2Mesh::bind_vertex_buffers(BitSet32 &used_attributes)
 	{
 		BitSet32 attributes;
-		Uint32 i, count;
-
-		count = m_vertex_data.size();
+		Uint32 i;
 
 		DEBUG_CHECK_GL_ERROR();
 
-		for (i = 0; i < count; ++i)
+		for (i = 0; i < vertex_stream_count; ++i)
 		{
 			bind(get_vertex_elements(i), m_vertex_data[i],
 				attributes);
@@ -315,7 +322,7 @@ namespace eternal_lands
 
 		result = boost::make_shared<OpenGl2Mesh>(get_name(),
 			get_static_indices(), get_static_vertices(),
-			get_use_simd());
+			get_static_instances(), get_use_simd());
 
 		copy_data(*result);
 		clone_buffers(shared_vertex_datas, shared_index_data, *result);
@@ -335,4 +342,10 @@ namespace eternal_lands
 		return false;
 	}
 
+	bool OpenGl2Mesh::get_supports_vertex_attribute_divisor() const
+	{
+		return false;
+	}
+
 }
+

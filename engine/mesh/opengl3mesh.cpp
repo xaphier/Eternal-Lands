@@ -46,14 +46,20 @@ namespace eternal_lands
 	}
 
 	OpenGl3Mesh::OpenGl3Mesh(const String &name, const bool static_indices,
-		const bool static_vertices, const bool use_simd):
-		OpenGl2Mesh(name, static_indices, static_vertices, use_simd)
+		const bool static_vertices, const bool static_instances,
+		const bool use_simd): OpenGl2Mesh(name, static_indices,
+			static_vertices, static_instances, use_simd)
 	{
 		assert(GLEW_VERSION_3_0 || GLEW_ARB_vertex_array_object);
 	}
 
 	OpenGl3Mesh::~OpenGl3Mesh() noexcept
 	{
+	}
+
+	void OpenGl3Mesh::init_vertex_buffers(BitSet32 &used_attributes)
+	{
+		bind_vertex_buffers(used_attributes);
 	}
 
 	void OpenGl3Mesh::init_vertex_buffers(
@@ -69,7 +75,7 @@ namespace eternal_lands
 
 		m_id->bind();
 
-		bind_vertex_buffers(m_used_attributes);
+		init_vertex_buffers(m_used_attributes);
 
 		m_id->unbind();
 
@@ -114,7 +120,7 @@ namespace eternal_lands
 
 		result = boost::make_shared<OpenGl3Mesh>(get_name(),
 			get_static_indices(), get_static_vertices(),
-			get_use_simd());
+			get_static_instances(), get_use_simd());
 
 		copy_data(*result);
 		clone_buffers(shared_vertex_datas, shared_index_data, *result);

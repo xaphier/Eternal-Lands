@@ -10,6 +10,7 @@
 #include "mesh/opengl3mesh.hpp"
 #include "mesh/opengl31mesh.hpp"
 #include "mesh/opengl32mesh.hpp"
+#include "mesh/opengl33mesh.hpp"
 #include "vertexformat.hpp"
 #include "abstractmesh.hpp"
 #include "exceptions.hpp"
@@ -35,6 +36,7 @@ namespace eternal_lands
 			String(UTF8("morph_mesh_extra_uv")),
 			String(UTF8("instanced_mesh_extra_uv")),
 			String(UTF8("simple_terrain")),
+			String(UTF8("terrain")),
 			String(UTF8("sprite")),
 			String(UTF8("font"))
 		};
@@ -49,9 +51,9 @@ namespace eternal_lands
 	{
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
 		VertexDescriptionMap instanced_mesh, simple_terrain_0;
-		VertexDescriptionMap simple_terrain_1;
+		VertexDescriptionMap simple_terrain_1, terrain;
 		VertexDescriptionMap sprite, font;
-		VertexElementsVector simple_terrain;
+		VertexElementsVector simple_terrain, instanced_terrain;
 		VertexElementType position, texture_coordinate, normal;
 
 		if (get_global_vars()->get_opengl_3_0() ||
@@ -61,6 +63,7 @@ namespace eternal_lands
 			texture_coordinate = vet_half2;
 			font[vst_position] = vet_half2;
 			simple_terrain_0[vst_position] = vet_half2;
+			terrain[vst_position] = vet_half2;
 		}
 		else
 		{
@@ -68,6 +71,7 @@ namespace eternal_lands
 			texture_coordinate = vet_float2;
 			font[vst_position] = vet_float2;
 			simple_terrain_0[vst_position] = vet_float2;
+			terrain[vst_position] = vet_float2;
 		}
 
 		mesh[vst_position] = position;
@@ -134,6 +138,8 @@ namespace eternal_lands
 
 		set_format(vft_simple_terrain, simple_terrain);
 
+		set_format(vft_terrain, terrain);
+
 		mesh[vst_texture_coordinate_1] = texture_coordinate;
 		animated_mesh[vst_texture_coordinate_1] = texture_coordinate;
 		morph_mesh[vst_texture_coordinate_1] = texture_coordinate;
@@ -168,13 +174,22 @@ namespace eternal_lands
 	}
 
 	AbstractMeshSharedPtr MeshBuilder::get_mesh(const String &name,
-		const bool static_indices, const bool static_vertices) const
+		const bool static_indices, const bool static_vertices,
+		const bool static_instances) const
 	{
+		if (get_global_vars()->get_opengl_3_3())
+		{
+			return boost::make_shared<OpenGl33Mesh>(name,
+				static_indices, static_vertices,
+				static_instances,
+				get_global_vars()->get_use_simd());
+		}
 
 		if (get_global_vars()->get_opengl_3_2())
 		{
 			return boost::make_shared<OpenGl32Mesh>(name,
 				static_indices, static_vertices,
+				static_instances,
 				get_global_vars()->get_use_simd());
 		}
 
@@ -182,6 +197,7 @@ namespace eternal_lands
 		{
 			return boost::make_shared<OpenGl31Mesh>(name,
 				static_indices, static_vertices,
+				static_instances,
 				get_global_vars()->get_use_simd());
 		}
 
@@ -189,21 +205,25 @@ namespace eternal_lands
 		{
 			return boost::make_shared<OpenGl3Mesh>(name,
 				static_indices, static_vertices,
+				static_instances,
 				get_global_vars()->get_use_simd());
 		}
 
 		return boost::make_shared<OpenGl2Mesh>(name, static_indices,
-			static_vertices, get_global_vars()->get_use_simd());
+			static_vertices, static_instances,
+			get_global_vars()->get_use_simd());
 	}
 
 	AbstractMeshSharedPtr MeshBuilder::get_mesh(
 		const VertexFormatType vertex_format,
 		const MeshDataToolSharedPtr &mesh_data_tool, const String &name,
-		const bool static_indices, const bool static_vertices) const
+		const bool static_indices, const bool static_vertices,
+		const bool static_instances) const
 	{
 		AbstractMeshSharedPtr result;
 
-		result = get_mesh(name, static_indices, static_vertices);
+		result = get_mesh(name, static_indices, static_vertices,
+			static_instances);
 
 		result->init(get_vertex_format(vertex_format), mesh_data_tool);
 

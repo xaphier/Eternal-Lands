@@ -17,8 +17,8 @@
 
 /**
  * @file
- * @brief The @c class OpenGl3Mesh.
- * This file contains the @c class OpenGl3Mesh.
+ * @brief The @c class OpenGl32Mesh.
+ * This file contains the @c class OpenGl32Mesh.
  */
 namespace eternal_lands
 {
@@ -40,6 +40,7 @@ namespace eternal_lands
 			OpenGl32Mesh(const String &name,
 				const bool static_indices,
 				const bool static_vertices,
+				const bool static_instances,
 				const bool use_simd);
 
 			/**
@@ -72,3 +73,4 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_cfbf3d73_d078_4803_ab3c_bdc9507a04c8 */
+

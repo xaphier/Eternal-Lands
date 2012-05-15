@@ -96,6 +96,7 @@ namespace eternal_lands
 			OpenGl2Mesh(const String &name,
 				const bool static_indices,
 				const bool static_vertices,
+				const bool static_instances,
 				const bool use_simd);
 
 			/**
@@ -129,6 +130,8 @@ namespace eternal_lands
 				 const Uint16 index);
 			virtual bool get_supports_base_vertex() const;
 			virtual bool get_supports_restart_index() const;
+			virtual bool get_supports_vertex_attribute_divisor()
+				const;
 
 	};
 

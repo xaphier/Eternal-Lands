@@ -1,41 +1,49 @@
 /****************************************************************************
- *            opengl31mesh.hpp
+ *            opengl33mesh.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_44cee017_6c76_4f62_ba04_4752efb0a6b6
-#define	UUID_44cee017_6c76_4f62_ba04_4752efb0a6b6
+#ifndef	UUID_34cfccfb_1db3_4aef_990e_b6299747c7c9
+#define	UUID_34cfccfb_1db3_4aef_990e_b6299747c7c9
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "opengl3mesh.hpp"
+#include "opengl32mesh.hpp"
 
 /**
  * @file
- * @brief The @c class OpenGl31Mesh.
- * This file contains the @c class OpenGl31Mesh.
+ * @brief The @c class OpenGl33Mesh.
+ * This file contains the @c class OpenGl33Mesh.
  */
 namespace eternal_lands
 {
 
 	/**
-	 * @brief @c class for meshs in a format for OpenGL 3.1.
+	 * @brief @c class for meshs in a format for OpenGL 3.3.
 	 *
-	 * @c class for meshs in a format for OpenGL 3.1 using hardware
+	 * @c class for meshs in a format for OpenGL 3.3 using hardware
 	 * buffers, shaders and instancing.
 	 */
-	class OpenGl31Mesh: public OpenGl3Mesh
+	class OpenGl33Mesh: public OpenGl32Mesh
 	{
+		private:
+			static void inti_divisor(
+				const VertexElements &vertex_elements);
+
+		protected:
+			virtual void init_vertex_buffers(
+				BitSet32 &used_attributes);
+
 		public:
 			/**
 			 * Default constructor.
 			 */
-			OpenGl31Mesh(const String &name,
+			OpenGl33Mesh(const String &name,
 				const bool static_indices,
 				const bool static_vertices,
 				const bool static_instances,
@@ -44,10 +52,7 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~OpenGl31Mesh() noexcept;
-
-			virtual void bind(BitSet32 &used_attributes);
-			virtual void unbind();
+			virtual ~OpenGl33Mesh() noexcept;
 			/**
 			 * Clones the data of the mesh. Used for animated
 			 * actors and terrain.
@@ -60,18 +65,12 @@ namespace eternal_lands
 			virtual AbstractMeshSharedPtr clone(
 				const VertexStreamBitset shared_vertex_datas,
 				const bool shared_index_data) const;
-			virtual bool get_supports_restart_index() const;
-
-			/**
-			 * Draws the mesh using the given draw data.
-			 */
-			virtual void draw(const MeshDrawData &draw_data,
-				const Uint32 instances,
-				const PrimitiveType primitive);
+			virtual bool get_supports_vertex_attribute_divisor()
+				const;
 
 	};
 
 }
 
-#endif	/* UUID_44cee017_6c76_4f62_ba04_4752efb0a6b6 */
+#endif	/* UUID_34cfccfb_1db3_4aef_990e_b6299747c7c9 */
 

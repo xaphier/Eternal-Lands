@@ -22,11 +22,13 @@ namespace eternal_lands
 
 	AbstractMesh::AbstractMesh(const String &name,
 		const bool static_indices, const bool static_vertices,
-		const bool use_simd): m_name(name), m_vertex_count(0),
-		m_index_count(0), m_primitive(pt_triangles),
+		const bool static_instances, const bool use_simd): m_name(name),
+		m_index_count(0), m_vertex_count(0), m_instance_count(0),
+		m_primitive(pt_triangles),
 		m_use_16_bit_indices(true), m_use_restart_index(false),
 		m_static_indices(static_indices),
-		m_static_vertices(static_vertices), m_use_simd(use_simd)
+		m_static_vertices(static_vertices),
+		m_static_instances(static_instances), m_use_simd(use_simd)
 	{
 		assert(!get_name().get().empty());
 	}
@@ -37,7 +39,8 @@ namespace eternal_lands
 
 	void AbstractMesh::init(const VertexFormatSharedPtr &vertex_format,
 		const MeshDataToolSharedPtr &source,
-		const bool static_indices, const bool static_vertices)
+		const bool static_indices, const bool static_vertices,
+		const bool static_instances)
 	{
 		AbstractWriteMemorySharedPtr buffer;
 		VertexStreamBitset used_vertex_buffers;
@@ -62,13 +65,15 @@ namespace eternal_lands
 
 		m_use_16_bit_indices = source->get_16_bit_indices();
 		m_vertex_format = vertex_format;
-		m_vertex_count = source->get_vertex_count();
 		m_index_count = source->get_index_count();
+		m_vertex_count = source->get_vertex_count();
+		m_instance_count = 0;
 		m_sub_meshs = source->get_sub_meshs();
 		m_primitive = source->get_primitive();
 		m_use_restart_index = source->get_use_restart_index();
 		m_static_indices = static_indices;
 		m_static_vertices = static_vertices;
+		m_static_instances = static_instances;
 
 		LOG_DEBUG(lt_mesh, UTF8("Mesh '%1%' use_16_bit_indices: %2%, "
 			"vertex_count: %3%, index_count: %4%, sub_mesh_count:"
@@ -118,9 +123,10 @@ namespace eternal_lands
 	}
 
 	void AbstractMesh::init(const VertexFormatSharedPtr &vertex_format,
-		const Uint32 vertex_count, const Uint32 index_count,
-		const bool use_16_bit_indices, const bool static_indices,
-		const bool static_vertices)
+		const Uint32 index_count, const Uint32 vertex_count,
+		const Uint32 instance_count, const bool use_16_bit_indices,
+		const bool static_indices, const bool static_vertices,
+		const bool static_instances)
 	{
 		if (vertex_count == 0)
 		{
@@ -132,10 +138,12 @@ namespace eternal_lands
 
 		m_use_16_bit_indices = use_16_bit_indices;
 		m_vertex_format = vertex_format;
-		m_vertex_count = vertex_count;
 		m_index_count = index_count;
+		m_vertex_count = vertex_count;
+		m_instance_count = instance_count;
 		m_static_indices = static_indices;
 		m_static_vertices = static_vertices;
+		m_static_instances = static_instances;
 
 		LOG_DEBUG(lt_mesh, UTF8("Mesh '%1%' use_16_bit_indices: %2%, "
 			"vertex_count: %3%, index_count: %4%"), get_name() %
