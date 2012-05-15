@@ -1363,6 +1363,7 @@ int set_var_OPT_INT(const char *str, int new_value)
 		int widget_id = our_vars.var[var_index]->widgets.widget_id;
 		// This bit belongs in the widgets module
 		widget_list *widget = widget_find(tab_win_id, widget_id);
+		our_vars.var[var_index]->saved = 0;
 		if(widget != NULL && widget->widget_info != NULL)
 		{
 			spinbutton *button = widget->widget_info;
@@ -1383,7 +1384,7 @@ void change_language(const char *new_lang)
 {
 	int var_index;
 
-	LOG_INFO_OLD("Language changed, was [%s] now [%s]\n",  lang, new_lang);
+	LOG_DEBUG_OLD("Language changed, was [%s] now [%s]\n",  lang, new_lang);
 	/* guard against being the same string */
 	if (strcmp(lang, new_lang) != 0)
 		safe_strncpy(lang, new_lang, sizeof(lang));
