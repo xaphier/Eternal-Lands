@@ -362,7 +362,7 @@ void load_recipes (){
 	/* if the file exists but is not a valid size, don't use it */
 	if ((file_size > 0) && (file_size % recipe_size != 0))
 	{
-		LOG_ERROR("%s: Invalid format (size mismatch) \"%s\"\n", reg_error_str, fname);
+		LOG_ERROR_OLD("%s: Invalid format (size mismatch) \"%s\"\n", reg_error_str, fname);
 		return;
 	}
 
