@@ -42,9 +42,9 @@
 		<shader_source>shaders/sources/exp_shadow_mapping.xml</shader_source>
 		<shader_source>shaders/sources/tbn_matrix.xml</shader_source>
 		<shader_source>shaders/sources/cook_torrance_light.xml</shader_source>
-		<shader_source>shaders/sources/terrain_depth_simple.xml</shader_source>
-		<shader_source>shaders/sources/terrain_normal_simple.xml</shader_source>
-		<shader_source>shaders/sources/terrain_tangent_simple.xml</shader_source>
+		<shader_source>shaders/sources/simple_terrain_depth.xml</shader_source>
+		<shader_source>shaders/sources/simple_terrain_normal.xml</shader_source>
+		<shader_source>shaders/sources/simple_terrain_tangent.xml</shader_source>
 		<shader_source>shaders/sources/emission.xml</shader_source>
 		<shader_source>shaders/sources/animated_uv.xml</shader_source>
 		<shader_source>shaders/sources/animated_extra_uv.xml</shader_source>
@@ -56,6 +56,9 @@
 		<shader_source>shaders/sources/albedo_terrain_mapping.xml</shader_source>
 		<shader_source>shaders/sources/no_normal_mapping_terrain.xml</shader_source>
 		<shader_source>shaders/sources/terrain_uv.xml</shader_source>
+		<shader_source>shaders/sources/cdlod_terrain_depth.xml</shader_source>
+		<shader_source>shaders/sources/cdlod_terrain_normal.xml</shader_source>
+		<shader_source>shaders/sources/cdlod_terrain_tangent.xml</shader_source>
 	</shader_sources>
 	<sources>
 		<world_depth_transformation>default</world_depth_transformation>

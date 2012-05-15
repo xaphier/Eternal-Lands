@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>cdlod-terrain</name>
+ <type>world_normal_transformation</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>terrain_instances</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1024</scale>
+    </parameter>
+    <parameter>
+     <name>terrain_lod_offset</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>terrain_texture_coodrinate</name>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>vertex_normal_sampler</name>
+     <type>sampler2DRect</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>vertex_vector_field_sampler</name>
+     <type>sampler2DRect</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_normal</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_position</name>
+     <type>vec3</type>
+     <qualifier>out</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+    <parameter>
+     <name>world_transformation</name>
+     <type>mat2x4</type>
+     <qualifier>in</qualifier>
+     <size>one</size>
+     <scale>1</scale>
+    </parameter>
+   </parameters>
+   <source>mat2x4 terrain_instance;
+vec3 vertex_position;
+vec2 fenc, morph_dir, dist;
+float f, g, morph;
+
+terrain_instance = terrain_instances[gl_InstanceID];
+
+morph_dir = fract(position.xy * 0.5) * 2.0 * terrain_instance[0].z;
+vertex_position = vec3(terrain_instance.xy + position.xy * terrain_instance[0].z, 0.0);
+dist = length(vertex_position * world_transformation[1].w + terrain_lod_offset);
+morph = clamp(dist * terrain_instance[1].z + terrain_instance[1].w, 0.0, 1.0);
+vertex_position.xy += morph_dir * morph;
+world_position = textureLod(vertex_vector_field_sampler, vertex_position.xy, 0).rgb;
+world_position.xy = world_position.xy * 2.0 - 1.0;
+world_position = world_position * terrain_vector_scale + vertex_position;
+
+fenc = textureLod(vertex_normal_sampler, vertex_position.xy, 0).rg * 3.968871595 - 1.984435798;
+f = dot(fenc, fenc);
+g = sqrt(1.0f - f / 4.0);
+world_normal = vec3(fenc * g, 1.0 - f / 2.0);
+
+world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
+world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
+terrain_texture_coodrinate = vertex_position.xy;
+</source>
+   <version>150</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

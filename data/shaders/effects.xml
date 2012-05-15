@@ -74,7 +74,19 @@
 	</effect>
 	<effect>
 		<name>simple-terrain</name>
-		<world_transformation>terrain</world_transformation>
+		<world_transformation>simple-terrain</world_transformation>
+		<texture_coodrinates>terrain</texture_coodrinates>
+		<albedo_mapping>terrain</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<transparent>false</transparent>
+		<lighting>true</lighting>
+	</effect>
+	<effect>
+		<name>cdlod-terrain</name>
+		<world_transformation>cdlod-terrain</world_transformation>
 		<texture_coodrinates>terrain</texture_coodrinates>
 		<albedo_mapping>terrain</albedo_mapping>
 		<normal_mapping>disabled</normal_mapping>

@@ -83,7 +83,14 @@ namespace eternal_lands
 		/**
 		 * vec4(z_near, z_far, z_near + z_far, z_far - z_near)
 		 */
-		apt_z_params
+		apt_z_params,
+		/**
+		 * mat2x4(x_offset, y_offset, scale, lod_level, morph_start,
+		 * morph_end, 1.0 / (morph_end - morph_start),
+		 * -morph_start / (morph_end - morph_start))
+		 */
+		apt_terrain_instances,
+		apt_terrain_lod_offset
 	};
 	/**
 	 * @}
