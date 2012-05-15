@@ -42,8 +42,16 @@ namespace eternal_lands
 				const glm::uvec2 &tile_offset,
 				const glm::vec2 &position_scale,
 				const Uint32 vertex_count,
-				const Uint32 index_count,
-				const bool low_quality);
+				const Uint32 index_count);
+			void set_terrain_page_low_quality(
+				const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
+				const AbstractMeshSharedPtr &mesh,
+				const glm::uvec2 &tile_offset,
+				const glm::vec2 &position_scale,
+				const Uint32 vertex_count,
+				const Uint32 index_count);
 
 		public:
 			SimpleTerrainManager(const ImageSharedPtr &vector_map,

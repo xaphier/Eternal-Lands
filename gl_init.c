@@ -51,7 +51,7 @@ float anisotropic_filter = 1.0f;
 int disable_gamma_adjust = 0;
 float gamma_var = 1.00f;
 float perspective = 0.15f;
-float near_plane = 0.1f; // don't cut off anything
+float near_plane = 0.5f; // don't cut off anything
 float far_plane = 100.0;   // LOD helper. Cull distant objects. Lower value == higher framerates.
 float far_reflection_plane = 100.0;   // LOD helper. Cull distant reflected objects. Lower value == higher framerates.
 int gl_extensions_loaded = 0;

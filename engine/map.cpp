@@ -278,4 +278,24 @@ namespace eternal_lands
 		m_particles.push_back(particle);
 	}
 
+	glm::vec4 Map::get_terrain_size_data() const
+	{
+		if (m_terrain.get() != nullptr)
+		{
+			return m_terrain->get_terrain_size_data();
+		}
+
+		return glm::vec4(0.0f);
+	}
+
+	glm::vec2 Map::get_terrain_size() const
+	{
+		if (m_terrain.get() != nullptr)
+		{
+			return m_terrain->get_terrain_size();
+		}
+
+		return glm::vec2(0.0f);
+	}
+
 }

@@ -277,7 +277,7 @@ namespace eternal_lands
 			format = tft_r5g6b5;
 		}
 
-		m_clipmap.rebuild(glm::vec2(256.0f),
+		m_clipmap.rebuild(m_map->get_terrain_size(),
 			get_global_vars()->get_view_distance(),
 			get_global_vars()->get_clipmap_world_size(),
 			get_global_vars()->get_clipmap_size(),
@@ -621,8 +621,7 @@ namespace eternal_lands
 			program->set_parameter(apt_split_distances,
 				m_scene_view.get_split_distances());
 			program->set_parameter(apt_terrain_scale,
-				glm::vec4(256.0f, 256.0f,
-					1.0f / 256.0f, 1.0f / 256.0f));
+				m_map->get_terrain_size_data());
 			program->set_parameter(apt_terrain_texture_size,
 				m_clipmap.get_terrain_texture_size());
 			program->set_parameter(apt_z_params,
@@ -1146,8 +1145,8 @@ namespace eternal_lands
 			STRING_MARKER(UTF8("Updating terrain slice %1%"),
 				slice);
 
-			tile_scale = 256.0f / glm::vec2(get_global_vars(
-				)->get_tile_world_size());
+			tile_scale = m_map->get_terrain_size() / glm::vec2(
+				get_global_vars()->get_tile_world_size());
 
 			m_clipmap.update_slice(slice);
 
@@ -1184,8 +1183,8 @@ namespace eternal_lands
 		glm::vec2 tile_scale;
 		Uint32 i, width, height, count;
 
-		tile_scale = 256.0f /
-			glm::vec2(get_global_vars()->get_tile_world_size());
+		tile_scale = m_map->get_terrain_size() / glm::vec2(
+			get_global_vars()->get_tile_world_size());
 
 		width = m_clipmap_frame_buffer->get_width();
 		height = m_clipmap_frame_buffer->get_height();

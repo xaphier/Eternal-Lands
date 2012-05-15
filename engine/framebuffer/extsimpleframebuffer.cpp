@@ -159,6 +159,8 @@ namespace eternal_lands
 	{
 		GLenum mask;
 
+		glClearColor(color.r, color.g, color.b, color.a);
+
 		mask = 0;
 
 		if (get_depth_buffer())
@@ -183,6 +185,9 @@ namespace eternal_lands
 		const float depth)
 	{
 		GLenum mask;
+
+		glClearColor(color.r, color.g, color.b, color.a);
+		glClearDepth(depth);
 
 		mask = 0;
 

@@ -27,8 +27,18 @@ namespace eternal_lands
 	{
 		private:
 			TerrainData m_data;
+			glm::vec4 m_terrain_size_data;
 
 		protected:
+			inline void set_terrain_size(
+				const glm::uvec2 &terrain_size) noexcept
+			{
+				m_terrain_size_data.x = terrain_size.x;
+				m_terrain_size_data.y = terrain_size.y;
+				m_terrain_size_data.z = 1.0f / terrain_size.x;
+				m_terrain_size_data.w = 1.0f / terrain_size.y;
+			}
+
 			inline void set_data(const TerrainData &data)
 			{
 				m_data = data;
@@ -106,6 +116,17 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_data.get_translation();
+			}
+
+			inline glm::vec2 get_terrain_size() const noexcept
+			{
+				return glm::vec2(m_terrain_size_data);
+			}
+
+			inline const glm::vec4 &get_terrain_size_data() const
+				noexcept
+			{
+				return m_terrain_size_data;
 			}
 
 			inline const TerrainData &get_data() const noexcept
