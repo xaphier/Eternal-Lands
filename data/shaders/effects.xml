@@ -84,7 +84,7 @@
 		<transparent>false</transparent>
 		<lighting>true</lighting>
 	</effect>
-	<effect>
+<!--	<effect>
 		<name>cdlod-terrain</name>
 		<world_transformation>cdlod-terrain</world_transformation>
 		<texture_coodrinates>terrain</texture_coodrinates>
@@ -95,7 +95,7 @@
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>true</lighting>
-	</effect>
+	</effect>-->
 	<effect>
 		<name>textured-screen-quad</name>
 		<world_transformation>none</world_transformation>
