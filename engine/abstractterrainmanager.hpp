@@ -30,6 +30,7 @@ namespace eternal_lands
 			glm::vec4 m_terrain_size_data;
 
 		protected:
+			AbstractTerrainManager();
 			inline void set_terrain_size(
 				const glm::uvec2 &terrain_size) noexcept
 			{
@@ -78,7 +79,6 @@ namespace eternal_lands
 			}
 
 		public:
-			AbstractTerrainManager();
 			virtual ~AbstractTerrainManager() noexcept;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const = 0;

@@ -76,10 +76,10 @@ float f, g, morph;
 
 terrain_instance = terrain_instances[gl_InstanceID];
 
-morph_dir = fract(position.xy * 0.5) * 2.0 * terrain_instance[0].z;
+morph_dir = fract(position.xy * 0.5) * terrain_instance[0].w;
 vertex_position = vec3(terrain_instance.xy + position.xy * terrain_instance[0].z, 0.0);
 dist = length(vertex_position * world_transformation[1].w + terrain_lod_offset);
-morph = clamp(dist * terrain_instance[1].z + terrain_instance[1].w, 0.0, 1.0);
+morph = clamp(dist * terrain_instance[1].x + terrain_instance[1].y, 0.0, 1.0);
 vertex_position.xy += morph_dir * morph;
 world_position = textureLod(vertex_vector_field_sampler, vertex_position.xy, 0).rgb;
 world_position.xy = world_position.xy * 2.0 - 1.0;

@@ -14,35 +14,89 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String uniform_buffer_names[] =
+		class UniformBufferTypeData
 		{
-			String(UTF8("none")),
-			String(UTF8("scene_data")),
-			String(UTF8("material_data")),
-			String(UTF8("terrain_data"))
+			private:
+				const String m_name;
+				const String m_identifier;
+
+			public:
+				inline UniformBufferTypeData(const String &name,
+					const String &identifier): m_name(name),
+					m_identifier(identifier)
+				{
+				}
+
+				inline ~UniformBufferTypeData() noexcept
+				{
+				}
+
+				inline const String &get_name() const noexcept
+				{
+					return m_name;
+				}
+
+				inline const String &get_identifier() const
+					noexcept
+				{
+					return m_identifier;
+				}
+
 		};
 
-		const Uint32 uniform_buffer_names_count =
-			sizeof(uniform_buffer_names) / sizeof(String);
+		const UniformBufferTypeData uniform_buffer_type_datas[] =
+		{
+			UniformBufferTypeData(String(UTF8("scene")),
+				String(UTF8("Scene"))),
+			UniformBufferTypeData(String(UTF8("material")),
+				String(UTF8("Material"))),
+			UniformBufferTypeData(String(UTF8("terrain")),
+				String(UTF8("Terrain"))),
+			UniformBufferTypeData(String(UTF8("terrain_instances")),
+				String(UTF8("TerrainInstances")))
+		};
+
+		const Uint32 uniform_buffer_type_datas_count =
+			sizeof(uniform_buffer_type_datas) /
+				sizeof(UniformBufferTypeData);
 
 	}
 
-	const String &UniformBufferUtil::get_str(
+	const String &UniformBufferUtil::get_identifier(
 		const UniformBufferType uniform_buffer)
 	{
-		if (uniform_buffer_names_count <= uniform_buffer)
+		if (uniform_buffer_type_datas_count <= uniform_buffer)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					uniform_buffer_names_count - 1)
+					uniform_buffer_type_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					uniform_buffer))
 				<< boost::errinfo_type_info_name(UTF8(
 					"UniformBufferType")));
 		}
 
-		return uniform_buffer_names[uniform_buffer];
+		return uniform_buffer_type_datas[
+			uniform_buffer].get_identifier();
+	}
+
+	const String &UniformBufferUtil::get_str(
+		const UniformBufferType uniform_buffer)
+	{
+		if (uniform_buffer_type_datas_count <= uniform_buffer)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_range_min(0)
+				<< errinfo_range_max(
+					uniform_buffer_type_datas_count - 1)
+				<< errinfo_range_index(static_cast<Uint32>(
+					uniform_buffer))
+				<< boost::errinfo_type_info_name(UTF8(
+					"UniformBufferType")));
+		}
+
+		return uniform_buffer_type_datas[uniform_buffer].get_name();
 	}
 
 	UniformBufferType UniformBufferUtil::get_uniform_buffer(
@@ -51,7 +105,7 @@ namespace eternal_lands
 		Uint32 i;
 		UniformBufferType uniform_buffer;
 
-		for (i = 0; i < uniform_buffer_names_count; ++i)
+		for (i = 0; i < uniform_buffer_type_datas_count; ++i)
 		{
 			uniform_buffer = static_cast<UniformBufferType>(i);
 
@@ -73,7 +127,7 @@ namespace eternal_lands
 		Uint32 i;
 		UniformBufferType tmp;
 
-		for (i = 0; i < uniform_buffer_names_count; ++i)
+		for (i = 0; i < uniform_buffer_type_datas_count; ++i)
 		{
 			tmp = static_cast<UniformBufferType>(i);
 
@@ -90,7 +144,7 @@ namespace eternal_lands
 
 	Uint32 UniformBufferUtil::get_uniform_buffer_count() noexcept
 	{
-		return uniform_buffer_names_count;
+		return uniform_buffer_type_datas_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const UniformBufferType value)
@@ -112,3 +166,4 @@ namespace eternal_lands
 	}
 
 }
+

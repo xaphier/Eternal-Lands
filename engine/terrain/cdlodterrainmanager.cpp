@@ -11,9 +11,12 @@ namespace eternal_lands
 {
 
 	CdLodTerrainManager::CdLodTerrainManager(
-		const CodecManagerSharedPtr &codec_manager,
-		const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars)
+		const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
+		const GlobalVarsSharedPtr &global_vars,
+		const MeshBuilderSharedPtr &mesh_builder,
+		const MaterialSharedPtrVector &materials)
 	{
 	}
 

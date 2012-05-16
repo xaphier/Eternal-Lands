@@ -35,8 +35,8 @@ namespace eternal_lands
 			};
 
 			boost::array<LodDescription, 8> m_lods;
+			glm::vec3 m_min, m_max;
 			glm::uvec2 m_grid_size;
-			glm::vec2 m_start;
 			float m_cell_size;
 			float m_morph_zone_ratio;
 			Uint32 m_lod_count;
@@ -45,12 +45,13 @@ namespace eternal_lands
 		protected:
 			void calculate_lod_params();
 			void add_patch_to_queue(const glm::uvec2 &position,
-				const Uint16 level) const;
+				const Uint16 level, Mat2x4Vector &instances)
+				const;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera_position,
 				const glm::uvec2 &position,
-				const PlanesMask mask, const Uint16 level)
-				const;
+				const PlanesMask mask, const Uint16 level,
+				Mat2x4Vector &instances) const;
 			static Uint16 get_quad_order(const glm::vec2 &dir)
 				noexcept;
 			static const glm::uvec2 &get_quad_order(
@@ -66,10 +67,12 @@ namespace eternal_lands
 			}
 
 		public:
-			CdLodQuadTree(const ImageSharedPtr height_map,
-				const glm::vec3 &scale,
-				const glm::vec3 &offset);
+			CdLodQuadTree(const glm::vec3 &min,
+				const glm::vec3 &max);
 			~CdLodQuadTree() noexcept;
+			void select_quads_for_drawing(const Frustum &frustum,
+				const glm::vec3 &camera,
+				Mat2x4Vector &instances) const;
 
 			inline Uint32 get_max_lod_count() const noexcept
 			{

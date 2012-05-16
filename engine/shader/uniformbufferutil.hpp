@@ -24,15 +24,17 @@ namespace eternal_lands
 
 	enum UniformBufferType
 	{
-		ubt_none,
-		ubt_scene_data,
-		ubt_material_data,
-		ubt_terrain_data
+		ubt_scene,
+		ubt_material,
+		ubt_terrain,
+		ubt_terrain_instances
 	};
 
 	class UniformBufferUtil
 	{
 		public:
+			static const String &get_identifier(
+				const UniformBufferType uniform_buffer);
 			static const String &get_str(
 				const UniformBufferType uniform_buffer);
 			static UniformBufferType get_uniform_buffer(
@@ -49,3 +51,4 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_90d5e594_bf25_4f07_91a3_531559cb9250 */
+

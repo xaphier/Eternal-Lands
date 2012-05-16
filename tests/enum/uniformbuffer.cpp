@@ -30,6 +30,19 @@ BOOST_AUTO_TEST_CASE(get_str)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(get_identifier)
+{
+	Uint32 i, count;
+
+	count = el::UniformBufferUtil::get_uniform_buffer_count();
+
+	for (i = 0; i < count; ++i)
+	{
+		BOOST_CHECK_NO_THROW(el::UniformBufferUtil::get_identifier(
+			static_cast<el::UniformBufferType>(i)));
+	}
+}
+
 BOOST_AUTO_TEST_CASE(convert)
 {
 	Uint32 i, count;
@@ -66,12 +79,24 @@ BOOST_AUTO_TEST_CASE(get_uniform_buffer)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
-	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_str(el::ubt_none).get(),
-		"none");
+	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_str(el::ubt_scene).get(),
+		"scene");
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_str(
-		el::ubt_scene_data).get(), "scene_data");
+		el::ubt_material).get(), "material");
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_str(
-		el::ubt_material_data).get(), "material_data");
+		el::ubt_terrain).get(), "terrain");
 	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_str(
-		el::ubt_terrain_data).get(), "terrain_data");
+		el::ubt_terrain_instances).get(), "terrain_instances");
+}
+
+BOOST_AUTO_TEST_CASE(get_identifier_value)
+{
+	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_identifier(
+		el::ubt_scene).get(), "Scene");
+	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_identifier(
+		el::ubt_material).get(), "Material");
+	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_identifier(
+		el::ubt_terrain).get(), "Terrain");
+	BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_identifier(
+		el::ubt_terrain_instances).get(), "TerrainInstances");
 }

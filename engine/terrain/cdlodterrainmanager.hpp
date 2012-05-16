@@ -26,15 +26,17 @@ namespace eternal_lands
 	class CdLodTerrainManager: public AbstractTerrainManager
 	{
 		private:
-			ImageSharedPtr m_height_image;
+			ImageSharedPtr m_vector_map;
 			ImageSharedPtr m_normal_image;
 			ImageSharedPtr m_dudv_image;
 
 		public:
-			CdLodTerrainManager(
-				const CodecManagerSharedPtr &codec_manager,
-				const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars);
+			CdLodTerrainManager(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
+				const GlobalVarsSharedPtr &global_vars,
+				const MeshBuilderSharedPtr &mesh_builder,
+				const MaterialSharedPtrVector &materials);
 			virtual ~CdLodTerrainManager() noexcept;
 
 //			get_visible_terrain_pages();
