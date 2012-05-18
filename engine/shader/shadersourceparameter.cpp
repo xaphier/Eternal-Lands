@@ -532,7 +532,7 @@ namespace eternal_lands
 		}
 		while (XmlUtil::next(it, true));
 
-//		check();
+		check();
 	}
 
 	void ShaderSourceParameter::save_xml(const XmlWriterSharedPtr &writer)
