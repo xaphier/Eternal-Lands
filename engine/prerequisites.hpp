@@ -290,6 +290,7 @@ namespace eternal_lands
 	class TextureFont;
 	class TextureFontCache;
 	class Transformation;
+	class UniformBufferUsage;
 	class UvTool;
 	class VertexElement;
 	class VertexElements;

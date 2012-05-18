@@ -13,18 +13,10 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>terrain_instances</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1024</scale>
+     <auto_parameter>terrain_instances</auto_parameter>
     </parameter>
     <parameter>
-     <name>terrain_lod_offset</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>terrain_lod_offset</auto_parameter>
     </parameter>
     <parameter>
      <name>terrain_texture_coodrinate</name>
@@ -34,46 +26,27 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>vertex_normal_sampler</name>
+     <sampler_parameter>vertex_normal_sampler</sampler_parameter>
      <type>sampler2DRect</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>vertex_vector_field_sampler</name>
+     <sampler_parameter>vertex_vector_field_sampler</sampler_parameter>
      <type>sampler2DRect</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_normal</name>
-     <type>vec3</type>
+     <common_parameter>world_normal</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_tangent</name>
-     <type>vec3</type>
+     <common_parameter>world_tangent</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformation</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>world_transformation</auto_parameter>
     </parameter>
    </parameters>
    <source>mat2x4 terrain_instance;

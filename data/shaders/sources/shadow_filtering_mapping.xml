@@ -6,25 +6,15 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>shadow</name>
-     <type>float</type>
+     <common_parameter>shadow</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>shadow_camera</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>shadow_camera</auto_parameter>
     </parameter>
     <parameter>
-     <name>shadow_sampler</name>
+     <sampler_parameter>shadow_sampler</sampler_parameter>
      <type>sampler2DArray</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
      <name>shadow_uv</name>
@@ -34,25 +24,15 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>split_distances</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>split_distances</auto_parameter>
     </parameter>
     <parameter>
-     <name>view_position</name>
-     <type>vec3</type>
+     <common_parameter>view_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>vec2 uv;

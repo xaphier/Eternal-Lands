@@ -100,7 +100,7 @@ namespace eternal_lands
 	{
 		public:
 			static const String &get_str(
-				const AutoParameterType auto_paramter);
+				const AutoParameterType auto_parameter);
 			static ParameterType get_type(
 				const AutoParameterType auto_parameter);
 			static ParameterSizeType get_size(

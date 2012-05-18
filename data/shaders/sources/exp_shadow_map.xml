@@ -6,25 +6,15 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>shadow_camera</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>shadow_camera</auto_parameter>
     </parameter>
     <parameter>
-     <name>shadow_map_data</name>
-     <type>vec3</type>
+     <common_parameter>shadow_map_data</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>shadow_map_data = vec3(exp(abs(shadow_camera.z - world_position.z)));

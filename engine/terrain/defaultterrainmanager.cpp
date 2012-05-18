@@ -249,11 +249,11 @@ namespace eternal_lands
 
 //		uvs.relaxed_uv(use_simd);
 
-		material.set_texture(get_albedo_map(0), stt_albedo_0);
-		material.set_texture(get_albedo_map(1), stt_albedo_1);
-		material.set_texture(get_albedo_map(2), stt_albedo_2);
-		material.set_texture(get_albedo_map(3), stt_albedo_3);
-		material.set_texture(get_blend_map(), stt_blend);
+		material.set_texture(get_albedo_map(0), spt_albedo_0);
+		material.set_texture(get_albedo_map(1), spt_albedo_1);
+		material.set_texture(get_albedo_map(2), spt_albedo_2);
+		material.set_texture(get_albedo_map(3), spt_albedo_3);
+		material.set_texture(get_blend_map(), spt_blend);
 
 		material.set_effect(effect);
 

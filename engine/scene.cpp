@@ -25,7 +25,7 @@
 #include "abstractmesh.hpp"
 #include "shader/autoparameterutil.hpp"
 #include "abstractframebuffer.hpp"
-#include "shader/shadertextureutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 #include "globalvars.hpp"
 #include "subobject.hpp"
 #include "materialdescription.hpp"
@@ -886,7 +886,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.switch_texture(stt_shadow,
+		m_state_manager.switch_texture(spt_shadow,
 			m_shadow_frame_buffer->get_texture());
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1218,7 +1218,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.switch_texture(stt_clipmap,
+		m_state_manager.switch_texture(spt_clipmap,
 			m_clipmap_frame_buffer->get_texture());
 
 		if (get_global_vars()->get_opengl_3_0())
@@ -1263,13 +1263,13 @@ namespace eternal_lands
 
 		if (m_scene_view.get_shadow_map_count() > 0)
 		{
-			m_state_manager.switch_texture(stt_shadow,
+			m_state_manager.switch_texture(spt_shadow,
 				m_shadow_frame_buffer->get_texture());
 		}
 
 		if (m_clipmap_frame_buffer.get() != nullptr)
 		{
-			m_state_manager.switch_texture(stt_clipmap,
+			m_state_manager.switch_texture(spt_clipmap,
 				m_clipmap_frame_buffer->get_texture());
 		}
 

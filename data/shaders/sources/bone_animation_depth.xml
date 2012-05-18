@@ -20,11 +20,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>bones</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>bone_count</size>
-     <scale>1</scale>
+     <auto_parameter>bones</auto_parameter>
     </parameter>
     <parameter>
      <name>position</name>
@@ -34,18 +30,11 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformation</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>world_transformation</auto_parameter>
     </parameter>
    </parameters>
    <source>mat2x4 dual, m;
@@ -118,11 +107,7 @@ world_position += world_transformation[1].xyz;
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>bones</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>bone_count</size>
-     <scale>1</scale>
+     <auto_parameter>bones</auto_parameter>
     </parameter>
     <parameter>
      <name>position</name>
@@ -132,18 +117,11 @@ world_position += world_transformation[1].xyz;
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformation</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>world_transformation</auto_parameter>
     </parameter>
    </parameters>
    <source>mat2x4 dual, m;

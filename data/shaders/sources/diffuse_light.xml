@@ -6,46 +6,28 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>diffuse_color</name>
-     <type>vec3</type>
+     <common_parameter>diffuse_color</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>fragment_normal</name>
-     <type>vec3</type>
+     <common_parameter>fragment_normal</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>light_color</name>
-     <type>vec4</type>
+     <common_parameter>light_color</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>light_position</name>
-     <type>vec4</type>
+     <common_parameter>light_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>specular_color</name>
-     <type>vec3</type>
+     <common_parameter>specular_color</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>vec3 dir;

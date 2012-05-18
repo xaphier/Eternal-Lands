@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "materialdata.hpp"
-#include "shader/shadertextureutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 
 /**
  * @file
@@ -88,7 +88,7 @@ namespace eternal_lands
 			}
 
 			void set_texture(const MaterialDescription &material,
-				const ShaderTextureType texture_type);
+				const SamplerParameterType sampler);
 
 		public:
 			Material(const EffectCacheWeakPtr &effect_cache,
@@ -100,15 +100,15 @@ namespace eternal_lands
 			~Material() noexcept;
 			void init(const MaterialDescription &material);
 			void set_texture(const String &name,
-				const ShaderTextureType texture_type);
+				const SamplerParameterType sampler);
 			const String &get_texture_name(
-				const ShaderTextureType texture_type) const;
+				const SamplerParameterType sampler) const;
 			void set_effect(const String &effect);
 			void bind(StateManager &state_manager) const;
 			void set_texture(const TextureSharedPtr &texture,
-				const ShaderTextureType texture_type);
+				const SamplerParameterType sampler);
 			const TextureSharedPtr &get_texture(
-				const ShaderTextureType texture_type) const;
+				const SamplerParameterType sampler) const;
 			const EffectDescription &get_effect_description() const
 				noexcept;
 			const String &get_material_script_name() const noexcept;

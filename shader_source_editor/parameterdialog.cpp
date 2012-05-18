@@ -8,7 +8,7 @@
 #include "parameterdialog.hpp"
 #include "shader/autoparameterutil.hpp"
 #include "shader/commonparameterutil.hpp"
-#include "shader/shadertextureutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 #include "shader/parameterqualifierutil.hpp"
 #include "shader/parametersizeutil.hpp"
 #include "shader/parameterutil.hpp"
@@ -26,12 +26,13 @@ ParameterDialog::ParameterDialog(QWidget* parent): QDialog(parent)
 
 	setupUi(this);
 
-	count = el::ShaderTextureUtil::get_shader_texture_count();
+	count = el::SamplerParameterUtil::get_sampler_parameter_count();
 
 	for (i = 0; i < count; ++i)
 	{
-		str = QString::fromUtf8(el::ShaderTextureUtil::get_str(
-			static_cast<el::ShaderTextureType>(i)).get().c_str());
+		str = QString::fromUtf8(el::SamplerParameterUtil::get_str(
+			static_cast<el::SamplerParameterType>(i)).get(
+				).c_str());
 
 		sampler_name_value->addItem(str, i);
 	}

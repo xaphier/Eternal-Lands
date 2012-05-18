@@ -6,11 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>time</name>
-     <type>float</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>time</auto_parameter>
     </parameter>
     <parameter>
      <name>uv</name>
@@ -20,11 +16,8 @@
      <scale>3</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>uv[0] = world_position.xy * 0.1 + vec2(-2.5, -1.0) * time * 0.01;

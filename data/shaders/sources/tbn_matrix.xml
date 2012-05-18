@@ -6,25 +6,16 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>tbn_matrix</name>
-     <type>mat3</type>
+     <common_parameter>tbn_matrix</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_normal</name>
-     <type>vec3</type>
+     <common_parameter>world_normal</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_tangent</name>
-     <type>vec3</type>
+     <common_parameter>world_tangent</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>tbn_matrix[0] = world_tangent;

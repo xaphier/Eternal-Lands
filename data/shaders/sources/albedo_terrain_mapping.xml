@@ -6,18 +6,12 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>albedo</name>
-     <type>vec4</type>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>clipmap_sampler</name>
+     <sampler_parameter>clipmap_sampler</sampler_parameter>
      <type>sampler2DArray</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
      <name>terrain_uvs</name>
@@ -27,18 +21,12 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>vec4 tmp;
@@ -97,18 +85,12 @@ if (blend &gt; 0.0)
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>albedo</name>
-     <type>vec4</type>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>clipmap_sampler</name>
+     <sampler_parameter>clipmap_sampler</sampler_parameter>
      <type>sampler3D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
      <name>terrain_uvs</name>
@@ -118,11 +100,8 @@ if (blend &gt; 0.0)
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>vec4 tmp;

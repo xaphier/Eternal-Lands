@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "materialdata.hpp"
-#include "shader/shadertextureutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 
 /**
  * @file
@@ -54,19 +54,19 @@ namespace eternal_lands
 				const;
 
 			inline void set_texture(const String &texture,
-				const ShaderTextureType texture_type)
+				const SamplerParameterType sampler)
 			{
-				assert(texture_type < m_textures.size());
+				assert(sampler < m_textures.size());
 
-				m_textures[texture_type] = texture;
+				m_textures[sampler] = texture;
 			}
 
 			inline const String &get_texture(
-				const ShaderTextureType texture_type) const
+				const SamplerParameterType sampler) const
 			{
-				assert(texture_type < m_textures.size());
+				assert(sampler < m_textures.size());
 
-				return m_textures[texture_type];
+				return m_textures[sampler];
 			}
 
 			inline const String &get_name() const noexcept

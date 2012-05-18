@@ -6,18 +6,12 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>fragment_uv</name>
-     <type>vec2</type>
+     <common_parameter>fragment_uv</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>fragment_uv = world_uv;

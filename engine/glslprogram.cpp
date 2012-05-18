@@ -10,7 +10,7 @@
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "shader/parameterutil.hpp"
-#include "shader/shadertextureutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
 
@@ -2196,12 +2196,12 @@ namespace eternal_lands
 
 		bind();
 
-		count = ShaderTextureUtil::get_shader_texture_count();
+		count = SamplerParameterUtil::get_sampler_parameter_count();
 
 		for (i = 0; i < count; ++i)
 		{
-			set_variant_parameter(ShaderTextureUtil::get_str(
-				static_cast<ShaderTextureType>(i)),
+			set_variant_parameter(SamplerParameterUtil::get_str(
+				static_cast<SamplerParameterType>(i)),
 					static_cast<Sint64>(i));
 		}
 

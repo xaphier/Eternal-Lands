@@ -20,11 +20,7 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>bones</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>bone_count</size>
-     <scale>1</scale>
+     <auto_parameter>bones</auto_parameter>
     </parameter>
     <parameter>
      <name>normal</name>
@@ -48,32 +44,19 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_normal</name>
-     <type>vec3</type>
+     <common_parameter>world_normal</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_tangent</name>
-     <type>vec3</type>
+     <common_parameter>world_tangent</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformation</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>world_transformation</auto_parameter>
     </parameter>
    </parameters>
    <source>mat2x4 dual, m;
@@ -152,11 +135,7 @@ world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transforma
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>bones</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>bone_count</size>
-     <scale>1</scale>
+     <auto_parameter>bones</auto_parameter>
     </parameter>
     <parameter>
      <name>normal</name>
@@ -180,32 +159,19 @@ world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transforma
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_normal</name>
-     <type>vec3</type>
+     <common_parameter>world_normal</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_tangent</name>
-     <type>vec3</type>
+     <common_parameter>world_tangent</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_transformation</name>
-     <type>mat2x4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>world_transformation</auto_parameter>
     </parameter>
    </parameters>
    <source>mat2x4 dual, m;

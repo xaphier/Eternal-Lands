@@ -6,60 +6,36 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>albedo</name>
-     <type>vec4</type>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_0</name>
+     <sampler_parameter>albedo_sampler_0</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_1</name>
+     <sampler_parameter>albedo_sampler_1</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_2</name>
+     <sampler_parameter>albedo_sampler_2</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_3</name>
+     <sampler_parameter>albedo_sampler_3</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>blend_sampler</name>
+     <sampler_parameter>blend_sampler</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_extra_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_extra_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>vec4 blend;
@@ -76,60 +52,36 @@ albedo += texture(albedo_sampler_3, world_extra_uv) * blend.a;
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>albedo</name>
-     <type>vec4</type>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_0</name>
+     <sampler_parameter>albedo_sampler_0</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_1</name>
+     <sampler_parameter>albedo_sampler_1</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_2</name>
+     <sampler_parameter>albedo_sampler_2</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_3</name>
+     <sampler_parameter>albedo_sampler_3</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>blend_sampler</name>
+     <sampler_parameter>blend_sampler</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_extra_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_extra_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>vec4 blend;

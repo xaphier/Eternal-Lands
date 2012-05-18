@@ -6,25 +6,16 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>albedo</name>
-     <type>vec4</type>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_0</name>
+     <sampler_parameter>albedo_sampler_0</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_1</name>
+     <sampler_parameter>albedo_sampler_1</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
      <name>uv</name>
@@ -61,25 +52,16 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>albedo</name>
-     <type>vec4</type>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_0</name>
+     <sampler_parameter>albedo_sampler_0</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>albedo_sampler_1</name>
+     <sampler_parameter>albedo_sampler_1</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
      <name>uv</name>

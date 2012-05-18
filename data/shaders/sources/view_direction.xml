@@ -6,25 +6,15 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>camera</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>camera</auto_parameter>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_view_direction</name>
-     <type>vec4</type>
+     <common_parameter>world_view_direction</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>world_view_direction.xyz = world_position - camera.xyz;

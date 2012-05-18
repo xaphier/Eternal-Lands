@@ -13,11 +13,8 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>world_uv = texture_coordinate_0;

@@ -10,6 +10,7 @@
 #include "autoparameterutil.hpp"
 #include "commonparameterutil.hpp"
 #include "exceptions.hpp"
+#include "uniformbufferusage.hpp"
 
 namespace eternal_lands
 {
@@ -39,28 +40,21 @@ namespace eternal_lands
 		const CommonParameterType common_parameter,
 		const ParameterQualifierType qualifier)
 	{
-		return ShaderSourceParameter(source,
-			CommonParameterUtil::get_str(common_parameter),
-			CommonParameterUtil::get_type(common_parameter),
-			qualifier,
-			CommonParameterUtil::get_size(common_parameter),
-			CommonParameterUtil::get_scale(common_parameter));
+		return ShaderSourceParameter(source, common_parameter,
+			qualifier);
 	}
 
 	ShaderSourceParameter ShaderSourceParameterBuilder::build(
 		const String &source, const AutoParameterType auto_parameter)
 	{
-		return ShaderSourceParameter(source,
-			AutoParameterUtil::get_str(auto_parameter),
-			AutoParameterUtil::get_type(auto_parameter), pqt_in,
-			AutoParameterUtil::get_size(auto_parameter),
-			AutoParameterUtil::get_scale(auto_parameter));
+		return ShaderSourceParameter(source, auto_parameter);
 	}
 
 	void ShaderSourceParameterBuilder::add_parameter(
 		const ShaderSourceParameter &parameter,
 		const ShaderSourceParameterVector &locals,
-		ShaderSourceParameterVector &parameters)
+		ShaderSourceParameterVector &parameters,
+		UniformBufferUsage &uniform_buffers)
 	{
 		BOOST_FOREACH(const ShaderSourceParameter &tmp, parameters)
 		{
@@ -92,13 +86,17 @@ namespace eternal_lands
 				InvalidParameterException());
 		}
 
-		parameters.push_back(parameter);
+		if (!uniform_buffers.add_parameter(parameter))
+		{
+			parameters.push_back(parameter);
+		}
 	}
 
 	void ShaderSourceParameterBuilder::add_local(
 		const ShaderSourceParameter &local,
 		ShaderSourceParameterVector &locals,
-		const ShaderSourceParameterVector &parameters)
+		const ShaderSourceParameterVector &parameters,
+		const UniformBufferUsage &uniform_buffers)
 	{
 		BOOST_FOREACH(const ShaderSourceParameter &tmp, parameters)
 		{
@@ -130,7 +128,10 @@ namespace eternal_lands
 				InvalidParameterException());
 		}
 
-		locals.push_back(local);
+		if (!uniform_buffers.used_parameter(local))
+		{
+			locals.push_back(local);
+		}
 	}
 
 }

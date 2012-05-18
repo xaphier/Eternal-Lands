@@ -6,39 +6,24 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>fragment_normal</name>
-     <type>vec3</type>
+     <common_parameter>fragment_normal</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>fragment_uv</name>
-     <type>vec2</type>
+     <common_parameter>fragment_uv</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal_sampler</name>
+     <sampler_parameter>normal_sampler</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>tbn_matrix</name>
-     <type>mat3</type>
+     <common_parameter>tbn_matrix</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>vec3 normal;
@@ -54,39 +39,24 @@ fragment_uv = world_uv;
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>fragment_normal</name>
-     <type>vec3</type>
+     <common_parameter>fragment_normal</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>fragment_uv</name>
-     <type>vec2</type>
+     <common_parameter>fragment_uv</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>normal_sampler</name>
+     <sampler_parameter>normal_sampler</sampler_parameter>
      <type>sampler2D</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>tbn_matrix</name>
-     <type>mat3</type>
+     <common_parameter>tbn_matrix</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>vec3 normal;

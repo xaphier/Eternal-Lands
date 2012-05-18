@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "shadersourcedata.hpp"
-#include "shadertextureutil.hpp"
+#include "samplerparameterutil.hpp"
 #include "shadersourceparameterbuilder.hpp"
 #include "shadersourceparameter.hpp"
 #include "xmlwriter.hpp"
@@ -32,7 +32,8 @@ namespace eternal_lands
 	void ShaderSourceData::build_source(
 		const ShaderSourceParameterVector &locals,
 		const String &indent, OutStream &stream,
-		ShaderSourceParameterVector &globals) const
+		ShaderSourceParameterVector &globals,
+		UniformBufferUsage &uniform_buffers) const
 	{
 		StringTypeVector lines;
 
@@ -52,7 +53,7 @@ namespace eternal_lands
 			get_parameters())
 		{
 			ShaderSourceParameterBuilder::add_parameter(parameter,
-				locals, globals);
+				locals, globals, uniform_buffers);
 		}
 	}
 
@@ -79,7 +80,8 @@ namespace eternal_lands
 		const ShaderSourceParameterVector &locals,
 		const ParameterSizeTypeUint16Map &sizes, const String &indent,
 		const String &name, OutStream &stream,
-		ShaderSourceParameterVector &globals) const
+		ShaderSourceParameterVector &globals,
+		UniformBufferUsage &uniform_buffers) const
 	{
 		StringTypeVector lines;
 		bool first;
@@ -113,7 +115,7 @@ namespace eternal_lands
 			get_parameters())
 		{
 			ShaderSourceParameterBuilder::add_parameter(parameter,
-				locals, globals);
+				locals, globals, uniform_buffers);
 		}
 	}
 
@@ -228,11 +230,11 @@ namespace eternal_lands
 		const ParameterSizeTypeUint16Map &sizes, const String &indent,
 		const String &name, const String &parameter_prefix,
 		const String &use_indent, OutStream &stream,
-		OutStream &function, ShaderSourceParameterVector &globals)
-		const
+		OutStream &function, ShaderSourceParameterVector &globals,
+		UniformBufferUsage &uniform_buffers) const
 	{
 		build_function_source(locals, sizes, indent, name,
-			function, globals);
+			function, globals, uniform_buffers);
 
 		build_function_use(use_indent, name, parameter_prefix,
 			stream);

@@ -64,7 +64,8 @@ namespace eternal_lands
 				const String &indent, const bool vertex,
 				const bool shadow, OutStream &main,
 				OutStream &functions,
-				ShaderSourceParameterVector &globals) const;
+				ShaderSourceParameterVector &globals,
+				UniformBufferUsage &uniform_buffers) const;
 			void build_light_index_lights(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
@@ -79,12 +80,14 @@ namespace eternal_lands
 				const ShaderSourceType shader_source_type,
 				const String &indent, OutStream &stream,
 				OutStream &functions,
-				ShaderSourceParameterVector &globals) const;
+				ShaderSourceParameterVector &globals,
+				UniformBufferUsage &uniform_buffers) const;
 			void build_vertex_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				OutStream &main, OutStream &functions,
-				ShaderSourceParameterVector &globals) const;
+				ShaderSourceParameterVector &globals,
+				UniformBufferUsage &uniform_buffers) const;
 			void build_geometry_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
@@ -92,12 +95,14 @@ namespace eternal_lands
 				const String &in_prefix,
 				const String &out_prefix, const bool use_blocks,
 				OutStream &main, OutStream &functions,
-				ShaderSourceParameterVector &globals) const;
+				ShaderSourceParameterVector &globals,
+				UniformBufferUsage &uniform_buffers) const;
 			void build_fragment_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				OutStream &main, OutStream &functions,
-				ShaderSourceParameterVector &globals) const;
+				ShaderSourceParameterVector &globals,
+				UniformBufferUsage &uniform_buffers) const;
 			void load_shader_source(
 				const FileSystemSharedPtr &file_system,
 				const String &file_name);

@@ -50,12 +50,14 @@ namespace eternal_lands
 			static void add_parameter(
 				const ShaderSourceParameter &parameter,
 				const ShaderSourceParameterVector &locals,
-				ShaderSourceParameterVector &parameters);
+				ShaderSourceParameterVector &parameters,
+				UniformBufferUsage &uniform_buffers);
 
 			static void add_local(
 				const ShaderSourceParameter &local,
 				ShaderSourceParameterVector &locals,
-				const ShaderSourceParameterVector &parameters);
+				const ShaderSourceParameterVector &parameters,
+				const UniformBufferUsage &uniform_buffers);
 
 	};
 

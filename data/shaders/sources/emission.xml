@@ -6,18 +6,11 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>emission</name>
-     <type>vec3</type>
+     <common_parameter>emission</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>emission_scale_offset</name>
-     <type>mat2x3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>emission_scale_offset</auto_parameter>
     </parameter>
    </parameters>
    <source>emission = emission_scale_offset[1];</source>

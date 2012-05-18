@@ -8,7 +8,7 @@
 #include "filter.hpp"
 #include "glslprogram.hpp"
 #include "glslprogramdescription.hpp"
-#include "shader/shadertextureutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 #include "meshcache.hpp"
 #include "statemanager.hpp"
 #include "abstractmesh.hpp"
@@ -317,7 +317,7 @@ namespace eternal_lands
 		str << UTF8("#version ") << version << UTF8("\n");
 		str << UTF8("\n");
 
-		str << UTF8("uniform sampler2DMS ") << stt_albedo_0;
+		str << UTF8("uniform sampler2DMS ") << spt_albedo_0;
 
 		str << UTF8(";\n");
 		str << UTF8("\n");
@@ -363,7 +363,7 @@ namespace eternal_lands
 					str << UTF8("\tcolor += ");
 				}
 
-				str << UTF8("texelFetch(") << stt_albedo_0;
+				str << UTF8("texelFetch(") << spt_albedo_0;
 				str << UTF8(", ivec2(gl_FragCoord.xy + ");
 				str << offset << UTF8("), ") << i << UTF8(")");
 				str << channels << UTF8(";\n");
@@ -456,11 +456,11 @@ namespace eternal_lands
 		if (layer)
 		{
 			str << UTF8("uniform float layer;\n");
-			str << UTF8("uniform sampler2DArray ") << stt_albedo_0;
+			str << UTF8("uniform sampler2DArray ") << spt_albedo_0;
 		}
 		else
 		{
-			str << UTF8("uniform sampler2D ") << stt_albedo_0;
+			str << UTF8("uniform sampler2D ") << spt_albedo_0;
 		}
 
 		str << UTF8(";\n");
@@ -490,7 +490,7 @@ namespace eternal_lands
 
 		if (layer)
 		{
-			tmp << UTF8("texture(") << stt_albedo_0;
+			tmp << UTF8("texture(") << spt_albedo_0;
 			tmp << UTF8(", vec3(uv");
 			textures[0] = tmp.str() + UTF8(", layer))");
 			textures[1] = tmp.str();
@@ -523,12 +523,12 @@ namespace eternal_lands
 		{
 			if (version >= 130)
 			{
-				tmp << UTF8("texture(") << stt_albedo_0;
+				tmp << UTF8("texture(") << spt_albedo_0;
 				tmp << UTF8(", uv");
 			}
 			else
 			{
-				tmp << UTF8("texture2D(") << stt_albedo_0;
+				tmp << UTF8("texture2D(") << spt_albedo_0;
 				tmp << UTF8(", uv");
 			}
 

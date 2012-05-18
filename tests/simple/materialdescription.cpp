@@ -19,27 +19,27 @@ BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::MaterialDescription material_description;
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_0),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_1),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_2),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_3),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_normal),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_specular),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_specular),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_emission),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_emission),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_blend),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_vector_field),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector_field),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_dudv),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_dudv),
 		"");
 	BOOST_CHECK_CLOSE(material_description.get_albedo_scale_offset(0
 		)[0][0], 1.0f, 1.0);
@@ -161,49 +161,49 @@ BOOST_AUTO_TEST_CASE(all)
 	el::MaterialDescription material_description;
 
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("df")), el::stt_albedo_0));
+		el::String(UTF8("df")), el::spt_albedo_0));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("agaghrt")), el::stt_albedo_1));
+		el::String(UTF8("agaghrt")), el::spt_albedo_1));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("5z5")), el::stt_albedo_2));
+		el::String(UTF8("5z5")), el::spt_albedo_2));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("wj")), el::stt_albedo_3));
+		el::String(UTF8("wj")), el::spt_albedo_3));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("m120")), el::stt_normal));
+		el::String(UTF8("m120")), el::spt_normal));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("aw79dz")), el::stt_specular));
+		el::String(UTF8("aw79dz")), el::spt_specular));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("y<bnj3e")), el::stt_emission));
+		el::String(UTF8("y<bnj3e")), el::spt_emission));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("48fh")), el::stt_blend));
+		el::String(UTF8("48fh")), el::spt_blend));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("ymbnjf!2r2!A")), el::stt_vertex_vector_field));
+		el::String(UTF8("ymbnjf!2r2!A")), el::spt_vertex_vector_field));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("SDFGSGDF")), el::stt_vertex_normal));
+		el::String(UTF8("SDFGSGDF")), el::spt_vertex_normal));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("345w")), el::stt_vertex_dudv));
+		el::String(UTF8("345w")), el::spt_vertex_dudv));
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_0),
 		"df");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_1),
 		"agaghrt");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_2),
 		"5z5");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_3),
 		"wj");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_normal),
 		"m120");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_specular),	
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_specular),	
 		"aw79dz");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_emission),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_emission),
 		"y<bnj3e");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_blend),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"48fh");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_vector_field),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector_field),
 		"ymbnjf!2r2!A");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
 		"SDFGSGDF");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_dudv),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_dudv),
 		"345w");
 	BOOST_CHECK_CLOSE(material_description.get_albedo_scale_offset(0
 		)[0][0], 1.0f, 1.0);
@@ -328,27 +328,27 @@ BOOST_AUTO_TEST_CASE(all)
 	BOOST_CHECK_NO_THROW(material_description.set_cast_shadows(false));
 	BOOST_CHECK_NO_THROW(material_description.set_culling(false));
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_0),
 		"df");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_1),
 		"agaghrt");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_2),
 		"5z5");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_3),
 		"wj");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_normal),
 		"m120");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_specular),	
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_specular),	
 		"aw79dz");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_emission),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_emission),
 		"y<bnj3e");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_blend),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"48fh");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_vector_field),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector_field),
 		"ymbnjf!2r2!A");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
 		"SDFGSGDF");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_dudv),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_dudv),
 		"345w");
 	BOOST_CHECK_CLOSE(material_description.get_albedo_scale_offset(0
 		)[0][0], 1.0f, 1.0);
@@ -474,27 +474,27 @@ BOOST_AUTO_TEST_CASE(all)
 	BOOST_CHECK_EQUAL(material_description.get_culling(), false);
 
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("df")), el::stt_albedo_0));
+		el::String(UTF8("df")), el::spt_albedo_0));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("agaghrt")), el::stt_albedo_1));
+		el::String(UTF8("agaghrt")), el::spt_albedo_1));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("5z5")), el::stt_albedo_2));
+		el::String(UTF8("5z5")), el::spt_albedo_2));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("wj")), el::stt_albedo_3));
+		el::String(UTF8("wj")), el::spt_albedo_3));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("m120")), el::stt_normal));
+		el::String(UTF8("m120")), el::spt_normal));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("aw79dz")), el::stt_specular));
+		el::String(UTF8("aw79dz")), el::spt_specular));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("y<bnj3e")), el::stt_emission));
+		el::String(UTF8("y<bnj3e")), el::spt_emission));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("48fh")), el::stt_blend));
+		el::String(UTF8("48fh")), el::spt_blend));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("ymbnjf!2r2!A")), el::stt_vertex_vector_field));
+		el::String(UTF8("ymbnjf!2r2!A")), el::spt_vertex_vector_field));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("SDFGSGDF")), el::stt_vertex_normal));
+		el::String(UTF8("SDFGSGDF")), el::spt_vertex_normal));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("345w")), el::stt_vertex_dudv));
+		el::String(UTF8("345w")), el::spt_vertex_dudv));
 	BOOST_CHECK_NO_THROW(material_description.set_texture_matrix(
 		glm::mat2x3(0.6787f, 4.342f, 345.0f, 76.0f, 3124.0f, 123.0f),
 			0));
@@ -511,27 +511,27 @@ BOOST_AUTO_TEST_CASE(all)
 	BOOST_CHECK_NO_THROW(material_description.set_cast_shadows(false));
 	BOOST_CHECK_NO_THROW(material_description.set_culling(false));
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_0),
 		"df");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_1),
 		"agaghrt");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_2),
 		"5z5");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_3),
 		"wj");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_normal),
 		"m120");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_specular),	
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_specular),	
 		"aw79dz");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_emission),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_emission),
 		"y<bnj3e");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_blend),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"48fh");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_vector_field),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector_field),
 		"ymbnjf!2r2!A");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
 		"SDFGSGDF");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_vertex_dudv),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_dudv),
 		"345w");
 	BOOST_CHECK_CLOSE(material_description.get_albedo_scale_offset(0
 		)[0][0], 1.0f, 1.0);
@@ -675,28 +675,28 @@ BOOST_AUTO_TEST_CASE(xml)
 
 	xml_reader.reset();
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_0),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_0),
 		"df");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_1),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_1),
 		"agaghrt");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_2),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_2),
 		"5z5");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_albedo_3),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_3),
 		"wj");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_normal),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_normal),
 		"m120");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_specular),	
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_specular),	
 		"y<bnj3e");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_emission),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_emission),
 		"ymbnjf!2r2!A");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::stt_blend),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"345w");
 	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::stt_vertex_vector_field), "");
+		el::spt_vertex_vector_field), "");
 	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::stt_vertex_normal), "");
+		el::spt_vertex_normal), "");
 	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::stt_vertex_dudv), "");
+		el::spt_vertex_dudv), "");
 	BOOST_CHECK_CLOSE(material_description.get_albedo_scale_offset(0
 		)[0][0], 1.0f, 1.0);
 	BOOST_CHECK_CLOSE(material_description.get_albedo_scale_offset(0

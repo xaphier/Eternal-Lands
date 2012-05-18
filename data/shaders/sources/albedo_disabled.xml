@@ -6,11 +6,8 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>albedo</name>
-     <type>vec4</type>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>albedo = vec4(1.0);

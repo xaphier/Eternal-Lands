@@ -16,6 +16,9 @@
 #include "parameterutil.hpp"
 #include "parametersizeutil.hpp"
 #include "parameterqualifierutil.hpp"
+#include "autoparameterutil.hpp"
+#include "commonparameterutil.hpp"
+#include "samplerparameterutil.hpp"
 
 /**
  * @file
@@ -44,10 +47,36 @@ namespace eternal_lands
 				const ParameterQualifierType qualifier,
 				const ParameterSizeType size,
 				const Uint16 array_size);
+			ShaderSourceParameter(const String &source,
+				const AutoParameterType auto_parameter);
+			ShaderSourceParameter(const String &source,
+				const CommonParameterType common_parameter,
+				const ParameterQualifierType qualifier);
+			ShaderSourceParameter(const String &source,
+				const SamplerParameterType sampler_parameter,
+				const ParameterType type);
+			ShaderSourceParameter(const String &source,
+				const SamplerParameterType sampler_parameter);
 			~ShaderSourceParameter() noexcept;
 			void load_xml(const String &source,
 				const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
+			bool get_auto_parameter() const;
+			bool get_common_parameter() const;
+			bool get_sampler_parameter() const;
+			bool get_auto_parameter(
+				AutoParameterType &auto_parameter) const;
+			bool get_common_parameter(
+				CommonParameterType &common_parameter) const;
+			bool get_sampler_parameter(
+				SamplerParameterType &sampler_parameter) const;
+			void set_auto_parameter(
+				const AutoParameterType auto_parameter);
+			void set_common_parameter(
+				const CommonParameterType common_parameter);
+			void set_sampler_parameter(
+				const SamplerParameterType sampler_parameter);
+			void check() const;
 
 			/**
 			 * Equal operator, needed for error checking

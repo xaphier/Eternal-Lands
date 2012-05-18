@@ -24,6 +24,8 @@ namespace eternal_lands
 		m_qualifier(pqt_in), m_size(pst_one), m_scale(0)
 	{
 		load_xml(source, node);
+
+		assert(!get_name().get().empty());
 	}
 
 	ShaderSourceParameter::ShaderSourceParameter(const String &source,
@@ -36,8 +38,260 @@ namespace eternal_lands
 		assert(!get_name().get().empty());
 	}
 
+	ShaderSourceParameter::ShaderSourceParameter(const String &source,
+		const AutoParameterType auto_parameter): m_source(source),
+		m_type(pt_vec4), m_qualifier(pqt_in), m_size(pst_one),
+		m_scale(0)
+	{
+		set_auto_parameter(auto_parameter);
+
+		assert(!get_name().get().empty());
+	}
+
+	ShaderSourceParameter::ShaderSourceParameter(const String &source,
+		const CommonParameterType common_parameter,
+		const ParameterQualifierType qualifier): m_source(source),
+		m_type(pt_vec4), m_qualifier(qualifier), m_size(pst_one),
+		m_scale(0)
+	{
+		set_common_parameter(common_parameter);
+
+		assert(!get_name().get().empty());
+	}
+
+	ShaderSourceParameter::ShaderSourceParameter(const String &source,
+		const SamplerParameterType sampler_parameter,
+		const ParameterType type): m_source(source),
+		m_type(type), m_qualifier(pqt_in), m_size(pst_one), m_scale(0)
+	{
+		set_sampler_parameter(sampler_parameter);
+
+		assert(!get_name().get().empty());
+	}
+
 	ShaderSourceParameter::~ShaderSourceParameter() noexcept
 	{
+	}
+
+	void ShaderSourceParameter::set_auto_parameter(
+		const AutoParameterType auto_parameter)
+	{
+		set_name(AutoParameterUtil::get_str(auto_parameter));
+		set_type(AutoParameterUtil::get_type(auto_parameter));
+		set_size(AutoParameterUtil::get_size(auto_parameter));
+		set_scale(AutoParameterUtil::get_scale(auto_parameter));
+		set_qualifier(pqt_in);
+	}
+
+	void ShaderSourceParameter::set_common_parameter(
+		const CommonParameterType common_parameter)
+	{
+		set_name(CommonParameterUtil::get_str(common_parameter));
+		set_type(CommonParameterUtil::get_type(common_parameter));
+		set_size(CommonParameterUtil::get_size(common_parameter));
+		set_scale(CommonParameterUtil::get_scale(common_parameter));
+	}
+
+	void ShaderSourceParameter::set_sampler_parameter(
+		const SamplerParameterType sampler_parameter)
+	{
+		set_name(SamplerParameterUtil::get_str(sampler_parameter));
+		set_size(pst_one);
+		set_scale(1);
+		set_qualifier(pqt_in);
+	}
+
+	bool ShaderSourceParameter::get_auto_parameter() const
+	{
+		AutoParameterType auto_parameter;
+
+		return get_auto_parameter(auto_parameter);
+	}
+
+	bool ShaderSourceParameter::get_common_parameter() const
+	{
+		CommonParameterType common_parameter;
+
+		return get_common_parameter(common_parameter);
+	}
+
+	bool ShaderSourceParameter::get_sampler_parameter() const
+	{
+		SamplerParameterType sampler_parameter;
+
+		return get_sampler_parameter(sampler_parameter);
+	}
+
+	bool ShaderSourceParameter::get_auto_parameter(
+		AutoParameterType &auto_parameter) const
+	{
+		return AutoParameterUtil::get_auto_parameter(get_name(),
+			auto_parameter);
+	}
+
+	bool ShaderSourceParameter::get_common_parameter(
+		CommonParameterType &common_parameter) const
+	{
+		return CommonParameterUtil::get_common_parameter(get_name(),
+			common_parameter);
+	}
+
+	bool ShaderSourceParameter::get_sampler_parameter(
+		SamplerParameterType &sampler_parameter) const
+	{
+		return SamplerParameterUtil::get_sampler_parameter(get_name(),
+			sampler_parameter);
+	}
+
+	void ShaderSourceParameter::check() const
+	{
+		AutoParameterType auto_parameter;
+		CommonParameterType common_parameter;
+		ParameterType type;
+		ParameterSizeType size;
+		Uint16 scale;
+
+		if (get_auto_parameter(auto_parameter))
+		{
+			type = AutoParameterUtil::get_type(auto_parameter);
+			size = AutoParameterUtil::get_size(auto_parameter);
+			scale = AutoParameterUtil::get_scale(auto_parameter);
+
+			if (type != get_type())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong type %3% instead"
+					" of %4%"), get_source() % get_name() %
+					get_type() % type,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			if (pqt_in != get_qualifier())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong qualifier %3% "
+					"instead of %4%"), get_source() %
+					get_name() % get_qualifier() % pqt_in,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			if (size != get_size())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong size %3% instead"
+					" of %4%"), get_source() % get_name() %
+					get_size() % size,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			if (scale != get_scale())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong scale %3% instead"
+					" of %4%"), get_source() % get_name() %
+					get_scale() % scale,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			return;
+		}
+
+		if (get_common_parameter(common_parameter))
+		{
+			type = CommonParameterUtil::get_type(common_parameter);
+			size = CommonParameterUtil::get_size(common_parameter);
+			scale = CommonParameterUtil::get_scale(
+				common_parameter);
+
+			if (type != get_type())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong type %3% instead"
+					" of %4%"), get_source() % get_name() %
+					get_type() % type,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			if (size != get_size())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong size %3% instead"
+					" of %4%"), get_source() % get_name() %
+					get_size() % size,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			if (scale != get_scale())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong scale %3% instead"
+					" of %4%"), get_source() % get_name() %
+					get_scale() % scale,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			return;
+		}
+
+		if (get_sampler_parameter())
+		{
+			if (!ParameterUtil::get_sampler(get_type()))
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has non sampler type %3%"),
+					get_source() % get_name() % get_type(),
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			if (pqt_in != get_qualifier())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong qualifier %3% "
+					"instead of %4%"), get_source() %
+					get_name() % get_qualifier() % pqt_in,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			if (pst_one != get_size())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong size %3% instead"
+					" of %4%"), get_source() % get_name() %
+					get_size() % pst_one,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			if (1 != get_scale())
+			{
+				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+					"name '%2%' has wrong scale %3% instead"
+					" of %4%"), get_source() % get_name() %
+					get_scale() % 1,
+					DuplicateItemException()
+					<< errinfo_parameter_name(get_name()));
+			}
+
+			return;
+		}
+
+		if (ParameterUtil::get_sampler(get_type()))
+		{
+			EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+				"name '%2%' has sampler type %3%"),
+				get_source() % get_name() % get_type(),
+				InvalidParameterException()
+				<< errinfo_parameter_name(get_name()));
+		}
 	}
 
 	void ShaderSourceParameter::log(OutStream &str) const
@@ -222,6 +476,30 @@ namespace eternal_lands
 
 		do
 		{
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("auto_parameter")) == 0)
+			{
+				set_auto_parameter(
+					AutoParameterUtil::get_auto_parameter(
+						XmlUtil::get_string_value(it)));
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("common_parameter")) == 0)
+			{
+				set_common_parameter(
+					CommonParameterUtil::get_common_parameter(
+						XmlUtil::get_string_value(it)));
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("sampler_parameter")) == 0)
+			{
+				set_sampler_parameter(
+					SamplerParameterUtil::get_sampler_parameter(
+						XmlUtil::get_string_value(it)));
+			}
+
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
 			{
 				set_name(XmlUtil::get_string_value(it));
@@ -253,12 +531,47 @@ namespace eternal_lands
 			}
 		}
 		while (XmlUtil::next(it, true));
+
+//		check();
 	}
 
 	void ShaderSourceParameter::save_xml(const XmlWriterSharedPtr &writer)
 		const
 	{
 		writer->start_element(UTF8("parameter"));
+
+		if (get_auto_parameter())
+		{
+			writer->write_element(UTF8("auto_parameter"),
+				get_name());
+			writer->end_element();
+
+			return;
+		}
+
+		if (get_common_parameter())
+		{
+			writer->write_element(UTF8("common_parameter"),
+				get_name());
+			writer->write_element(UTF8("qualifier"),
+				ParameterQualifierUtil::get_str(
+					get_qualifier()));
+			writer->end_element();
+
+			return;
+		}
+
+		if (get_sampler_parameter())
+		{
+			writer->write_element(UTF8("sampler_parameter"),
+				get_name());
+			writer->write_element(UTF8("type"),
+				ParameterUtil::get_str(get_type()));
+			writer->end_element();
+
+			return;
+		}
+
 		writer->write_element(UTF8("name"), get_name());
 		writer->write_element(UTF8("type"), ParameterUtil::get_str(
 			get_type()));

@@ -13,21 +13,14 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>texture_matrices</name>
-     <type>mat2x3</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>texture_matrices</auto_parameter>
     </parameter>
     <parameter>
-     <name>world_uv</name>
-     <type>vec2</type>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
-   <source>world_uv = vec3(texture_coordinate_0.xy, 1.0) * texture_matrices;
+   <source>world_uv = vec3(texture_coordinate_0.xy, 1.0) * texture_matrices[0];
 </source>
    <version>120</version>
   </shader_source_data>

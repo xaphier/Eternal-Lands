@@ -10,7 +10,7 @@
 #include "glslprogramdescription.hpp"
 #include "exceptions.hpp"
 #include "shader/shadersourcebuilder.hpp"
-#include "shader/shadertextureutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 #include "logging.hpp"
 #include "glslprogramcache.hpp"
 

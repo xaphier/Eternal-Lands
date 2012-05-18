@@ -6,28 +6,18 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>view_matrix</name>
-     <type>mat4</type>
-     <qualifier>in</qualifier>
-     <size>layer_count</size>
-     <scale>1</scale>
+     <auto_parameter>view_matrix</auto_parameter>
     </parameter>
     <parameter>
-     <name>view_position</name>
-     <type>vec3</type>
+     <common_parameter>view_position</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
-   <source>view_position = vec3(view_matrix[0] * vec4(world_position, 1.0));
+   <source>view_position = vec3(view_matrix * vec4(world_position, 1.0));
 </source>
    <version>120</version>
   </shader_source_data>

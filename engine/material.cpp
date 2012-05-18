@@ -10,7 +10,7 @@
 #include "effect.hpp"
 #include "texture.hpp"
 #include "texturecache.hpp"
-#include "shader/shadertextureutil.hpp"
+#include "shader/samplerparameterutil.hpp"
 #include "statemanager.hpp"
 #include "materialdescription.hpp"
 #include "script/materialscript.hpp"
@@ -62,17 +62,17 @@ namespace eternal_lands
 
 		m_data = material;
 
-		set_texture(material, stt_albedo_0);
-		set_texture(material, stt_albedo_1);
-		set_texture(material, stt_albedo_2);
-		set_texture(material, stt_albedo_3);
-		set_texture(material, stt_specular);
-		set_texture(material, stt_normal);
-		set_texture(material, stt_emission);
-		set_texture(material, stt_blend);
-		set_texture(material, stt_vertex_vector_field);
-		set_texture(material, stt_vertex_normal);
-		set_texture(material, stt_vertex_dudv);
+		set_texture(material, spt_albedo_0);
+		set_texture(material, spt_albedo_1);
+		set_texture(material, spt_albedo_2);
+		set_texture(material, spt_albedo_3);
+		set_texture(material, spt_specular);
+		set_texture(material, spt_normal);
+		set_texture(material, spt_emission);
+		set_texture(material, spt_blend);
+		set_texture(material, spt_vertex_vector_field);
+		set_texture(material, spt_vertex_normal);
+		set_texture(material, spt_vertex_dudv);
 	}
 
 	void Material::set_material_script(const String &material_script)
@@ -104,54 +104,53 @@ namespace eternal_lands
 	}
 
 	void Material::set_texture(const MaterialDescription &material,
-		const ShaderTextureType texture_type)
+		const SamplerParameterType sampler)
 	{
-		set_texture(material.get_texture(texture_type), texture_type);
+		set_texture(material.get_texture(sampler), sampler);
 	}
 
 	void Material::set_texture(const String &name,
-		const ShaderTextureType texture_type)
+		const SamplerParameterType sampler)
 	{
-		assert(texture_type < m_textures.size());
+		assert(sampler < m_textures.size());
 
 		if (name.get().empty())
 		{
-			m_textures[texture_type].reset();
+			m_textures[sampler].reset();
 
 			return;
 		}
 
-		m_textures[texture_type] = get_texture_cache()->get_texture(
-			name);
+		m_textures[sampler] = get_texture_cache()->get_texture(name);
 	}
 
 	const String &Material::get_texture_name(
-		const ShaderTextureType texture_type) const
+		const SamplerParameterType sampler) const
 	{
-		assert(texture_type < m_textures.size());
+		assert(sampler < m_textures.size());
 
-		if (get_texture(texture_type).get() == nullptr)
+		if (get_texture(sampler).get() == nullptr)
 		{
 			return empty_str;
 		}
 
-		return get_texture(texture_type)->get_name();
+		return get_texture(sampler)->get_name();
 	}
 
 	void Material::set_texture(const TextureSharedPtr &texture,
-		const ShaderTextureType texture_type)
+		const SamplerParameterType sampler)
 	{
-		assert(texture_type < m_textures.size());
+		assert(sampler < m_textures.size());
 
-		m_textures[texture_type] = texture;
+		m_textures[sampler] = texture;
 	}
 
 	const TextureSharedPtr &Material::get_texture(
-		const ShaderTextureType texture_type) const
+		const SamplerParameterType sampler) const
 	{
-		assert(texture_type < m_textures.size());
+		assert(sampler < m_textures.size());
 
-		return m_textures[texture_type];
+		return m_textures[sampler];
 	}
 
 	void Material::bind(StateManager &state_manager) const

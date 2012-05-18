@@ -46,7 +46,8 @@ namespace eternal_lands
 		hbt_vertex = GL_ARRAY_BUFFER,
 		hbt_index = GL_ELEMENT_ARRAY_BUFFER,
 		hbt_pixel_pack = GL_PIXEL_PACK_BUFFER,
-		hbt_pixel_unpack = GL_PIXEL_UNPACK_BUFFER
+		hbt_pixel_unpack = GL_PIXEL_UNPACK_BUFFER,
+		hbt_uniform = GL_UNIFORM_BUFFER
 	};
 	/**
 	 * @}

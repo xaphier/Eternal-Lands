@@ -41,18 +41,18 @@ BOOST_AUTO_TEST_CASE(load_xml)
 			el::String("target1")));
 
 	BOOST_CHECK_EQUAL(material_description_cache.get_material_description(
-		el::String("ground/grass1")).get_texture(el::stt_albedo_0),
+		el::String("ground/grass1")).get_texture(el::spt_albedo_0),
 		"2dobjects/ground/grass1.dds");
 
 	BOOST_CHECK_EQUAL(material_description_cache.get_material_description(
-		el::String("tile42")).get_texture(el::stt_albedo_0),
+		el::String("tile42")).get_texture(el::spt_albedo_0),
 		"3dobjects/tile42.dds");
 
 	BOOST_CHECK_EQUAL(material_description_cache.get_material_description(
-		el::String("giant1")).get_texture(el::stt_albedo_0),
+		el::String("giant1")).get_texture(el::spt_albedo_0),
 		"meshes/giant1.dds");
 
 	BOOST_CHECK_EQUAL(material_description_cache.get_material_description(
-		el::String("target1")).get_texture(el::stt_albedo_0),
+		el::String("target1")).get_texture(el::spt_albedo_0),
 		"meshes/target1.dds");
 }

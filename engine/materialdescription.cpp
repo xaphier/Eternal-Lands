@@ -46,54 +46,54 @@ namespace eternal_lands
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_albedo_0);
+					spt_albedo_0);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("albedo_1"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_albedo_1);
+					spt_albedo_1);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("albedo_2"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_albedo_2);
+					spt_albedo_2);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("albedo_3"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_albedo_3);
+					spt_albedo_3);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("normal"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_normal);
+					spt_normal);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("specular"))
 				== 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_specular);
+					spt_specular);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("emission")) == 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_emission);
+					spt_emission);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("blend")) == 0)
 			{
 				set_texture(XmlUtil::get_string_value(it),
-					stt_blend);
+					spt_blend);
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
@@ -195,20 +195,20 @@ namespace eternal_lands
 		writer->write_element(UTF8("effect"), get_effect());
 		writer->write_element(UTF8("script"), get_script());
 		writer->write_element(UTF8("albedo_0"),
-			get_texture(stt_albedo_0));
+			get_texture(spt_albedo_0));
 		writer->write_element(UTF8("albedo_1"),
-			get_texture(stt_albedo_1));
+			get_texture(spt_albedo_1));
 		writer->write_element(UTF8("albedo_2"),
-			get_texture(stt_albedo_2));
+			get_texture(spt_albedo_2));
 		writer->write_element(UTF8("albedo_3"),
-			get_texture(stt_albedo_3));
+			get_texture(spt_albedo_3));
 		writer->write_element(UTF8("normal"),
-			get_texture(stt_normal));
+			get_texture(spt_normal));
 		writer->write_element(UTF8("specular"),
-			get_texture(stt_specular));
+			get_texture(spt_specular));
 		writer->write_element(UTF8("emission"),
-			get_texture(stt_emission));
-		writer->write_element(UTF8("blend"), get_texture(stt_blend));
+			get_texture(spt_emission));
+		writer->write_element(UTF8("blend"), get_texture(spt_blend));
 		writer->write_mat2x4_element(UTF8("albedo_scale_offset_0"),
 			get_albedo_scale_offset(0));
 		writer->write_mat2x4_element(UTF8("albedo_scale_offset_1"),
@@ -464,7 +464,7 @@ namespace eternal_lands
 
 	OutStream& operator<<(OutStream &str, const MaterialDescription &value)
 	{
-		ShaderTextureType type;
+		SamplerParameterType sampler;
 		Uint16 i;
 
 		str << "name: " << value.get_name();
@@ -473,8 +473,9 @@ namespace eternal_lands
 
 		for (i = 0; i < material_texture_count; ++i)
 		{
-			type = static_cast<ShaderTextureType>(i);
-			str << " " << type << ": " << value.get_texture(type);
+			sampler = static_cast<SamplerParameterType>(i);
+			str << " " << sampler << ": ";
+			str << value.get_texture(sampler);
 		}
 
 		for (i = 0; i < 4; ++i)

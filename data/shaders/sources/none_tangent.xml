@@ -27,25 +27,16 @@
      <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_normal</name>
-     <type>vec3</type>
+     <common_parameter>world_normal</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_position</name>
-     <type>vec3</type>
+     <common_parameter>world_position</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>world_tangent</name>
-     <type>vec3</type>
+     <common_parameter>world_tangent</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>world_position = position.xyz;

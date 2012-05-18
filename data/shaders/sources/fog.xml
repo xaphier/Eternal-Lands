@@ -6,25 +6,15 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>fog</name>
-     <type>float</type>
+     <common_parameter>fog</common_parameter>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
     <parameter>
-     <name>fog_data</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <auto_parameter>fog_data</auto_parameter>
     </parameter>
     <parameter>
-     <name>view_position</name>
-     <type>vec3</type>
+     <common_parameter>view_position</common_parameter>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
     </parameter>
    </parameters>
    <source>fog = min(exp2(dot(view_position, view_position) * fog_data.a), 1.0);

@@ -8,7 +8,7 @@
 #include "shadersource.hpp"
 #include "exceptions.hpp"
 #include "logging.hpp"
-#include "shadertextureutil.hpp"
+#include "samplerparameterutil.hpp"
 #include "shadersourceparameterbuilder.hpp"
 #include "shadersourceparameter.hpp"
 #include "shadersourcedata.hpp"
@@ -175,11 +175,13 @@ namespace eternal_lands
 	void ShaderSource::build_source(const ShaderVersionType &version,
 		const ShaderSourceParameterVector &locals,
 		const String &indent, OutStream &stream,
-		ShaderSourceParameterVector &globals) const
+		ShaderSourceParameterVector &globals,
+		UniformBufferUsage &uniform_buffers) const
 	{
 		stream << indent << UTF8("/* ") << get_typed_name();
 		stream << UTF8(" */\n");
-		get_data(version).build_source(locals, indent, stream, globals);
+		get_data(version).build_source(locals, indent, stream, globals,
+			uniform_buffers);
 	}
 
 	void ShaderSource::build_function(const ShaderVersionType &version,
@@ -187,7 +189,8 @@ namespace eternal_lands
 		const ParameterSizeTypeUint16Map &sizes,
 		const String &indent, const String &parameter_prefix,
 		const String &use_indent, OutStream &stream,
-		OutStream &function, ShaderSourceParameterVector &globals) const
+		OutStream &function, ShaderSourceParameterVector &globals,
+		UniformBufferUsage &uniform_buffers) const
 	{
 		function << indent << UTF8("/* ") << get_typed_name();
 		function << UTF8(" */\n");
@@ -197,7 +200,7 @@ namespace eternal_lands
 
 		get_data(version).build_function(locals, sizes, indent,
 			get_typed_name(), parameter_prefix, use_indent, stream,
-			function, globals);
+			function, globals, uniform_buffers);
 	}
 
 	bool ShaderSource::check_source_parameter(
