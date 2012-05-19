@@ -36,9 +36,9 @@ namespace eternal_lands
 					const Uint32 y) const noexcept;
 
 			public:
-				PlaneIndexBuilder(Uint32Vector &indices,
-					const Uint32 tile_size,
-					const bool use_restart_index);
+				PlaneIndexBuilder(const Uint32 tile_size,
+					const bool use_restart_index,
+					Uint32Vector &indices);
 				~PlaneIndexBuilder() noexcept;
 				bool get_use_restart_index() const noexcept;
 				Uint32 get_restart_index() const noexcept;
@@ -275,8 +275,8 @@ namespace eternal_lands
 			}
 		}
 
-		PlaneIndexBuilder::PlaneIndexBuilder(Uint32Vector &indices,
-			const Uint32 tile_size, const bool use_restart_index):
+		PlaneIndexBuilder::PlaneIndexBuilder(const Uint32 tile_size,
+			const bool use_restart_index, Uint32Vector &indices):
 			m_indices(indices), m_tile_size(tile_size),
 			m_use_restart_index(use_restart_index)
 		{
@@ -286,14 +286,168 @@ namespace eternal_lands
 		{
 		}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		class TerrainIndexBuilder
+		{
+			private:
+				Uint32Vector &m_indices;
+				Uint32 m_tile_size;
+				bool m_use_restart_index;
+
+				void build_indices(const Uint32 y) noexcept;
+				void build_triangles(const Uint32 y) noexcept;
+				void build_triangle_strip(const Uint32 y)
+					noexcept;
+				Uint32 get_index(const Uint32 x,
+					const Uint32 y) const noexcept;
+
+			public:
+				TerrainIndexBuilder(const Uint32 tile_size,
+					const bool use_restart_index,
+					Uint32Vector &indices);
+				~TerrainIndexBuilder() noexcept;
+				bool get_use_restart_index() const noexcept;
+				Uint32 get_restart_index() const noexcept;
+				Uint32 get_tile_size() const noexcept;
+				Uint32 get_tile_index_size() const noexcept;
+				void build_indices() noexcept;
+
+		};
+
+		Uint32 TerrainIndexBuilder::get_index(const Uint32 x,
+			const Uint32 y) const noexcept
+		{
+			assert(x < get_tile_index_size());
+			assert(y < get_tile_index_size());
+
+			return x + y * get_tile_index_size();
+		}
+
+		void TerrainIndexBuilder::build_indices(const Uint32 y) noexcept
+		{
+			if (get_use_restart_index())
+			{
+				build_triangle_strip(y);
+				m_indices.push_back(get_restart_index());
+			}
+			else
+			{
+				build_triangles(y);
+			}
+		}
+
+		void TerrainIndexBuilder::build_triangles(const Uint32 y)
+			noexcept
+		{
+			Uint32 x, count;
+
+			count = get_tile_size();
+
+			for (x = 0; x < count; ++x)
+			{
+				m_indices.push_back(get_index(x    , y    ));
+				m_indices.push_back(get_index(x    , y + 1));
+				m_indices.push_back(get_index(x + 1, y    ));
+				m_indices.push_back(get_index(x + 1, y    ));
+				m_indices.push_back(get_index(x    , y + 1));
+				m_indices.push_back(get_index(x + 1, y + 1));
+			}
+		}
+
+		void TerrainIndexBuilder::build_triangle_strip(const Uint32 y)
+			noexcept
+		{
+			Uint32 x, count;
+
+			count = get_tile_size();
+
+			m_indices.push_back(get_index(0, y));
+			m_indices.push_back(get_index(0, y + 1));
+
+			for (x = 0; x < count; ++x)
+			{
+				m_indices.push_back(get_index(x + 1, y    ));
+				m_indices.push_back(get_index(x + 1, y + 1));
+			}
+		}
+
+		bool TerrainIndexBuilder::get_use_restart_index() const noexcept
+		{
+			return m_use_restart_index;
+		}
+
+		Uint32 TerrainIndexBuilder::get_restart_index() const noexcept
+		{
+			return std::numeric_limits<Uint32>::max();
+		}
+
+		Uint32 TerrainIndexBuilder::get_tile_size() const noexcept
+		{
+			return m_tile_size;
+		}
+
+		Uint32 TerrainIndexBuilder::get_tile_index_size() const noexcept
+		{
+			return get_tile_size() + 1;
+		}
+
+		void TerrainIndexBuilder::build_indices() noexcept
+		{
+			Uint32 i, count;
+
+			count = get_tile_size();
+
+			for (i = 0; i < count; ++i)
+			{
+				build_indices(i);
+			}
+		}
+
+		TerrainIndexBuilder::TerrainIndexBuilder(const Uint32 tile_size,
+			const bool use_restart_index, Uint32Vector &indices):
+			m_indices(indices), m_tile_size(tile_size),
+			m_use_restart_index(use_restart_index)
+		{
+		}
+
+		TerrainIndexBuilder::~TerrainIndexBuilder() noexcept
+		{
+		}
 	}
 
-	void IndexBuilder::build_plane_indices(Uint32Vector &indices,
-		const Uint32 tile_size, const bool use_restart_index,
-		const Uint32 skip, const bool split)
+	void IndexBuilder::build_plane_indices(const Uint32 tile_size,
+		const bool use_restart_index, const Uint32 skip,
+		const bool split, Uint32Vector &indices)
 	{
-		PlaneIndexBuilder plane_index_builder(indices, tile_size,
-			use_restart_index);
+		PlaneIndexBuilder plane_index_builder(tile_size,
+			use_restart_index, indices);
 		Uint16Array4 splits_outside;
 
 		if (split)
@@ -314,16 +468,25 @@ namespace eternal_lands
 		plane_index_builder.build_indices(skip, splits_outside, split);
 	}
 
-	void IndexBuilder::build_plane_indices(Uint32Vector &indices,
-		const Uint32 tile_size, const bool use_restart_index,
-		const Uint32 skip, const Uint16Array4 &splits_outside,
-		const bool split_inside)
+	void IndexBuilder::build_plane_indices(const Uint32 tile_size,
+		const bool use_restart_index, const Uint32 skip,
+		const Uint16Array4 &splits_outside, const bool split_inside,
+		Uint32Vector &indices)
 	{
-		PlaneIndexBuilder plane_index_builder(indices, tile_size,
-			use_restart_index);
+		PlaneIndexBuilder plane_index_builder(tile_size,
+			use_restart_index, indices);
 
 		plane_index_builder.build_indices(skip, splits_outside,
 			split_inside);
+	}
+
+	void IndexBuilder::build_terrain_indices(const Uint32 tile_size,
+		const bool use_restart_index, Uint32Vector &indices)
+	{
+		TerrainIndexBuilder terrain_index_builder(tile_size,
+			use_restart_index, indices);
+
+		terrain_index_builder.build_indices();
 	}
 
 }

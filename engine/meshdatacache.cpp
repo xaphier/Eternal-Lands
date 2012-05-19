@@ -172,8 +172,8 @@ namespace eternal_lands
 				primitive = pt_triangles;
 			}
 
-			IndexBuilder::build_plane_indices(indices, tile_size,
-				use_restart_index, 0, split);
+			IndexBuilder::build_plane_indices(tile_size,
+				use_restart_index, 0, split, indices);
 
 			index_count = indices.size();
 
@@ -318,6 +318,72 @@ namespace eternal_lands
 				BoundingBox(vmin, vmax), 0, 6, 0, 3));
 		}
 
+		void load_terrain(const String &name, const Uint16 tile_size,
+			const bool use_restart_index, const bool use_simd,
+			MeshDataToolSharedPtr &mesh_data_tool)
+		{
+			glm::vec4 data, position;
+			glm::vec3 vmin, vmax;
+			glm::vec2 size, uv;
+			Uint32Vector indices;
+			VertexSemanticTypeSet semantics;
+			Uint32 vertex_count, index_count, i, index, x, y;
+			PrimitiveType primitive;
+
+			vertex_count = tile_size + 1;
+			vertex_count *= tile_size + 1;
+
+			if (use_restart_index)
+			{
+				primitive = pt_triangle_fan;
+			}
+			else
+			{
+				primitive = pt_triangles;
+			}
+
+			IndexBuilder::build_terrain_indices(tile_size,
+				use_restart_index, indices);
+
+			index_count = indices.size();
+
+			semantics.insert(vst_position);
+
+			mesh_data_tool = boost::make_shared<MeshDataTool>(name,
+				vertex_count, index_count, 1, semantics,
+				primitive, use_restart_index, use_simd);
+
+			for (i = 0; i < index_count; ++i)
+			{
+				mesh_data_tool->set_index_data(i, indices[i]);
+			}
+
+			index = 0;
+
+			for (y = 0; y <= tile_size; ++y)
+			{
+				for (x = 0; x <= tile_size; ++x)
+				{
+					position.x = x;
+					position.y = y;
+					position.z = 0.0f;
+					position.w = 1.0f;
+
+					mesh_data_tool->set_vertex_data(
+						vst_position, index, position);
+
+					++index;
+				}
+			}
+
+			vmin = glm::vec3(0.0f, 0.0f, -0.1f);
+			vmax = glm::vec3(tile_size, tile_size, 0.0f);
+
+			mesh_data_tool->set_sub_mesh_data(0, SubMesh(
+				BoundingBox(vmin, vmax), 0, index_count, 0,
+				vertex_count - 1));
+		}
+
 		void load_e2d(const ReaderSharedPtr &reader,
 			const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool,
@@ -382,6 +448,13 @@ namespace eternal_lands
 			const bool use_restart_index, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
+			StringTypeVector data;
+			StringStream str;
+			Uint32 count;
+
+			boost::split(data, name.get(), boost::is_any_of(
+				UTF8("_")), boost::token_compress_on);
+
 			if (name == UTF8("quad"))
 			{
 				load_quad(name, use_simd, mesh_data_tool);
@@ -411,59 +484,42 @@ namespace eternal_lands
 				return true;
 			}
 
-			if (name == UTF8("plane_2"))
+			if (data.size() != 2)
 			{
-				load_plane(name, 1.0f, 2, true, 
+				return false;
+			}
+
+			str << data[1];
+			str >> count;
+
+			if ((data[0] == UTF8("plane")) && (count >= 2))
+			{
+				if (__builtin_popcount(count) != 1)
+				{
+					LOG_ERROR(lt_mesh, UTF8("Only power of"
+						" two sizes supported for "
+						"plane (%1%)"), name);
+					return false;
+				}
+
+				load_plane(name, 1.0f, count, true,
 					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;
 			}
 
-			if (name == UTF8("plane_4"))
+			if ((data[0] == UTF8("terrain")) && (count >= 2))
 			{
-				load_plane(name, 1.0f, 4, true, 
-					use_restart_index, use_simd, false,
-					mesh_data_tool);
-				return true;
-			}
+				if (__builtin_popcount(count) != 1)
+				{
+					LOG_ERROR(lt_mesh, UTF8("Only power of"
+						" two sizes supported for "
+						"terrain (%1%)"), name);
+					return false;
+				}
 
-			if (name == UTF8("plane_8"))
-			{
-				load_plane(name, 1.0f, 8, true, 
-					use_restart_index, use_simd, false,
-					mesh_data_tool);
-				return true;
-			}
-
-			if (name == UTF8("plane_16"))
-			{
-				load_plane(name, 1.0f, 16, true,
-					use_restart_index, use_simd, false,
-					mesh_data_tool);
-				return true;
-			}
-
-			if (name == UTF8("plane_32"))
-			{
-				load_plane(name, 1.0f, 32, true,
-					use_restart_index, use_simd, false,
-					mesh_data_tool);
-				return true;
-			}
-
-			if (name == UTF8("plane_64"))
-			{
-				load_plane(name, 1.0f, 64, true,
-					use_restart_index, use_simd, false,
-					mesh_data_tool);
-				return true;
-			}
-
-			if (name == UTF8("plane_128"))
-			{
-				load_plane(name, 1.0f, 128, true,
-					use_restart_index, use_simd, false,
-					mesh_data_tool);
+				load_terrain(name, count, use_restart_index,
+					use_simd, mesh_data_tool);
 				return true;
 			}
 
@@ -500,7 +556,7 @@ namespace eternal_lands
 		try
 		{
 			if (load_named_object(name,
-				get_global_vars()->get_opengl_3_1() && false,
+				get_global_vars()->get_opengl_3_1(),
 				get_global_vars()->get_use_simd(),
 				mesh_data_tool))
 			{

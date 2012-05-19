@@ -445,8 +445,8 @@ BOOST_AUTO_TEST_CASE(add_plane)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -619,8 +619,8 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -802,8 +802,8 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -986,8 +986,8 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -1155,8 +1155,8 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -1420,8 +1420,8 @@ BOOST_AUTO_TEST_CASE(add_plane_use_restart)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -1594,8 +1594,8 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal_use_restart)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -1777,8 +1777,8 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_use_restart)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -1961,8 +1961,8 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho_use_restart)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -2130,8 +2130,8 @@ BOOST_AUTO_TEST_CASE(add_plane_disable_use_restart)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -2284,8 +2284,8 @@ BOOST_AUTO_TEST_CASE(add_plane_disable_use_restart)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 
@@ -2410,8 +2410,8 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box_use_restart)
 		primitive = el::pt_triangles;
 	}
 
-	el::IndexBuilder::build_plane_indices(indices, tile_size,
-		use_restart_index, 0, split);
+	el::IndexBuilder::build_plane_indices(tile_size, use_restart_index, 0,
+		split, indices);
 
 	index_count = indices.size();
 

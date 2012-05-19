@@ -83,7 +83,7 @@ namespace
 
 }
 
-BOOST_AUTO_TEST_CASE(no_restart_split)
+BOOST_AUTO_TEST_CASE(plane_no_restart_split)
 {
 	el::Uint32Vector indices;
 	el::Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
@@ -117,8 +117,8 @@ BOOST_AUTO_TEST_CASE(no_restart_split)
 
 		index_count = tile_size * tile_size * 24 / 4;
 
-		el::IndexBuilder::build_plane_indices(indices, tile_size,
-			use_restart_index, 0, split);
+		el::IndexBuilder::build_plane_indices(tile_size,
+			use_restart_index, 0, split, indices);
 
 		BOOST_FOREACH(const el::Uint32 index, indices)
 		{
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE(no_restart_split)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(no_restart_no_split)
+BOOST_AUTO_TEST_CASE(plane_no_restart_no_split)
 {
 	el::Uint32Vector indices;
 	el::Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
@@ -178,8 +178,8 @@ BOOST_AUTO_TEST_CASE(no_restart_no_split)
 
 		index_count = tile_size * tile_size * 12 / 4;
 
-		el::IndexBuilder::build_plane_indices(indices, tile_size,
-			use_restart_index, 0, split);
+		el::IndexBuilder::build_plane_indices(tile_size,
+			use_restart_index, 0, split, indices);
 
 		BOOST_FOREACH(const el::Uint32 index, indices)
 		{
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE(no_restart_no_split)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(restart_split)
+BOOST_AUTO_TEST_CASE(plane_restart_split)
 {
 	el::Uint32Vector indices, restart_indices;
 	std::bitset<65536> vertices;
@@ -239,8 +239,8 @@ BOOST_AUTO_TEST_CASE(restart_split)
 
 		index_count = tile_size * tile_size * 11 / 4;
 
-		el::IndexBuilder::build_plane_indices(restart_indices,
-			tile_size, true, 0, split);
+		el::IndexBuilder::build_plane_indices(tile_size, true, 0, split,
+			restart_indices);
 
 		BOOST_CHECK_EQUAL(restart_indices.size(), index_count);
 
@@ -283,8 +283,8 @@ BOOST_AUTO_TEST_CASE(restart_split)
 
 		BOOST_CHECK_EQUAL(vertices.count(), vertex_count);
 
-		el::IndexBuilder::build_plane_indices(indices, tile_size,
-			false, 0, split);
+		el::IndexBuilder::build_plane_indices(tile_size, false, 0,
+			split, indices);
 
 		for (j = 0; j < (indices.size() / 3); ++j)
 		{
@@ -310,7 +310,7 @@ BOOST_AUTO_TEST_CASE(restart_split)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(restart_no_split)
+BOOST_AUTO_TEST_CASE(plane_restart_no_split)
 {
 	el::Uint32Vector indices, restart_indices;
 	std::bitset<65536> vertices;
@@ -348,8 +348,8 @@ BOOST_AUTO_TEST_CASE(restart_no_split)
 
 		index_count = tile_size * tile_size * 7 / 4;
 
-		el::IndexBuilder::build_plane_indices(restart_indices,
-			tile_size, true, 0, split);
+		el::IndexBuilder::build_plane_indices(tile_size, true, 0, split,
+			restart_indices);
 
 		BOOST_CHECK_EQUAL(restart_indices.size(), index_count);
 
@@ -392,8 +392,171 @@ BOOST_AUTO_TEST_CASE(restart_no_split)
 
 		BOOST_CHECK_EQUAL(vertices.count(), vertex_count);
 
-		el::IndexBuilder::build_plane_indices(indices, tile_size,
-			false, 0, split);
+		el::IndexBuilder::build_plane_indices(tile_size, false, 0,
+			split, indices);
+
+		for (j = 0; j < (indices.size() / 3); ++j)
+		{
+			triangle = Triangle(indices[j * 3 + 0],
+				indices[j * 3 + 1], indices[j * 3 + 2]);
+
+			BOOST_CHECK_EQUAL(triangles.count(triangle), 0);
+
+			triangles.insert(triangle);
+		}
+
+		BOOST_CHECK_EQUAL(restart_triangles.size(), triangles.size());
+
+		BOOST_FOREACH(const Triangle &triangle, triangles)
+		{
+			BOOST_CHECK_EQUAL(restart_triangles.count(triangle), 1);
+		}
+
+		BOOST_FOREACH(const Triangle &triangle, restart_triangles)
+		{
+			BOOST_CHECK_EQUAL(triangles.count(triangle), 1);
+		}
+	}
+}
+
+BOOST_AUTO_TEST_CASE(terrain_no_restart)
+{
+	el::Uint32Vector indices;
+	el::Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
+	std::set<Triangle> triangles;
+	Triangle triangle;
+	std::bitset<65536> vertices;
+	bool use_restart_index;
+
+	use_restart_index = false;
+
+	for (i = 0; i < 7; i++)
+	{
+		indices.clear();
+		triangles.clear();
+
+		tile_size = 2 << i;
+
+		BOOST_CHECK_LT(tile_size, 256);
+
+		vertex_count = tile_size + 1;
+		vertex_count *= tile_size + 1;
+
+		BOOST_CHECK_LE(vertex_count,
+			std::numeric_limits<Uint16>::max());
+		BOOST_CHECK_EQUAL(vertex_count % 2, 1);
+
+		max_vertex = vertex_count - 1;
+
+		BOOST_CHECK_LT(max_vertex, std::numeric_limits<Uint16>::max());
+
+		index_count = tile_size * tile_size * 6;
+
+		el::IndexBuilder::build_terrain_indices(tile_size,
+			use_restart_index, indices);
+
+		BOOST_FOREACH(const el::Uint32 index, indices)
+		{
+			BOOST_CHECK_LE(index, max_vertex);
+
+			vertices[index] = true;
+		}
+
+		BOOST_CHECK_EQUAL(indices.size(), index_count);
+		BOOST_CHECK_EQUAL(vertices.count(), vertex_count);
+
+		for (j = 0; j < (indices.size() / 3); ++j)
+		{
+			triangle = Triangle(indices[j * 3 + 0],
+				indices[j * 3 + 1], indices[j * 3 + 2]);
+
+			BOOST_CHECK_EQUAL(triangles.count(triangle), 0);
+
+			triangles.insert(triangle);
+		}
+	}
+}
+
+BOOST_AUTO_TEST_CASE(terrain_restart)
+{
+	el::Uint32Vector indices, restart_indices;
+	std::bitset<65536> vertices;
+	std::set<Triangle> triangles, restart_triangles;
+	Triangle triangle;
+	el::Uint32 vertex_count, index_count, tile_size, max_vertex, i, j;
+	glm::uvec2 last;
+
+	for (i = 0; i < 7; i++)
+	{
+		indices.clear();
+		triangles.clear();
+		restart_indices.clear();
+		restart_triangles.clear();
+
+		tile_size = 2 << i;
+
+		BOOST_CHECK_LT(tile_size, 256);
+
+		vertex_count = tile_size + 1;
+		vertex_count *= tile_size + 1;
+
+		BOOST_CHECK_LE(vertex_count,
+			std::numeric_limits<Uint16>::max());
+		BOOST_CHECK_EQUAL(vertex_count % 2, 1);
+
+		max_vertex = vertex_count - 1;
+
+		BOOST_CHECK_LE(max_vertex, std::numeric_limits<Uint16>::max());
+
+		index_count = tile_size * (tile_size * 2 + 3);
+
+		el::IndexBuilder::build_terrain_indices(tile_size, true,
+			restart_indices);
+
+		BOOST_CHECK_EQUAL(restart_indices.size(), index_count);
+
+		last.x = std::numeric_limits<Uint32>::max();
+		last.y = std::numeric_limits<Uint32>::max();
+
+		BOOST_FOREACH(const el::Uint32 index, restart_indices)
+		{
+			if (index == std::numeric_limits<Uint32>::max())
+			{
+				last.x = std::numeric_limits<Uint32>::max();
+				last.y = std::numeric_limits<Uint32>::max();
+				continue;
+			}
+
+			BOOST_CHECK_LE(index, max_vertex);
+
+			vertices[index] = true;
+
+			if (last.x == std::numeric_limits<Uint32>::max())
+			{
+				last.x = index;
+				continue;
+			}
+
+			if (last.y == std::numeric_limits<Uint32>::max())
+			{
+				last.y = index;
+				continue;
+			}
+
+			triangle = Triangle(last.x, last.y, index);
+
+			last.x = last.y;
+			last.y = index;
+
+			BOOST_CHECK_EQUAL(restart_triangles.count(triangle), 0);
+
+			restart_triangles.insert(triangle);
+		}
+
+		BOOST_CHECK_EQUAL(vertices.count(), vertex_count);
+
+		el::IndexBuilder::build_terrain_indices(tile_size, false,
+			indices);
 
 		for (j = 0; j < (indices.size() / 3); ++j)
 		{

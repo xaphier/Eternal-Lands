@@ -277,8 +277,8 @@ namespace eternal_lands
 		vertex_count = tile_size + 1;
 		vertex_count *= tile_size + 1;
 
-		IndexBuilder::build_plane_indices(indices, tile_size, false,
-			0, true);
+		IndexBuilder::build_plane_indices(tile_size, false, 0, true,
+			indices);
 
 		semantics.insert(vst_position);
 

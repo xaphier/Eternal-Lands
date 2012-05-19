@@ -52,17 +52,110 @@ namespace eternal_lands
 	class IndexBuilder
 	{
 		public:
-			static void build_plane_indices(
-				Uint32Vector &indices, const Uint32 tile_size,
+			/**
+			 * Build plane indices using triangle fans if restart
+			 * index is supported. The triangles are ordered like
+			 * this:			unsplit patch:
+			 * 0--0--0--0--0--0--0		0-----0-----0-----0
+			 * |\ | /|\ | /|\ | /|		|\   /|\   /|\   /|
+			 * | \|/ | \|/ | \|/ |		| \ / | \ / | \ / |
+			 * 0--0--0--0--0--0--0		|  0  |  0  |  0  |
+			 * | /|\ | /|\ | /|\ |		| / \ | / \ | / \ |
+			 * |/ | \|/ | \|/ | \|		|/   \|/   \|/   \|
+			 * 0--0--0--0--0--0--0		0-----0-----0-----0
+			 * |\ | /|\ | /|\ | /|		|\   /|\   /|\   /|
+			 * | \|/ | \|/ | \|/ |		| \ / | \ / | \ / |
+			 * 0--0--0--0--0--0--0		|  0  |  0  |  0  |
+			 * | /|\ | /|\ | /|\ |		| / \ | / \ | / \ |
+			 * |/ | \|/ | \|/ | \|		|/   \|/   \|/   \|
+			 * 0--0--0--0--0--0--0		0-----0-----0-----0
+			 * This gives many lod levels and a uniform lighting
+			 * for vertex lighting.
+			 * @param tile_size The size of each tile in vertexes
+			 * @param use_restart_index True if restart index should
+			 * be used and triangle fans, else trianlges are used.
+			 * @param skip Defines how many vertexes are skiped
+			 * when building the indices. Used for different lod
+			 * levels.
+			 * @param split Defines if each patch should should be
+			 * splitted
+			 * @param indices The vector where all the indices are
+			 * added.
+			 */
+			static void build_plane_indices(const Uint32 tile_size,
 				const bool use_restart_index,
-				const Uint32 skip, const bool split);
+				const Uint32 skip, const bool split,
+				Uint32Vector &indices);
 
-			static void build_plane_indices(
-				Uint32Vector &indices, const Uint32 tile_size,
+			/**
+			 * Build plane indices using triangle fans if restart
+			 * index is supported. The triangles are ordered like
+			 * this:			unsplit patch:
+			 * 0--0--0--0--0--0--0		0-----0-----0-----0
+			 * |\ | /|\ | /|\ | /|		|\   /|\   /|\   /|
+			 * | \|/ | \|/ | \|/ |		| \ / | \ / | \ / |
+			 * 0--0--0--0--0--0--0		|  0  |  0  |  0  |
+			 * | /|\ | /|\ | /|\ |		| / \ | / \ | / \ |
+			 * |/ | \|/ | \|/ | \|		|/   \|/   \|/   \|
+			 * 0--0--0--0--0--0--0		0-----0-----0-----0
+			 * |\ | /|\ | /|\ | /|		|\   /|\   /|\   /|
+			 * | \|/ | \|/ | \|/ |		| \ / | \ / | \ / |
+			 * 0--0--0--0--0--0--0		|  0  |  0  |  0  |
+			 * | /|\ | /|\ | /|\ |		| / \ | / \ | / \ |
+			 * |/ | \|/ | \|/ | \|		|/   \|/   \|/   \|
+			 * 0--0--0--0--0--0--0		0-----0-----0-----0
+			 * This gives many lod levels and a uniform lighting
+			 * for vertex lighting.
+			 * @param tile_size The size of each tile in vertexes
+			 * @param use_restart_index True if restart index should
+			 * be used and triangle fans, else trianlges are used.
+			 * @param skip Defines how many vertexes are skiped
+			 * when building the indices. Used for different lod
+			 * levels.
+			 * @param splits_outside Defines how often each patch
+			 * is splitted on the borders so it can link to
+			 * a a given lod level.
+			 * @param split_inside Defines if the patch is splitted
+			 * inside for greater resolution.
+			 * @param indices The vector where all the indices are
+			 * added.
+			 */
+			static void build_plane_indices(const Uint32 tile_size,
 				const bool use_restart_index,
 				const Uint32 skip,
 				const Uint16Array4 &splits_outside,
-				const bool split_inside);
+				const bool split_inside,
+				Uint32Vector &indices);
+
+			/**
+			 * Build plane indices using triangle strips if restart
+			 * index is supported. The triangles are ordered like
+			 * this:
+			 * 0--0--0--0--0--0--0
+			 * |\ |\ |\ |\ |\ |\ |
+			 * | \| \| \| \| \| \|
+			 * 0--0--0--0--0--0--0
+			 * |\ |\ |\ |\ |\ |\ |
+			 * | \| \| \| \| \| \|
+			 * 0--0--0--0--0--0--0
+			 * |\ |\ |\ |\ |\ |\ |
+			 * | \| \| \| \| \| \|
+			 * 0--0--0--0--0--0--0
+			 * |\ |\ |\ |\ |\ |\ |
+			 * | \| \| \| \| \| \|
+			 * 0--0--0--0--0--0--0
+			 * This gives many lod levels and a uniform lighting
+			 * for vertex lighting.
+			 * @param tile_size The size of each tile in vertexes
+			 * @param use_restart_index True if restart index should
+			 * be used and triangle fans, else trianlges are used.
+			 * @param indices The vector where all the indices are
+			 * added.
+			 */
+			static void build_terrain_indices(
+				const Uint32 tile_size,
+				const bool use_restart_index,
+				Uint32Vector &indices);
 
 	};
 

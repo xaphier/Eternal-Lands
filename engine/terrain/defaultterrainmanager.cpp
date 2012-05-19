@@ -160,16 +160,14 @@ namespace eternal_lands
 			splits_outside[2] = 0;
 			splits_outside[3] = 0;
 
-			IndexBuilder::build_plane_indices(indices,
-				get_tile_size(), false, 0, splits_outside,
-				false);
+			IndexBuilder::build_plane_indices(get_tile_size(),
+				false, 0, splits_outside, false, indices);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 
-			IndexBuilder::build_plane_indices(indices,
-				get_tile_size(), false, 1, splits_outside,
-				true);
+			IndexBuilder::build_plane_indices(get_tile_size(),
+				false, 1, splits_outside, true, indices);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
@@ -179,9 +177,8 @@ namespace eternal_lands
 			splits_outside[2] = 1;
 			splits_outside[3] = 1;
 
-			IndexBuilder::build_plane_indices(indices,
-				get_tile_size(), false, 1, splits_outside,
-				false);
+			IndexBuilder::build_plane_indices(get_tile_size(),
+				false, 1, splits_outside, false, indices);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
@@ -193,16 +190,14 @@ namespace eternal_lands
 			splits_outside[2] = 1;
 			splits_outside[3] = 1;
 
-			IndexBuilder::build_plane_indices(indices,
-				get_tile_size(), false, 0, splits_outside,
-				true);
+			IndexBuilder::build_plane_indices(get_tile_size(),
+				false, 0, splits_outside, true, indices);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
 
-			IndexBuilder::build_plane_indices(indices,
-				get_tile_size(), false, 0, splits_outside,
-				false);
+			IndexBuilder::build_plane_indices(get_tile_size(),
+				false, 0, splits_outside, false, indices);
 
 			index_counts.push_back(indices.size() - index_count);
 			index_count = indices.size();
