@@ -95,7 +95,8 @@ namespace eternal_lands
 	}
 
 	CdLodQuadTree::CdLodQuadTree(const glm::vec3 &min,
-		const glm::vec3 &max): m_min(min), m_max(max)
+		const glm::vec3 &max, const glm::uvec2 &size): m_min(min),
+		m_max(max)
 	{
 	}
 

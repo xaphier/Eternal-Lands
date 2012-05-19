@@ -68,7 +68,7 @@ namespace eternal_lands
 
 		public:
 			CdLodQuadTree(const glm::vec3 &min,
-				const glm::vec3 &max);
+				const glm::vec3 &max, const glm::uvec2 &size);
 			~CdLodQuadTree() noexcept;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera,

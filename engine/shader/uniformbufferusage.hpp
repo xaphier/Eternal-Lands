@@ -40,6 +40,32 @@ namespace eternal_lands
 			bool used_parameter(
 				const ShaderSourceParameter &parameter) const;
 
+			inline bool get_used_uniform_buffer(
+				const UniformBufferType buffer) const noexcept
+			{
+				return m_used_uniform_buffers.count(buffer) > 0;
+			}
+
+			inline bool get_usable_uniform_buffer(
+				const UniformBufferType buffer) const noexcept
+			{
+				return m_usable_uniform_buffers.count(buffer)
+					> 0;
+			}
+
+			inline void set_usable_uniform_buffer(
+				const UniformBufferType buffer,
+				const bool enable) noexcept
+			{
+				m_usable_uniform_buffers.insert(buffer);
+			}
+
+			inline void clear() noexcept
+			{
+				m_used_uniform_buffers.clear();
+				m_usable_uniform_buffers.clear();
+			}
+
 	};
 
 }
