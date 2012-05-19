@@ -47,6 +47,7 @@ namespace eternal_lands
 			bool m_depth_test;
 			bool m_scissor_test;
 			bool m_sample_alpha_to_coverage;
+			bool m_use_restart_index;
 			bool m_polygon_offset_fill;
 			bool m_stencil_test;
 
@@ -79,6 +80,8 @@ namespace eternal_lands
 				const bool sample_alpha_to_coverage) noexcept;
 			void set_stencil_test(const bool stencil) noexcept;
 			void set_restart_index(const Uint32 restart_index)
+				noexcept;
+			void set_use_restart_index(const bool use_restart_index)
 				noexcept;
 
 		public:
@@ -277,6 +280,19 @@ namespace eternal_lands
 				}
 
 				set_restart_index(restart_index);
+
+				return true;
+			}
+
+			inline bool switch_use_restart_index(
+				const bool use_restart_index) noexcept
+			{
+				if (m_use_restart_index == use_restart_index)
+				{
+					return false;
+				}
+
+				set_use_restart_index(use_restart_index);
 
 				return true;
 			}

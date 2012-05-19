@@ -22,7 +22,8 @@ namespace eternal_lands
 		m_texture_unit(0), m_multisample(false), m_blend(false),
 		m_culling(true), m_depth_mask(true), m_depth_test(true),
 		m_scissor_test(false), m_sample_alpha_to_coverage(false),
-		m_polygon_offset_fill(false), m_stencil_test(false)
+		m_use_restart_index(false), m_polygon_offset_fill(false),
+		m_stencil_test(false)
 	{
 		m_program_used_texture_units.set();
 	}
@@ -44,11 +45,8 @@ namespace eternal_lands
 		set_polygon_offset_fill(false);
 		glCullFace(GL_BACK);
 
-		if (get_global_vars()->get_opengl_3_1())
-		{
-			glEnable(GL_PRIMITIVE_RESTART);
-			set_restart_index(std::numeric_limits<Uint32>::max());
-		}
+		set_restart_index(std::numeric_limits<Uint32>::max());
+		set_use_restart_index(true);
 	}
 
 	void StateManager::set_mesh(const AbstractMeshSharedPtr &mesh)
@@ -58,6 +56,7 @@ namespace eternal_lands
 		m_mesh->bind(m_used_attributes);
 
 		switch_restart_index(m_mesh->get_restart_index());
+		switch_use_restart_index(m_mesh->get_use_restart_index());
 	}
 
 	void StateManager::set_program(const GlslProgramSharedPtr &program)
@@ -233,7 +232,30 @@ namespace eternal_lands
 	{
 		m_restart_index = restart_index;
 
-		glPrimitiveRestartIndex(m_restart_index);
+		if (get_global_vars()->get_opengl_3_1())
+		{
+			glPrimitiveRestartIndex(m_restart_index);
+		}
+	}
+
+	void StateManager::set_use_restart_index(const bool use_restart_index)
+		noexcept
+	{
+		m_use_restart_index = use_restart_index;
+
+		if (!get_global_vars()->get_opengl_3_1())
+		{
+			return;
+		}
+
+		if (m_use_restart_index)
+		{
+			glEnable(GL_PRIMITIVE_RESTART);
+		}
+		else
+		{
+			glDisable(GL_PRIMITIVE_RESTART);
+		}
 	}
 
 	bool StateManager::switch_texture_unit(const Uint16 texture_unit)
@@ -271,13 +293,9 @@ namespace eternal_lands
 		result |= switch_sample_alpha_to_coverage(false);
 		result |= switch_stencil_test(false);
 		result |= switch_sample_alpha_to_coverage(false);
+		result |= switch_use_restart_index(false);
 		switch_texture_unit(0);
 		glCullFace(GL_BACK);
-
-		if (get_global_vars()->get_opengl_3_1())
-		{
-			glDisable(GL_PRIMITIVE_RESTART);
-		}
 
 		return result;
 	}
