@@ -15,8 +15,7 @@
      <name>terrain_texture_coodrinate</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <auto_parameter>terrain_texture_size</auto_parameter>
@@ -25,8 +24,7 @@
      <name>terrain_uvs</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
-     <size>clipmap_slices</size>
-     <scale>1</scale>
+     <size>6</size>
     </parameter>
     <parameter>
      <common_parameter>world_uv</common_parameter>

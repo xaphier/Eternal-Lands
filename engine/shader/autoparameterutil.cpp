@@ -20,18 +20,14 @@ namespace eternal_lands
 			private:
 				const String m_name;
 				const ParameterType m_type;
-				const ParameterSizeType m_size;
-				const Uint16 m_scale;
+				const Uint16 m_size;
 
 			public:
 				inline AutoParameterTypeData(
 					const String &name,
 					const ParameterType type,
-					const ParameterSizeType size = pst_one,
-					const Uint16 scale = 1):
-						m_name(name), m_type(type),
-						m_size(size),
-						m_scale(scale)
+					const Uint16 size = 1): m_name(name),
+						m_type(type), m_size(size)
 				{
 				}
 
@@ -49,15 +45,9 @@ namespace eternal_lands
 					return m_type;
 				}
 
-				inline ParameterSizeType get_size() const
-					noexcept
+				inline Uint16 get_size() const noexcept
 				{
 					return m_size;
-				}
-
-				inline Uint16 get_scale() const noexcept
-				{
-					return m_scale;
 				}
 
 		};
@@ -73,25 +63,23 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("view_matrix")),
 				pt_mat4x4),
 			AutoParameterTypeData(
-				String(UTF8("projection_matrices")),
-				pt_mat4x4, pst_layer_count),
+				String(UTF8("projection_matrix")),
+				pt_mat4x4),
 			AutoParameterTypeData(String(UTF8(
-				"projection_view_matrices")), pt_mat4x4,
-				pst_layer_count),
+				"projection_view_matrix")), pt_mat4x4),
 			AutoParameterTypeData(String(UTF8("reflection_matrix")),
 				pt_mat4x4),
 			AutoParameterTypeData(String(UTF8(
-				"shadow_texture_matrices")), pt_mat4x4,
-				pst_shadow_map_count),
+				"shadow_texture_matrices")), pt_mat4x4, 3),
 			AutoParameterTypeData(String(UTF8("light_positions")),
-				pt_vec4, pst_light_count),
+				pt_vec4, 8),
 			AutoParameterTypeData(String(UTF8("light_colors")),
-				pt_vec4, pst_light_count),
+				pt_vec4, 8),
 			AutoParameterTypeData(String(UTF8("ambient")), pt_vec4),
 			AutoParameterTypeData(String(UTF8(
 				"dynamic_light_count")), pt_int),
 			AutoParameterTypeData(String(UTF8("bones")), pt_mat2x4,
-				pst_bone_count),
+				80),
 			AutoParameterTypeData(String(UTF8("time")), pt_float),
 			AutoParameterTypeData(String(UTF8("fog_data")),
 				pt_vec4),
@@ -102,11 +90,10 @@ namespace eternal_lands
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("layers")), pt_ivec4),
 			AutoParameterTypeData(
-				String(UTF8("texture_matrices")), pt_mat2x3,
-				pst_one, 2),
+				String(UTF8("texture_matrices")), pt_mat2x3, 2),
 			AutoParameterTypeData(
 				String(UTF8("albedo_scale_offsets")),
-				pt_mat2x4, pst_one, 4),
+				pt_mat2x4, 4),
 			AutoParameterTypeData(
 				String(UTF8("emission_scale_offset")),
 				pt_mat2x3),
@@ -119,11 +106,11 @@ namespace eternal_lands
 			AutoParameterTypeData(
 				String(UTF8("terrain_texture_size")), pt_vec4),
 			AutoParameterTypeData(String(UTF8("clipmap_matrices")),
-				pt_mat2x3, pst_clipmap_slices),
+				pt_mat2x3, 6),
 			AutoParameterTypeData(String(UTF8("z_params")),
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("terrain_instances")),
-				pt_mat2x4, pst_one, 2048),
+				pt_mat2x4, 1024),
 			AutoParameterTypeData(
 				String(UTF8("terrain_lod_offset")), pt_vec4)
 		};
@@ -170,7 +157,7 @@ namespace eternal_lands
 		return auto_parameter_datas[auto_parameter].get_type();
 	}
 
-	ParameterSizeType AutoParameterUtil::get_size(
+	Uint16 AutoParameterUtil::get_size(
 		const AutoParameterType auto_parameter)
 	{
 		if (auto_parameter_datas_count <= auto_parameter)
@@ -186,24 +173,6 @@ namespace eternal_lands
 		}
 
 		return auto_parameter_datas[auto_parameter].get_size();
-	}
-
-	Uint16 AutoParameterUtil::get_scale(
-		const AutoParameterType auto_parameter)
-	{
-		if (auto_parameter_datas_count <= auto_parameter)
-		{
-			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_range_min(0)
-				<< errinfo_range_max(
-					auto_parameter_datas_count - 1)
-				<< errinfo_range_index(static_cast<Uint32>(
-					auto_parameter))
-				<< boost::errinfo_type_info_name(UTF8(
-					"AutoParameterType")));
-		}
-
-		return auto_parameter_datas[auto_parameter].get_scale();
 	}
 
 	AutoParameterType AutoParameterUtil::get_auto_parameter(

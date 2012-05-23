@@ -9,15 +9,13 @@
      <name>bone_index</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <name>bone_weight</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <auto_parameter>bones</auto_parameter>
@@ -26,15 +24,13 @@
      <name>normal</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <name>position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <common_parameter>world_normal</common_parameter>
@@ -110,15 +106,13 @@ world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformat
      <name>bone_index</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <name>bone_weight</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <auto_parameter>bones</auto_parameter>
@@ -127,15 +121,13 @@ world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformat
      <name>normal</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <name>position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <common_parameter>world_normal</common_parameter>

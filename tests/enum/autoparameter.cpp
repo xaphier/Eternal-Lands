@@ -102,29 +102,13 @@ BOOST_AUTO_TEST_CASE(get_type)
 BOOST_AUTO_TEST_CASE(get_size)
 {
 	Uint32 i, count;
-	el::ParameterSizeType type;
 
 	count = el::AutoParameterUtil::get_auto_parameter_count();
 
 	for (i = 0; i < count; i++)
 	{
-		BOOST_CHECK_NO_THROW(type = el::AutoParameterUtil::get_size(
-			static_cast<el::AutoParameterType>(i)));
-
-		BOOST_CHECK_NO_THROW(el::ParameterSizeUtil::get_str(type));
-	}
-}
-
-BOOST_AUTO_TEST_CASE(get_scale)
-{
-	Uint32 i, count;
-
-	count = el::AutoParameterUtil::get_auto_parameter_count();
-
-	for (i = 0; i < count; i++)
-	{
-		BOOST_CHECK_NO_THROW(el::AutoParameterUtil::get_scale(
-			static_cast<el::AutoParameterType>(i)));
+		BOOST_CHECK_GT(el::AutoParameterUtil::get_size(
+			static_cast<el::AutoParameterType>(i)), 0);
 	}
 }
 
@@ -137,11 +121,11 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 		el::apt_view_matrix).get(), "view_matrix");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
-		el::apt_projection_matrices).get(), "projection_matrices");
+		el::apt_projection_matrix).get(), "projection_matrix");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
-		el::apt_projection_view_matrices).get(),
-		"projection_view_matrices");
+		el::apt_projection_view_matrix).get(),
+		"projection_view_matrix");
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
 		el::apt_reflection_matrix).get(), "reflection_matrix");

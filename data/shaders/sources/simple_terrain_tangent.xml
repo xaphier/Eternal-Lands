@@ -9,29 +9,25 @@
      <name>morph_normal</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <name>morph_position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <name>position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <name>terrain_texture_coodrinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <common_parameter>world_normal</common_parameter>

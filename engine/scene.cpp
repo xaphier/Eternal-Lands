@@ -446,9 +446,7 @@ namespace eternal_lands
 
 		m_scene_view.update();
 
-		assert(m_scene_view.get_projection_view_matrices().size() > 0);
-		frustum = Frustum(m_scene_view.get_projection_view_matrices(
-			)[0]);
+		frustum = Frustum(m_scene_view.get_projection_view_matrix());
 
 		m_visible_lights.get_lights().clear();
 
@@ -584,8 +582,7 @@ namespace eternal_lands
 			m_shadow_update_mask);
 	}
 
-	bool Scene::switch_program(const GlslProgramSharedPtr &program,
-		const Uint16 layer)
+	bool Scene::switch_program(const GlslProgramSharedPtr &program)
 	{
 		bool result;
 
@@ -603,12 +600,11 @@ namespace eternal_lands
 			program->set_parameter(apt_view_rotation_matrix,
 				m_scene_view.get_current_view_rotation_matrix()
 				);
-			program->set_parameter(apt_projection_matrices,
-				m_scene_view.get_current_projection_matrices(),
-				layer);
-			program->set_parameter(apt_projection_view_matrices,
-				m_scene_view.get_current_projection_view_matrices(
-					), layer);
+			program->set_parameter(apt_projection_matrix,
+				m_scene_view.get_current_projection_matrix());
+			program->set_parameter(apt_projection_view_matrix,
+				m_scene_view.get_current_projection_view_matrix(
+					));
 			program->set_parameter(apt_time, m_time);
 			program->set_parameter(apt_fog_data, m_fog);
 			program->set_parameter(apt_camera,
@@ -655,8 +651,8 @@ namespace eternal_lands
 	}
 
 	void Scene::do_draw_object(const ObjectSharedPtr &object,
-		const EffectProgramType type, const Uint16 layer,
-		const Uint16 distance, const bool lights)
+		const EffectProgramType type, const Uint16 distance,
+		const bool lights)
 	{
 		Uint16 count, i, light_count;
 		bool object_data_set;
@@ -681,7 +677,7 @@ namespace eternal_lands
 			MaterialLock material(object->get_materials()[i]);
 
 			if (switch_program(material->get_effect()->get_program(
-				type), layer))
+				type)))
 			{
 				object_data_set = false;
 			}
@@ -725,8 +721,8 @@ namespace eternal_lands
 	}
 
 	void Scene::draw_object(const ObjectSharedPtr &object,
-		const EffectProgramType type, const Uint16 layer,
-		const Uint16 distance, const bool lights)
+		const EffectProgramType type, const Uint16 distance,
+		const bool lights)
 	{
 		try
 		{
@@ -734,7 +730,7 @@ namespace eternal_lands
 				"'%2%'"), object->get_name() %
 				object->get_mesh()->get_name());
 
-			do_draw_object(object, type, layer, distance, lights);
+			do_draw_object(object, type, distance, lights);
 		}
 		catch (boost::exception &exception)
 		{
@@ -771,7 +767,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_scene_view.set_shadow_view();
+		m_scene_view.set_shadow_view(index);
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_shadow_objects.get_objects())
@@ -779,7 +775,7 @@ namespace eternal_lands
 			if (object.get_sub_frustums_mask(index))
 			{
 				draw_object(object.get_object(), ept_shadow,
-					index, object.get_distance(), false);
+					object.get_distance(), false);
 			}
 		}
 
@@ -905,7 +901,7 @@ namespace eternal_lands
 			glBeginQuery(GL_SAMPLES_PASSED, m_querie_ids[index]);
 
 #endif
-			draw_object(object.get_object(), ept_depth, 0,
+			draw_object(object.get_object(), ept_depth,
 				object.get_distance(), false);
 #ifdef	OCCLUSION_CULLING
 
@@ -995,7 +991,7 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			draw_object(object.get_object(), ept_default, 0,
+			draw_object(object.get_object(), ept_default,
 				object.get_distance(), true);
 		}
 
@@ -1029,7 +1025,7 @@ namespace eternal_lands
 			DEBUG_CHECK_GL_ERROR();
 
 			switch_program(material->get_effect(
-				)->get_program(ept_default), 0);
+				)->get_program(ept_default));
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -1256,7 +1252,7 @@ namespace eternal_lands
 				m_querie_ids[ids.size()]);
 
 			draw_object(object.get_object(), ept_depth,
-				0, object.get_distance(), false);
+				object.get_distance(), false);
 
 			glEndQuery(GL_SAMPLES_PASSED);
 
@@ -1273,15 +1269,16 @@ namespace eternal_lands
 
 		for (i = 0; i < sub_objects; ++i)
 		{
-			if (object.get_object()->get_sub_objects()[i].get_selection()
-				== st_none)
+			if (object.get_object()->get_sub_objects(
+				)[i].get_selection() == st_none)
 			{
 				continue;
 			}
 
 			STRING_MARKER(UTF8("sub object index '%1%'"), i);
 
-			data.first = object.get_object()->get_sub_objects()[i].get_id();
+			data.first = object.get_object()->get_sub_objects(
+				)[i].get_id();
 			data.second = object.get_object()->get_sub_objects(
 				)[i].get_selection();
 

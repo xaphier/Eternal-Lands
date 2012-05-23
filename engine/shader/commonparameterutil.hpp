@@ -14,7 +14,6 @@
 
 #include "prerequisites.hpp"
 #include "parameterutil.hpp"
-#include "parametersizeutil.hpp"
 
 /**
  * @file
@@ -63,9 +62,7 @@ namespace eternal_lands
 				const CommonParameterType common_paramter);
 			static ParameterType get_type(
 				const CommonParameterType common_parameter);
-			static ParameterSizeType get_size(
-				const CommonParameterType common_parameter);
-			static Uint16 get_scale(
+			static Uint16 get_size(
 				const CommonParameterType common_parameter);
 			static CommonParameterType get_common_parameter(
 				const String &str);

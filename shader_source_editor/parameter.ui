@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>401</width>
-    <height>351</height>
+    <height>321</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -124,27 +124,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QComboBox" name="size_value"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>scale</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QSpinBox" name="scale_value">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>1024</number>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="button_box">
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
@@ -167,6 +147,16 @@
    <item row="2" column="1">
     <widget class="QComboBox" name="qualifier_value"/>
    </item>
+   <item row="3" column="1">
+    <widget class="QSpinBox" name="size_value">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>1024</number>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
@@ -177,8 +167,6 @@
   <tabstop>attribute_name_value</tabstop>
   <tabstop>type_value</tabstop>
   <tabstop>qualifier_value</tabstop>
-  <tabstop>size_value</tabstop>
-  <tabstop>scale_value</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -314,22 +302,6 @@
    <sender>custom_name</sender>
    <signal>toggled(bool)</signal>
    <receiver>size_value</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>67</x>
-     <y>43</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>296</x>
-     <y>215</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>custom_name</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>scale_value</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

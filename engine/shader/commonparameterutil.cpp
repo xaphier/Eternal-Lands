@@ -19,17 +19,14 @@ namespace eternal_lands
 			private:
 				const String m_name;
 				const ParameterType m_type;
-				const ParameterSizeType m_size;
-				const Uint16 m_scale;
+				const Uint16 m_size;
 
 			public:
 				inline CommonParameterTypeData(
 					const String &name,
 					const ParameterType type,
-					const ParameterSizeType size = pst_one,
-					const Uint16 scale = 1): m_name(name),
-						m_type(type), m_size(size),
-						m_scale(scale)
+					const Uint16 size = 1): m_name(name),
+						m_type(type), m_size(size)
 				{
 				}
 
@@ -47,15 +44,9 @@ namespace eternal_lands
 					return m_type;
 				}
 
-				inline ParameterSizeType get_size() const
-					noexcept
+				inline Uint16 get_size() const noexcept
 				{
 					return m_size;
-				}
-
-				inline Uint16 get_scale() const noexcept
-				{
-					return m_scale;
 				}
 
 		};
@@ -94,7 +85,7 @@ namespace eternal_lands
 				pt_vec2),
 			CommonParameterTypeData(String(UTF8("fog")), pt_float),
 			CommonParameterTypeData(String(UTF8("shadow_uvs")),
-				pt_vec4, pst_shadow_map_count),
+				pt_vec4, 3),
 			CommonParameterTypeData(String(UTF8("shadow_map_data")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("tbn_matrix")),
@@ -147,7 +138,7 @@ namespace eternal_lands
 		return common_parameter_datas[common_parameter].get_type();
 	}
 
-	ParameterSizeType CommonParameterUtil::get_size(
+	Uint16 CommonParameterUtil::get_size(
 		const CommonParameterType common_parameter)
 	{
 		if (common_parameter_datas_count <= common_parameter)
@@ -163,25 +154,6 @@ namespace eternal_lands
 		}
 
 		return common_parameter_datas[common_parameter].get_size();
-	}
-
-	Uint16 CommonParameterUtil::get_scale(
-		const CommonParameterType common_parameter)
-	{
-		if (common_parameter_datas_count <= common_parameter)
-		{
-			EL_THROW_EXCEPTION(InvalidParameterException()
-				<< errinfo_range_min(0)
-				<< errinfo_range_max(
-					common_parameter_datas_count - 1)
-				<< errinfo_range_index(static_cast<Uint32>(
-					common_parameter))
-				<< boost::errinfo_type_info_name(UTF8(
-					"CommonParameterType")));
-		}
-
-		return common_parameter_datas[
-			common_parameter].get_scale();
 	}
 
 	CommonParameterType CommonParameterUtil::get_common_parameter(

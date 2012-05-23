@@ -9,8 +9,7 @@
      <name>position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>
@@ -34,8 +33,7 @@ world_position += world_transformation[1].xyz;
      <name>position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>

@@ -9,8 +9,7 @@
      <name>position</name>
      <type>vec4</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <auto_parameter>terrain_instances</auto_parameter>
@@ -22,8 +21,7 @@
      <name>terrain_texture_coodrinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <sampler_parameter>vertex_normal_sampler</sampler_parameter>

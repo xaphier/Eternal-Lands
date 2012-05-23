@@ -149,15 +149,13 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		qtreewidgetitem->setText(1, "type");
 		qtreewidgetitem->setText(2, "qualifier");
 		qtreewidgetitem->setText(3, "size");
-		qtreewidgetitem->setText(4, "scale");
 
 		parameters->setHeaderItem(qtreewidgetitem);
 		parameters->header()->setVisible(true);
-		parameters->setColumnWidth(0, 175);
-		parameters->setColumnWidth(1, 175);
-		parameters->setColumnWidth(2, 65);
-		parameters->setColumnWidth(3, 135);
-		parameters->setColumnWidth(4, 50);
+		parameters->setColumnWidth(0, 225);
+		parameters->setColumnWidth(1, 225);
+		parameters->setColumnWidth(2, 75);
+		parameters->setColumnWidth(3, 75);
 
 		parameters->sortItems(0, Qt::AscendingOrder);
 	}
@@ -349,9 +347,6 @@ void MainWindow::save(const QString &file_name)
 				el::ParameterQualifierUtil::get_parameter_qualifier(
 					el::String(item->text(2).toUtf8())));
 			shader_source_parameters[j].set_size(
-				el::ParameterSizeUtil::get_parameter_size(
-					el::String(item->text(3).toUtf8())));
-			shader_source_parameters[j].set_scale(
 				item->text(4).toInt());
 		}
 
@@ -473,11 +468,7 @@ void MainWindow::load(const QString &file_name)
 				el::ParameterQualifierUtil::get_str(
 					parameter.get_qualifier()).get(
 					).c_str()));
-			list.push_back(QString::fromUtf8(
-				el::ParameterSizeUtil::get_str(
-					parameter.get_size()).get(
-					).c_str()));
-			list.push_back(QString::number(parameter.get_scale()));
+			list.push_back(QString::number(parameter.get_size()));
 
 			item = new QTreeWidgetItem((QTreeWidgetItem*)0, list);
 
@@ -568,7 +559,6 @@ void MainWindow::add_parameter(const int index)
 		list.push_back(m_parameterdialog->get_parameter_type());
 		list.push_back(m_parameterdialog->get_parameter_qualifier());
 		list.push_back(m_parameterdialog->get_parameter_size());
-		list.push_back(m_parameterdialog->get_parameter_scale());
 
 		item = new QTreeWidgetItem((QTreeWidgetItem*)0, list);
 
@@ -592,13 +582,12 @@ void MainWindow::edit_parameter(const int index)
 	item = m_parameters[index]->selectedItems()[0];
 
 	if (m_parameterdialog->edit_parameter(item->text(0), item->text(1),
-		item->text(2), item->text(3), item->text(4)))
+		item->text(2), item->text(3)))
 	{
 		item->setText(0, m_parameterdialog->get_parameter_name());
 		item->setText(1, m_parameterdialog->get_parameter_type());
 		item->setText(2, m_parameterdialog->get_parameter_qualifier());
 		item->setText(3, m_parameterdialog->get_parameter_size());
-		item->setText(4, m_parameterdialog->get_parameter_scale());
 
 		m_parameters[index]->sortItems(0, Qt::AscendingOrder);
 

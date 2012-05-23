@@ -21,8 +21,7 @@
      <name>uv</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>3</scale>
+     <size>3</size>
     </parameter>
    </parameters>
    <source>{
@@ -67,8 +66,7 @@
      <name>uv</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>3</scale>
+     <size>3</size>
     </parameter>
    </parameters>
    <source>{

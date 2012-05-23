@@ -14,7 +14,6 @@
 
 #include "prerequisites.hpp"
 #include "parameterutil.hpp"
-#include "parametersizeutil.hpp"
 
 /**
  * @file
@@ -48,8 +47,8 @@ namespace eternal_lands
 		/**
 		 * 4x4 scene projection matrix
 		 */
-		apt_projection_matrices,
-		apt_projection_view_matrices,
+		apt_projection_matrix,
+		apt_projection_view_matrix,
 		apt_reflection_matrix,
 		apt_shadow_texture_matrices,
 		apt_light_positions,
@@ -103,9 +102,7 @@ namespace eternal_lands
 				const AutoParameterType auto_parameter);
 			static ParameterType get_type(
 				const AutoParameterType auto_parameter);
-			static ParameterSizeType get_size(
-				const AutoParameterType auto_parameter);
-			static Uint16 get_scale(
+			static Uint16 get_size(
 				const AutoParameterType auto_parameter);
 			static AutoParameterType get_auto_parameter(
 				const String &str);

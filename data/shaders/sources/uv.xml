@@ -9,8 +9,7 @@
      <name>texture_coordinate_0</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
-     <size>one</size>
-     <scale>1</scale>
+     <size>1</size>
     </parameter>
     <parameter>
      <common_parameter>world_uv</common_parameter>

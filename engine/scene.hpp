@@ -78,17 +78,14 @@ namespace eternal_lands
 				Uint16 &light_count);
 			void do_draw_object(const ObjectSharedPtr &object,
 				const EffectProgramType type,
-				const Uint16 layer, const Uint16 distance,
-				const bool lights);
+				const Uint16 distance, const bool lights);
 			void draw_object(const ObjectSharedPtr &object,
 				const EffectProgramType type,
-				const Uint16 layer, const Uint16 distance,
-				const bool lights);
+				const Uint16 distance, const bool lights);
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids);
 			bool switch_program(
-				const GlslProgramSharedPtr &program,
-				const Uint16 layer = 0);
+				const GlslProgramSharedPtr &program);
 			void cull_shadows(const glm::vec3 &camera,
 				const Uint16 index);
 			void cull_all_shadows();
@@ -270,8 +267,7 @@ namespace eternal_lands
 
 			inline const glm::mat4 &get_projection_matrix() const
 			{
-				return m_scene_view.get_projection_matrices(
-					)[0];
+				return m_scene_view.get_projection_matrix();
 			}
 
 			inline void set_lights(const bool lights) noexcept

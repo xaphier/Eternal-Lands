@@ -14,11 +14,11 @@
 
 #include "prerequisites.hpp"
 #include "parameterutil.hpp"
-#include "parametersizeutil.hpp"
 #include "parameterqualifierutil.hpp"
 #include "autoparameterutil.hpp"
 #include "commonparameterutil.hpp"
 #include "samplerparameterutil.hpp"
+#include "exceptions.hpp"
 
 /**
  * @file
@@ -35,8 +35,7 @@ namespace eternal_lands
 			String m_name;
 			ParameterType m_type;
 			ParameterQualifierType m_qualifier;
-			ParameterSizeType m_size;
-			Uint16 m_scale;
+			Uint16 m_size;
 
 		public:
 			ShaderSourceParameter();
@@ -45,8 +44,7 @@ namespace eternal_lands
 			ShaderSourceParameter(const String &source,
 				const String &name, const ParameterType type,
 				const ParameterQualifierType qualifier,
-				const ParameterSizeType size,
-				const Uint16 array_size);
+				const Uint16 size);
 			ShaderSourceParameter(const String &source,
 				const AutoParameterType auto_parameter);
 			ShaderSourceParameter(const String &source,
@@ -139,25 +137,13 @@ namespace eternal_lands
 			}
 
 			/**
-			 * @brief Sets the size type of the parameter.
-			 * Sets the size type of the parameter.
-			 * @param size the size type of the parameter.
+			 * @brief Sets the size of the parameter.
+			 * Sets the size of the parameter.
+			 * @param size the size of the parameter.
 			 */
-			inline void set_size(const ParameterSizeType size)
-				noexcept
+			inline void set_size(const Uint16 size) noexcept
 			{
 				m_size = size;
-			}
-
-			/**
-			 * @brief Sets the scale of the parameter.
-			 * Sets the scale of the parameter.
-			 * @param scale the scale of the parameter.
-			 */
-			inline void set_scale(const Uint16 scale) noexcept
-			{
-				assert(scale > 0);
-				m_scale = scale;
 			}
 
 			/**
@@ -206,35 +192,19 @@ namespace eternal_lands
 			 * Gets the size type of the parameter.
 			 * @return the size type of the parameter.
 			 */
-			inline ParameterSizeType get_size() const noexcept
+			inline Uint16 get_size() const noexcept
 			{
 				return m_size;
 			}
 
-			/**
-			 * @brief Gets the scale of the parameter.
-			 * Gets the scale of the parameter.
-			 * @return the scale of the parameter.
-			 */
-			inline Uint16 get_scale() const noexcept
-			{
-				return m_scale;
-			}
-
-			Uint16 get_array_size(
-				const ParameterSizeTypeUint16Map &sizes) const;
-
 			void write(const String &name_prefix,
-				const ParameterSizeTypeUint16Map &sizes,
 				OutStream &str) const;
 			void write(const String &name_prefix,
-				const ParameterSizeTypeUint16Map &sizes,
 				const String &prefix, OutStream &str,
 				bool &first) const;
 			void write_name(const String &name_prefix,
 				OutStream &str, bool &first) const;
 			void write_parameter(const String &name_prefix,
-				const ParameterSizeTypeUint16Map &sizes,
 				OutStream &str, bool &first) const;
 
 	};

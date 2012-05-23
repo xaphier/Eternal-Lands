@@ -102,8 +102,6 @@ namespace eternal_lands
 		m_exponential_shadow_maps(false)
 	{
 		set_default_view();
-
-		m_ortho_matrices.push_back(glm::mat4x4());
 	}
 
 	SceneView::~SceneView() noexcept
@@ -312,20 +310,14 @@ namespace eternal_lands
 
 		m_layer_count = 4;
 
-		m_projection_matrices.resize(get_layer_count());
-		m_projection_view_matrices.resize(get_layer_count());
-
 		for (i = 0; i < 3; ++i)
 		{
 			m_view_rotation_matrix[i] =
 				glm::normalize(glm::vec3(m_view_matrix[i]));
 		}
 
-		for (i = 0; i < get_layer_count(); ++i)
-		{
-			m_projection_matrices[i] = projection_matrix;
-			m_projection_view_matrices[i] = projection_view_matrix;
-		}
+		m_projection_matrix = projection_matrix;
+		m_projection_view_matrix = projection_view_matrix;
 
 		m_camera = glm::vec4(0.0, 0.0, 0.0f, 1.0f);
 		m_camera = glm::inverse(m_view_matrix) * m_camera;

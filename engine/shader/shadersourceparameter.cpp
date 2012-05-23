@@ -14,14 +14,13 @@ namespace eternal_lands
 {
 
 	ShaderSourceParameter::ShaderSourceParameter():
-		m_type(pt_vec4), m_qualifier(pqt_in), m_size(pst_one),
-		m_scale(0)
+		m_type(pt_vec4), m_qualifier(pqt_in), m_size(0)
 	{
 	}
 
 	ShaderSourceParameter::ShaderSourceParameter(const String &source,
 		const xmlNodePtr node): m_source(source), m_type(pt_vec4),
-		m_qualifier(pqt_in), m_size(pst_one), m_scale(0)
+		m_qualifier(pqt_in), m_size(0)
 	{
 		load_xml(source, node);
 
@@ -30,18 +29,16 @@ namespace eternal_lands
 
 	ShaderSourceParameter::ShaderSourceParameter(const String &source,
 		const String &name, const ParameterType type,
-		const ParameterQualifierType qualifier,
-		const ParameterSizeType size, const Uint16 scale):
+		const ParameterQualifierType qualifier, const Uint16 size):
 		m_source(source), m_name(name), m_type(type),
-		m_qualifier(qualifier), m_size(size), m_scale(scale)
+		m_qualifier(qualifier), m_size(size)
 	{
 		assert(!get_name().get().empty());
 	}
 
 	ShaderSourceParameter::ShaderSourceParameter(const String &source,
 		const AutoParameterType auto_parameter): m_source(source),
-		m_type(pt_vec4), m_qualifier(pqt_in), m_size(pst_one),
-		m_scale(0)
+		m_type(pt_vec4), m_qualifier(pqt_in), m_size(0)
 	{
 		set_auto_parameter(auto_parameter);
 
@@ -51,8 +48,7 @@ namespace eternal_lands
 	ShaderSourceParameter::ShaderSourceParameter(const String &source,
 		const CommonParameterType common_parameter,
 		const ParameterQualifierType qualifier): m_source(source),
-		m_type(pt_vec4), m_qualifier(qualifier), m_size(pst_one),
-		m_scale(0)
+		m_type(pt_vec4), m_qualifier(qualifier), m_size(0)
 	{
 		set_common_parameter(common_parameter);
 
@@ -62,7 +58,7 @@ namespace eternal_lands
 	ShaderSourceParameter::ShaderSourceParameter(const String &source,
 		const SamplerParameterType sampler_parameter,
 		const ParameterType type): m_source(source),
-		m_type(type), m_qualifier(pqt_in), m_size(pst_one), m_scale(0)
+		m_type(type), m_qualifier(pqt_in), m_size(0)
 	{
 		set_sampler_parameter(sampler_parameter);
 
@@ -79,7 +75,6 @@ namespace eternal_lands
 		set_name(AutoParameterUtil::get_str(auto_parameter));
 		set_type(AutoParameterUtil::get_type(auto_parameter));
 		set_size(AutoParameterUtil::get_size(auto_parameter));
-		set_scale(AutoParameterUtil::get_scale(auto_parameter));
 		set_qualifier(pqt_in);
 	}
 
@@ -89,15 +84,13 @@ namespace eternal_lands
 		set_name(CommonParameterUtil::get_str(common_parameter));
 		set_type(CommonParameterUtil::get_type(common_parameter));
 		set_size(CommonParameterUtil::get_size(common_parameter));
-		set_scale(CommonParameterUtil::get_scale(common_parameter));
 	}
 
 	void ShaderSourceParameter::set_sampler_parameter(
 		const SamplerParameterType sampler_parameter)
 	{
 		set_name(SamplerParameterUtil::get_str(sampler_parameter));
-		set_size(pst_one);
-		set_scale(1);
+		set_size(1);
 		set_qualifier(pqt_in);
 	}
 
@@ -148,14 +141,12 @@ namespace eternal_lands
 		AutoParameterType auto_parameter;
 		CommonParameterType common_parameter;
 		ParameterType type;
-		ParameterSizeType size;
-		Uint16 scale;
+		Uint16 size;
 
 		if (get_auto_parameter(auto_parameter))
 		{
 			type = AutoParameterUtil::get_type(auto_parameter);
 			size = AutoParameterUtil::get_size(auto_parameter);
-			scale = AutoParameterUtil::get_scale(auto_parameter);
 
 			if (type != get_type())
 			{
@@ -187,16 +178,6 @@ namespace eternal_lands
 					<< errinfo_parameter_name(get_name()));
 			}
 
-			if (scale != get_scale())
-			{
-				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
-					"name '%2%' has wrong scale %3% instead"
-					" of %4%"), get_source() % get_name() %
-					get_scale() % scale,
-					DuplicateItemException()
-					<< errinfo_parameter_name(get_name()));
-			}
-
 			return;
 		}
 
@@ -204,8 +185,6 @@ namespace eternal_lands
 		{
 			type = CommonParameterUtil::get_type(common_parameter);
 			size = CommonParameterUtil::get_size(common_parameter);
-			scale = CommonParameterUtil::get_scale(
-				common_parameter);
 
 			if (type != get_type())
 			{
@@ -223,16 +202,6 @@ namespace eternal_lands
 					"name '%2%' has wrong size %3% instead"
 					" of %4%"), get_source() % get_name() %
 					get_size() % size,
-					DuplicateItemException()
-					<< errinfo_parameter_name(get_name()));
-			}
-
-			if (scale != get_scale())
-			{
-				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
-					"name '%2%' has wrong scale %3% instead"
-					" of %4%"), get_source() % get_name() %
-					get_scale() % scale,
 					DuplicateItemException()
 					<< errinfo_parameter_name(get_name()));
 			}
@@ -261,22 +230,12 @@ namespace eternal_lands
 					<< errinfo_parameter_name(get_name()));
 			}
 
-			if (pst_one != get_size())
+			if (1 != get_size())
 			{
 				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
 					"name '%2%' has wrong size %3% instead"
 					" of %4%"), get_source() % get_name() %
-					get_size() % pst_one,
-					DuplicateItemException()
-					<< errinfo_parameter_name(get_name()));
-			}
-
-			if (1 != get_scale())
-			{
-				EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
-					"name '%2%' has wrong scale %3% instead"
-					" of %4%"), get_source() % get_name() %
-					get_scale() % 1,
+					get_size() % 1,
 					DuplicateItemException()
 					<< errinfo_parameter_name(get_name()));
 			}
@@ -292,6 +251,15 @@ namespace eternal_lands
 				InvalidParameterException()
 				<< errinfo_parameter_name(get_name()));
 		}
+
+		if (1 > get_size())
+		{
+			EL_THROW_MESSAGE_EXCEPTION(UTF8("source '%1%' "
+				"name '%2%' has wrong size %3%"), get_source()
+				% get_name() % get_size(),
+				InvalidParameterException()
+				<< errinfo_parameter_name(get_name()));
+		}
 	}
 
 	void ShaderSourceParameter::log(OutStream &str) const
@@ -302,24 +270,7 @@ namespace eternal_lands
 		str << UTF8(" [name]: ") << get_name();
 		str << UTF8(" [type]: ") << get_type();
 		str << UTF8(" [qualifier]: ") << get_qualifier();
-		str << UTF8(" [scale]: ") << get_scale();
-	}
-
-	Uint16 ShaderSourceParameter::get_array_size(
-		const ParameterSizeTypeUint16Map &sizes) const
-	{
-		ParameterSizeTypeUint16Map::const_iterator found;
-
-		assert(!get_name().get().empty());
-
-		found = sizes.find(get_size());
-
-		if (found != sizes.end())
-		{
-			return found->second * get_scale();
-		}
-
-		return get_scale();
+		str << UTF8(" [size]: ") << get_size();
 	}
 
 	bool ShaderSourceParameter::get_use(
@@ -345,14 +296,6 @@ namespace eternal_lands
 			EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' and "
 				"'%2%' have the same name, but not equal "
 				"sizes"), *this % parameter,
-				InvalidParameterException());
-		}
-
-		if (get_scale() != parameter.get_scale())
-		{
-			EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' and "
-				"'%2%' have the same name, but not equal "
-				"scales"), *this % parameter,
 				InvalidParameterException());
 		}
 
@@ -386,27 +329,22 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceParameter::write(const String &name_prefix,
-		const ParameterSizeTypeUint16Map &sizes, OutStream &str) const
+		OutStream &str) const
 	{
-		Uint16 array_size;
-
 		assert(!get_name().get().empty());
 
 		str << get_type() << UTF8(" ") << name_prefix << get_name();
 
-		array_size = get_array_size(sizes);
+		assert(get_size() > 0);
 
-		assert(array_size > 0);
-
-		if ((array_size > 1) || (get_size() != pst_one))
+		if (get_size() > 1)
 		{
-			str << UTF8("[") << array_size << UTF8("]");
+			str << UTF8("[") << get_size() << UTF8("]");
 		}
 	}
 
 	void ShaderSourceParameter::write(const String &name_prefix,
-		const ParameterSizeTypeUint16Map &sizes, const String &prefix,
-		OutStream &str, bool &first) const
+		const String &prefix, OutStream &str, bool &first) const
 	{
 		assert(!get_name().get().empty());
 
@@ -417,7 +355,7 @@ namespace eternal_lands
 
 		str << prefix;
 
-		write(name_prefix, sizes, str);
+		write(name_prefix, str);
 
 		first = false;
 	}
@@ -438,8 +376,7 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceParameter::write_parameter(const String &name_prefix,
-		const ParameterSizeTypeUint16Map &sizes, OutStream &str,
-		bool &first) const
+		OutStream &str, bool &first) const
 	{
 		assert(!get_name().get().empty());
 
@@ -455,7 +392,7 @@ namespace eternal_lands
 
 		str << get_qualifier() << UTF8(" ");
 
-		write(name_prefix, sizes, str);
+		write(name_prefix, str);
 
 		first = false;
 	}
@@ -521,13 +458,7 @@ namespace eternal_lands
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("size")) == 0)
 			{
-				set_size(ParameterSizeUtil::get_parameter_size(
-					XmlUtil::get_string_value(it)));
-			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("scale")) == 0)
-			{
-				set_scale(XmlUtil::get_uint16_value(it));
+				set_size(XmlUtil::get_uint32_value(it));
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -577,9 +508,7 @@ namespace eternal_lands
 			get_type()));
 		writer->write_element(UTF8("qualifier"),
 			ParameterQualifierUtil::get_str(get_qualifier()));
-		writer->write_element(UTF8("size"),
-			ParameterSizeUtil::get_str(get_size()));
-		writer->write_int_element(UTF8("scale"), get_scale());
+		writer->write_int_element(UTF8("size"), get_size());
 		writer->end_element();
 	}
 

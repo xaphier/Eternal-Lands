@@ -32,13 +32,7 @@ namespace eternal_lands
 			static ShaderSourceParameter build(const String &source,
 				const String &name, const ParameterType type,
 				const ParameterQualifierType qualifier,
-				const Uint16 array_size = 1);
-
-			static ShaderSourceParameter build(const String &source,
-				const String &name, const ParameterType type,
-				const ParameterQualifierType qualifier,
-				const ParameterSizeType size,
-				const Uint16 array_size = 1);
+				const Uint16 size = 1);
 
 			static ShaderSourceParameter build(const String &source,
 				const CommonParameterType common_parameter,

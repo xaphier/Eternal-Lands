@@ -29,6 +29,9 @@ namespace eternal_lands
 			AbstractWriteMemorySharedPtr m_memory;
 
 		public:
+			TerrainInstancesBuffer();
+			~TerrainInstancesBuffer() noexcept;
+			static void write(const String &indent, OutStream &str);
 			void set_terrain_instance(const glm::mat2x4 &data,
 				const Uint16 index);
 

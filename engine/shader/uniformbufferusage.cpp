@@ -22,6 +22,15 @@ namespace eternal_lands
 	{
 	}
 
+	void UniformBufferUsage::write(const String &indent, OutStream &str)
+		const
+	{
+		if (m_used_uniform_buffers.count(ubt_terrain_instances) > 0)
+		{
+//			TerrainInstancesBuffer::write(indent, str);
+		}
+	}
+
 	bool UniformBufferUsage::add_parameter(
 		const ShaderSourceParameter &parameter)
 	{

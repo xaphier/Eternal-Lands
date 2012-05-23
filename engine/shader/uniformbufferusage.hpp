@@ -35,6 +35,7 @@ namespace eternal_lands
 		public:
 			UniformBufferUsage();
 			~UniformBufferUsage() noexcept;
+			void write(const String &indent, OutStream &str) const;
 			bool add_parameter(
 				const ShaderSourceParameter &parameter);
 			bool used_parameter(
