@@ -143,6 +143,8 @@ namespace eternal_lands
 			 */
 			inline void set_size(const Uint16 size) noexcept
 			{
+				RANGE_CECK_MIN(size, 1,
+					UTF8("size value to small"));
 				m_size = size;
 			}
 

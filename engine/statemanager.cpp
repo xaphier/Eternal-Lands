@@ -260,7 +260,7 @@ namespace eternal_lands
 
 	bool StateManager::switch_texture_unit(const Uint16 texture_unit)
 	{
-		RANGE_CECK(texture_unit, m_textures.size(),
+		RANGE_CECK_MAX(texture_unit, m_textures.size(),
 			UTF8("texture_unit value too big"));
 
 		if (m_texture_unit == texture_unit)

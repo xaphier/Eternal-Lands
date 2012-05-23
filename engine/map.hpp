@@ -143,9 +143,9 @@ namespace eternal_lands
 			inline void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height)
 			{
-				RANGE_CECK(x, m_height_map.shape()[0],
+				RANGE_CECK_MAX(x, m_height_map.shape()[0],
 					UTF8("index value too big"));
-				RANGE_CECK(y, m_height_map.shape()[1],
+				RANGE_CECK_MAX(y, m_height_map.shape()[1],
 					UTF8("index value too big"));
 
 				m_height_map[x][y] = height;
@@ -154,9 +154,9 @@ namespace eternal_lands
 			inline Uint16 get_height(const Uint16 x, const Uint16 y)
 				const
 			{
-				RANGE_CECK(x, m_height_map.shape()[0],
+				RANGE_CECK_MAX(x, m_height_map.shape()[0],
 					UTF8("index value too big"));
-				RANGE_CECK(y, m_height_map.shape()[1],
+				RANGE_CECK_MAX(y, m_height_map.shape()[1],
 					UTF8("index value too big"));
 
 				return m_height_map[x][y];
@@ -182,9 +182,9 @@ namespace eternal_lands
 			inline void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile)
 			{
-				RANGE_CECK(x, m_tile_map.shape()[0],
+				RANGE_CECK_MAX(x, m_tile_map.shape()[0],
 					UTF8("index value too big"));
-				RANGE_CECK(y, m_tile_map.shape()[1],
+				RANGE_CECK_MAX(y, m_tile_map.shape()[1],
 					UTF8("index value too big"));
 
 				m_tile_map[x][y] = tile;
@@ -193,9 +193,9 @@ namespace eternal_lands
 			inline Uint16 get_tile(const Uint16 x, const Uint16 y)
 				const
 			{
-				RANGE_CECK(x, m_tile_map.shape()[0],
+				RANGE_CECK_MAX(x, m_tile_map.shape()[0],
 					UTF8("index value too big"));
-				RANGE_CECK(y, m_tile_map.shape()[1],
+				RANGE_CECK_MAX(y, m_tile_map.shape()[1],
 					UTF8("index value too big"));
 
 				return m_tile_map[x][y];

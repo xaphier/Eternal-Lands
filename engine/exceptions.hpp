@@ -199,9 +199,10 @@ namespace eternal_lands
 #endif
 
 #ifdef	DEBUG
-#define RANGE_CECK(index, max, message) assert(((index) < (max)) && (message));
+#define RANGE_CECK_MAX(index, max, message)	\
+	assert(((index) < (max)) && (message));
 #else
-#define RANGE_CECK(index, max, message)	\
+#define RANGE_CECK_MAX(index, max, message)	\
 	do	\
 	{	\
 		if ((index) >= (max))	\
@@ -210,6 +211,24 @@ namespace eternal_lands
 				<< errinfo_message((message))	\
 				<< errinfo_range_index((index))	\
 				<< errinfo_range_max((max)));	\
+		}	\
+	}	\
+	while (false)
+#endif
+
+#ifdef	DEBUG
+#define RANGE_CECK_MIN(index, min, message)	\
+	assert(((index) >= (min)) && (message));
+#else
+#define RANGE_CECK_MIN(index, min, message)	\
+	do	\
+	{	\
+		if ((index) < (min))	\
+		{	\
+			EL_THROW_EXCEPTION(RangeErrorException()	\
+				<< errinfo_message((message))	\
+				<< errinfo_range_index((index))	\
+				<< errinfo_range_min((min)));	\
 		}	\
 	}	\
 	while (false)

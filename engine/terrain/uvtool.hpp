@@ -91,9 +91,9 @@ namespace eternal_lands
 			inline const glm::vec2 &get_uv(const Uint16 x,
 				const Uint16 y) const
 			{
-				RANGE_CECK(x, m_width,
+				RANGE_CECK_MAX(x, m_width,
 					UTF8("x value too big"));
-				RANGE_CECK(y, m_height,
+				RANGE_CECK_MAX(y, m_height,
 					UTF8("y value too big"));
 				assert((x + y * m_width) < m_uvs.size());
 

@@ -45,7 +45,7 @@ namespace eternal_lands
 			inline const AbstractReadWriteMemorySharedPtr
 				&get_buffer(const Uint32 index) const
 			{
-				RANGE_CECK(index, m_buffers.size(),
+				RANGE_CECK_MAX(index, m_buffers.size(),
 					UTF8("index value too big"));
 
 				return m_buffers[index];
