@@ -11,7 +11,6 @@
 #include "subobject.hpp"
 #include "material.hpp"
 #include "materialdescription.hpp"
-#include "shadowobject.hpp"
 
 namespace eternal_lands
 {

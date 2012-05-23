@@ -40,10 +40,6 @@ namespace eternal_lands
 			 * Data needed to draw instanced objects for selection.
 			 */
 			SubObjectVector m_sub_objects;
-			/**
-			 * Data needed for optimized depth/shadow drawing.
-			 */
-			ShadowObjectVector m_shadow_objects;
 			boost::scoped_ptr<CalModel> m_model;
 			Mat2x4Vector m_bones;
 
@@ -177,12 +173,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_sub_objects;
-			}
-
-			inline const ShadowObjectVector &get_shadow_objects()
-				const noexcept
-			{
-				return m_shadow_objects;
 			}
 
 	};

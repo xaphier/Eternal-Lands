@@ -40,7 +40,6 @@
 #include "logging.hpp"
 
 #include "materialcache.hpp"
-#include "shadowobject.hpp"
 
 #include "../client_serv.h"
 
@@ -659,7 +658,7 @@ namespace eternal_lands
 		const EffectProgramType type, const Uint16 layer,
 		const Uint16 distance, const bool lights)
 	{
-		Uint16 count, i, light_count, mesh_count;
+		Uint16 count, i, light_count;
 		bool object_data_set;
 
 		m_state_manager.switch_mesh(object->get_mesh());
@@ -677,14 +676,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		mesh_count = 0;
-
-		if (type == ept_shadow)
-		{
-//			mesh_count = object->get_shadow_mesh_count();
-		}
-
-		for (i = mesh_count; i < count; ++i)
+		for (i = 0; i < count; ++i)
 		{
 			MaterialLock material(object->get_materials()[i]);
 
@@ -727,40 +719,6 @@ namespace eternal_lands
 			DEBUG_CHECK_GL_ERROR();
 
 			m_state_manager.draw(i, 1);
-
-			DEBUG_CHECK_GL_ERROR();
-		}
-
-		if (type != ept_shadow)
-		{
-			return;
-		}
-
-		m_state_manager.switch_sample_alpha_to_coverage(false);
-
-		BOOST_FOREACH(const ShadowObject &shadow_object,
-			object->get_shadow_objects())
-		{
-			if (switch_program(shadow_object.get_program(),	layer))
-			{
-				object_data_set = false;
-			}
-
-			if (!object_data_set)
-			{
-				m_state_manager.get_program()->set_parameter(
-					apt_world_transformation,
-					object->get_world_transformation(
-						).get_data());
-				m_state_manager.get_program()->set_parameter(
-					apt_bones, object->get_bones());
-
-				object_data_set = true;
-			}
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.draw(shadow_object, 1);
 
 			DEBUG_CHECK_GL_ERROR();
 		}

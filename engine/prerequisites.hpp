@@ -290,7 +290,9 @@ namespace eternal_lands
 	class TextureFont;
 	class TextureFontCache;
 	class Transformation;
+	class UniformBufferDescription;
 	class UniformBufferUsage;
+	class UniformDescription;
 	class UvTool;
 	class VertexElement;
 	class VertexElements;
@@ -425,6 +427,7 @@ namespace eternal_lands
 	VECTOR(SubObject);
 	VECTOR(SubObjectPtr);
 	VECTOR(TextureSharedPtr);
+	VECTOR(UniformDescription);
 	VECTOR(VertexElement);
 	VECTOR(VertexElements);
 
