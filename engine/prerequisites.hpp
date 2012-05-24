@@ -291,6 +291,7 @@ namespace eternal_lands
 	class TextureFontCache;
 	class Transformation;
 	class UniformBufferDescription;
+	class UniformBufferDescriptionCache;
 	class UniformBufferUsage;
 	class UniformDescription;
 	class UvTool;
@@ -378,6 +379,8 @@ namespace eternal_lands
 	SHARED_PTR(ShaderSourceDescriptionLoader);
 	SHARED_PTR(Texture);
 	SHARED_PTR(TextureCache);
+	SHARED_PTR(UniformBufferDescription);
+	SHARED_PTR(UniformBufferDescriptionCache);
 	SHARED_PTR(VertexFormat);
 	SHARED_PTR(VertexBuffers);
 	SHARED_PTR(VertexStream);
@@ -401,6 +404,7 @@ namespace eternal_lands
 	WEAK_PTR(ScriptEngine);
 	WEAK_PTR(ShaderSourceBuilder);
 	WEAK_PTR(TextureCache);
+	WEAK_PTR(UniformBufferDescriptionCache);
 
 	VECTOR(AbstractReadWriteMemorySharedPtr);
 	VECTOR(ActorSharedPtr);
@@ -428,6 +432,7 @@ namespace eternal_lands
 	VECTOR(SubObjectPtr);
 	VECTOR(TextureSharedPtr);
 	VECTOR(UniformDescription);
+	VECTOR(UniformBufferDescriptionSharedPtr);
 	VECTOR(VertexElement);
 	VECTOR(VertexElements);
 

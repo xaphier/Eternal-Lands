@@ -17,18 +17,29 @@ namespace eternal_lands
 		class UniformBufferTypeData
 		{
 			private:
+				const AutoParameterTypeVector m_auto_parameters;
 				const String m_name;
 				const String m_identifier;
 
 			public:
-				inline UniformBufferTypeData(const String &name,
-					const String &identifier): m_name(name),
-					m_identifier(identifier)
+				inline UniformBufferTypeData(
+					const AutoParameterTypeVector
+						&auto_parameters,
+					const String &name,
+					const String &identifier):
+					m_auto_parameters(auto_parameters),
+					m_name(name), m_identifier(identifier)
 				{
 				}
 
 				inline ~UniformBufferTypeData() noexcept
 				{
+				}
+
+				inline const AutoParameterTypeVector
+					&get_auto_parameters() const noexcept
+				{
+					return m_auto_parameters;
 				}
 
 				inline const String &get_name() const noexcept
@@ -46,13 +57,46 @@ namespace eternal_lands
 
 		const UniformBufferTypeData uniform_buffer_type_datas[] =
 		{
-			UniformBufferTypeData(String(UTF8("scene")),
+			UniformBufferTypeData(boost::assign::list_of
+				(apt_view_rotation_matrix)
+				(apt_view_matrix)
+				(apt_projection_matrix)
+				(apt_projection_view_matrix)
+				(apt_reflection_matrix)
+				(apt_ambient)
+				(apt_time)
+				(apt_fog_data)
+				(apt_camera)
+				(apt_z_params),
+				String(UTF8("scene")),
 				String(UTF8("Scene"))),
-			UniformBufferTypeData(String(UTF8("material")),
+			UniformBufferTypeData(boost::assign::list_of
+				(apt_texture_matrices)
+				(apt_albedo_scale_offsets)
+				(apt_emission_scale_offset)
+				(apt_specular_scale_offset)
+				(apt_dudv_scale),
+				String(UTF8("material")),
 				String(UTF8("Material"))),
-			UniformBufferTypeData(String(UTF8("terrain")),
+			UniformBufferTypeData(boost::assign::list_of
+				(apt_bones),
+				String(UTF8("animation")),
+				String(UTF8("Animation"))),
+			UniformBufferTypeData(boost::assign::list_of
+				(apt_shadow_camera)
+				(apt_shadow_texture_matrices)
+				(apt_split_distances),
+				String(UTF8("shadow")),
+				String(UTF8("Shadow"))),
+			UniformBufferTypeData(boost::assign::list_of
+				(apt_terrain_scale)
+				(apt_terrain_texture_size)
+				(apt_clipmap_matrices),
+				String(UTF8("terrain")),
 				String(UTF8("Terrain"))),
-			UniformBufferTypeData(String(UTF8("terrain_instances")),
+			UniformBufferTypeData(boost::assign::list_of
+				(apt_terrain_instances),
+				String(UTF8("terrain_instances")),
 				String(UTF8("TerrainInstances")))
 		};
 
@@ -99,6 +143,25 @@ namespace eternal_lands
 		return uniform_buffer_type_datas[uniform_buffer].get_name();
 	}
 
+	const AutoParameterTypeVector &UniformBufferUtil::get_auto_parameters(
+		const UniformBufferType uniform_buffer)
+	{
+		if (uniform_buffer_type_datas_count <= uniform_buffer)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_range_min(0)
+				<< errinfo_range_max(
+					uniform_buffer_type_datas_count - 1)
+				<< errinfo_range_index(static_cast<Uint32>(
+					uniform_buffer))
+				<< boost::errinfo_type_info_name(UTF8(
+					"UniformBufferType")));
+		}
+
+		return uniform_buffer_type_datas[
+			uniform_buffer].get_auto_parameters();
+	}
+
 	UniformBufferType UniformBufferUtil::get_uniform_buffer(
 		const String &str)
 	{
@@ -121,6 +184,28 @@ namespace eternal_lands
 				"UniformBufferType")));
 	}
 
+	UniformBufferType UniformBufferUtil::get_uniform_buffer_from_identifier(
+		const String &identifier)
+	{
+		Uint32 i;
+		UniformBufferType uniform_buffer;
+
+		for (i = 0; i < uniform_buffer_type_datas_count; ++i)
+		{
+			uniform_buffer = static_cast<UniformBufferType>(i);
+
+			if (identifier == get_identifier(uniform_buffer))
+			{
+				return uniform_buffer;
+			}
+		}
+
+		EL_THROW_EXCEPTION(InvalidParameterException()
+			<< errinfo_string_value(identifier)
+			<< boost::errinfo_type_info_name(UTF8(
+				"UniformBufferType")));
+	}
+
 	bool UniformBufferUtil::get_uniform_buffer(const String &str,
 		UniformBufferType &uniform_buffer) noexcept
 	{
@@ -132,6 +217,28 @@ namespace eternal_lands
 			tmp = static_cast<UniformBufferType>(i);
 
 			if (str == get_str(tmp))
+			{
+				uniform_buffer = tmp;
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	bool UniformBufferUtil::get_uniform_buffer_from_identifier(
+		const String &identifier, UniformBufferType &uniform_buffer)
+		noexcept
+	{
+		Uint32 i;
+		UniformBufferType tmp;
+
+		for (i = 0; i < uniform_buffer_type_datas_count; ++i)
+		{
+			tmp = static_cast<UniformBufferType>(i);
+
+			if (identifier == get_identifier(tmp))
 			{
 				uniform_buffer = tmp;
 

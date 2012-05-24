@@ -95,6 +95,8 @@ namespace eternal_lands
 	 * @}
 	 */
 
+	VECTOR(AutoParameterType);
+
 	class AutoParameterUtil
 	{
 		public:

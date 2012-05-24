@@ -42,12 +42,28 @@ namespace eternal_lands
 				m_shader_sources;
 			ShaderSourceTypeStringMap m_sources;
 			const GlobalVarsSharedPtr m_global_vars;
+			const UniformBufferDescriptionCacheWeakPtr
+				m_uniform_buffer_description_cache;
 			boost::scoped_ptr<ShaderSourceOptimizer> m_optimizer;
 			float m_shadow_scale;
 			Uint16 m_vertex_light_count;
 			Uint16 m_fragment_light_count;
 			Uint16 m_bone_count;
 			bool m_dynamic_light_count;
+
+			inline UniformBufferDescriptionCacheSharedPtr
+				get_uniform_buffer_description_cache() const
+				noexcept
+			{
+				UniformBufferDescriptionCacheSharedPtr result;
+
+				result = m_uniform_buffer_description_cache.
+					lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
 
 			bool check_function(const ShaderSourceBuildData &data,
 				const String &name,
@@ -113,7 +129,9 @@ namespace eternal_lands
 
 		public:
 			ShaderSourceBuilder(
-				const GlobalVarsSharedPtr &global_vars);
+				const GlobalVarsSharedPtr &global_vars,
+				const UniformBufferDescriptionCacheWeakPtr
+					&uniform_buffer_description_cache);
 			~ShaderSourceBuilder() noexcept;
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);

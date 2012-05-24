@@ -936,10 +936,15 @@ namespace eternal_lands
 	};
 
 	ShaderSourceBuilder::ShaderSourceBuilder(
-		const GlobalVarsSharedPtr &global_vars):
-		m_global_vars(global_vars)
+		const GlobalVarsSharedPtr &global_vars,
+		const UniformBufferDescriptionCacheWeakPtr
+			&uniform_buffer_description_cache):
+		m_global_vars(global_vars),
+		m_uniform_buffer_description_cache(
+			uniform_buffer_description_cache)
 	{
 		assert(m_global_vars.get() != nullptr);
+		assert(!m_uniform_buffer_description_cache.expired());
 
 		m_optimizer.reset(new ShaderSourceOptimizer());
 
@@ -2332,8 +2337,8 @@ namespace eternal_lands
 		StringStream fragment_functions;
 		StringStream vertex_source, geometry_source, fragment_source;
 		StringStream version_stream;
-		UniformBufferUsage vertex_uniform_buffers;
-		UniformBufferUsage fragment_uniform_buffers;
+		UniformBufferUsage vertex_uniform_buffers;//(get_uniform_buffer_description_cache());
+		UniformBufferUsage fragment_uniform_buffers;//(get_uniform_buffer_description_cache());
 		String vertex_data, fragment_data, prefix, name_prefix;
 		String vertex, geometry, fragment;
 		Uint16 version, layer_count;
@@ -2359,7 +2364,16 @@ namespace eternal_lands
 		}
 
 		version_type = get_shader_version_type(version);
+#if	0
+		if (version_type >= svt_140)
+		{
+			vertex_uniform_buffers = UniformBufferUsage(
+				get_uniform_buffer_description_cache());
 
+			fragment_uniform_buffers = UniformBufferUsage(
+				get_uniform_buffer_description_cache());
+		}
+#endif
 		version_stream << UTF8("#version ") << version << UTF8("\n");
 
 		if (shader_build_type == sbt_shadow)
@@ -2419,11 +2433,6 @@ namespace eternal_lands
 		data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());
 		data.set_option(ssbot_lighting, description.get_lighting());
-
-		vertex_uniform_buffers.set_usable_uniform_buffer(
-			ubt_terrain_instances, true);
-		fragment_uniform_buffers.set_usable_uniform_buffer(
-			ubt_terrain_instances, true);
 
 		build_fragment_source(data, fragment_main, fragment_functions,
 			fragment_globals, fragment_uniform_buffers);

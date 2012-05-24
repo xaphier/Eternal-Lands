@@ -13,6 +13,10 @@
 #include "shader/samplerparameterutil.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
+#include "shader/uniformbufferdescription.hpp"
+#include "shader/uniformdescription.hpp"
+#include "shader/uniformbufferutil.hpp"
+#include "uniformbufferdescriptioncache.hpp"
 
 namespace eternal_lands
 {
@@ -965,25 +969,31 @@ namespace eternal_lands
 			Uint32 m_size;
 	};
 
-	GlslProgram::GlslProgram(const GlslProgramDescription &description,
+	GlslProgram::GlslProgram(const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const GlslProgramDescription &description,
 		const boost::uuids::uuid &uuid): m_uuid(uuid), m_last_used(0),
 		m_program(0)
 	{
-		build(description);
+		build(uniform_buffer_description_cache, description);
 	}
 
 	GlslProgram::GlslProgram(const FileSystemSharedPtr &file_system,
+		const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
 		const String &file_name, const boost::uuids::uuid &uuid):
 		m_uuid(uuid), m_last_used(0), m_program(0)
 	{
-		load_xml(file_system, file_name);
+		load_xml(uniform_buffer_description_cache, file_system,
+			file_name);
 	}
 
-	GlslProgram::GlslProgram(const String &file_name,
-		const boost::uuids::uuid &uuid): m_uuid(uuid), m_last_used(0),
-		m_program(0)
+	GlslProgram::GlslProgram(const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const String &file_name, const boost::uuids::uuid &uuid):
+		m_uuid(uuid), m_last_used(0), m_program(0)
 	{
-		load_xml(file_name);
+		load_xml(uniform_buffer_description_cache, file_name);
 	}
 
 	GlslProgram::~GlslProgram() noexcept
@@ -1922,17 +1932,323 @@ namespace eternal_lands
 		bind_attribute_location(vst_morph_texture_coordinate_1);
 	}
 
-	void GlslProgram::log_uniforms()
+	void GlslProgram::check_uniform_buffer(
+		const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const Uint32 index)
+	{
+		UniformBufferDescriptionSharedPtr uniform_buffer_description;
+		boost::scoped_array<GLint> uniform_block_active_uniform_indices;
+		StringStream str;
+		String name, tmp_str0, tmp_str1;
+		GLcharSharedArray buffer;
+		UniformBufferType uniform_buffer;
+		GLint i, max_buffer_size, length;
+		GLint uniform_type, uniform_size, uniform_name_length;
+		GLint uniform_block_index, uniform_offset, uniform_array_stride;
+		GLint uniform_matrix_stride, uniform_is_row_major;
+		GLuint uniform_index;
+		GLint uniform_block_binding, uniform_block_data_size;
+		GLint uniform_block_name_length, uniform_block_active_uniforms;
+		ParameterType type;
+		AutoParameterType auto_parameter;
+		bool init;
+
+		glGetProgramiv(m_program, GL_ACTIVE_UNIFORM_MAX_LENGTH,
+			&max_buffer_size);
+
+		buffer.reset(new GLchar[max_buffer_size + 1]);
+
+		glGetActiveUniformBlockName(m_program, index, max_buffer_size,
+			&length, buffer.get());
+		glGetActiveUniformBlockiv(m_program, index,
+			GL_UNIFORM_BLOCK_BINDING, &uniform_block_binding);
+		glGetActiveUniformBlockiv(m_program, index,
+			GL_UNIFORM_BLOCK_DATA_SIZE, &uniform_block_data_size);
+		glGetActiveUniformBlockiv(m_program, index,
+			GL_UNIFORM_BLOCK_NAME_LENGTH,
+			&uniform_block_name_length);
+		glGetActiveUniformBlockiv(m_program, index,
+			GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS,
+			&uniform_block_active_uniforms);
+
+		name = String(std::string(buffer.get(), length));
+
+		if (uniform_block_active_uniforms < 1)
+		{
+			LOG_DEBUG(lt_glsl_program, UTF8("Uniform block '%1%' "
+				"has no active uniforms"), name);
+
+			return;
+		}
+
+		if (!UniformBufferUtil::get_uniform_buffer_from_identifier(name,
+			uniform_buffer))
+		{
+			LOG_ERROR(lt_glsl_program, UTF8("Uniform block '%1%' "
+				"has unkown name"), name);
+
+			return;
+		}
+
+		if (uniform_block_data_size < 1)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_parameter_name(
+					UTF8("uniform_block_data_size"))
+				<< errinfo_range_index(uniform_block_data_size)
+				<< errinfo_range_min(1));
+		}
+
+		uniform_buffer_description = uniform_buffer_description_cache->
+			get_uniform_buffer_description(uniform_buffer);
+
+		init = uniform_buffer_description->get_size() == 0;
+
+		if (init)
+		{
+			uniform_buffer_description->set_size(
+				uniform_block_data_size);
+		}
+
+		if (uniform_buffer_description->get_size() !=
+			static_cast<Uint32>(uniform_block_data_size))
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_value(uniform_block_data_size)
+				<< errinfo_expected_value(
+					uniform_buffer_description->
+						get_size()));
+		}
+
+		uniform_block_active_uniform_indices.reset(
+			new GLint[uniform_block_active_uniforms]);
+
+		glGetActiveUniformBlockiv(m_program, index,
+			GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES,
+			uniform_block_active_uniform_indices.get());
+
+		BoostFormat format(UTF8("\t%1% binding %2% data size "
+			"%3% name length %4% active uniforms %5%."));
+
+		format % name % uniform_block_binding;
+		format % uniform_block_data_size;
+		format % uniform_block_name_length;
+		format % uniform_block_active_uniforms;
+
+		str << format.str() << std::endl;
+
+		for (i = 0; i < uniform_block_active_uniforms; ++i)
+		{
+			uniform_index = uniform_block_active_uniform_indices[i];
+
+			uniform_type = 0;
+			uniform_size = 0;
+			uniform_name_length = 0;
+			uniform_block_index = 0;
+			uniform_offset = 0;
+			uniform_array_stride = 0;
+			uniform_matrix_stride = 0;
+			uniform_is_row_major = 0;
+
+			glGetActiveUniformsiv(m_program, 1, &uniform_index,
+				GL_UNIFORM_TYPE, &uniform_type);
+			glGetActiveUniformsiv(m_program, 1, &uniform_index,
+				GL_UNIFORM_SIZE, &uniform_size);
+			glGetActiveUniformsiv(m_program, 1, &uniform_index,
+				GL_UNIFORM_NAME_LENGTH, &uniform_name_length);
+			glGetActiveUniformsiv(m_program, 1, &uniform_index,
+				GL_UNIFORM_BLOCK_INDEX,	&uniform_block_index);
+			glGetActiveUniformsiv(m_program, 1, &uniform_index,
+				GL_UNIFORM_OFFSET, &uniform_offset);
+			glGetActiveUniformsiv(m_program, 1, &uniform_index,
+				GL_UNIFORM_ARRAY_STRIDE, &uniform_array_stride);
+			glGetActiveUniformsiv(m_program, 1, &uniform_index,
+				GL_UNIFORM_MATRIX_STRIDE,
+				&uniform_matrix_stride);
+			glGetActiveUniformsiv(m_program, 1, &uniform_index,
+				GL_UNIFORM_IS_ROW_MAJOR,
+				&uniform_is_row_major);
+
+			glGetActiveUniformName(m_program, uniform_index,
+				max_buffer_size, &length, buffer.get());
+
+			name = String(std::string(buffer.get(), length));
+
+			type = ParameterUtil::get_parameter(uniform_type);
+
+			auto_parameter = AutoParameterUtil::get_auto_parameter(
+				name);
+
+			UniformDescription &uniform_description =
+				uniform_buffer_description->
+					get_uniform_description(auto_parameter);
+
+			if (uniform_size < 1)
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_size"))
+					<< errinfo_range_index(uniform_size)
+					<< errinfo_range_min(1));
+			}
+
+			if (static_cast<Sint64>(uniform_block_index) !=
+				static_cast<Sint64>(index))
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_block_index"))
+					<< errinfo_value(uniform_block_index)
+					<< errinfo_expected_value(index));
+			}
+
+			if (uniform_offset < 0)
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_offset"))
+					<< errinfo_range_index(uniform_offset)
+					<< errinfo_range_min(0));
+			}
+
+			if (uniform_array_stride < 0)
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_array_stride"))
+					<< errinfo_range_index(
+						uniform_array_stride)
+					<< errinfo_range_min(0));
+			}
+
+			if (uniform_matrix_stride < 0)
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_matrix_stride"))
+					<< errinfo_range_index(
+						uniform_matrix_stride)
+					<< errinfo_range_min(0));
+			}
+
+			if (init)
+			{
+				uniform_description.set_size(uniform_size);
+				uniform_description.set_offset(uniform_offset);
+				uniform_description.set_array_stride(
+					uniform_array_stride);
+				uniform_description.set_matrix_stride(
+					uniform_matrix_stride);
+				uniform_description.set_is_row_major(
+					uniform_is_row_major == GL_TRUE);
+			}
+
+			if (uniform_description.get_type() != type)
+			{
+				tmp_str0 = ParameterUtil::get_str(type);
+				tmp_str1 = ParameterUtil::get_str(
+					uniform_description.get_type());
+
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("type"))
+					<< errinfo_string_value(tmp_str0)
+					<< errinfo_expected_string_value(
+						tmp_str1));
+			}
+
+			if (uniform_description.get_size() !=
+				static_cast<Uint32>(uniform_size))
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_size"))
+					<< errinfo_value(uniform_size)
+					<< errinfo_expected_value(
+						uniform_description.
+							get_size()));
+			}
+
+			if (uniform_description.get_offset() !=
+				static_cast<Uint32>(uniform_offset))
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_offset"))
+					<< errinfo_value(uniform_offset)
+					<< errinfo_expected_value(
+						uniform_description.
+							get_offset()));
+			}
+
+			if (uniform_description.get_array_stride() !=
+				static_cast<Uint32>(uniform_array_stride))
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_array_stride"))
+					<< errinfo_value(uniform_array_stride)
+					<< errinfo_expected_value(
+						uniform_description.
+							get_array_stride()));
+			}
+
+			if (uniform_description.get_matrix_stride() !=
+				static_cast<Uint32>(uniform_matrix_stride))
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_matrix_stride"))
+					<< errinfo_value(uniform_matrix_stride)
+					<< errinfo_expected_value(
+						uniform_description.
+							get_matrix_stride()));
+			}
+
+			if (uniform_description.get_is_row_major() !=
+				(uniform_is_row_major == GL_TRUE))
+			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_parameter_name(
+						UTF8("uniform_is_row_major"))
+					<< errinfo_value(uniform_is_row_major
+						== GL_TRUE)
+					<< errinfo_expected_value(
+						uniform_description.
+							get_is_row_major()));
+			}
+
+			BoostFormat format(UTF8("\t\t%1% of type %2% has size"
+				" %3% block index %4% offset %5% array stride"
+				" %6% matrix stride %7% is row major %8%."));
+
+			format % name % type % uniform_size;
+			format % uniform_block_index % uniform_offset;
+			format % uniform_array_stride;
+			format % uniform_matrix_stride;
+			format % uniform_is_row_major;
+
+			str << format.str() << std::endl;
+		}
+
+		LOG_DEBUG(lt_glsl_program, UTF8("Uniform block:\n%1%"),
+			str.str());
+	}
+
+	void GlslProgram::log_uniforms(
+		const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache)
 	{
 		Uniform uniform;
 		StringStream str;
-		String name;
+		String name, tmp_str0, tmp_str1;
 		GLcharSharedArray buffer;
 		GLint count, max_buffer_size;
 		GLint index, length;
 		GLint i, array_size;
 		GLenum type;
-		ParameterType parameter;
+		ParameterType parameter, tmp;
 		AutoParameterType auto_parameter;
 
 		glGetProgramiv(m_program, GL_ACTIVE_UNIFORM_MAX_LENGTH,
@@ -1944,6 +2260,9 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			BoostFormat format(UTF8("\t%1% of type %2% has size "
+				"%3% and index %4%."));
+
 			type = 0;
 			length = 0;
 			array_size = 0;
@@ -1959,39 +2278,67 @@ namespace eternal_lands
 			index = glGetUniformLocation(m_program, buffer.get());
 			parameter = ParameterUtil::get_parameter(type);
 
-			if (index >= 0)
+			if (index < 0)
 			{
-				BoostFormat format(UTF8("\t%1% of type "
-					"%2% has size %3% and index %4%."));
+				continue;
+			}
 
-				uniform.m_index = index;
-				uniform.m_size = array_size;
-				uniform.m_parameter = parameter;
+			uniform.m_index = index;
+			uniform.m_size = array_size;
+			uniform.m_parameter = parameter;
 
-				format % name % parameter % array_size % index;
+			format % name % parameter % array_size % index;
 
-				str << format.str() << std::endl;
+			str << format.str() << std::endl;
 
-				m_uniforms[name] = uniform;
+			m_uniforms[name] = uniform;
 
-				if (AutoParameterUtil::get_auto_parameter(
-					name, auto_parameter))
+			if (AutoParameterUtil::get_auto_parameter(name,
+				auto_parameter))
+			{
+				tmp = AutoParameterUtil::get_type(
+					auto_parameter);
+
+				if (tmp != parameter)
 				{
-					assert(AutoParameterUtil::get_type(
-						auto_parameter) ==
-							parameter);
-					m_auto_parameters[auto_parameter]
-						= uniform;
+					tmp_str0 = ParameterUtil::get_str(
+						parameter);
+					tmp_str1 = ParameterUtil::get_str(
+						tmp);
+
+					EL_THROW_EXCEPTION(
+						InvalidParameterException()
+						<< errinfo_parameter_name(
+							UTF8("parameter"))
+						<< errinfo_string_value(
+							tmp_str0)
+						<< errinfo_expected_string_value(
+							tmp_str1));
 				}
 
-				if (ParameterUtil::get_sampler(parameter))
-				{
-					m_samplers[name] = 0;
-				}
+				m_auto_parameters[auto_parameter] = uniform;
+			}
+
+			if (ParameterUtil::get_sampler(parameter))
+			{
+				m_samplers[name] = 0;
 			}
 		}
 
 		LOG_DEBUG(lt_glsl_program, UTF8("Uniforms:\n%1%"), str.str());
+
+		if (!GLEW_VERSION_3_1)
+		{
+			return;
+		}
+
+		glGetProgramiv(m_program, GL_ACTIVE_UNIFORM_BLOCKS, &count);
+
+		for (i = 0; i < count; ++i)
+		{
+			check_uniform_buffer(uniform_buffer_description_cache,
+				i);
+		}
 	}
 
 	void GlslProgram::log_attribute_locations()
@@ -2089,7 +2436,9 @@ namespace eternal_lands
 		return m_program == get_current_program();
 	}
 
-	void GlslProgram::do_build(const GlslProgramDescription &description)
+	void GlslProgram::do_build(const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const GlslProgramDescription &description)
 	{
 		GlslShaderObject vertex(GL_VERTEX_SHADER);
 		GlslShaderObject fragment(GL_FRAGMENT_SHADER);
@@ -2162,10 +2511,12 @@ namespace eternal_lands
 			"%1%"), get_program_log());
 
 		log_attribute_locations();
-		log_uniforms();
+		log_uniforms(uniform_buffer_description_cache);
 	}
 
-	void GlslProgram::build(const GlslProgramDescription &description)
+	void GlslProgram::build(const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const GlslProgramDescription &description)
 	{
 		Uint32 i, count;
 
@@ -2174,7 +2525,7 @@ namespace eternal_lands
 
 		try
 		{
-			do_build(description);
+			do_build(uniform_buffer_description_cache, description);
 		}
 		catch (boost::exception &exception)
 		{
@@ -2229,7 +2580,9 @@ namespace eternal_lands
 		}
 	}
 
-	void GlslProgram::load_xml(const xmlNodePtr node)
+	void GlslProgram::load_xml(const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const xmlNodePtr node)
 	{
 		String vertex_shader, tess_control_shader;
 		String tess_evaluation_shader, geometry_shader, fragment_shader;
@@ -2292,12 +2645,15 @@ namespace eternal_lands
 		}
 		while (XmlUtil::next(it, true));
 
-		build(GlslProgramDescription(vertex_shader, tess_control_shader,
-			tess_evaluation_shader, geometry_shader,
-			fragment_shader));
+		build(uniform_buffer_description_cache,	GlslProgramDescription(
+				vertex_shader, tess_control_shader,
+				tess_evaluation_shader, geometry_shader,
+				fragment_shader));
 	}
 
-	void GlslProgram::load_xml(const FileSystemSharedPtr &file_system,
+	void GlslProgram::load_xml(const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const FileSystemSharedPtr &file_system,
 		const String &file_name)
 	{
 		XmlReaderSharedPtr reader;
@@ -2305,16 +2661,20 @@ namespace eternal_lands
 		reader = XmlReaderSharedPtr(new XmlReader(file_system,
 			file_name));
 
-		load_xml(reader->get_root_node());
+		load_xml(uniform_buffer_description_cache,
+			reader->get_root_node());
 	}
 
-	void GlslProgram::load_xml(const String &file_name)
+	void GlslProgram::load_xml(const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const String &file_name)
 	{
 		XmlReaderSharedPtr reader;
 
 		reader = XmlReaderSharedPtr(new XmlReader(file_name));
 
-		load_xml(reader->get_root_node());
+		load_xml(uniform_buffer_description_cache,
+			reader->get_root_node());
 	}
 
 }

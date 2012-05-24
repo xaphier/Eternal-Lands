@@ -30,9 +30,13 @@ namespace eternal_lands
 				UniformBufferTypeSet;
 
 			UniformBufferTypeSet m_used_uniform_buffers;
-			UniformBufferTypeSet m_usable_uniform_buffers;
+			UniformBufferDescriptionSharedPtrVector
+				m_usable_uniform_buffers;
 
 		public:
+			UniformBufferUsage(
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache);
 			UniformBufferUsage();
 			~UniformBufferUsage() noexcept;
 			void write(const String &indent, OutStream &str) const;
@@ -47,24 +51,9 @@ namespace eternal_lands
 				return m_used_uniform_buffers.count(buffer) > 0;
 			}
 
-			inline bool get_usable_uniform_buffer(
-				const UniformBufferType buffer) const noexcept
-			{
-				return m_usable_uniform_buffers.count(buffer)
-					> 0;
-			}
-
-			inline void set_usable_uniform_buffer(
-				const UniformBufferType buffer,
-				const bool enable) noexcept
-			{
-				m_usable_uniform_buffers.insert(buffer);
-			}
-
 			inline void clear() noexcept
 			{
 				m_used_uniform_buffers.clear();
-				m_usable_uniform_buffers.clear();
 			}
 
 	};

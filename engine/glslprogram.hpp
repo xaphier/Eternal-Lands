@@ -51,15 +51,34 @@ namespace eternal_lands
 			bool program_link_status();
 			bool program_validate_status();
 			void log_attribute_locations();
-			void log_uniforms();
+			void check_uniform_buffer(
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
+				const Uint32 index);
+			void log_uniforms(
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache);
 			void do_build(
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
 				const GlslProgramDescription &description);
-			void build(const GlslProgramDescription &description);
+			void build(const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
+				const GlslProgramDescription &description);
 			void update_used_texture_units();
-			void load_xml(const xmlNodePtr node);
-			void load_xml(const FileSystemSharedPtr &file_system,
+			void load_xml(
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
+				const xmlNodePtr node);
+			void load_xml(
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
+				const FileSystemSharedPtr &file_system,
 				const String &file_name);
-			void load_xml(const String &file_name);
+			void load_xml(
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
+				const String &file_name);
 
 			inline GLuint get_program() const noexcept
 			{
@@ -67,12 +86,18 @@ namespace eternal_lands
 			}
 
 		public:
-			GlslProgram(const GlslProgramDescription &description,
+			GlslProgram(const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
+				const GlslProgramDescription &description,
 				const boost::uuids::uuid &uuid);
 			GlslProgram(const FileSystemSharedPtr &file_system,
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
 				const String &file_name,
 				const boost::uuids::uuid &uuid);
-			GlslProgram(const String &file_name,
+			GlslProgram(const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
+				const String &file_name,
 				const boost::uuids::uuid &uuid);
 			~GlslProgram() noexcept;
 			void bind();

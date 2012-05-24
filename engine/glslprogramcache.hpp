@@ -33,13 +33,31 @@ namespace eternal_lands
 			typedef std::map<GlslProgramDescription,
 				GlslProgramSharedPtr> GlslProgramCacheMap;
 
+			const UniformBufferDescriptionCacheWeakPtr
+				m_uniform_buffer_description_cache;
 			GlslProgramCacheMap m_glsl_program_cache;
+
+			inline UniformBufferDescriptionCacheSharedPtr
+				get_uniform_buffer_description_cache() const
+				noexcept
+			{
+				UniformBufferDescriptionCacheSharedPtr result;
+
+				result = m_uniform_buffer_description_cache.
+					lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			GlslProgramCache();
+			GlslProgramCache(
+				const UniformBufferDescriptionCacheWeakPtr
+					&uniform_buffer_description_cache);
 
 			/**
 			 * Default destructor.

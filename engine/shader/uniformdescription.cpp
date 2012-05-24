@@ -44,4 +44,30 @@ namespace eternal_lands
 	{
 	}
 
+	void UniformDescription::write(const String &indent, OutStream &str)
+		const
+	{
+		str << indent << get_type() << UTF8(" ") << get_name();
+
+		if (get_auto_parameter_size() > 1)
+		{
+			str << UTF8("[") << get_auto_parameter_size();
+			str << UTF8("]");
+		}
+
+		str << UTF8(";\n");
+	}
+
+	void UniformDescription::log(OutStream &str) const
+	{
+		str << UTF8("UniformDescription");
+		str << UTF8(" [auto_parameter]: ") << get_auto_parameter();
+		str << UTF8(" [offset]: ") << get_offset();
+		str << UTF8(" [size]: ") << get_size();
+		str << UTF8(" [array_stride]: ") << get_array_stride();
+		str << UTF8(" [array_stride]: ") << get_array_stride();
+		str << UTF8(" [matrix_stride]: ") << get_matrix_stride();
+		str << UTF8(" [is_row_major]: ") << get_is_row_major();
+	}
+
 }

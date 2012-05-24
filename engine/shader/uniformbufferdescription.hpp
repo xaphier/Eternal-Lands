@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "uniformbufferutil.hpp"
+#include "autoparameterutil.hpp"
 
 /**
  * @file
@@ -26,13 +27,30 @@ namespace eternal_lands
 	class UniformBufferDescription
 	{
 		private:
+			typedef std::map<AutoParameterType, Uint32>
+				AutoParameterTypeUint32Map;
 			UniformDescriptionVector m_uniforms;
+			AutoParameterTypeUint32Map m_auto_parameters;
 			UniformBufferType m_type;
 			Uint32 m_size;
 
 		public:
-			UniformBufferDescription();
+			UniformBufferDescription(const UniformBufferType type);
 			~UniformBufferDescription() noexcept;
+			void write(const String &indent, OutStream &str) const;
+			void log(OutStream &str) const;
+			UniformDescription &get_uniform_description(
+				const AutoParameterType auto_parameter);
+			const UniformDescription &get_uniform_description(
+				const AutoParameterType auto_parameter) const;
+
+			inline bool has_auto_parameter(
+				const AutoParameterType auto_parameter) const
+				noexcept
+			{
+				return m_auto_parameters.find(auto_parameter)
+					!= m_auto_parameters.end();
+			}
 
 			inline UniformBufferType get_type() const noexcept
 			{
@@ -47,6 +65,12 @@ namespace eternal_lands
 			inline Uint32 get_size() const noexcept
 			{
 				return m_size;
+			}
+
+			inline const UniformDescriptionVector &get_uniforms()
+				const
+			{
+				return m_uniforms;
 			}
 
 			inline void set_type(const UniformBufferType type)

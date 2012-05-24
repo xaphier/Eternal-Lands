@@ -11,12 +11,18 @@
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
+#include <boost/uuid/uuid_generators.hpp>
 
 namespace eternal_lands
 {
 
-	GlslProgramCache::GlslProgramCache()
+	GlslProgramCache::GlslProgramCache(
+		const UniformBufferDescriptionCacheWeakPtr
+			&uniform_buffer_description_cache):
+		m_uniform_buffer_description_cache(
+			uniform_buffer_description_cache)
 	{
+		assert(!m_uniform_buffer_description_cache.expired());
 	}
 
 	GlslProgramCache::~GlslProgramCache() noexcept
@@ -28,7 +34,6 @@ namespace eternal_lands
 	{
 		GlslProgramCacheMap::iterator found;
 		GlslProgramSharedPtr glsl_program;
-		boost::uuids::uuid uuid;
 
 		found = m_glsl_program_cache.find(description);
 
@@ -39,8 +44,9 @@ namespace eternal_lands
 			return found->second;
 		}
 
-		glsl_program = boost::make_shared<GlslProgram>(description,
-			uuid);
+		glsl_program = boost::make_shared<GlslProgram>(
+			get_uniform_buffer_description_cache(), description,
+			boost::uuids::random_generator()());
 
 		m_glsl_program_cache[description] = glsl_program;
 

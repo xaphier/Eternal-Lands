@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "autoparameterutil.hpp"
 
 /**
  * @file
@@ -26,6 +27,8 @@ namespace eternal_lands
 	{
 		ubt_scene,
 		ubt_material,
+		ubt_animation,
+		ubt_shadow,
 		ubt_terrain,
 		ubt_terrain_instances
 	};
@@ -37,10 +40,19 @@ namespace eternal_lands
 				const UniformBufferType uniform_buffer);
 			static const String &get_str(
 				const UniformBufferType uniform_buffer);
+			static const AutoParameterTypeVector
+				&get_auto_parameters(
+					const UniformBufferType uniform_buffer);
 			static UniformBufferType get_uniform_buffer(
 				const String &str);
+			static UniformBufferType
+				get_uniform_buffer_from_identifier(
+					const String &identifier);
 			static bool get_uniform_buffer(const String &str,
-				UniformBufferType &shader_version) noexcept;
+				UniformBufferType &uniform_buffer) noexcept;
+			static bool get_uniform_buffer_from_identifier(
+				const String &identifier,
+				UniformBufferType &uniform_buffer) noexcept;
 			static Uint32 get_uniform_buffer_count() noexcept;
 
 	};

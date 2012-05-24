@@ -43,10 +43,10 @@ BOOST_AUTO_TEST_CASE(get_identifier)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(convert)
+BOOST_AUTO_TEST_CASE(convert_str)
 {
 	Uint32 i, count;
-	el::UniformBufferType type;
+	el::UniformBufferType type, tmp;
 
 	count = el::UniformBufferUtil::get_uniform_buffer_count();
 
@@ -56,6 +56,36 @@ BOOST_AUTO_TEST_CASE(convert)
 
 		BOOST_CHECK_EQUAL(el::UniformBufferUtil::get_uniform_buffer(
 			el::UniformBufferUtil::get_str(type)), type);
+
+		BOOST_CHECK(el::UniformBufferUtil::get_uniform_buffer(
+			el::UniformBufferUtil::get_str(type), tmp));
+
+		BOOST_CHECK_EQUAL(tmp, type);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(convert_identifier)
+{
+	Uint32 i, count;
+	el::UniformBufferType type, tmp;
+
+	count = el::UniformBufferUtil::get_uniform_buffer_count();
+
+	for (i = 0; i < count; ++i)
+	{
+		type = static_cast<el::UniformBufferType>(i);
+
+		BOOST_CHECK_EQUAL(el::UniformBufferUtil::
+			get_uniform_buffer_from_identifier(
+				el::UniformBufferUtil::get_identifier(type)),
+			type);
+
+		BOOST_CHECK(el::UniformBufferUtil::
+			get_uniform_buffer_from_identifier(
+				el::UniformBufferUtil::get_identifier(type),
+				tmp));
+
+		BOOST_CHECK_EQUAL(tmp, type);
 	}
 }
 

@@ -7,7 +7,8 @@
 
 #include "uniformbufferusage.hpp"
 #include "autoparameterutil.hpp"
-#include "terraininstancesbuffer.hpp"
+#include "uniformbufferdescription.hpp"
+#include "uniformbufferdescriptioncache.hpp"
 #include "shadersourceparameter.hpp"
 #include "exceptions.hpp"
 
@@ -18,6 +19,25 @@ namespace eternal_lands
 	{
 	}
 
+	UniformBufferUsage::UniformBufferUsage(
+		const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache)
+	{
+		Uint32 i, count;
+		UniformBufferType type;
+
+		count = UniformBufferUtil::get_uniform_buffer_count();
+
+		for (i = 0; i < count; ++i)
+		{
+			type = static_cast<UniformBufferType>(i);
+
+			m_usable_uniform_buffers.push_back(
+				uniform_buffer_description_cache->
+					get_uniform_buffer_description(type));
+		}
+	}
+
 	UniformBufferUsage::~UniformBufferUsage() noexcept
 	{
 	}
@@ -25,9 +45,14 @@ namespace eternal_lands
 	void UniformBufferUsage::write(const String &indent, OutStream &str)
 		const
 	{
-		if (m_used_uniform_buffers.count(ubt_terrain_instances) > 0)
+		BOOST_FOREACH(const UniformBufferDescriptionSharedPtr
+			&uniform_buffer_description, m_usable_uniform_buffers)
 		{
-//			TerrainInstancesBuffer::write(indent, str);
+			if (m_used_uniform_buffers.count(
+				uniform_buffer_description->get_type()) > 0)
+			{
+				uniform_buffer_description->write(indent, str);
+			}
 		}
 	}
 
@@ -41,13 +66,14 @@ namespace eternal_lands
 			return false;
 		}
 
-		if (m_usable_uniform_buffers.count(ubt_terrain_instances) > 0)
+		BOOST_FOREACH(const UniformBufferDescriptionSharedPtr
+			&uniform_buffer_description, m_usable_uniform_buffers)
 		{
-			if (TerrainInstancesBuffer::has_auto_parameter(
+			if (uniform_buffer_description->has_auto_parameter(
 				auto_parameter))
 			{
 				m_used_uniform_buffers.insert(
-					ubt_terrain_instances);
+					uniform_buffer_description->get_type());
 
 				return true;
 			}

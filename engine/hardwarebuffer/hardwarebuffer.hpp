@@ -162,4 +162,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_ebe8ffbc_ae1a_4db5_bdd0_e78938bd6dfc */
-

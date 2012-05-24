@@ -42,6 +42,8 @@ namespace eternal_lands
 				const Uint32 matrix_stride,
 				const bool is_row_major);
 			~UniformDescription() noexcept;
+			void write(const String &indent, OutStream &str) const;
+			void log(OutStream &str) const;
 
 			inline const String &get_name() const
 			{
@@ -52,6 +54,12 @@ namespace eternal_lands
 			inline ParameterType get_type() const
 			{
 				return AutoParameterUtil::get_type(
+					get_auto_parameter());
+			}
+
+			inline Uint16 get_auto_parameter_size() const
+			{
+				return AutoParameterUtil::get_size(
 					get_auto_parameter());
 			}
 
