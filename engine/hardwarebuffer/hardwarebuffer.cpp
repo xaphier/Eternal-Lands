@@ -64,10 +64,80 @@ namespace eternal_lands
 		glBindBuffer(type, 0);
 	}
 
+	void HardwareBuffer::bind(const HardwareBufferType type,
+		const Uint32 index)
+	{
+		glBindBufferBase(type, index, m_id);
+	}
+
+	void HardwareBuffer::unbind(const HardwareBufferType type,
+		const Uint32 index)
+	{
+		glBindBufferBase(type, index, 0);
+	}
+
 	void* HardwareBuffer::map(const HardwareBufferType type,
 		const HardwareBufferAccessType access)
 	{
 		return glMapBuffer(type, access);
+	}
+
+	void* HardwareBuffer::map_range(const HardwareBufferType type,
+		const Uint32 offset, const Uint32 size, const bool read,
+		const bool write, const bool invalidate_range)
+	{
+		GLbitfield access;
+
+		assert(get_size() >= (offset + size));
+		assert(read || write);
+		assert(!(invalidate_range && read));
+
+		access = 0;
+
+		if (read)
+		{
+			access |= GL_MAP_READ_BIT;
+		}
+
+		if (write)
+		{
+			access |= GL_MAP_WRITE_BIT;
+		}
+
+		if (invalidate_range)
+		{
+			access |= GL_MAP_INVALIDATE_RANGE_BIT;
+		}
+
+		return glMapBufferRange(type, offset, size, access);
+	}
+
+	void* HardwareBuffer::map(const HardwareBufferType type,
+		const bool read, const bool write, const bool invalidate_buffer)
+	{
+		GLbitfield access;
+
+		assert(read || write);
+		assert(!(invalidate_buffer && read));
+
+		access = 0;
+
+		if (read)
+		{
+			access |= GL_MAP_READ_BIT;
+		}
+
+		if (write)
+		{
+			access |= GL_MAP_WRITE_BIT;
+		}
+
+		if (invalidate_buffer)
+		{
+			access |= GL_MAP_INVALIDATE_BUFFER_BIT;
+		}
+
+		return glMapBufferRange(type, 0, get_size(), access);
 	}
 
 	bool HardwareBuffer::unmap(const HardwareBufferType type)

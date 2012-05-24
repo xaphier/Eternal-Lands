@@ -142,6 +142,20 @@ namespace eternal_lands
 			static void unbind(const HardwareBufferType type);
 
 			/**
+			 * Binds the buffer.
+			 * @param type The type of the buffer to bind.
+			 */
+			void bind(const HardwareBufferType type,
+				const Uint32 index);
+
+			/**
+			 * Unbinds the currently bound buffer.
+			 * @param type The type of the buffer to unbind.
+			 */
+			static void unbind(const HardwareBufferType type,
+				const Uint32 index);
+
+			/**
 			 * Map the buffer the currently bound buffer.
 			 * @param type The hardware buffer type to unmap.
 			 * @param access The access type that is performed.
@@ -149,6 +163,36 @@ namespace eternal_lands
 			 */
 			static void* map(const HardwareBufferType type,
 				const HardwareBufferAccessType access);
+
+			/**
+			 * Map the buffer the currently bound buffer.
+			 * @param type The hardware buffer type to unmap.
+			 * @param offset The offset of the mapped range.
+			 * @param size The size of the mapped range.
+			 * @param read The access to the buffer is reading.
+			 * @param write The access to the buffer is writing.
+			 * @param invalidate_range The content of the mapped
+			 * range of the buffer can be invalidated before
+			 * mapping it.
+			 * @return Pointer of the buffer data.
+			 */
+			void* map_range(const HardwareBufferType type,
+				const Uint32 offset, const Uint32 size,
+				const bool read, const bool write,
+				const bool invalidate_range);
+
+			/**
+			 * Map the buffer the currently bound buffer.
+			 * @param type The hardware buffer type to unmap.
+			 * @param read The access to the buffer is reading.
+			 * @param write The access to the buffer is writing.
+			 * @param invalidate_buffer The content of the whole
+			 * buffer can be invalidated before mapping it.
+			 * @return Pointer of the buffer data.
+			 */
+			void* map(const HardwareBufferType type,
+				const bool read, const bool write,
+				const bool invalidate_buffer);
 
 			/**
 			 * Unmap the buffer the currently bound buffer.
