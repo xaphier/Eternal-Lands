@@ -10,15 +10,12 @@
 namespace eternal_lands
 {
 
-	FreeIdsManager::FreeIdsManager()
+	FreeIdsManager::FreeIdsManager(): m_free_ids(boost::assign::list_of
+		(FreeIds(it_3d_object))(FreeIds(it_2d_object))
+		(FreeIds(it_tile_object))(FreeIds(it_water_object))
+		(FreeIds(it_dynamic_object))(FreeIds(it_light_object))
+		(FreeIds(it_particle_object)))
 	{
-		m_free_ids[it_3d_object] = FreeIds(it_3d_object);
-		m_free_ids[it_2d_object] = FreeIds(it_2d_object);
-		m_free_ids[it_tile_object] = FreeIds(it_tile_object);
-		m_free_ids[it_water_object] = FreeIds(it_water_object);
-		m_free_ids[it_dynamic_object] = FreeIds(it_dynamic_object);
-		m_free_ids[it_light_object] = FreeIds(it_light_object);
-		m_free_ids[it_particle_object] = FreeIds(it_particle_object);
 	}
 
 	FreeIdsManager::~FreeIdsManager() noexcept
