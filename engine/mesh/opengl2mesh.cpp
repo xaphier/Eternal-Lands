@@ -6,8 +6,8 @@
  ****************************************************************************/
 
 #include "opengl2mesh.hpp"
-#include "mappedhardwarewritememory.hpp"
-#include "hardwarewritememory.hpp"
+#include "hardwarebuffer/mappedhardwarewritememory.hpp"
+#include "hardwarebuffer/hardwarewritememory.hpp"
 #include "vertexelements.hpp"
 #include "meshdrawdata.hpp"
 #include "vertexstream.hpp"

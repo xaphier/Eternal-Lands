@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "abstractmesh.hpp"
-#include "hardwarebuffer.hpp"
+#include "hardwarebuffer/hardwarebuffer.hpp"
 
 /**
  * @file

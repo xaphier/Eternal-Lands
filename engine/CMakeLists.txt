@@ -80,6 +80,12 @@ file(GLOB thread_source_files thread/*.cpp)
 list(APPEND engine_source_files ${thread_header_files})
 list(APPEND engine_header_files ${thread_source_files})
 
+#hardwarebuffer dir
+file(GLOB hardwarebuffer_header_files hardwarebuffer/*.hpp)
+file(GLOB hardwarebuffer_source_files hardwarebuffer/*.cpp)
+list(APPEND engine_source_files ${hardwarebuffer_header_files})
+list(APPEND engine_header_files ${hardwarebuffer_source_files})
+
 list(APPEND engine_source_files simd/simd.cpp)
 list(APPEND engine_header_files simd/simd.hpp)
 set_property(SOURCE simd/simd.cpp APPEND PROPERTY COMPILE_FLAGS ${SSE2_FLAGS})
