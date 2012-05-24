@@ -62,8 +62,8 @@ namespace eternal_lands
 		errinfo_message;
 	typedef boost::error_info<struct errinfo_file_position_, Uint64>
 		errinfo_file_position;
-	typedef boost::error_info<struct errinfo_value_, Uint32> errinfo_value;
-	typedef boost::error_info<struct errinfo_expected_value_, Uint32>
+	typedef boost::error_info<struct errinfo_value_, Sint64> errinfo_value;
+	typedef boost::error_info<struct errinfo_expected_value_, Sint64>
 		errinfo_expected_value;
 	typedef boost::error_info<struct errinfo_size_, Uint64> errinfo_size;
 	typedef boost::error_info<struct errinfo_item_id_, Uint32>
@@ -96,10 +96,6 @@ namespace eternal_lands
 		errinfo_array_index_1;
 	typedef boost::error_info<struct errinfo_array_index_2_, Uint64>
 		errinfo_array_index_2;
-	typedef boost::error_info<struct errinfo_lua_type_, Sint32>
-		errinfo_lua_type;
-	typedef boost::error_info<struct errinfo_lua_type_name_, StringType>
-		errinfo_lua_type_name;
 	typedef boost::error_info<struct errinfo_name_, StringType>
 		errinfo_name;
 	typedef boost::error_info<struct errinfo_type_name_, StringType>

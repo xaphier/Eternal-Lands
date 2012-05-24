@@ -54,7 +54,6 @@ namespace eternal_lands
 #ifdef	WIN32
 		return String();
 #else	/* WIN32 */
-		return String();
 		/**
 		 * Using GNU backtrace to get the stacktrace.
 		 **/
