@@ -23,7 +23,7 @@
 namespace eternal_lands
 {
 
-	class UniformBufferDescriptionCache
+	class UniformBufferDescriptionCache: public boost::noncopyable
 	{
 		private:
 			typedef std::map<UniformBufferType,

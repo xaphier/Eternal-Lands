@@ -6,8 +6,7 @@
  ****************************************************************************/
 
 #include "opengl2mesh.hpp"
-#include "hardwarebuffer/mappedhardwarewritememory.hpp"
-#include "hardwarebuffer/hardwarewritememory.hpp"
+#include "hardwarebuffer/hardwarebuffermapper.hpp"
 #include "vertexelements.hpp"
 #include "meshdrawdata.hpp"
 #include "vertexstream.hpp"
@@ -16,10 +15,13 @@
 namespace eternal_lands
 {
 
-	OpenGl2Mesh::OpenGl2Mesh(const String &name, const bool static_indices,
-		const bool static_vertices, const bool static_instances,
-		const bool use_simd): AbstractMesh(name, static_indices,
-			static_vertices, static_instances, use_simd)
+	OpenGl2Mesh::OpenGl2Mesh(const HardwareBufferMapperWeakPtr
+			&hardware_buffer_mapper, const String &name,
+		const bool static_indices, const bool static_vertices,
+		const bool static_instances, const bool use_simd):
+		AbstractMesh(name, static_indices, static_vertices,
+			static_instances, use_simd),
+		m_hardware_buffer_mapper(hardware_buffer_mapper)
 	{
 	}
 
@@ -36,10 +38,9 @@ namespace eternal_lands
 
 		if (m_vertex_data[index].get() != nullptr)
 		{
-			m_vertex_data[index]->bind(hbt_vertex);
-
-			result = boost::make_shared<HardwareWriteMemory>(
-				m_vertex_data[index], hbt_vertex);
+			result = get_hardware_buffer_mapper(
+				)->write_map_hardware_buffer(
+					m_vertex_data[index]);
 		}
 
 		return result;
@@ -48,16 +49,16 @@ namespace eternal_lands
 	void OpenGl2Mesh::set_vertex_buffer(
 		const AbstractReadMemorySharedPtr &buffer, const Uint16 index)
 	{
-		m_vertex_data[index]->bind(hbt_vertex);
-		m_vertex_data[index]->set(hbt_vertex, *buffer,
+		m_vertex_data[index]->bind(btt_vertex);
+		m_vertex_data[index]->set(btt_vertex, *buffer,
 			get_vertices_usage());
 	}
 
 	void OpenGl2Mesh::update_vertex_buffer(
 		const AbstractReadMemorySharedPtr &buffer, const Uint16 index)
 	{
-		m_vertex_data[index]->bind(hbt_vertex);
-		m_vertex_data[index]->update(hbt_vertex, *buffer);
+		m_vertex_data[index]->bind(btt_vertex);
+		m_vertex_data[index]->update(btt_vertex, *buffer);
 	}
 
 	AbstractWriteMemorySharedPtr OpenGl2Mesh::get_index_buffer()
@@ -66,10 +67,8 @@ namespace eternal_lands
 
 		if (m_index_data.get() != nullptr)
 		{
-			m_index_data->bind(hbt_index);
-
-			result = boost::make_shared<HardwareWriteMemory>(
-				m_index_data, hbt_index);
+			result = get_hardware_buffer_mapper(
+				)->write_map_hardware_buffer(m_index_data);
 		}
 
 		return result;
@@ -90,7 +89,7 @@ namespace eternal_lands
 			return;
 		}
 
-		buffer->bind(hbt_vertex);
+		buffer->bind(btt_vertex);
 
 		stride = vertex_elements.get_stride();
 
@@ -146,8 +145,8 @@ namespace eternal_lands
 
 				size *= get_vertex_elements(i).get_stride();
 
-				m_vertex_data[i]->bind(hbt_vertex);
-				m_vertex_data[i]->set_size(hbt_vertex, size,
+				m_vertex_data[i]->bind(btt_vertex);
+				m_vertex_data[i]->set_size(btt_vertex, size,
 					get_vertices_usage());
 			}
 		}
@@ -180,8 +179,8 @@ namespace eternal_lands
 		}
 
 		m_index_data = boost::make_shared<HardwareBuffer>();
-		m_index_data->bind(hbt_index);
-		m_index_data->set_size(hbt_index, size, get_indices_usage());
+		m_index_data->bind(btt_index);
+		m_index_data->set_size(btt_index, size, get_indices_usage());
 
 		CHECK_GL_ERROR_NAME(get_name());
 	}
@@ -232,7 +231,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 
-		HardwareBuffer::unbind(hbt_vertex);
+		HardwareBuffer::unbind(btt_vertex);
 
 		DEBUG_CHECK_GL_ERROR_NAME(get_name());
 	}
@@ -241,13 +240,13 @@ namespace eternal_lands
 	{
 		if (m_index_data.get() != nullptr)
 		{
-			m_index_data->bind(hbt_index);
+			m_index_data->bind(btt_index);
 		}
 	}
 
 	void OpenGl2Mesh::unbind_index_buffer()
 	{
-		HardwareBuffer::unbind(hbt_index);
+		HardwareBuffer::unbind(btt_index);
 	}
 
 	void OpenGl2Mesh::bind(BitSet32 &used_attributes)
@@ -320,7 +319,8 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		result = boost::make_shared<OpenGl2Mesh>(get_name(),
+		result = boost::make_shared<OpenGl2Mesh>(
+			get_hardware_buffer_mapper(), get_name(),
 			get_static_indices(), get_static_vertices(),
 			get_static_instances(), get_use_simd());
 

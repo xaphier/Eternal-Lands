@@ -27,9 +27,9 @@ namespace eternal_lands
 	class MappedHardwareWriteMemory: public AbstractWriteMemory
 	{
 		private:
-			HardwareBufferSharedPtr m_buffer;
+			const HardwareBufferSharedPtr m_buffer;
 			void* m_ptr;
-			const HardwareBufferType m_type;
+			const BufferTargetType m_target;
 
 		public:
 			/**
@@ -37,7 +37,7 @@ namespace eternal_lands
 			 */
 			MappedHardwareWriteMemory(
 				const HardwareBufferSharedPtr &buffer,
-				const HardwareBufferType type);
+				const BufferTargetType target);
 
 			/**
 			 * Default destructor.
@@ -59,11 +59,6 @@ namespace eternal_lands
 			 * @return Returns the size of the memory.
 			 */
 			virtual Uint64 get_size() const noexcept;
-
-			inline HardwareBufferType get_type() const noexcept
-			{
-				return m_type;
-			}
 
 	};
 

@@ -49,7 +49,9 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl3Mesh(const String &name,
+			OpenGl3Mesh(const HardwareBufferMapperWeakPtr
+					&hardware_buffer_mapper,
+				const String &name,
 				const bool static_indices,
 				const bool static_vertices,
 				const bool static_instances,

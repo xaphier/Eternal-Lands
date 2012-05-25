@@ -1,48 +1,48 @@
 /****************************************************************************
- *            hardwarewritememory.hpp
+ *            opengl3mappedhardwarewritememory.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_c0c47815_78b4_49c8_97b8_dfab11e205ad
-#define	UUID_c0c47815_78b4_49c8_97b8_dfab11e205ad
+#ifndef	UUID_ed536052_3d29_4289_965c_4bc3cb99bb25
+#define	UUID_ed536052_3d29_4289_965c_4bc3cb99bb25
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "readwritememory.hpp"
+#include "abstractwritememory.hpp"
 #include "hardwarebuffer.hpp"
 
 /**
  * @file
- * @brief The @c class HardwareWriteMemory.
- * This file contains the @c class HardwareWriteMemory.
+ * @brief The @c class Opengl3HardwareWriteMemory.
+ * This file contains the @c class Opengl3HardwareWriteMemory.
  */
 namespace eternal_lands
 {
 
-	class HardwareWriteMemory: public AbstractWriteMemory
+	class Opengl3HardwareWriteMemory: public AbstractWriteMemory
 	{
 		private:
-			ReadWriteMemory m_memory_buffer;
 			const HardwareBufferSharedPtr m_buffer;
+			void* m_ptr;
 			const BufferTargetType m_target;
 
 		public:
 			/**
 			 * Default constructor.
 			 */
-			HardwareWriteMemory(
+			Opengl3HardwareWriteMemory(
 				const HardwareBufferSharedPtr &buffer,
 				const BufferTargetType target);
 
 			/**
 			 * Default destructor.
 			 */
-			virtual ~HardwareWriteMemory() noexcept;
+			virtual ~Opengl3HardwareWriteMemory() noexcept;
 
 			/**
 			 * @brief Gets the pointer of the memory.
@@ -64,4 +64,4 @@ namespace eternal_lands
 
 }
 
-#endif	/* UUID_c0c47815_78b4_49c8_97b8_dfab11e205ad */
+#endif	/* UUID_ed536052_3d29_4289_965c_4bc3cb99bb25 */

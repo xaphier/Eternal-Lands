@@ -46,8 +46,10 @@ namespace eternal_lands
 
 	}
 
-	MeshBuilder::MeshBuilder(const GlobalVarsSharedPtr &global_vars):
-		m_global_vars(global_vars)
+	MeshBuilder::MeshBuilder(const GlobalVarsSharedPtr &global_vars,
+		const HardwareBufferMapperWeakPtr &hardware_buffer_mapper):
+		m_global_vars(global_vars),
+		m_hardware_buffer_mapper(hardware_buffer_mapper)
 	{
 		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
 		VertexDescriptionMap instanced_mesh, simple_terrain_0;
@@ -179,7 +181,8 @@ namespace eternal_lands
 	{
 		if (get_global_vars()->get_opengl_3_3())
 		{
-			return boost::make_shared<OpenGl33Mesh>(name,
+			return boost::make_shared<OpenGl33Mesh>(
+				get_hardware_buffer_mapper(), name,
 				static_indices, static_vertices,
 				static_instances,
 				get_global_vars()->get_use_simd());
@@ -187,7 +190,8 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_opengl_3_2())
 		{
-			return boost::make_shared<OpenGl32Mesh>(name,
+			return boost::make_shared<OpenGl32Mesh>(
+				get_hardware_buffer_mapper(), name,
 				static_indices, static_vertices,
 				static_instances,
 				get_global_vars()->get_use_simd());
@@ -195,7 +199,8 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_opengl_3_1())
 		{
-			return boost::make_shared<OpenGl31Mesh>(name,
+			return boost::make_shared<OpenGl31Mesh>(
+				get_hardware_buffer_mapper(), name,
 				static_indices, static_vertices,
 				static_instances,
 				get_global_vars()->get_use_simd());
@@ -203,13 +208,15 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
-			return boost::make_shared<OpenGl3Mesh>(name,
+			return boost::make_shared<OpenGl3Mesh>(
+				get_hardware_buffer_mapper(), name,
 				static_indices, static_vertices,
 				static_instances,
 				get_global_vars()->get_use_simd());
 		}
 
-		return boost::make_shared<OpenGl2Mesh>(name, static_indices,
+		return boost::make_shared<OpenGl2Mesh>(
+			get_hardware_buffer_mapper(), name, static_indices,
 			static_vertices, static_instances,
 			get_global_vars()->get_use_simd());
 	}

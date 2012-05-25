@@ -233,6 +233,7 @@ namespace eternal_lands
 	class GlslProgramCache;
 	class GlslProgramDescription;
 	class HardwareBuffer;
+	class HardwareBufferMapper;
 	class Image;
 	class IndexUpdateSource;
 	class InstanceBuilder;
@@ -354,6 +355,7 @@ namespace eternal_lands
 	SHARED_PTR(GlslProgram);
 	SHARED_PTR(GlslProgramCache);
 	SHARED_PTR(HardwareBuffer);
+	SHARED_PTR(HardwareBufferMapper);
 	SHARED_PTR(Image);
 	SHARED_PTR(IndexUpdateSource);
 	SHARED_PTR(Light);
@@ -392,6 +394,7 @@ namespace eternal_lands
 	WEAK_PTR(CodecManager);
 	WEAK_PTR(EffectCache);
 	WEAK_PTR(GlslProgramCache);
+	WEAK_PTR(HardwareBufferMapper);
 	WEAK_PTR(MaterialBuilder);
 	WEAK_PTR(MaterialCache);
 	WEAK_PTR(MaterialDescriptionCache);

@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "hardwarebuffer/hardwarebuffer.hpp"
+#include "uniformbufferutil.hpp"
 
 /**
  * @file
@@ -31,8 +32,12 @@ namespace eternal_lands
 				m_uniform_buffer_description;
 
 		public:
-			UniformBuffer();
+			UniformBuffer(
+				const UniformBufferDescriptionCacheSharedPtr
+					&uniform_buffer_description_cache,
+				const UniformBufferType type);
 			~UniformBuffer() noexcept;
+
 	};
 
 }

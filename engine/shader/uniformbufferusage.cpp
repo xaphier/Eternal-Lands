@@ -23,6 +23,7 @@ namespace eternal_lands
 		const UniformBufferDescriptionCacheSharedPtr
 			&uniform_buffer_description_cache)
 	{
+#if	0
 		Uint32 i, count;
 		UniformBufferType type;
 
@@ -36,6 +37,12 @@ namespace eternal_lands
 				uniform_buffer_description_cache->
 					get_uniform_buffer_description(type));
 		}
+#else
+		m_usable_uniform_buffers.push_back(
+			uniform_buffer_description_cache->
+				get_uniform_buffer_description(
+					ubt_terrain_instances));
+#endif
 	}
 
 	UniformBufferUsage::~UniformBufferUsage() noexcept

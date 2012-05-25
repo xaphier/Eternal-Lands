@@ -45,6 +45,8 @@ namespace eternal_lands
 				VertexFormatSharedPtr> VertexFormatsMap;
 
 			const GlobalVarsSharedPtr m_global_vars;
+			const HardwareBufferMapperWeakPtr
+				m_hardware_buffer_mapper;
 			VertexFormatsMap m_vertex_formats;
 
 			void set_format(const VertexFormatType format,
@@ -59,8 +61,16 @@ namespace eternal_lands
 				return m_global_vars;
 			}
 
+			inline const HardwareBufferMapperWeakPtr
+				&get_hardware_buffer_mapper() const noexcept
+			{
+				return m_hardware_buffer_mapper;
+			}
+
 		public:
-			MeshBuilder(const GlobalVarsSharedPtr &global_vars);
+			MeshBuilder(const GlobalVarsSharedPtr &global_vars,
+				const HardwareBufferMapperWeakPtr
+					&hardware_buffer_mapper);
 			~MeshBuilder() noexcept;
 			AbstractMeshSharedPtr get_mesh(const String &name,
 				const bool static_indices = true,

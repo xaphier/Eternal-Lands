@@ -7,12 +7,19 @@
 
 #include "uniformbuffer.hpp"
 #include "uniformbufferdescription.hpp"
+#include "uniformbufferdescriptioncache.hpp"
 
 namespace eternal_lands
 {
 
-	UniformBuffer::UniformBuffer()
+	UniformBuffer::UniformBuffer(
+		const UniformBufferDescriptionCacheSharedPtr
+			&uniform_buffer_description_cache,
+		const UniformBufferType type)
 	{
+		m_uniform_buffer_description =
+			uniform_buffer_description_cache->
+				get_uniform_buffer_description(type);
 	}
 
 	UniformBuffer::~UniformBuffer() noexcept

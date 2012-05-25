@@ -45,6 +45,7 @@ namespace eternal_lands
 			GlslProgramCacheSharedPtr m_glsl_program_cache;
 			UniformBufferDescriptionCacheSharedPtr
 				m_uniform_buffer_description_cache;
+			HardwareBufferMapperSharedPtr m_hardware_buffer_mapper;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
@@ -154,6 +155,12 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_uniform_buffer_description_cache;
+			}
+
+			inline const HardwareBufferMapperSharedPtr
+				&get_hardware_buffer_mapper() const noexcept
+			{
+				return m_hardware_buffer_mapper;
 			}
 
 	};

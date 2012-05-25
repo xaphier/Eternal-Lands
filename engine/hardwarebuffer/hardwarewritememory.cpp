@@ -12,15 +12,17 @@ namespace eternal_lands
 
 	HardwareWriteMemory::HardwareWriteMemory(
 		const HardwareBufferSharedPtr &buffer,
-		const HardwareBufferType type): m_buffer(buffer), m_type(type)
+		const BufferTargetType target): m_buffer(buffer),
+		m_target(target)
 	{
 		m_memory_buffer.resize(buffer->get_size());
 	}
 
 	HardwareWriteMemory::~HardwareWriteMemory() noexcept
 	{
-		m_buffer->bind(get_type());
-		m_buffer->update(get_type(), m_memory_buffer);
+		m_buffer->bind(m_target);
+		m_buffer->update(m_target, m_memory_buffer);
+		m_buffer->unbind(m_target);
 	}
 
 	void* HardwareWriteMemory::get_ptr() noexcept

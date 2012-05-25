@@ -12,11 +12,12 @@
 namespace eternal_lands
 {
 
-	OpenGl32Mesh::OpenGl32Mesh(const String &name,
+	OpenGl32Mesh::OpenGl32Mesh(const HardwareBufferMapperWeakPtr
+			&hardware_buffer_mapper, const String &name,
 		const bool static_indices, const bool static_vertices,
 		const bool static_instances, const bool use_simd):
-		OpenGl31Mesh(name, static_indices, static_vertices,
-			static_instances, use_simd)
+		OpenGl31Mesh(hardware_buffer_mapper, name, static_indices,
+			static_vertices, static_instances, use_simd)
 	{
 		assert(GLEW_VERSION_3_2);
 	}
@@ -33,7 +34,8 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		result = boost::make_shared<OpenGl32Mesh>(get_name(),
+		result = boost::make_shared<OpenGl32Mesh>(
+			get_hardware_buffer_mapper(), get_name(),
 			get_static_indices(), get_static_vertices(),
 			get_static_instances(), get_use_simd());
 

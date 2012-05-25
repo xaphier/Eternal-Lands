@@ -2364,7 +2364,7 @@ namespace eternal_lands
 		}
 
 		version_type = get_shader_version_type(version);
-#if	0
+
 		if (version_type >= svt_140)
 		{
 			vertex_uniform_buffers = UniformBufferUsage(
@@ -2373,7 +2373,7 @@ namespace eternal_lands
 			fragment_uniform_buffers = UniformBufferUsage(
 				get_uniform_buffer_description_cache());
 		}
-#endif
+
 		version_stream << UTF8("#version ") << version << UTF8("\n");
 
 		if (shader_build_type == sbt_shadow)

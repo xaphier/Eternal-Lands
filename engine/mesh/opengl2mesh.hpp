@@ -37,6 +37,8 @@ namespace eternal_lands
 				vertex_stream_count>
 					HardwareBufferSharedPtrArray;
 
+			const HardwareBufferMapperWeakPtr
+				m_hardware_buffer_mapper;
 			HardwareBufferSharedPtrArray m_vertex_data;
 			HardwareBufferSharedPtr m_index_data;
 
@@ -65,6 +67,18 @@ namespace eternal_lands
 				BitSet32 &used_attributes);
 
 		protected:
+			inline HardwareBufferMapperSharedPtr
+				get_hardware_buffer_mapper() const noexcept
+			{
+				HardwareBufferMapperSharedPtr result;
+
+				result = m_hardware_buffer_mapper.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
 			void clone_buffers(
 				const VertexStreamBitset shared_vertex_datas,
 				const bool shared_index_data,
@@ -93,7 +107,9 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl2Mesh(const String &name,
+			OpenGl2Mesh(const HardwareBufferMapperWeakPtr
+					&hardware_buffer_mapper,
+				const String &name,
 				const bool static_indices,
 				const bool static_vertices,
 				const bool static_instances,

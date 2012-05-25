@@ -24,6 +24,7 @@
 #include "script/materialscriptcache.hpp"
 #include "script/materialscriptmanager.hpp"
 #include "script/scriptengine.hpp"
+#include "hardwarebuffer/hardwarebuffermapper.hpp"
 
 namespace eternal_lands
 {
@@ -38,7 +39,10 @@ namespace eternal_lands
 		m_material_script_manager =
 			boost::make_shared<MaterialScriptManager>(
 				get_script_engine());
-		m_mesh_builder = boost::make_shared<MeshBuilder>(global_vars);
+		m_hardware_buffer_mapper =
+			boost::make_shared<HardwareBufferMapper>(global_vars);
+		m_mesh_builder = boost::make_shared<MeshBuilder>(global_vars,
+			get_hardware_buffer_mapper());
 		m_uniform_buffer_description_cache =
 			boost::make_shared<UniformBufferDescriptionCache>();
 		m_shader_source_builder =

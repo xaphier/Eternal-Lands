@@ -37,7 +37,9 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			OpenGl32Mesh(const String &name,
+			OpenGl32Mesh(const HardwareBufferMapperWeakPtr
+					&hardware_buffer_mapper,
+				const String &name,
 				const bool static_indices,
 				const bool static_vertices,
 				const bool static_instances,

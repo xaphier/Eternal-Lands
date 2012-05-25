@@ -256,16 +256,16 @@ namespace ec
 
 		if (particle_vertex_buffer.get_size() < size)
 		{
-			particle_vertex_buffer.bind(el::hbt_vertex);
+			particle_vertex_buffer.bind(el::btt_vertex);
 
-			particle_vertex_buffer.set_size(el::hbt_vertex, size,
+			particle_vertex_buffer.set_size(el::btt_vertex, size,
 				el::hbut_dynamic_draw);
 		}
 
-		particle_vertex_buffer.bind(el::hbt_vertex);
+		particle_vertex_buffer.bind(el::btt_vertex);
 
 		buffer = static_cast<float*>(particle_vertex_buffer.map(
-			el::hbt_vertex, el::hbat_write_only));
+			el::btt_vertex, el::hbat_write_only));
 
 		if (bounds)
 		{
@@ -286,7 +286,7 @@ namespace ec
 			}
 		}
 
-		particle_vertex_buffer.unmap(el::hbt_vertex);
+		particle_vertex_buffer.unmap(el::btt_vertex);
 	}
 
 	void Effect::draw_particle_buffer()
@@ -296,7 +296,7 @@ namespace ec
 			return;
 		}
 
-		particle_vertex_buffer.bind(el::hbt_vertex);
+		particle_vertex_buffer.bind(el::btt_vertex);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
@@ -348,8 +348,8 @@ namespace ec
 #ifdef	NEW_TEXTURES
 		base->set_shape_texture_combiner(1.0f);
 
-		vertex_buffer.bind(el::hbt_vertex);
-		index_buffer.bind(el::hbt_index);
+		vertex_buffer.bind(el::btt_vertex);
+		index_buffer.bind(el::btt_index);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_NORMAL_ARRAY);
@@ -450,14 +450,14 @@ namespace ec
 
 		if (vertex_buffer.get_size() < size)
 		{
-			vertex_buffer.bind(el::hbt_vertex);
+			vertex_buffer.bind(el::btt_vertex);
 
-			vertex_buffer.set_size(el::hbt_vertex, size,
+			vertex_buffer.set_size(el::btt_vertex, size,
 				el::hbut_dynamic_draw);
 		}
 
-		vertex_buffer.bind(el::hbt_vertex);
-		vertices = static_cast<float*>(vertex_buffer.map(el::hbt_vertex,
+		vertex_buffer.bind(el::btt_vertex);
+		vertices = static_cast<float*>(vertex_buffer.map(el::btt_vertex,
 			el::hbat_write_only));
 		normals = &vertices[vertex_count * 3];
 #else	/* NEW_TEXTURES */
@@ -502,8 +502,8 @@ namespace ec
 		}
 
 #ifdef	NEW_TEXTURES
-		vertex_buffer.unmap(el::hbt_vertex);
-		vertex_buffer.unbind(el::hbt_vertex);
+		vertex_buffer.unmap(el::btt_vertex);
+		vertex_buffer.unbind(el::btt_vertex);
 #endif	/* NEW_TEXTURES */
 
 		facet_count = subdivisions * 2;
@@ -512,14 +512,14 @@ namespace ec
 
 		if (index_buffer.get_size() < size)
 		{
-			index_buffer.bind(el::hbt_index);
+			index_buffer.bind(el::btt_index);
 
-			index_buffer.set_size(el::hbt_index, size,
+			index_buffer.set_size(el::btt_index, size,
 				el::hbut_dynamic_draw);
 		}
 
-		index_buffer.bind(el::hbt_index);
-		facets = static_cast<GLushort*>(index_buffer.map(el::hbt_index,
+		index_buffer.bind(el::btt_index);
+		facets = static_cast<GLushort*>(index_buffer.map(el::btt_index,
 			el::hbat_write_only));
 #else	/* NEW_TEXTURES */
 		facets = new GLuint[facet_count * 3];
@@ -541,8 +541,8 @@ namespace ec
 		facets[(subdivisions - 1) * 6 + 3] = subdivisions;
 		facets[(subdivisions - 1) * 6 + 4] = 0;
 #ifdef	NEW_TEXTURES
-		index_buffer.unmap(el::hbt_index);
-		index_buffer.unbind(el::hbt_index);
+		index_buffer.unmap(el::btt_index);
+		index_buffer.unbind(el::btt_index);
 #endif	/* NEW_TEXTURES */
 	}
 
@@ -583,14 +583,14 @@ namespace ec
 
 		if (vertex_buffer.get_size() < size)
 		{
-			vertex_buffer.bind(el::hbt_vertex);
+			vertex_buffer.bind(el::btt_vertex);
 
-			vertex_buffer.set_size(el::hbt_vertex, size,
+			vertex_buffer.set_size(el::btt_vertex, size,
 				el::hbut_dynamic_draw);
 		}
 
-		vertex_buffer.bind(el::hbt_vertex);
-		vertices = static_cast<float*>(vertex_buffer.map(el::hbt_vertex,
+		vertex_buffer.bind(el::btt_vertex);
+		vertices = static_cast<float*>(vertex_buffer.map(el::btt_vertex,
 			el::hbat_write_only));
 		normals = &vertices[vertex_count * 3];
 #else	/* NEW_TEXTURES */
@@ -665,8 +665,8 @@ namespace ec
 		normals[subdivisions * 12 + 5] = -normalized.z;
 
 #ifdef	NEW_TEXTURES
-		vertex_buffer.unmap(el::hbt_vertex);
-		vertex_buffer.unbind(el::hbt_vertex);
+		vertex_buffer.unmap(el::btt_vertex);
+		vertex_buffer.unbind(el::btt_vertex);
 #endif	/* NEW_TEXTURES */
 
 		facet_count = subdivisions * 4;
@@ -675,14 +675,14 @@ namespace ec
 
 		if (index_buffer.get_size() < size)
 		{
-			index_buffer.bind(el::hbt_index);
+			index_buffer.bind(el::btt_index);
 
-			index_buffer.set_size(el::hbt_index, size,
+			index_buffer.set_size(el::btt_index, size,
 				el::hbut_dynamic_draw);
 		}
 
-		index_buffer.bind(el::hbt_index);
-		facets = static_cast<GLushort*>(index_buffer.map(el::hbt_index,
+		index_buffer.bind(el::btt_index);
+		facets = static_cast<GLushort*>(index_buffer.map(el::btt_index,
 			el::hbat_write_only));
 #else	/* NEW_TEXTURES */
 		facets = new GLuint[facet_count * 3];
@@ -718,8 +718,8 @@ namespace ec
 		facets[subdivisions * 3 * 2 + (subdivisions - 1) * 6 + 3] = subdivisions * 3;
 		facets[subdivisions * 3 * 2 + (subdivisions - 1) * 6 + 4] = subdivisions * 2;
 #ifdef	NEW_TEXTURES
-		index_buffer.unmap(el::hbt_index);
-		index_buffer.unbind(el::hbt_index);
+		index_buffer.unmap(el::btt_index);
+		index_buffer.unbind(el::btt_index);
 #endif	/* NEW_TEXTURES */
 	}
 
@@ -804,14 +804,14 @@ namespace ec
 
 		if (vertex_buffer.get_size() < size)
 		{
-			vertex_buffer.bind(el::hbt_vertex);
+			vertex_buffer.bind(el::btt_vertex);
 
-			vertex_buffer.set_size(el::hbt_vertex, size,
+			vertex_buffer.set_size(el::btt_vertex, size,
 				el::hbut_dynamic_draw);
 		}
 
-		vertex_buffer.bind(el::hbt_vertex);
-		vertices = static_cast<float*>(vertex_buffer.map(el::hbt_vertex,
+		vertex_buffer.bind(el::btt_vertex);
+		vertices = static_cast<float*>(vertex_buffer.map(el::btt_vertex,
 			el::hbat_write_only));
 		normals = &vertices[vertex_count * 3];
 #else	/* NEW_TEXTURES */
@@ -831,8 +831,8 @@ namespace ec
 			vertices[i * 3 + 2] = normals[i * 3 + 2] * radius;
 		}
 #ifdef	NEW_TEXTURES
-		vertex_buffer.unmap(el::hbt_vertex);
-		vertex_buffer.unbind(el::hbt_vertex);
+		vertex_buffer.unmap(el::btt_vertex);
+		vertex_buffer.unbind(el::btt_vertex);
 #endif	/* NEW_TEXTURES */
 
 		// Convert facets to OpenGL-suitable array.
@@ -842,14 +842,14 @@ namespace ec
 
 		if (index_buffer.get_size() < size)
 		{
-			index_buffer.bind(el::hbt_index);
+			index_buffer.bind(el::btt_index);
 
-			index_buffer.set_size(el::hbt_index, size,
+			index_buffer.set_size(el::btt_index, size,
 				el::hbut_dynamic_draw);
 		}
 
-		index_buffer.bind(el::hbt_index);
-		facets = static_cast<GLushort*>(index_buffer.map(el::hbt_index,
+		index_buffer.bind(el::btt_index);
+		facets = static_cast<GLushort*>(index_buffer.map(el::btt_index,
 			el::hbat_write_only));
 #else	/* NEW_TEXTURES */
 		facets = new GLuint[facet_count * 3];
@@ -861,8 +861,8 @@ namespace ec
 			facets[i * 3 + 2] = spherical_facets[i].f[2];
 		}
 #ifdef	NEW_TEXTURES
-		index_buffer.unmap(el::hbt_index);
-		index_buffer.unbind(el::hbt_index);
+		index_buffer.unmap(el::btt_index);
+		index_buffer.unbind(el::btt_index);
 #endif	/* NEW_TEXTURES */
 	}
 
@@ -919,27 +919,27 @@ namespace ec
 
 		if (vertex_buffer.get_size() < size)
 		{
-			vertex_buffer.bind(el::hbt_vertex);
+			vertex_buffer.bind(el::btt_vertex);
 
-			vertex_buffer.set_size(el::hbt_vertex, size,
+			vertex_buffer.set_size(el::btt_vertex, size,
 				el::hbut_dynamic_draw);
 		}
 
-		vertex_buffer.bind(el::hbt_vertex);
-		vertices = static_cast<CaplessCylindersVertex*>(vertex_buffer.map(el::hbt_vertex, el::hbat_write_only));
+		vertex_buffer.bind(el::btt_vertex);
+		vertices = static_cast<CaplessCylindersVertex*>(vertex_buffer.map(el::btt_vertex, el::hbat_write_only));
 
 		size = 3 * sizeof(GLushort) * facet_count;
 
 		if (index_buffer.get_size() < size)
 		{
-			index_buffer.bind(el::hbt_index);
+			index_buffer.bind(el::btt_index);
 
-			index_buffer.set_size(el::hbt_index, size,
+			index_buffer.set_size(el::btt_index, size,
 				el::hbut_dynamic_draw);
 		}
 
-		index_buffer.bind(el::hbt_index);
-		facets = static_cast<GLushort*>(index_buffer.map(el::hbt_index,
+		index_buffer.bind(el::btt_index);
+		facets = static_cast<GLushort*>(index_buffer.map(el::btt_index,
 			el::hbat_write_only));
 
 		face_index = 0;
@@ -1028,11 +1028,11 @@ namespace ec
 			face_index += subdivisions;
 		}
 
-		vertex_buffer.unmap(el::hbt_vertex);
-		vertex_buffer.unbind(el::hbt_vertex);
+		vertex_buffer.unmap(el::btt_vertex);
+		vertex_buffer.unbind(el::btt_vertex);
 
-		index_buffer.unmap(el::hbt_index);
-		index_buffer.unbind(el::hbt_index);
+		index_buffer.unmap(el::btt_index);
+		index_buffer.unbind(el::btt_index);
 	}
 
 	void CaplessCylinders::draw(const float alpha_scale)
@@ -1042,8 +1042,8 @@ namespace ec
 
 		base->set_shape_texture_combiner(alpha_scale);
 
-		vertex_buffer.bind(el::hbt_vertex);
-		index_buffer.bind(el::hbt_index);
+		vertex_buffer.bind(el::btt_vertex);
+		index_buffer.bind(el::btt_index);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_NORMAL_ARRAY);
@@ -2524,8 +2524,8 @@ namespace ec
 			}
 		}
 
-		el::HardwareBuffer::unbind(el::hbt_index);
-		el::HardwareBuffer::unbind(el::hbt_vertex);
+		el::HardwareBuffer::unbind(el::btt_index);
+		el::HardwareBuffer::unbind(el::btt_vertex);
 #else	/* NEW_TEXTURES */
 		// Draw effects (any special drawing functionality) and their particles.
 		for (std::vector<Effect*>::const_iterator iter = effects.begin(); iter
@@ -2867,8 +2867,8 @@ namespace ec
 				}
 			}
 
-			el::HardwareBuffer::unbind(el::hbt_index);
-			el::HardwareBuffer::unbind(el::hbt_vertex);
+			el::HardwareBuffer::unbind(el::btt_index);
+			el::HardwareBuffer::unbind(el::btt_vertex);
 #endif	/* NEW_TEXTURES */
 		}
 
