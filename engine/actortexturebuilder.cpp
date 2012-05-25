@@ -76,7 +76,7 @@ namespace eternal_lands
 					<< boost::errinfo_file_name(
 						reader->get_name())
 					<< errinfo_expected_value(1)
-					<< errinfo_value(width)
+					<< errinfo_value(image_sizes[2])
 					<< errinfo_message(UTF8("Wrong image "
 						"depth")));
 			}
@@ -226,7 +226,7 @@ namespace eternal_lands
 					<< boost::errinfo_file_name(
 						reader->get_name()))
 					<< errinfo_expected_value(1)
-					<< errinfo_value(width)
+					<< errinfo_value(result->get_depth())
 					<< errinfo_message(UTF8("Wrong image "
 						"depth"));
 			}
