@@ -6,14 +6,14 @@
  ****************************************************************************/
 
 #include "filter.hpp"
-#include "glslprogram.hpp"
-#include "glslprogramdescription.hpp"
+#include "shader/glslprogram.hpp"
+#include "shader/glslprogramdescription.hpp"
 #include "shader/samplerparameterutil.hpp"
 #include "meshcache.hpp"
 #include "statemanager.hpp"
 #include "abstractmesh.hpp"
 #include "globalvars.hpp"
-#include "glslprogramcache.hpp"
+#include "shader/glslprogramcache.hpp"
 
 namespace eternal_lands
 {

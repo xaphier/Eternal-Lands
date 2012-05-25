@@ -16,7 +16,7 @@
 #include "script/materialscript.hpp"
 #include "script/materialscriptcache.hpp"
 #include "script/materialscriptmanager.hpp"
-#include "glslprogram.hpp"
+#include "shader/glslprogram.hpp"
 
 namespace eternal_lands
 {

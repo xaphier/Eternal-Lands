@@ -6,13 +6,13 @@
  ****************************************************************************/
 
 #include "effect.hpp"
-#include "glslprogram.hpp"
-#include "glslprogramdescription.hpp"
+#include "shader/glslprogram.hpp"
+#include "shader/glslprogramdescription.hpp"
 #include "exceptions.hpp"
 #include "shader/shadersourcebuilder.hpp"
 #include "shader/samplerparameterutil.hpp"
 #include "logging.hpp"
-#include "glslprogramcache.hpp"
+#include "shader/glslprogramcache.hpp"
 
 namespace eternal_lands
 {

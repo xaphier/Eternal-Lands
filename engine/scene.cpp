@@ -16,7 +16,7 @@
 #include "frustum.hpp"
 #include "instancedata.hpp"
 #include "objectdescription.hpp"
-#include "glslprogram.hpp"
+#include "shader/glslprogram.hpp"
 #include "actor.hpp"
 #include "effect.hpp"
 #include "texturecache.hpp"

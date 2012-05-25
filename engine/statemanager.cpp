@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "statemanager.hpp"
-#include "glslprogram.hpp"
+#include "shader/glslprogram.hpp"
 #include "texture.hpp"
 #include "abstractmesh.hpp"
 #include "logging.hpp"
