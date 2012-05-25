@@ -2029,14 +2029,15 @@ namespace eternal_lands
 			uniform_block_active_uniform_indices.get());
 
 		BoostFormat format(UTF8("\t%1% binding %2% data size "
-			"%3% name length %4% active uniforms %5%."));
+			"%3% active uniforms %4%."));
 
-		format % name % uniform_block_binding;
+		format % name % static_cast<Uint32>(uniform_buffer);
 		format % uniform_block_data_size;
-		format % uniform_block_name_length;
 		format % uniform_block_active_uniforms;
 
 		str << format.str() << std::endl;
+
+		glUniformBlockBinding(m_program, index, uniform_buffer);
 
 		for (i = 0; i < uniform_block_active_uniforms; ++i)
 		{
