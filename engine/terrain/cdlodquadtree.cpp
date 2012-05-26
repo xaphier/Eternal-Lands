@@ -9,6 +9,7 @@
 #include "alignedvec4array.hpp"
 #include "frustum.hpp"
 #include "shader/mappeduniformbuffer.hpp"
+#include "image.hpp"
 
 namespace eternal_lands
 {
@@ -60,6 +61,74 @@ namespace eternal_lands
 			glm::uvec2(0, 1)
 		};
 
+		void get_min_max(const ImageSharedPtr &image,
+			const glm::vec3 &scale, const glm::uvec2 &offset,
+			const Uint32 size, glm::vec3 &min, glm::vec3 &max)
+		{
+			glm::vec3 tmp;
+			glm::uvec2 index, count;
+			Uint32 x, y;
+
+			min = glm::vec3(std::numeric_limits<float>::max());
+			max = glm::vec3(-std::numeric_limits<float>::max());
+
+			if (glm::any(glm::lessThan(glm::uvec2(
+				image->get_sizes()), offset + size)))
+			{
+				return;
+			}
+
+			count = glm::uvec2(image->get_sizes()) - offset;
+			count = glm::min(count, size);
+
+			for (y = 0; y < count.y; ++y)
+			{
+				for (x = 0; x < count.x; ++x)
+				{
+					index = offset + glm::uvec2(x, y);
+
+					tmp = glm::vec3(image->get_pixel(
+						index.x, index.y, 0, 0, 0));
+
+					min = glm::min(min, tmp);
+					max = glm::max(max, tmp);
+				}
+			}
+
+			min.x = min.x * 2.0f - 1.0f;
+			min.y = min.y * 2.0f - 1.0f;
+			max.x = max.x * 2.0f - 1.0f;
+			max.y = max.y * 2.0f - 1.0f;
+
+			min *= scale;
+			max *= scale;
+		}
+
+		void init_min_max(const ImageSharedPtr &image,
+			const glm::vec3 &scale, const Uint32 size,
+			boost::multi_array<Vec3Array2, 2> &min_max)
+		{
+			glm::vec3 min, max;
+			glm::uvec2 index, count;
+			Uint32 x, y;
+
+			count = glm::uvec2(image->get_sizes()) / size;
+
+			for (y = 0; y < count.y; ++y)
+			{
+				for (x = 0; x < count.x; ++x)
+				{
+					index = glm::uvec2(x, y) * size;
+
+					get_min_max(image, scale, index, size,
+						min, max);
+
+					min_max[y][x][0] = min;
+					min_max[y][x][1] = max;
+				}
+			}
+		}
+
 	}
 
 	Uint16 CdLodQuadTree::get_quad_order(const glm::vec2 &dir) noexcept
@@ -95,18 +164,20 @@ namespace eternal_lands
 		return quad_orders[quad_order * 4 + index];
 	}
 
-	CdLodQuadTree::CdLodQuadTree(const glm::vec3 &min,
-		const glm::vec3 &max, const glm::uvec2 &size): m_min(min),
-		m_max(max), m_grid_size(size)
+	CdLodQuadTree::CdLodQuadTree(const ImageSharedPtr &vector_map,
+		const glm::vec3 &scale)
 	{
-		Uint32 max_size;
+		Uint32 max_grid_size;
 
-		max_size = std::max(size.x, size.y);
+		m_grid_size.x = vector_map->get_width();
+		m_grid_size.y = vector_map->get_height();
+
+		max_grid_size = std::max(m_grid_size.x, m_grid_size.y);
 
 		m_lod_count = 1;
 
 		while ((m_lod_count < get_max_lod_count()) &&
-			(max_size < (m_patch_size * 1 << m_lod_count)))
+			(max_grid_size < (m_patch_size * 1 << m_lod_count)))
 		{
 			m_lod_count++;
 		}
@@ -189,6 +260,7 @@ namespace eternal_lands
 		BoundingBox box;
 		glm::vec3 min, max;
 		glm::vec2 size, center, half_size, distance;
+		glm::uvec2 pos;
 		PlanesMask out_mask;
 		Uint32 offset;
 		Uint16 i, index;
@@ -203,8 +275,10 @@ namespace eternal_lands
 			m_grid_size - position)) * m_cell_size;
 		min = m_cell_size * glm::vec3(position, 0.0f);
 		max = min + glm::vec3(size, 0.0f);
-		min += m_min;
-		max += m_max;
+
+		pos = position / m_lods[level].patch_size;
+		min += m_lods[level].min_max[pos.y][pos.x][0];
+		max += m_lods[level].min_max[pos.y][pos.x][1];
 
 		box.set_min_max(min, max);
 

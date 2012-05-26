@@ -29,7 +29,7 @@ namespace eternal_lands
 	{
 
 		glm::vec3 get_low_quality_pixel_3(const ImageSharedPtr &image,
-			const Uint32 x, Uint32 y)
+			const Uint32 x, const Uint32 y)
 		{
 			glm::vec3 result;
 			Uint32 x0, y0, x1, y1;
@@ -51,7 +51,7 @@ namespace eternal_lands
 		}
 
 		glm::vec2 get_low_quality_pixel_2(const ImageSharedPtr &image,
-			const Uint32 x, Uint32 y)
+			const Uint32 x, const Uint32 y)
 		{
 			glm::vec2 result;
 			Uint32 x0, y0, x1, y1;

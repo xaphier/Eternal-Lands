@@ -27,6 +27,7 @@ namespace eternal_lands
 		private:
 			struct LodDescription
 			{
+				boost::multi_array<Vec3Array2, 2> min_max;
 				glm::vec2 morph_params;
 				float range_start;
 				Uint32 patch_size;
@@ -41,6 +42,23 @@ namespace eternal_lands
 			Uint32 m_patch_size;
 
 		protected:
+
+			static inline glm::uvec2 get_quad_order(
+				const Uint32 offset, const Uint16 quad_order,
+				const Uint16 index) noexcept
+			{
+				return get_quad_order(quad_order, index) *
+					offset;
+			}
+
+			inline void get_min_max(const glm::uvec2 &index,
+				const Uint16 level, glm::vec3 &min,
+				glm::vec3 &max)
+			{
+				min = m_lods[level].min_max[index.y][index.x][0];
+				max = m_lods[level].min_max[index.y][index.x][1];
+			}
+
 			void calculate_lod_params();
 			void add_patch_to_queue(const glm::uvec2 &position,
 				const Uint16 level,
@@ -58,17 +76,9 @@ namespace eternal_lands
 				const Uint16 quad_order, const Uint16 index)
 				noexcept;
 
-			static inline glm::uvec2 get_quad_order(
-				const Uint32 offset, const Uint16 quad_order,
-				const Uint16 index) noexcept
-			{
-				return get_quad_order(quad_order, index) *
-					offset;
-			}
-
 		public:
-			CdLodQuadTree(const glm::vec3 &min,
-				const glm::vec3 &max, const glm::uvec2 &size);
+			CdLodQuadTree(const ImageSharedPtr &vector_map,
+				const glm::vec3 &scale);
 			~CdLodQuadTree() noexcept;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera,
