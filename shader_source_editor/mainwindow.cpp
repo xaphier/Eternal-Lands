@@ -344,10 +344,12 @@ void MainWindow::save(const QString &file_name)
 				el::ParameterUtil::get_parameter(
 					el::String(item->text(1).toUtf8())));
 			shader_source_parameters[j].set_qualifier(
-				el::ParameterQualifierUtil::get_parameter_qualifier(
-					el::String(item->text(2).toUtf8())));
+				el::ParameterQualifierUtil::
+					get_parameter_qualifier(
+						el::String(item->text(2).
+							toUtf8())));
 			shader_source_parameters[j].set_size(
-				item->text(4).toInt());
+				item->text(3).toInt());
 		}
 
 		shader_source_datas[i].set_parameters(shader_source_parameters);
