@@ -95,6 +95,7 @@ namespace eternal_lands
 		const FileSystemSharedPtr &file_system):
 		m_global_vars(global_vars), m_file_system(file_system),
 		m_scene_resources(global_vars, file_system),
+		m_clipmap(m_scene_resources.get_material_builder()),
 		m_state_manager(global_vars), m_scene_view(global_vars),
 		m_frame_id(0), m_program_vars_id(0), m_shadow_map_change(true)
 	{
@@ -290,17 +291,6 @@ namespace eternal_lands
 				get_global_vars()->get_clipmap_size(),
 				m_clipmap.get_slices(), mipmaps, target,
 				format, false);
-
-		m_materials.clear();
-
-		m_materials.push_back(get_scene_resources().get_material_cache(
-			)->get_material(String(UTF8("terrain_0"))));
-		m_materials.push_back(get_scene_resources().get_material_cache(
-			)->get_material(String(UTF8("terrain_1"))));
-		m_materials.push_back(get_scene_resources().get_material_cache(
-			)->get_material(String(UTF8("terrain_2"))));
-		m_materials.push_back(get_scene_resources().get_material_cache(
-			)->get_material(String(UTF8("terrain_3"))));
 	}
 
 	void Scene::clear()
@@ -1110,8 +1100,8 @@ namespace eternal_lands
 			texture_matrices[1][0] *= tile_scale.x;
 			texture_matrices[1][1] *= tile_scale.y;
 
-			update_terrain_texture(m_materials, texture_matrices,
-				slice);
+			update_terrain_texture(m_clipmap.get_materials(),
+				texture_matrices, slice);
 		}
 		catch (boost::exception &exception)
 		{

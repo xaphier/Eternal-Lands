@@ -6,7 +6,10 @@
  ****************************************************************************/
 
 #include "clipmap.hpp"
-#include "texture.hpp"
+#include "texturetargetutil.hpp"
+#include "textureformatutil.hpp"
+#include "materialdescription.hpp"
+#include "materialbuilder.hpp"
 
 namespace eternal_lands
 {
@@ -21,8 +24,9 @@ namespace eternal_lands
 
 	}
 
-	Clipmap::Clipmap(): m_world_size(16.0f), m_distance(0.0f), m_size(512),
-		m_dir_index(0), m_slices(4)
+	Clipmap::Clipmap(const MaterialBuilderWeakPtr &material_builder):
+		m_material_builder(material_builder), m_world_size(16.0f),
+		m_distance(0.0f), m_size(512), m_dir_index(0), m_slices(4)
 	{
 	}
 
@@ -52,6 +56,8 @@ namespace eternal_lands
 		m_terrain_texture_size.y = terrain_texture_size.y;
 		m_terrain_texture_size.z = 1.0f / terrain_texture_size.x;
 		m_terrain_texture_size.w = 1.0f / terrain_texture_size.y;
+
+		load_materials();
 	}
 
 	bool Clipmap::update(const glm::vec3 &camera, const glm::vec3 &view_dir,
@@ -133,59 +139,87 @@ namespace eternal_lands
 		m_texture_matrices[slice] = texture_matrix;
 	}
 
-	void Clipmap::rebuild_frame_buffer()
+	void Clipmap::load_materials()
 	{
-		Uint16 mipmaps;
-		TextureTargetType target;
-		TextureFormatType format;
+		MaterialDescription material;
+		glm::mat2x3 emission_scale_offset;
 
-		mipmaps = 0;
-/*
-		if (get_global_vars()->get_opengl_3_0())
-		{
-			target = ttt_texture_2d_array;
-
-			while ((1 << mipmaps) <
-				get_global_vars()->get_clipmap_size())
-			{
-				mipmaps++;
-			}
-
-			format = tft_rgb8;
-		}
-		else
-		{
-			target = ttt_texture_3d;
-			format = tft_r5g6b5;
-		}
-
-		m_clipmap.rebuild(m_map->get_terrain_size(),
-			get_global_vars()->get_view_distance(),
-			get_global_vars()->get_clipmap_world_size(),
-			get_global_vars()->get_clipmap_size(),
-			get_global_vars()->get_clipmap_slices());
-
-		m_clipmap_frame_buffer.reset();
-		m_clipmap_frame_buffer = get_scene_resources(
-			).get_framebuffer_builder()->build(
-				String(UTF8("terrain")),
-				get_global_vars()->get_clipmap_size(),
-				get_global_vars()->get_clipmap_size(),
-				m_clipmap.get_slices(), mipmaps, target,
-				format, false);
-*/
+		emission_scale_offset[0] = glm::vec3(1.0f);
+		emission_scale_offset[1] = glm::vec3(1.0f);
 
 		m_materials.clear();
-/*
-		m_materials.push_back(get_scene_resources().get_material_cache(
-			)->get_material(String(UTF8("terrain_0"))));
-		m_materials.push_back(get_scene_resources().get_material_cache(
-			)->get_material(String(UTF8("terrain_1"))));
-		m_materials.push_back(get_scene_resources().get_material_cache(
-			)->get_material(String(UTF8("terrain_2"))));
-		m_materials.push_back(get_scene_resources().get_material_cache(
-			)->get_material(String(UTF8("terrain_3"))));
-*/
+
+		material.set_name(String(UTF8("terrain_0")));
+		material.set_texture(String(UTF8("3dobjects/tile1.dds")),
+			spt_albedo_0);
+		material.set_texture(String(UTF8("3dobjects/tile2.dds")),
+			spt_albedo_1);
+		material.set_texture(String(UTF8("3dobjects/tile3.dds")),
+			spt_albedo_2);
+		material.set_texture(String(UTF8("3dobjects/tile4.dds")),
+			spt_albedo_3);
+		material.set_texture(String(UTF8("textures/blend2.dds")),
+			spt_blend);
+		material.set_effect(
+			String(UTF8("textured-blend-4-screen-quad")));
+		material.set_emission_scale_offset(emission_scale_offset);
+
+		m_materials.push_back(get_material_builder()->get_material(
+			material));
+
+		material.set_name(String(UTF8("terrain_1")));
+		material.set_texture(String(UTF8("3dobjects/tile5.dds")),
+			spt_albedo_0);
+		material.set_texture(String(UTF8("3dobjects/tile6.dds")),
+			spt_albedo_1);
+		material.set_texture(String(UTF8("3dobjects/tile7.dds")),
+			spt_albedo_2);
+		material.set_texture(String(UTF8("3dobjects/tile8.dds")),
+			spt_albedo_3);
+		material.set_texture(String(UTF8("textures/blend3.dds")),
+			spt_blend);
+		material.set_effect(
+			String(UTF8("textured-blend-4-screen-quad")));
+		material.set_emission_scale_offset(emission_scale_offset);
+
+		m_materials.push_back(get_material_builder()->get_material(
+			material));
+
+		material.set_name(String(UTF8("terrain_2")));
+		material.set_texture(String(UTF8("3dobjects/tile9.dds")),
+			spt_albedo_0);
+		material.set_texture(String(UTF8("3dobjects/tile10.dds")),
+			spt_albedo_1);
+		material.set_texture(String(UTF8("3dobjects/tile11.dds")),
+			spt_albedo_2);
+		material.set_texture(String(UTF8("3dobjects/tile12.dds")),
+			spt_albedo_3);
+		material.set_texture(String(UTF8("textures/blend3.dds")),
+			spt_blend);
+		material.set_effect(
+			String(UTF8("textured-blend-4-screen-quad")));
+		material.set_emission_scale_offset(emission_scale_offset);
+
+		m_materials.push_back(get_material_builder()->get_material(
+			material));
+
+		material.set_name(String(UTF8("terrain_3")));
+		material.set_texture(String(UTF8("3dobjects/tile13.dds")),
+			spt_albedo_0);
+		material.set_texture(String(UTF8("3dobjects/tile14.dds")),
+			spt_albedo_1);
+		material.set_texture(String(UTF8("3dobjects/tile15.dds")),
+			spt_albedo_2);
+		material.set_texture(String(UTF8("3dobjects/tile16.dds")),
+			spt_albedo_3);
+		material.set_texture(String(UTF8("textures/blend3.dds")),
+			spt_blend);
+		material.set_effect(
+			String(UTF8("textured-blend-4-screen-quad")));
+		material.set_emission_scale_offset(emission_scale_offset);
+
+		m_materials.push_back(get_material_builder()->get_material(
+			material));
 	}
 
 }

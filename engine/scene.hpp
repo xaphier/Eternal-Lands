@@ -44,10 +44,10 @@ namespace eternal_lands
 				PairUint32SelectionTypeVector;
 
 			boost::array<GLuint, 0x40000> m_querie_ids;
-			Clipmap m_clipmap;
 			GlobalVarsSharedPtr m_global_vars;
 			FileSystemSharedPtr m_file_system;
 			SceneResources m_scene_resources;
+			Clipmap m_clipmap;
 			StateManager m_state_manager;
 			ObjectVisitor m_visible_objects;
 			ObjectVisitor m_shadow_objects;
@@ -55,7 +55,6 @@ namespace eternal_lands
 			MapSharedPtr m_map;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractMeshSharedPtr m_screen_quad;
-			MaterialSharedPtrVector m_materials;
 			AbstractFrameBufferSharedPtr m_clipmap_frame_buffer;
 			MaterialSharedPtr m_terrain_material;
 			Uint32ActorSharedPtrMap m_actors;

@@ -25,8 +25,8 @@ namespace eternal_lands
 	class Clipmap
 	{
 		private:
+			const MaterialBuilderWeakPtr m_material_builder;
 			Mat2x3Vector m_texture_matrices;
-			AbstractFrameBufferSharedPtr m_frame_buffer;
 			MaterialSharedPtrVector m_materials;
 			glm::vec4 m_terrain_texture_size;
 			glm::vec2 m_focus;
@@ -37,6 +37,18 @@ namespace eternal_lands
 			Uint16 m_dir_index;
 			Uint16 m_slices;
 
+			inline MaterialBuilderSharedPtr get_material_builder()
+				const noexcept
+			{
+				MaterialBuilderSharedPtr result;
+
+				result = m_material_builder.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
 			inline Uint16 get_dir_index() const noexcept
 			{
 				return m_dir_index;
@@ -45,10 +57,8 @@ namespace eternal_lands
 			Uint16 get_dir_index(const glm::vec2 &view_dir) const
 				noexcept;
 
-			void rebuild_frame_buffer();
-
 		public:
-			Clipmap();
+			Clipmap(const MaterialBuilderWeakPtr &material_builder);
 			~Clipmap() noexcept;
 			void rebuild(const glm::vec2 &terrain_world_size,
 				const float view_distance,
@@ -58,6 +68,13 @@ namespace eternal_lands
 				const glm::vec3 &view_dir,
 				const glm::vec2 &focus);
 			void update_slice(const Uint16 slice);
+			void load_materials();
+
+			inline const MaterialSharedPtrVector &get_materials()
+				const noexcept
+			{
+				return m_materials;
+			}
 
 			inline const Mat2x3Vector &get_texture_matrices() const
 				noexcept
