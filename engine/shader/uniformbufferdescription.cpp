@@ -102,4 +102,22 @@ namespace eternal_lands
 		return m_uniforms[found->second];
 	}
 
+	bool UniformBufferDescription::get_uniform_description(
+		const AutoParameterType auto_parameter,
+		UniformDescription &uniform_description) const
+	{
+		AutoParameterTypeUint32Map::const_iterator found;
+
+		found = m_auto_parameters.find(auto_parameter);
+
+		if (found == m_auto_parameters.end())
+		{
+			return false;
+		}
+
+		uniform_description = m_uniforms[found->second];
+
+		return true;
+	}
+
 }

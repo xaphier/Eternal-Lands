@@ -94,7 +94,6 @@ void engine_set_clipmap_size(const int value);
 void engine_set_clipmap_world_size(const int value);
 void engine_set_clipmap_slices(const int value);
 void engine_set_tile_world_size(const int value);
-void engine_set_clipmap_centered(const int value);
 void engine_set_effect_debug(const int value);
 
 int engine_get_opengl_3_0();

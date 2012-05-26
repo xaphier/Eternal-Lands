@@ -95,7 +95,8 @@ namespace eternal_lands
 				String(UTF8("terrain")),
 				String(UTF8("Terrain"))),
 			UniformBufferTypeData(boost::assign::list_of
-				(apt_terrain_instances),
+				(apt_terrain_instances)
+				(apt_terrain_lod_offset),
 				String(UTF8("terrain_instances")),
 				String(UTF8("TerrainInstances")))
 		};

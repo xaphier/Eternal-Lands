@@ -27,12 +27,27 @@ namespace eternal_lands
 	class UniformBuffer
 	{
 		private:
+			const HardwareBufferMapperWeakPtr
+				m_hardware_buffer_mapper;
 			HardwareBuffer m_buffer;
 			UniformBufferDescriptionSharedPtr
 				m_uniform_buffer_description;
 
+			inline HardwareBufferMapperSharedPtr
+				get_hardware_buffer_mapper() const noexcept
+			{
+				HardwareBufferMapperSharedPtr result;
+
+				result = m_hardware_buffer_mapper.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
 		public:
-			UniformBuffer(
+			UniformBuffer(const HardwareBufferMapperWeakPtr
+					&hardware_buffer_mapper,
 				const UniformBufferDescriptionCacheSharedPtr
 					&uniform_buffer_description_cache,
 				const UniformBufferType type);

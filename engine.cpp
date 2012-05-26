@@ -1590,16 +1590,6 @@ extern "C" void engine_set_tile_world_size(const int value)
 	}
 }
 
-extern "C" void engine_set_clipmap_centered(const int value)
-{
-	global_vars->set_clipmap_centered(value != 0);
-
-	if (scene.get() != 0)
-	{
-		scene->terrain_change();
-	}
-}
-
 extern "C" int engine_get_opengl_3_0()
 {
 	return global_vars->get_opengl_3_0();

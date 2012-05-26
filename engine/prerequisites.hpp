@@ -244,6 +244,7 @@ namespace eternal_lands
 	class LightData;
 	class LightVisitor;
 	class Map;
+	class MappedUniformBuffer;
 	class Material;
 	class MaterialBuilder;
 	class MaterialCache;

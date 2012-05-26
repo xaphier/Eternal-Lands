@@ -68,6 +68,86 @@ namespace eternal_lands
 		str << UTF8(" [array_stride]: ") << get_array_stride();
 		str << UTF8(" [matrix_stride]: ") << get_matrix_stride();
 		str << UTF8(" [is_row_major]: ") << get_is_row_major();
+		str << UTF8(" [compact]: ") << get_compact();
+	}
+
+	void UniformDescription::update_compact()
+	{
+		switch (get_type())
+		{
+			case pt_bool:
+			case pt_int:
+			case pt_unsigned_int:
+			case pt_float:
+				m_compact = get_array_stride() == (1 * 4);
+				break;
+			case pt_bvec2:
+			case pt_ivec2:
+			case pt_uvec2:
+			case pt_vec2:
+				m_compact = get_array_stride() == (2 * 4);
+				break;
+			case pt_bvec3:
+			case pt_ivec3:
+			case pt_uvec3:
+			case pt_vec3:
+				m_compact = get_array_stride() == (3 * 4);
+				break;
+			case pt_bvec4:
+			case pt_ivec4:
+			case pt_uvec4:
+			case pt_vec4:
+				m_compact = get_array_stride() == (4 * 4);
+				break;
+			case pt_mat2x2:
+				m_compact = (get_array_stride() == (2 * 2 * 4))
+					&& (get_matrix_stride() == (2 * 4)) &&
+					get_is_row_major();
+				break;
+			case pt_mat2x3:
+				m_compact = (get_array_stride() == (2 * 3 * 4))
+					&& (get_matrix_stride() == (3 * 4)) &&
+					get_is_row_major();
+				break;
+			case pt_mat2x4:
+				m_compact = (get_array_stride() == (2 * 4 * 4))
+					&& (get_matrix_stride() == (4 * 4)) &&
+					get_is_row_major();
+				break;
+			case pt_mat3x2:
+				m_compact = (get_array_stride() == (3 * 2 * 4))
+					&& (get_matrix_stride() == (2 * 4)) &&
+					get_is_row_major();
+				break;
+			case pt_mat3x3:
+				m_compact = (get_array_stride() == (3 * 3 * 4))
+					&& (get_matrix_stride() == (3 * 4)) &&
+					get_is_row_major();
+				break;
+			case pt_mat3x4:
+				m_compact = (get_array_stride() == (3 * 4 * 4))
+					&& (get_matrix_stride() == (4 * 4)) &&
+					get_is_row_major();
+				break;
+			case pt_mat4x2:
+				m_compact = (get_array_stride() == (4 * 2 * 4))
+					&& (get_matrix_stride() == (2 * 4)) &&
+					get_is_row_major();
+				break;
+			case pt_mat4x3:
+				m_compact = (get_array_stride() == (4 * 3 * 4))
+					&& (get_matrix_stride() == (3 * 4)) &&
+					get_is_row_major();
+				break;
+			case pt_mat4x4:
+				m_compact = (get_array_stride() == (4 * 4 * 4))
+					&& (get_matrix_stride() == (4 * 4)) &&
+					get_is_row_major();
+				break;
+			default:
+				m_compact = false;
+				break;
+		}
 	}
 
 }

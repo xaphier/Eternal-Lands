@@ -43,7 +43,9 @@ namespace eternal_lands
 				const AutoParameterType auto_parameter);
 			const UniformDescription &get_uniform_description(
 				const AutoParameterType auto_parameter) const;
-
+			bool get_uniform_description(
+				const AutoParameterType auto_parameter,
+				UniformDescription &uniform_description) const;
 			inline bool has_auto_parameter(
 				const AutoParameterType auto_parameter) const
 				noexcept

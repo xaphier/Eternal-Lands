@@ -30,6 +30,9 @@ namespace eternal_lands
 			Uint32 m_offset, m_size, m_array_stride;
 			Uint32 m_matrix_stride;
 			bool m_is_row_major;
+			bool m_compact;
+
+			void update_compact();
 
 		public:
 			UniformDescription();
@@ -94,38 +97,49 @@ namespace eternal_lands
 				return m_is_row_major;
 			}
 
+			inline bool get_compact() const noexcept
+			{
+				return m_compact;
+			}
+
 			inline void set_auto_parameter(
 				const AutoParameterType auto_parameter) noexcept
 			{
 				m_auto_parameter = auto_parameter;
+				update_compact();
 			}
 
 			inline void set_offset(const Uint32 offset) noexcept
 			{
 				m_offset = offset;
+				update_compact();
 			}
 
 			inline void set_size(const Uint32 size) noexcept
 			{
 				m_size = size;
+				update_compact();
 			}
 
 			inline void set_array_stride(const Uint32 array_stride)
 				noexcept
 			{
 				m_array_stride = array_stride;
+				update_compact();
 			}
 
 			inline void set_matrix_stride(
 				const Uint32 matrix_stride) noexcept
 			{
 				m_matrix_stride = matrix_stride;
+				update_compact();
 			}
 
 			inline void set_is_row_major(const bool is_row_major)
 				noexcept
 			{
 				m_is_row_major = is_row_major;
+				update_compact();
 			}
 
 	};

@@ -8,6 +8,7 @@
 #include "cdlodquadtree.hpp"
 #include "alignedvec4array.hpp"
 #include "frustum.hpp"
+#include "shader/mappeduniformbuffer.hpp"
 
 namespace eternal_lands
 {
@@ -96,8 +97,19 @@ namespace eternal_lands
 
 	CdLodQuadTree::CdLodQuadTree(const glm::vec3 &min,
 		const glm::vec3 &max, const glm::uvec2 &size): m_min(min),
-		m_max(max)
+		m_max(max), m_grid_size(size)
 	{
+		Uint32 max_size;
+
+		max_size = std::max(size.x, size.y);
+
+		m_lod_count = 1;
+
+		while ((m_lod_count < get_max_lod_count()) &&
+			(max_size < (m_patch_size * 1 << m_lod_count)))
+		{
+			m_lod_count++;
+		}
 	}
 
 	CdLodQuadTree::~CdLodQuadTree() noexcept
@@ -145,11 +157,12 @@ namespace eternal_lands
 	}
 
 	void CdLodQuadTree::add_patch_to_queue(const glm::uvec2 &position,
-		const Uint16 level, Mat2x4Vector &instances) const
+		const Uint16 level, MappedUniformBuffer &instances,
+		Uint32 &instance_index) const
 	{
 		glm::mat2x4 data;
 
-		if (instances.size() < get_max_patch_count())
+		if (instance_index < get_max_patch_count())
 		{
 			data[0].x = position.x;
 			data[0].y = position.y;
@@ -161,14 +174,17 @@ namespace eternal_lands
 			data[1].z = level;
 			data[1].w = 0.0f;
 
-			instances.push_back(data);
+			instances.set_parameter(apt_terrain_instances,
+				data, instance_index);
+
+			instance_index++;
 		}
 	}
 
 	void CdLodQuadTree::select_quads_for_drawing(const Frustum &frustum,
 		const glm::vec3 &camera, const glm::uvec2 &position,
 		const PlanesMask mask, const Uint16 level,
-		Mat2x4Vector &instances) const
+		MappedUniformBuffer &instances, Uint32 &instance_index) const
 	{
 		BoundingBox box;
 		glm::vec3 min, max;
@@ -200,7 +216,8 @@ namespace eternal_lands
 		if ((level == 0) || ((m_lods[level].range_start +
 			get_height_scale()) < camera.z))
 		{
-			add_patch_to_queue(position, level, instances);
+			add_patch_to_queue(position, level, instances,
+				instance_index);
 			return;
 		}
 
@@ -218,7 +235,8 @@ namespace eternal_lands
 
 		if (!intersect)
 		{
-			add_patch_to_queue(position, level, instances);
+			add_patch_to_queue(position, level, instances,
+				instance_index);
 
 			return;
 		}
@@ -232,17 +250,17 @@ namespace eternal_lands
 		{
 			select_quads_for_drawing(frustum, camera, position +
 					get_quad_order(offset, index, i),
-				out_mask, level - 1, instances);
+				out_mask, level - 1, instances, instance_index);
 		}
 	}
 
 	void CdLodQuadTree::select_quads_for_drawing(const Frustum &frustum,
-		const glm::vec3 &camera, Mat2x4Vector &instances) const
+		const glm::vec3 &camera, MappedUniformBuffer &instances) const
 	{
-		Uint32 x, y, level, step;
+		glm::vec4 terrain_lod_offset;
+		float dist;
+		Uint32 x, y, level, step, instance_index;
 		PlanesMask mask;
-
-		instances.clear();
 
 		level = m_lod_count - 1;
 
@@ -250,13 +268,27 @@ namespace eternal_lands
 
 		mask = frustum.get_planes_mask();
 
+		instance_index = 0;
+
+		dist = std::abs(camera.z - m_max.z * 0.5f);
+		terrain_lod_offset = glm::vec4(-camera.x, -camera.y, 0.0f,
+			0.0f);
+
+		if (dist > (m_max.z * 0.5f))
+		{
+			terrain_lod_offset.z = dist - m_max.z * 0.5f;
+		}
+
+		instances.set_parameter(apt_terrain_lod_offset,
+			terrain_lod_offset, 0);
+
 		for (y = 0; y < (m_grid_size.y - 1); y += step)
 		{
 			for (x = 0; x < (m_grid_size.x - 1); x += step)
 			{
 				select_quads_for_drawing(frustum, camera,
 					glm::uvec2(x, y), mask, level,
-					instances);
+					instances, instance_index);
 			}
 		}
 	}

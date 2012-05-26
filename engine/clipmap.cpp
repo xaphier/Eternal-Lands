@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "clipmap.hpp"
+#include "texture.hpp"
 
 namespace eternal_lands
 {
@@ -21,7 +22,7 @@ namespace eternal_lands
 	}
 
 	Clipmap::Clipmap(): m_world_size(16.0f), m_distance(0.0f), m_size(512),
-		m_dir_index(0), m_slices(4), m_centered(true)
+		m_dir_index(0), m_slices(4)
 	{
 	}
 
@@ -60,7 +61,7 @@ namespace eternal_lands
 
 		dir_index = get_dir_index(glm::normalize(glm::vec2(view_dir)));
 
-		if (((dir_index != get_dir_index()) && !get_centered()) ||
+		if ((dir_index != get_dir_index()) ||
 			(glm::distance(focus, get_focus()) > 1.0f))
 		{
 			m_focus = focus;
@@ -117,14 +118,11 @@ namespace eternal_lands
 
 		offset = get_focus() - world_size * 0.5f;
 
-		if (!get_centered())
-		{
-			offset -= dir[get_dir_index()] * world_size * 0.5f;
-//			offset += dir[get_dir_index()] * get_world_size() * 0.5f;
-//			offset -= dir[get_dir_index()] *
-//				(get_world_size() * 0.5f - m_distance);
-			offset += dir[get_dir_index()] * m_distance;
-		}
+		offset -= dir[get_dir_index()] * world_size * 0.5f;
+//		offset += dir[get_dir_index()] * get_world_size() * 0.5f;
+//		offset -= dir[get_dir_index()] *
+//			(get_world_size() * 0.5f - m_distance);
+		offset += dir[get_dir_index()] * m_distance;
 
 		offset /= world_size;
 		scale = get_terrain_world_size() / world_size;
@@ -133,6 +131,61 @@ namespace eternal_lands
 		texture_matrix[1] = glm::vec3(0.0f, scale.y, -offset.y);
 
 		m_texture_matrices[slice] = texture_matrix;
+	}
+
+	void Clipmap::rebuild_frame_buffer()
+	{
+		Uint16 mipmaps;
+		TextureTargetType target;
+		TextureFormatType format;
+
+		mipmaps = 0;
+/*
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			target = ttt_texture_2d_array;
+
+			while ((1 << mipmaps) <
+				get_global_vars()->get_clipmap_size())
+			{
+				mipmaps++;
+			}
+
+			format = tft_rgb8;
+		}
+		else
+		{
+			target = ttt_texture_3d;
+			format = tft_r5g6b5;
+		}
+
+		m_clipmap.rebuild(m_map->get_terrain_size(),
+			get_global_vars()->get_view_distance(),
+			get_global_vars()->get_clipmap_world_size(),
+			get_global_vars()->get_clipmap_size(),
+			get_global_vars()->get_clipmap_slices());
+
+		m_clipmap_frame_buffer.reset();
+		m_clipmap_frame_buffer = get_scene_resources(
+			).get_framebuffer_builder()->build(
+				String(UTF8("terrain")),
+				get_global_vars()->get_clipmap_size(),
+				get_global_vars()->get_clipmap_size(),
+				m_clipmap.get_slices(), mipmaps, target,
+				format, false);
+*/
+
+		m_materials.clear();
+/*
+		m_materials.push_back(get_scene_resources().get_material_cache(
+			)->get_material(String(UTF8("terrain_0"))));
+		m_materials.push_back(get_scene_resources().get_material_cache(
+			)->get_material(String(UTF8("terrain_1"))));
+		m_materials.push_back(get_scene_resources().get_material_cache(
+			)->get_material(String(UTF8("terrain_2"))));
+		m_materials.push_back(get_scene_resources().get_material_cache(
+			)->get_material(String(UTF8("terrain_3"))));
+*/
 	}
 
 }

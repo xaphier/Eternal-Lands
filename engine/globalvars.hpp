@@ -65,7 +65,6 @@ namespace eternal_lands
 			bool m_use_in_out;
 			bool m_use_functions;
 			bool m_low_quality_terrain;
-			bool m_clipmap_centered;
 
 		public:
 			GlobalVars();
@@ -121,12 +120,6 @@ namespace eternal_lands
 				const Uint16 clipmap_slices)
 			{
 				m_clipmap_slices = clipmap_slices;
-			}
-
-			inline void set_clipmap_centered(
-				const bool clipmap_centered)
-			{
-				m_clipmap_centered = clipmap_centered;
 			}
 
 			inline void set_opengl_version(
@@ -246,11 +239,6 @@ namespace eternal_lands
 			inline Uint16 get_tile_world_size() const
 			{
 				return m_tile_world_size;
-			}
-
-			inline bool get_clipmap_centered() const
-			{
-				return m_clipmap_centered;
 			}
 
 			inline OpenglVerionType get_opengl_version() const

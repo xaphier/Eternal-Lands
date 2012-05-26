@@ -26,7 +26,8 @@ namespace eternal_lands
 	{
 		private:
 			Mat2x3Vector m_texture_matrices;
-			AbstractFrameBufferSharedPtr m_terrain_frame_buffer;
+			AbstractFrameBufferSharedPtr m_frame_buffer;
+			MaterialSharedPtrVector m_materials;
 			glm::vec4 m_terrain_texture_size;
 			glm::vec2 m_focus;
 			glm::vec2 m_terrain_world_size;
@@ -35,15 +36,16 @@ namespace eternal_lands
 			Uint16 m_size;
 			Uint16 m_dir_index;
 			Uint16 m_slices;
-			bool m_centered;
-
-			Uint16 get_dir_index(const glm::vec2 &view_dir) const
-				noexcept;
 
 			inline Uint16 get_dir_index() const noexcept
 			{
 				return m_dir_index;
 			}
+
+			Uint16 get_dir_index(const glm::vec2 &view_dir) const
+				noexcept;
+
+			void rebuild_frame_buffer();
 
 		public:
 			Clipmap();
@@ -56,11 +58,6 @@ namespace eternal_lands
 				const glm::vec3 &view_dir,
 				const glm::vec2 &focus);
 			void update_slice(const Uint16 slice);
-
-			inline void set_centered(const bool centered) noexcept
-			{
-				m_centered = centered;
-			}
 
 			inline const Mat2x3Vector &get_texture_matrices() const
 				noexcept
@@ -93,11 +90,6 @@ namespace eternal_lands
 			inline Uint16 get_slices() const noexcept
 			{
 				return m_slices;
-			}
-
-			inline bool get_centered() const noexcept
-			{
-				return m_centered;
 			}
 
 	};

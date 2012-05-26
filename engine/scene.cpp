@@ -291,9 +291,6 @@ namespace eternal_lands
 				m_clipmap.get_slices(), mipmaps, target,
 				format, false);
 
-		m_clipmap.set_centered(get_global_vars(
-			)->get_clipmap_centered());
-
 		m_materials.clear();
 
 		m_materials.push_back(get_scene_resources().get_material_cache(

@@ -235,7 +235,6 @@ int engine_clipmap_size = 1;
 int engine_clipmap_world_size = 16;
 int engine_clipmap_slices = 4;
 int engine_tile_world_size = 4;
-int engine_clipmap_centered = engine_true;
 int engine_effect_debug = 0;
 
 void change_engine_shadow_quality(int* var, int value)
@@ -311,12 +310,6 @@ void change_engine_clipmap_slices(int* var, int value)
 {
 	*var = value;
 	engine_set_clipmap_slices(*var);
-}
-
-void change_engine_clipmap_centered(int* var)
-{
-	*var = !*var;
-	engine_set_clipmap_centered(*var);
 }
 
 void change_engine_effect_debug(int* var, int value)
@@ -1926,7 +1919,6 @@ static void init_ELC_vars(void)
 	add_var(OPT_INT, "clipmap_world_size", "clipmap_world_size", &engine_clipmap_world_size, change_engine_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
 	add_var(OPT_INT, "clipmap_slices", "clipmap_slices", &engine_clipmap_slices, change_engine_clipmap_slices, 4, "Climap slices", "Clipmap slices for terrain", GFX, 1, 16);
 	add_var(OPT_INT, "tile_world_size", "tile_world_size", &engine_tile_world_size, change_engine_tile_world_size, 4, "Tile world size", "Tile used for terrain texturing world size", GFX, 1, 16);
-	add_var(OPT_BOOL, "clipmap_centered", "clipmap_centered", &engine_clipmap_centered, change_engine_clipmap_centered, engine_true, "Climap centered", "Climap centered around focus point", GFX);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */

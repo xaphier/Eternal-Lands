@@ -13,9 +13,11 @@ namespace eternal_lands
 {
 
 	UniformBuffer::UniformBuffer(
+		const HardwareBufferMapperWeakPtr &hardware_buffer_mapper,
 		const UniformBufferDescriptionCacheSharedPtr
 			&uniform_buffer_description_cache,
-		const UniformBufferType type)
+		const UniformBufferType type):
+		m_hardware_buffer_mapper(hardware_buffer_mapper)
 	{
 		m_uniform_buffer_description =
 			uniform_buffer_description_cache->

@@ -22,8 +22,6 @@
 namespace eternal_lands
 {
 
-	struct PatchData;
-
 	class CdLodQuadTree
 	{
 		private:
@@ -45,13 +43,15 @@ namespace eternal_lands
 		protected:
 			void calculate_lod_params();
 			void add_patch_to_queue(const glm::uvec2 &position,
-				const Uint16 level, Mat2x4Vector &instances)
-				const;
+				const Uint16 level,
+				MappedUniformBuffer &instances,
+				Uint32 &instance_index) const;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera_position,
 				const glm::uvec2 &position,
 				const PlanesMask mask, const Uint16 level,
-				Mat2x4Vector &instances) const;
+				MappedUniformBuffer &instances,
+				Uint32 &instance_index) const;
 			static Uint16 get_quad_order(const glm::vec2 &dir)
 				noexcept;
 			static const glm::uvec2 &get_quad_order(
@@ -72,7 +72,7 @@ namespace eternal_lands
 			~CdLodQuadTree() noexcept;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera,
-				Mat2x4Vector &instances) const;
+				MappedUniformBuffer &instances) const;
 
 			inline Uint32 get_max_lod_count() const noexcept
 			{

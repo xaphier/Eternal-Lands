@@ -57,6 +57,7 @@ namespace eternal_lands
 			AbstractMeshSharedPtr m_screen_quad;
 			MaterialSharedPtrVector m_materials;
 			AbstractFrameBufferSharedPtr m_clipmap_frame_buffer;
+			MaterialSharedPtr m_terrain_material;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;
