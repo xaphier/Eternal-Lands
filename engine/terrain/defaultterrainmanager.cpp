@@ -50,6 +50,11 @@ namespace eternal_lands
 	{
 	}
 
+	void DefaultTerrainManager::set_clipmap_texture(
+		const TextureSharedPtr &texture)
+	{
+	}
+
 	void DefaultTerrainManager::set_terrain_page(const UvTool &uvs,
 		const ImageSharedPtr &height_map, const glm::uvec2 &tile_offset,
 		const glm::uvec2 &terrain_size,

@@ -56,7 +56,6 @@ namespace eternal_lands
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractMeshSharedPtr m_screen_quad;
 			AbstractFrameBufferSharedPtr m_clipmap_frame_buffer;
-			MaterialSharedPtr m_terrain_material;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;
@@ -78,10 +77,12 @@ namespace eternal_lands
 				Uint16 &light_count);
 			void do_draw_object(const ObjectSharedPtr &object,
 				const EffectProgramType type,
-				const Uint16 distance, const bool lights);
+				const Uint16 instances, const Uint16 distance,
+				const bool lights);
 			void draw_object(const ObjectSharedPtr &object,
 				const EffectProgramType type,
-				const Uint16 distance, const bool lights);
+				const Uint16 instances, const Uint16 distance,
+				const bool lights);
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids);
 			bool switch_program(

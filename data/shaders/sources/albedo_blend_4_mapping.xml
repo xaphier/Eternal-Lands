@@ -39,13 +39,22 @@
     </parameter>
    </parameters>
    <source>vec4 blend;
+vec2 ddx, ddy;
 
 blend = texture(blend_sampler, world_uv);
 
-albedo = texture(albedo_sampler_0, world_extra_uv) * blend.r;
-albedo += texture(albedo_sampler_1, world_extra_uv) * blend.g;
-albedo += texture(albedo_sampler_2, world_extra_uv) * blend.b;
-albedo += texture(albedo_sampler_3, world_extra_uv) * blend.a;
+ddx = dFdx(world_extra_uv);
+ddy = dFdy(world_extra_uv);
+
+if (all(lessThanEqual(blend, vec4(0.0))))
+{
+	discard;
+}
+
+albedo = textureGrad(albedo_sampler_0, world_extra_uv, ddx, ddy) * blend.r;
+albedo += textureGrad(albedo_sampler_1, world_extra_uv, ddx, ddy) * blend.g;
+albedo += textureGrad(albedo_sampler_2, world_extra_uv, ddx, ddy) * blend.b;
+albedo += textureGrad(albedo_sampler_3, world_extra_uv, ddx, ddy) * blend.a;
 </source>
    <version>130</version>
   </shader_source_data>

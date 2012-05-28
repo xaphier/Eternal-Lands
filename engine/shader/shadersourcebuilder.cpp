@@ -1742,6 +1742,7 @@ namespace eternal_lands
 
 		if ((data.get_shader_build_type() == sbt_default) ||
 			(data.get_shader_build_type() == sbt_light_index) ||
+			(data.get_shader_build_type() == sbt_screen) ||
 			(data.get_shader_build_type() == sbt_debug_alpha) ||
 			(data.get_shader_build_type() == sbt_debug_albedo) ||
 			(data.get_shader_build_type() ==
@@ -1931,14 +1932,15 @@ namespace eternal_lands
 				break;
 			case sbt_debug_alpha:
 				add_parameter(String(UTF8("fragment")),
-					cpt_emission, pqt_in, locals,
+					cpt_albedo, pqt_in, locals,
 					globals, uniform_buffers);
 				main << indent << output << UTF8(".rgb = ");
 				main << cpt_albedo << UTF8(".aaa;\n");
 				break;
+			case sbt_screen:
 			case sbt_debug_albedo:
 				add_parameter(String(UTF8("fragment")),
-					cpt_emission, pqt_in, locals,
+					cpt_albedo, pqt_in, locals,
 					globals, uniform_buffers);
 				main << indent << output << UTF8(".rgb = ");
 				main << cpt_albedo << UTF8(".rgb;\n");
@@ -2172,6 +2174,7 @@ namespace eternal_lands
 
 		if ((data.get_shader_build_type() == sbt_default) ||
 			(data.get_shader_build_type() == sbt_light_index) ||
+			(data.get_shader_build_type() == sbt_screen) ||
 			(data.get_shader_build_type() ==
 				sbt_debug_alpha) ||
 			(data.get_shader_build_type() ==

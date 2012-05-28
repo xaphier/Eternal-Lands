@@ -68,14 +68,11 @@ namespace eternal_lands
 			dudv_map = codec_manager->load_image(dudv_map_name,
 				file_system, ImageCompressionTypeSet(), true);
 
-			materials.push_back(get_material_cache()->get_material(
-				String(UTF8("terrain"))));
-
 			m_terrain.reset(new SimpleTerrainManager(vector_map,
 				normal_map, dudv_map, global_vars,
-				mesh_builder, materials));
-
-			std::cout << "terrain build" << std::endl;
+				mesh_builder,
+				get_material_cache()->get_material(
+					String(UTF8("terrain")))));
 		}
 	}
 
@@ -296,6 +293,14 @@ namespace eternal_lands
 		}
 
 		return glm::vec2(0.0f);
+	}
+
+	void Map::set_clipmap_texture(const TextureSharedPtr &texture)
+	{
+		if (m_terrain.get() != nullptr)
+		{
+			m_terrain->set_clipmap_texture(texture);
+		}
 	}
 
 }

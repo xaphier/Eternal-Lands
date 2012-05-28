@@ -84,6 +84,8 @@ namespace eternal_lands
 				ObjectVisitor &visitor) const = 0;
 			static const glm::vec3 &get_vector_scale() noexcept;
 			static const glm::vec2 &get_position_scale() noexcept;
+			virtual void set_clipmap_texture(
+				const TextureSharedPtr &texture) = 0;
 
 			inline const StringArray4 &get_albedo_maps() const
 				noexcept

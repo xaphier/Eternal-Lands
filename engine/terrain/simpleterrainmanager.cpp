@@ -21,6 +21,7 @@
 #include "vertexstream.hpp"
 #include "abstractmesh.hpp"
 #include "alignedvec4array.hpp"
+#include "material.hpp"
 
 namespace eternal_lands
 {
@@ -80,18 +81,23 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map,
 		const GlobalVarsSharedPtr &global_vars,
 		const MeshBuilderSharedPtr &mesh_builder,
-		const MaterialSharedPtrVector &materials)
+		const MaterialSharedPtr &material): m_material(material)
 	{
 		m_object_tree.reset(new RStarTree());
 
-		add_terrain_pages(String(UTF8("shaders/default.xml")),
-			vector_map, normal_map, dudv_map, mesh_builder,
-			materials, global_vars->get_low_quality_terrain(),
+		add_terrain_pages(vector_map, normal_map, dudv_map,
+			mesh_builder, global_vars->get_low_quality_terrain(),
 			global_vars->get_use_simd());
 	}
 
 	SimpleTerrainManager::~SimpleTerrainManager() noexcept
 	{
+	}
+
+	void SimpleTerrainManager::set_clipmap_texture(
+		const TextureSharedPtr &texture)
+	{
+		m_material->set_texture(texture, spt_albedo_0);
 	}
 
 	void SimpleTerrainManager::set_terrain_page(
@@ -243,12 +249,11 @@ namespace eternal_lands
 		mesh->set_sub_meshs(sub_meshs);
 	}
 
-	void SimpleTerrainManager::add_terrain_pages(const String &effect,
+	void SimpleTerrainManager::add_terrain_pages(
 		const ImageSharedPtr &vector_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
 		const MeshBuilderSharedPtr &mesh_builder,
-		const MaterialSharedPtrVector &materials,
 		const bool low_quality, const bool use_simd)
 	{
 		MeshDataToolSharedPtr mesh_data_tool;
@@ -256,6 +261,7 @@ namespace eternal_lands
 		AbstractMeshSharedPtr mesh, mesh_clone;
 		ObjectSharedPtr object;
 		ObjectData object_data;
+		MaterialSharedPtrVector materials;
 		glm::vec3 min, max;
 		glm::uvec2 tile_offset, terrain_size;
 		glm::vec2 position_scale, position, uv;
@@ -263,6 +269,8 @@ namespace eternal_lands
 		Uint32 vertex_count, index_count, i, x, y, height, width;
 		Uint32 index, tile_size;
 		VertexSemanticTypeSet semantics;
+
+		materials.push_back(m_material);
 
 		position_scale = get_position_scale();
 

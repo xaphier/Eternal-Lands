@@ -122,6 +122,8 @@ namespace eternal_lands
 			void add_particle(const ParticleData &particle);
 			glm::vec4 get_terrain_size_data() const;
 			glm::vec2 get_terrain_size() const;
+			void set_clipmap_texture(
+				const TextureSharedPtr &texture);
 
 			inline glm::uvec2 get_height_map_size() const noexcept
 			{

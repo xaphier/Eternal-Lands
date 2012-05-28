@@ -37,8 +37,8 @@ namespace eternal_lands
 		spt_vertex_dudv = 10,
 		spt_light_positions = 11,
 		spt_light_colors = 12,
-		spt_reflection = 13,
-		spt_clipmap = 14,
+		spt_light_indices = 13,
+		spt_reflection = 14,
 		spt_shadow = 15
 	};
 

@@ -80,8 +80,6 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
 		el::spt_blend).get(), "blend_sampler");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
-		el::spt_clipmap).get(), "clipmap_sampler");
-	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
 		el::spt_light_colors).get(), "light_colors_sampler");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
 		el::spt_shadow).get(), "shadow_sampler");

@@ -291,6 +291,12 @@ namespace eternal_lands
 				get_global_vars()->get_clipmap_size(),
 				m_clipmap.get_slices(), mipmaps, target,
 				format, false);
+
+		if (m_map.get() != nullptr)
+		{
+			m_map->set_clipmap_texture(
+				m_clipmap_frame_buffer->get_texture());
+		}
 	}
 
 	void Scene::clear()
@@ -638,8 +644,8 @@ namespace eternal_lands
 	}
 
 	void Scene::do_draw_object(const ObjectSharedPtr &object,
-		const EffectProgramType type, const Uint16 distance,
-		const bool lights)
+		const EffectProgramType type, const Uint16 instances,
+		const Uint16 distance, const bool lights)
 	{
 		Uint16 count, i, light_count;
 		bool object_data_set;
@@ -701,34 +707,37 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_state_manager.draw(i, 1);
+			m_state_manager.draw(i, instances);
 
 			DEBUG_CHECK_GL_ERROR();
 		}
 	}
 
 	void Scene::draw_object(const ObjectSharedPtr &object,
-		const EffectProgramType type, const Uint16 distance,
-		const bool lights)
+		const EffectProgramType type, const Uint16 instances,
+		const Uint16 distance, const bool lights)
 	{
 		try
 		{
 			STRING_MARKER(UTF8("object name '%1%', mesh name "
-				"'%2%'"), object->get_name() %
-				object->get_mesh()->get_name());
+				"'%2%', instances %3%"), object->get_name() %
+				object->get_mesh()->get_name() % instances);
 
-			do_draw_object(object, type, distance, lights);
+			do_draw_object(object, type, instances, distance,
+				lights);
 		}
 		catch (boost::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While rendering object '%1%' "
-				"caught exception '%2%'"), object->get_name() %
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance(s)"
+				"of object '%2%' caught exception '%3%'"),
+				instances % object->get_name() %
 				boost::diagnostic_information(exception));
 		}
 		catch (std::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While rendering object '%1%' "
-				"caught exception '%2%'"), object->get_name() %
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance(s)"
+				"of object '%2%' caught exception '%3%'"),
+				instances % object->get_name() %
 				exception.what());
 		}
 	}
@@ -762,7 +771,7 @@ namespace eternal_lands
 			if (object.get_sub_frustums_mask(index))
 			{
 				draw_object(object.get_object(), ept_shadow,
-					object.get_distance(), false);
+					1, object.get_distance(), false);
 			}
 		}
 
@@ -856,13 +865,10 @@ namespace eternal_lands
 		m_shadow_update_mask[0] = true;
 	}
 
-#define	OCCLUSION_CULLING
-
 	void Scene::draw_depth()
 	{
-#ifdef	OCCLUSION_CULLING
 		Uint32 index;
-#endif
+
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("depth"));
 
 		DEBUG_CHECK_GL_ERROR();
@@ -871,10 +877,8 @@ namespace eternal_lands
 
 		m_state_manager.switch_color_mask(glm::bvec4(false));
 
-#ifdef	OCCLUSION_CULLING
 		index = 0;
 
-#endif
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
@@ -882,20 +886,17 @@ namespace eternal_lands
 			{
 				continue;
 			}
-#ifdef	OCCLUSION_CULLING
+
 			object.set_occlusion_culling(index);
 
 			glBeginQuery(GL_SAMPLES_PASSED, m_querie_ids[index]);
 
-#endif
 			draw_object(object.get_object(), ept_depth,
-				object.get_distance(), false);
-#ifdef	OCCLUSION_CULLING
+				1, object.get_distance(), false);
 
 			glEndQuery(GL_SAMPLES_PASSED);
 
 			index++;
-#endif
 		}
 
 		unbind_all();
@@ -908,9 +909,7 @@ namespace eternal_lands
 
 	void Scene::draw_default()
 	{
-#ifdef	OCCLUSION_CULLING
 		Uint32 index, count;
-#endif
 		BlendType blend;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
@@ -928,7 +927,6 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-#ifdef	OCCLUSION_CULLING
 			index = object.get_occlusion_culling();
 
 			if (index < m_querie_ids.size())
@@ -943,7 +941,7 @@ namespace eternal_lands
 					continue;
 				}
 			}
-#endif
+
 			if (blend != object.get_blend())
 			{
 				blend = object.get_blend();
@@ -979,7 +977,7 @@ namespace eternal_lands
 			DEBUG_CHECK_GL_ERROR();
 
 			draw_object(object.get_object(), ept_default,
-				object.get_distance(), true);
+				1, object.get_distance(), true);
 		}
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1159,7 +1157,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.switch_texture(spt_clipmap,
+		m_state_manager.switch_texture(spt_albedo_0,
 			m_clipmap_frame_buffer->get_texture());
 
 		if (get_global_vars()->get_opengl_3_0())
@@ -1208,12 +1206,6 @@ namespace eternal_lands
 				m_shadow_frame_buffer->get_texture());
 		}
 
-		if (m_clipmap_frame_buffer.get() != nullptr)
-		{
-			m_state_manager.switch_texture(spt_clipmap,
-				m_clipmap_frame_buffer->get_texture());
-		}
-
 		m_state_manager.switch_depth_mask(false);
 		draw_default();
 	}
@@ -1239,7 +1231,7 @@ namespace eternal_lands
 				m_querie_ids[ids.size()]);
 
 			draw_object(object.get_object(), ept_depth,
-				object.get_distance(), false);
+				1, object.get_distance(), false);
 
 			glEndQuery(GL_SAMPLES_PASSED);
 

@@ -52,6 +52,8 @@ namespace eternal_lands
 			virtual ~DefaultTerrainManager() noexcept;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
+			virtual void set_clipmap_texture(
+				const TextureSharedPtr &texture);
 
 	};
 

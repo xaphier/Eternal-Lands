@@ -27,13 +27,12 @@ namespace eternal_lands
 	{
 		private:
 			boost::scoped_ptr<RStarTree> m_object_tree;
+			MaterialSharedPtr m_material;
 
-			void add_terrain_pages(const String &effect,
-				const ImageSharedPtr &vector_map,
+			void add_terrain_pages(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const MeshBuilderSharedPtr &mesh_builder,
-				const MaterialSharedPtrVector &materials,
 				const bool low_quality, const bool use_simd);
 			void set_terrain_page(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
@@ -59,10 +58,18 @@ namespace eternal_lands
 				const ImageSharedPtr &dudv_map,
 				const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
-				const MaterialSharedPtrVector &materials);
+				const MaterialSharedPtr &material);
 			virtual ~SimpleTerrainManager() noexcept;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
+			virtual void set_clipmap_texture(
+				const TextureSharedPtr &texture);
+
+			inline const MaterialSharedPtr &get_material() const
+				noexcept
+			{
+				return m_material;
+			}
 
 	};
 

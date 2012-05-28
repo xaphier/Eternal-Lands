@@ -32,6 +32,7 @@ namespace eternal_lands
 		sbt_light_index,
 		sbt_depth,
 		sbt_shadow,
+		sbt_screen,
 		sbt_debug_uv,
 		sbt_debug_depth,
 		sbt_debug_alpha,

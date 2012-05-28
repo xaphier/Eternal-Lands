@@ -29,8 +29,8 @@ namespace eternal_lands
 			String(UTF8("vertex_dudv_sampler")),
 			String(UTF8("light_positions_sampler")),
 			String(UTF8("light_colors_sampler")),
+			String(UTF8("light_indices_sampler")),
 			String(UTF8("reflection_sampler")),
-			String(UTF8("clipmap_sampler")),
 			String(UTF8("shadow_sampler"))
 		};
 
