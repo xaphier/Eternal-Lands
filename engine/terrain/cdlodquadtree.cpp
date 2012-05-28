@@ -17,49 +17,56 @@ namespace eternal_lands
 	namespace
 	{
 
-		const glm::uvec2 quad_orders[32] =
-		{
-			// index 0
-			glm::uvec2(0, 0),
-			glm::uvec2(0, 1),
-			glm::uvec2(1, 0),
-			glm::uvec2(1, 1),
-			// index 1
-			glm::uvec2(0, 0),
-			glm::uvec2(1, 0),
-			glm::uvec2(0, 1),
-			glm::uvec2(1, 1),
-			// index 2
-			glm::uvec2(0, 1),
-			glm::uvec2(0, 0),
-			glm::uvec2(1, 1),
-			glm::uvec2(1, 0),
-			// index 3
-			glm::uvec2(0, 1),
-			glm::uvec2(1, 1),
-			glm::uvec2(0, 0),
-			glm::uvec2(1, 0),
-			// index 4
-			glm::uvec2(1, 1),
-			glm::uvec2(1, 0),
-			glm::uvec2(0, 1),
-			glm::uvec2(0, 0),
-			// index 5
-			glm::uvec2(1, 1),
-			glm::uvec2(0, 1),
-			glm::uvec2(1, 0),
-			glm::uvec2(0, 0),
-			// index 6
-			glm::uvec2(1, 0),
-			glm::uvec2(1, 1),
-			glm::uvec2(0, 0),
-			glm::uvec2(0, 1),
-			// index 7
-			glm::uvec2(1, 0),
-			glm::uvec2(0, 0),
-			glm::uvec2(1, 1),
-			glm::uvec2(0, 1)
-		};
+		const boost::array<Uvec2Array4, 8> quad_orders =
+			boost::assign::list_of
+				// index 0
+				(boost::assign::list_of
+					(glm::uvec2(0, 0))
+					(glm::uvec2(0, 1))
+					(glm::uvec2(1, 0))
+					(glm::uvec2(1, 1)))
+				// index 1
+				(boost::assign::list_of
+					(glm::uvec2(0, 0))
+					(glm::uvec2(1, 0))
+					(glm::uvec2(0, 1))
+					(glm::uvec2(1, 1)))
+				// index 2
+				(boost::assign::list_of
+					(glm::uvec2(0, 1))
+					(glm::uvec2(0, 0))
+					(glm::uvec2(1, 1))
+					(glm::uvec2(1, 0)))
+				// index 3
+				(boost::assign::list_of
+					(glm::uvec2(0, 1))
+					(glm::uvec2(1, 1))
+					(glm::uvec2(0, 0))
+					(glm::uvec2(1, 0)))
+				// index 4
+				(boost::assign::list_of
+					(glm::uvec2(1, 0))
+					(glm::uvec2(1, 1))
+					(glm::uvec2(0, 0))
+					(glm::uvec2(0, 1)))
+				// index 5
+				(boost::assign::list_of
+					(glm::uvec2(1, 0))
+					(glm::uvec2(0, 0))
+					(glm::uvec2(1, 1))
+					(glm::uvec2(0, 1)))
+				// index 6
+				(boost::assign::list_of
+					(glm::uvec2(1, 1))
+					(glm::uvec2(1, 0))
+					(glm::uvec2(0, 1))
+					(glm::uvec2(0, 0)))
+				// index 7
+				(boost::assign::list_of
+					(glm::uvec2(1, 1))
+					(glm::uvec2(0, 1))
+					(glm::uvec2(1, 0))
+					(glm::uvec2(0, 0)));
 
 		void get_min_max(const ImageSharedPtr &image,
 			const glm::vec3 &scale, const glm::uvec2 &offset,
@@ -104,64 +111,33 @@ namespace eternal_lands
 			max *= scale;
 		}
 
-		void init_min_max(const ImageSharedPtr &image,
-			const glm::vec3 &scale, const Uint32 size,
-			boost::multi_array<Vec3Array2, 2> &min_max)
-		{
-			glm::vec3 min, max;
-			glm::uvec2 index, count;
-			Uint32 x, y;
-
-			count = glm::uvec2(image->get_sizes()) / size;
-
-			for (y = 0; y < count.y; ++y)
-			{
-				for (x = 0; x < count.x; ++x)
-				{
-					index = glm::uvec2(x, y) * size;
-
-					get_min_max(image, scale, index, size,
-						min, max);
-
-					min_max[y][x][0] = min;
-					min_max[y][x][1] = max;
-				}
-			}
-		}
-
 	}
 
-	Uint16 CdLodQuadTree::get_quad_order(const glm::vec2 &dir) noexcept
+	const Uvec2Array4 &CdLodQuadTree::get_quad_order(const glm::vec2 &dir)
+		noexcept
 	{
-		Uint16 result;
+		Uint16 index;
 
-		result = 0;
+		index = 0;
 
 		if (dir.x < 0.0f)
 		{
-			result += 4;
+			index += 4;
 		}
 
 		if (dir.y < 0.0f)
 		{
-			result += 2;
+			index += 2;
 		}
 
 		if (std::abs(dir.x) < std::abs(dir.y))
 		{
-			result += 1;
+			index += 1;
 		}
 
-		return result;
-	}
+		assert(index < 8);
 
-	const glm::uvec2 &CdLodQuadTree::get_quad_order(const Uint16 quad_order,
-		const Uint16 index) noexcept
-	{
-		assert(quad_order < 8);
-		assert(index < 4);
-
-		return quad_orders[quad_order * 4 + index];
+		return quad_orders[index];
 	}
 
 	CdLodQuadTree::CdLodQuadTree(const ImageSharedPtr &vector_map,
@@ -187,9 +163,46 @@ namespace eternal_lands
 	{
 	}
 
-	float get_height_scale()
+	void CdLodQuadTree::init_min_max(const ImageSharedPtr &image,
+		const glm::vec3 &scale, const glm::uvec2 &position,
+		const Uint16 level, glm::vec3 &min, glm::vec3 &max)
 	{
-		return 32.0f;
+		glm::vec3 tmin, tmax;
+
+		if (level == 0)
+		{
+			get_min_max(image, scale, position, m_patch_size,
+				min, max);
+
+			m_lods[level].min_max[position.x][position.y][0] = min;
+			m_lods[level].min_max[position.x][position.y][1] = max;
+
+			return;
+		}
+
+		init_min_max(image, scale, position * 2u + glm::uvec2(0, 0),
+			level - 1, min, max);
+
+		init_min_max(image, scale, position * 2u + glm::uvec2(0, 1),
+			level - 1, tmin, tmax);
+
+		min = glm::min(min, tmin);
+		max = glm::max(max, tmax);
+
+		init_min_max(image, scale, position * 2u + glm::uvec2(1, 0),
+			level - 1, tmin, tmax);
+
+		min = glm::min(min, tmin);
+		max = glm::max(max, tmax);
+
+		init_min_max(image, scale, position * 2u + glm::uvec2(1, 1),
+			level - 1, tmin, tmax);
+
+		min = glm::min(min, tmin);
+		max = glm::max(max, tmax);
+
+		m_lods[level].min_max[position.x][position.y][0] = min;
+		m_lods[level].min_max[position.x][position.y][1] = max;
 	}
 
 	void CdLodQuadTree::calculate_lod_params()
@@ -263,7 +276,7 @@ namespace eternal_lands
 		glm::uvec2 pos;
 		PlanesMask out_mask;
 		Uint32 offset;
-		Uint16 i, index;
+		Uint16 i;
 		bool intersect;
 
 		if (glm::any(glm::greaterThanEqual(position, m_grid_size - 1u)))
@@ -277,8 +290,8 @@ namespace eternal_lands
 		max = min + glm::vec3(size, 0.0f);
 
 		pos = position / m_lods[level].patch_size;
-		min += m_lods[level].min_max[pos.y][pos.x][0];
-		max += m_lods[level].min_max[pos.y][pos.x][1];
+		min += m_lods[level].min_max[pos.x][pos.y][0];
+		max += m_lods[level].min_max[pos.x][pos.y][1];
 
 		box.set_min_max(min, max);
 
@@ -288,7 +301,7 @@ namespace eternal_lands
 		}
 
 		if ((level == 0) || ((m_lods[level].range_start +
-			get_height_scale()) < camera.z))
+			get_max_z()) < camera.z))
 		{
 			add_patch_to_queue(position, level, instances,
 				instance_index);
@@ -317,23 +330,24 @@ namespace eternal_lands
 
 		offset = m_lods[level].patch_size / 2;
 
-		index = get_quad_order(glm::vec2(position + offset) -
-			glm::vec2(camera));
+		const Uvec2Array4 &quad_order = get_quad_order(
+			glm::vec2(position + offset) - glm::vec2(camera));
 
 		for (i = 0; i < 4; ++i)
 		{
 			select_quads_for_drawing(frustum, camera, position +
-					get_quad_order(offset, index, i),
-				out_mask, level - 1, instances, instance_index);
+				quad_order[i] * offset, out_mask, level - 1,
+				instances, instance_index);
 		}
 	}
 
 	void CdLodQuadTree::select_quads_for_drawing(const Frustum &frustum,
-		const glm::vec3 &camera, MappedUniformBuffer &instances) const
+		const glm::vec3 &camera, MappedUniformBuffer &instances,
+		Uint32 &instance_count) const
 	{
 		glm::vec4 terrain_lod_offset;
 		float dist;
-		Uint32 x, y, level, step, instance_index;
+		Uint32 x, y, level, step;
 		PlanesMask mask;
 
 		level = m_lod_count - 1;
@@ -342,7 +356,7 @@ namespace eternal_lands
 
 		mask = frustum.get_planes_mask();
 
-		instance_index = 0;
+		instance_count = 0;
 
 		dist = std::abs(camera.z - m_max.z * 0.5f);
 		terrain_lod_offset = glm::vec4(-camera.x, -camera.y, 0.0f,
@@ -362,7 +376,7 @@ namespace eternal_lands
 			{
 				select_quads_for_drawing(frustum, camera,
 					glm::uvec2(x, y), mask, level,
-					instances, instance_index);
+					instances, instance_count);
 			}
 		}
 	}

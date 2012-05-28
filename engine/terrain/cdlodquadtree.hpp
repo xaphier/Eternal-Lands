@@ -27,7 +27,7 @@ namespace eternal_lands
 		private:
 			struct LodDescription
 			{
-				boost::multi_array<Vec3Array2, 2> min_max;
+				Vec3Array2MultiArray2 min_max;
 				glm::vec2 morph_params;
 				float range_start;
 				Uint32 patch_size;
@@ -38,26 +38,15 @@ namespace eternal_lands
 			glm::uvec2 m_grid_size;
 			float m_cell_size;
 			float m_morph_zone_ratio;
+			float m_max_z;
 			Uint32 m_lod_count;
 			Uint32 m_patch_size;
 
 		protected:
-
-			static inline glm::uvec2 get_quad_order(
-				const Uint32 offset, const Uint16 quad_order,
-				const Uint16 index) noexcept
-			{
-				return get_quad_order(quad_order, index) *
-					offset;
-			}
-
-			inline void get_min_max(const glm::uvec2 &index,
-				const Uint16 level, glm::vec3 &min,
-				glm::vec3 &max)
-			{
-				min = m_lods[level].min_max[index.y][index.x][0];
-				max = m_lods[level].min_max[index.y][index.x][1];
-			}
+			void init_min_max(const ImageSharedPtr &image,
+				const glm::vec3 &scale,
+				const glm::uvec2 &position, const Uint16 level,
+				glm::vec3 &min, glm::vec3 &max);
 
 			void calculate_lod_params();
 			void add_patch_to_queue(const glm::uvec2 &position,
@@ -69,12 +58,7 @@ namespace eternal_lands
 				const glm::uvec2 &position,
 				const PlanesMask mask, const Uint16 level,
 				MappedUniformBuffer &instances,
-				Uint32 &instance_index) const;
-			static Uint16 get_quad_order(const glm::vec2 &dir)
-				noexcept;
-			static const glm::uvec2 &get_quad_order(
-				const Uint16 quad_order, const Uint16 index)
-				noexcept;
+				Uint32 &instance_count) const;
 
 		public:
 			CdLodQuadTree(const ImageSharedPtr &vector_map,
@@ -82,7 +66,10 @@ namespace eternal_lands
 			~CdLodQuadTree() noexcept;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera,
-				MappedUniformBuffer &instances) const;
+				MappedUniformBuffer &instances,
+				Uint32 &instance_count) const;
+			static const Uvec2Array4 &get_quad_order(
+				const glm::vec2 &dir) noexcept;
 
 			inline Uint32 get_max_lod_count() const noexcept
 			{
@@ -91,7 +78,12 @@ namespace eternal_lands
 
 			static inline Uint32 get_max_patch_count() noexcept
 			{
-				return 4096;
+				return 1024;
+			}
+
+			inline float get_max_z() const noexcept
+			{
+				return m_max_z;
 			}
 
 	};

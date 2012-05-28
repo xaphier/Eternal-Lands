@@ -76,7 +76,10 @@
 #define override
 #define noexcept throw()
 #define nullptr 0
-#endif /* BOOST_NO_NULLPTR */
+#define UTF8(str) str
+#else
+#define UTF8(str) u##str
+#endif
 
 namespace eternal_lands
 {
@@ -99,9 +102,14 @@ namespace eternal_lands
 	#define ARRAY(type, N) ARRAY_NAME(type, N, type)
 	#define VECTOR(type) VECTOR_NAME(type, type)
 
+
+#if (__cplusplus < 201103L)
 	typedef wchar_t Utf32Char;
 	typedef std::wstring Utf32String;
-	#define UTF8(str) str
+#else
+	typedef char32_t Utf32Char;
+	typedef std::u32string Utf32String;
+#endif
 
 	typedef std::string StringType;
 	typedef std::stringstream StringStream;
@@ -116,10 +124,6 @@ namespace eternal_lands
 	typedef boost::scoped_array<Uint8> Uint8ScopedArray;
 	typedef std::set<Uint32> Uint32Set;
 	typedef std::set<String> StringSet;
-	typedef boost::multi_array<bool, 2> BoolMultiArray2;
-	typedef boost::multi_array<float, 2> FloatMultiArray2;
-	typedef boost::multi_array<Uint8, 2> Uint8MultiArray2;
-	typedef boost::multi_array<Uint16, 2> Uint16MultiArray2;
 
 	ARRAY_NAME(float, 2, Float);
 	ARRAY_NAME(float, 4, Float);
@@ -161,6 +165,7 @@ namespace eternal_lands
 	ARRAY_NAME(glm::mat2x3, 2, Mat2x3);
 	ARRAY_NAME(glm::mat2x3, 4, Mat2x3);
 	ARRAY_NAME(glm::mat2x3, 8, Mat2x3);
+	ARRAY_NAME(glm::uvec2, 4, Uvec2);
 	ARRAY(String, 2);
 	ARRAY(String, 3);
 	ARRAY(String, 4);
@@ -332,6 +337,11 @@ namespace eternal_lands
 	typedef std::map<String, Uint16> StringUint16Map;
 	typedef std::map<String, Uint32> StringUint32Map;
 	typedef std::map<String, String> StringStringMap;
+	typedef boost::multi_array<bool, 2> BoolMultiArray2;
+	typedef boost::multi_array<float, 2> FloatMultiArray2;
+	typedef boost::multi_array<Uint8, 2> Uint8MultiArray2;
+	typedef boost::multi_array<Uint16, 2> Uint16MultiArray2;
+	typedef boost::multi_array<Vec3Array2, 2> Vec3Array2MultiArray2;
 
 	SHARED_PTR(AbstractFrameBuffer);
 	SHARED_PTR(AbstractMesh);
