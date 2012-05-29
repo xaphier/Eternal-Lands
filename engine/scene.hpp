@@ -21,6 +21,7 @@
 #include "sceneview.hpp"
 #include "clipmap.hpp"
 #include "effectprogramutil.hpp"
+#include "terrainrenderingdata.hpp"
 
 /**
  * @file
@@ -49,6 +50,8 @@ namespace eternal_lands
 			SceneResources m_scene_resources;
 			Clipmap m_clipmap;
 			StateManager m_state_manager;
+			TerrainRenderingData m_visible_terrain;
+			TerrainRenderingData m_shadow_terrain;
 			ObjectVisitor m_visible_objects;
 			ObjectVisitor m_shadow_objects;
 			LightVisitor m_visible_lights;

@@ -297,6 +297,7 @@ namespace eternal_lands
 	class TextureFont;
 	class TextureFontCache;
 	class Transformation;
+	class UniformBuffer;
 	class UniformBufferDescription;
 	class UniformBufferDescriptionCache;
 	class UniformBufferUsage;
@@ -392,6 +393,7 @@ namespace eternal_lands
 	SHARED_PTR(ShaderSourceDescriptionLoader);
 	SHARED_PTR(Texture);
 	SHARED_PTR(TextureCache);
+	SHARED_PTR(UniformBuffer);
 	SHARED_PTR(UniformBufferDescription);
 	SHARED_PTR(UniformBufferDescriptionCache);
 	SHARED_PTR(VertexFormat);

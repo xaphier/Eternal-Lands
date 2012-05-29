@@ -26,11 +26,18 @@ namespace eternal_lands
 	class AbstractTerrainManager: public boost::noncopyable
 	{
 		private:
-			TerrainData m_data;
 			glm::vec4 m_terrain_size_data;
+			glm::vec3 m_translation;
 
 		protected:
 			AbstractTerrainManager();
+
+			inline void set_translation(
+				const glm::vec3 &translation) noexcept
+			{
+				m_translation = translation;
+			}
+
 			inline void set_terrain_size(
 				const glm::uvec2 &terrain_size) noexcept
 			{
@@ -38,44 +45,6 @@ namespace eternal_lands
 				m_terrain_size_data.y = terrain_size.y;
 				m_terrain_size_data.z = 1.0f / terrain_size.x;
 				m_terrain_size_data.w = 1.0f / terrain_size.y;
-			}
-
-			inline void set_data(const TerrainData &data)
-			{
-				m_data = data;
-			}
-
-			inline void set_albedo_maps(
-				const StringArray4 &albedo_maps)
-			{
-				m_data.set_albedo_maps(albedo_maps);
-			}
-
-			inline void set_albedo_map(const String &albedo_map,
-				const Uint16 index)
-			{
-				m_data.set_albedo_map(albedo_map, index);
-			}
-
-			inline void set_blend_map(const String &blend_map)
-			{
-				m_data.set_blend_map(blend_map);
-			}
-
-			inline void set_height_map(const String &height_map)
-			{
-				m_data.set_height_map(height_map);
-			}
-
-			inline void set_dudv_map(const String &dudv_map)
-			{
-				m_data.set_dudv_map(dudv_map);
-			}
-
-			inline void set_translation(
-				const glm::vec3 &translation)
-			{
-				m_data.set_translation(translation);
 			}
 
 		public:
@@ -87,37 +56,10 @@ namespace eternal_lands
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture) = 0;
 
-			inline const StringArray4 &get_albedo_maps() const
-				noexcept
-			{
-				return m_data.get_albedo_maps();
-			}
-
-			inline const String &get_albedo_map(const Uint16 index)
-				const noexcept
-			{
-				return m_data.get_albedo_map(index);
-			}
-
-			inline const String &get_blend_map() const noexcept
-			{
-				return m_data.get_blend_map();
-			}
-
-			inline const String &get_height_map() const noexcept
-			{
-				return m_data.get_height_map();
-			}
-
-			inline const String &get_dudv_map() const noexcept
-			{
-				return m_data.get_dudv_map();
-			}
-
 			inline const glm::vec3 &get_translation() const
 				noexcept
 			{
-				return m_data.get_translation();
+				return m_translation;
 			}
 
 			inline glm::vec2 get_terrain_size() const noexcept
@@ -129,11 +71,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_terrain_size_data;
-			}
-
-			inline const TerrainData &get_data() const noexcept
-			{
-				return m_data;
 			}
 
 			static inline Uint16 get_tile_size() noexcept

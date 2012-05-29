@@ -34,12 +34,10 @@ namespace eternal_lands
 		ImageSharedPtr height_image;
 
 		m_object_tree.reset(new RStarTree());
-
-		set_data(terrain_data);
-
+/*
 		height_image = codec_manager->load_image(get_height_map(),
 			file_system, ImageCompressionTypeSet(), true);
-
+*/
 		add_terrain_pages(String(UTF8("shaders/simple_terrain.xml")),
 			height_image, mesh_builder, effect_cache,
 			global_vars->get_low_quality_terrain(),
@@ -249,12 +247,6 @@ namespace eternal_lands
 
 //		uvs.relaxed_uv(use_simd);
 
-		material.set_texture(get_albedo_map(0), spt_albedo_0);
-		material.set_texture(get_albedo_map(1), spt_albedo_1);
-		material.set_texture(get_albedo_map(2), spt_albedo_2);
-		material.set_texture(get_albedo_map(3), spt_albedo_3);
-		material.set_texture(get_blend_map(), spt_blend);
-
 		material.set_effect(effect);
 
 		texture_matrix[0].x = 1.0f;
@@ -279,7 +271,7 @@ namespace eternal_lands
 			{
 				StringStream str;
 
-				str << get_height_map() << UTF8(" terrain ");
+//				str << get_height_map() << UTF8(" terrain ");
 				str << x << UTF8("x") << y;
 
 				mesh_data_tool =
