@@ -147,49 +147,57 @@ namespace eternal_lands
 			}
 		}
 
-		void set_uniform(const Uint32 index, const bool value)
+		inline void set_uniform(const Uint32 index, const bool value)
+			noexcept
 		{
 			glUniform1i(index, value);
 		}
 
-		void set_uniform(const Uint32 index, const glm::bvec2 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::bvec2 &value) noexcept
 		{
 			glUniform2i(index, value[0], value[1]);
 		}
 
-		void set_uniform(const Uint32 index, const glm::bvec3 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::bvec3 &value) noexcept
 		{
 			glUniform3i(index, value[0], value[1], value[2]);
 		}
 
-		void set_uniform(const Uint32 index, const glm::bvec4 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::bvec4 &value) noexcept
 		{
 			glUniform4i(index, value[0], value[1], value[2],
 				value[3]);
 		}
 
-		void set_uniform(const Uint32 index, const Sint32 value)
+		inline void set_uniform(const Uint32 index,
+			const Sint32 value) noexcept
 		{
 			glUniform1i(index, value);
 		}
 
-		void set_uniform(const Uint32 index, const glm::ivec2 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::ivec2 &value) noexcept
 		{
 			glUniform2iv(index, 1, glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::ivec3 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::ivec3 &value) noexcept
 		{
 			glUniform3iv(index, 1, glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::ivec4 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::ivec4 &value) noexcept
 		{
 			glUniform4iv(index, 1, glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Sint32Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Sint32Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform1iv(index, std::min(size,
@@ -197,8 +205,8 @@ namespace eternal_lands
 				&value[offset]);
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Ivec2Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Ivec2Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform2iv(index, std::min(size,
@@ -206,8 +214,8 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Ivec3Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Ivec3Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform3iv(index, std::min(size,
@@ -215,8 +223,8 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Ivec4Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Ivec4Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform4iv(index, std::min(size,
@@ -224,28 +232,32 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 value)
+		inline void set_uniform(const Uint32 index,
+			const Uint32 value) noexcept
 		{
 			glUniform1ui(index, value);
 		}
 
-		void set_uniform(const Uint32 index, const glm::uvec2 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::uvec2 &value) noexcept
 		{
 			glUniform2uiv(index, 1, glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::uvec3 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::uvec3 &value) noexcept
 		{
 			glUniform3uiv(index, 1, glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::uvec4 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::uvec4 &value) noexcept
 		{
 			glUniform4uiv(index, 1, glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Uint32Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Uint32Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform1uiv(index, std::min(size,
@@ -253,8 +265,8 @@ namespace eternal_lands
 				&value[offset]);
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Uvec2Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Uvec2Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform2uiv(index, std::min(size,
@@ -262,8 +274,8 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Uvec3Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Uvec3Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform3uiv(index, std::min(size,
@@ -271,8 +283,8 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Uvec4Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Uvec4Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform4uiv(index, std::min(size,
@@ -280,13 +292,14 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const float value)
+		inline void set_uniform(const Uint32 index, const float value)
+			noexcept
 		{
 			glUniform1f(index, value);
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const FloatVector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const FloatVector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform1fv(index, std::min(size,
@@ -294,8 +307,8 @@ namespace eternal_lands
 				&value[offset]);
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Vec2Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Vec2Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform2fv(index, std::min(size,
@@ -303,8 +316,8 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Vec3Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Vec3Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform3fv(index, std::min(size,
@@ -312,8 +325,8 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const Uint32 offset, const Vec4Vector &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const Uint32 offset, const Vec4Vector &value) noexcept
 		{
 			assert(offset < value.size());
 			glUniform4fv(index, std::min(size,
@@ -321,33 +334,36 @@ namespace eternal_lands
 				glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const glm::vec2 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::vec2 &value) noexcept
 		{
 			glUniform2fv(index, 1, glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::vec3 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::vec3 &value) noexcept
 		{
 			glUniform3fv(index, 1, glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::vec4 &value)
+		inline void set_uniform(const Uint32 index,
+			const glm::vec4 &value) noexcept
 		{
 			glUniform4fv(index, 1, glm::value_ptr(value));
 		}
 
 		template<Uint32 N>
-		void set_uniform(const Uint32 index, const Uint32 size,
-			const boost::array<glm::vec4, N> &value)
+		inline void set_uniform(const Uint32 index, const Uint32 size,
+			const boost::array<glm::vec4, N> &value) noexcept
 		{
 			glUniform4fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
 				glm::value_ptr(value[0]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat2x2Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix2fv(index, std::min(size,
@@ -355,9 +371,9 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat2x3Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix2x3fv(index, std::min(size,
@@ -365,9 +381,9 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat2x4Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix2x4fv(index, std::min(size,
@@ -375,9 +391,9 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat3x2Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix3x2fv(index, std::min(size,
@@ -385,9 +401,9 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat3x3Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix3fv(index, std::min(size,
@@ -395,9 +411,9 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat3x4Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix3x4fv(index, std::min(size,
@@ -405,9 +421,9 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat4x2Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix4x2fv(index, std::min(size,
@@ -415,9 +431,9 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat4x3Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix4x3fv(index, std::min(size,
@@ -425,9 +441,9 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const Uint32 offset, const Mat4x4Vector &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			assert(offset < value.size());
 			glUniformMatrix4fv(index, std::min(size,
@@ -435,103 +451,112 @@ namespace eternal_lands
 				transpose, glm::value_ptr(value[offset]));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat2x2 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat2x2 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix2fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat2x3 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat2x3 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix2x3fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
 		template<Uint32 N>
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const boost::array<glm::mat2x3, N> &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			glUniformMatrix2x3fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
 				transpose, glm::value_ptr(value[0]));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat2x4 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat2x4 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix2x4fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
 		template<Uint32 N>
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const boost::array<glm::mat2x4, N> &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			glUniformMatrix2x4fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
 				transpose, glm::value_ptr(value[0]));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat3x2 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat3x2 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix3x2fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat3x3 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat3x3 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix3fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat3x4 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat3x4 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix3x4fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
 		template<Uint32 N>
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const boost::array<glm::mat3x4, N> &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			glUniformMatrix3x4fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
 				transpose, glm::value_ptr(value[0]));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat4x2 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat4x2 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix4x2fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat4x3 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat4x3 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix4x3fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
-		void set_uniform(const Uint32 index, const glm::mat4x4 &value,
-			const GLboolean transpose)
+		inline void set_uniform(const Uint32 index,
+			const glm::mat4x4 &value, const GLboolean transpose)
+			noexcept
 		{
 			glUniformMatrix4fv(index, 1, transpose,
 				glm::value_ptr(value));
 		}
 
 		template<Uint32 N>
-		void set_uniform(const Uint32 index, const Uint32 size,
+		inline void set_uniform(const Uint32 index, const Uint32 size,
 			const boost::array<glm::mat4x4, N> &value,
-			const GLboolean transpose)
+			const GLboolean transpose) noexcept
 		{
 			glUniformMatrix4fv(index, std::min(size,
 					static_cast<Uint32>(value.size())),
@@ -570,7 +595,7 @@ namespace eternal_lands
 				bool &m_sampler_changed;
 
 			public:
-				GlUniformVariant(const String &name,
+				inline GlUniformVariant(const String &name,
 					const GLint index, const Uint32 size,
 					const Uint32 offset, 
 					const ParameterType parameter,
@@ -587,11 +612,11 @@ namespace eternal_lands
 					m_sampler_changed = false;
 				}
 
-				~GlUniformVariant() noexcept
+				inline ~GlUniformVariant() noexcept
 				{
 				}
 
-				void operator()(const bool value) const
+				inline void operator()(const bool value) const
 					noexcept
 				{
 					CHECK_TYPE(pt_bool);
@@ -601,7 +626,7 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const float value) const
+				inline void operator()(const float value) const
 					noexcept
 				{
 					CHECK_TYPE(pt_float);
@@ -611,8 +636,7 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const Sint64 value) const
-					noexcept
+				inline void operator()(const Sint64 value) const
 				{
 					StringUint16Map::iterator found;
 
@@ -672,8 +696,8 @@ namespace eternal_lands
 							format_string.str()));
 				}
 
-				void operator()(const glm::vec2 &value) const
-					noexcept
+				inline void operator()(const glm::vec2 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_vec2);
 
@@ -682,8 +706,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::vec3 &value) const
-					noexcept
+				inline void operator()(const glm::vec3 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_vec3);
 
@@ -692,8 +716,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::vec4 &value) const
-					noexcept
+				inline void operator()(const glm::vec4 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_vec4);
 
@@ -702,8 +726,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::ivec2 &value) const
-					noexcept
+				inline void operator()(const glm::ivec2 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_ivec2);
 
@@ -712,8 +736,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::ivec3 &value) const
-					noexcept
+				inline void operator()(const glm::ivec3 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_ivec3);
 
@@ -722,8 +746,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::ivec4 &value) const
-					noexcept
+				inline void operator()(const glm::ivec4 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_ivec4);
 
@@ -732,8 +756,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::uvec2 &value) const
-					noexcept
+				inline void operator()(const glm::uvec2 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_uvec2);
 
@@ -742,8 +766,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::uvec3 &value) const
-					noexcept
+				inline void operator()(const glm::uvec3 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_uvec3);
 
@@ -752,8 +776,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::uvec4 &value) const
-					noexcept
+				inline void operator()(const glm::uvec4 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_uvec4);
 
@@ -762,8 +786,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::bvec2 &value) const
-					noexcept
+				inline void operator()(const glm::bvec2 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_bvec2);
 
@@ -772,8 +796,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::bvec3 &value) const
-					noexcept
+				inline void operator()(const glm::bvec3 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_bvec3);
 
@@ -782,8 +806,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::bvec4 &value) const
-					noexcept
+				inline void operator()(const glm::bvec4 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_bvec4);
 
@@ -792,8 +816,8 @@ namespace eternal_lands
 					set_uniform(m_index, value);
 				}
 
-				void operator()(const glm::mat2x2 &value) const
-					noexcept
+				inline void operator()(const glm::mat2x2 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat2x2);
 
@@ -803,8 +827,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const glm::mat2x3 &value) const
-					noexcept
+				inline void operator()(const glm::mat2x3 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat2x3);
 
@@ -814,8 +838,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const glm::mat2x4 &value) const
-					noexcept
+				inline void operator()(const glm::mat2x4 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat2x4);
 
@@ -825,8 +849,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const glm::mat3x2 &value) const
-					noexcept
+				inline void operator()(const glm::mat3x2 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat3x2);
 
@@ -836,8 +860,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const glm::mat3x3 &value) const
-					noexcept
+				inline void operator()(const glm::mat3x3 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat3x3);
 
@@ -847,8 +871,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const glm::mat3x4 &value) const
-					noexcept
+				inline void operator()(const glm::mat3x4 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat3x4);
 
@@ -858,8 +882,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const glm::mat4x2 &value) const
-					noexcept
+				inline void operator()(const glm::mat4x2 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat4x2);
 
@@ -869,8 +893,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const glm::mat4x3 &value) const
-					noexcept
+				inline void operator()(const glm::mat4x3 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat4x3);
 
@@ -880,8 +904,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const glm::mat4x4 &value) const
-					noexcept
+				inline void operator()(const glm::mat4x4 &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_mat4x4);
 
@@ -891,8 +915,8 @@ namespace eternal_lands
 						m_transpose);
 				}
 
-				void operator()(const Ivec4Vector &value) const
-					noexcept
+				inline void operator()(const Ivec4Vector &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_ivec4);
 
@@ -902,8 +926,8 @@ namespace eternal_lands
 						value);
 				}
 
-				void operator()(const Uvec4Vector &value) const
-					noexcept
+				inline void operator()(const Uvec4Vector &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_uvec4);
 
@@ -913,8 +937,8 @@ namespace eternal_lands
 						value);
 				}
 
-				void operator()(const Vec4Vector &value) const
-					noexcept
+				inline void operator()(const Vec4Vector &value)
+					const noexcept
 				{
 					CHECK_TYPE(pt_vec4);
 
@@ -924,7 +948,8 @@ namespace eternal_lands
 						value);
 				}
 
-				void operator()(const Mat2x4Vector &value) const
+				inline void operator()(
+					const Mat2x4Vector &value) const
 					noexcept
 				{
 					CHECK_TYPE(pt_mat2x4);
@@ -935,7 +960,8 @@ namespace eternal_lands
 						value, m_transpose);
 				}
 
-				void operator()(const Mat3x4Vector &value) const
+				inline void operator()(
+					const Mat3x4Vector &value) const
 					noexcept
 				{
 					CHECK_TYPE(pt_mat3x4);
@@ -946,7 +972,8 @@ namespace eternal_lands
 						value, m_transpose);
 				}
 
-				void operator()(const Mat4x4Vector &value) const
+				inline void operator()(
+					const Mat4x4Vector &value) const
 					noexcept
 				{
 					CHECK_TYPE(pt_mat4x4);
