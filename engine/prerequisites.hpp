@@ -209,6 +209,7 @@ namespace eternal_lands
 	class AbstractNodeVisitor;
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
+	class AbstractTask;
 	class AbstractTerrainManager;
 	class AbstractWriteMemory;
 	class Actor;
@@ -219,6 +220,7 @@ namespace eternal_lands
 	class Atlas;
 	class BoundedObject;
 	class BoundingBox;
+	class CdLodQuadTree;
 	class CodecManager;
 	class ConvexBody;
 	class Decal;
@@ -289,6 +291,8 @@ namespace eternal_lands
 	class SubMesh;
 	class SubObject;
 	class TerrainData;
+	class TerrainRenderingData;
+	class TerrainVisitor;
 	class Text;
 	class TextAttribute;
 	class Texture;
@@ -372,6 +376,7 @@ namespace eternal_lands
 	SHARED_PTR(IndexUpdateSource);
 	SHARED_PTR(Light);
 	SHARED_PTR(Map);
+	SHARED_PTR(MappedUniformBuffer);
 	SHARED_PTR(Material);
 	SHARED_PTR(MaterialBuilder);
 	SHARED_PTR(MaterialCache);

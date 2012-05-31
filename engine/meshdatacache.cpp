@@ -335,7 +335,7 @@ namespace eternal_lands
 
 			if (use_restart_index)
 			{
-				primitive = pt_triangle_fan;
+				primitive = pt_triangle_strip;
 			}
 			else
 			{

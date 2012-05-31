@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
+#include "image.hpp"
 #include "terrain/cdlodquadtree.hpp"
 #include <boost/random.hpp>
 #define BOOST_TEST_MODULE cd_lod_quad_tree
@@ -89,4 +90,26 @@ BOOST_AUTO_TEST_CASE(get_quad_order)
 		BOOST_CHECK_LE(dist[1], dist[2] + 0.1f);
 		BOOST_CHECK_LE(dist[2], dist[3] + 0.1f);
 	}
+}
+
+BOOST_AUTO_TEST_CASE(construct)
+{
+	boost::scoped_ptr<el::CdLodQuadTree> tree;
+	el::ImageSharedPtr vector_map;
+
+	vector_map = boost::make_shared<el::Image>(
+		el::String(UTF8("vector_map")), false, el::tft_rgb32f,
+		glm::uvec3(129, 129, 1), 0);
+
+	BOOST_CHECK_NO_THROW(tree.reset(new el::CdLodQuadTree(vector_map,
+		glm::vec3(1.0f), 0.25f)));
+
+	BOOST_CHECK_EQUAL(tree->get_max_lod_count(), 8);
+	BOOST_CHECK_EQUAL(tree->get_lod_count(), 4);
+	BOOST_CHECK_EQUAL(tree->get_max_patch_count(), 1024);
+	BOOST_CHECK_EQUAL(tree->get_patch_size(), 16);
+	BOOST_CHECK_CLOSE(tree->get_patch_scale(), 0.25f, 1.0f);
+	BOOST_CHECK_CLOSE(tree->get_morph_zone_ratio(), 0.3f, 1.0f);
+	BOOST_CHECK_EQUAL(tree->get_grid_size().x, 129);
+	BOOST_CHECK_EQUAL(tree->get_grid_size().y, 129);
 }

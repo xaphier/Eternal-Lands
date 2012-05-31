@@ -70,7 +70,7 @@ namespace eternal_lands
 		set_texture(material, spt_normal);
 		set_texture(material, spt_emission);
 		set_texture(material, spt_blend);
-		set_texture(material, spt_vertex_vector_field);
+		set_texture(material, spt_vertex_vector);
 		set_texture(material, spt_vertex_normal);
 		set_texture(material, spt_vertex_dudv);
 	}

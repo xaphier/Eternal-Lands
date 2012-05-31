@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		"");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector_field),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector),
 		"");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
 		"");
@@ -177,7 +177,7 @@ BOOST_AUTO_TEST_CASE(all)
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8("48fh")), el::spt_blend));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("ymbnjf!2r2!A")), el::spt_vertex_vector_field));
+		el::String(UTF8("ymbnjf!2r2!A")), el::spt_vertex_vector));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8("SDFGSGDF")), el::spt_vertex_normal));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
@@ -199,7 +199,7 @@ BOOST_AUTO_TEST_CASE(all)
 		"y<bnj3e");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"48fh");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector_field),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector),
 		"ymbnjf!2r2!A");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
 		"SDFGSGDF");
@@ -344,7 +344,7 @@ BOOST_AUTO_TEST_CASE(all)
 		"y<bnj3e");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"48fh");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector_field),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector),
 		"ymbnjf!2r2!A");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
 		"SDFGSGDF");
@@ -490,7 +490,7 @@ BOOST_AUTO_TEST_CASE(all)
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8("48fh")), el::spt_blend));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
-		el::String(UTF8("ymbnjf!2r2!A")), el::spt_vertex_vector_field));
+		el::String(UTF8("ymbnjf!2r2!A")), el::spt_vertex_vector));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
 		el::String(UTF8("SDFGSGDF")), el::spt_vertex_normal));
 	BOOST_CHECK_NO_THROW(material_description.set_texture(
@@ -527,7 +527,7 @@ BOOST_AUTO_TEST_CASE(all)
 		"y<bnj3e");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"48fh");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector_field),
+	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector),
 		"ymbnjf!2r2!A");
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
 		"SDFGSGDF");
@@ -692,7 +692,7 @@ BOOST_AUTO_TEST_CASE(xml)
 	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
 		"345w");
 	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::spt_vertex_vector_field), "");
+		el::spt_vertex_vector), "");
 	BOOST_CHECK_EQUAL(material_description.get_texture(
 		el::spt_vertex_normal), "");
 	BOOST_CHECK_EQUAL(material_description.get_texture(
