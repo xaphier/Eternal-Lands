@@ -59,6 +59,7 @@ namespace eternal_lands
 
 		public:
 			Frustum();
+			Frustum(const Frustum &frustum, const Uint16 index);
 			Frustum(const glm::mat4x4 &matrix);
 			Frustum(const Mat4x4Vector &matrices);
 			Frustum(const BoundingBox &box);

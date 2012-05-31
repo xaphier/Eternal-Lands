@@ -70,6 +70,36 @@ namespace eternal_lands
 		m_planes_mask.reset();
 	}
 
+	Frustum::Frustum(const Frustum &frustum, const Uint16 index)
+	{
+		Uint32 i, offset;
+
+		assert(m_planes_mask.size() == (sub_frustum_count *
+			(sub_frustum_planes_count + 1)));
+		assert(m_planes_mask.size() == (m_planes.size() +
+			sub_frustum_count));
+		assert((sub_frustum_masks[0] & all_sub_frustum_planes_mask) ==
+			sub_frustum_planes_masks[0]);
+		assert((sub_frustum_masks[1] & all_sub_frustum_planes_mask) ==
+			sub_frustum_planes_masks[1]);
+		assert((sub_frustum_masks[2] & all_sub_frustum_planes_mask) ==
+			sub_frustum_planes_masks[2]);
+		assert((sub_frustum_masks[3] & all_sub_frustum_planes_mask) ==
+			sub_frustum_planes_masks[3]);
+
+		m_planes_mask.reset();
+
+		RANGE_CECK_MAX(index, sub_frustum_count, UTF8("index too big"));
+
+		offset = index * sub_frustum_planes_count;
+
+		for (i = 0; i < sub_frustum_planes_count; ++i)
+		{
+			m_planes[i] = frustum.m_planes[i + offset];
+			m_planes_mask[i] = frustum.m_planes_mask[i + offset];
+		}
+	}
+
 	Frustum::Frustum(const glm::mat4 &matrix)
 	{
 		assert(m_planes_mask.size() == (sub_frustum_count *
