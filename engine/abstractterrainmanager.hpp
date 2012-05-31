@@ -39,7 +39,7 @@ namespace eternal_lands
 			}
 
 			inline void set_terrain_size(
-				const glm::uvec2 &terrain_size) noexcept
+				const glm::vec2 &terrain_size) noexcept
 			{
 				m_terrain_size_data.x = terrain_size.x;
 				m_terrain_size_data.y = terrain_size.y;
@@ -51,10 +51,12 @@ namespace eternal_lands
 			virtual ~AbstractTerrainManager() noexcept;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const = 0;
-			static const glm::vec3 &get_vector_scale() noexcept;
-			static const glm::vec2 &get_position_scale() noexcept;
+			virtual void intersect(const Frustum &frustum,
+				const glm::vec3 &camera,
+				TerrainVisitor &terrain) const = 0;
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture) = 0;
+			static const glm::vec3 &get_vector_scale() noexcept;
 
 			inline const glm::vec3 &get_translation() const
 				noexcept
@@ -76,6 +78,11 @@ namespace eternal_lands
 			static inline Uint16 get_tile_size() noexcept
 			{
 				return 32;
+			}
+
+			static inline float get_patch_scale() noexcept
+			{
+				return 0.25f;
 			}
 
 	};

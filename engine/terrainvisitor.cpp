@@ -1,20 +1,22 @@
 /****************************************************************************
- *            terrainrenderingdata.cpp
+ *            terrainvisitor.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "terrainrenderingdata.hpp"
+#include "terrainvisitor.hpp"
 
 namespace eternal_lands
 {
 
-	TerrainRenderingData::TerrainRenderingData(): m_instances(0)
+	TerrainVisitor::TerrainVisitor(
+		const MappedUniformBufferSharedPtr &mapped_uniform_buffer):
+		m_mapped_uniform_buffer(mapped_uniform_buffer), m_instances(0)
 	{
 	}
 
-	TerrainRenderingData::~TerrainRenderingData() noexcept
+	TerrainVisitor::~TerrainVisitor() noexcept
 	{
 	}
 

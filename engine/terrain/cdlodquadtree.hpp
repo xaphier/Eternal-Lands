@@ -30,17 +30,14 @@ namespace eternal_lands
 				Vec3Array2MultiArray2 min_max;
 				glm::vec2 morph_params;
 				float range_start;
-				Uint32 patch_size;
+				Uint32 patch_scale;
 			};
 
 			boost::array<LodDescription, 8> m_lods;
-			glm::vec3 m_min, m_max;
 			glm::uvec2 m_grid_size;
-			float m_cell_size;
-			float m_morph_zone_ratio;
+			float m_patch_scale;
 			float m_max_z;
 			Uint32 m_lod_count;
-			Uint32 m_patch_size;
 
 		protected:
 			void init_min_max(const ImageSharedPtr &image,
@@ -51,22 +48,23 @@ namespace eternal_lands
 			void calculate_lod_params();
 			void add_patch_to_queue(const glm::uvec2 &position,
 				const Uint16 level,
-				MappedUniformBuffer &instances,
+				const MappedUniformBufferSharedPtr &instances,
 				Uint32 &instance_index) const;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera_position,
 				const glm::uvec2 &position,
 				const PlanesMask mask, const Uint16 level,
-				MappedUniformBuffer &instances,
+				const MappedUniformBufferSharedPtr &instances,
 				Uint32 &instance_count) const;
 
 		public:
 			CdLodQuadTree(const ImageSharedPtr &vector_map,
-				const glm::vec3 &scale);
+				const glm::vec3 &scale,
+				const float patch_scale);
 			~CdLodQuadTree() noexcept;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera,
-				MappedUniformBuffer &instances,
+				const MappedUniformBufferSharedPtr &instances,
 				Uint32 &instance_count) const;
 			static const Uvec2Array4 &get_quad_order(
 				const glm::vec2 &dir) noexcept;
@@ -74,6 +72,11 @@ namespace eternal_lands
 			inline Uint32 get_max_lod_count() const noexcept
 			{
 				return m_lods.size();
+			}
+
+			inline Uint32 get_lod_count() const noexcept
+			{
+				return m_lod_count;
 			}
 
 			static inline Uint32 get_max_patch_count() noexcept
@@ -84,6 +87,26 @@ namespace eternal_lands
 			inline float get_max_z() const noexcept
 			{
 				return m_max_z;
+			}
+
+			static inline Uint32 get_patch_size() noexcept
+			{
+				return 16;
+			}
+
+			inline float get_patch_scale() const noexcept
+			{
+				return m_patch_scale;
+			}
+
+			inline float get_morph_zone_ratio() const noexcept
+			{
+				return 0.3f;
+			}
+
+			inline const glm::uvec2 &get_grid_size() const noexcept
+			{
+				return m_grid_size;
 			}
 
 	};

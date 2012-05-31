@@ -19,6 +19,7 @@
 #include "meshbuilder.hpp"
 #include "globalvars.hpp"
 #include "uvtool.hpp"
+#include "terrainvisitor.hpp"
 
 namespace eternal_lands
 {
@@ -314,6 +315,12 @@ namespace eternal_lands
 		ObjectVisitor &visitor) const
 	{
 		m_object_tree->intersect(frustum, visitor);
+	}
+
+	void DefaultTerrainManager::intersect(const Frustum &frustum,
+		const glm::vec3 &camera, TerrainVisitor &terrain) const
+	{
+		terrain.set_instances(0);
 	}
 
 }

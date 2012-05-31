@@ -26,21 +26,31 @@ namespace eternal_lands
 	class CdLodTerrainManager: public AbstractTerrainManager
 	{
 		private:
-			ImageSharedPtr m_vector_map;
-			ImageSharedPtr m_normal_image;
-			ImageSharedPtr m_dudv_image;
+			boost::scoped_ptr<CdLodQuadTree> m_cd_lod_quad_tree;
+			MaterialSharedPtr m_material;
+			AbstractMeshSharedPtr m_mesh;
 
 		public:
 			CdLodTerrainManager(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const GlobalVarsSharedPtr &global_vars,
-				const MeshBuilderSharedPtr &mesh_builder,
-				const MaterialSharedPtrVector &materials);
+				const MeshCacheSharedPtr &mesh_cache,
+				const MaterialSharedPtr &material);
 			virtual ~CdLodTerrainManager() noexcept;
+			virtual void intersect(const Frustum &frustum,
+				ObjectVisitor &visitor) const override;
+			virtual void intersect(const Frustum &frustum,
+				const glm::vec3 &camera,
+				TerrainVisitor &terrain) const override;
+			virtual void set_clipmap_texture(
+				const TextureSharedPtr &texture) override;
 
-//			get_visible_terrain_pages();
-//			get_visible_terrain_pages();
+			inline const MaterialSharedPtr &get_material() const
+				noexcept
+			{
+				return m_material;
+			}
 
 	};
 

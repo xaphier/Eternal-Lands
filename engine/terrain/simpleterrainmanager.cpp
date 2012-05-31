@@ -22,6 +22,7 @@
 #include "abstractmesh.hpp"
 #include "alignedvec4array.hpp"
 #include "material.hpp"
+#include "terrainvisitor.hpp"
 
 namespace eternal_lands
 {
@@ -84,6 +85,9 @@ namespace eternal_lands
 		const MaterialSharedPtr &material): m_material(material)
 	{
 		m_object_tree.reset(new RStarTree());
+
+		set_terrain_size((glm::vec2(vector_map->get_sizes()) -1.0f) *
+			get_patch_scale());
 
 		add_terrain_pages(vector_map, normal_map, dudv_map,
 			mesh_builder, global_vars->get_low_quality_terrain(),
@@ -272,7 +276,7 @@ namespace eternal_lands
 
 		materials.push_back(m_material);
 
-		position_scale = get_position_scale();
+		position_scale = glm::vec2(get_patch_scale());
 
 		tile_size = get_tile_size();
 
@@ -289,11 +293,6 @@ namespace eternal_lands
 			indices);
 
 		semantics.insert(vst_position);
-
-		width = vector_map->get_width() * get_position_scale().x;
-		height = vector_map->get_height() * get_position_scale().y;
-
-		set_terrain_size(glm::uvec2(width, height));
 
 		width = vector_map->get_width() / get_tile_size();
 		height = vector_map->get_height() / get_tile_size();
@@ -394,6 +393,12 @@ namespace eternal_lands
 		ObjectVisitor &visitor) const
 	{
 		m_object_tree->intersect(frustum, visitor);
+	}
+
+	void SimpleTerrainManager::intersect(const Frustum &frustum,
+		const glm::vec3 &camera, TerrainVisitor &terrain) const
+	{
+		terrain.set_instances(0);
 	}
 
 }
