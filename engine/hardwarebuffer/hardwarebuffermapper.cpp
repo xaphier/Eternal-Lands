@@ -30,6 +30,13 @@ namespace eternal_lands
 		HardwareBufferMapper::write_map_hardware_buffer(
 			const HardwareBufferSharedPtr &buffer) const
 	{
+		if (buffer->get_size() == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("buffer size is zero"))
+				<< errinfo_parameter_name(UTF8("buffer")));
+		}
+
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			return boost::make_shared<Opengl3HardwareWriteMemory>(

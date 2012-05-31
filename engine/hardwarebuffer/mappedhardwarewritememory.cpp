@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "mappedhardwarewritememory.hpp"
+#include "exceptions.hpp"
 
 namespace eternal_lands
 {
@@ -18,10 +19,15 @@ namespace eternal_lands
 		m_buffer->bind(m_target);
 		m_ptr = m_buffer->map(m_target, hbat_write_only);
 		m_buffer->unbind(m_target);
+
+		if (m_ptr == nullptr)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("buffer ptr is zero")));
+		}
 	}
 
-	MappedHardwareWriteMemory::~MappedHardwareWriteMemory()
-		noexcept
+	MappedHardwareWriteMemory::~MappedHardwareWriteMemory() noexcept
 	{
 		m_buffer->bind(m_target);
 		m_buffer->unmap(m_target);
