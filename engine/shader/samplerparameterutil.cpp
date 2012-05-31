@@ -24,7 +24,7 @@ namespace eternal_lands
 			String(UTF8("specular_sampler")),
 			String(UTF8("emission_sampler")),
 			String(UTF8("blend_sampler")),
-			String(UTF8("vertex_vector_field_sampler")),
+			String(UTF8("vertex_vector_sampler")),
 			String(UTF8("vertex_normal_sampler")),
 			String(UTF8("vertex_dudv_sampler")),
 			String(UTF8("light_positions_sampler")),

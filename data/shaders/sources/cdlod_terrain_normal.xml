@@ -28,7 +28,7 @@
      <type>sampler2DRect</type>
     </parameter>
     <parameter>
-     <sampler_parameter>vertex_vector_field_sampler</sampler_parameter>
+     <sampler_parameter>vertex_vector_sampler</sampler_parameter>
      <type>sampler2DRect</type>
     </parameter>
     <parameter>
@@ -38,9 +38,6 @@
     <parameter>
      <common_parameter>world_position</common_parameter>
      <qualifier>out</qualifier>
-    </parameter>
-    <parameter>
-     <auto_parameter>world_transformation</auto_parameter>
     </parameter>
    </parameters>
    <source>mat2x4 terrain_instance;
@@ -52,10 +49,11 @@ terrain_instance = terrain_instances[gl_InstanceID];
 
 morph_dir = fract(position.xy * 0.5) * terrain_instance[0].w;
 vertex_position = vec3(terrain_instance[0].xy + position.xy * terrain_instance[0].z, 0.0);
-dist = length(vertex_position * world_transformation[1].w + terrain_lod_offset.xyz);
+dist = length(vertex_position * terrain_lod_offset.w + terrain_lod_offset.xyz);
 morph = clamp(dist * terrain_instance[1].x + terrain_instance[1].y, 0.0, 1.0);
 vertex_position.xy += morph_dir * morph;
-world_position = texture(vertex_vector_field_sampler, vertex_position.xy).rgb;
+world_position = texture(vertex_vector_sampler, vertex_position.xy).rgb;
+vertex_position.xy *= terrain_lod_offset.w;
 world_position.xy = world_position.xy * 2.0 - 1.0;
 world_position = world_position * terrain_vector_scale + vertex_position;
 
@@ -64,13 +62,38 @@ f = dot(fenc, fenc);
 g = sqrt(1.0f - f / 4.0);
 world_normal = vec3(fenc * g, 1.0 - f / 2.0);
 
-world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
-world_position *= world_transformation[1].w;
-world_position += world_transformation[1].xyz;
-world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
 terrain_texture_coodrinate = vertex_position.xy;
 </source>
    <version>150</version>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <name>position</name>
+     <type>vec4</type>
+     <qualifier>in</qualifier>
+     <size>1</size>
+    </parameter>
+    <parameter>
+     <name>terrain_texture_coodrinate</name>
+     <type>vec2</type>
+     <qualifier>out</qualifier>
+     <size>1</size>
+    </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_position</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+   </parameters>
+   <source>world_position = position.xyz;
+world_normal = normal.xyz;
+terrain_texture_coodrinate = position.xy;
+</source>
+   <version>120</version>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

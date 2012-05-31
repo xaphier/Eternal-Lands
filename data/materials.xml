@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf8"?>
 <materials>
 	<material>
-		<name>terrain</name>
+		<name>simple-terrain</name>
 		<effect>simple-terrain</effect>
+	</material>
+	<material>
+		<name>cdlod-terrain</name>
+		<effect>cdlod-terrain</effect>
 	</material>
 	<material>
 		<name>lava</name>

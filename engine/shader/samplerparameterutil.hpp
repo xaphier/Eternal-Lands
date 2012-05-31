@@ -32,7 +32,7 @@ namespace eternal_lands
 		spt_specular = 5,
 		spt_emission = 6,
 		spt_blend = 7,
-		spt_vertex_vector_field = 8,
+		spt_vertex_vector = 8,
 		spt_vertex_normal = 9,
 		spt_vertex_dudv = 10,
 		spt_light_positions = 11,

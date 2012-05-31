@@ -530,7 +530,8 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read_material_names(const Uint32 material_name_size,
+	void AbstractMapLoader::read_material_names(
+		const Uint32 material_name_size,
 		const Uint32 material_name_count,
 		const Uint32 material_name_offset)
 	{
