@@ -24,7 +24,7 @@
      <size>1</size>
     </parameter>
     <parameter>
-     <name>terrain_texture_coodrinate</name>
+     <name>terrain_texture_coordinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>1</size>
@@ -54,7 +54,7 @@ world_position = world_position * terrain_vector_scale + position.xyz;
 
 fenc = morph_normal.xy * 3.968871595 - 1.984435798;
 f = dot(fenc, fenc);
-g = sqrt(1.0f - f / 4.0);
+g = sqrt(1.0 - f / 4.0);
 world_normal = vec3(fenc * g, 1.0 - f / 2.0);
 
 world_tangent = world_normal;
@@ -64,7 +64,7 @@ world_position *= world_transformation[1].w;
 world_position += world_transformation[1].xyz;
 world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
 world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + world_transformation[0].w * world_tangent);
-terrain_texture_coodrinate = position.xy + world_transformation[1].xy;
+terrain_texture_coordinate = position.xy + world_transformation[1].xy;
 </source>
    <version>120</version>
   </shader_source_data>

@@ -12,7 +12,7 @@
      <auto_parameter>terrain_scale</auto_parameter>
     </parameter>
     <parameter>
-     <name>terrain_texture_coodrinate</name>
+     <name>terrain_texture_coordinate</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
      <size>1</size>
@@ -34,7 +34,7 @@
    <source>vec3 uv;
 int i;
 
-uv.xy =  terrain_texture_coodrinate * terrain_scale.zw;
+uv.xy =  terrain_texture_coordinate * terrain_scale.zw;
 uv.z = 1.0;
 
 for (i = 0; i &lt; clipmap_slices; ++i)

@@ -18,7 +18,7 @@
      <auto_parameter>terrain_lod_offset</auto_parameter>
     </parameter>
     <parameter>
-     <name>terrain_texture_coodrinate</name>
+     <name>terrain_texture_coordinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>1</size>
@@ -34,22 +34,23 @@
    </parameters>
    <source>mat2x4 terrain_instance;
 vec3 vertex_position;
-vec2 morph_dir;
+vec2 vertex_uv, morph_dir;
 float morph, dist;
 
 terrain_instance = terrain_instances[gl_InstanceID];
 
 morph_dir = fract(position.xy * 0.5) * terrain_instance[0].w;
-vertex_position = vec3(terrain_instance[0].xy + position.xy * terrain_instance[0].z, 0.0);
-dist = length(vertex_position * terrain_lod_offset.w + terrain_lod_offset.xyz);
+vertex_uv = terrain_instance[0].xy + position.xy * terrain_instance[0].z;
+vertex_position = vec3(vertex_uv * terrain_lod_offset.w, 0.0);
+dist = length(vertex_position + terrain_lod_offset.xyz);
 morph = clamp(dist * terrain_instance[1].x + terrain_instance[1].y, 0.0, 1.0);
-vertex_position.xy += morph_dir * morph;
-world_position = texture(vertex_vector_sampler, vertex_position.xy).rgb;
-vertex_position.xy *= terrain_lod_offset.w;
+vertex_uv += morph_dir * morph;
+vertex_position = vec3(vertex_uv * terrain_lod_offset.w, 0.0);
+world_position = texture(vertex_vector_sampler, vertex_uv).rgb;
 world_position.xy = world_position.xy * 2.0 - 1.0;
 world_position = world_position * terrain_vector_scale + vertex_position;
 
-terrain_texture_coodrinate = vertex_position.xy;
+terrain_texture_coordinate = vertex_position.xy;
 </source>
    <version>150</version>
   </shader_source_data>
@@ -62,7 +63,7 @@ terrain_texture_coodrinate = vertex_position.xy;
      <size>1</size>
     </parameter>
     <parameter>
-     <name>terrain_texture_coodrinate</name>
+     <name>terrain_texture_coordinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>1</size>
@@ -73,7 +74,7 @@ terrain_texture_coodrinate = vertex_position.xy;
     </parameter>
    </parameters>
    <source>world_position = position.xyz;
-terrain_texture_coodrinate = position.xy;
+terrain_texture_coordinate = position.xy;
 </source>
    <version>120</version>
   </shader_source_data>

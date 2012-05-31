@@ -24,7 +24,7 @@
      <size>1</size>
     </parameter>
     <parameter>
-     <name>terrain_texture_coodrinate</name>
+     <name>terrain_texture_coordinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
      <size>1</size>
@@ -57,7 +57,7 @@ world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transform
 world_position *= world_transformation[1].w;
 world_position += world_transformation[1].xyz;
 world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
-terrain_texture_coodrinate = position.xy + world_transformation[1].xy;
+terrain_texture_coordinate = position.xy + world_transformation[1].xy;
 </source>
    <version>120</version>
   </shader_source_data>
