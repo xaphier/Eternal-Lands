@@ -9,8 +9,6 @@
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
-	int i, count;
-
 	setupUi(this);
 
 	init_actions();
@@ -260,6 +258,17 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(m_progress.get(), SIGNAL(set_range(const int, const int)), m_progress_bar, SLOT(setRange(const int, const int)), Qt::QueuedConnection);
 	QObject::connect(m_progress.get(), SIGNAL(set_value(const int)), m_progress_bar, SLOT(setValue(const int)), Qt::QueuedConnection);
 
+	QObject::connect(el_gl_widget, SIGNAL(initialized()), this, SLOT(initialized()), Qt::QueuedConnection);
+}
+
+MainWindow::~MainWindow()
+{
+}
+
+void MainWindow::initialized()
+{
+	Uint32 i, count;
+
 	count = ground_tile->count();
 
 	for (i = 0; i < count; ++i)
@@ -271,10 +280,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 		ground_tile->setItemIcon(i, QIcon(pixmap));
 	}
-}
-
-MainWindow::~MainWindow()
-{
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

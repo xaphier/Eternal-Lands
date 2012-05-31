@@ -24,7 +24,9 @@
 #include "abstractterrainmanager.hpp"
 #include "particledata.hpp"
 #include "terrain/simpleterrainmanager.hpp"
+#include "terrain/cdlodterrainmanager.hpp"
 #include "codec/codecmanager.hpp"
+#include "globalvars.hpp"
 
 namespace eternal_lands
 {
@@ -39,6 +41,7 @@ namespace eternal_lands
 		m_mesh_cache(mesh_cache), m_material_cache(material_cache),
 		m_name(name), m_id(0), m_dungeon(false)
 	{
+		ImageCompressionTypeSet compressions;
 		ImageSharedPtr vector_map, normal_map, dudv_map;
 		MaterialSharedPtrVector materials;
 		String file_name, vector_map_name, normal_map_name;
@@ -55,25 +58,47 @@ namespace eternal_lands
 		normal_map_name = String(file_name.get() + UTF8("_normal.dds"));
 		dudv_map_name = String(file_name.get() + UTF8("_dudv.dds"));
 
-		if (file_system->get_file_readable(vector_map_name) &&
-			file_system->get_file_readable(normal_map_name) &&
-			file_system->get_file_readable(dudv_map_name))
+		if (!file_system->get_file_readable(vector_map_name) ||
+			!file_system->get_file_readable(normal_map_name) ||
+			!file_system->get_file_readable(dudv_map_name))
 		{
+			return;
+		}
+
+		if (global_vars->get_opengl_3_2())
+		{
+			compressions.insert(ict_s3tc);
+
 			vector_map = codec_manager->load_image(vector_map_name,
-				file_system, ImageCompressionTypeSet(), true);
+				file_system, compressions, true);
 
 			normal_map = codec_manager->load_image(normal_map_name,
-				file_system, ImageCompressionTypeSet(), true);
+				file_system, compressions, true);
 
 			dudv_map = codec_manager->load_image(dudv_map_name,
-				file_system, ImageCompressionTypeSet(), true);
+				file_system, compressions, true);
 
-			m_terrain.reset(new SimpleTerrainManager(vector_map,
+			m_terrain.reset(new CdLodTerrainManager(vector_map,
 				normal_map, dudv_map, global_vars,
-				mesh_builder,
-				get_material_cache()->get_material(
-					String(UTF8("terrain")))));
+				mesh_cache, get_material_cache()->get_material(
+				String(UTF8("cdlod-terrain")))));
+
+			return;
 		}
+
+		vector_map = codec_manager->load_image(vector_map_name,
+			file_system, ImageCompressionTypeSet(), true);
+
+		normal_map = codec_manager->load_image(normal_map_name,
+			file_system, ImageCompressionTypeSet(), true);
+
+		dudv_map = codec_manager->load_image(dudv_map_name,
+			file_system, ImageCompressionTypeSet(), true);
+
+		m_terrain.reset(new SimpleTerrainManager(vector_map,
+			normal_map, dudv_map, global_vars, mesh_builder,
+			get_material_cache()->get_material(
+				String(UTF8("simple-terrain")))));
 	}
 
 	Map::~Map() noexcept
@@ -252,6 +277,15 @@ namespace eternal_lands
 		}
 
 		m_object_tree->intersect(frustum, visitor);
+	}
+
+	void Map::intersect(const Frustum &frustum, const glm::vec3 &camera,
+		TerrainVisitor &terrain) const
+	{
+		if (m_terrain.get() != nullptr)
+		{
+			m_terrain->intersect(frustum, camera, terrain);
+		}
 	}
 
 	void Map::intersect(const Frustum &frustum, LightVisitor &visitor)

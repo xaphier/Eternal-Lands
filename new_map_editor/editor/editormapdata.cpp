@@ -61,11 +61,6 @@ namespace eternal_lands
 		}
 	}
 
-	void EditorMapData::init()
-	{
-		m_scene->init();
-	}
-
 	void EditorMapData::set_view_matrix(const glm::mat4 &view_matrix)
 	{
 		m_scene->set_view_matrix(view_matrix);

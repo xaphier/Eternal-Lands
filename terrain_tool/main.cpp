@@ -74,7 +74,7 @@ namespace
 
 		position.x = x;
 		position.y = y;
-		position *= AbstractTerrainManager::get_position_scale();
+		position *= AbstractTerrainManager::get_patch_scale();
 
 		return glm::vec3(position, 0.0f) + offset;
 	}
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 	sizes.z = 1;
 
 	dest_image = boost::make_shared<Image>(String("terrain normals"),
-		false, tft_la8, sizes, 0);
+		false, tft_rgb8, sizes, 0);
 
 	width = source_image->get_width();
 	height = source_image->get_height();

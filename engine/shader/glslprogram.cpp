@@ -2058,7 +2058,7 @@ namespace eternal_lands
 		BoostFormat format(UTF8("\t%1% binding %2% data size "
 			"%3% active uniforms %4%."));
 
-		format % name % static_cast<Uint32>(uniform_buffer);
+		format % name % uniform_block_binding;
 		format % uniform_block_data_size;
 		format % uniform_block_active_uniforms;
 

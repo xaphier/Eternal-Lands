@@ -122,16 +122,16 @@ namespace eternal_lands
 	}
 
 	void EditorScene::intersect(const Frustum &frustum,
-		ObjectVisitor &visitor) const
+		const bool shadow, ObjectVisitor &visitor) const
 	{
 		Uint32ObjectSharedPtrMap::const_iterator it, begin, end;
 		float transparency;
 		SubFrustumsMask mask;
 		BlendType blend;
 
-		Scene::intersect(frustum, visitor);
+		Scene::intersect(frustum, shadow, visitor);
 
-		if (!get_draw_lights())
+		if (!get_draw_lights() || shadow)
 		{
 			return;
 		}

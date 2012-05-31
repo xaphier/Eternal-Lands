@@ -40,6 +40,7 @@ namespace eternal_lands
 		lt_dds_image,
 		lt_png_image,
 		lt_jpeg_image,
+		lt_j2k_image,
 		lt_e3d_loader,
 		lt_e2d_loader,
 		lt_map_loader,

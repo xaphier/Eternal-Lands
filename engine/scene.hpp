@@ -39,6 +39,10 @@ namespace eternal_lands
 	class Scene
 	{
 		private:
+			class TerrainVisitorTask;
+			class ObjectVisitorTask;
+			class LightVisitorTask;
+
 			typedef std::pair<Uint32, SelectionType>
 				PairUint32SelectionType;
 			typedef std::vector<PairUint32SelectionType>
@@ -51,7 +55,7 @@ namespace eternal_lands
 			Clipmap m_clipmap;
 			StateManager m_state_manager;
 			TerrainRenderingData m_visible_terrain;
-			TerrainRenderingData m_shadow_terrain;
+			boost::array<TerrainRenderingData, 3> m_shadow_terrain;
 			ObjectVisitor m_visible_objects;
 			ObjectVisitor m_shadow_objects;
 			LightVisitor m_visible_lights;
@@ -76,6 +80,10 @@ namespace eternal_lands
 			bool m_lights;
 			bool m_shadow_map_change;
 
+			void draw_terrain(
+				const TerrainRenderingData &terrain_data,
+				const EffectProgramType type,
+				const bool lights);
 			void get_lights(const BoundingBox &bounding_box,
 				Uint16 &light_count);
 			void do_draw_object(const ObjectSharedPtr &object,
@@ -109,11 +117,13 @@ namespace eternal_lands
 
 		protected:
 			virtual void intersect(const Frustum &frustum,
-				ObjectVisitor &visitor) const;
+				const glm::vec3 &camera,
+				TerrainVisitor &terrain) const;
+			virtual void intersect(const Frustum &frustum,
+				const bool shadow, ObjectVisitor &visitor)
+				const;
 			virtual void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
-			virtual void intersect_shadow(const Frustum &frustum,
-				ObjectVisitor &visitor) const;
 
 			inline void set_map(const MapSharedPtr &map) noexcept
 			{
@@ -153,7 +163,6 @@ namespace eternal_lands
 				const float density);
 			void clear();
 			void draw();
-			void init();
 			void cull();
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,

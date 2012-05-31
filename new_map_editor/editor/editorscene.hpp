@@ -40,7 +40,8 @@ namespace eternal_lands
 
 		protected:
 			virtual void intersect(const Frustum &frustum,
-				ObjectVisitor &visitor) const;
+				const bool shadow, ObjectVisitor &visitor)
+				const;
 
 		public:
 			/**

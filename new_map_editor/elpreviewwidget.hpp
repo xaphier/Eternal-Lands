@@ -15,7 +15,7 @@ class ELPreviewWidget: public QGLWidget
 	private:
 		GlobalVarsSharedPtr m_global_vars;
 		FileSystemSharedPtr m_file_system;
-		Scene m_scene;
+		Scene* m_scene;
 		QTimer* m_timer;
 		QString m_object;
 		QVector3D m_rotation;

@@ -143,7 +143,6 @@ namespace eternal_lands
 				const;
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
-			void init();
 			void set_view_matrix(const glm::mat4 &view_matrix);
 			void set_perspective(const float fov,
 				const float aspect, const float z_near,

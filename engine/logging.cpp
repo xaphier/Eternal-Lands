@@ -153,6 +153,7 @@ namespace eternal_lands
 			log_levels[lt_dds_image] = llt_debug;
 			log_levels[lt_png_image] = llt_debug;
 			log_levels[lt_jpeg_image] = llt_debug;
+			log_levels[lt_j2k_image] = llt_debug;
 			log_levels[lt_e3d_loader] = llt_debug;
 			log_levels[lt_e2d_loader] = llt_debug;
 			log_levels[lt_map_loader] = llt_debug;
@@ -172,6 +173,7 @@ namespace eternal_lands
 			log_levels[lt_dds_image] = llt_info;
 			log_levels[lt_png_image] = llt_info;
 			log_levels[lt_jpeg_image] = llt_info;
+			log_levels[lt_j2k_image] = llt_info;
 			log_levels[lt_e3d_loader] = llt_info;
 			log_levels[lt_e2d_loader] = llt_info;
 			log_levels[lt_map_loader] = llt_info;

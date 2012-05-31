@@ -104,6 +104,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void new_map();
 		void change_preferences();
 		void terrain_edit(const int x, const int y);
+		void initialized();
 
 };
 

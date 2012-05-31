@@ -115,6 +115,9 @@ namespace eternal_lands
 			void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const;
 			void intersect(const Frustum &frustum,
+				const glm::vec3 &camera,
+				TerrainVisitor &terrain) const;
+			void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
 			const BoundingBox &get_bounding_box() const;
 			void add_terrain(

@@ -16,8 +16,7 @@
 
 ELPreviewWidget::ELPreviewWidget(QWidget* parent): QGLWidget(parent),
 	m_global_vars(boost::make_shared<GlobalVars>()),
-	m_file_system(boost::make_shared<FileSystem>()),
-	m_scene(m_global_vars, m_file_system)
+	m_file_system(boost::make_shared<FileSystem>())
 {
 	m_timer = new QTimer(this);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
@@ -25,6 +24,7 @@ ELPreviewWidget::ELPreviewWidget(QWidget* parent): QGLWidget(parent),
 
 ELPreviewWidget::~ELPreviewWidget()
 {
+	delete m_scene;
 }
 
 void ELPreviewWidget::mousePressEvent(QMouseEvent *event)
@@ -83,10 +83,11 @@ void ELPreviewWidget::initializeGL()
 
 	m_global_vars->set_view_distance(250.0f);
 
-	m_scene.init();
-	m_scene.set_lights(true);
-	m_scene.set_ambient(glm::vec3(0.2f));
-	m_scene.add_light(LightData(glm::vec3(0.0f, -5.0f, 0.0f),
+	m_scene = new Scene(m_global_vars, m_file_system);
+
+	m_scene->set_lights(true);
+	m_scene->set_ambient(glm::vec3(0.2f));
+	m_scene->add_light(LightData(glm::vec3(0.0f, -5.0f, 0.0f),
 		glm::vec3(1.0f), 10.0f, 0));
 
 	m_timer->start(500);
@@ -96,8 +97,8 @@ void ELPreviewWidget::resizeGL(int width, int height)
 {
 	glViewport(0, 0, width, height);
 
-	m_scene.set_view_port(glm::uvec4(0, 0, width, height));
-	m_scene.set_perspective(60.0f, static_cast<float>(width) /
+	m_scene->set_view_port(glm::uvec4(0, 0, width, height));
+	m_scene->set_perspective(60.0f, static_cast<float>(width) /
 		static_cast<float>(height), 1.5f, 250.0f);
 
 	updateGL();
@@ -112,7 +113,7 @@ void ELPreviewWidget::paintGL()
 	matrix = glm::lookAt(glm::vec3(0.0f, -2.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-	m_scene.set_view_matrix(matrix);
+	m_scene->set_view_matrix(matrix);
 
 	if (m_update_object)
 	{
@@ -120,8 +121,8 @@ void ELPreviewWidget::paintGL()
 		m_update_object = false;
 	}
 
-	m_scene.cull();
-	m_scene.draw();
+	m_scene->cull();
+	m_scene->draw();
 }
 
 void ELPreviewWidget::set_object(const QString &name, const QVector3D &rotation)
@@ -141,13 +142,13 @@ void ELPreviewWidget::update_object()
 		String name;
 		float max;
 
-		m_scene.remove_object(0);
+		m_scene->remove_object(0);
 
 		name = String(m_object.toUtf8().data());
 
 		if (!name.get().empty())
 		{
-			m_scene.get_scene_resources().get_mesh_data_cache(
+			m_scene->get_scene_resources().get_mesh_data_cache(
 				)->get_mesh_data(name, mesh_data_tool);
 
 			mesh_data_tool->update_sub_meshs_bounding_box();
@@ -166,7 +167,7 @@ void ELPreviewWidget::update_object()
 			world_transformation.set_translation(
 				-bounding_box.get_center() / max);
 
-			m_scene.add_object(ObjectDescription(
+			m_scene->add_object(ObjectDescription(
 				world_transformation, StringVector(),
 				name, 1.0f, 0, st_select, bt_disabled));
 		}

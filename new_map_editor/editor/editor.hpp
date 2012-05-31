@@ -176,11 +176,6 @@ namespace eternal_lands
 				m_data.set_lights_enabled(enabled);
 			}
 
-			inline void init()
-			{
-				m_data.init();
-			}
-
 			inline void set_view_matrix(
 				const glm::mat4 &view_matrix)
 			{

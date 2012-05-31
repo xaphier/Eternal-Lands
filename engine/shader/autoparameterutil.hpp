@@ -86,7 +86,8 @@ namespace eternal_lands
 		/**
 		 * mat2x4(x_offset, y_offset, scale, scale * 2,
 		 * 1.0 / (morph_end - morph_start),
-		 * -morph_start / (morph_end - morph_start), lod_level, 0.0)
+		 * -morph_start / (morph_end - morph_start), lod_level,
+		 * patch_size)
 		 */
 		apt_terrain_instances,
 		apt_terrain_lod_offset

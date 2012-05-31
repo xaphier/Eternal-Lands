@@ -222,6 +222,7 @@ class ELGLWidget: public QGLWidget
 		void deselect();
 		void can_undo(const bool undo);
 		void terrain_edit(const int x, const int y);
+		void initialized();
 
 };
 

@@ -25,8 +25,6 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_global_vars = boost::make_shared<GlobalVars>();
 	m_file_system = boost::make_shared<FileSystem>();
 
-	m_editor.reset(new Editor(m_global_vars, m_file_system));
-
 	m_timer = new QTimer(this);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
 }
@@ -287,13 +285,15 @@ void ELGLWidget::initializeGL()
 
 	try
 	{
-		m_editor->init();
+		m_editor.reset(new Editor(m_global_vars, m_file_system));
 	}
 	catch (...)
 	{
 	}
 
 	m_timer->start(50);
+
+	emit initialized();
 }
 
 void ELGLWidget::resizeGL(int width, int height)

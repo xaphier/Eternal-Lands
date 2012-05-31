@@ -29,7 +29,7 @@ namespace eternal_lands
 		private:
 			const HardwareBufferMapperWeakPtr
 				m_hardware_buffer_mapper;
-			HardwareBuffer m_buffer;
+			HardwareBufferSharedPtr m_hardware_buffer;
 			UniformBufferDescriptionSharedPtr
 				m_uniform_buffer_description;
 
@@ -52,6 +52,21 @@ namespace eternal_lands
 					&uniform_buffer_description_cache,
 				const UniformBufferType type);
 			~UniformBuffer() noexcept;
+			MappedUniformBufferSharedPtr
+				get_mapped_uniform_buffer() const;
+			void bind();
+
+			inline const HardwareBufferSharedPtr
+				&get_hardware_buffer() const noexcept
+			{
+				return m_hardware_buffer;
+			}
+
+			inline const UniformBufferDescriptionSharedPtr
+				&get_uniform_buffer_description() const noexcept
+			{
+				return m_uniform_buffer_description;
+			}
 
 	};
 
