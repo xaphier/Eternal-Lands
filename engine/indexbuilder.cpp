@@ -286,34 +286,6 @@ namespace eternal_lands
 		{
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		class TerrainIndexBuilder
 		{
 			private:
@@ -372,12 +344,13 @@ namespace eternal_lands
 
 			for (x = 0; x < count; ++x)
 			{
+				m_indices.push_back(get_index(x    , y + 1));
 				m_indices.push_back(get_index(x    , y    ));
-				m_indices.push_back(get_index(x    , y + 1));
-				m_indices.push_back(get_index(x + 1, y    ));
-				m_indices.push_back(get_index(x + 1, y    ));
-				m_indices.push_back(get_index(x    , y + 1));
 				m_indices.push_back(get_index(x + 1, y + 1));
+
+				m_indices.push_back(get_index(x + 1, y + 1));
+				m_indices.push_back(get_index(x    , y    ));
+				m_indices.push_back(get_index(x + 1, y    ));
 			}
 		}
 
@@ -388,13 +361,13 @@ namespace eternal_lands
 
 			count = get_tile_size();
 
-			m_indices.push_back(get_index(0, y));
 			m_indices.push_back(get_index(0, y + 1));
+			m_indices.push_back(get_index(0, y));
 
 			for (x = 0; x < count; ++x)
 			{
-				m_indices.push_back(get_index(x + 1, y    ));
 				m_indices.push_back(get_index(x + 1, y + 1));
+				m_indices.push_back(get_index(x + 1, y    ));
 			}
 		}
 

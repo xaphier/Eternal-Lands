@@ -27,6 +27,11 @@ namespace
 			bool operator==(const Triangle &triangle) const;
 			bool operator<(const Triangle &triangle) const;
 
+			inline const glm::uvec3 &get_indices() const
+			{
+				return m_indices;
+			}
+
 	};
 
 	Triangle::Triangle()
@@ -81,6 +86,41 @@ namespace
 		return m_indices.z < triangle.m_indices.z;
 	}
 
+	bool check_front_facing(const glm::vec3 &normal,
+		const glm::uvec2 &grid_size, const Uint32 idx0,
+		const Uint32 idx1, const Uint32 idx2)
+	{
+		glm::vec3 p0, p1, p2, d0, d1, d2;
+
+		p0.x = idx0 % grid_size.x;
+		p0.y = idx0 / grid_size.x;
+		p0.z = 0.0f;
+
+		p1.x = idx1 % grid_size.x;
+		p1.y = idx1 / grid_size.x;
+		p1.z = 0.0f;
+
+		p2.x = idx2 % grid_size.x;
+		p2.y = idx2 / grid_size.x;
+		p2.z = 0.0f;
+
+		d0 = p1 - p0;
+		d1 = p2 - p0;
+
+		if ((glm::dot(d0, d0) < el::epsilon) ||
+			(glm::dot(d1, d1) < el::epsilon))
+		{
+			return false;
+		}
+
+		d0 = glm::normalize(d0);
+		d1 = glm::normalize(d1);
+
+		d2 = glm::cross(d0, d1);
+
+		return glm::dot(normal, d2) > 0.0f;
+	}
+
 }
 
 BOOST_AUTO_TEST_CASE(plane_no_restart_split)
@@ -132,6 +172,12 @@ BOOST_AUTO_TEST_CASE(plane_no_restart_split)
 
 		for (j = 0; j < (indices.size() / 3); ++j)
 		{
+			BOOST_CHECK(check_front_facing(
+				glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::uvec2(tile_size + 1),
+				indices[j * 3 + 0],
+				indices[j * 3 + 1], indices[j * 3 + 2]));
+
 			triangle = Triangle(indices[j * 3 + 0],
 				indices[j * 3 + 1], indices[j * 3 + 2]);
 
@@ -193,6 +239,12 @@ BOOST_AUTO_TEST_CASE(plane_no_restart_no_split)
 
 		for (j = 0; j < (indices.size() / 3); ++j)
 		{
+			BOOST_CHECK(check_front_facing(
+				glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::uvec2(tile_size + 1),
+				indices[j * 3 + 0],
+				indices[j * 3 + 1], indices[j * 3 + 2]));
+
 			triangle = Triangle(indices[j * 3 + 0],
 				indices[j * 3 + 1], indices[j * 3 + 2]);
 
@@ -272,6 +324,11 @@ BOOST_AUTO_TEST_CASE(plane_restart_split)
 				continue;
 			}
 
+			BOOST_CHECK(check_front_facing(
+				glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::uvec2(tile_size + 1),
+				center, last, index));
+
 			triangle = Triangle(center, last, index);
 
 			last = index;
@@ -288,6 +345,12 @@ BOOST_AUTO_TEST_CASE(plane_restart_split)
 
 		for (j = 0; j < (indices.size() / 3); ++j)
 		{
+			BOOST_CHECK(check_front_facing(
+				glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::uvec2(tile_size + 1),
+				indices[j * 3 + 0],
+				indices[j * 3 + 1], indices[j * 3 + 2]));
+
 			triangle = Triangle(indices[j * 3 + 0],
 				indices[j * 3 + 1], indices[j * 3 + 2]);
 
@@ -381,6 +444,11 @@ BOOST_AUTO_TEST_CASE(plane_restart_no_split)
 				continue;
 			}
 
+			BOOST_CHECK(check_front_facing(
+				glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::uvec2(tile_size + 1),
+				center, last, index));
+
 			triangle = Triangle(center, last, index);
 
 			last = index;
@@ -397,6 +465,12 @@ BOOST_AUTO_TEST_CASE(plane_restart_no_split)
 
 		for (j = 0; j < (indices.size() / 3); ++j)
 		{
+			BOOST_CHECK(check_front_facing(
+				glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::uvec2(tile_size + 1),
+				indices[j * 3 + 0],
+				indices[j * 3 + 1], indices[j * 3 + 2]));
+
 			triangle = Triangle(indices[j * 3 + 0],
 				indices[j * 3 + 1], indices[j * 3 + 2]);
 
@@ -467,6 +541,12 @@ BOOST_AUTO_TEST_CASE(terrain_no_restart)
 
 		for (j = 0; j < (indices.size() / 3); ++j)
 		{
+			BOOST_CHECK(check_front_facing(
+				glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::uvec2(tile_size + 1),
+				indices[j * 3 + 0],
+				indices[j * 3 + 1], indices[j * 3 + 2]));
+
 			triangle = Triangle(indices[j * 3 + 0],
 				indices[j * 3 + 1], indices[j * 3 + 2]);
 
@@ -485,6 +565,7 @@ BOOST_AUTO_TEST_CASE(terrain_restart)
 	Triangle triangle;
 	el::Uint32 vertex_count, index_count, tile_size, max_vertex, i, j;
 	glm::uvec2 last;
+	bool flip_triangle;
 
 	for (i = 0; i < 7; i++)
 	{
@@ -517,6 +598,7 @@ BOOST_AUTO_TEST_CASE(terrain_restart)
 
 		last.x = std::numeric_limits<Uint32>::max();
 		last.y = std::numeric_limits<Uint32>::max();
+		flip_triangle = false;
 
 		BOOST_FOREACH(const el::Uint32 index, restart_indices)
 		{
@@ -524,6 +606,7 @@ BOOST_AUTO_TEST_CASE(terrain_restart)
 			{
 				last.x = std::numeric_limits<Uint32>::max();
 				last.y = std::numeric_limits<Uint32>::max();
+				flip_triangle = false;
 				continue;
 			}
 
@@ -543,6 +626,21 @@ BOOST_AUTO_TEST_CASE(terrain_restart)
 				continue;
 			}
 
+			if (flip_triangle)
+			{
+				BOOST_CHECK(check_front_facing(
+					glm::vec3(0.0f, 0.0f, 1.0f),
+					glm::uvec2(tile_size + 1),
+					last.y, last.x, index));
+			}
+			else
+			{
+				BOOST_CHECK(check_front_facing(
+					glm::vec3(0.0f, 0.0f, 1.0f),
+					glm::uvec2(tile_size + 1),
+					last.x, last.y, index));
+			}
+
 			triangle = Triangle(last.x, last.y, index);
 
 			last.x = last.y;
@@ -551,6 +649,8 @@ BOOST_AUTO_TEST_CASE(terrain_restart)
 			BOOST_CHECK_EQUAL(restart_triangles.count(triangle), 0);
 
 			restart_triangles.insert(triangle);
+
+			flip_triangle = !flip_triangle;
 		}
 
 		BOOST_CHECK_EQUAL(vertices.count(), vertex_count);
@@ -560,6 +660,12 @@ BOOST_AUTO_TEST_CASE(terrain_restart)
 
 		for (j = 0; j < (indices.size() / 3); ++j)
 		{
+			BOOST_CHECK(check_front_facing(
+				glm::vec3(0.0f, 0.0f, 1.0f),
+				glm::uvec2(tile_size + 1),
+				indices[j * 3 + 0],
+				indices[j * 3 + 1], indices[j * 3 + 2]));
+
 			triangle = Triangle(indices[j * 3 + 0],
 				indices[j * 3 + 1], indices[j * 3 + 2]);
 
