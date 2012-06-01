@@ -49,7 +49,8 @@ namespace eternal_lands
 		lt_shader_source,
 		lt_angel_script,
 		lt_framebuffer,
-		lt_rendering
+		lt_rendering,
+		lt_uniform_buffer
 	};
 
 	void init_logging(const std::string &log_file_name);

@@ -50,10 +50,12 @@ namespace eternal_lands
 		str << UTF8("UniformBufferDescription");
 		str << UTF8(" [type]: ") << get_type();
 		str << UTF8(" [size]: ") << get_size();
+		str << std::endl;
 
 		BOOST_FOREACH(const UniformDescription &uniform, get_uniforms())
 		{
 			uniform.log(str);
+			str << std::endl;
 		}
 	}
 

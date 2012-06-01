@@ -1278,7 +1278,7 @@ namespace eternal_lands
 
 		if (!vertex)
 		{
-			add_local(String(UTF8("lighting")), cpt_emission,
+			add_parameter(String(UTF8("lighting")), cpt_emission,
 				pqt_in, function_locals, function_parameters,
 				uniform_buffers);
 
