@@ -2101,7 +2101,8 @@ namespace eternal_lands
 			glGetActiveUniformName(m_program, uniform_index,
 				max_buffer_size, &length, buffer.get());
 
-			name = String(std::string(buffer.get(), length));
+			name = String(get_base_name(std::string(buffer.get(),
+				length)));
 
 			type = ParameterUtil::get_parameter(uniform_type);
 
