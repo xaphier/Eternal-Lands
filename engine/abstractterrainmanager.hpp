@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "terraindata.hpp"
+#include "boundingbox.hpp"
 
 /**
  * @file
@@ -26,11 +27,18 @@ namespace eternal_lands
 	class AbstractTerrainManager: public boost::noncopyable
 	{
 		private:
+			BoundingBox m_bounding_box;
 			glm::vec4 m_terrain_size_data;
 			glm::vec3 m_translation;
 
 		protected:
 			AbstractTerrainManager();
+
+			inline void set_bounding_box(
+				const BoundingBox &bounding_box) noexcept
+			{
+				m_bounding_box = bounding_box;
+			}
 
 			inline void set_translation(
 				const glm::vec3 &translation) noexcept
@@ -57,6 +65,12 @@ namespace eternal_lands
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture) = 0;
 			static const glm::vec3 &get_vector_scale() noexcept;
+
+			inline const BoundingBox &get_bounding_box() const
+				noexcept
+			{
+				return m_bounding_box;
+			}
 
 			inline const glm::vec3 &get_translation() const
 				noexcept

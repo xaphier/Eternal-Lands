@@ -92,6 +92,8 @@ namespace eternal_lands
 		add_terrain_pages(vector_map, normal_map, dudv_map,
 			mesh_builder, global_vars->get_low_quality_terrain(),
 			global_vars->get_use_simd());
+
+		set_bounding_box(m_object_tree->get_bounding_box());
 	}
 
 	SimpleTerrainManager::~SimpleTerrainManager() noexcept
@@ -171,6 +173,9 @@ namespace eternal_lands
 		vertex_stream->set(vst_morph_normal, normals);
 
 		min = glm::min(min, max - 0.05f);
+
+		std::cout << "min: " << glm::to_string(min) << std::endl;
+		std::cout << "max: " << glm::to_string(max) << std::endl;
 
 		sub_meshs.push_back(SubMesh(BoundingBox(min, max), 0,
 			index_count, 0, vertex_count - 1));

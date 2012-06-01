@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "shader/mappeduniformbuffer.hpp"
+#include "boundingbox.hpp"
 
 /**
  * @file
@@ -26,6 +27,7 @@ namespace eternal_lands
 	class TerrainVisitor
 	{
 		private:
+			BoundingBox m_bounding_box;
 			MappedUniformBufferSharedPtr m_mapped_uniform_buffer;
 			AbstractMeshSharedPtr m_mesh;
 			MaterialSharedPtr m_material;
@@ -35,6 +37,12 @@ namespace eternal_lands
 			TerrainVisitor(const MappedUniformBufferSharedPtr
 				&mapped_uniform_buffer);
 			~TerrainVisitor() noexcept;
+
+			inline void set_bounding_box(
+				const BoundingBox &bounding_box)
+			{
+				m_bounding_box = bounding_box;
+			}
 
 			inline void set_mapped_uniform_buffer(
 				const MappedUniformBufferSharedPtr
@@ -58,6 +66,12 @@ namespace eternal_lands
 				noexcept
 			{
 				m_instances = instances;
+			}
+
+			inline const BoundingBox &get_bounding_box() const
+				noexcept
+			{
+				return m_bounding_box;
 			}
 
 			inline const MappedUniformBufferSharedPtr

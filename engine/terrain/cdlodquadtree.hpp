@@ -34,9 +34,9 @@ namespace eternal_lands
 			};
 
 			boost::array<LodDescription, 8> m_lods;
+			glm::vec3 m_min, m_max;
 			glm::uvec2 m_grid_size;
 			float m_patch_scale;
-			float m_max_z;
 			Uint32 m_lod_count;
 
 		protected:
@@ -47,14 +47,17 @@ namespace eternal_lands
 
 			void calculate_lod_params();
 			void add_patch_to_queue(const glm::uvec2 &position,
-				const Uint16 level,
 				const MappedUniformBufferSharedPtr &instances,
+				const Uint16 level,
+				const Uint16 max_instance_count,
 				Uint32 &instance_index) const;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera_position,
 				const glm::uvec2 &position,
-				const PlanesMask mask, const Uint16 level,
 				const MappedUniformBufferSharedPtr &instances,
+				const PlanesMask mask, const Uint16 level,
+				const Uint16 max_instance_count,
+				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
 
 		public:
@@ -65,6 +68,7 @@ namespace eternal_lands
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera,
 				const MappedUniformBufferSharedPtr &instances,
+				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
 			static const Uvec2Array4 &get_quad_order(
 				const glm::vec2 &dir) noexcept;
@@ -79,14 +83,9 @@ namespace eternal_lands
 				return m_lod_count;
 			}
 
-			static inline Uint32 get_max_patch_count() noexcept
-			{
-				return 1024;
-			}
-
 			inline float get_max_z() const noexcept
 			{
-				return m_max_z;
+				return m_max.z;
 			}
 
 			static inline Uint32 get_patch_size() noexcept
@@ -107,6 +106,16 @@ namespace eternal_lands
 			inline const glm::uvec2 &get_grid_size() const noexcept
 			{
 				return m_grid_size;
+			}
+
+			inline const glm::vec3 &get_min() const noexcept
+			{
+				return m_min;
+			}
+
+			inline const glm::vec3 &get_max() const noexcept
+			{
+				return m_max;
 			}
 
 	};

@@ -10,6 +10,7 @@
 #include "frustum.hpp"
 #include "shader/mappeduniformbuffer.hpp"
 #include "image.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -168,19 +169,23 @@ namespace eternal_lands
 
 		size = (get_grid_size() + step - 2u) / step;
 
-		m_max_z = -std::numeric_limits<float>::max();
+		m_min = glm::vec3(std::numeric_limits<float>::max());
+		m_max = glm::vec3(-std::numeric_limits<float>::max());
 
 		for (y = 0; y < size.y; ++y)
 		{
 			for (x = 0; x < size.x; ++x)
 			{
-				min = glm::vec3(std::numeric_limits<float>::max());
-				max = glm::vec3(-std::numeric_limits<float>::max());
+				min = glm::vec3(
+					std::numeric_limits<float>::max());
+				max = glm::vec3(
+					-std::numeric_limits<float>::max());
 
 				init_min_max(vector_map, scale,
 					glm::uvec2(x, y), level, min, max);
 
-				m_max_z = std::max(m_max_z, max.z);
+				m_min = glm::min(m_min, min);
+				m_max = glm::max(m_max, max);
 			}
 		}
 	}
@@ -239,7 +244,7 @@ namespace eternal_lands
 		float range_end, morph_range, morph_start;
 		float range, cur_range;
 
-		assert(get_lod_count() <= get_max_patch_count());
+		assert(get_lod_count() <= get_max_lod_count());
 
 		patch_scale = 1;
 
@@ -277,13 +282,13 @@ namespace eternal_lands
 	}
 
 	void CdLodQuadTree::add_patch_to_queue(const glm::uvec2 &position,
-		const Uint16 level,
 		const MappedUniformBufferSharedPtr &instances,
+		const Uint16 level, const Uint16 max_instance_count,
 		Uint32 &instance_index) const
 	{
 		glm::mat2x4 data;
 
-		if (instance_index < get_max_patch_count())
+		if (instance_index < max_instance_count)
 		{
 			data[0].x = position.x;
 			data[0].y = position.y;
@@ -300,13 +305,22 @@ namespace eternal_lands
 				data, instance_index);
 
 			instance_index++;
+
+			return;
 		}
+
+		LOG_ERROR(lt_rendering,
+			UTF8("instance index %1% too big (%2%)"),
+			instance_index % max_instance_count);
+
+		instance_index++;
 	}
 
 	void CdLodQuadTree::select_quads_for_drawing(const Frustum &frustum,
 		const glm::vec3 &camera, const glm::uvec2 &position,
-		const PlanesMask mask, const Uint16 level,
 		const MappedUniformBufferSharedPtr &instances,
+		const PlanesMask mask, const Uint16 level,
+		const Uint16 max_instance_count, BoundingBox &bounding_box,
 		Uint32 &instance_index) const
 	{
 		BoundingBox box;
@@ -352,8 +366,11 @@ namespace eternal_lands
 		if ((level == 0) || ((m_lods[level].range_start +
 			get_max_z()) < camera.z))
 		{
-			add_patch_to_queue(position, level, instances,
-				instance_index);
+			bounding_box.merge(box);
+
+			add_patch_to_queue(position, instances, level,
+				max_instance_count, instance_index);
+
 			return;
 		}
 
@@ -372,8 +389,10 @@ namespace eternal_lands
 
 		if (!intersect)
 		{
-			add_patch_to_queue(position, level, instances,
-				instance_index);
+			bounding_box.merge(box);
+
+			add_patch_to_queue(position, instances, level,
+				max_instance_count, instance_index);
 
 			return;
 		}
@@ -386,20 +405,22 @@ namespace eternal_lands
 		for (i = 0; i < 4; ++i)
 		{
 			select_quads_for_drawing(frustum, camera, position +
-				quad_order[i] * offset, out_mask, level - 1,
-				instances, instance_index);
+				quad_order[i] * offset, instances, out_mask,
+				level - 1, max_instance_count, bounding_box,
+				instance_index);
 		}
 	}
 
 	void CdLodQuadTree::select_quads_for_drawing(const Frustum &frustum,
 		const glm::vec3 &camera,
 		const MappedUniformBufferSharedPtr &instances,
-		Uint32 &instance_count) const
+		BoundingBox &bounding_box, Uint32 &instance_count) const
 	{
 		glm::vec4 terrain_lod_offset;
 		float dist, half_max_z;
 		Uint32 x, y, level, step;
 		PlanesMask mask;
+		Uint16 max_instance_count;
 
 		level = get_lod_count() - 1;
 
@@ -424,14 +445,23 @@ namespace eternal_lands
 		instances->set_parameter(apt_terrain_lod_offset,
 			terrain_lod_offset, 0);
 
+		max_instance_count = AutoParameterUtil::get_size(
+			apt_terrain_instances);
+
 		for (y = 0; y < (get_grid_size().y - 1); y += step)
 		{
 			for (x = 0; x < (get_grid_size().x - 1); x += step)
 			{
 				select_quads_for_drawing(frustum, camera,
-					glm::uvec2(x, y), mask, level,
-					instances, instance_count);
+					glm::uvec2(x, y), instances, mask,
+					level, max_instance_count,
+					bounding_box, instance_count);
 			}
+		}
+
+		if (instance_count > max_instance_count)
+		{
+			instance_count = max_instance_count;
 		}
 	}
 

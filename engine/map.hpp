@@ -119,7 +119,7 @@ namespace eternal_lands
 				TerrainVisitor &terrain) const;
 			void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
-			const BoundingBox &get_bounding_box() const;
+			BoundingBox get_bounding_box() const;
 			void add_terrain(
 				const AbstractTerrainManagerSharedPtr &terrain);
 			void add_particle(const ParticleData &particle);

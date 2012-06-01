@@ -167,7 +167,7 @@ namespace eternal_lands
 			log_levels[lt_default] = llt_info;
 			log_levels[lt_io] = llt_info;
 			log_levels[lt_texture] = llt_info;
-			log_levels[lt_glsl_program] = llt_debug;
+			log_levels[lt_glsl_program] = llt_info;
 			log_levels[lt_actor_texture] = llt_info;
 			log_levels[lt_image] = llt_info;
 			log_levels[lt_dds_image] = llt_info;
@@ -179,7 +179,7 @@ namespace eternal_lands
 			log_levels[lt_map_loader] = llt_info;
 			log_levels[lt_mesh] = llt_info;
 			log_levels[lt_material] = llt_info;
-			log_levels[lt_shader_source] = llt_debug;
+			log_levels[lt_shader_source] = llt_info;
 			log_levels[lt_angel_script] = llt_info;
 			log_levels[lt_framebuffer] = llt_info;
 			log_levels[lt_rendering] = llt_info;

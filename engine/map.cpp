@@ -67,7 +67,7 @@ namespace eternal_lands
 
 		if (global_vars->get_opengl_3_2())
 		{
-			compressions.insert(ict_s3tc);
+			compressions.insert(ict_rgtc);
 
 			vector_map = codec_manager->load_image(vector_map_name,
 				file_system, compressions, true);
@@ -294,9 +294,18 @@ namespace eternal_lands
 		m_light_tree->intersect(frustum, visitor);
 	}
 
-	const BoundingBox &Map::get_bounding_box() const
+	BoundingBox Map::get_bounding_box() const
 	{
-		return m_object_tree->get_bounding_box();
+		BoundingBox bounding_box;
+
+		bounding_box = m_object_tree->get_bounding_box();
+
+		if (m_terrain.get() != nullptr)
+		{
+			bounding_box.merge(m_terrain->get_bounding_box());
+		}
+
+		return bounding_box;
 	}
 
 	void Map::add_terrain(const AbstractTerrainManagerSharedPtr &terrain)

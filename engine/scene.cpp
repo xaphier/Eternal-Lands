@@ -655,7 +655,7 @@ namespace eternal_lands
 		SubFrustumsBoundingBoxes receiver_boxes;
 		SubFrustumsBoundingBoxes caster_boxes;
 		Frustum frustum;
-		glm::vec4 camera;
+		glm::vec3 camera;
 		SubFrustumsMask mask;
 		Uint32 i, count;
 
@@ -673,13 +673,14 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			convex_bodys[i] = ConvexBody(frustum, i);
+			convex_bodys[i].clip(m_map->get_bounding_box());
 		}
 
 		m_scene_view.build_shadow_matrices(
 			glm::vec3(get_main_light_direction()), convex_bodys, 
 			m_map->get_bounding_box().get_max().z);
 
-		camera = m_scene_view.get_shadow_camera();
+		camera = glm::vec3(m_scene_view.get_shadow_camera());
 
 		frustum = Frustum(
 			m_scene_view.get_shadow_projection_view_matrices());
@@ -687,6 +688,10 @@ namespace eternal_lands
 		m_shadow_objects.next_frame();
 
 		intersect(frustum, true, m_shadow_objects);
+
+		m_shadow_objects.sort(camera);
+
+		m_shadow_objects_mask.reset();
 
 		if (get_global_vars()->get_opengl_3_1())
 		{
@@ -700,8 +705,8 @@ namespace eternal_lands
 
 				DEBUG_CHECK_GL_ERROR();
 
-				intersect(Frustum(frustum, i),
-					glm::vec3(camera), terrain_visitor);
+				intersect(Frustum(frustum, i), camera,
+					terrain_visitor);
 
 				m_shadow_terrain[i].set_mesh(
 					terrain_visitor.get_mesh());
@@ -709,18 +714,39 @@ namespace eternal_lands
 					terrain_visitor.get_material());
 				m_shadow_terrain[i].set_instances(
 					terrain_visitor.get_instances());
+
+				caster_boxes[i].merge(
+					terrain_visitor.get_bounding_box());
+
+				m_shadow_objects_mask[i] =
+					terrain_visitor.get_instances() > 0;
 			}
 		}
 
-		m_shadow_objects.sort(glm::vec3(camera));
+		count = mask.size();
 
-		m_shadow_objects_mask = 0xFF;
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_shadow_objects.get_objects())
+		{
+			mask = object.get_sub_frustums_mask();
 
-		count = convex_bodys.size();
+			for (i = 0; i < count; ++i)
+			{
+				if (mask[i])
+				{
+					caster_boxes[i].merge(
+						object.get_object(
+							)->get_bounding_box());
+				}
+			}
+
+			m_shadow_objects_mask |= mask;
+		}
 
 		for (i = 0; i < count; ++i)
 		{
 			convex_bodys[i] = ConvexBody(frustum, i);
+			convex_bodys[i].clip(caster_boxes[i]);
 		}
 
 		m_scene_view.update_shadow_matrices(convex_bodys,

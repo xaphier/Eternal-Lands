@@ -106,7 +106,6 @@ BOOST_AUTO_TEST_CASE(construct)
 
 	BOOST_CHECK_EQUAL(tree->get_max_lod_count(), 8);
 	BOOST_CHECK_EQUAL(tree->get_lod_count(), 4);
-	BOOST_CHECK_EQUAL(tree->get_max_patch_count(), 1024);
 	BOOST_CHECK_EQUAL(tree->get_patch_size(), 16);
 	BOOST_CHECK_CLOSE(tree->get_patch_scale(), 0.25f, 1.0f);
 	BOOST_CHECK_CLOSE(tree->get_morph_zone_ratio(), 0.3f, 1.0f);

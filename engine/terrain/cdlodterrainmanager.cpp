@@ -29,6 +29,7 @@ namespace eternal_lands
 		TextureSharedPtr normal_texture;
 		TextureSharedPtr dudv_texture;
 		StringStream str;
+		glm::vec3 min, max;
 
 		set_terrain_size((glm::vec2(vector_map->get_sizes()) -1.0f) *
 			get_patch_scale());
@@ -39,6 +40,13 @@ namespace eternal_lands
 
 		m_cd_lod_quad_tree.reset(new CdLodQuadTree(vector_map,
 			get_vector_scale(), get_patch_scale()));
+
+		max.x += m_cd_lod_quad_tree->get_grid_size().x *
+			get_patch_scale();
+		max.y += m_cd_lod_quad_tree->get_grid_size().y *
+			get_patch_scale();
+
+		set_bounding_box(BoundingBox(min, max));
 
 		vector_texture = boost::make_shared<Texture>(
 			vector_map->get_name());
@@ -98,6 +106,7 @@ namespace eternal_lands
 	void CdLodTerrainManager::intersect(const Frustum &frustum,
 		const glm::vec3 &camera, TerrainVisitor &terrain) const
 	{
+		BoundingBox bounding_box;
 		Uint32 instance_count;
 
 		terrain.set_instances(0);
@@ -106,9 +115,12 @@ namespace eternal_lands
 		terrain.set_material(m_material);
 
 		m_cd_lod_quad_tree->select_quads_for_drawing(frustum, camera,
-			terrain.get_mapped_uniform_buffer(), instance_count);
+			terrain.get_mapped_uniform_buffer(), bounding_box,
+			instance_count);
 
 		terrain.set_instances(instance_count);
+
+		terrain.set_bounding_box(bounding_box);
 	}
 
 }

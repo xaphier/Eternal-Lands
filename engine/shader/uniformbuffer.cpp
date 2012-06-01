@@ -33,7 +33,7 @@ namespace eternal_lands
 		m_hardware_buffer->bind(btt_uniform);
 		m_hardware_buffer->set_size(btt_uniform,
 			m_uniform_buffer_description->get_size(),
-			hbut_stream_draw);
+			hbut_dynamic_draw);
 		m_hardware_buffer->unbind(btt_uniform);
 
 		DEBUG_CHECK_GL_ERROR();

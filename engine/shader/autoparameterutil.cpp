@@ -110,7 +110,7 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("z_params")),
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("terrain_instances")),
-				pt_mat2x4, 1024),
+				pt_mat2x4, 1000),
 			AutoParameterTypeData(
 				String(UTF8("terrain_lod_offset")), pt_vec4)
 		};
