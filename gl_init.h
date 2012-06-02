@@ -6,8 +6,6 @@
 #ifndef __GL_INIT_H__
 #define __GL_INIT_H__
 
-#include "load_gl_extensions.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -37,7 +35,6 @@ extern float near_plane; /*!< The distance of the near clipping plane to your ac
  * @{ */
 extern int have_stencil; /*!< flag that indicates whether we have the stencil extension or not. \todo shouldn't this go to gl_init.h to all the other OpenGL related variables? */
 extern int use_vertex_buffers; /*!< specifies if we use vertex buffer objects or not */
-extern int use_compiled_vertex_array; /*!< specified if we use compiled vertex array or not */
 extern int use_mipmaps; /*!< indicates whether we use mipmaps or not */
 extern int use_frame_buffer; /*!< specifies if we use frame buffer or not */
 extern int use_draw_range_elements;  /*!< specifies if we use glDrawRangeElements or glDrawElements */

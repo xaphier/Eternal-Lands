@@ -643,10 +643,10 @@ static e3d_object* do_load_e3d_detail(e3d_object* cur_object)
 	if (use_vertex_buffers)
 	{
 		//Generate the buffers
-		ELglGenBuffersARB(1, &cur_object->vertex_vbo);
-		ELglBindBufferARB(GL_ARRAY_BUFFER_ARB,
+		glGenBuffersARB(1, &cur_object->vertex_vbo);
+		glBindBufferARB(GL_ARRAY_BUFFER_ARB,
 			cur_object->vertex_vbo);
-		ELglBufferDataARB(GL_ARRAY_BUFFER_ARB,
+		glBufferDataARB(GL_ARRAY_BUFFER_ARB,
 			cur_object->vertex_no * cur_object->vertex_layout->size,
 			cur_object->vertex_data, GL_STATIC_DRAW_ARB);
 #ifndef	MAP_EDITOR
@@ -654,10 +654,10 @@ static e3d_object* do_load_e3d_detail(e3d_object* cur_object)
 		cur_object->vertex_data = 0;
 #endif	//MAP_EDITOR
 		
-		ELglGenBuffersARB(1, &cur_object->indices_vbo);
-		ELglBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
+		glGenBuffersARB(1, &cur_object->indices_vbo);
+		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
 			cur_object->indices_vbo);
-		ELglBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
+		glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
 			cur_object->index_no * indices_size,
 			cur_object->indices, GL_STATIC_DRAW_ARB);
 #ifndef	MAP_EDITOR
@@ -665,8 +665,8 @@ static e3d_object* do_load_e3d_detail(e3d_object* cur_object)
 		cur_object->indices = 0;
 #endif	//MAP_EDITOR
 				
-		ELglBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-		ELglBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+		glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 	}
 	else
 	{

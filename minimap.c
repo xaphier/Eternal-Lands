@@ -731,17 +731,10 @@ void load_exploration_map ()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	}
 
-	if(have_extension(arb_texture_compression))
-	{
-		if(have_extension(ext_texture_compression_s3tc))
-			glTexImage2D(GL_TEXTURE_2D,0,GL_COMPRESSED_RGB_S3TC_DXT1_EXT, minimap_size, minimap_size,0,GL_LUMINANCE,GL_UNSIGNED_BYTE,&exploration_map);
-		else
-			glTexImage2D(GL_TEXTURE_2D,0,GL_COMPRESSED_LUMINANCE, minimap_size, minimap_size,0,GL_ALPHA,GL_UNSIGNED_BYTE,&exploration_map);
-		
-	}
+	if (GLEW_EXT_texture_compression_s3tc)
+		glTexImage2D(GL_TEXTURE_2D,0,GL_COMPRESSED_RGB_S3TC_DXT1_EXT, minimap_size, minimap_size,0,GL_LUMINANCE,GL_UNSIGNED_BYTE,&exploration_map);
 	else
-		glTexImage2D(GL_TEXTURE_2D,0,GL_LUMINANCE, minimap_size, minimap_size,0,GL_LUMINANCE,GL_UNSIGNED_BYTE,&exploration_map);
-	
+		glTexImage2D(GL_TEXTURE_2D,0,GL_COMPRESSED_LUMINANCE, minimap_size, minimap_size,0,GL_ALPHA,GL_UNSIGNED_BYTE,&exploration_map);
 
 	CHECK_GL_ERRORS();	
 }

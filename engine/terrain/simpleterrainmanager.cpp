@@ -174,9 +174,6 @@ namespace eternal_lands
 
 		min = glm::min(min, max - 0.05f);
 
-		std::cout << "min: " << glm::to_string(min) << std::endl;
-		std::cout << "max: " << glm::to_string(max) << std::endl;
-
 		sub_meshs.push_back(SubMesh(BoundingBox(min, max), 0,
 			index_count, 0, vertex_count - 1));
 

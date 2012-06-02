@@ -12,7 +12,6 @@
 #include "../io/elfilewrapper.h"
 #include "../textures.h"
 #ifdef	NEW_TEXTURES
-#include "../load_gl_extensions.h"
 #include "../weather.h"
 #endif	/* NEW_TEXTURES */
 
@@ -306,12 +305,12 @@ namespace ec
 		glVertexPointer(3, GL_FLOAT, 10 * sizeof(float),
 			static_cast<char*>(0) + 4 * sizeof(float));
 
-		ELglClientActiveTextureARB(GL_TEXTURE0);
+		glClientActiveTexture(GL_TEXTURE0);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2, GL_FLOAT, 10 * sizeof(float),
 			static_cast<char*>(0) + 7 * sizeof(float));
 
-		ELglClientActiveTextureARB(GL_TEXTURE1);
+		glClientActiveTextureARB(GL_TEXTURE1);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(1, GL_FLOAT, 10 * sizeof(float),
 			static_cast<char*>(0) + 9 * sizeof(float));
@@ -320,9 +319,9 @@ namespace ec
 
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);
-		ELglClientActiveTextureARB(GL_TEXTURE1);
+		glClientActiveTexture(GL_TEXTURE1);
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		ELglClientActiveTextureARB(GL_TEXTURE0);
+		glClientActiveTexture(GL_TEXTURE0);
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
 #endif	/* NEW_TEXTURES */
@@ -354,7 +353,7 @@ namespace ec
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_NORMAL_ARRAY);
 
-		ELglMultiTexCoord1f(GL_TEXTURE1, get_texture_coordinate(1.0f));
+		glMultiTexCoord1f(GL_TEXTURE1, get_texture_coordinate(1.0f));
 		glNormalPointer(GL_FLOAT, 3 * sizeof(float),
 			static_cast<char*>(0) + vertex_count * 3 * sizeof(float));
 		glVertexPointer(3, GL_FLOAT, 3 * sizeof(float),
@@ -1049,7 +1048,7 @@ namespace ec
 		glEnableClientState(GL_NORMAL_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 
-		ELglMultiTexCoord1f(GL_TEXTURE1, get_texture_coordinate(1.0f));
+		glMultiTexCoord1f(GL_TEXTURE1, get_texture_coordinate(1.0f));
 		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(CaplessCylindersVertex),
 			static_cast<char*>(0) + 6 * sizeof(float));
 		glNormalPointer(GL_FLOAT, sizeof(CaplessCylindersVertex),
@@ -2149,7 +2148,7 @@ namespace ec
 
 	void EyeCandy::set_particle_texture_combiner()
 	{
-		ELglActiveTextureARB(GL_TEXTURE1);
+		glActiveTexture(GL_TEXTURE1);
 
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
@@ -2167,7 +2166,7 @@ namespace ec
 		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
 		glTexEnvi(GL_TEXTURE_ENV, GL_ALPHA_SCALE, 1);
 
-		ELglActiveTextureARB(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0);
 
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
@@ -2195,7 +2194,7 @@ namespace ec
 		color[2] = alpha_scale;
 		color[3] = alpha_scale;
 
-		ELglActiveTextureARB(GL_TEXTURE1);
+		glActiveTexture(GL_TEXTURE1);
 
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 		glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -2212,7 +2211,7 @@ namespace ec
 		glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
 		glTexEnvi(GL_TEXTURE_ENV, GL_ALPHA_SCALE, 1);
 
-		ELglActiveTextureARB(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0);
 
 		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR, color);
 
@@ -2421,11 +2420,11 @@ namespace ec
 
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-		ELglActiveTextureARB(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0);
 		glEnable(GL_TEXTURE_2D);
 		bind_texture(texture_atlas);
 
-		ELglActiveTextureARB(GL_TEXTURE1);
+		glActiveTexture(GL_TEXTURE1);
 		glEnable(GL_TEXTURE_2D);
 		bind_texture(texture_burn);
 
@@ -2473,11 +2472,11 @@ namespace ec
 	void EyeCandy::end_draw()
 	{
 #ifdef	NEW_TEXTURES
-		ELglActiveTextureARB(GL_TEXTURE1);
+		glActiveTexture(GL_TEXTURE1);
 		glDisable(GL_TEXTURE_2D);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-		ELglActiveTextureARB(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 #ifndef MAP_EDITOR

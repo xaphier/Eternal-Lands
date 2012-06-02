@@ -886,6 +886,8 @@ extern "C" void engine_build_buffers(actor_types* a)
 
 	DEBUG_CHECK_GL_ERROR();
 
+	assert(scene.get() != nullptr);
+
 	scene->get_scene_resources().get_actor_data_cache()->add_actor(
 		a->actor_type, a->coremodel, 
 		el::String(el::string_to_utf8(a->actor_name)),

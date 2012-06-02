@@ -10,7 +10,6 @@
 #include "errors.h"
 #include "gl_init.h"
 #include "init.h"
-#include "load_gl_extensions.h"
 #include "map.h"
 #ifdef	NEW_TEXTURES
 #include "image.h"
@@ -157,8 +156,8 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 			compressed = tct_latc;
 			break;
 		case ift_ati2:
-			if ((!have_extension(ext_texture_compression_latc))
-				&& have_extension(ati_texture_compression_3dc))
+			if ((!GLEW_EXT_texture_compression_latc)
+				&& GLEW_ATI_texture_compression_3dc)
 			{
 				internal_format = GL_COMPRESSED_LUMINANCE_ALPHA_3DC_ATI;
 				compressed = tct_3dc;
@@ -174,14 +173,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 			return 0;
 	}
 
-	if ((compressed != 0) && (!have_extension(arb_texture_compression)))
-	{
-		LOG_ERROR_OLD("Can't use compressed source formats because "
-			"GL_ARB_texture_compression is not supported.");
-		return 0;
-	}
-
-	if ((!have_extension(ext_texture_compression_s3tc)) &&
+	if ((!GLEW_EXT_texture_compression_s3tc) &&
 		((compressed & tct_s3tc) == tct_s3tc))
 	{
 		LOG_ERROR_OLD("Can't use s3tc compressed source formats because "
@@ -189,7 +181,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 		return 0;
 	}
 
-	if ((!have_extension(ext_texture_compression_latc)) &&
+	if ((!GLEW_EXT_texture_compression_latc) &&
 		((compressed & tct_latc) == tct_latc))
 	{
 		LOG_ERROR_OLD("Can't use s3tc compressed source formats because "
@@ -197,7 +189,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 		return 0;
 	}
 
-	if ((!have_extension(ati_texture_compression_3dc)) &&
+	if ((!GLEW_ATI_texture_compression_3dc) &&
 		((compressed & tct_3dc) == tct_3dc))
 	{
 		LOG_ERROR_OLD("Can't use s3tc compressed source formats because "
@@ -252,8 +244,8 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 				compression = tct_latc;
 				break;
 			case tft_ati2:
-				if ((!have_extension(ext_texture_compression_latc))
-					&& have_extension(ati_texture_compression_3dc))
+				if ((!GLEW_EXT_texture_compression_latc)
+					&& GLEW_ATI_texture_compression_3dc)
 				{
 					internal_format = GL_COMPRESSED_LUMINANCE_ALPHA_3DC_ATI;
 					compression = tct_3dc;
@@ -271,14 +263,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 		}
 	}
 
-	if ((compression != 0) && (!have_extension(arb_texture_compression)))
-	{
-		LOG_ERROR_OLD("Can't use compressed texture format, because "
-			"GL_ARB_texture_compression is not supported.");
-		return 0;
-	}
-
-	if ((!have_extension(ext_texture_compression_s3tc)) &&
+	if ((!GLEW_EXT_texture_compression_s3tc) &&
 		((compression & tct_s3tc) == tct_s3tc))
 	{
 		LOG_ERROR_OLD("Can't use s3tc compressed texture format, because "
@@ -286,7 +271,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 		return 0;
 	}
 
-	if ((!have_extension(ext_texture_compression_latc)) &&
+	if ((!GLEW_EXT_texture_compression_latc) &&
 		((compression & tct_latc) == tct_latc))
 	{
 		LOG_ERROR_OLD("Can't use s3tc compressed texture format, because "
@@ -294,7 +279,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 		return 0;
 	}
 
-	if ((!have_extension(ati_texture_compression_3dc)) &&
+	if ((!GLEW_ATI_texture_compression_3dc) &&
 		((compression & tct_3dc) == tct_3dc))
 	{
 		LOG_ERROR_OLD("Can't use s3tc compressed texture format, because "
@@ -344,7 +329,7 @@ static GLuint build_texture(image_t* image, const Uint32 wrap_mode_repeat,
 
 		if (compressed != 0)
 		{
-			ELglCompressedTexImage2D(GL_TEXTURE_2D, i,
+			glCompressedTexImage2D(GL_TEXTURE_2D, i,
 				internal_format, width, height, 0,
 				image->sizes[i], ptr);
 		}
@@ -509,22 +494,17 @@ static Uint32 get_supported_compression_formats()
 
 	result = 0;
 
-	if (!have_extension(arb_texture_compression))
-	{
-		return result;
-	}
-
-	if (have_extension(ext_texture_compression_s3tc))
+	if (GLEW_EXT_texture_compression_s3tc)
 	{
 		result |= tct_s3tc;
 	}
 
-	if (have_extension(ati_texture_compression_3dc))
+	if (GLEW_ATI_texture_compression_3dc)
 	{
 		result |= tct_3dc;
 	}
 
-	if (have_extension(ext_texture_compression_latc))
+	if (GLEW_EXT_texture_compression_latc)
 	{
 		result |= tct_latc;
 	}

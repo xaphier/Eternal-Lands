@@ -30,7 +30,6 @@
 #include "hud.h"
 #include "interface.h"
 #include "list.h"
-#include "load_gl_extensions.h"
 #include "tabs.h"
 #include "text.h"
 #include "translate.h"

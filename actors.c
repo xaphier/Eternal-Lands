@@ -14,7 +14,6 @@
 #include "gl_init.h"
 #include "global.h"
 #include "interface.h"
-#include "load_gl_extensions.h"
 #include "map.h"
 #include "missiles.h"
 #include "new_actors.h"
@@ -1194,8 +1193,7 @@ void get_actors_in_range()
 
 void display_actors(int banner, int render_pass)
 {
-	Sint32 i, has_alpha, has_ghosts;
-	Uint32 use_lightning = 0, use_textures = 0;
+	Sint32 i;
 
 	get_actors_in_range();
 
@@ -1205,8 +1203,8 @@ void display_actors(int banner, int render_pass)
 		{
 			glPushAttrib(GL_TEXTURE_BIT|GL_ENABLE_BIT);
 			glDisable(GL_TEXTURE_2D);
-			ELglActiveTextureARB(shadow_unit);
-			ELglActiveTextureARB(GL_TEXTURE0);
+			glActiveTextureARB(shadow_unit);
+			glActiveTextureARB(GL_TEXTURE0);
 			glEnable(GL_TEXTURE_2D);
 			glTexEnvi (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		}

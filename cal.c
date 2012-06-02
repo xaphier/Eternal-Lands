@@ -5,7 +5,6 @@
 #include "errors.h"
 #include "font.h"
 #include "global.h"
-#include "load_gl_extensions.h"
 #include "missiles.h"
 #include "shadows.h"
 #include "translate.h"
@@ -737,8 +736,8 @@ void cal_render_actor(actor *act, Uint32 use_lightning, Uint32 use_textures, Uin
 
 						if(use_shadow_mapping){
 							glPushAttrib(GL_TEXTURE_BIT|GL_ENABLE_BIT);
-							ELglActiveTextureARB(shadow_unit);
-							ELglActiveTextureARB(GL_TEXTURE0);
+							glActiveTextureARB(shadow_unit);
+							glActiveTextureARB(GL_TEXTURE0);
 						}
 
 						glColor4f(glow_colors[glow].r, glow_colors[glow].g, glow_colors[glow].b, 0.5f);

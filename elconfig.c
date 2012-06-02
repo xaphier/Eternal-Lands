@@ -603,85 +603,12 @@ void change_poor_man(int *poor_man)
 	}
 }
 
-void change_compiled_vertex_array(int *value)
-{
-	if (*value) {
-		*value= 0;
-	}
-	else if (!gl_extensions_loaded || have_extension(ext_compiled_vertex_array))
-	{
-		// don't check if we have hardware support when OpenGL
-		// extensions are not initialized yet.
-		*value= 1;
-	}
-	else LOG_TO_CONSOLE(c_green2,disabled_compiled_vertex_arrays);
-}
-
-void change_vertex_buffers(int *value)
-{
-	if (*value) {
-		*value= 0;
-	}
-	else if (!gl_extensions_loaded || have_extension(arb_vertex_buffer_object))
-	{
-		// don't check if we have hardware support when OpenGL
-		// extensions are not initialized yet.
-		*value= 1;
-	}
-//	else LOG_TO_CONSOLE(c_green2,disabled_vertex_buffers);
-}
-
-void change_clouds_shadows(int *value)
-{
-	if (*value) {
-		*value= 0;
-	}
-	else if (!gl_extensions_loaded || (get_texture_units() >= 2))
-	{
-		// don't check if we have hardware support when OpenGL
-		// extensions are not initialized yet.
-		*value= 1;
-	}
-//	else LOG_TO_CONSOLE(c_green2,disabled_clouds_shadows);
-}
-
-#ifdef	NEW_TEXTURES
-void change_eye_candy(int *value)
-{
-	if (*value)
-	{
-		*value = 0;
-	}
-	else if (!gl_extensions_loaded || ((get_texture_units() >= 2) &&
-		supports_gl_version(1, 5)))
-	{
-		// don't check if we have hardware support when OpenGL
-		// extensions are not initialized yet.
-		*value = 1;
-	}
-}
-#else	/* NEW_TEXTURES */
-void change_mipmaps(int *value)
-{
-	if (*value) {
-		*value= 0;
-	}
-	else if (!gl_extensions_loaded || have_extension(sgis_generate_mipmap))
-	{
-		// don't check if we have hardware support when OpenGL
-		// extensions are not initialized yet.
-		*value= 1;
-	}
-//	else LOG_TO_CONSOLE(c_green2,disabled_mipmaps);
-}
-#endif	/* NEW_TEXTURES */
-
 void change_point_particles(int *value)
 {
 	if (*value) {
 		*value= 0;
 	}
-	else if (!gl_extensions_loaded || have_extension(arb_point_sprite))
+	else if (!gl_extensions_loaded)
 	{
 		// don't check if we have hardware support when OpenGL
 		// extensions are not initialized yet.
@@ -707,9 +634,7 @@ void change_new_selection(int *value)
 	{
 		if (gl_extensions_loaded)
 		{
-			if ((supports_gl_version(1, 3) ||
-				have_extension(arb_texture_env_combine)) &&
-				(get_texture_units() > 1) && (bpp == 32))
+			if (bpp == 32)
 			{
 				*value = 1;
 			}
@@ -1183,28 +1108,6 @@ void change_separate_flag(int * pointer) {
 }
 #endif
 
-void change_shadow_mapping (int *sm)
-{
-	if (*sm)
-	{
-		*sm= 0;
-	}
-	else
-	{
-		// don't check if we have hardware support when OpenGL
-		// extensions are not initialized yet.
-		if (!gl_extensions_loaded || ((get_texture_units() >= 3) &&
-			have_extension(arb_shadow) && have_extension(arb_texture_env_combine)))
-		{
-			*sm= 1;
-		}
-		else
-		{
-			LOG_TO_CONSOLE (c_red1, disabled_shadow_mapping);
-		}
-	}
-}
-
 #ifndef MAP_EDITOR2
 void change_global_filters (int *use)
 {
@@ -1233,7 +1136,7 @@ void change_frame_buffer(int *fb)
 	}
 	else
 	{
-		if (!gl_extensions_loaded || have_extension(ext_framebuffer_object))
+		if (!gl_extensions_loaded || GLEW_EXT_framebuffer_object)
 		{
 			*fb= 1;
 		}
@@ -1440,8 +1343,6 @@ static __inline__ void check_option_var(char* name)
 
 void check_options()
 {
-	check_option_var("use_compiled_vertex_array");
-	check_option_var("use_vertex_buffers");
 	check_option_var("clouds_shadows");
 #ifdef	NEW_TEXTURES
 	check_option_var("use_eye_candy");
@@ -1900,10 +1801,6 @@ static void init_ELC_vars(void)
 	}
 #endif	/* FSAA */
 	add_var (OPT_BOOL, "use_frame_buffer", "fb", &use_frame_buffer, change_frame_buffer, 0, "Toggle Frame Buffer Support", "Toggle frame buffer support. Used for reflection and shadow mapping.", VIDEO);
-#ifndef	NEW_TEXTURES
-	add_var(OPT_BOOL,"use_mipmaps","mm",&use_mipmaps,change_mipmaps,0,"Mipmaps","Mipmaps is a texture effect that blurs the texture a bit - it may look smoother and better, or it may look worse depending on your graphics driver settings and the like.",VIDEO);
-#endif	/* NEW_TEXTURES */
-	add_var(OPT_BOOL,"use_vertex_buffers","vbo",&use_vertex_buffers,change_vertex_buffers,0,"Vertex Buffer Objects","Toggle the use of the vertex buffer objects, restart required to activate it",VIDEO);
 	add_var(OPT_BOOL_INI, "video_info_sent", "svi", &video_info_sent, change_var, 0, "Video info sent", "Video information are sent to the server (like OpenGL version and OpenGL extentions)", VIDEO);
 	// VIDEO TAB
 
@@ -1929,11 +1826,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL,"skybox_show_stars","sky_stars", &skybox_show_stars, change_sky_var,1,"Show Stars", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX);
 	add_var(OPT_INT,"skybox_update_delay","skybox_update_delay", &skybox_update_delay, change_int, skybox_update_delay, "Sky Update Delay", "Specifies the delay in seconds between 2 updates of the sky and the environment. A value of 0 corresponds to an update at every frame.", GFX, 0, 60);
 	add_var(OPT_BOOL,"special_effects", "sfx", &special_effects, change_var, 1, "Toggle Special Effects", "Special spell effects", GFX);
-#ifdef	NEW_TEXTURES
-	add_var(OPT_BOOL,"use_eye_candy", "ec", &use_eye_candy, change_eye_candy, 1, "Enable Eye Candy", "Toggles most visual effects, like spells' and harvesting events'. Needs OpenGL 1.5", GFX);
-#else	/* NEW_TEXTURES */
 	add_var(OPT_BOOL,"use_eye_candy", "ec", &use_eye_candy, change_var, 1, "Enable Eye Candy", "Toggles most visual effects, like spells' and harvesting events'", GFX);
-#endif	/* NEW_TEXTURES */
 	add_var(OPT_BOOL,"enable_blood","eb",&enable_blood,change_var,0,"Enable Blood","Enable blood special effects during combat.",GFX);
 	add_var(OPT_BOOL,"use_harvesting_eye_candy","uharvec",&use_harvesting_eye_candy,change_var,0,"Enable harvesting effect","This effect shows that you're harvesting. Only you can see it!",GFX);
 	add_var(OPT_BOOL,"use_lamp_halo","ulh",&use_lamp_halo,change_var,0,"Use Lamp Halos","Enable halos for torches, candles, etc.",GFX);
@@ -1986,7 +1879,6 @@ static void init_ELC_vars(void)
 	// Grum: attempt to work around bug in Ati linux drivers.
 	add_var(OPT_BOOL,"ati_click_workaround", "atibug", &ati_click_workaround, change_var, 0, "ATI Bug", "If you are using an ATI graphics card and don't move when you click, try this option to work around a bug in their drivers.", TROUBLESHOOT);
 	add_var (OPT_BOOL,"use_old_clicker", "oldmclick", &use_old_clicker, change_var, 0, "Mouse Bug", "Unrelated to ATI graphics cards, if clicking to walk doesn't move you, try toggling this option.", TROUBLESHOOT);
-	add_var(OPT_BOOL,"use_compiled_vertex_array","cva",&use_compiled_vertex_array,change_compiled_vertex_array,1,"Compiled Vertex Array","Some systems will not support the new compiled vertex array in EL. Disable this if some 3D objects do not display correctly.",TROUBLESHOOT);
 	add_var(OPT_BOOL,"use_draw_range_elements","dre",&use_draw_range_elements,change_var,1,"Draw Range Elements","Disable this if objects appear partially stretched.",TROUBLESHOOT);
 	add_var(OPT_BOOL,"use_point_particles","upp",&use_point_particles,change_point_particles,1,"Point Particles","Some systems will not support the new point based particles in EL. Disable this if your client complains about not having the point based particles extension.",TROUBLESHOOT);
 #ifndef	NEW_TEXTURES

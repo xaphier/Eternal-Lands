@@ -654,85 +654,8 @@ void init_gl_extensions()
 		exit(1);
 	}
 
-	init_opengl_extensions();
-
-	/*	GL_ARB_multitexture			*/
-	if (have_extension(arb_multitexture))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_multitexture");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_multitexture");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_multitexture			*/
-
-	/*	GL_ARB_texture_env_combine		*/
-	if (have_extension(arb_texture_env_combine))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_texture_env_combine");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_texture_env_combine");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_texture_env_combine		*/
-
-	/*	GL_EXT_compiled_vertex_array		*/
-	if (have_extension(ext_compiled_vertex_array))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_EXT_compiled_vertex_array");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_EXT_compiled_vertex_array");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_EXT_compiled_vertex_array		*/
-
-	/*	GL_ARB_point_sprite			*/
-	if (have_extension(ext_compiled_vertex_array))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_point_sprite");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_point_sprite");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_point_sprite		*/
-
-	/*	GL_ARB_texture_compression		*/
-	if (have_extension(arb_texture_compression))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_texture_compression");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_texture_compression");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_texture_compression		*/
-
 	/*	GL_EXT_texture_compression_s3tc		*/
-	if (have_extension(ext_texture_compression_s3tc))
+	if (GLEW_EXT_texture_compression_s3tc)
 	{
 		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_EXT_texture_compression_s3tc");
 		LOG_TO_CONSOLE(c_green2, str);
@@ -745,54 +668,9 @@ void init_gl_extensions()
 		LOG_DEBUG_OLD("%s\n",str);
 	}
 	/*	GL_EXT_texture_compression_s3tc		*/
-	
-	/*	GL_SGIS_generate_mipmap			*/
-	if (have_extension(sgis_generate_mipmap))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_SGIS_generate_mipmap");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_SGIS_generate_mipmap");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_SGIS_generate_mipmap			*/
-
-	/*	GL_ARB_shadow				*/
-	if (have_extension(arb_shadow))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_shadow");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_shadow");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_shadow				*/
-
-	/*	GL_ARB_vertex_buffer_object		*/
-	if (have_extension(arb_vertex_buffer_object))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_vertex_buffer_object");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_vertex_buffer_object");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_vertex_buffer_object		*/
 
 	/*	GL_EXT_framebuffer_object		*/
-	if (have_extension(ext_framebuffer_object))
+	if (GLEW_EXT_framebuffer_object)
 	{
 		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_EXT_framebuffer_object");
 		LOG_TO_CONSOLE(c_green2, str);
@@ -805,144 +683,9 @@ void init_gl_extensions()
 		LOG_DEBUG_OLD("%s\n",str);
 	}
 	/*	GL_EXT_framebuffer_object		*/
-	
-	/*	GL_EXT_draw_range_elements		*/
-	if (have_extension(ext_draw_range_elements))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_EXT_draw_range_elements");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_EXT_draw_range_elements");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_EXT_draw_range_elements		*/
-
-	/*	GL_ARB_texture_non_power_of_two		*/
-	if (have_extension(arb_texture_non_power_of_two))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_texture_non_power_of_two");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_texture_non_power_of_two");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_texture_non_power_of_two		*/
-
-	/*	GL_ARB_fragment_program			*/
-	if (have_extension(arb_fragment_program))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_fragment_program");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_fragment_program");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_fragment_program			*/
-
-	/*	GL_ARB_vertex_program			*/
-	if (have_extension(arb_vertex_program))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_vertex_program");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_vertex_program");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_vertex_program			*/
-
-	/*	GL_ARB_fragment_shader			*/
-	if (have_extension(arb_fragment_shader))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_fragment_shader");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_fragment_shader");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_fragment_shader			*/
-
-	/*	GL_ARB_vertex_shader			*/
-	if (have_extension(arb_vertex_shader))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_vertex_shader");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_vertex_shader");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_vertex_shader			*/
-
-	/*	GL_ARB_shader_objects			*/
-	if (have_extension(arb_shader_objects))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_shader_objects");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_shader_objects");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_shader_objects			*/
-
-	/*	GL_ARB_shading_language_100		*/
-	if (have_extension(arb_shading_language_100))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ARB_shading_language_100");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_shading_language_100");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_shading_language_100		*/
-
-	/*	GL_ARB_texture_mirrored_repeat		*/
-	if (have_extension(arb_texture_mirrored_repeat))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found_not_used, "GL_ARB_texture_mirrored_repeat");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_ARB_texture_mirrored_repeat");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_ARB_texture_mirrored_repeat		*/
 
 	/*	GL_ARB_texture_rectangle		*/
-	if (have_extension(arb_texture_rectangle))
+	if (GLEW_ARB_texture_rectangle)
 	{
 		safe_snprintf(str, sizeof(str), gl_ext_found_not_used, "GL_ARB_texture_rectangle");
 		LOG_TO_CONSOLE(c_green2, str);
@@ -956,23 +699,8 @@ void init_gl_extensions()
 	}
 	/*	GL_ARB_texture_rectangle		*/
 
-	/*	GL_EXT_fog_coord			*/
-	if (have_extension(ext_fog_coord))
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_found_not_used, "GL_EXT_fog_coord");
-		LOG_TO_CONSOLE(c_green2, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	else
-	{
-		safe_snprintf(str, sizeof(str), gl_ext_not_found, "GL_EXT_fog_coord");
-		LOG_TO_CONSOLE(c_red1, str);
-		LOG_DEBUG_OLD("%s\n",str);
-	}
-	/*	GL_EXT_fog_coord			*/
-
 	/*	GL_ATI_texture_compression_3dc		*/
-	if (have_extension(ati_texture_compression_3dc))
+	if (GLEW_ATI_texture_compression_3dc)
 	{
 		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_ATI_texture_compression_3dc");
 		LOG_TO_CONSOLE(c_green2, str);
@@ -987,7 +715,7 @@ void init_gl_extensions()
 	/*	GL_ATI_texture_compression_3dc		*/
 
 	/*	GL_EXT_texture_compression_latc		*/
-	if (have_extension(ext_texture_compression_latc))
+	if (GLEW_EXT_texture_compression_latc)
 	{
 		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_EXT_texture_compression_latc");
 		LOG_TO_CONSOLE(c_green2, str);
@@ -1002,7 +730,7 @@ void init_gl_extensions()
 	/*	GL_EXT_texture_compression_latc		*/
 
 	/*	GL_EXT_texture_filter_anisotropic	*/
-	if (have_extension(ext_texture_filter_anisotropic))
+	if (GLEW_EXT_texture_filter_anisotropic)
 	{
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &anisotropic_filter);
 		safe_snprintf(str, sizeof(str), gl_ext_found, "GL_EXT_texture_filter_anisotropic");
