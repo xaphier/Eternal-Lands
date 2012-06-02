@@ -1054,7 +1054,7 @@ void add_enhanced_actor_from_server (const char *in_data, int len)
 	if (actors_list[i]->buffs & BUFF_DOUBLE_SPEED)
 		actors_list[i]->step_duration /= 2;
 
-    actors_list[i]->z_pos = get_actor_z(actors_list[i]);
+    actors_list[i]->z_pos = get_tile_height_linear(actors_list[i]->x_pos + 0.25f, actors_list[i]->y_pos + 0.25f);
 	if(frame==frame_sit_idle||(pose!=NULL&&pose->pose==EMOTE_SITTING)){ //sitting pose sent by the server
 			actors_list[i]->poses[EMOTE_SITTING]=pose;
 			if(actors_list[i]->actor_id==yourself)you_sit_down();

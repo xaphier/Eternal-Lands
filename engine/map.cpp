@@ -27,6 +27,7 @@
 #include "terrain/cdlodterrainmanager.hpp"
 #include "codec/codecmanager.hpp"
 #include "globalvars.hpp"
+#include "image.hpp"
 
 namespace eternal_lands
 {
@@ -54,7 +55,7 @@ namespace eternal_lands
 
 		file_name = FileSystem::get_name_without_extension(name);
 
-		vector_map_name = String(file_name.get() + UTF8("_vector.dds"));
+		vector_map_name = String(file_name.get() + UTF8("_vector.png"));
 		normal_map_name = String(file_name.get() + UTF8("_normal.dds"));
 		dudv_map_name = String(file_name.get() + UTF8("_dudv.dds"));
 
@@ -65,12 +66,14 @@ namespace eternal_lands
 			return;
 		}
 
+		vector_map = codec_manager->load_image(vector_map_name,
+			file_system, ImageCompressionTypeSet(), true);
+
+		init_walk_height_map(vector_map);
+
 		if (global_vars->get_opengl_3_2())
 		{
 			compressions.insert(ict_rgtc);
-
-			vector_map = codec_manager->load_image(vector_map_name,
-				file_system, compressions, true);
 
 			normal_map = codec_manager->load_image(normal_map_name,
 				file_system, compressions, true);
@@ -86,9 +89,6 @@ namespace eternal_lands
 			return;
 		}
 
-		vector_map = codec_manager->load_image(vector_map_name,
-			file_system, ImageCompressionTypeSet(), true);
-
 		normal_map = codec_manager->load_image(normal_map_name,
 			file_system, ImageCompressionTypeSet(), true);
 
@@ -103,6 +103,29 @@ namespace eternal_lands
 
 	Map::~Map() noexcept
 	{
+	}
+
+	void Map::init_walk_height_map(const ImageSharedPtr &vector_map)
+	{
+		glm::uvec2 size;
+		Uint32 x, y;
+		float scale, z;
+
+		size = glm::uvec2(vector_map->get_sizes());
+
+		scale = AbstractTerrainManager::get_vector_scale().z;
+
+		m_walk_height_map.resize(boost::extents[size.x][size.y]);
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				z = vector_map->get_pixel(x, y, 0, 0, 0).z;
+
+				m_walk_height_map[x][y] = z * scale;
+			}
+		}
 	}
 
 	void Map::add_object(const ObjectDescription &object_description)

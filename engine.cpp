@@ -724,7 +724,7 @@ extern "C" void engine_cull_scene()
 	{
 		focus.x = me->x_pos + 0.25f;
 		focus.y = me->y_pos + 0.25f;
-		focus.z = -2.2f + height_map[me->y_tile_pos*tile_map_size_x*6+me->x_tile_pos]*0.2f;
+		focus.z = me->z_pos;
 
 		scene->set_focus(focus);
 	}
@@ -913,13 +913,6 @@ extern "C" void engine_set_transformation_buffers(actor* actor)
 	offset = glm::vec3(actor->x_pos, actor->y_pos, actor->z_pos);
 
 	assert(glm::all(glm::lessThanEqual(glm::abs(offset), glm::vec3(1e7f))));
-
-	if (offset.z == 0.0f)
-	{
-		//actor is walking, as opposed to flying, get the height underneath
-		offset.z = -2.2f + height_map[actor->y_tile_pos * tile_map_size_x * 6
-			+ actor->x_tile_pos] * 0.2f;
-	}
 
 	offset.x += 0.25f;
 	offset.y += 0.25f;
@@ -1665,4 +1658,117 @@ extern "C" void engine_set_effect_debug(const int value)
 		scene->get_scene_resources().get_effect_cache()->reload(
 			effect_debug);
 	}
+}
+
+float get_tile_height_old(const int x, const int y)
+{
+	float z;
+	int i, j, tmp, count;
+
+	if (!get_tile_valid(x, y))
+	{
+		return 0.0f;
+	}
+
+	tmp = height_map[y * tile_map_size_x * 6 + x];
+
+	if (tmp != 0)
+	{
+		return tmp * 0.2f - 2.2f;
+	}
+
+	tmp = 0;
+	count = 0;
+
+	for (j = y - 1; j <= (y + 1); ++j)
+	{
+		for (i = x - 1; i <= (x + 1); ++i)
+		{
+			if (get_tile_walkable(i, j))
+			{
+				tmp += height_map[j * tile_map_size_x * 6 + i];
+				count++;
+			}
+		}
+	}
+
+	z = tmp;
+
+	if (count > 1)
+	{
+		z /= count;
+	}
+
+	return z * 0.2f - 2.2f;
+}
+
+extern "C" float get_tile_height(const int x, const int y)
+{
+	if (!get_tile_valid(x, y))
+	{
+		return 0.0f;
+	}
+
+	if (scene.get() == nullptr)
+	{
+		return get_tile_height_old(x, y);
+	}
+
+	if (!scene->get_terrain())
+	{
+		return get_tile_height_old(x, y);
+	}
+
+	return scene->get_walk_height(x * 2, y * 2);
+}
+
+extern "C" float get_tile_height_linear(const float x, const float y)
+{
+	glm::vec2 pos, scale;
+	glm::ivec2 ipos, ipos0, ipos1, size;
+	float h0, h1, h2, h3, t0, t1;
+
+	if (scene.get() == nullptr)
+	{
+		return get_tile_height_old(x * 2, y * 2);
+	}
+
+	if (!scene->get_terrain())
+	{
+		return get_tile_height_old(x * 2, y * 2);
+	}
+
+	pos = glm::vec2(x, y) * 4.0f;
+	ipos = pos;
+	scale = pos - glm::vec2(ipos);
+
+	size = scene->get_walk_height_map_size();
+
+	ipos0 = glm::clamp(ipos, glm::ivec2(0), size - 1);
+	ipos1 = glm::clamp(ipos + 1, glm::ivec2(0), size - 1);
+
+	h0 = scene->get_walk_height(ipos0.x, ipos0.y);
+	h1 = scene->get_walk_height(ipos1.x, ipos0.y);
+	h2 = scene->get_walk_height(ipos0.x, ipos1.y);
+	h3 = scene->get_walk_height(ipos1.x, ipos1.y);
+
+	t0 = glm::mix(h0, h1, scale.x);
+	t1 = glm::mix(h2, h3, scale.x);
+
+	return glm::mix(t0, t1, scale.y);
+}
+
+extern "C" int engine_has_terrain()
+{
+	if (scene.get() == nullptr)
+	{
+		return 0;
+	}
+
+	if (!scene->get_terrain())
+	{
+		return 0;
+	}
+
+	return 1;
 }

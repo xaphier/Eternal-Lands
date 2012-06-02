@@ -811,16 +811,6 @@ static __inline__ void set_our_actor (actor *act)
 }
 
 /*!
- * \brief Get the Z position of an actor according to its position on the height map
- * \param a the actor
- * \return the Z position of the actor
- */
-static __inline__ float get_actor_z(actor *a)
-{
-	return get_tile_height(a->x_tile_pos, a->y_tile_pos);
-}
-
-/*!
  * \brief Get the scale factor of an actor
  * \param a the actor
  * \return the scale factor of the actor

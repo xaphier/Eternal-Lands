@@ -249,7 +249,7 @@ namespace eternal_lands
 
 		m_scene_resources.init(get_file_system());
 
-		if (get_global_vars()->get_opengl_3_1())
+		if (get_global_vars()->get_opengl_3_2())
 		{
 			DEBUG_CHECK_GL_ERROR();
 
@@ -619,7 +619,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		if (get_global_vars()->get_opengl_3_1())
+		if (get_global_vars()->get_opengl_3_2())
 		{
 			TerrainVisitor terrain_visitor(
 				m_visible_terrain.get_uniform_buffer(
@@ -693,7 +693,7 @@ namespace eternal_lands
 
 		m_shadow_objects_mask.reset();
 
-		if (get_global_vars()->get_opengl_3_1())
+		if (get_global_vars()->get_opengl_3_2())
 		{
 			count = m_shadow_terrain.size();
 
@@ -862,7 +862,8 @@ namespace eternal_lands
 
 			m_state_manager.switch_sample_alpha_to_coverage(
 				material->get_effect()->get_description(
-					).get_transparent());
+					).get_transparent() &&
+				(type == ept_shadow));
 
 			light_count = std::min(light_count,
 				material->get_effect()->get_max_light_count());
@@ -1199,7 +1200,7 @@ namespace eternal_lands
 				glGetQueryObjectuiv(m_querie_ids[index],
 					GL_QUERY_RESULT, &count);
 
-				if (count < 25)
+				if (count == 0)
 				{
 					continue;
 				}
@@ -1657,6 +1658,11 @@ namespace eternal_lands
 		return m_map->get_tile(x, y);
 	}
 
+	glm::uvec2 Scene::get_walk_height_map_size() const
+	{
+		return m_map->get_walk_height_map_size();
+	}
+
 	glm::uvec2 Scene::get_height_map_size() const
 	{
 		return m_map->get_height_map_size();
@@ -1680,6 +1686,16 @@ namespace eternal_lands
 	void Scene::set_ambient(const glm::vec3 &color)
 	{
 		m_map->set_ambient(color);
+	}
+
+	float Scene::get_walk_height(const Uint16 x, const Uint16 y) const
+	{
+		return m_map->get_walk_height(x, y);
+	}
+
+	bool Scene::get_terrain() const
+	{
+		return m_map->get_terrain();
 	}
 
 }

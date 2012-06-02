@@ -335,6 +335,10 @@ void animate_actors()
 					actors_list[i]->z_pos += actors_list[i]->move_z_speed*actors_list[i]->movement_time_left;
 				}
 #endif	/* ANIMATION_SCALING */
+				if (engine_has_terrain())
+				{
+					actors_list[i]->z_pos = get_tile_height_linear(actors_list[i]->x_pos + 0.25f, actors_list[i]->y_pos + 0.25f);
+				}
 				actors_list[i]->movement_time_left -= time_diff;
 				if(actors_list[i]->movement_time_left <= 0){	//we moved all the way
 					Uint8 last_command;
@@ -360,7 +364,7 @@ void animate_actors()
 						else {
 							actors_list[i]->x_pos= actors_list[i]->x_tile_pos*0.5;
 							actors_list[i]->y_pos= actors_list[i]->y_tile_pos*0.5;
-							actors_list[i]->z_pos= get_actor_z(actors_list[i]);
+							actors_list[i]->z_pos= get_tile_height_linear(actors_list[i]->x_pos + 0.25f, actors_list[i]->y_pos + 0.25f);
 						}
 					} else {
 						actors_list[i]->busy = 0;
@@ -1632,7 +1636,14 @@ void next_command()
                             // we compute the moving speeds in x, y and z directions
 							actors_list[i]->move_x_speed = 0.5*(dx+actors_list[i]->x_tile_pos)-actors_list[i]->x_pos;
 							actors_list[i]->move_y_speed = 0.5*(dy+actors_list[i]->y_tile_pos)-actors_list[i]->y_pos;
-							actors_list[i]->move_z_speed = get_tile_height(actors_list[i]->x_tile_pos+dx, actors_list[i]->y_tile_pos+dy) - actors_list[i]->z_pos;
+							if (!engine_has_terrain())
+							{
+								actors_list[i]->move_z_speed = get_tile_height(dx+actors_list[i]->x_tile_pos, dy+actors_list[i]->y_tile_pos) - actors_list[i]->z_pos;
+							}
+							else
+							{
+								actors_list[i]->move_z_speed = 0.0f;
+							}
 							actors_list[i]->move_x_speed /= (float)actors_list[i]->movement_time_left;
 							actors_list[i]->move_y_speed /= (float)actors_list[i]->movement_time_left;
 							actors_list[i]->move_z_speed /= (float)actors_list[i]->movement_time_left;

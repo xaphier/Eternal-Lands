@@ -85,7 +85,7 @@ int get_tile_type(int x, int y);
  * \param y						Y coordinate
  * \callgraph
  */
-float get_tile_height(const float x, const float y);
+float get_tile_height(const int x, const int y);
 
 /*!
  * \ingroup 	tile

@@ -109,7 +109,8 @@ void display_highlight_marker(const highlight_marker *marker) {
 			glColor4f(1.0f, 1.0f, 0.0f, a);
 			break;
 	}
-	
+	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
 	glBegin(GL_POLYGON);
 	glVertex3f(x - 2*dx - center_offset_x, y - 2*dy - center_offset_y, z);
 	glVertex3f(x - 1*dx - center_offset_x, y - 2*dy - center_offset_y, z);
@@ -138,6 +139,8 @@ void display_highlight_marker(const highlight_marker *marker) {
 	glVertex3f(x - 2*dx - center_offset_x, y + 1*dy + center_offset_y, z);
 	glVertex3f(x - 2*dx - center_offset_x, y + 2*dy + center_offset_y, z);
 	glEnd();
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 }
 
 void display_highlight_markers() {

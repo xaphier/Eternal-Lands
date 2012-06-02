@@ -159,7 +159,7 @@ namespace eternal_lands
 
 			texture_format = get_texture_format(color_type,
 				bit_depth, png_get_valid(m_png_ptr, m_info_ptr,
-					PNG_INFO_sRGB), rg_formats);
+					PNG_INFO_sRGB) && false, rg_formats);
 
 			image = boost::make_shared<Image>(reader->get_name(),
 				false, texture_format, sizes, 0);
@@ -216,7 +216,7 @@ namespace eternal_lands
 
 			texture_format = get_texture_format(color_type,
 				bit_depth, png_get_valid(m_png_ptr, m_info_ptr,
-					PNG_INFO_sRGB), rg_formats);
+					PNG_INFO_sRGB) && false, rg_formats);
 
 			sizes[0] = png_get_image_width(m_png_ptr, m_info_ptr);
 			sizes[1] = png_get_image_height(m_png_ptr, m_info_ptr);

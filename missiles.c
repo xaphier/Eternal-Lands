@@ -400,7 +400,7 @@ float missiles_compute_actor_rotation(float *out_h_rot, float *out_v_rot,
 
 	origin[0] = in_act->x_pos + 0.25;
 	origin[1] = in_act->y_pos + 0.25;
-	origin[2] = get_actor_z(in_act) + 1.4 * get_actor_scale(in_act);
+	origin[2] = get_tile_height_linear(in_act->x_pos + 0.25f, in_act->y_pos + 0.25f) + 1.4 * get_actor_scale(in_act);
 
 	missiles_log_message("%s (%d): compute_actor_rotation: origin=(%.2f,%.2f,%.2f), target=(%.2f,%.2f,%.2f)",
 						 in_act->actor_name, in_act->actor_id,

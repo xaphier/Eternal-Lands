@@ -171,11 +171,15 @@ namespace eternal_lands
 			const ParticleDataVector &get_particles() const;
 			Uint16 get_height(const Uint16 x, const Uint16 y) const;
 			Uint16 get_tile(const Uint16 x, const Uint16 y) const;
+			glm::uvec2 get_walk_height_map_size() const;
 			glm::uvec2 get_height_map_size() const;
 			glm::uvec2 get_tile_map_size() const;
 			bool get_dungeon() const;
 			void set_ambient(const glm::vec3 &color);
 			const glm::vec3 &get_ambient() const;
+			float get_walk_height(const Uint16 x, const Uint16 y)
+				const;
+			bool get_terrain() const;
 
 			inline void terrain_change()
 			{

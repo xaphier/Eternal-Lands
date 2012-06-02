@@ -293,7 +293,7 @@ void add_actor_attachment(int actor_id, int attachment_type)
 		if (actors_list[id]->buffs & BUFF_DOUBLE_SPEED)
 			actors_list[id]->step_duration /= 2;
 
-		actors_list[id]->z_pos = get_actor_z(actors_list[id]);
+		actors_list[id]->z_pos = get_tile_height_linear(actors_list[id]->x_pos + 0.25f, actors_list[id]->y_pos + 0.25f);
 
 		//printf("attached actor n°%d of type %d to actor n°%d with id %d\n", id, attachment_type, i, actor_id);
 
@@ -969,7 +969,7 @@ void draw_actor_without_banner(actor * actor_id, Uint32 use_lightning, Uint32 us
 	if (z_pos == 0.0f)
 	{
 		//actor is walking, as opposed to flying, get the height underneath
-		z_pos = get_tile_height(actor_id->x_tile_pos, actor_id->y_tile_pos);
+		z_pos = get_tile_height_linear(actor_id->x_pos + 0.25f, actor_id->y_pos + 0.25f);
 	}
 
 	x_rot = actor_id->x_rot;
@@ -1012,7 +1012,7 @@ static __inline__ void draw_actor_banner_new(actor * actor_id)
 	if (z_pos == 0.0f)
 	{
 		//actor is walking, as opposed to flying, get the height underneath
-		z_pos = get_tile_height(actor_id->x_tile_pos, actor_id->y_tile_pos);
+		z_pos = get_tile_height_linear(actor_id->x_pos + 0.25f, actor_id->y_pos + 0.25f);
 	}
 
 	glTranslatef(x_pos + 0.25f, y_pos + 0.25f, z_pos);
@@ -1134,7 +1134,7 @@ void get_actors_in_range()
 			if (pos[Z] == 0.0f)
 			{
 				//actor is walking, as opposed to flying, get the height underneath
-				pos[Z] = get_tile_height(actors_list[i]->x_tile_pos, actors_list[i]->y_tile_pos);
+				pos[Z] = get_tile_height_linear(actors_list[i]->x_pos + 0.25f, actors_list[i]->y_pos + 0.25f);
 			}
 
 			if (actors_list[i]->calmodel == NULL) continue;
@@ -1391,7 +1391,7 @@ void add_actor_from_server (const char *in_data, int len)
 	if (actors_list[i]->buffs & BUFF_DOUBLE_SPEED)
 		actors_list[i]->step_duration /= 2;
 
-	actors_list[i]->z_pos = get_actor_z(actors_list[i]);
+	actors_list[i]->z_pos = get_tile_height_linear(actors_list[i]->x_pos + 0.25f, actors_list[i]->y_pos + 0.25f);
 	if(frame==frame_sit_idle||(pose!=NULL&&pose->pose==EMOTE_SITTING)){ //sitting pose sent by the server
 			actors_list[i]->poses[EMOTE_SITTING]=pose;
 			actors_list[i]->sitting=1;
@@ -1532,7 +1532,7 @@ void transform_actor_local_position_to_absolute(actor *in_act, float *in_local_p
 
 	out_pos[0] = out_pos[0] * scale + in_act->x_pos + 0.25;
 	out_pos[1] = out_pos[1] * scale + in_act->y_pos + 0.25;
-	out_pos[2] = out_pos[2] * scale + get_actor_z(in_act);
+	out_pos[2] = out_pos[2] * scale + get_tile_height_linear(in_act->x_pos + 0.25f, in_act->y_pos + 0.25f);
 
 	if (in_act->attached_actor >= 0)
 	{

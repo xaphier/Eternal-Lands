@@ -42,6 +42,7 @@ namespace eternal_lands
 			Uint32LightSharedPtrMap m_lights;
 			Uint16MultiArray2 m_height_map;
 			Uint16MultiArray2 m_tile_map;
+			FloatMultiArray2 m_walk_height_map;
 			ParticleDataVector m_particles;
 			glm::vec3 m_ambient;
 			String m_name;
@@ -83,6 +84,9 @@ namespace eternal_lands
 
 				return result;
 			}
+
+			void init_walk_height_map(
+				const ImageSharedPtr &vector_map);
 
 		public:
 			/**
@@ -138,6 +142,17 @@ namespace eternal_lands
 				return result;
 			}
 
+			inline glm::uvec2 get_walk_height_map_size() const
+				noexcept
+			{
+				glm::uvec2 result;
+
+				result.x = m_walk_height_map.shape()[0];
+				result.y = m_walk_height_map.shape()[1];
+
+				return result;
+			}
+
 			void set_height_map_size(const Uint16 width,
 				const Uint16 height)
 			{
@@ -165,6 +180,17 @@ namespace eternal_lands
 					UTF8("index value too big"));
 
 				return m_height_map[x][y];
+			}
+
+			inline float get_walk_height(const Uint16 x,
+				const Uint16 y) const
+			{
+				RANGE_CECK_MAX(x, m_walk_height_map.shape()[0],
+					UTF8("index value too big"));
+				RANGE_CECK_MAX(y, m_walk_height_map.shape()[1],
+					UTF8("index value too big"));
+
+				return m_walk_height_map[x][y];
 			}
 
 			inline glm::uvec2 get_tile_map_size() const noexcept
@@ -241,6 +267,11 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_particles;
+			}
+
+			inline bool get_terrain() const noexcept
+			{
+				return m_terrain.get() != nullptr;
 			}
 
 	};

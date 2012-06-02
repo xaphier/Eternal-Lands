@@ -94,6 +94,9 @@ void engine_set_clipmap_world_size(const int value);
 void engine_set_clipmap_slices(const int value);
 void engine_set_effect_debug(const int value);
 
+float get_tile_height_linear(const float x, const float y);
+int engine_has_terrain();
+
 int engine_get_opengl_3_0();
 int engine_get_opengl_3_1();
 int engine_get_opengl_3_2();

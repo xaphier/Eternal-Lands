@@ -355,19 +355,14 @@ namespace eternal_lands
 		min += m_lods[level].min_max[pos.x][pos.y][0];
 		max += m_lods[level].min_max[pos.x][pos.y][1];
 
+		min = glm::min(min, max - 0.05f);
+
 		box.set_min_max(min, max);
 
-#if	0
 		if (frustum.intersect(box, mask, out_mask) == it_outside)
 		{
 			return;
 		}
-#else
-		if (frustum.intersect(box) == it_outside)
-		{
-			return;
-		}
-#endif
 
 		if ((level == 0) || ((m_lods[level].range_start +
 			get_max_z()) < camera.z))
