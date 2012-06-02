@@ -53,7 +53,6 @@ namespace eternal_lands
 			Uint16 m_clipmap_size;
 			Uint16 m_clipmap_world_size;
 			Uint16 m_clipmap_slices;
-			Uint16 m_tile_world_size;
 			ShadowQualityType m_shadow_quality;
 			OpenglVerionType m_opengl_version;
 			bool m_fog;
@@ -61,7 +60,6 @@ namespace eternal_lands
 			bool m_use_simd;
 			bool m_use_s3tc_for_actors;
 			bool m_use_block;
-			bool m_use_alias;
 			bool m_use_in_out;
 			bool m_use_functions;
 			bool m_low_quality_terrain;
@@ -110,12 +108,6 @@ namespace eternal_lands
 				m_clipmap_world_size = clipmap_world_size;
 			}
 
-			inline void set_tile_world_size(
-				const Uint16 tile_world_size)
-			{
-				m_tile_world_size = tile_world_size;
-			}
-
 			inline void set_clipmap_slices(
 				const Uint16 clipmap_slices)
 			{
@@ -154,11 +146,6 @@ namespace eternal_lands
 			inline void set_use_block(const bool use_block)
 			{
 				m_use_block = use_block;
-			}
-
-			inline void set_use_alias(const bool use_alias)
-			{
-				m_use_alias = use_alias;
 			}
 
 			inline void set_use_in_out(const bool use_in_out)
@@ -236,11 +223,6 @@ namespace eternal_lands
 				return m_clipmap_slices;
 			}
 
-			inline Uint16 get_tile_world_size() const
-			{
-				return m_tile_world_size;
-			}
-
 			inline OpenglVerionType get_opengl_version() const
 			{
 				return m_opengl_version;
@@ -307,31 +289,6 @@ namespace eternal_lands
 				return get_opengl_version() >= ovt_4_2;
 			}
 
-			inline Uint16 get_glsl_version() const
-			{
-				switch (get_opengl_version())
-				{
-					case ovt_2_1:
-						return 120;
-					case ovt_3_0:
-						return 130;
-					case ovt_3_1:
-						return 140;
-					case ovt_3_2:
-						return 150;
-					case ovt_3_3:
-						return 330;
-					case ovt_4_0:
-						return 400;
-					case ovt_4_1:
-						return 410;
-					case ovt_4_2:
-						return 420;
-				}
-
-				return 110;
-			}
-
 			inline bool get_use_simd() const
 			{
 				return m_use_simd;
@@ -345,11 +302,6 @@ namespace eternal_lands
 			inline bool get_use_block() const
 			{
 				return m_use_block;
-			}
-
-			inline bool get_use_alias() const
-			{
-				return m_use_alias;
 			}
 
 			inline bool get_use_in_out() const

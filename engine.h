@@ -86,14 +86,12 @@ void engine_set_shadow_map_filtering(const int value);
 void engine_set_use_simd(const int value);
 void engine_set_use_s3tc_for_actors(const int value);
 void engine_set_use_block(const int value);
-void engine_set_use_alias(const int value);
 void engine_set_use_in_out(const int value);
 void engine_set_use_functions(const int value);
 void engine_set_low_quality_terrain(const int value);
 void engine_set_clipmap_size(const int value);
 void engine_set_clipmap_world_size(const int value);
 void engine_set_clipmap_slices(const int value);
-void engine_set_tile_world_size(const int value);
 void engine_set_effect_debug(const int value);
 
 int engine_get_opengl_3_0();

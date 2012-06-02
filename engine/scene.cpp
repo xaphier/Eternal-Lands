@@ -1347,8 +1347,8 @@ namespace eternal_lands
 			STRING_MARKER(UTF8("Updating terrain slice %1%"),
 				slice);
 
-			tile_scale = m_map->get_terrain_size() / glm::vec2(
-				get_global_vars()->get_tile_world_size());
+			tile_scale = m_map->get_terrain_size() /
+				glm::vec2(2.0f);
 
 			m_clipmap.update_slice(slice);
 
@@ -1382,11 +1382,7 @@ namespace eternal_lands
 	{
 		Mat2x3Array2 texture_matrices;
 		glm::mat2x3 texture_matrix;
-		glm::vec2 tile_scale;
 		Uint32 i, width, height, count;
-
-		tile_scale = m_map->get_terrain_size() / glm::vec2(
-			get_global_vars()->get_tile_world_size());
 
 		width = m_clipmap_frame_buffer->get_width();
 		height = m_clipmap_frame_buffer->get_height();

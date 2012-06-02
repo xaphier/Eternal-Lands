@@ -22,7 +22,6 @@ namespace eternal_lands
 		m_clipmap_size = 1;
 		m_clipmap_world_size = 16;
 		m_clipmap_slices = 4;
-		m_tile_world_size = 4;
 		m_opengl_version = ovt_2_1;
 		m_fog = true;
 		m_optmize_shader_source = true;
@@ -33,7 +32,6 @@ namespace eternal_lands
 #endif	/* USE_SSE2 */
 		m_use_s3tc_for_actors = true;
 		m_use_block = true;
-		m_use_alias = false;
 		m_use_in_out = true;
 		m_use_functions = false;
 		m_low_quality_terrain = false;

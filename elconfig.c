@@ -226,7 +226,6 @@ int engine_fog = engine_true;
 int engine_optmize_shader_source = engine_true;
 int engine_use_simd = engine_true;
 int engine_use_block = engine_true;
-int engine_use_alias = engine_false;
 int engine_use_in_out = engine_true;
 int engine_use_functions = engine_false;
 int engine_low_quality_terrain = engine_false;
@@ -234,7 +233,6 @@ int engine_use_s3tc_for_actors = engine_true;
 int engine_clipmap_size = 1;
 int engine_clipmap_world_size = 16;
 int engine_clipmap_slices = 4;
-int engine_tile_world_size = 4;
 int engine_effect_debug = 0;
 
 void change_engine_shadow_quality(int* var, int value)
@@ -300,12 +298,6 @@ void change_engine_clipmap_world_size(int* var, int value)
 	engine_set_clipmap_world_size(*var);
 }
 
-void change_engine_tile_world_size(int* var, int value)
-{
-	*var = value;
-	engine_set_tile_world_size(*var);
-}
-
 void change_engine_clipmap_slices(int* var, int value)
 {
 	*var = value;
@@ -354,12 +346,6 @@ void change_engine_set_use_block(int* var)
 	engine_set_use_block(*var);
 }
 
-void change_engine_set_use_alias(int* var)
-{
-	*var = !*var;
-	engine_set_use_alias(*var);
-}
-
 void change_engine_set_use_in_out(int* var)
 {
 	*var = !*var;
@@ -389,22 +375,13 @@ void change_engine_optmize_shader_source(int* var)
 	if (*var)
 	{
 		*var = engine_false;
-		engine_set_optmize_shader_source(*var);
 	}
 	else
 	{
-		if (gl_extensions_loaded && engine_get_opengl_3_0())
-		{
-			LOG_TO_CONSOLE(c_green2, "Only for OpenGL 2.1 mode");
-			*var = engine_false;
-			engine_set_optmize_shader_source(*var);
-		}
-		else
-		{
-			*var = engine_true;
-			engine_set_optmize_shader_source(*var);
-		}
+		*var = engine_true;
 	}
+
+	engine_set_optmize_shader_source(*var);
 }
 
 void change_engine_opengl_version(int* var, int value)
@@ -1815,7 +1792,6 @@ static void init_ELC_vars(void)
 	add_var(OPT_MULTI_H, "clipmap_size", "clipmap_size", &engine_clipmap_size, change_engine_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", 0);
 	add_var(OPT_INT, "clipmap_world_size", "clipmap_world_size", &engine_clipmap_world_size, change_engine_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
 	add_var(OPT_INT, "clipmap_slices", "clipmap_slices", &engine_clipmap_slices, change_engine_clipmap_slices, 4, "Climap slices", "Clipmap slices for terrain", GFX, 1, 16);
-	add_var(OPT_INT, "tile_world_size", "tile_world_size", &engine_tile_world_size, change_engine_tile_world_size, 4, "Tile world size", "Tile used for terrain texturing world size", GFX, 1, 16);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */
@@ -1892,7 +1868,6 @@ static void init_ELC_vars(void)
 	// TROUBLESHOOT TAB
 
 	add_var(OPT_BOOL, "use_block", "use_block", &engine_use_block, change_engine_set_use_block, engine_true, "Use block", "Use interface block in shaders", TROUBLESHOOT);
-	add_var(OPT_BOOL, "use_alias", "use_alias", &engine_use_alias, change_engine_set_use_alias, engine_false, "Use alias", "Use alias in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_in_out", "use_in_out", &engine_use_in_out, change_engine_set_use_in_out, engine_true, "Use in/out", "Use in/out in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_functions", "use_functions", &engine_use_functions, change_engine_set_use_functions, engine_false, "Use functions", "Use functions in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "optmize_shader_source", "oss", &engine_optmize_shader_source, change_engine_optmize_shader_source, engine_true, "Optimize Shader source", "Optimize the shader source code. Enable this if you have poor performance or crashes", TROUBLESHOOT);

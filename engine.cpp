@@ -1511,17 +1511,6 @@ extern "C" void engine_set_use_block(const int value)
 	}
 }
 
-extern "C" void engine_set_use_alias(const int value)
-{
-	global_vars->set_use_alias(value != 0);
-
-	if (scene.get() != 0)
-	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
-	}
-}
-
 extern "C" void engine_set_use_in_out(const int value)
 {
 	global_vars->set_use_in_out(value != 0);
@@ -1577,16 +1566,6 @@ extern "C" void engine_set_clipmap_slices(const int value)
 	{
 		scene->get_scene_resources().get_effect_cache()->reload(
 			effect_debug);
-		scene->terrain_change();
-	}
-}
-
-extern "C" void engine_set_tile_world_size(const int value)
-{
-	global_vars->set_tile_world_size(value);
-
-	if (scene.get() != 0)
-	{
 		scene->terrain_change();
 	}
 }

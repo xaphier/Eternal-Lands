@@ -666,41 +666,27 @@ namespace eternal_lands
 			return String(str);
 		}
 
-		ShaderVersionType get_shader_version_type(const Uint16 version)
+		ShaderVersionType get_shader_version_type(
+			const OpenglVerionType opengl_version)
 		{
-			if (version >= 420)
+			switch (opengl_version)
 			{
-				return svt_420;
-			}
-
-			if (version >= 410)
-			{
-				return svt_410;
-			}
-
-			if (version >= 400)
-			{
-				return svt_400;
-			}
-
-			if (version >= 330)
-			{
-				return svt_330;
-			}
-
-			if (version >= 150)
-			{
-				return svt_150;
-			}
-
-			if (version >= 140)
-			{
-				return svt_140;
-			}
-
-			if (version >= 130)
-			{
-				return svt_130;
+				case ovt_2_1:
+					return svt_120;
+				case ovt_3_0:
+					return svt_130;
+				case ovt_3_1:
+					return svt_140;
+				case ovt_3_2:
+					return svt_150;
+				case ovt_3_3:
+					return svt_330;
+				case ovt_4_0:
+					return svt_400;
+				case ovt_4_1:
+					return svt_410;
+				case ovt_4_2:
+					return svt_420;
 			}
 
 			return svt_120;
@@ -2340,13 +2326,13 @@ namespace eternal_lands
 		StringStream fragment_functions;
 		StringStream vertex_source, geometry_source, fragment_source;
 		StringStream version_stream;
-		UniformBufferUsage vertex_uniform_buffers;//(get_uniform_buffer_description_cache());
-		UniformBufferUsage fragment_uniform_buffers;//(get_uniform_buffer_description_cache());
+		UniformBufferUsage vertex_uniform_buffers;
+		UniformBufferUsage fragment_uniform_buffers;
 		String vertex_data, fragment_data, prefix, name_prefix;
 		String vertex, geometry, fragment;
-		Uint16 version, layer_count;
+		Uint16 layer_count;
 		ShaderVersionType version_type;
-		bool use_block, use_alias, use_in_out;
+		bool use_block, use_in_out;
 
 		sources = build_sources(description);
 
@@ -2357,16 +2343,11 @@ namespace eternal_lands
 		program_description.set_geometry_shader(String(UTF8("")));
 		program_description.set_fragment_shader(String(UTF8("")));
 
-		if (get_global_vars()->get_optmize_shader_source())
-		{
-			version = 120;
-		}
-		else
-		{
-			version = get_global_vars()->get_glsl_version();
-		}
+		version_type = get_shader_version_type(get_global_vars(
+			)->get_opengl_version());
 
-		version_type = get_shader_version_type(version);
+		LOG_DEBUG(lt_shader_source, UTF8("GLSL version %1%"),
+			version_type);
 
 		if (version_type >= svt_140)
 		{
@@ -2377,7 +2358,8 @@ namespace eternal_lands
 				get_uniform_buffer_description_cache());
 		}
 
-		version_stream << UTF8("#version ") << version << UTF8("\n");
+		version_stream << UTF8("#version ") << version_type;
+		version_stream << UTF8("\n");
 
 		if (shader_build_type == sbt_shadow)
 		{
@@ -2398,7 +2380,6 @@ namespace eternal_lands
 
 		use_block = (data.get_version() >= svt_150) &&
 			get_global_vars()->get_use_block();
-		use_alias = get_global_vars()->get_use_alias();
 		use_in_out = (data.get_version() >= svt_130) &&
 			get_global_vars()->get_use_in_out();
 
@@ -2515,13 +2496,6 @@ namespace eternal_lands
 					String(UTF8("\t")), String(),
 					vertex_source);
 				vertex_source << UTF8("}");
-
-				if (use_alias)
-				{
-					vertex_source << UTF8(" ");
-					vertex_source << vertex_data;
-				}
-
 				vertex_source << UTF8(";\n");
 			}
 		}
@@ -2536,18 +2510,9 @@ namespace eternal_lands
 				prefix = UTF8("varying ");
 			}
 
-			if (use_alias)
-			{
-				name_prefix = vertex_data;
-			}
-			else
-			{
-				name_prefix = UTF8("");
-			}
-
-			write_parameters(name_prefix, varyings, prefix,
+			write_parameters(String(), varyings, prefix,
 				String(), vertex_source);
-			write_parameters(name_prefix, geometry_in_parameters, 
+			write_parameters(String(), geometry_in_parameters, 
 				prefix, String(), vertex_source);
 		}
 
@@ -2557,28 +2522,9 @@ namespace eternal_lands
 		write_parameters(String(), pqt_out, vertex_globals,
 			String(UTF8("\t")), String(), vertex_source);
 
-		if (use_alias)
-		{
-			vertex_source << UTF8("\t/* Aliases */\n");
-			write_parameters(String(), varyings,
-				String(UTF8("\t")), String(), vertex_source);
-			write_parameters(String(), geometry_in_parameters,
-				String(UTF8("\t")), String(), vertex_source);
-		}
-
 		vertex_source << UTF8("\n");
 		vertex_source << vertex_main.str();
 		vertex_source << UTF8("\n");
-
-		if (use_alias)
-		{
-			vertex_source << UTF8("\t/* Assign from aliases */\n");
-			write_parameters_assign_out(vertex_data, varyings,
-				String(UTF8("\t")), use_block, vertex_source);
-			write_parameters_assign_out(vertex_data,
-				geometry_in_parameters, String(UTF8("\t")),
-				use_block, vertex_source);
-		}
 
 		vertex_source << UTF8("}\n");
 
@@ -2726,12 +2672,6 @@ namespace eternal_lands
 					fragment_source);
 				fragment_source << UTF8("}");
 
-				if (use_alias)
-				{
-					fragment_source << UTF8(" ");
-					fragment_source << fragment_data;
-				}
-
 				fragment_source << UTF8(";\n");
 			}
 		}
@@ -2746,18 +2686,9 @@ namespace eternal_lands
 				prefix =  UTF8("varying ");
 			}
 
-			if (use_alias)
-			{
-				name_prefix = fragment_data;
-			}
-			else
-			{
-				name_prefix = UTF8("");
-			}
-
-			write_parameters(name_prefix, varyings, prefix,
+			write_parameters(String(), varyings, prefix,
 				String(), fragment_source);
-			write_parameters(name_prefix, geometry_out_parameters,
+			write_parameters(String(), geometry_out_parameters,
 				prefix, String(), fragment_source);
 		}
 
@@ -2765,24 +2696,9 @@ namespace eternal_lands
 		{
 			fragment_source << UTF8("\n");
 
-/*			if (data.get_shader_build_type() == sbt_deferred)
-			{
-				for (i = 0; i < 4; ++i)
-				{
-					fragment_source << UTF8("layout(");
-					fragment_source << UTF8("location = ");
-					fragment_source << i << UTF8(") out");
-					fragment_source << UTF8(" vec4 ");
-					fragment_source << UTF8("FragData_");
-					fragment_source << i << UTF8(";\n");
-				}
-			}
-			else
-*/			{
-				fragment_source << UTF8("layout(location = 0");
-				fragment_source << UTF8(") out vec4 ");
-				fragment_source << UTF8("FragColor;\n");
-			}
+			fragment_source << UTF8("layout(location = 0");
+			fragment_source << UTF8(") out vec4 ");
+			fragment_source << UTF8("FragColor;\n");
 		}
 
 		fragment_source << UTF8("\n");
@@ -2790,24 +2706,6 @@ namespace eternal_lands
 		fragment_source << UTF8("{\n");
 		write_parameters(String(), pqt_out, fragment_globals,
 			String(UTF8("\t")), String(), fragment_source);
-
-		if (use_alias)
-		{
-			fragment_source << UTF8("\t/* Aliases */\n");
-			write_parameters(String(), varyings, String(UTF8("\t")),
-				String(), fragment_source);
-			write_parameters(String(), geometry_out_parameters,
-				String(UTF8("\t")), String(), fragment_source);
-
-			fragment_source << UTF8("\n");
-
-			fragment_source << UTF8("\t/* Assign to aliases */\n");
-			write_parameters_assign_in(fragment_data, varyings,
-				String(UTF8("\t")), use_block, fragment_source);
-			write_parameters_assign_in(fragment_data,
-				geometry_out_parameters, String(UTF8("\t")),
-				use_block, fragment_source);
-		}
 
 		fragment_source << UTF8("\n");
 		fragment_source << fragment_main.str();
@@ -2818,7 +2716,8 @@ namespace eternal_lands
 
 		geometry = UTF8("");
 
-		if (get_global_vars()->get_optmize_shader_source())
+		if (get_global_vars()->get_optmize_shader_source() &&
+			(version_type == svt_120))
 		{
 			try
 			{
