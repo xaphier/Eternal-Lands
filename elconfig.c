@@ -1879,7 +1879,6 @@ static void init_ELC_vars(void)
 	// Grum: attempt to work around bug in Ati linux drivers.
 	add_var(OPT_BOOL,"ati_click_workaround", "atibug", &ati_click_workaround, change_var, 0, "ATI Bug", "If you are using an ATI graphics card and don't move when you click, try this option to work around a bug in their drivers.", TROUBLESHOOT);
 	add_var (OPT_BOOL,"use_old_clicker", "oldmclick", &use_old_clicker, change_var, 0, "Mouse Bug", "Unrelated to ATI graphics cards, if clicking to walk doesn't move you, try toggling this option.", TROUBLESHOOT);
-	add_var(OPT_BOOL,"use_draw_range_elements","dre",&use_draw_range_elements,change_var,1,"Draw Range Elements","Disable this if objects appear partially stretched.",TROUBLESHOOT);
 	add_var(OPT_BOOL,"use_point_particles","upp",&use_point_particles,change_point_particles,1,"Point Particles","Some systems will not support the new point based particles in EL. Disable this if your client complains about not having the point based particles extension.",TROUBLESHOOT);
 #ifndef	NEW_TEXTURES
 	add_var(OPT_BOOL,"transparency_resolution_fix","trf",&transparency_resolution_fix,change_var,0,"Transparency Resolution Fix","Use this if your video card or driver has problems with rendering highly blended effects, like teleportation.",TROUBLESHOOT);

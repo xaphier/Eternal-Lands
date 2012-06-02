@@ -152,7 +152,7 @@ namespace eternal_lands
 		max_grid_size = std::max(get_grid_size().x, get_grid_size().y);
 		max_grid_size--;
 
-		m_lod_count = 1;
+		m_lod_count = 0;
 
 		while ((get_lod_count() < get_max_lod_count()) &&
 			(max_grid_size >= (get_patch_size() *
@@ -199,6 +199,12 @@ namespace eternal_lands
 		const Uint16 level, glm::vec3 &min, glm::vec3 &max)
 	{
 		glm::vec3 tmin, tmax;
+
+		if ((position.x >= m_lods[level].min_max.shape()[0]) ||
+			(position.y >= m_lods[level].min_max.shape()[1]))
+		{
+			return;
+		}
 
 		if (level == 0)
 		{

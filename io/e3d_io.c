@@ -525,8 +525,7 @@ static e3d_object* do_load_e3d_detail(e3d_object* cur_object)
 
 	cur_object->indices = malloc(cur_object->index_no * indices_size);
 
-	if (use_vertex_buffers) index_pointer = 0;
-	else index_pointer = cur_object->indices;
+	index_pointer = 0;
 
 	for (i = 0; i < cur_object->index_no; i++)
 	{
@@ -637,42 +636,34 @@ static e3d_object* do_load_e3d_detail(e3d_object* cur_object)
 	}
 	el_close(file);
 
-	LOG_DEBUG_OLD("Building vertex buffers (%d) for e3d file '%s'.",
-		use_vertex_buffers, cur_object->file_name);
+	LOG_DEBUG_OLD("Building vertex buffers for e3d file '%s'.",
+		cur_object->file_name);
 
-	if (use_vertex_buffers)
-	{
-		//Generate the buffers
-		glGenBuffersARB(1, &cur_object->vertex_vbo);
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,
-			cur_object->vertex_vbo);
-		glBufferDataARB(GL_ARRAY_BUFFER_ARB,
-			cur_object->vertex_no * cur_object->vertex_layout->size,
-			cur_object->vertex_data, GL_STATIC_DRAW_ARB);
+	//Generate the buffers
+	glGenBuffersARB(1, &cur_object->vertex_vbo);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB,
+		cur_object->vertex_vbo);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,
+		cur_object->vertex_no * cur_object->vertex_layout->size,
+		cur_object->vertex_data, GL_STATIC_DRAW_ARB);
 #ifndef	MAP_EDITOR
-		free(cur_object->vertex_data);
-		cur_object->vertex_data = 0;
+	free(cur_object->vertex_data);
+	cur_object->vertex_data = 0;
 #endif	//MAP_EDITOR
 		
-		glGenBuffersARB(1, &cur_object->indices_vbo);
-		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
-			cur_object->indices_vbo);
-		glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
-			cur_object->index_no * indices_size,
-			cur_object->indices, GL_STATIC_DRAW_ARB);
+	glGenBuffersARB(1, &cur_object->indices_vbo);
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
+		cur_object->indices_vbo);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,
+		cur_object->index_no * indices_size,
+		cur_object->indices, GL_STATIC_DRAW_ARB);
 #ifndef	MAP_EDITOR
-		free(cur_object->indices);
-		cur_object->indices = 0;
+	free(cur_object->indices);
+	cur_object->indices = 0;
 #endif	//MAP_EDITOR
 				
-		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
-	}
-	else
-	{
-		cur_object->vertex_vbo = 0;
-		cur_object->indices_vbo = 0;
-	}
+	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+	glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 
 #ifndef	MAP_EDITOR
 	LOG_DEBUG_OLD("Adding e3d file '%s' to cache.",
