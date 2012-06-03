@@ -254,7 +254,7 @@ namespace eternal_lands
 
 		patch_scale = 1;
 
-		range = 2.0f * std::sqrt(2.0f) * get_patch_scale() *
+		range = 4.0f * std::sqrt(2.0f) * get_patch_scale() *
 			get_patch_size();
 
 		cur_range = 0.0f;

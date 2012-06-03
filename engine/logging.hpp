@@ -66,6 +66,7 @@ namespace eternal_lands
 		const std::string &file, const Uint32 line);
 	void log_exception_str(const std::string &message,
 		const std::string &file, const Uint32 line);
+	void register_logger(std::auto_ptr<AbstractLogger> &logger);
 
 }
 
@@ -103,8 +104,8 @@ namespace eternal_lands
 	\
 		format_string % arguments;	\
 	\
-		eternal_lands::log_exception_str(format_string.str(), __FILE__,	\
-			__LINE__);	\
+		eternal_lands::log_exception_str(format_string.str(),	\
+			__FILE__, __LINE__);	\
 	}	\
 	while (false)
 

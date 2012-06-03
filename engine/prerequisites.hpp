@@ -205,6 +205,7 @@ namespace eternal_lands
 	class AbstractArchive;
 	class AbstractBoundedObjectVisitor;
 	class AbstractFrameBuffer;
+	class AbstractLogger;
 	class AbstractMesh;
 	class AbstractNodeVisitor;
 	class AbstractReadMemory;
@@ -475,6 +476,7 @@ namespace eternal_lands
 	typedef boost::ptr_vector<InstanceData> InstanceDataVector;
 	typedef boost::ptr_vector<InstancingData> InstancingDataVector;
 	typedef boost::ptr_vector<AbstractArchive> AbstractArchiveVector;
+	typedef boost::ptr_vector<AbstractLogger> AbstractLoggerVector;
 	typedef boost::ptr_array<VertexStream, vertex_stream_count>
 		VertexStreamArray;
 	typedef boost::array<AbstractWriteMemorySharedPtr,

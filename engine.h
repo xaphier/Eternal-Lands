@@ -106,6 +106,8 @@ int engine_get_opengl_4_1();
 int engine_get_opengl_4_2();
 void engine_update_materials();
 
+void engine_init_console_logging();
+
 #ifdef __cplusplus
 }
 #endif

@@ -27,6 +27,8 @@
 #include <boost/exception/all.hpp>
 #include "utf.hpp"
 #include "exceptions.hpp"
+#include "abstractlogger.hpp"
+#include "filesystem.hpp"
 
 namespace eternal_lands
 {
@@ -40,6 +42,7 @@ namespace eternal_lands
 		Uint32 m_last_message_count;
 		std::fstream m_log_file;
 		std::map<LogType, LogLevelType> log_levels;
+		AbstractLoggerVector loggers;
 
 		std::string get_str(const LogLevelType log_level)
 		{
@@ -59,20 +62,29 @@ namespace eternal_lands
 			}
 		}
 
-		void log_message(const std::string &type,
-			const std::string &message, const std::string &file,
-			const Uint32 line)
+		void log_message(const LogLevelType log_level,
+			const std::string &type, const std::string &message,
+			const std::string &file, const Uint32 line)
 		{
 			char buffer[128];
 			std::stringstream str, log_stream;
 			std::time_t raw_time;
+			String file_name;
+
+			file_name = FileSystem::get_file_name(String(file));
+
+			BOOST_FOREACH(AbstractLogger &logger, loggers)
+			{
+				logger.log_message(log_level, type, message,
+					file_name, line);
+			}
 
 			std::time(&raw_time);
 			memset(buffer, 0, sizeof(buffer));
 			std::strftime(buffer, sizeof(buffer), "%X",
 				std::localtime(&raw_time));
 
-			str << ", " << file << ":" << line << "] " << type;
+			str << ", " << file_name << ":" << line << "] " << type;
 			str << ": " << message;
 
 			if (str.str() == m_last_message)
@@ -84,12 +96,6 @@ namespace eternal_lands
 			if (m_last_message_count > 0)
 			{
 				log_stream << "[" << buffer;
-
-				if (log_levels[lt_default] >= llt_debug_verbose)
-				{
-					log_stream << ", " << __FILE__ << ":";
-					log_stream << __LINE__;
-				}
 
 				log_stream << "]";
 				log_stream << "Last message repeated ";
@@ -167,7 +173,7 @@ namespace eternal_lands
 			log_levels[lt_default] = llt_info;
 			log_levels[lt_io] = llt_info;
 			log_levels[lt_texture] = llt_info;
-			log_levels[lt_glsl_program] = llt_debug;
+			log_levels[lt_glsl_program] = llt_info;
 			log_levels[lt_actor_texture] = llt_info;
 			log_levels[lt_image] = llt_info;
 			log_levels[lt_dds_image] = llt_info;
@@ -179,11 +185,11 @@ namespace eternal_lands
 			log_levels[lt_map_loader] = llt_info;
 			log_levels[lt_mesh] = llt_info;
 			log_levels[lt_material] = llt_info;
-			log_levels[lt_shader_source] = llt_debug;
+			log_levels[lt_shader_source] = llt_info;
 			log_levels[lt_angel_script] = llt_info;
 			log_levels[lt_framebuffer] = llt_info;
 			log_levels[lt_rendering] = llt_info;
-			log_levels[lt_uniform_buffer] = llt_debug;
+			log_levels[lt_uniform_buffer] = llt_info;
 
 			file_name << log_dir << name << ".log";
 
@@ -195,19 +201,19 @@ namespace eternal_lands
 			m_log_file.open(file_name.str().c_str(),
 				std::ios::out);
 
-			log_message("Git sha1", git_sha1_str,
+			log_message(llt_info, "Git sha1", git_sha1_str,
 				__FILE__, __LINE__);
 
-			log_message("Git tag", git_tag_str,
+			log_message(llt_info, "Git tag", git_tag_str,
 				__FILE__, __LINE__);
 
-			log_message("CMAKE_BUILD_TYPE", cmake_build_type_str,
-				__FILE__, __LINE__);
+			log_message(llt_info, "CMAKE_BUILD_TYPE",
+				cmake_build_type_str, __FILE__, __LINE__);
 
-			log_message("Log started at", get_local_time_string(),
-				__FILE__, __LINE__);
+			log_message(llt_info, "Log started at",
+				get_local_time_string(), __FILE__, __LINE__);
 
-			log_message("version", FILE_VERSION, __FILE__,
+			log_message(llt_info, "version", FILE_VERSION, __FILE__,
 				__LINE__);
 		}
 
@@ -262,6 +268,8 @@ namespace eternal_lands
 	{
 		m_log_file.close();
 
+		loggers.clear();
+
 		SDL_DestroyMutex(log_mutex);
 	}
 
@@ -300,7 +308,7 @@ namespace eternal_lands
 			return;
 		}
 
-		log_message(get_str(log_level), message, file, line);
+		log_message(log_level, get_str(log_level), message, file, line);
 
 		SDL_UnlockMutex(log_mutex);
 	}
@@ -310,7 +318,7 @@ namespace eternal_lands
 	{
 		SDL_LockMutex(log_mutex);
 
-		log_message(UTF8("exception"), message, file, line);
+		log_message(llt_error, UTF8("exception"), message, file, line);
 
 		SDL_UnlockMutex(log_mutex);
 	}
@@ -421,6 +429,11 @@ namespace eternal_lands
 		const std::string &file, const Uint32 line)
 	{
 		log_exception_message(message, file, line);
+	}
+
+	void register_logger(std::auto_ptr<AbstractLogger> &logger)
+	{
+		loggers.push_back(logger);
 	}
 
 }

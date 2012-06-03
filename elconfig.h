@@ -50,7 +50,8 @@ typedef enum
 	OPT_FLOAT_F,       // Change float with functions that returns max and min values  func(float*,float*), max/min float func()
 	OPT_INT_F,         // Change int with functions that returns max and min values    func(int*,int), max/min int func()
 	OPT_BOOL_INI,      // Boolean value that is only read from and written to the ini file
-	OPT_INT_INI	   // Int value that is only read from the ini file
+	OPT_INT_INI,	   // Int value that is only read from the ini file
+	OPT_MULTI_NO_SAVE  // INT with multiselect widget, not saved in ini file
 } option_type;
 
 /*!

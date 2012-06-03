@@ -17,7 +17,7 @@
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>shadow_map_data = vec3(exp(distance(shadow_camera, world_position)));
+   <source>shadow_map_data = vec3(exp(distance(shadow_camera.xyz, world_position)));
 </source>
    <version>120</version>
   </shader_source_data>

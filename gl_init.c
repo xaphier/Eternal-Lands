@@ -769,6 +769,57 @@ void init_gl_extensions()
 	}
 
 	CHECK_GL_ERRORS();
+
+	if (engine_get_opengl_4_2())
+	{
+		LOG_TO_CONSOLE(c_green2, "Using OpenGL 4.2");
+
+		return;
+	}
+
+	if (engine_get_opengl_4_1())
+	{
+		LOG_TO_CONSOLE(c_green2, "Using OpenGL 4.1");
+
+		return;
+	}
+
+	if (engine_get_opengl_4_0())
+	{
+		LOG_TO_CONSOLE(c_green2, "Using OpenGL 4.0");
+
+		return;
+	}
+
+	if (engine_get_opengl_3_3())
+	{
+		LOG_TO_CONSOLE(c_green2, "Using OpenGL 3.3");
+
+		return;
+	}
+
+	if (engine_get_opengl_3_2())
+	{
+		LOG_TO_CONSOLE(c_green2, "Using OpenGL 3.2");
+
+		return;
+	}
+
+	if (engine_get_opengl_3_1())
+	{
+		LOG_TO_CONSOLE(c_green2, "Using OpenGL 3.1");
+
+		return;
+	}
+
+	if (engine_get_opengl_3_0())
+	{
+		LOG_TO_CONSOLE(c_green2, "Using OpenGL 3.0");
+
+		return;
+	}
+
+	LOG_TO_CONSOLE(c_green2, "Using OpenGL 2.1");
 }
 
 void resize_root_window()

@@ -1295,6 +1295,7 @@ static __inline__ void check_option_var(char* name)
 		case OPT_MULTI_H:
 		case OPT_INT_F:
 		case OPT_INT_INI:
+		case OPT_MULTI_NO_SAVE:
 			value_i= *((int*)our_vars.var[i]->var);
 			our_vars.var[i]->func (our_vars.var[i]->var, value_i);
 			break;
@@ -1401,6 +1402,7 @@ int check_var (char *str, var_name_type type)
 		case OPT_MULTI:
 		case OPT_MULTI_H:
 		case OPT_INT_F:
+		case OPT_MULTI_NO_SAVE:
 			our_vars.var[i]->func ( our_vars.var[i]->var, atoi (ptr) );
 			return 1;
 		case OPT_BOOL_INI:
@@ -1446,6 +1448,7 @@ void free_vars()
 				break;
 			case OPT_MULTI:
 			case OPT_MULTI_H:
+			case OPT_MULTI_NO_SAVE:
 				if(our_vars.var[i]->queue != NULL) {
 					while(!queue_isempty(our_vars.var[i]->queue)) {
 						//We don't free() because it's not allocated.
@@ -1479,6 +1482,7 @@ void add_var(option_type type, char * name, char * shortname, void * var, void *
 	{
 		case OPT_MULTI:
 		case OPT_MULTI_H:
+		case OPT_MULTI_NO_SAVE:
 			queue_initialise(&our_vars.var[no]->queue);
 			va_start(ap, tab_id);
 			while((pointer= va_arg(ap, char *)) != NULL) {
@@ -1876,7 +1880,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "use_simd", "simd", &engine_use_simd, change_engine_use_simd, engine_true, "Use SIMD", "Use Intel SIMD instructions (SSE2).", TROUBLESHOOT);
 #endif	/* USE_SSE2 */
 	add_var(OPT_BOOL, "use_s3tc_for_actors", "uatc", &engine_use_s3tc_for_actors, change_engine_use_s3tc_for_actors, engine_true, "Use s3tc for actors", "Use s3 texture compression for actors.", TROUBLESHOOT);
-	add_var(OPT_MULTI, "effect_debug", "effect_debug", &engine_effect_debug, change_engine_effect_debug, 0, "effect", "effect used for rendering", TROUBLESHOOT, "default", "debug_uv", "debug_depth", "debug_alpha", "debug_albedo", "debug_normal", "debug_shadow", "debug_specular", "debug_emissive", "debug_diffuse_light", "debug_specular_light", 0);
+	add_var(OPT_MULTI_NO_SAVE, "effect_debug", "effect_debug", &engine_effect_debug, change_engine_effect_debug, 0, "effect", "effect used for rendering", TROUBLESHOOT, "default", "debug_uv", "debug_depth", "debug_alpha", "debug_albedo", "debug_normal", "debug_shadow", "debug_specular", "debug_emissive", "debug_diffuse_light", "debug_specular_light", 0);
 
 	// DEBUGTAB TAB
 #ifdef DEBUG
@@ -1969,6 +1973,8 @@ void write_var (FILE *fout, int ivar)
 			fprintf (fout, "#%s= %g\n", our_vars.var[ivar]->name, *g);
 			break;
 		}
+		case OPT_MULTI_NO_SAVE:
+			break;
 	}
 	our_vars.var[ivar]->saved= 1;	// keep only one copy of this setting
 }
@@ -2129,7 +2135,7 @@ int display_elconfig_handler(window_info *win)
 		// Update the widgets in case an option changed
 		// Actually that's ony the OPT_MULTI type widgets, the others are
 		// taken care of by their widget handlers
-		if ((our_vars.var[i]->type == OPT_MULTI) || (our_vars.var[i]->type == OPT_MULTI_H))
+		if ((our_vars.var[i]->type == OPT_MULTI) || (our_vars.var[i]->type == OPT_MULTI_H) || (our_vars.var[i]->type == OPT_MULTI_NO_SAVE))
 			multiselect_set_selected (elconfig_tabs[our_vars.var[i]->widgets.tab_id].tab, our_vars.var[i]->widgets.widget_id, *(int *)our_vars.var[i]->var);
 	}
 
@@ -2384,6 +2390,7 @@ void elconfig_populate_tabs(void)
 				//widget_set_OnKey (elconfig_tabs[tab_id].tab, widget_id, string_onkey_handler);
 				continue;
 			case OPT_MULTI:
+			case OPT_MULTI_NO_SAVE:
 
 				label_id= label_add_extended(elconfig_tabs[tab_id].tab, elconfig_free_widget_id++, NULL, elconfig_tabs[tab_id].x, elconfig_tabs[tab_id].y, 0, 1.0, 0.77f, 0.59f, 0.39f, (char*)our_vars.var[i]->display.str);
 				widget_id= multiselect_add_extended(elconfig_tabs[tab_id].tab, elconfig_free_widget_id++, NULL, elconfig_tabs[tab_id].x+SPACING+get_string_width(our_vars.var[i]->display.str), elconfig_tabs[tab_id].y, 250, 80, 1.0f, 0.77f, 0.59f, 0.39f, 0.32f, 0.23f, 0.15f, 0);

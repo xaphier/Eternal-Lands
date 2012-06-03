@@ -419,6 +419,7 @@ int main(int argc, char **argv)
 	init_file_system();
 	init_global_vars();
 	init_logging("log");
+	engine_init_console_logging();
 
 	check_log_level_on_command_line();
 	create_tcp_out_mutex();

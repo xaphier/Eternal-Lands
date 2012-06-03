@@ -53,9 +53,7 @@
 #include "engine/script/scriptengine.hpp"
 #include "engine/script/materialscriptmanager.hpp"
 #include "engine/script/imagescript.hpp"
-
-#include "engine/image.hpp"
-#include "engine/codec/codecmanager.hpp"
+#include "engine/abstractlogger.hpp"
 
 using namespace eternal_lands;
 
@@ -307,6 +305,62 @@ namespace
 			name, transparency, id, el_selection, el_blend);
 	}
 
+	class ConsoleLogger: public AbstractLogger
+	{
+		public:
+			/**
+			 * Default constructor.
+			 */
+			ConsoleLogger();
+
+			/**
+			 * Default destructor.
+			 */
+			virtual ~ConsoleLogger() noexcept;
+
+			/**
+			 * Logs a message.
+			 * @param log_level The log level, e.g. error or debug.
+			 * @param type The log type, e.g. io or image.
+			 * @param message The message.
+			 * @param file The source file where the logging was
+			 * called.
+			 * @param line The line in the source file where the
+			 * logging was called.
+			 */
+			virtual void log_message(
+				const eternal_lands::LogLevelType log_level,
+				const std::string &type,
+				const std::string &message,
+				const std::string &file, const Uint32 line);
+
+	};
+
+	ConsoleLogger::ConsoleLogger()
+	{
+	}
+
+	ConsoleLogger::~ConsoleLogger() noexcept
+	{
+	}
+
+	void ConsoleLogger::log_message(
+		const eternal_lands::LogLevelType log_level,
+		const std::string &type, const std::string &message,
+		const std::string &file, const Uint32 line)
+	{
+		BoostFormat format_string("%1%: %2% at %3%-%4%");
+
+		if (log_level != eternal_lands::llt_error)
+		{
+			return;
+		}
+
+		format_string % "Error" % type % file % line;
+
+		LOG_TO_CONSOLE(c_red1, format_string.str().c_str());
+	}
+
 }
 
 #define	USE_GL_DEBUG_OUTPUT
@@ -544,8 +598,6 @@ extern "C" void init_engine()
 	TRY_BLOCK
 
 	CHECK_GL_ERROR();
-
-//	set_log_level(eternal_lands::llt_debug);
 
 	scene.reset(new el::Scene(global_vars, file_system));
 
@@ -1771,4 +1823,13 @@ extern "C" int engine_has_terrain()
 	}
 
 	return 1;
+}
+
+extern "C" void engine_init_console_logging()
+{
+	std::auto_ptr<AbstractLogger> logger;
+
+	logger.reset(new ConsoleLogger());
+
+	register_logger(logger);
 }

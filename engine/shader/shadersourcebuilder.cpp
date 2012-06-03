@@ -962,7 +962,7 @@ namespace eternal_lands
 
 			m_shader_sources.insert(index, shader_source);
 
-			LOG_INFO(lt_shader_source, UTF8("Shader source type "
+			LOG_DEBUG(lt_shader_source, UTF8("Shader source type "
 				"%1%-%2% loaded from file '%3%'"), index.first
 				% index.second % file_name);
 		}

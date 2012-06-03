@@ -53,7 +53,7 @@ for (i = 0; i &lt; shadow_map_count; ++i)
 		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2( 1,  1)).r;
 		occluder *= 0.2;
 
-		light_distance = distance(shadow_camera, world_position) + light_shadow_bias;
+		light_distance = distance(shadow_camera.xyz, world_position) + light_shadow_bias;
 
 		shadow = exp(over_darkening_factor * (log(occluder) - light_distance));
 		shadow = clamp(shadow, 0.0, 1.0);
