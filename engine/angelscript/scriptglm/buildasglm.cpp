@@ -669,9 +669,17 @@ std::string get_string(const ParameterType type)
 	return "";
 }
 
+const std::string indents[4] = { "", "\t", "\t\t", "\t\t\t" };
+
+inline const std::string &get_indent(const int indent)
+{
+	return indents[indent];
+}
+
 const char swizzel_names[12] = { 'x', 'r', 's', 'y', 'g', 't', 'z', 'b', 'p', 'w', 'a', 'q' };
 
-void register_vector_element(const ParameterType type)
+void register_vector_element(const ParameterType type,
+	const int indent)
 {
 	unsigned int i, size;
 
@@ -679,17 +687,17 @@ void register_vector_element(const ParameterType type)
 
 	for (i = 0; i < (size * 3); ++i)
 	{
-		std::cout << "\tr = engine->RegisterObjectProperty(\"";
+		std::cout << get_indent(indent) << "\tr = engine->RegisterObjectProperty(\"";
 		std::cout << get_angelscript_string(type) << "\", \"";
 		std::cout << get_angelscript_string(get_value(type)) << " ";
 		std::cout << swizzel_names[i] << "\", ";
 		std::cout << "asOFFSET(" << get_string(type) << ", ";
 		std::cout << swizzel_names[i] << "));" << std::endl;
-		std::cout << "\tassert(r >= 0);" << std::endl;
+		std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 	}
 }
 
-void register_quat_element()
+void register_quat_element(const int indent)
 {
 	ParameterType type;
 	unsigned int i;
@@ -698,62 +706,71 @@ void register_quat_element()
 
 	for (i = 0; i < 4; ++i)
 	{
-		std::cout << "\tr = engine->RegisterObjectProperty(\"";
+		std::cout << get_indent(indent) << "\tr = engine->RegisterObjectProperty(\"";
 		std::cout << get_angelscript_string(type) << "\", \"";
 		std::cout << get_angelscript_string(get_value(type)) << " ";
 		std::cout << swizzel_names[i * 3] << "\", ";
 		std::cout << "asOFFSET(" << get_string(type) << ", ";
 		std::cout << swizzel_names[i * 3] << "));" << std::endl;
-		std::cout << "\tassert(r >= 0);" << std::endl;
+		std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 	}
 }
 
 void register_index_operator(const ParameterType type,
-	const ParameterType result)
+	const ParameterType result, const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectMethod(\"";
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectMethod(\"";
 	std::cout << get_angelscript_string(type);
 	std::cout << "\", \"" << get_angelscript_string(result);
 	std::cout << " &opIndex(uint)\", " << std::endl;
-	std::cout << "\t\tasFUNCTION((get_value_at<" << get_string(type);
+	std::cout << get_indent(indent) << "\t\tasFUNCTION((get_value_at<" << get_string(type);
 	std::cout << ", " << get_string(result) << ", " << get_count(type);
 	std::cout << ">)), asCALL_CDECL_OBJLAST);" << std::endl;
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 
-	std::cout << "\tr = engine->RegisterObjectMethod(\"";
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectMethod(\"";
 	std::cout << get_angelscript_string(type);
 	std::cout << "\", \"const " << get_angelscript_string(result);
 	std::cout << " &opIndex(uint) const\", " << std::endl;
-	std::cout << "\t\tasFUNCTION((get_value_at<" << get_string(type);
+	std::cout << get_indent(indent) << "\t\tasFUNCTION((get_value_at<" << get_string(type);
 	std::cout << ", " << get_string(result) << ", " << get_count(type);
-	std::cout << ">)), asCALL_CDECL_OBJLAST);" << std::endl;
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_indent(indent) << ">)), asCALL_CDECL_OBJLAST);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_operator(const ParameterType type, const ParameterType value,
-	const UnaryOperatorType uo)
+	const UnaryOperatorType uo, const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectMethod(\"";
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectMethod(\"";
 	std::cout << get_angelscript_string(type);
-	std::cout << "\"," << std::endl << "\t\t\"";
+	std::cout << "\"," << std::endl << get_indent(indent) << "\t\t\"";
 	std::cout << get_angelscript_string(type) << " &" << get_angelscript_string(uo);
 	std::cout << "(const " << get_angelscript_string(value) << " &in)\"," << std::endl;
-	std::cout << "\t\tasMETHODPR(" << get_string(type) << ", operator";
+	std::cout << get_indent(indent) << "\t\tasMETHODPR(" << get_string(type) << ", operator";
 	std::cout << get_string(uo) << ", (const " << get_string(value) << " &), ";
-	std::cout << get_string(type) << "&)," << std::endl << "\t\t";
-	std::cout << "asCALL_THISCALL);" << std::endl;
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_string(type) << "&)," << std::endl << get_indent(indent) << "\t\t";
+	std::cout << get_indent(indent) << "asCALL_THISCALL);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_operator(const ParameterType type, const ParameterType result,
-	const ParameterType parameter, const BinaryOperatorType bo, const bool swapped)
+	const ParameterType parameter, const BinaryOperatorType bo,
+	const bool swapped, const std::string &namespace_name,
+	const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectMethod(\"" << get_angelscript_string(type);
-	std::cout << "\"," << std::endl << "\t\t\"";
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectMethod(\"" << get_angelscript_string(type);
+	std::cout << "\"," << std::endl << get_indent(indent) << "\t\t\"";
 	std::cout << get_angelscript_string(result) << " " << get_angelscript_string(bo, swapped);
 	std::cout << "(const " << get_angelscript_string(parameter) << " &in)\"," << std::endl;
-	std::cout << "\t\tasFUNCTIONPR(glm::detail::operator";
-	std::cout << get_string(bo) << "," << std::endl << "\t\t";
+	std::cout << get_indent(indent) << "\t\tasFUNCTIONPR(";
+
+	if (!namespace_name.empty())
+	{
+		std::cout << namespace_name << "::";
+	}
+
+	std::cout << "operator";
+	std::cout << get_string(bo) << "," << std::endl << get_indent(indent) << "\t\t";
 
 	if (swapped)
 	{
@@ -766,7 +783,7 @@ void register_operator(const ParameterType type, const ParameterType result,
 		std::cout << " &, const " << get_string(parameter) << " &), ";
 	}
 
-	std::cout << get_string(result) << ")," << std::endl << "\t\t";
+	std::cout << get_string(result) << ")," << std::endl << get_indent(indent) << "\t\t";
 
 	if (swapped)
 	{
@@ -777,100 +794,111 @@ void register_operator(const ParameterType type, const ParameterType result,
 		std::cout << "asCALL_CDECL_OBJFIRST);" << std::endl;
 	}
 
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_operator(const ParameterType type, const ParameterType value,
-	const BinaryOperatorType bo, const bool swapped)
+	const BinaryOperatorType bo, const bool swapped,
+	const std::string &namespace_name, const int indent)
 {
-	register_operator(type, type, value, bo, swapped);
+	register_operator(type, type, value, bo, swapped, namespace_name,
+		indent);
 }
 
-void register_to_string_function(const ParameterType type)
+void register_to_string_function(const ParameterType type,
+	const int indent)
 {
-	std::cout << "\tr = engine->RegisterGlobalFunction(" << std::endl << "\t\t\"";
+	std::cout << get_indent(indent) << "\tr = engine->RegisterGlobalFunction(" << std::endl << get_indent(indent) << "\t\t\"";
 	std::cout << "string to_string(const " << get_angelscript_string(type);
-	std::cout << " &in)\"," << std::endl << "\t\tasFUNCTIONPR(glm::";
-	std::cout << "to_string," << std::endl << "\t\t";
+	std::cout << " &in)\"," << std::endl << get_indent(indent) << "\t\tasFUNCTIONPR(glm::";
+	std::cout << "to_string," << std::endl << get_indent(indent) << "\t\t";
 	std::cout << "(const " << get_string(type) << " &), ";
-	std::cout << "std::string)," << std::endl << "\t\t";
+	std::cout << "std::string)," << std::endl << get_indent(indent) << "\t\t";
 	std::cout << "asCALL_CDECL);" << std::endl;
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_function(const ParameterType result, const ParameterType param_0,
-	const std::string &name, const std::string &as_name)
+	const std::string &name, const std::string &as_name,
+	const int indent)
 {
-	std::cout << "\tr = engine->RegisterGlobalFunction(" << std::endl << "\t\t\"";
+	std::cout << get_indent(indent) << "\tr = engine->RegisterGlobalFunction(";
+	std::cout << std::endl << get_indent(indent) << "\t\t\"";
 	std::cout << get_angelscript_string(result) << " " << as_name;
-	std::cout << "(const " << get_angelscript_string(param_0) << " &in)\"," << std::endl;
-	std::cout << "\t\tasFUNCTIONPR(glm::";
-	std::cout << name << "," << std::endl << "\t\t";
+	std::cout << "(const " << get_angelscript_string(param_0) << " &in)\",";
+	std::cout << std::endl << get_indent(indent);
+	std::cout << "\t\tasFUNCTIONPR(";
+	std::cout << name << "," << std::endl << get_indent(indent) << "\t\t";
 	std::cout << "(const " << get_string(param_0) << " &), ";
-	std::cout << get_string(result) << ")," << std::endl << "\t\t";
+	std::cout << get_string(result) << ")," << std::endl << get_indent(indent) << "\t\t";
 	std::cout << "asCALL_CDECL);" << std::endl;
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_function(const ParameterType result, const ParameterType param_0,
 	const ParameterType param_1, const std::string &name,
-	const std::string &as_name)
+	const std::string &as_name, const int indent)
 {
-	std::cout << "\tr = engine->RegisterGlobalFunction(" << std::endl << "\t\t\"";
+	std::cout << get_indent(indent) << "\tr = engine->RegisterGlobalFunction(";
+	std::cout << std::endl << get_indent(indent) << "\t\t\"";
 	std::cout << get_angelscript_string(result) << " " << as_name;
 	std::cout << "(const " << get_angelscript_string(param_0) << " &in,";
-	std::cout << " const " << get_angelscript_string(param_1) << " &in)\"," << std::endl;
-	std::cout << "\t\tasFUNCTIONPR(glm::";
-	std::cout << name << "," << std::endl << "\t\t";
+	std::cout << " const " << get_angelscript_string(param_1) << " &in)\",";
+	std::cout << std::endl << get_indent(indent) << "\t\tasFUNCTIONPR(";
+	std::cout << name << "," << std::endl << get_indent(indent) << "\t\t";
 	std::cout << "(const " << get_string(param_0) << " &,";
 	std::cout << " const " << get_string(param_1) << " &), ";
-	std::cout << get_string(result) << ")," << std::endl << "\t\t";
+	std::cout << get_string(result) << ")," << std::endl << get_indent(indent) << "\t\t";
 	std::cout << "asCALL_CDECL);" << std::endl;
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_function(const ParameterType result, const ParameterType param_0,
 	const ParameterType param_1, const ParameterType param_2,
-	const std::string &name, const std::string &as_name)
+	const std::string &name, const std::string &as_name,
+	const int indent)
 {
-	std::cout << "\tr = engine->RegisterGlobalFunction(" << std::endl << "\t\t\"";
+	std::cout << get_indent(indent) << "\tr = engine->RegisterGlobalFunction(";
+	std::cout << std::endl << get_indent(indent) << "\t\t\"";
 	std::cout << get_angelscript_string(result) << " " << as_name;
 	std::cout << "(const " << get_angelscript_string(param_0) << " &in,";
 	std::cout << " const " << get_angelscript_string(param_1) << " &in,";
-	std::cout << " const " << get_angelscript_string(param_2) << " &in)\"," << std::endl;
-	std::cout << "\t\tasFUNCTIONPR(glm::";
-	std::cout << name << "," << std::endl << "\t\t";
+	std::cout << " const " << get_angelscript_string(param_2) << " &in)\",";
+	std::cout << std::endl << get_indent(indent);
+	std::cout << "\t\tasFUNCTIONPR(";
+	std::cout << name << "," << std::endl << get_indent(indent) << "\t\t";
 	std::cout << "(const " << get_string(param_0) << " &,";
 	std::cout << " const " << get_string(param_1) << " &,";
 	std::cout << " const " << get_string(param_2) << " &), ";
-	std::cout << get_string(result) << ")," << std::endl << "\t\t";
+	std::cout << get_string(result) << ")," << std::endl << get_indent(indent) << "\t\t";
 	std::cout << "asCALL_CDECL);" << std::endl;
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_function(const ParameterType result, const ParameterType param_0,
-	const std::string &name)
+	const std::string &name, const int indent)
 {
-	register_function(result, param_0, name, name);
+	register_function(result, param_0, name, name, indent);
 }
 
 void register_function(const ParameterType result, const ParameterType param_0,
-	const ParameterType param_1, const std::string &name)
+	const ParameterType param_1, const std::string &name,
+	const int indent)
 {
-	register_function(result, param_0, param_1, name, name);
+	register_function(result, param_0, param_1, name, name, indent);
 }
 
 void register_function(const ParameterType result, const ParameterType param_0,
 	const ParameterType param_1, const ParameterType param_2,
-	const std::string &name)
+	const std::string &name, const int indent)
 {
-	register_function(result, param_0, param_1, param_2, name, name);
+	register_function(result, param_0, param_1, param_2, name, name, indent);
 }
 
-void register_type(const ParameterType type)
+void register_type(const ParameterType type, const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectType(\"" << get_angelscript_string(type);
-	std::cout << "\", sizeof(" << get_string(type) << ")," << std::endl;
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectType(\"" << get_angelscript_string(type);
+	std::cout << "\", sizeof(" << get_string(type) << ")," << std::endl << get_indent(indent);
 
 	switch (get_value(type))
 	{
@@ -884,82 +912,83 @@ void register_type(const ParameterType type)
 			break;
 	}
 
-	std::cout << "\tassert(r >= 0);" << std::endl;
+	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
-void register_vector_float_functions(const ParameterType type)
+void register_vector_float_functions(const ParameterType type,
+	const int indent)
 {
-	register_function(type, type, "radians");
-	register_function(type, type, "degrees");
-	register_function(type, type, "sin");
-	register_function(type, type, "cos");
-	register_function(type, type, "tan");
-	register_function(type, type, "asin");
-	register_function(type, type, "acos");
-	register_function(type, type, type, "atan");
-	register_function(type, type, "atan");
+	register_function(type, type, "glm::radians", indent);
+	register_function(type, type, "glm::degrees", indent);
+	register_function(type, type, "glm::sin", indent);
+	register_function(type, type, "glm::cos", indent);
+	register_function(type, type, "glm::tan", indent);
+	register_function(type, type, "glm::asin", indent);
+	register_function(type, type, "glm::acos", indent);
+	register_function(type, type, type, "glm::atan", indent);
+	register_function(type, type, "glm::atan", indent);
 
-	register_function(type, type, "sinh");
-	register_function(type, type, "cosh");
-	register_function(type, type, "tanh");
-	register_function(type, type, "asinh");
-	register_function(type, type, "acosh");
-	register_function(type, type, "atanh");
+	register_function(type, type, "glm::sinh", indent);
+	register_function(type, type, "glm::cosh", indent);
+	register_function(type, type, "glm::tanh", indent);
+	register_function(type, type, "glm::asinh", indent);
+	register_function(type, type, "glm::acosh", indent);
+	register_function(type, type, "glm::atanh", indent);
 
-	register_function(type, type, type, "pow");
-	register_function(type, type, "exp");
-	register_function(type, type, "log");
-	register_function(type, type, "exp2");
-	register_function(type, type, "log2");
-	register_function(type, type, "sqrt");
-	register_function(type, type, "inversesqrt");
-	register_function(type, type, "abs");
-	register_function(type, type, "sign");
-	register_function(type, type, "round");
-	register_function(type, type, "trunc");
-	register_function(type, type, "floor");
+	register_function(type, type, type, "glm::pow", indent);
+	register_function(type, type, "glm::exp", indent);
+	register_function(type, type, "glm::log", indent);
+	register_function(type, type, "glm::exp2", indent);
+	register_function(type, type, "glm::log2", indent);
+	register_function(type, type, "glm::sqrt", indent);
+	register_function(type, type, "glm::inversesqrt", indent);
+	register_function(type, type, "glm::abs", indent);
+	register_function(type, type, "glm::sign", indent);
+	register_function(type, type, "glm::round", indent);
+	register_function(type, type, "glm::trunc", indent);
+	register_function(type, type, "glm::floor", indent);
 
-	register_function(type, type, "ceil");
-	register_function(type, type, "fract");
-	register_function(type, type, type, "mod");
-	register_function(type, type, type, "min");
-	register_function(type, type, type, "max");
+	register_function(type, type, "glm::ceil", indent);
+	register_function(type, type, "glm::fract", indent);
+	register_function(type, type, type, "glm::mod", indent);
+	register_function(type, type, type, "glm::min", indent);
+	register_function(type, type, type, "glm::max", indent);
 
-	register_function(type, type, type, type, "clamp");
-	register_function(type, type, type, type, "mix");
-	register_function(type, type, type, "step");
-	register_function(type, type, type, type, "smoothstep");
-	register_function(type, type, type, "reflect");
-	register_function(type, type, type, pt_float, "refract");
+	register_function(type, type, type, type, "glm::clamp", indent);
+	register_function(type, type, type, type, "glm::mix", indent);
+	register_function(type, type, type, "glm::step", indent);
+	register_function(type, type, type, type, "glm::smoothstep", indent);
+	register_function(type, type, type, "glm::reflect", indent);
+	register_function(type, type, type, pt_float, "glm::refract", indent);
 
 	if (type != pt_float)
 	{
-		register_function(type, type, pt_float, "mod");
-		register_function(type, type, pt_float, "min");
-		register_function(type, type, pt_float, "max");
-		register_function(type, type, pt_float, pt_float, "clamp");
-		register_function(type, type, type, pt_float, "mix");
-		register_function(type, pt_float, type, "step");
-		register_function(type, pt_float, pt_float, type, "smoothstep");
+		register_function(type, type, pt_float, "glm::mod", indent);
+		register_function(type, type, pt_float, "glm::min", indent);
+		register_function(type, type, pt_float, "glm::max", indent);
+		register_function(type, type, pt_float, pt_float, "glm::clamp", indent);
+		register_function(type, type, type, pt_float, "glm::mix", indent);
+		register_function(type, pt_float, type, "glm::step", indent);
+		register_function(type, pt_float, pt_float, type, "glm::smoothstep", indent);
 	}
 
-	register_function(pt_float, type, "length");
-	register_function(pt_float, type, type, "distance");
-	register_function(pt_float, type, type, "dot");
+	register_function(pt_float, type, "glm::length", indent);
+	register_function(pt_float, type, type, "glm::distance", indent);
+	register_function(pt_float, type, type, "dot", indent);
 
-	register_function(type, type, "normalize");
+	register_function(type, type, "glm::normalize", indent);
 }
 
-void register_vector_float_functions()
+void register_vector_float_functions(const int indent)
 {
-	register_vector_float_functions(pt_float);
-	register_vector_float_functions(pt_vec2);
-	register_vector_float_functions(pt_vec3);
-	register_vector_float_functions(pt_vec4);
-	register_function(pt_vec3, pt_vec3, pt_vec3, "cross");
+	register_vector_float_functions(pt_float, indent);
+	register_vector_float_functions(pt_vec2, indent);
+	register_vector_float_functions(pt_vec3, indent);
+	register_vector_float_functions(pt_vec4, indent);
+	register_function(pt_vec3, pt_vec3, pt_vec3, "glm::cross", indent);
 }
 
-void register_vector_compare_functions()
+void register_vector_compare_functions(const int indent)
 {
 	ParameterType itype, utype, btype, type;
 	unsigned int i;
@@ -971,37 +1000,37 @@ void register_vector_compare_functions()
 		btype = get_parameter(vt_bool, i);
 		type = get_parameter(vt_float, i);
 
-		register_function(pt_bool, type, type, "detail::operator==", "opEquals");
+		register_function(pt_bool, type, type, "glm::detail::operator==", "opEquals", indent);
 
-		register_function(btype, type, type, "lessThan");
-		register_function(btype, itype, itype, "lessThan");
-		register_function(btype, utype, utype, "lessThan");
+		register_function(btype, type, type, "glm::lessThan", indent);
+		register_function(btype, itype, itype, "glm::lessThan", indent);
+		register_function(btype, utype, utype, "glm::lessThan", indent);
 
-		register_function(btype, type, type, "lessThanEqual");
-		register_function(btype, itype, itype, "lessThanEqual");
-		register_function(btype, utype, utype, "lessThanEqual");
+		register_function(btype, type, type, "glm::lessThanEqual", indent);
+		register_function(btype, itype, itype, "glm::lessThanEqual", indent);
+		register_function(btype, utype, utype, "glm::lessThanEqual", indent);
 
-		register_function(btype, type, type, "greaterThan");
-		register_function(btype, itype, itype, "greaterThan");
-		register_function(btype, utype, utype, "greaterThan");
+		register_function(btype, type, type, "glm::greaterThan", indent);
+		register_function(btype, itype, itype, "glm::greaterThan", indent);
+		register_function(btype, utype, utype, "glm::greaterThan", indent);
 
-		register_function(btype, type, type, "greaterThanEqual");
-		register_function(btype, itype, itype, "greaterThanEqual");
-		register_function(btype, utype, utype, "greaterThanEqual");
+		register_function(btype, type, type, "glm::greaterThanEqual", indent);
+		register_function(btype, itype, itype, "glm::greaterThanEqual", indent);
+		register_function(btype, utype, utype, "glm::greaterThanEqual", indent);
 
-		register_function(btype, type, type, "equal");
-		register_function(btype, itype, itype, "equal");
-		register_function(btype, utype, utype, "equal");
-		register_function(btype, btype, btype, "equal");
+		register_function(btype, type, type, "glm::equal", indent);
+		register_function(btype, itype, itype, "glm::equal", indent);
+		register_function(btype, utype, utype, "glm::equal", indent);
+		register_function(btype, btype, btype, "glm::equal", indent);
 
-		register_function(btype, type, type, "notEqual");
-		register_function(btype, itype, itype, "notEqual");
-		register_function(btype, utype, utype, "notEqual");
-		register_function(btype, btype, btype, "notEqual");
+		register_function(btype, type, type, "glm::notEqual", indent);
+		register_function(btype, itype, itype, "glm::notEqual", indent);
+		register_function(btype, utype, utype, "glm::notEqual", indent);
+		register_function(btype, btype, btype, "glm::notEqual", indent);
 	}
 }
 
-void register_vector_functions()
+void register_vector_functions(const int indent)
 {
 	ParameterType itype, utype, btype, type;
 	unsigned int i;
@@ -1013,88 +1042,94 @@ void register_vector_functions()
 		btype = get_parameter(vt_bool, i);
 		type = get_parameter(vt_float, i);
 
-		register_function(pt_bool, btype, "all");
-		register_function(pt_bool, btype, "any");
-		register_function(btype, btype, "not_");
+		register_function(pt_bool, btype, "glm::all", indent);
+		register_function(pt_bool, btype, "glm::any", indent);
+		register_function(btype, btype, "glm::not_", indent);
 
-		register_function(type, type, "detail::operator-", "opNeg");
-		register_function(itype, itype, "detail::operator-", "opNeg");
+		register_function(type, type, "glm::detail::operator-", "opNeg", indent);
+		register_function(itype, itype, "glm::detail::operator-", "opNeg", indent);
 
-		register_function(utype, utype, "detail::operator~", "opCom");
-		register_function(btype, btype, "detail::operator~", "opCom");
+		register_function(utype, utype, "glm::detail::operator~", "opCom", indent);
+		register_function(btype, btype, "glm::detail::operator~", "opCom", indent);
 	}
 }
 
-void register_constructor(const ParameterType type)
+void register_constructor(const ParameterType type, const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
-	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl;
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
+	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl << get_indent(indent);
 	std::cout << "\t\t\"void f()\", asFUNCTION(constructor_0<" << get_string(type);
-	std::cout << ">)," << std::endl;
-	std::cout << "\t\tasCALL_CDECL_OBJLAST);" << std::endl;
+	std::cout << ">)," << std::endl << get_indent(indent);
+	std::cout << "\t\tasCALL_CDECL_OBJLAST);" << std::endl << get_indent(indent);
 	std::cout << "\tassert(r >= 0);" << std::endl;
 }
 
-void register_constructor(const ParameterType type, const ParameterType param_0)
+void register_constructor(const ParameterType type, const ParameterType param_0,
+	const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
-	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl;
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
+	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl << get_indent(indent);
 	std::cout << "\t\t\"void f(const " << get_angelscript_string(param_0);
 	std::cout << " &in)\", asFUNCTION((constructor_1<" << get_string(type);
-	std::cout << ", " << get_string(param_0) << ">))," << std::endl;
-	std::cout << "\t\tasCALL_CDECL_OBJLAST);" << std::endl;
+	std::cout << ", " << get_string(param_0) << ">))," << std::endl << get_indent(indent);
+	std::cout << "\t\tasCALL_CDECL_OBJLAST);" << std::endl << get_indent(indent);
 	std::cout << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_constructor(const ParameterType type, const ParameterType param_0,
-	const ParameterType param_1)
+	const ParameterType param_1, const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
-	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl;
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
+	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl << get_indent(indent);
 	std::cout << "\t\t\"void f(const " << get_angelscript_string(param_0);
 	std::cout << " &in, const " << get_angelscript_string(param_1);
-	std::cout << " &in)\"," << std::endl;
+	std::cout << " &in)\"," << std::endl << get_indent(indent);
 	std::cout << "\t\tasFUNCTION((constructor_2<" << get_string(type);
 	std::cout << ", " << get_string(param_0) << ", " << get_string(param_1);
-	std::cout << ">))," << std::endl << "\t\tasCALL_CDECL_OBJLAST);" << std::endl;
+	std::cout << ">))," << std::endl << get_indent(indent);
+	std::cout << "\t\tasCALL_CDECL_OBJLAST);" << std::endl << get_indent(indent);
 	std::cout << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_constructor(const ParameterType type, const ParameterType param_0,
-	const ParameterType param_1, const ParameterType param_2)
+	const ParameterType param_1, const ParameterType param_2,
+	const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
-	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl;
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
+	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl << get_indent(indent);
 	std::cout << "\t\t\"void f(const " << get_angelscript_string(param_0);
 	std::cout << " &in, const " << get_angelscript_string(param_1);
 	std::cout << " &in, const " << get_angelscript_string(param_2);
-	std::cout << " &in)\"," << std::endl;
+	std::cout << " &in)\"," << std::endl << get_indent(indent);
 	std::cout << "\t\tasFUNCTION((constructor_3<" << get_string(type);
 	std::cout << ", " << get_string(param_0) << ", " << get_string(param_1);
-	std::cout << ", " << get_string(param_2) << ">))," << std::endl;
-	std::cout << "\t\tasCALL_CDECL_OBJLAST);" << std::endl;
+	std::cout << ", " << get_string(param_2) << ">))," << std::endl << get_indent(indent);
+	std::cout << "\t\tasCALL_CDECL_OBJLAST);" << std::endl << get_indent(indent);
 	std::cout << "\tassert(r >= 0);" << std::endl;
 }
 
 void register_constructor(const ParameterType type, const ParameterType param_0,
-	const ParameterType param_1, const ParameterType param_2, const ParameterType param_3)
+	const ParameterType param_1, const ParameterType param_2,
+	const ParameterType param_3, const int indent)
 {
-	std::cout << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
-	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl;
+	std::cout << get_indent(indent) << "\tr = engine->RegisterObjectBehaviour(\"" << get_angelscript_string(type);
+	std::cout << "\", asBEHAVE_CONSTRUCT," << std::endl << get_indent(indent);
 	std::cout << "\t\t\"void f(const " << get_angelscript_string(param_0);
 	std::cout << " &in, const " << get_angelscript_string(param_1);
 	std::cout << " &in, const " << get_angelscript_string(param_2);
 	std::cout << " &in, const " << get_angelscript_string(param_3);
-	std::cout << " &in)\"," << std::endl;
+	std::cout << " &in)\"," << std::endl << get_indent(indent);
 	std::cout << "\t\tasFUNCTION((constructor_4<" << get_string(type);
 	std::cout << ", " << get_string(param_0) << ", " << get_string(param_1);
 	std::cout << ", " << get_string(param_2) << ", " << get_string(param_3);
-	std::cout << ">))," << std::endl << "\t\tasCALL_CDECL_OBJLAST);" << std::endl;
+	std::cout << ">))," << std::endl << get_indent(indent);
+	std::cout << "\t\tasCALL_CDECL_OBJLAST);" << std::endl << get_indent(indent);
 	std::cout << "\tassert(r >= 0);" << std::endl;
 }
 
-void register_vector_constructors(const ParameterType type, const ParameterType param_0,
-	const ParameterType param_1, const ParameterType param_2)
+void register_vector_constructors(const ParameterType type,
+	const ParameterType param_0, const ParameterType param_1,
+	const ParameterType param_2, const int indent)
 {
 	ValueType value;
 	unsigned int count, n;
@@ -1106,18 +1141,18 @@ void register_vector_constructors(const ParameterType type, const ParameterType 
 
 	if (n == 1)
 	{
-		register_constructor(type, param_0, param_1, param_2, get_parameter(value, 1));
+		register_constructor(type, param_0, param_1, param_2, get_parameter(value, 1), indent);
 		return;
 	}
 
-	register_constructor(type, param_0, param_1, param_2, get_parameter(vt_int, n));
-	register_constructor(type, param_0, param_1, param_2, get_parameter(vt_uint, n));
-	register_constructor(type, param_0, param_1, param_2, get_parameter(vt_bool, n));
-	register_constructor(type, param_0, param_1, param_2, get_parameter(vt_float, n));
+	register_constructor(type, param_0, param_1, param_2, get_parameter(vt_int, n), indent);
+	register_constructor(type, param_0, param_1, param_2, get_parameter(vt_uint, n), indent);
+	register_constructor(type, param_0, param_1, param_2, get_parameter(vt_bool, n), indent);
+	register_constructor(type, param_0, param_1, param_2, get_parameter(vt_float, n), indent);
 }
 
 void register_vector_constructors(const ParameterType type, const ParameterType param_0,
-	const ParameterType param_1)
+	const ParameterType param_1, const int indent)
 {
 	ValueType value;
 	unsigned int i, count, n;
@@ -1129,32 +1164,33 @@ void register_vector_constructors(const ParameterType type, const ParameterType 
 
 	if (n == 1)
 	{
-		register_constructor(type, param_0, param_1, get_parameter(value, 1));
+		register_constructor(type, param_0, param_1, get_parameter(value, 1), indent);
 		return;
 	}
 
-	register_constructor(type, param_0, param_1, get_parameter(vt_int, n));
-	register_constructor(type, param_0, param_1, get_parameter(vt_uint, n));
-	register_constructor(type, param_0, param_1, get_parameter(vt_bool, n));
-	register_constructor(type, param_0, param_1, get_parameter(vt_float, n));
+	register_constructor(type, param_0, param_1, get_parameter(vt_int, n), indent);
+	register_constructor(type, param_0, param_1, get_parameter(vt_uint, n), indent);
+	register_constructor(type, param_0, param_1, get_parameter(vt_bool, n), indent);
+	register_constructor(type, param_0, param_1, get_parameter(vt_float, n), indent);
 
 	if (count < 4)
 	{
 		return;
 	}
 
-	register_vector_constructors(type, param_0, param_1, get_parameter(value, 1));
+	register_vector_constructors(type, param_0, param_1, get_parameter(value, 1), indent);
 
 	for (i = 2; i < n; ++i)
 	{
-		register_vector_constructors(type, param_0, param_1, get_parameter(vt_int, i));
-		register_vector_constructors(type, param_0, param_1, get_parameter(vt_uint, i));
-		register_vector_constructors(type, param_0, param_1, get_parameter(vt_bool, i));
-		register_vector_constructors(type, param_0, param_1, get_parameter(vt_float, i));
+		register_vector_constructors(type, param_0, param_1, get_parameter(vt_int, i), indent);
+		register_vector_constructors(type, param_0, param_1, get_parameter(vt_uint, i), indent);
+		register_vector_constructors(type, param_0, param_1, get_parameter(vt_bool, i), indent);
+		register_vector_constructors(type, param_0, param_1, get_parameter(vt_float, i), indent);
 	}
 }
 
-void register_vector_constructors(const ParameterType type, const ParameterType param_0)
+void register_vector_constructors(const ParameterType type,
+	const ParameterType param_0, const int indent)
 {
 	ValueType value;
 	unsigned int i, count, n;
@@ -1166,62 +1202,63 @@ void register_vector_constructors(const ParameterType type, const ParameterType 
 
 	if (n == 1)
 	{
-		register_constructor(type, param_0, get_parameter(value, 1));
+		register_constructor(type, param_0, get_parameter(value, 1), indent);
 		return;
 	}
 
-	register_constructor(type, param_0, get_parameter(vt_int, n));
-	register_constructor(type, param_0, get_parameter(vt_uint, n));
-	register_constructor(type, param_0, get_parameter(vt_bool, n));
-	register_constructor(type, param_0, get_parameter(vt_float, n));
+	register_constructor(type, param_0, get_parameter(vt_int, n), indent);
+	register_constructor(type, param_0, get_parameter(vt_uint, n), indent);
+	register_constructor(type, param_0, get_parameter(vt_bool, n), indent);
+	register_constructor(type, param_0, get_parameter(vt_float, n), indent);
 
 	if (count < 3)
 	{
 		return;
 	}
 
-	register_vector_constructors(type, param_0, get_parameter(value, 1));
+	register_vector_constructors(type, param_0, get_parameter(value, 1), indent);
 
 	for (i = 2; i < n; ++i)
 	{
-		register_vector_constructors(type, param_0, get_parameter(vt_int, i));
-		register_vector_constructors(type, param_0, get_parameter(vt_uint, i));
-		register_vector_constructors(type, param_0, get_parameter(vt_bool, i));
-		register_vector_constructors(type, param_0, get_parameter(vt_float, i));
+		register_vector_constructors(type, param_0, get_parameter(vt_int, i), indent);
+		register_vector_constructors(type, param_0, get_parameter(vt_uint, i), indent);
+		register_vector_constructors(type, param_0, get_parameter(vt_bool, i), indent);
+		register_vector_constructors(type, param_0, get_parameter(vt_float, i), indent);
 	}
 }
 
-void register_vector_constructors(const ParameterType type)
+void register_vector_constructors(const ParameterType type,
+	const int indent)
 {
 	ValueType value;
 	unsigned int i, count;
 
-	register_constructor(type);
+	register_constructor(type, indent);
 
 	value = get_value(type);
 	count = get_count(type);
 
-	register_constructor(type, get_parameter(value, 1));
+	register_constructor(type, get_parameter(value, 1), indent);
 
 	for (i = 2; i < 5; ++i)
 	{
 		if (i >= count)
 		{
-			register_constructor(type, get_parameter(vt_int, i));
-			register_constructor(type, get_parameter(vt_uint, i));
-			register_constructor(type, get_parameter(vt_bool, i));
-			register_constructor(type, get_parameter(vt_float, i));
+			register_constructor(type, get_parameter(vt_int, i), indent);
+			register_constructor(type, get_parameter(vt_uint, i), indent);
+			register_constructor(type, get_parameter(vt_bool, i), indent);
+			register_constructor(type, get_parameter(vt_float, i), indent);
 		}
 	}
 
-	register_vector_constructors(type, get_parameter(value, 1));
+	register_vector_constructors(type, get_parameter(value, 1), indent);
 
 	for (i = 2; i < count; ++i)
 	{
-		register_vector_constructors(type, get_parameter(vt_int, i));
-		register_vector_constructors(type, get_parameter(vt_uint, i));
-		register_vector_constructors(type, get_parameter(vt_bool, i));
-		register_vector_constructors(type, get_parameter(vt_float, i));
+		register_vector_constructors(type, get_parameter(vt_int, i), indent);
+		register_vector_constructors(type, get_parameter(vt_uint, i), indent);
+		register_vector_constructors(type, get_parameter(vt_bool, i), indent);
+		register_vector_constructors(type, get_parameter(vt_float, i), indent);
 	}
 }
 
@@ -1229,65 +1266,69 @@ typedef std::set<UnaryOperatorType> UnaryOperatorSet;
 typedef std::set<BinaryOperatorType> BinaryOperatorSet;
 
 void register_vec(const UnaryOperatorSet &uos, const BinaryOperatorSet &bos,
-	const ParameterType type)
+	const ParameterType type, const int indent)
 {
 	UnaryOperatorSet::const_iterator uos_it, uos_end;
 	BinaryOperatorSet::const_iterator bos_it, bos_end;
 	ParameterType value;
 
-	std::cout << "\t/* " << get_string(type) << " */" << std::endl;
+	std::cout << get_indent(indent) << "\t/* " << get_string(type) << " */" << std::endl;
 
 	value = get_type(type);
 
-	register_vector_element(type);
-	register_index_operator(type, value);
-	register_vector_constructors(type);
+	register_vector_element(type, indent);
+	register_index_operator(type, value, indent);
+	register_vector_constructors(type, indent);
 
 	uos_end = uos.end();
 
 	for (uos_it = uos.begin(); uos_it != uos_end; ++uos_it)
 	{
-		register_operator(type, type, *uos_it);
-		register_operator(type, value, *uos_it);
+		register_operator(type, type, *uos_it, indent);
+		register_operator(type, value, *uos_it, indent);
 	}
 
 	bos_end = bos.end();
 
 	for (bos_it = bos.begin(); bos_it != bos_end; ++bos_it)
 	{
-		register_operator(type, type, *bos_it, false);
-		register_operator(type, value, *bos_it, true);
-		register_operator(type, value, *bos_it, false);
+		register_operator(type, type, *bos_it, false, "glm::detail",
+			indent);
+		register_operator(type, value, *bos_it, true, "glm::detail",
+			indent);
+		register_operator(type, value, *bos_it, false, "glm::detail",
+			indent);
 	}
 
-	register_to_string_function(type);
+	register_to_string_function(type, indent);
 }
 
 void register_vecs(const UnaryOperatorSet &uos, const BinaryOperatorSet &bos,
-	const ValueType type)
+	const ValueType type, const int indent)
 {
-	register_vec(uos, bos, get_parameter(type, 2));
-	register_vec(uos, bos, get_parameter(type, 3));
-	register_vec(uos, bos, get_parameter(type, 4));
+	register_vec(uos, bos, get_parameter(type, 2), indent);
+	register_vec(uos, bos, get_parameter(type, 3), indent);
+	register_vec(uos, bos, get_parameter(type, 4), indent);
 }
 
-void register_matrix_constructors(const ParameterType type)
+void register_matrix_constructors(const ParameterType type,
+	const int indent)
 {
 	ValueType value_type;
 	unsigned int i, j, row, col;
 
-	register_constructor(type);
+	register_constructor(type, indent);
 
 	get_matrix_counts(type, row, col);
 	value_type = get_value(type);
 
-	register_constructor(type, get_parameter(value_type, 1));
+	register_constructor(type, get_parameter(value_type, 1), indent);
 
 	for (i = 2; i < 5; ++i)
 	{
 		for (j = 2; j < 5; ++j)
 		{
-			register_constructor(type, get_matrix(i, j));
+			register_constructor(type, get_matrix(i, j), indent);
 		}
 	}
 
@@ -1296,80 +1337,81 @@ void register_matrix_constructors(const ParameterType type)
 		case 2:
 			register_constructor(type,
 				get_parameter(value_type, col),
-				get_parameter(value_type, col));
+				get_parameter(value_type, col), indent);
 			break;
 		case 3:
 			register_constructor(type,
 				get_parameter(value_type, col),
 				get_parameter(value_type, col),
-				get_parameter(value_type, col));
+				get_parameter(value_type, col), indent);
 			break;
 		case 4:
 			register_constructor(type,
 				get_parameter(value_type, col),
 				get_parameter(value_type, col),
 				get_parameter(value_type, col),
-				get_parameter(value_type, col));
+				get_parameter(value_type, col), indent);
 			break;
 	}
 }
 
-void register_mat(const ParameterType type)
+void register_mat(const ParameterType type, const int indent)
 {
 	ValueType value_type;
 	ParameterType value;
 	unsigned int row, col, i;
 
-	std::cout << "\t/* " << get_string(type) << " */" << std::endl;
+	std::cout << get_indent(indent) << "\t/* " << get_string(type) << " */" << std::endl;
 
-	register_matrix_constructors(type);
+	register_matrix_constructors(type, indent);
 
 	value = get_type(type);
 	value_type = get_value(type);
 	get_matrix_counts(type, row, col);
 
-	register_index_operator(type, get_parameter(value_type, col));
+	register_index_operator(type, get_parameter(value_type, col), indent);
 
-	register_operator(type, type, uot_add_assign);
-	register_operator(type, value, uot_add_assign);
-	register_operator(type, type, uot_sub_assign);
-	register_operator(type, value, uot_sub_assign);
-	register_operator(type, value, uot_mul_assign);
-	register_operator(type, value, uot_div_assign);
+	register_operator(type, type, uot_add_assign, indent);
+	register_operator(type, value, uot_add_assign, indent);
+	register_operator(type, type, uot_sub_assign, indent);
+	register_operator(type, value, uot_sub_assign, indent);
+	register_operator(type, value, uot_mul_assign, indent);
+	register_operator(type, value, uot_div_assign, indent);
 
-	register_operator(type, type, bot_add, false);
-	register_operator(type, value, bot_add, false);
-	register_operator(type, type, bot_sub, false);
-	register_operator(type, value, bot_sub, false);
-	register_operator(type, value, bot_mul, false);
-	register_operator(type, value, bot_div, false);
+	register_operator(type, type, bot_add, false, "glm::detail", indent);
+	register_operator(type, value, bot_add, false, "glm::detail", indent);
+	register_operator(type, type, bot_sub, false, "glm::detail", indent);
+	register_operator(type, value, bot_sub, false, "glm::detail", indent);
+	register_operator(type, value, bot_mul, false, "glm::detail", indent);
+	register_operator(type, value, bot_div, false, "glm::detail", indent);
 
-	register_function(type, type, type, "matrixCompMult", "matrixCompMult");
-	register_function(get_matrix(col, row), type, "transpose", "transpose");
+	register_function(type, type, type, "glm::matrixCompMult", "matrixCompMult", indent);
+	register_function(get_matrix(col, row), type, "transpose", "transpose", indent);
 	register_function(type, get_parameter(value_type, col),
-		get_parameter(value_type, row), "outerProduct<float>", "outerProduct");
+		get_parameter(value_type, row), "glm::outerProduct<float>", "outerProduct", indent);
 
 	if (row == col)
 	{
-		register_function(type, type, "inverse", "inverse");
-		register_function(value, type, "determinant", "determinant");
-		register_operator(type, type, uot_mul_assign);
+		register_function(type, type, "glm::inverse", "inverse", indent);
+		register_function(value, type, "glm::determinant", "determinant", indent);
+		register_operator(type, type, uot_mul_assign, indent);
  	}
 
 	for (i = 2; i < 5; ++i)
 	{
-		register_operator(type, get_matrix(i, col), get_matrix(i, row), bot_mul, false);
+		register_operator(type, get_matrix(i, col), get_matrix(i, row),
+			bot_mul, false, "glm::detail", indent);
 	}
 
 	register_operator(type, get_parameter(value_type, col),
-		get_parameter(value_type, row), bot_mul, false);
+		get_parameter(value_type, row), bot_mul, false, "glm::detail", indent);
 	register_operator(type, get_parameter(value_type, row),
-		get_parameter(value_type, col), bot_mul, true);
+		get_parameter(value_type, col), bot_mul, true, "glm::detail", indent);
 
-	register_to_string_function(type);
+	register_to_string_function(type, indent);
 }
 
-void register_mats()
+void register_mats(const int indent)
 {
 	unsigned int i, j;
 
@@ -1377,77 +1419,77 @@ void register_mats()
 	{
 		for (j = 2; j < 5; ++j)
 		{
-			register_mat(get_matrix(i, j));
+			register_mat(get_matrix(i, j), indent);
 		}
 	}
 }
 
-void register_quaternion()
+void register_quaternion(const int indent)
 {
 	ParameterType value, type;
 
 	type = pt_quat;
 
-	std::cout << "\t/* " << get_string(type) << " */" << std::endl;
+	std::cout << get_indent(indent) << "\t/* " << get_string(type) << " */" << std::endl;
 
-	register_constructor(type);
-	register_constructor(type, pt_float, pt_vec3);
-	register_constructor(type, pt_float, pt_float, pt_float, pt_float);
+	register_constructor(type, indent);
+	register_constructor(type, pt_float, pt_vec3, indent);
+	register_constructor(type, pt_float, pt_float, pt_float, pt_float, indent);
 
-	register_quat_element();
+	register_quat_element(indent);
 
 	value = get_type(type);
 
-	register_index_operator(type, value);
+	register_index_operator(type, value, indent);
 
-	register_operator(type, value, uot_mul_assign);
-	register_operator(type, value, uot_div_assign);
+	register_operator(type, value, uot_mul_assign, indent);
+	register_operator(type, value, uot_div_assign, indent);
 
-	register_operator(type, type, bot_add, false);
-	register_operator(type, type, bot_mul, false);
+	register_operator(type, type, bot_add, false, "glm::detail", indent);
+	register_operator(type, type, bot_mul, false, "glm::detail", indent);
 
-	register_function(type, type, "detail::operator-", "opNeg");
+	register_function(type, type, "glm::detail::operator-", "opNeg", indent);
 
-	register_function(pt_vec3, type, pt_vec3, "detail::operator*", "opMul");
-	register_function(pt_vec3, pt_vec3, type, "detail::operator*", "opMul");
-	register_function(pt_vec4, type, pt_vec4, "detail::operator*", "opMul");
-	register_function(pt_vec4, pt_vec4, type, "detail::operator*", "opMul");
-	register_function(type, type, pt_float, "detail::operator*", "opMul");
-	register_function(type, pt_float, type, "detail::operator*", "opMul");
-	register_function(type, type, pt_float, "detail::operator/", "opDiv");
+	register_function(pt_vec3, type, pt_vec3, "glm::detail::operator*", "opMul", indent);
+	register_function(pt_vec3, pt_vec3, type, "glm::detail::operator*", "opMul", indent);
+	register_function(pt_vec4, type, pt_vec4, "glm::detail::operator*", "opMul", indent);
+	register_function(pt_vec4, pt_vec4, type, "glm::detail::operator*", "opMul", indent);
+	register_function(type, type, pt_float, "glm::detail::operator*", "opMul", indent);
+	register_function(type, pt_float, type, "glm::detail::operator*", "opMul", indent);
+	register_function(type, type, pt_float, "glm::detail::operator/", "opDiv", indent);
 
-	register_function(pt_float, type, "length", "length");
-	register_function(type, type, "normalize", "normalize");
-	register_function(pt_float, type, type, "dot", "dot");
-	register_function(type, type, type, pt_float, "mix", "mix");
-	register_function(type, type, "conjugate", "conjugate");
-	register_function(type, type, "inverse", "inverse");
-	register_function(type, type, pt_float, pt_vec3, "rotate", "rotate");
+	register_function(pt_float, type, "length", "length", indent);
+	register_function(type, type, "glm::normalize", "normalize", indent);
+	register_function(pt_float, type, type, "dot", "dot", indent);
+	register_function(type, type, type, pt_float, "glm::mix", "mix", indent);
+	register_function(type, type, "glm::conjugate", "conjugate", indent);
+	register_function(type, type, "glm::inverse", "inverse", indent);
+	register_function(type, type, pt_float, pt_vec3, "glm::rotate", "rotate", indent);
 
 //	register_to_string_function(type);
 }
 
-void register_types()
+void register_types(const int indent)
 {
 	unsigned int i, j;
 
 	for (i = 2; i < 5; ++i)
 	{
-		register_type(get_parameter(vt_int, i));
-		register_type(get_parameter(vt_uint, i));
-		register_type(get_parameter(vt_bool, i));
-		register_type(get_parameter(vt_float, i));
+		register_type(get_parameter(vt_int, i), indent);
+		register_type(get_parameter(vt_uint, i), indent);
+		register_type(get_parameter(vt_bool, i), indent);
+		register_type(get_parameter(vt_float, i), indent);
 	}
 
 	for (i = 2; i < 5; ++i)
 	{
 		for (j = 2; j < 5; ++j)
 		{
-			register_type(get_matrix(i, j));
+			register_type(get_matrix(i, j), indent);
 		}
 	}
 
-	register_type(pt_quat);
+	register_type(pt_quat, indent);
 }
 
 int main(int argc, char **argv)
@@ -1462,50 +1504,143 @@ int main(int argc, char **argv)
 	std::cout << "#include <glm/gtc/quaternion.hpp>" << std::endl;
 	std::cout << "#include <new>" << std::endl;
 	std::cout << std::endl;
-	std::cout << "template<typename T, typename U, unsigned int N>" << std::endl;
-	std::cout << "U *get_value_at(unsigned int i, T &obj)" << std::endl;
+	std::cout << "namespace" << std::endl;
 	std::cout << "{" << std::endl;
-	std::cout << "\tif (i >= N)" << std::endl;
-	std::cout << "\t{" << std::endl;
-	std::cout << "\t\tasIScriptContext *ctx = asGetActiveContext();" << std::endl;
-	std::cout << "\t\tctx->SetException(\"Out of range\");" << std::endl;
 	std::cout << std::endl;
-	std::cout << "\t\treturn 0;" << std::endl;
+	std::cout << "\ttemplate<typename T, typename U, unsigned int N>" << std::endl;
+	std::cout << "\tinline U *get_value_at(unsigned int i, T &obj)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tif (i >= N)" << std::endl;
+	std::cout << "\t\t{" << std::endl;
+	std::cout << "\t\t\tasIScriptContext *ctx = asGetActiveContext();" << std::endl;
+	std::cout << "\t\t\tctx->SetException(\"Out of range\");" << std::endl;
+	std::cout << std::endl;
+	std::cout << "\t\t\treturn 0;" << std::endl;
+	std::cout << "\t\t}" << std::endl;
+	std::cout << std::endl;
+	std::cout << "\t\treturn &obj[i];" << std::endl;
 	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
-	std::cout << "\treturn &obj[i];" << std::endl;
-	std::cout << "}" << std::endl;
+	std::cout << "\ttemplate<typename T>" << std::endl;
+	std::cout << "\tinline void constructor_0(T *self)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tnew(self) T();" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
-	std::cout << "template<typename T>" << std::endl;
-	std::cout << "void constructor_0(T *self)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tnew(self) T();" << std::endl;
-	std::cout << "}" << std::endl;
+	std::cout << "\ttemplate<typename T, typename P0>" << std::endl;
+	std::cout << "\tinline void constructor_1(const P0 &p0, T *self)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tnew(self) T(p0);" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
-	std::cout << "template<typename T, typename P0>" << std::endl;
-	std::cout << "void constructor_1(const P0 &p0, T *self)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tnew(self) T(p0);" << std::endl;
-	std::cout << "}" << std::endl;
+	std::cout << "\ttemplate<typename T, typename P0, typename P1>" << std::endl;
+	std::cout << "\tinline void constructor_2(const P0 &p0, const P1 &p1, T *self)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tnew(self) T(p0, p1);" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
-	std::cout << "template<typename T, typename P0, typename P1>" << std::endl;
-	std::cout << "void constructor_2(const P0 &p0, const P1 &p1, T *self)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tnew(self) T(p0, p1);" << std::endl;
-	std::cout << "}" << std::endl;
+	std::cout << "\ttemplate<typename T, typename P0, typename P1, typename P2>" << std::endl;
+	std::cout << "\tinline void constructor_3(const P0 &p0, const P1 &p1, const P2 &p2, T *self)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tnew(self) T(p0, p1, p2);" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
-	std::cout << "template<typename T, typename P0, typename P1, typename P2>" << std::endl;
-	std::cout << "void constructor_3(const P0 &p0, const P1 &p1, const P2 &p2, T *self)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tnew(self) T(p0, p1, p2);" << std::endl;
-	std::cout << "}" << std::endl;
+	std::cout << "\ttemplate<typename T, typename P0, typename P1, typename P2, typename P3>" << std::endl;
+	std::cout << "\tinline void constructor_4(const P0 &p0, const P1 &p1, const P2 &p2, const P3 &p3," << std::endl;
+	std::cout << "\t\tT *self)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tnew(self) T(p0, p1, p2, p3);" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
-	std::cout << "template<typename T, typename P0, typename P1, typename P2, typename P3>" << std::endl;
-	std::cout << "void constructor_4(const P0 &p0, const P1 &p1, const P2 &p2, const P3 &p3," << std::endl;
-	std::cout << "\tT *self)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tnew(self) T(p0, p1, p2, p3);" << std::endl;
-	std::cout << "}" << std::endl;
+
+	std::cout << "\tinline float dot(const float &p0, const float &p1)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::dot(p0, p1);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline float dot(const glm::vec2 &p0, const glm::vec2 &p1)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::dot(p0, p1);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline float dot(const glm::vec3 &p0, const glm::vec3 &p1)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::dot(p0, p1);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline float dot(const glm::vec4 &p0, const glm::vec4 &p1)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::dot(p0, p1);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline float dot(const glm::quat &p0, const glm::quat &p1)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::dot(p0, p1);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline float length(const glm::quat &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::length(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat2x2 transpose(const glm::mat2x2 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat3x2 transpose(const glm::mat2x3 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat4x2 transpose(const glm::mat2x4 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat2x3 transpose(const glm::mat3x2 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat3x3 transpose(const glm::mat3x3 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat4x3 transpose(const glm::mat3x4 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat2x4 transpose(const glm::mat4x2 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat3x4 transpose(const glm::mat4x3 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\tinline glm::mat4x4 transpose(const glm::mat4x4 &p)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\treturn glm::transpose(p);" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
 
 	uos.insert(uot_add_assign);
@@ -1518,14 +1653,14 @@ int main(int argc, char **argv)
 	bos.insert(bot_mul);
 	bos.insert(bot_div);
 
-	std::cout << "static void RegisterGlmFloatVecs(asIScriptEngine* engine)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tint r;" << std::endl;
+	std::cout << "\tvoid RegisterGlmFloatVecs(asIScriptEngine* engine)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tint r;" << std::endl;
 	std::cout << std::endl;
 
-	register_vecs(uos, bos, vt_float);
+	register_vecs(uos, bos, vt_float, 1);
 
-	std::cout << "}" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
 
 	bos.insert(bot_shl);
@@ -1533,24 +1668,24 @@ int main(int argc, char **argv)
 	uos.insert(uot_shl_assign);
 	uos.insert(uot_shr_assign);
 
-	std::cout << "static void RegisterGlmIntVecs(asIScriptEngine* engine)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tint r;" << std::endl;
+	std::cout << "\tvoid RegisterGlmIntVecs(asIScriptEngine* engine)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tint r;" << std::endl;
 	std::cout << std::endl;
 
-	register_vecs(uos, bos, vt_int);
+	register_vecs(uos, bos, vt_int, 1);
 
-	std::cout << "}" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
 
-	std::cout << "static void RegisterGlmUintVecs(asIScriptEngine* engine)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tint r;" << std::endl;
+	std::cout << "\tvoid RegisterGlmUintVecs(asIScriptEngine* engine)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tint r;" << std::endl;
 	std::cout << std::endl;
 
-	register_vecs(uos, bos, vt_uint);
+	register_vecs(uos, bos, vt_uint, 1);
 
-	std::cout << "}" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
 
 	uos.clear();
@@ -1563,45 +1698,47 @@ int main(int argc, char **argv)
 	bos.insert(bot_or);
 	bos.insert(bot_xor);
 
-	std::cout << "static void RegisterGlmBoolVecs(asIScriptEngine* engine)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tint r;" << std::endl;
+	std::cout << "\tvoid RegisterGlmBoolVecs(asIScriptEngine* engine)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tint r;" << std::endl;
 	std::cout << std::endl;
 
-	register_vecs(uos, bos, vt_bool);
+	register_vecs(uos, bos, vt_bool, 1);
 
-	std::cout << "}" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
 
-	std::cout << "static void RegisterGlmVecFuncs(asIScriptEngine* engine)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tint r;" << std::endl;
+	std::cout << "\tvoid RegisterGlmVecFuncs(asIScriptEngine* engine)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tint r;" << std::endl;
 	std::cout << std::endl;
 
-	register_vector_float_functions();
-	register_vector_compare_functions();
-	register_vector_functions();
+	register_vector_float_functions(1);
+	register_vector_compare_functions(1);
+	register_vector_functions(1);
 
-	std::cout << "}" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
 
-	std::cout << "static void RegisterGlmMats(asIScriptEngine* engine)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tint r;" << std::endl;
+	std::cout << "\tvoid RegisterGlmMats(asIScriptEngine* engine)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tint r;" << std::endl;
 	std::cout << std::endl;
 
-	register_mats();
+	register_mats(1);
 
-	std::cout << "}" << std::endl;
+	std::cout << "\t}" << std::endl;
 	std::cout << std::endl;
 
-	std::cout << "static void RegisterGlmQuat(asIScriptEngine* engine)" << std::endl;
-	std::cout << "{" << std::endl;
-	std::cout << "\tint r;" << std::endl;
+	std::cout << "\tvoid RegisterGlmQuat(asIScriptEngine* engine)" << std::endl;
+	std::cout << "\t{" << std::endl;
+	std::cout << "\t\tint r;" << std::endl;
 	std::cout << std::endl;
 
-	register_quaternion();
+	register_quaternion(1);
 
+	std::cout << "\t}" << std::endl;
+	std::cout << std::endl;
 	std::cout << "}" << std::endl;
 	std::cout << std::endl;
 
@@ -1610,7 +1747,7 @@ int main(int argc, char **argv)
 	std::cout << "\tint r;" << std::endl;
 	std::cout << std::endl;
 
-	register_types();
+	register_types(0);
 
 	std::cout << std::endl;
 
