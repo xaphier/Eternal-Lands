@@ -314,6 +314,7 @@ namespace eternal_lands
 	class VertexBuffers;
 	class VertexStream;
 	class VertexStreams;
+	class Writer;
 	class XmlReader;
 	class XmlWriter;
 
@@ -390,6 +391,7 @@ namespace eternal_lands
 	SHARED_PTR(MeshDataCache);
 	SHARED_PTR(MeshDataTool);
 	SHARED_PTR(Object);
+	SHARED_PTR(OutStream);
 	SHARED_PTR(Reader);
 	SHARED_PTR(ReadWriteMemory);
 	SHARED_PTR(RStarTreeNode);
@@ -406,6 +408,7 @@ namespace eternal_lands
 	SHARED_PTR(VertexBuffers);
 	SHARED_PTR(VertexStream);
 	SHARED_PTR(VertexStreams);
+	SHARED_PTR(Writer);
 	SHARED_PTR(XmlReader);
 	SHARED_PTR(XmlWriter);
 
