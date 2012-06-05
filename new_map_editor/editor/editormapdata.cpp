@@ -837,7 +837,7 @@ namespace eternal_lands
 	{
 		return m_scene->get_scene_resources().get_codec_manager(
 			)->load_image(name, m_scene->get_file_system(),
-			ImageCompressionTypeSet(), false);
+			ImageCompressionTypeSet(), false, false);
 	}
 
 }

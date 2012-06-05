@@ -60,7 +60,7 @@ namespace eternal_lands
 			const CodecManagerSharedPtr &codec_manager,
 			const ReaderSharedPtr &reader,
 			const Uint32Array2 &sizes, const Uint16 scale,
-			const bool rg_formats)
+			const bool rg_formats, const bool srgb_formats)
 		{
 			TextureFormatType texture_format;
 			glm::uvec3 image_sizes;
@@ -68,7 +68,8 @@ namespace eternal_lands
 			Uint16 mipmap, mipmap_count;
 
 			codec_manager->get_image_information(reader, rg_formats,
-				texture_format, image_sizes, mipmap_count);
+				srgb_formats, texture_format, image_sizes,
+				mipmap_count);
 
 			if (image_sizes[2] != 1)
 			{
@@ -145,7 +146,7 @@ namespace eternal_lands
 			TextureFormatType texture_format;
 
 			texture_format = check_size(codec_manager, reader,
-				sizes, scale, false);
+				sizes, scale, false, false);
 
 			compressed &= (texture_format == tft_rgb_dxt1) ||
 				(texture_format == tft_rgba_dxt1) ||
@@ -173,12 +174,12 @@ namespace eternal_lands
 			}
 
 			alpha = get_alpha(check_size(codec_manager,
-				texture_reader, sizes, scale, false));
+				texture_reader, sizes, scale, false, false));
 			alpha |= get_alpha(check_size(codec_manager,
-				base_reader, sizes, scale, false));
+				base_reader, sizes, scale, false, false));
 
 			texture_format = check_size(codec_manager,
-				mask_reader, sizes, scale, false);
+				mask_reader, sizes, scale, false, false);
 
 			count = TextureFormatUtil::get_count(texture_format);
 
@@ -212,13 +213,14 @@ namespace eternal_lands
 			const ReaderSharedPtr &reader,
 			const Uint32Array2 &sizes, const Uint16 scale,
 			const ImageCompressionTypeSet &compressions,
-			const bool rg_formats, Uint16 &mipmap)
+			const bool rg_formats, const bool srgb_formats,
+			Uint16 &mipmap)
 		{
 			ImageSharedPtr result;
 			Uint32 width, height;
 
 			result = codec_manager->load_image(reader,
-				compressions, rg_formats);
+				compressions, rg_formats, srgb_formats);
 
 			if (result->get_depth() != 1)
 			{
@@ -373,7 +375,7 @@ namespace eternal_lands
 			Uint16 mipmap;
 
 			tmp = get_image(codec_manager, reader, sizes, scale,
-				compressions, false, mipmap);
+				compressions, false, false, mipmap);
 
 			if ((tmp->get_texture_format() == tft_rgb_dxt1) ||
 				(tmp->get_texture_format() == tft_rgba_dxt1))
@@ -413,7 +415,7 @@ namespace eternal_lands
 			{
 				tmp = get_image(codec_manager, reader, sizes,
 					scale, ImageCompressionTypeSet(),
-					false, mipmap);
+					false, false, mipmap);
 			}
 
 			if (tmp->get_texture_format() == tft_rgba8)
@@ -478,15 +480,15 @@ namespace eternal_lands
 
 			texture_image = get_image(codec_manager, texture_reader,
 				sizes, scale, ImageCompressionTypeSet(),
-				false, texture_mipmap);
+				false, false, texture_mipmap);
 
 			base_image = get_image(codec_manager, base_reader,
 				sizes, scale, ImageCompressionTypeSet(),
-				false, base_mipmap);
+				false, false, base_mipmap);
 
 			mask_image = get_image(codec_manager, mask_reader,
 				sizes, scale, ImageCompressionTypeSet(),
-				false, mask_mipmap);
+				false, false, mask_mipmap);
 
 			width = sizes[0] * scale;
 			height = sizes[1] * scale;

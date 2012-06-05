@@ -78,7 +78,8 @@ namespace eternal_lands
 			SubFrustumsMask m_shadow_objects_mask;
 			SubFrustumsMask m_shadow_update_mask;
 			bool m_lights;
-			bool m_shadow_map_change;
+			bool m_rebuild_terrain_map;
+			bool m_rebuild_shadow_map;
 
 			void draw_terrain(
 				const TerrainRenderingData &terrain_data,
@@ -106,14 +107,14 @@ namespace eternal_lands
 			void draw_all_shadows_array();
 			void draw_depth();
 			void draw_default();
-			void update_shadow_map();
-			void update_terrain_map();
 			void update_terrain_texture(
 				const MaterialSharedPtrVector &materials,
 				const Mat2x3Array2 &texture_matrices,
 				const Uint16 index);
 			void update_terrain_texture(const Uint16 slice);
 			void update_terrain_texture();
+			void build_terrain_map();
+			void build_shadow_map();
 
 		protected:
 			virtual void intersect(const Frustum &frustum,
@@ -181,14 +182,14 @@ namespace eternal_lands
 				const;
 			bool get_terrain() const;
 
-			inline void terrain_change()
+			inline void rebuild_terrain_map() noexcept
 			{
-				update_terrain_map();
+				m_rebuild_terrain_map = true;
 			}
 
-			inline void shadow_map_change() noexcept
+			inline void rebuild_shadow_map() noexcept
 			{
-				m_shadow_map_change = true;
+				m_rebuild_shadow_map = true;
 			}
 
 			inline bool unbind_all()

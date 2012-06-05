@@ -529,7 +529,7 @@ namespace eternal_lands
 	ImageSharedPtr CodecManager::load_image(const String &name,
 		const FileSystemSharedPtr &file_system,
 		const ImageCompressionTypeSet &compressions,
-		const bool rg_formats) const
+		const bool rg_formats, const bool srgb_formats) const
 	{
 		Uint8Array32 magic;
 		boost::array<String, 5> file_names;
@@ -567,7 +567,7 @@ namespace eternal_lands
 				JpegImage::check_load(magic))
 			{
 				return load_image(reader, compressions,
-					rg_formats);
+					rg_formats, srgb_formats);
 			}
 		}
 
@@ -579,7 +579,7 @@ namespace eternal_lands
 
 	ImageSharedPtr CodecManager::load_image(const ReaderSharedPtr &reader,
 		const ImageCompressionTypeSet &compressions,
-		const bool rg_formats) const
+		const bool rg_formats, const bool srgb_formats) const
 	{
 		Uint8Array32 magic;
 		StringStream str;
@@ -596,7 +596,7 @@ namespace eternal_lands
 		if (DdsImage::check_load(magic))
 		{
 			return DdsImage::load_image(*this, reader,
-				compressions, rg_formats);
+				compressions, rg_formats, srgb_formats);
 		}
 
 		if (PngImage::check_load(magic))
@@ -623,8 +623,9 @@ namespace eternal_lands
 
 	void CodecManager::get_image_information(const String &name,
 		const FileSystemSharedPtr &file_system,
-		const bool rg_formats, TextureFormatType &texture_format,
-		glm::uvec3 &sizes, Uint16 &mipmaps) const
+		const bool rg_formats, const bool srgb_formats,
+		TextureFormatType &texture_format, glm::uvec3 &sizes,
+		Uint16 &mipmaps) const
 	{
 		Uint8Array32 magic;
 		boost::array<String, 5> file_names;
@@ -662,7 +663,9 @@ namespace eternal_lands
 				JpegImage::check_load(magic))
 			{
 				get_image_information(reader, rg_formats,
-					texture_format, sizes, mipmaps);
+					srgb_formats, texture_format, sizes,
+					mipmaps);
+
 				return;
 			}
 		}
@@ -674,8 +677,9 @@ namespace eternal_lands
 	}
 
 	void CodecManager::get_image_information(const ReaderSharedPtr &reader,
-		const bool rg_formats, TextureFormatType &texture_format,
-		glm::uvec3 &sizes, Uint16 &mipmaps) const
+		const bool rg_formats, const bool srgb_formats,
+		TextureFormatType &texture_format, glm::uvec3 &sizes,
+		Uint16 &mipmaps) const
 	{
 		Uint8Array32 magic;
 		StringStream str;
@@ -692,7 +696,7 @@ namespace eternal_lands
 		if (DdsImage::check_load(magic))
 		{
 			DdsImage::get_image_information(reader, rg_formats,
-				texture_format, sizes, mipmaps);
+				srgb_formats, texture_format, sizes, mipmaps);
 
 			return;
 		}
@@ -737,29 +741,15 @@ namespace eternal_lands
 	}
 
 	void CodecManager::save_image_as_png(const ImageSharedPtr &image,
-		const String &file_name)
+		const WriterSharedPtr &writer)
 	{
-		std::fstream saver;
-
-		saver.open(file_name.get().c_str(), std::ios::out |
-			std::ios::binary | std::ios::trunc);
-		saver.exceptions(std::ios::eofbit | std::ios::failbit |
-			std::ios::badbit);
-
-		PngImage::save_image(image, saver);
+		PngImage::save_image(image, writer);
 	}
 
 	void CodecManager::save_image_as_jpeg(const ImageSharedPtr &image,
-		const String &file_name)
+		const WriterSharedPtr &writer)
 	{
-		std::fstream saver;
-
-		saver.open(file_name.get().c_str(), std::ios::out |
-			std::ios::binary | std::ios::trunc);
-		saver.exceptions(std::ios::eofbit | std::ios::failbit |
-			std::ios::badbit);
-
-		JpegImage::save_image(image, saver);
+		JpegImage::save_image(image, writer);
 	}
 
 }

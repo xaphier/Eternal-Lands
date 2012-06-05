@@ -1424,7 +1424,7 @@ extern "C" void engine_set_shadow_map_size(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->shadow_map_change();
+		scene->rebuild_shadow_map();
 	}
 }
 
@@ -1439,7 +1439,7 @@ extern "C" void engine_set_view_distance(const float value)
 
 	if (scene.get() != 0)
 	{
-		scene->terrain_change();
+		scene->rebuild_terrain_map();
 	}
 }
 
@@ -1482,7 +1482,7 @@ extern "C" void engine_set_shadow_quality(const int value)
 
 		scene->get_scene_resources().get_effect_cache()->reload(
 			effect_debug);
-		scene->shadow_map_change();
+		scene->rebuild_shadow_map();
 	}
 }
 
@@ -1589,7 +1589,7 @@ extern "C" void engine_set_clipmap_size(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->terrain_change();
+		scene->rebuild_terrain_map();
 	}
 }
 
@@ -1599,7 +1599,7 @@ extern "C" void engine_set_clipmap_world_size(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->terrain_change();
+		scene->rebuild_terrain_map();
 	}
 }
 
@@ -1611,7 +1611,7 @@ extern "C" void engine_set_clipmap_slices(const int value)
 	{
 		scene->get_scene_resources().get_effect_cache()->reload(
 			effect_debug);
-		scene->terrain_change();
+		scene->rebuild_terrain_map();
 	}
 }
 

@@ -10,6 +10,7 @@
 #include "logging.hpp"
 #include "readwritememory.hpp"
 #include "reader.hpp"
+#include "writer.hpp"
 #include "image.hpp"
 
 extern "C"
@@ -301,7 +302,7 @@ namespace eternal_lands
 				JpegCompress();
 				~JpegCompress();
 				void set_image(const ImageSharedPtr &image,
-					OutStream &saver);
+					const WriterSharedPtr &writer);
 				static bool can_save(
 					const ImageSharedPtr &image);
 
@@ -324,7 +325,7 @@ namespace eternal_lands
 		}
 
 		void JpegCompress::set_image(const ImageSharedPtr &image,
-			OutStream &saver)
+			const WriterSharedPtr &writer)
 		{
 			boost::scoped_array<JSAMPROW> row_pointers;
 			unsigned char *buffer;
@@ -373,7 +374,7 @@ namespace eternal_lands
 
 			jpeg_finish_compress(&m_cinfo);
 
-			saver.write((const char*)buffer, size);
+			writer->write(buffer, size);
 		}
 
 		bool JpegCompress::can_save(const ImageSharedPtr &image)
@@ -426,13 +427,13 @@ namespace eternal_lands
 	}
 
 	void JpegImage::save_image(const ImageSharedPtr &image,
-		OutStream &saver)
+		const WriterSharedPtr &writer)
 	{
 		try
 		{
 			JpegCompress jpeg_compress;
 
-			jpeg_compress.set_image(image, saver);
+			jpeg_compress.set_image(image, writer);
 		}
 		catch (boost::exception &exception)
 		{

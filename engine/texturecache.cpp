@@ -230,7 +230,7 @@ namespace eternal_lands
 		reader = get_file_system()->get_file(name);
 
 		image = get_codec_manager()->load_image(reader, compressions,
-			rg_formats);
+			rg_formats, true);
 		texture = boost::make_shared<Texture>(index);
 
 		if (image->get_height() == 1)

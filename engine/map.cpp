@@ -67,7 +67,7 @@ namespace eternal_lands
 		}
 
 		vector_map = codec_manager->load_image(vector_map_name,
-			file_system, ImageCompressionTypeSet(), true);
+			file_system, ImageCompressionTypeSet(), true, false);
 
 		init_walk_height_map(vector_map);
 
@@ -76,10 +76,10 @@ namespace eternal_lands
 			compressions.insert(ict_rgtc);
 
 			normal_map = codec_manager->load_image(normal_map_name,
-				file_system, compressions, true);
+				file_system, compressions, true, false);
 
 			dudv_map = codec_manager->load_image(dudv_map_name,
-				file_system, compressions, true);
+				file_system, compressions, true, false);
 
 			m_terrain.reset(new CdLodTerrainManager(vector_map,
 				normal_map, dudv_map, global_vars,
@@ -90,10 +90,10 @@ namespace eternal_lands
 		}
 
 		normal_map = codec_manager->load_image(normal_map_name,
-			file_system, ImageCompressionTypeSet(), true);
+			file_system, ImageCompressionTypeSet(), true, false);
 
 		dudv_map = codec_manager->load_image(dudv_map_name,
-			file_system, ImageCompressionTypeSet(), true);
+			file_system, ImageCompressionTypeSet(), true, false);
 
 		m_terrain.reset(new SimpleTerrainManager(vector_map,
 			normal_map, dudv_map, global_vars, mesh_builder,

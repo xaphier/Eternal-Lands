@@ -1464,7 +1464,7 @@ namespace eternal_lands
 	ImageSharedPtr DdsImage::load_image(const CodecManager &codec_manager,
 		const ReaderSharedPtr &reader,
 		const ImageCompressionTypeSet &compression,
-		const bool rg_formats)
+		const bool rg_formats, const bool srgb_formats)
 	{
 		try
 		{
@@ -1482,8 +1482,9 @@ namespace eternal_lands
 	}
 
 	void DdsImage::get_image_information(const ReaderSharedPtr &reader,
-		const bool rg_formats, TextureFormatType &texture_format,
-		glm::uvec3 &sizes, Uint16 &mipmaps)
+		const bool rg_formats, const bool srgb_formats,
+		TextureFormatType &texture_format, glm::uvec3 &sizes,
+		Uint16 &mipmaps)
 	{
 		dds::DdsHeader header;
 

@@ -9,6 +9,7 @@
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "reader.hpp"
+#include "writer.hpp"
 #include "image.hpp"
 #include <png.h>
 
@@ -57,8 +58,8 @@ namespace eternal_lands
 		void png_write(png_structp png_ptr, png_bytep buffer,
 			png_size_t size)
 		{
-			static_cast<OutStream*>(png_get_io_ptr(png_ptr))->write(
-				(const char*)buffer, size);
+			static_cast<Writer*>(png_get_io_ptr(png_ptr))->write(
+				buffer, size);
 		}
 
 		void png_flush(png_structp png_ptr)
@@ -75,8 +76,7 @@ namespace eternal_lands
 				TextureFormatType get_texture_format(
 					const Uint32 color_type,
 					const Uint32 bit_depth,
-					const bool sRGB, const bool rg_formats)
-					const;
+					const bool rg_formats) const;
 
 			public:
 				PngDecompress();
@@ -158,8 +158,7 @@ namespace eternal_lands
 			sizes[2] = 1;
 
 			texture_format = get_texture_format(color_type,
-				bit_depth, png_get_valid(m_png_ptr, m_info_ptr,
-					PNG_INFO_sRGB) && false, rg_formats);
+				bit_depth, rg_formats);
 
 			image = boost::make_shared<Image>(reader->get_name(),
 				false, texture_format, sizes, 0);
@@ -215,8 +214,7 @@ namespace eternal_lands
 			bit_depth = png_get_bit_depth(m_png_ptr, m_info_ptr);
 
 			texture_format = get_texture_format(color_type,
-				bit_depth, png_get_valid(m_png_ptr, m_info_ptr,
-					PNG_INFO_sRGB) && false, rg_formats);
+				bit_depth, rg_formats);
 
 			sizes[0] = png_get_image_width(m_png_ptr, m_info_ptr);
 			sizes[1] = png_get_image_height(m_png_ptr, m_info_ptr);
@@ -227,7 +225,7 @@ namespace eternal_lands
 
 		TextureFormatType PngDecompress::get_texture_format(
 			const Uint32 color_type, const Uint32 bit_depth,
-			const bool sRGB, const bool rg_formats) const
+			const bool rg_formats) const
 		{
 			if ((bit_depth != 8) && (bit_depth != 16))
 			{
@@ -273,11 +271,6 @@ namespace eternal_lands
 				case PNG_COLOR_TYPE_RGB:
 					if (bit_depth <= 8)
 					{
-						if (sRGB)
-						{
-							return tft_srgb8;
-						}
-
 						return tft_rgb8;
 					}
 
@@ -285,11 +278,6 @@ namespace eternal_lands
 				case PNG_COLOR_TYPE_RGB_ALPHA:
 					if (bit_depth <= 8)
 					{
-						if (sRGB)
-						{
-							return tft_srgb8_a8;
-						}
-
 						return tft_rgba8;
 					}
 
@@ -303,7 +291,7 @@ namespace eternal_lands
 		class PngCompress
 		{
 			private:
-				OutStream &m_saver;
+				WriterSharedPtr m_writer;
 				png_structp m_png_ptr;
 				png_infop m_info_ptr;
 
@@ -313,7 +301,7 @@ namespace eternal_lands
 					const ImageSharedPtr &image);
 
 			public:
-				PngCompress(OutStream &saver);
+				PngCompress(const WriterSharedPtr &writer);
 				~PngCompress();
 				void set_image(const ImageSharedPtr &image);
 				static bool can_save(
@@ -321,7 +309,8 @@ namespace eternal_lands
 
 		};
 
-		PngCompress::PngCompress(OutStream &saver): m_saver(saver)
+		PngCompress::PngCompress(const WriterSharedPtr &writer):
+			m_writer(writer)
 		{
 			/* initialize stuff */
 			m_png_ptr = png_create_write_struct(
@@ -340,7 +329,7 @@ namespace eternal_lands
 				EL_THROW_EXCEPTION(PngErrorException());
 			}
 
-			png_set_write_fn(m_png_ptr, &m_saver, png_write,
+			png_set_write_fn(m_png_ptr, m_writer.get(), png_write,
 				png_flush);
 		}
 
@@ -514,11 +503,12 @@ namespace eternal_lands
 		return String(UTF8("png-image"));
 	}
 
-	void PngImage::save_image(const ImageSharedPtr &image, OutStream &saver)
+	void PngImage::save_image(const ImageSharedPtr &image,
+		const WriterSharedPtr &writer)
 	{
 		try
 		{
-			PngCompress png_compress(saver);
+			PngCompress png_compress(writer);
 
 			png_compress.set_image(image);
 		}

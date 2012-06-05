@@ -231,7 +231,8 @@ namespace eternal_lands
 		m_scene_resources(global_vars, file_system),
 		m_clipmap(m_scene_resources.get_material_builder()),
 		m_state_manager(global_vars), m_scene_view(global_vars),
-		m_frame_id(0), m_program_vars_id(0), m_shadow_map_change(true)
+		m_frame_id(0), m_program_vars_id(0),
+		m_rebuild_terrain_map(true), m_rebuild_shadow_map(true)
 	{
 		Uint32 i, count;
 
@@ -367,7 +368,7 @@ namespace eternal_lands
 		m_fog = glm::vec4(color, -density * density * 1.442695f);
 	}
 
-	void Scene::update_shadow_map()
+	void Scene::build_shadow_map()
 	{
 		Uint32 shadow_map_width, shadow_map_height, shadow_map_size;
 		Uint16 mipmaps, samples, shadow_map_count;
@@ -414,7 +415,7 @@ namespace eternal_lands
 				tft_r32f, false, true);
 	}
 
-	void Scene::update_terrain_map()
+	void Scene::build_terrain_map()
 	{
 		Uint16 mipmaps;
 		TextureTargetType target;
@@ -647,6 +648,12 @@ namespace eternal_lands
 		}
 
 		intersect(frustum, m_visible_lights);
+
+		if (m_rebuild_terrain_map)
+		{
+			build_terrain_map();
+			m_rebuild_terrain_map = false;
+		}
 	}
 
 	void Scene::cull_all_shadows()
@@ -659,10 +666,10 @@ namespace eternal_lands
 		SubFrustumsMask mask;
 		Uint32 i, count;
 
-		if (m_shadow_map_change)
+		if (m_rebuild_shadow_map)
 		{
-			update_shadow_map();
-			m_shadow_map_change = false;
+			build_shadow_map();
+			m_rebuild_shadow_map = false;
 		}
 
 		frustum = Frustum(
@@ -1639,8 +1646,6 @@ namespace eternal_lands
 			m_free_ids));
 
 		set_map(map_loader->load(name));
-
-		update_terrain_map();
 	}
 
 	const ParticleDataVector &Scene::get_particles() const

@@ -288,22 +288,24 @@ namespace eternal_lands
 			ImageSharedPtr load_image(
 				const ReaderSharedPtr &reader,
 				const ImageCompressionTypeSet &compressions,
-				const bool rg_formats) const;
+				const bool rg_formats, const bool srgb_formats)
+				const;
 
 			ImageSharedPtr load_image(const String &name,
 				const FileSystemSharedPtr &file_system,
 				const ImageCompressionTypeSet &compressions,
-				const bool rg_formats) const;
+				const bool rg_formats, const bool srgb_formats)
+				const;
 
 			void get_image_information(
 				const ReaderSharedPtr &reader,
-				const bool rg_formats,
+				const bool rg_formats, const bool srgb_formats,
 				TextureFormatType &texture_format,
 				glm::uvec3 &sizes, Uint16 &mipmaps) const;
 
 			void get_image_information(const String &name,
 				const FileSystemSharedPtr &file_system,
-				const bool rg_formats,
+				const bool rg_formats, const bool srgb_formats,
 				TextureFormatType &texture_format,
 				glm::uvec3 &sizes, Uint16 &mipmaps) const;
 
@@ -311,10 +313,10 @@ namespace eternal_lands
 				StringVector &extensions) const noexcept;
 
 			void save_image_as_png(const ImageSharedPtr &image,
-				const String &file_name);
+				const WriterSharedPtr &writer);
 
 			void save_image_as_jpeg(const ImageSharedPtr &image,
-				const String &file_name);
+				const WriterSharedPtr &writer);
 
 	};
 
