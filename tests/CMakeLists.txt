@@ -19,6 +19,7 @@ if (NOT BOOST_STATIC_TEST_LIB)
 endif (NOT BOOST_STATIC_TEST_LIB)
 
 file(COPY ../data/materials.xml DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY images DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(GLOB shader_sources ../data/shaders/sources/*.xml)
 file(GLOB default default/*.cpp)
 
@@ -51,13 +52,6 @@ foreach (FILE_NAME ${default})
 	target_link_libraries(${PROG_NAME} ${ZLIB_LIBRARIES})
 	target_link_libraries(${PROG_NAME} elengine)
 
-	if (WIN32)
-		target_link_libraries(${PROG_NAME} bfd)
-		target_link_libraries(${PROG_NAME} intl)
-		target_link_libraries(${PROG_NAME} iberty)
-		target_link_libraries(${PROG_NAME} imagehlp)
-	endif (WIN32)
-
 	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
 endforeach (FILE_NAME)
 
@@ -83,13 +77,6 @@ foreach (FILE_NAME ${simple})
 	target_link_libraries(${PROG_NAME} ${CMAKE_THREAD_LIBS_INIT})
 	target_link_libraries(${PROG_NAME} ${ZLIB_LIBRARIES})
 	target_link_libraries(${PROG_NAME} elengine)
-
-	if (WIN32)
-		target_link_libraries(${PROG_NAME} bfd)
-		target_link_libraries(${PROG_NAME} intl)
-		target_link_libraries(${PROG_NAME} iberty)
-		target_link_libraries(${PROG_NAME} imagehlp)
-	endif (WIN32)
 
 	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
 endforeach (FILE_NAME)
@@ -117,12 +104,31 @@ foreach (FILE_NAME ${enum})
 	target_link_libraries(${PROG_NAME} ${ZLIB_LIBRARIES})
 	target_link_libraries(${PROG_NAME} elengine)
 
-	if (WIN32)
-		target_link_libraries(${PROG_NAME} bfd)
-		target_link_libraries(${PROG_NAME} intl)
-		target_link_libraries(${PROG_NAME} iberty)
-		target_link_libraries(${PROG_NAME} imagehlp)
-	endif (WIN32)
+	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
+endforeach (FILE_NAME)
+
+file(GLOB io io/*.cpp)
+
+foreach (FILE_NAME ${io})
+	file(RELATIVE_PATH PROG_NAME ${CMAKE_CURRENT_SOURCE_DIR}/io
+		${FILE_NAME})
+
+	string(REPLACE ".cpp" "" PROG_NAME ${PROG_NAME})
+
+	add_executable(${PROG_NAME} ${FILE_NAME})
+
+	target_link_libraries(${PROG_NAME} ${GLEW_LIBRARY})
+	target_link_libraries(${PROG_NAME} ${OPENGL_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${CAL3D_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${JPEG_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${PNG_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${Boost_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${OPENGL_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${ICONV_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${LIBXML2_LIBRARIES})
+	target_link_libraries(${PROG_NAME} ${CMAKE_THREAD_LIBS_INIT})
+	target_link_libraries(${PROG_NAME} ${ZLIB_LIBRARIES})
+	target_link_libraries(${PROG_NAME} elengine)
 
 	add_test(${PROG_NAME} ${EXECUTABLE_OUTPUT_PATH}/${PROG_NAME})
 endforeach (FILE_NAME)

@@ -3,6 +3,7 @@
 #include "abstractterrainmanager.hpp"
 #include "readwritememory.hpp"
 #include "reader.hpp"
+#include "writer.hpp"
 
 using namespace eternal_lands;
 
@@ -94,8 +95,37 @@ namespace
 
 }
 
+void update_map_file(const std::string &file_name)
+{
+	std::fstream file;
+	Uint8Array4 file_sig;
+	Uint32 tile_x, tile_y, tile_map_offset, height_map_offset;
+	Uint32 i, count;
+	Uint8 tmp;
+
+	file.open(file_name.c_str(), std::ios::in | std::ios::out |
+		std::ios::binary);
+
+	file.read(reinterpret_cast<char*>(file_sig.c_array()), 4);
+	file.read(reinterpret_cast<char*>(&tile_x), 4);
+	file.read(reinterpret_cast<char*>(&tile_y), 4);
+	file.read(reinterpret_cast<char*>(&tile_map_offset), 4);
+	file.read(reinterpret_cast<char*>(&height_map_offset), 4);
+
+	file.seekp(tile_map_offset);
+
+	tmp = 255;
+	count = tile_x * tile_y;
+
+	for (i = 0; i < count; ++i)
+	{
+		file.write(reinterpret_cast<char*>(&tmp), 1);
+	}
+}
+
 int main(int argc, char *argv[])
 {
+	WriterSharedPtr writer;
 	CodecManager codec_manager;
 	ImageSharedPtr source_image, dest_image;
 	ReaderSharedPtr reader;
@@ -109,6 +139,11 @@ int main(int argc, char *argv[])
 
 	if (argc < 3)
 	{
+		if (argc == 2)
+		{
+			update_map_file(argv[1]);
+		}
+
 		return -1;
 	}
 
@@ -129,7 +164,7 @@ int main(int argc, char *argv[])
 	reader = boost::make_shared<Reader>(buffer, String(argv[1]));
 
 	source_image = codec_manager.load_image(reader,
-		ImageCompressionTypeSet(), true);
+		ImageCompressionTypeSet(), true, false);
 
 	sizes = source_image->get_sizes();
 
@@ -208,7 +243,9 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	codec_manager.save_image_as_png(dest_image, String(argv[2]));
+	writer = boost::make_shared<Writer>(String(argv[2]));
+
+	codec_manager.save_image_as_png(dest_image, writer);
 
 	return 1;
 }
