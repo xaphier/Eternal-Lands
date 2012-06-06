@@ -22,7 +22,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		std::vector<QObject*> m_terrain_witdgets;
 		std::vector<QComboBox*> m_material_witdgets;
 		std::vector<QLabel*> m_material_label_witdgets;
-		QSignalMapper* m_terrain_albedo_map_mapper;
 		QSignalMapper* m_object_selection_mapper;
 		QSignalMapper* m_object_transparency_mapper;
 		QSpinBox* action_time;

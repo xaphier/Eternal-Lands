@@ -47,26 +47,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(y_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 	QObject::connect(z_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 
-	m_terrain_albedo_map_mapper = new QSignalMapper(this);
-	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_0, int(0));
-	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_1, int(1));
-	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_2, int(2));
-	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_3, int(3));
-	m_terrain_albedo_map_mapper->setMapping(terrain_albedo_map_4, int(4));
-
-	QObject::connect(terrain_albedo_map_0, SIGNAL(currentIndexChanged(int)),
-		m_terrain_albedo_map_mapper, SLOT(map()));
-	QObject::connect(terrain_albedo_map_1, SIGNAL(currentIndexChanged(int)),
-		m_terrain_albedo_map_mapper, SLOT(map()));
-	QObject::connect(terrain_albedo_map_2, SIGNAL(currentIndexChanged(int)),
-		m_terrain_albedo_map_mapper, SLOT(map()));
-	QObject::connect(terrain_albedo_map_3, SIGNAL(currentIndexChanged(int)),
-		m_terrain_albedo_map_mapper, SLOT(map()));
-	QObject::connect(terrain_albedo_map_4, SIGNAL(currentIndexChanged(int)),
-		m_terrain_albedo_map_mapper, SLOT(map()));
-	QObject::connect(m_terrain_albedo_map_mapper, SIGNAL(mapped(const int)),
-		this, SLOT(set_terrain_albedo_map(const int)));
-
 	QObject::connect(el_gl_widget, SIGNAL(terrain_edit(const int, const int)), this,
 		SLOT(terrain_edit(const int, const int)));
 
@@ -92,8 +72,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 //	QObject::connect(action_settings, SIGNAL(triggered(bool)), this, SLOT(settings()));
 	QObject::connect(action_fog, SIGNAL(triggered(bool)), this, SLOT(set_fog()));
 	QObject::connect(action_ambient, SIGNAL(triggered(bool)), this, SLOT(change_ambient()));
-	QObject::connect(action_blend_image, SIGNAL(triggered(bool)), this,
-		SLOT(change_blend_image_name()));
+//	QObject::connect(action_blend_image, SIGNAL(triggered(bool)), this,
+//		SLOT(change_blend_image_name()));
 	QObject::connect(action_time, SIGNAL(valueChanged(int)), el_gl_widget,
 		SLOT(set_game_minute(int)));
 	QObject::connect(action_preferences, SIGNAL(triggered(bool)), this,
@@ -453,6 +433,7 @@ void MainWindow::add_item(const QString &str, QComboBox* combobox)
 
 void MainWindow::set_terrain_albedo_map(const QString &str, const int index)
 {
+/*
 	QComboBox* combobox;
 	int idx;
 
@@ -471,10 +452,12 @@ void MainWindow::set_terrain_albedo_map(const QString &str, const int index)
 	}
 
 	combobox->setCurrentIndex(idx);
+*/
 }
 
 void MainWindow::update_terrain()
 {
+/*
 	QStringList terrain_albedo_maps;
 	int i;
 
@@ -498,6 +481,7 @@ void MainWindow::update_terrain()
 	{
 		m_terrain_albedo_map_mapper->mapping(i)->blockSignals(false);
 	}
+*/
 }
 
 void MainWindow::update_object(const bool select)
@@ -556,10 +540,10 @@ void MainWindow::update_light(const bool select)
 	{
 		if (select)
 		{
-			properties->setCurrentIndex(2);
+			properties->setCurrentIndex(1);
 		}
 
-		action_remove->setEnabled(properties->currentIndex() == 2);
+		action_remove->setEnabled(properties->currentIndex() == 1);
 
 		el_gl_widget->get_light_data(light);
 
@@ -684,11 +668,8 @@ void MainWindow::add_object(const bool value)
 	{
 		if (m_objects->exec() == QDialog::Accepted)
 		{
-			/*
-			el_gl_widget->add_object(glm::vec4(1.0f, 1.0f, 1.0f, 0.0f),
-				m_objects->get_type(), m_objects->get_server_id(),
-				m_objects->get_object());
-			*/
+			el_gl_widget->add_object(String(
+				m_objects->get_object()));
 		}
 		else
 		{
@@ -737,7 +718,7 @@ void MainWindow::height_mode(const bool checked)
 	if (checked)
 	{
 		action_remove->setEnabled(false);
-		properties->setCurrentIndex(3);
+		properties->setCurrentIndex(2);
 	}
 	else
 	{
@@ -747,12 +728,14 @@ void MainWindow::height_mode(const bool checked)
 
 void MainWindow::set_terrain_albedo_map(const int index)
 {
+/*
 	QString file_name;
 
 	file_name = dynamic_cast<QComboBox*>(
 		m_terrain_albedo_map_mapper->mapping(index))->currentText();
 
 	el_gl_widget->set_terrain_albedo_map(file_name, index);
+*/
 }
 
 void MainWindow::set_fog()
@@ -765,7 +748,7 @@ void MainWindow::open_map()
 	QString file_name;
 
 	file_name = QFileDialog::getOpenFileName(this, tr("Open File"), ".",
-		tr("EL-map (*.elm *.elm.gz *.elm.xz); All files (*.*)"));
+		tr("All EL-maps (*.elm *.elm.gz *.elm.xz);;All files (*)"));
 
 	if (!file_name.isEmpty())
 	{
@@ -1121,11 +1104,12 @@ void MainWindow::set_textures(const QStringList &textures)
 	m_textures = textures;
 
 	m_preferences->set_textures(m_textures);
-
+/*
 	set_items(m_textures, terrain_albedo_map_0);
 	set_items(m_textures, terrain_albedo_map_1);
 	set_items(m_textures, terrain_albedo_map_2);
 	set_items(m_textures, terrain_albedo_map_3);
+*/
 }
 
 void MainWindow::set_items(const QStringList &strs, QComboBox* combobox)
@@ -1198,9 +1182,11 @@ void MainWindow::terrain_edit(const int x, const int y)
 				height_brush_type->currentIndex());
 			break;
 		case 1:
-			el_gl_widget->terrain_layer_edit(x, y, layer_index->value(),
-				layer_brush_strength->value() * 0.01f, layer_brush_radius->value(),
-				layer_brush_type->currentIndex());
+			el_gl_widget->terrain_layer_edit(x, y,
+				layer_mask_brush_layer_masks->currentIndex(),
+				layer_mask_brush_strength->value() * 0.01f,
+				layer_mask_brush_radius->value(),
+				layer_mask_brush_type->currentIndex());
 			break;
 		case 2:
 			el_gl_widget->ground_tile_edit(x, y, ground_tile->currentText().toInt());

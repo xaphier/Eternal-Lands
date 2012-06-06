@@ -165,6 +165,8 @@ namespace eternal_lands
 		object_description.set_name(mesh);
 		object_description.set_id(id);
 
+		m_data.add_object(object_description);
+
 		change_object(mt_object_added, object_description);
 	}
 

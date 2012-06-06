@@ -21,7 +21,6 @@ class ELGLWidget: public QGLWidget
 		glm::mat4 m_projection;
 		glm::mat4 m_view;
 		glm::mat3 m_rotate;
-		glm::vec4 m_color;
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
 		String m_object;
@@ -86,8 +85,7 @@ class ELGLWidget: public QGLWidget
 		void set_object_selection(const SelectionType selection);
 		void set_object_blend(const BlendType blend);
 		void set_object_materials(const StringVector &materials);
-		void add_object(const glm::vec4 &color, const Uint16 type,
-			const Uint16 server_id, const String &object);
+		void add_object(const String &object);
 		void add_light();
 		void set_ambient(const glm::vec3 &color);
 		const glm::vec3 &get_ambient() const;

@@ -19,7 +19,6 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_terrain_layer_index = 0;
 	m_light = false;
 	m_rotate_z = 0.0f;
-	m_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
 	m_blend = bt_disabled;
 
 	m_global_vars = boost::make_shared<GlobalVars>();
@@ -548,11 +547,9 @@ void ELGLWidget::zoom_out()
 	m_zoom = std::max(1.0f, std::min(500.0f, m_zoom));
 }
 
-void ELGLWidget::add_object(const glm::vec4 &color, const Uint16 type, const Uint16 server_id,
-	const String &object)
+void ELGLWidget::add_object(const String &object)
 {
 	m_object = object;
-	m_color = color;
 	m_light = false;
 }
 

@@ -19,7 +19,9 @@
 #include "filesystem.hpp"
 #include <boost/random.hpp>
 #define BOOST_TEST_MODULE dds
+#define BOOST_TEST_ALTERNATIVE_INIT_API
 #include <boost/test/unit_test.hpp>
+#include <boost/test/parameterized_test.hpp>
 
 using namespace eternal_lands;
 
@@ -358,7 +360,6 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 		}
 	}
 }
-
 
 BOOST_AUTO_TEST_CASE(write_read_color)
 {
