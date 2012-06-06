@@ -318,6 +318,9 @@ namespace eternal_lands
 			void save_image_as_jpeg(const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
 
+			void save_image_as_dds(const ImageSharedPtr &image,
+				const WriterSharedPtr &writer);
+
 	};
 
 }

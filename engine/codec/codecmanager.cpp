@@ -752,4 +752,10 @@ namespace eternal_lands
 		JpegImage::save_image(image, writer);
 	}
 
+	void CodecManager::save_image_as_dds(const ImageSharedPtr &image,
+		const WriterSharedPtr &writer)
+	{
+		DdsImage::save_image(*this, image, writer);
+	}
+
 }

@@ -621,6 +621,30 @@ namespace eternal_lands
 		}
 	}
 
+	glm::vec4 PackTool::unpack_uint_8_8_8_8(const bool normalize, const Uint32 value)
+	{
+		if (normalize)
+		{
+			return unpack_values<Uint32, 8, 8, 8, 8, false, true, false>(value);
+		}
+		else
+		{
+			return unpack_values<Uint32, 8, 8, 8, 8, false, false, false>(value);
+		}
+	}
+
+	glm::vec4 PackTool::unpack_uint_8_8_8_8_rev(const bool normalize, const Uint32 value)
+	{
+		if (normalize)
+		{
+			return unpack_values<Uint32, 8, 8, 8, 8, false, true, true>(value);
+		}
+		else
+		{
+			return unpack_values<Uint32, 8, 8, 8, 8, false, false, true>(value);
+		}
+	}
+
 	glm::vec4 PackTool::unpack_uint_10_10_10_2(const bool normalize, const Uint32 value)
 	{
 		if (normalize)
@@ -762,6 +786,30 @@ namespace eternal_lands
 		else
 		{
 			return pack_values<Uint16, 4, 4, 4, 4, false, false, true>(value);
+		}
+	}
+
+	Uint32 PackTool::pack_uint_8_8_8_8(const bool normalize, const glm::vec4 &value)
+	{
+		if (normalize)
+		{
+			return pack_values<Uint32, 8, 8, 8, 8, false, true, false>(value);
+		}
+		else
+		{
+			return pack_values<Uint32, 8, 8, 8, 8, false, false, false>(value);
+		}
+	}
+
+	Uint32 PackTool::pack_uint_8_8_8_8_rev(const bool normalize, const glm::vec4 &value)
+	{
+		if (normalize)
+		{
+			return pack_values<Uint32, 8, 8, 8, 8, false, true, true>(value);
+		}
+		else
+		{
+			return pack_values<Uint32, 8, 8, 8, 8, false, false, true>(value);
 		}
 	}
 

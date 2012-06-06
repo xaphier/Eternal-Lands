@@ -270,21 +270,29 @@ namespace eternal_lands
 		switch (type)
 		{
 			case GL_UNSIGNED_BYTE:
-				return get_channel_count(format) * sizeof(Uint8) * 8;
+				return get_channel_count(format) *
+					sizeof(Uint8) * 8;
 			case GL_BYTE:
-				return get_channel_count(format) * sizeof(Sint8) * 8;
+				return get_channel_count(format) *
+					sizeof(Sint8) * 8;
 			case GL_UNSIGNED_SHORT:
-				return get_channel_count(format) * sizeof(Uint16) * 8;
+				return get_channel_count(format) *
+					sizeof(Uint16) * 8;
 			case GL_SHORT:
-				return get_channel_count(format) * sizeof(Sint16) * 8;
+				return get_channel_count(format) *
+					sizeof(Sint16) * 8;
 			case GL_UNSIGNED_INT:
-				return get_channel_count(format) * sizeof(Uint32) * 8;
+				return get_channel_count(format) *
+					sizeof(Uint32) * 8;
 			case GL_INT:
-				return get_channel_count(format) * sizeof(Sint32) * 8;
+				return get_channel_count(format) *
+					sizeof(Sint32) * 8;
 			case GL_FLOAT:
-				return get_channel_count(format) * sizeof(float) * 8;
+				return get_channel_count(format) *
+					sizeof(float) * 8;
 			case GL_HALF_FLOAT:
-				return get_channel_count(format) * sizeof(Uint16) * 8;
+				return get_channel_count(format) *
+					sizeof(Uint16) * 8;
 			case GL_UNSIGNED_BYTE_3_3_2:
 			case GL_UNSIGNED_BYTE_2_3_3_REV:
 				return sizeof(Uint8) * 8;
@@ -437,18 +445,12 @@ namespace eternal_lands
 					*static_cast<const Uint16*>(value));
 				break;
 			case GL_UNSIGNED_INT_8_8_8_8:
-				for (i = 0; i < 4; ++i)
-				{
-					result[i] = static_cast<const Uint8*>(value)[i];
-					result[i] /= std::numeric_limits<Uint8>::max();
-				}
+				result = PackTool::unpack_uint_8_8_8_8(true,
+					*static_cast<const Uint32*>(value));
 				break;
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
-				for (i = 0; i < 4; ++i)
-				{
-					result[i] = static_cast<const Uint8*>(value)[3 - i];
-					result[i] /= std::numeric_limits<Uint8>::max();
-				}
+				result = PackTool::unpack_uint_8_8_8_8_rev(true,
+					*static_cast<const Uint32*>(value));
 				break;
 			case GL_UNSIGNED_INT_10_10_10_2:
 				result = PackTool::unpack_uint_10_10_10_2(true,
@@ -584,18 +586,14 @@ namespace eternal_lands
 					*static_cast<const Uint16*>(value)));
 				break;
 			case GL_UNSIGNED_INT_8_8_8_8:
-				for (i = 0; i < 4; ++i)
-				{
-					result[i] = static_cast<const Uint8*>(
-						value)[i];
-				}
+				result = glm::uvec4(
+					PackTool::unpack_uint_8_8_8_8(false,
+					*static_cast<const Uint32*>(value)));
 				break;
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
-				for (i = 0; i < 4; ++i)
-				{
-					result[i] = static_cast<const Uint8*>(
-						value)[3 - i];
-				}
+				result = glm::uvec4(
+					PackTool::unpack_uint_8_8_8_8_rev(false,
+					*static_cast<const Uint32*>(value)));
 				break;
 			case GL_UNSIGNED_INT_10_10_10_2:
 				result = glm::uvec4(
@@ -734,18 +732,14 @@ namespace eternal_lands
 					*static_cast<const Uint16*>(value)));
 				break;
 			case GL_UNSIGNED_INT_8_8_8_8:
-				for (i = 0; i < 4; ++i)
-				{
-					result[i] = static_cast<const Uint8*>(
-						value)[i];
-				}
+				result = glm::ivec4(
+					PackTool::unpack_uint_8_8_8_8(false,
+					*static_cast<const Uint32*>(value)));
 				break;
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
-				for (i = 0; i < 4; ++i)
-				{
-					result[i] = static_cast<const Uint8*>(
-						value)[3 - i];
-				}
+				result = glm::ivec4(
+					PackTool::unpack_uint_8_8_8_8_rev(false,
+					*static_cast<const Uint32*>(value)));
 				break;
 			case GL_UNSIGNED_INT_10_10_10_2:
 				result = glm::ivec4(

@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
 
 	writer = boost::make_shared<Writer>(String(argv[2]));
 
-	codec_manager.save_image_as_png(dest_image, writer);
+	codec_manager.save_image_as_dds(dest_image, writer);
 
 	return 1;
 }

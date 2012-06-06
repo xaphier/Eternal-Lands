@@ -364,6 +364,122 @@ BOOST_AUTO_TEST_CASE(unpack_4_4_4_4_rev_normalized)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(unpack_uint_8_8_8_8)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint32> >
+		random_uint32(rng, range);
+	glm::vec4 tmp;
+	Uint32 i, temp, value;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		temp = random_uint32();
+		tmp = el::PackTool::unpack_uint_8_8_8_8(false, temp);
+
+		BOOST_CHECK_LE(tmp[0], 255.0f);
+		BOOST_CHECK_LE(tmp[1], 255.0f);
+		BOOST_CHECK_LE(tmp[2], 255.0f);
+		BOOST_CHECK_LE(tmp[3], 255.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
+		value = el::PackTool::pack_uint_8_8_8_8(false, tmp);
+		BOOST_CHECK_EQUAL(value, temp);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(unpack_uint_8_8_8_8_normalized)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint32> >
+		random_uint32(rng, range);
+	glm::vec4 tmp;
+	Uint32 i, temp, value;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		temp = random_uint32();
+		tmp = el::PackTool::unpack_uint_8_8_8_8(true, temp);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
+		value = el::PackTool::pack_uint_8_8_8_8(true, tmp);
+		BOOST_CHECK_EQUAL(value, temp);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(unpack_uint_8_8_8_8_rev)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint32> >
+		random_uint32(rng, range);
+	glm::vec4 tmp;
+	Uint32 i, temp, value;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		temp = random_uint32();
+		tmp = el::PackTool::unpack_uint_8_8_8_8_rev(false, temp);
+
+		BOOST_CHECK_LE(tmp[0], 255.0f);
+		BOOST_CHECK_LE(tmp[1], 255.0f);
+		BOOST_CHECK_LE(tmp[2], 255.0f);
+		BOOST_CHECK_LE(tmp[3], 255.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
+		value = el::PackTool::pack_uint_8_8_8_8_rev(false, tmp);
+		BOOST_CHECK_EQUAL(value, temp);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(unpack_uint_8_8_8_8_rev_normalized)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint32> >
+		random_uint32(rng, range);
+	glm::vec4 tmp;
+	Uint32 i, temp, value;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		temp = random_uint32();
+		tmp = el::PackTool::unpack_uint_8_8_8_8_rev(true, temp);
+
+		BOOST_CHECK_LE(tmp[0], 1.0f);
+		BOOST_CHECK_LE(tmp[1], 1.0f);
+		BOOST_CHECK_LE(tmp[2], 1.0f);
+		BOOST_CHECK_LE(tmp[3], 1.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+		BOOST_CHECK_GE(tmp[3], 0.0f);
+
+		value = el::PackTool::pack_uint_8_8_8_8_rev(true, tmp);
+		BOOST_CHECK_EQUAL(value, temp);
+	}
+}
+
 BOOST_AUTO_TEST_CASE(unpack_uint_10_10_10_2)
 {
 	boost::mt19937 rng;

@@ -38,9 +38,12 @@ namespace eternal_lands
 				const bool rg_formats, const bool srgb_formats);
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();
-			static void save_image(const ImageSharedPtr &image,
+			static void save_image(
+				const CodecManager &codec_manager,
+				const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
-			static bool can_save(const ImageSharedPtr &image);
+			static bool can_save(const CodecManager &codec_manager,
+				const ImageSharedPtr &image);
 			static void check_all_fourcc_support(
 				const CodecManager &codec_manager,
 				const bool rg_formats);

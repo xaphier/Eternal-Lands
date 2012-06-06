@@ -12,6 +12,7 @@
 #include "../image.hpp"
 #include "codecmanager.hpp"
 #include "dds.hpp"
+#include "writer.hpp"
 
 namespace eternal_lands
 {
@@ -586,10 +587,26 @@ namespace eternal_lands
 						return tft_rgb10_a2;
 					case dds::DDSFMT_A16B16G16R16:
 						return tft_rgba16;
+					case dds::DDSFMT_A16B16G16R16_SIGNED:
+						return tft_rgba16_snorm;
 					case dds::DDSFMT_L8:
-						return tft_r8;
+						if (rg_formats)
+						{
+							return tft_r8;
+						}
+						return tft_l8;
+					case dds::DDSFMT_A8L8:
+						if (rg_formats)
+						{
+							return tft_rg8;
+						}
+						return tft_la8;
 					case dds::DDSFMT_L16:
-						return tft_r16;
+						if (rg_formats)
+						{
+							return tft_r16;
+						}
+						return tft_l16;
 				}
 
 				EL_THROW_EXCEPTION(DdsUnkownFormatException());
@@ -630,6 +647,7 @@ namespace eternal_lands
 				case dds::DDSFMT_A2R10G10B10:
 				case dds::DDSFMT_A2B10G10R10:
 				case dds::DDSFMT_L8:
+				case dds::DDSFMT_A8L8:
 				case dds::DDSFMT_A8B8G8R8:
 					return true;
 			}
@@ -733,6 +751,12 @@ namespace eternal_lands
 					blue_mask = 0x00000000;
 					alpha_mask = 0x00000000;
 					return;
+				case dds::DDSFMT_A8L8:
+					red_mask = 0x000000FF;
+					green_mask = 0x00000000;
+					blue_mask = 0x00000000;
+					alpha_mask = 0x0000FF00;
+					return;
 				case dds::DDSFMT_A8B8G8R8:
 					red_mask = 0x000000FF;
 					green_mask = 0x0000FF00;
@@ -766,12 +790,12 @@ namespace eternal_lands
 					return true;
 				case dds::DDSFMT_R32F:
 					pixel_size = 32;
-					format = GL_LUMINANCE;
+					format = GL_RED;
 					type = GL_FLOAT;
 					return true;
 				case dds::DDSFMT_G32R32F:
 					pixel_size = 64;
-					format = GL_LUMINANCE_ALPHA;
+					format = GL_RG;
 					type = GL_FLOAT;
 					return true;
 				case dds::DDSFMT_A32B32G32R32F:
@@ -781,12 +805,12 @@ namespace eternal_lands
 					return true;
 				case dds::DDSFMT_R16F:
 					pixel_size = 16;
-					format = GL_LUMINANCE;
+					format = GL_RED;
 					type = GL_HALF_FLOAT;
 					return true;
 				case dds::DDSFMT_G16R16F:
 					pixel_size = 32;
-					format = GL_LUMINANCE_ALPHA;
+					format = GL_RG;
 					type = GL_HALF_FLOAT;
 					return true;
 				case dds::DDSFMT_A16B16G16R16F:
@@ -806,16 +830,17 @@ namespace eternal_lands
 				case dds::DDSFMT_A2R10G10B10:
 				case dds::DDSFMT_A2B10G10R10:
 				case dds::DDSFMT_L8:
+				case dds::DDSFMT_A8L8:
 				case dds::DDSFMT_A8B8G8R8:
 					return false;
 				case dds::DDSFMT_L16:
 					pixel_size = 16;
-					format = GL_LUMINANCE;
+					format = GL_RED;
 					type = GL_UNSIGNED_SHORT;
 					return true;
 				case dds::DDSFMT_G16R16:
 					pixel_size = 32;
-					format = GL_LUMINANCE_ALPHA;
+					format = GL_RG;
 					type = GL_UNSIGNED_SHORT;
 					return true;
 				case dds::DDSFMT_A16B16G16R16:
@@ -863,67 +888,19 @@ namespace eternal_lands
 
 			if (!supported)
 			{
-				EL_THROW_EXCEPTION(DdsFormatNotSupportedException());
+				EL_THROW_EXCEPTION(
+					DdsFormatNotSupportedException()
+					<< errinfo_message(format_str));
 			}
 
 			if (bits != pixel_size)
 			{
-				EL_THROW_EXCEPTION(DdsUnkownFormatException());
+				EL_THROW_EXCEPTION(DdsUnkownFormatException()
+					<< errinfo_message(format_str));
 			}
 
 			LOG_DEBUG_VERBOSE(lt_dds_image, UTF8("Loading of DDS "
 				"FourCC %1% is supported."), format_str);
-		}
-
-		Uint32 get_fourcc(const Image &image, Uint32 &swap_size)
-		{
-			switch (image.get_type())
-			{
-				case GL_UNSIGNED_SHORT:
-					swap_size = 2;
-					switch (image.get_format())
-					{
-						case GL_RED:
-						case GL_LUMINANCE:
-							return dds::DDSFMT_L16;
-						case GL_RG:
-						case GL_LUMINANCE_ALPHA:
-							return dds::DDSFMT_G16R16;
-						case GL_RGBA:
-							return dds::DDSFMT_A16B16G16R16;
-					}
-					break;
-				case GL_FLOAT:
-					swap_size = 4;
-					switch (image.get_format())
-					{
-						case GL_RED:
-						case GL_LUMINANCE:
-							return dds::DDSFMT_R32F;
-						case GL_RG:
-						case GL_LUMINANCE_ALPHA:
-							return dds::DDSFMT_G32R32F;
-						case GL_RGBA:
-							return dds::DDSFMT_A32B32G32R32F;
-					}
-					break;
-				case GL_HALF_FLOAT:
-					swap_size = 2;
-					switch (image.get_format())
-					{
-						case GL_RED:
-						case GL_LUMINANCE:
-							return dds::DDSFMT_R16F;
-						case GL_RG:
-						case GL_LUMINANCE_ALPHA:
-							return dds::DDSFMT_G16R16F;
-						case GL_RGBA:
-							return dds::DDSFMT_A16B16G16R16F;
-					}
-					break;
-			}
-
-			EL_THROW_EXCEPTION(NotImplementedException());
 		}
 
 		class DdsImageLoader
@@ -1203,6 +1180,7 @@ namespace eternal_lands
 				case dds::DDSFMT_A2B10G10R10:
 				case dds::DDSFMT_L8:
 				case dds::DDSFMT_A8B8G8R8:
+				case dds::DDSFMT_A8L8:
 					assert(get_rgba_masks_needed(fourcc));
 					red_mask = 0x00000000;
 					green_mask = 0x00000000;
@@ -1556,6 +1534,8 @@ namespace eternal_lands
 			String(UTF8("A16B16G16R16_SIGNED")), 64, rg_formats);
 		check_fourcc_support(codec_manager, dds::DDSFMT_L8,
 			String(UTF8("L8")), 8, rg_formats);
+		check_fourcc_support(codec_manager, dds::DDSFMT_A8L8,
+			String(UTF8("A8L8")), 16, rg_formats);
 		check_fourcc_support(codec_manager, dds::DDSFMT_L16,
 			String(UTF8("L16")), 16, rg_formats);
 		check_fourcc_support(codec_manager, dds::DDSFMT_DXT1,
@@ -1584,6 +1564,110 @@ namespace eternal_lands
 			String(UTF8("G32R32F")), 64, rg_formats);
 		check_fourcc_support(codec_manager, dds::DDSFMT_A32B32G32R32F,
 			String(UTF8("A32B32G32R32F")), 128, rg_formats);
+	}
+
+	void DdsImage::save_image(const CodecManager &codec_manager,
+		const ImageSharedPtr &image, const WriterSharedPtr &writer)
+	{
+		dds::DdsHeader header;
+		GLenum type, format;
+		Uint32 red_mask, green_mask, blue_mask, alpha_mask, size;
+		Uint32 swap_size, fourcc;
+		Uint32 width, height, depth, mipmaps;
+
+		try
+		{
+			type = image->get_type();
+			format = image->get_format();
+			width = image->get_width();
+			height = image->get_height();
+			depth = image->get_depth();
+			mipmaps = image->get_mipmap_count() + 1;
+
+			if (dds::get_fourcc(type, format, size, swap_size,
+				fourcc))
+			{
+				dds::build_dds_fourcc_header(width, height,
+					depth, mipmaps, fourcc, size, header);
+			}
+			else
+			{
+				if (codec_manager.has_color_bit_mask(type,
+					format, red_mask, green_mask,
+					blue_mask, alpha_mask, size, swap_size))
+				{
+					dds::build_dds_header(width, height,
+						depth, mipmaps, red_mask,
+						green_mask, blue_mask,
+						alpha_mask, header);
+				}
+				else
+				{
+					EL_THROW_EXCEPTION(
+						DdsFormatNotSupportedException(
+						));
+				}
+			}
+
+			writer->write_u32_le(dds::DDSMAGIC);
+			writer->write_u32_le(header.m_size);
+			writer->write_u32_le(header.m_flags);
+			writer->write_u32_le(header.m_height);
+			writer->write_u32_le(header.m_width);
+			writer->write_u32_le(header.m_size_or_pitch);
+			writer->write_u32_le(header.m_depth);
+			writer->write_u32_le(header.m_mipmap_count);
+			writer->write_u32_le(header.m_reserved1[0]);
+			writer->write_u32_le(header.m_reserved1[1]);
+			writer->write_u32_le(header.m_reserved1[2]);
+			writer->write_u32_le(header.m_reserved1[3]);
+			writer->write_u32_le(header.m_reserved1[4]);
+			writer->write_u32_le(header.m_reserved1[5]);
+			writer->write_u32_le(header.m_reserved1[6]);
+			writer->write_u32_le(header.m_reserved1[7]);
+			writer->write_u32_le(header.m_reserved1[8]);
+			writer->write_u32_le(header.m_reserved1[9]);
+			writer->write_u32_le(header.m_reserved1[10]);
+			writer->write_u32_le(header.m_pixel_format.m_size);
+			writer->write_u32_le(header.m_pixel_format.m_flags);
+			writer->write_u32_le(header.m_pixel_format.m_fourcc);
+			writer->write_u32_le(header.m_pixel_format.m_bit_count);
+			writer->write_u32_le(header.m_pixel_format.m_red_mask);
+			writer->write_u32_le(
+				header.m_pixel_format.m_green_mask);
+			writer->write_u32_le(
+				header.m_pixel_format.m_blue_mask);
+			writer->write_u32_le(
+				header.m_pixel_format.m_alpha_mask);
+			writer->write_u32_le(header.m_caps.m_caps1);
+			writer->write_u32_le(header.m_caps.m_caps2);
+			writer->write_u32_le(header.m_caps.m_caps3);
+			writer->write_u32_le(header.m_caps.m_caps4);
+			writer->write_u32_le(header.m_reserved2);
+
+			writer->write_le(image->get_buffer(), swap_size);
+		}
+		catch (boost::exception &exception)
+		{
+			exception << errinfo_name(image->get_name());
+			throw;
+		}
+	}
+
+	bool DdsImage::can_save(const CodecManager &codec_manager,
+		const ImageSharedPtr &image)
+	{
+		GLenum type, format;
+		Uint32 red_mask, green_mask, blue_mask, alpha_mask, size;
+		Uint32 swap_size, fourcc;
+
+		type = image->get_type();
+		format = image->get_format();
+
+		return dds::get_fourcc(type, format, size, swap_size, fourcc) ||
+			codec_manager.has_color_bit_mask(type, format,
+				red_mask, green_mask, blue_mask, alpha_mask,
+				size, swap_size);
 	}
 
 }
