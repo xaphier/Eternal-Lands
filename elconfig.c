@@ -234,6 +234,7 @@ int engine_clipmap_size = 1;
 int engine_clipmap_world_size = 16;
 int engine_clipmap_slices = 4;
 int engine_effect_debug = 0;
+int engine_use_multisample_shadows = engine_true;
 
 void change_engine_shadow_quality(int* var, int value)
 {
@@ -338,6 +339,20 @@ void change_engine_use_s3tc_for_actors(int* var)
 				"GL_EXT_texture_compression_s3tc needed");
 		}
 	}
+}
+
+void change_engine_use_multisample_shadows(int* var)
+{
+	if (*var)
+	{
+		*var = engine_false;
+	}
+	else
+	{
+		*var = engine_true;
+	}
+
+	engine_set_use_multisample_shadows(*var);
 }
 
 void change_engine_set_use_block(int* var)
@@ -1880,6 +1895,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "use_simd", "simd", &engine_use_simd, change_engine_use_simd, engine_true, "Use SIMD", "Use Intel SIMD instructions (SSE2).", TROUBLESHOOT);
 #endif	/* USE_SSE2 */
 	add_var(OPT_BOOL, "use_s3tc_for_actors", "uatc", &engine_use_s3tc_for_actors, change_engine_use_s3tc_for_actors, engine_true, "Use s3tc for actors", "Use s3 texture compression for actors.", TROUBLESHOOT);
+	add_var(OPT_BOOL, "use_multisample_shadows", "ums", &engine_use_multisample_shadows, change_engine_use_multisample_shadows, engine_true, "Use multisample shadows", "Use multisample shadows for better quality.", TROUBLESHOOT);
 	add_var(OPT_MULTI_NO_SAVE, "effect_debug", "effect_debug", &engine_effect_debug, change_engine_effect_debug, 0, "effect", "effect used for rendering", TROUBLESHOOT, "default", "debug_uv", "debug_depth", "debug_alpha", "debug_albedo", "debug_normal", "debug_shadow", "debug_specular", "debug_emissive", "debug_diffuse_light", "debug_specular_light", 0);
 
 	// DEBUGTAB TAB

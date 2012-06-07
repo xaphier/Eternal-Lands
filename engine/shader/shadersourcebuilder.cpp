@@ -2413,6 +2413,7 @@ namespace eternal_lands
 			description.get_transparent());
 		data.set_option(ssbot_alpha_test,
 			!(get_global_vars()->get_exponential_shadow_maps() &&
+			get_global_vars()->get_use_multisample_shadows() &&
 			(shader_build_type == sbt_shadow)));
 		data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());

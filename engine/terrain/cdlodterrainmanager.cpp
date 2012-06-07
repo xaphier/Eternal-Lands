@@ -104,6 +104,13 @@ namespace eternal_lands
 	}
 
 	void CdLodTerrainManager::intersect(const Frustum &frustum,
+		const glm::vec3 &camera, BoundingBox &bounding_box) const
+	{
+		m_cd_lod_quad_tree->select_bounding_box(frustum, camera,
+			bounding_box);
+	}
+
+	void CdLodTerrainManager::intersect(const Frustum &frustum,
 		const glm::vec3 &camera, TerrainVisitor &terrain) const
 	{
 		BoundingBox bounding_box;

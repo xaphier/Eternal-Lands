@@ -42,6 +42,9 @@ namespace eternal_lands
 				ObjectVisitor &visitor) const override;
 			virtual void intersect(const Frustum &frustum,
 				const glm::vec3 &camera,
+				BoundingBox &bounding_box) const;
+			virtual void intersect(const Frustum &frustum,
+				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const override;
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture) override;

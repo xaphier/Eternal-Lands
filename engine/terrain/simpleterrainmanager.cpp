@@ -23,6 +23,7 @@
 #include "alignedvec4array.hpp"
 #include "material.hpp"
 #include "terrainvisitor.hpp"
+#include "boundingboxvisitor.hpp"
 
 namespace eternal_lands
 {
@@ -395,6 +396,16 @@ namespace eternal_lands
 		ObjectVisitor &visitor) const
 	{
 		m_object_tree->intersect(frustum, visitor);
+	}
+
+	void SimpleTerrainManager::intersect(const Frustum &frustum,
+		const glm::vec3 &camera, BoundingBox &bounding_box) const
+	{
+		BoundingBoxVisitor visitor;
+
+		m_object_tree->intersect(frustum, visitor);
+
+		bounding_box = visitor.get_bounding_box();
 	}
 
 	void SimpleTerrainManager::intersect(const Frustum &frustum,

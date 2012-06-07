@@ -10,15 +10,18 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <auto_parameter>shadow_camera</auto_parameter>
-    </parameter>
-    <parameter>
      <sampler_parameter>shadow_sampler</sampler_parameter>
      <type>sampler2DArray</type>
     </parameter>
     <parameter>
      <common_parameter>shadow_uvs</common_parameter>
      <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <name>shadow_view_distance</name>
+     <type>float</type>
+     <qualifier>in</qualifier>
+     <size>1</size>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>
@@ -53,7 +56,7 @@ for (i = 0; i &lt; shadow_map_count; ++i)
 		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2( 1,  1)).r;
 		occluder *= 0.2;
 
-		light_distance = distance(shadow_camera.xyz, world_position) + light_shadow_bias;
+		light_distance = shadow_view_distance + light_shadow_bias;
 
 		shadow = exp(over_darkening_factor * (log(occluder) - light_distance));
 		shadow = clamp(shadow, 0.0, 1.0);

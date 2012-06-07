@@ -49,11 +49,14 @@ namespace eternal_lands
 			glm::mat4x4 m_ortho_matrix;
 			glm::vec4 m_camera;
 			glm::vec4 m_shadow_camera;
+			glm::vec4 m_shadow_distance_transform;
 			glm::vec4 m_view_dir;
 			glm::vec4 m_focus;
 			glm::vec4 m_split_distances;
 			glm::vec4 m_z_params;
 			glm::ivec4 m_view_port;
+			glm::vec3 m_shadow_dir;
+			glm::vec3 m_shadow_up;
 			glm::uvec2 m_window_size;
 			glm::uvec2 m_shadow_map_size;
 			float m_fov, m_aspect, m_z_near, m_z_far;
@@ -270,6 +273,12 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_shadow_camera;
+			}
+
+			inline const glm::vec4 &get_shadow_distance_transform()
+				const noexcept
+			{
+				return m_shadow_distance_transform;
 			}
 
 			inline const glm::vec4 &get_split_distances() const

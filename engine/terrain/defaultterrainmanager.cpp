@@ -20,6 +20,7 @@
 #include "globalvars.hpp"
 #include "uvtool.hpp"
 #include "terrainvisitor.hpp"
+#include "boundingboxvisitor.hpp"
 
 namespace eternal_lands
 {
@@ -315,6 +316,16 @@ namespace eternal_lands
 		ObjectVisitor &visitor) const
 	{
 		m_object_tree->intersect(frustum, visitor);
+	}
+
+	void DefaultTerrainManager::intersect(const Frustum &frustum,
+		const glm::vec3 &camera, BoundingBox &bounding_box) const
+	{
+		BoundingBoxVisitor visitor;
+
+		m_object_tree->intersect(frustum, visitor);
+
+		bounding_box = visitor.get_bounding_box();
 	}
 
 	void DefaultTerrainManager::intersect(const Frustum &frustum,

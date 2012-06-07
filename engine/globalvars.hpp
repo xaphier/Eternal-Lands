@@ -63,6 +63,7 @@ namespace eternal_lands
 			bool m_use_in_out;
 			bool m_use_functions;
 			bool m_low_quality_terrain;
+			bool m_use_multisample_shadows;
 
 		public:
 			GlobalVars();
@@ -162,6 +163,13 @@ namespace eternal_lands
 				const bool low_quality_terrain)
 			{
 				m_low_quality_terrain = low_quality_terrain;
+			}
+
+			inline void set_use_multisample_shadows(
+				const bool use_multisample_shadows)
+			{
+				m_use_multisample_shadows =
+					use_multisample_shadows;
 			}
 
 			inline const String &get_quality() const
@@ -317,6 +325,11 @@ namespace eternal_lands
 			inline bool get_low_quality_terrain() const
 			{
 				return m_low_quality_terrain;
+			}
+
+			inline bool get_use_multisample_shadows() const
+			{
+				return m_use_multisample_shadows;
 			}
 
 	};

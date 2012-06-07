@@ -291,6 +291,24 @@ namespace eternal_lands
 		m_particles.clear();
 	}
 
+	void Map::intersect_terrain(const Frustum &frustum,
+		const glm::vec3 &camera, BoundingBox &bounding_box) const
+	{
+		if (m_terrain.get() != nullptr)
+		{
+			m_terrain->intersect(frustum, camera, bounding_box);
+		}
+	}
+
+	void Map::intersect_terrain(const Frustum &frustum,
+		const glm::vec3 &camera, TerrainVisitor &terrain) const
+	{
+		if (m_terrain.get() != nullptr)
+		{
+			m_terrain->intersect(frustum, camera, terrain);
+		}
+	}
+
 	void Map::intersect(const Frustum &frustum, ObjectVisitor &visitor)
 		const
 	{
@@ -300,15 +318,6 @@ namespace eternal_lands
 		}
 
 		m_object_tree->intersect(frustum, visitor);
-	}
-
-	void Map::intersect(const Frustum &frustum, const glm::vec3 &camera,
-		TerrainVisitor &terrain) const
-	{
-		if (m_terrain.get() != nullptr)
-		{
-			m_terrain->intersect(frustum, camera, terrain);
-		}
 	}
 
 	void Map::intersect(const Frustum &frustum, LightVisitor &visitor)

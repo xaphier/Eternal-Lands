@@ -68,7 +68,7 @@ namespace eternal_lands
 		 */
 		apt_fog_data,
 		apt_camera,
-		apt_shadow_camera,
+		apt_shadow_distance_transform,
 		apt_split_distances,
 		apt_layers,
 		apt_texture_matrices,

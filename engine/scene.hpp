@@ -117,7 +117,10 @@ namespace eternal_lands
 			void build_shadow_map();
 
 		protected:
-			virtual void intersect(const Frustum &frustum,
+			virtual void intersect_terrain(const Frustum &frustum,
+				const glm::vec3 &camera,
+				BoundingBox &bounding_box) const;
+			virtual void intersect_terrain(const Frustum &frustum,
 				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const;
 			virtual void intersect(const Frustum &frustum,

@@ -6,11 +6,20 @@
   <shader_source_data>
    <parameters>
     <parameter>
+     <auto_parameter>shadow_distance_transform</auto_parameter>
+    </parameter>
+    <parameter>
      <auto_parameter>shadow_texture_matrices</auto_parameter>
     </parameter>
     <parameter>
      <common_parameter>shadow_uvs</common_parameter>
      <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <name>shadow_view_distance</name>
+     <type>float</type>
+     <qualifier>out</qualifier>
+     <size>1</size>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>
@@ -26,6 +35,8 @@ for (i = 0; i &lt; shadow_map_count; ++i)
 {
 	shadow_uvs[i] = shadow_texture_matrices[i] * pos;
 }
+
+shadow_view_distance = dot(shadow_distance_transform, vec4(world_position, 1.0));
 </source>
    <version>120</version>
   </shader_source_data>

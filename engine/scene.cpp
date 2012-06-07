@@ -149,7 +149,8 @@ namespace eternal_lands
 
 	void Scene::TerrainVisitorTask::operator()()
 	{
-		m_scene.intersect(m_frustum, m_camera, m_terrain_visitor);
+		m_scene.intersect_terrain(m_frustum, m_camera,
+			m_terrain_visitor);
 	}
 
 	class Scene::ObjectVisitorTask
@@ -405,7 +406,13 @@ namespace eternal_lands
 		}
 
 		shadow_map_count = m_scene_view.get_shadow_map_count();
-		samples = 4;
+
+		samples = 0;
+
+		if (get_global_vars()->get_use_multisample_shadows())
+		{
+			samples = 4;
+		}
 
 		m_shadow_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
@@ -533,10 +540,16 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::intersect(const Frustum &frustum, const glm::vec3 &camera,
-		TerrainVisitor &terrain) const
+	void Scene::intersect_terrain(const Frustum &frustum,
+		const glm::vec3 &camera, BoundingBox &bounding_box) const
 	{
-		m_map->intersect(frustum, camera, terrain);
+		m_map->intersect_terrain(frustum, camera, bounding_box);
+	}
+
+	void Scene::intersect_terrain(const Frustum &frustum,
+		const glm::vec3 &camera, TerrainVisitor &terrain) const
+	{
+		m_map->intersect_terrain(frustum, camera, terrain);
 	}
 
 	void Scene::intersect(const Frustum &frustum, const bool shadow,
@@ -628,8 +641,8 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			intersect(frustum, glm::vec3(m_scene_view.get_camera()),
-				terrain_visitor);
+			intersect_terrain(frustum, glm::vec3(
+				m_scene_view.get_camera()), terrain_visitor);
 
 			m_visible_terrain.set_mesh(terrain_visitor.get_mesh());
 			m_visible_terrain.set_material(
@@ -675,12 +688,43 @@ namespace eternal_lands
 		frustum = Frustum(
 			m_scene_view.get_split_projection_view_matrices());
 
+		if (get_global_vars()->get_opengl_3_2())
+		{
+			count = m_shadow_terrain.size();
+
+			for (i = 0; i < count; ++i)
+			{
+				intersect_terrain(Frustum(frustum, i), camera,
+					receiver_boxes[i]);
+			}
+		}
+
+		count = mask.size();
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_visible_objects.get_objects())
+		{
+			mask = frustum.intersect_sub_frustums(object.get_object(
+				)->get_bounding_box());
+
+			for (i = 0; i < count; ++i)
+			{
+				if (mask[i])
+				{
+					receiver_boxes[i].merge(
+						object.get_object(
+							)->get_bounding_box());
+				}
+			}
+		}
+
 		count = convex_bodys.size();
 
 		for (i = 0; i < count; ++i)
 		{
 			convex_bodys[i] = ConvexBody(frustum, i);
-			convex_bodys[i].clip(m_map->get_bounding_box());
+//			convex_bodys[i].clip(m_map->get_bounding_box());
+			convex_bodys[i].clip(receiver_boxes[i]);
 		}
 
 		m_scene_view.build_shadow_matrices(
@@ -712,7 +756,7 @@ namespace eternal_lands
 
 				DEBUG_CHECK_GL_ERROR();
 
-				intersect(Frustum(frustum, i), camera,
+				intersect_terrain(Frustum(frustum, i), camera,
 					terrain_visitor);
 
 				m_shadow_terrain[i].set_mesh(
@@ -756,6 +800,19 @@ namespace eternal_lands
 			convex_bodys[i].clip(caster_boxes[i]);
 		}
 
+		if (get_global_vars()->get_opengl_3_2())
+		{
+			frustum = Frustum(
+				m_scene_view.get_split_projection_view_matrices());
+
+			for (i = 0; i < count; ++i)
+			{
+				convex_bodys[i] = ConvexBody(frustum, i);
+				convex_bodys[i].clip(caster_boxes[i]);
+				convex_bodys[i].clip(receiver_boxes[i]);
+			}
+		}
+
 		m_scene_view.update_shadow_matrices(convex_bodys,
 			m_shadow_update_mask);
 	}
@@ -787,8 +844,8 @@ namespace eternal_lands
 			program->set_parameter(apt_fog_data, m_fog);
 			program->set_parameter(apt_camera,
 				m_scene_view.get_camera());
-			program->set_parameter(apt_shadow_camera,
-				m_scene_view.get_shadow_camera());
+			program->set_parameter(apt_shadow_distance_transform,
+				m_scene_view.get_shadow_distance_transform());
 			program->set_parameter(apt_shadow_texture_matrices,
 				m_scene_view.get_shadow_texture_matrices());
 			program->set_parameter(apt_split_distances,
@@ -1078,6 +1135,11 @@ namespace eternal_lands
 
 		glViewport(0, 0, width, height);
 
+		if (get_global_vars()->get_opengl_3_2())
+		{
+			glEnable(GL_DEPTH_CLAMP);
+		}
+
 		for (i = 0; i < m_scene_view.get_shadow_map_count(); ++i)
 		{
 			if (!m_shadow_update_mask[i])
@@ -1097,6 +1159,11 @@ namespace eternal_lands
 		}
 
 		unbind_all();
+
+		if (get_global_vars()->get_opengl_3_2())
+		{
+			glDisable(GL_DEPTH_CLAMP);
+		}
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1131,6 +1198,7 @@ namespace eternal_lands
 		}
 
 		m_shadow_update_mask[0] = true;
+		m_shadow_update_mask = 0xFFFF;
 	}
 
 	void Scene::draw_depth()

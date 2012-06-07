@@ -116,11 +116,14 @@ namespace eternal_lands
 			void add_light(const LightData &light_data);
 			void remove_light(const Uint32 id);
 			void clear();
-			void intersect(const Frustum &frustum,
-				ObjectVisitor &visitor) const;
-			void intersect(const Frustum &frustum,
+			void intersect_terrain(const Frustum &frustum,
+				const glm::vec3 &camera,
+				BoundingBox &bounding_box) const;
+			void intersect_terrain(const Frustum &frustum,
 				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const;
+			void intersect(const Frustum &frustum,
+				ObjectVisitor &visitor) const;
 			void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
 			BoundingBox get_bounding_box() const;

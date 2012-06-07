@@ -59,6 +59,13 @@ namespace eternal_lands
 				const Uint16 max_instance_count,
 				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
+			void select_bounding_box(const Frustum &frustum,
+				const glm::vec3 &camera_position,
+				const glm::uvec2 &position,
+				const PlanesMask mask, const Uint16 level,
+				const Uint16 max_instance_count,
+				BoundingBox &bounding_box,
+				Uint32 &instance_count) const;
 
 		public:
 			CdLodQuadTree(const ImageSharedPtr &vector_map,
@@ -70,6 +77,9 @@ namespace eternal_lands
 				const MappedUniformBufferSharedPtr &instances,
 				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
+			void select_bounding_box(const Frustum &frustum,
+				const glm::vec3 &camera,
+				BoundingBox &bounding_box) const;
 			static const Uvec2Array4 &get_quad_order(
 				const glm::vec2 &dir) noexcept;
 

@@ -466,4 +466,100 @@ namespace eternal_lands
 		}
 	}
 
+
+
+	void CdLodQuadTree::select_bounding_box(const Frustum &frustum,
+		const glm::vec3 &camera, const glm::uvec2 &position,
+		const PlanesMask mask, const Uint16 level,
+		const Uint16 max_instance_count, BoundingBox &bounding_box,
+		Uint32 &instance_index) const
+	{
+		BoundingBox box;
+		glm::vec3 min, max;
+		glm::vec2 size, center, half_size, distance;
+		glm::uvec2 pos;
+		PlanesMask out_mask;
+		Uint32 offset, patch_size;
+		Uint16 i;
+		IntersectionType intersect;
+
+		if (glm::any(glm::greaterThanEqual(position,
+			get_grid_size() - 1u)))
+		{
+			return;
+		}
+
+		patch_size = m_lods[level].patch_scale * get_patch_size();
+
+		size = glm::vec2(glm::min(glm::uvec2(patch_size),
+			get_grid_size() - position)) * get_patch_scale();
+		min = get_patch_scale() * glm::vec3(position, 0.0f);
+		max = min + glm::vec3(size, 0.0f);
+
+		pos = position / patch_size;
+		min += m_lods[level].min_max[pos.x][pos.y][0];
+		max += m_lods[level].min_max[pos.x][pos.y][1];
+
+		min = glm::min(min, max - 0.05f);
+
+		box.set_min_max(min, max);
+
+		intersect = frustum.intersect(box, mask, out_mask);
+
+		if (intersect == it_outside)
+		{
+			return;
+		}
+
+		if ((level == 0) || (intersect == it_inside));
+		{
+			bounding_box.merge(box);
+
+			return;
+		}
+
+		offset = patch_size / 2;
+
+		const Uvec2Array4 &quad_order = get_quad_order(
+			glm::vec2(position + offset) - glm::vec2(camera));
+
+		for (i = 0; i < 4; ++i)
+		{
+			select_bounding_box(frustum, camera, position +
+				quad_order[i] * offset, out_mask, level - 1,
+				max_instance_count, bounding_box,
+				instance_index);
+		}
+	}
+
+	void CdLodQuadTree::select_bounding_box(const Frustum &frustum,
+		const glm::vec3 &camera, BoundingBox &bounding_box) const
+	{
+		Uint32 x, y, level, step, instance_count;
+		PlanesMask mask;
+		Uint16 max_instance_count;
+
+		level = get_lod_count() - 1;
+
+		step = m_lods[level].patch_scale * get_patch_size();
+
+		mask = frustum.get_planes_mask();
+
+		instance_count = 0;
+
+		max_instance_count = AutoParameterUtil::get_size(
+			apt_terrain_instances);
+
+		for (y = 0; y < (get_grid_size().y - 1); y += step)
+		{
+			for (x = 0; x < (get_grid_size().x - 1); x += step)
+			{
+				select_bounding_box(frustum, camera,
+					glm::uvec2(x, y), mask, level,
+					max_instance_count, bounding_box,
+					instance_count);
+			}
+		}
+	}
+
 }

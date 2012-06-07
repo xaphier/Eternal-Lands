@@ -84,7 +84,8 @@ namespace eternal_lands
 			AutoParameterTypeData(String(UTF8("fog_data")),
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("camera")), pt_vec4),
-			AutoParameterTypeData(String(UTF8("shadow_camera")),
+			AutoParameterTypeData(
+				String(UTF8("shadow_distance_transform")),
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("split_distances")),
 				pt_vec4),

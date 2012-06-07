@@ -6,7 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <auto_parameter>shadow_camera</auto_parameter>
+     <auto_parameter>shadow_distance_transform</auto_parameter>
     </parameter>
     <parameter>
      <common_parameter>shadow_map_data</common_parameter>
@@ -17,7 +17,7 @@
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>shadow_map_data = vec3(exp(distance(shadow_camera.xyz, world_position)));
+   <source>shadow_map_data = vec3(exp(dot(shadow_distance_transform, vec4(world_position, 1.0))));
 </source>
    <version>120</version>
   </shader_source_data>

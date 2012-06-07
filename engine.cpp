@@ -1712,6 +1712,18 @@ extern "C" void engine_set_effect_debug(const int value)
 	}
 }
 
+extern "C" void engine_set_use_multisample_shadows(const int value)
+{
+	global_vars->set_use_multisample_shadows(value != 0);
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload(
+			effect_debug);
+		scene->rebuild_shadow_map();
+	}
+}
+
 float get_tile_height_old(const int x, const int y)
 {
 	float z;

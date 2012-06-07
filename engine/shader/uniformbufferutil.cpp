@@ -83,7 +83,7 @@ namespace eternal_lands
 				String(UTF8("animation")),
 				String(UTF8("Animation"))),
 			UniformBufferTypeData(boost::assign::list_of
-				(apt_shadow_camera)
+				(apt_shadow_distance_transform)
 				(apt_shadow_texture_matrices)
 				(apt_split_distances),
 				String(UTF8("shadow")),

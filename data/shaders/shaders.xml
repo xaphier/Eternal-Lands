@@ -24,7 +24,6 @@
 		<shader_source>shaders/sources/fog.xml</shader_source>
 		<shader_source>shaders/sources/shadow_uv.xml</shader_source>
 		<shader_source>shaders/sources/shadow_mapping.xml</shader_source>
-		<shader_source>shaders/sources/shadow_filtering_mapping.xml</shader_source>
 		<shader_source>shaders/sources/simple_light.xml</shader_source>
 		<shader_source>shaders/sources/diffuse_light.xml</shader_source>
 		<shader_source>shaders/sources/specular_light.xml</shader_source>

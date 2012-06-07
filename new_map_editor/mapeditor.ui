@@ -461,7 +461,7 @@
      <item>
       <widget class="QStackedWidget" name="properties">
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="object_page">
         <layout class="QVBoxLayout" name="verticalLayout_17">
