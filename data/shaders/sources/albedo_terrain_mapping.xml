@@ -17,7 +17,7 @@
      <name>terrain_uvs</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
-     <size>6</size>
+     <size>4</size>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>
