@@ -129,6 +129,7 @@ namespace eternal_lands
 
 			m_log_file.write(log_stream.str().c_str(),
 				log_stream.str().length());
+			m_log_file.flush();
 		}
 
 		std::string get_local_time_string()

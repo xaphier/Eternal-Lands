@@ -285,8 +285,6 @@ int start_rendering()
 	FreeXML();
 	exit_engine();
 
-	exit_logging();
-
 	return(0);
 }
 
@@ -440,6 +438,7 @@ int main(int argc, char **argv)
 #endif	//OLC
 	exit_global_vars();
 	exit_file_system();
+	exit_logging();
 
 #ifndef WINDOWS
 	// attempt to restart if requested
