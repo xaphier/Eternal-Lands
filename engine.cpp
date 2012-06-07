@@ -363,95 +363,87 @@ namespace
 
 }
 
-#define	USE_GL_DEBUG_OUTPUT
-
-#ifdef	USE_GL_DEBUG_OUTPUT
-extern "C" void ARB_debug_output_to_file(GLenum source, GLenum type, GLuint id,
+extern "C" void log_ARB_debug_output(GLenum source, GLenum type, GLuint id,
 	GLenum severity, GLsizei length, const GLchar* message,
 	GLvoid* userParam)
 {
+	BoostFormat format_string(UTF8("Source: %1% Type: %2% ID: %3% "
+		"Severity: %4% Message: %5%"));
 	std::string source_str, type_str, severity_str;
-	FILE* file;
 
-	file = fopen("debug.txt", "a");
-
-	if (file)
+	switch (source)
 	{
-		switch (source)
-		{
-			case GL_DEBUG_SOURCE_API_ARB:
-				source_str = "OpenGL";
-				break;
-			case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:
-				source_str = "Windows";
-				break;
-			case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB:
-				source_str = "Shader Compiler";
-				break;
-			case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:
-				source_str = "Third Party";
-				break;
-			case GL_DEBUG_SOURCE_APPLICATION_ARB:
-				source_str = "Application";
-				break;
-			case GL_DEBUG_SOURCE_OTHER_ARB:
-				source_str = "Other";
-				break;
-			default:
-				source_str = "Unkown";
-				break;
-		}
-
-		switch (type)
-		{
-			case GL_DEBUG_TYPE_ERROR_ARB:
-				type_str = "Error";
-				break;
-			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB:
-				type_str = "Deprecated behavior";
-				break;
-			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:
-				type_str = "Undefined behavior";
-				break;
-			case GL_DEBUG_TYPE_PORTABILITY_ARB:
-				type_str = "Portability";
-				break;
-			case GL_DEBUG_TYPE_PERFORMANCE_ARB:
-				type_str = "Performance";
-				break;
-			case GL_DEBUG_TYPE_OTHER_ARB:
-				type_str = "Other";
-				break;
-			default:
-				type_str = "Unkown";
-				break;
-		}
- 
-		switch (severity)
-		{
-			case GL_DEBUG_SEVERITY_HIGH_ARB:
-				severity_str = "High";
-				break;
-			case GL_DEBUG_SEVERITY_MEDIUM_ARB:
-				severity_str = "Medium";
-				break;
-			case GL_DEBUG_SEVERITY_LOW_ARB:
-				severity_str = "Low";
-				break;
-			default:
-				severity_str = "Unkown";
-				break;
-		}
-
-		fprintf(file,
-			"Source:%s\tType:%s\tID:%d\tSeverity:%s\tMessage:%s\n",
-			source_str.c_str(), type_str.c_str(), id,
-			severity_str.c_str(), message);
-
-		fclose(file);
+		case GL_DEBUG_SOURCE_API_ARB:
+			source_str = "OpenGL";
+			break;
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB:
+			source_str = "Windows";
+			break;
+		case GL_DEBUG_SOURCE_SHADER_COMPILER_ARB:
+			source_str = "Shader Compiler";
+			break;
+		case GL_DEBUG_SOURCE_THIRD_PARTY_ARB:
+			source_str = "Third Party";
+			break;
+		case GL_DEBUG_SOURCE_APPLICATION_ARB:
+			source_str = "Application";
+			break;
+		case GL_DEBUG_SOURCE_OTHER_ARB:
+			source_str = "Other";
+			break;
+		default:
+			source_str = "Unkown";
+			break;
 	}
+
+	switch (type)
+	{
+		case GL_DEBUG_TYPE_ERROR_ARB:
+			type_str = "Error";
+			break;
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB:
+			type_str = "Deprecated behavior";
+			break;
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB:
+			type_str = "Undefined behavior";
+			break;
+		case GL_DEBUG_TYPE_PORTABILITY_ARB:
+			type_str = "Portability";
+			break;
+		case GL_DEBUG_TYPE_PERFORMANCE_ARB:
+			type_str = "Performance";
+			break;
+		case GL_DEBUG_TYPE_OTHER_ARB:
+			type_str = "Other";
+			break;
+		default:
+			type_str = "Unkown";
+			break;
+	}
+ 
+	switch (severity)
+	{
+		case GL_DEBUG_SEVERITY_HIGH_ARB:
+			severity_str = "High";
+			break;
+		case GL_DEBUG_SEVERITY_MEDIUM_ARB:
+			severity_str = "Medium";
+			break;
+		case GL_DEBUG_SEVERITY_LOW_ARB:
+			severity_str = "Low";
+			break;
+		default:
+			severity_str = "Unkown";
+			break;
+	}
+
+	format_string % source_str % type_str % id % severity_str % message;
+
+	LOG_WARNING(lt_opengl, UTF8("%1%"), format_string.str());
+
+	LOG_TO_CONSOLE(c_red1, format_string.str().c_str());
 }
-#endif
+
 #if	1
 #define	TRY_BLOCK	\
 	try	\
@@ -604,12 +596,14 @@ extern "C" void init_engine()
 	script_engine.reset(new el::ScriptEngine(file_system));
 
 	CHECK_GL_ERROR();
-#ifdef	USE_GL_DEBUG_OUTPUT
+
 	if (GLEW_ARB_debug_output)
 	{
-		glDebugMessageCallbackARB((GLDEBUGPROCARB)&ARB_debug_output_to_file, 0);
+		LOG_TO_CONSOLE(c_green2, "Using GLEW_ARB_debug_output");
+		glDebugMessageCallbackARB((GLDEBUGPROCARB)&log_ARB_debug_output,
+			0);
 	}
-#endif
+
 	CHECK_GL_ERROR();
 #ifdef	EL_TIME_FRAME_DEBUG
 	glGenQueries(1, &el_timer_id);
