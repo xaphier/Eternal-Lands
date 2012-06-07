@@ -50,11 +50,6 @@ for (i = 0; i &lt; shadow_map_count; ++i)
 	if (all(lessThan(abs(uv - vec3(0.5)), vec3(0.4995))))
 	{
 		occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), ddx, ddy).r;
-		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2(-1, -1)).r;
-		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2(-1,  1)).r;
-		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2( 1, -1)).r;
-		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2( 1,  1)).r;
-		occluder *= 0.2;
 
 		light_distance = shadow_view_distance + light_shadow_bias;
 
