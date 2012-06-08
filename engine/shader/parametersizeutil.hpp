@@ -28,7 +28,6 @@ namespace eternal_lands
 		pst_light_count,
 		pst_bone_count,
 		pst_shadow_map_count,
-		pst_layer_count,
 		pst_clipmap_slices
 	};
 
@@ -45,6 +44,8 @@ namespace eternal_lands
 				const String &str);
 			static bool get_parameter_size(const String &str,
 				ParameterSizeType &parameter_size) noexcept;
+			static Uint16 get_max_size(
+				const ParameterSizeType parameter_size);
 			static Uint32 get_parameter_size_count() noexcept;
 
 	};

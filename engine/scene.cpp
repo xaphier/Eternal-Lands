@@ -723,7 +723,6 @@ namespace eternal_lands
 		for (i = 0; i < count; ++i)
 		{
 			convex_bodys[i] = ConvexBody(frustum, i);
-//			convex_bodys[i].clip(m_map->get_bounding_box());
 			convex_bodys[i].clip(receiver_boxes[i]);
 		}
 
@@ -1652,16 +1651,15 @@ namespace eternal_lands
 		m_state_manager.switch_scissor_test(true);
 		glScissor(offset.x - size.x, offset.y - size.y, 2 * size.x,
 			2 * size.y);
+		m_state_manager.switch_multisample(true);
+		m_state_manager.switch_depth_mask(false);
 		m_state_manager.switch_color_mask(glm::bvec4(false));
-		m_state_manager.switch_multisample(false);
 //		m_state_manager.switch_polygon_offset_fill(true);
 //		glPolygonOffset(0.99f, -4.0f);
 
 		glDepthFunc(GL_LEQUAL);
 
 		m_scene_view.set_default_view();
-
-		m_state_manager.switch_depth_mask(false);
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
@@ -1714,6 +1712,9 @@ namespace eternal_lands
 			m_free_ids));
 
 		set_map(map_loader->load(name));
+
+		rebuild_terrain_map();
+		rebuild_shadow_map();
 	}
 
 	const ParticleDataVector &Scene::get_particles() const

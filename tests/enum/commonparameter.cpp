@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(get_type)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(get_size)
+BOOST_AUTO_TEST_CASE(get_scale)
 {
 	Uint32 i, count;
 
@@ -108,7 +108,7 @@ BOOST_AUTO_TEST_CASE(get_size)
 
 	for (i = 0; i < count; i++)
 	{
-		BOOST_CHECK_GT(el::CommonParameterUtil::get_size(
+		BOOST_CHECK_GT(el::CommonParameterUtil::get_scale(
 			static_cast<el::CommonParameterType>(i)), 0);
 	}
 }

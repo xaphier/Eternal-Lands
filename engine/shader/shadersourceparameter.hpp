@@ -14,10 +14,12 @@
 
 #include "prerequisites.hpp"
 #include "parameterutil.hpp"
+#include "parametersizeutil.hpp"
 #include "parameterqualifierutil.hpp"
 #include "autoparameterutil.hpp"
 #include "commonparameterutil.hpp"
 #include "samplerparameterutil.hpp"
+#include "vertexelement.hpp"
 #include "exceptions.hpp"
 
 /**
@@ -35,7 +37,8 @@ namespace eternal_lands
 			String m_name;
 			ParameterType m_type;
 			ParameterQualifierType m_qualifier;
-			Uint16 m_size;
+			ParameterSizeType m_size;
+			Uint16 m_scale;
 
 		public:
 			ShaderSourceParameter();
@@ -44,9 +47,12 @@ namespace eternal_lands
 			ShaderSourceParameter(const String &source,
 				const String &name, const ParameterType type,
 				const ParameterQualifierType qualifier,
-				const Uint16 size);
+				const ParameterSizeType size,
+				const Uint16 scale);
 			ShaderSourceParameter(const String &source,
 				const AutoParameterType auto_parameter);
+			ShaderSourceParameter(const String &source,
+				const VertexSemanticType vertex_semantic);
 			ShaderSourceParameter(const String &source,
 				const CommonParameterType common_parameter,
 				const ParameterQualifierType qualifier);
@@ -60,16 +66,21 @@ namespace eternal_lands
 				const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 			bool get_auto_parameter() const;
+			bool get_vertex_semantic() const;
 			bool get_common_parameter() const;
 			bool get_sampler_parameter() const;
 			bool get_auto_parameter(
 				AutoParameterType &auto_parameter) const;
+			bool get_vertex_semantic(
+				VertexSemanticType &vertex_semantic) const;
 			bool get_common_parameter(
 				CommonParameterType &common_parameter) const;
 			bool get_sampler_parameter(
 				SamplerParameterType &sampler_parameter) const;
 			void set_auto_parameter(
 				const AutoParameterType auto_parameter);
+			void set_vertex_semantic(
+				const VertexSemanticType vertex_semantic);
 			void set_common_parameter(
 				const CommonParameterType common_parameter);
 			void set_sampler_parameter(
@@ -137,15 +148,27 @@ namespace eternal_lands
 			}
 
 			/**
-			 * @brief Sets the size of the parameter.
-			 * Sets the size of the parameter.
-			 * @param size the size of the parameter.
+			 * @brief Sets the size type of the parameter.
+			 * Sets the size type of the parameter.
+			 * @param size the size type of the parameter.
 			 */
-			inline void set_size(const Uint16 size) noexcept
+			inline void set_size(const ParameterSizeType size)
+				noexcept
 			{
-				RANGE_CECK_MIN(size, 1,
-					UTF8("size value to small"));
 				m_size = size;
+			}
+
+			/**
+			 * @brief Sets the scale of the parameter.
+			 * Sets the scale of the parameter.
+			 * @param scale the scale of the parameter.
+			 */
+			inline void set_scale(const Uint16 scale) noexcept
+			{
+				RANGE_CECK_MIN(scale, 1,
+					UTF8("scale value to small"));
+
+				m_scale = scale;
 			}
 
 			/**
@@ -194,19 +217,32 @@ namespace eternal_lands
 			 * Gets the size type of the parameter.
 			 * @return the size type of the parameter.
 			 */
-			inline Uint16 get_size() const noexcept
+			inline ParameterSizeType get_size() const noexcept
 			{
 				return m_size;
 			}
 
+			/**
+			 * @brief Gets the scale of the parameter.
+			 * Gets the scale of the parameter.
+			 * @return the scale of the parameter.
+			 */
+			inline Uint16 get_scale() const noexcept
+			{
+				return m_scale;
+			}
+
 			void write(const String &name_prefix,
+				const ParameterSizeTypeUint16Map &sizes,
 				OutStream &str) const;
 			void write(const String &name_prefix,
+				const ParameterSizeTypeUint16Map &sizes,
 				const String &prefix, OutStream &str,
 				bool &first) const;
 			void write_name(const String &name_prefix,
 				OutStream &str, bool &first) const;
 			void write_parameter(const String &name_prefix,
+				const ParameterSizeTypeUint16Map &sizes,
 				OutStream &str, bool &first) const;
 
 	};

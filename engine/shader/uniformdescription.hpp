@@ -48,6 +48,12 @@ namespace eternal_lands
 			void write(const String &indent, OutStream &str) const;
 			void log(OutStream &str) const;
 
+			inline Uint32 get_auto_parameter_max_size() const
+			{
+				return AutoParameterUtil::get_max_size(
+					get_auto_parameter());
+			}
+
 			inline const String &get_name() const
 			{
 				return AutoParameterUtil::get_str(
@@ -57,12 +63,6 @@ namespace eternal_lands
 			inline ParameterType get_type() const
 			{
 				return AutoParameterUtil::get_type(
-					get_auto_parameter());
-			}
-
-			inline Uint16 get_auto_parameter_size() const
-			{
-				return AutoParameterUtil::get_size(
 					get_auto_parameter());
 			}
 

@@ -14,37 +14,68 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String parameter_size_names[] =
+		class ParameterSizeTypeData
 		{
-			String(UTF8("one")),
-			String(UTF8("light_count")),
-			String(UTF8("bone_count")),
-			String(UTF8("shadow_map_count")),
-			String(UTF8("layer_count")),
-			String(UTF8("clipmap_slices"))
+			private:
+				const String m_name;
+				const Uint16 m_max_size;
+
+			public:
+				inline ParameterSizeTypeData(
+					const String &name,
+					const Uint16 max_size): m_name(name),
+						m_max_size(max_size)
+				{
+				}
+
+				inline ~ParameterSizeTypeData() noexcept
+				{
+				}
+
+				inline const String &get_name() const noexcept
+				{
+					return m_name;
+				}
+
+				inline Uint16 get_max_size() const noexcept
+				{
+					return m_max_size;
+				}
+
 		};
 
-		const Uint32 parameter_size_names_count =
-			sizeof(parameter_size_names) / sizeof(String);
+		const ParameterSizeTypeData parameter_size_datas[] =
+		{
+			ParameterSizeTypeData(String(UTF8("one")), 1),
+			ParameterSizeTypeData(String(UTF8("light_count")), 8),
+			ParameterSizeTypeData(String(UTF8("bone_count")), 80),
+			ParameterSizeTypeData(String(UTF8("shadow_map_count")),
+				3),
+			ParameterSizeTypeData(String(UTF8("clipmap_slices")), 8)
+		};
+
+		const Uint32 parameter_size_datas_count =
+			sizeof(parameter_size_datas) /
+			sizeof(ParameterSizeTypeData);
 
 	}
 
 	const String &ParameterSizeUtil::get_str(
 		const ParameterSizeType parameter_size)
 	{
-		if (parameter_size_names_count <= parameter_size)
+		if (parameter_size_datas_count <= parameter_size)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					parameter_size_names_count - 1)
+					parameter_size_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					parameter_size))
 				<< boost::errinfo_type_info_name(UTF8(
 					"ParameterSizeType")));
 		}
 
-		return parameter_size_names[parameter_size];
+		return parameter_size_datas[parameter_size].get_name();
 	}
 
 	ParameterSizeType ParameterSizeUtil::get_parameter_size(
@@ -53,7 +84,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterSizeType parameter_size;
 
-		for (i = 0; i < parameter_size_names_count; ++i)
+		for (i = 0; i < parameter_size_datas_count; ++i)
 		{
 			parameter_size = static_cast<ParameterSizeType>(i);
 
@@ -75,7 +106,7 @@ namespace eternal_lands
 		Uint32 i;
 		ParameterSizeType tmp;
 
-		for (i = 0; i < parameter_size_names_count; ++i)
+		for (i = 0; i < parameter_size_datas_count; ++i)
 		{
 			tmp = static_cast<ParameterSizeType>(i);
 
@@ -90,9 +121,27 @@ namespace eternal_lands
 		return false;
 	}
 
+	Uint16 ParameterSizeUtil::get_max_size(
+		const ParameterSizeType parameter_size)
+	{
+		if (parameter_size_datas_count <= parameter_size)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_range_min(0)
+				<< errinfo_range_max(
+					parameter_size_datas_count - 1)
+				<< errinfo_range_index(static_cast<Uint32>(
+					parameter_size))
+				<< boost::errinfo_type_info_name(UTF8(
+					"ParameterSizeType")));
+		}
+
+		return parameter_size_datas[parameter_size].get_max_size();
+	}
+
 	Uint32 ParameterSizeUtil::get_parameter_size_count() noexcept
 	{
-		return parameter_size_names_count;
+		return parameter_size_datas_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const ParameterSizeType value)

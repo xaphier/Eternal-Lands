@@ -14,10 +14,8 @@
      <type>sampler2DArray</type>
     </parameter>
     <parameter>
-     <name>terrain_uvs</name>
-     <type>vec2</type>
+     <common_parameter>terrain_uvs</common_parameter>
      <qualifier>in</qualifier>
-     <size>4</size>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>
@@ -92,10 +90,8 @@ if (blend &gt; 0.0)
      <type>sampler3D</type>
     </parameter>
     <parameter>
-     <name>terrain_uvs</name>
-     <type>vec2</type>
+     <common_parameter>terrain_uvs</common_parameter>
      <qualifier>in</qualifier>
-     <size>6</size>
     </parameter>
     <parameter>
      <common_parameter>world_uv</common_parameter>

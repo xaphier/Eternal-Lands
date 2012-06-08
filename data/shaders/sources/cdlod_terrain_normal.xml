@@ -6,10 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>position</vertex_semantic>
     </parameter>
     <parameter>
      <auto_parameter>terrain_instances</auto_parameter>
@@ -21,7 +18,8 @@
      <name>terrain_texture_coordinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
-     <size>1</size>
+     <size>one</size>
+     <scale>1</scale>
     </parameter>
     <parameter>
      <sampler_parameter>vertex_normal_sampler</sampler_parameter>
@@ -70,22 +68,17 @@ terrain_texture_coordinate = vertex_position.xy;
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>normal</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>normal</vertex_semantic>
     </parameter>
     <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>position</vertex_semantic>
     </parameter>
     <parameter>
      <name>terrain_texture_coordinate</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
-     <size>1</size>
+     <size>one</size>
+     <scale>1</scale>
     </parameter>
     <parameter>
      <common_parameter>world_normal</common_parameter>

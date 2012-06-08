@@ -149,13 +149,15 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		qtreewidgetitem->setText(1, "type");
 		qtreewidgetitem->setText(2, "qualifier");
 		qtreewidgetitem->setText(3, "size");
+		qtreewidgetitem->setText(4, "scale");
 
 		parameters->setHeaderItem(qtreewidgetitem);
 		parameters->header()->setVisible(true);
-		parameters->setColumnWidth(0, 225);
-		parameters->setColumnWidth(1, 225);
-		parameters->setColumnWidth(2, 75);
-		parameters->setColumnWidth(3, 75);
+		parameters->setColumnWidth(0, 175);
+		parameters->setColumnWidth(1, 175);
+		parameters->setColumnWidth(2, 65);
+		parameters->setColumnWidth(3, 135);
+		parameters->setColumnWidth(4, 50);
 
 		parameters->sortItems(0, Qt::AscendingOrder);
 	}
@@ -349,7 +351,10 @@ void MainWindow::save(const QString &file_name)
 						el::String(item->text(2).
 							toUtf8())));
 			shader_source_parameters[j].set_size(
-				item->text(3).toInt());
+				el::ParameterSizeUtil::get_parameter_size(
+					el::String(item->text(3).toUtf8())));
+			shader_source_parameters[j].set_scale(
+				item->text(4).toInt());
 		}
 
 		shader_source_datas[i].set_parameters(shader_source_parameters);
@@ -470,7 +475,11 @@ void MainWindow::load(const QString &file_name)
 				el::ParameterQualifierUtil::get_str(
 					parameter.get_qualifier()).get(
 					).c_str()));
-			list.push_back(QString::number(parameter.get_size()));
+			list.push_back(QString::fromUtf8(
+				el::ParameterSizeUtil::get_str(
+					parameter.get_size()).get(
+						).c_str()));
+			list.push_back(QString::number(parameter.get_scale()));
 
 			item = new QTreeWidgetItem((QTreeWidgetItem*)0, list);
 

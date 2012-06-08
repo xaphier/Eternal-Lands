@@ -33,15 +33,7 @@ BOOST_AUTO_TEST_CASE(load)
 	{
 		str >> name;
 
-		try
-		{
-			shader_source.load_xml(name);
-		}
-		catch (const boost::exception &exception)
-		{
-			std::cout << boost::diagnostic_information(
-			exception) << std::endl;
-		}
+		BOOST_CHECK_NO_THROW(shader_source.load_xml(name));
 		BOOST_CHECK_NO_THROW(shader_source.save_xml(name));
 	}
 }

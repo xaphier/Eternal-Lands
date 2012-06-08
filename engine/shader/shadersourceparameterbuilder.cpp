@@ -18,10 +18,11 @@ namespace eternal_lands
 	ShaderSourceParameter ShaderSourceParameterBuilder::build(
 		const String &source, const String &name,
 		const ParameterType type,
-		const ParameterQualifierType qualifier, const Uint16 size)
+		const ParameterQualifierType qualifier,
+		const ParameterSizeType size, const Uint16 scale)
 	{
 		return ShaderSourceParameter(source, name, type, qualifier,
-			size);
+			size, scale);
 	}
 
 	ShaderSourceParameter ShaderSourceParameterBuilder::build(

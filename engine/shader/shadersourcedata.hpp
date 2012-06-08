@@ -35,6 +35,7 @@ namespace eternal_lands
 				const xmlNodePtr node);
 			void build_function_source(
 				const ShaderSourceParameterVector &locals,
+				const ParameterSizeTypeUint16Map &sizes,
 				const String &indent, const String &name,
 				OutStream &stream,
 				ShaderSourceParameterVector &globals,
@@ -62,6 +63,7 @@ namespace eternal_lands
 				const ShaderSourceParameterVector &parameters);
 			void build_function(
 				const ShaderSourceParameterVector &locals,
+				const ParameterSizeTypeUint16Map &sizes,
 				const String &indent, const String &name,
 				const String &parameter_prefix,
 				const String &use_indent, OutStream &stream,

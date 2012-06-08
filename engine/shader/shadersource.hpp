@@ -52,6 +52,7 @@ namespace eternal_lands
 				UniformBufferUsage &uniform_buffers) const;
 			void build_function(const ShaderVersionType &version,
 				const ShaderSourceParameterVector &locals,
+				const ParameterSizeTypeUint16Map &array_sizes,
 				const String &indent,
 				const String &parameter_prefix,
 				const String &use_indent, OutStream &stream,

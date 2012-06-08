@@ -49,9 +49,9 @@ namespace eternal_lands
 	{
 		str << indent << get_type() << UTF8(" ") << get_name();
 
-		if (get_auto_parameter_size() > 1)
+		if (get_auto_parameter_max_size() > 1)
 		{
-			str << UTF8("[") << get_auto_parameter_size();
+			str << UTF8("[") << get_auto_parameter_max_size();
 			str << UTF8("]");
 		}
 

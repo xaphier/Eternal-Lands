@@ -19,7 +19,8 @@
      <name>shadow_view_distance</name>
      <type>float</type>
      <qualifier>out</qualifier>
-     <size>1</size>
+     <size>one</size>
+     <scale>1</scale>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>

@@ -6,25 +6,16 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>bone_index</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>bone_index</vertex_semantic>
     </parameter>
     <parameter>
-     <name>bone_weight</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>bone_weight</vertex_semantic>
     </parameter>
     <parameter>
      <auto_parameter>bones</auto_parameter>
     </parameter>
     <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>position</vertex_semantic>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>
@@ -90,25 +81,16 @@ world_position += world_transformation[1].xyz;
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>bone_index</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>bone_index</vertex_semantic>
     </parameter>
     <parameter>
-     <name>bone_weight</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>bone_weight</vertex_semantic>
     </parameter>
     <parameter>
      <auto_parameter>bones</auto_parameter>
     </parameter>
     <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>position</vertex_semantic>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>

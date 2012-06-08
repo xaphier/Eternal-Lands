@@ -1,7 +1,7 @@
 /****************************************************************************
  *            shadersourceparameter.cpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -19,14 +19,16 @@ BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ShaderSourceParameter shader_source_parameter(
 		el::String(UTF8("346")), el::String(UTF8("3sfd23")),
-		el::pt_uvec3, el::pqt_inout, 14536u);
+		el::pt_uvec3, el::pqt_inout, el::pst_bone_count, 14536u);
 
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_source(), UTF8("346"));
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_name(), UTF8("3sfd23"));
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_type(), el::pt_uvec3);
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_qualifier(),
 		el::pqt_inout);
-	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(), 14536u);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
+		el::pst_bone_count);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 14536u);
 }
 
 BOOST_AUTO_TEST_CASE(source)
@@ -105,17 +107,38 @@ BOOST_AUTO_TEST_CASE(size)
 {
 	el::ShaderSourceParameter shader_source_parameter;
 
-	shader_source_parameter.set_size(345u);
-	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(), 345u);
+	shader_source_parameter.set_size(el::pst_one);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
+		el::pst_one);
 
-	shader_source_parameter.set_size(14536u);
-	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(), 14536u);
+	shader_source_parameter.set_size(el::pst_light_count);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
+		el::pst_light_count);
 
-	shader_source_parameter.set_size(1u);
-	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(), 1u);
+	shader_source_parameter.set_size(el::pst_bone_count);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
+		el::pst_bone_count);
 
-	shader_source_parameter.set_size(65u);
-	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(), 65u);
+	shader_source_parameter.set_size(el::pst_shadow_map_count);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
+		el::pst_shadow_map_count);
+}
+
+BOOST_AUTO_TEST_CASE(scale)
+{
+	el::ShaderSourceParameter shader_source_parameter;
+
+	shader_source_parameter.set_scale(345u);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 345u);
+
+	shader_source_parameter.set_scale(14536u);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 14536u);
+
+	shader_source_parameter.set_scale(1u);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 1u);
+
+	shader_source_parameter.set_scale(65u);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 65u);
 }
 
 BOOST_AUTO_TEST_CASE(save_xml)
@@ -124,7 +147,7 @@ BOOST_AUTO_TEST_CASE(save_xml)
 	el::XmlWriterSharedPtr writer;
 	el::ShaderSourceParameter shader_source_parameter(
 		el::String(UTF8("fasd")), el::String(UTF8("3sfd23")),
-		el::pt_uvec3, el::pqt_inout, 14536u);
+		el::pt_uvec3, el::pqt_inout, el::pst_bone_count, 14536u);
 
 	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
 
@@ -136,7 +159,8 @@ BOOST_AUTO_TEST_CASE(load_xml)
 {
 	el::XmlBuffer buffer(UTF8("<?xml version=\"1.0\" encoding=\"utf8\"?>"
 		"<parameter><name>3sfd23</name><type>uvec3</type>"
-		"<qualifier>inout</qualifier><size>14536</size></parameter>"));
+		"<qualifier>inout</qualifier><size>bone_count</size>"
+		"<scale>14536</scale></parameter>"));
 	el::XmlReaderSharedPtr xml_reader;
 	el::ShaderSourceParameter shader_source_parameter;
 
@@ -153,7 +177,9 @@ BOOST_AUTO_TEST_CASE(load_xml)
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_type(), el::pt_uvec3);
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_qualifier(),
 		el::pqt_inout);
-	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(), 14536u);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
+		el::pst_bone_count);
+	BOOST_CHECK_EQUAL(shader_source_parameter.get_scale(), 14536u);
 }
 
 BOOST_AUTO_TEST_CASE(save_load_xml)
@@ -164,7 +190,7 @@ BOOST_AUTO_TEST_CASE(save_load_xml)
 	el::ShaderSourceParameter shader_source_parameter_load;
 	el::ShaderSourceParameter shader_source_parameter_save(
 		el::String(UTF8("fasd")), el::String(UTF8("3sfd23")),
-		el::pt_uvec3, el::pqt_inout, 14536u);
+		el::pt_uvec3, el::pqt_inout, el::pst_bone_count, 14536u);
 
 	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
 
@@ -187,5 +213,7 @@ BOOST_AUTO_TEST_CASE(save_load_xml)
 		el::pt_uvec3);
 	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_qualifier(),
 		el::pqt_inout);
-	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_size(), 14536u);
+	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_size(),
+		el::pst_bone_count);
+	BOOST_CHECK_EQUAL(shader_source_parameter_load.get_scale(), 14536u);
 }

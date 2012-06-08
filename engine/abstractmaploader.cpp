@@ -561,7 +561,7 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read(const String &name)
+	void AbstractMapLoader::read(const String &name/*, const MapItemsTypeSet &*/)
 	{
 		glm::vec3 ambient;
 		Uint32 tile_map_offset;

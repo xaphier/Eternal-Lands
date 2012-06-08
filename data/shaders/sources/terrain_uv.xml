@@ -15,16 +15,15 @@
      <name>terrain_texture_coordinate</name>
      <type>vec2</type>
      <qualifier>in</qualifier>
-     <size>1</size>
+     <size>one</size>
+     <scale>1</scale>
     </parameter>
     <parameter>
      <auto_parameter>terrain_texture_size</auto_parameter>
     </parameter>
     <parameter>
-     <name>terrain_uvs</name>
-     <type>vec2</type>
+     <common_parameter>terrain_uvs</common_parameter>
      <qualifier>out</qualifier>
-     <size>4</size>
     </parameter>
     <parameter>
      <common_parameter>world_uv</common_parameter>

@@ -225,7 +225,8 @@ namespace eternal_lands
 		}
 
 		half_size = glm::dvec3(bounding_box.get_half_size());
-		half_size.z = std::max(half_size.z, scene_max_height * 0.5);
+		half_size.z = std::max(half_size.z * 2.0,
+			static_cast<double>(scene_max_height));
 		target = glm::dvec3(bounding_box.get_center());
 		len = glm::dot(glm::abs(dir), half_size);
 

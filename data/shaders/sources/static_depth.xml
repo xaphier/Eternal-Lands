@@ -6,34 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
-    </parameter>
-    <parameter>
-     <common_parameter>world_position</common_parameter>
-     <qualifier>out</qualifier>
-    </parameter>
-    <parameter>
-     <auto_parameter>world_transformation</auto_parameter>
-    </parameter>
-   </parameters>
-   <source>world_position = position.xyz;
-
-world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
-world_position *= world_transformation[1].w;
-world_position += world_transformation[1].xyz;
-</source>
-   <version>140</version>
-  </shader_source_data>
-  <shader_source_data>
-   <parameters>
-    <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>position</vertex_semantic>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>

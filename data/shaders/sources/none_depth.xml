@@ -6,10 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>position</vertex_semantic>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>

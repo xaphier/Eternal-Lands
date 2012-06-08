@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "parameterutil.hpp"
+#include "parametersizeutil.hpp"
 
 /**
  * @file
@@ -105,7 +106,11 @@ namespace eternal_lands
 				const AutoParameterType auto_parameter);
 			static ParameterType get_type(
 				const AutoParameterType auto_parameter);
-			static Uint16 get_size(
+			static ParameterSizeType get_size(
+				const AutoParameterType auto_parameter);
+			static Uint16 get_scale(
+				const AutoParameterType auto_parameter);
+			static Uint32 get_max_size(
 				const AutoParameterType auto_parameter);
 			static AutoParameterType get_auto_parameter(
 				const String &str);

@@ -446,7 +446,7 @@ namespace eternal_lands
 		instances->set_parameter(apt_terrain_lod_offset,
 			terrain_lod_offset, 0);
 
-		max_instance_count = AutoParameterUtil::get_size(
+		max_instance_count = AutoParameterUtil::get_max_size(
 			apt_terrain_instances);
 
 		for (y = 0; y < (get_grid_size().y - 1); y += step)
@@ -547,7 +547,7 @@ namespace eternal_lands
 
 		instance_count = 0;
 
-		max_instance_count = AutoParameterUtil::get_size(
+		max_instance_count = AutoParameterUtil::get_max_size(
 			apt_terrain_instances);
 
 		for (y = 0; y < (get_grid_size().y - 1); y += step)

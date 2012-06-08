@@ -6,10 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>texture_coordinate_0</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>texture_coordinate_0</vertex_semantic>
     </parameter>
     <parameter>
      <auto_parameter>texture_matrices</auto_parameter>

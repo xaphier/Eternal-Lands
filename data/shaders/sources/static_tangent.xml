@@ -6,22 +6,13 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <name>normal</name>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>normal</vertex_semantic>
     </parameter>
     <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>position</vertex_semantic>
     </parameter>
     <parameter>
-     <name>tangent</name>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
+     <vertex_semantic>tangent</vertex_semantic>
     </parameter>
     <parameter>
      <common_parameter>world_normal</common_parameter>
@@ -40,55 +31,8 @@
     </parameter>
    </parameters>
    <source>world_position = position.xyz;
-world_normal = normal;
-world_tangent = tangent;
-
-world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
-world_position *= world_transformation[1].w;
-world_position += world_transformation[1].xyz;
-world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
-world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + world_transformation[0].w * world_tangent);</source>
-   <version>140</version>
-  </shader_source_data>
-  <shader_source_data>
-   <parameters>
-    <parameter>
-     <name>normal</name>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
-    </parameter>
-    <parameter>
-     <name>position</name>
-     <type>vec4</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
-    </parameter>
-    <parameter>
-     <name>tangent</name>
-     <type>vec3</type>
-     <qualifier>in</qualifier>
-     <size>1</size>
-    </parameter>
-    <parameter>
-     <common_parameter>world_normal</common_parameter>
-     <qualifier>out</qualifier>
-    </parameter>
-    <parameter>
-     <common_parameter>world_position</common_parameter>
-     <qualifier>out</qualifier>
-    </parameter>
-    <parameter>
-     <common_parameter>world_tangent</common_parameter>
-     <qualifier>out</qualifier>
-    </parameter>
-    <parameter>
-     <auto_parameter>world_transformation</auto_parameter>
-    </parameter>
-   </parameters>
-   <source>world_position = position.xyz;
-world_normal = normal;
-world_tangent = tangent;
+world_normal = normal.xyz;
+world_tangent = tangent.xyz;
 
 world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
 world_position *= world_transformation[1].w;

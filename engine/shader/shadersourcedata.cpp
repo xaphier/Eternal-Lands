@@ -78,7 +78,8 @@ namespace eternal_lands
 
 	void ShaderSourceData::build_function_source(
 		const ShaderSourceParameterVector &locals,
-		const String &indent, const String &name, OutStream &stream,
+		const ParameterSizeTypeUint16Map &sizes, const String &indent,
+		const String &name, OutStream &stream,
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
@@ -92,7 +93,8 @@ namespace eternal_lands
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
 			get_parameters())
 		{
-			parameter.write_parameter(String(), stream, first);
+			parameter.write_parameter(String(), sizes, stream,
+				first);
 		}
 
 		stream << UTF8(")") << std::endl;
@@ -225,14 +227,15 @@ namespace eternal_lands
 
 	void ShaderSourceData::build_function(
 		const ShaderSourceParameterVector &locals,
+		const ParameterSizeTypeUint16Map &sizes,
 		const String &indent, const String &name,
 		const String &parameter_prefix, const String &use_indent,
 		OutStream &stream, OutStream &function,
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
-		build_function_source(locals, indent, name, function, globals,
-			uniform_buffers);
+		build_function_source(locals, sizes, indent, name, function,
+			globals, uniform_buffers);
 
 		build_function_use(use_indent, name, parameter_prefix,
 			stream);

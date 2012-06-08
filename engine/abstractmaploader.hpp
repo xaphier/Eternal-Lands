@@ -24,6 +24,22 @@
 namespace eternal_lands
 {
 
+	enum MapItemsType
+	{
+		mit_2d_objects = 0,
+		mit_3d_objects,
+		mit_lights,
+		mit_particles,
+		mit_materials,
+		mit_height_map,
+		mit_tile_map,
+		mit_walk_map,
+		mit_ambient,
+		mit_options
+	};
+
+	typedef std::set<MapItemsType> MapItemsTypeSet;
+
 	/**
 	 * @brief @c class for loading maps.
 	 *

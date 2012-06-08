@@ -12,7 +12,8 @@
      <name>uv</name>
      <type>vec2</type>
      <qualifier>out</qualifier>
-     <size>3</size>
+     <size>one</size>
+     <scale>3</scale>
     </parameter>
     <parameter>
      <common_parameter>world_position</common_parameter>

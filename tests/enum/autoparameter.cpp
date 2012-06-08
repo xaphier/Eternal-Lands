@@ -99,7 +99,7 @@ BOOST_AUTO_TEST_CASE(get_type)
 	}
 }
 
-BOOST_AUTO_TEST_CASE(get_size)
+BOOST_AUTO_TEST_CASE(get_scale)
 {
 	Uint32 i, count;
 
@@ -107,8 +107,25 @@ BOOST_AUTO_TEST_CASE(get_size)
 
 	for (i = 0; i < count; i++)
 	{
-		BOOST_CHECK_GT(el::AutoParameterUtil::get_size(
+		BOOST_CHECK_GT(el::AutoParameterUtil::get_scale(
 			static_cast<el::AutoParameterType>(i)), 0);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(get_max_size)
+{
+	Uint32 i, count;
+
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
+	{
+		BOOST_CHECK_GT(el::AutoParameterUtil::get_max_size(
+			static_cast<el::AutoParameterType>(i)), 0);
+		BOOST_CHECK_GE(el::AutoParameterUtil::get_max_size(
+			static_cast<el::AutoParameterType>(i)),
+			el::AutoParameterUtil::get_scale(
+				static_cast<el::AutoParameterType>(i)));
 	}
 }
 
