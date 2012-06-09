@@ -70,7 +70,6 @@ namespace
 	GlobalVarsSharedPtr global_vars;
 	FileSystemSharedPtr file_system;
 	boost::shared_ptr<ScriptEngine> script_engine;
-	Uint16 effect_debug = 0;
 
 	String get_string(const char* str,
 		const Uint32 len = std::numeric_limits<Uint32>::max())
@@ -1474,8 +1473,7 @@ extern "C" void engine_set_shadow_quality(const int value)
 					UTF8("default")));
 		}
 
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->rebuild_shadow_map();
 	}
 }
@@ -1486,8 +1484,7 @@ extern "C" void engine_set_fog(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 
@@ -1497,8 +1494,7 @@ extern "C" void engine_set_optmize_shader_source(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 
@@ -1545,8 +1541,7 @@ extern "C" void engine_set_use_block(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 
@@ -1556,8 +1551,7 @@ extern "C" void engine_set_use_in_out(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 
@@ -1567,8 +1561,7 @@ extern "C" void engine_set_use_functions(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 
@@ -1603,8 +1596,7 @@ extern "C" void engine_set_clipmap_slices(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->rebuild_terrain_map();
 	}
 }
@@ -1697,12 +1689,23 @@ extern "C" void engine_update_materials()
 
 extern "C" void engine_set_effect_debug(const int value)
 {
-	effect_debug = value;
+	ShaderBuildType shader_debug;
+
+	global_vars->set_effect_debug(value != 0);
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		shader_debug = sbt_default;
+
+		if (value > 0)
+		{
+			shader_debug = static_cast<ShaderBuildType>(
+				sbt_debug_uv + value - 1);
+		}
+
+		scene->get_scene_resources().get_effect_cache(
+			)->set_debug_shader(shader_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 	}
 }
 
@@ -1712,8 +1715,7 @@ extern "C" void engine_set_use_multisample_shadows(const int value)
 
 	if (scene.get() != 0)
 	{
-		scene->get_scene_resources().get_effect_cache()->reload(
-			effect_debug);
+		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->rebuild_shadow_map();
 	}
 }

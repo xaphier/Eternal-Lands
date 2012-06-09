@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "effectdescription.hpp"
 #include "effectprogramutil.hpp"
+#include "shader/shaderbuildutil.hpp"
 
 /**
  * @file
@@ -31,18 +32,16 @@ namespace eternal_lands
 			const ShaderSourceBuilderWeakPtr
 				m_shader_source_builder;
 			const EffectDescription m_description;
-			boost::array<GlslProgramSharedPtr, 3> m_programs;
-			Uint16 m_max_light_count;
+			boost::array<GlslProgramSharedPtr, 4> m_programs;
+			ShaderBuildType m_default_shader;
+			ShaderBuildType m_debug_shader;
 
 			void error_load();
-			void do_load(const Uint16 debug);
+			void do_load();
 			void build_default_shader(
 				const EffectDescription &description,
 				const Uint16 vertex_light_count,
-				const Uint16 fragment_light_count,
-				const Uint16 debug);
-			void build_light_index_shader(
-				const EffectDescription &description);
+				const Uint16 fragment_light_count);
 
 			inline GlslProgramCacheSharedPtr
 				get_glsl_program_cache() const noexcept
@@ -77,8 +76,32 @@ namespace eternal_lands
 					&shader_source_builder,
 				const EffectDescription &description);
 			~Effect() noexcept;
-			void load(const Uint16 debug);
+			void load();
 			bool get_simple_shadow() const;
+
+			inline void set_default_shader(
+				const ShaderBuildType default_shader) noexcept
+			{
+				m_default_shader = default_shader;
+			}
+
+			inline void set_debug_shader(
+				const ShaderBuildType debug_shader) noexcept
+			{
+				m_debug_shader = debug_shader;
+			}
+
+			inline ShaderBuildType get_default_shader() const
+				noexcept
+			{
+				return m_default_shader;
+			}
+
+			inline ShaderBuildType get_debug_shader() const
+				noexcept
+			{
+				return m_debug_shader;
+			}
 
 			inline const GlslProgramSharedPtr &get_program(
 				const EffectProgramType type) const
@@ -90,11 +113,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_description;
-			}
-
-			inline Uint16 get_max_light_count() const noexcept
-			{
-				return m_max_light_count;
 			}
 
 	};

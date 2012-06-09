@@ -111,11 +111,12 @@ namespace eternal_lands
 		const EffectDescription &description):
 		m_glsl_program_cache(glsl_program_cache),
 		m_shader_source_builder(shader_source_builder),
-		m_description(description)
+		m_description(description), m_default_shader(sbt_default),
+		m_debug_shader(sbt_debug_uv)
 	{
 		assert(!m_shader_source_builder.expired());
 
-		load(0);
+		load();
 	}
 
 	Effect::~Effect() noexcept
@@ -124,51 +125,34 @@ namespace eternal_lands
 
 	void Effect::build_default_shader(const EffectDescription &description,
 		const Uint16 vertex_light_count,
-		const Uint16 fragment_light_count, const Uint16 debug)
+		const Uint16 fragment_light_count)
 	{
 		GlslProgramDescription program_description;
 		Uint16 light_count;
-		ShaderBuildType shader_build;
 
-		light_count = vertex_light_count + fragment_light_count;
+		light_count = 0;
 
-		shader_build = sbt_default;
-
-		if (debug > 0)
+		if (get_default_shader() == sbt_default)
 		{
-			shader_build = static_cast<ShaderBuildType>(
-				sbt_debug_uv + debug - 1);
+			light_count = vertex_light_count + fragment_light_count;
 		}
 
 		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
-			shader_build % m_description.get_name());
+			get_default_shader() % m_description.get_name());
 
-		get_shader_source_builder()->build(description, shader_build,
-			light_count, program_description);
+		get_shader_source_builder()->build(description,
+			get_default_shader(), light_count,
+			program_description);
 
 		m_programs[ept_default] = get_glsl_program_cache()->get_program(
 			program_description);
 	}
 
-	void Effect::build_light_index_shader(
-		const EffectDescription &description)
-	{
-		GlslProgramDescription program_description;
-
-		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
-			sbt_light_index % m_description.get_name());
-
-		get_shader_source_builder()->build(description, sbt_light_index,
-			0, program_description);
-
-		m_programs[ept_default] = get_glsl_program_cache()->get_program(
-			program_description);
-	}
-
-	void Effect::do_load(const Uint16 debug)
+	void Effect::do_load()
 	{
 		GlslProgramDescription program_description;
 		Uint16 fragment_light_count, vertex_light_count;
+		Uint16 light_count;
 
 		m_programs[ept_default].reset();
 		m_programs[ept_shadow].reset();
@@ -181,7 +165,7 @@ namespace eternal_lands
 
 		/* Light shader */
 		build_default_shader(m_description, vertex_light_count,
-			fragment_light_count, debug);
+			fragment_light_count);
 
 		/* Depth shader */
 		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
@@ -201,6 +185,18 @@ namespace eternal_lands
 			program_description);
 
 		m_programs[ept_shadow] = get_glsl_program_cache()->get_program(
+			program_description);
+
+		/* debug shader */
+		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
+			get_debug_shader() % m_description.get_name());
+
+		light_count = vertex_light_count + fragment_light_count;
+
+		get_shader_source_builder()->build(m_description,
+			get_debug_shader(), light_count, program_description);
+
+		m_programs[ept_debug] = get_glsl_program_cache()->get_program(
 			program_description);
 	}
 
@@ -226,13 +222,13 @@ namespace eternal_lands
 		m_programs[ept_shadow] = m_programs[ept_depth];
 	}
 
-	void Effect::load(const Uint16 debug)
+	void Effect::load()
 	{
 		try
 		{
 			if (!m_shader_source_builder.expired())
 			{
-				do_load(debug);
+				do_load();
 
 				return;
 			}

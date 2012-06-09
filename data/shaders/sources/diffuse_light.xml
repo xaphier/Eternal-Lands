@@ -36,12 +36,7 @@ float dist, scale, nxdir;
 dir = light_position.xyz - world_position * light_color.a;
 dist = dot(dir, dir);
 dir *= inversesqrt(dist);
-/*
-nxdir = dot(fragment_normal, dir);
-nxdir = nxdir * 0.5 + 0.5;
-nxdir *= nxdir;
-*/
-nxdir = max(0.0, dot(fragment_normal, dir));
+nxdir = pow(dot(fragment_normal, dir) * 0.5 + 0.5, 2.0);
 scale = max(0.0, 1.0 - dist * light_position.w);
 diffuse_color = light_color.rgb * scale * nxdir;
 specular_color = vec3(0.0);

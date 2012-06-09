@@ -37,7 +37,8 @@ namespace eternal_lands
 		asIScriptContext* context)
 	{
 		glm::vec4 color;
-		glm::uvec3 position, sizes;
+		glm::vec3 position;
+		glm::uvec3 sizes;
 		Uint32 x, y, z;
 		int r;
 

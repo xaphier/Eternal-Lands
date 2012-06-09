@@ -36,6 +36,7 @@ namespace eternal_lands
 		m_use_functions = false;
 		m_low_quality_terrain = false;
 		m_use_multisample_shadows = true;
+		m_effect_debug = false;
 	}
 
 	GlobalVars::~GlobalVars() noexcept

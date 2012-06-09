@@ -11,6 +11,9 @@
 #include "materialdescription.hpp"
 #include "materialbuilder.hpp"
 
+#include "material.hpp"
+#include "effect.hpp"
+
 namespace eternal_lands
 {
 
@@ -124,11 +127,11 @@ namespace eternal_lands
 
 		offset = get_focus() - world_size * 0.5f;
 
-		offset -= dir[get_dir_index()] * world_size * 0.5f;
+		offset -= dir[get_dir_index()] * world_size * 0.495f;
 //		offset += dir[get_dir_index()] * get_world_size() * 0.5f;
 //		offset -= dir[get_dir_index()] *
 //			(get_world_size() * 0.5f - m_distance);
-		offset += dir[get_dir_index()] * m_distance;
+		offset += dir[get_dir_index()] * m_distance * 1.05f;
 
 		offset /= world_size;
 		scale = get_terrain_world_size() / world_size;
@@ -220,6 +223,9 @@ namespace eternal_lands
 
 		m_materials.push_back(get_material_builder()->get_material(
 			material));
+
+		m_materials[0]->get_effect()->set_default_shader(sbt_screen);
+		m_materials[0]->get_effect()->load();
 	}
 
 }

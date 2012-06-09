@@ -64,135 +64,146 @@ namespace eternal_lands
 			bool m_use_functions;
 			bool m_low_quality_terrain;
 			bool m_use_multisample_shadows;
+			bool m_effect_debug;
 
 		public:
 			GlobalVars();
 			~GlobalVars() noexcept;
 
-			inline void set_quality(const String quality)
+			inline void set_quality(const String quality) noexcept
 			{
 				m_quality = quality;
 			}
 
 			inline void set_shadow_distance(
-				const float shadow_distance)
+				const float shadow_distance) noexcept
 			{
 				m_shadow_distance = shadow_distance;
 			}
 
 			inline void set_view_distance(
-				const float view_distance)
+				const float view_distance) noexcept
 			{
 				m_view_distance = view_distance;
 			}
 
 			inline void set_shadow_quality(
-				const ShadowQualityType shadow_quality)
+				const ShadowQualityType shadow_quality) noexcept
 			{
 				m_shadow_quality = shadow_quality;
 			}
 
 			inline void set_shadow_map_size(
-				const Uint16 shadow_map_size)
+				const Uint16 shadow_map_size) noexcept
 			{
 				m_shadow_map_size = shadow_map_size;
 			}
 
 			inline void set_clipmap_size(const Uint16 clipmap_size)
+				noexcept
 			{
 				m_clipmap_size = clipmap_size;
 			}
 
 			inline void set_clipmap_world_size(
-				const Uint16 clipmap_world_size)
+				const Uint16 clipmap_world_size) noexcept
 			{
 				m_clipmap_world_size = clipmap_world_size;
 			}
 
 			inline void set_clipmap_slices(
-				const Uint16 clipmap_slices)
+				const Uint16 clipmap_slices) noexcept
 			{
 				m_clipmap_slices = clipmap_slices;
 			}
 
 			inline void set_opengl_version(
-				const OpenglVerionType opengl_version)
+				const OpenglVerionType opengl_version) noexcept
 			{
 				m_opengl_version = opengl_version;
 			}
 
-			inline void set_fog(const bool fog)
+			inline void set_fog(const bool fog) noexcept
 			{
 				m_fog = fog;
 			}
 
 			inline void set_optmize_shader_source(
-				const bool optmize_shader_source)
+				const bool optmize_shader_source) noexcept
 			{
 				m_optmize_shader_source =
 					optmize_shader_source;
 			}
 
-			inline void set_use_simd(const bool use_simd)
+			inline void set_use_simd(const bool use_simd) noexcept
 			{
 				m_use_simd = use_simd;
 			}
 
 			inline void set_use_s3tc_for_actors(
-				const bool use_s3tc_for_actors)
+				const bool use_s3tc_for_actors) noexcept
 			{
 				m_use_s3tc_for_actors = use_s3tc_for_actors;
 			}
 
-			inline void set_use_block(const bool use_block)
+			inline void set_use_block(const bool use_block) noexcept
 			{
 				m_use_block = use_block;
 			}
 
 			inline void set_use_in_out(const bool use_in_out)
+				noexcept
 			{
 				m_use_in_out = use_in_out;
 			}
 
 			inline void set_use_functions(const bool use_functions)
+				noexcept
 			{
 				m_use_functions = use_functions;
 			}
 
 			inline void set_low_quality_terrain(
-				const bool low_quality_terrain)
+				const bool low_quality_terrain) noexcept
 			{
 				m_low_quality_terrain = low_quality_terrain;
 			}
 
 			inline void set_use_multisample_shadows(
-				const bool use_multisample_shadows)
+				const bool use_multisample_shadows) noexcept
 			{
 				m_use_multisample_shadows =
 					use_multisample_shadows;
 			}
 
-			inline const String &get_quality() const
+			inline void set_effect_debug(const bool effect_debug)
+				noexcept
+			{
+				m_effect_debug = effect_debug;
+			}
+
+			inline const String &get_quality() const noexcept
 			{
 				return m_quality;
 			}
 
-			inline float get_shadow_distance() const
+			inline float get_shadow_distance() const noexcept
 			{
 				return m_shadow_distance;
 			}
 
-			inline float get_view_distance() const
+			inline float get_view_distance() const noexcept
 			{
 				return m_view_distance;
 			}
 
 			inline ShadowQualityType get_shadow_quality() const
+				noexcept
 			{
 				return m_shadow_quality;
 			}
 
-			inline Uint16 get_shadow_map_count() const
+			inline Uint16 get_shadow_map_count() const noexcept
 			{
 				switch (get_shadow_quality())
 				{
@@ -211,32 +222,33 @@ namespace eternal_lands
 				return 0;
 			}
 
-			inline Uint16 get_shadow_map_size() const
+			inline Uint16 get_shadow_map_size() const noexcept
 			{
 				return m_shadow_map_size;
 			}
 
-			inline Uint16 get_clipmap_size() const
+			inline Uint16 get_clipmap_size() const noexcept
 			{
 				return m_clipmap_size;
 			}
 
-			inline Uint16 get_clipmap_world_size() const
+			inline Uint16 get_clipmap_world_size() const noexcept
 			{
 				return m_clipmap_world_size;
 			}
 
-			inline Uint16 get_clipmap_slices() const
+			inline Uint16 get_clipmap_slices() const noexcept
 			{
 				return m_clipmap_slices;
 			}
 
 			inline OpenglVerionType get_opengl_version() const
+				noexcept
 			{
 				return m_opengl_version;
 			}
 
-			inline bool get_exponential_shadow_maps() const
+			inline bool get_exponential_shadow_maps() const noexcept
 			{
 				switch (get_shadow_quality())
 				{
@@ -252,84 +264,89 @@ namespace eternal_lands
 				return false;
 			}
 
-			inline bool get_fog() const
+			inline bool get_fog() const noexcept
 			{
 				return m_fog;
 			}
 
-			inline bool get_optmize_shader_source() const
+			inline bool get_optmize_shader_source() const noexcept
 			{
 				return m_optmize_shader_source;
 			}
 
-			inline bool get_opengl_3_0() const
+			inline bool get_opengl_3_0() const noexcept
 			{
 				return get_opengl_version() >= ovt_3_0;
 			}
 
-			inline bool get_opengl_3_1() const
+			inline bool get_opengl_3_1() const noexcept
 			{
 				return get_opengl_version() >= ovt_3_1;
 			}
 
-			inline bool get_opengl_3_2() const
+			inline bool get_opengl_3_2() const noexcept
 			{
 				return get_opengl_version() >= ovt_3_2;
 			}
 
-			inline bool get_opengl_3_3() const
+			inline bool get_opengl_3_3() const noexcept
 			{
 				return get_opengl_version() >= ovt_3_3;
 			}
 
-			inline bool get_opengl_4_0() const
+			inline bool get_opengl_4_0() const noexcept
 			{
 				return get_opengl_version() >= ovt_4_0;
 			}
 
-			inline bool get_opengl_4_1() const
+			inline bool get_opengl_4_1() const noexcept
 			{
 				return get_opengl_version() >= ovt_4_1;
 			}
 
-			inline bool get_opengl_4_2() const
+			inline bool get_opengl_4_2() const noexcept
 			{
 				return get_opengl_version() >= ovt_4_2;
 			}
 
-			inline bool get_use_simd() const
+			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;
 			}
 
-			inline bool get_use_s3tc_for_actors() const
+			inline bool get_use_s3tc_for_actors() const noexcept
 			{
 				return m_use_s3tc_for_actors;
 			}
 
-			inline bool get_use_block() const
+			inline bool get_use_block() const noexcept
 			{
 				return m_use_block;
 			}
 
-			inline bool get_use_in_out() const
+			inline bool get_use_in_out() const noexcept
 			{
 				return m_use_in_out;
 			}
 
-			inline bool get_use_functions() const
+			inline bool get_use_functions() const noexcept
 			{
 				return m_use_functions;
 			}
 
-			inline bool get_low_quality_terrain() const
+			inline bool get_low_quality_terrain() const noexcept
 			{
 				return m_low_quality_terrain;
 			}
 
-			inline bool get_use_multisample_shadows() const
+			inline bool get_use_multisample_shadows() const noexcept
 			{
 				return m_use_multisample_shadows;
+			}
+
+			inline bool get_effect_debug() const noexcept
+			{
+				return m_effect_debug;
 			}
 
 	};

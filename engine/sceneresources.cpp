@@ -25,6 +25,7 @@
 #include "script/materialscriptmanager.hpp"
 #include "script/scriptengine.hpp"
 #include "hardwarebuffer/hardwarebuffermapper.hpp"
+#include "colorcorrection.hpp"
 
 namespace eternal_lands
 {
@@ -75,6 +76,8 @@ namespace eternal_lands
 			file_system, global_vars);
 		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
 			global_vars);
+		m_color_correction = boost::make_shared<ColorCorrection>(
+			get_script_engine());
 	}
 
 	SceneResources::~SceneResources() throw()

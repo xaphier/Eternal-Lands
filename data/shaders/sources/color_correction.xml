@@ -14,7 +14,7 @@
      <qualifier>inout</qualifier>
     </parameter>
    </parameters>
-   <source>fragment_color = textureLod(color_correction_sampler, fragment_color, 0.0).rgb;</source>
+   <source>fragment_color = textureLod(color_correction_sampler, fragment_color * color_correction_scale_offset.x + color_correction_scale_offset.y, 0.0).rgb;</source>
    <version>130</version>
   </shader_source_data>
   <shader_source_data>
@@ -28,7 +28,7 @@
      <qualifier>inout</qualifier>
     </parameter>
    </parameters>
-   <source>fragment_color = texture3D(color_correction_sampler, fragment_color).rgb;</source>
+   <source>fragment_color = texture3D(color_correction_sampler, fragment_color * color_correction_scale_offset.x + color_correction_scale_offset.y).rgb;</source>
    <version>120</version>
   </shader_source_data>
  </shader_source_datas>

@@ -52,6 +52,8 @@ namespace eternal_lands
 			GlobalVarsSharedPtr m_global_vars;
 			FileSystemSharedPtr m_file_system;
 			SceneResources m_scene_resources;
+			TextureSharedPtr m_day_color_correction;
+			TextureSharedPtr m_night_color_correction;
 			Clipmap m_clipmap;
 			StateManager m_state_manager;
 			TerrainRenderingData m_visible_terrain;

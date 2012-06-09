@@ -818,7 +818,7 @@ void register_to_string_function(const ParameterType type,
 	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
-void register_function(const ParameterType result, const ParameterType param_0,
+void register_function_1(const ParameterType result, const ParameterType param_0,
 	const std::string &name, const std::string &as_name,
 	const int indent)
 {
@@ -835,7 +835,7 @@ void register_function(const ParameterType result, const ParameterType param_0,
 	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
-void register_function(const ParameterType result, const ParameterType param_0,
+void register_function_2(const ParameterType result, const ParameterType param_0,
 	const ParameterType param_1, const std::string &name,
 	const std::string &as_name, const int indent)
 {
@@ -853,7 +853,7 @@ void register_function(const ParameterType result, const ParameterType param_0,
 	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
-void register_function(const ParameterType result, const ParameterType param_0,
+void register_function_3(const ParameterType result, const ParameterType param_0,
 	const ParameterType param_1, const ParameterType param_2,
 	const std::string &name, const std::string &as_name,
 	const int indent)
@@ -875,24 +875,24 @@ void register_function(const ParameterType result, const ParameterType param_0,
 	std::cout << get_indent(indent) << "\tassert(r >= 0);" << std::endl;
 }
 
-void register_function(const ParameterType result, const ParameterType param_0,
+void register_function_1(const ParameterType result, const ParameterType param_0,
 	const std::string &name, const int indent)
 {
-	register_function(result, param_0, name, name, indent);
+	register_function_1(result, param_0, name, name, indent);
 }
 
-void register_function(const ParameterType result, const ParameterType param_0,
+void register_function_2(const ParameterType result, const ParameterType param_0,
 	const ParameterType param_1, const std::string &name,
 	const int indent)
 {
-	register_function(result, param_0, param_1, name, name, indent);
+	register_function_2(result, param_0, param_1, name, name, indent);
 }
 
-void register_function(const ParameterType result, const ParameterType param_0,
+void register_function_3(const ParameterType result, const ParameterType param_0,
 	const ParameterType param_1, const ParameterType param_2,
 	const std::string &name, const int indent)
 {
-	register_function(result, param_0, param_1, param_2, name, name, indent);
+	register_function_3(result, param_0, param_1, param_2, name, name, indent);
 }
 
 void register_type(const ParameterType type, const int indent)
@@ -918,65 +918,78 @@ void register_type(const ParameterType type, const int indent)
 void register_vector_float_functions(const ParameterType type,
 	const int indent)
 {
-	register_function(type, type, "glm::radians", indent);
-	register_function(type, type, "glm::degrees", indent);
-	register_function(type, type, "glm::sin", indent);
-	register_function(type, type, "glm::cos", indent);
-	register_function(type, type, "glm::tan", indent);
-	register_function(type, type, "glm::asin", indent);
-	register_function(type, type, "glm::acos", indent);
-	register_function(type, type, type, "glm::atan", indent);
-	register_function(type, type, "glm::atan", indent);
+	register_function_1(type, type, "glm::radians", "radians", indent);
+	register_function_1(type, type, "glm::degrees", "degrees", indent);
+	register_function_1(type, type, "glm::sin", "sin", indent);
+	register_function_1(type, type, "glm::cos", "cos", indent);
+	register_function_1(type, type, "glm::tan", "tan", indent);
+	register_function_1(type, type, "glm::asin", "asin", indent);
+	register_function_1(type, type, "glm::acos", "acos", indent);
+	register_function_2(type, type, type, "glm::atan", "atan", indent);
+	register_function_1(type, type, "glm::atan", "atan", indent);
 
-	register_function(type, type, "glm::sinh", indent);
-	register_function(type, type, "glm::cosh", indent);
-	register_function(type, type, "glm::tanh", indent);
-	register_function(type, type, "glm::asinh", indent);
-	register_function(type, type, "glm::acosh", indent);
-	register_function(type, type, "glm::atanh", indent);
+	register_function_1(type, type, "glm::sinh", "sinh", indent);
+	register_function_1(type, type, "glm::cosh", "cosh", indent);
+	register_function_1(type, type, "glm::tanh", "tanh", indent);
+	register_function_1(type, type, "glm::asinh", "asinh", indent);
+	register_function_1(type, type, "glm::acosh", "acosh", indent);
+	register_function_1(type, type, "glm::atanh", "atanh", indent);
 
-	register_function(type, type, type, "glm::pow", indent);
-	register_function(type, type, "glm::exp", indent);
-	register_function(type, type, "glm::log", indent);
-	register_function(type, type, "glm::exp2", indent);
-	register_function(type, type, "glm::log2", indent);
-	register_function(type, type, "glm::sqrt", indent);
-	register_function(type, type, "glm::inversesqrt", indent);
-	register_function(type, type, "glm::abs", indent);
-	register_function(type, type, "glm::sign", indent);
-	register_function(type, type, "glm::round", indent);
-	register_function(type, type, "glm::trunc", indent);
-	register_function(type, type, "glm::floor", indent);
+	register_function_2(type, type, type, "glm::pow", "pow", indent);
+	register_function_1(type, type, "glm::exp", "exp", indent);
+	register_function_1(type, type, "glm::log", "log", indent);
+	register_function_1(type, type, "glm::exp2", "exp2", indent);
+	register_function_1(type, type, "glm::log2", "log2", indent);
+	register_function_1(type, type, "glm::sqrt", "sqrt", indent);
+	register_function_1(type, type, "glm::inversesqrt", "inversesqrt",
+		indent);
+	register_function_1(type, type, "glm::abs", "abs", indent);
+	register_function_1(type, type, "glm::sign", "sign", indent);
+	register_function_1(type, type, "glm::round", "round", indent);
+	register_function_1(type, type, "glm::trunc", "trunc", indent);
+	register_function_1(type, type, "glm::floor", "floor", indent);
 
-	register_function(type, type, "glm::ceil", indent);
-	register_function(type, type, "glm::fract", indent);
-	register_function(type, type, type, "glm::mod", indent);
-	register_function(type, type, type, "glm::min", indent);
-	register_function(type, type, type, "glm::max", indent);
+	register_function_1(type, type, "glm::ceil", "ceil", indent);
+	register_function_1(type, type, "glm::fract", "fract", indent);
+	register_function_2(type, type, type, "glm::mod", "mod", indent);
+	register_function_2(type, type, type, "glm::min", "min", indent);
+	register_function_2(type, type, type, "glm::max", "max", indent);
 
-	register_function(type, type, type, type, "glm::clamp", indent);
-	register_function(type, type, type, type, "glm::mix", indent);
-	register_function(type, type, type, "glm::step", indent);
-	register_function(type, type, type, type, "glm::smoothstep", indent);
-	register_function(type, type, type, "glm::reflect", indent);
-	register_function(type, type, type, pt_float, "glm::refract", indent);
+	register_function_3(type, type, type, type, "glm::clamp", "clamp",
+		indent);
+	register_function_3(type, type, type, type, "glm::mix", "mix", indent);
+	register_function_2(type, type, type, "glm::step", "step", indent);
+	register_function_3(type, type, type, type, "glm::smoothstep",
+		"smoothstep", indent);
+	register_function_2(type, type, type, "glm::reflect", "reflect",
+		indent);
+	register_function_3(type, type, type, pt_float, "glm::refract",
+		"refract", indent);
 
 	if (type != pt_float)
 	{
-		register_function(type, type, pt_float, "glm::mod", indent);
-		register_function(type, type, pt_float, "glm::min", indent);
-		register_function(type, type, pt_float, "glm::max", indent);
-		register_function(type, type, pt_float, pt_float, "glm::clamp", indent);
-		register_function(type, type, type, pt_float, "glm::mix", indent);
-		register_function(type, pt_float, type, "glm::step", indent);
-		register_function(type, pt_float, pt_float, type, "glm::smoothstep", indent);
+		register_function_2(type, type, pt_float, "glm::mod", "mod",
+			indent);
+		register_function_2(type, type, pt_float, "glm::min", "min",
+			indent);
+		register_function_2(type, type, pt_float, "glm::max", "max",
+			indent);
+		register_function_3(type, type, pt_float, pt_float,
+			"glm::clamp", "clamp", indent);
+		register_function_3(type, type, type, pt_float, "glm::mix",
+			"mix", indent);
+		register_function_2(type, pt_float, type, "glm::step", "step",
+			indent);
+		register_function_3(type, pt_float, pt_float, type,
+			"glm::smoothstep", "smoothstep", indent);
 	}
 
-	register_function(pt_float, type, "glm::length", indent);
-	register_function(pt_float, type, type, "glm::distance", indent);
-	register_function(pt_float, type, type, "dot", indent);
+	register_function_1(pt_float, type, "glm::length", "length", indent);
+	register_function_2(pt_float, type, type, "glm::distance", "distance",
+		indent);
+	register_function_2(pt_float, type, type, "dot", indent);
 
-	register_function(type, type, "glm::normalize", indent);
+	register_function_1(type, type, "glm::normalize", "normalize", indent);
 }
 
 void register_vector_float_functions(const int indent)
@@ -985,7 +998,8 @@ void register_vector_float_functions(const int indent)
 	register_vector_float_functions(pt_vec2, indent);
 	register_vector_float_functions(pt_vec3, indent);
 	register_vector_float_functions(pt_vec4, indent);
-	register_function(pt_vec3, pt_vec3, pt_vec3, "glm::cross", indent);
+	register_function_2(pt_vec3, pt_vec3, pt_vec3, "glm::cross", "cross",
+		indent);
 }
 
 void register_vector_compare_functions(const int indent)
@@ -1000,33 +1014,50 @@ void register_vector_compare_functions(const int indent)
 		btype = get_parameter(vt_bool, i);
 		type = get_parameter(vt_float, i);
 
-		register_function(pt_bool, type, type, "glm::detail::operator==", "opEquals", indent);
+		register_function_2(pt_bool, type, type,
+			"glm::detail::operator==", "opEquals", indent);
 
-		register_function(btype, type, type, "glm::lessThan", indent);
-		register_function(btype, itype, itype, "glm::lessThan", indent);
-		register_function(btype, utype, utype, "glm::lessThan", indent);
+		register_function_2(btype, type, type, "glm::lessThan",
+			"lessThan", indent);
+		register_function_2(btype, itype, itype, "glm::lessThan",
+			"lessThan", indent);
+		register_function_2(btype, utype, utype, "glm::lessThan",
+			"lessThan", indent);
 
-		register_function(btype, type, type, "glm::lessThanEqual", indent);
-		register_function(btype, itype, itype, "glm::lessThanEqual", indent);
-		register_function(btype, utype, utype, "glm::lessThanEqual", indent);
+		register_function_2(btype, type, type, "glm::lessThanEqual",
+			"lessThanEqual", indent);
+		register_function_2(btype, itype, itype, "glm::lessThanEqual",
+			"lessThanEqual", indent);
+		register_function_2(btype, utype, utype, "glm::lessThanEqual",
+			"lessThanEqual", indent);
 
-		register_function(btype, type, type, "glm::greaterThan", indent);
-		register_function(btype, itype, itype, "glm::greaterThan", indent);
-		register_function(btype, utype, utype, "glm::greaterThan", indent);
+		register_function_2(btype, type, type, "glm::greaterThan",
+			"greaterThan", indent);
+		register_function_2(btype, itype, itype, "glm::greaterThan",
+			"greaterThan", indent);
+		register_function_2(btype, utype, utype, "glm::greaterThan",
+			"greaterThan", indent);
 
-		register_function(btype, type, type, "glm::greaterThanEqual", indent);
-		register_function(btype, itype, itype, "glm::greaterThanEqual", indent);
-		register_function(btype, utype, utype, "glm::greaterThanEqual", indent);
+		register_function_2(btype, type, type, "glm::greaterThanEqual",
+			"greaterThanEqual", indent);
+		register_function_2(btype, itype, itype,
+			"glm::greaterThanEqual", "greaterThanEqual", indent);
+		register_function_2(btype, utype, utype,
+			"glm::greaterThanEqual", "greaterThanEqual", indent);
 
-		register_function(btype, type, type, "glm::equal", indent);
-		register_function(btype, itype, itype, "glm::equal", indent);
-		register_function(btype, utype, utype, "glm::equal", indent);
-		register_function(btype, btype, btype, "glm::equal", indent);
+		register_function_2(btype, type, type, "glm::equal", indent);
+		register_function_2(btype, itype, itype, "glm::equal", indent);
+		register_function_2(btype, utype, utype, "glm::equal", indent);
+		register_function_2(btype, btype, btype, "glm::equal", indent);
 
-		register_function(btype, type, type, "glm::notEqual", indent);
-		register_function(btype, itype, itype, "glm::notEqual", indent);
-		register_function(btype, utype, utype, "glm::notEqual", indent);
-		register_function(btype, btype, btype, "glm::notEqual", indent);
+		register_function_2(btype, type, type, "glm::notEqual",
+			"notEqual", indent);
+		register_function_2(btype, itype, itype, "glm::notEqual",
+			"notEqual", indent);
+		register_function_2(btype, utype, utype, "glm::notEqual",
+			"notEqual", indent);
+		register_function_2(btype, btype, btype, "glm::notEqual",
+			"notEqual", indent);
 	}
 }
 
@@ -1042,15 +1073,19 @@ void register_vector_functions(const int indent)
 		btype = get_parameter(vt_bool, i);
 		type = get_parameter(vt_float, i);
 
-		register_function(pt_bool, btype, "glm::all", indent);
-		register_function(pt_bool, btype, "glm::any", indent);
-		register_function(btype, btype, "glm::not_", indent);
+		register_function_1(pt_bool, btype, "glm::all", "all", indent);
+		register_function_1(pt_bool, btype, "glm::any", "any", indent);
+		register_function_1(btype, btype, "glm::not_", "not_", indent);
 
-		register_function(type, type, "glm::detail::operator-", "opNeg", indent);
-		register_function(itype, itype, "glm::detail::operator-", "opNeg", indent);
+		register_function_1(type, type, "glm::detail::operator-",
+			"opNeg", indent);
+		register_function_1(itype, itype, "glm::detail::operator-",
+			"opNeg", indent);
 
-		register_function(utype, utype, "glm::detail::operator~", "opCom", indent);
-		register_function(btype, btype, "glm::detail::operator~", "opCom", indent);
+		register_function_1(utype, utype, "glm::detail::operator~",
+			"opCom", indent);
+		register_function_1(btype, btype, "glm::detail::operator~",
+			"opCom", indent);
 	}
 }
 
@@ -1385,15 +1420,20 @@ void register_mat(const ParameterType type, const int indent)
 	register_operator(type, value, bot_mul, false, "glm::detail", indent);
 	register_operator(type, value, bot_div, false, "glm::detail", indent);
 
-	register_function(type, type, type, "glm::matrixCompMult", "matrixCompMult", indent);
-	register_function(get_matrix(col, row), type, "transpose", "transpose", indent);
-	register_function(type, get_parameter(value_type, col),
-		get_parameter(value_type, row), "glm::outerProduct<float>", "outerProduct", indent);
+	register_function_2(type, type, type, "glm::matrixCompMult",
+		"matrixCompMult", indent);
+	register_function_1(get_matrix(col, row), type, "transpose",
+		"transpose", indent);
+	register_function_2(type, get_parameter(value_type, col),
+		get_parameter(value_type, row), "glm::outerProduct<float>",
+		"outerProduct", indent);
 
 	if (row == col)
 	{
-		register_function(type, type, "glm::inverse", "inverse", indent);
-		register_function(value, type, "glm::determinant", "determinant", indent);
+		register_function_1(type, type, "glm::inverse", "inverse",
+			indent);
+		register_function_1(value, type, "glm::determinant",
+			"determinant", indent);
 		register_operator(type, type, uot_mul_assign, indent);
  	}
 
@@ -1404,9 +1444,11 @@ void register_mat(const ParameterType type, const int indent)
 	}
 
 	register_operator(type, get_parameter(value_type, col),
-		get_parameter(value_type, row), bot_mul, false, "glm::detail", indent);
+		get_parameter(value_type, row), bot_mul, false, "glm::detail",
+		indent);
 	register_operator(type, get_parameter(value_type, row),
-		get_parameter(value_type, col), bot_mul, true, "glm::detail", indent);
+		get_parameter(value_type, col), bot_mul, true, "glm::detail",
+		indent);
 
 	register_to_string_function(type, indent);
 }
@@ -1448,23 +1490,33 @@ void register_quaternion(const int indent)
 	register_operator(type, type, bot_add, false, "glm::detail", indent);
 	register_operator(type, type, bot_mul, false, "glm::detail", indent);
 
-	register_function(type, type, "glm::detail::operator-", "opNeg", indent);
+	register_function_1(type, type, "glm::detail::operator-", "opNeg",
+		indent);
 
-	register_function(pt_vec3, type, pt_vec3, "glm::detail::operator*", "opMul", indent);
-	register_function(pt_vec3, pt_vec3, type, "glm::detail::operator*", "opMul", indent);
-	register_function(pt_vec4, type, pt_vec4, "glm::detail::operator*", "opMul", indent);
-	register_function(pt_vec4, pt_vec4, type, "glm::detail::operator*", "opMul", indent);
-	register_function(type, type, pt_float, "glm::detail::operator*", "opMul", indent);
-	register_function(type, pt_float, type, "glm::detail::operator*", "opMul", indent);
-	register_function(type, type, pt_float, "glm::detail::operator/", "opDiv", indent);
+	register_function_2(pt_vec3, type, pt_vec3, "glm::detail::operator*",
+		"opMul", indent);
+	register_function_2(pt_vec3, pt_vec3, type, "glm::detail::operator*",
+		"opMul", indent);
+	register_function_2(pt_vec4, type, pt_vec4, "glm::detail::operator*",
+		"opMul", indent);
+	register_function_2(pt_vec4, pt_vec4, type, "glm::detail::operator*",
+		"opMul", indent);
+	register_function_2(type, type, pt_float, "glm::detail::operator*",
+		"opMul", indent);
+	register_function_2(type, pt_float, type, "glm::detail::operator*",
+		"opMul", indent);
+	register_function_2(type, type, pt_float, "glm::detail::operator/",
+		"opDiv", indent);
 
-	register_function(pt_float, type, "length", "length", indent);
-	register_function(type, type, "glm::normalize", "normalize", indent);
-	register_function(pt_float, type, type, "dot", "dot", indent);
-	register_function(type, type, type, pt_float, "glm::mix", "mix", indent);
-	register_function(type, type, "glm::conjugate", "conjugate", indent);
-	register_function(type, type, "glm::inverse", "inverse", indent);
-	register_function(type, type, pt_float, pt_vec3, "glm::rotate", "rotate", indent);
+	register_function_1(pt_float, type, "length", "length", indent);
+	register_function_1(type, type, "glm::normalize", "normalize", indent);
+	register_function_2(pt_float, type, type, "dot", "dot", indent);
+	register_function_3(type, type, type, pt_float, "glm::mix", "mix",
+		indent);
+	register_function_1(type, type, "glm::conjugate", "conjugate", indent);
+	register_function_1(type, type, "glm::inverse", "inverse", indent);
+	register_function_3(type, type, pt_float, pt_vec3, "glm::rotate",
+		"rotate", indent);
 
 //	register_to_string_function(type);
 }

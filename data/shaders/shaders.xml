@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shaders>
-	<shadow_scale>0.8</shadow_scale>
+	<shadow_scale>0.7</shadow_scale>
 	<vertex_light_count>3</vertex_light_count>
 	<fragment_light_count>5</fragment_light_count>
 	<bone_count>80</bone_count>

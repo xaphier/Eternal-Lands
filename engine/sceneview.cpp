@@ -199,11 +199,9 @@ namespace eternal_lands
 		const SubFrustumsConvexBodys &convex_bodys,
 		const float scene_max_height)
 	{
-		BoundingBox bounding_box;
 		glm::dmat4x4 shadow_view_matrix, basic_projection_matrix;
 		glm::dmat4x4 basic_projection_view_matrix;
-		glm::dvec3 dir, up, left, target, pos, view_pos, half_size;
-		double len;
+		glm::dvec3 dir, up, left, target, pos;
 		Uint16 i;
 
 		dir = glm::normalize(glm::dvec3(light_direction));
@@ -219,18 +217,9 @@ namespace eternal_lands
 		left = glm::normalize(glm::cross(dir, up));
 		up = glm::normalize(glm::cross(dir, left));
 
-		for (i = 0; i < get_shadow_map_count(); ++i)
-		{
-			bounding_box.merge(convex_bodys[i].get_bounding_box());
-		}
+		target = glm::dvec3(m_focus);
 
-		half_size = glm::dvec3(bounding_box.get_half_size());
-		half_size.z = std::max(half_size.z * 2.0,
-			static_cast<double>(scene_max_height));
-		target = glm::dvec3(bounding_box.get_center());
-		len = glm::dot(glm::abs(dir), half_size);
-
-		pos = target + dir * len;
+		pos = target + dir * 60.0;
 
 		m_shadow_dir = dir;
 		m_shadow_up = up;
@@ -287,68 +276,9 @@ namespace eternal_lands
 		const SubFrustumsConvexBodys &convex_bodys,
 		const SubFrustumsMask &mask)
 	{
-		BoundingBox bounding_box;
-		glm::dmat4x4 shadow_view_matrix;
 		glm::dmat4x4 basic_projection_matrix;
 		glm::dmat4x4 basic_projection_view_matrix;
-		glm::dvec4 camera;
-		glm::dvec3 dir, up, left, target, pos, view_pos, half_size;
-		double len;
 		Uint16 i;
-
-		for (i = 0; i < get_shadow_map_count(); ++i)
-		{
-			if (mask[i])
-			{
-				bounding_box.merge(
-					convex_bodys[i].get_bounding_box());
-			}
-		}
-
-		dir = m_shadow_dir;
-		up = m_shadow_up;
-
-		left = glm::normalize(glm::cross(dir, up));
-		up = glm::normalize(glm::cross(dir, left));
-
-		half_size = glm::dvec3(bounding_box.get_half_size());
-		target = glm::dvec3(bounding_box.get_center());
-		len = glm::dot(glm::abs(dir), half_size);
-
-		pos = target + dir * len;
-
-		shadow_view_matrix = glm::dmat4x4(1);
-
-		shadow_view_matrix[0][0] = -left.x;
-		shadow_view_matrix[1][0] = -left.y;
-		shadow_view_matrix[2][0] = -left.z;
-		shadow_view_matrix[0][1] = -up.x;
-		shadow_view_matrix[1][1] = -up.y;
-		shadow_view_matrix[2][1] = -up.z;
-		shadow_view_matrix[0][2] = dir.x;
-		shadow_view_matrix[1][2] = dir.y;
-		shadow_view_matrix[2][2] = dir.z;
-
-		for (i = 0; i < 3; ++i)
-		{
-			m_shadow_view_rotation_matrix[i] =
-				glm::vec3(shadow_view_matrix[i]);
-		}
-
-		shadow_view_matrix = glm::translate(shadow_view_matrix,
-			-glm::dvec3(pos));
-
-		m_shadow_camera = glm::transpose(shadow_view_matrix) *
-			glm::dvec4(0.0, 0.0, 0.0, 1.0);
-
-		/**
-		 * 0.3 for a maximum shadow distance of 250 units, because
-		 * we use exp function for esm shadows.
-		 */
-		m_shadow_distance_transform =
-			-0.3 * glm::transpose(shadow_view_matrix)[2];
-
-		m_shadow_view_matrix = shadow_view_matrix;
 
 		basic_projection_matrix = glm::mat4x4(1.0f);
 		basic_projection_matrix[2][2] = -1.0f;

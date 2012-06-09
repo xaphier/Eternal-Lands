@@ -503,6 +503,7 @@ namespace eternal_lands
 		min = glm::min(min, max - 0.05f);
 
 		box.set_min_max(min, max);
+		box.scale(1.05f);
 
 		intersect = frustum.intersect(box, mask, out_mask);
 

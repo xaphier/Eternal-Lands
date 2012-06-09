@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "shader/shaderbuildutil.hpp"
 
 /**
  * @file
@@ -68,7 +69,8 @@ namespace eternal_lands
 			~EffectCache() noexcept;
 			const EffectSharedPtr &get_effect(const String &name);
 			const EffectSharedPtr &get_simple_effect();
-			void reload(const Uint16 debug);
+			void reload();
+			void set_debug_shader(const ShaderBuildType debug);
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			StringVector get_effect_names() const;

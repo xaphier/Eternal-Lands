@@ -38,13 +38,14 @@
 #include "freeidsmanager.hpp"
 #include "thread/materiallock.hpp"
 #include "logging.hpp"
+#include "terrainvisitor.hpp"
+#include "shader/uniformbuffer.hpp"
 
 #include "materialcache.hpp"
 
 #include "../client_serv.h"
 
-#include "terrainvisitor.hpp"
-#include "shader/uniformbuffer.hpp"
+#include "colorcorrection.hpp"
 
 namespace eternal_lands
 {
@@ -291,6 +292,24 @@ namespace eternal_lands
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_material_cache(),
 			String(UTF8("empty"))));
+
+		try
+		{
+			m_day_color_correction = get_scene_resources(
+				).get_color_correction()->get_color_correction(
+				String(UTF8("scripts/day.as")));
+			m_night_color_correction = get_scene_resources(
+				).get_color_correction()->get_color_correction(
+				String(UTF8("scripts/night.as")));
+		}
+		catch (const boost::exception &exception)
+		{
+			LOG_EXCEPTION(exception);
+		}
+		catch (const std::exception &exception)
+		{
+			LOG_EXCEPTION(exception);
+		}
 	}
 
 	Scene::~Scene() noexcept
@@ -607,7 +626,7 @@ namespace eternal_lands
 			m_light_position_array[0] =
 				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 			m_light_color_array[0] =
-				glm::vec4(glm::vec3(0.2f), 0.0f);
+				glm::vec4(glm::vec3(0.3f), 0.0f);
 		}
 		else
 		{
@@ -616,7 +635,7 @@ namespace eternal_lands
 			if (get_lights())
 			{
 				m_light_color_array[0] = m_main_light_color +
-					glm::vec4(glm::vec3(0.3f), 0.0f);
+					glm::vec4(glm::vec3(0.4f), 0.0f);
 			}
 			else
 			{
@@ -928,9 +947,6 @@ namespace eternal_lands
 					).get_transparent() &&
 				(type == ept_shadow));
 
-			light_count = std::min(light_count,
-				material->get_effect()->get_max_light_count());
-
 			m_state_manager.get_program()->set_parameter(
 				apt_dynamic_light_count, light_count);
 			m_state_manager.get_program()->set_parameter(
@@ -1003,9 +1019,6 @@ namespace eternal_lands
 
 			if (!object_data_set)
 			{
-				light_count = std::min(light_count,
-					material->get_effect(
-						)->get_max_light_count());
 				m_state_manager.get_program()->set_parameter(
 					apt_world_transformation,
 					object->get_world_transformation(
@@ -1246,6 +1259,7 @@ namespace eternal_lands
 	void Scene::draw_default()
 	{
 		Uint32 index, count;
+		EffectProgramType effect;
 		BlendType blend;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
@@ -1258,9 +1272,29 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
+		if (get_lights())
+		{
+			m_state_manager.switch_texture(spt_color_correction,
+				m_night_color_correction);
+		}
+		else
+		{
+			m_state_manager.switch_texture(spt_color_correction,
+				m_day_color_correction);
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		effect = ept_default;
+
+		if (get_global_vars()->get_effect_debug())
+		{
+			effect = ept_debug;
+		}
+
 		blend = bt_disabled;
 
-		draw_terrain(m_visible_terrain, ept_default, true);
+		draw_terrain(m_visible_terrain, effect, true);
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
@@ -1314,8 +1348,8 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			draw_object(object.get_object(), ept_default,
-				1, object.get_distance(), true);
+			draw_object(object.get_object(), effect, 1,
+				object.get_distance(), true);
 		}
 
 		DEBUG_CHECK_GL_ERROR();

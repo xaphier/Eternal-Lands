@@ -26,6 +26,7 @@
 #include "glmutil.hpp"
 #include "glslprogramdescription.hpp"
 #include "uniformbufferusage.hpp"
+#include "colorcorrection.hpp"
 
 namespace eternal_lands
 {
@@ -581,6 +582,9 @@ namespace eternal_lands
 			const ParameterSizeTypeUint16Map &array_sizes,
 			OutStream &str)
 		{
+			float scale, offset;
+			Uint16 lut_size;
+
 			BOOST_FOREACH(const ParameterSizeTypeUint16Pair
 				&parameter, array_sizes)
 			{
@@ -595,6 +599,14 @@ namespace eternal_lands
 			str << AbstractTerrainManager::get_vector_scale().y;
 			str << ", ";
 			str << AbstractTerrainManager::get_vector_scale().z;
+			str << UTF8(");\n");
+
+			lut_size = ColorCorrection::get_lut_size();
+			scale = (lut_size - 1.0) / lut_size;
+			offset = 1.0f / (2.0f * lut_size);
+
+			str << UTF8("const vec2 color_correction_scale_offset");
+			str << UTF8(" = vec2(") << scale << ", " << offset;
 			str << UTF8(");\n");
 		}
 
@@ -1878,6 +1890,14 @@ namespace eternal_lands
 				main << UTF8(" + ") << cpt_emission;
 				main << UTF8(");\n");
 			}
+		}
+
+		if ((data.get_shader_build_type() == sbt_default) ||
+			(data.get_shader_build_type() == sbt_light_index))
+		{
+			build_function(data, array_sizes, locals,
+				sst_color_correction, indent, main, functions,
+				globals, uniform_buffers);
 		}
 
 		switch (data.get_shader_build_type())

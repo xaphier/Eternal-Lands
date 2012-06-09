@@ -18,7 +18,8 @@ namespace eternal_lands
 		{
 			String(UTF8("default")),
 			String(UTF8("shadow")),
-			String(UTF8("depth"))
+			String(UTF8("depth")),
+			String(UTF8("debug"))
 		};
 
 		const Uint32 effect_program_names_count =

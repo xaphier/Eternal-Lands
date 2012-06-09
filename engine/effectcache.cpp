@@ -58,7 +58,7 @@ namespace eternal_lands
 		return m_simple_effect;
 	}
 
-	void EffectCache::reload(const Uint16 debug)
+	void EffectCache::reload()
 	{
 		EffectCacheMap::iterator it, end;
 
@@ -66,7 +66,19 @@ namespace eternal_lands
 
 		for (it = m_effect_cache.begin(); it != end; ++it)
 		{
-			it->second->load(debug);
+			it->second->load();
+		}
+	}
+
+	void EffectCache::set_debug_shader(const ShaderBuildType debug)
+	{
+		EffectCacheMap::iterator it, end;
+
+		end = m_effect_cache.end();
+
+		for (it = m_effect_cache.begin(); it != end; ++it)
+		{
+			it->second->set_debug_shader(debug);
 		}
 	}
 

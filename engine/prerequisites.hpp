@@ -223,6 +223,7 @@ namespace eternal_lands
 	class BoundingBox;
 	class CdLodQuadTree;
 	class CodecManager;
+	class ColorCorrection;
 	class ConvexBody;
 	class Decal;
 	class DecalDescription;
@@ -362,6 +363,7 @@ namespace eternal_lands
 	SHARED_PTR(Atlas);
 	SHARED_PTR(BoundedObject);
 	SHARED_PTR(CodecManager);
+	SHARED_PTR(ColorCorrection);
 	SHARED_PTR(Effect);
 	SHARED_PTR(EffectCache);
 	SHARED_PTR(FreeIds);

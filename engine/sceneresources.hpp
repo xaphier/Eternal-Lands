@@ -46,6 +46,7 @@ namespace eternal_lands
 			UniformBufferDescriptionCacheSharedPtr
 				m_uniform_buffer_description_cache;
 			HardwareBufferMapperSharedPtr m_hardware_buffer_mapper;
+			ColorCorrectionSharedPtr m_color_correction;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
@@ -161,6 +162,12 @@ namespace eternal_lands
 				&get_hardware_buffer_mapper() const noexcept
 			{
 				return m_hardware_buffer_mapper;
+			}
+
+			inline const ColorCorrectionSharedPtr
+				&get_color_correction() const noexcept
+			{
+				return m_color_correction;
 			}
 
 	};
