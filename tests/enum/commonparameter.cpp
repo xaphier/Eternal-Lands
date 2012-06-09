@@ -124,6 +124,12 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_str(
 		el::cpt_shadow_map_data).get(), "shadow_map_data");
 
+	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_str(
+		el::cpt_world_uv_ddx_ddy).get(), "world_uv_ddx_ddy");
+
+	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_str(
+		el::cpt_fragment_color).get(), "fragment_color");
+
 	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_type(
 		el::cpt_light_position), el::pt_vec4);
 
@@ -135,4 +141,10 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 
 	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_type(
 		el::cpt_shadow_map_data), el::pt_vec3);
+
+	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_type(
+		el::cpt_world_uv_ddx_ddy), el::pt_vec4);
+
+	BOOST_CHECK_EQUAL(el::CommonParameterUtil::get_type(
+		el::cpt_fragment_color), el::pt_vec3);
 }

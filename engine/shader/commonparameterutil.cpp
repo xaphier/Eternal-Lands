@@ -104,7 +104,20 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("world_extra_uv")),
 				pt_vec2),
 			CommonParameterTypeData(String(UTF8("terrain_uvs")),
-				pt_vec2, pst_clipmap_slices)
+				pt_vec2, pst_clipmap_slices),
+			CommonParameterTypeData(
+				String(UTF8("world_uv_ddx_ddy")), pt_vec4),
+			CommonParameterTypeData(
+				String(UTF8("world_extra_uv_ddx_ddy")),
+				pt_vec4),
+			CommonParameterTypeData(
+				String(UTF8("shadow_uv_ddx_ddy")), pt_vec4),
+			CommonParameterTypeData(
+				String(UTF8("terrain_uv_ddx_ddy")), pt_vec4),
+			CommonParameterTypeData(String(UTF8("vertex_color")),
+				pt_vec3),
+			CommonParameterTypeData(String(UTF8("fragment_color")),
+				pt_vec3)
 		};
 
 		const Uint32 common_parameter_datas_count =

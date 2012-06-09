@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>default</name>
+ <type>world_extra_uv_ddx_ddy</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>world_extra_uv</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_extra_uv_ddx_ddy</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+   </parameters>
+   <source>world_extra_uv_ddx_ddy.xy = dFdx(world_extra_uv);
+world_extra_uv_ddx_ddy.zw = dFdy(world_extra_uv);</source>
+   <version>120</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

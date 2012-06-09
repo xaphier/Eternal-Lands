@@ -14,6 +14,10 @@
      <type>sampler2DArray</type>
     </parameter>
     <parameter>
+     <common_parameter>shadow_uv_ddx_ddy</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
      <common_parameter>shadow_uvs</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
@@ -30,7 +34,6 @@
     </parameter>
    </parameters>
    <source>vec3 uv;
-vec2 lod_uv, ddx, ddy;
 float occluder, light_distance;
 int i;
 
@@ -39,18 +42,13 @@ const float over_darkening_factor = 2.5;
 
 shadow = 1.0;
 
-lod_uv = shadow_uvs[shadow_map_count - 1].xy / shadow_uvs[shadow_map_count - 1].w;
-
-ddx = dFdx(lod_uv);
-ddy = dFdy(lod_uv);
-
 for (i = 0; i &lt; shadow_map_count; ++i)
 {
 	uv = shadow_uvs[i].xyz / shadow_uvs[i].w;
 
 	if (all(lessThan(abs(uv - vec3(0.5)), vec3(0.4995))))
 	{
-		occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), ddx, ddy).r;
+		occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), shadow_uv_ddx_ddy.xy, shadow_uv_ddx_ddy.zw).r;
 
 		light_distance = shadow_view_distance + light_shadow_bias;
 

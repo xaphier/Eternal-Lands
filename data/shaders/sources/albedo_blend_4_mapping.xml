@@ -34,17 +34,25 @@
      <qualifier>in</qualifier>
     </parameter>
     <parameter>
+     <common_parameter>world_extra_uv_ddx_ddy</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
      <common_parameter>world_uv</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv_ddx_ddy</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
    <source>vec4 blend;
 vec2 ddx, ddy;
 
-blend = texture(blend_sampler, world_uv);
+blend = textureGrad(blend_sampler, world_uv, world_uv_ddx_ddy.xy, world_uv_ddx_ddy.zw);
 
-ddx = dFdx(world_extra_uv);
-ddy = dFdy(world_extra_uv);
+ddx = world_extra_uv_ddx_ddy.xy;
+ddy = world_extra_uv_ddx_ddy.zw;
 
 if (all(lessThanEqual(blend, vec4(0.0))))
 {

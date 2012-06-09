@@ -14,6 +14,10 @@
      <type>sampler2DArray</type>
     </parameter>
     <parameter>
+     <common_parameter>terrain_uv_ddx_ddy</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
      <common_parameter>terrain_uvs</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
@@ -22,7 +26,7 @@
      <qualifier>in</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>world_uv</common_parameter>
+     <common_parameter>world_uv_ddx_ddy</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
@@ -33,8 +37,8 @@ float det, squared_length_major, length_major;
 float ratio_of_anisotropy, length_minor;
 int i, index;
 
-ddx = dFdx(world_uv);
-ddy = dFdy(world_uv);
+ddx = world_uv_ddx_ddy.xy;
+ddy = world_uv_ddx_ddy.zw;
 
 squared_length_major = max(dot(ddx, ddx), dot(ddy, ddy));
 det = abs(ddx.x * ddy.y - ddx.y * ddy.x);
@@ -43,8 +47,8 @@ ratio_of_anisotropy = squared_length_major / det;
 length_minor = max((ratio_of_anisotropy &gt; 16.0) ? length_major / ratio_of_anisotropy : det / length_major, 1.0);
 lod = log2(length_minor);
 
-ddx = dFdx(terrain_uvs[0]);
-ddy = dFdy(terrain_uvs[0]);
+ddx = terrain_uv_ddx_ddy.xy;
+ddy = terrain_uv_ddx_ddy.zw;
 
 index = clipmap_slices - 1;
 
@@ -67,15 +71,10 @@ ddx /= exp2(index);
 ddy /= exp2(index);
 
 albedo = textureGrad(albedo_sampler_0, vec3(terrain_uvs[index], index), ddx, ddy);
-
-if (blend &gt; 0.0)
-{
-	ddx *= 0.5;
-	ddy *= 0.5;
-
-	tmp = textureGrad(albedo_sampler_0, vec3(terrain_uvs[index + 1], index + 1), ddx, ddy);
-	albedo = mix(albedo, tmp, blend);
-}
+ddx *= 0.5;
+ddy *= 0.5;
+tmp = textureGrad(albedo_sampler_0, vec3(terrain_uvs[index + 1], index + 1), ddx, ddy);
+albedo = mix(albedo, tmp, blend);
 </source>
    <version>130</version>
   </shader_source_data>
@@ -116,9 +115,7 @@ for (i = 0; i &lt; (clipmap_slices - 1); ++i)
 
 	if (all(lessThan(abs(uv - vec2(0.5)), vec2(0.4995))))
 	{
-		index = i;
-
-		break;
+		index = min(i, index);
 	}
 }
 
@@ -127,12 +124,8 @@ index = int(lod);
 blend = fract(lod);
 
 albedo = texture3D(albedo_sampler_0, vec3(terrain_uvs[index], (index + 0.5) / clipmap_slices));
-
-if (blend &gt; 0.0)
-{
-	tmp = texture3D(albedo_sampler_0, vec3(terrain_uvs[index + 1], (index + 1.5) / clipmap_slices));
-	albedo = mix(albedo, tmp, blend);
-}
+tmp = texture3D(albedo_sampler_0, vec3(terrain_uvs[index + 1], (index + 1.5) / clipmap_slices));
+albedo = mix(albedo, tmp, blend);
 </source>
    <version>120</version>
   </shader_source_data>

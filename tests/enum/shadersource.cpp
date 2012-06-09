@@ -54,4 +54,6 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 		el::sst_emission_mapping).get(), "emission_mapping");
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
 		el::sst_shadow_map).get(), "shadow_map");
+	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
+		el::sst_shadow_uv_ddx_ddy).get(), "shadow_uv_ddx_ddy");
 }

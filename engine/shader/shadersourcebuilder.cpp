@@ -37,13 +37,8 @@ namespace eternal_lands
 		{
 			sslt_diffuse_colors_sum,
 			sslt_specular_colors_sum,
-			sslt_vertex_color,
-			sslt_fragment_color,
 			sslt_shadow_values,
-			sslt_layer_index,
-			sslt_layer,
-			sslt_i,
-			sslt_position
+			sslt_i
 		};
 
 		class ShaderSourceLocalTypeData
@@ -83,19 +78,9 @@ namespace eternal_lands
 				String(UTF8("diffuse_colors_sum")), pt_vec3),
 			ShaderSourceLocalTypeData(
 				String(UTF8("specular_colors_sum")), pt_vec3),
-			ShaderSourceLocalTypeData(String(UTF8("vertex_color")),
-				pt_vec3),
-			ShaderSourceLocalTypeData(String(UTF8(
-				"fragment_color")), pt_vec3),
 			ShaderSourceLocalTypeData(String(UTF8("shadow_values")),
 				pt_vec3),
-			ShaderSourceLocalTypeData(String(UTF8("layer_index")),
-				pt_int),
-			ShaderSourceLocalTypeData(String(UTF8("layer_data")),
-				pt_int),
-			ShaderSourceLocalTypeData(String(UTF8("i")), pt_int),
-			ShaderSourceLocalTypeData(String(UTF8("position")),
-				pt_vec3)
+			ShaderSourceLocalTypeData(String(UTF8("i")), pt_int)
 		};
 
 		const Uint32 shader_source_local_datas_count =
@@ -776,7 +761,11 @@ namespace eternal_lands
 		ssbot_fog,
 		ssbot_alpha_test,
 		ssbot_use_functions,
-		ssbot_lighting
+		ssbot_lighting,
+		ssbot_world_uv_ddx_ddy,
+		ssbot_world_extra_uv_ddx_ddy,
+		ssbot_shadow_uv_ddx_ddy,
+		ssbot_terrain_uv_ddx_ddy
 	};
 
 	class ShaderSourceBuilder::ShaderSourceBuildData
@@ -1198,7 +1187,7 @@ namespace eternal_lands
 	{
 		ShaderSourceParameterVector function_locals;
 		ShaderSourceParameterVector function_parameters;
-		ShaderSourceLocalType output_color;
+		CommonParameterType output_color;
 		ShaderSourceType light;
 		StringStream stream;
 		String local_indent, local_loop_indent;
@@ -1212,7 +1201,7 @@ namespace eternal_lands
 
 		if (vertex)
 		{
-			output_color = sslt_vertex_color;
+			output_color = cpt_vertex_color;
 			light_offset = get_fragment_light_count();
 			light_count = data.get_light_count();
 			dynamic_light_count = true;
@@ -1220,7 +1209,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			output_color = sslt_fragment_color;
+			output_color = cpt_fragment_color;
 			light_offset = 0;
 			light_count = data.get_fragment_light_count();
 			dynamic_light_count =
@@ -1266,10 +1255,10 @@ namespace eternal_lands
 		else
 		{
 			add_parameter(String(UTF8("lighting")),
-				sslt_vertex_color, pqt_in, function_locals,
+				cpt_vertex_color, pqt_in, function_locals,
 				function_parameters, uniform_buffers);
 
-			stream << sslt_vertex_color << UTF8(";\n");
+			stream << cpt_vertex_color << UTF8(";\n");
 		}
 
 		if (!vertex)
@@ -1702,6 +1691,34 @@ namespace eternal_lands
 
 		shadows = false;
 
+		if (data.get_option(ssbot_world_uv_ddx_ddy))
+		{
+			build_function(data, array_sizes, locals,
+				sst_world_uv_ddx_ddy, indent, main, functions,
+				globals, uniform_buffers);
+		}
+
+		if (data.get_option(ssbot_world_extra_uv_ddx_ddy))
+		{
+			build_function(data, array_sizes, locals,
+				sst_world_extra_uv_ddx_ddy, indent, main,
+				functions, globals, uniform_buffers);
+		}
+
+		if (data.get_option(ssbot_shadow_uv_ddx_ddy))
+		{
+			build_function(data, array_sizes, locals,
+				sst_shadow_uv_ddx_ddy, indent, main, functions,
+				globals, uniform_buffers);
+		}
+
+		if (data.get_option(ssbot_terrain_uv_ddx_ddy))
+		{
+			build_function(data, array_sizes, locals,
+				sst_terrain_uv_ddx_ddy, indent, main, functions,
+				globals, uniform_buffers);
+		}
+
 		if (data.get_option(ssbot_view_direction))
 		{
 			build_function(data, array_sizes, locals,
@@ -1826,13 +1843,13 @@ namespace eternal_lands
 			else
 			{
 				add_parameter(String(UTF8("fragment")),
-					sslt_fragment_color, pqt_out, locals,
+					cpt_fragment_color, pqt_out, locals,
 					globals, uniform_buffers);
 				add_parameter(String(UTF8("fragment")),
 					cpt_albedo, pqt_in, locals, globals,
 					uniform_buffers);
 
-				main << indent << sslt_fragment_color;
+				main << indent << cpt_fragment_color;
 				main << UTF8(" = ") << cpt_albedo;
 				main << UTF8(".rgb * (");
 
@@ -1840,10 +1857,10 @@ namespace eternal_lands
 					data.get_option(ssbot_lighting))
 				{
 					add_parameter(String(UTF8("fragment")),
-						sslt_vertex_color, pqt_in,
+						cpt_vertex_color, pqt_in,
 						locals, globals,
 						uniform_buffers);
-					main << sslt_vertex_color;
+					main << cpt_vertex_color;
 				}
 				else
 				{
@@ -1868,7 +1885,7 @@ namespace eternal_lands
 			case sbt_default:
 			case sbt_light_index:
 				add_parameter(String(UTF8("fragment")),
-					sslt_fragment_color, pqt_in, locals,
+					cpt_fragment_color, pqt_in, locals,
 					globals, uniform_buffers);
 
 				main << indent << output << UTF8(".rgb = ");
@@ -1884,13 +1901,13 @@ namespace eternal_lands
 
 					main << UTF8("mix(") << apt_fog_data;
 					main << UTF8(".rgb, ");
-					main << sslt_fragment_color;
+					main << cpt_fragment_color;
 					main << UTF8(", ");
 					main << cpt_fog << UTF8(")");
 				}
 				else
 				{
-					main << sslt_fragment_color;
+					main << cpt_fragment_color;
 				}
 
 				main << UTF8(";\n");
@@ -2135,10 +2152,33 @@ namespace eternal_lands
 		}
 
 		if ((data.get_shader_build_type() == sbt_debug_uv) &&
-			((common_parameter == cpt_world_uv) ||
-				(common_parameter == cpt_world_extra_uv)))
+			(common_parameter == cpt_world_uv))
 		{
 			result = true;
+		}
+
+		if (data.get_option(ssbot_world_uv_ddx_ddy))
+		{
+			result |= check_function(data, name,
+				sst_world_uv_ddx_ddy);
+		}
+
+		if (data.get_option(ssbot_world_extra_uv_ddx_ddy))
+		{
+			result |= check_function(data, name,
+				sst_world_extra_uv_ddx_ddy);
+		}
+
+		if (data.get_option(ssbot_shadow_uv_ddx_ddy))
+		{
+			result |= check_function(data, name,
+				sst_shadow_uv_ddx_ddy);
+		}
+
+		if (data.get_option(ssbot_terrain_uv_ddx_ddy))
+		{
+			result |= check_function(data, name,
+				sst_terrain_uv_ddx_ddy);
 		}
 
 		if (data.get_option(ssbot_view_direction))
@@ -2414,6 +2454,14 @@ namespace eternal_lands
 			description.get_transparent());
 		data.set_option(ssbot_view_direction, get_source_parameter(data,
 			cpt_world_view_direction));
+		data.set_option(ssbot_world_uv_ddx_ddy,
+			get_source_parameter(data, cpt_world_uv_ddx_ddy));
+		data.set_option(ssbot_world_extra_uv_ddx_ddy,
+			get_source_parameter(data, cpt_world_extra_uv_ddx_ddy));
+		data.set_option(ssbot_shadow_uv_ddx_ddy,
+			get_source_parameter(data, cpt_shadow_uv_ddx_ddy));
+		data.set_option(ssbot_terrain_uv_ddx_ddy,
+			get_source_parameter(data, cpt_terrain_uv_ddx_ddy));
 		data.set_option(ssbot_fragment_uv, get_source_parameter(data,
 			cpt_fragment_uv));
 		data.set_option(ssbot_world_uv, get_source_parameter(data,

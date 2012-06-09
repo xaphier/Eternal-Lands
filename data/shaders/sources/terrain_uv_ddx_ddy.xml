@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>default</name>
+ <type>terrain_uv_ddx_ddy</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>terrain_uv_ddx_ddy</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>terrain_uvs</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>terrain_uv_ddx_ddy.xy = dFdx(terrain_uvs[0]);
+terrain_uv_ddx_ddy.zw = dFdy(terrain_uvs[0]);</source>
+   <version>120</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

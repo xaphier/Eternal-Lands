@@ -18,11 +18,11 @@
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>shadow = textureProj(shadow_sampler, shadow_uvs[0]);
-shadow += textureProjOffset(shadow_sampler, shadow_uvs[0], ivec2(-1, -1));
-shadow += textureProjOffset(shadow_sampler, shadow_uvs[0], ivec2(-1,  1));
-shadow += textureProjOffset(shadow_sampler, shadow_uvs[0], ivec2( 1, -1));
-shadow += textureProjOffset(shadow_sampler, shadow_uvs[0], ivec2( 1,  1));
+   <source>shadow = textureProjLod(shadow_sampler, shadow_uvs[0], 0.0);
+shadow += textureProjLodOffset(shadow_sampler, shadow_uvs[0], 0.0, ivec2(-1, -1));
+shadow += textureProjLodOffset(shadow_sampler, shadow_uvs[0], 0.0, ivec2(-1,  1));
+shadow += textureProjLodOffset(shadow_sampler, shadow_uvs[0], 0.0, ivec2( 1, -1));
+shadow += textureProjLodOffset(shadow_sampler, shadow_uvs[0], 0.0, ivec2( 1,  1));
 shadow *= 0.2;
 
 shadow += dot(vec2(1.0), step(vec2(0.5), abs(shadow_uvs[0].xy - 0.5)));

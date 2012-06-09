@@ -51,7 +51,13 @@ namespace eternal_lands
 		cpt_tbn_matrix,
 		cpt_emission,
 		cpt_world_extra_uv,
-		cpt_terrain_uvs
+		cpt_terrain_uvs,
+		cpt_world_uv_ddx_ddy,
+		cpt_world_extra_uv_ddx_ddy,
+		cpt_shadow_uv_ddx_ddy,
+		cpt_terrain_uv_ddx_ddy,
+		cpt_vertex_color,
+		cpt_fragment_color
 	};
 	/**
 	 * @}

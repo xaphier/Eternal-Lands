@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>default</name>
+ <type>shadow_uv_ddx_ddy</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>shadow_uv_ddx_ddy</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>shadow_uvs</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>vec2 shadow_uv;
+
+shadow_uv = shadow_uvs[0].xy / shadow_uvs[0].w;
+
+shadow_uv_ddx_ddy.xy = dFdx(shadow_uv);
+shadow_uv_ddx_ddy.zw = dFdy(shadow_uv);</source>
+   <version>120</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

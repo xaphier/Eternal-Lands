@@ -36,7 +36,11 @@ namespace eternal_lands
 			String(UTF8("emission_mapping")),
 			String(UTF8("shadow_map")),
 			String(UTF8("tbn_matrix")),
-			String(UTF8("color_correction"))
+			String(UTF8("color_correction")),
+			String(UTF8("world_uv_ddx_ddy")),
+			String(UTF8("world_extra_uv_ddx_ddy")),
+			String(UTF8("shadow_uv_ddx_ddy")),
+			String(UTF8("terrain_uv_ddx_ddy"))
 		};
 
 		const Uint32 shader_source_names_count =
