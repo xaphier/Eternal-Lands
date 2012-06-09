@@ -10,6 +10,7 @@
 #include "shader/commonparameterutil.hpp"
 #include "shader/samplerparameterutil.hpp"
 #include "shader/parameterqualifierutil.hpp"
+#include "shader/parametersizeutil.hpp"
 #include "shader/parameterutil.hpp"
 #include "vertexelement.hpp"
 #include <QSortFilterProxyModel>
@@ -98,6 +99,22 @@ ParameterDialog::ParameterDialog(QWidget* parent): QDialog(parent)
 		qualifier_value->addItem(str, i);
 	}
 
+	count = el::ParameterSizeUtil::get_parameter_size_count();
+
+	for (i = 0; i < count; ++i)
+	{
+		str = QString::fromUtf8(el::ParameterSizeUtil::get_str(
+			static_cast<el::ParameterSizeType>(i)).get().c_str());
+
+		size_value->addItem(str, i);
+	}
+
+	proxy = new QSortFilterProxyModel(size_value);
+	proxy->setSourceModel(size_value->model());
+	size_value->model()->setParent(proxy);
+	size_value->setModel(proxy);
+	size_value->model()->sort(0);
+
 	set_types(sampler_name->isChecked());
 
 	QObject::connect(custom_name_value, SIGNAL(textChanged(const QString &)),
@@ -174,7 +191,8 @@ void ParameterDialog::set_sampler_name()
 	set_types(true);
 
 	qualifier_value->setCurrentIndex(qualifier_value->findData(el::pqt_in));
-	size_value->setValue(1);
+	size_value->setCurrentIndex(size_value->findData(el::pst_one));
+	scale_value->setValue(1);
 
 	sampler_name_value->setFocus(Qt::OtherFocusReason);
 }
@@ -203,7 +221,8 @@ void ParameterDialog::set_attribute_name()
 
 	type_value->setCurrentIndex(type_value->findData(el::pt_vec4));
 	qualifier_value->setCurrentIndex(qualifier_value->findData(el::pqt_in));
-	size_value->setValue(1);
+	size_value->setCurrentIndex(size_value->findData(el::pst_one));
+	scale_value->setValue(1);
 
 	attribute_name_value->setFocus(Qt::OtherFocusReason);
 }
@@ -233,8 +252,10 @@ void ParameterDialog::set_auto_name_value(const QString &name)
 
 	type_value->setCurrentIndex(type_value->findData(
 		el::AutoParameterUtil::get_type(auto_parameter)));
+	size_value->setCurrentIndex(size_value->findData(
+		el::AutoParameterUtil::get_size(auto_parameter)));
 	qualifier_value->setCurrentIndex(qualifier_value->findData(el::pqt_in));
-	size_value->setValue(el::AutoParameterUtil::get_size(auto_parameter));
+	scale_value->setValue(el::AutoParameterUtil::get_scale(auto_parameter));
 }
 
 void ParameterDialog::set_common_name_value(const QString &name)
@@ -246,7 +267,9 @@ void ParameterDialog::set_common_name_value(const QString &name)
 
 	type_value->setCurrentIndex(type_value->findData(
 		el::CommonParameterUtil::get_type(common_parameter)));
-	size_value->setValue(el::CommonParameterUtil::get_size(
+	size_value->setCurrentIndex(size_value->findData(
+		el::CommonParameterUtil::get_size(common_parameter)));
+	scale_value->setValue(el::CommonParameterUtil::get_scale(
 		common_parameter));
 }
 
@@ -277,19 +300,21 @@ void ParameterDialog::set_types(const bool sampler)
 }
 
 bool ParameterDialog::edit_parameter(const QString &name, const QString &type,
-	const QString &qualifier, const QString &size)
+	const QString &qualifier, const QString &size, const QString &scale)
 {
-	int type_index, qualifier_index, size_int;
+	int type_index, qualifier_index, size_index, scale_int;
 	int sampler_index, auto_index, common_index, attribute_index;
 	el::CommonParameterType common_parameter;
 	el::AutoParameterType auto_parameter;
 	el::ParameterQualifierType parameter_qualifier;
+	el::ParameterSizeType parameter_size;
 	el::ParameterType parameter;
 
 	m_name = name;
 	type_index = type_value->findText(type);
 	qualifier_index = qualifier_value->findText(qualifier);
-	size_int = size.toInt();
+	size_index = size_value->findText(size);
+	scale_int = scale.toInt();
 
 	sampler_index = sampler_name_value->findText(name);
 	auto_index = auto_name_value->findText(name);
@@ -298,15 +323,18 @@ bool ParameterDialog::edit_parameter(const QString &name, const QString &type,
 
 	parameter = el::pt_float;
 	parameter_qualifier = el::pqt_in;
+	parameter_size = el::pst_one;
 
 	if (sampler_index != -1)
 	{
 		sampler_name_value->setCurrentIndex(sampler_index);
 		sampler_name->setChecked(true);
 
-		size_int = 1;
+		parameter_size = el::pst_one;
+		scale_int = 1;
 		parameter_qualifier = el::pqt_in;
 
+		size_index = -2;
 		qualifier_index = -2;
 	}
 
@@ -319,10 +347,13 @@ bool ParameterDialog::edit_parameter(const QString &name, const QString &type,
 			el::String(name.toUtf8()));
 
 		parameter = el::AutoParameterUtil::get_type(auto_parameter);
-		size_int = el::AutoParameterUtil::get_size(auto_parameter);
+		parameter_size = el::AutoParameterUtil::get_size(
+			auto_parameter);
+		scale_int = el::AutoParameterUtil::get_scale(auto_parameter);
 		parameter_qualifier = el::pqt_in;
 
 		type_index = -2;
+		size_index = -2;
 		qualifier_index = -2;
 	}
 
@@ -336,10 +367,13 @@ bool ParameterDialog::edit_parameter(const QString &name, const QString &type,
 				el::String(name.toUtf8()));
 
 		parameter = el::CommonParameterUtil::get_type(common_parameter);
-		size_int = el::CommonParameterUtil::get_size(
+		parameter_size = el::CommonParameterUtil::get_size(
+			common_parameter);
+		scale_int = el::CommonParameterUtil::get_scale(
 			common_parameter);
 
 		type_index = -2;
+		size_index = -2;
 	}
 
 	if (attribute_index != -1)
@@ -347,11 +381,13 @@ bool ParameterDialog::edit_parameter(const QString &name, const QString &type,
 		attribute_name_value->setCurrentIndex(attribute_index);
 		attribute_name->setChecked(true);
 
-		size_int = 1;
+		parameter_size = el::pst_one;
+		scale_int = 1;
 		parameter_qualifier = el::pqt_in;
 
 		parameter = el::pt_vec4;
 		type_index = -2;
+		size_index = -2;
 		qualifier_index = -2;
 	}
 
@@ -372,9 +408,15 @@ bool ParameterDialog::edit_parameter(const QString &name, const QString &type,
 		qualifier_index = qualifier_value->findData(parameter_qualifier);
 	}
 
+	if (size_index == -2)
+	{
+		size_index = size_value->findData(parameter_size);
+	}
+
 	type_value->setCurrentIndex(type_index);
 	qualifier_value->setCurrentIndex(qualifier_index);
-	size_value->setValue(size_int);
+	size_value->setCurrentIndex(size_index);
+	scale_value->setValue(scale_int);
 
 	return exec() == QDialog::Accepted;
 }
@@ -423,5 +465,10 @@ QString ParameterDialog::get_parameter_qualifier() const
 
 QString ParameterDialog::get_parameter_size() const
 {
-	return QString::number(size_value->value());
+	return size_value->currentText();
+}
+
+QString ParameterDialog::get_parameter_scale() const
+{
+	return QString::number(scale_value->value());
 }

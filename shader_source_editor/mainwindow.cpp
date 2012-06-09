@@ -570,6 +570,7 @@ void MainWindow::add_parameter(const int index)
 		list.push_back(m_parameterdialog->get_parameter_type());
 		list.push_back(m_parameterdialog->get_parameter_qualifier());
 		list.push_back(m_parameterdialog->get_parameter_size());
+		list.push_back(m_parameterdialog->get_parameter_scale());
 
 		item = new QTreeWidgetItem((QTreeWidgetItem*)0, list);
 
@@ -593,12 +594,13 @@ void MainWindow::edit_parameter(const int index)
 	item = m_parameters[index]->selectedItems()[0];
 
 	if (m_parameterdialog->edit_parameter(item->text(0), item->text(1),
-		item->text(2), item->text(3)))
+		item->text(2), item->text(3), item->text(4)))
 	{
 		item->setText(0, m_parameterdialog->get_parameter_name());
 		item->setText(1, m_parameterdialog->get_parameter_type());
 		item->setText(2, m_parameterdialog->get_parameter_qualifier());
 		item->setText(3, m_parameterdialog->get_parameter_size());
+		item->setText(4, m_parameterdialog->get_parameter_scale());
 
 		m_parameters[index]->sortItems(0, Qt::AscendingOrder);
 

@@ -36,12 +36,13 @@ class ParameterDialog: public QDialog, public Ui::Parameter
 		virtual void setVisible(bool visible);
 		bool edit_parameter(const QString &name,
 			const QString &type, const QString &qualifier,
-			const QString &size);
+			const QString &size, const QString &scale);
 		bool add_parameter();
 		QString get_parameter_name() const;
 		QString get_parameter_type() const;
 		QString get_parameter_qualifier() const;
 		QString get_parameter_size() const;
+		QString get_parameter_scale() const;
 
 	public slots:
 
