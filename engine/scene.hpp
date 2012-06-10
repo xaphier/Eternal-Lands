@@ -65,6 +65,8 @@ namespace eternal_lands
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractMeshSharedPtr m_screen_quad;
 			AbstractFrameBufferSharedPtr m_clipmap_frame_buffer;
+			AbstractFrameBufferSharedPtr m_light_frame_buffer;
+			AbstractFrameBufferSharedPtr m_scene_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_position_array;
 			Vec4Vector m_light_color_array;
@@ -173,6 +175,7 @@ namespace eternal_lands
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
 				SelectionType &selection);
+			float get_depth(const glm::uvec2 &offset);
 			void load(const String &name);
 			const ParticleDataVector &get_particles() const;
 			Uint16 get_height(const Uint16 x, const Uint16 y) const;

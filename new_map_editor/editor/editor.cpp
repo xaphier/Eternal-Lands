@@ -92,7 +92,7 @@ namespace eternal_lands
 	void Editor::set_ground_tile(const glm::vec2 &point,
 		const Uint16 tile)
 	{
-		Uint16Array2 offset;
+		glm::uvec2 offset;
 		Uint16 tmp;
 
 		offset = m_data.get_tile_offset(point);
@@ -327,52 +327,18 @@ namespace eternal_lands
 		}
 	}
 */
-	void Editor::ground_tile_edit(const glm::vec3 &p0, const glm::vec3 &p1,
+	void Editor::ground_tile_edit(const glm::vec3 &point,
 		const Uint8 height)
 	{
-		glm::vec3 dir;
-		glm::vec2 point;
-		float distance;
-
-		dir = p1 - p0;
-
-		if (std::abs(dir.z) > epsilon)
-		{
-			distance = -p0.z / dir.z;
-
-			if (distance >= 0.0f)
-			{
-				point = glm::vec2(p0 + dir * distance);
-
-				set_ground_tile(point, height);
-			}
-		}
+		set_ground_tile(glm::vec2(point), height);
 	}
 
-	void Editor::water_tile_edit(const glm::vec3 &p0, const glm::vec3 &p1,
-		const Uint8 water)
+	void Editor::water_tile_edit(const glm::vec3 &point, const Uint8 water)
 	{
-		glm::vec3 dir;
-		glm::vec2 point;
-		float distance;
-
-		dir = p1 - p0;
-
-		if (std::abs(dir.z) > epsilon)
-		{
-			distance = -p0.z / dir.z;
-
-			if (distance >= 0.0f)
-			{
-				point = glm::vec2(p0 + dir * distance);
-
-				set_ground_tile(point, water);
-			}
-		}
+//		set_ground_tile(glm::vec2(point), water);
 	}
 
-	void Editor::height_edit(const glm::vec3 &p0, const glm::vec3 &p1,
-		const Uint8 height)
+	void Editor::height_edit(const glm::vec3 &point, const Uint8 height)
 	{
 /*		Ray ray;
 
@@ -649,15 +615,15 @@ namespace eternal_lands
 		return m_data.get_ambient();
 	}
 
-	void Editor::terrain_height_edit(const Uint32 id, const glm::vec3 &p0,
-		const glm::vec3 &p1, const float strength, const float radius,
-		const int brush_type)
+	void Editor::terrain_height_edit(const Uint32 id,
+		const glm::vec3 &position, const float strength,
+		const float radius, const int brush_type)
 	{
 	}
 
-	void Editor::terrain_layer_edit(const Uint32 id, const glm::vec3 &p0,
-		const glm::vec3 &p1, const Uint32 index, const float strength,
-		const float radius, const int brush_type)
+	void Editor::terrain_layer_edit(const Uint32 id,
+		const glm::vec3 &position, const Uint32 index,
+		const float strength, const float radius, const int brush_type)
 	{
 	}
 
@@ -738,10 +704,20 @@ namespace eternal_lands
 		m_data.draw();
 	}
 
-	void Editor::select(const Uint16Array2 &position,
-		const Uint16Array2 &half_size)
+	void Editor::select(const glm::uvec2 &position,
+		const glm::uvec2 &half_size)
 	{
 		m_data.select(position, half_size);
+	}
+
+	void Editor::select_depth(const glm::uvec2 &position)
+	{
+		m_data.select_depth(position);
+	}
+
+	float Editor::get_depth() const
+	{
+		return m_data.get_depth();
 	}
 
 	Uint32 Editor::get_id() const

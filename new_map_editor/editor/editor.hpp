@@ -81,19 +81,18 @@ namespace eternal_lands
 				const Uint8 texture);
 			void set_ambient(const glm::vec3 &color);
 			void terrain_height_edit(const Uint32 id,
-				const glm::vec3 &p0, const glm::vec3 &p1,
+				const glm::vec3 &point, const float strength,
+				const float radius, const int brush_type);
+			void terrain_layer_edit(const Uint32 id,
+				const glm::vec3 &point, const Uint32 index,
 				const float strength, const float radius,
 				const int brush_type);
-			void terrain_layer_edit(const Uint32 id,
-				const glm::vec3 &p0, const glm::vec3 &p1,
-				const Uint32 index, const float strength,
-				const float radius, const int brush_type);
-			void ground_tile_edit(const glm::vec3 &p0,
-				const glm::vec3 &p1, const Uint8 tile);
-			void water_tile_edit(const glm::vec3 &p0,
-				const glm::vec3 &p1, const Uint8 water);
-			void height_edit(const glm::vec3 &p0,
-				const glm::vec3 &p1, const Uint8 height);
+			void ground_tile_edit(const glm::vec3 &point,
+				const Uint8 tile);
+			void water_tile_edit(const glm::vec3 &point,
+				const Uint8 water);
+			void height_edit(const glm::vec3 &point,
+				const Uint8 height);
 /*			void set_terrain(const MaterialData &terrain_material,
 				const Uint16Array2 map_size, const Uint16Array2 blend_image_size);
 			void set_terrain(const MaterialData &terrain_material,
@@ -147,8 +146,10 @@ namespace eternal_lands
 			StringVector get_default_materials(const String &name)
 				const;
 			void draw();
-			void select(const Uint16Array2 &position,
-				const Uint16Array2 &half_size);
+			void select(const glm::uvec2 &position,
+				const glm::uvec2 &half_size);
+			void select_depth(const glm::uvec2 &position);
+			float get_depth() const;
 			Uint32 get_id() const;
 			bool get_selected() const;
 			RenderableType get_renderable() const;

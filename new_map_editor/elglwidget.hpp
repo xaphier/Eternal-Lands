@@ -23,22 +23,24 @@ class ELGLWidget: public QGLWidget
 		glm::mat3 m_rotate;
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
+		glm::vec3 m_world_position;
 		String m_object;
 		float m_zoom, m_rotate_z;
-		Uint16Array2  m_select_pos, m_half_size;
+		glm::uvec2  m_select_pos, m_half_size;
+		float m_selected_depth;
 		Uint32 m_terrain_type_index;
 		Uint32 m_terrain_layer_index;
 		Uint16 m_terrain_index;
 		bool m_select;
+		bool m_select_depth;
 		bool m_terrain_editing;
 		bool m_light;
+		bool m_mouse_click_action;
+		bool m_mouse_move_action;
 		BlendType m_blend;
 		Qt::MouseButton m_click_button;
 		Qt::KeyboardModifier m_wheel_zoom_x10;
 		bool m_swap_wheel_zoom;
-
-		void get_points(const Sint32 x, const Sint32 y,
-			glm::vec3 &p0, glm::vec3 &p1);
 
 		inline bool get_terrain_editing() const
 		{
@@ -59,6 +61,9 @@ class ELGLWidget: public QGLWidget
 		{
 			return m_terrain_index;
 		}
+
+		void mouse_click_action();
+		void mouse_move_action();
 
 	protected:
 		virtual void initializeGL();
@@ -93,13 +98,6 @@ class ELGLWidget: public QGLWidget
 		QString get_blend_image_name() const;
 		QStringList get_materials() const;
 		QStringList get_default_materials(const String &name) const;
-		void terrain_height_edit(const int x, const int y, const float strength,
-			const float radius, const int brush_type);
-		void terrain_layer_edit(const int x, const int y, const int terrain_layer_index,
-			const float strength, const float radius, const int brush_type);
-		void ground_tile_edit(const int x, const int y, const int tile);
-		void water_tile_edit(const int x, const int y, const int water);
-		void height_edit(const int x, const int y, const int height);
 		void export_blend_image(const QString &file_name, const QString &codec) const;
 		void export_terrain_map(const QString &file_name, const QString &codec) const;
 		void import_terrain_map(const QString &file_name);
@@ -113,6 +111,14 @@ class ELGLWidget: public QGLWidget
 			const QString &codec);
 		void set_dirs(const QStringList &dirs);
 		QImage get_icon(const QString &name);
+		void terrain_height_edit(const float strength,
+			const float radius, const int brush_type);
+		void terrain_layer_edit(const int terrain_layer_index,
+			const float strength, const float radius,
+			const int brush_type);
+		void ground_tile_edit(const int tile);
+		void water_tile_edit(const int water);
+		void height_edit(const int height);
 
 		inline Qt::MouseButton get_click_button() const
 		{
@@ -219,7 +225,7 @@ class ELGLWidget: public QGLWidget
 		void update_light(const bool select);
 		void deselect();
 		void can_undo(const bool undo);
-		void terrain_edit(const int x, const int y);
+		void terrain_edit();
 		void initialized();
 
 };

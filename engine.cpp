@@ -101,7 +101,7 @@ namespace
 
 		return String(result);
 	}
-
+#if	0
 	Text get_text(const unsigned char* str, const char* font,
 		const glm::vec4 &start_color,
 		const Uint32 len = std::numeric_limits<Uint32>::max())
@@ -154,7 +154,7 @@ namespace
 
 		return text;
 	}
-
+#endif
 	void disable_opengl2_stuff()
 	{
 		Uint16 i;

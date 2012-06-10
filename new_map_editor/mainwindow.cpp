@@ -47,8 +47,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(y_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 	QObject::connect(z_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 
-	QObject::connect(el_gl_widget, SIGNAL(terrain_edit(const int, const int)), this,
-		SLOT(terrain_edit(const int, const int)));
+	QObject::connect(el_gl_widget, SIGNAL(terrain_edit()), this,
+		SLOT(terrain_edit()));
 
 	QObject::connect(action_undo, SIGNAL(triggered()), el_gl_widget, SLOT(undo()));
 	QObject::connect(el_gl_widget, SIGNAL(can_undo(bool)), action_undo, SLOT(setEnabled(bool)));
@@ -1172,30 +1172,32 @@ void MainWindow::load_textures_settings(QSettings &settings)
 	settings.endGroup();
 }
 
-void MainWindow::terrain_edit(const int x, const int y)
+void MainWindow::terrain_edit()
 {
 	switch (paint_tool_box->currentIndex())
 	{
 		case 0:
-			el_gl_widget->terrain_height_edit(x, y, height_brush_strength->value()
-				* 0.01f, height_brush_radius->value(),
+			el_gl_widget->terrain_height_edit(
+				height_brush_strength->value() * 0.01f,
+				height_brush_radius->value(),
 				height_brush_type->currentIndex());
 			break;
 		case 1:
-			el_gl_widget->terrain_layer_edit(x, y,
+			el_gl_widget->terrain_layer_edit(
 				layer_mask_brush_layer_masks->currentIndex(),
 				layer_mask_brush_strength->value() * 0.01f,
 				layer_mask_brush_radius->value(),
 				layer_mask_brush_type->currentIndex());
 			break;
 		case 2:
-			el_gl_widget->ground_tile_edit(x, y, ground_tile->currentText().toInt());
+			el_gl_widget->ground_tile_edit(
+				ground_tile->currentText().toInt());
 			break;
 		case 3:
-			el_gl_widget->water_tile_edit(x, y, 0);
+			el_gl_widget->water_tile_edit(0);
 			break;
 		case 4:
-			el_gl_widget->height_edit(x, y, 0);
+			el_gl_widget->height_edit(0);
 			break;
 	}
 }

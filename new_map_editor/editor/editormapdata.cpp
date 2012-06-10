@@ -320,15 +320,11 @@ namespace eternal_lands
 		return m_tile_map[x][y];
 	}
 
-	Uint16Array2 EditorMapData::get_tile_offset(const glm::vec2 &point)
+	glm::uvec2 EditorMapData::get_tile_offset(const glm::vec2 &point)
 		const
 	{
-		Uint16Array2 result;
-
-		result[0] = std::max(0.0f, point.x / 3);
-		result[1] = std::max(0.0f, point.y / 3);
-
-		return result;
+		return glm::uvec2(glm::clamp(point / 3.0f, glm::vec2(0.0f),
+			glm::vec2(get_tile_map_size())));
 	}
 
 	void EditorMapData::set_height(const Uint16 x, const Uint16 y,
@@ -432,16 +428,16 @@ namespace eternal_lands
 		m_scene->draw();
 	}
 
-	void EditorMapData::select(const Uint16Array2 &position,
-		const Uint16Array2 &half_size)
+	void EditorMapData::select(const glm::uvec2 &position,
+		const glm::uvec2 &half_size)
 	{
 		Uint32 typeless_id;
 		SelectionType selection;
 		IdType type;
 		bool selected;
 
-		m_id = m_scene->pick(glm::vec2(position[0], position[1]),
-			glm::vec2(half_size[0], half_size[1]), selection);
+		m_id = m_scene->pick(glm::vec2(position), glm::vec2(half_size),
+			selection);
 
 		selected = FreeIdsManager::get_id_type(m_id, typeless_id, type);
 		m_renderable = rt_none;
@@ -474,6 +470,11 @@ namespace eternal_lands
 		}
 	}
 
+	void EditorMapData::select_depth(const glm::uvec2 &position)
+	{
+		m_depth = m_scene->get_depth(position);
+	}
+
 	StringVector EditorMapData::get_materials() const
 	{
 		return m_scene->get_scene_resources(
@@ -488,7 +489,7 @@ namespace eternal_lands
 			).get_mesh_data_cache()->get_mesh_materials(name);
 	}
 
-	void EditorMapData::get_terrain_values(const Uint16Array2 &vertex,
+	void EditorMapData::get_terrain_values(const glm::uvec2 &vertex,
 		const float radius, TerrainValueVector &terrain_values) const
 	{
 		glm::vec2 centre, point;
@@ -496,17 +497,17 @@ namespace eternal_lands
 		Uint32 min_x, min_y, max_x, max_y;
 		float tmp, temp, sqr_radius;
 
-		tmp = static_cast<float>(vertex[0]) - radius;
+		tmp = static_cast<float>(vertex.x) - radius;
 		min_x = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
 
-		tmp = static_cast<float>(vertex[1]) - radius;
+		tmp = static_cast<float>(vertex.y) - radius;
 		min_y = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
 
-		tmp = static_cast<float>(vertex[0]) + radius;
+		tmp = static_cast<float>(vertex.x) + radius;
 		temp = m_terrain_values_image->get_width() - 1.0f;
 		max_x = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
-		tmp = static_cast<float>(vertex[1]) + radius;
+		tmp = static_cast<float>(vertex.y) + radius;
 		temp = m_terrain_values_image->get_height() - 1.0f;
 		max_y = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
@@ -527,8 +528,9 @@ namespace eternal_lands
 					TerrainValue value(x, y);
 
 					value.set_value(
-						m_terrain_values_image->get_pixel_uint(x, y,
-							0, 0, 0));
+						m_terrain_values_image->
+							get_pixel_uint(x, y,
+								0, 0, 0));
 
 					terrain_values.push_back(value);
 				}
@@ -536,7 +538,7 @@ namespace eternal_lands
 		}
 	}
 
-	void EditorMapData::change_terrain_values(const Uint16Array2 &vertex,
+	void EditorMapData::change_terrain_values(const glm::uvec2 &vertex,
 		const float strength, const float radius,
 		const EditorBrushType brush_type,
 		TerrainValueVector &terrain_values) const
@@ -545,7 +547,7 @@ namespace eternal_lands
 		glm::vec2 centre;
 		Uint32 i;
 
-		centre = glm::vec2(vertex[0], vertex[1]);
+		centre = glm::vec2(vertex);
 
 		if ((brush_type == ebt_linear_smooth) ||
 			(brush_type == ebt_quadratic_smooth))
@@ -611,7 +613,8 @@ namespace eternal_lands
 				break;
 			case ebt_quadratic:
 				dist = glm::distance2(centre, point);
-				tmp = std::max(1.0f - dist / (radius * radius), 0.0f);
+				tmp = std::max(1.0f - dist / (radius * radius),
+					0.0f);
 				result += tmp * strength;
 				break;
 			case ebt_linear_smooth:
@@ -621,7 +624,8 @@ namespace eternal_lands
 				break;
 			case ebt_quadratic_smooth:
 				dist = glm::distance2(centre, point);
-				tmp = std::max(1.0f - dist / (radius * radius), 0.0f);
+				tmp = std::max(1.0f - dist / (radius * radius),
+					0.0f);
 				result -= (value - average) * strength * tmp;
 				break;
 		};
@@ -629,7 +633,7 @@ namespace eternal_lands
 		return std::max(0.0f, std::min(result, 1.0f));
 	}
 
-	void EditorMapData::get_blend_values(const Uint16Array2 &vertex,
+	void EditorMapData::get_blend_values(const glm::uvec2 &vertex,
 		const float radius, ImageValueVector &blend_values) const
 	{
 		glm::vec2 centre, point;
@@ -637,17 +641,17 @@ namespace eternal_lands
 		Uint32 min_x, min_y, max_x, max_y;
 		float tmp, temp, sqr_radius;
 
-		tmp = static_cast<float>(vertex[0]) - radius;
+		tmp = static_cast<float>(vertex.x) - radius;
 		min_x = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
 
-		tmp = static_cast<float>(vertex[1]) - radius;
+		tmp = static_cast<float>(vertex.y) - radius;
 		min_y = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
 
-		tmp = static_cast<float>(vertex[0]) + radius;
+		tmp = static_cast<float>(vertex.x) + radius;
 		temp = m_blend_image->get_width() - 1.0f;
 		max_x = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
-		tmp = static_cast<float>(vertex[1]) + radius;
+		tmp = static_cast<float>(vertex.y) + radius;
 		temp = m_blend_image->get_height() - 1.0f;
 		max_y = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
@@ -676,7 +680,7 @@ namespace eternal_lands
 		}
 	}
 
-	void EditorMapData::change_blend_values(const Uint16Array2 &position,
+	void EditorMapData::change_blend_values(const glm::uvec2 &position,
 		const Uint32 index, const float strength, const float radius,
 		const EditorBrushType brush_type,
 		ImageValueVector &blend_values)
@@ -685,7 +689,7 @@ namespace eternal_lands
 		float average;
 		Uint32 i;
 
-		centre = glm::vec2(position[0], position[1]);
+		centre = glm::vec2(position);
 
 		if ((brush_type == ebt_linear_smooth) ||
 			(brush_type == ebt_quadratic_smooth))

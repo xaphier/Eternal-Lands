@@ -63,20 +63,21 @@ namespace eternal_lands
 			Uint16MultiArray2 m_height_map;
 			Uint8MultiArray2 m_tile_map;
 			Uint32 m_id;
+			float m_depth;
 			RenderableType m_renderable;
 
-			void get_terrain_values(const Uint16Array2 &vertex,
+			void get_terrain_values(const glm::uvec2 &vertex,
 				const float radius,
 				TerrainValueVector &terrain_values) const;
-			void change_terrain_values(const Uint16Array2 &vertex,
+			void change_terrain_values(const glm::uvec2 &vertex,
 				const float strength, const float radius,
 				const EditorBrushType brush_type,
 				TerrainValueVector &terrain_values) const;
-			void get_blend_values(const Uint16Array2 &vertex,
+			void get_blend_values(const glm::uvec2 &vertex,
 				const float radius,
 				ImageValueVector &blend_values) const;
 			static void change_blend_values(
-				const Uint16Array2 &position,
+				const glm::uvec2 &position,
 				const Uint32 index, const float strength,
 				const float radius,
 				const EditorBrushType brush_type,
@@ -118,7 +119,7 @@ namespace eternal_lands
 			void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile);
 			Uint16 get_tile(const Uint16 x, const Uint16 y) const;
-			Uint16Array2 get_tile_offset(const glm::vec2 &point)
+			glm::uvec2 get_tile_offset(const glm::vec2 &point)
 				const; 
 			void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height);
@@ -151,8 +152,9 @@ namespace eternal_lands
 			const glm::mat4 &get_projection_matrix() const;
 			void load_map(const String &name);
 			void draw();
-			void select(const Uint16Array2 &position,
-				const Uint16Array2 &half_size);
+			void select(const glm::uvec2 &position,
+				const glm::uvec2 &half_size);
+			void select_depth(const glm::uvec2 &position);
 			void set_draw_lights(const bool draw_lights);
 			void set_draw_light_spheres(
 				const bool draw_light_spheres);
@@ -162,26 +164,37 @@ namespace eternal_lands
 				const;
 			ImageSharedPtr get_image(const String &name) const;
 
-			void set_height_map_size(const Uint16 width,
-				const Uint16 height)
+			inline void set_height_map_size(const Uint16 width,
+				const Uint16 height) noexcept
 			{
 				m_height_map.resize(
 					boost::extents[width][height]);
 			}
 
-			void set_tile_map_size(const Uint16 width,
-				const Uint16 height)
+			inline void set_tile_map_size(const Uint16 width,
+				const Uint16 height) noexcept
 			{
 				m_tile_map.resize(
 					boost::extents[width][height]);
 			}
 
-			inline Uint32 get_id() const
+			inline glm::uvec2 get_tile_map_size() const noexcept
+			{
+				return glm::uvec2(m_tile_map.shape()[0],
+					m_tile_map.shape()[1]);
+			}
+
+			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
 			}
 
-			inline RenderableType get_renderable() const
+			inline float get_depth() const noexcept
+			{
+				return m_depth;
+			}
+
+			inline RenderableType get_renderable() const noexcept
 			{
 				return m_renderable;
 			}

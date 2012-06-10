@@ -20,11 +20,11 @@ namespace eternal_lands
 	class GroundTileModification: public Modification
 	{
 		private:
-			const Uint16Array2 m_offset;
+			const glm::uvec2 m_offset;
 			const Uint16 m_material;
 
 		public:
-			GroundTileModification(const Uint16Array2 &offset,
+			GroundTileModification(const glm::uvec2 &offset,
 				const Uint16 material);
 			virtual ~GroundTileModification() throw();
 			virtual ModificationType get_type() const;

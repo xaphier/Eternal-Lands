@@ -12,7 +12,7 @@ namespace eternal_lands
 {
 
 	GroundTileModification::GroundTileModification(
-		const Uint16Array2 &offset, const Uint16 material):
+		const glm::uvec2 &offset, const Uint16 material):
 		m_offset(offset), m_material(material)
 	{
 	}
@@ -48,7 +48,7 @@ namespace eternal_lands
 
 	bool GroundTileModification::undo(EditorMapData &editor)
 	{
-		editor.set_tile(m_offset[0], m_offset[1], m_material);
+		editor.set_tile(m_offset.x, m_offset.y, m_material);
 
 		return false;
 	}

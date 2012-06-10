@@ -1728,6 +1728,16 @@ namespace eternal_lands
 		return id;
 	}
 
+	float Scene::get_depth(const glm::uvec2 &offset)
+	{
+		float depth;
+
+		glReadPixels(offset.x, offset.y, 1, 1, GL_DEPTH_COMPONENT,
+			GL_FLOAT, &depth);
+
+		return depth;
+	}
+
 	void Scene::load(const String &name)
 	{
 		boost::scoped_ptr<MapLoader> map_loader;

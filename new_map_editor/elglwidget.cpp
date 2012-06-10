@@ -13,6 +13,7 @@
 ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 {
 	m_select = false;
+	m_select_depth = false;
 	m_zoom = 10.0f;
 	m_terrain_editing = false;
 	m_terrain_type_index = 0;
@@ -82,139 +83,100 @@ QImage ELGLWidget::get_icon(const QString &name)
 		Qt::SmoothTransformation);
 }
 
-void ELGLWidget::get_points(const Sint32 x, const Sint32 y, glm::vec3 &p0,
-	glm::vec3 &p1)
+void ELGLWidget::mouse_click_action()
 {
-	glm::ivec4 view_port;
+	if (get_terrain_editing())
+	{
+		m_terrain_index++;
 
-	view_port[0] = 0;
-	view_port[1] = 0;
-	view_port[2] = width();
-	view_port[3] = height();
+		emit terrain_edit();
 
-	p0 = glm::unProject(glm::vec3(x, y, 0), m_view, m_projection,
-		view_port);
-	p1 = glm::unProject(glm::vec3(x, y, 1), m_view, m_projection,
-		view_port);
+		return;
+	}
+
+	if (!m_object.get().empty())
+	{
+		m_editor->add_3d_object(m_world_position, m_object, st_select);
+		emit update_object(false);
+		emit can_undo(m_editor->get_can_undo());
+
+		return;
+	}
+
+	if (m_light)
+	{
+		m_editor->add_light(m_world_position);
+		emit update_light(false);
+		emit can_undo(m_editor->get_can_undo());
+
+		return;
+	}
+}
+
+void ELGLWidget::mouse_move_action()
+{
 }
 
 void ELGLWidget::mousePressEvent(QMouseEvent *event)
 {
-	if (event->button() == m_click_button)
+	if (event->button() != m_click_button)
 	{
-		glm::vec3 p0, p1, dir;
-		glm::vec3 position;
-
-		if (get_terrain_editing())
-		{
-			m_terrain_index++;
-
-			emit terrain_edit(event->x(), height() - event->y());
-		}
-		else
-		{
-			if (!m_object.get().empty())
-			{
-				get_points(event->x(), height() - event->y(), p0, p1);
-
-				dir = p1 - p0;
-
-				position = p0 - dir * (p0[2] / dir[2]);
-
-				m_editor->add_3d_object(position, m_object,
-					st_select);
-				emit update_object(false);
-				emit can_undo(m_editor->get_can_undo());
-			}
-			else
-			{
-				if (m_light)
-				{
-					get_points(event->x(), height() - event->y(), p0, p1);
-
-					dir = p1 - p0;
-
-					position = p0 - dir * (p0[2] / dir[2]);
-
-					m_editor->add_light(position);
-					emit update_light(false);
-					emit can_undo(m_editor->get_can_undo());
-				}
-				else
-				{
-					m_select_pos[0] = event->x();
-					m_select_pos[1] = height() - event->y();
-					m_select = true;
-				}
-			}
-		}
+		return;
 	}
+
+	m_select_pos.x = event->x();
+	m_select_pos.y = height() - event->y();
+	m_select = true;
+	m_select_depth = true;
+	m_mouse_click_action = true;
+
+	updateGL();
 }
 
 void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	if (get_terrain_editing())
-	{
-		emit terrain_edit(event->x(), height() - event->y());
-	}
+	return;
+	m_select_pos.x = event->x();
+	m_select_pos.y = height() - event->y();
+	m_select_depth = true;
+	m_mouse_move_action = true;
 }
 
-void ELGLWidget::terrain_height_edit(const int x, const int y,
-	const float strength, const float radius, const int brush_type)
+void ELGLWidget::terrain_height_edit(const float strength, const float radius,
+	const int brush_type)
 {
-	glm::vec3 p0, p1;
-
-	get_points(x, y, p0, p1);
-
-	m_editor->terrain_height_edit(m_terrain_index, p0, p1, strength,
-		radius, brush_type);
-
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::terrain_layer_edit(const int x, const int y,
-	const int terrain_layer_index, const float strength,
-	const float radius, const int brush_type)
-{
-	glm::vec3 p0, p1;
-
-	get_points(x, y, p0, p1);
-
-	m_editor->terrain_layer_edit(m_terrain_index, p0, p1, terrain_layer_index,
+	m_editor->terrain_height_edit(m_terrain_index, m_world_position,
 		strength, radius, brush_type);
 
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::ground_tile_edit(const int x, const int y, const int tile)
+void ELGLWidget::terrain_layer_edit(const int terrain_layer_index,
+	const float strength, const float radius, const int brush_type)
 {
-	glm::vec3 p0, p1;
-
-	get_points(x, y, p0, p1);
-
-	m_editor->ground_tile_edit(p0, p1, tile);
+	m_editor->terrain_layer_edit(m_terrain_index, m_world_position,
+		terrain_layer_index, strength, radius, brush_type);
 
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::water_tile_edit(const int x, const int y, const int water)
+void ELGLWidget::ground_tile_edit(const int tile)
 {
-	glm::vec3 p0, p1;
-
-	get_points(x, y, p0, p1);
-
-	m_editor->water_tile_edit(p0, p1, water);
+	m_editor->ground_tile_edit(m_world_position, tile);
 
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::height_edit(const int x, const int y, const int height)
+void ELGLWidget::water_tile_edit(const int water)
 {
-	glm::vec3 p0, p1;
+	m_editor->water_tile_edit(m_world_position, water);
 
-	get_points(x, y, p0, p1);
+	emit can_undo(m_editor->get_can_undo());
+}
 
-	m_editor->height_edit(p0, p1, height);
+void ELGLWidget::height_edit(const int height)
+{
+	m_editor->height_edit(m_world_position, height);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -311,6 +273,7 @@ void ELGLWidget::resizeGL(int width, int height)
 
 void ELGLWidget::paintGL()
 {
+	glm::ivec4 view_port;
 	glm::vec3 dir, pos;
 
 	glEnable(GL_CULL_FACE);
@@ -348,6 +311,36 @@ void ELGLWidget::paintGL()
 				emit update_object(true);
 				break;
 		}
+	}
+
+	if (m_select_depth)
+	{
+		m_select_depth = false;
+		m_editor->select_depth(m_select_pos);
+		m_selected_depth = m_editor->get_depth();
+
+		view_port[0] = 0;
+		view_port[1] = 0;
+		view_port[2] = width();
+		view_port[3] = height();
+
+		m_world_position = glm::unProject(glm::vec3(m_select_pos,
+			m_selected_depth), m_view, m_projection, view_port);
+
+	}
+
+	if (m_mouse_click_action)
+	{
+		m_mouse_click_action = false;
+
+		mouse_click_action();
+	}
+
+	if (m_mouse_move_action)
+	{
+		m_mouse_move_action = false;
+
+		mouse_move_action();
 	}
 }
 
