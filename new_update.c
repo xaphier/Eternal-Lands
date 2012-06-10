@@ -118,7 +118,7 @@ static Uint32 download_file(const char* file_name, FILE* file,
 		if (len < 0) 
 		{
 		    // Read error (connection lost);
-		    LOG_ERROR("Read error: %d", len);
+		    LOG_ERROR_OLD("Read error: %d", len);
 		    SDLNet_TCP_Close(http_sock);
 		    return 5;
 		}
