@@ -334,4 +334,10 @@ namespace eternal_lands
 		terrain.set_instances(0);
 	}
 
+	void DefaultTerrainManager::update(const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map)
+	{
+	}
+
 }

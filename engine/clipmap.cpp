@@ -66,9 +66,16 @@ namespace eternal_lands
 	bool Clipmap::update(const glm::vec3 &camera, const glm::vec3 &view_dir,
 		const glm::vec2 &focus)
 	{
+		glm::vec2 dir;
 		Uint16 dir_index;
 
-		dir_index = get_dir_index(glm::normalize(glm::vec2(view_dir)));
+		dir = glm::vec2(view_dir);
+		dir_index = get_dir_index();
+
+		if (std::abs(glm::dot(dir, dir)) > epsilon)
+		{
+			dir_index = get_dir_index(glm::normalize(dir));
+		}
 
 		if ((dir_index != get_dir_index()) ||
 			(glm::distance(focus, get_focus()) > 1.0f))

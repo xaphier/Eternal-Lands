@@ -54,7 +54,6 @@ namespace eternal_lands
 			void add_terrain_page(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
-				const MeshBuilderSharedPtr &mesh_builder,
 				const glm::uvec2 &position);
 			void remove_terrain_page(const glm::uvec2 &position);
 
@@ -74,6 +73,9 @@ namespace eternal_lands
 			virtual void intersect(const Frustum &frustum,
 				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const;
+			virtual void update(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map);
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture);
 

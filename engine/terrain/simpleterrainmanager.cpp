@@ -349,8 +349,7 @@ namespace eternal_lands
 			for (x = 0; x < width; ++x)
 			{
 				add_terrain_page(vector_map, normal_map,
-					dudv_map, mesh_builder,
-					glm::uvec2(x, y));
+					dudv_map, glm::uvec2(x, y));
 			}
 		}
 	}
@@ -359,7 +358,6 @@ namespace eternal_lands
 		const ImageSharedPtr &vector_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
-		const MeshBuilderSharedPtr &mesh_builder,
 		const glm::uvec2 &position)
 	{
 		MaterialSharedPtrVector materials;
@@ -441,6 +439,32 @@ namespace eternal_lands
 		const glm::vec3 &camera, TerrainVisitor &terrain) const
 	{
 		terrain.set_instances(0);
+	}
+
+	void SimpleTerrainManager::update(const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map)
+	{
+		Uint32 x, y, height, width;
+
+		m_object_tree.reset(new RStarTree());
+
+		set_terrain_size((glm::vec2(vector_map->get_sizes()) -1.0f) *
+			get_patch_scale());
+
+		width = vector_map->get_width() / get_tile_size();
+		height = vector_map->get_height() / get_tile_size();
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				add_terrain_page(vector_map, normal_map,
+					dudv_map, glm::uvec2(x, y));
+			}
+		}
+
+		set_bounding_box(m_object_tree->get_bounding_box());
 	}
 
 }

@@ -60,6 +60,9 @@ namespace eternal_lands
 				TerrainVisitor &terrain) const override;
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture) override;
+			virtual void update(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map);
 
 	};
 

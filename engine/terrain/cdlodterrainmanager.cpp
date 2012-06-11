@@ -130,4 +130,66 @@ namespace eternal_lands
 		terrain.set_bounding_box(bounding_box);
 	}
 
+	void CdLodTerrainManager::update(const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map)
+	{
+		TextureSharedPtr vector_texture;
+		TextureSharedPtr normal_texture;
+		TextureSharedPtr dudv_texture;
+		glm::vec3 min, max;
+
+		set_terrain_size((glm::vec2(vector_map->get_sizes()) -1.0f) *
+			get_patch_scale());
+
+		m_cd_lod_quad_tree.reset(new CdLodQuadTree(vector_map,
+			get_vector_scale(), get_patch_scale()));
+
+		max.x += m_cd_lod_quad_tree->get_grid_size().x *
+			get_patch_scale();
+		max.y += m_cd_lod_quad_tree->get_grid_size().y *
+			get_patch_scale();
+
+		set_bounding_box(BoundingBox(min, max));
+
+		vector_texture = boost::make_shared<Texture>(
+			vector_map->get_name());
+
+		vector_texture->set_mipmap_count(0);
+		vector_texture->set_wrap_s(twt_clamp);
+		vector_texture->set_wrap_t(twt_clamp);
+		vector_texture->set_wrap_r(twt_clamp);
+		vector_texture->set_target(ttt_texture_rectangle);
+		vector_texture->set_format(vector_map->get_texture_format());
+		vector_texture->set_image(vector_map);
+
+		m_material->set_texture(vector_texture, spt_vertex_vector);
+
+		normal_texture = boost::make_shared<Texture>(
+			normal_map->get_name());
+
+		normal_texture->set_mipmap_count(0);
+		normal_texture->set_wrap_s(twt_clamp);
+		normal_texture->set_wrap_t(twt_clamp);
+		normal_texture->set_wrap_r(twt_clamp);
+		normal_texture->set_target(ttt_texture_rectangle);
+		normal_texture->set_format(normal_map->get_texture_format());
+		normal_texture->set_image(normal_map);
+
+		m_material->set_texture(normal_texture, spt_vertex_normal);
+
+		dudv_texture = boost::make_shared<Texture>(
+			dudv_map->get_name());
+
+		dudv_texture->set_mipmap_count(0);
+		dudv_texture->set_wrap_s(twt_clamp);
+		dudv_texture->set_wrap_t(twt_clamp);
+		dudv_texture->set_wrap_r(twt_clamp);
+		dudv_texture->set_target(ttt_texture_rectangle);
+		dudv_texture->set_format(dudv_map->get_texture_format());
+		dudv_texture->set_image(dudv_map);
+
+		m_material->set_texture(dudv_texture, spt_vertex_dudv);
+	}
+
 }

@@ -67,6 +67,9 @@ namespace eternal_lands
 				TerrainVisitor &terrain) const = 0;
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture) = 0;
+			virtual void update(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map) = 0;
 			static const glm::vec3 &get_vector_scale() noexcept;
 
 			inline const BoundingBox &get_bounding_box() const
