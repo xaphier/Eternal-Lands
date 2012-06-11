@@ -25,8 +25,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	action_time->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
 	tool_bar->insertWidget(action_ambient, action_time);
 
-	QObject::connect(action_add_object, SIGNAL(triggered(bool)), this, SLOT(add_object(bool)));
-	QObject::connect(action_add_light, SIGNAL(triggered(bool)), this, SLOT(add_light(bool)));
+	QObject::connect(action_add_objects, SIGNAL(triggered(bool)), this, SLOT(add_objects(bool)));
+	QObject::connect(action_add_lights, SIGNAL(triggered(bool)), this, SLOT(add_lights(bool)));
 	QObject::connect(action_wire_frame, SIGNAL(triggered(bool)), el_gl_widget, SLOT(set_wire_frame(bool)));
 
 	QObject::connect(el_gl_widget, SIGNAL(update_object(bool)), this, SLOT(update_object(bool)));
@@ -53,8 +53,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_undo, SIGNAL(triggered()), el_gl_widget, SLOT(undo()));
 	QObject::connect(el_gl_widget, SIGNAL(can_undo(bool)), action_undo, SLOT(setEnabled(bool)));
 
-	QObject::connect(action_height, SIGNAL(triggered(bool)), this, SLOT(height_mode(bool)));
-	QObject::connect(action_height, SIGNAL(triggered(bool)), el_gl_widget, SLOT(set_terrain_editing(bool)));
+	QObject::connect(action_terrain_mode, SIGNAL(triggered(bool)), this, SLOT(terrain_mode(bool)));
+	QObject::connect(action_terrain_mode, SIGNAL(triggered(bool)), el_gl_widget, SLOT(set_terrain_editing(bool)));
+
+	QObject::connect(action_delete_mode, SIGNAL(triggered(bool)), this, SLOT(delete_mode(bool)));
 
 	QObject::connect(action_remove, SIGNAL(triggered(bool)), this, SLOT(remove()));
 
@@ -79,6 +81,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_preferences, SIGNAL(triggered(bool)), this,
 		SLOT(change_preferences()));
 
+	QObject::connect(action_objects, SIGNAL(triggered(bool)),
+		el_gl_widget, SLOT(set_draw_objects(bool)));
+	QObject::connect(action_terrain, SIGNAL(triggered(bool)),
+		el_gl_widget, SLOT(set_draw_terrain(bool)));
 	QObject::connect(action_lights, SIGNAL(triggered(bool)),
 		el_gl_widget, SLOT(set_draw_lights(bool)));
 	QObject::connect(action_light_spheres, SIGNAL(triggered(bool)),
@@ -489,33 +495,21 @@ void MainWindow::update_object(const bool select)
 	Uint16 renderable;
 	int i;
 
-	if (select && action_delete->isChecked())
+	if (select && action_delete_mode->isChecked())
 	{
 		el_gl_widget->remove_object();
 		deselect();
-	}
-	else
-	{
-		i = -1;
-		renderable = el_gl_widget->get_renderable();
 
-/*		if (renderable == rt_terrain)
-		{
-			i = 1;
-			update_terrain();
-		}
-		else
-*/		{
-			if (renderable == rt_object)
-			{
-				i = 0;
-				update_object();
-			}
-			else
-			{
-				return;
-			}
-		}
+		return;
+	}
+
+	i = -1;
+	renderable = el_gl_widget->get_renderable();
+
+	if (renderable == rt_object)
+	{
+		i = 0;
+		update_object();
 
 		if (select)
 		{
@@ -524,6 +518,10 @@ void MainWindow::update_object(const bool select)
 
 		action_remove->setEnabled(properties->currentIndex() == i);
 	}
+	else
+	{
+		deselect();
+	}
 }
 
 void MainWindow::update_light(const bool select)
@@ -531,7 +529,7 @@ void MainWindow::update_light(const bool select)
 	LightData light;
 	unsigned int id;
 
-	if (select && action_delete->isChecked())
+	if (select && action_delete_mode->isChecked())
 	{
 		el_gl_widget->remove_light();
 		deselect();
@@ -662,37 +660,62 @@ void MainWindow::change_light_color()
 	}
 }
 
-void MainWindow::add_object(const bool value)
+void MainWindow::add_objects(const bool value)
 {
-	if (value)
-	{
-		if (m_objects->exec() == QDialog::Accepted)
-		{
-			el_gl_widget->add_object(String(
-				m_objects->get_object()));
-		}
-		else
-		{
-			action_add_object->setChecked(false);
-			el_gl_widget->disable_object();
-		}
-	}
-	else
+	if (!value)
 	{
 		el_gl_widget->disable_object();
+
+		return;
 	}
+
+	if (m_objects->exec() == QDialog::Accepted)
+	{
+		el_gl_widget->add_object(String(m_objects->get_object()));
+
+		action_add_lights->setChecked(false);
+		action_delete_mode->setChecked(false);
+		action_terrain_mode->setChecked(false);
+
+		set_default_mode();
+
+		return;
+	}
+
+	el_gl_widget->disable_object();
+
+	action_add_objects->setChecked(false);
 }
 
-void MainWindow::add_light(const bool value)
+void MainWindow::add_lights(const bool value)
 {
-	if (value)
-	{
-		el_gl_widget->add_light();
-	}
-	else
+	float radius;
+	bool ok;
+
+	if (!value)
 	{
 		el_gl_widget->disable_light();
+
+		return;
 	}
+
+	radius = QInputDialog::getDouble(this, "Add ligts", "radius", 5.0,
+		0.01, 100.0, 2, &ok);
+
+	if (ok)
+	{
+		el_gl_widget->add_light(radius);
+
+		action_add_objects->setChecked(false);
+		action_delete_mode->setChecked(false);
+		action_terrain_mode->setChecked(false);
+
+		return;
+	}
+
+	el_gl_widget->disable_light();
+
+	action_add_lights->setChecked(false);
 }
 
 void MainWindow::remove()
@@ -713,12 +736,30 @@ void MainWindow::remove()
 	deselect();
 }
 
-void MainWindow::height_mode(const bool checked)
+void MainWindow::terrain_mode(const bool checked)
 {
 	if (checked)
 	{
 		action_remove->setEnabled(false);
 		properties->setCurrentIndex(2);
+
+		action_add_objects->setChecked(false);
+		action_add_lights->setChecked(false);
+		action_delete_mode->setChecked(false);
+	}
+	else
+	{
+		set_default_mode();
+	}
+}
+
+void MainWindow::delete_mode(const bool checked)
+{
+	if (checked)
+	{
+		action_add_objects->setChecked(false);
+		action_add_lights->setChecked(false);
+		action_terrain_mode->setChecked(false);
 	}
 	else
 	{
@@ -758,7 +799,7 @@ void MainWindow::open_map()
 
 void MainWindow::set_default_mode()
 {
-	properties->setCurrentIndex(4);
+	properties->setCurrentIndex(3);
 }
 
 void MainWindow::do_save()

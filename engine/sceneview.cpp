@@ -305,7 +305,6 @@ namespace eternal_lands
 	{
 		glm::mat4 projection_matrix;
 		glm::mat4 projection_view_matrix;
-		glm::vec2 window_size;
 		float z_near, z_far;
 		Uint32 shadow_map_size;
 		Uint16 i;
@@ -342,8 +341,6 @@ namespace eternal_lands
 		m_view_dir = glm::inverse(m_view_matrix) * m_view_dir;
 		m_view_dir = glm::vec4(glm::normalize(glm::vec3(m_view_dir) -
 			glm::vec3(m_camera)), 0.0f);
-
-		window_size = get_window_size();
 
 		switch (get_global_vars()->get_shadow_map_size())
 		{

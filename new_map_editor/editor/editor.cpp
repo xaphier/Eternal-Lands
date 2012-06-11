@@ -170,7 +170,7 @@ namespace eternal_lands
 		change_object(mt_object_added, object_description);
 	}
 
-	void Editor::add_light(const glm::vec3 &position)
+	void Editor::add_light(const glm::vec3 &position, const float radius)
 	{
 		LightData light_data;
 		Uint32 id;
@@ -179,7 +179,7 @@ namespace eternal_lands
 
 		light_data.set_position(position);
 		light_data.set_color(glm::vec3(1.0f));
-		light_data.set_radius(5.0f);
+		light_data.set_radius(radius);
 		light_data.set_id(id);
 
 		m_data.add_light(light_data);

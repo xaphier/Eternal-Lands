@@ -803,6 +803,7 @@ extern "C" void engine_cull_scene()
 
 extern "C" void engine_draw_scene()
 {
+	glm::vec2 mouse_position;
 	Uint32 id;
 
 	TRY_BLOCK
@@ -822,8 +823,18 @@ extern "C" void engine_draw_scene()
 		actor_under_mouse = 0;
 		object_under_mouse = -1;
 
-		id = scene->pick(glm::vec2(mouse_x, window_height - mouse_y),
-			glm::vec2(5.0f), selection);
+		if (global_vars->get_use_scene_fbo())
+		{
+			mouse_position = glm::vec2(mouse_x,
+				scene->get_view_port().w - mouse_y);
+		}
+		else
+		{
+			mouse_position = glm::vec2(mouse_x,
+				window_height - mouse_y);
+		}
+
+		id = scene->pick(mouse_position, glm::vec2(5.0f), selection);
 
 		if (selection == el::st_npc)
 		{
@@ -858,6 +869,8 @@ extern "C" void engine_draw_scene()
 
 		pick_frame = 0;
 	}
+
+	scene->blit_to_back_buffer();
 
 	CHECK_GL_ERROR();
 
@@ -1570,6 +1583,16 @@ extern "C" void engine_set_low_quality_terrain(const int value)
 	global_vars->set_low_quality_terrain(value != 0);
 }
 
+extern "C" void engine_set_use_scene_fbo(const int value)
+{
+	global_vars->set_use_scene_fbo(value != 0);
+
+	if (scene.get() != 0)
+	{
+		scene->set_view_port(scene->get_view_port());
+	}
+}
+
 extern "C" void engine_set_clipmap_size(const int value)
 {
 	global_vars->set_clipmap_size(512 << value);
@@ -1651,20 +1674,15 @@ extern "C" void engine_set_window_size(const Uint32 width, const Uint32 height,
 	TRY_BLOCK
 
 	glm::uvec4 view_port;
-	glm::uvec2 window_size;
 
 	view_port.x = 0;
 	view_port.y = hud_y;
 	view_port.z = width - hud_x;
 	view_port.w = height - hud_y;
 
-	window_size.x = width;
-	window_size.y = height;
-
 	if (scene.get() != 0)
 	{
 		scene->set_view_port(view_port);
-		scene->set_window_size(window_size);
 	}
 
 	CATCH_BLOCK

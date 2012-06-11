@@ -83,7 +83,8 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map,
 		const GlobalVarsSharedPtr &global_vars,
 		const MeshBuilderSharedPtr &mesh_builder,
-		const MaterialSharedPtr &material): m_material(material)
+		const MaterialSharedPtr &material): m_material(material),
+		m_low_quality(global_vars->get_low_quality_terrain())
 	{
 		m_object_tree.reset(new RStarTree());
 
@@ -91,8 +92,7 @@ namespace eternal_lands
 			get_patch_scale());
 
 		add_terrain_pages(vector_map, normal_map, dudv_map,
-			mesh_builder, global_vars->get_low_quality_terrain(),
-			global_vars->get_use_simd());
+			mesh_builder, global_vars->get_use_simd());
 
 		set_bounding_box(m_object_tree->get_bounding_box());
 	}
@@ -113,8 +113,7 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map,
 		const AbstractMeshSharedPtr &mesh,
 		const glm::uvec2 &tile_offset,
-		const glm::vec2 &position_scale,
-		const Uint32 vertex_count, const Uint32 index_count)
+		const glm::vec2 &position_scale)
 	{
 		VertexStreamSharedPtr vertex_stream;
 		AlignedVec4Array vectors, normals;
@@ -176,7 +175,8 @@ namespace eternal_lands
 		min = glm::min(min, max - 0.05f);
 
 		sub_meshs.push_back(SubMesh(BoundingBox(min, max), 0,
-			index_count, 0, vertex_count - 1));
+			mesh->get_index_count(), 0,
+			mesh->get_vertex_count() - 1));
 
 		mesh->set_sub_meshs(sub_meshs);
 	}
@@ -187,8 +187,7 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map,
 		const AbstractMeshSharedPtr &mesh,
 		const glm::uvec2 &tile_offset,
-		const glm::vec2 &position_scale,
-		const Uint32 vertex_count, const Uint32 index_count)
+		const glm::vec2 &position_scale)
 	{
 		VertexStreamSharedPtr vertex_stream;
 		AlignedVec4Array vectors, normals;
@@ -251,7 +250,8 @@ namespace eternal_lands
 		min = glm::min(min, max - 0.05f);
 
 		sub_meshs.push_back(SubMesh(BoundingBox(min, max), 0,
-			index_count, 0, vertex_count - 1));
+			mesh->get_index_count(), 0,
+			mesh->get_vertex_count() - 1));
 
 		mesh->set_sub_meshs(sub_meshs);
 	}
@@ -260,12 +260,11 @@ namespace eternal_lands
 		const ImageSharedPtr &vector_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
-		const MeshBuilderSharedPtr &mesh_builder,
-		const bool low_quality, const bool use_simd)
+		const MeshBuilderSharedPtr &mesh_builder, const bool use_simd)
 	{
 		MeshDataToolSharedPtr mesh_data_tool;
 		Transformation transformation;
-		AbstractMeshSharedPtr mesh, mesh_clone;
+		AbstractMeshSharedPtr mesh_clone;
 		ObjectSharedPtr object;
 		ObjectData object_data;
 		MaterialSharedPtrVector materials;
@@ -283,7 +282,7 @@ namespace eternal_lands
 
 		tile_size = get_tile_size();
 
-		if (low_quality)
+		if (get_low_quality())
 		{
 			tile_size /= 2;
 			position_scale *= 2;
@@ -342,54 +341,84 @@ namespace eternal_lands
 			BoundingBox(min, max), 0, index_count, 0,
 			vertex_count - 1));
 
-		mesh = mesh_builder->get_mesh(vft_simple_terrain,
+		m_mesh = mesh_builder->get_mesh(vft_simple_terrain,
 			mesh_data_tool, String(UTF8("terrain")));
 
 		for (y = 0; y < height; ++y)
 		{
 			for (x = 0; x < width; ++x)
 			{
-				StringStream str;
-
-				str << UTF8("terrain ") << x << UTF8("x") << y;
-
-				object_data.set_name(String(str.str()));
-
-				tile_offset.x = x;
-				tile_offset.y = y;
-				tile_offset *= tile_size;
-
-				mesh_clone = mesh->clone(0x01, true);
-
-				if (low_quality)
-				{
-					set_terrain_page_low_quality(vector_map,
-						normal_map, dudv_map,
-						mesh_clone, tile_offset,
-						position_scale, vertex_count,
-						index_count);
-				}
-				else
-				{
-					set_terrain_page(vector_map, normal_map,
-						dudv_map, mesh_clone,
-						tile_offset, position_scale,
-						vertex_count, index_count);
-				}
-
-				transformation.set_translation(
-					glm::vec3(glm::vec2(tile_offset) *
-					position_scale, 0.0f));
-
-				object_data.set_world_transformation(
-					transformation);
-
-				object = boost::make_shared<Object>(object_data,
-					mesh_clone, materials);
-
-				m_object_tree->add(object);
+				add_terrain_page(vector_map, normal_map,
+					dudv_map, mesh_builder,
+					glm::uvec2(x, y));
 			}
 		}
+	}
+
+	void SimpleTerrainManager::add_terrain_page(
+		const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
+		const MeshBuilderSharedPtr &mesh_builder,
+		const glm::uvec2 &position)
+	{
+		MaterialSharedPtrVector materials;
+		AbstractMeshSharedPtr mesh_clone;
+		ObjectData object_data;
+		ObjectSharedPtr object;
+		Transformation transformation;
+		StringStream str;
+		glm::uvec2 tile_offset;
+		glm::vec2 position_scale;
+		Uint32 tile_size;
+
+		materials.push_back(m_material);
+
+		str << UTF8("terrain ") << position.x << UTF8("x");
+		str << position.y;
+
+		object_data.set_name(String(str.str()));
+
+		tile_offset = position;
+
+		tile_size = get_tile_size();
+		position_scale = glm::vec2(get_patch_scale());
+
+		if (get_low_quality())
+		{
+			tile_size /= 2;
+			position_scale *= 2;
+		}
+
+		tile_offset *= tile_size;
+
+		mesh_clone = m_mesh->clone(0x01, true);
+
+		if (get_low_quality())
+		{
+			set_terrain_page_low_quality(vector_map, normal_map,
+				dudv_map, mesh_clone, tile_offset,
+				position_scale);
+		}
+		else
+		{
+			set_terrain_page(vector_map, normal_map, dudv_map,
+				mesh_clone, tile_offset, position_scale);
+		}
+
+		transformation.set_translation(
+			glm::vec3(glm::vec2(tile_offset) * position_scale,
+			0.0f));
+
+		object_data.set_world_transformation(
+			transformation);
+
+		object_data.set_id(position.x + (position.y << 16));
+
+		object = boost::make_shared<Object>(object_data,
+			mesh_clone, materials);
+
+		m_object_tree->add(object);
 	}
 
 	void SimpleTerrainManager::intersect(const Frustum &frustum,

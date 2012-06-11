@@ -22,7 +22,8 @@ namespace eternal_lands
 
 	EditorScene::EditorScene(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system):
-		Scene(global_vars, file_system), m_draw_lights(false),
+		Scene(global_vars, file_system), m_draw_objects(true),
+		m_draw_terrain(true), m_draw_lights(false),
 		m_draw_light_spheres(false)
 	{
 	}
@@ -121,6 +122,24 @@ namespace eternal_lands
 		Scene::remove_light(id);
 	}
 
+	void EditorScene::intersect_terrain(const Frustum &frustum,
+		const glm::vec3 &camera, BoundingBox &bounding_box) const
+	{
+		if (get_draw_terrain())
+		{
+			Scene::intersect_terrain(frustum, camera, bounding_box);
+		}
+	}
+
+	void EditorScene::intersect_terrain(const Frustum &frustum,
+		const glm::vec3 &camera, TerrainVisitor &terrain) const
+	{
+		if (get_draw_terrain())
+		{
+			Scene::intersect_terrain(frustum, camera, terrain);
+		}
+	}
+
 	void EditorScene::intersect(const Frustum &frustum,
 		const bool shadow, ObjectVisitor &visitor) const
 	{
@@ -129,7 +148,10 @@ namespace eternal_lands
 		SubFrustumsMask mask;
 		BlendType blend;
 
-		Scene::intersect(frustum, shadow, visitor);
+		if (get_draw_objects())
+		{
+			Scene::intersect(frustum, shadow, visitor);
+		}
 
 		if (!get_draw_lights() || shadow)
 		{

@@ -54,10 +54,9 @@ namespace eternal_lands
 			glm::vec4 m_focus;
 			glm::vec4 m_split_distances;
 			glm::vec4 m_z_params;
-			glm::ivec4 m_view_port;
+			glm::uvec4 m_view_port;
 			glm::vec3 m_shadow_dir;
 			glm::vec3 m_shadow_up;
-			glm::uvec2 m_window_size;
 			glm::uvec2 m_shadow_map_size;
 			float m_fov, m_aspect, m_z_near, m_z_far;
 			float m_shadow_z_far;
@@ -151,12 +150,6 @@ namespace eternal_lands
 				noexcept
 			{
 				m_view_port = view_port;
-			}
-
-			inline void set_window_size(
-				const glm::uvec2 &window_size) noexcept
-			{
-				m_window_size = window_size;
 			}
 
 			inline void set_focus(const glm::vec3 &focus) noexcept
@@ -254,7 +247,7 @@ namespace eternal_lands
 				return m_shadow_texture_matrices;
 			}
 
-			inline const glm::ivec4 &get_view_port() const noexcept
+			inline const glm::uvec4 &get_view_port() const noexcept
 			{
 				return m_view_port;
 			}
@@ -320,12 +313,6 @@ namespace eternal_lands
 			inline float get_shadow_z_far() const noexcept
 			{
 				return m_shadow_z_far;
-			}
-
-			inline const glm::uvec2 &get_window_size() const
-				noexcept
-			{
-				return m_window_size;
 			}
 
 			inline const glm::uvec2 &get_shadow_map_size() const

@@ -64,6 +64,14 @@ namespace eternal_lands
 				const float depth) = 0;
 			virtual void clear(const glm::vec4 &color) = 0;
 			virtual void unbind() = 0;
+			virtual void blit_to_back_buffer(const glm::uvec4 &rect,
+				const Uint16 layer, const bool color,
+				const bool depth, const bool stencil) = 0;
+
+			inline void set_view_port()
+			{
+				glViewport(0, 0, get_width(), get_height());
+			}
 
 			inline const TextureSharedPtr &get_texture() const
 				noexcept

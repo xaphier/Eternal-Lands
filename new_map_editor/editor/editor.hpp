@@ -16,7 +16,6 @@
 #include "undostack.hpp"
 #include "editormapdata.hpp"
 #include "editorobjectdescription.hpp"
-#include "editor.hpp"
 #include <boost/random.hpp>
 #include <boost/random/linear_congruential.hpp>
 #include <boost/random/uniform_int.hpp>
@@ -76,7 +75,8 @@ namespace eternal_lands
 			void add_3d_object(const glm::vec3 &position,
 				const String &mesh,
 				const SelectionType selection);
-			void add_light(const glm::vec3 &position);
+			void add_light(const glm::vec3 &position,
+				const float radius);
 			void add_ground_tile(const Uint32 x, const Uint32 y,
 				const Uint8 texture);
 			void set_ambient(const glm::vec3 &color);
@@ -158,6 +158,16 @@ namespace eternal_lands
 				const
 			{
 				return m_data.get_image(name);
+			}
+
+			inline void set_draw_objects(const bool draw_objects)
+			{
+				m_data.set_draw_objects(draw_objects);
+			}
+
+			inline void set_draw_terrain(const bool draw_terrain)
+			{
+				m_data.set_draw_terrain(draw_terrain);
 			}
 
 			inline void set_draw_lights(const bool draw_lights)

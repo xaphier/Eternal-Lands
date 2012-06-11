@@ -58,8 +58,8 @@ namespace eternal_lands
 			std::map<Uint32, LightData> m_lights;
 			std::map<Uint32, ParticleData> m_particles;
 			boost::scoped_ptr<EditorScene> m_scene;
-			ImageSharedPtr m_terrain_values_image;
-			ImageSharedPtr m_blend_image;
+			ImageSharedPtr m_terrain_vector_image;
+			boost::array<ImageSharedPtr, 3> m_blend_images;
 			Uint16MultiArray2 m_height_map;
 			Uint8MultiArray2 m_tile_map;
 			Uint32 m_id;
@@ -155,6 +155,8 @@ namespace eternal_lands
 			void select(const glm::uvec2 &position,
 				const glm::uvec2 &half_size);
 			void select_depth(const glm::uvec2 &position);
+			void set_draw_objects(const bool draw_objects);
+			void set_draw_terrain(const bool draw_terrain);
 			void set_draw_lights(const bool draw_lights);
 			void set_draw_light_spheres(
 				const bool draw_light_spheres);

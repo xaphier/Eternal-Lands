@@ -94,9 +94,10 @@ void ELGLWidget::mouse_click_action()
 		return;
 	}
 
-	if (!m_object.get().empty())
+	if (m_object)
 	{
-		m_editor->add_3d_object(m_world_position, m_object, st_select);
+		m_editor->add_3d_object(m_world_position, m_object_name,
+			st_select);
 		emit update_object(false);
 		emit can_undo(m_editor->get_can_undo());
 
@@ -105,7 +106,7 @@ void ELGLWidget::mouse_click_action()
 
 	if (m_light)
 	{
-		m_editor->add_light(m_world_position);
+		m_editor->add_light(m_world_position, m_light_radius);
 		emit update_light(false);
 		emit can_undo(m_editor->get_can_undo());
 
@@ -448,6 +449,7 @@ void ELGLWidget::undo()
 	{
 		switch (m_editor->get_renderable())
 		{
+			default:
 			case rt_none:
 			case rt_particle:
 				break;
@@ -542,14 +544,18 @@ void ELGLWidget::zoom_out()
 
 void ELGLWidget::add_object(const String &object)
 {
-	m_object = object;
 	m_light = false;
+	m_object = true;
+	m_object_name = object;
+	m_light_radius = 0.0f;
 }
 
-void ELGLWidget::add_light()
+void ELGLWidget::add_light(const float radius)
 {
 	m_light = true;
-	m_object = String("");
+	m_object = false;
+	m_object_name = String("");
+	m_light_radius = radius;
 }
 
 QStringList ELGLWidget::get_terrain_albedo_maps() const
@@ -816,12 +822,14 @@ void ELGLWidget::set_random_scale_max(const double value)
 
 void ELGLWidget::disable_object()
 {
-	m_object = String("");
+	m_object = false;
+	m_object_name = String("");
 }
 
 void ELGLWidget::disable_light()
 {
 	m_light = false;
+	m_light_radius = 0.0f;
 }
 
 void ELGLWidget::save(const QString &name) const
@@ -852,6 +860,16 @@ glm::vec3 ELGLWidget::get_light_color() const
 	get_light_data(light);
 
 	return light.get_color();
+}
+
+void ELGLWidget::set_draw_objects(const bool draw_objects)
+{
+	m_editor->set_draw_objects(draw_objects);
+}
+
+void ELGLWidget::set_draw_terrain(const bool draw_terrain)
+{
+	m_editor->set_draw_terrain(draw_terrain);
 }
 
 void ELGLWidget::set_draw_lights(const bool draw_lights)

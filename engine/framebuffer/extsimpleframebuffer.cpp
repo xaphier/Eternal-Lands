@@ -214,4 +214,44 @@ namespace eternal_lands
 		m_frame_buffer.unbind();
 	}
 
+	void ExtSimpleFrameBuffer::blit_to_back_buffer(const glm::uvec4 &rect,
+		const Uint16 layer, const bool color, const bool depth,
+		const bool stencil)
+	{
+		GLbitfield mask;
+
+		mask = 0;
+
+		if (color)
+		{
+			mask |= GL_COLOR_BUFFER_BIT;
+		}
+
+		if (color)
+		{
+			mask |= GL_DEPTH_BUFFER_BIT;
+		}
+
+		if (color)
+		{
+			mask |= GL_STENCIL_BUFFER_BIT;
+		}
+
+		if (mask == 0)
+		{
+			return;
+		}
+
+		m_frame_buffer.bind(false);
+		glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER_EXT, 0);
+
+		glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + layer);
+		glDrawBuffer(GL_BACK);
+
+		glBlitFramebufferEXT(0, 0, get_width(), get_height(), rect.x,
+			rect.y, rect.z, rect.w, mask, GL_NEAREST);
+
+		glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, 0);
+	}
+
 }

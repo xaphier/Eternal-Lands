@@ -35,10 +35,18 @@ namespace eternal_lands
 		private:
 			Uint32ObjectSharedPtrMap m_light_objects;
 			Uint32ObjectSharedPtrMap m_light_sphere_objects;
+			bool m_draw_objects;
+			bool m_draw_terrain;
 			bool m_draw_lights;
 			bool m_draw_light_spheres;
 
 		protected:
+			virtual void intersect_terrain(const Frustum &frustum,
+				const glm::vec3 &camera,
+				BoundingBox &bounding_box) const;
+			virtual void intersect_terrain(const Frustum &frustum,
+				const glm::vec3 &camera,
+				TerrainVisitor &terrain) const;
 			virtual void intersect(const Frustum &frustum,
 				const bool shadow, ObjectVisitor &visitor)
 				const;
@@ -58,6 +66,16 @@ namespace eternal_lands
 			virtual void remove_light(const Uint32 id);
 			void load_map(const String &name, EditorMapData &data);
 
+			inline bool get_draw_objects() const
+			{
+				return m_draw_objects;
+			}
+
+			inline bool get_draw_terrain() const
+			{
+				return m_draw_terrain;
+			}
+
 			inline bool get_draw_lights() const
 			{
 				return m_draw_lights;
@@ -66,6 +84,16 @@ namespace eternal_lands
 			inline bool get_draw_light_spheres() const
 			{
 				return m_draw_light_spheres;
+			}
+
+			inline void set_draw_objects(const bool draw_objects)
+			{
+				m_draw_objects = draw_objects;
+			}
+
+			inline void set_draw_terrain(const bool draw_terrain)
+			{
+				m_draw_terrain = draw_terrain;
 			}
 
 			inline void set_draw_lights(const bool draw_lights)

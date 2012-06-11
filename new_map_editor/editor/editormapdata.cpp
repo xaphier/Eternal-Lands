@@ -36,6 +36,16 @@ namespace eternal_lands
 	{
 	}
 
+	void EditorMapData::set_draw_objects(const bool draw_objects)
+	{
+		m_scene->set_draw_objects(draw_objects);
+	}
+
+	void EditorMapData::set_draw_terrain(const bool draw_terrain)
+	{
+		m_scene->set_draw_terrain(draw_terrain);
+	}
+
 	void EditorMapData::set_draw_lights(const bool draw_lights)
 	{
 		m_scene->set_draw_lights(draw_lights);
@@ -352,7 +362,7 @@ namespace eternal_lands
 	{
 		BOOST_FOREACH(const TerrainValue &terrain_value, terrain_values)
 		{
-			m_terrain_values_image->set_pixel_uint(
+			m_terrain_vector_image->set_pixel_uint(
 				terrain_value.get_x(), terrain_value.get_y(),
 				0, 0, 0, terrain_value.get_value());
 		}
@@ -504,11 +514,11 @@ namespace eternal_lands
 		min_y = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
 
 		tmp = static_cast<float>(vertex.x) + radius;
-		temp = m_terrain_values_image->get_width() - 1.0f;
+		temp = m_terrain_vector_image->get_width() - 1.0f;
 		max_x = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
 		tmp = static_cast<float>(vertex.y) + radius;
-		temp = m_terrain_values_image->get_height() - 1.0f;
+		temp = m_terrain_vector_image->get_height() - 1.0f;
 		max_y = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
 		terrain_values.clear();
@@ -528,7 +538,7 @@ namespace eternal_lands
 					TerrainValue value(x, y);
 
 					value.set_value(
-						m_terrain_values_image->
+						m_terrain_vector_image->
 							get_pixel_uint(x, y,
 								0, 0, 0));
 
@@ -648,11 +658,11 @@ namespace eternal_lands
 		min_y = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
 
 		tmp = static_cast<float>(vertex.x) + radius;
-		temp = m_blend_image->get_width() - 1.0f;
+		temp = m_blend_images[0]->get_width() - 1.0f;
 		max_x = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
 		tmp = static_cast<float>(vertex.y) + radius;
-		temp = m_blend_image->get_height() - 1.0f;
+		temp = m_blend_images[0]->get_height() - 1.0f;
 		max_y = boost::numeric_cast<Uint32>(std::min(temp, tmp));
 
 		blend_values.clear();
@@ -672,7 +682,7 @@ namespace eternal_lands
 					ImageValue value(x, y);
 
 					value.set_value(
-						m_blend_image->get_pixel(x, y,
+						m_blend_images[0]->get_pixel(x, y,
 							0, 0, 0));
 					blend_values.push_back(value);
 				}

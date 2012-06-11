@@ -28,29 +28,35 @@ namespace eternal_lands
 		private:
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			MaterialSharedPtr m_material;
+			AbstractMeshSharedPtr m_mesh;
+			const bool m_low_quality;
 
 			void add_terrain_pages(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const MeshBuilderSharedPtr &mesh_builder,
-				const bool low_quality, const bool use_simd);
+				const bool use_simd);
 			void set_terrain_page(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const AbstractMeshSharedPtr &mesh,
 				const glm::uvec2 &tile_offset,
-				const glm::vec2 &position_scale,
-				const Uint32 vertex_count,
-				const Uint32 index_count);
+				const glm::vec2 &position_scale);
 			void set_terrain_page_low_quality(
 				const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const AbstractMeshSharedPtr &mesh,
 				const glm::uvec2 &tile_offset,
-				const glm::vec2 &position_scale,
-				const Uint32 vertex_count,
-				const Uint32 index_count);
+				const glm::vec2 &position_scale);
+
+		protected:
+			void add_terrain_page(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
+				const MeshBuilderSharedPtr &mesh_builder,
+				const glm::uvec2 &position);
+			void remove_terrain_page(const glm::uvec2 &position);
 
 		public:
 			SimpleTerrainManager(const ImageSharedPtr &vector_map,
@@ -75,6 +81,11 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_material;
+			}
+
+			inline bool get_low_quality() const noexcept
+			{
+				return m_low_quality;
 			}
 
 	};

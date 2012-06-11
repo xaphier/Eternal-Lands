@@ -89,10 +89,11 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void update_light(const bool select);
 		void deselect();
 		void change_light_color();
-		void add_object(const bool value);
-		void add_light(const bool value);
+		void add_objects(const bool value);
+		void add_lights(const bool value);
+		void terrain_mode(const bool checked);
+		void delete_mode(const bool checked);
 		void remove();
-		void height_mode(const bool checked);
 		void set_terrain_albedo_map(const int index);
 		void set_fog();
 		void open_map();

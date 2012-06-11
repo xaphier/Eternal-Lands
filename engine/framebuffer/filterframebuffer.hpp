@@ -43,6 +43,9 @@ namespace eternal_lands
 			virtual void clear(const glm::vec4 &color,
 				const float depth);
 			virtual void unbind();
+			virtual void blit_to_back_buffer(const glm::uvec4 &rect,
+				const Uint16 layer, const bool color,
+				const bool depth, const bool stencil) override;
 
 	};
 

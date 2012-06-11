@@ -435,7 +435,7 @@ namespace eternal_lands
 
 		m_shadow_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
-				String(UTF8("Shadow")),	shadow_map_width,
+				String(UTF8("Shadow")), shadow_map_width,
 				shadow_map_height, shadow_map_count,
 				mipmaps, samples, ttt_texture_2d_array,
 				tft_r32f, false, true);
@@ -1092,8 +1092,8 @@ namespace eternal_lands
 
 		if (!m_scene_view.get_exponential_shadow_maps())
 		{
-			glPolygonOffset(1.05f, 8.0f);
-			glCullFace(GL_FRONT);
+			glPolygonOffset(0.05f, 8.0f);
+//			glCullFace(GL_FRONT);
 		}
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1137,15 +1137,11 @@ namespace eternal_lands
 
 	void Scene::draw_all_shadows_array()
 	{
-		Uint32 width, height;
 		Uint16 i;
 
 		DEBUG_CHECK_GL_ERROR();
 
-		width = m_shadow_frame_buffer->get_width();
-		height = m_shadow_frame_buffer->get_height();
-
-		glViewport(0, 0, width, height);
+		m_shadow_frame_buffer->set_view_port();
 
 		if (get_global_vars()->get_opengl_3_2())
 		{
@@ -1192,13 +1188,6 @@ namespace eternal_lands
 		{
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 		}
-
-		DEBUG_CHECK_GL_ERROR();
-
-		glViewport(m_scene_view.get_view_port()[0],
-			m_scene_view.get_view_port()[1],
-			m_scene_view.get_view_port()[2],
-			m_scene_view.get_view_port()[3]);
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1491,12 +1480,12 @@ namespace eternal_lands
 	{
 		Mat2x3Array2 texture_matrices;
 		glm::mat2x3 texture_matrix;
-		Uint32 i, width, height, count;
+		Uint32 i, count;
 
-		width = m_clipmap_frame_buffer->get_width();
-		height = m_clipmap_frame_buffer->get_height();
+		DEBUG_CHECK_GL_ERROR();
 
-		glViewport(0, 0, width, height);
+		m_clipmap_frame_buffer->set_view_port();
+
 		DEBUG_CHECK_GL_ERROR();
 
 		m_scene_view.set_ortho_view();
@@ -1534,16 +1523,12 @@ namespace eternal_lands
 		}
 
 		DEBUG_CHECK_GL_ERROR();
-
-		glViewport(m_scene_view.get_view_port()[0],
-			m_scene_view.get_view_port()[1],
-			m_scene_view.get_view_port()[2],
-			m_scene_view.get_view_port()[3]);
 	}
 
 	void Scene::draw()
 	{
 		StateManagerUtil state(m_state_manager);
+
 		CHECK_GL_ERROR();
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1552,6 +1537,18 @@ namespace eternal_lands
 
 		m_scene_view.set_default_view();
 		glDepthFunc(GL_LEQUAL);
+
+		if (m_scene_frame_buffer.get() == nullptr)
+		{
+			set_view_port();
+		}
+		else
+		{
+			m_scene_frame_buffer->bind(0);
+			m_scene_frame_buffer->clear(glm::vec4(0.0f));
+			m_scene_frame_buffer->set_view_port();
+		}
+
 		draw_depth();
 
 		if (m_scene_view.get_shadow_map_count() > 0)
@@ -1575,11 +1572,22 @@ namespace eternal_lands
 		}
 
 		m_state_manager.switch_depth_mask(false);
+
+		if (m_scene_frame_buffer.get() == nullptr)
+		{
+			set_view_port();
+		}
+		else
+		{
+			m_scene_frame_buffer->bind(0);
+			m_scene_frame_buffer->set_view_port();
+		}
+
 		draw_default();
 	}
 
 	void Scene::pick_object(const RenderObjectData &object,
-		PairUint32SelectionTypeVector &ids)
+		PairUint32SelectionTypeVector &ids, Uint32 &query_index)
 	{
 		PairUint32SelectionType data;
 		Uint32 i, sub_objects, index;
@@ -1596,7 +1604,7 @@ namespace eternal_lands
 			data.second = object.get_object()->get_selection();
 
 			glBeginQuery(GL_SAMPLES_PASSED,
-				m_querie_ids[ids.size()]);
+				m_querie_ids[query_index]);
 
 			draw_object(object.get_object(), ept_depth,
 				1, object.get_distance(), false);
@@ -1604,6 +1612,7 @@ namespace eternal_lands
 			glEndQuery(GL_SAMPLES_PASSED);
 
 			ids.push_back(data);
+			query_index++;
 
 			return;
 		}
@@ -1630,7 +1639,7 @@ namespace eternal_lands
 				)[i].get_selection();
 
 			glBeginQuery(GL_SAMPLES_PASSED,
-				m_querie_ids[ids.size()]);
+				m_querie_ids[query_index]);
 
 			index = object.get_object()->get_sub_objects(
 				)[i].get_material();
@@ -1669,6 +1678,7 @@ namespace eternal_lands
 			glEndQuery(GL_SAMPLES_PASSED);
 
 			ids.push_back(data);
+			query_index++;
 		}
 	}
 
@@ -1676,7 +1686,7 @@ namespace eternal_lands
 		SelectionType &selection)
 	{
 		PairUint32SelectionTypeVector ids;
-		Uint32 i, max_count, count, id;
+		Uint32 i, max_count, count, id, query_offset, query_index;
 		StateManagerUtil state(m_state_manager);
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("picking"));
@@ -1688,17 +1698,21 @@ namespace eternal_lands
 		m_state_manager.switch_multisample(true);
 		m_state_manager.switch_depth_mask(false);
 		m_state_manager.switch_color_mask(glm::bvec4(false));
-//		m_state_manager.switch_polygon_offset_fill(true);
-//		glPolygonOffset(0.99f, -4.0f);
+
+		m_state_manager.switch_polygon_offset_fill(true);
+		glPolygonOffset(0.0f, -1.0f);
 
 		glDepthFunc(GL_LEQUAL);
 
 		m_scene_view.set_default_view();
 
+		query_offset = m_querie_ids.size() / 2;
+		query_index = query_offset;
+
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			pick_object(object, ids);
+			pick_object(object, ids, query_index);
 		}
 
 		m_program_vars_id++;
@@ -1710,11 +1724,13 @@ namespace eternal_lands
 		for (i = 0; i < ids.size(); ++i)
 		{
 			count = 0;
+			assert(query_index > (i + query_offset));
 
-			glGetQueryObjectuiv(m_querie_ids[i], GL_QUERY_RESULT,
-				&count);
+			glGetQueryObjectuiv(m_querie_ids[i + query_offset],
+				GL_QUERY_RESULT, &count);
 
-			if (count > max_count)
+			if ((count >= max_count) && (count > 0) &&
+				(ids[i].second != st_none))
 			{
 				id = ids[i].first;
 				selection = ids[i].second;
@@ -1814,6 +1830,58 @@ namespace eternal_lands
 	bool Scene::get_terrain() const
 	{
 		return m_map->get_terrain();
+	}
+
+	void Scene::blit_to_back_buffer()
+	{
+		glm::uvec4 rect;
+
+		if (m_scene_frame_buffer.get() == nullptr)
+		{
+			return;
+		}
+
+		rect = glm::uvec4(m_scene_view.get_view_port());
+		rect.z += rect.x;
+		rect.w += rect.y;
+
+		set_view_port();
+
+		m_scene_frame_buffer->blit_to_back_buffer(rect, 0, true,
+			true, true);
+		m_scene_frame_buffer->unbind();
+	}
+
+	void Scene::set_view_port(const glm::uvec4 &view_port)
+	{
+		if (get_global_vars()->get_use_scene_fbo())
+		{
+			if ((view_port.z != m_scene_view.get_view_port().z) ||
+				(view_port.w != m_scene_view.get_view_port().w)
+				|| (m_scene_frame_buffer.get() == nullptr))
+			{
+				m_scene_frame_buffer = get_scene_resources(
+					).get_framebuffer_builder()->build(
+						String(UTF8("Scene")),
+						view_port.z, view_port.w, 0, 0,
+						ttt_texture_2d, tft_rgba8,
+						true);
+			}
+		}
+		else
+		{
+			m_scene_frame_buffer.reset();
+		}
+
+		m_scene_view.set_view_port(view_port);
+	}
+
+	void Scene::set_view_port()
+	{
+		glViewport(m_scene_view.get_view_port()[0],
+			m_scene_view.get_view_port()[1],
+			m_scene_view.get_view_port()[2],
+			m_scene_view.get_view_port()[3]);
 	}
 
 }

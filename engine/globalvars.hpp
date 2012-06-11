@@ -65,6 +65,7 @@ namespace eternal_lands
 			bool m_low_quality_terrain;
 			bool m_use_multisample_shadows;
 			bool m_effect_debug;
+			bool m_use_scene_fbo;
 
 		public:
 			GlobalVars();
@@ -180,6 +181,11 @@ namespace eternal_lands
 				noexcept
 			{
 				m_effect_debug = effect_debug;
+			}
+
+			inline void set_use_scene_fbo(const bool use_scene_fbo) noexcept
+			{
+				m_use_scene_fbo = use_scene_fbo;
 			}
 
 			inline const String &get_quality() const noexcept
@@ -347,6 +353,11 @@ namespace eternal_lands
 			inline bool get_effect_debug() const noexcept
 			{
 				return m_effect_debug;
+			}
+
+			inline bool get_use_scene_fbo() const noexcept
+			{
+				return m_use_scene_fbo;
 			}
 
 	};

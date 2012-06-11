@@ -24,9 +24,10 @@ class ELGLWidget: public QGLWidget
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
 		glm::vec3 m_world_position;
-		String m_object;
-		float m_zoom, m_rotate_z;
 		glm::uvec2  m_select_pos, m_half_size;
+		String m_object_name;
+		float m_light_radius;
+		float m_zoom, m_rotate_z;
 		float m_selected_depth;
 		Uint32 m_terrain_type_index;
 		Uint32 m_terrain_layer_index;
@@ -34,6 +35,7 @@ class ELGLWidget: public QGLWidget
 		bool m_select;
 		bool m_select_depth;
 		bool m_terrain_editing;
+		bool m_object;
 		bool m_light;
 		bool m_mouse_click_action;
 		bool m_mouse_move_action;
@@ -91,7 +93,7 @@ class ELGLWidget: public QGLWidget
 		void set_object_blend(const BlendType blend);
 		void set_object_materials(const StringVector &materials);
 		void add_object(const String &object);
-		void add_light();
+		void add_light(const float radius);
 		void set_ambient(const glm::vec3 &color);
 		const glm::vec3 &get_ambient() const;
 		void set_fog(const glm::vec3 &color, const float density);
@@ -216,6 +218,8 @@ class ELGLWidget: public QGLWidget
 		void open_map(const QString &file_name);
 		void set_blend_image_name(const QString &blend_image_name);
 		void set_game_minute(const int game_minute);
+		void set_draw_objects(const bool draw_objects);
+		void set_draw_terrain(const bool draw_terrain);
 		void set_draw_lights(const bool draw_lights);
 		void set_draw_light_spheres(const bool draw_light_spheres);
 		void set_lights_enabled(const bool enabled);

@@ -10,7 +10,7 @@ void main(vec3 & in position, vec4 & out color)
 	l0 = dot(tmp, vec3(0.11f, 0.59f, 0.33f));
 	l1 = dot(tmp, vec3(0.11f, 0.59f, 0.33f));
 
-	tmp = mix(vec3(l1), tmp, pow(l0, 0.5f));
+	tmp = mix(vec3(l1), tmp, pow(l0, 0.99f));
 
 	tmp = pow(tmp, vec3(0.90f));
 

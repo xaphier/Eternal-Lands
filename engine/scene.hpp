@@ -100,7 +100,8 @@ namespace eternal_lands
 				const Uint16 instances, const Uint16 distance,
 				const bool lights);
 			void pick_object(const RenderObjectData &object,
-				PairUint32SelectionTypeVector &ids);
+				PairUint32SelectionTypeVector &ids,
+				Uint32 &query_index);
 			bool switch_program(
 				const GlslProgramSharedPtr &program);
 			void cull_shadows(const glm::vec3 &camera,
@@ -119,6 +120,7 @@ namespace eternal_lands
 			void update_terrain_texture();
 			void build_terrain_map();
 			void build_shadow_map();
+			void set_view_port();
 
 		protected:
 			virtual void intersect_terrain(const Frustum &frustum,
@@ -171,6 +173,7 @@ namespace eternal_lands
 				const float density);
 			void clear();
 			void draw();
+			void blit_to_back_buffer();
 			void cull();
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
@@ -189,6 +192,12 @@ namespace eternal_lands
 			float get_walk_height(const Uint16 x, const Uint16 y)
 				const;
 			bool get_terrain() const;
+			void set_view_port(const glm::uvec4 &view_port);
+
+			inline const glm::uvec4 &get_view_port() const noexcept
+			{
+				return m_scene_view.get_view_port();
+			}
 
 			inline void rebuild_terrain_map() noexcept
 			{
@@ -211,18 +220,6 @@ namespace eternal_lands
 			{
 				m_scene_view.set_perspective(fov, aspect,
 					z_near);
-			}
-
-			inline void set_view_port(const glm::uvec4 &view_port)
-				noexcept
-			{
-				m_scene_view.set_view_port(view_port);
-			}
-
-			inline void set_window_size(
-				const glm::uvec2 &window_size) noexcept
-			{
-				m_scene_view.set_window_size(window_size);
 			}
 
 			inline float get_fov() const noexcept
