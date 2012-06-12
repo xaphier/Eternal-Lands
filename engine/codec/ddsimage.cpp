@@ -6,13 +6,14 @@
  ****************************************************************************/
 
 #include "ddsimage.hpp"
-#include "../exceptions.hpp"
-#include "../logging.hpp"
-#include "../reader.hpp"
-#include "../image.hpp"
+#include "exceptions.hpp"
+#include "logging.hpp"
+#include "reader.hpp"
+#include "image.hpp"
 #include "codecmanager.hpp"
 #include "dds.hpp"
 #include "writer.hpp"
+#include "dxt.hpp"
 
 namespace eternal_lands
 {
@@ -244,99 +245,6 @@ namespace eternal_lands
 				header.m_pixel_format.m_alpha_mask ^=
 					header.m_pixel_format.m_green_mask;
 			}
-		}
-
-		void read_colors_block(const ReaderSharedPtr &reader,
-			dds::DXTColorBlock &colors)
-		{
-			BOOST_FOREACH(Uint16 &value, colors.m_colors)
-			{
-				value = reader->read_u16_le();
-			}
-
-			BOOST_FOREACH(Uint8 &value, colors.m_indices)
-			{
-				value = reader->read_u8();
-			}
-		}
-
-		void read_alphas_block(const ReaderSharedPtr &reader,
-			dds::DXTInterpolatedAlphaBlock &alphas)
-		{
-			BOOST_FOREACH(Uint8 &value, alphas.m_alphas)
-			{
-				value = reader->read_u8();
-			}
-
-			BOOST_FOREACH(Uint8 &value, alphas.m_indices)
-			{
-				value = reader->read_u8();
-			}
-		}
-
-		void read_alphas_block(const ReaderSharedPtr &reader,
-			dds::DXTExplicitAlphaBlock &alphas)
-		{
-			BOOST_FOREACH(Uint16 &value, alphas.m_alphas)
-			{
-				value = reader->read_u16_le();
-			}
-		}
-
-		void read_and_uncompress_dxt1_block(
-			const ReaderSharedPtr &reader, Vec4Array16 &values)
-		{
-			dds::DXTColorBlock colors;
-
-			read_colors_block(reader, colors);
-
-			dds::unpack_dxt1(colors, values);
-		}
-
-		void read_and_uncompress_dxt3_block(
-			const ReaderSharedPtr &reader, Vec4Array16 &values)
-		{
-			dds::DXTExplicitAlphaBlock alphas;
-			dds::DXTColorBlock colors;
-
-			read_alphas_block(reader, alphas);
-			read_colors_block(reader, colors);
-
-			dds::unpack_dxt3(alphas, colors, values);
-		}
-
-		void read_and_uncompress_dxt5_block(
-			const ReaderSharedPtr &reader, Vec4Array16 &values)
-		{
-			dds::DXTInterpolatedAlphaBlock alphas;
-			dds::DXTColorBlock colors;
-
-			read_alphas_block(reader, alphas);
-			read_colors_block(reader, colors);
-
-			dds::unpack_dxt5(alphas, colors, values);
-		}
-
-		void read_and_uncompress_ati1_block(
-			const ReaderSharedPtr &reader, Vec4Array16 &values)
-		{
-			dds::DXTInterpolatedAlphaBlock alphas;
-
-			read_alphas_block(reader, alphas);
-
-			dds::unpack_ati1(alphas, values);
-		}
-
-		void read_and_uncompress_ati2_block(
-			const ReaderSharedPtr &reader, Vec4Array16 &values)
-		{
-			dds::DXTInterpolatedAlphaBlock first_block;
-			dds::DXTInterpolatedAlphaBlock second_block;
-
-			read_alphas_block(reader, first_block);
-			read_alphas_block(reader, second_block);
-
-			dds::unpack_ati2(first_block, second_block, values);
 		}
 
 		void convert_ycocg_block(Vec4Array16 &values)
@@ -916,12 +824,6 @@ namespace eternal_lands
 					&compression, const bool rg_formats);
 				void set_format(const TextureFormatType tft,
 					const bool rg_formats);
-				void uncompress_block(
-					const TextureFormatType format,
-					const Uint32 x, const Uint32 y,
-					const Uint32 z, const Uint16 face,
-					const Uint16 mipmap, const Uint32 width,
-					const Uint32 height);
 				void uncompress(const TextureFormatType format,
 					const bool rg_formats);
 				void load(const ImageCompressionTypeSet
@@ -937,11 +839,6 @@ namespace eternal_lands
 					const Uint16 swap_size,
 					const bool rg_formats);
 				Uint16 get_faces() const;
-				void read_uncompress_face(
-					const TextureFormatType format,
-					const Uint32 width, const Uint32 height,
-					const Uint32 depth, const Uint16 face,
-					const Uint16 mipmap);
 
 				inline const CodecManager &get_codec_manager()
 					const
@@ -1215,12 +1112,6 @@ namespace eternal_lands
 			const bool rg_formats)
 		{
 			glm::uvec3 size;
-			Uint32 width, height, depth, face_count, mipmap_count;
-			Uint32 i, j;
-			Uint32 dst_bpp;
-			GLenum gl_format;
-			GLenum gl_type;
-			TextureFormatType uncompressed_format;
 
 			LOG_DEBUG(lt_dds_image, UTF8("Uncompressing DDS file "
 				"'%1%'."), m_reader->get_name());
@@ -1250,12 +1141,6 @@ namespace eternal_lands
 				m_header.m_pixel_format.m_green_mask = 0x00FF0000;
 				m_header.m_pixel_format.m_blue_mask = 0x0000FF00;
 				m_header.m_pixel_format.m_alpha_mask = 0x000000FF;
-
-				dst_bpp = 4;
-
-				gl_type = GL_UNSIGNED_BYTE;
-				gl_format = GL_RGBA;
-				uncompressed_format = tft_rgba8;
 			}
 			else
 			{
@@ -1265,20 +1150,6 @@ namespace eternal_lands
 					m_header.m_pixel_format.m_green_mask = 0x000000FF;
 					m_header.m_pixel_format.m_blue_mask = 0x00000000;
 					m_header.m_pixel_format.m_alpha_mask = 0x00000000;
-
-					dst_bpp = 2;
-					gl_type = GL_UNSIGNED_BYTE;
-
-					if (rg_formats)
-					{
-						gl_format = GL_RG;
-						uncompressed_format = tft_rg8;
-					}
-					else
-					{
-						gl_format = GL_LUMINANCE_ALPHA;
-						uncompressed_format = tft_la8;
-					}
 				}
 				else
 				{
@@ -1288,24 +1159,6 @@ namespace eternal_lands
 						m_header.m_pixel_format.m_green_mask = 0x00000000;
 						m_header.m_pixel_format.m_blue_mask = 0x00000000;
 						m_header.m_pixel_format.m_alpha_mask = 0x00000000;
-
-						dst_bpp = 1;
-
-						gl_type = GL_UNSIGNED_BYTE;
-
-						if (rg_formats)
-						{
-							gl_format = GL_RED;
-							uncompressed_format =
-								tft_r8;
-						}
-						else
-						{
-							gl_format =
-								GL_LUMINANCE;
-							uncompressed_format =
-								tft_l8;
-						}
 					}
 					else
 					{
@@ -1321,120 +1174,10 @@ namespace eternal_lands
 			size[1] = m_header.m_height;
 			size[2] = m_header.m_depth;
 
-			m_image = boost::make_shared<Image>(
-				m_reader->get_name(), get_cube_map(m_header),
-				uncompressed_format, size,
+			m_image = Dxt::uncompress(m_reader,
+				m_reader->get_name(), size, format,
 				static_cast<Uint16>(m_header.m_mipmap_count),
-				static_cast<Uint16>(dst_bpp * 8), gl_format,
-				gl_type, false);
-
-			face_count = m_image->get_face_count();
-			mipmap_count = m_image->get_mipmap_count();
-
-			for (i = 0; i < face_count; ++i)
-			{
-				width = m_image->get_width();
-				height = m_image->get_height();
-				depth = m_image->get_depth();
-
-				for (j = 0; j <= mipmap_count; ++j)
-				{
-					read_uncompress_face(format,
-						width, height, depth, i, j);
-
-					if (width > 1)
-					{
-						width /= 2;
-					}
-
-					if (height > 1)
-					{
-						height /= 2;
-					}
-
-					if (depth > 1)
-					{
-						depth /= 2;
-					}
-				}
-			}
-		}
-
-		void DdsImageLoader::read_uncompress_face(
-			const TextureFormatType format, const Uint32 width,
-			const Uint32 height, const Uint32 depth,
-			const Uint16 face, const Uint16 mipmap)
-		{
-			Uint32 x, y, z;
-
-			// slices are done individually
-			for (z = 0; z < depth; z++)
-			{
-				// 4x4 blocks in x/y
-				for (y = 0; y < height; y += 4)
-				{
-					for (x = 0; x < width; x += 4)
-					{
-						uncompress_block(format, x, y,
-							z, face, mipmap,
-							width, height);
-					}
-				}
-			}
-		}
-
-		void DdsImageLoader::uncompress_block(
-			const TextureFormatType format,
-			const Uint32 x, const Uint32 y, const Uint32 z,
-			const Uint16 face, const Uint16 mipmap,
-			const Uint32 width, const Uint32 height)
-		{
-			Vec4Array16 values;
-			Uint32 bx, by, sx, sy;
-
-			switch (format)
-			{
-				case tft_rgb_dxt1:
-				case tft_rgba_dxt1:
-					read_and_uncompress_dxt1_block(m_reader,
-						values);
-					break;
-				case tft_rgba_dxt3:
-					read_and_uncompress_dxt3_block(m_reader,
-						values);
-					break;
-				case tft_rgba_dxt5:
-					read_and_uncompress_dxt5_block(m_reader,
-						values);
-					break;
-				case tft_r_rgtc1:
-					read_and_uncompress_ati1_block(m_reader,
-						values);
-					break;
-				case tft_rg_rgtc2:
-					read_and_uncompress_ati2_block(m_reader,
-						values);
-					break;
-				default:
-					EL_THROW_EXCEPTION(
-						InvalidParameterException()
-						<< boost::errinfo_file_name(
-							m_reader->get_name()));
-			}
-
-			sx = std::min(width - x, static_cast<Uint32>(4));
-			sy = std::min(height - y, static_cast<Uint32>(4));
-
-			// write 4x4 block to uncompressed version
-			for (by = 0; by < sy; by++)
-			{
-				for (bx = 0; bx < sx; bx++)
-				{
-					m_image->set_pixel(x + bx, y + by, z,
-						face, mipmap,
-						values[by * 4 + bx]);
-				}
-			}
+				get_cube_map(m_header), rg_formats);
 		}
 
 	}
