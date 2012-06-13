@@ -30,10 +30,10 @@ namespace eternal_lands
 	 * Abstract basic class for images used for images.
 	 * @see ImageLoader
 	 */
-	class Image
+	class Image: public boost::enable_shared_from_this<Image>
 	{
 		private:
-			ReadWriteMemory m_buffer;
+			ReadWriteMemorySharedPtr m_buffer;
 			String m_name;
 			TextureFormatType m_texture_format;
 			glm::uvec3 m_sizes;
@@ -109,6 +109,20 @@ namespace eternal_lands
 			 */
 			Image(const Image &image);
 
+			/**
+			 * @brief Returns decompressed image.
+			 * Returns a decompressed copy of the image if the
+			 * image is compressed, else a copy if the image
+			 * itself is returned.
+			 * @param copy Returns a copy of the image if the image
+			 * is uncompressed else just a copy of the handle.
+			 * @param rg_formats Use RG and R as format for
+			 * uncompressed image.
+			 * @return the uncompressed image.
+			 */
+			ImageSharedPtr decompress(const bool copy,
+				const bool rg_formats);
+
 			void read_framebuffer(const Uint32 x, const Uint32 y);
 
 			/**
@@ -151,7 +165,8 @@ namespace eternal_lands
 						mipmap);
 			}
 
-			inline ReadWriteMemory &get_buffer()
+			inline const ReadWriteMemorySharedPtr &get_buffer()
+				const
 			{
 				return m_buffer;
 			}
@@ -171,8 +186,8 @@ namespace eternal_lands
 				const Uint16 face, const Uint16 mipmap)
 			{
 				return static_cast<Uint8*>(get_buffer(
-					).get_ptr()) + get_pixel_offset(x, y, z,
-					face, mipmap);
+					)->get_ptr()) + get_pixel_offset(x, y,
+						z, face, mipmap);
 			}
 
 			/**
@@ -190,8 +205,8 @@ namespace eternal_lands
 				const Uint16 face, const Uint16 mipmap)
 			{
 				return static_cast<Uint8*>(get_buffer(
-					).get_ptr()) + get_block_offset(x, y, z,
-					face, mipmap);
+					)->get_ptr()) + get_block_offset(x, y,
+						z, face, mipmap);
 			}
 
 			inline void set_name(const String &name)
@@ -352,7 +367,7 @@ namespace eternal_lands
 				const Uint16 mipmap) const
 			{
 				return static_cast<const Uint8* const>(
-					get_buffer().get_ptr()) +
+					get_buffer()->get_ptr()) +
 					get_offset(face, mipmap);
 			}
 
@@ -371,7 +386,7 @@ namespace eternal_lands
 				const Uint16 face, const Uint16 mipmap) const
 			{
 				return static_cast<const Uint8* const>(
-					get_buffer().get_ptr()) +
+					get_buffer()->get_ptr()) +
 					get_pixel_offset(x, y, z, face, mipmap);
 			}
 
@@ -390,13 +405,8 @@ namespace eternal_lands
 				const Uint16 face, const Uint16 mipmap) const
 			{
 				return static_cast<const Uint8* const>(
-					get_buffer().get_ptr()) +
+					get_buffer()->get_ptr()) +
 					get_block_offset(x, y, z, face, mipmap);
-			}
-
-			inline const ReadWriteMemory &get_buffer() const
-			{
-				return m_buffer;
 			}
 
 			/**

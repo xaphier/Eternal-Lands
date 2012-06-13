@@ -8,6 +8,8 @@
 #include "image.hpp"
 #include "packtool.hpp"
 #include "logging.hpp"
+#include "reader.hpp"
+#include "codec/dxt.hpp"
 
 namespace eternal_lands
 {
@@ -212,8 +214,10 @@ namespace eternal_lands
 
 		LOG_DEBUG(lt_image, UTF8("Setting image %1%."), get_log_str());
 
-		get_buffer().resize(get_total_size());
-		memset(get_buffer().get_ptr(), 0, get_buffer().get_size());
+		m_buffer = boost::make_shared<ReadWriteMemory>(
+			get_total_size());
+
+		memset(get_buffer()->get_ptr(), 0, get_buffer()->get_size());
 	}
 
 	Image::Image(const String &name, const bool cube_map,
@@ -237,8 +241,10 @@ namespace eternal_lands
 
 		LOG_DEBUG(lt_image, UTF8("Setting image %1%."), get_log_str());
 
-		get_buffer().resize(get_total_size());
-		memset(get_buffer().get_ptr(), 0, get_buffer().get_size());
+		m_buffer = boost::make_shared<ReadWriteMemory>(
+			get_total_size());
+
+		memset(get_buffer()->get_ptr(), 0, get_buffer()->get_size());
 	}
 
 	Uint16 Image::get_channel_count(const GLenum format)
@@ -371,7 +377,7 @@ namespace eternal_lands
 		assert(count < 5);
 
 		const void* const value = static_cast<const Uint8* const>(
-			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
+			get_buffer()->get_ptr()) + get_pixel_offset(x, y, z,
 			face, mipmap);
 
 		result = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -502,7 +508,7 @@ namespace eternal_lands
 		assert(count < 5);
 
 		const void* const value = static_cast<const Uint8* const>(
-			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
+			get_buffer()->get_ptr()) + get_pixel_offset(x, y, z,
 			face, mipmap);
 
 		result = glm::uvec4(0);
@@ -648,7 +654,7 @@ namespace eternal_lands
 		assert(count < 5);
 
 		const void* const value = static_cast<const Uint8* const>(
-			get_buffer().get_ptr()) + get_pixel_offset(x, y, z,
+			get_buffer()->get_ptr()) + get_pixel_offset(x, y, z,
 			face, mipmap);
 
 		result = glm::ivec4(0);
@@ -794,7 +800,7 @@ namespace eternal_lands
 		assert(count > 0);
 		assert(count < 5);
 
-		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
+		value = static_cast<Uint8*>(get_buffer()->get_ptr()) +
 			get_pixel_offset(x, y, z, face, mipmap);
 
 		tmp = swizzel_channels(get_format(), data);
@@ -930,7 +936,7 @@ namespace eternal_lands
 		assert(count > 0);
 		assert(count < 5);
 
-		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
+		value = static_cast<Uint8*>(get_buffer()->get_ptr()) +
 			get_pixel_offset(x, y, z, face, mipmap);
 
 		tmp = swizzel_channels(get_format(), data);
@@ -1075,7 +1081,7 @@ namespace eternal_lands
 		assert(count > 0);
 		assert(count < 5);
 
-		value = static_cast<Uint8*>(get_buffer().get_ptr()) +
+		value = static_cast<Uint8*>(get_buffer()->get_ptr()) +
 			get_pixel_offset(x, y, z, face, mipmap);
 
 		tmp = swizzel_channels(get_format(), data);
@@ -1230,6 +1236,9 @@ namespace eternal_lands
 		m_type = image.get_type();
 		m_sRGB = image.get_sRGB();
 
+		m_buffer = boost::make_shared<ReadWriteMemory>(
+			get_total_size());
+
 		if (expand_dxt1_to_dxt5 && ((m_texture_format == tft_rgb_dxt1)
 			|| (m_texture_format == tft_srgb_dxt1)))
 		{
@@ -1248,9 +1257,9 @@ namespace eternal_lands
 			m_pixel_size = TextureFormatUtil::get_size(
 				m_texture_format);
 
-			get_buffer().resize(get_total_size());
-			memset(get_buffer().get_ptr(), 0xFF,
-				get_buffer().get_size());
+			get_buffer()->resize(get_total_size());
+			memset(get_buffer()->get_ptr(), 0xFF,
+				get_buffer()->get_size());
 
 			assert((get_total_size() % 16) == 0);
 
@@ -1259,17 +1268,16 @@ namespace eternal_lands
 			for (i = 0; i < count; ++i)
 			{
 				memcpy(static_cast<Uint8*>(
-					get_buffer().get_ptr()) + i * 16,
+					get_buffer()->get_ptr()) + i * 16,
 					static_cast<const Uint8* const >(
-					image.get_buffer().get_ptr()) + i * 8,
+					image.get_buffer()->get_ptr()) + i * 8,
 					8);
 			}
 
 			return;
 		}
 
-		get_buffer().resize(get_total_size());
-		get_buffer().copy(image.get_buffer(), image.get_size(mipmap),
+		get_buffer()->copy(*image.get_buffer(), image.get_size(mipmap),
 			image.get_offset(face, mipmap), 0);
 	}
 
@@ -1285,14 +1293,39 @@ namespace eternal_lands
 		m_type = image.m_type;
 		m_sRGB = image.m_sRGB;
 
-		get_buffer().resize(get_total_size());
-		get_buffer().copy(image.get_buffer());
+		m_buffer = boost::make_shared<ReadWriteMemory>(
+			get_total_size());
+
+		get_buffer()->copy(*image.get_buffer());
+	}
+
+	ImageSharedPtr Image::decompress(const bool copy,
+		const bool rg_formats)
+	{
+		ReaderSharedPtr reader;
+
+		if (get_compressed())
+		{
+			reader = boost::make_shared<Reader>(get_buffer(),
+				get_name());
+
+			return Dxt::uncompress(reader, get_name(), get_sizes(),
+				get_texture_format(), get_mipmap_count(),
+				get_cube_map(), rg_formats);
+		}
+
+		if (copy)
+		{
+			return boost::make_shared<Image>(*this);
+		}
+
+		return shared_from_this();
 	}
 
 	void Image::read_framebuffer(const Uint32 x, const Uint32 y)
 	{
 		glReadPixels(x, y, get_width(), get_height(), get_format(),
-			get_type(), get_buffer().get_ptr());
+			get_type(), get_buffer()->get_ptr());
 	}
 
 }

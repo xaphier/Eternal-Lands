@@ -176,7 +176,7 @@ namespace eternal_lands
 			for (i = 0; i < image->get_height(); ++i)
 			{
 				row_pointers[i] = static_cast<png_byte*>(
-					image->get_buffer().get_ptr()) +
+					image->get_buffer()->get_ptr()) +
 					png_get_rowbytes(m_png_ptr, m_info_ptr)
 					* i;
 			}

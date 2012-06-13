@@ -81,7 +81,8 @@ namespace eternal_lands
 			0x00
 		};
 
-		void rle_decode(const Uint8* input, AbstractWriteMemory &buffer)
+		void rle_decode(const Uint8* input,
+			const AbstractWriteMemorySharedPtr &buffer)
 			noexcept
 		{
 			Uint64 src, dst, len, size;
@@ -90,8 +91,8 @@ namespace eternal_lands
 			src = 0;
 			dst = 0;
 
-			ptr = static_cast<Uint8*>(buffer.get_ptr());
-			size = buffer.get_size();
+			ptr = static_cast<Uint8*>(buffer->get_ptr());
+			size = buffer->get_size();
 
 			while (dst < size)
 			{

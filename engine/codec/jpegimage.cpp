@@ -204,7 +204,7 @@ namespace eternal_lands
 			while (m_cinfo.output_scanline < m_cinfo.output_height)
 			{
 				rowptr[0] = static_cast<JSAMPROW>(
-					image->get_buffer().get_ptr()) +
+					image->get_buffer()->get_ptr()) +
 					m_cinfo.output_scanline *
 					m_cinfo.output_width *
 					m_cinfo.out_color_components;

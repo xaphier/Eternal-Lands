@@ -981,7 +981,7 @@ namespace eternal_lands
 		{
 			m_reader->set_position(dds::DDS_DATA_POSITION);
 
-			m_reader->read_le(m_image->get_buffer(), swap_size);
+			m_reader->read_le(*m_image->get_buffer(), swap_size);
 		}
 
 		void DdsImageLoader::load_supported(
@@ -1388,7 +1388,7 @@ namespace eternal_lands
 			writer->write_u32_le(header.m_caps.m_caps4);
 			writer->write_u32_le(header.m_reserved2);
 
-			writer->write_le(image->get_buffer(), swap_size);
+			writer->write_le(*image->get_buffer(), swap_size);
 		}
 		catch (boost::exception &exception)
 		{
