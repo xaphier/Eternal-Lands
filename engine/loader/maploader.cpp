@@ -16,7 +16,6 @@
 #include "materialdescription.hpp"
 #include "instancesbuilder.hpp"
 #include "materialdescriptioncache.hpp"
-#include "terrain/defaultterrainmanager.hpp"
 #include "globalvars.hpp"
 #include "lightdata.hpp"
 #include "exceptions.hpp"
@@ -134,16 +133,6 @@ namespace eternal_lands
 		const String &blend, const String &height, const String &dudv,
 		const glm::vec3 &translation, const glm::vec2 &dudv_scale)
 	{
-		AbstractTerrainManagerSharedPtr terrain;
-		Transformation transformation;
-
-		terrain.reset(new DefaultTerrainManager(get_codec_manager(),
-			get_file_system(), get_global_vars(),
-			get_mesh_builder(), get_effect_cache(),
-			TerrainData(albedo, blend, height, dudv, translation,
-				dudv_scale)));
-
-		m_map->add_terrain(terrain);
 	}
 
 	void MapLoader::set_tile(const Uint16 x, const Uint16 y,

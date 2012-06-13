@@ -135,6 +135,11 @@ namespace eternal_lands
 			virtual void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
 
+			inline const MapSharedPtr &get_map() const noexcept
+			{
+				return m_map;
+			}
+
 			inline void set_map(const MapSharedPtr &map) noexcept
 			{
 				m_map = map;

@@ -31,10 +31,7 @@ namespace eternal_lands
 			AbstractMeshSharedPtr m_mesh;
 
 		public:
-			CdLodTerrainManager(const ImageSharedPtr &vector_map,
-				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map,
-				const GlobalVarsSharedPtr &global_vars,
+			CdLodTerrainManager(
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialSharedPtr &material);
 			virtual ~CdLodTerrainManager() noexcept;
@@ -51,6 +48,7 @@ namespace eternal_lands
 			virtual void update(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
+			virtual void clear();
 
 			inline const MaterialSharedPtr &get_material() const
 				noexcept

@@ -31,9 +31,7 @@ namespace eternal_lands
 			AbstractMeshSharedPtr m_mesh;
 			const bool m_low_quality;
 
-			void add_terrain_pages(const ImageSharedPtr &vector_map,
-				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map,
+			void init_terrain_pages(
 				const MeshBuilderSharedPtr &mesh_builder,
 				const bool use_simd);
 			void set_terrain_page(const ImageSharedPtr &vector_map,
@@ -58,9 +56,7 @@ namespace eternal_lands
 			void remove_terrain_page(const glm::uvec2 &position);
 
 		public:
-			SimpleTerrainManager(const ImageSharedPtr &vector_map,
-				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map,
+			SimpleTerrainManager(
 				const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MaterialSharedPtr &material);
@@ -78,6 +74,7 @@ namespace eternal_lands
 				const ImageSharedPtr &dudv_map);
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture);
+			virtual void clear();
 
 			inline const MaterialSharedPtr &get_material() const
 				noexcept

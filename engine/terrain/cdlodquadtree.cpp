@@ -137,14 +137,31 @@ namespace eternal_lands
 		return quad_orders[index];
 	}
 
-	CdLodQuadTree::CdLodQuadTree(const ImageSharedPtr &vector_map,
-		const glm::vec3 &scale, const float patch_scale):
-		m_patch_scale(patch_scale)
+	CdLodQuadTree::CdLodQuadTree()
+	{
+		BOOST_FOREACH(LodDescription &lod, m_lods)
+		{
+			lod.range_start = 0.0f;
+			lod.patch_scale = 0;
+		}
+
+		m_patch_scale = 0;
+		m_lod_count = 0;
+	}
+
+	CdLodQuadTree::~CdLodQuadTree() noexcept
+	{
+	}
+
+	void CdLodQuadTree::init(const ImageSharedPtr &vector_map,
+		const glm::vec3 &scale, const float patch_scale)
 	{
 		glm::vec3 min, max;
 		glm::uvec2 size;
 		Uint32 x, y, level, step;
 		Uint32 max_grid_size;
+
+		m_patch_scale = patch_scale;
 
 		m_grid_size.x = vector_map->get_width();
 		m_grid_size.y = vector_map->get_height();
@@ -152,7 +169,7 @@ namespace eternal_lands
 		max_grid_size = std::max(get_grid_size().x, get_grid_size().y);
 		max_grid_size--;
 
-		m_lod_count = 0;
+		m_lod_count = 1;
 
 		while ((get_lod_count() < get_max_lod_count()) &&
 			(max_grid_size >= (get_patch_size() *
@@ -190,8 +207,16 @@ namespace eternal_lands
 		}
 	}
 
-	CdLodQuadTree::~CdLodQuadTree() noexcept
+	void CdLodQuadTree::clear()
 	{
+		BOOST_FOREACH(LodDescription &lod, m_lods)
+		{
+			lod.range_start = 0.0f;
+			lod.patch_scale = 0;
+		}
+
+		m_patch_scale = 0;
+		m_lod_count = 0;
 	}
 
 	void CdLodQuadTree::init_min_max(const ImageSharedPtr &vector_map,
@@ -423,6 +448,14 @@ namespace eternal_lands
 		PlanesMask mask;
 		Uint16 max_instance_count;
 
+		if (get_lod_count() == 0)
+		{
+			bounding_box = BoundingBox();
+			instance_count = 0;
+
+			return;
+		}
+
 		level = get_lod_count() - 1;
 
 		step = m_lods[level].patch_scale * get_patch_size();
@@ -465,8 +498,6 @@ namespace eternal_lands
 			instance_count = max_instance_count;
 		}
 	}
-
-
 
 	void CdLodQuadTree::select_bounding_box(const Frustum &frustum,
 		const glm::vec3 &camera, const glm::uvec2 &position,
@@ -539,6 +570,13 @@ namespace eternal_lands
 		Uint32 x, y, level, step, instance_count;
 		PlanesMask mask;
 		Uint16 max_instance_count;
+
+		if (get_lod_count() == 0)
+		{
+			bounding_box = BoundingBox();
+
+			return;
+		}
 
 		level = get_lod_count() - 1;
 

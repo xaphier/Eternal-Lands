@@ -134,11 +134,6 @@ namespace eternal_lands
 				const Uint32 id) = 0;
 			virtual void add_particle(const glm::vec3 &position,
 				const String &name, const Uint32 id) = 0;
-			virtual void add_terrain(const StringArray4 &albedo,
-				const String &blend, const String &height,
-				const String &dudv,
-				const glm::vec3 &translation,
-				const glm::vec2 &dudv_scale) = 0;
 			virtual void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile) = 0;
 			virtual void set_height(const Uint16 x, const Uint16 y,

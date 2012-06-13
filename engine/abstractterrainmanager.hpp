@@ -70,7 +70,13 @@ namespace eternal_lands
 			virtual void update(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map) = 0;
+			virtual void clear() = 0;
 			static const glm::vec3 &get_vector_scale() noexcept;
+
+			inline bool get_empty() const noexcept
+			{
+				return get_bounding_box().get_empty();
+			}
 
 			inline const BoundingBox &get_bounding_box() const
 				noexcept

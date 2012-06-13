@@ -68,9 +68,7 @@ namespace eternal_lands
 				Uint32 &instance_count) const;
 
 		public:
-			CdLodQuadTree(const ImageSharedPtr &vector_map,
-				const glm::vec3 &scale,
-				const float patch_scale);
+			CdLodQuadTree();
 			~CdLodQuadTree() noexcept;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera,
@@ -80,6 +78,10 @@ namespace eternal_lands
 			void select_bounding_box(const Frustum &frustum,
 				const glm::vec3 &camera,
 				BoundingBox &bounding_box) const;
+			void init(const ImageSharedPtr &vector_map,
+				const glm::vec3 &scale,
+				const float patch_scale);
+			void clear();
 			static const Uvec2Array4 &get_quad_order(
 				const glm::vec2 &dir) noexcept;
 

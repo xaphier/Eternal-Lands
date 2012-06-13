@@ -37,7 +37,7 @@ namespace eternal_lands
 			const MaterialCacheWeakPtr m_material_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
-			AbstractTerrainManagerSharedPtr m_terrain;
+			AbstractTerrainManagerSharedPtr m_terrain_manager;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
 			Uint16MultiArray2 m_height_map;
@@ -87,6 +87,14 @@ namespace eternal_lands
 
 			void init_walk_height_map(
 				const ImageSharedPtr &vector_map);
+			void init_terrain(
+				const GlobalVarsSharedPtr &global_vars,
+				const MeshBuilderSharedPtr &mesh_builder,
+				const MeshCacheSharedPtr &mesh_cache,
+				const MaterialCacheSharedPtr &material_cache);
+
+		protected:
+			
 
 		public:
 			/**
@@ -127,13 +135,15 @@ namespace eternal_lands
 			void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
 			BoundingBox get_bounding_box() const;
-			void add_terrain(
-				const AbstractTerrainManagerSharedPtr &terrain);
 			void add_particle(const ParticleData &particle);
 			glm::vec4 get_terrain_size_data() const;
 			glm::vec2 get_terrain_size() const;
 			void set_clipmap_texture(
 				const TextureSharedPtr &texture);
+			void set_terrain(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map);
+			bool get_terrain() const;
 
 			inline glm::uvec2 get_height_map_size() const noexcept
 			{
@@ -270,11 +280,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_particles;
-			}
-
-			inline bool get_terrain() const noexcept
-			{
-				return m_terrain.get() != nullptr;
 			}
 
 	};

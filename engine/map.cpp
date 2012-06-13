@@ -53,6 +53,9 @@ namespace eternal_lands
 
 		set_ambient(glm::vec3(0.2f));
 
+		init_terrain(global_vars, mesh_builder, mesh_cache,	
+			material_cache);
+
 		file_name = FileSystem::get_name_without_extension(name);
 
 		vector_map_name = String(file_name.get() + UTF8("_vector.png"));
@@ -66,39 +69,23 @@ namespace eternal_lands
 			return;
 		}
 
-		vector_map = codec_manager->load_image(vector_map_name,
-			file_system, ImageCompressionTypeSet(), true, false);
-
-		init_walk_height_map(vector_map);
-
-		if (global_vars->get_opengl_3_2())
+		if (global_vars->get_opengl_3_0())
 		{
 			compressions.insert(ict_rgtc);
-
-			normal_map = codec_manager->load_image(normal_map_name,
-				file_system, compressions, true, false);
-
-			dudv_map = codec_manager->load_image(dudv_map_name,
-				file_system, compressions, true, false);
-
-			m_terrain.reset(new CdLodTerrainManager(vector_map,
-				normal_map, dudv_map, global_vars,
-				mesh_cache, get_material_cache()->get_material(
-				String(UTF8("cdlod-terrain")))));
-
-			return;
 		}
 
+		vector_map = codec_manager->load_image(vector_map_name,
+			file_system, compressions, true, false);
+
 		normal_map = codec_manager->load_image(normal_map_name,
-			file_system, ImageCompressionTypeSet(), true, false);
+			file_system, compressions, true, false);
 
 		dudv_map = codec_manager->load_image(dudv_map_name,
-			file_system, ImageCompressionTypeSet(), true, false);
+			file_system, compressions, true, false);
 
-		m_terrain.reset(new SimpleTerrainManager(vector_map,
-			normal_map, dudv_map, global_vars, mesh_builder,
-			get_material_cache()->get_material(
-				String(UTF8("simple-terrain")))));
+		init_walk_height_map(vector_map->decompress(false, true));
+
+		set_terrain(vector_map, normal_map, dudv_map);
 	}
 
 	Map::~Map() noexcept
@@ -285,38 +272,28 @@ namespace eternal_lands
 	{
 		m_light_tree->clear();
 		m_object_tree->clear();
+		m_terrain_manager->clear();
 		m_objects.clear();
 		m_lights.clear();
-		m_terrain.reset();
 		m_particles.clear();
 	}
 
 	void Map::intersect_terrain(const Frustum &frustum,
 		const glm::vec3 &camera, BoundingBox &bounding_box) const
 	{
-		if (m_terrain.get() != nullptr)
-		{
-			m_terrain->intersect(frustum, camera, bounding_box);
-		}
+		m_terrain_manager->intersect(frustum, camera, bounding_box);
 	}
 
 	void Map::intersect_terrain(const Frustum &frustum,
 		const glm::vec3 &camera, TerrainVisitor &terrain) const
 	{
-		if (m_terrain.get() != nullptr)
-		{
-			m_terrain->intersect(frustum, camera, terrain);
-		}
+		m_terrain_manager->intersect(frustum, camera, terrain);
 	}
 
 	void Map::intersect(const Frustum &frustum, ObjectVisitor &visitor)
 		const
 	{
-		if (m_terrain.get() != nullptr)
-		{
-			m_terrain->intersect(frustum, visitor);
-		}
-
+		m_terrain_manager->intersect(frustum, visitor);
 		m_object_tree->intersect(frustum, visitor);
 	}
 
@@ -331,18 +308,9 @@ namespace eternal_lands
 		BoundingBox bounding_box;
 
 		bounding_box = m_object_tree->get_bounding_box();
-
-		if (m_terrain.get() != nullptr)
-		{
-			bounding_box.merge(m_terrain->get_bounding_box());
-		}
+		bounding_box.merge(m_terrain_manager->get_bounding_box());
 
 		return bounding_box;
-	}
-
-	void Map::add_terrain(const AbstractTerrainManagerSharedPtr &terrain)
-	{
-		m_terrain = terrain;
 	}
 
 	void Map::add_particle(const ParticleData &particle)
@@ -352,30 +320,48 @@ namespace eternal_lands
 
 	glm::vec4 Map::get_terrain_size_data() const
 	{
-		if (m_terrain.get() != nullptr)
-		{
-			return m_terrain->get_terrain_size_data();
-		}
-
-		return glm::vec4(0.0f);
+		return m_terrain_manager->get_terrain_size_data();
 	}
 
 	glm::vec2 Map::get_terrain_size() const
 	{
-		if (m_terrain.get() != nullptr)
-		{
-			return m_terrain->get_terrain_size();
-		}
-
-		return glm::vec2(0.0f);
+		return m_terrain_manager->get_terrain_size();
 	}
 
 	void Map::set_clipmap_texture(const TextureSharedPtr &texture)
 	{
-		if (m_terrain.get() != nullptr)
+		m_terrain_manager->set_clipmap_texture(texture);
+	}
+
+	void Map::init_terrain(const GlobalVarsSharedPtr &global_vars,
+		const MeshBuilderSharedPtr &mesh_builder,
+		const MeshCacheSharedPtr &mesh_cache,
+		const MaterialCacheSharedPtr &material_cache)
+	{
+		if (global_vars->get_opengl_3_2())
 		{
-			m_terrain->set_clipmap_texture(texture);
+			m_terrain_manager.reset(new CdLodTerrainManager(
+				mesh_cache, get_material_cache()->get_material(
+					String(UTF8("cdlod-terrain")))));
+
+			return;
 		}
+
+		m_terrain_manager.reset(new SimpleTerrainManager(global_vars,
+			mesh_builder, get_material_cache()->get_material(
+				String(UTF8("simple-terrain")))));
+	}
+
+	void Map::set_terrain(const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map)
+	{
+		m_terrain_manager->update(vector_map, normal_map, dudv_map);
+	}
+
+	bool Map::get_terrain() const
+	{
+		return !m_terrain_manager->get_empty();
 	}
 
 }

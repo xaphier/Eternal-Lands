@@ -301,29 +301,7 @@ namespace eternal_lands
 	void AbstractMapLoader::read_terrain(const Uint32 index,
 		const Uint32 offset)
 	{
-		StringArray4 albedo;
-		String blend, height, dudv;
-		glm::vec3 translation;
-		glm::vec2 dudv_scale;
-
 		get_reader()->set_position(offset);
-
-		albedo[0] = get_reader()->read_utf8_string(128);
-		albedo[1] = get_reader()->read_utf8_string(128);
-		albedo[2] = get_reader()->read_utf8_string(128);
-		albedo[3] = get_reader()->read_utf8_string(128);
-		blend = get_reader()->read_utf8_string(128);
-		height = get_reader()->read_utf8_string(128);
-		dudv = get_reader()->read_utf8_string(128);
-
-		translation.x = get_reader()->read_float_le();
-		translation.y = get_reader()->read_float_le();
-		translation.z = get_reader()->read_float_le();
-		dudv_scale.x = get_reader()->read_float_le();
-		dudv_scale.y = get_reader()->read_float_le();
-
-		add_terrain(albedo, blend, height, dudv, translation,
-			dudv_scale);
 	}
 
 	void AbstractMapLoader::read_material_name(const Uint32 index,
