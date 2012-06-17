@@ -21,6 +21,7 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_light = false;
 	m_rotate_z = 0.0f;
 	m_blend = bt_disabled;
+	m_terrain_id = 0;
 
 	m_global_vars = boost::make_shared<GlobalVars>();
 	m_file_system = boost::make_shared<FileSystem>();
@@ -87,9 +88,9 @@ void ELGLWidget::mouse_click_action()
 {
 	if (get_terrain_editing())
 	{
-		m_terrain_index++;
-
 		emit terrain_edit();
+
+		m_terrain_id++;
 
 		return;
 	}
@@ -127,7 +128,7 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 
 	m_select_pos.x = event->x();
 	m_select_pos.y = height() - event->y();
-	m_select = true;
+	m_select = !get_terrain_editing();
 	m_select_depth = true;
 	m_mouse_click_action = true;
 
@@ -143,11 +144,42 @@ void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 	m_mouse_move_action = true;
 }
 
-void ELGLWidget::terrain_height_edit(const float strength, const float radius,
-	const int brush_type)
+void ELGLWidget::terrain_vector_add_normal(const float scale,
+	const float radius, const int brush_type)
 {
-	m_editor->terrain_height_edit(m_terrain_index, m_world_position,
-		strength, radius, brush_type);
+	m_editor->terrain_vector_add_normal(m_world_position, scale, radius,
+		brush_type, m_terrain_id);
+
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::terrain_vector_add(const float value_x, const float value_y,
+	const float value_z, const float radius, const int brush_type)
+{
+	m_editor->terrain_vector_add(m_world_position,
+		glm::vec3(value_x, value_y, value_z), radius, brush_type,
+		m_terrain_id);
+
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::terrain_vector_smooth(const float strength,
+	const float radius, const int brush_type)
+{
+	m_editor->terrain_vector_smooth(m_world_position, strength, radius,
+		brush_type, m_terrain_id);
+
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::terrain_vector_set(const float value_x, const float value_y,
+	const float value_z, const bool mask_x, const bool mask_y,
+	const bool mask_z, const float radius, const int brush_type)
+{
+	m_editor->terrain_vector_set(m_world_position,
+		glm::vec3(value_x, value_y, value_z),
+		glm::bvec3(mask_x, mask_y, mask_z), radius, brush_type,
+		m_terrain_id);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -155,8 +187,8 @@ void ELGLWidget::terrain_height_edit(const float strength, const float radius,
 void ELGLWidget::terrain_layer_edit(const int terrain_layer_index,
 	const float strength, const float radius, const int brush_type)
 {
-	m_editor->terrain_layer_edit(m_terrain_index, m_world_position,
-		terrain_layer_index, strength, radius, brush_type);
+	m_editor->terrain_layer_edit(m_world_position, terrain_layer_index,
+		strength, radius, brush_type);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -208,9 +240,9 @@ void ELGLWidget::initializeGL()
 #endif	/* OSX */
 	glewInit();
 
-	if (!GLEW_VERSION_3_0)
+	if (!GLEW_VERSION_2_1)
 	{
-		BoostFormat format_string(UTF8("OpenGL 3.0 needed, but '%1%'"
+		BoostFormat format_string(UTF8("OpenGL 2.1 needed, but '%1%'"
 			" found!"));
 
 		format_string % (const char*)glGetString(GL_VERSION);
@@ -220,6 +252,8 @@ void ELGLWidget::initializeGL()
 
 		exit(1);
 	}
+
+	m_global_vars->set_opengl_version(ovt_2_1);
 
 	if (GLEW_VERSION_3_0)
 	{
@@ -242,8 +276,23 @@ void ELGLWidget::initializeGL()
 	}
 
 	m_global_vars->set_optmize_shader_source(false);
-
 	m_global_vars->set_view_distance(550.0f);
+
+	m_global_vars->set_shadow_quality(sqt_no);
+	m_global_vars->set_shadow_map_size(2);
+	m_global_vars->set_clipmap_size(2048);
+	m_global_vars->set_clipmap_world_size(8);
+	m_global_vars->set_clipmap_slices(16);
+	m_global_vars->set_fog(false);
+	m_global_vars->set_use_simd(true);
+	m_global_vars->set_use_s3tc_for_actors(true);
+	m_global_vars->set_use_block(true);
+	m_global_vars->set_use_in_out(true);
+	m_global_vars->set_use_functions(false);
+	m_global_vars->set_low_quality_terrain(false);
+	m_global_vars->set_use_multisample_shadows(false);
+	m_global_vars->set_effect_debug(false);
+	m_global_vars->set_use_scene_fbo(false);
 
 	try
 	{
@@ -290,6 +339,7 @@ void ELGLWidget::paintGL()
 
 	m_view = glm::lookAt(pos + dir, pos, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
 	m_editor->set_view_matrix(m_view);
+	m_editor->set_focus(pos);
 
 	m_editor->draw();
 
@@ -562,34 +612,34 @@ QStringList ELGLWidget::get_terrain_albedo_maps() const
 {
 	QStringList result;
 
-	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(0,
-		get_terrain_index()).get().c_str());
-	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(1,
-		get_terrain_index()).get().c_str());
-	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(2,
-		get_terrain_index()).get().c_str());
-	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(3,
-		get_terrain_index()).get().c_str());
+	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(0).get(
+		).c_str());
+	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(1).get(
+		).c_str());
+	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(2).get(
+		).c_str());
+	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(3).get(
+		).c_str());
 
 	return result;
 }
 
 QString ELGLWidget::get_terrain_height_map() const
 {
-	return QString::fromUtf8(m_editor->get_terrain_height_map(
-		get_terrain_index()).get().c_str());
+	return QString::fromUtf8(m_editor->get_terrain_vector_map().get(
+		).c_str());
 }
 
 QString ELGLWidget::get_terrain_blend_map() const
 {
-	return QString::fromUtf8(m_editor->get_terrain_blend_map(
-		get_terrain_index()).get().c_str());
+	return QString::fromUtf8(m_editor->get_terrain_blend_map(0).get(
+		).c_str());
 }
 
 QString ELGLWidget::get_terrain_dudv_map() const
 {
-	return QString::fromUtf8(m_editor->get_terrain_dudv_map(
-		get_terrain_index()).get().c_str());
+	return QString::fromUtf8(m_editor->get_terrain_dudv_map().get(
+		).c_str());
 }
 
 void ELGLWidget::new_map(const int map_size_x, const int map_size_y, const int blend_image_size_x,
@@ -666,12 +716,12 @@ void ELGLWidget::set_terrain_editing(const bool enabled)
 
 void ELGLWidget::set_terrain_type_index(const int index)
 {
-	m_terrain_type_index = boost::numeric_cast<Uint32>(index);
+	m_terrain_type_index = std::max(index, 0);
 }
 
 void ELGLWidget::set_terrain_layer_index(const int index)
 {
-	m_terrain_layer_index = boost::numeric_cast<Uint32>(index);
+	m_terrain_layer_index = std::max(index, 0);
 }
 
 void ELGLWidget::open_map(const QString &file_name)
@@ -1037,3 +1087,74 @@ void ELGLWidget::import_terrain_map(const QString &file_name)
 	emit can_undo(m_editor->get_can_undo());
 }
 */
+
+void ELGLWidget::set_debug_mode(const int value)
+{
+	m_global_vars->set_effect_debug(value >= 0);
+	m_editor->set_debug_mode(std::max(value, 0));
+}
+
+void ELGLWidget::init_terrain(const int width, const int height)
+{
+	m_editor->init_terrain(glm::uvec2(width, height));
+}
+
+QStringList ELGLWidget::get_debug_modes() const
+{
+	StringVector debug_modes;
+	QStringList result;
+
+	debug_modes = m_editor->get_debug_modes();
+
+	BOOST_FOREACH(const String &debug_mode, debug_modes)
+	{
+		result.push_back(QString::fromUtf8(debug_mode.get().c_str()));
+	}
+
+	return result;
+}
+
+float ELGLWidget::get_terrain_offset_x() const
+{
+	return Editor::get_terrain_offset().x;
+}
+
+float ELGLWidget::get_terrain_offset_y() const
+{
+	return Editor::get_terrain_offset().y;
+}
+
+float ELGLWidget::get_terrain_offset_z() const
+{
+	return Editor::get_terrain_offset().z;
+}
+
+float ELGLWidget::get_terrain_offset_min_x() const
+{
+	return Editor::get_terrain_offset_min().x;
+}
+
+float ELGLWidget::get_terrain_offset_min_y() const
+{
+	return Editor::get_terrain_offset_min().y;
+}
+
+float ELGLWidget::get_terrain_offset_min_z() const
+{
+	return Editor::get_terrain_offset_min().z;
+}
+
+float ELGLWidget::get_terrain_offset_max_x() const
+{
+	return Editor::get_terrain_offset_max().x;
+}
+
+float ELGLWidget::get_terrain_offset_max_y() const
+{
+	return Editor::get_terrain_offset_max().y;
+}
+
+float ELGLWidget::get_terrain_offset_max_z() const
+{
+	return Editor::get_terrain_offset_max().z;
+}

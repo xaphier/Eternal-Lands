@@ -25,9 +25,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	action_time->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
 	tool_bar->insertWidget(action_ambient, action_time);
 
-	QObject::connect(action_add_objects, SIGNAL(triggered(bool)), this, SLOT(add_objects(bool)));
-	QObject::connect(action_add_lights, SIGNAL(triggered(bool)), this, SLOT(add_lights(bool)));
-	QObject::connect(action_wire_frame, SIGNAL(triggered(bool)), el_gl_widget, SLOT(set_wire_frame(bool)));
+	QObject::connect(action_add_objects, SIGNAL(toggled(bool)), this, SLOT(add_objects(bool)));
+	QObject::connect(action_add_lights, SIGNAL(toggled(bool)), this, SLOT(add_lights(bool)));
+	QObject::connect(action_wire_frame, SIGNAL(toggled(bool)), el_gl_widget, SLOT(set_wire_frame(bool)));
 
 	QObject::connect(el_gl_widget, SIGNAL(update_object(bool)), this, SLOT(update_object(bool)));
 	QObject::connect(el_gl_widget, SIGNAL(update_light(bool)), this, SLOT(update_light(bool)));
@@ -53,12 +53,12 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_undo, SIGNAL(triggered()), el_gl_widget, SLOT(undo()));
 	QObject::connect(el_gl_widget, SIGNAL(can_undo(bool)), action_undo, SLOT(setEnabled(bool)));
 
-	QObject::connect(action_terrain_mode, SIGNAL(triggered(bool)), this, SLOT(terrain_mode(bool)));
-	QObject::connect(action_terrain_mode, SIGNAL(triggered(bool)), el_gl_widget, SLOT(set_terrain_editing(bool)));
+	QObject::connect(action_terrain_mode, SIGNAL(toggled(bool)), this, SLOT(terrain_mode(bool)));
+	QObject::connect(action_terrain_mode, SIGNAL(toggled(bool)), el_gl_widget, SLOT(set_terrain_editing(bool)));
 
-	QObject::connect(action_delete_mode, SIGNAL(triggered(bool)), this, SLOT(delete_mode(bool)));
+	QObject::connect(action_delete_mode, SIGNAL(toggled(bool)), this, SLOT(delete_mode(bool)));
 
-	QObject::connect(action_remove, SIGNAL(triggered(bool)), this, SLOT(remove()));
+	QObject::connect(action_remove, SIGNAL(toggled(bool)), this, SLOT(remove()));
 
 	QObject::connect(move_l, SIGNAL(clicked()), action_move_l, SLOT(trigger()));
 	QObject::connect(move_r, SIGNAL(clicked()), action_move_r, SLOT(trigger()));
@@ -69,27 +69,27 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(zoom_in, SIGNAL(clicked()), action_zoom_in, SLOT(trigger()));
 	QObject::connect(zoom_out, SIGNAL(clicked()), action_zoom_out, SLOT(trigger()));
 
-	QObject::connect(action_new, SIGNAL(triggered(bool)), this, SLOT(new_map()));
-	QObject::connect(action_open, SIGNAL(triggered(bool)), this, SLOT(open_map()));
-//	QObject::connect(action_settings, SIGNAL(triggered(bool)), this, SLOT(settings()));
-	QObject::connect(action_fog, SIGNAL(triggered(bool)), this, SLOT(set_fog()));
-	QObject::connect(action_ambient, SIGNAL(triggered(bool)), this, SLOT(change_ambient()));
-//	QObject::connect(action_blend_image, SIGNAL(triggered(bool)), this,
+	QObject::connect(action_new, SIGNAL(toggled(bool)), this, SLOT(new_map()));
+	QObject::connect(action_open, SIGNAL(toggled(bool)), this, SLOT(open_map()));
+//	QObject::connect(action_settings, SIGNAL(toggled(bool)), this, SLOT(settings()));
+	QObject::connect(action_fog, SIGNAL(toggled(bool)), this, SLOT(set_fog()));
+	QObject::connect(action_ambient, SIGNAL(toggled(bool)), this, SLOT(change_ambient()));
+//	QObject::connect(action_blend_image, SIGNAL(toggled(bool)), this,
 //		SLOT(change_blend_image_name()));
 	QObject::connect(action_time, SIGNAL(valueChanged(int)), el_gl_widget,
 		SLOT(set_game_minute(int)));
-	QObject::connect(action_preferences, SIGNAL(triggered(bool)), this,
+	QObject::connect(action_preferences, SIGNAL(toggled(bool)), this,
 		SLOT(change_preferences()));
 
-	QObject::connect(action_objects, SIGNAL(triggered(bool)),
+	QObject::connect(action_objects, SIGNAL(toggled(bool)),
 		el_gl_widget, SLOT(set_draw_objects(bool)));
-	QObject::connect(action_terrain, SIGNAL(triggered(bool)),
+	QObject::connect(action_terrain, SIGNAL(toggled(bool)),
 		el_gl_widget, SLOT(set_draw_terrain(bool)));
-	QObject::connect(action_lights, SIGNAL(triggered(bool)),
+	QObject::connect(action_lights, SIGNAL(toggled(bool)),
 		el_gl_widget, SLOT(set_draw_lights(bool)));
-	QObject::connect(action_light_spheres, SIGNAL(triggered(bool)),
+	QObject::connect(action_light_spheres, SIGNAL(toggled(bool)),
 		el_gl_widget, SLOT(set_draw_light_spheres(bool)));
-	QObject::connect(action_lights_enabled, SIGNAL(triggered(bool)),
+	QObject::connect(action_lights_enabled, SIGNAL(toggled(bool)),
 		el_gl_widget, SLOT(set_lights_enabled(bool)));
 
 	m_object_selection_mapper = new QSignalMapper(this);
@@ -179,6 +179,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_save_as, SIGNAL(triggered()), this, SLOT(save_as()));
 	QObject::connect(action_info, SIGNAL(triggered()), this, SLOT(about_el()));
 	QObject::connect(action_qt_info, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+	QObject::connect(action_debug, SIGNAL(toggled(bool)), this, SLOT(set_debug(bool)));
 
 	m_object_witdgets.push_back(x_translation);
 	m_object_witdgets.push_back(y_translation);
@@ -241,10 +242,28 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	status_bar->addPermanentWidget(m_progress_bar, 1);
 	m_progress.reset(new QProgress);
 
-	QObject::connect(m_progress.get(), SIGNAL(set_range(const int, const int)), m_progress_bar, SLOT(setRange(const int, const int)), Qt::QueuedConnection);
-	QObject::connect(m_progress.get(), SIGNAL(set_value(const int)), m_progress_bar, SLOT(setValue(const int)), Qt::QueuedConnection);
+	QObject::connect(m_progress.get(),
+		SIGNAL(set_range(const int, const int)), m_progress_bar,
+		SLOT(setRange(const int, const int)), Qt::QueuedConnection);
+	QObject::connect(m_progress.get(), SIGNAL(set_value(const int)),
+		m_progress_bar, SLOT(setValue(const int)), Qt::QueuedConnection);
 
-	QObject::connect(el_gl_widget, SIGNAL(initialized()), this, SLOT(initialized()), Qt::QueuedConnection);
+	QObject::connect(el_gl_widget, SIGNAL(initialized()), this,
+		SLOT(initialized()), Qt::QueuedConnection);
+
+	vector_brush_add_x->setMinimum(-el_gl_widget->get_terrain_offset_x());
+	vector_brush_add_x->setMaximum(el_gl_widget->get_terrain_offset_x());
+	vector_brush_add_y->setMinimum(-el_gl_widget->get_terrain_offset_y());
+	vector_brush_add_y->setMaximum(el_gl_widget->get_terrain_offset_y());
+	vector_brush_add_z->setMinimum(-el_gl_widget->get_terrain_offset_z());
+	vector_brush_add_z->setMaximum(el_gl_widget->get_terrain_offset_z());
+
+	vector_brush_set_x->setMinimum(el_gl_widget->get_terrain_offset_min_x());
+	vector_brush_set_x->setMaximum(el_gl_widget->get_terrain_offset_max_x());
+	vector_brush_set_y->setMinimum(el_gl_widget->get_terrain_offset_min_y());
+	vector_brush_set_y->setMaximum(el_gl_widget->get_terrain_offset_max_y());
+	vector_brush_set_z->setMinimum(el_gl_widget->get_terrain_offset_min_z());
+	vector_brush_set_z->setMaximum(el_gl_widget->get_terrain_offset_max_z());
 }
 
 MainWindow::~MainWindow()
@@ -746,6 +765,7 @@ void MainWindow::terrain_mode(const bool checked)
 		action_add_objects->setChecked(false);
 		action_add_lights->setChecked(false);
 		action_delete_mode->setChecked(false);
+		el_gl_widget->init_terrain(1025, 1025);
 	}
 	else
 	{
@@ -1213,15 +1233,62 @@ void MainWindow::load_textures_settings(QSettings &settings)
 	settings.endGroup();
 }
 
+void MainWindow::terrain_vector_edit()
+{
+	if (vector_brush_add->isChecked() &&
+		vector_brush_add_value->isChecked())
+	{
+		el_gl_widget->terrain_vector_add(vector_brush_add_x->value(),
+			vector_brush_add_y->value(),
+			vector_brush_add_z->value(),
+			vector_brush_radius->value(),
+			vector_brush_add_type->currentIndex());
+		
+		return;
+	}
+
+	if (vector_brush_add->isChecked() &&
+		vector_brush_add_normal->isChecked())
+	{
+		el_gl_widget->terrain_vector_add_normal(
+			vector_brush_add_scale->value() * 0.01f,
+			vector_brush_radius->value(),
+			vector_brush_add_type->currentIndex());
+		
+		return;
+	}
+
+	if (vector_brush_set->isChecked())
+	{
+		el_gl_widget->terrain_vector_set(vector_brush_set_x->value(),
+			vector_brush_set_y->value(),
+			vector_brush_set_z->value(),
+			vector_brush_set_checkbox_x->isChecked(),
+			vector_brush_set_checkbox_y->isChecked(),
+			vector_brush_set_checkbox_z->isChecked(),
+			vector_brush_radius->value(),
+			vector_brush_set_type->currentIndex());
+
+		return;
+	}
+
+	if (vector_brush_smooth->isChecked())
+	{
+		el_gl_widget->terrain_vector_smooth(
+			vector_brush_smooth_strength->value() * 0.01f,
+			vector_brush_radius->value(),
+			vector_brush_smooth_type->currentIndex());
+
+		return;
+	}
+}
+
 void MainWindow::terrain_edit()
 {
 	switch (paint_tool_box->currentIndex())
 	{
 		case 0:
-			el_gl_widget->terrain_height_edit(
-				height_brush_strength->value() * 0.01f,
-				height_brush_radius->value(),
-				height_brush_type->currentIndex());
+			terrain_vector_edit();
 			break;
 		case 1:
 			el_gl_widget->terrain_layer_edit(
@@ -1312,4 +1379,32 @@ void MainWindow::set_selection(const SelectionType value)
 			selection_type_0->setChecked(true);
 			break;
 	}
+}
+
+void MainWindow::set_debug(const bool enabled)
+{
+	QStringList debug_modes;
+	QString debug_mode;
+	bool ok;
+
+	if (!enabled)
+	{
+		el_gl_widget->set_debug_mode(-1);
+
+		return;
+	}
+
+	debug_modes = el_gl_widget->get_debug_modes();
+
+	debug_mode = QInputDialog::getItem(this, "Select debug mode",
+		"debug mode", debug_modes, 0, false, &ok);
+
+	if (!ok)
+	{
+		el_gl_widget->set_debug_mode(-1);
+
+		return;
+	}
+
+	el_gl_widget->set_debug_mode(debug_modes.indexOf(debug_mode));
 }

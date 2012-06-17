@@ -20,19 +20,30 @@ namespace eternal_lands
 	class TerrainValue
 	{
 		private:
-			glm::uvec4 m_value;
+			struct
+			{
+				Uint32 r : 10;
+				Uint32 g : 10;
+				Uint32 b : 10;
+				Uint32 a : 2;
+			} m_value;
 			Uint16 m_x;
 			Uint16 m_y;
 
 		public:
 			inline TerrainValue(const Uint16 x, const Uint16 y):
-				m_value(0), m_x(x), m_y(y)
+				m_x(x), m_y(y)
 			{
+				m_value.r = 0;
+				m_value.g = 0;
+				m_value.b = 0;
+				m_value.a = 0;
 			}
 
-			inline const glm::uvec4 &get_value() const
+			inline glm::uvec4 get_value() const
 			{
-				return m_value;
+				return glm::uvec4(m_value.r, m_value.g,
+					m_value.b, m_value.a);
 			}
 
 			inline Uint16 get_x() const
@@ -47,7 +58,10 @@ namespace eternal_lands
 
 			inline void set_value(const glm::uvec4 &value)
 			{
-				m_value = value;
+				m_value.r = value.r;
+				m_value.g = value.g;
+				m_value.b = value.b;
+				m_value.a = value.a;
 			}
 
 			inline Uint32 get_index() const
@@ -57,6 +71,8 @@ namespace eternal_lands
 			}
 
 	};
+
+	BOOST_STATIC_ASSERT(sizeof(TerrainValue) == 8);
 
 	VECTOR(TerrainValue);
 

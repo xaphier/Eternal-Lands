@@ -65,21 +65,13 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void set_selection(const SelectionType value);
 		void save_dirs_settings(QSettings &settings);
 		void load_dirs_settings(QSettings &settings);
+		void terrain_vector_edit();
 
 	private slots:
 		void update_object();
 		void about_el();
 		void set_object_blend(const int);
 		void set_object_selection(const int);
-
-	protected:
-		virtual void closeEvent(QCloseEvent* event);
-
-	public:
-		MainWindow(QWidget* parent = 0);
-		virtual ~MainWindow();
-
-	public slots:
 		void update_translation();
 		void update_rotation();
 		void update_scale();
@@ -105,6 +97,16 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void change_preferences();
 		void terrain_edit();
 		void initialized();
+		void set_debug(const bool enabled);
+
+	protected:
+		virtual void closeEvent(QCloseEvent* event);
+
+	public:
+		MainWindow(QWidget* parent = 0);
+		virtual ~MainWindow();
+
+	public slots:
 
 };
 

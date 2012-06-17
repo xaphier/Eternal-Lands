@@ -208,4 +208,11 @@ namespace eternal_lands
 		map_loader->load(name);
 	}
 
+	void EditorScene::set_terrain(const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map)
+	{
+		get_map()->set_terrain(vector_map, normal_map, dudv_map);
+	}
+
 }

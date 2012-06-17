@@ -22,9 +22,10 @@ namespace eternal_lands
 	{
 		private:
 			TerrainValueVector m_terrain_values;
+			Uint32 m_id;
 
 		public:
-			TerrainValueModification(
+			TerrainValueModification(const Uint32 id,
 				const TerrainValueVector &terrain_values);
 			virtual ~TerrainValueModification() throw();
 			virtual ModificationType get_type() const;

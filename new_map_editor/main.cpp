@@ -32,6 +32,7 @@ class ElApplication: public QApplication
 				QMessageBox::critical(0, "std::exception",
 					exception.what());
 			}
+
 			exit(-1);
 			return false;
 		}

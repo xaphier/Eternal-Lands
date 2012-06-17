@@ -30,9 +30,9 @@ namespace eternal_lands
 
 	}
 
-	TerrainValueModification::TerrainValueModification(
+	TerrainValueModification::TerrainValueModification(const Uint32 id,
 		const TerrainValueVector &terrain_values):
-		m_terrain_values(terrain_values)
+		m_terrain_values(terrain_values), m_id(id)
 	{
 	}
 
@@ -52,41 +52,42 @@ namespace eternal_lands
 		Uint32 size;
 		bool found;
 
-		if (get_type() == modification->get_type())
-		{
-			terrain_value_modification = dynamic_cast<
-				TerrainValueModification*>(modification);
-
-			assert(terrain_value_modification != 0);
-
-			size = m_terrain_values.size();
-			begin = m_terrain_values.begin();
-			end = begin + size;
-
-			std::sort(begin, end, CompareTerrainValueIndex());
-
-			BOOST_FOREACH(const TerrainValue &terrain_value,
-				terrain_value_modification->m_terrain_values)
-			{
-				found = std::binary_search(begin, end,
-					terrain_value,
-					CompareTerrainValueIndex());
-
-				if (!found)
-				{
-					m_terrain_values.push_back(
-						terrain_value);
-					begin = m_terrain_values.begin();
-					end = begin + size;
-				}
-			}
-
-			return true;
-		}
-		else
+		if (get_type() != modification->get_type())
 		{
 			return false;
 		}
+
+		terrain_value_modification = dynamic_cast<
+			TerrainValueModification*>(modification);
+
+		assert(terrain_value_modification != 0);
+
+		if (m_id != terrain_value_modification->m_id)
+		{
+			return false;
+		}
+
+		size = m_terrain_values.size();
+		begin = m_terrain_values.begin();
+		end = begin + size;
+
+		std::sort(begin, end, CompareTerrainValueIndex());
+
+		BOOST_FOREACH(const TerrainValue &terrain_value,
+			terrain_value_modification->m_terrain_values)
+		{
+			found = std::binary_search(begin, end, terrain_value,
+				CompareTerrainValueIndex());
+
+			if (!found)
+			{
+				m_terrain_values.push_back(terrain_value);
+				begin = m_terrain_values.begin();
+				end = begin + size;
+			}
+		}
+
+		return true;
 	}
 
 	bool TerrainValueModification::undo(EditorMapData &editor)
@@ -108,7 +109,7 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_terrain_albedo_map_changed:
 			case mt_terrain_blend_map_changed:
-			case mt_terrain_height_map_changed:
+			case mt_terrain_vector_map_changed:
 			case mt_terrain_dudv_map_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:

@@ -204,10 +204,10 @@ namespace eternal_lands
 #define EXPAND_INTEGER_TEXTURE_FORMAT_TYPE(name, packed, gl_type, source_type, source_format, count, size)	\
 	TextureFormatTypeData(String(UTF8(name "ui")), it_unsigned,	\
 		pft_unsigned_##packed##_##count, gl_type##UI, 	\
-		GL_UNSIGNED_##source_type, source_format, count, size),	\
+		GL_UNSIGNED_##source_type, source_format##_INTEGER, count, size),	\
 	TextureFormatTypeData(String(UTF8(name "i")), it_signed,	\
 		pft_signed_##packed##_##count, gl_type##I, GL_##source_type,	\
-		source_format, count, size),	\
+		source_format##_INTEGER, count, size),	\
 	TextureFormatTypeData(String(UTF8(name)), it_unsigned,	\
 		pft_unsigned_normalized_##packed##_##count, gl_type,	\
 		GL_UNSIGNED_##source_type, source_format, count, size),	\
@@ -240,7 +240,7 @@ namespace eternal_lands
 			TextureFormatTypeData(String(UTF8("rgb10_a2_ui")),
 				it_unsigned, pft_unsigned_int_10_10_10_2,
 				GL_RGB10_A2UI, GL_UNSIGNED_INT_10_10_10_2,
-				GL_RGBA, 4, 32),
+				GL_RGBA_INTEGER, 4, 32),
 			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("r8", byte, GL_R8,
 				BYTE, GL_RED, 1, 8),
 			EXPAND_INTEGER_TEXTURE_FORMAT_TYPE("rg8", byte, GL_RG8,
@@ -259,28 +259,28 @@ namespace eternal_lands
 				GL_RGBA16, SHORT, GL_RGBA, 4, 64),
 			TextureFormatTypeData(String(UTF8("r32ui")),
 				pft_unsigned_int_1, GL_R32UI, GL_UNSIGNED_INT,
-				GL_RED, 1, 32),
+				GL_RED_INTEGER, 1, 32),
 			TextureFormatTypeData(String(UTF8("r32i")),
-				pft_signed_int_1, GL_R32I, GL_INT, GL_RED, 1,
-				32),
+				pft_signed_int_1, GL_R32I, GL_INT,
+				GL_RED_INTEGER, 1, 32),
 			TextureFormatTypeData(String(UTF8("rg32ui")),
 				pft_unsigned_int_2, GL_RG32UI, GL_UNSIGNED_INT,
-				GL_RG, 2, 64),
+				GL_RG_INTEGER, 2, 64),
 			TextureFormatTypeData(String(UTF8("rg32i")),
-				pft_signed_int_2, GL_RG32I, GL_INT, GL_RG, 2,
-				64),
+				pft_signed_int_2, GL_RG32I, GL_INT,
+				GL_RG_INTEGER, 2, 64),
 			TextureFormatTypeData(String(UTF8("rgb32ui")),
 				pft_unsigned_int_3, GL_RGB32UI, GL_UNSIGNED_INT,
-				GL_RGB, 3, 96),
+				GL_RGB_INTEGER, 3, 96),
 			TextureFormatTypeData(String(UTF8("rgb32i")),
-				pft_signed_int_3, GL_RGB32I, GL_INT, GL_RGB, 3,
-				96),
+				pft_signed_int_3, GL_RGB32I, GL_INT,
+				GL_RGB_INTEGER, 3, 96),
 			TextureFormatTypeData(String(UTF8("rgba32ui")),
 				pft_unsigned_int_4, GL_RGBA32UI,
-				GL_UNSIGNED_INT, GL_RGBA, 4, 128),
+				GL_UNSIGNED_INT, GL_RGBA_INTEGER, 4, 128),
 			TextureFormatTypeData(String(UTF8("rgba32i")),
-				pft_signed_int_4, GL_RGBA32I, GL_INT, GL_RGBA,
-				4, 128),
+				pft_signed_int_4, GL_RGBA32I, GL_INT,
+				GL_RGBA_INTEGER, 4, 128),
 			TextureFormatTypeData(String(UTF8("r16f")), pft_half_1,
 				GL_R16F, GL_HALF_FLOAT, GL_RED, 1, 16),
 			TextureFormatTypeData(String(UTF8("rg16f")), pft_half_2,

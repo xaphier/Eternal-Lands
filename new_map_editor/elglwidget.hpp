@@ -31,7 +31,7 @@ class ELGLWidget: public QGLWidget
 		float m_selected_depth;
 		Uint32 m_terrain_type_index;
 		Uint32 m_terrain_layer_index;
-		Uint16 m_terrain_index;
+		Uint32 m_terrain_id;
 		bool m_select;
 		bool m_select_depth;
 		bool m_terrain_editing;
@@ -57,11 +57,6 @@ class ELGLWidget: public QGLWidget
 		inline Uint32 get_terrain_layer_index() const
 		{
 			return m_terrain_layer_index;
-		}
-
-		inline Uint16 get_terrain_index() const
-		{
-			return m_terrain_index;
 		}
 
 		void mouse_click_action();
@@ -100,6 +95,7 @@ class ELGLWidget: public QGLWidget
 		QString get_blend_image_name() const;
 		QStringList get_materials() const;
 		QStringList get_default_materials(const String &name) const;
+		QStringList get_debug_modes() const;
 		void export_blend_image(const QString &file_name, const QString &codec) const;
 		void export_terrain_map(const QString &file_name, const QString &codec) const;
 		void import_terrain_map(const QString &file_name);
@@ -109,18 +105,38 @@ class ELGLWidget: public QGLWidget
 		QString get_terrain_dudv_map() const;
 		static void get_codecs(QStringList &codecs);
 		static void get_file_extensions_filter(QString &filter);
-		static void get_file_extensions_filter(QString &filter, QString &default_extension,
-			const QString &codec);
+		static void get_file_extensions_filter(QString &filter,
+			QString &default_extension, const QString &codec);
 		void set_dirs(const QStringList &dirs);
 		QImage get_icon(const QString &name);
-		void terrain_height_edit(const float strength,
-			const float radius, const int brush_type);
 		void terrain_layer_edit(const int terrain_layer_index,
 			const float strength, const float radius,
 			const int brush_type);
 		void ground_tile_edit(const int tile);
 		void water_tile_edit(const int water);
 		void height_edit(const int height);
+		void set_debug_mode(const int value);
+		void terrain_vector_add_normal(const float scale,
+			const float radius, const int brush_type);
+		void terrain_vector_add(const float value_x,
+			const float value_y, const float value_z,
+			const float radius, const int brush_type);
+		void terrain_vector_smooth(const float strength,
+			const float radius, const int brush_type);
+		void terrain_vector_set(const float value_x,
+			const float value_y, const float value_z,
+			const bool mask_x, const bool mask_y,
+			const bool mask_z, const float radius,
+			const int brush_type);
+		float get_terrain_offset_x() const;
+		float get_terrain_offset_y() const;
+		float get_terrain_offset_z() const;
+		float get_terrain_offset_min_x() const;
+		float get_terrain_offset_min_y() const;
+		float get_terrain_offset_min_z() const;
+		float get_terrain_offset_max_x() const;
+		float get_terrain_offset_max_y() const;
+		float get_terrain_offset_max_z() const;
 
 		inline Qt::MouseButton get_click_button() const
 		{
@@ -223,6 +239,7 @@ class ELGLWidget: public QGLWidget
 		void set_draw_lights(const bool draw_lights);
 		void set_draw_light_spheres(const bool draw_light_spheres);
 		void set_lights_enabled(const bool enabled);
+		void init_terrain(const int width, const int height);
 
 	signals:
 		void update_object(const bool select);

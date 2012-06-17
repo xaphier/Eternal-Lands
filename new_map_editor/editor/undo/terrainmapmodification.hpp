@@ -22,12 +22,11 @@ namespace eternal_lands
 		private:
 			const String m_map;
 			const Uint16 m_index;
-			const Uint16 m_id;
 			const ModificationType m_type;
 
 		public:
 			TerrainMapModification(const String &map,
-				const Uint16 index, const Uint16 id,
+				const Uint16 index,
 				const ModificationType type);
 			virtual ~TerrainMapModification() throw();
 			virtual ModificationType get_type() const;

@@ -36,15 +36,44 @@ namespace eternal_lands
 		rt_particle
 	};
 
-	enum EditorBrushType
+	enum AddBrushType
 	{
-		ebt_set = 0,
-		ebt_const = 1,
-		ebt_linear = 2,
-		ebt_quadratic = 3,
-		ebt_linear_smooth = 4,
-		ebt_quadratic_smooth = 5
+		abt_const = 0,
+		abt_linear = 1,
+		abt_quadratic = 2
 	};
+
+	enum SmoothBrushType
+	{
+		sbt_linear = 0,
+		sbt_quadratic = 1
+	};
+
+	class LessIvec2
+	{
+		public:
+			inline LessIvec2()
+			{
+			}
+
+			inline ~LessIvec2() noexcept
+			{
+			}
+
+			inline bool operator()(const glm::ivec2 &p0,
+				const glm::ivec2 &p1)
+			{
+				if (p0.x == p1.x)
+				{
+					return p0.y < p1.y;
+				}
+
+				return p0.x < p1.x;
+			}
+
+	};
+
+	typedef std::set<glm::ivec2, LessIvec2> Ivec2Set;
 
 	/**
 	 * @brief @c class for maps.
@@ -59,42 +88,44 @@ namespace eternal_lands
 			std::map<Uint32, ParticleData> m_particles;
 			boost::scoped_ptr<EditorScene> m_scene;
 			ImageSharedPtr m_terrain_vector_image;
+			ImageSharedPtr m_terrain_normal_image;
+			ImageSharedPtr m_terrain_dudv_image;
 			boost::array<ImageSharedPtr, 3> m_blend_images;
+			boost::array<glm::vec3,  65536> m_normals;
 			Uint16MultiArray2 m_height_map;
 			Uint8MultiArray2 m_tile_map;
 			Uint32 m_id;
 			float m_depth;
 			RenderableType m_renderable;
 
-			void get_terrain_values(const glm::uvec2 &vertex,
-				const float radius,
-				TerrainValueVector &terrain_values) const;
-			void change_terrain_values(const glm::uvec2 &vertex,
-				const float strength, const float radius,
-				const EditorBrushType brush_type,
-				TerrainValueVector &terrain_values) const;
+			glm::uvec2 get_best_normal(const glm::vec3 &normal)
+				const;
+			glm::vec3 get_position(const glm::ivec2 &index)
+				const;
+			glm::vec3 get_direction(const glm::vec3 &centre,
+				const glm::ivec2 &index) const;
+			glm::vec3 get_normal(const glm::ivec2 &index) const;
+			void update_normal(const glm::ivec2 &index);
+			void update_normals(const Ivec2Set &positions);
 			void get_blend_values(const glm::uvec2 &vertex,
 				const float radius,
 				ImageValueVector &blend_values) const;
-			static void change_blend_values(
-				const glm::uvec2 &position,
-				const Uint32 index, const float strength,
+			static float calc_brush_effect_add(
+				const glm::vec2 &centre,
+				const glm::vec2 &point, const float radius,
+				const AddBrushType brush_type);
+			static glm::vec3 calc_brush_effect_smooth(
+				const glm::vec2 &centre,
+				const glm::vec2 &point, const glm::vec3 &value,
+				const glm::vec3 &average, const float strength,
 				const float radius,
-				const EditorBrushType brush_type,
-				ImageValueVector &blend_values);
-			static float calc_brush_effect(const glm::vec2 &centre,
-				const glm::vec2 &point, const float value,
-				const float average, const float strength,
-				const float radius,
-				const EditorBrushType brush_type);
+				const SmoothBrushType brush_type);
 			static float get_blend_value(const glm::vec4 &blend,
 				const Uint32 index);
 			static void set_blend_value(const float value,
 				const Uint32 index, glm::vec4 &blend);
 			static glm::vec4 get_blend_values(
 				const glm::vec4 &blend);
-			static EditorBrushType get_brush_type(
-				const int brush_type);
 
 		public:
 			EditorMapData(const GlobalVarsSharedPtr &global_vars,
@@ -127,21 +158,17 @@ namespace eternal_lands
 			void set_terrain_values(
 				const TerrainValueVector &terrain_values);
 			void set_terrain_albedo_map(const String &name,
-				const Uint16 index, const Uint16 id);
+				const Uint16 index);
 			void set_terrain_blend_map(const String &name,
-				const Uint16 id);
-			void set_terrain_height_map(const String &name,
-				const Uint16 id);
-			void set_terrain_dudv_map(const String &name,
-				const Uint16 id);
-			const String &get_terrain_albedo_map(const Uint16 index,
-				const Uint16 id) const;
-			const String &get_terrain_blend_map(const Uint16 id)
+				const Uint16 index);
+			void set_terrain_vector_map(const String &name);
+			void set_terrain_dudv_map(const String &name);
+			const String &get_terrain_albedo_map(
+				const Uint16 index) const;
+			const String &get_terrain_blend_map(const Uint16 index)
 				const;
-			const String &get_terrain_height_map(const Uint16 id)
-				const;
-			const String &get_terrain_dudv_map(const Uint16 id)
-				const;
+			const String &get_terrain_vector_map() const;
+			const String &get_terrain_dudv_map() const;
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
 			void set_view_matrix(const glm::mat4 &view_matrix);
@@ -165,6 +192,37 @@ namespace eternal_lands
 			StringVector get_default_materials(const String &name)
 				const;
 			ImageSharedPtr get_image(const String &name) const;
+			void init_terrain(const glm::uvec2 &size);
+			void set_focus(const glm::vec3 &focus) noexcept;
+			void set_debug_mode(const int value);
+			StringVector get_debug_modes() const;
+			void get_terrain_values(const glm::uvec2 &vertex,
+				const float radius,
+				TerrainValueVector &terrain_values) const;
+			void change_terrain_values_add_normal(
+				const glm::uvec2 &vertex,
+				const float scale, const float radius,
+				const AddBrushType brush_type,
+				TerrainValueVector &terrain_values) const;
+			void change_terrain_values_add(const glm::uvec2 &vertex,
+				const glm::vec3 &add_value, const float radius,
+				const AddBrushType brush_type,
+				TerrainValueVector &terrain_values) const;
+			void change_terrain_values_smooth(
+				const glm::uvec2 &vertex, const float strength,
+				const float radius,
+				const SmoothBrushType brush_type,
+				TerrainValueVector &terrain_values) const;
+			void change_terrain_values_set(const glm::uvec2 &vertex,
+				const glm::vec3 &set_value,
+				const glm::bvec3 &mask, const float radius,
+				const AddBrushType brush_type,
+				TerrainValueVector &terrain_values) const;
+			static const glm::vec3 &get_terrain_offset();
+			static const glm::vec3 &get_terrain_offset_min();
+			static const glm::vec3 &get_terrain_offset_max();
+			glm::uvec2 get_vertex(const glm::vec3 &world_position)
+				const;
 
 			inline void set_height_map_size(const Uint16 width,
 				const Uint16 height) noexcept

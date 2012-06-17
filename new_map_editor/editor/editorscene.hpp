@@ -65,6 +65,9 @@ namespace eternal_lands
 			virtual void add_light(const LightData &light_data);
 			virtual void remove_light(const Uint32 id);
 			void load_map(const String &name, EditorMapData &data);
+			void set_terrain(const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map);
 
 			inline bool get_draw_objects() const
 			{

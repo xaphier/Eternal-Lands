@@ -12,9 +12,8 @@ namespace eternal_lands
 {
 
 	TerrainMapModification::TerrainMapModification(const String &map,
-		const Uint16 index, const Uint16 id,
-		const ModificationType type): m_map(map), m_index(index),
-		m_id(id), m_type(type)
+		const Uint16 index, const ModificationType type): m_map(map),
+		m_index(index), m_type(type)
 	{
 	}
 
@@ -31,21 +30,18 @@ namespace eternal_lands
 	{
 		TerrainMapModification* terrain_map_modification;
 
-		if (get_type() == modification->get_type())
-		{
-			terrain_map_modification =
-				dynamic_cast<TerrainMapModification*>(
-					modification);
-
-			assert(terrain_map_modification != 0);
-
-			return (m_index == terrain_map_modification->m_index)
-				&& (m_id == terrain_map_modification->m_id);
-		}
-		else
+		if (get_type() != modification->get_type())
 		{
 			return false;
 		}
+
+		terrain_map_modification = 
+			dynamic_cast<TerrainMapModification*>(
+				modification);
+
+		assert(terrain_map_modification != 0);
+
+		return m_index == terrain_map_modification->m_index;
 	}
 
 	bool TerrainMapModification::undo(EditorMapData &editor)
@@ -67,16 +63,15 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 				break;
 			case mt_terrain_albedo_map_changed:
-				editor.set_terrain_albedo_map(m_map, m_index,
-					m_id);
+				editor.set_terrain_albedo_map(m_map, m_index);
 			case mt_terrain_blend_map_changed:
-				editor.set_terrain_blend_map(m_map, m_id);
+				editor.set_terrain_blend_map(m_map, m_index);
 				break;
-			case mt_terrain_height_map_changed:
-				editor.set_terrain_height_map(m_map, m_id);
+			case mt_terrain_vector_map_changed:
+				editor.set_terrain_vector_map(m_map);
 				break;
 			case mt_terrain_dudv_map_changed:
-				editor.set_terrain_dudv_map(m_map, m_id);
+				editor.set_terrain_dudv_map(m_map);
 				break;
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:

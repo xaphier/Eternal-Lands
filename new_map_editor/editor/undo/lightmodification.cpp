@@ -27,19 +27,15 @@ namespace eternal_lands
 
 	bool LightModification::merge(Modification* modification)
 	{
-		if (get_type() == modification->get_type())
-		{
-			assert(dynamic_cast<LightModification*>(
-				modification) != 0);
-
-			return m_data.get_id() ==
-				dynamic_cast<LightModification*>(
-					modification)->m_data.get_id();
-		}
-		else
+		if (get_type() != modification->get_type())
 		{
 			return false;
 		}
+
+		assert(dynamic_cast<LightModification*>(modification) != 0);
+
+		return m_data.get_id() == dynamic_cast<LightModification*>(
+			modification)->m_data.get_id();
 	}
 
 	bool LightModification::undo(EditorMapData &editor)
@@ -66,7 +62,7 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_terrain_albedo_map_changed:
 			case mt_terrain_blend_map_changed:
-			case mt_terrain_height_map_changed:
+			case mt_terrain_vector_map_changed:
 			case mt_terrain_dudv_map_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:

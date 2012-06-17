@@ -30,20 +30,17 @@ namespace eternal_lands
 	{
 		GroundTileModification* tile_modification;
 
-		if (get_type() == modification->get_type())
-		{
-			tile_modification =
-				dynamic_cast<GroundTileModification*>(
-					modification);
-
-			assert(tile_modification != 0);
-
-			return m_offset == tile_modification->m_offset;
-		}
-		else
+		if (get_type() != modification->get_type())
 		{
 			return false;
 		}
+
+		tile_modification = dynamic_cast<GroundTileModification*>(
+			modification);
+
+		assert(tile_modification != 0);
+
+		return m_offset == tile_modification->m_offset;
 	}
 
 	bool GroundTileModification::undo(EditorMapData &editor)

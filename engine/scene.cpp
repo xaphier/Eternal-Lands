@@ -1514,11 +1514,11 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.switch_texture(spt_albedo_0,
-			m_clipmap_frame_buffer->get_texture());
-
 		if (get_global_vars()->get_opengl_3_0())
 		{
+			m_state_manager.switch_texture(spt_albedo_0,
+				m_clipmap_frame_buffer->get_texture());
+
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 		}
 

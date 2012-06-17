@@ -15,6 +15,7 @@
 #include "undo/heightmodification.hpp"
 #include "undo/terrainmapmodification.hpp"
 #include "undo/groundtilemodification.hpp"
+#include "undo/terrainvaluemodification.hpp"
 #include "scene.hpp"
 #include "codec/codecmanager.hpp"
 #include "logging.hpp"
@@ -66,15 +67,14 @@ namespace eternal_lands
 			light_data, type));
 
 		m_undo.add(modification);
-
 	}
 
 	void Editor::set_terrain_albedo_map(const String &str,
-		const Uint16 index, const Uint16 id)
+		const Uint16 index)
 	{
 		String tmp;
 
-		tmp = m_data.get_terrain_albedo_map(index, id);
+		tmp = m_data.get_terrain_albedo_map(index);
 
 		if (str == tmp)
 		{
@@ -82,11 +82,11 @@ namespace eternal_lands
 		}
 
 		ModificationAutoPtr modification(new TerrainMapModification(
-			tmp, index, id, mt_terrain_albedo_map_changed));
+			tmp, index, mt_terrain_albedo_map_changed));
 
 		m_undo.add(modification);
 
-		m_data.set_terrain_albedo_map(str, index, id);
+		m_data.set_terrain_albedo_map(str, index);
 	}
 
 	void Editor::set_ground_tile(const glm::vec2 &point,
@@ -196,28 +196,6 @@ namespace eternal_lands
 
 		m_data.set_ambient(color);
 	}
-
-	const String &Editor::get_terrain_albedo_map(const Uint16 index,
-		const Uint16 id) const
-	{
-		return m_data.get_terrain_albedo_map(index, id);
-	}
-
-	const String &Editor::get_terrain_height_map(const Uint16 id) const
-	{
-		return m_data.get_terrain_height_map(id);
-	}
-
-	const String &Editor::get_terrain_blend_map(const Uint16 id) const
-	{
-		return m_data.get_terrain_blend_map(id);
-	}
-
-	const String &Editor::get_terrain_dudv_map(const Uint16 id) const
-	{
-		return m_data.get_terrain_dudv_map(id);
-	}
-
 
 /*
 	void Editor::terrain_edit(const Uint16Array2 &vertex,
@@ -615,15 +593,101 @@ namespace eternal_lands
 		return m_data.get_ambient();
 	}
 
-	void Editor::terrain_height_edit(const Uint32 id,
-		const glm::vec3 &position, const float strength,
-		const float radius, const int brush_type)
+	void Editor::terrain_vector_add_normal(const glm::vec3 &position,
+		const float scale, const float radius, const Sint32 brush_type,
+		const Uint32 id)
 	{
+		TerrainValueVector terrain_values;
+		glm::uvec2 vertex;
+
+		vertex = m_data.get_vertex(position);
+
+		m_data.get_terrain_values(vertex, radius, terrain_values);
+
+		ModificationAutoPtr modification(new TerrainValueModification(
+			id, terrain_values));
+
+		m_undo.add(modification);
+
+		m_data.change_terrain_values_add_normal(vertex, scale,
+			radius, static_cast<AddBrushType>(brush_type),
+			terrain_values);
+
+		m_data.set_terrain_values(terrain_values);
 	}
 
-	void Editor::terrain_layer_edit(const Uint32 id,
-		const glm::vec3 &position, const Uint32 index,
-		const float strength, const float radius, const int brush_type)
+	void Editor::terrain_vector_add(const glm::vec3 &position,
+		const glm::vec3 &add_value, const float radius,
+		const Sint32 brush_type, const Uint32 id)
+	{
+		TerrainValueVector terrain_values;
+		glm::uvec2 vertex;
+
+		vertex = m_data.get_vertex(position);
+
+		m_data.get_terrain_values(vertex, radius, terrain_values);
+
+		ModificationAutoPtr modification(new TerrainValueModification(
+			id, terrain_values));
+
+		m_undo.add(modification);
+
+		m_data.change_terrain_values_add(vertex, add_value, radius,
+			static_cast<AddBrushType>(brush_type),
+			terrain_values);
+
+		m_data.set_terrain_values(terrain_values);
+	}
+
+	void Editor::terrain_vector_smooth(const glm::vec3 &position,
+		const float strength, const float radius,
+		const Sint32 brush_type, const Uint32 id)
+	{
+		TerrainValueVector terrain_values;
+		glm::uvec2 vertex;
+
+		vertex = m_data.get_vertex(position);
+
+		m_data.get_terrain_values(vertex, radius, terrain_values);
+
+		ModificationAutoPtr modification(new TerrainValueModification(
+			id, terrain_values));
+
+		m_undo.add(modification);
+
+		m_data.change_terrain_values_smooth(vertex, strength, radius,
+			static_cast<SmoothBrushType>(brush_type),
+			terrain_values);
+
+		m_data.set_terrain_values(terrain_values);
+	}
+
+	void Editor::terrain_vector_set(const glm::vec3 &position,
+		const glm::vec3 &set_value, const glm::bvec3 &mask,
+		const float radius, const Sint32 brush_type, const Uint32 id)
+	{
+		TerrainValueVector terrain_values;
+		glm::uvec2 vertex;
+
+		vertex = m_data.get_vertex(position);
+
+		m_data.get_terrain_values(vertex, radius, terrain_values);
+
+		ModificationAutoPtr modification(new TerrainValueModification(
+			id, terrain_values));
+
+		m_undo.add(modification);
+
+		m_data.change_terrain_values_set(vertex, set_value, mask,
+			radius, static_cast<AddBrushType>(brush_type),
+			terrain_values);
+
+		m_data.set_terrain_values(terrain_values);
+	}
+
+	void Editor::terrain_layer_edit(const glm::vec3 &position,
+		const Uint32 index, const float strength, const float radius,
+		const int brush_type)
 	{
 	}
 
@@ -699,45 +763,5 @@ namespace eternal_lands
 		m_undo.clear();
 	}
 */
-	void Editor::draw()
-	{
-		m_data.draw();
-	}
-
-	void Editor::select(const glm::uvec2 &position,
-		const glm::uvec2 &half_size)
-	{
-		m_data.select(position, half_size);
-	}
-
-	void Editor::select_depth(const glm::uvec2 &position)
-	{
-		m_data.select_depth(position);
-	}
-
-	float Editor::get_depth() const
-	{
-		return m_data.get_depth();
-	}
-
-	Uint32 Editor::get_id() const
-	{
-		return m_data.get_id();
-	}
-
-	RenderableType Editor::get_renderable() const
-	{
-		return m_data.get_renderable();
-	}
-
-	StringVector Editor::get_materials() const
-	{
-		return m_data.get_materials();
-	}
-
-	StringVector Editor::get_default_materials(const String &name) const
-	{
-		return m_data.get_default_materials(name);
-	}
 
 }

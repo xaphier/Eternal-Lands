@@ -19,12 +19,17 @@ namespace eternal_lands
 			private:
 				const String m_name;
 				const GLenum m_gl_type;
+				const TextureTargetType m_depth_texture_target;
 
 			public:
 				inline TextureTargetTypeData(
 					const String &name,
-					const GLenum gl_type):
-					m_name(name), m_gl_type(gl_type)
+					const GLenum gl_type,
+					const TextureTargetType
+						depth_texture_target):
+					m_name(name), m_gl_type(gl_type),
+					m_depth_texture_target(
+						depth_texture_target)
 				{
 				}
 
@@ -42,33 +47,40 @@ namespace eternal_lands
 					return m_gl_type;
 				}
 
+				inline TextureTargetType
+					get_depth_texture_target() const
+					noexcept
+				{
+					return m_depth_texture_target;
+				}
+
 		};
 
 		const TextureTargetTypeData texture_target_datas[] =
 		{
 			TextureTargetTypeData(String(UTF8("texture_1d")),
-				GL_TEXTURE_1D),
+				GL_TEXTURE_1D, ttt_texture_1d),
 			TextureTargetTypeData(String(UTF8("texture_2d")),
-				GL_TEXTURE_2D),
+				GL_TEXTURE_2D, ttt_texture_2d),
 			TextureTargetTypeData(String(UTF8("texture_3d")),
-				GL_TEXTURE_3D),
+				GL_TEXTURE_3D, ttt_texture_2d),
 			TextureTargetTypeData(String(UTF8("texture_cube_map")),
-				GL_TEXTURE_CUBE_MAP),
+				GL_TEXTURE_CUBE_MAP, ttt_texture_2d),
 			TextureTargetTypeData(String(UTF8("texture_1d_array")),
-				GL_TEXTURE_1D_ARRAY),
+				GL_TEXTURE_1D_ARRAY, ttt_texture_1d),
 			TextureTargetTypeData(String(UTF8("texture_2d_array")),
-				GL_TEXTURE_2D_ARRAY),
+				GL_TEXTURE_2D_ARRAY, ttt_texture_2d),
 			TextureTargetTypeData(
 				String(UTF8("texture_cube_map_array")),
-				GL_TEXTURE_CUBE_MAP_ARRAY),
+				GL_TEXTURE_CUBE_MAP_ARRAY, ttt_texture_2d),
 			TextureTargetTypeData(String(UTF8("texture_rectangle")),
-				GL_TEXTURE_RECTANGLE),
+				GL_TEXTURE_RECTANGLE, ttt_texture_rectangle),
 			TextureTargetTypeData(
 				String(UTF8("texture_2d_multisample")),
-				GL_TEXTURE_2D_MULTISAMPLE),
+				GL_TEXTURE_2D_MULTISAMPLE, ttt_texture_2d),
 			TextureTargetTypeData(
 				String(UTF8("texture_2d_multisample_array")),
-				GL_TEXTURE_2D_MULTISAMPLE_ARRAY)
+				GL_TEXTURE_2D_MULTISAMPLE_ARRAY, ttt_texture_2d)
 		};
 
 		const Uint32 texture_target_datas_count =
@@ -133,6 +145,25 @@ namespace eternal_lands
 			<< errinfo_string_value(str)
 			<< boost::errinfo_type_info_name(
 				UTF8("TextureTargetType")));
+	}
+
+	TextureTargetType TextureTargetUtil::get_depth_texture_target(
+		const TextureTargetType texture_target)
+	{
+		if (texture_target_datas_count <= texture_target)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_range_min(0)
+				<< errinfo_range_max(
+					texture_target_datas_count - 1)
+				<< errinfo_range_index(static_cast<Uint32>(
+					texture_target))
+				<< boost::errinfo_type_info_name(
+					UTF8("TextureTargetType")));
+		}
+
+		return texture_target_datas[
+			texture_target].get_depth_texture_target();
 	}
 
 	Uint32 TextureTargetUtil::get_texture_target_count() noexcept

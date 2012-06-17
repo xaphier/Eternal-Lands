@@ -54,48 +54,42 @@ namespace eternal_lands
 		Uint32 size;
 		bool found;
 
-		if (get_type() == modification->get_type())
-		{
-			blend_modification = dynamic_cast<BlendModification*>(
-				modification);
-
-			assert(blend_modification != 0);
-
-			if (blend_modification->m_id == m_id)
-			{
-				size = m_blend_values.size();
-				begin = m_blend_values.begin();
-				end = begin + size;
-
-				std::sort(begin, end, CompareImageValueIndex());
-
-				BOOST_FOREACH(const ImageValue &image_value,
-					blend_modification->m_blend_values)
-				{
-					found = std::binary_search(begin, end,
-						image_value,
-						CompareImageValueIndex());
-
-					if (!found)
-					{
-						m_blend_values.push_back(
-							image_value);
-						begin = m_blend_values.begin();
-						end = begin + size;
-					}
-				}
-
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
+		if (get_type() != modification->get_type())
 		{
 			return false;
 		}
+
+		blend_modification = dynamic_cast<BlendModification*>(
+			modification);
+
+		assert(blend_modification != 0);
+
+		if (blend_modification->m_id != m_id)
+		{
+			return false;
+		}
+
+		size = m_blend_values.size();
+		begin = m_blend_values.begin();
+		end = begin + size;
+
+		std::sort(begin, end, CompareImageValueIndex());
+
+		BOOST_FOREACH(const ImageValue &image_value,
+			blend_modification->m_blend_values)
+		{
+			found = std::binary_search(begin, end, image_value,
+				CompareImageValueIndex());
+
+			if (!found)
+			{
+				m_blend_values.push_back(image_value);
+				begin = m_blend_values.begin();
+				end = begin + size;
+			}
+		}
+
+		return true;
 	}
 
 	bool BlendModification::undo(EditorMapData &editor)

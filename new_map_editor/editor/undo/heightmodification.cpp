@@ -44,39 +44,37 @@ namespace eternal_lands
 		Uint32 size;
 		bool found;
 
-		if (get_type() == modification->get_type())
-		{
-			height_modification = dynamic_cast<
-				HeightModification*>(modification);
-
-			assert(height_modification != 0);
-
-			size = m_heights.size();
-			begin = m_heights.begin();
-			end = begin + size;
-
-			std::sort(begin, end, CompareHeightIndex());
-
-			BOOST_FOREACH(const Height &height,
-				height_modification->m_heights)
-			{
-				found = std::binary_search(begin, end, height,
-					CompareHeightIndex());
-
-				if (!found)
-				{
-					m_heights.push_back(height);
-					begin = m_heights.begin();
-					end = begin + size;
-				}
-			}
-
-			return true;
-		}
-		else
+		if (get_type() != modification->get_type())
 		{
 			return false;
 		}
+
+		height_modification = dynamic_cast<HeightModification*>(
+			modification);
+
+		assert(height_modification != 0);
+
+		size = m_heights.size();
+		begin = m_heights.begin();
+		end = begin + size;
+
+		std::sort(begin, end, CompareHeightIndex());
+
+		BOOST_FOREACH(const Height &height,
+			height_modification->m_heights)
+		{
+			found = std::binary_search(begin, end, height,
+				CompareHeightIndex());
+
+			if (!found)
+			{
+				m_heights.push_back(height);
+				begin = m_heights.begin();
+				end = begin + size;
+			}
+		}
+
+		return true;
 	}
 
 	bool HeightModification::undo(EditorMapData &editor)
@@ -98,7 +96,7 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 			case mt_terrain_albedo_map_changed:
 			case mt_terrain_blend_map_changed:
-			case mt_terrain_height_map_changed:
+			case mt_terrain_vector_map_changed:
 			case mt_terrain_dudv_map_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:

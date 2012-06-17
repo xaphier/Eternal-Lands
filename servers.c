@@ -59,7 +59,7 @@ void set_server_details()
 	if (num == -1)
 	{
 		// Oops... what they they specify on the command line?
-		LOG_ERROR_OLD("Server profile not found in servers.lst for server: %s. Failover to server: main.", id);
+		LOG_WARNING_OLD("Server profile not found in servers.lst for server: %s. Failover to server: main.", id);
 		// Failover to the main server
 		num = find_server_from_id("main");
 		if (num == -1)

@@ -54,22 +54,21 @@ namespace eternal_lands
 			void remove_ground_tile(const Uint32 id);
 			static StringVector get_ground_tile_materials(
 				const Uint8 index);
-			void terrain_edit(const Uint16Array2 &vertex,
+/*			void terrain_edit(const Uint16Array2 &vertex,
 				const float strength, const float radius,
-				const EditorBrushType brush_type,
-				const Uint16 id);
+				const EditorBrushType brush_type);
 			void blend_image_edit(const Uint16Array2 &vertex,
 				const Uint32 index, const float strength,
 				const float radius,
 				const EditorBrushType brush_type,
 				const Uint16 id);
-
+*/
 		public:
 			Editor(const GlobalVarsSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
 			bool undo();
 			void set_terrain_albedo_map(const String &texture,
-				const Uint16 index, const Uint16 id);
+				const Uint16 index);
 			void set_ground_tile(const glm::vec2 &point,
 				const Uint16 tile);
 			void add_3d_object(const glm::vec3 &position,
@@ -80,26 +79,16 @@ namespace eternal_lands
 			void add_ground_tile(const Uint32 x, const Uint32 y,
 				const Uint8 texture);
 			void set_ambient(const glm::vec3 &color);
-			void terrain_height_edit(const Uint32 id,
-				const glm::vec3 &point, const float strength,
+			void terrain_layer_edit(const glm::vec3 &point,
+				const Uint32 index, const float strength,
 				const float radius, const int brush_type);
-			void terrain_layer_edit(const Uint32 id,
-				const glm::vec3 &point, const Uint32 index,
-				const float strength, const float radius,
-				const int brush_type);
 			void ground_tile_edit(const glm::vec3 &point,
 				const Uint8 tile);
 			void water_tile_edit(const glm::vec3 &point,
 				const Uint8 water);
 			void height_edit(const glm::vec3 &point,
 				const Uint8 height);
-/*			void set_terrain(const MaterialData &terrain_material,
-				const Uint16Array2 map_size, const Uint16Array2 blend_image_size);
-			void set_terrain(const MaterialData &terrain_material,
-				const String &image_name,
-				const Uint16Array2 blend_image_size);
-			void get_terrain_material_data(MaterialData &terrain_material) const;
-*/			void remove_object(const Uint32 id);
+			void remove_object(const Uint32 id);
 			void save(const String &name) const;
 			void load_map(const String &name);
 			void set_object_transparency(const Uint32 id,
@@ -134,25 +123,72 @@ namespace eternal_lands
 			void export_terrain_map(const String &file_name,
 				const String &type) const;
 			void import_terrain_map(const String &file_name);
-			const String &get_terrain_albedo_map(
-				const Uint16 index, const Uint16 id) const;
-			const String &get_terrain_height_map(const Uint16 id)
-				const;
-			const String &get_terrain_blend_map(const Uint16 id)
-				const;
-			const String &get_terrain_dudv_map(const Uint16 id)
-				const;
-			StringVector get_materials() const;
-			StringVector get_default_materials(const String &name)
-				const;
-			void draw();
-			void select(const glm::uvec2 &position,
-				const glm::uvec2 &half_size);
-			void select_depth(const glm::uvec2 &position);
-			float get_depth() const;
-			Uint32 get_id() const;
-			bool get_selected() const;
-			RenderableType get_renderable() const;
+			void terrain_vector_add_normal(
+				const glm::vec3 &position, const float scale,
+				const float radius, const Sint32 brush_type,
+				const Uint32 id);
+			void terrain_vector_add(const glm::vec3 &position,
+				const glm::vec3 &add_value, const float radius,
+				const Sint32 brush_type, const Uint32 id);
+			void terrain_vector_smooth(const glm::vec3 &position,
+				const float strength, const float radius,
+				const Sint32 brush_type, const Uint32 id);
+			void terrain_vector_set(const glm::vec3 &position,
+				const glm::vec3 &set_value,
+				const glm::bvec3 &mask, const float radius,
+				const Sint32 brush_type, const Uint32 id);
+
+			static inline const glm::vec3 &get_terrain_offset()
+			{
+				return EditorMapData::get_terrain_offset();
+			}
+
+			static inline const glm::vec3 &get_terrain_offset_min()
+			{
+				return EditorMapData::get_terrain_offset_min();
+			}
+
+			static inline const glm::vec3 &get_terrain_offset_max()
+			{
+				return EditorMapData::get_terrain_offset_max();
+			}
+
+			inline const String &get_terrain_albedo_map(
+				const Uint16 index) const
+			{
+				return m_data.get_terrain_albedo_map(index);
+			}
+
+			inline const String &get_terrain_vector_map() const
+			{
+				return m_data.get_terrain_vector_map();
+			}
+
+			inline const String &get_terrain_blend_map(
+				const Uint16 index) const
+			{
+				return m_data.get_terrain_blend_map(index);
+			}
+
+			inline const String &get_terrain_dudv_map() const
+			{
+				return m_data.get_terrain_dudv_map();
+			}
+
+			inline StringVector get_debug_modes() const
+			{
+				return m_data.get_debug_modes();
+			}
+
+			inline void set_debug_mode(const int value)
+			{
+				m_data.set_debug_mode(value);
+			}
+
+			inline void init_terrain(const glm::uvec2 &size)
+			{
+				m_data.init_terrain(size);
+			}
 
 			inline ImageSharedPtr get_image(const String &name)
 				const
@@ -206,6 +242,11 @@ namespace eternal_lands
 				m_data.set_view_port(view_port);
 			}
 
+			inline void set_focus(const glm::vec3 &focus) noexcept
+			{
+				m_data.set_focus(focus);
+			}
+
 			inline const glm::mat4 &get_projection_matrix() const
 			{
 				return m_data.get_projection_matrix();
@@ -257,32 +298,7 @@ namespace eternal_lands
 					return false;
 				}
 			}
-/*
-			inline const Selection &get_selection() const
-			{
-				return m_scene.get_selection();
-			}
 
-			inline bool get_selected() const
-			{
-				return get_selection().get_valid();
-			}
-
-			inline EditorScene &get_scene()
-			{
-				return m_scene;
-			}
-
-			inline const EditorScene &get_scene() const
-			{
-				return m_scene;
-			}
-
-			inline void set_deselect()
-			{
-				m_scene.set_deselect();
-			}
-*/
 			inline bool get_can_undo() const
 			{
 				return m_undo.can_undo();
@@ -359,14 +375,6 @@ namespace eternal_lands
 				set_light_color(get_id(), color);
 			}
 
-			inline void set_terrain_albedo_map(
-				const String &texture, const Uint16 index)
-			{
-				assert(get_object_selected());
-				set_terrain_albedo_map(texture, index,
-					get_id());
-			}
-
 			inline void set_random_translation(const bool value,
 				const Uint16 index)
 			{
@@ -416,6 +424,48 @@ namespace eternal_lands
 			inline void set_random_scale_max(const float value)
 			{
 				m_random_scale_max = value;
+			}
+
+			inline void draw()
+			{
+				m_data.draw();
+			}
+
+			inline void select(const glm::uvec2 &position,
+				const glm::uvec2 &half_size)
+			{
+				m_data.select(position, half_size);
+			}
+
+			inline void select_depth(const glm::uvec2 &position)
+			{
+				m_data.select_depth(position);
+			}
+
+			inline float get_depth() const
+			{
+				return m_data.get_depth();
+			}
+
+			inline Uint32 get_id() const
+			{
+				return m_data.get_id();
+			}
+
+			inline RenderableType get_renderable() const
+			{
+				return m_data.get_renderable();
+			}
+
+			inline StringVector get_materials() const
+			{
+				return m_data.get_materials();
+			}
+
+			inline StringVector get_default_materials(
+				const String &name) const
+			{
+				return m_data.get_default_materials(name);
 			}
 
 	};

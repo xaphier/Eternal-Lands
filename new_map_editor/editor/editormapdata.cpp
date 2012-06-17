@@ -18,6 +18,9 @@
 #include "meshdatacache.hpp"
 #include "abstractmaploader.hpp"
 #include "codec/codecmanager.hpp"
+#include "shader/shaderbuildutil.hpp"
+#include "effectcache.hpp"
+#include "abstractterrainmanager.hpp"
 
 namespace eternal_lands
 {
@@ -25,11 +28,30 @@ namespace eternal_lands
 	EditorMapData::EditorMapData(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system)
 	{
+		glm::uvec2 value;
+		Uint32 i, j, index;
+
 		m_scene.reset(new EditorScene(global_vars, file_system));
 		m_scene->set_main_light_ambient(glm::vec3(0.1f));
 		m_scene->set_main_light_color(glm::vec3(0.8f));
 		m_scene->set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
 		m_scene->set_lights(false);
+
+		for (i = 0; i < 256; ++i)
+		{
+			for (j = 0; j < 256; ++j)
+			{
+				value.x = j;
+				value.y = i;
+
+				index = value.x + value.y * 256;
+
+				m_normals[index] =
+					PackTool::decode_normal_optimized_uint8(
+						value);
+			}
+		}
+
 	}
 
 	EditorMapData::~EditorMapData() throw()
@@ -360,56 +382,81 @@ namespace eternal_lands
 	void EditorMapData::set_terrain_values(
 		const TerrainValueVector &terrain_values)
 	{
+		Ivec2Set indices;
+		glm::ivec2 index, min, max;
+		Sint32 x, y;
+
+		min = glm::ivec2(0);
+		max = glm::ivec2(m_terrain_vector_image->get_width(),
+			m_terrain_vector_image->get_height()) - 1;
+
 		BOOST_FOREACH(const TerrainValue &terrain_value, terrain_values)
 		{
 			m_terrain_vector_image->set_pixel_uint(
 				terrain_value.get_x(), terrain_value.get_y(),
 				0, 0, 0, terrain_value.get_value());
+
+			for (y = -1; y < 2; ++y)
+			{
+				for (x = -1; x < 2; ++x)
+				{
+					index.x = terrain_value.get_x();
+					index.y = terrain_value.get_y();
+					index.x += x;
+					index.y += y;
+
+					index = glm::min(index, max);
+					index = glm::max(index, min);
+
+					indices.insert(index);
+				}
+			}
 		}
+
+		update_normals(indices);
+
+		m_scene->set_terrain(m_terrain_vector_image,
+			m_terrain_normal_image, m_terrain_dudv_image);
 	}
 
 	void EditorMapData::set_terrain_albedo_map(const String &name,
-		const Uint16 index, const Uint16 id)
+		const Uint16 index)
 	{
 	}
 
 	void EditorMapData::set_terrain_blend_map(const String &name,
-		const Uint16 id)
+		const Uint16 index)
 	{
 	}
 
-	void EditorMapData::set_terrain_height_map(const String &name,
-		const Uint16 id)
+	void EditorMapData::set_terrain_vector_map(const String &name)
 	{
 	}
 
-	void EditorMapData::set_terrain_dudv_map(const String &name,
-		const Uint16 id)
+	void EditorMapData::set_terrain_dudv_map(const String &name)
 	{
 	}
 
 	String tmp;
 
-	const String &EditorMapData::get_terrain_albedo_map(const Uint16 index,
-		const Uint16 id) const
-	{
-		return tmp;
-	}
-
-	const String &EditorMapData::get_terrain_blend_map(const Uint16 id)
+	const String &EditorMapData::get_terrain_albedo_map(const Uint16 index)
 		const
 	{
 		return tmp;
 	}
 
-	const String &EditorMapData::get_terrain_height_map(const Uint16 id)
+	const String &EditorMapData::get_terrain_blend_map(const Uint16 index)
 		const
 	{
 		return tmp;
 	}
 
-	const String &EditorMapData::get_terrain_dudv_map(const Uint16 id)
-		const
+	const String &EditorMapData::get_terrain_vector_map() const
+	{
+		return tmp;
+	}
+
+	const String &EditorMapData::get_terrain_dudv_map() const
 	{
 		return tmp;
 	}
@@ -503,23 +550,24 @@ namespace eternal_lands
 		const float radius, TerrainValueVector &terrain_values) const
 	{
 		glm::vec2 centre, point;
+		Sint64 temp;
 		Uint32 x, y;
 		Uint32 min_x, min_y, max_x, max_y;
-		float tmp, temp, sqr_radius;
+		float tmp, sqr_radius;
 
 		tmp = static_cast<float>(vertex.x) - radius;
-		min_x = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
+		min_x = std::max(static_cast<Sint64>(tmp), 0l);
 
 		tmp = static_cast<float>(vertex.y) - radius;
-		min_y = boost::numeric_cast<Uint32>(std::max(0.0f, tmp));
+		min_y = std::max(static_cast<Sint64>(tmp), 0l);
 
 		tmp = static_cast<float>(vertex.x) + radius;
-		temp = m_terrain_vector_image->get_width() - 1.0f;
-		max_x = boost::numeric_cast<Uint32>(std::min(temp, tmp));
+		temp = m_terrain_vector_image->get_width();
+		max_x = std::min(static_cast<Sint64>(tmp), temp - 1);
 
 		tmp = static_cast<float>(vertex.y) + radius;
-		temp = m_terrain_vector_image->get_height() - 1.0f;
-		max_y = boost::numeric_cast<Uint32>(std::min(temp, tmp));
+		temp = m_terrain_vector_image->get_height();
+		max_y = std::min(static_cast<Sint64>(tmp), temp - 1);
 
 		terrain_values.clear();
 
@@ -548,91 +596,182 @@ namespace eternal_lands
 		}
 	}
 
-	void EditorMapData::change_terrain_values(const glm::uvec2 &vertex,
-		const float strength, const float radius,
-		const EditorBrushType brush_type,
+	void EditorMapData::change_terrain_values_add_normal(
+		const glm::uvec2 &vertex, const float scale,
+		const float radius, const AddBrushType brush_type,
 		TerrainValueVector &terrain_values) const
 	{
-		glm::vec3 average;
-		glm::vec2 centre;
+		glm::vec3 value, normal;
+		glm::vec2 centre, point;
+		glm::ivec2 index;
 		Uint32 i;
 
 		centre = glm::vec2(vertex);
 
-		if ((brush_type == ebt_linear_smooth) ||
-			(brush_type == ebt_quadratic_smooth))
-		{
-			if (terrain_values.size() < 2)
-			{
-				return;
-			}
+		normal = scale * get_normal(glm::ivec2(vertex));
 
-			average = glm::vec3(0.0f);
-
-			BOOST_FOREACH(const TerrainValue &terrain_value,
-				terrain_values)
-			{
-				average += glm::vec3(terrain_value.get_value());
-			}
-
-			average /= terrain_values.size();
-		}
-		else
-		{
-			average = glm::vec3(0.0f);
-		}
-/*
 		for (i = 0; i < terrain_values.size(); i++)
 		{
-			glm::vec3 value;
-			glm::vec2 point;
+			value = AbstractTerrainManager::get_offset_scaled_rgb10_a2(
+				terrain_values[i].get_value());
 
-			value = terrain_values[i].get_value();
-			point[0] = terrain_values[i].get_x();
-			point[1] = terrain_values[i].get_y();
+			index.x = terrain_values[i].get_x();
+			index.y = terrain_values[i].get_y();
+			point = index;
 
-			value = calc_brush_effect(centre, point, value,
-				average, strength, radius, brush_type);
+			value += normal * calc_brush_effect_add(centre, point,
+				radius, brush_type);
 
-			heights[i].set_value(value * 255.0f + 0.5f);
+			terrain_values[i].set_value(
+				AbstractTerrainManager::get_value_scaled_rgb10_a2(
+					value));
 		}
-*/
 	}
 
-	float EditorMapData::calc_brush_effect(const glm::vec2 &centre,
-		const glm::vec2 &point, const float value, const float average,
-		const float strength, const float radius,
-		const EditorBrushType brush_type)
+	void EditorMapData::change_terrain_values_add(const glm::uvec2 &vertex,
+		const glm::vec3 &add_value, const float radius,
+		const AddBrushType brush_type,
+		TerrainValueVector &terrain_values) const
 	{
-		float dist, tmp, result;
+		glm::vec3 value;
+		glm::vec2 centre, point;
+		Uint32 i;
+
+		centre = glm::vec2(vertex);
+
+		for (i = 0; i < terrain_values.size(); i++)
+		{
+			value = AbstractTerrainManager::get_offset_scaled_rgb10_a2(
+				terrain_values[i].get_value());
+
+			point.x = terrain_values[i].get_x();
+			point.y = terrain_values[i].get_y();
+
+			value += add_value * calc_brush_effect_add(centre,
+				point, radius, brush_type);
+
+			terrain_values[i].set_value(
+				AbstractTerrainManager::get_value_scaled_rgb10_a2(
+					value));
+		}
+	}
+
+	void EditorMapData::change_terrain_values_smooth(
+		const glm::uvec2 &vertex, const float strength,
+		const float radius, const SmoothBrushType brush_type,
+		TerrainValueVector &terrain_values) const
+	{
+		glm::vec3 average, value;
+		glm::vec2 centre, point;
+		Uint32 i;
+
+		centre = glm::vec2(vertex);
+
+		if (terrain_values.size() < 2)
+		{
+			return;
+		}
+
+		average = glm::vec3(0.0f);
+
+		BOOST_FOREACH(const TerrainValue &terrain_value, terrain_values)
+		{
+			average += AbstractTerrainManager::get_offset_scaled_rgb10_a2(
+				terrain_value.get_value());
+		}
+
+		average /= terrain_values.size();
+
+		for (i = 0; i < terrain_values.size(); i++)
+		{
+			value = AbstractTerrainManager::get_offset_scaled_rgb10_a2(
+				terrain_values[i].get_value());
+
+			point.x = terrain_values[i].get_x();
+			point.y = terrain_values[i].get_y();
+
+			value = calc_brush_effect_smooth(centre, point,
+				value, average, strength, radius, brush_type);
+
+			terrain_values[i].set_value(
+				AbstractTerrainManager::get_value_scaled_rgb10_a2(
+					value));
+		}
+	}
+
+	void EditorMapData::change_terrain_values_set(const glm::uvec2 &vertex,
+		const glm::vec3 &set_value, const glm::bvec3 &mask,
+		const float radius, const AddBrushType brush_type,
+		TerrainValueVector &terrain_values) const
+	{
+		glm::vec3 value, mix;
+		glm::vec2 centre, point;
+		float tmp;
+		Uint32 i;
+
+		centre = glm::vec2(vertex);
+		mix = glm::vec3(mask);
+
+		for (i = 0; i < terrain_values.size(); i++)
+		{
+			value = AbstractTerrainManager::get_offset_scaled_rgb10_a2(
+				terrain_values[i].get_value());
+
+			point.x = terrain_values[i].get_x();
+			point.y = terrain_values[i].get_y();
+
+			tmp = calc_brush_effect_add(centre, point, radius,
+				brush_type);
+
+			value = glm::mix(value, set_value, mix * tmp);
+
+			terrain_values[i].set_value(
+				AbstractTerrainManager::get_value_scaled_rgb10_a2(
+					value));
+		}
+	}
+
+	float EditorMapData::calc_brush_effect_add(const glm::vec2 &centre,
+		const glm::vec2 &point, const float radius,
+		const AddBrushType brush_type)
+	{
+		float dist;
+
+		switch (brush_type)
+		{
+			case abt_const:
+				return 1.0f;
+			case abt_linear:
+				dist = glm::distance(centre, point);
+				return std::max(1.0f - dist / radius, 0.0f);
+			case abt_quadratic:
+				dist = glm::distance2(centre, point);
+				return std::max(1.0f - dist / (radius * radius),
+					0.0f);
+		};
+
+		return 0.0f;
+	}
+
+	glm::vec3 EditorMapData::calc_brush_effect_smooth(
+		const glm::vec2 &centre, const glm::vec2 &point,
+		const glm::vec3 &value, const glm::vec3 &average,
+		const float strength, const float radius,
+		const SmoothBrushType brush_type)
+	{
+		glm::vec3 result;
+		float dist, tmp;
 
 		result = value;
 
 		switch (brush_type)
 		{
-			case ebt_set:
-				result = strength;
-				break;
-			case ebt_const:
-				result += strength;
-				break;
-			case ebt_linear:
-				dist = glm::distance(centre, point);
-				tmp = std::max(1.0f - dist / radius, 0.0f);
-				result += tmp * strength;
-				break;
-			case ebt_quadratic:
-				dist = glm::distance2(centre, point);
-				tmp = std::max(1.0f - dist / (radius * radius),
-					0.0f);
-				result += tmp * strength;
-				break;
-			case ebt_linear_smooth:
+			case sbt_linear:
 				dist = glm::distance(centre, point);
 				tmp = std::max(1.0f - dist / radius, 0.0f);
 				result -= (value - average) * strength * tmp;
 				break;
-			case ebt_quadratic_smooth:
+			case sbt_quadratic:
 				dist = glm::distance2(centre, point);
 				tmp = std::max(1.0f - dist / (radius * radius),
 					0.0f);
@@ -640,7 +779,7 @@ namespace eternal_lands
 				break;
 		};
 
-		return std::max(0.0f, std::min(result, 1.0f));
+		return result;
 	}
 
 	void EditorMapData::get_blend_values(const glm::uvec2 &vertex,
@@ -682,83 +821,11 @@ namespace eternal_lands
 					ImageValue value(x, y);
 
 					value.set_value(
-						m_blend_images[0]->get_pixel(x, y,
-							0, 0, 0));
+						m_blend_images[0]->get_pixel(x,
+							y, 0, 0, 0));
 					blend_values.push_back(value);
 				}
 			}
-		}
-	}
-
-	void EditorMapData::change_blend_values(const glm::uvec2 &position,
-		const Uint32 index, const float strength, const float radius,
-		const EditorBrushType brush_type,
-		ImageValueVector &blend_values)
-	{
-		glm::vec2 centre;
-		float average;
-		Uint32 i;
-
-		centre = glm::vec2(position);
-
-		if ((brush_type == ebt_linear_smooth) ||
-			(brush_type == ebt_quadratic_smooth))
-		{
-			if (blend_values.size() < 2)
-			{
-				return;
-			}
-
-			average = 0.0f;
-
-			BOOST_FOREACH(ImageValue &blend_value, blend_values)
-			{
-				average += get_blend_value(
-					blend_value.get_value(), index);
-			}
-
-			average /= blend_values.size();
-		}
-		else
-		{
-			average = 0.5f;
-		}
-
-		for (i = 0; i < blend_values.size(); i++)
-		{
-			glm::vec4 values;
-			glm::vec2 point;
-			float value;
-
-			values = blend_values[i].get_value();
-			value = get_blend_value(values, index);
-			point[0] = blend_values[i].get_x();
-			point[1] = blend_values[i].get_y();
-
-			value = calc_brush_effect(centre, point, value,
-				average, strength, radius, brush_type);
-
-			set_blend_value(value, index, values);
-
-			blend_values[i].set_value(values);
-		}
-	}
-
-	float EditorMapData::get_blend_value(const glm::vec4 &blend,
-		const Uint32 index)
-	{
-		switch (index)
-		{
-			case 0:
-				return (1.0f - blend[0]) * (1.0f - blend[1]);
-			case 1:
-				return blend[0] * (1.0f - blend[1]);
-			case 2:
-				return (1.0f - blend[2]) * blend[1];
-			case 3:
-				return blend[2] * blend[1];
-			default:
-				return 0.0f;
 		}
 	}
 
@@ -766,12 +833,12 @@ namespace eternal_lands
 	{
 		glm::vec4 result;
 		Uint32 i;
-
+/*
 		for (i = 0; i < 4; i++)
 		{
 			result[i] = get_blend_value(blend, i);
 		}
-
+*/
 		return result;
 	}
 
@@ -821,30 +888,10 @@ namespace eternal_lands
 			blend[2] += 1.0f - tmp[2] / t1;
 			blend[2] *= 0.5f;
 		}
-
+/*
 		assert(std::abs(value - get_blend_value(blend, index)) <
 			epsilon);
-	}
-
-	EditorBrushType EditorMapData::get_brush_type(const int brush_type)
-	{
-		switch (brush_type)
-		{
-			case 0:
-				return ebt_set;
-			case 1:
-				return ebt_const;
-			case 2:
-				return ebt_linear;
-			case 3:
-				return ebt_quadratic;
-			case 4:
-				return ebt_linear_smooth;
-			case 5:
-				return ebt_quadratic_smooth;
-			default:
-				return ebt_set;
-		}
+*/
 	}
 
 	ImageSharedPtr EditorMapData::get_image(const String &name) const
@@ -852,6 +899,272 @@ namespace eternal_lands
 		return m_scene->get_scene_resources().get_codec_manager(
 			)->load_image(name, m_scene->get_file_system(),
 			ImageCompressionTypeSet(), false, false);
+	}
+
+	void EditorMapData::init_terrain(const glm::uvec2 &size)
+	{
+		glm::uvec3 sizes, sizes_x4;
+		Uint32 x, y;
+
+		sizes = glm::uvec3(size, 1);
+		sizes_x4 = glm::uvec3((size * 4u + 3u) / 4u, 1);
+
+		m_terrain_vector_image = boost::make_shared<Image>(
+			String(UTF8("terrain vector map")),
+			false, tft_rgb10_a2, sizes, 0);
+
+		m_terrain_normal_image = boost::make_shared<Image>(
+			String(UTF8("terrain normal map")),
+			false, tft_rgba8, sizes, 0);
+
+		m_terrain_dudv_image = boost::make_shared<Image>(
+			String(UTF8("terrain dudv map")),
+			false, tft_rgba8, sizes, 0);
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				m_terrain_vector_image->set_pixel_uint(x, y, 0,
+					0, 0, glm::uvec4(512, 512, 0, 0));
+			}
+		}
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				update_normal(glm::ivec2(x, y));
+			}
+		}
+
+		m_scene->set_terrain(m_terrain_vector_image,
+			m_terrain_normal_image, m_terrain_dudv_image);
+		m_scene->rebuild_terrain_map();
+	}
+
+	void EditorMapData::set_focus(const glm::vec3 &focus) noexcept
+	{
+		m_scene->set_focus(focus);
+	}
+
+	void EditorMapData::set_debug_mode(const int value)
+	{
+		ShaderBuildType shader_debug;
+
+		shader_debug = static_cast<ShaderBuildType>(
+			sbt_debug_uv + value);
+
+		m_scene->get_scene_resources().get_effect_cache(
+			)->set_debug_shader(shader_debug);
+		m_scene->get_scene_resources().get_effect_cache()->reload();
+	}
+
+	StringVector EditorMapData::get_debug_modes() const
+	{
+		StringVector result;
+		Uint32 i, count;
+
+		count = ShaderBuildUtil::get_shader_build_count();
+
+		for (i = 0; i < count; ++i)
+		{
+			if (i < sbt_debug_uv)
+			{
+				continue;
+			}
+
+			result.push_back(ShaderBuildUtil::get_str(
+				static_cast<ShaderBuildType>(i)));
+		}
+
+		return result;
+	}
+
+	glm::uvec2 EditorMapData::get_best_normal(const glm::vec3 &normal) const
+	{
+		glm::uvec2 value, result;
+		float error, tmp;
+		Uint32 i, j, index;
+
+		error = std::numeric_limits<float>::max();
+
+		for (i = 0; i < 256; ++i)
+		{
+			for (j = 0; j < 256; ++j)
+			{
+				value.x = j;
+				value.y = i;
+
+				index = value.x + value.y * 256;
+
+				tmp = std::abs(1.0f - glm::dot(m_normals[index],
+					normal));
+
+				if (tmp <= error)
+				{
+					error = tmp;
+					result = value;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	glm::vec3 EditorMapData::get_position(const glm::ivec2 &index) const
+	{
+		glm::vec3 offset;
+		glm::vec2 position;
+
+		offset = AbstractTerrainManager::get_offset_scaled_rgb10_a2(
+			m_terrain_vector_image->get_pixel_uint(index.x,
+				index.y, 0, 0, 0));
+
+		position.x = index.x;
+		position.y = index.y;
+		position *= AbstractTerrainManager::get_patch_scale();
+
+		return glm::vec3(position, 0.0f) + offset;
+	}
+
+	glm::vec3 EditorMapData::get_direction(const glm::vec3 &centre,
+		const glm::ivec2 &index) const
+	{
+		if ((index.x < 0) || (index.y < 0) ||
+			(index.x >= static_cast<Sint32>(
+				m_terrain_vector_image->get_width())) ||
+			(index.y >= static_cast<Sint32>(
+				m_terrain_vector_image->get_height())))
+		{
+			return glm::vec3(0.0f);
+		}
+
+		return glm::normalize(get_position(index) - centre);
+	}
+
+	glm::vec3 EditorMapData::get_normal(const glm::ivec2 &index) const
+	{
+		glm::vec3 centre, d0, d1, d2, d3, d4, d5, d6, d7, n;
+		glm::uvec3 sizes;
+		glm::uvec2 value;
+
+		centre = get_position(index);
+
+		d0 = get_direction(centre, index + glm::ivec2(-1, -1));
+		d1 = get_direction(centre, index + glm::ivec2( 0, -1));
+		d2 = get_direction(centre, index + glm::ivec2( 1, -1));
+		d3 = get_direction(centre, index + glm::ivec2( 1,  0));
+		d4 = get_direction(centre, index + glm::ivec2( 1,  1));
+		d5 = get_direction(centre, index + glm::ivec2( 0,  1));
+		d6 = get_direction(centre, index + glm::ivec2(-1,  1));
+		d7 = get_direction(centre, index + glm::ivec2(-1,  0));
+
+		n = glm::cross(d0, d1);
+		n += glm::cross(d1, d2);
+		n += glm::cross(d2, d3);
+		n += glm::cross(d3, d4);
+		n += glm::cross(d4, d5);
+		n += glm::cross(d5, d6);
+		n += glm::cross(d6, d7);
+		n += glm::cross(d7, d0);
+
+		return glm::normalize(n);
+	}
+
+	void EditorMapData::update_normal(const glm::ivec2 &index)
+	{
+		glm::vec3 normal;
+		glm::uvec2 value;
+
+		normal = get_normal(index);
+
+		value = PackTool::encode_normal_optimized_uint8(normal);
+
+		if (std::abs(1.0f - glm::dot(normal,
+			PackTool::decode_normal_optimized_uint8(value)))
+				> 0.01f)
+		{
+			value = get_best_normal(normal);
+		}
+
+		m_terrain_normal_image->set_pixel_uint(index.x,
+			index.y, 0, 0, 0, glm::uvec4(value, 0, 0));
+	}
+
+	void EditorMapData::update_normals(const Ivec2Set &indices)
+	{
+		BOOST_FOREACH(const glm::ivec2 &index, indices)
+		{
+			update_normal(index);
+		}
+	}
+
+	const glm::vec3 &EditorMapData::get_terrain_offset()
+	{
+		return AbstractTerrainManager::get_vector_scale();
+	}
+
+	const glm::vec3 &EditorMapData::get_terrain_offset_min()
+	{
+		return AbstractTerrainManager::get_vector_min();
+	}
+
+	const glm::vec3 &EditorMapData::get_terrain_offset_max()
+	{
+		return AbstractTerrainManager::get_vector_max();
+	}
+
+	glm::uvec2 EditorMapData::get_vertex(const glm::vec3 &world_position)
+		const
+	{
+		glm::vec2 tmp;
+		glm::ivec2 index, min, max, result, size;
+		Sint32 x, y;
+		float distance, min_distance;
+
+		min_distance = std::numeric_limits<float>::max();
+
+		tmp = glm::vec2(world_position) +
+			glm::vec2(AbstractTerrainManager::get_vector_min());
+		min = glm::ivec2(tmp /
+			AbstractTerrainManager::get_patch_scale());
+
+		tmp = glm::vec2(world_position) +
+			glm::vec2(AbstractTerrainManager::get_vector_max());
+		max = glm::ivec2(tmp /
+			AbstractTerrainManager::get_patch_scale());
+
+		size.x = m_terrain_vector_image->get_width();
+		size.y = m_terrain_vector_image->get_height();
+
+		min = glm::clamp(min, glm::ivec2(0), size);
+		max = glm::clamp(max, glm::ivec2(0), size);
+
+		for (y = min.y; y <= max.y; ++y)
+		{
+			for (x = min.x; x <= max.x; ++x)
+			{
+				index.x = x;
+				index.y = y;
+
+				distance = glm::distance(get_position(index),
+					world_position);
+
+				if (distance < min_distance)
+				{
+					if (distance == 0.0f)
+					{
+						return glm::uvec2(result);
+					}
+
+					min_distance = distance;
+					result = index;
+				}
+			}
+		}
+
+		return glm::uvec2(result);
 	}
 
 }

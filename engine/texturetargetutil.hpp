@@ -58,6 +58,8 @@ namespace eternal_lands
 			static GLenum get_gl_type(
 				const TextureTargetType texture_target);
 			static Uint32 get_texture_target_count() noexcept;
+			static TextureTargetType get_depth_texture_target(
+				const TextureTargetType texture_target);
 
 	};
 

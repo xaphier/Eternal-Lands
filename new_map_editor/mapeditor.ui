@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1050</width>
-    <height>992</height>
+    <width>1052</width>
+    <height>1026</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,7 +57,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1050</width>
+     <width>1052</width>
      <height>23</height>
     </rect>
    </property>
@@ -178,6 +178,7 @@
    <addaction name="action_light_spheres"/>
    <addaction name="action_lights_enabled"/>
    <addaction name="separator"/>
+   <addaction name="action_debug"/>
    <addaction name="action_info"/>
   </widget>
   <widget class="QDockWidget" name="navigation_window">
@@ -192,7 +193,7 @@
     <string>Navigation</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>2</number>
+    <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
     <layout class="QGridLayout" name="gridLayout_5">
@@ -527,8 +528,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>264</width>
-              <height>435</height>
+              <width>109</width>
+              <height>336</height>
              </rect>
             </property>
             <attribute name="label">
@@ -911,8 +912,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>264</width>
-              <height>435</height>
+              <width>203</width>
+              <height>255</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1031,7 +1032,7 @@
               <x>0</x>
               <y>0</y>
               <width>264</width>
-              <height>435</height>
+              <height>723</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1557,36 +1558,27 @@
          <item>
           <widget class="QToolBox" name="paint_tool_box">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
-           <widget class="QWidget" name="type_terrain_height">
+           <widget class="QWidget" name="type_terrain_vector">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>254</width>
-              <height>174</height>
+              <width>264</width>
+              <height>745</height>
              </rect>
             </property>
             <attribute name="label">
-             <string>Terrain height</string>
+             <string>Terrain vector</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
-              <widget class="QGroupBox" name="height_brush_group">
+              <widget class="QGroupBox" name="vector_brush_group">
                <property name="title">
                 <string>Brush</string>
                </property>
-               <layout class="QGridLayout" name="gridLayout_4">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="spacing">
-                 <number>6</number>
-                </property>
+               <layout class="QGridLayout" name="gridLayout_16">
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_7">
                   <property name="text">
@@ -1595,7 +1587,7 @@
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="height_brush_radius">
+                 <widget class="QDoubleSpinBox" name="vector_brush_radius">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -1622,95 +1614,362 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_8">
-                  <property name="text">
-                   <string>Strength</string>
+                <item row="1" column="0" rowspan="2" colspan="2">
+                 <widget class="QGroupBox" name="groupBox_3">
+                  <property name="title">
+                   <string>Type</string>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QSpinBox" name="height_brush_strength">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                  <property name="checkable">
+                   <bool>false</bool>
                   </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  <property name="checked">
+                   <bool>false</bool>
                   </property>
-                  <property name="buttonSymbols">
-                   <enum>QAbstractSpinBox::PlusMinus</enum>
-                  </property>
-                  <property name="suffix">
-                   <string>%</string>
-                  </property>
-                  <property name="prefix">
-                   <string/>
-                  </property>
-                  <property name="minimum">
-                   <number>-100</number>
-                  </property>
-                  <property name="maximum">
-                   <number>100</number>
-                  </property>
-                  <property name="value">
-                   <number>10</number>
-                  </property>
+                  <layout class="QGridLayout" name="gridLayout_15">
+                   <item row="4" column="0">
+                    <widget class="QRadioButton" name="vector_brush_add">
+                     <property name="text">
+                      <string>Add</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QComboBox" name="vector_brush_add_type">
+                     <item>
+                      <property name="text">
+                       <string>constant</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>linear</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>quadric</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="13" column="0">
+                    <widget class="QRadioButton" name="vector_brush_smooth">
+                     <property name="text">
+                      <string>Smooth</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="13" column="1">
+                    <widget class="QComboBox" name="vector_brush_smooth_type">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>linear</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>quadric</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="14" column="0">
+                    <widget class="QLabel" name="vector_brush_label_strength">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="text">
+                      <string>Strength</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="14" column="1">
+                    <widget class="QSpinBox" name="vector_brush_smooth_strength">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="buttonSymbols">
+                      <enum>QAbstractSpinBox::PlusMinus</enum>
+                     </property>
+                     <property name="suffix">
+                      <string>%</string>
+                     </property>
+                     <property name="minimum">
+                      <number>0</number>
+                     </property>
+                     <property name="maximum">
+                      <number>100</number>
+                     </property>
+                     <property name="value">
+                      <number>100</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="7" column="0">
+                    <widget class="QRadioButton" name="vector_brush_set">
+                     <property name="text">
+                      <string>Set</string>
+                     </property>
+                     <property name="checked">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="5" column="0" colspan="2">
+                    <widget class="QFrame" name="vector_brush_add_frame">
+                     <layout class="QGridLayout" name="gridLayout_4">
+                      <item row="1" column="0">
+                       <widget class="QLabel" name="vector_brush_add_label_x">
+                        <property name="text">
+                         <string>X</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="0">
+                       <widget class="QLabel" name="vector_brush_add_label_y">
+                        <property name="text">
+                         <string>Y</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="0">
+                       <widget class="QLabel" name="vector_brush_add_label_z">
+                        <property name="text">
+                         <string>Z</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1">
+                       <widget class="QDoubleSpinBox" name="vector_brush_add_x">
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                        <property name="minimum">
+                         <double>-4.000000000000000</double>
+                        </property>
+                        <property name="maximum">
+                         <double>4.000000000000000</double>
+                        </property>
+                        <property name="singleStep">
+                         <double>0.100000000000000</double>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="1">
+                       <widget class="QDoubleSpinBox" name="vector_brush_add_y">
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                        <property name="minimum">
+                         <double>-4.000000000000000</double>
+                        </property>
+                        <property name="maximum">
+                         <double>4.000000000000000</double>
+                        </property>
+                        <property name="singleStep">
+                         <double>0.100000000000000</double>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="3" column="1">
+                       <widget class="QDoubleSpinBox" name="vector_brush_add_z">
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                        <property name="minimum">
+                         <double>-32.000000000000000</double>
+                        </property>
+                        <property name="maximum">
+                         <double>32.000000000000000</double>
+                        </property>
+                        <property name="singleStep">
+                         <double>0.500000000000000</double>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QRadioButton" name="vector_brush_add_value">
+                        <property name="text">
+                         <string>Value</string>
+                        </property>
+                        <property name="checked">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="0">
+                       <widget class="QRadioButton" name="vector_brush_add_normal">
+                        <property name="text">
+                         <string>Normal</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="1">
+                       <widget class="QSpinBox" name="vector_brush_add_scale">
+                        <property name="enabled">
+                         <bool>false</bool>
+                        </property>
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                        <property name="buttonSymbols">
+                         <enum>QAbstractSpinBox::PlusMinus</enum>
+                        </property>
+                        <property name="suffix">
+                         <string>%</string>
+                        </property>
+                        <property name="minimum">
+                         <number>-1000</number>
+                        </property>
+                        <property name="maximum">
+                         <number>1000</number>
+                        </property>
+                        <property name="singleStep">
+                         <number>10</number>
+                        </property>
+                        <property name="value">
+                         <number>100</number>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                     <zorder>vector_brush_add_label_x</zorder>
+                     <zorder>vector_brush_add_label_y</zorder>
+                     <zorder>vector_brush_add_label_z</zorder>
+                     <zorder>vector_brush_add_x</zorder>
+                     <zorder>vector_brush_add_y</zorder>
+                     <zorder>vector_brush_add_z</zorder>
+                     <zorder>vector_brush_add_value</zorder>
+                     <zorder>vector_brush_add_normal</zorder>
+                     <zorder>vector_brush_add_scale</zorder>
+                    </widget>
+                   </item>
+                   <item row="8" column="0" colspan="2">
+                    <widget class="QFrame" name="vector_brush_set_frame">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_17">
+                      <item row="0" column="0">
+                       <widget class="QCheckBox" name="vector_brush_set_checkbox_x">
+                        <property name="text">
+                         <string>X</string>
+                        </property>
+                        <property name="checked">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="0">
+                       <widget class="QCheckBox" name="vector_brush_set_checkbox_y">
+                        <property name="text">
+                         <string>Y</string>
+                        </property>
+                        <property name="checked">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="0">
+                       <widget class="QCheckBox" name="vector_brush_set_checkbox_z">
+                        <property name="text">
+                         <string>Z</string>
+                        </property>
+                        <property name="checked">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QDoubleSpinBox" name="vector_brush_set_x">
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="1">
+                       <widget class="QDoubleSpinBox" name="vector_brush_set_y">
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="1">
+                       <widget class="QDoubleSpinBox" name="vector_brush_set_z">
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                   <item row="7" column="1">
+                    <widget class="QComboBox" name="vector_brush_set_type">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>constant</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>linear</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>quadric</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                 <item row="3" column="0">
-                 <widget class="QLabel" name="label_9">
+                 <widget class="QCheckBox" name="height_brush_layer_mask">
                   <property name="text">
-                   <string>Type</string>
+                   <string>Layer mask</string>
                   </property>
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QComboBox" name="height_brush_type">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string>set</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>constant</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>linear</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>quadratic</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>linear smooth</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>quadratic smooth</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
-                <item row="4" column="1">
                  <widget class="QComboBox" name="height_brush_layer_masks">
                   <property name="enabled">
                    <bool>false</bool>
@@ -1723,13 +1982,6 @@
                   </property>
                   <property name="layoutDirection">
                    <enum>Qt::LeftToRight</enum>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QCheckBox" name="height_brush_layer_mask">
-                  <property name="text">
-                   <string>Layer mask</string>
                   </property>
                  </widget>
                 </item>
@@ -1756,8 +2008,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>242</width>
-              <height>174</height>
+              <width>264</width>
+              <height>745</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1939,8 +2191,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>84</height>
+              <width>264</width>
+              <height>745</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2274,8 +2526,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>264</width>
+              <height>745</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2287,8 +2539,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>264</width>
+              <height>745</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3260,7 +3512,7 @@
     <bool>true</bool>
    </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="icons/resourcen.qrc">
@@ -3418,6 +3670,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons/resourcen.qrc">
      <normaloff>:/icons/terrain.png</normaloff>:/icons/terrain.png</iconset>
@@ -3427,6 +3682,21 @@
    </property>
    <property name="toolTip">
     <string>Draw terrain</string>
+   </property>
+  </action>
+  <action name="action_debug">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/debug.png</normaloff>:/icons/debug.png</iconset>
+   </property>
+   <property name="text">
+    <string>Debug</string>
+   </property>
+   <property name="toolTip">
+    <string>debug mode</string>
    </property>
   </action>
  </widget>
@@ -3551,6 +3821,278 @@
     <hint type="destinationlabel">
      <x>957</x>
      <y>498</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_type</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>853</x>
+     <y>487</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>962</x>
+     <y>487</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_smooth</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_smooth_type</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>853</x>
+     <y>607</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>962</x>
+     <y>607</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_smooth</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_label_strength</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>853</x>
+     <y>607</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>853</x>
+     <y>637</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_smooth</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_smooth_strength</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>853</x>
+     <y>607</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>962</x>
+     <y>637</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_set</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_set_type</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>853</x>
+     <y>606</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>636</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_set</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_set_frame</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>853</x>
+     <y>606</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>909</x>
+     <y>706</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_frame</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>859</x>
+     <y>434</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>909</x>
+     <y>530</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add_value</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_label_x</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>864</x>
+     <y>500</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add_value</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_x</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>500</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add_value</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_label_y</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>864</x>
+     <y>530</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add_value</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_y</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>530</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add_value</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_label_z</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>864</x>
+     <y>560</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add_value</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_z</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>472</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>560</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_add_normal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_add_scale</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>590</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>590</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_set_checkbox_x</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_set_x</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>467</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>467</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_set_checkbox_y</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_set_y</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>497</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>497</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>vector_brush_set_checkbox_z</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>vector_brush_set_z</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>864</x>
+     <y>527</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>955</x>
+     <y>527</y>
     </hint>
    </hints>
   </connection>
