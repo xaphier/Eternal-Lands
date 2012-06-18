@@ -954,6 +954,81 @@ namespace eternal_lands
 	{
 	}
 
+	void ShaderSourceBuilder::build_decode_normal(const String &indent,
+		OutStream &functions) const
+	{
+		functions << indent << UTF8("/**") << std::endl;
+		functions << indent << UTF8(" * Converts from Lambert ");
+		functions << UTF8("Azimuthal Equal-Area") << std::endl;
+		functions << indent << UTF8(" * projection. Optimized for ");
+		functions << UTF8("normalized Uint8 values.") << std::endl;
+		functions << indent << UTF8(" * @param value The Lambert ");
+		functions << UTF8("Azimuthal Equal-Area") << std::endl;
+		functions << indent << UTF8(" * projection vector to use ");
+		functions << UTF8("(0..1).") << std::endl;
+		functions << indent << UTF8(" * @return The normalized ");
+		functions << UTF8("vector.") << std::endl;
+		functions << indent << UTF8(" */") << std::endl;
+
+		functions << indent << UTF8("vec3 decode_normal(const in ");
+		functions << UTF8("vec2 normal)") << std::endl;
+		functions << indent << UTF8("{") << std::endl;
+		functions << indent << UTF8("\tvec2 fenc;") << std::endl;
+		functions << indent << UTF8("\tfloat f, g;") << std::endl;
+		functions << std::endl;
+		functions << indent << UTF8("\tfenc = normal * vec2(");
+		functions << UTF8("3.968871595) - vec2(1.984435798);");
+		functions << std::endl;
+		functions << indent << UTF8("\tf = dot(fenc, fenc);");
+		functions << std::endl;
+		functions << indent << UTF8("\tg = sqrt(1.0 - f / 4.0);");
+		functions << std::endl;
+		functions << indent << UTF8("\treturn vec3(fenc * g, 1.0 -");
+		functions << UTF8(" f / 2.0);") << std::endl;
+		functions << indent << UTF8("}") << std::endl;
+		functions << std::endl;
+	}
+
+	void ShaderSourceBuilder::build_decode_terrain_displacement(
+		const String &indent, OutStream &functions) const
+	{
+		glm::vec4 scale;
+		glm::vec2 offset;
+
+		scale = AbstractTerrainManager::get_vector_scale_rgb10_a2();
+		offset = AbstractTerrainManager::get_vector_offset_rgb10_a2();
+
+		functions << indent << UTF8("/**") << std::endl;
+		functions << indent << UTF8(" * Convertes the normalized ");
+		functions << UTF8("rgb10_a2 vector to the") << std::endl;
+		functions << indent << UTF8(" * scaled terrain ");
+		functions << UTF8("displacment vector.") << std::endl;
+		functions << indent << UTF8(" * @param value The rgb10_a2 ");
+		functions << UTF8("normalized value (0..1).") << std::endl;
+		functions << indent << UTF8(" * @return The terrain ");
+		functions << UTF8("displacement vector.") << std::endl;
+		functions << indent << UTF8(" */") << std::endl;
+
+		functions << indent << UTF8("vec3 decode_terrain_displacement");
+		functions << UTF8("(const in vec4 vector)") << std::endl;
+		functions << indent << UTF8("{") << std::endl;
+		functions << indent << UTF8("\tvec4 tmp;") << std::endl;
+		functions << indent << UTF8("\tvec3 result;") << std::endl;
+		functions << std::endl;
+		functions << indent << UTF8("\ttmp = vector * ");
+		functions << UTF8("vec4(") << scale.x << UTF8(", ") << scale.y;
+		functions << UTF8(", ") << scale.z << UTF8(", ") << scale.w;
+		functions << UTF8(");") << std::endl;
+		functions << indent << UTF8("\tresult.xy = tmp.xy + ");
+		functions << UTF8("vec2(") << offset.x << UTF8(", ");
+		functions << offset.y << UTF8(");") << std::endl;
+		functions << indent << UTF8("\tresult.z = tmp.z + tmp.w;");
+		functions << std::endl;
+		functions << indent << UTF8("\treturn result;") << std::endl;
+		functions << indent << UTF8("}") << std::endl;
+		functions << std::endl;
+	}
+
 	void ShaderSourceBuilder::load_shader_source(
 		const FileSystemSharedPtr &file_system, const String &file_name)
 	{
@@ -2535,6 +2610,8 @@ namespace eternal_lands
 		vertex_source << UTF8("\n");
 
 		vertex_source << UTF8("/* functions */\n");
+		build_decode_normal(String(), vertex_source);
+		build_decode_terrain_displacement(String(), vertex_source);
 		vertex_source << vertex_functions.str();
 		vertex_source << UTF8("\n");
 

@@ -113,7 +113,7 @@ namespace eternal_lands
 
 			/**
 			 * Converts to Lambert Azimuthal Equal-Area projection.
-			 * Optimized for Uint8 values (0..255)
+			 * Optimized for normalized Uint8 values.
 			 * @param value The normalized vector to use.
 			 * @return The Lambert Azimuthal Equal-Area projection
 			 * vector (0..1).
@@ -123,7 +123,7 @@ namespace eternal_lands
 
 			/**
 			 * Converts from Lambert Azimuthal Equal-Area
-			 * projection. Optimized for Uint8 values (0..255)
+			 * projection. Optimized for normalized Uint8 values.
 			 * @param value The Lambert Azimuthal Equal-Area
 			 * projection vector to use (0..1).
 			 * @return The normalized vector.

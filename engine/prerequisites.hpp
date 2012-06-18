@@ -470,6 +470,11 @@ namespace eternal_lands
 	ARRAY(TextureSharedPtr, 16);
 	ARRAY(TextureSharedPtr, 32);
 
+	ARRAY(ImageSharedPtr, 2);
+	ARRAY(ImageSharedPtr, 3);
+	ARRAY(ImageSharedPtr, 4);
+	ARRAY(ImageSharedPtr, 8);
+
 	typedef boost::array<TextureSharedPtr, material_texture_count>
 		MaterialTextureSharedPtrArray;
 

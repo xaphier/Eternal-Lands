@@ -44,9 +44,8 @@ dist = length(vertex_position + terrain_lod_offset.xyz);
 morph = clamp(dist * terrain_instance[1].x + terrain_instance[1].y, 0.0, 1.0);
 vertex_uv += morph_dir * morph;
 vertex_position = vec3(vertex_uv * terrain_lod_offset.w, 0.0);
-world_position = texture(vertex_vector_sampler, vertex_uv).rgb;
-world_position.xy = world_position.xy * 2.0 - 1.0;
-world_position = world_position * terrain_vector_scale + vertex_position;
+vertex_position +=decode_terrain_displacement( texture(vertex_vector_sampler, vertex_uv));
+world_position = vertex_position;
 
 terrain_texture_coordinate = vertex_position.xy;
 </source>

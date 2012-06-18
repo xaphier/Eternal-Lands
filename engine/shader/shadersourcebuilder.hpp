@@ -65,6 +65,24 @@ namespace eternal_lands
 				return result;
 			}
 
+			/**
+			 * Converts from Lambert Azimuthal Equal-Area
+			 * projection. Optimized for Uint8 values (0..255)
+			 * @param value The Lambert Azimuthal Equal-Area
+			 * projection vector to use (0..1).
+			 * @return The normalized vector.
+			 */
+			void build_decode_normal(const String &indent,
+				OutStream &functions) const;
+
+			/**
+			 * Convertes the normalized rgb10_a2 vector to the
+			 * scaled terrain displacment vector.
+			 */
+			void build_decode_terrain_displacement(
+				const String &indent, OutStream &functions)
+				const;
+
 			bool check_function(const ShaderSourceBuildData &data,
 				const String &name,
 				const ShaderSourceType shader_source_type)

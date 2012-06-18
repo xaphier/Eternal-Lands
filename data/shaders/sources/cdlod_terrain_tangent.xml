@@ -59,14 +59,10 @@ dist = length(vertex_position + terrain_lod_offset.xyz);
 morph = clamp(dist * terrain_instance[1].x + terrain_instance[1].y, 0.0, 1.0);
 vertex_uv += morph_dir * morph;
 vertex_position = vec3(vertex_uv * terrain_lod_offset.w, 0.0);
-world_position = texture(vertex_vector_sampler, vertex_uv).rgb;
-world_position.xy = world_position.xy * 2.0 - 1.0;
-world_position = world_position * terrain_vector_scale + vertex_position;
+vertex_position +=decode_terrain_displacement( texture(vertex_vector_sampler, vertex_uv));
+world_position = vertex_position;
 
-fenc = texture(vertex_normal_sampler, vertex_uv).rg * 3.968871595 - 1.984435798;
-f = dot(fenc, fenc);
-g = sqrt(1.0 - f / 4.0);
-world_normal = vec3(fenc * g, 1.0 - f / 2.0);
+world_normal = decode_normal(texture(vertex_normal_sampler, vertex_uv).rg);
 world_tangent = world_normal;
 
 terrain_texture_coordinate = vertex_position.xy;
