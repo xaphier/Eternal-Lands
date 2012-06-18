@@ -593,8 +593,10 @@ namespace eternal_lands
 		return m_data.get_ambient();
 	}
 
-	void Editor::terrain_vector_add_normal(const glm::vec3 &position,
-		const float scale, const float radius, const Sint32 brush_type,
+	void Editor::change_terrain_values(const glm::vec3 &position,
+		const glm::vec3 &data, const glm::bvec3 &mask,
+		const glm::vec2 &size, const float attenuation_size,
+		const int attenuation, const int shape, const int effect,
 		const Uint32 id)
 	{
 		TerrainValueVector terrain_values;
@@ -602,84 +604,20 @@ namespace eternal_lands
 
 		vertex = m_data.get_vertex(position);
 
-		m_data.get_terrain_values(vertex, radius, terrain_values);
+		m_data.get_terrain_values(vertex, size, attenuation_size,
+			static_cast<BrushAttenuationType>(attenuation),
+			static_cast<BrushShapeType>(shape), terrain_values);
 
 		ModificationAutoPtr modification(new TerrainValueModification(
 			id, terrain_values));
 
 		m_undo.add(modification);
 
-		m_data.change_terrain_values_add_normal(vertex, scale,
-			radius, static_cast<AddBrushType>(brush_type),
-			terrain_values);
-
-		m_data.set_terrain_values(terrain_values);
-	}
-
-	void Editor::terrain_vector_add(const glm::vec3 &position,
-		const glm::vec3 &add_value, const float radius,
-		const Sint32 brush_type, const Uint32 id)
-	{
-		TerrainValueVector terrain_values;
-		glm::uvec2 vertex;
-
-		vertex = m_data.get_vertex(position);
-
-		m_data.get_terrain_values(vertex, radius, terrain_values);
-
-		ModificationAutoPtr modification(new TerrainValueModification(
-			id, terrain_values));
-
-		m_undo.add(modification);
-
-		m_data.change_terrain_values_add(vertex, add_value, radius,
-			static_cast<AddBrushType>(brush_type),
-			terrain_values);
-
-		m_data.set_terrain_values(terrain_values);
-	}
-
-	void Editor::terrain_vector_smooth(const glm::vec3 &position,
-		const float strength, const float radius,
-		const Sint32 brush_type, const Uint32 id)
-	{
-		TerrainValueVector terrain_values;
-		glm::uvec2 vertex;
-
-		vertex = m_data.get_vertex(position);
-
-		m_data.get_terrain_values(vertex, radius, terrain_values);
-
-		ModificationAutoPtr modification(new TerrainValueModification(
-			id, terrain_values));
-
-		m_undo.add(modification);
-
-		m_data.change_terrain_values_smooth(vertex, strength, radius,
-			static_cast<SmoothBrushType>(brush_type),
-			terrain_values);
-
-		m_data.set_terrain_values(terrain_values);
-	}
-
-	void Editor::terrain_vector_set(const glm::vec3 &position,
-		const glm::vec3 &set_value, const glm::bvec3 &mask,
-		const float radius, const Sint32 brush_type, const Uint32 id)
-	{
-		TerrainValueVector terrain_values;
-		glm::uvec2 vertex;
-
-		vertex = m_data.get_vertex(position);
-
-		m_data.get_terrain_values(vertex, radius, terrain_values);
-
-		ModificationAutoPtr modification(new TerrainValueModification(
-			id, terrain_values));
-
-		m_undo.add(modification);
-
-		m_data.change_terrain_values_set(vertex, set_value, mask,
-			radius, static_cast<AddBrushType>(brush_type),
+		m_data.change_terrain_values(data, mask, size, vertex,
+			attenuation_size,
+			static_cast<BrushAttenuationType>(attenuation),
+			static_cast<BrushShapeType>(shape),
+			static_cast<BrushEffectType>(effect),
 			terrain_values);
 
 		m_data.set_terrain_values(terrain_values);

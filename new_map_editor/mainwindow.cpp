@@ -2,6 +2,7 @@
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QVector2D>
 #include "newmapdialog.hpp"
 #include "lightdata.hpp"
 #include "editor/editorobjectdescription.hpp"
@@ -1235,52 +1236,97 @@ void MainWindow::load_textures_settings(QSettings &settings)
 
 void MainWindow::terrain_vector_edit()
 {
-	if (vector_brush_add->isChecked() &&
-		vector_brush_add_value->isChecked())
+	QVector3D data;
+	QVector2D size;
+	float attenuation_size;
+	int mask, attenuation, shape, effect;
+
+	shape = -1;
+
+	if (vector_brush_shape_circle->isChecked())
 	{
-		el_gl_widget->terrain_vector_add(vector_brush_add_x->value(),
-			vector_brush_add_y->value(),
-			vector_brush_add_z->value(),
-			vector_brush_radius->value(),
-			vector_brush_add_type->currentIndex());
-		
-		return;
+		size.setX(vector_brush_radius->value());
+		size.setY(vector_brush_radius->value());
+
+		shape = 0;
 	}
 
-	if (vector_brush_add->isChecked() &&
-		vector_brush_add_normal->isChecked())
+	if (vector_brush_shape_rect->isChecked())
 	{
-		el_gl_widget->terrain_vector_add_normal(
-			vector_brush_add_scale->value() * 0.01f,
-			vector_brush_radius->value(),
-			vector_brush_add_type->currentIndex());
-		
-		return;
+		size.setX(vector_brush_width->value());
+		size.setY(vector_brush_height->value());
+
+		shape = 1;
 	}
 
-	if (vector_brush_set->isChecked())
-	{
-		el_gl_widget->terrain_vector_set(vector_brush_set_x->value(),
-			vector_brush_set_y->value(),
-			vector_brush_set_z->value(),
-			vector_brush_set_checkbox_x->isChecked(),
-			vector_brush_set_checkbox_y->isChecked(),
-			vector_brush_set_checkbox_z->isChecked(),
-			vector_brush_radius->value(),
-			vector_brush_set_type->currentIndex());
+	attenuation_size = vector_brush_attenuation_size->value();
 
-		return;
+	attenuation = vector_brush_attenuation->currentIndex();
+
+	effect = vector_brush_effect->currentIndex();
+
+	mask = 0x7;
+
+	switch (effect)
+	{
+		case 0:
+			data.setX(vector_brush_add_x->value());
+			data.setY(vector_brush_add_y->value());
+			data.setZ(vector_brush_add_z->value());
+
+			break;
+		case 1:
+			data.setX(vector_brush_set_x->value());
+			data.setY(vector_brush_set_y->value());
+			data.setZ(vector_brush_set_z->value());
+
+			mask = 0;
+
+			if (vector_brush_set_checkbox_x->isChecked())
+			{
+				mask |= 1;
+			}
+
+			if (vector_brush_set_checkbox_y->isChecked())
+			{
+				mask |= 2;
+			}
+
+			if (vector_brush_set_checkbox_z->isChecked())
+			{
+				mask |= 4;
+			}
+
+			break;
+		case 2:
+			data.setX(vector_brush_smooth_strength_x->value());
+			data.setY(vector_brush_smooth_strength_y->value());
+			data.setZ(vector_brush_smooth_strength_z->value());
+
+			data *= 0.01f;
+
+			mask = 0;
+
+			if (vector_brush_smooth_x->isChecked())
+			{
+				mask |= 1;
+			}
+
+			if (vector_brush_smooth_y->isChecked())
+			{
+				mask |= 2;
+			}
+
+			if (vector_brush_smooth_z->isChecked())
+			{
+				mask |= 4;
+			}
+
+			break;
 	}
 
-	if (vector_brush_smooth->isChecked())
-	{
-		el_gl_widget->terrain_vector_smooth(
-			vector_brush_smooth_strength->value() * 0.01f,
-			vector_brush_radius->value(),
-			vector_brush_smooth_type->currentIndex());
-
-		return;
-	}
+	el_gl_widget->change_terrain_values(data, size, attenuation_size, mask,
+		attenuation, shape, effect);
 }
 
 void MainWindow::terrain_edit()

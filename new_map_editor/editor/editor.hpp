@@ -123,20 +123,12 @@ namespace eternal_lands
 			void export_terrain_map(const String &file_name,
 				const String &type) const;
 			void import_terrain_map(const String &file_name);
-			void terrain_vector_add_normal(
-				const glm::vec3 &position, const float scale,
-				const float radius, const Sint32 brush_type,
-				const Uint32 id);
-			void terrain_vector_add(const glm::vec3 &position,
-				const glm::vec3 &add_value, const float radius,
-				const Sint32 brush_type, const Uint32 id);
-			void terrain_vector_smooth(const glm::vec3 &position,
-				const float strength, const float radius,
-				const Sint32 brush_type, const Uint32 id);
-			void terrain_vector_set(const glm::vec3 &position,
-				const glm::vec3 &set_value,
-				const glm::bvec3 &mask, const float radius,
-				const Sint32 brush_type, const Uint32 id);
+			void change_terrain_values(const glm::vec3 &position,
+				const glm::vec3 &data, const glm::bvec3 &mask,
+				const glm::vec2 &size,
+				const float attenuation_size,
+				const int attenuation, const int shape,
+				const int effect, const Uint32 id);
 
 			static inline const glm::vec3 &get_terrain_offset()
 			{

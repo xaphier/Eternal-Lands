@@ -116,18 +116,10 @@ class ELGLWidget: public QGLWidget
 		void water_tile_edit(const int water);
 		void height_edit(const int height);
 		void set_debug_mode(const int value);
-		void terrain_vector_add_normal(const float scale,
-			const float radius, const int brush_type);
-		void terrain_vector_add(const float value_x,
-			const float value_y, const float value_z,
-			const float radius, const int brush_type);
-		void terrain_vector_smooth(const float strength,
-			const float radius, const int brush_type);
-		void terrain_vector_set(const float value_x,
-			const float value_y, const float value_z,
-			const bool mask_x, const bool mask_y,
-			const bool mask_z, const float radius,
-			const int brush_type);
+		void change_terrain_values(const QVector3D &data,
+			const QVector2D &size, const float attenuation_size,
+			const int mask, const int attenuation,
+			const int shape, const int effect);
 		float get_terrain_offset_x() const;
 		float get_terrain_offset_y() const;
 		float get_terrain_offset_z() const;

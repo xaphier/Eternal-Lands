@@ -7,6 +7,8 @@
 #include "editor/editorobjectdescription.hpp"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QVector3D>
+#include <QVector2D>
 #include <QTimer>
 #include <QImage>
 
@@ -144,42 +146,15 @@ void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 	m_mouse_move_action = true;
 }
 
-void ELGLWidget::terrain_vector_add_normal(const float scale,
-	const float radius, const int brush_type)
+void ELGLWidget::change_terrain_values(const QVector3D &data,
+	const QVector2D &size, const float attenuation_size, const int mask,
+	const int attenuation, const int shape, const int effect)
 {
-	m_editor->terrain_vector_add_normal(m_world_position, scale, radius,
-		brush_type, m_terrain_id);
-
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::terrain_vector_add(const float value_x, const float value_y,
-	const float value_z, const float radius, const int brush_type)
-{
-	m_editor->terrain_vector_add(m_world_position,
-		glm::vec3(value_x, value_y, value_z), radius, brush_type,
-		m_terrain_id);
-
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::terrain_vector_smooth(const float strength,
-	const float radius, const int brush_type)
-{
-	m_editor->terrain_vector_smooth(m_world_position, strength, radius,
-		brush_type, m_terrain_id);
-
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::terrain_vector_set(const float value_x, const float value_y,
-	const float value_z, const bool mask_x, const bool mask_y,
-	const bool mask_z, const float radius, const int brush_type)
-{
-	m_editor->terrain_vector_set(m_world_position,
-		glm::vec3(value_x, value_y, value_z),
-		glm::bvec3(mask_x, mask_y, mask_z), radius, brush_type,
-		m_terrain_id);
+	m_editor->change_terrain_values(m_world_position,
+		glm::vec3(data.x(), data.y(), data.z()),
+		glm::bvec3((mask & 1) != 0, (mask & 2) != 0, (mask & 4) != 0),
+		glm::vec2(size.x(), size.y()), attenuation_size, attenuation,
+		shape, effect, m_terrain_id);
 
 	emit can_undo(m_editor->get_can_undo());
 }
