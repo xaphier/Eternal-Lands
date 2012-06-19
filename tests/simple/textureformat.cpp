@@ -59,6 +59,12 @@ BOOST_AUTO_TEST_CASE(source_format)
 	formats.insert(GL_BGR);
 	formats.insert(GL_RGBA);
 	formats.insert(GL_BGRA);
+	formats.insert(GL_RED_INTEGER);
+	formats.insert(GL_RG_INTEGER);
+	formats.insert(GL_RGB_INTEGER);
+	formats.insert(GL_BGR_INTEGER);
+	formats.insert(GL_RGBA_INTEGER);
+	formats.insert(GL_BGRA_INTEGER);
 	formats.insert(GL_DEPTH_COMPONENT);
 	formats.insert(GL_DEPTH_STENCIL);
 	formats.insert(GL_ALPHA);
