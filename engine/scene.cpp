@@ -1077,11 +1077,14 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::draw_shadows(const Uint16 index)
+	void Scene::draw_shadow(const Uint16 index)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
 		m_state_manager.init();
+
+		m_shadow_frame_buffer->bind(index);
+		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
 
 		STRING_MARKER(UTF8("drawing shadows %1%"), index);
 
@@ -1116,26 +1119,12 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
+		m_shadow_frame_buffer->blit();
+
 		m_state_manager.unbind_all();
 	}
 
-	void Scene::draw_shadows_array(const Uint16 index)
-	{
-		DEBUG_CHECK_GL_ERROR();
-
-		m_shadow_frame_buffer->bind(index);
-		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
-
-		draw_shadows(index);
-
-		DEBUG_CHECK_GL_ERROR();
-
-		m_shadow_frame_buffer->blit();
-
-		DEBUG_CHECK_GL_ERROR();
-	}
-
-	void Scene::draw_all_shadows_array()
+	void Scene::draw_shadows()
 	{
 		Uint16 i;
 
@@ -1157,7 +1146,7 @@ namespace eternal_lands
 
 			if (m_shadow_objects_mask[i])
 			{
-				draw_shadows_array(i);
+				draw_shadow(i);
 			}
 			else
 			{
@@ -1221,8 +1210,10 @@ namespace eternal_lands
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			if (object.get_blend() != bt_disabled)
+			if (!object.get_use_depth_pre_pass())
 			{
+				object.set_occlusion_culling(
+					std::numeric_limits<Uint32>::max());
 				continue;
 			}
 
@@ -1555,7 +1546,7 @@ namespace eternal_lands
 		{
 			STRING_MARKER(UTF8("drawing mode '%1%'"),
 				UTF8("shadows"));
-			draw_all_shadows_array();
+			draw_shadows();
 		}
 
 		if (m_clipmap.update(glm::vec3(m_scene_view.get_camera()),

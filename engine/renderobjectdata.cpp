@@ -14,7 +14,7 @@ namespace eternal_lands
 	RenderObjectData::RenderObjectData(): m_transparency(0.0f),
 		m_distance(0.0f), m_sub_frustums_mask(0x1),
 		m_occlusion_culling(std::numeric_limits<Uint32>::max()),
-		m_lod(0), m_blend(bt_disabled)
+		m_lod(0), m_blend(bt_disabled), m_depth_pre_pass(true)
 	{
 	}
 
@@ -23,7 +23,7 @@ namespace eternal_lands
 		m_transparency(0.0f), m_distance(0.0f),
 		m_sub_frustums_mask(sub_frustums_mask),
 		m_occlusion_culling(std::numeric_limits<Uint32>::max()),
-		m_lod(0), m_blend(bt_disabled)
+		m_lod(0), m_blend(bt_disabled), m_depth_pre_pass(true)
 	{
 		m_transparency = object->get_transparency();
 		m_blend = object->get_blend();

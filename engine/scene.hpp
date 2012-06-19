@@ -107,11 +107,6 @@ namespace eternal_lands
 			void cull_shadows(const glm::vec3 &camera,
 				const Uint16 index);
 			void cull_all_shadows();
-			void draw_shadows(const Uint16 index);
-			void draw_shadows_array(const Uint16 index);
-			void draw_all_shadows_array();
-			void draw_depth();
-			void draw_default();
 			void update_terrain_texture(
 				const MaterialSharedPtrVector &materials,
 				const Mat2x3Array2 &texture_matrices,
@@ -123,6 +118,10 @@ namespace eternal_lands
 			void set_view_port();
 
 		protected:
+			virtual void draw_shadow(const Uint16 index);
+			virtual void draw_shadows();
+			virtual void draw_depth();
+			virtual void draw_default();
 			virtual void intersect_terrain(const Frustum &frustum,
 				const glm::vec3 &camera,
 				BoundingBox &bounding_box) const;

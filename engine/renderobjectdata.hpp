@@ -37,6 +37,7 @@ namespace eternal_lands
 			Uint32 m_occlusion_culling;
 			Uint16 m_lod;
 			BlendType m_blend;
+			bool m_depth_pre_pass;
 
 		public:
 			RenderObjectData();
@@ -72,6 +73,12 @@ namespace eternal_lands
 			inline void set_blend(const BlendType blend) noexcept
 			{
 				m_blend = blend;
+			}
+
+			inline void set_depth_pre_pass(
+				const bool depth_pre_pass) noexcept
+			{
+				m_depth_pre_pass = depth_pre_pass;
 			}
 
 			inline void set_sub_frustums_mask(
@@ -128,6 +135,17 @@ namespace eternal_lands
 			inline Uint32 get_occlusion_culling() const noexcept
 			{
 				return m_occlusion_culling;
+			}
+
+			inline bool get_depth_pre_pass() const noexcept
+			{
+				return m_depth_pre_pass;
+			}
+
+			inline bool get_use_depth_pre_pass() const noexcept
+			{
+				return get_depth_pre_pass() &&
+					(get_blend() == bt_disabled);
 			}
 
 	};
