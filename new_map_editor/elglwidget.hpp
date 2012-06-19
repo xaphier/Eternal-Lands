@@ -24,6 +24,8 @@ class ELGLWidget: public QGLWidget
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
 		glm::vec3 m_world_position;
+		glm::vec3 m_grab_world_position;
+		glm::vec3 m_start_world_position;
 		glm::uvec2  m_select_pos, m_half_size;
 		String m_object_name;
 		float m_light_radius;
@@ -39,6 +41,7 @@ class ELGLWidget: public QGLWidget
 		bool m_light;
 		bool m_mouse_click_action;
 		bool m_mouse_move_action;
+		bool m_grab_world_position_valid;
 		BlendType m_blend;
 		Qt::MouseButton m_click_button;
 		Qt::KeyboardModifier m_wheel_zoom_x10;
@@ -67,6 +70,7 @@ class ELGLWidget: public QGLWidget
 		virtual void resizeGL(int width, int height);
 		virtual void paintGL();
 
+		virtual void mouseReleaseEvent(QMouseEvent *event);
 		virtual void mousePressEvent(QMouseEvent *event);
 		virtual void mouseMoveEvent(QMouseEvent *event);
 		virtual void wheelEvent(QWheelEvent *event);
@@ -86,6 +90,7 @@ class ELGLWidget: public QGLWidget
 		void set_object_scale(const float scale);
 		void set_object_selection(const SelectionType selection);
 		void set_object_blend(const BlendType blend);
+		void set_object_transparency(const float transparency);
 		void set_object_materials(const StringVector &materials);
 		void add_object(const String &object);
 		void add_light(const float radius);

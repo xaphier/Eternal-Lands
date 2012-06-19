@@ -443,7 +443,7 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>300</width>
+     <width>250</width>
      <height>587</height>
     </size>
    </property>
@@ -459,6 +459,12 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QVBoxLayout" name="verticalLayout_10">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QStackedWidget" name="properties">
        <property name="currentIndex">
@@ -466,12 +472,18 @@
        </property>
        <widget class="QWidget" name="object_page">
         <layout class="QVBoxLayout" name="verticalLayout_17">
+         <property name="margin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QGroupBox" name="groupBox_10">
            <property name="title">
             <string>Object</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
+            <property name="margin">
+             <number>0</number>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="label_18">
               <property name="text">
@@ -528,20 +540,26 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>109</width>
-              <height>336</height>
+              <width>250</width>
+              <height>704</height>
              </rect>
             </property>
             <attribute name="label">
              <string>Transformation</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="margin">
+              <number>0</number>
+             </property>
              <item>
               <widget class="QGroupBox" name="groupBox_11">
                <property name="title">
                 <string>Translation</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_6">
+                <property name="margin">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_20">
                   <property name="minimumSize">
@@ -689,6 +707,9 @@
                 <string>Rotation</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_11">
+                <property name="margin">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_23">
                   <property name="minimumSize">
@@ -845,6 +866,9 @@
                 <string>Scale</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_12">
+                <property name="margin">
+                 <number>0</number>
+                </property>
                 <item row="0" column="1">
                  <widget class="QDoubleSpinBox" name="scale_value">
                   <property name="minimumSize">
@@ -912,20 +936,26 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>203</width>
-              <height>255</height>
+              <width>250</width>
+              <height>704</height>
              </rect>
             </property>
             <attribute name="label">
              <string>Options</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_18">
+             <property name="margin">
+              <number>0</number>
+             </property>
              <item>
               <widget class="QGroupBox" name="groupBox_13">
                <property name="title">
                 <string>Transparency</string>
                </property>
                <layout class="QFormLayout" name="formLayout">
+                <property name="margin">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0" colspan="2">
                  <widget class="QRadioButton" name="transparency_type_0">
                   <property name="text">
@@ -943,8 +973,18 @@
                   </property>
                  </widget>
                 </item>
+                <item row="2" column="0" colspan="2">
+                 <widget class="QRadioButton" name="transparency_type_2">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="text">
+                   <string>using texture alpha</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="1" column="1">
-                 <widget class="QDoubleSpinBox" name="transparency_value">
+                 <widget class="QSpinBox" name="transparency_value">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
@@ -955,23 +995,10 @@
                    <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
                   <property name="suffix">
-                   <string comment=" %"/>
+                   <string>%</string>
                   </property>
                   <property name="maximum">
-                   <double>100.000000000000000</double>
-                  </property>
-                  <property name="value">
-                   <double>0.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0" colspan="2">
-                 <widget class="QRadioButton" name="transparency_type_2">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="text">
-                   <string>using texture alpha</string>
+                   <number>100</number>
                   </property>
                  </widget>
                 </item>
@@ -984,6 +1011,9 @@
                 <string>Selection</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
+                <property name="margin">
+                 <number>0</number>
+                </property>
                 <item>
                  <widget class="QRadioButton" name="selection_type_0">
                   <property name="text">
@@ -1031,14 +1061,17 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>152</width>
-              <height>318</height>
+              <width>250</width>
+              <height>704</height>
              </rect>
             </property>
             <attribute name="label">
-             <string>Seite</string>
+             <string>Materials</string>
             </attribute>
             <layout class="QGridLayout" name="gridLayout_9">
+             <property name="margin">
+              <number>0</number>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="material_label_0">
                <property name="maximumSize">
@@ -1350,6 +1383,9 @@
        </widget>
        <widget class="QWidget" name="light_page">
         <layout class="QGridLayout" name="gridLayout_13">
+         <property name="margin">
+          <number>0</number>
+         </property>
          <item row="1" column="0" rowspan="2">
           <widget class="QGroupBox" name="groupBox_2">
            <property name="title">
@@ -1496,6 +1532,9 @@
             <string>Color</string>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout">
+            <property name="margin">
+             <number>0</number>
+            </property>
             <item>
              <widget class="QPushButton" name="light_color">
               <property name="text">
@@ -1531,6 +1570,9 @@
             <string>Light</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
+            <property name="margin">
+             <number>0</number>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="label_4">
               <property name="text">
@@ -1565,8 +1607,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>264</width>
-              <height>672</height>
+              <width>232</width>
+              <height>690</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2155,8 +2197,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>264</width>
-              <height>672</height>
+              <width>242</width>
+              <height>174</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2338,8 +2380,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>264</width>
-              <height>672</height>
+              <width>98</width>
+              <height>84</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2673,8 +2715,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>264</width>
-              <height>672</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2686,8 +2728,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>264</width>
-              <height>672</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2700,6 +2742,12 @@
        </widget>
        <widget class="QWidget" name="randomize_page">
         <layout class="QVBoxLayout" name="verticalLayout_19">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QGroupBox" name="groupBox_20">
            <property name="title">
@@ -2728,7 +2776,7 @@
                 <number>0</number>
                </property>
                <property name="topMargin">
-                <number>9</number>
+                <number>0</number>
                </property>
                <property name="rightMargin">
                 <number>0</number>
@@ -3940,22 +3988,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>transparency_type_1</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>transparency_value</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>575</x>
-     <y>356</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>575</x>
-     <y>356</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>height_brush_layer_mask</sender>
    <signal>toggled(bool)</signal>
    <receiver>height_brush_layer_masks</receiver>
@@ -4080,6 +4112,22 @@
     <hint type="destinationlabel">
      <x>841</x>
      <y>576</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>transparency_type_1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>transparency_value</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>795</x>
+     <y>253</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>919</x>
+     <y>254</y>
     </hint>
    </hints>
   </connection>

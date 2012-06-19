@@ -426,6 +426,24 @@ namespace eternal_lands
 		}
 	}
 
+	void Editor::set_object_transparency(const Uint32 id,
+		const float transparency)
+	{
+		EditorObjectDescription object_description;
+
+		m_data.get_object(id, object_description);
+
+		if (object_description.get_transparency() != transparency)
+		{
+			change_object(mt_object_transparency_changed,
+				object_description);
+
+			object_description.set_transparency(transparency);
+
+			m_data.modify_object(object_description);
+		}
+	}
+
 	void Editor::set_object_translation(const Uint32 id,
 		const glm::vec3 &translation)
 	{

@@ -132,18 +132,22 @@ namespace eternal_lands
 		max_size = size + attenuation_size;
 
 		tmp = static_cast<float>(vertex.x) - max_size.x;
-		min_x = std::max(static_cast<Sint64>(tmp), 0l);
+		min_x = std::max(static_cast<Sint64>(tmp),
+			static_cast<Sint64>(0));
 
 		tmp = static_cast<float>(vertex.y) - max_size.y;
-		min_y = std::max(static_cast<Sint64>(tmp), 0l);
+		min_y = std::max(static_cast<Sint64>(tmp),
+			static_cast<Sint64>(0));
 
 		tmp = static_cast<float>(vertex.x) + max_size.x;
 		temp = m_terrain_vector_image->get_width();
-		max_x = std::min(static_cast<Sint64>(tmp), temp - 1);
+		max_x = std::min(static_cast<Sint64>(tmp),
+			static_cast<Sint64>(temp - 1));
 
 		tmp = static_cast<float>(vertex.y) + max_size.y;
 		temp = m_terrain_vector_image->get_height();
-		max_y = std::min(static_cast<Sint64>(tmp), temp - 1);
+		max_y = std::min(static_cast<Sint64>(tmp),
+			static_cast<Sint64>(temp - 1));
 
 		terrain_values.clear();
 

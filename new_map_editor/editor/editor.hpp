@@ -92,7 +92,7 @@ namespace eternal_lands
 			void save(const String &name) const;
 			void load_map(const String &name);
 			void set_object_transparency(const Uint32 id,
-				const BlendType blend);
+				const float transparency);
 			void set_object_translation(const Uint32 id,
 				const glm::vec3 &translation);
 			void set_object_rotation(const Uint32 id,
@@ -248,12 +248,14 @@ namespace eternal_lands
 				EditorObjectDescription &object_description)
 				const
 			{
+				assert(get_object_selected());
 				get_object_description(get_id(),
 					object_description);
 			}
 
 			inline void get_light_data(LightData &light_data) const
 			{
+				assert(get_light_selected());
 				get_light_data(get_id(), light_data);
 			}
 
@@ -306,6 +308,14 @@ namespace eternal_lands
 			{
 				assert(get_object_selected());
 				set_object_blend(get_id(), blend);
+			}
+
+			inline void set_object_transparency(
+				const float transparency)
+			{
+				assert(get_object_selected());
+				set_object_transparency(get_id(),
+					transparency);
 			}
 
 			inline void set_object_translation(

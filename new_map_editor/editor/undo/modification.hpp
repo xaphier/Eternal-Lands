@@ -25,6 +25,7 @@ namespace eternal_lands
 		mt_object_rotation_changed,
 		mt_object_scale_changed,
 		mt_object_blend_changed,
+		mt_object_transparency_changed,
 		mt_object_selection_changed,
 		mt_object_materials_changed,
 		mt_light_added,

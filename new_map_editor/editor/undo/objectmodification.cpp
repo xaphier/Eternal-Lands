@@ -55,6 +55,7 @@ namespace eternal_lands
 			case mt_object_rotation_changed:
 			case mt_object_scale_changed:
 			case mt_object_blend_changed:
+			case mt_object_transparency_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
 				editor.modify_object(m_object_description);

@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(action_delete_mode, SIGNAL(toggled(bool)), this, SLOT(delete_mode(bool)));
 
-	QObject::connect(action_remove, SIGNAL(toggled(bool)), this, SLOT(remove()));
+	QObject::connect(action_remove, SIGNAL(triggered()), this, SLOT(remove()));
 
 	QObject::connect(move_l, SIGNAL(clicked()), action_move_l, SLOT(trigger()));
 	QObject::connect(move_r, SIGNAL(clicked()), action_move_r, SLOT(trigger()));
@@ -70,16 +70,16 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(zoom_in, SIGNAL(clicked()), action_zoom_in, SLOT(trigger()));
 	QObject::connect(zoom_out, SIGNAL(clicked()), action_zoom_out, SLOT(trigger()));
 
-	QObject::connect(action_new, SIGNAL(toggled(bool)), this, SLOT(new_map()));
-	QObject::connect(action_open, SIGNAL(toggled(bool)), this, SLOT(open_map()));
-//	QObject::connect(action_settings, SIGNAL(toggled(bool)), this, SLOT(settings()));
-	QObject::connect(action_fog, SIGNAL(toggled(bool)), this, SLOT(set_fog()));
-	QObject::connect(action_ambient, SIGNAL(toggled(bool)), this, SLOT(change_ambient()));
-//	QObject::connect(action_blend_image, SIGNAL(toggled(bool)), this,
+	QObject::connect(action_new, SIGNAL(triggered()), this, SLOT(new_map()));
+	QObject::connect(action_open, SIGNAL(triggered()), this, SLOT(open_map()));
+//	QObject::connect(action_settings, SIGNAL(triggered()), this, SLOT(settings()));
+	QObject::connect(action_fog, SIGNAL(triggered()), this, SLOT(set_fog()));
+	QObject::connect(action_ambient, SIGNAL(triggered()), this, SLOT(change_ambient()));
+//	QObject::connect(action_blend_image, SIGNAL(triggered()), this,
 //		SLOT(change_blend_image_name()));
 	QObject::connect(action_time, SIGNAL(valueChanged(int)), el_gl_widget,
 		SLOT(set_game_minute(int)));
-	QObject::connect(action_preferences, SIGNAL(toggled(bool)), this,
+	QObject::connect(action_preferences, SIGNAL(triggered()), this,
 		SLOT(change_preferences()));
 
 	QObject::connect(action_objects, SIGNAL(toggled(bool)),
@@ -121,6 +121,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(m_object_transparency_mapper,
 		SIGNAL(mapped(const int)), this,
 		SLOT(set_object_blend(const int)));
+
+	QObject::connect(transparency_value, SIGNAL(valueChanged(int)), this,
+		SLOT(set_object_transparency(const int)));
 
 	QObject::connect(material_0, SIGNAL(currentIndexChanged(int)), this,
 		SLOT(update_materials()));
@@ -366,6 +369,9 @@ void MainWindow::update_object()
 
 	scale_value->setValue(object_description.get_world_transformation(
 		).get_scale() * 100.0f);
+
+	transparency_value->setValue(object_description.get_transparency() *
+		100.0f);
 
 	set_blend(object_description.get_blend());
 	set_selection(object_description.get_selection());
@@ -1359,6 +1365,11 @@ void MainWindow::terrain_edit()
 void MainWindow::about_el()
 {
 
+}
+
+void MainWindow::set_object_transparency(const int value)
+{
+	el_gl_widget->set_object_transparency(value * 0.01f);
 }
 
 void MainWindow::set_object_blend(const int value)

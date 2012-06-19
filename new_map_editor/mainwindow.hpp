@@ -98,6 +98,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void terrain_edit();
 		void initialized();
 		void set_debug(const bool enabled);
+		void set_object_transparency(const int value);
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

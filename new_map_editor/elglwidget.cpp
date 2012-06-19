@@ -88,6 +88,35 @@ QImage ELGLWidget::get_icon(const QString &name)
 
 void ELGLWidget::mouse_click_action()
 {
+	EditorObjectDescription object_description;
+	LightData light_data;
+
+	if (!m_grab_world_position_valid)
+	{
+		m_grab_world_position_valid = true;
+		m_grab_world_position = m_world_position;
+
+		switch (m_editor->get_renderable())
+		{
+			default:
+			case rt_none:
+				break;
+			case rt_light:
+				m_editor->get_light_data(light_data);
+
+				m_start_world_position =
+					light_data.get_position();
+				break;
+			case rt_object:
+				m_editor->get_object_description(
+					object_description);
+
+				m_start_world_position =
+					object_description.get_translation();
+				break;
+		}
+	}
+
 	if (get_terrain_editing())
 	{
 		emit terrain_edit();
@@ -119,6 +148,36 @@ void ELGLWidget::mouse_click_action()
 
 void ELGLWidget::mouse_move_action()
 {
+	glm::vec3 position;
+
+	if (m_grab_world_position_valid)
+	{
+		position = m_start_world_position + m_world_position -
+			m_grab_world_position;
+
+		switch (m_editor->get_renderable())
+		{
+			case rt_light:
+				m_editor->set_light_position(position);
+				emit update_light(true);
+				break;
+			case rt_object:
+				m_editor->set_object_translation(position);
+				emit update_object(true);
+				break;
+			case rt_none:
+			default:
+				break;
+		}
+	}
+}
+
+void ELGLWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+	if (event->button() != m_click_button)
+	{
+		m_grab_world_position_valid = false;
+	}
 }
 
 void ELGLWidget::mousePressEvent(QMouseEvent *event)
@@ -139,11 +198,17 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 
 void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	return;
+	if (!event->buttons().testFlag(m_click_button))
+	{
+		return;
+	}
+
 	m_select_pos.x = event->x();
 	m_select_pos.y = height() - event->y();
 	m_select_depth = true;
 	m_mouse_move_action = true;
+
+	updateGL();
 }
 
 void ELGLWidget::change_terrain_values(const QVector3D &data,
@@ -352,7 +417,6 @@ void ELGLWidget::paintGL()
 
 		m_world_position = glm::unProject(glm::vec3(m_select_pos,
 			m_selected_depth), m_view, m_projection, view_port);
-
 	}
 
 	if (m_mouse_click_action)
@@ -413,6 +477,12 @@ void ELGLWidget::remove_object()
 void ELGLWidget::set_object_blend(const BlendType value)
 {
 	m_editor->set_object_blend(value);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_object_transparency(const float value)
+{
+	m_editor->set_object_transparency(value);
 	emit can_undo(m_editor->get_can_undo());
 }
 
