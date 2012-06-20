@@ -124,6 +124,15 @@ void ELGLWidget::mouse_move_action()
 	LightData light_data;
 	glm::vec3 position;
 
+	if (get_terrain_editing())
+	{
+		emit terrain_edit();
+
+		m_editor->update_edit_id();
+
+		return;
+	}
+
 	if (!m_grab_world_position_valid)
 	{
 		m_grab_world_position_valid = true;
