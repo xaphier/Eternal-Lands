@@ -18,22 +18,19 @@ class ELGLWidget: public QGLWidget
 		FileSystemSharedPtr m_file_system;
 		QStringList m_dirs;
 		QTimer* m_timer;
-		glm::mat4 m_projection;
-		glm::mat4 m_view;
 		glm::mat3 m_rotate;
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
 		glm::vec3 m_world_position;
 		glm::vec3 m_grab_world_position;
-		glm::vec3 m_start_world_position;
+		glm::vec3 m_move_offset;
 		glm::uvec2  m_select_pos, m_half_size;
 		String m_object_name;
 		float m_light_radius;
 		float m_zoom, m_rotate_z;
-		float m_selected_depth;
+		float m_aspect;
 		Uint32 m_terrain_type_index;
 		Uint32 m_terrain_layer_index;
-		Uint32 m_terrain_id;
 		bool m_select;
 		bool m_select_depth;
 		bool m_terrain_editing;
@@ -64,6 +61,7 @@ class ELGLWidget: public QGLWidget
 
 		void mouse_click_action();
 		void mouse_move_action();
+		void update_ortho();
 
 	protected:
 		virtual void initializeGL();

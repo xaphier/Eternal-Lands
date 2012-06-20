@@ -108,10 +108,10 @@ namespace eternal_lands
 
 	void ObjectVisitor::add(const ObjectSharedPtr &object,
 		const float transparency, const BlendType blend,
-		const SubFrustumsMask mask)
+		const SubFrustumsMask mask, const bool depth_read)
 	{
 		m_objects.push_back(RenderObjectData(object,
-			transparency, blend, mask));
+			transparency, blend, mask, depth_read));
 	}
 
 	void ObjectVisitor::operator()(

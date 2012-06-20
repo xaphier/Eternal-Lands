@@ -23,12 +23,13 @@ namespace eternal_lands
 			const glm::uvec2 m_offset;
 			const Uint16 m_material;
 
+			virtual bool do_merge(Modification* modification);
+
 		public:
 			GroundTileModification(const glm::uvec2 &offset,
-				const Uint16 material);
+				const Uint16 material, const Uint32 edit_id);
 			virtual ~GroundTileModification() throw();
 			virtual ModificationType get_type() const;
-			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);
 
 	};

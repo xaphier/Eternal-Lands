@@ -43,6 +43,8 @@ namespace eternal_lands
 		m_random_rotation[2] = false;
 		m_random_scale = false;
 
+		m_edit_id = 0;
+
 		init_logging("log");
 	}
 
@@ -55,7 +57,7 @@ namespace eternal_lands
 		const EditorObjectDescription &object_description)
 	{
 		ModificationAutoPtr modification(new ObjectModification(
-			object_description, type));
+			object_description, type, m_edit_id));
 
 		m_undo.add(modification);
 	}
@@ -64,7 +66,7 @@ namespace eternal_lands
 		const LightData &light_data)
 	{
 		ModificationAutoPtr modification(new LightModification(
-			light_data, type));
+			light_data, type, m_edit_id));
 
 		m_undo.add(modification);
 	}
@@ -82,7 +84,8 @@ namespace eternal_lands
 		}
 
 		ModificationAutoPtr modification(new TerrainMapModification(
-			tmp, index, mt_terrain_albedo_map_changed));
+			tmp, index, mt_terrain_albedo_map_changed,
+			get_edit_id()));
 
 		m_undo.add(modification);
 
@@ -101,7 +104,8 @@ namespace eternal_lands
 		if (tile != tmp)
 		{
 			ModificationAutoPtr modification(
-				new GroundTileModification(offset, tmp));
+				new GroundTileModification(offset, tmp,
+					get_edit_id()));
 
 			m_undo.add(modification);
 
@@ -190,7 +194,7 @@ namespace eternal_lands
 	void Editor::set_ambient(const glm::vec3 &color)
 	{
 		ModificationAutoPtr modification(new AmbientModification(
-			m_data.get_ambient()));
+			m_data.get_ambient(), get_edit_id()));
 
 		m_undo.add(modification);
 
@@ -614,8 +618,7 @@ namespace eternal_lands
 	void Editor::change_terrain_values(const glm::vec3 &position,
 		const glm::vec3 &data, const glm::bvec3 &mask,
 		const glm::vec2 &size, const float attenuation_size,
-		const int attenuation, const int shape, const int effect,
-		const Uint32 id)
+		const int attenuation, const int shape, const int effect)
 	{
 		TerrainValueVector terrain_values;
 		glm::uvec2 vertex;
@@ -627,7 +630,7 @@ namespace eternal_lands
 			static_cast<BrushShapeType>(shape), terrain_values);
 
 		ModificationAutoPtr modification(new TerrainValueModification(
-			id, terrain_values));
+			terrain_values, get_edit_id()));
 
 		m_undo.add(modification);
 

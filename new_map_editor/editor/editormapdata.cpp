@@ -79,10 +79,20 @@ namespace eternal_lands
 		m_scene->set_view_matrix(view_matrix);
 	}
 
-	void EditorMapData::set_perspective(const float fov, const float aspect,
-		const float z_near, const float z_far)
+	void EditorMapData::set_z_near(const float z_near)
 	{
-		m_scene->set_perspective(fov, aspect, z_near, z_far);
+		m_scene->set_z_near(z_near);
+	}
+
+	void EditorMapData::set_perspective(const float fov,
+		const float aspect)
+	{
+		m_scene->set_perspective(fov, aspect);
+	}
+
+	void EditorMapData::set_ortho(const glm::vec4 &ortho)
+	{
+		m_scene->set_ortho(ortho);
 	}
 
 	void EditorMapData::set_view_port(const glm::uvec4 &view_port)
@@ -445,11 +455,15 @@ namespace eternal_lands
 		IdType type;
 		bool selected;
 
+		typeless_id = std::numeric_limits<Uint32>::max();
+
 		m_id = m_scene->pick(glm::vec2(position), glm::vec2(half_size),
 			selection);
 
 		selected = FreeIdsManager::get_id_type(m_id, typeless_id, type);
 		m_renderable = rt_none;
+
+		m_scene->deselect_object();
 
 		if (!selected)
 		{
@@ -460,6 +474,7 @@ namespace eternal_lands
 		{
 			case it_3d_object:
 			case it_2d_object:
+				m_scene->set_selected_object(m_id);
 				m_renderable = rt_object;
 				break;
 			case it_tile_object:
@@ -477,11 +492,6 @@ namespace eternal_lands
 			default:
 				break;
 		}
-	}
-
-	void EditorMapData::select_depth(const glm::uvec2 &position)
-	{
-		m_depth = m_scene->get_depth(position);
 	}
 
 	StringVector EditorMapData::get_materials() const
@@ -552,6 +562,16 @@ namespace eternal_lands
 		}
 
 		return result;
+	}
+
+	double EditorMapData::get_depth() const
+	{
+		return m_scene->get_depth();
+	}
+
+	void EditorMapData::set_depth_selection(const glm::uvec2 &position)
+	{
+		m_scene->set_depth_selection(position);
 	}
 
 }

@@ -24,14 +24,16 @@ namespace eternal_lands
 			EditorObjectDescription m_object_description;
 			const ModificationType m_type;
 
+			virtual bool do_merge(Modification* modification);
+
 		public:
 			ObjectModification(
 				const EditorObjectDescription
 					&object_description,
-				const ModificationType type);
+				const ModificationType type,
+				const Uint32 edit_id);
 			virtual ~ObjectModification() throw();
 			virtual ModificationType get_type() const;
-			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);
 
 	};

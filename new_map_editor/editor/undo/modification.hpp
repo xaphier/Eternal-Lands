@@ -49,14 +49,24 @@ namespace eternal_lands
 
 	class Modification
 	{
+		private:
+			const Uint32 m_edit_id;
+
+			virtual bool do_merge(Modification* modification) = 0;
+
 		protected:
-			Modification();
+			Modification(const Uint32 edit_id);
 
 		public:
 			virtual ~Modification() throw();
 			virtual ModificationType get_type() const = 0;
-			virtual bool merge(Modification* modification) = 0;
 			virtual bool undo(EditorMapData &editor) = 0;
+			bool merge(Modification* modification);
+
+			inline Uint32 get_edit_id() const noexcept
+			{
+				return m_edit_id;
+			}
 
 	};
 

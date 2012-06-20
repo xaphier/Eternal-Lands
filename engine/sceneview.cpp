@@ -301,6 +301,23 @@ namespace eternal_lands
 		}
 	}
 
+	glm::mat4 SceneView::build_projection_matrix(const float z_near,
+		const float z_far) const
+	{
+		switch (get_projection())
+		{
+			case pt_perspective:
+				return glm::perspective(get_fov(),
+					get_aspect(), z_near, z_far);
+			case pt_ortho:
+				return glm::ortho(get_ortho().x, get_ortho().y,
+					get_ortho().z, get_ortho().w, z_near,
+					z_far);
+		}
+
+		return glm::mat4();
+	}
+
 	void SceneView::update()
 	{
 		glm::mat4 projection_matrix;
@@ -318,8 +335,8 @@ namespace eternal_lands
 		m_shadow_z_far = std::min(get_global_vars(
 			)->get_shadow_distance(), get_z_far());
 
-		projection_matrix = glm::perspective(get_fov(),
-			get_aspect(), get_z_near(), get_z_far());
+		projection_matrix = build_projection_matrix(get_z_near(),
+			get_z_far());
 
 		projection_view_matrix = projection_matrix * m_view_matrix;
 
@@ -389,8 +406,8 @@ namespace eternal_lands
 			z_far = std::min(z_far + 0.5f, get_shadow_z_far());
 
 			m_split_projection_view_matrices[i] =
-				glm::perspective(get_fov(), get_aspect(),
-					z_near, z_far) * m_view_matrix;
+				build_projection_matrix(z_near, z_far) *
+				m_view_matrix;
 		}
 
 		for (i = 0; i < 4; ++i)

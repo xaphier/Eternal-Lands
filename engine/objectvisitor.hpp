@@ -46,7 +46,8 @@ namespace eternal_lands
 				const SubFrustumsMask mask);
 			void add(const ObjectSharedPtr &object,
 				const float transparency, const BlendType blend,
-				const SubFrustumsMask mask);
+				const SubFrustumsMask mask,
+				const bool depth_read = true);
 			void next_frame() noexcept;
 
 			inline RenderObjectDataVector &get_objects() noexcept

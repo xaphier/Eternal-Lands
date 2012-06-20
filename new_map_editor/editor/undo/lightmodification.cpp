@@ -12,7 +12,8 @@ namespace eternal_lands
 {
 
 	LightModification::LightModification(const LightData &data,
-		const ModificationType type): m_data(data), m_type(type)
+		const ModificationType type, const Uint32 edit_id):
+		Modification(edit_id), m_data(data), m_type(type)
 	{
 	}
 
@@ -25,13 +26,8 @@ namespace eternal_lands
 		return m_type;
 	}
 
-	bool LightModification::merge(Modification* modification)
+	bool LightModification::do_merge(Modification* modification)
 	{
-		if (get_type() != modification->get_type())
-		{
-			return false;
-		}
-
 		assert(dynamic_cast<LightModification*>(modification) != 0);
 
 		return m_data.get_id() == dynamic_cast<LightModification*>(

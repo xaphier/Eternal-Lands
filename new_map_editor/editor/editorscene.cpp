@@ -16,6 +16,7 @@
 #include "editormaploader.hpp"
 #include "freeidsmanager.hpp"
 #include "map.hpp"
+#include "renderobjectdata.hpp"
 
 namespace eternal_lands
 {
@@ -153,6 +154,14 @@ namespace eternal_lands
 			Scene::intersect(frustum, shadow, visitor);
 		}
 
+		BOOST_FOREACH(RenderObjectData& object, visitor.get_objects())
+		{
+			if (object.get_object()->get_id() == m_selected_object)
+			{
+				object.set_depth_read(false);
+			}
+		}
+
 		if (!get_draw_lights() || shadow)
 		{
 			return;
@@ -181,7 +190,7 @@ namespace eternal_lands
 			if (mask.any())
 			{
 				visitor.add(it->second, transparency, blend,
-					mask);
+					mask, false);
 			}
 		}
 	}
@@ -213,6 +222,11 @@ namespace eternal_lands
 		const ImageSharedPtr &dudv_map)
 	{
 		get_map()->set_terrain(vector_map, normal_map, dudv_map);
+	}
+
+	void EditorScene::depth_read()
+	{
+		m_depth = Scene::get_depth(m_depth_selection);
 	}
 
 }

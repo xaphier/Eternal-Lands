@@ -11,8 +11,8 @@
 namespace eternal_lands
 {
 
-	AmbientModification::AmbientModification(const glm::vec3 &color):
-		m_color(color)
+	AmbientModification::AmbientModification(const glm::vec3 &color,
+		const Uint32 edit_id): Modification(edit_id), m_color(color)
 	{
 	}
 
@@ -25,9 +25,9 @@ namespace eternal_lands
 		return mt_scene_ambient_changed;
 	}
 
-	bool AmbientModification::merge(Modification* modification)
+	bool AmbientModification::do_merge(Modification* modification)
 	{
-		return get_type() == modification->get_type();
+		return true;
 	}
 
 	bool AmbientModification::undo(EditorMapData &editor)

@@ -22,14 +22,15 @@ namespace eternal_lands
 	{
 		private:
 			TerrainValueVector m_terrain_values;
-			Uint32 m_id;
+
+			virtual bool do_merge(Modification* modification);
 
 		public:
-			TerrainValueModification(const Uint32 id,
-				const TerrainValueVector &terrain_values);
+			TerrainValueModification(
+				const TerrainValueVector &terrain_values,
+				const Uint32 id);
 			virtual ~TerrainValueModification() throw();
 			virtual ModificationType get_type() const;
-			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);
 
 	};

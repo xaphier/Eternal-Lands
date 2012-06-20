@@ -23,7 +23,6 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_light = false;
 	m_rotate_z = 0.0f;
 	m_blend = bt_disabled;
-	m_terrain_id = 0;
 
 	m_global_vars = boost::make_shared<GlobalVars>();
 	m_file_system = boost::make_shared<FileSystem>();
@@ -88,40 +87,13 @@ QImage ELGLWidget::get_icon(const QString &name)
 
 void ELGLWidget::mouse_click_action()
 {
-	EditorObjectDescription object_description;
-	LightData light_data;
-
-	if (!m_grab_world_position_valid)
-	{
-		m_grab_world_position_valid = true;
-		m_grab_world_position = m_world_position;
-
-		switch (m_editor->get_renderable())
-		{
-			default:
-			case rt_none:
-				break;
-			case rt_light:
-				m_editor->get_light_data(light_data);
-
-				m_start_world_position =
-					light_data.get_position();
-				break;
-			case rt_object:
-				m_editor->get_object_description(
-					object_description);
-
-				m_start_world_position =
-					object_description.get_translation();
-				break;
-		}
-	}
+	m_editor->update_edit_id();
 
 	if (get_terrain_editing())
 	{
 		emit terrain_edit();
 
-		m_terrain_id++;
+		m_editor->update_edit_id();
 
 		return;
 	}
@@ -148,21 +120,52 @@ void ELGLWidget::mouse_click_action()
 
 void ELGLWidget::mouse_move_action()
 {
+	EditorObjectDescription object_description;
+	LightData light_data;
 	glm::vec3 position;
+
+	if (!m_grab_world_position_valid)
+	{
+		m_grab_world_position_valid = true;
+		m_grab_world_position = m_world_position;
+
+		switch (m_editor->get_renderable())
+		{
+			default:
+			case rt_none:
+				break;
+			case rt_light:
+				m_editor->get_light_data(light_data);
+
+				m_move_offset = light_data.get_position();
+				break;
+			case rt_object:
+				m_editor->get_object_description(
+					object_description);
+
+				m_move_offset =
+					object_description.get_translation();
+				break;
+		}
+
+		return;
+	}
 
 	if (m_grab_world_position_valid)
 	{
-		position = m_start_world_position + m_world_position -
+		position = m_move_offset + m_world_position -
 			m_grab_world_position;
 
 		switch (m_editor->get_renderable())
 		{
 			case rt_light:
 				m_editor->set_light_position(position);
+				emit can_undo(m_editor->get_can_undo());
 				emit update_light(true);
 				break;
 			case rt_object:
 				m_editor->set_object_translation(position);
+				emit can_undo(m_editor->get_can_undo());
 				emit update_object(true);
 				break;
 			case rt_none:
@@ -176,7 +179,6 @@ void ELGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (event->button() != m_click_button)
 	{
-		m_grab_world_position_valid = false;
 	}
 }
 
@@ -187,11 +189,19 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 		return;
 	}
 
+	if ((event->x() < 0) || (event->y() < 0) || (event->x() >= width())
+		|| (event->y() >= height()))
+	{
+		return;
+	}
+
 	m_select_pos.x = event->x();
 	m_select_pos.y = height() - event->y();
+
 	m_select = !get_terrain_editing();
 	m_select_depth = true;
 	m_mouse_click_action = true;
+	m_grab_world_position_valid = false;
 
 	updateGL();
 }
@@ -199,6 +209,14 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	if (!event->buttons().testFlag(m_click_button))
+	{
+		m_grab_world_position_valid = false;
+
+		return;
+	}
+
+	if ((event->x() < 0) || (event->y() < 0) || (event->x() >= width())
+		|| (event->y() >= height()))
 	{
 		return;
 	}
@@ -219,7 +237,7 @@ void ELGLWidget::change_terrain_values(const QVector3D &data,
 		glm::vec3(data.x(), data.y(), data.z()),
 		glm::bvec3((mask & 1) != 0, (mask & 2) != 0, (mask & 4) != 0),
 		glm::vec2(size.x(), size.y()), attenuation_size, attenuation,
-		shape, effect, m_terrain_id);
+		shape, effect);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -258,14 +276,16 @@ void ELGLWidget::wheelEvent(QWheelEvent *event)
 {
 	if (event->modifiers().testFlag(m_wheel_zoom_x10))
 	{
-		m_zoom += event->delta() / 12.0f * (m_swap_wheel_zoom ? -1.0f : 1.0f);
+		m_zoom += event->delta() / 5.0f * (m_swap_wheel_zoom ? -1.0f : 1.0f);
 	}
 	else
 	{
-		m_zoom += event->delta() / 120.0f * (m_swap_wheel_zoom ? -1.0f : 1.0f);
+		m_zoom += event->delta() / 50.0f * (m_swap_wheel_zoom ? -1.0f : 1.0f);
 	}
 
-	m_zoom = std::max(1.0f, std::min(200.0f, m_zoom));
+	m_zoom = std::max(1.0f, std::min(50.0f, m_zoom));
+
+	update_ortho();
 }
 
 void ELGLWidget::initializeGL()
@@ -337,6 +357,7 @@ void ELGLWidget::initializeGL()
 	try
 	{
 		m_editor.reset(new Editor(m_global_vars, m_file_system));
+		m_editor->set_z_near(1.5f);
 	}
 	catch (...)
 	{
@@ -347,39 +368,56 @@ void ELGLWidget::initializeGL()
 	emit initialized();
 }
 
+void ELGLWidget::update_ortho()
+{
+	m_editor->set_ortho(glm::vec4(-m_aspect, m_aspect, -1.0f,
+		1.0f) * m_zoom);
+}
+
 void ELGLWidget::resizeGL(int width, int height)
 {
 	glViewport(0, 0, width, height);
 
 	m_editor->set_view_port(glm::uvec4(0, 0, width, height));
 
-	m_editor->set_perspective(60.0f, static_cast<float>(width) /
-		static_cast<float>(height), 1.5f, 550.0f);
+	m_aspect = 1.0f;
+
+	if ((height * width) > 0)
+	{
+		m_aspect = static_cast<float>(width) /
+			static_cast<float>(height);
+	}
+
+	update_ortho();
 
 	updateGL();
-
-	m_projection = m_editor->get_projection_matrix();
 }
 
 void ELGLWidget::paintGL()
 {
+	glm::mat4 view;
 	glm::ivec4 view_port;
 	glm::vec3 dir, pos;
+	double selected_depth;
+	Uint32 id;
 
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_ALPHA_TEST);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	dir = glm::normalize(glm::vec3(0.0f, -1.0f, 1.0f));
+	dir = glm::normalize(glm::vec3(0.0f, -1.0f, 2.0f));
 
 	pos = m_pos;
 
-	dir = m_rotate * dir * m_zoom;
+	dir = m_rotate * dir * 200.0f;
 
-	m_view = glm::lookAt(pos + dir, pos, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
-	m_editor->set_view_matrix(m_view);
+	view = glm::lookAt(pos + dir, pos, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
+	m_editor->set_view_matrix(view);
 	m_editor->set_focus(pos);
+	m_editor->set_depth_selection(m_select_pos);
+
+	id = m_editor->get_id();
 
 	m_editor->draw();
 
@@ -407,16 +445,26 @@ void ELGLWidget::paintGL()
 	if (m_select_depth)
 	{
 		m_select_depth = false;
-		m_editor->select_depth(m_select_pos);
-		m_selected_depth = m_editor->get_depth();
+
+		if (m_editor->get_object_selected() &&
+			(m_editor->get_id() != id))
+		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			m_editor->draw();
+		}
+
+		selected_depth = m_editor->get_depth();
 
 		view_port[0] = 0;
 		view_port[1] = 0;
 		view_port[2] = width();
 		view_port[3] = height();
 
-		m_world_position = glm::unProject(glm::vec3(m_select_pos,
-			m_selected_depth), m_view, m_projection, view_port);
+		m_world_position = glm::unProject(glm::dvec3(m_select_pos,
+			selected_depth), glm::dmat4(view),
+			glm::dmat4(m_editor->get_projection_matrix()),
+			view_port);
 	}
 
 	if (m_mouse_click_action)
@@ -627,14 +675,18 @@ void ELGLWidget::rotate_right()
 
 void ELGLWidget::zoom_in()
 {
-	m_zoom -= 1.0f;
-	m_zoom = std::max(1.0f, std::min(500.0f, m_zoom));
+	m_zoom -= 0.5f;
+	m_zoom = std::max(1.0f, std::min(50.0f, m_zoom));
+
+	update_ortho();
 }
 
 void ELGLWidget::zoom_out()
 {
-	m_zoom += 1.0f;
-	m_zoom = std::max(1.0f, std::min(500.0f, m_zoom));
+	m_zoom += 0.5f;
+	m_zoom = std::max(1.0f, std::min(50.0f, m_zoom));
+
+	update_ortho();
 }
 
 void ELGLWidget::add_object(const String &object)

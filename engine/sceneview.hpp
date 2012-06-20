@@ -22,6 +22,12 @@
 namespace eternal_lands
 {
 
+	enum ProjectionType
+	{
+		pt_perspective = 0,
+		pt_ortho = 1
+	};
+
 	/**
 	 * @brief @c class for scene view.
 	 *
@@ -54,6 +60,7 @@ namespace eternal_lands
 			glm::vec4 m_focus;
 			glm::vec4 m_split_distances;
 			glm::vec4 m_z_params;
+			glm::vec4 m_ortho;
 			glm::uvec4 m_view_port;
 			glm::vec3 m_shadow_dir;
 			glm::vec3 m_shadow_up;
@@ -62,6 +69,7 @@ namespace eternal_lands
 			float m_shadow_z_far;
 			Uint16 m_shadow_map_count, m_layer_count;
 			bool m_exponential_shadow_maps;
+			ProjectionType m_projection;
 
 			void build_shadow_matrix(
 				const glm::dmat4x4 &shadow_view_matrix,
@@ -77,6 +85,9 @@ namespace eternal_lands
 				const ConvexBody &convex_body,
 				const glm::vec3 &dir, const float max_height,
 				const Uint16 index);
+
+			glm::mat4 build_projection_matrix(const float z_near,
+				const float z_far) const;
 
 			inline GlobalVarsSharedPtr get_global_vars() const
 				noexcept
@@ -138,12 +149,23 @@ namespace eternal_lands
 						index];
 			}
 
+			inline void set_z_near(const float z_near) noexcept
+			{
+				m_z_near = z_near;
+			}
+
 			inline void set_perspective(const float fov,
-				const float aspect, const float z_near) noexcept
+				const float aspect) noexcept
 			{
 				m_fov = fov;
 				m_aspect = aspect;
-				m_z_near = z_near;
+				m_projection = pt_perspective;
+			}
+
+			inline void set_ortho(const glm::vec4 &ortho) noexcept
+			{
+				m_ortho = ortho;
+				m_projection = pt_ortho;
 			}
 
 			inline void set_view_port(const glm::uvec4 &view_port)
@@ -280,6 +302,11 @@ namespace eternal_lands
 				return m_split_distances;
 			}
 
+			inline const glm::vec4 &get_ortho() const noexcept
+			{
+				return m_ortho;
+			}
+
 			inline const glm::vec4 &get_focus() const noexcept
 			{
 				return m_focus;
@@ -334,6 +361,11 @@ namespace eternal_lands
 			inline bool get_exponential_shadow_maps() const noexcept
 			{
 				return m_exponential_shadow_maps;
+			}
+
+			inline ProjectionType get_projection() const
+			{
+				return m_projection;
 			}
 
 	};

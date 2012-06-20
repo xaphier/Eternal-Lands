@@ -42,6 +42,7 @@ namespace eternal_lands
 			float m_random_scale_max;
 			glm::bvec3 m_random_translation;
 			glm::bvec3 m_random_rotation;
+			Uint32 m_edit_id;
 			bool m_random_scale;
 
 			void change_object(const ModificationType type,
@@ -128,7 +129,7 @@ namespace eternal_lands
 				const glm::vec2 &size,
 				const float attenuation_size,
 				const int attenuation, const int shape,
-				const int effect, const Uint32 id);
+				const int effect);
 
 			static inline const glm::vec3 &get_terrain_offset()
 			{
@@ -221,12 +222,20 @@ namespace eternal_lands
 				m_data.set_view_matrix(view_matrix);
 			}
 
-			inline void set_perspective(const float fov,
-				const float aspect, const float z_near,
-				const float z_far)
+			inline void set_z_near(const float z_near) noexcept
 			{
-				m_data.set_perspective(fov, aspect, z_near,
-					z_far);
+				m_data.set_z_near(z_near);
+			}
+
+			inline void set_perspective(const float fov,
+				const float aspect) noexcept
+			{
+				m_data.set_perspective(fov, aspect);
+			}
+
+			inline void set_ortho(const glm::vec4 &ortho)
+			{
+				m_data.set_ortho(ortho);
 			}
 
 			inline void set_view_port(const glm::uvec4 &view_port)
@@ -439,12 +448,13 @@ namespace eternal_lands
 				m_data.select(position, half_size);
 			}
 
-			inline void select_depth(const glm::uvec2 &position)
+			inline void set_depth_selection(
+				const glm::uvec2 &position)
 			{
-				m_data.select_depth(position);
+				m_data.set_depth_selection(position);
 			}
 
-			inline float get_depth() const
+			inline double get_depth() const
 			{
 				return m_data.get_depth();
 			}
@@ -468,6 +478,16 @@ namespace eternal_lands
 				const String &name) const
 			{
 				return m_data.get_default_materials(name);
+			}
+
+			inline Uint32 get_edit_id() const noexcept
+			{
+				return m_edit_id;
+			}
+
+			inline void update_edit_id() noexcept
+			{
+				m_edit_id++;
 			}
 
 	};

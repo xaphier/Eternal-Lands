@@ -68,7 +68,7 @@ void load_entrable_list();
 void engine_update_actor_buffs(actor *act, Uint32 buffs);
 void engine_set_shader_quality(const char* quality);
 void engine_resize_root_window(const float fov, const float aspect,
-	const float z_near, const float z_far);
+	const float z_near);
 int command_lua(char *text, int len);
 
 void engine_cull_scene();

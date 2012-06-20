@@ -30,9 +30,10 @@ namespace eternal_lands
 
 	}
 
-	TerrainValueModification::TerrainValueModification(const Uint32 id,
-		const TerrainValueVector &terrain_values):
-		m_terrain_values(terrain_values), m_id(id)
+	TerrainValueModification::TerrainValueModification(
+		const TerrainValueVector &terrain_values,
+		const Uint32 edit_id): Modification(edit_id),
+		m_terrain_values(terrain_values)
 	{
 	}
 
@@ -45,27 +46,17 @@ namespace eternal_lands
 		return mt_terrain_value_changed;
 	}
 
-	bool TerrainValueModification::merge(Modification* modification)
+	bool TerrainValueModification::do_merge(Modification* modification)
 	{
 		TerrainValueModification* terrain_value_modification;
 		TerrainValueVector::iterator begin, end;
 		Uint32 size;
 		bool found;
 
-		if (get_type() != modification->get_type())
-		{
-			return false;
-		}
-
 		terrain_value_modification = dynamic_cast<
 			TerrainValueModification*>(modification);
 
 		assert(terrain_value_modification != 0);
-
-		if (m_id != terrain_value_modification->m_id)
-		{
-			return false;
-		}
 
 		size = m_terrain_values.size();
 		begin = m_terrain_values.begin();
@@ -105,6 +96,7 @@ namespace eternal_lands
 			case mt_object_rotation_changed:
 			case mt_object_scale_changed:
 			case mt_object_blend_changed:
+			case mt_object_transparency_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
 			case mt_terrain_albedo_map_changed:

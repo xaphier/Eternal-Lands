@@ -98,8 +98,9 @@ void ELPreviewWidget::resizeGL(int width, int height)
 	glViewport(0, 0, width, height);
 
 	m_scene->set_view_port(glm::uvec4(0, 0, width, height));
-	m_scene->set_perspective(60.0f, static_cast<float>(width) /
-		static_cast<float>(height), 1.5f, 250.0f);
+	m_scene->set_perspective(40.0f, static_cast<float>(width) /
+		static_cast<float>(height));
+	m_scene->set_z_near(1.5f);
 
 	updateGL();
 }
@@ -157,7 +158,7 @@ void ELPreviewWidget::update_object()
 
 			max = std::max(std::max(bounding_box.get_half_size().x,
 				bounding_box.get_half_size().y),
-				bounding_box.get_half_size().z);
+				bounding_box.get_half_size().z) + 2.5f;
 
 			world_transformation.set_rotation_angles(glm::vec3(
 				m_rotation.x(), m_rotation.y(),

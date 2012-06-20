@@ -24,12 +24,14 @@ namespace eternal_lands
 			LightData m_data;
 			const ModificationType m_type;
 
+			virtual bool do_merge(Modification* modification);
+
 		public:
 			LightModification(const LightData &data,
-				const ModificationType type);
+				const ModificationType type,
+				const Uint32 edit_id);
 			virtual ~LightModification() throw();
 			virtual ModificationType get_type() const;
-			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);
 
 	};

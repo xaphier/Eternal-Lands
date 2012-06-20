@@ -12,8 +12,9 @@ namespace eternal_lands
 {
 
 	GroundTileModification::GroundTileModification(
-		const glm::uvec2 &offset, const Uint16 material):
-		m_offset(offset), m_material(material)
+		const glm::uvec2 &offset, const Uint16 material,
+		const Uint32 edit_id): Modification(edit_id), m_offset(offset),
+		m_material(material)
 	{
 	}
 
@@ -26,14 +27,9 @@ namespace eternal_lands
 		return mt_tile_texture_changed;
 	}
 
-	bool GroundTileModification::merge(Modification* modification)
+	bool GroundTileModification::do_merge(Modification* modification)
 	{
 		GroundTileModification* tile_modification;
-
-		if (get_type() != modification->get_type())
-		{
-			return false;
-		}
 
 		tile_modification = dynamic_cast<GroundTileModification*>(
 			modification);

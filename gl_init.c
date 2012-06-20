@@ -872,7 +872,7 @@ void resize_root_window()
 		}
 #else
 		gluPerspective(40.0f, window_ratio, near_plane, far_plane);
-		engine_resize_root_window(40.0f, window_ratio, near_plane, far_plane);
+		engine_resize_root_window(40.0f, window_ratio, near_plane);
 #endif
 	}
 

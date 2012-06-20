@@ -13,7 +13,8 @@ namespace eternal_lands
 
 	ObjectModification::ObjectModification(
 		const EditorObjectDescription &object_description,
-		const ModificationType type):
+		const ModificationType type, const Uint32 edit_id):
+		Modification(edit_id),
 		m_object_description(object_description), m_type(type)
 	{
 	}
@@ -27,13 +28,8 @@ namespace eternal_lands
 		return m_type;
 	}
 
-	bool ObjectModification::merge(Modification* modification)
+	bool ObjectModification::do_merge(Modification* modification)
 	{
-		if (get_type() != modification->get_type())
-		{
-			return false;
-		}
-
 		assert(dynamic_cast<ObjectModification*>(modification) != 0);
 
 		return m_object_description.get_id() == dynamic_cast<

@@ -23,8 +23,8 @@ namespace eternal_lands
 
 	};
 
-	HeightModification::HeightModification(const HeightVector &heights):
-		m_heights(heights)
+	HeightModification::HeightModification(const HeightVector &heights,
+		const Uint32 edit_id): Modification(edit_id), m_heights(heights)
 	{
 	}
 
@@ -37,17 +37,12 @@ namespace eternal_lands
 		return mt_height_changed;
 	}
 
-	bool HeightModification::merge(Modification* modification)
+	bool HeightModification::do_merge(Modification* modification)
 	{
 		HeightModification* height_modification;
 		HeightVector::iterator begin, end;
 		Uint32 size;
 		bool found;
-
-		if (get_type() != modification->get_type())
-		{
-			return false;
-		}
 
 		height_modification = dynamic_cast<HeightModification*>(
 			modification);
@@ -92,6 +87,7 @@ namespace eternal_lands
 			case mt_object_rotation_changed:
 			case mt_object_scale_changed:
 			case mt_object_blend_changed:
+			case mt_object_transparency_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
 			case mt_terrain_albedo_map_changed:

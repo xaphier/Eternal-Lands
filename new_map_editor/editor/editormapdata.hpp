@@ -53,7 +53,6 @@ namespace eternal_lands
 			Uint16MultiArray2 m_height_map;
 			Uint8MultiArray2 m_tile_map;
 			Uint32 m_id;
-			float m_depth;
 			RenderableType m_renderable;
 
 		public:
@@ -101,16 +100,17 @@ namespace eternal_lands
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
 			void set_view_matrix(const glm::mat4 &view_matrix);
+			void set_z_near(const float z_near);
 			void set_perspective(const float fov,
-				const float aspect, const float z_near,
-				const float z_far);
+				const float aspect);
+			void set_ortho(const glm::vec4 &ortho);
 			void set_view_port(const glm::uvec4 &view_port);
 			const glm::mat4 &get_projection_matrix() const;
 			void load_map(const String &name);
 			void draw();
 			void select(const glm::uvec2 &position,
 				const glm::uvec2 &half_size);
-			void select_depth(const glm::uvec2 &position);
+			void set_depth_selection(const glm::uvec2 &position);
 			void set_draw_objects(const bool draw_objects);
 			void set_draw_terrain(const bool draw_terrain);
 			void set_draw_lights(const bool draw_lights);
@@ -125,6 +125,7 @@ namespace eternal_lands
 			void set_focus(const glm::vec3 &focus) noexcept;
 			void set_debug_mode(const int value);
 			StringVector get_debug_modes() const;
+			double get_depth() const;
 
 			inline void get_terrain_values(const glm::uvec2 &vertex,
 				const glm::vec2 &size,
@@ -198,11 +199,6 @@ namespace eternal_lands
 			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
-			}
-
-			inline float get_depth() const noexcept
-			{
-				return m_depth;
 			}
 
 			inline RenderableType get_renderable() const noexcept

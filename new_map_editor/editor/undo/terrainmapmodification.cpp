@@ -12,7 +12,8 @@ namespace eternal_lands
 {
 
 	TerrainMapModification::TerrainMapModification(const String &map,
-		const Uint16 index, const ModificationType type): m_map(map),
+		const Uint16 index, const ModificationType type,
+		const Uint32 edit_id): Modification(edit_id), m_map(map),
 		m_index(index), m_type(type)
 	{
 	}
@@ -26,14 +27,9 @@ namespace eternal_lands
 		return m_type;
 	}
 
-	bool TerrainMapModification::merge(Modification* modification)
+	bool TerrainMapModification::do_merge(Modification* modification)
 	{
 		TerrainMapModification* terrain_map_modification;
-
-		if (get_type() != modification->get_type())
-		{
-			return false;
-		}
 
 		terrain_map_modification = 
 			dynamic_cast<TerrainMapModification*>(
@@ -59,6 +55,7 @@ namespace eternal_lands
 			case mt_object_rotation_changed:
 			case mt_object_scale_changed:
 			case mt_object_blend_changed:
+			case mt_object_transparency_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
 				break;

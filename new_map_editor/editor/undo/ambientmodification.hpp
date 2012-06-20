@@ -22,11 +22,13 @@ namespace eternal_lands
 		private:
 			glm::vec3 m_color;
 
+			virtual bool do_merge(Modification* modification);
+
 		public:
-			AmbientModification(const glm::vec3 &color);
+			AmbientModification(const glm::vec3 &color,
+				const Uint32 edit_id);
 			virtual ~AmbientModification() throw();
 			virtual ModificationType get_type() const;
-			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);
 
 	};

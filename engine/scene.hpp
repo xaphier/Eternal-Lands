@@ -116,12 +116,12 @@ namespace eternal_lands
 			void build_terrain_map();
 			void build_shadow_map();
 			void set_view_port();
+			void draw_shadow(const Uint16 index);
+			void draw_shadows();
+			void draw_depth();
+			void draw_default();
 
 		protected:
-			virtual void draw_shadow(const Uint16 index);
-			virtual void draw_shadows();
-			virtual void draw_depth();
-			virtual void draw_default();
 			virtual void intersect_terrain(const Frustum &frustum,
 				const glm::vec3 &camera,
 				BoundingBox &bounding_box) const;
@@ -133,6 +133,7 @@ namespace eternal_lands
 				const;
 			virtual void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
+			virtual void depth_read();
 
 			inline const MapSharedPtr &get_map() const noexcept
 			{
@@ -182,7 +183,7 @@ namespace eternal_lands
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
 				SelectionType &selection);
-			float get_depth(const glm::uvec2 &offset);
+			double get_depth(const glm::uvec2 &offset);
 			void load(const String &name);
 			const ParticleDataVector &get_particles() const;
 			Uint16 get_height(const Uint16 x, const Uint16 y) const;
@@ -218,12 +219,20 @@ namespace eternal_lands
 				return m_state_manager.unbind_all();
 			}
 
-			inline void set_perspective(const float fov,
-				const float aspect, const float z_near,
-				const float z_far) noexcept
+			inline void set_z_near(const float z_near) noexcept
 			{
-				m_scene_view.set_perspective(fov, aspect,
-					z_near);
+				m_scene_view.set_z_near(z_near);
+			}
+
+			inline void set_perspective(const float fov,
+				const float aspect) noexcept
+			{
+				m_scene_view.set_perspective(fov, aspect);
+			}
+
+			inline void set_ortho(const glm::vec4 &ortho)
+			{
+				m_scene_view.set_ortho(ortho);
 			}
 
 			inline float get_fov() const noexcept

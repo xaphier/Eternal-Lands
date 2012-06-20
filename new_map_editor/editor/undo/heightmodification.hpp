@@ -23,11 +23,13 @@ namespace eternal_lands
 		private:
 			HeightVector m_heights;
 
+			virtual bool do_merge(Modification* modification);
+
 		public:
-			HeightModification(const HeightVector &heights);
+			HeightModification(const HeightVector &heights,
+				const Uint32 edit_id);
 			virtual ~HeightModification() throw();
 			virtual ModificationType get_type() const;
-			virtual bool merge(Modification* modification);
 			virtual bool undo(EditorMapData &editor);
 
 	};

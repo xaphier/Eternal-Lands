@@ -1382,13 +1382,14 @@ extern "C" void engine_set_shader_quality(const char* quality)
 }
 
 extern "C" void engine_resize_root_window(const float fov, const float aspect,
-	const float z_near, const float z_far)
+	const float z_near)
 {
 	TRY_BLOCK
 
 	if (scene.get() != 0)
 	{
-		scene->set_perspective(fov, aspect, z_near, z_far);
+		scene->set_perspective(fov, aspect);
+		scene->set_z_near(z_near);
 	}
 
 	CATCH_BLOCK

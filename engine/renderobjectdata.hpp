@@ -37,7 +37,7 @@ namespace eternal_lands
 			Uint32 m_occlusion_culling;
 			Uint16 m_lod;
 			BlendType m_blend;
-			bool m_depth_pre_pass;
+			bool m_depth_read;
 
 		public:
 			RenderObjectData();
@@ -46,6 +46,10 @@ namespace eternal_lands
 			RenderObjectData(const ObjectSharedPtr &object,
 				const float transparency, const BlendType blend,
 				const SubFrustumsMask sub_frustums_mask = 0x1);
+			RenderObjectData(const ObjectSharedPtr &object,
+				const float transparency, const BlendType blend,
+				const SubFrustumsMask sub_frustums_mask,
+				const bool depth_read);
 			~RenderObjectData() noexcept;
 
 			inline void set_object(const ObjectSharedPtr &object)
@@ -75,10 +79,10 @@ namespace eternal_lands
 				m_blend = blend;
 			}
 
-			inline void set_depth_pre_pass(
-				const bool depth_pre_pass) noexcept
+			inline void set_depth_read(const bool depth_read)
+				noexcept
 			{
-				m_depth_pre_pass = depth_pre_pass;
+				m_depth_read = depth_read;
 			}
 
 			inline void set_sub_frustums_mask(
@@ -137,15 +141,9 @@ namespace eternal_lands
 				return m_occlusion_culling;
 			}
 
-			inline bool get_depth_pre_pass() const noexcept
+			inline bool get_depth_read() const noexcept
 			{
-				return m_depth_pre_pass;
-			}
-
-			inline bool get_use_depth_pre_pass() const noexcept
-			{
-				return get_depth_pre_pass() &&
-					(get_blend() == bt_disabled);
+				return m_depth_read;
 			}
 
 	};

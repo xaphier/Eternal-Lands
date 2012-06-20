@@ -10,12 +10,27 @@
 namespace eternal_lands
 {
 
-	Modification::Modification()
+	Modification::Modification(const Uint32 edit_id): m_edit_id(edit_id)
 	{
 	}
 
 	Modification::~Modification() throw()
 	{
+	}
+
+	bool Modification::merge(Modification* modification)
+	{
+		if (get_edit_id() != modification->get_edit_id())
+		{
+			return false;
+		}
+
+		if (get_type() != modification->get_type())
+		{
+			return false;
+		}
+
+		return do_merge(modification);
 	}
 
 }

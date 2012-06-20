@@ -31,10 +31,8 @@ namespace eternal_lands
 	}
 
 	BlendModification::BlendModification(
-		const ImageValueVector &blend_values,
-		const ImageSharedPtr &blend_image, const Uint16 id):
-		m_blend_values(blend_values), m_blend_image(blend_image),
-		m_id(id)
+		const ImageValueVector &blend_values, const Uint32 edit_id):
+		Modification(edit_id), m_blend_values(blend_values)
 	{
 	}
 
@@ -47,27 +45,17 @@ namespace eternal_lands
 		return mt_blend_values_changed;
 	}
 
-	bool BlendModification::merge(Modification* modification)
+	bool BlendModification::do_merge(Modification* modification)
 	{
 		BlendModification* blend_modification;
 		ImageValueVector::iterator begin, end;
 		Uint32 size;
 		bool found;
 
-		if (get_type() != modification->get_type())
-		{
-			return false;
-		}
-
 		blend_modification = dynamic_cast<BlendModification*>(
 			modification);
 
 		assert(blend_modification != 0);
-
-		if (blend_modification->m_id != m_id)
-		{
-			return false;
-		}
 
 		size = m_blend_values.size();
 		begin = m_blend_values.begin();
@@ -94,12 +82,13 @@ namespace eternal_lands
 
 	bool BlendModification::undo(EditorMapData &editor)
 	{
+/*
 		BOOST_FOREACH(const ImageValue &value, m_blend_values)
 		{
 			m_blend_image->set_pixel(value.get_x(), value.get_y(),
 				0, 0, 0, value.get_value());
 		}
-
+*/
 		return false;
 	}
 

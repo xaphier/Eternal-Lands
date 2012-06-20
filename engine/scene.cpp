@@ -1194,6 +1194,7 @@ namespace eternal_lands
 	void Scene::draw_depth()
 	{
 		Uint32 index;
+		bool no_depth_read;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("depth"));
 
@@ -1207,11 +1208,16 @@ namespace eternal_lands
 
 		draw_terrain(m_visible_terrain, ept_depth, false);
 
+		no_depth_read = false;
+
 		BOOST_FOREACH(RenderObjectData &object,
 			m_visible_objects.get_objects())
 		{
-			if (!object.get_use_depth_pre_pass())
+			if ((object.get_blend() != bt_disabled) ||
+				!object.get_depth_read())
 			{
+				no_depth_read |= !object.get_depth_read();
+
 				object.set_occlusion_culling(
 					std::numeric_limits<Uint32>::max());
 				continue;
@@ -1227,6 +1233,33 @@ namespace eternal_lands
 			glEndQuery(GL_SAMPLES_PASSED);
 
 			index++;
+		}
+
+		depth_read();
+
+		if (no_depth_read)
+		{
+			BOOST_FOREACH(RenderObjectData &object,
+				m_visible_objects.get_objects())
+			{
+				if ((object.get_blend() != bt_disabled) ||
+					object.get_depth_read())
+				{
+					continue;
+				}
+
+				object.set_occlusion_culling(index);
+
+				glBeginQuery(GL_SAMPLES_PASSED,
+					m_querie_ids[index]);
+
+				draw_object(object.get_object(), ept_depth,
+					1, object.get_distance(), false);
+
+				glEndQuery(GL_SAMPLES_PASSED);
+
+				index++;
+			}
 		}
 
 		unbind_all();
@@ -1340,6 +1373,10 @@ namespace eternal_lands
 
 		m_program_vars_id++;
 		m_frame_id++;
+	}
+
+	void Scene::depth_read()
+	{
 	}
 
 	void Scene::update_terrain_texture(
@@ -1735,14 +1772,15 @@ namespace eternal_lands
 		return id;
 	}
 
-	float Scene::get_depth(const glm::uvec2 &offset)
+	double Scene::get_depth(const glm::uvec2 &offset)
 	{
-		float depth;
+		Uint32 depth;
 
 		glReadPixels(offset.x, offset.y, 1, 1, GL_DEPTH_COMPONENT,
-			GL_FLOAT, &depth);
+			GL_UNSIGNED_INT, &depth);
 
-		return depth;
+		return static_cast<double>(depth) /
+			std::numeric_limits<Uint32>::max();
 	}
 
 	void Scene::load(const String &name)
