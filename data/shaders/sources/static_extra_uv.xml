@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>static_extra</name>
- <type>uv</type>
+ <types>
+  <type>uv</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>

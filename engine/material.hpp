@@ -136,6 +136,12 @@ namespace eternal_lands
 				return m_material_script;
 			}
 
+			inline void set_blend_sizes(
+				const Vec4Array4 &blend_sizes)
+			{
+				m_data.set_blend_sizes(blend_sizes);
+			}
+
 			inline void set_albedo_scale_offsets(
 				const Mat2x4Array4 &albedo_scale_offsets)
 			{
@@ -178,6 +184,11 @@ namespace eternal_lands
 					specular_scale_offset);
 			}
 
+			inline void set_color(const glm::vec4 &color)
+			{
+				m_data.set_color(color);
+			}
+
 			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
 			{
 				m_data.set_dudv_scale(dudv_scale);
@@ -191,6 +202,11 @@ namespace eternal_lands
 			inline void set_culling(const bool culling)
 			{
 				m_data.set_culling(culling);
+			}
+
+			inline const Vec4Array4 &get_blend_sizes() const
+			{
+				return m_data.get_blend_sizes();
 			}
 
 			inline const Mat2x4Array4 &get_albedo_scale_offsets()
@@ -227,6 +243,11 @@ namespace eternal_lands
 				const
 			{
 				return m_data.get_specular_scale_offset();
+			}
+
+			inline const glm::vec4 &get_color() const
+			{
+				return m_data.get_color();
 			}
 
 			inline const glm::vec2 &get_dudv_scale() const

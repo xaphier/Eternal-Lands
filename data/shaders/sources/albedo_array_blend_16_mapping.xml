@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>array_blend_16</name>
+ <types>
+  <type>albedo_mapping</type>
+ </types>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <sampler_parameter>albedo_sampler_0</sampler_parameter>
+     <type>sampler2DArray</type>
+    </parameter>
+    <parameter>
+     <sampler_parameter>blend_sampler</sampler_parameter>
+     <type>sampler2DArray</type>
+    </parameter>
+    <parameter>
+     <auto_parameter>blend_sizes</auto_parameter>
+    </parameter>
+    <parameter>
+     <auto_parameter>material_color</auto_parameter>
+    </parameter>
+    <parameter>
+     <common_parameter>output_data</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_extra_uv</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_extra_uv_ddx_ddy</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv_ddx_ddy</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>vec4 blend, tmp[4], extra_blend;
+vec3 result;
+vec2 ddx, ddy;
+int i, j;
+
+ddx = world_extra_uv_ddx_ddy.xy;
+ddy = world_extra_uv_ddx_ddy.zw;
+
+result = material_color.rgb;
+
+for (i = 0; i &lt; 4; ++i)
+{
+	blend = textureGrad(blend_sampler, vec3(world_uv, i), world_uv_ddx_ddy.xy, world_uv_ddx_ddy.zw);
+
+	if (any(greaterThan(blend, vec4(0.0))))
+	{
+		for (j = 0; j &lt; 4; ++j)
+		{
+			tmp[j] = textureGrad(albedo_sampler_0, vec3(world_extra_uv, i * 4 + j), ddx, ddy);
+			extra_blend[j] = tmp[j].a;
+		}
+
+		blend = smoothstep(extra_blend - blend_sizes[0], extra_blend + blend_sizes[0], blend);
+
+		for (j = 3; j &gt;= 0; --j)
+		{
+			result = mix(result, tmp[j].rgb, blend[j]);
+		}
+	}
+}
+
+output_data[0].rgb = result;
+output_data[0].a = 1.0;
+</source>
+   <version>130</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

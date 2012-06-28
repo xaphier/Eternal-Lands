@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>normal_mapping</name>
- <type>normal_mapping</type>
+ <types>
+  <type>normal_mapping</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -11,7 +13,7 @@
     </parameter>
     <parameter>
      <common_parameter>fragment_uv</common_parameter>
-     <qualifier>out</qualifier>
+     <qualifier>in</qualifier>
     </parameter>
     <parameter>
      <sampler_parameter>normal_sampler</sampler_parameter>
@@ -21,18 +23,13 @@
      <common_parameter>tbn_matrix</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
-    <parameter>
-     <common_parameter>world_uv</common_parameter>
-     <qualifier>in</qualifier>
-    </parameter>
    </parameters>
    <source>vec3 normal;
 
-normal.xy = texture(normal_sampler, world_uv).rg * 2.0 - 1.0;
+normal.xy = texture(normal_sampler, fragment_uv).rg * 2.0 - 1.0;
 normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 
 fragment_normal = tbn_matrix * normal;
-fragment_uv = world_uv;
 </source>
    <version>130</version>
   </shader_source_data>
@@ -44,7 +41,7 @@ fragment_uv = world_uv;
     </parameter>
     <parameter>
      <common_parameter>fragment_uv</common_parameter>
-     <qualifier>out</qualifier>
+     <qualifier>in</qualifier>
     </parameter>
     <parameter>
      <sampler_parameter>normal_sampler</sampler_parameter>
@@ -54,18 +51,13 @@ fragment_uv = world_uv;
      <common_parameter>tbn_matrix</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
-    <parameter>
-     <common_parameter>world_uv</common_parameter>
-     <qualifier>in</qualifier>
-    </parameter>
    </parameters>
    <source>vec3 normal;
 
-normal.xy = texture2D(normal_sampler, world_uv).ga * 2.0 - 1.0;
+normal.xy = texture2D(normal_sampler, fragment_uv).ga * 2.0 - 1.0;
 normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 
 fragment_normal = tbn_matrix * normal;
-fragment_uv = world_uv;
 </source>
    <version>120</version>
   </shader_source_data>

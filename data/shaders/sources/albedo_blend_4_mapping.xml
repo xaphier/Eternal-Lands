@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>blend_4</name>
- <type>albedo_mapping</type>
+ <types>
+  <type>albedo_mapping</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
-    <parameter>
-     <common_parameter>albedo</common_parameter>
-     <qualifier>out</qualifier>
-    </parameter>
     <parameter>
      <sampler_parameter>albedo_sampler_0</sampler_parameter>
      <type>sampler2D</type>
@@ -28,6 +26,16 @@
     <parameter>
      <sampler_parameter>blend_sampler</sampler_parameter>
      <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <auto_parameter>blend_sizes</auto_parameter>
+    </parameter>
+    <parameter>
+     <auto_parameter>material_color</auto_parameter>
+    </parameter>
+    <parameter>
+     <common_parameter>output_data</common_parameter>
+     <qualifier>out</qualifier>
     </parameter>
     <parameter>
      <common_parameter>world_extra_uv</common_parameter>
@@ -46,32 +54,48 @@
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>vec4 blend;
+   <source>vec4 blend, tmp[4], extra_blend, min_blend, max_blend;
+vec3 result;
 vec2 ddx, ddy;
-
-blend = textureGrad(blend_sampler, world_uv, world_uv_ddx_ddy.xy, world_uv_ddx_ddy.zw);
+int i;
 
 ddx = world_extra_uv_ddx_ddy.xy;
 ddy = world_extra_uv_ddx_ddy.zw;
 
-if (all(lessThanEqual(blend, vec4(0.0))))
+result = material_color.rgb;
+
+blend = textureGrad(blend_sampler, world_uv, world_uv_ddx_ddy.xy, world_uv_ddx_ddy.zw);
+
+if (any(greaterThan(blend, vec4(0.0))))
 {
-	discard;
+	tmp[0] = textureGrad(albedo_sampler_0, world_extra_uv, ddx, ddy);
+	tmp[1] = textureGrad(albedo_sampler_1, world_extra_uv, ddx, ddy);
+	tmp[2] = textureGrad(albedo_sampler_2, world_extra_uv, ddx, ddy);
+	tmp[3] = textureGrad(albedo_sampler_3, world_extra_uv, ddx, ddy);
+
+	for (i = 0; i &lt; 4; ++i)
+	{
+		extra_blend[i] = tmp[i].a;
+	}
+
+	min_blend = clamp(extra_blend - blend_sizes[0], 0.0, 1.0);
+	max_blend = clamp(extra_blend + blend_sizes[0], 0.0, 1.0);
+
+	blend = smoothstep(min_blend, max_blend, blend);
+
+	for (i = 3; i &gt;= 0; --i)
+	{
+		result = mix(result, tmp[i].rgb, blend[i]);
+	}
 }
 
-albedo = textureGrad(albedo_sampler_0, world_extra_uv, ddx, ddy) * blend.r;
-albedo += textureGrad(albedo_sampler_1, world_extra_uv, ddx, ddy) * blend.g;
-albedo += textureGrad(albedo_sampler_2, world_extra_uv, ddx, ddy) * blend.b;
-albedo += textureGrad(albedo_sampler_3, world_extra_uv, ddx, ddy) * blend.a;
+output_data[0].rgb = result;
+output_data[0].a = 1.0;
 </source>
    <version>130</version>
   </shader_source_data>
   <shader_source_data>
    <parameters>
-    <parameter>
-     <common_parameter>albedo</common_parameter>
-     <qualifier>out</qualifier>
-    </parameter>
     <parameter>
      <sampler_parameter>albedo_sampler_0</sampler_parameter>
      <type>sampler2D</type>
@@ -93,6 +117,16 @@ albedo += textureGrad(albedo_sampler_3, world_extra_uv, ddx, ddy) * blend.a;
      <type>sampler2D</type>
     </parameter>
     <parameter>
+     <auto_parameter>blend_sizes</auto_parameter>
+    </parameter>
+    <parameter>
+     <auto_parameter>material_color</auto_parameter>
+    </parameter>
+    <parameter>
+     <common_parameter>output_data</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
      <common_parameter>world_extra_uv</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
@@ -101,14 +135,33 @@ albedo += textureGrad(albedo_sampler_3, world_extra_uv, ddx, ddy) * blend.a;
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>vec4 blend;
+   <source>vec4 blend, tmp[4], extra_blend;
+vec3 result;
+int i;
+
+result = material_color.rgb;
 
 blend = texture2D(blend_sampler, world_uv);
 
-albedo = texture2D(albedo_sampler_0, world_extra_uv) * blend.r;
-albedo += texture2D(albedo_sampler_1, world_extra_uv) * blend.g;
-albedo += texture2D(albedo_sampler_2, world_extra_uv) * blend.b;
-albedo += texture2D(albedo_sampler_3, world_extra_uv) * blend.a;
+tmp[0] = texture2D(albedo_sampler_0, world_extra_uv);
+tmp[1] = texture2D(albedo_sampler_1, world_extra_uv);
+tmp[2] = texture2D(albedo_sampler_2, world_extra_uv);
+tmp[3] = texture2D(albedo_sampler_3, world_extra_uv);
+
+for (i = 0; i &lt; 4; ++i)
+{
+	extra_blend[i] = tmp[i].a;
+}
+
+blend = smoothstep(extra_blend - blend_sizes[0], extra_blend + blend_sizes[0], blend);
+
+for (i = 3; i &gt;= 0; --i)
+{
+	result = mix(result, tmp[i].rgb, blend[i]);
+}
+
+output_data[0].rgb = result;
+output_data[0].a = 1.0;
 </source>
    <version>120</version>
   </shader_source_data>

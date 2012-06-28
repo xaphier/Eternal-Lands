@@ -148,37 +148,6 @@ namespace eternal_lands
 			return texture;
 		}
 
-		StringVector load_file_names_xml(const xmlNodePtr node)
-		{
-			StringVector file_names;
-			xmlNodePtr it;
-
-			if (xmlStrcmp(node->name, BAD_CAST UTF8("file_names")) != 0)
-			{
-				return file_names;
-			}
-
-			if (!XmlUtil::has_children(node, true))
-			{
-				return file_names;
-			}
-
-			it = XmlUtil::children(node, true);
-
-			do
-			{
-				if (xmlStrcmp(it->name,
-					BAD_CAST UTF8("file_name")) == 0)
-				{
-					file_names.push_back(
-						XmlUtil::get_string_value(it));
-				}
-			}
-			while (XmlUtil::next(it, true));
-
-			return file_names;
-		}
-
 	}
 
 	TextureCache::TextureCache(const CodecManagerWeakPtr &codec_manager,
@@ -302,6 +271,49 @@ namespace eternal_lands
 		m_texture_cache[index] = texture;
 
 		return m_texture_cache[index];
+	}
+
+	TextureSharedPtr TextureCache::get_texture_array(
+		const StringVector &names, const String &index) const
+	{
+		ImageSharedPtr image;
+		ImageSharedPtrVector images;
+		TextureSharedPtr texture;
+		ReaderSharedPtr reader;
+		ImageCompressionTypeSet compressions;
+		bool rg_formats;
+
+		RANGE_CECK_MIN(names.size(), 1, UTF8("not enough names."));
+
+		if (GLEW_EXT_texture_compression_s3tc)
+		{
+			compressions.insert(ict_s3tc);
+		}
+
+		rg_formats = false;
+
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			compressions.insert(ict_rgtc);
+			rg_formats = true;
+		}
+
+		texture = boost::make_shared<Texture>(index);
+
+		BOOST_FOREACH(const String &name, names)
+		{
+			reader = get_file_system()->get_file(name);
+
+			image = get_codec_manager()->load_image(reader,
+				compressions, rg_formats, true);
+
+			images.push_back(image);
+		}
+
+		texture->set_format(images[0]->get_texture_format());
+		texture->set_images(images);
+
+		return texture;
 	}
 
 }

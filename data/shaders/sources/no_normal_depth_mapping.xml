@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>disabled</name>
- <type>normal_depth_mapping</type>
+ <name>blend</name>
+ <types>
+  <type>albedo_mapping</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
     <parameter>
-     <common_parameter>fragment_uv</common_parameter>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>world_uv</common_parameter>
+     <sampler_parameter>albedo_sampler_0</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <sampler_parameter>albedo_sampler_1</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_uv</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>fragment_uv = world_uv;
+   <source>albedo = texture(albedo_sampler_1, fragment_uv);
+albedo = mix(texture(albedo_sampler_0, fragment_uv), albedo, albedo.a);
+</source>
+   <version>130</version>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>albedo</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <sampler_parameter>albedo_sampler_0</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <sampler_parameter>albedo_sampler_1</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_uv</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>albedo = texture2D(albedo_sampler_1, fragment_uv);
+albedo = mix(texture2D(albedo_sampler_0, fragment_uv), albedo, albedo.a);
 </source>
    <version>120</version>
   </shader_source_data>

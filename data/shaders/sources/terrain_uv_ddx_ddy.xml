@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>default</name>
- <type>terrain_uv_ddx_ddy</type>
+ <types>
+  <type>terrain_uv_ddx_ddy</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>

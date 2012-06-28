@@ -80,16 +80,16 @@ namespace eternal_lands
 				pt_mat4x4),
 			AutoParameterTypeData(String(UTF8(
 				"shadow_texture_matrices")), pt_mat4x4,
-				pst_shadow_map_count),
+				pst_shadow_maps_count),
 			AutoParameterTypeData(String(UTF8("light_positions")),
-				pt_vec4, pst_light_count),
+				pt_vec4, pst_lights_count),
 			AutoParameterTypeData(String(UTF8("light_colors")),
-				pt_vec4, pst_light_count),
+				pt_vec4, pst_lights_count),
 			AutoParameterTypeData(String(UTF8("ambient")), pt_vec4),
 			AutoParameterTypeData(String(UTF8(
-				"dynamic_light_count")), pt_int),
+				"dynamic_lights_count")), pt_int),
 			AutoParameterTypeData(String(UTF8("bones")), pt_mat2x4,
-				pst_bone_count),
+				pst_bones_count),
 			AutoParameterTypeData(String(UTF8("time")), pt_float),
 			AutoParameterTypeData(String(UTF8("fog_data")),
 				pt_vec4),
@@ -113,6 +113,10 @@ namespace eternal_lands
 				String(UTF8("specular_scale_offset")), pt_vec4),
 			AutoParameterTypeData(String(UTF8("dudv_scale")),
 				pt_vec2),
+			AutoParameterTypeData(String(UTF8("blend_sizes")),
+				pt_vec4, pst_one, 4),
+			AutoParameterTypeData(String(UTF8("material_color")),
+				pt_vec4),
 			AutoParameterTypeData(
 				String(UTF8("terrain_scale")), pt_vec4),
 			AutoParameterTypeData(

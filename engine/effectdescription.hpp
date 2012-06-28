@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "effectdescriptionutil.hpp"
 
 /**
  * @file
@@ -36,10 +37,12 @@ namespace eternal_lands
 			String m_name;
 			String m_world_transformation;
 			String m_texture_coodrinates;
+			String m_uv_mapping;
 			String m_albedo_mapping;
 			String m_normal_mapping;
 			String m_specular_mapping;
 			String m_emission_mapping;
+			EffectDescriptionType m_type;
 			bool m_receives_shadows;
 			bool m_transparent;
 			bool m_lighting;
@@ -79,6 +82,12 @@ namespace eternal_lands
 				m_texture_coodrinates = texture_coodrinates;
 			}
 
+			inline void set_uv_mapping(const String &uv_mapping)
+				noexcept
+			{
+				m_uv_mapping = uv_mapping;
+			}
+
 			inline void set_albedo_mapping(
 				const String &albedo_mapping) noexcept
 			{
@@ -109,6 +118,12 @@ namespace eternal_lands
 				m_receives_shadows = receives_shadows;
 			}
 
+			inline void set_type(const EffectDescriptionType type)
+				noexcept
+			{
+				m_type = type;
+			}
+
 			inline void set_transparent(const bool transparent)
 				noexcept
 			{
@@ -137,6 +152,11 @@ namespace eternal_lands
 				return m_texture_coodrinates;
 			}
 
+			inline const String &get_uv_mapping() const noexcept
+			{
+				return m_uv_mapping;
+			}
+
 			inline const String &get_albedo_mapping() const
 				noexcept
 			{
@@ -159,6 +179,11 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_emission_mapping;
+			}
+
+			inline EffectDescriptionType get_type() const noexcept
+			{
+				return m_type;
 			}
 
 			inline bool get_receives_shadows() const noexcept

@@ -238,8 +238,8 @@ namespace eternal_lands
 	{
 		Uint32 i, count;
 
-		m_light_position_array.resize(8);
-		m_light_color_array.resize(8);
+		m_light_positions_array.resize(8);
+		m_light_colors_array.resize(8);
 		m_shadow_update_mask = 0x55;
 
 		set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
@@ -291,6 +291,8 @@ namespace eternal_lands
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_material_cache(),
+			get_scene_resources().get_material_builder(),
+			get_scene_resources().get_texture_cache(),
 			String(UTF8("empty"))));
 
 		try
@@ -496,31 +498,31 @@ namespace eternal_lands
 	}
 
 	void Scene::get_lights(const BoundingBox &bounding_box,
-		Uint16 &light_count)
+		Uint16 &lights_count)
 	{
 		Uint32 i, size;
 
-		light_count = 1;
+		lights_count = 1;
 
 		if (m_map->get_dungeon())
 		{
-			m_light_position_array[0] =
+			m_light_positions_array[0] =
 				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-			m_light_color_array[0] =
+			m_light_colors_array[0] =
 				glm::vec4(glm::vec3(0.2f), 0.0f);
 		}
 		else
 		{
-			m_light_position_array[0] = m_main_light_direction;
+			m_light_positions_array[0] = m_main_light_direction;
 
 			if (get_lights())
 			{
-				m_light_color_array[0] = m_main_light_color +
+				m_light_colors_array[0] = m_main_light_color +
 					glm::vec4(glm::vec3(0.3f), 0.0f);
 			}
 			else
 			{
-				m_light_color_array[0] = m_main_light_color +
+				m_light_colors_array[0] = m_main_light_color +
 					glm::vec4(glm::vec3(0.1f), 0.0f);
 			}
 		}
@@ -532,16 +534,16 @@ namespace eternal_lands
 			{
 				if (light->intersect(bounding_box))
 				{
-					m_light_position_array[light_count] =
+					m_light_positions_array[lights_count] =
 						glm::vec4(light->get_position(),
 						light->get_inv_sqr_radius());
-					m_light_color_array[light_count] =
+					m_light_colors_array[lights_count] =
 						glm::vec4(light->get_color(),
 						1.0);
-					light_count++;
+					lights_count++;
 
-					if (light_count >=
-						m_light_position_array.size())
+					if (lights_count >=
+						m_light_positions_array.size())
 					{
 						break;
 					}
@@ -549,12 +551,12 @@ namespace eternal_lands
 			}
 		}
 
-		size = m_light_color_array.size();
+		size = m_light_colors_array.size();
 
-		for (i = light_count; i < size; ++i)
+		for (i = lights_count; i < size; ++i)
 		{
-			m_light_color_array[i] = glm::vec4(0.0f);
-			m_light_position_array[i] = glm::vec4(0.0f, 0.0f, 1.0f,
+			m_light_colors_array[i] = glm::vec4(0.0f);
+			m_light_positions_array[i] = glm::vec4(0.0f, 0.0f, 1.0f,
 				1.0f);
 		}
 	}
@@ -623,23 +625,23 @@ namespace eternal_lands
 
 		if (m_map->get_dungeon())
 		{
-			m_light_position_array[0] =
+			m_light_positions_array[0] =
 				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-			m_light_color_array[0] =
+			m_light_colors_array[0] =
 				glm::vec4(glm::vec3(0.3f), 0.0f);
 		}
 		else
 		{
-			m_light_position_array[0] = m_main_light_direction;
+			m_light_positions_array[0] = m_main_light_direction;
 
 			if (get_lights())
 			{
-				m_light_color_array[0] = m_main_light_color +
+				m_light_colors_array[0] = m_main_light_color +
 					glm::vec4(glm::vec3(0.4f), 0.0f);
 			}
 			else
 			{
-				m_light_color_array[0] = m_main_light_color +
+				m_light_colors_array[0] = m_main_light_color +
 					glm::vec4(glm::vec3(0.1f), 0.0f);
 			}
 		}
@@ -907,7 +909,7 @@ namespace eternal_lands
 		const EffectProgramType type, const bool lights)
 	{
 		float tmp;
-		Uint16 light_count;
+		Uint16 lights_count;
 
 		if (terrain_data.get_instances() == 0)
 		{
@@ -936,7 +938,7 @@ namespace eternal_lands
 				tmp = std::numeric_limits<float>::max();
 
 				get_lights(BoundingBox(-glm::vec3(tmp),
-					glm::vec3(tmp)), light_count);
+					glm::vec3(tmp)), lights_count);
 			}
 
 			switch_program(material->get_effect()->get_program(
@@ -948,11 +950,11 @@ namespace eternal_lands
 				(type == ept_shadow));
 
 			m_state_manager.get_program()->set_parameter(
-				apt_dynamic_light_count, light_count);
+				apt_dynamic_lights_count, lights_count);
 			m_state_manager.get_program()->set_parameter(
-				apt_light_positions, m_light_position_array);
+				apt_light_positions, m_light_positions_array);
 			m_state_manager.get_program()->set_parameter(
-				apt_light_colors, m_light_color_array);
+				apt_light_colors, m_light_colors_array);
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -985,7 +987,7 @@ namespace eternal_lands
 		const EffectProgramType type, const Uint16 instances,
 		const Uint16 distance, const bool lights)
 	{
-		Uint16 count, i, light_count;
+		Uint16 count, i, lights_count;
 		bool object_data_set;
 
 		m_state_manager.switch_mesh(object->get_mesh());
@@ -996,7 +998,7 @@ namespace eternal_lands
 
 		if (lights)
 		{
-			get_lights(object->get_bounding_box(), light_count);
+			get_lights(object->get_bounding_box(), lights_count);
 		}
 
 		object_data_set = false;
@@ -1026,12 +1028,12 @@ namespace eternal_lands
 				m_state_manager.get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				m_state_manager.get_program()->set_parameter(
-					apt_dynamic_light_count, light_count);
+					apt_dynamic_lights_count, lights_count);
 				m_state_manager.get_program()->set_parameter(
 					apt_light_positions,
-					m_light_position_array);
+					m_light_positions_array);
 				m_state_manager.get_program()->set_parameter(
-					apt_light_colors, m_light_color_array);
+					apt_light_colors, m_light_colors_array);
 
 				object_data_set = true;
 			}
@@ -1379,87 +1381,44 @@ namespace eternal_lands
 	{
 	}
 
-	void Scene::update_terrain_texture(
-		const MaterialSharedPtrVector &materials,
+	void Scene::update_terrain_texture(const MaterialSharedPtr &material,
 		const Mat2x3Array2 &texture_matrices, const Uint16 index)
 	{
-		Uint32 i, count;
-
 		m_clipmap_frame_buffer->bind(index);
 		m_clipmap_frame_buffer->clear(glm::vec4(0.0f));
 
-		count = materials.size();
+		MaterialLock material_lock(material);
 
-		glBlendFunc(GL_ONE, GL_ONE);
+		DEBUG_CHECK_GL_ERROR();
 
-		for (i = 0; i < count; ++i)
-		{
-			MaterialLock material(materials[i]);
+		switch_program(material_lock->get_effect(
+			)->get_program(ept_default));
 
-			DEBUG_CHECK_GL_ERROR();
+		DEBUG_CHECK_GL_ERROR();
 
-			switch_program(material->get_effect(
-				)->get_program(ept_default));
+		material_lock->bind(m_state_manager);
 
-			DEBUG_CHECK_GL_ERROR();
+		DEBUG_CHECK_GL_ERROR();
 
-			material->bind(m_state_manager);
+		m_state_manager.get_program()->set_parameter(
+			apt_texture_matrices, texture_matrices);
+		m_state_manager.get_program()->set_parameter(
+			apt_albedo_scale_offsets,
+			material->get_albedo_scale_offsets());
+		m_state_manager.get_program()->set_parameter(
+			apt_emission_scale_offset,
+			material->get_emission_scale_offset());
+		m_state_manager.get_program()->set_parameter(
+			apt_specular_scale_offset,
+			material->get_specular_scale_offset());
 
-			DEBUG_CHECK_GL_ERROR();
+		DEBUG_CHECK_GL_ERROR();
 
-			m_state_manager.get_program()->set_parameter(
-				apt_texture_matrices, texture_matrices);
-			m_state_manager.get_program()->set_parameter(
-				apt_albedo_scale_offsets,
-				material->get_albedo_scale_offsets());
-			m_state_manager.get_program()->set_parameter(
-				apt_emission_scale_offset,
-				material->get_emission_scale_offset());
-			m_state_manager.get_program()->set_parameter(
-				apt_specular_scale_offset,
-				material->get_specular_scale_offset());
+		m_state_manager.draw(0, 1);
 
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.draw(0, 1);
-
-			DEBUG_CHECK_GL_ERROR();
-			break;
-		}
-/*
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		for (i = 0; i < count; ++i)
-		{
-			MaterialLock material(materials[i]);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			switch_program(material->get_effect(
-				)->get_default_program(), 0);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			material->bind(m_state_manager);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.get_program()->set_parameter(
-				apt_texture_matrices,
-				material->get_texture_matrices());
-			m_state_manager.get_program()->set_parameter(
-				apt_albedo_scale_offsets,
-				material->get_albedo_scale_offsets());
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_state_manager.draw(0, 1);
-
-			DEBUG_CHECK_GL_ERROR();
-		}
+		DEBUG_CHECK_GL_ERROR();
 
 		m_clipmap_frame_buffer->blit();
-*/
 	}
 
 	void Scene::update_terrain_texture(const Uint16 slice)
@@ -1487,7 +1446,7 @@ namespace eternal_lands
 			texture_matrices[1][0] *= tile_scale.x;
 			texture_matrices[1][1] *= tile_scale.y;
 
-			update_terrain_texture(m_clipmap.get_materials(),
+			update_terrain_texture(m_map->get_clipmap_material(),
 				texture_matrices, slice);
 		}
 		catch (boost::exception &exception)
@@ -1790,14 +1749,16 @@ namespace eternal_lands
 		clear();
 
 		map_loader.reset(new MapLoader(
-			m_scene_resources.get_codec_manager(),
+			get_scene_resources().get_codec_manager(),
 			m_file_system, m_global_vars,
-			m_scene_resources.get_mesh_builder(),
-			m_scene_resources.get_mesh_cache(),
-			m_scene_resources.get_mesh_data_cache(),
-			m_scene_resources.get_effect_cache(),
-			m_scene_resources.get_material_cache(),
-			m_scene_resources.get_material_description_cache(),
+			get_scene_resources().get_mesh_builder(),
+			get_scene_resources().get_mesh_cache(),
+			get_scene_resources().get_mesh_data_cache(),
+			get_scene_resources().get_effect_cache(),
+			get_scene_resources().get_material_cache(),
+			get_scene_resources().get_material_description_cache(),
+			get_scene_resources().get_material_builder(),
+			get_scene_resources().get_texture_cache(),
 			m_free_ids));
 
 		set_map(map_loader->load(name));

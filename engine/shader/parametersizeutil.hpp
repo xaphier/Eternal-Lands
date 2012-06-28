@@ -25,10 +25,11 @@ namespace eternal_lands
 	enum ParameterSizeType
 	{
 		pst_one = 0,
-		pst_light_count,
-		pst_bone_count,
-		pst_shadow_map_count,
-		pst_clipmap_slices
+		pst_lights_count,
+		pst_bones_count,
+		pst_shadow_maps_count,
+		pst_clipmap_slices,
+		pst_render_targets
 	};
 
 	typedef std::map<ParameterSizeType, Uint16> ParameterSizeTypeUint16Map;

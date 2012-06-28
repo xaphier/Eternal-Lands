@@ -57,12 +57,9 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>type</string>
+          <string>types</string>
          </property>
         </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="type_value"/>
        </item>
        <item row="0" column="4" rowspan="2">
         <spacer name="horizontalSpacer">
@@ -76,6 +73,16 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="1" column="1">
+        <widget class="QListWidget" name="type_values">
+         <property name="resizeMode">
+          <enum>QListView::Fixed</enum>
+         </property>
+         <property name="uniformItemSizes">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -776,7 +783,6 @@
  </widget>
  <tabstops>
   <tabstop>name_value</tabstop>
-  <tabstop>type_value</tabstop>
   <tabstop>source_data_count</tabstop>
   <tabstop>source_datas</tabstop>
   <tabstop>parameters_0</tabstop>

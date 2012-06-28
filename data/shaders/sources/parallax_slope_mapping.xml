@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>parallax_slope_mapping</name>
- <type>normal_mapping</type>
+ <types>
+  <type>uv_mapping</type>
+  <type>normal_mapping</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>

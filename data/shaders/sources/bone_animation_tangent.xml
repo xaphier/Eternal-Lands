@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>bone_animation</name>
- <type>world_tangent_transformation</type>
+ <types>
+  <type>world_tangent_transformation</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>

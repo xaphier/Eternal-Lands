@@ -13,6 +13,7 @@
 
 #include "material.hpp"
 #include "effect.hpp"
+#include "clipmapdata.hpp"
 
 namespace eternal_lands
 {
@@ -59,8 +60,6 @@ namespace eternal_lands
 		m_terrain_texture_size.y = terrain_texture_size.y;
 		m_terrain_texture_size.z = 1.0f / terrain_texture_size.x;
 		m_terrain_texture_size.w = 1.0f / terrain_texture_size.y;
-
-		load_materials();
 	}
 
 	bool Clipmap::update(const glm::vec3 &camera, const glm::vec3 &view_dir,
@@ -147,92 +146,6 @@ namespace eternal_lands
 		texture_matrix[1] = glm::vec3(0.0f, scale.y, -offset.y);
 
 		m_texture_matrices[slice] = texture_matrix;
-	}
-
-	void Clipmap::load_materials()
-	{
-		MaterialDescription material;
-		glm::mat2x3 emission_scale_offset;
-
-		emission_scale_offset[0] = glm::vec3(1.0f);
-		emission_scale_offset[1] = glm::vec3(1.0f);
-
-		m_materials.clear();
-
-		material.set_name(String(UTF8("terrain_0")));
-		material.set_texture(String(UTF8("3dobjects/tile1.dds")),
-			spt_albedo_0);
-		material.set_texture(String(UTF8("3dobjects/tile2.dds")),
-			spt_albedo_1);
-		material.set_texture(String(UTF8("3dobjects/tile3.dds")),
-			spt_albedo_2);
-		material.set_texture(String(UTF8("3dobjects/tile4.dds")),
-			spt_albedo_3);
-		material.set_texture(String(UTF8("textures/blend2.dds")),
-			spt_blend);
-		material.set_effect(
-			String(UTF8("textured-blend-4-screen-quad")));
-		material.set_emission_scale_offset(emission_scale_offset);
-
-		m_materials.push_back(get_material_builder()->get_material(
-			material));
-
-		material.set_name(String(UTF8("terrain_1")));
-		material.set_texture(String(UTF8("3dobjects/tile5.dds")),
-			spt_albedo_0);
-		material.set_texture(String(UTF8("3dobjects/tile6.dds")),
-			spt_albedo_1);
-		material.set_texture(String(UTF8("3dobjects/tile7.dds")),
-			spt_albedo_2);
-		material.set_texture(String(UTF8("3dobjects/tile8.dds")),
-			spt_albedo_3);
-		material.set_texture(String(UTF8("textures/blend3.dds")),
-			spt_blend);
-		material.set_effect(
-			String(UTF8("textured-blend-4-screen-quad")));
-		material.set_emission_scale_offset(emission_scale_offset);
-
-		m_materials.push_back(get_material_builder()->get_material(
-			material));
-
-		material.set_name(String(UTF8("terrain_2")));
-		material.set_texture(String(UTF8("3dobjects/tile9.dds")),
-			spt_albedo_0);
-		material.set_texture(String(UTF8("3dobjects/tile10.dds")),
-			spt_albedo_1);
-		material.set_texture(String(UTF8("3dobjects/tile11.dds")),
-			spt_albedo_2);
-		material.set_texture(String(UTF8("3dobjects/tile12.dds")),
-			spt_albedo_3);
-		material.set_texture(String(UTF8("textures/blend3.dds")),
-			spt_blend);
-		material.set_effect(
-			String(UTF8("textured-blend-4-screen-quad")));
-		material.set_emission_scale_offset(emission_scale_offset);
-
-		m_materials.push_back(get_material_builder()->get_material(
-			material));
-
-		material.set_name(String(UTF8("terrain_3")));
-		material.set_texture(String(UTF8("3dobjects/tile13.dds")),
-			spt_albedo_0);
-		material.set_texture(String(UTF8("3dobjects/tile14.dds")),
-			spt_albedo_1);
-		material.set_texture(String(UTF8("3dobjects/tile15.dds")),
-			spt_albedo_2);
-		material.set_texture(String(UTF8("3dobjects/tile16.dds")),
-			spt_albedo_3);
-		material.set_texture(String(UTF8("textures/blend3.dds")),
-			spt_blend);
-		material.set_effect(
-			String(UTF8("textured-blend-4-screen-quad")));
-		material.set_emission_scale_offset(emission_scale_offset);
-
-		m_materials.push_back(get_material_builder()->get_material(
-			material));
-
-		m_materials[0]->get_effect()->set_default_shader(sbt_screen);
-		m_materials[0]->get_effect()->load();
 	}
 
 }

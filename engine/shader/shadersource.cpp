@@ -32,7 +32,8 @@ namespace eternal_lands
 
 	}
 
-	ShaderSource::ShaderSource(): m_type(sst_world_depth_transformation)
+	ShaderSource::ShaderSource(const boost::uuids::uuid &uuid):
+		m_uuid(uuid)
 	{
 	}
 
@@ -74,6 +75,40 @@ namespace eternal_lands
 			sort_shader_source_data);
 	}
 
+	void ShaderSource::load_types_xml(const xmlNodePtr node)
+	{
+		ShaderSourceTypeSet types;
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("types")) != 0)
+		{
+			return;
+		}
+
+		m_types.clear();
+
+		if (!XmlUtil::has_children(node, true))
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("type")) == 0)
+			{
+				types.insert(
+					ShaderSourceUtil::get_shader_source(
+						XmlUtil::get_string_value(it)));
+			}
+		}
+		while (XmlUtil::next(it, true));
+
+		set_types(types);
+	}
+
 	void ShaderSource::load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
@@ -100,15 +135,14 @@ namespace eternal_lands
 				set_name(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("types")) == 0)
 			{
-				set_type(ShaderSourceUtil::get_shader_source(
-					XmlUtil::get_string_value(it)));
+				load_types_xml(it);
 			}
 		}
 		while (XmlUtil::next(it, true));
 
-		source = ShaderSourceUtil::get_str(get_type());
+		source = get_typed_name();
 
 		it = XmlUtil::children(node, true);
 
@@ -148,8 +182,16 @@ namespace eternal_lands
 		writer->start_element(UTF8("shader_source"));
 
 		writer->write_element(UTF8("name"), get_name());
-		writer->write_element(UTF8("type"), ShaderSourceUtil::get_str(
-			get_type()));
+
+		writer->start_element(UTF8("types"));
+
+		BOOST_FOREACH(const ShaderSourceType type, get_types())
+		{
+			writer->write_element(UTF8("type"),
+				ShaderSourceUtil::get_str(type));
+		}
+
+		writer->end_element();
 
 		writer->start_element(UTF8("shader_source_datas"));
 
@@ -235,9 +277,8 @@ namespace eternal_lands
 		}
 
 		EL_THROW_MESSAGE_EXCEPTION(UTF8("No shader source data with "
-			"shader version %1% in '[%2%]: %3%' found."),
-			version % get_type() % get_name(),
-			ItemNotFoundException());
+			"shader version %1% in '%2%' found."),
+			version % get_typed_name(), ItemNotFoundException());
 	}
 
 	void ShaderSource::set_datas(const ShaderSourceDataVector &datas)
@@ -250,8 +291,16 @@ namespace eternal_lands
 
 	String ShaderSource::get_typed_name() const
 	{
-		return String(ShaderSourceUtil::get_str(get_type()).get() +
-			UTF8("_") + get_name().get());
+		StringStream str;
+
+		str << get_name();
+
+		BOOST_FOREACH(const ShaderSourceType type, get_types())
+		{
+			str << UTF8("_") << type;
+		}
+
+		return String(str.str());
 	}
 
 }

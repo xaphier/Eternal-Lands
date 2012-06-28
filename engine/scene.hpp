@@ -68,8 +68,8 @@ namespace eternal_lands
 			AbstractFrameBufferSharedPtr m_light_frame_buffer;
 			AbstractFrameBufferSharedPtr m_scene_frame_buffer;
 			Uint32ActorSharedPtrMap m_actors;
-			Vec4Vector m_light_position_array;
-			Vec4Vector m_light_color_array;
+			Vec4Vector m_light_positions_array;
+			Vec4Vector m_light_colors_array;
 			SceneView m_scene_view;
 			glm::vec4 m_main_light_direction;
 			glm::vec4 m_main_light_color;
@@ -90,7 +90,7 @@ namespace eternal_lands
 				const EffectProgramType type,
 				const bool lights);
 			void get_lights(const BoundingBox &bounding_box,
-				Uint16 &light_count);
+				Uint16 &lights_count);
 			void do_draw_object(const ObjectSharedPtr &object,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
@@ -108,7 +108,7 @@ namespace eternal_lands
 				const Uint16 index);
 			void cull_all_shadows();
 			void update_terrain_texture(
-				const MaterialSharedPtrVector &materials,
+				const MaterialSharedPtr &material,
 				const Mat2x3Array2 &texture_matrices,
 				const Uint16 index);
 			void update_terrain_texture(const Uint16 slice);

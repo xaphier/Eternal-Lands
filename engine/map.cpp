@@ -28,6 +28,12 @@
 #include "codec/codecmanager.hpp"
 #include "globalvars.hpp"
 #include "image.hpp"
+#include "clipmapdata.hpp"
+#include "materialbuilder.hpp"
+#include "materialdescription.hpp"
+#include "texturecache.hpp"
+#include "material.hpp"
+#include "effect.hpp"
 
 namespace eternal_lands
 {
@@ -38,9 +44,13 @@ namespace eternal_lands
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const MaterialCacheSharedPtr &material_cache,
+		const MaterialBuilderWeakPtr &material_builder,
+		const TextureCacheWeakPtr &texture_cache,
 		const String &name): m_mesh_builder(mesh_builder),
 		m_mesh_cache(mesh_cache), m_material_cache(material_cache),
-		m_name(name), m_id(0), m_dungeon(false)
+		m_material_builder(material_builder),
+		m_texture_cache(texture_cache), m_name(name), m_id(0),
+		m_dungeon(false)
 	{
 		ImageCompressionTypeSet compressions;
 		ImageSharedPtr vector_map, normal_map, dudv_map;
@@ -57,6 +67,24 @@ namespace eternal_lands
 			material_cache);
 
 		file_name = FileSystem::get_name_without_extension(name);
+
+		{
+			ClipmapData clipmap_data;
+			StringArray16 albedo_maps;
+			StringArray4 blend_maps;
+
+			albedo_maps[0] = String(UTF8("3dobjects/tile1.dds"));
+			albedo_maps[1] = String(UTF8("3dobjects/tile2.dds"));
+			albedo_maps[2] = String(UTF8("textures/tile3.dds"));
+			albedo_maps[3] = String(UTF8("3dobjects/tile3.dds"));
+
+			blend_maps[0] = String(UTF8("textures/blend0.dds"));
+
+			clipmap_data.set_albedo_maps(albedo_maps);
+			clipmap_data.set_blend_maps(blend_maps);
+
+			build_clipmap_material(clipmap_data);
+		}
 
 		vector_map_name = String(file_name.get() + UTF8("_vector.png"));
 		normal_map_name = String(file_name.get() + UTF8("_normal.dds"));
@@ -362,6 +390,119 @@ namespace eternal_lands
 	bool Map::get_terrain() const
 	{
 		return !m_terrain_manager->get_empty();
+	}
+
+	void Map::build_clipmap_material(const ClipmapData &clipmap_data)
+	{
+/*		if (global_vars->get_opengl_3_0())
+		{
+			build_clipmap_material_with_texture_arrays(
+				clipmap_data);
+
+			return;
+		}
+*/
+		build_clipmap_material_simple(clipmap_data);
+	}
+
+	void Map::build_clipmap_material_simple(
+		const ClipmapData &clipmap_data)
+	{
+		MaterialDescription material;
+
+		material.set_name(String(UTF8("clipmap")));
+		material.set_texture(clipmap_data.get_albedo_map(0),
+			spt_albedo_0);
+		material.set_texture(clipmap_data.get_albedo_map(1),
+			spt_albedo_1);
+		material.set_texture(clipmap_data.get_albedo_map(2),
+			spt_albedo_2);
+		material.set_texture(clipmap_data.get_albedo_map(3),
+			spt_albedo_3);
+		material.set_texture(clipmap_data.get_blend_map(0),
+			spt_blend);
+		material.set_blend_sizes(clipmap_data.get_blend_sizes());
+		material.set_effect(
+			String(UTF8("clipmap-simple-blend-4-screen-quad")));
+
+		m_clipmap_material = get_material_builder()->get_material(
+			material);
+	}
+
+	void Map::build_clipmap_material_with_texture_arrays(
+		const ClipmapData &clipmap_data)
+	{
+		StringVector albedo_names, normal_names, specular_names;
+		StringVector blend_names;
+		MaterialDescription material;
+		TextureSharedPtr texture;
+		String effect;
+		Uint16 i, count;
+
+		material.set_name(String(UTF8("clipmap")));
+
+		count = clipmap_data.get_blend_count() * 4;
+		count = std::min(count, clipmap_data.get_albedo_count());
+
+		if (count <= 4)
+		{
+			effect = String(UTF8("clipmap-blend-4-screen-quad"));
+		}
+
+		if (count <= 8)
+		{
+			effect = String(UTF8("clipmap-blend-8-screen-quad"));
+		}
+
+		if (count <= 12)
+		{
+			effect = String(UTF8("clipmap-blend-12-screen-quad"));
+		}
+
+		if (count <= 16)
+		{
+			effect = String(UTF8("clipmap-blend-16-screen-quad"));
+		}
+
+		material.set_effect(effect);
+
+		m_clipmap_material = get_material_builder()->get_material(
+			material);
+
+		for (i = 0; i < count; ++i)
+		{
+			albedo_names.push_back(clipmap_data.get_albedo_map(i));
+			normal_names.push_back(clipmap_data.get_normal_map(i));
+			specular_names.push_back(
+				clipmap_data.get_specular_map(i));
+		}
+
+		for (i = 0; i < (count / 4); ++i)
+		{
+			blend_names.push_back(clipmap_data.get_blend_map(i));
+		}
+
+		texture = get_texture_cache()->get_texture_array(albedo_names,
+			String(UTF8("albedo clipmap")));
+
+		m_clipmap_material->set_texture(texture, spt_albedo_0);
+		m_clipmap_material->set_blend_sizes(clipmap_data.get_blend_sizes());
+
+/*
+		texture = get_texture_cache()->get_texture_array(normal_names,
+			String(UTF8("normal clipmap")));
+
+		m_clipmap_material->set_texture(texture, spt_normal);
+
+		texture = get_texture_cache()->get_texture_array(specular_names,
+			String(UTF8("specular clipmap")));
+
+		m_clipmap_material->set_texture(texture, spt_specular);
+*/
+		texture = get_texture_cache()->get_texture_array(blend_names,
+			String(UTF8("blend clipmap")));
+
+		m_clipmap_material->set_texture(texture, spt_blend);
 	}
 
 }

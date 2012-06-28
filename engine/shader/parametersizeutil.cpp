@@ -47,11 +47,14 @@ namespace eternal_lands
 		const ParameterSizeTypeData parameter_size_datas[] =
 		{
 			ParameterSizeTypeData(String(UTF8("one")), 1),
-			ParameterSizeTypeData(String(UTF8("light_count")), 8),
-			ParameterSizeTypeData(String(UTF8("bone_count")), 80),
-			ParameterSizeTypeData(String(UTF8("shadow_map_count")),
+			ParameterSizeTypeData(String(UTF8("lights_count")), 8),
+			ParameterSizeTypeData(String(UTF8("bones_count")), 80),
+			ParameterSizeTypeData(String(UTF8("shadow_maps_count")),
 				3),
-			ParameterSizeTypeData(String(UTF8("clipmap_slices")), 8)
+			ParameterSizeTypeData(String(UTF8("clipmap_slices")),
+				8),
+			ParameterSizeTypeData(String(UTF8("render_targets")),
+				4)
 		};
 
 		const Uint32 parameter_size_datas_count =

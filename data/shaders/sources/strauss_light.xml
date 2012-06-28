@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>strauss</name>
- <type>fragment_light</type>
+ <types/>
  <shader_source_datas>
   <shader_source_data>
    <parameters>

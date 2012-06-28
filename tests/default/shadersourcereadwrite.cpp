@@ -9,21 +9,26 @@
 #include "shader/shadersource.hpp"
 #define BOOST_TEST_MODULE shader_source_read_write
 #include <boost/test/unit_test.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 
 namespace el = eternal_lands;
 
 BOOST_AUTO_TEST_CASE(shader_source)
 {
-	el::ShaderSource shader_source;
+	boost::scoped_ptr<el::ShaderSource> shader_source;
 
-	BOOST_CHECK_EQUAL(shader_source.get_name().get(), "");
+	BOOST_CHECK_NO_THROW(shader_source.reset(new el::ShaderSource(
+		boost::uuids::random_generator()())));
 }
 
 BOOST_AUTO_TEST_CASE(load)
 {
-	el::ShaderSource shader_source;
+	boost::scoped_ptr<el::ShaderSource> shader_source;
 	el::String name;
 	std::ifstream str;
+
+	BOOST_CHECK_NO_THROW(shader_source.reset(new el::ShaderSource(
+		boost::uuids::random_generator()())));
 
 	str.open("shader_sources.txt", std::ios::in);
 
@@ -33,7 +38,7 @@ BOOST_AUTO_TEST_CASE(load)
 	{
 		str >> name;
 
-		BOOST_CHECK_NO_THROW(shader_source.load_xml(name));
-		BOOST_CHECK_NO_THROW(shader_source.save_xml(name));
+		BOOST_CHECK_NO_THROW(shader_source->load_xml(name));
+		BOOST_CHECK_NO_THROW(shader_source->save_xml(name));
 	}
 }

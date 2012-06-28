@@ -25,12 +25,16 @@ namespace eternal_lands
 		const MeshCacheSharedPtr &mesh_cache,
 		const MeshDataCacheSharedPtr &mesh_data_cache,
 		const MaterialCacheSharedPtr &material_cache,
+		const MaterialBuilderWeakPtr &material_builder,
+		const TextureCacheWeakPtr &texture_cache,
 		const FreeIdsManagerSharedPtr &free_ids,
 		EditorMapData &data): AbstractMapLoader(file_system, free_ids),
 		m_codec_manager(codec_manager), m_global_vars(global_vars),
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_mesh_data_cache(mesh_data_cache),
-		m_material_cache(material_cache), m_data(data)
+		m_material_cache(material_cache),
+		m_material_builder(material_builder),
+		m_texture_cache(texture_cache), m_data(data)
 	{
 	}
 
@@ -135,7 +139,8 @@ namespace eternal_lands
 		return boost::make_shared<Map>(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_mesh_cache(),
-			get_material_cache(), name);
+			get_material_cache(), get_material_builder(),
+			get_texture_cache(), name);
 	}
 
 }

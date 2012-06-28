@@ -36,13 +36,17 @@ namespace eternal_lands
 		const MaterialCacheSharedPtr &material_cache,
 		const MaterialDescriptionCacheSharedPtr
 			&material_description_cache,
+		const MaterialBuilderSharedPtr &material_builder,
+		const TextureCacheSharedPtr &texture_cache,
 		const FreeIdsManagerSharedPtr &free_ids):
 		AbstractMapLoader(file_system, free_ids),
 		m_codec_manager(codec_manager), m_global_vars(global_vars),
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_mesh_data_cache(mesh_data_cache),
 		m_effect_cache(effect_cache), m_material_cache(material_cache),
-		m_material_description_cache(material_description_cache)
+		m_material_description_cache(material_description_cache),
+		m_material_builder(material_builder),
+		m_texture_cache(texture_cache)
 	{
 		assert(m_codec_manager.get() != nullptr);
 		assert(m_global_vars.get() != nullptr);
@@ -52,6 +56,8 @@ namespace eternal_lands
 		assert(m_effect_cache.get() != nullptr);
 		assert(m_material_cache.get() != nullptr);
 		assert(m_material_description_cache.get() != nullptr);
+		assert(m_material_builder.get() != nullptr);
+		assert(m_texture_cache.get() != nullptr);
 	}
 
 	MapLoader::~MapLoader() noexcept
@@ -69,7 +75,8 @@ namespace eternal_lands
 		m_map = boost::make_shared<Map>(get_codec_manager(),
 			get_file_system(), get_global_vars(),
 			get_mesh_builder(), get_mesh_cache(),
-			get_material_cache(), name);
+			get_material_cache(), get_material_builder(),
+			get_texture_cache(), name);
 
 		read(name);
 

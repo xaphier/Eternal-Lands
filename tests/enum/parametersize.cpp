@@ -69,11 +69,13 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(el::pst_one).get(),
 		"one");
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
-		el::pst_light_count).get(), "light_count");
+		el::pst_lights_count).get(), "lights_count");
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
-		el::pst_bone_count).get(), "bone_count");
+		el::pst_bones_count).get(), "bones_count");
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
-		el::pst_shadow_map_count).get(), "shadow_map_count");
+		el::pst_shadow_maps_count).get(), "shadow_maps_count");
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
 		el::pst_clipmap_slices).get(), "clipmap_slices");
+	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
+		el::pst_render_targets).get(), "render_targets");
 }

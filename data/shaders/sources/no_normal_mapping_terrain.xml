@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>terrain</name>
- <type>normal_mapping</type>
+ <name>default</name>
+ <types>
+  <type>shadow_map</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
     <parameter>
-     <common_parameter>fragment_normal</common_parameter>
+     <common_parameter>shadow_map_data</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
    </parameters>
-   <source>fragment_normal = vec3(0.0, 0.0, 1.0);
+   <source>shadow_map_data = gl_FragCoord.zzz;
 </source>
    <version>120</version>
   </shader_source_data>

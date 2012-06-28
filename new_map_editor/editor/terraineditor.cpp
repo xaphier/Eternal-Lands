@@ -318,6 +318,7 @@ namespace eternal_lands
 	void TerrainEditor::get_blend_values(const glm::uvec2 &vertex,
 		const float radius, ImageValueVector &blend_values) const
 	{
+		Uvec4Array4 values;
 		glm::vec2 centre, point;
 		Uint32 x, y;
 		Uint32 min_x, min_y, max_x, max_y;
@@ -353,9 +354,16 @@ namespace eternal_lands
 				{
 					ImageValue value(x, y);
 
-					value.set_value(
-						m_blend_images[0]->get_pixel(x,
-							y, 0, 0, 0));
+					values[0] = m_blend_images[0]->
+						get_pixel_uint(x, y, 0, 0, 0);
+					values[1] = m_blend_images[1]->
+						get_pixel_uint(x, y, 0, 0, 0);
+					values[2] = m_blend_images[2]->
+						get_pixel_uint(x, y, 0, 0, 0);
+					values[3] = m_blend_images[3]->
+						get_pixel_uint(x, y, 0, 0, 0);
+
+					value.set_values(values);
 					blend_values.push_back(value);
 				}
 			}

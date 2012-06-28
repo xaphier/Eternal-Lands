@@ -1124,48 +1124,96 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void Texture::set_images(const Uint16 mipmaps,
-		const ImageSharedPtrVector &images)
+	void Texture::set_images(const ImageSharedPtrVector &images)
 	{
-		Uint32 layer, i, w, h, mip, level, used_mipmaps;
+		Uint32 layer, i, w, h, mip, level, mipmaps;
 
 		CHECK_GL_ERROR();
 
-		if (mipmaps > 0)
-		{
-			used_mipmaps = std::min(mipmaps, get_mipmap_count());
-			level = used_mipmaps + 1;
-		}
-		else
-		{
-			used_mipmaps = get_mipmap_count();
+		RANGE_CECK_MIN(images.size(), 1, UTF8("not enough images."));
 
-			level = 1;
-		}
+		set_width(images[0]->get_width());
+		set_height(images[0]->get_height());
+
+		set_depth(images.size());
+
+		mipmaps = images[0]->get_mipmap_count();
 
 		BOOST_FOREACH(const ImageSharedPtr &image, images)
 		{
 			if (get_width() != image->get_width())
 			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_message(UTF8("wrong width"))
+					<< errinfo_name(get_name())
+					<< errinfo_item_name(image->get_name())
+					<< errinfo_value(image->get_width())
+					<< errinfo_expected_value(get_width(
+						)));
 			}
 
 			if (get_height() != image->get_height())
 			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_message(UTF8("wrong height"))
+					<< errinfo_name(get_name())
+					<< errinfo_item_name(image->get_name())
+					<< errinfo_value(image->get_height())
+					<< errinfo_expected_value(get_height(
+						)));
 			}
 
-			if (level <= (image->get_mipmap_count() + 1))
+			if (mipmaps > image->get_mipmap_count())
 			{
+				EL_THROW_EXCEPTION(InvalidParameterException()
+					<< errinfo_message(UTF8("not enought "
+						"mipmap levels"))
+					<< errinfo_name(get_name())
+					<< errinfo_item_name(image->get_name())
+					<< errinfo_value(image->get_height())
+					<< errinfo_expected_value(get_height(
+						)));
 			}
 		}
-
-		set_depth(images.size());
 
 		CHECK_GL_ERROR_NAME(get_name());
 
 		build_texture_id();
 		bind();
 
-		m_used_mipmaps = used_mipmaps;
+		if (images[0]->has_mipmaps())
+		{
+			mipmaps = std::min(images[0]->get_mipmap_count(),
+				get_mipmap_count());
+			level = mipmaps + 1;
+
+			glTexParameteri(get_gl_target(), GL_TEXTURE_MAX_LEVEL,
+				mipmaps);
+		}
+		else
+		{
+			if (get_mipmap_count() > 0)
+			{
+				glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+
+				glTexParameteri(get_gl_target(),
+					GL_TEXTURE_MAX_LEVEL,
+					get_mipmap_count());
+
+				glTexParameteri(get_gl_target(),
+					GL_GENERATE_MIPMAP, GL_TRUE);
+
+				mipmaps = get_mipmap_count();
+			}
+			else
+			{
+				mipmaps = 0;
+			}
+
+			level = 1;
+		}
+
+		m_used_mipmaps = mipmaps;
 
 		if (mipmaps > 0)
 		{
@@ -1201,6 +1249,7 @@ namespace eternal_lands
 			{
 				w = w / 2;
 			}
+
 			if (h > 1)
 			{
 				h = h / 2;
@@ -1221,6 +1270,7 @@ namespace eternal_lands
 				{
 					w = w / 2;
 				}
+
 				if (h > 1)
 				{
 					h = h / 2;

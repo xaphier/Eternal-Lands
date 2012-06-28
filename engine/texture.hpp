@@ -433,8 +433,7 @@ namespace eternal_lands
 			}
 
 			void set_image(const ImageSharedPtr &image);
-			void set_images(const Uint16 mipmaps,
-				const ImageSharedPtrVector &images);
+			void set_images(const ImageSharedPtrVector &images);
 			void sub_texture(const Uint16 mipmap,
 				const ImageSharedPtr &image,
 				const glm::uvec3 &position);

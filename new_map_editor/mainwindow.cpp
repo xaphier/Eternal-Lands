@@ -889,8 +889,8 @@ void MainWindow::change_blend_image_name()
 
 	blend_image_name = el_gl_widget->get_blend_image_name();
 
-	blend_image_name = QInputDialog::getText(this, tr("Blend image"), tr("File name:"),
-		QLineEdit::Normal, blend_image_name, &ok);
+	blend_image_name = QInputDialog::getText(this, tr("Blend image"),
+		tr("File name:"), QLineEdit::Normal, blend_image_name, &ok);
 
 	if (ok && !blend_image_name.isEmpty())
 	{

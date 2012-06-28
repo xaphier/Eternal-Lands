@@ -29,7 +29,6 @@ namespace eternal_lands
 		ept_debug
 	};
 
-
 	class EffectProgramUtil
 	{
 		public:

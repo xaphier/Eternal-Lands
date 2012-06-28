@@ -210,6 +210,8 @@ namespace eternal_lands
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_mesh_data_cache(),
 			get_scene_resources().get_material_cache(),
+			get_scene_resources().get_material_builder(),
+			get_scene_resources().get_texture_cache(),
 			get_free_ids(), data));
 
 		set_map(map_loader->get_map(name));

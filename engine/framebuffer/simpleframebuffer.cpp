@@ -86,6 +86,32 @@ namespace eternal_lands
 
 				m_render_buffer->bind_to_framebuffer(
 					GL_STENCIL_ATTACHMENT);
+/*
+
+				depth_texture_target = TextureTargetUtil::
+					get_depth_texture_target(target);
+
+				get_depth_texture()->set_target(
+					depth_texture_target);
+				get_depth_texture()->set_format(
+					tft_depth24_stencil8);
+				get_depth_texture()->set_wrap_s(twt_clamp);
+				get_depth_texture()->set_wrap_t(twt_clamp);
+				get_depth_texture()->set_mipmap_count(0);
+
+				get_depth_texture()->init(get_width(),
+					get_height(), 0, 0);
+
+				CHECK_GL_ERROR_NAME(get_name());
+
+				get_depth_texture()->attach(
+					GL_DEPTH_ATTACHMENT, 0, 0);
+
+				CHECK_GL_ERROR_NAME(get_name());
+
+				get_depth_texture()->attach(
+					GL_STENCIL_ATTACHMENT, 0, 0);
+*/
 			}
 
 			glDrawBuffer(GL_COLOR_ATTACHMENT0);

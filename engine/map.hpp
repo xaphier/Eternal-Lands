@@ -35,6 +35,8 @@ namespace eternal_lands
 			const MeshBuilderWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
 			const MaterialCacheWeakPtr m_material_cache;
+			const MaterialBuilderWeakPtr m_material_builder;
+			const TextureCacheWeakPtr m_texture_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
 			AbstractTerrainManagerSharedPtr m_terrain_manager;
@@ -44,6 +46,7 @@ namespace eternal_lands
 			Uint16MultiArray2 m_tile_map;
 			FloatMultiArray2 m_walk_height_map;
 			ParticleDataVector m_particles;
+			MaterialSharedPtr m_clipmap_material;
 			glm::vec3 m_ambient;
 			String m_name;
 			Uint32 m_id;
@@ -85,6 +88,30 @@ namespace eternal_lands
 				return result;
 			}
 
+			inline MaterialBuilderSharedPtr get_material_builder()
+				const noexcept
+			{
+				MaterialBuilderSharedPtr result;
+
+				result = m_material_builder.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
+			inline TextureCacheSharedPtr get_texture_cache()
+				const noexcept
+			{
+				TextureCacheSharedPtr result;
+
+				result = m_texture_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
 			void init_walk_height_map(
 				const ImageSharedPtr &vector_map);
 			void init_terrain(
@@ -92,9 +119,10 @@ namespace eternal_lands
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialCacheSharedPtr &material_cache);
-
-		protected:
-			
+			void build_clipmap_material_simple(
+				const ClipmapData &clipmap_data);
+			void build_clipmap_material_with_texture_arrays(
+				const ClipmapData &clipmap_data);
 
 		public:
 			/**
@@ -106,6 +134,8 @@ namespace eternal_lands
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialCacheSharedPtr &material_cache,
+				const MaterialBuilderWeakPtr &material_builder,
+				const TextureCacheWeakPtr &texture_cache,
 				const String &name);
 
 			/**
@@ -144,6 +174,14 @@ namespace eternal_lands
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
 			bool get_terrain() const;
+			void build_clipmap_material(
+				const ClipmapData &clipmap_data);
+
+			inline const MaterialSharedPtr &get_clipmap_material()
+				const noexcept
+			{
+				return m_clipmap_material;
+			}
 
 			inline glm::uvec2 get_height_map_size() const noexcept
 			{

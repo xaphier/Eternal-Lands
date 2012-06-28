@@ -49,25 +49,44 @@ namespace eternal_lands
 		 * 4x4 scene projection matrix
 		 */
 		apt_projection_matrix,
+		/**
+		 * 4x4 scene projection view matrix
+		 */
 		apt_projection_view_matrix,
 		apt_reflection_matrix,
+		/**
+		 * 4x4 shadow texture matrices, number depends on the number
+		 * of screen splits if pssm is used.
+		 */
 		apt_shadow_texture_matrices,
+		/**
+		 * vec4(position.x, position.y, position.z, 1.0 / radius^2)
+		 * array of light data.
+		 */
 		apt_light_positions,
+		/**
+		 * vec4(red, green, blue, 1.0) array of light colors.
+		 */
 		apt_light_colors,
 		/**
-		 * vec4(red, green, blue, alpha)
+		 * vec4(red, green, blue, alpha) ambient
 		 */
 		apt_ambient,
 		/**
-		 * ivec3(vertex_light_count, fragment_light_count, light_count)
+		 * ivec3(vertex_lights_count, fragment_lights_count,
+		 * 	lights_count)
 		 */
-		apt_dynamic_light_count,
+		apt_dynamic_lights_count,
 		apt_bones,
 		apt_time,
 		/**
-		 * vec4(red, green, blue, density)
+		 * vec4(red, green, blue, density) fog
 		 */
 		apt_fog_data,
+		/**
+		 * vec4(position.x, position.y, position.z, 1.0) camera
+		 * world space position.
+		 */
 		apt_camera,
 		apt_shadow_distance_transform,
 		apt_split_distances,
@@ -77,6 +96,11 @@ namespace eternal_lands
 		apt_emission_scale_offset,
 		apt_specular_scale_offset,
 		apt_dudv_scale,
+		apt_blend_sizes,
+		/**
+		 * vec4 (red, green, blue, alpha) material color
+		 */
+		apt_material_color,
 		apt_terrain_scale,
 		apt_terrain_texture_size,
 		apt_clipmap_matrices,

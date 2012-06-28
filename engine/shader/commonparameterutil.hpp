@@ -57,7 +57,8 @@ namespace eternal_lands
 		cpt_shadow_uv_ddx_ddy,
 		cpt_terrain_uv_ddx_ddy,
 		cpt_vertex_color,
-		cpt_fragment_color
+		cpt_fragment_color,
+		cpt_output_data
 	};
 	/**
 	 * @}

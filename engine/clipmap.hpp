@@ -27,7 +27,6 @@ namespace eternal_lands
 		private:
 			const MaterialBuilderWeakPtr m_material_builder;
 			Mat2x3Vector m_texture_matrices;
-			MaterialSharedPtrVector m_materials;
 			glm::vec4 m_terrain_texture_size;
 			glm::vec2 m_focus;
 			glm::vec2 m_terrain_world_size;
@@ -68,13 +67,6 @@ namespace eternal_lands
 				const glm::vec3 &view_dir,
 				const glm::vec2 &focus);
 			void update_slice(const Uint16 slice);
-			void load_materials();
-
-			inline const MaterialSharedPtrVector &get_materials()
-				const noexcept
-			{
-				return m_materials;
-			}
 
 			inline const Mat2x3Vector &get_texture_matrices() const
 				noexcept

@@ -20,7 +20,7 @@ namespace eternal_lands
 			String(UTF8("light_index")),
 			String(UTF8("depth")),
 			String(UTF8("shadow")),
-			String(UTF8("screen")),
+			String(UTF8("screen_quad")),
 			String(UTF8("debug_uv")),
 			String(UTF8("debug_depth")),
 			String(UTF8("debug_alpha")),

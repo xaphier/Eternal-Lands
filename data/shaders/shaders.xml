@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf8"?>
 <shaders>
 	<shadow_scale>0.7</shadow_scale>
-	<vertex_light_count>3</vertex_light_count>
-	<fragment_light_count>5</fragment_light_count>
-	<bone_count>80</bone_count>
-	<dynamic_light_count>false</dynamic_light_count>
+	<vertex_lights_count>3</vertex_lights_count>
+	<fragment_lights_count>5</fragment_lights_count>
+	<bones_count>80</bones_count>
+	<dynamic_lights_count>false</dynamic_lights_count>
 	<shader_sources>
 		<shader_source>shaders/sources/bone_animation_depth.xml</shader_source>
 		<shader_source>shaders/sources/bone_animation_normal.xml</shader_source>
@@ -28,7 +28,7 @@
 		<shader_source>shaders/sources/diffuse_light.xml</shader_source>
 		<shader_source>shaders/sources/specular_light.xml</shader_source>
 		<shader_source>shaders/sources/no_normal_mapping.xml</shader_source>
-		<shader_source>shaders/sources/no_normal_depth_mapping.xml</shader_source>
+		<shader_source>shaders/sources/no_uv_mapping.xml</shader_source>
 		<shader_source>shaders/sources/no_specular_mapping.xml</shader_source>
 		<shader_source>shaders/sources/no_emission_mapping.xml</shader_source>
 		<shader_source>shaders/sources/normal_mapping.xml</shader_source>
@@ -53,16 +53,20 @@
 		<shader_source>shaders/sources/none_normal.xml</shader_source>
 		<shader_source>shaders/sources/none_tangent.xml</shader_source>
 		<shader_source>shaders/sources/albedo_terrain_mapping.xml</shader_source>
-		<shader_source>shaders/sources/no_normal_mapping_terrain.xml</shader_source>
 		<shader_source>shaders/sources/terrain_uv.xml</shader_source>
 		<shader_source>shaders/sources/cdlod_terrain_depth.xml</shader_source>
 		<shader_source>shaders/sources/cdlod_terrain_normal.xml</shader_source>
 		<shader_source>shaders/sources/cdlod_terrain_tangent.xml</shader_source>
-		<shader_source>shaders/sources/color_correction.xml</shader_source>
+<!--		<shader_source>shaders/sources/color_correction.xml</shader_source>-->
 		<shader_source>shaders/sources/world_uv_ddx_ddy.xml</shader_source>
 		<shader_source>shaders/sources/world_extra_uv_ddx_ddy.xml</shader_source>
 		<shader_source>shaders/sources/shadow_uv_ddx_ddy.xml</shader_source>
 		<shader_source>shaders/sources/terrain_uv_ddx_ddy.xml</shader_source>
+		<shader_source>shaders/sources/no_uv_mapping.xml</shader_source>
+		<shader_source>shaders/sources/albedo_array_blend_4_mapping.xml</shader_source>
+		<shader_source>shaders/sources/albedo_array_blend_8_mapping.xml</shader_source>
+		<shader_source>shaders/sources/albedo_array_blend_12_mapping.xml</shader_source>
+		<shader_source>shaders/sources/albedo_array_blend_16_mapping.xml</shader_source>
 	</shader_sources>
 	<sources>
 		<world_depth_transformation>default</world_depth_transformation>
@@ -81,11 +85,12 @@
 		<tbn_matrix>default</tbn_matrix>
 		<albedo_mapping>default</albedo_mapping>
 		<uv>default</uv>
+		<uv_mapping>disabled</uv_mapping>
+		<uv_depth_mapping>disabled</uv_depth_mapping>
 		<normal_mapping>disabled</normal_mapping>
-		<normal_depth_mapping>disabled</normal_depth_mapping>
 		<specular_mapping>default</specular_mapping>
 		<emission_mapping>disabled</emission_mapping>
-		<color_correction>default</color_correction>
+<!--		<color_correction>default</color_correction>-->
 		<world_uv_ddx_ddy>default</world_uv_ddx_ddy>
 		<world_extra_uv_ddx_ddy>default</world_extra_uv_ddx_ddy>
 		<shadow_uv_ddx_ddy>default</shadow_uv_ddx_ddy>

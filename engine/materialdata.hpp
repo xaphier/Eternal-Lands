@@ -25,10 +25,12 @@ namespace eternal_lands
 	class MaterialData
 	{
 		private:
+			Vec4Array4 m_blend_sizes;
 			Mat2x4Array4 m_albedo_scale_offsets;
 			Mat2x3Array2 m_texture_matrices;
 			glm::mat2x3 m_emission_scale_offset;
 			glm::vec4 m_specular_scale_offset;
+			glm::vec4 m_color;
 			glm::vec2 m_dudv_scale;
 			bool m_cast_shadows;
 			bool m_culling;
@@ -36,6 +38,17 @@ namespace eternal_lands
 		public:
 			MaterialData();
 			~MaterialData() noexcept;
+
+			inline const Vec4Array4 &get_blend_sizes() const noexcept
+			{
+				return m_blend_sizes;
+			}
+
+			inline const glm::vec4 &get_blend_size(
+				const Uint16 index) const
+			{
+				return m_blend_sizes[index];
+			}
 
 			inline const Mat2x4Array4 &get_albedo_scale_offsets()
 				const noexcept
@@ -73,6 +86,11 @@ namespace eternal_lands
 				return m_specular_scale_offset;
 			}
 
+			inline const glm::vec4 &get_color() const noexcept
+			{
+				return m_color;
+			}
+
 			inline const glm::vec2 &get_dudv_scale() const noexcept
 			{
 				return m_dudv_scale;
@@ -86,6 +104,18 @@ namespace eternal_lands
 			inline bool get_culling() const noexcept
 			{
 				return m_culling;
+			}
+
+			inline void set_blend_sizes(
+				const Vec4Array4 &blend_sizes) noexcept
+			{
+				m_blend_sizes = blend_sizes;
+			}
+
+			inline void set_blend_size(const glm::vec4 &blend_size,
+				const Uint16 index)
+			{
+				m_blend_sizes[index] = blend_size;
 			}
 
 			inline void set_albedo_scale_offsets(
@@ -130,6 +160,11 @@ namespace eternal_lands
 			{
 				m_specular_scale_offset =
 					specular_scale_offset;
+			}
+
+			inline void set_color(const glm::vec4 &color) noexcept
+			{
+				m_color = color;
 			}
 
 			inline void set_dudv_scale(const glm::vec2 &dudv_scale)

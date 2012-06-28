@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>terrain</name>
- <type>albedo_mapping</type>
+ <types>
+  <type>albedo_mapping</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -34,8 +36,8 @@
 vec2 uv, ddx, ddy;
 float lod, blend;
 float det, squared_length_major, length_major;
-float ratio_of_anisotropy, length_minor;
-int i, index;
+float ratio_of_anisotropy, length_minor, index;
+int i;
 
 ddx = world_uv_ddx_ddy.xy;
 ddy = world_uv_ddx_ddy.zw;
@@ -99,8 +101,8 @@ albedo = mix(albedo, tmp, blend);
    </parameters>
    <source>vec4 tmp;
 vec2 uv, ddx, ddy;
-float lod, blend;
-int i, index;
+float lod, blend, index;
+int i;
 
 ddx = dFdx(world_uv);
 ddy = dFdy(world_uv);

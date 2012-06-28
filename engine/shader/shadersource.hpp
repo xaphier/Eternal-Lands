@@ -25,18 +25,22 @@
 namespace eternal_lands
 {
 
+	typedef std::set<ShaderSourceType> ShaderSourceTypeSet;
+
 	class ShaderSource
 	{
 		private:
-			ShaderSourceType m_type;
+			ShaderSourceTypeSet m_types;
 			String m_name;
 			ShaderSourceDataVector m_datas;
+			const boost::uuids::uuid m_uuid;
 
 			void load_datas_xml(const String &source,
 				const xmlNodePtr node);
+			void load_types_xml(const xmlNodePtr node);
 
 		public:
-			ShaderSource();
+			ShaderSource(const boost::uuids::uuid &uuid);
 			~ShaderSource() noexcept;
 			void load_xml(const String &file_name);
 			void load_xml(const FileSystemSharedPtr &file_system,
@@ -69,10 +73,10 @@ namespace eternal_lands
 			void set_datas(const ShaderSourceDataVector &datas);
 			String get_typed_name() const;
 
-			inline void set_type(const ShaderSourceType type)
+			inline void set_types(const ShaderSourceTypeSet types)
 				noexcept
 			{
-				m_type = type;
+				m_types = types;
 			}
 
 			inline void set_name(const String &name) noexcept
@@ -86,14 +90,27 @@ namespace eternal_lands
 				return m_datas;
 			}
 
-			inline ShaderSourceType get_type() const noexcept
+			inline bool get_type(const ShaderSourceType type) const
+				noexcept
 			{
-				return m_type;
+				return m_types.count(type) > 0;
+			}
+
+			inline const ShaderSourceTypeSet &get_types() const
+				noexcept
+			{
+				return m_types;
 			}
 
 			inline const String &get_name() const noexcept
 			{
 				return m_name;
+			}
+
+			inline const boost::uuids::uuid &get_uuid() const
+				noexcept
+			{
+				return m_uuid;
 			}
 
 	};

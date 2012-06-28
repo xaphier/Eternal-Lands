@@ -137,6 +137,13 @@ namespace eternal_lands
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",
+			"void set_blend_size(const vec4 &in, uint)",
+			asMETHODPR(MaterialData, set_blend_size,
+			(const glm::vec4 &, const Uint16), void),
+			asCALL_THISCALL);
+		assert(r >= 0);
+
+		r = get_engine()->RegisterObjectMethod("MaterialData",
 			"void set_albedo_scale_offset(const mat2x4 &in, uint)",
 			asMETHODPR(MaterialData, set_albedo_scale_offset,
 			(const glm::mat2x4 &, const Uint16), void),
@@ -163,6 +170,12 @@ namespace eternal_lands
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",
+			"void set_color(const vec4 &in)",
+			asMETHODPR(MaterialData, set_color,
+			(const glm::vec4 &), void), asCALL_THISCALL);
+		assert(r >= 0);
+
+		r = get_engine()->RegisterObjectMethod("MaterialData",
 			"void set_cast_shadows(bool)",
 			asMETHODPR(MaterialData, set_cast_shadows,
 			(const bool), void), asCALL_THISCALL);
@@ -172,6 +185,13 @@ namespace eternal_lands
 			"void set_culling(bool)",
 			asMETHODPR(MaterialData, set_culling,
 			(const bool), void), asCALL_THISCALL);
+		assert(r >= 0);
+
+		r = get_engine()->RegisterObjectMethod("MaterialData",
+			"const vec4 &get_blend_size(uint) const",
+			asMETHODPR(MaterialData, get_blend_size,
+			(const Uint16) const, const glm::vec4 &),
+			asCALL_THISCALL);
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",
@@ -195,9 +215,15 @@ namespace eternal_lands
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"const vec4 &set_specular_scale_offset()",
+			"const vec4 &get_specular_scale_offset()",
 			asMETHODPR(MaterialData, get_specular_scale_offset,
 			() const, const glm::vec4 &), asCALL_THISCALL);
+		assert(r >= 0);
+
+		r = get_engine()->RegisterObjectMethod("MaterialData",
+			"const vec4 &get_color()",
+			asMETHODPR(MaterialData, get_color, () const,
+			const glm::vec4 &), asCALL_THISCALL);
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",

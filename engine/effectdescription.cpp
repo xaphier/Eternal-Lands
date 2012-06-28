@@ -13,8 +13,9 @@
 namespace eternal_lands
 {
 
-	EffectDescription::EffectDescription(): m_receives_shadows(true),
-		m_transparent(false), m_lighting(true)
+	EffectDescription::EffectDescription(): m_type(edt_default),
+		m_receives_shadows(true), m_transparent(false),
+		m_lighting(true)
 	{
 	}
 
@@ -66,17 +67,23 @@ namespace eternal_lands
 					XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("normal_mapping")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("uv_mapping"))
+				== 0)
 			{
-				set_normal_mapping(
-					XmlUtil::get_string_value(it));
+				set_uv_mapping(XmlUtil::get_string_value(it));
 			}
 
 			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("albedo_mapping")) == 0)
 			{
 				set_albedo_mapping(
+					XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("normal_mapping")) == 0)
+			{
+				set_normal_mapping(
 					XmlUtil::get_string_value(it));
 			}
 
@@ -92,6 +99,13 @@ namespace eternal_lands
 			{
 				set_emission_mapping(
 					XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
+			{
+				set_type(EffectDescriptionUtil::
+					get_effect_description(
+						XmlUtil::get_string_value(it)));
 			}
 
 			if (xmlStrcmp(it->name,
@@ -124,6 +138,8 @@ namespace eternal_lands
 			get_world_transformation());
 		writer->write_element(UTF8("texture_coodrinates"),
 			get_texture_coodrinates());
+		writer->write_element(UTF8("uv_mapping"),
+			get_uv_mapping());
 		writer->write_element(UTF8("albedo_mapping"),
 			get_albedo_mapping());
 		writer->write_element(UTF8("normal_mapping"),
@@ -132,6 +148,8 @@ namespace eternal_lands
 			get_specular_mapping());
 		writer->write_element(UTF8("emission_mapping"),
 			get_emission_mapping());
+		writer->write_element(UTF8("type"),
+			EffectDescriptionUtil::get_str(get_type()));
 		writer->write_bool_element(UTF8("receives_shadows"),
 			get_receives_shadows());
 		writer->write_bool_element(UTF8("transparent"),
@@ -151,6 +169,11 @@ namespace eternal_lands
 
 		if (get_texture_coodrinates() !=
 			effect.get_texture_coodrinates())
+		{
+			return false;
+		}
+
+		if (get_uv_mapping() != effect.get_uv_mapping())
 		{
 			return false;
 		}
@@ -211,6 +234,11 @@ namespace eternal_lands
 				effect.get_texture_coodrinates();
 		}
 
+		if (get_uv_mapping() != effect.get_uv_mapping())
+		{
+			return get_uv_mapping() < effect.get_uv_mapping();
+		}
+
 		if (get_albedo_mapping() != effect.get_albedo_mapping())
 		{
 			return get_albedo_mapping() <
@@ -256,6 +284,7 @@ namespace eternal_lands
 		str << value.get_world_transformation();
 		str << " texture_coodrinates: ";
 		str << value.get_texture_coodrinates();
+		str << " uv_mapping: " << value.get_uv_mapping();
 		str << " albedo_mapping: " << value.get_albedo_mapping();
 		str << " normal_mapping: " << value.get_normal_mapping();
 		str << " specular_mapping: " << value.get_specular_mapping();

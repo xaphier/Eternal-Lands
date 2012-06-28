@@ -166,6 +166,7 @@ namespace eternal_lands
 	ARRAY_NAME(glm::mat2x3, 4, Mat2x3);
 	ARRAY_NAME(glm::mat2x3, 8, Mat2x3);
 	ARRAY_NAME(glm::uvec2, 4, Uvec2);
+	ARRAY_NAME(glm::uvec4, 4, Uvec4);
 	ARRAY(String, 2);
 	ARRAY(String, 3);
 	ARRAY(String, 4);
@@ -222,6 +223,8 @@ namespace eternal_lands
 	class BoundedObject;
 	class BoundingBox;
 	class CdLodQuadTree;
+	class Clipmap;
+	class ClipmapData;
 	class CodecManager;
 	class ColorCorrection;
 	class ConvexBody;
@@ -284,6 +287,7 @@ namespace eternal_lands
 	class Scene;
 	class SceneResources;
 	class ScriptEngine;
+	class ShaderSource;
 	class ShaderSourceBuilder;
 	class ShaderSourceData;
 	class ShaderSourceDescriptionLoader;
@@ -399,6 +403,7 @@ namespace eternal_lands
 	SHARED_PTR(RStarTreeNode);
 	SHARED_PTR(SceneResources);
 	SHARED_PTR(ScriptEngine);
+	SHARED_PTR(ShaderSource);
 	SHARED_PTR(ShaderSourceBuilder);
 	SHARED_PTR(ShaderSourceDescriptionLoader);
 	SHARED_PTR(Texture);

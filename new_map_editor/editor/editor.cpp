@@ -136,8 +136,8 @@ namespace eternal_lands
 			vrandom[i] = m_random();
 		}
 
-		rotation = glm::mix(m_random_rotation_min, m_random_rotation_max,
-			vrandom);
+		rotation = glm::mix(m_random_rotation_min,
+			m_random_rotation_max, vrandom);
 
 		for (i = 0; i < 3; i++)
 		{

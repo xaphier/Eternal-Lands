@@ -1,5 +1,7 @@
 ENABLE_TESTING()
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 link_directories(${TESTS_BINARY_DIR})
 
 find_package(Boost 1.40.0 COMPONENTS unit_test_framework REQUIRED)

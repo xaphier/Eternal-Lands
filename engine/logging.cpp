@@ -170,6 +170,8 @@ namespace eternal_lands
 			log_levels[lt_angel_script] = llt_debug;
 			log_levels[lt_framebuffer] = llt_debug;
 			log_levels[lt_rendering] = llt_debug;
+			log_levels[lt_uniform_buffer] = llt_debug;
+			log_levels[lt_effect] = llt_debug;
 			log_levels[lt_opengl] = llt_debug;
 */
 			log_levels[lt_default] = llt_info;
@@ -192,6 +194,7 @@ namespace eternal_lands
 			log_levels[lt_framebuffer] = llt_info;
 			log_levels[lt_rendering] = llt_info;
 			log_levels[lt_uniform_buffer] = llt_info;
+			log_levels[lt_effect] = llt_info;
 			log_levels[lt_opengl] = llt_info;
 
 			file_name << log_dir << name << ".log";

@@ -15,12 +15,14 @@
 #include "shader/shadersourceutil.hpp"
 #include "shader/shaderversionutil.hpp"
 #include "glslhighlighter.hpp"
+#include <boost/uuid/uuid_generators.hpp>
 
 namespace el = eternal_lands;
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
-	QTreeWidgetItem* qtreewidgetitem;
+	QTreeWidgetItem* tree_widget_item;
+	QListWidgetItem* list_widget_item;
 	QString str;
 	int i, count;
 
@@ -143,15 +145,15 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	foreach(QTreeWidget* parameters, m_parameters)
 	{
-		qtreewidgetitem = new QTreeWidgetItem();
+		tree_widget_item = new QTreeWidgetItem();
 
-		qtreewidgetitem->setText(0, "name");
-		qtreewidgetitem->setText(1, "type");
-		qtreewidgetitem->setText(2, "qualifier");
-		qtreewidgetitem->setText(3, "size");
-		qtreewidgetitem->setText(4, "scale");
+		tree_widget_item->setText(0, "name");
+		tree_widget_item->setText(1, "type");
+		tree_widget_item->setText(2, "qualifier");
+		tree_widget_item->setText(3, "size");
+		tree_widget_item->setText(4, "scale");
 
-		parameters->setHeaderItem(qtreewidgetitem);
+		parameters->setHeaderItem(tree_widget_item);
 		parameters->header()->setVisible(true);
 		parameters->setColumnWidth(0, 175);
 		parameters->setColumnWidth(1, 175);
@@ -169,7 +171,14 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		str = QString::fromUtf8(el::ShaderSourceUtil::get_str(
 			static_cast<el::ShaderSourceType>(i)).get().c_str());
 
-		type_value->addItem(str, i);
+		list_widget_item = new QListWidgetItem(str);
+
+		list_widget_item->setData(Qt::UserRole, i);
+		list_widget_item->setFlags(Qt::ItemIsSelectable |
+			Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+
+		type_values->addItem(list_widget_item);
+		list_widget_item->setCheckState(Qt::Unchecked);
 	}
 
 	count = m_sources.size();
@@ -193,7 +202,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(name_value, SIGNAL(textChanged(const QString &)),
 		this, SLOT(changed()));
-	QObject::connect(type_value, SIGNAL(currentIndexChanged(int)),
+	QObject::connect(type_values, SIGNAL(itemChanged(QListWidgetItem*)),
 		this, SLOT(changed()));
 
 	count = el::ShaderVersionUtil::get_shader_version_count();
@@ -298,20 +307,38 @@ void MainWindow::save_as()
 void MainWindow::save(const QString &file_name)
 {
 	QTreeWidgetItem* item;
-	el::ShaderSource shader_source;
+	boost::scoped_ptr<el::ShaderSource> shader_source;
 	el::ShaderSourceDataVector shader_source_datas;
 	el::ShaderSourceParameterVector shader_source_parameters;
+	el::ShaderSourceTypeSet types;
 	int i, j, count, index, item_count;
 
-	shader_source.set_name(el::String(name_value->text().toUtf8()));
+	shader_source.reset(new el::ShaderSource(
+		boost::uuids::random_generator()()));
 
-	index = type_value->currentIndex();
+	shader_source->set_name(el::String(name_value->text().toUtf8()));
 
-	if (index > -1)
+	count = type_values->count();
+
+	for (i = 0; i < count; ++i)
 	{
-		shader_source.set_type(static_cast<el::ShaderSourceType>(
-			type_value->itemData(index).toInt()));
+		if (type_values->item(i)->checkState() == Qt::Checked)
+		{
+			types.insert(static_cast<el::ShaderSourceType>(
+				type_values->item(i)->data(
+					Qt::UserRole).toInt()));
+		}
 	}
+
+	if (types.size() == 0)
+	{
+		QMessageBox::critical(this, "Error",
+			"No types enabled, but at least one type is needed.");
+
+		return;
+	}
+
+	shader_source->set_types(types);
 
 	count = source_data_count->value();
 
@@ -360,11 +387,11 @@ void MainWindow::save(const QString &file_name)
 		shader_source_datas[i].set_parameters(shader_source_parameters);
 	}
 
-	shader_source.set_datas(shader_source_datas);
+	shader_source->set_datas(shader_source_datas);
 
 	try
 	{
-		shader_source.save_xml(el::String(file_name.toUtf8()));
+		shader_source->save_xml(el::String(file_name.toUtf8()));
 	}
 	catch (...)
 	{
@@ -396,12 +423,16 @@ void MainWindow::load(const QString &file_name)
 {
 	QTreeWidgetItem* item;
 	QStringList list;
-	el::ShaderSource shader_source;
+	QString str;
+	boost::scoped_ptr<el::ShaderSource> shader_source;
 	int i, count, index;
+
+	shader_source.reset(new el::ShaderSource(
+		boost::uuids::random_generator()()));
 
 	try
 	{
-		shader_source.load_xml(el::String(file_name.toUtf8()));
+		shader_source->load_xml(el::String(file_name.toUtf8()));
 	}
 	catch (const boost::exception &exception)
 	{
@@ -419,7 +450,7 @@ void MainWindow::load(const QString &file_name)
 		return;
 	}
 
-	count = shader_source.get_datas().size();
+	count = shader_source->get_datas().size();
 
 	if (count < 1)
 	{
@@ -441,11 +472,18 @@ void MainWindow::load(const QString &file_name)
 		parameters->clear();
 	}
 
-	name_value->setText(QString::fromUtf8(shader_source.get_name().get(
+	name_value->setText(QString::fromUtf8(shader_source->get_name().get(
 		).c_str()));
 
-	index = type_value->findData(shader_source.get_type());
-	type_value->setCurrentIndex(index);
+	BOOST_FOREACH(const el::ShaderSourceType type,
+		shader_source->get_types())
+	{
+		str = QString::fromUtf8(el::ShaderSourceUtil::get_str(
+			type).get().c_str());
+
+		type_values->findItems(str,
+			Qt::MatchExactly)[0]->setCheckState(Qt::Checked);
+	}
 
 	source_data_count->setValue(count);
 
@@ -453,16 +491,16 @@ void MainWindow::load(const QString &file_name)
 
 	for (i = 0; i < count; i++)
 	{
-		index = m_glsl_versions[i]->findData(shader_source.get_datas(
+		index = m_glsl_versions[i]->findData(shader_source->get_datas(
 			)[i].get_version());
 		m_glsl_versions[i]->setCurrentIndex(index);
 
 		m_sources[i]->setPlainText(QString::fromUtf8(
-			shader_source.get_datas()[i].get_source().get(
+			shader_source->get_datas()[i].get_source().get(
 				).c_str()));
 
 		BOOST_FOREACH(const el::ShaderSourceParameter &parameter,
-			shader_source.get_datas()[i].get_parameters())
+			shader_source->get_datas()[i].get_parameters())
 		{
 			list.clear();
 

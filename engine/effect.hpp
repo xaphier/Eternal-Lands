@@ -33,15 +33,10 @@ namespace eternal_lands
 				m_shader_source_builder;
 			const EffectDescription m_description;
 			boost::array<GlslProgramSharedPtr, 4> m_programs;
-			ShaderBuildType m_default_shader;
 			ShaderBuildType m_debug_shader;
 
 			void error_load();
 			void do_load();
-			void build_default_shader(
-				const EffectDescription &description,
-				const Uint16 vertex_light_count,
-				const Uint16 fragment_light_count);
 
 			inline GlslProgramCacheSharedPtr
 				get_glsl_program_cache() const noexcept
@@ -79,22 +74,10 @@ namespace eternal_lands
 			void load();
 			bool get_simple_shadow() const;
 
-			inline void set_default_shader(
-				const ShaderBuildType default_shader) noexcept
-			{
-				m_default_shader = default_shader;
-			}
-
 			inline void set_debug_shader(
 				const ShaderBuildType debug_shader) noexcept
 			{
 				m_debug_shader = debug_shader;
-			}
-
-			inline ShaderBuildType get_default_shader() const
-				noexcept
-			{
-				return m_default_shader;
 			}
 
 			inline ShaderBuildType get_debug_shader() const

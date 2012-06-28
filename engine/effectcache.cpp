@@ -11,6 +11,7 @@
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -37,6 +38,9 @@ namespace eternal_lands
 
 		if (found == m_effect_cache.end())
 		{
+			LOG_ERROR(lt_effect, UTF8("Effect '%1%' not found"),
+				name);
+
 			return get_simple_effect();
 		}
 		else

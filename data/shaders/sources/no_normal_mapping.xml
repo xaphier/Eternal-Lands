@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>disabled</name>
- <type>normal_mapping</type>
+ <types>
+  <type>normal_mapping</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -10,19 +12,11 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>fragment_uv</common_parameter>
-     <qualifier>out</qualifier>
-    </parameter>
-    <parameter>
      <common_parameter>world_normal</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
-    <parameter>
-     <common_parameter>world_uv</common_parameter>
-     <qualifier>in</qualifier>
-    </parameter>
    </parameters>
-   <source>fragment_uv = world_uv;
+   <source>
 fragment_normal = normalize(world_normal);
 
 if (!gl_FrontFacing)

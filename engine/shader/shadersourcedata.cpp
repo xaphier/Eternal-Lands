@@ -198,8 +198,6 @@ namespace eternal_lands
 
 	void ShaderSourceData::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		Uint32 index;
-
 		writer->start_element(UTF8("shader_source_data"));
 
 		writer->start_element(UTF8("parameters"));
