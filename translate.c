@@ -310,12 +310,12 @@ char
 	cm_title_help_str[50],
 	cm_items_menu_str[150],
 	cm_storage_menu_str[75],
-	cm_astro_menu_str[50],
+	cm_astro_menu_str[80],
 	cm_ranging_menu_str[50],
 	cm_dialog_options_str[80],
 	cm_dialog_menu_str[60],
 	cm_url_menu_str[150],
-	cm_counters_menu_str[75],
+	cm_counters_menu_str[90],
 	cm_help_options_str[50],
 	cm_npcname_menu_str[50],
 	cm_dialog_copy_menu_str[50],
@@ -1449,18 +1449,18 @@ void init_help()
 	add_xml_identifier(misc, "cm_quickspell_menu", cm_quickspell_menu_str, "Move Up\nMove Down\nRemove\n", sizeof(cm_quickspell_menu_str));
 	add_xml_identifier(misc, "cm_textedit_menu", cm_textedit_menu_str, "Cut\nCopy\nPaste\n--\nDate\nTime\nCoords", sizeof(cm_textedit_menu_str));
 	add_xml_identifier(misc, "cm_quickbar_menu", cm_quickbar_menu_str, "Quickbar Relocatable\nQuickbar Draggable\nReset Quickbar Position\nFlip Quickbar\nEnable Quickbar Menu\n", sizeof(cm_quickbar_menu_str));
-	add_xml_identifier(misc, "cm_hud_menu", cm_hud_menu_str, "Show Stats\nShow Stats Bars\nShow Knowledge Bar\nShow Digital Clock\nShow Analogue Clock\nShow Seconds\nShow FPS\nShow Minimap\nEnable Quickbar Menu\n--\nEnable Sound Effects\nEnable Music\n--\nCopy Location", sizeof(cm_hud_menu_str));
+	add_xml_identifier(misc, "cm_hud_menu", cm_hud_menu_str, "Show Stats\nShow Stats Bars\nShow Knowledge Bar\nShow Digital Clock\nShow Analogue Clock\nShow Seconds\nShow FPS\nEnable Quickbar Menu\n--\nShow Minimap\nShow Ranging Stats\n--\nEnable Sound Effects\nEnable Music\n--\nCopy Location", sizeof(cm_hud_menu_str));
 	add_xml_identifier(misc, "cm_banner_menu", cm_banner_menu_str, "Show Names\nShow Health Bars\nShow Health Numbers\nShow Ether Bar\nShow Ether Numbers\nEnable Instance Mode\nShow Speech Bubbles\nEnable Banner Background\nSit Lock\nRanging Lock\n--\nDisable This Menu\n", sizeof(cm_banner_menu_str));
 	add_xml_identifier(misc, "cm_title_menu", cm_title_menu_str, "Hide Windows\nOpaque Background\nWindows On Top\n", sizeof(cm_title_menu_str));
 	add_xml_identifier(misc, "cm_title_help", cm_title_help_str, "Right-click for window menu", sizeof(cm_title_help_str));
 	add_xml_identifier(misc, "cm_items_menu", cm_items_menu_str, "--\nUse Small Window\nManual Window Size\nItem Window On Drop\nAllow Equipment Swap\n--\nOpen Storage (View Only)", sizeof(cm_items_menu_str));
 	add_xml_identifier(misc, "cm_storage_menu", cm_storage_menu_str, "--\nPrint Items To Console\nSort Categories Alphabetically\n", sizeof(cm_storage_menu_str));
-	add_xml_identifier(misc, "cm_astro_menu", cm_astro_menu_str, "--\nPrint Details To Console", sizeof(cm_astro_menu_str));
+	add_xml_identifier(misc, "cm_astro_menu", cm_astro_menu_str, "--\nPrint Details To Console\nAlways Print Details To Console", sizeof(cm_astro_menu_str));
 	add_xml_identifier(misc, "cm_ranging_menu", cm_ranging_menu_str, "--\nPrint To Console", sizeof(cm_ranging_menu_str));
 	add_xml_identifier(misc, "cm_dialog_options", cm_dialog_options_str, "Auto close storage dialogue\nAuto select storage option in dialogue", sizeof(cm_dialog_options_str));
 	add_xml_identifier(misc, "cm_dialog_menu", cm_dialog_menu_str, "--\nEnable Keypresses\nKeypresses Anywhere", sizeof(cm_dialog_menu_str));
 	add_xml_identifier(misc, "cm_url_menu", cm_url_menu_str, "Open\nFind In Console\nMark Visited\nMark Unvisited\n--\nDelete\n--\nDelete All", sizeof(cm_url_menu_str));	
-	add_xml_identifier(misc, "cm_counters_menu", cm_counters_menu_str, "Delete entry\n--\nReset Session Total\n--\nEnable floating messages", sizeof(cm_counters_menu_str));	
+	add_xml_identifier(misc, "cm_counters_menu", cm_counters_menu_str, "Delete Entry\n--\nReset Session Total\n--\nEnable Floating Messages For Category", sizeof(cm_counters_menu_str));
 	add_xml_identifier(misc, "cm_help_options", cm_help_options_str, "Right-click for options.", sizeof(cm_help_options_str));
 	add_xml_identifier(misc, "cm_npcname_menu", cm_npcname_menu_str, "Copy NPC Name", sizeof(cm_npcname_menu_str));
 	add_xml_identifier(misc, "cm_dialog_copy_menu", cm_dialog_copy_menu_str, "Exclude Responses\nRemove newlines", sizeof(cm_dialog_copy_menu_str));
