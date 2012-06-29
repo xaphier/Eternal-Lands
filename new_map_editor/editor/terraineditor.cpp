@@ -58,9 +58,9 @@ namespace eternal_lands
 
 		BOOST_FOREACH(const TerrainValue &terrain_value, terrain_values)
 		{
-			m_terrain_vector_image->set_pixel_uint(
+			m_terrain_vector_image->set_pixel_packed_uint32(
 				terrain_value.get_x(), terrain_value.get_y(),
-				0, 0, 0, terrain_value.get_value());
+				0, 0, 0, terrain_value.get_packed_value());
 
 			for (y = -1; y < 2; ++y)
 			{
@@ -167,10 +167,10 @@ namespace eternal_lands
 				{
 					TerrainValue value(x, y);
 
-					value.set_value(
+					value.set_packed_value(
 						m_terrain_vector_image->
-							get_pixel_uint(x, y,
-								0, 0, 0));
+							get_pixel_packed_uint32(
+								x, y, 0, 0, 0));
 
 					terrain_values.push_back(value);
 				}
@@ -363,11 +363,94 @@ namespace eternal_lands
 					values[3] = m_blend_images[3]->
 						get_pixel_uint(x, y, 0, 0, 0);
 
-					value.set_values(values);
+					//value.set_values(values);
 					blend_values.push_back(value);
 				}
 			}
 		}
+	}
+
+	float TerrainEditor::calc_effect(const float value, const float data,
+		const float average, const float strength,
+		const BrushEffectType effect)
+	{
+		switch (effect)
+		{
+			case bet_add:
+				return glm::mix(value, value + data, strength);
+			case bet_set:
+				return glm::mix(value, data, strength);
+			case bet_smooth:
+				return glm::mix(value, average, data *
+					strength);
+		};
+
+		return data;
+	}
+
+	float TerrainEditor::calc_brush(const glm::vec2 &center,
+		const glm::vec2 &position, const glm::vec2 &size,
+		const float value, const float attenuation_size,
+		const float data, const float average,		
+		const BrushAttenuationType attenuation,
+		const BrushShapeType shape, const BrushEffectType effect)
+	{
+		float strength, distance;
+
+		distance = calc_distance(center, position, size, shape);
+
+		strength = calc_attenuation(distance, attenuation_size,
+			attenuation);
+
+		return calc_effect(value, data, average, strength, effect);
+	}
+
+	void TerrainEditor::change_blend_values(const glm::vec2 &size,
+		const glm::uvec2 &vertex, const float attenuation_size,
+		const float data, const Uint16 layer, const bool mask, 
+		const BrushAttenuationType attenuation,
+		const BrushShapeType shape, const BrushEffectType effect,
+		ImageValueVector &terrain_values) const
+	{
+		glm::vec3 average, value, normal;
+		glm::vec2 center, position;
+		glm::ivec2 index;
+
+		if (terrain_values.size() < 1)
+		{
+			return;
+		}
+
+		center = glm::vec2(vertex);
+/*
+		average = glm::vec3(0.0f);
+
+		BOOST_FOREACH(const TerrainValue &terrain_value, terrain_values)
+		{
+			average += AbstractTerrainManager::get_offset_scaled_rgb10_a2(
+				terrain_value.get_value());
+		}
+
+		average /= terrain_values.size();
+
+		BOOST_FOREACH(TerrainValue &terrain_value, terrain_values)
+		{
+			value = AbstractTerrainManager::get_offset_scaled_rgb10_a2(
+				terrain_value.get_value());
+
+			index.x = terrain_value.get_x();
+			index.y = terrain_value.get_y();
+			position = index;
+
+			value = calc_brush(value, data, average, mask, center,
+				position, size, attenuation_size, attenuation,
+				shape, effect);
+
+			terrain_value.set_value(
+				AbstractTerrainManager::get_value_scaled_rgb10_a2(
+					value));
+		}
+*/
 	}
 
 	glm::vec4 TerrainEditor::get_blend_values(const glm::vec4 &blend)

@@ -1134,7 +1134,7 @@ namespace eternal_lands
 
 		set_width(images[0]->get_width());
 		set_height(images[0]->get_height());
-
+		set_target(ttt_texture_2d_array);
 		set_depth(images.size());
 
 		mipmaps = images[0]->get_mipmap_count();

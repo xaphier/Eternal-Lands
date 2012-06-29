@@ -461,9 +461,30 @@ namespace eternal_lands
 			glm::uvec4 get_pixel_uint(const Uint32 x,
 				const Uint32 y, const Uint32 z,
 				const Uint16 face, const Uint16 mipmap) const;
+			Uint8 get_pixel_packed_uint8(const Uint32 x,
+				const Uint32 y, const Uint32 z,
+				const Uint16 face, const Uint16 mipmap) const;
+			Uint16 get_pixel_packed_uint16(const Uint32 x,
+				const Uint32 y, const Uint32 z,
+				const Uint16 face, const Uint16 mipmap) const;
+			Uint32 get_pixel_packed_uint32(const Uint32 x,
+				const Uint32 y, const Uint32 z,
+				const Uint16 face, const Uint16 mipmap) const;
 			void set_pixel_uint(const Uint32 x, const Uint32 y,
 				const Uint32 z, const Uint16 face,
 				const Uint16 mipmap, const glm::uvec4 &data);
+			void set_pixel_packed_uint8(const Uint32 x,
+				const Uint32 y, const Uint32 z,
+				const Uint16 face, const Uint16 mipmap,
+				const Uint8 data);
+			void set_pixel_packed_uint16(const Uint32 x,
+				const Uint32 y, const Uint32 z,
+				const Uint16 face, const Uint16 mipmap,
+				const Uint16 data);
+			void set_pixel_packed_uint32(const Uint32 x,
+				const Uint32 y, const Uint32 z,
+				const Uint16 face, const Uint16 mipmap,
+				const Uint32 data);
 			glm::ivec4 get_pixel_int(const Uint32 x, const Uint32 y,
 				const Uint32 z, const Uint16 face,
 				const Uint16 mipmap) const;

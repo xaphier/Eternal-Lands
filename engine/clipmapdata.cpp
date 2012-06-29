@@ -67,15 +67,15 @@ namespace eternal_lands
 	{
 		Uint16 i;
 
-		for (i = 0; i < m_blend_maps.size(); ++i)
+		for (i = 0; i < m_blend_images.size(); ++i)
 		{
-			if (get_blend_map(i).get().empty())
+			if (get_blend_image(i).get() != nullptr)
 			{
 				return i;
 			}
 		}
 
-		return m_blend_maps.size();
+		return m_blend_images.size();
 	}
 
 }

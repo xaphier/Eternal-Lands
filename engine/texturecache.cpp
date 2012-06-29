@@ -179,7 +179,6 @@ namespace eternal_lands
 		const String &index) const
 	{
 		ImageSharedPtr image;
-		TextureSharedPtr texture;
 		ReaderSharedPtr reader;
 		ImageCompressionTypeSet compressions;
 		bool rg_formats;
@@ -201,7 +200,16 @@ namespace eternal_lands
 
 		image = get_codec_manager()->load_image(reader, compressions,
 			rg_formats, true);
-		texture = boost::make_shared<Texture>(index);
+
+		return do_load_texture(image, index);
+	}
+
+	TextureSharedPtr TextureCache::do_load_texture(
+		const ImageSharedPtr &image, const String &name) const
+	{
+		TextureSharedPtr texture;
+
+		texture = boost::make_shared<Texture>(name);
 
 		if (image->get_height() == 1)
 		{
@@ -273,17 +281,37 @@ namespace eternal_lands
 		return m_texture_cache[index];
 	}
 
+	TextureSharedPtr TextureCache::get_texture(const ImageSharedPtr &image)
+		const
+	{
+		return do_load_texture(image, image->get_name());
+	}
+
 	TextureSharedPtr TextureCache::get_texture_array(
-		const StringVector &names, const String &index) const
+		const ImageSharedPtrVector &images, const String &name) const
+	{
+		TextureSharedPtr texture;
+
+		texture = boost::make_shared<Texture>(name);
+
+		texture->set_wrap_s(twt_clamp);
+		texture->set_wrap_t(twt_clamp);
+		texture->set_format(images[0]->get_texture_format());
+		texture->set_images(images);
+
+		return texture;
+	}
+
+	TextureSharedPtr TextureCache::get_texture_array(
+		const StringVector &image_names, const String &name) const
 	{
 		ImageSharedPtr image;
 		ImageSharedPtrVector images;
-		TextureSharedPtr texture;
 		ReaderSharedPtr reader;
 		ImageCompressionTypeSet compressions;
 		bool rg_formats;
 
-		RANGE_CECK_MIN(names.size(), 1, UTF8("not enough names."));
+		RANGE_CECK_MIN(images.size(), 1, UTF8("not enough images."));
 
 		if (GLEW_EXT_texture_compression_s3tc)
 		{
@@ -298,11 +326,9 @@ namespace eternal_lands
 			rg_formats = true;
 		}
 
-		texture = boost::make_shared<Texture>(index);
-
-		BOOST_FOREACH(const String &name, names)
+		BOOST_FOREACH(const String &image_name, image_names)
 		{
-			reader = get_file_system()->get_file(name);
+			reader = get_file_system()->get_file(image_name);
 
 			image = get_codec_manager()->load_image(reader,
 				compressions, rg_formats, true);
@@ -310,10 +336,7 @@ namespace eternal_lands
 			images.push_back(image);
 		}
 
-		texture->set_format(images[0]->get_texture_format());
-		texture->set_images(images);
-
-		return texture;
+		return get_texture_array(images, name);
 	}
 
 }

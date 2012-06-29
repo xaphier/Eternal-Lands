@@ -29,7 +29,7 @@ namespace eternal_lands
 			StringArray16 m_albedo_maps;
 			StringArray16 m_normal_maps;
 			StringArray16 m_specular_maps;
-			StringArray4 m_blend_maps;
+			ImageSharedPtrArray4 m_blend_images;
 			Vec4Array4 m_blend_sizes;
 			glm::vec4 m_color;
 
@@ -65,10 +65,11 @@ namespace eternal_lands
 				m_specular_maps = specular_maps;
 			}
 
-			inline void set_blend_maps(
-				const StringArray4 &blend_maps) noexcept
+			inline void set_blend_images(
+				const ImageSharedPtrArray4 &blend_images)
+				noexcept
 			{
-				m_blend_maps = blend_maps;
+				m_blend_images = blend_images;
 			}
 
 			inline void set_color(const glm::vec4 &color) noexcept
@@ -94,10 +95,10 @@ namespace eternal_lands
 				return m_specular_maps;
 			}
 
-			inline const StringArray4 &get_blend_maps() const
-				noexcept
+			inline const ImageSharedPtrArray4 &get_blend_images()
+				const noexcept
 			{
-				return m_blend_maps;
+				return m_blend_images;
 			}
 
 			inline const Vec4Array4 &get_blend_sizes() const noexcept
@@ -132,13 +133,13 @@ namespace eternal_lands
 				return m_specular_maps[index];
 			}
 
-			inline const String &get_blend_map(const Uint16 index)
-				const
+			inline const ImageSharedPtr &get_blend_image(
+				const Uint16 index) const
 			{
-				RANGE_CECK_MAX(index, m_blend_maps.size(),
+				RANGE_CECK_MAX(index, m_blend_images.size(),
 					UTF8("index too big."));
 
-				return m_blend_maps[index];
+				return m_blend_images[index];
 			}
 
 			inline const glm::vec4 &get_blend_size(

@@ -45,6 +45,13 @@ namespace eternal_lands
 		bet_smooth = 2
 	};
 
+	enum BrushSourceType
+	{
+		bst_value = 0,
+		bst_slope = 1,
+		bst_height = 2
+	};
+
 	class LessIvec2
 	{
 		public:
@@ -161,6 +168,25 @@ namespace eternal_lands
 				const BrushShapeType shape,
 				const BrushEffectType effect,
 				TerrainValueVector &terrain_values) const;
+			float calc_effect(const float value, const float data,
+				const float average, const float strength,
+				const BrushEffectType effect);
+			float calc_brush(const glm::vec2 &center,
+				const glm::vec2 &position,
+				const glm::vec2 &size, const float value,
+				const float attenuation_size, const float data,
+				const float average,
+				const BrushAttenuationType attenuation,
+				const BrushShapeType shape,
+				const BrushEffectType effect);
+			void change_blend_values(const glm::vec2 &size,
+				const glm::uvec2 &vertex,
+				const float attenuation_size, const float data,
+				const Uint16 layer, const bool mask, 
+				const BrushAttenuationType attenuation,
+				const BrushShapeType shape,
+				const BrushEffectType effect,
+				ImageValueVector &blend_values) const;
 
 			inline const ImageSharedPtr &get_terrain_vector_image()
 				const noexcept

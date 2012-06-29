@@ -71,17 +71,29 @@ namespace eternal_lands
 		{
 			ClipmapData clipmap_data;
 			StringArray16 albedo_maps;
-			StringArray4 blend_maps;
+			ImageSharedPtrArray4 blend_images;
+			Vec4Array4 blend_sizes;
 
 			albedo_maps[0] = String(UTF8("3dobjects/tile1.dds"));
 			albedo_maps[1] = String(UTF8("3dobjects/tile2.dds"));
 			albedo_maps[2] = String(UTF8("textures/tile3.dds"));
 			albedo_maps[3] = String(UTF8("3dobjects/tile3.dds"));
 
-			blend_maps[0] = String(UTF8("textures/blend0.dds"));
+			blend_images[0] = codec_manager->load_image(
+				String(UTF8("textures/blend0.dds")),
+				file_system, ImageCompressionTypeSet(), false,
+				false);
+
+			blend_sizes[0] = glm::vec4(0.1f);
+			blend_sizes[1] = glm::vec4(0.1f);
+			blend_sizes[2] = glm::vec4(0.1f);
+			blend_sizes[3] = glm::vec4(0.1f);
 
 			clipmap_data.set_albedo_maps(albedo_maps);
-			clipmap_data.set_blend_maps(blend_maps);
+			clipmap_data.set_blend_images(blend_images);
+			clipmap_data.set_blend_sizes(blend_sizes);
+			clipmap_data.set_color(
+				glm::vec4(0.3f, 0.9f, 0.1f, 1.0f));
 
 			build_clipmap_material(clipmap_data);
 		}
@@ -409,31 +421,45 @@ namespace eternal_lands
 		const ClipmapData &clipmap_data)
 	{
 		MaterialDescription material;
+		TextureSharedPtr texture;
 
 		material.set_name(String(UTF8("clipmap")));
-		material.set_texture(clipmap_data.get_albedo_map(0),
-			spt_albedo_0);
-		material.set_texture(clipmap_data.get_albedo_map(1),
-			spt_albedo_1);
-		material.set_texture(clipmap_data.get_albedo_map(2),
-			spt_albedo_2);
-		material.set_texture(clipmap_data.get_albedo_map(3),
-			spt_albedo_3);
-		material.set_texture(clipmap_data.get_blend_map(0),
-			spt_blend);
 		material.set_blend_sizes(clipmap_data.get_blend_sizes());
 		material.set_effect(
 			String(UTF8("clipmap-simple-blend-4-screen-quad")));
 
 		m_clipmap_material = get_material_builder()->get_material(
 			material);
+
+		texture = get_texture_cache()->get_texture(
+			clipmap_data.get_albedo_map(0));
+		m_clipmap_material->set_texture(texture, spt_albedo_0);
+
+		texture = get_texture_cache()->get_texture(
+			clipmap_data.get_albedo_map(1));
+		m_clipmap_material->set_texture(texture, spt_albedo_1);
+
+		texture = get_texture_cache()->get_texture(
+			clipmap_data.get_albedo_map(2));
+		m_clipmap_material->set_texture(texture, spt_albedo_2);
+
+		texture = get_texture_cache()->get_texture(
+			clipmap_data.get_albedo_map(3));
+		m_clipmap_material->set_texture(texture, spt_albedo_3);
+
+		texture = get_texture_cache()->get_texture(
+			clipmap_data.get_blend_image(0));
+		m_clipmap_material->set_texture(texture, spt_blend);
+
+		m_clipmap_material->set_blend_sizes(
+			clipmap_data.get_blend_sizes());
 	}
 
 	void Map::build_clipmap_material_with_texture_arrays(
 		const ClipmapData &clipmap_data)
 	{
 		StringVector albedo_names, normal_names, specular_names;
-		StringVector blend_names;
+		ImageSharedPtrVector blend_images;
 		MaterialDescription material;
 		TextureSharedPtr texture;
 		String effect;
@@ -479,14 +505,16 @@ namespace eternal_lands
 
 		for (i = 0; i < (count / 4); ++i)
 		{
-			blend_names.push_back(clipmap_data.get_blend_map(i));
+			blend_images.push_back(clipmap_data.get_blend_image(i));
 		}
 
 		texture = get_texture_cache()->get_texture_array(albedo_names,
 			String(UTF8("albedo clipmap")));
 
 		m_clipmap_material->set_texture(texture, spt_albedo_0);
-		m_clipmap_material->set_blend_sizes(clipmap_data.get_blend_sizes());
+
+		m_clipmap_material->set_blend_sizes(
+			clipmap_data.get_blend_sizes());
 
 /*
 		texture = get_texture_cache()->get_texture_array(normal_names,
@@ -499,7 +527,7 @@ namespace eternal_lands
 
 		m_clipmap_material->set_texture(texture, spt_specular);
 */
-		texture = get_texture_cache()->get_texture_array(blend_names,
+		texture = get_texture_cache()->get_texture_array(blend_images,
 			String(UTF8("blend clipmap")));
 
 		m_clipmap_material->set_texture(texture, spt_blend);

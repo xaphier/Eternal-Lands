@@ -11,10 +11,6 @@
 #include "materialdescription.hpp"
 #include "materialbuilder.hpp"
 
-#include "material.hpp"
-#include "effect.hpp"
-#include "clipmapdata.hpp"
-
 namespace eternal_lands
 {
 

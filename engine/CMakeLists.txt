@@ -98,6 +98,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/buildinformations.cpp.in" "${CMAKE_C
 
 list(APPEND engine_source_files "${CMAKE_CURRENT_BINARY_DIR}/buildinformations.cpp")
 
+add_subdirectory(lz4)
 add_subdirectory(zip)
 add_subdirectory(angelscript)
 add_subdirectory(glsl_optimizer)
@@ -119,14 +120,8 @@ target_link_libraries(elengine glsl_optimizer)
 target_link_libraries(elengine angelscript)
 target_link_libraries(elengine xz)
 target_link_libraries(elengine zip)
+target_link_libraries(elengine lz4)
 target_link_libraries(elengine ${ZLIB_LIBRARIES})
-
-if (WIN32)
-	target_link_libraries(elengine bfd)
-	target_link_libraries(elengine intl)
-	target_link_libraries(elengine iberty)
-	target_link_libraries(elengine imagehlp)
-endif (WIN32)
 
 if (PCHSupport_FOUND AND BUILD_PCH)
 	ADD_PRECOMPILED_HEADER(elengine prerequisites.hpp)

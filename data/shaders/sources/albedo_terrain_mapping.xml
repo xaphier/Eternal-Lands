@@ -36,8 +36,8 @@
 vec2 uv, ddx, ddy;
 float lod, blend;
 float det, squared_length_major, length_major;
-float ratio_of_anisotropy, length_minor, index;
-int i;
+float ratio_of_anisotropy, length_minor;
+int i, index;
 
 ddx = world_uv_ddx_ddy.xy;
 ddy = world_uv_ddx_ddy.zw;
@@ -111,13 +111,13 @@ lod = log2(max(length(ddx), length(ddy)));
 
 index = clipmap_slices - 1;
 
-for (i = 0; i &lt; (clipmap_slices - 1); ++i)
+for (i = clipmap_slices - 2; i &gt;= 0; --i)
 {
 	uv = terrain_uvs[i];
 
 	if (all(lessThan(abs(uv - vec2(0.5)), vec2(0.4995))))
 	{
-		index = min(i, index);
+		index = i;
 	}
 }
 

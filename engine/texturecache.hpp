@@ -39,9 +39,9 @@ namespace eternal_lands
 				const String &index);
 			TextureSharedPtr do_load_texture(const String &name,
 				const String &index) const;
-			TextureSharedPtr do_load_texture_array(
-				const StringVector &names, const String &index)
-				const;
+			TextureSharedPtr do_load_texture(
+				const ImageSharedPtr &image,
+				const String &name) const;
 
 			inline CodecManagerSharedPtr get_codec_manager() const
 				noexcept
@@ -74,9 +74,14 @@ namespace eternal_lands
 			~TextureCache() noexcept;
 			const TextureSharedPtr &get_texture(const String &name);
 			const TextureSharedPtr &get_error_texture();
+			TextureSharedPtr get_texture(
+				const ImageSharedPtr &image) const;
 			TextureSharedPtr get_texture_array(
-				const StringVector &names, const String &index)
-				const;
+				const StringVector &image_names,
+				const String &name) const;
+			TextureSharedPtr get_texture_array(
+				const ImageSharedPtrVector &images,
+				const String &name) const;
 
 	};
 

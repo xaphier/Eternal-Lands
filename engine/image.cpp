@@ -642,6 +642,72 @@ namespace eternal_lands
 		return swizzel_channels(get_format(), result);
 	}
 
+	Uint8 Image::get_pixel_packed_uint8(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap) const
+	{
+		const void* const value = static_cast<const Uint8* const>(
+			get_buffer()->get_ptr()) + get_pixel_offset(x, y, z,
+			face, mipmap);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_BYTE_3_3_2:
+			case GL_UNSIGNED_BYTE_2_3_3_REV:
+				return *static_cast<const Uint8*>(value);
+			default:
+				assert(false);
+				return 0;
+		}
+
+		return 0;
+	}
+
+	Uint16 Image::get_pixel_packed_uint16(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap) const
+	{
+		const void* const value = static_cast<const Uint8* const>(
+			get_buffer()->get_ptr()) + get_pixel_offset(x, y, z,
+			face, mipmap);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_SHORT_5_6_5:
+			case GL_UNSIGNED_SHORT_5_6_5_REV:
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+				return *static_cast<const Uint16*>(value);
+			default:
+				assert(false);
+				return 0;
+		}
+
+		return 0;
+	}
+
+	Uint32 Image::get_pixel_packed_uint32(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap) const
+	{
+		const void* const value = static_cast<const Uint8* const>(
+			get_buffer()->get_ptr()) + get_pixel_offset(x, y, z,
+			face, mipmap);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_INT_8_8_8_8:
+			case GL_UNSIGNED_INT_8_8_8_8_REV:
+			case GL_UNSIGNED_INT_10_10_10_2:
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				return *static_cast<const Uint32*>(value);
+			default:
+				assert(false);
+				return 0;
+		}
+
+		return 0;
+	}
+
 	glm::ivec4 Image::get_pixel_int(const Uint32 x, const Uint32 y,
 		const Uint32 z, const Uint16 face, const Uint16 mipmap) const
 	{
@@ -1062,6 +1128,75 @@ namespace eternal_lands
 				}
 				return;
 			case GL_NONE:
+			default:
+				assert(false);
+				return;
+		}
+	}
+
+	void Image::set_pixel_packed_uint8(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap,
+		const Uint8 data)
+	{
+		void* value;
+
+		value = static_cast<Uint8*>(get_buffer()->get_ptr()) +
+			get_pixel_offset(x, y, z, face, mipmap);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_BYTE_3_3_2:
+			case GL_UNSIGNED_BYTE_2_3_3_REV:
+				*static_cast<Uint8*>(value) = data;
+				return;
+			default:
+				assert(false);
+				return;
+		}
+	}
+
+	void Image::set_pixel_packed_uint16(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap,
+		const Uint16 data)
+	{
+		void* value;
+
+		value = static_cast<Uint8*>(get_buffer()->get_ptr()) +
+			get_pixel_offset(x, y, z, face, mipmap);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_SHORT_5_6_5:
+			case GL_UNSIGNED_SHORT_5_6_5_REV:
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+				*static_cast<Uint16*>(value) = data;
+				return;
+			default:
+				assert(false);
+				return;
+		}
+	}
+
+	void Image::set_pixel_packed_uint32(const Uint32 x, const Uint32 y,
+		const Uint32 z, const Uint16 face, const Uint16 mipmap,
+		const Uint32 data)
+	{
+		void* value;
+
+		value = static_cast<Uint8*>(get_buffer()->get_ptr()) +
+			get_pixel_offset(x, y, z, face, mipmap);
+
+		switch (get_type())
+		{
+			case GL_UNSIGNED_INT_8_8_8_8:
+			case GL_UNSIGNED_INT_8_8_8_8_REV:
+			case GL_UNSIGNED_INT_10_10_10_2:
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				*static_cast<Uint32*>(value) = data;
+				return;
 			default:
 				assert(false);
 				return;
