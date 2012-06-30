@@ -65,9 +65,10 @@ namespace eternal_lands
 
 		if (err != Z_OK)
 		{
-			EL_THROW_EXCEPTION(UncompressException()
-				<< errinfo_message(UTF8("gz uncompress "
-					"error")));
+			EL_THROW_EXCEPTION(DecompressException()
+				<< errinfo_message(UTF8("gz decompression "
+					"error"))
+				<< errinfo_parameter_name(UTF8("gz")));
 		}
 
 		result = boost::make_shared<ReadWriteMemory>();
@@ -89,9 +90,10 @@ namespace eternal_lands
 
 			if ((err != Z_STREAM_END) && (err != Z_OK))
 			{
-				EL_THROW_EXCEPTION(UncompressException()
-					<< errinfo_message(UTF8("gz uncompress"
-						" error")));
+				EL_THROW_EXCEPTION(DecompressException()
+					<< errinfo_message(UTF8("gz "
+						"decompression error"))
+					<< errinfo_parameter_name(UTF8("gz")));
 			}
 		}
 		while (err != Z_STREAM_END);
@@ -102,9 +104,10 @@ namespace eternal_lands
 
 		if (err != Z_OK)
 		{
-			EL_THROW_EXCEPTION(UncompressException()
-				<< errinfo_message(UTF8("gz uncompress "
-					"error")));
+			EL_THROW_EXCEPTION(DecompressException()
+				<< errinfo_message(UTF8("gz decompression "
+					"error"))
+				<< errinfo_parameter_name(UTF8("gz")));
 		}
 
 		return result;
@@ -126,9 +129,10 @@ namespace eternal_lands
 
 		if (err != SZ_OK)
 		{
-			EL_THROW_EXCEPTION(UncompressException()
-				<< errinfo_message(UTF8("xz uncompress "
-					"error")));
+			EL_THROW_EXCEPTION(DecompressException()
+				<< errinfo_message(UTF8("xz decompression "
+					"error"))
+				<< errinfo_parameter_name(UTF8("xz")));
 		}
 
 		dst_idx = 0;
@@ -161,9 +165,10 @@ namespace eternal_lands
 
 		if (err != SZ_OK)
 		{
-			EL_THROW_EXCEPTION(UncompressException()
-				<< errinfo_message(UTF8("xz uncompress "
-					"error")));
+			EL_THROW_EXCEPTION(DecompressException()
+				<< errinfo_message(UTF8("xz decompression "
+					"error"))
+				<< errinfo_parameter_name(UTF8("xz")));
 		}
 
 		result->resize(dst_idx);

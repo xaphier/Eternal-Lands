@@ -18,6 +18,12 @@ QT4_WRAP_CPP(map_editor_moc_files ${map_editor_header_files} OPTIONS -DBOOST_TT_
 QT4_WRAP_UI(map_editor_form_files ${map_editor_ui_files})
 QT4_ADD_RESOURCES(map_editor_resource_files ${map_editor_qrc_files})
 
+#nodes dir
+file(GLOB nodes_header_files nodes/*.h)
+file(GLOB nodes_source_files nodes/*.cpp)
+list(APPEND map_editor_source_files ${nodes_source_files})
+list(APPEND map_editor_header_files ${nodes_header_files})
+
 #editor dir
 file(GLOB editor_header_files editor/*.hpp)
 file(GLOB editor_source_files editor/*.cpp)

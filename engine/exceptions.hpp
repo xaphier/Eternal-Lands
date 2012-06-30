@@ -51,7 +51,9 @@ namespace eternal_lands
 		public virtual boost::exception {};
 	class VariantException: public virtual std::exception,
 		public virtual boost::exception {};
-	class UncompressException: public virtual std::exception,
+	class DecompressException: public virtual std::exception,
+		public virtual boost::exception {};
+	class CompressException: public virtual std::exception,
 		public virtual boost::exception {};
 	class BadAllocException: public virtual std::bad_alloc,
 		public virtual boost::exception {};
