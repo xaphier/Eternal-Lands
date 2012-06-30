@@ -101,8 +101,8 @@ albedo = mix(albedo, tmp, blend);
    </parameters>
    <source>vec4 tmp;
 vec2 uv, ddx, ddy;
-float lod, blend, index;
-int i;
+float lod, blend;
+int i, index;
 
 ddx = dFdx(world_uv);
 ddy = dFdy(world_uv);
