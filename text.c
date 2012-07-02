@@ -38,11 +38,7 @@ int summoning_filter=0;
 
 text_message display_text_buffer[DISPLAY_TEXT_BUFFER_SIZE];
 int last_message = -1;
-int total_nr_lines = 0;
 Uint8 current_filter = FILTER_ALL;
-
-int console_msg_nr = 0;
-int console_msg_offset = 0;
 
 text_message input_text_line;
 
@@ -52,8 +48,6 @@ Uint32 last_server_message_time;
 int lines_to_show=0;
 
 int show_timestamp = 0;
-
-char not_from_the_end_console=0;
 
 int log_chat = LOG_SERVER;
 
@@ -128,7 +122,7 @@ void update_text_windows (text_message * pmsg)
 	if (console_root_win >= 0) update_console_win (pmsg);
 	switch (use_windowed_chat) {
 		case 0:
-			rewrap_message(pmsg, chat_zoom, console_text_width, NULL);
+			rewrap_message(pmsg, chat_zoom, get_console_text_width(), NULL);
 			lines_to_show += pmsg->wrap_lines;
 			if (lines_to_show > 10) lines_to_show = 10;
 			break;
@@ -875,7 +869,6 @@ void put_colored_text_in_buffer (Uint8 color, Uint8 channel, const Uint8 *text_t
 			msg = &(display_text_buffer[i]);
 			if (msg->data)
 			{
-				total_nr_lines -= msg->wrap_lines;
 				msg->deleted = 1;
 				update_text_windows(msg);
 				free_text_message_data (msg);
@@ -1111,12 +1104,7 @@ int find_last_lines_time (int *msg, int *offset, Uint8 filter, int width)
 	}
 	if (lines_to_show <= 0) return 0;
 
-	return find_line_nr (total_nr_lines, total_nr_lines - lines_to_show, filter, msg, offset, chat_zoom, width);
-}
-
-int find_last_console_lines (int lines_no)
-{
-	return find_line_nr (total_nr_lines, total_nr_lines - lines_no, FILTER_ALL, &console_msg_nr, &console_msg_offset, chat_zoom, console_text_width);
+	return find_line_nr (get_total_nr_lines(), get_total_nr_lines() - lines_to_show, filter, msg, offset, chat_zoom, width);
 }
 
 
@@ -1186,111 +1174,6 @@ int find_line_nr (int nr_lines, int line, Uint8 filter, int *msg, int *offset, f
 	*offset = 0;
 	return 1;
 }
-void console_move_up ()
-{
-	int nl_found, ichar;
-	int max_lines;
-
-	// get the number of lines we have - the last one, which is the
-	// command line
-	max_lines = (window_height - hud_y) / 18 - 1;
-	if (not_from_the_end_console) max_lines--;
-
-	// if we have less lines of text than the max lines onscreen, don't
-	// scroll up
-	if (total_nr_lines > max_lines)
-	{
-		not_from_the_end_console = 1;
-
-		nl_found = 0;
-		while (1)
-		{
-			const char *data = display_text_buffer[console_msg_nr].data;
-			for (ichar = console_msg_offset; ichar >= 0; ichar--)
-			{
-				if (data[ichar] == '\n' || data[ichar] == '\r')
-				{
-					if (nl_found) break;
-					nl_found = 1;
-				}
-			}
-			if (nl_found)
-			{
-				console_msg_offset = ichar + 1;
-				return;
-			}
-			--console_msg_nr;
-			nl_found = 1;
-		}
-	}
-}
-
-
-void console_move_down ()
-{
-	int ichar;
-	int max_lines;
-	const char *data = display_text_buffer[console_msg_nr].data;
-
-	if (!not_from_the_end_console)
-		// we can't scroll down anymore
-		return;
-
-	// get the number of lines we have on screen
-	max_lines = (window_height-hud_y)/18 - 1;
-	max_lines--;
-
-	for (ichar = console_msg_offset; data[ichar] != '\0'; ichar++)
-		if (data[ichar] == '\n' || data[ichar] == '\r')
-			break;
-
-	if (data[ichar] == '\n' || data[ichar] == '\r')
-	{
-		console_msg_offset = ichar + 1;
-	}
-	else
-	{
-		if (++console_msg_nr >= DISPLAY_TEXT_BUFFER_SIZE)
-			console_msg_nr = 0;
-		console_msg_offset = 0;
-	}
-
-	if (console_msg_nr == last_message)
-	{
-		data = display_text_buffer[console_msg_nr].data;
-		for (ichar = console_msg_offset; data[ichar] != '\0'; ichar++)
-			if (data[ichar] == '\n' || data[ichar] == '\r')
-				break;
-		if (data[ichar] == '\0')
-			not_from_the_end_console = 0;
-	}
-}
-
-void console_move_page_down()
-{
-	int max_lines;
-	int i;
-
-	max_lines=(window_height-hud_y)/18-3;
-
-	for(i=0;i<max_lines;i++)
-		{
-			console_move_down();
-		}
-}
-
-void console_move_page_up()
-{
-	int max_lines;
-	int i;
-
-	max_lines=(window_height-hud_y)/18-3;
-
-	for(i=0;i<max_lines;i++)
-		{
-			console_move_up();
-		}
-}
 
 void clear_display_text_buffer ()
 {
@@ -1303,12 +1186,8 @@ void clear_display_text_buffer ()
 		display_text_buffer[i].deleted= 1;
 	}
 
-	console_msg_nr = 0;
-	console_msg_offset = 0;
 	last_message = -1;
 	last_server_message_time = cur_time;
-	total_nr_lines = 0;
-	not_from_the_end_console = 1;
 
 	clear_console();
 	if(use_windowed_chat == 2){
@@ -1326,11 +1205,7 @@ int rewrap_message(text_message * msg, float zoom, int width, int * cursor)
 
 	if (msg->wrap_width != width || msg->wrap_zoom != zoom)
 	{
-		if (msg->chan_idx != CHAT_NONE)
-			total_nr_lines -= msg->wrap_lines;
  		nlines = reset_soft_breaks(msg->data, msg->len, msg->size, zoom, width, cursor, &max_line_width);
-		if (msg->chan_idx != CHAT_NONE)
-			total_nr_lines += nlines;
 		msg->len = strlen(msg->data);
 		msg->wrap_lines = nlines;
 		msg->wrap_width = width;
