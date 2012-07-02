@@ -23,14 +23,56 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include <QtGui/QApplication>
-#include "qnemainwindow.h"
+#ifndef QNEPORT_H
+#define QNEPORT_H
 
-int main(int argc, char *argv[])
+#include <QGraphicsPathItem>
+
+class QNEBlock;
+class QNEConnection;
+
+class QNEPort : public QGraphicsPathItem
 {
-    QApplication a(argc, argv);
-    QNEMainWindow w;
-    w.show();
+public:
+	enum { Type = QGraphicsItem::UserType + 1 };
+	enum { NamePort = 1, TypePort = 2 };
 
-    return a.exec();
-}
+	QNEPort(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	~QNEPort();
+
+	void setNEBlock(QNEBlock*);
+	void setName(const QString &n);
+	void setIsOutput(bool o);
+	int radius();
+	bool isOutput();
+	QVector<QNEConnection*>& connections();
+	void setPortFlags(int);
+
+	const QString& portName() const { return name; }
+	int portFlags() const { return m_portFlags; }
+
+	int type() const { return Type; }
+
+	QNEBlock* block() const;
+
+	quint64 ptr();
+	void setPtr(quint64);
+
+	bool isConnected(QNEPort*);
+
+protected:
+	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
+private:
+	QNEBlock *m_block;
+	QString name;
+	bool isOutput_;
+	QGraphicsTextItem *label;
+	int radius_;
+	int margin;
+	QVector<QNEConnection*> m_connections;
+	int m_portFlags;
+	quint64 m_ptr;
+};
+
+#endif // QNEPORT_H

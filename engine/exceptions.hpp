@@ -232,6 +232,22 @@ namespace eternal_lands
 	while (false)
 #endif
 
+#ifdef	DEBUG
+#define NULL_PTR_CHECK(ptr, parameter)	\
+	assert(((ptr) != nullptr) && (parameter));
+#else
+#define NULL_PTR_CHECK(ptr, parameter)	\
+	do	\
+	{	\
+		if ((ptr) == nullptr)	\
+		{	\
+			EL_THROW_EXCEPTION(NullPtrException()	\
+				<< errinfo_parameter_name((parameter));	\
+		}	\
+	}	\
+	while (false)
+#endif
+
 }
 
 #endif	/* UUID_2895e87c_d039_42e6_8628_577d13de5d2a */

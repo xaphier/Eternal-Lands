@@ -233,6 +233,8 @@ namespace eternal_lands
 	class Effect;
 	class EffectCache;
 	class EffectDescription;
+	class EffectNode;
+	class EffectNodePort;
 	class FreeIds;
 	class FreeIdsManager;
 	class FileSystem;
@@ -343,12 +345,14 @@ namespace eternal_lands
 	typedef RStarTree* RStarTreePtr;
 	typedef SubObject* SubObjectPtr;
 	typedef VertexElements* VertexElementsPtr;
+	typedef EffectNodePort* EffectNodePortPtr;
 
 	typedef std::pair<Sint16, Sint16> Sint16Sint16Pair;
 	typedef std::map<Uint32, Uint32> Uint32Uint32Map;
 	typedef std::map<String, Uint16> StringUint16Map;
 	typedef std::map<String, Uint32> StringUint32Map;
 	typedef std::map<String, String> StringStringMap;
+	typedef std::set<EffectNodePortPtr> EffectNodePortPtrSet;
 	typedef boost::multi_array<bool, 2> BoolMultiArray2;
 	typedef boost::multi_array<float, 2> FloatMultiArray2;
 	typedef boost::multi_array<Uint8, 2> Uint8MultiArray2;
@@ -497,6 +501,7 @@ namespace eternal_lands
 	typedef boost::array<AbstractWriteMemorySharedPtr,
 		vertex_stream_count> AbstractWriteMemorySharedPtrArray;
 	typedef boost::ptr_vector<VertexStream> VertexStreamVector;
+	typedef boost::ptr_vector<EffectNodePort> EffectNodePortVector;
 
 	typedef boost::variant<bool, Sint64, float,
 		glm::ivec2, glm::ivec3, glm::ivec4,

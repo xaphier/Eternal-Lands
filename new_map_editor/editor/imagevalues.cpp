@@ -7,11 +7,12 @@
 
 #include "imagevalues.hpp"
 #include "readwritememory.hpp"
+#include "lz4.hpp"
 
 namespace eternal_lands
 {
 
-	ImageValues::ImageValues()
+	ImageValues::ImageValues(): m_size(0)
 	{
 	}
 
@@ -76,6 +77,9 @@ namespace eternal_lands
 				idx1++;
 			}
 		}
+
+		m_buffer = Lz4::compress_high(buffer);
+		m_size = buffer->get_size();
 	}
 
 	ImageValueVector ImageValues::unpack() const
@@ -85,6 +89,8 @@ namespace eternal_lands
 		Uint32 x, y, i, j, count, idx0, idx1, image_count;
 		Uint32 size;
 		Uint16* data;
+
+		buffer = Lz4::decompress(m_buffer, m_size);
 
 		data = static_cast<Uint16*>(buffer->get_ptr());
 

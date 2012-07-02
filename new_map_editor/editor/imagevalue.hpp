@@ -21,7 +21,7 @@ namespace eternal_lands
 	class ImageValue
 	{
 		private:
-			Uint16Array16 m_values;
+			Uint16Array4 m_values;
 			Uint16 m_x;
 			Uint16 m_y;
 

@@ -23,14 +23,41 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include <QtGui/QApplication>
-#include "qnemainwindow.h"
+#ifndef QNEBLOCK_H
+#define QNEBLOCK_H
 
-int main(int argc, char *argv[])
+#include <QGraphicsPathItem>
+
+class QNEPort;
+
+class QNEBlock : public QGraphicsPathItem
 {
-    QApplication a(argc, argv);
-    QNEMainWindow w;
-    w.show();
+public:
+	enum { Type = QGraphicsItem::UserType + 3 };
 
-    return a.exec();
-}
+	QNEBlock(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+
+	QNEPort* addPort(const QString &name, bool isOutput, int flags = 0, int ptr = 0);
+	void addInputPort(const QString &name);
+	void addOutputPort(const QString &name);
+	void addInputPorts(const QStringList &names);
+	void addOutputPorts(const QStringList &names);
+	void save(QDataStream&);
+	void load(QDataStream&, QMap<quint64, QNEPort*> &portMap);
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+	QNEBlock* clone();
+	QVector<QNEPort*> ports();
+
+	int type() const { return Type; }
+
+protected:
+	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
+private:
+	int horzMargin;
+	int vertMargin;
+	int width;
+	int height;
+};
+
+#endif // QNEBLOCK_H

@@ -62,6 +62,12 @@ file(GLOB terrain_source_files terrain/*.cpp)
 list(APPEND engine_source_files ${terrain_source_files})
 list(APPEND engine_header_files ${terrain_header_files})
 
+#node dir
+file(GLOB node_header_files node/*.hpp)
+file(GLOB node_source_files node/*.cpp)
+list(APPEND engine_source_files ${node_header_files})
+list(APPEND engine_header_files ${node_source_files})
+
 #sha1 dir
 file(GLOB sha1_header_files sha1/*.h)
 file(GLOB sha1_source_files sha1/*.cpp)

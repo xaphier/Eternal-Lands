@@ -22,6 +22,7 @@ namespace eternal_lands
 	{
 		private:
 			ReadWriteMemorySharedPtr m_buffer;
+			Uint32 m_size;
 
 		public:
 			ImageValues();

@@ -23,14 +23,40 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include <QtGui/QApplication>
-#include "qnemainwindow.h"
+#ifndef QNECONNECTION_H
+#define QNECONNECTION_H
 
-int main(int argc, char *argv[])
+#include <QGraphicsPathItem>
+
+class QNEPort;
+
+class QNEConnection : public QGraphicsPathItem
 {
-    QApplication a(argc, argv);
-    QNEMainWindow w;
-    w.show();
+public:
+	enum { Type = QGraphicsItem::UserType + 2 };
 
-    return a.exec();
-}
+	QNEConnection(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	~QNEConnection();
+
+	void setPos1(const QPointF &p);
+	void setPos2(const QPointF &p);
+	void setPort1(QNEPort *p);
+	void setPort2(QNEPort *p);
+	void updatePosFromPorts();
+	void updatePath();
+	QNEPort* port1() const;
+	QNEPort* port2() const;
+
+	void save(QDataStream&);
+	void load(QDataStream&, const QMap<quint64, QNEPort*> &portMap);
+
+	int type() const { return Type; }
+
+private:
+	QPointF pos1;
+	QPointF pos2;
+	QNEPort *m_port1;
+	QNEPort *m_port2;
+};
+
+#endif // QNECONNECTION_H

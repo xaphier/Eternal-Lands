@@ -177,10 +177,7 @@ namespace eternal_lands
 		RStarTreeNodeSharedPtr node;
 		BitSet32 oft;
 
-		if (element.get() == nullptr)
-		{
-			EL_THROW_EXCEPTION(NullPtrException());
-		}
+		NULL_PTR_CHECK(element.get(), UTF8("element"));
 
 		if (!get_root_node()->insert(element))
 		{
@@ -207,10 +204,7 @@ namespace eternal_lands
 		RStarTreeNodeSharedPtrVector reinsert;
 		RStarTreeNodeSharedPtr node;
 
-		if (element.get() == nullptr)
-		{
-			EL_THROW_EXCEPTION(NullPtrException());
-		}
+		NULL_PTR_CHECK(element.get(), UTF8("element"));
 
 		node = get_root_node()->find_leaf(element, path_buffer);
 

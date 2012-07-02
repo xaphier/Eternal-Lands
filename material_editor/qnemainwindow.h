@@ -23,14 +23,33 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include <QtGui/QApplication>
-#include "qnemainwindow.h"
+#ifndef QNEMAINWINDOW_H
+#define QNEMAINWINDOW_H
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
-    QNEMainWindow w;
-    w.show();
+#include <QMainWindow>
 
-    return a.exec();
+namespace Ui {
+	class QNEMainWindow;
 }
+
+class QNodesEditor;
+
+class QNEMainWindow : public QMainWindow
+{
+	Q_OBJECT
+
+public:
+	explicit QNEMainWindow(QWidget *parent = 0);
+	~QNEMainWindow();
+
+private slots:
+	void saveFile();
+	void loadFile();
+	void addBlock();
+
+private:
+	Ui::QNEMainWindow *ui;
+	QNodesEditor *nodesEditor;
+};
+
+#endif // QNEMAINWINDOW_H
