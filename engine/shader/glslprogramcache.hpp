@@ -36,6 +36,8 @@ namespace eternal_lands
 			const UniformBufferDescriptionCacheWeakPtr
 				m_uniform_buffer_description_cache;
 			GlslProgramCacheMap m_glsl_program_cache;
+			boost::mt19937 m_ran;
+			Mt19937RandomUuidGenerator m_uuid_generator;
 
 			inline UniformBufferDescriptionCacheSharedPtr
 				get_uniform_buffer_description_cache() const

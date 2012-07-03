@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "effectchangeutil.hpp"
 #include "effectnodeportutil.hpp"
 
 /**
@@ -25,39 +26,61 @@ namespace eternal_lands
 
 	class EffectNodePort
 	{
+		friend class EffectNode;
 		private:
 			EffectNodePortPtrSet m_connections;
-			const EffectNode &m_node;
+			EffectNodePtr m_node;
+			const String m_var_name;
 			const String m_description;
 			const EffectNodePortType m_type;
+			const EffectChangeType m_change;
 			const bool m_input;
 
 			void do_connect(const EffectNodePortPtr port);
 			void do_disconnect(const EffectNodePortPtr port);
-
-		public:	
-			EffectNodePort(const EffectNode &node,
-				const String &description,
-				const EffectNodePortType type,
-				const bool input);
-			EffectNodePort(const EffectNode &node,
-				const EffectNodePortType type,
-				const bool input);
-			~EffectNodePort() noexcept;
-			bool check_connection(const EffectNodePortPtr port)
-				const;
-			Uint16 get_value_count() const noexcept;
-			Uint16 get_node_value_count() const noexcept;
-			bool connect(const EffectNodePortPtr port);
-			void disconnect(const EffectNodePortPtr port);
+			bool check_connection(EffectNodePtrSet &checking) const;
+			void update(EffectNodePtrSet &updated);
+			Uint16 get_connected_value_count() const;
 			static bool get_convertable(
 				const EffectNodePortType effect_node_port_0,
 				const EffectNodePortType effect_node_port_1,
 				const Uint16 count_0, const Uint16 count_1);
+
+			inline const EffectNodePortPtr &get_connection()
+				const noexcept
+			{
+				return *m_connections.begin();
+			}
+
+		public:	
+			EffectNodePort(const EffectNodePtr node,
+				const String &var_name,
+				const String &description,
+				const EffectNodePortType type,
+				const EffectChangeType change,
+				const bool input);
+			EffectNodePort(const EffectNodePtr node,
+				const String &var_name,
+				const EffectNodePortType type,
+				const EffectChangeType change,
+				const bool input);
+			~EffectNodePort() noexcept;
+			bool check_connection(const EffectNodePortPtr port,
+				EffectNodePtrSet &checking) const;
+			Uint16 get_value_count() const noexcept;
+			Uint16 get_node_value_count() const noexcept;
+			bool connect(const EffectNodePortPtr port);
+			void disconnect(const EffectNodePortPtr port);
 			bool get_convertable(const EffectNodePortPtr port)
 				const;
+			String get_connected_var_name() const;
 
 			inline const EffectNode &get_node() const noexcept
+			{
+				return *m_node;
+			}
+
+			inline const EffectNodePtr get_node_ptr() const noexcept
 			{
 				return m_node;
 			}
@@ -73,19 +96,34 @@ namespace eternal_lands
 				return m_description;
 			}
 
+			inline const String &get_var_name() const noexcept
+			{
+				return m_var_name;
+			}
+
 			inline EffectNodePortType get_type() const noexcept
 			{
 				return m_type;
 			}
 
-			inline bool get_input_port() const noexcept
+			inline bool get_general_type() const noexcept
+			{
+				return enpt_general == get_type();
+			}
+
+			inline bool get_input() const noexcept
 			{
 				return m_input;
 			}
 
-			inline bool get_output_port() const noexcept
+			inline bool get_output() const noexcept
 			{
-				return !get_input_port();
+				return !get_input();
+			}
+
+			inline bool get_connected() const noexcept
+			{
+				return m_connections.size() > 0;
 			}
 
 	};

@@ -11,7 +11,6 @@
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
-#include <boost/uuid/uuid_generators.hpp>
 
 namespace eternal_lands
 {
@@ -20,9 +19,13 @@ namespace eternal_lands
 		const UniformBufferDescriptionCacheWeakPtr
 			&uniform_buffer_description_cache):
 		m_uniform_buffer_description_cache(
-			uniform_buffer_description_cache)
+			uniform_buffer_description_cache),
+		m_uuid_generator(&m_ran)
+
 	{
 		assert(!m_uniform_buffer_description_cache.expired());
+
+		m_ran.seed(time(0));
 	}
 
 	GlslProgramCache::~GlslProgramCache() noexcept

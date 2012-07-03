@@ -13,6 +13,8 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "effectchangeutil.hpp"
+#include "effectnodeportutil.hpp"
 
 /**
  * @file
@@ -24,16 +26,38 @@ namespace eternal_lands
 
 	class EffectNode
 	{
+		friend class EffectNodePort;
 		private:
+			EffectNodePortVector m_ports;
 			String m_name;
 			Uint16 m_value_count;
-			EffectNodePortVector m_ports;
+
+			bool check_connections(EffectNodePtrSet &checking);
 
 		protected:
-			EffectNode();
+			EffectNode(const String &name);
+			void add_input_port(const String &description,
+				const EffectNodePortType type);
+			void add_input_port(const EffectNodePortType type);
+			void add_output_port(const String &var_name,
+				const String &description,
+				const EffectNodePortType type,
+				const EffectChangeType change);
+			void add_output_port(const String &var_name,
+				const EffectNodePortType type,
+				const EffectChangeType change);
+
+			inline void set_value_count(const Uint16 value_count)
+				noexcept
+			{
+				m_value_count = value_count;
+			}
 
 		public:
-			~EffectNode() noexcept;
+			virtual ~EffectNode() noexcept;
+			virtual void write(OutStream &str) const = 0;
+			void update(EffectNodePtrSet &updated);
+			bool update();
 			bool check() const;
 
 			inline const EffectNodePortVector &get_ports() const

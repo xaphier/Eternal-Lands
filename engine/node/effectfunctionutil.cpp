@@ -1,11 +1,11 @@
 /****************************************************************************
- *            effectnodeutil.cpp
+ *            effectfunctionutil.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "effectnodeutil.hpp"
+#include "effectfunctionutil.hpp"
 #include "exceptions.hpp"
 
 namespace eternal_lands
@@ -14,16 +14,13 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String effect_node_names[] =
+		const String effect_function_names[] =
 		{
 			String(UTF8("add")),
 			String(UTF8("sub")),
 			String(UTF8("mul")),
 			String(UTF8("div")),
 			String(UTF8("mad")),
-			String(UTF8("swizzle")),
-			String(UTF8("merge")),
-			String(UTF8("split")),
 			String(UTF8("radians")),
 			String(UTF8("degrees")),
 			String(UTF8("sin")),
@@ -66,71 +63,67 @@ namespace eternal_lands
 			String(UTF8("dot")),
 			String(UTF8("normalize")),
 			String(UTF8("saturate")),
-			String(UTF8("refract")),
-			String(UTF8("color")),
-			String(UTF8("constant")),
-			String(UTF8("paramter")),
-			String(UTF8("texture")),
-			String(UTF8("output")),
-			String(UTF8("inout"))
+			String(UTF8("refract"))
 		};
 
-		const Uint32 effect_node_names_count =
-			sizeof(effect_node_names) / sizeof(String);
+		const Uint32 effect_function_names_count =
+			sizeof(effect_function_names) / sizeof(String);
 
 	}
 
-	const String &EffectNodeUtil::get_str(const EffectNodeType effect_node)
+	const String &EffectFunctionUtil::get_str(
+		const EffectFunctionType effect_function)
 	{
-		if (effect_node_names_count <= effect_node)
+		if (effect_function_names_count <= effect_function)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					effect_node_names_count - 1)
+					effect_function_names_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
-					effect_node))
+					effect_function))
 				<< boost::errinfo_type_info_name(UTF8(
-					"EffectNodeType")));
+					"EffectFunctionType")));
 		}
 
-		return effect_node_names[effect_node];
+		return effect_function_names[effect_function];
 	}
 
-	EffectNodeType EffectNodeUtil::get_effect_node(const String &str)
+	EffectFunctionType EffectFunctionUtil::get_effect_function(
+		const String &str)
 	{
 		Uint32 i;
-		EffectNodeType effect_node;
+		EffectFunctionType effect_function;
 
-		for (i = 0; i < effect_node_names_count; ++i)
+		for (i = 0; i < effect_function_names_count; ++i)
 		{
-			effect_node = static_cast<EffectNodeType>(i);
+			effect_function = static_cast<EffectFunctionType>(i);
 
-			if (str == get_str(effect_node))
+			if (str == get_str(effect_function))
 			{
-				return effect_node;
+				return effect_function;
 			}
 		}
 
 		EL_THROW_EXCEPTION(InvalidParameterException()
 			<< errinfo_string_value(str)
 			<< boost::errinfo_type_info_name(
-				UTF8("EffectNodeType")));
+				UTF8("EffectFunctionType")));
 	}
 
-	bool EffectNodeUtil::get_effect_node(const String &str,
-		EffectNodeType &effect_node) noexcept
+	bool EffectFunctionUtil::get_effect_function(const String &str,
+		EffectFunctionType &effect_function) noexcept
 	{
 		Uint32 i;
-		EffectNodeType tmp;
+		EffectFunctionType tmp;
 
-		for (i = 0; i < effect_node_names_count; ++i)
+		for (i = 0; i < effect_function_names_count; ++i)
 		{
-			tmp = static_cast<EffectNodeType>(i);
+			tmp = static_cast<EffectFunctionType>(i);
 
 			if (str == get_str(tmp))
 			{
-				effect_node = tmp;
+				effect_function = tmp;
 
 				return true;
 			}
@@ -139,25 +132,25 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint32 EffectNodeUtil::get_effect_node_count() noexcept
+	Uint32 EffectFunctionUtil::get_effect_function_count() noexcept
 	{
-		return effect_node_names_count;
+		return effect_function_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectNodeType value)
+	OutStream& operator<<(OutStream &str, const EffectFunctionType value)
 	{
-		str << EffectNodeUtil::get_str(value);
+		str << EffectFunctionUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectNodeType &value)
+	InStream& operator>>(InStream &str, EffectFunctionType &value)
 	{
 		StringType string;
 
 		str >> string;
 
-		value = EffectNodeUtil::get_effect_node(String(string));
+		value = EffectFunctionUtil::get_effect_function(String(string));
 
 		return str;
 	}

@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(quat_in_out)
 	glm::quat tmp0, tmp1;
 	Uint16 i, j;
 
-	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	for (i = 0; i < 4096; ++i)
 	{
 		StringStream str;
 
@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(vec_in_out, T, vec_types)
 	T tmp0, tmp1;
 	Uint16 i, j;
 
-	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	for (i = 0; i < 4096; ++i)
 	{
 		StringStream str;
 
@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(ivec_in_out, T, ivec_types)
 	T tmp0, tmp1;
 	Uint16 i, j;
 
-	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	for (i = 0; i < 4096; ++i)
 	{
 		StringStream str;
 
@@ -112,7 +112,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(uvec_in_out, T, uvec_types)
 	T tmp0, tmp1;
 	Uint16 i, j;
 
-	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	for (i = 0; i < 4096; ++i)
 	{
 		StringStream str;
 
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(bvec_in_out, T, bvec_types)
 	T tmp0, tmp1;
 	Uint16 i, j;
 
-	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	for (i = 0; i < 4096; ++i)
 	{
 		StringStream str;
 
@@ -174,7 +174,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(mat_in_out, T, mat_types)
 	T tmp0, tmp1;
 	Uint16 i, j, k;
 
-	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
+	for (i = 0; i < 4096; ++i)
 	{
 		StringStream str;
 

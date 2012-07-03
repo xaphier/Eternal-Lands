@@ -242,7 +242,7 @@ namespace eternal_lands
 		if ((ptr) == nullptr)	\
 		{	\
 			EL_THROW_EXCEPTION(NullPtrException()	\
-				<< errinfo_parameter_name((parameter));	\
+				<< errinfo_parameter_name((parameter)));	\
 		}	\
 	}	\
 	while (false)

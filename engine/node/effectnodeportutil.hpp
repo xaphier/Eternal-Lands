@@ -32,10 +32,16 @@ namespace eternal_lands
 		enpt_g,
 		enpt_b,
 		enpt_a,
+		enpt_x,
+		enpt_y,
+		enpt_z,
+		enpt_w,
 		enpt_rg,
+		enpt_xy,
 		enpt_rgb,
 		enpt_xyz,
 		enpt_rgba,
+		enpt_xyzw,
 		enpt_single,
 		enpt_general
 	};

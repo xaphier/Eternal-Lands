@@ -53,6 +53,7 @@
 #include <boost/format.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 #include <boost/variant.hpp>
 #include <cmath>
 #include <glm/glm.hpp>
@@ -345,6 +346,7 @@ namespace eternal_lands
 	typedef RStarTree* RStarTreePtr;
 	typedef SubObject* SubObjectPtr;
 	typedef VertexElements* VertexElementsPtr;
+	typedef EffectNode* EffectNodePtr;
 	typedef EffectNodePort* EffectNodePortPtr;
 
 	typedef std::pair<Sint16, Sint16> Sint16Sint16Pair;
@@ -352,12 +354,16 @@ namespace eternal_lands
 	typedef std::map<String, Uint16> StringUint16Map;
 	typedef std::map<String, Uint32> StringUint32Map;
 	typedef std::map<String, String> StringStringMap;
+	typedef std::set<EffectNodePtr> EffectNodePtrSet;
 	typedef std::set<EffectNodePortPtr> EffectNodePortPtrSet;
 	typedef boost::multi_array<bool, 2> BoolMultiArray2;
 	typedef boost::multi_array<float, 2> FloatMultiArray2;
 	typedef boost::multi_array<Uint8, 2> Uint8MultiArray2;
 	typedef boost::multi_array<Uint16, 2> Uint16MultiArray2;
 	typedef boost::multi_array<Vec3Array2, 2> Vec3Array2MultiArray2;
+
+	typedef boost::uuids::basic_random_generator<boost::mt19937>
+		Mt19937RandomUuidGenerator;
 
 	SHARED_PTR(AbstractFrameBuffer);
 	SHARED_PTR(AbstractMesh);

@@ -1,5 +1,5 @@
 /****************************************************************************
- *            effectnodeutil.hpp
+ *            effectfunctionutil.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -16,26 +16,23 @@
 
 /**
  * @file
- * @brief The @c class EffectNodeUtil.
- * This file contains the @c class EffectNodeUtil.
+ * @brief The @c class EffectFunctionUtil.
+ * This file contains the @c class EffectFunctionUtil.
  */
 namespace eternal_lands
 {
 
 	/**
-	 * Basic types of the effect nodes.
+	 * Basic types of the effect functions.
 	 * @{
 	 */
-	enum EffectNodeType
+	enum EffectFunctionType
 	{
 		ent_add = 0,
 		ent_sub,
 		ent_mul,
 		ent_div,
 		ent_mad,
-		ent_swizzle,
-		ent_merge,
-		ent_split,
 		ent_radians,
 		ent_degrees,
 		ent_sin,
@@ -78,33 +75,27 @@ namespace eternal_lands
 		ent_dot,
 		ent_normalize,
 		ent_saturate,
-		ent_refract,
-		ent_color,
-		ent_constant,
-		ent_paramter,
-		ent_texture,
-		ent_output,
-		ent_inout
+		ent_refract
 	};
 	/**
 	 * @}
 	 */
 
-	class EffectNodeUtil
+	class EffectFunctionUtil
 	{
 		public:
 			static const String &get_str(
-				const EffectNodeType effect_node);
-			static EffectNodeType get_effect_node(
+				const EffectFunctionType effect_function);
+			static EffectFunctionType get_effect_function(
 				const String &str);
-			static bool get_effect_node(const String &str,
-				EffectNodeType &effect_node) noexcept;
-			static Uint32 get_effect_node_count() noexcept;
+			static bool get_effect_function(const String &str,
+				EffectFunctionType &effect_function) noexcept;
+			static Uint32 get_effect_function_count() noexcept;
 
 	};
 
-	OutStream& operator<<(OutStream &str, const EffectNodeType value);
-	InStream& operator>>(InStream &str, EffectNodeType &value);
+	OutStream& operator<<(OutStream &str, const EffectFunctionType value);
+	InStream& operator>>(InStream &str, EffectFunctionType &value);
 
 }
 
