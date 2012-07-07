@@ -16,7 +16,7 @@ namespace eternal_lands
 
 		const String effect_change_names[] =
 		{
-			String(UTF8("variable")),
+			String(UTF8("undefined")),
 			String(UTF8("constant")),
 			String(UTF8("vertex")),
 			String(UTF8("fragment"))

@@ -65,10 +65,34 @@ BOOST_AUTO_TEST_CASE(get_effect_change)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(stream)
+{
+	Uint32 i, count;
+	el::EffectChangeType type, tmp;
+
+	count = el::EffectChangeUtil::get_effect_change_count();
+
+	for (i = 0; i < count; i++)
+	{
+		el::StringStream str;
+
+		type = static_cast<el::EffectChangeType>(i);
+
+		BOOST_CHECK_NO_THROW(str << type);
+
+		BOOST_CHECK_EQUAL(str.str(),
+			el::EffectChangeUtil::get_str(type).get());
+
+		BOOST_CHECK_NO_THROW(str >> tmp);
+
+		BOOST_CHECK_EQUAL(tmp, type);
+	}
+}
+
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::EffectChangeUtil::get_str(
-		el::ect_variable).get(), "variable");
+		el::ect_undefined).get(), "undefined");
 	BOOST_CHECK_EQUAL(el::EffectChangeUtil::get_str(
 		el::ect_constant).get(), "constant");
 	BOOST_CHECK_EQUAL(el::EffectChangeUtil::get_str(

@@ -354,6 +354,7 @@ namespace eternal_lands
 	typedef std::map<String, Uint16> StringUint16Map;
 	typedef std::map<String, Uint32> StringUint32Map;
 	typedef std::map<String, String> StringStringMap;
+	typedef std::map<String, BitSet16> StringBitSet16Map;
 	typedef std::set<EffectNodePtr> EffectNodePtrSet;
 	typedef std::set<EffectNodePortPtr> EffectNodePortPtrSet;
 	typedef boost::multi_array<bool, 2> BoolMultiArray2;

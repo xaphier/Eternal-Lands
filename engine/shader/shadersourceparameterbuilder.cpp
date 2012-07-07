@@ -40,6 +40,48 @@ namespace eternal_lands
 		return ShaderSourceParameter(source, auto_parameter);
 	}
 
+	void ShaderSourceParameterBuilder::add_parameter(const String &source,
+		const CommonParameterType common_parameter,
+		const ParameterQualifierType qualifier,
+		ShaderSourceParameterVector &parameters)
+	{
+		add_parameter(build(source, common_parameter, qualifier),
+			parameters);
+	}
+
+	void ShaderSourceParameterBuilder::add_parameter(const String &source,
+		const AutoParameterType auto_parameter,
+		ShaderSourceParameterVector &parameters)
+	{
+		add_parameter(build(source, auto_parameter), parameters);
+	}
+
+	void ShaderSourceParameterBuilder::add_parameter(
+		const ShaderSourceParameter &parameter,
+		ShaderSourceParameterVector &parameters)
+	{
+		BOOST_FOREACH(const ShaderSourceParameter &tmp, parameters)
+		{
+			if (tmp.get_name() == parameter.get_name())
+			{
+				if (tmp.get_use(parameter))
+				{
+					return;
+				}
+			}
+		}
+
+		if (parameter.get_qualifier() == pqt_inout)
+		{
+			EL_THROW_MESSAGE_EXCEPTION(UTF8("Parameter '%1%' has "
+				"qualifier %2% and there is no possible "
+				"input."), parameter % pqt_inout,
+				InvalidParameterException());
+		}
+
+		parameters.push_back(parameter);
+	}
+
 	void ShaderSourceParameterBuilder::add_parameter(
 		const ShaderSourceParameter &parameter,
 		const ShaderSourceParameterVector &locals,

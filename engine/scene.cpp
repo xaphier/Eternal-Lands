@@ -252,7 +252,7 @@ namespace eternal_lands
 
 		m_scene_resources.init(get_file_system());
 
-		if (get_global_vars()->get_opengl_3_2())
+		if (get_global_vars()->get_opengl_3_1())
 		{
 			DEBUG_CHECK_GL_ERROR();
 
@@ -654,7 +654,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		if (get_global_vars()->get_opengl_3_2())
+		if (get_global_vars()->get_opengl_3_1())
 		{
 			TerrainVisitor terrain_visitor(
 				m_visible_terrain.get_uniform_buffer(
@@ -709,7 +709,7 @@ namespace eternal_lands
 		frustum = Frustum(
 			m_scene_view.get_split_projection_view_matrices());
 
-		if (get_global_vars()->get_opengl_3_2())
+		if (get_global_vars()->get_opengl_3_1())
 		{
 			count = m_shadow_terrain.size();
 
@@ -764,7 +764,7 @@ namespace eternal_lands
 
 		m_shadow_objects_mask.reset();
 
-		if (get_global_vars()->get_opengl_3_2())
+		if (get_global_vars()->get_opengl_3_1())
 		{
 			count = m_shadow_terrain.size();
 

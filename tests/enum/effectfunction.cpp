@@ -65,6 +65,30 @@ BOOST_AUTO_TEST_CASE(get_effect_function)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(stream)
+{
+	Uint32 i, count;
+	el::EffectFunctionType type, tmp;
+
+	count = el::EffectFunctionUtil::get_effect_function_count();
+
+	for (i = 0; i < count; i++)
+	{
+		el::StringStream str;
+
+		type = static_cast<el::EffectFunctionType>(i);
+
+		BOOST_CHECK_NO_THROW(str << type);
+
+		BOOST_CHECK_EQUAL(str.str(),
+			el::EffectFunctionUtil::get_str(type).get());
+
+		BOOST_CHECK_NO_THROW(str >> tmp);
+
+		BOOST_CHECK_EQUAL(tmp, type);
+	}
+}
+
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::EffectFunctionUtil::get_str(

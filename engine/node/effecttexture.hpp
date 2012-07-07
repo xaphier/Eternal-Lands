@@ -1,12 +1,12 @@
 /****************************************************************************
- *            effectconstant.hpp
+ *            effecttexture.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_c3aa7f77_e79c_44c0_8887_8f4e3d58afec
-#define	UUID_c3aa7f77_e79c_44c0_8887_8f4e3d58afec
+#ifndef	UUID_00d1c233_ac27_41ab_991a_acbde4b2c2ae
+#define	UUID_00d1c233_ac27_41ab_991a_acbde4b2c2ae
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
@@ -14,22 +14,22 @@
 
 #include "prerequisites.hpp"
 #include "effectnode.hpp"
-#include "effectconstantutil.hpp"
+#include "effecttextureutil.hpp"
 
 /**
  * @file
- * @brief The @c class EffectConstant.
- * This file contains the @c class EffectConstant.
+ * @brief The @c class EffectTexture.
+ * This file contains the @c class EffectTexture.
  */
 namespace eternal_lands
 {
 
-	class EffectConstant: public EffectNode
+	class EffectTexture: public EffectNode
 	{
 		private:
-			glm::vec4 m_value;
-			String m_var_name;
-			EffectConstantType m_type;
+			String m_name;
+			String m_var;
+			EffectTextureType m_type;
 
 			virtual void do_write(const bool glsl_120,
 				const EffectChangeType change,
@@ -41,28 +41,28 @@ namespace eternal_lands
 				EffectNodePtrSet &written);
 
 		public:
-			EffectConstant(const String &name,
-				const EffectConstantType type,
+			EffectTexture(const String &name,
+				const EffectTextureType type,
 				Mt19937RandomUuidGenerator &generator);
-			virtual ~EffectConstant() noexcept;
+			virtual ~EffectTexture() noexcept;
 
-			inline EffectConstantType get_type() const noexcept
+			inline EffectTextureType get_type() const noexcept
 			{
 				return m_type;
 			}
 
-			inline const glm::vec4 &get_value() const noexcept
+			inline const String &get_value() const noexcept
 			{
-				return m_value;
+				return m_name;
 			}
 
-			inline void set_value(const glm::vec4 &value) noexcept
+			inline void set_value(const String &value) noexcept
 			{
-				m_value = value;
+				m_name = value;
 			}
 
 	};
 
 }
 
-#endif	/* UUID_08e79691_15e8_455a_bab6_b75881a1c19f */
+#endif	/* UUID_00d1c233_ac27_41ab_991a_acbde4b2c2ae */

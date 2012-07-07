@@ -28,7 +28,7 @@ namespace eternal_lands
 	 */
 	enum EffectChangeType
 	{
-		ect_variable = 0,
+		ect_undefined = 0,
 		ect_constant,
 		ect_vertex,
 		ect_fragment

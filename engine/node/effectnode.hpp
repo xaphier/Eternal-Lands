@@ -14,7 +14,6 @@
 
 #include "prerequisites.hpp"
 #include "effectchangeutil.hpp"
-#include "effectnodeportutil.hpp"
 
 /**
  * @file
@@ -30,22 +29,37 @@ namespace eternal_lands
 		private:
 			EffectNodePortVector m_ports;
 			String m_name;
+			EffectChangeType m_change;
 			Uint16 m_value_count;
 
 			bool check_connections(EffectNodePtrSet &checking);
+			virtual void do_write(const bool glsl_120,
+				const EffectChangeType change,
+				StringBitSet16Map &parameters_indices,
+				ShaderSourceParameterVector &vertex_parameters,
+				ShaderSourceParameterVector
+					&fragment_parameters,
+				OutStream &vertex_str, OutStream &fragment_str,
+				EffectNodePtrSet &written) = 0;
 
 		protected:
 			EffectNode(const String &name);
 			void add_input_port(const String &description,
-				const EffectNodePortType type);
-			void add_input_port(const EffectNodePortType type);
-			void add_output_port(const String &var_name,
+				const String &swizzle);
+			void add_input_port(const String &swizzle);
+			void add_output_port(const String &var,
 				const String &description,
-				const EffectNodePortType type,
-				const EffectChangeType change);
-			void add_output_port(const String &var_name,
-				const EffectNodePortType type,
-				const EffectChangeType change);
+				const String &swizzle,
+				const EffectChangeType change = ect_undefined);
+			void add_output_port(const String &var,
+				const String &swizzle,
+				const EffectChangeType change = ect_undefined);
+			String get_value_count_type_str() const;
+
+			inline EffectNodePortVector &get_ports() noexcept
+			{
+				return m_ports;
+			}
 
 			inline void set_value_count(const Uint16 value_count)
 				noexcept
@@ -53,9 +67,22 @@ namespace eternal_lands
 				m_value_count = value_count;
 			}
 
+			inline void set_change(const EffectChangeType change)
+				noexcept
+			{
+				m_change = change;
+			}
+
 		public:
 			virtual ~EffectNode() noexcept;
-			virtual void write(OutStream &str) const = 0;
+			void write(const bool glsl_120,
+				const EffectChangeType change,
+				StringBitSet16Map &parameters_indices,
+				ShaderSourceParameterVector &vertex_parameters,
+				ShaderSourceParameterVector
+					&fragment_parameters,
+				OutStream &vertex_str, OutStream &fragment_str,
+				EffectNodePtrSet &written);
 			void update(EffectNodePtrSet &updated);
 			bool update();
 			bool check() const;
@@ -64,6 +91,11 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_ports;
+			}
+
+			inline EffectChangeType get_change() const noexcept
+			{
+				return m_change;
 			}
 
 			inline Uint16 get_value_count() const noexcept

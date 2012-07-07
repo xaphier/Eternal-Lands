@@ -61,7 +61,7 @@ world_normal = decode_normal(texture(vertex_normal_sampler, vertex_uv).rg);
 
 terrain_texture_coordinate = vertex_position.xy;
 </source>
-   <version>150</version>
+   <version>140</version>
   </shader_source_data>
   <shader_source_data>
    <parameters>

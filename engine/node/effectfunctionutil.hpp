@@ -75,7 +75,10 @@ namespace eternal_lands
 		ent_dot,
 		ent_normalize,
 		ent_saturate,
-		ent_refract
+		ent_refract,
+		ent_dFdx,
+		ent_dFdy,
+		ent_fresnel
 	};
 	/**
 	 * @}

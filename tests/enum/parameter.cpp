@@ -155,6 +155,26 @@ BOOST_AUTO_TEST_CASE(convert_gl)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(stream)
+{
+	Uint32 i, count;
+	el::ParameterType type;
+
+	count = el::ParameterUtil::get_parameter_count();
+
+	for (i = 0; i < count; i++)
+	{
+		el::StringStream str;
+
+		type = static_cast<el::ParameterType>(i);
+
+		BOOST_CHECK_NO_THROW(str << type);
+
+		BOOST_CHECK_EQUAL(str.str(),
+			el::ParameterUtil::get_str(type).get());
+	}
+}
+
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::ParameterUtil::get_str(el::pt_bvec2).get(),
@@ -165,11 +185,13 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 
 	BOOST_CHECK_EQUAL(el::ParameterUtil::get_str(
 		el::pt_usamplerBuffer).get(), "usamplerBuffer");
+}
 
+BOOST_AUTO_TEST_CASE(get_gl_value)
+{
 	BOOST_CHECK_EQUAL(el::ParameterUtil::get_gl(el::pt_isampler1D), 
 		GL_INT_SAMPLER_1D);
 
 	BOOST_CHECK_EQUAL(el::ParameterUtil::get_gl(el::pt_usampler3D), 
 		GL_UNSIGNED_INT_SAMPLER_3D);
 }
-

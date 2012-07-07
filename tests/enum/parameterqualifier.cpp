@@ -67,6 +67,30 @@ BOOST_AUTO_TEST_CASE(get_parameter_qualifier)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(stream)
+{
+	Uint32 i, count;
+	el::ParameterQualifierType type, tmp;
+
+	count = el::ParameterQualifierUtil::get_parameter_qualifier_count();
+
+	for (i = 0; i < count; i++)
+	{
+		el::StringStream str;
+
+		type = static_cast<el::ParameterQualifierType>(i);
+
+		BOOST_CHECK_NO_THROW(str << type);
+
+		BOOST_CHECK_EQUAL(str.str(),
+			el::ParameterQualifierUtil::get_str(type).get());
+
+		BOOST_CHECK_NO_THROW(str >> tmp);
+
+		BOOST_CHECK_EQUAL(tmp, type);
+	}
+}
+
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::ParameterQualifierUtil::get_str(

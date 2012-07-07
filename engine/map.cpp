@@ -378,7 +378,7 @@ namespace eternal_lands
 		const MeshCacheSharedPtr &mesh_cache,
 		const MaterialCacheSharedPtr &material_cache)
 	{
-		if (global_vars->get_opengl_3_2())
+		if (global_vars->get_opengl_3_1())
 		{
 			m_terrain_manager.reset(new CdLodTerrainManager(
 				mesh_cache, get_material_cache()->get_material(

@@ -12,24 +12,102 @@
 namespace eternal_lands
 {
 
-	EffectNodePort::EffectNodePort(const EffectNodePtr node,
-		const String &var_name, const String &description,
-		const EffectNodePortType type, const EffectChangeType change,
-		const bool input): m_node(node), m_var_name(var_name),
-		m_description(description), m_type(type), m_change(change),
-		m_input(input)
+	namespace
 	{
-		assert(m_input || !get_var_name().get().empty());
+
+		Uint8Array4 get_swizzle_from_str(const String &swizzle)
+		{
+			Uint8Array4 result;
+			Uint16 i, set, tmp;
+
+			set = 0;
+
+			for (i = 0; i < 4; ++i)
+			{
+				if (i >= swizzle.get().size())
+				{
+					result[i] = UTF8(' ');
+
+					continue;
+				}
+
+				result[i] = swizzle.get()[i];
+
+				switch (result[i])
+				{
+					case UTF8('r'):
+					case UTF8('g'):
+					case UTF8('b'):
+					case UTF8('a'):
+						tmp = 1;
+						break;
+					case UTF8('x'):
+					case UTF8('y'):
+					case UTF8('z'):
+					case UTF8('w'):
+						tmp = 2;
+						break;
+					case UTF8('u'):
+					case UTF8('v'):
+						tmp = 3;
+						break;
+					case UTF8('s'):
+					case UTF8('t'):
+					case UTF8('p'):
+					case UTF8('q'):
+						tmp = 4;
+						break;
+					case UTF8('?'):
+						tmp = 5;
+						break;
+					case UTF8('*'):
+						tmp = 6;
+						break;
+					default:
+						tmp = 0;
+						break;
+				}
+
+				if (i == 0)
+				{
+					set = tmp;
+				}
+
+				if ((tmp != set) || (tmp == 0))
+				{
+					EL_THROW_EXCEPTION(
+						InvalidParameterException()
+						<< errinfo_parameter_name(
+							UTF8("swizzle"))
+						<< errinfo_string_value(
+							swizzle));
+				}
+			}
+
+			return result;
+		}
+
 	}
 
 	EffectNodePort::EffectNodePort(const EffectNodePtr node,
-		const String &var_name, const EffectNodePortType type,
-		const EffectChangeType change, const bool input): m_node(node),
-		m_var_name(var_name),
-		m_description(EffectNodePortUtil::get_description(type)),
-		m_type(type), m_change(change), m_input(input)
+		const String &var, const String &description,
+		const String &swizzle, const EffectChangeType change,
+		const bool input): m_node(node), m_var(var),
+		m_description(description),
+		m_swizzle(get_swizzle_from_str(swizzle)),
+		m_change(change), m_input(input)
 	{
-		assert(m_input || !get_var_name().get().empty());
+		assert(m_input || !get_var().get().empty());
+	}
+
+	EffectNodePort::EffectNodePort(const EffectNodePtr node,
+		const String &var, const String &swizzle,
+		const EffectChangeType change, const bool input): m_node(node),
+		m_var(var), m_description(String(swizzle)),
+		m_swizzle(get_swizzle_from_str(swizzle)),
+		m_change(change), m_input(input)
+	{
+		assert(m_input || !get_var().get().empty());
 	}
 
 	EffectNodePort::~EffectNodePort() noexcept
@@ -104,23 +182,23 @@ namespace eternal_lands
 		do_disconnect(port);
 	}
 
-	Uint16 EffectNodePort::get_value_count() const noexcept
+	Uint16 EffectNodePort::get_value_count() const
 	{
 		if (get_general_type())
 		{
 			return get_node_value_count();
 		}
 
-		return EffectNodePortUtil::get_count(get_type());
+		return get_var_count();
 	}
 
-	String EffectNodePort::get_connected_var_name() const
+	String EffectNodePort::get_connected_var_swizzled() const
 	{
 		StringStream str;
 
 		if (get_output())
 		{
-			return get_var_name();
+			return get_var_swizzled();
 		}
 
 		if (!get_connected())
@@ -130,16 +208,60 @@ namespace eternal_lands
 
 		if (get_value_count() == get_connection()->get_value_count())
 		{
-			return get_connection()->get_var_name();
+			return get_connection()->get_var_swizzled();
 		}
 
 		str << UTF8("vec") << get_value_count() << UTF8("(");
-		str << get_connection()->get_var_name() << UTF8(")");
+		str << get_connection()->get_var_swizzled() << UTF8(")");
 
 		return String(str.str());
 	}
 
-	Uint16 EffectNodePort::get_node_value_count() const noexcept
+	String EffectNodePort::get_var_swizzled() const
+	{
+		StringStream str;
+		Uint16 i;
+
+		str << UTF8('.');
+
+		for (i = 0; i < 4; ++i)
+		{
+			switch (get_swizzle()[i])
+			{
+				case UTF8('r'):
+				case UTF8('x'):
+				case UTF8('u'):
+				case UTF8('s'):
+					str << UTF8('r');
+					break;
+				case UTF8('g'):
+				case UTF8('y'):
+				case UTF8('v'):
+				case UTF8('t'):
+					str << UTF8('g');
+					break;
+				case UTF8('b'):
+				case UTF8('z'):
+				case UTF8('p'):
+					str << UTF8('b');
+					break;
+				case UTF8('a'):
+				case UTF8('w'):
+				case UTF8('q'):
+					str << UTF8('a');
+					break;
+			}
+		}
+
+		if (str.str().size() == 1)
+		{
+			return get_var();
+		}
+
+		return String(get_var().get() + str.str());
+	}
+
+	Uint16 EffectNodePort::get_node_value_count() const
 	{
 		return get_node().get_value_count();
 	}
@@ -148,7 +270,7 @@ namespace eternal_lands
 	{
 		if (!get_general_type())
 		{
-			return EffectNodePortUtil::get_count(get_type());
+			return get_var_count();
 		}
 
 		BOOST_FOREACH(const EffectNodePortPtr port, m_connections)
@@ -156,7 +278,37 @@ namespace eternal_lands
 			return port->get_value_count();
 		}
 
-		return 0;
+		return get_var_count();
+	}
+
+	EffectChangeType EffectNodePort::get_change() const
+	{
+		if (!get_undefined_change())
+		{
+			return get_node_change();
+		}
+
+		return m_change;
+	}
+
+	EffectChangeType EffectNodePort::get_node_change() const
+	{
+		return get_node().get_change();
+	}
+
+	EffectChangeType EffectNodePort::get_connected_change() const
+	{
+		if (!get_undefined_change())
+		{
+			return get_change();
+		}
+
+		BOOST_FOREACH(const EffectNodePortPtr port, m_connections)
+		{
+			return port->get_change();
+		}
+
+		return get_change();
 	}
 
 	void EffectNodePort::update(EffectNodePtrSet &updated)
@@ -167,42 +319,139 @@ namespace eternal_lands
 		}
 	}
 
+	void EffectNodePort::write(const bool glsl_120,
+		const EffectChangeType change,
+		StringBitSet16Map &parameters_indices,
+		ShaderSourceParameterVector &vertex_parameters,
+		ShaderSourceParameterVector &fragment_parameters,
+		OutStream &vertex_str, OutStream &fragment_str,
+		EffectNodePtrSet &written)
+	{
+		EffectChangeType new_change;
+
+		if (get_output())
+		{
+			m_node->write(glsl_120, change, parameters_indices,
+				vertex_parameters, fragment_parameters,
+				vertex_str, fragment_str, written);
+
+			return;
+		}
+
+		BOOST_FOREACH(EffectNodePortPtr port, m_connections)
+		{
+			new_change = change;
+
+			if ((get_change() == ect_fragment) &&
+				(port->get_change() == ect_vertex))
+			{
+				port->add_parameter(parameters_indices);
+
+				new_change = ect_vertex;
+			}
+
+			port->write(glsl_120, new_change, parameters_indices,
+				vertex_parameters, fragment_parameters,
+				vertex_str, fragment_str, written);
+		}
+	}
+
 	bool EffectNodePort::get_convertable(const EffectNodePortPtr port)
 		const
 	{
 		NULL_PTR_CHECK(port, UTF8("port"));
 
-		return get_convertable(get_type(), port->get_type(),
-			get_value_count(), port->get_value_count());
+		return true;/*get_convertable(get_type(), port->get_type(),
+			get_value_count(), port->get_value_count());*/
 	}
 
-	bool EffectNodePort::get_convertable(
-		const EffectNodePortType effect_node_port_0,
-		const EffectNodePortType effect_node_port_1,
-		const Uint16 count_0, const Uint16 count_1)
+	BitSet16 EffectNodePort::get_var_indices() const
 	{
-		Uint16 tmp_count_0, tmp_count_1;
+		BitSet16 result;
+		Uint16 i;
 
-		tmp_count_0 = EffectNodePortUtil::get_count(
-			effect_node_port_0);
-		tmp_count_1 = EffectNodePortUtil::get_count(
-			effect_node_port_1);
-
-		if (tmp_count_0 == 0)
+		for (i = 0; i < 4; ++i)
 		{
-			tmp_count_0 = count_0;
+			switch (get_swizzle()[i])
+			{
+				case UTF8('r'):
+				case UTF8('x'):
+				case UTF8('u'):
+				case UTF8('s'):
+				case UTF8('?'):
+					result[0] = true;
+					break;
+				case UTF8('g'):
+				case UTF8('y'):
+				case UTF8('v'):
+				case UTF8('t'):
+					result[1] = true;
+					break;
+				case UTF8('b'):
+				case UTF8('z'):
+				case UTF8('p'):
+					result[2] = true;
+					break;
+				case UTF8('a'):
+				case UTF8('w'):
+				case UTF8('q'):
+					result[3] = true;
+					break;
+			}
 		}
 
-		if (tmp_count_1 == 0)
+		return result;
+	}
+
+	Uint16 EffectNodePort::get_var_count() const
+	{
+		Uint16 i, result;
+
+		result = 0;
+
+		for (i = 0; i < 4; ++i)
 		{
-			tmp_count_1 = count_1;
+			switch (get_swizzle()[i])
+			{
+				case UTF8('r'):
+				case UTF8('x'):
+				case UTF8('u'):
+				case UTF8('s'):
+				case UTF8('?'):
+				case UTF8('g'):
+				case UTF8('y'):
+				case UTF8('v'):
+				case UTF8('t'):
+				case UTF8('b'):
+				case UTF8('z'):
+				case UTF8('p'):
+				case UTF8('a'):
+				case UTF8('w'):
+				case UTF8('q'):
+					result++;
+					break;
+			}
 		}
 
-		return (tmp_count_0 == tmp_count_1) ||
-			EffectNodePortUtil::get_convertable(
-				effect_node_port_0) ||
-			EffectNodePortUtil::get_convertable(
-				effect_node_port_1);
+		return result;
+	}
+
+	void EffectNodePort::add_parameter(
+		StringBitSet16Map &parameters_indices)
+	{
+/*
+		StringBitSet16Map::iterator found;
+
+		found = parameters_indices.find(name);
+
+		if (found == parameters_indices.end())
+		{
+			found->second |= used_indices;
+			return;
+		}
+
+		parameters_indices[name] = used_indices;
+*/
 	}
 
 }

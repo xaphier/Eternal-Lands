@@ -1,12 +1,12 @@
 /****************************************************************************
- *            effectconstant.hpp
+ *            effectparameter.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#ifndef	UUID_c3aa7f77_e79c_44c0_8887_8f4e3d58afec
-#define	UUID_c3aa7f77_e79c_44c0_8887_8f4e3d58afec
+#ifndef	UUID_1654606c_e461_4d86_bc43_72886572aea4
+#define	UUID_1654606c_e461_4d86_bc43_72886572aea4
 
 #ifndef	__cplusplus
 #error	"Including C++ header in C translation unit!"
@@ -14,22 +14,20 @@
 
 #include "prerequisites.hpp"
 #include "effectnode.hpp"
-#include "effectconstantutil.hpp"
+#include "effectparameterutil.hpp"
 
 /**
  * @file
- * @brief The @c class EffectConstant.
- * This file contains the @c class EffectConstant.
+ * @brief The @c class EffectParameter.
+ * This file contains the @c class EffectParameter.
  */
 namespace eternal_lands
 {
 
-	class EffectConstant: public EffectNode
+	class EffectParameter: public EffectNode
 	{
 		private:
-			glm::vec4 m_value;
-			String m_var_name;
-			EffectConstantType m_type;
+			EffectParameterType m_type;
 
 			virtual void do_write(const bool glsl_120,
 				const EffectChangeType change,
@@ -41,28 +39,17 @@ namespace eternal_lands
 				EffectNodePtrSet &written);
 
 		public:
-			EffectConstant(const String &name,
-				const EffectConstantType type,
-				Mt19937RandomUuidGenerator &generator);
-			virtual ~EffectConstant() noexcept;
+			EffectParameter(const String &name,
+				const EffectParameterType type);
+			virtual ~EffectParameter() noexcept;
 
-			inline EffectConstantType get_type() const noexcept
+			inline EffectParameterType get_type() const noexcept
 			{
 				return m_type;
-			}
-
-			inline const glm::vec4 &get_value() const noexcept
-			{
-				return m_value;
-			}
-
-			inline void set_value(const glm::vec4 &value) noexcept
-			{
-				m_value = value;
 			}
 
 	};
 
 }
 
-#endif	/* UUID_08e79691_15e8_455a_bab6_b75881a1c19f */
+#endif	/* UUID_1654606c_e461_4d86_bc43_72886572aea4 */

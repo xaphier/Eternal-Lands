@@ -14,7 +14,6 @@
 
 #include "prerequisites.hpp"
 #include "effectchangeutil.hpp"
-#include "effectnodeportutil.hpp"
 
 /**
  * @file
@@ -30,9 +29,9 @@ namespace eternal_lands
 		private:
 			EffectNodePortPtrSet m_connections;
 			EffectNodePtr m_node;
-			const String m_var_name;
+			const String m_var;
 			const String m_description;
-			const EffectNodePortType m_type;
+			const Uint8Array4 m_swizzle;
 			const EffectChangeType m_change;
 			const bool m_input;
 
@@ -41,10 +40,12 @@ namespace eternal_lands
 			bool check_connection(EffectNodePtrSet &checking) const;
 			void update(EffectNodePtrSet &updated);
 			Uint16 get_connected_value_count() const;
-			static bool get_convertable(
-				const EffectNodePortType effect_node_port_0,
-				const EffectNodePortType effect_node_port_1,
-				const Uint16 count_0, const Uint16 count_1);
+			EffectChangeType get_connected_change() const;
+			void add_parameter(
+				StringBitSet16Map &parameters_indices);
+			BitSet16 get_var_indices() const;
+			Uint16 get_var_count() const;
+			String get_var_swizzled() const;
 
 			inline const EffectNodePortPtr &get_connection()
 				const noexcept
@@ -52,28 +53,43 @@ namespace eternal_lands
 				return *m_connections.begin();
 			}
 
-		public:	
+			inline const Uint8Array4 &get_swizzle() const noexcept
+			{
+				return m_swizzle;
+			}
+
+		public:
 			EffectNodePort(const EffectNodePtr node,
-				const String &var_name,
+				const String &var,
 				const String &description,
-				const EffectNodePortType type,
+				const String &swizzle,
 				const EffectChangeType change,
 				const bool input);
 			EffectNodePort(const EffectNodePtr node,
-				const String &var_name,
-				const EffectNodePortType type,
+				const String &var,
+				const String &swizzle,
 				const EffectChangeType change,
 				const bool input);
 			~EffectNodePort() noexcept;
 			bool check_connection(const EffectNodePortPtr port,
 				EffectNodePtrSet &checking) const;
-			Uint16 get_value_count() const noexcept;
-			Uint16 get_node_value_count() const noexcept;
+			Uint16 get_value_count() const;
+			Uint16 get_node_value_count() const;
+			EffectChangeType get_change() const;
+			EffectChangeType get_node_change() const;
 			bool connect(const EffectNodePortPtr port);
 			void disconnect(const EffectNodePortPtr port);
 			bool get_convertable(const EffectNodePortPtr port)
 				const;
-			String get_connected_var_name() const;
+			String get_connected_var_swizzled() const;
+			void write(const bool glsl_120,
+				const EffectChangeType change,
+				StringBitSet16Map &parameters_indices,
+				ShaderSourceParameterVector &vertex_parameters,
+				ShaderSourceParameterVector
+					&fragment_parameters,
+				OutStream &vertex_str, OutStream &fragment_str,
+				EffectNodePtrSet &written);
 
 			inline const EffectNode &get_node() const noexcept
 			{
@@ -96,19 +112,19 @@ namespace eternal_lands
 				return m_description;
 			}
 
-			inline const String &get_var_name() const noexcept
+			inline const String &get_var() const noexcept
 			{
-				return m_var_name;
-			}
-
-			inline EffectNodePortType get_type() const noexcept
-			{
-				return m_type;
+				return m_var;
 			}
 
 			inline bool get_general_type() const noexcept
 			{
-				return enpt_general == get_type();
+				return m_swizzle[0] == UTF8('*');
+			}
+
+			inline bool get_undefined_change() const noexcept
+			{
+				return m_change == ect_undefined;
 			}
 
 			inline bool get_input() const noexcept

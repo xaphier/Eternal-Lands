@@ -43,6 +43,30 @@ BOOST_AUTO_TEST_CASE(convert)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(stream)
+{
+	Uint32 i, count;
+	el::ShaderVersionType type, tmp;
+
+	count = el::ShaderVersionUtil::get_shader_version_count();
+
+	for (i = 0; i < count; i++)
+	{
+		el::StringStream str;
+
+		type = static_cast<el::ShaderVersionType>(i);
+
+		BOOST_CHECK_NO_THROW(str << type);
+
+		BOOST_CHECK_EQUAL(str.str(),
+			el::ShaderVersionUtil::get_str(type).get());
+
+		BOOST_CHECK_NO_THROW(str >> tmp);
+
+		BOOST_CHECK_EQUAL(tmp, type);
+	}
+}
+
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::ShaderVersionUtil::get_str(el::svt_120).get(),

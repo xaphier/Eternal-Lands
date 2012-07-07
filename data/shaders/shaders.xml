@@ -67,6 +67,8 @@
 		<shader_source>shaders/sources/albedo_array_blend_8_mapping.xml</shader_source>
 		<shader_source>shaders/sources/albedo_array_blend_12_mapping.xml</shader_source>
 		<shader_source>shaders/sources/albedo_array_blend_16_mapping.xml</shader_source>
+		<shader_source>shaders/sources/depth_relief_mapping.xml</shader_source>
+		<shader_source>shaders/sources/albedo_grad_mapping.xml</shader_source>
 	</shader_sources>
 	<sources>
 		<world_depth_transformation>default</world_depth_transformation>

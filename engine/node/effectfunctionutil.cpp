@@ -63,7 +63,10 @@ namespace eternal_lands
 			String(UTF8("dot")),
 			String(UTF8("normalize")),
 			String(UTF8("saturate")),
-			String(UTF8("refract"))
+			String(UTF8("refract")),
+			String(UTF8("dFdx")),
+			String(UTF8("dFdy")),
+			String(UTF8("fresnel"))
 		};
 
 		const Uint32 effect_function_names_count =

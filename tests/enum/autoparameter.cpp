@@ -129,6 +129,30 @@ BOOST_AUTO_TEST_CASE(get_max_size)
 	}
 }
 
+BOOST_AUTO_TEST_CASE(stream)
+{
+	Uint32 i, count;
+	el::AutoParameterType type, tmp;
+
+	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	for (i = 0; i < count; i++)
+	{
+		el::StringStream str;
+
+		type = static_cast<el::AutoParameterType>(i);
+
+		BOOST_CHECK_NO_THROW(str << type);
+
+		BOOST_CHECK_EQUAL(str.str(),
+			el::AutoParameterUtil::get_str(type).get());
+
+		BOOST_CHECK_NO_THROW(str >> tmp);
+
+		BOOST_CHECK_EQUAL(tmp, type);
+	}
+}
+
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
@@ -156,7 +180,10 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_str(
 		el::apt_split_distances).get(), "split_distances");
+}
 
+BOOST_AUTO_TEST_CASE(get_type_value)
+{
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_type(el::apt_view_matrix),
 		el::pt_mat4x4);
 

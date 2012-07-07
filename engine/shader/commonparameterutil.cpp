@@ -92,6 +92,8 @@ namespace eternal_lands
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("fragment_uv")),
 				pt_vec2),
+			CommonParameterTypeData(
+				String(UTF8("fragment_position")), pt_vec3),
 			CommonParameterTypeData(String(UTF8("fog")), pt_float),
 			CommonParameterTypeData(String(UTF8("shadow_uvs")),
 				pt_vec4, pst_shadow_maps_count),

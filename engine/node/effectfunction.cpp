@@ -16,35 +16,34 @@ namespace eternal_lands
 		Mt19937RandomUuidGenerator &generator): EffectNode(name),
 		m_type(type)
 	{
-		String var_name;
 		StringStream str;
 
-		str << generator();
+		str << UTF8("_") << generator();
 
-		var_name = String(str.str());
+		m_var = String(str.str());
 
 		switch (get_type())
 		{
 			case ent_length:
-				add_input_port(String(), enpt_general);
-				add_output_port(var_name, String(),
-					enpt_single, ect_variable);
+				add_input_port(String(), String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("?")));
 				break;
 			case ent_distance:
 				add_input_port(String(UTF8("p0")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("p1")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_single, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("?")));
 				break;
 			case ent_dot:
 				add_input_port(String(UTF8("x")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_single, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("?")));
 				break;
 			case ent_add:
 			case ent_sub:
@@ -56,67 +55,67 @@ namespace eternal_lands
 			case ent_max:
 			case ent_atan2:
 				add_input_port(String(UTF8("x")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
 				break;
 			case ent_reflect:
 				add_input_port(String(UTF8("I")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("N")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
 				break;
 			case ent_mad:
 				add_input_port(String(UTF8("a")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("b")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("c")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
 				break;
 			case ent_clamp:
 				add_input_port(String(UTF8("x")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("minVal")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("maxVal")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
 				break;
 			case ent_mix:
 				add_input_port(String(UTF8("x")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("a")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
 				break;
 			case ent_step:
 				add_input_port(String(UTF8("edge")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("x")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
 				break;
 			case ent_smoothstep:
 				add_input_port(String(UTF8("edge0")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("edge1")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("x")),
-					enpt_general);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+					String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
 				break;
 			case ent_radians:
 			case ent_degrees:
@@ -147,19 +146,33 @@ namespace eternal_lands
 			case ent_fract:
 			case ent_normalize:
 			case ent_saturate:
-				add_input_port(String(), enpt_general);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+				add_input_port(String(), String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
+				break;
+			case ent_dFdx:
+			case ent_dFdy:
+				add_input_port(String(), String(UTF8("*")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")), ect_fragment);
 				break;
 			case ent_refract:
 				add_input_port(String(UTF8("I")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("N")),
-					enpt_general);
+					String(UTF8("*")));
 				add_input_port(String(UTF8("eta")),
-					enpt_single);
-				add_output_port(var_name, String(),
-					enpt_general, ect_variable);
+					String(UTF8("?")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
+				break;
+			case ent_fresnel:
+				add_input_port(String(UTF8("view")),
+					String(UTF8("xyz")));
+				add_input_port(String(UTF8("normal")),
+					String(UTF8("xyz")));
+				add_output_port(m_var, String(),
+					String(UTF8("*")));
 				break;
 		}
 	}
@@ -168,24 +181,47 @@ namespace eternal_lands
 	{
 	}
 
-	void EffectFunction::write(OutStream &str) const
+	void EffectFunction::do_write(const bool glsl_120,
+		const EffectChangeType change,
+		StringBitSet16Map &parameters_indices,
+		ShaderSourceParameterVector &vertex_parameters,
+		ShaderSourceParameterVector &fragment_parameters,
+		OutStream &vertex_str, OutStream &fragment_str,
+		EffectNodePtrSet &written)
 	{
-		String output;
 		StringVector inputs;
+		String output;
+		EffectChangeType input_change;
 
-		BOOST_FOREACH(const EffectNodePort &port, get_ports())
+		input_change = ect_constant;
+
+		BOOST_FOREACH(EffectNodePort &port, get_ports())
 		{
-			if (port.get_output())
+			if (port.get_input())
 			{
-				output = port.get_var_name();
-			}
-			else
-			{
-				inputs.push_back(port.get_connected_var_name());
+				inputs.push_back(
+					port.get_connected_var_swizzled());
+
+				port.write(glsl_120, change,
+					parameters_indices, vertex_parameters,
+					fragment_parameters, vertex_str,
+					fragment_str, written);
+
+				input_change = std::max(input_change,
+					port.get_change());
 			}
 		}
 
-		str << output << UTF8(" = ");
+		if (input_change == ect_constant)
+		{
+			input_change = change;
+		}
+
+		OutStream &str = change == ect_fragment ? fragment_str :
+			vertex_str;
+
+		str << get_value_count_type_str() << UTF8(" ");
+		str << m_var << UTF8(" = ");
 
 		switch (get_type())
 		{
@@ -357,6 +393,18 @@ namespace eternal_lands
 				str << UTF8("refract(") << inputs[0];
 				str << UTF8(", ") << inputs[1] << UTF8(", ");
 				str << inputs[2] << UTF8(")");
+				break;
+			case ent_dFdx:
+				str << UTF8("dFdx(") << inputs[0];
+				str << UTF8(")");
+				break;
+			case ent_dFdy:
+				str << UTF8("dFdy(") << inputs[0];
+				str << UTF8(")");
+				break;
+			case ent_fresnel:
+				str << UTF8("dot(") << inputs[0] << UTF8(", ");
+				str << inputs[1] << UTF8(")");
 				break;
 		}
 

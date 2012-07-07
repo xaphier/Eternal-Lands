@@ -23,7 +23,7 @@ namespace eternal_lands
 	namespace
 	{
 
-		const bool use_tangent = false;
+		const bool use_tangent = true;
 
 		const String vertex_format_type_names[] =
 		{

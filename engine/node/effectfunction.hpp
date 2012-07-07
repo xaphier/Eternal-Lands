@@ -27,14 +27,23 @@ namespace eternal_lands
 	class EffectFunction: public EffectNode
 	{
 		private:
+			String m_var;
 			EffectFunctionType m_type;
+
+			virtual void do_write(const bool glsl_120,
+				const EffectChangeType change,
+				StringBitSet16Map &parameters_indices,
+				ShaderSourceParameterVector &vertex_parameters,
+				ShaderSourceParameterVector
+					&fragment_parameters,
+				OutStream &vertex_str, OutStream &fragment_str,
+				EffectNodePtrSet &written);
 
 		public:
 			EffectFunction(const String &name,
 				const EffectFunctionType type,
 				Mt19937RandomUuidGenerator &generator);
 			virtual ~EffectFunction() noexcept;
-			virtual void write(OutStream &str) const;
 
 			inline EffectFunctionType get_type() const noexcept
 			{

@@ -45,6 +45,7 @@ namespace eternal_lands
 		cpt_specular,
 		cpt_fragment_normal,
 		cpt_fragment_uv,
+		cpt_fragment_position,
 		cpt_fog,
 		cpt_shadow_uvs,
 		cpt_shadow_map_data,
