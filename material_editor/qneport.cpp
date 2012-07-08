@@ -23,14 +23,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "qneport.h"
+#include "qneport.hpp"
 
 #include <QGraphicsScene>
 #include <QFontMetrics>
 
 #include <QPen>
 
-#include "qneconnection.h"
+#include "qneconnection.hpp"
 
 QNEPort::QNEPort(QGraphicsItem *parent, QGraphicsScene *scene):
 	QGraphicsPathItem(parent, scene)

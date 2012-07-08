@@ -8,7 +8,7 @@ FIND_PACKAGE(Qt4 REQUIRED)
 include(${QT_USE_FILE}) 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-file(GLOB material_editor_header_files *.h)
+file(GLOB material_editor_header_files *.hpp)
 file(GLOB material_editor_source_files *.cpp)
 file(GLOB material_editor_ui_files *.ui)
 file(GLOB material_editor_qrc_files *.qrc)
