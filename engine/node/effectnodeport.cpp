@@ -1,5 +1,5 @@
 /****************************************************************************
- *            abstractnode.cpp
+ *            effectnodeport.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -98,16 +98,18 @@ namespace eternal_lands
 		m_change(change), m_input(input)
 	{
 		assert(m_input || !get_var().get().empty());
+		assert(m_node != 0);
 	}
 
 	EffectNodePort::EffectNodePort(const EffectNodePtr node,
 		const String &var, const String &swizzle,
 		const EffectChangeType change, const bool input): m_node(node),
-		m_var(var), m_description(String(swizzle)),
+		m_var(var), m_description(swizzle),
 		m_swizzle(get_swizzle_from_str(swizzle)),
 		m_change(change), m_input(input)
 	{
 		assert(m_input || !get_var().get().empty());
+		assert(m_node != 0);
 	}
 
 	EffectNodePort::~EffectNodePort() noexcept
@@ -118,10 +120,36 @@ namespace eternal_lands
 		}
 	}
 
+	bool EffectNodePort::check_connection(const EffectNodePortPtr port)
+	{
+		EffectNodePtrSet checking;
+
+		if (get_output())
+		{
+			return port->check_connection(this, checking);
+		}
+		else
+		{
+			return check_connection(port, checking);
+		}
+	}
+
 	bool EffectNodePort::check_connection(const EffectNodePortPtr port,
 		EffectNodePtrSet &checking) const
 	{
+		NULL_PTR_CHECK(port, UTF8("port"));
+
 		checking.insert(port->get_node_ptr());
+
+		if (get_input() == port->get_input())
+		{
+			return false;
+		}
+
+		if (!get_convertable(port))
+		{
+			return false;
+		}
 
 		return m_node->check_connections(checking);
 	}
@@ -163,6 +191,7 @@ namespace eternal_lands
 
 		port->do_connect(this);
 		do_connect(port);
+		get_node_ptr()->update();
 
 		return true;
 	}
@@ -180,6 +209,7 @@ namespace eternal_lands
 
 		port->do_disconnect(this);
 		do_disconnect(port);
+		get_node_ptr()->update();
 	}
 
 	Uint16 EffectNodePort::get_value_count() const
@@ -315,6 +345,8 @@ namespace eternal_lands
 	{
 		BOOST_FOREACH(EffectNodePortPtr port, m_connections)
 		{
+			assert(port != 0);
+			assert(port->m_node != 0);
 			port->m_node->update(updated);
 		}
 	}
@@ -361,8 +393,11 @@ namespace eternal_lands
 	{
 		NULL_PTR_CHECK(port, UTF8("port"));
 
-		return true;/*get_convertable(get_type(), port->get_type(),
-			get_value_count(), port->get_value_count());*/
+		return (get_value_count() == port->get_value_count()) ||
+			(get_value_count() == 0) ||
+			(port->get_value_count() == 0) ||
+			((get_value_count() == 1) && get_output()) ||
+			((port->get_value_count() == 1) && port->get_output());
 	}
 
 	BitSet16 EffectNodePort::get_var_indices() const

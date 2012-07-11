@@ -1205,9 +1205,12 @@
 	</material>
 	<material>
 		<name>tile1</name>
-		<albedo_sampler_0>3dobjects/tile1.dds</albedo_sampler_0>
-		<effect>default</effect>
+<!--		<albedo_sampler_0>3dobjects/tile1.dds</albedo_sampler_0>
+		<effect>default</effect>-->
 <!--		<script>scripts/test.as</script>-->
+		<albedo_sampler_0>textures/grass_color.dds</albedo_sampler_0>
+		<normal_sampler>textures/grass_normal.dds</normal_sampler>
+		<effect>relief</effect>
 	</material>
 	<material>
 		<name>doorwindows1</name>
@@ -1347,8 +1350,11 @@
 	</material>
 	<material>
 		<name>tile17</name>
-		<albedo_sampler_0>3dobjects/tile17.dds</albedo_sampler_0>
-		<effect>default</effect>
+<!--		<albedo_sampler_0>3dobjects/tile17.dds</albedo_sampler_0>
+		<effect>default</effect>-->
+		<albedo_sampler_0>textures/albedo.jpg</albedo_sampler_0>
+		<normal_sampler>textures/normal.dds</normal_sampler>
+		<effect>relief</effect>
 	</material>
 	<material>
 		<name>dirtroad01</name>

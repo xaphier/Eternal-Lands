@@ -18,8 +18,6 @@ namespace eternal_lands
 	{
 		StringStream str;
 
-		set_value_count(EffectConstantUtil::get_count(get_type()));
-
 		str << UTF8("_") << generator();
 
 		m_var_name = String(str.str());
@@ -38,45 +36,15 @@ namespace eternal_lands
 				add_output_port(m_var_name,
 					String(UTF8("rgb")), ect_constant);
 				break;
-			case ect_direction_xyz:
-				add_output_port(m_var_name,
-					String(UTF8("xyz")), ect_constant);
-				break;
-			case ect_color_rgba:
-				add_output_port(m_var_name,
-					String(UTF8("rgb")), ect_constant);
-				add_output_port(m_var_name, String(UTF8("a")),
-					ect_constant);
-				add_output_port(m_var_name,
-					String(UTF8("rgba")), ect_constant);
-				break;
 			case ect_vec2:
-				add_output_port(m_var_name, String(UTF8("x")),
-					ect_constant);
-				add_output_port(m_var_name, String(UTF8("y")),
-					ect_constant);
 				add_output_port(m_var_name, String(UTF8("xy")),
 					ect_constant);
 				break;
 			case ect_vec3:
-				add_output_port(m_var_name, String(UTF8("x")),
-					ect_constant);
-				add_output_port(m_var_name, String(UTF8("y")),
-					ect_constant);
-				add_output_port(m_var_name, String(UTF8("z")),
-					ect_constant);
 				add_output_port(m_var_name,
 					String(UTF8("xyz")), ect_constant);
 				break;
 			case ect_vec4:
-				add_output_port(m_var_name, String(UTF8("x")),
-					ect_constant);
-				add_output_port(m_var_name, String(UTF8("y")),
-					ect_constant);
-				add_output_port(m_var_name, String(UTF8("z")),
-					ect_constant);
-				add_output_port(m_var_name, String(UTF8("w")),
-					ect_constant);
 				add_output_port(m_var_name,
 					String(UTF8("xyzw")), ect_constant);
 				break;
@@ -85,6 +53,11 @@ namespace eternal_lands
 
 	EffectConstant::~EffectConstant() noexcept
 	{
+	}
+
+	Uint16 EffectConstant::get_initial_value_count() const
+	{
+		return EffectConstantUtil::get_count(get_type());
 	}
 
 	void EffectConstant::do_write(const bool glsl_120,
@@ -114,7 +87,6 @@ namespace eternal_lands
 				str << get_value().y << UTF8(")");
 				break;
 			case ect_color_rgb:
-			case ect_direction_xyz:
 			case ect_vec3:
 				str << UTF8("vec3 ") << m_var_name;
 				str << UTF8(" = ") << UTF8("vec3(");
@@ -122,7 +94,6 @@ namespace eternal_lands
 				str << get_value().y << UTF8(", ");
 				str << get_value().z << UTF8(")");
 				break;
-			case ect_color_rgba:
 			case ect_vec4:
 				str << UTF8("vec4 ") << m_var_name;
 				str << UTF8(" = ") << UTF8("vec4(");

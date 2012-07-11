@@ -29,9 +29,7 @@ namespace eternal_lands
 	enum EffectConstantType
 	{
 		ect_color_rgb,
-		ect_color_rgba,
 		ect_direction_xy,
-		ect_direction_xyz,
 		ect_float,
 		ect_vec2,
 		ect_vec3,

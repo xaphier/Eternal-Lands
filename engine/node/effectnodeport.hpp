@@ -73,6 +73,7 @@ namespace eternal_lands
 			~EffectNodePort() noexcept;
 			bool check_connection(const EffectNodePortPtr port,
 				EffectNodePtrSet &checking) const;
+			bool check_connection(const EffectNodePortPtr port);
 			Uint16 get_value_count() const;
 			Uint16 get_node_value_count() const;
 			EffectChangeType get_change() const;

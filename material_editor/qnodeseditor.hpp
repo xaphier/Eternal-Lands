@@ -39,13 +39,11 @@ class QNodesEditor : public QObject
 	Q_OBJECT
 public:
 	explicit QNodesEditor(QObject *parent = 0);
+	virtual ~QNodesEditor();
 
 	void install(QGraphicsScene *scene);
 
 	bool eventFilter(QObject *, QEvent *);
-
-	void save(QDataStream &ds);
-	void load(QDataStream &ds);
 
 private:
 	QGraphicsItem *itemAt(const QPointF&);

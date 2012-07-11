@@ -39,6 +39,7 @@ namespace eternal_lands
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &written);
+			virtual Uint16 get_initial_value_count() const;
 
 		public:
 			EffectTexture(const String &name,

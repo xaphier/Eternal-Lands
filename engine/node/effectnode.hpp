@@ -41,6 +41,19 @@ namespace eternal_lands
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &written) = 0;
+			virtual Uint16 get_initial_value_count() const = 0;
+
+			inline void set_value_count(const Uint16 value_count)
+				noexcept
+			{
+				m_value_count = value_count;
+			}
+
+			inline void set_change(const EffectChangeType change)
+				noexcept
+			{
+				m_change = change;
+			}
 
 		protected:
 			EffectNode(const String &name);
@@ -56,23 +69,6 @@ namespace eternal_lands
 				const EffectChangeType change = ect_undefined);
 			String get_value_count_type_str() const;
 
-			inline EffectNodePortVector &get_ports() noexcept
-			{
-				return m_ports;
-			}
-
-			inline void set_value_count(const Uint16 value_count)
-				noexcept
-			{
-				m_value_count = value_count;
-			}
-
-			inline void set_change(const EffectChangeType change)
-				noexcept
-			{
-				m_change = change;
-			}
-
 		public:
 			virtual ~EffectNode() noexcept;
 			void write(const bool glsl_120,
@@ -84,11 +80,15 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &written);
 			void update(EffectNodePtrSet &updated);
-			bool update();
-			bool check() const;
+			void update();
 
 			inline const EffectNodePortVector &get_ports() const
 				noexcept
+			{
+				return m_ports;
+			}
+
+			inline EffectNodePortVector &get_ports() noexcept
 			{
 				return m_ports;
 			}

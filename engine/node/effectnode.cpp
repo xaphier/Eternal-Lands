@@ -29,7 +29,8 @@ namespace eternal_lands
 
 	void EffectNode::add_input_port(const String &swizzle)
 	{
-		add_input_port(String(), swizzle);
+		m_ports.push_back(new EffectNodePort(this, String(),
+			swizzle, ect_undefined, true));
 	}
 
 	void EffectNode::add_output_port(const String &var,
@@ -43,7 +44,8 @@ namespace eternal_lands
 	void EffectNode::add_output_port(const String &var,
 		const String &swizzle, const EffectChangeType change)
 	{
-		add_output_port(var, String(), swizzle, change);
+		m_ports.push_back(new EffectNodePort(this, var,
+			swizzle, change, false));
 	}
 
 	bool EffectNode::check_connections(EffectNodePtrSet &checking)
@@ -74,13 +76,18 @@ namespace eternal_lands
 		EffectChangeType change;
 		Uint16 value_count, connected_value_count;
 
-		change = ect_undefined;
-		value_count = 0;
-
 		if (updated.count(this) > 0)
 		{
 			return;
 		}
+
+		updated.insert(this);
+
+		change = ect_undefined;
+		value_count = get_initial_value_count();
+		connected_value_count = get_initial_value_count();
+
+		set_value_count(value_count);
 
 		BOOST_FOREACH(EffectNodePort &port, m_ports)
 		{
@@ -91,9 +98,11 @@ namespace eternal_lands
 				connected_value_count =
 					port.get_connected_value_count();
 
-				if (value_count != connected_value_count)
+				if (((connected_value_count > 1) &&
+					port.get_input()) ||
+					((connected_value_count > 0) &&
+						port.get_output()))
 				{
-					assert(value_count == 0);
 					value_count = connected_value_count;
 				}
 			}
@@ -104,8 +113,6 @@ namespace eternal_lands
 					port.get_connected_change());
 			}
 		}
-
-		updated.insert(this);
 
 		set_change(change);
 		set_value_count(value_count);
@@ -149,6 +156,13 @@ namespace eternal_lands
 			default:
 				return String();
 		}
+	}
+
+	void EffectNode::update()
+	{
+		EffectNodePtrSet updated;
+
+		update(updated);
 	}
 
 }

@@ -68,6 +68,26 @@ namespace eternal_lands
 	{
 	}
 
+	Uint16 EffectParameter::get_initial_value_count() const
+	{
+		switch (get_type())
+		{
+			case ept_position:
+			case ept_normal:
+			case ept_tangent:
+			case ept_view_direction:
+				return 3;
+			case ept_uv:
+				return 2;
+			case ept_fragment_coordinate:
+				return 4;
+			case ept_time:
+				return 1;
+		}
+
+		return 0;
+	}
+
 	void EffectParameter::do_write(const bool glsl_120,
 		const EffectChangeType change,
 		StringBitSet16Map &parameters_indices,

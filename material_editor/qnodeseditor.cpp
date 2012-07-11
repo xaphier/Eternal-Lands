@@ -39,6 +39,10 @@ QNodesEditor::QNodesEditor(QObject *parent) :
 	conn = 0;
 }
 
+QNodesEditor::~QNodesEditor()
+{
+}
+
 void QNodesEditor::install(QGraphicsScene *s)
 {
 	s->installEventFilter(this);
@@ -73,7 +77,7 @@ bool QNodesEditor::eventFilter(QObject *o, QEvent *e)
 			{
 				conn = new QNEConnection(0, scene);
 				conn->setPort1((QNEPort*) item);
-				conn->setPos1(item->scenePos());
+				conn->setPos1(item->scenePos() + QPointF(((QNEPort*) item)->radius(), ((QNEPort*) item)->radius()));
 				conn->setPos2(me->scenePos());
 				conn->updatePath();
 
@@ -117,9 +121,12 @@ bool QNodesEditor::eventFilter(QObject *o, QEvent *e)
 				QNEPort *port1 = conn->port1();
 				QNEPort *port2 = (QNEPort*) item;
 
-				if (port1->block() != port2->block() && port1->isOutput() != port2->isOutput() && !port1->isConnected(port2))
+//				if (port1->block() != port2->block() && port1->isOutput() != port2->isOutput() && !port1->isConnected(port2) && port1->can_connect(port2))
+				if (port1->can_connect(port2))
 				{
-					conn->setPos2(port2->scenePos());
+					conn->setPos2(port2->scenePos() +
+						QPointF(port2->radius(),
+							port2->radius()));
 					conn->setPort2(port2);
 					conn->updatePath();
 					conn = 0;
@@ -135,43 +142,4 @@ bool QNodesEditor::eventFilter(QObject *o, QEvent *e)
 	}
 	}
 	return QObject::eventFilter(o, e);
-}
-
-void QNodesEditor::save(QDataStream &ds)
-{
-	foreach(QGraphicsItem *item, scene->items())
-		if (item->type() == QNEBlock::Type)
-		{
-			ds << item->type();
-			((QNEBlock*) item)->save(ds);
-		}
-
-	foreach(QGraphicsItem *item, scene->items())
-		if (item->type() == QNEConnection::Type)
-		{
-			ds << item->type();
-			((QNEConnection*) item)->save(ds);
-		}
-}
-
-void QNodesEditor::load(QDataStream &ds)
-{
-	scene->clear();
-
-	QMap<quint64, QNEPort*> portMap;
-
-	while (!ds.atEnd())
-	{
-		int type;
-		ds >> type;
-		if (type == QNEBlock::Type)
-		{
-			QNEBlock *block = new QNEBlock(0, scene);
-			block->load(ds, portMap);
-		} else if (type == QNEConnection::Type)
-		{
-			QNEConnection *conn = new QNEConnection(0, scene);
-			conn->load(ds, portMap);
-		}
-	}
 }

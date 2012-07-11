@@ -42,6 +42,12 @@ QNEConnection::QNEConnection(QGraphicsItem *parent, QGraphicsScene *scene) : QGr
 
 QNEConnection::~QNEConnection()
 {
+	if (m_port1 && m_port2)
+	{
+		m_port1->disconnect(m_port2);
+		m_port2->disconnect(m_port1);
+	}
+
 	if (m_port1)
 		m_port1->connections().remove(m_port1->connections().indexOf(this));
 	if (m_port2)
@@ -62,6 +68,11 @@ void QNEConnection::setPort1(QNEPort *p)
 {
 	m_port1 = p;
 
+	if (m_port1 && m_port2)
+	{
+		m_port2->connect(m_port1);
+	}
+
 	m_port1->connections().append(this);
 }
 
@@ -69,13 +80,18 @@ void QNEConnection::setPort2(QNEPort *p)
 {
 	m_port2 = p;
 
+	if (m_port1 && m_port2)
+	{
+		m_port1->connect(m_port2);
+	}
+
 	m_port2->connections().append(this);
 }
 
 void QNEConnection::updatePosFromPorts()
 {
-	pos1 = m_port1->scenePos();
-	pos2 = m_port2->scenePos();
+	pos1 = m_port1->scenePos() + QPointF(m_port1->radius(), m_port1->radius());
+	pos2 = m_port2->scenePos() + QPointF(m_port2->radius(), m_port2->radius());
 }
 
 void QNEConnection::updatePath()

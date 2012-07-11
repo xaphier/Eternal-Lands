@@ -27,6 +27,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #define QNEBLOCK_H
 
 #include <QGraphicsPathItem>
+#include "../engine/node/effectnodeport.hpp"
+
+namespace el = eternal_lands;
 
 class QNEPort;
 
@@ -36,14 +39,8 @@ public:
 	enum { Type = QGraphicsItem::UserType + 3 };
 
 	QNEBlock(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	virtual ~QNEBlock();
 
-	QNEPort* addPort(const QString &name, bool isOutput, int flags = 0, int ptr = 0);
-	void addInputPort(const QString &name);
-	void addOutputPort(const QString &name);
-	void addInputPorts(const QStringList &names);
-	void addOutputPorts(const QStringList &names);
-	void save(QDataStream&);
-	void load(QDataStream&, QMap<quint64, QNEPort*> &portMap);
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 	QNEBlock* clone();
 	QVector<QNEPort*> ports();
@@ -52,6 +49,13 @@ public:
 
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+	QNEPort* addPort(const QString &name, bool isOutput, int flags);
+	QNEPort* addPort(el::EffectNodePortPtr effect_port, const QString &name,
+		bool isOutput, int flags = 0);
+	void addInputPort(el::EffectNodePortPtr effect_port,
+		const QString &name);
+	void addOutputPort(el::EffectNodePortPtr effect_port,
+		const QString &name);
 
 private:
 	int horzMargin;

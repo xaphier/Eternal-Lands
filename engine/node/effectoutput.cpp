@@ -26,6 +26,11 @@ namespace eternal_lands
 	{
 	}
 
+	Uint16 EffectOutput::get_initial_value_count() const
+	{
+		return 4;
+	}
+
 	void EffectOutput::do_write(const bool glsl_120,
 		const EffectChangeType change,
 		StringBitSet16Map &parameters_indices,

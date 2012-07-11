@@ -111,14 +111,14 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::EffectConstantUtil::get_str(
 		el::ect_color_rgb).get(), "color_rgb");
 	BOOST_CHECK_EQUAL(el::EffectConstantUtil::get_str(
-		el::ect_direction_xyz).get(), "direction_xyz");
+		el::ect_direction_xy).get(), "direction_xy");
 	BOOST_CHECK_EQUAL(el::EffectConstantUtil::get_str(
 		el::ect_float).get(), "float");
 	BOOST_CHECK_EQUAL(el::EffectConstantUtil::get_str(
 		el::ect_vec4).get(), "vec4");
 
 	BOOST_CHECK_EQUAL(el::EffectConstantUtil::get_count(
-		el::ect_color_rgba), 4);
+		el::ect_color_rgb), 3);
 	BOOST_CHECK_EQUAL(el::EffectConstantUtil::get_count(
 		el::ect_direction_xy), 2);
 	BOOST_CHECK_EQUAL(el::EffectConstantUtil::get_count(el::ect_float), 1);

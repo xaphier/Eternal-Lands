@@ -19,8 +19,6 @@ namespace eternal_lands
 		String var, var_rgb, var_a;
 		StringStream str;
 
-		set_value_count(4);
-
 		str << UTF8("_") << generator();
 
 		var = String(str.str());
@@ -126,6 +124,11 @@ namespace eternal_lands
 
 	EffectTexture::~EffectTexture() noexcept
 	{
+	}
+
+	Uint16 EffectTexture::get_initial_value_count() const
+	{
+		return 4;
 	}
 
 	void EffectTexture::do_write(const bool glsl_120,

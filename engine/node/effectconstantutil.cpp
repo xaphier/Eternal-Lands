@@ -47,11 +47,8 @@ namespace eternal_lands
 		const EffectConstantTypeData effect_constant_datas[] =
 		{
 			EffectConstantTypeData(String(UTF8("color_rgb")), 3),
-			EffectConstantTypeData(String(UTF8("color_rgba")), 4),
 			EffectConstantTypeData(String(UTF8("direction_xy")),
 				2),
-			EffectConstantTypeData(String(UTF8("direction_xyz")),
-				3),
 			EffectConstantTypeData(String(UTF8("float")), 1),
 			EffectConstantTypeData(String(UTF8("vec2")), 2),
 			EffectConstantTypeData(String(UTF8("vec3")), 3),
