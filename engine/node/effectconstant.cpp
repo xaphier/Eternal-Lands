@@ -12,21 +12,21 @@ namespace eternal_lands
 {
 
 	EffectConstant::EffectConstant(const String &name,
-		const EffectConstantType type,
-		Mt19937RandomUuidGenerator &generator): EffectNode(name),
-		m_type(type)
+		const EffectConstantType type, Uint32 &var_ids):
+		EffectNode(name), m_type(type)
 	{
 		StringStream str;
 
-		str << UTF8("_") << generator();
+		str << UTF8("effect_var_") << std::hex << var_ids;
+		var_ids++;
 
 		m_var_name = String(str.str());
 
 		switch (get_type())
 		{
 			case ect_float:
-				add_output_port(m_var_name, String(UTF8("?")),
-					ect_constant);
+				add_output_port(m_var_name, String(),
+					String(UTF8("?")), ect_constant);
 				break;
 			case ect_direction_xy:
 				add_output_port(m_var_name, String(UTF8("xy")),
@@ -60,16 +60,36 @@ namespace eternal_lands
 		return EffectConstantUtil::get_count(get_type());
 	}
 
-	void EffectConstant::do_write(const bool glsl_120,
+	void EffectConstant::write(const bool glsl_120,
 		const EffectChangeType change,
-		StringBitSet16Map &parameters_indices,
+		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &written)
+		EffectNodePtrSet &vertex_written,
+		EffectNodePtrSet &fragment_written)
 	{
 		OutStream &str = change == ect_fragment ? fragment_str :
 			vertex_str;
+
+		if (change == ect_fragment)
+		{
+			if (fragment_written.count(this) > 0)
+			{
+				return;
+			}
+
+			fragment_written.insert(this);
+		}
+		else
+		{
+			if (vertex_written.count(this) > 0)
+			{
+				return;
+			}
+
+			vertex_written.insert(this);
+		}
 
 		str << UTF8("constant ");
 

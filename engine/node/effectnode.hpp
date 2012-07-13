@@ -32,15 +32,7 @@ namespace eternal_lands
 			EffectChangeType m_change;
 			Uint16 m_value_count;
 
-			bool check_connections(EffectNodePtrSet &checking);
-			virtual void do_write(const bool glsl_120,
-				const EffectChangeType change,
-				StringBitSet16Map &parameters_indices,
-				ShaderSourceParameterVector &vertex_parameters,
-				ShaderSourceParameterVector
-					&fragment_parameters,
-				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &written) = 0;
+			bool check_connections(EffectNodePtrVector &checking);
 			virtual Uint16 get_initial_value_count() const = 0;
 
 			inline void set_value_count(const Uint16 value_count)
@@ -58,8 +50,10 @@ namespace eternal_lands
 		protected:
 			EffectNode(const String &name);
 			void add_input_port(const String &description,
-				const String &swizzle);
-			void add_input_port(const String &swizzle);
+				const String &swizzle,
+				const EffectChangeType change = ect_undefined);
+			void add_input_port(const String &swizzle,
+				const EffectChangeType change = ect_undefined);
 			void add_output_port(const String &var,
 				const String &description,
 				const String &swizzle,
@@ -71,14 +65,15 @@ namespace eternal_lands
 
 		public:
 			virtual ~EffectNode() noexcept;
-			void write(const bool glsl_120,
+			virtual void write(const bool glsl_120,
 				const EffectChangeType change,
-				StringBitSet16Map &parameters_indices,
+				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,
 				ShaderSourceParameterVector
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &written);
+				EffectNodePtrSet &vertex_written,
+				EffectNodePtrSet &fragment_written) = 0;
 			void update(EffectNodePtrSet &updated);
 			void update();
 

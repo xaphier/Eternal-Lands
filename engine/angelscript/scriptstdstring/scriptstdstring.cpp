@@ -315,12 +315,12 @@ static void StringResize(asUINT l, string &str)
 // string formatInt(int64 val, const string &in options, uint width)
 static string formatInt(asINT64 value, const string &options, asUINT width)
 {
-	bool leftJustify = options.find("l") != -1;
-	bool padWithZero = options.find("0") != -1;
-	bool alwaysSign  = options.find("+") != -1;
-	bool spaceOnSign = options.find(" ") != -1;
-	bool hexSmall    = options.find("h") != -1;
-	bool hexLarge    = options.find("H") != -1;
+	bool leftJustify = options.find("l") != std::string::npos;
+	bool padWithZero = options.find("0") != std::string::npos;
+	bool alwaysSign  = options.find("+") != std::string::npos;
+	bool spaceOnSign = options.find(" ") != std::string::npos;
+	bool hexSmall    = options.find("h") != std::string::npos;
+	bool hexLarge    = options.find("H") != std::string::npos;
 
 	string fmt = "%";
 	if( leftJustify ) fmt += "-";
@@ -358,12 +358,12 @@ static string formatInt(asINT64 value, const string &options, asUINT width)
 // string formatFloat(double val, const string &in options, uint width, uint precision)
 static string formatFloat(double value, const string &options, asUINT width, asUINT precision)
 {
-	bool leftJustify = options.find("l") != -1;
-	bool padWithZero = options.find("0") != -1;
-	bool alwaysSign  = options.find("+") != -1;
-	bool spaceOnSign = options.find(" ") != -1;
-	bool expSmall    = options.find("e") != -1;
-	bool expLarge    = options.find("E") != -1;
+	bool leftJustify = options.find("l") != std::string::npos;
+	bool padWithZero = options.find("0") != std::string::npos;
+	bool alwaysSign  = options.find("+") != std::string::npos;
+	bool spaceOnSign = options.find(" ") != std::string::npos;
+	bool expSmall    = options.find("e") != std::string::npos;
+	bool expLarge    = options.find("E") != std::string::npos;
 
 	string fmt = "%";
 	if( leftJustify ) fmt += "-";
@@ -489,6 +489,11 @@ static string StringSubString(asUINT start, int count, const string &str)
 	return ret;
 }
 
+static inline bool compare(const string &str0, const string &str1)
+{
+	return str0 == str1;
+}
+
 void RegisterStdString_Native(asIScriptEngine *engine)
 {
 	int r;
@@ -515,7 +520,7 @@ void RegisterStdString_Native(asIScriptEngine *engine)
 	r = engine->RegisterObjectMethod("string", "string &opAssign(const string &in)", asMETHODPR(string, operator =, (const string&), string&), asCALL_THISCALL); assert( r >= 0 );
 	r = engine->RegisterObjectMethod("string", "string &opAddAssign(const string &in)", asMETHODPR(string, operator+=, (const string&), string&), asCALL_THISCALL); assert( r >= 0 );
 
-	r = engine->RegisterObjectMethod("string", "bool opEquals(const string &in) const", asFUNCTIONPR(operator ==, (const string &, const string &), bool), asCALL_CDECL_OBJFIRST); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("string", "bool opEquals(const string &in) const", asFUNCTIONPR(compare, (const string &, const string &), bool), asCALL_CDECL_OBJFIRST); assert( r >= 0 );
 	r = engine->RegisterObjectMethod("string", "int opCmp(const string &in) const", asFUNCTION(StringCmp), asCALL_CDECL_OBJFIRST); assert( r >= 0 );
 	r = engine->RegisterObjectMethod("string", "string opAdd(const string &in) const", asFUNCTIONPR(operator +, (const string &, const string &), string), asCALL_CDECL_OBJFIRST); assert( r >= 0 );
 

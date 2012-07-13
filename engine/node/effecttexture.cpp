@@ -12,14 +12,14 @@ namespace eternal_lands
 {
 
 	EffectTexture::EffectTexture(const String &name,
-		const EffectTextureType type,
-		Mt19937RandomUuidGenerator &generator): EffectNode(name),
-		m_type(type)
+		const EffectTextureType type, Uint32 &var_ids):
+		EffectNode(name), m_type(type)
 	{
 		String var, var_rgb, var_a;
 		StringStream str;
 
-		str << UTF8("_") << generator();
+		str << UTF8("effect_var_") << std::hex << var_ids;
+		var_ids++;
 
 		var = String(str.str());
 
@@ -30,94 +30,105 @@ namespace eternal_lands
 		switch (get_type())
 		{
 			case ett_texture_1d:
-				add_input_port(String(UTF8("u")));
+				add_input_port(String(UTF8("u")), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("x")));
+					String(UTF8("x")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("x")));
+					String(UTF8("x")), ect_fragment);
 				break;
 			case ett_texture_2d:
-				add_input_port(String(UTF8("uv")));
+				add_input_port(String(UTF8("uv")),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				break;
 			case ett_texture_3d:
-				add_input_port(String(UTF8("xyz")));
+				add_input_port(String(UTF8("xyz")),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xyz")));
+					String(UTF8("xyz")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xyz")));
+					String(UTF8("xyz")), ect_fragment);
 				break;
 			case ett_texture_cube_map:
-				add_input_port(String(UTF8("xyz")));
+				add_input_port(String(UTF8("xyz")),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xyz")));
+					String(UTF8("xyz")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xyz")));
+					String(UTF8("xyz")), ect_fragment);
 				break;
 			case ett_texture_1d_array:
-				add_input_port(String(UTF8("u")));
+				add_input_port(String(UTF8("u")),
+					ect_fragment);
 				add_input_port(String("layer"),
-					String(UTF8("?")));
+					String(UTF8("?")), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("x")));
+					String(UTF8("x")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("x")));
+					String(UTF8("x")), ect_fragment);
 				break;
 			case ett_texture_2d_array:
-				add_input_port(String(UTF8("uv")));
+				add_input_port(String(UTF8("uv")),
+					ect_fragment);
 				add_input_port(String("layer"),
-					String(UTF8("?")));
+					String(UTF8("?")), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				break;
 			case ett_texture_cube_map_array:
-				add_input_port(String(UTF8("xyz")));
+				add_input_port(String(UTF8("xyz")),
+					ect_fragment);
 				add_input_port(String("layer"),
-					String(UTF8("?")));
+					String(UTF8("?")), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xyz")));
+					String(UTF8("xyz")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xyz")));
+					String(UTF8("xyz")), ect_fragment);
 				break;
 			case ett_texture_rectangle:
-				add_input_port(String(UTF8("uv")));
+				add_input_port(String(UTF8("uv")),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				break;
 			case ett_texture_1d_project:
-				add_input_port(String(UTF8("xyzw")));
+				add_input_port(String(UTF8("xyzw")),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("x")));
+					String(UTF8("x")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("x")));
+					String(UTF8("x")), ect_fragment);
 				break;
 			case ett_texture_2d_project:
-				add_input_port(String(UTF8("xyzw")));
+				add_input_port(String(UTF8("xyzw")),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				break;
 			case ett_texture_3d_project:
-				add_input_port(String(UTF8("xyzw")));
+				add_input_port(String(UTF8("xyzw")),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xyz")));
+					String(UTF8("xyz")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xyz")));
+					String(UTF8("xyz")), ect_fragment);
 				break;
 			case ett_texture_rectangle_project:
-				add_input_port(String(UTF8("xyzw")));
+				add_input_port(String(UTF8("xyzw")),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")));
+					String(UTF8("xy")), ect_fragment);
 				break;
 		}
 	}
@@ -131,16 +142,24 @@ namespace eternal_lands
 		return 4;
 	}
 
-	void EffectTexture::do_write(const bool glsl_120,
+	void EffectTexture::write(const bool glsl_120,
 		const EffectChangeType change,
-		StringBitSet16Map &parameters_indices,
+		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &written)
+		EffectNodePtrSet &vertex_written,
+		EffectNodePtrSet &fragment_written)
 	{
 		String uv, dPdx, dPdy, layer;
 		bool use_grad;
+
+		if (fragment_written.count(this) > 0)
+		{
+			return;
+		}
+
+		fragment_written.insert(this);
 
 		OutStream &str = fragment_str;
 
@@ -153,11 +172,11 @@ namespace eternal_lands
 					dPdx = port.
 						get_connected_var_swizzled();
 					port.write(glsl_120, ect_fragment,
-						parameters_indices,
-						vertex_parameters,
+						parameters, vertex_parameters,
 						fragment_parameters,
 						vertex_str, fragment_str,
-						written);
+						vertex_written,
+						fragment_written);
 
 					continue;
 				}
@@ -167,11 +186,11 @@ namespace eternal_lands
 					dPdy = port.
 						get_connected_var_swizzled();
 					port.write(glsl_120, ect_fragment,
-						parameters_indices,
-						vertex_parameters,
+						parameters, vertex_parameters,
 						fragment_parameters,
 						vertex_str, fragment_str,
-						written);
+						vertex_written,
+						fragment_written);
 
 					continue;
 				}
@@ -181,11 +200,11 @@ namespace eternal_lands
 					layer = port.
 						get_connected_var_swizzled();
 					port.write(glsl_120, ect_fragment,
-							parameters_indices,
-					vertex_parameters,
+						parameters, vertex_parameters,
 						fragment_parameters,
 						vertex_str, fragment_str,
-						written);
+						vertex_written,
+						fragment_written);
 
 					continue;
 				}
@@ -194,9 +213,11 @@ namespace eternal_lands
 				 */
 				uv = port.get_connected_var_swizzled();
 				port.write(glsl_120, ect_fragment,
-					parameters_indices, vertex_parameters,
+					parameters, vertex_parameters,
 					fragment_parameters, vertex_str,
-					fragment_str, written);
+					fragment_str, vertex_written,
+					fragment_written);
+
 			}
 		}
 

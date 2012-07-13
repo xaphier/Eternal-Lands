@@ -21,16 +21,17 @@ namespace eternal_lands
 	}
 
 	void EffectNode::add_input_port(const String &description,
-		const String &swizzle)
+		const String &swizzle, const EffectChangeType change)
 	{
 		m_ports.push_back(new EffectNodePort(this, String(),
-			description, swizzle, ect_undefined, true));
+			description, swizzle, change, true));
 	}
 
-	void EffectNode::add_input_port(const String &swizzle)
+	void EffectNode::add_input_port(const String &swizzle,
+		const EffectChangeType change)
 	{
 		m_ports.push_back(new EffectNodePort(this, String(),
-			swizzle, ect_undefined, true));
+			swizzle, change, true));
 	}
 
 	void EffectNode::add_output_port(const String &var,
@@ -48,14 +49,19 @@ namespace eternal_lands
 			swizzle, change, false));
 	}
 
-	bool EffectNode::check_connections(EffectNodePtrSet &checking)
+	bool EffectNode::check_connections(EffectNodePtrVector &checking)
 	{
-		if (checking.count(this) > 0)
+		BOOST_FOREACH(EffectNodePtr node, checking)
 		{
-			return false;
+			if (node == this)
+			{
+				checking.push_back(this);
+
+				return false;
+			}
 		}
 
-		checking.insert(this);
+		checking.push_back(this);
 
 		BOOST_FOREACH(EffectNodePort &port, m_ports)
 		{
@@ -68,13 +74,14 @@ namespace eternal_lands
 			}
 		}
 
+		checking.pop_back();
+
 		return true;
 	}
 
 	void EffectNode::update(EffectNodePtrSet &updated)
 	{
-		EffectChangeType change;
-		Uint16 value_count, connected_value_count;
+		Uint16 connected_value_count;
 
 		if (updated.count(this) > 0)
 		{
@@ -83,14 +90,17 @@ namespace eternal_lands
 
 		updated.insert(this);
 
-		change = ect_undefined;
-		value_count = get_initial_value_count();
+		m_change = ect_undefined;
+		m_value_count = get_initial_value_count();
 		connected_value_count = get_initial_value_count();
-
-		set_value_count(value_count);
 
 		BOOST_FOREACH(EffectNodePort &port, m_ports)
 		{
+			if (port.get_output())
+			{
+				continue;
+			}
+
 			port.update(updated);
 
 			if (port.get_general_type())
@@ -103,39 +113,45 @@ namespace eternal_lands
 					((connected_value_count > 0) &&
 						port.get_output()))
 				{
-					value_count = connected_value_count;
+					m_value_count = connected_value_count;
 				}
 			}
 
 			if (port.get_undefined_change())
 			{
-				change = std::max(change,
+				m_change = std::max(m_change,
 					port.get_connected_change());
+			}
+			else
+			{
+				m_change = std::max(m_change,
+					port.get_change());
 			}
 		}
 
-		set_change(change);
-		set_value_count(value_count);
-	}
-
-	void EffectNode::write(const bool glsl_120,
-		const EffectChangeType change,
-		StringBitSet16Map &parameters_indices,
-		ShaderSourceParameterVector &vertex_parameters,
-		ShaderSourceParameterVector &fragment_parameters,
-		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &written)
-	{
-		if (written.count(this) > 0)
+		BOOST_FOREACH(EffectNodePort &port, m_ports)
 		{
-			return;
+			if (port.get_input())
+			{
+				continue;
+			}
+
+			port.update(updated);
+
+			if (port.get_general_type())
+			{
+				connected_value_count =
+					port.get_connected_value_count();
+
+				if (((connected_value_count > 1) &&
+					port.get_input()) ||
+					((connected_value_count > 0) &&
+						port.get_output()))
+				{
+					m_value_count = connected_value_count;
+				}
+			}
 		}
-
-		written.insert(this);
-
-		do_write(glsl_120, change, parameters_indices,
-			vertex_parameters, fragment_parameters, vertex_str,
-			fragment_str, written);
 	}
 
 	String EffectNode::get_value_count_type_str() const

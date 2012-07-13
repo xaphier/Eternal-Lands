@@ -122,24 +122,22 @@ namespace eternal_lands
 
 	bool EffectNodePort::check_connection(const EffectNodePortPtr port)
 	{
-		EffectNodePtrSet checking;
+		EffectNodePtrVector checking;
 
 		if (get_output())
 		{
-			return port->check_connection(this, checking);
+			return port->do_check_connection(this, checking);
 		}
 		else
 		{
-			return check_connection(port, checking);
+			return do_check_connection(port, checking);
 		}
 	}
 
-	bool EffectNodePort::check_connection(const EffectNodePortPtr port,
-		EffectNodePtrSet &checking) const
+	bool EffectNodePort::do_check_connection(const EffectNodePortPtr port,
+		EffectNodePtrVector &checking) const
 	{
 		NULL_PTR_CHECK(port, UTF8("port"));
-
-		checking.insert(port->get_node_ptr());
 
 		if (get_input() == port->get_input())
 		{
@@ -151,10 +149,13 @@ namespace eternal_lands
 			return false;
 		}
 
+		checking.push_back(port->get_node_ptr());
+
 		return m_node->check_connections(checking);
 	}
 
-	bool EffectNodePort::check_connection(EffectNodePtrSet &checking) const
+	bool EffectNodePort::check_connection(EffectNodePtrVector &checking)
+		const
 	{
 		BOOST_FOREACH(EffectNodePortPtr connected_port, m_connections)
 		{
@@ -315,10 +316,10 @@ namespace eternal_lands
 	{
 		if (!get_undefined_change())
 		{
-			return get_node_change();
+			return m_change;
 		}
 
-		return m_change;
+		return get_node_change();
 	}
 
 	EffectChangeType EffectNodePort::get_node_change() const
@@ -353,19 +354,21 @@ namespace eternal_lands
 
 	void EffectNodePort::write(const bool glsl_120,
 		const EffectChangeType change,
-		StringBitSet16Map &parameters_indices,
+		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &written)
+		EffectNodePtrSet &vertex_written,
+		EffectNodePtrSet &fragment_written)
 	{
 		EffectChangeType new_change;
 
 		if (get_output())
 		{
-			m_node->write(glsl_120, change, parameters_indices,
+			m_node->write(glsl_120, change, parameters,
 				vertex_parameters, fragment_parameters,
-				vertex_str, fragment_str, written);
+				vertex_str, fragment_str, vertex_written,
+				fragment_written);
 
 			return;
 		}
@@ -377,14 +380,16 @@ namespace eternal_lands
 			if ((get_change() == ect_fragment) &&
 				(port->get_change() == ect_vertex))
 			{
-				port->add_parameter(parameters_indices);
+				parameters[port->get_var()] =
+					port->get_value_count();
 
 				new_change = ect_vertex;
 			}
 
-			port->write(glsl_120, new_change, parameters_indices,
+			port->write(glsl_120, new_change, parameters,
 				vertex_parameters, fragment_parameters,
-				vertex_str, fragment_str, written);
+				vertex_str, fragment_str, vertex_written,
+				fragment_written);
 		}
 	}
 
@@ -469,24 +474,6 @@ namespace eternal_lands
 		}
 
 		return result;
-	}
-
-	void EffectNodePort::add_parameter(
-		StringBitSet16Map &parameters_indices)
-	{
-/*
-		StringBitSet16Map::iterator found;
-
-		found = parameters_indices.find(name);
-
-		if (found == parameters_indices.end())
-		{
-			found->second |= used_indices;
-			return;
-		}
-
-		parameters_indices[name] = used_indices;
-*/
 	}
 
 }

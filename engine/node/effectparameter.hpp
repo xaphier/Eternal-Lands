@@ -29,20 +29,21 @@ namespace eternal_lands
 		private:
 			EffectParameterType m_type;
 
-			virtual void do_write(const bool glsl_120,
-				const EffectChangeType change,
-				StringBitSet16Map &parameters_indices,
-				ShaderSourceParameterVector &vertex_parameters,
-				ShaderSourceParameterVector
-					&fragment_parameters,
-				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &written);
 			virtual Uint16 get_initial_value_count() const;
 
 		public:
 			EffectParameter(const String &name,
 				const EffectParameterType type);
 			virtual ~EffectParameter() noexcept;
+			void write(const bool glsl_120,
+				const EffectChangeType change,
+				StringUint16Map &parameters,
+				ShaderSourceParameterVector &vertex_parameters,
+				ShaderSourceParameterVector
+					&fragment_parameters,
+				OutStream &vertex_str, OutStream &fragment_str,
+				EffectNodePtrSet &vertex_written,
+				EffectNodePtrSet &fragment_written);
 
 			inline EffectParameterType get_type() const noexcept
 			{

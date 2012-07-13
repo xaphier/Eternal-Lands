@@ -22,7 +22,8 @@ namespace eternal_lands
 			String(UTF8("view_direction")),
 			String(UTF8("uv")),
 			String(UTF8("fragment_coordinate")),
-			String(UTF8("time"))
+			String(UTF8("time")),
+			String(UTF8("camera"))
 		};
 
 		const Uint32 effect_parameter_names_count =

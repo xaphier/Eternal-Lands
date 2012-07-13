@@ -453,6 +453,7 @@ namespace eternal_lands
 	VECTOR(ActorSharedPtr);
 	VECTOR(BoundedObjectSharedPtr);
 	VECTOR(BoundingBox);
+	VECTOR(EffectNodePtr);
 	VECTOR(GlslProgramSharedPtr);
 	VECTOR(ImageSharedPtr);
 	VECTOR(LightSharedPtr);

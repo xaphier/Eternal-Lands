@@ -9,6 +9,13 @@ namespace el = eternal_lands;
 
 class Node: public QNEBlock
 {
+	private:
+		el::EffectNode* m_effect_node;
+
+	protected:
+		virtual void mouseDoubleClickEvent(
+			QGraphicsSceneMouseEvent * event);
+
 	public:
 		Node(el::EffectNode* effect_node, QString name,
 			QGraphicsItem *parent = 0,

@@ -37,7 +37,8 @@ namespace eternal_lands
 
 			void do_connect(const EffectNodePortPtr port);
 			void do_disconnect(const EffectNodePortPtr port);
-			bool check_connection(EffectNodePtrSet &checking) const;
+			bool check_connection(EffectNodePtrVector &checking)
+				const;
 			void update(EffectNodePtrSet &updated);
 			Uint16 get_connected_value_count() const;
 			EffectChangeType get_connected_change() const;
@@ -46,6 +47,8 @@ namespace eternal_lands
 			BitSet16 get_var_indices() const;
 			Uint16 get_var_count() const;
 			String get_var_swizzled() const;
+			bool do_check_connection(const EffectNodePortPtr port,
+				EffectNodePtrVector &checking) const;
 
 			inline const EffectNodePortPtr &get_connection()
 				const noexcept
@@ -71,8 +74,6 @@ namespace eternal_lands
 				const EffectChangeType change,
 				const bool input);
 			~EffectNodePort() noexcept;
-			bool check_connection(const EffectNodePortPtr port,
-				EffectNodePtrSet &checking) const;
 			bool check_connection(const EffectNodePortPtr port);
 			Uint16 get_value_count() const;
 			Uint16 get_node_value_count() const;
@@ -85,12 +86,13 @@ namespace eternal_lands
 			String get_connected_var_swizzled() const;
 			void write(const bool glsl_120,
 				const EffectChangeType change,
-				StringBitSet16Map &parameters_indices,
+				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,
 				ShaderSourceParameterVector
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &written);
+				EffectNodePtrSet &vertex_written,
+				EffectNodePtrSet &fragment_written);
 
 			inline const EffectNode &get_node() const noexcept
 			{

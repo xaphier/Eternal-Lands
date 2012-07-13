@@ -34,7 +34,8 @@ namespace eternal_lands
 		ept_view_direction,
 		ept_uv,
 		ept_fragment_coordinate,
-		ept_time
+		ept_time,
+		ept_camera
 	};
 	/**
 	 * @}

@@ -14,8 +14,9 @@
 #include "../engine/node/effectparameter.hpp"
 #include "../engine/node/effecttexture.hpp"
 #include "../engine/node/effectoutput.hpp"
+#include "../engine/node/effecttexture.hpp"
 
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), m_var_id(0)
 {
 	setupUi(this);
 
@@ -30,23 +31,14 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
 	connect(constant_button, SIGNAL(clicked()), this, SLOT(add_constant()));
 	connect(function_button, SIGNAL(clicked()), this, SLOT(add_function()));
+	connect(texture_button, SIGNAL(clicked()), this, SLOT(add_texture()));
 	connect(parameter_button, SIGNAL(clicked()), this,
 		SLOT(add_parameter()));
 	connect(output_button, SIGNAL(clicked()), this, SLOT(add_output()));
-	connect(texture_button, SIGNAL(clicked()), this, SLOT(edit_direction()));
 }
 
 MainWindow::~MainWindow()
 {
-}
-
-void MainWindow::edit_direction()
-{
-	DirectionDialog* dialog;
-
-	dialog = new DirectionDialog(this);
-
-	dialog->show();
 }
 
 void MainWindow::add_constant()
@@ -85,32 +77,32 @@ void MainWindow::add_constant()
 	{
 		case el::ect_direction_xy:
 			node = new DirectionNode(new el::EffectConstant(
-				el::String("Direction"), type, m_generator),
+				el::String("Direction"), type, m_var_id),
 				"Direction", 0, graphicsView->scene());
 			break;
 		case el::ect_color_rgb:
 			node = new ColorNode(new el::EffectConstant(
-				el::String("Color"), type, m_generator),
+				el::String("Color"), type, m_var_id),
 				"Color", 0, graphicsView->scene());
 			break;
 		case el::ect_float:
 			node = new ValuesNode(new el::EffectConstant(
-				el::String("Constant"), type, m_generator),
+				el::String("Constant"), type, m_var_id),
 				"Constant", 1, 0, graphicsView->scene());
 			break;
 		case el::ect_vec2:
 			node = new ValuesNode(new el::EffectConstant(
-				el::String("Constant"), type, m_generator),
+				el::String("Constant"), type, m_var_id),
 				"Constant", 2, 0, graphicsView->scene());
 			break;
 		case el::ect_vec3:
 			node = new ValuesNode(new el::EffectConstant(
-				el::String("Constant"), type, m_generator),
+				el::String("Constant"), type, m_var_id),
 				"Constant", 3, 0, graphicsView->scene());
 			break;
 		case el::ect_vec4:
 			node = new ValuesNode(new el::EffectConstant(
-				el::String("Constant"), type, m_generator),
+				el::String("Constant"), type, m_var_id),
 				"Constant", 4, 0, graphicsView->scene());
 			break;
 		default:
@@ -152,7 +144,7 @@ void MainWindow::add_function()
 		return;
 	}
 
-	node = new Node(new el::EffectFunction(function, type, m_generator),
+	node = new Node(new el::EffectFunction(function, type, m_var_id),
 		"Function", 0, graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
@@ -193,6 +185,45 @@ void MainWindow::add_parameter()
 
 	node = new Node(new el::EffectParameter(parameter, type), "Parameter",
 		0, graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+}
+
+void MainWindow::add_texture()
+{
+	Node* node;
+	QStringList textures;
+	QString tmp;
+	el::String texture;
+	el::EffectTextureType type;
+	Uint32 i;
+	bool ok;
+
+	for (i = 0; i < el::EffectTextureUtil::get_effect_texture_count();
+		++i)
+	{
+		textures << QString::fromUtf8(
+			el::EffectTextureUtil::get_str(static_cast<
+				el::EffectTextureType>(i)).get().c_str());
+	}
+
+	tmp = QInputDialog::getItem(this, "Select texture", "texture",
+		textures, 0, false, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	texture = el::String(tmp.toUtf8());
+
+	if (!el::EffectTextureUtil::get_effect_texture(texture, type))
+	{
+		return;
+	}
+
+	node = new Node(new el::EffectTexture(texture, type, m_var_id),
+		"Texture", 0, graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }

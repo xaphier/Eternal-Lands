@@ -14,12 +14,18 @@ namespace eternal_lands
 
 	EffectOutput::EffectOutput(const String &name): EffectNode(name)
 	{
-		add_input_port(String(UTF8("albedo")), String(UTF8("rgb")));
-		add_input_port(String(UTF8("alpha")), String(UTF8("?")));
-		add_input_port(String(UTF8("roughness")), String(UTF8("?")));
-		add_input_port(String(UTF8("emission")), String(UTF8("rgb")));
-		add_input_port(String(UTF8("normal")), String(UTF8("xyz")));
-		add_input_port(String(UTF8("position")), String(UTF8("xyz")));
+		add_input_port(String(UTF8("albedo")), String(UTF8("rgb")),
+			ect_fragment);
+		add_input_port(String(UTF8("alpha")), String(UTF8("?")),
+			ect_fragment);
+		add_input_port(String(UTF8("roughness")), String(UTF8("?")),
+			ect_fragment);
+		add_input_port(String(UTF8("emission")), String(UTF8("rgb")),
+			ect_fragment);
+		add_input_port(String(UTF8("normal")), String(UTF8("xyz")),
+			ect_fragment);
+		add_input_port(String(UTF8("position")), String(UTF8("xyz")),
+			ect_fragment);
 	}
 
 	EffectOutput::~EffectOutput() noexcept
@@ -31,14 +37,22 @@ namespace eternal_lands
 		return 4;
 	}
 
-	void EffectOutput::do_write(const bool glsl_120,
+	void EffectOutput::write(const bool glsl_120,
 		const EffectChangeType change,
-		StringBitSet16Map &parameters_indices,
+		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &written)
+		EffectNodePtrSet &vertex_written,
+		EffectNodePtrSet &fragment_written)
 	{
+		if (fragment_written.count(this) > 0)
+		{
+			return;
+		}
+
+		fragment_written.insert(this);
+
 		BOOST_FOREACH(EffectNodePort &port, get_ports())
 		{
 			assert(port.get_input());
@@ -48,9 +62,10 @@ namespace eternal_lands
 				continue;
 			}
 
-			port.write(glsl_120, ect_fragment, parameters_indices,
+			port.write(glsl_120, ect_fragment, parameters,
 				vertex_parameters, fragment_parameters,
-				vertex_str, fragment_str, written);
+				vertex_str, fragment_str, vertex_written,
+				fragment_written);
 
 			if (port.get_description() == UTF8("albedo"))
 			{
@@ -94,7 +109,8 @@ namespace eternal_lands
 
 			if (port.get_connected())
 			{
-				fragment_str << port.get_connected_var_swizzled();
+				fragment_str <<
+					port.get_connected_var_swizzled();
 			}
 			else
 			{

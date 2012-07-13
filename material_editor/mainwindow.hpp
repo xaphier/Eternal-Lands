@@ -14,14 +14,14 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 
 	private:
 		QNodesEditor *m_nodes_editor;
-		el::Mt19937RandomUuidGenerator m_generator;
+		Uint32 m_var_id;
 
 	private slots:
 		void add_constant();
 		void add_function();
 		void add_parameter();
+		void add_texture();
 		void add_output();
-		void edit_direction();
 
 	public:
 		MainWindow(QWidget *parent = 0);

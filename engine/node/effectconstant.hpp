@@ -31,21 +31,22 @@ namespace eternal_lands
 			String m_var_name;
 			EffectConstantType m_type;
 
-			virtual void do_write(const bool glsl_120,
-				const EffectChangeType change,
-				StringBitSet16Map &parameters_indices,
-				ShaderSourceParameterVector &vertex_parameters,
-				ShaderSourceParameterVector
-					&fragment_parameters,
-				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &written);
 			virtual Uint16 get_initial_value_count() const;
 
 		public:
 			EffectConstant(const String &name,
 				const EffectConstantType type,
-				Mt19937RandomUuidGenerator &generator);
+				Uint32 &var_ids);
 			virtual ~EffectConstant() noexcept;
+			virtual void write(const bool glsl_120,
+				const EffectChangeType change,
+				StringUint16Map &parameters,
+				ShaderSourceParameterVector &vertex_parameters,
+				ShaderSourceParameterVector
+					&fragment_parameters,
+				OutStream &vertex_str, OutStream &fragment_str,
+				EffectNodePtrSet &vertex_written,
+				EffectNodePtrSet &fragment_written);
 
 			inline EffectConstantType get_type() const noexcept
 			{

@@ -26,19 +26,20 @@ namespace eternal_lands
 	class EffectOutput: public EffectNode
 	{
 		private:
-			virtual void do_write(const bool glsl_120,
-				const EffectChangeType change,
-				StringBitSet16Map &parameters_indices,
-				ShaderSourceParameterVector &vertex_parameters,
-				ShaderSourceParameterVector
-					&fragment_parameters,
-				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &written);
 			virtual Uint16 get_initial_value_count() const;
 
 		public:
 			EffectOutput(const String &name);
 			virtual ~EffectOutput() noexcept;
+			void write(const bool glsl_120,
+				const EffectChangeType change,
+				StringUint16Map &parameters,
+				ShaderSourceParameterVector &vertex_parameters,
+				ShaderSourceParameterVector
+					&fragment_parameters,
+				OutStream &vertex_str, OutStream &fragment_str,
+				EffectNodePtrSet &vertex_written,
+				EffectNodePtrSet &fragment_written);
 
 	};
 

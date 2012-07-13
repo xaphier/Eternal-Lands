@@ -12,13 +12,13 @@ namespace eternal_lands
 {
 
 	EffectFunction::EffectFunction(const String &name,
-		const EffectFunctionType type,
-		Mt19937RandomUuidGenerator &generator): EffectNode(name),
-		m_type(type)
+		const EffectFunctionType type, Uint32 &var_ids):
+		EffectNode(name), m_type(type)
 	{
 		StringStream str;
 
-		str << UTF8("_") << generator();
+		str << UTF8("effect_var_") << std::hex << var_ids;
+		var_ids++;
 
 		m_var = String(str.str());
 
@@ -70,11 +70,11 @@ namespace eternal_lands
 					String(UTF8("*")));
 				break;
 			case ent_mad:
-				add_input_port(String(UTF8("a")),
+				add_input_port(String(UTF8("x")),
 					String(UTF8("*")));
-				add_input_port(String(UTF8("b")),
+				add_input_port(String(UTF8("y")),
 					String(UTF8("*")));
-				add_input_port(String(UTF8("c")),
+				add_input_port(String(UTF8("z")),
 					String(UTF8("*")));
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
@@ -152,7 +152,8 @@ namespace eternal_lands
 				break;
 			case ent_dFdx:
 			case ent_dFdy:
-				add_input_port(String(), String(UTF8("*")));
+				add_input_port(String(), String(UTF8("*")),
+					ect_fragment);
 				add_output_port(m_var, String(),
 					String(UTF8("*")), ect_fragment);
 				break;
@@ -186,13 +187,14 @@ namespace eternal_lands
 		return 0;
 	}
 
-	void EffectFunction::do_write(const bool glsl_120,
+	void EffectFunction::write(const bool glsl_120,
 		const EffectChangeType change,
-		StringBitSet16Map &parameters_indices,
+		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &written)
+		EffectNodePtrSet &vertex_written,
+		EffectNodePtrSet &fragment_written)
 	{
 		StringVector inputs;
 		String output;
@@ -207,11 +209,6 @@ namespace eternal_lands
 				inputs.push_back(
 					port.get_connected_var_swizzled());
 
-				port.write(glsl_120, change,
-					parameters_indices, vertex_parameters,
-					fragment_parameters, vertex_str,
-					fragment_str, written);
-
 				input_change = std::max(input_change,
 					port.get_change());
 			}
@@ -222,8 +219,39 @@ namespace eternal_lands
 			input_change = change;
 		}
 
-		OutStream &str = change == ect_fragment ? fragment_str :
+		BOOST_FOREACH(EffectNodePort &port, get_ports())
+		{
+			if (port.get_input())
+			{
+				port.write(glsl_120, input_change,
+					parameters, vertex_parameters,
+					fragment_parameters, vertex_str,
+					fragment_str, vertex_written,
+					fragment_written);
+			}
+		}
+
+		OutStream &str = input_change == ect_fragment ? fragment_str :
 			vertex_str;
+
+		if (input_change == ect_fragment)
+		{
+			if (fragment_written.count(this) > 0)
+			{
+				return;
+			}
+
+			fragment_written.insert(this);
+		}
+		else
+		{
+			if (vertex_written.count(this) > 0)
+			{
+				return;
+			}
+
+			vertex_written.insert(this);
+		}
 
 		str << get_value_count_type_str() << UTF8(" ");
 		str << m_var << UTF8(" = ");

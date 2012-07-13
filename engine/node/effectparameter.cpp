@@ -47,19 +47,21 @@ namespace eternal_lands
 				break;
 			case ept_fragment_coordinate:
 				add_output_port(String("gl_FragCoord"),
-					String(), String(UTF8("uv")),
-					ect_fragment);
+					String(UTF8("uv")), ect_fragment);
 				add_output_port(String("gl_FragCoord"),
-					String(), String(UTF8("z")),
-					ect_fragment);
+					String(UTF8("z")), ect_fragment);
 				add_output_port(String("gl_FragCoord"),
-					String(), String(UTF8("w")),
-					ect_fragment);
+					String(UTF8("w")), ect_fragment);
 				break;
 			case ept_time:
 				add_output_port(AutoParameterUtil::get_str(
 					apt_time), String(),
 					String(UTF8("?")), ect_constant);
+				break;
+			case ept_camera:
+				add_output_port(AutoParameterUtil::get_str(
+					apt_camera), String(),
+					String(UTF8("xyz")), ect_constant);
 				break;
 		}
 	}
@@ -76,6 +78,7 @@ namespace eternal_lands
 			case ept_normal:
 			case ept_tangent:
 			case ept_view_direction:
+			case ept_camera:
 				return 3;
 			case ept_uv:
 				return 2;
@@ -88,13 +91,14 @@ namespace eternal_lands
 		return 0;
 	}
 
-	void EffectParameter::do_write(const bool glsl_120,
+	void EffectParameter::write(const bool glsl_120,
 		const EffectChangeType change,
-		StringBitSet16Map &parameters_indices,
+		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &written)
+		EffectNodePtrSet &vertex_written,
+		EffectNodePtrSet &fragment_written)
 	{
 		switch (get_type())
 		{
@@ -145,6 +149,24 @@ namespace eternal_lands
 						add_parameter(String(UTF8(
 							"EffectParameter")),
 							apt_time,
+							vertex_parameters);
+				}
+				break;
+			case ept_camera:
+				if (change == ect_fragment)
+				{
+					ShaderSourceParameterBuilder::
+						add_parameter(String(UTF8(
+							"EffectParameter")),
+							apt_camera,
+							fragment_parameters);
+				}
+				else
+				{
+					ShaderSourceParameterBuilder::
+						add_parameter(String(UTF8(
+							"EffectParameter")),
+							apt_camera,
 							vertex_parameters);
 				}
 				break;
