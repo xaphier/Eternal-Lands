@@ -91,7 +91,8 @@ namespace eternal_lands
 		return 0;
 	}
 
-	void EffectParameter::write(const bool glsl_120,
+	void EffectParameter::write(const Uint16StringMap &array_layers,
+		const ShaderVersionType version, const bool low_quality,
 		const EffectChangeType change,
 		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,

@@ -88,6 +88,11 @@ namespace eternal_lands
 				pt_vec4),
 			CommonParameterTypeData(String(UTF8("specular")),
 				pt_float),
+			CommonParameterTypeData(String(UTF8("roughness")),
+				pt_float),
+			CommonParameterTypeData(
+				String(UTF8("reflectance_at_normal_incidence")),
+				pt_float),
 			CommonParameterTypeData(String(UTF8("fragment_normal")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("fragment_uv")),

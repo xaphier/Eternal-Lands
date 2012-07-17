@@ -16,18 +16,10 @@ namespace eternal_lands
 
 		const String effect_texture_names[] =
 		{
-			String(UTF8("texture_1d")),
-			String(UTF8("texture_2d")),
-			String(UTF8("texture_3d")),
-			String(UTF8("texture_cube_map")),
-			String(UTF8("texture_1d_array")),
-			String(UTF8("texture_2d_array")),
-			String(UTF8("texture_cube_map_array")),
-			String(UTF8("texture_rectangle")),
-			String(UTF8("texture_1d_project")),
-			String(UTF8("texture_2d_project")),
-			String(UTF8("texture_3d_project")),
-			String(UTF8("texture_rectangle_project"))
+			String(UTF8("default")),
+			String(UTF8("albedo")),
+			String(UTF8("normal")),
+			String(UTF8("parallax"))
 		};
 
 		const Uint32 effect_texture_names_count =

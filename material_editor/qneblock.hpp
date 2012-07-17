@@ -50,11 +50,11 @@ public:
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 	QNEPort* addPort(const QString &name, bool isOutput, int flags);
-	QNEPort* addPort(el::EffectNodePortPtr effect_port, const QString &name,
-		bool isOutput, int flags = 0);
-	void addInputPort(el::EffectNodePortPtr effect_port,
+	QNEPort* addPort(const el::EffectNodePortPtr effect_port,
+		const QString &name, bool isOutput, int flags = 0);
+	void addInputPort(const el::EffectNodePortPtr effect_port,
 		const QString &name);
-	void addOutputPort(el::EffectNodePortPtr effect_port,
+	void addOutputPort(const el::EffectNodePortPtr effect_port,
 		const QString &name);
 
 private:

@@ -37,21 +37,22 @@
 vec3 uv, view_dir;
 float h;
 int i;
-const vec2 scale_bias = vec2(0.06, -0.03);
+const vec2 scale_bias = vec2(0.06, -0.03) * 0.5;
 
-view_dir = transpose(tbn_matrix) * world_view_dir.xyz;
+view_dir = transpose(tbn_matrix) * world_view_direction.xyz;
 uv = vec3(world_uv, 0.0);
 
 for (i = 0; i &lt; 3; i++)
 {
 	normal = texture2D(normal_sampler, uv.xy);
-	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
+	normal.xy = normal.xy * 2.0 - 1.0;
+	normal.z = 1.0 - length(normal.xy);
 	h = normal.a * scale_bias.x + scale_bias.y;
 	uv += (h - uv.z) * normal.z * view_dir;
 }
 
-normal.xyz = normalize(tbn_matrix * normal.xyz);
-fragment_normal = normal.xyz;
+normal.xyz = normalize(normal.xyz * 2.0 - 1.0);
+fragment_normal = tbn_matrix * normal.xyz;
 fragment_uv = uv.xy;
 </source>
    <version>120</version>

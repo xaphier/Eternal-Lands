@@ -40,8 +40,8 @@ public:
 	enum { Type = QGraphicsItem::UserType + 1 };
 	enum { NamePort = 1, TypePort = 2, ImagePort = 3 };
 
-	QNEPort(el::EffectNodePortPtr effect_port, QGraphicsItem *parent = 0,
-		QGraphicsScene *scene = 0);
+	QNEPort(el::EffectNodePortPtr effect_port,
+		QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
 	~QNEPort();
 
 	void setNEBlock(QNEBlock*);

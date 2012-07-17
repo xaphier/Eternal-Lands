@@ -19,8 +19,9 @@ class DirectionNode: public QNEBlock
 			QGraphicsSceneMouseEvent * event);
 
 	public:
-		DirectionNode(el::EffectConstant* effect_constant, QString name,
-			QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+		DirectionNode(el::EffectConstant* effect_constant,
+			QString name, QGraphicsItem *parent = 0,
+			QGraphicsScene *scene = 0);
 		virtual ~DirectionNode();
 		void select_direction();
 

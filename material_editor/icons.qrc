@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>editclear.png</file>
+    <file>rgb.png</file>
+    <file>rgba.png</file>
+    <file>gtk-add.png</file>
+  </qresource>
+</RCC>

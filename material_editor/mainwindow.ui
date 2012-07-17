@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>838</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,62 +16,10 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QPushButton" name="constant_button">
-        <property name="text">
-         <string>constant</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="texture_button">
-        <property name="text">
-         <string>texture</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="parameter_button">
-        <property name="text">
-         <string>parameter</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="function_button">
-        <property name="text">
-         <string>function</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="output_button">
-        <property name="text">
-         <string>output</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item>
      <widget class="QGraphicsView" name="graphicsView">
       <property name="font">
        <font>
-        <pointsize>19</pointsize>
+        <pointsize>11</pointsize>
        </font>
       </property>
      </widget>
@@ -89,7 +37,165 @@
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="dockWidget">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="8" column="0" colspan="2">
+      <widget class="QPushButton" name="output_button">
+       <property name="text">
+        <string>output</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0" colspan="2">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="0" colspan="2">
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>Texture units</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QLineEdit" name="texture_unit_name_0"/>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="texture_unit_type_0"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLineEdit" name="texture_unit_name_1"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLineEdit" name="texture_unit_name_2"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLineEdit" name="texture_unit_name_3"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLineEdit" name="texture_unit_name_4"/>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLineEdit" name="texture_unit_name_5"/>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLineEdit" name="texture_unit_name_6"/>
+        </item>
+        <item row="7" column="0">
+         <widget class="QLineEdit" name="texture_unit_name_7"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="texture_unit_type_1"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="texture_unit_type_2"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="texture_unit_type_3"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QComboBox" name="texture_unit_type_4"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="QComboBox" name="texture_unit_type_5"/>
+        </item>
+        <item row="6" column="1">
+         <widget class="QComboBox" name="texture_unit_type_6"/>
+        </item>
+        <item row="7" column="1">
+         <widget class="QComboBox" name="texture_unit_type_7"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="function_button">
+       <property name="text">
+        <string>Function</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="color_button">
+       <property name="text">
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="parameter_button">
+       <property name="text">
+        <string>Parameter</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="texture_button">
+       <property name="text">
+        <string>Texture</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="constant_button">
+       <property name="text">
+        <string>Constant</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="direction_button">
+       <property name="text">
+        <string>Direction</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_2">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTreeWidget" name="parameters">
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="widget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -92,11 +92,11 @@ BOOST_AUTO_TEST_CASE(stream)
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::EffectFunctionUtil::get_str(
-		el::ent_add).get(), "add");
+		el::eft_add).get(), "add");
 	BOOST_CHECK_EQUAL(el::EffectFunctionUtil::get_str(
-		el::ent_atanh).get(), "atanh");
+		el::eft_atanh).get(), "atanh");
 	BOOST_CHECK_EQUAL(el::EffectFunctionUtil::get_str(
-		el::ent_fract).get(), "fract");
+		el::eft_fract).get(), "fract");
 	BOOST_CHECK_EQUAL(el::EffectFunctionUtil::get_str(
-		el::ent_refract).get(), "refract");
+		el::eft_refract).get(), "refract");
 }

@@ -17,6 +17,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		Uint32 m_var_id;
 
 	private slots:
+		void add_color();
+		void add_direction();
 		void add_constant();
 		void add_function();
 		void add_parameter();

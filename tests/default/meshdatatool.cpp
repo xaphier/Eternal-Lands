@@ -425,7 +425,7 @@ BOOST_AUTO_TEST_CASE(add_plane)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -599,7 +599,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -782,7 +782,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -966,7 +966,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -1135,7 +1135,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -1400,7 +1400,7 @@ BOOST_AUTO_TEST_CASE(add_plane_use_restart)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -1574,7 +1574,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal_use_restart)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -1757,7 +1757,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_use_restart)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -1941,7 +1941,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho_use_restart)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -2110,7 +2110,7 @@ BOOST_AUTO_TEST_CASE(add_plane_disable_use_restart)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 
@@ -2390,7 +2390,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box_use_restart)
 	glm::vec2 size, uv;
 	el::Uint32Vector indices;
 	el::VertexSemanticTypeSet semantics;
-	el::Uint32 vertex_count, index_count, i, index, x, y, tile_size;
+	Uint32 vertex_count, index_count, i, index, x, y, tile_size;
 	el::PrimitiveType primitive;
 	bool use_restart_index, split;
 

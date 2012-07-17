@@ -17,8 +17,9 @@ class ColorNode: public QNEBlock
 			QGraphicsSceneMouseEvent * event);
 
 	public:
-		ColorNode(el::EffectConstant* effect_constant, QString name,
-			QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+		ColorNode(el::EffectConstant* effect_constant,
+			QString name, QGraphicsItem *parent = 0,
+			QGraphicsScene *scene = 0);
 		virtual ~ColorNode();
 		void select_color();
 

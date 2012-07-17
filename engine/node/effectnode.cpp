@@ -30,28 +30,28 @@ namespace eternal_lands
 	void EffectNode::add_input_port(const String &swizzle,
 		const EffectChangeType change)
 	{
-		m_ports.push_back(new EffectNodePort(this, String(),
-			swizzle, change, true));
+		m_ports.push_back(new EffectNodePort(this, String(), swizzle,
+			change, true));
 	}
 
 	void EffectNode::add_output_port(const String &var,
 		const String &description, const String &swizzle,
 		const EffectChangeType change)
 	{
-		m_ports.push_back(new EffectNodePort(this, var,
-			description, swizzle, change, false));
+		m_ports.push_back(new EffectNodePort(this, var, description,
+			swizzle, change, false));
 	}
 
 	void EffectNode::add_output_port(const String &var,
 		const String &swizzle, const EffectChangeType change)
 	{
-		m_ports.push_back(new EffectNodePort(this, var,
-			swizzle, change, false));
+		m_ports.push_back(new EffectNodePort(this, var, swizzle,
+			change, false));
 	}
 
 	bool EffectNode::check_connections(EffectNodePtrVector &checking)
 	{
-		BOOST_FOREACH(EffectNodePtr node, checking)
+		BOOST_FOREACH(const EffectNodePtr node, checking)
 		{
 			if (node == this)
 			{
@@ -63,7 +63,7 @@ namespace eternal_lands
 
 		checking.push_back(this);
 
-		BOOST_FOREACH(EffectNodePort &port, m_ports)
+		BOOST_FOREACH(const EffectNodePort &port, m_ports)
 		{
 			if (port.get_output())
 			{
@@ -94,7 +94,7 @@ namespace eternal_lands
 		m_value_count = get_initial_value_count();
 		connected_value_count = get_initial_value_count();
 
-		BOOST_FOREACH(EffectNodePort &port, m_ports)
+		BOOST_FOREACH(EffectNodePort &port, get_ports())
 		{
 			if (port.get_output())
 			{
@@ -129,7 +129,7 @@ namespace eternal_lands
 			}
 		}
 
-		BOOST_FOREACH(EffectNodePort &port, m_ports)
+		BOOST_FOREACH(EffectNodePort &port, get_ports())
 		{
 			if (port.get_input())
 			{
@@ -179,6 +179,15 @@ namespace eternal_lands
 		EffectNodePtrSet updated;
 
 		update(updated);
+	}
+
+	String EffectNode::get_sampler_name(const Uint16 index)
+	{
+		StringStream str;
+
+		str << UTF8("effect_sampler_") << index;
+
+		return String(str.str());
 	}
 
 }

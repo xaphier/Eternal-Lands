@@ -1,9 +1,9 @@
 #include "directionnode.hpp"
 #include "qneport.hpp"
 
-DirectionNode::DirectionNode(el::EffectConstant* effect_constant, QString name,
-	QGraphicsItem* parent, QGraphicsScene* scene): QNEBlock(parent, scene),
-	m_effect_constant(effect_constant)
+DirectionNode::DirectionNode(el::EffectConstant* effect_constant,
+	QString name, QGraphicsItem* parent, QGraphicsScene* scene):
+	QNEBlock(parent, scene), m_effect_constant(effect_constant)
 {
 	addPort(name, 0, QNEPort::NamePort);
 

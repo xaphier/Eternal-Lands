@@ -31,7 +31,9 @@ namespace eternal_lands
 		public:
 			EffectOutput(const String &name);
 			virtual ~EffectOutput() noexcept;
-			void write(const bool glsl_120,
+			void write(const Uint16StringMap &array_layers,
+				const ShaderVersionType version,
+				const bool low_quality,
 				const EffectChangeType change,
 				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,

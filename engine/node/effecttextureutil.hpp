@@ -28,18 +28,10 @@ namespace eternal_lands
 	 */
 	enum EffectTextureType
 	{
-		ett_texture_1d = 0,
-		ett_texture_2d,
-		ett_texture_3d,
-		ett_texture_cube_map,
-		ett_texture_1d_array,
-		ett_texture_2d_array,
-		ett_texture_cube_map_array,
-		ett_texture_rectangle,
-		ett_texture_1d_project,
-		ett_texture_2d_project,
-		ett_texture_3d_project,
-		ett_texture_rectangle_project
+		ett_default = 0,
+		ett_albedo,
+		ett_normal,
+		ett_parallax
 	};
 	/**
 	 * @}

@@ -85,15 +85,6 @@
 namespace eternal_lands
 {
 
-        typedef boost::uint8_t Uint8;
-        typedef boost::uint16_t Uint16;
-        typedef boost::uint32_t Uint32;
-        typedef boost::uint64_t Uint64;
-        typedef boost::int8_t Sint8;
-        typedef boost::int16_t Sint16;
-        typedef boost::int32_t Sint32;
-        typedef boost::int64_t Sint64;
-
 	#define SHARED_PTR_NAME(type, name) typedef boost::shared_ptr<type> name##SharedPtr
 	#define ARRAY_NAME(type, N, name) typedef boost::array<type, N> name##Array##N
 	#define VECTOR_NAME(type, name) typedef std::vector<type> name##Vector
@@ -355,8 +346,7 @@ namespace eternal_lands
 	typedef std::map<String, Uint32> StringUint32Map;
 	typedef std::map<String, String> StringStringMap;
 	typedef std::map<String, BitSet16> StringBitSet16Map;
-	typedef std::set<EffectNodePtr> EffectNodePtrSet;
-	typedef std::set<EffectNodePortPtr> EffectNodePortPtrSet;
+	typedef std::map<Uint16, String> Uint16StringMap;
 	typedef boost::multi_array<bool, 2> BoolMultiArray2;
 	typedef boost::multi_array<float, 2> FloatMultiArray2;
 	typedef boost::multi_array<Uint8, 2> Uint8MultiArray2;
@@ -454,6 +444,7 @@ namespace eternal_lands
 	VECTOR(BoundedObjectSharedPtr);
 	VECTOR(BoundingBox);
 	VECTOR(EffectNodePtr);
+	VECTOR(EffectNodePortPtr);
 	VECTOR(GlslProgramSharedPtr);
 	VECTOR(ImageSharedPtr);
 	VECTOR(LightSharedPtr);
@@ -537,6 +528,8 @@ namespace eternal_lands
 	typedef std::map<Utf32Char, TextureGlyphe> Utf32CharTextureGlypheMap;
 	typedef std::map<Uint32, TextAttributeUint32Pair>
 		Uint32TextAttributeUint32PairMap;
+	typedef std::set<EffectNodePtr> EffectNodePtrSet;
+	typedef std::set<EffectNodePortPtr> EffectNodePortPtrSet;
 
 	typedef boost::shared_array<double> DoubleSharedArray;
 

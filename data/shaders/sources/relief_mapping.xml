@@ -3,9 +3,86 @@
  <name>relief_mapping</name>
  <types>
   <type>uv_mapping</type>
+  <type>uv_depth_mapping</type>
   <type>normal_mapping</type>
  </types>
  <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_uv</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <sampler_parameter>normal_sampler</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <common_parameter>tbn_matrix</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv_ddx_ddy</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_view_direction</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>{
+	vec4 data;
+	vec3 normal;
+	vec2 ddx, ddy;
+	float f1, f2, delta, ambient_occlusion_value;
+
+	const float offset_mapping_scale = 0.04;
+	const float ambient_occlusion_scale = 40.0;
+
+	ddx = world_uv_ddx_ddy.xy;
+	ddx = world_uv_ddx_ddy.xy;
+
+	fragment_uv = world_uv;
+
+	for (int i = 0; i &lt; 4; ++i)
+	{
+		data =  textureGrad(normal_sampler, fragment_uv, ddx, ddy);
+
+		normal = normalize(data.xyz * 2.0 - 1.0);
+		normal = normalize(tbn_matrix * normal);
+
+		f2 = dot(normal, world_view_direction.xyz);
+		f1 = dot(normal, world_normal);
+		f1 = 1.0 - f1 * f1;
+		delta = f2 * f1 * offset_mapping_scale * data.a;
+		ambient_occlusion_value = 1.0 - ambient_occlusion_scale * delta;
+
+		fragment_uv -= delta;
+	}
+
+	data =  textureGrad(normal_sampler, fragment_uv, ddx, ddy);
+
+//	normal = normalize(data.xyz * 2.0 - 1.0);
+	normal = data.xyz * 2.0 - 1.0;
+	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
+	normal = normalize(tbn_matrix * normal);
+
+	fragment_normal = normal;
+}</source>
+   <version>140</version>
+  </shader_source_data>
   <shader_source_data>
    <parameters>
     <parameter>

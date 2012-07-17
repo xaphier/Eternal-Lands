@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "effectchangeutil.hpp"
+#include "../shader/shaderversionutil.hpp"
 
 /**
  * @file
@@ -23,7 +24,7 @@
 namespace eternal_lands
 {
 
-	class EffectNode
+	class EffectNode: public boost::noncopyable
 	{
 		friend class EffectNodePort;
 		private:
@@ -32,8 +33,10 @@ namespace eternal_lands
 			EffectChangeType m_change;
 			Uint16 m_value_count;
 
-			bool check_connections(EffectNodePtrVector &checking);
+			bool check_connections(
+				EffectNodePtrVector &checking);
 			virtual Uint16 get_initial_value_count() const = 0;
+			void update(EffectNodePtrSet &updated);
 
 			inline void set_value_count(const Uint16 value_count)
 				noexcept
@@ -65,7 +68,9 @@ namespace eternal_lands
 
 		public:
 			virtual ~EffectNode() noexcept;
-			virtual void write(const bool glsl_120,
+			virtual void write(const Uint16StringMap &array_layers,
+				const ShaderVersionType version,
+				const bool low_quality,
 				const EffectChangeType change,
 				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,
@@ -74,16 +79,16 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written) = 0;
-			void update(EffectNodePtrSet &updated);
 			void update();
+			static String get_sampler_name(const Uint16 index);
 
-			inline const EffectNodePortVector &get_ports() const
-				noexcept
+			inline EffectNodePortVector &get_ports() noexcept
 			{
 				return m_ports;
 			}
 
-			inline EffectNodePortVector &get_ports() noexcept
+			inline const EffectNodePortVector &get_ports() const
+				noexcept
 			{
 				return m_ports;
 			}

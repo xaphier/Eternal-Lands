@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "effectchangeutil.hpp"
+#include "../shader/shaderversionutil.hpp"
 
 /**
  * @file
@@ -23,7 +24,7 @@
 namespace eternal_lands
 {
 
-	class EffectNodePort
+	class EffectNodePort: public boost::noncopyable
 	{
 		friend class EffectNode;
 		private:
@@ -50,8 +51,8 @@ namespace eternal_lands
 			bool do_check_connection(const EffectNodePortPtr port,
 				EffectNodePtrVector &checking) const;
 
-			inline const EffectNodePortPtr &get_connection()
-				const noexcept
+			inline EffectNodePortPtr get_connection() const
+				noexcept
 			{
 				return *m_connections.begin();
 			}
@@ -59,6 +60,11 @@ namespace eternal_lands
 			inline const Uint8Array4 &get_swizzle() const noexcept
 			{
 				return m_swizzle;
+			}
+
+			inline EffectNodePtr get_node_ptr() const noexcept
+			{
+				return m_node;
 			}
 
 		public:
@@ -74,7 +80,8 @@ namespace eternal_lands
 				const EffectChangeType change,
 				const bool input);
 			~EffectNodePort() noexcept;
-			bool check_connection(const EffectNodePortPtr port);
+			bool check_connection(
+				const EffectNodePortPtr port);
 			Uint16 get_value_count() const;
 			Uint16 get_node_value_count() const;
 			EffectChangeType get_change() const;
@@ -84,7 +91,9 @@ namespace eternal_lands
 			bool get_convertable(const EffectNodePortPtr port)
 				const;
 			String get_connected_var_swizzled() const;
-			void write(const bool glsl_120,
+			void write(const Uint16StringMap &array_layers,
+				const ShaderVersionType version,
+				const bool low_quality,
 				const EffectChangeType change,
 				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,
@@ -93,16 +102,6 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written);
-
-			inline const EffectNode &get_node() const noexcept
-			{
-				return *m_node;
-			}
-
-			inline const EffectNodePtr get_node_ptr() const noexcept
-			{
-				return m_node;
-			}
 
 			inline const EffectNodePortPtrSet &get_connections()
 				const noexcept

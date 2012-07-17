@@ -38,7 +38,9 @@ namespace eternal_lands
 				const EffectConstantType type,
 				Uint32 &var_ids);
 			virtual ~EffectConstant() noexcept;
-			virtual void write(const bool glsl_120,
+			virtual void write(const Uint16StringMap &array_layers,
+				const ShaderVersionType version,
+				const bool low_quality,
 				const EffectChangeType change,
 				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,

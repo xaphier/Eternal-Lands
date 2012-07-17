@@ -23,9 +23,9 @@ class ValuesNode: public QNEBlock
 			QGraphicsSceneMouseEvent * event);
 
 	public:
-		ValuesNode(el::EffectConstant* effect_constant, QString name,
-			const int count, QGraphicsItem *parent = 0,
-			QGraphicsScene *scene = 0);
+		ValuesNode(el::EffectConstant* effect_constant,
+			QString name, const int count,
+			QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
 		virtual ~ValuesNode();
 		void select_values();
 

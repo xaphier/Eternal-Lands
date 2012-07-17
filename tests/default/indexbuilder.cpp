@@ -126,7 +126,7 @@ namespace
 BOOST_AUTO_TEST_CASE(plane_no_restart_split)
 {
 	el::Uint32Vector indices;
-	el::Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
+	Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
 	std::set<Triangle> triangles;
 	Triangle triangle;
 	std::bitset<65536> vertices;
@@ -160,7 +160,7 @@ BOOST_AUTO_TEST_CASE(plane_no_restart_split)
 		el::IndexBuilder::build_plane_indices(tile_size,
 			use_restart_index, 0, split, indices);
 
-		BOOST_FOREACH(const el::Uint32 index, indices)
+		BOOST_FOREACH(const Uint32 index, indices)
 		{
 			BOOST_CHECK_LE(index, max_vertex);
 
@@ -191,7 +191,7 @@ BOOST_AUTO_TEST_CASE(plane_no_restart_split)
 BOOST_AUTO_TEST_CASE(plane_no_restart_no_split)
 {
 	el::Uint32Vector indices;
-	el::Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
+	Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
 	std::set<Triangle> triangles;
 	Triangle triangle;
 	std::bitset<65536> vertices;
@@ -227,7 +227,7 @@ BOOST_AUTO_TEST_CASE(plane_no_restart_no_split)
 		el::IndexBuilder::build_plane_indices(tile_size,
 			use_restart_index, 0, split, indices);
 
-		BOOST_FOREACH(const el::Uint32 index, indices)
+		BOOST_FOREACH(const Uint32 index, indices)
 		{
 			BOOST_CHECK_LE(index, max_vertex);
 
@@ -261,7 +261,7 @@ BOOST_AUTO_TEST_CASE(plane_restart_split)
 	std::bitset<65536> vertices;
 	std::set<Triangle> triangles, restart_triangles;
 	Triangle triangle;
-	el::Uint32 vertex_count, index_count, tile_size, max_vertex, i, j;
+	Uint32 vertex_count, index_count, tile_size, max_vertex, i, j;
 	Uint32 center, last;
 	bool split;
 
@@ -299,7 +299,7 @@ BOOST_AUTO_TEST_CASE(plane_restart_split)
 		center = std::numeric_limits<Uint32>::max();
 		last = std::numeric_limits<Uint32>::max();
 
-		BOOST_FOREACH(const el::Uint32 index, restart_indices)
+		BOOST_FOREACH(const Uint32 index, restart_indices)
 		{
 			if (index == std::numeric_limits<Uint32>::max())
 			{
@@ -379,7 +379,7 @@ BOOST_AUTO_TEST_CASE(plane_restart_no_split)
 	std::bitset<65536> vertices;
 	std::set<Triangle> triangles, restart_triangles;
 	Triangle triangle;
-	el::Uint32 vertex_count, index_count, tile_size, max_vertex, i, j;
+	Uint32 vertex_count, index_count, tile_size, max_vertex, i, j;
 	Uint32 center, last;
 	bool split;
 
@@ -419,7 +419,7 @@ BOOST_AUTO_TEST_CASE(plane_restart_no_split)
 		center = std::numeric_limits<Uint32>::max();
 		last = std::numeric_limits<Uint32>::max();
 
-		BOOST_FOREACH(const el::Uint32 index, restart_indices)
+		BOOST_FOREACH(const Uint32 index, restart_indices)
 		{
 			if (index == std::numeric_limits<Uint32>::max())
 			{
@@ -496,7 +496,7 @@ BOOST_AUTO_TEST_CASE(plane_restart_no_split)
 BOOST_AUTO_TEST_CASE(terrain_no_restart)
 {
 	el::Uint32Vector indices;
-	el::Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
+	Uint32 vertex_count, max_vertex, index_count, tile_size, i, j;
 	std::set<Triangle> triangles;
 	Triangle triangle;
 	std::bitset<65536> vertices;
@@ -529,7 +529,7 @@ BOOST_AUTO_TEST_CASE(terrain_no_restart)
 		el::IndexBuilder::build_terrain_indices(tile_size,
 			use_restart_index, indices);
 
-		BOOST_FOREACH(const el::Uint32 index, indices)
+		BOOST_FOREACH(const Uint32 index, indices)
 		{
 			BOOST_CHECK_LE(index, max_vertex);
 
@@ -563,7 +563,7 @@ BOOST_AUTO_TEST_CASE(terrain_restart)
 	std::bitset<65536> vertices;
 	std::set<Triangle> triangles, restart_triangles;
 	Triangle triangle;
-	el::Uint32 vertex_count, index_count, tile_size, max_vertex, i, j;
+	Uint32 vertex_count, index_count, tile_size, max_vertex, i, j;
 	glm::uvec2 last;
 	bool flip_triangle;
 
@@ -600,7 +600,7 @@ BOOST_AUTO_TEST_CASE(terrain_restart)
 		last.y = std::numeric_limits<Uint32>::max();
 		flip_triangle = false;
 
-		BOOST_FOREACH(const el::Uint32 index, restart_indices)
+		BOOST_FOREACH(const Uint32 index, restart_indices)
 		{
 			if (index == std::numeric_limits<Uint32>::max())
 			{

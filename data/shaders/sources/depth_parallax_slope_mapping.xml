@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>parallax_slope_mapping</name>
+ <types>
+  <type>uv_depth_mapping</type>
+ </types>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>fragment_uv</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>fragment_uv = world_uv;</source>
+   <version>120</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

@@ -60,7 +60,8 @@ namespace eternal_lands
 		return EffectConstantUtil::get_count(get_type());
 	}
 
-	void EffectConstant::write(const bool glsl_120,
+	void EffectConstant::write(const Uint16StringMap &array_layers,
+		const ShaderVersionType version, const bool low_quality,
 		const EffectChangeType change,
 		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,

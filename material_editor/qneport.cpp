@@ -130,7 +130,7 @@ void QNEPort::update()
 	{
 		if (name().isEmpty())
 		{
-			QPixmap pixmap(QSize(128, 128));
+			QPixmap pixmap(QSize(32, 32));
 
 			pixmap.fill(color());
 
@@ -245,7 +245,7 @@ void QNEPort::setFlags(int f)
 
 		if (name().isEmpty())
 		{
-			QPixmap pixmap(QSize(128, 128));
+			QPixmap pixmap(QSize(32, 32));
 
 			pixmap.fill(color());
 

@@ -1350,11 +1350,11 @@
 	</material>
 	<material>
 		<name>tile17</name>
-<!--		<albedo_sampler_0>3dobjects/tile17.dds</albedo_sampler_0>-->
-		<effect>default</effect>
+<!--		<albedo_sampler_0>3dobjects/tile17.dds</albedo_sampler_0>
+		<effect>default</effect>-->
 		<albedo_sampler_0>textures/albedo.jpg</albedo_sampler_0>
 		<normal_sampler>textures/normal.dds</normal_sampler>
-<!--		<effect>relief</effect>-->
+		<effect>parallax_slope</effect>
 	</material>
 	<material>
 		<name>dirtroad01</name>

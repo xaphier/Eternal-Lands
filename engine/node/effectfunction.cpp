@@ -24,12 +24,12 @@ namespace eternal_lands
 
 		switch (get_type())
 		{
-			case ent_length:
+			case eft_length:
 				add_input_port(String(), String(UTF8("*")));
 				add_output_port(m_var, String(),
 					String(UTF8("?")));
 				break;
-			case ent_distance:
+			case eft_distance:
 				add_input_port(String(UTF8("p0")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("p1")),
@@ -37,7 +37,7 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("?")));
 				break;
-			case ent_dot:
+			case eft_dot:
 				add_input_port(String(UTF8("x")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
@@ -45,15 +45,15 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("?")));
 				break;
-			case ent_add:
-			case ent_sub:
-			case ent_mul:
-			case ent_div:
-			case ent_pow:
-			case ent_mod:
-			case ent_min:
-			case ent_max:
-			case ent_atan2:
+			case eft_add:
+			case eft_sub:
+			case eft_mul:
+			case eft_div:
+			case eft_pow:
+			case eft_mod:
+			case eft_min:
+			case eft_max:
+			case eft_atan2:
 				add_input_port(String(UTF8("x")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
@@ -61,7 +61,7 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
-			case ent_reflect:
+			case eft_reflect:
 				add_input_port(String(UTF8("I")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("N")),
@@ -69,7 +69,7 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
-			case ent_mad:
+			case eft_mad:
 				add_input_port(String(UTF8("x")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
@@ -79,7 +79,7 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
-			case ent_clamp:
+			case eft_clamp:
 				add_input_port(String(UTF8("x")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("minVal")),
@@ -89,7 +89,7 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
-			case ent_mix:
+			case eft_mix:
 				add_input_port(String(UTF8("x")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
@@ -99,7 +99,7 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
-			case ent_step:
+			case eft_step:
 				add_input_port(String(UTF8("edge")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("x")),
@@ -107,7 +107,7 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
-			case ent_smoothstep:
+			case eft_smoothstep:
 				add_input_port(String(UTF8("edge0")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("edge1")),
@@ -117,61 +117,53 @@ namespace eternal_lands
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
-			case ent_radians:
-			case ent_degrees:
-			case ent_sin:
-			case ent_cos:
-			case ent_tan:
-			case ent_asin:
-			case ent_acos:
-			case ent_atan:
-			case ent_sinh:
-			case ent_cosh:
-			case ent_tanh:
-			case ent_asinh:
-			case ent_acosh:
-			case ent_atanh:
-			case ent_exp:
-			case ent_log:
-			case ent_exp2:
-			case ent_log2:
-			case ent_sqrt:
-			case ent_inversesqrt:
-			case ent_abs:
-			case ent_sign:
-			case ent_round:
-			case ent_trunc:
-			case ent_floor:
-			case ent_ceil:
-			case ent_fract:
-			case ent_normalize:
-			case ent_saturate:
+			case eft_radians:
+			case eft_degrees:
+			case eft_sin:
+			case eft_cos:
+			case eft_tan:
+			case eft_asin:
+			case eft_acos:
+			case eft_atan:
+			case eft_sinh:
+			case eft_cosh:
+			case eft_tanh:
+			case eft_asinh:
+			case eft_acosh:
+			case eft_atanh:
+			case eft_exp:
+			case eft_log:
+			case eft_exp2:
+			case eft_log2:
+			case eft_sqrt:
+			case eft_inversesqrt:
+			case eft_abs:
+			case eft_sign:
+			case eft_round:
+			case eft_trunc:
+			case eft_floor:
+			case eft_ceil:
+			case eft_fract:
+			case eft_normalize:
+			case eft_saturate:
 				add_input_port(String(), String(UTF8("*")));
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
-			case ent_dFdx:
-			case ent_dFdy:
+			case eft_dFdx:
+			case eft_dFdy:
 				add_input_port(String(), String(UTF8("*")),
 					ect_fragment);
 				add_output_port(m_var, String(),
 					String(UTF8("*")), ect_fragment);
 				break;
-			case ent_refract:
+			case eft_refract:
 				add_input_port(String(UTF8("I")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("N")),
 					String(UTF8("*")));
 				add_input_port(String(UTF8("eta")),
 					String(UTF8("?")));
-				add_output_port(m_var, String(),
-					String(UTF8("*")));
-				break;
-			case ent_fresnel:
-				add_input_port(String(UTF8("view")),
-					String(UTF8("xyz")));
-				add_input_port(String(UTF8("normal")),
-					String(UTF8("xyz")));
 				add_output_port(m_var, String(),
 					String(UTF8("*")));
 				break;
@@ -187,7 +179,8 @@ namespace eternal_lands
 		return 0;
 	}
 
-	void EffectFunction::write(const bool glsl_120,
+	void EffectFunction::write(const Uint16StringMap &array_layers,
+		const ShaderVersionType version, const bool low_quality,
 		const EffectChangeType change,
 		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
@@ -202,7 +195,7 @@ namespace eternal_lands
 
 		input_change = ect_constant;
 
-		BOOST_FOREACH(EffectNodePort &port, get_ports())
+		BOOST_FOREACH(const EffectNodePort &port, get_ports())
 		{
 			if (port.get_input())
 			{
@@ -223,11 +216,11 @@ namespace eternal_lands
 		{
 			if (port.get_input())
 			{
-				port.write(glsl_120, input_change,
-					parameters, vertex_parameters,
-					fragment_parameters, vertex_str,
-					fragment_str, vertex_written,
-					fragment_written);
+				port.write(array_layers, version, low_quality,
+					input_change, parameters,
+					vertex_parameters, fragment_parameters,
+					vertex_str, fragment_str,
+					vertex_written, fragment_written);
 			}
 		}
 
@@ -258,186 +251,182 @@ namespace eternal_lands
 
 		switch (get_type())
 		{
-			case ent_add:
+			case eft_add:
 				str << inputs[0] << UTF8(" + ") << inputs[1];
 				break;
-			case ent_sub:
+			case eft_sub:
 				str << inputs[0] << UTF8(" - ") << inputs[1];
 				break;
-			case ent_mul:
+			case eft_mul:
 				str << inputs[0] << UTF8(" * ") << inputs[1];
 				break;
-			case ent_div:
+			case eft_div:
 				str << inputs[0] << UTF8(" / ") << inputs[1];
 				break;
-			case ent_mad:
+			case eft_mad:
 				str << inputs[0] << UTF8(" * ") << inputs[1];
 				str << UTF8(" + ") << inputs[2];
 				break;
-			case ent_length:
+			case eft_length:
 				str << UTF8("length(") << inputs[0];
 				str << UTF8(")");
 				break;
-			case ent_distance:
+			case eft_distance:
 				str << UTF8("distance(") << inputs[0];
 				str << UTF8(", ") << inputs[1] << UTF8(")");
 				break;
-			case ent_dot:
+			case eft_dot:
 				str << UTF8("dot(") << inputs[0] << UTF8(", ");
 				str << inputs[1] << UTF8(")");
 				break;
-			case ent_pow:
+			case eft_pow:
 				str << UTF8("pow(") << inputs[0] << UTF8(", ");
 				str << inputs[1] << UTF8(")");
 				break;
-			case ent_mod:
+			case eft_mod:
 				str << UTF8("mod(") << inputs[0] << UTF8(", ");
 				str << inputs[1] << UTF8(")");
 				break;
-			case ent_min:
+			case eft_min:
 				str << UTF8("min(") << inputs[0] << UTF8(", ");
 				str << inputs[1] << UTF8(")");
 				break;
-			case ent_max:
+			case eft_max:
 				str << UTF8("max(") << inputs[0] << UTF8(", ");
 				str << inputs[1] << UTF8(")");
 				break;
-			case ent_atan2:
+			case eft_atan2:
 				str << UTF8("atan2(") << inputs[0];
 				str << UTF8(", ") << inputs[1] << UTF8(")");
 				break;
-			case ent_reflect:
+			case eft_reflect:
 				str << UTF8("reflect(") << inputs[0];
 				str << UTF8(", ") << inputs[1] << UTF8(")");
 				break;
-			case ent_clamp:
+			case eft_clamp:
 				str << UTF8("clamp(") << inputs[0];
 				str << UTF8(", ") << inputs[1] << UTF8(", ");
 				str << inputs[2] << UTF8(")");
 				break;
-			case ent_mix:
+			case eft_mix:
 				str << UTF8("mix(") << inputs[0] << UTF8(", ");
 				str << inputs[1] << UTF8(", ") << inputs[2];
 				str << UTF8(")");
 				break;
-			case ent_step:
+			case eft_step:
 				str << UTF8("step(") << inputs[0] << UTF8(", ");
 				str << inputs[1] << UTF8(", ") << inputs[2];
 				str << UTF8(")");
 				break;
-			case ent_smoothstep:
+			case eft_smoothstep:
 				str << UTF8("smoothstep(") << inputs[0];
 				str << UTF8(", ") << inputs[1] << UTF8(", ");
 				str << inputs[2] << UTF8(")");
 				break;
-			case ent_radians:
+			case eft_radians:
 				str << UTF8("radians(") << inputs[0];
 				str << UTF8(")");
 				break;
-			case ent_degrees:
+			case eft_degrees:
 				str << UTF8("degrees(") << inputs[0];
 				str << UTF8(")");
 				break;
-			case ent_sin:
+			case eft_sin:
 				str << UTF8("sin(") << inputs[0] << UTF8(")");
 				break;
-			case ent_cos:
+			case eft_cos:
 				str << UTF8("cos(") << inputs[0] << UTF8(")");
 				break;
-			case ent_tan:
+			case eft_tan:
 				str << UTF8("tan(") << inputs[0] << UTF8(")");
 				break;
-			case ent_asin:
+			case eft_asin:
 				str << UTF8("asin(") << inputs[0] << UTF8(")");
 				break;
-			case ent_acos:
+			case eft_acos:
 				str << UTF8("acos(") << inputs[0] << UTF8(")");
 				break;
-			case ent_atan:
+			case eft_atan:
 				str << UTF8("atan(") << inputs[0] << UTF8(")");
 				break;
-			case ent_sinh:
+			case eft_sinh:
 				str << UTF8("sinh(") << inputs[0] << UTF8(")");
 				break;
-			case ent_cosh:
+			case eft_cosh:
 				str << UTF8("cosh(") << inputs[0] << UTF8(")");
 				break;
-			case ent_tanh:
+			case eft_tanh:
 				str << UTF8("tanh(") << inputs[0] << UTF8(")");
 				break;
-			case ent_asinh:
+			case eft_asinh:
 				str << UTF8("asinh(") << inputs[0] << UTF8(")");
 				break;
-			case ent_acosh:
+			case eft_acosh:
 				str << UTF8("acosh(") << inputs[0] << UTF8(")");
 				break;
-			case ent_atanh:
+			case eft_atanh:
 				str << UTF8("atanh(") << inputs[0] << UTF8(")");
 				break;
-			case ent_exp:
+			case eft_exp:
 				str << UTF8("exp(") << inputs[0] << UTF8(")");
 				break;
-			case ent_log:
+			case eft_log:
 				str << UTF8("log(") << inputs[0] << UTF8(")");
 				break;
-			case ent_exp2:
+			case eft_exp2:
 				str << UTF8("exp2(") << inputs[0] << UTF8(")");
 				break;
-			case ent_log2:
+			case eft_log2:
 				str << UTF8("log2(") << inputs[0] << UTF8(")");
 				break;
-			case ent_sqrt:
+			case eft_sqrt:
 				str << UTF8("sqrt(") << inputs[0] << UTF8(")");
 				break;
-			case ent_inversesqrt:
+			case eft_inversesqrt:
 				str << UTF8("inversesqrt(") << inputs[0];
 				str << UTF8(")");
 				break;
-			case ent_abs:
+			case eft_abs:
 				str << UTF8("abs(") << inputs[0] << UTF8(")");
 				break;
-			case ent_sign:
+			case eft_sign:
 				str << UTF8("sign(") << inputs[0] << UTF8(")");
 				break;
-			case ent_round:
+			case eft_round:
 				str << UTF8("round(") << inputs[0] << UTF8(")");
 				break;
-			case ent_trunc:
+			case eft_trunc:
 				str << UTF8("trunc(") << inputs[0] << UTF8(")");
 				break;
-			case ent_floor:
+			case eft_floor:
 				str << UTF8("floor(") << inputs[0] << UTF8(")");
 				break;
-			case ent_ceil:
+			case eft_ceil:
 				str << UTF8("ceil(") << inputs[0] << UTF8(")");
 				break;
-			case ent_fract:
+			case eft_fract:
 				str << UTF8("fract(") << inputs[0] << UTF8(")");
 				break;
-			case ent_normalize:
+			case eft_normalize:
 				str << UTF8("normalize(") << inputs[0];
 				str << UTF8(")");
 				break;
-			case ent_saturate:
+			case eft_saturate:
 				str << UTF8("saturate(") << inputs[0];
 				str << UTF8(", 0.0, 1.0)");
 				break;
-			case ent_refract:
+			case eft_refract:
 				str << UTF8("refract(") << inputs[0];
 				str << UTF8(", ") << inputs[1] << UTF8(", ");
 				str << inputs[2] << UTF8(")");
 				break;
-			case ent_dFdx:
+			case eft_dFdx:
 				str << UTF8("dFdx(") << inputs[0];
 				str << UTF8(")");
 				break;
-			case ent_dFdy:
+			case eft_dFdy:
 				str << UTF8("dFdy(") << inputs[0];
 				str << UTF8(")");
-				break;
-			case ent_fresnel:
-				str << UTF8("dot(") << inputs[0] << UTF8(", ");
-				str << inputs[1] << UTF8(")");
 				break;
 		}
 

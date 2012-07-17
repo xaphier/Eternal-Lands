@@ -40,6 +40,19 @@
 		<lighting>true</lighting>
 	</effect>
 	<effect>
+		<name>parallax_slope</name>
+		<world_transformation>static</world_transformation>
+		<texture_coodrinates>static</texture_coodrinates>
+		<uv_mapping>parallax_slope_mapping</uv_mapping>
+		<albedo_mapping>default_grad</albedo_mapping>
+		<normal_mapping>parallax_slope_mapping</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>true</receives_shadows>
+		<transparent>false</transparent>
+		<lighting>true</lighting>
+	</effect>
+	<effect>
 		<name>relief</name>
 		<world_transformation>static</world_transformation>
 		<texture_coodrinates>static</texture_coodrinates>

@@ -43,6 +43,8 @@ namespace eternal_lands
 		cpt_view_position,
 		cpt_albedo,
 		cpt_specular,
+		cpt_roughness,
+		cpt_reflectance_at_normal_incidence,
 		cpt_fragment_normal,
 		cpt_fragment_uv,
 		cpt_fragment_position,

@@ -37,7 +37,8 @@ namespace eternal_lands
 		return 4;
 	}
 
-	void EffectOutput::write(const bool glsl_120,
+	void EffectOutput::write(const Uint16StringMap &array_layers,
+		const ShaderVersionType version, const bool low_quality,
 		const EffectChangeType change,
 		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
@@ -62,10 +63,10 @@ namespace eternal_lands
 				continue;
 			}
 
-			port.write(glsl_120, ect_fragment, parameters,
-				vertex_parameters, fragment_parameters,
-				vertex_str, fragment_str, vertex_written,
-				fragment_written);
+			port.write(array_layers, version, low_quality,
+				ect_fragment, parameters, vertex_parameters,
+				fragment_parameters, vertex_str, fragment_str,
+				vertex_written, fragment_written);
 
 			if (port.get_description() == UTF8("albedo"))
 			{

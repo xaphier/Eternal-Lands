@@ -41,6 +41,28 @@ MainWindow::~MainWindow()
 {
 }
 
+void MainWindow::add_color()
+{
+	QNEBlock* node;
+
+	node = new ColorNode(new el::EffectConstant(el::String("Color"),
+		el::ect_color_rgb, m_var_id), "Color", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+}
+
+void MainWindow::add_direction()
+{
+	QNEBlock* node;
+
+	node = new ColorNode(new el::EffectConstant(el::String("Direction"),
+		el::ect_direction_xy, m_var_id), "Direction", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+}
+
 void MainWindow::add_constant()
 {
 	QNEBlock* node;
@@ -221,10 +243,10 @@ void MainWindow::add_texture()
 	{
 		return;
 	}
-
+/*
 	node = new Node(new el::EffectTexture(texture, type, m_var_id),
 		"Texture", 0, graphicsView->scene());
-
+*/
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
 

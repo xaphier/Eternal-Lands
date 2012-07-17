@@ -98,7 +98,7 @@ namespace eternal_lands
 		m_change(change), m_input(input)
 	{
 		assert(m_input || !get_var().get().empty());
-		assert(m_node != 0);
+		assert(m_node != nullptr);
 	}
 
 	EffectNodePort::EffectNodePort(const EffectNodePtr node,
@@ -109,12 +109,12 @@ namespace eternal_lands
 		m_change(change), m_input(input)
 	{
 		assert(m_input || !get_var().get().empty());
-		assert(m_node != 0);
+		assert(m_node != nullptr);
 	}
 
 	EffectNodePort::~EffectNodePort() noexcept
 	{
-		BOOST_FOREACH(const EffectNodePortPtr port, m_connections)
+		BOOST_FOREACH(const EffectNodePortPtr port, get_connections())
 		{
 			disconnect(port);
 		}
@@ -151,16 +151,15 @@ namespace eternal_lands
 
 		checking.push_back(port->get_node_ptr());
 
-		return m_node->check_connections(checking);
+		return get_node_ptr()->check_connections(checking);
 	}
 
 	bool EffectNodePort::check_connection(EffectNodePtrVector &checking)
 		const
 	{
-		BOOST_FOREACH(EffectNodePortPtr connected_port, m_connections)
+		BOOST_FOREACH(const EffectNodePortPtr port, get_connections())
 		{
-			if (!connected_port->m_node->check_connections(
-				checking))
+			if (!port->get_node_ptr()->check_connections(checking))
 			{
 				return false;
 			}
@@ -294,7 +293,7 @@ namespace eternal_lands
 
 	Uint16 EffectNodePort::get_node_value_count() const
 	{
-		return get_node().get_value_count();
+		return get_node_ptr()->get_value_count();
 	}
 
 	Uint16 EffectNodePort::get_connected_value_count() const
@@ -304,9 +303,9 @@ namespace eternal_lands
 			return get_var_count();
 		}
 
-		BOOST_FOREACH(const EffectNodePortPtr port, m_connections)
+		if (get_connected())
 		{
-			return port->get_value_count();
+			return get_connection()->get_value_count();
 		}
 
 		return get_var_count();
@@ -324,7 +323,7 @@ namespace eternal_lands
 
 	EffectChangeType EffectNodePort::get_node_change() const
 	{
-		return get_node().get_change();
+		return get_node_ptr()->get_change();
 	}
 
 	EffectChangeType EffectNodePort::get_connected_change() const
@@ -334,9 +333,9 @@ namespace eternal_lands
 			return get_change();
 		}
 
-		BOOST_FOREACH(const EffectNodePortPtr port, m_connections)
+		if (get_connected())
 		{
-			return port->get_change();
+			return get_connection()->get_change();
 		}
 
 		return get_change();
@@ -344,15 +343,14 @@ namespace eternal_lands
 
 	void EffectNodePort::update(EffectNodePtrSet &updated)
 	{
-		BOOST_FOREACH(EffectNodePortPtr port, m_connections)
+		BOOST_FOREACH(const EffectNodePortPtr port, get_connections())
 		{
-			assert(port != 0);
-			assert(port->m_node != 0);
-			port->m_node->update(updated);
+			port->get_node_ptr()->update(updated);
 		}
 	}
 
-	void EffectNodePort::write(const bool glsl_120,
+	void EffectNodePort::write(const Uint16StringMap &array_layers,
+		const ShaderVersionType version, const bool low_quality,
 		const EffectChangeType change,
 		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
@@ -365,7 +363,8 @@ namespace eternal_lands
 
 		if (get_output())
 		{
-			m_node->write(glsl_120, change, parameters,
+			get_node_ptr()->write(array_layers, version,
+				low_quality, change, parameters,
 				vertex_parameters, fragment_parameters,
 				vertex_str, fragment_str, vertex_written,
 				fragment_written);
@@ -373,7 +372,7 @@ namespace eternal_lands
 			return;
 		}
 
-		BOOST_FOREACH(EffectNodePortPtr port, m_connections)
+		BOOST_FOREACH(const EffectNodePortPtr port, get_connections())
 		{
 			new_change = change;
 
@@ -386,10 +385,10 @@ namespace eternal_lands
 				new_change = ect_vertex;
 			}
 
-			port->write(glsl_120, new_change, parameters,
-				vertex_parameters, fragment_parameters,
-				vertex_str, fragment_str, vertex_written,
-				fragment_written);
+			port->write(array_layers, version, low_quality,
+				new_change, parameters, vertex_parameters,
+				fragment_parameters, vertex_str, fragment_str,
+				vertex_written, fragment_written);
 		}
 	}
 

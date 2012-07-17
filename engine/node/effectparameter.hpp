@@ -35,7 +35,9 @@ namespace eternal_lands
 			EffectParameter(const String &name,
 				const EffectParameterType type);
 			virtual ~EffectParameter() noexcept;
-			void write(const bool glsl_120,
+			void write(const Uint16StringMap &array_layers,
+				const ShaderVersionType version,
+				const bool low_quality,
 				const EffectChangeType change,
 				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,

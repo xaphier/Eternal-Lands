@@ -2,9 +2,9 @@
 #include <QColorDialog>
 #include "qneport.hpp"
 
-ColorNode::ColorNode(el::EffectConstant* effect_constant, QString name,
-	QGraphicsItem* parent, QGraphicsScene* scene): QNEBlock(parent, scene),
-	m_effect_constant(effect_constant)
+ColorNode::ColorNode(el::EffectConstant* effect_constant,
+	QString name, QGraphicsItem* parent, QGraphicsScene* scene):
+	QNEBlock(parent, scene), m_effect_constant(effect_constant)
 {
 	addPort(name, 0, QNEPort::NamePort);
 

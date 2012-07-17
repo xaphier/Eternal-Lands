@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE(render_object_data_blend)
 BOOST_AUTO_TEST_CASE(render_object_data_sub_frustums_mask)
 {
 	el::RenderObjectData render_object_data;
-	el::Uint16 i;
+	Uint16 i;
 
 	BOOST_CHECK_CLOSE(render_object_data.get_transparency(), 0.0f, 0.001);
 	BOOST_CHECK_CLOSE(render_object_data.get_distance(), 0.0f, 0.001);

@@ -2,8 +2,8 @@
 #include "qneport.hpp"
 #include "../engine/shader/shadersourceparameter.hpp"
 
-Node::Node(el::EffectNode* effect_node, QString name, QGraphicsItem* parent,
-	QGraphicsScene* scene): QNEBlock(parent, scene),
+Node::Node(el::EffectNodePtr effect_node, QString name,
+	QGraphicsItem* parent, QGraphicsScene* scene): QNEBlock(parent, scene),
 	m_effect_node(effect_node)
 {
 	addPort(name, 0, QNEPort::NamePort);
@@ -33,23 +33,24 @@ Node::~Node()
 {
 }
 
-typedef std::pair<el::String, el::BitSet16> StringBitSet16Pair;
-
 void Node::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
 	el::ShaderSourceParameterVector vertex_parameters, fragment_parameters;
 	el::StringStream vertex_str, fragment_str;
+	el::Uint16StringMap array_layers;
 	el::StringUint16Map parameters;
 	el::EffectNodePtrSet vertex_written, fragment_written;
 	el::EffectChangeType change;
 	el::StringUint16Map::const_iterator it, end;
-	bool glsl_120;
+	el::ShaderVersionType version;
+	bool low_quality;
 
 	change = el::ect_fragment;
-	glsl_120 = false;
+	version = el::svt_130;
+	low_quality = false;
 
-	m_effect_node->write(glsl_120, change, parameters,
-		vertex_parameters, fragment_parameters, vertex_str,
+	m_effect_node->write(array_layers, version, low_quality, change,
+		parameters, vertex_parameters, fragment_parameters, vertex_str,
 		fragment_str, vertex_written, fragment_written);
 
 	std::cout << "vertex_str: " << vertex_str.str() << std::endl;

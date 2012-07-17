@@ -1,10 +1,10 @@
 #include "valuesnode.hpp"
 #include "qneport.hpp"
 
-ValuesNode::ValuesNode(el::EffectConstant* effect_constant, QString name,
-	const int count, QGraphicsItem* parent, QGraphicsScene* scene):
-	QNEBlock(parent, scene), m_effect_constant(effect_constant),
-	m_count(count)
+ValuesNode::ValuesNode(el::EffectConstant* effect_constant,
+	QString name, const int count, QGraphicsItem* parent,
+	QGraphicsScene* scene): QNEBlock(parent, scene),
+	m_effect_constant(effect_constant), m_count(count)
 {
 	addPort(name, 0, QNEPort::NamePort);
 
