@@ -14,53 +14,58 @@
 namespace eternal_lands
 {
 
-	EffectParameter::EffectParameter(const String &name,
-		const EffectParameterType type): EffectNode(name),
+	EffectParameter::EffectParameter(const String &name, const Uint32 id,
+		const EffectParameterType type): EffectNode(name, id),
 		m_type(type)
 	{
 		switch (get_type())
 		{
 			case ept_position:
 				add_output_port(CommonParameterUtil::get_str(
-					cpt_world_position), String(),
+					cpt_world_position),
+					String(UTF8("position")),
 					String(UTF8("xyz")), ect_vertex);
 				break;
 			case ept_normal:
 				add_output_port(CommonParameterUtil::get_str(
-					cpt_world_normal), String(),
+					cpt_world_normal),
+					String(UTF8("normal")),
 					String(UTF8("xyz")), ect_vertex);
 				break;
 			case ept_tangent:
 				add_output_port(CommonParameterUtil::get_str(
-					cpt_world_tangent), String(),
+					cpt_world_tangent),
+					String(UTF8("tangent")),
 					String(UTF8("xyz")), ect_vertex);
 				break;
 			case ept_view_direction:
 				add_output_port(CommonParameterUtil::get_str(
-					cpt_world_view_direction), String(),
+					cpt_world_view_direction),
+					String(UTF8("view direction")),
 					String(UTF8("xyz")), ect_fragment);
 				break;
 			case ept_uv:
 				add_output_port(CommonParameterUtil::get_str(
-					cpt_world_uv), String(),
+					cpt_world_uv),
+					String(UTF8("texture coordinate")),
 					String(UTF8("uv")), ect_vertex);
 				break;
 			case ept_fragment_coordinate:
-				add_output_port(String("gl_FragCoord"),
+				add_output_port(String(UTF8("gl_FragCoord")),
 					String(UTF8("uv")), ect_fragment);
-				add_output_port(String("gl_FragCoord"),
+				add_output_port(String(UTF8("gl_FragCoord")),
 					String(UTF8("z")), ect_fragment);
-				add_output_port(String("gl_FragCoord"),
+				add_output_port(String(UTF8("gl_FragCoord")),
 					String(UTF8("w")), ect_fragment);
 				break;
 			case ept_time:
 				add_output_port(AutoParameterUtil::get_str(
-					apt_time), String(),
+					apt_time), String(UTF8("time")),
 					String(UTF8("?")), ect_constant);
 				break;
 			case ept_camera:
 				add_output_port(AutoParameterUtil::get_str(
-					apt_camera), String(),
+					apt_camera), String(UTF8("camera")),
 					String(UTF8("xyz")), ect_constant);
 				break;
 		}
@@ -172,6 +177,31 @@ namespace eternal_lands
 				}
 				break;
 		}
+	}
+
+	String EffectParameter::get_description() const
+	{
+		switch (get_type())
+		{
+			case ept_position:
+				return String(UTF8("world position"));
+			case ept_normal:
+				return String(UTF8("world normal"));
+			case ept_tangent:
+				return String(UTF8("world tangent"));
+			case ept_view_direction:
+				return String(UTF8("view direction"));
+			case ept_uv:
+				return String(UTF8("texture coordinate"));
+			case ept_fragment_coordinate:
+				return String(UTF8("fragment coordinate"));
+			case ept_time:
+				return String(UTF8("time in seconds"));
+			case ept_camera:
+				return String(UTF8("camera position"));
+		}
+
+		return String();
 	}
 
 }

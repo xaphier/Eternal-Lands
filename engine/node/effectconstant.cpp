@@ -11,16 +11,11 @@
 namespace eternal_lands
 {
 
-	EffectConstant::EffectConstant(const String &name,
-		const EffectConstantType type, Uint32 &var_ids):
-		EffectNode(name), m_type(type)
+	EffectConstant::EffectConstant(const String &name, const Uint32 id,
+		const EffectConstantType type): EffectNode(name, id),
+		m_type(type)
 	{
-		StringStream str;
-
-		str << UTF8("effect_var_") << std::hex << var_ids;
-		var_ids++;
-
-		m_var_name = String(str.str());
+		m_var_name = get_var_name();
 
 		switch (get_type())
 		{
@@ -126,6 +121,31 @@ namespace eternal_lands
 		}
 
 		str << UTF8(";\n");
+	}
+
+	String EffectConstant::get_description() const
+	{
+		StringStream str;
+
+		switch (get_type())
+		{
+			case ect_float:
+				str << get_value().x;
+				break;
+			case ect_direction_xy:
+			case ect_vec2:
+				str << glm::to_string(glm::vec2(get_value()));
+				break;
+			case ect_color_rgb:
+			case ect_vec3:
+				str << glm::to_string(glm::vec3(get_value()));
+				break;
+			case ect_vec4:
+				str << glm::to_string(glm::vec4(get_value()));
+				break;
+		}
+
+		return String(str.str());
 	}
 
 }

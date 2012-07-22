@@ -28,7 +28,7 @@ namespace eternal_lands
 	class EffectTexture: public EffectNode
 	{
 		private:
-			StringArray3 m_vars;
+			StringArray8 m_vars;
 			EffectSamplerType m_sampler;
 			EffectTextureType m_texture;
 			Uint16 m_texture_unit;
@@ -36,10 +36,10 @@ namespace eternal_lands
 			virtual Uint16 get_initial_value_count() const;
 
 		public:
-			EffectTexture(const String &name,
+			EffectTexture(const String &name, const Uint32 id,
 				const EffectSamplerType sampler,
 				const EffectTextureType texture,
-				const Uint16 texture_unit, Uint32 &var_ids);
+				const Uint16 texture_unit);
 			virtual ~EffectTexture() noexcept;
 			virtual void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
@@ -52,12 +52,12 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written);
-			static String get_sampler_name(
-				const Uint16 texture_unit);
+			virtual String get_description() const;
 
 			inline String get_sampler_name() const
 			{
-				return get_sampler_name(get_texture_unit());
+				return EffectNode::get_sampler_name(
+					get_texture_unit());
 			}
 
 			inline EffectSamplerType get_sampler() const noexcept

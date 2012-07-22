@@ -29,8 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QFontMetrics>
 
 #include <QPen>
-
+#include <QInputDialog>
 #include "qneconnection.hpp"
+
+#include "../engine/node/effectnode.hpp"
 
 QNEPort::QNEPort(el::EffectNodePortPtr effect_port, QGraphicsItem *parent,
 	QGraphicsScene *scene): QGraphicsPathItem(parent, scene),
@@ -67,6 +69,11 @@ void QNEPort::setNEBlock(QNEBlock *b)
 
 void QNEPort::setName(const QString &n)
 {
+	if (m_effect_port != 0)
+	{
+		m_effect_port->set_description(el::String(n.toUtf8()));
+	}
+
 	m_name = n;
 
 	update();
@@ -97,7 +104,7 @@ int QNEPort::margin()
 	return m_margin;
 }
 
-const QString& QNEPort::name() const
+const QString &QNEPort::name() const
 {
 	return m_name;
 }
@@ -174,36 +181,46 @@ void QNEPort::update()
 
 	brush = QBrush(Qt::black);
 
-	if (m_name == "rgba")
+	if (m_effect_port != 0)
 	{
-		brush = QBrush(QImage("rgba.png").scaledToHeight(height(),
-			Qt::SmoothTransformation));
-	}
+		if (m_effect_port->get_name().get() == "rgba")
+		{
+			brush = QBrush(QImage(":/icons/rgba.png").scaledToHeight(
+				height(), Qt::SmoothTransformation));
+		}
 
-	if (m_name == "rgb")
-	{
-		brush = QBrush(QImage("rgb.png").scaledToHeight(height(),
-			Qt::SmoothTransformation));
-	}
+		if (m_effect_port->get_name().get() == "rgb")
+		{
+			brush = QBrush(QImage(":/icons/rgb.png").scaledToHeight(
+				height(), Qt::SmoothTransformation));
+		}
 
-	if (m_name == "r")
-	{
-		brush = QBrush(Qt::red);
-	}
+		if (m_effect_port->get_name().get() == "r")
+		{
+			brush = QBrush(Qt::red);
+		}
 
-	if (m_name == "g")
-	{
-		brush = QBrush(Qt::green);
-	}
+		if (m_effect_port->get_name().get() == "g")
+		{
+			brush = QBrush(Qt::green);
+		}
 
-	if (m_name == "b")
-	{
-		brush = QBrush(Qt::blue);
-	}
+		if (m_effect_port->get_name().get() == "b")
+		{
+			brush = QBrush(Qt::blue);
+		}
 
-	if (m_name == "a")
-	{
-		brush = QBrush(Qt::white);
+		if (m_effect_port->get_name().get() == "a")
+		{
+			brush = QBrush(Qt::white);
+		}
+
+		if (m_effect_port->get_name().get() == "a")
+		{
+			brush = QBrush(Qt::white);
+		}
+
+		setToolTip(QString::number(m_effect_port->get_value_count()));
 	}
 
 	setBrush(brush);
@@ -314,8 +331,6 @@ QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value)
 	return value;
 }
 
-#include "../engine/node/effectnode.hpp"
-
 bool QNEPort::can_connect(QNEPort* port)
 {
 	if ((effect_port() == 0) && (port->effect_port() == 0))
@@ -354,4 +369,16 @@ void QNEPort::disconnect(QNEPort* port)
 el::EffectNodePortPtr QNEPort::effect_port() const
 {
 	return m_effect_port;
+}
+
+void QNEPort::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+	QString str;
+
+	str = QInputDialog::getText(0, "", "Text", QLineEdit::Normal, name());
+
+	if (!str.isEmpty())
+	{
+		setName(str);
+	}
 }

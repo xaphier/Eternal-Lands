@@ -63,7 +63,7 @@ public:
 
 	bool isConnected(QNEPort*);
 
-	const QString& name() const;
+	const QString &name() const;
 	int flags() const;
 	int type() const;
 	bool can_connect(QNEPort* port);
@@ -72,6 +72,7 @@ public:
 
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
 private:
 	void update();

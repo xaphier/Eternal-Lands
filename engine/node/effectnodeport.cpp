@@ -90,10 +90,10 @@ namespace eternal_lands
 	}
 
 	EffectNodePort::EffectNodePort(const EffectNodePtr node,
-		const String &var, const String &description,
+		const String &var, const String &name,
 		const String &swizzle, const EffectChangeType change,
 		const bool input): m_node(node), m_var(var),
-		m_description(description),
+		m_name(name), m_description(name),
 		m_swizzle(get_swizzle_from_str(swizzle)),
 		m_change(change), m_input(input)
 	{
@@ -104,7 +104,7 @@ namespace eternal_lands
 	EffectNodePort::EffectNodePort(const EffectNodePtr node,
 		const String &var, const String &swizzle,
 		const EffectChangeType change, const bool input): m_node(node),
-		m_var(var), m_description(swizzle),
+		m_var(var), m_name(swizzle), m_description(swizzle),
 		m_swizzle(get_swizzle_from_str(swizzle)),
 		m_change(change), m_input(input)
 	{

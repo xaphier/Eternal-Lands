@@ -29,7 +29,7 @@ namespace eternal_lands
 			virtual Uint16 get_initial_value_count() const;
 
 		public:
-			EffectOutput(const String &name);
+			EffectOutput(const String &name, const Uint32 id);
 			virtual ~EffectOutput() noexcept;
 			void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
@@ -42,6 +42,7 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written);
+			virtual String get_description() const;
 
 	};
 

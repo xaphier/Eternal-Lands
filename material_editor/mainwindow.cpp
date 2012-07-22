@@ -9,15 +9,20 @@
 #include "colornode.hpp"
 #include "directionnode.hpp"
 #include "valuesnode.hpp"
+#include "../engine/node/effectnodes.hpp"
 #include "../engine/node/effectconstant.hpp"
 #include "../engine/node/effectfunction.hpp"
 #include "../engine/node/effectparameter.hpp"
 #include "../engine/node/effecttexture.hpp"
 #include "../engine/node/effectoutput.hpp"
 #include "../engine/node/effecttexture.hpp"
+#include "../engine/shader/samplerparameterutil.hpp"
+#include "../engine/texturetargetutil.hpp"
 
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), m_var_id(0)
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
+	int i, count;
+
 	setupUi(this);
 
 	QGraphicsScene *s = new QGraphicsScene();
@@ -35,19 +40,82 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), m_var_id(0)
 	connect(parameter_button, SIGNAL(clicked()), this,
 		SLOT(add_parameter()));
 	connect(output_button, SIGNAL(clicked()), this, SLOT(add_output()));
+
+	m_buttons.push_back(texture_unit_0);
+	m_buttons.push_back(texture_unit_1);
+	m_buttons.push_back(texture_unit_2);
+	m_buttons.push_back(texture_unit_3);
+	m_buttons.push_back(texture_unit_4);
+	m_buttons.push_back(texture_unit_5);
+	m_buttons.push_back(texture_unit_6);
+	m_buttons.push_back(texture_unit_7);
+
+	m_texture_unit_mapper = new QSignalMapper(this);
+
+	count = m_buttons.size();
+
+	for (i = 0; i < count; ++i)
+	{
+		m_targets.push_back(el::ttt_texture_2d);
+		m_file_names.push_back(QStringList());
+		m_texture_unit_mapper->setMapping(m_buttons[i], i);
+		m_buttons[i]->setText(QString::fromUtf8(
+			el::SamplerParameterUtil::get_str(
+				static_cast<el::SamplerParameterType>(i)).get(
+					).c_str()));
+		m_names << m_buttons[i]->text();
+
+		QObject::connect(m_buttons[i], SIGNAL(clicked(bool)),
+			m_texture_unit_mapper, SLOT(map()));
+	}
+
+	QObject::connect(m_texture_unit_mapper, SIGNAL(mapped(const int)),
+		this, SLOT(change_texture(const int)));
+
+	m_texture_dialog = new TextureDialog(this);
+	m_texture_unit_dialog = new TextureUnitDialog(this);
+
+	connect(m_texture_dialog->texture_unit,
+		SIGNAL(currentIndexChanged(int)), this,
+		SLOT(texture_unit_changed(int)));
+
+	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
 }
 
 MainWindow::~MainWindow()
 {
 }
 
+void MainWindow::texture_unit_changed(const int value)
+{
+	m_texture_dialog->set_target(m_targets[value]);
+}
+
+void MainWindow::change_texture(const int index)
+{
+	m_texture_unit_dialog->set_name(m_names[index]);
+	m_texture_unit_dialog->set_target(m_targets[index]);
+	m_texture_unit_dialog->set_file_names(m_file_names[index]);
+	m_texture_unit_dialog->set_texture_unit(index);
+
+	if (m_texture_unit_dialog->exec() == QDialog::Accepted)
+	{
+		m_names[index] = m_texture_unit_dialog->get_name();
+		m_buttons[index]->setText(m_names[index]);
+		m_targets[index] = m_texture_unit_dialog->get_target();
+		m_file_names[index] = m_texture_unit_dialog->get_file_names();
+	}
+}
+
 void MainWindow::add_color()
 {
 	QNEBlock* node;
+	el::EffectConstant* ptr;
 
-	node = new ColorNode(new el::EffectConstant(el::String("Color"),
-		el::ect_color_rgb, m_var_id), "Color", 0,
-		graphicsView->scene());
+	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_color(
+		el::String("Color")));
+
+	node = new ColorNode(ptr, "Color", 0, graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -55,10 +123,12 @@ void MainWindow::add_color()
 void MainWindow::add_direction()
 {
 	QNEBlock* node;
+	el::EffectConstant* ptr;
 
-	node = new ColorNode(new el::EffectConstant(el::String("Direction"),
-		el::ect_direction_xy, m_var_id), "Direction", 0,
-		graphicsView->scene());
+	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_direction(
+		el::String("Direction")));
+
+	node = new DirectionNode(ptr, "Direction", 0, graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -66,70 +136,22 @@ void MainWindow::add_direction()
 void MainWindow::add_constant()
 {
 	QNEBlock* node;
-	QStringList constants;
-	QString tmp;
-	el::String constant;
-	el::EffectConstantType type;
-	Uint32 i;
+	el::EffectConstant* ptr;
+	int count;
 	bool ok;
 
-	for (i = 0; i < el::EffectConstantUtil::get_effect_constant_count();
-		++i)
-	{
-		constants << QString::fromUtf8(el::EffectConstantUtil::get_str(
-			static_cast<el::EffectConstantType>(i)).get().c_str());
-	}
-
-	tmp = QInputDialog::getItem(this, "Select constant", "constant",
-		constants, 0, false, &ok);
+	count = QInputDialog::getInt(this, "Select constant count", "count",
+		4, 1, 4, 1, &ok);
 
 	if (!ok)
 	{
 		return;
 	}
 
-	constant = el::String(tmp.toUtf8());
+	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_constant(
+		el::String("Constant"), count));
 
-	if (!el::EffectConstantUtil::get_effect_constant(constant, type))
-	{
-		return;
-	}
-
-	switch (type)
-	{
-		case el::ect_direction_xy:
-			node = new DirectionNode(new el::EffectConstant(
-				el::String("Direction"), type, m_var_id),
-				"Direction", 0, graphicsView->scene());
-			break;
-		case el::ect_color_rgb:
-			node = new ColorNode(new el::EffectConstant(
-				el::String("Color"), type, m_var_id),
-				"Color", 0, graphicsView->scene());
-			break;
-		case el::ect_float:
-			node = new ValuesNode(new el::EffectConstant(
-				el::String("Constant"), type, m_var_id),
-				"Constant", 1, 0, graphicsView->scene());
-			break;
-		case el::ect_vec2:
-			node = new ValuesNode(new el::EffectConstant(
-				el::String("Constant"), type, m_var_id),
-				"Constant", 2, 0, graphicsView->scene());
-			break;
-		case el::ect_vec3:
-			node = new ValuesNode(new el::EffectConstant(
-				el::String("Constant"), type, m_var_id),
-				"Constant", 3, 0, graphicsView->scene());
-			break;
-		case el::ect_vec4:
-			node = new ValuesNode(new el::EffectConstant(
-				el::String("Constant"), type, m_var_id),
-				"Constant", 4, 0, graphicsView->scene());
-			break;
-		default:
-			return;
-	};
+	node = new ValuesNode(ptr, "Constant", count, 0, graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -141,6 +163,7 @@ void MainWindow::add_function()
 	QString tmp;
 	el::String function;
 	el::EffectFunctionType type;
+	el::EffectNodePtr ptr;
 	Uint32 i;
 	bool ok;
 
@@ -166,8 +189,9 @@ void MainWindow::add_function()
 		return;
 	}
 
-	node = new Node(new el::EffectFunction(function, type, m_var_id),
-		"Function", 0, graphicsView->scene());
+	ptr = m_effect_nodes->add_function(function, type);
+
+	node = new Node(ptr, "Function", 0, graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -179,6 +203,7 @@ void MainWindow::add_parameter()
 	QString tmp;
 	el::String parameter;
 	el::EffectParameterType type;
+	el::EffectNodePtr ptr;
 	Uint32 i;
 	bool ok;
 
@@ -205,8 +230,9 @@ void MainWindow::add_parameter()
 		return;
 	}
 
-	node = new Node(new el::EffectParameter(parameter, type), "Parameter",
-		0, graphicsView->scene());
+	ptr = m_effect_nodes->add_parameter(parameter, type);
+
+	node = new Node(ptr, "Parameter", 0, graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -214,48 +240,121 @@ void MainWindow::add_parameter()
 void MainWindow::add_texture()
 {
 	Node* node;
-	QStringList textures;
-	QString tmp;
-	el::String texture;
-	el::EffectTextureType type;
-	Uint32 i;
-	bool ok;
+	el::String name;
+	el::EffectSamplerType sampler;
+	el::EffectTextureType texture;
+	el::EffectNodePtr ptr;
+	Uint16 texture_unit;
+	bool project;
 
-	for (i = 0; i < el::EffectTextureUtil::get_effect_texture_count();
-		++i)
-	{
-		textures << QString::fromUtf8(
-			el::EffectTextureUtil::get_str(static_cast<
-				el::EffectTextureType>(i)).get().c_str());
-	}
+	m_texture_dialog->set_texture_units(m_names);
 
-	tmp = QInputDialog::getItem(this, "Select texture", "texture",
-		textures, 0, false, &ok);
-
-	if (!ok)
+	if (m_texture_dialog->exec() != QDialog::Accepted)
 	{
 		return;
 	}
 
-	texture = el::String(tmp.toUtf8());
+	texture_unit = m_texture_dialog->get_texture_units();
 
-	if (!el::EffectTextureUtil::get_effect_texture(texture, type))
+	name = el::String(m_names[texture_unit].toUtf8());
+
+	project = m_texture_dialog->get_project();
+
+	sampler = el::est_sampler_2d;
+
+	switch (m_targets[texture_unit])
 	{
-		return;
+		case el::ttt_texture_1d:
+			if (project)
+			{
+				sampler = el::est_sampler_1d_project;
+			}
+			else
+			{
+				sampler = el::est_sampler_1d;
+			}
+			break;
+		case el::ttt_texture_2d:
+			if (project)
+			{
+				sampler = el::est_sampler_2d_project;
+			}
+			else
+			{
+				sampler = el::est_sampler_2d;
+			}
+			break;
+		case el::ttt_texture_3d:
+			if (project)
+			{
+				sampler = el::est_sampler_3d_project;
+			}
+			else
+			{
+				sampler = el::est_sampler_3d;
+			}
+			break;
+		case el::ttt_texture_rectangle:
+			if (project)
+			{
+				sampler = el::est_sampler_rectangle_project;
+			}
+			else
+			{
+				sampler = el::est_sampler_rectangle;
+			}
+			break;
+		case el::ttt_texture_cube_map:
+			sampler = el::est_sampler_cube_map;
+			break;
+		case el::ttt_texture_1d_array:
+			sampler = el::est_sampler_1d_array;
+			break;
+		case el::ttt_texture_2d_array:
+			sampler = el::est_sampler_2d_array;
+			break;
+		case el::ttt_texture_cube_map_array:
+			sampler = el::est_sampler_cube_map_array;
+			break;
+		case el::ttt_texture_2d_multisample:
+		case el::ttt_texture_2d_multisample_array:
+			return;
 	}
-/*
-	node = new Node(new el::EffectTexture(texture, type, m_var_id),
-		"Texture", 0, graphicsView->scene());
-*/
+
+	texture = el::ett_default;
+
+	switch (m_texture_dialog->get_texture())
+	{
+		case el::ett_albedo:
+			texture = el::ett_albedo;
+			break;
+		case el::ett_normal:
+			texture = el::ett_normal;
+			break;
+		case el::ett_parallax:
+			texture = el::ett_parallax;
+			break;
+		case el::ett_default:
+			texture = el::ett_default;
+			break;
+	}
+
+	ptr = m_effect_nodes->add_texture(name, sampler, texture,
+		texture_unit);
+
+	node = new Node(ptr, "Texture", 0, graphicsView->scene());
+
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
 
 void MainWindow::add_output()
 {
 	Node* node;
+	el::EffectNodePtr ptr;
 
-	node = new Node(new el::EffectOutput(el::String("Output")),
-		"Output", 0, graphicsView->scene());
+	ptr = m_effect_nodes->add_output(el::String("Output"));
+
+	node = new Node(ptr, "Output", 0, graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }

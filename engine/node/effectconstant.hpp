@@ -34,9 +34,8 @@ namespace eternal_lands
 			virtual Uint16 get_initial_value_count() const;
 
 		public:
-			EffectConstant(const String &name,
-				const EffectConstantType type,
-				Uint32 &var_ids);
+			EffectConstant(const String &name, const Uint32 id,
+				const EffectConstantType type);
 			virtual ~EffectConstant() noexcept;
 			virtual void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
@@ -49,6 +48,7 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written);
+			virtual String get_description() const;
 
 			inline EffectConstantType get_type() const noexcept
 			{

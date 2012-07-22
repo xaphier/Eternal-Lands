@@ -12,19 +12,22 @@
 namespace eternal_lands
 {
 
-	EffectOutput::EffectOutput(const String &name): EffectNode(name)
+	EffectOutput::EffectOutput(const String &name, const Uint32 id):
+		EffectNode(name, id)
 	{
-		add_input_port(String(UTF8("albedo")), String(UTF8("rgb")),
-			ect_fragment);
+		add_input_port(String(UTF8("albedo/diffuse color")),
+			String(UTF8("rgb")), ect_fragment);
+		add_input_port(String(UTF8("specular color")),
+			String(UTF8("xyz")), ect_fragment);
 		add_input_port(String(UTF8("alpha")), String(UTF8("?")),
 			ect_fragment);
+		add_input_port(String(UTF8("reflectance at normal incidence")),
+			String(UTF8("?")), ect_fragment);
 		add_input_port(String(UTF8("roughness")), String(UTF8("?")),
 			ect_fragment);
 		add_input_port(String(UTF8("emission")), String(UTF8("rgb")),
 			ect_fragment);
 		add_input_port(String(UTF8("normal")), String(UTF8("xyz")),
-			ect_fragment);
-		add_input_port(String(UTF8("position")), String(UTF8("xyz")),
 			ect_fragment);
 	}
 
@@ -47,6 +50,8 @@ namespace eternal_lands
 		EffectNodePtrSet &vertex_written,
 		EffectNodePtrSet &fragment_written)
 	{
+		String default_value;
+
 		if (fragment_written.count(this) > 0)
 		{
 			return;
@@ -68,42 +73,64 @@ namespace eternal_lands
 				fragment_parameters, vertex_str, fragment_str,
 				vertex_written, fragment_written);
 
-			if (port.get_description() == UTF8("albedo"))
+			if (port.get_name() == UTF8("albedo/diffuse color"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_albedo);
 				fragment_str << UTF8(".rgb");
+
+				default_value = UTF8("1.0");
 			}
 
-			if (port.get_description() == UTF8("alpha"))
+			if (port.get_name() == UTF8("alpha"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_albedo);
 				fragment_str << UTF8(".a");
+
+				default_value = UTF8("1.0");
 			}
 
-			if (port.get_description() == UTF8("roughness"))
+			if (port.get_name() == UTF8("specular color"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_specular);
+				fragment_str << UTF8(".rgb");
+
+				default_value = UTF8("1.0");
 			}
 
-			if (port.get_description() == UTF8("emission"))
+			if (port.get_name() ==
+				UTF8("reflectance at normal incidence"))
+			{
+				fragment_str << CommonParameterUtil::get_str(
+					cpt_reflectance_at_normal_incidence);
+
+				default_value = UTF8("0.0");
+			}
+
+			if (port.get_name() == UTF8("roughness"))
+			{
+				fragment_str << CommonParameterUtil::get_str(
+					cpt_roughness);
+
+				default_value = UTF8("1.0");
+			}
+
+			if (port.get_name() == UTF8("emission"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_emission);
+
+				default_value = UTF8("0.0");
 			}
 
-			if (port.get_description() == UTF8("normal"))
+			if (port.get_name() == UTF8("normal"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_fragment_normal);
-			}
 
-			if (port.get_description() == UTF8("position"))
-			{
-				fragment_str << CommonParameterUtil::get_str(
-					cpt_fragment_position);
+				default_value = UTF8("1.0");
 			}
 
 			fragment_str << UTF8(" = ");
@@ -116,11 +143,17 @@ namespace eternal_lands
 			else
 			{
 				fragment_str << get_value_count_type_str();
-				fragment_str << UTF8("(0.0)");
+				fragment_str << UTF8("(") << default_value;
+				fragment_str << UTF8(")");
 			}
 
 			fragment_str << UTF8(";\n");
 		}
+	}
+
+	String EffectOutput::get_description() const
+	{
+		return String();
 	}
 
 }

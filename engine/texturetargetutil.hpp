@@ -53,6 +53,8 @@ namespace eternal_lands
 		public:
 			static const String &get_str(
 				const TextureTargetType texture_target);
+			static const String &get_description(
+				const TextureTargetType texture_target);
 			static TextureTargetType get_texture_target(
 				const String &str);
 			static GLenum get_gl_type(

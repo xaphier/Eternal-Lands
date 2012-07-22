@@ -7,31 +7,30 @@
 
 #include "effecttexture.hpp"
 #include "effectnodeport.hpp"
+#include "../shader/commonparameterutil.hpp"
 
 namespace eternal_lands
 {
 
-	EffectTexture::EffectTexture(const String &name,
+	EffectTexture::EffectTexture(const String &name, const Uint32 id,
 		const EffectSamplerType sampler,
-		const EffectTextureType texture, const Uint16 texture_unit,
-		Uint32 &var_ids): EffectNode(name), m_sampler(sampler),
-		m_texture(texture), m_texture_unit(texture_unit)
+		const EffectTextureType texture, const Uint16 texture_unit):
+		EffectNode(name, id), m_sampler(sampler), m_texture(texture),
+		m_texture_unit(texture_unit)
 	{
+		Uint32 index;
+
+		index = 0;
+
 		BOOST_FOREACH(String &var, m_vars)
 		{
-			StringStream str;
-
-			str << UTF8("effect_var_") << std::hex << var_ids;
-			var_ids++;
-
-			var = String(str.str());
+			var = get_var_name(index);
+			index++;
 		}
 
 		switch (get_texture())
 		{
 			case ett_default:
-				add_output_port(m_vars[0], String(UTF8("rgba")),
-					ect_fragment);
 				add_output_port(m_vars[0], String(UTF8("r")),
 					ect_fragment);
 				add_output_port(m_vars[0], String(UTF8("g")),
@@ -54,12 +53,16 @@ namespace eternal_lands
 					ect_fragment);
 				break;
 			case ett_parallax:
+				add_input_port(String(UTF8("parallax")),
+					String(UTF8("?")), ect_fragment);
 				add_output_port(m_vars[0], String(UTF8("uv")),
 					ect_fragment);
 				add_output_port(m_vars[1],
 					String(UTF8("normal")),
 					String(UTF8("xyz")), ect_fragment);
-				add_output_port(m_vars[2], String(UTF8("?")),
+				add_output_port(m_vars[2],
+					String(UTF8("extra")),
+					String(UTF8("?")),
 					ect_fragment);
 				break;
 		}
@@ -189,9 +192,32 @@ namespace eternal_lands
 		EffectNodePtrSet &vertex_written,
 		EffectNodePtrSet &fragment_written)
 	{
+		BoostFormat normal_format(UTF8(
+			"vec2 %1% = %3%.xy * 2.0 - 1.0;\n"
+			"vec3 %2% = vec3(%1%, sqrt(1.0 - dot(%1%, %1%)));"));
+		BoostFormat parallax_format(UTF8(
+			"vec4 %9%;\n"
+			"vec3 %8%, %10%;\n"
+			"float %11%, %12%;\n"
+			"int %13%;\n"
+			"\n"
+			"%10% = %6%.xyz * %5%;\n"
+			"%8% = vec3(%4%, 0.0);\n"
+			"\n"
+			"for (%13% = 0; %13% < 3; %13%++)\n"
+			"{\n"
+			"\t%9% = %3%;\n"
+			"\t%9%.xy = %9%.xy * 2.0 - 1.0;\n"
+			"\t%12% = sqrt(1.0 - dot(%9%.xy, %9%.xy));\n"
+			"\t%11% = %9%.a * %7% - %7% * 0.5;\n"
+			"\t%8% += (%11% - %8%.z) * %12% * %10%;\n"
+			"}\n"
+			"\n"
+			"%1% = %8%.xy;\n"
+			"%2% = %5% * vec3(%9%.xy, %12%);\n"));
 		StringStream str;
 		Uint16StringMap::const_iterator found;
-		String uv, dPdx, dPdy, layer;
+		String world_uv, uv, scale, dPdx, dPdy, layer;
 		bool use_grad;
 
 		if (fragment_written.count(this) > 0)
@@ -207,7 +233,7 @@ namespace eternal_lands
 		{
 			if (port.get_input())
 			{
-				if (port.get_description() == UTF8("dPdx"))
+				if (port.get_name() == UTF8("dPdx"))
 				{
 					dPdx = port.
 						get_connected_var_swizzled();
@@ -222,7 +248,7 @@ namespace eternal_lands
 					continue;
 				}
 
-				if (port.get_description() == UTF8("dPdy"))
+				if (port.get_name() == UTF8("dPdy"))
 				{
 					dPdy = port.
 						get_connected_var_swizzled();
@@ -237,9 +263,24 @@ namespace eternal_lands
 					continue;
 				}
 
-				if (port.get_description() == UTF8("layer"))
+				if (port.get_name() == UTF8("layer"))
 				{
 					layer = port.
+						get_connected_var_swizzled();
+					port.write(array_layers, version,
+						low_quality, ect_fragment,
+						parameters, vertex_parameters,
+						fragment_parameters,
+						vertex_str, fragment_str,
+						vertex_written,
+						fragment_written);
+
+					continue;
+				}
+
+				if (port.get_name() == UTF8("parallax"))
+				{
+					scale = port.
 						get_connected_var_swizzled();
 					port.write(array_layers, version,
 						low_quality, ect_fragment,
@@ -261,6 +302,13 @@ namespace eternal_lands
 					vertex_str, fragment_str,
 					vertex_written, fragment_written);
 			}
+		}
+
+		world_uv = uv;
+
+		if (get_texture() == ett_parallax)
+		{
+			uv = m_vars[2];
 		}
 
 		use_grad = (version > svt_120) && !dPdx.get().empty() &&
@@ -289,7 +337,7 @@ namespace eternal_lands
 				if (found != array_layers.end())
 				{
 					str << UTF8("vec2(") << uv;
-					str << UTF8(",") << found->second;
+					str << UTF8(", ") << found->second;
 					str << UTF8(")");
 				}
 				else
@@ -299,8 +347,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_2d:
@@ -322,7 +370,7 @@ namespace eternal_lands
 				if (found != array_layers.end())
 				{
 					str << UTF8("vec3(") << uv;
-					str << UTF8(",") << found->second;
+					str << UTF8(", ") << found->second;
 					str << UTF8(")");
 				}
 				else
@@ -332,8 +380,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_3d:
@@ -354,8 +402,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_cube_map:
@@ -376,8 +424,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_1d_array:
@@ -392,8 +440,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_2d_array:
@@ -404,12 +452,12 @@ namespace eternal_lands
 
 				str << UTF8("(") << get_sampler_name();
 				str << UTF8(", vec3(") << uv;
-				str << UTF8(",") << layer << UTF8(")");
+				str << UTF8(", ") << layer << UTF8(")");
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_cube_map_array:
@@ -420,12 +468,12 @@ namespace eternal_lands
 
 				str << UTF8("(") << get_sampler_name();
 				str << UTF8(", vec4(") << uv;
-				str << UTF8(",") << layer << UTF8(")");
+				str << UTF8(", ") << layer << UTF8(")");
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_rectangle:
@@ -439,8 +487,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_1d_project:
@@ -461,8 +509,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_2d_project:
@@ -483,8 +531,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_3d_project:
@@ -505,8 +553,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 			case est_sampler_rectangle_project:
@@ -522,8 +570,8 @@ namespace eternal_lands
 
 				if (use_grad)
 				{
-					str << UTF8(",") << dPdx;
-					str << UTF8(",") << dPdy;
+					str << UTF8(", ") << dPdx;
+					str << UTF8(", ") << dPdy;
 				}
 				break;
 		}
@@ -539,26 +587,29 @@ namespace eternal_lands
 				fragment_str << UTF8(";\n");
 				break;
 			case ett_normal:
+				normal_format % m_vars[0] % m_vars[1];
+				normal_format % str.str();
+
+				fragment_str << normal_format.str();
+				break;
 			case ett_parallax:
-				BoostFormat format(UTF8("vec2 %1% = %3%.xy * "
-					"2.0 - 1.0;\nvec3 %2% = vec3(%1%, "
-					"sqrt(1.0 - dot(%1%, %1%)));"));
-
-				format % m_vars[0] % m_vars[1] % str.str();
-
-				fragment_str << format.str();
+				parallax_format % m_vars[0] % m_vars[1];
+				parallax_format % str.str();
+				parallax_format % world_uv % cpt_tbn_matrix;
+				parallax_format % cpt_world_view_direction;
+				parallax_format % scale % uv;
+				parallax_format % m_vars[3] % m_vars[4];
+				parallax_format % m_vars[5] % m_vars[6];
+				parallax_format % m_vars[7];
+				fragment_str << parallax_format.str();
 				break;
 		}
 
 	}
 
-	String EffectTexture::get_sampler_name(const Uint16 texture_unit)
+	String EffectTexture::get_description() const
 	{
-		StringStream str;
-
-		str << UTF8("effect_sampler_") << texture_unit;
-
-		return String(str.str());
+		return EffectTextureUtil::get_description(get_texture());
 	}
 
 }

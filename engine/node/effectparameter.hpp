@@ -32,7 +32,7 @@ namespace eternal_lands
 			virtual Uint16 get_initial_value_count() const;
 
 		public:
-			EffectParameter(const String &name,
+			EffectParameter(const String &name, const Uint32 id,
 				const EffectParameterType type);
 			virtual ~EffectParameter() noexcept;
 			void write(const Uint16StringMap &array_layers,
@@ -46,6 +46,7 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written);
+			virtual String get_description() const;
 
 			inline EffectParameterType get_type() const noexcept
 			{

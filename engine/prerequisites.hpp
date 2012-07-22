@@ -227,6 +227,7 @@ namespace eternal_lands
 	class EffectDescription;
 	class EffectNode;
 	class EffectNodePort;
+	class EffectNodes;
 	class FreeIds;
 	class FreeIdsManager;
 	class FileSystem;
@@ -371,6 +372,7 @@ namespace eternal_lands
 	SHARED_PTR(ColorCorrection);
 	SHARED_PTR(Effect);
 	SHARED_PTR(EffectCache);
+	SHARED_PTR(EffectNodes);
 	SHARED_PTR(FreeIds);
 	SHARED_PTR(FreeIdsManager);
 	SHARED_PTR(FileSystem);
@@ -500,6 +502,7 @@ namespace eternal_lands
 	typedef boost::array<AbstractWriteMemorySharedPtr,
 		vertex_stream_count> AbstractWriteMemorySharedPtrArray;
 	typedef boost::ptr_vector<VertexStream> VertexStreamVector;
+	typedef boost::ptr_vector<EffectNode> EffectNodeVector;
 	typedef boost::ptr_vector<EffectNodePort> EffectNodePortVector;
 
 	typedef boost::variant<bool, Sint64, float,

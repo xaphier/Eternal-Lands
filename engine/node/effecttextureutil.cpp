@@ -14,35 +14,90 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String effect_texture_names[] =
+		class EffectTextureTypeData
 		{
-			String(UTF8("default")),
-			String(UTF8("albedo")),
-			String(UTF8("normal")),
-			String(UTF8("parallax"))
+			private:
+				const String m_name;
+				const String m_description;
+
+			public:
+				inline EffectTextureTypeData(
+					const String &name,
+					const String &description):
+						m_name(name),
+						m_description(description)
+				{
+				}
+
+				inline ~EffectTextureTypeData() noexcept
+				{
+				}
+
+				inline const String &get_name() const noexcept
+				{
+					return m_name;
+				}
+
+				inline const String &get_description() const
+					noexcept
+				{
+					return m_description;
+				}
+
 		};
 
-		const Uint32 effect_texture_names_count =
-			sizeof(effect_texture_names) / sizeof(String);
+		const EffectTextureTypeData effect_texture_datas[] =
+		{
+			EffectTextureTypeData(String(UTF8("default")),
+				String(UTF8(""))),
+			EffectTextureTypeData(String(UTF8("albedo")),
+				String(UTF8(""))),
+			EffectTextureTypeData(String(UTF8("normal")),
+				String(UTF8(""))),
+			EffectTextureTypeData(String(UTF8("parallax")),
+				String(UTF8("")))
+		};
+
+		const Uint32 effect_texture_datas_count =
+			sizeof(effect_texture_datas) /
+			sizeof(EffectTextureTypeData);
 
 	}
 
 	const String &EffectTextureUtil::get_str(
 		const EffectTextureType effect_texture)
 	{
-		if (effect_texture_names_count <= effect_texture)
+		if (effect_texture_datas_count <= effect_texture)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_range_min(0)
 				<< errinfo_range_max(
-					effect_texture_names_count - 1)
+					effect_texture_datas_count - 1)
 				<< errinfo_range_index(static_cast<Uint32>(
 					effect_texture))
 				<< boost::errinfo_type_info_name(UTF8(
 					"EffectTextureType")));
 		}
 
-		return effect_texture_names[effect_texture];
+		return effect_texture_datas[effect_texture].get_name();
+	}
+
+	const String &EffectTextureUtil::get_description(
+		const EffectTextureType effect_texture)
+	{
+		if (effect_texture_datas_count <= effect_texture)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_range_min(0)
+				<< errinfo_range_max(
+					effect_texture_datas_count - 1)
+				<< errinfo_range_index(static_cast<Uint32>(
+					effect_texture))
+				<< boost::errinfo_type_info_name(UTF8(
+					"EffectTextureType")));
+		}
+
+		return effect_texture_datas[effect_texture].get_description();
 	}
 
 	EffectTextureType EffectTextureUtil::get_effect_texture(
@@ -51,7 +106,7 @@ namespace eternal_lands
 		Uint32 i;
 		EffectTextureType effect_texture;
 
-		for (i = 0; i < effect_texture_names_count; ++i)
+		for (i = 0; i < effect_texture_datas_count; ++i)
 		{
 			effect_texture = static_cast<EffectTextureType>(i);
 
@@ -73,7 +128,7 @@ namespace eternal_lands
 		Uint32 i;
 		EffectTextureType tmp;
 
-		for (i = 0; i < effect_texture_names_count; ++i)
+		for (i = 0; i < effect_texture_datas_count; ++i)
 		{
 			tmp = static_cast<EffectTextureType>(i);
 
@@ -90,7 +145,7 @@ namespace eternal_lands
 
 	Uint32 EffectTextureUtil::get_effect_texture_count() noexcept
 	{
-		return effect_texture_names_count;
+		return effect_texture_datas_count;
 	}
 
 	OutStream& operator<<(OutStream &str, const EffectTextureType value)

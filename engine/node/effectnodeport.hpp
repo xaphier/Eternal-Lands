@@ -31,7 +31,8 @@ namespace eternal_lands
 			EffectNodePortPtrSet m_connections;
 			EffectNodePtr m_node;
 			const String m_var;
-			const String m_description;
+			const String m_name;
+			String m_description;
 			const Uint8Array4 m_swizzle;
 			const EffectChangeType m_change;
 			const bool m_input;
@@ -70,7 +71,7 @@ namespace eternal_lands
 		public:
 			EffectNodePort(const EffectNodePtr node,
 				const String &var,
-				const String &description,
+				const String &name,
 				const String &swizzle,
 				const EffectChangeType change,
 				const bool input);
@@ -103,10 +104,20 @@ namespace eternal_lands
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written);
 
+			inline void set_description(const String &description)
+			{
+				m_description = description;
+			}
+
 			inline const EffectNodePortPtrSet &get_connections()
 				const noexcept
 			{
 				return m_connections;
+			}
+
+			inline const String &get_name() const noexcept
+			{
+				return m_name;
 			}
 
 			inline const String &get_description() const noexcept

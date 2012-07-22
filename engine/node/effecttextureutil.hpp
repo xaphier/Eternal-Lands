@@ -42,6 +42,8 @@ namespace eternal_lands
 		public:
 			static const String &get_str(
 				const EffectTextureType effect_texture);
+			static const String &get_description(
+				const EffectTextureType effect_texture);
 			static EffectTextureType get_effect_texture(
 				const String &str);
 			static bool get_effect_texture(const String &str,

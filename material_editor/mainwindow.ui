@@ -69,53 +69,41 @@
         <string>Texture units</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>5</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>5</number>
+        </property>
         <item row="0" column="0">
-         <widget class="QLineEdit" name="texture_unit_name_0"/>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="texture_unit_type_0"/>
+         <widget class="QPushButton" name="texture_unit_0"/>
         </item>
         <item row="1" column="0">
-         <widget class="QLineEdit" name="texture_unit_name_1"/>
+         <widget class="QPushButton" name="texture_unit_1"/>
         </item>
         <item row="2" column="0">
-         <widget class="QLineEdit" name="texture_unit_name_2"/>
+         <widget class="QPushButton" name="texture_unit_2"/>
         </item>
         <item row="3" column="0">
-         <widget class="QLineEdit" name="texture_unit_name_3"/>
+         <widget class="QPushButton" name="texture_unit_3"/>
         </item>
         <item row="4" column="0">
-         <widget class="QLineEdit" name="texture_unit_name_4"/>
+         <widget class="QPushButton" name="texture_unit_4"/>
         </item>
         <item row="5" column="0">
-         <widget class="QLineEdit" name="texture_unit_name_5"/>
+         <widget class="QPushButton" name="texture_unit_5"/>
         </item>
         <item row="6" column="0">
-         <widget class="QLineEdit" name="texture_unit_name_6"/>
+         <widget class="QPushButton" name="texture_unit_6"/>
         </item>
         <item row="7" column="0">
-         <widget class="QLineEdit" name="texture_unit_name_7"/>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="texture_unit_type_1"/>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="texture_unit_type_2"/>
-        </item>
-        <item row="3" column="1">
-         <widget class="QComboBox" name="texture_unit_type_3"/>
-        </item>
-        <item row="4" column="1">
-         <widget class="QComboBox" name="texture_unit_type_4"/>
-        </item>
-        <item row="5" column="1">
-         <widget class="QComboBox" name="texture_unit_type_5"/>
-        </item>
-        <item row="6" column="1">
-         <widget class="QComboBox" name="texture_unit_type_6"/>
-        </item>
-        <item row="7" column="1">
-         <widget class="QComboBox" name="texture_unit_type_7"/>
+         <widget class="QPushButton" name="texture_unit_7"/>
         </item>
        </layout>
       </widget>
@@ -166,20 +154,14 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_2">
+   <property name="windowTitle">
+    <string>Preview</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
     <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QTreeWidget" name="parameters">
-       <column>
-        <property name="text">
-         <string notr="true">1</string>
-        </property>
-       </column>
-      </widget>
-     </item>
      <item>
       <widget class="QWidget" name="widget" native="true">
        <property name="minimumSize">

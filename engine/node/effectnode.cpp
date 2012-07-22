@@ -11,8 +11,9 @@
 namespace eternal_lands
 {
 
-	EffectNode::EffectNode(const String &name): m_name(name),
-		m_change(ect_undefined), m_value_count(0)
+	EffectNode::EffectNode(const String &name, const Uint32 id):
+		m_name(name), m_id(id), m_change(ect_undefined),
+		m_value_count(0)
 	{
 	}
 
@@ -186,6 +187,15 @@ namespace eternal_lands
 		StringStream str;
 
 		str << UTF8("effect_sampler_") << index;
+
+		return String(str.str());
+	}
+
+	String EffectNode::get_var_name(const Uint32 id, const Uint16 index)
+	{
+		StringStream str;
+
+		str << UTF8("effect_var_") << id << UTF8("_") << index;
 
 		return String(str.str());
 	}

@@ -27,15 +27,14 @@ namespace eternal_lands
 	class EffectFunction: public EffectNode
 	{
 		private:
-			String m_var;
+			StringArray2 m_vars;
 			EffectFunctionType m_type;
 
 			virtual Uint16 get_initial_value_count() const;
 
 		public:
-			EffectFunction(const String &name,
-				const EffectFunctionType type,
-				Uint32 &var_ids);
+			EffectFunction(const String &name, const Uint32 id,
+				const EffectFunctionType type);
 			virtual ~EffectFunction() noexcept;
 			virtual void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
@@ -48,6 +47,7 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written);
+			virtual String get_description() const;
 
 			inline EffectFunctionType get_type() const noexcept
 			{

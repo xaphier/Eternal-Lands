@@ -58,6 +58,7 @@ namespace eternal_lands
 		eft_abs,
 		eft_sign,
 		eft_round,
+		eft_roundEven,
 		eft_trunc,
 		eft_floor,
 		eft_ceil,
@@ -76,8 +77,8 @@ namespace eternal_lands
 		eft_normalize,
 		eft_saturate,
 		eft_refract,
-		eft_dFdx,
-		eft_dFdy
+		eft_derivatives,
+		eft_fwidth
 	};
 	/**
 	 * @}
@@ -88,10 +89,16 @@ namespace eternal_lands
 		public:
 			static const String &get_str(
 				const EffectFunctionType effect_function);
+			static const String &get_description(
+				const EffectFunctionType effect_function);
 			static EffectFunctionType get_effect_function(
 				const String &str);
 			static bool get_effect_function(const String &str,
 				EffectFunctionType &effect_function) noexcept;
+			static bool get_geometric(
+				const EffectFunctionType effect_function);
+			static bool get_trigonometric(
+				const EffectFunctionType effect_function);
 			static Uint32 get_effect_function_count() noexcept;
 
 	};

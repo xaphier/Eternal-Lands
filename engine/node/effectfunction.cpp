@@ -11,22 +11,25 @@
 namespace eternal_lands
 {
 
-	EffectFunction::EffectFunction(const String &name,
-		const EffectFunctionType type, Uint32 &var_ids):
-		EffectNode(name), m_type(type)
+	EffectFunction::EffectFunction(const String &name, const Uint32 id,
+		const EffectFunctionType type): EffectNode(name, id),
+		m_type(type)
 	{
-		StringStream str;
+		Uint32 index;
 
-		str << UTF8("effect_var_") << std::hex << var_ids;
-		var_ids++;
+		index = 0;
 
-		m_var = String(str.str());
+		BOOST_FOREACH(String &var, m_vars)
+		{
+			var = get_var_name(index);
+			index++;
+		}
 
 		switch (get_type())
 		{
 			case eft_length:
 				add_input_port(String(), String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("?")));
 				break;
 			case eft_distance:
@@ -34,7 +37,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("p1")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("?")));
 				break;
 			case eft_dot:
@@ -42,7 +45,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("?")));
 				break;
 			case eft_add:
@@ -58,7 +61,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("y")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
 			case eft_reflect:
@@ -66,7 +69,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("N")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
 			case eft_mad:
@@ -76,7 +79,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("z")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
 			case eft_clamp:
@@ -86,7 +89,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("maxVal")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
 			case eft_mix:
@@ -96,7 +99,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("a")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
 			case eft_step:
@@ -104,7 +107,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("x")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
 			case eft_smoothstep:
@@ -114,11 +117,21 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("x")),
 					String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
 			case eft_radians:
+				add_input_port(String(UTF8("degrees")),
+					String(UTF8("*")));
+				add_output_port(m_vars[0], String(),
+					String(UTF8("*")));
+				break;
 			case eft_degrees:
+				add_input_port(String(UTF8("radians")),
+					String(UTF8("*")));
+				add_output_port(m_vars[0], String(),
+					String(UTF8("*")));
+				break;
 			case eft_sin:
 			case eft_cos:
 			case eft_tan:
@@ -131,6 +144,11 @@ namespace eternal_lands
 			case eft_asinh:
 			case eft_acosh:
 			case eft_atanh:
+				add_input_port(String(UTF8("angle")),
+					String(UTF8("*")));
+				add_output_port(m_vars[0], String(),
+					String(UTF8("*")));
+				break;
 			case eft_exp:
 			case eft_log:
 			case eft_exp2:
@@ -140,21 +158,31 @@ namespace eternal_lands
 			case eft_abs:
 			case eft_sign:
 			case eft_round:
+			case eft_roundEven:
 			case eft_trunc:
 			case eft_floor:
 			case eft_ceil:
 			case eft_fract:
 			case eft_normalize:
 			case eft_saturate:
-				add_input_port(String(), String(UTF8("*")));
-				add_output_port(m_var, String(),
+				add_input_port(String("x"), String(UTF8("*")));
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
-			case eft_dFdx:
-			case eft_dFdy:
-				add_input_port(String(), String(UTF8("*")),
-					ect_fragment);
-				add_output_port(m_var, String(),
+			case eft_derivatives:
+				add_input_port(String(UTF8("uv")),
+					String(UTF8("*")), ect_fragment);
+				add_output_port(m_vars[0],
+					String(UTF8("dFdx")),
+					String(UTF8("*")), ect_fragment);
+				add_output_port(m_vars[1],
+					String(UTF8("dFdy")),
+					String(UTF8("*")), ect_fragment);
+				break;
+			case eft_fwidth:
+				add_input_port(String(UTF8("p")),
+					String(UTF8("*")), ect_fragment);
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")), ect_fragment);
 				break;
 			case eft_refract:
@@ -164,7 +192,7 @@ namespace eternal_lands
 					String(UTF8("*")));
 				add_input_port(String(UTF8("eta")),
 					String(UTF8("?")));
-				add_output_port(m_var, String(),
+				add_output_port(m_vars[0], String(),
 					String(UTF8("*")));
 				break;
 		}
@@ -247,7 +275,7 @@ namespace eternal_lands
 		}
 
 		str << get_value_count_type_str() << UTF8(" ");
-		str << m_var << UTF8(" = ");
+		str << m_vars[0] << UTF8(" = ");
 
 		switch (get_type())
 		{
@@ -395,6 +423,10 @@ namespace eternal_lands
 			case eft_round:
 				str << UTF8("round(") << inputs[0] << UTF8(")");
 				break;
+			case eft_roundEven:
+				str << UTF8("roundEven(") << inputs[0];
+				str << UTF8(")");
+				break;
 			case eft_trunc:
 				str << UTF8("trunc(") << inputs[0] << UTF8(")");
 				break;
@@ -420,17 +452,25 @@ namespace eternal_lands
 				str << UTF8(", ") << inputs[1] << UTF8(", ");
 				str << inputs[2] << UTF8(")");
 				break;
-			case eft_dFdx:
+			case eft_derivatives:
 				str << UTF8("dFdx(") << inputs[0];
-				str << UTF8(")");
+				str << UTF8(");\n");
+				str << get_value_count_type_str() << UTF8(" ");
+				str << m_vars[1] << UTF8(" = dFdy(");
+				str << inputs[0] << UTF8(")");
 				break;
-			case eft_dFdy:
-				str << UTF8("dFdy(") << inputs[0];
+			case eft_fwidth:
+				str << UTF8("fwidth(") << inputs[0];
 				str << UTF8(")");
 				break;
 		}
 
 		str << UTF8(";\n");
+	}
+
+	String EffectFunction::get_description() const
+	{
+		return EffectFunctionUtil::get_description(get_type());
 	}
 
 }

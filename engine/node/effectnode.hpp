@@ -30,6 +30,7 @@ namespace eternal_lands
 		private:
 			EffectNodePortVector m_ports;
 			String m_name;
+			Uint32 m_id;
 			EffectChangeType m_change;
 			Uint16 m_value_count;
 
@@ -51,7 +52,7 @@ namespace eternal_lands
 			}
 
 		protected:
-			EffectNode(const String &name);
+			EffectNode(const String &name, const Uint32 id);
 			void add_input_port(const String &description,
 				const String &swizzle,
 				const EffectChangeType change = ect_undefined);
@@ -79,8 +80,16 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written) = 0;
+			virtual String get_description() const = 0;
 			void update();
 			static String get_sampler_name(const Uint16 index);
+			static String get_var_name(const Uint32 id,
+				const Uint16 index);
+
+			inline String get_var_name(const Uint16 index = 0) const
+			{
+				return get_var_name(get_id(), index);
+			}
 
 			inline EffectNodePortVector &get_ports() noexcept
 			{
@@ -101,6 +110,11 @@ namespace eternal_lands
 			inline Uint16 get_value_count() const noexcept
 			{
 				return m_value_count;
+			}
+
+			inline Uint32 get_id() const noexcept
+			{
+				return m_id;
 			}
 
 			inline void set_name(const String &name) noexcept

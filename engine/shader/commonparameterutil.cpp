@@ -87,7 +87,7 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("albedo")),
 				pt_vec4),
 			CommonParameterTypeData(String(UTF8("specular")),
-				pt_float),
+				pt_vec3),
 			CommonParameterTypeData(String(UTF8("roughness")),
 				pt_float),
 			CommonParameterTypeData(
