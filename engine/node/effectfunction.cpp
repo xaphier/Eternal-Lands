@@ -7,19 +7,26 @@
 
 #include "effectfunction.hpp"
 #include "effectnodeport.hpp"
+#include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
 
+	EffectFunction::EffectFunction(): m_type(eft_add)
+	{
+	}
+
 	EffectFunction::EffectFunction(const String &name, const Uint32 id,
-		const EffectFunctionType type): EffectNode(name, id),
-		m_type(type)
+		const EffectFunctionType type,
+		Mt19937RandomUuidGenerator &uuid_generator):
+		EffectNode(name, id, uuid_generator()), m_type(type)
 	{
 		Uint32 index;
 
 		index = 0;
 
-		BOOST_FOREACH(String &var, m_vars)
+		BOOST_FOREACH(String &var, m_var_names)
 		{
 			var = get_var_name(index);
 			index++;
@@ -28,25 +35,26 @@ namespace eternal_lands
 		switch (get_type())
 		{
 			case eft_length:
-				add_input_port(String(), String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("?")));
+				add_input_port(String(), String(UTF8("*")),
+					uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("?")), uuid_generator());
 				break;
 			case eft_distance:
 				add_input_port(String(UTF8("p0")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("p1")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("?")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("?")), uuid_generator());
 				break;
 			case eft_dot:
 				add_input_port(String(UTF8("x")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("y")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("?")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("?")), uuid_generator());
 				break;
 			case eft_add:
 			case eft_sub:
@@ -58,79 +66,79 @@ namespace eternal_lands
 			case eft_max:
 			case eft_atan2:
 				add_input_port(String(UTF8("x")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("y")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_reflect:
 				add_input_port(String(UTF8("I")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("N")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_mad:
 				add_input_port(String(UTF8("x")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("y")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("z")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_clamp:
 				add_input_port(String(UTF8("x")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("minVal")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("maxVal")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_mix:
 				add_input_port(String(UTF8("x")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("y")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("a")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_step:
 				add_input_port(String(UTF8("edge")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("x")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_smoothstep:
 				add_input_port(String(UTF8("edge0")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("edge1")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("x")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_radians:
 				add_input_port(String(UTF8("degrees")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_degrees:
 				add_input_port(String(UTF8("radians")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_sin:
 			case eft_cos:
@@ -145,9 +153,9 @@ namespace eternal_lands
 			case eft_acosh:
 			case eft_atanh:
 				add_input_port(String(UTF8("angle")),
-					String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_exp:
 			case eft_log:
@@ -165,35 +173,41 @@ namespace eternal_lands
 			case eft_fract:
 			case eft_normalize:
 			case eft_saturate:
-				add_input_port(String("x"), String(UTF8("*")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+				add_input_port(String("x"), String(UTF8("*")),
+					uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 			case eft_derivatives:
 				add_input_port(String(UTF8("uv")),
-					String(UTF8("*")), ect_fragment);
-				add_output_port(m_vars[0],
+					String(UTF8("*")), uuid_generator(),
+					ect_fragment);
+				add_output_port(m_var_names[0],
 					String(UTF8("dFdx")),
-					String(UTF8("*")), ect_fragment);
-				add_output_port(m_vars[1],
+					String(UTF8("*")), uuid_generator(),
+					ect_fragment);
+				add_output_port(m_var_names[1],
 					String(UTF8("dFdy")),
-					String(UTF8("*")), ect_fragment);
+					String(UTF8("*")), uuid_generator(),
+					ect_fragment);
 				break;
 			case eft_fwidth:
 				add_input_port(String(UTF8("p")),
-					String(UTF8("*")), ect_fragment);
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")), ect_fragment);
+					String(UTF8("*")), uuid_generator(),
+					ect_fragment);
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator(),
+					ect_fragment);
 				break;
 			case eft_refract:
 				add_input_port(String(UTF8("I")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("N")),
-					String(UTF8("*")));
+					String(UTF8("*")), uuid_generator());
 				add_input_port(String(UTF8("eta")),
-					String(UTF8("?")));
-				add_output_port(m_vars[0], String(),
-					String(UTF8("*")));
+					String(UTF8("?")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("*")), uuid_generator());
 				break;
 		}
 	}
@@ -275,7 +289,7 @@ namespace eternal_lands
 		}
 
 		str << get_value_count_type_str() << UTF8(" ");
-		str << m_vars[0] << UTF8(" = ");
+		str << m_var_names[0] << UTF8(" = ");
 
 		switch (get_type())
 		{
@@ -456,7 +470,7 @@ namespace eternal_lands
 				str << UTF8("dFdx(") << inputs[0];
 				str << UTF8(");\n");
 				str << get_value_count_type_str() << UTF8(" ");
-				str << m_vars[1] << UTF8(" = dFdy(");
+				str << m_var_names[1] << UTF8(" = dFdy(");
 				str << inputs[0] << UTF8(")");
 				break;
 			case eft_fwidth:
@@ -471,6 +485,58 @@ namespace eternal_lands
 	String EffectFunction::get_description() const
 	{
 		return EffectFunctionUtil::get_description(get_type());
+	}
+
+	void EffectFunction::save_xml(const XmlWriterSharedPtr &writer)
+	{
+		writer->start_element(UTF8("effect_function"));
+
+		EffectNode::save_xml(writer);
+
+		writer->write_element(UTF8("var_name_0"), m_var_names[0]);
+		writer->write_element(UTF8("var_name_1"), m_var_names[1]);
+		writer->write_element(UTF8("type"),
+			EffectFunctionUtil::get_str(get_type()));
+
+		writer->end_element();
+	}
+
+	void EffectFunction::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_function"))
+			!= 0)
+		{
+			return;
+		}
+
+		EffectNode::load_xml(node);
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_0"))
+				== 0)
+			{
+				m_var_names[0] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_1"))
+				== 0)
+			{
+				m_var_names[1] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
+			{
+				m_type =
+					EffectFunctionUtil::get_effect_function(
+						XmlUtil::get_string_value(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
 	}
 
 }

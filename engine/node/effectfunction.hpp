@@ -26,15 +26,22 @@ namespace eternal_lands
 
 	class EffectFunction: public EffectNode
 	{
+		friend class EffectNodes;
 		private:
-			StringArray2 m_vars;
+			StringArray2 m_var_names;
 			EffectFunctionType m_type;
 
+			EffectFunction();
 			virtual Uint16 get_initial_value_count() const;
+
+		protected:
+			virtual void save_xml(const XmlWriterSharedPtr &writer);
+			virtual void load_xml(const xmlNodePtr node);
 
 		public:
 			EffectFunction(const String &name, const Uint32 id,
-				const EffectFunctionType type);
+				const EffectFunctionType type,
+				Mt19937RandomUuidGenerator &uuid_generator);
 			virtual ~EffectFunction() noexcept;
 			virtual void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,

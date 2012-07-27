@@ -51,17 +51,31 @@ namespace eternal_lands
 	{
 		private:
 			const Uint32 m_edit_id;
+			const Uint32 m_id;
+			const ModificationType m_type;
 
 			virtual bool do_merge(Modification* modification) = 0;
 
 		protected:
-			Modification(const Uint32 edit_id);
+			Modification(const Uint32 edit_id,
+				const Uint32 id, const ModificationType type);
 
 		public:
 			virtual ~Modification() throw();
-			virtual ModificationType get_type() const = 0;
 			virtual bool undo(EditorMapData &editor) = 0;
+			bool add_needed(const Uint32 edit_id,
+				const Uint32 id, const ModificationType type);
 			bool merge(Modification* modification);
+
+			inline ModificationType get_type() const noexcept
+			{
+				return m_type;
+			}
+
+			inline Uint32 get_id() const noexcept
+			{
+				return m_id;
+			}
 
 			inline Uint32 get_edit_id() const noexcept
 			{

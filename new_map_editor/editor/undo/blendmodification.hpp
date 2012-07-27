@@ -29,8 +29,8 @@ namespace eternal_lands
 			BlendModification(const ImageValueVector &blend_values,
 				const Uint32 edit_id);
 			virtual ~BlendModification() throw();
-			virtual ModificationType get_type() const;
 			virtual bool undo(EditorMapData &editor);
+			bool add_needed(const Uint32 edit_id);
 
 	};
 

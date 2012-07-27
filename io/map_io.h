@@ -69,8 +69,8 @@ typedef struct
 
 	char self_lit; /**< indicator if this object3d is self lit or not */
 	char blended;  /**< indicates whether this object3d is blended with some other objects or not */
-	
-	char pad[2];   /**< Padding bytes are inserted here by gcc and so ended up in the map format, make them explicit */
+	char instance_type;
+	char pad[1];   /**< Padding bytes are inserted here by gcc and so ended up in the map format, make them explicit */
 	
 	float r,g,b;   /**< red, green and blue color values of the object */
 
@@ -81,8 +81,9 @@ typedef struct
     /** @} */
 	int material_count;
 	int material_index;
+	int instance_id;
 
-	char reserved[12]; /**< reserved for future expansions. */
+	char reserved[8]; /**< reserved for future expansions. */
 
 }object3d_io;
 
@@ -222,8 +223,6 @@ typedef struct
 #endif
     /** @name Reserved for future use 
      * @{ */
-	int terrain_size; /**< Size of the terrain datas. */
-	int terrain_count; /**< Count of the terrain datas. */
 	int terrain_offset; /**< Offset to the terrain datas. */
 	int material_name_size; /**< Size of the material names data. */
 	int material_name_count; /**< Count of the material names data. */
@@ -231,6 +230,8 @@ typedef struct
     /** @} */
     /** @name Reserved for future expansions 
      * @{ */
+	int reserved_13;
+	int reserved_14;
 	int reserved_15;
 	int reserved_16;
 	int reserved_17;

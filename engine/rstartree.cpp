@@ -45,8 +45,6 @@ namespace eternal_lands
 		node->insert_element(this, element, path_buffer, oft);
 
 		update_root_node_bounding_box();
-
-		assert(check_tree());
 	}
 
 	RStarTreeNodeSharedPtr RStarTree::condense_tree(
@@ -194,8 +192,6 @@ namespace eternal_lands
 		{
 			get_root_node()->update_enclosing_bounding_box(element);
 		}
-
-		assert(check_tree());
 	}
 
 	void RStarTree::remove(const BoundedObjectSharedPtr &element)
@@ -222,11 +218,7 @@ namespace eternal_lands
 			set_root_node(node);
 		}
 
-		assert(check_tree());
-
 		reinsert_nodes(reinsert);
-
-		assert(check_tree());
 	}
 
 	Uint32 RStarTree::optimize(const Uint32 count)
@@ -256,11 +248,11 @@ namespace eternal_lands
 				set_root_node(node);
 			}
 
-			assert(check_tree());
+			/* assert(check_tree()); */
 
 			reinsert_nodes(reinsert);
 
-			assert(check_tree());
+			/* assert(check_tree()); */
 		}
 
 		return count;
@@ -350,11 +342,7 @@ namespace eternal_lands
 			set_root_node(node);
 		}
 
-		assert(check_tree());
-
 		reinsert_nodes(reinsert);
-
-		assert(check_tree());
 	}
 
 	void RStarTree::update_root_node_bounding_box()

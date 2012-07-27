@@ -32,18 +32,14 @@ namespace eternal_lands
 
 	TerrainValueModification::TerrainValueModification(
 		const TerrainValueVector &terrain_values,
-		const Uint32 edit_id): Modification(edit_id),
+		const Uint32 edit_id):
+		Modification(edit_id, 0, mt_terrain_value_changed),
 		m_terrain_values(terrain_values)
 	{
 	}
 
 	TerrainValueModification::~TerrainValueModification() throw()
 	{
-	}
-
-	ModificationType TerrainValueModification::get_type() const
-	{
-		return mt_terrain_value_changed;
 	}
 
 	bool TerrainValueModification::do_merge(Modification* modification)
@@ -53,10 +49,8 @@ namespace eternal_lands
 		Uint32 size;
 		bool found;
 
-		terrain_value_modification = dynamic_cast<
+		terrain_value_modification = boost::polymorphic_downcast<
 			TerrainValueModification*>(modification);
-
-		assert(terrain_value_modification != 0);
 
 		size = m_terrain_values.size();
 		begin = m_terrain_values.begin();

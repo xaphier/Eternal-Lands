@@ -45,4 +45,15 @@ namespace eternal_lands
 		}
 	}
 
+	bool UndoStack::add_needed(const Uint32 edit_id, const Uint32 id,
+		const ModificationType type)
+	{
+		if (m_buffer.size() == 0)
+		{
+			return true;
+		}
+
+		return m_buffer.begin()->add_needed(edit_id, id, type);
+	}
+
 }

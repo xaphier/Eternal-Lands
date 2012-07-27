@@ -27,6 +27,8 @@ namespace eternal_lands
 			UndoStack(const Uint32 size);
 			void add(ModificationAutoPtr &ptr);
 			bool undo(EditorMapData &editor);
+			bool add_needed(const Uint32 edit_id, const Uint32 id,
+				const ModificationType type);
 
 			inline void clear()
 			{

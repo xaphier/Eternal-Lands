@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>fileopen.png</file>
+    <file>filesave.png</file>
     <file>editclear.png</file>
     <file>rgb.png</file>
     <file>rgba.png</file>

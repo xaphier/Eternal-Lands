@@ -27,9 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #define QNODESEDITOR_H
 
 #include <QObject>
+#include "qneport.hpp"
 
 class QGraphicsScene;
-class QNEConnection;
+class Connection;
 class QGraphicsItem;
 class QPointF;
 class QNEBlock;
@@ -40,17 +41,19 @@ class QNodesEditor : public QObject
 public:
 	explicit QNodesEditor(QObject *parent = 0);
 	virtual ~QNodesEditor();
-
 	void install(QGraphicsScene *scene);
-
 	bool eventFilter(QObject *, QEvent *);
+	void fill_ports_map(std::map<el::EffectNodePortPtr, QNEPort*> &ports);
+	void update_connections();
+	void update_tool_tips();
 
 private:
-	QGraphicsItem *itemAt(const QPointF&);
+	QGraphicsItem *get_item_at(const QPointF&);
+	QGraphicsItem *get_item_at(const QPointF&, const int type);
 
 private:
 	QGraphicsScene *scene;
-	QNEConnection *conn;
+	Connection *conn;
 	// QNEBlock *selBlock;
 };
 

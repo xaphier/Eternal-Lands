@@ -8,21 +8,29 @@
 #include "effecttexture.hpp"
 #include "effectnodeport.hpp"
 #include "../shader/commonparameterutil.hpp"
+#include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
 
+	EffectTexture::EffectTexture(): m_sampler(est_sampler_2d),
+		m_texture(ett_default), m_texture_unit(0)
+	{
+	}
+
 	EffectTexture::EffectTexture(const String &name, const Uint32 id,
 		const EffectSamplerType sampler,
-		const EffectTextureType texture, const Uint16 texture_unit):
-		EffectNode(name, id), m_sampler(sampler), m_texture(texture),
-		m_texture_unit(texture_unit)
+		const EffectTextureType texture, const Uint16 texture_unit,
+		Mt19937RandomUuidGenerator &uuid_generator):
+		EffectNode(name, id, uuid_generator()), m_sampler(sampler),
+		m_texture(texture), m_texture_unit(texture_unit)
 	{
 		Uint32 index;
 
 		index = 0;
 
-		BOOST_FOREACH(String &var, m_vars)
+		BOOST_FOREACH(String &var, m_var_names)
 		{
 			var = get_var_name(index);
 			index++;
@@ -31,38 +39,49 @@ namespace eternal_lands
 		switch (get_texture())
 		{
 			case ett_default:
-				add_output_port(m_vars[0], String(UTF8("r")),
+				add_output_port(m_var_names[0],
+					String(UTF8("r")), uuid_generator(),
 					ect_fragment);
-				add_output_port(m_vars[0], String(UTF8("g")),
+				add_output_port(m_var_names[0],
+					String(UTF8("g")), uuid_generator(),
 					ect_fragment);
-				add_output_port(m_vars[0], String(UTF8("b")),
+				add_output_port(m_var_names[0],
+					String(UTF8("b")), uuid_generator(),
 					ect_fragment);
-				add_output_port(m_vars[0], String(UTF8("a")),
+				add_output_port(m_var_names[0],
+					String(UTF8("a")), uuid_generator(),
 					ect_fragment);
 				break;
 			case ett_albedo:
-				add_output_port(m_vars[0], String(UTF8("rgba")),
+				add_output_port(m_var_names[0],
+					String(UTF8("rgba")), uuid_generator(),
 					ect_fragment);
-				add_output_port(m_vars[0], String(UTF8("rgb")),
+				add_output_port(m_var_names[0],
+					String(UTF8("rgb")), uuid_generator(),
 					ect_fragment);
-				add_output_port(m_vars[0], String(UTF8("a")),
+				add_output_port(m_var_names[0],
+					String(UTF8("a")), uuid_generator(),
 					ect_fragment);
 				break;
 			case ett_normal:
-				add_output_port(m_vars[1], String(UTF8("xyz")),
+				add_output_port(m_var_names[1],
+					String(UTF8("xyz")), uuid_generator(),
 					ect_fragment);
 				break;
 			case ett_parallax:
 				add_input_port(String(UTF8("parallax")),
-					String(UTF8("?")), ect_fragment);
-				add_output_port(m_vars[0], String(UTF8("uv")),
+					String(UTF8("?")), uuid_generator(),
 					ect_fragment);
-				add_output_port(m_vars[1],
+				add_output_port(m_var_names[0],
+					String(UTF8("uv")), uuid_generator(),
+					ect_fragment);
+				add_output_port(m_var_names[1],
 					String(UTF8("normal")),
-					String(UTF8("xyz")), ect_fragment);
-				add_output_port(m_vars[2],
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
+				add_output_port(m_var_names[2],
 					String(UTF8("extra")),
-					String(UTF8("?")),
+					String(UTF8("a")), uuid_generator(),
 					ect_fragment);
 				break;
 		}
@@ -70,105 +89,133 @@ namespace eternal_lands
 		switch (get_sampler())
 		{
 			case est_sampler_1d:
-				add_input_port(String(UTF8("u")), ect_fragment);
+				add_input_port(String(UTF8("u")),
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("x")), ect_fragment);
+					String(UTF8("x")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("x")), ect_fragment);
+					String(UTF8("x")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_2d:
 				add_input_port(String(UTF8("uv")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_3d:
 				add_input_port(String(UTF8("xyz")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_cube_map:
 				add_input_port(String(UTF8("xyz")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_1d_array:
 				add_input_port(String(UTF8("u")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("layer"),
-					String(UTF8("?")), ect_fragment);
+					String(UTF8("?")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("x")), ect_fragment);
+					String(UTF8("x")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("x")), ect_fragment);
+					String(UTF8("x")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_2d_array:
 				add_input_port(String(UTF8("uv")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("layer"),
-					String(UTF8("?")), ect_fragment);
+					String(UTF8("?")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_cube_map_array:
 				add_input_port(String(UTF8("xyz")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("layer"),
-					String(UTF8("?")), ect_fragment);
+					String(UTF8("?")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_rectangle:
 				add_input_port(String(UTF8("uv")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_1d_project:
 				add_input_port(String(UTF8("xyzw")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("x")), ect_fragment);
+					String(UTF8("x")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("x")), ect_fragment);
+					String(UTF8("x")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_2d_project:
 				add_input_port(String(UTF8("xyzw")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_3d_project:
 				add_input_port(String(UTF8("xyzw")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				break;
 			case est_sampler_rectangle_project:
 				add_input_port(String(UTF8("xyzw")),
-					ect_fragment);
+					uuid_generator(), ect_fragment);
 				add_input_port(String("dPdx"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				add_input_port(String("dPdy"),
-					String(UTF8("xy")), ect_fragment);
+					String(UTF8("xy")), uuid_generator(),
+					ect_fragment);
 				break;
 		}
 	}
@@ -196,25 +243,25 @@ namespace eternal_lands
 			"vec2 %1% = %3%.xy * 2.0 - 1.0;\n"
 			"vec3 %2% = vec3(%1%, sqrt(1.0 - dot(%1%, %1%)));"));
 		BoostFormat parallax_format(UTF8(
-			"vec4 %9%;\n"
-			"vec3 %8%, %10%;\n"
+			"vec4 %3%;\n"
+			"vec3 %9%, %10%;\n"
 			"float %11%, %12%;\n"
 			"int %13%;\n"
 			"\n"
-			"%10% = %6%.xyz * %5%;\n"
-			"%8% = vec3(%4%, 0.0);\n"
+			"%10% = %7%.xyz * %6%;\n"
+			"%9% = vec3(%5%, 0.0);\n"
 			"\n"
 			"for (%13% = 0; %13% < 3; %13%++)\n"
 			"{\n"
-			"\t%9% = %3%;\n"
-			"\t%9%.xy = %9%.xy * 2.0 - 1.0;\n"
-			"\t%12% = sqrt(1.0 - dot(%9%.xy, %9%.xy));\n"
-			"\t%11% = %9%.a * %7% - %7% * 0.5;\n"
-			"\t%8% += (%11% - %8%.z) * %12% * %10%;\n"
+			"\t%3% = %4%;\n"
+			"\t%3%.xy = %3%.xy * 2.0 - 1.0;\n"
+			"\t%12% = sqrt(1.0 - dot(%3%.xy, %3%.xy));\n"
+			"\t%11% = %3%.b * %8% - %8% * 0.5;\n"
+			"\t%9% += (%11% - %9%.z) * %12% * %10%;\n"
 			"}\n"
 			"\n"
-			"%1% = %8%.xy;\n"
-			"%2% = %5% * vec3(%9%.xy, %12%);\n"));
+			"%1% = %9%.xy;\n"
+			"%2% = %6% * vec3(%3%.xy, %12%);\n"));
 		StringStream str;
 		Uint16StringMap::const_iterator found;
 		String world_uv, uv, scale, dPdx, dPdy, layer;
@@ -308,7 +355,7 @@ namespace eternal_lands
 
 		if (get_texture() == ett_parallax)
 		{
-			uv = m_vars[2];
+			uv = m_var_names[3];
 		}
 
 		use_grad = (version > svt_120) && !dPdx.get().empty() &&
@@ -582,25 +629,24 @@ namespace eternal_lands
 		{
 			case ett_default:
 			case ett_albedo:
-				fragment_str << UTF8("vec4 ") << m_vars[0];
+				fragment_str << UTF8("vec4 ") << m_var_names[0];
 				fragment_str << UTF8(" = ") << str.str();
 				fragment_str << UTF8(";\n");
 				break;
 			case ett_normal:
-				normal_format % m_vars[0] % m_vars[1];
+				normal_format % m_var_names[0] % m_var_names[1];
 				normal_format % str.str();
 
 				fragment_str << normal_format.str();
 				break;
 			case ett_parallax:
-				parallax_format % m_vars[0] % m_vars[1];
-				parallax_format % str.str();
+				parallax_format % m_var_names[0] % m_var_names[1];
+				parallax_format % m_var_names[2] % str.str();
 				parallax_format % world_uv % cpt_tbn_matrix;
 				parallax_format % cpt_world_view_direction;
 				parallax_format % scale % uv;
-				parallax_format % m_vars[3] % m_vars[4];
-				parallax_format % m_vars[5] % m_vars[6];
-				parallax_format % m_vars[7];
+				parallax_format % m_var_names[4] % m_var_names[5];
+				parallax_format % m_var_names[6] % m_var_names[7];
 				fragment_str << parallax_format.str();
 				break;
 		}
@@ -610,6 +656,117 @@ namespace eternal_lands
 	String EffectTexture::get_description() const
 	{
 		return EffectTextureUtil::get_description(get_texture());
+	}
+
+	void EffectTexture::save_xml(const XmlWriterSharedPtr &writer)
+	{
+		writer->start_element(UTF8("effect_function"));
+
+		EffectNode::save_xml(writer);
+
+		writer->write_element(UTF8("var_name_0"), m_var_names[0]);
+		writer->write_element(UTF8("var_name_1"), m_var_names[1]);
+		writer->write_element(UTF8("var_name_2"), m_var_names[2]);
+		writer->write_element(UTF8("var_name_3"), m_var_names[3]);
+		writer->write_element(UTF8("var_name_4"), m_var_names[4]);
+		writer->write_element(UTF8("var_name_5"), m_var_names[5]);
+		writer->write_element(UTF8("var_name_6"), m_var_names[6]);
+		writer->write_element(UTF8("var_name_7"), m_var_names[7]);
+		writer->write_element(UTF8("sampler"),
+			EffectSamplerUtil::get_str(get_sampler()));
+		writer->write_element(UTF8("texture"),
+			EffectTextureUtil::get_str(get_texture()));
+		writer->write_int_element(UTF8("texture_unit"),
+			get_texture_unit());
+
+		writer->end_element();
+	}
+
+	void EffectTexture::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_function"))
+			!= 0)
+		{
+			return;
+		}
+
+		EffectNode::load_xml(node);
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_0"))
+				== 0)
+			{
+				m_var_names[0] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_1"))
+				== 0)
+			{
+				m_var_names[1] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_2"))
+				== 0)
+			{
+				m_var_names[2] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_3"))
+				== 0)
+			{
+				m_var_names[3] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_4"))
+				== 0)
+			{
+				m_var_names[4] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_5"))
+				== 0)
+			{
+				m_var_names[5] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_6"))
+				== 0)
+			{
+				m_var_names[6] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name_7"))
+				== 0)
+			{
+				m_var_names[7] = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("sampler")) == 0)
+			{
+				m_sampler =
+					EffectSamplerUtil::get_effect_sampler(
+						XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("texture")) == 0)
+			{
+				m_texture =
+					EffectTextureUtil::get_effect_texture(
+						XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("texture_unit"))
+				== 0)
+			{
+				m_texture_unit = XmlUtil::get_uint32_value(it);
+			}
+		}
+		while (XmlUtil::next(it, true));
 	}
 
 }

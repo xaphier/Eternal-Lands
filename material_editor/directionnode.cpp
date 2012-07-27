@@ -1,31 +1,17 @@
 #include "directionnode.hpp"
 #include "qneport.hpp"
 
-DirectionNode::DirectionNode(el::EffectConstant* effect_constant,
-	QString name, QGraphicsItem* parent, QGraphicsScene* scene):
-	QNEBlock(parent, scene), m_effect_constant(effect_constant)
+DirectionNode::DirectionNode(const el::EffectNodesSharedPtr &effect_nodes,
+	el::EffectConstant* effect_constant, QString name,
+	QGraphicsItem* parent, QGraphicsScene* scene):
+	BasicNode(effect_nodes, effect_constant, name, parent, scene),
+	m_effect_constant(effect_constant)
 {
-	addPort(name, 0, QNEPort::NamePort);
-
 	m_direction = addPort("", 0, QNEPort::ImagePort);
 
-	BOOST_FOREACH(el::EffectNodePort &port, effect_constant->get_ports())
-	{
-		if (port.get_input())
-		{
-			addInputPort(&port, QString::fromUtf8(
-				port.get_description().get().c_str()));
-		}
-		else
-		{
-			addOutputPort(&port, QString::fromUtf8(
-				port.get_description().get().c_str()));
-		}
-	}
+	init_ports();
 
 	m_dialog = new DirectionDialog(0);
-
-	select_direction();
 }
 
 DirectionNode::~DirectionNode()

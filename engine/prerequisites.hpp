@@ -348,6 +348,8 @@ namespace eternal_lands
 	typedef std::map<String, String> StringStringMap;
 	typedef std::map<String, BitSet16> StringBitSet16Map;
 	typedef std::map<Uint16, String> Uint16StringMap;
+	typedef std::map<boost::uuids::uuid, EffectNodePortPtr>
+		UuidEffectNodePortPtrMap;
 	typedef boost::multi_array<bool, 2> BoolMultiArray2;
 	typedef boost::multi_array<float, 2> FloatMultiArray2;
 	typedef boost::multi_array<Uint8, 2> Uint8MultiArray2;

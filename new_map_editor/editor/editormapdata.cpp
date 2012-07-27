@@ -21,6 +21,7 @@
 #include "shader/shaderbuildutil.hpp"
 #include "effectcache.hpp"
 #include "abstractterrainmanager.hpp"
+#include "writer.hpp"
 
 namespace eternal_lands
 {
@@ -572,6 +573,62 @@ namespace eternal_lands
 	void EditorMapData::set_depth_selection(const glm::uvec2 &position)
 	{
 		m_scene->set_depth_selection(position);
+	}
+
+	void EditorMapData::save(const String &writer) const
+	{
+	}
+
+	void EditorMapData::save(const WriterSharedPtr &writer) const
+	{
+		writer->write_s8('e');
+		writer->write_s8('l');
+		writer->write_s8('m');
+		writer->write_s8('f');
+
+		writer->write_u32_le(0);	// tile map size x
+		writer->write_u32_le(0);	// tile map size y
+		writer->write_u32_le(0);	// tile map offset
+		writer->write_u32_le(0);	// height map offset
+
+//		writer->write_u32_le(get_3d_object_size());
+		writer->write_u32_le(0);	// tile map offset
+		writer->write_u32_le(0);	// height map offset
+
+//		writer->write_u32_le(get_2d_object_size());
+		writer->write_u32_le(0);	// tile map offset
+		writer->write_u32_le(0);	// height map offset
+
+//		writer->write_u32_le(get_light_size());
+		writer->write_u32_le(m_lights.size());	// tile map offset
+		writer->write_u32_le(0);	// height map offset
+
+		writer->write_u8(0);		// dungeon
+		writer->write_u8(0);		// res_2
+		writer->write_u8(1);		// version_major
+		writer->write_u8(0);		// version_minor
+
+		writer->write_float_le(0.0f);	// ambient_r
+		writer->write_float_le(0.0f);	// ambient_g
+		writer->write_float_le(0.0f);	// ambient_b
+
+//		writer->write_u32_le(get_particle_size());
+		writer->write_u32_le(m_particles.size());
+		writer->write_u32_le(0);	// particles offset
+
+		writer->write_u32_le(0);	// clusters_offset
+
+		writer->write_u32_le(0);	// terrain_offset
+
+		writer->write_u32_le(0);	// material_name_size
+		writer->write_u32_le(0);	// material_name_count
+		writer->write_u32_le(0);	// material_name_offset
+
+		writer->write_u32_le(0);	// reserved_13
+		writer->write_u32_le(0);	// reserved_14
+		writer->write_u32_le(0);	// reserved_15
+		writer->write_u32_le(0);	// reserved_16
+		writer->write_u32_le(0);	// reserved_17
 	}
 
 }

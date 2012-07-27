@@ -13,8 +13,8 @@ namespace eternal_lands
 
 	TerrainMapModification::TerrainMapModification(const String &map,
 		const Uint16 index, const ModificationType type,
-		const Uint32 edit_id): Modification(edit_id), m_map(map),
-		m_index(index), m_type(type)
+		const Uint32 edit_id): Modification(edit_id, index, type),
+		m_map(map)
 	{
 	}
 
@@ -22,22 +22,9 @@ namespace eternal_lands
 	{
 	}
 
-	ModificationType TerrainMapModification::get_type() const
-	{
-		return m_type;
-	}
-
 	bool TerrainMapModification::do_merge(Modification* modification)
 	{
-		TerrainMapModification* terrain_map_modification;
-
-		terrain_map_modification = 
-			dynamic_cast<TerrainMapModification*>(
-				modification);
-
-		assert(terrain_map_modification != 0);
-
-		return m_index == terrain_map_modification->m_index;
+		return true;
 	}
 
 	bool TerrainMapModification::undo(EditorMapData &editor)
@@ -60,9 +47,9 @@ namespace eternal_lands
 			case mt_object_materials_changed:
 				break;
 			case mt_terrain_albedo_map_changed:
-				editor.set_terrain_albedo_map(m_map, m_index);
+				editor.set_terrain_albedo_map(m_map, get_id());
 			case mt_terrain_blend_map_changed:
-				editor.set_terrain_blend_map(m_map, m_index);
+				editor.set_terrain_blend_map(m_map, get_id());
 				break;
 			case mt_terrain_vector_map_changed:
 				editor.set_terrain_vector_map(m_map);

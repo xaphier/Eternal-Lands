@@ -13,7 +13,7 @@ namespace eternal_lands
 
 	LightModification::LightModification(const LightData &data,
 		const ModificationType type, const Uint32 edit_id):
-		Modification(edit_id), m_data(data), m_type(type)
+		Modification(edit_id, data.get_id(), type), m_data(data)
 	{
 	}
 
@@ -21,17 +21,9 @@ namespace eternal_lands
 	{
 	}
 
-	ModificationType LightModification::get_type() const
-	{
-		return m_type;
-	}
-
 	bool LightModification::do_merge(Modification* modification)
 	{
-		assert(dynamic_cast<LightModification*>(modification) != 0);
-
-		return m_data.get_id() == dynamic_cast<LightModification*>(
-			modification)->m_data.get_id();
+		return true;
 	}
 
 	bool LightModification::undo(EditorMapData &editor)

@@ -21,8 +21,6 @@ namespace eternal_lands
 	{
 		private:
 			const String m_map;
-			const Uint16 m_index;
-			const ModificationType m_type;
 
 			virtual bool do_merge(Modification* modification);
 
@@ -32,7 +30,6 @@ namespace eternal_lands
 				const ModificationType type,
 				const Uint32 edit_id);
 			virtual ~TerrainMapModification() throw();
-			virtual ModificationType get_type() const;
 			virtual bool undo(EditorMapData &editor);
 
 	};

@@ -22,7 +22,6 @@ namespace eternal_lands
 	{
 		private:
 			EditorObjectDescription m_object_description;
-			const ModificationType m_type;
 
 			virtual bool do_merge(Modification* modification);
 
@@ -33,7 +32,6 @@ namespace eternal_lands
 				const ModificationType type,
 				const Uint32 edit_id);
 			virtual ~ObjectModification() throw();
-			virtual ModificationType get_type() const;
 			virtual bool undo(EditorMapData &editor);
 
 	};

@@ -1,13 +1,12 @@
 #include "valuesnode.hpp"
 #include "qneport.hpp"
 
-ValuesNode::ValuesNode(el::EffectConstant* effect_constant,
-	QString name, const int count, QGraphicsItem* parent,
-	QGraphicsScene* scene): QNEBlock(parent, scene),
+ValuesNode::ValuesNode(const el::EffectNodesSharedPtr &effect_nodes,
+	el::EffectConstant* effect_constant, QString name, const int count,
+	QGraphicsItem* parent, QGraphicsScene* scene):
+	BasicNode(effect_nodes, effect_constant, name, parent, scene),
 	m_effect_constant(effect_constant), m_count(count)
 {
-	addPort(name, 0, QNEPort::NamePort);
-
 	m_value_1 = addPort("0", 0, QNEPort::TypePort);
 
 	if (m_count > 1)
@@ -25,24 +24,30 @@ ValuesNode::ValuesNode(el::EffectConstant* effect_constant,
 		m_value_4 = addPort("0", 0, QNEPort::TypePort);
 	}
 
-	BOOST_FOREACH(el::EffectNodePort &port, effect_constant->get_ports())
-	{
-		if (port.get_input())
-		{
-			addInputPort(&port, QString::fromUtf8(
-				port.get_description().get().c_str()));
-		}
-		else
-		{
-			addOutputPort(&port, QString::fromUtf8(
-				port.get_description().get().c_str()));
-		}
-	}
+	init_ports();
 
 	m_dialog = new ValuesDialog(0);
 	m_dialog->set_value_count(count);
 
-	select_values();
+	m_value_1->setName(QString::number(m_effect_constant->get_value().x));
+
+	if (m_count > 1)
+	{
+		m_value_2->setName(QString::number(
+			m_effect_constant->get_value().y));
+	}
+
+	if (m_count > 2)
+	{
+		m_value_3->setName(QString::number(
+			m_effect_constant->get_value().z));
+	}
+
+	if (m_count > 3)
+	{
+		m_value_4->setName(QString::number(
+			m_effect_constant->get_value().z));
+	}
 }
 
 ValuesNode::~ValuesNode()

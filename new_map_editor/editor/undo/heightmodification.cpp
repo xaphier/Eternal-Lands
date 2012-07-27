@@ -24,17 +24,13 @@ namespace eternal_lands
 	};
 
 	HeightModification::HeightModification(const HeightVector &heights,
-		const Uint32 edit_id): Modification(edit_id), m_heights(heights)
+		const Uint32 edit_id):
+		Modification(edit_id, 0, mt_height_changed), m_heights(heights)
 	{
 	}
 
 	HeightModification::~HeightModification() throw()
 	{
-	}
-
-	ModificationType HeightModification::get_type() const
-	{
-		return mt_height_changed;
 	}
 
 	bool HeightModification::do_merge(Modification* modification)
@@ -44,10 +40,8 @@ namespace eternal_lands
 		Uint32 size;
 		bool found;
 
-		height_modification = dynamic_cast<HeightModification*>(
-			modification);
-
-		assert(height_modification != 0);
+		height_modification = boost::polymorphic_downcast<
+			HeightModification*>(modification);
 
 		size = m_heights.size();
 		begin = m_heights.begin();

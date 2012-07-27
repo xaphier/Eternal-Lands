@@ -1,13 +1,13 @@
 #ifndef	UUID_01513aaa_47e5_4448_80aa_cec72226f173
 #define	UUID_01513aaa_47e5_4448_80aa_cec72226f173
 
-#include "node.hpp"
+#include "basicnode.hpp"
 #include "../engine/node/effectconstant.hpp"
 #include "valuesdialog.hpp"
 
 namespace el = eternal_lands;
 
-class ValuesNode: public QNEBlock
+class ValuesNode: public BasicNode
 {
 	private:
 		el::EffectConstant* m_effect_constant;
@@ -23,9 +23,10 @@ class ValuesNode: public QNEBlock
 			QGraphicsSceneMouseEvent * event);
 
 	public:
-		ValuesNode(el::EffectConstant* effect_constant,
-			QString name, const int count,
-			QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+		ValuesNode(const el::EffectNodesSharedPtr &effect_nodes,
+			el::EffectConstant* effect_constant, QString name,
+			const int count, QGraphicsItem *parent = 0,
+			QGraphicsScene *scene = 0);
 		virtual ~ValuesNode();
 		void select_values();
 

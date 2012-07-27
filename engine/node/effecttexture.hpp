@@ -27,19 +27,26 @@ namespace eternal_lands
 
 	class EffectTexture: public EffectNode
 	{
+		friend class EffectNodes;
 		private:
-			StringArray8 m_vars;
+			StringArray8 m_var_names;
 			EffectSamplerType m_sampler;
 			EffectTextureType m_texture;
 			Uint16 m_texture_unit;
 
+			EffectTexture();
 			virtual Uint16 get_initial_value_count() const;
+
+		protected:
+			virtual void save_xml(const XmlWriterSharedPtr &writer);
+			virtual void load_xml(const xmlNodePtr node);
 
 		public:
 			EffectTexture(const String &name, const Uint32 id,
 				const EffectSamplerType sampler,
 				const EffectTextureType texture,
-				const Uint16 texture_unit);
+				const Uint16 texture_unit,
+				Mt19937RandomUuidGenerator &uuid_generator);
 			virtual ~EffectTexture() noexcept;
 			virtual void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,

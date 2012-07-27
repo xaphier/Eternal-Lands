@@ -19,7 +19,8 @@
      <widget class="QGraphicsView" name="graphicsView">
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <family>OpenSymbol</family>
+        <pointsize>10</pointsize>
        </font>
       </property>
      </widget>
@@ -175,6 +176,37 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_load"/>
+   <addaction name="action_save"/>
+  </widget>
+  <action name="action_save">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/filesave.png</normaloff>:/icons/filesave.png</iconset>
+   </property>
+   <property name="text">
+    <string>save</string>
+   </property>
+  </action>
+  <action name="action_load">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/fileopen.png</normaloff>:/icons/fileopen.png</iconset>
+   </property>
+   <property name="text">
+    <string>load</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="icons.qrc"/>

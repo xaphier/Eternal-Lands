@@ -79,8 +79,6 @@ namespace eternal_lands
 				const Uint32 offset);
 			void read_particle(const Uint32 index,
 				const Uint32 offset);
-			void read_terrain(const Uint32 index,
-				const Uint32 offset);
 			void read_material_name(const Uint32 index,
 				const Uint32 offset);
 
@@ -96,9 +94,7 @@ namespace eternal_lands
 			void read_particles(const Uint32 particle_size,
 				const Uint32 particle_count,
 				const Uint32 particle_offset);
-			void read_terrains(const Uint32 terrain_size,
-				const Uint32 terrain_count,
-				const Uint32 terrain_offset);
+			void read_terrain(const Uint32 terrain_offset);
 			void read_material_names(
 				const Uint32 material_name_size,
 				const Uint32 material_name_count,

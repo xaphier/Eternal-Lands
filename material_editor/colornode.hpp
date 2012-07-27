@@ -1,12 +1,12 @@
 #ifndef	UUID_51f6e890_c51d_4062_98d2_bf875138e572
 #define	UUID_51f6e890_c51d_4062_98d2_bf875138e572
 
-#include "node.hpp"
+#include "basicnode.hpp"
 #include "../engine/node/effectconstant.hpp"
 
 namespace el = eternal_lands;
 
-class ColorNode: public QNEBlock
+class ColorNode: public BasicNode
 {
 	private:
 		el::EffectConstant* m_effect_constant;
@@ -17,9 +17,9 @@ class ColorNode: public QNEBlock
 			QGraphicsSceneMouseEvent * event);
 
 	public:
-		ColorNode(el::EffectConstant* effect_constant,
-			QString name, QGraphicsItem *parent = 0,
-			QGraphicsScene *scene = 0);
+		ColorNode(const el::EffectNodesSharedPtr &effect_nodes,
+			el::EffectConstant* effect_constant, QString name,
+			QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
 		virtual ~ColorNode();
 		void select_color();
 

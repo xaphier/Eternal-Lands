@@ -29,7 +29,6 @@ namespace eternal_lands
 			GroundTileModification(const glm::uvec2 &offset,
 				const Uint16 material, const Uint32 edit_id);
 			virtual ~GroundTileModification() throw();
-			virtual ModificationType get_type() const;
 			virtual bool undo(EditorMapData &editor);
 
 	};

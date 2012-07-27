@@ -10,14 +10,18 @@
 #include "directionnode.hpp"
 #include "valuesnode.hpp"
 #include "../engine/node/effectnodes.hpp"
+#include "../engine/node/effectnode.hpp"
+#include "../engine/node/effectnodeport.hpp"
 #include "../engine/node/effectconstant.hpp"
 #include "../engine/node/effectfunction.hpp"
 #include "../engine/node/effectparameter.hpp"
 #include "../engine/node/effecttexture.hpp"
 #include "../engine/node/effectoutput.hpp"
-#include "../engine/node/effecttexture.hpp"
 #include "../engine/shader/samplerparameterutil.hpp"
 #include "../engine/texturetargetutil.hpp"
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <fstream>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
@@ -80,9 +84,119 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 		SLOT(texture_unit_changed(int)));
 
 	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+
+	QObject::connect(action_save, SIGNAL(triggered()), this, SLOT(save()));
+	QObject::connect(action_load, SIGNAL(triggered()), this, SLOT(load()));
 }
 
 MainWindow::~MainWindow()
+{
+}
+
+void MainWindow::save()
+{
+/*
+	std::ofstream ofs("/home/daniel/filename.txt");
+	boost::archive::text_oarchive oa(ofs);
+	// read class state from archive
+	oa << boost::serialization::make_nvp("effect_nodes", m_effect_nodes);
+*/
+	m_effect_nodes->save_xml(el::String("/home/daniel/filename.xml"));
+}
+
+void MainWindow::save_as()
+{
+}
+
+void MainWindow::load()
+{
+	std::map<el::EffectNodePortPtr, QNEPort*> ports;
+	std::vector<BasicNode*> basic_nodes;
+	BasicNode* new_node;
+	el::EffectNodePtr node;
+	el::EffectConstant* constant_node;
+	Uint32 i, count;
+/*
+	std::ifstream ifs("/home/daniel/filename.txt");
+	boost::archive::text_iarchive ia(ifs);
+	// read class state from archive
+	ia >> boost::serialization::make_nvp("effect_nodes", m_effect_nodes);
+*/
+	m_effect_nodes->load_xml(el::String("/home/daniel/filename.xml"));
+
+	count = m_effect_nodes->get_node_count();
+
+	for (i = 0; i < count; ++i)
+	{
+		node = m_effect_nodes->get_node(i);
+
+		constant_node = dynamic_cast<el::EffectConstant*>(node);
+
+		if (constant_node != 0)
+		{
+			switch (constant_node->get_type())
+			{
+				case el::ect_color_rgb: 
+					new_node = new ColorNode(m_effect_nodes,
+						constant_node, "Color", 0,
+						graphicsView->scene());
+					break;
+				case el::ect_direction_xy: 
+					new_node = new DirectionNode(
+						m_effect_nodes, constant_node,
+						"Direction", 0,
+						graphicsView->scene());
+					break;
+				case el::ect_float: 
+					new_node = new ValuesNode(
+						m_effect_nodes, constant_node,
+						"Constant", 1, 0,
+						graphicsView->scene());
+					break;
+				case el::ect_vec2: 
+					new_node = new ValuesNode(
+						m_effect_nodes, constant_node,
+						"Constant", 2, 0,
+						graphicsView->scene());
+					break;
+				case el::ect_vec3: 
+					new_node = new ValuesNode(
+						m_effect_nodes, constant_node,
+						"Constant", 3, 0,
+						graphicsView->scene());
+					break;
+				case el::ect_vec4: 
+					new_node = new ValuesNode(
+						m_effect_nodes, constant_node,
+						"Constant", 4, 0,
+						graphicsView->scene());
+					break;
+			}
+
+			basic_nodes.push_back(new_node);
+
+			continue;
+		}
+
+		new_node = new Node(m_effect_nodes, node,
+			node->get_name().get().c_str(), 0,
+			graphicsView->scene());
+
+		basic_nodes.push_back(new_node);
+	}
+
+	m_nodes_editor->fill_ports_map(ports);
+
+	BOOST_FOREACH(BasicNode* basic_node, basic_nodes)
+	{
+		basic_node->rebuild_connections(ports);
+	}
+
+	m_nodes_editor->update_connections();
+	m_nodes_editor->update_tool_tips();
+}
+
+void MainWindow::new_data()
 {
 }
 
@@ -115,7 +229,8 @@ void MainWindow::add_color()
 	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_color(
 		el::String("Color")));
 
-	node = new ColorNode(ptr, "Color", 0, graphicsView->scene());
+	node = new ColorNode(m_effect_nodes, ptr, "Color", 0,
+		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -128,7 +243,8 @@ void MainWindow::add_direction()
 	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_direction(
 		el::String("Direction")));
 
-	node = new DirectionNode(ptr, "Direction", 0, graphicsView->scene());
+	node = new DirectionNode(m_effect_nodes, ptr, "Direction", 0,
+		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -151,7 +267,8 @@ void MainWindow::add_constant()
 	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_constant(
 		el::String("Constant"), count));
 
-	node = new ValuesNode(ptr, "Constant", count, 0, graphicsView->scene());
+	node = new ValuesNode(m_effect_nodes, ptr, "Constant", count, 0,
+		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -191,7 +308,8 @@ void MainWindow::add_function()
 
 	ptr = m_effect_nodes->add_function(function, type);
 
-	node = new Node(ptr, "Function", 0, graphicsView->scene());
+	node = new Node(m_effect_nodes, ptr, "Function", 0,
+		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -232,7 +350,8 @@ void MainWindow::add_parameter()
 
 	ptr = m_effect_nodes->add_parameter(parameter, type);
 
-	node = new Node(ptr, "Parameter", 0, graphicsView->scene());
+	node = new Node(m_effect_nodes, ptr, "Parameter", 0,
+		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -342,7 +461,8 @@ void MainWindow::add_texture()
 	ptr = m_effect_nodes->add_texture(name, sampler, texture,
 		texture_unit);
 
-	node = new Node(ptr, "Texture", 0, graphicsView->scene());
+	node = new Node(m_effect_nodes, ptr, "Texture", 0,
+		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }
@@ -354,7 +474,8 @@ void MainWindow::add_output()
 
 	ptr = m_effect_nodes->add_output(el::String("Output"));
 
-	node = new Node(ptr, "Output", 0, graphicsView->scene());
+	node = new Node(m_effect_nodes, ptr, "Output", 0,
+		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 }

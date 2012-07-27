@@ -10,13 +10,20 @@
 #include "shader/autoparameterutil.hpp"
 #include "shader/commonparameterutil.hpp"
 #include "shader/shadersourceparameterbuilder.hpp"
+#include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
 
+	EffectParameter::EffectParameter(): m_type(ept_position)
+	{
+	}
+
 	EffectParameter::EffectParameter(const String &name, const Uint32 id,
-		const EffectParameterType type): EffectNode(name, id),
-		m_type(type)
+		const EffectParameterType type,
+		Mt19937RandomUuidGenerator &uuid_generator):
+		EffectNode(name, id, uuid_generator()), m_type(type)
 	{
 		switch (get_type())
 		{
@@ -24,49 +31,59 @@ namespace eternal_lands
 				add_output_port(CommonParameterUtil::get_str(
 					cpt_world_position),
 					String(UTF8("position")),
-					String(UTF8("xyz")), ect_vertex);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_vertex);
 				break;
 			case ept_normal:
 				add_output_port(CommonParameterUtil::get_str(
 					cpt_world_normal),
 					String(UTF8("normal")),
-					String(UTF8("xyz")), ect_vertex);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_vertex);
 				break;
 			case ept_tangent:
 				add_output_port(CommonParameterUtil::get_str(
 					cpt_world_tangent),
 					String(UTF8("tangent")),
-					String(UTF8("xyz")), ect_vertex);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_vertex);
 				break;
 			case ept_view_direction:
 				add_output_port(CommonParameterUtil::get_str(
 					cpt_world_view_direction),
 					String(UTF8("view direction")),
-					String(UTF8("xyz")), ect_fragment);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
 				break;
 			case ept_uv:
 				add_output_port(CommonParameterUtil::get_str(
 					cpt_world_uv),
 					String(UTF8("texture coordinate")),
-					String(UTF8("uv")), ect_vertex);
+					String(UTF8("uv")), uuid_generator(),
+					ect_vertex);
 				break;
 			case ept_fragment_coordinate:
 				add_output_port(String(UTF8("gl_FragCoord")),
-					String(UTF8("uv")), ect_fragment);
+					String(UTF8("uv")), uuid_generator(),
+					ect_fragment);
 				add_output_port(String(UTF8("gl_FragCoord")),
-					String(UTF8("z")), ect_fragment);
+					String(UTF8("z")), uuid_generator(),
+					ect_fragment);
 				add_output_port(String(UTF8("gl_FragCoord")),
-					String(UTF8("w")), ect_fragment);
+					String(UTF8("w")), uuid_generator(),
+					ect_fragment);
 				break;
 			case ept_time:
 				add_output_port(AutoParameterUtil::get_str(
 					apt_time), String(UTF8("time")),
-					String(UTF8("?")), ect_constant);
+					String(UTF8("?")), uuid_generator(),
+					ect_constant);
 				break;
 			case ept_camera:
 				add_output_port(AutoParameterUtil::get_str(
 					apt_camera), String(UTF8("camera")),
-					String(UTF8("xyz")), ect_constant);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_constant);
 				break;
 		}
 	}
@@ -202,6 +219,44 @@ namespace eternal_lands
 		}
 
 		return String();
+	}
+
+	void EffectParameter::save_xml(const XmlWriterSharedPtr &writer)
+	{
+		writer->start_element(UTF8("effect_parameter"));
+
+		EffectNode::save_xml(writer);
+
+		writer->write_element(UTF8("type"),
+			EffectParameterUtil::get_str(get_type()));
+
+		writer->end_element();
+	}
+
+	void EffectParameter::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_parameter"))
+			!= 0)
+		{
+			return;
+		}
+
+		EffectNode::load_xml(node);
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
+			{
+				m_type = EffectParameterUtil::
+					get_effect_parameter(
+						XmlUtil::get_string_value(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
 	}
 
 }

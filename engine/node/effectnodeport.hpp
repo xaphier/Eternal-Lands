@@ -27,16 +27,19 @@ namespace eternal_lands
 	class EffectNodePort: public boost::noncopyable
 	{
 		friend class EffectNode;
+		friend class EffectNodes;
 		private:
 			EffectNodePortPtrSet m_connections;
 			EffectNodePtr m_node;
-			const String m_var;
-			const String m_name;
+			boost::uuids::uuid m_uuid;
+			String m_var;
+			String m_name;
 			String m_description;
-			const Uint8Array4 m_swizzle;
-			const EffectChangeType m_change;
-			const bool m_input;
+			Uint8Array4 m_swizzle;
+			EffectChangeType m_change;
+			bool m_input;
 
+			EffectNodePort();
 			void do_connect(const EffectNodePortPtr port);
 			void do_disconnect(const EffectNodePortPtr port);
 			bool check_connection(EffectNodePtrVector &checking)
@@ -51,6 +54,11 @@ namespace eternal_lands
 			String get_var_swizzled() const;
 			bool do_check_connection(const EffectNodePortPtr port,
 				EffectNodePtrVector &checking) const;
+			void save_xml(const XmlWriterSharedPtr &writer) const;
+			void save_connections_xml(
+				const XmlWriterSharedPtr &writer) const;
+			EffectNodePort(const EffectNodePtr effect_node,
+				const xmlNodePtr node);
 
 			inline EffectNodePortPtr get_connection() const
 				noexcept
@@ -73,11 +81,13 @@ namespace eternal_lands
 				const String &var,
 				const String &name,
 				const String &swizzle,
+				const boost::uuids::uuid &uuid,
 				const EffectChangeType change,
 				const bool input);
 			EffectNodePort(const EffectNodePtr node,
 				const String &var,
 				const String &swizzle,
+				const boost::uuids::uuid &uuid,
 				const EffectChangeType change,
 				const bool input);
 			~EffectNodePort() noexcept;
@@ -153,6 +163,12 @@ namespace eternal_lands
 			inline bool get_connected() const noexcept
 			{
 				return m_connections.size() > 0;
+			}
+
+			inline const boost::uuids::uuid &get_uuid() const
+				noexcept
+			{
+				return m_uuid;
 			}
 
 	};

@@ -38,9 +38,43 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(y_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
 	QObject::connect(z_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
 	QObject::connect(scale_value, SIGNAL(valueChanged(double)), this, SLOT(update_scale()));
-	QObject::connect(x_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
-	QObject::connect(y_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
-	QObject::connect(z_rotation, SIGNAL(valueChanged(double)), this, SLOT(update_rotation()));
+	QObject::connect(scale_slider, SIGNAL(valueChanged(int)), this, SLOT(update_scale_slider()));
+
+	m_rotations.push_back(x_rotation);
+	m_rotations.push_back(y_rotation);
+	m_rotations.push_back(z_rotation);
+
+	m_rotation_mapper = new QSignalMapper(this);
+	m_rotation_mapper->setMapping(m_rotations[0], int(0));
+	m_rotation_mapper->setMapping(m_rotations[1], int(1));
+	m_rotation_mapper->setMapping(m_rotations[2], int(2));
+
+	QObject::connect(m_rotations[0], SIGNAL(valueChanged(double)),
+		m_rotation_mapper, SLOT(map()));
+	QObject::connect(m_rotations[1], SIGNAL(valueChanged(double)),
+		m_rotation_mapper, SLOT(map()));
+	QObject::connect(m_rotations[2], SIGNAL(valueChanged(double)),
+		m_rotation_mapper, SLOT(map()));
+	QObject::connect(m_rotation_mapper, SIGNAL(mapped(const int)),
+		this, SLOT(update_rotation(const int)));
+
+	m_rotation_dials.push_back(x_rotation_dial);
+	m_rotation_dials.push_back(y_rotation_dial);
+	m_rotation_dials.push_back(z_rotation_dial);
+
+	m_rotation_dial_mapper = new QSignalMapper(this);
+	m_rotation_dial_mapper->setMapping(m_rotation_dials[0], int(0));
+	m_rotation_dial_mapper->setMapping(m_rotation_dials[1], int(1));
+	m_rotation_dial_mapper->setMapping(m_rotation_dials[2], int(2));
+
+	QObject::connect(m_rotation_dials[0], SIGNAL(valueChanged(int)),
+		m_rotation_dial_mapper, SLOT(map()));
+	QObject::connect(m_rotation_dials[1], SIGNAL(valueChanged(int)),
+		m_rotation_dial_mapper, SLOT(map()));
+	QObject::connect(m_rotation_dials[2], SIGNAL(valueChanged(int)),
+		m_rotation_dial_mapper, SLOT(map()));
+	QObject::connect(m_rotation_dial_mapper, SIGNAL(mapped(const int)),
+		this, SLOT(update_rotation_dial(const int)));
 
 	QObject::connect(radius, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_light_radius(double)));
 	QObject::connect(light_color, SIGNAL(clicked()), this, SLOT(change_light_color()));
@@ -189,9 +223,13 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_object_witdgets.push_back(y_translation);
 	m_object_witdgets.push_back(z_translation);
 	m_object_witdgets.push_back(scale_value);
+	m_object_witdgets.push_back(scale_slider);
 	m_object_witdgets.push_back(x_rotation);
 	m_object_witdgets.push_back(y_rotation);
 	m_object_witdgets.push_back(z_rotation);
+	m_object_witdgets.push_back(x_rotation_dial);
+	m_object_witdgets.push_back(y_rotation_dial);
+	m_object_witdgets.push_back(z_rotation_dial);
 	m_object_witdgets.push_back(transparency_type_0);
 	m_object_witdgets.push_back(transparency_type_1);
 	m_object_witdgets.push_back(transparency_type_2);
@@ -366,9 +404,13 @@ void MainWindow::update_object()
 	x_rotation->setValue(object_description.get_rotation_angles()[0]);
 	y_rotation->setValue(object_description.get_rotation_angles()[1]);
 	z_rotation->setValue(object_description.get_rotation_angles()[2]);
+	x_rotation_dial->setValue(object_description.get_rotation_angles()[0]);
+	y_rotation_dial->setValue(object_description.get_rotation_angles()[1]);
+	z_rotation_dial->setValue(object_description.get_rotation_angles()[2]);
 
 	scale_value->setValue(object_description.get_world_transformation(
 		).get_scale() * 100.0f);
+	scale_slider->setValue(200.0f * (std::log10(scale_value->value()) - 1.0f));
 
 	transparency_value->setValue(object_description.get_transparency() *
 		100.0f);
@@ -612,9 +654,28 @@ void MainWindow::update_translation()
 	el_gl_widget->set_object_translation(translation);
 }
 
-void MainWindow::update_rotation()
+void MainWindow::update_rotation(const int index)
 {
 	glm::vec3 rotation;
+
+	m_rotation_dials[index]->blockSignals(true);
+	m_rotation_dials[index]->setValue(m_rotations[index]->value());
+	m_rotation_dials[index]->blockSignals(false);
+
+	rotation[0] = x_rotation->value();
+	rotation[1] = y_rotation->value();
+	rotation[2] = z_rotation->value();
+
+	el_gl_widget->set_object_rotation(rotation);
+}
+
+void MainWindow::update_rotation_dial(const int index)
+{
+	glm::vec3 rotation;
+
+	m_rotations[index]->blockSignals(true);
+	m_rotations[index]->setValue(m_rotation_dials[index]->value());
+	m_rotations[index]->blockSignals(false);
 
 	rotation[0] = x_rotation->value();
 	rotation[1] = y_rotation->value();
@@ -625,6 +686,19 @@ void MainWindow::update_rotation()
 
 void MainWindow::update_scale()
 {
+	scale_slider->blockSignals(true);
+	scale_slider->setValue(200.0f * (std::log10(scale_value->value()) - 1.0f));
+	scale_slider->blockSignals(false);
+
+	el_gl_widget->set_object_scale(scale_value->value() * 0.01f);
+}
+
+void MainWindow::update_scale_slider()
+{
+	scale_value->blockSignals(true);
+	scale_value->setValue(std::pow(10.0f, 1.0f + scale_slider->value() / 200.0f));
+	scale_value->blockSignals(false);
+
 	el_gl_widget->set_object_scale(scale_value->value() * 0.01f);
 }
 

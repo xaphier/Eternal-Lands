@@ -119,6 +119,16 @@ namespace eternal_lands
 
 	}
 
+	void XmlWriter::write_uuid_element(const StringType &name,
+		const boost::uuids::uuid &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
 	void XmlWriter::write_bool_element(const StringType &name,
 		const bool value)
 	{
@@ -184,6 +194,36 @@ namespace eternal_lands
 		}
 
 		end_element();
+	}
+
+	void XmlWriter::write_ivec2_element(const StringType &name,
+		const glm::ivec2 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_ivec3_element(const StringType &name,
+		const glm::ivec3 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
+	}
+
+	void XmlWriter::write_ivec4_element(const StringType &name,
+		const glm::ivec4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, str.str());
 	}
 
 	void XmlWriter::write_vec2_element(const StringType &name,

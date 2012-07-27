@@ -33,8 +33,9 @@ namespace eternal_lands
 			ShaderSourceTypeSet m_types;
 			String m_name;
 			ShaderSourceDataVector m_datas;
-			const boost::uuids::uuid m_uuid;
+			boost::uuids::uuid m_uuid;
 
+			ShaderSource();
 			void load_datas_xml(const String &source,
 				const xmlNodePtr node);
 			void load_types_xml(const xmlNodePtr node);

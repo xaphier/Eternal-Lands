@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 namespace el = eternal_lands;
 
 class QNEBlock;
-class QNEConnection;
+class Connection;
 
 class QNEPort : public QGraphicsPathItem
 {
@@ -47,15 +47,15 @@ public:
 	void setNEBlock(QNEBlock*);
 	void setName(const QString &n);
 	void setIsOutput(bool o);
-	int radius();
-	int height();
-	int width();
-	int margin();
+	int radius() const;
+	int height() const;
+	int width() const;
+	int margin() const;
 	bool isOutput();
-	QVector<QNEConnection*>& connections();
+	QVector<Connection*>& connections();
 	void setFlags(int);
 	QColor color();
-	void set_color(QColor &c);
+	void set_color(const QColor &c);
 
 	QNEBlock* block() const;
 
@@ -69,6 +69,8 @@ public:
 	bool can_connect(QNEPort* port);
 	void connect(QNEPort* port);
 	void disconnect(QNEPort* port);
+	QPointF connection_pos() const;
+	void update_tool_tip();
 
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -84,7 +86,7 @@ private:
 	QGraphicsPixmapItem* m_pixmap;
 	int m_radius;
 	int m_margin;
-	QVector<QNEConnection*> m_connections;
+	QVector<Connection*> m_connections;
 	int m_flags;
 	int m_height;
 	int m_width;

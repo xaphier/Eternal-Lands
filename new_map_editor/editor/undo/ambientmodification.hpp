@@ -28,7 +28,6 @@ namespace eternal_lands
 			AmbientModification(const glm::vec3 &color,
 				const Uint32 edit_id);
 			virtual ~AmbientModification() throw();
-			virtual ModificationType get_type() const;
 			virtual bool undo(EditorMapData &editor);
 
 	};

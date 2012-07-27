@@ -302,4 +302,9 @@ namespace eternal_lands
 		return m_files.find(file_name) != m_files.end();
 	}
 
+	void ZipFile::get_files(const String &dir, const String &pattern,
+		StringSet &files) const
+	{
+	}
+
 }

@@ -35,18 +35,18 @@ namespace eternal_lands
 		sst_uv,
 		sst_shadow_uv,
 		sst_shadow_mapping,
+		sst_shadow_map,
+		sst_tbn_matrix,
+		sst_shadow_uv_ddx_ddy,
+		sst_terrain_uv_ddx_ddy,
+		sst_world_uv_ddx_ddy,
+		sst_world_extra_uv_ddx_ddy,
 		sst_uv_mapping,
 		sst_uv_depth_mapping,
 		sst_normal_mapping,
 		sst_albedo_mapping,
 		sst_specular_mapping,
-		sst_emission_mapping,
-		sst_shadow_map,
-		sst_tbn_matrix,
-		sst_world_uv_ddx_ddy,
-		sst_world_extra_uv_ddx_ddy,
-		sst_shadow_uv_ddx_ddy,
-		sst_terrain_uv_ddx_ddy
+		sst_emission_mapping
 	};
 
 	typedef std::map<ShaderSourceType, String> ShaderSourceTypeStringMap;

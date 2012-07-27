@@ -33,8 +33,19 @@ namespace eternal_lands
 		friend class EffectNodePort;
 		private:
 			EffectNodeVector m_nodes;
+			boost::mt19937 m_ran;
+			Mt19937RandomUuidGenerator m_uuid_generator;
 			String m_name;
 			Uint32 m_ids;
+
+			EffectNodes();
+			void save_xml(const XmlWriterSharedPtr &writer);
+			void load_xml(const xmlNodePtr node);
+			void load_nodes_xml(const xmlNodePtr node);
+			void load_connection_xml(const xmlNodePtr node,
+				UuidEffectNodePortPtrMap &ports);
+			void load_connections_xml(const xmlNodePtr node);
+			void get_ports(UuidEffectNodePortPtrMap &ports);
 
 		public:
 			EffectNodes(const String &name);
@@ -59,15 +70,25 @@ namespace eternal_lands
 				ShaderSourceParameterVector
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str);
+			void save_xml(const String &file_name);
+			void load_xml(const String &file_name);
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
+			void remove(const EffectNodePtr effect_node);
+
+			inline Uint32 get_node_count() const
+			{
+				return m_nodes.size();
+			}
+
+			inline const EffectNodeVector &get_nodes() const
+			{
+				return m_nodes;
+			}
 
 			inline EffectNodePtr get_node(const Uint32 index)
 			{
 				return &m_nodes[index];
-			}
-
-			inline void remove(const Uint32 index)
-			{
-				//m_nodes.remove(index);
 			}
 
 			inline Uint32 get_ids() const noexcept

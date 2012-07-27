@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #include <QPen>
 #include <QInputDialog>
-#include "qneconnection.hpp"
+#include "connection.hpp"
 
 #include "../engine/node/effectnode.hpp"
 
@@ -58,7 +58,7 @@ QNEPort::QNEPort(el::EffectNodePortPtr effect_port, QGraphicsItem *parent,
 
 QNEPort::~QNEPort()
 {
-	foreach(QNEConnection *conn, m_connections)
+	foreach(Connection *conn, m_connections)
 		delete conn;
 }
 
@@ -84,22 +84,22 @@ void QNEPort::setIsOutput(bool o)
 	m_isOutput = o;
 }
 
-int QNEPort::radius()
+int QNEPort::radius() const
 {
 	return m_radius;
 }
 
-int QNEPort::height()
+int QNEPort::height() const
 {
 	return m_height;
 }
 
-int QNEPort::width()
+int QNEPort::width() const
 {
 	return m_width;
 }
 
-int QNEPort::margin()
+int QNEPort::margin() const
 {
 	return m_margin;
 }
@@ -224,7 +224,15 @@ void QNEPort::update()
 	}
 
 	setBrush(brush);
-}	
+}
+
+void QNEPort::update_tool_tip()
+{
+	if (m_effect_port != 0)
+	{
+		setToolTip(QString::number(m_effect_port->get_value_count()));
+	}
+}
 
 bool QNEPort::isOutput()
 {
@@ -236,14 +244,14 @@ QColor QNEPort::color()
 	return m_color;
 }
 
-void QNEPort::set_color(QColor &c)
+void QNEPort::set_color(const QColor &c)
 {
 	m_color = c;
 
 	update();
 }
 
-QVector<QNEConnection*>& QNEPort::connections()
+QVector<Connection*>& QNEPort::connections()
 {
 	return m_connections;
 }
@@ -311,21 +319,46 @@ QNEBlock* QNEPort::block() const
 
 bool QNEPort::isConnected(QNEPort *other)
 {
-	foreach(QNEConnection *conn, m_connections)
-		if (conn->port1() == other || conn->port2() == other)
+	foreach(Connection *conn, m_connections)
+	{
+		if ((conn->get_port1() == other) ||
+			(conn->get_port2() == other))
+		{
 			return true;
+		}
+	}
 
 	return false;
+}
+
+QPointF QNEPort::connection_pos() const
+{
+	QPointF result;
+
+	result = scenePos();
+
+	result.setY(result.y() + radius());
+
+	if (m_isOutput)
+	{
+		result.setX(result.x() + 2 * radius());
+	}
+	else
+	{
+		result.setX(result.x());
+	}
+
+	return result;
 }
 
 QVariant QNEPort::itemChange(GraphicsItemChange change, const QVariant &value)
 {
 	if (change == ItemScenePositionHasChanged)
 	{
-		foreach(QNEConnection *conn, m_connections)
+		foreach(Connection *conn, m_connections)
 		{
-			conn->updatePosFromPorts();
-			conn->updatePath();
+			conn->update_pos_from_ports();
+			conn->update_path();
 		}
 	}
 	return value;

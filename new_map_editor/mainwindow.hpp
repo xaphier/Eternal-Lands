@@ -22,6 +22,10 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		std::vector<QObject*> m_terrain_witdgets;
 		std::vector<QComboBox*> m_material_witdgets;
 		std::vector<QLabel*> m_material_label_witdgets;
+		std::vector<QDoubleSpinBox*> m_rotations;
+		std::vector<QDial*> m_rotation_dials;
+		QSignalMapper* m_rotation_mapper;
+		QSignalMapper* m_rotation_dial_mapper;
 		QSignalMapper* m_object_selection_mapper;
 		QSignalMapper* m_object_transparency_mapper;
 		QSpinBox* action_time;
@@ -73,8 +77,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void set_object_blend(const int);
 		void set_object_selection(const int);
 		void update_translation();
-		void update_rotation();
 		void update_scale();
+		void update_scale_slider();
 		void update_position();
 		void update_materials();
 		void update_object(const bool select);
@@ -99,6 +103,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void initialized();
 		void set_debug(const bool enabled);
 		void set_object_transparency(const int value);
+		void update_rotation(const int index);
+		void update_rotation_dial(const int index);
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

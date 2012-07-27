@@ -7,13 +7,20 @@
 
 #include "effectnode.hpp"
 #include "effectnodeport.hpp"
+#include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
 
-	EffectNode::EffectNode(const String &name, const Uint32 id):
-		m_name(name), m_id(id), m_change(ect_undefined),
+	EffectNode::EffectNode(): m_id(0), m_change(ect_undefined),
 		m_value_count(0)
+	{
+	}
+
+	EffectNode::EffectNode(const String &name, const Uint32 id,
+		const boost::uuids::uuid &uuid): m_uuid(uuid), m_name(name),
+		m_id(id), m_change(ect_undefined), m_value_count(0)
 	{
 	}
 
@@ -21,32 +28,120 @@ namespace eternal_lands
 	{
 	}
 
+	void EffectNode::save_xml(const XmlWriterSharedPtr &writer)
+	{
+		writer->write_uuid_element(UTF8("uuid"), get_uuid());
+		writer->write_element(UTF8("name"), get_name());
+		writer->write_int_element(UTF8("id"), get_id());
+		writer->write_ivec2_element(UTF8("position"), get_position());
+
+		writer->start_element(UTF8("ports"));
+
+		BOOST_FOREACH(const EffectNodePort &port, m_ports)
+		{
+			port.save_xml(writer);
+		}
+
+		writer->end_element();
+	}
+
+	void EffectNode::save_connections_xml(const XmlWriterSharedPtr &writer)
+	{
+		BOOST_FOREACH(const EffectNodePort &port, m_ports)
+		{
+			port.save_connections_xml(writer);
+		}
+	}
+
+	void EffectNode::load_ports_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("ports"))
+			!= 0)
+		{
+			return;
+		}
+
+		clear_ports();
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("effect_node_port")) == 0)
+			{
+				m_ports.push_back(new EffectNodePort(this, it));
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
+	void EffectNode::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("uuid")) == 0)
+			{
+				m_uuid = XmlUtil::get_uuid_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
+			{
+				m_name = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("id")) == 0)
+			{
+				m_id = XmlUtil::get_uint32_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("position")) == 0)
+			{
+				m_position = XmlUtil::get_ivec2_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("ports")) == 0)
+			{
+				load_ports_xml(it);
+			}
+		}
+		while (XmlUtil::next(it, true));
+	}
+
 	void EffectNode::add_input_port(const String &description,
-		const String &swizzle, const EffectChangeType change)
+		const String &swizzle, const boost::uuids::uuid &uuid,
+		const EffectChangeType change)
 	{
 		m_ports.push_back(new EffectNodePort(this, String(),
-			description, swizzle, change, true));
+			description, swizzle, uuid, change, true));
 	}
 
 	void EffectNode::add_input_port(const String &swizzle,
-		const EffectChangeType change)
+		const boost::uuids::uuid &uuid, const EffectChangeType change)
 	{
 		m_ports.push_back(new EffectNodePort(this, String(), swizzle,
-			change, true));
+			uuid, change, true));
 	}
 
 	void EffectNode::add_output_port(const String &var,
 		const String &description, const String &swizzle,
-		const EffectChangeType change)
+		const boost::uuids::uuid &uuid, const EffectChangeType change)
 	{
 		m_ports.push_back(new EffectNodePort(this, var, description,
-			swizzle, change, false));
+			swizzle, uuid, change, false));
 	}
 
 	void EffectNode::add_output_port(const String &var,
-		const String &swizzle, const EffectChangeType change)
+		const String &swizzle, const boost::uuids::uuid &uuid,
+		const EffectChangeType change)
 	{
-		m_ports.push_back(new EffectNodePort(this, var, swizzle,
+		m_ports.push_back(new EffectNodePort(this, var, swizzle, uuid,
 			change, false));
 	}
 
@@ -198,6 +293,18 @@ namespace eternal_lands
 		str << UTF8("effect_var_") << id << UTF8("_") << index;
 
 		return String(str.str());
+	}
+
+	void EffectNode::get_ports(UuidEffectNodePortPtrMap &ports)
+	{
+		EffectNodePortVector::iterator it, end;
+
+		end = m_ports.end();
+
+		for (it = m_ports.begin(); it != end; ++it)
+		{
+			ports[it->get_uuid()] = &(*it);
+		}
 	}
 
 }

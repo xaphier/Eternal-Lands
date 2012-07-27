@@ -366,7 +366,7 @@ void ELGLWidget::initializeGL()
 	m_editor.reset(new Editor(m_global_vars, m_file_system));
 	m_editor->set_z_near(1.5f);
 
-	m_timer->start(50);
+	m_timer->start(17);
 
 	emit initialized();
 }

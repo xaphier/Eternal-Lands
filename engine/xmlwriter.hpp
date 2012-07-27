@@ -35,12 +35,20 @@ namespace eternal_lands
 			void end_element();
 			void write_element(const StringType &name,
 				const StringType &value);
+			void write_uuid_element(const StringType &name,
+				const boost::uuids::uuid &value);
 			void write_bool_element(const StringType &name,
 				const bool value);
 			void write_float_element(const StringType &name,
 				const float value);
 			void write_int_element(const StringType &name,
 				const Sint64 value);
+			void write_ivec2_element(const StringType &name,
+				const glm::ivec2 &value);
+			void write_ivec3_element(const StringType &name,
+				const glm::ivec3 &value);
+			void write_ivec4_element(const StringType &name,
+				const glm::ivec4 &value);
 			void write_vec2_element(const StringType &name,
 				const glm::vec2 &value);
 			void write_vec3_element(const StringType &name,

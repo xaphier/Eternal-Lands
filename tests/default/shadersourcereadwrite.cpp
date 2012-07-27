@@ -1,7 +1,7 @@
 /****************************************************************************
  *            shadersourcereadwrite.cpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@googlemail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -23,7 +23,7 @@ BOOST_AUTO_TEST_CASE(shader_source)
 
 BOOST_AUTO_TEST_CASE(load)
 {
-	boost::scoped_ptr<el::ShaderSource> shader_source;
+	boost::shared_ptr<el::ShaderSource> shader_source;
 	el::String name;
 	std::ifstream str;
 
@@ -39,6 +39,7 @@ BOOST_AUTO_TEST_CASE(load)
 		str >> name;
 
 		BOOST_CHECK_NO_THROW(shader_source->load_xml(name));
-		BOOST_CHECK_NO_THROW(shader_source->save_xml(name));
+//		BOOST_CHECK_NO_THROW(shader_source->save_xml(name));
 	}
+
 }

@@ -7,13 +7,20 @@
 
 #include "effectconstant.hpp"
 #include "effectnodeport.hpp"
+#include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
 
+	EffectConstant::EffectConstant(): m_type(ect_float)
+	{
+	}
+
 	EffectConstant::EffectConstant(const String &name, const Uint32 id,
-		const EffectConstantType type): EffectNode(name, id),
-		m_type(type)
+		const EffectConstantType type,
+		Mt19937RandomUuidGenerator &uuid_generator):
+		EffectNode(name, id, uuid_generator()), m_type(type)
 	{
 		m_var_name = get_var_name();
 
@@ -21,27 +28,31 @@ namespace eternal_lands
 		{
 			case ect_float:
 				add_output_port(m_var_name, String(),
-					String(UTF8("?")), ect_constant);
+					String(UTF8("?")), uuid_generator(),
+					ect_constant);
 				break;
 			case ect_direction_xy:
 				add_output_port(m_var_name, String(UTF8("xy")),
-					ect_constant);
+					uuid_generator(),ect_constant);
 				break;
 			case ect_color_rgb:
 				add_output_port(m_var_name,
-					String(UTF8("rgb")), ect_constant);
+					String(UTF8("rgb")), uuid_generator(),
+					ect_constant);
 				break;
 			case ect_vec2:
 				add_output_port(m_var_name, String(UTF8("xy")),
-					ect_constant);
+					uuid_generator(),ect_constant);
 				break;
 			case ect_vec3:
 				add_output_port(m_var_name,
-					String(UTF8("xyz")), ect_constant);
+					String(UTF8("xyz")), uuid_generator(),
+					ect_constant);
 				break;
 			case ect_vec4:
 				add_output_port(m_var_name,
-					String(UTF8("xyzw")), ect_constant);
+					String(UTF8("xyzw")), uuid_generator(),
+					ect_constant);
 				break;
 		}
 	}
@@ -146,6 +157,56 @@ namespace eternal_lands
 		}
 
 		return String(str.str());
+	}
+
+	void EffectConstant::save_xml(const XmlWriterSharedPtr &writer)
+	{
+		writer->start_element(UTF8("effect_constant"));
+
+		EffectNode::save_xml(writer);
+
+		writer->write_vec4_element(UTF8("value"), get_value());
+		writer->write_element(UTF8("var_name"), get_var_name());
+		writer->write_element(UTF8("type"),
+			EffectConstantUtil::get_str(get_type()));
+
+		writer->end_element();
+	}
+
+	void EffectConstant::load_xml(const xmlNodePtr node)
+	{
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_constant"))
+			!= 0)
+		{
+			return;
+		}
+
+		EffectNode::load_xml(node);
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("value")) == 0)
+			{
+				m_value = XmlUtil::get_vec4_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var_name")) == 0)
+			{
+				m_var_name = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
+			{
+				m_type =
+					EffectConstantUtil::get_effect_constant(
+						XmlUtil::get_string_value(it));
+			}
+		}
+		while (XmlUtil::next(it, true));
 	}
 
 }

@@ -55,6 +55,18 @@ namespace eternal_lands
 				const = 0;
 
 			/**
+			 * Adds all files in the directory recursively
+			 * that match the given pattern to the given set.
+			 * @param dir The directory to start with.
+			 * @param pattern The pattern the files must match.
+			 * @param files The set of files where the found
+			 * files are added.
+			 */
+			virtual void get_files(const String &dir,
+				const String &pattern, StringSet &files)
+				const = 0;
+
+			/**
 			 * Gets the name of the archive.
 			 * @return The name of the archive.
 			 */

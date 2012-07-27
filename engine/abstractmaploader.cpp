@@ -298,10 +298,20 @@ namespace eternal_lands
 		add_particle(position, name, index);
 	}
 
-	void AbstractMapLoader::read_terrain(const Uint32 index,
-		const Uint32 offset)
+	void AbstractMapLoader::read_terrain(const Uint32 offset)
 	{
-		get_reader()->set_position(offset);
+		try
+		{
+			get_reader()->set_position(offset);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION(exception);
+		}
+		catch (const std::exception &exception)
+		{
+			LOG_EXCEPTION(exception);
+		}
 	}
 
 	void AbstractMapLoader::read_material_name(const Uint32 index,
@@ -484,30 +494,6 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read_terrains(const Uint32 terrain_size,
-		const Uint32 terrain_count, const Uint32 terrain_offset)
-	{
-		Uint32 i;
-
-		for (i = 0; i < terrain_count; ++i)
-		{
-			try
-			{
-				read_terrain(i, terrain_offset +
-					i * terrain_size);
-			}
-			catch (boost::exception &exception)
-			{
-				exception << errinfo_item_id(i);
-				LOG_EXCEPTION(exception);
-			}
-			catch (const std::exception &exception)
-			{
-				LOG_EXCEPTION(exception);
-			}
-		}
-	}
-
 	void AbstractMapLoader::read_material_names(
 		const Uint32 material_name_size,
 		const Uint32 material_name_count,
@@ -557,8 +543,6 @@ namespace eternal_lands
 		Uint32 particle_count;
 		Uint32 particle_offset;
 		Uint32 clusters_offset;
-		Uint32 terrain_size;
-		Uint32 terrain_count;
 		Uint32 terrain_offset;
 		Uint32 material_name_size;
 		Uint32 material_name_count;
@@ -634,8 +618,6 @@ namespace eternal_lands
 		particle_offset = get_reader()->read_u32_le();
 		clusters_offset = get_reader()->read_u32_le();
 
-		terrain_size = get_reader()->read_u32_le();
-		terrain_count = get_reader()->read_u32_le();
 		terrain_offset = get_reader()->read_u32_le();
 		material_name_size = get_reader()->read_u32_le();
 		material_name_count = get_reader()->read_u32_le();
@@ -650,8 +632,6 @@ namespace eternal_lands
 
 		if (version == 0)
 		{
-			terrain_size = get_terrain_size();
-			terrain_count = 0;
 			terrain_offset = 0;
 			material_name_size = get_material_name_size();
 			material_name_count = 0;
@@ -697,14 +677,6 @@ namespace eternal_lands
 				particle_size % get_particle_size());
 		}
 
-		if (terrain_size != get_terrain_size())
-		{
-			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
-				"terrain size of %2% instead of %3%."),
-				get_reader()->get_name() %
-				terrain_size % get_terrain_size());
-		}
-
 		if (material_name_size != get_material_name_size())
 		{
 			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
@@ -722,7 +694,7 @@ namespace eternal_lands
 		read_height_map(height_map_width, height_map_height,
 			height_map_offset);
 		read_tile_map(tile_map_width, tile_map_height, tile_map_offset);
-		read_terrains(terrain_size, terrain_count, terrain_offset);
+		read_terrain(terrain_offset);
 
 		LOG_DEBUG(lt_map_loader, UTF8("Done loading map '%1%'."),
 			get_reader()->get_name());

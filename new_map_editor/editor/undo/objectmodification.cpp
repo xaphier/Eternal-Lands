@@ -14,8 +14,8 @@ namespace eternal_lands
 	ObjectModification::ObjectModification(
 		const EditorObjectDescription &object_description,
 		const ModificationType type, const Uint32 edit_id):
-		Modification(edit_id),
-		m_object_description(object_description), m_type(type)
+		Modification(edit_id, object_description.get_id(), type),
+		m_object_description(object_description)
 	{
 	}
 
@@ -23,18 +23,9 @@ namespace eternal_lands
 	{
 	}
 
-	ModificationType ObjectModification::get_type() const
-	{
-		return m_type;
-	}
-
 	bool ObjectModification::do_merge(Modification* modification)
 	{
-		assert(dynamic_cast<ObjectModification*>(modification) != 0);
-
-		return m_object_description.get_id() == dynamic_cast<
-			ObjectModification*>(modification
-				)->m_object_description.get_id();
+		return true;
 	}
 
 	bool ObjectModification::undo(EditorMapData &editor)

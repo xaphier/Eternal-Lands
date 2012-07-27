@@ -16,12 +16,213 @@
 #include "logging.hpp"
 #include "utf.hpp"
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <dirent.h>
+#ifdef	WINDOWS
+#include <io.h>
+#else	/* WINDOWS */
+#include <ftw.h>
+#include <fnmatch.h>
+#endif	/* WINDOWS */
 
 namespace eternal_lands
 {
 
 	namespace
 	{
+
+		inline String get_dir(const String &name)
+		{
+			if (name.get().empty())
+			{
+				return name;
+			}
+
+#ifdef	WINDOWS
+			if (*name.get().rbegin() != UTF8('\\'))
+			{
+				return String(name.get() + UTF8('\\'));
+			}
+#else	/* WINDOWS */
+			if (*name.get().rbegin() != UTF8('/'))
+			{
+				return String(name.get() + UTF8( '/'));
+			}
+#endif	/* WINDOWS */
+
+			return name;
+		}
+
+		inline String append_dir(const String &name, const String &str)
+		{
+			if (name.get().empty())
+			{
+				return str;
+			}
+
+#ifdef	WINDOWS
+			if (*name.get().rbegin() != UTF8('\\'))
+			{
+				return String(name.get() + UTF8('\\') +
+					str.get());
+			}
+#else	/* WINDOWS */
+			if (*name.get().rbegin() != UTF8('/'))
+			{
+				return String(name.get() + UTF8('/') +
+					str.get());
+			}
+#endif	/* WINDOWS */
+
+			return String(name.get() + str.get());
+		}
+
+#ifdef	WINDOWS
+		void scan_directory(const String &base_name,
+			const String &dir_name, const String &pattern,
+			StringSet &files)
+		{
+			long h_find;
+			struct _finddata_t find_data;
+			StringType actual_search, path, file_name;
+
+			path = append_dir(base_name, dir_name);
+
+			actual_search = append_dir(path, pattern);
+
+			// Find the first file
+			h_find = _findfirst(actual_search.c_str(), &find_data);
+
+			// Look for more
+			do
+			{
+				//If no files are found
+				if (h_find == INVALID_HANDLE_VALUE)
+				{
+					//Done checking this folder
+					break;
+				}
+
+				file_name = find_data.cFileName;
+
+				//If the file is a self-reference
+				if ((file_name == ".") || (file_name == ".."))
+				{
+					//Skip to next file
+					continue;
+				}
+
+				file_name = append_dir(dir_name, file_name);
+
+				//If the file is a folder
+				if (find_data.dwFileAttributes &
+					FILE_ATTRIBUTE_DIRECTORY)
+				{
+					continue;
+				}
+
+				files.insert(file_name);
+			}
+			while (_findnext(h_find, &find_data));
+
+			actual_search = append_dir(path, "*");
+
+			// Find the first file
+			h_find = _findfirst(actual_search.c_str(), &find_data);
+
+			// Look for more dirs
+			do
+			{
+				//If no files are found
+				if (h_find == INVALID_HANDLE_VALUE)
+				{
+					//Done checking this folder
+					break;
+				}
+
+				file_name = find_data.cFileName;
+
+				//If the file is a self-reference
+				if ((file_name == ".") || (file_name == ".."))
+				{
+					//Skip to next file
+					continue;
+				}
+
+				file_name = append_dir(dir_name, file_name);
+
+				//If the file is a folder
+				if (find_data.dwFileAttributes &
+					FILE_ATTRIBUTE_DIRECTORY)
+				{
+					scandirectory(base_name, file_name,
+						pattern);
+				}
+			}
+			while (_findnext(h_find, &find_data));
+ 
+			_findclose(h_find);
+		}
+#else	/* WINDOWS */
+		void scan_directory(const String &base_name,
+			const String &dir_name, const String &pattern,
+			StringSet &files)
+		{
+			DIR* dir;
+			struct dirent* entry;
+			String current;
+			StringType path;
+
+			path = append_dir(base_name, dir_name);
+
+			dir = opendir(path.c_str());
+
+			if (dir == NULL)
+			{
+				return;
+			}
+
+			entry = readdir(dir);
+
+			while (entry != 0)
+			{
+				current = append_dir(dir_name,
+					String(entry->d_name));
+
+				if (entry->d_type == DT_DIR)
+				{
+					if (strcmp(entry->d_name, ".") &&
+						strcmp(entry->d_name, ".."))
+					{
+						scan_directory(base_name,
+							current, pattern,
+							files);
+					}
+
+					entry = readdir(dir);
+
+					continue;
+				}
+
+				if (entry->d_type != DT_REG)
+				{
+					entry = readdir(dir);
+
+					continue;
+				}
+
+				if (!fnmatch(pattern.get().c_str(),
+					entry->d_name, 0))
+				{
+					files.insert(current);
+				}
+
+				entry = readdir(dir);
+			}
+
+			closedir(dir);
+		}
+#endif	/* WINDOWS */
 
 		class DirArchive: public AbstractArchive
 		{
@@ -51,30 +252,9 @@ namespace eternal_lands
 				 */
 				virtual bool get_has_file(
 					const String &file_name) const;
-
-				inline static String get_dir(const String &name)
-				{
-					if (name.get().empty())
-					{
-						return name;
-					}
-
-#ifdef	WINDOWS
-					if (*name.get().rbegin() != UTF8('\\'))
-					{
-						return String(name.get() +
-							UTF8('\\'));
-					}			
-#else	/* WINDOWS */
-					if (*name.get().rbegin() != UTF8('/'))
-					{
-						return String(name.get() +
-							UTF8( '/'));
-					}
-#endif	/* WINDOWS */
-
-					return name;
-				}
+				virtual void get_files(const String &dir,
+					const String &pattern, StringSet &files)
+					const;
 
 		};
 
@@ -97,8 +277,8 @@ namespace eternal_lands
 			StringType path, gz_path, xz_path;
 			struct stat fstat;
 
-			path = get_name().get();
-			path += file_name.get();
+			path = get_dir(get_name());
+			path += file_name;
 			path = utf8_to_string(path);
 
 			gz_path = path;
@@ -143,8 +323,8 @@ namespace eternal_lands
 			StringType path, gz_path, xz_path;
 			struct stat fstat;
 
-			path = get_name().get();
-			path += file_name.get();
+			path = get_dir(get_name());
+			path += file_name;
 			path = utf8_to_string(path);
 
 			gz_path = path;
@@ -164,6 +344,15 @@ namespace eternal_lands
 			}
 
 			return stat(path.c_str(), &fstat) == 0;
+		}
+
+		void DirArchive::get_files(const String &dir,
+			const String &pattern, StringSet &files) const
+		{
+			scan_directory(String(utf8_to_string(get_dir(
+					get_name()))),
+				String(utf8_to_string(get_dir(dir))), pattern,
+					files);
 		}
 
 		Uint8Array20 get_file_sha1(
@@ -526,7 +715,7 @@ namespace eternal_lands
 				exception <<
 					boost::errinfo_file_name(file_name);
 				throw;
-			}		
+			}
 		}
 
 		EL_THROW_EXCEPTION(FileNotFoundException()
@@ -608,6 +797,38 @@ namespace eternal_lands
 	void FileSystem::clear()
 	{
 		m_archives.clear();
+	}
+
+	StringSet FileSystem::get_files(const String &dir,
+		const String &pattern) const
+	{
+		AbstractArchiveVector::const_reverse_iterator it, end;
+		StringSet result;
+		String name;
+
+		name = String(get_strip_relative_path(dir));
+
+		end = m_archives.rend();
+
+		LOG_DEBUG(lt_io, UTF8("Checking dir '%1%'"), dir);
+
+		for (it = m_archives.rbegin(); it != end; ++it)
+		{
+			LOG_DEBUG(lt_io, UTF8("Checking archive '%1%'"),
+				it->get_name());
+
+			try
+			{
+				it->get_files(name, pattern, result);
+			}
+			catch (boost::exception &exception)
+			{
+				exception << boost::errinfo_file_name(dir);
+				throw;
+			}
+		}
+
+		return result;
 	}
 
 }

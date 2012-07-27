@@ -55,6 +55,8 @@ namespace eternal_lands
 			Uint32 m_id;
 			RenderableType m_renderable;
 
+			void save(const WriterSharedPtr &writer) const;
+
 		public:
 			EditorMapData(const GlobalVarsSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
@@ -126,6 +128,7 @@ namespace eternal_lands
 			void set_debug_mode(const int value);
 			StringVector get_debug_modes() const;
 			double get_depth() const;
+			void save(const String &file_name) const;
 
 			inline void get_terrain_values(const glm::uvec2 &vertex,
 				const glm::vec2 &size,

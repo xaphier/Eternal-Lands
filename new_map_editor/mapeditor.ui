@@ -493,6 +493,24 @@
             </item>
             <item row="0" column="1">
              <widget class="QLabel" name="mesh_name">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="sizeIncrement">
+               <size>
+                <width>2</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="baseSize">
+               <size>
+                <width>2</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -519,6 +537,24 @@
             </item>
             <item row="1" column="1">
              <widget class="QLabel" name="object_id">
+              <property name="minimumSize">
+               <size>
+                <width>200</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="sizeIncrement">
+               <size>
+                <width>2</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="baseSize">
+               <size>
+                <width>2</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -533,15 +569,15 @@
          <item>
           <widget class="QToolBox" name="toolBox_2">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>264</height>
+              <width>250</width>
+              <height>704</height>
              </rect>
             </property>
             <attribute name="label">
@@ -707,9 +743,6 @@
                 <string>Rotation</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_11">
-                <property name="margin">
-                 <number>0</number>
-                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_23">
                   <property name="minimumSize">
@@ -726,13 +759,16 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
+                <item row="0" column="1" colspan="2">
                  <widget class="QDoubleSpinBox" name="x_rotation">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
                     <height>0</height>
                    </size>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -747,10 +783,10 @@
                    <string>°</string>
                   </property>
                   <property name="minimum">
-                   <double>-360.000000000000000</double>
+                   <double>-180.000000000000000</double>
                   </property>
                   <property name="maximum">
-                   <double>360.000000000000000</double>
+                   <double>179.000000000000000</double>
                   </property>
                   <property name="singleStep">
                    <double>1.000000000000000</double>
@@ -773,13 +809,16 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
+                <item row="1" column="1" colspan="2">
                  <widget class="QDoubleSpinBox" name="y_rotation">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
                     <height>0</height>
                    </size>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -794,10 +833,10 @@
                    <string>°</string>
                   </property>
                   <property name="minimum">
-                   <double>-360.000000000000000</double>
+                   <double>-180.000000000000000</double>
                   </property>
                   <property name="maximum">
-                   <double>360.000000000000000</double>
+                   <double>179.000000000000000</double>
                   </property>
                   <property name="singleStep">
                    <double>1.000000000000000</double>
@@ -823,13 +862,16 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
+                <item row="2" column="1" colspan="2">
                  <widget class="QDoubleSpinBox" name="z_rotation">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
                     <height>0</height>
                    </size>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -844,16 +886,94 @@
                    <string>°</string>
                   </property>
                   <property name="minimum">
-                   <double>-360.000000000000000</double>
+                   <double>-180.000000000000000</double>
                   </property>
                   <property name="maximum">
-                   <double>360.000000000000000</double>
+                   <double>179.000000000000000</double>
                   </property>
                   <property name="singleStep">
                    <double>1.000000000000000</double>
                   </property>
                   <property name="value">
                    <double>0.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_9">
+                  <property name="text">
+                   <string>x</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLabel" name="label_27">
+                  <property name="text">
+                   <string>y</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QLabel" name="label_28">
+                  <property name="text">
+                   <string>z</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QDial" name="x_rotation_dial">
+                  <property name="minimum">
+                   <number>-180</number>
+                  </property>
+                  <property name="maximum">
+                   <number>179</number>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
+                  </property>
+                  <property name="notchesVisible">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QDial" name="y_rotation_dial">
+                  <property name="minimum">
+                   <number>-180</number>
+                  </property>
+                  <property name="maximum">
+                   <number>179</number>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
+                  </property>
+                  <property name="notchesVisible">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="2">
+                 <widget class="QDial" name="z_rotation_dial">
+                  <property name="minimum">
+                   <number>-180</number>
+                  </property>
+                  <property name="maximum">
+                   <number>179</number>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
+                  </property>
+                  <property name="notchesVisible">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -917,6 +1037,25 @@
               </widget>
              </item>
              <item>
+              <widget class="QSlider" name="scale_slider">
+               <property name="maximum">
+                <number>400</number>
+               </property>
+               <property name="value">
+                <number>200</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBothSides</enum>
+               </property>
+               <property name="tickInterval">
+                <number>8</number>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="verticalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -936,8 +1075,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>160</width>
-              <height>201</height>
+              <width>250</width>
+              <height>704</height>
              </rect>
             </property>
             <attribute name="label">
@@ -952,10 +1091,7 @@
                <property name="title">
                 <string>Transparency</string>
                </property>
-               <layout class="QFormLayout" name="formLayout">
-                <property name="margin">
-                 <number>0</number>
-                </property>
+               <layout class="QGridLayout" name="gridLayout_20">
                 <item row="0" column="0" colspan="2">
                  <widget class="QRadioButton" name="transparency_type_0">
                   <property name="text">
@@ -973,6 +1109,25 @@
                   </property>
                  </widget>
                 </item>
+                <item row="1" column="1">
+                 <widget class="QSlider" name="transparency_value">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                  <property name="value">
+                   <number>100</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksBothSides</enum>
+                  </property>
+                 </widget>
+                </item>
                 <item row="2" column="0" colspan="2">
                  <widget class="QRadioButton" name="transparency_type_2">
                   <property name="enabled">
@@ -980,25 +1135,6 @@
                   </property>
                   <property name="text">
                    <string>using texture alpha</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QSpinBox" name="transparency_value">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="buttonSymbols">
-                   <enum>QAbstractSpinBox::PlusMinus</enum>
-                  </property>
-                  <property name="suffix">
-                   <string>%</string>
-                  </property>
-                  <property name="maximum">
-                   <number>100</number>
                   </property>
                  </widget>
                 </item>
@@ -1061,8 +1197,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>134</width>
-              <height>300</height>
+              <width>250</width>
+              <height>704</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1607,8 +1743,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>226</width>
-              <height>498</height>
+              <width>232</width>
+              <height>690</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2380,7 +2516,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
+              <width>94</width>
               <height>84</height>
              </rect>
             </property>
@@ -2715,8 +2851,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2728,8 +2864,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <attribute name="label">
@@ -4238,8 +4374,8 @@
      <y>253</y>
     </hint>
     <hint type="destinationlabel">
-     <x>919</x>
-     <y>254</y>
+     <x>870</x>
+     <y>284</y>
     </hint>
    </hints>
   </connection>

@@ -8,6 +8,8 @@
 #include "effectnodeport.hpp"
 #include "effectnode.hpp"
 #include "exceptions.hpp"
+#include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
@@ -89,11 +91,15 @@ namespace eternal_lands
 
 	}
 
+	EffectNodePort::EffectNodePort()
+	{
+	}
+
 	EffectNodePort::EffectNodePort(const EffectNodePtr node,
 		const String &var, const String &name,
-		const String &swizzle, const EffectChangeType change,
-		const bool input): m_node(node), m_var(var),
-		m_name(name), m_description(name),
+		const String &swizzle, const boost::uuids::uuid &uuid,
+		const EffectChangeType change, const bool input): m_node(node),
+		m_uuid(uuid), m_var(var), m_name(name), m_description(name),
 		m_swizzle(get_swizzle_from_str(swizzle)),
 		m_change(change), m_input(input)
 	{
@@ -103,8 +109,9 @@ namespace eternal_lands
 
 	EffectNodePort::EffectNodePort(const EffectNodePtr node,
 		const String &var, const String &swizzle,
-		const EffectChangeType change, const bool input): m_node(node),
-		m_var(var), m_name(swizzle), m_description(swizzle),
+		const boost::uuids::uuid &uuid, const EffectChangeType change,
+		const bool input): m_node(node), m_uuid(uuid), m_var(var),
+		m_name(swizzle), m_description(swizzle),
 		m_swizzle(get_swizzle_from_str(swizzle)),
 		m_change(change), m_input(input)
 	{
@@ -473,6 +480,129 @@ namespace eternal_lands
 		}
 
 		return result;
+	}
+
+	void EffectNodePort::save_xml(const XmlWriterSharedPtr &writer) const
+	{
+		StringType swizzle;
+		Uint16 i;
+
+		for (i = 0; i < 4; ++i)
+		{
+			switch (get_swizzle()[i])
+			{
+				case UTF8('r'):
+				case UTF8('g'):
+				case UTF8('b'):
+				case UTF8('a'):
+				case UTF8('x'):
+				case UTF8('y'):
+				case UTF8('z'):
+				case UTF8('w'):
+				case UTF8('u'):
+				case UTF8('v'):
+				case UTF8('s'):
+				case UTF8('t'):
+				case UTF8('p'):
+				case UTF8('q'):
+				case UTF8('?'):
+				case UTF8('*'):
+					swizzle += '\0' + get_swizzle()[i];
+					break;
+				default:
+					break;
+			}
+		}
+
+		writer->start_element(UTF8("effect_node_port"));
+
+		writer->write_uuid_element(UTF8("uuid"), get_uuid());
+		writer->write_element(UTF8("var"), get_var());
+		writer->write_element(UTF8("name"), get_name());
+		writer->write_element(UTF8("description"), get_description());
+		writer->write_element(UTF8("swizzle"), swizzle);
+		writer->write_element(UTF8("change"),
+			EffectChangeUtil::get_str(get_change()));
+		writer->write_bool_element(UTF8("input"), get_input());
+
+		writer->end_element();
+	}
+		
+	void EffectNodePort::save_connections_xml(
+		const XmlWriterSharedPtr &writer) const
+	{
+		if (get_output())
+		{
+			return;
+		}
+
+		BOOST_FOREACH(const EffectNodePortPtr &connection,
+			m_connections)
+		{
+			writer->start_element(UTF8("connection"));
+
+			writer->write_uuid_element(UTF8("uuid"), get_uuid());
+			writer->write_uuid_element(UTF8("uuid"),
+				connection->get_uuid());
+
+			writer->end_element();
+		}
+	}
+
+	EffectNodePort::EffectNodePort(const EffectNodePtr effect_node,
+		const xmlNodePtr node): m_node(effect_node)
+	{
+		xmlNodePtr it;
+
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_node_port"))
+			!= 0)
+		{
+			return;
+		}
+
+		it = XmlUtil::children(node, true);
+
+		do
+		{
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("uuid")) == 0)
+			{
+				m_uuid = XmlUtil::get_uuid_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("var")) == 0)
+			{
+				m_var = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
+			{
+				m_name = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("description"))
+				== 0)
+			{
+				m_description = XmlUtil::get_string_value(it);
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("swizzle")) == 0)
+			{
+				m_swizzle = get_swizzle_from_str(
+					XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("change")) == 0)
+			{
+				m_change = EffectChangeUtil::get_effect_change(
+					XmlUtil::get_string_value(it));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("input")) == 0)
+			{
+				m_input = XmlUtil::get_bool_value(it);
+			}
+		}
+		while (XmlUtil::next(it, true));
 	}
 
 }

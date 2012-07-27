@@ -8,27 +8,34 @@
 #include "effectoutput.hpp"
 #include "effectnodeport.hpp"
 #include "shader/commonparameterutil.hpp"
+#include "xmlutil.hpp"
+#include "xmlwriter.hpp"
 
 namespace eternal_lands
 {
 
-	EffectOutput::EffectOutput(const String &name, const Uint32 id):
-		EffectNode(name, id)
+	EffectOutput::EffectOutput()
+	{
+	}
+
+	EffectOutput::EffectOutput(const String &name, const Uint32 id,
+		Mt19937RandomUuidGenerator &uuid_generator):
+		EffectNode(name, id, uuid_generator())
 	{
 		add_input_port(String(UTF8("albedo/diffuse color")),
-			String(UTF8("rgb")), ect_fragment);
+			String(UTF8("rgb")), uuid_generator(), ect_fragment);
 		add_input_port(String(UTF8("specular color")),
-			String(UTF8("xyz")), ect_fragment);
+			String(UTF8("xyz")), uuid_generator(), ect_fragment);
 		add_input_port(String(UTF8("alpha")), String(UTF8("?")),
-			ect_fragment);
+			uuid_generator(), ect_fragment);
 		add_input_port(String(UTF8("reflectance at normal incidence")),
-			String(UTF8("?")), ect_fragment);
+			String(UTF8("?")), uuid_generator(), ect_fragment);
 		add_input_port(String(UTF8("roughness")), String(UTF8("?")),
-			ect_fragment);
+			uuid_generator(), ect_fragment);
 		add_input_port(String(UTF8("emission")), String(UTF8("rgb")),
-			ect_fragment);
+			uuid_generator(), ect_fragment);
 		add_input_port(String(UTF8("normal")), String(UTF8("xyz")),
-			ect_fragment);
+			uuid_generator(), ect_fragment);
 	}
 
 	EffectOutput::~EffectOutput() noexcept
@@ -79,7 +86,7 @@ namespace eternal_lands
 					cpt_albedo);
 				fragment_str << UTF8(".rgb");
 
-				default_value = UTF8("1.0");
+				default_value = UTF8("vec3(1.0)");
 			}
 
 			if (port.get_name() == UTF8("alpha"))
@@ -97,7 +104,7 @@ namespace eternal_lands
 					cpt_specular);
 				fragment_str << UTF8(".rgb");
 
-				default_value = UTF8("1.0");
+				default_value = UTF8("vec3(1.0)");
 			}
 
 			if (port.get_name() ==
@@ -122,7 +129,7 @@ namespace eternal_lands
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_emission);
 
-				default_value = UTF8("0.0");
+				default_value = UTF8("vec3(0.0)");
 			}
 
 			if (port.get_name() == UTF8("normal"))
@@ -130,7 +137,7 @@ namespace eternal_lands
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_fragment_normal);
 
-				default_value = UTF8("1.0");
+				default_value = UTF8("vec3(0.0, 0.0, 1.0)");
 			}
 
 			fragment_str << UTF8(" = ");
@@ -142,9 +149,7 @@ namespace eternal_lands
 			}
 			else
 			{
-				fragment_str << get_value_count_type_str();
-				fragment_str << UTF8("(") << default_value;
-				fragment_str << UTF8(")");
+				fragment_str << default_value;
 			}
 
 			fragment_str << UTF8(";\n");
@@ -154,6 +159,26 @@ namespace eternal_lands
 	String EffectOutput::get_description() const
 	{
 		return String();
+	}
+
+	void EffectOutput::save_xml(const XmlWriterSharedPtr &writer)
+	{
+		writer->start_element(UTF8("effect_output"));
+
+		EffectNode::save_xml(writer);
+
+		writer->end_element();
+	}
+
+	void EffectOutput::load_xml(const xmlNodePtr node)
+	{
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_output"))
+			!= 0)
+		{
+			return;
+		}
+
+		EffectNode::load_xml(node);
 	}
 
 }

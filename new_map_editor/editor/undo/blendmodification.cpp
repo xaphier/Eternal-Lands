@@ -32,17 +32,13 @@ namespace eternal_lands
 
 	BlendModification::BlendModification(
 		const ImageValueVector &blend_values, const Uint32 edit_id):
-		Modification(edit_id), m_blend_values(blend_values)
+		Modification(edit_id, 0, mt_blend_values_changed),
+		m_blend_values(blend_values)
 	{
 	}
 
 	BlendModification::~BlendModification() throw()
 	{
-	}
-
-	ModificationType BlendModification::get_type() const
-	{
-		return mt_blend_values_changed;
 	}
 
 	bool BlendModification::do_merge(Modification* modification)
@@ -52,8 +48,8 @@ namespace eternal_lands
 		Uint32 size;
 		bool found;
 
-		blend_modification = dynamic_cast<BlendModification*>(
-			modification);
+		blend_modification = boost::polymorphic_downcast<
+			BlendModification*>(modification);
 
 		assert(blend_modification != 0);
 

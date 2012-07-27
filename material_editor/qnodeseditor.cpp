@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QGraphicsSceneMouseEvent>
 
 #include "qneport.hpp"
-#include "qneconnection.hpp"
+#include "connection.hpp"
 #include "qneblock.hpp"
 
 QNodesEditor::QNodesEditor(QObject *parent) :
@@ -49,15 +49,73 @@ void QNodesEditor::install(QGraphicsScene *s)
 	scene = s;
 }
 
-QGraphicsItem* QNodesEditor::itemAt(const QPointF &pos)
+QGraphicsItem* QNodesEditor::get_item_at(const QPointF &pos)
 {
-	QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1), QSize(3,3)));
+	QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1),
+		QSize(3,3)));
 
 	foreach(QGraphicsItem *item, items)
 		if (item->type() > QGraphicsItem::UserType)
 			return item;
 
 	return 0;
+}
+
+QGraphicsItem* QNodesEditor::get_item_at(const QPointF &pos, const int type)
+{
+	QList<QGraphicsItem*> items = scene->items(QRectF(pos - QPointF(1,1),
+		QSize(3,3)));
+
+	foreach(QGraphicsItem *item, items)
+	{
+		if (item->type() == type)
+		{
+			return item;
+		}
+	}
+
+	return 0;
+}
+
+void QNodesEditor::update_tool_tips()
+{
+	QList<QGraphicsItem*> items = scene->items();
+
+	foreach(QGraphicsItem *item, items)
+	{
+		if (item->type() == QNEPort::Type)
+		{
+			((QNEPort*)item)->update_tool_tip();
+		}
+	}
+}
+
+void QNodesEditor::fill_ports_map(
+	std::map<el::EffectNodePortPtr, QNEPort*> &ports)
+{
+	QList<QGraphicsItem*> items = scene->items();
+
+	foreach(QGraphicsItem *item, items)
+	{
+		if (item->type() == QNEPort::Type)
+		{
+			ports[((QNEPort*)item)->effect_port()] =
+				(QNEPort*)item;
+		}
+	}
+}
+
+void QNodesEditor::update_connections()
+{
+	QList<QGraphicsItem*> items = scene->items();
+
+	foreach(QGraphicsItem *item, items)
+	{
+		if (item->type() == Connection::Type)
+		{
+			((Connection*)item)->update_path();
+		}
+	}
 }
 
 bool QNodesEditor::eventFilter(QObject *o, QEvent *e)
@@ -72,14 +130,15 @@ bool QNodesEditor::eventFilter(QObject *o, QEvent *e)
 		{
 		case Qt::LeftButton:
 		{
-			QGraphicsItem *item = itemAt(me->scenePos());
+			QGraphicsItem *item = get_item_at(me->scenePos());
 			if (item && item->type() == QNEPort::Type)
 			{
-				conn = new QNEConnection(0, scene);
-				conn->setPort1((QNEPort*) item);
-				conn->setPos1(item->scenePos() + QPointF(((QNEPort*) item)->radius(), ((QNEPort*) item)->radius()));
-				conn->setPos2(me->scenePos());
-				conn->updatePath();
+				conn = new Connection(0, scene);
+				conn->set_port1((QNEPort*) item);
+				conn->set_pos1(((QNEPort*) item)->connection_pos());
+				conn->set_pos2(me->scenePos());
+				conn->update_path();
+				update_tool_tips();
 
 				return true;
 			} else if (item && item->type() == QNEBlock::Type)
@@ -92,9 +151,12 @@ bool QNodesEditor::eventFilter(QObject *o, QEvent *e)
 		}
 		case Qt::RightButton:
 		{
-			QGraphicsItem *item = itemAt(me->scenePos());
-			if (item && (item->type() == QNEConnection::Type || item->type() == QNEBlock::Type))
+			QGraphicsItem *item = get_item_at(me->scenePos());
+			if (item && (item->type() == Connection::Type || item->type() == QNEBlock::Type))
+			{
 				delete item;
+				update_tool_tips();
+			}
 			// if (selBlock == (QNEBlock*) item)
 				// selBlock = 0;
 			break;
@@ -105,8 +167,9 @@ bool QNodesEditor::eventFilter(QObject *o, QEvent *e)
 	{
 		if (conn)
 		{
-			conn->setPos2(me->scenePos());
-			conn->updatePath();
+			conn->set_pos2(me->scenePos());
+			conn->update_path();
+			update_tool_tips();
 			return true;
 		}
 		break;
@@ -115,27 +178,28 @@ bool QNodesEditor::eventFilter(QObject *o, QEvent *e)
 	{
 		if (conn && me->button() == Qt::LeftButton)
 		{
-			QGraphicsItem *item = itemAt(me->scenePos());
-			if (item && item->type() == QNEPort::Type)
+			QGraphicsItem *item = get_item_at(me->scenePos(),
+				QNEPort::Type);
+
+			if (item != 0)
 			{
-				QNEPort *port1 = conn->port1();
+				QNEPort *port1 = conn->get_port1();
 				QNEPort *port2 = (QNEPort*) item;
 
-//				if (port1->block() != port2->block() && port1->isOutput() != port2->isOutput() && !port1->isConnected(port2) && port1->can_connect(port2))
 				if (port1->can_connect(port2))
 				{
-					conn->setPos2(port2->scenePos() +
-						QPointF(port2->radius(),
-							port2->radius()));
-					conn->setPort2(port2);
-					conn->updatePath();
+					conn->set_pos2(port2->connection_pos());
+					conn->set_port2(port2);
+					conn->update_path();
 					conn = 0;
+					update_tool_tips();
 					return true;
 				}
 			}
 
 			delete conn;
 			conn = 0;
+			update_tool_tips();
 			return true;
 		}
 		break;

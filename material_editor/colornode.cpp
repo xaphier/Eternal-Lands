@@ -2,29 +2,20 @@
 #include <QColorDialog>
 #include "qneport.hpp"
 
-ColorNode::ColorNode(el::EffectConstant* effect_constant,
-	QString name, QGraphicsItem* parent, QGraphicsScene* scene):
-	QNEBlock(parent, scene), m_effect_constant(effect_constant)
+ColorNode::ColorNode(const el::EffectNodesSharedPtr &effect_nodes,
+	el::EffectConstant* effect_constant, QString name,
+	QGraphicsItem* parent, QGraphicsScene* scene):
+	BasicNode(effect_nodes, effect_constant, name, parent, scene),
+	m_effect_constant(effect_constant)
 {
-	addPort(name, 0, QNEPort::NamePort);
-
 	m_pixmap = addPort("", 0, QNEPort::ImagePort);
 
-	BOOST_FOREACH(el::EffectNodePort &port, effect_constant->get_ports())
-	{
-		if (port.get_input())
-		{
-			addInputPort(&port, QString::fromUtf8(
-				port.get_description().get().c_str()));
-		}
-		else
-		{
-			addOutputPort(&port, QString::fromUtf8(
-				port.get_description().get().c_str()));
-		}
-	}
+	init_ports();
 
-	select_color();
+	m_pixmap->set_color(QColor(m_effect_constant->get_value().r,
+		m_effect_constant->get_value().g,
+		m_effect_constant->get_value().b,
+		m_effect_constant->get_value().a));
 }
 
 ColorNode::~ColorNode()

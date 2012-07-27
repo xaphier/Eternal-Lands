@@ -25,6 +25,14 @@ namespace eternal_lands
 	class XmlUtil
 	{
 		public:
+			static boost::uuids::uuid get_uuid_value(
+				const xmlNodePtr node);
+			static glm::ivec2 get_ivec2_value(
+				const xmlNodePtr node);
+			static glm::ivec3 get_ivec3_value(
+				const xmlNodePtr node);
+			static glm::ivec4 get_ivec4_value(
+				const xmlNodePtr node);
 			static glm::vec2 get_vec2_value(const xmlNodePtr node);
 			static glm::vec3 get_vec3_value(const xmlNodePtr node);
 			static glm::vec4 get_vec4_value(const xmlNodePtr node);

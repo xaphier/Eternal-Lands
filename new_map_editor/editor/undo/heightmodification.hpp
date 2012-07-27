@@ -29,7 +29,6 @@ namespace eternal_lands
 			HeightModification(const HeightVector &heights,
 				const Uint32 edit_id);
 			virtual ~HeightModification() throw();
-			virtual ModificationType get_type() const;
 			virtual bool undo(EditorMapData &editor);
 
 	};

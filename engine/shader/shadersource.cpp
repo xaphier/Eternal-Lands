@@ -32,6 +32,10 @@ namespace eternal_lands
 
 	}
 
+	ShaderSource::ShaderSource()
+	{
+	}
+
 	ShaderSource::ShaderSource(const boost::uuids::uuid &uuid):
 		m_uuid(uuid)
 	{

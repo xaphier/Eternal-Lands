@@ -53,9 +53,19 @@ namespace eternal_lands
 		return m_undo.undo(m_data);
 	}
 
+	bool Editor::add_needed(const Uint32 id, const ModificationType type)
+	{
+		return m_undo.add_needed(m_edit_id, id, type);
+	}
+
 	void Editor::change_object(const ModificationType type,
 		const EditorObjectDescription &object_description)
 	{
+		if (!add_needed(object_description.get_id(), type))
+		{
+			return;
+		}
+
 		ModificationAutoPtr modification(new ObjectModification(
 			object_description, type, m_edit_id));
 
@@ -65,6 +75,11 @@ namespace eternal_lands
 	void Editor::change_light(const ModificationType type,
 		const LightData &light_data)
 	{
+		if (!add_needed(light_data.get_id(), type))
+		{
+			return;
+		}
+
 		ModificationAutoPtr modification(new LightModification(
 			light_data, type, m_edit_id));
 
@@ -83,11 +98,14 @@ namespace eternal_lands
 			return;
 		}
 
-		ModificationAutoPtr modification(new TerrainMapModification(
-			tmp, index, mt_terrain_albedo_map_changed,
-			get_edit_id()));
+		if (add_needed(index, mt_terrain_albedo_map_changed))
+		{
+			ModificationAutoPtr modification(new
+				TerrainMapModification(tmp, index,
+				mt_terrain_albedo_map_changed, get_edit_id()));
 
-		m_undo.add(modification);
+			m_undo.add(modification);
+		}
 
 		m_data.set_terrain_albedo_map(str, index);
 	}
@@ -99,18 +117,24 @@ namespace eternal_lands
 		Uint16 tmp;
 
 		offset = m_data.get_tile_offset(point);
-		tmp = m_data.get_tile(offset[0], offset[1]);
+		tmp = m_data.get_tile(offset.x, offset.y);
 
-		if (tile != tmp)
+		if (tile == tmp)
+		{
+			return;
+		}
+
+		if (add_needed(offset.x + (offset.y << 16),
+			mt_tile_texture_changed))
 		{
 			ModificationAutoPtr modification(
 				new GroundTileModification(offset, tmp,
 					get_edit_id()));
 
 			m_undo.add(modification);
-
-			m_data.set_tile(offset[0], offset[1], tile);
 		}
+
+		m_data.set_tile(offset[0], offset[1], tile);
 	}
 
 	void Editor::add_3d_object(const glm::vec3 &position,
@@ -193,10 +217,14 @@ namespace eternal_lands
 
 	void Editor::set_ambient(const glm::vec3 &color)
 	{
-		ModificationAutoPtr modification(new AmbientModification(
-			m_data.get_ambient(), get_edit_id()));
+		if (add_needed(0, mt_scene_ambient_changed))
+		{
+			ModificationAutoPtr modification(new
+				AmbientModification(m_data.get_ambient(),
+				get_edit_id()));
 
-		m_undo.add(modification);
+			m_undo.add(modification);
+		}
 
 		m_data.set_ambient(color);
 	}

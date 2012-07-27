@@ -64,6 +64,9 @@ namespace eternal_lands
 				const EditorBrushType brush_type,
 				const Uint16 id);
 */
+			bool add_needed(const Uint32 id,
+				const ModificationType type);
+
 		public:
 			Editor(const GlobalVarsSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);

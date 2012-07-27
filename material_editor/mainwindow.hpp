@@ -36,6 +36,10 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void add_output();
 		void change_texture(const int index);
 		void texture_unit_changed(const int value);
+		void new_data();
+		void load();
+		void save();
+		void save_as();
 
 	public:
 		MainWindow(QWidget *parent = 0);

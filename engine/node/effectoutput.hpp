@@ -25,11 +25,18 @@ namespace eternal_lands
 
 	class EffectOutput: public EffectNode
 	{
+		friend class EffectNodes;
 		private:
+			EffectOutput();
 			virtual Uint16 get_initial_value_count() const;
 
+		protected:
+			virtual void save_xml(const XmlWriterSharedPtr &writer);
+			virtual void load_xml(const xmlNodePtr node);
+
 		public:
-			EffectOutput(const String &name, const Uint32 id);
+			EffectOutput(const String &name, const Uint32 id,
+				Mt19937RandomUuidGenerator &uuid_generator);
 			virtual ~EffectOutput() noexcept;
 			void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,

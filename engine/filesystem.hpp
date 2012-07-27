@@ -49,6 +49,8 @@ namespace eternal_lands
 			bool get_file_if_readable(const String &file_name,
 				ReaderSharedPtr &reader);
 			String get_file_string(const String &file_name);
+			StringSet get_files(const String &dir,
+				const String &pattern) const;
 			void clear();
 			static String get_file_name(const String &file_name);
 			static String get_dir_name(const String &file_name);

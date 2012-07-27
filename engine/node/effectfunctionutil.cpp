@@ -77,13 +77,13 @@ namespace eternal_lands
 			EffectFunctionTypeData(String(UTF8("radians")),
 				String(UTF8("radians converts a quantity, "
 					"specified in degrees into radians.\n"
-					"That is, the return value is \u03A0 *"
+					"That is, the return value is \u03C0 *"
 					" degrees / 180")), false, true),
 			EffectFunctionTypeData(String(UTF8("degrees")),
 				String(UTF8("degrees converts a quantity, "
 					"specified in radians into degrees.\n"
 					"That is, the return value is 180 * "
-					"radians / \u03A0")), false, true),
+					"radians / \u03C0")), false, true),
 			EffectFunctionTypeData(String(UTF8("sin")),
 				String(UTF8("sin returns the trigonometric "
 					"sine of angle.")), false, true),
@@ -97,14 +97,14 @@ namespace eternal_lands
 				String(UTF8("atan returns the angle whose "
 					"trigonometric sine is x.\n"
 					"The range of values returned by asin"
-					" is (- \u03A0 / 2, \u03A0 / 2).\n"
+					" is (- \u03C0 / 2, \u03C0 / 2).\n"
 					"The result is undefined if |x|>1.")),
 				false, true),
 			EffectFunctionTypeData(String(UTF8("acos")),
 				String(UTF8("atan returns the angle whose "
 					"trigonometric cosine is x.\n"
 					"The range of values returned by acos "
-					"is (0, \u03A0).\n"
+					"is (0, \u03C0).\n"
 					"The result is undefined if |x|>1.")),
 				false, true),
 			EffectFunctionTypeData(String(UTF8("atan")),
@@ -114,7 +114,7 @@ namespace eternal_lands
 					"atan returns the angle whose tangent"
 					" is y_over_x.\n"
 					"Values returned are in the range "
-					"(- \u03A0 / 2, \u03A0 / 2).")),
+					"(- \u03C0 / 2, \u03C0 / 2).")),
 				false, true),
 			EffectFunctionTypeData(String(UTF8("atan2")),
 				String(UTF8("atan returns the angle whose "
@@ -123,8 +123,8 @@ namespace eternal_lands
 					"determine the quadrant that the angle"
 					" lies in.\n"
 					"The values returned by atan in this "
-					"case are in the range (−\u03A0, "
-					"\u03A0).\n"
+					"case are in the range (−\u03C0, "
+					"\u03C0).\n"
 					"Results are undefined if x is zero.")),
 				false, true),
 			EffectFunctionTypeData(String(UTF8("sinh")),

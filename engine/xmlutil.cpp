@@ -13,6 +13,75 @@
 namespace eternal_lands
 {
 
+	glm::ivec2 XmlUtil::get_ivec2_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::ivec2 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::ivec2();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::ivec3 XmlUtil::get_ivec3_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::ivec3 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::ivec3();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::ivec4 XmlUtil::get_ivec4_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::ivec4 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::ivec4();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
 	glm::vec2 XmlUtil::get_vec2_value(const xmlNodePtr node)
 	{
 		StringStream str;
@@ -327,6 +396,24 @@ namespace eternal_lands
 		}
 
 		return boost::lexical_cast<float>(node->children->content);
+	}
+
+	boost::uuids::uuid XmlUtil::get_uuid_value(const xmlNodePtr node)
+	{
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return boost::uuids::uuid();
+		}
+
+		return boost::lexical_cast<boost::uuids::uuid>(
+			node->children->content);
 	}
 
 	Sint32 XmlUtil::get_sint32_value(const xmlNodePtr node)

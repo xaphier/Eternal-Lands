@@ -60,6 +60,10 @@ namespace eternal_lands
 			virtual bool get_has_file(const String &file_name)
 				const;
 
+			virtual void get_files(const String &dir,
+				const String &pattern, StringSet &files)
+				const;
+
 	};
 
 }

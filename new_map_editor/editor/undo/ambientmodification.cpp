@@ -12,17 +12,14 @@ namespace eternal_lands
 {
 
 	AmbientModification::AmbientModification(const glm::vec3 &color,
-		const Uint32 edit_id): Modification(edit_id), m_color(color)
+		const Uint32 edit_id):
+		Modification(edit_id, 0, mt_scene_ambient_changed),
+		m_color(color)
 	{
 	}
 
 	AmbientModification::~AmbientModification() throw()
 	{
-	}
-
-	ModificationType AmbientModification::get_type() const
-	{
-		return mt_scene_ambient_changed;
 	}
 
 	bool AmbientModification::do_merge(Modification* modification)

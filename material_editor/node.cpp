@@ -1,32 +1,22 @@
 #include "node.hpp"
 #include "qneport.hpp"
+#include "../engine/node/effectnode.hpp"
+#include "../engine/node/effectnodeport.hpp"
 #include "../engine/shader/shadersourceparameter.hpp"
 
-Node::Node(el::EffectNodePtr effect_node, QString name,
-	QGraphicsItem* parent, QGraphicsScene* scene): QNEBlock(parent, scene),
+Node::Node(const el::EffectNodesSharedPtr &effect_nodes,
+	el::EffectNodePtr effect_node, QString name, QGraphicsItem* parent,
+	QGraphicsScene* scene):
+	BasicNode(effect_nodes, effect_node, name, parent, scene),
 	m_effect_node(effect_node)
 {
-	addPort(name, 0, QNEPort::NamePort);
-
 	if (!effect_node->get_name().get().empty())
 	{
 		addPort(QString::fromUtf8(effect_node->get_name().get(
 			).c_str()), 0, QNEPort::TypePort);
 	}
 
-	BOOST_FOREACH(el::EffectNodePort &port, effect_node->get_ports())
-	{
-		if (port.get_input())
-		{
-			addInputPort(&port, QString::fromUtf8(
-				port.get_description().get().c_str()));
-		}
-		else
-		{
-			addOutputPort(&port, QString::fromUtf8(
-				port.get_description().get().c_str()));
-		}
-	}
+	init_ports();
 }
 
 Node::~Node()
