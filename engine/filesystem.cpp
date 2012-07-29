@@ -77,6 +77,8 @@ namespace eternal_lands
 			return String(name.get() + str.get());
 		}
 
+		std::ofstream log_stream;
+
 #ifdef	WINDOWS
 		void scan_directory(const String &base_name,
 			const String &dir_name, const String &pattern,
@@ -90,7 +92,7 @@ namespace eternal_lands
 
 			actual_search = append_dir(String(path), pattern);
 
-			std::cout << "actual_search: " << actual_search << std::endl;
+			log_stream << "actual_search: " << actual_search << std::endl;
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
@@ -101,7 +103,7 @@ namespace eternal_lands
 				//If no files are found
 				if (h_find == -1L)
 				{
-					std::cout << "no files are found" << std::endl;
+					log_stream << "no files are found" << std::endl;
 
 					//Done checking this folder
 					break;
@@ -125,7 +127,7 @@ namespace eternal_lands
 					continue;
 				}
 
-				std::cout << "file name: " << file_name << std::endl;
+				log_stream << "file name: " << file_name << std::endl;
 
 				files.insert(String(file_name));
 			}
@@ -136,7 +138,7 @@ namespace eternal_lands
 			actual_search = append_dir(String(path),
 				String(UTF8("*")));
 
-			std::cout << "actual_search dir: " << actual_search << std::endl;
+			log_stream << "actual_search dir: " << actual_search << std::endl;
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
@@ -147,7 +149,7 @@ namespace eternal_lands
 				//If no files are found
 				if (h_find == -1L)
 				{
-					std::cout << "no files are found" << std::endl;
+					log_stream << "no files are found" << std::endl;
 
 					//Done checking this folder
 					break;
@@ -168,7 +170,7 @@ namespace eternal_lands
 				//If the file is a folder
 				if (find_data.attrib & _A_SUBDIR)
 				{
-					std::cout << "dir name: " << file_name << std::endl;
+					log_stream << "dir name: " << file_name << std::endl;
 
 					scan_directory(base_name,
 						String(file_name), pattern,
@@ -365,10 +367,14 @@ namespace eternal_lands
 		void DirArchive::get_files(const String &dir,
 			const String &pattern, StringSet &files) const
 		{
+			log_stream.open("files.log");
+
 			scan_directory(String(utf8_to_string(get_dir(
 					get_name()))),
 				String(utf8_to_string(get_dir(dir))), pattern,
 					files);
+
+			log_stream.close();
 		}
 
 		Uint8Array20 get_file_sha1(
