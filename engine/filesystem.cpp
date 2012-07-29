@@ -125,7 +125,8 @@ namespace eternal_lands
 			}
 			while (_findnext(h_find, &find_data));
 
-			actual_search = append_dir(path, String(UTF8("*")));
+			actual_search = append_dir(String(path),
+				String(UTF8("*")));
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
@@ -155,7 +156,7 @@ namespace eternal_lands
 				//If the file is a folder
 				if (find_data.attrib & _A_SUBDIR)
 				{
-					scandirectory(base_name,
+					scan_directory(base_name,
 						String(file_name), pattern);
 				}
 			}
