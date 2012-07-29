@@ -157,7 +157,8 @@ namespace eternal_lands
 				if (find_data.attrib & _A_SUBDIR)
 				{
 					scan_directory(base_name,
-						String(file_name), pattern);
+						String(file_name), pattern,
+						files);
 				}
 			}
 			while (_findnext(h_find, &find_data));
