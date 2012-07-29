@@ -41,22 +41,7 @@ namespace eternal_lands
 			~FrameBufferBuilder() noexcept;
 			AbstractFrameBufferSharedPtr build(
 				const String &name, const Uint32 width,
-				const Uint32 height, const Uint32 depth,
-				const Uint16 mipmaps,
-				const TextureTargetType target,
-				const TextureFormatType format,
-				const bool depth_buffer);
-			AbstractFrameBufferSharedPtr build_filter(
-				const String &name, const Uint32 width,
-				const Uint32 height,
-				const TextureFormatType format);
-			AbstractFrameBufferSharedPtr build(
-				const String &name, const Uint32 width,
-				const Uint32 height, const Uint32 depth,
-				const Uint16 mipmaps, const Uint16 samples,
-				const TextureTargetType target,
-				const TextureFormatType format,
-				const bool layered, const bool depth_buffer);
+				const Uint32 height, const bool depth_buffer);
 
 	};
 

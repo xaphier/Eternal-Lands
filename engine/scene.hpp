@@ -62,11 +62,15 @@ namespace eternal_lands
 			ObjectVisitor m_shadow_objects;
 			LightVisitor m_visible_lights;
 			MapSharedPtr m_map;
-			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractMeshSharedPtr m_screen_quad;
+			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractFrameBufferSharedPtr m_clipmap_frame_buffer;
 			AbstractFrameBufferSharedPtr m_light_frame_buffer;
 			AbstractFrameBufferSharedPtr m_scene_frame_buffer;
+			TextureSharedPtr m_shadow_texture;
+			TextureSharedPtr m_clipmap_texture;
+			TextureSharedPtr m_light_texture;
+			TextureSharedPtr m_scene_texture;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_positions_array;
 			Vec4Vector m_light_colors_array;

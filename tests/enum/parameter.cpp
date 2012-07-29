@@ -7,7 +7,7 @@
 
 #include "prerequisites.hpp"
 #include "shader/parameterutil.hpp"
-#define BOOST_TEST_MODULE pack
+#define BOOST_TEST_MODULE parameterutil
 #include <boost/test/unit_test.hpp>
 
 namespace el = eternal_lands;

@@ -3,7 +3,6 @@
  <name>relief_mapping</name>
  <types>
   <type>uv_depth_mapping</type>
-  <type>normal_mapping</type>
  </types>
  <shader_source_datas>
   <shader_source_data>

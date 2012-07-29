@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="9">
+<shader_source class_id="0" tracking_level="0" version="1">
+	<px class_id="1" tracking_level="1" version="0" object_id="_0">
+		<types class_id="2" tracking_level="0" version="0">
+			<count>1</count>
+			<item_version>0</item_version>
+			<item>15</item>
+		</types>
+		<name class_id="3" tracking_level="0" version="0">
+			<str>disabled</str>
+		</name>
+		<datas class_id="4" tracking_level="0" version="0">
+			<count>1</count>
+			<item_version>0</item_version>
+			<item class_id="5" tracking_level="0" version="0">
+				<parameters class_id="6" tracking_level="0" version="0">
+					<count>1</count>
+					<item_version>0</item_version>
+					<item class_id="7" tracking_level="0" version="0">
+						<source>
+							<str>disabled_specular_mapping</str>
+						</source>
+						<name>
+							<str>specular</str>
+						</name>
+						<type>14</type>
+						<qualifier>1</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+				</parameters>
+				<version>0</version>
+				<source>
+					<str>specular = 0.0;
+</str>
+				</source>
+			</item>
+		</datas>
+	</px>
+</shader_source>
+</boost_serialization>
+

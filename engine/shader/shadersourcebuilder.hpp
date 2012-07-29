@@ -150,9 +150,6 @@ namespace eternal_lands
 			void load_shader_source(
 				const FileSystemSharedPtr &file_system,
 				const String &file_name);
-			void load_shader_sources(
-				const FileSystemSharedPtr &file_system,
-				const xmlNodePtr node);
 			ShaderSourceTypeStringMap build_sources(
 				const EffectDescription &description) const;
 			bool check(const ShaderSourceTypeStringPair &source,
@@ -160,6 +157,9 @@ namespace eternal_lands
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const xmlNodePtr node);
 			void load_sources(const xmlNodePtr node);
+			void load_shader_sources(
+				const FileSystemSharedPtr &file_system,
+				const String &dir);
 
 		public:
 			ShaderSourceBuilder(

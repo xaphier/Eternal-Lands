@@ -88,7 +88,7 @@ namespace eternal_lands
 
 			path = append_dir(base_name, dir_name);
 
-			actual_search = append_dir(path, pattern);
+			actual_search = append_dir(String(path), pattern);
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
@@ -97,13 +97,13 @@ namespace eternal_lands
 			do
 			{
 				//If no files are found
-				if (h_find == INVALID_HANDLE_VALUE)
+				if (h_find == -1L)
 				{
 					//Done checking this folder
 					break;
 				}
 
-				file_name = find_data.cFileName;
+				file_name = find_data.name;
 
 				//If the file is a self-reference
 				if ((file_name == ".") || (file_name == ".."))
@@ -112,11 +112,11 @@ namespace eternal_lands
 					continue;
 				}
 
-				file_name = append_dir(dir_name, file_name);
+				file_name = append_dir(dir_name, 
+					String(file_name));
 
 				//If the file is a folder
-				if (find_data.dwFileAttributes &
-					FILE_ATTRIBUTE_DIRECTORY)
+				if (find_data.attrib & _A_SUBDIR)
 				{
 					continue;
 				}
@@ -125,7 +125,7 @@ namespace eternal_lands
 			}
 			while (_findnext(h_find, &find_data));
 
-			actual_search = append_dir(path, "*");
+			actual_search = append_dir(path, String(UTF8("*"));
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
@@ -134,13 +134,13 @@ namespace eternal_lands
 			do
 			{
 				//If no files are found
-				if (h_find == INVALID_HANDLE_VALUE)
+				if (h_find == -1L)
 				{
 					//Done checking this folder
 					break;
 				}
 
-				file_name = find_data.cFileName;
+				file_name = find_data.name;
 
 				//If the file is a self-reference
 				if ((file_name == ".") || (file_name == ".."))
@@ -149,14 +149,14 @@ namespace eternal_lands
 					continue;
 				}
 
-				file_name = append_dir(dir_name, file_name);
+				file_name = append_dir(dir_name,
+					String(file_name));
 
 				//If the file is a folder
-				if (find_data.dwFileAttributes &
-					FILE_ATTRIBUTE_DIRECTORY)
+				if (find_data.attrib & _A_SUBDIR)
 				{
-					scandirectory(base_name, file_name,
-						pattern);
+					scandirectory(base_name,
+						String(file_name), pattern);
 				}
 			}
 			while (_findnext(h_find, &find_data));

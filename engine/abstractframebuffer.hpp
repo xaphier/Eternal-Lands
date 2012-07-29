@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "framebufferattachmentutil.hpp"
 
 /**
  * @file
@@ -25,58 +26,67 @@ namespace eternal_lands
 	class AbstractFrameBuffer: public boost::noncopyable
 	{
 		private:
+			typedef std::map<FrameBufferAttachmentType,
+				TextureSharedPtr>
+				FrameBufferAttachmentTypeTextureSharedPtrMap;
 			const String m_name;
-			TextureSharedPtr m_texture;
+			FrameBufferAttachmentTypeTextureSharedPtrMap m_textures;
 			const Uint32 m_width;
 			const Uint32 m_height;
-			const Uint32 m_depth;
-			bool m_depth_buffer;
-			bool m_stencil_buffer;
-			bool m_color_buffer;
+			BitSet16 m_attachments;
+
+			virtual void detach_texture(
+				const FrameBufferAttachmentType attachment) = 0;
+			virtual void attach_texture(
+				const TextureSharedPtr &texture,
+				const FrameBufferAttachmentType attachment,
+				const Uint16 layer) = 0;
+			virtual void do_attach_depth_render_buffer(
+				bool &depth, bool &stencil) = 0;
 
 		protected:
 			AbstractFrameBuffer(const String &name,
-				const Uint32 width, const Uint32 height,
-				const Uint32 depth);
-
-			inline void set_depth_buffer(const bool depth_buffer)
-			{
-				m_depth_buffer = depth_buffer;
-			}
-
-			inline void set_stencil_buffer(
-				const bool stencil_buffer)
-			{
-				m_stencil_buffer = stencil_buffer;
-			}
-
-			inline void set_color_buffer(const bool color_buffer)
-			{
-				m_color_buffer = color_buffer;
-			}
+				const Uint32 width, const Uint32 height);
 
 		public:
 			virtual ~AbstractFrameBuffer() noexcept;
-			virtual void bind(const Uint32 layer) = 0;
-			virtual void bind_texture(const Uint32 layer) = 0;
-			virtual void blit() = 0;
+			virtual void bind() = 0;
+			virtual void clear(const float depth,
+				const GLint stencil) = 0;
 			virtual void clear(const glm::vec4 &color,
-				const float depth) = 0;
-			virtual void clear(const glm::vec4 &color) = 0;
+				const Uint16 index) = 0;
 			virtual void unbind() = 0;
 			virtual void blit_to_back_buffer(const glm::uvec4 &rect,
 				const Uint16 layer, const bool color,
 				const bool depth, const bool stencil) = 0;
+			void attach_depth_render_buffer();
+			void attach(const TextureSharedPtr &texture,
+				const FrameBufferAttachmentType attachment,
+				const Uint16 layer);
+			bool detach(const TextureSharedPtr &texture);
+			bool detach(
+				const FrameBufferAttachmentType attachment);
+			bool get_is_attached(const TextureSharedPtr &texture)
+				const;
+			bool get_has_texture_attachment(
+				const FrameBufferAttachmentType attachment)
+				const;
+			const TextureSharedPtr &get_texture(
+				const FrameBufferAttachmentType attachment)
+				const;
+			virtual void set_draw_buffer(const Uint16 index,
+				const bool enabled) = 0;
 
-			inline void set_view_port()
+			inline bool get_has_attachment(
+				const FrameBufferAttachmentType attachment)
+				const noexcept
 			{
-				glViewport(0, 0, get_width(), get_height());
+				return m_attachments[attachment];
 			}
 
-			inline const TextureSharedPtr &get_texture() const
-				noexcept
+			inline void set_view_port() noexcept
 			{
-				return m_texture;
+				glViewport(0, 0, get_width(), get_height());
 			}
 
 			inline Uint32 get_width() const noexcept
@@ -89,24 +99,26 @@ namespace eternal_lands
 				return m_height;
 			}
 
-			inline Uint32 get_depth() const noexcept
+			inline bool get_depth() const noexcept
 			{
-				return m_depth;
+				return m_attachments[fbat_depth];
 			}
 
-			inline bool get_depth_buffer() const noexcept
+			inline bool get_stencil() const noexcept
 			{
-				return m_depth_buffer;
+				return m_attachments[fbat_stencil];
 			}
 
-			inline bool get_stencil_buffer() const noexcept
+			inline bool get_color() const noexcept
 			{
-				return m_stencil_buffer;
-			}
+				BitSet16 result;
 
-			inline bool get_color_buffer() const noexcept
-			{
-				return m_color_buffer;
+				result = m_attachments;
+
+				result[fbat_depth] = false;
+				result[fbat_stencil] = false;
+
+				return result.any();
 			}
 
 			inline const String &get_name() const noexcept

@@ -13,111 +13,43 @@ namespace eternal_lands
 {
 
 	ExtSimpleFrameBuffer::ExtSimpleFrameBuffer(const String &name,
-		const Uint32 width, const Uint32 height, const Uint32 depth,
-		const Uint16 mipmaps, const TextureTargetType target,
-		const TextureFormatType format, const bool depth_buffer):
-		AbstractFrameBuffer(name, width, height, depth), m_layer(0)
+		const Uint32 width, const Uint32 height,
+		const bool depth_buffer):
+		AbstractFrameBuffer(name, width, height)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
 		m_frame_buffer.bind();
 
-		get_texture()->set_target(target);
-		get_texture()->set_format(format);
-		get_texture()->set_wrap_s(twt_clamp);
-		get_texture()->set_wrap_t(twt_clamp);
-		get_texture()->set_wrap_r(twt_clamp);
-
-		get_texture()->set_mipmap_count(mipmaps);
-
-		DEBUG_CHECK_GL_ERROR();
-
-		get_texture()->init(get_width(), get_height(), get_depth(),
-			mipmaps);
-
-		DEBUG_CHECK_GL_ERROR();
-
-		set_stencil_buffer(false);
-
-		if (TextureFormatUtil::get_depth(format))
+		if (depth_buffer)
 		{
-			set_depth_buffer(true);
-			set_color_buffer(false);
-
-			get_texture()->attach_ext(GL_DEPTH_ATTACHMENT_EXT, 0,
-				0);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			if (TextureFormatUtil::get_stencil(format))
+			if (GLEW_EXT_packed_depth_stencil)
 			{
-				set_stencil_buffer(true);
+				m_render_buffer.reset(new ExtRenderBuffer(
+					get_width(), get_height(),
+					tft_depth24_stencil8));
+			}
+			else
+			{
+				m_render_buffer.reset(new ExtRenderBuffer(
+					get_width(), get_height(),
+					tft_depth32));
 
-				get_texture()->attach_ext(
-					GL_STENCIL_ATTACHMENT_EXT, 0, 0);
 			}
 
-			glDrawBuffer(GL_NONE);
+			CHECK_GL_ERROR_NAME(get_name());
 
-			DEBUG_CHECK_GL_ERROR();
-		}
-		else
-		{
-			set_depth_buffer(depth_buffer);
-			set_color_buffer(true);
-
-			get_texture()->attach_ext(GL_COLOR_ATTACHMENT0_EXT, 0,
-				0);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			if (get_depth_buffer())
-			{
-				if (GLEW_EXT_packed_depth_stencil)
-				{
-					set_stencil_buffer(true);
-
-					m_render_buffer.reset(
-						new ExtRenderBuffer(
-							get_width(),
-							get_height(),
-							tft_depth24_stencil8));
-
-					DEBUG_CHECK_GL_ERROR();
-
-					m_render_buffer->bind_to_framebuffer(
-						GL_DEPTH_ATTACHMENT_EXT);
-
-					DEBUG_CHECK_GL_ERROR();
-
-					m_render_buffer->bind_to_framebuffer(
-						GL_STENCIL_ATTACHMENT_EXT);
-				}
-				else
-				{
-					m_render_buffer.reset(
-						new ExtRenderBuffer(
-							get_width(),
-							get_height(),
-							tft_depth32));
-
-					DEBUG_CHECK_GL_ERROR();
-
-					m_render_buffer->bind_to_framebuffer(
-						GL_DEPTH_ATTACHMENT_EXT);
-				}
-			}
-
-			DEBUG_CHECK_GL_ERROR();
-
-			glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+			attach_depth_render_buffer();
 		}
 
+		CHECK_GL_ERROR_NAME(get_name());
+
+		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 
-		DEBUG_CHECK_GL_ERROR();
+		CHECK_GL_ERROR_NAME(get_name());
 
-		m_frame_buffer.check_status();
+//		m_frame_buffer.check_status();
 		m_frame_buffer.unbind();
 
 		DEBUG_CHECK_GL_ERROR();
@@ -127,83 +59,141 @@ namespace eternal_lands
 	{
 	}
 
-	void ExtSimpleFrameBuffer::do_bind(const Uint32 layer)
+	void ExtSimpleFrameBuffer::detach_texture(
+		const FrameBufferAttachmentType attachment)
+	{
+		GLenum gl_attachment;
+
+		switch (attachment)
+		{
+			case fbat_depth:
+				gl_attachment = GL_DEPTH_ATTACHMENT_EXT;
+				break;
+			case fbat_stencil:
+				gl_attachment = GL_STENCIL_ATTACHMENT_EXT;
+				break;
+			case fbat_color_0:
+				gl_attachment = GL_COLOR_ATTACHMENT0_EXT;
+				break;
+			case fbat_color_1:
+				gl_attachment = GL_COLOR_ATTACHMENT1_EXT;
+				break;
+			case fbat_color_2:
+				gl_attachment = GL_COLOR_ATTACHMENT2_EXT;
+				break;
+			case fbat_color_3:
+				gl_attachment = GL_COLOR_ATTACHMENT3_EXT;
+				break;
+			case fbat_color_4:
+				gl_attachment = GL_COLOR_ATTACHMENT4_EXT;
+				break;
+			case fbat_color_5:
+				gl_attachment = GL_COLOR_ATTACHMENT5_EXT;
+				break;
+			case fbat_color_6:
+				gl_attachment = GL_COLOR_ATTACHMENT6_EXT;
+				break;
+			case fbat_color_7:
+				gl_attachment = GL_COLOR_ATTACHMENT7_EXT;
+				break;
+			default:
+				return;
+		}
+
+		glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, gl_attachment,
+			0, 0, 0, 0);
+	}
+
+	void ExtSimpleFrameBuffer::attach_texture(
+		const TextureSharedPtr &texture,
+		const FrameBufferAttachmentType attachment,
+		const Uint16 layer)
+	{
+		GLenum gl_attachment;
+
+		switch (attachment)
+		{
+			case fbat_depth:
+				gl_attachment = GL_DEPTH_ATTACHMENT_EXT;
+				break;
+			case fbat_stencil:
+				gl_attachment = GL_STENCIL_ATTACHMENT_EXT;
+				break;
+			case fbat_color_0:
+				gl_attachment = GL_COLOR_ATTACHMENT0_EXT;
+				break;
+			case fbat_color_1:
+				gl_attachment = GL_COLOR_ATTACHMENT1_EXT;
+				break;
+			case fbat_color_2:
+				gl_attachment = GL_COLOR_ATTACHMENT2_EXT;
+				break;
+			case fbat_color_3:
+				gl_attachment = GL_COLOR_ATTACHMENT3_EXT;
+				break;
+			case fbat_color_4:
+				gl_attachment = GL_COLOR_ATTACHMENT4_EXT;
+				break;
+			case fbat_color_5:
+				gl_attachment = GL_COLOR_ATTACHMENT5_EXT;
+				break;
+			case fbat_color_6:
+				gl_attachment = GL_COLOR_ATTACHMENT6_EXT;
+				break;
+			case fbat_color_7:
+				gl_attachment = GL_COLOR_ATTACHMENT7_EXT;
+				break;
+			default:
+				return;
+		}
+
+		texture->attach_ext(gl_attachment, 0, layer);
+	}
+
+	void ExtSimpleFrameBuffer::bind()
 	{
 		m_frame_buffer.bind();
-
-		if (layer != get_layer())
-		{
-			get_texture()->attach_ext(GL_COLOR_ATTACHMENT0_EXT, 0,
-				layer);
-			m_layer = layer;
-		}
-
-		m_frame_buffer.check_status();
-	}
-
-	void ExtSimpleFrameBuffer::bind(const Uint32 layer)
-	{
-		do_bind(layer);
-	}
-
-	void ExtSimpleFrameBuffer::bind_texture(const Uint32 layer)
-	{
-		do_bind(layer);
-	}
-
-	void ExtSimpleFrameBuffer::blit()
-	{
-	}
-
-	void ExtSimpleFrameBuffer::clear(const glm::vec4 &color)
-	{
-		GLenum mask;
-
-		glClearColor(color.r, color.g, color.b, color.a);
-
-		mask = 0;
-
-		if (get_depth_buffer())
-		{
-			mask |= GL_DEPTH_BUFFER_BIT;
-		}
-
-		if (get_stencil_buffer())
-		{
-			mask |= GL_STENCIL_BUFFER_BIT;
-		}
-
-		if (get_color_buffer())
-		{
-			mask |= GL_COLOR_BUFFER_BIT;
-		}
-
-		glClear(mask);
 	}
 
 	void ExtSimpleFrameBuffer::clear(const glm::vec4 &color,
-		const float depth)
+		const Uint16 index)
 	{
-		GLenum mask;
+		assert(index == 0);
+
+		if (!get_color())
+		{
+			return;
+		}
 
 		glClearColor(color.r, color.g, color.b, color.a);
-		glClearDepth(depth);
+
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	void ExtSimpleFrameBuffer::clear(const float depth,
+		const GLint stencil)
+	{
+		GLbitfield mask;
 
 		mask = 0;
 
-		if (get_depth_buffer())
+		if (get_depth())
 		{
 			mask |= GL_DEPTH_BUFFER_BIT;
+
+			glClearDepth(depth);
 		}
 
-		if (get_stencil_buffer())
+		if (get_stencil())
 		{
 			mask |= GL_STENCIL_BUFFER_BIT;
+
+			glClearStencil(stencil);
 		}
 
-		if (get_color_buffer())
+		if (mask == 0)
 		{
-			mask |= GL_COLOR_BUFFER_BIT;
+			return;
 		}
 
 		glClear(mask);
@@ -227,12 +217,12 @@ namespace eternal_lands
 			mask |= GL_COLOR_BUFFER_BIT;
 		}
 
-		if (color)
+		if (depth)
 		{
 			mask |= GL_DEPTH_BUFFER_BIT;
 		}
 
-		if (color)
+		if (stencil)
 		{
 			mask |= GL_STENCIL_BUFFER_BIT;
 		}
@@ -252,6 +242,40 @@ namespace eternal_lands
 			rect.y, rect.z, rect.w, mask, GL_NEAREST);
 
 		glBindFramebufferEXT(GL_READ_FRAMEBUFFER_EXT, 0);
+	}
+
+	void ExtSimpleFrameBuffer::do_attach_depth_render_buffer(
+		bool &depth, bool &stencil)
+	{
+		if (m_render_buffer.get() == 0)
+		{
+			return;
+		}
+
+		m_render_buffer->bind_to_framebuffer(GL_DEPTH_ATTACHMENT_EXT);
+
+		depth = true;
+
+		if (GLEW_EXT_packed_depth_stencil)
+		{
+			m_render_buffer->bind_to_framebuffer(
+				GL_STENCIL_ATTACHMENT_EXT);
+
+			stencil = true;
+		}
+	}
+
+	void ExtSimpleFrameBuffer::set_draw_buffer(const Uint16 index,
+		const bool enabled)
+	{
+		if (enabled)
+		{
+			glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + index);
+		}
+		else
+		{
+			glDrawBuffer(GL_NONE);
+		}
 	}
 
 }

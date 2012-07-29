@@ -393,7 +393,10 @@ namespace eternal_lands
 	void Scene::build_shadow_map()
 	{
 		Uint32 shadow_map_width, shadow_map_height, shadow_map_size;
-		Uint16 mipmaps, samples, shadow_map_count;
+		Uint16 mipmaps, shadow_map_count;
+		TextureTargetType target;
+		TextureFormatType format;
+		bool depth_buffer;
 
 		m_shadow_update_mask = 0xFF;
 
@@ -410,37 +413,59 @@ namespace eternal_lands
 
 		mipmaps = 0;
 
-		if (!m_scene_view.get_exponential_shadow_maps())
-		{
-			m_shadow_frame_buffer = get_scene_resources(
-				).get_framebuffer_builder()->build(
-					String(UTF8("Shadow")),
-					shadow_map_width, shadow_map_height, 0,
-					0, ttt_texture_2d, tft_depth32, true);
-
-			return;
-		}
-
 		while ((1 << mipmaps) < shadow_map_size)
 		{
 			mipmaps++;
 		}
 
 		shadow_map_count = m_scene_view.get_shadow_map_count();
+		target = ttt_texture_2d_array;				
+		format = tft_r32f;
+		depth_buffer = true;
 
-		samples = 0;
-
-		if (get_global_vars()->get_use_multisample_shadows())
+		if (!m_scene_view.get_exponential_shadow_maps())
 		{
-			samples = 4;
+			shadow_map_count = 0;
+			mipmaps = 0;
+			target = ttt_texture_2d;
+			format = tft_depth32;
+			depth_buffer = false;
 		}
 
 		m_shadow_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
-				String(UTF8("Shadow")), shadow_map_width,
-				shadow_map_height, shadow_map_count,
-				mipmaps, samples, ttt_texture_2d_array,
-				tft_r32f, false, true);
+				String(UTF8("shadow")), shadow_map_width,
+				shadow_map_height, depth_buffer);
+
+		m_shadow_texture = boost::make_shared<Texture>(
+			String(UTF8("shadow")));
+
+		m_shadow_texture->set_target(target);
+		m_shadow_texture->set_format(format);
+		m_shadow_texture->set_wrap_s(twt_clamp);
+		m_shadow_texture->set_wrap_t(twt_clamp);
+		m_shadow_texture->set_wrap_r(twt_clamp);
+		m_shadow_texture->set_mipmap_count(mipmaps);
+		m_shadow_texture->init(shadow_map_width, shadow_map_height,
+			shadow_map_count, mipmaps);
+
+		m_shadow_frame_buffer->bind();
+
+		if (depth_buffer)
+		{
+			m_shadow_frame_buffer->attach(m_shadow_texture,
+				fbat_color_0, 0);
+			m_shadow_frame_buffer->attach_depth_render_buffer();
+			m_shadow_frame_buffer->set_draw_buffer(0, true);
+		}
+		else
+		{
+			m_shadow_frame_buffer->attach(m_shadow_texture,
+				fbat_depth, 0);
+			m_shadow_frame_buffer->set_draw_buffer(0, false);
+		}
+
+		m_shadow_frame_buffer->unbind();
 	}
 
 	void Scene::build_terrain_map()
@@ -481,13 +506,30 @@ namespace eternal_lands
 				String(UTF8("terrain")),
 				get_global_vars()->get_clipmap_size(),
 				get_global_vars()->get_clipmap_size(),
-				m_clipmap.get_slices(), mipmaps, target,
-				format, false);
+				false);
+
+		m_clipmap_texture = boost::make_shared<Texture>(
+			String(UTF8("terrain")));
+
+		m_clipmap_texture->set_target(target);
+		m_clipmap_texture->set_format(format);
+		m_clipmap_texture->set_wrap_s(twt_clamp);
+		m_clipmap_texture->set_wrap_t(twt_clamp);
+		m_clipmap_texture->set_wrap_r(twt_clamp);
+		m_clipmap_texture->set_mipmap_count(mipmaps);
+		m_clipmap_texture->init(get_global_vars()->get_clipmap_size(),
+			get_global_vars()->get_clipmap_size(),
+			m_clipmap.get_slices(), mipmaps);
+
+		m_clipmap_frame_buffer->bind();
+		m_clipmap_frame_buffer->attach(m_clipmap_texture, fbat_color_0,
+			0);
+		m_clipmap_frame_buffer->set_draw_buffer(0, true);
+		m_clipmap_frame_buffer->unbind();
 
 		if (m_map.get() != nullptr)
 		{
-			m_map->set_clipmap_texture(
-				m_clipmap_frame_buffer->get_texture());
+			m_map->set_clipmap_texture(m_clipmap_texture);
 		}
 	}
 
@@ -1085,8 +1127,21 @@ namespace eternal_lands
 
 		m_state_manager.init();
 
-		m_shadow_frame_buffer->bind(index);
-		m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+		if (m_scene_view.get_exponential_shadow_maps())
+		{
+			m_shadow_frame_buffer->attach(m_shadow_texture,
+				fbat_color_0, index);
+		}
+		else
+		{
+			m_shadow_frame_buffer->attach(m_shadow_texture,
+				fbat_depth, index);
+		}
+
+		m_shadow_frame_buffer->clear(glm::vec4(1e38f), 0);
+		m_shadow_frame_buffer->clear(1.0f, 0);
+
+		DEBUG_CHECK_GL_ERROR();
 
 		STRING_MARKER(UTF8("drawing shadows %1%"), index);
 
@@ -1121,8 +1176,6 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_shadow_frame_buffer->blit();
-
 		m_state_manager.unbind_all();
 	}
 
@@ -1131,6 +1184,8 @@ namespace eternal_lands
 		Uint16 i;
 
 		DEBUG_CHECK_GL_ERROR();
+
+		m_shadow_frame_buffer->bind();
 
 		m_shadow_frame_buffer->set_view_port();
 
@@ -1152,10 +1207,25 @@ namespace eternal_lands
 			}
 			else
 			{
-				m_shadow_frame_buffer->bind_texture(i);
-				m_shadow_frame_buffer->clear(glm::vec4(1e38f));
+				if (m_scene_view.get_exponential_shadow_maps())
+				{
+					m_shadow_frame_buffer->attach(
+						m_shadow_texture,
+						fbat_color_0, i);
+				}
+				else
+				{
+					m_shadow_frame_buffer->attach(
+						m_shadow_texture, fbat_depth,
+						i);
+				}
+
+				m_shadow_frame_buffer->clear(glm::vec4(1e38f),
+					0);
 			}
 		}
+
+		m_shadow_frame_buffer->unbind();
 
 		unbind_all();
 
@@ -1171,7 +1241,7 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 
 		m_state_manager.switch_texture(spt_shadow,
-			m_shadow_frame_buffer->get_texture());
+			m_shadow_texture);
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1384,8 +1454,10 @@ namespace eternal_lands
 	void Scene::update_terrain_texture(const MaterialSharedPtr &material,
 		const Mat2x3Array2 &texture_matrices, const Uint16 index)
 	{
-		m_clipmap_frame_buffer->bind(index);
-		m_clipmap_frame_buffer->clear(glm::vec4(0.0f));
+		m_clipmap_frame_buffer->bind();
+		m_clipmap_frame_buffer->attach(m_clipmap_texture, fbat_color_0,
+			index);
+		m_clipmap_frame_buffer->clear(glm::vec4(0.0f), 0);
 
 		MaterialLock material_lock(material);
 
@@ -1417,8 +1489,6 @@ namespace eternal_lands
 		m_state_manager.draw(0, 1);
 
 		DEBUG_CHECK_GL_ERROR();
-
-		m_clipmap_frame_buffer->blit();
 	}
 
 	void Scene::update_terrain_texture(const Uint16 slice)
@@ -1504,7 +1574,7 @@ namespace eternal_lands
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			m_state_manager.switch_texture(spt_albedo_0,
-				m_clipmap_frame_buffer->get_texture());
+				m_clipmap_texture);
 
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 		}
@@ -1531,8 +1601,9 @@ namespace eternal_lands
 		}
 		else
 		{
-			m_scene_frame_buffer->bind(0);
-			m_scene_frame_buffer->clear(glm::vec4(0.0f));
+			m_scene_frame_buffer->bind();
+			m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
+			m_scene_frame_buffer->clear(1.0f, 0);
 			m_scene_frame_buffer->set_view_port();
 		}
 
@@ -1555,7 +1626,7 @@ namespace eternal_lands
 		if (m_scene_view.get_shadow_map_count() > 0)
 		{
 			m_state_manager.switch_texture(spt_shadow,
-				m_shadow_frame_buffer->get_texture());
+				m_shadow_texture);
 		}
 
 		m_state_manager.switch_depth_mask(false);
@@ -1566,7 +1637,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			m_scene_frame_buffer->bind(0);
+			m_scene_frame_buffer->bind();
 			m_scene_frame_buffer->set_view_port();
 		}
 
@@ -1853,9 +1924,15 @@ namespace eternal_lands
 				m_scene_frame_buffer = get_scene_resources(
 					).get_framebuffer_builder()->build(
 						String(UTF8("Scene")),
+						view_port.z, view_port.w, true);
+/*
+				m_scene_frame_buffer = get_scene_resources(
+					).get_framebuffer_builder()->build(
+						String(UTF8("Scene")),
 						view_port.z, view_port.w, 0, 0,
 						ttt_texture_2d, tft_rgba8,
 						true);
+*/
 			}
 		}
 		else

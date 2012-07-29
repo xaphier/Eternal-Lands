@@ -32,33 +32,33 @@ namespace eternal_lands
 		private:
 			ExtFrameBuffer m_frame_buffer;
 			boost::scoped_ptr<ExtRenderBuffer> m_render_buffer;
-			Uint32 m_layer;
 
-			void do_bind(const Uint32 layer);
+			virtual void detach_texture(
+				const FrameBufferAttachmentType attachment)
+				override;
+			virtual void attach_texture(
+				const TextureSharedPtr &texture,
+				const FrameBufferAttachmentType attachment,
+				const Uint16 layer) override;
+			virtual void do_attach_depth_render_buffer(
+				bool &depth, bool &stencil) override;
 
 		public:
 			ExtSimpleFrameBuffer(const String &name,
 				const Uint32 width, const Uint32 height,
-				const Uint32 depth, const Uint16 mipmaps,
-				const TextureTargetType target,
-				const TextureFormatType format,
 				const bool depth_buffer);
 			virtual ~ExtSimpleFrameBuffer() noexcept;
-			virtual void bind(const Uint32 layer) override;
-			virtual void bind_texture(const Uint32 layer) override;
-			virtual void blit() override;
-			virtual void clear(const glm::vec4 &color) override;
+			virtual void bind() override;
+			virtual void clear(const float depth,
+				const GLint stencil) override;
 			virtual void clear(const glm::vec4 &color,
-				const float depth) override;
+				const Uint16 index) override;
 			virtual void unbind() override;
 			virtual void blit_to_back_buffer(const glm::uvec4 &rect,
 				const Uint16 layer, const bool color,
 				const bool depth, const bool stencil) override;
-
-			inline Uint32 get_layer() const
-			{
-				return m_layer;
-			}
+			virtual void set_draw_buffer(const Uint16 index,
+				const bool enabled);
 
 	};
 

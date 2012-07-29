@@ -140,61 +140,61 @@ namespace eternal_lands
 					return m_name;
 				}
 
-				inline const IntegerType get_integer_type()
+				inline IntegerType get_integer_type()
 					const noexcept
 				{
 					return m_integer_type;
 				}
 
-				inline const GLenum get_gl_type() const noexcept
+				inline GLenum get_gl_type() const noexcept
 				{
 					return m_gl_type;
 				}
 
-				inline const GLenum get_source_type() const
+				inline GLenum get_source_type() const
 					noexcept
 				{
 					return m_source_type;
 				}
 
-				inline const GLenum get_format_type() const
+				inline GLenum get_format_type() const
 					noexcept
 				{
 					return m_format_type;
 				}
 
-				inline const Uint16 get_count() const noexcept
+				inline Uint16 get_count() const noexcept
 				{
 					return m_count;
 				}
 
-				inline const Uint16 get_size() const noexcept
+				inline Uint16 get_size() const noexcept
 				{
 					return m_size;
 				}
 
-				inline const bool get_compressed() const
+				inline bool get_compressed() const
 					noexcept
 				{
 					return m_compressed;
 				}
 
-				inline const bool get_sRGB() const noexcept
+				inline bool get_sRGB() const noexcept
 				{
 					return m_sRGB;
 				}
 
-				inline const bool get_depth() const noexcept
+				inline bool get_depth() const noexcept
 				{
 					return m_depth;
 				}
 
-				inline const bool get_stencil() const noexcept
+				inline bool get_stencil() const noexcept
 				{
 					return m_stencil;
 				}
 
-				inline const bool get_integer() const noexcept
+				inline bool get_integer() const noexcept
 				{
 					return m_integer;
 				}

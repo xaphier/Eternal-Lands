@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="9">
+<shader_source class_id="0" tracking_level="0" version="1">
+	<px class_id="1" tracking_level="1" version="0" object_id="_0">
+		<types class_id="2" tracking_level="0" version="0">
+			<count>1</count>
+			<item_version>0</item_version>
+			<item>13</item>
+		</types>
+		<name class_id="3" tracking_level="0" version="0">
+			<str>normal_mapping</str>
+		</name>
+		<datas class_id="4" tracking_level="0" version="0">
+			<count>2</count>
+			<item_version>0</item_version>
+			<item class_id="5" tracking_level="0" version="0">
+				<parameters class_id="6" tracking_level="0" version="0">
+					<count>4</count>
+					<item_version>0</item_version>
+					<item class_id="7" tracking_level="0" version="0">
+						<source>
+							<str>normal_mapping_normal_mapping</str>
+						</source>
+						<name>
+							<str>fragment_normal</str>
+						</name>
+						<type>14</type>
+						<qualifier>1</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>normal_mapping_normal_mapping</str>
+						</source>
+						<name>
+							<str>fragment_uv</str>
+						</name>
+						<type>13</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>normal_mapping_normal_mapping</str>
+						</source>
+						<name>
+							<str>normal_sampler</str>
+						</name>
+						<type>26</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>normal_mapping_normal_mapping</str>
+						</source>
+						<name>
+							<str>tbn_matrix</str>
+						</name>
+						<type>20</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+				</parameters>
+				<version>1</version>
+				<source>
+					<str>vec3 normal;
+
+normal.xy = texture(normal_sampler, fragment_uv).rg * 2.0 - 1.0;
+normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
+
+fragment_normal = tbn_matrix * normal;
+</str>
+				</source>
+			</item>
+			<item>
+				<parameters>
+					<count>4</count>
+					<item_version>0</item_version>
+					<item>
+						<source>
+							<str>normal_mapping_normal_mapping</str>
+						</source>
+						<name>
+							<str>fragment_normal</str>
+						</name>
+						<type>14</type>
+						<qualifier>1</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>normal_mapping_normal_mapping</str>
+						</source>
+						<name>
+							<str>fragment_uv</str>
+						</name>
+						<type>13</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>normal_mapping_normal_mapping</str>
+						</source>
+						<name>
+							<str>normal_sampler</str>
+						</name>
+						<type>26</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>normal_mapping_normal_mapping</str>
+						</source>
+						<name>
+							<str>tbn_matrix</str>
+						</name>
+						<type>20</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+				</parameters>
+				<version>0</version>
+				<source>
+					<str>vec3 normal;
+
+normal.xy = texture2D(normal_sampler, fragment_uv).ga * 2.0 - 1.0;
+normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
+
+fragment_normal = tbn_matrix * normal;
+</str>
+				</source>
+			</item>
+		</datas>
+	</px>
+</shader_source>
+</boost_serialization>
+

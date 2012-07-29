@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="9">
+<shader_source class_id="0" tracking_level="0" version="1">
+	<px class_id="1" tracking_level="1" version="0" object_id="_0">
+		<types class_id="2" tracking_level="0" version="0">
+			<count>1</count>
+			<item_version>0</item_version>
+			<item>0</item>
+		</types>
+		<name class_id="3" tracking_level="0" version="0">
+			<str>simple-terrain</str>
+		</name>
+		<datas class_id="4" tracking_level="0" version="0">
+			<count>1</count>
+			<item_version>0</item_version>
+			<item class_id="5" tracking_level="0" version="0">
+				<parameters class_id="6" tracking_level="0" version="0">
+					<count>5</count>
+					<item_version>0</item_version>
+					<item class_id="7" tracking_level="0" version="0">
+						<source>
+							<str>simple-terrain_world_depth_transformation</str>
+						</source>
+						<name>
+							<str>morph_position</str>
+						</name>
+						<type>15</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>simple-terrain_world_depth_transformation</str>
+						</source>
+						<name>
+							<str>position</str>
+						</name>
+						<type>15</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>simple-terrain_world_depth_transformation</str>
+						</source>
+						<name>
+							<str>terrain_texture_coordinate</str>
+						</name>
+						<type>13</type>
+						<qualifier>1</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>simple-terrain_world_depth_transformation</str>
+						</source>
+						<name>
+							<str>world_position</str>
+						</name>
+						<type>14</type>
+						<qualifier>1</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+					<item>
+						<source>
+							<str>simple-terrain_world_depth_transformation</str>
+						</source>
+						<name>
+							<str>world_transformation</str>
+						</name>
+						<type>18</type>
+						<qualifier>0</qualifier>
+						<size>0</size>
+						<scale>1</scale>
+					</item>
+				</parameters>
+				<version>0</version>
+				<source>
+					<str>world_position = morph_position.xyz;
+world_position.xy = world_position.xy * 2.0 - 1.0;
+world_position = world_position * terrain_vector_scale + position.xyz;
+
+world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
+world_position *= world_transformation[1].w;
+world_position += world_transformation[1].xyz;
+terrain_texture_coordinate = position.xy + world_transformation[1].xy;
+</str>
+				</source>
+			</item>
+		</datas>
+	</px>
+</shader_source>
+</boost_serialization>
+

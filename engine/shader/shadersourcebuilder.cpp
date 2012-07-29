@@ -1183,37 +1183,6 @@ namespace eternal_lands
 		}
 	}
 
-	void ShaderSourceBuilder::load_shader_sources(
-		const FileSystemSharedPtr &file_system, const xmlNodePtr node)
-	{
-		xmlNodePtr it;
-		String name, file_name;
-
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("shader_sources"))
-			!= 0)
-		{
-			return;
-		}
-
-		if (!XmlUtil::has_children(node, true))
-		{
-			return;
-		}
-
-		it = XmlUtil::children(node, true);
-
-		do
-		{
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("shader_source"))
-				== 0)
-			{
-				load_shader_source(file_system,
-					XmlUtil::get_string_value(it));
-			}
-		}
-		while (XmlUtil::next(it, true));
-	}
-
 	void ShaderSourceBuilder::load_sources(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
@@ -1318,12 +1287,6 @@ namespace eternal_lands
 			{
 				load_sources(it);
 			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("shader_sources"))
-				== 0)
-			{
-				load_shader_sources(file_system, it);
-			}
 		}
 		while (XmlUtil::next(it, true));
 	}
@@ -1336,7 +1299,24 @@ namespace eternal_lands
 		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
 			file_name));
 
+		load_shader_sources(file_system, String(
+			FileSystem::get_dir_name(file_name).get() +
+				UTF8("/sources")));
+
 		load_xml(file_system, xml_reader->get_root_node());
+	}
+
+	void ShaderSourceBuilder::load_shader_sources(
+		const FileSystemSharedPtr &file_system, const String &dir)
+	{
+		StringSet files;
+
+		files = file_system->get_files(dir, String(UTF8("*.xml")));
+
+		BOOST_FOREACH(const String &file, files)
+		{
+			load_shader_source(file_system, file);
+		}
 	}
 
 	bool ShaderSourceBuilder::build_function(

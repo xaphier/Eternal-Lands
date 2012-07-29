@@ -223,12 +223,13 @@ namespace eternal_lands
 
 	void AbstractMesh::set_sub_meshs(const SubMeshVector &sub_meshs)
 	{
+#ifndef	NDEBUG
 		BOOST_FOREACH(const SubMesh &sub_mesh, sub_meshs)
 		{
 			assert((sub_mesh.get_base_vertex() == 0) ||
 				get_supports_base_vertex());
 		}
-
+#endif	/* NDEBUG */
 		m_sub_meshs = sub_meshs;
 	}
 
