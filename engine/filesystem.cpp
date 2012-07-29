@@ -90,6 +90,8 @@ namespace eternal_lands
 
 			actual_search = append_dir(String(path), pattern);
 
+			std::cout << "actual_search: " << actual_search << std::endl;
+
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
 
@@ -99,6 +101,8 @@ namespace eternal_lands
 				//If no files are found
 				if (h_find == -1L)
 				{
+					std::cout << "no files are found" << std::endl;
+
 					//Done checking this folder
 					break;
 				}
@@ -121,12 +125,18 @@ namespace eternal_lands
 					continue;
 				}
 
+				std::cout << "file name: " << file_name << std::endl;
+
 				files.insert(String(file_name));
 			}
 			while (_findnext(h_find, &find_data));
 
+			_findclose(h_find);
+
 			actual_search = append_dir(String(path),
 				String(UTF8("*")));
+
+			std::cout << "actual_search dir: " << actual_search << std::endl;
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
@@ -137,6 +147,8 @@ namespace eternal_lands
 				//If no files are found
 				if (h_find == -1L)
 				{
+					std::cout << "no files are found" << std::endl;
+
 					//Done checking this folder
 					break;
 				}
@@ -156,13 +168,15 @@ namespace eternal_lands
 				//If the file is a folder
 				if (find_data.attrib & _A_SUBDIR)
 				{
+					std::cout << "dir name: " << file_name << std::endl;
+
 					scan_directory(base_name,
 						String(file_name), pattern,
 						files);
 				}
 			}
 			while (_findnext(h_find, &find_data));
- 
+
 			_findclose(h_find);
 		}
 #else	/* WINDOWS */
