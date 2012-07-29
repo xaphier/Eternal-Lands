@@ -3,6 +3,8 @@
 #include <QGraphicsScene>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QCloseEvent>
 
 #include "qnodeseditor.hpp"
 #include "node.hpp"
@@ -19,15 +21,14 @@
 #include "../engine/node/effectoutput.hpp"
 #include "../engine/shader/samplerparameterutil.hpp"
 #include "../engine/texturetargetutil.hpp"
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <fstream>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
 	int i, count;
 
 	setupUi(this);
+
+	m_changed = false;
 
 	QGraphicsScene *s = new QGraphicsScene();
 	graphicsView->setScene(s);
@@ -44,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 	connect(parameter_button, SIGNAL(clicked()), this,
 		SLOT(add_parameter()));
 	connect(output_button, SIGNAL(clicked()), this, SLOT(add_output()));
+	connect(color_button, SIGNAL(clicked()), this, SLOT(add_color()));
+	connect(direction_button, SIGNAL(clicked()), this,
+		SLOT(add_direction()));
 
 	m_buttons.push_back(texture_unit_0);
 	m_buttons.push_back(texture_unit_1);
@@ -85,30 +89,100 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
 	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
 
+	QObject::connect(action_new, SIGNAL(triggered()), this, SLOT(do_new()));
+	QObject::connect(action_open, SIGNAL(triggered()), this, SLOT(load()));
 	QObject::connect(action_save, SIGNAL(triggered()), this, SLOT(save()));
-	QObject::connect(action_load, SIGNAL(triggered()), this, SLOT(load()));
+	QObject::connect(action_save_as, SIGNAL(activated()), this,
+		SLOT(save_as()));
+
+	action_new->setIcon(QIcon::fromTheme("document-new"));
+	action_open->setIcon(QIcon::fromTheme("document-open"));
+	action_save->setIcon(QIcon::fromTheme("document-save"));
+	action_save_as->setIcon(QIcon::fromTheme("document-save-as"));
+	action_exit->setIcon(QIcon::fromTheme("application-exit"));
 }
 
 MainWindow::~MainWindow()
 {
 }
 
+
+void MainWindow::changed()
+{
+	m_changed = true;
+}
+
+void MainWindow::do_new()
+{
+	if (!check_save())
+	{
+		return;
+	}
+
+	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+
+	m_changed = false;
+}
+
 void MainWindow::save()
 {
-/*
-	std::ofstream ofs("/home/daniel/filename.txt");
-	boost::archive::text_oarchive oa(ofs);
-	// read class state from archive
-	oa << boost::serialization::make_nvp("effect_nodes", m_effect_nodes);
-*/
-	m_effect_nodes->save_xml(el::String("/home/daniel/filename.xml"));
+	if (m_file_name.isEmpty())
+	{
+		save_as();
+
+		return;
+	}
+
+	save(m_file_name);
 }
 
 void MainWindow::save_as()
 {
+	QString file_name;
+
+	file_name = QFileDialog::getSaveFileName(this, "save", QString(),
+		"xml (*.xml)");
+
+	if (!file_name.isEmpty())
+	{
+		save(file_name);
+		m_file_name = file_name;
+	}
+}
+
+void MainWindow::save(const QString &file_name)
+{
+	try
+	{
+		m_effect_nodes->save_xml(el::String(file_name.toUtf8()));
+	}
+	catch (...)
+	{
+	}
+
+	m_changed = false;
 }
 
 void MainWindow::load()
+{
+	QString file_name;
+
+	if (!check_save())
+	{
+		return;
+	}
+
+	file_name = QFileDialog::getOpenFileName(this, "open", QString(),
+		"xml (*.xml)");
+
+	if (!file_name.isEmpty())
+	{
+		load(file_name);
+		m_file_name = file_name;
+	}
+}
+
+void MainWindow::load(const QString &file_name)
 {
 	std::map<el::EffectNodePortPtr, QNEPort*> ports;
 	std::vector<BasicNode*> basic_nodes;
@@ -116,13 +190,15 @@ void MainWindow::load()
 	el::EffectNodePtr node;
 	el::EffectConstant* constant_node;
 	Uint32 i, count;
-/*
-	std::ifstream ifs("/home/daniel/filename.txt");
-	boost::archive::text_iarchive ia(ifs);
-	// read class state from archive
-	ia >> boost::serialization::make_nvp("effect_nodes", m_effect_nodes);
-*/
-	m_effect_nodes->load_xml(el::String("/home/daniel/filename.xml"));
+
+	try
+	{
+		m_effect_nodes->load_xml(el::String(file_name.toUtf8()));
+	}
+	catch (...)
+	{
+		return;
+	}
 
 	count = m_effect_nodes->get_node_count();
 
@@ -194,15 +270,78 @@ void MainWindow::load()
 
 	m_nodes_editor->update_connections();
 	m_nodes_editor->update_tool_tips();
+
+	m_changed = false;
 }
 
-void MainWindow::new_data()
+void MainWindow::closeEvent(QCloseEvent *event)
 {
+	QMessageBox message_box;
+
+	if (!m_changed)
+	{
+		event->accept();
+		return;
+	}
+
+	message_box.setText("Closing.");
+	message_box.setInformativeText("Do you want to save your changes "
+		"before closing?");
+	message_box.setStandardButtons(QMessageBox::Save | QMessageBox::Discard
+		| QMessageBox::Cancel);
+	message_box.setDefaultButton(QMessageBox::Save);
+
+	switch (message_box.exec())
+	{
+		case QMessageBox::Save:
+			save();
+			event->accept();
+			return;
+		case QMessageBox::Discard:
+			event->accept();
+			return;
+		case QMessageBox::Cancel:
+			event->ignore();
+			return;
+		default:
+			return;
+	}
+}
+
+bool MainWindow::check_save()
+{
+	QMessageBox message_box;
+
+	if (!m_changed)
+	{
+		return true;
+	}
+
+	message_box.setText("The document has been modified.");
+	message_box.setInformativeText("Do you want to save your changes?");
+	message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No
+		| QMessageBox::Cancel);
+	message_box.setDefaultButton(QMessageBox::Yes);
+
+	switch (message_box.exec())
+	{
+		case QMessageBox::Yes:
+			save();
+			return true;
+		case QMessageBox::No:
+			return true;
+		case QMessageBox::Cancel:
+			return false;
+		default:
+			return false;
+	}
 }
 
 void MainWindow::texture_unit_changed(const int value)
 {
 	m_texture_dialog->set_target(m_targets[value]);
+
+	changed();
 }
 
 void MainWindow::change_texture(const int index)
@@ -218,6 +357,8 @@ void MainWindow::change_texture(const int index)
 		m_buttons[index]->setText(m_names[index]);
 		m_targets[index] = m_texture_unit_dialog->get_target();
 		m_file_names[index] = m_texture_unit_dialog->get_file_names();
+
+		changed();
 	}
 }
 
@@ -233,6 +374,8 @@ void MainWindow::add_color()
 		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
 }
 
 void MainWindow::add_direction()
@@ -247,6 +390,8 @@ void MainWindow::add_direction()
 		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
 }
 
 void MainWindow::add_constant()
@@ -271,6 +416,8 @@ void MainWindow::add_constant()
 		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
 }
 
 void MainWindow::add_function()
@@ -312,6 +459,8 @@ void MainWindow::add_function()
 		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
 }
 
 void MainWindow::add_parameter()
@@ -354,6 +503,8 @@ void MainWindow::add_parameter()
 		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
 }
 
 void MainWindow::add_texture()
@@ -465,6 +616,8 @@ void MainWindow::add_texture()
 		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
 }
 
 void MainWindow::add_output()
@@ -478,4 +631,6 @@ void MainWindow::add_output()
 		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
 }

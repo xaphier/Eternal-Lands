@@ -53,7 +53,9 @@ namespace eternal_lands
 			{
 				str = UTF8("3dobjects/");
 				str += *it;
-				result.insert(String(str));
+				result.insert(
+					FileSystem::get_strip_relative_path(
+						String(str)));
 			}
 
 			it++;
@@ -86,9 +88,11 @@ namespace eternal_lands
 
 			if (!it->empty())
 			{
-				str = UTF8("3dobjects");
+				str = UTF8("3dobjects/");
 				str += *it;
-				result.insert(String(str));
+				result.insert(
+					FileSystem::get_strip_relative_path(
+						String(str)));
 			}
 
 			it++;

@@ -754,28 +754,49 @@
    <addaction name="action_new"/>
    <addaction name="action_open"/>
    <addaction name="action_save"/>
+   <addaction name="action_exit"/>
   </widget>
   <action name="action_new">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/filenew.png</normaloff>:/icons/filenew.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;New</string>
    </property>
   </action>
   <action name="action_open">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/fileopen.png</normaloff>:/icons/fileopen.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Open</string>
    </property>
   </action>
   <action name="action_save">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/filesave.png</normaloff>:/icons/filesave.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
   </action>
   <action name="action_save_as">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/filesaveas.png</normaloff>:/icons/filesaveas.png</iconset>
+   </property>
    <property name="text">
     <string>Save &amp;as</string>
    </property>
   </action>
   <action name="action_exit">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/gtk-cancel.png</normaloff>:/icons/gtk-cancel.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Exit</string>
    </property>
@@ -818,7 +839,9 @@
   <tabstop>glsl_version_3</tabstop>
   <tabstop>source_3</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>clear_0</sender>

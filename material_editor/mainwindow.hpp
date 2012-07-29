@@ -25,6 +25,12 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		std::vector<QStringList> m_file_names;
 		QStringList m_names;
 		el::EffectNodesSharedPtr m_effect_nodes;
+		QString m_file_name;
+		bool m_changed;
+
+		void save(const QString &file_name);
+		void load(const QString &file_name);
+		bool check_save();
 
 	private slots:
 		void add_color();
@@ -36,10 +42,14 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void add_output();
 		void change_texture(const int index);
 		void texture_unit_changed(const int value);
-		void new_data();
+		void do_new();
 		void load();
 		void save();
 		void save_as();
+		void changed();
+
+	protected:
+		virtual void closeEvent(QCloseEvent* event);
 
 	public:
 		MainWindow(QWidget *parent = 0);

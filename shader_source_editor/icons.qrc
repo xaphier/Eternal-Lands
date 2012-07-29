@@ -2,13 +2,9 @@
   <qresource prefix="icons">
     <file>gtk-apply.png</file>
     <file>gtk-cancel.png</file>
-    <file>filesaveas.png</file>
     <file>filenew.png</file>
     <file>fileopen.png</file>
     <file>filesave.png</file>
-    <file>rgb.png</file>
-    <file>editclear.png</file>
-    <file>rgba.png</file>
-    <file>gtk-add.png</file>
+    <file>filesaveas.png</file>
   </qresource>
 </RCC>

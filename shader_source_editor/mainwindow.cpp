@@ -9,13 +9,13 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QCloseEvent>
 #include "shader/shadersource.hpp"
 #include "shader/shadersourcedata.hpp"
 #include "shader/shadersourceparameter.hpp"
 #include "shader/shadersourceutil.hpp"
 #include "shader/shaderversionutil.hpp"
 #include "glslhighlighter.hpp"
-#include <boost/uuid/uuid_generators.hpp>
 
 namespace el = eternal_lands;
 
@@ -138,6 +138,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SIGNAL(check_name(const QString, bool &)),
 		this, SLOT(check_name(const QString, bool &)));
 
+	QObject::connect(action_new, SIGNAL(triggered()), this, SLOT(do_new()));
 	QObject::connect(action_open, SIGNAL(activated()), this, SLOT(load()));
 	QObject::connect(action_save, SIGNAL(activated()), this, SLOT(save()));
 	QObject::connect(action_save_as, SIGNAL(activated()), this,
@@ -541,7 +542,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 	if (!m_changed)
 	{
-		QMainWindow::closeEvent(event);
+		event->accept();
 		return;
 	}
 
@@ -556,12 +557,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	{
 		case QMessageBox::Save:
 			save();
-			QMainWindow::closeEvent(event);
+			event->accept();
 			return;
 		case QMessageBox::Discard:
-			QMainWindow::closeEvent(event);
+			event->accept();
 			return;
 		case QMessageBox::Cancel:
+			event->ignore();
 			return;
 		default:
 			return;
