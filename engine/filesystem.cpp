@@ -121,11 +121,11 @@ namespace eternal_lands
 					continue;
 				}
 
-				files.insert(file_name);
+				files.insert(String(file_name));
 			}
 			while (_findnext(h_find, &find_data));
 
-			actual_search = append_dir(path, String(UTF8("*"));
+			actual_search = append_dir(path, String(UTF8("*")));
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
