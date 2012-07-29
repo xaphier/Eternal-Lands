@@ -54,6 +54,7 @@
 #include "engine/script/materialscriptmanager.hpp"
 #include "engine/script/imagescript.hpp"
 #include "engine/abstractlogger.hpp"
+#include "engine/abstractmaploader.hpp"
 
 using namespace eternal_lands;
 
@@ -465,62 +466,12 @@ extern "C" void log_ARB_debug_output(GLenum source, GLenum type, GLuint id,
 
 extern "C" void load_harvestable_list()
 {
-	std::vector<StringType> lines, line;
-	std::vector<StringType>::iterator it;
-	StringType str;
-	String harvestables_str;
-
-	harvestables_str = file_system->get_file_string(
-		String(UTF8("harvestable.lst")));
-
-	boost::split(lines, harvestables_str.get(), boost::is_any_of(
-		UTF8("\n")), boost::token_compress_on);
-
-	it = lines.begin();
-
-	while (it != lines.end())
-	{
-		boost::algorithm::trim(*it);
-
-		if (!it->empty())
-		{
-			str = UTF8("3dobjects/");
-			str += *it;
-			harvestables.insert(String(str));
-		}
-
-		it++;
-	}
+	harvestables = AbstractMapLoader::load_harvestables(file_system);
 }
 
 extern "C" void load_entrable_list()
 {
-	std::vector<StringType> lines, line;
-	std::vector<StringType>::iterator it;
-	StringType str;
-	String entrable_str;
-
-	entrable_str = file_system->get_file_string(
-		String(UTF8("entrable.lst")));
-
-	boost::split(lines, entrable_str.get(), boost::is_any_of(
-		UTF8("\n")), boost::token_compress_on);
-
-	it = lines.begin();
-
-	while (it != lines.end())
-	{
-		boost::algorithm::trim(*it);
-
-		if (!it->empty())
-		{
-			str = UTF8("3dobjects");
-			str += *it;
-			entrables.insert(String(str));
-		}
-
-		it++;
-	}
+	entrables = AbstractMapLoader::load_entrables(file_system);
 }
 
 extern "C" void init_global_vars()
