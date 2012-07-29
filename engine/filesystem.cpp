@@ -116,7 +116,7 @@ namespace eternal_lands
 					files.insert(file_name);
 				}
 			}
-			while (_findnext(h_find, &find_data));
+			while (_findnext(h_find, &find_data) == 0);
 
 			_findclose(h_find);
 
@@ -150,7 +150,7 @@ namespace eternal_lands
 						pattern, files);
 				}
 			}
-			while (_findnext(h_find, &find_data));
+			while (_findnext(h_find, &find_data) == 0);
 
 			_findclose(h_find);
 		}
