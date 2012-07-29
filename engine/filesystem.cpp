@@ -77,8 +77,6 @@ namespace eternal_lands
 			return String(name.get() + str.get());
 		}
 
-		std::ofstream log_stream;
-
 #ifdef	WINDOWS
 		void scan_directory(const String &base_name,
 			const String &dir_name, const String &pattern,
@@ -86,13 +84,12 @@ namespace eternal_lands
 		{
 			long h_find;
 			struct _finddata_t find_data;
-			StringType actual_search, path, file_name;
+			String file_name;
+			StringType actual_search, path;
 
 			path = append_dir(base_name, dir_name);
 
 			actual_search = append_dir(String(path), pattern);
-
-			log_stream << "actual_search: " << actual_search << std::endl;
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
@@ -103,33 +100,21 @@ namespace eternal_lands
 				//If no files are found
 				if (h_find == -1L)
 				{
-					log_stream << "no files are found" << std::endl;
-
 					//Done checking this folder
 					break;
 				}
 
-				file_name = find_data.name;
+				file_name = String(find_data.name);
 
 				//If the file is a self-reference
-				if ((file_name == ".") || (file_name == ".."))
+				if ((file_name != ".") && (file_name != "..")
+					&& ((find_data.attrib & _A_SUBDIR) !=
+						_A_SUBDIR))
 				{
-					//Skip to next file
-					continue;
+					file_name = append_dir(dir_name,
+						file_name);
+					files.insert(file_name);
 				}
-
-				file_name = append_dir(dir_name, 
-					String(file_name));
-
-				//If the file is a folder
-				if (find_data.attrib & _A_SUBDIR)
-				{
-					continue;
-				}
-
-				log_stream << "file name: " << file_name << std::endl;
-
-				files.insert(String(file_name));
 			}
 			while (_findnext(h_find, &find_data));
 
@@ -137,8 +122,6 @@ namespace eternal_lands
 
 			actual_search = append_dir(String(path),
 				String(UTF8("*")));
-
-			log_stream << "actual_search dir: " << actual_search << std::endl;
 
 			// Find the first file
 			h_find = _findfirst(actual_search.c_str(), &find_data);
@@ -149,32 +132,22 @@ namespace eternal_lands
 				//If no files are found
 				if (h_find == -1L)
 				{
-					log_stream << "no files are found" << std::endl;
-
 					//Done checking this folder
 					break;
 				}
 
-				file_name = find_data.name;
+				file_name = String(find_data.name);
 
 				//If the file is a self-reference
-				if ((file_name == ".") || (file_name == ".."))
+				if (((file_name != ".") && (file_name != ".."))
+					&& ((find_data.attrib & _A_SUBDIR) ==
+						_A_SUBDIR))
 				{
-					//Skip to next file
-					continue;
-				}
+					file_name = append_dir(dir_name,
+						file_name);
 
-				file_name = append_dir(dir_name,
-					String(file_name));
-
-				//If the file is a folder
-				if (find_data.attrib & _A_SUBDIR)
-				{
-					log_stream << "dir name: " << file_name << std::endl;
-
-					scan_directory(base_name,
-						String(file_name), pattern,
-						files);
+					scan_directory(base_name, file_name,
+						pattern, files);
 				}
 			}
 			while (_findnext(h_find, &find_data));
@@ -367,14 +340,10 @@ namespace eternal_lands
 		void DirArchive::get_files(const String &dir,
 			const String &pattern, StringSet &files) const
 		{
-			log_stream.open("files.log");
-
 			scan_directory(String(utf8_to_string(get_dir(
 					get_name()))),
 				String(utf8_to_string(get_dir(dir))), pattern,
 					files);
-
-			log_stream.close();
 		}
 
 		Uint8Array20 get_file_sha1(
