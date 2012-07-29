@@ -581,6 +581,37 @@ namespace eternal_lands
 
 	void EditorMapData::save(const WriterSharedPtr &writer) const
 	{
+		glm::vec3 ambient;
+		glm::uvec2 size;
+		Uint32 tile_map_offset;
+		Uint32 height_map_offset;
+		Uint32 obj_3d_size;
+		Uint32 obj_3d_count;
+		Uint32 obj_3d_offset;
+		Uint32 obj_2d_size;
+		Uint32 obj_2d_count;
+		Uint32 obj_2d_offset;
+		Uint32 light_size;
+		Uint32 light_count;
+		Uint32 light_offset;
+		Uint32 particle_size;
+		Uint32 particle_count;
+		Uint32 particle_offset;
+		Uint32 clusters_offset;
+		Uint32 terrain_offset;
+		Uint32 material_name_size;
+		Uint32 material_name_count;
+		Uint32 material_name_offset; 
+		Uint32 height_map_width;
+		Uint32 height_map_height;
+		Uint32 tile_map_width;
+		Uint32 tile_map_height;
+		Sint8Array4 magic_number;
+		Uint8Array2 version_number;
+		Uint16 version;
+		bool dungeon;
+		Uint32 x, y;
+
 		writer->write_s8('e');
 		writer->write_s8('l');
 		writer->write_s8('m');
@@ -592,16 +623,16 @@ namespace eternal_lands
 		writer->write_u32_le(0);	// height map offset
 
 //		writer->write_u32_le(get_3d_object_size());
-		writer->write_u32_le(0);	// tile map offset
-		writer->write_u32_le(0);	// height map offset
+		writer->write_u32_le(0);	// 3d object count
+		writer->write_u32_le(0);	// 3d object offset
 
 //		writer->write_u32_le(get_2d_object_size());
-		writer->write_u32_le(0);	// tile map offset
-		writer->write_u32_le(0);	// height map offset
+		writer->write_u32_le(0);	// 2d object count
+		writer->write_u32_le(0);	// 2d object offset
 
 //		writer->write_u32_le(get_light_size());
-		writer->write_u32_le(m_lights.size());	// tile map offset
-		writer->write_u32_le(0);	// height map offset
+		writer->write_u32_le(m_lights.size());	// light count
+		writer->write_u32_le(0);	// light offset
 
 		writer->write_u8(0);		// dungeon
 		writer->write_u8(0);		// res_2
@@ -629,6 +660,26 @@ namespace eternal_lands
 		writer->write_u32_le(0);	// reserved_15
 		writer->write_u32_le(0);	// reserved_16
 		writer->write_u32_le(0);	// reserved_17
+
+		tile_map_offset = writer->get_position();
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				writer->write_u8(0);
+			}
+		}
+
+		height_map_offset = writer->get_position();
+
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				writer->write_u8(0);
+			}
+		}
 	}
 
 }

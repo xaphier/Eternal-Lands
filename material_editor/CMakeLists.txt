@@ -25,3 +25,4 @@ add_executable(material_editor WIN32 ${material_editor_header_files}
 
 target_link_libraries(material_editor elengine)
 target_link_libraries(material_editor ${QT_LIBRARIES})
+target_link_libraries(material_editor ${ZLIB_LIBRARIES})
