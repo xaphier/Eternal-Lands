@@ -42,7 +42,7 @@ shadow = clamp(shadow, 0.0, 1.0);
     </parameter>
    </parameters>
    <source>shadow = dot(vec2(1.0), step(vec2(0.5), abs(shadow_uvs[0].xy - 0.5)));
-shadow += shadow2DProj(shadow_sampler, shadow_uvs[0]);
+shadow += shadow2DProj(shadow_sampler, shadow_uvs[0]).r;
 shadow = clamp(shadow, 0.0, 1.0);
 </source>
    <version>120</version>
