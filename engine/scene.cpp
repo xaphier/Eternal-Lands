@@ -1145,15 +1145,15 @@ namespace eternal_lands
 
 		STRING_MARKER(UTF8("drawing shadows %1%"), index);
 
-		m_state_manager.switch_polygon_offset_fill(
-			!m_scene_view.get_exponential_shadow_maps());
 		m_state_manager.switch_color_mask(glm::bvec4(
 			m_scene_view.get_exponential_shadow_maps()));
 
+		m_state_manager.switch_polygon_offset_fill(true);
+		glPolygonOffset(1.0f, 32.0f);
+
 		if (!m_scene_view.get_exponential_shadow_maps())
 		{
-			glPolygonOffset(0.05f, 8.0f);
-//			glCullFace(GL_FRONT);
+			glCullFace(GL_FRONT);
 		}
 
 		DEBUG_CHECK_GL_ERROR();

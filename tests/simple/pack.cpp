@@ -742,7 +742,7 @@ BOOST_AUTO_TEST_CASE(compress_uncompress_normalized)
 
 BOOST_AUTO_TEST_CASE(encode_decode_normal)
 {
-	glm::vec3 normal;
+	glm::vec3 normal, normal2;
 	glm::vec2 temp, tmp, min, max;
 	Uint32 i;
 
@@ -778,15 +778,16 @@ BOOST_AUTO_TEST_CASE(encode_decode_normal)
 		BOOST_CHECK_GE(tmp.x, 0.0);
 		BOOST_CHECK_GE(tmp.y, 0.0);
 
-		normal = el::PackTool::decode_normal(tmp);
+		normal2 = el::PackTool::decode_normal(tmp);
 
-		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+		BOOST_CHECK_CLOSE(glm::length(normal2), 1.0, 0.01);
+		BOOST_CHECK_CLOSE(glm::dot(normal, normal2), 1.0, 0.01);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(encode_decode_normal_optimized)
 {
-	glm::vec3 normal;
+	glm::vec3 normal, normal2;
 	glm::vec2 temp, tmp, min, max;
 	Uint32 i;
 
@@ -822,15 +823,16 @@ BOOST_AUTO_TEST_CASE(encode_decode_normal_optimized)
 		BOOST_CHECK_GE(tmp.x, -el::epsilon);
 		BOOST_CHECK_GE(tmp.y, -el::epsilon);
 
-		normal = el::PackTool::decode_normal_optimized(tmp);
+		normal2 = el::PackTool::decode_normal_optimized(tmp);
 
-		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+		BOOST_CHECK_CLOSE(glm::length(normal2), 1.0, 0.01);
+		BOOST_CHECK_CLOSE(glm::dot(normal, normal2), 1.0, 0.01);
 	}
 }
 
 BOOST_AUTO_TEST_CASE(encode_decode_normal_optimized_uint8)
 {
-	glm::vec3 normal;
+	glm::vec3 normal, normal2;
 	glm::vec2 min, max;
 	glm::uvec2 tmp;
 	Uint32 i;
@@ -865,8 +867,9 @@ BOOST_AUTO_TEST_CASE(encode_decode_normal_optimized_uint8)
 		BOOST_CHECK_GE(tmp.x, 0);
 		BOOST_CHECK_GE(tmp.y, 0);
 
-		normal = el::PackTool::decode_normal_optimized_uint8(tmp);
+		normal2 = el::PackTool::decode_normal_optimized_uint8(tmp);
 
-		BOOST_CHECK_CLOSE(glm::length(normal), 1.0, 0.01);
+		BOOST_CHECK_CLOSE(glm::length(normal2), 1.0, 0.01);
+		BOOST_CHECK_CLOSE(glm::dot(normal, normal2), 1.0, 0.01);
 	}
 }
