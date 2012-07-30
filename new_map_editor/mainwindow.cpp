@@ -94,6 +94,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_delete_mode, SIGNAL(toggled(bool)), this, SLOT(delete_mode(bool)));
 
 	QObject::connect(action_remove, SIGNAL(triggered()), this, SLOT(remove()));
+	QObject::connect(action_dungeon, SIGNAL(toggled(bool)), this, SLOT(change_dungeon()));
 
 	QObject::connect(move_l, SIGNAL(clicked()), action_move_l, SLOT(trigger()));
 	QObject::connect(move_r, SIGNAL(clicked()), action_move_r, SLOT(trigger()));
@@ -896,6 +897,10 @@ void MainWindow::open_map()
 	{
 		el_gl_widget->open_map(file_name);
 	}
+
+	action_dungeon->blockSignals(true);
+	action_dungeon->setChecked(el_gl_widget->get_dungeon());
+	action_dungeon->blockSignals(false);
 }
 
 void MainWindow::set_default_mode()
@@ -954,6 +959,11 @@ void MainWindow::change_ambient()
 
 		el_gl_widget->set_ambient(ambient_color);
 	}
+}
+
+void MainWindow::change_dungeon()
+{
+	el_gl_widget->set_dungeon(action_dungeon->isChecked());
 }
 
 void MainWindow::change_blend_image_name()

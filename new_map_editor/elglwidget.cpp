@@ -621,6 +621,17 @@ void ELGLWidget::set_wire_frame(const bool enabled)
 	}
 }
 
+void ELGLWidget::set_dungeon(const bool dungeon)
+{
+	m_editor->set_dungeon(dungeon);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+bool ELGLWidget::get_dungeon() const
+{
+	return m_editor->get_dungeon();
+}
+
 void ELGLWidget::set_ambient(const glm::vec3 &color)
 {
 	m_editor->set_ambient(color);
@@ -984,7 +995,7 @@ void ELGLWidget::disable_light()
 
 void ELGLWidget::save(const QString &name) const
 {
-//	m_editor->save(String(name.toUtf8()));
+	m_editor->save(String(name.toUtf8()));
 }
 
 QString ELGLWidget::get_blend_image_name() const

@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>Door.png</file>
     <file>debug.png</file>
     <file>Crystal sphere-256.png</file>
     <file>Lightbulb-32.png</file>

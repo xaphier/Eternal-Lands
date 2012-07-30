@@ -92,6 +92,8 @@ class ELGLWidget: public QGLWidget
 		void set_object_materials(const StringVector &materials);
 		void add_object(const String &object);
 		void add_light(const float radius);
+		void set_dungeon(const bool dungeon);
+		bool get_dungeon() const;
 		void set_ambient(const glm::vec3 &color);
 		const glm::vec3 &get_ambient() const;
 		void set_fog(const glm::vec3 &color, const float density);

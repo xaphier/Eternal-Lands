@@ -9,6 +9,7 @@
 #include "height.hpp"
 #include "undo/ambientmodification.hpp"
 #include "undo/blendmodification.hpp"
+#include "undo/dungeonmodification.hpp"
 #include "undo/heightmodification.hpp"
 #include "undo/lightmodification.hpp"
 #include "undo/objectmodification.hpp"
@@ -215,6 +216,25 @@ namespace eternal_lands
 		change_light(mt_light_added, light_data);
 	}
 
+	void Editor::set_dungeon(const bool dungeon)
+	{
+		if (add_needed(0, mt_dungeon_changed))
+		{
+			ModificationAutoPtr modification(new
+				DungeonModification(m_data.get_dungeon(),
+				get_edit_id()));
+
+			m_undo.add(modification);
+		}
+
+		m_data.set_dungeon(dungeon);
+	}
+
+	bool Editor::get_dungeon() const
+	{
+		return m_data.get_dungeon();
+	}
+
 	void Editor::set_ambient(const glm::vec3 &color)
 	{
 		if (add_needed(0, mt_scene_ambient_changed))
@@ -227,6 +247,11 @@ namespace eternal_lands
 		}
 
 		m_data.set_ambient(color);
+	}
+
+	const glm::vec3 &Editor::get_ambient() const
+	{
+		return m_data.get_ambient();
 	}
 
 /*
@@ -549,6 +574,27 @@ namespace eternal_lands
 		}
 	}
 
+	bool Editor::check_default_materials(const String &name,
+		const StringVector &materials) const
+	{
+		StringVector default_materials;
+		Uint32 i, count;
+
+		default_materials = get_default_materials(name);
+
+		count = std::min(default_materials.size(), materials.size());
+
+		for (i = 0; i < count; ++i)
+		{
+			if (default_materials[i] != materials[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	void Editor::set_object_materials(const Uint32 id,
 		const StringVector &materials)
 	{
@@ -558,9 +604,20 @@ namespace eternal_lands
 
 		if (object_description.get_material_names() != materials)
 		{
-			change_object(mt_object_materials_changed, object_description);
+			change_object(mt_object_materials_changed,
+				object_description);
 
-			object_description.set_material_names(materials);
+			if (check_default_materials(
+				object_description.get_name(), materials))
+			{
+				object_description.set_material_names(
+					StringVector());
+			}
+			else
+			{
+				object_description.set_material_names(
+					materials);
+			}
 
 			m_data.modify_object(object_description);
 		}
@@ -636,11 +693,6 @@ namespace eternal_lands
 		const
 	{
 		m_data.get_light(id, light_data);
-	}
-
-	const glm::vec3 &Editor::get_ambient() const
-	{
-		return m_data.get_ambient();
 	}
 
 	void Editor::change_terrain_values(const glm::vec3 &position,

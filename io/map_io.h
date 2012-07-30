@@ -69,8 +69,8 @@ typedef struct
 
 	char self_lit; /**< indicator if this object3d is self lit or not */
 	char blended;  /**< indicates whether this object3d is blended with some other objects or not */
-	char instance_type;
-	char pad[1];   /**< Padding bytes are inserted here by gcc and so ended up in the map format, make them explicit */
+	char selection;		/**< the selection mode used for the object */
+	char transparency;	/**< the transparency used for the object */
 	
 	float r,g,b;   /**< red, green and blue color values of the object */
 
@@ -78,13 +78,13 @@ typedef struct
      *  Will be used in the future
      * @{ */
 	float scale;
-    /** @} */
-	int material_count;
 	int material_index;
+	int material_count;
+	int id;
 	int instance_id;
+    /** @} */
 
-	char reserved[8]; /**< reserved for future expansions. */
-
+	char reserved[4]; /**< reserved for future expansions. */
 }object3d_io;
 
 /**

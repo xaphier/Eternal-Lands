@@ -105,6 +105,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void set_object_transparency(const int value);
 		void update_rotation(const int index);
 		void update_rotation_dial(const int index);
+		void change_dungeon();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

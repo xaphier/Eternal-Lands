@@ -26,6 +26,79 @@
 namespace eternal_lands
 {
 
+	namespace
+	{
+
+		typedef std::multimap<String, Uint32> StringUint32MultiMap;
+
+		void update_materials_list(const StringVector &materials,
+			StringVector &material_list,
+			StringUint32MultiMap &index_map,
+			Uint32 &material_index, Uint32 &material_count)
+		{
+			StringUint32MultiMap::const_iterator it, begin, end;
+			Uint32 i;
+			bool found;
+
+			material_count = materials.size();
+
+			if (material_count == 0)
+			{
+				material_index = 0;
+
+				return; 
+			}
+
+			found = false;
+
+			begin = index_map.lower_bound(materials[0]);
+			end = index_map.upper_bound(materials[0]);
+
+			for (it = begin; it != end; ++it)
+			{
+				material_index = it->second;
+
+				if ((material_index + material_count) >=
+					material_list.size())
+				{
+					continue;
+				}
+
+				found = true;
+
+				for (i = 0; i < material_count; ++i)
+				{
+					if (material_list[i + material_index]
+						!= materials[i])
+					{
+						found = false;
+						break;
+					}
+				}
+
+				if (found)
+				{
+					break;
+				}
+			}
+
+			if (!found)
+			{
+				material_index = material_list.size();
+
+				for (i = 0; i < material_count; ++i)
+				{
+					index_map.insert(
+						std::pair<String, Uint32>(
+							materials[i],
+							material_list.size()));
+					material_list.push_back(materials[i]);
+				}
+			}
+		}
+
+	}
+
 	EditorMapData::EditorMapData(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system)
 	{
@@ -114,6 +187,16 @@ namespace eternal_lands
 	const glm::vec3 &EditorMapData::get_ambient() const
 	{
 		return m_scene->get_ambient();
+	}
+
+	void EditorMapData::set_dungeon(const bool dungeon)
+	{
+		m_scene->set_dungeon(dungeon);
+	}
+
+	bool EditorMapData::get_dungeon() const
+	{
+		return m_scene->get_dungeon();
 	}
 
 	void EditorMapData::add_object(
@@ -362,6 +445,16 @@ namespace eternal_lands
 		m_height_map[x][y] = height;
 	}
 
+	Uint16 EditorMapData::get_height(const Uint16 x, const Uint16 y) const
+	{
+		RANGE_CECK_MAX(x, m_height_map.shape()[0],
+			UTF8("index value too big"));
+		RANGE_CECK_MAX(y, m_height_map.shape()[1],
+			UTF8("index value too big"));
+
+		return m_height_map[x][y];
+	}
+
 	void EditorMapData::set_heights(const HeightVector &heights)
 	{
 		BOOST_FOREACH(const Height &height, heights)
@@ -575,14 +668,30 @@ namespace eternal_lands
 		m_scene->set_depth_selection(position);
 	}
 
-	void EditorMapData::save(const String &writer) const
+	void EditorMapData::save(const String &file_name) const
 	{
+		WriterSharedPtr writer;
+
+		writer = boost::make_shared<Writer>(file_name);
+
+		save(writer, mvt_1_1);
 	}
 
-	void EditorMapData::save(const WriterSharedPtr &writer) const
+	void EditorMapData::save(const WriterSharedPtr &writer,
+		const MapVersionType version) const
 	{
+		std::map<Uint32, EditorObjectDescription>::const_iterator
+			object_it, object_end;
+		std::map<Uint32, LightData>::const_iterator light_it;
+		std::map<Uint32, LightData>::const_iterator light_end;
+		std::map<Uint32, ParticleData>::const_iterator particle_it;
+		std::map<Uint32, ParticleData>::const_iterator particle_end;
+		StringVector material_list;
+		StringUint32MultiMap index_map;
 		glm::vec3 ambient;
 		glm::uvec2 size;
+		Uint32 x, y, i, id, count;
+		Uint32 material_count, material_index;
 		Uint32 tile_map_offset;
 		Uint32 height_map_offset;
 		Uint32 obj_3d_size;
@@ -602,15 +711,10 @@ namespace eternal_lands
 		Uint32 material_name_size;
 		Uint32 material_name_count;
 		Uint32 material_name_offset; 
-		Uint32 height_map_width;
-		Uint32 height_map_height;
 		Uint32 tile_map_width;
 		Uint32 tile_map_height;
-		Sint8Array4 magic_number;
-		Uint8Array2 version_number;
-		Uint16 version;
-		bool dungeon;
-		Uint32 x, y;
+		Uint16 dungeon;
+		IdType type;
 
 		writer->write_s8('e');
 		writer->write_s8('l');
@@ -622,16 +726,16 @@ namespace eternal_lands
 		writer->write_u32_le(0);	// tile map offset
 		writer->write_u32_le(0);	// height map offset
 
-//		writer->write_u32_le(get_3d_object_size());
+		writer->write_u32_le(0);	// 3d object size
 		writer->write_u32_le(0);	// 3d object count
 		writer->write_u32_le(0);	// 3d object offset
 
-//		writer->write_u32_le(get_2d_object_size());
+		writer->write_u32_le(0);	// 2d object size
 		writer->write_u32_le(0);	// 2d object count
 		writer->write_u32_le(0);	// 2d object offset
 
-//		writer->write_u32_le(get_light_size());
-		writer->write_u32_le(m_lights.size());	// light count
+		writer->write_u32_le(0);	// light size
+		writer->write_u32_le(0);	// light count
 		writer->write_u32_le(0);	// light offset
 
 		writer->write_u8(0);		// dungeon
@@ -643,12 +747,11 @@ namespace eternal_lands
 		writer->write_float_le(0.0f);	// ambient_g
 		writer->write_float_le(0.0f);	// ambient_b
 
-//		writer->write_u32_le(get_particle_size());
-		writer->write_u32_le(m_particles.size());
-		writer->write_u32_le(0);	// particles offset
+		writer->write_u32_le(0);	// particle size
+		writer->write_u32_le(0);	// particle count
+		writer->write_u32_le(0);	// particle offset
 
 		writer->write_u32_le(0);	// clusters_offset
-
 		writer->write_u32_le(0);	// terrain_offset
 
 		writer->write_u32_le(0);	// material_name_size
@@ -661,25 +764,309 @@ namespace eternal_lands
 		writer->write_u32_le(0);	// reserved_16
 		writer->write_u32_le(0);	// reserved_17
 
+		if (get_dungeon())
+		{
+			dungeon = 1;
+		}
+		else
+		{
+			dungeon = 0;
+		}
+
+		ambient = get_ambient();
+
+		size = get_tile_map_size();
+
+		tile_map_width = size.x;
+		tile_map_height = size.y;
+
 		tile_map_offset = writer->get_position();
 
 		for (y = 0; y < size.y; ++y)
 		{
 			for (x = 0; x < size.x; ++x)
 			{
-				writer->write_u8(0);
+				writer->write_u8(get_tile(x, y));
 			}
 		}
 
+		size *= 6u;
 		height_map_offset = writer->get_position();
 
 		for (y = 0; y < size.y; ++y)
 		{
 			for (x = 0; x < size.x; ++x)
 			{
+				writer->write_u8(get_height(x, y));
+			}
+		}
+
+		obj_3d_size = AbstractMapLoader::get_3d_object_size();
+		obj_3d_count = 0;
+		obj_3d_offset = writer->get_position();
+
+		object_end = m_objects.end();
+
+		for (object_it = m_objects.begin(); object_it != object_end;
+			++object_it)
+		{
+			if (!FreeIdsManager::get_id_type(
+				object_it->second.get_id(), id, type))
+			{
+				continue;
+			}
+
+			if (type != it_3d_object)
+			{
+				continue;
+			}
+
+			if ((version == mvt_1_0) && (obj_3d_count < id))
+			{
+				count = id - obj_3d_count;
+
+				obj_3d_count += count;
+
+				count *= obj_3d_size;
+
+				for (i = 0; i < count; ++i)
+				{
+					writer->write_u8(20);
+				}
+			}
+
+			obj_3d_count++;
+
+			writer->write_utf8_string(
+				object_it->second.get_name(), 80);
+
+			writer->write_float_le(
+				object_it->second.get_translation().x);
+			writer->write_float_le(
+				object_it->second.get_translation().y);
+			writer->write_float_le(
+				object_it->second.get_translation().z);
+
+			writer->write_float_le(
+				object_it->second.get_rotation_angles().x);
+			writer->write_float_le(
+				object_it->second.get_rotation_angles().y);
+			writer->write_float_le(
+				object_it->second.get_rotation_angles().z);
+
+			if (version == mvt_1_0)
+			{
+				writer->write_u8(0);
+
+				if (object_it->second.get_blend() ==
+					bt_disabled)
+				{
+					writer->write_u8(0);
+				}
+				else
+				{
+					writer->write_u8(1);
+				}
+
+				writer->write_u8(0);
+				writer->write_u8(0);
+			}
+			else
+			{
+				writer->write_u8(0);
+				writer->write_u8(
+					object_it->second.get_blend());
+				writer->write_u8(
+					object_it->second.get_selection());
+				writer->write_u8(
+					object_it->second.get_transparency() *
+					255.5f);
+			}
+
+			writer->write_float_le(0.0f);
+			writer->write_float_le(0.0f);
+			writer->write_float_le(0.0f);
+
+			writer->write_float_le(object_it->second.get_scale());
+
+			update_materials_list(
+				object_it->second.get_material_names(),
+				material_list, index_map, material_index,
+				material_count);
+
+			writer->write_u32_le(material_index);
+			writer->write_u32_le(material_count);
+			writer->write_u32_le(id);
+			writer->write_u32_le(0);
+
+			for (i = 0; i < 4; ++i)
+			{
 				writer->write_u8(0);
 			}
 		}
+
+		obj_2d_size = AbstractMapLoader::get_2d_object_size();
+		obj_2d_count = 0;
+		obj_2d_offset = writer->get_position();
+
+		object_end = m_objects.end();
+
+		for (object_it = m_objects.begin(); object_it != object_end;
+			++object_it)
+		{
+			if (!FreeIdsManager::get_id_type(
+				object_it->second.get_id(), id, type))
+			{
+				continue;
+			}
+
+			if (type != it_2d_object)
+			{
+				continue;
+			}
+
+			obj_2d_count++;
+
+			writer->write_utf8_string(
+				object_it->second.get_name(), 80);
+
+			writer->write_float_le(
+				object_it->second.get_translation().x);
+			writer->write_float_le(
+				object_it->second.get_translation().y);
+			writer->write_float_le(
+				object_it->second.get_translation().z);
+
+			writer->write_float_le(
+				object_it->second.get_rotation_angles().x);
+			writer->write_float_le(
+				object_it->second.get_rotation_angles().y);
+			writer->write_float_le(
+				object_it->second.get_rotation_angles().z);
+
+			for (i = 0; i < 24; ++i)
+			{
+				writer->write_u8(0);
+			}
+		}
+
+		light_size = AbstractMapLoader::get_light_size();
+		light_count = 0;
+		light_offset = writer->get_position();
+
+		light_end = m_lights.end();
+
+		for (light_it = m_lights.begin(); light_it != light_end;
+			++light_it)
+		{
+			light_count++;
+
+			writer->write_float_le(
+				light_it->second.get_position().x);
+			writer->write_float_le(
+				light_it->second.get_position().y);
+			writer->write_float_le(
+				light_it->second.get_position().z);
+
+			writer->write_float_le(light_it->second.get_color().r);
+			writer->write_float_le(light_it->second.get_color().g);
+			writer->write_float_le(light_it->second.get_color().b);
+
+			writer->write_float_le(light_it->second.get_radius());
+
+			for (i = 0; i < 12; ++i)
+			{
+				writer->write_u8(0);
+			}
+		}
+
+		particle_size = AbstractMapLoader::get_particle_size();
+		particle_count = 0;
+		particle_offset = writer->get_position();
+
+		particle_end = m_particles.end();
+
+		for (particle_it = m_particles.begin();
+			particle_it != particle_end; ++particle_it)
+		{
+			particle_count++;
+
+			writer->write_utf8_string(
+				particle_it->second.get_name(), 80);
+			writer->write_float_le(
+				particle_it->second.get_position().x);
+			writer->write_float_le(
+				particle_it->second.get_position().y);
+			writer->write_float_le(
+				particle_it->second.get_position().z);
+
+			for (i = 0; i < 12; ++i)
+			{
+				writer->write_u8(0);
+			}
+		}
+
+		material_name_size =
+			AbstractMapLoader::get_material_name_size();
+		material_name_count = 0;
+		material_name_offset = writer->get_position();
+
+		BOOST_FOREACH(const String &material, material_list)
+		{
+			material_name_count++;
+
+			writer->write_utf8_string(material, 128);
+		}
+
+		writer->set_position(0);
+
+		writer->write_s8('e');
+		writer->write_s8('l');
+		writer->write_s8('m');
+		writer->write_s8('f');
+
+		writer->write_u32_le(tile_map_width);
+		writer->write_u32_le(tile_map_height);
+		writer->write_u32_le(tile_map_offset);
+		writer->write_u32_le(height_map_offset);
+
+		writer->write_u32_le(obj_3d_size);
+		writer->write_u32_le(obj_3d_count);
+		writer->write_u32_le(obj_3d_offset);
+
+		writer->write_u32_le(obj_2d_size);
+		writer->write_u32_le(obj_2d_count);
+		writer->write_u32_le(obj_2d_offset);
+
+		writer->write_u32_le(light_size);
+		writer->write_u32_le(light_count);
+		writer->write_u32_le(light_offset);
+
+		writer->write_u8(dungeon);
+		writer->write_u8(0);		// res_2
+		writer->write_u8(1);		// version_major
+		writer->write_u8(1);		// version_minor
+
+		writer->write_float_le(ambient.r);
+		writer->write_float_le(ambient.g);
+		writer->write_float_le(ambient.b);
+
+		writer->write_u32_le(particle_size);
+		writer->write_u32_le(particle_count);
+		writer->write_u32_le(particle_offset);
+
+		writer->write_u32_le(0);	// clusters_offset
+		writer->write_u32_le(0);	// terrain_offset
+
+		writer->write_u32_le(material_name_size);
+		writer->write_u32_le(material_name_count);
+		writer->write_u32_le(material_name_offset);
+
+		writer->write_u32_le(0);	// reserved_13
+		writer->write_u32_le(0);	// reserved_14
+		writer->write_u32_le(0);	// reserved_15
+		writer->write_u32_le(0);	// reserved_16
+		writer->write_u32_le(0);	// reserved_17
 	}
 
 }

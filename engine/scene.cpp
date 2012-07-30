@@ -1868,6 +1868,11 @@ namespace eternal_lands
 		return m_map->get_tile_map_size();
 	}
 
+	void Scene::set_dungeon(const bool dungeon)
+	{
+		m_map->set_dungeon(dungeon);
+	}
+
 	bool Scene::get_dungeon() const
 	{
 		return m_map->get_dungeon();

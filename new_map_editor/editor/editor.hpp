@@ -82,7 +82,10 @@ namespace eternal_lands
 				const float radius);
 			void add_ground_tile(const Uint32 x, const Uint32 y,
 				const Uint8 texture);
+			void set_dungeon(const bool dungeon);
+			bool get_dungeon() const;
 			void set_ambient(const glm::vec3 &color);
+			const glm::vec3 &get_ambient() const;
 			void terrain_layer_edit(const glm::vec3 &point,
 				const Uint32 index, const float strength,
 				const float radius, const int brush_type);
@@ -121,7 +124,6 @@ namespace eternal_lands
 				const;
 			void get_light_data(const Uint32 id,
 				LightData &light_data) const;
-			const glm::vec3 &get_ambient() const;
 			void export_blend_image(const String &file_name,
 				const String &type) const;
 			void export_terrain_map(const String &file_name,
@@ -133,6 +135,8 @@ namespace eternal_lands
 				const float attenuation_size,
 				const int attenuation, const int shape,
 				const int effect);
+			bool check_default_materials(const String &name,
+				const StringVector &materials) const;
 
 			static inline const glm::vec3 &get_terrain_offset()
 			{
@@ -491,6 +495,11 @@ namespace eternal_lands
 			inline void update_edit_id() noexcept
 			{
 				m_edit_id++;
+			}
+
+			inline void save(const String &file_name)
+			{
+				m_data.save(file_name);
 			}
 
 	};

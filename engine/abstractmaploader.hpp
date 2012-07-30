@@ -40,6 +40,12 @@ namespace eternal_lands
 
 	typedef std::set<MapItemsType> MapItemsTypeSet;
 
+	enum MapVersionType
+	{
+		mvt_1_0,
+		mvt_1_1
+	};
+
 	/**
 	 * @brief @c class for loading maps.
 	 *
@@ -72,39 +78,52 @@ namespace eternal_lands
 			}
 
 			void read_3d_object(const Uint32 index,
-				const Uint32 offset);
+				const Uint32 offset,
+				const MapVersionType version);
 			void read_2d_object(const Uint32 index,
-				const Uint32 offset);
+				const Uint32 offset,
+				const MapVersionType version);
 			void read_light(const Uint32 index,
-				const Uint32 offset);
+				const Uint32 offset,
+				const MapVersionType version);
 			void read_particle(const Uint32 index,
-				const Uint32 offset);
+				const Uint32 offset,
+				const MapVersionType version);
 			void read_material_name(const Uint32 index,
-				const Uint32 offset);
+				const Uint32 offset,
+				const MapVersionType version);
 
 			void read_3d_objects(const Uint32 obj_3d_size,
 				const Uint32 obj_3d_count,
-				const Uint32 obj_3d_offset);
+				const Uint32 obj_3d_offset,
+				const MapVersionType version);
 			void read_2d_objects(const Uint32 obj_2d_size,
 				const Uint32 obj_2d_count,
-				const Uint32 obj_2d_offset);
+				const Uint32 obj_2d_offset,
+				const MapVersionType version);
 			void read_lights(const Uint32 light_size,
 				const Uint32 light_count,
-				const Uint32 light_offset);
+				const Uint32 light_offset,
+				const MapVersionType version);
 			void read_particles(const Uint32 particle_size,
 				const Uint32 particle_count,
-				const Uint32 particle_offset);
-			void read_terrain(const Uint32 terrain_offset);
+				const Uint32 particle_offset,
+				const MapVersionType version);
+			void read_terrain(const Uint32 terrain_offset,
+				const MapVersionType version);
 			void read_material_names(
 				const Uint32 material_name_size,
 				const Uint32 material_name_count,
-				const Uint32 material_name_offset);
+				const Uint32 material_name_offset,
+				const MapVersionType version);
 			void read_height_map(const Uint32 height_map_width,
 				const Uint32 height_map_height,
-				const Uint32 height_map_offset);
+				const Uint32 height_map_offset,
+				const MapVersionType version);
 			void read_tile_map(const Uint32 tile_map_widht,
 				const Uint32 tile_map_height,
-				const Uint32 tile_map_offset);
+				const Uint32 tile_map_offset,
+				const MapVersionType version);
 			void read(const String &name);
 			static ObjectDescription get_object_description(
 				const glm::vec3 &translation,

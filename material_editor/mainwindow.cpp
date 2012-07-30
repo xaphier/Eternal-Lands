@@ -120,6 +120,7 @@ void MainWindow::do_new()
 	}
 
 	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+	graphicsView->scene()->clear();
 
 	m_changed = false;
 }

@@ -195,6 +195,7 @@ namespace eternal_lands
 			glm::uvec2 get_walk_height_map_size() const;
 			glm::uvec2 get_height_map_size() const;
 			glm::uvec2 get_tile_map_size() const;
+			void set_dungeon(const bool dungeon);
 			bool get_dungeon() const;
 			void set_ambient(const glm::vec3 &color);
 			const glm::vec3 &get_ambient() const;

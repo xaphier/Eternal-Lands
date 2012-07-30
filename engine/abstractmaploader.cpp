@@ -136,13 +136,13 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_3d_object(const Uint32 index,
-		const Uint32 offset)
+		const Uint32 offset, const MapVersionType version)
 	{
 		glm::vec3 translation, rotation_angles, color;
 		String name;
 		StringVector material_names;
 		float transparency, scale;
-		Uint32 id, blended, material_index, material_count;
+		Uint32 id, blended, material_index, material_count, instance_id;
 		SelectionType selection;
 		BlendType blend;
 		bool self_lit;
@@ -161,17 +161,20 @@ namespace eternal_lands
 
 		self_lit = get_reader()->read_u8() != 0;
 		blended = get_reader()->read_u8();
+		blend = static_cast<BlendType>(blended);
 		selection = static_cast<SelectionType>(
 			get_reader()->read_u8());
-		get_reader()->skip(sizeof(Uint8));
+		transparency = get_reader()->read_u8() / 255.0f;
 
 		color.r = get_reader()->read_float_le();
 		color.g = get_reader()->read_float_le();
 		color.b = get_reader()->read_float_le();
 
 		scale = get_reader()->read_float_le();
-		material_count = get_reader()->read_u32_le();
 		material_index = get_reader()->read_u32_le();
+		material_count = get_reader()->read_u32_le();
+		id = get_reader()->read_u32_le();
+		instance_id = get_reader()->read_u32_le();
 
 		LOG_DEBUG(lt_map_loader, UTF8("Adding 3d object (%1%) '%2%' at"
 			" <%3%> with rotation <%4%>, left lit %5%, blended %6%"
@@ -180,32 +183,45 @@ namespace eternal_lands
 			glm::to_string(rotation_angles) % self_lit % blended %
 			glm::to_string(color));
 
-		if (blended == 20)
+		if (version == mvt_1_0)
 		{
-			return;
-		}
+			if (blended == 20)
+			{
+				return;
+			}
 
-		if (blended == 1)
-		{
-			transparency = 0.7f;
-			blend = bt_alpha_transparency_source_value;
-		}
-		else
-		{
-			transparency = 1.0f;
-			blend = bt_disabled;
-		}
+			if (blended == 1)
+			{
+				transparency = 0.7f;
+				blend = bt_alpha_transparency_source_value;
+			}
+			else
+			{
+				transparency = 1.0f;
+				blend = bt_disabled;
+			}
 
-		if (true)
-		{
 			scale = 1.0f;
 			material_count = 0;
 			material_index = 0;
 			name = FileSystem::get_strip_relative_path(name);
 			selection = get_selection(name);
+			id = index;
 		}
 
-		id = get_free_ids().use_typeless_object_id(index, it_3d_object);
+		if ((material_index + material_count) > m_material_names.size())
+		{
+			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
+				"material name index [%2%] and count [%3%] for"
+				" object %4% [%5%]."), get_reader()->get_name()
+				% material_index % material_count % name %
+				index);
+
+			material_count = 0;
+			material_index = 0;
+		}
+
+		id = get_free_ids().use_typeless_object_id(id, it_3d_object);
 
 		add_object(translation, rotation_angles, name, scale,
 			transparency, id, selection, blend,
@@ -213,7 +229,7 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_2d_object(const Uint32 index,
-		const Uint32 offset)
+		const Uint32 offset, const MapVersionType version)
 	{
 		glm::vec3 translation, rotation_angles;
 		String name;
@@ -244,7 +260,7 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_light(const Uint32 index,
-		const Uint32 offset)
+		const Uint32 offset, const MapVersionType version)
 	{
 		glm::vec3 color, position;
 		float radius, scale;
@@ -261,7 +277,7 @@ namespace eternal_lands
 
 		radius = get_reader()->read_float_le();
 
-		if (true)
+		if (version == mvt_1_0)
 		{
 			scale = std::max(std::max(color.r, color.g),
 				std::max(color.b, 1.0f));
@@ -280,7 +296,7 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_particle(const Uint32 index,
-		const Uint32 offset)
+		const Uint32 offset, const MapVersionType version)
 	{
 		glm::vec3 position;
 		String name;
@@ -302,8 +318,14 @@ namespace eternal_lands
 		add_particle(position, name, index);
 	}
 
-	void AbstractMapLoader::read_terrain(const Uint32 offset)
+	void AbstractMapLoader::read_terrain(const Uint32 offset,
+		const MapVersionType version)
 	{
+		if (version == mvt_1_0)
+		{
+			return;
+		}
+
 		try
 		{
 			get_reader()->set_position(offset);
@@ -319,7 +341,7 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_material_name(const Uint32 index,
-		const Uint32 offset)
+		const Uint32 offset, const MapVersionType version)
 	{
 		get_reader()->set_position(offset);
 
@@ -327,7 +349,8 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_3d_objects(const Uint32 obj_3d_size,
-		const Uint32 obj_3d_count, const Uint32 obj_3d_offset)
+		const Uint32 obj_3d_count, const Uint32 obj_3d_offset,
+		const MapVersionType version)
 	{
 		Uint32 i;
 
@@ -339,7 +362,7 @@ namespace eternal_lands
 			try
 			{
 				read_3d_object(i, obj_3d_offset +
-					i * obj_3d_size);
+					i * obj_3d_size, version);
 			}
 			catch (boost::exception &exception)
 			{
@@ -354,7 +377,8 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_2d_objects(const Uint32 obj_2d_size,
-		const Uint32 obj_2d_count, const Uint32 obj_2d_offset)
+		const Uint32 obj_2d_count, const Uint32 obj_2d_offset,
+		const MapVersionType version)
 	{
 		Uint32 i;
 
@@ -366,7 +390,7 @@ namespace eternal_lands
 			try
 			{
 				read_2d_object(i, obj_2d_offset +
-					i * obj_2d_size);
+					i * obj_2d_size, version);
 			}
 			catch (boost::exception &exception)
 			{
@@ -381,7 +405,8 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_lights(const Uint32 light_size,
-		const Uint32 light_count, const Uint32 light_offset)
+		const Uint32 light_count, const Uint32 light_offset,
+		const MapVersionType version)
 	{
 		Uint32 i;
 
@@ -392,7 +417,8 @@ namespace eternal_lands
 		{
 			try
 			{
-				read_light(i, light_offset + i * light_size);
+				read_light(i, light_offset + i * light_size,
+					version);
 			}
 			catch (boost::exception &exception)
 			{
@@ -407,7 +433,8 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_particles(const Uint32 particle_size,
-		const Uint32 particle_count, const Uint32 particle_offset)
+		const Uint32 particle_count, const Uint32 particle_offset,
+		const MapVersionType version)
 	{
 		Uint32 i;
 
@@ -419,7 +446,7 @@ namespace eternal_lands
 			try
 			{
 				read_particle(i, particle_offset +
-					i * particle_size);
+					i * particle_size, version);
 			}
 			catch (boost::exception &exception)
 			{
@@ -434,7 +461,8 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_height_map(const Uint32 height_map_width,
-		const Uint32 height_map_height, const Uint32 height_map_offset)
+		const Uint32 height_map_height, const Uint32 height_map_offset,
+		const MapVersionType version)
 	{
 		Uint32 x, y;
 
@@ -467,7 +495,8 @@ namespace eternal_lands
 	}
 
 	void AbstractMapLoader::read_tile_map(const Uint32 tile_map_width,
-		const Uint32 tile_map_height, const Uint32 tile_map_offset)
+		const Uint32 tile_map_height, const Uint32 tile_map_offset,
+		const MapVersionType version)
 	{
 		Uint32 x, y;
 
@@ -501,7 +530,8 @@ namespace eternal_lands
 	void AbstractMapLoader::read_material_names(
 		const Uint32 material_name_size,
 		const Uint32 material_name_count,
-		const Uint32 material_name_offset)
+		const Uint32 material_name_offset,
+		const MapVersionType version)
 	{
 		Uint32 i;
 
@@ -515,7 +545,7 @@ namespace eternal_lands
 			try
 			{
 				read_material_name(i, material_name_offset +
-					i * material_name_size);
+					i * material_name_size, version);
 			}
 			catch (boost::exception &exception)
 			{
@@ -556,8 +586,8 @@ namespace eternal_lands
 		Uint32 tile_map_width;
 		Uint32 tile_map_height;
 		Sint8Array4 magic_number;
-		Uint8Array2 version_number;
-		Uint16 version;
+		Uint16 version_number, version_major, version_minor;
+		MapVersionType version;
 		bool dungeon;
 
 		m_reader = get_file_system()->get_file(name);
@@ -605,8 +635,11 @@ namespace eternal_lands
 
 		get_reader()->skip(sizeof(Uint8));
 
-		version_number[0] = get_reader()->read_u8();
-		version_number[1] = get_reader()->read_u8();
+		version_major = get_reader()->read_u8();
+		version_minor = get_reader()->read_u8();
+
+		version_number = version_major << 8;
+		version_number |= version_minor;
 
 		ambient.r = get_reader()->read_float_le();
 		ambient.g = get_reader()->read_float_le();
@@ -627,12 +660,30 @@ namespace eternal_lands
 		material_name_count = get_reader()->read_u32_le();
 		material_name_offset = get_reader()->read_u32_le();
 
-		LOG_DEBUG(lt_map_loader, UTF8("Map version %1%.%2%."),
-			static_cast<Uint16>(version_number[0]) %
-			static_cast<Uint16>(version_number[1]));
+		switch (version_number)
+		{
+			case 0x0000:
+			case 0x0100:
+				version = mvt_1_0;
+				version_major = 1;
+				version_minor = 0;
+				break;
+			case 0x0101:
+				version = mvt_1_1;
+				version_major = 1;
+				version_minor = 1;
+				break;
+			default:
+				LOG_ERROR(lt_map_loader, UTF8("File '%1%' has "
+					"invalid version number %2%.%3%"),
+					get_reader()->get_name() %
+					version_major % version_minor);
+				version = mvt_1_0;
+				break;
+		}
 
-		version = static_cast<Uint16>(version_number[0]) << 8;
-		version |= static_cast<Uint16>(version_number[1]) << 0;
+		LOG_DEBUG(lt_map_loader, UTF8("Map version %1%.%2%."),
+			version_major % version_minor);
 
 		if (version == 0)
 		{
@@ -655,6 +706,8 @@ namespace eternal_lands
 				" object size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				obj_3d_size % get_3d_object_size());
+			obj_3d_count = 0;
+			obj_3d_offset = 0;
 		}
 
 		if (obj_2d_size != get_2d_object_size())
@@ -663,6 +716,8 @@ namespace eternal_lands
 				" object size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				obj_2d_size % get_2d_object_size());
+			obj_2d_count = 0;
+			obj_2d_offset = 0;
 		}
 
 		if (light_size != get_light_size())
@@ -671,6 +726,8 @@ namespace eternal_lands
 				"light size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				light_size % get_light_size());
+			light_count = 0;
+			light_offset = 0;
 		}
 
 		if (particle_size != get_particle_size())
@@ -679,6 +736,8 @@ namespace eternal_lands
 				"particle size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				particle_size % get_particle_size());
+			particle_count = 0;
+			particle_offset = 0;
 		}
 
 		if (material_name_size != get_material_name_size())
@@ -687,18 +746,25 @@ namespace eternal_lands
 				"material name size of %2% instead of %3%."),
 				get_reader()->get_name() %
 				material_name_size % get_material_name_size());
+			material_name_count = 0;
+			material_name_offset = 0;
 		}
 
 		read_material_names(material_name_size, material_name_count,
-			material_name_offset);
-		read_3d_objects(obj_3d_size, obj_3d_count, obj_3d_offset);
-		read_2d_objects(obj_2d_size, obj_2d_count, obj_2d_offset);
-		read_lights(light_size, light_count, light_offset);
-		read_particles(particle_size, particle_count, particle_offset);
+			material_name_offset, version);
+		read_3d_objects(obj_3d_size, obj_3d_count, obj_3d_offset,
+			version);
+		read_2d_objects(obj_2d_size, obj_2d_count, obj_2d_offset,
+			version);
+		read_lights(light_size, light_count, light_offset,
+			version);
+		read_particles(particle_size, particle_count, particle_offset,
+			version);
 		read_height_map(height_map_width, height_map_height,
-			height_map_offset);
-		read_tile_map(tile_map_width, tile_map_height, tile_map_offset);
-		read_terrain(terrain_offset);
+			height_map_offset, version);
+		read_tile_map(tile_map_width, tile_map_height, tile_map_offset,
+			version);
+		read_terrain(terrain_offset, version);
 
 		LOG_DEBUG(lt_map_loader, UTF8("Done loading map '%1%'."),
 			get_reader()->get_name());
@@ -745,6 +811,23 @@ namespace eternal_lands
 	{
 		StringVector result;
 		Uint32 i;
+
+		if (index > m_material_names.size())
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_parameter_name(UTF8("index"))
+				<< errinfo_range_index(index)
+				<< errinfo_range_max(m_material_names.size()));
+		}
+
+		if ((index + count) > m_material_names.size())
+		{
+			EL_THROW_EXCEPTION(RangeErrorException()
+				<< errinfo_message(UTF8("index plus count are "
+					"too big"))
+				<< errinfo_range_index(index + count)
+				<< errinfo_range_max(m_material_names.size()));
+		}
 
 		for (i = 0; i < count; ++i)
 		{

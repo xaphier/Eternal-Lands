@@ -122,7 +122,7 @@ namespace eternal_lands
 		
 	void EditorMapLoader::set_dungeon(const bool dungeon)
 	{
-//		m_data.set_dungeon(dungeon);
+		m_data.set_dungeon(dungeon);
 	}
 
 	void EditorMapLoader::instance()

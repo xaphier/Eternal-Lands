@@ -18,6 +18,7 @@
 #include "terrainvalue.hpp"
 #include "height.hpp"
 #include "terraineditor.hpp"
+#include "abstractmaploader.hpp"
 
 /**
  * @file
@@ -55,7 +56,8 @@ namespace eternal_lands
 			Uint32 m_id;
 			RenderableType m_renderable;
 
-			void save(const WriterSharedPtr &writer) const;
+			void save(const WriterSharedPtr &writer,
+				const MapVersionType version) const;
 
 		public:
 			EditorMapData(const GlobalVarsSharedPtr &global_vars,
@@ -77,11 +79,14 @@ namespace eternal_lands
 				ParticleData &particle) const;
 			void set_ambient(const glm::vec3 &color);
 			const glm::vec3 &get_ambient() const;
+			void set_dungeon(const bool dungeon);
+			bool get_dungeon() const;
 			void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile);
 			Uint16 get_tile(const Uint16 x, const Uint16 y) const;
 			glm::uvec2 get_tile_offset(const glm::vec2 &point)
 				const; 
+			Uint16 get_height(const Uint16 x, const Uint16 y) const;
 			void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height);
 			void set_heights(const HeightVector &heights);
