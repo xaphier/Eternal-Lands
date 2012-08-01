@@ -907,7 +907,7 @@ namespace eternal_lands
 					m_header.m_mipmap_count),
 					static_cast<Uint16>(pixel_size * 8),
 					format, type, false);
-				load(1);
+				load(swap_size);
 			}
 			else
 			{
