@@ -434,8 +434,7 @@ int display_newchar_handler (window_info *win)
 
 		update_scene_lights();
 		CHECK_GL_ERRORS ();
-		if (use_fog)
-			weather_render_fog();
+		weather_render_fog();
 		engine_draw_scene();
 		display_actors (1, DEFAULT_RENDER_PASS);
 

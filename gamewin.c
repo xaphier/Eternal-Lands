@@ -1091,8 +1091,7 @@ int display_game_handler (window_info *win)
             glPopMatrix();
         }
 	
-		if (use_fog)
-			weather_render_fog();
+		weather_render_fog();
 
 		// only draw scene lights if inside or it is night
 		if (dungeon || !is_day)

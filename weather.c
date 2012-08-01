@@ -23,8 +23,6 @@
 #include "sky.h"
 #include "engine.h"
 
-int use_fog = 1;
-
 int wind_speed_srv = 0;	//strength of wind, as set by server. 100 is about the max
 int wind_direction_srv = 0;	//wind direction, in degrees, as set by server. 0 and 360 == north
 int wind_speed = 0;	//strength of wind, based on server's setting and local randomization

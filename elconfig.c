@@ -574,7 +574,6 @@ void change_poor_man(int *poor_man)
 #ifndef MAP_EDITOR2
 		special_effects= 0;
 		use_eye_candy = 0;
-		use_fog= 0;
 #endif
 #ifndef MAP_EDITOR
 		use_frame_buffer= 0;

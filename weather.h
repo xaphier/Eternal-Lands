@@ -13,10 +13,6 @@
 extern "C" {
 #endif
 
-extern int use_fog;			/*!< Whether we are using fog or not */
-
-
-
 /* N E W   W E A T H E R *****************************************************/
 
 #define MAX_WEATHER_TYPES 10 // including NONE

@@ -1,7 +1,7 @@
 /****************************************************************************
  *            half.cpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@googlemail.com>
+ * Author: 2011  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 

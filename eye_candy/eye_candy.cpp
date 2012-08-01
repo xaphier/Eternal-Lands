@@ -2430,15 +2430,6 @@ namespace ec
 
 		set_particle_texture_combiner();
 
-#ifndef MAP_EDITOR
-		/* Fog hurts blending with 5 color blending
-		 * (red, green, blue, alpha and burn)
-		 */
-		if (use_fog)
-		{
-			glDisable(GL_FOG);
-		}
-#endif
 #else	/* NEW_TEXTURES */
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
@@ -2479,12 +2470,6 @@ namespace ec
 		glActiveTexture(GL_TEXTURE0);
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-#ifndef MAP_EDITOR
-		if (use_fog)
-		{
-			glEnable(GL_FOG);
-		}
-#endif
 #else	/* NEW_TEXTURES */
 		if (draw_method == POINT_SPRITES)
 		{
