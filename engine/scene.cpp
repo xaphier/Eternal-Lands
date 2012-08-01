@@ -1802,6 +1802,59 @@ namespace eternal_lands
 		return id;
 	}
 
+	void Scene::select_rect(const glm::vec2 &min, const glm::vec2 &max,
+		Uint32Set &selections)
+	{
+		PairUint32SelectionTypeVector ids;
+		Uint32 i, count, query_offset, query_index;
+		StateManagerUtil state(m_state_manager);
+
+		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("picking"));
+
+		selections.clear();
+
+		m_state_manager.unbind_all();
+		m_state_manager.switch_scissor_test(true);
+		glScissor(min.x, min.y, max.x - min.x, max.y - min.y);
+		m_state_manager.switch_multisample(true);
+		m_state_manager.switch_depth_mask(false);
+		m_state_manager.switch_color_mask(glm::bvec4(false));
+
+		m_state_manager.switch_polygon_offset_fill(true);
+		glPolygonOffset(0.0f, -1.0f);
+
+		glDepthFunc(GL_LEQUAL);
+
+		m_scene_view.set_default_view();
+
+		query_offset = m_querie_ids.size() / 2;
+		query_index = query_offset;
+
+		BOOST_FOREACH(const RenderObjectData &object,
+			m_visible_objects.get_objects())
+		{
+			pick_object(object, ids, query_index);
+		}
+
+		m_program_vars_id++;
+
+		for (i = 0; i < ids.size(); ++i)
+		{
+			count = 0;
+			assert(query_index > (i + query_offset));
+
+			glGetQueryObjectuiv(m_querie_ids[i + query_offset],
+				GL_QUERY_RESULT, &count);
+
+			if ((count > 0) && (ids[i].second != st_none))
+			{
+				selections.insert(ids[i].first);
+			}
+		}
+
+		CHECK_GL_ERROR();
+	}
+
 	double Scene::get_depth(const glm::uvec2 &offset)
 	{
 		Uint32 depth;

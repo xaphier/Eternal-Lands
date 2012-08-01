@@ -187,6 +187,8 @@ namespace eternal_lands
 			Uint32 pick(const glm::vec2 &offset,
 				const glm::vec2 &size,
 				SelectionType &selection);
+			void select_rect(const glm::vec2 &min,
+				const glm::vec2 &max, Uint32Set &selections);
 			double get_depth(const glm::uvec2 &offset);
 			void load(const String &name);
 			const ParticleDataVector &get_particles() const;
