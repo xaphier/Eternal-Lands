@@ -177,6 +177,7 @@ char
 	mix_one_str[8],
 	mix_all_str[8],
 	auto_get_all_str[30],
+	item_list_but_str[35],
 	inv_keeprow_str[30],
 	quantity_edit_str[100],
 	equip_here_str[100],
@@ -202,6 +203,7 @@ char
 	recipe_save_str[70],
 	/*knowledge.c*/
 	completed_research[12],
+	lessthanaminute_str[30],
 	researching_str[30],
 	not_researching_anything[25],
 	not_researching_str[25],
@@ -297,6 +299,7 @@ char
 	/*update.c*/
 	update_complete_str[40],
 	video_restart_str[80],
+	rotate_chat_log_restart_str[80],
 	client_restart_countdown_str[40],
 	client_restarting_str[20],
 	restart_now_label[20],
@@ -1246,8 +1249,10 @@ void init_help()
 	add_xml_identifier(misc,"mixone",mix_one_str,"Mix One",sizeof(mix_one_str));
 	add_xml_identifier(misc,"mixall",mix_all_str,"Mix All",sizeof(mix_all_str));
 	add_xml_identifier(misc,"autogetall",auto_get_all_str,"Empty Bag Automatically",sizeof(auto_get_all_str));
+	add_xml_identifier(misc,"itemlistbut",item_list_but_str,"Open Left Of Inventory",sizeof(item_list_but_str));
 	add_xml_identifier(misc,"inv_keeprow",inv_keeprow_str,"Keep First Row\nKeep Last Row",sizeof(inv_keeprow_str));
 	add_xml_identifier(misc,"completed",completed_research,"COMPLETED",sizeof(completed_research));
+	add_xml_identifier(misc,"lessthanaminute",lessthanaminute_str,"Less than a minute",sizeof(lessthanaminute_str));
 	add_xml_identifier(misc,"research",researching_str,"Researching",sizeof(researching_str));
 	add_xml_identifier(misc,"nothing",not_researching_anything,"Nothing",sizeof(not_researching_anything));
 	add_xml_identifier(misc,"not_researching",not_researching_str,"Researching nothing",sizeof(not_researching_anything));
@@ -1285,12 +1290,12 @@ void init_help()
 	add_xml_identifier(misc,"pick_item_help",pick_item_help_str,"Pickup item. +ctrl/+alt to drop/store all",sizeof(pick_item_help_str));
 	add_xml_identifier(misc,"multiuse_item_help",multiuse_item_help_str,"Leftclick to use (+shift to use again)",sizeof(multiuse_item_help_str));
 	add_xml_identifier(misc,"equipment",equip_str,"Equipment",sizeof(equip_str));
-	add_xml_identifier(misc,"stoall_help",stoall_help_str,"Move all items into opened storage",sizeof(stoall_help_str));
-	add_xml_identifier(misc,"getall_help",getall_help_str,"Get all items from ground bag",sizeof(getall_help_str));
-	add_xml_identifier(misc,"dcdrpall_help",dcdrpall_help_str,"Double-click to drop all items",sizeof(dcdrpall_help_str));
-	add_xml_identifier(misc,"drpall_help",drpall_help_str,"Drop all items",sizeof(drpall_help_str));
-	add_xml_identifier(misc,"mixoneall_help",mixoneall_help_str,"Mix one/all, right-click to choose",sizeof(mixoneall_help_str));
-	add_xml_identifier(misc,"itmlst_help",itmlst_help_str,"Show items list",sizeof(itmlst_help_str));
+	add_xml_identifier(misc,"stoall_help",stoall_help_str,"Move all items into opened storage.",sizeof(stoall_help_str));
+	add_xml_identifier(misc,"getall_help",getall_help_str,"Get all items from ground bag.",sizeof(getall_help_str));
+	add_xml_identifier(misc,"dcdrpall_help",dcdrpall_help_str,"Double-click to drop all items.",sizeof(dcdrpall_help_str));
+	add_xml_identifier(misc,"drpall_help",drpall_help_str,"Drop all items.",sizeof(drpall_help_str));
+	add_xml_identifier(misc,"mixoneall_help",mixoneall_help_str,"Mix current manufacture recipe.",sizeof(mixoneall_help_str));
+	add_xml_identifier(misc,"itmlst_help",itmlst_help_str,"Show/hide item lists window.",sizeof(itmlst_help_str));
 	add_xml_identifier(misc,"items_stack",items_stack_str,"Client can't choose between multiple stacks, make a free slot and let the server do it!",sizeof(items_stack_str));
 	add_xml_identifier(misc,"mixbut_empty",mixbut_empty_str,"Nothing to mix, add some items using the manufacture window.",sizeof(mixbut_empty_str));
 	add_xml_identifier(misc,"mix_empty_str",mix_empty_str,"Nothing to mix, add some items.",sizeof(mix_empty_str));
@@ -1328,6 +1333,7 @@ void init_help()
 	add_xml_identifier(misc,"ranginglock_enabled",ranginglock_enabled_str,"Ranging-Lock is now enabled. Disable it or unequip ranging weapon before walking.",sizeof(ranginglock_enabled_str));
 	add_xml_identifier(misc,"ranginglock_disabled",ranginglock_disabled_str,"Ranging-Lock is now disabled.",sizeof(ranginglock_disabled_str));
 	add_xml_identifier(misc,"video_restart", video_restart_str, "Video change will take effect at next restart.", sizeof(video_restart_str));
+	add_xml_identifier(misc,"rotate_chat_log_restart", rotate_chat_log_restart_str, "Rotate chat log change will take effect at next restart.", sizeof(rotate_chat_log_restart_str));
 	add_xml_identifier(misc,"ranging_win_title", ranging_win_title_str, "Ranging", sizeof(ranging_win_title_str));
 	add_xml_identifier(misc,"ranging_total_shots", ranging_total_shots_str, "Total shots      %d", sizeof(ranging_total_shots_str));
 	add_xml_identifier(misc,"ranging_sucessful_shots", ranging_sucessful_shots_str, "Successful hits  %d", sizeof(ranging_sucessful_shots_str));

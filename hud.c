@@ -1628,7 +1628,7 @@ static int context_hud_handler(window_info *win, int widget_id, int mx, int my, 
 		case CMH_MINIMAP: view_window(&minimap_win, 0); break;
 		case CMH_RANGSTATS: view_window(&range_win, 0); break;
 #ifdef NEW_SOUND
-		case CMH_SOUND: toggle_sounds(&sound_on); set_var_unsaved("enable_sounds", OPT_BOOL); break;
+		case CMH_SOUND: toggle_sounds(&sound_on); set_var_unsaved("enable_sound", OPT_BOOL); break;
 		case CMH_MUSIC: toggle_music(&music_on); set_var_unsaved("enable_music", OPT_BOOL); break;
 #endif // NEW_SOUND
 		case CMH_LOCATION:
@@ -1949,13 +1949,7 @@ CHECK_GL_ERRORS();
 
 		if (mouse_over_knowledge_bar)
 		{
-			use_str = not_researching_str;
-			if (is_researching())
-			{
-				int eta = get_research_eta();
-				safe_snprintf(str, sizeof(str), "ETA: %d %s", eta, (eta==1)?minute_str:minutes_str);
-				use_str = str;
-			}
+			use_str = (is_researching()) ?get_research_eta_str(str, sizeof(str)) : not_researching_str;
 			draw_string_small_shadowed(-(int)(SMALL_FONT_X_LEN*(strlen(use_str)+0.5)), y+gy_adjust, (unsigned char*)use_str, 1,1.0f,1.0f,1.0f,0.0f,0.0f,0.0f);
 			mouse_over_knowledge_bar = 0;
 		}
