@@ -46,7 +46,9 @@ namespace eternal_lands
 		sst_normal_mapping,
 		sst_albedo_mapping,
 		sst_specular_mapping,
-		sst_emission_mapping
+		sst_emission_mapping,
+		sst_vertex_node_data,
+		sst_fragment_node_data
 	};
 
 	typedef std::map<ShaderSourceType, String> ShaderSourceTypeStringMap;

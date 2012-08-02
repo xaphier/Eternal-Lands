@@ -252,7 +252,7 @@ namespace eternal_lands
 
 	String EffectNode::get_value_count_type_str() const
 	{
-		assert(get_value_count() > 0);
+//		assert(get_value_count() > 0);
 		assert(get_value_count() < 5);
 
 		switch (get_value_count())

@@ -4,16 +4,28 @@
 #include "../engine/node/effectnode.hpp"
 #include "../engine/node/effectnodes.hpp"
 #include "../engine/node/effectnodeport.hpp"
+#include <QTextDocument>
 
 BasicNode::BasicNode(const el::EffectNodesSharedPtr &effect_nodes,
 	el::EffectNodePtr effect_node, QString name, QGraphicsItem* parent,
 	QGraphicsScene* scene): QNEBlock(parent, scene),
 	m_effect_nodes(effect_nodes), m_effect_node(effect_node)
 {
+	QString tool_tip;
+	QTextDocument document;
+
 	addPort(name, 0, QNEPort::NamePort);
 
-	setToolTip(QString::fromUtf8(effect_node->get_description().get(
-		).c_str()));
+	tool_tip = QString::fromUtf8(effect_node->get_description().get(
+		).c_str());
+
+	document.setPlainText(tool_tip);
+
+	tool_tip = QString("<FONT COLOR=black>");
+	tool_tip += document.toHtml();
+	tool_tip += QString("</FONT>");
+
+	setToolTip(tool_tip);
 
 	setPos(QPointF(effect_node->get_position().x,
 		effect_node->get_position().y));
@@ -23,6 +35,19 @@ BasicNode::BasicNode(const el::EffectNodesSharedPtr &effect_nodes,
 
 BasicNode::~BasicNode()
 {
+	foreach(QGraphicsItem *child, childItems())
+	{
+		if (child->type() == QNEPort::Type)
+		{
+			delete child;
+		}
+	}
+
+	foreach(QGraphicsItem *child, childItems())
+	{
+		delete child;
+	}
+
 	m_effect_nodes->remove(m_effect_node);
 }
 

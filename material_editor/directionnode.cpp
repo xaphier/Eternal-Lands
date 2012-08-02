@@ -1,5 +1,6 @@
 #include "directionnode.hpp"
 #include "qneport.hpp"
+#include <QGraphicsProxyWidget>
 
 DirectionNode::DirectionNode(const el::EffectNodesSharedPtr &effect_nodes,
 	el::EffectConstant* effect_constant, QString name,
@@ -7,38 +8,37 @@ DirectionNode::DirectionNode(const el::EffectNodesSharedPtr &effect_nodes,
 	BasicNode(effect_nodes, effect_constant, name, parent, scene),
 	m_effect_constant(effect_constant)
 {
-	m_direction = addPort("", 0, QNEPort::ImagePort);
+	float tmp;
+
+	m_direction = new QDial();
+	m_direction->setMaximum(179);
+	m_direction->setMinimum(-180);
+	m_proxi = new QGraphicsProxyWidget(this);
+	m_proxi->setWidget(m_direction);
 
 	init_ports();
 
-	m_dialog = new DirectionDialog(0);
+	tmp = std::asin(m_effect_constant->get_value().x);
+
+	m_direction->setValue((tmp * 360.0) / (2.0 * M_PI));
+
+	QObject::connect(m_direction, SIGNAL(valueChanged(int)), this,
+		SLOT(value_change(int)));
 }
 
 DirectionNode::~DirectionNode()
 {
 }
 
-void DirectionNode::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void DirectionNode::value_change(const int value)
 {
-	select_direction();
-}
+	float x, y;
 
-void DirectionNode::select_direction()
-{
-	glm::vec4 value;
-	QVector2D result;
+	x = std::sin((value / 360.0) * 2.0 * M_PI);
+	y = std::cos((value / 360.0) * 2.0 * M_PI);
 
-	value = m_effect_constant->get_value();
+	m_effect_constant->set_value(glm::vec4(x, y, 0.0f, 0.0f));
 
-	m_dialog->set_direction(QVector2D(value.x, value.y));
-
-	if (m_dialog->exec() == QDialog::Accepted)
-	{
-		result = m_dialog->get_direction();
-
-		m_effect_constant->set_value(glm::vec4(result.x(), result.y(),
-			0.0f, 0.0f));
-
-//		m_direction->set_color(color);
-	}
+	setToolTip(QString::fromUtf8(m_effect_constant->get_description().get(
+		).c_str()));
 }

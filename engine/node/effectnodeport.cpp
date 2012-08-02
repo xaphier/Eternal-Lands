@@ -123,7 +123,13 @@ namespace eternal_lands
 	{
 		BOOST_FOREACH(const EffectNodePortPtr port, get_connections())
 		{
-			disconnect(port);
+			port->do_disconnect(this);
+			do_disconnect(port);
+		}
+
+		BOOST_FOREACH(const EffectNodePortPtr port, get_connections())
+		{
+			port->get_node_ptr()->update();
 		}
 	}
 

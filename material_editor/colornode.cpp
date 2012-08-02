@@ -12,7 +12,7 @@ ColorNode::ColorNode(const el::EffectNodesSharedPtr &effect_nodes,
 
 	init_ports();
 
-	m_pixmap->set_color(QColor(m_effect_constant->get_value().r,
+	m_pixmap->set_color(QColor::fromRgbF(m_effect_constant->get_value().r,
 		m_effect_constant->get_value().g,
 		m_effect_constant->get_value().b,
 		m_effect_constant->get_value().a));

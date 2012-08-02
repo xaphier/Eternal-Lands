@@ -59,7 +59,9 @@ QNEPort::QNEPort(el::EffectNodePortPtr effect_port, QGraphicsItem *parent,
 QNEPort::~QNEPort()
 {
 	foreach(Connection *conn, m_connections)
+	{
 		delete conn;
+	}
 }
 
 void QNEPort::setNEBlock(QNEBlock *b)
@@ -192,6 +194,18 @@ void QNEPort::update()
 		if (m_effect_port->get_name().get() == "rgb")
 		{
 			brush = QBrush(QImage(":/icons/rgb.png").scaledToHeight(
+				height(), Qt::SmoothTransformation));
+		}
+
+		if (m_effect_port->get_name().get() == "rg")
+		{
+			brush = QBrush(QImage(":/icons/rg.png").scaledToHeight(
+				height(), Qt::SmoothTransformation));
+		}
+
+		if (m_effect_port->get_name().get() == "ba")
+		{
+			brush = QBrush(QImage(":/icons/ba.png").scaledToHeight(
 				height(), Qt::SmoothTransformation));
 		}
 

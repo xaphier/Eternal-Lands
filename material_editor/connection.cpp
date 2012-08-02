@@ -8,8 +8,6 @@
 Connection::Connection(QGraphicsItem *parent, QGraphicsScene *scene):
 	QGraphicsPathItem(parent, scene), m_port1(0), m_port2(0)
 {
-	setFlag(QGraphicsItem::ItemIsSelectable, true);
-
 	set_color(Qt::black);
 
 	setPen(QPen(get_color(), 2, Qt::SolidLine, Qt::RoundCap,
@@ -104,7 +102,10 @@ void Connection::set_port1(QNEPort *p)
 		m_port2->connect(m_port1);
 	}
 
-	m_port1->connections().append(this);
+	if (m_port1 != 0)
+	{
+		m_port1->connections().append(this);
+	}
 }
 
 void Connection::set_port2(QNEPort *p)
@@ -116,7 +117,10 @@ void Connection::set_port2(QNEPort *p)
 		m_port1->connect(m_port2);
 	}
 
-	m_port2->connections().append(this);
+	if (m_port2 != 0)
+	{
+		m_port2->connections().append(this);
+	}
 }
 
 void Connection::update_pos_from_ports()

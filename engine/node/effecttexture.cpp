@@ -52,6 +52,14 @@ namespace eternal_lands
 					String(UTF8("a")), uuid_generator(),
 					ect_fragment);
 				break;
+			case ett_uv_offset:
+				add_output_port(m_var_names[0],
+					String(UTF8("rg")), uuid_generator(),
+					ect_fragment);
+				add_output_port(m_var_names[0],
+					String(UTF8("ba")), uuid_generator(),
+					ect_fragment);
+				break;
 			case ett_albedo:
 				add_output_port(m_var_names[0],
 					String(UTF8("rgba")), uuid_generator(),
@@ -66,6 +74,12 @@ namespace eternal_lands
 			case ett_normal:
 				add_output_port(m_var_names[1],
 					String(UTF8("xyz")), uuid_generator(),
+					ect_fragment);
+				add_output_port(m_var_names[0],
+					String(UTF8("b")), uuid_generator(),
+					ect_fragment);
+				add_output_port(m_var_names[0],
+					String(UTF8("a")), uuid_generator(),
 					ect_fragment);
 				break;
 			case ett_parallax:
@@ -240,15 +254,16 @@ namespace eternal_lands
 		EffectNodePtrSet &fragment_written)
 	{
 		BoostFormat normal_format(UTF8(
-			"vec2 %1% = %3%.xy * 2.0 - 1.0;\n"
-			"vec3 %2% = vec3(%1%, sqrt(1.0 - dot(%1%, %1%)));"));
+			"vec4 %1% = %4%;\n"
+			"vec2 %3% = %1%.xy * 2.0 - 1.0;\n"
+			"vec3 %2% = vec3(%1%, sqrt(1.0 - dot(%3%, %3%)));\n"));
 		BoostFormat parallax_format(UTF8(
 			"vec4 %3%;\n"
 			"vec3 %9%, %10%;\n"
 			"float %11%, %12%;\n"
 			"int %13%;\n"
 			"\n"
-			"%10% = %7%.xyz * %6%;\n"
+			"%10% = vec3(%7%.xyz * mat2x3(%6%), -1.0);\n"
 			"%9% = vec3(%5%, 0.0);\n"
 			"\n"
 			"for (%13% = 0; %13% < 3; %13%++)\n"
@@ -629,24 +644,28 @@ namespace eternal_lands
 		{
 			case ett_default:
 			case ett_albedo:
+			case ett_uv_offset:
 				fragment_str << UTF8("vec4 ") << m_var_names[0];
 				fragment_str << UTF8(" = ") << str.str();
 				fragment_str << UTF8(";\n");
 				break;
 			case ett_normal:
 				normal_format % m_var_names[0] % m_var_names[1];
-				normal_format % str.str();
+				normal_format % m_var_names[2] % str.str();
 
 				fragment_str << normal_format.str();
 				break;
 			case ett_parallax:
-				parallax_format % m_var_names[0] % m_var_names[1];
+				parallax_format % m_var_names[0];
+				parallax_format % m_var_names[1];
 				parallax_format % m_var_names[2] % str.str();
 				parallax_format % world_uv % cpt_tbn_matrix;
 				parallax_format % cpt_world_view_direction;
 				parallax_format % scale % uv;
-				parallax_format % m_var_names[4] % m_var_names[5];
-				parallax_format % m_var_names[6] % m_var_names[7];
+				parallax_format % m_var_names[4];
+				parallax_format % m_var_names[5];
+				parallax_format % m_var_names[6];
+				parallax_format % m_var_names[7];
 				fragment_str << parallax_format.str();
 				break;
 		}
@@ -660,7 +679,7 @@ namespace eternal_lands
 
 	void EffectTexture::save_xml(const XmlWriterSharedPtr &writer)
 	{
-		writer->start_element(UTF8("effect_function"));
+		writer->start_element(UTF8("effect_texture"));
 
 		EffectNode::save_xml(writer);
 
@@ -686,7 +705,7 @@ namespace eternal_lands
 	{
 		xmlNodePtr it;
 
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_function"))
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_texture"))
 			!= 0)
 		{
 			return;

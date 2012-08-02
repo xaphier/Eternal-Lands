@@ -82,6 +82,9 @@ QNEPort* QNEBlock::addPort(el::EffectNodePortPtr effect_port,
 	{
 		if (port_->type() != QNEPort::Type)
 		{
+			w = std::max(w, (int)port_->boundingRect().size().width());
+			h += port_->boundingRect().size().height() + 2;
+
 			continue;
 		}
 
@@ -124,6 +127,14 @@ QNEPort* QNEBlock::addPort(el::EffectNodePortPtr effect_port,
 	{
 		if (port_->type() != QNEPort::Type)
 		{
+			y = std::max(y_in, y_out);
+
+			port_->setPos(-w/2, y);
+
+			y += port->height() + 2;
+			y_in = y;
+			y_out = y;
+
 			continue;
 		}
 

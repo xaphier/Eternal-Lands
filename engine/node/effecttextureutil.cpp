@@ -50,12 +50,20 @@ namespace eternal_lands
 		{
 			EffectTextureTypeData(String(UTF8("default")),
 				String(UTF8(""))),
+			EffectTextureTypeData(String(UTF8("uv_offset")),
+				String(UTF8(""))),
 			EffectTextureTypeData(String(UTF8("albedo")),
 				String(UTF8(""))),
 			EffectTextureTypeData(String(UTF8("normal")),
-				String(UTF8(""))),
+				String(UTF8("Normal in tangent space is stored"
+					" in red and green channel."))),
 			EffectTextureTypeData(String(UTF8("parallax")),
-				String(UTF8("")))
+				String(UTF8("Iterative parallax mapping with"
+					"slope information.\n"
+					"Normal in tangent space is stored in "
+					"red and green channel.\n"
+					"Height is stored in blue channel.\n"
+					"Alpha channel is free.")))
 		};
 
 		const Uint32 effect_texture_datas_count =

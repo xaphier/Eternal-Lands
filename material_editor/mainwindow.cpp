@@ -24,6 +24,7 @@
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
+	QAction* action;
 	int i, count;
 
 	setupUi(this);
@@ -100,12 +101,19 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 	action_save->setIcon(QIcon::fromTheme("document-save"));
 	action_save_as->setIcon(QIcon::fromTheme("document-save-as"));
 	action_exit->setIcon(QIcon::fromTheme("application-exit"));
+
+	foreach(QDockWidget* dock_widget, findChildren<QDockWidget*>())
+	{
+		action = dock_widget->toggleViewAction();
+		action->setIcon(dock_widget->windowIcon());
+		action->setText(dock_widget->windowTitle());
+		menu_windows->addAction(action);
+	}
 }
 
 MainWindow::~MainWindow()
 {
 }
-
 
 void MainWindow::changed()
 {
@@ -191,6 +199,8 @@ void MainWindow::load(const QString &file_name)
 	el::EffectNodePtr node;
 	el::EffectConstant* constant_node;
 	Uint32 i, count;
+
+	graphicsView->scene()->clear();
 
 	try
 	{

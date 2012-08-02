@@ -1,5 +1,6 @@
 #include "valuesnode.hpp"
 #include "qneport.hpp"
+#include <QGraphicsProxyWidget>
 
 ValuesNode::ValuesNode(const el::EffectNodesSharedPtr &effect_nodes,
 	el::EffectConstant* effect_constant, QString name, const int count,
@@ -7,90 +8,53 @@ ValuesNode::ValuesNode(const el::EffectNodesSharedPtr &effect_nodes,
 	BasicNode(effect_nodes, effect_constant, name, parent, scene),
 	m_effect_constant(effect_constant), m_count(count)
 {
-	m_value_1 = addPort("0", 0, QNEPort::TypePort);
+	QDoubleSpinBox* edit;
+	QGraphicsProxyWidget* proxi;
+	int i;
 
-	if (m_count > 1)
+	for (i = 0; i < m_count; ++i)
 	{
-		m_value_2 = addPort("0", 0, QNEPort::TypePort);
-	}
+		edit = new QDoubleSpinBox();
+		edit->setMaximum(1000.0);
+		edit->setMinimum(-1000.0);
+		edit->setSingleStep(0.05);
+		edit->setAccelerated(true);
+		edit->setValue(m_effect_constant->get_value()[i]);
 
-	if (m_count > 2)
-	{
-		m_value_3 = addPort("0", 0, QNEPort::TypePort);
-	}
+		proxi = new QGraphicsProxyWidget(this);
+		proxi->setWidget(edit);
 
-	if (m_count > 3)
-	{
-		m_value_4 = addPort("0", 0, QNEPort::TypePort);
+		m_edits.push_back(edit);
+		m_proxis.push_back(proxi);
 	}
 
 	init_ports();
 
-	m_dialog = new ValuesDialog(0);
-	m_dialog->set_value_count(count);
+	m_edit_mapper = new QSignalMapper(this);
 
-	m_value_1->setName(QString::number(m_effect_constant->get_value().x));
-
-	if (m_count > 1)
+	for (i = 0; i < m_count; ++i)
 	{
-		m_value_2->setName(QString::number(
-			m_effect_constant->get_value().y));
+		m_edit_mapper->setMapping(m_edits[i], i);
+
+		QObject::connect(m_edits[i], SIGNAL(valueChanged(double)),
+			m_edit_mapper, SLOT(map()));
 	}
 
-	if (m_count > 2)
-	{
-		m_value_3->setName(QString::number(
-			m_effect_constant->get_value().z));
-	}
-
-	if (m_count > 3)
-	{
-		m_value_4->setName(QString::number(
-			m_effect_constant->get_value().z));
-	}
+	QObject::connect(m_edit_mapper, SIGNAL(mapped(const int)),
+		this, SLOT(value_change(const int)));
 }
 
 ValuesNode::~ValuesNode()
 {
 }
 
-void ValuesNode::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
+void ValuesNode::value_change(const int index)
 {
-	select_values();
-}
+	glm::vec4 tmp;
 
-void ValuesNode::select_values()
-{
-	glm::vec4 value;
-	QVector4D result;
-	QString name;
+	tmp = m_effect_constant->get_value();
+	tmp[index] = m_edits[index]->value();
 
-	value = m_effect_constant->get_value();
+	m_effect_constant->set_value(tmp);
 
-	m_dialog->set_values(QVector4D(value.x, value.y, value.z, value.w));
-
-	if (m_dialog->exec() == QDialog::Accepted)
-	{
-		result = m_dialog->get_values();
-
-		m_effect_constant->set_value(glm::vec4(result.x(), result.y(),
-			result.z(), result.w()));
-
-		m_value_1->setName(QString::number(result.x()));
-
-		if (m_count > 1)
-		{
-			m_value_2->setName(QString::number(result.y()));
-		}
-
-		if (m_count > 2)
-		{
-			m_value_3->setName(QString::number(result.z()));
-		}
-
-		if (m_count > 3)
-		{
-			m_value_4->setName(QString::number(result.z()));
-		}
-	}
 }

@@ -13,14 +13,16 @@
 namespace eternal_lands
 {
 
-	EffectConstant::EffectConstant(): m_type(ect_float)
+	EffectConstant::EffectConstant(): m_value(0.0f, 0.0f, 0.0f, 1.0f),
+		m_type(ect_float)
 	{
 	}
 
 	EffectConstant::EffectConstant(const String &name, const Uint32 id,
 		const EffectConstantType type,
 		Mt19937RandomUuidGenerator &uuid_generator):
-		EffectNode(name, id, uuid_generator()), m_type(type)
+		EffectNode(name, id, uuid_generator()),
+		m_value(0.0f, 0.0f, 0.0f, 1.0f), m_type(type)
 	{
 		m_var_name = get_var_name();
 

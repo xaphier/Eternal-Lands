@@ -29,6 +29,7 @@ namespace eternal_lands
 	enum EffectTextureType
 	{
 		ett_default = 0,
+		ett_uv_offset,
 		ett_albedo,
 		ett_normal,
 		ett_parallax

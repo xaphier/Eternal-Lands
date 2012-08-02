@@ -3,24 +3,24 @@
 
 #include "basicnode.hpp"
 #include "../engine/node/effectconstant.hpp"
-#include "valuesdialog.hpp"
+#include <QDoubleSpinBox>
+#include <QSignalMapper>
 
 namespace el = eternal_lands;
 
-class ValuesNode: public BasicNode
+class ValuesNode: public QObject, public BasicNode
 {
+	Q_OBJECT
+
 	private:
 		el::EffectConstant* m_effect_constant;
-		ValuesDialog* m_dialog;
-		QNEPort* m_value_1;
-		QNEPort* m_value_2;
-		QNEPort* m_value_3;
-		QNEPort* m_value_4;
+		QVector<QDoubleSpinBox*> m_edits;
+		QVector<QGraphicsProxyWidget*> m_proxis;
+		QSignalMapper* m_edit_mapper;
 		const int m_count;
 
-	protected:
-		virtual void mouseDoubleClickEvent(
-			QGraphicsSceneMouseEvent * event);
+	private slots:
+		void value_change(const int index);
 
 	public:
 		ValuesNode(const el::EffectNodesSharedPtr &effect_nodes,
@@ -28,7 +28,6 @@ class ValuesNode: public BasicNode
 			const int count, QGraphicsItem *parent = 0,
 			QGraphicsScene *scene = 0);
 		virtual ~ValuesNode();
-		void select_values();
 
 };
 
