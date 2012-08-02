@@ -192,13 +192,39 @@
     <bool>false</bool>
    </property>
    <property name="windowTitle">
-    <string>Navigation</string>
+    <string>Camera</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
     <layout class="QGridLayout" name="gridLayout_5">
+     <item row="0" column="0">
+      <widget class="QPushButton" name="zoom_out">
+       <property name="minimumSize">
+        <size>
+         <width>44</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>44</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="icon">
+        <iconset resource="icons/resourcen.qrc">
+         <normaloff>:/icons/gtk-zoom-out.png</normaloff>:/icons/gtk-zoom-out.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="1">
       <widget class="QPushButton" name="move_u">
        <property name="minimumSize">
@@ -216,6 +242,32 @@
        <property name="icon">
         <iconset resource="icons/resourcen.qrc">
          <normaloff>:/icons/gtk-go-up.png</normaloff>:/icons/gtk-go-up.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="zoom_in">
+       <property name="minimumSize">
+        <size>
+         <width>44</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>44</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="icon">
+        <iconset resource="icons/resourcen.qrc">
+         <normaloff>:/icons/gtk-zoom-in.png</normaloff>:/icons/gtk-zoom-in.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -251,6 +303,32 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="move_d">
+       <property name="minimumSize">
+        <size>
+         <width>44</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>44</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="icon">
+        <iconset resource="icons/resourcen.qrc">
+         <normaloff>:/icons/gtk-go-down.png</normaloff>:/icons/gtk-go-down.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>32</height>
+        </size>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="2">
       <widget class="QPushButton" name="move_r">
        <property name="minimumSize">
@@ -277,161 +355,60 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="move_d">
-       <property name="minimumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
+     <item row="3" column="0" colspan="3">
+      <widget class="QDial" name="camera_yaw">
+       <property name="minimum">
+        <number>-180</number>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
+       <property name="maximum">
+        <number>179</number>
        </property>
-       <property name="icon">
-        <iconset resource="icons/resourcen.qrc">
-         <normaloff>:/icons/gtk-go-down.png</normaloff>:/icons/gtk-go-down.png</iconset>
+       <property name="wrapping">
+        <bool>true</bool>
        </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
+       <property name="notchTarget">
+        <double>5.500000000000000</double>
+       </property>
+       <property name="notchesVisible">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="5">
+     <item row="0" column="3" rowspan="4" colspan="2">
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>0</width>
+         <height>0</height>
         </size>
        </property>
       </spacer>
      </item>
-     <item row="3" column="2">
+     <item row="2" column="0" colspan="3">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Yaw</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="5">
       <spacer name="verticalSpacer_2">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>20</width>
-         <height>40</height>
+         <width>0</width>
+         <height>0</height>
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="0" column="0">
-      <widget class="QPushButton" name="rotate_r">
-       <property name="minimumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
-       </property>
-       <property name="icon">
-        <iconset resource="icons/resourcen.qrc">
-         <normaloff>:/icons/object-rotate-right.png</normaloff>:/icons/object-rotate-right.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="rotate_l">
-       <property name="minimumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
-       </property>
-       <property name="icon">
-        <iconset resource="icons/resourcen.qrc">
-         <normaloff>:/icons/object-rotate-left.png</normaloff>:/icons/object-rotate-left.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QPushButton" name="zoom_out">
-       <property name="minimumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
-       </property>
-       <property name="icon">
-        <iconset resource="icons/resourcen.qrc">
-         <normaloff>:/icons/gtk-zoom-out.png</normaloff>:/icons/gtk-zoom-out.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QPushButton" name="zoom_in">
-       <property name="minimumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>44</width>
-         <height>44</height>
-        </size>
-       </property>
-       <property name="icon">
-        <iconset resource="icons/resourcen.qrc">
-         <normaloff>:/icons/gtk-zoom-in.png</normaloff>:/icons/gtk-zoom-in.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>32</width>
-         <height>32</height>
-        </size>
-       </property>
-      </widget>
      </item>
     </layout>
    </widget>
@@ -578,14 +555,17 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>188</width>
-              <height>397</height>
+              <width>122</width>
+              <height>340</height>
              </rect>
             </property>
             <attribute name="label">
              <string>Transformation</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="spacing">
+              <number>0</number>
+             </property>
              <property name="margin">
               <number>0</number>
              </property>
@@ -745,6 +725,9 @@
                 <string>Rotation</string>
                </property>
                <layout class="QGridLayout" name="gridLayout_11">
+                <property name="margin">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_23">
                   <property name="minimumSize">
@@ -761,7 +744,23 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1" colspan="2">
+                <item row="0" column="2">
+                 <widget class="QDial" name="x_rotation_dial">
+                  <property name="minimum">
+                   <number>-180</number>
+                  </property>
+                  <property name="maximum">
+                   <number>179</number>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
+                  </property>
+                  <property name="notchesVisible">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="4">
                  <widget class="QDoubleSpinBox" name="x_rotation">
                   <property name="minimumSize">
                    <size>
@@ -811,7 +810,23 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1" colspan="2">
+                <item row="1" column="2">
+                 <widget class="QDial" name="y_rotation_dial">
+                  <property name="minimum">
+                   <number>-180</number>
+                  </property>
+                  <property name="maximum">
+                   <number>179</number>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
+                  </property>
+                  <property name="notchesVisible">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="4">
                  <widget class="QDoubleSpinBox" name="y_rotation">
                   <property name="minimumSize">
                    <size>
@@ -864,7 +879,23 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1" colspan="2">
+                <item row="2" column="2">
+                 <widget class="QDial" name="z_rotation_dial">
+                  <property name="minimum">
+                   <number>-180</number>
+                  </property>
+                  <property name="maximum">
+                   <number>179</number>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
+                  </property>
+                  <property name="notchesVisible">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="4">
                  <widget class="QDoubleSpinBox" name="z_rotation">
                   <property name="minimumSize">
                    <size>
@@ -901,83 +932,83 @@
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_9">
-                  <property name="text">
-                   <string>x</string>
+                <item row="0" column="3">
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
                   </property>
-                 </widget>
+                 </spacer>
                 </item>
-                <item row="3" column="1">
-                 <widget class="QLabel" name="label_27">
-                  <property name="text">
-                   <string>y</string>
+                <item row="0" column="1">
+                 <spacer name="horizontalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
                   </property>
-                 </widget>
+                 </spacer>
                 </item>
-                <item row="3" column="2">
-                 <widget class="QLabel" name="label_28">
-                  <property name="text">
-                   <string>z</string>
+                <item row="1" column="1">
+                 <spacer name="horizontalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
                   </property>
-                 </widget>
+                 </spacer>
                 </item>
-                <item row="4" column="0">
-                 <widget class="QDial" name="x_rotation_dial">
-                  <property name="minimum">
-                   <number>-180</number>
+                <item row="1" column="3">
+                 <spacer name="horizontalSpacer_9">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <property name="maximum">
-                   <number>179</number>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
                   </property>
-                  <property name="wrapping">
-                   <bool>true</bool>
-                  </property>
-                  <property name="notchesVisible">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
+                 </spacer>
                 </item>
-                <item row="4" column="1">
-                 <widget class="QDial" name="y_rotation_dial">
-                  <property name="minimum">
-                   <number>-180</number>
+                <item row="2" column="1">
+                 <spacer name="horizontalSpacer_10">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <property name="maximum">
-                   <number>179</number>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
                   </property>
-                  <property name="wrapping">
-                   <bool>true</bool>
-                  </property>
-                  <property name="notchesVisible">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
+                 </spacer>
                 </item>
-                <item row="4" column="2">
-                 <widget class="QDial" name="z_rotation_dial">
-                  <property name="minimum">
-                   <number>-180</number>
+                <item row="2" column="3">
+                 <spacer name="horizontalSpacer_11">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                  <property name="maximum">
-                   <number>179</number>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
                   </property>
-                  <property name="wrapping">
-                   <bool>true</bool>
-                  </property>
-                  <property name="notchesVisible">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
+                 </spacer>
                 </item>
                </layout>
               </widget>
@@ -1029,46 +1060,39 @@
                  </widget>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QLabel" name="label_26">
-                  <property name="text">
-                   <string>scale</string>
+                 <widget class="QSlider" name="scale_slider">
+                  <property name="maximum">
+                   <number>400</number>
+                  </property>
+                  <property name="value">
+                   <number>200</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksBothSides</enum>
+                  </property>
+                  <property name="tickInterval">
+                   <number>8</number>
                   </property>
                  </widget>
                 </item>
+                <item row="1" column="0" colspan="2">
+                 <spacer name="verticalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
                </layout>
               </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="scale_slider">
-               <property name="maximum">
-                <number>400</number>
-               </property>
-               <property name="value">
-                <number>200</number>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="tickPosition">
-                <enum>QSlider::TicksBothSides</enum>
-               </property>
-               <property name="tickInterval">
-                <number>8</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
              </item>
             </layout>
            </widget>
@@ -2518,7 +2542,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
+              <width>94</width>
               <height>84</height>
              </rect>
             </property>
@@ -2853,8 +2877,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2866,8 +2890,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>28</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3971,6 +3995,9 @@
    </property>
   </action>
   <action name="action_ambient">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons/resourcen.qrc">
      <normaloff>:/icons/gtk-color-picker.png</normaloff>:/icons/gtk-color-picker.png</iconset>
@@ -4157,6 +4184,36 @@
    </property>
    <property name="toolTip">
     <string>Dungeon map</string>
+   </property>
+  </action>
+  <action name="action_rotate_l">
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/object-rotate-left.png</normaloff>:/icons/object-rotate-left.png</iconset>
+   </property>
+   <property name="text">
+    <string>rotate left</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate left</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
+  <action name="action_rotate_r">
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/object-rotate-right.png</normaloff>:/icons/object-rotate-right.png</iconset>
+   </property>
+   <property name="text">
+    <string>rotate right</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate right</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
    </property>
   </action>
  </widget>
@@ -4393,6 +4450,54 @@
     <hint type="destinationlabel">
      <x>870</x>
      <y>284</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_dungeon</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>action_ambient</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_dungeon</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>action_lights_enabled</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_dungeon</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>action_lights_enabled</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>

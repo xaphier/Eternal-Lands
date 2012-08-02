@@ -190,8 +190,7 @@ class ELGLWidget: public QGLWidget
 		void move_right();
 		void move_up();
 		void move_down();
-		void rotate_left();
-		void rotate_right();
+		void rotate(const int angle);
 		void zoom_in();
 		void zoom_out();
 		void new_map(const int map_size_x, const int map_size_y,

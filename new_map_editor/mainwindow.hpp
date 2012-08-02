@@ -17,13 +17,13 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 	Q_OBJECT
 
 	private:
-		std::vector<QObject*> m_object_witdgets;
-		std::vector<QObject*> m_light_witdgets;
-		std::vector<QObject*> m_terrain_witdgets;
-		std::vector<QComboBox*> m_material_witdgets;
-		std::vector<QLabel*> m_material_label_witdgets;
-		std::vector<QDoubleSpinBox*> m_rotations;
-		std::vector<QDial*> m_rotation_dials;
+		QVector<QObject*> m_object_witdgets;
+		QVector<QObject*> m_light_witdgets;
+		QVector<QObject*> m_terrain_witdgets;
+		QVector<QComboBox*> m_material_witdgets;
+		QVector<QLabel*> m_material_label_witdgets;
+		QVector<QDoubleSpinBox*> m_rotations;
+		QVector<QDial*> m_rotation_dials;
 		QSignalMapper* m_rotation_mapper;
 		QSignalMapper* m_rotation_dial_mapper;
 		QSignalMapper* m_object_selection_mapper;
@@ -37,8 +37,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		QAction* action_move_r;
 		QAction* action_move_u;
 		QAction* action_move_d;
-		QAction* action_rotate_l;
-		QAction* action_rotate_r;
 		QAction* action_zoom_in;
 		QAction* action_zoom_out;
 		QProgressBar* m_progress_bar;
@@ -106,6 +104,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void update_rotation(const int index);
 		void update_rotation_dial(const int index);
 		void change_dungeon();
+		void rotate_left();
+		void rotate_right();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

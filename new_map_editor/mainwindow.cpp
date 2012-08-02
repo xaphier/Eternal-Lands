@@ -100,8 +100,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(move_r, SIGNAL(clicked()), action_move_r, SLOT(trigger()));
 	QObject::connect(move_u, SIGNAL(clicked()), action_move_u, SLOT(trigger()));
 	QObject::connect(move_d, SIGNAL(clicked()), action_move_d, SLOT(trigger()));
-	QObject::connect(rotate_l, SIGNAL(clicked()), action_rotate_l, SLOT(trigger()));
-	QObject::connect(rotate_r, SIGNAL(clicked()), action_rotate_r, SLOT(trigger()));
+	QObject::connect(camera_yaw, SIGNAL(valueChanged(int)), el_gl_widget, SLOT(rotate(int)));
 	QObject::connect(zoom_in, SIGNAL(clicked()), action_zoom_in, SLOT(trigger()));
 	QObject::connect(zoom_out, SIGNAL(clicked()), action_zoom_out, SLOT(trigger()));
 
@@ -433,7 +432,8 @@ void MainWindow::update_object()
 
 	for (j = 0; j < default_materials.size(); ++j)
 	{
-		if (object_description.get_material_names().size() > j)
+		if (static_cast<int>(
+			object_description.get_material_names().size()) > j)
 		{
 			material = QString::fromUtf8(
 				object_description.get_material_names()[j].get(
@@ -448,7 +448,7 @@ void MainWindow::update_object()
 
 	m_material_count = object_materials.size();
 
-	m_material_count = std::min(m_material_count,
+	m_material_count = std::min(static_cast<int>(m_material_count),
 		m_material_witdgets.size());
 
 	materials = el_gl_widget->get_materials();
@@ -1055,8 +1055,8 @@ void MainWindow::init_actions()
 	QAction* action;
 	QIcon icon;
 
-	icon.addFile(QString::fromUtf8(":/icons/gtk-execute.png"), QSize(), QIcon::Normal,
-		QIcon::Off);
+	icon.addFile(QString::fromUtf8(":/icons/gtk-execute.png"), QSize(),
+		QIcon::Normal, QIcon::Off);
 
 	action = tool_bar->toggleViewAction();
 	action->setIcon(icon);
@@ -1072,50 +1072,32 @@ void MainWindow::init_actions()
 	}
 
 	action_move_l = new QAction(this);
-
 	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
 	action_move_l->setText("Move Left");
 	action_move_l->setIcon(move_l->icon());
 
 	action_move_r = new QAction(this);
-
-	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_move_r->setShortcutContext(Qt::ApplicationShortcut);
 	action_move_r->setText("Move Right");
 	action_move_r->setIcon(move_r->icon());
 
 	action_move_u = new QAction(this);
-
-	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_move_u->setShortcutContext(Qt::ApplicationShortcut);
 	action_move_u->setText("Move Up");
 	action_move_u->setIcon(move_u->icon());
 
 	action_move_d = new QAction(this);
-
-	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_move_d->setShortcutContext(Qt::ApplicationShortcut);
 	action_move_d->setText("Move Down");
 	action_move_d->setIcon(move_d->icon());
 
-	action_rotate_l = new QAction(this);
-
-	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
-	action_rotate_l->setText("Rotate Left");
-	action_rotate_l->setIcon(rotate_l->icon());
-
-	action_rotate_r = new QAction(this);
-
-	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
-	action_rotate_r->setText("Rotate Right");
-	action_rotate_r->setIcon(rotate_r->icon());
-
 	action_zoom_in = new QAction(this);
-
-	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_zoom_in->setShortcutContext(Qt::ApplicationShortcut);
 	action_zoom_in->setText("Zoom In");
 	action_zoom_in->setIcon(zoom_in->icon());
 
 	action_zoom_out = new QAction(this);
-
-	action_move_l->setShortcutContext(Qt::ApplicationShortcut);
+	action_zoom_out->setShortcutContext(Qt::ApplicationShortcut);
 	action_zoom_out->setText("Zoom Out");
 	action_zoom_out->setIcon(zoom_out->icon());
 
@@ -1143,8 +1125,8 @@ void MainWindow::init_actions()
 	QObject::connect(action_move_r, SIGNAL(triggered()), el_gl_widget, SLOT(move_right()));
 	QObject::connect(action_move_u, SIGNAL(triggered()), el_gl_widget, SLOT(move_up()));
 	QObject::connect(action_move_d, SIGNAL(triggered()), el_gl_widget, SLOT(move_down()));
-	QObject::connect(action_rotate_l, SIGNAL(triggered()), el_gl_widget, SLOT(rotate_left()));
-	QObject::connect(action_rotate_r, SIGNAL(triggered()), el_gl_widget, SLOT(rotate_right()));
+	QObject::connect(action_rotate_l, SIGNAL(triggered()), this, SLOT(rotate_left()));
+	QObject::connect(action_rotate_r, SIGNAL(triggered()), this, SLOT(rotate_right()));
 	QObject::connect(action_zoom_in, SIGNAL(triggered()), el_gl_widget, SLOT(zoom_in()));
 	QObject::connect(action_zoom_out, SIGNAL(triggered()), el_gl_widget, SLOT(zoom_out()));
 }
@@ -1548,4 +1530,14 @@ void MainWindow::set_debug(const bool enabled)
 	}
 
 	el_gl_widget->set_debug_mode(debug_modes.indexOf(debug_mode));
+}
+
+void MainWindow::rotate_left()
+{
+	camera_yaw->setValue(camera_yaw->value() - 5);
+}
+
+void MainWindow::rotate_right()
+{
+	camera_yaw->setValue(camera_yaw->value() + 5);
 }

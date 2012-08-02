@@ -663,28 +663,10 @@ void ELGLWidget::move_down()
 	m_pos += m_rotate * glm::vec3(0.0f, -5.0f, 0.0f);
 }
 
-void ELGLWidget::rotate_left()
+void ELGLWidget::rotate(const int angle)
 {
-	m_rotate_z -= 5.0f;
-
-	if (m_rotate_z < 0.0f)
-	{
-		m_rotate_z += 360.0f;
-	}
-
-	m_rotate = glm::mat3(glm::rotate(m_rotate_z, glm::vec3(0.0f, 0.0f, 1.0f)));
-}
-
-void ELGLWidget::rotate_right()
-{
-	m_rotate_z += 5.0f;
-
-	if (m_rotate_z >= 360.0f)
-	{
-		m_rotate_z -= 360.0f;
-	}
-
-	m_rotate = glm::mat3(glm::rotate(m_rotate_z, glm::vec3(0.0f, 0.0f, 1.0f)));
+	m_rotate = glm::mat3(glm::rotate(static_cast<float>(angle),
+		glm::vec3(0.0f, 0.0f, 1.0f)));
 }
 
 void ELGLWidget::zoom_in()
