@@ -33,13 +33,13 @@ void Node::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 	el::EffectChangeType change;
 	el::StringUint16Map::const_iterator it, end;
 	el::ShaderVersionType version;
-	bool low_quality;
+	el::EffectQualityType quality;
 
 	change = el::ect_fragment;
 	version = el::svt_130;
-	low_quality = false;
+	quality = el::eqt_high;
 
-	m_effect_node->write(array_layers, version, low_quality, change,
+	m_effect_node->write(array_layers, version, quality, change,
 		parameters, vertex_parameters, fragment_parameters, vertex_str,
 		fragment_str, vertex_written, fragment_written);
 

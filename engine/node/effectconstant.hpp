@@ -46,7 +46,7 @@ namespace eternal_lands
 			virtual ~EffectConstant() noexcept;
 			virtual void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
-				const bool low_quality,
+				const EffectQualityType quality,
 				const EffectChangeType change,
 				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,

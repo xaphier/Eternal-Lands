@@ -117,7 +117,8 @@ namespace eternal_lands
 	}
 
 	void EffectNodes::write(const Uint16StringMap &array_layers,
-		const ShaderVersionType version, const bool low_quality,
+		const ShaderVersionType version,
+		const EffectQualityType quality,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str)
@@ -125,7 +126,7 @@ namespace eternal_lands
 		EffectNodePtrSet vertex_written, fragment_written;
 		StringUint16Map parameters;
 
-		m_nodes.begin()->write(array_layers, version, low_quality,
+		m_nodes.begin()->write(array_layers, version, quality,
 			ect_constant, parameters, vertex_parameters,
 			fragment_parameters, vertex_str, fragment_str,
 			vertex_written, fragment_written);

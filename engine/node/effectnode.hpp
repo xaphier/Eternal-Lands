@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "effectchangeutil.hpp"
+#include "effectqualityutil.hpp"
 #include "../shader/shaderversionutil.hpp"
 
 /**
@@ -91,7 +92,7 @@ namespace eternal_lands
 			virtual ~EffectNode() noexcept;
 			virtual void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
-				const bool low_quality,
+				const EffectQualityType quality,
 				const EffectChangeType change,
 				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,

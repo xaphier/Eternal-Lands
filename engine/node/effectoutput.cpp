@@ -48,8 +48,8 @@ namespace eternal_lands
 	}
 
 	void EffectOutput::write(const Uint16StringMap &array_layers,
-		const ShaderVersionType version, const bool low_quality,
-		const EffectChangeType change,
+		const ShaderVersionType version,
+		const EffectQualityType quality, const EffectChangeType change,
 		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
@@ -75,7 +75,7 @@ namespace eternal_lands
 				continue;
 			}
 
-			port.write(array_layers, version, low_quality,
+			port.write(array_layers, version, quality,
 				ect_fragment, parameters, vertex_parameters,
 				fragment_parameters, vertex_str, fragment_str,
 				vertex_written, fragment_written);

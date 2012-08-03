@@ -114,8 +114,8 @@ namespace eternal_lands
 	}
 
 	void EffectParameter::write(const Uint16StringMap &array_layers,
-		const ShaderVersionType version, const bool low_quality,
-		const EffectChangeType change,
+		const ShaderVersionType version,
+		const EffectQualityType quality, const EffectChangeType change,
 		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,

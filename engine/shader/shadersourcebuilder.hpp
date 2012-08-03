@@ -84,10 +84,6 @@ namespace eternal_lands
 				const String &indent, OutStream &functions)
 				const;
 
-			bool get_build_function(
-				const ShaderSourceBuildData &data,
-				const ShaderSourceType shader_source_type)
-				const;
 			bool check_function(const ShaderSourceBuildData &data,
 				const String &name,
 				const ShaderSourceType shader_source_type)

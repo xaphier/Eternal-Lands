@@ -65,7 +65,7 @@ namespace eternal_lands
 			EffectNodePtr add_output(const String &name);
 			void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
-				const bool low_quality,
+				const EffectQualityType quality,
 				ShaderSourceParameterVector &vertex_parameters,
 				ShaderSourceParameterVector
 					&fragment_parameters,

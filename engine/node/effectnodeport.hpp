@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "effectchangeutil.hpp"
+#include "effectqualityutil.hpp"
 #include "../shader/shaderversionutil.hpp"
 
 /**
@@ -49,7 +50,6 @@ namespace eternal_lands
 			EffectChangeType get_connected_change() const;
 			void add_parameter(
 				StringBitSet16Map &parameters_indices);
-			BitSet16 get_var_indices() const;
 			Uint16 get_var_count() const;
 			String get_var_swizzled() const;
 			bool do_check_connection(const EffectNodePortPtr port,
@@ -59,22 +59,6 @@ namespace eternal_lands
 				const XmlWriterSharedPtr &writer) const;
 			EffectNodePort(const EffectNodePtr effect_node,
 				const xmlNodePtr node);
-
-			inline EffectNodePortPtr get_connection() const
-				noexcept
-			{
-				return *m_connections.begin();
-			}
-
-			inline const Uint8Array4 &get_swizzle() const noexcept
-			{
-				return m_swizzle;
-			}
-
-			inline EffectNodePtr get_node_ptr() const noexcept
-			{
-				return m_node;
-			}
 
 		public:
 			EffectNodePort(const EffectNodePtr node,
@@ -104,7 +88,7 @@ namespace eternal_lands
 			String get_connected_var_swizzled() const;
 			void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
-				const bool low_quality,
+				const EffectQualityType quality,
 				const EffectChangeType change,
 				StringUint16Map &parameters,
 				ShaderSourceParameterVector &vertex_parameters,
@@ -113,6 +97,19 @@ namespace eternal_lands
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
 				EffectNodePtrSet &fragment_written);
+			BitSet16 get_var_indices() const;
+
+			inline EffectNodePortPtr get_connection() const
+				noexcept
+			{
+				assert(get_connected());
+				return *m_connections.begin();
+			}
+
+			inline EffectNodePtr get_node_ptr() const noexcept
+			{
+				return m_node;
+			}
 
 			inline void set_description(const String &description)
 			{
@@ -140,9 +137,14 @@ namespace eternal_lands
 				return m_var;
 			}
 
+			inline const Uint8Array4 &get_swizzle() const noexcept
+			{
+				return m_swizzle;
+			}
+
 			inline bool get_general_type() const noexcept
 			{
-				return m_swizzle[0] == UTF8('*');
+				return get_swizzle()[0] == UTF8('*');
 			}
 
 			inline bool get_undefined_change() const noexcept

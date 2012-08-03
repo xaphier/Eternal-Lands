@@ -7,6 +7,7 @@
 
 #include "effecttexture.hpp"
 #include "effectnodeport.hpp"
+#include "effectconstant.hpp"
 #include "../shader/commonparameterutil.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
@@ -243,9 +244,59 @@ namespace eternal_lands
 		return 4;
 	}
 
+	Uint16 EffectTexture::get_layer()
+	{
+		EffectConstant* constant;
+		BitSet16 indices;
+		Uint32 i;
+
+		BOOST_FOREACH(EffectNodePort &port, get_ports())
+		{
+			if (port.get_output())
+			{
+				continue;
+			}
+
+			if (port.get_name() != UTF8("layer"))
+			{
+				continue;
+			}
+
+			if (!port.get_connected())
+			{
+				continue;
+			}
+
+			indices = port.get_connection()->get_var_indices();
+
+			if (indices.count() != 1)
+			{
+				continue;
+			}
+
+			constant = dynamic_cast<EffectConstant*>(
+				port.get_connection()->get_node_ptr());		
+
+			if (constant == 0)
+			{
+				continue;
+			}
+
+			for (i = 0; i < 4; ++i)
+			{
+				if (indices[i])
+				{
+					return constant->get_value()[i];
+				}
+			}
+		}
+
+		return std::numeric_limits<Uint16>::max();
+	}
+
 	void EffectTexture::write(const Uint16StringMap &array_layers,
-		 const ShaderVersionType version, const bool low_quality,
-		const EffectChangeType change,
+		const ShaderVersionType version,
+		const EffectQualityType quality, const EffectChangeType change,
 		StringUint16Map &parameters,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
@@ -256,7 +307,14 @@ namespace eternal_lands
 		BoostFormat normal_format(UTF8(
 			"vec4 %1% = %4%;\n"
 			"vec2 %3% = %1%.xy * 2.0 - 1.0;\n"
-			"vec3 %2% = vec3(%1%, sqrt(1.0 - dot(%3%, %3%)));\n"));
+			"vec3 %2% = %5% * vec3(%3%, sqrt(1.0 - dot(%3%, "
+			"%3%)));\n"));
+		BoostFormat no_parallax_format(UTF8(
+			"vec4 %4% = %5%;\n"
+			"vec2 %1% = %6%;\n"
+			"vec2 %3% = %4%.xy * 2.0 - 1.0;\n"
+			"vec3 %2% = %7% * vec3(%3%, sqrt(1.0 - dot(%3%, "
+			"%3%)));\n"));
 		BoostFormat parallax_format(UTF8(
 			"vec4 %3%;\n"
 			"vec3 %9%, %10%;\n"
@@ -266,7 +324,7 @@ namespace eternal_lands
 			"%10% = vec3(%7%.xyz * mat2x3(%6%), -1.0);\n"
 			"%9% = vec3(%5%, 0.0);\n"
 			"\n"
-			"for (%13% = 0; %13% < 3; %13%++)\n"
+			"for (%13% = 0; %13% < %14%; %13%++)\n"
 			"{\n"
 			"\t%3% = %4%;\n"
 			"\t%3%.xy = %3%.xy * 2.0 - 1.0;\n"
@@ -300,7 +358,7 @@ namespace eternal_lands
 					dPdx = port.
 						get_connected_var_swizzled();
 					port.write(array_layers, version,
-						low_quality, ect_fragment,
+						quality, ect_fragment,
 						parameters, vertex_parameters,
 						fragment_parameters,
 						vertex_str, fragment_str,
@@ -315,7 +373,7 @@ namespace eternal_lands
 					dPdy = port.
 						get_connected_var_swizzled();
 					port.write(array_layers, version,
-						low_quality, ect_fragment,
+						quality, ect_fragment,
 						parameters, vertex_parameters,
 						fragment_parameters,
 						vertex_str, fragment_str,
@@ -330,7 +388,7 @@ namespace eternal_lands
 					layer = port.
 						get_connected_var_swizzled();
 					port.write(array_layers, version,
-						low_quality, ect_fragment,
+						quality, ect_fragment,
 						parameters, vertex_parameters,
 						fragment_parameters,
 						vertex_str, fragment_str,
@@ -345,7 +403,7 @@ namespace eternal_lands
 					scale = port.
 						get_connected_var_swizzled();
 					port.write(array_layers, version,
-						low_quality, ect_fragment,
+						quality, ect_fragment,
 						parameters, vertex_parameters,
 						fragment_parameters,
 						vertex_str, fragment_str,
@@ -358,7 +416,7 @@ namespace eternal_lands
 				 * the texture coordinates.
 				 */
 				uv = port.get_connected_var_swizzled();
-				port.write(array_layers, version, low_quality,
+				port.write(array_layers, version, quality,
 					ect_fragment, parameters,
 					vertex_parameters, fragment_parameters,
 					vertex_str, fragment_str,
@@ -656,6 +714,21 @@ namespace eternal_lands
 				fragment_str << normal_format.str();
 				break;
 			case ett_parallax:
+				if (quality == eqt_low)
+				{
+					no_parallax_format % m_var_names[0];
+					no_parallax_format % m_var_names[1];
+					no_parallax_format % m_var_names[2];
+					no_parallax_format % m_var_names[3];
+					no_parallax_format % str.str();
+					no_parallax_format % world_uv;
+					no_parallax_format % cpt_tbn_matrix;
+
+					fragment_str <<
+						no_parallax_format.str();
+					break;
+				}
+
 				parallax_format % m_var_names[0];
 				parallax_format % m_var_names[1];
 				parallax_format % m_var_names[2] % str.str();
@@ -666,6 +739,16 @@ namespace eternal_lands
 				parallax_format % m_var_names[5];
 				parallax_format % m_var_names[6];
 				parallax_format % m_var_names[7];
+
+				if (quality == eqt_medium)
+				{
+					parallax_format % 1;
+				}
+				else
+				{
+					parallax_format % 4;
+				}
+
 				fragment_str << parallax_format.str();
 				break;
 		}
