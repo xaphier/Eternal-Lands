@@ -29,7 +29,6 @@ namespace eternal_lands
 		private:
 			BoundingBox m_bounding_box;
 			glm::vec4 m_terrain_size_data;
-			glm::vec3 m_translation;
 
 		protected:
 			AbstractTerrainManager();
@@ -38,12 +37,6 @@ namespace eternal_lands
 				const BoundingBox &bounding_box) noexcept
 			{
 				m_bounding_box = bounding_box;
-			}
-
-			inline void set_translation(
-				const glm::vec3 &translation) noexcept
-			{
-				m_translation = translation;
 			}
 
 			inline void set_terrain_size(
@@ -89,12 +82,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_bounding_box;
-			}
-
-			inline const glm::vec3 &get_translation() const
-				noexcept
-			{
-				return m_translation;
 			}
 
 			inline glm::vec2 get_terrain_size() const noexcept
