@@ -17,7 +17,7 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>normal_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_4</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -57,7 +57,7 @@
 
 	for (int i = 0; i &lt; 4; ++i)
 	{
-		data =  textureGrad(normal_sampler, fragment_uv, ddx, ddy);
+		data =  textureGrad(effect_sampler_4, fragment_uv, ddx, ddy);
 
 		normal = normalize(data.xyz * 2.0 - 1.0);
 		normal = normalize(tbn_matrix * normal);
@@ -71,7 +71,7 @@
 		fragment_uv -= delta;
 	}
 
-	data =  textureGrad(normal_sampler, fragment_uv, ddx, ddy);
+	data =  textureGrad(effect_sampler_4, fragment_uv, ddx, ddy);
 
 //	normal = normalize(data.xyz * 2.0 - 1.0);
 	normal = data.xyz * 2.0 - 1.0;
@@ -93,7 +93,7 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>normal_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_4</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -140,7 +140,7 @@
 	for(int i = 0; i &lt; linear_search_steps - 1; ++i)
 	{
 		depth += size;
-		float t = textureGrad(normal_sampler, dp + ds * depth, ddx, ddy).a;
+		float t = textureGrad(effect_sampler_4, dp + ds * depth, ddx, ddy).a;
 		if(best_depth &gt; 0.996)
 		{
 			if(depth &gt;= t)
@@ -157,7 +157,7 @@
    for(int i = 0; i &lt; binary_search_steps; ++i)
    {
       size *= 0.5;
-      float t = textureGrad(normal_sampler, dp + ds * depth, ddx, ddy).a;
+      float t = textureGrad(effect_sampler_4, dp + ds * depth, ddx, ddy).a;
       if(depth &gt;= t)
       {
          best_depth = depth;
@@ -170,7 +170,7 @@
 
 	vec2 uv = dp + ds * d;
 
-	normal = textureGrad(normal_sampler, uv.xy, ddx, ddy) * 2.0 - 1.0;
+	normal = textureGrad(effect_sampler_4, uv.xy, ddx, ddy) * 2.0 - 1.0;
 	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 	normal.xyz = normalize(vec3(0.0, 0.0, 1.0) + normal.xyz);
 	normal.xyz = normalize(tbn_matrix * normal.xyz);
@@ -191,7 +191,7 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>normal_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_4</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -231,7 +231,7 @@
    for(int i = 0; i &lt; linear_search_steps - 1; ++i)
    {
       depth += size;
-      float t = 1.0 - texture2D(normal_sampler, dp + ds * depth).a;
+      float t = 1.0 - texture2D(effect_sampler_4, dp + ds * depth).a;
       if(best_depth &gt; 0.996)
          if(depth &gt;= t)
             best_depth = depth;
@@ -243,7 +243,7 @@
    for(int i = 0; i &lt; binary_search_steps; ++i)
    {
       size *= 0.5;
-      float t = 1.0 - texture2D(normal_sampler, dp + ds * depth).a;
+      float t = 1.0 - texture2D(effect_sampler_4, dp + ds * depth).a;
       if(depth &gt;= t)
       {
          best_depth = depth;
@@ -256,7 +256,7 @@
 
 	vec2 uv = dp + ds * d;
 
-	normal = texture2D(normal_sampler, uv.xy);
+	normal = texture2D(effect_sampler_4, uv.xy);
 	normal.z = 1.0 - sqrt(dot(normal.xy, normal.xy));
 	normal.xyz = normalize(tbn_matrix * normal.xyz);
 	fragment_normal = normal.xyz;

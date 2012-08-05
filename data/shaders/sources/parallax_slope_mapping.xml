@@ -17,7 +17,7 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>normal_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_4</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -44,7 +44,7 @@ uv = vec3(world_uv, 0.0);
 
 for (i = 0; i &lt; 4; i++)
 {
-	normal = texture2D(normal_sampler, uv.xy);
+	normal = texture2D(effect_sampler_4, uv.xy);
 	normal.xy = normal.xy * 2.0 - 1.0;
 	normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
 	h = normal.a * scale_bias.x + scale_bias.y;

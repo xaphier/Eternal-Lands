@@ -18,6 +18,7 @@
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
 #include "exceptions.hpp"
+#include "../shader/shadersourceparameterbuilder.hpp"
 
 namespace eternal_lands
 {
@@ -125,11 +126,54 @@ namespace eternal_lands
 	{
 		EffectNodePtrSet vertex_written, fragment_written;
 		StringUint16Map parameters;
+		StringUint16Map::const_iterator it, end;
+		ParameterType type;
 
 		m_nodes.begin()->write(array_layers, version, quality,
 			ect_constant, parameters, vertex_parameters,
 			fragment_parameters, vertex_str, fragment_str,
 			vertex_written, fragment_written);
+
+		end = parameters.end();
+
+		for (it = parameters.begin(); it != end; ++it)
+		{
+			assert(it->second > 0);
+			assert(it->second < 5);
+		
+			type = pt_float;
+
+			switch (it->second)
+			{			
+				case 1:
+					type = pt_float;
+					break;
+				case 2:
+					type = pt_vec2;
+					break;
+				case 3:
+					type = pt_vec3;
+					break;
+				case 4:
+					type = pt_vec4;
+					break;
+				default:
+					continue;
+			}
+
+			if (true)
+			{
+				ShaderSourceParameterBuilder::add_parameter(
+					String(UTF8("effect nodes")),
+					it->first, type, pqt_out, pst_one, 1,
+					vertex_parameters);
+			}
+
+			ShaderSourceParameterBuilder::add_parameter(
+				String(UTF8("effect nodes")), it->first, type,
+				pqt_in, pst_one, 1, fragment_parameters);
+		}
+
 	}
 
 	void EffectNodes::remove(const EffectNodePtr effect_node)

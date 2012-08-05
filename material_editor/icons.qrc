@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>application-x-desktop.png</file>
     <file>rg.png</file>
     <file>ba.png</file>
     <file>gtk-apply.png</file>

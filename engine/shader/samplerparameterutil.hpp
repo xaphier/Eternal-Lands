@@ -24,21 +24,21 @@ namespace eternal_lands
 
 	enum SamplerParameterType
 	{
-		spt_albedo_0 = 0,
-		spt_albedo_1 = 1,
-		spt_albedo_2 = 2,
-		spt_albedo_3 = 3,
-		spt_normal = 4,
-		spt_specular = 5,
-		spt_emission = 6,
-		spt_blend = 7,
-		spt_vertex_vector = 8,
-		spt_vertex_normal = 9,
-		spt_vertex_dudv = 10,
-		spt_light_positions = 11,
-		spt_light_colors = 12,
-		spt_light_indices = 13,
-		spt_color_correction = 14,
+		spt_effect_0 = 0,
+		spt_effect_1 = 1,
+		spt_effect_2 = 2,
+		spt_effect_3 = 3,
+		spt_effect_4 = 4,
+		spt_effect_5 = 5,
+		spt_effect_6 = 6,
+		spt_effect_7 = 7,
+		spt_effect_8 = 8,
+		spt_effect_9 = 9,
+		spt_effect_10 = 10,
+		spt_effect_11 = 11,
+		spt_light_positions = 12,
+		spt_light_colors = 13,
+		spt_light_indices = 14,
 		spt_shadow = 15
 	};
 

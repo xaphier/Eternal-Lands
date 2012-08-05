@@ -543,7 +543,7 @@ namespace eternal_lands
 			return;
 		}
 
-		if ((level == 0) || (intersect == it_inside));
+		if ((level == 0) || (intersect == it_inside))
 		{
 			bounding_box.merge(box);
 

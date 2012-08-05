@@ -10,6 +10,7 @@
 #include "node.hpp"
 #include "colornode.hpp"
 #include "directionnode.hpp"
+#include "texturenode.hpp"
 #include "valuesnode.hpp"
 #include "../engine/node/effectnodes.hpp"
 #include "../engine/node/effectnode.hpp"
@@ -198,6 +199,7 @@ void MainWindow::load(const QString &file_name)
 	BasicNode* new_node;
 	el::EffectNodePtr node;
 	el::EffectConstant* constant_node;
+	el::EffectTexture* texture_node;
 	Uint32 i, count;
 
 	graphicsView->scene()->clear();
@@ -259,6 +261,19 @@ void MainWindow::load(const QString &file_name)
 						graphicsView->scene());
 					break;
 			}
+
+			basic_nodes.push_back(new_node);
+
+			continue;
+		}
+
+		texture_node = dynamic_cast<el::EffectTexture*>(node);
+
+		if (texture_node != 0)
+		{
+			new_node = new TextureNode(m_effect_nodes, texture_node,
+				node->get_name().get().c_str(), 0,
+				graphicsView->scene());
 
 			basic_nodes.push_back(new_node);
 
@@ -375,11 +390,11 @@ void MainWindow::change_texture(const int index)
 
 void MainWindow::add_color()
 {
-	QNEBlock* node;
+	BasicNode* node;
 	el::EffectConstant* ptr;
 
-	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_color(
-		el::String("Color")));
+	ptr = boost::polymorphic_downcast<el::EffectConstant*>(
+		m_effect_nodes->add_color(el::String("Color")));
 
 	node = new ColorNode(m_effect_nodes, ptr, "Color", 0,
 		graphicsView->scene());
@@ -391,11 +406,11 @@ void MainWindow::add_color()
 
 void MainWindow::add_direction()
 {
-	QNEBlock* node;
+	BasicNode* node;
 	el::EffectConstant* ptr;
 
-	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_direction(
-		el::String("Direction")));
+	ptr = boost::polymorphic_downcast<el::EffectConstant*>(
+		m_effect_nodes->add_direction(el::String("Direction")));
 
 	node = new DirectionNode(m_effect_nodes, ptr, "Direction", 0,
 		graphicsView->scene());
@@ -407,7 +422,7 @@ void MainWindow::add_direction()
 
 void MainWindow::add_constant()
 {
-	QNEBlock* node;
+	BasicNode* node;
 	el::EffectConstant* ptr;
 	int count;
 	bool ok;
@@ -420,8 +435,8 @@ void MainWindow::add_constant()
 		return;
 	}
 
-	ptr = dynamic_cast<el::EffectConstant*>(m_effect_nodes->add_constant(
-		el::String("Constant"), count));
+	ptr = boost::polymorphic_downcast<el::EffectConstant*>(
+		m_effect_nodes->add_constant(el::String("Constant"), count));
 
 	node = new ValuesNode(m_effect_nodes, ptr, "Constant", count, 0,
 		graphicsView->scene());
@@ -520,11 +535,11 @@ void MainWindow::add_parameter()
 
 void MainWindow::add_texture()
 {
-	Node* node;
+	TextureNode* node;
 	el::String name;
 	el::EffectSamplerType sampler;
 	el::EffectTextureType texture;
-	el::EffectNodePtr ptr;
+	el::EffectTexture* ptr;
 	Uint16 texture_unit;
 	bool project;
 
@@ -618,12 +633,16 @@ void MainWindow::add_texture()
 		case el::ett_default:
 			texture = el::ett_default;
 			break;
+		case el::ett_uv_offset:
+			texture = el::ett_uv_offset;
+			break;
 	}
 
-	ptr = m_effect_nodes->add_texture(name, sampler, texture,
-		texture_unit);
+	ptr = boost::polymorphic_downcast<el::EffectTexture*>(
+		m_effect_nodes->add_texture(name, sampler, texture,
+			texture_unit));
 
-	node = new Node(m_effect_nodes, ptr, "Texture", 0,
+	node = new TextureNode(m_effect_nodes, ptr, "Texture", 0,
 		graphicsView->scene());
 
 	node->setPos(graphicsView->sceneRect().center().toPoint());

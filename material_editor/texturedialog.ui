@@ -43,14 +43,14 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="3" column="0" colspan="2">
        <widget class="QRadioButton" name="normal_texture">
         <property name="text">
          <string>Normal</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="4" column="0" colspan="2">
        <widget class="QRadioButton" name="parallax_texture">
         <property name="text">
          <string>Parallax</string>
@@ -64,6 +64,13 @@
         </property>
         <property name="checked">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QRadioButton" name="uv_offset_texture">
+        <property name="text">
+         <string>UV offset</string>
         </property>
        </widget>
       </item>
@@ -136,6 +143,22 @@
     <hint type="destinationlabel">
      <x>112</x>
      <y>203</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>parallax_texture</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>projection</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>112</x>
+     <y>206</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>108</x>
+     <y>49</y>
     </hint>
    </hints>
   </connection>

@@ -63,7 +63,6 @@ void TextureDialog::set_target(const int target)
 			parallax_texture->setEnabled(false);
 			break;
 	}
-
 }
 
 int TextureDialog::get_texture() const
@@ -71,6 +70,11 @@ int TextureDialog::get_texture() const
 	if (albedo_texture->isChecked())
 	{
 		return el::ett_albedo;
+	}
+
+	if (uv_offset_texture->isChecked())
+	{
+		return el::ett_uv_offset;
 	}
 
 	if (normal_texture->isChecked())

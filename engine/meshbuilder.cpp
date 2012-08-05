@@ -206,7 +206,8 @@ namespace eternal_lands
 				get_global_vars()->get_use_simd());
 		}
 
-		if (get_global_vars()->get_opengl_3_0())
+		if (get_global_vars()->get_opengl_3_0() ||
+			GLEW_ARB_vertex_array_object)
 		{
 			return boost::make_shared<OpenGl3Mesh>(
 				get_hardware_buffer_mapper(), name,

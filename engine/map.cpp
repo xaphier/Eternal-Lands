@@ -433,23 +433,23 @@ namespace eternal_lands
 
 		texture = get_texture_cache()->get_texture(
 			clipmap_data.get_albedo_map(0));
-		m_clipmap_material->set_texture(texture, spt_albedo_0);
+		m_clipmap_material->set_texture(texture, spt_effect_0);
 
 		texture = get_texture_cache()->get_texture(
 			clipmap_data.get_albedo_map(1));
-		m_clipmap_material->set_texture(texture, spt_albedo_1);
+		m_clipmap_material->set_texture(texture, spt_effect_1);
 
 		texture = get_texture_cache()->get_texture(
 			clipmap_data.get_albedo_map(2));
-		m_clipmap_material->set_texture(texture, spt_albedo_2);
+		m_clipmap_material->set_texture(texture, spt_effect_2);
 
 		texture = get_texture_cache()->get_texture(
 			clipmap_data.get_albedo_map(3));
-		m_clipmap_material->set_texture(texture, spt_albedo_3);
+		m_clipmap_material->set_texture(texture, spt_effect_3);
 
 		texture = get_texture_cache()->get_texture(
 			clipmap_data.get_blend_image(0));
-		m_clipmap_material->set_texture(texture, spt_blend);
+		m_clipmap_material->set_texture(texture, spt_effect_7);
 
 		m_clipmap_material->set_blend_sizes(
 			clipmap_data.get_blend_sizes());
@@ -511,7 +511,7 @@ namespace eternal_lands
 		texture = get_texture_cache()->get_texture_array(albedo_names,
 			String(UTF8("albedo clipmap")));
 
-		m_clipmap_material->set_texture(texture, spt_albedo_0);
+		m_clipmap_material->set_texture(texture, spt_effect_0);
 
 		m_clipmap_material->set_blend_sizes(
 			clipmap_data.get_blend_sizes());
@@ -530,7 +530,7 @@ namespace eternal_lands
 		texture = get_texture_cache()->get_texture_array(blend_images,
 			String(UTF8("blend clipmap")));
 
-		m_clipmap_material->set_texture(texture, spt_blend);
+		m_clipmap_material->set_texture(texture, spt_effect_7);
 	}
 
 }

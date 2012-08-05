@@ -75,7 +75,7 @@ namespace eternal_lands
 				file_system, global_vars, get_name());
 
 		get_materials()[0]->set_texture(
-			m_actor_texture_builder->get_texture(), spt_albedo_0);
+			m_actor_texture_builder->get_texture(), spt_effect_0);
 	}
 
 	void Actor::set_parts(const ActorPartTextureTypeStringMap &parts)

@@ -96,13 +96,13 @@ BOOST_AUTO_TEST_CASE(stream)
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
-		el::spt_albedo_0).get(), "albedo_sampler_0");
+		el::spt_effect_0).get(), "effect_sampler_0");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
-		el::spt_albedo_3).get(), "albedo_sampler_3");
+		el::spt_effect_4).get(), "effect_sampler_4");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
-		el::spt_emission).get(), "emission_sampler");
+		el::spt_effect_8).get(), "effect_sampler_8");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
-		el::spt_blend).get(), "blend_sampler");
+		el::spt_effect_11).get(), "effect_sampler_11");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
 		el::spt_light_colors).get(), "light_colors_sampler");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(

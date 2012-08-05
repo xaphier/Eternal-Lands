@@ -42,26 +42,33 @@ namespace eternal_lands
 			static ShaderSourceParameter build(const String &source,
 				const AutoParameterType auto_parameter);
 
-			static void add_parameter(const String &source,
+			static bool add_parameter(const String &source,
 				const CommonParameterType common_parameter,
 				const ParameterQualifierType qualifier,
 				ShaderSourceParameterVector &parameters);
 
-			static void add_parameter(const String &source,
+			static bool add_parameter(const String &source,
 				const AutoParameterType auto_parameter,
 				ShaderSourceParameterVector &parameters);
 
-			static void add_parameter(
+			static bool add_parameter(const String &source,
+				const String &name, const ParameterType type,
+				const ParameterQualifierType qualifier,
+				const ParameterSizeType size,
+				const Uint16 scale,
+				ShaderSourceParameterVector &parameters);
+
+			static bool add_parameter(
 				const ShaderSourceParameter &parameter,
 				ShaderSourceParameterVector &parameters);
 
-			static void add_parameter(
+			static bool add_parameter(
 				const ShaderSourceParameter &parameter,
 				const ShaderSourceParameterVector &locals,
 				ShaderSourceParameterVector &parameters,
 				UniformBufferUsage &uniform_buffers);
 
-			static void add_local(
+			static bool add_local(
 				const ShaderSourceParameter &local,
 				ShaderSourceParameterVector &locals,
 				const ShaderSourceParameterVector &parameters,

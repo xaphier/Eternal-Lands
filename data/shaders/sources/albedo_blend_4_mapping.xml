@@ -8,23 +8,23 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <sampler_parameter>albedo_sampler_0</sampler_parameter>
+     <sampler_parameter>effect_sampler_0</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_1</sampler_parameter>
+     <sampler_parameter>effect_sampler_1</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_2</sampler_parameter>
+     <sampler_parameter>effect_sampler_2</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_3</sampler_parameter>
+     <sampler_parameter>effect_sampler_3</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>blend_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_7</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -64,14 +64,14 @@ ddy = world_extra_uv_ddx_ddy.zw;
 
 result = material_color.rgb;
 
-blend = textureGrad(blend_sampler, world_uv, world_uv_ddx_ddy.xy, world_uv_ddx_ddy.zw);
+blend = textureGrad(effect_sampler_7, world_uv, world_uv_ddx_ddy.xy, world_uv_ddx_ddy.zw);
 
 if (any(greaterThan(blend, vec4(0.0))))
 {
-	tmp[0] = textureGrad(albedo_sampler_0, world_extra_uv, ddx, ddy);
-	tmp[1] = textureGrad(albedo_sampler_1, world_extra_uv, ddx, ddy);
-	tmp[2] = textureGrad(albedo_sampler_2, world_extra_uv, ddx, ddy);
-	tmp[3] = textureGrad(albedo_sampler_3, world_extra_uv, ddx, ddy);
+	tmp[0] = textureGrad(effect_sampler_0, world_extra_uv, ddx, ddy);
+	tmp[1] = textureGrad(effect_sampler_1, world_extra_uv, ddx, ddy);
+	tmp[2] = textureGrad(effect_sampler_2, world_extra_uv, ddx, ddy);
+	tmp[3] = textureGrad(effect_sampler_3, world_extra_uv, ddx, ddy);
 
 	for (i = 0; i &lt; 4; ++i)
 	{
@@ -97,23 +97,23 @@ output_data[0].a = 1.0;
   <shader_source_data>
    <parameters>
     <parameter>
-     <sampler_parameter>albedo_sampler_0</sampler_parameter>
+     <sampler_parameter>effect_sampler_0</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_1</sampler_parameter>
+     <sampler_parameter>effect_sampler_1</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_2</sampler_parameter>
+     <sampler_parameter>effect_sampler_2</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_3</sampler_parameter>
+     <sampler_parameter>effect_sampler_3</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>blend_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_7</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -141,12 +141,12 @@ int i;
 
 result = material_color.rgb;
 
-blend = texture2D(blend_sampler, world_uv);
+blend = texture2D(effect_sampler_7, world_uv);
 
-tmp[0] = texture2D(albedo_sampler_0, world_extra_uv);
-tmp[1] = texture2D(albedo_sampler_1, world_extra_uv);
-tmp[2] = texture2D(albedo_sampler_2, world_extra_uv);
-tmp[3] = texture2D(albedo_sampler_3, world_extra_uv);
+tmp[0] = texture2D(effect_sampler_0, world_extra_uv);
+tmp[1] = texture2D(effect_sampler_1, world_extra_uv);
+tmp[2] = texture2D(effect_sampler_2, world_extra_uv);
+tmp[3] = texture2D(effect_sampler_3, world_extra_uv);
 
 for (i = 0; i &lt; 4; ++i)
 {

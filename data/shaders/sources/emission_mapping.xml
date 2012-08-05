@@ -12,7 +12,7 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>emission_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_6</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -20,7 +20,7 @@
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>emission = texture(emission_sampler, fragment_uv).rgb;</source>
+   <source>emission = texture(effect_sampler_6, fragment_uv).rgb;</source>
    <version>130</version>
   </shader_source_data>
   <shader_source_data>
@@ -30,7 +30,7 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>emission_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_6</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -38,7 +38,7 @@
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>emission = texture2D(emission_sampler, fragment_uv).rgb;</source>
+   <source>emission = texture2D(effect_sampler_6, fragment_uv).rgb;</source>
    <version>120</version>
   </shader_source_data>
  </shader_source_datas>

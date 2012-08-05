@@ -324,7 +324,7 @@ namespace eternal_lands
 	ARRAY(String, 16);
 
 	const Uint16 vertex_stream_count = 16;
-	const Uint16 material_texture_count = 11;
+	const Uint16 material_texture_count = 12;
 	const float epsilon = 1e-5f;
 
 	typedef boost::array<String, material_texture_count>

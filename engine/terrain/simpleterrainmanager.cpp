@@ -95,7 +95,7 @@ namespace eternal_lands
 	void SimpleTerrainManager::set_clipmap_texture(
 		const TextureSharedPtr &texture)
 	{
-		m_material->set_texture(texture, spt_albedo_0);
+		m_material->set_texture(texture, spt_effect_0);
 	}
 
 	void SimpleTerrainManager::set_terrain_page(

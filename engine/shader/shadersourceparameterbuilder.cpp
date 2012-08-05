@@ -40,23 +40,33 @@ namespace eternal_lands
 		return ShaderSourceParameter(source, auto_parameter);
 	}
 
-	void ShaderSourceParameterBuilder::add_parameter(const String &source,
+	bool ShaderSourceParameterBuilder::add_parameter(const String &source,
 		const CommonParameterType common_parameter,
 		const ParameterQualifierType qualifier,
 		ShaderSourceParameterVector &parameters)
 	{
-		add_parameter(build(source, common_parameter, qualifier),
+		return add_parameter(build(source, common_parameter, qualifier),
 			parameters);
 	}
 
-	void ShaderSourceParameterBuilder::add_parameter(const String &source,
+	bool ShaderSourceParameterBuilder::add_parameter(const String &source,
 		const AutoParameterType auto_parameter,
 		ShaderSourceParameterVector &parameters)
 	{
-		add_parameter(build(source, auto_parameter), parameters);
+		return add_parameter(build(source, auto_parameter), parameters);
 	}
 
-	void ShaderSourceParameterBuilder::add_parameter(
+	bool ShaderSourceParameterBuilder::add_parameter(const String &source,
+		const String &name, const ParameterType type,
+		const ParameterQualifierType qualifier,
+		const ParameterSizeType size, const Uint16 scale,
+		ShaderSourceParameterVector &parameters)
+	{
+		return add_parameter(build(source, name, type, qualifier, size,
+			scale), parameters);
+	}
+
+	bool ShaderSourceParameterBuilder::add_parameter(
 		const ShaderSourceParameter &parameter,
 		ShaderSourceParameterVector &parameters)
 	{
@@ -66,7 +76,7 @@ namespace eternal_lands
 			{
 				if (tmp.get_use(parameter))
 				{
-					return;
+					return false;
 				}
 			}
 		}
@@ -80,9 +90,11 @@ namespace eternal_lands
 		}
 
 		parameters.push_back(parameter);
+
+		return true;
 	}
 
-	void ShaderSourceParameterBuilder::add_parameter(
+	bool ShaderSourceParameterBuilder::add_parameter(
 		const ShaderSourceParameter &parameter,
 		const ShaderSourceParameterVector &locals,
 		ShaderSourceParameterVector &parameters,
@@ -94,7 +106,7 @@ namespace eternal_lands
 			{
 				if (tmp.get_use(parameter))
 				{
-					return;
+					return false;
 				}
 			}
 		}
@@ -105,7 +117,7 @@ namespace eternal_lands
 			{
 				if (tmp.get_use(parameter))
 				{
-					return;
+					return false;
 				}
 			}
 		}
@@ -121,10 +133,14 @@ namespace eternal_lands
 		if (!uniform_buffers.add_parameter(parameter))
 		{
 			parameters.push_back(parameter);
+
+			return true;
 		}
+
+		return false;
 	}
 
-	void ShaderSourceParameterBuilder::add_local(
+	bool ShaderSourceParameterBuilder::add_local(
 		const ShaderSourceParameter &local,
 		ShaderSourceParameterVector &locals,
 		const ShaderSourceParameterVector &parameters,
@@ -136,7 +152,7 @@ namespace eternal_lands
 			{
 				if (tmp.get_use(local))
 				{
-					return;
+					return false;
 				}
 			}
 		}
@@ -147,7 +163,7 @@ namespace eternal_lands
 			{
 				if (tmp.get_use(local))
 				{
-					return;
+					return false;
 				}
 			}
 		}
@@ -163,7 +179,11 @@ namespace eternal_lands
 		if (!uniform_buffers.used_parameter(local))
 		{
 			locals.push_back(local);
+
+			return true;
 		}
+
+		return false;
 	}
 
 }

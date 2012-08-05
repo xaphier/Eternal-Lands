@@ -12,11 +12,11 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_0</sampler_parameter>
+     <sampler_parameter>effect_sampler_0</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_1</sampler_parameter>
+     <sampler_parameter>effect_sampler_1</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -33,13 +33,13 @@
 	vec2 tmp_uv[2];
 	float p;
 
-	noise = texture(albedo_sampler_1, uv[0]);
+	noise = texture(effect_sampler_1, uv[0]);
 
 	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
 	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
 
-	p = texture(albedo_sampler_1, tmp_uv[0]).a;
-	color = texture(albedo_sampler_0, tmp_uv[1]).rgb;
+	p = texture(effect_sampler_1, tmp_uv[0]).a;
+	color = texture(effect_sampler_0, tmp_uv[1]).rgb;
 	color = color * p * 2.0 + color * color - 0.1;
 
 	color.bg += clamp(color.r - 2.0, 0.0, 1.0);
@@ -58,11 +58,11 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_0</sampler_parameter>
+     <sampler_parameter>effect_sampler_0</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <sampler_parameter>albedo_sampler_1</sampler_parameter>
+     <sampler_parameter>effect_sampler_1</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
     <parameter>
@@ -79,13 +79,13 @@
 	vec2 tmp_uv[2];
 	float p;
 
-	noise = texture2D(albedo_sampler_1, uv[0]);
+	noise = texture2D(effect_sampler_1, uv[0]);
 
 	tmp_uv[0] = 2.0 * (uv[1] + noise.xy * 2.0);
 	tmp_uv[1] = 2.0 * (uv[2] + noise.yz * 0.2);
 
-	p = texture2D(albedo_sampler_1, tmp_uv[0]).a;
-	color = texture2D(albedo_sampler_0, tmp_uv[1]).rgb;
+	p = texture2D(effect_sampler_1, tmp_uv[0]).a;
+	color = texture2D(effect_sampler_0, tmp_uv[1]).rgb;
 	color = color * p * 2.0 + color * color - 0.1;
 
 	color.bg += clamp(color.r - 2.0, 0.0, 1.0);

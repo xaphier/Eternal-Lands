@@ -33,29 +33,13 @@ BOOST_FIXTURE_TEST_SUITE(random_tool, el::RandomUtil)
 BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::MaterialDescription material_description;
+	Uint32 i;
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_0),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_1),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_2),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_3),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_normal),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_specular),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_emission),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_vector),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_normal),
-		"");
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_vertex_dudv),
-		"");
+	for (i = 0; i < el::material_texture_count; ++i)
+	{
+		BOOST_CHECK_EQUAL(material_description.get_texture(i), "");
+	}
+
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(0), vec4_one);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(1), vec4_one);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(2), vec4_one);
@@ -87,14 +71,14 @@ BOOST_AUTO_TEST_CASE(default_creation)
 BOOST_AUTO_TEST_CASE(all)
 {
 	el::MaterialDescription material_description;
-	el::StringArray4 albedos;
-	el::String normal, specular, emission, blend, vertex_vector;
-	el::String vertex_normal, vertex_dudv, name, effect, script;
+	el::MaterialStringArray textures;
+	el::String name, effect, script;
 	el::Vec4Array4 blend_sizes;
 	el::Mat2x4Array4 albedo_scale_offsets;
 	el::Mat2x3Array2 texture_matrices;
 	glm::mat2x3 emission_scale_offset;
 	glm::vec4 color, specular_scale_offset;
+	Uint32 i;
 
 	BOOST_FOREACH(glm::vec4 &value, blend_sizes)
 	{
@@ -143,44 +127,21 @@ BOOST_AUTO_TEST_CASE(all)
 	specular_scale_offset[2] = get_random_float();
 	specular_scale_offset[3] = get_random_float();
 
-	BOOST_FOREACH(el::String &name, albedos)
+	BOOST_FOREACH(el::String &name, textures)
 	{
 		name = get_random_name();
 	}
 
-	normal = get_random_name();
-	specular = get_random_name();
-	emission = get_random_name();
-	blend = get_random_name();
-	vertex_vector = get_random_name();
-	vertex_normal = get_random_name();
-	vertex_dudv = get_random_name();
 	name = get_random_name();
 	effect = get_random_name();
 	script = get_random_name();
 
-	BOOST_CHECK_NO_THROW(material_description.set_texture(albedos[0],
-		el::spt_albedo_0));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(albedos[1],
-		el::spt_albedo_1));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(albedos[2],
-		el::spt_albedo_2));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(albedos[3],
-		el::spt_albedo_3));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(normal,
-		el::spt_normal));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(specular,
-		el::spt_specular));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(emission,
-		el::spt_emission));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(blend,
-		el::spt_blend));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(vertex_vector,
-		el::spt_vertex_vector));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(vertex_normal,
-		el::spt_vertex_normal));
-	BOOST_CHECK_NO_THROW(material_description.set_texture(vertex_dudv,
-		el::spt_vertex_dudv));
+	for (i = 0; i < el::material_texture_count; ++i)
+	{
+		BOOST_CHECK_NO_THROW(material_description.set_texture(
+			textures[i], i));
+	}
+
 	BOOST_CHECK_NO_THROW(material_description.set_blend_sizes(blend_sizes));
 	BOOST_CHECK_NO_THROW(material_description.set_albedo_scale_offsets(
 		albedo_scale_offsets));
@@ -197,28 +158,12 @@ BOOST_AUTO_TEST_CASE(all)
 	BOOST_CHECK_NO_THROW(material_description.set_cast_shadows(false));
 	BOOST_CHECK_NO_THROW(material_description.set_culling(false));
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_0),
-		albedos[0]);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_1),
-		albedos[1]);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_2),
-		albedos[2]);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_3),
-		albedos[3]);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_normal),
-		normal);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_specular),	
-		specular);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_emission),
-		emission);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
-		blend);
-	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::spt_vertex_vector), vertex_vector);
-	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::spt_vertex_normal), vertex_normal);
-	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::spt_vertex_dudv), vertex_dudv);
+	for (i = 0; i < el::material_texture_count; ++i)
+	{
+		BOOST_CHECK_EQUAL(material_description.get_texture(i),
+			textures[i]);
+	}
+
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(0),
 		blend_sizes[0]);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(1),
@@ -258,14 +203,14 @@ BOOST_AUTO_TEST_CASE(xml)
 	el::XmlReaderSharedPtr reader;
 	el::MaterialDescription tmp_material_description;
 	el::MaterialDescription material_description;
-	el::StringArray4 albedos;
-	el::String normal, specular, emission, blend, vertex_vector;
-	el::String vertex_normal, vertex_dudv, name, effect, script;
+	el::MaterialStringArray textures;
+	el::String name, effect, script;
 	el::Vec4Array4 blend_sizes;
 	el::Mat2x4Array4 albedo_scale_offsets;
 	el::Mat2x3Array2 texture_matrices;
 	glm::mat2x3 emission_scale_offset;
 	glm::vec4 color, specular_scale_offset;
+	Uint32 i;
 
 	BOOST_FOREACH(glm::vec4 &value, blend_sizes)
 	{
@@ -314,44 +259,21 @@ BOOST_AUTO_TEST_CASE(xml)
 	specular_scale_offset[2] = get_random_int_float();
 	specular_scale_offset[3] = get_random_int_float();
 
-	BOOST_FOREACH(el::String &name, albedos)
+	BOOST_FOREACH(el::String &name, textures)
 	{
 		name = get_random_name();
 	}
 
-	normal = get_random_name();
-	specular = get_random_name();
-	emission = get_random_name();
-	blend = get_random_name();
-	vertex_vector = get_random_name();
-	vertex_normal = get_random_name();
-	vertex_dudv = get_random_name();
 	name = get_random_name();
 	effect = get_random_name();
 	script = get_random_name();
 
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(albedos[0],
-		el::spt_albedo_0));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(albedos[1],
-		el::spt_albedo_1));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(albedos[2],
-		el::spt_albedo_2));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(albedos[3],
-		el::spt_albedo_3));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(normal,
-		el::spt_normal));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(specular,
-		el::spt_specular));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(emission,
-		el::spt_emission));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(blend,
-		el::spt_blend));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(vertex_vector,
-		el::spt_vertex_vector));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(vertex_normal,
-		el::spt_vertex_normal));
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(vertex_dudv,
-		el::spt_vertex_dudv));
+	for (i = 0; i < el::material_texture_count; ++i)
+	{
+		BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(
+			textures[i], i));
+	}
+
 	BOOST_CHECK_NO_THROW(tmp_material_description.set_blend_sizes(
 		blend_sizes));
 	BOOST_CHECK_NO_THROW(tmp_material_description.set_albedo_scale_offsets(
@@ -382,28 +304,12 @@ BOOST_AUTO_TEST_CASE(xml)
 
 	reader.reset();
 
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_0),
-		albedos[0]);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_1),
-		albedos[1]);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_2),
-		albedos[2]);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_albedo_3),
-		albedos[3]);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_normal),
-		normal);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_specular),	
-		specular);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_emission),
-		emission);
-	BOOST_CHECK_EQUAL(material_description.get_texture(el::spt_blend),
-		blend);
-	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::spt_vertex_vector), vertex_vector);
-	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::spt_vertex_normal), vertex_normal);
-	BOOST_CHECK_EQUAL(material_description.get_texture(
-		el::spt_vertex_dudv), vertex_dudv);
+	for (i = 0; i < el::material_texture_count; ++i)
+	{
+		BOOST_CHECK_EQUAL(material_description.get_texture(i),
+			textures[i]);
+	}
+
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(0),
 		blend_sizes[0]);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(1),

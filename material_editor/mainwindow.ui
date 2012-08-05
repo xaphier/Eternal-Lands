@@ -166,6 +166,7 @@
    <addaction name="action_open"/>
    <addaction name="action_save"/>
    <addaction name="action_exit"/>
+   <addaction name="action_generate"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget_3">
    <property name="windowTitle">
@@ -274,6 +275,15 @@
    </property>
    <property name="toolTip">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="action_generate">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/application-x-desktop.png</normaloff>:/icons/application-x-desktop.png</iconset>
+   </property>
+   <property name="text">
+    <string>generate</string>
    </property>
   </action>
  </widget>

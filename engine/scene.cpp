@@ -1356,7 +1356,7 @@ namespace eternal_lands
 		m_state_manager.switch_multisample(true);
 
 		DEBUG_CHECK_GL_ERROR();
-
+/*
 		if (get_lights())
 		{
 			m_state_manager.switch_texture(spt_color_correction,
@@ -1367,7 +1367,7 @@ namespace eternal_lands
 			m_state_manager.switch_texture(spt_color_correction,
 				m_day_color_correction);
 		}
-
+*/
 		DEBUG_CHECK_GL_ERROR();
 
 		effect = ept_default;
@@ -1573,7 +1573,7 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
-			m_state_manager.switch_texture(spt_albedo_0,
+			m_state_manager.switch_texture(spt_effect_0,
 				m_clipmap_texture);
 
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);

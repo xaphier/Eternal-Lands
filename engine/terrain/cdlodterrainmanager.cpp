@@ -37,7 +37,7 @@ namespace eternal_lands
 	void CdLodTerrainManager::set_clipmap_texture(
 		const TextureSharedPtr &texture)
 	{
-		m_material->set_texture(texture, spt_albedo_0);
+		m_material->set_texture(texture, spt_effect_0);
 	}
 
 	void CdLodTerrainManager::intersect(const Frustum &frustum,
@@ -109,7 +109,7 @@ namespace eternal_lands
 		vector_texture->set_format(vector_map->get_texture_format());
 		vector_texture->set_image(vector_map);
 
-		m_material->set_texture(vector_texture, spt_vertex_vector);
+		m_material->set_texture(vector_texture, spt_effect_8);
 
 		normal_texture = boost::make_shared<Texture>(
 			normal_map->get_name());
@@ -122,7 +122,7 @@ namespace eternal_lands
 		normal_texture->set_format(normal_map->get_texture_format());
 		normal_texture->set_image(normal_map);
 
-		m_material->set_texture(normal_texture, spt_vertex_normal);
+		m_material->set_texture(normal_texture, spt_effect_9);
 
 		dudv_texture = boost::make_shared<Texture>(
 			dudv_map->get_name());
@@ -135,7 +135,7 @@ namespace eternal_lands
 		dudv_texture->set_format(dudv_map->get_texture_format());
 		dudv_texture->set_image(dudv_map);
 
-		m_material->set_texture(dudv_texture, spt_vertex_dudv);
+		m_material->set_texture(dudv_texture, spt_effect_10);
 	}
 
 	void CdLodTerrainManager::clear()

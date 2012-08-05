@@ -111,7 +111,7 @@ void ELPreviewWidget::paintGL()
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	matrix = glm::lookAt(glm::vec3(0.0f, -2.0f, 0.0f),
+	matrix = glm::lookAt(glm::vec3(0.0f, -2.0f, 1.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	m_scene->set_view_matrix(matrix);
@@ -158,7 +158,7 @@ void ELPreviewWidget::update_object()
 
 			max = std::max(std::max(bounding_box.get_half_size().x,
 				bounding_box.get_half_size().y),
-				bounding_box.get_half_size().z) + 2.5f;
+				bounding_box.get_half_size().z) * 2.0f + 0.5f;
 
 			world_transformation.set_rotation_angles(glm::vec3(
 				m_rotation.x(), m_rotation.y(),

@@ -62,17 +62,18 @@ namespace eternal_lands
 
 		m_data = material;
 
-		set_texture(material, spt_albedo_0);
-		set_texture(material, spt_albedo_1);
-		set_texture(material, spt_albedo_2);
-		set_texture(material, spt_albedo_3);
-		set_texture(material, spt_specular);
-		set_texture(material, spt_normal);
-		set_texture(material, spt_emission);
-		set_texture(material, spt_blend);
-		set_texture(material, spt_vertex_vector);
-		set_texture(material, spt_vertex_normal);
-		set_texture(material, spt_vertex_dudv);
+		set_texture(material, spt_effect_0);
+		set_texture(material, spt_effect_1);
+		set_texture(material, spt_effect_2);
+		set_texture(material, spt_effect_3);
+		set_texture(material, spt_effect_4);
+		set_texture(material, spt_effect_5);
+		set_texture(material, spt_effect_6);
+		set_texture(material, spt_effect_7);
+		set_texture(material, spt_effect_8);
+		set_texture(material, spt_effect_9);
+		set_texture(material, spt_effect_10);
+		set_texture(material, spt_effect_11);
 	}
 
 	void Material::set_material_script(const String &material_script)

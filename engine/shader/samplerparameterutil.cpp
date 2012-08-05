@@ -16,21 +16,21 @@ namespace eternal_lands
 
 		const String sampler_parameter_names[] =
 		{
-			String(UTF8("albedo_sampler_0")),
-			String(UTF8("albedo_sampler_1")),
-			String(UTF8("albedo_sampler_2")),
-			String(UTF8("albedo_sampler_3")),
-			String(UTF8("normal_sampler")),
-			String(UTF8("specular_sampler")),
-			String(UTF8("emission_sampler")),
-			String(UTF8("blend_sampler")),
-			String(UTF8("vertex_vector_sampler")),
-			String(UTF8("vertex_normal_sampler")),
-			String(UTF8("vertex_dudv_sampler")),
+			String(UTF8("effect_sampler_0")),
+			String(UTF8("effect_sampler_1")),
+			String(UTF8("effect_sampler_2")),
+			String(UTF8("effect_sampler_3")),
+			String(UTF8("effect_sampler_4")),
+			String(UTF8("effect_sampler_5")),
+			String(UTF8("effect_sampler_6")),
+			String(UTF8("effect_sampler_7")),
+			String(UTF8("effect_sampler_8")),
+			String(UTF8("effect_sampler_9")),
+			String(UTF8("effect_sampler_10")),
+			String(UTF8("effect_sampler_11")),
 			String(UTF8("light_positions_sampler")),
 			String(UTF8("light_colors_sampler")),
 			String(UTF8("light_indices_sampler")),
-			String(UTF8("color_correction_sampler")),
 			String(UTF8("shadow_sampler"))
 		};
 

@@ -32,14 +32,6 @@ namespace eternal_lands
 			String m_effect;
 			String m_script;
 
-			inline const String &get_texture(const Uint16 index)
-				const
-			{
-				assert(index < m_textures.size());
-
-				return m_textures[index];
-			}
-
 		public:
 			MaterialDescription();
 			MaterialDescription(const xmlNodePtr node);
@@ -54,19 +46,19 @@ namespace eternal_lands
 				const;
 
 			inline void set_texture(const String &texture,
-				const SamplerParameterType sampler)
+				const Uint16 index)
 			{
-				assert(sampler < m_textures.size());
+				assert(index < m_textures.size());
 
-				m_textures[sampler] = texture;
+				m_textures[index] = texture;
 			}
 
-			inline const String &get_texture(
-				const SamplerParameterType sampler) const
+			inline const String &get_texture(const Uint16 index)
+				const
 			{
-				assert(sampler < m_textures.size());
+				assert(index < m_textures.size());
 
-				return m_textures[sampler];
+				return m_textures[index];
 			}
 
 			inline const String &get_name() const noexcept
