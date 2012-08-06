@@ -7,6 +7,7 @@
 
 #include "effectnodeport.hpp"
 #include "effectnode.hpp"
+#include "effectparameter.hpp"
 #include "exceptions.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
@@ -390,7 +391,9 @@ namespace eternal_lands
 			new_change = change;
 
 			if ((get_change() == ect_fragment) &&
-				(port->get_change() == ect_vertex))
+				(port->get_change() == ect_vertex) &&
+				(dynamic_cast<EffectParameter*>(
+					port->get_node_ptr()) == 0))
 			{
 				parameters[port->get_var()] =
 					port->get_value_count();

@@ -17,6 +17,7 @@
 #include "commonparameterutil.hpp"
 #include "parameterutil.hpp"
 #include "parameterqualifierutil.hpp"
+#include "samplerparameterutil.hpp"
 
 /**
  * @file
@@ -42,9 +43,18 @@ namespace eternal_lands
 			static ShaderSourceParameter build(const String &source,
 				const AutoParameterType auto_parameter);
 
+			static ShaderSourceParameter build(const String &source,
+				const SamplerParameterType sampler_parameter,
+				const ParameterType type);
+
 			static bool add_parameter(const String &source,
 				const CommonParameterType common_parameter,
 				const ParameterQualifierType qualifier,
+				ShaderSourceParameterVector &parameters);
+
+			static bool add_parameter(const String &source,
+				const SamplerParameterType sampler_parameter,
+				const ParameterType type,
 				ShaderSourceParameterVector &parameters);
 
 			static bool add_parameter(const String &source,

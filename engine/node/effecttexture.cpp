@@ -8,7 +8,8 @@
 #include "effecttexture.hpp"
 #include "effectnodeport.hpp"
 #include "effectconstant.hpp"
-#include "../shader/commonparameterutil.hpp"
+#include "../shader/shadersourceparameterbuilder.hpp"
+#include "exceptions.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
 
@@ -28,6 +29,9 @@ namespace eternal_lands
 		m_texture(texture), m_texture_unit(texture_unit)
 	{
 		Uint32 index;
+
+		RANGE_CECK_MAX(m_texture_unit, material_texture_count,
+			UTF8("texture unit value too big"));
 
 		index = 0;
 
@@ -167,19 +171,6 @@ namespace eternal_lands
 					ect_fragment);
 				add_input_port(String("dPdy"),
 					String(UTF8("xy")), uuid_generator(),
-					ect_fragment);
-				break;
-			case est_sampler_cube_map_array:
-				add_input_port(String(UTF8("xyz")),
-					uuid_generator(), ect_fragment);
-				add_input_port(String("layer"),
-					String(UTF8("?")), uuid_generator(),
-					ect_fragment);
-				add_input_port(String("dPdx"),
-					String(UTF8("xyz")), uuid_generator(),
-					ect_fragment);
-				add_input_port(String("dPdy"),
-					String(UTF8("xyz")), uuid_generator(),
 					ect_fragment);
 				break;
 			case est_sampler_rectangle:
@@ -338,6 +329,8 @@ namespace eternal_lands
 		StringStream str;
 		Uint16StringMap::const_iterator found;
 		String world_uv, uv, scale, dPdx, dPdy, layer;
+		SamplerParameterType sampler;
+		ParameterType type;
 		bool use_grad;
 
 		if (fragment_written.count(this) > 0)
@@ -346,6 +339,8 @@ namespace eternal_lands
 		}
 
 		fragment_written.insert(this);
+
+		sampler = static_cast<SamplerParameterType>(m_texture_unit);
 
 		found = array_layers.find(get_texture_unit());
 
@@ -451,18 +446,21 @@ namespace eternal_lands
 					}
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ");
+				str << UTF8("(") << sampler << UTF8(", ");
 
 				if (found != array_layers.end())
 				{
 					str << UTF8("vec2(") << uv;
 					str << UTF8(", ") << found->second;
 					str << UTF8(")");
+
+					type = pt_sampler1DArray;
 				}
 				else
 				{
 					str << uv;
+
+					type = pt_sampler1D;
 				}
 
 				if (use_grad)
@@ -484,18 +482,21 @@ namespace eternal_lands
 					}
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ");
+				str << UTF8("(") << sampler << UTF8(", ");
 
 				if (found != array_layers.end())
 				{
 					str << UTF8("vec3(") << uv;
 					str << UTF8(", ") << found->second;
 					str << UTF8(")");
+
+					type = pt_sampler2DArray;
 				}
 				else
 				{
 					str << uv;
+
+					type = pt_sampler2D;
 				}
 
 				if (use_grad)
@@ -517,8 +518,9 @@ namespace eternal_lands
 					}
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ") << uv;
+				str << UTF8("(") << sampler << UTF8(", ") << uv;
+
+				type = pt_sampler3D;
 
 				if (use_grad)
 				{
@@ -539,8 +541,9 @@ namespace eternal_lands
 					}
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ") << uv;
+				str << UTF8("(") << sampler << UTF8(", ") << uv;
+
+				type = pt_samplerCube;
 
 				if (use_grad)
 				{
@@ -554,9 +557,10 @@ namespace eternal_lands
 					str << UTF8("Grad");
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", vec2(") << uv;
-				str << UTF8(",") << layer << UTF8(")");
+				str << UTF8("(") << sampler << UTF8(", vec2(");
+				str << uv << UTF8(",") << layer << UTF8(")");
+
+				type = pt_sampler1DArray;
 
 				if (use_grad)
 				{
@@ -570,25 +574,10 @@ namespace eternal_lands
 					str << UTF8("Grad");
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", vec3(") << uv;
-				str << UTF8(", ") << layer << UTF8(")");
+				str << UTF8("(") << sampler << UTF8(", vec3(");
+				str << uv << UTF8(", ") << layer << UTF8(")");
 
-				if (use_grad)
-				{
-					str << UTF8(", ") << dPdx;
-					str << UTF8(", ") << dPdy;
-				}
-				break;
-			case est_sampler_cube_map_array:
-				if (use_grad)
-				{
-					str << UTF8("Grad");
-				}
-
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", vec4(") << uv;
-				str << UTF8(", ") << layer << UTF8(")");
+				type = pt_sampler2DArray;
 
 				if (use_grad)
 				{
@@ -602,8 +591,9 @@ namespace eternal_lands
 					str << UTF8("Grad");
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ") << uv;
+				str << UTF8("(") << sampler << UTF8(", ") << uv;
+
+				type = pt_sampler2DRect;
 
 				if (use_grad)
 				{
@@ -624,8 +614,9 @@ namespace eternal_lands
 					str << UTF8("Grad");
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ") << uv;
+				str << UTF8("(") << sampler << UTF8(", ") << uv;
+
+				type = pt_sampler1D;
 
 				if (use_grad)
 				{
@@ -646,8 +637,9 @@ namespace eternal_lands
 					str << UTF8("Grad");
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ") << uv;
+				str << UTF8("(") << sampler << UTF8(", ") << uv;
+
+				type = pt_sampler2D;
 
 				if (use_grad)
 				{
@@ -668,8 +660,9 @@ namespace eternal_lands
 					str << UTF8("Grad");
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ") << uv;
+				str << UTF8("(") << sampler << UTF8(", ") << uv;
+
+				type = pt_sampler3D;
 
 				if (use_grad)
 				{
@@ -685,8 +678,9 @@ namespace eternal_lands
 					str << UTF8("Grad");
 				}
 
-				str << UTF8("(") << get_sampler_name();
-				str << UTF8(", ") << uv;
+				str << UTF8("(") << sampler << UTF8(", ") << uv;
+
+				type = pt_sampler2DRect;
 
 				if (use_grad)
 				{
@@ -695,6 +689,10 @@ namespace eternal_lands
 				}
 				break;
 		}
+
+		ShaderSourceParameterBuilder::add_parameter(
+			String(UTF8("effect texture")), sampler, type,
+			fragment_parameters);
 
 		str << UTF8(")");
 
@@ -866,6 +864,10 @@ namespace eternal_lands
 				== 0)
 			{
 				m_texture_unit = XmlUtil::get_uint32_value(it);
+
+				RANGE_CECK_MAX(m_texture_unit,
+					material_texture_count,
+					UTF8("texture unit value too big"));
 			}
 		}
 		while (XmlUtil::next(it, true));

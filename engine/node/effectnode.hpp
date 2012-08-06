@@ -103,7 +103,6 @@ namespace eternal_lands
 				EffectNodePtrSet &fragment_written) = 0;
 			virtual String get_description() const = 0;
 			void update();
-			static String get_sampler_name(const Uint16 index);
 			static String get_var_name(const Uint32 id,
 				const Uint16 index);
 

@@ -40,7 +40,11 @@ namespace eternal_lands
 			sslt_diffuse_colors_sum,
 			sslt_specular_colors_sum,
 			sslt_shadow_values,
-			sslt_i
+			sslt_i,
+			sslt_index,
+			sslt_packed_light_indices,
+			sslt_floor_values,
+			sslt_unpack_const
 		};
 
 		class ShaderSourceLocalTypeData
@@ -82,7 +86,15 @@ namespace eternal_lands
 				String(UTF8("specular_colors_sum")), pt_vec3),
 			ShaderSourceLocalTypeData(String(UTF8("shadow_values")),
 				pt_vec3),
-			ShaderSourceLocalTypeData(String(UTF8("i")), pt_int)
+			ShaderSourceLocalTypeData(String(UTF8("i")), pt_int),
+			ShaderSourceLocalTypeData(String(UTF8("index")),
+				pt_int),
+			ShaderSourceLocalTypeData(String(
+				UTF8("packed_light_indices")), pt_vec4),
+			ShaderSourceLocalTypeData(String(UTF8("floor_values")),
+				pt_vec4),
+			ShaderSourceLocalTypeData(String(UTF8("unpack_const")),
+				pt_vec4)
 		};
 
 		const Uint32 shader_source_local_datas_count =
@@ -163,6 +175,22 @@ namespace eternal_lands
 
 			tmp = ShaderSourceParameterBuilder::build(source,
 				auto_parameter);
+
+			ShaderSourceParameterBuilder::add_parameter(tmp, locals,
+				parameters, uniform_buffers);
+		}
+
+		void add_parameter(const String &source,
+			const SamplerParameterType sampler_parameter,
+			const ParameterType type,
+			const ShaderSourceParameterVector &locals,
+			ShaderSourceParameterVector &parameters,
+			UniformBufferUsage &uniform_buffers)
+		{
+			ShaderSourceParameter tmp;
+
+			tmp = ShaderSourceParameterBuilder::build(source,
+				sampler_parameter, type);
 
 			ShaderSourceParameterBuilder::add_parameter(tmp, locals,
 				parameters, uniform_buffers);
@@ -1265,6 +1293,249 @@ namespace eternal_lands
 		return true;
 	}
 
+	void ShaderSourceBuilder::build_light_index_lights(
+		const ShaderSourceBuildData &data,
+		const ParameterSizeTypeUint16Map &array_sizes,
+		const ShaderSourceParameterVector &locals, 
+		const String &indent, const bool shadow, OutStream &main,
+		OutStream &functions, ShaderSourceParameterVector &globals,
+		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
+		const
+	{
+		ShaderSourceParameterVector function_locals;
+		ShaderSourceParameterVector function_parameters;
+		StringStream stream;
+		String local_indent, local_loop_indent;
+		String lighting;
+
+		lighting = UTF8("lighting");
+		local_indent = indent.get() + UTF8('\t');
+		local_loop_indent = local_indent.get() + UTF8('\t');
+
+		add_local(String(UTF8("lighting")), sslt_i, pqt_out,
+			function_locals, function_parameters,
+			uniform_buffers);
+		add_local(String(UTF8("lighting")), sslt_shadow_values,
+			pqt_out, function_locals, function_parameters,
+			uniform_buffers);
+		add_local(String(UTF8("lighting")), sslt_index, pqt_out,
+			function_locals, function_parameters,
+			uniform_buffers);
+
+		add_local(String(UTF8("lighting")), sslt_packed_light_indices,
+			pqt_out, function_locals, function_parameters,
+			uniform_buffers);
+		add_local(String(UTF8("lighting")), sslt_floor_values, pqt_out,
+			function_locals, function_parameters,
+			uniform_buffers);
+		add_local(String(UTF8("lighting")), sslt_unpack_const, pqt_out,
+			function_locals, function_parameters,
+			uniform_buffers);
+
+		add_parameter(String(UTF8("lighting")), spt_light_positions,
+			pt_sampler1D, function_locals, function_parameters,
+			uniform_buffers);
+		add_parameter(String(UTF8("lighting")), spt_light_colors,
+			pt_sampler1D, function_locals, function_parameters,
+			uniform_buffers);
+		add_parameter(String(UTF8("lighting")), spt_light_indices,
+			pt_sampler2D, function_locals, function_parameters,
+			uniform_buffers);
+
+		stream << UTF8("\n");
+
+		if (data.get_shader_build_type() == sbt_debug_diffuse_light)
+		{
+			add_parameter(String(UTF8("lighting")),
+				sslt_diffuse_colors_sum, pqt_out,
+				function_locals, function_parameters,
+				uniform_buffers);
+		}
+		else
+		{
+			add_local(String(UTF8("lighting")),
+				sslt_diffuse_colors_sum, pqt_out,
+				function_locals, function_parameters,
+				uniform_buffers);
+		}
+
+		stream << local_indent << sslt_diffuse_colors_sum;
+		stream << UTF8(" = ");
+
+		add_parameter(String(UTF8("lighting")), apt_ambient,
+			function_locals, function_parameters, uniform_buffers);
+
+		stream << apt_ambient << UTF8(".rgb;\n");
+
+		add_parameter(String(UTF8("lighting")), cpt_emission, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+
+
+		if (data.get_shader_build_type() == sbt_debug_specular_light)
+		{
+			add_parameter(String(UTF8("lighting")),
+				sslt_specular_colors_sum, pqt_out,
+				function_locals, function_parameters,
+				uniform_buffers);
+		}
+		else
+		{
+			add_local(String(UTF8("lighting")),
+				sslt_specular_colors_sum, pqt_out,
+				function_locals, function_parameters,
+				uniform_buffers);
+		}
+
+		stream << local_indent << sslt_diffuse_colors_sum;
+		stream << UTF8(" += ") << cpt_emission << UTF8(";\n");
+
+		stream << local_indent << sslt_specular_colors_sum;
+		stream << UTF8(" = vec3(0.0);\n");
+
+		if (shadow)
+		{
+			add_parameter(String(UTF8("lighting")), cpt_shadow,
+				pqt_in, function_locals, function_parameters,
+				uniform_buffers);
+
+			stream << local_indent << sslt_shadow_values;
+			stream << UTF8(" = vec3(") << cpt_shadow;
+			stream << UTF8(" * ") << get_shadow_scale();
+			stream << UTF8(" + ") << (1.0 - get_shadow_scale());
+			stream << UTF8(", ") << cpt_shadow;
+			stream << UTF8(", 1.0);\n");
+		}
+
+		stream << UTF8("\n");
+
+		// Look up the bit planes texture
+		stream << local_indent << sslt_packed_light_indices;
+		stream << UTF8(" = texelFetch(") << spt_light_indices;
+		stream << UTF8(", ivec2(gl_FragCoord.xy), 0);\n");
+
+		// Unpack each lighting channel
+		stream << local_indent << sslt_unpack_const << UTF8(" = ");
+		stream << UTF8("vec4(4.0, 16.0, 64.0 , 256.0) / 256.0;\n");
+
+		// Expand the packed light values to the 0.. 255 range
+		stream << local_indent << sslt_floor_values << UTF8(" = ceil(");
+		stream << sslt_packed_light_indices << UTF8(" * 254.5);\n");
+
+		stream << local_indent << UTF8("for (") << sslt_i;
+		stream << UTF8(" = 0; ") << sslt_i << UTF8(" < 4; ++i)\n");
+		stream << local_indent << UTF8("{\n");
+
+		stream << local_loop_indent << sslt_packed_light_indices;
+		stream << UTF8(" = ") << sslt_floor_values;
+		stream << UTF8(" * 0.25;\n"); // Shift two bits down
+		stream << local_loop_indent << sslt_floor_values;
+		stream << UTF8(" = floor(") << sslt_packed_light_indices;
+		stream << UTF8(");\n"); // Remove shifted bits
+
+		stream << local_loop_indent << sslt_index << UTF8(" = int(");
+		stream << UTF8("dot((") << sslt_packed_light_indices;
+		stream << UTF8(" - ") << sslt_floor_values << UTF8("), ");
+		stream << sslt_unpack_const << UTF8("));\n");
+
+		add_local(String(UTF8("lighting")), cpt_light_color, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+
+		stream << local_loop_indent << cpt_light_color;
+		stream << UTF8(" = texelFetch(") << spt_light_colors;
+		stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
+
+		add_local(String(UTF8("lighting")), cpt_light_position, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+
+		stream << local_loop_indent << cpt_light_position;
+		stream << UTF8(" = texelFetch(") << spt_light_positions;
+		stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
+
+		build_function(data, array_sizes, function_locals,
+			sst_fragment_light, local_loop_indent, stream,
+			functions, function_parameters, uniform_buffers,
+			used_sources);
+
+		make_parameter_local(
+			CommonParameterUtil::get_str(cpt_diffuse_color),
+			function_locals, function_parameters);
+		make_parameter_local(
+			CommonParameterUtil::get_str(cpt_specular_color),
+			function_locals, function_parameters);
+
+		add_local(String(UTF8("lighting")), cpt_diffuse_color, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+
+		stream << local_loop_indent << sslt_diffuse_colors_sum;
+		stream << UTF8(" += ") << cpt_diffuse_color;
+
+		if (shadow)
+		{
+			add_parameter(String(UTF8("lighting")), cpt_shadow,
+				pqt_in, function_locals, function_parameters,
+				uniform_buffers);
+
+			stream << UTF8(" * ") << sslt_shadow_values;
+			stream << UTF8(".x");
+		}
+
+		stream << UTF8(";\n");
+
+		add_local(String(UTF8("lighting")), cpt_specular_color, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+
+		stream << local_loop_indent << sslt_specular_colors_sum;
+		stream << UTF8(" += ") << cpt_specular_color;
+
+		if (shadow)
+		{
+			stream << UTF8(" * ") << sslt_shadow_values;
+			stream << UTF8(".y");
+		}
+
+		stream << UTF8(";\n");
+
+		if (shadow)
+		{
+			stream << local_loop_indent << sslt_shadow_values;
+			stream << UTF8(".xy = ") << sslt_shadow_values;
+			stream << UTF8(".zz;\n");
+		}
+
+		stream << local_indent << UTF8("}\n\n");
+
+		add_parameter(String(UTF8("lighting")), cpt_fragment_color, pqt_out,
+			function_locals, function_parameters, uniform_buffers);
+
+		stream << local_indent << cpt_fragment_color << UTF8(" = ");
+		stream << sslt_diffuse_colors_sum;
+
+		add_parameter(String(UTF8("lighting")), cpt_albedo, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+
+		stream << UTF8(" * ") << cpt_albedo << UTF8(".rgb");
+
+		stream << UTF8(";\n");
+
+		add_parameter(String(UTF8("lighting")), cpt_specular, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+
+		stream << local_indent << cpt_fragment_color << UTF8(" += ");
+		stream << cpt_specular << UTF8(" * ");
+		stream << sslt_specular_colors_sum << UTF8(";\n");
+
+		main << indent << UTF8("/* lighting */\n");
+		main << indent << UTF8("{\n");
+
+		write_parameters(String(), function_locals, array_sizes,
+			local_indent, String(), main);
+
+		main << stream.str() << indent << UTF8("}\n");
+
+		add_parameters(function_parameters, locals, globals,
+			uniform_buffers);
+	}
+
 	void ShaderSourceBuilder::build_lights(
 		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
@@ -1944,7 +2215,12 @@ namespace eternal_lands
 						main, functions, globals,
 						uniform_buffers, used_sources);
 				}
-
+/*
+				build_light_index_lights(data, array_sizes, locals, indent,
+					shadows, main, functions,
+					globals, uniform_buffers,
+					used_sources);
+*/
 				build_lights(data, array_sizes, locals, indent,
 					false, shadows, main, functions,
 					globals, uniform_buffers,

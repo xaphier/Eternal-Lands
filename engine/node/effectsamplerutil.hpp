@@ -34,7 +34,6 @@ namespace eternal_lands
 		est_sampler_cube_map,
 		est_sampler_1d_array,
 		est_sampler_2d_array,
-		est_sampler_cube_map_array,
 		est_sampler_rectangle,
 		est_sampler_1d_project,
 		est_sampler_2d_project,

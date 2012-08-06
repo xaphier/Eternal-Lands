@@ -22,7 +22,6 @@ namespace eternal_lands
 			String(UTF8("sampler_cube_map")),
 			String(UTF8("sampler_1d_array")),
 			String(UTF8("sampler_2d_array")),
-			String(UTF8("sampler_cube_map_array")),
 			String(UTF8("sampler_rectangle")),
 			String(UTF8("sampler_1d_project")),
 			String(UTF8("sampler_2d_project")),

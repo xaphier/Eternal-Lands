@@ -123,75 +123,53 @@ namespace eternal_lands
 		EffectNodePtrSet &vertex_written,
 		EffectNodePtrSet &fragment_written)
 	{
+		ShaderSourceParameterVector &shader_parameters =
+			change == ect_fragment ? fragment_parameters :
+			vertex_parameters;
+
 		switch (get_type())
 		{
 			case ept_position:
 				ShaderSourceParameterBuilder::add_parameter(
 					String(UTF8("EffectParameter")),
 					cpt_world_position, pqt_in,
-					vertex_parameters);
+					shader_parameters);
 				break;
 			case ept_normal:
 				ShaderSourceParameterBuilder::add_parameter(
 					String(UTF8("EffectParameter")),
 					cpt_world_normal, pqt_in,
-					vertex_parameters);
+					shader_parameters);
 				break;
 			case ept_tangent:
 				ShaderSourceParameterBuilder::add_parameter(
 					String(UTF8("EffectParameter")),
 					cpt_world_tangent, pqt_in,
-					vertex_parameters);
+					shader_parameters);
 				break;
 			case ept_view_direction:
 				ShaderSourceParameterBuilder::add_parameter(
 					String(UTF8("EffectParameter")),
 					cpt_world_view_direction, pqt_in,
-					vertex_parameters);
+					fragment_parameters);
 				break;
 			case ept_uv:
 				ShaderSourceParameterBuilder::add_parameter(
 					String(UTF8("EffectParameter")),
 					cpt_world_uv, pqt_in,
-					vertex_parameters);
+					shader_parameters);
 				break;
 			case ept_fragment_coordinate:
 				break;
 			case ept_time:
-				if (change == ect_fragment)
-				{
-					ShaderSourceParameterBuilder::
-						add_parameter(String(UTF8(
-							"EffectParameter")),
-							apt_time,
-							fragment_parameters);
-				}
-				else
-				{
-					ShaderSourceParameterBuilder::
-						add_parameter(String(UTF8(
-							"EffectParameter")),
-							apt_time,
-							vertex_parameters);
-				}
+				ShaderSourceParameterBuilder::add_parameter(
+					String(UTF8("EffectParameter")),
+					apt_time, shader_parameters);
 				break;
 			case ept_camera:
-				if (change == ect_fragment)
-				{
-					ShaderSourceParameterBuilder::
-						add_parameter(String(UTF8(
-							"EffectParameter")),
-							apt_camera,
-							fragment_parameters);
-				}
-				else
-				{
-					ShaderSourceParameterBuilder::
-						add_parameter(String(UTF8(
-							"EffectParameter")),
-							apt_camera,
-							vertex_parameters);
-				}
+				ShaderSourceParameterBuilder::add_parameter(
+					String(UTF8("EffectParameter")),
+					apt_camera, shader_parameters);
 				break;
 		}
 	}

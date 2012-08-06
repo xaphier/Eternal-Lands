@@ -47,6 +47,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void save();
 		void save_as();
 		void changed();
+		void generate();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

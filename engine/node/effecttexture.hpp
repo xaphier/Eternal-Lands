@@ -62,12 +62,6 @@ namespace eternal_lands
 			virtual String get_description() const;
 			Uint16 get_layer();
 
-			inline String get_sampler_name() const
-			{
-				return EffectNode::get_sampler_name(
-					get_texture_unit());
-			}
-
 			inline EffectSamplerType get_sampler() const noexcept
 			{
 				return m_sampler;

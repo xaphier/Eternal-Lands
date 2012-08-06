@@ -277,15 +277,6 @@ namespace eternal_lands
 		update(updated);
 	}
 
-	String EffectNode::get_sampler_name(const Uint16 index)
-	{
-		StringStream str;
-
-		str << UTF8("effect_sampler_") << index;
-
-		return String(str.str());
-	}
-
 	String EffectNode::get_var_name(const Uint32 id, const Uint16 index)
 	{
 		StringStream str;

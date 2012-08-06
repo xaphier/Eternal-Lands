@@ -40,6 +40,14 @@ namespace eternal_lands
 		return ShaderSourceParameter(source, auto_parameter);
 	}
 
+	ShaderSourceParameter ShaderSourceParameterBuilder::build(
+		const String &source,
+		const SamplerParameterType sampler_parameter,
+		const ParameterType type)
+	{
+		return ShaderSourceParameter(source, sampler_parameter, type);
+	}
+
 	bool ShaderSourceParameterBuilder::add_parameter(const String &source,
 		const CommonParameterType common_parameter,
 		const ParameterQualifierType qualifier,
@@ -54,6 +62,15 @@ namespace eternal_lands
 		ShaderSourceParameterVector &parameters)
 	{
 		return add_parameter(build(source, auto_parameter), parameters);
+	}
+
+	bool ShaderSourceParameterBuilder::add_parameter(const String &source,
+		const SamplerParameterType sampler_parameter,
+		const ParameterType type,
+		ShaderSourceParameterVector &parameters)
+	{
+		return add_parameter(build(source, sampler_parameter, type),
+			parameters);
 	}
 
 	bool ShaderSourceParameterBuilder::add_parameter(const String &source,

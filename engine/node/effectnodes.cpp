@@ -19,6 +19,7 @@
 #include "xmlwriter.hpp"
 #include "exceptions.hpp"
 #include "../shader/shadersourceparameterbuilder.hpp"
+#include "../shader/shadersourceparameter.hpp"
 
 namespace eternal_lands
 {
@@ -128,11 +129,24 @@ namespace eternal_lands
 		StringUint16Map parameters;
 		StringUint16Map::const_iterator it, end;
 		ParameterType type;
+		Uint32 i, count;
 
-		m_nodes.begin()->write(array_layers, version, quality,
-			ect_constant, parameters, vertex_parameters,
-			fragment_parameters, vertex_str, fragment_str,
-			vertex_written, fragment_written);
+		count = m_nodes.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			if (dynamic_cast<EffectOutput*>(&m_nodes[i]) == 0)
+			{
+				continue;
+			}
+
+			m_nodes[i].write(array_layers, version, quality,
+				ect_constant, parameters, vertex_parameters,
+				fragment_parameters, vertex_str, fragment_str,
+				vertex_written, fragment_written);
+
+			break;
+		}
 
 		end = parameters.end();
 
@@ -161,19 +175,16 @@ namespace eternal_lands
 					continue;
 			}
 
-			if (true)
-			{
-				ShaderSourceParameterBuilder::add_parameter(
+			vertex_parameters.push_back(
+				ShaderSourceParameterBuilder::build(
 					String(UTF8("effect nodes")),
-					it->first, type, pqt_out, pst_one, 1,
-					vertex_parameters);
-			}
+					it->first, type, pqt_out, pst_one, 1));
 
-			ShaderSourceParameterBuilder::add_parameter(
-				String(UTF8("effect nodes")), it->first, type,
-				pqt_in, pst_one, 1, fragment_parameters);
+			fragment_parameters.push_back(
+				ShaderSourceParameterBuilder::build(
+					String(UTF8("effect nodes")), it->first,
+					type, pqt_in, pst_one, 1));
 		}
-
 	}
 
 	void EffectNodes::remove(const EffectNodePtr effect_node)

@@ -21,6 +21,7 @@
 #include "../engine/node/effecttexture.hpp"
 #include "../engine/node/effectoutput.hpp"
 #include "../engine/shader/samplerparameterutil.hpp"
+#include "../engine/shader/shadersourceparameter.hpp"
 #include "../engine/texturetargetutil.hpp"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
@@ -94,8 +95,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 	QObject::connect(action_new, SIGNAL(triggered()), this, SLOT(do_new()));
 	QObject::connect(action_open, SIGNAL(triggered()), this, SLOT(load()));
 	QObject::connect(action_save, SIGNAL(triggered()), this, SLOT(save()));
-	QObject::connect(action_save_as, SIGNAL(activated()), this,
+	QObject::connect(action_save_as, SIGNAL(triggered()), this,
 		SLOT(save_as()));
+	QObject::connect(action_generate, SIGNAL(triggered()), this,
+		SLOT(generate()));
 
 	action_new->setIcon(QIcon::fromTheme("document-new"));
 	action_open->setIcon(QIcon::fromTheme("document-open"));
@@ -609,9 +612,6 @@ void MainWindow::add_texture()
 		case el::ttt_texture_2d_array:
 			sampler = el::est_sampler_2d_array;
 			break;
-		case el::ttt_texture_cube_map_array:
-			sampler = el::est_sampler_cube_map_array;
-			break;
 		case el::ttt_texture_2d_multisample:
 		case el::ttt_texture_2d_multisample_array:
 			return;
@@ -663,4 +663,33 @@ void MainWindow::add_output()
 	node->setPos(graphicsView->sceneRect().center().toPoint());
 
 	changed();
+}
+
+void MainWindow::generate()
+{
+	el::ShaderSourceParameterVector vertex_parameters, fragment_parameters;
+	el::ShaderSourceParameterVector::const_iterator it, end;
+	el::StringStream vertex_str, fragment_str;
+	el::Uint16StringMap array_layers;
+
+	m_effect_nodes->write(array_layers, el::svt_130, el::eqt_high,
+		vertex_parameters, fragment_parameters, vertex_str,
+		fragment_str);
+
+	std::cout << "vertex_str: " << vertex_str.str() << std::endl;
+	std::cout << "fragment_str: " << fragment_str.str() << std::endl;
+
+	end = vertex_parameters.end();
+
+	for (it = vertex_parameters.begin(); it != end; ++it)
+	{
+		std::cout << "vertex parameter: " << *it << std::endl;
+	}
+
+	end = fragment_parameters.end();
+
+	for (it = fragment_parameters.begin(); it != end; ++it)
+	{
+		std::cout << "fragment parameter: " << *it << std::endl;
+	}
 }
