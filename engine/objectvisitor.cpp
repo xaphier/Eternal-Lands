@@ -114,7 +114,7 @@ namespace eternal_lands
 			transparency, blend, mask, depth_read));
 	}
 
-	void ObjectVisitor::operator()(
+	void ObjectVisitor::operator()(const Frustum &frustum,
 		const BoundedObjectSharedPtr &bounded_object,
 		const SubFrustumsMask mask)
 	{

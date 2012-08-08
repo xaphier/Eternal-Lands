@@ -46,7 +46,7 @@ namespace eternal_lands
 
 		m_edit_id = 0;
 
-		init_logging("log");
+		init_logging("log", false);
 	}
 
 	bool Editor::undo()
@@ -194,7 +194,7 @@ namespace eternal_lands
 		object_description.set_name(mesh);
 		object_description.set_id(id);
 
-		m_data.add_object(object_description);
+		m_data.add_object(object_description, sct_no);
 
 		change_object(mt_object_added, object_description);
 	}
@@ -211,7 +211,7 @@ namespace eternal_lands
 		light_data.set_radius(radius);
 		light_data.set_id(id);
 
-		m_data.add_light(light_data);
+		m_data.add_light(light_data, sct_force_select);
 
 		change_light(mt_light_added, light_data);
 	}

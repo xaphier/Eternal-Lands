@@ -26,7 +26,7 @@ typedef enum
  *
  * Inits the logging.
  */
-void init_logging(const char* log_file_name);
+void init_logging(const char* log_file_name, const int debug);
 
 /**
  * @ingroup logging

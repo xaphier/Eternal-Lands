@@ -276,6 +276,7 @@ namespace eternal_lands
 	class Ray;
 	class Reader;
 	class ReadWriteMemory;
+	class RenderLightData;
 	class RenderObjectData;
 	class RStarTree;
 	class RStarTreeNode;
@@ -461,6 +462,7 @@ namespace eternal_lands
 	VECTOR(ObjectSharedPtr);
 	VECTOR(ParticleData);
 	VECTOR(Plane);
+	VECTOR(RenderLightData);
 	VECTOR(RenderObjectData);
 	VECTOR(RStarTreeNodeSharedPtr);
 	VECTOR(ShaderSourceData);

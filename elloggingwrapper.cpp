@@ -19,13 +19,13 @@
 
 namespace el = eternal_lands;
 
-extern "C" void init_logging(const char* log_file_name)
+extern "C" void init_logging(const char* log_file_name, const int debug)
 {
 	char str[65536];
 
 	snprintf(str, sizeof(str), "%s%s", get_path_config(), log_file_name);
 
-	el::init_logging(str);
+	el::init_logging(str, debug != 0);
 }
 
 extern "C" void exit_logging()
@@ -40,7 +40,8 @@ extern "C" LogLevelType get_log_level()
 
 extern "C" void set_log_level(const LogLevelType log_level)
 {
-	el::set_log_level(el::lt_default, static_cast<el::LogLevelType>(log_level));
+	el::set_log_level(el::lt_default,
+		static_cast<el::LogLevelType>(log_level));
 }
 
 extern "C" void log_error(const char* file, const int line,

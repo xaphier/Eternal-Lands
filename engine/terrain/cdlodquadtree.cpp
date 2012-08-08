@@ -279,10 +279,10 @@ namespace eternal_lands
 
 		patch_scale = 1;
 
-		range = 8.0f * std::sqrt(2.0f) * get_patch_scale() *
+		range = 2.0f * std::sqrt(2.0f) * get_patch_scale() *
 			get_patch_size();
 
-		cur_range = 0.0f;
+		cur_range = 10.0f;
 
 		for (i = 0; i < get_lod_count(); ++i)
 		{
@@ -308,6 +308,8 @@ namespace eternal_lands
 			range *= 2.0f;
 			patch_scale *= 2;
 		}
+
+		m_lods[0].range_start = 0.0f;
 
 		m_lods[get_lod_count() - 1].morph_params = glm::vec2(0.0f);
 	}

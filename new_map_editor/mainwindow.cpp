@@ -561,9 +561,6 @@ void MainWindow::update_terrain()
 
 void MainWindow::update_object(const bool select)
 {
-	Uint16 renderable;
-	int i;
-
 	if (select && action_delete_mode->isChecked())
 	{
 		el_gl_widget->remove_object();
@@ -572,25 +569,21 @@ void MainWindow::update_object(const bool select)
 		return;
 	}
 
-	i = -1;
-	renderable = el_gl_widget->get_renderable();
-
-	if (renderable == rt_object)
-	{
-		i = 0;
-		update_object();
-
-		if (select)
-		{
-			properties->setCurrentIndex(i);
-		}
-
-		action_remove->setEnabled(properties->currentIndex() == i);
-	}
-	else
+	if (el_gl_widget->get_renderable() != rt_object)
 	{
 		deselect();
+
+		return;
 	}
+
+	update_object();
+
+	if (select)
+	{
+		properties->setCurrentIndex(0);
+	}
+
+	action_remove->setEnabled(properties->currentIndex() == 0);
 }
 
 void MainWindow::update_light(const bool select)
@@ -602,39 +595,46 @@ void MainWindow::update_light(const bool select)
 	{
 		el_gl_widget->remove_light();
 		deselect();
+
+		return;
 	}
-	else
+
+	if (el_gl_widget->get_renderable() != rt_light)
 	{
-		if (select)
-		{
-			properties->setCurrentIndex(1);
-		}
+		deselect();
 
-		action_remove->setEnabled(properties->currentIndex() == 1);
+		return;
+	}
+		
+	if (select)
+	{
+		properties->setCurrentIndex(1);
+	}
 
-		el_gl_widget->get_light_data(light);
+	action_remove->setEnabled(properties->currentIndex() == 1);
 
-		BOOST_FOREACH(QObject* light_widget, m_light_witdgets)
-		{
-			light_widget->blockSignals(true);
-		}
+	el_gl_widget->get_light_data(light);
 
-		x_position->setValue(light.get_position()[0]);
-		y_position->setValue(light.get_position()[1]);
-		z_position->setValue(light.get_position()[2]);
+	BOOST_FOREACH(QObject* light_widget, m_light_witdgets)
+	{
+		light_widget->blockSignals(true);
+	}
 
-		radius->setValue(light.get_radius());
+	x_position->setValue(light.get_position()[0]);
+	y_position->setValue(light.get_position()[1]);
+	z_position->setValue(light.get_position()[2]);
 
-		set_light_color(glm::clamp(light.get_color(), 0.0f, 1.0));
+	radius->setValue(light.get_radius());
 
-		id = light.get_id();
+	set_light_color(glm::clamp(light.get_color(), 0.0f, 1.0));
 
-		light_id->setText(QVariant(id).toString());
+	id = light.get_id();
 
-		BOOST_FOREACH(QObject* light_widget, m_light_witdgets)
-		{
-			light_widget->blockSignals(false);
-		}
+	light_id->setText(QVariant(id).toString());
+
+	BOOST_FOREACH(QObject* light_widget, m_light_witdgets)
+	{
+		light_widget->blockSignals(false);
 	}
 }
 

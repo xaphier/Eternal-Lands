@@ -38,6 +38,14 @@ namespace eternal_lands
 		rt_particle
 	};
 
+	enum SelectionChangeType
+	{
+		sct_no,
+		sct_unselect,
+		sct_select,
+		sct_force_select
+	};
+
 	/**
 	 * @brief @c class for maps.
 	 *
@@ -58,14 +66,20 @@ namespace eternal_lands
 
 			void save(const WriterSharedPtr &writer,
 				const MapVersionType version) const;
+			void change_selection(const Uint32 id,
+				const RenderableType renderable,
+				const SelectionChangeType selection);
 
 		public:
 			EditorMapData(const GlobalVarsSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
 			~EditorMapData() throw();
-			void add_object(const EditorObjectDescription &object);
-			void add_light(const LightData &light);
-			void add_particle(const ParticleData &particle);
+			void add_object(const EditorObjectDescription &object,
+				const SelectionChangeType select);
+			void add_light(const LightData &light,
+				const SelectionChangeType select);
+			void add_particle(const ParticleData &particle,
+				const SelectionChangeType select);
 			void modify_object(const EditorObjectDescription &object);
 			void modify_light(const LightData &light);
 			void modify_particle(const ParticleData &particle);

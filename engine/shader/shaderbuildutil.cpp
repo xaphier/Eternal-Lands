@@ -30,7 +30,9 @@ namespace eternal_lands
 			String(UTF8("debug_specular")),
 			String(UTF8("debug_emissive")),
 			String(UTF8("debug_diffuse_light")),
-			String(UTF8("debug_specular_light"))
+			String(UTF8("debug_specular_light")),
+			String(UTF8("debug_packed_light_index")),
+			String(UTF8("debug_light_index"))
 		};
 
 		const Uint32 shader_build_type_names_count =

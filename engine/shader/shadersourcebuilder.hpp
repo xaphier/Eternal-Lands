@@ -107,6 +107,7 @@ namespace eternal_lands
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
 				const String &indent, const bool shadow,
+				const bool light_indices_10_bit,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers,
@@ -158,6 +159,10 @@ namespace eternal_lands
 			void load_shader_sources(
 				const FileSystemSharedPtr &file_system,
 				const String &dir);
+			void remove_function_usage(
+				const ShaderSourceBuildData &data,
+				const ShaderSourceType shader_source_type,
+				UuidSet &used_sources) const;
 
 		public:
 			ShaderSourceBuilder(

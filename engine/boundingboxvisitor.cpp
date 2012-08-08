@@ -19,7 +19,7 @@ namespace eternal_lands
 	{
 	}
 
-	void BoundingBoxVisitor::operator()(
+	void BoundingBoxVisitor::operator()(const Frustum &frustum,
 		const BoundedObjectSharedPtr &bounded_object,
 		const SubFrustumsMask mask)
 	{

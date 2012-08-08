@@ -14,6 +14,19 @@
 		<lighting>false</lighting>
 	</effect>
 	<effect>
+		<name>light-index</name>
+		<world_transformation>static</world_transformation>
+		<texture_coodrinates>static</texture_coodrinates>
+		<uv_mapping>disabled</uv_mapping>
+		<albedo_mapping>color</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>emission</emission_mapping>
+		<receives_shadows>false</receives_shadows>
+		<transparent>false</transparent>
+		<lighting>false</lighting>
+	</effect>
+	<effect>
 		<name>lava</name>
 		<world_transformation>static</world_transformation>
 		<texture_coodrinates>lava</texture_coodrinates>

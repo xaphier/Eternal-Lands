@@ -199,27 +199,60 @@ namespace eternal_lands
 		return m_scene->get_dungeon();
 	}
 
+	void EditorMapData::change_selection(const Uint32 id,
+		const RenderableType renderable,
+		const SelectionChangeType selection)
+	{
+		switch (selection)
+		{
+			case sct_no:
+				break;
+			case sct_unselect:
+				m_renderable = rt_none;
+				break;
+			case sct_select:
+				if (m_renderable != rt_none)
+				{
+					break;
+				}
+			case sct_force_select:
+				m_id = id;
+				m_renderable == renderable;
+				break;
+		}
+	}
+
 	void EditorMapData::add_object(
-		const EditorObjectDescription &object_description)
+		const EditorObjectDescription &object_description,
+		const SelectionChangeType selection)
 	{
 		m_objects.insert(std::pair<Uint32,
 			EditorObjectDescription>(object_description.get_id(),
 			object_description));
 		m_scene->add_object(object_description);
+
+		change_selection(object_description.get_id(), rt_object,
+			selection);
 	}
 
-	void EditorMapData::add_light(const LightData &light)
+	void EditorMapData::add_light(const LightData &light,
+		const SelectionChangeType selection)
 	{
 		m_lights.insert(std::pair<Uint32,
 			LightData>(light.get_id(), light));
 		m_scene->add_light(light);
+
+		change_selection(light.get_id(), rt_light, selection);
 	}
 
-	void EditorMapData::add_particle(const ParticleData &particle)
+	void EditorMapData::add_particle(const ParticleData &particle,
+		const SelectionChangeType selection)
 	{
 		m_particles.insert(std::pair<Uint32,
 			ParticleData>(particle.get_id(), particle));
 //		m_scene->add_particle(particle);
+
+		change_selection(particle.get_id(), rt_particle, selection);
 	}
 
 	void EditorMapData::modify_object(

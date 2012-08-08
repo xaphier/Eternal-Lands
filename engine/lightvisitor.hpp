@@ -30,25 +30,25 @@ namespace eternal_lands
 	class LightVisitor: public AbstractBoundedObjectVisitor
 	{
 		private:
-			LightSharedPtrVector m_lights;
+			RenderLightDataVector m_lights;
 
 		public:
 			LightVisitor();
 
 			virtual ~LightVisitor() noexcept;
 
-			virtual void operator()(
+			virtual void operator()(const Frustum &frustum,
 				const BoundedObjectSharedPtr &bounded_object,
 				const SubFrustumsMask mask) noexcept;
 		
 			void sort(const glm::vec3 &position) noexcept;
 
-			inline LightSharedPtrVector &get_lights() noexcept
+			inline RenderLightDataVector &get_lights() noexcept
 			{
 				return m_lights;
 			}
 
-			inline const LightSharedPtrVector &get_lights() const
+			inline const RenderLightDataVector &get_lights() const
 				noexcept
 			{
 				return m_lights;

@@ -42,7 +42,9 @@ namespace eternal_lands
 		sbt_debug_specular,
 		sbt_debug_emissive,
 		sbt_debug_diffuse_light,
-		sbt_debug_specular_light
+		sbt_debug_specular_light,
+		sbt_debug_packed_light_index,
+		sbt_debug_light_index
 	};
 	/**
 	 * @}

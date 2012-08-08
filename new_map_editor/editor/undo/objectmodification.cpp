@@ -36,7 +36,8 @@ namespace eternal_lands
 				return editor.remove_object(
 					m_object_description.get_id());
 			case mt_object_removed:
-				editor.add_object(m_object_description);
+				editor.add_object(m_object_description,
+					sct_select);
 				return false;
 			case mt_object_translation_changed:
 			case mt_object_rotation_changed:

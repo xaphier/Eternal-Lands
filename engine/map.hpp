@@ -177,6 +177,18 @@ namespace eternal_lands
 			void build_clipmap_material(
 				const ClipmapData &clipmap_data);
 
+			inline const Uint32ObjectSharedPtrMap &get_objects()
+				const noexcept
+			{
+				return m_objects;
+			}
+
+			inline const Uint32LightSharedPtrMap &get_lights()
+				const noexcept
+			{
+				return m_lights;
+			}
+
 			inline const MaterialSharedPtr &get_clipmap_material()
 				const noexcept
 			{

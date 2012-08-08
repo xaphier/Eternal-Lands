@@ -308,11 +308,7 @@ namespace eternal_lands
 
 			if (in_mask[index])
 			{
-#ifdef	USE_SSE2_
-				switch (get_plane(index).intersect_sse2(box))
-#else	/* USE_SSE2 */
 				switch (get_plane(index).intersect(box))
-#endif	/* USE_SSE2 */
 				{
 					case it_outside:
 						return;
@@ -342,6 +338,78 @@ namespace eternal_lands
 		for (i = 0; i < sub_frustum_count; ++i)
 		{
 			intersect(box, in_mask, i, out_mask);
+		}
+
+		if (out_mask.none())
+		{
+			return it_outside;
+		}
+
+		if ((out_mask & all_sub_frustum_planes_mask).none())
+		{
+			return it_inside;
+		}
+
+		return it_intersect;
+	}
+
+	void Frustum::intersect(const glm::vec3 &point,
+		const PlanesMask in_mask, const Uint16 sub_frustum_index,
+		PlanesMask &out_mask) const
+	{
+		PlanesMask mask;
+		Uint16 i, index, offset;
+
+		assert((get_planes_mask() & in_mask) ==
+			(in_mask & all_sub_frustum_planes_mask));
+
+		if ((in_mask &
+			sub_frustum_planes_masks[sub_frustum_index]).none())
+		{
+			out_mask |=
+				in_mask & sub_frustum_masks[sub_frustum_index];
+
+			return;
+		}
+
+		offset = sub_frustum_index * sub_frustum_planes_count;
+
+		for (i = 0; i < sub_frustum_planes_count; ++i)
+		{
+			index = i + offset;
+
+			if (in_mask[index])
+			{
+				switch (get_plane(index).intersect(point))
+				{
+					case it_outside:
+						return;
+					case it_intersect:
+						mask[index] = true;
+						break;
+					case it_inside:
+						break;
+				}
+			}
+		}
+
+		index = sub_frustum_index + sub_frustum_intersect_offset;
+
+		mask[index] = mask.none();
+
+		out_mask |= mask;
+	}
+
+	IntersectionType Frustum::intersect(const glm::vec3 &point,
+		const PlanesMask in_mask, PlanesMask &out_mask) const
+	{
+		Uint16 i;
+
+		out_mask.reset();
+
+		for (i = 0; i < sub_frustum_count; ++i)
+		{
+			intersect(point, in_mask, i, out_mask);
 		}
 
 		if (out_mask.none())

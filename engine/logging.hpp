@@ -55,7 +55,8 @@ namespace eternal_lands
 		lt_opengl
 	};
 
-	void init_logging(const std::string &log_file_name);
+	void init_logging(const std::string &log_file_name,
+		const bool debug);
 	void exit_logging();
 	LogLevelType get_log_level(const LogType log);
 	void set_log_level(const LogType log, const LogLevelType log_level);

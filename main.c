@@ -390,11 +390,6 @@ void check_log_level_on_command_line()
 			}
 			continue;
 		}
-		if (strcmp(gargv[i], "--debug") == 0)
-		{
-			set_log_level(llt_debug_verbose);
-			continue;
-		}
 	}
 }
 
@@ -404,6 +399,8 @@ int Main(int argc, char **argv)
 int main(int argc, char **argv)
 #endif
 {
+	Uint32 i, debug;
+
 #ifdef MEMORY_DEBUG
 	elm_init();
 #endif //MEMORY_DEBUG
@@ -416,7 +413,19 @@ int main(int argc, char **argv)
 #endif	//OLC
 	init_file_system();
 	init_global_vars();
-	init_logging("log");
+
+	debug = 0;
+
+	for (i = 1; i < gargc; i++)
+	{
+		if (strcmp(gargv[i], "--debug") == 0)
+		{
+			debug = 1;
+			break;
+		}
+	}
+
+	init_logging("log", debug);
 	engine_init_console_logging();
 
 	check_log_level_on_command_line();

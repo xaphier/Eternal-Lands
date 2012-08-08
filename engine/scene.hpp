@@ -65,12 +65,17 @@ namespace eternal_lands
 			AbstractMeshSharedPtr m_screen_quad;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractFrameBufferSharedPtr m_clipmap_frame_buffer;
-			AbstractFrameBufferSharedPtr m_light_frame_buffer;
 			AbstractFrameBufferSharedPtr m_scene_frame_buffer;
 			TextureSharedPtr m_shadow_texture;
 			TextureSharedPtr m_clipmap_texture;
-			TextureSharedPtr m_light_texture;
+#if	0
+			TextureSharedPtr m_light_index_texture;
+			TextureSharedPtr m_light_position_texture;
+			TextureSharedPtr m_light_color_texture;
+#endif
 			TextureSharedPtr m_scene_texture;
+			Uint32Uint32Map m_light_index;
+			ObjectSharedPtr m_light_sphere;
 			Uint32ActorSharedPtrMap m_actors;
 			Vec4Vector m_light_positions_array;
 			Vec4Vector m_light_colors_array;
@@ -103,6 +108,8 @@ namespace eternal_lands
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance,
 				const bool lights);
+			void draw_light(const glm::vec3 &position,
+				const float size, const Uint8 light_index);
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids,
 				Uint32 &query_index);
@@ -124,6 +131,8 @@ namespace eternal_lands
 			void draw_shadows();
 			void draw_depth();
 			void draw_default();
+			void draw_lights();
+			void init_light_indexed_deferred_rendering();
 
 		protected:
 			virtual void intersect_terrain(const Frustum &frustum,
@@ -138,6 +147,7 @@ namespace eternal_lands
 			virtual void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
 			virtual void depth_read();
+			void map_changed();
 
 			inline const MapSharedPtr &get_map() const noexcept
 			{
@@ -147,6 +157,7 @@ namespace eternal_lands
 			inline void set_map(const MapSharedPtr &map) noexcept
 			{
 				m_map = map;
+				map_changed();
 			}
 
 		public:

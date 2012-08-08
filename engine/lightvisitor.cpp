@@ -7,6 +7,8 @@
 
 #include "lightvisitor.hpp"
 #include "light.hpp"
+#include "frustum.hpp"
+#include "renderlightdata.hpp"
 
 namespace eternal_lands
 {
@@ -29,15 +31,18 @@ namespace eternal_lands
 				{
 				}
 
-				inline bool operator()(const LightSharedPtr &l0,
-					const LightSharedPtr &l1) noexcept
+				inline bool operator()(
+					const RenderLightData &l0,
+					const RenderLightData &l1) noexcept
 				{
 					float dist0, dist1;
 
 					dist0 = glm::distance2(
-						l0->get_position(), m_position);
+						l0.get_light()->get_position(),
+						m_position);
 					dist1 = glm::distance2(
-						l1->get_position(), m_position);
+						l1.get_light()->get_position(),
+						m_position);
 
 					return dist0 < dist1;
 				}
@@ -54,7 +59,7 @@ namespace eternal_lands
 	{
 	}
 
-	void LightVisitor::operator()(
+	void LightVisitor::operator()(const Frustum &frustum,
 		const BoundedObjectSharedPtr &bounded_object,
 		const SubFrustumsMask mask) noexcept
 	{
@@ -64,7 +69,8 @@ namespace eternal_lands
 
 		assert(light.get() != nullptr);
 
-		m_lights.push_back(light);
+		m_lights.push_back(RenderLightData(light, frustum.intersect(
+			light->get_position()) == it_inside));
 	}
 
 	void LightVisitor::sort(const glm::vec3 &position) noexcept

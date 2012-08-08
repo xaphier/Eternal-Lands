@@ -59,19 +59,21 @@ namespace eternal_lands
 
 		m_data.add_object(EditorObjectDescription(translation,
 			rotation_angles, material_names, name, scale,
-			transparency, id, new_selection, blend));
+			transparency, id, new_selection, blend), sct_no);
 	}
 
 	void EditorMapLoader::add_light(const glm::vec3 &position,
 		const glm::vec3 &color, const float radius, const Uint32 id)
 	{
-		m_data.add_light(LightData(position, color, radius, id));
+		m_data.add_light(LightData(position, color, radius, id),
+			sct_no);
 	}
 
 	void EditorMapLoader::add_particle(const glm::vec3 &position,
 		const String &name, const Uint32 id)
 	{
-		m_data.add_particle(ParticleData(position, name, id));
+		m_data.add_particle(ParticleData(position, name, id),
+			sct_no);
 	}
 
 	void EditorMapLoader::add_terrain(const StringArray4 &albedo,

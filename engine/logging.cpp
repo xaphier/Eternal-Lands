@@ -146,56 +146,43 @@ namespace eternal_lands
 			return buffer;
 		}
 
-		void init(const std::string &name)
+		void init(const std::string &name, const bool debug)
 		{
 			std::stringstream file_name;
 			std::stringstream str;
-/*
+			LogLevelType log_level;
+
+			if (debug)
+			{
+				log_level = llt_debug;
+			}
+			else
+			{
+				log_level = llt_info;
+			}			
+
 			log_levels[lt_default] = llt_info;
-			log_levels[lt_io] = llt_info;
-			log_levels[lt_texture] = llt_debug;
-			log_levels[lt_glsl_program] = llt_debug;
-			log_levels[lt_actor_texture] = llt_debug;
-			log_levels[lt_image] = llt_debug;
-			log_levels[lt_dds_image] = llt_debug;
-			log_levels[lt_png_image] = llt_debug;
-			log_levels[lt_jpeg_image] = llt_debug;
-			log_levels[lt_j2k_image] = llt_debug;
-			log_levels[lt_e3d_loader] = llt_debug;
-			log_levels[lt_e2d_loader] = llt_debug;
-			log_levels[lt_map_loader] = llt_debug;
-			log_levels[lt_mesh] = llt_debug;
-			log_levels[lt_material] = llt_debug;
-			log_levels[lt_shader_source] = llt_debug;
-			log_levels[lt_angel_script] = llt_debug;
-			log_levels[lt_framebuffer] = llt_debug;
-			log_levels[lt_rendering] = llt_debug;
-			log_levels[lt_uniform_buffer] = llt_debug;
-			log_levels[lt_effect] = llt_debug;
-			log_levels[lt_opengl] = llt_debug;
-*/
-			log_levels[lt_default] = llt_info;
-			log_levels[lt_io] = llt_info;
-			log_levels[lt_texture] = llt_info;
-			log_levels[lt_glsl_program] = llt_info;
-			log_levels[lt_actor_texture] = llt_info;
-			log_levels[lt_image] = llt_info;
-			log_levels[lt_dds_image] = llt_info;
-			log_levels[lt_png_image] = llt_info;
-			log_levels[lt_jpeg_image] = llt_info;
-			log_levels[lt_j2k_image] = llt_info;
-			log_levels[lt_e3d_loader] = llt_info;
-			log_levels[lt_e2d_loader] = llt_info;
-			log_levels[lt_map_loader] = llt_info;
-			log_levels[lt_mesh] = llt_info;
-			log_levels[lt_material] = llt_info;
-			log_levels[lt_shader_source] = llt_info;
-			log_levels[lt_angel_script] = llt_info;
-			log_levels[lt_framebuffer] = llt_info;
-			log_levels[lt_rendering] = llt_info;
-			log_levels[lt_uniform_buffer] = llt_info;
-			log_levels[lt_effect] = llt_info;
-			log_levels[lt_opengl] = llt_info;
+			log_levels[lt_io] = log_level;
+			log_levels[lt_texture] = log_level;
+			log_levels[lt_glsl_program] = log_level;
+			log_levels[lt_actor_texture] = log_level;
+			log_levels[lt_image] = log_level;
+			log_levels[lt_dds_image] = log_level;
+			log_levels[lt_png_image] = log_level;
+			log_levels[lt_jpeg_image] = log_level;
+			log_levels[lt_j2k_image] = log_level;
+			log_levels[lt_e3d_loader] = log_level;
+			log_levels[lt_e2d_loader] = log_level;
+			log_levels[lt_map_loader] = log_level;
+			log_levels[lt_mesh] = log_level;
+			log_levels[lt_material] = log_level;
+			log_levels[lt_shader_source] = log_level;
+			log_levels[lt_angel_script] = log_level;
+			log_levels[lt_framebuffer] = log_level;
+			log_levels[lt_rendering] = log_level;
+			log_levels[lt_uniform_buffer] = log_level;
+			log_levels[lt_effect] = log_level;
+			log_levels[lt_opengl] = log_level;
 
 			file_name << log_dir << name << ".log";
 
@@ -252,7 +239,7 @@ namespace eternal_lands
 
 	}
 
-	void init_logging(const std::string &dir)
+	void init_logging(const std::string &dir, const bool debug)
 	{
 		std::string str;
 
@@ -267,7 +254,7 @@ namespace eternal_lands
 		mkdir(dir.c_str(), S_IRWXU | S_IRWXG);
 #endif	/* WINDOWS */
 
-		init("main");
+		init("main", debug);
 	}
 
 	void exit_logging()

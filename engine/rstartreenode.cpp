@@ -243,7 +243,8 @@ namespace eternal_lands
 		}
 	}
 
-	void RStarTreeNode::view_node(const SubFrustumsMask sub_frustums_mask,
+	void RStarTreeNode::view_node(const Frustum &frustum,
+		const SubFrustumsMask sub_frustums_mask,
 		AbstractBoundedObjectVisitor &visitor) const
 	{
 		Uint32 i;
@@ -252,7 +253,8 @@ namespace eternal_lands
 		{
 			for (i = 0; i < get_count(); ++i)
 			{
-				visitor(get_element(i), sub_frustums_mask);
+				visitor(frustum, get_element(i),
+					sub_frustums_mask);
 			}
 
 			return;
@@ -260,7 +262,8 @@ namespace eternal_lands
 
 		for (i = 0; i < get_count(); ++i)
 		{
-			get_node(i)->view_node(sub_frustums_mask, visitor);
+			get_node(i)->view_node(frustum, sub_frustums_mask,
+				visitor);
 		}
 	}
 
@@ -319,7 +322,8 @@ namespace eternal_lands
 
 			if (sub_frustums_mask.any())
 			{
-				visitor(get_element(i), sub_frustums_mask);
+				visitor(frustum, get_element(i),
+					sub_frustums_mask);
 			}
 		}
 	}
@@ -347,7 +351,7 @@ namespace eternal_lands
 			{
 				case it_inside:
 				{
-					get_node(i)->view_node(
+					get_node(i)->view_node(frustum,
 						frustum.get_sub_frustums_mask(
 							out_mask), visitor);
 					break;

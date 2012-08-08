@@ -1011,9 +1011,20 @@ namespace eternal_lands
 	void MeshDataTool::write_vertex_stream(VertexStream &stream) const
 	{
 		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator found;
-		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator end;
+		VertexSemanticTypeAlignedVec4ArrayMap::const_iterator it, end;
 
 		end = m_vertices.end();
+
+		for (it = m_vertices.begin(); it != end; ++it)
+		{
+			for (Uint32 i = 0; i < it->second.size(); ++i)
+			{
+				assert(std::isfinite(it->second[i][0]));
+				assert(std::isfinite(it->second[i][1]));
+				assert(std::isfinite(it->second[i][2]));
+				assert(std::isfinite(it->second[i][3]));
+			}
+		}
 
 		BOOST_FOREACH(const VertexElement &element,
 			stream.get_vertex_elements().get_vertex_elements())

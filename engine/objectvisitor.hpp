@@ -38,7 +38,7 @@ namespace eternal_lands
 		public:
 			ObjectVisitor();
 			virtual ~ObjectVisitor() noexcept;
-			virtual void operator()(
+			virtual void operator()(const Frustum &frustum,
 				const BoundedObjectSharedPtr &bounded_object,
 				const SubFrustumsMask mask);
 			void sort(const glm::vec3 &position);
