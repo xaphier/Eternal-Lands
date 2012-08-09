@@ -59,7 +59,7 @@ namespace eternal_lands
 	{
 	}
 
-	void LightVisitor::operator()(const Frustum &frustum,
+	void LightVisitor::operator()(
 		const BoundedObjectSharedPtr &bounded_object,
 		const SubFrustumsMask mask) noexcept
 	{
@@ -69,14 +69,23 @@ namespace eternal_lands
 
 		assert(light.get() != nullptr);
 
-		m_lights.push_back(RenderLightData(light, frustum.intersect(
-			light->get_position()) == it_inside));
+		m_lights.push_back(RenderLightData(light));
 	}
 
 	void LightVisitor::sort(const glm::vec3 &position) noexcept
 	{
 		std::sort(m_lights.begin(), m_lights.end(),
 			LightSort(position));
+	}
+
+	void LightVisitor::update_camera(const glm::vec3 &camera) noexcept
+	{
+		BOOST_FOREACH(RenderLightData &light, m_lights)
+		{
+			light.set_camera_inside(glm::distance(camera,
+				light.get_light()->get_position()) <
+				(light.get_light()->get_radius() + 1.2f));
+		}
 	}
 
 }

@@ -411,6 +411,161 @@ namespace eternal_lands
 			return result;
 		}
 
+#ifdef _WIN32
+#define __BYTE_ORDER __LITTLE_ENDIAN
+#endif
+
+#define RGB9E5_EXPONENT_BITS          5
+#define RGB9E5_MANTISSA_BITS          9
+#define RGB9E5_EXP_BIAS               15
+#define RGB9E5_MAX_VALID_BIASED_EXP   31
+
+#define MAX_RGB9E5_EXP               (RGB9E5_MAX_VALID_BIASED_EXP - RGB9E5_EXP_BIAS)
+#define RGB9E5_MANTISSA_VALUES       (1<<RGB9E5_MANTISSA_BITS)
+#define MAX_RGB9E5_MANTISSA          (RGB9E5_MANTISSA_VALUES-1)
+#define MAX_RGB9E5                   (((float)MAX_RGB9E5_MANTISSA)/RGB9E5_MANTISSA_VALUES * (1<<MAX_RGB9E5_EXP))
+#define EPSILON_RGB9E5               ((1.0/RGB9E5_MANTISSA_VALUES) / (1<<RGB9E5_EXP_BIAS))
+
+typedef struct {
+#ifdef __BYTE_ORDER
+#if __BYTE_ORDER == __BIG_ENDIAN
+  Uint32 negative:1;
+  Uint32 biasedexponent:8;
+  Uint32 mantissa:23;
+#elif __BYTE_ORDER == __LITTLE_ENDIAN
+  Uint32 mantissa:23;
+  Uint32 biasedexponent:8;
+  Uint32 negative:1;
+#endif
+#endif
+} BitsOfIEEE754;
+
+typedef union {
+  Uint32 raw;
+  float value;
+  BitsOfIEEE754 field;
+} Float754;
+
+typedef struct {
+#ifdef __BYTE_ORDER
+#if __BYTE_ORDER == __BIG_ENDIAN
+  Uint32 biasedexponent:RGB9E5_EXPONENT_BITS;
+  Uint32 b:RGB9E5_MANTISSA_BITS;
+  Uint32 g:RGB9E5_MANTISSA_BITS;
+  Uint32 r:RGB9E5_MANTISSA_BITS;
+#elif __BYTE_ORDER == __LITTLE_ENDIAN
+  Uint32 r:RGB9E5_MANTISSA_BITS;
+  Uint32 g:RGB9E5_MANTISSA_BITS;
+  Uint32 b:RGB9E5_MANTISSA_BITS;
+  Uint32 biasedexponent:RGB9E5_EXPONENT_BITS;
+#endif
+#endif
+} BitsOfRGB9E5;
+
+typedef union {
+  Uint32 raw;
+  BitsOfRGB9E5 field;
+} RGB9E5;
+
+			float clamp_range_for_rgb9e5(const float x)
+			{
+				if (x > 0.0f)
+				{
+					return std::min(x, MAX_RGB9E5);
+				}
+
+				/**
+				 * NaN gets here too since comparisons with
+				 * NaN always fail!
+				 */
+				return 0.0f;
+			}
+
+			/**
+			 * Ok, FloorLog2 is not correct for the denorm and zero
+			 * values, but we are going to do a max of this value
+			 * with the minimum rgb9e5 exponent that will hide
+			 * these problem cases.
+			 */
+			int floor_log2(const float x)
+			{
+				Float754 f;
+
+				f.value = x;
+				return (f.field.biasedexponent - 127);
+			}
+
+	}
+
+	Uint32 PackTool::encode_rgb9e5(const glm::vec3 &value)
+	{
+		RGB9E5 retval;
+		double denom;
+		float maxrgb;
+		float rc, gc, bc;
+		int rm, gm, bm;
+		int exp_shared, maxm;
+
+		rc = clamp_range_for_rgb9e5(value[0]);
+		gc = clamp_range_for_rgb9e5(value[1]);
+		bc = clamp_range_for_rgb9e5(value[2]);
+
+		maxrgb = std::max(std::max(rc, gc), bc);
+		exp_shared = std::max(-RGB9E5_EXP_BIAS-1, floor_log2(maxrgb)) +
+			1 + RGB9E5_EXP_BIAS;
+		assert(exp_shared <= RGB9E5_MAX_VALID_BIASED_EXP);
+		assert(exp_shared >= 0);
+		/**
+		 * This pow function could be replaced by a table.
+		 */
+		denom = std::pow(2, exp_shared - RGB9E5_EXP_BIAS -
+			RGB9E5_MANTISSA_BITS);
+
+		maxm = std::floor(maxrgb / denom + 0.5);
+
+		if (maxm == MAX_RGB9E5_MANTISSA+1)
+		{
+			denom *= 2;
+			exp_shared += 1;
+			assert(exp_shared <= RGB9E5_MAX_VALID_BIASED_EXP);
+		}
+		else
+		{
+			assert(maxm <= MAX_RGB9E5_MANTISSA);
+		}
+
+		rm = std::floor(rc / denom + 0.5);
+		gm = std::floor(gc / denom + 0.5);
+		bm = std::floor(bc / denom + 0.5);
+
+		assert(rm <= MAX_RGB9E5_MANTISSA);
+		assert(gm <= MAX_RGB9E5_MANTISSA);
+		assert(bm <= MAX_RGB9E5_MANTISSA);
+		assert(rm >= 0);
+		assert(gm >= 0);
+		assert(bm >= 0);
+
+		retval.field.r = rm;
+		retval.field.g = gm;
+		retval.field.b = bm;
+		retval.field.biasedexponent = exp_shared;
+
+		return retval.raw;
+	}
+
+	glm::vec3 PackTool::decode_rgb9e5(const Uint32 value)
+	{
+		Sint32 exponent;
+		float scale;
+		RGB9E5 tmp;
+
+		tmp.raw = value;
+		exponent = tmp.field.biasedexponent - RGB9E5_EXP_BIAS -
+			RGB9E5_MANTISSA_BITS;
+		scale = std::pow(2, exponent);
+
+		return glm::vec3(tmp.field.r * scale, tmp.field.g * scale,
+			tmp.field.b * scale);
 	}
 
 	Uint16 PackTool::compress_normalized(const glm::vec3 &value)
@@ -977,6 +1132,12 @@ namespace eternal_lands
 					static_cast<const glm::detail::hdata*>(
 						ptr)[0]);
 				return result;
+			case pft_rgb9_e5:
+				return glm::vec4(decode_rgb9e5(
+						*static_cast<const Uint32*>(
+							ptr)), 1.0f);
+			case pft_r10f_g11f_b10f:
+				return glm::vec4(0.0f);
 		}
 
 		return glm::vec4(0.0f);
@@ -1128,6 +1289,13 @@ namespace eternal_lands
 					static_cast<glm::detail::hdata*>(ptr)[0]
 						=
 						glm::detail::toFloat16(data[0]);
+					return;
+				case pft_rgb9_e5:
+					*static_cast<Uint32*>(ptr) =
+						encode_rgb9e5(glm::vec3(data));
+					return;
+				case pft_r10f_g11f_b10f:
+					*static_cast<Uint32*>(ptr) = 0;
 					return;
 			}
 		}

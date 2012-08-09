@@ -672,6 +672,17 @@ namespace eternal_lands
 
 		m_visible_lights.get_lights().clear();
 
+		BOOST_FOREACH(glm::vec4 &light_position,
+			m_light_positions_array)
+		{
+			light_position = glm::vec4(0.0f);
+		}
+
+		BOOST_FOREACH(glm::vec4 &light_color, m_light_colors_array)
+		{
+			light_color = glm::vec4(0.0f);
+		}
+
 		if (m_map->get_dungeon())
 		{
 			m_light_positions_array[0] =
@@ -731,6 +742,9 @@ namespace eternal_lands
 		}
 
 		intersect(frustum, m_visible_lights);
+
+		m_visible_lights.update_camera(glm::vec3(
+			m_scene_view.get_camera()));
 
 		if (m_rebuild_terrain_map)
 		{
@@ -948,6 +962,14 @@ namespace eternal_lands
 				}
 			}
 
+			m_state_manager.get_program()->set_parameter(
+				apt_dynamic_lights_count, 4);
+			m_state_manager.get_program()->set_parameter(
+				apt_light_positions,
+				m_light_positions_array);
+			m_state_manager.get_program()->set_parameter(
+				apt_light_colors, m_light_colors_array);
+
 			program->set_last_used(m_program_vars_id);
 		}
 
@@ -1034,7 +1056,61 @@ namespace eternal_lands
 
 	void Scene::do_draw_object(const ObjectSharedPtr &object,
 		const EffectProgramType type, const Uint16 instances,
-		const Uint16 distance, const bool lights)
+		const Uint16 distance)
+	{
+		Uint16 count, i;
+		bool object_data_set;
+
+		m_state_manager.switch_mesh(object->get_mesh());
+
+		DEBUG_CHECK_GL_ERROR();
+
+		count = object->get_materials().size();
+
+		object_data_set = false;
+
+		DEBUG_CHECK_GL_ERROR();
+
+		for (i = 0; i < count; ++i)
+		{
+			MaterialLock material(object->get_materials()[i]);
+
+			if (switch_program(material->get_effect()->get_program(
+				type)))
+			{
+				object_data_set = false;
+			}
+
+			m_state_manager.switch_sample_alpha_to_coverage(
+				material->get_effect()->get_description(
+					).get_transparent());
+
+			if (!object_data_set)
+			{
+				m_state_manager.get_program()->set_parameter(
+					apt_world_transformation,
+					object->get_world_transformation(
+						).get_data());
+				m_state_manager.get_program()->set_parameter(
+					apt_bones, object->get_bones());
+				object_data_set = true;
+			}
+
+			DEBUG_CHECK_GL_ERROR();
+
+			material->bind(m_state_manager);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_state_manager.draw(i, instances);
+
+			DEBUG_CHECK_GL_ERROR();
+		}
+	}
+
+	void Scene::do_draw_object_old_lights(const ObjectSharedPtr &object,
+		const EffectProgramType type, const Uint16 instances,
+		const Uint16 distance)
 	{
 		Uint16 count, i, lights_count;
 		bool object_data_set;
@@ -1045,10 +1121,7 @@ namespace eternal_lands
 
 		count = object->get_materials().size();
 
-		if (lights)
-		{
-			get_lights(object->get_bounding_box(), lights_count);
-		}
+		get_lights(object->get_bounding_box(), lights_count);
 
 		object_data_set = false;
 
@@ -1099,9 +1172,9 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::draw_object(const ObjectSharedPtr &object,
+	void Scene::draw_object_old_lights(const ObjectSharedPtr &object,
 		const EffectProgramType type, const Uint16 instances,
-		const Uint16 distance, const bool lights)
+		const Uint16 distance)
 	{
 		try
 		{
@@ -1109,8 +1182,36 @@ namespace eternal_lands
 				"'%2%', instances %3%"), object->get_name() %
 				object->get_mesh()->get_name() % instances);
 
-			do_draw_object(object, type, instances, distance,
-				lights);
+			do_draw_object_old_lights(object, type, instances,
+				distance);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance(s)"
+				"of object '%2%' caught exception '%3%'"),
+				instances % object->get_name() %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance(s)"
+				"of object '%2%' caught exception '%3%'"),
+				instances % object->get_name() %
+				exception.what());
+		}
+	}
+
+	void Scene::draw_object(const ObjectSharedPtr &object,
+		const EffectProgramType type, const Uint16 instances,
+		const Uint16 distance)
+	{
+		try
+		{
+			STRING_MARKER(UTF8("object name '%1%', mesh name "
+				"'%2%', instances %3%"), object->get_name() %
+				object->get_mesh()->get_name() % instances);
+
+			do_draw_object(object, type, instances, distance);
 		}
 		catch (boost::exception &exception)
 		{
@@ -1175,7 +1276,7 @@ namespace eternal_lands
 			if (object.get_sub_frustums_mask(index))
 			{
 				draw_object(object.get_object(), ept_shadow,
-					1, object.get_distance(), false);
+					1, object.get_distance());
 			}
 		}
 
@@ -1307,7 +1408,7 @@ namespace eternal_lands
 			glBeginQuery(GL_SAMPLES_PASSED, m_querie_ids[index]);
 
 			draw_object(object.get_object(), ept_depth,
-				1, object.get_distance(), false);
+				1, object.get_distance());
 
 			glEndQuery(GL_SAMPLES_PASSED);
 
@@ -1333,7 +1434,7 @@ namespace eternal_lands
 					m_querie_ids[index]);
 
 				draw_object(object.get_object(), ept_depth,
-					1, object.get_distance(), false);
+					1, object.get_distance());
 
 				glEndQuery(GL_SAMPLES_PASSED);
 
@@ -1353,6 +1454,7 @@ namespace eternal_lands
 		Uint32 index, count;
 		EffectProgramType effect;
 		BlendType blend;
+		bool old_lights;
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("default"));
 
@@ -1363,18 +1465,10 @@ namespace eternal_lands
 		m_state_manager.switch_multisample(true);
 
 		DEBUG_CHECK_GL_ERROR();
-/*
-		if (get_lights())
-		{
-			m_state_manager.switch_texture(spt_color_correction,
-				m_night_color_correction);
-		}
-		else
-		{
-			m_state_manager.switch_texture(spt_color_correction,
-				m_day_color_correction);
-		}
-*/
+
+		old_lights = get_global_vars()->get_light_system() ==
+			lst_default;
+
 		DEBUG_CHECK_GL_ERROR();
 
 		effect = ept_default;
@@ -1440,8 +1534,16 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			draw_object(object.get_object(), effect, 1,
-				object.get_distance(), true);
+			if (old_lights)
+			{
+				draw_object_old_lights(object.get_object(),
+					effect, 1, object.get_distance());
+			}
+			else
+			{
+				draw_object(object.get_object(), effect, 1,
+					object.get_distance());
+			}
 		}
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1589,61 +1691,6 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 	}
 
-	void Scene::draw_light(const glm::vec3 &position, const float size,
-		const Uint8 light_index)
-	{
-		Transformation world_transformation;
-		glm::mat2x3 emission_scale_offset;
-		glm::uvec4 bits;
-		glm::vec4 color;
-
-		bits.r = (light_index & (0x03 << 0)) << 8;
-		bits.g = (light_index & (0x03 << 2)) << 6;
-		bits.b = (light_index & (0x03 << 4)) << 4;
-		bits.a = 0;//(light_index & (0x03 << 6)) << 0;
-
-		color = glm::vec4(bits) / 1023.0f;
-
-		world_transformation.set_scale(size);
-		world_transformation.set_translation(position);
-		world_transformation.set_rotation_angles(glm::vec3());
-
-		m_light_sphere->set_world_transformation(world_transformation);
-
-		m_light_sphere->get_materials()[0]->set_color(color);
-
-		STRING_MARKER(UTF8("drawing light %1%, %2%"),
-			static_cast<Uint16>(light_index) %
-			glm::to_string(color));
-
-#if	1
-		glCullFace(GL_FRONT);
-		/************/
-		glStencilFunc(GL_ALWAYS, light_index, 0xFFFFFFFF);
-		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP); 
-
-		// Disable color writes
-		m_state_manager.switch_color_mask(glm::bvec4(false));
-		m_state_manager.switch_blend(false);
-
-		// Draw a sphere the radius of the light
-		draw_object(m_light_sphere, ept_depth, 1, 0, false);
-
-		// Set the stencil to only pass on equal value
-		glStencilFunc(GL_EQUAL, light_index, 0xFFFFFFFF);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); 
-		glCullFace(GL_BACK);
-		/************/
-
-		m_state_manager.switch_color_mask(glm::bvec4(true));
-		m_state_manager.switch_blend(true);
-#endif
-
-		//TODO: Render lowers detail spheres when light is far away?
-		// Draw a sphere the radius of the light
-		draw_object(m_light_sphere, ept_default, 1, 0, false);
-	}
-
 	void Scene::init_light_indexed_deferred_rendering()
 	{
 		AbstractMeshSharedPtr mesh;
@@ -1673,10 +1720,128 @@ namespace eternal_lands
 			materials);
 	}
 
+	void Scene::draw_light(const glm::vec3 &position, const float size,
+		const Uint8 light_index)
+	{
+		Transformation world_transformation;
+		glm::mat2x3 emission_scale_offset;
+		glm::uvec4 bits;
+		glm::vec4 color;
+
+		if (get_global_vars()->get_light_system() == lst_lidr_x5)
+		{
+			bits.r = (light_index & (0x03 << 0)) << 8;
+			bits.g = (light_index & (0x03 << 2)) << 6;
+			bits.b = (light_index & (0x03 << 4)) << 4;
+			bits.a = 0;
+
+			color = glm::vec4(bits) / 1023.0f;
+		}
+		else
+		{
+			bits.r = (light_index & (0x03 << 0)) << 6;
+			bits.g = (light_index & (0x03 << 2)) << 4;
+			bits.b = (light_index & (0x03 << 4)) << 2;
+			bits.a = (light_index & (0x03 << 6)) << 0;
+
+			color = glm::vec4(bits) / 255.0f;
+		}
+
+		world_transformation.set_scale(size);
+		world_transformation.set_translation(position);
+		world_transformation.set_rotation_angles(glm::vec3());
+
+		m_light_sphere->set_world_transformation(world_transformation);
+
+		m_light_sphere->get_materials()[0]->set_color(color);
+
+		STRING_MARKER(UTF8("drawing light %1%, %2%"),
+			static_cast<Uint16>(light_index) %
+			glm::to_string(color));
+
+#if	1
+		glCullFace(GL_FRONT);
+		/************/
+		glStencilFunc(GL_ALWAYS, light_index, 0xFFFFFFFF);
+		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP); 
+
+		// Disable color writes
+		m_state_manager.switch_color_mask(glm::bvec4(false));
+		m_state_manager.switch_blend(false);
+
+		// Draw a sphere the radius of the light
+		draw_object(m_light_sphere, ept_depth, 1, 0);
+
+		// Set the stencil to only pass on equal value
+		glStencilFunc(GL_EQUAL, light_index, 0xFFFFFFFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); 
+		glCullFace(GL_BACK);
+		/************/
+
+		m_state_manager.switch_color_mask(glm::bvec4(true));
+		m_state_manager.switch_blend(true);
+#endif
+
+		//TODO: Render lowers detail spheres when light is far away?
+		// Draw a sphere the radius of the light
+		draw_object(m_light_sphere, ept_default, 1, 0);
+	}
+
+	void Scene::draw_light_camera_inside(const glm::vec3 &position,
+		const float size, const Uint8 light_index)
+	{
+		Transformation world_transformation;
+		glm::mat2x3 emission_scale_offset;
+		glm::uvec4 bits;
+		glm::vec4 color;
+
+		if (get_global_vars()->get_light_system() == lst_lidr_x5)
+		{
+			bits.r = (light_index & (0x03 << 0)) << 8;
+			bits.g = (light_index & (0x03 << 2)) << 6;
+			bits.b = (light_index & (0x03 << 4)) << 4;
+			bits.a = 0;
+
+			color = glm::vec4(bits) / 1023.0f;
+		}
+		else
+		{
+			bits.r = (light_index & (0x03 << 0)) << 6;
+			bits.g = (light_index & (0x03 << 2)) << 4;
+			bits.b = (light_index & (0x03 << 4)) << 2;
+			bits.a = (light_index & (0x03 << 6)) << 0;
+
+			color = glm::vec4(bits) / 255.0f;
+		}
+
+		world_transformation.set_scale(size);
+		world_transformation.set_translation(position);
+		world_transformation.set_rotation_angles(glm::vec3());
+
+		m_light_sphere->set_world_transformation(world_transformation);
+
+		m_light_sphere->get_materials()[0]->set_color(color);
+
+		STRING_MARKER(UTF8("drawing light %1%, %2%"),
+			static_cast<Uint16>(light_index) %
+			glm::to_string(color));
+
+		m_state_manager.switch_color_mask(glm::bvec4(true));
+		m_state_manager.switch_depth_mask(false);
+		m_state_manager.switch_blend(true);
+		m_state_manager.switch_culling(true);
+
+		draw_object(m_light_sphere, ept_default, 1, 0);
+	}
+
 	void Scene::draw_lights()
 	{
-#if	0
 		Uint32Uint32Map::const_iterator found;
+
+		if (get_global_vars()->get_light_system() == lst_default)
+		{
+			return;
+		}
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("lights"));
 		m_scene_frame_buffer->bind();
@@ -1686,8 +1851,17 @@ namespace eternal_lands
 		m_scene_frame_buffer->clear(glm::vec4(0.0f), 0);
 
 		glBlendFunc(GL_ONE, GL_CONSTANT_COLOR);
+
 		// Set the constant blend color to bit shift 2 bits down on each call
-		glBlendColor(0.25025f, 0.25025f, 0.25025f, 0.25025f);
+		if (get_global_vars()->get_light_system() == lst_lidr_x5)
+		{
+			glBlendColor(0.25025f, 0.25025f, 0.25025f, 0.25025f);
+		}
+		else
+		{
+			glBlendColor(0.251f, 0.251f, 0.251f, 0.251f);
+		}
+
 		glEnable(GL_STENCIL_TEST);
 		glEnable(GL_DEPTH_CLAMP);
 		m_state_manager.switch_depth_mask(false);
@@ -1697,6 +1871,11 @@ namespace eternal_lands
 		BOOST_FOREACH(const RenderLightData &light,
 			m_visible_lights.get_lights())
 		{
+			if (light.get_camera_inside())
+			{
+				continue;
+			}
+
 			found = m_light_index.find(light.get_light()->get_id());
 
 			if (found == m_light_index.end())
@@ -1709,15 +1888,46 @@ namespace eternal_lands
 				found->second);
 		}
 
-		glDisable(GL_DEPTH_CLAMP);
 		glDisable(GL_STENCIL_TEST);
+
+		glCullFace(GL_FRONT);
+		glDepthFunc(GL_GREATER);
+
+		m_state_manager.switch_color_mask(glm::bvec4(true));
+		m_state_manager.switch_depth_mask(false);
+		m_state_manager.switch_blend(true);
+		m_state_manager.switch_culling(true);
+
+		BOOST_FOREACH(const RenderLightData &light,
+			m_visible_lights.get_lights())
+		{
+			if (!light.get_camera_inside())
+			{
+				continue;
+			}
+
+			found = m_light_index.find(light.get_light()->get_id());
+
+			if (found == m_light_index.end())
+			{
+				continue;
+			}
+
+			draw_light_camera_inside(
+				light.get_light()->get_position(),
+				light.get_light()->get_radius() + 1.2f,
+				found->second);
+		}
+
+		glDisable(GL_DEPTH_CLAMP);
+		glCullFace(GL_FRONT);
+		glDepthFunc(GL_LEQUAL);
 
 		m_program_vars_id++;
 
 		DEBUG_CHECK_GL_ERROR();
 
 		unbind_all();
-#endif
 	}
 
 	void Scene::draw()
@@ -1748,13 +1958,13 @@ namespace eternal_lands
 		}
 
 		draw_depth();
-#if	0
+
 		if ((m_scene_frame_buffer.get() != nullptr) &&
 			(get_global_vars()->get_opengl_3_2()))
 		{
 			draw_lights();
 		}
-#endif
+
 		if (m_scene_view.get_shadow_map_count() > 0)
 		{
 			STRING_MARKER(UTF8("drawing mode '%1%'"),
@@ -1787,8 +1997,10 @@ namespace eternal_lands
 			m_scene_frame_buffer->set_view_port();
 			m_scene_frame_buffer->attach(m_scene_texture,
 				fbat_color_0, 0);
-#if	0
-			if (get_global_vars()->get_opengl_3_2())
+
+			if (get_global_vars()->get_opengl_3_2() &&
+				(get_global_vars()->get_light_system() !=
+					lst_default))
 			{
 				m_state_manager.switch_texture(
 					spt_light_positions,
@@ -1800,7 +2012,6 @@ namespace eternal_lands
 					spt_light_indices,
 					m_light_index_texture);
 			}
-#endif
 		}
 
 		draw_default();
@@ -1827,7 +2038,7 @@ namespace eternal_lands
 				m_querie_ids[query_index]);
 
 			draw_object(object.get_object(), ept_depth,
-				1, object.get_distance(), false);
+				1, object.get_distance());
 
 			glEndQuery(GL_SAMPLES_PASSED);
 
@@ -2052,16 +2263,34 @@ namespace eternal_lands
 
 	void Scene::map_changed()
 	{
-#if	0
+		rebuild_terrain_map();
+		rebuild_shadow_map();
+
+		update_light_system();
+	}
+
+	void Scene::update_light_system()
+	{
 		ImageSharedPtr light_position_image;
 		ImageSharedPtr light_color_image;
 		Uint32LightSharedPtrMap::const_iterator it, end;
 		glm::vec4 position, color;
-		Uint32 index;
-#endif
-		rebuild_terrain_map();
-		rebuild_shadow_map();
-#if	0
+		Uint32 index, count;
+
+		switch (get_global_vars()->get_light_system())
+		{
+			case lst_default:
+				m_light_position_texture.reset();
+				m_light_color_texture.reset();
+				return;
+			case lst_lidr_x4:
+				count = 256;
+				break;
+			case lst_lidr_x5:
+				count = 64;
+				break;
+		};
+
 		m_light_position_texture = boost::make_shared<Texture>(
 			String(UTF8("light position")));
 
@@ -2079,7 +2308,7 @@ namespace eternal_lands
 			String(UTF8("light color")));
 
 		m_light_color_texture->set_target(ttt_texture_1d);
-		m_light_color_texture->set_format(tft_rgba16f);
+		m_light_color_texture->set_format(tft_rgb9_e5);
 		m_light_color_texture->set_wrap_s(twt_clamp);
 		m_light_color_texture->set_wrap_t(twt_clamp);
 		m_light_color_texture->set_wrap_r(twt_clamp);
@@ -2090,11 +2319,11 @@ namespace eternal_lands
 
 		light_position_image = boost::make_shared<Image>(
 			String(UTF8("light position")), false, tft_rgba32f,
-			glm::uvec3(256, 1, 1), 0);
+			glm::uvec3(count, 1, 1), 0);
 
 		light_color_image = boost::make_shared<Image>(
-			String(UTF8("light color")), false, tft_rgba32f,
-			glm::uvec3(256, 1, 1), 0);
+			String(UTF8("light color")), false, tft_rgb9_e5,
+			glm::uvec3(count, 1, 1), 0);
 
 		light_position_image->set_pixel(0, 0, 0, 0, 0, glm::vec4());
 		light_color_image->set_pixel(0, 0, 0, 0, 0, glm::vec4());
@@ -2107,7 +2336,7 @@ namespace eternal_lands
 
 		for (it = get_map()->get_lights().begin(); it != end; ++it)
 		{
-			if (index == 256)
+			if (index == count)
 			{
 				break;
 			}
@@ -2127,7 +2356,34 @@ namespace eternal_lands
 
 		m_light_position_texture->set_image(light_position_image);
 		m_light_color_texture->set_image(light_color_image);
-#endif
+
+		update_light_index_texture();
+	}
+
+	void Scene::update_light_index_texture()
+	{
+		if (get_global_vars()->get_light_system() == lst_default)
+		{
+			m_light_index_texture.reset();
+		}
+		else
+		{
+			m_light_index_texture = boost::make_shared<Texture>(
+				String(UTF8("light index")));
+
+			m_light_index_texture->set_target(ttt_texture_2d);
+			m_light_index_texture->set_format(tft_rgb10_a2);
+			m_light_index_texture->set_wrap_s(twt_clamp);
+			m_light_index_texture->set_wrap_t(twt_clamp);
+			m_light_index_texture->set_wrap_r(twt_clamp);
+			m_light_index_texture->set_mipmap_count(0);
+			m_light_index_texture->set_mag_filter(tft_nearest);
+			m_light_index_texture->set_min_filter(tft_nearest);
+			m_light_index_texture->set_mipmap_filter(tmt_none);
+			m_light_index_texture->init(
+				m_scene_view.get_view_port().z,
+				m_scene_view.get_view_port().w, 0, 0);
+		}
 	}
 
 	const ParticleDataVector &Scene::get_particles() const
@@ -2219,11 +2475,11 @@ namespace eternal_lands
 			m_scene_frame_buffer.reset();
 
 			m_scene_view.set_view_port(view_port);
-#if	0
+
 			m_light_index_texture.reset();
 			m_light_position_texture.reset();
 			m_light_color_texture.reset();
-#endif
+
 			m_scene_texture.reset();
 
 			return;
@@ -2268,22 +2524,9 @@ namespace eternal_lands
 			fbat_color_0, 0);
 		m_scene_frame_buffer->set_draw_buffer(0, true);
 		m_scene_frame_buffer->unbind();
-#if	0
-		m_light_index_texture = boost::make_shared<Texture>(
-			String(UTF8("light index")));
 
-		m_light_index_texture->set_target(ttt_texture_2d);
-		m_light_index_texture->set_format(tft_rgb10_a2);
-		m_light_index_texture->set_wrap_s(twt_clamp);
-		m_light_index_texture->set_wrap_t(twt_clamp);
-		m_light_index_texture->set_wrap_r(twt_clamp);
-		m_light_index_texture->set_mipmap_count(0);
-		m_light_index_texture->set_mag_filter(tft_nearest);
-		m_light_index_texture->set_min_filter(tft_nearest);
-		m_light_index_texture->set_mipmap_filter(tmt_none);
-		m_light_index_texture->init(view_port.z, view_port.w,
-			0, 0);
-#endif
+		update_light_index_texture();
+
 		m_scene_view.set_view_port(view_port);
 	}
 

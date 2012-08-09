@@ -815,6 +815,8 @@ namespace eternal_lands
 		ssbot_alpha_test,
 		ssbot_use_functions,
 		ssbot_lighting,
+		ssbot_light_indexed_deferred,
+		ssbot_x5_light_indices,
 		ssbot_world_uv_ddx_ddy,
 		ssbot_world_extra_uv_ddx_ddy,
 		ssbot_shadow_uv_ddx_ddy,
@@ -1336,7 +1338,7 @@ namespace eternal_lands
 		const ParameterSizeTypeUint16Map &array_sizes,
 		const ShaderSourceParameterVector &locals, 
 		const String &indent, const bool shadow,
-		const bool light_indices_10_bit, OutStream &main,
+		const bool x5_light_indices, OutStream &main,
 		OutStream &functions, ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
 		const
@@ -1361,7 +1363,7 @@ namespace eternal_lands
 			function_locals, function_parameters,
 			uniform_buffers);
 
-		if (light_indices_10_bit)
+		if (x5_light_indices)
 		{
 			add_local(String(UTF8("lighting")),
 				sslt_packed_light_indices_3, pqt_out,
@@ -1477,7 +1479,7 @@ namespace eternal_lands
 
 		stream << UTF8("\n");
 
-		if (light_indices_10_bit)
+		if (x5_light_indices)
 		{
 			// Look up the bit planes texture
 			stream << local_indent << sslt_packed_light_indices_3;
@@ -2439,17 +2441,24 @@ namespace eternal_lands
 						main, functions, globals,
 						uniform_buffers, used_sources);
 				}
-#if	0
-				build_light_index_lights(data, array_sizes,
-				 	locals, indent, shadows, true, main,
-				 	functions, globals, uniform_buffers,
-					used_sources);
-#endif
-				build_lights(data, array_sizes, locals, indent,
-					false, shadows, main, functions,
-					globals, uniform_buffers,
-					used_sources);
 
+				if (data.get_option(
+					ssbot_light_indexed_deferred))
+				{
+					build_light_index_lights(data,
+						array_sizes, locals, indent,
+						shadows, data.get_option(
+							ssbot_x5_light_indices),
+						main, functions, globals,
+						uniform_buffers, used_sources);
+				}
+				else
+				{
+					build_lights(data, array_sizes, locals,
+						indent, false, shadows, main,
+						functions, globals,
+						uniform_buffers, used_sources);
+				}
 			}
 			else
 			{
@@ -3165,6 +3174,10 @@ namespace eternal_lands
 		data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());
 		data.set_option(ssbot_lighting, description.get_lighting());
+		data.set_option(ssbot_light_indexed_deferred,
+			get_global_vars()->get_light_system() != lst_default);
+		data.set_option(ssbot_x5_light_indices,
+			get_global_vars()->get_light_system() == lst_lidr_x5);
 
 		build_fragment_source(data, array_sizes, fragment_main,
 			fragment_functions, fragment_globals,

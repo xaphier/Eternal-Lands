@@ -23,6 +23,7 @@ namespace eternal_lands
 		m_clipmap_world_size = 8;
 		m_clipmap_slices = 4;
 		m_opengl_version = ovt_2_1;
+		m_light_system = lst_default;
 		m_fog = true;
 		m_optmize_shader_source = true;
 #ifdef	USE_SSE2
@@ -37,7 +38,7 @@ namespace eternal_lands
 		m_low_quality_terrain = false;
 		m_use_multisample_shadows = true;
 		m_effect_debug = false;
-		m_use_scene_fbo = false;
+		m_use_scene_fbo = true;
 	}
 
 	GlobalVars::~GlobalVars() noexcept

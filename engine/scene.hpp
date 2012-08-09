@@ -68,11 +68,9 @@ namespace eternal_lands
 			AbstractFrameBufferSharedPtr m_scene_frame_buffer;
 			TextureSharedPtr m_shadow_texture;
 			TextureSharedPtr m_clipmap_texture;
-#if	0
 			TextureSharedPtr m_light_index_texture;
 			TextureSharedPtr m_light_position_texture;
 			TextureSharedPtr m_light_color_texture;
-#endif
 			TextureSharedPtr m_scene_texture;
 			Uint32Uint32Map m_light_index;
 			ObjectSharedPtr m_light_sphere;
@@ -100,15 +98,23 @@ namespace eternal_lands
 				const bool lights);
 			void get_lights(const BoundingBox &bounding_box,
 				Uint16 &lights_count);
+			void do_draw_object_old_lights(
+				const ObjectSharedPtr &object,
+				const EffectProgramType type,
+				const Uint16 instances, const Uint16 distance);
 			void do_draw_object(const ObjectSharedPtr &object,
 				const EffectProgramType type,
-				const Uint16 instances, const Uint16 distance,
-				const bool lights);
+				const Uint16 instances, const Uint16 distance);
+			void draw_object_old_lights(
+				const ObjectSharedPtr &object,
+				const EffectProgramType type,
+				const Uint16 instances, const Uint16 distance);
 			void draw_object(const ObjectSharedPtr &object,
 				const EffectProgramType type,
-				const Uint16 instances, const Uint16 distance,
-				const bool lights);
+				const Uint16 instances, const Uint16 distance);
 			void draw_light(const glm::vec3 &position,
+				const float size, const Uint8 light_index);
+			void draw_light_camera_inside(const glm::vec3 &position,
 				const float size, const Uint8 light_index);
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids,
@@ -133,6 +139,7 @@ namespace eternal_lands
 			void draw_default();
 			void draw_lights();
 			void init_light_indexed_deferred_rendering();
+			void update_light_index_texture();
 
 		protected:
 			virtual void intersect_terrain(const Frustum &frustum,
@@ -216,6 +223,7 @@ namespace eternal_lands
 				const;
 			bool get_terrain() const;
 			void set_view_port(const glm::uvec4 &view_port);
+			void update_light_system();
 
 			inline const glm::uvec4 &get_view_port() const noexcept
 			{

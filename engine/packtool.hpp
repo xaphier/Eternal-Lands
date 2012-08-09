@@ -65,7 +65,9 @@ namespace eternal_lands
 		PACK_FORMAT_PACKED_4(short, 4, 4, 4, 4),
 		PACK_FORMAT_PACKED_3(short, 5, 6, 5),
 		PACK_FORMAT_PACKED_4(short, 5, 5, 5, 1),
-		PACK_FORMAT_PACKED_4(int, 10, 10, 10, 2)
+		PACK_FORMAT_PACKED_4(int, 10, 10, 10, 2),
+		pft_rgb9_e5,
+		pft_r10f_g11f_b10f
 	};
 
 #undef	PACK_FORMAT
@@ -406,8 +408,8 @@ namespace eternal_lands
 			 * 8_8_8_8-value.
 			 * @param normalize When true the values are treated as
 			 * normalized.
-			 * @param Vector of four unsigned normalized floats to
-			 * pack.
+			 * @param value Vector of four unsigned normalized
+			 * floats to pack.
 			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_uint_8_8_8_8(const bool normalize,
@@ -418,8 +420,8 @@ namespace eternal_lands
 			 * 8_8_8_8_rev-value.
 			 * @param normalize When true the values are treated as
 			 * normalized.
-			 * @param Vector of four unsigned normalized floats to
-			 * pack.
+			 * @param value Vector of four unsigned normalized
+			 * floats to pack.
 			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_uint_8_8_8_8_rev(
@@ -430,8 +432,8 @@ namespace eternal_lands
 			 * 10_10_10_2-value.
 			 * @param normalize When true the values are treated as
 			 * normalized.
-			 * @param Vector of four unsigned normalized floats to
-			 * pack.
+			 * @param value Vector of four unsigned normalized
+			 * floats to pack.
 			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_uint_10_10_10_2(const bool normalize,
@@ -442,8 +444,8 @@ namespace eternal_lands
 			 * 2_10_10_10_rev-value.
 			 * @param normalize When true the values are treated as
 			 * normalized.
-			 * @param Vector of four unsigned normalized floats to
-			 * pack.
+			 * @param value Vector of four unsigned normalized
+			 * floats to pack.
 			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_uint_2_10_10_10_rev(
@@ -454,8 +456,8 @@ namespace eternal_lands
 			 * 10_10_10_2-value.
 			 * @param normalize When true the values are treated as
 			 * normalized.
-			 * @param Vector of four signed normalized floats to
-			 * pack.
+			 * @param value Vector of four signed normalized floats
+			 * to pack.
 			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_sint_10_10_10_2(const bool normalize,
@@ -466,12 +468,32 @@ namespace eternal_lands
 			 * 2_10_10_10_rev-value.
 			 * @param normalize When true the values are treated as
 			 * normalized.
-			 * @param Vector of four signed normalized floats to
-			 * pack.
+			 * @param value Vector of four signed normalized floats
+			 * to pack.
 			 * @return The packed 32 bit unsigned int.
 			 */
 			static Uint32 pack_sint_2_10_10_10_rev(
 				const bool normalize, const glm::vec4 &value);
+
+			/**
+			 * Encodes as color with shared exponent, used for
+			 * RGB9E5 textures. Useful for HDR textures, because
+			 * values from 0 up to 65408 can be stored.
+			 * @param value Vector of three floats.
+			 * @return The 32 bit unsigned int representing the
+			 * RGB9E5 value.
+			 */
+			static Uint32 encode_rgb9e5(const glm::vec3 &value);
+
+			/**
+			 * Decodes from a color with shared exponent, used for
+			 * RGB9E5 textures. Useful for HDR textures, because
+			 * values from 0 up to 65408 can be stored.
+			 * @param value The 32 bit unsigned int representing
+			 * the RGB9E5 value.
+			 * @return Vector of three floats.
+			 */
+			static glm::vec3 decode_rgb9e5(const Uint32 value);
 
 			static glm::vec4 unpack_vec4(
 				const AbstractReadMemory &buffer,

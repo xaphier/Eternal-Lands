@@ -34,8 +34,7 @@ namespace eternal_lands
 
 		public:
 			RenderLightData();
-			RenderLightData(const LightSharedPtr &light,
-				const bool camera_inside);
+			RenderLightData(const LightSharedPtr &light);
 			~RenderLightData() noexcept;
 
 			inline void set_light(const LightSharedPtr &light)

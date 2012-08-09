@@ -165,8 +165,7 @@ namespace eternal_lands
 			 * @param visitor The visitor that gets the pointers of
 			 * the intersecting elements.
 			 */
-			void view_node(const Frustum &frustum,
-				const SubFrustumsMask sub_frustums_mask,
+			void view_node(const SubFrustumsMask sub_frustums_mask,
 				AbstractBoundedObjectVisitor &visitor) const;
 
 			/**

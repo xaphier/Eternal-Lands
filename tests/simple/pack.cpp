@@ -873,3 +873,37 @@ BOOST_AUTO_TEST_CASE(encode_decode_normal_optimized_uint8)
 		BOOST_CHECK_CLOSE(glm::dot(normal, normal2), 1.0, 0.01);
 	}
 }
+
+BOOST_AUTO_TEST_CASE(convert_rgb9_e5)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint32> >
+		random_uint32(rng, range);
+	glm::vec3 tmp, values;
+	Uint32 i, temp, value;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		temp = random_uint32();
+		tmp = el::PackTool::decode_rgb9e5(temp);
+
+		BOOST_CHECK_LE(tmp[0], 65408.0f);
+		BOOST_CHECK_LE(tmp[1], 65408.0f);
+		BOOST_CHECK_LE(tmp[2], 65408.0f);
+
+		BOOST_CHECK_GE(tmp[0], 0.0f);
+		BOOST_CHECK_GE(tmp[1], 0.0f);
+		BOOST_CHECK_GE(tmp[2], 0.0f);
+
+		value = el::PackTool::encode_rgb9e5(tmp);
+		/**
+		 * More than one value for rgb9e5 represents the same three
+		 * floats, so can't check for that directly.
+		 */
+		values = el::PackTool::decode_rgb9e5(value);
+		BOOST_CHECK_CLOSE(values.r, tmp.r, 0.01);
+		BOOST_CHECK_CLOSE(values.g, tmp.g, 0.01);
+		BOOST_CHECK_CLOSE(values.b, tmp.b, 0.01);
+	}
+}

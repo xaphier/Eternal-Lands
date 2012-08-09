@@ -43,6 +43,24 @@ namespace eternal_lands
 		sqt_ultra
 	};		
 
+	enum LightSystemType
+	{
+		/**
+		 * Default lighting with ligths per object
+		 */
+		lst_default,
+		/**
+		 * Light indexed deferred rendering using rgba8 light index
+		 * texture with up to 255 lights and up to 4 lights per pixel.
+		 */
+		lst_lidr_x4,
+		/**
+		 * Light indexed deferred rendering using rgb10_a2 light index
+		 * texture with up to 63 lights and up to 5 lights per pixel.
+		 */
+		lst_lidr_x5
+	};
+
 	class GlobalVars
 	{
 		private:
@@ -55,6 +73,7 @@ namespace eternal_lands
 			Uint16 m_clipmap_slices;
 			ShadowQualityType m_shadow_quality;
 			OpenglVerionType m_opengl_version;
+			LightSystemType m_light_system;
 			bool m_fog;
 			bool m_optmize_shader_source;
 			bool m_use_simd;
@@ -124,6 +143,12 @@ namespace eternal_lands
 				m_opengl_version = opengl_version;
 			}
 
+			inline void set_light_system(
+				const LightSystemType light_system) noexcept
+			{
+				m_light_system = light_system;
+			}
+
 			inline void set_fog(const bool fog) noexcept
 			{
 				m_fog = fog;
@@ -183,7 +208,8 @@ namespace eternal_lands
 				m_effect_debug = effect_debug;
 			}
 
-			inline void set_use_scene_fbo(const bool use_scene_fbo) noexcept
+			inline void set_use_scene_fbo(const bool use_scene_fbo)
+				noexcept
 			{
 				m_use_scene_fbo = use_scene_fbo;
 			}
@@ -246,6 +272,11 @@ namespace eternal_lands
 			inline Uint16 get_clipmap_slices() const noexcept
 			{
 				return m_clipmap_slices;
+			}
+
+			inline LightSystemType get_light_system() const	noexcept
+			{
+				return m_light_system;
 			}
 
 			inline OpenglVerionType get_opengl_version() const

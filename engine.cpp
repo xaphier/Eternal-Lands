@@ -1565,6 +1565,28 @@ extern "C" void engine_set_clipmap_world_size(const int value)
 	}
 }
 
+extern "C" void engine_set_light_system(const int value)
+{
+	switch (value)
+	{
+		case lst_default:
+			global_vars->set_light_system(lst_default);
+			break;
+		case lst_lidr_x4:
+			global_vars->set_light_system(lst_lidr_x4);
+			break;
+		case lst_lidr_x5:
+			global_vars->set_light_system(lst_lidr_x5);
+			break;
+	};
+
+	if (scene.get() != 0)
+	{
+		scene->get_scene_resources().get_effect_cache()->reload();
+		scene->update_light_system();
+	}
+}
+
 extern "C" void engine_set_clipmap_slices(const int value)
 {
 	global_vars->set_clipmap_slices(value);

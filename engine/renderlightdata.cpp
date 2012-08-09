@@ -15,9 +15,8 @@ namespace eternal_lands
 	{
 	}
 
-	RenderLightData::RenderLightData(const LightSharedPtr &light,
-		const bool camera_inside): m_light(light),
-		m_camera_inside(camera_inside)
+	RenderLightData::RenderLightData(const LightSharedPtr &light):
+		m_light(light), m_camera_inside(false)
 	{
 	}
 

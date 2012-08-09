@@ -235,7 +235,8 @@ int engine_clipmap_world_size = 16;
 int engine_clipmap_slices = 4;
 int engine_effect_debug = 0;
 int engine_use_multisample_shadows = engine_true;
-int engine_use_scene_fbo = engine_false;
+int engine_use_scene_fbo = engine_true;
+int engine_light_system = 0;
 
 void change_engine_shadow_quality(int* var, int value)
 {
@@ -298,6 +299,30 @@ void change_engine_clipmap_world_size(int* var, int value)
 {
 	*var = value;
 	engine_set_clipmap_world_size(*var);
+}
+
+void change_engine_light_system(int* var, int value)
+{
+	if (value == 0)
+	{
+		*var = value;
+	}
+	else
+	{
+		if (!gl_extensions_loaded ||
+			(engine_use_scene_fbo == engine_true))
+		{
+			*var = value;
+		}
+		else
+		{
+			*var = 0;
+			LOG_TO_CONSOLE(c_green2, "Scene fbo needed (options "
+				"-> troubleshoot -> use scene fbo");
+		}
+	}
+
+	engine_set_light_system(*var);
 }
 
 void change_engine_clipmap_slices(int* var, int value)
@@ -382,6 +407,11 @@ void change_engine_use_scene_fbo(int* var)
 {
 	*var = !*var;
 	engine_set_use_scene_fbo(*var);
+
+	if (*var == 0)
+	{
+		change_engine_light_system(&engine_light_system, 0);
+	}
 }
 
 void change_engine_optmize_shader_source(int* var)
@@ -1404,6 +1434,7 @@ void check_options()
 	check_option_var("optmize_shader_source");
 	check_option_var("use_simd");
 	check_option_var("use_s3tc_for_actors");
+	check_option_var("light_system");
 }
 
 int check_var (char *str, var_name_type type)
@@ -1867,6 +1898,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "low_quality_terrain", "low_quality_terrain", &engine_low_quality_terrain, change_engine_set_low_quality_terrain, engine_false, "Low quality terrain", "Low quality terrain", GFX);
 	add_var(OPT_MULTI_H, "clipmap_size", "clipmap_size", &engine_clipmap_size, change_engine_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", 0);
 	add_var(OPT_INT, "clipmap_world_size", "clipmap_world_size", &engine_clipmap_world_size, change_engine_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
+	add_var(OPT_MULTI_H, "light_system", "light_system", &engine_light_system, change_engine_light_system, 0, "Light system", "Light system used. Light Index Deferred Renderer needs float point precision at shader level. For the x5 type, support for RGB10_A2 textures is needed (some ATI cards and all OpenGL 3+)", GFX, "default", "LIDR x4", "LIDR x5", 0);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */
@@ -1953,7 +1985,7 @@ static void init_ELC_vars(void)
 #endif	/* USE_SSE2 */
 	add_var(OPT_BOOL, "use_s3tc_for_actors", "uatc", &engine_use_s3tc_for_actors, change_engine_use_s3tc_for_actors, engine_true, "Use s3tc for actors", "Use s3 texture compression for actors.", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_multisample_shadows", "ums", &engine_use_multisample_shadows, change_engine_use_multisample_shadows, engine_true, "Use multisample shadows", "Use multisample shadows for better quality.", TROUBLESHOOT);
-	add_var(OPT_BOOL, "use_scene_fbo", "usf", &engine_use_scene_fbo, change_engine_use_scene_fbo, engine_false, "Use scene fbo", "Use scene framebuffer object and blit it with framebuffer.", TROUBLESHOOT);
+	add_var(OPT_BOOL, "use_scene_fbo", "usf", &engine_use_scene_fbo, change_engine_use_scene_fbo, engine_true, "Use scene fbo", "Use scene framebuffer object and blit it with framebuffer.", TROUBLESHOOT);
 	add_var(OPT_MULTI_NO_SAVE, "effect_debug", "effect_debug", &engine_effect_debug, change_engine_effect_debug, 0, "effect", "effect used for rendering", TROUBLESHOOT, "default", "debug_uv", "debug_depth", "debug_alpha", "debug_albedo", "debug_normal", "debug_shadow", "debug_specular", "debug_emissive", "debug_diffuse_light", "debug_specular_light", "debug_packed_light_index", "debug_light_index", 0);
 
 	// DEBUGTAB TAB

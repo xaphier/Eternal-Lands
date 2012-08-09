@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "light.hpp"
+#include "packtool.hpp"
 
 namespace eternal_lands
 {
@@ -15,6 +16,7 @@ namespace eternal_lands
 	{
 		set_inv_sqr_radius(get_radius());
 		update_bounding_box();
+		update_rgb9_e5_color();
 	}
 
 	Light::~Light() noexcept
@@ -44,6 +46,11 @@ namespace eternal_lands
 		total_distance = glm::length2(tmp);
 
 		return total_distance <= (get_radius() * get_radius());
+	}
+
+	void Light::update_rgb9_e5_color()
+	{
+		m_rgb9_e5_color = PackTool::encode_rgb9e5(get_color());
 	}
 
 }

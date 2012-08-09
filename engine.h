@@ -95,6 +95,7 @@ void engine_set_clipmap_slices(const int value);
 void engine_set_effect_debug(const int value);
 void engine_set_use_multisample_shadows(const int value);
 void engine_set_use_scene_fbo(const int value);
+void engine_set_light_system(const int value);
 
 float get_tile_height_linear(const float x, const float y);
 int engine_has_terrain();

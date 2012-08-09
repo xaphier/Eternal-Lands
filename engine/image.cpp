@@ -313,6 +313,8 @@ namespace eternal_lands
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
 			case GL_UNSIGNED_INT_10_10_10_2:
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
 				return sizeof(Uint32) * 8;
 			case GL_NONE:
 			default:
@@ -347,6 +349,8 @@ namespace eternal_lands
 			case GL_UNSIGNED_BYTE_2_3_3_REV:
 			case GL_UNSIGNED_SHORT_5_6_5:
 			case GL_UNSIGNED_SHORT_5_6_5_REV:
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
 				return GL_RGB == format;
 			case GL_UNSIGNED_SHORT_4_4_4_4:
 			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
@@ -465,6 +469,13 @@ namespace eternal_lands
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
 				result = PackTool::unpack_uint_2_10_10_10_rev(true,
 					*static_cast<const Uint32*>(value));
+				break;
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				break;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
+				result = glm::vec4(PackTool::decode_rgb9e5(
+					*static_cast<const Uint32*>(value)),
+					1.0f);
 				break;
 			case GL_BYTE:
 				for (i = 0; i < count; ++i)
@@ -612,6 +623,13 @@ namespace eternal_lands
 					false,
 					*static_cast<const Uint32*>(value)));
 				break;
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				break;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
+				result = glm::uvec4(PackTool::decode_rgb9e5(
+					*static_cast<const Uint32*>(value)),
+					1);
+				break;
 			case GL_BYTE:
 				for (i = 0; i < count; ++i)
 				{
@@ -699,6 +717,8 @@ namespace eternal_lands
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
 			case GL_UNSIGNED_INT_10_10_10_2:
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
 				return *static_cast<const Uint32*>(value);
 			default:
 				assert(false);
@@ -824,6 +844,13 @@ namespace eternal_lands
 					false,
 					*static_cast<const Uint32*>(value)));
 				break;
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				break;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
+				result = glm::ivec4(PackTool::decode_rgb9e5(
+					*static_cast<const Uint32*>(value)),
+					1);
+				break;
 			case GL_BYTE:
 				for (i = 0; i < count; ++i)
 				{
@@ -876,22 +903,28 @@ namespace eternal_lands
 			case GL_UNSIGNED_BYTE:
 				for (i = 0; i < count; ++i)
 				{
-					static_cast<Uint8*>(value)[i] = tmp[i] *
-						std::numeric_limits<Uint8>::max();
+					static_cast<Uint8*>(value)[i] =
+						tmp[i] *
+						std::numeric_limits<
+							Uint8>::max();
 				}
 				return;
 			case GL_UNSIGNED_SHORT:
 				for (i = 0; i < count; ++i)
 				{
-					static_cast<Uint16*>(value)[i] = tmp[i] *
-						std::numeric_limits<Uint16>::max();
+					static_cast<Uint16*>(value)[i] =
+						tmp[i] *
+						std::numeric_limits<
+							Uint16>::max();
 				}
 				return;
 			case GL_UNSIGNED_INT:
 				for (i = 0; i < count; ++i)
 				{
-					static_cast<Uint32*>(value)[i] = tmp[i] *
-						std::numeric_limits<Uint32>::max();
+					static_cast<Uint32*>(value)[i] =
+						tmp[i] *
+						std::numeric_limits<
+							Uint32>::max();
 				}
 				return;
 			case GL_FLOAT:
@@ -903,25 +936,30 @@ namespace eternal_lands
 			case GL_HALF_FLOAT:
 				for (i = 0; i < count; ++i)
 				{
-					static_cast<glm::detail::hdata*>(value)[i] =
+					static_cast<glm::detail::hdata*>(
+						value)[i] =
 						glm::detail::toFloat16(tmp[i]);
 				}
 				return;
 			case GL_UNSIGNED_BYTE_3_3_2:
 				*static_cast<Uint8*>(value) =
-					PackTool::pack_uint_3_3_2(true, glm::vec3(tmp));
+					PackTool::pack_uint_3_3_2(true,
+						glm::vec3(tmp));
 				return;
 			case GL_UNSIGNED_BYTE_2_3_3_REV:
 				*static_cast<Uint8*>(value) =
-					PackTool::pack_uint_2_3_3_rev(true, glm::vec3(tmp));
+					PackTool::pack_uint_2_3_3_rev(true,
+						glm::vec3(tmp));
 				return;
 			case GL_UNSIGNED_SHORT_5_6_5:
 				*static_cast<Uint16*>(value) =
-					PackTool::pack_uint_5_6_5(true, glm::vec3(tmp));
+					PackTool::pack_uint_5_6_5(true,
+						glm::vec3(tmp));
 				return;
 			case GL_UNSIGNED_SHORT_5_6_5_REV:
 				*static_cast<Uint16*>(value) =
-					PackTool::pack_uint_5_6_5_rev(true, glm::vec3(tmp));
+					PackTool::pack_uint_5_6_5_rev(true,
+						glm::vec3(tmp));
 				return;
 			case GL_UNSIGNED_SHORT_4_4_4_4:
 				*static_cast<Uint16*>(value) =
@@ -929,7 +967,8 @@ namespace eternal_lands
 				return;
 			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
 				*static_cast<Uint16*>(value) =
-					PackTool::pack_uint_4_4_4_4_rev(true, tmp);
+					PackTool::pack_uint_4_4_4_4_rev(true,
+						tmp);
 				return;
 			case GL_UNSIGNED_SHORT_5_5_5_1:
 				*static_cast<Uint16*>(value) =
@@ -937,49 +976,67 @@ namespace eternal_lands
 				return;
 			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
 				*static_cast<Uint16*>(value) =
-					PackTool::pack_uint_1_5_5_5_rev(true, tmp);
+					PackTool::pack_uint_1_5_5_5_rev(true,
+						tmp);
 				return;
 			case GL_UNSIGNED_INT_8_8_8_8:
 				for (i = 0; i < 4; ++i)
 				{
 					static_cast<Uint8*>(value)[i] = tmp[i] *
-						std::numeric_limits<Uint8>::max();
+						std::numeric_limits<
+							Uint8>::max();
 				}
 				return;
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
 				for (i = 0; i < 4; ++i)
 				{
-					static_cast<Uint8*>(value)[i] = tmp[3 - i] *
-						std::numeric_limits<Uint8>::max();
+					static_cast<Uint8*>(value)[i] =
+						tmp[3 - i] *
+						std::numeric_limits<
+							Uint8>::max();
 				}
 				return;
 			case GL_UNSIGNED_INT_10_10_10_2:
 				*static_cast<Uint32*>(value) =
-					PackTool::pack_uint_10_10_10_2(true, tmp);
+					PackTool::pack_uint_10_10_10_2(true,
+						tmp);
 				return;
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
 				*static_cast<Uint32*>(value) =
-					PackTool::pack_uint_2_10_10_10_rev(true, tmp);
+					PackTool::pack_uint_2_10_10_10_rev(
+						true, tmp);
+				return;
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				return;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
+				*static_cast<Uint32*>(value) =
+					PackTool::encode_rgb9e5(glm::vec3(
+						tmp));
 				return;
 			case GL_BYTE:
 				for (i = 0; i < count; ++i)
 				{
 					static_cast<Sint8*>(value)[i] = tmp[i] *
-						std::numeric_limits<Sint8>::max();
+						std::numeric_limits<
+							Sint8>::max();
 				}
 				return;
 			case GL_SHORT:
 				for (i = 0; i < count; ++i)
 				{
-					static_cast<Sint16*>(value)[i] = tmp[i] *
-						std::numeric_limits<Sint16>::max();
+					static_cast<Sint16*>(value)[i] =
+						tmp[i] *
+						std::numeric_limits<
+							Sint16>::max();
 				}
 				return;
 			case GL_INT:
 				for (i = 0; i < count; ++i)
 				{
-					static_cast<Sint32*>(value)[i] = tmp[i] *
-						std::numeric_limits<Sint32>::max();
+					static_cast<Sint32*>(value)[i] =
+						tmp[i] *
+						std::numeric_limits<
+							Sint32>::max();
 				}
 				return;
 			case GL_NONE:
@@ -1040,7 +1097,8 @@ namespace eternal_lands
 			case GL_HALF_FLOAT:
 				for (i = 0; i < count; ++i)
 				{
-					static_cast<glm::detail::hdata*>(value)[i] =
+					static_cast<glm::detail::hdata*>(
+						value)[i] =
 						glm::detail::toFloat16(tmp[i]);
 				}
 				return;
@@ -1106,6 +1164,13 @@ namespace eternal_lands
 				*static_cast<Uint32*>(value) =
 					PackTool::pack_uint_2_10_10_10_rev(
 						false, glm::vec4(tmp));
+				return;
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				return;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
+				*static_cast<Uint32*>(value) =
+					PackTool::encode_rgb9e5(glm::vec3(
+						tmp));
 				return;
 			case GL_BYTE:
 				for (i = 0; i < count; ++i)
@@ -1195,6 +1260,8 @@ namespace eternal_lands
 			case GL_UNSIGNED_INT_8_8_8_8_REV:
 			case GL_UNSIGNED_INT_10_10_10_2:
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
 				*static_cast<Uint32*>(value) = data;
 				return;
 			default:
@@ -1320,6 +1387,13 @@ namespace eternal_lands
 				*static_cast<Uint32*>(value) =
 					PackTool::pack_uint_2_10_10_10_rev(
 						false, glm::vec4(tmp));
+				return;
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				return;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
+				*static_cast<Uint32*>(value) =
+					PackTool::encode_rgb9e5(glm::vec3(
+						tmp));
 				return;
 			case GL_BYTE:
 				for (i = 0; i < count; ++i)

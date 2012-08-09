@@ -29,6 +29,9 @@ namespace eternal_lands
 		private:
 			LightData m_light_data;
 			float m_inv_sqr_radius;
+			Uint32 m_rgb9_e5_color;
+
+			void update_rgb9_e5_color();
 
 			inline void set_inv_sqr_radius(const float radius)
 				noexcept
@@ -96,6 +99,13 @@ namespace eternal_lands
 				return m_inv_sqr_radius;
 			}
 
+			/**
+			 */
+			inline Uint32 get_rgb9_e5_color() const noexcept
+			{
+				return m_rgb9_e5_color;
+			}
+
 			inline void set_radius(const float radius) noexcept
 			{
 				m_light_data.set_radius(radius);
@@ -110,6 +120,7 @@ namespace eternal_lands
 			inline void set_color(const glm::vec3 &color) noexcept
 			{
 				m_light_data.set_color(color);
+				update_rgb9_e5_color();
 			}
 
 			inline Uint32 get_id() const noexcept

@@ -136,7 +136,8 @@ namespace eternal_lands
 		 */
 		tft_rgb16f,
 		/**
-		 * Red 16 bit float, green 16 bit float, blue 16 bit float, alpha 16 bit float
+		 * Red 16 bit float, green 16 bit float, blue 16 bit float,
+		 * alpha 16 bit float
 		 */
 		tft_rgba16f,
 		/**
@@ -148,13 +149,25 @@ namespace eternal_lands
 		 */
 		tft_rg32f,
 		/**
-		 * Red 32 bit float, green 32 bit float, blue 32 bit float, no alpha
+		 * Red 32 bit float, green 32 bit float, blue 32 bit float,
+		 * no alpha
 		 */
 		tft_rgb32f,
 		/**
-		 * Red 32 bit float, green 32 bit float, blue 32 bit float, alpha 32 bit float
+		 * Red 32 bit float, green 32 bit float, blue 32 bit float,
+		 * alpha 32 bit float
 		 */
 		tft_rgba32f,
+		/**
+		 * Red 9 bit mantissa, green 9 bit mantissa,
+		 * blue 9 bit mantissa, 5 bit shared exponent, no alpha
+		 */
+		tft_rgb9_e5,
+		/**
+		 * Red 10 bit float, green 11 bit float,
+		 * blue 10 bit float
+		 */
+		tft_r10f_b11f_g10f,
 		/**
 		 * DXT1 compression without alpha
 		 */
