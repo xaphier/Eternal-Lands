@@ -1070,7 +1070,7 @@ void change_dir_name (char *var, const char *str, int len)
 		var[idx++]= '/';
 	}
 	var[idx]= '\0';
-	file_system_add_dir(var);
+	file_system_replace_with_dir(var, 0);
 }
 
 #ifdef ANTI_ALIAS

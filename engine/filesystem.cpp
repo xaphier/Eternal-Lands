@@ -583,6 +583,52 @@ namespace eternal_lands
 		m_archives.push_back(new ZipFile(zip_name));
 	}
 
+	void FileSystem::replace_with_dir(const String &dir_name,
+		const Uint32 index)
+	{
+		m_archives.replace(index, new DirArchive(dir_name));
+	}
+
+	void FileSystem::replace_with_zip(const String &zip_name,
+		const Uint32 index)
+	{
+		m_archives.replace(index, new ZipFile(zip_name));
+	}
+
+	void FileSystem::replace_with_zip(const String &zip_name,
+		const Uint8Array20 &sha1, const Uint32 index)
+	{
+		Uint8Array20 file_sha1;
+
+		file_sha1 = get_file_sha1(zip_name);
+
+		if (sha1 != file_sha1)
+		{
+			LOG_WARNING(lt_io, UTF8("File '%1%' sha1 should be "
+				"'%2%', but is '%3%'"), zip_name %
+				get_sha1_str(sha1) % get_sha1_str(file_sha1));
+		}
+
+		m_archives.replace(index, new ZipFile(zip_name));
+	}
+
+	void FileSystem::replace_with_zip(const String &zip_name,
+		const char sha1[20], const Uint32 index)
+	{
+		Uint8Array20 file_sha1;
+
+		file_sha1 = get_file_sha1(zip_name);
+
+		if (sha1 != get_sha1_str(file_sha1))
+		{
+			LOG_WARNING(lt_io, UTF8("File '%1%' sha1 should be "
+				"'%2%', but is '%3%'"), zip_name % sha1 %
+				get_sha1_str(file_sha1));
+		}
+
+		m_archives.replace(index, new ZipFile(zip_name));
+	}
+
 	bool FileSystem::remove_archive(const String &name)
 	{
 		AbstractArchiveVector::iterator it, end;

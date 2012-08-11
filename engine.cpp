@@ -492,6 +492,8 @@ extern "C" void init_file_system()
 
 	file_system.reset(new el::FileSystem());
 
+	file_system->add_dir(el::String(UTF8(".")));
+
 	config_dir = el::string_to_utf8(get_path_config_base());
 
 	file_system->add_dir(el::String(config_dir));
@@ -527,6 +529,17 @@ extern "C" void file_system_add_dir(const char* dir)
 	TRY_BLOCK
 
 	file_system->add_dir(el::String(el::string_to_utf8(dir)));
+
+	CATCH_BLOCK
+}
+
+extern "C" void file_system_replace_with_dir(const char* dir,
+	const Uint32 index)
+{
+	TRY_BLOCK
+
+	file_system->replace_with_dir(el::String(el::string_to_utf8(dir)),
+		index);
 
 	CATCH_BLOCK
 }

@@ -33,6 +33,7 @@ void exit_engine();
 void exit_global_vars();
 void exit_file_system();
 void file_system_add_dir(const char* dir);
+void file_system_replace_with_dir(const char* dir, const Uint32 index);
 Uint32 engine_load_map(const char* name);
 void engine_add_dynamic_object(const char* name, const float x_pos,
 	const float y_pos, const float z_pos, const float x_rot,
