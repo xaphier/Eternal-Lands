@@ -2469,7 +2469,7 @@ namespace eternal_lands
 		set_view_port();
 
 		m_scene_frame_buffer->blit_to_back_buffer(rect, 0, true,
-			true, true);
+			true, false);
 		m_scene_frame_buffer->unbind();
 	}
 
