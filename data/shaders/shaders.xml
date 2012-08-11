@@ -16,7 +16,9 @@
 		<fog>default</fog>
 		<transparent>default</transparent>
 		<vertex_light>diffuse</vertex_light>
-<!--		<fragment_light>Cook-Torrance</fragment_light>-->
+<!--		<fragment_light>Strauss</fragment_light>	-->
+<!--		<fragment_light>Cook-Torrance</fragment_light>	-->
+<!--		<fragment_light>anisotropic</fragment_light>	-->
 		<fragment_light>diffuse</fragment_light>
 		<shadow_map>default</shadow_map>
 		<tbn_matrix>default</tbn_matrix>
@@ -27,7 +29,6 @@
 		<normal_mapping>disabled</normal_mapping>
 		<specular_mapping>default</specular_mapping>
 		<emission_mapping>disabled</emission_mapping>
-<!--		<color_correction>default</color_correction>-->
 		<world_uv_ddx_ddy>default</world_uv_ddx_ddy>
 		<world_extra_uv_ddx_ddy>default</world_extra_uv_ddx_ddy>
 		<shadow_uv_ddx_ddy>default</shadow_uv_ddx_ddy>

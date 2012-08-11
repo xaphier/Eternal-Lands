@@ -244,6 +244,8 @@ void MainWindow::changed()
 
 void MainWindow::do_new()
 {
+	int i, count;
+
 	if (!check_save())
 	{
 		return;
@@ -274,6 +276,13 @@ void MainWindow::do_new()
 	foreach(QObject* object, children())
 	{
 		object->blockSignals(false);
+	}
+
+	count = type_values->count();
+
+	for (i = 0; i < count; ++i)
+	{
+		type_values->item(i)->setCheckState(Qt::Unchecked);
 	}
 
 	m_changed = false;
@@ -449,6 +458,13 @@ void MainWindow::load(const QString &file_name)
 	catch (...)
 	{
 		return;
+	}
+
+	count = type_values->count();
+
+	for (i = 0; i < count; ++i)
+	{
+		type_values->item(i)->setCheckState(Qt::Unchecked);
 	}
 
 	count = shader_source->get_datas().size();

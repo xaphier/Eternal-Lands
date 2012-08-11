@@ -44,8 +44,8 @@ dist = dot(dir, dir);
 dir = normalize(dir);
 scale = max(0.0, 1.0 - dist * light_position.w);
 
-float roughness_value = 0.9;
-float ref_at_norm_incidence = 0.4;
+float roughness_value = 0.1;
+float ref_at_norm_incidence = 0.5;
 
 // Compute any aliases and intermediary values
 // -------------------------------------------
@@ -98,7 +98,7 @@ float Rs             = Rs_numerator/ Rs_denominator;
 // the final colour
 // --------------------------------------
 diffuse_color = light_color.rgb * NdotL * scale;
-specular_color = light_color.rgb * NdotL * Rs * scale;
+specular_color = light_color.rgb * NdotL * max(Rs, 0.0) * scale;
 </source>
    <version>120</version>
   </shader_source_data>

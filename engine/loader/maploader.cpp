@@ -68,7 +68,7 @@ namespace eternal_lands
 	{
 		m_instances_builder.reset(new InstancesBuilder(
 			get_effect_cache(), get_mesh_data_cache(),
-			get_material_description_cache(), 8.0f,
+			get_material_description_cache(), 16.0f,
 			get_global_vars()->get_use_simd(),
 			get_global_vars()->get_opengl_3_2()));
 

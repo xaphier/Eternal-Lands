@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>max</name>
+ <types>
+  <type>specular_mapping</type>
+ </types>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>specular</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+   </parameters>
+   <source>specular = vec3(1.0);</source>
+   <version>120</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

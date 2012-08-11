@@ -8,6 +8,10 @@
   <shader_source_data>
    <parameters>
     <parameter>
+     <sampler_parameter>effect_sampler_5</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
      <common_parameter>fragment_uv</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
@@ -15,18 +19,18 @@
      <common_parameter>specular</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
-    <parameter>
-     <sampler_parameter>effect_sampler_5</sampler_parameter>
-     <type>sampler2D</type>
-    </parameter>
    </parameters>
-   <source>specular = texture(effect_sampler_5, fragment_uv).r;
+   <source>specular = texture(effect_sampler_5, fragment_uv).rrr;
 </source>
    <version>130</version>
   </shader_source_data>
   <shader_source_data>
    <parameters>
     <parameter>
+     <sampler_parameter>effect_sampler_5</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
      <common_parameter>fragment_uv</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
@@ -34,12 +38,8 @@
      <common_parameter>specular</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
-    <parameter>
-     <sampler_parameter>effect_sampler_5</sampler_parameter>
-     <type>sampler2D</type>
-    </parameter>
    </parameters>
-   <source>specular = texture2D(effect_sampler_5, fragment_uv).r;
+   <source>specular = texture2D(effect_sampler_5, fragment_uv).rrr;
 </source>
    <version>120</version>
   </shader_source_data>

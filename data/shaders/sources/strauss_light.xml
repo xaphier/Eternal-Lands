@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>strauss</name>
- <types/>
+ <types>
+  <type>fragment_light</type>
+ </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -95,8 +97,8 @@ float Rs             = Rs_numerator/ Rs_denominator;
 // Put all the parts together to generate
 // the final colour
 // --------------------------------------
-diffuse_color += light_color.rgb * NdotL * scale;
-specular_color += light_color.rgb * NdotL * Rs * scale;
+diffuse_color = light_color.rgb * NdotL * scale;
+specular_color = light_color.rgb * NdotL * Rs * scale;
 </source>
    <version>120</version>
   </shader_source_data>

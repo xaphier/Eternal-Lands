@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>anisotropic</name>
+ <types>
+  <type>fragment_light</type>
+ </types>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>diffuse_color</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>light_color</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>light_position</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular_color</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_position</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_tangent</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_view_direction</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>vec3 dir;
+float dist, scale, nxdir;
+
+dir = light_position.xyz - world_position * light_color.a;
+dist = dot(dir, dir);
+dir *= inversesqrt(dist);
+//nxdir = pow(dot(fragment_normal, dir) * 0.5 + 0.5, 2.0);
+
+nxdir = max(0.0, dot(dir, fragment_normal));
+scale = max(0.0, 1.0 - dist * light_position.w);
+diffuse_color = light_color.rgb * scale * nxdir;
+//specular_color = pow(max(0.0, dot(-world_view_direction.xyz, fragment_normal)), 32) * scale;
+
+//                float diffuse = clamp( dot( -oglLightDir.xyz, vNormal ), 0.0, 1.0 );
+vec3 tang = normalize(world_tangent);
+float cs = dot(-world_view_direction.xyz, tang);
+float sn = sqrt(1.0 - cs * cs);
+float cl =  dot(dir, tang);
+float sl = sqrt(1.0 - cl * cl);
+
+specular_color = pow(clamp((cs * cl + sn * sl), 0.0, 1.0 ), 32.0);</source>
+   <version>120</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

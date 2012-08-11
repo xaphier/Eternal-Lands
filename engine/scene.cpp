@@ -2365,25 +2365,32 @@ namespace eternal_lands
 		if (get_global_vars()->get_light_system() == lst_default)
 		{
 			m_light_index_texture.reset();
+			return;
+		}
+
+		m_light_index_texture = boost::make_shared<Texture>(
+			String(UTF8("light index")));
+
+		m_light_index_texture->set_target(ttt_texture_2d);
+
+		if (get_global_vars()->get_light_system() == lst_lidr_x5)
+		{
+			m_light_index_texture->set_format(tft_rgb10_a2);
 		}
 		else
 		{
-			m_light_index_texture = boost::make_shared<Texture>(
-				String(UTF8("light index")));
-
-			m_light_index_texture->set_target(ttt_texture_2d);
-			m_light_index_texture->set_format(tft_rgb10_a2);
-			m_light_index_texture->set_wrap_s(twt_clamp);
-			m_light_index_texture->set_wrap_t(twt_clamp);
-			m_light_index_texture->set_wrap_r(twt_clamp);
-			m_light_index_texture->set_mipmap_count(0);
-			m_light_index_texture->set_mag_filter(tft_nearest);
-			m_light_index_texture->set_min_filter(tft_nearest);
-			m_light_index_texture->set_mipmap_filter(tmt_none);
-			m_light_index_texture->init(
-				m_scene_view.get_view_port().z,
-				m_scene_view.get_view_port().w, 0, 0);
+			m_light_index_texture->set_format(tft_rgba8);
 		}
+
+		m_light_index_texture->set_wrap_s(twt_clamp);
+		m_light_index_texture->set_wrap_t(twt_clamp);
+		m_light_index_texture->set_wrap_r(twt_clamp);
+		m_light_index_texture->set_mipmap_count(0);
+		m_light_index_texture->set_mag_filter(tft_nearest);
+		m_light_index_texture->set_min_filter(tft_nearest);
+		m_light_index_texture->set_mipmap_filter(tmt_none);
+		m_light_index_texture->init(m_scene_view.get_view_port().z,
+			m_scene_view.get_view_port().w, 0, 0);
 	}
 
 	const ParticleDataVector &Scene::get_particles() const

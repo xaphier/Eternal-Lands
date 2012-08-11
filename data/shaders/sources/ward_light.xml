@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>Ward</name>
+ <types>
+  <type>fragment_light</type>
+ </types>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>diffuse_color</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>light_color</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>light_position</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular_color</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_position</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_view_direction</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>float fRoughness = 0.1;
+
+float dir, dist, scale;
+
+dir = light_position.xyz - world_position * light_color.a;
+dist = dot(dir, dir);
+dir = normalize(dir);
+scale = max(0.0, 1.0 - dist * light_position.w);
+
+// Make sure the interpolated inputs and
+// constant parameters are normalized
+vec3 n = fragment_normal;
+vec3 l = dir;
+vec3 v = -world_view_direction.xyz;
+vec3 h = normalize( l + v );
+ 
+// Generate any useful aliases
+float VdotN = max(dot( v, n ), 0);
+float LdotN = max(dot( l, n ), 0);
+float HdotN = max(dot( h, n ), 0);
+float r_sq = (fRoughness * fRoughness) + 1e-5f;
+// (Adding a small bias to r_sq stops unexpected
+//  results caused by divide-by-zero)
+
+// Compute the specular term
+float exp_a;
+
+// manually compute the complex term
+exp_a = -pow( tan( acos( HdotN ) ), 2 );
+
+float spec_num = exp( exp_a / r_sq );
+ 
+float spec_den = 4.0f * 3.14159f * r_sq;
+spec_den *= sqrt( LdotN * VdotN );
+ 
+diffuse_color = light_color.rgb * LdotN * scale;
+specular_color = light_color.rgb * LdotN * ( spec_num / spec_den ) * scale;
+</source>
+   <version>120</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

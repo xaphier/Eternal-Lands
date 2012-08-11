@@ -96,7 +96,7 @@ world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transform
 world_position *= world_transformation[1].w;
 world_position += world_transformation[1].xyz;
 world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
-world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + transformationation[0].w * world_tangent);
+world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + world_transformation[0].w * world_tangent);
 </source>
    <version>140</version>
   </shader_source_data>
