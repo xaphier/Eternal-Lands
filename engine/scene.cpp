@@ -2308,7 +2308,7 @@ namespace eternal_lands
 			String(UTF8("light color")));
 
 		m_light_color_texture->set_target(ttt_texture_1d);
-		m_light_color_texture->set_format(tft_rgba32f);
+		m_light_color_texture->set_format(tft_rgb9_e5);
 		m_light_color_texture->set_wrap_s(twt_clamp);
 		m_light_color_texture->set_wrap_t(twt_clamp);
 		m_light_color_texture->set_wrap_r(twt_clamp);
@@ -2322,7 +2322,7 @@ namespace eternal_lands
 			glm::uvec3(count, 1, 1), 0);
 
 		light_color_image = boost::make_shared<Image>(
-			String(UTF8("light color")), false, tft_rgba32f,
+			String(UTF8("light color")), false, tft_rgb9_e5,
 			glm::uvec3(count, 1, 1), 0);
 
 		light_position_image->set_pixel(0, 0, 0, 0, 0, glm::vec4());

@@ -99,6 +99,8 @@ BOOST_AUTO_TEST_CASE(source_format)
 	types.insert(GL_UNSIGNED_SHORT_5_6_5);
 	types.insert(GL_UNSIGNED_SHORT_5_5_5_1);
 	types.insert(GL_UNSIGNED_INT_10_10_10_2);
+	types.insert(GL_UNSIGNED_INT_5_9_9_9_REV);
+	types.insert(GL_UNSIGNED_INT_10F_11F_11F_REV);
 
 	for (i = 0; i < count; ++i)
 	{

@@ -41,8 +41,6 @@ namespace eternal_lands
 			void add_zip(const String &zip_name);
 			void add_zip(const String &zip_name,
 				const Uint8Array20 &sha1);
-			void add_zip(const String &zip_name,
-				const char sha1[20]);
 			void replace_with_dir(const String &dir_name,
 				const Uint32 index);
 			void replace_with_zip(const String &zip_name,
@@ -50,8 +48,6 @@ namespace eternal_lands
 			void replace_with_zip(const String &zip_name,
 				const Uint8Array20 &sha1,
 				const Uint32 index);
-			void replace_with_zip(const String &zip_name,
-				const char sha1[20], const Uint32 index);
 			bool remove_archive(const String &file_name);
 			bool get_file_readable(const String &file_name);
 			ReaderSharedPtr get_file(const String &file_name);

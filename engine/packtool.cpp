@@ -411,10 +411,6 @@ namespace eternal_lands
 			return result;
 		}
 
-#ifdef _WIN32
-#define __BYTE_ORDER __LITTLE_ENDIAN
-#endif
-
 #define RGB9E5_EXPONENT_BITS          5
 #define RGB9E5_MANTISSA_BITS          9
 #define RGB9E5_EXP_BIAS               15
@@ -426,74 +422,65 @@ namespace eternal_lands
 #define MAX_RGB9E5                   (((float)MAX_RGB9E5_MANTISSA)/RGB9E5_MANTISSA_VALUES * (1<<MAX_RGB9E5_EXP))
 #define EPSILON_RGB9E5               ((1.0/RGB9E5_MANTISSA_VALUES) / (1<<RGB9E5_EXP_BIAS))
 
-typedef struct {
-#ifdef __BYTE_ORDER
-#if __BYTE_ORDER == __BIG_ENDIAN
-  Uint32 negative:1;
-  Uint32 biasedexponent:8;
-  Uint32 mantissa:23;
-#elif __BYTE_ORDER == __LITTLE_ENDIAN
-  Uint32 mantissa:23;
-  Uint32 biasedexponent:8;
-  Uint32 negative:1;
-#endif
-#endif
-} BitsOfIEEE754;
+		typedef struct
+		{
+			Uint32 mantissa:23;
+			Uint32 biasedexponent:8;
+			Uint32 negative:1;
+		}
+		BitsOfIEEE754;
 
-typedef union {
-  Uint32 raw;
-  float value;
-  BitsOfIEEE754 field;
-} Float754;
+		typedef union
+		{
+			Uint32 raw;
+			float value;
+			BitsOfIEEE754 field;
+		}
+		Float754;
 
-typedef struct {
-#ifdef __BYTE_ORDER
-#if __BYTE_ORDER == __BIG_ENDIAN
-  Uint32 biasedexponent:RGB9E5_EXPONENT_BITS;
-  Uint32 b:RGB9E5_MANTISSA_BITS;
-  Uint32 g:RGB9E5_MANTISSA_BITS;
-  Uint32 r:RGB9E5_MANTISSA_BITS;
-#elif __BYTE_ORDER == __LITTLE_ENDIAN
-  Uint32 r:RGB9E5_MANTISSA_BITS;
-  Uint32 g:RGB9E5_MANTISSA_BITS;
-  Uint32 b:RGB9E5_MANTISSA_BITS;
-  Uint32 biasedexponent:RGB9E5_EXPONENT_BITS;
-#endif
-#endif
-} BitsOfRGB9E5;
+		typedef struct
+		{
+			Uint32 r:RGB9E5_MANTISSA_BITS;
+			Uint32 g:RGB9E5_MANTISSA_BITS;
+			Uint32 b:RGB9E5_MANTISSA_BITS;
+			Uint32 biasedexponent:RGB9E5_EXPONENT_BITS;
+		}
+		BitsOfRGB9E5;
 
-typedef union {
-  Uint32 raw;
-  BitsOfRGB9E5 field;
-} RGB9E5;
+		typedef union
+		{
+			Uint32 raw;
+			BitsOfRGB9E5 field;
+		}
+		RGB9E5;
 
-			float clamp_range_for_rgb9e5(const float x)
+		float clamp_range_for_rgb9e5(const float x)
+		{
+			if (x > 0.0f)
 			{
-				if (x > 0.0f)
-				{
-					return std::min(x, MAX_RGB9E5);
-				}
-
-				/**
-				 * NaN gets here too since comparisons with
-				 * NaN always fail!
-				 */
-				return 0.0f;
+				return std::min(x, MAX_RGB9E5);
 			}
 
 			/**
-			 * Ok, FloorLog2 is not correct for the denorm and zero
-			 * values, but we are going to do a max of this value
-			 * with the minimum rgb9e5 exponent that will hide
-			 * these problem cases.
+			 * NaN gets here too since comparisons with
+			 * NaN always fail!
 			 */
-			int floor_log2(const float x)
-			{
-				Float754 f;
+			return 0.0f;
+		}
 
-				f.value = x;
-				return (f.field.biasedexponent - 127);
-			}
+		/**
+		 * Ok, FloorLog2 is not correct for the denorm and zero
+		 * values, but we are going to do a max of this value
+		 * with the minimum rgb9e5 exponent that will hide
+		 * these problem cases.
+		 */
+		int floor_log2(const float x)
+		{
+			Float754 f;
+
+			f.value = x;
+			return static_cast<int>(f.field.biasedexponent) - 127;
+		}
 
 	}
 
