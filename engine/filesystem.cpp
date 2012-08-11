@@ -278,14 +278,14 @@ namespace eternal_lands
 			xz_path = path;
 			xz_path += ".xz";
 
-			if (stat(xz_path.c_str(), &fstat) == 0)
-			{
-				path = xz_path;
-			}
-
 			if (stat(gz_path.c_str(), &fstat) == 0)
 			{
 				path = gz_path;
+			}
+
+			if (stat(xz_path.c_str(), &fstat) == 0)
+			{
+				path = xz_path;
 			}
 
 			if (stat(path.c_str(), &fstat) != 0)
