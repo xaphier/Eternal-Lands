@@ -23,14 +23,16 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "qneblock.h"
+#include "qneblock.hpp"
 
 #include <QPen>
 #include <QGraphicsScene>
 #include <QFontMetrics>
 #include <QPainter>
 
-#include "qneport.h"
+#include "qneport.hpp"
+
+#include "../engine/node/effectnode.hpp"
 
 QNEBlock::QNEBlock(QGraphicsItem *parent, QGraphicsScene *scene) : QGraphicsPathItem(parent, scene)
 {
@@ -42,119 +44,158 @@ QNEBlock::QNEBlock(QGraphicsItem *parent, QGraphicsScene *scene) : QGraphicsPath
 	setFlag(QGraphicsItem::ItemIsMovable);
 	setFlag(QGraphicsItem::ItemIsSelectable);
 	horzMargin = 20;
-	vertMargin = 5;
+	vertMargin = 10;
 	width = horzMargin;
 	height = vertMargin;
 }
 
-QNEPort* QNEBlock::addPort(const QString &name, bool isOutput, int flags, int ptr)
+QNEBlock::~QNEBlock()
 {
-	QNEPort *port = new QNEPort(this);
+}
+
+QNEPort* QNEBlock::addPort(const QString &name, bool isOutput, int flags)
+{
+	return addPort(0, name, isOutput, flags);
+}
+
+QNEPort* QNEBlock::addPort(el::EffectNodePortPtr effect_port,
+	const QString &name, bool isOutput, int flags)
+{
+	QNEPort* port;
+	QPainterPath p;
+	int y, w, h, h_in, h_out, w_in, w_out, y_in, y_out;
+
+	port = new QNEPort(effect_port, this);
 	port->setName(name);
 	port->setIsOutput(isOutput);
 	port->setNEBlock(this);
-	port->setPortFlags(flags);
-	port->setPtr(ptr);
+	port->setFlags(flags);
 
-	QFontMetrics fm(scene()->font());
-	int w = fm.width(name);
-	int h = fm.height();
-	// port->setPos(0, height + h/2);
-	if (w > width - horzMargin)
-		width = w + horzMargin;
-	height += h;
+	w = 0;
+	h = 0;
+	h_in = 0;
+	h_out = 0;
+	w_in = 0;
+	w_out = 0;
 
-	QPainterPath p;
+	foreach(QGraphicsItem *port_, children())
+	{
+		if (port_->type() != QNEPort::Type)
+		{
+			w = std::max(w, (int)port_->boundingRect().size().width());
+			h += port_->boundingRect().size().height() + 2;
+
+			continue;
+		}
+
+		port = (QNEPort*) port_;
+
+		if (port->flags() == 0)
+		{
+			if (port->isOutput())
+			{
+				w_out = std::max(w_out, port->width());
+				h_out += port->height();
+			}
+			else
+			{
+				w_in = std::max(w_in, port->width());
+				h_in += port->height();
+			}
+		}
+		else
+		{
+			w = std::max(w, port->width());
+			h += port->height();
+		}
+	}
+
+	w = std::max(w, w_in + w_out);
+	h += std::max(h_in, h_out);
+
+	width = w + horzMargin;
+	height = h + vertMargin;
+
 	p.addRoundedRect(-width/2, -height/2, width, height, 5, 5);
 	setPath(p);
 
-	int y = -height / 2 + vertMargin + port->radius();
-	foreach(QGraphicsItem *port_, children()) {
+	y = -height / 2 + vertMargin;
+	y_in = y;
+	y_out = y;
+
+	foreach(QGraphicsItem *port_, children())
+	{
 		if (port_->type() != QNEPort::Type)
+		{
+			y = std::max(y_in, y_out);
+
+			port_->setPos(-w/2, y);
+
+			y += port->height() + 2;
+			y_in = y;
+			y_out = y;
+
 			continue;
+		}
 
 		QNEPort *port = (QNEPort*) port_;
-		if (port->isOutput())
-			port->setPos(width/2 + port->radius(), y);
+
+		if (port->flags() != 0)
+		{
+			y = std::max(y_in, y_out);
+			y_in = y;
+			y_out = y;
+		}
+
+		if (port->flags() == QNEPort::ImagePort)
+		{
+			port->setPos(-w/2, y);
+		}
 		else
-			port->setPos(-width/2 - port->radius(), y);
-		y += h;
+		{
+			if (port->isOutput())
+			{
+				port->setPos(width/2, y_out);
+			}
+			else
+			{
+				port->setPos(-width/2 - 2 * port->radius(),
+					y_in);
+			}
+		}
+
+		if (port->flags() == 0)
+		{
+			if (port->isOutput())
+			{
+				y_out += port->height();
+			}
+			else
+			{
+				y_in += port->height();
+			}
+		}
+		else
+		{
+			y += port->height();
+			y_in = y;
+			y_out = y;
+		}
 	}
 
 	return port;
 }
 
-void QNEBlock::addInputPort(const QString &name)
+void QNEBlock::addInputPort(el::EffectNodePortPtr effect_port,
+	const QString &name)
 {
-	addPort(name, false);
+	addPort(effect_port, name, false);
 }
 
-void QNEBlock::addOutputPort(const QString &name)
+void QNEBlock::addOutputPort(el::EffectNodePortPtr effect_port,
+	const QString &name)
 {
-	addPort(name, true);
-}
-
-void QNEBlock::addInputPorts(const QStringList &names)
-{
-	foreach(QString n, names)
-		addInputPort(n);
-}
-
-void QNEBlock::addOutputPorts(const QStringList &names)
-{
-	foreach(QString n, names)
-		addOutputPort(n);
-}
-
-void QNEBlock::save(QDataStream &ds)
-{
-	ds << pos();
-
-	int count(0);
-
-	foreach(QGraphicsItem *port_, children())
-	{
-		if (port_->type() != QNEPort::Type)
-			continue;
-
-		count++;
-	}
-
-	ds << count;
-
-	foreach(QGraphicsItem *port_, children())
-	{
-		if (port_->type() != QNEPort::Type)
-			continue;
-
-		QNEPort *port = (QNEPort*) port_;
-		ds << (quint64) port;
-		ds << port->portName();
-		ds << port->isOutput();
-		ds << port->portFlags();
-	}
-}
-
-void QNEBlock::load(QDataStream &ds, QMap<quint64, QNEPort*> &portMap)
-{
-	QPointF p;
-	ds >> p;
-	setPos(p);
-	int count;
-	ds >> count;
-	for (int i = 0; i < count; i++)
-	{
-		QString name;
-		bool output;
-		int flags;
-		quint64 ptr;
-
-		ds >> ptr;
-		ds >> name;
-		ds >> output;
-		ds >> flags;
-		portMap[ptr] = addPort(name, output, flags, ptr);
-	}
+	addPort(effect_port, name, true);
 }
 
 #include <QStyleOptionGraphicsItem>
@@ -164,12 +205,15 @@ void QNEBlock::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 	Q_UNUSED(option)
 	Q_UNUSED(widget)
 
-	if (isSelected()) {
-		painter->setPen(QPen(Qt::darkYellow));
-		painter->setBrush(Qt::yellow);
-	} else {
-		painter->setPen(QPen(Qt::darkGreen));
-		painter->setBrush(Qt::green);
+	if (isSelected())
+	{
+		painter->setPen(QPen(Qt::darkGray));
+		painter->setBrush(Qt::gray);
+	}
+	else
+	{
+		painter->setPen(QPen(Qt::darkGray));
+		painter->setBrush(Qt::lightGray);
 	}
 
 	painter->drawPath(path());
@@ -184,7 +228,8 @@ QNEBlock* QNEBlock::clone()
 		if (port_->type() == QNEPort::Type)
 		{
 			QNEPort *port = (QNEPort*) port_;
-			b->addPort(port->portName(), port->isOutput(), port->portFlags(), port->ptr());
+			b->addPort(port->effect_port(), port->name(),
+				port->isOutput(), port->flags());
 		}
 	}
 

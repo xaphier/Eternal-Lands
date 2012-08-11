@@ -1,5 +1,9 @@
 <RCC>
   <qresource prefix="icons">
+    <file>ba.png</file>
+    <file>rg.png</file>
+    <file>rgb.png</file>
+    <file>rgba.png</file>
     <file>Door.png</file>
     <file>debug.png</file>
     <file>Crystal sphere-256.png</file>

@@ -23,40 +23,45 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#ifndef QNECONNECTION_H
-#define QNECONNECTION_H
+#ifndef QNEBLOCK_H
+#define QNEBLOCK_H
 
 #include <QGraphicsPathItem>
+#include "../engine/node/effectnodeport.hpp"
+
+namespace el = eternal_lands;
 
 class QNEPort;
 
-class QNEConnection : public QGraphicsPathItem
+class QNEBlock : public QGraphicsPathItem
 {
 public:
-	enum { Type = QGraphicsItem::UserType + 2 };
+	enum { Type = QGraphicsItem::UserType + 3 };
 
-	QNEConnection(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
-	~QNEConnection();
+	QNEBlock(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	virtual ~QNEBlock();
 
-	void setPos1(const QPointF &p);
-	void setPos2(const QPointF &p);
-	void setPort1(QNEPort *p);
-	void setPort2(QNEPort *p);
-	void updatePosFromPorts();
-	void updatePath();
-	QNEPort* port1() const;
-	QNEPort* port2() const;
-
-	void save(QDataStream&);
-	void load(QDataStream&, const QMap<quint64, QNEPort*> &portMap);
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+	QNEBlock* clone();
+	QVector<QNEPort*> ports();
 
 	int type() const { return Type; }
 
+protected:
+	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+	QNEPort* addPort(const QString &name, bool isOutput, int flags);
+	QNEPort* addPort(const el::EffectNodePortPtr effect_port,
+		const QString &name, bool isOutput, int flags = 0);
+	void addInputPort(const el::EffectNodePortPtr effect_port,
+		const QString &name);
+	void addOutputPort(const el::EffectNodePortPtr effect_port,
+		const QString &name);
+
 private:
-	QPointF pos1;
-	QPointF pos2;
-	QNEPort *m_port1;
-	QNEPort *m_port2;
+	int horzMargin;
+	int vertMargin;
+	int width;
+	int height;
 };
 
-#endif // QNECONNECTION_H
+#endif // QNEBLOCK_H

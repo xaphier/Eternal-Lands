@@ -14,15 +14,17 @@ file(GLOB map_editor_source_files *.cpp)
 file(GLOB map_editor_ui_files *.ui)
 file(GLOB map_editor_qrc_files icons/*.qrc)
 
+#nodes dir
+file(GLOB nodes_header_files nodes/*.hpp)
+file(GLOB nodes_source_files nodes/*.cpp)
+file(GLOB nodes_ui_files nodes/*.ui)
+list(APPEND map_editor_source_files ${nodes_source_files})
+list(APPEND map_editor_header_files ${nodes_header_files})
+list(APPEND map_editor_ui_files ${nodes_ui_files})
+
 QT4_WRAP_CPP(map_editor_moc_files ${map_editor_header_files} OPTIONS -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED)
 QT4_WRAP_UI(map_editor_form_files ${map_editor_ui_files})
 QT4_ADD_RESOURCES(map_editor_resource_files ${map_editor_qrc_files})
-
-#nodes dir
-file(GLOB nodes_header_files nodes/*.h)
-file(GLOB nodes_source_files nodes/*.cpp)
-list(APPEND map_editor_source_files ${nodes_source_files})
-list(APPEND map_editor_header_files ${nodes_header_files})
 
 #editor dir
 file(GLOB editor_header_files editor/*.hpp)

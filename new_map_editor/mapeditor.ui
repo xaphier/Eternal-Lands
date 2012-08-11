@@ -3579,7 +3579,7 @@
          <item>
           <widget class="QToolBox" name="toolBox_3">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_12">
             <property name="geometry">
@@ -3627,8 +3627,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>122</width>
-              <height>340</height>
+              <width>265</width>
+              <height>454</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3667,7 +3667,7 @@
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="x_translation_2">
+                 <widget class="QDoubleSpinBox" name="x_translations">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
@@ -3711,7 +3711,7 @@
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QDoubleSpinBox" name="y_translation_2">
+                 <widget class="QDoubleSpinBox" name="y_translations">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
@@ -3758,7 +3758,7 @@
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QDoubleSpinBox" name="z_translation_2">
+                 <widget class="QDoubleSpinBox" name="z_translations">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
@@ -3817,7 +3817,7 @@
                  </widget>
                 </item>
                 <item row="0" column="2">
-                 <widget class="QDial" name="x_rotation_dial_2">
+                 <widget class="QDial" name="x_rotations_dial">
                   <property name="minimum">
                    <number>-180</number>
                   </property>
@@ -3833,7 +3833,7 @@
                  </widget>
                 </item>
                 <item row="0" column="4">
-                 <widget class="QDoubleSpinBox" name="x_rotation_2">
+                 <widget class="QDoubleSpinBox" name="x_rotations">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
@@ -3883,7 +3883,7 @@
                  </widget>
                 </item>
                 <item row="1" column="2">
-                 <widget class="QDial" name="y_rotation_dial_2">
+                 <widget class="QDial" name="y_rotations_dial">
                   <property name="minimum">
                    <number>-180</number>
                   </property>
@@ -3899,7 +3899,7 @@
                  </widget>
                 </item>
                 <item row="1" column="4">
-                 <widget class="QDoubleSpinBox" name="y_rotation_2">
+                 <widget class="QDoubleSpinBox" name="y_rotations">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
@@ -3952,7 +3952,7 @@
                  </widget>
                 </item>
                 <item row="2" column="2">
-                 <widget class="QDial" name="z_rotation_dial_2">
+                 <widget class="QDial" name="z_rotations_dial">
                   <property name="minimum">
                    <number>-180</number>
                   </property>
@@ -3968,7 +3968,7 @@
                  </widget>
                 </item>
                 <item row="2" column="4">
-                 <widget class="QDoubleSpinBox" name="z_rotation_2">
+                 <widget class="QDoubleSpinBox" name="z_rotations">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
@@ -4095,7 +4095,7 @@
                  <number>0</number>
                 </property>
                 <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="scale_value_2">
+                 <widget class="QDoubleSpinBox" name="scales_value">
                   <property name="minimumSize">
                    <size>
                     <width>30</width>
@@ -4132,7 +4132,7 @@
                  </widget>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QSlider" name="scale_slider_2">
+                 <widget class="QSlider" name="scales_slider">
                   <property name="maximum">
                    <number>400</number>
                   </property>
@@ -4173,8 +4173,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>175</width>
-              <height>229</height>
+              <width>265</width>
+              <height>454</height>
              </rect>
             </property>
             <attribute name="label">
@@ -4191,7 +4191,7 @@
                </property>
                <layout class="QGridLayout" name="gridLayout_25">
                 <item row="0" column="0" colspan="2">
-                 <widget class="QRadioButton" name="transparency_type_3">
+                 <widget class="QRadioButton" name="transparencys_type_0">
                   <property name="text">
                    <string>no transparency</string>
                   </property>
@@ -4201,14 +4201,14 @@
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QRadioButton" name="transparency_type_4">
+                 <widget class="QRadioButton" name="transparencys_type_1">
                   <property name="text">
                    <string>using value</string>
                   </property>
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QSlider" name="transparency_value_2">
+                 <widget class="QSlider" name="transparencys_value">
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
@@ -4227,7 +4227,7 @@
                  </widget>
                 </item>
                 <item row="2" column="0" colspan="2">
-                 <widget class="QRadioButton" name="transparency_type_5">
+                 <widget class="QRadioButton" name="transparencys_type_2">
                   <property name="enabled">
                    <bool>true</bool>
                   </property>
@@ -4249,7 +4249,7 @@
                  <number>0</number>
                 </property>
                 <item>
-                 <widget class="QRadioButton" name="selection_type_3">
+                 <widget class="QRadioButton" name="selections_type_0">
                   <property name="text">
                    <string>Usable</string>
                   </property>
@@ -4259,14 +4259,14 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="selection_type_4">
+                 <widget class="QRadioButton" name="selections_type_1">
                   <property name="text">
                    <string>Entrable</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QRadioButton" name="selection_type_5">
+                 <widget class="QRadioButton" name="selections_type_2">
                   <property name="text">
                    <string>Harvestable</string>
                   </property>
@@ -4295,8 +4295,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>145</width>
-              <height>300</height>
+              <width>265</width>
+              <height>454</height>
              </rect>
             </property>
             <attribute name="label">
@@ -4326,7 +4326,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QComboBox" name="material_10">
+              <widget class="QComboBox" name="materials_0">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4355,7 +4355,7 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QComboBox" name="material_11">
+              <widget class="QComboBox" name="materials_1">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4384,7 +4384,7 @@
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QComboBox" name="material_12">
+              <widget class="QComboBox" name="materials_2">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4413,7 +4413,7 @@
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QComboBox" name="material_13">
+              <widget class="QComboBox" name="materials_3">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4442,7 +4442,7 @@
               </widget>
              </item>
              <item row="4" column="1">
-              <widget class="QComboBox" name="material_14">
+              <widget class="QComboBox" name="materials_4">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4471,7 +4471,7 @@
               </widget>
              </item>
              <item row="5" column="1">
-              <widget class="QComboBox" name="material_15">
+              <widget class="QComboBox" name="materials_5">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4500,7 +4500,7 @@
               </widget>
              </item>
              <item row="6" column="1">
-              <widget class="QComboBox" name="material_16">
+              <widget class="QComboBox" name="materials_6">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4529,7 +4529,7 @@
               </widget>
              </item>
              <item row="7" column="1">
-              <widget class="QComboBox" name="material_17">
+              <widget class="QComboBox" name="materials_7">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4558,7 +4558,7 @@
               </widget>
              </item>
              <item row="8" column="1">
-              <widget class="QComboBox" name="material_18">
+              <widget class="QComboBox" name="materials_8">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4587,7 +4587,7 @@
               </widget>
              </item>
              <item row="9" column="1">
-              <widget class="QComboBox" name="material_19">
+              <widget class="QComboBox" name="materials_9">
                <property name="sizeIncrement">
                 <size>
                  <width>4</width>
@@ -4924,7 +4924,7 @@
   </widget>
   <widget class="QDockWidget" name="dockWidget_3">
    <property name="windowTitle">
-    <string>Nodes</string>
+    <string>Nodes view</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
@@ -4933,6 +4933,60 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QGraphicsView" name="graphicsView_2"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_4">
+   <property name="windowTitle">
+    <string>Nodes</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_6">
+    <layout class="QGridLayout" name="gridLayout_27">
+     <item row="0" column="0">
+      <widget class="QPushButton" name="pushButton_9">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="pushButton_10">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="pushButton_11">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushButton_12">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="pushButton_13">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="pushButton_14">
+       <property name="text">
+        <string>PushButton</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

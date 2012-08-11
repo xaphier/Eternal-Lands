@@ -23,41 +23,76 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#ifndef QNEBLOCK_H
-#define QNEBLOCK_H
+#ifndef QNEPORT_H
+#define QNEPORT_H
 
 #include <QGraphicsPathItem>
+#include "../engine/node/effectnodeport.hpp"
 
-class QNEPort;
+namespace el = eternal_lands;
 
-class QNEBlock : public QGraphicsPathItem
+class QNEBlock;
+class Connection;
+
+class QNEPort : public QGraphicsPathItem
 {
 public:
-	enum { Type = QGraphicsItem::UserType + 3 };
+	enum { Type = QGraphicsItem::UserType + 1 };
+	enum { NamePort = 1, TypePort = 2, ImagePort = 3 };
 
-	QNEBlock(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	QNEPort(el::EffectNodePortPtr effect_port,
+		QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+	~QNEPort();
 
-	QNEPort* addPort(const QString &name, bool isOutput, int flags = 0, int ptr = 0);
-	void addInputPort(const QString &name);
-	void addOutputPort(const QString &name);
-	void addInputPorts(const QStringList &names);
-	void addOutputPorts(const QStringList &names);
-	void save(QDataStream&);
-	void load(QDataStream&, QMap<quint64, QNEPort*> &portMap);
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-	QNEBlock* clone();
-	QVector<QNEPort*> ports();
+	void setNEBlock(QNEBlock*);
+	void setName(const QString &n);
+	void setIsOutput(bool o);
+	int radius() const;
+	int height() const;
+	int width() const;
+	int margin() const;
+	bool isOutput();
+	QVector<Connection*>& connections();
+	void setFlags(int);
+	QColor color();
+	void set_color(const QColor &c);
 
-	int type() const { return Type; }
+	QNEBlock* block() const;
+
+	el::EffectNodePortPtr effect_port() const;
+
+	bool isConnected(QNEPort*);
+
+	const QString &name() const;
+	int flags() const;
+	int type() const;
+	bool can_connect(QNEPort* port);
+	void connect(QNEPort* port);
+	void disconnect(QNEPort* port);
+	QPointF connection_pos() const;
+	void update_tool_tip();
 
 protected:
 	QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event);
 
 private:
-	int horzMargin;
-	int vertMargin;
-	int width;
-	int height;
+	void update();
+
+	QNEBlock* m_block;
+	QString m_name;
+	bool m_isOutput;
+	QGraphicsTextItem* m_label;
+	QGraphicsPixmapItem* m_pixmap;
+	int m_radius;
+	int m_margin;
+	QVector<Connection*> m_connections;
+	int m_flags;
+	int m_height;
+	int m_width;
+	QColor m_color;
+	el::EffectNodePortPtr m_effect_port;
+
 };
 
-#endif // QNEBLOCK_H
+#endif // QNEPORT_H
