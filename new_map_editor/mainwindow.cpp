@@ -3,10 +3,28 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QVector2D>
+#include <QMessageBox>
 #include "newmapdialog.hpp"
 #include "lightdata.hpp"
 #include "editor/editorobjectdescription.hpp"
 #include "editor/editor.hpp"
+#include "nodes/qnodeseditor.hpp"
+#include "nodes/node.hpp"
+#include "nodes/colornode.hpp"
+#include "nodes/directionnode.hpp"
+#include "nodes/texturenode.hpp"
+#include "nodes/valuesnode.hpp"
+#include "node/effectnodes.hpp"
+#include "node/effectnode.hpp"
+#include "node/effectnodeport.hpp"
+#include "node/effectconstant.hpp"
+#include "node/effectfunction.hpp"
+#include "node/effectparameter.hpp"
+#include "node/effecttexture.hpp"
+#include "node/effectoutput.hpp"
+#include "shader/samplerparameterutil.hpp"
+#include "shader/shadersourceparameter.hpp"
+#include "texturetargetutil.hpp"
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
@@ -100,7 +118,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(move_r, SIGNAL(clicked()), action_move_r, SLOT(trigger()));
 	QObject::connect(move_u, SIGNAL(clicked()), action_move_u, SLOT(trigger()));
 	QObject::connect(move_d, SIGNAL(clicked()), action_move_d, SLOT(trigger()));
-	QObject::connect(camera_yaw, SIGNAL(valueChanged(int)), el_gl_widget, SLOT(rotate(int)));
+	QObject::connect(camera_yaw, SIGNAL(valueChanged(int)), el_gl_widget,
+		SLOT(rotate_yaw(int)));
+	QObject::connect(camera_roll, SIGNAL(valueChanged(int)), el_gl_widget,
+		SLOT(rotate_roll(int)));
 	QObject::connect(zoom_in, SIGNAL(clicked()), action_zoom_in, SLOT(trigger()));
 	QObject::connect(zoom_out, SIGNAL(clicked()), action_zoom_out, SLOT(trigger()));
 
@@ -306,6 +327,34 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	vector_brush_set_y->setMaximum(el_gl_widget->get_terrain_offset_max_y());
 	vector_brush_set_z->setMinimum(el_gl_widget->get_terrain_offset_min_z());
 	vector_brush_set_z->setMaximum(el_gl_widget->get_terrain_offset_max_z());
+
+
+	m_changed_nodes = false;
+
+	QGraphicsScene *s = new QGraphicsScene();
+	graphicsView->setScene(s);
+	graphicsView->setRenderHint(QPainter::Antialiasing);
+	s->setFont(graphicsView->font());
+	// graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+
+	m_nodes_editor = new QNodesEditor(this);
+	m_nodes_editor->install(s);
+
+	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+
+	connect(constant_button, SIGNAL(clicked()), this, SLOT(add_constant()));
+	connect(function_button, SIGNAL(clicked()), this, SLOT(add_function()));
+	connect(geometric_function_button, SIGNAL(clicked()), this,
+		SLOT(add_geometric_function()));
+	connect(trigonemetric_function_button, SIGNAL(clicked()), this,
+		SLOT(add_trigonemetric_function()));
+	connect(texture_button, SIGNAL(clicked()), this, SLOT(add_texture()));
+	connect(parameter_button, SIGNAL(clicked()), this,
+		SLOT(add_parameter()));
+	connect(output_button, SIGNAL(clicked()), this, SLOT(add_output()));
+	connect(color_button, SIGNAL(clicked()), this, SLOT(add_color()));
+	connect(direction_button, SIGNAL(clicked()), this,
+		SLOT(add_direction()));
 }
 
 MainWindow::~MainWindow()
@@ -1540,4 +1589,648 @@ void MainWindow::rotate_left()
 void MainWindow::rotate_right()
 {
 	camera_yaw->setValue(camera_yaw->value() + 5);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool MainWindow::check_save_nodes()
+{
+	QMessageBox message_box;
+
+	if (!m_changed_nodes)
+	{
+		return true;
+	}
+
+	message_box.setText("The document has been modified.");
+	message_box.setInformativeText("Do you want to save your changes?");
+	message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No
+		| QMessageBox::Cancel);
+	message_box.setDefaultButton(QMessageBox::Yes);
+
+	switch (message_box.exec())
+	{
+		case QMessageBox::Yes:
+			save();
+			return true;
+		case QMessageBox::No:
+			return true;
+		case QMessageBox::Cancel:
+			return false;
+		default:
+			return false;
+	}
+}
+
+void MainWindow::new_nodes()
+{
+	if (!check_save_nodes())
+	{
+		return;
+	}
+
+	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+	graphicsView->scene()->clear();
+
+	m_changed_nodes = false;
+}
+
+void MainWindow::save_nodes()
+{
+	if (m_file_name_nodes.isEmpty())
+	{
+		save_as_nodes();
+
+		return;
+	}
+
+	save_nodes(m_file_name_nodes);
+}
+
+void MainWindow::save_as_nodes()
+{
+	QString file_name_nodes;
+
+	file_name_nodes = QFileDialog::getSaveFileName(this, "save", QString(),
+		"xml (*.xml)");
+
+	if (!file_name_nodes.isEmpty())
+	{
+		save_nodes(file_name_nodes);
+		m_file_name_nodes = file_name_nodes;
+	}
+}
+
+void MainWindow::save_nodes(const QString &file_name_nodes)
+{
+	try
+	{
+		m_effect_nodes->save_xml(el::String(file_name_nodes.toUtf8()));
+	}
+	catch (...)
+	{
+	}
+
+	m_changed_nodes = false;
+}
+
+void MainWindow::load_nodes()
+{
+	QString file_name_nodes;
+
+	if (!check_save_nodes())
+	{
+		return;
+	}
+
+	file_name_nodes = QFileDialog::getOpenFileName(this, "open", QString(),
+		"xml (*.xml)");
+
+	if (!file_name_nodes.isEmpty())
+	{
+		load_nodes(file_name_nodes);
+		m_file_name_nodes = file_name_nodes;
+	}
+}
+
+void MainWindow::load_nodes(const QString &file_name_nodes)
+{
+	std::map<el::EffectNodePortPtr, QNEPort*> ports;
+	std::vector<BasicNode*> basic_nodes;
+	BasicNode* new_node;
+	el::EffectNodePtr node;
+	el::EffectConstant* constant_node;
+	el::EffectTexture* texture_node;
+	Uint32 i, count;
+
+	graphicsView->scene()->clear();
+
+	try
+	{
+		m_effect_nodes->load_xml(el::String(file_name_nodes.toUtf8()));
+	}
+	catch (...)
+	{
+		return;
+	}
+
+	count = m_effect_nodes->get_node_count();
+
+	for (i = 0; i < count; ++i)
+	{
+		node = m_effect_nodes->get_node(i);
+
+		constant_node = dynamic_cast<el::EffectConstant*>(node);
+
+		if (constant_node != 0)
+		{
+			switch (constant_node->get_type())
+			{
+				case el::ect_color_rgb: 
+					new_node = new ColorNode(m_effect_nodes,
+						constant_node, "Color", 0,
+						graphicsView->scene());
+					break;
+				case el::ect_direction_xy: 
+					new_node = new DirectionNode(
+						m_effect_nodes, constant_node,
+						"Direction", 0,
+						graphicsView->scene());
+					break;
+				case el::ect_float: 
+					new_node = new ValuesNode(
+						m_effect_nodes, constant_node,
+						"Constant", 1, 0,
+						graphicsView->scene());
+					break;
+				case el::ect_vec2: 
+					new_node = new ValuesNode(
+						m_effect_nodes, constant_node,
+						"Constant", 2, 0,
+						graphicsView->scene());
+					break;
+				case el::ect_vec3: 
+					new_node = new ValuesNode(
+						m_effect_nodes, constant_node,
+						"Constant", 3, 0,
+						graphicsView->scene());
+					break;
+				case el::ect_vec4: 
+					new_node = new ValuesNode(
+						m_effect_nodes, constant_node,
+						"Constant", 4, 0,
+						graphicsView->scene());
+					break;
+			}
+
+			basic_nodes.push_back(new_node);
+
+			continue;
+		}
+
+		texture_node = dynamic_cast<el::EffectTexture*>(node);
+
+		if (texture_node != 0)
+		{
+			new_node = new TextureNode(m_effect_nodes, texture_node,
+				node->get_name().get().c_str(), 0,
+				graphicsView->scene());
+
+			basic_nodes.push_back(new_node);
+
+			continue;
+		}
+
+		new_node = new Node(m_effect_nodes, node,
+			node->get_name().get().c_str(), 0,
+			graphicsView->scene());
+
+		basic_nodes.push_back(new_node);
+	}
+
+	m_nodes_editor->fill_ports_map(ports);
+
+	BOOST_FOREACH(BasicNode* basic_node, basic_nodes)
+	{
+		basic_node->rebuild_connections(ports);
+	}
+
+	m_nodes_editor->update_connections();
+	m_nodes_editor->update_tool_tips();
+
+	m_changed_nodes = false;
+}
+
+
+void MainWindow::changed_nodes()
+{
+	m_changed_nodes = true;
+}
+
+void MainWindow::add_color()
+{
+	BasicNode* node;
+	el::EffectConstant* ptr;
+
+	ptr = boost::polymorphic_downcast<el::EffectConstant*>(
+		m_effect_nodes->add_color(el::String("Color")));
+
+	node = new ColorNode(m_effect_nodes, ptr, "Color", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::add_direction()
+{
+	BasicNode* node;
+	el::EffectConstant* ptr;
+
+	ptr = boost::polymorphic_downcast<el::EffectConstant*>(
+		m_effect_nodes->add_direction(el::String("Direction")));
+
+	node = new DirectionNode(m_effect_nodes, ptr, "Direction", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::add_constant()
+{
+	BasicNode* node;
+	el::EffectConstant* ptr;
+	int count;
+	bool ok;
+
+	count = QInputDialog::getInt(this, "Select constant count", "count",
+		4, 1, 4, 1, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	ptr = boost::polymorphic_downcast<el::EffectConstant*>(
+		m_effect_nodes->add_constant(el::String("Constant"), count));
+
+	node = new ValuesNode(m_effect_nodes, ptr, "Constant", count, 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::add_function()
+{
+	Node* node;
+	QStringList functions;
+	QString tmp;
+	el::String function;
+	el::EffectFunctionType type;
+	el::EffectNodePtr ptr;
+	Uint32 i;
+	bool ok;
+
+	for (i = 0; i < el::EffectFunctionUtil::get_effect_function_count();
+		++i)
+	{
+		type = static_cast<el::EffectFunctionType>(i);
+
+		if (el::EffectFunctionUtil::get_geometric(type) ||
+			el::EffectFunctionUtil::get_trigonometric(type))
+		{
+			continue;
+		}
+
+		functions << QString::fromUtf8(el::EffectFunctionUtil::get_str(
+			type).get().c_str());
+	}
+
+	tmp = QInputDialog::getItem(this, "Select function", "function",
+		functions, 0, false, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	function = el::String(tmp.toUtf8());
+
+	if (!el::EffectFunctionUtil::get_effect_function(function, type))
+	{
+		return;
+	}
+
+	ptr = m_effect_nodes->add_function(function, type);
+
+	node = new Node(m_effect_nodes, ptr, "Function", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::add_geometric_function()
+{
+	Node* node;
+	QStringList functions;
+	QString tmp;
+	el::String function;
+	el::EffectFunctionType type;
+	el::EffectNodePtr ptr;
+	Uint32 i;
+	bool ok;
+
+	for (i = 0; i < el::EffectFunctionUtil::get_effect_function_count();
+		++i)
+	{
+		type = static_cast<el::EffectFunctionType>(i);
+
+		if (!el::EffectFunctionUtil::get_geometric(type))
+		{
+			continue;
+		}
+
+		functions << QString::fromUtf8(el::EffectFunctionUtil::get_str(
+			type).get().c_str());
+	}
+
+	tmp = QInputDialog::getItem(this, "Select function", "function",
+		functions, 0, false, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	function = el::String(tmp.toUtf8());
+
+	if (!el::EffectFunctionUtil::get_effect_function(function, type))
+	{
+		return;
+	}
+
+	ptr = m_effect_nodes->add_function(function, type);
+
+	node = new Node(m_effect_nodes, ptr, "Function", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::add_trigonemetric_function()
+{
+	Node* node;
+	QStringList functions;
+	QString tmp;
+	el::String function;
+	el::EffectFunctionType type;
+	el::EffectNodePtr ptr;
+	Uint32 i;
+	bool ok;
+
+	for (i = 0; i < el::EffectFunctionUtil::get_effect_function_count();
+		++i)
+	{
+		type = static_cast<el::EffectFunctionType>(i);
+
+		if (!el::EffectFunctionUtil::get_trigonometric(type))
+		{
+			continue;
+		}
+
+		functions << QString::fromUtf8(el::EffectFunctionUtil::get_str(
+			type).get().c_str());
+	}
+
+	tmp = QInputDialog::getItem(this, "Select function", "function",
+		functions, 0, false, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	function = el::String(tmp.toUtf8());
+
+	if (!el::EffectFunctionUtil::get_effect_function(function, type))
+	{
+		return;
+	}
+
+	ptr = m_effect_nodes->add_function(function, type);
+
+	node = new Node(m_effect_nodes, ptr, "Function", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::add_parameter()
+{
+	Node* node;
+	QStringList parameters;
+	QString tmp;
+	el::String parameter;
+	el::EffectParameterType type;
+	el::EffectNodePtr ptr;
+	Uint32 i;
+	bool ok;
+
+	for (i = 0; i < el::EffectParameterUtil::get_effect_parameter_count();
+		++i)
+	{
+		parameters << QString::fromUtf8(
+			el::EffectParameterUtil::get_str(static_cast<
+				el::EffectParameterType>(i)).get().c_str());
+	}
+
+	tmp = QInputDialog::getItem(this, "Select parameter", "parameter",
+		parameters, 0, false, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	parameter = el::String(tmp.toUtf8());
+
+	if (!el::EffectParameterUtil::get_effect_parameter(parameter, type))
+	{
+		return;
+	}
+
+	ptr = m_effect_nodes->add_parameter(parameter, type);
+
+	node = new Node(m_effect_nodes, ptr, "Parameter", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::add_texture()
+{
+	TextureNode* node;
+	el::String name;
+	el::EffectSamplerType sampler;
+	el::EffectTextureType texture;
+	el::EffectTexture* ptr;
+	Uint16 texture_unit;
+	bool project;
+
+	m_texture_dialog->set_texture_units(m_sampler_names);
+
+	if (m_texture_dialog->exec() != QDialog::Accepted)
+	{
+		return;
+	}
+
+	texture_unit = m_texture_dialog->get_texture_units();
+/*
+	name = el::String(m_names[texture_unit].toUtf8());
+*/
+	project = m_texture_dialog->get_project();
+
+	sampler = el::est_sampler_2d;
+/*
+	switch (m_targets[texture_unit])
+	{
+		case el::ttt_texture_1d:
+			if (project)
+			{
+				sampler = el::est_sampler_1d_project;
+			}
+			else
+			{
+				sampler = el::est_sampler_1d;
+			}
+			break;
+		case el::ttt_texture_2d:
+			if (project)
+			{
+				sampler = el::est_sampler_2d_project;
+			}
+			else
+			{
+				sampler = el::est_sampler_2d;
+			}
+			break;
+		case el::ttt_texture_3d:
+			if (project)
+			{
+				sampler = el::est_sampler_3d_project;
+			}
+			else
+			{
+				sampler = el::est_sampler_3d;
+			}
+			break;
+		case el::ttt_texture_rectangle:
+			if (project)
+			{
+				sampler = el::est_sampler_rectangle_project;
+			}
+			else
+			{
+				sampler = el::est_sampler_rectangle;
+			}
+			break;
+		case el::ttt_texture_cube_map:
+			sampler = el::est_sampler_cube_map;
+			break;
+		case el::ttt_texture_1d_array:
+			sampler = el::est_sampler_1d_array;
+			break;
+		case el::ttt_texture_2d_array:
+			sampler = el::est_sampler_2d_array;
+			break;
+		case el::ttt_texture_2d_multisample:
+		case el::ttt_texture_2d_multisample_array:
+			return;
+	}
+*/
+	texture = el::ett_default;
+
+	switch (m_texture_dialog->get_texture())
+	{
+		case el::ett_albedo:
+			texture = el::ett_albedo;
+			break;
+		case el::ett_normal:
+			texture = el::ett_normal;
+			break;
+		case el::ett_parallax:
+			texture = el::ett_parallax;
+			break;
+		case el::ett_default:
+			texture = el::ett_default;
+			break;
+		case el::ett_uv_offset:
+			texture = el::ett_uv_offset;
+			break;
+	}
+
+	ptr = boost::polymorphic_downcast<el::EffectTexture*>(
+		m_effect_nodes->add_texture(name, sampler, texture,
+			texture_unit));
+
+	node = new TextureNode(m_effect_nodes, ptr, "Texture", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::add_output()
+{
+	Node* node;
+	el::EffectNodePtr ptr;
+
+	ptr = m_effect_nodes->add_output(el::String("Output"));
+
+	node = new Node(m_effect_nodes, ptr, "Output", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed_nodes();
+}
+
+void MainWindow::generate()
+{
+	el::ShaderSourceParameterVector vertex_parameters, fragment_parameters;
+	el::ShaderSourceParameterVector::const_iterator it, end;
+	el::StringStream vertex_str, fragment_str;
+	el::Uint16StringMap array_layers;
+
+	m_effect_nodes->write(array_layers, el::svt_130, el::eqt_high,
+		vertex_parameters, fragment_parameters, vertex_str,
+		fragment_str);
+
+	std::cout << "vertex_str: " << vertex_str.str() << std::endl;
+	std::cout << "fragment_str: " << fragment_str.str() << std::endl;
+
+	end = vertex_parameters.end();
+
+	for (it = vertex_parameters.begin(); it != end; ++it)
+	{
+		std::cout << "vertex parameter: " << *it << std::endl;
+	}
+
+	end = fragment_parameters.end();
+
+	for (it = fragment_parameters.begin(); it != end; ++it)
+	{
+		std::cout << "fragment parameter: " << *it << std::endl;
+	}
 }

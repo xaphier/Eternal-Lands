@@ -21,8 +21,9 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_terrain_type_index = 0;
 	m_terrain_layer_index = 0;
 	m_light = false;
-	m_rotate_z = 0.0f;
 	m_blend = bt_disabled;
+	m_camera_roll = 45.0f;
+	m_camera_yaw = 0.0f;
 
 	m_global_vars = boost::make_shared<GlobalVars>();
 	m_file_system = boost::make_shared<FileSystem>();
@@ -399,6 +400,7 @@ void ELGLWidget::resizeGL(int width, int height)
 void ELGLWidget::paintGL()
 {
 	glm::mat4 view;
+	glm::mat3 rotate;
 	glm::ivec4 view_port;
 	glm::vec3 dir, pos;
 	double selected_depth;
@@ -409,13 +411,27 @@ void ELGLWidget::paintGL()
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	dir = glm::normalize(glm::vec3(0.0f, -1.0f, 2.0f));
+	dir = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
+
+	rotate = glm::mat3(glm::rotate(90.0f - m_camera_roll,
+		glm::vec3(1.0f, 0.0f, 0.0f)));
+
+	rotate = m_camera_yaw_rotate * rotate;
 
 	pos = m_pos;
 
-	dir = m_rotate * dir * 200.0f;
+	dir = rotate * dir * 40.0f;
 
-	view = glm::lookAt(pos + dir, pos, glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f)));
+	if (m_camera_roll == 90)
+	{
+		view = glm::lookAt(pos + dir, pos,
+			m_camera_yaw_rotate * glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	else
+	{
+		view = glm::lookAt(pos + dir, pos, glm::vec3(0.0f, 0.0f, 1.0f));
+	}
+
 	m_editor->set_view_matrix(view);
 	m_editor->set_focus(pos);
 	m_editor->set_depth_selection(m_select_pos);
@@ -645,28 +661,35 @@ const glm::vec3 &ELGLWidget::get_ambient() const
 
 void ELGLWidget::move_left()
 {
-	m_pos += m_rotate * glm::vec3(-5.0f, 0.0f, 0.0f);
+	m_pos += m_camera_yaw_rotate * glm::vec3(-5.0f, 0.0f, 0.0f);
 }
 
 void ELGLWidget::move_right()
 {
-	m_pos += m_rotate * glm::vec3(5.0f, 0.0f, 0.0f);
+	m_pos += m_camera_yaw_rotate * glm::vec3(5.0f, 0.0f, 0.0f);
 }
 
 void ELGLWidget::move_up()
 {
-	m_pos += m_rotate * glm::vec3(0.0f, 5.0f, 0.0f);
+	m_pos += m_camera_yaw_rotate * glm::vec3(0.0f, 5.0f, 0.0f);
 }
 
 void ELGLWidget::move_down()
 {
-	m_pos += m_rotate * glm::vec3(0.0f, -5.0f, 0.0f);
+	m_pos += m_camera_yaw_rotate * glm::vec3(0.0f, -5.0f, 0.0f);
 }
 
-void ELGLWidget::rotate(const int angle)
+void ELGLWidget::rotate_yaw(const int angle)
 {
-	m_rotate = glm::mat3(glm::rotate(static_cast<float>(angle),
+	m_camera_yaw = angle;
+	m_camera_yaw_rotate = glm::mat3(glm::rotate(
+		static_cast<float>(m_camera_yaw),
 		glm::vec3(0.0f, 0.0f, 1.0f)));
+}
+
+void ELGLWidget::rotate_roll(const int angle)
+{
+	m_camera_roll = static_cast<float>(angle);
 }
 
 void ELGLWidget::zoom_in()

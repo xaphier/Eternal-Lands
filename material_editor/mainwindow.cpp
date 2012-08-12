@@ -44,6 +44,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 
 	connect(constant_button, SIGNAL(clicked()), this, SLOT(add_constant()));
 	connect(function_button, SIGNAL(clicked()), this, SLOT(add_function()));
+	connect(geometric_function_button, SIGNAL(clicked()), this,
+		SLOT(add_geometric_function()));
+	connect(trigonemetric_function_button, SIGNAL(clicked()), this,
+		SLOT(add_trigonemetric_function()));
 	connect(texture_button, SIGNAL(clicked()), this, SLOT(add_texture()));
 	connect(parameter_button, SIGNAL(clicked()), this,
 		SLOT(add_parameter()));
@@ -463,8 +467,116 @@ void MainWindow::add_function()
 	for (i = 0; i < el::EffectFunctionUtil::get_effect_function_count();
 		++i)
 	{
+		type = static_cast<el::EffectFunctionType>(i);
+
+		if (el::EffectFunctionUtil::get_geometric(type) ||
+			el::EffectFunctionUtil::get_trigonometric(type))
+		{
+			continue;
+		}
+
 		functions << QString::fromUtf8(el::EffectFunctionUtil::get_str(
-			static_cast<el::EffectFunctionType>(i)).get().c_str());
+			type).get().c_str());
+	}
+
+	tmp = QInputDialog::getItem(this, "Select function", "function",
+		functions, 0, false, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	function = el::String(tmp.toUtf8());
+
+	if (!el::EffectFunctionUtil::get_effect_function(function, type))
+	{
+		return;
+	}
+
+	ptr = m_effect_nodes->add_function(function, type);
+
+	node = new Node(m_effect_nodes, ptr, "Function", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
+}
+
+void MainWindow::add_geometric_function()
+{
+	Node* node;
+	QStringList functions;
+	QString tmp;
+	el::String function;
+	el::EffectFunctionType type;
+	el::EffectNodePtr ptr;
+	Uint32 i;
+	bool ok;
+
+	for (i = 0; i < el::EffectFunctionUtil::get_effect_function_count();
+		++i)
+	{
+		type = static_cast<el::EffectFunctionType>(i);
+
+		if (!el::EffectFunctionUtil::get_geometric(type))
+		{
+			continue;
+		}
+
+		functions << QString::fromUtf8(el::EffectFunctionUtil::get_str(
+			type).get().c_str());
+	}
+
+	tmp = QInputDialog::getItem(this, "Select function", "function",
+		functions, 0, false, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	function = el::String(tmp.toUtf8());
+
+	if (!el::EffectFunctionUtil::get_effect_function(function, type))
+	{
+		return;
+	}
+
+	ptr = m_effect_nodes->add_function(function, type);
+
+	node = new Node(m_effect_nodes, ptr, "Function", 0,
+		graphicsView->scene());
+
+	node->setPos(graphicsView->sceneRect().center().toPoint());
+
+	changed();
+}
+
+void MainWindow::add_trigonemetric_function()
+{
+	Node* node;
+	QStringList functions;
+	QString tmp;
+	el::String function;
+	el::EffectFunctionType type;
+	el::EffectNodePtr ptr;
+	Uint32 i;
+	bool ok;
+
+	for (i = 0; i < el::EffectFunctionUtil::get_effect_function_count();
+		++i)
+	{
+		type = static_cast<el::EffectFunctionType>(i);
+
+		if (!el::EffectFunctionUtil::get_trigonometric(type))
+		{
+			continue;
+		}
+
+		functions << QString::fromUtf8(el::EffectFunctionUtil::get_str(
+			type).get().c_str());
 	}
 
 	tmp = QInputDialog::getItem(this, "Select function", "function",

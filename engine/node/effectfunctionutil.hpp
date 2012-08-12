@@ -78,7 +78,10 @@ namespace eternal_lands
 		eft_saturate,
 		eft_refract,
 		eft_derivatives,
-		eft_fwidth
+		eft_fwidth,
+		eft_ycocg_to_rgb,
+		eft_rgb_to_ycocg,
+		eft_luminance
 	};
 	/**
 	 * @}

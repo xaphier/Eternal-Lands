@@ -11,6 +11,11 @@
 #include "preferencesdialog.hpp"
 #include "objectsdialog.hpp"
 #include "qprogress.hpp"
+#include "nodes/texturedialog.hpp"
+
+namespace el = eternal_lands;
+
+class QNodesEditor;
 
 class MainWindow: public QMainWindow, public Ui::MainWindow
 {
@@ -43,6 +48,14 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		boost::shared_ptr<QProgress> m_progress;
 		QStringList m_textures;
 		size_t m_material_count;
+		TextureDialog* m_texture_dialog;
+		QSignalMapper* m_texture_unit_mapper;
+		QNodesEditor *m_nodes_editor;
+		QStringList m_sampler_names;
+		el::EffectNodesSharedPtr m_effect_nodes;
+		QString m_file_name_nodes;
+		bool m_changed_nodes;
+
 
 		void set_light_color(const glm::vec3 &color);
 		void set_light_color(const QColor &color);
@@ -68,6 +81,9 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void save_dirs_settings(QSettings &settings);
 		void load_dirs_settings(QSettings &settings);
 		void terrain_vector_edit();
+		void save_nodes(const QString &file_name);
+		void load_nodes(const QString &file_name);
+		bool check_save_nodes();
 
 	private slots:
 		void update_object();
@@ -106,6 +122,21 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void change_dungeon();
 		void rotate_left();
 		void rotate_right();
+		void add_color();
+		void add_direction();
+		void add_constant();
+		void add_function();
+		void add_geometric_function();
+		void add_trigonemetric_function();
+		void add_parameter();
+		void add_texture();
+		void add_output();
+		void changed_nodes();
+		void new_nodes();
+		void load_nodes();
+		void save_nodes();
+		void save_as_nodes();
+		void generate();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

@@ -17,6 +17,7 @@
 #include "parametersizeutil.hpp"
 #include "commonparameterutil.hpp"
 #include "shaderbuildutil.hpp"
+#include "shaderoutpututil.hpp"
 
 /**
  * @file
@@ -173,7 +174,8 @@ namespace eternal_lands
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			void build(const EffectDescription &description,
-				const ShaderBuildType shader_build_type,
+				const ShaderBuildType shader_build,
+				const ShaderOutputType shader_output,
 				const Uint16 lights_count,
 				GlslProgramDescription &program_description)
 				const;

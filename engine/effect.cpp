@@ -139,13 +139,14 @@ namespace eternal_lands
 		/* default shader */
 		lights_count = 0;
 
-		if (get_description().get_type() != edt_default)
+		if (get_description().get_description() != edt_default)
 		{
 			LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
 				sbt_screen_quad % m_description.get_name());
 
 			get_shader_source_builder()->build(m_description,
-				sbt_screen_quad, lights_count,
+				sbt_screen_quad,
+				get_description().get_output(), lights_count,
 				program_description);
 
 			m_programs[ept_default] = get_glsl_program_cache(
@@ -169,7 +170,8 @@ namespace eternal_lands
 		lights_count = vertex_lights_count + fragment_lights_count;
 
 		get_shader_source_builder()->build(m_description, sbt_default,
-			lights_count, program_description);
+			get_description().get_output(), lights_count,
+			program_description);
 
 		m_programs[ept_default] = get_glsl_program_cache()->get_program(
 			program_description);
@@ -178,8 +180,8 @@ namespace eternal_lands
 		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
 			sbt_depth % m_description.get_name());
 
-		get_shader_source_builder()->build(m_description, sbt_depth, 0,
-			program_description);
+		get_shader_source_builder()->build(m_description, sbt_depth,
+			sot_float, 0, program_description);
 
 		m_programs[ept_depth] = get_glsl_program_cache()->get_program(
 			program_description);
@@ -188,8 +190,8 @@ namespace eternal_lands
 		LOG_DEBUG(lt_shader_source, UTF8("%1% effect '%2%'"),
 			sbt_shadow % m_description.get_name());
 
-		get_shader_source_builder()->build(m_description, sbt_shadow, 0,
-			program_description);
+		get_shader_source_builder()->build(m_description, sbt_shadow,
+			sot_float, 0, program_description);
 
 		m_programs[ept_shadow] = get_glsl_program_cache()->get_program(
 			program_description);
@@ -201,7 +203,8 @@ namespace eternal_lands
 		lights_count = vertex_lights_count + fragment_lights_count;
 
 		get_shader_source_builder()->build(m_description,
-			get_debug_shader(), lights_count, program_description);
+			get_debug_shader(), sot_float, lights_count,
+			program_description);
 
 		m_programs[ept_debug] = get_glsl_program_cache()->get_program(
 			program_description);

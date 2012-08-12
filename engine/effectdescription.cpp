@@ -13,9 +13,9 @@
 namespace eternal_lands
 {
 
-	EffectDescription::EffectDescription(): m_type(edt_default),
-		m_receives_shadows(true), m_transparent(false),
-		m_lighting(true)
+	EffectDescription::EffectDescription(): m_description(edt_default),
+		m_output(sot_float), m_receives_shadows(true),
+		m_transparent(false), m_lighting(true)
 	{
 	}
 
@@ -101,11 +101,18 @@ namespace eternal_lands
 					XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("description"))
+				== 0)
 			{
-				set_type(EffectDescriptionUtil::
+				set_description(EffectDescriptionUtil::
 					get_effect_description(
 						XmlUtil::get_string_value(it)));
+			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("output")) == 0)
+			{
+				set_output(ShaderOutputUtil::get_shader_output(
+					XmlUtil::get_string_value(it)));
 			}
 
 			if (xmlStrcmp(it->name,
@@ -148,8 +155,10 @@ namespace eternal_lands
 			get_specular_mapping());
 		writer->write_element(UTF8("emission_mapping"),
 			get_emission_mapping());
-		writer->write_element(UTF8("type"),
-			EffectDescriptionUtil::get_str(get_type()));
+		writer->write_element(UTF8("description"),
+			EffectDescriptionUtil::get_str(get_description()));
+		writer->write_element(UTF8("output"),
+			ShaderOutputUtil::get_str(get_output()));
 		writer->write_bool_element(UTF8("receives_shadows"),
 			get_receives_shadows());
 		writer->write_bool_element(UTF8("transparent"),

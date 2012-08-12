@@ -125,8 +125,15 @@ namespace eternal_lands
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("fragment_color")),
 				pt_vec3),
-			CommonParameterTypeData(String(UTF8("output_data")),
-				pt_vec4, pst_render_targets)
+			CommonParameterTypeData(
+				String(UTF8("output_data_float")), pt_vec4,
+				pst_render_targets),
+			CommonParameterTypeData(
+				String(UTF8("output_data_int")), pt_ivec4,
+				pst_render_targets),
+			CommonParameterTypeData(
+				String(UTF8("output_data_uint")), pt_uvec4,
+				pst_render_targets)
 		};
 
 		const Uint32 common_parameter_datas_count =

@@ -29,7 +29,6 @@ namespace eternal_lands
 	enum ShaderBuildType
 	{
 		sbt_default = 0,
-		sbt_light_index,
 		sbt_depth,
 		sbt_shadow,
 		sbt_screen_quad,

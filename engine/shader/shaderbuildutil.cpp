@@ -17,7 +17,6 @@ namespace eternal_lands
 		const String shader_build_type_names[] =
 		{
 			String(UTF8("default")),
-			String(UTF8("light_index")),
 			String(UTF8("depth")),
 			String(UTF8("shadow")),
 			String(UTF8("screen_quad")),

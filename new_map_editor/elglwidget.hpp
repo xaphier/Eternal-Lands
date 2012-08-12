@@ -18,7 +18,7 @@ class ELGLWidget: public QGLWidget
 		FileSystemSharedPtr m_file_system;
 		QStringList m_dirs;
 		QTimer* m_timer;
-		glm::mat3 m_rotate;
+		glm::mat3 m_camera_yaw_rotate;
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
 		glm::vec3 m_world_position;
@@ -27,8 +27,10 @@ class ELGLWidget: public QGLWidget
 		glm::uvec2  m_select_pos, m_half_size;
 		String m_object_name;
 		float m_light_radius;
-		float m_zoom, m_rotate_z;
+		float m_zoom;
 		float m_aspect;
+		int m_camera_roll;
+		int m_camera_yaw;
 		Uint32 m_terrain_type_index;
 		Uint32 m_terrain_layer_index;
 		bool m_select;
@@ -190,7 +192,8 @@ class ELGLWidget: public QGLWidget
 		void move_right();
 		void move_up();
 		void move_down();
-		void rotate(const int angle);
+		void rotate_yaw(const int angle);
+		void rotate_roll(const int angle);
 		void zoom_in();
 		void zoom_out();
 		void new_map(const int map_size_x, const int map_size_y,

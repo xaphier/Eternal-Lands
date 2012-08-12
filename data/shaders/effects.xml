@@ -155,7 +155,7 @@
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>false</lighting>
-		<type>screen_quad_1</type>
+		<description>screen_quad_1</description>
 	</effect>
 <!--	<effect>
 		<name>clipmap-blend-4-screen-quad</name>

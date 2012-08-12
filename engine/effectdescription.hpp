@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "effectdescriptionutil.hpp"
+#include "shader/shaderoutpututil.hpp"
 
 /**
  * @file
@@ -42,7 +43,8 @@ namespace eternal_lands
 			String m_normal_mapping;
 			String m_specular_mapping;
 			String m_emission_mapping;
-			EffectDescriptionType m_type;
+			EffectDescriptionType m_description;
+			ShaderOutputType m_output;
 			bool m_receives_shadows;
 			bool m_transparent;
 			bool m_lighting;
@@ -118,10 +120,17 @@ namespace eternal_lands
 				m_receives_shadows = receives_shadows;
 			}
 
-			inline void set_type(const EffectDescriptionType type)
+			inline void set_description(
+				const EffectDescriptionType description)
 				noexcept
 			{
-				m_type = type;
+				m_description = description;
+			}
+
+			inline void set_output(const ShaderOutputType output)
+				noexcept
+			{
+				m_output = output;
 			}
 
 			inline void set_transparent(const bool transparent)
@@ -181,9 +190,15 @@ namespace eternal_lands
 				return m_emission_mapping;
 			}
 
-			inline EffectDescriptionType get_type() const noexcept
+			inline EffectDescriptionType get_description() const
+				noexcept
 			{
-				return m_type;
+				return m_description;
+			}
+
+			inline ShaderOutputType get_output() const noexcept
+			{
+				return m_output;
 			}
 
 			inline bool get_receives_shadows() const noexcept

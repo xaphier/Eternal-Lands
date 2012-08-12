@@ -37,6 +37,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void add_direction();
 		void add_constant();
 		void add_function();
+		void add_geometric_function();
+		void add_trigonemetric_function();
 		void add_parameter();
 		void add_texture();
 		void add_output();

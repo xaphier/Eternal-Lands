@@ -209,6 +209,35 @@ namespace eternal_lands
 				add_output_port(m_var_names[0], String(),
 					String(UTF8("*")), uuid_generator());
 				break;
+			case eft_ycocg_to_rgb:
+				add_input_port(String(UTF8("Y")),
+					String(UTF8("?")), uuid_generator());
+				add_input_port(String(UTF8("Co")),
+					String(UTF8("?")), uuid_generator());
+				add_input_port(String(UTF8("Cg")),
+					String(UTF8("?")), uuid_generator());
+				add_output_port(m_var_names[0],
+					String(UTF8("rgb")), uuid_generator());
+				break;
+			case eft_rgb_to_ycocg:
+				add_input_port(String(UTF8("rgb")),
+					String(UTF8("rgb")), uuid_generator());
+				add_output_port(m_var_names[0],
+					String(UTF8("Y")), String(UTF8("r")),
+					uuid_generator());
+				add_output_port(m_var_names[0],
+					String(UTF8("Co")), String(UTF8("g")),
+					uuid_generator());
+				add_output_port(m_var_names[0],
+					String(UTF8("Cg")), String(UTF8("b")),
+					uuid_generator());
+				break;
+			case eft_luminance:
+				add_input_port(String(UTF8("rgb")),
+					String(UTF8("rgb")), uuid_generator());
+				add_output_port(m_var_names[0], String(),
+					String(UTF8("?")), uuid_generator());
+				break;
 		}
 	}
 
@@ -476,6 +505,29 @@ namespace eternal_lands
 			case eft_fwidth:
 				str << UTF8("fwidth(") << inputs[0];
 				str << UTF8(")");
+				break;
+			case eft_ycocg_to_rgb:
+				str << UTF8("vec3(") << inputs[0];
+				str << UTF8(" + vec3(1.0, 0.0, -1.0) * ");
+				str << inputs[1] << UTF8(" + ");
+				str << UTF8("vec3(-1.0, 1.0, -1.0) * ");
+				str << inputs[2] << UTF8(" + ");
+				str << UTF8("vec3(0.0, -0.5, 1.0) * ");
+				str << UTF8("256.0 / 255.0)");
+				break;
+			case eft_rgb_to_ycocg:
+				str << UTF8("vec3(vec3(") << inputs[0];
+				str << UTF8(").r * vec3(1.0, 2.0, -1.0) + ");
+				str << UTF8("vec3(") << inputs[0];
+				str << UTF8(").g * vec3(2.0, -2.0, 2.0) + ");
+				str << UTF8("vec3(") << inputs[0];
+				str << UTF8(").b * ");
+				str << UTF8("vec3(1.0, 0.0, -1.0)) * 0.25 + ");
+				str << UTF8("vec3(0.0, vec2(128 / 255.0))");
+				break;
+			case eft_luminance:
+				str << UTF8("dot(") << inputs[0];
+				str << UTF8(", vec3(0.2126, 0.7152, 0.0722))");
 				break;
 		}
 

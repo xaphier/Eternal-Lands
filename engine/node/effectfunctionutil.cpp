@@ -345,7 +345,20 @@ namespace eternal_lands
 					" local differencing for the input "
 					"argument p.\n"
 					"It is equivalent to abs(dFdx(p)) + "
-					"abs(dFdy(p)).")))
+					"abs(dFdy(p))."))),
+			EffectFunctionTypeData(String(UTF8("ycocg_to_rgb")),
+				String(UTF8("ycocg_to_rgb converts an YCoCg ("
+					"luma, chroma orange, and chroma green"
+					") value to an RGB value."))),
+			EffectFunctionTypeData(String(UTF8("rgb_to_ycocg")),
+				String(UTF8("rgb_ycocg converts a RGB value "
+					"to an YCoCg (luma, chroma orange, and"
+					" chroma green) value."))),
+			EffectFunctionTypeData(String(UTF8("luminance")),
+				String(UTF8("calculates the elative luminance "
+					"with:\n"
+					"\tY = 0.2126 R + 0.7152 G + 0.0722 "
+					"B.")))
 		};
 
 		const Uint32 effect_function_datas_count =
