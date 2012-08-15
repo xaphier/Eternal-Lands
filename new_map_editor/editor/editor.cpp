@@ -45,8 +45,6 @@ namespace eternal_lands
 		m_random_scale = false;
 
 		m_edit_id = 0;
-
-		init_logging("log", false);
 	}
 
 	bool Editor::undo()
@@ -569,6 +567,23 @@ namespace eternal_lands
 				object_description);
 
 			object_description.set_selection(selection);
+
+			m_data.modify_object(object_description);
+		}
+	}
+
+	void Editor::set_object_walkable(const Uint32 id, const bool walkable)
+	{
+		EditorObjectDescription object_description;
+
+		m_data.get_object(id, object_description);
+
+		if (object_description.get_walkable() != walkable)
+		{
+			change_object(mt_object_walkable_changed,
+				object_description);
+
+			object_description.set_walkable(walkable);
 
 			m_data.modify_object(object_description);
 		}

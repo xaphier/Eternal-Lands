@@ -145,7 +145,7 @@ namespace eternal_lands
 		Uint32 id, blended, material_index, material_count, instance_id;
 		SelectionType selection;
 		BlendType blend;
-		bool self_lit;
+		bool self_lit, walkable;
 
 		get_reader()->set_position(offset);
 
@@ -175,6 +175,7 @@ namespace eternal_lands
 		material_count = get_reader()->read_u32_le();
 		id = get_reader()->read_u32_le();
 		instance_id = get_reader()->read_u32_le();
+		walkable = get_reader()->read_u8() != 0;
 
 		LOG_DEBUG(lt_map_loader, UTF8("Adding 3d object (%1%) '%2%' at"
 			" <%3%> with rotation <%4%>, left lit %5%, blended %6%"
@@ -201,6 +202,7 @@ namespace eternal_lands
 				blend = bt_disabled;
 			}
 
+			walkable = false;
 			scale = 1.0f;
 			material_count = 0;
 			material_index = 0;
@@ -224,7 +226,7 @@ namespace eternal_lands
 		id = get_free_ids().use_typeless_object_id(id, it_3d_object);
 
 		add_object(translation, rotation_angles, name, scale,
-			transparency, id, selection, blend,
+			transparency, id, selection, blend, walkable,
 			get_material_names(material_index, material_count));
 	}
 
@@ -256,7 +258,7 @@ namespace eternal_lands
 			glm::to_string(rotation_angles));
 
 		add_object(translation, rotation_angles, name, 1.0f,
-			0.0f, id, st_none, bt_disabled, material_names);
+			0.0f, id, st_none, bt_disabled, false, material_names);
 	}
 
 	void AbstractMapLoader::read_light(const Uint32 index,

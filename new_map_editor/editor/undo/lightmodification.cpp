@@ -49,6 +49,7 @@ namespace eternal_lands
 			case mt_object_transparency_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
+			case mt_object_walkable_changed:
 			case mt_terrain_albedo_map_changed:
 			case mt_terrain_blend_map_changed:
 			case mt_terrain_vector_map_changed:

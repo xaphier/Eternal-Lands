@@ -330,6 +330,23 @@ namespace eternal_lands
 			/**
 			 * @brief Select objects.
 			 *
+			 * Checks the nodes of the tree using the box.
+			 * All objects intersecting the box are added to
+			 * the objects vector.
+			 * @param bounding_box The bounding box that checks the
+			 * objects.
+			 * @param contains_only If true, only objects
+			 * that are containt by the box are selected.
+			 * @param objects The objects vector for the selected
+			 * objects.
+			 */
+			void select_objects(const BoundingBox &bounding_box,
+				const bool contains_only,
+				BoundedObjectSharedPtrVector &objects) const;
+
+			/**
+			 * @brief Select objects.
+			 *
 			 * Checks the nodes of the tree using the visitor.
 			 * If the visitor returns true, all objects of the leaf
 			 * node(s) are added to the objects vector.
@@ -339,6 +356,16 @@ namespace eternal_lands
 			 */
 			void select_objects(AbstractNodeVisitor &visitor,
 				BoundedObjectSharedPtrVector &objects) const;
+
+			/**
+			 * @brief Visits all nodes.
+			 *
+			 * Visists all nodes and objects of the tree using the
+			 * visitor. If the visitor returns false, visiting is
+			 * stopped.
+			 * @param visitor The visitor that visits the nodes.
+			 */
+			void visit(AbstractNodeVisitor &visitor) const;
 
 			/**
 			 * @brief Select and remove objects.
@@ -358,6 +385,7 @@ namespace eternal_lands
 			bool check_tree() const;
 
 			void log(OutStream &log) const;
+			void randomize_order();
 
 	};
 

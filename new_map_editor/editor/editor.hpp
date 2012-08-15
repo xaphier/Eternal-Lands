@@ -110,6 +110,8 @@ namespace eternal_lands
 				const BlendType blend);
 			void set_object_selection(const Uint32 id,
 				const SelectionType selection);
+			void set_object_walkable(const Uint32 id,
+				const bool walkable);
 			void set_object_materials(const Uint32 id,
 				const StringVector &materials);
 			void remove_light(const Uint32 id);
@@ -326,6 +328,12 @@ namespace eternal_lands
 				set_object_blend(get_id(), blend);
 			}
 
+			inline void set_object_walkable(const bool walkable)
+			{
+				assert(get_object_selected());
+				set_object_walkable(get_id(), walkable);
+			}
+
 			inline void set_object_transparency(
 				const float transparency)
 			{
@@ -447,6 +455,12 @@ namespace eternal_lands
 			inline void draw()
 			{
 				m_data.draw();
+			}
+
+			inline void draw_selection(
+				const glm::uvec4 &selection_rect)
+			{
+				m_data.draw_selection(selection_rect);
 			}
 
 			inline void select(const glm::uvec2 &position,

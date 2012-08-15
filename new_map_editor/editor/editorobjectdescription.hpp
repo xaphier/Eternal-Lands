@@ -32,6 +32,7 @@ namespace eternal_lands
 	{
 		private:
 			glm::vec3 m_rotation_angles;
+			bool m_walkable;
 
 		public:
 			/**
@@ -48,7 +49,7 @@ namespace eternal_lands
 				const String &name, const float scale,
 				const float transparency, const Uint32 id,
 				const SelectionType selection,
-				const BlendType blend);
+				const BlendType blend, const bool walkable);
 
 			/**
 			 * Default destructor.
@@ -62,8 +63,19 @@ namespace eternal_lands
 			float get_scale() const;
 
 			inline const glm::vec3 &get_rotation_angles() const
+				noexcept
 			{
 				return m_rotation_angles;
+			}
+
+			inline void set_walkable(const bool walkable) noexcept
+			{
+				m_walkable = walkable;
+			}
+
+			inline bool get_walkable() const noexcept
+			{
+				return m_walkable;
 			}
 
 	};

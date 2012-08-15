@@ -2256,6 +2256,7 @@ namespace eternal_lands
 		const
 	{
 		ShaderSourceParameterVector locals;
+		CommonParameterType output_parameter;
 		StringArray8 output_array;
 		String output, indent;
 		Uint16 i, count;
@@ -2507,6 +2508,21 @@ namespace eternal_lands
 			}
 		}
 
+
+		switch (data.get_shader_output())
+		{
+			case sot_int:
+				output_parameter = cpt_output_data_int;
+				break;
+			case sot_uint:
+				output_parameter = cpt_output_data_uint;
+				break;
+			case sot_float:
+			default:
+				output_parameter = cpt_output_data_float;
+				break;
+		}
+
 		switch (data.get_shader_build())
 		{
 			case sbt_default:
@@ -2585,7 +2601,7 @@ namespace eternal_lands
 				break;
 			case sbt_screen_quad:
 				add_parameter(String(UTF8("fragment")),
-					cpt_output_data_float, pqt_in, locals,
+					output_parameter, pqt_in, locals,
 					globals, uniform_buffers);
 
 				count = data.get_render_targets_count();
@@ -2593,41 +2609,10 @@ namespace eternal_lands
 				for (i = 0; i < count; ++i)
 				{
 					main << indent << output_array[i];
-					main << UTF8(" = ");
-					main << cpt_output_data_float;
+					main << UTF8(" = ") << output_parameter;
 					main << UTF8("[") << i << UTF8("];\n");
 				}
 				break;
-/*			case sbt_screen_quad_int:
-				add_parameter(String(UTF8("fragment")),
-					cpt_int_output_data, pqt_in, locals,
-					globals, uniform_buffers);
-
-				count = data.get_render_targets_count();
-
-				for (i = 0; i < count; ++i)
-				{
-					main << indent << output_array[i];
-					main << UTF8(" = ");
-					main << cpt_int_output_data;
-					main << UTF8("[") << i << UTF8("];\n");
-				}
-				break;
-			case sbt_screen_quad_uint:
-				add_parameter(String(UTF8("fragment")),
-					cpt_uint_output_data, pqt_in, locals,
-					globals, uniform_buffers);
-
-				count = data.get_render_targets_count();
-
-				for (i = 0; i < count; ++i)
-				{
-					main << indent << output_array[i];
-					main << UTF8(" = ");
-					main << cpt_uint_output_data;
-					main << UTF8("[") << i << UTF8("];\n");
-				}
-				break;*/
 			case sbt_debug_albedo:
 				add_parameter(String(UTF8("fragment")),
 					cpt_albedo, pqt_in, locals,

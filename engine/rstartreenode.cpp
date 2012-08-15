@@ -1017,8 +1017,41 @@ namespace eternal_lands
 		return RStarTreeNodeSharedPtr();
 	}
 
-	bool RStarTreeNode::select_objects(
-		AbstractNodeVisitor &visitor,
+	bool RStarTreeNode::visit(AbstractNodeVisitor &visitor)
+	{
+		RStarTreeNodeSharedPtr node;
+		Uint32 i;
+
+		if (!visitor(shared_from_this()))
+		{
+			return false;
+		}
+
+		if (get_leaf())
+		{
+			for (i = 0; i < get_count(); ++i)
+			{
+				if (!visitor(get_element(i)))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			if (!get_node(i)->visit(visitor))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	void RStarTreeNode::select_objects(AbstractNodeVisitor &visitor,
 		BoundedObjectSharedPtrVector &objects)
 	{
 		RStarTreeNodeSharedPtr node;
@@ -1028,23 +1061,74 @@ namespace eternal_lands
 		{
 			add_node(objects);
 
-			return true;
+			return;
 		}
 
 		if (get_leaf())
 		{
-			return false;
+			for (i = 0; i < get_count(); ++i)
+			{
+				if (visitor(get_element(i)))
+				{
+					objects.push_back(get_element(i));
+				}
+			}
+
+			return;
 		}
 
 		for (i = 0; i < get_count(); ++i)
 		{
-			if (get_node(i)->select_objects(visitor, objects))
-			{
-				return true;
-			}
+			get_node(i)->select_objects(visitor, objects);
+		}
+	}
+
+	void RStarTreeNode::select_objects(const BoundingBox &bounding_box,
+		const bool contains_only,
+		BoundedObjectSharedPtrVector &objects)
+	{
+		RStarTreeNodeSharedPtr node;
+		Uint32 i;
+
+		if (bounding_box.contains(get_bounding_box()))
+		{
+			add_node(objects);
+
+			return;
 		}
 
-		return false;
+		if (get_leaf())
+		{
+			for (i = 0; i < get_count(); ++i)
+			{
+				if (contains_only)
+				{
+					if (bounding_box.contains(get_element(
+						i)->get_bounding_box()))
+					{
+						objects.push_back(
+							get_element(i));
+					}
+				}
+				else
+				{
+					if (bounding_box.intersect(get_element(
+						i)->get_bounding_box()))
+					{
+						objects.push_back(
+							get_element(i));
+					}
+				}
+			}
+
+			return;
+		}
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			get_node(i)->select_objects(bounding_box,
+				contains_only, objects);
+		}
 	}
 
 	void RStarTreeNode::log(const Uint16 indent, OutStream &log) const
@@ -1081,6 +1165,29 @@ namespace eternal_lands
 		for (i = 0; i < get_count(); ++i)
 		{
 			get_node(i)->log(indent + 1, log);
+		}
+	}
+
+	void RStarTreeNode::randomize_order()
+	{
+		Uint32 i, idx0, idx1;
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			idx0 = rand() % m_count;
+			idx1 = rand() % m_count;
+
+			std::swap(m_elements[idx0], m_elements[idx1]);
+		}
+
+		if (get_leaf())
+		{
+			return;
+		}
+
+		for (i = 0; i < get_count(); ++i)
+		{
+			get_node(i)->randomize_order();
 		}
 	}
 

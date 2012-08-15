@@ -20,9 +20,10 @@ namespace eternal_lands
 		const StringVector &material_names, const String &name,
 		const float scale, const float transparency,
 		const Uint32 id, const SelectionType selection,
-		const BlendType blend): ObjectDescription(Transformation(),
-			material_names, name, transparency, id, selection,
-			blend),	m_rotation_angles(rotation_angles)
+		const BlendType blend, const bool walkable):
+		ObjectDescription(Transformation(), material_names, name,
+			transparency, id, selection, blend),
+		m_rotation_angles(rotation_angles), m_walkable(walkable)
 	{
 		Transformation m_world_transformation;
 

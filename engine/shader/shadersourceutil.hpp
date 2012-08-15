@@ -39,6 +39,7 @@ namespace eternal_lands
 		sst_tbn_matrix,
 		sst_shadow_uv_ddx_ddy,
 		sst_terrain_uv_ddx_ddy,
+/**/
 		sst_world_uv_ddx_ddy,
 		sst_world_extra_uv_ddx_ddy,
 		sst_uv_mapping,
@@ -47,8 +48,9 @@ namespace eternal_lands
 		sst_albedo_mapping,
 		sst_specular_mapping,
 		sst_emission_mapping,
-		sst_vertex_node_data,
-		sst_fragment_node_data
+/**/
+		sst_vertex_effect,
+		sst_fragment_effect
 	};
 
 	typedef std::map<ShaderSourceType, String> ShaderSourceTypeStringMap;

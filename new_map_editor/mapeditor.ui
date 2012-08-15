@@ -581,8 +581,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>122</width>
-              <height>340</height>
+              <width>265</width>
+              <height>603</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1127,8 +1127,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>175</width>
-              <height>229</height>
+              <width>265</width>
+              <height>603</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1227,6 +1227,13 @@
                  </widget>
                 </item>
                </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="walkable">
+               <property name="text">
+                <string>Walkable</string>
+               </property>
               </widget>
              </item>
              <item>
@@ -1801,8 +1808,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>193</width>
-              <height>401</height>
+              <width>265</width>
+              <height>605</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2610,7 +2617,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>83</width>
+              <width>98</width>
               <height>60</height>
              </rect>
             </property>
@@ -2951,8 +2958,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>100</width>
-              <height>30</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -2964,8 +2971,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>100</width>
-              <height>30</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3612,8 +3619,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>87</width>
-              <height>87</height>
+              <width>265</width>
+              <height>633</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3653,8 +3660,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>122</width>
-              <height>340</height>
+              <width>265</width>
+              <height>633</height>
              </rect>
             </property>
             <attribute name="label">
@@ -4199,8 +4206,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>175</width>
-              <height>229</height>
+              <width>265</width>
+              <height>633</height>
              </rect>
             </property>
             <attribute name="label">
@@ -4302,6 +4309,13 @@
               </widget>
              </item>
              <item>
+              <widget class="QCheckBox" name="walkables">
+               <property name="text">
+                <string>Walkable</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <spacer name="verticalSpacer_8">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -4321,8 +4335,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>145</width>
-              <height>300</height>
+              <width>265</width>
+              <height>633</height>
              </rect>
             </property>
             <attribute name="label">

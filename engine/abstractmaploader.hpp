@@ -142,7 +142,7 @@ namespace eternal_lands
 				const String &name, const float scale,
 				const float transparency, const Uint32 id,
 				const SelectionType selection,
-				const BlendType blend,
+				const BlendType blend, const bool walkable,
 				const StringVector &material_names) = 0;
 			virtual void add_light(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,

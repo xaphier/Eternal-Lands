@@ -36,6 +36,7 @@ namespace eternal_lands
 		private:
 			Uint32ObjectSharedPtrMap m_light_objects;
 			Uint32ObjectSharedPtrMap m_light_sphere_objects;
+			MaterialSharedPtr m_selection_material;
 			glm::uvec2 m_depth_selection;
 			double m_depth;
 			Uint32 m_selected_object;
@@ -73,6 +74,7 @@ namespace eternal_lands
 			void set_terrain(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
+			void draw_selection(const glm::uvec4 &selection_rect);
 
 			inline void deselect_object() noexcept
 			{

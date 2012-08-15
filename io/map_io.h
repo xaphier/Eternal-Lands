@@ -78,13 +78,14 @@ typedef struct
      *  Will be used in the future
      * @{ */
 	float scale;
+    /** @} */
 	int material_index;
 	int material_count;
 	int id;
 	int instance_id;
-    /** @} */
+	char walkable;	/**< inidcator if the object is walkable or not. Used in the map editor for automated walkmap generation. */
 
-	char reserved[4]; /**< reserved for future expansions. */
+	char reserved[3]; /**< reserved for future expansions. */
 }object3d_io;
 
 /**

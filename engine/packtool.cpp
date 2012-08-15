@@ -505,7 +505,7 @@ namespace eternal_lands
 		/**
 		 * This pow function could be replaced by a table.
 		 */
-		denom = std::pow(2, exp_shared - RGB9E5_EXP_BIAS -
+		denom = std::pow(2.0f, exp_shared - RGB9E5_EXP_BIAS -
 			RGB9E5_MANTISSA_BITS);
 
 		maxm = std::floor(maxrgb / denom + 0.5);
@@ -549,7 +549,7 @@ namespace eternal_lands
 		tmp.raw = value;
 		exponent = tmp.field.biasedexponent - RGB9E5_EXP_BIAS -
 			RGB9E5_MANTISSA_BITS;
-		scale = std::pow(2, exponent);
+		scale = std::pow(2.0f, exponent);
 
 		return glm::vec3(tmp.field.r * scale, tmp.field.g * scale,
 			tmp.field.b * scale);

@@ -302,10 +302,23 @@ namespace eternal_lands
 			get_root_node()->get_level(), true);
 	}
 
+	void RStarTree::select_objects(const BoundingBox &bounding_box,
+		const bool contains_only,
+		BoundedObjectSharedPtrVector &objects) const
+	{
+		get_root_node()->select_objects(bounding_box, contains_only,
+			objects);
+	}
+
 	void RStarTree::select_objects(AbstractNodeVisitor &visitor,
 		BoundedObjectSharedPtrVector &objects) const
 	{
 		get_root_node()->select_objects(visitor, objects);
+	}
+
+	void RStarTree::visit(AbstractNodeVisitor &visitor) const
+	{
+		get_root_node()->visit(visitor);
 	}
 
 	void RStarTree::select_and_remove_objects(AbstractNodeVisitor &visitor,
@@ -369,6 +382,13 @@ namespace eternal_lands
 		log << str.str() << std::endl;
 
 		get_root_node()->log(0, log);
+	}
+
+	void RStarTree::randomize_order()
+	{
+		srand(time(0));
+
+		get_root_node()->randomize_order();
 	}
 
 }

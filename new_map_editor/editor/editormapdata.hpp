@@ -148,6 +148,7 @@ namespace eternal_lands
 			StringVector get_debug_modes() const;
 			double get_depth() const;
 			void save(const String &file_name) const;
+			void draw_selection(const glm::uvec4 &selection_rect);
 
 			inline void get_terrain_values(const glm::uvec2 &vertex,
 				const glm::vec2 &size,

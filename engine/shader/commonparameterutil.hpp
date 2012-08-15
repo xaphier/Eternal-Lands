@@ -63,7 +63,7 @@ namespace eternal_lands
 		cpt_fragment_color,
 		cpt_output_data_float,
 		cpt_output_data_int,
-		cpt_output_data_out
+		cpt_output_data_uint
 	};
 	/**
 	 * @}

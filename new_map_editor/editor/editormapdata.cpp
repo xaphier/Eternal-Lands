@@ -217,7 +217,7 @@ namespace eternal_lands
 				}
 			case sct_force_select:
 				m_id = id;
-				m_renderable == renderable;
+				m_renderable = renderable;
 				break;
 		}
 	}
@@ -572,6 +572,11 @@ namespace eternal_lands
 	{
 		m_scene->cull();
 		m_scene->draw();
+	}
+
+	void EditorMapData::draw_selection(const glm::uvec4 &selection_rect)
+	{
+		m_scene->draw_selection(selection_rect);
 	}
 
 	void EditorMapData::select(const glm::uvec2 &position,
@@ -931,8 +936,9 @@ namespace eternal_lands
 			writer->write_u32_le(material_count);
 			writer->write_u32_le(id);
 			writer->write_u32_le(0);
+			writer->write_u8(object_it->second.get_walkable());
 
-			for (i = 0; i < 4; ++i)
+			for (i = 0; i < 3; ++i)
 			{
 				writer->write_u8(0);
 			}

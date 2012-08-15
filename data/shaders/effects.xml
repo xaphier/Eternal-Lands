@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf8"?>
 <effects>
 	<effect>
+		<name>solid-color-screen-quad</name>
+		<world_transformation>none</world_transformation>
+		<texture_coodrinates>static_extra</texture_coodrinates>
+		<uv_mapping>disabled</uv_mapping>
+		<albedo_mapping>output-color</albedo_mapping>
+		<normal_mapping>disabled</normal_mapping>
+		<specular_mapping>disabled</specular_mapping>
+		<emission_mapping>disabled</emission_mapping>
+		<receives_shadows>false</receives_shadows>
+		<transparent>false</transparent>
+		<lighting>false</lighting>
+		<description>screen_quad_1</description>
+	</effect>
+	<effect>
 		<name>solid-color</name>
 		<world_transformation>static</world_transformation>
 		<texture_coodrinates>static</texture_coodrinates>
@@ -151,7 +165,7 @@
 		<albedo_mapping>blend_4</albedo_mapping>
 		<normal_mapping>disabled</normal_mapping>
 		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
+		<emission_mapping>disabled</emission_mapping>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>false</lighting>

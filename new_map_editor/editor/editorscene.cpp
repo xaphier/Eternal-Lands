@@ -17,6 +17,8 @@
 #include "freeidsmanager.hpp"
 #include "map.hpp"
 #include "renderobjectdata.hpp"
+#include "thread/materiallock.hpp"
+#include "effect.hpp"
 
 namespace eternal_lands
 {
@@ -27,6 +29,19 @@ namespace eternal_lands
 		m_draw_terrain(true), m_draw_lights(false),
 		m_draw_light_spheres(false)
 	{
+		MaterialDescription material_description;
+
+		material_description.set_cast_shadows(false);
+
+		material_description.set_color(
+			glm::vec4(0.0f, 1.0f, 0.0f, 0.5f));
+		material_description.set_name(String(UTF8("selection")));
+		material_description.set_effect(
+			String(UTF8("solid-color-screen-quad")));
+
+		m_selection_material = get_scene_resources(
+			).get_material_builder()->get_material(
+				material_description);
 	}
 
 	EditorScene::~EditorScene() throw()
@@ -229,6 +244,54 @@ namespace eternal_lands
 	void EditorScene::depth_read()
 	{
 		m_depth = Scene::get_depth(m_depth_selection);
+	}
+
+	void EditorScene::draw_selection(const glm::uvec4 &selection_rect)
+	{
+		update_program_vars_id();
+		get_state_manager().unbind_all();
+		get_scene_view().set_ortho_view();
+
+		get_state_manager().switch_blend(true);
+		get_state_manager().switch_scissor_test(true);
+		get_state_manager().switch_depth_mask(false);
+		get_state_manager().switch_depth_test(false);
+		get_state_manager().switch_multisample(false);
+		glScissor(selection_rect.x, selection_rect.y, selection_rect.z,
+			selection_rect.w);
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		MaterialLock material_lock(m_selection_material);
+
+		DEBUG_CHECK_GL_ERROR();
+
+		switch_program(material_lock->get_effect(
+			)->get_program(ept_default));
+
+		DEBUG_CHECK_GL_ERROR();
+
+		material_lock->bind(get_state_manager());
+
+		get_state_manager().switch_mesh(get_screen_quad());
+
+		get_state_manager().draw(0, 1);
+
+		get_state_manager().switch_blend(false);
+		get_state_manager().switch_scissor_test(false);
+
+		DEBUG_CHECK_GL_ERROR();
+
+		get_state_manager().unbind_all();
+
+		Uint32Set selections;
+
+		select_rect(glm::vec2(selection_rect.x, selection_rect.y),
+			glm::vec2(selection_rect.x, selection_rect.y) +
+			glm::vec2(selection_rect.z, selection_rect.w),
+			selections);
+
+		std::cout << selections.size() << std::endl;
 	}
 
 }

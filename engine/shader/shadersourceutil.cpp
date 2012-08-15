@@ -41,8 +41,8 @@ namespace eternal_lands
 			String(UTF8("albedo_mapping")),
 			String(UTF8("specular_mapping")),
 			String(UTF8("emission_mapping")),
-			String(UTF8("vertex_node_data")),
-			String(UTF8("fragment_node_data"))
+			String(UTF8("vertex_effect")),
+			String(UTF8("fragment_effect"))
 		};
 
 		const Uint32 shader_source_names_count =

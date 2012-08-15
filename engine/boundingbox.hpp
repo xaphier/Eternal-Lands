@@ -13,6 +13,12 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#ifdef	__SSE__
+#include <xmmintrin.h>
+#endif	/* __SSE__ */
+#ifdef	__SSE4_1__
+#include <smmintrin.h>
+#endif	/* __SSE4_1__ */
 
 namespace eternal_lands
 {
@@ -30,7 +36,11 @@ namespace eternal_lands
 			 *
 			 * Contains the three center values of the bounding box.
 			 */
+#ifdef	__SSE__
+			__m128 m_center;
+#else	/* __SSE__ */
 			glm::vec3 m_center;
+#endif	/* __SSE__ */
 
 			/**
 			 * @brief Contains the three half size values.
@@ -38,7 +48,11 @@ namespace eternal_lands
 			 * Contains the three half size values of the bounding
 			 * box.
 			 */
+#ifdef	__SSE__
+			__m128 m_half_size;
+#else	/* __SSE__ */
 			glm::vec3 m_half_size;
+#endif	/* __SSE__ */
 
 		public:
 			/**
@@ -77,8 +91,13 @@ namespace eternal_lands
 			 */
 			inline void set_empty() noexcept
 			{
+#ifdef	__SSE__
+				m_center = _mm_setzero_ps();
+				m_half_size = _mm_set1_ps(-1e30f);
+#else	/* __SSE__ */
 				m_center = glm::vec3(0.0f);
 				m_half_size = glm::vec3(-1e30f);
+#endif	/* __SSE__ */
 			}
 
 			/**
@@ -90,8 +109,19 @@ namespace eternal_lands
 			 * @param min The minimal extend of the bounding box.
 			 * @param max The maximal extend of the bounding box.
 			 */
-			void set_min_max(const glm::vec3 &min,
-				const glm::vec3 &max) noexcept;
+			inline void set_min_max(const glm::vec3 &min,
+				const glm::vec3 &max) noexcept
+			{
+				if (!glm::all(glm::lessThanEqual(min, max)))
+				{
+					set_empty();
+
+					return;
+				}
+
+				set_center((min + max) * 0.5f);
+				set_half_size((max - min) * 0.5f);
+			}
 
 			/**
 			 * @brief Half size set.
@@ -102,7 +132,24 @@ namespace eternal_lands
 			 * @param half_size The minimal extend of the bounding
 			 * box.
 			 */
-			void set_half_size(const glm::vec3 &half_size) noexcept;
+			inline void set_half_size(const glm::vec3 &half_size)
+				noexcept
+			{
+				if (!glm::all(glm::greaterThanEqual(half_size,
+					glm::vec3(0.0f))))
+				{
+					set_empty();
+
+					return;
+				}
+
+#ifdef	__SSE__
+				m_half_size = _mm_setr_ps(half_size.x,
+					half_size.y, half_size.z, 0.0f);
+#else	/* __SSE__ */
+				m_half_size = half_size;
+#endif	/* __SSE__ */
+			}
 
 			/**
 			 * @brief Get minimum.
@@ -179,7 +226,12 @@ namespace eternal_lands
 				assert(std::abs(center[0]) < 1e7f);
 				assert(std::abs(center[1]) < 1e7f);
 				assert(std::abs(center[2]) < 1e7f);
+#ifdef	__SSE__
+				m_center = _mm_setr_ps(center.x, center.y,
+					center.z, 0.0f);
+#else	/* __SSE__ */
 				m_center = center;
+#endif	/* __SSE__ */
 			}
 
 			/**
@@ -188,9 +240,17 @@ namespace eternal_lands
 			 * Returns the center of the bounding box.
 			 * @return The center of the box.
 			 */
-			inline const glm::vec3 &get_center() const noexcept
+			inline glm::vec3 get_center() const noexcept
 			{
+#ifdef	__SSE__
+				glm::vec4 result;
+
+				_mm_storeu_ps(glm::value_ptr(result), m_center);
+
+				return glm::vec3(result);
+#else	/* __SSE__ */
 				return m_center;
+#endif	/* __SSE__ */
 			}
 
 			/**
@@ -199,9 +259,18 @@ namespace eternal_lands
 			 * Returns the half sizes of the bounding box.
 			 * @return The half sizes of the box.
 			 */
-			inline const glm::vec3 &get_half_size() const noexcept
+			inline glm::vec3 get_half_size() const noexcept
 			{
+#ifdef	__SSE__
+				glm::vec4 result;
+
+				_mm_storeu_ps(glm::value_ptr(result),
+					m_half_size);
+
+				return glm::vec3(result);
+#else	/* __SSE__ */
 				return m_half_size;
+#endif	/* __SSE__ */
 			}
 
 			/**
@@ -212,8 +281,14 @@ namespace eternal_lands
 			 */
 			inline bool get_empty() const noexcept
 			{
+#ifdef	__SSE__
+				return !((_mm_movemask_ps(_mm_cmpge_ps(
+					m_half_size, _mm_setzero_ps())) & 0x7)
+					== 0x7);
+#else	/* __SSE__ */
 				return !glm::all(glm::greaterThanEqual(
 					m_half_size, glm::vec3(0.0f)));
+#endif	/* __SSE__ */
 			}
 
 			/**
@@ -224,7 +299,12 @@ namespace eternal_lands
 			 */
 			inline void scale(const float s) noexcept
 			{
+#ifdef	__SSE__
+				m_half_size = _mm_mul_ps(m_half_size,
+					_mm_set1_ps(s));
+#else	/* __SSE__ */
 				m_half_size *= s;
+#endif	/* __SSE__ */
 			}
 
 			/**
@@ -235,7 +315,12 @@ namespace eternal_lands
 			 */
 			inline void extend(const float e) noexcept
 			{
+#ifdef	__SSE__
+				m_half_size = _mm_add_ps(m_half_size,
+					_mm_setr_ps(e, e, e, 0.0f));
+#else	/* __SSE__ */
 				m_half_size += e;
+#endif	/* __SSE__ */
 			}
 
 			/**
@@ -258,8 +343,13 @@ namespace eternal_lands
 			 */
 			inline float get_margin() const noexcept
 			{
+#ifdef	__SSE4_1__
+				return _mm_cvtss_f32(_mm_dp_ps(
+					m_half_size, _mm_set1_ps(2.0f), 0x71));
+#else	/* __SSE4_1__ */
 				return (get_half_size()[0] + get_half_size()[1]
 					+ get_half_size()[2]) * 2.0f;
+#endif	/* __SSE4_1__ */
 			}
 
 			/**
@@ -268,7 +358,35 @@ namespace eternal_lands
 			 * Clamps this bounding boxes with the given one.
 			 * @param box Bounding box for merge.
 			 */
-			void clamp(const BoundingBox &box) noexcept;
+			inline void clamp(const BoundingBox &box) noexcept
+			{
+#ifdef	__SSE__
+				__m128 min0, max0, min1, max1, min, max;
+
+				min0 = _mm_sub_ps(m_center, m_half_size);
+				max0 = _mm_add_ps(m_center, m_half_size);
+
+				min1 = _mm_sub_ps(box.m_center,
+					box.m_half_size);
+				max1 = _mm_add_ps(box.m_center,
+					box.m_half_size);
+
+				min = _mm_max_ps(min0, min1);
+				max = _mm_min_ps(max0, max1);
+
+				m_center = _mm_mul_ps(_mm_add_ps(min, max),
+					_mm_set1_ps(0.5f));
+				m_half_size = _mm_mul_ps(_mm_sub_ps(max, min),
+					_mm_set1_ps(0.5f));
+#else	/* __SSE__ */
+				glm::vec3 min, max;
+
+				min = glm::max(get_min(), box.get_min());
+				max = glm::min(get_max(), box.get_max());
+
+				set_min_max(min, max);
+#endif	/* __SSE__ */
+			}
 
 			/**
 			 * @brief Merge.
@@ -276,7 +394,35 @@ namespace eternal_lands
 			 * Merges this bounding boxes with the given one.
 			 * @param box Bounding box for merge.
 			 */
-			void merge(const BoundingBox &box) noexcept;
+			inline void merge(const BoundingBox &box) noexcept
+			{
+#ifdef	__SSE__
+				__m128 min0, max0, min1, max1, min, max;
+
+				min0 = _mm_sub_ps(m_center, m_half_size);
+				max0 = _mm_add_ps(m_center, m_half_size);
+
+				min1 = _mm_sub_ps(box.m_center,
+					box.m_half_size);
+				max1 = _mm_add_ps(box.m_center,
+					box.m_half_size);
+
+				min = _mm_min_ps(min0, min1);
+				max = _mm_max_ps(max0, max1);
+
+				m_center = _mm_mul_ps(_mm_add_ps(min, max),
+					_mm_set1_ps(0.5f));
+				m_half_size = _mm_mul_ps(_mm_sub_ps(max, min),
+					_mm_set1_ps(0.5f));
+#else	/* __SSE__ */
+				glm::vec3 min, max;
+
+				min = glm::min(get_min(), box.get_min());
+				max = glm::max(get_max(), box.get_max());
+
+				set_min_max(min, max);
+#endif	/* __SSE__ */
+			}
 
 			/**
 			 * @brief Overlap calculation.
@@ -287,7 +433,67 @@ namespace eternal_lands
 			 * @return The overlap of this bounding boxes with the
 			 * given one.
 			 */
-			float overlap(const BoundingBox &box) const noexcept;
+			inline float overlap(const BoundingBox &box) const
+				noexcept
+			{
+#ifdef	__SSE__
+				__m128 t, t0, t1;
+
+				t0 = _mm_and_ps(_mm_sub_ps(m_center,
+					box.m_center), _mm_castsi128_ps(
+					_mm_set1_epi32(0x7FFFFFFF)));
+				t1 = _mm_add_ps(m_half_size, box.m_half_size);
+
+				t = _mm_max_ps(_mm_sub_ps(t1, t0),
+					_mm_setzero_ps());
+
+				return _mm_cvtss_f32(_mm_mul_ss(t,
+					_mm_mul_ss(_mm_shuffle_ps(t, t,
+						_MM_SHUFFLE(1, 1, 1, 1)),
+					_mm_movehl_ps(t, t))));
+#else	/* __SSE__ */
+				glm::vec3 t, t0, t1;
+
+				t0 = glm::abs(get_center() - box.get_center());
+				t1 = get_half_size() + box.get_half_size();
+
+				t = glm::max(t1 - t0, glm::vec3(0.0f));
+
+				return t[0] * t[1] * t[2];
+#endif	/* __SSE__ */
+			}
+
+			/**
+			 * @brief Intersect calculation.
+			 *
+			 * Calculates if the boxes intersect.
+			 * @param box Bounding box for intersect.
+			 * @return True if the boxes intersect, false else.
+			 */
+			inline bool intersect(const BoundingBox &box) const
+				noexcept
+			{
+#ifdef	__SSE__
+				__m128 t0, t1;
+
+				t0 = _mm_and_ps(_mm_sub_ps(m_center,
+					box.m_center), _mm_castsi128_ps(
+					_mm_set1_epi32(0x7FFFFFFF)));
+				t1 = _mm_add_ps(m_half_size, box.m_half_size);
+
+				return (_mm_movemask_ps(_mm_cmpgt_ps(
+					_mm_sub_ps(t1, t0),
+					_mm_setzero_ps())) & 0x7) == 0x7;
+#else	/* __SSE__ */
+				glm::vec3 t0, t1;
+
+				t0 = glm::abs(get_center() - box.get_center());
+				t1 = get_half_size() + box.get_half_size();
+
+				return glm::all(glm::greaterThan(t1 - t0,
+					glm::vec3(0.0f)));
+#endif	/* __SSE__ */
+			}
 
 			/**
 			 * @brief Contains test.
@@ -297,7 +503,30 @@ namespace eternal_lands
 			 * @return Returns true if it contains the bounding box,
 			 * else false.
 			 */
-			bool contains(const BoundingBox &box) const noexcept;
+			inline bool contains(const BoundingBox &box) const
+				noexcept
+			{
+#ifdef	__SSE__
+				__m128 dist;
+
+				dist = _mm_and_ps(_mm_sub_ps(m_center,
+					box.m_center), _mm_castsi128_ps(
+					_mm_set1_epi32(0x7FFFFFFF)));
+				dist = _mm_add_ps(dist, box.m_half_size);
+
+				return (_mm_movemask_ps(_mm_cmple_ps(dist,
+					_mm_mul_ps(m_half_size,
+					_mm_set1_ps(1.0001f)))) & 0x7) == 0x7;
+#else	/* __SSE__ */
+				glm::vec3 dist;
+
+				dist = glm::abs(get_center() -
+					box.get_center()) + box.get_half_size();
+
+				return glm::all(glm::lessThanEqual(dist,
+					get_half_size() * 1.0001f));
+#endif	/* __SSE__ */
+			}
 
 			/**
 			 * @brief Gets a transformed box.
@@ -329,8 +558,49 @@ namespace eternal_lands
 			 * @param box The box that would be merged.
 			 * @return The enlargement if the boxes would be merged.
 			 */
-			float enlargement(const BoundingBox &box) const
-				noexcept;
+			inline float enlargement(const BoundingBox &box) const
+				noexcept
+			{
+#ifdef	__SSE__
+				__m128 min0, max0, min1, max1, min, max, size;
+
+				min0 = _mm_sub_ps(m_center, m_half_size);
+				max0 = _mm_add_ps(m_center, m_half_size);
+
+				min1 = _mm_sub_ps(box.m_center,
+					box.m_half_size);
+				max1 = _mm_add_ps(box.m_center,
+					box.m_half_size);
+
+				min = _mm_min_ps(min0, min1);
+				max = _mm_max_ps(max0, max1);
+
+				size = _mm_sub_ps(max, min);
+
+				return _mm_cvtss_f32(_mm_sub_ps(_mm_mul_ss(size,
+					_mm_mul_ss(_mm_shuffle_ps(size, size,
+						_MM_SHUFFLE(1, 1, 1, 1)),
+					_mm_movehl_ps(size, size))),
+					_mm_mul_ss(_mm_mul_ss(m_half_size,
+					_mm_mul_ss(_mm_shuffle_ps(m_half_size,
+						m_half_size,
+						_MM_SHUFFLE(1, 1, 1, 1)),
+					_mm_movehl_ps(m_half_size,
+						m_half_size))),
+					_mm_set_ss(8.0f))));
+#else	/* __SSE__ */
+				glm::vec3 min, max, size;
+
+				min = glm::min(get_min(), box.get_min());
+				max = glm::max(get_max(), box.get_max());
+
+				size = max - min;
+
+				return size[0] * size[1] * size[2] -
+					get_half_size()[0] * get_half_size()[1]
+					* get_half_size()[2] * 8.0f;
+#endif	/* __SSE__ */
+			}
 
 			/**
 			 * @brief Gets the distance.

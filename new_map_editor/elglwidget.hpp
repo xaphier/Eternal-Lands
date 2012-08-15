@@ -24,7 +24,8 @@ class ELGLWidget: public QGLWidget
 		glm::vec3 m_world_position;
 		glm::vec3 m_grab_world_position;
 		glm::vec3 m_move_offset;
-		glm::uvec2  m_select_pos, m_half_size;
+		glm::uvec4 m_selection_rect;
+		glm::uvec2 m_select_pos, m_half_size;
 		String m_object_name;
 		float m_light_radius;
 		float m_zoom;
@@ -239,6 +240,7 @@ class ELGLWidget: public QGLWidget
 		void set_draw_light_spheres(const bool draw_light_spheres);
 		void set_lights_enabled(const bool enabled);
 		void init_terrain(const int width, const int height);
+		void set_object_walkable(const bool value);
 
 	signals:
 		void update_object(const bool select);

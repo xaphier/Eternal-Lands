@@ -561,16 +561,43 @@ namespace eternal_lands
 			/**
 			 * @brief Select objects.
 			 *
+			 * Checks the sub nodes of this node using the box.
+			 * All objects intersecting the box are added to
+			 * the objects vector.
+			 * @param bounding_box The bounding box that checks the
+			 * objects.
+			 * @param contains_only If true, only objects
+			 * that are containt by the box are selected.
+			 * @param objects The objects vector for the selected
+			 * objects.
+			 */
+			void select_objects(const BoundingBox &bounding_box,
+				const bool contains_only,
+				BoundedObjectSharedPtrVector &objects);
+
+			/**
+			 * @brief Select objects.
+			 *
 			 * Checks the node using the visitor. If the visitor
 			 * returns true, all objects of the leaf node(s) are
 			 * added to the objects vector.
 			 * @param visitor The visitor that checks the nodes.
 			 * @param objects The objects vector for the selected
 			 * objects.
-			 * @return The true if a node was selected.
 			 */
-			bool select_objects(AbstractNodeVisitor &visitor,
+			void select_objects(AbstractNodeVisitor &visitor,
 				BoundedObjectSharedPtrVector &objects);
+
+			/**
+			 * @brief Visits all nodes.
+			 *
+			 * Visists all sub nodes and objects of the this node
+			 * using the visitor. If the visitor returns false,
+			 * visiting is stopped.
+			 * @param visitor The visitor that visits the nodes.
+			 */
+			bool visit(AbstractNodeVisitor &visitor);
+			void randomize_order();
 
 		public:
 			/**

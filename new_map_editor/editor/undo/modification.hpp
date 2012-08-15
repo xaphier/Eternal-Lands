@@ -28,6 +28,7 @@ namespace eternal_lands
 		mt_object_transparency_changed,
 		mt_object_selection_changed,
 		mt_object_materials_changed,
+		mt_object_walkable_changed,
 		mt_light_added,
 		mt_light_removed,
 		mt_light_position_changed,

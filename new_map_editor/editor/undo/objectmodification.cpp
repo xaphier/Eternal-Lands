@@ -46,6 +46,7 @@ namespace eternal_lands
 			case mt_object_transparency_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
+			case mt_object_walkable_changed:
 				editor.modify_object(m_object_description);
 				return false;
 			case mt_light_added:

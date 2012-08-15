@@ -2,6 +2,7 @@
 #include <sceneresources.hpp>
 #include <filesystem.hpp>
 #include <globalvars.hpp>
+#include <logging.hpp>
 #include <image.hpp>
 #include <lightdata.hpp>
 #include "editor/editorobjectdescription.hpp"
@@ -27,6 +28,8 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 
 	m_global_vars = boost::make_shared<GlobalVars>();
 	m_file_system = boost::make_shared<FileSystem>();
+
+	init_logging("log", true);
 
 	m_timer = new QTimer(this);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
@@ -189,11 +192,30 @@ void ELGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (event->button() != m_click_button)
 	{
+		m_selection_rect.z = 0;
+		m_selection_rect.w = 0;
 	}
 }
 
 void ELGLWidget::mousePressEvent(QMouseEvent *event)
 {
+	if (event->buttons().testFlag(m_click_button) &&
+		event->modifiers().testFlag(Qt::ControlModifier))
+	{
+		m_select_pos.x = event->x();
+		m_select_pos.y = height() - event->y();
+
+		std::cout << "selection rect pos: " << glm::to_string(
+			m_select_pos) << std::endl;
+
+		m_select = false;
+		m_select_depth = false;
+		m_mouse_click_action = false;
+		m_grab_world_position_valid = false;
+
+		return;
+	}
+
 	if (event->button() != m_click_button)
 	{
 		return;
@@ -212,12 +234,16 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 	m_select_depth = true;
 	m_mouse_click_action = true;
 	m_grab_world_position_valid = false;
+	m_selection_rect.z = 0;
+	m_selection_rect.w = 0;
 
 	updateGL();
 }
 
 void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
+	glm::uvec2 min, max, pos;
+
 	if (!event->buttons().testFlag(m_click_button))
 	{
 		m_grab_world_position_valid = false;
@@ -231,10 +257,29 @@ void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 		return;
 	}
 
+	if (event->buttons().testFlag(m_click_button) &&
+		event->modifiers().testFlag(Qt::ControlModifier))
+	{
+		pos.x = event->x();
+		pos.y = height() - event->y();
+
+		min = glm::min(m_select_pos, pos);
+		max = glm::max(m_select_pos, pos);
+
+		m_selection_rect.x = min.x;
+		m_selection_rect.y = min.y;
+		m_selection_rect.z = max.x - min.x;
+		m_selection_rect.w = max.y - min.y;
+
+		return;
+	}
+
 	m_select_pos.x = event->x();
 	m_select_pos.y = height() - event->y();
 	m_select_depth = true;
 	m_mouse_move_action = true;
+	m_selection_rect.z = 0;
+	m_selection_rect.w = 0;
 
 	updateGL();
 }
@@ -440,6 +485,11 @@ void ELGLWidget::paintGL()
 
 	m_editor->draw();
 
+	if ((m_selection_rect.z != 0) || (m_selection_rect.w != 0))
+	{
+		m_editor->draw_selection(m_selection_rect);
+	}
+
 	if (m_select)
 	{
 		m_select = false;
@@ -544,6 +594,12 @@ void ELGLWidget::remove_object()
 void ELGLWidget::set_object_blend(const BlendType value)
 {
 	m_editor->set_object_blend(value);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_object_walkable(const bool value)
+{
+	m_editor->set_object_walkable(value);
 	emit can_undo(m_editor->get_can_undo());
 }
 

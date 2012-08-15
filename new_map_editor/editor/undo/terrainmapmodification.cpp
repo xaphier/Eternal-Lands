@@ -45,6 +45,7 @@ namespace eternal_lands
 			case mt_object_transparency_changed:
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
+			case mt_object_walkable_changed:
 				break;
 			case mt_terrain_albedo_map_changed:
 				editor.set_terrain_albedo_map(m_map, get_id());

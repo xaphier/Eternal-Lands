@@ -46,7 +46,8 @@ namespace eternal_lands
 		const glm::vec3 &rotation_angles, const String &name,
 		const float scale, const float transparency,
 		const Uint32 id, const SelectionType selection,
-		const BlendType blend, const StringVector &material_names)
+		const BlendType blend, const bool walkable,
+		const StringVector &material_names)
 	{
 		SelectionType new_selection;
 
@@ -59,7 +60,8 @@ namespace eternal_lands
 
 		m_data.add_object(EditorObjectDescription(translation,
 			rotation_angles, material_names, name, scale,
-			transparency, id, new_selection, blend), sct_no);
+			transparency, id, new_selection, blend, walkable),
+			sct_no);
 	}
 
 	void EditorMapLoader::add_light(const glm::vec3 &position,

@@ -94,40 +94,26 @@ albedo = mix(albedo, tmp, blend);
      <common_parameter>terrain_uvs</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
-    <parameter>
-     <common_parameter>world_uv</common_parameter>
-     <qualifier>in</qualifier>
-    </parameter>
    </parameters>
-   <source>vec4 tmp;
-vec2 uv, ddx, ddy;
-float lod, blend;
+   <source>vec2 tmp;
 int i, index;
 
-ddx = dFdx(world_uv);
-ddy = dFdy(world_uv);
-
-lod = log2(max(length(ddx), length(ddy)));
-
 index = clipmap_slices - 1;
+tmp = terrain_uvs[clipmap_slices - 1];
 
 for (i = clipmap_slices - 2; i &gt;= 0; --i)
 {
-	uv = terrain_uvs[i];
-
-	if (all(lessThan(abs(uv - vec2(0.5)), vec2(0.4995))))
+	if (all(lessThan(abs(terrain_uvs[i] - vec2(0.5)), vec2(0.4995))))
 	{
-		index = i;
+		if (i &lt; index)
+		{
+			index = i;
+			tmp = terrain_uvs[i];
+		}
 	}
 }
 
-lod = clamp(lod, index, clipmap_slices - 1);
-index = int(lod);
-blend = fract(lod);
-
 albedo = texture3D(effect_sampler_0, vec3(terrain_uvs[index], (index + 0.5) / clipmap_slices));
-tmp = texture3D(effect_sampler_0, vec3(terrain_uvs[index + 1], (index + 1.5) / clipmap_slices));
-albedo = mix(albedo, tmp, blend);
 </source>
    <version>120</version>
   </shader_source_data>
