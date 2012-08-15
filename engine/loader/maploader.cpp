@@ -196,11 +196,11 @@ namespace eternal_lands
 
 		id = get_free_ids().use_typeless_object_id(x + (y << 10),
 			it_tile_object);
-/*
+
 		m_instances_builder->add(ObjectDescription(transformation,
 			materials, String(UTF8("tile")), 0.0f, id, st_none,
 			bt_disabled));
-*/
+
 		m_map->set_tile(x, y, tile);
 	}
 

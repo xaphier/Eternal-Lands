@@ -405,12 +405,12 @@ namespace eternal_lands
 
 		m_shadow_update_mask = 0xFF;
 
-		shadow_map_width = m_scene_view.get_shadow_map_size().x;
-		shadow_map_height = m_scene_view.get_shadow_map_size().y;
+		shadow_map_width = get_scene_view().get_shadow_map_size().x;
+		shadow_map_height = get_scene_view().get_shadow_map_size().y;
 
 		shadow_map_size = std::max(shadow_map_width, shadow_map_height);
 
-		if (m_scene_view.get_shadow_map_count() == 0)
+		if (get_scene_view().get_shadow_map_count() == 0)
 		{
 			m_shadow_frame_buffer.reset();
 			return;
@@ -423,12 +423,12 @@ namespace eternal_lands
 			mipmaps++;
 		}
 
-		shadow_map_count = m_scene_view.get_shadow_map_count();
+		shadow_map_count = get_scene_view().get_shadow_map_count();
 		target = ttt_texture_2d_array;				
 		format = tft_r32f;
 		depth_buffer = true;
 
-		if (!m_scene_view.get_exponential_shadow_maps())
+		if (!get_scene_view().get_exponential_shadow_maps())
 		{
 			shadow_map_count = 0;
 			mipmaps = 0;
@@ -491,7 +491,7 @@ namespace eternal_lands
 				mipmaps++;
 			}
 
-			format = tft_rgb8;
+			format = tft_rgb8;//tft_r_rgtc1;
 		}
 		else
 		{
@@ -666,9 +666,10 @@ namespace eternal_lands
 	{
 		Frustum frustum;
 
-		m_scene_view.update();
+		get_scene_view().update();
 
-		frustum = Frustum(m_scene_view.get_projection_view_matrix());
+		frustum = Frustum(
+			get_scene_view().get_projection_view_matrix());
 
 		m_visible_lights.get_lights().clear();
 
@@ -723,7 +724,8 @@ namespace eternal_lands
 			DEBUG_CHECK_GL_ERROR();
 
 			intersect_terrain(frustum, glm::vec3(
-				m_scene_view.get_camera()), terrain_visitor);
+				get_scene_view().get_camera()),
+				terrain_visitor);
 
 			m_visible_terrain.set_mesh(terrain_visitor.get_mesh());
 			m_visible_terrain.set_material(
@@ -734,9 +736,10 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_visible_objects.sort(glm::vec3(m_scene_view.get_camera()));
+		m_visible_objects.sort(glm::vec3(
+			get_scene_view().get_camera()));
 
-		if (m_scene_view.get_shadow_map_count() > 0)
+		if (get_scene_view().get_shadow_map_count() > 0)
 		{
 			cull_all_shadows();
 		}
@@ -744,7 +747,7 @@ namespace eternal_lands
 		intersect(frustum, m_visible_lights);
 
 		m_visible_lights.update_camera(glm::vec3(
-			m_scene_view.get_camera()));
+			get_scene_view().get_camera()));
 
 		if (m_rebuild_terrain_map)
 		{
@@ -770,7 +773,7 @@ namespace eternal_lands
 		}
 
 		frustum = Frustum(
-			m_scene_view.get_split_projection_view_matrices());
+			get_scene_view().get_split_projection_view_matrices());
 
 		if (get_global_vars()->get_opengl_3_1())
 		{
@@ -810,14 +813,14 @@ namespace eternal_lands
 			convex_bodys[i].clip(receiver_boxes[i]);
 		}
 
-		m_scene_view.build_shadow_matrices(
+		get_scene_view().build_shadow_matrices(
 			glm::vec3(get_main_light_direction()), convex_bodys, 
 			m_map->get_bounding_box().get_max().z);
 
-		camera = glm::vec3(m_scene_view.get_shadow_camera());
+		camera = glm::vec3(get_scene_view().get_shadow_camera());
 
 		frustum = Frustum(
-			m_scene_view.get_shadow_projection_view_matrices());
+			get_scene_view().get_shadow_projection_view_matrices());
 
 		m_shadow_objects.next_frame();
 
@@ -885,8 +888,8 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_opengl_3_2())
 		{
-			frustum = Frustum(
-				m_scene_view.get_split_projection_view_matrices());
+			frustum = Frustum(get_scene_view(
+				).get_split_projection_view_matrices());
 
 			for (i = 0; i < count; ++i)
 			{
@@ -896,7 +899,7 @@ namespace eternal_lands
 			}
 		}
 
-		m_scene_view.update_shadow_matrices(convex_bodys,
+		get_scene_view().update_shadow_matrices(convex_bodys,
 			m_shadow_update_mask);
 	}
 
@@ -904,7 +907,7 @@ namespace eternal_lands
 	{
 		bool result;
 
-		result = m_state_manager.switch_program(program);
+		result = get_state_manager().switch_program(program);
 
 		if (program.get() == nullptr)
 		{
@@ -914,33 +917,34 @@ namespace eternal_lands
 		if (m_program_vars_id != program->get_last_used())
 		{
 			program->set_parameter(apt_view_matrix,
-				m_scene_view.get_current_view_matrix());
+				get_scene_view().get_current_view_matrix());
 			program->set_parameter(apt_view_rotation_matrix,
-				m_scene_view.get_current_view_rotation_matrix()
-				);
+				get_scene_view(
+					).get_current_view_rotation_matrix());
 			program->set_parameter(apt_projection_matrix,
-				m_scene_view.get_current_projection_matrix());
+				get_scene_view(
+					).get_current_projection_matrix());
 			program->set_parameter(apt_projection_view_matrix,
-				m_scene_view.get_current_projection_view_matrix(
-					));
+				get_scene_view(
+					).get_current_projection_view_matrix());
 			program->set_parameter(apt_time, m_time);
 			program->set_parameter(apt_fog_data, m_fog);
 			program->set_parameter(apt_camera,
-				m_scene_view.get_camera());
+				get_scene_view().get_camera());
 			program->set_parameter(apt_shadow_distance_transform,
-				m_scene_view.get_shadow_distance_transform());
+				get_scene_view(
+					).get_shadow_distance_transform());
 			program->set_parameter(apt_shadow_texture_matrices,
-				m_scene_view.get_shadow_texture_matrices());
+				get_scene_view().get_shadow_texture_matrices());
 			program->set_parameter(apt_split_distances,
-				m_scene_view.get_split_distances());
+				get_scene_view().get_split_distances());
 			program->set_parameter(apt_terrain_scale,
 				m_map->get_terrain_size_data());
 			program->set_parameter(apt_terrain_texture_size,
 				m_clipmap.get_terrain_texture_size());
 			program->set_parameter(apt_z_params,
-				m_scene_view.get_z_params());
-			m_state_manager.get_program()->set_parameter(
-				apt_clipmap_matrices,
+				get_scene_view().get_z_params());
+			program->set_parameter(apt_clipmap_matrices,
 				m_clipmap.get_texture_matrices());
 
 			if (m_map->get_dungeon())
@@ -962,13 +966,11 @@ namespace eternal_lands
 				}
 			}
 
-			m_state_manager.get_program()->set_parameter(
-				apt_dynamic_lights_count, 4);
-			m_state_manager.get_program()->set_parameter(
-				apt_light_positions,
+			program->set_parameter(apt_dynamic_lights_count, 4);
+			program->set_parameter(apt_light_positions,
 				m_light_positions_array);
-			m_state_manager.get_program()->set_parameter(
-				apt_light_colors, m_light_colors_array);
+			program->set_parameter(apt_light_colors,
+				m_light_colors_array);
 
 			program->set_last_used(m_program_vars_id);
 		}
@@ -994,7 +996,8 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_state_manager.switch_mesh(terrain_data.get_mesh());
+			get_state_manager().switch_mesh(
+				terrain_data.get_mesh());
 
 			MaterialLock material(terrain_data.get_material());
 
@@ -1015,25 +1018,26 @@ namespace eternal_lands
 			switch_program(material->get_effect()->get_program(
 				type));
 
-			m_state_manager.switch_sample_alpha_to_coverage(
+			get_state_manager().switch_sample_alpha_to_coverage(
 				material->get_effect()->get_description(
 					).get_transparent() &&
 				(type == ept_shadow));
 
-			m_state_manager.get_program()->set_parameter(
+			get_state_manager().get_program()->set_parameter(
 				apt_dynamic_lights_count, lights_count);
-			m_state_manager.get_program()->set_parameter(
+			get_state_manager().get_program()->set_parameter(
 				apt_light_positions, m_light_positions_array);
-			m_state_manager.get_program()->set_parameter(
+			get_state_manager().get_program()->set_parameter(
 				apt_light_colors, m_light_colors_array);
 
 			DEBUG_CHECK_GL_ERROR();
 
-			material->bind(m_state_manager);
+			material->bind(get_state_manager());
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_state_manager.draw(0, terrain_data.get_instances());
+			get_state_manager().draw(0,
+				terrain_data.get_instances());
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -1061,7 +1065,7 @@ namespace eternal_lands
 		Uint16 count, i;
 		bool object_data_set;
 
-		m_state_manager.switch_mesh(object->get_mesh());
+		get_state_manager().switch_mesh(object->get_mesh());
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1081,28 +1085,28 @@ namespace eternal_lands
 				object_data_set = false;
 			}
 
-			m_state_manager.switch_sample_alpha_to_coverage(
+			get_state_manager().switch_sample_alpha_to_coverage(
 				material->get_effect()->get_description(
 					).get_transparent());
 
 			if (!object_data_set)
 			{
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_world_transformation,
 					object->get_world_transformation(
 						).get_data());
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				object_data_set = true;
 			}
 
 			DEBUG_CHECK_GL_ERROR();
 
-			material->bind(m_state_manager);
+			material->bind(get_state_manager());
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_state_manager.draw(i, instances);
+			get_state_manager().draw(i, instances);
 
 			DEBUG_CHECK_GL_ERROR();
 		}
@@ -1115,7 +1119,7 @@ namespace eternal_lands
 		Uint16 count, i, lights_count;
 		bool object_data_set;
 
-		m_state_manager.switch_mesh(object->get_mesh());
+		get_state_manager().switch_mesh(object->get_mesh());
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1137,24 +1141,24 @@ namespace eternal_lands
 				object_data_set = false;
 			}
 
-			m_state_manager.switch_sample_alpha_to_coverage(
+			get_state_manager().switch_sample_alpha_to_coverage(
 				material->get_effect()->get_description(
 					).get_transparent());
 
 			if (!object_data_set)
 			{
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_world_transformation,
 					object->get_world_transformation(
 						).get_data());
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_bones, object->get_bones());
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_dynamic_lights_count, lights_count);
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_light_positions,
 					m_light_positions_array);
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_light_colors, m_light_colors_array);
 
 				object_data_set = true;
@@ -1162,11 +1166,11 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			material->bind(m_state_manager);
+			material->bind(get_state_manager());
 
 			DEBUG_CHECK_GL_ERROR();
 
-			m_state_manager.draw(i, instances);
+			get_state_manager().draw(i, instances);
 
 			DEBUG_CHECK_GL_ERROR();
 		}
@@ -1233,9 +1237,9 @@ namespace eternal_lands
 	{
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.init();
+		get_state_manager().init();
 
-		if (m_scene_view.get_exponential_shadow_maps())
+		if (get_scene_view().get_exponential_shadow_maps())
 		{
 			m_shadow_frame_buffer->attach(m_shadow_texture,
 				fbat_color_0, index);
@@ -1253,20 +1257,20 @@ namespace eternal_lands
 
 		STRING_MARKER(UTF8("drawing shadows %1%"), index);
 
-		m_state_manager.switch_color_mask(glm::bvec4(
-			m_scene_view.get_exponential_shadow_maps()));
+		get_state_manager().switch_color_mask(glm::bvec4(
+			get_scene_view().get_exponential_shadow_maps()));
 
-		m_state_manager.switch_polygon_offset_fill(true);
+		get_state_manager().switch_polygon_offset_fill(true);
 		glPolygonOffset(1.0f, 32.0f);
 
-		if (!m_scene_view.get_exponential_shadow_maps())
+		if (!get_scene_view().get_exponential_shadow_maps())
 		{
 			glCullFace(GL_FRONT);
 		}
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_scene_view.set_shadow_view(index);
+		get_scene_view().set_shadow_view(index);
 
 		draw_terrain(m_shadow_terrain[index], ept_shadow, false);
 
@@ -1280,11 +1284,11 @@ namespace eternal_lands
 			}
 		}
 
-		m_program_vars_id++;
+		update_program_vars_id();
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.unbind_all();
+		get_state_manager().unbind_all();
 	}
 
 	void Scene::draw_shadows()
@@ -1302,7 +1306,7 @@ namespace eternal_lands
 			glEnable(GL_DEPTH_CLAMP);
 		}
 
-		for (i = 0; i < m_scene_view.get_shadow_map_count(); ++i)
+		for (i = 0; i < get_scene_view().get_shadow_map_count(); ++i)
 		{
 			if (!m_shadow_update_mask[i])
 			{
@@ -1315,7 +1319,8 @@ namespace eternal_lands
 			}
 			else
 			{
-				if (m_scene_view.get_exponential_shadow_maps())
+				if (get_scene_view(
+					).get_exponential_shadow_maps())
 				{
 					m_shadow_frame_buffer->attach(
 						m_shadow_texture,
@@ -1348,12 +1353,12 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.switch_texture(spt_shadow,
+		get_state_manager().switch_texture(spt_shadow,
 			m_shadow_texture);
 
 		DEBUG_CHECK_GL_ERROR();
 
-		if (m_scene_view.get_exponential_shadow_maps())
+		if (get_scene_view().get_exponential_shadow_maps())
 		{
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 		}
@@ -1380,9 +1385,9 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_scene_view.set_default_view();
+		get_scene_view().set_default_view();
 
-		m_state_manager.switch_color_mask(glm::bvec4(false));
+		get_state_manager().switch_color_mask(glm::bvec4(false));
 
 		index = 0;
 
@@ -1446,7 +1451,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_program_vars_id++;
+		update_program_vars_id();
 	}
 
 	void Scene::draw_default()
@@ -1460,9 +1465,9 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_scene_view.set_default_view();
+		get_scene_view().set_default_view();
 
-		m_state_manager.switch_multisample(true);
+		get_state_manager().switch_multisample(true);
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1522,7 +1527,7 @@ namespace eternal_lands
 						break;
 				}
 
-				m_state_manager.switch_blend(blend !=
+				get_state_manager().switch_blend(blend !=
 					bt_disabled);
 			}
 
@@ -1552,7 +1557,7 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR();
 
-		m_program_vars_id++;
+		update_program_vars_id();
 		m_frame_id++;
 	}
 
@@ -1566,6 +1571,8 @@ namespace eternal_lands
 		m_clipmap_frame_buffer->bind();
 		m_clipmap_frame_buffer->attach(m_clipmap_texture, fbat_color_0,
 			index);
+//		m_clipmap_frame_buffer->attach(m_clipmap_tmp_texture,
+//			fbat_color_0, 0);
 		m_clipmap_frame_buffer->clear(glm::vec4(0.0f), 0);
 
 		MaterialLock material_lock(material);
@@ -1577,25 +1584,25 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		material_lock->bind(m_state_manager);
+		material_lock->bind(get_state_manager());
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.get_program()->set_parameter(
+		get_state_manager().get_program()->set_parameter(
 			apt_texture_matrices, texture_matrices);
-		m_state_manager.get_program()->set_parameter(
+		get_state_manager().get_program()->set_parameter(
 			apt_albedo_scale_offsets,
 			material->get_albedo_scale_offsets());
-		m_state_manager.get_program()->set_parameter(
+		get_state_manager().get_program()->set_parameter(
 			apt_emission_scale_offset,
 			material->get_emission_scale_offset());
-		m_state_manager.get_program()->set_parameter(
+		get_state_manager().get_program()->set_parameter(
 			apt_specular_scale_offset,
 			material->get_specular_scale_offset());
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.draw(0, 1);
+		get_state_manager().draw(0, 1);
 
 		DEBUG_CHECK_GL_ERROR();
 	}
@@ -1654,12 +1661,12 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_scene_view.set_ortho_view();
-		m_state_manager.switch_depth_mask(false);
-		m_state_manager.switch_depth_test(false);
-		m_state_manager.switch_blend(true);
-		m_state_manager.switch_multisample(false);
-		m_state_manager.switch_mesh(m_screen_quad);
+		get_scene_view().set_ortho_view();
+		get_state_manager().switch_depth_mask(false);
+		get_state_manager().switch_depth_test(false);
+		get_state_manager().switch_blend(true);
+		get_state_manager().switch_multisample(false);
+		get_state_manager().switch_mesh(get_screen_quad());
 
 		count = m_clipmap.get_slices();
 
@@ -1668,7 +1675,7 @@ namespace eternal_lands
 			update_terrain_texture(i);
 		}
 
-		m_program_vars_id++;
+		update_program_vars_id();
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1682,7 +1689,7 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
-			m_state_manager.switch_texture(spt_effect_0,
+			get_state_manager().switch_texture(spt_effect_0,
 				m_clipmap_texture);
 
 			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
@@ -1759,15 +1766,14 @@ namespace eternal_lands
 			static_cast<Uint16>(light_index) %
 			glm::to_string(color));
 
-#if	1
 		glCullFace(GL_FRONT);
 		/************/
 		glStencilFunc(GL_ALWAYS, light_index, 0xFFFFFFFF);
 		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP); 
 
 		// Disable color writes
-		m_state_manager.switch_color_mask(glm::bvec4(false));
-		m_state_manager.switch_blend(false);
+		get_state_manager().switch_color_mask(glm::bvec4(false));
+		get_state_manager().switch_blend(false);
 
 		// Draw a sphere the radius of the light
 		draw_object(m_light_sphere, ept_depth, 1, 0);
@@ -1778,9 +1784,8 @@ namespace eternal_lands
 		glCullFace(GL_BACK);
 		/************/
 
-		m_state_manager.switch_color_mask(glm::bvec4(true));
-		m_state_manager.switch_blend(true);
-#endif
+		get_state_manager().switch_color_mask(glm::bvec4(true));
+		get_state_manager().switch_blend(true);
 
 		//TODO: Render lowers detail spheres when light is far away?
 		// Draw a sphere the radius of the light
@@ -1826,10 +1831,10 @@ namespace eternal_lands
 			static_cast<Uint16>(light_index) %
 			glm::to_string(color));
 
-		m_state_manager.switch_color_mask(glm::bvec4(true));
-		m_state_manager.switch_depth_mask(false);
-		m_state_manager.switch_blend(true);
-		m_state_manager.switch_culling(true);
+		get_state_manager().switch_color_mask(glm::bvec4(true));
+		get_state_manager().switch_depth_mask(false);
+		get_state_manager().switch_blend(true);
+		get_state_manager().switch_culling(true);
 
 		draw_object(m_light_sphere, ept_default, 1, 0);
 	}
@@ -1864,9 +1869,9 @@ namespace eternal_lands
 
 		glEnable(GL_STENCIL_TEST);
 		glEnable(GL_DEPTH_CLAMP);
-		m_state_manager.switch_depth_mask(false);
-		m_state_manager.switch_blend(true);
-		m_state_manager.switch_culling(true);
+		get_state_manager().switch_depth_mask(false);
+		get_state_manager().switch_blend(true);
+		get_state_manager().switch_culling(true);
 
 		BOOST_FOREACH(const RenderLightData &light,
 			m_visible_lights.get_lights())
@@ -1893,10 +1898,10 @@ namespace eternal_lands
 		glCullFace(GL_FRONT);
 		glDepthFunc(GL_GREATER);
 
-		m_state_manager.switch_color_mask(glm::bvec4(true));
-		m_state_manager.switch_depth_mask(false);
-		m_state_manager.switch_blend(true);
-		m_state_manager.switch_culling(true);
+		get_state_manager().switch_color_mask(glm::bvec4(true));
+		get_state_manager().switch_depth_mask(false);
+		get_state_manager().switch_blend(true);
+		get_state_manager().switch_culling(true);
 
 		BOOST_FOREACH(const RenderLightData &light,
 			m_visible_lights.get_lights())
@@ -1923,7 +1928,7 @@ namespace eternal_lands
 		glCullFace(GL_FRONT);
 		glDepthFunc(GL_LEQUAL);
 
-		m_program_vars_id++;
+		update_program_vars_id();
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1932,15 +1937,15 @@ namespace eternal_lands
 
 	void Scene::draw()
 	{
-		StateManagerUtil state(m_state_manager);
+		StateManagerUtil state(get_state_manager());
 
 		CHECK_GL_ERROR();
 
 		DEBUG_CHECK_GL_ERROR();
 
-		m_state_manager.init();
+		get_state_manager().init();
 
-		m_scene_view.set_default_view();
+		get_scene_view().set_default_view();
 		glDepthFunc(GL_LEQUAL);
 
 		if (m_scene_frame_buffer.get() == nullptr)
@@ -1965,27 +1970,27 @@ namespace eternal_lands
 			draw_lights();
 		}
 
-		if (m_scene_view.get_shadow_map_count() > 0)
+		if (get_scene_view().get_shadow_map_count() > 0)
 		{
 			STRING_MARKER(UTF8("drawing mode '%1%'"),
 				UTF8("shadows"));
 			draw_shadows();
 		}
 
-		if (m_clipmap.update(glm::vec3(m_scene_view.get_camera()),
-			glm::vec3(m_scene_view.get_view_dir()),
-			glm::vec2(m_scene_view.get_focus())))
+		if (m_clipmap.update(glm::vec3(get_scene_view().get_camera()),
+			glm::vec3(get_scene_view().get_view_dir()),
+			glm::vec2(get_scene_view().get_focus())))
 		{
 			update_terrain_texture();
 		}
 
-		if (m_scene_view.get_shadow_map_count() > 0)
+		if (get_scene_view().get_shadow_map_count() > 0)
 		{
-			m_state_manager.switch_texture(spt_shadow,
+			get_state_manager().switch_texture(spt_shadow,
 				m_shadow_texture);
 		}
 
-		m_state_manager.switch_depth_mask(false);
+		get_state_manager().switch_depth_mask(false);
 
 		if (m_scene_frame_buffer.get() == nullptr)
 		{
@@ -2002,13 +2007,13 @@ namespace eternal_lands
 				(get_global_vars()->get_light_system() !=
 					lst_default))
 			{
-				m_state_manager.switch_texture(
+				get_state_manager().switch_texture(
 					spt_light_positions,
 					m_light_position_texture);
-				m_state_manager.switch_texture(
+				get_state_manager().switch_texture(
 					spt_light_colors,
 					m_light_color_texture);
-				m_state_manager.switch_texture(
+				get_state_manager().switch_texture(
 					spt_light_indices,
 					m_light_index_texture);
 			}
@@ -2048,7 +2053,8 @@ namespace eternal_lands
 			return;
 		}
 
-		m_state_manager.switch_mesh(object.get_object()->get_mesh());
+		get_state_manager().switch_mesh(
+			object.get_object()->get_mesh());
 
 		sub_objects = object.get_object()->get_sub_objects().size();
 
@@ -2086,24 +2092,24 @@ namespace eternal_lands
 
 			if (!object_data_set)
 			{
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_world_transformation,
 					object.get_object(
 						)->get_world_transformation(
 						).get_data());
-				m_state_manager.get_program()->set_parameter(
+				get_state_manager().get_program()->set_parameter(
 					apt_bones, object.get_object(
 						)->get_bones());
 				object_data_set = true;
 			}
 
-			material->bind(m_state_manager);
+			material->bind(get_state_manager());
 
-			m_state_manager.get_program()->set_parameter(
+			get_state_manager().get_program()->set_parameter(
 				apt_texture_matrices,
 				material->get_texture_matrices());
 
-			m_state_manager.draw(object.get_object(
+			get_state_manager().draw(object.get_object(
 				)->get_sub_objects()[i], 1);
 
 			glEndQuery(GL_SAMPLES_PASSED);
@@ -2118,24 +2124,24 @@ namespace eternal_lands
 	{
 		PairUint32SelectionTypeVector ids;
 		Uint32 i, max_count, count, id, query_offset, query_index;
-		StateManagerUtil state(m_state_manager);
+		StateManagerUtil state(get_state_manager());
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("picking"));
 
-		m_state_manager.unbind_all();
-		m_state_manager.switch_scissor_test(true);
+		get_state_manager().unbind_all();
+		get_state_manager().switch_scissor_test(true);
 		glScissor(offset.x - size.x, offset.y - size.y, 2 * size.x,
 			2 * size.y);
-		m_state_manager.switch_multisample(true);
-		m_state_manager.switch_depth_mask(false);
-		m_state_manager.switch_color_mask(glm::bvec4(false));
+		get_state_manager().switch_multisample(true);
+		get_state_manager().switch_depth_mask(false);
+		get_state_manager().switch_color_mask(glm::bvec4(false));
 
-		m_state_manager.switch_polygon_offset_fill(true);
+		get_state_manager().switch_polygon_offset_fill(true);
 		glPolygonOffset(0.0f, -1.0f);
 
 		glDepthFunc(GL_LEQUAL);
 
-		m_scene_view.set_default_view();
+		get_scene_view().set_default_view();
 
 		query_offset = m_querie_ids.size() / 2;
 		query_index = query_offset;
@@ -2146,7 +2152,7 @@ namespace eternal_lands
 			pick_object(object, ids, query_index);
 		}
 
-		m_program_vars_id++;
+		update_program_vars_id();
 
 		max_count = 0;
 		id = 0xFFFFFFFF;
@@ -2180,25 +2186,25 @@ namespace eternal_lands
 	{
 		PairUint32SelectionTypeVector ids;
 		Uint32 i, count, query_offset, query_index;
-		StateManagerUtil state(m_state_manager);
+		StateManagerUtil state(get_state_manager());
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("picking"));
 
 		selections.clear();
 
-		m_state_manager.unbind_all();
-		m_state_manager.switch_scissor_test(true);
+		get_state_manager().unbind_all();
+		get_state_manager().switch_scissor_test(true);
 		glScissor(min.x, min.y, max.x - min.x, max.y - min.y);
-		m_state_manager.switch_multisample(true);
-		m_state_manager.switch_depth_mask(false);
-		m_state_manager.switch_color_mask(glm::bvec4(false));
+		get_state_manager().switch_multisample(true);
+		get_state_manager().switch_depth_mask(false);
+		get_state_manager().switch_color_mask(glm::bvec4(false));
 
-		m_state_manager.switch_polygon_offset_fill(true);
+		get_state_manager().switch_polygon_offset_fill(true);
 		glPolygonOffset(0.0f, -1.0f);
 
 		glDepthFunc(GL_LEQUAL);
 
-		m_scene_view.set_default_view();
+		get_scene_view().set_default_view();
 
 		query_offset = m_querie_ids.size() / 2;
 		query_index = query_offset;
@@ -2209,7 +2215,7 @@ namespace eternal_lands
 			pick_object(object, ids, query_index);
 		}
 
-		m_program_vars_id++;
+		update_program_vars_id();
 
 		for (i = 0; i < ids.size(); ++i)
 		{
@@ -2389,8 +2395,8 @@ namespace eternal_lands
 		m_light_index_texture->set_mag_filter(tft_nearest);
 		m_light_index_texture->set_min_filter(tft_nearest);
 		m_light_index_texture->set_mipmap_filter(tmt_none);
-		m_light_index_texture->init(m_scene_view.get_view_port().z,
-			m_scene_view.get_view_port().w, 0, 0);
+		m_light_index_texture->init(get_view_port().z,
+			get_view_port().w, 0, 0);
 	}
 
 	const ParticleDataVector &Scene::get_particles() const
@@ -2462,7 +2468,7 @@ namespace eternal_lands
 			return;
 		}
 
-		rect = glm::uvec4(m_scene_view.get_view_port());
+		rect = glm::uvec4(get_view_port());
 		rect.z += rect.x;
 		rect.w += rect.y;
 
@@ -2481,7 +2487,7 @@ namespace eternal_lands
 		{
 			m_scene_frame_buffer.reset();
 
-			m_scene_view.set_view_port(view_port);
+			get_scene_view().set_view_port(view_port);
 
 			m_light_index_texture.reset();
 			m_light_position_texture.reset();
@@ -2492,11 +2498,11 @@ namespace eternal_lands
 			return;
 		}
 
-		if ((view_port.z == m_scene_view.get_view_port().z) &&
-			(view_port.w == m_scene_view.get_view_port().w)
+		if ((view_port.z == get_view_port().z) &&
+			(view_port.w == get_view_port().w)
 			&& (m_scene_frame_buffer.get() != nullptr))
 		{
-			m_scene_view.set_view_port(view_port);
+			get_scene_view().set_view_port(view_port);
 
 			return;
 		}
@@ -2534,15 +2540,13 @@ namespace eternal_lands
 
 		update_light_index_texture();
 
-		m_scene_view.set_view_port(view_port);
+		get_scene_view().set_view_port(view_port);
 	}
 
 	void Scene::set_view_port()
 	{
-		glViewport(m_scene_view.get_view_port()[0],
-			m_scene_view.get_view_port()[1],
-			m_scene_view.get_view_port()[2],
-			m_scene_view.get_view_port()[3]);
+		glViewport(get_view_port()[0], get_view_port()[1],
+			get_view_port()[2], get_view_port()[3]);
 	}
 
 }

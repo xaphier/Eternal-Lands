@@ -18,6 +18,7 @@ namespace eternal_lands
 		const ObjectDescription &object_description):
 		ObjectDescription(object_description)
 	{
+		BoundingBox bounding_box;
 		StringVector material_names;
 		Uint32 i, count;
 
@@ -42,7 +43,9 @@ namespace eternal_lands
 		set_material_names(material_names);
 
 		m_mesh_data_tool->get_bounding_box(get_world_transformation(),
-			m_bounding_box);
+			bounding_box);
+
+		set_bounding_box(bounding_box);
 
 		m_effect_names.resize(material_names.size());
 		m_simple_shadows.resize(material_names.size(), false);

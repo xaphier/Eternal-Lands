@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "objectdescription.hpp"
-#include "boundingbox.hpp"
+#include "boundedobject.hpp"
 
 /**
  * @file
@@ -24,10 +24,9 @@
 namespace eternal_lands
 {
 
-	class InstancingData: public ObjectDescription
+	class InstancingData: public BoundedObject, public ObjectDescription
 	{
 		private:
-			BoundingBox m_bounding_box;
 			MeshDataToolSharedPtr m_mesh_data_tool;
 			StringVector m_effect_names;
 			BoolVector m_simple_shadows;
@@ -36,14 +35,7 @@ namespace eternal_lands
 			InstancingData(
 				const MeshDataCacheSharedPtr &mesh_data_cache,
 				const ObjectDescription &object_descrition);
-
-			~InstancingData() noexcept;
-
-			inline const BoundingBox &get_bounding_box() const
-				noexcept
-			{
-				return m_bounding_box;
-			}
+			virtual ~InstancingData() noexcept;
 
 			inline const MeshDataToolSharedPtr &get_mesh_data_tool()
 				const noexcept

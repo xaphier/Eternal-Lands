@@ -119,8 +119,6 @@ namespace eternal_lands
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids,
 				Uint32 &query_index);
-			bool switch_program(
-				const GlslProgramSharedPtr &program);
 			void cull_shadows(const glm::vec3 &camera,
 				const Uint16 index);
 			void cull_all_shadows();
@@ -155,6 +153,40 @@ namespace eternal_lands
 				LightVisitor &visitor) const;
 			virtual void depth_read();
 			void map_changed();
+			bool switch_program(
+				const GlslProgramSharedPtr &program);
+
+			inline void update_program_vars_id() noexcept
+			{
+				m_program_vars_id++;
+			}
+
+			inline SceneView &get_scene_view() noexcept
+			{
+				return m_scene_view;
+			}
+
+			inline const SceneView &get_scene_view() const noexcept
+			{
+				return m_scene_view;
+			}
+
+			inline StateManager &get_state_manager() noexcept
+			{
+				return m_state_manager;
+			}
+
+			inline const StateManager &get_state_manager() const
+				noexcept
+			{
+				return m_state_manager;
+			}
+
+			inline const AbstractMeshSharedPtr &get_screen_quad()
+				const noexcept
+			{
+				return m_screen_quad;
+			}
 
 			inline const MapSharedPtr &get_map() const noexcept
 			{
