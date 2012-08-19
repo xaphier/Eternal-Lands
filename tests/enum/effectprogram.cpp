@@ -6,9 +6,7 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "exceptions.hpp"
-#include "effectprogramutil.hpp"
-#include "utf.hpp"
+#include "effect/effectprogramutil.hpp"
 #define BOOST_TEST_MODULE effect_program
 #include <boost/test/unit_test.hpp>
 

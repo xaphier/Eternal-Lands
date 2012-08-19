@@ -15,7 +15,7 @@
 #include "indexbuilder.hpp"
 #include "object.hpp"
 #include "materialdescription.hpp"
-#include "effectdescription.hpp"
+#include "effect/effectdescription.hpp"
 #include "meshbuilder.hpp"
 #include "globalvars.hpp"
 #include "vertexstream.hpp"

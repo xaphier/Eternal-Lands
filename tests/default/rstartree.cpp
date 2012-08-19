@@ -572,8 +572,6 @@ BOOST_AUTO_TEST_CASE(add_random_select_count_objects)
 
 		for (j = 0; j < count; ++j)
 		{
-			BOOST_CHECK(bounding_box.contains(
-				objects[j]->get_bounding_box()));
 			BOOST_CHECK_EQUAL(objects[j].use_count(), 3);
 		}
 

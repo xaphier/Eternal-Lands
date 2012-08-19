@@ -38,13 +38,10 @@ namespace eternal_lands
 			String m_name;
 			String m_world_transformation;
 			String m_texture_coodrinates;
-			String m_uv_mapping;
-			String m_albedo_mapping;
-			String m_normal_mapping;
-			String m_specular_mapping;
-			String m_emission_mapping;
+			String m_main;
 			EffectDescriptionType m_description;
 			ShaderOutputType m_output;
+			bool m_node_based;
 			bool m_receives_shadows;
 			bool m_transparent;
 			bool m_lighting;
@@ -84,34 +81,15 @@ namespace eternal_lands
 				m_texture_coodrinates = texture_coodrinates;
 			}
 
-			inline void set_uv_mapping(const String &uv_mapping)
+			inline void set_main(const String &main) noexcept
+			{
+				m_main = main;
+			}
+
+			inline void set_node_based(const bool node_based)
 				noexcept
 			{
-				m_uv_mapping = uv_mapping;
-			}
-
-			inline void set_albedo_mapping(
-				const String &albedo_mapping) noexcept
-			{
-				m_albedo_mapping = albedo_mapping;
-			}
-
-			inline void set_normal_mapping(
-				const String &normal_mapping) noexcept
-			{
-				m_normal_mapping = normal_mapping;
-			}
-
-			inline void set_specular_mapping(
-				const String &specular_mapping) noexcept
-			{
-				m_specular_mapping = specular_mapping;
-			}
-
-			inline void set_emission_mapping(
-				const String &emission_mapping) noexcept
-			{
-				m_emission_mapping = emission_mapping;
+				m_node_based = node_based;
 			}
 
 			inline void set_receives_shadows(
@@ -161,33 +139,14 @@ namespace eternal_lands
 				return m_texture_coodrinates;
 			}
 
-			inline const String &get_uv_mapping() const noexcept
+			inline const String &get_main() const noexcept
 			{
-				return m_uv_mapping;
+				return m_main;
 			}
 
-			inline const String &get_albedo_mapping() const
-				noexcept
+			inline bool get_node_based() const noexcept
 			{
-				return m_albedo_mapping;
-			}
-
-			inline const String &get_normal_mapping() const
-				noexcept
-			{
-				return m_normal_mapping;
-			}
-
-			inline const String &get_specular_mapping() const
-				noexcept
-			{
-				return m_specular_mapping;
-			}
-
-			inline const String &get_emission_mapping() const
-				noexcept
-			{
-				return m_emission_mapping;
+				return m_node_based;
 			}
 
 			inline EffectDescriptionType get_description() const

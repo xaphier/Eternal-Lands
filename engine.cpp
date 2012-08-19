@@ -36,7 +36,7 @@
 #include "engine/actordatacache.hpp"
 #include "engine/actortexturebuilder.hpp"
 #include "engine/freeids.hpp"
-#include "engine/effectcache.hpp"
+#include "engine/effect/effectcache.hpp"
 #include "engine/globalvars.hpp"
 #include "engine/exceptions.hpp"
 #include "engine/shader/shadersourcebuilder.hpp"

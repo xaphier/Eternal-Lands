@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "node/effectqualityutil.hpp"
+#include "effect/effectqualityutil.hpp"
 #define BOOST_TEST_MODULE effect_quality
 #include <boost/test/unit_test.hpp>
 

@@ -1,54 +1,33 @@
 <?xml version="1.0" encoding="utf8"?>
 <effects>
 	<effect>
-		<name>solid-color-screen-quad</name>
+		<name>solid-color</name>
 		<world_transformation>none</world_transformation>
 		<texture_coodrinates>static_extra</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>output-color</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>output-color</main>
+		<node_based>false</node_based>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>false</lighting>
 		<description>screen_quad_1</description>
 	</effect>
 	<effect>
-		<name>solid-color</name>
-		<world_transformation>static</world_transformation>
-		<texture_coodrinates>static</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>disabled</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
-		<receives_shadows>false</receives_shadows>
-		<transparent>false</transparent>
-		<lighting>false</lighting>
-	</effect>
-	<effect>
 		<name>light-index</name>
 		<world_transformation>static</world_transformation>
 		<texture_coodrinates>static</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>color</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
+		<main>output-color</main>
+		<node_based>false</node_based>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>false</lighting>
+		<description>screen_quad_1</description>
 	</effect>
 	<effect>
 		<name>lava</name>
 		<world_transformation>static</world_transformation>
 		<texture_coodrinates>lava</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>lava</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
+		<main>lava</main>
+		<node_based>false</node_based>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>false</lighting>
@@ -57,11 +36,8 @@
 		<name>default</name>
 		<world_transformation>static</world_transformation>
 		<texture_coodrinates>static</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>default_mapping</main>
+		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>true</lighting>
@@ -70,24 +46,8 @@
 		<name>parallax_slope</name>
 		<world_transformation>static</world_transformation>
 		<texture_coodrinates>static</texture_coodrinates>
-		<uv_mapping>parallax_slope_mapping</uv_mapping>
-		<albedo_mapping>default_grad</albedo_mapping>
-		<normal_mapping>parallax_slope_mapping</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
-		<receives_shadows>true</receives_shadows>
-		<transparent>false</transparent>
-		<lighting>true</lighting>
-	</effect>
-	<effect>
-		<name>relief</name>
-		<world_transformation>static</world_transformation>
-		<texture_coodrinates>static</texture_coodrinates>
-		<uv_mapping>relief_mapping</uv_mapping>
-		<albedo_mapping>default_grad</albedo_mapping>
-		<normal_mapping>relief_mapping</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>parallax_slope_mapping</main>
+		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>true</lighting>
@@ -96,11 +56,8 @@
 		<name>default-alpha</name>
 		<world_transformation>static</world_transformation>
 		<texture_coodrinates>static</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>default_mapping</main>
+		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>true</transparent>
 		<lighting>true</lighting>
@@ -109,11 +66,8 @@
 		<name>actor</name>
 		<world_transformation>bone_animation</world_transformation>
 		<texture_coodrinates>static</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>default_mapping</main>
+		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>true</lighting>
@@ -122,11 +76,8 @@
 		<name>actor-alpha</name>
 		<world_transformation>bone_animation</world_transformation>
 		<texture_coodrinates>static</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>default</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>default_mapping</main>
+		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>true</transparent>
 		<lighting>true</lighting>
@@ -135,11 +86,8 @@
 		<name>simple-terrain</name>
 		<world_transformation>simple-terrain</world_transformation>
 		<texture_coodrinates>terrain</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>terrain</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>terrain-mapping</main>
+		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>true</lighting>
@@ -148,11 +96,8 @@
 		<name>cdlod-terrain</name>
 		<world_transformation>cdlod-terrain</world_transformation>
 		<texture_coodrinates>terrain</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>terrain</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>terrain-mapping</main>
+		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>true</lighting>
@@ -161,71 +106,11 @@
 		<name>clipmap-simple-blend-4-screen-quad</name>
 		<world_transformation>none</world_transformation>
 		<texture_coodrinates>static_extra</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>blend_4</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
+		<main>blend_4</main>
+		<node_based>false</node_based>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
 		<lighting>false</lighting>
 		<description>screen_quad_1</description>
 	</effect>
-<!--	<effect>
-		<name>clipmap-blend-4-screen-quad</name>
-		<world_transformation>none</world_transformation>
-		<texture_coodrinates>static_extra</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>array_blend_4</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
-		<receives_shadows>false</receives_shadows>
-		<transparent>false</transparent>
-		<lighting>false</lighting>
-		<type>screen_quad_1</type>
-	</effect>
-	<effect>
-		<name>clipmap-blend-8-screen-quad</name>
-		<world_transformation>none</world_transformation>
-		<texture_coodrinates>static_extra</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>array_blend_8</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
-		<receives_shadows>false</receives_shadows>
-		<transparent>false</transparent>
-		<lighting>false</lighting>
-		<type>screen_quad_1</type>
-	</effect>
-	<effect>
-		<name>clipmap-blend-12-screen-quad</name>
-		<world_transformation>none</world_transformation>
-		<texture_coodrinates>static_extra</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>array_blend_12</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
-		<receives_shadows>false</receives_shadows>
-		<transparent>false</transparent>
-		<lighting>false</lighting>
-		<type>screen_quad_1</type>
-	</effect>
-	<effect>
-		<name>clipmap-blend-16-screen-quad</name>
-		<world_transformation>none</world_transformation>
-		<texture_coodrinates>static_extra</texture_coodrinates>
-		<uv_mapping>disabled</uv_mapping>
-		<albedo_mapping>array_blend_16</albedo_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>disabled</specular_mapping>
-		<emission_mapping>emission</emission_mapping>
-		<receives_shadows>false</receives_shadows>
-		<transparent>false</transparent>
-		<lighting>false</lighting>
-		<type>screen_quad_1</type>
-	</effect>
--->
 </effects>

@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "node/effectfunctionutil.hpp"
+#include "effect/effectfunctionutil.hpp"
 #define BOOST_TEST_MODULE effect_function
 #include <boost/test/unit_test.hpp>
 

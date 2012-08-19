@@ -19,7 +19,7 @@
 #include "abstractmaploader.hpp"
 #include "codec/codecmanager.hpp"
 #include "shader/shaderbuildutil.hpp"
-#include "effectcache.hpp"
+#include "effect/effectcache.hpp"
 #include "abstractterrainmanager.hpp"
 #include "writer.hpp"
 
@@ -571,7 +571,8 @@ namespace eternal_lands
 	void EditorMapData::draw()
 	{
 		m_scene->cull();
-		m_scene->draw();
+		m_scene->draw();	
+		m_scene->blit_to_back_buffer();
 	}
 
 	void EditorMapData::draw_selection(const glm::uvec4 &selection_rect)

@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>max</name>
+ <name>output-color</name>
  <types>
-  <type>specular_mapping</type>
+  <type>main_effect</type>
  </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
     <parameter>
-     <common_parameter>specular</common_parameter>
+     <auto_parameter>material_color</auto_parameter>
+    </parameter>
+    <parameter>
+     <common_parameter>output_data_float</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
    </parameters>
-   <source>specular = vec3(1.0);</source>
+   <source>output_data_float[0] = material_color;</source>
    <version>120</version>
   </shader_source_data>
  </shader_source_datas>

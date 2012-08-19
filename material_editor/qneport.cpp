@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #include <QInputDialog>
 #include "connection.hpp"
 
-#include "../engine/node/effectnode.hpp"
+#include "../engine/effect/effectnode.hpp"
 
 QNEPort::QNEPort(el::EffectNodePortPtr effect_port, QGraphicsItem *parent,
 	QGraphicsScene *scene): QGraphicsPathItem(parent, scene),

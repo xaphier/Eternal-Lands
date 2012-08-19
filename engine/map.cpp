@@ -33,7 +33,7 @@
 #include "materialdescription.hpp"
 #include "texturecache.hpp"
 #include "material.hpp"
-#include "effect.hpp"
+#include "effect/effect.hpp"
 
 namespace eternal_lands
 {

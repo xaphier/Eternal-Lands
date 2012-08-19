@@ -46,9 +46,6 @@ namespace eternal_lands
 			bounding_box);
 
 		set_bounding_box(bounding_box);
-
-		m_effect_names.resize(material_names.size());
-		m_simple_shadows.resize(material_names.size(), false);
 	}
 
 	InstancingData::~InstancingData() noexcept

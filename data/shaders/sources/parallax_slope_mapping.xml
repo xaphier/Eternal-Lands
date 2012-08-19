@@ -2,23 +2,34 @@
 <shader_source>
  <name>parallax_slope_mapping</name>
  <types>
-  <type>uv_mapping</type>
-  <type>normal_mapping</type>
+  <type>main_effect</type>
  </types>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
     <parameter>
-     <common_parameter>fragment_normal</common_parameter>
+     <common_parameter>albedo</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>fragment_uv</common_parameter>
-     <qualifier>out</qualifier>
+     <sampler_parameter>effect_sampler_0</sampler_parameter>
+     <type>sampler2D</type>
     </parameter>
     <parameter>
      <sampler_parameter>effect_sampler_4</sampler_parameter>
      <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <common_parameter>emission</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular</common_parameter>
+     <qualifier>out</qualifier>
     </parameter>
     <parameter>
      <common_parameter>tbn_matrix</common_parameter>
@@ -52,7 +63,9 @@ for (i = 0; i &lt; 4; i++)
 }
 
 fragment_normal = tbn_matrix * normal.xyz;
-fragment_uv = uv.xy;
+albedo = texture(effect_sampler_0, uv.xy);
+emission = vec3(0.0);
+specular = vec3(0.0);
 </source>
    <version>120</version>
   </shader_source_data>

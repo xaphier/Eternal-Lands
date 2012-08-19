@@ -6,9 +6,6 @@
  ****************************************************************************/
 
 #include "instancesbuilder.hpp"
-#include "effect.hpp"
-#include "effectcache.hpp"
-#include "materialdescription.hpp"
 #include "materialdescriptioncache.hpp"
 #include "instancingdata.hpp"
 #include "freeids.hpp"
@@ -87,19 +84,6 @@ namespace eternal_lands
 
 					continue;
 				}
-
-				effect_name = get_material_description_cache(
-					)->get_material_description(
-						material_name).get_effect();
-
-				instancing_data->set_effect_name(i,
-					effect_name);
-
-				effect = get_effect_cache()->get_effect(
-					effect_name);
-
-				instancing_data->set_simple_shadow(i,
-					effect->get_simple_shadow());
 			}
 
 			if (!ok)

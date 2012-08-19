@@ -1,7 +1,7 @@
 #include "node.hpp"
 #include "qneport.hpp"
-#include "../engine/node/effectnode.hpp"
-#include "../engine/node/effectnodeport.hpp"
+#include "../engine/effect/effectnode.hpp"
+#include "../engine/effect/effectnodeport.hpp"
 #include "../engine/shader/shadersourceparameter.hpp"
 
 Node::Node(const el::EffectNodesSharedPtr &effect_nodes,

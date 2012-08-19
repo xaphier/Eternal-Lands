@@ -8,7 +8,7 @@
 #include "sceneresources.hpp"
 #include "meshbuilder.hpp"
 #include "meshcache.hpp"
-#include "effectcache.hpp"
+#include "effect/effectcache.hpp"
 #include "meshdatacache.hpp"
 #include "codec/codecmanager.hpp"
 #include "texturecache.hpp"

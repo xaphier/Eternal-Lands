@@ -407,7 +407,7 @@ void ELGLWidget::initializeGL()
 	m_global_vars->set_low_quality_terrain(false);
 	m_global_vars->set_use_multisample_shadows(false);
 	m_global_vars->set_effect_debug(false);
-	m_global_vars->set_use_scene_fbo(false);
+	m_global_vars->set_use_scene_fbo(true);
 
 	m_editor.reset(new Editor(m_global_vars, m_file_system));
 	m_editor->set_z_near(1.5f);

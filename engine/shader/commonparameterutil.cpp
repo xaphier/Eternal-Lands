@@ -90,13 +90,8 @@ namespace eternal_lands
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("roughness")),
 				pt_float),
-			CommonParameterTypeData(
-				String(UTF8("reflectance_at_normal_incidence")),
-				pt_float),
 			CommonParameterTypeData(String(UTF8("fragment_normal")),
 				pt_vec3),
-			CommonParameterTypeData(String(UTF8("fragment_uv")),
-				pt_vec2),
 			CommonParameterTypeData(
 				String(UTF8("fragment_position")), pt_vec3),
 			CommonParameterTypeData(String(UTF8("fog")), pt_float),
@@ -113,14 +108,7 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("terrain_uvs")),
 				pt_vec2, pst_clipmap_slices),
 			CommonParameterTypeData(
-				String(UTF8("world_uv_ddx_ddy")), pt_vec4),
-			CommonParameterTypeData(
-				String(UTF8("world_extra_uv_ddx_ddy")),
-				pt_vec4),
-			CommonParameterTypeData(
 				String(UTF8("shadow_uv_ddx_ddy")), pt_vec4),
-			CommonParameterTypeData(
-				String(UTF8("terrain_uv_ddx_ddy")), pt_vec4),
 			CommonParameterTypeData(String(UTF8("vertex_color")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("fragment_color")),

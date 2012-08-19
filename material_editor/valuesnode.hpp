@@ -2,7 +2,7 @@
 #define	UUID_01513aaa_47e5_4448_80aa_cec72226f173
 
 #include "basicnode.hpp"
-#include "../engine/node/effectconstant.hpp"
+#include "../engine/effect/effectconstant.hpp"
 #include <QDoubleSpinBox>
 #include <QSignalMapper>
 

@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 #include "qneport.hpp"
 
-#include "../engine/node/effectnode.hpp"
+#include "../engine/effect/effectnode.hpp"
 
 QNEBlock::QNEBlock(QGraphicsItem *parent, QGraphicsScene *scene) : QGraphicsPathItem(parent, scene)
 {

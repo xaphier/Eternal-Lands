@@ -1,6 +1,6 @@
 #include "texturedialog.hpp"
 #include "../engine/texturetargetutil.hpp"
-#include "../engine/node/effecttextureutil.hpp"
+#include "../engine/effect/effecttextureutil.hpp"
 
 namespace el = eternal_lands;
 

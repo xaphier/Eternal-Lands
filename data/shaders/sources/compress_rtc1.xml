@@ -2,7 +2,7 @@
 <shader_source>
  <name>compress_rtc1</name>
  <types>
-  <type>albedo_mapping</type>
+  <type>main_effect</type>
  </types>
  <shader_source_datas>
   <shader_source_data>

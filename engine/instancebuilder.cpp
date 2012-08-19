@@ -20,85 +20,6 @@ namespace eternal_lands
 	namespace
 	{
 
-		class SimpleShadowData
-		{
-			private:
-				String m_material_name;
-				String m_effect_name;
-				bool m_simple_shadow;
-
-			public:
-				inline SimpleShadowData():
-					m_simple_shadow(false)
-				{
-				}
-
-				inline SimpleShadowData(
-					const String &material_name,
-					const String &effect_name,
-					const bool simple_shadow):
-					m_material_name(material_name),
-					m_effect_name(effect_name),
-					m_simple_shadow(simple_shadow)
-				{
-				}
-
-				inline ~SimpleShadowData() noexcept
-				{
-				}
-
-				bool operator<(const SimpleShadowData& data)
-					const noexcept;
-				bool can_merge_for_shadows(
-					const SimpleShadowData& data) const
-					noexcept;
-
-				inline const String &get_material_name() const
-					noexcept
-				{
-					return m_material_name;
-				}
-
-				inline const String &get_effect_name() const
-					noexcept
-				{
-					return m_effect_name;
-				}
-
-				inline bool get_simple_shadow() const noexcept
-				{
-					return m_simple_shadow;
-				}
-
-		};
-
-		bool SimpleShadowData::operator<(const SimpleShadowData& data)
-			const noexcept
-		{
-			if (get_simple_shadow() != data.get_simple_shadow())
-			{
-				return get_simple_shadow() <
-					data.get_simple_shadow();
-			}
-
-			if (get_effect_name() != data.get_effect_name())
-			{
-				return get_effect_name() <
-					data.get_effect_name();
-			}
-
-			return get_material_name() < data.get_material_name();
-		}
-
-		bool SimpleShadowData::can_merge_for_shadows(
-			const SimpleShadowData& data) const noexcept
-		{
-			return (get_effect_name() == data.get_effect_name()) &&
-				get_simple_shadow() && data.get_simple_shadow();
-		}
-
-		typedef std::set<SimpleShadowData> SimpleShadowDataSet;
-
 		void add_vertex(MeshDataTool &mesh_data_tool,
 			const MeshDataToolSharedPtr &source,
 			const glm::mat4x3 &world_matrix,
@@ -494,7 +415,7 @@ namespace eternal_lands
 		SubMesh sub_mesh;
 		Transformation transformation;
 		glm::vec3 center;
-		SimpleShadowDataSet simple_shadow_data_set;
+		StringSet materials;
 		MeshDataToolSharedPtr mesh_data_tool;
 		StringVector material_names;
 		SubObjectVector instanced_objects;
@@ -535,10 +456,9 @@ namespace eternal_lands
 
 			for (i = 0; i < count; ++i)
 			{
-				simple_shadow_data_set.insert(SimpleShadowData(
-					instancing_data.get_material_names()[i],
-					instancing_data.get_effect_name(i),
-					instancing_data.get_simple_shadow(i)));
+				materials.insert(
+					instancing_data.get_material_names(
+						)[i]);
 			}
 
 			if (!str.str().empty())
@@ -549,9 +469,9 @@ namespace eternal_lands
 			str << instancing_data.get_name();
 		}
 
-		assert(simple_shadow_data_set.size() > 0);
+		assert(materials.size() > 0);
 
-		sub_mesh_count = simple_shadow_data_set.size();
+		sub_mesh_count = materials.size();
 
 		semantics.insert(vst_position);
 		semantics.insert(vst_normal);
@@ -572,8 +492,7 @@ namespace eternal_lands
 
 		min_max_boxes.reserve(min_max_boxes_count);
 
-		BOOST_FOREACH(const SimpleShadowData &simple_shadow_data,
-			simple_shadow_data_set)
+		BOOST_FOREACH(const String &material, materials)
 		{
 			if (get_use_base_vertex())
 			{
@@ -581,13 +500,11 @@ namespace eternal_lands
 			}
 
 			build_instance_sub_mesh(center, mesh_data_tool,
-				simple_shadow_data.get_material_name(),
-				sub_mesh_index, base_vertex, vertex_offset,
-				index_offset, instanced_objects,
+				material, sub_mesh_index, base_vertex,
+				vertex_offset, index_offset, instanced_objects,
 				min_max_boxes_index, min_max_boxes);
 
-			material_names.push_back(
-				simple_shadow_data.get_material_name());
+			material_names.push_back(material);
 			sub_mesh_index++;
 
 			assert(instanced_objects.size() > 0);

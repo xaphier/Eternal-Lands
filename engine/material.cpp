@@ -6,8 +6,8 @@
  ****************************************************************************/
 
 #include "material.hpp"
-#include "effectcache.hpp"
-#include "effect.hpp"
+#include "effect/effectcache.hpp"
+#include "effect/effect.hpp"
 #include "texture.hpp"
 #include "texturecache.hpp"
 #include "shader/samplerparameterutil.hpp"

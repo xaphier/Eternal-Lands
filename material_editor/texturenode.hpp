@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "basicnode.hpp"
-#include "../engine/node/effecttexture.hpp"
+#include "../engine/effect/effecttexture.hpp"
 
 namespace el = eternal_lands;
 

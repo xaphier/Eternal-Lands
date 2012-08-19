@@ -2,7 +2,7 @@
 #define	UUID_f1f5aa38_071f_409f_bc35_a0e623634240
 
 #include "basicnode.hpp"
-#include "../engine/node/effectconstant.hpp"
+#include "../engine/effect/effectconstant.hpp"
 #include <QDial>
 
 namespace el = eternal_lands;

@@ -2,7 +2,7 @@
 <shader_source>
  <name>blend_4</name>
  <types>
-  <type>albedo_mapping</type>
+  <type>main_effect</type>
  </types>
  <shader_source_datas>
   <shader_source_data>
@@ -42,15 +42,7 @@
      <qualifier>in</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>world_extra_uv_ddx_ddy</common_parameter>
-     <qualifier>in</qualifier>
-    </parameter>
-    <parameter>
      <common_parameter>world_uv</common_parameter>
-     <qualifier>in</qualifier>
-    </parameter>
-    <parameter>
-     <common_parameter>world_uv_ddx_ddy</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
@@ -59,12 +51,12 @@ vec3 result;
 vec2 ddx, ddy;
 int i;
 
-ddx = world_extra_uv_ddx_ddy.xy;
-ddy = world_extra_uv_ddx_ddy.zw;
+ddx = dFdx(world_extra_uv);
+ddy = dFdy(world_extra_uv);
 
 result = material_color.rgb;
 
-blend = textureGrad(effect_sampler_7, world_uv, world_uv_ddx_ddy.xy, world_uv_ddx_ddy.zw);
+blend = texture(effect_sampler_7, world_uv);
 
 if (any(greaterThan(blend, vec4(0.0))))
 {

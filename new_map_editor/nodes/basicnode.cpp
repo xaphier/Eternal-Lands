@@ -1,9 +1,9 @@
 #include "basicnode.hpp"
 #include "qneport.hpp"
 #include "connection.hpp"
-#include "../engine/node/effectnode.hpp"
-#include "../engine/node/effectnodes.hpp"
-#include "../engine/node/effectnodeport.hpp"
+#include "../engine/effect/effectnode.hpp"
+#include "../engine/effect/effectnodes.hpp"
+#include "../engine/effect/effectnodeport.hpp"
 #include <QTextDocument>
 
 BasicNode::BasicNode(const el::EffectNodesSharedPtr &effect_nodes,

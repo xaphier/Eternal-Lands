@@ -2,7 +2,7 @@
 #define	UUID_51f6e890_c51d_4062_98d2_bf875138e572
 
 #include "basicnode.hpp"
-#include "../engine/node/effectconstant.hpp"
+#include "../engine/effect/effectconstant.hpp"
 
 namespace el = eternal_lands;
 

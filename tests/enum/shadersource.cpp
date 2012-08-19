@@ -73,13 +73,9 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
 		el::sst_fragment_light).get(), "fragment_light");
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
-		el::sst_normal_mapping).get(), "normal_mapping");
-	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
-		el::sst_emission_mapping).get(), "emission_mapping");
+		el::sst_main_effect).get(), "main_effect");
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
 		el::sst_shadow_map).get(), "shadow_map");
 	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
 		el::sst_shadow_uv_ddx_ddy).get(), "shadow_uv_ddx_ddy");
-	BOOST_CHECK_EQUAL(el::ShaderSourceUtil::get_str(
-		el::sst_fragment_effect).get(), "fragment_effect");
 }

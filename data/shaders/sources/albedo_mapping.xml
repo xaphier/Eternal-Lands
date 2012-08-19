@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>default</name>
+ <name>default_mapping</name>
  <types>
-  <type>albedo_mapping</type>
+  <type>main_effect</type>
  </types>
  <shader_source_datas>
   <shader_source_data>
@@ -16,15 +16,30 @@
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <auto_parameter>albedo_scale_offsets</auto_parameter>
+     <common_parameter>emission</common_parameter>
+     <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>fragment_uv</common_parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>albedo = texture(effect_sampler_0, fragment_uv) * albedo_scale_offsets[0][0] + albedo_scale_offsets[0][1];
-</source>
+   <source>albedo = texture(effect_sampler_0, world_uv);
+emission = vec3(0.0);
+specular = vec3(0.0);
+fragment_normal = normalize(world_normal);</source>
    <version>130</version>
   </shader_source_data>
   <shader_source_data>
@@ -38,14 +53,30 @@
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <auto_parameter>albedo_scale_offsets</auto_parameter>
+     <common_parameter>emission</common_parameter>
+     <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <common_parameter>fragment_uv</common_parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv</common_parameter>
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>albedo = texture2D(effect_sampler_0, fragment_uv) * albedo_scale_offsets[0][0] + albedo_scale_offsets[0][1];
+   <source>albedo = texture2D(effect_sampler_0, world_uv);
+emission = vec3(0.0);
+specular = vec3(0.0);
+fragment_normal = normalize(world_normal);
 </source>
    <version>120</version>
   </shader_source_data>

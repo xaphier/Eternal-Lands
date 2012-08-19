@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "node/effecttextureutil.hpp"
+#include "effect/effecttextureutil.hpp"
 #define BOOST_TEST_MODULE effect_texture
 #include <boost/test/unit_test.hpp>
 

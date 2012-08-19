@@ -107,15 +107,6 @@ namespace eternal_lands
 				default_value = UTF8("vec3(1.0)");
 			}
 
-			if (port.get_name() ==
-				UTF8("reflectance at normal incidence"))
-			{
-				fragment_str << CommonParameterUtil::get_str(
-					cpt_reflectance_at_normal_incidence);
-
-				default_value = UTF8("0.0");
-			}
-
 			if (port.get_name() == UTF8("roughness"))
 			{
 				fragment_str << CommonParameterUtil::get_str(

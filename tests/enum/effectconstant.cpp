@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "node/effectconstantutil.hpp"
+#include "effect/effectconstantutil.hpp"
 #define BOOST_TEST_MODULE effect_constant
 #include <boost/test/unit_test.hpp>
 

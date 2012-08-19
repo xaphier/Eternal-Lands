@@ -18,7 +18,7 @@
 #include "map.hpp"
 #include "renderobjectdata.hpp"
 #include "thread/materiallock.hpp"
-#include "effect.hpp"
+#include "effect/effect.hpp"
 
 namespace eternal_lands
 {
@@ -37,7 +37,7 @@ namespace eternal_lands
 			glm::vec4(0.0f, 1.0f, 0.0f, 0.5f));
 		material_description.set_name(String(UTF8("selection")));
 		material_description.set_effect(
-			String(UTF8("solid-color-screen-quad")));
+			String(UTF8("solid-color")));
 
 		m_selection_material = get_scene_resources(
 			).get_material_builder()->get_material(
@@ -57,7 +57,6 @@ namespace eternal_lands
 		MaterialDescription material_description;
 		ObjectData object_data;
 		Transformation transformation;
-		glm::mat2x3 emission_scale_offset;
 		Uint32 object_id;
 
 		object_id = get_free_ids()->use_typeless_object_id(
@@ -73,12 +72,10 @@ namespace eternal_lands
 		get_scene_resources().get_mesh_cache()->get_mesh(
 			object_data.get_name(), mesh);
 
-		emission_scale_offset[1] = light_data.get_color();
-
-		material_description.set_emission_scale_offset(
-			emission_scale_offset);
+		material_description.set_color(
+			glm::vec4(light_data.get_color(), 1.0f));
 		material_description.set_name(String(UTF8("light")));
-		material_description.set_effect(String(UTF8("solid-color")));
+		material_description.set_effect(String(UTF8("light-index")));
 
 		materials.push_back(get_scene_resources().get_material_builder(
 			)->get_material(material_description));

@@ -20,7 +20,7 @@
 #include "statemanager.hpp"
 #include "sceneview.hpp"
 #include "clipmap.hpp"
-#include "effectprogramutil.hpp"
+#include "effect/effectprogramutil.hpp"
 #include "terrainrenderingdata.hpp"
 
 /**

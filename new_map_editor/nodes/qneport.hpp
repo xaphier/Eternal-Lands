@@ -27,7 +27,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 #define QNEPORT_H
 
 #include <QGraphicsPathItem>
-#include "../engine/node/effectnodeport.hpp"
+#include "../engine/effect/effectnodeport.hpp"
 
 namespace el = eternal_lands;
 
