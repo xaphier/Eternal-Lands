@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "alignedshort8array.hpp"
 
 /**
  * @file
@@ -60,7 +61,9 @@ namespace eternal_lands
 				const Uint32 sub_mesh_index,
 				const Uint32 base_vertex,
 				Uint32 &vertex_offset, Uint32 &index_offset,
-				SubObjectVector &sub_objects);
+				SubObjectVector &sub_objects,
+				Uint32 &min_max_boxes_index,
+				AlignedShort8Array &min_max_boxes);
 
 		public:
 			/**

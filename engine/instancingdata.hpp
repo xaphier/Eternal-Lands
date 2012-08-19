@@ -43,7 +43,8 @@ namespace eternal_lands
 				return m_mesh_data_tool;
 			}
 
-			inline const StringVector &get_effect_names() const noexcept
+			inline const StringVector &get_effect_names() const
+				noexcept
 			{
 				return m_effect_names;
 			}

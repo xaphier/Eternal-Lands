@@ -35,8 +35,8 @@ namespace eternal_lands
 			virtual ~AbstractBoundedObjectVisitor() noexcept;
 
 			virtual void operator()(
-				const BoundedObjectSharedPtr &bounded_object,
-				const SubFrustumsMask mask) = 0;
+				const BoundedObjectSharedPtr &bounded_object)
+				= 0;
 
 	};
 	/**

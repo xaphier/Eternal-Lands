@@ -113,7 +113,7 @@ namespace eternal_lands
 			 * endless reinsertation.
 			 */
 			void add_data(const BoundedObjectSharedPtr &element,
-				const Uint32 level, BitSet32 &oft);
+				const Uint32 level, BitSet64 &oft);
 
 			/**
 			 * @brief Condense the tree.

@@ -69,6 +69,7 @@ namespace eternal_lands
 		m_vertex_count = source->get_vertex_count();
 		m_instance_count = 0;
 		m_sub_meshs = source->get_sub_meshs();
+		m_min_max_boxes = source->get_min_max_boxes();
 		m_primitive = source->get_primitive();
 		m_use_restart_index = source->get_use_restart_index();
 		m_static_indices = static_indices;
@@ -186,6 +187,7 @@ namespace eternal_lands
 		mesh.m_static_indices = m_static_indices;
 		mesh.m_static_vertices = m_static_vertices;
 		mesh.m_sub_meshs = m_sub_meshs;
+		mesh.m_min_max_boxes = m_min_max_boxes;
 	}
 
 	void AbstractMesh::get_bounding_box(
@@ -231,13 +233,6 @@ namespace eternal_lands
 		}
 #endif	/* NDEBUG */
 		m_sub_meshs = sub_meshs;
-	}
-
-	void AbstractMesh::set_use_restart_index(const bool use_restart_index)
-	{
-		assert(!use_restart_index || get_supports_restart_index());
-
-		m_use_restart_index = use_restart_index;
 	}
 
 	VertexStreamSharedPtr AbstractMesh::get_vertex_stream(

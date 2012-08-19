@@ -243,8 +243,8 @@ namespace eternal_lands
 		}
 	}
 
-	void RStarTreeNode::view_node(const SubFrustumsMask sub_frustums_mask,
-		AbstractBoundedObjectVisitor &visitor) const
+	void RStarTreeNode::view_node(AbstractBoundedObjectVisitor &visitor)
+		const
 	{
 		Uint32 i;
 
@@ -252,7 +252,7 @@ namespace eternal_lands
 		{
 			for (i = 0; i < get_count(); ++i)
 			{
-				visitor(get_element(i),	sub_frustums_mask);
+				visitor(get_element(i));
 			}
 
 			return;
@@ -260,7 +260,7 @@ namespace eternal_lands
 
 		for (i = 0; i < get_count(); ++i)
 		{
-			get_node(i)->view_node(sub_frustums_mask, visitor);
+			get_node(i)->view_node(visitor);
 		}
 	}
 
@@ -304,32 +304,29 @@ namespace eternal_lands
 	}
 
 	void RStarTreeNode::intersect_node(const Frustum &frustum,
-		const PlanesMask in_mask, AbstractBoundedObjectVisitor &visitor)
+		const BitSet64 in_mask, AbstractBoundedObjectVisitor &visitor)
 		const
 	{
 		Uint32 i;
-		SubFrustumsMask sub_frustums_mask;
 
 		assert(get_leaf());
 
 		for (i = 0; i < get_count(); ++i)
 		{
-			sub_frustums_mask = frustum.intersect_sub_frustums(
-				get_element_bounding_box(i), in_mask);
-
-			if (sub_frustums_mask.any())
+			if (frustum.intersect(get_element_bounding_box(i),
+				in_mask) != it_outside)
 			{
-				visitor(get_element(i), sub_frustums_mask);
+				visitor(get_element(i));
 			}
 		}
 	}
 
 	void RStarTreeNode::intersect_tree(const Frustum &frustum,
-		const PlanesMask mask, AbstractBoundedObjectVisitor &visitor)
+		const BitSet64 mask, AbstractBoundedObjectVisitor &visitor)
 		const
 	{
 		Uint32 i;
-		PlanesMask out_mask;
+		BitSet64 out_mask;
 		IntersectionType result;
 
 		if (get_leaf())
@@ -347,9 +344,7 @@ namespace eternal_lands
 			{
 				case it_inside:
 				{
-					get_node(i)->view_node(
-						frustum.get_sub_frustums_mask(
-							out_mask), visitor);
+					get_node(i)->view_node(visitor);
 					break;
 				}
 				case it_intersect:
@@ -661,7 +656,7 @@ namespace eternal_lands
 
 	bool RStarTreeNode::insert_element(RStarTreePtr tree,
 		const BoundedObjectSharedPtr &element,
-		RStarTreeNodeSharedPtrStack &path_buffer, BitSet32 &oft)
+		RStarTreeNodeSharedPtrStack &path_buffer, BitSet64 &oft)
 	{
 		RStarTreeNodeSharedPtr node;
 		RStarTreeNodeSharedPtr new_node;
@@ -827,7 +822,7 @@ namespace eternal_lands
 
 	void RStarTreeNode::adjust_tree(RStarTreePtr tree,
 		const RStarTreeNodeSharedPtr &node,
-		RStarTreeNodeSharedPtrStack &path_buffer, BitSet32 &oft)
+		RStarTreeNodeSharedPtrStack &path_buffer, BitSet64 &oft)
 	{
 		bool adjust;
 

@@ -109,6 +109,7 @@ namespace eternal_lands
 	typedef std::istream InStream;
 	typedef boost::format BoostFormat;
 	typedef boost::flyweights::flyweight<StringType> String;
+	typedef std::bitset<64> BitSet64;
 	typedef std::bitset<32> BitSet32;
 	typedef std::bitset<16> BitSet16;
 	typedef std::bitset<8> BitSet8;
@@ -209,6 +210,7 @@ namespace eternal_lands
 	class Actor;
 	class ActorDataCache;
 	class ActorTextureBuilder;
+	class AlignedShort8Array;
 	class AlignedVec4Array;
 	class AngelScript;
 	class Atlas;
@@ -220,6 +222,7 @@ namespace eternal_lands
 	class CodecManager;
 	class ColorCorrection;
 	class ConvexBody;
+	class CpuRasterizer;
 	class Decal;
 	class DecalDescription;
 	class Effect;
@@ -327,6 +330,7 @@ namespace eternal_lands
 	const Uint16 vertex_stream_count = 16;
 	const Uint16 material_texture_count = 12;
 	const float epsilon = 1e-5f;
+	const Uint64 all_bits_set = 0xFFFFFFFFFFFFFFFF;
 
 	typedef boost::array<String, material_texture_count>
 		MaterialStringArray;
@@ -373,6 +377,7 @@ namespace eternal_lands
 	SHARED_PTR(BoundedObject);
 	SHARED_PTR(CodecManager);
 	SHARED_PTR(ColorCorrection);
+	SHARED_PTR(CpuRasterizer);
 	SHARED_PTR(Effect);
 	SHARED_PTR(EffectCache);
 	SHARED_PTR(EffectNodes);
@@ -448,6 +453,7 @@ namespace eternal_lands
 	VECTOR(ActorSharedPtr);
 	VECTOR(BoundedObjectSharedPtr);
 	VECTOR(BoundingBox);
+	VECTOR(ConvexBody);
 	VECTOR(EffectNodePtr);
 	VECTOR(EffectNodePortPtr);
 	VECTOR(GlslProgramSharedPtr);
@@ -474,6 +480,7 @@ namespace eternal_lands
 	VECTOR(TextureSharedPtr);
 	VECTOR(UniformDescription);
 	VECTOR(UniformBufferDescriptionSharedPtr);
+	VECTOR(Vec3Array8);
 	VECTOR(VertexElement);
 	VECTOR(VertexElements);
 
@@ -523,11 +530,6 @@ namespace eternal_lands
 	typedef std::map<String, Variant> StringVariantMap;
 	typedef std::pair<String, Variant> StringVariantPair;
 
-	typedef boost::array<BoundingBox, 4> SubFrustumsBoundingBoxes;
-	typedef boost::array<Vec3Array8, 4> SubFrustumsConerPoints;
-	typedef boost::array<ConvexBody, 4> SubFrustumsConvexBodys;
-	typedef std::bitset<4> SubFrustumsMask;
-	typedef std::bitset<32> PlanesMask;
 	typedef std::pair<TextAttribute, Uint32> TextAttributeUint32Pair;
 	typedef std::pair<Uint32, TextAttributeUint32Pair>
 		Uint32TextAttributeUint32PairPair;

@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "primitiveutil.hpp"
+#include "alignedshort8array.hpp"
 
 /**
  * @file
@@ -31,6 +32,10 @@ namespace eternal_lands
 	class AbstractMesh: public boost::noncopyable
 	{
 		private:
+			/**
+			 * These min max boxes are used for lod selection.
+			 */
+			AlignedShort8Array m_min_max_boxes;
 			SubMeshVector m_sub_meshs;
 			VertexFormatSharedPtr m_vertex_format;
 			const String m_name;
@@ -196,12 +201,28 @@ namespace eternal_lands
 			void set_sub_meshs(const SubMeshVector &sub_meshs);
 
 			/**
+			 * Sets the min/max boxes.
+			 * @param min_max_boxes The new min/max boxes.
+			 */
+			inline void set_min_max_boxes(
+				const AlignedShort8Array &min_max_boxes)
+			{
+				m_min_max_boxes = min_max_boxes;
+			}
+
+			/**
 			 * Sets if the restart index is used.
 			 * @param use_restart_index True if the restart index
 			 * is used
 			 */
-			void set_use_restart_index(
-				const bool use_restart_index);
+			inline void set_use_restart_index(
+				const bool use_restart_index)
+			{
+				assert(!use_restart_index ||
+					get_supports_restart_index());
+
+				m_use_restart_index = use_restart_index;
+			}
 
 			/**
 			 * Returns the sub meshs.
@@ -211,6 +232,16 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_sub_meshs;
+			}
+
+			/**
+			 * Returns the min/max boxes.
+			 * @result The min/max boxes.
+			 */
+			inline const AlignedShort8Array &get_min_max_boxes()
+				const noexcept
+			{
+				return m_min_max_boxes;
 			}
 
 			/**
@@ -327,6 +358,10 @@ namespace eternal_lands
 				return m_name;
 			}
 
+			/**
+			 * Using SIMD (SSE/SSE2) instruction.
+			 * @result Using SIMD (SSE/SSE2) instruction.
+			 */
 			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;

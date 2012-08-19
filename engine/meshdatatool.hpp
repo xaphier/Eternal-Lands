@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "vertexelement.hpp"
 #include "primitiveutil.hpp"
+#include "alignedshort8array.hpp"
 
 /**
  * @file
@@ -37,6 +38,7 @@ namespace eternal_lands
 
 			SubMeshVector m_sub_meshs;
 			VertexSemanticTypeAlignedVec4ArrayMap m_vertices;
+			AlignedShort8Array m_min_max_boxes;
 			Uint32Vector m_indices;
 			String m_name;
 			Uint32 m_vertex_count;
@@ -125,6 +127,7 @@ namespace eternal_lands
 				const Uint32 dest_index, const Uint32 count,
 				const Sint32 offset);
 			void resize_vertices(const Uint32 vertex_count);
+			void check_min_max_boxes() const;
 
 			inline void resize_indices(const Uint32 index_count)
 			{
@@ -228,6 +231,31 @@ namespace eternal_lands
 				const;
 
 			/**
+			 * Build the min/max boxes from the sub mesh data.
+			 */
+			void build_min_max_boxes();
+
+			/**
+			 * Sets the min/max boxes.
+			 * @param min_max_boxes The new min/max boxes.
+			 */
+			inline void set_min_max_boxes(
+				const AlignedShort8Array &min_max_boxes)
+			{
+				m_min_max_boxes = min_max_boxes;
+			}
+
+			/**
+			 * Returns the min/max boxes.
+			 * @result The min/max boxes.
+			 */
+			inline const AlignedShort8Array &get_min_max_boxes()
+				const noexcept
+			{
+				return m_min_max_boxes;
+			}
+
+			/**
 			 * Returns the number of vertices.
 			 * @result The vertex count.
 			 */
@@ -282,11 +310,20 @@ namespace eternal_lands
 				return m_sub_meshs;
 			}
 
+			/**
+			 * Using SIMD (SSE/SSE2) instruction for
+			 * transformations, conversions etc.
+			 * @result Using SIMD (SSE/SSE2) instruction.
+			 */
 			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;
 			}
 
+			/**
+			 * Returns the name.
+			 * @result The name.
+			 */
 			inline const String &get_name() const noexcept
 			{
 				return m_name;

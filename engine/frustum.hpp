@@ -43,38 +43,25 @@ namespace eternal_lands
 	class Frustum
 	{
 		private:
-			boost::array<Plane, 28> m_planes;
-			PlanesMask m_planes_mask;
+			boost::array<Plane, 6> m_planes;
+			BitSet64 m_planes_mask;
 
 			void build_frustum(const BoundingBox &box);
 			void set_plane(const glm::mat4 &matrix,
-				const PlaneType plane,
-				const Uint16 sub_frustum_index);
-			void set_sub_frustum(const glm::mat4 &matrix,
-				const Uint16 sub_frustum_index);
-			void intersect(const BoundingBox &box,
-				const PlanesMask in_mask,
-				const Uint16 sub_frustum_index,
-				PlanesMask &out_mask) const;
-			void intersect(const glm::vec3 &point,
-				const PlanesMask in_mask,
-				const Uint16 sub_frustum_index,
-				PlanesMask &out_mask) const;
+				const PlaneType plane);
 
 		public:
 			Frustum();
-			Frustum(const Frustum &frustum, const Uint16 index);
 			Frustum(const glm::mat4x4 &matrix);
-			Frustum(const Mat4x4Vector &matrices);
 			Frustum(const BoundingBox &box);
 			~Frustum() noexcept;
 			static Plane get_plane(const glm::mat4 &matrix,
 				const PlaneType plane);
 			static const String get_str(const PlaneType plane);
 			static PlaneVector get_planes(const BoundingBox &box);
-			PlaneVector get_planes(const Uint16 sub_frustum) const;
+			PlaneVector get_planes() const;
 
-			inline const PlanesMask &get_planes_mask() const
+			inline const BitSet64 &get_planes_mask() const
 				noexcept
 			{
 				return m_planes_mask;
@@ -89,7 +76,7 @@ namespace eternal_lands
 			inline IntersectionType intersect(
 				const BoundingBox &box) const
 			{
-				PlanesMask out_mask;
+				BitSet64 out_mask;
 
 				return intersect(box, get_planes_mask(),
 					out_mask);
@@ -97,21 +84,21 @@ namespace eternal_lands
 
 			inline IntersectionType intersect(
 				const BoundingBox &box,
-				const PlanesMask in_mask) const
+				const BitSet64 in_mask) const
 			{
-				PlanesMask out_mask;
+				BitSet64 out_mask;
 
 				return intersect(box, in_mask, out_mask);
 			}
 
 			IntersectionType intersect(const BoundingBox &box,
-				const PlanesMask in_mask, PlanesMask &out_mask)
+				const BitSet64 in_mask, BitSet64 &out_mask)
 				const;
 
 			inline IntersectionType intersect(
 				const glm::vec3 &point) const
 			{
-				PlanesMask out_mask;
+				BitSet64 out_mask;
 
 				return intersect(point, get_planes_mask(),
 					out_mask);
@@ -119,37 +106,20 @@ namespace eternal_lands
 
 			inline IntersectionType intersect(
 				const glm::vec3 &point,
-				const PlanesMask in_mask) const
+				const BitSet64 in_mask) const
 			{
-				PlanesMask out_mask;
+				BitSet64 out_mask;
 
 				return intersect(point, in_mask, out_mask);
 			}
 
 			IntersectionType intersect(const glm::vec3 &point,
-				const PlanesMask in_mask, PlanesMask &out_mask)
+				const BitSet64 in_mask, BitSet64 &out_mask)
 				const;
 
-			inline SubFrustumsMask intersect_sub_frustums(
-				const BoundingBox &box) const
-			{
-				return intersect_sub_frustums(box,
-					get_planes_mask());
-			}
+			BoundingBox get_bounding_box() const;
 
-			SubFrustumsMask intersect_sub_frustums(
-				const BoundingBox &box,
-				const PlanesMask in_mask) const;
-
-			SubFrustumsMask get_sub_frustums_mask(
-				const PlanesMask mask) const;
-
-			SubFrustumsBoundingBoxes get_bounding_boxes() const;
-
-			SubFrustumsConerPoints get_corner_points() const;
-
-			Vec3Array8 get_corner_points(
-				const Uint16 sub_frustum_index) const;
+			Vec3Array8 get_corner_points() const;
 
 			void transform(const glm::mat4x3 &matrix);
 

@@ -147,9 +147,9 @@ namespace eternal_lands
 		}
 
 		void load_plane(const String &name, const float scale,
-			const Uint16 tile_size, const bool split,
-			const bool use_restart_index, const bool use_simd,
-			const bool center,
+			const float z_size, const Uint16 tile_size,
+			const bool split, const bool use_restart_index,
+			const bool use_simd, const bool center,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
 			glm::vec4 normal, tangent, data, position;
@@ -159,6 +159,8 @@ namespace eternal_lands
 			VertexSemanticTypeSet semantics;
 			Uint32 vertex_count, index_count, i, index, x, y;
 			PrimitiveType primitive;
+
+			assert(z_size > 0.0f);
 
 			vertex_count = tile_size + 1;
 			vertex_count *= tile_size + 1;
@@ -239,13 +241,13 @@ namespace eternal_lands
 			if (center)
 			{
 				vmin = glm::vec3(-scale * 0.5f, -scale * 0.5f,
-					-0.1f);
+					-z_size);
 				vmax = glm::vec3(scale * 0.5f, scale * 0.5f,
 					0.0f);
 			}
 			else
 			{
-				vmin = glm::vec3(0.0f, 0.0f, -0.1f);
+				vmin = glm::vec3(0.0f, 0.0f, -z_size);
 				vmax = glm::vec3(scale, scale, 0.0f);
 			}
 
@@ -463,7 +465,7 @@ namespace eternal_lands
 
 			if (name == UTF8("tile"))
 			{
-				load_plane(name, 3.0f, 2, true,
+				load_plane(name, 3.0f, 0.5f, 2, true,
 					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;
@@ -471,7 +473,7 @@ namespace eternal_lands
 
 			if (name == UTF8("grass"))
 			{
-				load_plane(name, 1.0f, 2, true,
+				load_plane(name, 1.0f, 0.1f, 2, true,
 					use_restart_index, use_simd, true,
 					mesh_data_tool);
 				return true;
@@ -502,7 +504,7 @@ namespace eternal_lands
 					return false;
 				}
 
-				load_plane(name, 1.0f, count, true,
+				load_plane(name, 1.0f, 0.5f, count, true,
 					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;
@@ -611,6 +613,8 @@ namespace eternal_lands
 		if (found == m_mesh_data_cache.end())
 		{
 			load_mesh(name, tmp.m_mesh_data_tool, tmp.m_materials);
+
+			tmp.m_mesh_data_tool->build_min_max_boxes();
 
 			m_mesh_data_cache[name] = tmp;
 

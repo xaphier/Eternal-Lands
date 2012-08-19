@@ -12,6 +12,7 @@
 #include "instancingdata.hpp"
 #include "subobject.hpp"
 #include "submesh.hpp"
+#include "cpurasterizer.hpp"
 
 namespace eternal_lands
 {
@@ -346,13 +347,24 @@ namespace eternal_lands
 			const String &material_name, const Uint32 index,
 			const Uint32 base_vertex, glm::vec3 &min,
 			glm::vec3 &max, Uint32 &vertex_offset,
-			Uint32 &index_offset)
+			Uint32 &index_offset,
+			AlignedShort8Array &min_max_boxes)
 		{
+			BoundingBox bounding_box;
+
 			if (material_name !=
 				instancing_data.get_material_names()[index])
 			{
 				return false;
 			}
+
+			bounding_box = instancing_data.get_bounding_box();
+
+			bounding_box.set_center(bounding_box.get_center() -
+				center);
+
+			CpuRasterizer::append_min_max_box(bounding_box,
+				min_max_boxes);
 
 			if (instancing_data.get_mesh_data_tool(
 				)->get_sub_mesh_data(index).get_packed())
@@ -410,17 +422,21 @@ namespace eternal_lands
 		const MeshDataToolSharedPtr &mesh_data_tool,
 		const String &material, const Uint32 sub_mesh_index,
 		const Uint32 base_vertex, Uint32 &vertex_offset,
-		Uint32 &index_offset, SubObjectVector &sub_objects)
+		Uint32 &index_offset, SubObjectVector &sub_objects,
+		Uint32 &min_max_boxes_index, AlignedShort8Array &min_max_boxes)
 	{
 		SubMesh sub_mesh;
 		SubObject sub_object;
 		glm::vec3 min, max;
 		Uint32 count, i, min_vertex, max_vertex, offset;
+		Uint32 min_max_boxes_count;
 
 		sub_mesh.set_offset(index_offset);
 		sub_mesh.set_min_vertex(vertex_offset - base_vertex);
 
 		sub_object.set_material(sub_mesh_index);
+
+		min_max_boxes_count = 0;
 
 		BOOST_FOREACH(const InstancingData &instancing_data,
 			get_instancing_datas())
@@ -439,8 +455,9 @@ namespace eternal_lands
 				if (build_sub_mesh(center, instancing_data,
 					mesh_data_tool, material, i,
 					base_vertex, min, max, vertex_offset,
-					index_offset))
+					index_offset, min_max_boxes))
 				{
+					min_max_boxes_count++;
 					max_vertex = vertex_offset - 1;
 
 					sub_object.set_offset(offset);
@@ -465,7 +482,11 @@ namespace eternal_lands
 		sub_mesh.set_count(index_offset - sub_mesh.get_offset());
 		sub_mesh.set_max_vertex(vertex_offset - 1 - base_vertex);
 		sub_mesh.set_base_vertex(base_vertex);
+		sub_mesh.set_min_max_boxes_index(min_max_boxes_index);
+		sub_mesh.set_min_max_boxes_count(min_max_boxes_count);
 		mesh_data_tool->set_sub_mesh_data(sub_mesh_index, sub_mesh);
+
+		min_max_boxes_index += min_max_boxes_count;
 	}
 
 	void InstanceBuilder::build_instance()
@@ -478,17 +499,19 @@ namespace eternal_lands
 		StringVector material_names;
 		SubObjectVector instanced_objects;
 		VertexSemanticTypeSet semantics;
+		AlignedShort8Array min_max_boxes;
 		glm::vec4 texture_scale_offset;
 		Uint32 index_count, vertex_count, sub_mesh_count, base_vertex;
 		Uint32 vertex_offset, index_offset, sub_mesh_index;
 		SelectionType selection;
 		StringStream str;
-		Uint32 i, count;
+		Uint32 i, count, min_max_boxes_index, min_max_boxes_count;
 
 		center = get_center();
 
 		index_count = 0;
 		vertex_count = 0;
+		min_max_boxes_count = 0;
 
 		selection = st_none;
 
@@ -505,6 +528,8 @@ namespace eternal_lands
 			mesh_data_tool = instancing_data.get_mesh_data_tool();
 			index_count += mesh_data_tool->get_index_count();
 			vertex_count += mesh_data_tool->get_vertex_count();
+			min_max_boxes_count +=
+				mesh_data_tool->get_sub_mesh_count();
 
 			count = instancing_data.get_material_names().size();
 
@@ -543,6 +568,9 @@ namespace eternal_lands
 		index_offset = 0;
 		vertex_offset = 0;
 		sub_mesh_index = 0;
+		min_max_boxes_index = 0;
+
+		min_max_boxes.reserve(min_max_boxes_count);
 
 		BOOST_FOREACH(const SimpleShadowData &simple_shadow_data,
 			simple_shadow_data_set)
@@ -555,7 +583,8 @@ namespace eternal_lands
 			build_instance_sub_mesh(center, mesh_data_tool,
 				simple_shadow_data.get_material_name(),
 				sub_mesh_index, base_vertex, vertex_offset,
-				index_offset, instanced_objects);
+				index_offset, instanced_objects,
+				min_max_boxes_index, min_max_boxes);
 
 			material_names.push_back(
 				simple_shadow_data.get_material_name());
@@ -563,6 +592,9 @@ namespace eternal_lands
 
 			assert(instanced_objects.size() > 0);
 		}
+
+		mesh_data_tool->set_min_max_boxes(min_max_boxes);
+//		mesh_data_tool->check_min_max_boxes();
 #if	0
 /////////////////////////////////
 		SimpleShadowDataSet::const_iterator it, end, last;

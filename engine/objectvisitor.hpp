@@ -32,23 +32,51 @@ namespace eternal_lands
 	{
 		private:
 			RenderObjectDataVector m_objects;
+			glm::mat4x4 m_projection_view_matrix;
+			CpuRasterizerSharedPtr m_cpu_rasterizer;
 
-			void clear() noexcept;
+			void clear();
+			BitSet64 get_visibility_mask(
+				const ObjectSharedPtr &object) const;
 
 		public:
 			ObjectVisitor();
 			virtual ~ObjectVisitor() noexcept;
 			virtual void operator()(
-				const BoundedObjectSharedPtr &bounded_object,
-				const SubFrustumsMask mask);
+				const BoundedObjectSharedPtr &bounded_object);
 			void sort(const glm::vec3 &position);
-			void add(const ObjectSharedPtr &object,
-				const SubFrustumsMask mask);
+			void add(const ObjectSharedPtr &object);
 			void add(const ObjectSharedPtr &object,
 				const float transparency, const BlendType blend,
-				const SubFrustumsMask mask,
 				const bool depth_read = true);
-			void next_frame() noexcept;
+			void next_frame();
+
+			inline void set_projection_view_matrix(
+				const glm::mat4x4 &projection_view_matrix)
+				noexcept
+			{
+				m_projection_view_matrix =
+					projection_view_matrix;
+			}
+
+			inline void set_cpu_rasterizer(
+				const CpuRasterizerSharedPtr &cpu_rasterizer)
+				noexcept
+			{
+				m_cpu_rasterizer = cpu_rasterizer;
+			}
+
+			inline const glm::mat4x4 &get_projection_view_matrix()
+				const noexcept
+			{
+				return m_projection_view_matrix;
+			}
+
+			inline const CpuRasterizerSharedPtr
+				&get_cpu_rasterizer() const noexcept
+			{
+				return m_cpu_rasterizer;
+			}
 
 			inline RenderObjectDataVector &get_objects() noexcept
 			{

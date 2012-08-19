@@ -8,6 +8,9 @@
 #include "objectvisitor.hpp"
 #include "object.hpp"
 #include "renderobjectdata.hpp"
+#include "cpurasterizer.hpp"
+#include "abstractmesh.hpp"
+#include "submesh.hpp"
 
 namespace eternal_lands
 {
@@ -100,23 +103,37 @@ namespace eternal_lands
 			ObjectSort());
 	}
 
-	void ObjectVisitor::add(const ObjectSharedPtr &object,
-		const SubFrustumsMask mask)
+	void ObjectVisitor::add(const ObjectSharedPtr &object)
 	{
-		m_objects.push_back(RenderObjectData(object, mask));
+		BitSet64 visibility_mask;
+
+		visibility_mask = get_visibility_mask(object);
+
+		if (visibility_mask.any())
+		{
+			m_objects.push_back(RenderObjectData(object,
+				visibility_mask));
+		}
 	}
 
 	void ObjectVisitor::add(const ObjectSharedPtr &object,
 		const float transparency, const BlendType blend,
-		const SubFrustumsMask mask, const bool depth_read)
+		const bool depth_read)
 	{
-		m_objects.push_back(RenderObjectData(object,
-			transparency, blend, mask, depth_read));
+		BitSet64 visibility_mask;
+
+		visibility_mask = get_visibility_mask(object);
+
+		if (visibility_mask.any())
+		{
+			m_objects.push_back(RenderObjectData(object,
+				visibility_mask, transparency, blend,
+				depth_read));
+		}
 	}
 
 	void ObjectVisitor::operator()(
-		const BoundedObjectSharedPtr &bounded_object,
-		const SubFrustumsMask mask)
+		const BoundedObjectSharedPtr &bounded_object)
 	{
 		ObjectSharedPtr object;
 
@@ -124,17 +141,32 @@ namespace eternal_lands
 
 		assert(object.get() != nullptr);
 
-		add(object, mask);
+		add(object);
 	}
 
-	void ObjectVisitor::next_frame() noexcept
+	void ObjectVisitor::next_frame()
 	{
 		clear();
 	}
 
-	void ObjectVisitor::clear() noexcept
+	void ObjectVisitor::clear()
 	{
 		m_objects.clear();
+	}
+
+	BitSet64 ObjectVisitor::get_visibility_mask(
+		const ObjectSharedPtr &object) const
+	{
+		if (get_cpu_rasterizer().get() == nullptr)
+		{
+			return all_bits_set;
+		}
+
+		return get_cpu_rasterizer()->check_visibility(
+			get_projection_view_matrix(),
+			object->get_world_transformation().get_matrix(),
+			object->get_mesh()->get_min_max_boxes(),
+			object->get_mesh()->get_sub_meshs());
 	}
 
 }

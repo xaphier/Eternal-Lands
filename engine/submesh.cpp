@@ -14,7 +14,8 @@ namespace eternal_lands
 		const Uint32 count, const Uint32 min_vertex,
 		const Uint32 max_vertex, const bool packed):
 		MeshDrawData(offset, count, min_vertex, max_vertex),
-		m_bounding_box(bounding_box), m_packed(packed)
+		m_bounding_box(bounding_box), m_min_max_boxes_index(0),
+		m_min_max_boxes_count(0), m_packed(packed)
 	{
 	}
 
@@ -23,11 +24,13 @@ namespace eternal_lands
 		const Uint32 max_vertex, const Uint32 base_vertex,
 		const bool packed): MeshDrawData(offset, count, min_vertex,
 			max_vertex, base_vertex), m_bounding_box(bounding_box),
-				m_packed(packed)
+				m_min_max_boxes_index(0),
+				m_min_max_boxes_count(0), m_packed(packed)
 	{
 	}
 
-	SubMesh::SubMesh(): MeshDrawData(), m_packed(true)
+	SubMesh::SubMesh(): MeshDrawData(), m_min_max_boxes_index(0),
+		m_min_max_boxes_count(0), m_packed(true)
 	{
 	}
 

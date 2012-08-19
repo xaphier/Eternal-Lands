@@ -57,10 +57,10 @@ namespace eternal_lands
 
 		public:
 			ConvexBody();
-			ConvexBody(const Frustum &frustum, const Uint16 index);
+			ConvexBody(const Frustum &frustum);
 			ConvexBody(const BoundingBox &box);
 			~ConvexBody() noexcept;
-			void clip(const Frustum &frustum, const Uint16 index);
+			void clip(const Frustum &frustum);
 			void clip(const BoundingBox &box);
 			void clip(const Plane &plane);
 			void transform(const glm::mat4x3 &matrix);

@@ -17,8 +17,8 @@
 
 /**
  * @file
- * @brief The @c class AlignedObjectArray.
- * This file contains the @c class AlignedObjectArray.
+ * @brief The @c class AlignedVec4Array.
+ * This file contains the @c class AlignedVec4Array.
  */
 namespace eternal_lands
 {

@@ -28,6 +28,8 @@ namespace eternal_lands
 	{
 		private:
 			BoundingBox m_bounding_box;
+			Uint32 m_min_max_boxes_index;
+			Uint32 m_min_max_boxes_count;
 			bool m_packed;
 
 		public:
@@ -45,26 +47,48 @@ namespace eternal_lands
 			SubMesh();
 			~SubMesh() noexcept;
 
-			inline const BoundingBox &get_bounding_box() const
-				noexcept
-			{
-				return m_bounding_box;
-			}
-
-			inline bool get_packed() const noexcept
-			{
-				return m_packed;
-			}
-
 			inline void set_bounding_box(
 				const BoundingBox &bounding_box) noexcept
 			{
 				m_bounding_box = bounding_box;
 			}
 
+			inline void set_min_max_boxes_index(
+				const Uint32 min_max_boxes_index) noexcept
+			{
+				m_min_max_boxes_index = min_max_boxes_index;
+			}
+
+			inline void set_min_max_boxes_count(
+				const Uint32 min_max_boxes_count) noexcept
+			{
+				m_min_max_boxes_count = min_max_boxes_count;
+			}
+
 			inline void set_packed(const bool packed) noexcept
 			{
 				m_packed = packed;
+			}
+
+			inline const BoundingBox &get_bounding_box() const
+				noexcept
+			{
+				return m_bounding_box;
+			}
+
+			inline Uint32 get_min_max_boxes_index() const noexcept
+			{
+				return m_min_max_boxes_index;
+			}
+
+			inline Uint32 get_min_max_boxes_count() const noexcept
+			{
+				return m_min_max_boxes_count;
+			}
+
+			inline bool get_packed() const noexcept
+			{
+				return m_packed;
 			}
 
 	};

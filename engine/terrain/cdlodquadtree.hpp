@@ -55,14 +55,14 @@ namespace eternal_lands
 				const glm::vec3 &camera_position,
 				const glm::uvec2 &position,
 				const MappedUniformBufferSharedPtr &instances,
-				const PlanesMask mask, const Uint16 level,
+				const BitSet64 mask, const Uint16 level,
 				const Uint16 max_instance_count,
 				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
 			void select_bounding_box(const Frustum &frustum,
 				const glm::vec3 &camera_position,
 				const glm::uvec2 &position,
-				const PlanesMask mask, const Uint16 level,
+				const BitSet64 mask, const Uint16 level,
 				const Uint16 max_instance_count,
 				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;

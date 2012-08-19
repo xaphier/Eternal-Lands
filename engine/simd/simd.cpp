@@ -1031,4 +1031,521 @@ namespace eternal_lands
 #endif	/* USE_SSE2 */
 	}
 
+	void SIMD::float_to_signed_short_8_scale(const float* source,
+		const Uint32 count, const float scale, Sint16* dest)
+	{
+#ifdef	USE_SSE2
+		__m128 t0, t1, s;
+		__m128i t2, t3, t4;
+		Uint32 i;
+
+		s = _mm_set1_ps(scale);
+
+		for (i = 0; i < count; ++i)
+		{
+			t0 = _mm_load_ps(source + i * 8 + 0);
+			t1 = _mm_load_ps(source + i * 8 + 4);
+
+			t0 = _mm_mul_ps(t0, s);
+			t1 = _mm_mul_ps(t1, s);
+
+			t2 = _mm_cvttps_epi32(t0);
+			t3 = _mm_cvttps_epi32(t1);
+			t4 = _mm_packs_epi32(t2, t3);
+
+			_mm_stream_si128(((__m128i*)dest) + i, t4);
+		}
+#endif	/* USE_SSE2 */
+	}
+
+	bool SIMD::check_coverage(const float* matrix,
+		const Sint16* min_max_boxes, const Uint32 count,
+		const float view_x, const float view_y, const float threshold)
+	{
+#ifdef	USE_SSE2
+		__m128 m0, m1, m2, m3, tmp, low, high, min, max, view, x, y, z;
+		__m128 w_rcp, t;
+		__m128i tmp_i, low_i, high_i, sign;
+		Uint32 i;
+
+		m0 = _mm_load_ps(matrix);
+		m1 = _mm_load_ps(matrix + 4);
+		m2 = _mm_load_ps(matrix + 8);
+		m3 = _mm_load_ps(matrix + 12);
+
+		/**
+		 * Scaled with four, because we do not map the range to
+		 * (0 .. view_x) x (0 .. view_y).
+		 * We use (-view_x .. view_x) x (-view_y .. view_y),
+		 * so coverage values are four times bigger.
+		 */
+		t = _mm_set1_ps(threshold * 4.0f);
+		view = _mm_setr_ps(view_x, view_y, 1.0f, 1.0f);
+
+		for (i = 0; i < count; ++i)
+		{
+			tmp_i = _mm_load_si128(
+				((const __m128i*)min_max_boxes) + i);
+			sign = _mm_cmpgt_epi16(_mm_setzero_si128(), tmp_i);
+			low_i = _mm_unpacklo_epi16(tmp_i, sign);
+			high_i = _mm_unpackhi_epi16(tmp_i, sign);
+
+			low = _mm_cvtepi32_ps(low_i);
+			high = _mm_cvtepi32_ps(high_i);
+
+			/**
+			 * x = { low.x, low.x, low.x, low.x }
+			 * y = { low.y, low.y, low.y, low.y }
+			 * z = { low.z, low.z, low.z, low.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			y = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(1, 1, 1, 1));
+			z = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(2, 2, 2, 2));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = tmp;
+			max = tmp;
+
+			/**
+			 * x = { high.x, high.x, high.x, high.x }
+			 * y = { low.y, low.y, low.y, low.y }
+			 * z = { low.z, low.z, low.z, low.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)high,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { high.x, high.x, high.x, high.x }
+			 * y = { high.y, high.y, high.y, high.y }
+			 * z = { low.z, low.z, low.z, low.z }
+			 */
+			y = (__m128)_mm_shuffle_epi32((__m128i)high,
+				_MM_SHUFFLE(1, 1, 1, 1));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { low.x, low.x, low.x, low.x }
+			 * y = { high.y, high.y, high.y, high.y }
+			 * z = { low.z, low.z, low.z, low.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { low.x, low.x, low.x, low.x }
+			 * y = { high.y, high.y, high.y, high.y }
+			 * z = { high.z, high.z, high.z, high.z }
+			 */
+			z = (__m128)_mm_shuffle_epi32((__m128i)high,
+				_MM_SHUFFLE(2, 2, 2, 2));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { high.x, high.x, high.x, high.x }
+			 * y = { high.y, high.y, high.y, high.y }
+			 * z = { high.z, high.z, high.z, high.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)high,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { high.x, high.x, high.x, high.x }
+			 * y = { low.y, low.y, low.y, low.y }
+			 * z = { high.z, high.z, high.z, high.z }
+			 */
+			y = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(1, 1, 1, 1));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { low.x, low.x, low.x, low.x }
+			 * y = { low.y, low.y, low.y, low.y }
+			 * z = { high.z, high.z, high.z, high.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			min = _mm_min_ps(min, _mm_set1_ps(1.0f));
+			max = _mm_min_ps(max, _mm_set1_ps(1.0f));
+			min = _mm_max_ps(min, _mm_set1_ps(-1.0f));
+			max = _mm_max_ps(max, _mm_set1_ps(-1.0f));
+
+			tmp = _mm_sub_ps(max, min);
+
+			tmp = _mm_mul_ps(tmp, view);
+
+			tmp = _mm_mul_ss(tmp, (__m128)_mm_shuffle_epi32(
+				(__m128i)tmp, _MM_SHUFFLE(1, 1, 1, 1)));
+
+			if (_mm_comigt_ss(tmp, t) == 1)
+			{
+				return true;
+			}
+		}
+
+		return false;
+#endif	/* USE_SSE2 */
+	}
+
+	BitSet64 SIMD::check_coverage_simple(const float* matrix,
+		const Sint16* min_max_boxes, const Uint32 count,
+		const float view_x, const float view_y, const float threshold)
+	{
+#ifdef	USE_SSE2
+		__m128 m0, m1, m2, m3, tmp, low, high, min, max, view, x, y, z;
+		__m128 w_rcp, t;
+		__m128i tmp_i, low_i, high_i, sign;
+		Uint32 i;
+		BitSet64 result;
+
+		m0 = _mm_load_ps(matrix);
+		m1 = _mm_load_ps(matrix + 4);
+		m2 = _mm_load_ps(matrix + 8);
+		m3 = _mm_load_ps(matrix + 12);
+
+		/**
+		 * Scaled with four, because we do not map the range to
+		 * (0 .. view_x) x (0 .. view_y).
+		 * We use (-view_x .. view_x) x (-view_y .. view_y),
+		 * so coverage values are four times bigger.
+		 */
+		t = _mm_set1_ps(threshold * 4.0f);
+		view = _mm_setr_ps(view_x, view_y, 1.0f, 1.0f);
+
+		for (i = 0; i < count; ++i)
+		{
+			tmp_i = _mm_load_si128(
+				((const __m128i*)min_max_boxes) + i);
+			sign = _mm_cmpgt_epi16(_mm_setzero_si128(), tmp_i);
+			low_i = _mm_unpacklo_epi16(tmp_i, sign);
+			high_i = _mm_unpackhi_epi16(tmp_i, sign);
+
+			low = _mm_cvtepi32_ps(low_i);
+			high = _mm_cvtepi32_ps(high_i);
+
+			/**
+			 * x = { low.x, low.x, low.x, low.x }
+			 * y = { low.y, low.y, low.y, low.y }
+			 * z = { low.z, low.z, low.z, low.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			y = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(1, 1, 1, 1));
+			z = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(2, 2, 2, 2));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = tmp;
+			max = tmp;
+
+			/**
+			 * x = { high.x, high.x, high.x, high.x }
+			 * y = { low.y, low.y, low.y, low.y }
+			 * z = { low.z, low.z, low.z, low.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)high,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { high.x, high.x, high.x, high.x }
+			 * y = { high.y, high.y, high.y, high.y }
+			 * z = { low.z, low.z, low.z, low.z }
+			 */
+			y = (__m128)_mm_shuffle_epi32((__m128i)high,
+				_MM_SHUFFLE(1, 1, 1, 1));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { low.x, low.x, low.x, low.x }
+			 * y = { high.y, high.y, high.y, high.y }
+			 * z = { low.z, low.z, low.z, low.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { low.x, low.x, low.x, low.x }
+			 * y = { high.y, high.y, high.y, high.y }
+			 * z = { high.z, high.z, high.z, high.z }
+			 */
+			z = (__m128)_mm_shuffle_epi32((__m128i)high,
+				_MM_SHUFFLE(2, 2, 2, 2));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { high.x, high.x, high.x, high.x }
+			 * y = { high.y, high.y, high.y, high.y }
+			 * z = { high.z, high.z, high.z, high.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)high,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { high.x, high.x, high.x, high.x }
+			 * y = { low.y, low.y, low.y, low.y }
+			 * z = { high.z, high.z, high.z, high.z }
+			 */
+			y = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(1, 1, 1, 1));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			/**
+			 * x = { low.x, low.x, low.x, low.x }
+			 * y = { low.y, low.y, low.y, low.y }
+			 * z = { high.z, high.z, high.z, high.z }
+			 */
+			x = (__m128)_mm_shuffle_epi32((__m128i)low,
+				_MM_SHUFFLE(0, 0, 0, 0));
+
+			tmp = _mm_mul_ps(x, m0);
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(y, m1));
+			tmp = _mm_add_ps(tmp, _mm_mul_ps(z, m2));
+			tmp = _mm_add_ps(tmp, m3);
+
+			w_rcp = (__m128)_mm_shuffle_epi32((__m128i)tmp,
+				_MM_SHUFFLE(3, 3, 3, 3));
+			w_rcp = _mm_rcp_ss(w_rcp);
+			w_rcp = _mm_shuffle_ps(w_rcp, w_rcp,
+				_MM_SHUFFLE(0, 0, 0, 0));
+			tmp = _mm_mul_ps(tmp, w_rcp);
+
+			min = _mm_min_ps(min, tmp);
+			max = _mm_max_ps(max, tmp);
+
+			min = _mm_min_ps(min, _mm_set1_ps(1.0f));
+			max = _mm_min_ps(max, _mm_set1_ps(1.0f));
+			min = _mm_max_ps(min, _mm_set1_ps(-1.0f));
+			max = _mm_max_ps(max, _mm_set1_ps(-1.0f));
+
+			tmp = _mm_sub_ps(max, min);
+
+			tmp = _mm_mul_ps(tmp, view);
+
+			tmp = _mm_mul_ss(tmp, (__m128)_mm_shuffle_epi32(
+				(__m128i)tmp, _MM_SHUFFLE(1, 1, 1, 1)));
+
+			result[i] = _mm_comigt_ss(tmp, t) == 1;
+		}
+
+		return result;
+#endif	/* USE_SSE2 */
+	}
+
 }

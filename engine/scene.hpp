@@ -57,9 +57,9 @@ namespace eternal_lands
 			Clipmap m_clipmap;
 			StateManager m_state_manager;
 			TerrainRenderingData m_visible_terrain;
-			boost::array<TerrainRenderingData, 3> m_shadow_terrain;
 			ObjectVisitor m_visible_objects;
-			ObjectVisitor m_shadow_objects;
+			boost::array<TerrainRenderingData, 4> m_shadow_terrains;
+			boost::array<ObjectVisitor, 4> m_shadow_objects;
 			LightVisitor m_visible_lights;
 			MapSharedPtr m_map;
 			AbstractMeshSharedPtr m_screen_quad;
@@ -78,6 +78,7 @@ namespace eternal_lands
 			Vec4Vector m_light_positions_array;
 			Vec4Vector m_light_colors_array;
 			SceneView m_scene_view;
+			CpuRasterizerSharedPtr m_cpu_rasterizer;
 			glm::vec4 m_main_light_direction;
 			glm::vec4 m_main_light_color;
 			glm::vec4 m_main_light_ambient;
@@ -86,8 +87,6 @@ namespace eternal_lands
 			Uint64 m_frame_id;
 			Uint64 m_program_vars_id;
 			float m_time;
-			SubFrustumsMask m_shadow_objects_mask;
-			SubFrustumsMask m_shadow_update_mask;
 			bool m_lights;
 			bool m_rebuild_terrain_map;
 			bool m_rebuild_shadow_map;
@@ -100,16 +99,20 @@ namespace eternal_lands
 				Uint16 &lights_count);
 			void do_draw_object_old_lights(
 				const ObjectSharedPtr &object,
+				const BitSet64 visibility_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance);
 			void do_draw_object(const ObjectSharedPtr &object,
+				const BitSet64 visibility_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance);
 			void draw_object_old_lights(
 				const ObjectSharedPtr &object,
+				const BitSet64 visibility_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance);
 			void draw_object(const ObjectSharedPtr &object,
+				const BitSet64 visibility_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance);
 			void draw_light(const glm::vec3 &position,
@@ -119,9 +122,9 @@ namespace eternal_lands
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids,
 				Uint32 &query_index);
-			void cull_shadows(const glm::vec3 &camera,
-				const Uint16 index);
-			void cull_all_shadows();
+			void cull_shadow(const Frustum &frustum,
+				const glm::vec3 &camera, const Uint16 index);
+			void cull_shadows();
 			void update_terrain_texture(
 				const MaterialSharedPtr &material,
 				const Mat2x3Array2 &texture_matrices,

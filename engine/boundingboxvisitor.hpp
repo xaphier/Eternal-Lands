@@ -37,8 +37,7 @@ namespace eternal_lands
 			BoundingBoxVisitor();
 			virtual ~BoundingBoxVisitor() noexcept;
 			virtual void operator()(
-				const BoundedObjectSharedPtr &bounded_object,
-				const SubFrustumsMask mask);
+				const BoundedObjectSharedPtr &bounded_object);
 
 			inline void clear()
 			{

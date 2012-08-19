@@ -20,8 +20,7 @@ namespace eternal_lands
 	}
 
 	void BoundingBoxVisitor::operator()(
-		const BoundedObjectSharedPtr &bounded_object,
-		const SubFrustumsMask mask)
+		const BoundedObjectSharedPtr &bounded_object)
 	{
 		m_bounding_box.merge(bounded_object->get_bounding_box());
 	}

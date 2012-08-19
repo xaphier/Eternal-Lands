@@ -36,10 +36,9 @@ namespace eternal_lands
 			LightVisitor();
 			virtual ~LightVisitor() noexcept;
 			virtual void operator()(
-				const BoundedObjectSharedPtr &bounded_object,
-				const SubFrustumsMask mask) noexcept;
-			void sort(const glm::vec3 &position) noexcept;
-			void update_camera(const glm::vec3 &camera) noexcept;
+				const BoundedObjectSharedPtr &bounded_object);
+			void sort(const glm::vec3 &position);
+			void update_camera(const glm::vec3 &camera);
 
 			inline RenderLightDataVector &get_lights() noexcept
 			{

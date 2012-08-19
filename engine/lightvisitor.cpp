@@ -60,8 +60,7 @@ namespace eternal_lands
 	}
 
 	void LightVisitor::operator()(
-		const BoundedObjectSharedPtr &bounded_object,
-		const SubFrustumsMask mask) noexcept
+		const BoundedObjectSharedPtr &bounded_object)
 	{
 		LightSharedPtr light;
 
@@ -72,13 +71,13 @@ namespace eternal_lands
 		m_lights.push_back(RenderLightData(light));
 	}
 
-	void LightVisitor::sort(const glm::vec3 &position) noexcept
+	void LightVisitor::sort(const glm::vec3 &position)
 	{
 		std::sort(m_lights.begin(), m_lights.end(),
 			LightSort(position));
 	}
 
-	void LightVisitor::update_camera(const glm::vec3 &camera) noexcept
+	void LightVisitor::update_camera(const glm::vec3 &camera)
 	{
 		BOOST_FOREACH(RenderLightData &light, m_lights)
 		{

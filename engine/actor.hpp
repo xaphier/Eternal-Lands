@@ -35,7 +35,7 @@ namespace eternal_lands
 			IndexUpdateSourceSharedPtr m_index_source;
 			ActorTextureBuilderSharedPtr m_actor_texture_builder;
 			Uint32Set m_meshs;
-			BitSet32 m_buffs;
+			BitSet64 m_buffs;
 
 		public:
 			/**
@@ -80,12 +80,12 @@ namespace eternal_lands
 				return m_index_source.get() != nullptr;
 			}
 
-			inline BitSet32 get_buffs() const noexcept
+			inline BitSet64 get_buffs() const noexcept
 			{
 				return m_buffs;
 			}
 
-			inline void set_buffs(const BitSet32 buffs) noexcept
+			inline void set_buffs(const BitSet64 buffs) noexcept
 			{
 				m_buffs = buffs;
 			}

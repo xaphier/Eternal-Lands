@@ -18,7 +18,7 @@ namespace eternal_lands
 	{
 	}
 
-	ConvexBody::ConvexBody(const Frustum &frustum, const Uint16 index)
+	ConvexBody::ConvexBody(const Frustum &frustum)
 	{
 		// ordering of the points:
 		// near (0-3), far (4-7); each (top-right, top-left, bottom-left, bottom-right)
@@ -33,7 +33,7 @@ namespace eternal_lands
 		Vec3Array8 corner_points;
 		Polygon polygon;
 
-		corner_points = frustum.get_corner_points(index);
+		corner_points = frustum.get_corner_points();
 		/// update vertices: near, far, left, right, bottom, top; fill in ccw
 
 		// near
@@ -176,11 +176,11 @@ namespace eternal_lands
 	{
 	}
 
-	void ConvexBody::clip(const Frustum &frustum, const Uint16 index)
+	void ConvexBody::clip(const Frustum &frustum)
 	{
 		PlaneVector planes;
 
-		planes = frustum.get_planes(index);
+		planes = frustum.get_planes();
 
 		BOOST_FOREACH(const Plane &plane, planes)
 		{

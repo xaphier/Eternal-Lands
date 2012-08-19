@@ -161,7 +161,6 @@ namespace eternal_lands
 	{
 		Uint32ObjectSharedPtrMap::const_iterator it, begin, end;
 		float transparency;
-		SubFrustumsMask mask;
 		BlendType blend;
 
 		if (get_draw_objects())
@@ -199,13 +198,11 @@ namespace eternal_lands
 
 		for (it = begin; it != end; ++it)
 		{
-			mask = frustum.intersect_sub_frustums(
-				it->second->get_bounding_box());
-
-			if (mask.any())
+			if (frustum.intersect(it->second->get_bounding_box())
+				!= it_outside)
 			{
 				visitor.add(it->second, transparency, blend,
-					mask, false);
+					false);
 			}
 		}
 	}

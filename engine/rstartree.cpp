@@ -32,7 +32,7 @@ namespace eternal_lands
 	}
 
 	void RStarTree::add_data(const BoundedObjectSharedPtr &element,
-		const Uint32 level, BitSet32 &oft)
+		const Uint32 level, BitSet64 &oft)
 	{
 		RStarTreeNodeSharedPtrStack path_buffer;
 		RStarTreeNodeSharedPtr node;
@@ -93,7 +93,7 @@ namespace eternal_lands
 	void RStarTree::reinsert_nodes(
 		const RStarTreeNodeSharedPtrVector &reinsert)
 	{
-		BitSet32 oft;
+		BitSet64 oft;
 		Uint32 i, count;
 
 		BOOST_FOREACH(const RStarTreeNodeSharedPtr &node, reinsert)
@@ -173,7 +173,7 @@ namespace eternal_lands
 	{
 		RStarTreeNodeSharedPtrStack path_buffer;
 		RStarTreeNodeSharedPtr node;
-		BitSet32 oft;
+		BitSet64 oft;
 
 		NULL_PTR_CHECK(element.get(), UTF8("element"));
 

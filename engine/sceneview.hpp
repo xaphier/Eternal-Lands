@@ -64,9 +64,9 @@ namespace eternal_lands
 			glm::uvec4 m_view_port;
 			glm::vec3 m_shadow_dir;
 			glm::vec3 m_shadow_up;
-			glm::uvec2 m_shadow_map_size;
+			Uint32 m_shadow_map_size;
 			float m_fov, m_aspect, m_z_near, m_z_far;
-			float m_shadow_z_far;
+			float m_shadow_z_far, m_shadow_z_offset;
 			Uint16 m_shadow_map_count, m_layer_count;
 			bool m_exponential_shadow_maps;
 			ProjectionType m_projection;
@@ -75,15 +75,7 @@ namespace eternal_lands
 				const glm::dmat4x4 &shadow_view_matrix,
 				const glm::dmat4x4 &basic_projection_matrix,
 				const glm::dmat4x4 &basic_projection_view_matrix,
-				const ConvexBody &convex_body,
-				const Uint16 index);
-
-			void build_shadow_matrix(
-				const glm::dmat4x4 &shadow_view_matrix,
-				const glm::dmat4x4 &basic_projection_matrix,
-				const glm::dmat4x4 &basic_projection_view_matrix,
-				const ConvexBody &convex_body,
-				const glm::vec3 &dir, const float max_height,
+				const Vec3Array8 &corner_points,
 				const Uint16 index);
 
 			glm::mat4 build_projection_matrix(const float z_near,
@@ -109,11 +101,10 @@ namespace eternal_lands
 			void update();
 			void build_shadow_matrices(
 				const glm::vec3 &light_direction,
-				const SubFrustumsConvexBodys &convex_bodys,
+				const Vec3Array8Vector &corner_points,
 				const float scene_max_height);
 			void update_shadow_matrices(
-				const SubFrustumsConvexBodys &convex_bodys,
-				const SubFrustumsMask &mask);
+				const Vec3Array8Vector &corner_points);
 
 			inline void set_ortho_view() noexcept
 			{
@@ -342,10 +333,14 @@ namespace eternal_lands
 				return m_shadow_z_far;
 			}
 
-			inline const glm::uvec2 &get_shadow_map_size() const
-				noexcept
+			inline float get_shadow_z_offset() const noexcept
 			{
-				return m_shadow_map_size;
+				return m_shadow_z_offset;
+			}
+
+			inline glm::uvec2 get_shadow_map_size() const noexcept
+			{
+				return glm::uvec2(m_shadow_map_size);
 			}
 
 			inline Uint16 get_shadow_map_count() const noexcept

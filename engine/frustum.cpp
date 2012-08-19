@@ -27,146 +27,27 @@ namespace eternal_lands
 		const Uint16 plane_type_names_count =
 			sizeof(plane_type_names) / sizeof(String);
 
-		const Uint16 sub_frustum_count = 4;
-		const Uint16 sub_frustum_planes_count = 7;
-		const Uint16 sub_frustum_intersect_offset = sub_frustum_count *
-			sub_frustum_planes_count;
-
-		const PlanesMask sub_frustum_masks[sub_frustum_count] =
-		{
-			0x1000007F,
-			0x20003F80,
-			0x401FC000,
-			0x8FE00000
-		};
-
-		const PlanesMask sub_frustum_planes_masks[sub_frustum_count] =
-		{
-			0x0000007F,
-			0x00003F80,
-			0x001FC000,
-			0x0FE00000
-		};
-
-		const PlanesMask sub_frustum_6_planes_masks[sub_frustum_count] =
-		{
-			0x0000003F,
-			0x00001F80,
-			0x000FC000,
-			0x07E00000
-		};
-
-		const PlanesMask all_sub_frustum_planes_mask = 0x0FFFFFFF;
-
 	}
 
 	Frustum::Frustum()
 	{
-		assert(m_planes_mask.size() == (sub_frustum_count *
-			(sub_frustum_planes_count + 1)));
-		assert(m_planes_mask.size() == (m_planes.size() +
-			sub_frustum_count));
-
 		m_planes_mask.reset();
-	}
-
-	Frustum::Frustum(const Frustum &frustum, const Uint16 index)
-	{
-		Uint32 i, offset;
-
-		assert(m_planes_mask.size() == (sub_frustum_count *
-			(sub_frustum_planes_count + 1)));
-		assert(m_planes_mask.size() == (m_planes.size() +
-			sub_frustum_count));
-		assert((sub_frustum_masks[0] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[0]);
-		assert((sub_frustum_masks[1] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[1]);
-		assert((sub_frustum_masks[2] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[2]);
-		assert((sub_frustum_masks[3] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[3]);
-
-		m_planes_mask.reset();
-
-		RANGE_CECK_MAX(index, sub_frustum_count, UTF8("index too big"));
-
-		offset = index * sub_frustum_planes_count;
-
-		for (i = 0; i < sub_frustum_planes_count; ++i)
-		{
-			m_planes[i] = frustum.m_planes[i + offset];
-			m_planes_mask[i] = frustum.m_planes_mask[i + offset];
-		}
 	}
 
 	Frustum::Frustum(const glm::mat4 &matrix)
 	{
-		assert(m_planes_mask.size() == (sub_frustum_count *
-			(sub_frustum_planes_count + 1)));
-		assert(m_planes_mask.size() == (m_planes.size() +
-			sub_frustum_count));
-		assert((sub_frustum_masks[0] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[0]);
-		assert((sub_frustum_masks[1] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[1]);
-		assert((sub_frustum_masks[2] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[2]);
-		assert((sub_frustum_masks[3] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[3]);
-
 		m_planes_mask.reset();
 
-		set_sub_frustum(matrix, 0);
-	}
-
-	Frustum::Frustum(const Mat4x4Vector &matrices)
-	{
-		Uint16 i, count;
-
-		assert(m_planes_mask.size() == (sub_frustum_count *
-			(sub_frustum_planes_count + 1)));
-		assert(m_planes_mask.size() == (m_planes.size() +
-			sub_frustum_count));
-		assert((sub_frustum_masks[0] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[0]);
-		assert((sub_frustum_masks[1] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[1]);
-		assert((sub_frustum_masks[2] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[2]);
-		assert((sub_frustum_masks[3] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[3]);
-
-		m_planes_mask.reset();
-
-		count = sub_frustum_count;
-
-		if (count > matrices.size())
-		{
-			count = matrices.size();
-		}
-
-		for (i = 0; i < count; ++i)
-		{
-			set_sub_frustum(matrices[i], i);
-		}
+		set_plane(matrix, pt_left);
+		set_plane(matrix, pt_right);
+		set_plane(matrix, pt_top);
+		set_plane(matrix, pt_bottom);
+		set_plane(matrix, pt_near);
+		set_plane(matrix, pt_far);
 	}
 
 	Frustum::Frustum(const BoundingBox &box)
 	{
-		assert(m_planes_mask.size() == (sub_frustum_count *
-			(sub_frustum_planes_count + 1)));
-		assert(m_planes_mask.size() == (m_planes.size() +
-			sub_frustum_count));
-		assert((sub_frustum_masks[0] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[0]);
-		assert((sub_frustum_masks[1] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[1]);
-		assert((sub_frustum_masks[2] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[2]);
-		assert((sub_frustum_masks[3] & all_sub_frustum_planes_mask) ==
-			sub_frustum_planes_masks[3]);
-
 		build_frustum(box);
 	}
 
@@ -219,31 +100,11 @@ namespace eternal_lands
 		VALUE_NOT_IN_SWITCH(plane, UTF8("PlaneType"));
 	}
 
-	void Frustum::set_plane(const glm::mat4 &matrix, const PlaneType plane,
-		const Uint16 sub_frustum_index)
+	void Frustum::set_plane(const glm::mat4 &matrix, const PlaneType plane)
 	{
-		Uint16 sub_frustum_offset;
+		m_planes[plane] = get_plane(matrix, plane);
 
-		assert(sub_frustum_index < sub_frustum_count);
-		assert(plane < sub_frustum_planes_count);
-
-		sub_frustum_offset = sub_frustum_index *
-			sub_frustum_planes_count;
-
-		m_planes[plane + sub_frustum_offset] = get_plane(matrix, plane);
-
-		m_planes_mask[plane + sub_frustum_offset] = true;
-	}
-
-	void Frustum::set_sub_frustum(const glm::mat4 &matrix,
-		const Uint16 sub_frustum_index)
-	{
-		set_plane(matrix, pt_left, sub_frustum_index);
-		set_plane(matrix, pt_right, sub_frustum_index);
-		set_plane(matrix, pt_top, sub_frustum_index);
-		set_plane(matrix, pt_bottom, sub_frustum_index);
-		set_plane(matrix, pt_near, sub_frustum_index);
-		set_plane(matrix, pt_far, sub_frustum_index);
+		m_planes_mask[plane] = true;
 	}
 
 	void Frustum::build_frustum(const BoundingBox &box)
@@ -281,202 +142,84 @@ namespace eternal_lands
 		m_planes_mask[pt_far] = true;
 	}
 
-	void Frustum::intersect(const BoundingBox &box,
-		const PlanesMask in_mask, const Uint16 sub_frustum_index,
-		PlanesMask &out_mask) const
-	{
-		PlanesMask mask;
-		Uint16 i, index, offset;
-
-		assert((get_planes_mask() & in_mask) ==
-			(in_mask & all_sub_frustum_planes_mask));
-
-		if ((in_mask &
-			sub_frustum_planes_masks[sub_frustum_index]).none())
-		{
-			out_mask |=
-				in_mask & sub_frustum_masks[sub_frustum_index];
-
-			return;
-		}
-
-		offset = sub_frustum_index * sub_frustum_planes_count;
-
-		for (i = 0; i < sub_frustum_planes_count; ++i)
-		{
-			index = i + offset;
-
-			if (in_mask[index])
-			{
-				switch (get_plane(index).intersect(box))
-				{
-					case it_outside:
-						return;
-					case it_intersect:
-						mask[index] = true;
-						break;
-					case it_inside:
-						break;
-				}
-			}
-		}
-
-		index = sub_frustum_index + sub_frustum_intersect_offset;
-
-		mask[index] = mask.none();
-
-		out_mask |= mask;
-	}
-
 	IntersectionType Frustum::intersect(const BoundingBox &box,
-		const PlanesMask in_mask, PlanesMask &out_mask) const
+		const BitSet64 in_mask, BitSet64 &out_mask) const
 	{
-		Uint16 i;
+		IntersectionType result;
+		Uint16 i, count;
 
-		out_mask.reset();
+		count = m_planes.size();
 
-		for (i = 0; i < sub_frustum_count; ++i)
+		result = it_inside;
+
+		for (i = 0; i < count; ++i)
 		{
-			intersect(box, in_mask, i, out_mask);
-		}
-
-		if (out_mask.none())
-		{
-			return it_outside;
-		}
-
-		if ((out_mask & all_sub_frustum_planes_mask).none())
-		{
-			return it_inside;
-		}
-
-		return it_intersect;
-	}
-
-	void Frustum::intersect(const glm::vec3 &point,
-		const PlanesMask in_mask, const Uint16 sub_frustum_index,
-		PlanesMask &out_mask) const
-	{
-		PlanesMask mask;
-		Uint16 i, index, offset;
-
-		assert((get_planes_mask() & in_mask) ==
-			(in_mask & all_sub_frustum_planes_mask));
-
-		if ((in_mask &
-			sub_frustum_planes_masks[sub_frustum_index]).none())
-		{
-			out_mask |=
-				in_mask & sub_frustum_masks[sub_frustum_index];
-
-			return;
-		}
-
-		offset = sub_frustum_index * sub_frustum_planes_count;
-
-		for (i = 0; i < sub_frustum_planes_count; ++i)
-		{
-			index = i + offset;
-
-			if (in_mask[index])
+			if (in_mask[i])
 			{
-				switch (get_plane(index).intersect(point))
+				switch (get_plane(i).intersect(box))
 				{
 					case it_outside:
-						return;
+						return it_outside;
 					case it_intersect:
-						mask[index] = true;
+						out_mask[i] = true;
+						result = it_intersect;
 						break;
 					case it_inside:
 						break;
 				}
 			}
-		}
-
-		index = sub_frustum_index + sub_frustum_intersect_offset;
-
-		mask[index] = mask.none();
-
-		out_mask |= mask;
-	}
-
-	IntersectionType Frustum::intersect(const glm::vec3 &point,
-		const PlanesMask in_mask, PlanesMask &out_mask) const
-	{
-		Uint16 i;
-
-		out_mask.reset();
-
-		for (i = 0; i < sub_frustum_count; ++i)
-		{
-			intersect(point, in_mask, i, out_mask);
-		}
-
-		if (out_mask.none())
-		{
-			return it_outside;
-		}
-
-		if ((out_mask & all_sub_frustum_planes_mask).none())
-		{
-			return it_inside;
-		}
-
-		return it_intersect;
-	}
-
-	SubFrustumsMask Frustum::intersect_sub_frustums(const BoundingBox &box,
-		const PlanesMask in_mask) const
-	{
-		PlanesMask mask;
-		Uint16 i;
-
-		for (i = 0; i < sub_frustum_count; ++i)
-		{
-			intersect(box, in_mask, i, mask);
-		}
-
-		return get_sub_frustums_mask(mask);
-	}
-
-	SubFrustumsMask Frustum::get_sub_frustums_mask(const PlanesMask mask)
-		const
-	{
-		SubFrustumsMask result;
-		Uint16 i;
-
-		for (i = 0; i < sub_frustum_count; ++i)
-		{
-			result[i] = (mask & sub_frustum_masks[i]).any();
 		}
 
 		return result;
 	}
 
-	Vec3Array8 Frustum::get_corner_points(const Uint16 sub_frustum_index)
-		const
+	IntersectionType Frustum::intersect(const glm::vec3 &point,
+		const BitSet64 in_mask, BitSet64 &out_mask) const
 	{
-		Vec3Array8 result;
-		Uint16Array3 offsets;
-		Uint16 i, j, offset, count;
+		IntersectionType result;
+		Uint16 i, count;
 
-		offset = sub_frustum_index * sub_frustum_planes_count;
-		count = result.size();
+		count = m_planes.size();
+
+		result = it_inside;
 
 		for (i = 0; i < count; ++i)
 		{
+			if (in_mask[i])
+			{
+				switch (get_plane(i).intersect(point))
+				{
+					case it_outside:
+						return it_outside;
+					case it_intersect:
+						out_mask[i] = true;
+						result = it_intersect;
+						break;
+					case it_inside:
+						break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	Vec3Array8 Frustum::get_corner_points() const
+	{
+		Vec3Array8 result;
+		Uint16Array3 offsets;
+		Uint16 i, j;
+
+		for (i = 0; i < 8; ++i)
+		{
 			for (j = 0; j < 3; ++j)
 			{
-				offsets[j] = offset + j * 2;
+				offsets[j] = j * 2;
 
 				if (std::bitset<3>(i)[j])
 				{
 					offsets[j]++;
 				}
-
-				assert(offsets[j] >= offset);
-				assert(offsets[j] < (offset +
-					sub_frustum_planes_count));
 			}
 
 			Plane::intersection_point(m_planes[offsets[0]],
@@ -487,38 +230,9 @@ namespace eternal_lands
 		return result;
 	}
 
-	SubFrustumsBoundingBoxes Frustum::get_bounding_boxes() const
+	BoundingBox Frustum::get_bounding_box() const
 	{
-		SubFrustumsBoundingBoxes result;
-		Uint16 i;
-
-		for (i = 0; i < sub_frustum_count; ++i)
-		{
-			if ((get_planes_mask() & sub_frustum_6_planes_masks[i])
-				== sub_frustum_6_planes_masks[i])
-			{
-				result[i] = BoundingBox(get_corner_points(i));
-			}
-		}
-
-		return result;
-	}
-
-	SubFrustumsConerPoints Frustum::get_corner_points() const
-	{
-		SubFrustumsConerPoints result;
-		Uint16 i;
-
-		for (i = 0; i < sub_frustum_count; ++i)
-		{
-			if ((get_planes_mask() & sub_frustum_6_planes_masks[i])
-				== sub_frustum_6_planes_masks[i])
-			{
-				result[i] = get_corner_points(i);
-			}
-		}
-
-		return result;
+		return BoundingBox(get_corner_points());;
 	}
 
 	PlaneVector Frustum::get_planes(const BoundingBox &box)
@@ -551,18 +265,18 @@ namespace eternal_lands
 		return result;
 	}
 
-	PlaneVector Frustum::get_planes(const Uint16 sub_frustum) const
+	PlaneVector Frustum::get_planes() const
 	{
 		PlaneVector result;
-		Uint16 i, index;
+		Uint16 i, count;
 
-		for (i = 0; i < sub_frustum_planes_count; ++i)
+		count = m_planes.size();
+
+		for (i = 0; i < count; ++i)
 		{
-			index = sub_frustum * sub_frustum_planes_count + i;
-
-			if (get_planes_mask()[index])
+			if (get_planes_mask()[i])
 			{
-				result.push_back(get_plane(index));
+				result.push_back(get_plane(i));
 			}
 		}
 

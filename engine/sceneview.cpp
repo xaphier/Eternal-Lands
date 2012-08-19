@@ -8,7 +8,7 @@
 #include "sceneview.hpp"
 #include "globalvars.hpp"
 #include "boundingbox.hpp"
-#include "convexbody.hpp"
+#include "frustum.hpp"
 #include "glmutil.hpp"
 
 namespace eternal_lands
@@ -28,56 +28,73 @@ namespace eternal_lands
 			split_uni = z_near + (z_far - z_near) * scale;
 			split_log = z_near * std::pow(z_far / z_near, scale);
 
-			return glm::mix(split_uni, split_log, 0.15f);
+			return glm::mix(split_uni, split_log, 0.5f);
 		}
 
-		glm::dmat4x4 build_shadow_cropp_matrix(
-			const glm::dmat4x3 &matrix,
-			const ConvexBody &convex_body, const glm::vec3 &dir,
-			const float max_height)
+		float build_min_max(const glm::mat4x4 &matrix,
+			const Vec3Array8 &corner_points,
+			glm::vec3 &min, glm::vec3 &max)
 		{
 			BoundingBox bounding_box;
-			glm::dmat4x4 result;
-			glm::dvec3 min, max, offset, scale;
+			glm::vec3 center;
+			float radius;
 
-			bounding_box = convex_body.get_transformed(
-				glm::mat4x3(matrix)).get_bounding_box();
-
-			min = bounding_box.get_min();
-			max = bounding_box.get_max();
-
-			if (std::abs(dir.z) > epsilon)
+			BOOST_FOREACH(const glm::vec3 &point, corner_points)
 			{
-				min.z -= max_height / dir.z;
+				center += point;
 			}
 
-			// Create the crop matrix.
-			scale.x = 2.0f / (max.x - min.x);
-			scale.y = 2.0f / (max.y - min.y);
-			scale.z = 1.0f / (max.z - min.z);
-			offset.x = -0.5f * (max.x + min.x) * scale.x;  
-			offset.y = -0.5f * (max.y + min.y) * scale.y;
-			offset.z = -min.z * scale.z;
-			// Use default near-plane value
+			center /= static_cast<float>(corner_points.size());
 
-			result = glm::translate(offset);
-			result = glm::scale(result, scale);
+			radius = 0.0f;
 
-			return result;
-		}
+			BOOST_FOREACH(const glm::vec3 &point, corner_points)
+			{
+				radius = std::max(radius,
+					glm::distance(center, point) * 0.5f);
+			}
 
-		glm::dmat4x4 build_shadow_cropp_matrix(const glm::dmat4x3 &matrix,
-			const ConvexBody &convex_body)
-		{
-			BoundingBox bounding_box;
-			glm::dmat4x4 result;
-			glm::dvec3 min, max, offset, scale;
+			radius = std::ceil(radius * 10.0f) / 10.0f;
+			center = glm::vec3(glm::ivec3(center * 10.0f)) / 10.0f;
 
-			bounding_box = convex_body.get_transformed(
-				glm::mat4x3(matrix)).get_bounding_box();
+			bounding_box.set_center(center);
+			bounding_box.set_half_size(glm::vec3(radius));
+
+			bounding_box = bounding_box.transform(matrix);
 
 			min = bounding_box.get_min();
 			max = bounding_box.get_max();
+
+			return radius;
+		}
+
+		glm::mat4x4 build_shadow_cropp_matrix(
+			const glm::mat4x4 &matrix,
+			const Vec3Array8 &corner_points,
+			const float shadow_map_size,
+			const float z_offset)
+		{
+			glm::mat4x4 result;
+			glm::vec3 min, max, offset, scale;
+			float radius, world_units_per_texel;
+
+			radius = build_min_max(matrix, corner_points, min, max);
+
+			min.z += z_offset;
+
+			world_units_per_texel = (2.0f + radius * 2.0f) /
+				shadow_map_size;
+
+			max += world_units_per_texel * 0.5;
+			min -= world_units_per_texel * 0.5;
+
+			min /= world_units_per_texel;
+			min = glm::floor(min);
+			min *= world_units_per_texel;
+
+			max /= world_units_per_texel;
+			max = glm::floor(max);
+			max *= world_units_per_texel;
 
 			// Create the crop matrix.
 			scale.x = 2.0f / (max.x - min.x);
@@ -113,47 +130,7 @@ namespace eternal_lands
 		const glm::dmat4x4 &shadow_view_matrix,
 		const glm::dmat4x4 &basic_projection_matrix,
 		const glm::dmat4x4 &basic_projection_view_matrix,
-		const ConvexBody &convex_body, const glm::vec3 &dir,
-		const float max_height, const Uint16 index)
-	{
-		glm::dmat4x4 shadow_projection_matrix;
-		glm::dmat4x4 shadow_projection_view_matrix;
-		glm::dmat4x4 shadow_texture_matrix;
-		glm::dvec3 scale, offset;
-
-		if (convex_body.get_bounding_box().get_empty())
-		{
-			m_shadow_projection_matrices[index] = glm::mat4x4();
-			m_shadow_projection_view_matrices[index] =
-				glm::mat4x4();
-
-			return;
-		}
-
-		shadow_projection_matrix = build_shadow_cropp_matrix(
-			glm::dmat4x3(basic_projection_view_matrix), convex_body,
-			dir, max_height) * basic_projection_matrix;
-
-		shadow_projection_view_matrix =	shadow_projection_matrix *
-			shadow_view_matrix;
-
-		scale = glm::vec3(0.5f);
-		offset = glm::vec3(0.5f);
-
-		shadow_texture_matrix = glm::translate(offset);
-		shadow_texture_matrix = glm::scale(shadow_texture_matrix,
-			scale);
-
-		m_shadow_projection_matrices[index] = shadow_projection_matrix;
-		m_shadow_projection_view_matrices[index] =
-			shadow_projection_view_matrix;
-	}
-
-	void SceneView::build_shadow_matrix(
-		const glm::dmat4x4 &shadow_view_matrix,
-		const glm::dmat4x4 &basic_projection_matrix,
-		const glm::dmat4x4 &basic_projection_view_matrix,
-		const ConvexBody &convex_body, const Uint16 index)
+		const Vec3Array8 &corner_points, const Uint16 index)
 	{
 		glm::dmat4x4 shadow_cropp_matrix;
 		glm::dmat4x4 shadow_projection_matrix;
@@ -161,19 +138,10 @@ namespace eternal_lands
 		glm::dmat4x4 shadow_texture_matrix;
 		glm::dvec3 scale, offset;
 
-		if (convex_body.get_bounding_box().get_empty())
-		{
-			m_shadow_projection_matrices[index] = glm::mat4x4();
-			m_shadow_projection_view_matrices[index] =
-				glm::mat4x4();
-			m_shadow_texture_matrices[index] = glm::mat4x4();
-
-			return;
-		}
-
-		shadow_cropp_matrix = build_shadow_cropp_matrix(
-			glm::dmat4x3(basic_projection_view_matrix),
-			convex_body);
+		shadow_cropp_matrix = glm::dmat4x4(build_shadow_cropp_matrix(
+			glm::mat4x4(basic_projection_view_matrix),
+			corner_points, m_shadow_map_size,
+			get_shadow_z_offset()));
 
 		shadow_projection_matrix = shadow_cropp_matrix *
 			basic_projection_matrix;
@@ -196,9 +164,10 @@ namespace eternal_lands
 	}
 
 	void SceneView::build_shadow_matrices(const glm::vec3 &light_direction,
-		const SubFrustumsConvexBodys &convex_bodys,
+		const Vec3Array8Vector &corner_points,
 		const float scene_max_height)
 	{
+		Frustum frustum;
 		glm::dmat4x4 shadow_view_matrix, basic_projection_matrix;
 		glm::dmat4x4 basic_projection_view_matrix;
 		glm::dvec3 dir, up, left, target, pos;
@@ -207,6 +176,13 @@ namespace eternal_lands
 		dir = glm::normalize(glm::dvec3(light_direction));
 		dir = glm::round(dir * 100.0) / 100.0;
 
+		m_shadow_z_offset = 0.0f;
+
+		if (std::abs(dir.z) > epsilon)
+		{
+			m_shadow_z_offset = -scene_max_height / dir.z;
+		}
+
 		up = glm::vec3(0.0f, 0.0f, 1.0);
 
 		if (std::abs(glm::dot(up, dir)) >= 1.0f)
@@ -214,10 +190,13 @@ namespace eternal_lands
 			up = glm::vec3(1.0f, 0.0f, 0.0f);
 		}
 
+		frustum = Frustum(build_projection_matrix(get_z_near(),
+				get_shadow_z_far()) * m_view_matrix);
+
+		target = glm::ivec3(glm::ceil(m_focus * 10.0f)) / 10;
+
 		left = glm::normalize(glm::cross(dir, up));
 		up = glm::normalize(glm::cross(dir, left));
-
-		target = glm::dvec3(m_focus);
 
 		pos = target + dir * 60.0;
 
@@ -267,14 +246,13 @@ namespace eternal_lands
 		{
 			build_shadow_matrix(shadow_view_matrix,
 				basic_projection_matrix,
-				basic_projection_view_matrix, convex_bodys[i],
-				glm::vec3(dir), scene_max_height, i);
+				basic_projection_view_matrix, corner_points[i],
+				i);
 		}
 	}
 
 	void SceneView::update_shadow_matrices(
-		const SubFrustumsConvexBodys &convex_bodys,
-		const SubFrustumsMask &mask)
+		const Vec3Array8Vector &corner_points)
 	{
 		glm::dmat4x4 basic_projection_matrix;
 		glm::dmat4x4 basic_projection_view_matrix;
@@ -288,15 +266,10 @@ namespace eternal_lands
 
 		for (i = 0; i < get_shadow_map_count(); ++i)
 		{
-			if (!mask[i])
-			{
-				continue;
-			}
-
 			build_shadow_matrix(glm::dmat4x4(
 				get_shadow_view_matrix()),
 				basic_projection_matrix,
-				basic_projection_view_matrix, convex_bodys[i],
+				basic_projection_view_matrix, corner_points[i],
 				i);
 		}
 	}
@@ -391,7 +364,7 @@ namespace eternal_lands
 		m_shadow_texture_matrices.resize(get_shadow_map_count());
 		m_split_projection_view_matrices.resize(get_shadow_map_count());
 
-		m_shadow_map_size = glm::uvec2(shadow_map_size);
+		m_shadow_map_size = shadow_map_size;
 
 		for (i = 0; i < get_shadow_map_count(); ++i)
 		{

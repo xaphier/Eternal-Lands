@@ -328,10 +328,68 @@ namespace eternal_lands
 			static void fill(const glm::vec4 &data,
 				const Uint32 count, float* dest);
 
+			/**
+			 * Converts an array of floats to signed shorts using
+			 * SSE2. Floats are scaled and processed in blocks of
+			 * eight each and are stored as blocks of eight signed
+			 * shorts. Be carefull when using these functions, no
+			 * error checking is done!
+			 * @param source The source memory must be 16 byte
+			 * aligned.
+			 * @param count The Number of four float blocks to
+			 * process.
+			 * @param scale The scale value used to convert the
+			 * floats to shorts.
+			 * @param dest The dest memory where the signed shorts
+			 * are stored.
+			 */
+			static void float_to_signed_short_8_scale(
+				const float* source, const Uint32 count,
+				const float scale, Sint16* dest);
+
 			static void relax_uv_line(const float* uv,
 				const float* distances, const float damping,
 				const float clamping, const Uint32 width,
 				float* new_uv);
+
+			/**
+			 * Checks if any of the min max boxes in the array
+			 * covers more samples than threshold. The min max
+			 * boxes are eight singed shorts, with:
+			 * (min.x, min.y, min.z, 1), (max.x, max.y, max.z, 1)
+			 * @param matrix The 4x4 matrix used to project the
+			 * boxes. Must be 16 byte aligned memory.
+			 * @param min_max_boxes The min/max boxes used. Memory
+			 * must be 16 byte aligned.
+			 * @param count The Number of min/max boxes to check.
+			 * @param view_x The size of the view in x direction.
+			 * @param view_y The size of the view in y direction.
+			 * @param threshold The threshold for the check.
+			 */
+			static bool check_coverage(const float* matrix,
+				const Sint16* min_max_boxes, const Uint32 count,
+				const float view_x, const float view_y,
+				const float threshold);
+
+			/**
+			 * Checks what min max boxes in the array covers more
+			 * samples than threshold. The min max boxes are eight
+			 * singed shorts, with:
+			 * (min.x, min.y, min.z, 1), (max.x, max.y, max.z, 1)
+			 * @param matrix The 4x4 matrix used to project the
+			 * boxes. Must be 16 byte aligned memory.
+			 * @param min_max_boxes The min/max boxes used. Memory
+			 * must be 16 byte aligned.
+			 * @param count The Number of min/max boxes to check.
+			 * @param view_x The size of the view in x direction.
+			 * @param view_y The size of the view in y direction.
+			 * @param threshold The threshold for the check.
+			 */
+			static BitSet64 check_coverage_simple(
+				const float* matrix,
+				const Sint16* min_max_boxes,
+				const Uint32 count, const float view_x,
+				const float view_y, const float threshold);
 
 	};
 

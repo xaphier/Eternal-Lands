@@ -42,6 +42,8 @@
 #include "terrainvisitor.hpp"
 #include "shader/uniformbuffer.hpp"
 
+#include "cpurasterizer.hpp"
+
 #include "materialcache.hpp"
 #include "materialbuilder.hpp"
 #include "image.hpp"
@@ -243,7 +245,6 @@ namespace eternal_lands
 
 		m_light_positions_array.resize(8);
 		m_light_colors_array.resize(8);
-		m_shadow_update_mask = 0x55;
 
 		set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
 		set_main_light_color(glm::vec3(0.2f));
@@ -269,11 +270,11 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			count = m_shadow_terrain.size();
+			count = m_shadow_terrains.size();
 
 			for (i = 0; i < count; ++i)
 			{
-				m_shadow_terrain[i].set_uniform_buffer(
+				m_shadow_terrains[i].set_uniform_buffer(
 					boost::make_shared<UniformBuffer>(
 						get_scene_resources(
 							).get_hardware_buffer_mapper(),
@@ -402,8 +403,6 @@ namespace eternal_lands
 		TextureTargetType target;
 		TextureFormatType format;
 		bool depth_buffer;
-
-		m_shadow_update_mask = 0xFF;
 
 		shadow_map_width = get_scene_view().get_shadow_map_size().x;
 		shadow_map_height = get_scene_view().get_shadow_map_size().y;
@@ -626,7 +625,6 @@ namespace eternal_lands
 		ObjectVisitor &visitor) const
 	{
 		Uint32ActorSharedPtrMap::const_iterator it, end;
-		SubFrustumsMask mask;
 
 		m_map->intersect(frustum, visitor);
 
@@ -634,15 +632,14 @@ namespace eternal_lands
 
 		for (it = m_actors.begin(); it != end; ++it)
 		{
-			mask = frustum.intersect_sub_frustums(
-				it->second->get_bounding_box());
-
-			if (mask.any())
+			if (frustum.intersect(it->second->get_bounding_box())
+				!= it_outside)
 			{
 				if ((it->second->get_buffs().to_ulong() &
 					BUFF_INVISIBILITY) == 0)
 				{
-					visitor.add(it->second, mask);
+					visitor.add(it->second);
+					continue;
 				}
 
 				if (shadow)
@@ -651,7 +648,7 @@ namespace eternal_lands
 				}
 
 				visitor.add(it->second, 0.25f,
-					bt_alpha_transparency_value, mask);
+					bt_alpha_transparency_value);
 			}
 		}
 	}
@@ -711,6 +708,10 @@ namespace eternal_lands
 
 		m_visible_objects.next_frame();
 
+		m_visible_objects.set_projection_view_matrix(
+			get_scene_view().get_projection_view_matrix());
+		m_visible_objects.set_cpu_rasterizer(m_cpu_rasterizer);
+
 		intersect(frustum, false, m_visible_objects);
 
 		DEBUG_CHECK_GL_ERROR();
@@ -739,15 +740,12 @@ namespace eternal_lands
 		m_visible_objects.sort(glm::vec3(
 			get_scene_view().get_camera()));
 
-		if (get_scene_view().get_shadow_map_count() > 0)
-		{
-			cull_all_shadows();
-		}
-
 		intersect(frustum, m_visible_lights);
 
 		m_visible_lights.update_camera(glm::vec3(
 			get_scene_view().get_camera()));
+
+		cull_shadows();
 
 		if (m_rebuild_terrain_map)
 		{
@@ -756,15 +754,13 @@ namespace eternal_lands
 		}
 	}
 
-	void Scene::cull_all_shadows()
+	void Scene::cull_shadows()
 	{
-		SubFrustumsConvexBodys convex_bodys;
-		SubFrustumsBoundingBoxes receiver_boxes;
-		SubFrustumsBoundingBoxes caster_boxes;
-		Frustum frustum;
+		Vec3Array8Vector corner_points;
 		glm::vec3 camera;
-		SubFrustumsMask mask;
 		Uint32 i, count;
+
+		count = get_scene_view().get_shadow_map_count();
 
 		if (m_rebuild_shadow_map)
 		{
@@ -772,135 +768,63 @@ namespace eternal_lands
 			m_rebuild_shadow_map = false;
 		}
 
-		frustum = Frustum(
-			get_scene_view().get_split_projection_view_matrices());
-
-		if (get_global_vars()->get_opengl_3_1())
+		if (count == 0)
 		{
-			count = m_shadow_terrain.size();
-
-			for (i = 0; i < count; ++i)
-			{
-				intersect_terrain(Frustum(frustum, i), camera,
-					receiver_boxes[i]);
-			}
+			return;
 		}
 
-		count = mask.size();
-
-		BOOST_FOREACH(const RenderObjectData &object,
-			m_visible_objects.get_objects())
-		{
-			mask = frustum.intersect_sub_frustums(object.get_object(
-				)->get_bounding_box());
-
-			for (i = 0; i < count; ++i)
-			{
-				if (mask[i])
-				{
-					receiver_boxes[i].merge(
-						object.get_object(
-							)->get_bounding_box());
-				}
-			}
-		}
-
-		count = convex_bodys.size();
+		corner_points.resize(count);
 
 		for (i = 0; i < count; ++i)
 		{
-			convex_bodys[i] = ConvexBody(frustum, i);
-			convex_bodys[i].clip(receiver_boxes[i]);
+			corner_points[i] = Frustum(get_scene_view(
+				).get_split_projection_view_matrices(
+				)[i]).get_corner_points();
+//			std::cout << frustums[i].get_bounding_box() << std::endl;
 		}
 
 		get_scene_view().build_shadow_matrices(
-			glm::vec3(get_main_light_direction()), convex_bodys, 
+			glm::vec3(get_main_light_direction()), corner_points, 
 			m_map->get_bounding_box().get_max().z);
 
 		camera = glm::vec3(get_scene_view().get_shadow_camera());
 
-		frustum = Frustum(
-			get_scene_view().get_shadow_projection_view_matrices());
+		for (i = 0; i < count; ++i)
+		{
+			cull_shadow(Frustum(get_scene_view(
+				).get_shadow_projection_view_matrices()[i]),
+				camera, i);
+		}
 
-		m_shadow_objects.next_frame();
+		get_scene_view().update_shadow_matrices(corner_points);
+	}
 
-		intersect(frustum, true, m_shadow_objects);
+	void Scene::cull_shadow(const Frustum &frustum, const glm::vec3 &camera,
+		const Uint16 index)
+	{
+		m_shadow_objects[index].next_frame();
 
-		m_shadow_objects.sort(camera);
+		intersect(frustum, true, m_shadow_objects[index]);
 
-		m_shadow_objects_mask.reset();
+		m_shadow_objects[index].sort(camera);
 
 		if (get_global_vars()->get_opengl_3_1())
 		{
-			count = m_shadow_terrain.size();
+			TerrainVisitor terrain_visitor(
+				m_shadow_terrains[index].get_uniform_buffer(
+					)->get_mapped_uniform_buffer());
 
-			for (i = 0; i < count; ++i)
-			{
-				TerrainVisitor terrain_visitor(
-					m_shadow_terrain[i].get_uniform_buffer(
-						)->get_mapped_uniform_buffer());
+			DEBUG_CHECK_GL_ERROR();
 
-				DEBUG_CHECK_GL_ERROR();
+			intersect_terrain(frustum, camera, terrain_visitor);
 
-				intersect_terrain(Frustum(frustum, i), camera,
-					terrain_visitor);
-
-				m_shadow_terrain[i].set_mesh(
-					terrain_visitor.get_mesh());
-				m_shadow_terrain[i].set_material(
-					terrain_visitor.get_material());
-				m_shadow_terrain[i].set_instances(
-					terrain_visitor.get_instances());
-
-				caster_boxes[i].merge(
-					terrain_visitor.get_bounding_box());
-
-				m_shadow_objects_mask[i] =
-					terrain_visitor.get_instances() > 0;
-			}
+			m_shadow_terrains[index].set_mesh(
+				terrain_visitor.get_mesh());
+			m_shadow_terrains[index].set_material(
+				terrain_visitor.get_material());
+			m_shadow_terrains[index].set_instances(
+				terrain_visitor.get_instances());
 		}
-
-		count = mask.size();
-
-		BOOST_FOREACH(const RenderObjectData &object,
-			m_shadow_objects.get_objects())
-		{
-			mask = object.get_sub_frustums_mask();
-
-			for (i = 0; i < count; ++i)
-			{
-				if (mask[i])
-				{
-					caster_boxes[i].merge(
-						object.get_object(
-							)->get_bounding_box());
-				}
-			}
-
-			m_shadow_objects_mask |= mask;
-		}
-
-		for (i = 0; i < count; ++i)
-		{
-			convex_bodys[i] = ConvexBody(frustum, i);
-			convex_bodys[i].clip(caster_boxes[i]);
-		}
-
-		if (get_global_vars()->get_opengl_3_2())
-		{
-			frustum = Frustum(get_scene_view(
-				).get_split_projection_view_matrices());
-
-			for (i = 0; i < count; ++i)
-			{
-				convex_bodys[i] = ConvexBody(frustum, i);
-				convex_bodys[i].clip(caster_boxes[i]);
-				convex_bodys[i].clip(receiver_boxes[i]);
-			}
-		}
-
-		get_scene_view().update_shadow_matrices(convex_bodys,
-			m_shadow_update_mask);
 	}
 
 	bool Scene::switch_program(const GlslProgramSharedPtr &program)
@@ -1059,8 +983,8 @@ namespace eternal_lands
 	}
 
 	void Scene::do_draw_object(const ObjectSharedPtr &object,
-		const EffectProgramType type, const Uint16 instances,
-		const Uint16 distance)
+		const BitSet64 visibility_mask, const EffectProgramType type,
+		const Uint16 instances, const Uint16 distance)
 	{
 		Uint16 count, i;
 		bool object_data_set;
@@ -1077,6 +1001,14 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			if (i < visibility_mask.size())
+			{
+				if (!visibility_mask[i])
+				{
+					continue;
+				}
+			}
+
 			MaterialLock material(object->get_materials()[i]);
 
 			if (switch_program(material->get_effect()->get_program(
@@ -1113,8 +1045,8 @@ namespace eternal_lands
 	}
 
 	void Scene::do_draw_object_old_lights(const ObjectSharedPtr &object,
-		const EffectProgramType type, const Uint16 instances,
-		const Uint16 distance)
+		const BitSet64 visibility_mask, const EffectProgramType type,
+		const Uint16 instances, const Uint16 distance)
 	{
 		Uint16 count, i, lights_count;
 		bool object_data_set;
@@ -1133,6 +1065,14 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			if (i < visibility_mask.size())
+			{
+				if (!visibility_mask[i])
+				{
+					continue;
+				}
+			}
+
 			MaterialLock material(object->get_materials()[i]);
 
 			if (switch_program(material->get_effect()->get_program(
@@ -1177,17 +1117,19 @@ namespace eternal_lands
 	}
 
 	void Scene::draw_object_old_lights(const ObjectSharedPtr &object,
-		const EffectProgramType type, const Uint16 instances,
-		const Uint16 distance)
+		const BitSet64 visibility_mask, const EffectProgramType type,
+		const Uint16 instances, const Uint16 distance)
 	{
 		try
 		{
 			STRING_MARKER(UTF8("object name '%1%', mesh name "
-				"'%2%', instances %3%"), object->get_name() %
-				object->get_mesh()->get_name() % instances);
+				"'%2%', instances %3%, visibility mask %4%"),
+				object->get_name() %
+				object->get_mesh()->get_name() % instances %
+				visibility_mask);
 
-			do_draw_object_old_lights(object, type, instances,
-				distance);
+			do_draw_object_old_lights(object, visibility_mask,
+				type, instances, distance);
 		}
 		catch (boost::exception &exception)
 		{
@@ -1206,16 +1148,19 @@ namespace eternal_lands
 	}
 
 	void Scene::draw_object(const ObjectSharedPtr &object,
-		const EffectProgramType type, const Uint16 instances,
-		const Uint16 distance)
+		const BitSet64 visibility_mask, const EffectProgramType type,
+		const Uint16 instances, const Uint16 distance)
 	{
 		try
 		{
 			STRING_MARKER(UTF8("object name '%1%', mesh name "
-				"'%2%', instances %3%"), object->get_name() %
-				object->get_mesh()->get_name() % instances);
+				"'%2%', instances %3%, visibility mask %4%"),
+				object->get_name() %
+				object->get_mesh()->get_name() % instances %
+				visibility_mask);
 
-			do_draw_object(object, type, instances, distance);
+			do_draw_object(object, visibility_mask, type,
+				instances, distance);
 		}
 		catch (boost::exception &exception)
 		{
@@ -1272,18 +1217,28 @@ namespace eternal_lands
 
 		get_scene_view().set_shadow_view(index);
 
-		draw_terrain(m_shadow_terrain[index], ept_shadow, false);
-
+		draw_terrain(m_shadow_terrains[index], ept_shadow, false);
+#if	1
 		BOOST_FOREACH(const RenderObjectData &object,
-			m_shadow_objects.get_objects())
+			m_shadow_objects[index].get_objects())
 		{
-			if (object.get_sub_frustums_mask(index))
+			draw_object(object.get_object(),
+				object.get_visibility_mask(), ept_shadow, 1,
+				object.get_distance());
+		}
+#else
+		Uint32 i;
+		for (i = 0; i < get_scene_view().get_shadow_map_count(); ++i)
+		{
+			BOOST_FOREACH(const RenderObjectData &object,
+				m_shadow_objects[i].get_objects())
 			{
-				draw_object(object.get_object(), ept_shadow,
-					1, object.get_distance());
+				draw_object(object.get_object(),
+					object.get_visibility_mask(),
+					ept_shadow, 1, object.get_distance());
 			}
 		}
-
+#endif
 		update_program_vars_id();
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1308,34 +1263,7 @@ namespace eternal_lands
 
 		for (i = 0; i < get_scene_view().get_shadow_map_count(); ++i)
 		{
-			if (!m_shadow_update_mask[i])
-			{
-				continue;
-			}
-
-			if (m_shadow_objects_mask[i])
-			{
-				draw_shadow(i);
-			}
-			else
-			{
-				if (get_scene_view(
-					).get_exponential_shadow_maps())
-				{
-					m_shadow_frame_buffer->attach(
-						m_shadow_texture,
-						fbat_color_0, i);
-				}
-				else
-				{
-					m_shadow_frame_buffer->attach(
-						m_shadow_texture, fbat_depth,
-						i);
-				}
-
-				m_shadow_frame_buffer->clear(glm::vec4(1e38f),
-					0);
-			}
+			draw_shadow(i);
 		}
 
 		m_shadow_frame_buffer->unbind();
@@ -1364,16 +1292,6 @@ namespace eternal_lands
 		}
 
 		DEBUG_CHECK_GL_ERROR();
-
-		m_shadow_update_mask = 0x55;
-
-		if ((m_frame_id % 2) == 0)
-		{
-			m_shadow_update_mask.flip();
-		}
-
-		m_shadow_update_mask[0] = true;
-		m_shadow_update_mask = 0xFFFF;
 	}
 
 	void Scene::draw_depth()
@@ -1412,8 +1330,9 @@ namespace eternal_lands
 
 			glBeginQuery(GL_SAMPLES_PASSED, m_querie_ids[index]);
 
-			draw_object(object.get_object(), ept_depth,
-				1, object.get_distance());
+			draw_object(object.get_object(),
+				object.get_visibility_mask(), ept_depth, 1,
+				object.get_distance());
 
 			glEndQuery(GL_SAMPLES_PASSED);
 
@@ -1438,8 +1357,9 @@ namespace eternal_lands
 				glBeginQuery(GL_SAMPLES_PASSED,
 					m_querie_ids[index]);
 
-				draw_object(object.get_object(), ept_depth,
-					1, object.get_distance());
+				draw_object(object.get_object(),
+					object.get_visibility_mask(),
+					ept_depth, 1, object.get_distance());
 
 				glEndQuery(GL_SAMPLES_PASSED);
 
@@ -1542,12 +1462,14 @@ namespace eternal_lands
 			if (old_lights)
 			{
 				draw_object_old_lights(object.get_object(),
-					effect, 1, object.get_distance());
+					object.get_visibility_mask(), effect,
+					1, object.get_distance());
 			}
 			else
 			{
-				draw_object(object.get_object(), effect, 1,
-					object.get_distance());
+				draw_object(object.get_object(),
+					object.get_visibility_mask(), effect,
+					1, object.get_distance());
 			}
 		}
 
@@ -1571,8 +1493,6 @@ namespace eternal_lands
 		m_clipmap_frame_buffer->bind();
 		m_clipmap_frame_buffer->attach(m_clipmap_texture, fbat_color_0,
 			index);
-//		m_clipmap_frame_buffer->attach(m_clipmap_tmp_texture,
-//			fbat_color_0, 0);
 		m_clipmap_frame_buffer->clear(glm::vec4(0.0f), 0);
 
 		MaterialLock material_lock(material);
@@ -1776,7 +1696,7 @@ namespace eternal_lands
 		get_state_manager().switch_blend(false);
 
 		// Draw a sphere the radius of the light
-		draw_object(m_light_sphere, ept_depth, 1, 0);
+		draw_object(m_light_sphere, 0xFFFFFFFF, ept_depth, 1, 0);
 
 		// Set the stencil to only pass on equal value
 		glStencilFunc(GL_EQUAL, light_index, 0xFFFFFFFF);
@@ -1789,7 +1709,7 @@ namespace eternal_lands
 
 		//TODO: Render lowers detail spheres when light is far away?
 		// Draw a sphere the radius of the light
-		draw_object(m_light_sphere, ept_default, 1, 0);
+		draw_object(m_light_sphere, 0xFFFFFFFF, ept_default, 1, 0);
 	}
 
 	void Scene::draw_light_camera_inside(const glm::vec3 &position,
@@ -1836,7 +1756,7 @@ namespace eternal_lands
 		get_state_manager().switch_blend(true);
 		get_state_manager().switch_culling(true);
 
-		draw_object(m_light_sphere, ept_default, 1, 0);
+		draw_object(m_light_sphere, 0xFFFFFFFF, ept_default, 1, 0);
 	}
 
 	void Scene::draw_lights()
@@ -2042,8 +1962,9 @@ namespace eternal_lands
 			glBeginQuery(GL_SAMPLES_PASSED,
 				m_querie_ids[query_index]);
 
-			draw_object(object.get_object(), ept_depth,
-				1, object.get_distance());
+			draw_object(object.get_object(),
+				object.get_visibility_mask(), ept_depth, 1,
+				object.get_distance());
 
 			glEndQuery(GL_SAMPLES_PASSED);
 
@@ -2482,6 +2403,10 @@ namespace eternal_lands
 	void Scene::set_view_port(const glm::uvec4 &view_port)
 	{
 		Uint16 mipmaps;
+
+		m_cpu_rasterizer = boost::make_shared<CpuRasterizer>(
+			view_port.y, view_port.w, 5.0f,
+			get_global_vars()->get_use_simd());
 
 		if (!get_global_vars()->get_use_scene_fbo())
 		{

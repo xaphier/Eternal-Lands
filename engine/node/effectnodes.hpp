@@ -33,6 +33,14 @@ namespace eternal_lands
 		friend class EffectNodePort;
 		private:
 			EffectNodeVector m_nodes;
+/*
+			struct
+			{
+				TextureTargetType m_target;
+				String m_name;
+				StringVector m_default_texture;
+			};
+*/
 			boost::mt19937 m_ran;
 			Mt19937RandomUuidGenerator m_uuid_generator;
 			String m_name;

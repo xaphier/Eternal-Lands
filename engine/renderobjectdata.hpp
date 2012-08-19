@@ -31,9 +31,9 @@ namespace eternal_lands
 	{
 		private:
 			ObjectSharedPtr m_object;
+			BitSet64 m_visibility_mask;
 			float m_transparency;
 			float m_distance;
-			SubFrustumsMask m_sub_frustums_mask;
 			Uint32 m_occlusion_culling;
 			Uint16 m_lod;
 			BlendType m_blend;
@@ -42,13 +42,14 @@ namespace eternal_lands
 		public:
 			RenderObjectData();
 			RenderObjectData(const ObjectSharedPtr &object,
-				const SubFrustumsMask sub_frustums_mask = 0x1);
+				const BitSet64 visibility_mask);
 			RenderObjectData(const ObjectSharedPtr &object,
-				const float transparency, const BlendType blend,
-				const SubFrustumsMask sub_frustums_mask = 0x1);
+				const BitSet64 visibility_mask,
+				const float transparency,
+				const BlendType blend);
 			RenderObjectData(const ObjectSharedPtr &object,
+				const BitSet64 visibility_mask,
 				const float transparency, const BlendType blend,
-				const SubFrustumsMask sub_frustums_mask,
 				const bool depth_read);
 			~RenderObjectData() noexcept;
 
@@ -56,6 +57,12 @@ namespace eternal_lands
 				noexcept
 			{
 				m_object = object;
+			}
+
+			inline void set_visibility_mask(
+				const BitSet64 visibility_mask)	noexcept
+			{
+				m_visibility_mask = visibility_mask;
 			}
 
 			inline void set_transparency(const float transparency)
@@ -85,13 +92,6 @@ namespace eternal_lands
 				m_depth_read = depth_read;
 			}
 
-			inline void set_sub_frustums_mask(
-				const SubFrustumsMask &sub_frustums_mask)
-				noexcept
-			{
-				m_sub_frustums_mask = sub_frustums_mask;
-			}
-
 			inline void set_occlusion_culling(
 				const Uint32 occlusion_culling) noexcept
 			{
@@ -102,6 +102,11 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_object;
+			}
+
+			inline BitSet64 get_visibility_mask() const noexcept
+			{
+				return m_visibility_mask;
 			}
 
 			inline float get_transparency() const noexcept
@@ -117,18 +122,6 @@ namespace eternal_lands
 			inline BlendType get_blend() const noexcept
 			{
 				return m_blend;
-			}
-
-			inline const SubFrustumsMask &get_sub_frustums_mask()
-				const noexcept
-			{
-				return m_sub_frustums_mask;
-			}
-
-			inline bool get_sub_frustums_mask(const Uint16 index)
-				const
-			{
-				return m_sub_frustums_mask[index];
 			}
 
 			inline Uint16 get_lod() const noexcept

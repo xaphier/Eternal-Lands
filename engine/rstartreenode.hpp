@@ -160,13 +160,11 @@ namespace eternal_lands
 			 * @brief Views the node and all sub nodes.
 			 *
 			 * Views the node and all sub nodes.
-			 * @param sub_frustums_mask The mask of the sub
-			 * frustums.
 			 * @param visitor The visitor that gets the pointers of
 			 * the intersecting elements.
 			 */
-			void view_node(const SubFrustumsMask sub_frustums_mask,
-				AbstractBoundedObjectVisitor &visitor) const;
+			void view_node(AbstractBoundedObjectVisitor &visitor)
+				const;
 
 			/**
 			 * @brief Adds all elements of the node and its
@@ -203,7 +201,7 @@ namespace eternal_lands
 			 * the intersecting elements.
 			 */
 			void intersect_node(const Frustum &frustum,
-				const PlanesMask in_mask,
+				const BitSet64 in_mask,
 				AbstractBoundedObjectVisitor &visitor) const;
 
 			/**
@@ -221,7 +219,7 @@ namespace eternal_lands
 			 * the intersecting elements.
 			 */
 			void intersect_tree(const Frustum &frustum,
-				const PlanesMask in_mask,
+				const BitSet64 in_mask,
 				AbstractBoundedObjectVisitor &visitor) const;
 
 			/**
@@ -374,7 +372,7 @@ namespace eternal_lands
 			void adjust_tree(RStarTreePtr tree,
 				const RStarTreeNodeSharedPtr &node,
 				RStarTreeNodeSharedPtrStack &path_buffer,
-				BitSet32 &oft);
+				BitSet64 &oft);
 
 			/**
 			 * @brief Selects elements for reinsert.
@@ -470,7 +468,7 @@ namespace eternal_lands
 			bool insert_element(RStarTreePtr tree,
 				const BoundedObjectSharedPtr &element,
 				RStarTreeNodeSharedPtrStack &path_buffer,
-				BitSet32 &oft);
+				BitSet64 &oft);
 
 			/**
 			 * @brief Searches a leaf that holds too few element.

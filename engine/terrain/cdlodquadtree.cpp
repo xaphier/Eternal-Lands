@@ -352,7 +352,7 @@ namespace eternal_lands
 	void CdLodQuadTree::select_quads_for_drawing(const Frustum &frustum,
 		const glm::vec3 &camera, const glm::uvec2 &position,
 		const MappedUniformBufferSharedPtr &instances,
-		const PlanesMask mask, const Uint16 level,
+		const BitSet64 mask, const Uint16 level,
 		const Uint16 max_instance_count, BoundingBox &bounding_box,
 		Uint32 &instance_index) const
 	{
@@ -360,7 +360,7 @@ namespace eternal_lands
 		glm::vec3 min, max;
 		glm::vec2 size, center, half_size, distance;
 		glm::uvec2 pos;
-		PlanesMask out_mask;
+		BitSet64 out_mask;
 		Uint32 offset, patch_size;
 		Uint16 i;
 		bool intersect;
@@ -447,7 +447,7 @@ namespace eternal_lands
 		glm::vec4 terrain_lod_offset;
 		float dist, half_max_z;
 		Uint32 x, y, level, step;
-		PlanesMask mask;
+		BitSet64 mask;
 		Uint16 max_instance_count;
 
 		if (get_lod_count() == 0)
@@ -503,7 +503,7 @@ namespace eternal_lands
 
 	void CdLodQuadTree::select_bounding_box(const Frustum &frustum,
 		const glm::vec3 &camera, const glm::uvec2 &position,
-		const PlanesMask mask, const Uint16 level,
+		const BitSet64 mask, const Uint16 level,
 		const Uint16 max_instance_count, BoundingBox &bounding_box,
 		Uint32 &instance_index) const
 	{
@@ -511,7 +511,7 @@ namespace eternal_lands
 		glm::vec3 min, max;
 		glm::vec2 size, center, half_size, distance;
 		glm::uvec2 pos;
-		PlanesMask out_mask;
+		BitSet64 out_mask;
 		Uint32 offset, patch_size;
 		Uint16 i;
 		IntersectionType intersect;
@@ -570,7 +570,7 @@ namespace eternal_lands
 		const glm::vec3 &camera, BoundingBox &bounding_box) const
 	{
 		Uint32 x, y, level, step, instance_count;
-		PlanesMask mask;
+		BitSet64 mask;
 		Uint16 max_instance_count;
 
 		if (get_lod_count() == 0)
