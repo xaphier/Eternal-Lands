@@ -11,6 +11,7 @@
 #include "alignedvec4array.hpp"
 #include "simd/simd.hpp"
 #include "logging.hpp"
+#include <boost/detail/endian.hpp>
 
 namespace eternal_lands
 {
@@ -424,9 +425,15 @@ namespace eternal_lands
 
 		typedef struct
 		{
+#ifdef	BOOST_BIG_ENDIAN
+			Uint32 negative:1;
+			Uint32 biasedexponent:8;
+			Uint32 mantissa:23;
+#else	/* BOOST_BIG_ENDIAN */
 			Uint32 mantissa:23;
 			Uint32 biasedexponent:8;
 			Uint32 negative:1;
+#endif	/* BOOST_BIG_ENDIAN */
 		}
 		BitsOfIEEE754;
 
@@ -440,10 +447,17 @@ namespace eternal_lands
 
 		typedef struct
 		{
+#ifdef	BOOST_BIG_ENDIAN
+			Uint32 biasedexponent:RGB9E5_EXPONENT_BITS;
+			Uint32 b:RGB9E5_MANTISSA_BITS;
+			Uint32 g:RGB9E5_MANTISSA_BITS;
+			Uint32 r:RGB9E5_MANTISSA_BITS;
+#else	/* BOOST_BIG_ENDIAN */
 			Uint32 r:RGB9E5_MANTISSA_BITS;
 			Uint32 g:RGB9E5_MANTISSA_BITS;
 			Uint32 b:RGB9E5_MANTISSA_BITS;
 			Uint32 biasedexponent:RGB9E5_EXPONENT_BITS;
+#endif	/* BOOST_BIG_ENDIAN */
 		}
 		BitsOfRGB9E5;
 
@@ -479,7 +493,6 @@ namespace eternal_lands
 			Float754 f;
 
 			f.value = x;
-			f.raw = SDL_SwapLE32(f.raw);
 
 			return static_cast<int>(f.field.biasedexponent) - 127;
 		}
@@ -539,7 +552,7 @@ namespace eternal_lands
 		retval.field.b = bm;
 		retval.field.biasedexponent = exp_shared;
 
-		return SDL_SwapLE32(retval.raw);
+		return retval.raw;
 	}
 
 	glm::vec3 PackTool::decode_rgb9e5(const Uint32 value)
@@ -548,7 +561,7 @@ namespace eternal_lands
 		float scale;
 		RGB9E5 tmp;
 
-		tmp.raw = SDL_SwapLE32(value);
+		tmp.raw = value;
 		exponent = tmp.field.biasedexponent - RGB9E5_EXP_BIAS -
 			RGB9E5_MANTISSA_BITS;
 		scale = std::pow(2.0f, exponent);
