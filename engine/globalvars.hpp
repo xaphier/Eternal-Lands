@@ -77,6 +77,7 @@ namespace eternal_lands
 			bool m_fog;
 			bool m_optmize_shader_source;
 			bool m_use_simd;
+			bool m_use_cpu_rasterizer;
 			bool m_use_s3tc_for_actors;
 			bool m_use_block;
 			bool m_use_in_out;
@@ -164,6 +165,12 @@ namespace eternal_lands
 			inline void set_use_simd(const bool use_simd) noexcept
 			{
 				m_use_simd = use_simd;
+			}
+
+			inline void set_use_cpu_rasterizer(
+				const bool use_cpu_rasterizer) noexcept
+			{
+				m_use_cpu_rasterizer = use_cpu_rasterizer;
 			}
 
 			inline void set_use_s3tc_for_actors(
@@ -349,6 +356,11 @@ namespace eternal_lands
 			inline bool get_use_simd() const noexcept
 			{
 				return m_use_simd;
+			}
+
+			inline bool get_use_cpu_rasterizer() const noexcept
+			{
+				return m_use_cpu_rasterizer;
 			}
 
 			inline bool get_use_s3tc_for_actors() const noexcept

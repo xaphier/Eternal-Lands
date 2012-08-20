@@ -85,6 +85,7 @@ void engine_set_opengl_version(const int value);
 void engine_set_fog_data(const float* color, const float density);
 void engine_set_shadow_map_filtering(const int value);
 void engine_set_use_simd(const int value);
+void engine_set_use_cpu_rasterizer(const int value);
 void engine_set_use_s3tc_for_actors(const int value);
 void engine_set_use_block(const int value);
 void engine_set_use_in_out(const int value);

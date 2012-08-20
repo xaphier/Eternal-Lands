@@ -2986,10 +2986,10 @@ namespace eternal_lands
 			cpt_world_tangent));
 		data.set_option(ssbot_transparent,
 			description.get_transparent());
-		data.set_option(ssbot_alpha_test,
-			!(get_global_vars()->get_exponential_shadow_maps() &&
-			get_global_vars()->get_use_multisample_shadows() &&
-			(shader_build == sbt_shadow)));
+		data.set_option(ssbot_alpha_test, true);
+//			!(get_global_vars()->get_exponential_shadow_maps() &&
+//			get_global_vars()->get_use_multisample_shadows() &&
+//			(shader_build == sbt_shadow)));
 		data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());
 		data.set_option(ssbot_lighting, description.get_lighting());

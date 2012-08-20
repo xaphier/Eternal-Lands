@@ -707,11 +707,20 @@ namespace eternal_lands
 		m_time = SDL_GetTicks() * 0.001f;
 
 		m_visible_objects.next_frame();
-/*
+
 		m_visible_objects.set_projection_view_matrix(
 			get_scene_view().get_projection_view_matrix());
-		m_visible_objects.set_cpu_rasterizer(m_cpu_rasterizer);
-*/
+
+		if (get_global_vars()->get_use_cpu_rasterizer())
+		{
+			m_visible_objects.set_cpu_rasterizer(m_cpu_rasterizer);
+		}
+		else
+		{
+			m_visible_objects.set_cpu_rasterizer(
+				CpuRasterizerSharedPtr());
+		}
+
 		intersect(frustum, false, m_visible_objects);
 
 		DEBUG_CHECK_GL_ERROR();
@@ -2403,11 +2412,11 @@ namespace eternal_lands
 	void Scene::set_view_port(const glm::uvec4 &view_port)
 	{
 		Uint16 mipmaps;
-/*
+
 		m_cpu_rasterizer = boost::make_shared<CpuRasterizer>(
 			view_port.y, view_port.w, 5.0f,
 			get_global_vars()->get_use_simd());
-*/
+
 		if (!get_global_vars()->get_use_scene_fbo())
 		{
 			m_scene_frame_buffer.reset();

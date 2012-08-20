@@ -479,6 +479,8 @@ namespace eternal_lands
 			Float754 f;
 
 			f.value = x;
+			f.raw = SDL_SwapLE32(f.raw);
+
 			return static_cast<int>(f.field.biasedexponent) - 127;
 		}
 
@@ -498,8 +500,8 @@ namespace eternal_lands
 		bc = clamp_range_for_rgb9e5(value[2]);
 
 		maxrgb = std::max(std::max(rc, gc), bc);
-		exp_shared = std::max(-RGB9E5_EXP_BIAS-1, floor_log2(maxrgb)) +
-			1 + RGB9E5_EXP_BIAS;
+		exp_shared = std::max(-RGB9E5_EXP_BIAS - 1,
+			floor_log2(maxrgb)) + 1 + RGB9E5_EXP_BIAS;
 		assert(exp_shared <= RGB9E5_MAX_VALID_BIASED_EXP);
 		assert(exp_shared >= 0);
 		/**
@@ -510,7 +512,7 @@ namespace eternal_lands
 
 		maxm = std::floor(maxrgb / denom + 0.5);
 
-		if (maxm == MAX_RGB9E5_MANTISSA+1)
+		if (maxm == (MAX_RGB9E5_MANTISSA + 1))
 		{
 			denom *= 2;
 			exp_shared += 1;
@@ -537,7 +539,7 @@ namespace eternal_lands
 		retval.field.b = bm;
 		retval.field.biasedexponent = exp_shared;
 
-		return retval.raw;
+		return SDL_SwapLE32(retval.raw);
 	}
 
 	glm::vec3 PackTool::decode_rgb9e5(const Uint32 value)
@@ -546,7 +548,7 @@ namespace eternal_lands
 		float scale;
 		RGB9E5 tmp;
 
-		tmp.raw = value;
+		tmp.raw = SDL_SwapLE32(value);
 		exponent = tmp.field.biasedexponent - RGB9E5_EXP_BIAS -
 			RGB9E5_MANTISSA_BITS;
 		scale = std::pow(2.0f, exponent);

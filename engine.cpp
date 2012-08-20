@@ -1508,6 +1508,11 @@ extern "C" void engine_set_use_simd(const int value)
 #endif	/* USE_SSE2 */
 }
 
+extern "C" void engine_set_use_cpu_rasterizer(const int value)
+{
+	global_vars->set_use_cpu_rasterizer(value);
+}
+
 extern "C" void engine_set_use_s3tc_for_actors(const int value)
 {
 	global_vars->set_use_s3tc_for_actors(value != 0);

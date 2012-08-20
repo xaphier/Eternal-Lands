@@ -225,6 +225,7 @@ float engine_view_distance = 40.0f;
 int engine_fog = engine_true;
 int engine_optmize_shader_source = engine_true;
 int engine_use_simd = engine_true;
+int engine_use_cpu_rasterizer = engine_true;
 int engine_use_block = engine_true;
 int engine_use_in_out = engine_true;
 int engine_use_functions = engine_false;
@@ -401,6 +402,12 @@ void change_engine_use_simd(int* var)
 {
 	*var = !*var;
 	engine_set_use_simd(*var);
+}
+
+void change_engine_use_cpu_rasterizer(int* var)
+{
+	*var = !*var;
+	engine_set_use_cpu_rasterizer(*var);
 }
 
 void change_engine_use_scene_fbo(int* var)
@@ -1983,6 +1990,8 @@ static void init_ELC_vars(void)
 #ifdef	USE_SSE2
 	add_var(OPT_BOOL, "use_simd", "simd", &engine_use_simd, change_engine_use_simd, engine_true, "Use SIMD", "Use Intel SIMD instructions (SSE2).", TROUBLESHOOT);
 #endif	/* USE_SSE2 */
+	add_var(OPT_BOOL, "use_cpu_rasterizer", "use_cpu_rasterizer", &engine_use_cpu_rasterizer, change_engine_use_cpu_rasterizer, engine_true, "Use CPU rasterizer", "Use CPU rasterizer for visibility and occlusion.", TROUBLESHOOT);
+
 	add_var(OPT_BOOL, "use_s3tc_for_actors", "uatc", &engine_use_s3tc_for_actors, change_engine_use_s3tc_for_actors, engine_true, "Use s3tc for actors", "Use s3 texture compression for actors.", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_multisample_shadows", "ums", &engine_use_multisample_shadows, change_engine_use_multisample_shadows, engine_true, "Use multisample shadows", "Use multisample shadows for better quality.", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_scene_fbo", "usf", &engine_use_scene_fbo, change_engine_use_scene_fbo, engine_true, "Use scene fbo", "Use scene framebuffer object and blit it with framebuffer.", TROUBLESHOOT);
