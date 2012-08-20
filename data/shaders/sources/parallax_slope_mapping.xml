@@ -46,6 +46,74 @@
    </parameters>
    <source>vec4 normal;
 vec3 uv, view_dir;
+vec2 ddx, ddy;
+float h;
+int i;
+const vec2 scale_bias = vec2(0.06, -0.03) * 0.1;
+
+view_dir = vec3(world_view_direction.xyz * mat2x3(tbn_matrix), -1.0);
+uv = vec3(world_uv, 0.0);
+
+ddx = dFdx(world_uv);
+ddy = dFdy(world_uv);
+
+for (i = 0; i &lt; 4; i++)
+{
+	normal = textureGrad(effect_sampler_4, uv.xy, ddx, ddy);
+	normal.xy = normal.xy * 2.0 - 1.0;
+	normal.z = sqrt(1.0 - dot(normal.xy, normal.xy));
+	h = normal.a * scale_bias.x + scale_bias.y;
+	uv += (h - uv.z) * normal.z * view_dir;
+}
+
+fragment_normal = tbn_matrix * normal.xyz;
+albedo = textureGrad(effect_sampler_0, uv.xy, ddx, ddy);
+emission = vec3(0.0);
+specular = vec3(0.0);
+</source>
+   <version>130</version>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>albedo</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <sampler_parameter>effect_sampler_0</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <sampler_parameter>effect_sampler_4</sampler_parameter>
+     <type>sampler2D</type>
+    </parameter>
+    <parameter>
+     <common_parameter>emission</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>tbn_matrix</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_uv</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_view_direction</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>vec4 normal;
+vec3 uv, view_dir;
 float h;
 int i;
 const vec2 scale_bias = vec2(0.06, -0.03) * 0.1;
@@ -63,7 +131,7 @@ for (i = 0; i &lt; 4; i++)
 }
 
 fragment_normal = tbn_matrix * normal.xyz;
-albedo = texture(effect_sampler_0, uv.xy);
+albedo = texture2D(effect_sampler_0, uv.xy);
 emission = vec3(0.0);
 specular = vec3(0.0);
 </source>
