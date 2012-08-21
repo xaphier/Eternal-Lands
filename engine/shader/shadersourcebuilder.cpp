@@ -48,7 +48,9 @@ namespace eternal_lands
 			sslt_packed_light_indices_3,
 			sslt_floor_values_3,
 			sslt_unpack_const_3,
-			sslt_light_indices
+			sslt_light_indices,
+			sslt_project_space,
+			sslt_light_index
 		};
 
 		class ShaderSourceLocalTypeData
@@ -106,7 +108,11 @@ namespace eternal_lands
 			ShaderSourceLocalTypeData(String(UTF8("unpack_const")),
 				pt_vec3),
 			ShaderSourceLocalTypeData(String(UTF8("light_indices")),
-				pt_vec4)
+				pt_vec4),
+			ShaderSourceLocalTypeData(String(UTF8("project_space")),
+				pt_vec3),
+			ShaderSourceLocalTypeData(String(UTF8("light_index")),
+				pt_float)
 		};
 
 		const Uint32 shader_source_local_datas_count =
@@ -1367,9 +1373,6 @@ namespace eternal_lands
 		add_local(String(UTF8("lighting")), sslt_shadow_values,
 			pqt_out, function_locals, function_parameters,
 			uniform_buffers);
-		add_local(String(UTF8("lighting")), sslt_index, pqt_out,
-			function_locals, function_parameters,
-			uniform_buffers);
 
 		if (x5_light_indices)
 		{
@@ -1486,12 +1489,46 @@ namespace eternal_lands
 
 		stream << UTF8("\n");
 
+		if (data.get_version() < svt_130)
+		{
+			add_parameter(String(UTF8("lighting")),
+				sslt_project_space, pqt_in, function_locals,
+				function_parameters, uniform_buffers);
+			add_local(String(UTF8("lighting")), sslt_light_index,
+				pqt_out, function_locals, function_parameters,
+				uniform_buffers);
+		}
+		else
+		{
+			add_local(String(UTF8("lighting")), sslt_index,
+				pqt_out, function_locals, function_parameters,
+				uniform_buffers);
+		}
+
 		if (x5_light_indices)
 		{
-			// Look up the bit planes texture
+			/**
+			 * Look up the bit planes texture
+			 */
+			stream << local_indent << UTF8("/* Look up the bit ");
+			stream << UTF8("planes texture */\n");
+
 			stream << local_indent << sslt_packed_light_indices_3;
-			stream << UTF8(" = texelFetch(") << spt_light_indices;
-			stream << UTF8(", ivec2(gl_FragCoord.xy), 0).rgb;\n");
+
+			if (data.get_version() >= svt_130)
+			{
+				stream << UTF8(" = texelFetch(");
+				stream << spt_light_indices;
+				stream << UTF8(", ivec2(gl_FragCoord.xy), 0)");
+				stream << UTF8(".rgb;\n");
+			}
+			else
+			{
+				stream << UTF8(" = texture2DProj(");
+				stream << spt_light_indices << UTF8(", ");
+				stream << sslt_project_space;
+				stream << UTF8(").rgb;\n");
+			}
 
 			if (data.get_shader_build() ==
 				sbt_debug_packed_light_index)
@@ -1503,11 +1540,30 @@ namespace eternal_lands
 				stream << UTF8(", 0.0);\n");
 			}
 
-			// Unpack each lighting channel
-			stream << local_indent << sslt_unpack_const_3;
-			stream << UTF8(" = vec3(4.0, 16.0, 64.0);\n");
+			/**
+			 * Unpack each lighting channel
+			 */
+			stream << local_indent << UTF8("/* Unpack each ");
+			stream << UTF8("lighting channel */\n");
 
-			// Expand the packed light values to the 0.. 1023 range
+			stream << local_indent << sslt_unpack_const_3;
+
+			stream << UTF8("= vec3(4.0, 16.0, 64.0)");
+
+			if (data.get_version() < svt_130)
+			{
+				stream << UTF8(" / 64.0");
+			}
+
+			stream << UTF8(";\n");
+
+			/**
+			 * Expand the packed light values to the 0 .. 1023 range
+			 */
+			stream << local_indent << UTF8("/* Expand the packed");
+			stream << UTF8(" light values to the 0 .. 1023 range");
+			stream << UTF8("  */\n");
+
 			stream << local_indent << sslt_floor_values_3;
 			stream << UTF8(" = ceil(");
 			stream << sslt_packed_light_indices_3;
@@ -1530,18 +1586,52 @@ namespace eternal_lands
 			stream << UTF8(" = floor(");
 			stream << sslt_packed_light_indices_3 << UTF8(");\n");
 
-			stream << local_loop_indent << sslt_index;
-			stream << UTF8(" = int(dot(");
-			stream << sslt_packed_light_indices_3 << UTF8(" - ");
-			stream << sslt_floor_values_3 << UTF8(", ");
-			stream << sslt_unpack_const_3 << UTF8(") + 0.5);\n");
+			if (data.get_version() < svt_130)
+			{
+				stream << local_loop_indent << sslt_light_index;
+				stream << UTF8(" = ");
+			}
+			else
+			{
+				stream << local_loop_indent << sslt_index;
+				stream << UTF8(" = int(");
+			}
+
+			stream << UTF8("dot(") << sslt_packed_light_indices_3;
+			stream << UTF8(" - ") << sslt_floor_values_3;
+			stream << UTF8(", ") << sslt_unpack_const_3;
+			stream << UTF8(")");
+
+			if (data.get_version() >= svt_130)
+			{
+				stream << UTF8(" + 0.5)");
+			}
+
+			stream << UTF8(";\n");
 		}
 		else
 		{
-			// Look up the bit planes texture
+			/**
+			 * Look up the bit planes texture
+			 */
+			stream << local_indent << UTF8("/* Look up the bit ");
+			stream << UTF8("planes texture */\n");
+
 			stream << local_indent << sslt_packed_light_indices_4;
-			stream << UTF8(" = texelFetch(") << spt_light_indices;
-			stream << UTF8(", ivec2(gl_FragCoord.xy), 0);\n");
+
+			if (data.get_version() >= svt_130)
+			{
+				stream << UTF8(" = texelFetch(");
+				stream << spt_light_indices;
+				stream << UTF8(", ivec2(gl_FragCoord.xy), 0)");
+				stream << UTF8(";\n");
+			}
+			else
+			{
+				stream << UTF8(" = texture2DProj(");
+				stream << spt_light_indices << UTF8(", ");
+				stream << sslt_project_space << UTF8(");\n");
+			}
 
 			if (data.get_shader_build() ==
 				sbt_debug_packed_light_index)
@@ -1552,11 +1642,30 @@ namespace eternal_lands
 				stream << UTF8(";\n");
 			}
 
-			// Unpack each lighting channel
-			stream << local_indent << sslt_unpack_const_4;
-			stream << UTF8("= vec4(4.0, 16.0, 64.0, 256.0);\n");
+			/**
+			 * Unpack each lighting channel
+			 */
+			stream << local_indent << UTF8("/* Unpack each ");
+			stream << UTF8("lighting channel */\n");
 
-			// Expand the packed light values to the 0.. 255 range
+			stream << local_indent << sslt_unpack_const_4;
+
+			stream << UTF8("= vec4(4.0, 16.0, 64.0, 256.0)");
+
+			if (data.get_version() < svt_130)
+			{
+				stream << UTF8(" / 256.0");
+			}
+
+			stream << UTF8(";\n");
+
+			/**
+			 * Expand the packed light values to the 0 .. 255 range
+			 */
+			stream << local_indent << UTF8("/* Expand the packed");
+			stream << UTF8(" light values to the 0 .. 255 range");
+			stream << UTF8("  */\n");
+
 			stream << local_indent << sslt_floor_values_4;
 			stream << UTF8(" = ceil(");
 			stream << sslt_packed_light_indices_4;
@@ -1581,15 +1690,45 @@ namespace eternal_lands
 			stream << sslt_packed_light_indices_4;
 			stream << UTF8(");\n");
 
-			stream << local_loop_indent << sslt_index;
-			stream << UTF8(" = int(dot(");
-			stream << sslt_packed_light_indices_4 << UTF8(" - ");
-			stream << sslt_floor_values_4 << UTF8(", ");
-			stream << sslt_unpack_const_4 << UTF8(") + 0.5);\n");
+			if (data.get_version() < svt_130)
+			{
+				stream << local_loop_indent << sslt_light_index;
+				stream << UTF8(" = ");
+			}
+			else
+			{
+				stream << local_loop_indent << sslt_index;
+				stream << UTF8(" = int(");
+			}
+
+			stream << UTF8("dot(") << sslt_packed_light_indices_4;
+			stream << UTF8(" - ") << sslt_floor_values_4;
+			stream << UTF8(", ") << sslt_unpack_const_4;
+			stream << UTF8(")");
+
+			if (data.get_version() >= svt_130)
+			{
+				stream << UTF8(" + 0.5)");
+			}
+
+			stream << UTF8(";\n");
 		}
 
-		stream << local_loop_indent << UTF8("/* skip zero light */\n");
-		stream << local_loop_indent << UTF8("if (") << sslt_index;
+		/**
+		 * Skip zero light
+		 */
+		stream << local_loop_indent << UTF8("/* Skip zero light */\n");
+		stream << local_loop_indent << UTF8("if (");
+
+		if (data.get_version() < svt_130)
+		{
+			stream << sslt_light_index;
+		}
+		else
+		{
+			stream << sslt_index;
+		}
+
 		stream << UTF8(" == 0)\n");
 		stream << local_loop_indent << UTF8("{\n");
 		stream << local_loop_indent << UTF8("\tcontinue;\n");
@@ -1609,15 +1748,35 @@ namespace eternal_lands
 			function_locals, function_parameters, uniform_buffers);
 
 		stream << local_loop_indent << cpt_light_color;
-		stream << UTF8(" = texelFetch(") << spt_light_colors;
-		stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
+
+		if (data.get_version() >= svt_130)
+		{
+			stream << UTF8(" = texelFetch(") << spt_light_colors;
+			stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
+		}
+		else
+		{
+			stream << UTF8(" = texture1D(") << spt_light_colors;
+			stream << UTF8(", ") << sslt_light_index;
+			stream << UTF8(");\n");
+		}
 
 		add_local(String(UTF8("lighting")), cpt_light_position, pqt_in,
 			function_locals, function_parameters, uniform_buffers);
 
 		stream << local_loop_indent << cpt_light_position;
-		stream << UTF8(" = texelFetch(") << spt_light_positions;
-		stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
+
+		if (data.get_version() >= svt_130)
+		{
+			stream << UTF8(" = texelFetch(") << spt_light_positions;
+			stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
+		}
+		else
+		{
+			stream << UTF8(" = texture1D(") << spt_light_positions;
+			stream << UTF8(", ") << sslt_light_index;
+			stream << UTF8(");\n");
+		}
 
 		build_function(data, array_sizes, function_locals,
 			sst_fragment_light, local_loop_indent, stream,
@@ -2080,6 +2239,21 @@ namespace eternal_lands
 		main << UTF8(" = ") << apt_projection_view_matrix;
 		main << UTF8(" * vec4(") << cpt_world_position;
 		main << UTF8(", 1.0);\n");
+
+		if (data.get_version() < svt_130)
+		{		
+			add_parameter(String(UTF8("lighting")),
+				sslt_project_space, pqt_out, locals, globals,
+				uniform_buffers);
+
+			main << indent << UTF8("/* projection space position");
+			main << UTF8(" */\n");
+			main << indent << sslt_project_space;
+			main << UTF8(" = vec3((") << gl_Position;
+			main << UTF8(".xy + ") << gl_Position;
+			main << UTF8(".w) * 0.5, ") << gl_Position;
+			main << UTF8(".w);\n");
+		}
 
 		if (data.get_option(ssbot_view_position))
 		{

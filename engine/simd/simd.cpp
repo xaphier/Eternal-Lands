@@ -1068,10 +1068,10 @@ namespace eternal_lands
 		__m128i tmp_i, low_i, high_i, sign;
 		Uint32 i;
 
-		m0 = _mm_load_ps(matrix);
-		m1 = _mm_load_ps(matrix + 4);
-		m2 = _mm_load_ps(matrix + 8);
-		m3 = _mm_load_ps(matrix + 12);
+		m0 = _mm_loadu_ps(matrix);
+		m1 = _mm_loadu_ps(matrix + 4);
+		m2 = _mm_loadu_ps(matrix + 8);
+		m3 = _mm_loadu_ps(matrix + 12);
 
 		/**
 		 * Scaled with four, because we do not map the range to
@@ -1315,10 +1315,10 @@ namespace eternal_lands
 		Uint32 i;
 		BitSet64 result;
 
-		m0 = _mm_load_ps(matrix);
-		m1 = _mm_load_ps(matrix + 4);
-		m2 = _mm_load_ps(matrix + 8);
-		m3 = _mm_load_ps(matrix + 12);
+		m0 = _mm_loadu_ps(matrix);
+		m1 = _mm_loadu_ps(matrix + 4);
+		m2 = _mm_loadu_ps(matrix + 8);
+		m3 = _mm_loadu_ps(matrix + 12);
 
 		/**
 		 * Scaled with four, because we do not map the range to

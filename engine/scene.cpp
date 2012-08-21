@@ -1797,7 +1797,12 @@ namespace eternal_lands
 		}
 
 		glEnable(GL_STENCIL_TEST);
-		glEnable(GL_DEPTH_CLAMP);
+
+		if (get_global_vars()->get_opengl_3_2())
+		{
+			glEnable(GL_DEPTH_CLAMP);
+		}
+
 		get_state_manager().switch_depth_mask(false);
 		get_state_manager().switch_blend(true);
 		get_state_manager().switch_culling(true);
@@ -1853,7 +1858,11 @@ namespace eternal_lands
 				found->second);
 		}
 
-		glDisable(GL_DEPTH_CLAMP);
+		if (get_global_vars()->get_opengl_3_2())
+		{
+			glDisable(GL_DEPTH_CLAMP);
+		}
+
 		glCullFace(GL_FRONT);
 		glDepthFunc(GL_LEQUAL);
 
@@ -1893,8 +1902,7 @@ namespace eternal_lands
 
 		draw_depth();
 
-		if ((m_scene_frame_buffer.get() != nullptr) &&
-			(get_global_vars()->get_opengl_3_2()))
+		if (m_scene_frame_buffer.get() != nullptr)
 		{
 			draw_lights();
 		}
@@ -1932,9 +1940,8 @@ namespace eternal_lands
 			m_scene_frame_buffer->attach(m_scene_texture,
 				fbat_color_0, 0);
 
-			if (get_global_vars()->get_opengl_3_2() &&
-				(get_global_vars()->get_light_system() !=
-					lst_default))
+			if (get_global_vars()->get_light_system() !=
+				lst_default)
 			{
 				get_state_manager().switch_texture(
 					spt_light_positions,
@@ -2212,6 +2219,16 @@ namespace eternal_lands
 		Uint32LightSharedPtrMap::const_iterator it, end;
 		glm::vec4 position, color;
 		Uint32 index, count;
+		TextureFormatType color_format;
+
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			color_format = tft_rgb9_e5;
+		}
+		else
+		{
+			color_format = tft_rgb8;
+		}
 
 		switch (get_global_vars()->get_light_system())
 		{
@@ -2244,7 +2261,7 @@ namespace eternal_lands
 			String(UTF8("light color")));
 
 		m_light_color_texture->set_target(ttt_texture_1d);
-		m_light_color_texture->set_format(tft_rgb9_e5);
+		m_light_color_texture->set_format(color_format);
 		m_light_color_texture->set_wrap_s(twt_clamp);
 		m_light_color_texture->set_wrap_t(twt_clamp);
 		m_light_color_texture->set_wrap_r(twt_clamp);
@@ -2258,7 +2275,7 @@ namespace eternal_lands
 			glm::uvec3(count, 1, 1), 0);
 
 		light_color_image = boost::make_shared<Image>(
-			String(UTF8("light color")), false, tft_rgb9_e5,
+			String(UTF8("light color")), false, color_format,
 			glm::uvec3(count, 1, 1), 0);
 
 		light_position_image->set_pixel(0, 0, 0, 0, 0, glm::vec4());
