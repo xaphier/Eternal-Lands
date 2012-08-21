@@ -66,9 +66,6 @@ namespace eternal_lands
 			AutoParameterTypeData(
 				String(UTF8("world_transformation")),
 				pt_mat2x4),
-			AutoParameterTypeData(
-				String(UTF8("view_rotation_matrix")),
-				pt_mat3x3),
 			AutoParameterTypeData(String(UTF8("view_matrix")),
 				pt_mat4x4),
 			AutoParameterTypeData(
@@ -95,7 +92,10 @@ namespace eternal_lands
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("camera")), pt_vec4),
 			AutoParameterTypeData(
-				String(UTF8("shadow_distance_transform")),
+				String(UTF8("shadow_distance_transforms")),
+				pt_vec4, pst_shadow_maps_count),
+			AutoParameterTypeData(String(
+				UTF8("current_shadow_distance_transform")),
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("split_distances")),
 				pt_vec4),

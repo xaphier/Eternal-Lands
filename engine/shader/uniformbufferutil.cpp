@@ -58,7 +58,6 @@ namespace eternal_lands
 		const UniformBufferTypeData uniform_buffer_type_datas[] =
 		{
 			UniformBufferTypeData(boost::assign::list_of
-				(apt_view_rotation_matrix)
 				(apt_view_matrix)
 				(apt_projection_matrix)
 				(apt_projection_view_matrix)
@@ -83,7 +82,7 @@ namespace eternal_lands
 				String(UTF8("animation")),
 				String(UTF8("Animation"))),
 			UniformBufferTypeData(boost::assign::list_of
-				(apt_shadow_distance_transform)
+				(apt_shadow_distance_transforms)
 				(apt_shadow_texture_matrices)
 				(apt_split_distances),
 				String(UTF8("shadow")),

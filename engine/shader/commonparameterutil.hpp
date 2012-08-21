@@ -48,6 +48,7 @@ namespace eternal_lands
 		cpt_fragment_position,
 		cpt_fog,
 		cpt_shadow_uvs,
+		cpt_shadow_view_distance,
 		cpt_shadow_map_data,
 		cpt_tbn_matrix,
 		cpt_emission,

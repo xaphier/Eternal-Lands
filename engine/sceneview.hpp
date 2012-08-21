@@ -37,21 +37,17 @@ namespace eternal_lands
 	{
 		private:
 			GlobalVarsSharedPtr m_global_vars;
-			glm::mat3x3 m_view_rotation_matrix;
 			glm::mat4x4 m_view_matrix;
 			glm::mat4x4 m_projection_matrix;
 			glm::mat4x4 m_projection_view_matrix;
-			glm::mat3x3 m_shadow_view_rotation_matrix;
 			glm::mat4x4 m_shadow_view_matrix;
 			Mat4x4Vector m_split_projection_view_matrices;
 			Mat4x4Vector m_shadow_projection_matrices;
 			Mat4x4Vector m_shadow_projection_view_matrices;
 			Mat4x4Vector m_shadow_texture_matrices;
-			glm::mat3x3 *m_current_view_rotation_matrix;
 			glm::mat4x4 *m_current_view_matrix;
 			glm::mat4x4 *m_current_projection_matrix;
 			glm::mat4x4 *m_current_projection_view_matrix;
-			glm::mat3x3 m_ortho_rotation_matrix;
 			glm::mat4x4 m_ortho_matrix;
 			glm::vec4 m_camera;
 			glm::vec4 m_shadow_camera;
@@ -68,6 +64,7 @@ namespace eternal_lands
 			float m_fov, m_aspect, m_z_near, m_z_far;
 			float m_shadow_z_far, m_shadow_z_offset;
 			Uint16 m_shadow_map_count, m_layer_count;
+			Uint16 m_shadow_view_index;
 			bool m_exponential_shadow_maps;
 			ProjectionType m_projection;
 
@@ -108,8 +105,6 @@ namespace eternal_lands
 
 			inline void set_ortho_view() noexcept
 			{
-				m_current_view_rotation_matrix =
-					&m_ortho_rotation_matrix;
 				m_current_view_matrix = &m_ortho_matrix;
 				m_current_projection_matrix =
 					&m_ortho_matrix;
@@ -119,8 +114,6 @@ namespace eternal_lands
 
 			inline void set_default_view() noexcept
 			{
-				m_current_view_rotation_matrix =
-					&m_view_rotation_matrix;
 				m_current_view_matrix = &m_view_matrix;
 				m_current_projection_matrix =
 					&m_projection_matrix;
@@ -130,14 +123,13 @@ namespace eternal_lands
 
 			inline void set_shadow_view(const Uint16 index) noexcept
 			{
-				m_current_view_rotation_matrix =
-					&m_shadow_view_rotation_matrix;
 				m_current_view_matrix = &m_shadow_view_matrix;
 				m_current_projection_matrix =
 					&m_shadow_projection_matrices[index];
 				m_current_projection_view_matrix =
 					&m_shadow_projection_view_matrices[
 						index];
+				m_shadow_view_index = index;
 			}
 
 			inline void set_z_near(const float z_near) noexcept
@@ -176,13 +168,6 @@ namespace eternal_lands
 				m_view_matrix = view_matrix;
 			}
 
-			inline const glm::mat3x3
-				&get_current_view_rotation_matrix() const
-				noexcept
-			{
-				return *m_current_view_rotation_matrix;
-			}
-
 			inline const glm::mat4x4 &get_current_view_matrix()
 				const noexcept
 			{
@@ -201,12 +186,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return *m_current_projection_view_matrix;
-			}
-
-			inline const glm::mat3x3 &get_view_rotation_matrix()
-				const noexcept
-			{
-				return m_view_rotation_matrix;
 			}
 
 			inline const glm::mat4x4 &get_view_matrix() const
@@ -232,13 +211,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_split_projection_view_matrices;
-			}
-
-			inline const glm::mat3x3
-				&get_shadow_view_rotation_matrix() const
-				noexcept
-			{
-				return m_shadow_view_rotation_matrix;
 			}
 
 			inline const glm::mat4x4 &get_shadow_view_matrix()
@@ -351,6 +323,11 @@ namespace eternal_lands
 			inline Uint16 get_layer_count() const noexcept
 			{
 				return m_layer_count;
+			}
+
+			inline Uint16 get_shadow_view_index() const noexcept
+			{
+				return m_shadow_view_index;
 			}
 
 			inline bool get_exponential_shadow_maps() const noexcept

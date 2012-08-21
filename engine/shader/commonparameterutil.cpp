@@ -97,6 +97,8 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("fog")), pt_float),
 			CommonParameterTypeData(String(UTF8("shadow_uvs")),
 				pt_vec4, pst_shadow_maps_count),
+			CommonParameterTypeData(
+				String(UTF8("shadow_view_distance")), pt_vec4),
 			CommonParameterTypeData(String(UTF8("shadow_map_data")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("tbn_matrix")),

@@ -117,7 +117,7 @@ namespace eternal_lands
 		m_global_vars(global_vars), m_fov(40.0f),
 		m_aspect(4.0f / 3.0f), m_z_near(1.5f),
 		m_shadow_map_count(1), m_layer_count(4),
-		m_exponential_shadow_maps(false)
+		m_shadow_view_index(0), m_exponential_shadow_maps(false)
 	{
 		set_default_view();
 	}
@@ -215,12 +215,6 @@ namespace eternal_lands
 		shadow_view_matrix[1][2] = dir.y;
 		shadow_view_matrix[2][2] = dir.z;
 
-		for (i = 0; i < 3; ++i)
-		{
-			m_shadow_view_rotation_matrix[i] =
-				glm::vec3(shadow_view_matrix[i]);
-		}
-
 		shadow_view_matrix = glm::translate(shadow_view_matrix,
 			-glm::dvec3(pos));
 
@@ -314,12 +308,6 @@ namespace eternal_lands
 		projection_view_matrix = projection_matrix * m_view_matrix;
 
 		m_layer_count = 4;
-
-		for (i = 0; i < 3; ++i)
-		{
-			m_view_rotation_matrix[i] =
-				glm::normalize(glm::vec3(m_view_matrix[i]));
-		}
 
 		m_projection_matrix = projection_matrix;
 		m_projection_view_matrix = projection_view_matrix;

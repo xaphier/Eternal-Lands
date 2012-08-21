@@ -191,5 +191,5 @@ BOOST_AUTO_TEST_CASE(get_type_value)
 		el::pt_vec4);
 
 	BOOST_CHECK_EQUAL(el::AutoParameterUtil::get_type(
-		el::apt_shadow_distance_transform), el::pt_vec4);
+		el::apt_shadow_distance_transforms), el::pt_vec4);
 }

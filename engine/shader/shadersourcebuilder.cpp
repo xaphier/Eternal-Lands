@@ -3005,6 +3005,7 @@ namespace eternal_lands
 	{
 		m_sources[sst_shadow_mapping] = name;
 		m_sources[sst_shadow_map] = name;
+		m_sources[sst_shadow_uv] = name;
 	}
 
 	ShaderSourceTypeStringMap ShaderSourceBuilder::build_sources(

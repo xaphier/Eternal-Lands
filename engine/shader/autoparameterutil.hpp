@@ -38,10 +38,6 @@ namespace eternal_lands
 		 */
 		apt_world_transformation = 0,
 		/**
-		 * 3x3 matrix with only the rotation part of the view matrix
-		 */
-		apt_view_rotation_matrix,
-		/**
 		 * 4x4 scene view matrix
 		 */
 		apt_view_matrix,
@@ -88,7 +84,8 @@ namespace eternal_lands
 		 * world space position.
 		 */
 		apt_camera,
-		apt_shadow_distance_transform,
+		apt_current_shadow_distance_transform,
+		apt_shadow_distance_transforms,
 		apt_split_distances,
 		apt_layers,
 		apt_texture_matrices,

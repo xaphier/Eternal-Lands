@@ -851,9 +851,6 @@ namespace eternal_lands
 		{
 			program->set_parameter(apt_view_matrix,
 				get_scene_view().get_current_view_matrix());
-			program->set_parameter(apt_view_rotation_matrix,
-				get_scene_view(
-					).get_current_view_rotation_matrix());
 			program->set_parameter(apt_projection_matrix,
 				get_scene_view(
 					).get_current_projection_matrix());
@@ -864,9 +861,14 @@ namespace eternal_lands
 			program->set_parameter(apt_fog_data, m_fog);
 			program->set_parameter(apt_camera,
 				get_scene_view().get_camera());
-			program->set_parameter(apt_shadow_distance_transform,
+			program->set_parameter(apt_shadow_distance_transforms,
 				get_scene_view(
 					).get_shadow_distance_transform());
+			program->set_parameter(
+				apt_current_shadow_distance_transform,
+				get_scene_view(
+					).get_shadow_distance_transform(
+						));
 			program->set_parameter(apt_shadow_texture_matrices,
 				get_scene_view().get_shadow_texture_matrices());
 			program->set_parameter(apt_split_distances,
