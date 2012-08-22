@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "alignedvec4array.hpp"
+#include "alignedarrays.hpp"
 
 /**
  * @file

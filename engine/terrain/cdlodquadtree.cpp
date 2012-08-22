@@ -6,7 +6,7 @@
  ****************************************************************************/
 
 #include "cdlodquadtree.hpp"
-#include "alignedvec4array.hpp"
+#include "alignedarrays.hpp"
 #include "frustum.hpp"
 #include "shader/mappeduniformbuffer.hpp"
 #include "image.hpp"

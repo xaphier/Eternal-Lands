@@ -15,7 +15,6 @@
 #include "submesh.hpp"
 #include "vertexstream.hpp"
 #include "vertexstreams.hpp"
-#include "alignedvec4array.hpp"
 #include "simd/simd.hpp"
 #include "cpurasterizer.hpp"
 
@@ -1507,58 +1506,6 @@ namespace eternal_lands
 			sub_mesh.set_min_max_boxes_index(index);
 
 			index++;
-		}
-	}
-
-	void MeshDataTool::check_min_max_boxes() const
-	{
-		AlignedShort8Array min_max_boxes;
-		glm::ivec4 min, max;
-		Uint32 i, idx, index, count;
-
-		CpuRasterizer::build_min_max_boxes(get_sub_meshs(),
-			min_max_boxes);
-
-		idx = 0;
-
-		BOOST_FOREACH(const SubMesh &sub_mesh, m_sub_meshs)
-		{
-			index = sub_mesh.get_min_max_boxes_index();
-			count = sub_mesh.get_min_max_boxes_count();
-
-			if (count == 0)
-			{
-				idx++;
-
-				continue;
-			}
-
-			min = glm::ivec4(32767, 32767, 32767, 1);
-			max = glm::ivec4(-32768, -32768, -32768, 1);
-
-			for (i = 0; i < count; ++i)
-			{
-				min = glm::min(m_min_max_boxes.get_value_low(
-					index + i), min);
-				max = glm::max(m_min_max_boxes.get_value_high(
-					index + i), max);
-			}
-
-			assert(std::abs(min_max_boxes.get_value_low(idx).x -
-				min.x) < 10);
-			assert(std::abs(min_max_boxes.get_value_low(idx).y -
-				min.y) < 10);
-			assert(std::abs(min_max_boxes.get_value_low(idx).z -
-				min.z) < 10);
-
-			assert(std::abs(min_max_boxes.get_value_high(idx).x -
-				max.x) < 10);
-			assert(std::abs(min_max_boxes.get_value_high(idx).y -
-				max.y) < 10);
-			assert(std::abs(min_max_boxes.get_value_high(idx).z -
-				max.z) < 10);
-
-			idx++;
 		}
 	}
 

@@ -20,7 +20,7 @@
 #include "globalvars.hpp"
 #include "vertexstream.hpp"
 #include "abstractmesh.hpp"
-#include "alignedvec4array.hpp"
+#include "alignedarrays.hpp"
 #include "material.hpp"
 #include "terrainvisitor.hpp"
 #include "boundingboxvisitor.hpp"

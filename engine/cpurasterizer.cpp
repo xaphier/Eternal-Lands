@@ -7,7 +7,6 @@
 
 #include "cpurasterizer.hpp"
 #include "submesh.hpp"
-#include "alignedshort8array.hpp"
 #include "simd/simd.hpp"
 
 namespace eternal_lands
@@ -24,8 +23,9 @@ namespace eternal_lands
 	}
 
 	void CpuRasterizer::build_min_max_boxes(const SubMeshVector &sub_meshs,
-		AlignedShort8Array &min_max_boxes)
+		AlignedSint16Vec8Array &min_max_boxes)
 	{
+		Sint16Array8 value;
 		glm::ivec4 min, max;
 		Uint32 index;
 
@@ -46,16 +46,24 @@ namespace eternal_lands
 			assert(min.w == 1);
 			assert(max.w == 1);
 
-			min_max_boxes.set_value_low(min, index);
-			min_max_boxes.set_value_high(max, index);
+			value[0] = min[0];
+			value[1] = min[1];
+			value[2] = min[2];
+			value[3] = min[3];
+			value[4] = max[0];
+			value[5] = max[1];
+			value[6] = max[2];
+			value[7] = max[3];
 
+			min_max_boxes[index] = value;
 			index++;
 		}
 	}
 
 	void CpuRasterizer::append_min_max_box(const BoundingBox &bounding_box,
-		AlignedShort8Array &min_max_boxes)
+		AlignedSint16Vec8Array &min_max_boxes)
 	{
+		Sint16Array8 value;
 		glm::ivec4 min, max;
 
 		min = glm::ivec4(bounding_box.get_min() *
@@ -69,7 +77,16 @@ namespace eternal_lands
 		assert(min.w == 1);
 		assert(max.w == 1);
 
-		min_max_boxes.push_back(min, max);
+		value[0] = min[0];
+		value[1] = min[1];
+		value[2] = min[2];
+		value[3] = min[3];
+		value[4] = max[0];
+		value[5] = max[1];
+		value[6] = max[2];
+		value[7] = max[3];
+
+		min_max_boxes.push_back(value);
 	}
 
 	bool CpuRasterizer::check_visibility(const glm::mat4x4 &matrix,
@@ -156,9 +173,10 @@ namespace eternal_lands
 	BitSet64 CpuRasterizer::check_visibility(
 		const glm::mat4x4 &projection_view_matrix,
 		const glm::mat4x3 &world_matrix,
-		const AlignedShort8Array &min_max_boxes) const
+		const AlignedSint16Vec8Array &min_max_boxes) const
 	{
 		glm::mat4x4 matrix;
+		Sint16Array8 value;
 		BitSet64 result;
 		Uint32 i, count;
 
@@ -176,7 +194,7 @@ namespace eternal_lands
 
 		matrix = projection_view_matrix * matrix;
 
-		count = std::min(min_max_boxes.size(), 32u);
+		count = std::min(min_max_boxes.size(), result.size());
 
 		if (count == 0)
 		{
@@ -193,9 +211,13 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			result[i] = check_visibility(matrix,
-				min_max_boxes.get_value_low(i),
-				min_max_boxes.get_value_high(i));
+			value = min_max_boxes[i];
+
+			result[i] = check_visibility(matrix, 
+				glm::ivec4(value[0], value[1], value[2],
+					value[3]),
+				glm::ivec4(value[4], value[5], value[6],
+					value[7]));
 		}
 
 		return result;
@@ -204,10 +226,11 @@ namespace eternal_lands
 	BitSet64 CpuRasterizer::check_visibility(
 		const glm::mat4x4 &projection_view_matrix,
 		const glm::mat4x3 &world_matrix,
-		const AlignedShort8Array &min_max_boxes,
+		const AlignedSint16Vec8Array &min_max_boxes,
 		const SubMeshVector &sub_meshs) const
 	{
 		glm::mat4x4 matrix;
+		Sint16Array8 value;
 		BitSet64 result;
 		Uint32 i, j, index, size, count;
 
@@ -225,8 +248,7 @@ namespace eternal_lands
 
 		matrix = projection_view_matrix * matrix;
 
-		size = sub_meshs.size();
-		size = std::min(size, 32u);
+		size = std::min(sub_meshs.size(), result.size());
 
 		if (get_use_simd())
 		{
@@ -263,10 +285,13 @@ namespace eternal_lands
 
 			for (j = 0; j < count; ++j)
 			{
+				value = min_max_boxes[index + j];
+
 				if (check_visibility(matrix,
-					min_max_boxes.get_value_low(index + j),
-					min_max_boxes.get_value_high(
-						index + j)))
+					glm::ivec4(value[0], value[1],
+						value[2], value[3]),
+					glm::ivec4(value[4], value[5],
+						value[6], value[7])))
 				{
 					result[i] = true;
 

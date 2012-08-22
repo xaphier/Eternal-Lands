@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "alignedarrays.hpp"
 
 /**
  * @file

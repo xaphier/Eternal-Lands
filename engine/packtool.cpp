@@ -8,7 +8,6 @@
 #include "packtool.hpp"
 #include "abstractreadmemory.hpp"
 #include "abstractwritememory.hpp"
-#include "alignedvec4array.hpp"
 #include "simd/simd.hpp"
 #include "logging.hpp"
 #include <boost/detail/endian.hpp>

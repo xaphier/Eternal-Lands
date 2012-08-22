@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "primitiveutil.hpp"
-#include "alignedshort8array.hpp"
+#include "alignedarrays.hpp"
 
 /**
  * @file
@@ -35,7 +35,7 @@ namespace eternal_lands
 			/**
 			 * These min max boxes are used for lod selection.
 			 */
-			AlignedShort8Array m_min_max_boxes;
+			AlignedSint16Vec8Array m_min_max_boxes;
 			SubMeshVector m_sub_meshs;
 			VertexFormatSharedPtr m_vertex_format;
 			const String m_name;
@@ -205,7 +205,7 @@ namespace eternal_lands
 			 * @param min_max_boxes The new min/max boxes.
 			 */
 			inline void set_min_max_boxes(
-				const AlignedShort8Array &min_max_boxes)
+				const AlignedSint16Vec8Array &min_max_boxes)
 			{
 				m_min_max_boxes = min_max_boxes;
 			}
@@ -238,7 +238,7 @@ namespace eternal_lands
 			 * Returns the min/max boxes.
 			 * @result The min/max boxes.
 			 */
-			inline const AlignedShort8Array &get_min_max_boxes()
+			inline const AlignedSint16Vec8Array &get_min_max_boxes()
 				const noexcept
 			{
 				return m_min_max_boxes;

@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "alignedshort8array.hpp"
+#include "alignedarrays.hpp"
 
 /**
  * @file
@@ -63,7 +63,7 @@ namespace eternal_lands
 				Uint32 &vertex_offset, Uint32 &index_offset,
 				SubObjectVector &sub_objects,
 				Uint32 &min_max_boxes_index,
-				AlignedShort8Array &min_max_boxes);
+				AlignedSint16Vec8Array &min_max_boxes);
 
 		public:
 			/**

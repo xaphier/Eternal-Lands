@@ -15,7 +15,7 @@
 #include "prerequisites.hpp"
 #include "vertexelement.hpp"
 #include "primitiveutil.hpp"
-#include "alignedshort8array.hpp"
+#include "alignedarrays.hpp"
 
 /**
  * @file
@@ -38,7 +38,7 @@ namespace eternal_lands
 
 			SubMeshVector m_sub_meshs;
 			VertexSemanticTypeAlignedVec4ArrayMap m_vertices;
-			AlignedShort8Array m_min_max_boxes;
+			AlignedSint16Vec8Array m_min_max_boxes;
 			Uint32Vector m_indices;
 			String m_name;
 			Uint32 m_vertex_count;
@@ -127,7 +127,6 @@ namespace eternal_lands
 				const Uint32 dest_index, const Uint32 count,
 				const Sint32 offset);
 			void resize_vertices(const Uint32 vertex_count);
-			void check_min_max_boxes() const;
 
 			inline void resize_indices(const Uint32 index_count)
 			{
@@ -240,7 +239,7 @@ namespace eternal_lands
 			 * @param min_max_boxes The new min/max boxes.
 			 */
 			inline void set_min_max_boxes(
-				const AlignedShort8Array &min_max_boxes)
+				const AlignedSint16Vec8Array &min_max_boxes)
 			{
 				m_min_max_boxes = min_max_boxes;
 			}
@@ -249,7 +248,7 @@ namespace eternal_lands
 			 * Returns the min/max boxes.
 			 * @result The min/max boxes.
 			 */
-			inline const AlignedShort8Array &get_min_max_boxes()
+			inline const AlignedSint16Vec8Array &get_min_max_boxes()
 				const noexcept
 			{
 				return m_min_max_boxes;

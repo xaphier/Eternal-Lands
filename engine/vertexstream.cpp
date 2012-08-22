@@ -9,7 +9,6 @@
 #include "abstractwritememory.hpp"
 #include "vertexformat.hpp"
 #include "exceptions.hpp"
-#include "alignedvec4array.hpp"
 
 namespace eternal_lands
 {

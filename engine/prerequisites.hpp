@@ -129,7 +129,9 @@ namespace eternal_lands
 	ARRAY(Uint16, 2);
 	ARRAY(Uint16, 3);
 	ARRAY(Uint16, 4);
+	ARRAY(Uint16, 8);
 	ARRAY(Uint16, 16);
+	ARRAY(Sint16, 8);
 	ARRAY(Uint8, 2);
 	ARRAY(Uint8, 3);
 	ARRAY(Uint8, 4);
@@ -141,6 +143,7 @@ namespace eternal_lands
 	ARRAY(Uint8, 32);
 	ARRAY(Sint8, 4);
 	ARRAY(Sint8, 8);
+	ARRAY(Sint8, 16);
 	ARRAY_NAME(glm::vec2, 2, Vec2);
 	ARRAY_NAME(glm::vec2, 3, Vec2);
 	ARRAY_NAME(glm::vec2, 4, Vec2);
@@ -210,8 +213,6 @@ namespace eternal_lands
 	class Actor;
 	class ActorDataCache;
 	class ActorTextureBuilder;
-	class AlignedShort8Array;
-	class AlignedVec4Array;
 	class AngelScript;
 	class Atlas;
 	class BoundedObject;

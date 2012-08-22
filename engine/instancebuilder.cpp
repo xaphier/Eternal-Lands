@@ -269,7 +269,7 @@ namespace eternal_lands
 			const Uint32 base_vertex, glm::vec3 &min,
 			glm::vec3 &max, Uint32 &vertex_offset,
 			Uint32 &index_offset,
-			AlignedShort8Array &min_max_boxes)
+			AlignedSint16Vec8Array &min_max_boxes)
 		{
 			BoundingBox bounding_box;
 
@@ -344,7 +344,8 @@ namespace eternal_lands
 		const String &material, const Uint32 sub_mesh_index,
 		const Uint32 base_vertex, Uint32 &vertex_offset,
 		Uint32 &index_offset, SubObjectVector &sub_objects,
-		Uint32 &min_max_boxes_index, AlignedShort8Array &min_max_boxes)
+		Uint32 &min_max_boxes_index,
+		AlignedSint16Vec8Array &min_max_boxes)
 	{
 		SubMesh sub_mesh;
 		SubObject sub_object;
@@ -420,7 +421,7 @@ namespace eternal_lands
 		StringVector material_names;
 		SubObjectVector instanced_objects;
 		VertexSemanticTypeSet semantics;
-		AlignedShort8Array min_max_boxes;
+		AlignedSint16Vec8Array min_max_boxes;
 		glm::vec4 texture_scale_offset;
 		Uint32 index_count, vertex_count, sub_mesh_count, base_vertex;
 		Uint32 vertex_offset, index_offset, sub_mesh_index;

@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "alignedvec4array.hpp"
+#include "alignedarrays.hpp"
 
 /**
  * @file
@@ -59,21 +59,22 @@ namespace eternal_lands
 
 			static void build_min_max_boxes(
 				const SubMeshVector &sub_meshs,
-				AlignedShort8Array &min_max_boxes);
+				AlignedSint16Vec8Array &min_max_boxes);
 
 			static void append_min_max_box(
 				const BoundingBox &bounding_box,
-				AlignedShort8Array &min_max_boxes);
+				AlignedSint16Vec8Array &min_max_boxes);
 
 			BitSet64 check_visibility(
 				const glm::mat4x4 &projection_view_matrix,
 				const glm::mat4x3 &world_matrix,
-				const AlignedShort8Array &min_max_boxes) const;
+				const AlignedSint16Vec8Array &min_max_boxes)
+				const;
 
 			BitSet64 check_visibility(
 				const glm::mat4x4 &projection_view_matrix,
 				const glm::mat4x3 &world_matrix,
-				const AlignedShort8Array &min_max_boxes,
+				const AlignedSint16Vec8Array &min_max_boxes,
 				const SubMeshVector &sub_meshs) const;
 
 			/**
