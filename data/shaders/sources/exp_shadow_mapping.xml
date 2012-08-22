@@ -45,7 +45,7 @@ for (i = 0; i &lt; shadow_maps_count; ++i)
 {
 	uv = shadow_uvs[i].xyz / shadow_uvs[i].w;
 
-	if (all(lessThan(abs(uv - vec3(0.5)), vec3(0.4995))))
+	if (all(lessThan(abs(uv - vec3(0.5)), vec3(0.5))))
 	{
 		occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), shadow_uv_ddx_ddy.xy, shadow_uv_ddx_ddy.zw).r;
 

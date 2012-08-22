@@ -765,7 +765,6 @@ namespace eternal_lands
 
 	void Scene::cull_shadows()
 	{
-		Vec3Array8Vector corner_points;
 		glm::vec3 camera;
 		Uint32 i, count;
 
@@ -777,35 +776,22 @@ namespace eternal_lands
 			m_rebuild_shadow_map = false;
 		}
 
-		if (count == 0)
+		for (i = 0; i < count; ++i)
 		{
-			return;
+			get_scene_view().build_shadow_matrices(
+				glm::vec3(get_main_light_direction()),
+				m_map->get_bounding_box().get_max().z, i);
 		}
-
-		corner_points.resize(count);
 
 		for (i = 0; i < count; ++i)
 		{
-			corner_points[i] = Frustum(get_scene_view(
-				).get_split_projection_view_matrices(
-				)[i]).get_corner_points();
-//			std::cout << frustums[i].get_bounding_box() << std::endl;
-		}
+			camera = glm::vec3(get_scene_view(
+				).get_shadow_cameras()[i]);
 
-		get_scene_view().build_shadow_matrices(
-			glm::vec3(get_main_light_direction()), corner_points, 
-			m_map->get_bounding_box().get_max().z);
-
-		camera = glm::vec3(get_scene_view().get_shadow_camera());
-
-		for (i = 0; i < count; ++i)
-		{
 			cull_shadow(Frustum(get_scene_view(
 				).get_shadow_projection_view_matrices()[i]),
 				camera, i);
 		}
-
-		get_scene_view().update_shadow_matrices(corner_points);
 	}
 
 	void Scene::cull_shadow(const Frustum &frustum, const glm::vec3 &camera,
@@ -863,11 +849,11 @@ namespace eternal_lands
 				get_scene_view().get_camera());
 			program->set_parameter(apt_shadow_distance_transforms,
 				get_scene_view(
-					).get_shadow_distance_transform());
+					).get_shadow_distance_transforms());
 			program->set_parameter(
 				apt_current_shadow_distance_transform,
 				get_scene_view(
-					).get_shadow_distance_transform(
+					).get_current_shadow_distance_transform(
 						));
 			program->set_parameter(apt_shadow_texture_matrices,
 				get_scene_view().get_shadow_texture_matrices());

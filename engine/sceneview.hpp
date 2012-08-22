@@ -40,40 +40,31 @@ namespace eternal_lands
 			glm::mat4x4 m_view_matrix;
 			glm::mat4x4 m_projection_matrix;
 			glm::mat4x4 m_projection_view_matrix;
-			glm::mat4x4 m_shadow_view_matrix;
 			Mat4x4Vector m_split_projection_view_matrices;
+			Mat4x4Vector m_shadow_view_matrices;
 			Mat4x4Vector m_shadow_projection_matrices;
 			Mat4x4Vector m_shadow_projection_view_matrices;
 			Mat4x4Vector m_shadow_texture_matrices;
+			Vec4Vector m_shadow_distance_transforms;
+			Vec4Vector m_shadow_cameras;
 			glm::mat4x4 *m_current_view_matrix;
 			glm::mat4x4 *m_current_projection_matrix;
 			glm::mat4x4 *m_current_projection_view_matrix;
 			glm::mat4x4 m_ortho_matrix;
 			glm::vec4 m_camera;
-			glm::vec4 m_shadow_camera;
-			glm::vec4 m_shadow_distance_transform;
 			glm::vec4 m_view_dir;
 			glm::vec4 m_focus;
 			glm::vec4 m_split_distances;
 			glm::vec4 m_z_params;
 			glm::vec4 m_ortho;
 			glm::uvec4 m_view_port;
-			glm::vec3 m_shadow_dir;
-			glm::vec3 m_shadow_up;
 			Uint32 m_shadow_map_size;
 			float m_fov, m_aspect, m_z_near, m_z_far;
-			float m_shadow_z_far, m_shadow_z_offset;
+			float m_shadow_z_far;
 			Uint16 m_shadow_map_count, m_layer_count;
 			Uint16 m_shadow_view_index;
 			bool m_exponential_shadow_maps;
 			ProjectionType m_projection;
-
-			void build_shadow_matrix(
-				const glm::dmat4x4 &shadow_view_matrix,
-				const glm::dmat4x4 &basic_projection_matrix,
-				const glm::dmat4x4 &basic_projection_view_matrix,
-				const Vec3Array8 &corner_points,
-				const Uint16 index);
 
 			glm::mat4 build_projection_matrix(const float z_near,
 				const float z_far) const;
@@ -98,10 +89,8 @@ namespace eternal_lands
 			void update();
 			void build_shadow_matrices(
 				const glm::vec3 &light_direction,
-				const Vec3Array8Vector &corner_points,
-				const float scene_max_height);
-			void update_shadow_matrices(
-				const Vec3Array8Vector &corner_points);
+				const float scene_max_height,
+				const Uint16 index);
 
 			inline void set_ortho_view() noexcept
 			{
@@ -123,7 +112,8 @@ namespace eternal_lands
 
 			inline void set_shadow_view(const Uint16 index) noexcept
 			{
-				m_current_view_matrix = &m_shadow_view_matrix;
+				m_current_view_matrix =
+					&m_shadow_view_matrices[index];
 				m_current_projection_matrix =
 					&m_shadow_projection_matrices[index];
 				m_current_projection_view_matrix =
@@ -213,10 +203,10 @@ namespace eternal_lands
 				return m_split_projection_view_matrices;
 			}
 
-			inline const glm::mat4x4 &get_shadow_view_matrix()
+			inline const Mat4x4Vector &get_shadow_view_matrices()
 				const noexcept
 			{
-				return m_shadow_view_matrix;
+				return m_shadow_view_matrices;
 			}
 
 			inline const Mat4x4Vector
@@ -247,16 +237,25 @@ namespace eternal_lands
 				return m_view_dir;
 			}
 
-			inline const glm::vec4 &get_shadow_camera() const
+			inline const Vec4Vector &get_shadow_cameras() const
 				noexcept
 			{
-				return m_shadow_camera;
+				return m_shadow_cameras;
 			}
 
-			inline const glm::vec4 &get_shadow_distance_transform()
-				const noexcept
+			inline const Vec4Vector
+				&get_shadow_distance_transforms() const
+				noexcept
 			{
-				return m_shadow_distance_transform;
+				return m_shadow_distance_transforms;
+			}
+
+			inline const glm::vec4
+				&get_current_shadow_distance_transform() const
+				noexcept
+			{
+				return get_shadow_distance_transforms()[
+					get_shadow_view_index()];
 			}
 
 			inline const glm::vec4 &get_split_distances() const
@@ -303,11 +302,6 @@ namespace eternal_lands
 			inline float get_shadow_z_far() const noexcept
 			{
 				return m_shadow_z_far;
-			}
-
-			inline float get_shadow_z_offset() const noexcept
-			{
-				return m_shadow_z_offset;
 			}
 
 			inline glm::uvec2 get_shadow_map_size() const noexcept
