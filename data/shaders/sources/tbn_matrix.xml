@@ -20,7 +20,7 @@
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>tbn_matrix[0] = world_tangent;
+   <source>tbn_matrix[0] = world_tangent.xyz;
 tbn_matrix[1] = cross(world_normal, world_tangent.xyz) * world_tangent.w;
 tbn_matrix[2] = world_normal;
 </source>
