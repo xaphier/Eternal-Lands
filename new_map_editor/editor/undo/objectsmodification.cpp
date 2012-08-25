@@ -1,48 +1,37 @@
 /****************************************************************************
- *            lightmodification.cpp
+ *            objectsmodification.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "lightmodification.hpp"
+#include "objectsmodification.hpp"
 #include "../editormapdata.hpp"
 
 namespace eternal_lands
 {
 
-	LightModification::LightModification(const LightData &data,
+	ObjectsModification::ObjectsModification(
+		const EditorObjectDescriptionVector &object_descriptions,
 		const ModificationType type, const Uint32 edit_id):
-		Modification(edit_id, data.get_id(), type), m_data(data)
+		Modification(edit_id, 0, type),
+		m_object_descriptions(object_descriptions)
 	{
 	}
 
-	LightModification::~LightModification() throw()
+	ObjectsModification::~ObjectsModification() throw()
 	{
 	}
 
-	bool LightModification::do_merge(Modification* modification)
+	bool ObjectsModification::do_merge(Modification* modification)
 	{
 		return true;
 	}
 
-	bool LightModification::undo(EditorMapData &editor)
+	bool ObjectsModification::undo(EditorMapData &editor)
 	{
 		switch (get_type())
 		{
-			case mt_light_added:
-				return editor.remove_light(m_data.get_id());
-			case mt_light_removed:
-				editor.add_light(m_data, sct_select);
-				return false;
-			case mt_light_position_changed:
-			case mt_light_color_changed:
-			case mt_light_radius_changed:
-				editor.modify_light(m_data);
-				return false;
-			case mt_lights_position_changed:
-			case mt_lights_color_changed:
-			case mt_lights_radius_changed:
 			case mt_object_added:
 			case mt_object_removed:
 			case mt_object_translation_changed:
@@ -53,6 +42,7 @@ namespace eternal_lands
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
 			case mt_object_walkable_changed:
+				return false;
 			case mt_objects_translation_changed:
 			case mt_objects_rotation_changed:
 			case mt_objects_scale_changed:
@@ -61,6 +51,22 @@ namespace eternal_lands
 			case mt_objects_selection_changed:
 			case mt_objects_materials_changed:
 			case mt_objects_walkable_changed:
+				BOOST_FOREACH(const EditorObjectDescription
+					&object_description,
+					m_object_descriptions)
+				{
+					editor.modify_object(
+						object_description);
+				}
+				return false;
+			case mt_light_added:
+			case mt_light_removed:
+			case mt_light_position_changed:
+			case mt_light_color_changed:
+			case mt_light_radius_changed:
+			case mt_lights_position_changed:
+			case mt_lights_color_changed:
+			case mt_lights_radius_changed:
 			case mt_terrain_albedo_map_changed:
 			case mt_terrain_blend_map_changed:
 			case mt_terrain_vector_map_changed:

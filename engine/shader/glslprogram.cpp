@@ -1949,14 +1949,14 @@ namespace eternal_lands
 		bind_attribute_location(vst_bone_index);
 		bind_attribute_location(vst_extra_bone_weight);
 		bind_attribute_location(vst_extra_bone_index);
-		bind_attribute_location(vst_texture_coordinate_0);
-		bind_attribute_location(vst_texture_coordinate_1);
-		bind_attribute_location(vst_mesh_index);
+		bind_attribute_location(vst_texture_coordinate);
 		bind_attribute_location(vst_morph_position);
 		bind_attribute_location(vst_morph_normal);
 		bind_attribute_location(vst_morph_tangent);
-		bind_attribute_location(vst_morph_texture_coordinate_0);
-		bind_attribute_location(vst_morph_texture_coordinate_1);
+		bind_attribute_location(vst_morph_texture_coordinate);
+		bind_attribute_location(vst_world_matrix_0);
+		bind_attribute_location(vst_world_matrix_1);
+		bind_attribute_location(vst_world_matrix_2);
 	}
 
 	void GlslProgram::check_uniform_buffer(

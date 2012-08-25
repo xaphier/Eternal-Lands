@@ -26,7 +26,7 @@ namespace eternal_lands
 			split_uni = z_near + (z_far - z_near) * scale;
 			split_log = z_near * std::pow(z_far / z_near, scale);
 
-			return glm::mix(split_uni, split_log, 0.5f);
+			return glm::mix(split_uni, split_log, 0.25f);
 		}
 
 	}
@@ -158,10 +158,10 @@ namespace eternal_lands
 		m_shadow_cameras[index] = glm::inverse(shadow_view_matrix) *
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		/**
-		* 0.3 for a maximum shadow distance of 250 units,
-		* because we use exp function for esm shadows.
+		* 0.1f as scale value for the depth, because we use exp
+		* function for esm shadows.
 		*/
-		m_shadow_distance_transforms[index] = -0.3 *
+		m_shadow_distance_transforms[index] = -0.2f *
 			glm::transpose(shadow_view_matrix)[2];
 
 		m_shadow_view_matrices[index] = shadow_view_matrix;

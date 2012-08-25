@@ -571,7 +571,6 @@ namespace eternal_lands
 	}
 
 	void MeshDataTool::build_tangent(const bool morph_target,
-		const bool second_texture_coord,
 		const bool gram_schmidth_orthogonalize)
 	{
 		Triangles triangles(get_indices(), get_sub_meshs(),
@@ -590,30 +589,14 @@ namespace eternal_lands
 			position = vst_morph_position;
 			normal = vst_morph_normal;
 			tangent = vst_morph_tangent;
-
-			if (second_texture_coord)
-			{
-				texture_coord = vst_morph_texture_coordinate_1;
-			}
-			else
-			{
-				texture_coord = vst_morph_texture_coordinate_0;
-			}
+			texture_coord = vst_morph_texture_coordinate;
 		}
 		else
 		{
 			position = vst_position;
 			normal = vst_normal;
 			tangent = vst_tangent;
-
-			if (second_texture_coord)
-			{
-				texture_coord = vst_texture_coordinate_1;
-			}
-			else
-			{
-				texture_coord = vst_texture_coordinate_0;
-			}
+			texture_coord = vst_texture_coordinate;
 		}
 
 		tangents.resize(get_vertex_count(), glm::vec3(0.0f));
@@ -780,7 +763,7 @@ namespace eternal_lands
 		}
 
 		build_normal(true);
-		build_tangent(true, false, true);
+		build_tangent(true, true);
 	}
 
 	void MeshDataTool::update_sub_meshs_bounding_box()
@@ -957,14 +940,11 @@ namespace eternal_lands
 			write_vertex_semantic_to_stream(vst_bone_index, i, str);
 			write_vertex_semantic_to_stream(vst_extra_bone_weight, i, str);
 			write_vertex_semantic_to_stream(vst_extra_bone_index, i, str);
-			write_vertex_semantic_to_stream(vst_texture_coordinate_0, i, str);
-			write_vertex_semantic_to_stream(vst_texture_coordinate_1, i, str);
-			write_vertex_semantic_to_stream(vst_mesh_index, i, str);
+			write_vertex_semantic_to_stream(vst_texture_coordinate, i, str);
 			write_vertex_semantic_to_stream(vst_morph_position, i, str);
 			write_vertex_semantic_to_stream(vst_morph_normal, i, str);
 			write_vertex_semantic_to_stream(vst_morph_tangent, i, str);
-			write_vertex_semantic_to_stream(vst_morph_texture_coordinate_0, i, str);
-			write_vertex_semantic_to_stream(vst_morph_texture_coordinate_1, i, str);
+			write_vertex_semantic_to_stream(vst_morph_texture_coordinate, i, str);
 		}
 
 		str << "primitive: " << get_primitive() << std::endl;

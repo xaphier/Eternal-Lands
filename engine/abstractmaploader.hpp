@@ -30,6 +30,7 @@ namespace eternal_lands
 		mit_3d_objects,
 		mit_lights,
 		mit_particles,
+		mit_decals,
 		mit_materials,
 		mit_height_map,
 		mit_tile_map,
@@ -89,6 +90,9 @@ namespace eternal_lands
 			void read_particle(const Uint32 index,
 				const Uint32 offset,
 				const MapVersionType version);
+			void read_decal(const Uint32 index,
+				const Uint32 offset,
+				const MapVersionType version);
 			void read_material_name(const Uint32 index,
 				const Uint32 offset,
 				const MapVersionType version);
@@ -109,6 +113,10 @@ namespace eternal_lands
 				const Uint32 particle_count,
 				const Uint32 particle_offset,
 				const MapVersionType version);
+			void read_decals(const Uint32 decal_size,
+				const Uint32 decal_count,
+				const Uint32 decal_offset,
+				const MapVersionType version);
 			void read_terrain(const Uint32 terrain_offset,
 				const MapVersionType version);
 			void read_material_names(
@@ -128,9 +136,10 @@ namespace eternal_lands
 			static ObjectDescription get_object_description(
 				const glm::vec3 &translation,
 				const glm::vec3 &rotation_angles,
+				const glm::vec3 &scale, 
 				const StringVector &material_names,
-				const String &name, const float scale,
-				const Uint32 id, const SelectionType selection,
+				const String &name, const Uint32 id,
+				const SelectionType selection,
 				const BlendType blend);
 			SelectionType get_selection(const String &name) const
 				noexcept;
@@ -139,7 +148,7 @@ namespace eternal_lands
 
 			virtual void add_object(const glm::vec3 &position,
 				const glm::vec3 &rotation_angles,
-				const String &name, const float scale,
+				const glm::vec3 &scale, const String &name,
 				const float transparency, const Uint32 id,
 				const SelectionType selection,
 				const BlendType blend, const bool walkable,
@@ -149,6 +158,9 @@ namespace eternal_lands
 				const Uint32 id) = 0;
 			virtual void add_particle(const glm::vec3 &position,
 				const String &name, const Uint32 id) = 0;
+			virtual void add_decal(const glm::vec2 &position,
+				const glm::vec2 &scale, const float rotation,
+				const String &texture, const Uint32 id) = 0;
 			virtual void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile) = 0;
 			virtual void set_height(const Uint16 x, const Uint16 y,

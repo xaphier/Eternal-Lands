@@ -282,7 +282,7 @@ namespace eternal_lands
 				mesh_data_tool->set_vertex_data(vst_tangent,
 					index, tangent);
 				mesh_data_tool->set_vertex_data(
-					vst_texture_coordinate_0, index, uv);
+					vst_texture_coordinate, index, uv);
 
 				index++;
 			}
@@ -310,7 +310,7 @@ namespace eternal_lands
 		index_count = indices.size();
 
 		semantics.insert(vst_position);
-		semantics.insert(vst_texture_coordinate_0);
+		semantics.insert(vst_texture_coordinate);
 		semantics.insert(vst_normal);
 		semantics.insert(vst_tangent);
 

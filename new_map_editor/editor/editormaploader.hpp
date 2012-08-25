@@ -103,32 +103,37 @@ namespace eternal_lands
 
 			virtual void add_object(const glm::vec3 &position,
 				const glm::vec3 &rotation_angles,
-				const String &name, const float scale,
+				const glm::vec3 &scale, const String &name,
 				const float transparency, const Uint32 id,
 				const SelectionType selection,
 				const BlendType blend, const bool walkable,
-				const StringVector &material_names);
+				const StringVector &material_names) override;
 			virtual void add_light(const glm::vec3 &position,
 				const glm::vec3 &color, const float radius,
-				const Uint32 id);
+				const Uint32 id) override;
 			virtual void add_particle(const glm::vec3 &position,
-				const String &name, const Uint32 id);
+				const String &name, const Uint32 id) override;
+			virtual void add_decal(const glm::vec2 &position,
+				const glm::vec2 &scale, const float rotation,
+				const String &texture, const Uint32 id)
+				override;
 			virtual void add_terrain(const StringArray4 &albedo,
 				const String &blend, const String &height,
 				const String &dudv,
 				const glm::vec3 &translation,
-				const glm::vec2 &dudv_scale);
+				const glm::vec2 &dudv_scale) override;
 			virtual void set_tile(const Uint16 x, const Uint16 y,
-				const Uint16 tile);
+				const Uint16 tile) override;
 			virtual void set_height(const Uint16 x, const Uint16 y,
-				const Uint16 height);
-			virtual void set_ambient(const glm::vec3 &ambient);
+				const Uint16 height) override;
+			virtual void set_ambient(const glm::vec3 &ambient)
+				override;
 			virtual void set_height_map_size(const Uint16 width,
-				const Uint16 height);
+				const Uint16 height) override;
 			virtual void set_tile_map_size(const Uint16 width,
-				const Uint16 height);
-			virtual void set_dungeon(const bool dungeon);
-			virtual void instance();
+				const Uint16 height) override;
+			virtual void set_dungeon(const bool dungeon) override;
+			virtual void instance() override;
 
 		public:
 			/**

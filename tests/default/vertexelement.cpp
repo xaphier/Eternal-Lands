@@ -71,11 +71,7 @@ BOOST_AUTO_TEST_CASE(vertex_semantic_type_get_str_value)
 	BOOST_CHECK_EQUAL(el::VertexElement::get_str(
 		el::vst_extra_bone_index).get(), "extra_bone_index");
 	BOOST_CHECK_EQUAL(el::VertexElement::get_str(
-		el::vst_texture_coordinate_0).get(), "texture_coordinate_0");
-	BOOST_CHECK_EQUAL(el::VertexElement::get_str(
-		el::vst_texture_coordinate_1).get(), "texture_coordinate_1");
-	BOOST_CHECK_EQUAL(el::VertexElement::get_str(el::vst_mesh_index).get(),
-		"mesh_index");
+		el::vst_texture_coordinate).get(), "texture_coordinate");
 	BOOST_CHECK_EQUAL(el::VertexElement::get_str(
 		el::vst_morph_position).get(), "morph_position");
 	BOOST_CHECK_EQUAL(el::VertexElement::get_str(
@@ -83,11 +79,8 @@ BOOST_AUTO_TEST_CASE(vertex_semantic_type_get_str_value)
 	BOOST_CHECK_EQUAL(el::VertexElement::get_str(
 		el::vst_morph_tangent).get(), "morph_tangent");
 	BOOST_CHECK_EQUAL(el::VertexElement::get_str(
-		el::vst_morph_texture_coordinate_0).get(),
-			"morph_texture_coordinate_0");
-	BOOST_CHECK_EQUAL(el::VertexElement::get_str(
-		el::vst_morph_texture_coordinate_1).get(),
-			"morph_texture_coordinate_1");
+		el::vst_morph_texture_coordinate).get(),
+			"morph_texture_coordinate");
 }
 
 BOOST_AUTO_TEST_CASE(vertex_element_type_convert)

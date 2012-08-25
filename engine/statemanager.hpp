@@ -50,6 +50,7 @@ namespace eternal_lands
 			bool m_use_restart_index;
 			bool m_polygon_offset_fill;
 			bool m_stencil_test;
+			bool m_flip_back_face_culling;
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
 				const
@@ -83,6 +84,8 @@ namespace eternal_lands
 				noexcept;
 			void set_use_restart_index(const bool use_restart_index)
 				noexcept;
+			void set_flip_back_face_culling(
+				const bool flip_back_face_culling) noexcept;
 
 		public:
 			/**
@@ -293,6 +296,21 @@ namespace eternal_lands
 				}
 
 				set_use_restart_index(use_restart_index);
+
+				return true;
+			}
+
+			inline bool switch_flip_back_face_culling(
+				const bool flip_back_face_culling) noexcept
+			{
+				if (m_flip_back_face_culling ==
+					flip_back_face_culling)
+				{
+					return false;
+				}
+
+				set_flip_back_face_culling(
+					flip_back_face_culling);
 
 				return true;
 			}

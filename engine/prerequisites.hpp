@@ -459,6 +459,7 @@ namespace eternal_lands
 	VECTOR(EffectNodePortPtr);
 	VECTOR(GlslProgramSharedPtr);
 	VECTOR(ImageSharedPtr);
+	VECTOR(LightData);
 	VECTOR(LightSharedPtr);
 	VECTOR(MaterialSharedPtr);
 	VECTOR(MaterialDescription);

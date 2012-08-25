@@ -956,8 +956,8 @@ extern "C" void engine_set_transformation_buffers(actor* actor)
 
 	transformation.set_rotation(rotation);
 	translation = offset + rotation * attachment_shift;
-	transformation.set_scale(actors_defs[actor->actor_type].actor_scale *
-		actor->scale);
+	transformation.set_scale(glm::vec3(actors_defs[
+		actor->actor_type].actor_scale * actor->scale));
 	transformation.set_translation(translation);
 
 	reinterpret_cast<el::Actor*>(actor->calmodel->getUserData(

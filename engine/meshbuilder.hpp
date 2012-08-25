@@ -24,12 +24,24 @@ namespace eternal_lands
 
 	enum VertexFormatType
 	{
+		/**
+		 * two component uv (u0, v0, 0, 1)
+		 */
 		vft_mesh = 0,
-		vft_animated_mesh,
+		vft_animated_mesh_2_bones,
+		vft_animated_mesh_4_bones,
+		vft_animated_mesh_6_bones,
+		vft_animated_mesh_8_bones,
 		vft_morph_mesh,
 		vft_instanced_mesh,
+		/**
+		 * four component uv (u0, v0, u1, v1)
+		 */
 		vft_mesh_extra_uv,
-		vft_animated_mesh_extra_uv,
+		vft_animated_mesh_2_bones_extra_uv,
+		vft_animated_mesh_4_bones_extra_uv,
+		vft_animated_mesh_6_bones_extra_uv,
+		vft_animated_mesh_8_bones_extra_uv,
 		vft_morph_mesh_extra_uv,
 		vft_instanced_mesh_extra_uv,
 		vft_simple_terrain,

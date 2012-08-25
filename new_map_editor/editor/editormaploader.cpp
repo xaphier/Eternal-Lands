@@ -43,11 +43,10 @@ namespace eternal_lands
 	}
 
 	void EditorMapLoader::add_object(const glm::vec3 &translation,
-		const glm::vec3 &rotation_angles, const String &name,
-		const float scale, const float transparency,
-		const Uint32 id, const SelectionType selection,
-		const BlendType blend, const bool walkable,
-		const StringVector &material_names)
+		const glm::vec3 &rotation_angles, const glm::vec3 &scale,
+		const String &name, const float transparency, const Uint32 id,
+		const SelectionType selection, const BlendType blend,
+		const bool walkable, const StringVector &material_names)
 	{
 		SelectionType new_selection;
 
@@ -59,7 +58,7 @@ namespace eternal_lands
 		}
 
 		m_data.add_object(EditorObjectDescription(translation,
-			rotation_angles, material_names, name, scale,
+			rotation_angles, scale, material_names, name,
 			transparency, id, new_selection, blend, walkable),
 			sct_no);
 	}
@@ -76,6 +75,14 @@ namespace eternal_lands
 	{
 		m_data.add_particle(ParticleData(position, name, id),
 			sct_no);
+	}
+
+	void EditorMapLoader::add_decal(const glm::vec2 &position,
+		const glm::vec2 &scale, const float rotation_angel,
+		const String &texture, const Uint32 id)
+	{
+//		m_data.add_decal(EditorDecalDescription(position, scale,
+//			rotation_angel, scale, texture, id));
 	}
 
 	void EditorMapLoader::add_terrain(const StringArray4 &albedo,

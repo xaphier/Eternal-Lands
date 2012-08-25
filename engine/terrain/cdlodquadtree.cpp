@@ -1,5 +1,5 @@
 /****************************************************************************
- *			cdlodquadtree.cpp
+ *            cdlodquadtree.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -11,6 +11,7 @@
 #include "shader/mappeduniformbuffer.hpp"
 #include "image.hpp"
 #include "logging.hpp"
+#include "abstractterrainmanager.hpp"
 
 namespace eternal_lands
 {
@@ -69,45 +70,6 @@ namespace eternal_lands
 					(glm::uvec2(1, 0))
 					(glm::uvec2(0, 0)));
 
-		void get_min_max(const ImageSharedPtr &image,
-			const glm::vec3 &scale, const glm::uvec2 &offset,
-			const Uint32 size, glm::vec3 &min, glm::vec3 &max)
-		{
-			glm::vec3 tmp;
-			glm::uvec2 index, count;
-			Uint32 x, y;
-
-			min = glm::vec3(std::numeric_limits<float>::max());
-			max = glm::vec3(-std::numeric_limits<float>::max());
-
-			if (glm::any(glm::lessThan(glm::uvec2(
-				image->get_sizes()), offset + size)))
-			{
-				return;
-			}
-
-			count = glm::uvec2(image->get_sizes()) - offset;
-			count = glm::min(count, size);
-
-			for (y = 0; y < count.y; ++y)
-			{
-				for (x = 0; x < count.x; ++x)
-				{
-					index = offset + glm::uvec2(x, y);
-
-					tmp = glm::vec3(image->get_pixel(
-						index.x, index.y, 0, 0, 0));
-
-					tmp.x = tmp.x * 2.0f - 1.0f;
-					tmp.y = tmp.y * 2.0f - 1.0f;
-					tmp *= scale;
-
-					min = glm::min(min, tmp);
-					max = glm::max(max, tmp);
-				}
-			}
-		}
-
 	}
 
 	const Uvec2Array4 &CdLodQuadTree::get_quad_order(const glm::vec2 &dir)
@@ -153,8 +115,48 @@ namespace eternal_lands
 	{
 	}
 
+	void CdLodQuadTree::get_min_max(const ImageSharedPtr &image,
+		const glm::uvec2 &offset, const Uint32 size, glm::vec3 &min,
+		glm::vec3 &max)
+	{
+		glm::vec3 tmp;
+		glm::uvec2 index, count;
+		Uint32 x, y;
+
+		min = glm::vec3(std::numeric_limits<float>::max());
+		max = glm::vec3(-std::numeric_limits<float>::max());
+
+		if (glm::any(glm::lessThan(glm::uvec2(image->get_sizes()),
+			offset + size)))
+		{
+			return;
+		}
+
+		count = glm::uvec2(image->get_sizes()) - offset;
+		count = glm::min(count, size);
+
+		for (y = 0; y < count.y; ++y)
+		{
+			for (x = 0; x < count.x; ++x)
+			{
+				index = offset + glm::uvec2(x, y);
+
+				tmp = glm::vec3(image->get_pixel(index.x,
+					index.y, 0, 0, 0));
+
+				tmp.x = tmp.x * 2.0f - 1.0f;
+				tmp.y = tmp.y * 2.0f - 1.0f;
+
+				tmp *= AbstractTerrainManager::get_vector_scale();
+
+				min = glm::min(min, tmp);
+				max = glm::max(max, tmp);
+			}
+		}
+	}
+
 	void CdLodQuadTree::init(const ImageSharedPtr &vector_map,
-		const glm::vec3 &scale, const float patch_scale)
+		const float patch_scale)
 	{
 		glm::vec3 min, max;
 		glm::uvec2 size;
@@ -198,8 +200,8 @@ namespace eternal_lands
 				max = glm::vec3(
 					-std::numeric_limits<float>::max());
 
-				init_min_max(vector_map, scale,
-					glm::uvec2(x, y), level, min, max);
+				init_min_max(vector_map, glm::uvec2(x, y),
+					level, min, max);
 
 				m_min = glm::min(m_min, min);
 				m_max = glm::max(m_max, max);
@@ -220,8 +222,8 @@ namespace eternal_lands
 	}
 
 	void CdLodQuadTree::init_min_max(const ImageSharedPtr &vector_map,
-		const glm::vec3 &scale, const glm::uvec2 &position,
-		const Uint16 level, glm::vec3 &min, glm::vec3 &max)
+		const glm::uvec2 &position, const Uint16 level, glm::vec3 &min,
+		glm::vec3 &max)
 	{
 		glm::vec3 tmin, tmax;
 
@@ -233,9 +235,8 @@ namespace eternal_lands
 
 		if (level == 0)
 		{
-			get_min_max(vector_map, scale, position *
-				get_patch_size(), get_patch_size() + 1, min,
-				max);
+			get_min_max(vector_map, position * get_patch_size(),
+				get_patch_size() + 1, min, max);
 
 			m_lods[level].min_max[position.x][position.y][0] = min;
 			m_lods[level].min_max[position.x][position.y][1] = max;
@@ -243,23 +244,23 @@ namespace eternal_lands
 			return;
 		}
 
-		init_min_max(vector_map, scale, position * 2u +
-			glm::uvec2(0, 0), level - 1, min, max);
+		init_min_max(vector_map, position * 2u + glm::uvec2(0, 0),
+			level - 1, min, max);
 
-		init_min_max(vector_map, scale, position * 2u +
-			glm::uvec2(0, 1), level - 1, tmin, tmax);
-
-		min = glm::min(min, tmin);
-		max = glm::max(max, tmax);
-
-		init_min_max(vector_map, scale, position * 2u +
-			glm::uvec2(1, 0), level - 1, tmin, tmax);
+		init_min_max(vector_map, position * 2u + glm::uvec2(0, 1),
+			level - 1, tmin, tmax);
 
 		min = glm::min(min, tmin);
 		max = glm::max(max, tmax);
 
-		init_min_max(vector_map, scale, position * 2u +
-			glm::uvec2(1, 1), level - 1, tmin, tmax);
+		init_min_max(vector_map, position * 2u + glm::uvec2(1, 0),
+			level - 1, tmin, tmax);
+
+		min = glm::min(min, tmin);
+		max = glm::max(max, tmax);
+
+		init_min_max(vector_map, position * 2u + glm::uvec2(1, 1),
+			level - 1, tmin, tmax);
 
 		min = glm::min(min, tmin);
 		max = glm::max(max, tmax);

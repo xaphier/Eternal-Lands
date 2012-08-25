@@ -114,8 +114,17 @@ namespace eternal_lands
 				assert(std::abs(glm::dot(normal, normal) -
 					1.0f) < 0.01f);
 
-				uv.x = core_sub_mesh->getVectorVectorTextureCoordinate()[0][i].u;
-				uv.y = core_sub_mesh->getVectorVectorTextureCoordinate()[0][i].v;
+				if (core_sub_mesh->getVectorVectorTextureCoordinate().size() > 0)
+				{
+					uv.x = core_sub_mesh->getVectorVectorTextureCoordinate()[0][i].u;
+					uv.y = core_sub_mesh->getVectorVectorTextureCoordinate()[0][i].v;
+				}
+
+				if (core_sub_mesh->getVectorVectorTextureCoordinate().size() > 1)
+				{
+					uv.z = core_sub_mesh->getVectorVectorTextureCoordinate()[1][i].u;
+					uv.w = core_sub_mesh->getVectorVectorTextureCoordinate()[1][i].v;
+				}
 
 				index = glm::vec4(0.0f);
 				weight = glm::vec4(0.0f);
@@ -163,7 +172,7 @@ namespace eternal_lands
 				mesh_data_tool->set_vertex_data(
 					vst_normal, vertex_offset + i, normal);
 				mesh_data_tool->set_vertex_data(
-					vst_texture_coordinate_0,
+					vst_texture_coordinate,
 					vertex_offset + i, uv);
 				mesh_data_tool->set_vertex_data(vst_bone_index,
 					vertex_offset + i, index);
@@ -212,7 +221,7 @@ namespace eternal_lands
 		semantics.insert(vst_position);
 		semantics.insert(vst_normal);
 		semantics.insert(vst_tangent);
-		semantics.insert(vst_texture_coordinate_0);
+		semantics.insert(vst_texture_coordinate);
 		semantics.insert(vst_bone_index);
 		semantics.insert(vst_bone_weight);
 
@@ -250,7 +259,7 @@ namespace eternal_lands
 				vertex_offset - min_vertex - 1));
 		}
 
-		mesh_data_tool->build_tangent(false, false, true);
+		mesh_data_tool->build_tangent(false, true);
 	}
 
 }

@@ -57,10 +57,10 @@ namespace eternal_lands
 			mesh_data_tool.set_vertex_data(vst_tangent, dest_index,
 				glm::vec4(tangent, data.w));
 
-			data = source->get_vertex_data(vst_texture_coordinate_0,
+			data = source->get_vertex_data(vst_texture_coordinate,
 				source_index);
 
-			mesh_data_tool.set_vertex_data(vst_texture_coordinate_0,
+			mesh_data_tool.set_vertex_data(vst_texture_coordinate,
 				dest_index, data);
 
 			mesh_data_tool.set_vertex_data(vst_color,
@@ -242,7 +242,7 @@ namespace eternal_lands
 
 			mesh_data_tool.copy_vertics(
 				*instancing_data.get_mesh_data_tool(),
-				vst_texture_coordinate_0, min_vertex,
+				vst_texture_coordinate, min_vertex,
 				vertex_offset, count);
 
 			mesh_data_tool.copy_vertics(
@@ -478,7 +478,7 @@ namespace eternal_lands
 		semantics.insert(vst_normal);
 		semantics.insert(vst_color);
 		semantics.insert(vst_tangent);
-		semantics.insert(vst_texture_coordinate_0);
+		semantics.insert(vst_texture_coordinate);
 
 		mesh_data_tool = boost::make_shared<MeshDataTool>(
 			String(str.str()), vertex_count, index_count,

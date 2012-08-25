@@ -988,6 +988,10 @@ namespace eternal_lands
 
 		get_state_manager().switch_mesh(object->get_mesh());
 
+		get_state_manager().switch_flip_back_face_culling(
+			object->get_world_transformation(
+				).get_flip_back_face_culling());
+
 		DEBUG_CHECK_GL_ERROR();
 
 		count = object->get_materials().size();
@@ -1022,8 +1026,8 @@ namespace eternal_lands
 			{
 				get_state_manager().get_program()->set_parameter(
 					apt_world_transformation,
-					object->get_world_transformation(
-						).get_data());
+					glm::transpose(object->get_world_transformation(
+						).get_matrix()));
 				get_state_manager().get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				object_data_set = true;
@@ -1049,6 +1053,10 @@ namespace eternal_lands
 		bool object_data_set;
 
 		get_state_manager().switch_mesh(object->get_mesh());
+
+		get_state_manager().switch_flip_back_face_culling(
+			object->get_world_transformation(
+				).get_flip_back_face_culling());
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1086,8 +1094,8 @@ namespace eternal_lands
 			{
 				get_state_manager().get_program()->set_parameter(
 					apt_world_transformation,
-					object->get_world_transformation(
-						).get_data());
+					glm::transpose(object->get_world_transformation(
+						).get_matrix()));
 				get_state_manager().get_program()->set_parameter(
 					apt_bones, object->get_bones());
 				get_state_manager().get_program()->set_parameter(
@@ -1671,7 +1679,7 @@ namespace eternal_lands
 			color = glm::vec4(bits) / 255.0f;
 		}
 
-		world_transformation.set_scale(size);
+		world_transformation.set_scale(glm::vec3(size));
 		world_transformation.set_translation(position);
 		world_transformation.set_rotation_angles(glm::vec3());
 
@@ -1736,7 +1744,7 @@ namespace eternal_lands
 			color = glm::vec4(bits) / 255.0f;
 		}
 
-		world_transformation.set_scale(size);
+		world_transformation.set_scale(glm::vec3(size));
 		world_transformation.set_translation(position);
 		world_transformation.set_rotation_angles(glm::vec3());
 
@@ -1981,6 +1989,10 @@ namespace eternal_lands
 		get_state_manager().switch_mesh(
 			object.get_object()->get_mesh());
 
+		get_state_manager().switch_flip_back_face_culling(
+			object.get_object()->get_world_transformation(
+				).get_flip_back_face_culling());
+
 		sub_objects = object.get_object()->get_sub_objects().size();
 
 		object_data_set = false;
@@ -2019,9 +2031,9 @@ namespace eternal_lands
 			{
 				get_state_manager().get_program()->set_parameter(
 					apt_world_transformation,
-					object.get_object(
+					glm::transpose(object.get_object(
 						)->get_world_transformation(
-						).get_data());
+						).get_matrix()));
 				get_state_manager().get_program()->set_parameter(
 					apt_bones, object.get_object(
 						)->get_bones());

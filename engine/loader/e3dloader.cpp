@@ -77,14 +77,9 @@ namespace eternal_lands
 				VertexSemanticTypeSet result;
 
 				result.insert(vst_position);
-				result.insert(vst_texture_coordinate_0);
+				result.insert(vst_texture_coordinate);
 				result.insert(vst_normal);
 				result.insert(vst_tangent);
-
-				if (get_secondary_texture_coordinate(options))
-				{
-					result.insert(vst_texture_coordinate_1);
-				}
 
 				if (get_color(options))
 				{
@@ -202,7 +197,7 @@ namespace eternal_lands
 
 		if (!get_tangent(options))
 		{
-			mesh_data_tool->build_tangent(false, false, true);
+			mesh_data_tool->build_tangent(false, true);
 		}
 
 		materials.clear();
@@ -215,14 +210,13 @@ namespace eternal_lands
 		const Uint32 vertex_count, const Uint32 vertex_size,
 		const Uint32 vertex_offset)
 	{
-		glm::vec4 position, uv, extra_uv, normal, tangent, color;
+		glm::vec4 position, uv, normal, tangent, color;
 		Uint32 i;
 
 		position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 		tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		uv = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		extra_uv = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
 		for (i = 0; i < vertex_count; ++i)
 		{
@@ -245,15 +239,15 @@ namespace eternal_lands
 			{
 				if (get_half_extra_uv(format))
 				{
-					extra_uv[0] = glm::detail::toFloat32(
+					uv[2] = glm::detail::toFloat32(
 						m_reader->read_u16_le());
-					extra_uv[1] = glm::detail::toFloat32(
+					uv[3] = glm::detail::toFloat32(
 						m_reader->read_u16_le());
 				}
 				else
 				{
-					extra_uv[0] = m_reader->read_float_le();
-					extra_uv[1] = m_reader->read_float_le();
+					uv[2] = m_reader->read_float_le();
+					uv[3] = m_reader->read_float_le();
 				}
 			}
 
@@ -321,9 +315,7 @@ namespace eternal_lands
 			}
 
 			mesh_data_tool->set_vertex_data(
-				vst_texture_coordinate_0, i, uv);
-			mesh_data_tool->set_vertex_data(
-				vst_texture_coordinate_1, i, extra_uv);
+				vst_texture_coordinate, i, uv);
 			mesh_data_tool->set_vertex_data(vst_color, i, color);
 			mesh_data_tool->set_vertex_data(vst_normal, i, normal);
 			mesh_data_tool->set_vertex_data(vst_tangent, i,

@@ -8,14 +8,14 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <vertex_semantic>texture_coordinate_0</vertex_semantic>
+     <vertex_semantic>texture_coordinate</vertex_semantic>
     </parameter>
     <parameter>
      <common_parameter>world_uv</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
    </parameters>
-   <source>world_uv = texture_coordinate_0;
+   <source>world_uv = texture_coordinate.xy;
 </source>
    <version>120</version>
   </shader_source_data>

@@ -35,7 +35,12 @@ namespace eternal_lands
 		rt_none,
 		rt_object,
 		rt_light,
-		rt_particle
+		rt_particle,
+		rt_decal,
+		rt_objects,
+		rt_lights,
+		rt_particles,
+		rt_decals
 	};
 
 	enum SelectionChangeType
@@ -61,6 +66,7 @@ namespace eternal_lands
 			boost::scoped_ptr<EditorScene> m_scene;
 			Uint16MultiArray2 m_height_map;
 			Uint8MultiArray2 m_tile_map;
+			Uint32Set m_ids;
 			Uint32 m_id;
 			RenderableType m_renderable;
 
@@ -80,9 +86,11 @@ namespace eternal_lands
 				const SelectionChangeType select);
 			void add_particle(const ParticleData &particle,
 				const SelectionChangeType select);
-			void modify_object(const EditorObjectDescription &object);
+			void modify_object(
+				const EditorObjectDescription &object);
 			void modify_light(const LightData &light);
 			void modify_particle(const ParticleData &particle);
+			void modify_decal(const DecalDescription &decal);
 			bool remove_object(const Uint32 id);
 			bool remove_light(const Uint32 id);
 			bool remove_particle(const Uint32 id);
@@ -222,6 +230,11 @@ namespace eternal_lands
 			inline Uint32 get_id() const noexcept
 			{
 				return m_id;
+			}
+
+			inline Uint32Set get_ids() const noexcept
+			{
+				return m_ids;
 			}
 
 			inline RenderableType get_renderable() const noexcept

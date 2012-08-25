@@ -425,7 +425,7 @@ namespace eternal_lands
 			glm::vec3(1e7f))));
 
 		transformation.set_translation(offset);
-		transformation.set_scale(3.0f);
+		transformation.set_scale(glm::vec3(3.0f));
 
 		if ((tile != 0) && (tile != 240))
 		{
@@ -922,11 +922,9 @@ namespace eternal_lands
 					255.5f);
 			}
 
-			writer->write_float_le(0.0f);
-			writer->write_float_le(0.0f);
-			writer->write_float_le(0.0f);
-
-			writer->write_float_le(object_it->second.get_scale());
+			writer->write_float_le(object_it->second.get_scale().x);
+			writer->write_float_le(object_it->second.get_scale().y);
+			writer->write_float_le(object_it->second.get_scale().z);
 
 			update_materials_list(
 				object_it->second.get_material_names(),

@@ -23,16 +23,20 @@ namespace eternal_lands
 	namespace
 	{
 
-		const bool use_tangent = true;
-
 		const String vertex_format_type_names[] =
 		{
 			String(UTF8("mesh")),
-			String(UTF8("animated_mesh")),
+			String(UTF8("animated_mesh_2_bones")),
+			String(UTF8("animated_mesh_4_bones")),
+			String(UTF8("animated_mesh_6_bones")),
+			String(UTF8("animated_mesh_8_bones")),
 			String(UTF8("morph_mesh")),
 			String(UTF8("instanced_mesh")),
 			String(UTF8("mesh_extra_uv")),
-			String(UTF8("animated_mesh_extra_uv")),
+			String(UTF8("animated_mesh_2_bones_extra_uv")),
+			String(UTF8("animated_mesh_4_bones_extra_uv")),
+			String(UTF8("animated_mesh_6_bones_extra_uv")),
+			String(UTF8("animated_mesh_8_bones_extra_uv")),
 			String(UTF8("morph_mesh_extra_uv")),
 			String(UTF8("instanced_mesh_extra_uv")),
 			String(UTF8("simple_terrain")),
@@ -51,18 +55,25 @@ namespace eternal_lands
 		m_global_vars(global_vars),
 		m_hardware_buffer_mapper(hardware_buffer_mapper)
 	{
-		VertexDescriptionMap mesh, animated_mesh, morph_mesh;
-		VertexDescriptionMap instanced_mesh, simple_terrain_0;
-		VertexDescriptionMap simple_terrain_1, terrain;
+		VertexDescriptionMap mesh, morph_mesh, terrain;
+		VertexDescriptionMap instanced_mesh_0, instanced_mesh_1;
+		VertexDescriptionMap animated_mesh_2_bones;
+		VertexDescriptionMap animated_mesh_4_bones;
+		VertexDescriptionMap animated_mesh_6_bones;
+		VertexDescriptionMap animated_mesh_8_bones;
+		VertexDescriptionMap simple_terrain_0, simple_terrain_1;
 		VertexDescriptionMap sprite, font;
-		VertexElementsVector simple_terrain, instanced_terrain;
-		VertexElementType position, texture_coordinate, normal;
+		VertexElementsVector simple_terrain, instanced_mesh;
+		VertexElementType position, position4, texture_coordinate;
+		VertexElementType normal, extra_texture_coordinate;
 
 		if (get_global_vars()->get_opengl_3_0() ||
 			GLEW_ARB_half_float_vertex)
 		{
 			position = vet_half4;
+			position4 = vet_half4;
 			texture_coordinate = vet_half2;
+			extra_texture_coordinate = vet_half4;
 			font[vst_position] = vet_half2;
 			simple_terrain_0[vst_position] = vet_half2;
 			terrain[vst_position] = vet_half2;
@@ -70,35 +81,13 @@ namespace eternal_lands
 		else
 		{
 			position = vet_float3;
+			position4 = vet_float4;
 			texture_coordinate = vet_float2;
+			extra_texture_coordinate = vet_float4;
 			font[vst_position] = vet_float2;
 			simple_terrain_0[vst_position] = vet_float2;
 			terrain[vst_position] = vet_float2;
 		}
-
-		mesh[vst_position] = position;
-		mesh[vst_texture_coordinate_0] = texture_coordinate;
-		mesh[vst_color] = vet_ubyte4_normalized;
-		animated_mesh[vst_position] = vet_float3;
-		animated_mesh[vst_texture_coordinate_0] = texture_coordinate;
-		animated_mesh[vst_color] = vet_ubyte4_normalized;
-		morph_mesh[vst_position] = vet_float3;
-		morph_mesh[vst_texture_coordinate_0] = texture_coordinate;
-		morph_mesh[vst_color] = vet_ubyte4_normalized;
-		morph_mesh[vst_morph_position] = vet_float3;
-		morph_mesh[vst_morph_texture_coordinate_0] = texture_coordinate;
-		instanced_mesh[vst_position] = vet_float3;
-		instanced_mesh[vst_texture_coordinate_0] = texture_coordinate;
-		instanced_mesh[vst_color] = vet_ubyte4_normalized;
-
-		sprite[vst_position] = position;
-		sprite[vst_texture_coordinate_0] = vet_ushort2_normalized;
-
-		font[vst_texture_coordinate_0] = vet_ushort2_normalized;
-		font[vst_color] = vet_ubyte4_normalized;
-
-		animated_mesh[vst_bone_index] = vet_ubyte4;
-		animated_mesh[vst_bone_weight] = vet_ushort4_normalized;
 
 		if (get_global_vars()->get_opengl_3_3())
 		{
@@ -109,52 +98,138 @@ namespace eternal_lands
 			normal = vet_short4_normalized;
 		}
 
+		mesh[vst_position] = position;
+		mesh[vst_texture_coordinate] = texture_coordinate;
 		mesh[vst_normal] = normal;
-		animated_mesh[vst_normal] = normal;
+		mesh[vst_tangent] = normal;
+
+		animated_mesh_2_bones[vst_position] = position4;
+		animated_mesh_2_bones[vst_normal] = normal;
+		animated_mesh_2_bones[vst_tangent] = normal;
+		animated_mesh_2_bones[vst_texture_coordinate] =
+			texture_coordinate;
+		animated_mesh_2_bones[vst_bone_index] = vet_ubyte4;
+		animated_mesh_2_bones[vst_bone_weight] =
+			vet_ushort2_normalized;
+
+		animated_mesh_4_bones[vst_position] = position4;
+		animated_mesh_4_bones[vst_normal] = normal;
+		animated_mesh_4_bones[vst_tangent] = normal;
+		animated_mesh_4_bones[vst_texture_coordinate] =
+			texture_coordinate;
+		animated_mesh_4_bones[vst_bone_index] = vet_ubyte4;
+		animated_mesh_4_bones[vst_bone_weight] =
+			vet_ushort4_normalized;
+
+		animated_mesh_6_bones[vst_position] = position4;
+		animated_mesh_6_bones[vst_normal] = normal;
+		animated_mesh_6_bones[vst_tangent] = normal;
+		animated_mesh_6_bones[vst_texture_coordinate] =
+			texture_coordinate;
+		animated_mesh_6_bones[vst_bone_index] = vet_ubyte4;
+		animated_mesh_6_bones[vst_bone_weight] =
+			vet_ushort4_normalized;
+		animated_mesh_6_bones[vst_extra_bone_index] = vet_ubyte4;
+		animated_mesh_6_bones[vst_extra_bone_weight] =
+			vet_ushort2_normalized;
+
+		animated_mesh_8_bones[vst_position] = position4;
+		animated_mesh_8_bones[vst_normal] = normal;
+		animated_mesh_8_bones[vst_tangent] = normal;
+		animated_mesh_8_bones[vst_texture_coordinate] =
+			texture_coordinate;
+		animated_mesh_8_bones[vst_bone_index] = vet_ubyte4;
+		animated_mesh_8_bones[vst_bone_weight] =
+			vet_ushort4_normalized;
+		animated_mesh_8_bones[vst_extra_bone_index] = vet_ubyte4;
+		animated_mesh_8_bones[vst_extra_bone_weight] =
+			vet_ushort4_normalized;
+
+		morph_mesh[vst_position] = position;
 		morph_mesh[vst_normal] = normal;
+		morph_mesh[vst_tangent] = normal;
+		morph_mesh[vst_texture_coordinate] = texture_coordinate;
+		morph_mesh[vst_morph_position] = position;
 		morph_mesh[vst_morph_normal] = normal;
-		instanced_mesh[vst_normal] = normal;
+		morph_mesh[vst_morph_tangent] = normal;
+		morph_mesh[vst_morph_texture_coordinate] = texture_coordinate;
+
+		instanced_mesh_0[vst_position] = position;
+		instanced_mesh_0[vst_normal] = normal;
+		instanced_mesh_0[vst_tangent] = normal;
+		instanced_mesh_0[vst_texture_coordinate] = texture_coordinate;
+
+		instanced_mesh_1[vst_world_matrix_0] = vet_float4;
+		instanced_mesh_1[vst_world_matrix_1] = vet_float4;
+		instanced_mesh_1[vst_world_matrix_2] = vet_float4;
+
+		sprite[vst_position] = position;
+		sprite[vst_texture_coordinate] = vet_ushort2_normalized;
+
+		font[vst_texture_coordinate] = vet_ushort2_normalized;
+		font[vst_color] = vet_ubyte4_normalized;
 
 		simple_terrain_1[vst_morph_position] = vet_ubyte4_normalized;
-		simple_terrain_1[vst_morph_normal] = vet_ubyte4_normalized;
-
-		if (use_tangent)
-		{
-			mesh[vst_tangent] = normal;
-			animated_mesh[vst_tangent] = normal;
-			morph_mesh[vst_tangent] = normal;
-			morph_mesh[vst_morph_tangent] = normal;
-			instanced_mesh[vst_tangent] = normal;
-		}
+		simple_terrain_1[vst_morph_normal] = normal;
 
 		set_format(vft_sprite, VertexElements(sprite));
 		set_format(vft_font, VertexElements(font));
 
 		set_format(vft_mesh, VertexElements(mesh));
-		set_format(vft_animated_mesh, VertexElements(animated_mesh));
+		set_format(vft_animated_mesh_2_bones,
+			VertexElements(animated_mesh_2_bones));
+		set_format(vft_animated_mesh_4_bones,
+			VertexElements(animated_mesh_4_bones));
+		set_format(vft_animated_mesh_6_bones,
+			VertexElements(animated_mesh_6_bones));
+		set_format(vft_animated_mesh_8_bones,
+			VertexElements(animated_mesh_8_bones));
 		set_format(vft_morph_mesh, VertexElements(morph_mesh));
-		set_format(vft_instanced_mesh, VertexElements(instanced_mesh));
 
 		simple_terrain.push_back(VertexElements(simple_terrain_0));
 		simple_terrain.push_back(VertexElements(simple_terrain_1));
 
 		set_format(vft_simple_terrain, simple_terrain);
 
+		instanced_mesh.push_back(VertexElements(instanced_mesh_0));
+		instanced_mesh.push_back(VertexElements(instanced_mesh_1));
+
+		set_format(vft_instanced_mesh, instanced_mesh);
+
 		set_format(vft_terrain, terrain);
 
-		mesh[vst_texture_coordinate_1] = texture_coordinate;
-		animated_mesh[vst_texture_coordinate_1] = texture_coordinate;
-		morph_mesh[vst_texture_coordinate_1] = texture_coordinate;
-		morph_mesh[vst_morph_texture_coordinate_1] = texture_coordinate;
-		instanced_mesh[vst_texture_coordinate_1] = texture_coordinate;
+		mesh[vst_texture_coordinate] = extra_texture_coordinate;
+		morph_mesh[vst_texture_coordinate] = extra_texture_coordinate;
+		morph_mesh[vst_morph_texture_coordinate] =
+			extra_texture_coordinate;
+		animated_mesh_2_bones[vst_texture_coordinate] =
+			extra_texture_coordinate;
+		animated_mesh_4_bones[vst_texture_coordinate] =
+			extra_texture_coordinate;
+		animated_mesh_6_bones[vst_texture_coordinate] =
+			extra_texture_coordinate;
+		animated_mesh_8_bones[vst_texture_coordinate] =
+			extra_texture_coordinate;
+		instanced_mesh_0[vst_texture_coordinate] =
+			extra_texture_coordinate;
 
 		set_format(vft_mesh_extra_uv, VertexElements(mesh));
-		set_format(vft_animated_mesh_extra_uv,
-			VertexElements(animated_mesh));
+		set_format(vft_animated_mesh_2_bones_extra_uv,
+			VertexElements(animated_mesh_2_bones));
+		set_format(vft_animated_mesh_4_bones_extra_uv,
+			VertexElements(animated_mesh_4_bones));
+		set_format(vft_animated_mesh_6_bones_extra_uv,
+			VertexElements(animated_mesh_6_bones));
+		set_format(vft_animated_mesh_8_bones_extra_uv,
+			VertexElements(animated_mesh_8_bones));
 		set_format(vft_morph_mesh_extra_uv,
 			VertexElements(morph_mesh));
-		set_format(vft_instanced_mesh_extra_uv,
-			VertexElements(instanced_mesh));
+
+		instanced_mesh.clear();
+		instanced_mesh.push_back(VertexElements(instanced_mesh_0));
+		instanced_mesh.push_back(VertexElements(instanced_mesh_1));
+
+		set_format(vft_instanced_mesh_extra_uv, instanced_mesh);
 	}
 
 	MeshBuilder::~MeshBuilder() noexcept

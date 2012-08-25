@@ -451,7 +451,7 @@ BOOST_AUTO_TEST_CASE(add_plane)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -484,7 +484,7 @@ BOOST_AUTO_TEST_CASE(add_plane)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -570,16 +570,16 @@ BOOST_AUTO_TEST_CASE(add_plane)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -625,7 +625,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -663,7 +663,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -753,16 +753,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -808,7 +808,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -846,7 +846,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -858,8 +858,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent)
 	mesh_data_tool->set_sub_mesh_data(0, el::SubMesh(el::BoundingBox(min,
 		max), 0, index_count, 0, vertex_count - 1));
 
-	BOOST_CHECK_NO_THROW(mesh_data_tool->build_tangent(false, false,
-		false));
+	BOOST_CHECK_NO_THROW(mesh_data_tool->build_tangent(false, false));
 
 	tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -937,16 +936,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -992,7 +991,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -1030,7 +1029,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -1042,8 +1041,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho)
 	mesh_data_tool->set_sub_mesh_data(0, el::SubMesh(el::BoundingBox(min,
 		max), 0, index_count, 0, vertex_count - 1));
 
-	BOOST_CHECK_NO_THROW(mesh_data_tool->build_tangent(false, false,
-		true));
+	BOOST_CHECK_NO_THROW(mesh_data_tool->build_tangent(false, true));
 
 	tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -1110,16 +1108,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -1161,7 +1159,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -1194,7 +1192,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -1280,16 +1278,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -1375,16 +1373,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -1426,7 +1424,7 @@ BOOST_AUTO_TEST_CASE(add_plane_use_restart)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -1459,7 +1457,7 @@ BOOST_AUTO_TEST_CASE(add_plane_use_restart)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -1545,16 +1543,16 @@ BOOST_AUTO_TEST_CASE(add_plane_use_restart)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -1600,7 +1598,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal_use_restart)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -1638,7 +1636,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal_use_restart)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -1728,16 +1726,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_normal_use_restart)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -1783,7 +1781,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_use_restart)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -1821,7 +1819,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_use_restart)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -1833,8 +1831,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_use_restart)
 	mesh_data_tool->set_sub_mesh_data(0, el::SubMesh(el::BoundingBox(min,
 		max), 0, index_count, 0, vertex_count - 1));
 
-	BOOST_CHECK_NO_THROW(mesh_data_tool->build_tangent(false, false,
-		false));
+	BOOST_CHECK_NO_THROW(mesh_data_tool->build_tangent(false, false));
 
 	tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -1912,16 +1909,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_use_restart)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -1967,7 +1964,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho_use_restart)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -2005,7 +2002,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho_use_restart)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -2017,8 +2014,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho_use_restart)
 	mesh_data_tool->set_sub_mesh_data(0, el::SubMesh(el::BoundingBox(min,
 		max), 0, index_count, 0, vertex_count - 1));
 
-	BOOST_CHECK_NO_THROW(mesh_data_tool->build_tangent(false, false,
-		true));
+	BOOST_CHECK_NO_THROW(mesh_data_tool->build_tangent(false, true));
 
 	tangent = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -2085,16 +2081,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_tangent_gram_schmidth_ortho_use_restart)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -2136,7 +2132,7 @@ BOOST_AUTO_TEST_CASE(add_plane_disable_use_restart)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -2169,7 +2165,7 @@ BOOST_AUTO_TEST_CASE(add_plane_disable_use_restart)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -2255,16 +2251,16 @@ BOOST_AUTO_TEST_CASE(add_plane_disable_use_restart)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -2365,16 +2361,16 @@ BOOST_AUTO_TEST_CASE(add_plane_disable_use_restart)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -2416,7 +2412,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box_use_restart)
 	index_count = indices.size();
 
 	semantics.insert(el::vst_position);
-	semantics.insert(el::vst_texture_coordinate_0);
+	semantics.insert(el::vst_texture_coordinate);
 	semantics.insert(el::vst_normal);
 	semantics.insert(el::vst_tangent);
 
@@ -2449,7 +2445,7 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box_use_restart)
 			mesh_data_tool->set_vertex_data(el::vst_tangent, index,
 				tangent);
 			mesh_data_tool->set_vertex_data(
-				el::vst_texture_coordinate_0, index, data);
+				el::vst_texture_coordinate, index, data);
 
 			++index;
 		}
@@ -2535,16 +2531,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box_use_restart)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;
@@ -2630,16 +2626,16 @@ BOOST_AUTO_TEST_CASE(add_plane_build_bounding_box_use_restart)
 				el::vst_tangent, index).w, tangent.w, 0.001);
 
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).x, data.x,
+				el::vst_texture_coordinate, index).x, data.x,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).y, data.y,
+				el::vst_texture_coordinate, index).y, data.y,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).z, data.z,
+				el::vst_texture_coordinate, index).z, data.z,
 				0.001);
 			BOOST_CHECK_CLOSE(mesh_data_tool->get_vertex_data(
-				el::vst_texture_coordinate_0, index).w, data.w,
+				el::vst_texture_coordinate, index).w, data.w,
 				0.001);
 
 			++index;

@@ -79,7 +79,6 @@ namespace eternal_lands
 			void update_sub_meshs_packed();
 			void update_sub_meshs_bounding_box();
 			void build_tangent(const bool morph_target,
-				const bool second_texture_coord,
 				const bool gram_schmidth_orthogonalize);
 			void build_normal(const bool morph_target);
 			void build_scale_morph(const float scale = 1.0f);

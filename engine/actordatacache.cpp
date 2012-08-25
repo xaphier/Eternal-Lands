@@ -85,8 +85,8 @@ namespace eternal_lands
 		loader.load(false, get_global_vars()->get_use_simd(),
 			mesh_data_tool);
 
-		data.m_mesh = get_mesh_builder()->get_mesh(vft_animated_mesh,
-			mesh_data_tool, name);
+		data.m_mesh = get_mesh_builder()->get_mesh(
+			vft_animated_mesh_4_bones, mesh_data_tool, name);
 
 		use_16_bit_indices = mesh_data_tool->get_vertex_count()
 			<= std::numeric_limits<Uint16>::max();

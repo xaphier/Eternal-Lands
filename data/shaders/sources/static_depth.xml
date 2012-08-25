@@ -20,9 +20,7 @@
    </parameters>
    <source>world_position = position.xyz;
 
-world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
-world_position *= world_transformation[1].w;
-world_position += world_transformation[1].xyz;
+world_position = vec4(world_position, 1.0) * world_transformation;
 </source>
    <version>120</version>
   </shader_source_data>

@@ -41,10 +41,11 @@ namespace eternal_lands
 
 		protected:
 			void init_min_max(const ImageSharedPtr &image,
-				const glm::vec3 &scale,
 				const glm::uvec2 &position, const Uint16 level,
 				glm::vec3 &min, glm::vec3 &max);
-
+			void get_min_max(const ImageSharedPtr &image,
+				const glm::uvec2 &offset, const Uint32 size,
+				glm::vec3 &min, glm::vec3 &max);
 			void calculate_lod_params();
 			void add_patch_to_queue(const glm::uvec2 &position,
 				const MappedUniformBufferSharedPtr &instances,
@@ -79,7 +80,6 @@ namespace eternal_lands
 				const glm::vec3 &camera,
 				BoundingBox &bounding_box) const;
 			void init(const ImageSharedPtr &vector_map,
-				const glm::vec3 &scale,
 				const float patch_scale);
 			void clear();
 			static const Uvec2Array4 &get_quad_order(

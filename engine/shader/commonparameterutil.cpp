@@ -77,7 +77,7 @@ namespace eternal_lands
 			CommonParameterTypeData(String(UTF8("world_normal")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("world_tangent")),
-				pt_vec3),
+				pt_vec4),
 			CommonParameterTypeData(String(UTF8(
 				"world_view_direction")), pt_vec4),
 			CommonParameterTypeData(String(UTF8("world_uv")),

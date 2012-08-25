@@ -65,7 +65,7 @@ namespace eternal_lands
 		{
 			AutoParameterTypeData(
 				String(UTF8("world_transformation")),
-				pt_mat2x4),
+				pt_mat3x4),
 			AutoParameterTypeData(String(UTF8("view_matrix")),
 				pt_mat4x4),
 			AutoParameterTypeData(

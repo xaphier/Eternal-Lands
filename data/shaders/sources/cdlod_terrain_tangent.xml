@@ -8,6 +8,14 @@
   <shader_source_data>
    <parameters>
     <parameter>
+     <sampler_parameter>effect_sampler_8</sampler_parameter>
+     <type>sampler2DRect</type>
+    </parameter>
+    <parameter>
+     <sampler_parameter>effect_sampler_9</sampler_parameter>
+     <type>sampler2DRect</type>
+    </parameter>
+    <parameter>
      <vertex_semantic>position</vertex_semantic>
     </parameter>
     <parameter>
@@ -22,14 +30,6 @@
      <qualifier>out</qualifier>
      <size>one</size>
      <scale>1</scale>
-    </parameter>
-    <parameter>
-     <sampler_parameter>effect_sampler_8</sampler_parameter>
-     <type>sampler2DRect</type>
-    </parameter>
-    <parameter>
-     <sampler_parameter>effect_sampler_9</sampler_parameter>
-     <type>sampler2DRect</type>
     </parameter>
     <parameter>
      <common_parameter>world_normal</common_parameter>
@@ -65,7 +65,7 @@ vertex_position += decode_terrain_displacement(texture(effect_sampler_8, vertex_
 world_position = vertex_position;
 
 world_normal = decode_normal(texture(effect_sampler_9, vertex_uv).rg);
-world_tangent = world_normal;
+world_tangent = vec4(world_normal, 1.0);
 
 terrain_texture_coordinate = vertex_position.xy;
 </source>

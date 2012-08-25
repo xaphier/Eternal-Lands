@@ -34,13 +34,11 @@
    </parameters>
    <source>world_position = position.xyz;
 world_normal = normal.xyz;
-world_tangent = tangent.xyz;
+world_tangent = tangent;
 
-world_position += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_position) + world_transformation[0].w * world_position);
-world_position *= world_transformation[1].w;
-world_position += world_transformation[1].xyz;
-world_normal += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_normal) + world_transformation[0].w * world_normal);
-world_tangent += 2.0 * cross(world_transformation[0].xyz, cross(world_transformation[0].xyz, world_tangent) + world_transformation[0].w * world_tangent);
+world_position = vec4(world_position, 1.0) * world_transformation;
+world_normal = normalize(world_normal * mat3(world_transformation));
+world_tangent.xyz = normalize(world_tangent.xyz * mat3(world_transformation));
 </source>
    <version>120</version>
   </shader_source_data>

@@ -29,11 +29,26 @@ namespace eternal_lands
 		mt_object_selection_changed,
 		mt_object_materials_changed,
 		mt_object_walkable_changed,
+
+		mt_objects_translation_changed,
+		mt_objects_rotation_changed,
+		mt_objects_scale_changed,
+		mt_objects_blend_changed,
+		mt_objects_transparency_changed,
+		mt_objects_selection_changed,
+		mt_objects_materials_changed,
+		mt_objects_walkable_changed,
+
 		mt_light_added,
 		mt_light_removed,
 		mt_light_position_changed,
 		mt_light_color_changed,
 		mt_light_radius_changed,
+
+		mt_lights_position_changed,
+		mt_lights_color_changed,
+		mt_lights_radius_changed,
+
 		mt_terrain_albedo_map_changed,
 		mt_terrain_blend_map_changed,
 		mt_terrain_vector_map_changed,

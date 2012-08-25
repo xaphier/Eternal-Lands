@@ -138,10 +138,10 @@ namespace eternal_lands
 	void AbstractMapLoader::read_3d_object(const Uint32 index,
 		const Uint32 offset, const MapVersionType version)
 	{
-		glm::vec3 translation, rotation_angles, color;
+		glm::vec3 translation, rotation_angles, scale;
 		String name;
 		StringVector material_names;
-		float transparency, scale;
+		float transparency;
 		Uint32 id, blended, material_index, material_count, instance_id;
 		SelectionType selection;
 		BlendType blend;
@@ -166,23 +166,15 @@ namespace eternal_lands
 			get_reader()->read_u8());
 		transparency = get_reader()->read_u8() / 255.0f;
 
-		color.r = get_reader()->read_float_le();
-		color.g = get_reader()->read_float_le();
-		color.b = get_reader()->read_float_le();
+		scale.x = get_reader()->read_float_le();
+		scale.y = get_reader()->read_float_le();
+		scale.z = get_reader()->read_float_le();
 
-		scale = get_reader()->read_float_le();
 		material_index = get_reader()->read_u32_le();
 		material_count = get_reader()->read_u32_le();
 		id = get_reader()->read_u32_le();
 		instance_id = get_reader()->read_u32_le();
 		walkable = get_reader()->read_u8() != 0;
-
-		LOG_DEBUG(lt_map_loader, UTF8("Adding 3d object (%1%) '%2%' at"
-			" <%3%> with rotation <%4%>, left lit %5%, blended %6%"
-			" and color <%7%>."), index % name %
-			glm::to_string(translation) %
-			glm::to_string(rotation_angles) % self_lit % blended %
-			glm::to_string(color));
 
 		if (version == mvt_1_0)
 		{
@@ -203,13 +195,19 @@ namespace eternal_lands
 			}
 
 			walkable = false;
-			scale = 1.0f;
+			scale = glm::vec3(1.0f);
 			material_count = 0;
 			material_index = 0;
 			name = FileSystem::get_strip_relative_path(name);
 			selection = get_selection(name);
 			id = index;
 		}
+
+		LOG_DEBUG(lt_map_loader, UTF8("Adding 3d object (%1%) '%2%' at"
+			" %3% with rotation %4%, scale %5%, blended %6%."),
+			index % name % glm::to_string(translation) %
+			glm::to_string(rotation_angles) % glm::to_string(scale)
+			% blended);
 
 		if ((material_index + material_count) > m_material_names.size())
 		{
@@ -225,7 +223,7 @@ namespace eternal_lands
 
 		id = get_free_ids().use_typeless_object_id(id, it_3d_object);
 
-		add_object(translation, rotation_angles, name, scale,
+		add_object(translation, rotation_angles, scale, name,
 			transparency, id, selection, blend, walkable,
 			get_material_names(material_index, material_count));
 	}
@@ -253,11 +251,11 @@ namespace eternal_lands
 		id = get_free_ids().use_typeless_object_id(index, it_2d_object);
 
 		LOG_DEBUG(lt_map_loader, UTF8("Adding 2d object (%1%) '%2%' at"
-			"<%3%> with rotation <%4%>."), index % name %
+			"%3% with rotation %4%."), index % name %
 			glm::to_string(translation) %
 			glm::to_string(rotation_angles));
 
-		add_object(translation, rotation_angles, name, 1.0f,
+		add_object(translation, rotation_angles, glm::vec3(1.0f), name,
 			0.0f, id, st_none, bt_disabled, false, material_names);
 	}
 
@@ -287,8 +285,8 @@ namespace eternal_lands
 			radius = 2.5f * scale;
 		}
 
-		LOG_DEBUG(lt_map_loader, UTF8("Adding light (%1%) at <%2%> "
-			"with color <%3%> and radius %4%."), index %
+		LOG_DEBUG(lt_map_loader, UTF8("Adding light (%1%) at %2% "
+			"with color %3% and radius %4%."), index %
 			glm::to_string(position) %
 			glm::to_string(color) % radius);
 
@@ -311,13 +309,40 @@ namespace eternal_lands
 		position.y = get_reader()->read_float_le();
 		position.z = get_reader()->read_float_le();
 
-		LOG_DEBUG(lt_map_loader, UTF8("Adding particle (%1%) at <%2%> "
-			"with date '%3%'."), index % glm::to_string(position) %
+		LOG_DEBUG(lt_map_loader, UTF8("Adding particle (%1%) at %2% "
+			"with name '%3%'."), index % glm::to_string(position) %
 			name);
 
 		get_free_ids().use_particle_id(index);
 
 		add_particle(position, name, index);
+	}
+
+	void AbstractMapLoader::read_decal(const Uint32 index,
+		const Uint32 offset, const MapVersionType version)
+	{
+		String texture;
+		glm::vec2 position, scale;
+		float rotation;
+
+		get_reader()->set_position(offset);
+
+		texture = get_reader()->read_utf8_string(80);
+
+		position.x = get_reader()->read_float_le();
+		position.y = get_reader()->read_float_le();
+		scale.x = get_reader()->read_float_le();
+		scale.y = get_reader()->read_float_le();
+		rotation = get_reader()->read_float_le();
+
+		LOG_DEBUG(lt_map_loader, UTF8("Adding decal (%1%) at %2% "
+			"with scale %3%, rotation %4% and texture '%5%'."),
+			index % glm::to_string(position) %
+			glm::to_string(scale) % rotation % texture);
+
+		get_free_ids().use_decal_id(index);
+
+		add_decal(position, scale, rotation, texture, index);
 	}
 
 	void AbstractMapLoader::read_terrain(const Uint32 offset,
@@ -449,6 +474,34 @@ namespace eternal_lands
 			{
 				read_particle(i, particle_offset +
 					i * particle_size, version);
+			}
+			catch (boost::exception &exception)
+			{
+				exception << errinfo_item_id(i);
+				LOG_EXCEPTION(exception);
+			}
+			catch (const std::exception &exception)
+			{
+				LOG_EXCEPTION(exception);
+			}
+		}
+	}
+
+	void AbstractMapLoader::read_decals(const Uint32 decal_size,
+		const Uint32 decal_count, const Uint32 decal_offset,
+		const MapVersionType version)
+	{
+		Uint32 i;
+
+		LOG_DEBUG(lt_map_loader, UTF8("Loading %1% decals."),
+			decal_count);
+
+		for (i = 0; i < decal_count; ++i)
+		{
+			try
+			{
+				read_decal(i, decal_offset + i * decal_size,
+					version);
 			}
 			catch (boost::exception &exception)
 			{
@@ -781,8 +834,8 @@ namespace eternal_lands
 	ObjectDescription AbstractMapLoader::get_object_description(
 		const glm::vec3 &translation,
 		const glm::vec3 &rotation_angles,
-		const StringVector &material_names, const String &name,
-		const float scale, const Uint32 id,
+		const glm::vec3 &scale, const StringVector &material_names,
+		const String &name, const Uint32 id,
 		const SelectionType selection, const BlendType blend)
 	{
 		Transformation transformation;

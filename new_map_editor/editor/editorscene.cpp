@@ -93,7 +93,7 @@ namespace eternal_lands
 		materials.push_back(get_scene_resources().get_material_builder(
 			)->get_material(material_description));
 
-		transformation.set_scale(light_data.get_radius());
+		transformation.set_scale(glm::vec3(light_data.get_radius()));
 		object_data.set_world_transformation(transformation);
 		object_data.set_selection(st_none);
 

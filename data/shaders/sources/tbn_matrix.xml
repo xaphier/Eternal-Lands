@@ -21,7 +21,7 @@
     </parameter>
    </parameters>
    <source>tbn_matrix[0] = world_tangent;
-tbn_matrix[1] = cross(world_normal, world_tangent);
+tbn_matrix[1] = cross(world_normal, world_tangent.xyz) * world_tangent.w;
 tbn_matrix[2] = world_normal;
 </source>
    <version>120</version>

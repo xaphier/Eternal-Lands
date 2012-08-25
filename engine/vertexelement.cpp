@@ -204,14 +204,14 @@ namespace eternal_lands
 			String(UTF8("bone_index")),
 			String(UTF8("extra_bone_weight")),
 			String(UTF8("extra_bone_index")),
-			String(UTF8("texture_coordinate_0")),
-			String(UTF8("texture_coordinate_1")),
-			String(UTF8("mesh_index")),
+			String(UTF8("texture_coordinate")),
 			String(UTF8("morph_position")),
 			String(UTF8("morph_normal")),
 			String(UTF8("morph_tangent")),
-			String(UTF8("morph_texture_coordinate_0")),
-			String(UTF8("morph_texture_coordinate_1"))
+			String(UTF8("morph_texture_coordinate")),
+			String(UTF8("world_matrix_0")),
+			String(UTF8("world_matrix_1")),
+			String(UTF8("world_matrix_2"))
 		};
 
 		const Uint32 vertex_semantic_type_names_count =

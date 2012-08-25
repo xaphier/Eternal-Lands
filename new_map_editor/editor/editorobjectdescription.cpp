@@ -16,14 +16,14 @@ namespace eternal_lands
 
 	EditorObjectDescription::EditorObjectDescription(
 		const glm::vec3 &translation,
-		const glm::vec3 &rotation_angles,
+		const glm::vec3 &rotation_angles, const glm::vec3 &scale,
 		const StringVector &material_names, const String &name,
-		const float scale, const float transparency,
-		const Uint32 id, const SelectionType selection,
-		const BlendType blend, const bool walkable):
-		ObjectDescription(Transformation(), material_names, name,
-			transparency, id, selection, blend),
-		m_rotation_angles(rotation_angles), m_walkable(walkable)
+		const float transparency, const Uint32 id,
+		const SelectionType selection, const BlendType blend,
+		const bool walkable): ObjectDescription(Transformation(),
+			material_names, name, transparency, id, selection,
+			blend), m_rotation_angles(rotation_angles),
+			m_walkable(walkable)
 	{
 		Transformation m_world_transformation;
 
@@ -64,7 +64,7 @@ namespace eternal_lands
 		m_rotation_angles = rotation_angles;
 	}
 
-	void EditorObjectDescription::set_scale(const float scale)
+	void EditorObjectDescription::set_scale(const glm::vec3 &scale)
 	{
 		Transformation m_world_transformation;
 
@@ -75,12 +75,12 @@ namespace eternal_lands
 		set_world_transformation(m_world_transformation);
 	}
 
-	glm::vec3 EditorObjectDescription::get_translation() const
+	const glm::vec3 &EditorObjectDescription::get_translation() const
 	{
 		return get_world_transformation().get_translation();
 	}
 
-	float EditorObjectDescription::get_scale() const
+	const glm::vec3 &EditorObjectDescription::get_scale() const
 	{
 		return get_world_transformation().get_scale();
 	}

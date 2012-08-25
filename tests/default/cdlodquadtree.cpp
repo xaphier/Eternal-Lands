@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(construct)
 		glm::uvec3(129, 129, 1), 0);
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::CdLodQuadTree()));
-	BOOST_CHECK_NO_THROW(tree->init(vector_map, glm::vec3(1.0f), 0.25f));
+	BOOST_CHECK_NO_THROW(tree->init(vector_map, 0.25f));
 
 	BOOST_CHECK_EQUAL(tree->get_max_lod_count(), 8);
 	BOOST_CHECK_EQUAL(tree->get_lod_count(), 4);

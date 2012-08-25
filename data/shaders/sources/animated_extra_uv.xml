@@ -8,7 +8,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <vertex_semantic>texture_coordinate_0</vertex_semantic>
+     <vertex_semantic>texture_coordinate</vertex_semantic>
     </parameter>
     <parameter>
      <auto_parameter>texture_matrices</auto_parameter>
@@ -25,8 +25,8 @@
      <qualifier>out</qualifier>
     </parameter>
    </parameters>
-   <source>world_uv = vec3(texture_coordinate_0.xy, 1.0) * texture_matrices[0];
-world_extra_uv = vec3(texture_coordinate_0.xy, time) * texture_matrices[1];
+   <source>world_uv = vec3(texture_coordinate.xy, time) * texture_matrices[0];
+world_extra_uv = vec3(texture_coordinate.xy, time) * texture_matrices[1];
 </source>
    <version>120</version>
   </shader_source_data>

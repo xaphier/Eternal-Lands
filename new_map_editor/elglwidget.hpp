@@ -88,11 +88,20 @@ class ELGLWidget: public QGLWidget
 		void set_light_color(const glm::vec3 &color);
 		void set_object_translation(const glm::vec3 &translation);
 		void set_object_rotation(const glm::vec3 &rotation);
-		void set_object_scale(const float scale);
+		void set_object_scale(const glm::vec3 &scale);
 		void set_object_selection(const SelectionType selection);
 		void set_object_blend(const BlendType blend);
 		void set_object_transparency(const float transparency);
 		void set_object_materials(const StringVector &materials);
+		void set_lights_position(const glm::vec3 &position);
+		void set_lights_color(const glm::vec3 &color);
+		void set_objects_translation(const glm::vec3 &translation);
+		void set_objects_rotation(const glm::vec3 &rotation);
+		void set_objects_scale(const glm::vec3 &scale);
+		void set_objects_selection(const SelectionType selection);
+		void set_objects_blend(const BlendType blend);
+		void set_objects_transparency(const float transparency);
+		void set_objects_materials(const StringVector &materials);
 		void add_object(const String &object);
 		void add_light(const float radius);
 		void set_dungeon(const bool dungeon);
@@ -187,6 +196,7 @@ class ELGLWidget: public QGLWidget
 		void remove_object();
 		void remove_light();
 		void set_light_radius(const double radius);
+		void set_lights_radius(const double radius);
 		void undo();
 		void set_wire_frame(const bool enabled);
 		void move_left();
@@ -241,6 +251,7 @@ class ELGLWidget: public QGLWidget
 		void set_lights_enabled(const bool enabled);
 		void init_terrain(const int width, const int height);
 		void set_object_walkable(const bool value);
+		void set_objects_walkable(const bool value);
 
 	signals:
 		void update_object(const bool select);

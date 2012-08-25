@@ -117,4 +117,19 @@ namespace eternal_lands
 		m_free_particle_ids.use_id(id);
 	}
 
+	Uint32 FreeIdsManager::get_next_free_decal_id()
+	{
+		return m_free_decal_ids.get_next_free_id();
+	}
+
+	void FreeIdsManager::free_decal_id(const Uint32 id)
+	{
+		m_free_decal_ids.free_id(id);
+	}
+
+	void FreeIdsManager::use_decal_id(const Uint32 id)
+	{
+		m_free_decal_ids.use_id(id);
+	}
+
 }

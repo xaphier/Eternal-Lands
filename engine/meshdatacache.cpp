@@ -104,7 +104,7 @@ namespace eternal_lands
 			Uint32 i;
 
 			semantics.insert(vst_position);
-			semantics.insert(vst_texture_coordinate_0);
+			semantics.insert(vst_texture_coordinate);
 			semantics.insert(vst_normal);
 			semantics.insert(vst_color);
 
@@ -128,7 +128,7 @@ namespace eternal_lands
 				mesh_data_tool->set_vertex_data(vst_normal, i,
 					glm::vec4(normal, 1.0f));
 				mesh_data_tool->set_vertex_data(
-					vst_texture_coordinate_0, i,
+					vst_texture_coordinate, i,
 					glm::vec4(uv, 0.0f, 1.0f));
 				mesh_data_tool->set_vertex_data(vst_color, i,
 					glm::vec4(1.0f));
@@ -180,7 +180,7 @@ namespace eternal_lands
 			index_count = indices.size();
 
 			semantics.insert(vst_position);
-			semantics.insert(vst_texture_coordinate_0);
+			semantics.insert(vst_texture_coordinate);
 			semantics.insert(vst_normal);
 			semantics.insert(vst_tangent);
 
@@ -231,7 +231,7 @@ namespace eternal_lands
 					mesh_data_tool->set_vertex_data(
 						vst_tangent, index, tangent);
 					mesh_data_tool->set_vertex_data(
-						vst_texture_coordinate_0,
+						vst_texture_coordinate,
 						index, data);
 
 					++index;
@@ -266,7 +266,7 @@ namespace eternal_lands
 			VertexSemanticTypeSet semantics;
 
 			semantics.insert(vst_position);
-			semantics.insert(vst_texture_coordinate_0);
+			semantics.insert(vst_texture_coordinate);
 			semantics.insert(vst_normal);
 			semantics.insert(vst_tangent);
 
@@ -306,7 +306,7 @@ namespace eternal_lands
 					mesh_data_tool->set_vertex_data(
 						vst_tangent, index, tangent);
 					mesh_data_tool->set_vertex_data(
-						vst_texture_coordinate_0,
+						vst_texture_coordinate,
 						index, data);
 
 					++index;

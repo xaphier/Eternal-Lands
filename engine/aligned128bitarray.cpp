@@ -69,7 +69,7 @@ namespace eternal_lands
 		count = new_capacity * item_size();
 
 #ifdef	USE_SSE2
-		data = _mm_malloc(count, 16);
+		data = _mm_malloc(count, 32);
 #else	/* USE_SSE2 */
 		data = malloc(count);
 #endif	/* USE_SSE2 */

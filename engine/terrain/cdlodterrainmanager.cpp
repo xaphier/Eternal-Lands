@@ -84,9 +84,8 @@ namespace eternal_lands
 		set_terrain_size((glm::vec2(vector_map->get_sizes()) -1.0f) *
 			get_patch_scale());
 
-		m_cd_lod_quad_tree->init(
-			vector_map->decompress(false, true),
-			get_vector_scale(), get_patch_scale());
+		m_cd_lod_quad_tree->init(vector_map->decompress(false, true),
+			get_patch_scale());
 
 		min = m_cd_lod_quad_tree->get_min();
 		max = m_cd_lod_quad_tree->get_max();

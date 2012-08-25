@@ -105,23 +105,22 @@ namespace eternal_lands
 	}
 
 	void MapLoader::add_object(const glm::vec3 &translation,
-		const glm::vec3 &rotation_angles, const String &name,
-		const float scale, const float transparency,
-		const Uint32 id, const SelectionType selection,
-		const BlendType blend, const bool walkable,
-		const StringVector &material_names)
+		const glm::vec3 &rotation_angles, const glm::vec3 &scale,
+		const String &name, const float transparency, const Uint32 id,
+		const SelectionType selection, const BlendType blend,
+		const bool walkable, const StringVector &material_names)
 	{
 		if (blend != bt_disabled)
 		{
 			m_map->add_object(get_object_description(translation,
-				rotation_angles, material_names, name, scale,
+				rotation_angles, scale, material_names, name,
 				id, selection, blend));
 		}
 		else
 		{
 			m_instances_builder->add(get_object_description(
-				translation, rotation_angles, material_names,
-				name, scale, id, selection, blend));
+				translation, rotation_angles, scale,
+				material_names, name, id, selection, blend));
 		}
 	}
 
@@ -135,6 +134,20 @@ namespace eternal_lands
 		const String &name, const Uint32 id)
 	{
 		m_map->add_particle(ParticleData(position, name, id));
+	}
+
+	void MapLoader::add_decal(const glm::vec2 &position,
+		const glm::vec2 &scale, const float rotation,
+		const String &texture, const Uint32 id)
+	{
+		glm::mat4x4 matrix;
+
+		matrix = glm::scale(glm::vec3(scale, 1.0f));
+		matrix = glm::rotate(matrix, rotation,
+			glm::vec3(0.0f, 0.0f, 1.0f));
+		matrix = glm::translate(matrix, glm::vec3(position, 0.0f));
+
+//		m_map->add_decal(DecalDescription(matrix, texture));
 	}
 
 	void MapLoader::add_terrain(const StringArray4 &albedo,
@@ -176,7 +189,7 @@ namespace eternal_lands
 			glm::vec3(1e7f))));
 
 		transformation.set_translation(offset);
-		transformation.set_scale(1.0f);
+		transformation.set_scale(glm::vec3(1.0f));
 
 		switch (tile)
 		{

@@ -55,8 +55,30 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(x_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
 	QObject::connect(y_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
 	QObject::connect(z_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
+
 	QObject::connect(scale_value, SIGNAL(valueChanged(double)), this, SLOT(update_scale()));
 	QObject::connect(scale_slider, SIGNAL(valueChanged(int)), this, SLOT(update_scale_slider()));
+	QObject::connect(scale_value_x, SIGNAL(valueChanged(double)), this, SLOT(update_scale_x()));
+	QObject::connect(scale_value_y, SIGNAL(valueChanged(double)), this, SLOT(update_scale_y()));
+	QObject::connect(scale_value_z, SIGNAL(valueChanged(double)), this, SLOT(update_scale_z()));
+	QObject::connect(scale_slider_x, SIGNAL(valueChanged(int)), this, SLOT(update_scale_slider_x()));
+	QObject::connect(scale_slider_y, SIGNAL(valueChanged(int)), this, SLOT(update_scale_slider_y()));
+	QObject::connect(scale_slider_z, SIGNAL(valueChanged(int)), this, SLOT(update_scale_slider_z()));
+	QObject::connect(mirror_x, SIGNAL(toggled(bool)), this, SLOT(update_mirror()));
+	QObject::connect(mirror_y, SIGNAL(toggled(bool)), this, SLOT(update_mirror()));
+	QObject::connect(mirror_z, SIGNAL(toggled(bool)), this, SLOT(update_mirror()));
+
+	QObject::connect(scales_value, SIGNAL(valueChanged(double)), this, SLOT(update_scales()));
+	QObject::connect(scales_slider, SIGNAL(valueChanged(int)), this, SLOT(update_scales_slider()));
+	QObject::connect(scales_value_x, SIGNAL(valueChanged(double)), this, SLOT(update_scales_x()));
+	QObject::connect(scales_value_y, SIGNAL(valueChanged(double)), this, SLOT(update_scales_y()));
+	QObject::connect(scales_value_z, SIGNAL(valueChanged(double)), this, SLOT(update_scales_z()));
+	QObject::connect(scales_slider_x, SIGNAL(valueChanged(int)), this, SLOT(update_scales_slider_x()));
+	QObject::connect(scales_slider_y, SIGNAL(valueChanged(int)), this, SLOT(update_scales_slider_y()));
+	QObject::connect(scales_slider_z, SIGNAL(valueChanged(int)), this, SLOT(update_scales_slider_z()));
+	QObject::connect(mirrors_x, SIGNAL(toggled(bool)), this, SLOT(update_mirrors()));
+	QObject::connect(mirrors_y, SIGNAL(toggled(bool)), this, SLOT(update_mirrors()));
+	QObject::connect(mirrors_z, SIGNAL(toggled(bool)), this, SLOT(update_mirrors()));
 
 	m_rotations.push_back(x_rotation);
 	m_rotations.push_back(y_rotation);
@@ -461,9 +483,30 @@ void MainWindow::update_object()
 	y_rotation_dial->setValue(object_description.get_rotation_angles()[1]);
 	z_rotation_dial->setValue(object_description.get_rotation_angles()[2]);
 
-	scale_value->setValue(object_description.get_world_transformation(
-		).get_scale() * 100.0f);
-	scale_slider->setValue(200.0f * (std::log10(scale_value->value()) - 1.0f));
+	scale_value_x->setValue(std::abs(
+		object_description.get_world_transformation().get_scale().x *
+		100.0f));
+	scale_slider_x->setValue(200.0f * (std::log10(
+		scale_value_x->value()) - 1.0f));
+
+	scale_value_y->setValue(std::abs(
+		object_description.get_world_transformation().get_scale().y *
+		100.0f));
+	scale_slider_y->setValue(200.0f * (std::log10(
+		scale_value_y->value()) - 1.0f));
+
+	scale_value_z->setValue(std::abs(
+		object_description.get_world_transformation().get_scale().z *
+		100.0f));
+	scale_slider_z->setValue(200.0f * (std::log10(
+		scale_value->value()) - 1.0f));
+
+	mirror_x->setChecked(object_description.get_world_transformation(
+		).get_scale().x < 0.0f);
+	mirror_y->setChecked(object_description.get_world_transformation(
+		).get_scale().y < 0.0f);
+	mirror_z->setChecked(object_description.get_world_transformation(
+		).get_scale().z < 0.0f);
 
 	transparency_value->setValue(object_description.get_transparency() *
 		100.0f);
@@ -741,20 +784,550 @@ void MainWindow::update_rotation_dial(const int index)
 
 void MainWindow::update_scale()
 {
+	glm::vec3 scale;
+
 	scale_slider->blockSignals(true);
-	scale_slider->setValue(200.0f * (std::log10(scale_value->value()) - 1.0f));
+	scale_slider->setValue(200.0f * (std::log10(
+		scale_value->value()) - 1.0f));
 	scale_slider->blockSignals(false);
 
-	el_gl_widget->set_object_scale(scale_value->value() * 0.01f);
+	scale.x = scale_value->value() * 0.01f;
+	scale.y = scale_value->value() * 0.01f;
+	scale.z = scale_value->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
+}
+
+void MainWindow::update_scale_x()
+{
+	glm::vec3 scale;
+
+	scale_slider_x->blockSignals(true);
+	scale_slider_x->setValue(200.0f * (std::log10(
+		scale_value_x->value()) - 1.0f));
+	scale_slider_x->blockSignals(false);
+
+	scale.x = scale_value_x->value() * 0.01f;
+	scale.y = scale_value_y->value() * 0.01f;
+	scale.z = scale_value_z->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
+}
+
+void MainWindow::update_scale_y()
+{
+	glm::vec3 scale;
+
+	scale_slider_y->blockSignals(true);
+	scale_slider_y->setValue(200.0f * (std::log10(
+		scale_value_y->value()) - 1.0f));
+	scale_slider_y->blockSignals(false);
+
+	scale.x = scale_value_x->value() * 0.01f;
+	scale.y = scale_value_y->value() * 0.01f;
+	scale.z = scale_value_z->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
+}
+
+void MainWindow::update_scale_z()
+{
+	glm::vec3 scale;
+
+	scale_slider_z->blockSignals(true);
+	scale_slider_z->setValue(200.0f * (std::log10(
+		scale_value_z->value()) - 1.0f));
+	scale_slider_z->blockSignals(false);
+
+	scale.x = scale_value_x->value() * 0.01f;
+	scale.y = scale_value_y->value() * 0.01f;
+	scale.z = scale_value_z->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
 }
 
 void MainWindow::update_scale_slider()
 {
+	glm::vec3 scale;
+
 	scale_value->blockSignals(true);
-	scale_value->setValue(std::pow(10.0f, 1.0f + scale_slider->value() / 200.0f));
+	scale_value->setValue(std::pow(10.0f, 1.0f +
+		scale_slider->value() / 200.0f));
 	scale_value->blockSignals(false);
 
-	el_gl_widget->set_object_scale(scale_value->value() * 0.01f);
+	scale.x = scale_value->value() * 0.01f;
+	scale.y = scale_value->value() * 0.01f;
+	scale.z = scale_value->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
+}
+
+void MainWindow::update_scale_slider_x()
+{
+	glm::vec3 scale;
+
+	scale_value_x->blockSignals(true);
+	scale_value_x->setValue(std::pow(10.0f, 1.0f +
+		scale_slider_x->value() / 200.0f));
+	scale_value_x->blockSignals(false);
+
+	scale.x = scale_value_x->value() * 0.01f;
+	scale.y = scale_value_y->value() * 0.01f;
+	scale.z = scale_value_z->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
+}
+
+void MainWindow::update_scale_slider_y()
+{
+	glm::vec3 scale;
+
+	scale_value_y->blockSignals(true);
+	scale_value_y->setValue(std::pow(10.0f, 1.0f +
+		scale_slider_y->value() / 200.0f));
+	scale_value_y->blockSignals(false);
+
+	scale.x = scale_value_x->value() * 0.01f;
+	scale.y = scale_value_y->value() * 0.01f;
+	scale.z = scale_value_z->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
+}
+
+void MainWindow::update_scale_slider_z()
+{
+	glm::vec3 scale;
+
+	scale_value_z->blockSignals(true);
+	scale_value_z->setValue(std::pow(10.0f, 1.0f +
+		scale_slider_z->value() / 200.0f));
+	scale_value_z->blockSignals(false);
+
+	scale.x = scale_value_x->value() * 0.01f;
+	scale.y = scale_value_y->value() * 0.01f;
+	scale.z = scale_value_z->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
+}
+
+void MainWindow::update_mirror()
+{
+	glm::vec3 scale;
+
+	scale.x = scale_value_x->value() * 0.01f;
+	scale.y = scale_value_y->value() * 0.01f;
+	scale.z = scale_value_z->value() * 0.01f;
+
+	if (mirror_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirror_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirror_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_object_scale(scale);
+}
+
+void MainWindow::update_scales()
+{
+	glm::vec3 scale;
+
+	scales_slider->blockSignals(true);
+	scales_slider->setValue(200.0f * (std::log10(
+		scales_value->value()) - 1.0f));
+	scales_slider->blockSignals(false);
+
+	scale.x = scales_value->value() * 0.01f;
+	scale.y = scales_value->value() * 0.01f;
+	scale.z = scales_value->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
+}
+
+void MainWindow::update_scales_x()
+{
+	glm::vec3 scale;
+
+	scales_slider_x->blockSignals(true);
+	scales_slider_x->setValue(200.0f * (std::log10(
+		scales_value_x->value()) - 1.0f));
+	scales_slider_x->blockSignals(false);
+
+	scale.x = scales_value_x->value() * 0.01f;
+	scale.y = scales_value_y->value() * 0.01f;
+	scale.z = scales_value_z->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
+}
+
+void MainWindow::update_scales_y()
+{
+	glm::vec3 scale;
+
+	scales_slider_y->blockSignals(true);
+	scales_slider_y->setValue(200.0f * (std::log10(
+		scales_value_y->value()) - 1.0f));
+	scales_slider_y->blockSignals(false);
+
+	scale.x = scales_value_x->value() * 0.01f;
+	scale.y = scales_value_y->value() * 0.01f;
+	scale.z = scales_value_z->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
+}
+
+void MainWindow::update_scales_z()
+{
+	glm::vec3 scale;
+
+	scales_slider_z->blockSignals(true);
+	scales_slider_z->setValue(200.0f * (std::log10(
+		scales_value_z->value()) - 1.0f));
+	scales_slider_z->blockSignals(false);
+
+	scale.x = scales_value_x->value() * 0.01f;
+	scale.y = scales_value_y->value() * 0.01f;
+	scale.z = scales_value_z->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
+}
+
+void MainWindow::update_scales_slider()
+{
+	glm::vec3 scale;
+
+	scales_value->blockSignals(true);
+	scales_value->setValue(std::pow(10.0f, 1.0f +
+		scales_slider->value() / 200.0f));
+	scales_value->blockSignals(false);
+
+	scale.x = scales_value_x->value() * 0.01f;
+	scale.y = scales_value_y->value() * 0.01f;
+	scale.z = scales_value_z->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
+}
+
+void MainWindow::update_scales_slider_x()
+{
+	glm::vec3 scale;
+
+	scales_value_x->blockSignals(true);
+	scales_value_x->setValue(std::pow(10.0f, 1.0f +
+		scales_slider_x->value() / 200.0f));
+	scales_value_x->blockSignals(false);
+
+	scale.x = scales_value_x->value() * 0.01f;
+	scale.y = scales_value_y->value() * 0.01f;
+	scale.z = scales_value_z->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
+}
+
+void MainWindow::update_scales_slider_y()
+{
+	glm::vec3 scale;
+
+	scales_value_y->blockSignals(true);
+	scales_value_y->setValue(std::pow(10.0f, 1.0f +
+		scales_slider_y->value() / 200.0f));
+	scales_value_y->blockSignals(false);
+
+	scale.x = scales_value_x->value() * 0.01f;
+	scale.y = scales_value_y->value() * 0.01f;
+	scale.z = scales_value_z->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
+}
+
+void MainWindow::update_scales_slider_z()
+{
+	glm::vec3 scale;
+
+	scales_value_z->blockSignals(true);
+	scales_value_z->setValue(std::pow(10.0f, 1.0f +
+		scales_slider_z->value() / 200.0f));
+	scales_value_z->blockSignals(false);
+
+	scale.x = scales_value_x->value() * 0.01f;
+	scale.y = scales_value_y->value() * 0.01f;
+	scale.z = scales_value_z->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
+}
+
+void MainWindow::update_mirrors()
+{
+	glm::vec3 scale;
+
+	scale.x = scales_value_x->value() * 0.01f;
+	scale.y = scales_value_y->value() * 0.01f;
+	scale.z = scales_value_z->value() * 0.01f;
+
+	if (mirrors_x->isChecked())
+	{
+		scale.x = -scale.x;
+	}
+
+	if (mirrors_y->isChecked())
+	{
+		scale.y = -scale.y;
+	}
+
+	if (mirrors_z->isChecked())
+	{
+		scale.z = -scale.z;
+	}
+
+	el_gl_widget->set_objects_scale(scale);
 }
 
 void MainWindow::update_materials()
@@ -884,6 +1457,11 @@ void MainWindow::remove()
 			el_gl_widget->remove_object();
 			break;
 		case rt_particle:
+		case rt_decal:
+		case rt_lights:
+		case rt_objects:
+		case rt_particles:
+		case rt_decals:
 		case rt_none:
 			return;
 	}

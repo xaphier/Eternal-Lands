@@ -17,6 +17,8 @@
 #include "undo/terrainmapmodification.hpp"
 #include "undo/groundtilemodification.hpp"
 #include "undo/terrainvaluemodification.hpp"
+#include "undo/lightsmodification.hpp"
+#include "undo/objectsmodification.hpp"
 #include "scene.hpp"
 #include "codec/codecmanager.hpp"
 #include "logging.hpp"
@@ -71,6 +73,20 @@ namespace eternal_lands
 		m_undo.add(modification);
 	}
 
+	void Editor::change_objects(const ModificationType type,
+		const EditorObjectDescriptionVector &object_descriptions)
+	{
+		if (!add_needed(0, type))
+		{
+			return;
+		}
+
+		ModificationAutoPtr modification(new ObjectsModification(
+			object_descriptions, type, m_edit_id));
+
+		m_undo.add(modification);
+	}
+
 	void Editor::change_light(const ModificationType type,
 		const LightData &light_data)
 	{
@@ -81,6 +97,20 @@ namespace eternal_lands
 
 		ModificationAutoPtr modification(new LightModification(
 			light_data, type, m_edit_id));
+
+		m_undo.add(modification);
+	}
+
+	void Editor::change_lights(const ModificationType type,
+		const LightDataVector &light_datas)
+	{
+		if (!add_needed(0, type))
+		{
+			return;
+		}
+
+		ModificationAutoPtr modification(new LightsModification(
+			light_datas, type, m_edit_id));
 
 		m_undo.add(modification);
 	}
@@ -187,7 +217,7 @@ namespace eternal_lands
 
 		object_description.set_translation(position + translation);
 		object_description.set_rotation_angles(rotation);
-		object_description.set_scale(scale);
+		object_description.set_scale(glm::vec3(scale));
 		object_description.set_selection(selection);
 		object_description.set_name(mesh);
 		object_description.set_id(id);
@@ -537,7 +567,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Editor::set_object_scale(const Uint32 id, const float scale)
+	void Editor::set_object_scale(const Uint32 id, const glm::vec3 &scale)
 	{
 		EditorObjectDescription object_description;
 
@@ -638,6 +668,287 @@ namespace eternal_lands
 		}
 	}
 
+	void Editor::set_objects_blend(const Uint32Set &ids,
+		const BlendType blend)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_blend_changed, object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_blend(blend);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_transparency(const Uint32Set &ids,
+		const float transparency)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_transparency_changed,
+			object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_transparency(transparency);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_translation(const Uint32Set &ids,
+		const glm::vec3 &translation)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_translation_changed,
+			object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_translation(translation);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_rotation(const Uint32Set &ids,
+		const glm::vec3 &rotation)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_rotation_changed,
+			object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_rotation_angles(rotation);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_scale(const Uint32Set &ids,
+		const glm::vec3 &scale)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_scale_changed,
+			object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_scale(scale);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_selection(const Uint32Set &ids,
+		const SelectionType selection)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_selection_changed,
+			object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_selection(selection);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_walkable(const Uint32Set &ids,
+		const bool walkable)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_walkable_changed,
+			object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_walkable(walkable);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_materials(const Uint32Set &ids,
+		const StringVector &materials)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_materials_changed,
+			object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			if (check_default_materials(
+				object_descriptions[i].get_name(), materials))
+			{
+				object_descriptions[i].set_material_names(
+					StringVector());
+			}
+			else
+			{
+				object_descriptions[i].set_material_names(
+					materials);
+			}
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
 	void Editor::remove_light(const Uint32 id)
 	{
 		LightData light_data;
@@ -695,6 +1006,105 @@ namespace eternal_lands
 			light_data.set_color(color);
 
 			m_data.modify_light(light_data);
+		}
+	}
+
+	void Editor::set_lights_position(const Uint32Set &ids,
+		const glm::vec3 &position)
+	{
+		LightDataVector light_datas;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		light_datas.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_light(id, light_datas[index]);
+			index++;
+		}
+
+		change_lights(mt_lights_position_changed, light_datas);
+
+		for (i = 0; i < count; ++i)
+		{
+			light_datas[i].set_position(position);
+
+			m_data.modify_light(light_datas[i]);
+		}
+	}
+
+	void Editor::set_lights_radius(const Uint32Set &ids,
+		const float radius)
+	{
+		LightDataVector light_datas;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		light_datas.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_light(id, light_datas[index]);
+			index++;
+		}
+
+		change_lights(mt_lights_radius_changed, light_datas);
+
+		for (i = 0; i < count; ++i)
+		{
+			light_datas[i].set_radius(radius);
+
+			m_data.modify_light(light_datas[i]);
+		}
+	}
+
+	void Editor::set_lights_color(const Uint32Set &ids,
+		const glm::vec3 &color)
+	{
+		LightDataVector light_datas;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		light_datas.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_light(id, light_datas[index]);
+			index++;
+		}
+
+		change_lights(mt_lights_color_changed, light_datas);
+
+		for (i = 0; i < count; ++i)
+		{
+			light_datas[i].set_color(color);
+
+			m_data.modify_light(light_datas[i]);
 		}
 	}
 

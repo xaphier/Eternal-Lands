@@ -46,6 +46,7 @@ namespace eternal_lands
 			boost::array<FreeIds, 7> m_free_ids;
 			FreeIds m_free_light_ids;
 			FreeIds m_free_particle_ids;
+			FreeIds m_free_decal_ids;
 
 		public:
 			/**
@@ -71,6 +72,9 @@ namespace eternal_lands
 			Uint32 get_next_free_particle_id();
 			void free_particle_id(const Uint32 id);
 			void use_particle_id(const Uint32 id);
+			Uint32 get_next_free_decal_id();
+			void free_decal_id(const Uint32 id);
+			void use_decal_id(const Uint32 id);
 
 			FreeIds &get_free_object_ids(const IdType type)
 			{

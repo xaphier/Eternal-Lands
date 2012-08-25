@@ -45,10 +45,10 @@ namespace eternal_lands
 			 */
 			EditorObjectDescription(const glm::vec3 &translation,
 				const glm::vec3 &rotation_angles,
+				const glm::vec3 &scale,
 				const StringVector &material_names,
-				const String &name, const float scale,
-				const float transparency, const Uint32 id,
-				const SelectionType selection,
+				const String &name, const float transparency,
+				const Uint32 id, const SelectionType selection,
 				const BlendType blend, const bool walkable);
 
 			/**
@@ -58,9 +58,9 @@ namespace eternal_lands
 			void set_translation(const glm::vec3 &translation);
 			void set_rotation_angles(
 				const glm::vec3 &rotation_angles);
-			void set_scale(const float scale);
-			glm::vec3 get_translation() const;
-			float get_scale() const;
+			void set_scale(const glm::vec3 &scale);
+			const glm::vec3 &get_translation() const;
+			const glm::vec3 &get_scale() const;
 
 			inline const glm::vec3 &get_rotation_angles() const
 				noexcept
@@ -79,6 +79,9 @@ namespace eternal_lands
 			}
 
 	};
+
+	typedef std::vector<EditorObjectDescription>
+		EditorObjectDescriptionVector;
 
 }
 

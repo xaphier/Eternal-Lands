@@ -408,6 +408,7 @@ void ELGLWidget::initializeGL()
 	m_global_vars->set_use_multisample_shadows(false);
 	m_global_vars->set_effect_debug(false);
 	m_global_vars->set_use_scene_fbo(true);
+	m_global_vars->set_use_cpu_rasterizer(false);
 
 	m_editor.reset(new Editor(m_global_vars, m_file_system));
 	m_editor->set_z_near(1.5f);
@@ -621,9 +622,45 @@ void ELGLWidget::set_object_rotation(const glm::vec3 &rotation)
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::set_object_scale(const float scale)
+void ELGLWidget::set_object_scale(const glm::vec3 &scale)
 {
 	m_editor->set_object_scale(scale);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_objects_blend(const BlendType value)
+{
+	m_editor->set_objects_blend(value);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_objects_walkable(const bool value)
+{
+	m_editor->set_objects_walkable(value);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_objects_transparency(const float value)
+{
+	m_editor->set_objects_transparency(value);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_objects_translation(const glm::vec3 &translation)
+{
+	m_editor->set_objects_translation(translation);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_objects_rotation(const glm::vec3 &rotation)
+{
+	m_editor->set_objects_rotation(rotation);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_objects_scale(const glm::vec3 &scale)
+{
+	m_editor->set_objects_scale(scale);
 	emit can_undo(m_editor->get_can_undo());
 }
 
@@ -648,6 +685,24 @@ void ELGLWidget::set_light_radius(const double radius)
 void ELGLWidget::set_light_color(const glm::vec3 &color)
 {
 	m_editor->set_light_color(color);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_lights_position(const glm::vec3 &position)
+{
+	m_editor->set_lights_position(position);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_lights_radius(const double radius)
+{
+	m_editor->set_lights_radius(radius);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_lights_color(const glm::vec3 &color)
+{
+	m_editor->set_lights_color(color);
 	emit can_undo(m_editor->get_can_undo());
 }
 

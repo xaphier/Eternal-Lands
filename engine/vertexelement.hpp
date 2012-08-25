@@ -37,14 +37,14 @@ namespace eternal_lands
 		vst_bone_index = 5,
 		vst_extra_bone_weight = 6,
 		vst_extra_bone_index = 7,
-		vst_texture_coordinate_0 = 8,
-		vst_texture_coordinate_1 = 9,
-		vst_mesh_index = 10,
-		vst_morph_position = 11,
-		vst_morph_normal = 12,
-		vst_morph_tangent = 13,
-		vst_morph_texture_coordinate_0 = 14,
-		vst_morph_texture_coordinate_1 = 15
+		vst_texture_coordinate = 8,
+		vst_morph_position = 9,
+		vst_morph_normal = 10,
+		vst_morph_tangent = 11,
+		vst_morph_texture_coordinate = 12,
+		vst_world_matrix_0 = 13,
+		vst_world_matrix_1 = 14,
+		vst_world_matrix_2 = 15
 	};
 	/**
 	 * @}

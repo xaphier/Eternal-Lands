@@ -23,7 +23,7 @@ namespace eternal_lands
 		m_culling(true), m_depth_mask(true), m_depth_test(true),
 		m_scissor_test(false), m_sample_alpha_to_coverage(false),
 		m_use_restart_index(false), m_polygon_offset_fill(false),
-		m_stencil_test(false)
+		m_stencil_test(false), m_flip_back_face_culling(false)
 	{
 		m_program_used_texture_units.set();
 	}
@@ -258,6 +258,21 @@ namespace eternal_lands
 		}
 	}
 
+	void StateManager::set_flip_back_face_culling(
+		const bool flip_back_face_culling) noexcept
+	{
+		m_flip_back_face_culling = flip_back_face_culling;
+
+		if (m_flip_back_face_culling)
+		{
+			glCullFace(GL_FRONT);
+		}
+		else
+		{
+			glCullFace(GL_BACK);
+		}
+	}
+
 	bool StateManager::switch_texture_unit(const Uint16 texture_unit)
 	{
 		RANGE_CECK_MAX(texture_unit, m_textures.size(),
@@ -294,6 +309,7 @@ namespace eternal_lands
 		result |= switch_stencil_test(false);
 		result |= switch_sample_alpha_to_coverage(false);
 		result |= switch_use_restart_index(false);
+		result |= switch_flip_back_face_culling(false);
 		switch_texture_unit(0);
 		glCullFace(GL_BACK);
 

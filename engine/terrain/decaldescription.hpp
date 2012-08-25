@@ -26,7 +26,8 @@ namespace eternal_lands
 	{
 		private:
 			String m_texture;
-			glm::mat2x3 m_transform_matrix; 
+			glm::mat2x3 m_transform_matrix;
+			Uint32 m_id;
 
 		public:
 			inline DecalDescription()
@@ -34,8 +35,8 @@ namespace eternal_lands
 			}
 
 			inline DecalDescription(const String &texture,
-				const glm::mat2x3 &transform_matrix):
-				m_texture(texture),
+				const glm::mat2x3 &transform_matrix,
+				const Uint32 id): m_texture(texture),
 				m_transform_matrix(transform_matrix)
 			{
 			}
@@ -55,6 +56,11 @@ namespace eternal_lands
 				return m_transform_matrix;
 			}
 
+			inline Uint32 get_id() const noexcept
+			{
+				return m_id;
+			}
+
 			inline void set_texture(const String &texture) noexcept
 			{
 				m_texture = texture;
@@ -64,6 +70,11 @@ namespace eternal_lands
 				const glm::mat2x3 &transform_matrix) noexcept
 			{
 				m_transform_matrix = transform_matrix;
+			}
+
+			inline void set_id(const Uint32 id) noexcept
+			{
+				m_id = id;
 			}
 
 	};

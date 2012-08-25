@@ -24,7 +24,9 @@ BOOST_AUTO_TEST_CASE(default_creation)
 	BOOST_CHECK_CLOSE(transformation.get_translation().x, 0.0f, 0.001);
 	BOOST_CHECK_CLOSE(transformation.get_translation().y, 0.0f, 0.001);
 	BOOST_CHECK_CLOSE(transformation.get_translation().z, 0.0f, 0.001);
-	BOOST_CHECK_CLOSE(transformation.get_scale(), 1.0f, 0.001);
+	BOOST_CHECK_CLOSE(transformation.get_scale().x, 1.0f, 0.001);
+	BOOST_CHECK_CLOSE(transformation.get_scale().y, 1.0f, 0.001);
+	BOOST_CHECK_CLOSE(transformation.get_scale().z, 1.0f, 0.001);
 }
 
 BOOST_AUTO_TEST_CASE(rotate)
@@ -60,7 +62,9 @@ BOOST_AUTO_TEST_CASE(rotate)
 			0.001);
 		BOOST_CHECK_CLOSE(transformation.get_translation().z, 0.0f,
 			0.001);
-		BOOST_CHECK_CLOSE(transformation.get_scale(), 1.0f, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().x, 1.0f, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().y, 1.0f, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().z, 1.0f, 0.001);
 	}
 }
 
@@ -93,7 +97,9 @@ BOOST_AUTO_TEST_CASE(translate)
 			translation.y, 0.001);
 		BOOST_CHECK_CLOSE(transformation.get_translation().z,
 			translation.z, 0.001);
-		BOOST_CHECK_CLOSE(transformation.get_scale(), 1.0f, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().x, 1.0f, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().y, 1.0f, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().z, 1.0f, 0.001);
 	}
 }
 
@@ -104,12 +110,14 @@ BOOST_AUTO_TEST_CASE(scale)
 	boost::variate_generator<boost::mt19937&, boost::uniform_int<Sint32> >
 		random_int(rng, range);
 	el::Transformation transformation;
-	float scale;
+	glm::vec3 scale;
 	Uint16 i;
 
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
 	{
-		scale = random_int() * 0.01f;
+		scale.x = random_int() * 0.01f;
+		scale.y = random_int() * 0.01f;
+		scale.z = random_int() * 0.01f;
 
 		BOOST_CHECK_NO_THROW(transformation.set_scale(scale));
 
@@ -123,7 +131,12 @@ BOOST_AUTO_TEST_CASE(scale)
 			0.001);
 		BOOST_CHECK_CLOSE(transformation.get_translation().z, 0.0f,
 			0.001);
-		BOOST_CHECK_CLOSE(transformation.get_scale(), scale, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().x, scale.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().y, scale.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().z, scale.z,
+			0.001);
 	}
 }
 
@@ -135,8 +148,7 @@ BOOST_AUTO_TEST_CASE(all)
 		random_int(rng, range);
 	el::Transformation transformation;
 	glm::quat rotation;
-	glm::vec3 translation;
-	float scale;
+	glm::vec3 translation, scale;
 	Uint16 i;
 
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
@@ -148,7 +160,9 @@ BOOST_AUTO_TEST_CASE(all)
 		rotation.y = random_int() * 0.01f;
 		rotation.z = random_int() * 0.01f;
 		rotation.w = random_int() * 0.01f;
-		scale = random_int() * 0.01f;
+		scale.x = random_int() * 0.01f;
+		scale.y = random_int() * 0.01f;
+		scale.z = random_int() * 0.01f;
 
 		BOOST_CHECK_NO_THROW(transformation.set_translation(
 			translation));
@@ -169,7 +183,12 @@ BOOST_AUTO_TEST_CASE(all)
 			translation.y, 0.001);
 		BOOST_CHECK_CLOSE(transformation.get_translation().z,
 			translation.z, 0.001);
-		BOOST_CHECK_CLOSE(transformation.get_scale(), scale, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().x, scale.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().y, scale.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().z, scale.z,
+			0.001);
 	}
 }
 
@@ -189,8 +208,7 @@ BOOST_AUTO_TEST_CASE(transform)
 	glm::mat4 tmp_matrix;
 	glm::mat4x3 matrix;
 	glm::quat rotation;
-	glm::vec3 translation, angle, point, p0, p1, p2;
-	float scale;
+	glm::vec3 translation, scale, angle, point, p0, p1, p2, p3;
 	Uint32 i;
 
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); ++i)
@@ -204,7 +222,9 @@ BOOST_AUTO_TEST_CASE(transform)
 		angle.x = random_angle() * 0.01f;
 		angle.y = random_angle() * 0.0f;
 		angle.z = random_angle() * 0.01f;
-		scale = random_scale() * 0.01f;
+		scale.x = random_int() * 0.01f;
+		scale.y = random_int() * 0.01f;
+		scale.z = random_int() * 0.01f;
 
 		rotation = glm::quat();
 		rotation = glm::rotate(rotation, angle.z,
@@ -233,21 +253,31 @@ BOOST_AUTO_TEST_CASE(transform)
 			translation.y, 0.001);
 		BOOST_CHECK_CLOSE(transformation.get_translation().z,
 			translation.z, 0.001);
-		BOOST_CHECK_CLOSE(transformation.get_scale(), scale, 0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().x, scale.x,
+			0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().y, scale.y,
+			0.001);
+		BOOST_CHECK_CLOSE(transformation.get_scale().z, scale.z,
+			0.001);
 
-		tmp_matrix = glm::rotate(angle.z, glm::vec3(0.0f, 0.0f, 1.0f));
+		tmp_matrix = glm::translate(translation);
+		tmp_matrix = glm::rotate(tmp_matrix, angle.z,
+			glm::vec3(0.0f, 0.0f, 1.0f));
 		tmp_matrix = glm::rotate(tmp_matrix, angle.x,
 			glm::vec3(1.0f, 0.0f, 0.0f));
 		tmp_matrix = glm::rotate(tmp_matrix, angle.y,
 			glm::vec3(0.0f, 1.0f, 0.0f));
-		tmp_matrix = glm::scale(tmp_matrix, glm::vec3(scale));
-		tmp_matrix[3] = glm::vec4(translation, 1.0f);
+		tmp_matrix = glm::scale(tmp_matrix, scale);
 
 		matrix = glm::mat4x3(tmp_matrix);
 
 		p0 = matrix * glm::vec4(point, 1.0f);
 		p1 = transformation.get_matrix() * glm::vec4(point, 1.0f);
 		p2 = transformation.transform_point(point);
+		p3 = point;
+		p3 *= scale;
+		p3 = rotation * p3;
+		p3 += translation;
 
 		BOOST_CHECK_CLOSE(p0.x, p1.x, 7.5);
 		BOOST_CHECK_CLOSE(p0.y, p1.y, 7.5);
@@ -257,8 +287,20 @@ BOOST_AUTO_TEST_CASE(transform)
 		BOOST_CHECK_CLOSE(p0.y, p2.y, 7.5);
 		BOOST_CHECK_CLOSE(p0.z, p2.z, 7.5);
 
+		BOOST_CHECK_CLOSE(p0.x, p3.x, 7.5);
+		BOOST_CHECK_CLOSE(p0.y, p3.y, 7.5);
+		BOOST_CHECK_CLOSE(p0.z, p3.z, 7.5);
+
 		BOOST_CHECK_CLOSE(p1.x, p2.x, 7.5);
 		BOOST_CHECK_CLOSE(p1.y, p2.y, 7.5);
 		BOOST_CHECK_CLOSE(p1.z, p2.z, 7.5);
+
+		BOOST_CHECK_CLOSE(p1.x, p3.x, 7.5);
+		BOOST_CHECK_CLOSE(p1.y, p3.y, 7.5);
+		BOOST_CHECK_CLOSE(p1.z, p3.z, 7.5);
+
+		BOOST_CHECK_CLOSE(p2.x, p3.x, 7.5);
+		BOOST_CHECK_CLOSE(p2.y, p3.y, 7.5);
+		BOOST_CHECK_CLOSE(p2.z, p3.z, 7.5);
 	}
 }

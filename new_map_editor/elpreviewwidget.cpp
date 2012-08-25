@@ -83,6 +83,23 @@ void ELPreviewWidget::initializeGL()
 
 	m_global_vars->set_view_distance(250.0f);
 
+	m_global_vars->set_shadow_quality(sqt_no);
+	m_global_vars->set_shadow_map_size(2);
+	m_global_vars->set_clipmap_size(512);
+	m_global_vars->set_clipmap_world_size(8);
+	m_global_vars->set_clipmap_slices(1);
+	m_global_vars->set_fog(false);
+	m_global_vars->set_use_simd(true);
+	m_global_vars->set_use_s3tc_for_actors(true);
+	m_global_vars->set_use_block(true);
+	m_global_vars->set_use_in_out(true);
+	m_global_vars->set_use_functions(false);
+	m_global_vars->set_low_quality_terrain(false);
+	m_global_vars->set_use_multisample_shadows(false);
+	m_global_vars->set_effect_debug(false);
+	m_global_vars->set_use_scene_fbo(false);
+	m_global_vars->set_use_cpu_rasterizer(false);
+
 	m_scene = new Scene(m_global_vars, m_file_system);
 
 	m_scene->set_lights(true);
@@ -164,7 +181,7 @@ void ELPreviewWidget::update_object()
 				m_rotation.x(), m_rotation.y(),
 				m_rotation.z()));
 
-			world_transformation.set_scale(1.0f / max);
+			world_transformation.set_scale(glm::vec3(1.0f / max));
 			world_transformation.set_translation(
 				-bounding_box.get_center() / max);
 

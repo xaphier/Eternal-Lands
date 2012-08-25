@@ -48,8 +48,13 @@ namespace eternal_lands
 			void change_object(const ModificationType type,
 				const EditorObjectDescription
 					&object_description);
+			void change_objects(const ModificationType type,
+				const EditorObjectDescriptionVector
+					&object_descriptions);
 			void change_light(const ModificationType type,
 				const LightData &light_data);
+			void change_lights(const ModificationType type,
+				const LightDataVector &light_datas);
 			bool do_set_terrain_albedo_map(const String &str,
 				const Uint16 index, const Uint16 id);
 			void remove_ground_tile(const Uint32 id);
@@ -105,7 +110,7 @@ namespace eternal_lands
 			void set_object_rotation(const Uint32 id,
 				const glm::vec3 &rotation);
 			void set_object_scale(const Uint32 id,
-				const float scale);
+				const glm::vec3 &scale);
 			void set_object_blend(const Uint32 id,
 				const BlendType blend);
 			void set_object_selection(const Uint32 id,
@@ -114,12 +119,34 @@ namespace eternal_lands
 				const bool walkable);
 			void set_object_materials(const Uint32 id,
 				const StringVector &materials);
+			void set_objects_transparency(const Uint32Set &ids,
+				const float transparency);
+			void set_objects_translation(const Uint32Set &ids,
+				const glm::vec3 &translation);
+			void set_objects_rotation(const Uint32Set &ids,
+				const glm::vec3 &rotation);
+			void set_objects_scale(const Uint32Set &ids,
+				const glm::vec3 &scale);
+			void set_objects_blend(const Uint32Set &ids,
+				const BlendType blend);
+			void set_objects_selection(const Uint32Set &ids,
+				const SelectionType selection);
+			void set_objects_walkable(const Uint32Set &ids,
+				const bool walkable);
+			void set_objects_materials(const Uint32Set &ids,
+				const StringVector &materials);
 			void remove_light(const Uint32 id);
 			void set_light_position(const Uint32 id,
 				const glm::vec3 &position);
 			void set_light_radius(const Uint32 id,
 				const float radius);
 			void set_light_color(const Uint32 id,
+				const glm::vec3 &color);
+			void set_lights_position(const Uint32Set &ids,
+				const glm::vec3 &position);
+			void set_lights_radius(const Uint32Set &ids,
+				const float radius);
+			void set_lights_color(const Uint32Set &ids,
 				const glm::vec3 &color);
 			void get_object_description(const Uint32 id,
 				EditorObjectDescription &object_description)
@@ -287,6 +314,16 @@ namespace eternal_lands
 				return get_renderable() == rt_light;
 			}
 
+			inline bool get_objects_selected() const
+			{
+				return get_renderable() == rt_objects;
+			}
+
+			inline bool get_lights_selected() const
+			{
+				return get_renderable() == rt_lights;
+			}
+
 			inline bool get_object_selected(const Uint32 id) const
 			{
 				if (get_object_selected())
@@ -356,7 +393,7 @@ namespace eternal_lands
 				set_object_rotation(get_id(), rotation);
 			}
 
-			inline void set_object_scale(const float scale)
+			inline void set_object_scale(const glm::vec3 &scale)
 			{
 				assert(get_object_selected());
 				set_object_scale(get_id(), scale);
@@ -374,6 +411,60 @@ namespace eternal_lands
 			{
 				assert(get_object_selected());
 				set_object_materials(get_id(), materials);
+			}
+
+			inline void set_objects_blend(const BlendType blend)
+			{
+				assert(get_objects_selected());
+				set_objects_blend(get_ids(), blend);
+			}
+
+			inline void set_objects_walkable(const bool walkable)
+			{
+				assert(get_objects_selected());
+				set_objects_walkable(get_ids(), walkable);
+			}
+
+			inline void set_objects_transparency(
+				const float transparency)
+			{
+				assert(get_objects_selected());
+				set_objects_transparency(get_ids(),
+					transparency);
+			}
+
+			inline void set_objects_translation(
+				const glm::vec3 &translation)
+			{
+				assert(get_objects_selected());
+				set_objects_translation(get_ids(), translation);
+			}
+
+			inline void set_objects_rotation(
+				const glm::vec3 &rotation)
+			{
+				assert(get_objects_selected());
+				set_objects_rotation(get_ids(), rotation);
+			}
+
+			inline void set_objects_scale(const glm::vec3 &scale)
+			{
+				assert(get_objects_selected());
+				set_objects_scale(get_ids(), scale);
+			}
+
+			inline void set_objects_selection(
+				const SelectionType selection)
+			{
+				assert(get_objects_selected());
+				set_objects_selection(get_ids(), selection);
+			}
+
+			inline void set_objects_materials(
+				const StringVector &materials)
+			{
+				assert(get_objects_selected());
+				set_objects_materials(get_ids(), materials);
 			}
 
 			inline void remove_light()
@@ -399,6 +490,25 @@ namespace eternal_lands
 			{
 				assert(get_light_selected());
 				set_light_color(get_id(), color);
+			}
+
+			inline void set_lights_position(
+				const glm::vec3 &position)
+			{
+				assert(get_lights_selected());
+				set_lights_position(get_ids(), position);
+			}
+
+			inline void set_lights_radius(const float radius)
+			{
+				assert(get_lights_selected());
+				set_lights_radius(get_ids(), radius);
+			}
+
+			inline void set_lights_color(const glm::vec3 &color)
+			{
+				assert(get_lights_selected());
+				set_lights_color(get_ids(), color);
 			}
 
 			inline void set_random_translation(const bool value,
@@ -483,6 +593,11 @@ namespace eternal_lands
 			inline Uint32 get_id() const
 			{
 				return m_data.get_id();
+			}
+
+			inline Uint32Set get_ids() const
+			{
+				return m_data.get_ids();
 			}
 
 			inline RenderableType get_renderable() const
