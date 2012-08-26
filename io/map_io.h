@@ -72,20 +72,22 @@ typedef struct
 	char selection;		/**< the selection mode used for the object */
 	char transparency;	/**< the transparency used for the object */
 	
-	float r,g,b;   /**< red, green and blue color values of the object */
-
+//	float r,g,b;   /**< red, green and blue color values of the object */
     /** @name Scaling of the object3d 
      *  Will be used in the future
      * @{ */
-	float scale;
+	float x_scale;
+	float y_scale;
+	float z_scale;
     /** @} */
+
 	int material_index;
 	int material_count;
 	int id;
 	int instance_id;
 	char walkable;	/**< inidcator if the object is walkable or not. Used in the map editor for automated walkmap generation. */
 
-	char reserved[3]; /**< reserved for future expansions. */
+	char reserved[7]; /**< reserved for future expansions. */
 }object3d_io;
 
 /**

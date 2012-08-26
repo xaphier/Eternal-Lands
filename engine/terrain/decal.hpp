@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "boundedobject.hpp"
 
 /**
  * @file
@@ -22,7 +23,7 @@
 namespace eternal_lands
 {
 
-	class Decal: public boost::noncopyable
+	class Decal: public BoundedObject
 	{
 		private:
 			TextureSharedPtr m_texture;

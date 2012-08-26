@@ -937,7 +937,7 @@ namespace eternal_lands
 			writer->write_u32_le(0);
 			writer->write_u8(object_it->second.get_walkable());
 
-			for (i = 0; i < 3; ++i)
+			for (i = 0; i < 7; ++i)
 			{
 				writer->write_u8(0);
 			}
