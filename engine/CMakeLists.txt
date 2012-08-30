@@ -3,6 +3,10 @@ project(elengine)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(angelscript/include)
 
+if ((${GPA_FOUND} MATCHES "TRUE") AND (${BUILD_GPA} MATCHES "ON"))
+include_directories(${GPA_INCLUDE_DIR})
+endif ((${GPA_FOUND} MATCHES "TRUE") AND (${BUILD_GPA} MATCHES "ON"))
+
 # project options
 set(${PROJECT_NAME}_MAJOR_VERSION 0)
 set(${PROJECT_NAME}_MINOR_VERSION 9)
@@ -128,6 +132,10 @@ target_link_libraries(elengine xz)
 target_link_libraries(elengine zip)
 target_link_libraries(elengine lz4)
 target_link_libraries(elengine ${ZLIB_LIBRARIES})
+
+if ((${GPA_FOUND} MATCHES "TRUE") AND (${BUILD_GPA} MATCHES "ON"))
+target_link_libraries(elengine ${GPA_LIBRARY})
+endif ((${GPA_FOUND} MATCHES "TRUE") AND (${BUILD_GPA} MATCHES "ON"))
 
 if (PCHSupport_FOUND AND BUILD_PCH)
 	ADD_PRECOMPILED_HEADER(elengine prerequisites.hpp)

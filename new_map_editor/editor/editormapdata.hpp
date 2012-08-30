@@ -15,7 +15,7 @@
 #include "prerequisites.hpp"
 #include "editorobjectdescription.hpp"
 #include "imagevalue.hpp"
-#include "terrainvalue.hpp"
+#include "displacmentvalue.hpp"
 #include "height.hpp"
 #include "terraineditor.hpp"
 #include "abstractmaploader.hpp"
@@ -112,20 +112,19 @@ namespace eternal_lands
 			void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height);
 			void set_heights(const HeightVector &heights);
-			void set_terrain_values(
-				const TerrainValueVector &terrain_values);
+			void set_terrain_displacment_values(
+				const DisplacmentValueVector
+					&displacment_values);
+			void set_terrain_blend_values(
+				const ImageValueVector &blend_values);
 			void set_terrain_albedo_map(const String &name,
 				const Uint16 index);
 			void set_terrain_blend_map(const String &name,
 				const Uint16 index);
-			void set_terrain_vector_map(const String &name);
+			void set_terrain_displacment_map(const String &name);
 			void set_terrain_dudv_map(const String &name);
 			const String &get_terrain_albedo_map(
 				const Uint16 index) const;
-			const String &get_terrain_blend_map(const Uint16 index)
-				const;
-			const String &get_terrain_vector_map() const;
-			const String &get_terrain_dudv_map() const;
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
 			void set_view_matrix(const glm::mat4 &view_matrix);
@@ -158,31 +157,61 @@ namespace eternal_lands
 			void save(const String &file_name) const;
 			void draw_selection(const glm::uvec4 &selection_rect);
 
-			inline void get_terrain_values(const glm::uvec2 &vertex,
+			inline void get_terrain_displacment_values(
+				const glm::uvec2 &vertex,
 				const glm::vec2 &size,
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
-				TerrainValueVector &terrain_values) const
+				DisplacmentValueVector &displacment_values)
+				const
 			{
-				m_terrain_editor.get_terrain_values(vertex,
+				m_terrain_editor.get_displacment_values(vertex,
 					size, attenuation_size, attenuation,
-					shape, terrain_values);
+					shape, displacment_values);
 			}
 
-			inline void change_terrain_values(const glm::vec3 &data,
-				const glm::bvec3 &mask, const glm::vec2 &size,
-				const glm::uvec2 &vertex,
+			inline void change_terrain_displacment_values(
+				const glm::vec3 &data, const glm::bvec3 &mask,
+				const glm::vec2 &size, const glm::uvec2 &vertex,
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
 				const BrushEffectType effect,
-				TerrainValueVector &terrain_values) const
+				DisplacmentValueVector &displacment_values)
+				const
 			{
-				m_terrain_editor.change_terrain_values(data,
-					mask, size, vertex, attenuation_size,
-					attenuation, shape, effect,
-					terrain_values);
+				m_terrain_editor.change_displacment_values(
+					data, mask, size, vertex,
+					attenuation_size, attenuation, shape,
+					effect, displacment_values);
+			}
+
+			inline void get_terrain_blend_values(
+				const glm::uvec2 &vertex, const glm::vec2 &size,
+				const float attenuation_size,
+				const BrushAttenuationType attenuation,
+				const BrushShapeType shape,
+				ImageValueVector &blend_values) const
+			{
+				m_terrain_editor.get_blend_values(vertex,
+					size, attenuation_size, attenuation,
+					shape, blend_values);
+			}
+
+			inline void change_terrain_blend_values(
+				const glm::vec2 &size, const glm::uvec2 &vertex,
+				const float attenuation_size, const float data,
+				const BrushAttenuationType attenuation,
+				const BrushShapeType shape,
+				const BrushEffectType effect,
+				const int layer,
+				ImageValueVector &blend_values) const
+			{
+				m_terrain_editor.change_blend_values(size,
+					vertex, attenuation_size, data,
+					attenuation, shape, effect, layer,
+					blend_values);
 			}
 
 			inline glm::uvec2 get_vertex(

@@ -207,6 +207,7 @@ namespace eternal_lands
 	class AbstractNodeVisitor;
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
+	class AbstractRenderTarget;
 	class AbstractTask;
 	class AbstractTerrainManager;
 	class AbstractWriteMemory;
@@ -369,6 +370,7 @@ namespace eternal_lands
 	SHARED_PTR(AbstractMesh);
 	SHARED_PTR(AbstractReadMemory);
 	SHARED_PTR(AbstractReadWriteMemory);
+	SHARED_PTR(AbstractRenderTarget);
 	SHARED_PTR(AbstractTerrainManager);
 	SHARED_PTR(AbstractWriteMemory);
 	SHARED_PTR(Actor);

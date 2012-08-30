@@ -399,7 +399,7 @@ namespace eternal_lands
 	void Scene::build_shadow_map()
 	{
 		Uint32 shadow_map_width, shadow_map_height, shadow_map_size;
-		Uint16 mipmaps, shadow_map_count;
+		Uint16 mipmaps, shadow_map_count, samples;
 		TextureTargetType target;
 		TextureFormatType format;
 		bool depth_buffer;
@@ -423,6 +423,13 @@ namespace eternal_lands
 		}
 
 		shadow_map_count = get_scene_view().get_shadow_map_count();
+		samples = 0;
+
+		if (get_global_vars()->get_use_multisample_shadows())
+		{
+			samples = 4;
+		}
+
 		target = ttt_texture_2d_array;				
 		format = tft_r32f;
 		depth_buffer = true;
@@ -431,6 +438,7 @@ namespace eternal_lands
 		{
 			shadow_map_count = 0;
 			mipmaps = 0;
+			samples = 0;
 			target = ttt_texture_2d;
 			format = tft_depth32;
 			depth_buffer = false;
@@ -439,17 +447,16 @@ namespace eternal_lands
 		m_shadow_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
 				String(UTF8("shadow")), shadow_map_width,
-				shadow_map_height, depth_buffer);
+				shadow_map_height, samples, depth_buffer);
 
 		m_shadow_texture = boost::make_shared<Texture>(
-			String(UTF8("shadow")));
+			String(UTF8("shadow")), shadow_map_width,
+			shadow_map_height, shadow_map_count, mipmaps, 0,
+			format, target);
 
-		m_shadow_texture->set_target(target);
-		m_shadow_texture->set_format(format);
 		m_shadow_texture->set_wrap_s(twt_clamp);
 		m_shadow_texture->set_wrap_t(twt_clamp);
 		m_shadow_texture->set_wrap_r(twt_clamp);
-		m_shadow_texture->set_mipmap_count(mipmaps);
 		m_shadow_texture->init(shadow_map_width, shadow_map_height,
 			shadow_map_count, mipmaps);
 
@@ -474,10 +481,12 @@ namespace eternal_lands
 
 	void Scene::build_terrain_map()
 	{
+		Uint32 size;
 		Uint16 mipmaps;
 		TextureTargetType target;
 		TextureFormatType format;
 
+		size = get_global_vars()->get_clipmap_size();
 		mipmaps = 0;
 
 		if (get_global_vars()->get_opengl_3_0())
@@ -500,30 +509,23 @@ namespace eternal_lands
 
 		m_clipmap.rebuild(m_map->get_terrain_size(),
 			get_global_vars()->get_view_distance(),
-			get_global_vars()->get_clipmap_world_size(),
-			get_global_vars()->get_clipmap_size(),
+			get_global_vars()->get_clipmap_world_size(), size,
 			get_global_vars()->get_clipmap_slices());
 
 		m_clipmap_frame_buffer.reset();
 		m_clipmap_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
-				String(UTF8("terrain")),
-				get_global_vars()->get_clipmap_size(),
-				get_global_vars()->get_clipmap_size(),
-				false);
+				String(UTF8("terrain")), size, size, 0, false);
 
 		m_clipmap_texture = boost::make_shared<Texture>(
-			String(UTF8("terrain")));
+			String(UTF8("terrain")), size, size,
+			m_clipmap.get_slices(), mipmaps, 0, format, target);
 
-		m_clipmap_texture->set_target(target);
-		m_clipmap_texture->set_format(format);
 		m_clipmap_texture->set_wrap_s(twt_clamp);
 		m_clipmap_texture->set_wrap_t(twt_clamp);
 		m_clipmap_texture->set_wrap_r(twt_clamp);
-		m_clipmap_texture->set_mipmap_count(mipmaps);
-		m_clipmap_texture->init(get_global_vars()->get_clipmap_size(),
-			get_global_vars()->get_clipmap_size(),
-			m_clipmap.get_slices(), mipmaps);
+		m_clipmap_texture->init(size, size, m_clipmap.get_slices(),
+			mipmaps);
 
 		m_clipmap_frame_buffer->bind();
 		m_clipmap_frame_buffer->attach(m_clipmap_texture, fbat_color_0,
@@ -1223,7 +1225,7 @@ namespace eternal_lands
 		get_scene_view().set_shadow_view(index);
 
 		draw_terrain(m_shadow_terrains[index], ept_shadow, false);
-#if	1
+
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_shadow_objects[index].get_objects())
 		{
@@ -1231,20 +1233,10 @@ namespace eternal_lands
 				object.get_visibility_mask(), ept_shadow, 1,
 				object.get_distance());
 		}
-#else
-		Uint32 i;
-		for (i = 0; i < get_scene_view().get_shadow_map_count(); ++i)
-		{
-			BOOST_FOREACH(const RenderObjectData &object,
-				m_shadow_objects[i].get_objects())
-			{
-				draw_object(object.get_object(),
-					object.get_visibility_mask(),
-					ept_shadow, 1, object.get_distance());
-			}
-		}
-#endif
+
 		update_program_vars_id();
+
+		m_shadow_frame_buffer->blit_buffers();
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1270,8 +1262,6 @@ namespace eternal_lands
 		{
 			draw_shadow(i);
 		}
-
-		m_shadow_frame_buffer->unbind();
 
 		unbind_all();
 
@@ -1608,6 +1598,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
+		m_clipmap_frame_buffer->blit_buffers();
 		m_clipmap_frame_buffer->unbind();
 
 		DEBUG_CHECK_GL_ERROR();
@@ -2245,27 +2236,25 @@ namespace eternal_lands
 		};
 
 		m_light_position_texture = boost::make_shared<Texture>(
-			String(UTF8("light position")));
+			String(UTF8("light position")), /* width */ count,
+			/* height */ 1, /* depth */ 1, /* mipmaps */ 0,
+			/* samples */ 0, tft_rgba32f, ttt_texture_1d);
 
-		m_light_position_texture->set_target(ttt_texture_1d);
-		m_light_position_texture->set_format(tft_rgba32f);
 		m_light_position_texture->set_wrap_s(twt_clamp);
 		m_light_position_texture->set_wrap_t(twt_clamp);
 		m_light_position_texture->set_wrap_r(twt_clamp);
-		m_light_position_texture->set_mipmap_count(0);
 		m_light_position_texture->set_mag_filter(tft_nearest);
 		m_light_position_texture->set_min_filter(tft_nearest);
 		m_light_position_texture->set_mipmap_filter(tmt_none);
 
 		m_light_color_texture = boost::make_shared<Texture>(
-			String(UTF8("light color")));
+			String(UTF8("light color")), /* width */ count,
+			/* height */ 1, /* depth */ 1, /* mipmaps */ 0,
+			/* samples */ 0, color_format, ttt_texture_1d);
 
-		m_light_color_texture->set_target(ttt_texture_1d);
-		m_light_color_texture->set_format(color_format);
 		m_light_color_texture->set_wrap_s(twt_clamp);
 		m_light_color_texture->set_wrap_t(twt_clamp);
 		m_light_color_texture->set_wrap_r(twt_clamp);
-		m_light_color_texture->set_mipmap_count(0);
 		m_light_color_texture->set_mag_filter(tft_nearest);
 		m_light_color_texture->set_min_filter(tft_nearest);
 		m_light_color_texture->set_mipmap_filter(tmt_none);
@@ -2315,30 +2304,30 @@ namespace eternal_lands
 
 	void Scene::update_light_index_texture()
 	{
+		TextureFormatType format;
+
 		if (get_global_vars()->get_light_system() == lst_default)
 		{
 			m_light_index_texture.reset();
 			return;
 		}
 
-		m_light_index_texture = boost::make_shared<Texture>(
-			String(UTF8("light index")));
-
-		m_light_index_texture->set_target(ttt_texture_2d);
-
 		if (get_global_vars()->get_light_system() == lst_lidr_x5)
 		{
-			m_light_index_texture->set_format(tft_rgb10_a2);
+			format = tft_rgb10_a2;
 		}
 		else
 		{
-			m_light_index_texture->set_format(tft_rgba8);
+			format = tft_rgba8;
 		}
+
+		m_light_index_texture = boost::make_shared<Texture>(
+			String(UTF8("light index")), get_view_port().z,
+			get_view_port().w, 1, 0, 0, format, ttt_texture_2d);
 
 		m_light_index_texture->set_wrap_s(twt_clamp);
 		m_light_index_texture->set_wrap_t(twt_clamp);
 		m_light_index_texture->set_wrap_r(twt_clamp);
-		m_light_index_texture->set_mipmap_count(0);
 		m_light_index_texture->set_mag_filter(tft_nearest);
 		m_light_index_texture->set_min_filter(tft_nearest);
 		m_light_index_texture->set_mipmap_filter(tmt_none);
@@ -2421,6 +2410,7 @@ namespace eternal_lands
 
 		set_view_port();
 
+		m_scene_frame_buffer->blit_buffers();
 		m_scene_frame_buffer->blit_to_back_buffer(rect, 0, true,
 			true, false);
 		m_scene_frame_buffer->unbind();
@@ -2469,17 +2459,15 @@ namespace eternal_lands
 		m_scene_frame_buffer = get_scene_resources(
 			).get_framebuffer_builder()->build(
 				String(UTF8("scene")), view_port.z,
-				view_port.w, true);
+				view_port.w, 0, true);
 
 		m_scene_texture = boost::make_shared<Texture>(
-			String(UTF8("scene")));
+			String(UTF8("scene")), view_port.z, view_port.w, 1,
+			mipmaps, 0, tft_rgba8, ttt_texture_2d);
 
-		m_scene_texture->set_target(ttt_texture_2d);
-		m_scene_texture->set_format(tft_rgba8);
 		m_scene_texture->set_wrap_s(twt_clamp);
 		m_scene_texture->set_wrap_t(twt_clamp);
 		m_scene_texture->set_wrap_r(twt_clamp);
-		m_scene_texture->set_mipmap_count(mipmaps);
 		m_scene_texture->init(view_port.z, view_port.w, 0,
 			mipmaps);
 

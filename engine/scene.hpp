@@ -377,6 +377,11 @@ namespace eternal_lands
 				return m_lights;
 			}
 
+			inline Uint64 get_frame_id() const noexcept
+			{
+				return m_frame_id;
+			}
+
 			inline SceneResources &get_scene_resources() noexcept
 			{
 				return m_scene_resources;

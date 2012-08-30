@@ -284,11 +284,11 @@ void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 	updateGL();
 }
 
-void ELGLWidget::change_terrain_values(const QVector3D &data,
+void ELGLWidget::change_terrain_displacment_values(const QVector3D &data,
 	const QVector2D &size, const float attenuation_size, const int mask,
 	const int attenuation, const int shape, const int effect)
 {
-	m_editor->change_terrain_values(m_world_position,
+	m_editor->change_terrain_displacment_values(m_world_position,
 		glm::vec3(data.x(), data.y(), data.z()),
 		glm::bvec3((mask & 1) != 0, (mask & 2) != 0, (mask & 4) != 0),
 		glm::vec2(size.x(), size.y()), attenuation_size, attenuation,
@@ -297,11 +297,14 @@ void ELGLWidget::change_terrain_values(const QVector3D &data,
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::terrain_layer_edit(const int terrain_layer_index,
-	const float strength, const float radius, const int brush_type)
+void ELGLWidget::change_terrain_blend_values(const QVector2D &size,
+	const float attenuation_size, const float data,
+	const int attenuation, const int shape, const int effect,
+	const int layer)
 {
-	m_editor->terrain_layer_edit(m_world_position, terrain_layer_index,
-		strength, radius, brush_type);
+	m_editor->change_terrain_blend_values(m_world_position,
+		glm::vec2(size.x(), size.y()), attenuation_size, data,
+		attenuation, shape, effect, layer);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -422,6 +425,7 @@ void ELGLWidget::update_ortho()
 {
 	m_editor->set_ortho(glm::vec4(-m_aspect, m_aspect, -1.0f,
 		1.0f) * m_zoom);
+	m_editor->set_z_near(-10.0f);
 }
 
 void ELGLWidget::resizeGL(int width, int height)
@@ -466,7 +470,7 @@ void ELGLWidget::paintGL()
 
 	pos = m_pos;
 
-	dir = rotate * dir * 40.0f;
+	dir = rotate * dir * m_zoom;
 
 	if (m_camera_roll == 90)
 	{
@@ -849,24 +853,6 @@ QStringList ELGLWidget::get_terrain_albedo_maps() const
 		).c_str());
 
 	return result;
-}
-
-QString ELGLWidget::get_terrain_height_map() const
-{
-	return QString::fromUtf8(m_editor->get_terrain_vector_map().get(
-		).c_str());
-}
-
-QString ELGLWidget::get_terrain_blend_map() const
-{
-	return QString::fromUtf8(m_editor->get_terrain_blend_map(0).get(
-		).c_str());
-}
-
-QString ELGLWidget::get_terrain_dudv_map() const
-{
-	return QString::fromUtf8(m_editor->get_terrain_dudv_map().get(
-		).c_str());
 }
 
 void ELGLWidget::new_map(const int map_size_x, const int map_size_y, const int blend_image_size_x,

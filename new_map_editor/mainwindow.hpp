@@ -81,6 +81,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void save_dirs_settings(QSettings &settings);
 		void load_dirs_settings(QSettings &settings);
 		void terrain_vector_edit();
+		void terrain_layer_edit();
 		void save_nodes(const QString &file_name);
 		void load_nodes(const QString &file_name);
 		bool check_save_nodes();

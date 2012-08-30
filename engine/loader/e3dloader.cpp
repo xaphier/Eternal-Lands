@@ -195,8 +195,6 @@ namespace eternal_lands
 			mesh_data_tool->build_normal(false);
 		}
 
-		mesh_data_tool->build_tangent(false, true);
-
 		materials.clear();
 		load_materials(material_count, material_size, material_offset,
 			materials);

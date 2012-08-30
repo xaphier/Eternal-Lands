@@ -614,7 +614,8 @@ namespace eternal_lands
 		{
 			load_mesh(name, tmp.m_mesh_data_tool, tmp.m_materials);
 
-			tmp.m_mesh_data_tool->build_min_max_boxes();
+			tmp.m_mesh_data_tool->build_min_max_boxes();	
+			tmp.m_mesh_data_tool->build_tangent(false, true);
 
 			m_mesh_data_cache[name] = tmp;
 

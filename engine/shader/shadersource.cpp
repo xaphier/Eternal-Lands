@@ -79,40 +79,6 @@ namespace eternal_lands
 			sort_shader_source_data);
 	}
 
-	void ShaderSource::load_types_xml(const xmlNodePtr node)
-	{
-		ShaderSourceTypeSet types;
-		xmlNodePtr it;
-
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("types")) != 0)
-		{
-			return;
-		}
-
-		m_types.clear();
-
-		if (!XmlUtil::has_children(node, true))
-		{
-			return;
-		}
-
-		it = XmlUtil::children(node, true);
-
-		do
-		{
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("type")) == 0)
-			{
-				types.insert(
-					ShaderSourceUtil::get_shader_source(
-						XmlUtil::get_string_value(it)));
-			}
-		}
-		while (XmlUtil::next(it, true));
-
-		set_types(types);
-	}
-
 	void ShaderSource::load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
@@ -139,9 +105,10 @@ namespace eternal_lands
 				set_name(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("types")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("type")) == 0)
 			{
-				load_types_xml(it);
+				set_type(ShaderSourceUtil::get_shader_source(
+					XmlUtil::get_string_value(it)));
 			}
 		}
 		while (XmlUtil::next(it, true));
@@ -187,15 +154,8 @@ namespace eternal_lands
 
 		writer->write_element(UTF8("name"), get_name());
 
-		writer->start_element(UTF8("types"));
-
-		BOOST_FOREACH(const ShaderSourceType type, get_types())
-		{
-			writer->write_element(UTF8("type"),
-				ShaderSourceUtil::get_str(type));
-		}
-
-		writer->end_element();
+		writer->write_element(UTF8("type"), ShaderSourceUtil::get_str(
+			get_type()));
 
 		writer->start_element(UTF8("shader_source_datas"));
 
@@ -297,12 +257,7 @@ namespace eternal_lands
 	{
 		StringStream str;
 
-		str << get_name();
-
-		BOOST_FOREACH(const ShaderSourceType type, get_types())
-		{
-			str << UTF8("_") << type;
-		}
+		str << get_name() << UTF8("_") << get_type();
 
 		return String(str.str());
 	}

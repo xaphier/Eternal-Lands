@@ -16,7 +16,7 @@
 #include "undo/heightmodification.hpp"
 #include "undo/terrainmapmodification.hpp"
 #include "undo/groundtilemodification.hpp"
-#include "undo/terrainvaluemodification.hpp"
+#include "undo/displacmentvaluemodification.hpp"
 #include "undo/lightsmodification.hpp"
 #include "undo/objectsmodification.hpp"
 #include "scene.hpp"
@@ -1120,112 +1120,66 @@ namespace eternal_lands
 		m_data.get_light(id, light_data);
 	}
 
-	void Editor::change_terrain_values(const glm::vec3 &position,
-		const glm::vec3 &data, const glm::bvec3 &mask,
-		const glm::vec2 &size, const float attenuation_size,
-		const int attenuation, const int shape, const int effect)
+	void Editor::change_terrain_displacment_values(
+		const glm::vec3 &position, const glm::vec3 &data,
+		const glm::bvec3 &mask, const glm::vec2 &size,
+		const float attenuation_size, const int attenuation,
+		const int shape, const int effect)
 	{
-		TerrainValueVector terrain_values;
+		DisplacmentValueVector displacment_values;
 		glm::uvec2 vertex;
 
 		vertex = m_data.get_vertex(position);
 
-		m_data.get_terrain_values(vertex, size, attenuation_size,
+		m_data.get_terrain_displacment_values(vertex, size,
+			attenuation_size,
 			static_cast<BrushAttenuationType>(attenuation),
-			static_cast<BrushShapeType>(shape), terrain_values);
+			static_cast<BrushShapeType>(shape),
+			displacment_values);
 
-		ModificationAutoPtr modification(new TerrainValueModification(
-			terrain_values, get_edit_id()));
+		ModificationAutoPtr modification(
+			new DisplacmentValueModification(displacment_values,
+			get_edit_id()));
 
 		m_undo.add(modification);
 
-		m_data.change_terrain_values(data, mask, size, vertex,
+		m_data.change_terrain_displacment_values(data, mask, size, vertex,
 			attenuation_size,
 			static_cast<BrushAttenuationType>(attenuation),
 			static_cast<BrushShapeType>(shape),
 			static_cast<BrushEffectType>(effect),
-			terrain_values);
+			displacment_values);
 
-		m_data.set_terrain_values(terrain_values);
+		m_data.set_terrain_displacment_values(displacment_values);
 	}
 
-	void Editor::terrain_layer_edit(const glm::vec3 &position,
-		const Uint32 index, const float strength, const float radius,
-		const int brush_type)
+	void Editor::change_terrain_blend_values(const glm::vec3 &position,
+		const glm::vec2 &size, const float attenuation_size,
+		const float data, const int attenuation, const int shape,
+		const int effect, const int layer)
 	{
-	}
+		ImageValueVector blend_values;
+		glm::uvec2 vertex;
 
-/*
-	void Editor::export_blend_image(const String &file_name,
-		const String &type) const
-	{
-		SceneResources::get_codec_manager().save_image(*m_blend_image,
-			file_name, type);
-	}
+		vertex = m_data.get_vertex(position);
 
-	void Editor::export_terrain_map(const String &file_name,
-		const String &type) const
-	{
-		ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-		ImageSharedPtr image;
+		m_data.get_terrain_blend_values(vertex, size, attenuation_size,
+			static_cast<BrushAttenuationType>(attenuation),
+			static_cast<BrushShapeType>(shape), blend_values);
 
-		get_scene().get_scene_page_read_only(get_page_id(),
-			scene_page_read_only);
-
-		export_terrain(image, scene_page_read_only);
-
-		SceneResources::get_codec_manager().save_image(*image, file_name,
-			type);
-	}
-
-	void Editor::import_terrain_map(const String &file_name)
-	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		ImageSharedPtr image;
-
-		image = SceneResources::get_codec_manager().load_image(file_name,
-			tft_l8);
-
-		get_scene().get_scene_page_read_write(get_page_id(),
-			scene_page_read_write);
-#warning "Missing implementation"
-
-		ModificationAutoPtr modification(new HeightMapModification(
-			scene_page_read_write->get_terrain_height_map(), get_page_id(),
-			true));
-
-		import_terrain(image, scene_page_read_write);
+//		ModificationAutoPtr modification(new ImageValueModification(
+//			blend_values, get_edit_id()));
 
 //		m_undo.add(modification);
 
-		get_scene().set_view_changed();
+		m_data.change_terrain_blend_values(size, vertex,
+			attenuation_size, data,
+			static_cast<BrushAttenuationType>(attenuation),
+			static_cast<BrushShapeType>(shape),
+			static_cast<BrushEffectType>(effect), layer,
+			blend_values);
+
+		m_data.set_terrain_blend_values(blend_values);
 	}
-
-	void Editor::set_terrain(const MaterialData &terrain_material,
-		const String &image_name, const Uint16Array2 blend_image_size)
-	{
-		ImageSharedPtr image;
-		Uint32Array3 size;
-
-		size[0] = blend_image_size[0];
-		size[1] = blend_image_size[1];
-		size[2] = 1;
-
-		m_blend_image = boost::make_shared<Image>("blend.dds", false,
-			tft_rgba8, size, 0);
-
-		m_texture.reset(new ImageTexture(m_blend_image));
-		m_texture->set_wrap_r(twt_clamp);
-		m_texture->set_wrap_s(twt_clamp);
-		m_texture->set_wrap_t(twt_clamp);
-
-		image = SceneResources::get_codec_manager().load_image(image_name,
-			tft_l8);
-
-		get_scene().set_terrain(image, terrain_material, m_texture);
-
-		m_undo.clear();
-	}
-*/
 
 }

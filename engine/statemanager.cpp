@@ -376,91 +376,15 @@ namespace eternal_lands
 		return result;
 	}
 
-	void StateManager::log_texture_units()
-	{
-		Uint32 i, count;
-		GLint id;
-
-		count = m_textures.size();
-
-		for (i = 0; i < count; ++i)
-		{
-			if (m_textures[i].get() == nullptr)
-			{
-				continue;
-			}
-/*
-			LOG_ERROR(UTF8("Texture '%1%' with id %2% bound to "
-				"unit %3%."), m_textures[i]->get_name() %
-				m_textures[i]->get_texture_id() % i);
-*/
-		}
-
-		for (i = 0; i < count; ++i)
-		{
-			if (m_textures[i].get() == nullptr)
-			{
-				continue;
-			}
-
-			switch_texture_unit(i);
-
-			id = 0;
-
-			glGetIntegerv(GL_TEXTURE_BINDING_2D, &id);
-
-//			LOG_ERROR(UTF8("Bound texture id: %1%"), id);
-			assert(static_cast<GLuint>(id) ==
-				m_textures[i]->get_texture_id());
-		}
-	}
-
-	void StateManager::gl_error_check()
-	{
-		GLint gl_error;
-
-		gl_error = glGetError();
-
-		if (gl_error != GL_NO_ERROR)
-		{
-/*			LOG_ERROR(UTF8("GL error %1%: '%2%'"),
-				gl_error % reinterpret_cast<const char*>(
-					gluErrorString(gl_error)));
-			log_texture_units();
-			m_program->validate();
-			LOG_ERROR(UTF8("Mesh '%1%' used."), m_mesh->get_name());
-*/		}
-
-		if (!m_program->validate())
-		{
-			LOG_ERROR(lt_glsl_program,
-				UTF8("Used texture units %1%."),
-				m_used_texture_units);
-			LOG_ERROR(lt_glsl_program,
-				UTF8("Program used texture units %1%."),
-				m_program_used_texture_units);
-			log_texture_units();
-			m_program->log_validate_status();
-			LOG_ERROR(lt_glsl_program, UTF8("Mesh '%1%' used."),
-				m_mesh->get_name());
-		}
-	}
-
 	void StateManager::draw(const Uint32 index, const Uint32 instances)
 	{
 		m_mesh->draw(index, instances);
-#ifndef	NDEBUG
-		gl_error_check();
-#endif	/* NDEBUG */
 	}
 
 	void StateManager::draw(const MeshDrawData &draw_data,
 		const Uint32 instances)
 	{
 		m_mesh->draw(draw_data, instances, m_mesh->get_primitive());
-#ifndef	NDEBUG
-		gl_error_check();
-#endif	/* NDEBUG */
 	}
 
 }

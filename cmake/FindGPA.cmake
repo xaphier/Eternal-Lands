@@ -1,0 +1,30 @@
+# - Find CPUPrefAPI
+# Find the native GPUPrefAPI includes and library
+#
+#  GPA_INCLUDE_DIR - where to find GPUPerfAPI.h, etc.
+#  GPA_LIBRARIES   - List of libraries when using GPUPrefAPI.
+#  GPA_FOUND       - True if GPUPrefAPI found.
+
+
+IF (GPA_INCLUDE_DIR)
+  # Already in cache, be silent
+  SET(GPA_FIND_QUIETLY TRUE)
+ENDIF (GPA_INCLUDE_DIR)
+
+FIND_PATH(GPA_INCLUDE_DIR GPUPerfAPI.h)
+
+SET(GPA_NAMES GPUPerfAPIGL)
+FIND_LIBRARY(GPA_LIBRARY NAMES ${GPA_NAMES} )
+
+# handle the QUIETLY and REQUIRED arguments and set GPA_FOUND to TRUE if 
+# all listed variables are TRUE
+INCLUDE(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(GPA DEFAULT_MSG GPA_LIBRARY GPA_INCLUDE_DIR)
+
+IF(GPA_FOUND)
+  SET( GPA_LIBRARIES ${GPA_LIBRARY} )
+ELSE(GPA_FOUND)
+  SET( GPA_LIBRARIES )
+ENDIF(GPA_FOUND)
+
+MARK_AS_ADVANCED( GPA_LIBRARY GPA_INCLUDE_DIR )

@@ -487,6 +487,11 @@ CHECK_GL_ERRORS();
 	change_minimap();
 
 	check_options();
+
+#ifdef	USE_GPU_COUNTER
+	engine_open_gl_context_gpu_counters();
+	engine_log_counters_gpu_counters();
+#endif	// USE_GPU_COUNTER
 }
 
 #ifdef	GL_EXTENSION_CHECK

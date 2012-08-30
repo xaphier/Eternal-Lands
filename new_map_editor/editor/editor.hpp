@@ -60,15 +60,6 @@ namespace eternal_lands
 			void remove_ground_tile(const Uint32 id);
 			static StringVector get_ground_tile_materials(
 				const Uint8 index);
-/*			void terrain_edit(const Uint16Array2 &vertex,
-				const float strength, const float radius,
-				const EditorBrushType brush_type);
-			void blend_image_edit(const Uint16Array2 &vertex,
-				const Uint32 index, const float strength,
-				const float radius,
-				const EditorBrushType brush_type,
-				const Uint16 id);
-*/
 			bool add_needed(const Uint32 id,
 				const ModificationType type);
 
@@ -91,9 +82,6 @@ namespace eternal_lands
 			bool get_dungeon() const;
 			void set_ambient(const glm::vec3 &color);
 			const glm::vec3 &get_ambient() const;
-			void terrain_layer_edit(const glm::vec3 &point,
-				const Uint32 index, const float strength,
-				const float radius, const int brush_type);
 			void ground_tile_edit(const glm::vec3 &point,
 				const Uint8 tile);
 			void water_tile_edit(const glm::vec3 &point,
@@ -158,12 +146,19 @@ namespace eternal_lands
 			void export_terrain_map(const String &file_name,
 				const String &type) const;
 			void import_terrain_map(const String &file_name);
-			void change_terrain_values(const glm::vec3 &position,
+			void change_terrain_displacment_values(
+				const glm::vec3 &position,
 				const glm::vec3 &data, const glm::bvec3 &mask,
 				const glm::vec2 &size,
 				const float attenuation_size,
 				const int attenuation, const int shape,
 				const int effect);
+			void change_terrain_blend_values(
+				const glm::vec3 &position,
+				const glm::vec2 &size,
+				const float attenuation_size, const float data,
+				const int attenuation, const int shape,
+				const int effect, const int layer);
 			bool check_default_materials(const String &name,
 				const StringVector &materials) const;
 
@@ -186,22 +181,6 @@ namespace eternal_lands
 				const Uint16 index) const
 			{
 				return m_data.get_terrain_albedo_map(index);
-			}
-
-			inline const String &get_terrain_vector_map() const
-			{
-				return m_data.get_terrain_vector_map();
-			}
-
-			inline const String &get_terrain_blend_map(
-				const Uint16 index) const
-			{
-				return m_data.get_terrain_blend_map(index);
-			}
-
-			inline const String &get_terrain_dudv_map() const
-			{
-				return m_data.get_terrain_dudv_map();
 			}
 
 			inline StringVector get_debug_modes() const

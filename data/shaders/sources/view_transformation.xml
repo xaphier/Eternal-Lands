@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>default</name>
- <types>
-  <type>view_transformation</type>
- </types>
+ <type>view_transformation</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>

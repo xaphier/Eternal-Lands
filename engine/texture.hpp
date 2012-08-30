@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "textureformatutil.hpp"
 #include "texturetargetutil.hpp"
+#include "abstractrendertarget.hpp"
 
 /**
  * @file
@@ -23,23 +24,6 @@
  */
 namespace eternal_lands
 {
-
-	/**
-	 * Types of cube map faces.
-	 * @{
-	 */
-	enum CubeMapFaceType
-	{
-		cmft_negative_x = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-		cmft_negative_y = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-		cmft_negative_z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
-		cmft_positive_x = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-		cmft_positive_y = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-		cmft_positive_z = GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-	};
-	/**
-	 * @}
-	 */
 
 	/**
 	 * Types of texture filter modes.
@@ -87,17 +71,13 @@ namespace eternal_lands
 	 *
 	 * @c class for textures.
 	 */
-	class Texture: public boost::noncopyable
+	class Texture: public AbstractRenderTarget
 	{
 		private:
-			const String m_name;
 			GLfloat m_anisotropic_filter;
 			GLuint m_texture_id;
-			Uint32 m_width;
-			Uint32 m_height;
 			Uint32 m_depth;
 			Uint32 m_size;
-			TextureFormatType m_format;
 			TextureTargetType m_target;
 			TextureFilterType m_mag_filter;
 			TextureFilterType m_min_filter;
@@ -107,7 +87,6 @@ namespace eternal_lands
 			TextureWrapType m_wrap_r;
 			Uint16 m_mipmap_count;
 			Uint16 m_used_mipmaps;
-			Uint16 m_samples;
 			bool m_rebuild;
 
 			void set_texture_image_1d(const Uint32 width,
@@ -230,41 +209,36 @@ namespace eternal_lands
 				return m_used_mipmaps;
 			}
 
-			inline void set_width(const Uint32 width)
-			{
-				m_rebuild = m_width != width;
-				m_width = width;
-			}
-
-			inline void set_height(const Uint32 height)
-			{
-				m_rebuild = m_height != height;
-				m_height = height;
-			}
-
 			inline void set_depth(const Uint32 depth)
 			{
-				m_rebuild = m_depth != depth;
 				m_depth = depth;
 			}
 
-			inline void set_samples(const Uint32 samples)
+			inline void set_target(const TextureTargetType value)
+				noexcept
 			{
-				m_rebuild = m_samples != samples;
-				m_samples = samples;
+				m_target = value;
 			}
 
-		public:
+			inline void set_mipmap_count(const Uint16 value)
+				noexcept
+			{
+				m_mipmap_count = value;
+			}
+
 			inline GLuint get_texture_id() const
 			{
 				return m_texture_id;
 			}
 
 		public:
-			Texture(const String &name);
+			Texture(const String &name, const Uint32 width,
+				const Uint32 height, const Uint32 depth,
+				const Uint16 mipmaps, const Uint16 samples,
+				const TextureFormatType format,
+				const TextureTargetType target);
 			~Texture() noexcept;
 			void unload() noexcept;
-			static String get_str(const CubeMapFaceType value);
 			static String get_str(const TextureFilterType value);
 			static String get_str(const TextureMipmapType value);
 			static String get_str(const TextureWrapType value);
@@ -280,11 +254,6 @@ namespace eternal_lands
 			inline Uint64 get_size() const noexcept
 			{
 				return m_size;
-			}
-
-			inline TextureFormatType get_format() const noexcept
-			{
-				return m_format;
 			}
 
 			inline TextureTargetType get_target() const noexcept
@@ -324,11 +293,6 @@ namespace eternal_lands
 				return m_mipmap_count;
 			}
 
-			inline Uint16 get_samples() const noexcept
-			{
-				return m_samples;
-			}
-
 			inline TextureWrapType get_wrap_s() const noexcept
 			{
 				return m_wrap_s;
@@ -344,16 +308,6 @@ namespace eternal_lands
 				return m_wrap_r;
 			}
 
-			inline Uint32 get_width() const noexcept
-			{
-				return m_width;
-			}
-
-			inline Uint32 get_height() const noexcept
-			{
-				return m_height;
-			}
-
 			inline Uint32 get_depth() const noexcept
 			{
 				return m_depth;
@@ -363,20 +317,6 @@ namespace eternal_lands
 			{
 				return TextureFormatUtil::get_gl_format(
 					get_format());
-			}
-
-			inline void set_format(const TextureFormatType value)
-				noexcept
-			{
-				m_rebuild = m_format != value;
-				m_format = value;
-			}
-
-			inline void set_target(const TextureTargetType value)
-				noexcept
-			{
-				m_rebuild = m_target != value;
-				m_target = value;
 			}
 
 			inline void set_mag_filter(
@@ -401,12 +341,6 @@ namespace eternal_lands
 				noexcept
 			{
 				m_anisotropic_filter = value;
-			}
-
-			inline void set_mipmap_count(const Uint16 value)
-				noexcept
-			{
-				m_mipmap_count = value;
 			}
 
 			inline void set_wrap_s(const TextureWrapType value)
@@ -458,14 +392,16 @@ namespace eternal_lands
 			void attach(const GLenum attachment,
 				const Uint32 level);
 
-			inline const String &get_name() const noexcept
+			inline void change_format(const TextureFormatType value)
+				noexcept
 			{
-				return m_name;
+				m_rebuild = true;
+				set_format(value);
 			}
+
 
 	};
 
-	OutStream& operator<<(OutStream &str, const CubeMapFaceType value);
 	OutStream& operator<<(OutStream &str, const TextureFilterType value);
 	OutStream& operator<<(OutStream &str, const TextureMipmapType value);
 	OutStream& operator<<(OutStream &str, const TextureWrapType value);

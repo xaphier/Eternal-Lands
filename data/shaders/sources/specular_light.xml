@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>specular</name>
- <types>
-  <type>fragment_light</type>
- </types>
+ <type>fragment_light</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>

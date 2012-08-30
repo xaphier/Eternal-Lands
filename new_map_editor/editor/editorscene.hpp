@@ -74,6 +74,7 @@ namespace eternal_lands
 			void set_terrain(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
+			void set_terrain(const ImageSharedPtr &blend_map);
 			void draw_selection(const glm::uvec4 &selection_rect);
 
 			inline void deselect_object() noexcept

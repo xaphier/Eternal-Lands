@@ -59,6 +59,7 @@ namespace eternal_lands
 				const bool depth, const bool stencil) override;
 			virtual void set_draw_buffer(const Uint16 index,
 				const bool enabled);
+			virtual void blit_buffers();
 
 	};
 

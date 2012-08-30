@@ -1995,7 +1995,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "use_s3tc_for_actors", "uatc", &engine_use_s3tc_for_actors, change_engine_use_s3tc_for_actors, engine_true, "Use s3tc for actors", "Use s3 texture compression for actors.", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_multisample_shadows", "ums", &engine_use_multisample_shadows, change_engine_use_multisample_shadows, engine_true, "Use multisample shadows", "Use multisample shadows for better quality.", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_scene_fbo", "usf", &engine_use_scene_fbo, change_engine_use_scene_fbo, engine_true, "Use scene fbo", "Use scene framebuffer object and blit it with framebuffer.", TROUBLESHOOT);
-	add_var(OPT_MULTI_NO_SAVE, "effect_debug", "effect_debug", &engine_effect_debug, change_engine_effect_debug, 0, "effect", "effect used for rendering", TROUBLESHOOT, "default", "debug_uv", "debug_depth", "debug_alpha", "debug_albedo", "debug_normal", "debug_shadow", "debug_specular", "debug_emissive", "debug_diffuse_light", "debug_specular_light", "debug_packed_light_index", "debug_light_index", 0);
+	add_var(OPT_MULTI_NO_SAVE, "effect_debug", "effect_debug", &engine_effect_debug, change_engine_effect_debug, 0, "effect", "effect used for rendering", TROUBLESHOOT, "default", "debug_uv", "debug_depth", "debug_alpha", "debug_albedo", "debug_normal", "debug_tbn_matrix_0", "debug_tbn_matrix_1", "debug_tbn_matrix_2", "debug_shadow", "debug_specular", "debug_emissive", "debug_diffuse_light", "debug_specular_light", "debug_packed_light_index", "debug_light_index", 0);
 
 	// DEBUGTAB TAB
 #ifdef DEBUG

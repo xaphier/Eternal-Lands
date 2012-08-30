@@ -41,14 +41,13 @@ namespace eternal_lands
 
 		image_script->execute(image, 0, 0, m_context);
 
-		texture = boost::make_shared<Texture>(name);
+		texture = boost::make_shared<Texture>(name, image->get_width(),
+			image->get_height(), image->get_depth(), 0, 0,
+			image->get_texture_format(), ttt_texture_3d);
 
 		texture->set_wrap_s(twt_clamp);
 		texture->set_wrap_t(twt_clamp);
 		texture->set_wrap_r(twt_clamp);
-		texture->set_target(ttt_texture_3d);
-		texture->set_format(image->get_texture_format());
-		texture->set_mipmap_count(0);
 		texture->set_image(image);
 
 		return texture;

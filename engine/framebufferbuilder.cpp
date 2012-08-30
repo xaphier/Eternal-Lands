@@ -8,6 +8,7 @@
 #include "framebufferbuilder.hpp"
 #include "framebuffer/extsimpleframebuffer.hpp"
 #include "framebuffer/simpleframebuffer.hpp"
+#include "framebuffer/multisampleframebuffer.hpp"
 #include "globalvars.hpp"
 #include "exceptions.hpp"
 
@@ -26,8 +27,15 @@ namespace eternal_lands
 
 	AbstractFrameBufferSharedPtr FrameBufferBuilder::build(
 		const String &name, const Uint32 width, const Uint32 height,
-		const bool depth_buffer)
+		const Uint16 samples, const bool depth_buffer)
 	{
+		if (get_global_vars()->get_opengl_3_0() && (samples > 1))
+		{
+			return AbstractFrameBufferSharedPtr(
+				new MultiSampleFrameBuffer(name, width, height,
+					samples, depth_buffer));
+		}
+
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			return AbstractFrameBufferSharedPtr(

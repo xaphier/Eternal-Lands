@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>material_glow_color</name>
- <types>
-  <type>main_effect</type>
- </types>
+ <type>main_effect</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>

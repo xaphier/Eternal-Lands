@@ -55,6 +55,10 @@
 #include "engine/script/imagescript.hpp"
 #include "engine/abstractlogger.hpp"
 #include "engine/abstractmaploader.hpp"
+#ifdef	USE_GPU_COUNTER
+#include "engine/gpucounters.hpp"
+#include <GL/glx.h>
+#endif	// USE_GPU_COUNTER
 
 using namespace eternal_lands;
 
@@ -71,6 +75,9 @@ namespace
 	GlobalVarsSharedPtr global_vars;
 	FileSystemSharedPtr file_system;
 	boost::shared_ptr<ScriptEngine> script_engine;
+#ifdef	USE_GPU_COUNTER
+	boost::scoped_ptr<GpuCounters> gpu_counters;
+#endif	// USE_GPU_COUNTER
 
 	String get_string(const char* str,
 		const Uint32 len = std::numeric_limits<Uint32>::max())
@@ -769,6 +776,9 @@ extern "C" void engine_draw_scene()
 {
 	glm::vec2 mouse_position;
 	Uint32 id;
+#ifdef	USE_GPU_COUNTER
+	Uint32 i, count;
+#endif	// USE_GPU_COUNTER
 
 	TRY_BLOCK
 
@@ -777,7 +787,33 @@ extern "C" void engine_draw_scene()
 	glEnable(GL_CULL_FACE);
 	glDisable(GL_ALPHA_TEST);
 
+#ifdef	USE_GPU_COUNTER
+	if ((scene->get_frame_id() % 50) == 0)
+	{
+		gpu_counters->begin_session();
+		count = gpu_counters->get_required_passes();
+
+		for (i = 0; i < count; ++i)
+		{
+			gpu_counters->begin_pass();
+			gpu_counters->begin_sample(0);
+
+			scene->draw();
+
+			gpu_counters->end_sample();
+			gpu_counters->end_pass();
+		}
+
+		gpu_counters->end_session();
+	}
+	else
+	{
+		scene->draw();
+	}
+	gpu_counters->print_counters();
+#else	// USE_GPU_COUNTER
 	scene->draw();
+#endif	// USE_GPU_COUNTER
 
 	pick_frame++;
 
@@ -1850,4 +1886,41 @@ extern "C" void engine_init_console_logging()
 	logger.reset(new ConsoleLogger());
 
 	register_logger(logger);
+}
+
+extern "C" void engine_init_gpu_counters()
+{
+#ifdef	USE_GPU_COUNTER
+	gpu_counters.reset(new GpuCounters());
+#endif	// USE_GPU_COUNTER
+}
+
+extern "C" void engine_finish_gpu_counters()
+{
+#ifdef	USE_GPU_COUNTER
+	gpu_counters.reset();
+#endif	// USE_GPU_COUNTER
+}
+
+extern "C" void engine_open_gl_context_gpu_counters()
+{
+#ifdef	USE_GPU_COUNTER
+	gpu_counters->open_gl_context((void*)glXGetCurrentContext());
+	gpu_counters->init_counters();
+	gpu_counters->enable_counters();
+#endif	// USE_GPU_COUNTER
+}
+
+extern "C" void engine_close_gl_context_gpu_counters()
+{
+#ifdef	USE_GPU_COUNTER
+	gpu_counters->close_gl_context();
+#endif	// USE_GPU_COUNTER
+}
+
+extern "C" void engine_log_counters_gpu_counters()
+{
+#ifdef	USE_GPU_COUNTER
+	gpu_counters->log_counters();
+#endif	// USE_GPU_COUNTER
 }

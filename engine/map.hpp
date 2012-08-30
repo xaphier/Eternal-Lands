@@ -173,6 +173,7 @@ namespace eternal_lands
 			void set_terrain(const ImageSharedPtr &vector_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
+			void set_blend(const ImageSharedPtrVector &blend_maps);
 			bool get_terrain() const;
 			void build_clipmap_material(
 				const ClipmapData &clipmap_data);

@@ -25,13 +25,13 @@ namespace eternal_lands
 		{
 			if (GLEW_EXT_packed_depth_stencil)
 			{
-				m_render_buffer.reset(new ExtRenderBuffer(
+				m_render_buffer.reset(new ExtRenderBuffer(name,
 					get_width(), get_height(),
 					tft_depth24_stencil8));
 			}
 			else
 			{
-				m_render_buffer.reset(new ExtRenderBuffer(
+				m_render_buffer.reset(new ExtRenderBuffer(name,
 					get_width(), get_height(),
 					tft_depth32));
 
@@ -252,14 +252,13 @@ namespace eternal_lands
 			return;
 		}
 
-		m_render_buffer->bind_to_framebuffer(GL_DEPTH_ATTACHMENT_EXT);
+		m_render_buffer->attach(GL_DEPTH_ATTACHMENT_EXT);
 
 		depth = true;
 
 		if (GLEW_EXT_packed_depth_stencil)
 		{
-			m_render_buffer->bind_to_framebuffer(
-				GL_STENCIL_ATTACHMENT_EXT);
+			m_render_buffer->attach(GL_STENCIL_ATTACHMENT_EXT);
 
 			stencil = true;
 		}
@@ -276,6 +275,10 @@ namespace eternal_lands
 		{
 			glDrawBuffer(GL_NONE);
 		}
+	}
+
+	void ExtSimpleFrameBuffer::blit_buffers()
+	{
 	}
 
 }

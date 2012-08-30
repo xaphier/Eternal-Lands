@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>static</name>
- <types>
-  <type>world_tangent_transformation</type>
- </types>
+ <type>world_tangent_transformation</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -39,7 +37,7 @@ world_tangent = tangent;
 world_position = vec4(world_position, 1.0) * world_transformation;
 world_normal = normalize(world_normal * mat3(world_transformation));
 world_tangent.xyz = normalize(world_tangent.xyz * mat3(world_transformation));
-</source>
+world_tangent.w = step(0.0, world_tangent.w) * 2.0 - 1.0;</source>
    <version>120</version>
   </shader_source_data>
  </shader_source_datas>

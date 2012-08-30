@@ -11,9 +11,10 @@
 namespace eternal_lands
 {
 
-	ExtRenderBuffer::ExtRenderBuffer(const Uint32 width,
-		const Uint32 height, const TextureFormatType format):
-		m_id(0), m_width(width), m_height(height), m_format(format)
+	ExtRenderBuffer::ExtRenderBuffer(const String &name,
+		const Uint32 width, const Uint32 height,
+		const TextureFormatType format): AbstractRenderTarget(name,
+			width, height, 0, format), m_id(0)
 	{
 		assert(GLEW_EXT_framebuffer_object);
 
@@ -34,7 +35,14 @@ namespace eternal_lands
 		}
 	}
 
-	void ExtRenderBuffer::bind_to_framebuffer(const GLenum attachment)
+	void ExtRenderBuffer::attach(const GLenum attachment,
+		const CubeMapFaceType face, const Uint32 level,
+		const Uint32 layer)
+	{
+		attach(attachment);
+	}
+
+	void ExtRenderBuffer::attach(const GLenum attachment)
 	{
 		glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment,
 			GL_RENDERBUFFER_EXT, m_id);

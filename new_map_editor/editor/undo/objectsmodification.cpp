@@ -75,7 +75,7 @@ namespace eternal_lands
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:
 			case mt_dungeon_changed:
-			case mt_terrain_value_changed:
+			case mt_displacment_value_changed:
 			case mt_height_changed:
 			case mt_blend_values_changed:
 				return false;

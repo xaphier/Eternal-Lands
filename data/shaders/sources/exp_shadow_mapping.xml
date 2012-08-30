@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>esm</name>
- <types>
-  <type>shadow_mapping</type>
- </types>
+ <type>shadow_mapping</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -33,6 +31,7 @@
     </parameter>
    </parameters>
    <source>vec3 uv;
+vec2 ddx, ddy;
 float occluder, light_distance;
 int i;
 
@@ -41,13 +40,19 @@ const float over_darkening_factor = 5.0;
 
 shadow = 1.0;
 
+ddx = shadow_uv_ddx_ddy.xy;
+ddy = shadow_uv_ddx_ddy.zw;
+
 for (i = 0; i &lt; shadow_maps_count; ++i)
 {
 	uv = shadow_uvs[i].xyz / shadow_uvs[i].w;
 
 	if (all(lessThan(abs(uv - vec3(0.5)), vec3(0.5))))
 	{
-		occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), shadow_uv_ddx_ddy.xy, shadow_uv_ddx_ddy.zw).r;
+		ddx /= exp2(i);
+		ddy /= exp2(i);
+
+		occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), ddx, ddy).r;
 
 		light_distance = shadow_view_distance[i] + light_shadow_bias;
 

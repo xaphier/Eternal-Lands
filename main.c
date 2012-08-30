@@ -407,6 +407,10 @@ int main(int argc, char **argv)
 	gargc=argc;
 	gargv=argv;
 
+#ifdef	USE_GPU_COUNTER
+	engine_init_gpu_counters();
+#endif	// USE_GPU_COUNTER
+
 	// do basic initialization
 #ifdef	OLC
 	olc_init();
@@ -439,6 +443,10 @@ int main(int argc, char **argv)
 	init_stuff();
 
 	start_rendering();
+
+#ifdef	USE_GPU_COUNTER
+	engine_finish_gpu_counters();
+#endif	// USE_GPU_COUNTER
 #ifdef MEMORY_DEBUG
 	elm_cleanup();
 #endif //MEMORY_DEBUG
@@ -448,6 +456,10 @@ int main(int argc, char **argv)
 	exit_global_vars();
 	exit_file_system();
 	exit_logging();
+
+#ifdef	USE_GPU_COUNTER
+	engine_finish_gpu_counters();
+#endif	// USE_GPU_COUNTER
 
 #ifndef WINDOWS
 	// attempt to restart if requested

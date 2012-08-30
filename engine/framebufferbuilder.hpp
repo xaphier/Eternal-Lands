@@ -41,7 +41,8 @@ namespace eternal_lands
 			~FrameBufferBuilder() noexcept;
 			AbstractFrameBufferSharedPtr build(
 				const String &name, const Uint32 width,
-				const Uint32 height, const bool depth_buffer);
+				const Uint32 height, const Uint16 samples,
+				const bool depth_buffer);
 
 	};
 

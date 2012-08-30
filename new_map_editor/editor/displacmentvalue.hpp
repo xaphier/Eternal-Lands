@@ -1,5 +1,5 @@
 /****************************************************************************
- *            terrainvalue.hpp
+ *            displacmentvalue.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -18,7 +18,7 @@
 namespace eternal_lands
 {
 
-	class TerrainValue
+	class DisplacmentValue
 	{
 		private:
 			Uint32 m_value;
@@ -26,7 +26,7 @@ namespace eternal_lands
 			Uint16 m_y;
 
 		public:
-			inline TerrainValue(const Uint16 x, const Uint16 y):
+			inline DisplacmentValue(const Uint16 x, const Uint16 y):
 				m_x(x), m_y(y)
 			{
 				m_value = 0;
@@ -73,9 +73,9 @@ namespace eternal_lands
 
 	};
 
-	BOOST_STATIC_ASSERT(sizeof(TerrainValue) == 8);
+	BOOST_STATIC_ASSERT(sizeof(DisplacmentValue) == 8);
 
-	VECTOR(TerrainValue);
+	VECTOR(DisplacmentValue);
 
 }
 

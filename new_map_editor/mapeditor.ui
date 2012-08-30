@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1113</width>
+    <width>879</width>
     <height>1021</height>
    </rect>
   </property>
@@ -57,7 +57,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1113</width>
+     <width>879</width>
      <height>24</height>
     </rect>
    </property>
@@ -163,6 +163,7 @@
    <addaction name="separator"/>
    <addaction name="action_add_objects"/>
    <addaction name="action_add_lights"/>
+   <addaction name="action_add_decals"/>
    <addaction name="action_terrain_mode"/>
    <addaction name="action_delete_mode"/>
    <addaction name="separator"/>
@@ -473,7 +474,7 @@
      <item>
       <widget class="QStackedWidget" name="properties">
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="object_page">
         <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -574,14 +575,14 @@
          <item>
           <widget class="QToolBox" name="toolBox_2">
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>250</width>
+              <width>265</width>
               <height>547</height>
              </rect>
             </property>
@@ -746,6 +747,14 @@
             </layout>
            </widget>
            <widget class="QWidget" name="page_13">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>198</width>
+              <height>168</height>
+             </rect>
+            </property>
             <attribute name="label">
              <string>Rotation</string>
             </attribute>
@@ -759,6 +768,12 @@
                 <size>
                  <width>10</width>
                  <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>25</width>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="text">
@@ -791,6 +806,12 @@
                 <size>
                  <width>30</width>
                  <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="wrapping">
@@ -827,6 +848,12 @@
                  <height>0</height>
                 </size>
                </property>
+               <property name="maximumSize">
+                <size>
+                 <width>25</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="text">
                 <string>y</string>
                </property>
@@ -857,6 +884,12 @@
                 <size>
                  <width>30</width>
                  <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="wrapping">
@@ -896,6 +929,12 @@
                  <height>0</height>
                 </size>
                </property>
+               <property name="maximumSize">
+                <size>
+                 <width>25</width>
+                 <height>16777215</height>
+                </size>
+               </property>
                <property name="text">
                 <string>z</string>
                </property>
@@ -926,6 +965,12 @@
                 <size>
                  <width>30</width>
                  <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
                 </size>
                </property>
                <property name="wrapping">
@@ -973,6 +1018,14 @@
             </layout>
            </widget>
            <widget class="QWidget" name="page_14">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>247</width>
+              <height>295</height>
+             </rect>
+            </property>
             <attribute name="label">
              <string>Scale &amp;&amp; Mirror</string>
             </attribute>
@@ -1247,8 +1300,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>250</width>
-              <height>547</height>
+              <width>178</width>
+              <height>256</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1376,8 +1429,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>250</width>
-              <height>547</height>
+              <width>140</width>
+              <height>300</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1921,19 +1974,19 @@
          <item>
           <widget class="QToolBox" name="paint_tool_box">
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="type_terrain_vector">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>193</width>
-              <height>401</height>
+              <width>265</width>
+              <height>577</height>
              </rect>
             </property>
             <attribute name="label">
-             <string>Terrain vector</string>
+             <string>Terrain Vector</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <property name="spacing">
@@ -2548,35 +2601,64 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>239</width>
-              <height>150</height>
+              <width>265</width>
+              <height>577</height>
              </rect>
             </property>
             <attribute name="label">
-             <string>Terrain layer</string>
+             <string>Terrain Layer</string>
             </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_20">
-             <property name="spacing">
-              <number>0</number>
-             </property>
-             <property name="margin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QGroupBox" name="layer_brush_group">
+            <layout class="QGridLayout" name="gridLayout_14">
+             <item row="0" column="0" colspan="2">
+              <widget class="QGroupBox" name="groupBox_15">
                <property name="title">
-                <string>Brush</string>
+                <string>Shape</string>
                </property>
-               <layout class="QGridLayout" name="gridLayout_14">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_37">
+               <layout class="QGridLayout" name="gridLayout_38">
+                <property name="horizontalSpacing">
+                 <number>0</number>
+                </property>
+                <property name="verticalSpacing">
+                 <number>5</number>
+                </property>
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0" colspan="3">
+                 <widget class="QRadioButton" name="layer_brush_shape_circle">
+                  <property name="text">
+                   <string>Circle</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <spacer name="horizontalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLabel" name="vector_brush_radius_label_3">
                   <property name="text">
                    <string>Radius</string>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="layer_mask_brush_radius">
+                <item row="1" column="2">
+                 <widget class="QDoubleSpinBox" name="layer_brush_radius">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2592,26 +2674,49 @@
                   <property name="decimals">
                    <number>1</number>
                   </property>
-                  <property name="minimum">
-                   <double>0.100000000000000</double>
-                  </property>
                   <property name="maximum">
                    <double>100.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
                   </property>
                   <property name="value">
                    <double>5.000000000000000</double>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_38">
+                <item row="2" column="0" colspan="3">
+                 <widget class="QRadioButton" name="layer_brush_shape_rect">
                   <property name="text">
-                   <string>Strength</string>
+                   <string>Rect</string>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QSpinBox" name="layer_mask_brush_strength">
+                <item row="3" column="0">
+                 <spacer name="horizontalSpacer_9">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLabel" name="vector_brush_width_label_3">
+                  <property name="text">
+                   <string>Half Width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2">
+                 <widget class="QDoubleSpinBox" name="layer_brush_width">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -2624,46 +2729,92 @@
                   <property name="buttonSymbols">
                    <enum>QAbstractSpinBox::PlusMinus</enum>
                   </property>
-                  <property name="suffix">
-                   <string>%</string>
+                  <property name="decimals">
+                   <number>1</number>
                   </property>
-                  <property name="prefix">
-                   <string/>
-                  </property>
-                  <property name="minimum">
-                   <number>-100</number>
-                  </property>
-                  <property name="maximum">
-                   <number>100</number>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
                   </property>
                   <property name="value">
-                   <number>10</number>
+                   <double>5.000000000000000</double>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_39">
+                <item row="4" column="0">
+                 <spacer name="horizontalSpacer_10">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Fixed</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>10</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLabel" name="vector_brush_height_label_3">
                   <property name="text">
-                   <string>Type</string>
+                   <string>Half Height</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1">
-                 <widget class="QComboBox" name="layer_mask_brush_type">
+                <item row="4" column="2">
+                 <widget class="QDoubleSpinBox" name="layer_brush_height">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                   </property>
-                  <item>
-                   <property name="text">
-                    <string>set</string>
-                   </property>
-                  </item>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
+                  </property>
+                  <property name="decimals">
+                   <number>1</number>
+                  </property>
+                  <property name="singleStep">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>5.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QGroupBox" name="vector_brush_group_2">
+               <property name="title">
+                <string>Brush</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_34">
+                <property name="horizontalSpacing">
+                 <number>0</number>
+                </property>
+                <property name="verticalSpacing">
+                 <number>5</number>
+                </property>
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_58">
+                  <property name="text">
+                   <string>Attenuation</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="layer_brush_attenuation">
                   <item>
                    <property name="text">
                     <string>constant</string>
@@ -2676,41 +2827,495 @@
                   </item>
                   <item>
                    <property name="text">
-                    <string>quadratic</string>
+                    <string>sqr linear</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
-                    <string>linear smooth</string>
+                    <string>quadric</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_59">
+                  <property name="text">
+                   <string>Attenuation size</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="layer_brush_attenuation_size">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
+                  </property>
+                  <property name="maximum">
+                   <double>100.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0" colspan="2">
+                 <widget class="QStackedWidget" name="stackedWidget_3">
+                  <property name="currentIndex">
+                   <number>0</number>
+                  </property>
+                  <widget class="QWidget" name="page_18">
+                   <layout class="QGridLayout" name="gridLayout_35">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="vector_brush_add_label_x_layer">
+                      <property name="text">
+                       <string>Strength</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QDoubleSpinBox" name="layer_brush_add">
+                      <property name="alignment">
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      </property>
+                      <property name="buttonSymbols">
+                       <enum>QAbstractSpinBox::PlusMinus</enum>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.100000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                  <widget class="QWidget" name="page_19">
+                   <layout class="QGridLayout" name="gridLayout_36">
+                    <item row="1" column="1">
+                     <widget class="QDoubleSpinBox" name="layer_brush_set">
+                      <property name="alignment">
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      </property>
+                      <property name="buttonSymbols">
+                       <enum>QAbstractSpinBox::PlusMinus</enum>
+                      </property>
+                      <property name="singleStep">
+                       <double>0.100000000000000</double>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_37">
+                      <property name="text">
+                       <string>Strength</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                  <widget class="QWidget" name="page_20">
+                   <layout class="QGridLayout" name="gridLayout_37">
+                    <item row="0" column="1">
+                     <widget class="QSpinBox" name="layer_brush_smooth_strength">
+                      <property name="alignment">
+                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                      </property>
+                      <property name="buttonSymbols">
+                       <enum>QAbstractSpinBox::PlusMinus</enum>
+                      </property>
+                      <property name="suffix">
+                       <string>%</string>
+                      </property>
+                      <property name="maximum">
+                       <number>100</number>
+                      </property>
+                      <property name="value">
+                       <number>50</number>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_38">
+                      <property name="text">
+                       <string>Strength</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QComboBox" name="layer_brush_effect">
+                  <item>
+                   <property name="text">
+                    <string>add</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
-                    <string>quadratic smooth</string>
+                    <string>set</string>
                    </property>
                   </item>
+                  <item>
+                   <property name="text">
+                    <string>smooth</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_60">
+                  <property name="text">
+                   <string>Effect</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_40">
+               <property name="text">
+                <string>Layer mask</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="layer_mask">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <spacer name="verticalSpacer_11">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>244</width>
+                 <height>179</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+            <zorder>vector_brush_group_2</zorder>
+            <zorder>groupBox_15</zorder>
+            <zorder>layer_mask</zorder>
+            <zorder>layer_mask</zorder>
+            <zorder>label_40</zorder>
+            <zorder>verticalSpacer_11</zorder>
+           </widget>
+           <widget class="QWidget" name="type_terrain_decals">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>265</width>
+              <height>577</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>Terrain Decals</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QGroupBox" name="groupBox_12">
+               <property name="title">
+                <string>Texture</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_49">
+                  <property name="text">
+                   <string>Name</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="comboBox"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_11">
+               <property name="title">
+                <string>Position</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_24">
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_56">
+                  <property name="text">
+                   <string>X</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_50">
+                  <property name="text">
+                   <string>Y</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_9">
+               <property name="title">
+                <string>Scale &amp;&amp; Mirror</string>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_28">
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0" colspan="3">
+                 <widget class="QRadioButton" name="uniform_scales_button_2">
+                  <property name="text">
+                   <string>Uniform scale</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1" colspan="3">
+                 <widget class="QSlider" name="scales_slider_2">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>125</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximum">
+                   <number>400</number>
+                  </property>
+                  <property name="value">
+                   <number>200</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksBothSides</enum>
+                  </property>
+                  <property name="tickInterval">
+                   <number>20</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="4">
+                 <widget class="QDoubleSpinBox" name="scales_value_2">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
+                  </property>
+                  <property name="suffix">
+                   <string>%</string>
+                  </property>
+                  <property name="minimum">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>10000.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>100.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0" colspan="3">
+                 <widget class="QRadioButton" name="invidual_scales_button_2">
+                  <property name="text">
+                   <string>Invidual scales</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item row="3" column="0">
-                 <widget class="QLabel" name="label_40">
+                 <widget class="QLabel" name="label_53">
+                  <property name="maximumSize">
+                   <size>
+                    <width>20</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="text">
-                   <string>Layer mask</string>
+                   <string>X</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
-                 <widget class="QComboBox" name="layer_mask_brush_layer_masks">
-                  <property name="enabled">
-                   <bool>true</bool>
+                <item row="3" column="1" colspan="3">
+                 <widget class="QSlider" name="scales_slider_x_2">
+                  <property name="minimumSize">
+                   <size>
+                    <width>125</width>
+                    <height>0</height>
+                   </size>
                   </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                  <property name="maximum">
+                   <number>400</number>
                   </property>
-                  <property name="layoutDirection">
-                   <enum>Qt::LeftToRight</enum>
+                  <property name="value">
+                   <number>200</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksBothSides</enum>
+                  </property>
+                  <property name="tickInterval">
+                   <number>20</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="4">
+                 <widget class="QDoubleSpinBox" name="scales_value_x_2">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
+                  </property>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
+                  </property>
+                  <property name="suffix">
+                   <string>%</string>
+                  </property>
+                  <property name="minimum">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>10000.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>100.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_54">
+                  <property name="text">
+                   <string>Y</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1" colspan="3">
+                 <widget class="QSlider" name="scales_slider_y_2">
+                  <property name="minimumSize">
+                   <size>
+                    <width>125</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximum">
+                   <number>400</number>
+                  </property>
+                  <property name="value">
+                   <number>200</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TicksBothSides</enum>
+                  </property>
+                  <property name="tickInterval">
+                   <number>20</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="4">
+                 <widget class="QDoubleSpinBox" name="scales_value_y_2">
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buttonSymbols">
+                   <enum>QAbstractSpinBox::PlusMinus</enum>
+                  </property>
+                  <property name="keyboardTracking">
+                   <bool>false</bool>
+                  </property>
+                  <property name="suffix">
+                   <string>%</string>
+                  </property>
+                  <property name="minimum">
+                   <double>1.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>10000.000000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>100.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0" colspan="3">
+                 <widget class="QCheckBox" name="mirrors_x_2">
+                  <property name="text">
+                   <string>Mirror X</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0" colspan="3">
+                 <widget class="QCheckBox" name="mirrors_y_2">
+                  <property name="text">
+                   <string>Mirror Y</string>
                   </property>
                  </widget>
                 </item>
@@ -2718,14 +3323,71 @@
               </widget>
              </item>
              <item>
-              <spacer name="verticalSpacer_11">
+              <widget class="QGroupBox" name="groupBox_8">
+               <property name="title">
+                <string>Rotation</string>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_55">
+                  <property name="maximumSize">
+                   <size>
+                    <width>25</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Z</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDial" name="dial">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>100</height>
+                   </size>
+                  </property>
+                  <property name="minimum">
+                   <number>-179</number>
+                  </property>
+                  <property name="maximum">
+                   <number>180</number>
+                  </property>
+                  <property name="wrapping">
+                   <bool>true</bool>
+                  </property>
+                  <property name="notchesVisible">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="doubleSpinBox">
+                  <property name="maximumSize">
+                   <size>
+                    <width>100</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_18">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>20</width>
-                 <height>124</height>
+                 <height>78</height>
                 </size>
                </property>
               </spacer>
@@ -2737,8 +3399,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>83</width>
-              <height>60</height>
+              <width>265</width>
+              <height>577</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3078,8 +3740,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>100</width>
-              <height>30</height>
+              <width>265</width>
+              <height>577</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3091,8 +3753,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>100</width>
-              <height>30</height>
+              <width>265</width>
+              <height>577</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3732,14 +4394,14 @@
          <item>
           <widget class="QToolBox" name="toolBox_3">
            <property name="currentIndex">
-            <number>3</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page_12">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>250</width>
+              <width>265</width>
               <height>577</height>
              </rect>
             </property>
@@ -3780,8 +4442,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>250</width>
-              <height>577</height>
+              <width>218</width>
+              <height>90</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3945,6 +4607,14 @@
             </layout>
            </widget>
            <widget class="QWidget" name="page_4">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>102</width>
+              <height>168</height>
+             </rect>
+            </property>
             <attribute name="label">
              <string>Rotation</string>
             </attribute>
@@ -3952,7 +4622,7 @@
              <property name="margin">
               <number>0</number>
              </property>
-             <item row="0" column="0" colspan="2">
+             <item row="0" column="0">
               <widget class="QLabel" name="label_35">
                <property name="minimumSize">
                 <size>
@@ -3968,7 +4638,7 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
+             <item row="0" column="1" colspan="2">
               <widget class="QDial" name="x_rotations_dial">
                <property name="minimum">
                 <number>-180</number>
@@ -4018,7 +4688,7 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0" colspan="2">
+             <item row="1" column="0">
               <widget class="QLabel" name="label_36">
                <property name="minimumSize">
                 <size>
@@ -4034,7 +4704,7 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="2">
+             <item row="1" column="1" colspan="2">
               <widget class="QDial" name="y_rotations_dial">
                <property name="minimum">
                 <number>-180</number>
@@ -4087,7 +4757,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="0" colspan="2">
+             <item row="2" column="0">
               <widget class="QLabel" name="label_41">
                <property name="minimumSize">
                 <size>
@@ -4140,7 +4810,7 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="2">
+             <item row="2" column="1" colspan="2">
               <widget class="QDial" name="z_rotations_dial">
                <property name="minimum">
                 <number>-180</number>
@@ -4172,6 +4842,14 @@
             </layout>
            </widget>
            <widget class="QWidget" name="page_5">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>247</width>
+              <height>301</height>
+             </rect>
+            </property>
             <attribute name="label">
              <string>Scale &amp;&amp; Mirror</string>
             </attribute>
@@ -4305,7 +4983,7 @@
                </property>
               </widget>
              </item>
-             <item row="5" column="0" rowspan="2" colspan="2">
+             <item row="5" column="0" rowspan="2">
               <widget class="QLabel" name="label_45">
                <property name="text">
                 <string>Z</string>
@@ -4485,8 +5163,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>250</width>
-              <height>577</height>
+              <width>178</width>
+              <height>256</height>
              </rect>
             </property>
             <attribute name="label">
@@ -4614,8 +5292,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>250</width>
-              <height>577</height>
+              <width>140</width>
+              <height>300</height>
              </rect>
             </property>
             <attribute name="label">
@@ -4955,7 +5633,7 @@
      <normaloff>:/icons/terrain.png</normaloff>:/icons/terrain.png</iconset>
    </property>
    <property name="windowTitle">
-    <string>Terrain Masks</string>
+    <string>Terrain</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -5599,6 +6277,24 @@
    </property>
    <property name="shortcutContext">
     <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
+  <action name="action_add_decals">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/gtk-add.png</normaloff>:/icons/gtk-add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Decals</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Lights</string>
    </property>
   </action>
  </widget>

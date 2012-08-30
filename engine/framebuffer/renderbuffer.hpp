@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "textureformatutil.hpp"
+#include "abstractrendertarget.hpp"
 
 /**
  * @file
@@ -24,7 +24,7 @@
 namespace eternal_lands
 {
 
-	class RenderBuffer
+	class RenderBuffer: public AbstractRenderTarget
 	{
 		private:
 			GLuint m_id;
@@ -34,31 +34,15 @@ namespace eternal_lands
 			TextureFormatType m_format;
 
 		public:
-			RenderBuffer(const Uint32 width, const Uint32 height,
+			RenderBuffer(const String &name, const Uint32 width,
+				const Uint32 height,
 				const Uint32 samples,
 				const TextureFormatType format);
-			~RenderBuffer() noexcept;
-			void bind_to_framebuffer(const GLenum attachment);
-
-			inline Uint32 get_width() const
-			{
-				return m_width;
-			}
-
-			inline Uint32 get_height() const
-			{
-				return m_height;
-			}
-
-			inline Uint32 get_samples() const
-			{
-				return m_samples;
-			}
-
-			inline TextureFormatType get_format() const
-			{
-				return m_format;
-			}
+			virtual ~RenderBuffer() noexcept;
+			virtual void attach(const GLenum attachment,
+				const CubeMapFaceType face, const Uint32 level,
+				const Uint32 layer);
+			void attach(const GLenum attachment);
 
 	};
 

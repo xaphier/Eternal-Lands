@@ -497,15 +497,27 @@ namespace eternal_lands
 		}
 	}
 
-	void EditorMapData::set_terrain_values(
-		const TerrainValueVector &terrain_values)
+	void EditorMapData::set_terrain_displacment_values(
+		const DisplacmentValueVector &displacment_values)
 	{
-		m_terrain_editor.set_terrain_values(terrain_values);
+		m_terrain_editor.set_displacment_values(displacment_values);
 
+		m_scene->set_terrain(
+			m_terrain_editor.get_displacment_image(),
+			m_terrain_editor.get_normal_image(),
+			m_terrain_editor.get_dudv_image());
+	}
+
+	void EditorMapData::set_terrain_blend_values(
+		const ImageValueVector &blend_values)
+	{
+		m_terrain_editor.set_blend_values(blend_values);
+/*
 		m_scene->set_terrain(
 			m_terrain_editor.get_terrain_vector_image(),
 			m_terrain_editor.get_terrain_normal_image(),
 			m_terrain_editor.get_terrain_dudv_image());
+*/
 	}
 
 	void EditorMapData::set_terrain_albedo_map(const String &name,
@@ -516,9 +528,10 @@ namespace eternal_lands
 	void EditorMapData::set_terrain_blend_map(const String &name,
 		const Uint16 index)
 	{
+		m_terrain_editor.set_blend_map(name, index);
 	}
 
-	void EditorMapData::set_terrain_vector_map(const String &name)
+	void EditorMapData::set_terrain_displacment_map(const String &name)
 	{
 	}
 
@@ -528,24 +541,8 @@ namespace eternal_lands
 
 	String tmp;
 
-	const String &EditorMapData::get_terrain_albedo_map(const Uint16 index)
-		const
-	{
-		return tmp;
-	}
-
-	const String &EditorMapData::get_terrain_blend_map(const Uint16 index)
-		const
-	{
-		return tmp;
-	}
-
-	const String &EditorMapData::get_terrain_vector_map() const
-	{
-		return tmp;
-	}
-
-	const String &EditorMapData::get_terrain_dudv_map() const
+	const String &EditorMapData::get_terrain_albedo_map(
+		const Uint16 index) const
 	{
 		return tmp;
 	}
@@ -650,12 +647,11 @@ namespace eternal_lands
 
 	void EditorMapData::init_terrain(const glm::uvec2 &size)
 	{
-		m_terrain_editor.init_terrain(size);
+		m_terrain_editor.init(size);
 
-		m_scene->set_terrain(
-			m_terrain_editor.get_terrain_vector_image(),
-			m_terrain_editor.get_terrain_normal_image(),
-			m_terrain_editor.get_terrain_dudv_image());
+		m_scene->set_terrain(m_terrain_editor.get_displacment_image(),
+			m_terrain_editor.get_normal_image(),
+			m_terrain_editor.get_dudv_image());
 		m_scene->rebuild_terrain_map();
 	}
 

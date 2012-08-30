@@ -665,29 +665,13 @@ namespace eternal_lands
 
 			compressions.insert(ict_s3tc);
 
-			if (get_uses_alpha())
-			{
-				m_image = boost::make_shared<Image>(m_name,
-					false, tft_rgba_dxt5, sizes, 0);
-			}
-			else
-			{
-				m_image = boost::make_shared<Image>(m_name,
-					false, tft_rgb_dxt1, sizes, 0);
-			}
+			m_image = boost::make_shared<Image>(m_name, false,
+				tft_rgba_dxt5, sizes, 0);
 		}
 		else
 		{
-			if (get_uses_alpha())
-			{
-				m_image = boost::make_shared<Image>(m_name,
-					false, tft_rgba8, sizes, 0);
-			}
-			else
-			{
-				m_image = boost::make_shared<Image>(m_name,
-					false, tft_rgb8, sizes, 0);
-			}
+			m_image = boost::make_shared<Image>(m_name, false,
+				tft_rgba8, sizes, 0);
 		}
 
 		if (parts[aptt_pants_tex].get() != nullptr)
@@ -796,34 +780,8 @@ namespace eternal_lands
 
 	void ActorTextureBuilder::build_actor_texture()
 	{
-		TextureFormatType texture_format;
-
-		if (m_compression)
-		{
-			if (get_uses_alpha())
-			{
-				texture_format = tft_rgba_dxt5;
-			}
-			else
-			{
-				texture_format = tft_rgb_dxt1;
-			}
-		}
-		else
-		{
-			if (get_uses_alpha())
-			{
-				texture_format = tft_rgba8;
-			}
-			else
-			{
-				texture_format = tft_r5g6b5;
-			}
-		}
-
 		CHECK_GL_ERROR();
 
-		m_texture->set_format(texture_format);
 		m_texture->set_image(m_image);
 
 		CHECK_GL_ERROR_NAME(get_name());
@@ -842,6 +800,8 @@ namespace eternal_lands
 		m_name(name), m_codec_manager(codec_manager),
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
+		TextureFormatType texture_format;
+
 		assert(!m_codec_manager.expired());
 		assert(m_file_system.get() != nullptr);
 		assert(m_global_vars.get() != nullptr);
@@ -851,7 +811,17 @@ namespace eternal_lands
 		m_compression = m_global_vars->get_use_s3tc_for_actors();
 		m_alphas.reset();
 
-		m_texture = boost::make_shared<Texture>(name);
+		if (m_compression)
+		{
+			texture_format = tft_rgba_dxt5;
+		}
+		else
+		{
+			texture_format = tft_rgba8;
+		}
+
+		m_texture = boost::make_shared<Texture>(m_name, m_size,
+			m_size, 1, 0xFFFF, 0, texture_format, ttt_texture_2d);
 	}
 
 	ActorTextureBuilder::~ActorTextureBuilder() noexcept

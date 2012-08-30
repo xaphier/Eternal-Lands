@@ -1102,22 +1102,17 @@ namespace eternal_lands
 
 			shader_source->load_xml(file_system, file_name);
 
-			BOOST_FOREACH(const ShaderSourceType type,
-				shader_source->get_types())
-			{
-				index.first = type;
-				index.second = shader_source->get_name();
+			index.first = shader_source->get_type();
+			index.second = shader_source->get_name();
 
-				data.first = index;
-				data.second = shader_source;
+			data.first = index;
+			data.second = shader_source;
 
-				m_shader_sources.insert(data);
+			m_shader_sources.insert(data);
 
-				LOG_DEBUG(lt_shader_source, UTF8("Shader "
-					"source type %1%-%2% loaded from file"
-					" '%3%'"), index.first % index.second %
-					file_name);
-			}
+			LOG_DEBUG(lt_shader_source, UTF8("Shader source type "
+				"%1%-%2% loaded from file '%3%'"), index.first
+				% index.second % file_name);
 		}
 		catch (boost::exception &exception)
 		{
@@ -2720,6 +2715,27 @@ namespace eternal_lands
 				main << cpt_fragment_normal;
 				main << UTF8(" * 0.5 + 0.5;\n");
 				break;
+			case sbt_debug_tbn_matrix_0:
+				add_parameter(String(UTF8("fragment")),
+					cpt_tbn_matrix, pqt_in, locals,
+					globals, uniform_buffers);
+				main << indent << output << UTF8(".rgb = ");
+				main << UTF8("tbn_matrix[0] * 0.5 + 0.5;\n");
+				break;
+			case sbt_debug_tbn_matrix_1:
+				add_parameter(String(UTF8("fragment")),
+					cpt_tbn_matrix, pqt_in, locals,
+					globals, uniform_buffers);
+				main << indent << output << UTF8(".rgb = ");
+				main << UTF8("tbn_matrix[1] * 0.5 + 0.5;\n");
+				break;
+			case sbt_debug_tbn_matrix_2:
+				add_parameter(String(UTF8("fragment")),
+					cpt_tbn_matrix, pqt_in, locals,
+					globals, uniform_buffers);
+				main << indent << output << UTF8(".rgb = ");
+				main << UTF8("tbn_matrix[2] * 0.5 + 0.5;\n");
+				break;
 			case sbt_debug_shadow:
 				main << indent << output << UTF8(".rgb = ");
 
@@ -2954,7 +2970,10 @@ namespace eternal_lands
 				sst_view_direction);
 		}
 
-		if (data.get_option(ssbot_tbn_matrix))
+		if (data.get_option(ssbot_tbn_matrix) ||
+			(data.get_shader_build() == sbt_debug_tbn_matrix_0) ||
+			(data.get_shader_build() == sbt_debug_tbn_matrix_1) ||
+			(data.get_shader_build() == sbt_debug_tbn_matrix_2))
 		{
 			result |= check_function(data, name, sst_tbn_matrix);
 		}
@@ -3161,10 +3180,10 @@ namespace eternal_lands
 			cpt_world_tangent));
 		data.set_option(ssbot_transparent,
 			description.get_transparent());
-		data.set_option(ssbot_alpha_test, true);
-//			!(get_global_vars()->get_exponential_shadow_maps() &&
-//			get_global_vars()->get_use_multisample_shadows() &&
-//			(shader_build == sbt_shadow)));
+		data.set_option(ssbot_alpha_test,
+			!(get_global_vars()->get_exponential_shadow_maps() &&
+			get_global_vars()->get_use_multisample_shadows() &&
+			(shader_build == sbt_shadow)));
 		data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());
 		data.set_option(ssbot_lighting, description.get_lighting());

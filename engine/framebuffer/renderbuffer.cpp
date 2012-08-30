@@ -11,10 +11,10 @@
 namespace eternal_lands
 {
 
-	RenderBuffer::RenderBuffer(const Uint32 width, const Uint32 height,
-		const Uint32 samples, const TextureFormatType format): m_id(0),
-		m_width(width), m_height(height), m_samples(samples),
-		m_format(format)
+	RenderBuffer::RenderBuffer(const String &name, const Uint32 width,
+		const Uint32 height, const Uint32 samples,
+		const TextureFormatType format): AbstractRenderTarget(name,
+		width, height, samples, format), m_id(0)
 	{
 		GLint max_samples;
 
@@ -58,7 +58,14 @@ namespace eternal_lands
 		}
 	}
 
-	void RenderBuffer::bind_to_framebuffer(const GLenum attachment)
+	void RenderBuffer::attach(const GLenum attachment,
+		const CubeMapFaceType face, const Uint32 level,
+		const Uint32 layer)
+	{
+		attach(attachment);
+	}
+
+	void RenderBuffer::attach(const GLenum attachment)
 	{
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment,
 			GL_RENDERBUFFER, m_id);

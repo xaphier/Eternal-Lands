@@ -2029,8 +2029,61 @@ void MainWindow::terrain_vector_edit()
 			break;
 	}
 
-	el_gl_widget->change_terrain_values(data, size, attenuation_size, mask,
-		attenuation, shape, effect);
+	el_gl_widget->change_terrain_displacment_values(data, size,
+		attenuation_size, mask, attenuation, shape, effect);
+}
+
+void MainWindow::terrain_layer_edit()
+{
+	QVector2D size;
+	float attenuation_size, data;
+	int attenuation, shape, effect, layer;
+
+	shape = -1;
+
+	if (layer_brush_shape_circle->isChecked())
+	{
+		size.setX(layer_brush_radius->value());
+		size.setY(layer_brush_radius->value());
+
+		shape = 0;
+	}
+
+	if (layer_brush_shape_rect->isChecked())
+	{
+		size.setX(layer_brush_width->value());
+		size.setY(layer_brush_height->value());
+
+		shape = 1;
+	}
+
+	attenuation_size = layer_brush_attenuation_size->value();
+
+	attenuation = layer_brush_attenuation->currentIndex();
+
+	effect = layer_brush_effect->currentIndex();
+
+	switch (effect)
+	{
+		case 0:
+			data = layer_brush_add->value();
+
+			break;
+		case 1:
+			data = layer_brush_set->value();
+
+			break;
+		case 2:
+			data = layer_brush_smooth_strength->value();
+			data *= 0.01f;
+
+			break;
+	}
+
+	layer = layer_mask->currentIndex();
+
+	el_gl_widget->change_terrain_blend_values(size, attenuation_size, data,
+		attenuation, shape, effect, layer);
 }
 
 void MainWindow::terrain_edit()
@@ -2041,20 +2094,18 @@ void MainWindow::terrain_edit()
 			terrain_vector_edit();
 			break;
 		case 1:
-			el_gl_widget->terrain_layer_edit(
-				layer_mask_brush_layer_masks->currentIndex(),
-				layer_mask_brush_strength->value() * 0.01f,
-				layer_mask_brush_radius->value(),
-				layer_mask_brush_type->currentIndex());
+			terrain_layer_edit();
 			break;
 		case 2:
+			break;
+		case 3:
 			el_gl_widget->ground_tile_edit(
 				ground_tile->currentText().toInt());
 			break;
-		case 3:
+		case 4:
 			el_gl_widget->water_tile_edit(0);
 			break;
-		case 4:
+		case 5:
 			el_gl_widget->height_edit(0);
 			break;
 	}

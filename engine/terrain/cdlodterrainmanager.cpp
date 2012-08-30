@@ -98,40 +98,39 @@ namespace eternal_lands
 		set_bounding_box(BoundingBox(min, max));
 
 		vector_texture = boost::make_shared<Texture>(
-			vector_map->get_name());
+			vector_map->get_name(), vector_map->get_width(),
+			vector_map->get_height(), 1, 0, 0,
+			vector_map->get_texture_format(),
+			ttt_texture_rectangle);
 
-		vector_texture->set_mipmap_count(0);
 		vector_texture->set_wrap_s(twt_clamp);
 		vector_texture->set_wrap_t(twt_clamp);
 		vector_texture->set_wrap_r(twt_clamp);
-		vector_texture->set_target(ttt_texture_rectangle);
-		vector_texture->set_format(vector_map->get_texture_format());
 		vector_texture->set_image(vector_map);
 
 		m_material->set_texture(vector_texture, spt_effect_8);
 
 		normal_texture = boost::make_shared<Texture>(
-			normal_map->get_name());
+			normal_map->get_name(), normal_map->get_width(),
+			normal_map->get_height(), 1, 0, 0,
+			normal_map->get_texture_format(),
+			ttt_texture_rectangle);
 
-		normal_texture->set_mipmap_count(0);
 		normal_texture->set_wrap_s(twt_clamp);
 		normal_texture->set_wrap_t(twt_clamp);
 		normal_texture->set_wrap_r(twt_clamp);
-		normal_texture->set_target(ttt_texture_rectangle);
-		normal_texture->set_format(normal_map->get_texture_format());
 		normal_texture->set_image(normal_map);
 
 		m_material->set_texture(normal_texture, spt_effect_9);
 
 		dudv_texture = boost::make_shared<Texture>(
-			dudv_map->get_name());
+			dudv_map->get_name(), dudv_map->get_width(),
+			dudv_map->get_height(), 1, 0, 0,
+			dudv_map->get_texture_format(), ttt_texture_rectangle);
 
-		dudv_texture->set_mipmap_count(0);
 		dudv_texture->set_wrap_s(twt_clamp);
 		dudv_texture->set_wrap_t(twt_clamp);
 		dudv_texture->set_wrap_r(twt_clamp);
-		dudv_texture->set_target(ttt_texture_rectangle);
-		dudv_texture->set_format(dudv_map->get_texture_format());
 		dudv_texture->set_image(dudv_map);
 
 		m_material->set_texture(dudv_texture, spt_effect_10);

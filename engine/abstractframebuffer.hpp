@@ -76,6 +76,7 @@ namespace eternal_lands
 				const;
 			virtual void set_draw_buffer(const Uint16 index,
 				const bool enabled) = 0;
+			virtual void blit_buffers() = 0;
 
 			inline bool get_has_attachment(
 				const FrameBufferAttachmentType attachment)

@@ -113,8 +113,10 @@ class ELGLWidget: public QGLWidget
 		QStringList get_materials() const;
 		QStringList get_default_materials(const String &name) const;
 		QStringList get_debug_modes() const;
-		void export_blend_image(const QString &file_name, const QString &codec) const;
-		void export_terrain_map(const QString &file_name, const QString &codec) const;
+		void export_blend_image(const QString &file_name,
+			const QString &codec) const;
+		void export_terrain_map(const QString &file_name,
+			const QString &codec) const;
 		void import_terrain_map(const QString &file_name);
 		QStringList get_terrain_albedo_maps() const;
 		QString get_terrain_height_map() const;
@@ -126,14 +128,15 @@ class ELGLWidget: public QGLWidget
 			QString &default_extension, const QString &codec);
 		void set_dirs(const QStringList &dirs);
 		QImage get_icon(const QString &name);
-		void terrain_layer_edit(const int terrain_layer_index,
-			const float strength, const float radius,
-			const int brush_type);
+		void change_terrain_blend_values(const QVector2D &size,
+			const float attenuation_size, const float data,
+			const int attenuation, const int shape,
+			const int effect, const int layer);
 		void ground_tile_edit(const int tile);
 		void water_tile_edit(const int water);
 		void height_edit(const int height);
 		void set_debug_mode(const int value);
-		void change_terrain_values(const QVector3D &data,
+		void change_terrain_displacment_values(const QVector3D &data,
 			const QVector2D &size, const float attenuation_size,
 			const int mask, const int attenuation,
 			const int shape, const int effect);
@@ -167,7 +170,8 @@ class ELGLWidget: public QGLWidget
 			m_click_button = click_button;
 		}
 
-		inline void set_wheel_zoom_x10(const Qt::KeyboardModifier wheel_zoom_x10)
+		inline void set_wheel_zoom_x10(
+			const Qt::KeyboardModifier wheel_zoom_x10)
 		{
 			m_wheel_zoom_x10 = wheel_zoom_x10;
 		}
@@ -208,10 +212,13 @@ class ELGLWidget: public QGLWidget
 		void zoom_in();
 		void zoom_out();
 		void new_map(const int map_size_x, const int map_size_y,
-			const int blend_image_size_x, const int blend_image_size_y,
+			const int blend_image_size_x,
+			const int blend_image_size_y,
 			const QStringList textures);
-		void new_map(const QString &image, const int blend_image_size_x,
-			const int blend_image_size_y, const QStringList textures);
+		void new_map(const QString &image,
+			const int blend_image_size_x,
+			const int blend_image_size_y,
+			const QStringList textures);
 		void set_terrain_editing(const bool enabled);
 		void set_terrain_type_index(const int index);
 		void set_terrain_layer_index(const int index);

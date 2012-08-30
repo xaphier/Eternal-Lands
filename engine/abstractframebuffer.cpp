@@ -25,6 +25,18 @@ namespace eternal_lands
 	void AbstractFrameBuffer::attach(const TextureSharedPtr &texture,
 		const FrameBufferAttachmentType attachment, const Uint16 layer)
 	{
+		FrameBufferAttachmentTypeTextureSharedPtrMap::iterator found;
+
+		found = m_textures.find(attachment);
+
+		if (found != m_textures.end())
+		{
+			if (found->second == texture)
+			{
+//				return;
+			}
+		}
+
 		m_textures[attachment] = texture;
 
 		attach_texture(texture, attachment, layer);

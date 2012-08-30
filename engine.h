@@ -113,6 +113,12 @@ void engine_update_materials();
 
 void engine_init_console_logging();
 
+void engine_init_gpu_counters();
+void engine_finish_gpu_counters();
+void engine_open_gl_context_gpu_counters();
+void engine_close_gl_context_gpu_counters();
+void engine_log_counters_gpu_counters();
+
 #ifdef __cplusplus
 }
 #endif
