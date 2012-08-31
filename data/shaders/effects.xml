@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf8"?>
 <effects>
 	<effect>
+		<name>leaves</name>
+		<world_transformation>leaves</world_transformation>
+		<texture_coodrinates>static</texture_coodrinates>
+		<main>leaves_mapping</main>
+		<node_based>false</node_based>
+		<receives_shadows>true</receives_shadows>
+		<transparent>true</transparent>
+		<lighting>true</lighting>
+	</effect>
+	<effect>
 		<name>solid-color</name>
 		<world_transformation>none</world_transformation>
 		<texture_coodrinates>static_extra</texture_coodrinates>

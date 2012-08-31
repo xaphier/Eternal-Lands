@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf8"?>
 <materials>
 	<material>
+		<name>tree_branch-TEST</name>
+		<effect_sampler_0>3dobjects/tree_branch-TEST.dds</effect_sampler_0>
+		<culling>false</culling>
+		<effect>leaves</effect>
+	</material>
+
+	<material>
 		<name>simple-terrain</name>
 		<effect>simple-terrain</effect>
 	</material>

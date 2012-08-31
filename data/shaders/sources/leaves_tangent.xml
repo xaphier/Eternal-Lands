@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf8"?>
+<shader_source>
+ <name>leaves</name>
+ <type>world_tangent_transformation</type>
+ <shader_source_datas>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <vertex_semantic>normal</vertex_semantic>
+    </parameter>
+    <parameter>
+     <vertex_semantic>position</vertex_semantic>
+    </parameter>
+    <parameter>
+     <vertex_semantic>tangent</vertex_semantic>
+    </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_position</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_tangent</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <auto_parameter>world_transformation</auto_parameter>
+    </parameter>
+   </parameters>
+   <source>world_position = position.xyz;
+world_normal = normalize(position.xyz - vec3(0.0, 0.0, 5.0));
+world_tangent = tangent;
+
+world_position = vec4(world_position, 1.0) * world_transformation;
+world_normal = normalize(world_normal * mat3(world_transformation));
+world_tangent.xyz = normalize(world_tangent.xyz * mat3(world_transformation));
+world_tangent.w = step(0.0, world_tangent.w) * 2.0 - 1.0;</source>
+   <version>120</version>
+  </shader_source_data>
+ </shader_source_datas>
+</shader_source>

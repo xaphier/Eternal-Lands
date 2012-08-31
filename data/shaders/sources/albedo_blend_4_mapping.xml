@@ -6,6 +6,9 @@
   <shader_source_data>
    <parameters>
     <parameter>
+     <auto_parameter>blend_sizes</auto_parameter>
+    </parameter>
+    <parameter>
      <sampler_parameter>effect_sampler_0</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
@@ -26,9 +29,6 @@
      <type>sampler2D</type>
     </parameter>
     <parameter>
-     <auto_parameter>blend_sizes</auto_parameter>
-    </parameter>
-    <parameter>
      <auto_parameter>material_color</auto_parameter>
     </parameter>
     <parameter>
@@ -46,8 +46,9 @@
    </parameters>
    <source>vec4 blend, tmp[4], extra_blend, min_blend, max_blend;
 vec3 result;
-vec2 ddx, ddy;
-int i;
+vec2 ddx, ddy, uv;
+ivec2 idx;
+int i, index;
 
 ddx = dFdx(world_extra_uv);
 ddy = dFdy(world_extra_uv);
@@ -58,10 +59,22 @@ blend = texture(effect_sampler_7, world_uv);
 
 if (any(greaterThan(blend, vec4(0.0))))
 {
-	tmp[0] = textureGrad(effect_sampler_0, world_extra_uv, ddx, ddy);
-	tmp[1] = textureGrad(effect_sampler_1, world_extra_uv, ddx, ddy);
-	tmp[2] = textureGrad(effect_sampler_2, world_extra_uv, ddx, ddy);
-	tmp[3] = textureGrad(effect_sampler_3, world_extra_uv, ddx, ddy);
+	uv = world_extra_uv;
+/*	idx = ivec2(uv) * ivec2(157, 97);
+	index = (idx.x + idx.y) % 8;
+
+	uv.x *= (index &amp; 0x1) * 2 - 1;
+	uv.y *= (index &amp; 0x2) - 1;
+
+	if ((index &amp; 0x4) != 0)
+	{
+		uv.xy = uv.yx;
+	}
+*/
+	tmp[0] = textureGrad(effect_sampler_0, uv, ddx, ddy);
+	tmp[1] = textureGrad(effect_sampler_1, uv, ddx, ddy);
+	tmp[2] = textureGrad(effect_sampler_2, uv, ddx, ddy);
+	tmp[3] = textureGrad(effect_sampler_3, uv, ddx, ddy);
 
 	for (i = 0; i &lt; 4; ++i)
 	{
@@ -87,6 +100,9 @@ output_data_float[0].a = 1.0;
   <shader_source_data>
    <parameters>
     <parameter>
+     <auto_parameter>blend_sizes</auto_parameter>
+    </parameter>
+    <parameter>
      <sampler_parameter>effect_sampler_0</sampler_parameter>
      <type>sampler2D</type>
     </parameter>
@@ -105,9 +121,6 @@ output_data_float[0].a = 1.0;
     <parameter>
      <sampler_parameter>effect_sampler_7</sampler_parameter>
      <type>sampler2D</type>
-    </parameter>
-    <parameter>
-     <auto_parameter>blend_sizes</auto_parameter>
     </parameter>
     <parameter>
      <auto_parameter>material_color</auto_parameter>
