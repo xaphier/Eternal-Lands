@@ -11,6 +11,7 @@
 #include "shadersourceparameter.hpp"
 #include "xmlwriter.hpp"
 #include "xmlutil.hpp"
+#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -35,16 +36,20 @@ namespace eternal_lands
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
-		StringTypeVector lines;
+		std::vector<std::wstring> lines;
+		std::wstring tmp;
 
-		boost::split(lines, get_source().get(), boost::is_any_of(
-			UTF8("\n")), boost::token_compress_on);
+		tmp = utf8_to_wstring(get_source());
+
+		boost::split(lines, tmp, boost::is_any_of(L"\n"),
+			boost::token_compress_on);
 
 		stream << indent << UTF8("{") << std::endl;
 
-		BOOST_FOREACH(const StringType &line, lines)
+		BOOST_FOREACH(const std::wstring &line, lines)
 		{
-			stream << indent << UTF8("\t") << line << std::endl;
+			stream << indent << UTF8("\t");
+			stream << wstring_to_utf8(line) << std::endl;
 		}
 
 		stream << indent << UTF8("}") << std::endl;
@@ -83,7 +88,8 @@ namespace eternal_lands
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
-		StringTypeVector lines;
+		std::vector<std::wstring> lines;
+		std::wstring tmp;
 		bool first;
 
 		stream << indent << UTF8("void ") << name << UTF8("(");
@@ -99,14 +105,17 @@ namespace eternal_lands
 
 		stream << UTF8(")") << std::endl;
 
-		boost::split(lines, get_source().get(), boost::is_any_of(
-			UTF8("\n")), boost::token_compress_on);
+		tmp = utf8_to_wstring(get_source());
+
+		boost::split(lines, tmp, boost::is_any_of(L"\n"),
+			boost::token_compress_on);
 
 		stream << indent << UTF8("{") << std::endl;
 
-		BOOST_FOREACH(const StringType &line, lines)
+		BOOST_FOREACH(const std::wstring &line, lines)
 		{
-			stream << indent << UTF8("\t") << line << std::endl;
+			stream << indent << UTF8("\t");
+			stream << wstring_to_utf8(line) << std::endl;
 		}
 
 		stream << indent << UTF8("}") << std::endl;
@@ -198,9 +207,9 @@ namespace eternal_lands
 
 	void ShaderSourceData::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("shader_source_data"));
+		writer->start_element(String(UTF8("shader_source_data")));
 
-		writer->start_element(UTF8("parameters"));
+		writer->start_element(String(UTF8("parameters")));
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
 			get_parameters())
@@ -210,8 +219,8 @@ namespace eternal_lands
 
 		writer->end_element();
 
-		writer->write_element(UTF8("source"), get_source());
-		writer->write_element(UTF8("version"),
+		writer->write_element(String(UTF8("source")), get_source());
+		writer->write_element(String(UTF8("version")),
 			ShaderVersionUtil::get_str(get_version()));
 
 		writer->end_element();

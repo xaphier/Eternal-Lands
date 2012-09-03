@@ -47,7 +47,7 @@ namespace eternal_lands
 			void bind_attribute_locations();
 			bool get_active() const;
 			static GLuint get_current_program();
-			StringType get_program_log();
+			String get_program_log();
 			bool program_link_status();
 			bool program_validate_status();
 			void log_attribute_locations();

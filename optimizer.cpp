@@ -55,19 +55,6 @@ float calculate_average_cache_miss_ratio(const Uint32* indices, const Uint32 off
 	return (cache_misses / (count / 3.0f));
 }
 
-static const float score_table[33] =
-{
-	0.0f,
-	2.0f / sqrt(1.0f), 2.0f / sqrt(2.0f), 2.0f / sqrt(3.0f), 2.0f / sqrt(4.0f),
-	2.0f / sqrt(5.0f), 2.0f / sqrt(6.0f), 2.0f / sqrt(7.0f), 2.0f / sqrt(8.0f),
-	2.0f / sqrt(9.0f), 2.0f / sqrt(10.0f), 2.0f / sqrt(11.0f), 2.0f / sqrt(12.0f),
-	2.0f / sqrt(13.0f), 2.0f / sqrt(14.0f), 2.0f / sqrt(15.0f), 2.0f / sqrt(16.0f),
-	2.0f / sqrt(17.0f), 2.0f / sqrt(18.0f), 2.0f / sqrt(19.0f), 2.0f / sqrt(20.0f),
-	2.0f / sqrt(21.0f), 2.0f / sqrt(22.0f), 2.0f / sqrt(23.0f), 2.0f / sqrt(24.0f),
-	2.0f / sqrt(25.0f), 2.0f / sqrt(26.0f), 2.0f / sqrt(27.0f), 2.0f / sqrt(28.0f),
-	2.0f / sqrt(29.0f), 2.0f / sqrt(30.0f), 2.0f / sqrt(31.0f), 2.0f / sqrt(32.0f)
-};
-
 static inline float calc_new_score(const Uint32 count)
 {
 	return 12.0f;//score_table[std::min(count, 32u)];

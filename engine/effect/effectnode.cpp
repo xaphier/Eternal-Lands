@@ -28,28 +28,38 @@ namespace eternal_lands
 	{
 	}
 
-	void EffectNode::save_xml(const XmlWriterSharedPtr &writer)
+	void EffectNode::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->write_uuid_element(UTF8("uuid"), get_uuid());
-		writer->write_element(UTF8("name"), get_name());
-		writer->write_int_element(UTF8("id"), get_id());
-		writer->write_ivec2_element(UTF8("position"), get_position());
+		Uint32 i, count;
 
-		writer->start_element(UTF8("ports"));
+		writer->write_uuid_element(String(UTF8("uuid")), get_uuid());
+		writer->write_element(String(UTF8("name")), get_name());
+		writer->write_int_element(String(UTF8("id")), get_id());
+		writer->write_ivec2_element(String(UTF8("position")),
+			get_position());
 
-		BOOST_FOREACH(const EffectNodePort &port, m_ports)
+		writer->start_element(String(UTF8("ports")));
+
+		count = get_ports().size();
+
+		for (i = 0; i < count; ++i)
 		{
-			port.save_xml(writer);
+			get_ports()[i].save_xml(writer);
 		}
 
 		writer->end_element();
 	}
 
 	void EffectNode::save_connections_xml(const XmlWriterSharedPtr &writer)
+		const
 	{
-		BOOST_FOREACH(const EffectNodePort &port, m_ports)
+		Uint32 i, count;
+
+		count = get_ports().size();
+
+		for (i = 0; i < count; ++i)
 		{
-			port.save_connections_xml(writer);
+			get_ports()[i].save_connections_xml(writer);
 		}
 	}
 

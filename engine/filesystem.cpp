@@ -39,14 +39,14 @@ namespace eternal_lands
 			}
 
 #ifdef	WINDOWS
-			if (*name.get().rbegin() != UTF8('\\'))
+			if (*name.get().rbegin() != '\\')
 			{
-				return String(name.get() + UTF8('\\'));
+				return String(name.get() + UTF8("\\"));
 			}
 #else	/* WINDOWS */
-			if (*name.get().rbegin() != UTF8('/'))
+			if (*name.get().rbegin() != '/')
 			{
-				return String(name.get() + UTF8( '/'));
+				return String(name.get() + UTF8("/"));
 			}
 #endif	/* WINDOWS */
 
@@ -61,15 +61,15 @@ namespace eternal_lands
 			}
 
 #ifdef	WINDOWS
-			if (*name.get().rbegin() != UTF8('\\'))
+			if (*name.get().rbegin() != '\\')
 			{
-				return String(name.get() + UTF8('\\') +
+				return String(name.get() + UTF8("\\") +
 					str.get());
 			}
 #else	/* WINDOWS */
-			if (*name.get().rbegin() != UTF8('/'))
+			if (*name.get().rbegin() != '/')
 			{
-				return String(name.get() + UTF8('/') +
+				return String(name.get() + UTF8("/") +
 					str.get());
 			}
 #endif	/* WINDOWS */
@@ -111,8 +111,11 @@ namespace eternal_lands
 					&& ((find_data.attrib & _A_SUBDIR) !=
 						_A_SUBDIR))
 				{
-					file_name = append_dir(dir_name,
-						file_name);
+					if (dir_name != ".")
+					{
+						file_name = append_dir(dir_name,
+							file_name);
+					}
 					files.insert(file_name);
 				}
 			}
@@ -162,7 +165,7 @@ namespace eternal_lands
 			DIR* dir;
 			struct dirent* entry;
 			String current;
-			StringType path;
+			std::string path;
 
 			path = append_dir(base_name, dir_name);
 
@@ -265,7 +268,7 @@ namespace eternal_lands
 			ReadWriteMemorySharedPtr buffer;
 			Uint64 size;
 			std::ifstream stream;
-			StringType path, gz_path, xz_path;
+			std::string path, gz_path, xz_path;
 			struct stat fstat;
 
 			path = get_dir(get_name());
@@ -311,7 +314,7 @@ namespace eternal_lands
 
 		bool DirArchive::get_has_file(const String &file_name) const
 		{
-			StringType path, gz_path, xz_path;
+			std::string path, gz_path, xz_path;
 			struct stat fstat;
 
 			path = get_dir(get_name());
@@ -362,7 +365,7 @@ namespace eternal_lands
 			ReadWriteMemorySharedPtr buffer;
 			Uint64 size;
 			std::ifstream stream;
-			StringType path, gz_path, xz_path;
+			std::string path, gz_path, xz_path;
 			struct stat fstat;
 
 			path = utf8_to_string(file_name);
@@ -385,7 +388,7 @@ namespace eternal_lands
 			return get_file_sha1(buffer);
 		}
 
-		StringType get_sha1_str(const Uint8Array20 &sha1)
+		std::string get_sha1_str(const Uint8Array20 &sha1)
 		{
 			StringStream str;
 
@@ -430,34 +433,46 @@ namespace eternal_lands
 	{
 	}
 
+	std::vector<std::wstring> FileSystem::get_splits(const String &file_name)
+	{
+		std::vector<std::wstring> splits;
+		std::wstring tmp;
+
+		tmp = utf8_to_wstring(file_name);
+
+		boost::split(splits, tmp, boost::is_any_of(L"\\/"),
+			boost::token_compress_on);
+
+		return splits;
+	}
+
 	String FileSystem::get_file_name(const String &file_name)
 	{
-		StringTypeVector splits;
+		std::vector<std::wstring> splits;
 
-		boost::split(splits, file_name.get(), boost::is_any_of(
-			UTF8("\\/")), boost::token_compress_on);
+		splits = get_splits(file_name);
 
 		if (splits.size() > 0)
 		{
-			return String(*splits.rbegin());
+			return String(wstring_to_utf8(*splits.rbegin()));
 		}
 
-		return String(UTF8(""));
+		return String();
 	}
 
-	StringTypeVector FileSystem::get_stripped_path(const String &file_name)
+	std::vector<std::wstring> FileSystem::get_stripped_path(
+		const String &file_name)
 	{
-		StringTypeVector splits, path;
+		std::vector<std::wstring> splits, path;
 		Uint32 i, count;
 
-		boost::split(splits, file_name.get(), boost::is_any_of(
-			UTF8("\\/")), boost::token_compress_on);
+		splits = get_splits(file_name);
 
 		count = splits.size();
 
 		for (i = 0; i < count; ++i)
 		{
-			if (splits[i] == "..")
+			if (splits[i] == L"..")
 			{
 				if (path.size() > 0)
 				{
@@ -467,7 +482,7 @@ namespace eternal_lands
 				continue;
 			}
 
-			if (splits[i] == ".")
+			if (splits[i] == L".")
 			{
 				continue;
 			}
@@ -480,8 +495,8 @@ namespace eternal_lands
 
 	String FileSystem::get_strip_relative_path(const String &file_name)
 	{
-		StringTypeVector path;
-		StringType result;
+		std::vector<std::wstring> path;
+		std::string result;
 		Uint32 i, count;
 
 		path = get_stripped_path(file_name);
@@ -490,19 +505,19 @@ namespace eternal_lands
 
 		if (count == 0)
 		{
-			return String(UTF8(""));
+			return String();
 		}
 
-		result = path[0];
+		result = wstring_to_utf8(path[0]);
 
 		for (i = 1; i < count; ++i)
 		{
 #ifdef	WINDOWS
-			result += UTF8('\\');
+			result += UTF8("\\");
 #else	/* WINDOWS */
-			result += UTF8('/');
+			result += UTF8("/");
 #endif	/* WINDOWS */
-			result += path[i];
+			result += wstring_to_utf8(path[i]);
 		}
 
 		return String(result);
@@ -510,8 +525,8 @@ namespace eternal_lands
 
 	String FileSystem::get_dir_name(const String &file_name)
 	{
-		StringTypeVector path;
-		StringType result;
+		std::vector<std::wstring> path;
+		std::string result;
 		Uint32 i, count;
 
 		path = get_stripped_path(file_name);
@@ -520,20 +535,20 @@ namespace eternal_lands
 
 		if (count < 2)
 		{
-			return String(UTF8(""));
+			return String();
 		}
 
 		count -= 1;
-		result = path[0];
+		result = wstring_to_utf8(path[0]);
 
 		for (i = 1; i < count; ++i)
 		{
 #ifdef	WINDOWS
-			result += UTF8('\\');
+			result += UTF8("\\");
 #else	/* WINDOWS */
-			result += UTF8('/');
+			result += UTF8("/");
 #endif	/* WINDOWS */
-			result += path[i];
+			result += wstring_to_utf8(path[i]);
 		}
 
 		return String(result);
@@ -740,8 +755,8 @@ namespace eternal_lands
 	String FileSystem::get_name_without_extension(
 		const String &file_name)
 	{
-		StringTypeVector path;
-		StringType result;
+		std::vector<std::wstring> path;
+		std::string result;
 		std::size_t pos;
 		Uint32 i, index, count;
 
@@ -751,12 +766,12 @@ namespace eternal_lands
 
 		if (count == 0)
 		{
-			return String(UTF8(""));
+			return String();
 		}
 
 		index = count - 1;
 
-		pos = path[index].rfind(UTF8("."));
+		pos = path[index].rfind(L".");
 
 		if (pos != std::string::npos)
 		{
@@ -764,16 +779,16 @@ namespace eternal_lands
 				path[index].end());
 		}
 
-		result = path[0];
+		result = wstring_to_utf8(path[0]);
 
 		for (i = 1; i < count; ++i)
 		{
 #ifdef	WINDOWS
-			result += UTF8('\\');
+			result += UTF8("\\");
 #else	/* WINDOWS */
-			result += UTF8('/');
+			result += UTF8("/");
 #endif	/* WINDOWS */
-			result += path[i];
+			result += wstring_to_utf8(path[i]);
 		}
 
 		return String(result);
@@ -782,19 +797,31 @@ namespace eternal_lands
 	String FileSystem::get_file_name_without_extension(
 		const String &file_name)
 	{
-		StringType result;
+		std::vector<std::wstring> path;
+		std::string result;
 		std::size_t pos;
+		Uint32 index, count;
 
-		result = get_file_name(file_name);
+		path = get_stripped_path(file_name);
 
-		pos = result.rfind(UTF8("."));
+		count = path.size();
+
+		if (count == 0)
+		{
+			return String();
+		}
+
+		index = count - 1;
+
+		pos = path[index].rfind(L".");
 
 		if (pos != std::string::npos)
 		{
-			result.erase(result.begin() + pos, result.end());
+			path[index].erase(path[index].begin() + pos,
+				path[index].end());
 		}
 
-		return String(result);
+		return String(wstring_to_utf8(path[index]));
 	}
 
 	void FileSystem::clear()

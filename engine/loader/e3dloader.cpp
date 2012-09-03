@@ -399,9 +399,9 @@ namespace eternal_lands
 
 	String E3dLoader::load_material(
 		const Uint32 material_offset, const Uint32 material_size,
-		const Uint32 material_index, const StringType &dir)
+		const Uint32 material_index, const String &dir)
 	{
-		StringType file_name;
+		String file_name;
 		String name;
 		Uint32 options;
 
@@ -412,22 +412,21 @@ namespace eternal_lands
 
 		file_name = m_reader->read_utf8_string(128);
 
-		return FileSystem::get_file_name_without_extension(
-			String(file_name));
+		return FileSystem::get_file_name_without_extension(file_name);
 	}
 
 	void E3dLoader::load_materials(const Uint32 material_count,
 		const Uint32 material_size, const Uint32 material_offset,
 		StringVector &materials)
 	{
-		StringType str;
+		String str;
 		Uint32 i;
 
 		str = FileSystem::get_dir_name(m_reader->get_name());
 
-		if (str.length() > 0)
+		if (!str.get().empty())
 		{
-			str += UTF8("/");
+			str = String(str.get() + UTF8("/"));
 		}
 
 		for (i = 0; i < material_count; ++i)
@@ -465,7 +464,7 @@ namespace eternal_lands
 	void E3dLoader::log_file_infos(const Uint8 options,
 		const Uint8 format) const
 	{
-		StringType str;
+		std::string str;
 
 		if (get_normal(options))
 		{

@@ -117,11 +117,6 @@ namespace eternal_lands
 				const glm::vec2 &scale, const float rotation,
 				const String &texture, const Uint32 id)
 				override;
-			virtual void add_terrain(const StringArray4 &albedo,
-				const String &blend, const String &height,
-				const String &dudv,
-				const glm::vec3 &translation,
-				const glm::vec2 &dudv_scale) override;
 			virtual void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile) override;
 			virtual void set_height(const Uint16 x, const Uint16 y,

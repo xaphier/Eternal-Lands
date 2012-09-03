@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(list_files)
 
 	BOOST_CHECK_NO_THROW(file_system->add_dir(String(".")));
 
-	BOOST_CHECK_NO_THROW(files = file_system->get_files(String("."),
+	BOOST_CHECK_NO_THROW(files = file_system->get_files(String(),
 		String("*.xml")));
 
 	BOOST_CHECK_EQUAL(files.size(), 1);

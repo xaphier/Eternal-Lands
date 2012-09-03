@@ -38,8 +38,9 @@ namespace eternal_lands
 			virtual Uint16 get_initial_value_count() const;
 
 		protected:
-			virtual void save_xml(const XmlWriterSharedPtr &writer);
-			virtual void load_xml(const xmlNodePtr node);
+			virtual void save_xml(const XmlWriterSharedPtr &writer)
+				const override;
+			virtual void load_xml(const xmlNodePtr node) override;
 
 		public:
 			EffectTexture(const String &name, const Uint32 id,
@@ -47,7 +48,7 @@ namespace eternal_lands
 				const EffectTextureType texture,
 				const Uint16 texture_unit,
 				Mt19937RandomUuidGenerator &uuid_generator);
-			virtual ~EffectTexture() noexcept;
+			virtual ~EffectTexture() noexcept override;
 			virtual void write(const Uint16StringMap &array_layers,
 				const ShaderVersionType version,
 				const EffectQualityType quality,
@@ -58,8 +59,8 @@ namespace eternal_lands
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str,
 				EffectNodePtrSet &vertex_written,
-				EffectNodePtrSet &fragment_written);
-			virtual String get_description() const;
+				EffectNodePtrSet &fragment_written) override;
+			virtual String get_description() const override;
 			Uint16 get_layer();
 
 			inline EffectSamplerType get_sampler() const noexcept

@@ -152,9 +152,9 @@ namespace eternal_lands
 		return String();
 	}
 
-	void EffectOutput::save_xml(const XmlWriterSharedPtr &writer)
+	void EffectOutput::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("effect_output"));
+		writer->start_element(String(UTF8("effect_output")));
 
 		EffectNode::save_xml(writer);
 

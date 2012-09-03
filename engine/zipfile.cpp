@@ -266,7 +266,7 @@ namespace eternal_lands
 			unzGetCurrentFileInfo64(m_file, 0, file_name.get(),
 				size, 0, 0, 0, 0);
 
-			index = String(string_to_utf8(StringType(
+			index = String(string_to_utf8(std::string(
 				file_name.get(), size)));
 
 			m_files[index] = ZipFileEntry(position);

@@ -1505,15 +1505,6 @@ namespace eternal_lands
 
 		get_state_manager().get_program()->set_parameter(
 			apt_texture_matrices, texture_matrices);
-		get_state_manager().get_program()->set_parameter(
-			apt_albedo_scale_offsets,
-			material->get_albedo_scale_offsets());
-		get_state_manager().get_program()->set_parameter(
-			apt_emission_scale_offset,
-			material->get_emission_scale_offset());
-		get_state_manager().get_program()->set_parameter(
-			apt_specular_scale_offset,
-			material->get_specular_scale_offset());
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1620,7 +1611,6 @@ namespace eternal_lands
 		MaterialSharedPtrVector materials;
 		MaterialDescription material_description;
 		ObjectData object_data;
-		glm::mat2x3 emission_scale_offset;
 
 		object_data.set_name(String(UTF8("sphere")));
 		object_data.set_id(0xFFFFFFFF);
@@ -1629,10 +1619,6 @@ namespace eternal_lands
 		get_scene_resources().get_mesh_cache()->get_mesh(
 			object_data.get_name(), mesh);
 
-		emission_scale_offset[1] = glm::vec3(1.0);
-
-		material_description.set_emission_scale_offset(
-			emission_scale_offset);
 		material_description.set_name(String(UTF8("light")));
 		material_description.set_effect(String(UTF8("light-index")));
 

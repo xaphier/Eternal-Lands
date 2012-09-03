@@ -144,7 +144,7 @@ namespace eternal_lands
 
 			inline bool get_general_type() const noexcept
 			{
-				return get_swizzle()[0] == UTF8('*');
+				return get_swizzle()[0] == '*';
 			}
 
 			inline bool get_undefined_change() const noexcept

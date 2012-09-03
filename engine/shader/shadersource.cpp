@@ -150,14 +150,14 @@ namespace eternal_lands
 
 	void ShaderSource::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("shader_source"));
+		writer->start_element(String(UTF8("shader_source")));
 
-		writer->write_element(UTF8("name"), get_name());
+		writer->write_element(String(UTF8("name")), get_name());
 
-		writer->write_element(UTF8("type"), ShaderSourceUtil::get_str(
-			get_type()));
+		writer->write_element(String(UTF8("type")),
+			ShaderSourceUtil::get_str(get_type()));
 
-		writer->start_element(UTF8("shader_source_datas"));
+		writer->start_element(String(UTF8("shader_source_datas")));
 
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{

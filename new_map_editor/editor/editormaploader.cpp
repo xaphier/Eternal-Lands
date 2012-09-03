@@ -85,23 +85,6 @@ namespace eternal_lands
 //			rotation_angel, scale, texture, id));
 	}
 
-	void EditorMapLoader::add_terrain(const StringArray4 &albedo,
-		const String &blend, const String &height, const String &dudv,
-		const glm::vec3 &translation, const glm::vec2 &dudv_scale)
-	{
-/*
-		AbstractTerrainManagerAutoPtr terrain;
-
-		terrain.reset(new SimpleTerrainManager(get_codec_manager(),
-			get_file_system(), get_global_vars(),
-			get_mesh_builder(), get_effect_cache(),
-			get_texture_cache(), transformation, albedo, blend,
-			height, dudv));
-
-		m_map->add_terrain(terrain);
-*/
-	}
-
 	void EditorMapLoader::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{

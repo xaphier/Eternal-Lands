@@ -165,7 +165,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, EffectTextureType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

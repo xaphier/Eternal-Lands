@@ -249,7 +249,7 @@ namespace
 
 	String get_name(const char* name)
 	{
-		StringType str;
+		std::string str;
 		std::size_t pos;
 
 		if (name == 0)
@@ -495,7 +495,7 @@ extern "C" void init_file_system()
 	TRY_BLOCK
 
 	el::StringStream str;
-	el::StringType config_dir, update_dir, custom_dir;
+	std::string config_dir, update_dir, custom_dir;
 
 	file_system.reset(new el::FileSystem());
 

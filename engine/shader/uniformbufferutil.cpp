@@ -71,9 +71,6 @@ namespace eternal_lands
 				String(UTF8("Scene"))),
 			UniformBufferTypeData(boost::assign::list_of
 				(apt_texture_matrices)
-				(apt_albedo_scale_offsets)
-				(apt_emission_scale_offset)
-				(apt_specular_scale_offset)
 				(apt_dudv_scale),
 				String(UTF8("material")),
 				String(UTF8("Material"))),
@@ -263,7 +260,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, UniformBufferType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

@@ -495,7 +495,7 @@ namespace eternal_lands
 
 		if (node->children == 0)
 		{
-			return String(UTF8(""));
+			return String();
 		}
 
 		return String((char*)node->children->content);
@@ -570,7 +570,7 @@ namespace eternal_lands
 	}
 
 	StringVariantMap XmlUtil::get_string_variant_map(const xmlNodePtr node,
-		const StringType &element)
+		const String &element)
 	{
 		StringVariantMap result;
 		xmlNodePtr it;
@@ -586,7 +586,8 @@ namespace eternal_lands
 
 		do
 		{
-			if (xmlStrcmp(it->name, BAD_CAST element.c_str()) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST element.get().c_str())
+				== 0)
 			{
 				result.insert(get_string_variant(it));
 			}

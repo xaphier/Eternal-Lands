@@ -95,7 +95,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, ShaderBuildType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

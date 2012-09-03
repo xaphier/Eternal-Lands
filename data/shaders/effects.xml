@@ -8,7 +8,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>true</transparent>
-		<lighting>true</lighting>
+		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
 		<name>solid-color</name>
@@ -18,7 +18,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>false</lighting>
+		<lighting></lighting>
 		<description>screen_quad_1</description>
 	</effect>
 	<effect>
@@ -29,7 +29,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>false</lighting>
+		<lighting></lighting>
 		<description>screen_quad_1</description>
 	</effect>
 	<effect>
@@ -40,7 +40,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>false</lighting>
+		<lighting></lighting>
 	</effect>
 	<effect>
 		<name>default</name>
@@ -50,7 +50,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>true</lighting>
+		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
 		<name>parallax_slope</name>
@@ -60,7 +60,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>true</lighting>
+		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
 		<name>default-alpha</name>
@@ -70,7 +70,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>true</transparent>
-		<lighting>true</lighting>
+		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
 		<name>actor</name>
@@ -80,7 +80,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>true</lighting>
+		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
 		<name>actor-alpha</name>
@@ -90,7 +90,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>true</transparent>
-		<lighting>true</lighting>
+		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
 		<name>simple-terrain</name>
@@ -100,7 +100,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>true</lighting>
+		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
 		<name>cdlod-terrain</name>
@@ -110,7 +110,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>true</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>true</lighting>
+		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
 		<name>clipmap-simple-blend-4-screen-quad</name>
@@ -120,7 +120,7 @@
 		<node_based>false</node_based>
 		<receives_shadows>false</receives_shadows>
 		<transparent>false</transparent>
-		<lighting>false</lighting>
+		<lighting></lighting>
 		<description>screen_quad_1</description>
 	</effect>
 </effects>

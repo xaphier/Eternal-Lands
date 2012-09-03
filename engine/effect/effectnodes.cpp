@@ -218,13 +218,24 @@ namespace eternal_lands
 
 	void EffectNodes::save_xml(const XmlWriterSharedPtr &writer)
 	{
-		writer->start_element(UTF8("effect_nodes"));
+		writer->start_element(String(UTF8("effect_nodes")));
 
-		writer->write_element(UTF8("name"), get_name());
+		writer->write_element(String(UTF8("name")), get_name());
 
-		writer->write_int_element(UTF8("ids"), get_ids());
+		writer->write_int_element(String(UTF8("ids")), get_ids());
 
-		writer->start_element(UTF8("nodes"));
+
+		writer->start_element(String(UTF8("texture_units")));
+
+		BOOST_FOREACH(const EffectTextureUnit &texture_units,
+			m_texture_units)
+		{
+			texture_units.save_xml(writer);
+		}
+
+		writer->end_element();
+
+		writer->start_element(String(UTF8("nodes")));
 
 		BOOST_FOREACH(EffectNode &node, m_nodes)
 		{
@@ -233,7 +244,7 @@ namespace eternal_lands
 
 		writer->end_element();
 
-		writer->start_element(UTF8("connections"));
+		writer->start_element(String(UTF8("connections")));
 
 		BOOST_FOREACH(EffectNode &node, m_nodes)
 		{
@@ -478,6 +489,32 @@ namespace eternal_lands
 		reader = XmlReaderSharedPtr(new XmlReader(file_name));
 
 		load_xml(reader->get_root_node());
+	}
+
+	void EffectNodes::set_texture_unit(const String &name,
+		const TextureTargetType target, const Uint16 index)
+	{
+		m_texture_units[index].set_name(name);
+		m_texture_units[index].set_target(target);
+		m_texture_units[index].set_default_texture(String());
+	}
+
+	void EffectNodes::set_texture_unit(const String &name,
+		const String &default_texture, const TextureTargetType target,
+		const Uint16 index)
+	{
+		m_texture_units[index].set_name(name);
+		m_texture_units[index].set_target(target);
+		m_texture_units[index].set_default_texture(default_texture);
+	}
+
+	void EffectNodes::set_texture_unit(const String &name,
+		const StringVector &default_texture,
+		const TextureTargetType target, const Uint16 index)
+	{
+		m_texture_units[index].set_name(name);
+		m_texture_units[index].set_target(target);
+		m_texture_units[index].set_default_texture(default_texture);
 	}
 
 }

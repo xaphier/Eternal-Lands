@@ -31,7 +31,10 @@ namespace eternal_lands
 
 			String get_tmp_file();
 
-			static StringTypeVector get_stripped_path(
+			static std::vector<std::wstring> get_splits(
+				const String &file_name);
+
+			static std::vector<std::wstring> get_stripped_path(
 				const String &file_name);
 
 		public:

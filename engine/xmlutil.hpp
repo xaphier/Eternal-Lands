@@ -64,7 +64,7 @@ namespace eternal_lands
 				const xmlNodePtr node);
 			static StringVariantMap get_string_variant_map(
 				const xmlNodePtr node,
-				const StringType &element);
+				const String &element);
 			static bool get_bool_value(const xmlNodePtr node);
 			static bool skip_non_elements(xmlNodePtr &node);
 			static void forece_next(xmlNodePtr &node,

@@ -28,7 +28,7 @@ namespace eternal_lands
 		public:
 			static Uint32 get_size(
 				const Variant &variant);
-			static StringType get_value_string(
+			static String get_value_string(
 				const Variant &variant);
 			static const String &get_type_string(
 				const Variant &variant);

@@ -78,8 +78,10 @@
 #define noexcept throw()
 #define nullptr 0
 #define UTF8(str) str
+#define UTF32(str) L##str
 #else
-#define UTF8(str) u##str
+#define UTF8(str) u8##str
+#define UTF32(str) U##str
 #endif
 
 namespace eternal_lands
@@ -94,7 +96,6 @@ namespace eternal_lands
 	#define ARRAY(type, N) ARRAY_NAME(type, N, type)
 	#define VECTOR(type) VECTOR_NAME(type, type)
 
-
 #if (__cplusplus < 201103L)
 	typedef wchar_t Utf32Char;
 	typedef std::wstring Utf32String;
@@ -103,12 +104,11 @@ namespace eternal_lands
 	typedef std::u32string Utf32String;
 #endif
 
-	typedef std::string StringType;
 	typedef std::stringstream StringStream;
 	typedef std::ostream OutStream;
 	typedef std::istream InStream;
 	typedef boost::format BoostFormat;
-	typedef boost::flyweights::flyweight<StringType> String;
+	typedef boost::flyweights::flyweight<std::string> String;
 	typedef std::bitset<64> BitSet64;
 	typedef std::bitset<32> BitSet32;
 	typedef std::bitset<16> BitSet16;
@@ -174,7 +174,6 @@ namespace eternal_lands
 	VECTOR(Uint32);
 	VECTOR(Sint32);
 	VECTOR(String);
-	VECTOR(StringType);
 	VECTOR(Uint16Array2);
 	VECTOR(Uint32Array2);
 

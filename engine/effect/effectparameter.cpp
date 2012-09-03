@@ -199,13 +199,13 @@ namespace eternal_lands
 		return String();
 	}
 
-	void EffectParameter::save_xml(const XmlWriterSharedPtr &writer)
+	void EffectParameter::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("effect_parameter"));
+		writer->start_element(String(UTF8("effect_parameter")));
 
 		EffectNode::save_xml(writer);
 
-		writer->write_element(UTF8("type"),
+		writer->write_element(String(UTF8("type")),
 			EffectParameterUtil::get_str(get_type()));
 
 		writer->end_element();

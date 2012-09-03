@@ -93,7 +93,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, ShaderSourceType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

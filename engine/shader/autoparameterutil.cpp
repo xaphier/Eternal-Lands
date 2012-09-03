@@ -103,14 +103,6 @@ namespace eternal_lands
 			AutoParameterTypeData(
 				String(UTF8("texture_matrices")), pt_mat2x3,
 				pst_one, 2),
-			AutoParameterTypeData(
-				String(UTF8("albedo_scale_offsets")),
-				pt_mat2x4, pst_one, 4),
-			AutoParameterTypeData(
-				String(UTF8("emission_scale_offset")),
-				pt_mat2x3),
-			AutoParameterTypeData(
-				String(UTF8("specular_scale_offset")), pt_vec4),
 			AutoParameterTypeData(String(UTF8("dudv_scale")),
 				pt_vec2),
 			AutoParameterTypeData(String(UTF8("blend_sizes")),
@@ -290,7 +282,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, AutoParameterType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

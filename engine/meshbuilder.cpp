@@ -102,6 +102,7 @@ namespace eternal_lands
 		mesh[vst_texture_coordinate] = texture_coordinate;
 		mesh[vst_normal] = normal;
 		mesh[vst_tangent] = normal;
+		mesh[vst_color] = vet_ubyte4_normalized;
 
 		animated_mesh_2_bones[vst_position] = position4;
 		animated_mesh_2_bones[vst_normal] = normal;
@@ -388,7 +389,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, VertexFormatType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

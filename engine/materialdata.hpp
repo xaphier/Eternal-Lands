@@ -26,10 +26,7 @@ namespace eternal_lands
 	{
 		private:
 			Vec4Array4 m_blend_sizes;
-			Mat2x4Array4 m_albedo_scale_offsets;
 			Mat2x3Array2 m_texture_matrices;
-			glm::mat2x3 m_emission_scale_offset;
-			glm::vec4 m_specular_scale_offset;
 			glm::vec4 m_color;
 			glm::vec2 m_dudv_scale;
 			bool m_cast_shadows;
@@ -51,18 +48,6 @@ namespace eternal_lands
 				return m_blend_sizes[index];
 			}
 
-			inline const Mat2x4Array4 &get_albedo_scale_offsets()
-				const noexcept
-			{
-				return m_albedo_scale_offsets;
-			}
-
-			inline const glm::mat2x4 &get_albedo_scale_offset(
-				const Uint16 index) const noexcept
-			{
-				return m_albedo_scale_offsets[index];
-			}
-
 			inline const Mat2x3Array2 &get_texture_matrices()
 				const noexcept
 			{
@@ -73,18 +58,6 @@ namespace eternal_lands
 				const Uint16 index) const
 			{
 				return m_texture_matrices[index];
-			}
-
-			inline const glm::mat2x3 &get_emission_scale_offset()
-				const noexcept
-			{
-				return m_emission_scale_offset;
-			}
-
-			inline const glm::vec4 &get_specular_scale_offset()
-				const noexcept
-			{
-				return m_specular_scale_offset;
 			}
 
 			inline const glm::vec4 &get_color() const noexcept
@@ -119,50 +92,6 @@ namespace eternal_lands
 				m_blend_sizes[index] = blend_size;
 			}
 
-			inline void set_albedo_scale_offsets(
-				const Mat2x4Array4 &albedo_scale_offsets)
-				noexcept
-			{
-				BOOST_FOREACH(const glm::mat2x4 &value, albedo_scale_offsets)
-				{
-					assert(std::isfinite(value[0][0]));
-					assert(std::isfinite(value[0][1]));
-					assert(std::isfinite(value[0][2]));
-					assert(std::isfinite(value[0][3]));
-					assert(std::isfinite(value[1][0]));
-					assert(std::isfinite(value[1][1]));
-					assert(std::isfinite(value[1][2]));
-					assert(std::isfinite(value[1][3]));
-				}
-
-				m_albedo_scale_offsets = albedo_scale_offsets;
-			}
-
-			inline void set_albedo_scale_offset(
-				const glm::mat2x4 &albedo_scale_offset,
-				const Uint16 index)
-			{
-				assert(std::isfinite(
-					albedo_scale_offset[0][0]));
-				assert(std::isfinite(
-					albedo_scale_offset[0][1]));
-				assert(std::isfinite(
-					albedo_scale_offset[0][2]));
-				assert(std::isfinite(
-					albedo_scale_offset[0][3]));
-				assert(std::isfinite(
-					albedo_scale_offset[1][0]));
-				assert(std::isfinite(
-					albedo_scale_offset[1][1]));
-				assert(std::isfinite(
-					albedo_scale_offset[1][2]));
-				assert(std::isfinite(
-					albedo_scale_offset[1][3]));
-
-				m_albedo_scale_offsets[index] =
-					albedo_scale_offset;
-			}
-
 			inline void set_texture_matrices(
 				const Mat2x3Array2 &texture_matrices) noexcept
 			{
@@ -193,39 +122,6 @@ namespace eternal_lands
 
 				m_texture_matrices[index] =
 					texture_matrix;
-			}
-
-			inline void set_emission_scale_offset(
-				const glm::mat2x3 &emission_scale_offset)
-				noexcept
-			{
-				assert(std::isfinite(
-					emission_scale_offset[0][0]));
-				assert(std::isfinite(
-					emission_scale_offset[0][1]));
-				assert(std::isfinite(
-					emission_scale_offset[0][2]));
-				assert(std::isfinite(
-					emission_scale_offset[1][0]));
-				assert(std::isfinite(
-					emission_scale_offset[1][1]));
-				assert(std::isfinite(
-					emission_scale_offset[1][2]));
-
-				m_emission_scale_offset =
-					emission_scale_offset;
-			}
-
-			inline void set_specular_scale_offset(
-				const glm::vec4 &specular_scale_offset) noexcept
-			{
-				assert(std::isfinite(specular_scale_offset[0]));
-				assert(std::isfinite(specular_scale_offset[1]));
-				assert(std::isfinite(specular_scale_offset[2]));
-				assert(std::isfinite(specular_scale_offset[3]));
-
-				m_specular_scale_offset =
-					specular_scale_offset;
 			}
 
 			inline void set_color(const glm::vec4 &color) noexcept

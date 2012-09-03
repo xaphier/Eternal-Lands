@@ -539,15 +539,17 @@ namespace eternal_lands
 		return EffectFunctionUtil::get_description(get_type());
 	}
 
-	void EffectFunction::save_xml(const XmlWriterSharedPtr &writer)
+	void EffectFunction::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("effect_function"));
+		writer->start_element(String(UTF8("effect_function")));
 
 		EffectNode::save_xml(writer);
 
-		writer->write_element(UTF8("var_name_0"), m_var_names[0]);
-		writer->write_element(UTF8("var_name_1"), m_var_names[1]);
-		writer->write_element(UTF8("type"),
+		writer->write_element(String(UTF8("var_name_0")),
+			m_var_names[0]);
+		writer->write_element(String(UTF8("var_name_1")),
+			m_var_names[1]);
+		writer->write_element(String(UTF8("type")),
 			EffectFunctionUtil::get_str(get_type()));
 
 		writer->end_element();

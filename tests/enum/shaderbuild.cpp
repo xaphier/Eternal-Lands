@@ -80,5 +80,9 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(
 		el::sbt_debug_normal).get(), "debug_normal");
 	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(
+		el::sbt_debug_shadow).get(), "debug_shadow");
+	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(
 		el::sbt_debug_emissive).get(), "debug_emissive");
+	BOOST_CHECK_EQUAL(el::ShaderBuildUtil::get_str(
+		el::sbt_debug_light_index).get(), "debug_light_index");
 }

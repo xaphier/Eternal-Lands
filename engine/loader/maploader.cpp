@@ -150,12 +150,6 @@ namespace eternal_lands
 //		m_map->add_decal(DecalDescription(matrix, texture));
 	}
 
-	void MapLoader::add_terrain(const StringArray4 &albedo,
-		const String &blend, const String &height, const String &dudv,
-		const glm::vec3 &translation, const glm::vec2 &dudv_scale)
-	{
-	}
-
 	void MapLoader::set_tile(const Uint16 x, const Uint16 y,
 		const Uint16 tile)
 	{

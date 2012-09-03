@@ -58,9 +58,9 @@ namespace eternal_lands
 	class BadAllocException: public virtual std::bad_alloc,
 		public virtual boost::exception {};
 
-	typedef boost::error_info<struct errinfo_parameter_name_, StringType>
+	typedef boost::error_info<struct errinfo_parameter_name_, std::string>
 		errinfo_parameter_name;
-	typedef boost::error_info<struct errinfo_message_, StringType>
+	typedef boost::error_info<struct errinfo_message_, std::string>
 		errinfo_message;
 	typedef boost::error_info<struct errinfo_file_position_, Uint64>
 		errinfo_file_position;
@@ -70,12 +70,12 @@ namespace eternal_lands
 	typedef boost::error_info<struct errinfo_size_, Uint64> errinfo_size;
 	typedef boost::error_info<struct errinfo_item_id_, Uint32>
 		errinfo_item_id;
-	typedef boost::error_info<struct errinfo_item_name_, StringType>
+	typedef boost::error_info<struct errinfo_item_name_, std::string>
 		errinfo_item_name;
-	typedef boost::error_info<struct errinfo_string_value_, StringType>
+	typedef boost::error_info<struct errinfo_string_value_, std::string>
 		errinfo_string_value;
 	typedef boost::error_info<struct errinfo_expected_string_value_,
-		StringType> errinfo_expected_string_value;
+		std::string> errinfo_expected_string_value;
 	typedef boost::error_info<struct errinfo_range_min_, Sint64>
 		errinfo_range_min;
 	typedef boost::error_info<struct errinfo_range_max_, Sint64>
@@ -98,27 +98,27 @@ namespace eternal_lands
 		errinfo_array_index_1;
 	typedef boost::error_info<struct errinfo_array_index_2_, Uint64>
 		errinfo_array_index_2;
-	typedef boost::error_info<struct errinfo_name_, StringType>
+	typedef boost::error_info<struct errinfo_name_, std::string>
 		errinfo_name;
-	typedef boost::error_info<struct errinfo_type_name_, StringType>
+	typedef boost::error_info<struct errinfo_type_name_, std::string>
 		errinfo_type_name;
-	typedef boost::error_info<struct errinfo_any_type_name_, StringType>
+	typedef boost::error_info<struct errinfo_any_type_name_, std::string>
 		errinfo_variant_type_name;
-	typedef boost::error_info<struct errinfo_vertex_shader_, StringType>
+	typedef boost::error_info<struct errinfo_vertex_shader_, std::string>
 		errinfo_vertex_shader_source;
 	typedef boost::error_info<struct errinfo_tess_control_shader_,
-		StringType> errinfo_tess_control_shader_source;
+		std::string> errinfo_tess_control_shader_source;
 	typedef boost::error_info<struct errinfo_tess_evaluation_shader_,
-		StringType> errinfo_tess_evaluation_shader_source;
-	typedef boost::error_info<struct errinfo_geometry_shader_, StringType>
+		std::string> errinfo_tess_evaluation_shader_source;
+	typedef boost::error_info<struct errinfo_geometry_shader_, std::string>
 		errinfo_geometry_shader_source;
-	typedef boost::error_info<struct errinfo_fragment_shader_, StringType>
+	typedef boost::error_info<struct errinfo_fragment_shader_, std::string>
 		errinfo_fragment_shader_source;
-	typedef boost::error_info<struct errinfo_object_name_, StringType>
+	typedef boost::error_info<struct errinfo_object_name_, std::string>
 		errinfo_object_name;
 	typedef boost::error_info<struct errinfo_opengl_error_, GLint>
 		errinfo_opengl_error;
-	typedef boost::error_info<struct errinfo_stack_string_, StringType>
+	typedef boost::error_info<struct errinfo_stack_string_, std::string>
 		errinfo_stack_string;
 
 	String get_gl_error_string(const GLenum error);

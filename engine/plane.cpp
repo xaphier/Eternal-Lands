@@ -200,7 +200,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, IntersectionType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

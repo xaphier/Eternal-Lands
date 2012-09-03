@@ -17,13 +17,8 @@ namespace eternal_lands
 		for (i = 0; i < 4; ++i)
 		{
 			m_blend_sizes[i] = glm::vec4(1.0f);
-			m_albedo_scale_offsets[i][0] = glm::vec4(1.0f);
-			m_albedo_scale_offsets[i][1] = glm::vec4(0.0f);
 		}
 
-		m_emission_scale_offset[0] = glm::vec3(1.0f);
-		m_emission_scale_offset[1] = glm::vec3(0.0f);
-		m_specular_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
 		m_color = glm::vec4(0.0f);
 		m_dudv_scale = glm::vec2(1.0f);
 	}

@@ -87,7 +87,7 @@ namespace eternal_lands
 		BOOST_FOREACH(const glm::vec3 &point, corner_points)
 		{
 			radius = std::max(radius, glm::distance(center,
-				point) * 0.55f);
+				point) * 0.6f);
 		}
 
 		/**

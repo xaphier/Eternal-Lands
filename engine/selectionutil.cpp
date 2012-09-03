@@ -84,7 +84,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, SelectionType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

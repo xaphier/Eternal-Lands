@@ -218,7 +218,7 @@ namespace eternal_lands
 		const Uint16 half_taps_minus_one, const bool layer,
 		const bool vertical)
 	{
-		StringType name;
+		std::string name;
 		String none;
 		Uint16 index;
 
@@ -311,7 +311,7 @@ namespace eternal_lands
 		const Uint16 channel_count, const Uint16 sample_count)
 	{
 		StringStream str;
-		StringType channels, offset;
+		std::string channels, offset;
 		Uint32 i, j;
 
 		str << UTF8("#version ") << version << UTF8("\n");
@@ -443,8 +443,8 @@ namespace eternal_lands
 		const bool layer, const bool vertical)
 	{
 		StringStream str, tmp;
-		boost::array<StringType, 7> textures;
-		StringType channels;
+		boost::array<std::string, 7> textures;
+		std::string channels;
 
 		str << UTF8("#version ") << version << UTF8("\n");
 		str << UTF8("\n");

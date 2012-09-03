@@ -450,12 +450,8 @@ namespace eternal_lands
 			const bool use_restart_index, const bool use_simd,
 			MeshDataToolSharedPtr &mesh_data_tool)
 		{
-			StringTypeVector data;
 			StringStream str;
-			Uint32 count;
-
-			boost::split(data, name.get(), boost::is_any_of(
-				UTF8("_")), boost::token_compress_on);
+			Uint32 i;
 
 			if (name == UTF8("quad"))
 			{
@@ -465,7 +461,7 @@ namespace eternal_lands
 
 			if (name == UTF8("tile"))
 			{
-				load_plane(name, 3.0f, 0.5f, 2, true,
+				load_plane(name, 3.01f, 0.5f, 2, true,
 					use_restart_index, use_simd, false,
 					mesh_data_tool);
 				return true;
@@ -486,43 +482,30 @@ namespace eternal_lands
 				return true;
 			}
 
-			if (data.size() != 2)
+			for (i = 1; i < 128; i += i)
 			{
-				return false;
-			}
+				StringStream plane, terrain;
 
-			str << data[1];
-			str >> count;
+				plane << UTF8("plane_") << i;
 
-			if ((data[0] == UTF8("plane")) && (count >= 2))
-			{
-				if (__builtin_popcount(count) != 1)
+				if (plane.str() == name)
 				{
-					LOG_ERROR(lt_mesh, UTF8("Only power of"
-						" two sizes supported for "
-						"plane (%1%)"), name);
-					return false;
+					load_plane(name, 1.0f, 0.5f, i, true,
+						use_restart_index, use_simd,
+						false, mesh_data_tool);
+					return true;
 				}
 
-				load_plane(name, 1.0f, 0.5f, count, true,
-					use_restart_index, use_simd, false,
-					mesh_data_tool);
-				return true;
-			}
+				terrain << UTF8("terrain_") << i;
 
-			if ((data[0] == UTF8("terrain")) && (count >= 2))
-			{
-				if (__builtin_popcount(count) != 1)
+				if (terrain.str() == name)
 				{
-					LOG_ERROR(lt_mesh, UTF8("Only power of"
-						" two sizes supported for "
-						"terrain (%1%)"), name);
-					return false;
-				}
+					load_terrain(name, i,
+						use_restart_index, use_simd,
+						mesh_data_tool);
 
-				load_terrain(name, count, use_restart_index,
-					use_simd, mesh_data_tool);
-				return true;
+					return true;
+				}
 			}
 
 			return false;

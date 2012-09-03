@@ -218,7 +218,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, TextureTargetType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

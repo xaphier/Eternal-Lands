@@ -30,9 +30,9 @@ namespace eternal_lands
 	StringSet AbstractMapLoader::load_harvestables(
 		const FileSystemSharedPtr &file_system)
 	{
-		std::vector<StringType> lines, line;
-		std::vector<StringType>::iterator it;
-		StringType str;
+		std::vector<std::string> lines, line;
+		std::vector<std::string>::iterator it;
+		std::string str;
 		String harvestables_str;
 		StringSet result;
 
@@ -67,9 +67,9 @@ namespace eternal_lands
 	StringSet AbstractMapLoader::load_entrables(
 		const FileSystemSharedPtr &file_system)
 	{
-		std::vector<StringType> lines, line;
-		std::vector<StringType>::iterator it;
-		StringType str;
+		std::vector<std::string> lines, line;
+		std::vector<std::string>::iterator it;
+		std::string str;
 		String entrable_str;
 		StringSet result;
 

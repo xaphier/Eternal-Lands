@@ -17,6 +17,7 @@
 #include "shader/uniformdescription.hpp"
 #include "shader/uniformbufferutil.hpp"
 #include "uniformbufferdescriptioncache.hpp"
+#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -37,8 +38,8 @@ namespace eternal_lands
 			public:
 				GlslShaderObject(const GLenum shader_type);
 				~GlslShaderObject() noexcept;
-				void load(const StringType &source);
-				StringType get_shader_log() const;
+				void load(const String &source);
+				String get_shader_log() const;
 				bool get_shader_compile_status() const;
 				void compile();
 
@@ -72,20 +73,20 @@ namespace eternal_lands
 			m_shader = 0;
 		}
 
-		void GlslShaderObject::load(const StringType &source)
+		void GlslShaderObject::load(const String &source)
 		{
 			GLint size;
 
-			const char* buffer = source.c_str();
+			const char* buffer = source.get().c_str();
 	
-			size = source.length();
+			size = source.get().length();
 
 			assert(size > 0);
 
 			glShaderSource(get_shader(), 1, &buffer, &size);
 		}
 
-		StringType GlslShaderObject::get_shader_log() const
+		String GlslShaderObject::get_shader_log() const
 		{
 			GLcharSharedArray buffer;
 			GLint blen, slen;
@@ -99,11 +100,11 @@ namespace eternal_lands
 				glGetShaderInfoLog(m_shader, blen, &slen,
 					buffer.get());
 
-				return std::string(buffer.get(), slen);
+				return String(std::string(buffer.get(), slen));
 			}
 			else
 			{
-				return UTF8("");
+				return String();
 			}
 		}
 
@@ -130,21 +131,23 @@ namespace eternal_lands
 				"successful: %1%"), get_shader_log());
 		}
 
-		String get_base_name(const StringType &name)
+		String get_base_name(const String &name)
 		{
-			StringType::size_type found;
+			std::wstring tmp;
+			std::wstring::size_type found;
 
-			found = name.rfind('[');
+			tmp = utf8_to_wstring(name);
 
-			if ((found != std::string::npos) &&
-				(name.size() == (name.rfind(']') + 1)))
+			found = tmp.rfind(L'[');
+
+			if ((found != std::wstring::npos) &&
+				(tmp.size() == (tmp.rfind(L']') + 1)))
 			{
-				return String(name.substr(0, found));
+				return String(wstring_to_utf8(tmp.substr(0,
+					found)));
 			}
-			else
-			{
-				return String(name);
-			}
+
+			return name;
 		}
 
 		inline void set_uniform(const Uint32 index, const bool value)
@@ -1874,7 +1877,7 @@ namespace eternal_lands
 		}
 	}
 
-	StringType GlslProgram::get_program_log()
+	String GlslProgram::get_program_log()
 	{
 		GLcharSharedArray buffer;
 		GLint blen, slen;
@@ -1887,16 +1890,15 @@ namespace eternal_lands
 
 			slen = blen;
 
-			glGetProgramInfoLog(m_program, blen, &slen, buffer.get());
+			glGetProgramInfoLog(m_program, blen, &slen,
+				buffer.get());
 
 			slen = std::min((GLint)strlen(buffer.get()), slen);
 
-			return std::string(buffer.get(), slen);
+			return String(std::string(buffer.get(), slen));
 		}
-		else
-		{
-			return UTF8("");
-		}
+
+		return String();
 	}
 
 	bool GlslProgram::program_link_status()
@@ -2101,7 +2103,7 @@ namespace eternal_lands
 			glGetActiveUniformName(m_program, uniform_index,
 				max_buffer_size, &length, buffer.get());
 
-			name = String(get_base_name(std::string(buffer.get(),
+			name = get_base_name(String(std::string(buffer.get(), 
 				length)));
 
 			type = ParameterUtil::get_parameter(uniform_type);
@@ -2301,7 +2303,7 @@ namespace eternal_lands
 
 			assert(array_size > 0);
 
-			name = String(get_base_name(std::string(buffer.get(),
+			name = get_base_name(String(std::string(buffer.get(),
 				length)));
 
 			index = glGetUniformLocation(m_program, buffer.get());
@@ -2404,7 +2406,8 @@ namespace eternal_lands
 
 			assert(array_size > 0);
 
-			name = get_base_name(std::string(buffer.get(), length));
+			name = get_base_name(String(std::string(buffer.get(),
+				length)));
 			index = glGetAttribLocation(m_program, buffer.get());
 			parameter = ParameterUtil::get_parameter(type);
 
@@ -2669,7 +2672,7 @@ namespace eternal_lands
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("values")) == 0)
 			{
 				values = XmlUtil::get_string_variant_map(it,
-					UTF8("value"));
+					String(UTF8("value")));
 			}
 		}
 		while (XmlUtil::next(it, true));

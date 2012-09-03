@@ -56,7 +56,7 @@ namespace eternal_lands
 			String load_material(const Uint32 material_offset,
 				const Uint32 material_size,
 				const Uint32 material_index,
-				const StringType &dir);
+				const String &dir);
 			void load_materials(const Uint32 material_count,
 				const Uint32 material_size,
 				const Uint32 material_offset,

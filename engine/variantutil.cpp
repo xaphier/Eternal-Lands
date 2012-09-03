@@ -730,13 +730,13 @@ namespace eternal_lands
 		return ParameterUtil::get_str(get_parameter_type(variant)); 
 	}
 
-	StringType VariantUtil::get_value_string(const Variant &variant)
+	String VariantUtil::get_value_string(const Variant &variant)
 	{
 		StringStream result;
 
 		boost::apply_visitor(VariantToOutStream(result), variant);
 
-		return result.str();
+		return String(result.str());
 	}
 
 	Variant VariantUtil::get_variant(const ParameterType type,

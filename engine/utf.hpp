@@ -22,7 +22,10 @@ namespace eternal_lands
 
 	std::string utf8_to_string(const std::string &str);
 	std::string string_to_utf8(const std::string &str);
+	std::string utf32_to_utf8(const Utf32String &str);
 	Utf32String utf8_to_utf32(const std::string &str);
+	std::string wstring_to_utf8(const std::wstring &str);
+	std::wstring utf8_to_wstring(const std::string &str);
 
 }
 

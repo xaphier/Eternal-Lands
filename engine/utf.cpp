@@ -16,7 +16,8 @@ namespace eternal_lands
 	{
 
 		std::string convert(const std::string &from_charset,
-			const std::string &to_charset, const std::string &input)
+			const std::string &to_charset, const char* input,
+			const size_t size)
 		{
 			std::string result;
 			boost::scoped_array<char> output;
@@ -37,12 +38,13 @@ namespace eternal_lands
 					NotImplementedException());
 			}
 
-			inleft = input.length();
-			inbuf = input.c_str();
+			inleft = size;
+			inbuf = input;
 
 			/* we'll start off allocating an output buffer which is
-			 * the same size as our input buffer. */
-			outlen = inleft;
+			 * the same size as our input buffer, but at least 128
+			 * bytes big. */
+			outlen = std::max(inleft, static_cast<size_t>(128));
 
 			output.reset(new char[outlen]);
 
@@ -122,22 +124,46 @@ namespace eternal_lands
 
 	std::string utf8_to_string(const std::string &str)
 	{
-		return convert("UTF-8", "", str);
+		return convert("UTF-8", "", str.c_str(), str.length());
 	}
 
 	std::string string_to_utf8(const std::string &str)
 	{
-		return convert("", "UTF-8", str);
+		return convert("", "UTF-8", str.c_str(), str.length());
 	}
 
-	std::wstring utf8_to_utf32(const std::string &str)
+	Utf32String utf8_to_utf32(const std::string &str)
 	{
 		std::string tmp;
 
-		tmp = convert("UTF-8", "UTF-32", str);
+		tmp = convert("UTF-8", "UTF-32", str.c_str(), str.length());
+
+		return Utf32String(reinterpret_cast<const Utf32Char*>(
+			tmp.c_str()), tmp.size() / 4);
+	}
+
+	std::string utf32_to_utf8(const Utf32String &str)
+	{
+		return convert("UTF-32", "UTF-8",
+			reinterpret_cast<const char*>(str.c_str()),
+			str.length() * 4);
+	}
+
+	std::wstring utf8_to_wstring(const std::string &str)
+	{
+		std::string tmp;
+
+		tmp = convert("UTF-8", "UTF-32", str.c_str(), str.length());
 
 		return std::wstring(reinterpret_cast<const wchar_t*>(
 			tmp.c_str()), tmp.size() / 4);
+	}
+
+	std::string wstring_to_utf8(const std::wstring &str)
+	{
+		return convert("UTF-32", "UTF-8",
+			reinterpret_cast<const char*>(str.c_str()),
+			str.length() * 4);
 	}
 
 }

@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		el::String(UTF8("3sfd23")), 0.54f, 543549564, el::st_player,
 		el::bt_disabled);
 
-	BOOST_CHECK_EQUAL(UTF8(object_data.get_name()), UTF8("3sfd23"));
+	BOOST_CHECK_EQUAL(object_data.get_name(), UTF8("3sfd23"));
 
 	BOOST_CHECK_CLOSE(object_data.get_transparency(), 0.54f, 0.001);
 

@@ -144,29 +144,10 @@ namespace eternal_lands
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"void set_albedo_scale_offset(const mat2x4 &in, uint)",
-			asMETHODPR(MaterialData, set_albedo_scale_offset,
-			(const glm::mat2x4 &, const Uint16), void),
-			asCALL_THISCALL);
-		assert(r >= 0);
-
-		r = get_engine()->RegisterObjectMethod("MaterialData",
 			"void set_texture_matrix(const mat2x3 &in, uint)",
 			asMETHODPR(MaterialData, set_texture_matrix,
 			(const glm::mat2x3 &, const Uint16), void),
 			asCALL_THISCALL);
-		assert(r >= 0);
-
-		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"void set_emission_scale_offset(const mat2x3 &in)",
-			asMETHODPR(MaterialData, set_emission_scale_offset,
-			(const glm::mat2x3 &), void), asCALL_THISCALL);
-		assert(r >= 0);
-
-		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"void set_specular_scale_offset(const vec4 &in)",
-			asMETHODPR(MaterialData, set_specular_scale_offset,
-			(const glm::vec4 &), void), asCALL_THISCALL);
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",
@@ -195,29 +176,10 @@ namespace eternal_lands
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"const mat2x4 &get_albedo_scale_offset(uint) const",
-			asMETHODPR(MaterialData, get_albedo_scale_offset,
-			(const Uint16) const, const glm::mat2x4 &),
-			asCALL_THISCALL);
-		assert(r >= 0);
-
-		r = get_engine()->RegisterObjectMethod("MaterialData",
 			"const mat2x3 &get_texture_matrix(uint)",
 			asMETHODPR(MaterialData, get_texture_matrix,
 			(const Uint16) const, const glm::mat2x3 &),
 			asCALL_THISCALL);
-		assert(r >= 0);
-
-		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"const mat2x3 &get_emission_scale_offset()",
-			asMETHODPR(MaterialData , get_emission_scale_offset,
-			() const, const glm::mat2x3 &), asCALL_THISCALL);
-		assert(r >= 0);
-
-		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"const vec4 &get_specular_scale_offset()",
-			asMETHODPR(MaterialData, get_specular_scale_offset,
-			() const, const glm::vec4 &), asCALL_THISCALL);
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",

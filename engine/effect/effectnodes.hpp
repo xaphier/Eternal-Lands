@@ -17,6 +17,7 @@
 #include "effectfunction.hpp"
 #include "effectparameter.hpp"
 #include "effecttexture.hpp"
+#include "effecttextureunit.hpp"
 #include "../shader/shaderversionutil.hpp"
 
 /**
@@ -32,15 +33,12 @@ namespace eternal_lands
 		friend class EffectNode;
 		friend class EffectNodePort;
 		private:
+			typedef boost::array<EffectTextureUnit, 12>
+				EffectTextureUnitMapArray12;
+
 			EffectNodeVector m_nodes;
-/*
-			struct
-			{
-				TextureTargetType m_target;
-				String m_name;
-				StringVector m_default_texture;
-			};
-*/
+			EffectTextureUnitMapArray12 m_texture_units;
+
 			boost::mt19937 m_ran;
 			Mt19937RandomUuidGenerator m_uuid_generator;
 			String m_name;
@@ -83,6 +81,17 @@ namespace eternal_lands
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			void remove(const EffectNodePtr effect_node);
+			void set_texture_unit(const String &name,
+				const TextureTargetType target,
+				const Uint16 index);
+			void set_texture_unit(const String &name,
+				const String &default_texture,
+				const TextureTargetType target,
+				const Uint16 index);
+			void set_texture_unit(const String &name,
+				const StringVector &default_texture,
+				const TextureTargetType target,
+				const Uint16 index);
 
 			inline Uint32 get_node_count() const
 			{

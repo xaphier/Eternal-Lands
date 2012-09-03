@@ -61,7 +61,7 @@ namespace eternal_lands
 		char** messages;
 		char* demangled_name;
 		StringStream str;
-		StringType message, name, address, offset;
+		std::string message, name, address, offset;
 		std::size_t mangled_name, offset_begin, offset_end;
 		int i, size, status;
 

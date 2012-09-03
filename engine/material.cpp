@@ -24,7 +24,7 @@ namespace eternal_lands
 	namespace
 	{
 
-		const String empty_str = String(UTF8(""));
+		const String empty_str = String();
 		const EffectDescription empty_material;
 
 	}
@@ -174,12 +174,6 @@ namespace eternal_lands
 			get_blend_sizes());
 		state_manager.get_program()->set_parameter(apt_texture_matrices,
 			get_texture_matrices());
-		state_manager.get_program()->set_parameter(
-			apt_albedo_scale_offsets, get_albedo_scale_offsets());
-		state_manager.get_program()->set_parameter(
-			apt_emission_scale_offset, get_emission_scale_offset());
-		state_manager.get_program()->set_parameter(
-			apt_specular_scale_offset, get_specular_scale_offset());
 		state_manager.get_program()->set_parameter(apt_material_color,
 			get_color());
 		state_manager.get_program()->set_parameter(apt_dudv_scale,

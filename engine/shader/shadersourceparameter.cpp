@@ -628,11 +628,11 @@ namespace eternal_lands
 	void ShaderSourceParameter::save_xml(const XmlWriterSharedPtr &writer)
 		const
 	{
-		writer->start_element(UTF8("parameter"));
+		writer->start_element(String(UTF8("parameter")));
 
 		if (get_auto_parameter())
 		{
-			writer->write_element(UTF8("auto_parameter"),
+			writer->write_element(String(UTF8("auto_parameter")),
 				get_name());
 			writer->end_element();
 
@@ -641,7 +641,7 @@ namespace eternal_lands
 
 		if (get_vertex_semantic())
 		{
-			writer->write_element(UTF8("vertex_semantic"),
+			writer->write_element(String(UTF8("vertex_semantic")),
 				get_name());
 			writer->end_element();
 
@@ -650,9 +650,9 @@ namespace eternal_lands
 
 		if (get_common_parameter())
 		{
-			writer->write_element(UTF8("common_parameter"),
+			writer->write_element(String(UTF8("common_parameter")),
 				get_name());
-			writer->write_element(UTF8("qualifier"),
+			writer->write_element(String(UTF8("qualifier")),
 				ParameterQualifierUtil::get_str(
 					get_qualifier()));
 			writer->end_element();
@@ -662,23 +662,23 @@ namespace eternal_lands
 
 		if (get_sampler_parameter())
 		{
-			writer->write_element(UTF8("sampler_parameter"),
+			writer->write_element(String(UTF8("sampler_parameter")),
 				get_name());
-			writer->write_element(UTF8("type"),
+			writer->write_element(String(UTF8("type")),
 				ParameterUtil::get_str(get_type()));
 			writer->end_element();
 
 			return;
 		}
 
-		writer->write_element(UTF8("name"), get_name());
-		writer->write_element(UTF8("type"), ParameterUtil::get_str(
-			get_type()));
-		writer->write_element(UTF8("qualifier"),
+		writer->write_element(String(UTF8("name")), get_name());
+		writer->write_element(String(UTF8("type")),
+			ParameterUtil::get_str(get_type()));
+		writer->write_element(String(UTF8("qualifier")),
 			ParameterQualifierUtil::get_str(get_qualifier()));
-		writer->write_element(UTF8("size"),
+		writer->write_element(String(UTF8("size")),
 			ParameterSizeUtil::get_str(get_size()));
-		writer->write_int_element(UTF8("scale"), get_scale());
+		writer->write_int_element(String(UTF8("scale")), get_scale());
 		writer->end_element();
 	}
 

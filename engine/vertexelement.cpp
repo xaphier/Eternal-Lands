@@ -541,7 +541,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, VertexElementType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 
@@ -552,7 +552,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, VertexSemanticType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

@@ -497,7 +497,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, EffectFunctionType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

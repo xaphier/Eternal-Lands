@@ -43,7 +43,7 @@ namespace eternal_lands
 			virtual Uint16 get_initial_value_count() const = 0;
 			void update(EffectNodePtrSet &updated);
 			void save_connections_xml(
-				const XmlWriterSharedPtr &writer);
+				const XmlWriterSharedPtr &writer) const;
 			void load_ports_xml(const xmlNodePtr node);
 			void get_ports(UuidEffectNodePortPtrMap &ports);
 
@@ -80,7 +80,8 @@ namespace eternal_lands
 				const boost::uuids::uuid &uuid,
 				const EffectChangeType change = ect_undefined);
 			String get_value_count_type_str() const;
-			virtual void save_xml(const XmlWriterSharedPtr &writer);
+			virtual void save_xml(const XmlWriterSharedPtr &writer)
+				const;
 			virtual void load_xml(const xmlNodePtr node);
 
 			inline void clear_ports()

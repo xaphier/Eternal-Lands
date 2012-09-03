@@ -99,16 +99,16 @@ namespace eternal_lands
 	void GlslProgramDescription::save_xml(
 		const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("glslprogram"));
-		writer->write_element(UTF8("vertex_shader"),
+		writer->start_element(String(UTF8("glslprogram")));
+		writer->write_element(String(UTF8("vertex_shader")),
 			get_vertex_shader());
-		writer->write_element(UTF8("tess_control_shader"),
+		writer->write_element(String(UTF8("tess_control_shader")),
 			get_tess_control_shader());
-		writer->write_element(UTF8("tess_evaluation_shader"),
+		writer->write_element(String(UTF8("tess_evaluation_shader")),
 			get_tess_evaluation_shader());
-		writer->write_element(UTF8("geometry_shader"),
+		writer->write_element(String(UTF8("geometry_shader")),
 			get_geometry_shader());
-		writer->write_element(UTF8("fragment_shader"),
+		writer->write_element(String(UTF8("fragment_shader")),
 			get_fragment_shader());
 		writer->end_element();
 	}

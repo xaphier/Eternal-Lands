@@ -105,7 +105,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, ParameterQualifierType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

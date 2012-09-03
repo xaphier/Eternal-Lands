@@ -39,12 +39,12 @@ namespace eternal_lands
 			String m_world_transformation;
 			String m_texture_coodrinates;
 			String m_main;
+			String m_lighting;
 			EffectDescriptionType m_description;
 			ShaderOutputType m_output;
 			bool m_node_based;
 			bool m_receives_shadows;
 			bool m_transparent;
-			bool m_lighting;
 
 		public:
 			/**
@@ -86,6 +86,12 @@ namespace eternal_lands
 				m_main = main;
 			}
 
+			inline void set_lighting(const String &lighting)
+				noexcept
+			{
+				m_lighting = lighting;
+			}
+
 			inline void set_node_based(const bool node_based)
 				noexcept
 			{
@@ -117,11 +123,6 @@ namespace eternal_lands
 				m_transparent = transparent;
 			}
 
-			inline void set_lighting(const bool lighting) noexcept
-			{
-				m_lighting = lighting;
-			}
-
 			inline const String &get_name() const noexcept
 			{
 				return m_name;
@@ -142,6 +143,11 @@ namespace eternal_lands
 			inline const String &get_main() const noexcept
 			{
 				return m_main;
+			}
+
+			inline const String &get_lighting() const noexcept
+			{
+				return m_lighting;
 			}
 
 			inline bool get_node_based() const noexcept
@@ -168,11 +174,6 @@ namespace eternal_lands
 			inline bool get_transparent() const noexcept
 			{
 				return m_transparent;
-			}
-
-			inline bool get_lighting() const noexcept
-			{
-				return m_lighting;
 			}
 
 	};

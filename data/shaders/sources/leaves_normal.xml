@@ -33,7 +33,15 @@
     </parameter>
    </parameters>
    <source>world_position = position.xyz;
-world_normal = normalize(position.xyz - vec3(0.0, 0.0, 3.0));
+
+vec3 dir;
+float dist;
+
+dist = distance(position.xyz, vec3(0.0, 0.0, 4.3)) * 2.0;
+
+dir = position.xyz - vec3(0.0, 0.0, 3.0);
+
+world_normal = normalize(dir) * clamp(dist, 0.0, 1.0);
 
 world_position = vec4(world_position, 1.0) * world_transformation;
 world_normal = normalize(world_normal * mat3(world_transformation));

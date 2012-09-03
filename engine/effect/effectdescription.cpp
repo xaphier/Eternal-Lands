@@ -15,8 +15,7 @@ namespace eternal_lands
 
 	EffectDescription::EffectDescription(): m_description(edt_default),
 		m_output(sot_float), m_node_based(true),
-		m_receives_shadows(true), m_transparent(false),
-		m_lighting(true)
+		m_receives_shadows(true), m_transparent(false)
 	{
 	}
 
@@ -73,6 +72,11 @@ namespace eternal_lands
 				set_main(XmlUtil::get_string_value(it));
 			}
 
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("lighting")) == 0)
+			{
+				set_lighting(XmlUtil::get_string_value(it));
+			}
+
 			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("node_based")) == 0)
 			{
@@ -105,11 +109,6 @@ namespace eternal_lands
 			{
 				set_transparent(XmlUtil::get_bool_value(it));
 			}
-
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("lighting")) == 0)
-			{
-				set_lighting(XmlUtil::get_bool_value(it));
-			}
 		}
 		while (XmlUtil::next(it, true));
 	}
@@ -117,24 +116,24 @@ namespace eternal_lands
 	void EffectDescription::save_xml(
 		const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("effect"));
-		writer->write_element(UTF8("name"), get_name());
-		writer->write_element(UTF8("world_transformation"),
+		writer->start_element(String(UTF8("effect")));
+		writer->write_element(String(UTF8("name")), get_name());
+		writer->write_element(String(UTF8("world_transformation")),
 			get_world_transformation());
-		writer->write_element(UTF8("texture_coodrinates"),
+		writer->write_element(String(UTF8("texture_coodrinates")),
 			get_texture_coodrinates());
-		writer->write_element(UTF8("main"), get_main());
-		writer->write_bool_element(UTF8("node_based"),
+		writer->write_element(String(UTF8("main")), get_main());
+		writer->write_element(String(UTF8("lighting")), get_lighting());
+		writer->write_bool_element(String(UTF8("node_based")),
 			get_node_based());
-		writer->write_element(UTF8("description"),
+		writer->write_element(String(UTF8("description")),
 			EffectDescriptionUtil::get_str(get_description()));
-		writer->write_element(UTF8("output"),
+		writer->write_element(String(UTF8("output")),
 			ShaderOutputUtil::get_str(get_output()));
-		writer->write_bool_element(UTF8("receives_shadows"),
+		writer->write_bool_element(String(UTF8("receives_shadows")),
 			get_receives_shadows());
-		writer->write_bool_element(UTF8("transparent"),
+		writer->write_bool_element(String(UTF8("transparent")),
 			get_transparent());
-		writer->write_bool_element(UTF8("lighting"), get_lighting());
 		writer->end_element();
 	}
 
@@ -158,6 +157,11 @@ namespace eternal_lands
 			return false;
 		}
 
+		if (get_lighting() != effect.get_lighting())
+		{
+			return false;
+		}
+
 		if (get_node_based() != effect.get_node_based())
 		{
 			return false;
@@ -168,12 +172,7 @@ namespace eternal_lands
 			return false;
 		}
 
-		if (get_transparent() != effect.get_transparent())
-		{
-			return false;
-		}
-
-		return get_lighting() == effect.get_lighting();
+		return get_transparent() == effect.get_transparent();
 	}
 
 	bool EffectDescription::operator!=(const EffectDescription &effect)
@@ -204,6 +203,11 @@ namespace eternal_lands
 			return get_main() < effect.get_main();
 		}
 
+		if (get_lighting() != effect.get_lighting())
+		{
+			return get_lighting() < effect.get_lighting();
+		}
+
 		if (get_node_based() != effect.get_node_based())
 		{
 			return get_node_based() < effect.get_node_based();
@@ -215,12 +219,7 @@ namespace eternal_lands
 				effect.get_receives_shadows();
 		}
 
-		if (get_transparent() != effect.get_transparent())
-		{
-			return get_transparent() < effect.get_transparent();
-		}
-
-		return get_lighting() < effect.get_lighting();
+		return get_transparent() < effect.get_transparent();
 	}
 
 	OutStream& operator<<(OutStream &str, const EffectDescription &value)
@@ -231,10 +230,10 @@ namespace eternal_lands
 		str << " texture_coodrinates: ";
 		str << value.get_texture_coodrinates();
 		str << " main: " << value.get_main();
+		str << " lighting: " << value.get_lighting();
 		str << " node_based: " << value.get_node_based();
 		str << " receives_shadows: " << value.get_receives_shadows();
 		str << " transparent: " << value.get_transparent();
-		str << " lighting: " << value.get_lighting();
 
 		return str;
 	}

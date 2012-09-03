@@ -132,7 +132,7 @@ namespace eternal_lands
 
 			if (normalize)
 			{
-				if (value < static_cast<T>(0))
+				if (tmp < 0.0f)
 				{
 					tmp = -tmp /
 						std::numeric_limits<T>::min();

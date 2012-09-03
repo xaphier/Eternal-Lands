@@ -161,15 +161,15 @@ namespace eternal_lands
 		return String(str.str());
 	}
 
-	void EffectConstant::save_xml(const XmlWriterSharedPtr &writer)
+	void EffectConstant::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("effect_constant"));
+		writer->start_element(String(UTF8("effect_constant")));
 
 		EffectNode::save_xml(writer);
 
-		writer->write_vec4_element(UTF8("value"), get_value());
-		writer->write_element(UTF8("var_name"), get_var_name());
-		writer->write_element(UTF8("type"),
+		writer->write_vec4_element(String(UTF8("value")), get_value());
+		writer->write_element(String(UTF8("var_name")), get_var_name());
+		writer->write_element(String(UTF8("type")),
 			EffectConstantUtil::get_str(get_type()));
 
 		writer->end_element();

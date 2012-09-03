@@ -77,7 +77,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, BlendType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

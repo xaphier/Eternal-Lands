@@ -13,6 +13,7 @@
 #include "logging.hpp"
 #include "indexbuilder.hpp"
 #include "filesystem.hpp"
+#include "utf.hpp"
 
 namespace eternal_lands
 {
@@ -29,10 +30,11 @@ namespace eternal_lands
 			glm::vec4 &texture_coordinates)
 		{
 			glm::vec2 scale;
-			StringTypeVector lines, line;
-			StringTypeVector::iterator it;
-			StringType e2d_data;
-			StringType texture;
+			std::vector<std::wstring> lines, line;
+			std::vector<std::wstring>::iterator it;
+			std::wstring tmp;
+			String texture;
+			String e2d_data;
 			float file_x_len;
 			float file_y_len;
 			float x_size;
@@ -43,9 +45,10 @@ namespace eternal_lands
 			float v_end;
 
 			e2d_data = reader->read_utf8_string(reader->get_size());
+			tmp = utf8_to_wstring(e2d_data);
 
-			boost::split(lines, e2d_data, boost::is_any_of(
-				UTF8("\n")), boost::token_compress_on);
+			boost::split(lines, tmp, boost::is_any_of(L"\n"),
+				boost::token_compress_on);
 
 			it = lines.begin();
 
@@ -70,12 +73,13 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(lines.size()));
 			}
 
-			boost::split(line, lines[0], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == UTF8("texture")))
+			boost::split(line, lines[0], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
 			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
-				texture = line[1];
 			}
 			else
 			{
@@ -83,14 +87,23 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(1));
 			}
 
-			boost::split(line, lines[1], boost::is_any_of(
-				UTF8(":")),
-				boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] ==
-				UTF8("file_x_len")))
+			if (line[0].find(L"texture") != std::wstring::npos)
 			{
+				texture = wstring_to_utf8(line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(1));
+			}
+
+			boost::split(line, lines[1], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
+			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
-				file_x_len = boost::lexical_cast<float>(line[1]);
 			}
 			else
 			{
@@ -98,13 +111,24 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(2));
 			}
 
-			boost::split(line, lines[2], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] ==
-				UTF8("file_y_len")))
+			if (line[0].find(L"file_x_len") != std::wstring::npos)
 			{
+				file_x_len = boost::lexical_cast<float>(
+					line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(2));
+			}
+
+			boost::split(line, lines[2], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
+			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
-				file_y_len = boost::lexical_cast<float>(line[1]);
 			}
 			else
 			{
@@ -112,11 +136,33 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(3));
 			}
 
-			boost::split(line, lines[3], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == UTF8("x_size")))
+			if (line[0].find(L"file_y_len") != std::wstring::npos)
 			{
+				file_y_len = boost::lexical_cast<float>(
+					line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(3));
+			}
+
+			boost::split(line, lines[3], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
+			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(4));
+			}
+
+			if (line[0].find(L"x_size") != std::wstring::npos)
+			{
 				x_size = boost::lexical_cast<float>(line[1]);
 			}
 			else
@@ -125,11 +171,22 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(4));
 			}
 
-			boost::split(line, lines[4], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == UTF8("y_size")))
+			boost::split(line, lines[4], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
 			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(5));
+			}
+
+			if (line[0].find(L"y_size") != std::wstring::npos)
+			{
 				y_size = boost::lexical_cast<float>(line[1]);
 			}
 			else
@@ -138,11 +195,22 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(5));
 			}
 
-			boost::split(line, lines[5], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == UTF8("u_start")))
+			boost::split(line, lines[5], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
 			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(6));
+			}
+
+			if (line[0].find(L"u_start") != std::wstring::npos)
+			{
 				u_start = boost::lexical_cast<float>(line[1]);
 			}
 			else
@@ -151,11 +219,22 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(6));
 			}
 
-			boost::split(line, lines[6], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == UTF8("u_end")))
+			boost::split(line, lines[6], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
 			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(7));
+			}
+
+			if (line[0].find(L"u_end") != std::wstring::npos)
+			{
 				u_end = boost::lexical_cast<float>(line[1]);
 			}
 			else
@@ -164,11 +243,22 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(7));
 			}
 
-			boost::split(line, lines[7], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == UTF8("v_start")))
+			boost::split(line, lines[7], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
 			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(8));
+			}
+
+			if (line[0].find(L"v_start") != std::wstring::npos)
+			{
 				v_start = boost::lexical_cast<float>(line[1]);
 			}
 			else
@@ -177,11 +267,22 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(8));
 			}
 
-			boost::split(line, lines[8], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == UTF8("v_end")))
+			boost::split(line, lines[8], boost::is_any_of(L":"),
+				boost::token_compress_on);
+
+			if (line.size() == 2)
 			{
+				boost::algorithm::trim(line[0]);
 				boost::algorithm::trim(line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(9));
+			}
+
+			if (line[0].find(L"v_end") != std::wstring::npos)
+			{
 				v_end = boost::lexical_cast<float>(line[1]);
 			}
 			else
@@ -190,13 +291,24 @@ namespace eternal_lands
 					<< boost::errinfo_at_line(9));
 			}
 
-			boost::split(line, lines[9], boost::is_any_of(
-				UTF8(":")), boost::token_compress_on);
-			if ((line.size() == 2) && (line[0] == UTF8("type")))
-			{
-				boost::algorithm::trim(line[1]);
+			boost::split(line, lines[9], boost::is_any_of(L":"),
+				boost::token_compress_on);
 
-				if (line[1] != UTF8("ground"))
+			if (line.size() == 2)
+			{
+				boost::algorithm::trim(line[0]);
+				boost::algorithm::trim(line[1]);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(E2dReadErrorException()
+					<< boost::errinfo_at_line(10));
+			}
+
+			if (line[0].find(L"type") != std::wstring::npos)
+			{
+				if (line[1].find(L"ground") ==
+					std::wstring::npos)
 				{
 					EL_THROW_EXCEPTION(
 						E2dReadErrorException()
@@ -298,7 +410,7 @@ namespace eternal_lands
 		Uint32Vector indices;
 		String texture, name;
 		VertexSemanticTypeSet semantics;
-		StringType str;
+		std::string str;
 		Uint32 vertex_count, index_count, i;
 
 		vertex_count = get_tile_size() + 1;

@@ -157,7 +157,7 @@ namespace eternal_lands
 
 		writer = XmlWriterSharedPtr(new XmlWriter(file_name));
 
-		writer->start_element(UTF8("effects"));
+		writer->start_element(String(UTF8("effects")));
 
 		end = m_effect_cache.end();
 

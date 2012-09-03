@@ -119,7 +119,7 @@ namespace eternal_lands
 
 		writer = XmlWriterSharedPtr(new XmlWriter(file_name));
 
-		writer->start_element(UTF8("materials"));
+		writer->start_element(String(UTF8("materials")));
 
 		end = m_material_description_cache.end();
 

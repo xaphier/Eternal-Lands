@@ -708,7 +708,7 @@ namespace eternal_lands
 			const String &source)
 		{
 			OptimizeShaderSource oss(optimizer, type, source);
-			StringType str;
+			std::string str;
 
 			str = prefix;
 			str += oss.get_source();
@@ -1359,8 +1359,8 @@ namespace eternal_lands
 		String lighting;
 
 		lighting = UTF8("lighting");
-		local_indent = indent.get() + UTF8('\t');
-		local_loop_indent = local_indent.get() + UTF8('\t');
+		local_indent = indent.get() + UTF8("\t");
+		local_loop_indent = local_indent.get() + UTF8("\t");
 
 		add_local(String(UTF8("lighting")), sslt_i, pqt_out,
 			function_locals, function_parameters,
@@ -1938,8 +1938,8 @@ namespace eternal_lands
 		bool dynamic_lights_count;
 
 		lighting = UTF8("lighting");
-		local_indent = indent.get() + UTF8('\t');
-		local_loop_indent = local_indent.get() + UTF8('\t');
+		local_indent = indent.get() + UTF8("\t");
+		local_loop_indent = local_indent.get() + UTF8("\t");
 
 		if (vertex)
 		{
@@ -3043,6 +3043,7 @@ namespace eternal_lands
 			description.get_world_transformation();
 		sources[sst_uv] = description.get_texture_coodrinates();
 		sources[sst_main_effect] = description.get_main();
+		sources[sst_fragment_light] = description.get_lighting();
 
 		if (!description.get_receives_shadows())
 		{
@@ -3061,7 +3062,7 @@ namespace eternal_lands
 			}
 		}
 
-		if (!description.get_lighting())
+		if (description.get_lighting().get().empty())
 		{
 			found = sources.find(sst_vertex_light);
 
@@ -3186,7 +3187,8 @@ namespace eternal_lands
 			(shader_build == sbt_shadow)));
 		data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());
-		data.set_option(ssbot_lighting, description.get_lighting());
+		data.set_option(ssbot_lighting, !description.get_lighting(
+			).get().empty());
 		data.set_option(ssbot_light_indexed_deferred,
 			get_global_vars()->get_light_system() != lst_default);
 		data.set_option(ssbot_x5_light_indices,

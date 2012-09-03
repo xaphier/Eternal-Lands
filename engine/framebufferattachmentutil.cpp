@@ -154,7 +154,7 @@ namespace eternal_lands
 
 	InStream& operator>>(InStream &str, FrameBufferAttachmentType &value)
 	{
-		StringType string;
+		std::string string;
 
 		str >> string;
 

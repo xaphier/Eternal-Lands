@@ -86,9 +86,6 @@ namespace eternal_lands
 		apt_split_distances,
 		apt_layers,
 		apt_texture_matrices,
-		apt_albedo_scale_offsets,
-		apt_emission_scale_offset,
-		apt_specular_scale_offset,
 		apt_dudv_scale,
 		apt_blend_sizes,
 		/**

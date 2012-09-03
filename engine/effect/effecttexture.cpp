@@ -758,25 +758,33 @@ namespace eternal_lands
 		return EffectTextureUtil::get_description(get_texture());
 	}
 
-	void EffectTexture::save_xml(const XmlWriterSharedPtr &writer)
+	void EffectTexture::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(UTF8("effect_texture"));
+		writer->start_element(String(UTF8("effect_texture")));
 
 		EffectNode::save_xml(writer);
 
-		writer->write_element(UTF8("var_name_0"), m_var_names[0]);
-		writer->write_element(UTF8("var_name_1"), m_var_names[1]);
-		writer->write_element(UTF8("var_name_2"), m_var_names[2]);
-		writer->write_element(UTF8("var_name_3"), m_var_names[3]);
-		writer->write_element(UTF8("var_name_4"), m_var_names[4]);
-		writer->write_element(UTF8("var_name_5"), m_var_names[5]);
-		writer->write_element(UTF8("var_name_6"), m_var_names[6]);
-		writer->write_element(UTF8("var_name_7"), m_var_names[7]);
-		writer->write_element(UTF8("sampler"),
+		writer->write_element(String(UTF8("var_name_0")),
+			m_var_names[0]);
+		writer->write_element(String(UTF8("var_name_1")),
+			m_var_names[1]);
+		writer->write_element(String(UTF8("var_name_2")),
+			m_var_names[2]);
+		writer->write_element(String(UTF8("var_name_3")),
+			m_var_names[3]);
+		writer->write_element(String(UTF8("var_name_4")),
+			m_var_names[4]);
+		writer->write_element(String(UTF8("var_name_5")),
+			m_var_names[5]);
+		writer->write_element(String(UTF8("var_name_6")),
+			m_var_names[6]);
+		writer->write_element(String(UTF8("var_name_7")),
+			m_var_names[7]);
+		writer->write_element(String(UTF8("sampler")),
 			EffectSamplerUtil::get_str(get_sampler()));
-		writer->write_element(UTF8("texture"),
+		writer->write_element(String(UTF8("texture")),
 			EffectTextureUtil::get_str(get_texture()));
-		writer->write_int_element(UTF8("texture_unit"),
+		writer->write_int_element(String(UTF8("texture_unit")),
 			get_texture_unit());
 
 		writer->end_element();

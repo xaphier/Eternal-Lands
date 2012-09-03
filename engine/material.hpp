@@ -142,21 +142,6 @@ namespace eternal_lands
 				m_data.set_blend_sizes(blend_sizes);
 			}
 
-			inline void set_albedo_scale_offsets(
-				const Mat2x4Array4 &albedo_scale_offsets)
-			{
-				m_data.set_albedo_scale_offsets(
-					albedo_scale_offsets);
-			}
-
-			inline void set_albedo_scale_offset(
-				const glm::mat2x4 &albedo_scale_offset,
-				const Uint16 index)
-			{
-				m_data.set_albedo_scale_offset(
-					albedo_scale_offset, index);
-			}
-
 			inline void set_texture_matrices(
 				const Mat2x3Array2 &texture_matrices)
 			{
@@ -168,20 +153,6 @@ namespace eternal_lands
 				const Uint16 index)
 			{
 				set_texture_matrix(texture_matrix, index);
-			}
-
-			inline void set_emission_scale_offset(
-				const glm::mat2x3 &emission_scale_offset)
-			{
-				m_data.set_emission_scale_offset(
-					emission_scale_offset);
-			}
-
-			inline void set_specular_scale_offset(
-				const glm::vec4 &specular_scale_offset)
-			{
-				m_data.set_specular_scale_offset(
-					specular_scale_offset);
 			}
 
 			inline void set_color(const glm::vec4 &color)
@@ -209,18 +180,6 @@ namespace eternal_lands
 				return m_data.get_blend_sizes();
 			}
 
-			inline const Mat2x4Array4 &get_albedo_scale_offsets()
-				const
-			{
-				return m_data.get_albedo_scale_offsets();
-			}
-
-			inline const glm::mat2x4 &get_albedo_scale_offset(
-				const Uint16 index) const
-			{
-				return m_data.get_albedo_scale_offset(index);
-			}
-
 			inline const Mat2x3Array2 &get_texture_matrices()
 				const
 			{
@@ -231,18 +190,6 @@ namespace eternal_lands
 				const Uint16 index) const
 			{
 				return m_data.get_texture_matrix(index);
-			}
-
-			inline const glm::mat2x3 &get_emission_scale_offset()
-				const
-			{
-				return m_data.get_emission_scale_offset();
-			}
-
-			inline const glm::vec4 &get_specular_scale_offset()
-				const
-			{
-				return m_data.get_specular_scale_offset();
 			}
 
 			inline const glm::vec4 &get_color() const

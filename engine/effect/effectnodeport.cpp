@@ -29,7 +29,7 @@ namespace eternal_lands
 			{
 				if (i >= swizzle.get().size())
 				{
-					result[i] = UTF8(' ');
+					result[i] = ' ';
 
 					continue;
 				}
@@ -38,32 +38,32 @@ namespace eternal_lands
 
 				switch (result[i])
 				{
-					case UTF8('r'):
-					case UTF8('g'):
-					case UTF8('b'):
-					case UTF8('a'):
+					case 'r':
+					case 'g':
+					case 'b':
+					case 'a':
 						tmp = 1;
 						break;
-					case UTF8('x'):
-					case UTF8('y'):
-					case UTF8('z'):
-					case UTF8('w'):
+					case 'x':
+					case 'y':
+					case 'z':
+					case 'w':
 						tmp = 2;
 						break;
-					case UTF8('u'):
-					case UTF8('v'):
+					case 'u':
+					case 'v':
 						tmp = 3;
 						break;
-					case UTF8('s'):
-					case UTF8('t'):
-					case UTF8('p'):
-					case UTF8('q'):
+					case 's':
+					case 't':
+					case 'p':
+					case 'q':
 						tmp = 4;
 						break;
-					case UTF8('?'):
+					case '?':
 						tmp = 5;
 						break;
-					case UTF8('*'):
+					case '*':
 						tmp = 6;
 						break;
 					default:
@@ -266,33 +266,33 @@ namespace eternal_lands
 		StringStream str;
 		Uint16 i;
 
-		str << UTF8('.');
+		str << UTF8(".");
 
 		for (i = 0; i < 4; ++i)
 		{
 			switch (get_swizzle()[i])
 			{
-				case UTF8('r'):
-				case UTF8('x'):
-				case UTF8('u'):
-				case UTF8('s'):
-					str << UTF8('r');
+				case 'r':
+				case 'x':
+				case 'u':
+				case 's':
+					str << UTF8("r");
 					break;
-				case UTF8('g'):
-				case UTF8('y'):
-				case UTF8('v'):
-				case UTF8('t'):
-					str << UTF8('g');
+				case 'g':
+				case 'y':
+				case 'v':
+				case 't':
+					str << UTF8("g");
 					break;
-				case UTF8('b'):
-				case UTF8('z'):
-				case UTF8('p'):
-					str << UTF8('b');
+				case 'b':
+				case 'z':
+				case 'p':
+					str << UTF8("b");
 					break;
-				case UTF8('a'):
-				case UTF8('w'):
-				case UTF8('q'):
-					str << UTF8('a');
+				case 'a':
+				case 'w':
+				case 'q':
+					str << UTF8("a");
 					break;
 			}
 		}
@@ -429,27 +429,27 @@ namespace eternal_lands
 		{
 			switch (get_swizzle()[i])
 			{
-				case UTF8('r'):
-				case UTF8('x'):
-				case UTF8('u'):
-				case UTF8('s'):
-				case UTF8('?'):
+				case 'r':
+				case 'x':
+				case 'u':
+				case 's':
+				case '?':
 					result[0] = true;
 					break;
-				case UTF8('g'):
-				case UTF8('y'):
-				case UTF8('v'):
-				case UTF8('t'):
+				case 'g':
+				case 'y':
+				case 'v':
+				case 't':
 					result[1] = true;
 					break;
-				case UTF8('b'):
-				case UTF8('z'):
-				case UTF8('p'):
+				case 'b':
+				case 'z':
+				case 'p':
 					result[2] = true;
 					break;
-				case UTF8('a'):
-				case UTF8('w'):
-				case UTF8('q'):
+				case 'a':
+				case 'w':
+				case 'q':
 					result[3] = true;
 					break;
 			}
@@ -468,21 +468,21 @@ namespace eternal_lands
 		{
 			switch (get_swizzle()[i])
 			{
-				case UTF8('r'):
-				case UTF8('x'):
-				case UTF8('u'):
-				case UTF8('s'):
-				case UTF8('?'):
-				case UTF8('g'):
-				case UTF8('y'):
-				case UTF8('v'):
-				case UTF8('t'):
-				case UTF8('b'):
-				case UTF8('z'):
-				case UTF8('p'):
-				case UTF8('a'):
-				case UTF8('w'):
-				case UTF8('q'):
+				case 'r':
+				case 'x':
+				case 'u':
+				case 's':
+				case '?':
+				case 'g':
+				case 'y':
+				case 'v':
+				case 't':
+				case 'b':
+				case 'z':
+				case 'p':
+				case 'a':
+				case 'w':
+				case 'q':
 					result++;
 					break;
 			}
@@ -493,46 +493,49 @@ namespace eternal_lands
 
 	void EffectNodePort::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		StringType swizzle;
+		std::string swizzle;
 		Uint16 i;
 
 		for (i = 0; i < 4; ++i)
 		{
 			switch (get_swizzle()[i])
 			{
-				case UTF8('r'):
-				case UTF8('g'):
-				case UTF8('b'):
-				case UTF8('a'):
-				case UTF8('x'):
-				case UTF8('y'):
-				case UTF8('z'):
-				case UTF8('w'):
-				case UTF8('u'):
-				case UTF8('v'):
-				case UTF8('s'):
-				case UTF8('t'):
-				case UTF8('p'):
-				case UTF8('q'):
-				case UTF8('?'):
-				case UTF8('*'):
-					swizzle += '\0' + get_swizzle()[i];
+				case 'r':
+				case 'g':
+				case 'b':
+				case 'a':
+				case 'x':
+				case 'y':
+				case 'z':
+				case 'w':
+				case 'u':
+				case 'v':
+				case 's':
+				case 't':
+				case 'p':
+				case 'q':
+				case '?':
+				case '*':
+					swizzle += get_swizzle()[i];
 					break;
 				default:
 					break;
 			}
 		}
 
-		writer->start_element(UTF8("effect_node_port"));
+		writer->start_element(String(UTF8("effect_node_port")));
 
-		writer->write_uuid_element(UTF8("uuid"), get_uuid());
-		writer->write_element(UTF8("var"), get_var());
-		writer->write_element(UTF8("name"), get_name());
-		writer->write_element(UTF8("description"), get_description());
-		writer->write_element(UTF8("swizzle"), swizzle);
-		writer->write_element(UTF8("change"),
+		writer->write_uuid_element(String(UTF8("uuid")),
+			get_uuid());
+		writer->write_element(String(UTF8("var")), get_var());
+		writer->write_element(String(UTF8("name")), get_name());
+		writer->write_element(String(UTF8("description")),
+			get_description());
+		writer->write_element(String(UTF8("swizzle")),
+			String(swizzle));
+		writer->write_element(String(UTF8("change")),
 			EffectChangeUtil::get_str(get_change()));
-		writer->write_bool_element(UTF8("input"), get_input());
+		writer->write_bool_element(String(UTF8("input")), get_input());
 
 		writer->end_element();
 	}
@@ -548,10 +551,11 @@ namespace eternal_lands
 		BOOST_FOREACH(const EffectNodePortPtr &connection,
 			m_connections)
 		{
-			writer->start_element(UTF8("connection"));
+			writer->start_element(String(UTF8("connection")));
 
-			writer->write_uuid_element(UTF8("uuid"), get_uuid());
-			writer->write_uuid_element(UTF8("uuid"),
+			writer->write_uuid_element(String(UTF8("uuid")),
+				get_uuid());
+			writer->write_uuid_element(String(UTF8("uuid")),
 				connection->get_uuid());
 
 			writer->end_element();
