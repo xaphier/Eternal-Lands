@@ -1637,24 +1637,35 @@ namespace eternal_lands
 		glm::uvec4 bits;
 		glm::vec4 color;
 
-		if (get_global_vars()->get_light_system() == lst_lidr_x5)
+		switch (get_global_vars()->get_light_system())
 		{
-			bits.r = (light_index & (0x03 << 0)) << 8;
-			bits.g = (light_index & (0x03 << 2)) << 6;
-			bits.b = (light_index & (0x03 << 4)) << 4;
-			bits.a = 0;
+			case lst_default:
+				return;
+			case lst_lidr_x4:
+				bits.r = (light_index & (0x03 << 0)) << 6;
+				bits.g = (light_index & (0x03 << 2)) << 4;
+				bits.b = (light_index & (0x03 << 4)) << 2;
+				bits.a = (light_index & (0x03 << 6)) << 0;
 
-			color = glm::vec4(bits) / 1023.0f;
-		}
-		else
-		{
-			bits.r = (light_index & (0x03 << 0)) << 6;
-			bits.g = (light_index & (0x03 << 2)) << 4;
-			bits.b = (light_index & (0x03 << 4)) << 2;
-			bits.a = (light_index & (0x03 << 6)) << 0;
+				color = glm::vec4(bits) / 255.0f;
+				break;
+			case lst_lidr_x5:
+				bits.r = (light_index & (0x03 << 0)) << 8;
+				bits.g = (light_index & (0x03 << 2)) << 6;
+				bits.b = (light_index & (0x03 << 4)) << 4;
+				bits.a = 0;
 
-			color = glm::vec4(bits) / 255.0f;
-		}
+				color = glm::vec4(bits) / 1023.0f;
+				break;
+			case lst_lidr_x8:
+				bits.r = (light_index & (0x03 << 0)) << 14;
+				bits.g = (light_index & (0x03 << 2)) << 12;
+				bits.b = (light_index & (0x03 << 4)) << 10;
+				bits.a = (light_index & (0x03 << 6)) << 8;
+
+				color = glm::vec4(bits) / 65535.0f;
+				break;
+		};
 
 		world_transformation.set_scale(glm::vec3(size));
 		world_transformation.set_translation(position);
@@ -1702,24 +1713,35 @@ namespace eternal_lands
 		glm::uvec4 bits;
 		glm::vec4 color;
 
-		if (get_global_vars()->get_light_system() == lst_lidr_x5)
+		switch (get_global_vars()->get_light_system())
 		{
-			bits.r = (light_index & (0x03 << 0)) << 8;
-			bits.g = (light_index & (0x03 << 2)) << 6;
-			bits.b = (light_index & (0x03 << 4)) << 4;
-			bits.a = 0;
+			case lst_default:
+				return;
+			case lst_lidr_x4:
+				bits.r = (light_index & (0x03 << 0)) << 6;
+				bits.g = (light_index & (0x03 << 2)) << 4;
+				bits.b = (light_index & (0x03 << 4)) << 2;
+				bits.a = (light_index & (0x03 << 6)) << 0;
 
-			color = glm::vec4(bits) / 1023.0f;
-		}
-		else
-		{
-			bits.r = (light_index & (0x03 << 0)) << 6;
-			bits.g = (light_index & (0x03 << 2)) << 4;
-			bits.b = (light_index & (0x03 << 4)) << 2;
-			bits.a = (light_index & (0x03 << 6)) << 0;
+				color = glm::vec4(bits) / 255.0f;
+				break;
+			case lst_lidr_x5:
+				bits.r = (light_index & (0x03 << 0)) << 8;
+				bits.g = (light_index & (0x03 << 2)) << 6;
+				bits.b = (light_index & (0x03 << 4)) << 4;
+				bits.a = 0;
 
-			color = glm::vec4(bits) / 255.0f;
-		}
+				color = glm::vec4(bits) / 1023.0f;
+				break;
+			case lst_lidr_x8:
+				bits.r = (light_index & (0x03 << 0)) << 14;
+				bits.g = (light_index & (0x03 << 2)) << 12;
+				bits.b = (light_index & (0x03 << 4)) << 10;
+				bits.a = (light_index & (0x03 << 6)) << 8;
+
+				color = glm::vec4(bits) / 65535.0f;
+				break;
+		};
 
 		world_transformation.set_scale(glm::vec3(size));
 		world_transformation.set_translation(position);
@@ -1759,15 +1781,33 @@ namespace eternal_lands
 
 		glBlendFunc(GL_ONE, GL_CONSTANT_COLOR);
 
-		// Set the constant blend color to bit shift 2 bits down on each call
-		if (get_global_vars()->get_light_system() == lst_lidr_x5)
+		switch (get_global_vars()->get_light_system())
 		{
-			glBlendColor(0.25025f, 0.25025f, 0.25025f, 0.25025f);
-		}
-		else
-		{
-			glBlendColor(0.251f, 0.251f, 0.251f, 0.251f);
-		}
+			case lst_default:
+				return;
+			case lst_lidr_x4:
+				/**
+				 * Set the constant blend color to bit shift
+				 * 2 bits down on each call
+				 */
+				glBlendColor(0.251f, 0.251f, 0.251f, 0.251f);
+				break;
+			case lst_lidr_x5:
+				/**
+				 * Set the constant blend color to bit shift
+				 * 2 bits down on each call
+				 */
+				glBlendColor(0.25025f, 0.25025f, 0.25025f,
+					0.25025f);
+				break;
+			case lst_lidr_x8:
+				/**
+				 * Set the constant blend color to bit shift
+				 * 2 bits down on each call
+				 */
+				glBlendColor(0.25f, 0.25f, 0.25f, 0.25f);
+				break;
+		};
 
 		glEnable(GL_STENCIL_TEST);
 
@@ -2219,6 +2259,9 @@ namespace eternal_lands
 			case lst_lidr_x5:
 				count = 64;
 				break;
+			case lst_lidr_x8:
+				count = 256;
+				break;
 		};
 
 		m_light_position_texture = boost::make_shared<Texture>(
@@ -2292,20 +2335,21 @@ namespace eternal_lands
 	{
 		TextureFormatType format;
 
-		if (get_global_vars()->get_light_system() == lst_default)
+		switch (get_global_vars()->get_light_system())
 		{
-			m_light_index_texture.reset();
-			return;
-		}
-
-		if (get_global_vars()->get_light_system() == lst_lidr_x5)
-		{
-			format = tft_rgb10_a2;
-		}
-		else
-		{
-			format = tft_rgba8;
-		}
+			case lst_default:
+				m_light_index_texture.reset();
+				return;
+			case lst_lidr_x4:
+				format = tft_rgba8;
+				break;
+			case lst_lidr_x5:
+				format = tft_rgb10_a2;
+				break;
+			case lst_lidr_x8:
+				format = tft_rgba16;
+				break;
+		};
 
 		m_light_index_texture = boost::make_shared<Texture>(
 			String(UTF8("light index")), get_view_port().z,

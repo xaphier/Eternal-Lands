@@ -1905,7 +1905,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL, "low_quality_terrain", "low_quality_terrain", &engine_low_quality_terrain, change_engine_set_low_quality_terrain, engine_false, "Low quality terrain", "Low quality terrain", GFX);
 	add_var(OPT_MULTI_H, "clipmap_size", "clipmap_size", &engine_clipmap_size, change_engine_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", 0);
 	add_var(OPT_INT, "clipmap_world_size", "clipmap_world_size", &engine_clipmap_world_size, change_engine_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
-	add_var(OPT_MULTI_H, "light_system", "light_system", &engine_light_system, change_engine_light_system, 0, "Light system", "Light system used. Light Index Deferred Renderer needs float point precision at shader level. For the x5 type, support for RGB10_A2 textures is needed (some ATI cards and all OpenGL 3+)", GFX, "default", "LIDR x4", "LIDR x5", 0);
+	add_var(OPT_MULTI_H, "light_system", "light_system", &engine_light_system, change_engine_light_system, 0, "Light system", "Light system used. Light Index Deferred Renderer needs float point precision at shader level. For the x5 type, support for RGB10_A2 textures is needed (some ATI cards and all OpenGL 3+)", GFX, "default", "LIDR x4", "LIDR x5", "LIDR x8", 0);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
 /* 	add_var(OPT_BOOL,"reflect_sky","reflect_sky", &reflect_sky, change_var,1,"Reflect Sky", "Sky Performance Option. Disable these from top to bottom until you're happy", GFX); */

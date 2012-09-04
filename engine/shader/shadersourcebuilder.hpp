@@ -108,11 +108,22 @@ namespace eternal_lands
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
 				const String &indent, const bool shadow,
-				const bool x5_light_indices,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers,
 				UuidSet &used_sources) const;
+			void build_light_index_x4_lights(
+				const ShaderSourceBuildData &data,
+				const String &indent, const String &loop_indent,
+				OutStream &stream) const;
+			void build_light_index_x5_lights(
+				const ShaderSourceBuildData &data,
+				const String &indent, const String &loop_indent,
+				OutStream &stream) const;
+			void build_light_index_x8_lights(
+				const ShaderSourceBuildData &data,
+				const String &indent, const String &loop_indent,
+				OutStream &stream) const;
 			bool build_function(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,

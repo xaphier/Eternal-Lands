@@ -1632,6 +1632,9 @@ extern "C" void engine_set_light_system(const int value)
 		case lst_lidr_x5:
 			global_vars->set_light_system(lst_lidr_x5);
 			break;
+		case lst_lidr_x8:
+			global_vars->set_light_system(lst_lidr_x8);
+			break;
 	};
 
 	if (scene.get() != 0)

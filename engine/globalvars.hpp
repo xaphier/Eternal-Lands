@@ -58,7 +58,12 @@ namespace eternal_lands
 		 * Light indexed deferred rendering using rgb10_a2 light index
 		 * texture with up to 63 lights and up to 5 lights per pixel.
 		 */
-		lst_lidr_x5
+		lst_lidr_x5,
+		/**
+		 * Light indexed deferred rendering using rgba16 light index
+		 * texture with up to 255 lights and up to 8 lights per pixel.
+		 */
+		lst_lidr_x8
 	};
 
 	class GlobalVars

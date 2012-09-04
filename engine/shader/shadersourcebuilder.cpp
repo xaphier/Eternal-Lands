@@ -819,7 +819,6 @@ namespace eternal_lands
 		ssbot_use_functions,
 		ssbot_lighting,
 		ssbot_light_indexed_deferred,
-		ssbot_x5_light_indices,
 		ssbot_shadow_uv_ddx_ddy,
 		ssbot_node_based_effect
 	};
@@ -1342,12 +1341,327 @@ namespace eternal_lands
 		return true;
 	}
 
+	void ShaderSourceBuilder::build_light_index_x4_lights(
+		const ShaderSourceBuildData &data,
+		const String &indent, const String &loop_indent,
+		OutStream &stream) const
+	{
+		/**
+		 * Look up the bit planes texture
+		 */
+		stream << indent << UTF8("/* Look up the bit ");
+		stream << UTF8("planes texture */\n");
+
+		stream << indent << sslt_packed_light_indices_4;
+
+		if (data.get_version() >= svt_130)
+		{
+			stream << UTF8(" = texelFetch(") << spt_light_indices;
+			stream << UTF8(", ivec2(gl_FragCoord.xy), 0);\n");
+		}
+		else
+		{
+			stream << UTF8(" = texture2DProj(");
+			stream << spt_light_indices << UTF8(", ");
+			stream << sslt_project_space << UTF8(");\n");
+		}
+
+		if (data.get_shader_build() == sbt_debug_packed_light_index)
+		{
+			stream << loop_indent;
+			stream << sslt_light_indices << UTF8(" = ");
+			stream << sslt_packed_light_indices_4;
+			stream << UTF8(";\n");
+		}
+
+		/**
+		 * Unpack each lighting channel
+		 */
+		stream << indent << UTF8("/* Unpack each ");
+		stream << UTF8("lighting channel */\n");
+
+		stream << indent << sslt_unpack_const_4;
+
+		stream << UTF8("= vec4(4.0, 16.0, 64.0, 256.0)");
+
+		if (data.get_version() < svt_130)
+		{
+			stream << UTF8(" / 256.0");
+		}
+
+		stream << UTF8(";\n");
+
+		/**
+		 * Expand the packed light values to the 0 .. 255 range
+		 */
+		stream << indent << UTF8("/* Expand the packed");
+		stream << UTF8(" light values to the 0 .. 255 range");
+		stream << UTF8("  */\n");
+
+		stream << indent << sslt_floor_values_4;
+		stream << UTF8(" = ceil(");
+		stream << sslt_packed_light_indices_4;
+		stream << UTF8(" * 254.5);\n");
+
+		stream << indent << UTF8("for (") << sslt_i;
+		stream << UTF8(" = 0; ") << sslt_i;
+		stream << UTF8(" < 4; ++i)\n");
+		stream << indent << UTF8("{\n");
+
+		stream << loop_indent;
+		stream << UTF8("/* Shift two bits down */\n");
+		stream << loop_indent;
+		stream << sslt_packed_light_indices_4;
+		stream << UTF8(" = ") << sslt_floor_values_4;
+		stream << UTF8(" * 0.25;\n");
+
+		stream << loop_indent;
+		stream << UTF8("/* Remove shifted bits */\n");
+		stream << loop_indent << sslt_floor_values_4;
+		stream << UTF8(" = floor(");
+		stream << sslt_packed_light_indices_4;
+		stream << UTF8(");\n");
+
+		if (data.get_version() < svt_130)
+		{
+			stream << loop_indent << sslt_light_index;
+			stream << UTF8(" = ");
+		}
+		else
+		{
+			stream << loop_indent << sslt_index;
+			stream << UTF8(" = int(");
+		}
+
+		stream << UTF8("dot(") << sslt_packed_light_indices_4;
+		stream << UTF8(" - ") << sslt_floor_values_4;
+		stream << UTF8(", ") << sslt_unpack_const_4;
+		stream << UTF8(")");
+
+		if (data.get_version() >= svt_130)
+		{
+			stream << UTF8(" + 0.5)");
+		}
+
+		stream << UTF8(";\n");
+	}
+
+	void ShaderSourceBuilder::build_light_index_x5_lights(
+		const ShaderSourceBuildData &data,
+		const String &indent, const String &loop_indent,
+		OutStream &stream) const
+	{
+		/**
+		 * Look up the bit planes texture
+		 */
+		stream << indent << UTF8("/* Look up the bit ");
+		stream << UTF8("planes texture */\n");
+
+		stream << indent << sslt_packed_light_indices_3;
+
+		if (data.get_version() >= svt_130)
+		{
+			stream << UTF8(" = texelFetch(") << spt_light_indices;
+			stream << UTF8(", ivec2(gl_FragCoord.xy), 0).rgb;\n");
+		}
+		else
+		{
+			stream << UTF8(" = texture2DProj(");
+			stream << spt_light_indices << UTF8(", ");
+			stream << sslt_project_space << UTF8(").rgb;\n");
+		}
+
+		if (data.get_shader_build() == sbt_debug_packed_light_index)
+		{
+			stream << loop_indent;
+			stream << sslt_light_indices;
+				stream << UTF8(" = vec4(");
+				stream << sslt_packed_light_indices_3;
+				stream << UTF8(", 0.0);\n");
+			}
+
+			/**
+			 * Unpack each lighting channel
+			 */
+			stream << indent << UTF8("/* Unpack each ");
+			stream << UTF8("lighting channel */\n");
+
+			stream << indent << sslt_unpack_const_3;
+
+			stream << UTF8("= vec3(4.0, 16.0, 64.0)");
+
+			if (data.get_version() < svt_130)
+			{
+				stream << UTF8(" / 64.0");
+			}
+
+			stream << UTF8(";\n");
+
+			/**
+			 * Expand the packed light values to the 0 .. 1023 range
+			 */
+			stream << indent << UTF8("/* Expand the packed");
+			stream << UTF8(" light values to the 0 .. 1023 range");
+			stream << UTF8("  */\n");
+
+			stream << indent << sslt_floor_values_3;
+			stream << UTF8(" = ceil(");
+			stream << sslt_packed_light_indices_3;
+			stream << UTF8(" * 1022.5);\n");
+
+			stream << indent << UTF8("for (") << sslt_i;
+			stream << UTF8(" = 0; ") << sslt_i;
+			stream << UTF8(" < 5; ++i)\n");
+			stream << indent << UTF8("{\n");
+
+			stream << loop_indent;
+			stream << UTF8("/* Shift two bits down */\n");
+			stream << loop_indent;
+			stream << sslt_packed_light_indices_3 << UTF8(" = ");
+			stream << sslt_floor_values_3 << UTF8(" * 0.25;\n");
+
+			stream << loop_indent;
+			stream << UTF8("/* Remove shifted bits */\n");
+			stream << loop_indent << sslt_floor_values_3;
+			stream << UTF8(" = floor(");
+			stream << sslt_packed_light_indices_3 << UTF8(");\n");
+
+			if (data.get_version() < svt_130)
+			{
+				stream << loop_indent << sslt_light_index;
+				stream << UTF8(" = ");
+			}
+			else
+			{
+				stream << loop_indent << sslt_index;
+				stream << UTF8(" = int(");
+			}
+
+			stream << UTF8("dot(") << sslt_packed_light_indices_3;
+			stream << UTF8(" - ") << sslt_floor_values_3;
+			stream << UTF8(", ") << sslt_unpack_const_3;
+			stream << UTF8(")");
+
+			if (data.get_version() >= svt_130)
+			{
+				stream << UTF8(" + 0.5)");
+			}
+
+			stream << UTF8(";\n");
+	}
+
+	void ShaderSourceBuilder::build_light_index_x8_lights(
+		const ShaderSourceBuildData &data,
+		const String &indent, const String &loop_indent,
+		OutStream &stream) const
+	{
+		/**
+		 * Look up the bit planes texture
+		 */
+		stream << indent << UTF8("/* Look up the bit ");
+		stream << UTF8("planes texture */\n");
+
+		stream << indent << sslt_packed_light_indices_4;
+
+		if (data.get_version() >= svt_130)
+		{
+			stream << UTF8(" = texelFetch(");
+			stream << spt_light_indices;
+			stream << UTF8(", ivec2(gl_FragCoord.xy), 0)");
+			stream << UTF8(";\n");
+		}
+		else
+		{
+			stream << UTF8(" = texture2DProj(");
+			stream << spt_light_indices << UTF8(", ");
+			stream << sslt_project_space << UTF8(");\n");
+		}
+
+		if (data.get_shader_build() == sbt_debug_packed_light_index)
+		{
+			stream << loop_indent;
+			stream << sslt_light_indices << UTF8(" = ");
+			stream << sslt_packed_light_indices_4;
+			stream << UTF8(";\n");
+		}
+
+		/**
+		 * Unpack each lighting channel
+		 */
+		stream << indent << UTF8("/* Unpack each ");
+		stream << UTF8("lighting channel */\n");
+
+		stream << indent << sslt_unpack_const_4;
+
+		stream << UTF8("= vec4(4.0, 16.0, 64.0, 256.0)");
+
+		if (data.get_version() < svt_130)
+		{
+			stream << UTF8(" / 256.0");
+		}
+
+		stream << UTF8(";\n");
+
+		/**
+		 * Expand the packed light values to the 0 .. 255 range
+		 */
+		stream << indent << UTF8("/* Expand the packed");
+		stream << UTF8(" light values to the 0 .. 255 range");
+		stream << UTF8("  */\n");
+
+		stream << indent << sslt_floor_values_4;
+		stream << UTF8(" = ceil(");
+		stream << sslt_packed_light_indices_4;
+		stream << UTF8(" * 65534.5);\n");
+
+		stream << indent << UTF8("for (") << sslt_i;
+		stream << UTF8(" = 0; ") << sslt_i;
+		stream << UTF8(" < 8; ++i)\n");
+		stream << indent << UTF8("{\n");
+
+		stream << loop_indent;
+		stream << UTF8("/* Shift two bits down */\n");
+		stream << loop_indent;
+		stream << sslt_packed_light_indices_4;
+		stream << UTF8(" = ") << sslt_floor_values_4;
+		stream << UTF8(" * 0.25;\n");
+
+		stream << loop_indent;
+		stream << UTF8("/* Remove shifted bits */\n");
+		stream << loop_indent << sslt_floor_values_4;
+		stream << UTF8(" = floor(");
+		stream << sslt_packed_light_indices_4;
+		stream << UTF8(");\n");
+
+		if (data.get_version() < svt_130)
+		{
+			stream << loop_indent << sslt_light_index;
+			stream << UTF8(" = ");
+		}
+		else
+		{
+			stream << loop_indent << sslt_index;
+			stream << UTF8(" = int(");
+		}
+
+		stream << UTF8("dot(") << sslt_packed_light_indices_4;
+		stream << UTF8(" - ") << sslt_floor_values_4;
+		stream << UTF8(", ") << sslt_unpack_const_4;
+		stream << UTF8(")");
+
+		if (data.get_version() >= svt_130)
+		{
+			stream << UTF8(" + 0.5)");
+		}
+
+		stream << UTF8(";\n");
+	}
+
 	void ShaderSourceBuilder::build_light_index_lights(
 		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
 		const ShaderSourceParameterVector &locals, 
-		const String &indent, const bool shadow,
-		const bool x5_light_indices, OutStream &main,
+		const String &indent, const bool shadow, OutStream &main,
 		OutStream &functions, ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
 		const
@@ -1369,7 +1683,7 @@ namespace eternal_lands
 			pqt_out, function_locals, function_parameters,
 			uniform_buffers);
 
-		if (x5_light_indices)
+		if (get_global_vars()->get_light_system() == lst_lidr_x5)
 		{
 			add_local(String(UTF8("lighting")),
 				sslt_packed_light_indices_3, pqt_out,
@@ -1405,7 +1719,6 @@ namespace eternal_lands
 		add_parameter(String(UTF8("lighting")), spt_light_indices,
 			pt_sampler2D, function_locals, function_parameters,
 			uniform_buffers);
-
 
 		stream << UTF8("\n");
 
@@ -1500,214 +1813,23 @@ namespace eternal_lands
 				uniform_buffers);
 		}
 
-		if (x5_light_indices)
+		switch (get_global_vars()->get_light_system())
 		{
-			/**
-			 * Look up the bit planes texture
-			 */
-			stream << local_indent << UTF8("/* Look up the bit ");
-			stream << UTF8("planes texture */\n");
-
-			stream << local_indent << sslt_packed_light_indices_3;
-
-			if (data.get_version() >= svt_130)
-			{
-				stream << UTF8(" = texelFetch(");
-				stream << spt_light_indices;
-				stream << UTF8(", ivec2(gl_FragCoord.xy), 0)");
-				stream << UTF8(".rgb;\n");
-			}
-			else
-			{
-				stream << UTF8(" = texture2DProj(");
-				stream << spt_light_indices << UTF8(", ");
-				stream << sslt_project_space;
-				stream << UTF8(").rgb;\n");
-			}
-
-			if (data.get_shader_build() ==
-				sbt_debug_packed_light_index)
-			{
-				stream << local_loop_indent;
-				stream << sslt_light_indices;
-				stream << UTF8(" = vec4(");
-				stream << sslt_packed_light_indices_3;
-				stream << UTF8(", 0.0);\n");
-			}
-
-			/**
-			 * Unpack each lighting channel
-			 */
-			stream << local_indent << UTF8("/* Unpack each ");
-			stream << UTF8("lighting channel */\n");
-
-			stream << local_indent << sslt_unpack_const_3;
-
-			stream << UTF8("= vec3(4.0, 16.0, 64.0)");
-
-			if (data.get_version() < svt_130)
-			{
-				stream << UTF8(" / 64.0");
-			}
-
-			stream << UTF8(";\n");
-
-			/**
-			 * Expand the packed light values to the 0 .. 1023 range
-			 */
-			stream << local_indent << UTF8("/* Expand the packed");
-			stream << UTF8(" light values to the 0 .. 1023 range");
-			stream << UTF8("  */\n");
-
-			stream << local_indent << sslt_floor_values_3;
-			stream << UTF8(" = ceil(");
-			stream << sslt_packed_light_indices_3;
-			stream << UTF8(" * 1022.5);\n");
-
-			stream << local_indent << UTF8("for (") << sslt_i;
-			stream << UTF8(" = 0; ") << sslt_i;
-			stream << UTF8(" < 5; ++i)\n");
-			stream << local_indent << UTF8("{\n");
-
-			stream << local_loop_indent;
-			stream << UTF8("/* Shift two bits down */\n");
-			stream << local_loop_indent;
-			stream << sslt_packed_light_indices_3 << UTF8(" = ");
-			stream << sslt_floor_values_3 << UTF8(" * 0.25;\n");
-
-			stream << local_loop_indent;
-			stream << UTF8("/* Remove shifted bits */\n");
-			stream << local_loop_indent << sslt_floor_values_3;
-			stream << UTF8(" = floor(");
-			stream << sslt_packed_light_indices_3 << UTF8(");\n");
-
-			if (data.get_version() < svt_130)
-			{
-				stream << local_loop_indent << sslt_light_index;
-				stream << UTF8(" = ");
-			}
-			else
-			{
-				stream << local_loop_indent << sslt_index;
-				stream << UTF8(" = int(");
-			}
-
-			stream << UTF8("dot(") << sslt_packed_light_indices_3;
-			stream << UTF8(" - ") << sslt_floor_values_3;
-			stream << UTF8(", ") << sslt_unpack_const_3;
-			stream << UTF8(")");
-
-			if (data.get_version() >= svt_130)
-			{
-				stream << UTF8(" + 0.5)");
-			}
-
-			stream << UTF8(";\n");
-		}
-		else
-		{
-			/**
-			 * Look up the bit planes texture
-			 */
-			stream << local_indent << UTF8("/* Look up the bit ");
-			stream << UTF8("planes texture */\n");
-
-			stream << local_indent << sslt_packed_light_indices_4;
-
-			if (data.get_version() >= svt_130)
-			{
-				stream << UTF8(" = texelFetch(");
-				stream << spt_light_indices;
-				stream << UTF8(", ivec2(gl_FragCoord.xy), 0)");
-				stream << UTF8(";\n");
-			}
-			else
-			{
-				stream << UTF8(" = texture2DProj(");
-				stream << spt_light_indices << UTF8(", ");
-				stream << sslt_project_space << UTF8(");\n");
-			}
-
-			if (data.get_shader_build() ==
-				sbt_debug_packed_light_index)
-			{
-				stream << local_loop_indent;
-				stream << sslt_light_indices << UTF8(" = ");
-				stream << sslt_packed_light_indices_4;
-				stream << UTF8(";\n");
-			}
-
-			/**
-			 * Unpack each lighting channel
-			 */
-			stream << local_indent << UTF8("/* Unpack each ");
-			stream << UTF8("lighting channel */\n");
-
-			stream << local_indent << sslt_unpack_const_4;
-
-			stream << UTF8("= vec4(4.0, 16.0, 64.0, 256.0)");
-
-			if (data.get_version() < svt_130)
-			{
-				stream << UTF8(" / 256.0");
-			}
-
-			stream << UTF8(";\n");
-
-			/**
-			 * Expand the packed light values to the 0 .. 255 range
-			 */
-			stream << local_indent << UTF8("/* Expand the packed");
-			stream << UTF8(" light values to the 0 .. 255 range");
-			stream << UTF8("  */\n");
-
-			stream << local_indent << sslt_floor_values_4;
-			stream << UTF8(" = ceil(");
-			stream << sslt_packed_light_indices_4;
-			stream << UTF8(" * 254.5);\n");
-
-			stream << local_indent << UTF8("for (") << sslt_i;
-			stream << UTF8(" = 0; ") << sslt_i;
-			stream << UTF8(" < 4; ++i)\n");
-			stream << local_indent << UTF8("{\n");
-
-			stream << local_loop_indent;
-			stream << UTF8("/* Shift two bits down */\n");
-			stream << local_loop_indent;
-			stream << sslt_packed_light_indices_4;
-			stream << UTF8(" = ") << sslt_floor_values_4;
-			stream << UTF8(" * 0.25;\n");
-
-			stream << local_loop_indent;
-			stream << UTF8("/* Remove shifted bits */\n");
-			stream << local_loop_indent << sslt_floor_values_4;
-			stream << UTF8(" = floor(");
-			stream << sslt_packed_light_indices_4;
-			stream << UTF8(");\n");
-
-			if (data.get_version() < svt_130)
-			{
-				stream << local_loop_indent << sslt_light_index;
-				stream << UTF8(" = ");
-			}
-			else
-			{
-				stream << local_loop_indent << sslt_index;
-				stream << UTF8(" = int(");
-			}
-
-			stream << UTF8("dot(") << sslt_packed_light_indices_4;
-			stream << UTF8(" - ") << sslt_floor_values_4;
-			stream << UTF8(", ") << sslt_unpack_const_4;
-			stream << UTF8(")");
-
-			if (data.get_version() >= svt_130)
-			{
-				stream << UTF8(" + 0.5)");
-			}
-
-			stream << UTF8(";\n");
-		}
+			case lst_default:
+				return;
+			case lst_lidr_x4:
+				build_light_index_x4_lights(data, local_indent,
+					local_loop_indent, stream);
+				break;
+			case lst_lidr_x5:
+				build_light_index_x5_lights(data, local_indent,
+					local_loop_indent, stream);
+				break;
+			case lst_lidr_x8:
+				build_light_index_x8_lights(data, local_indent,
+					local_loop_indent, stream);
+				break;
+		};
 
 		/**
 		 * Skip zero light
@@ -2531,10 +2653,9 @@ namespace eternal_lands
 				{
 					build_light_index_lights(data,
 						array_sizes, locals, indent,
-						shadows, data.get_option(
-							ssbot_x5_light_indices),
-						main, functions, globals,
-						uniform_buffers, used_sources);
+						shadows, main, functions,
+						globals, uniform_buffers,
+						used_sources);
 				}
 				else
 				{
@@ -3191,8 +3312,6 @@ namespace eternal_lands
 			).get().empty());
 		data.set_option(ssbot_light_indexed_deferred,
 			get_global_vars()->get_light_system() != lst_default);
-		data.set_option(ssbot_x5_light_indices,
-			get_global_vars()->get_light_system() == lst_lidr_x5);
 
 		build_fragment_source(data, array_sizes, fragment_main,
 			fragment_functions, fragment_globals,
