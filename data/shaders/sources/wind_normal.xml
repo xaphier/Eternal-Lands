@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>leaves</name>
+ <name>wind</name>
  <type>world_normal_transformation</type>
  <shader_source_datas>
   <shader_source_data>
@@ -27,7 +27,7 @@
     </parameter>
    </parameters>
    <source>world_position = position.xyz * mat3(world_transformation);
-world_normal = normalize(world_position - vec3(0.0, 0.0, 3.0));
+world_normal = normalize(normal.xyz * mat3(world_transformation));
 
 vec3 new_position;
 vec2 wind;

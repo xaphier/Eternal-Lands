@@ -36,11 +36,6 @@ namespace eternal_lands
 	{
 	}
 
-	ShaderSource::ShaderSource(const boost::uuids::uuid &uuid):
-		m_uuid(uuid)
-	{
-	}
-
 	ShaderSource::~ShaderSource() noexcept
 	{
 	}
@@ -178,41 +173,15 @@ namespace eternal_lands
 		save_xml(writer);
 	}
 
-	void ShaderSource::build_source(const ShaderVersionType &version,
-		const ShaderSourceParameterVector &locals,
-		const String &indent, OutStream &stream,
-		ShaderSourceParameterVector &globals,
-		UniformBufferUsage &uniform_buffers) const
+	ShaderSourceParameterVector ShaderSource::get_parameters(
+		const ShaderVersionType version) const
 	{
-		stream << indent << UTF8("/* ") << get_typed_name();
-		stream << UTF8(" */\n");
-		get_data(version).build_source(locals, indent, stream, globals,
-			uniform_buffers);
+		return get_data(version).get_parameters();
 	}
 
-	void ShaderSource::build_function(const ShaderVersionType &version,
-		const ShaderSourceParameterVector &locals,
-		const ParameterSizeTypeUint16Map &array_sizes,
-		const String &indent, const String &parameter_prefix,
-		const String &use_indent, OutStream &stream,
-		OutStream &function, ShaderSourceParameterVector &globals,
-		UniformBufferUsage &uniform_buffers) const
+	String ShaderSource::get_source(const ShaderVersionType version) const
 	{
-		function << indent << UTF8("/* ") << get_typed_name();
-		function << UTF8(" */\n");
-
-		stream << use_indent << UTF8("/* ") << get_typed_name();
-		stream << UTF8(" */\n");
-
-		get_data(version).build_function(locals, array_sizes, indent,
-			get_typed_name(), parameter_prefix, use_indent, stream,
-			function, globals, uniform_buffers);
-	}
-
-	bool ShaderSource::check_source_parameter(
-		const ShaderVersionType &version, const String &name) const
-	{
-		return get_data(version).check_source_parameter(name);
+		return get_data(version).get_source();
 	}
 
 	bool ShaderSource::get_has_data(const ShaderVersionType version)
@@ -251,15 +220,6 @@ namespace eternal_lands
 
 		std::sort(m_datas.begin(), m_datas.end(),
 			sort_shader_source_data);
-	}
-
-	String ShaderSource::get_typed_name() const
-	{
-		StringStream str;
-
-		str << get_name() << UTF8("_") << get_type();
-
-		return String(str.str());
 	}
 
 }

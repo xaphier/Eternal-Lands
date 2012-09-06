@@ -85,7 +85,7 @@ namespace eternal_lands
 			long h_find;
 			struct _finddata_t find_data;
 			String file_name;
-			StringType actual_search, path;
+			std::string actual_search, path;
 
 			path = append_dir(base_name, dir_name);
 
@@ -433,14 +433,11 @@ namespace eternal_lands
 	{
 	}
 
-	std::vector<std::wstring> FileSystem::get_splits(const String &file_name)
+	std::vector<std::string> FileSystem::get_splits(const String &file_name)
 	{
-		std::vector<std::wstring> splits;
-		std::wstring tmp;
+		std::vector<std::string> splits;
 
-		tmp = utf8_to_wstring(file_name);
-
-		boost::split(splits, tmp, boost::is_any_of(L"\\/"),
+		boost::split(splits, file_name.get(), boost::is_any_of("\\/"),
 			boost::token_compress_on);
 
 		return splits;
@@ -448,22 +445,22 @@ namespace eternal_lands
 
 	String FileSystem::get_file_name(const String &file_name)
 	{
-		std::vector<std::wstring> splits;
+		std::vector<std::string> splits;
 
 		splits = get_splits(file_name);
 
 		if (splits.size() > 0)
 		{
-			return String(wstring_to_utf8(*splits.rbegin()));
+			return String(*splits.rbegin());
 		}
 
 		return String();
 	}
 
-	std::vector<std::wstring> FileSystem::get_stripped_path(
+	std::vector<std::string> FileSystem::get_stripped_path(
 		const String &file_name)
 	{
-		std::vector<std::wstring> splits, path;
+		std::vector<std::string> splits, path;
 		Uint32 i, count;
 
 		splits = get_splits(file_name);
@@ -472,7 +469,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			if (splits[i] == L"..")
+			if (splits[i] == UTF8(".."))
 			{
 				if (path.size() > 0)
 				{
@@ -482,7 +479,7 @@ namespace eternal_lands
 				continue;
 			}
 
-			if (splits[i] == L".")
+			if (splits[i] == UTF8("."))
 			{
 				continue;
 			}
@@ -495,7 +492,7 @@ namespace eternal_lands
 
 	String FileSystem::get_strip_relative_path(const String &file_name)
 	{
-		std::vector<std::wstring> path;
+		std::vector<std::string> path;
 		std::string result;
 		Uint32 i, count;
 
@@ -508,7 +505,7 @@ namespace eternal_lands
 			return String();
 		}
 
-		result = wstring_to_utf8(path[0]);
+		result = path[0];
 
 		for (i = 1; i < count; ++i)
 		{
@@ -517,7 +514,7 @@ namespace eternal_lands
 #else	/* WINDOWS */
 			result += UTF8("/");
 #endif	/* WINDOWS */
-			result += wstring_to_utf8(path[i]);
+			result += path[i];
 		}
 
 		return String(result);
@@ -525,7 +522,7 @@ namespace eternal_lands
 
 	String FileSystem::get_dir_name(const String &file_name)
 	{
-		std::vector<std::wstring> path;
+		std::vector<std::string> path;
 		std::string result;
 		Uint32 i, count;
 
@@ -539,7 +536,7 @@ namespace eternal_lands
 		}
 
 		count -= 1;
-		result = wstring_to_utf8(path[0]);
+		result = path[0];
 
 		for (i = 1; i < count; ++i)
 		{
@@ -548,7 +545,7 @@ namespace eternal_lands
 #else	/* WINDOWS */
 			result += UTF8("/");
 #endif	/* WINDOWS */
-			result += wstring_to_utf8(path[i]);
+			result += path[i];
 		}
 
 		return String(result);
@@ -755,7 +752,7 @@ namespace eternal_lands
 	String FileSystem::get_name_without_extension(
 		const String &file_name)
 	{
-		std::vector<std::wstring> path;
+		std::vector<std::string> path;
 		std::string result;
 		std::size_t pos;
 		Uint32 i, index, count;
@@ -771,7 +768,7 @@ namespace eternal_lands
 
 		index = count - 1;
 
-		pos = path[index].rfind(L".");
+		pos = path[index].rfind(UTF8("."));
 
 		if (pos != std::string::npos)
 		{
@@ -779,7 +776,7 @@ namespace eternal_lands
 				path[index].end());
 		}
 
-		result = wstring_to_utf8(path[0]);
+		result = path[0];
 
 		for (i = 1; i < count; ++i)
 		{
@@ -788,7 +785,7 @@ namespace eternal_lands
 #else	/* WINDOWS */
 			result += UTF8("/");
 #endif	/* WINDOWS */
-			result += wstring_to_utf8(path[i]);
+			result += path[i];
 		}
 
 		return String(result);
@@ -797,7 +794,7 @@ namespace eternal_lands
 	String FileSystem::get_file_name_without_extension(
 		const String &file_name)
 	{
-		std::vector<std::wstring> path;
+		std::vector<std::string> path;
 		std::string result;
 		std::size_t pos;
 		Uint32 index, count;
@@ -813,7 +810,7 @@ namespace eternal_lands
 
 		index = count - 1;
 
-		pos = path[index].rfind(L".");
+		pos = path[index].rfind(UTF8("."));
 
 		if (pos != std::string::npos)
 		{
@@ -821,7 +818,7 @@ namespace eternal_lands
 				path[index].end());
 		}
 
-		return String(wstring_to_utf8(path[index]));
+		return String(path[index]);
 	}
 
 	void FileSystem::clear()

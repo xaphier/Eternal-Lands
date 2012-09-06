@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "effectmainutil.hpp"
 #include "effectdescriptionutil.hpp"
 #include "shader/shaderoutpututil.hpp"
 
@@ -42,7 +43,7 @@ namespace eternal_lands
 			String m_lighting;
 			EffectDescriptionType m_description;
 			ShaderOutputType m_output;
-			bool m_node_based;
+			EffectMainType m_main_type;
 			bool m_receives_shadows;
 			bool m_transparent;
 
@@ -90,12 +91,6 @@ namespace eternal_lands
 				noexcept
 			{
 				m_lighting = lighting;
-			}
-
-			inline void set_node_based(const bool node_based)
-				noexcept
-			{
-				m_node_based = node_based;
 			}
 
 			inline void set_receives_shadows(
@@ -148,11 +143,6 @@ namespace eternal_lands
 			inline const String &get_lighting() const noexcept
 			{
 				return m_lighting;
-			}
-
-			inline bool get_node_based() const noexcept
-			{
-				return m_node_based;
 			}
 
 			inline EffectDescriptionType get_description() const

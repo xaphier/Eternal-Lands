@@ -22,7 +22,6 @@ BOOST_AUTO_TEST_CASE(default_creation)
 	BOOST_CHECK_EQUAL(effect_description.get_texture_coodrinates(), "");
 	BOOST_CHECK_EQUAL(effect_description.get_main(), "");
 	BOOST_CHECK_EQUAL(effect_description.get_lighting(), "");
-	BOOST_CHECK_EQUAL(effect_description.get_node_based(), true);
 	BOOST_CHECK_EQUAL(effect_description.get_receives_shadows(), true);
 	BOOST_CHECK_EQUAL(effect_description.get_transparent(), false);
 }
@@ -39,7 +38,6 @@ BOOST_AUTO_TEST_CASE(get_set)
 		el::String(UTF8("428rfu0sr4v"))));
 	BOOST_CHECK_NO_THROW(effect_description.set_lighting(
 		el::String(UTF8("3423ge56z4g2bv"))));
-	BOOST_CHECK_NO_THROW(effect_description.set_node_based(false));
 	BOOST_CHECK_NO_THROW(effect_description.set_receives_shadows(false));
 	BOOST_CHECK_NO_THROW(effect_description.set_transparent(true));
 
@@ -49,7 +47,6 @@ BOOST_AUTO_TEST_CASE(get_set)
 		"afdgsr!§$AFD54");
 	BOOST_CHECK_EQUAL(effect_description.get_main(), "428rfu0sr4v");
 	BOOST_CHECK_EQUAL(effect_description.get_lighting(), "3423ge56z4g2bv");
-	BOOST_CHECK_EQUAL(effect_description.get_node_based(), false);
 	BOOST_CHECK_EQUAL(effect_description.get_receives_shadows(), false);
 	BOOST_CHECK_EQUAL(effect_description.get_transparent(), true);
 }
@@ -82,7 +79,6 @@ BOOST_AUTO_TEST_CASE(xml)
 		"afdgsr!§$AFD54");
 	BOOST_CHECK_EQUAL(effect_description.get_main(), "428rfu0sr4v");
 	BOOST_CHECK_EQUAL(effect_description.get_lighting(), "3423ge56z4g2bv");
-	BOOST_CHECK_EQUAL(effect_description.get_node_based(), false);
 	BOOST_CHECK_EQUAL(effect_description.get_receives_shadows(), false);
 	BOOST_CHECK_EQUAL(effect_description.get_transparent(), true);
 }
@@ -101,7 +97,6 @@ BOOST_AUTO_TEST_CASE(asign)
 		el::String(UTF8("428rfu0sr4v"))));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_lighting(
 		el::String(UTF8("3423ge56z4g2bv"))));
-	BOOST_CHECK_NO_THROW(effect_description_0.set_node_based(false));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_receives_shadows(
 		false));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_transparent(
@@ -127,8 +122,6 @@ BOOST_AUTO_TEST_CASE(asign)
 		"3423ge56z4g2bv");
 	BOOST_CHECK_EQUAL(effect_description_1.get_lighting(),
 		"3423ge56z4g2bv");
-	BOOST_CHECK_EQUAL(effect_description_0.get_node_based(), false);
-	BOOST_CHECK_EQUAL(effect_description_1.get_node_based(), false);
 	BOOST_CHECK_EQUAL(effect_description_0.get_receives_shadows(),
 		false);
 	BOOST_CHECK_EQUAL(effect_description_1.get_receives_shadows(),
@@ -156,7 +149,6 @@ BOOST_AUTO_TEST_CASE(equal)
 		el::String(UTF8("428rfu0sr4v"))));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_lighting(
 		el::String(UTF8("3423ge56z4g2bv"))));
-	BOOST_CHECK_NO_THROW(effect_description_0.set_node_based(false));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_receives_shadows(
 		false));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_transparent(
@@ -171,7 +163,6 @@ BOOST_AUTO_TEST_CASE(equal)
 		el::String(UTF8("428rfu0sr4v"))));
 	BOOST_CHECK_NO_THROW(effect_description_1.set_lighting(
 		el::String(UTF8("3423ge56z4g2bv"))));
-	BOOST_CHECK_NO_THROW(effect_description_1.set_node_based(false));
 	BOOST_CHECK_NO_THROW(effect_description_1.set_receives_shadows(
 		false));
 	BOOST_CHECK_NO_THROW(effect_description_1.set_transparent(
@@ -202,7 +193,6 @@ BOOST_AUTO_TEST_CASE(not_equal)
 		el::String(UTF8("428rfu0sr4v"))));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_lighting(
 		el::String(UTF8("3423ge56z4g2bv"))));
-	BOOST_CHECK_NO_THROW(effect_description_0.set_node_based(false));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_receives_shadows(
 		false));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_transparent(
@@ -241,14 +231,6 @@ BOOST_AUTO_TEST_CASE(not_equal)
 	effect_description_1 = effect_description_0;
 
 	BOOST_CHECK_NO_THROW(effect_description_1.set_lighting(el::String()));
-
-	BOOST_CHECK_NE(effect_description_0, effect_description_1);
-	BOOST_CHECK(!(effect_description_0 == effect_description_1));
-	BOOST_CHECK(effect_description_0 != effect_description_1);
-
-	effect_description_1 = effect_description_0;
-
-	BOOST_CHECK_NO_THROW(effect_description_1.set_node_based(true));
 
 	BOOST_CHECK_NE(effect_description_0, effect_description_1);
 	BOOST_CHECK(!(effect_description_0 == effect_description_1));
@@ -285,7 +267,6 @@ BOOST_AUTO_TEST_CASE(less)
 		el::String(UTF8("428rfu0sr4v"))));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_lighting(
 		el::String(UTF8("3423ge56z4g2bv"))));
-	BOOST_CHECK_NO_THROW(effect_description_0.set_node_based(true));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_receives_shadows(
 		false));
 	BOOST_CHECK_NO_THROW(effect_description_0.set_transparent(
@@ -324,14 +305,6 @@ BOOST_AUTO_TEST_CASE(less)
 	effect_description_1 = effect_description_0;
 
 	BOOST_CHECK_NO_THROW(effect_description_1.set_lighting(el::String()));
-
-	BOOST_CHECK_LT(effect_description_1, effect_description_0);
-	BOOST_CHECK(!(effect_description_0 < effect_description_1));
-	BOOST_CHECK(effect_description_1 < effect_description_0);
-
-	effect_description_1 = effect_description_0;
-
-	BOOST_CHECK_NO_THROW(effect_description_1.set_node_based(false));
 
 	BOOST_CHECK_LT(effect_description_1, effect_description_0);
 	BOOST_CHECK(!(effect_description_0 < effect_description_1));

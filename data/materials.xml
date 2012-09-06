@@ -1337,7 +1337,7 @@
 	<material>
 		<name>bark3</name>
 		<effect_sampler_0>3dobjects/bark3.dds</effect_sampler_0>
-		<effect>default</effect>
+		<effect>wind</effect>
 	</material>
 	<material>
 		<name>tapestries1</name>

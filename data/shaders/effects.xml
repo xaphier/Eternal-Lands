@@ -11,6 +11,16 @@
 		<lighting>diffuse</lighting>
 	</effect>
 	<effect>
+		<name>wind</name>
+		<world_transformation>wind</world_transformation>
+		<texture_coodrinates>static</texture_coodrinates>
+		<main>default_mapping</main>
+		<node_based>false</node_based>
+		<receives_shadows>true</receives_shadows>
+		<transparent>true</transparent>
+		<lighting>diffuse</lighting>
+	</effect>
+	<effect>
 		<name>solid-color</name>
 		<world_transformation>none</world_transformation>
 		<texture_coodrinates>static_extra</texture_coodrinates>

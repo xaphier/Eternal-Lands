@@ -18,7 +18,7 @@
 #include "effectparameter.hpp"
 #include "effecttexture.hpp"
 #include "effecttextureunit.hpp"
-#include "../shader/shaderversionutil.hpp"
+#include "../shader/abstractshadersource.hpp"
 
 /**
  * @file
@@ -28,7 +28,7 @@
 namespace eternal_lands
 {
 
-	class EffectNodes: public boost::noncopyable
+	class EffectNodes: public AbstractShaderSource
 	{
 		friend class EffectNode;
 		friend class EffectNodePort;
@@ -41,10 +41,12 @@ namespace eternal_lands
 
 			boost::mt19937 m_ran;
 			Mt19937RandomUuidGenerator m_uuid_generator;
-			String m_name;
 			Uint32 m_ids;
 
-			EffectNodes();
+			virtual ShaderSourceParameterVector get_parameters(
+				const ShaderVersionType version) const;
+			virtual String get_source(
+				const ShaderVersionType version) const;
 			void save_xml(const XmlWriterSharedPtr &writer);
 			void load_xml(const xmlNodePtr node);
 			void load_nodes_xml(const xmlNodePtr node);
@@ -54,8 +56,8 @@ namespace eternal_lands
 			void get_ports(UuidEffectNodePortPtrMap &ports);
 
 		public:
-			EffectNodes(const String &name);
-			~EffectNodes() noexcept;
+			EffectNodes();
+			virtual ~EffectNodes() noexcept;
 			EffectNodePtr add_color(const String &name);
 			EffectNodePtr add_direction(const String &name);
 			EffectNodePtr add_constant(const String &name,
@@ -92,6 +94,9 @@ namespace eternal_lands
 				const StringVector &default_texture,
 				const TextureTargetType target,
 				const Uint16 index);
+			virtual ShaderSourceType get_type() const;
+			virtual bool get_has_data(
+				const ShaderVersionType version) const;
 
 			inline Uint32 get_node_count() const
 			{
@@ -111,16 +116,6 @@ namespace eternal_lands
 			inline Uint32 get_ids() const noexcept
 			{
 				return m_ids;
-			}
-
-			inline void set_name(const String &name) noexcept
-			{
-				m_name = name;
-			}
-
-			inline const String &get_name() const noexcept
-			{
-				return m_name;
 			}
 
 	};

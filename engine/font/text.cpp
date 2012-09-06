@@ -19,14 +19,16 @@ namespace eternal_lands
 	{
 	}
 
-	void Text::add(const Utf32String &str, const TextAttribute &attribute)
+	void Text::add(const Uint32Vector &str, const TextAttribute &attribute)
 	{
+/*
 		m_text_attributes[m_string.length()] = TextAttributeUint32Pair(
 			attribute, str.length());
 
 		m_string += str;
 
 		boost::hash_combine(m_hash, str);
+*/
 	}
 
 	bool Text::operator==(const Text &text) const

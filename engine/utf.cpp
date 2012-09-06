@@ -132,38 +132,4 @@ namespace eternal_lands
 		return convert("", "UTF-8", str.c_str(), str.length());
 	}
 
-	Utf32String utf8_to_utf32(const std::string &str)
-	{
-		std::string tmp;
-
-		tmp = convert("UTF-8", "UTF-32", str.c_str(), str.length());
-
-		return Utf32String(reinterpret_cast<const Utf32Char*>(
-			tmp.c_str()), tmp.size() / 4);
-	}
-
-	std::string utf32_to_utf8(const Utf32String &str)
-	{
-		return convert("UTF-32", "UTF-8",
-			reinterpret_cast<const char*>(str.c_str()),
-			str.length() * 4);
-	}
-
-	std::wstring utf8_to_wstring(const std::string &str)
-	{
-		std::string tmp;
-
-		tmp = convert("UTF-8", "UTF-32", str.c_str(), str.length());
-
-		return std::wstring(reinterpret_cast<const wchar_t*>(
-			tmp.c_str()), tmp.size() / 4);
-	}
-
-	std::string wstring_to_utf8(const std::wstring &str)
-	{
-		return convert("UTF-32", "UTF-8",
-			reinterpret_cast<const char*>(str.c_str()),
-			str.length() * 4);
-	}
-
 }

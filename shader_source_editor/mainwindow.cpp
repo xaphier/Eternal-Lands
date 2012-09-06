@@ -305,8 +305,7 @@ void MainWindow::save(const QString &file_name)
 	el::ShaderSourceParameterVector shader_source_parameters;
 	int i, j, count, index, item_count;
 
-	shader_source.reset(new el::ShaderSource(
-		boost::uuids::random_generator()()));
+	shader_source.reset(new el::ShaderSource());
 
 	shader_source->set_name(el::String(name_value->text().toUtf8()));
 
@@ -400,8 +399,7 @@ void MainWindow::load(const QString &file_name)
 	boost::scoped_ptr<el::ShaderSource> shader_source;
 	int i, count, index;
 
-	shader_source.reset(new el::ShaderSource(
-		boost::uuids::random_generator()()));
+	shader_source.reset(new el::ShaderSource());
 
 	try
 	{

@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 		SIGNAL(currentIndexChanged(int)), this,
 		SLOT(texture_unit_changed(int)));
 
-	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+	m_effect_nodes = boost::make_shared<el::EffectNodes>();
 
 	QObject::connect(action_new, SIGNAL(triggered()), this, SLOT(do_new()));
 	QObject::connect(action_open, SIGNAL(triggered()), this, SLOT(load()));
@@ -135,7 +135,7 @@ void MainWindow::do_new()
 		return;
 	}
 
-	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+	m_effect_nodes = boost::make_shared<el::EffectNodes>();
 	graphicsView->scene()->clear();
 
 	m_changed = false;

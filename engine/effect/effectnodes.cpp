@@ -29,12 +29,6 @@ namespace eternal_lands
 		m_ran.seed(time(0));
 	}
 
-	EffectNodes::EffectNodes(const String &name): m_uuid_generator(&m_ran),
-		m_name(name), m_ids(0)
-	{
-		m_ran.seed(time(0));
-	}
-
 	EffectNodes::~EffectNodes() noexcept
 	{
 	}
@@ -116,6 +110,19 @@ namespace eternal_lands
 			m_uuid_generator));
 
 		return &(*m_nodes.rbegin());
+	}
+
+	ShaderSourceParameterVector EffectNodes::get_parameters(
+		const ShaderVersionType version) const
+	{
+		ShaderSourceParameterVector result;
+
+		return result;
+	}
+
+	String EffectNodes::get_source(const ShaderVersionType version) const
+	{
+		return String();
 	}
 
 	void EffectNodes::write(const Uint16StringMap &array_layers,
@@ -443,7 +450,7 @@ namespace eternal_lands
 		{
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("name")) == 0)
 			{
-				m_name = XmlUtil::get_string_value(it);
+				set_name(XmlUtil::get_string_value(it));
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("ids")) == 0)
@@ -515,6 +522,16 @@ namespace eternal_lands
 		m_texture_units[index].set_name(name);
 		m_texture_units[index].set_target(target);
 		m_texture_units[index].set_default_texture(default_texture);
+	}
+
+	ShaderSourceType EffectNodes::get_type() const
+	{
+		return sst_main_effect;
+	}
+
+	bool EffectNodes::get_has_data(const ShaderVersionType version) const
+	{
+		return true;
 	}
 
 }

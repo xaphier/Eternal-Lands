@@ -366,7 +366,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_nodes_editor = new QNodesEditor(this);
 	m_nodes_editor->install(s);
 
-	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+	m_effect_nodes = boost::make_shared<el::EffectNodes>();
 
 	connect(constant_button, SIGNAL(clicked()), this, SLOT(add_constant()));
 	connect(function_button, SIGNAL(clicked()), this, SLOT(add_function()));
@@ -2280,7 +2280,7 @@ void MainWindow::new_nodes()
 		return;
 	}
 
-	m_effect_nodes = boost::make_shared<el::EffectNodes>(el::String());
+	m_effect_nodes = boost::make_shared<el::EffectNodes>();
 	graphicsView->scene()->clear();
 
 	m_changed_nodes = false;

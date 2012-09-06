@@ -78,10 +78,8 @@
 #define noexcept throw()
 #define nullptr 0
 #define UTF8(str) str
-#define UTF32(str) L##str
 #else
 #define UTF8(str) u8##str
-#define UTF32(str) U##str
 #endif
 
 namespace eternal_lands
@@ -97,11 +95,9 @@ namespace eternal_lands
 	#define VECTOR(type) VECTOR_NAME(type, type)
 
 #if (__cplusplus < 201103L)
-	typedef wchar_t Utf32Char;
-	typedef std::wstring Utf32String;
+	typedef Uint32 Utf32Char;
 #else
 	typedef char32_t Utf32Char;
-	typedef std::u32string Utf32String;
 #endif
 
 	typedef std::stringstream StringStream;
@@ -287,6 +283,7 @@ namespace eternal_lands
 	class Scene;
 	class SceneResources;
 	class ScriptEngine;
+	class ShaderBlendData;
 	class ShaderSource;
 	class ShaderSourceBuilder;
 	class ShaderSourceData;

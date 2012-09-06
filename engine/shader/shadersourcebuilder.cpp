@@ -1089,25 +1089,21 @@ namespace eternal_lands
 	void ShaderSourceBuilder::load_shader_source(
 		const FileSystemSharedPtr &file_system, const String &file_name)
 	{
-		ShaderSourceSharedPtr shader_source;
+		std::auto_ptr<ShaderSource> shader_source;
 		ShaderSourceTypeStringPair index;
 		std::pair<ShaderSourceTypeStringPair, ShaderSourceSharedPtr>
 			data;
 
 		try
 		{
-			shader_source = boost::make_shared<ShaderSource>(
-				boost::uuids::random_generator()());
+			shader_source.reset(new ShaderSource());
 
 			shader_source->load_xml(file_system, file_name);
 
 			index.first = shader_source->get_type();
 			index.second = shader_source->get_name();
 
-			data.first = index;
-			data.second = shader_source;
-
-			m_shader_sources.insert(data);
+			m_shader_sources.insert(index, shader_source);
 
 			LOG_DEBUG(lt_shader_source, UTF8("Shader source type "
 				"%1%-%2% loaded from file '%3%'"), index.first
@@ -1257,32 +1253,6 @@ namespace eternal_lands
 		}
 	}
 
-	void ShaderSourceBuilder::remove_function_usage(
-		const ShaderSourceBuildData &data,
-		const ShaderSourceType shader_source_type,
-		UuidSet &used_sources) const
-	{
-		ShaderSourceTypeStringPairShaderSourceSharedPtrMap::
-			const_iterator found;
-		ShaderSourceTypeStringMap::const_iterator index;
-
-		index = data.get_sources().find(shader_source_type);
-
-		if (index == data.get_sources().end())
-		{
-			return;
-		}
-
-		found = m_shader_sources.find(*index);
-
-		if (found == m_shader_sources.end())
-		{
-			return;
-		}
-
-		used_sources.erase(found->second->get_uuid());
-	}
-
 	bool ShaderSourceBuilder::build_function(
 		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
@@ -1290,10 +1260,9 @@ namespace eternal_lands
 		const ShaderSourceType shader_source_type,
 		const String &indent, OutStream &stream, OutStream &functions,
 		ShaderSourceParameterVector &globals,
-		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
-		const
+		UniformBufferUsage &uniform_buffers) const
 	{
-		ShaderSourceTypeStringPairShaderSourceSharedPtrMap::
+		ShaderSourceTypeStringPairAbstractShaderSourceMap::
 			const_iterator found;
 		ShaderSourceTypeStringMap::const_iterator index;
 
@@ -1313,13 +1282,6 @@ namespace eternal_lands
 				index->second);
 			return false;
 		}
-
-		if (used_sources.count(found->second->get_uuid()) == 1)
-		{
-			return true;
-		}
-
-		used_sources.insert(found->second->get_uuid());
 
 		/**
 		 * AMD driver doesn't like functions with array arguments.
@@ -1663,8 +1625,7 @@ namespace eternal_lands
 		const ShaderSourceParameterVector &locals, 
 		const String &indent, const bool shadow, OutStream &main,
 		OutStream &functions, ShaderSourceParameterVector &globals,
-		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
-		const
+		UniformBufferUsage &uniform_buffers) const
 	{
 		ShaderSourceParameterVector function_locals, bak;
 		ShaderSourceParameterVector function_parameters;
@@ -1897,8 +1858,7 @@ namespace eternal_lands
 
 		build_function(data, array_sizes, function_locals,
 			sst_fragment_light, local_loop_indent, stream,
-			functions, function_parameters, uniform_buffers,
-			used_sources);
+			functions, function_parameters, uniform_buffers);
 
 		bak = function_locals;
 
@@ -1960,11 +1920,9 @@ namespace eternal_lands
 		stream << UTF8(" = ") << apt_light_positions;
 		stream << UTF8("[") << sslt_i << UTF8("];\n");
 
-		remove_function_usage(data, sst_fragment_light, used_sources);
-
 		build_function(data, array_sizes, bak, sst_fragment_light,
 			local_loop_indent, stream, functions,
-			function_parameters, uniform_buffers, used_sources);
+			function_parameters, uniform_buffers);
 
 		add_local(String(UTF8("lighting")), cpt_diffuse_color, pqt_in,
 			function_locals, function_parameters, uniform_buffers);
@@ -2046,8 +2004,7 @@ namespace eternal_lands
 		const String &indent, const bool vertex, const bool shadow,
 		OutStream &main, OutStream &functions,
 		ShaderSourceParameterVector &globals,
-		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
-		const
+		UniformBufferUsage &uniform_buffers) const
 	{
 		ShaderSourceParameterVector function_locals;
 		ShaderSourceParameterVector function_parameters;
@@ -2210,7 +2167,7 @@ namespace eternal_lands
 
 		build_function(data, array_sizes, function_locals, light,
 			local_loop_indent, stream, functions,
-			function_parameters, uniform_buffers, used_sources);
+			function_parameters, uniform_buffers);
 
 		make_parameter_local(
 			CommonParameterUtil::get_str(cpt_diffuse_color),
@@ -2309,8 +2266,7 @@ namespace eternal_lands
 		const ParameterSizeTypeUint16Map &array_sizes,
 		OutStream &main, OutStream &functions,
 		ShaderSourceParameterVector &globals,
-		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
-		const
+		UniformBufferUsage &uniform_buffers) const
 	{
 		ShaderSourceParameterVector locals;
 		String gl_Position, indent;
@@ -2322,8 +2278,7 @@ namespace eternal_lands
 		{
 			build_function(data, array_sizes, locals,
 				sst_world_tangent_transformation, indent, main,
-				functions, globals, uniform_buffers,
-				used_sources);
+				functions, globals, uniform_buffers);
 		}
 		else
 		{
@@ -2331,17 +2286,15 @@ namespace eternal_lands
 			{
 				build_function(data, array_sizes, locals,
 					sst_world_normal_transformation,
-					indent, main, functions,
-					globals, uniform_buffers,
-					used_sources);
+					indent, main, functions, globals,
+					uniform_buffers);
 			}
 			else
 			{
 				build_function(data, array_sizes, locals,
-					sst_world_depth_transformation,
-					indent, main, functions,
-					globals, uniform_buffers,
-					used_sources);
+					sst_world_depth_transformation,	indent,
+					main, functions, globals,
+					uniform_buffers);
 			}
 		}
 
@@ -2376,8 +2329,7 @@ namespace eternal_lands
 		{
 			build_function(data, array_sizes, locals,
 				sst_view_transformation, indent, main,
-				functions, globals, uniform_buffers,
-				used_sources);
+				functions, globals, uniform_buffers);
 		}
 
 		if ((data.get_shader_build() == sbt_default) ||
@@ -2389,8 +2341,7 @@ namespace eternal_lands
 			{
 				build_function(data, array_sizes, locals,
 					sst_fog, indent, main, functions,
-					globals, uniform_buffers,
-					used_sources);
+					globals, uniform_buffers);
 			}
 
 			if ((data.get_vertex_lights_count() > 0) &&
@@ -2398,7 +2349,7 @@ namespace eternal_lands
 			{
 				build_lights(data, array_sizes, locals, indent,
 					true, false, main, functions, globals,
-					uniform_buffers, used_sources);
+					uniform_buffers);
 			}
 
 			if ((data.get_shadow_maps_count() > 0) &&
@@ -2406,14 +2357,12 @@ namespace eternal_lands
 			{
 				build_function(data, array_sizes, locals,
 					sst_shadow_uv, indent, main, functions,
-					globals, uniform_buffers,
-					used_sources);
+					globals, uniform_buffers);
 			}
 		}
 
 		build_function(data, array_sizes, locals, sst_uv,
-			indent, main, functions, globals, uniform_buffers,
-			used_sources);
+			indent, main, functions, globals, uniform_buffers);
 
 		if (data.get_option(ssbot_node_based_effect))
 		{
@@ -2432,8 +2381,7 @@ namespace eternal_lands
 		const String &in_prefix, const String &out_prefix,
 		const bool use_block, OutStream &main, OutStream &functions,
 		ShaderSourceParameterVector &globals,
-		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
-		const
+		UniformBufferUsage &uniform_buffers) const
 	{
 #if	0
 		ShaderSourceParameterVector locals;
@@ -2543,8 +2491,7 @@ namespace eternal_lands
 		const ParameterSizeTypeUint16Map &array_sizes,
 		OutStream &main, OutStream &functions,
 		ShaderSourceParameterVector &globals,
-		UniformBufferUsage &uniform_buffers, UuidSet &used_sources)
-		const
+		UniformBufferUsage &uniform_buffers) const
 	{
 		ShaderSourceParameterVector locals;
 		CommonParameterType output_parameter;
@@ -2588,21 +2535,21 @@ namespace eternal_lands
 		{
 			build_function(data, array_sizes, locals,
 				sst_shadow_uv_ddx_ddy, indent, main, functions,
-				globals, uniform_buffers, used_sources);
+				globals, uniform_buffers);
 		}
 
 		if (data.get_option(ssbot_view_direction))
 		{
 			build_function(data, array_sizes, locals,
 				sst_view_direction, indent, main, functions,
-				globals, uniform_buffers, used_sources);
+				globals, uniform_buffers);
 		}
 
 		if (data.get_option(ssbot_tbn_matrix))
 		{
 			build_function(data, array_sizes, locals,
 				sst_tbn_matrix, indent, main, functions,
-				globals, uniform_buffers, used_sources);
+				globals, uniform_buffers);
 		}
 
 		if (data.get_option(ssbot_node_based_effect))
@@ -2612,7 +2559,7 @@ namespace eternal_lands
 		{
 			build_function(data, array_sizes, locals,
 				sst_main_effect, indent, main, functions,
-				globals, uniform_buffers, used_sources);
+				globals, uniform_buffers);
 		}
 
 		if (data.get_option(ssbot_transparent) &&
@@ -2645,7 +2592,7 @@ namespace eternal_lands
 						array_sizes, locals,
 						sst_shadow_mapping, indent,
 						main, functions, globals,
-						uniform_buffers, used_sources);
+						uniform_buffers);
 				}
 
 				if (data.get_option(
@@ -2654,15 +2601,14 @@ namespace eternal_lands
 					build_light_index_lights(data,
 						array_sizes, locals, indent,
 						shadows, main, functions,
-						globals, uniform_buffers,
-						used_sources);
+						globals, uniform_buffers);
 				}
 				else
 				{
 					build_lights(data, array_sizes, locals,
 						indent, false, shadows, main,
 						functions, globals,
-						uniform_buffers, used_sources);
+						uniform_buffers);
 				}
 			}
 			else
@@ -2771,8 +2717,7 @@ namespace eternal_lands
 			case sbt_shadow:
 				build_function(data, array_sizes, locals,
 					sst_shadow_map, indent, main,
-					functions, globals, uniform_buffers,
-					used_sources);
+					functions, globals, uniform_buffers);
 
 				add_parameter(String(UTF8("fragment")),
 					cpt_shadow_map_data, pqt_in, locals,
@@ -2956,28 +2901,11 @@ namespace eternal_lands
 		if ((data.get_shader_build() != sbt_depth) &&
 			(data.get_shader_build() != sbt_screen_quad))
 		{
+			add_parameter(String(UTF8("fragment")), cpt_albedo,
+				pqt_in, locals, globals, uniform_buffers);
+
 			main << indent << output << UTF8(".a = ");
-
-			if (data.get_option(ssbot_transparent) &&
-				!data.get_option(ssbot_alpha_test))
-			{
-				add_parameter(String(UTF8("fragment")),
-					cpt_albedo, pqt_in, locals,
-					globals, uniform_buffers);
-
-				main << cpt_albedo << UTF8(".a");
-			}
-			else
-			{
-				add_parameter(String(UTF8("fragment")),
-					cpt_albedo, pqt_in, locals,
-					globals, uniform_buffers);
-
-				main << cpt_albedo << UTF8(".a");
-//				main << UTF8("1.0");
-			}
-
-			main << UTF8(";\n");
+			main << cpt_albedo << UTF8(".a;\n");
 		}
 	}
 
@@ -2985,7 +2913,7 @@ namespace eternal_lands
 		const ShaderSourceBuildData &data, const String &name,
 		const ShaderSourceType shader_source_type) const
 	{
-		ShaderSourceTypeStringPairShaderSourceSharedPtrMap::
+		ShaderSourceTypeStringPairAbstractShaderSourceMap::
 			const_iterator found;
 		ShaderSourceTypeStringMap::const_iterator index;
 
@@ -3014,7 +2942,7 @@ namespace eternal_lands
 		const ShaderSourceTypeStringPair &source,
 		const ShaderVersionType version) const
 	{
-		ShaderSourceTypeStringPairShaderSourceSharedPtrMap::
+		ShaderSourceTypeStringPairAbstractShaderSourceMap::
 			const_iterator found;
 
 		found = m_shader_sources.find(source);
@@ -3225,7 +3153,6 @@ namespace eternal_lands
 		StringStream version_stream;
 		UniformBufferUsage vertex_uniform_buffers;
 		UniformBufferUsage fragment_uniform_buffers;
-		UuidSet used_sources;
 		String vertex_data, fragment_data, prefix, name_prefix;
 		String vertex, geometry, fragment, type;
 		ShaderVersionType version_type;
@@ -3315,10 +3242,10 @@ namespace eternal_lands
 
 		build_fragment_source(data, array_sizes, fragment_main,
 			fragment_functions, fragment_globals,
-			fragment_uniform_buffers, used_sources);
+			fragment_uniform_buffers);
 		build_vertex_source(data, array_sizes, vertex_main,
 			vertex_functions, vertex_globals,
-			vertex_uniform_buffers, used_sources);
+			vertex_uniform_buffers);
 
 		build_in_out(fragment_globals, vertex_globals, varyings);
 		build_attributes(vertex_globals, attributes);
@@ -3703,7 +3630,7 @@ namespace eternal_lands
 	StringVector ShaderSourceBuilder::get_shader_source_names(
 		const ShaderSourceType shader_source) const
 	{
-		ShaderSourceTypeStringPairShaderSourceSharedPtrMap::
+		ShaderSourceTypeStringPairAbstractShaderSourceMap::
 			const_iterator it, end;
 		StringVector result;
 

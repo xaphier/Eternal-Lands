@@ -31,7 +31,7 @@ namespace eternal_lands
 	{
 		private:
 			Uint32TextAttributeUint32PairMap m_text_attributes;
-			Utf32String m_string;
+			Uint32Vector m_string;
 			std::size_t m_hash;
 
 		public:
@@ -45,22 +45,17 @@ namespace eternal_lands
 			 */
 			~Text() noexcept;
 
-			void add(const Utf32String &str,
+			void add(const String &str,
 				const TextAttribute &attribute);
 			bool operator==(const Text &text) const;
 			void clear();
 			const TextAttribute &get_text_attribute(
 				const Uint32 index, Uint32 &size) const;
 
-			inline const Utf32String &get_string() const noexcept
-			{
-				return m_string;
-			}
-
 			inline Utf32Char get_char(const Uint32 index) const
 				noexcept
 			{
-				return get_string()[index];
+				return m_string[index];
 			}
 
 			inline bool operator!=(const Text &text) const noexcept
@@ -75,7 +70,7 @@ namespace eternal_lands
 
 			inline Uint32 get_length() const noexcept
 			{
-				return m_string.length();
+				return m_string.size();
 			}
 
 	};

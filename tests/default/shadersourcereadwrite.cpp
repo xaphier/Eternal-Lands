@@ -17,8 +17,7 @@ BOOST_AUTO_TEST_CASE(shader_source)
 {
 	boost::scoped_ptr<el::ShaderSource> shader_source;
 
-	BOOST_CHECK_NO_THROW(shader_source.reset(new el::ShaderSource(
-		boost::uuids::random_generator()())));
+	BOOST_CHECK_NO_THROW(shader_source.reset(new el::ShaderSource()));
 }
 
 BOOST_AUTO_TEST_CASE(load)
@@ -27,8 +26,7 @@ BOOST_AUTO_TEST_CASE(load)
 	el::String name;
 	std::ifstream str;
 
-	BOOST_CHECK_NO_THROW(shader_source.reset(new el::ShaderSource(
-		boost::uuids::random_generator()())));
+	BOOST_CHECK_NO_THROW(shader_source.reset(new el::ShaderSource()));
 
 	str.open("shader_sources.txt", std::ios::in);
 

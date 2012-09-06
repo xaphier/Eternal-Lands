@@ -14,8 +14,8 @@ namespace eternal_lands
 {
 
 	EffectDescription::EffectDescription(): m_description(edt_default),
-		m_output(sot_float), m_node_based(true),
-		m_receives_shadows(true), m_transparent(false)
+		m_output(sot_float), m_receives_shadows(true),
+		m_transparent(false)
 	{
 	}
 
@@ -77,12 +77,6 @@ namespace eternal_lands
 				set_lighting(XmlUtil::get_string_value(it));
 			}
 
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("node_based")) == 0)
-			{
-				set_node_based(XmlUtil::get_bool_value(it));
-			}
-
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("description"))
 				== 0)
 			{
@@ -124,8 +118,6 @@ namespace eternal_lands
 			get_texture_coodrinates());
 		writer->write_element(String(UTF8("main")), get_main());
 		writer->write_element(String(UTF8("lighting")), get_lighting());
-		writer->write_bool_element(String(UTF8("node_based")),
-			get_node_based());
 		writer->write_element(String(UTF8("description")),
 			EffectDescriptionUtil::get_str(get_description()));
 		writer->write_element(String(UTF8("output")),
@@ -158,11 +150,6 @@ namespace eternal_lands
 		}
 
 		if (get_lighting() != effect.get_lighting())
-		{
-			return false;
-		}
-
-		if (get_node_based() != effect.get_node_based())
 		{
 			return false;
 		}
@@ -208,11 +195,6 @@ namespace eternal_lands
 			return get_lighting() < effect.get_lighting();
 		}
 
-		if (get_node_based() != effect.get_node_based())
-		{
-			return get_node_based() < effect.get_node_based();
-		}
-
 		if (get_receives_shadows() != effect.get_receives_shadows())
 		{
 			return get_receives_shadows() <
@@ -231,7 +213,6 @@ namespace eternal_lands
 		str << value.get_texture_coodrinates();
 		str << " main: " << value.get_main();
 		str << " lighting: " << value.get_lighting();
-		str << " node_based: " << value.get_node_based();
 		str << " receives_shadows: " << value.get_receives_shadows();
 		str << " transparent: " << value.get_transparent();
 

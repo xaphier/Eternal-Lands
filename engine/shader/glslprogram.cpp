@@ -133,18 +133,17 @@ namespace eternal_lands
 
 		String get_base_name(const String &name)
 		{
-			std::wstring tmp;
-			std::wstring::size_type found;
+			std::string tmp;
+			std::string::size_type found;
 
-			tmp = utf8_to_wstring(name);
+			tmp = name;
 
-			found = tmp.rfind(L'[');
+			found = tmp.rfind(UTF8("["));
 
 			if ((found != std::wstring::npos) &&
-				(tmp.size() == (tmp.rfind(L']') + 1)))
+				(tmp.size() == (tmp.rfind(UTF8("]")) + 1)))
 			{
-				return String(wstring_to_utf8(tmp.substr(0,
-					found)));
+				return String(tmp.substr(0, found));
 			}
 
 			return name;

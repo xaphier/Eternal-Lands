@@ -13,9 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "shadersourceutil.hpp"
-#include "parametersizeutil.hpp"
-#include "shaderversionutil.hpp"
+#include "abstractshadersource.hpp"
 
 /**
  * @file
@@ -25,21 +23,23 @@
 namespace eternal_lands
 {
 
-	class ShaderSource
+	class ShaderSource: public AbstractShaderSource
 	{
 		private:
 			ShaderSourceType m_type;
-			String m_name;
 			ShaderSourceDataVector m_datas;
-			boost::uuids::uuid m_uuid;
 
-			ShaderSource();
+			virtual ShaderSourceParameterVector get_parameters(
+				const ShaderVersionType version) const;
+			virtual String get_source(
+				const ShaderVersionType version) const;
+
 			void load_datas_xml(const String &source,
 				const xmlNodePtr node);
 
 		public:
-			ShaderSource(const boost::uuids::uuid &uuid);
-			~ShaderSource() noexcept;
+			ShaderSource();
+			virtual ~ShaderSource() noexcept;
 			void load_xml(const String &file_name);
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
@@ -47,29 +47,16 @@ namespace eternal_lands
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
 			void load(const String &file_name);
-			void build_source(const ShaderVersionType &version,
-				const ShaderSourceParameterVector &locals, 
-				const String &indent, OutStream &stream,
-				ShaderSourceParameterVector &globals,
-				UniformBufferUsage &uniform_buffers) const;
-			void build_function(const ShaderVersionType &version,
-				const ShaderSourceParameterVector &locals,
-				const ParameterSizeTypeUint16Map &array_sizes,
-				const String &indent,
-				const String &parameter_prefix,
-				const String &use_indent, OutStream &stream,
-				OutStream &function,
-				ShaderSourceParameterVector &globals,
-				UniformBufferUsage &uniform_buffers) const;
-			bool check_source_parameter(
-				const ShaderVersionType &version,
-				const String &name) const;
-			bool get_has_data(const ShaderVersionType version)
-				const;
+			virtual bool get_has_data(
+				const ShaderVersionType version) const;
 			const ShaderSourceData &get_data(
 				const ShaderVersionType version) const;
 			void set_datas(const ShaderSourceDataVector &datas);
-			String get_typed_name() const;
+
+			virtual inline ShaderSourceType get_type() const
+			{
+				return m_type;
+			}
 
 			inline void set_type(const ShaderSourceType type)
 				noexcept
@@ -77,31 +64,10 @@ namespace eternal_lands
 				m_type = type;
 			}
 
-			inline void set_name(const String &name) noexcept
-			{
-				m_name = name;
-			}
-
 			inline const ShaderSourceDataVector &get_datas() const
 				noexcept
 			{
 				return m_datas;
-			}
-
-			inline ShaderSourceType get_type() const noexcept
-			{
-				return m_type;
-			}
-
-			inline const String &get_name() const noexcept
-			{
-				return m_name;
-			}
-
-			inline const boost::uuids::uuid &get_uuid() const
-				noexcept
-			{
-				return m_uuid;
 			}
 
 	};

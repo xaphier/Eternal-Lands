@@ -35,12 +35,11 @@ namespace eternal_lands
 
 			typedef std::pair<ShaderSourceType, String>
 				ShaderSourceTypeStringPair;
-			typedef std::map<ShaderSourceTypeStringPair,
-					ShaderSourceSharedPtr>
-				ShaderSourceTypeStringPairShaderSourceSharedPtrMap;
-			typedef std::set<boost::uuids::uuid> UuidSet;
+			typedef boost::ptr_map<ShaderSourceTypeStringPair,
+					AbstractShaderSource>
+				ShaderSourceTypeStringPairAbstractShaderSourceMap;
 
-			ShaderSourceTypeStringPairShaderSourceSharedPtrMap
+			ShaderSourceTypeStringPairAbstractShaderSourceMap
 				m_shader_sources;
 			ShaderSourceTypeStringMap m_sources;
 			const GlobalVarsSharedPtr m_global_vars;
@@ -101,8 +100,7 @@ namespace eternal_lands
 				const bool shadow, OutStream &main,
 				OutStream &functions,
 				ShaderSourceParameterVector &globals,
-				UniformBufferUsage &uniform_buffers,
-				UuidSet &used_sources) const;
+				UniformBufferUsage &uniform_buffers) const;
 			void build_light_index_lights(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
@@ -110,8 +108,7 @@ namespace eternal_lands
 				const String &indent, const bool shadow,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
-				UniformBufferUsage &uniform_buffers,
-				UuidSet &used_sources) const;
+				UniformBufferUsage &uniform_buffers) const;
 			void build_light_index_x4_lights(
 				const ShaderSourceBuildData &data,
 				const String &indent, const String &loop_indent,
@@ -132,15 +129,13 @@ namespace eternal_lands
 				const String &indent, OutStream &stream,
 				OutStream &functions,
 				ShaderSourceParameterVector &globals,
-				UniformBufferUsage &uniform_buffers,
-				UuidSet &used_sources) const;
+				UniformBufferUsage &uniform_buffers) const;
 			void build_vertex_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
-				UniformBufferUsage &uniform_buffers,
-				UuidSet &used_sources) const;
+				UniformBufferUsage &uniform_buffers) const;
 			void build_geometry_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
@@ -149,15 +144,13 @@ namespace eternal_lands
 				const String &out_prefix, const bool use_blocks,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
-				UniformBufferUsage &uniform_buffers,
-				UuidSet &used_sources) const;
+				UniformBufferUsage &uniform_buffers) const;
 			void build_fragment_source(
 				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
-				UniformBufferUsage &uniform_buffers,
-				UuidSet &used_sources) const;
+				UniformBufferUsage &uniform_buffers) const;
 			void load_shader_source(
 				const FileSystemSharedPtr &file_system,
 				const String &file_name);
@@ -171,10 +164,6 @@ namespace eternal_lands
 			void load_shader_sources(
 				const FileSystemSharedPtr &file_system,
 				const String &dir);
-			void remove_function_usage(
-				const ShaderSourceBuildData &data,
-				const ShaderSourceType shader_source_type,
-				UuidSet &used_sources) const;
 
 		public:
 			ShaderSourceBuilder(
