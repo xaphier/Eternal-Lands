@@ -241,6 +241,7 @@ namespace eternal_lands
 		m_frame_id(0), m_program_vars_id(0),
 		m_rebuild_terrain_map(true), m_rebuild_shadow_map(true)
 	{
+		MapSharedPtr map;
 		Uint32 i, count;
 
 		m_light_positions_array.resize(8);
@@ -289,15 +290,19 @@ namespace eternal_lands
 		get_scene_resources().get_mesh_cache()->get_mesh(
 			String(UTF8("quad")), m_screen_quad);
 
-		set_map(boost::make_shared<Map>(
+		map = boost::make_shared<Map>(
 			get_scene_resources().get_codec_manager(),
 			get_file_system(), get_global_vars(),
+			get_scene_resources().get_effect_cache(),
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_material_cache(),
 			get_scene_resources().get_material_builder(),
-			get_scene_resources().get_texture_cache(),
-			String(UTF8("empty"))));
+			get_scene_resources().get_texture_cache());
+
+		map->set_name(String(UTF8("empty")));
+
+		set_map(map);
 
 		try
 		{
@@ -1276,7 +1281,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		get_state_manager().switch_texture(spt_shadow,
+		get_state_manager().switch_texture(spt_effect_15,
 			m_shadow_texture);
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1525,7 +1530,7 @@ namespace eternal_lands
 				slice);
 
 			tile_scale = m_map->get_terrain_size() /
-				glm::vec2(2.0f);
+				glm::vec2(4.0f);
 
 			m_clipmap.update_slice(slice);
 
@@ -1927,16 +1932,20 @@ namespace eternal_lands
 			draw_shadows();
 		}
 
-		if (m_clipmap.update(glm::vec3(get_scene_view().get_camera()),
-			glm::vec3(get_scene_view().get_view_dir()),
-			glm::vec2(get_scene_view().get_focus())))
+		if (get_terrain())
 		{
-			update_terrain_texture();
+			if (m_clipmap.update(glm::vec3(
+				get_scene_view().get_camera()),
+				glm::vec3(get_scene_view().get_view_dir()),
+				glm::vec2(get_scene_view().get_focus())))
+			{
+				update_terrain_texture();
+			}
 		}
 
 		if (get_scene_view().get_shadow_map_count() > 0)
 		{
-			get_state_manager().switch_texture(spt_shadow,
+			get_state_manager().switch_texture(spt_effect_15,
 				m_shadow_texture);
 		}
 
@@ -1957,13 +1966,13 @@ namespace eternal_lands
 				lst_default)
 			{
 				get_state_manager().switch_texture(
-					spt_light_positions,
+					spt_effect_12,
 					m_light_position_texture);
 				get_state_manager().switch_texture(
-					spt_light_colors,
+					spt_effect_13,
 					m_light_color_texture);
 				get_state_manager().switch_texture(
-					spt_light_indices,
+					spt_effect_14,
 					m_light_index_texture);
 			}
 		}
@@ -2208,10 +2217,10 @@ namespace eternal_lands
 		map_loader.reset(new MapLoader(
 			get_scene_resources().get_codec_manager(),
 			m_file_system, m_global_vars,
+			get_scene_resources().get_effect_cache(),
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_mesh_data_cache(),
-			get_scene_resources().get_effect_cache(),
 			get_scene_resources().get_material_cache(),
 			get_scene_resources().get_material_description_cache(),
 			get_scene_resources().get_material_builder(),

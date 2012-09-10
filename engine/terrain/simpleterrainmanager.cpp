@@ -99,7 +99,7 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrainManager::set_terrain_page(
-		const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
 		const AbstractMeshSharedPtr &mesh,
@@ -131,8 +131,8 @@ namespace eternal_lands
 			{
 				pos = tile_offset + glm::uvec2(x, y);
 
-				vector = glm::vec3(vector_map->get_pixel(pos.x,
-					pos.y, 0, 0, 0));
+				vector = glm::vec3(displacement_map->get_pixel(
+					pos.x, pos.y, 0, 0, 0));
 
 				normal = glm::vec2(normal_map->get_pixel(pos.x,
 					pos.y, 0, 0, 0));
@@ -173,7 +173,7 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrainManager::set_terrain_page_low_quality(
-		const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
 		const AbstractMeshSharedPtr &mesh,
@@ -205,8 +205,8 @@ namespace eternal_lands
 			{
 				pos = (tile_offset + glm::uvec2(x, y)) * 2u;
 
-				vector = get_low_quality_pixel_3(vector_map,
-					pos.x, pos.y);
+				vector = get_low_quality_pixel_3(
+					displacement_map, pos.x, pos.y);
 
 				normal = get_low_quality_pixel_2(normal_map,
 					pos.x, pos.y);
@@ -327,7 +327,7 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrainManager::add_terrain_page(
-		const ImageSharedPtr &vector_map,
+		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
 		const glm::uvec2 &position)
@@ -366,14 +366,15 @@ namespace eternal_lands
 
 		if (get_low_quality())
 		{
-			set_terrain_page_low_quality(vector_map, normal_map,
-				dudv_map, mesh_clone, tile_offset,
+			set_terrain_page_low_quality(displacement_map,
+				normal_map, dudv_map, mesh_clone, tile_offset,
 				position_scale);
 		}
 		else
 		{
-			set_terrain_page(vector_map, normal_map, dudv_map,
-				mesh_clone, tile_offset, position_scale);
+			set_terrain_page(displacement_map, normal_map,
+				dudv_map, mesh_clone, tile_offset,
+				position_scale);
 		}
 
 		transformation.set_translation(
@@ -413,31 +414,35 @@ namespace eternal_lands
 		terrain.set_instances(0);
 	}
 
-	void SimpleTerrainManager::update(const ImageSharedPtr &vector_map,
+	void SimpleTerrainManager::update(
+		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
 	{
-		ImageSharedPtr vector_map_tmp, normal_map_tmp, dudv_map_tmp;
+		ImageSharedPtr displacement_map_tmp, normal_map_tmp;
+		ImageSharedPtr dudv_map_tmp;
 		Uint32 x, y, height, width;
 
 		m_object_tree->clear();
 
-		set_terrain_size((glm::vec2(vector_map->get_sizes()) -1.0f) *
-			get_patch_scale());
+		set_terrain_size((glm::vec2(displacement_map->get_sizes())
+			-1.0f) * get_patch_scale());
 
-		vector_map_tmp = vector_map->decompress(false, true);
+		displacement_map_tmp = displacement_map->decompress(false,
+			true);
 		normal_map_tmp = normal_map->decompress(false, true);
 		dudv_map_tmp = dudv_map->decompress(false, true);
 
-		width = vector_map->get_width() / get_tile_size();
-		height = vector_map->get_height() / get_tile_size();
+		width = displacement_map->get_width() / get_tile_size();
+		height = displacement_map->get_height() / get_tile_size();
 
 		for (y = 0; y < height; ++y)
 		{
 			for (x = 0; x < width; ++x)
 			{
-				add_terrain_page(vector_map_tmp, normal_map_tmp,
-					dudv_map_tmp, glm::uvec2(x, y));
+				add_terrain_page(displacement_map_tmp,
+					normal_map_tmp, dudv_map_tmp,
+					glm::uvec2(x, y));
 			}
 		}
 
@@ -448,6 +453,21 @@ namespace eternal_lands
 	{
 		m_object_tree->clear();
 		set_bounding_box(m_object_tree->get_bounding_box());
+	}
+
+	TextureSharedPtr SimpleTerrainManager::get_displacement_texture() const
+	{
+		return TextureSharedPtr();
+	}
+
+	TextureSharedPtr SimpleTerrainManager::get_normal_texture() const
+	{
+		return TextureSharedPtr();
+	}
+
+	TextureSharedPtr SimpleTerrainManager::get_dudv_texture() const
+	{
+		return TextureSharedPtr();
 	}
 
 }

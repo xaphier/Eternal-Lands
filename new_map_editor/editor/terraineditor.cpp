@@ -45,31 +45,31 @@ namespace eternal_lands
 	{
 	}
 
-	void TerrainEditor::set_displacment_values(
-		const DisplacmentValueVector &displacment_values)
+	void TerrainEditor::set_displacement_values(
+		const DisplacementValueVector &displacement_values)
 	{
 		Ivec2Set indices;
 		glm::ivec2 index, min, max;
 		Sint32 x, y;
 
 		min = glm::ivec2(0);
-		max = glm::ivec2(m_displacment_image->get_width(),
-			m_displacment_image->get_height()) - 1;
+		max = glm::ivec2(m_displacement_image->get_width(),
+			m_displacement_image->get_height()) - 1;
 
-		BOOST_FOREACH(const DisplacmentValue &displacment_value,
-			displacment_values)
+		BOOST_FOREACH(const DisplacementValue &displacement_value,
+			displacement_values)
 		{
-			m_displacment_image->set_pixel_packed_uint32(
-				displacment_value.get_x(),
-				displacment_value.get_y(), 0, 0, 0,
-				displacment_value.get_packed_value());
+			m_displacement_image->set_pixel_packed_uint32(
+				displacement_value.get_x(),
+				displacement_value.get_y(), 0, 0, 0,
+				displacement_value.get_packed_value());
 
 			for (y = -1; y < 2; ++y)
 			{
 				for (x = -1; x < 2; ++x)
 				{
-					index.x = displacment_value.get_x();
-					index.y = displacment_value.get_y();
+					index.x = displacement_value.get_x();
+					index.y = displacement_value.get_y();
 					index.x += x;
 					index.y += y;
 
@@ -110,7 +110,7 @@ namespace eternal_lands
 	{
 	}
 
-	void TerrainEditor::set_displacment_map(const String &name)
+	void TerrainEditor::set_displacement_map(const String &name)
 	{
 	}
 
@@ -118,24 +118,24 @@ namespace eternal_lands
 	{
 	}
 
-	void TerrainEditor::get_displacment_values(const Uint32 x,
-		const Uint32 y, DisplacmentValueVector &displacment_values)
+	void TerrainEditor::get_displacement_values(const Uint32 x,
+		const Uint32 y, DisplacementValueVector &displacement_values)
 		const
 	{
-		DisplacmentValue value(x, y);
+		DisplacementValue value(x, y);
 
 		value.set_packed_value(
-			m_displacment_image->get_pixel_packed_uint32(x, y,
+			m_displacement_image->get_pixel_packed_uint32(x, y,
 				0, 0, 0));
 
-		displacment_values.push_back(value);
+		displacement_values.push_back(value);
 	}
 
-	void TerrainEditor::get_displacment_values(const glm::uvec2 &vertex,
+	void TerrainEditor::get_displacement_values(const glm::uvec2 &vertex,
 		const glm::vec2 &size, const float attenuation_size,
 		const BrushAttenuationType attenuation,
 		const BrushShapeType shape,
-		DisplacmentValueVector &displacment_values) const
+		DisplacementValueVector &displacement_values) const
 	{
 		glm::vec2 center, position, max_size;
 		Sint64 temp;
@@ -154,16 +154,16 @@ namespace eternal_lands
 			static_cast<Sint64>(0));
 
 		tmp = static_cast<float>(vertex.x) + max_size.x;
-		temp = m_displacment_image->get_width();
+		temp = m_displacement_image->get_width();
 		max_x = std::min(static_cast<Sint64>(tmp),
 			static_cast<Sint64>(temp - 1));
 
 		tmp = static_cast<float>(vertex.y) + max_size.y;
-		temp = m_displacment_image->get_height();
+		temp = m_displacement_image->get_height();
 		max_y = std::min(static_cast<Sint64>(tmp),
 			static_cast<Sint64>(temp - 1));
 
-		displacment_values.clear();
+		displacement_values.clear();
 
 		center = glm::vec2(vertex[0], vertex[1]);
 
@@ -179,8 +179,8 @@ namespace eternal_lands
 				if (calc_attenuation(distance,
 					attenuation_size, attenuation) > 0.0f)
 				{
-					get_displacment_values(x, y,
-						displacment_values);
+					get_displacement_values(x, y,
+						displacement_values);
 				}
 			}
 		}
@@ -349,18 +349,18 @@ namespace eternal_lands
 		return calc_effect(value, data, average, strength, effect);
 	}
 
-	void TerrainEditor::change_displacment_values(const glm::vec3 &data,
+	void TerrainEditor::change_displacement_values(const glm::vec3 &data,
 		const glm::bvec3 &mask, const glm::vec2 &size,
 		const glm::uvec2 &vertex, const float attenuation_size,
 		const BrushAttenuationType attenuation,
 		const BrushShapeType shape, const BrushEffectType effect,
-		DisplacmentValueVector &displacment_values) const
+		DisplacementValueVector &displacement_values) const
 	{
 		glm::vec3 average, value, normal;
 		glm::vec2 center, position;
 		glm::ivec2 index;
 
-		if (displacment_values.size() < 1)
+		if (displacement_values.size() < 1)
 		{
 			return;
 		}
@@ -369,30 +369,30 @@ namespace eternal_lands
 
 		average = glm::vec3(0.0f);
 
-		BOOST_FOREACH(const DisplacmentValue &displacment_value,
-			displacment_values)
+		BOOST_FOREACH(const DisplacementValue &displacement_value,
+			displacement_values)
 		{
 			average += AbstractTerrainManager::get_offset_scaled_rgb10_a2(
-				displacment_value.get_value());
+				displacement_value.get_value());
 		}
 
-		average /= displacment_values.size();
+		average /= displacement_values.size();
 
-		BOOST_FOREACH(DisplacmentValue &displacment_value,
-			displacment_values)
+		BOOST_FOREACH(DisplacementValue &displacement_value,
+			displacement_values)
 		{
 			value = AbstractTerrainManager::get_offset_scaled_rgb10_a2(
-				displacment_value.get_value());
+				displacement_value.get_value());
 
-			index.x = displacment_value.get_x();
-			index.y = displacment_value.get_y();
+			index.x = displacement_value.get_x();
+			index.y = displacement_value.get_y();
 			position = index;
 
 			value = calc_brush(value, data, average, mask, center,
 				position, size, attenuation_size, attenuation,
 				shape, effect);
 
-			displacment_value.set_value(
+			displacement_value.set_value(
 				AbstractTerrainManager::get_value_scaled_rgb10_a2(
 					value));
 		}
@@ -491,8 +491,8 @@ namespace eternal_lands
 		sizes = glm::uvec3(size, 1);
 		sizes_x4 = glm::uvec3((size * 4u + 3u) / 4u, 1);
 
-		m_displacment_image = boost::make_shared<Image>(
-			String(UTF8("displacment map")),
+		m_displacement_image = boost::make_shared<Image>(
+			String(UTF8("displacement map")),
 			false, tft_rgb10_a2, sizes, 0);
 
 		m_normal_image = boost::make_shared<Image>(
@@ -507,7 +507,7 @@ namespace eternal_lands
 		{
 			for (x = 0; x < size.x; ++x)
 			{
-				m_displacment_image->set_pixel_uint(x, y, 0,
+				m_displacement_image->set_pixel_uint(x, y, 0,
 					0, 0, glm::uvec4(512, 512, 0, 0));
 			}
 		}
@@ -558,7 +558,7 @@ namespace eternal_lands
 		glm::vec2 position;
 
 		offset = AbstractTerrainManager::get_offset_scaled_rgb10_a2(
-			m_displacment_image->get_pixel_uint(index.x,
+			m_displacement_image->get_pixel_uint(index.x,
 				index.y, 0, 0, 0));
 
 		position.x = index.x;
@@ -573,9 +573,9 @@ namespace eternal_lands
 	{
 		if ((index.x < 0) || (index.y < 0) ||
 			(index.x >= static_cast<Sint32>(
-				m_displacment_image->get_width())) ||
+				m_displacement_image->get_width())) ||
 			(index.y >= static_cast<Sint32>(
-				m_displacment_image->get_height())))
+				m_displacement_image->get_height())))
 		{
 			return glm::vec3(0.0f);
 		}
@@ -675,8 +675,8 @@ namespace eternal_lands
 		max = glm::ivec2(tmp /
 			AbstractTerrainManager::get_patch_scale());
 
-		size.x = m_displacment_image->get_width();
-		size.y = m_displacment_image->get_height();
+		size.x = m_displacement_image->get_width();
+		size.y = m_displacement_image->get_height();
 		size -= 1;
 
 		min = glm::clamp(min, glm::ivec2(0), size);

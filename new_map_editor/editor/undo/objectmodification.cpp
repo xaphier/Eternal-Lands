@@ -67,13 +67,13 @@ namespace eternal_lands
 			case mt_lights_radius_changed:
 			case mt_terrain_albedo_map_changed:
 			case mt_terrain_blend_map_changed:
-			case mt_terrain_vector_map_changed:
+			case mt_terrain_displacement_map_changed:
 			case mt_terrain_dudv_map_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:
 			case mt_dungeon_changed:
-			case mt_displacment_value_changed:
+			case mt_displacement_value_changed:
 			case mt_height_changed:
 			case mt_blend_values_changed:
 				return false;

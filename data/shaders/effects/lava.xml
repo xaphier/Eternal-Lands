@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf8"?>
+<effect>
+	<name>lava</name>
+	<world_transformation>static</world_transformation>
+	<texture_coodrinates>lava</texture_coodrinates>
+	<main>lava</main>
+	<node_based>false</node_based>
+	<receives_shadows>false</receives_shadows>
+	<transparent>false</transparent>
+	<lighting></lighting>
+</effect>
+

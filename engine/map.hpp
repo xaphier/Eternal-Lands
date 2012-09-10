@@ -32,6 +32,8 @@ namespace eternal_lands
 	class Map
 	{
 		private:
+			const GlobalVarsSharedPtr m_global_vars;
+			const EffectCacheWeakPtr m_effect_cache;
 			const MeshBuilderWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
 			const MaterialCacheWeakPtr m_material_cache;
@@ -51,6 +53,26 @@ namespace eternal_lands
 			String m_name;
 			Uint32 m_id;
 			bool m_dungeon;
+			const CodecManagerSharedPtr m_codec_manager;
+			const FileSystemSharedPtr m_file_system;
+
+			inline GlobalVarsSharedPtr get_global_vars() const
+				noexcept
+			{
+				return m_global_vars;
+			}
+
+			inline EffectCacheSharedPtr get_effect_cache() const
+				noexcept
+			{
+				EffectCacheSharedPtr result;
+
+				result = m_effect_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
 
 			inline MeshBuilderSharedPtr get_mesh_builder() const
 				noexcept
@@ -113,16 +135,13 @@ namespace eternal_lands
 			}
 
 			void init_walk_height_map(
-				const ImageSharedPtr &vector_map);
+				const ImageSharedPtr &displacement_map);
 			void init_terrain(
 				const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialCacheSharedPtr &material_cache);
-			void build_clipmap_material_simple(
-				const ClipmapData &clipmap_data);
-			void build_clipmap_material_with_texture_arrays(
-				const ClipmapData &clipmap_data);
+			void load_data(const String& name);
 
 		public:
 			/**
@@ -131,12 +150,12 @@ namespace eternal_lands
 			Map(const CodecManagerSharedPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
+				const EffectCacheWeakPtr &effect_cache,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialCacheSharedPtr &material_cache,
 				const MaterialBuilderWeakPtr &material_builder,
-				const TextureCacheWeakPtr &texture_cache,
-				const String &name);
+				const TextureCacheWeakPtr &texture_cache);
 
 			/**
 			 * Default destructor.
@@ -170,7 +189,7 @@ namespace eternal_lands
 			glm::vec2 get_terrain_size() const;
 			void set_clipmap_texture(
 				const TextureSharedPtr &texture);
-			void set_terrain(const ImageSharedPtr &vector_map,
+			void set_terrain(const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
 			void set_blend(const ImageSharedPtrVector &blend_maps);
@@ -315,6 +334,12 @@ namespace eternal_lands
 			inline bool get_dungeon() const noexcept
 			{
 				return m_dungeon;
+			}
+
+			inline void set_name(const String &name) noexcept
+			{
+				m_name = name;
+				load_data(name);
 			}
 
 			inline const String &get_name() const noexcept

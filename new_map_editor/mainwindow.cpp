@@ -2029,7 +2029,7 @@ void MainWindow::terrain_vector_edit()
 			break;
 	}
 
-	el_gl_widget->change_terrain_displacment_values(data, size,
+	el_gl_widget->change_terrain_displacement_values(data, size,
 		attenuation_size, mask, attenuation, shape, effect);
 }
 

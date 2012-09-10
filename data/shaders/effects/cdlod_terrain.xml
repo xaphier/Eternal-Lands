@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf8"?>
+<effect>
+	<name>cdlod-terrain</name>
+	<world_transformation>cdlod-terrain</world_transformation>
+	<texture_coodrinates>terrain</texture_coodrinates>
+	<main>terrain-mapping</main>
+	<node_based>false</node_based>
+	<receives_shadows>true</receives_shadows>
+	<transparent>false</transparent>
+	<lighting>diffuse</lighting>
+</effect>
+

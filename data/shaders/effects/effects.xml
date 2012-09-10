@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf8"?>
+<effect>
+	<name>terrain</name>
+	<world_transformation>none</world_transformation>
+	<texture_coodrinates>static_extra</texture_coodrinates>
+	<main>default-terrain</main>
+	<node_based>false</node_based>
+	<receives_shadows>false</receives_shadows>
+	<transparent>false</transparent>
+	<lighting></lighting>
+	<description>screen_quad_1</description>
+</effect>
+

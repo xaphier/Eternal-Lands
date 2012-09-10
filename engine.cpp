@@ -557,6 +557,13 @@ GLuint el_timer_id = 0;
 #endif
 extern "C" void init_engine()
 {
+	if (GLEW_ARB_debug_output)
+	{
+		LOG_TO_CONSOLE(c_green2, "Using GLEW_ARB_debug_output");
+		glDebugMessageCallbackARB((GLDEBUGPROCARB)&log_ARB_debug_output,
+			0);
+	}
+
 	TRY_BLOCK
 
 	CHECK_GL_ERROR();
@@ -566,13 +573,6 @@ extern "C" void init_engine()
 	script_engine.reset(new el::ScriptEngine(file_system));
 
 	CHECK_GL_ERROR();
-
-	if (GLEW_ARB_debug_output)
-	{
-		LOG_TO_CONSOLE(c_green2, "Using GLEW_ARB_debug_output");
-		glDebugMessageCallbackARB((GLDEBUGPROCARB)&log_ARB_debug_output,
-			0);
-	}
 
 	CHECK_GL_ERROR();
 #ifdef	EL_TIME_FRAME_DEBUG

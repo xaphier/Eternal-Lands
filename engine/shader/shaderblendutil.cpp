@@ -17,7 +17,7 @@ namespace eternal_lands
 		const String shader_blend_type_names[] =
 		{
 			String(UTF8("texture")),
-			String(UTF8("slop")),
+			String(UTF8("slope")),
 			String(UTF8("height")),
 			String(UTF8("blend")),
 			String(UTF8("size"))

@@ -439,7 +439,7 @@ namespace eternal_lands
 		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
 			" 2d array texture '%2%' with width %3%, height %4% and"
 			" layer %5% using %6%compressed data and target '%7%' "
-			"from image '%7%'."), mipmap %  get_name() % width %
+			"from image '%8%'."), mipmap %  get_name() % width %
 			height % layer % (compressed ? UTF8("") : UTF8("un")) %
 			get_target() % image->get_name());
 
@@ -1258,7 +1258,7 @@ namespace eternal_lands
 
 		for (mip = 0; mip < level; mip++)
 		{
-			set_texture_image_3d(mip, w, h, layer);
+			set_texture_image_3d(w, h, layer, mip);
 
 			if (w > 1)
 			{
@@ -1278,7 +1278,7 @@ namespace eternal_lands
 
 			for (mip = 0; mip < level; mip++)
 			{
-				set_texture_image_2d_layer(mip, w, h, i,
+				set_texture_image_2d_layer(w, h, i, mip,
 					images[i]);
 
 				if (w > 1)

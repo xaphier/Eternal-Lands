@@ -284,11 +284,11 @@ void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 	updateGL();
 }
 
-void ELGLWidget::change_terrain_displacment_values(const QVector3D &data,
+void ELGLWidget::change_terrain_displacement_values(const QVector3D &data,
 	const QVector2D &size, const float attenuation_size, const int mask,
 	const int attenuation, const int shape, const int effect)
 {
-	m_editor->change_terrain_displacment_values(m_world_position,
+	m_editor->change_terrain_displacement_values(m_world_position,
 		glm::vec3(data.x(), data.y(), data.z()),
 		glm::bvec3((mask & 1) != 0, (mask & 2) != 0, (mask & 4) != 0),
 		glm::vec2(size.x(), size.y()), attenuation_size, attenuation,

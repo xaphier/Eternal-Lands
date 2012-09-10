@@ -27,7 +27,10 @@
 #include "glslprogramdescription.hpp"
 #include "uniformbufferusage.hpp"
 #include "colorcorrection.hpp"
-#include <boost/uuid/uuid_generators.hpp>
+#include "reader.hpp"
+#include "shadersource.hpp"
+#include "shadersourceterrain.hpp"
+#include "effect/effectnodes.hpp"
 
 namespace eternal_lands
 {
@@ -1059,7 +1062,7 @@ namespace eternal_lands
 		functions << indent << UTF8(" * Convertes the normalized ");
 		functions << UTF8("rgb10_a2 vector to the") << std::endl;
 		functions << indent << UTF8(" * scaled terrain ");
-		functions << UTF8("displacment vector.") << std::endl;
+		functions << UTF8("displacement vector.") << std::endl;
 		functions << indent << UTF8(" * @param value The rgb10_a2 ");
 		functions << UTF8("normalized value (0..1).") << std::endl;
 		functions << indent << UTF8(" * @return The terrain ");
@@ -1089,16 +1092,70 @@ namespace eternal_lands
 	void ShaderSourceBuilder::load_shader_source(
 		const FileSystemSharedPtr &file_system, const String &file_name)
 	{
-		std::auto_ptr<ShaderSource> shader_source;
+		std::auto_ptr<AbstractShaderSource> shader_source;
+		XmlReaderSharedPtr xml_reader;
+		ReaderSharedPtr reader;
 		ShaderSourceTypeStringPair index;
 		std::pair<ShaderSourceTypeStringPair, ShaderSourceSharedPtr>
 			data;
+		String name;
+		Uint8Array5 magic;
 
 		try
 		{
-			shader_source.reset(new ShaderSource());
+			reader = file_system->get_file(file_name);
 
-			shader_source->load_xml(file_system, file_name);
+			if (reader->get_size() < 5)
+			{
+				return;
+			}
+
+			reader->set_position(0);
+
+			BOOST_FOREACH(Uint8 &value, magic)
+			{
+				value = reader->read_u8();
+			}
+
+			reader->set_position(0);
+
+			if ((magic[0] != '<') || (magic[1] != '?') ||
+				(magic[2] != 'x') || (magic[3] != 'm') ||
+				(magic[4] != 'l'))
+			{
+				return;
+			}
+
+			xml_reader = boost::make_shared<XmlReader>(reader);
+
+			name = String(std::string(reinterpret_cast<const char*>(
+				xml_reader->get_root_node()->name)));
+
+			if (name == ShaderSourceTerrain::get_xml_id())
+			{
+				shader_source.reset(new ShaderSourceTerrain());
+			}
+			else
+			{
+				if (name == EffectNodes::get_xml_id())
+				{
+					shader_source.reset(new EffectNodes());
+				}
+				else
+				{
+					if (name == ShaderSource::get_xml_id())
+					{
+						shader_source.reset(
+							new ShaderSource());
+					}
+					else
+					{
+						return;
+					}
+				}
+			}
+
+			shader_source->load_xml(xml_reader->get_root_node());
 
 			index.first = shader_source->get_type();
 			index.second = shader_source->get_name();
@@ -1147,7 +1204,7 @@ namespace eternal_lands
 					ShaderSourceUtil::get_str(type).get(
 						).c_str()) == 0)
 				{
-					m_sources[type] =
+					m_default_sources[type] =
 						XmlUtil::get_string_value(it);
 
 					break;
@@ -1233,9 +1290,11 @@ namespace eternal_lands
 		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
 			file_name));
 
-		load_shader_sources(file_system, String(
-			FileSystem::get_dir_name(file_name).get() +
-				UTF8("/sources")));
+		load_shader_sources(file_system,
+			String(UTF8("shaders/sources")));
+
+		load_shader_sources(file_system,
+			String(UTF8("shaders/terrains")));
 
 		load_xml(file_system, xml_reader->get_root_node());
 	}
@@ -1318,13 +1377,13 @@ namespace eternal_lands
 
 		if (data.get_version() >= svt_130)
 		{
-			stream << UTF8(" = texelFetch(") << spt_light_indices;
+			stream << UTF8(" = texelFetch(") << spt_effect_14;
 			stream << UTF8(", ivec2(gl_FragCoord.xy), 0);\n");
 		}
 		else
 		{
 			stream << UTF8(" = texture2DProj(");
-			stream << spt_light_indices << UTF8(", ");
+			stream << spt_effect_14 << UTF8(", ");
 			stream << sslt_project_space << UTF8(");\n");
 		}
 
@@ -1423,13 +1482,13 @@ namespace eternal_lands
 
 		if (data.get_version() >= svt_130)
 		{
-			stream << UTF8(" = texelFetch(") << spt_light_indices;
+			stream << UTF8(" = texelFetch(") << spt_effect_14;
 			stream << UTF8(", ivec2(gl_FragCoord.xy), 0).rgb;\n");
 		}
 		else
 		{
 			stream << UTF8(" = texture2DProj(");
-			stream << spt_light_indices << UTF8(", ");
+			stream << spt_effect_14 << UTF8(", ");
 			stream << sslt_project_space << UTF8(").rgb;\n");
 		}
 
@@ -1528,14 +1587,14 @@ namespace eternal_lands
 		if (data.get_version() >= svt_130)
 		{
 			stream << UTF8(" = texelFetch(");
-			stream << spt_light_indices;
+			stream << spt_effect_14;
 			stream << UTF8(", ivec2(gl_FragCoord.xy), 0)");
 			stream << UTF8(";\n");
 		}
 		else
 		{
 			stream << UTF8(" = texture2DProj(");
-			stream << spt_light_indices << UTF8(", ");
+			stream << spt_effect_14 << UTF8(", ");
 			stream << sslt_project_space << UTF8(");\n");
 		}
 
@@ -1671,13 +1730,13 @@ namespace eternal_lands
 				uniform_buffers);
 		}
 
-		add_parameter(String(UTF8("lighting")), spt_light_positions,
+		add_parameter(String(UTF8("lighting")), spt_effect_12,
 			pt_sampler1D, function_locals, function_parameters,
 			uniform_buffers);
-		add_parameter(String(UTF8("lighting")), spt_light_colors,
+		add_parameter(String(UTF8("lighting")), spt_effect_13,
 			pt_sampler1D, function_locals, function_parameters,
 			uniform_buffers);
-		add_parameter(String(UTF8("lighting")), spt_light_indices,
+		add_parameter(String(UTF8("lighting")), spt_effect_14,
 			pt_sampler2D, function_locals, function_parameters,
 			uniform_buffers);
 
@@ -1829,12 +1888,12 @@ namespace eternal_lands
 
 		if (data.get_version() >= svt_130)
 		{
-			stream << UTF8(" = texelFetch(") << spt_light_colors;
+			stream << UTF8(" = texelFetch(") << spt_effect_13;
 			stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
 		}
 		else
 		{
-			stream << UTF8(" = texture1D(") << spt_light_colors;
+			stream << UTF8(" = texture1D(") << spt_effect_13;
 			stream << UTF8(", ") << sslt_light_index;
 			stream << UTF8(");\n");
 		}
@@ -1846,12 +1905,12 @@ namespace eternal_lands
 
 		if (data.get_version() >= svt_130)
 		{
-			stream << UTF8(" = texelFetch(") << spt_light_positions;
+			stream << UTF8(" = texelFetch(") << spt_effect_12;
 			stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
 		}
 		else
 		{
-			stream << UTF8(" = texture1D(") << spt_light_positions;
+			stream << UTF8(" = texture1D(") << spt_effect_12;
 			stream << UTF8(", ") << sslt_light_index;
 			stream << UTF8(");\n");
 		}
@@ -3071,9 +3130,9 @@ namespace eternal_lands
 
 	void ShaderSourceBuilder::set_shadow_map_type(const String &name)
 	{
-		m_sources[sst_shadow_mapping] = name;
-		m_sources[sst_shadow_map] = name;
-		m_sources[sst_shadow_uv] = name;
+		m_default_sources[sst_shadow_mapping] = name;
+		m_default_sources[sst_shadow_map] = name;
+		m_default_sources[sst_shadow_uv] = name;
 	}
 
 	ShaderSourceTypeStringMap ShaderSourceBuilder::build_sources(
@@ -3082,7 +3141,7 @@ namespace eternal_lands
 		ShaderSourceTypeStringMap::iterator found;
 		ShaderSourceTypeStringMap sources;
 
-		sources = get_sources();
+		sources = get_default_sources();
 
 		sources[sst_world_depth_transformation] =
 			description.get_world_transformation();
@@ -3472,6 +3531,8 @@ namespace eternal_lands
 		fragment_source << UTF8("\n");
 
 		fragment_source << UTF8("/* functions */\n");
+		build_decode_normal(String(), fragment_source);
+		build_decode_terrain_displacement(String(), fragment_source);
 		fragment_source << fragment_functions.str();
 		fragment_source << UTF8("\n");
 

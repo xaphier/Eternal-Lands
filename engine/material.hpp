@@ -136,12 +136,6 @@ namespace eternal_lands
 				return m_material_script;
 			}
 
-			inline void set_blend_sizes(
-				const Vec4Array4 &blend_sizes)
-			{
-				m_data.set_blend_sizes(blend_sizes);
-			}
-
 			inline void set_texture_matrices(
 				const Mat2x3Array2 &texture_matrices)
 			{
@@ -173,11 +167,6 @@ namespace eternal_lands
 			inline void set_culling(const bool culling)
 			{
 				m_data.set_culling(culling);
-			}
-
-			inline const Vec4Array4 &get_blend_sizes() const
-			{
-				return m_data.get_blend_sizes();
 			}
 
 			inline const Mat2x3Array2 &get_texture_matrices()

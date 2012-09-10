@@ -196,7 +196,7 @@ namespace eternal_lands
 	while (false)
 #endif
 
-#ifdef	DEBUG
+#ifndef	NDEBUG
 #define RANGE_CECK_MAX(index, max, message)	\
 	assert(((index) < (max)) && (message))
 #else
@@ -214,7 +214,7 @@ namespace eternal_lands
 	while (false)
 #endif
 
-#ifdef	DEBUG
+#ifndef	NDEBUG
 #define RANGE_CECK_MIN(index, min, message)	\
 	assert(((index) >= (min)) && (message))
 #else
@@ -232,7 +232,7 @@ namespace eternal_lands
 	while (false)
 #endif
 
-#ifdef	DEBUG
+#ifndef	NDEBUG
 #define RANGE_CECK(index, min, max, message)	\
 	assert(((index) >= (min)) && (message));	\
 	assert(((index) < (max)) && (message))
@@ -252,7 +252,7 @@ namespace eternal_lands
 	while (false)
 #endif
 
-#ifdef	DEBUG
+#ifndef	NDEBUG
 #define NULL_PTR_CHECK(ptr, parameter)	\
 	assert(((ptr) != nullptr) && (parameter));
 #else

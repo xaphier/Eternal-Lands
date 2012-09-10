@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "shadersource.hpp"
+#include "abstractshadersource.hpp"
 #include "parametersizeutil.hpp"
 #include "commonparameterutil.hpp"
 #include "shaderbuildutil.hpp"
@@ -41,7 +41,7 @@ namespace eternal_lands
 
 			ShaderSourceTypeStringPairAbstractShaderSourceMap
 				m_shader_sources;
-			ShaderSourceTypeStringMap m_sources;
+			ShaderSourceTypeStringMap m_default_sources;
 			const GlobalVarsSharedPtr m_global_vars;
 			const UniformBufferDescriptionCacheWeakPtr
 				m_uniform_buffer_description_cache;
@@ -78,7 +78,7 @@ namespace eternal_lands
 
 			/**
 			 * Convertes the normalized rgb10_a2 vector to the
-			 * scaled terrain displacment vector.
+			 * scaled terrain displacement vector.
 			 */
 			void build_decode_terrain_displacement(
 				const String &indent, OutStream &functions)
@@ -183,10 +183,10 @@ namespace eternal_lands
 			StringVector get_shader_source_names(
 				const ShaderSourceType shader_source) const;
 
-			inline const ShaderSourceTypeStringMap &get_sources()
-				const noexcept
+			inline const ShaderSourceTypeStringMap
+				&get_default_sources() const noexcept
 			{
-				return m_sources;
+				return m_default_sources;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()

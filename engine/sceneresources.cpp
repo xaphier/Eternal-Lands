@@ -100,8 +100,7 @@ namespace eternal_lands
 	{
 		m_shader_source_builder->load_xml(file_system, String(UTF8(
 			"shaders/shaders.xml")));
-		m_effect_cache->load_xml(file_system, String(UTF8(
-			"shaders/effects.xml")));
+		m_effect_cache->load_xml(file_system);
 		m_material_description_cache->load_xml(file_system, String(UTF8(
 			"materials.xml")));
 	}

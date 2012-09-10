@@ -117,7 +117,16 @@ namespace eternal_lands
 				<< errinfo_message(UTF8("Error at "
 					"xmlTextWriterWriteElement")));
 		}
+	}
 
+	void XmlWriter::write_bitset64_element(const String &name,
+		const BitSet64 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, String(str.str()));
 	}
 
 	void XmlWriter::write_uuid_element(const String &name,

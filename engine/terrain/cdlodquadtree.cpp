@@ -155,7 +155,7 @@ namespace eternal_lands
 		}
 	}
 
-	void CdLodQuadTree::init(const ImageSharedPtr &vector_map,
+	void CdLodQuadTree::init(const ImageSharedPtr &displacement_map,
 		const float patch_scale)
 	{
 		glm::vec3 min, max;
@@ -165,8 +165,8 @@ namespace eternal_lands
 
 		m_patch_scale = patch_scale;
 
-		m_grid_size.x = vector_map->get_width();
-		m_grid_size.y = vector_map->get_height();
+		m_grid_size.x = displacement_map->get_width();
+		m_grid_size.y = displacement_map->get_height();
 
 		max_grid_size = std::max(get_grid_size().x, get_grid_size().y);
 		max_grid_size--;
@@ -200,7 +200,7 @@ namespace eternal_lands
 				max = glm::vec3(
 					-std::numeric_limits<float>::max());
 
-				init_min_max(vector_map, glm::uvec2(x, y),
+				init_min_max(displacement_map, glm::uvec2(x, y),
 					level, min, max);
 
 				m_min = glm::min(m_min, min);
@@ -221,7 +221,7 @@ namespace eternal_lands
 		m_lod_count = 0;
 	}
 
-	void CdLodQuadTree::init_min_max(const ImageSharedPtr &vector_map,
+	void CdLodQuadTree::init_min_max(const ImageSharedPtr &displacement_map,
 		const glm::uvec2 &position, const Uint16 level, glm::vec3 &min,
 		glm::vec3 &max)
 	{
@@ -235,8 +235,9 @@ namespace eternal_lands
 
 		if (level == 0)
 		{
-			get_min_max(vector_map, position * get_patch_size(),
-				get_patch_size() + 1, min, max);
+			get_min_max(displacement_map, position *
+				get_patch_size(), get_patch_size() + 1, min,
+				max);
 
 			m_lods[level].min_max[position.x][position.y][0] = min;
 			m_lods[level].min_max[position.x][position.y][1] = max;
@@ -244,22 +245,22 @@ namespace eternal_lands
 			return;
 		}
 
-		init_min_max(vector_map, position * 2u + glm::uvec2(0, 0),
+		init_min_max(displacement_map, position * 2u + glm::uvec2(0, 0),
 			level - 1, min, max);
 
-		init_min_max(vector_map, position * 2u + glm::uvec2(0, 1),
+		init_min_max(displacement_map, position * 2u + glm::uvec2(0, 1),
 			level - 1, tmin, tmax);
 
 		min = glm::min(min, tmin);
 		max = glm::max(max, tmax);
 
-		init_min_max(vector_map, position * 2u + glm::uvec2(1, 0),
+		init_min_max(displacement_map, position * 2u + glm::uvec2(1, 0),
 			level - 1, tmin, tmax);
 
 		min = glm::min(min, tmin);
 		max = glm::max(max, tmax);
 
-		init_min_max(vector_map, position * 2u + glm::uvec2(1, 1),
+		init_min_max(displacement_map, position * 2u + glm::uvec2(1, 1),
 			level - 1, tmin, tmax);
 
 		min = glm::min(min, tmin);

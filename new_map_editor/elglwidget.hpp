@@ -136,7 +136,7 @@ class ELGLWidget: public QGLWidget
 		void water_tile_edit(const int water);
 		void height_edit(const int height);
 		void set_debug_mode(const int value);
-		void change_terrain_displacment_values(const QVector3D &data,
+		void change_terrain_displacement_values(const QVector3D &data,
 			const QVector2D &size, const float attenuation_size,
 			const int mask, const int attenuation,
 			const int shape, const int effect);

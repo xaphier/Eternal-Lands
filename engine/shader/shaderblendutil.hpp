@@ -29,7 +29,7 @@ namespace eternal_lands
 	enum ShaderBlendType
 	{
 		sbt_texture = 0,
-		sbt_slop,
+		sbt_slope,
 		sbt_height,
 		sbt_blend,
 		sbt_size

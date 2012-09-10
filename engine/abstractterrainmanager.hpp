@@ -30,6 +30,12 @@ namespace eternal_lands
 			BoundingBox m_bounding_box;
 			glm::vec4 m_terrain_size_data;
 
+			virtual TextureSharedPtr get_displacement_texture()
+				const = 0;
+			virtual TextureSharedPtr get_normal_texture()
+				const = 0;
+			virtual TextureSharedPtr get_dudv_texture() const = 0;
+
 		protected:
 			AbstractTerrainManager();
 
@@ -60,7 +66,8 @@ namespace eternal_lands
 				TerrainVisitor &terrain) const = 0;
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture) = 0;
-			virtual void update(const ImageSharedPtr &vector_map,
+			virtual void update(
+				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map) = 0;
 			virtual void clear() = 0;
@@ -72,6 +79,15 @@ namespace eternal_lands
 			static const glm::vec2 &get_vector_offset_rgb10_a2()
 				noexcept;
 			static const glm::vec4 &get_vector_rgb10_a2() noexcept;
+			MaterialSharedPtr build_clipmap_material(
+				const MaterialBuilderSharedPtr
+					&material_builder,
+				const EffectCacheSharedPtr &effect_cache,
+				const TextureCacheSharedPtr &texture_cache,
+				const StringVector &albedo_maps,
+				const StringVector &specular_maps,
+				const ImageSharedPtrVector &blend_images,
+				const bool texture_arrays) const;
 
 			inline bool get_empty() const noexcept
 			{

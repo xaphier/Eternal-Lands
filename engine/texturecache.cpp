@@ -315,7 +315,8 @@ namespace eternal_lands
 		ImageCompressionTypeSet compressions;
 		bool rg_formats;
 
-		RANGE_CECK_MIN(images.size(), 1, UTF8("not enough images."));
+		RANGE_CECK_MIN(image_names.size(), 1,
+			UTF8("not enough images."));
 
 		if (GLEW_EXT_texture_compression_s3tc)
 		{

@@ -1,5 +1,5 @@
 /****************************************************************************
- *            displacmentvaluemodification.hpp
+ *            displacementvaluemodification.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,24 +13,24 @@
 #endif	/* __cplusplus */
 
 #include "modification.hpp"
-#include "../displacmentvalue.hpp"
+#include "../displacementvalue.hpp"
 
 namespace eternal_lands
 {
 
-	class DisplacmentValueModification: public Modification
+	class DisplacementValueModification: public Modification
 	{
 		private:
-			DisplacmentValueVector m_displacment_values;
+			DisplacementValueVector m_displacement_values;
 
 			virtual bool do_merge(Modification* modification);
 
 		public:
-			DisplacmentValueModification(
-				const DisplacmentValueVector
-					&displacment_values,
+			DisplacementValueModification(
+				const DisplacementValueVector
+					&displacement_values,
 				const Uint32 edit_id);
-			virtual ~DisplacmentValueModification() throw();
+			virtual ~DisplacementValueModification() throw();
 			virtual bool undo(EditorMapData &editor);
 			bool add_needed(const Uint32 edit_id);
 

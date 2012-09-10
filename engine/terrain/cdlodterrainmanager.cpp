@@ -72,20 +72,17 @@ namespace eternal_lands
 		terrain.set_bounding_box(bounding_box);
 	}
 
-	void CdLodTerrainManager::update(const ImageSharedPtr &vector_map,
+	void CdLodTerrainManager::update(const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
 	{
-		TextureSharedPtr vector_texture;
-		TextureSharedPtr normal_texture;
-		TextureSharedPtr dudv_texture;
 		glm::vec3 min, max;
 
-		set_terrain_size((glm::vec2(vector_map->get_sizes()) -1.0f) *
-			get_patch_scale());
+		set_terrain_size((glm::vec2(displacement_map->get_sizes())
+			-1.0f) * get_patch_scale());
 
-		m_cd_lod_quad_tree->init(vector_map->decompress(false, true),
-			get_patch_scale());
+		m_cd_lod_quad_tree->init(displacement_map->decompress(false,
+			true), get_patch_scale());
 
 		min = m_cd_lod_quad_tree->get_min();
 		max = m_cd_lod_quad_tree->get_max();
@@ -97,49 +94,65 @@ namespace eternal_lands
 
 		set_bounding_box(BoundingBox(min, max));
 
-		vector_texture = boost::make_shared<Texture>(
-			vector_map->get_name(), vector_map->get_width(),
-			vector_map->get_height(), 1, 0, 0,
-			vector_map->get_texture_format(),
-			ttt_texture_rectangle);
+		m_displacement_texture = boost::make_shared<Texture>(
+			displacement_map->get_name(),
+			displacement_map->get_width(),
+			displacement_map->get_height(), 1, 0xFFFF, 0,
+			displacement_map->get_texture_format(),
+			ttt_texture_2d);
 
-		vector_texture->set_wrap_s(twt_clamp);
-		vector_texture->set_wrap_t(twt_clamp);
-		vector_texture->set_wrap_r(twt_clamp);
-		vector_texture->set_image(vector_map);
+		m_displacement_texture->set_wrap_s(twt_clamp);
+		m_displacement_texture->set_wrap_t(twt_clamp);
+		m_displacement_texture->set_wrap_r(twt_clamp);
+		m_displacement_texture->set_image(displacement_map);
 
-		m_material->set_texture(vector_texture, spt_effect_8);
+		m_material->set_texture(m_displacement_texture, spt_effect_8);
 
-		normal_texture = boost::make_shared<Texture>(
+		m_normal_texture = boost::make_shared<Texture>(
 			normal_map->get_name(), normal_map->get_width(),
-			normal_map->get_height(), 1, 0, 0,
+			normal_map->get_height(), 1, 0xFFFF, 0,
 			normal_map->get_texture_format(),
-			ttt_texture_rectangle);
+			ttt_texture_2d);
 
-		normal_texture->set_wrap_s(twt_clamp);
-		normal_texture->set_wrap_t(twt_clamp);
-		normal_texture->set_wrap_r(twt_clamp);
-		normal_texture->set_image(normal_map);
+		m_normal_texture->set_wrap_s(twt_clamp);
+		m_normal_texture->set_wrap_t(twt_clamp);
+		m_normal_texture->set_wrap_r(twt_clamp);
+		m_normal_texture->set_image(normal_map);
 
-		m_material->set_texture(normal_texture, spt_effect_9);
+		m_material->set_texture(m_normal_texture, spt_effect_9);
 
-		dudv_texture = boost::make_shared<Texture>(
+		m_dudv_texture = boost::make_shared<Texture>(
 			dudv_map->get_name(), dudv_map->get_width(),
-			dudv_map->get_height(), 1, 0, 0,
-			dudv_map->get_texture_format(), ttt_texture_rectangle);
+			dudv_map->get_height(), 1, 0xFFFF, 0,
+			dudv_map->get_texture_format(), ttt_texture_2d);
 
-		dudv_texture->set_wrap_s(twt_clamp);
-		dudv_texture->set_wrap_t(twt_clamp);
-		dudv_texture->set_wrap_r(twt_clamp);
-		dudv_texture->set_image(dudv_map);
+		m_dudv_texture->set_wrap_s(twt_clamp);
+		m_dudv_texture->set_wrap_t(twt_clamp);
+		m_dudv_texture->set_wrap_r(twt_clamp);
+		m_dudv_texture->set_image(dudv_map);
 
-		m_material->set_texture(dudv_texture, spt_effect_10);
+		m_material->set_texture(m_dudv_texture, spt_effect_10);
 	}
 
 	void CdLodTerrainManager::clear()
 	{
 		m_cd_lod_quad_tree->clear();
 		set_bounding_box(BoundingBox());
+	}
+
+	TextureSharedPtr CdLodTerrainManager::get_displacement_texture() const
+	{
+		return m_displacement_texture;
+	}
+
+	TextureSharedPtr CdLodTerrainManager::get_normal_texture() const
+	{
+		return m_normal_texture;
+	}
+
+	TextureSharedPtr CdLodTerrainManager::get_dudv_texture() const
+	{
+		return m_dudv_texture;
 	}
 
 }

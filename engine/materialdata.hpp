@@ -25,7 +25,6 @@ namespace eternal_lands
 	class MaterialData
 	{
 		private:
-			Vec4Array4 m_blend_sizes;
 			Mat2x3Array2 m_texture_matrices;
 			glm::vec4 m_color;
 			glm::vec2 m_dudv_scale;
@@ -35,18 +34,6 @@ namespace eternal_lands
 		public:
 			MaterialData();
 			~MaterialData() noexcept;
-
-			inline const Vec4Array4 &get_blend_sizes() const
-				noexcept
-			{
-				return m_blend_sizes;
-			}
-
-			inline const glm::vec4 &get_blend_size(
-				const Uint16 index) const
-			{
-				return m_blend_sizes[index];
-			}
 
 			inline const Mat2x3Array2 &get_texture_matrices()
 				const noexcept
@@ -78,18 +65,6 @@ namespace eternal_lands
 			inline bool get_culling() const noexcept
 			{
 				return m_culling;
-			}
-
-			inline void set_blend_sizes(
-				const Vec4Array4 &blend_sizes) noexcept
-			{
-				m_blend_sizes = blend_sizes;
-			}
-
-			inline void set_blend_size(const glm::vec4 &blend_size,
-				const Uint16 index)
-			{
-				m_blend_sizes[index] = blend_size;
 			}
 
 			inline void set_texture_matrices(

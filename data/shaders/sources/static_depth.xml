@@ -16,9 +16,7 @@
      <auto_parameter>world_transformation</auto_parameter>
     </parameter>
    </parameters>
-   <source>world_position = position.xyz;
-
-world_position = vec4(world_position, 1.0) * world_transformation;
+   <source>world_position = vec4(position.xyz, 1.0) * world_transformation;
 </source>
    <version>120</version>
   </shader_source_data>

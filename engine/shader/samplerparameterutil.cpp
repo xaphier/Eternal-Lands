@@ -28,10 +28,10 @@ namespace eternal_lands
 			String(UTF8("effect_sampler_9")),
 			String(UTF8("effect_sampler_10")),
 			String(UTF8("effect_sampler_11")),
-			String(UTF8("light_positions_sampler")),
-			String(UTF8("light_colors_sampler")),
-			String(UTF8("light_indices_sampler")),
-			String(UTF8("shadow_sampler"))
+			String(UTF8("effect_sampler_12")),
+			String(UTF8("effect_sampler_13")),
+			String(UTF8("effect_sampler_14")),
+			String(UTF8("effect_sampler_15"))
 		};
 
 		const Uint32 sampler_parameter_names_count =

@@ -10,7 +10,7 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
-     <sampler_parameter>shadow_sampler</sampler_parameter>
+     <sampler_parameter>effect_sampler_15</sampler_parameter>
      <type>sampler2DArray</type>
     </parameter>
     <parameter>
@@ -52,11 +52,11 @@ for (i = 0; i &lt; shadow_maps_count; ++i)
 		ddx /= exp2(i);
 		ddy /= exp2(i);
 
-		occluder = textureGrad(shadow_sampler, vec3(uv.xy, i), ddx, ddy).r;
-/*		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2( 1,  1)).r;
-		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2(-1,  1)).r;
-		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2( 1, -1)).r;
-		occluder += textureGradOffset(shadow_sampler, vec3(uv.xy, i), ddx, ddy, ivec2(-1, -1)).r;
+		occluder = textureGrad(effect_sampler_15, vec3(uv.xy, i), ddx, ddy).r;
+/*		occluder += textureGradOffset(effect_sampler_15, vec3(uv.xy, i), ddx, ddy, ivec2( 1,  1)).r;
+		occluder += textureGradOffset(effect_sampler_15, vec3(uv.xy, i), ddx, ddy, ivec2(-1,  1)).r;
+		occluder += textureGradOffset(effect_sampler_15, vec3(uv.xy, i), ddx, ddy, ivec2( 1, -1)).r;
+		occluder += textureGradOffset(effect_sampler_15, vec3(uv.xy, i), ddx, ddy, ivec2(-1, -1)).r;
 		occluder *= 0.2;
 */
 		light_distance = shadow_view_distance[i] - light_shadow_bias;

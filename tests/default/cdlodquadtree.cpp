@@ -95,14 +95,14 @@ BOOST_AUTO_TEST_CASE(get_quad_order)
 BOOST_AUTO_TEST_CASE(construct)
 {
 	boost::scoped_ptr<el::CdLodQuadTree> tree;
-	el::ImageSharedPtr vector_map;
+	el::ImageSharedPtr displacement_map;
 
-	vector_map = boost::make_shared<el::Image>(
-		el::String(UTF8("vector_map")), false, el::tft_rgb32f,
+	displacement_map = boost::make_shared<el::Image>(
+		el::String(UTF8("displacement_map")), false, el::tft_rgb32f,
 		glm::uvec3(129, 129, 1), 0);
 
 	BOOST_CHECK_NO_THROW(tree.reset(new el::CdLodQuadTree()));
-	BOOST_CHECK_NO_THROW(tree->init(vector_map, 0.25f));
+	BOOST_CHECK_NO_THROW(tree->init(displacement_map, 0.25f));
 
 	BOOST_CHECK_EQUAL(tree->get_max_lod_count(), 8);
 	BOOST_CHECK_EQUAL(tree->get_lod_count(), 4);

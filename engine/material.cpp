@@ -74,6 +74,10 @@ namespace eternal_lands
 		set_texture(material, spt_effect_9);
 		set_texture(material, spt_effect_10);
 		set_texture(material, spt_effect_11);
+		set_texture(material, spt_effect_12);
+		set_texture(material, spt_effect_13);
+		set_texture(material, spt_effect_14);
+		set_texture(material, spt_effect_15);
 	}
 
 	void Material::set_material_script(const String &material_script)
@@ -170,8 +174,6 @@ namespace eternal_lands
 
 		state_manager.switch_culling(get_culling());
 
-		state_manager.get_program()->set_parameter(apt_blend_sizes,
-			get_blend_sizes());
 		state_manager.get_program()->set_parameter(apt_texture_matrices,
 			get_texture_matrices());
 		state_manager.get_program()->set_parameter(apt_material_color,

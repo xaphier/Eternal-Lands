@@ -74,7 +74,7 @@ namespace eternal_lands
 			sort_shader_source_data);
 	}
 
-	void ShaderSource::load_xml(const xmlNodePtr node)
+	void ShaderSource::load_xml_node(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 		String source;
@@ -86,7 +86,8 @@ namespace eternal_lands
 				<< errinfo_parameter_name(UTF8("node")));
 		}
 
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("shader_source")) != 0)
+		if (xmlStrcmp(node->name, BAD_CAST get_xml_id().get().c_str())
+			!= 0)
 		{
 			return;
 		}
@@ -123,29 +124,9 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void ShaderSource::load_xml(const FileSystemSharedPtr &file_system,
-		const String &file_name)
-	{
-		XmlReaderSharedPtr xml_reader;
-
-		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
-			file_name));
-
-		load_xml(xml_reader->get_root_node());
-	}
-
-	void ShaderSource::load_xml(const String &file_name)
-	{
-		XmlReaderSharedPtr reader;
-
-		reader = XmlReaderSharedPtr(new XmlReader(file_name));
-
-		load_xml(reader->get_root_node());
-	}
-
 	void ShaderSource::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(String(UTF8("shader_source")));
+		writer->start_element(get_xml_id());
 
 		writer->write_element(String(UTF8("name")), get_name());
 
@@ -220,6 +201,16 @@ namespace eternal_lands
 
 		std::sort(m_datas.begin(), m_datas.end(),
 			sort_shader_source_data);
+	}
+
+	String ShaderSource::get_xml_id()
+	{
+		return String(UTF8("shader_source"));
+	}
+
+	ShaderSourceType ShaderSource::get_type() const
+	{
+		return m_type;
 	}
 
 }

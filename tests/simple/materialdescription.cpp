@@ -24,7 +24,6 @@ namespace
 	glm::mat2x3 texture_matrix;
 	glm::vec4 vec4_scale_offset(1.0f, 1.0f, 0.0f, 0.0f);
 	glm::vec4 vec4_zero(0.0f);
-	glm::vec4 vec4_one(1.0f);
 
 }
 
@@ -40,10 +39,6 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		BOOST_CHECK_EQUAL(material_description.get_texture(i), "");
 	}
 
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(0), vec4_one);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(1), vec4_one);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(2), vec4_one);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(3), vec4_one);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(0),
 		texture_matrix);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(1),
@@ -61,18 +56,9 @@ BOOST_AUTO_TEST_CASE(all)
 	el::MaterialDescription material_description;
 	el::MaterialStringArray textures;
 	el::String name, effect, script;
-	el::Vec4Array4 blend_sizes;
 	el::Mat2x3Array2 texture_matrices;
 	glm::vec4 color;
 	Uint32 i;
-
-	BOOST_FOREACH(glm::vec4 &value, blend_sizes)
-	{
-		value[0] = get_random_float();
-		value[1] = get_random_float();
-		value[2] = get_random_float();
-		value[3] = get_random_float();
-	}
 
 	BOOST_FOREACH(glm::mat2x3 &value, texture_matrices)
 	{
@@ -104,7 +90,6 @@ BOOST_AUTO_TEST_CASE(all)
 			textures[i], i));
 	}
 
-	BOOST_CHECK_NO_THROW(material_description.set_blend_sizes(blend_sizes));
 	BOOST_CHECK_NO_THROW(material_description.set_texture_matrices(
 		texture_matrices));
 	BOOST_CHECK_NO_THROW(material_description.set_color(color));
@@ -120,14 +105,6 @@ BOOST_AUTO_TEST_CASE(all)
 			textures[i]);
 	}
 
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(0),
-		blend_sizes[0]);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(1),
-		blend_sizes[1]);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(2),
-		blend_sizes[2]);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(3),
-		blend_sizes[3]);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(0),
 		texture_matrices[0]);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(1),
@@ -149,18 +126,9 @@ BOOST_AUTO_TEST_CASE(xml)
 	el::MaterialDescription material_description;
 	el::MaterialStringArray textures;
 	el::String name, effect, script;
-	el::Vec4Array4 blend_sizes;
 	el::Mat2x3Array2 texture_matrices;
 	glm::vec4 color;
 	Uint32 i;
-
-	BOOST_FOREACH(glm::vec4 &value, blend_sizes)
-	{
-		value[0] = get_random_int_float();
-		value[1] = get_random_int_float();
-		value[2] = get_random_int_float();
-		value[3] = get_random_int_float();
-	}
 
 	BOOST_FOREACH(glm::mat2x3 &value, texture_matrices)
 	{
@@ -192,8 +160,6 @@ BOOST_AUTO_TEST_CASE(xml)
 			textures[i], i));
 	}
 
-	BOOST_CHECK_NO_THROW(tmp_material_description.set_blend_sizes(
-		blend_sizes));
 	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture_matrices(
 		texture_matrices));
 	BOOST_CHECK_NO_THROW(tmp_material_description.set_color(color));
@@ -222,14 +188,6 @@ BOOST_AUTO_TEST_CASE(xml)
 			textures[i]);
 	}
 
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(0),
-		blend_sizes[0]);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(1),
-		blend_sizes[1]);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(2),
-		blend_sizes[2]);
-	EL_CHECK_EQUAL_VEC_MAT(material_description.get_blend_size(3),
-		blend_sizes[3]);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(0),
 		texture_matrices[0]);
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(1),

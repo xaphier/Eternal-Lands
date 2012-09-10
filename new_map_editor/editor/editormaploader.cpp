@@ -21,6 +21,7 @@ namespace eternal_lands
 		const CodecManagerSharedPtr &codec_manager,
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars,
+		const EffectCacheSharedPtr &effect_cache,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const MeshDataCacheSharedPtr &mesh_data_cache,
@@ -30,12 +31,21 @@ namespace eternal_lands
 		const FreeIdsManagerSharedPtr &free_ids,
 		EditorMapData &data): AbstractMapLoader(file_system, free_ids),
 		m_codec_manager(codec_manager), m_global_vars(global_vars),
-		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
-		m_mesh_data_cache(mesh_data_cache),
+		m_effect_cache(effect_cache), m_mesh_builder(mesh_builder),
+		m_mesh_cache(mesh_cache), m_mesh_data_cache(mesh_data_cache),
 		m_material_cache(material_cache),
 		m_material_builder(material_builder),
 		m_texture_cache(texture_cache), m_data(data)
 	{
+		assert(m_codec_manager.get() != nullptr);
+		assert(m_global_vars.get() != nullptr);
+		assert(m_effect_cache.get() != nullptr);
+		assert(m_mesh_builder.get() != nullptr);
+		assert(m_mesh_cache.get() != nullptr);
+		assert(m_mesh_data_cache.get() != nullptr);
+		assert(m_material_cache.get() != nullptr);
+		assert(!m_material_builder.expired());
+		assert(!m_texture_cache.expired());
 	}
 
 	EditorMapLoader::~EditorMapLoader() throw()
@@ -127,14 +137,20 @@ namespace eternal_lands
 	{
 		read(name);
 	}
-		
+
 	MapSharedPtr EditorMapLoader::get_map(const String &name)
 	{
-		return boost::make_shared<Map>(get_codec_manager(),
+		MapSharedPtr result;
+
+		result = boost::make_shared<Map>(get_codec_manager(),
 			get_file_system(), get_global_vars(),
-			get_mesh_builder(), get_mesh_cache(),
-			get_material_cache(), get_material_builder(),
-			get_texture_cache(), name);
+			get_effect_cache(), get_mesh_builder(),
+			get_mesh_cache(), get_material_cache(),
+			get_material_builder(), get_texture_cache());
+
+		result->set_name(name);
+
+		return result;
 	}
 
 }

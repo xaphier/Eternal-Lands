@@ -18,6 +18,7 @@
 #include "effectparameter.hpp"
 #include "effecttexture.hpp"
 #include "effecttextureunit.hpp"
+#include "effectnodeport.hpp"
 #include "../shader/abstractshadersource.hpp"
 
 /**
@@ -47,8 +48,8 @@ namespace eternal_lands
 				const ShaderVersionType version) const;
 			virtual String get_source(
 				const ShaderVersionType version) const;
+			virtual void load_xml_node(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer);
-			void load_xml(const xmlNodePtr node);
 			void load_nodes_xml(const xmlNodePtr node);
 			void load_connection_xml(const xmlNodePtr node,
 				UuidEffectNodePortPtrMap &ports);
@@ -79,9 +80,6 @@ namespace eternal_lands
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str);
 			void save_xml(const String &file_name);
-			void load_xml(const String &file_name);
-			void load_xml(const FileSystemSharedPtr &file_system,
-				const String &file_name);
 			void remove(const EffectNodePtr effect_node);
 			void set_texture_unit(const String &name,
 				const TextureTargetType target,
@@ -97,6 +95,7 @@ namespace eternal_lands
 			virtual ShaderSourceType get_type() const;
 			virtual bool get_has_data(
 				const ShaderVersionType version) const;
+			static String get_xml_id();
 
 			inline Uint32 get_node_count() const
 			{

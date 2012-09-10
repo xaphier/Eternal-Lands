@@ -501,6 +501,23 @@ namespace eternal_lands
 		return String((char*)node->children->content);
 	}
 
+	BitSet64 XmlUtil::get_bitset64_value(const xmlNodePtr node)
+	{
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return 0;
+		}
+
+		return boost::lexical_cast<BitSet64>(node->children->content);
+	}
+
 	Variant XmlUtil::get_variant_value(const xmlNodePtr node)
 	{
 		String type, value;

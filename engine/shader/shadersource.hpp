@@ -33,30 +33,22 @@ namespace eternal_lands
 				const ShaderVersionType version) const;
 			virtual String get_source(
 				const ShaderVersionType version) const;
-
+			virtual void load_xml_node(const xmlNodePtr node);
 			void load_datas_xml(const String &source,
 				const xmlNodePtr node);
 
 		public:
 			ShaderSource();
 			virtual ~ShaderSource() noexcept;
-			void load_xml(const String &file_name);
-			void load_xml(const FileSystemSharedPtr &file_system,
-				const String &file_name);
 			void save_xml(const String &file_name) const;
-			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
-			void load(const String &file_name);
 			virtual bool get_has_data(
 				const ShaderVersionType version) const;
 			const ShaderSourceData &get_data(
 				const ShaderVersionType version) const;
 			void set_datas(const ShaderSourceDataVector &datas);
-
-			virtual inline ShaderSourceType get_type() const
-			{
-				return m_type;
-			}
+			static String get_xml_id();
+			virtual ShaderSourceType get_type() const;
 
 			inline void set_type(const ShaderSourceType type)
 				noexcept

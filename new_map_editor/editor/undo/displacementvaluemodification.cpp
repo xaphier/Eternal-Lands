@@ -1,11 +1,11 @@
 /****************************************************************************
- *            displacmentvaluemodification.cpp
+ *            displacementvaluemodification.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "displacmentvaluemodification.hpp"
+#include "displacementvaluemodification.hpp"
 #include "../editormapdata.hpp"
 
 namespace eternal_lands
@@ -14,62 +14,62 @@ namespace eternal_lands
 	namespace
 	{
 
-		class CompareDisplacmentValueIndex
+		class CompareDisplacementValueIndex
 		{
 			public:
-				inline bool operator()(const DisplacmentValue
-					&displacment_value1,
-					const DisplacmentValue
-						&displacment_value2) const
+				inline bool operator()(const DisplacementValue
+					&displacement_value1,
+					const DisplacementValue
+						&displacement_value2) const
 				{
-					return displacment_value1.get_index() <
-						displacment_value2.get_index();
+					return displacement_value1.get_index() <
+						displacement_value2.get_index();
 				}
 
 		};
 
 	}
 
-	DisplacmentValueModification::DisplacmentValueModification(
-		const DisplacmentValueVector &displacment_values,
+	DisplacementValueModification::DisplacementValueModification(
+		const DisplacementValueVector &displacement_values,
 		const Uint32 edit_id):
-		Modification(edit_id, 0, mt_displacment_value_changed),
-		m_displacment_values(displacment_values)
+		Modification(edit_id, 0, mt_displacement_value_changed),
+		m_displacement_values(displacement_values)
 	{
 	}
 
-	DisplacmentValueModification::~DisplacmentValueModification() throw()
+	DisplacementValueModification::~DisplacementValueModification() throw()
 	{
 	}
 
-	bool DisplacmentValueModification::do_merge(Modification* modification)
+	bool DisplacementValueModification::do_merge(Modification* modification)
 	{
-		DisplacmentValueModification* displacment_value_modification;
-		DisplacmentValueVector::iterator begin, end;
+		DisplacementValueModification* displacement_value_modification;
+		DisplacementValueVector::iterator begin, end;
 		Uint32 size;
 		bool found;
 
-		displacment_value_modification = boost::polymorphic_downcast<
-			DisplacmentValueModification*>(modification);
+		displacement_value_modification = boost::polymorphic_downcast<
+			DisplacementValueModification*>(modification);
 
-		size = m_displacment_values.size();
-		begin = m_displacment_values.begin();
+		size = m_displacement_values.size();
+		begin = m_displacement_values.begin();
 		end = begin + size;
 
-		std::sort(begin, end, CompareDisplacmentValueIndex());
+		std::sort(begin, end, CompareDisplacementValueIndex());
 
-		BOOST_FOREACH(const DisplacmentValue &displacment_value,
-			displacment_value_modification->m_displacment_values)
+		BOOST_FOREACH(const DisplacementValue &displacement_value,
+			displacement_value_modification->m_displacement_values)
 		{
 			found = std::binary_search(begin, end,
-				displacment_value,
-				CompareDisplacmentValueIndex());
+				displacement_value,
+				CompareDisplacementValueIndex());
 
 			if (!found)
 			{
-				m_displacment_values.push_back(
-					displacment_value);
-				begin = m_displacment_values.begin();
+				m_displacement_values.push_back(
+					displacement_value);
+				begin = m_displacement_values.begin();
 				end = begin + size;
 			}
 		}
@@ -77,7 +77,7 @@ namespace eternal_lands
 		return true;
 	}
 
-	bool DisplacmentValueModification::undo(EditorMapData &editor)
+	bool DisplacementValueModification::undo(EditorMapData &editor)
 	{
 		switch (get_type())
 		{
@@ -109,16 +109,16 @@ namespace eternal_lands
 			case mt_objects_walkable_changed:
 			case mt_terrain_albedo_map_changed:
 			case mt_terrain_blend_map_changed:
-			case mt_terrain_vector_map_changed:
+			case mt_terrain_displacement_map_changed:
 			case mt_terrain_dudv_map_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:
 			case mt_dungeon_changed:
 				return false;
-			case mt_displacment_value_changed:
-				editor.set_terrain_displacment_values(
-					m_displacment_values);
+			case mt_displacement_value_changed:
+				editor.set_terrain_displacement_values(
+					m_displacement_values);
 				break;
 			case mt_height_changed:
 			case mt_blend_values_changed:

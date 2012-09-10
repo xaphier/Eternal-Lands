@@ -137,13 +137,6 @@ namespace eternal_lands
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"void set_blend_size(const vec4 &in, uint)",
-			asMETHODPR(MaterialData, set_blend_size,
-			(const glm::vec4 &, const Uint16), void),
-			asCALL_THISCALL);
-		assert(r >= 0);
-
-		r = get_engine()->RegisterObjectMethod("MaterialData",
 			"void set_texture_matrix(const mat2x3 &in, uint)",
 			asMETHODPR(MaterialData, set_texture_matrix,
 			(const glm::mat2x3 &, const Uint16), void),
@@ -166,13 +159,6 @@ namespace eternal_lands
 			"void set_culling(bool)",
 			asMETHODPR(MaterialData, set_culling,
 			(const bool), void), asCALL_THISCALL);
-		assert(r >= 0);
-
-		r = get_engine()->RegisterObjectMethod("MaterialData",
-			"const vec4 &get_blend_size(uint) const",
-			asMETHODPR(MaterialData, get_blend_size,
-			(const Uint16) const, const glm::vec4 &),
-			asCALL_THISCALL);
 		assert(r >= 0);
 
 		r = get_engine()->RegisterObjectMethod("MaterialData",

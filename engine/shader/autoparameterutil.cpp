@@ -105,8 +105,6 @@ namespace eternal_lands
 				pst_one, 2),
 			AutoParameterTypeData(String(UTF8("dudv_scale")),
 				pt_vec2),
-			AutoParameterTypeData(String(UTF8("blend_sizes")),
-				pt_vec4, pst_one, 4),
 			AutoParameterTypeData(String(UTF8("material_color")),
 				pt_vec4),
 			AutoParameterTypeData(

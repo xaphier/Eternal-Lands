@@ -34,22 +34,28 @@ namespace eternal_lands
 			void init_terrain_pages(
 				const MeshBuilderSharedPtr &mesh_builder,
 				const bool use_simd);
-			void set_terrain_page(const ImageSharedPtr &vector_map,
+			void set_terrain_page(
+				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const AbstractMeshSharedPtr &mesh,
 				const glm::uvec2 &tile_offset,
 				const glm::vec2 &position_scale);
 			void set_terrain_page_low_quality(
-				const ImageSharedPtr &vector_map,
+				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const AbstractMeshSharedPtr &mesh,
 				const glm::uvec2 &tile_offset,
 				const glm::vec2 &position_scale);
+			virtual TextureSharedPtr get_displacement_texture()
+				const;
+			virtual TextureSharedPtr get_normal_texture() const;
+			virtual TextureSharedPtr get_dudv_texture() const;
 
 		protected:
-			void add_terrain_page(const ImageSharedPtr &vector_map,
+			void add_terrain_page(
+				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map,
 				const glm::uvec2 &position);
@@ -60,21 +66,22 @@ namespace eternal_lands
 				const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MaterialSharedPtr &material);
-			virtual ~SimpleTerrainManager() noexcept;
+			virtual ~SimpleTerrainManager() noexcept override;
 			virtual void intersect(const Frustum &frustum,
-				ObjectVisitor &visitor) const;
-			virtual void intersect(const Frustum &frustum,
-				const glm::vec3 &camera,
-				BoundingBox &bounding_box) const;
+				ObjectVisitor &visitor) const override;
 			virtual void intersect(const Frustum &frustum,
 				const glm::vec3 &camera,
-				TerrainVisitor &terrain) const;
-			virtual void update(const ImageSharedPtr &vector_map,
+				BoundingBox &bounding_box) const override;
+			virtual void intersect(const Frustum &frustum,
+				const glm::vec3 &camera,
+				TerrainVisitor &terrain) const override;
+			virtual void update(
+				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map);
+				const ImageSharedPtr &dudv_map) override;
 			virtual void set_clipmap_texture(
-				const TextureSharedPtr &texture);
-			virtual void clear();
+				const TextureSharedPtr &texture) override;
+			virtual void clear() override;
 
 			inline const MaterialSharedPtr &get_material() const
 				noexcept

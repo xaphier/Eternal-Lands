@@ -146,7 +146,7 @@ namespace eternal_lands
 			void export_terrain_map(const String &file_name,
 				const String &type) const;
 			void import_terrain_map(const String &file_name);
-			void change_terrain_displacment_values(
+			void change_terrain_displacement_values(
 				const glm::vec3 &position,
 				const glm::vec3 &data, const glm::bvec3 &mask,
 				const glm::vec2 &size,

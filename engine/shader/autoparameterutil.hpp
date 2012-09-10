@@ -87,7 +87,6 @@ namespace eternal_lands
 		apt_layers,
 		apt_texture_matrices,
 		apt_dudv_scale,
-		apt_blend_sizes,
 		/**
 		 * vec4 (red, green, blue, alpha) material color
 		 */

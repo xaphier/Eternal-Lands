@@ -12,6 +12,9 @@
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
 #include "logging.hpp"
+#include "filesystem.hpp"
+#include "reader.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -86,53 +89,82 @@ namespace eternal_lands
 		}
 	}
 
-	void EffectCache::load_xml(const xmlNodePtr node)
-	{
-		String name;
-		xmlNodePtr it;
-
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("effects")) != 0)
-		{
-			return;
-		}
-
-		if (!XmlUtil::has_children(node, true))
-		{
-			return;
-		}
-
-		it = XmlUtil::children(node, true);
-
-		do
-		{
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("effect"))
-				== 0)
-			{
-				EffectDescription effect_description;
-
-				effect_description.load_xml(it);
-
-				name = effect_description.get_name();
-
-				m_effect_cache[name] =
-					boost::make_shared<Effect>(
-						get_glsl_program_cache(),
-						get_shader_source_builder(),
-						effect_description);
-			}
-		}
-		while (XmlUtil::next(it, true));
-	}
-
-	void EffectCache::load_xml(const FileSystemSharedPtr &file_system,
+	void EffectCache::load_effect(const FileSystemSharedPtr &file_system,
 		const String &file_name)
 	{
+		EffectDescription effect_description;
 		XmlReaderSharedPtr xml_reader;
+		ReaderSharedPtr reader;
+		String name;
+		Uint8Array5 magic;
 
-		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
-			file_name));
+		try
+		{
+			reader = file_system->get_file(file_name);
 
-		load_xml(xml_reader->get_root_node());
+			if (reader->get_size() < 5)
+			{
+				return;
+			}
+
+			reader->set_position(0);
+
+			BOOST_FOREACH(Uint8 &value, magic)
+			{
+				value = reader->read_u8();
+			}
+
+			reader->set_position(0);
+
+			if ((magic[0] != '<') || (magic[1] != '?') ||
+				(magic[2] != 'x') || (magic[3] != 'm') ||
+				(magic[4] != 'l'))
+			{
+				return;
+			}
+
+			xml_reader = boost::make_shared<XmlReader>(reader);
+
+			name = String(std::string(reinterpret_cast<const char*>(
+				xml_reader->get_root_node()->name)));
+
+			if (name != EffectDescription::get_xml_id())
+			{
+				return;
+			}
+
+			effect_description.load_xml(
+				xml_reader->get_root_node());
+
+			name = effect_description.get_name();
+
+			m_effect_cache[name] = boost::make_shared<Effect>(
+				get_glsl_program_cache(),
+				get_shader_source_builder(),
+				effect_description);
+
+			LOG_DEBUG(lt_effect, UTF8("Effect '%1%' loaded from "
+				"file '%2%'"), name % file_name);
+		}
+		catch (boost::exception &exception)
+		{
+			exception << boost::errinfo_file_name(file_name);
+
+			LOG_EXCEPTION(exception);
+		}
+	}
+
+	void EffectCache::load_xml(const FileSystemSharedPtr &file_system)
+	{
+		StringSet files;
+
+		files = file_system->get_files(String(UTF8("shaders/effects")),
+			String(UTF8("*.xml")));
+
+		BOOST_FOREACH(const String &file, files)
+		{
+			load_effect(file_system, file);
+		}
 	}
 
 	StringVector EffectCache::get_effect_names() const
@@ -150,23 +182,18 @@ namespace eternal_lands
 		return result;
 	}
 
-	void EffectCache::save_xml(const String &file_name) const
+	void EffectCache::add_effect(
+		const EffectDescription &effect_description)
 	{
-		EffectCacheMap::const_iterator it, end;
-		XmlWriterSharedPtr writer;
+		String name;
 
-		writer = XmlWriterSharedPtr(new XmlWriter(file_name));
+		name = effect_description.get_name();
 
-		writer->start_element(String(UTF8("effects")));
+		m_effect_cache[name] = boost::make_shared<Effect>(
+			get_glsl_program_cache(), get_shader_source_builder(),
+			effect_description);
 
-		end = m_effect_cache.end();
-
-		for (it = m_effect_cache.begin(); it != end; ++it)
-		{
-			it->second->get_description().save_xml(writer);
-		}
-
-		writer->end_element();
+		LOG_DEBUG(lt_effect, UTF8("Effect '%1%' added"), name);
 	}
 
 }

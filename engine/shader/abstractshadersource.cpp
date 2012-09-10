@@ -27,6 +27,31 @@ namespace eternal_lands
 	{
 	}
 
+	void AbstractShaderSource::load_xml(
+		const FileSystemSharedPtr &file_system, const String &file_name)
+	{
+		XmlReaderSharedPtr xml_reader;
+
+		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
+			file_name));
+
+		load_xml(xml_reader->get_root_node());
+	}
+
+	void AbstractShaderSource::load_xml(const String &file_name)
+	{
+		XmlReaderSharedPtr reader;
+
+		reader = XmlReaderSharedPtr(new XmlReader(file_name));
+
+		load_xml(reader->get_root_node());
+	}
+
+	void AbstractShaderSource::load_xml(const xmlNodePtr node)
+	{
+		load_xml_node(node);
+	}
+
 	void AbstractShaderSource::build_source(const ShaderVersionType version,
 		const ShaderSourceParameterVector &locals, 
 		const String &indent, OutStream &stream,

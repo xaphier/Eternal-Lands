@@ -36,10 +36,22 @@ namespace eternal_lands
 		spt_effect_9 = 9,
 		spt_effect_10 = 10,
 		spt_effect_11 = 11,
-		spt_light_positions = 12,
-		spt_light_colors = 13,
-		spt_light_indices = 14,
-		spt_shadow = 15
+		/**
+		 * Used for light positions.
+		 */
+		spt_effect_12 = 12,
+		/**
+		 * Used for light colors.
+		 */
+		spt_effect_13 = 13,
+		/**
+		 * Used for light indices.
+		 */
+		spt_effect_14 = 14,
+		/**
+		 * Used for shadows.
+		 */
+		spt_effect_15 = 15
 	};
 
 	class SamplerParameterUtil

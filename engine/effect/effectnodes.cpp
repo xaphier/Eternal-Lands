@@ -225,7 +225,7 @@ namespace eternal_lands
 
 	void EffectNodes::save_xml(const XmlWriterSharedPtr &writer)
 	{
-		writer->start_element(String(UTF8("effect_nodes")));
+		writer->start_element(get_xml_id());
 
 		writer->write_element(String(UTF8("name")), get_name());
 
@@ -427,7 +427,7 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void EffectNodes::load_xml(const xmlNodePtr node)
+	void EffectNodes::load_xml_node(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 		String source;
@@ -439,7 +439,8 @@ namespace eternal_lands
 				<< errinfo_parameter_name(UTF8("node")));
 		}
 
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("effect_nodes")) != 0)
+		if (xmlStrcmp(node->name, BAD_CAST get_xml_id().get().c_str())
+			!= 0)
 		{
 			return;
 		}
@@ -478,26 +479,6 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void EffectNodes::load_xml(const FileSystemSharedPtr &file_system,
-		const String &file_name)
-	{
-		XmlReaderSharedPtr xml_reader;
-
-		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
-			file_name));
-
-		load_xml(xml_reader->get_root_node());
-	}
-
-	void EffectNodes::load_xml(const String &file_name)
-	{
-		XmlReaderSharedPtr reader;
-
-		reader = XmlReaderSharedPtr(new XmlReader(file_name));
-
-		load_xml(reader->get_root_node());
-	}
-
 	void EffectNodes::set_texture_unit(const String &name,
 		const TextureTargetType target, const Uint16 index)
 	{
@@ -522,6 +503,11 @@ namespace eternal_lands
 		m_texture_units[index].set_name(name);
 		m_texture_units[index].set_target(target);
 		m_texture_units[index].set_default_texture(default_texture);
+	}
+
+	String EffectNodes::get_xml_id()
+	{
+		return String(UTF8("effect_nodes"));
 	}
 
 	ShaderSourceType EffectNodes::get_type() const

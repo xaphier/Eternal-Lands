@@ -582,8 +582,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>265</width>
-              <height>547</height>
+              <width>198</width>
+              <height>90</height>
              </rect>
             </property>
             <attribute name="label">
@@ -1974,7 +1974,7 @@
          <item>
           <widget class="QToolBox" name="paint_tool_box">
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="type_terrain_vector">
             <property name="geometry">
@@ -3014,7 +3014,6 @@
             <zorder>vector_brush_group_2</zorder>
             <zorder>groupBox_15</zorder>
             <zorder>layer_mask</zorder>
-            <zorder>layer_mask</zorder>
             <zorder>label_40</zorder>
             <zorder>verticalSpacer_11</zorder>
            </widget>
@@ -3023,8 +3022,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>265</width>
-              <height>577</height>
+              <width>196</width>
+              <height>496</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3399,8 +3398,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>265</width>
-              <height>577</height>
+              <width>98</width>
+              <height>60</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3740,8 +3739,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>265</width>
-              <height>577</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -3753,8 +3752,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>265</width>
-              <height>577</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <attribute name="label">
@@ -4401,8 +4400,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>265</width>
-              <height>577</height>
+              <width>98</width>
+              <height>87</height>
              </rect>
             </property>
             <attribute name="label">

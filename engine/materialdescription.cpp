@@ -73,30 +73,6 @@ namespace eternal_lands
 			}
 
 			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("blend_size_0")) == 0)
-			{
-				set_blend_size(XmlUtil::get_vec4_value(it), 0);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("blend_size_1")) == 0)
-			{
-				set_blend_size(XmlUtil::get_vec4_value(it), 1);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("blend_size_2")) == 0)
-			{
-				set_blend_size(XmlUtil::get_vec4_value(it), 2);
-			}
-
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("blend_size_3")) == 0)
-			{
-				set_blend_size(XmlUtil::get_vec4_value(it), 3);
-			}
-
-			if (xmlStrcmp(it->name,
 				BAD_CAST UTF8("texture_matrix_0")) == 0)
 			{
 				set_texture_matrix(
@@ -145,14 +121,6 @@ namespace eternal_lands
 		writer->write_element(String(UTF8("name")), get_name());
 		writer->write_element(String(UTF8("effect")), get_effect());
 		writer->write_element(String(UTF8("script")), get_script());
-		writer->write_vec4_element(String(UTF8("blend_size_0")),
-			get_blend_size(0));
-		writer->write_vec4_element(String(UTF8("blend_size_1")),
-			get_blend_size(1));
-		writer->write_vec4_element(String(UTF8("blend_size_2")),
-			get_blend_size(2));
-		writer->write_vec4_element(String(UTF8("blend_size_3")),
-			get_blend_size(3));
 
 		for (i = 0; i < m_textures.size(); ++i)
 		{

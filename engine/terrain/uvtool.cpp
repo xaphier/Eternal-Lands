@@ -27,17 +27,17 @@ namespace eternal_lands
 
 	}
 
-	UvTool::UvTool(const ImageSharedPtr &vector_map,
+	UvTool::UvTool(const ImageSharedPtr &displacement_map,
 		const glm::vec3 &offset_scale, const glm::vec2 &position_scale)
 	{
-		build_data(vector_map, offset_scale, position_scale);
+		build_data(displacement_map, offset_scale, position_scale);
 	}
 
 	UvTool::~UvTool() noexcept
 	{
 	}
 
-	void UvTool::build_data(const ImageSharedPtr &vector_map,
+	void UvTool::build_data(const ImageSharedPtr &displacement_map,
 		const glm::vec3 &offset_scale, const glm::vec2 &position_scale,
 		const Sint32 x, const Sint32 y)
 	{
@@ -55,8 +55,8 @@ namespace eternal_lands
 		m_uvs.push_back(uv);
 
 		p0 = glm::vec3(glm::vec2(x, y) * position_scale, 0.0f);
-		p0 += glm::vec3(vector_map->get_pixel(x, y, 0, 0, 0.0f)) *
-			offset_scale;
+		p0 += glm::vec3(displacement_map->get_pixel(x, y, 0, 0, 0.0f))
+			* offset_scale;
 
 		for (i = 0; i < 8; ++i)
 		{
@@ -74,8 +74,8 @@ namespace eternal_lands
 
 			p1 = glm::vec3(glm::vec2(xx, yy) * position_scale,
 				0.0f);
-			p1 += glm::vec3(vector_map->get_pixel(xx, yy, 0, 0,
-				0.0f)) * offset_scale;
+			p1 += glm::vec3(displacement_map->get_pixel(xx, yy, 0,
+				0, 0.0f)) * offset_scale;
 
 			half_distances[i / 4][i % 4] = 0.5f *
 				glm::distance(p0, p1);
@@ -85,13 +85,13 @@ namespace eternal_lands
 		m_half_distances.push_back(half_distances[1]);
 	}
 
-	void UvTool::build_data(const ImageSharedPtr &vector_map,
+	void UvTool::build_data(const ImageSharedPtr &displacement_map,
 		const glm::vec3 &offset_scale, const glm::vec2 &position_scale)
 	{
 		Sint32 width, height, x, y;
 
-		m_width = vector_map->get_width();
-		m_height = vector_map->get_height();
+		m_width = displacement_map->get_width();
+		m_height = displacement_map->get_height();
 
 		width = m_width;
 		height = m_height;
@@ -103,7 +103,7 @@ namespace eternal_lands
 		{
 			for (x = 0; x < width; ++x)
 			{
-				build_data(vector_map, offset_scale,
+				build_data(displacement_map, offset_scale,
 					position_scale, x, y);
 			}
 		}

@@ -19,114 +19,16 @@ BOOST_AUTO_TEST_CASE(default_creation)
 {
 	el::ClipmapData clipmap_data;
 
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(0), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(1), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(2), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(3), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(4), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(5), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(6), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(7), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(8), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(9), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(10), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(11), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(12), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(13), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(14), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(15), "");
-
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[0], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[1], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[2], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[3], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[4], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[5], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[6], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[7], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[8], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[9], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[10], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[11], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[12], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[13], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[14], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps()[15], "");
-
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(0), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(1), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(2), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(3), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(4), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(5), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(6), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(7), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(8), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(9), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(10), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(11), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(12), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(13), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(14), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_map(15), "");
-
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[0], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[1], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[2], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[3], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[4], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[5], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[6], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[7], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[8], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[9], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[10], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[11], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[12], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[13], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[14], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps()[15], "");
-
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(0), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(1), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(2), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(3), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(4), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(5), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(6), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(7), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(8), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(9), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(10), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(11), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(12), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(13), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(14), "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_map(15), "");
-
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[0], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[1], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[2], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[3], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[4], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[5], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[6], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[7], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[8], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[9], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[10], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[11], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[12], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[13], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[14], "");
-	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[15], "");
+	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_maps().size(), 0);
+	BOOST_CHECK_EQUAL(clipmap_data.get_normal_maps().size(), 0);
+	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps().size(), 0);
+	BOOST_CHECK_EQUAL(clipmap_data.get_blend_images().size(), 0);
 }
 
 BOOST_AUTO_TEST_CASE(all)
 {
 	el::ClipmapData clipmap_data;
-	el::StringArray16 albedo_maps, normal_maps, specular_maps;
-	el::Vec4Array4 blend_sizes;
+	el::StringVector albedo_maps, normal_maps, specular_maps;
 	glm::vec4 color;
 
 	color[0] = get_random_float();
@@ -134,13 +36,9 @@ BOOST_AUTO_TEST_CASE(all)
 	color[2] = get_random_float();
 	color[3] = get_random_float();
 
-	BOOST_FOREACH(glm::vec4 &value, blend_sizes)
-	{
-		value[0] = get_random_float();
-		value[1] = get_random_float();
-		value[2] = get_random_float();
-		value[3] = get_random_float();
-	}
+	albedo_maps.resize(16);
+	normal_maps.resize(16);
+	specular_maps.resize(16);
 
 	BOOST_FOREACH(el::String &name, albedo_maps)
 	{
@@ -160,7 +58,6 @@ BOOST_AUTO_TEST_CASE(all)
 	BOOST_CHECK_NO_THROW(clipmap_data.set_albedo_maps(albedo_maps));
 	BOOST_CHECK_NO_THROW(clipmap_data.set_normal_maps(normal_maps));
 	BOOST_CHECK_NO_THROW(clipmap_data.set_specular_maps(specular_maps));
-	BOOST_CHECK_NO_THROW(clipmap_data.set_blend_sizes(blend_sizes));
 	BOOST_CHECK_NO_THROW(clipmap_data.set_color(color));
 
 	BOOST_CHECK_EQUAL(clipmap_data.get_albedo_map(0), albedo_maps[0]);
@@ -280,11 +177,6 @@ BOOST_AUTO_TEST_CASE(all)
 		specular_maps[14]);
 	BOOST_CHECK_EQUAL(clipmap_data.get_specular_maps()[15],
 		specular_maps[15]);
-
-	EL_CHECK_EQUAL_VEC_MAT(clipmap_data.get_blend_size(0), blend_sizes[0]);
-	EL_CHECK_EQUAL_VEC_MAT(clipmap_data.get_blend_size(1), blend_sizes[1]);
-	EL_CHECK_EQUAL_VEC_MAT(clipmap_data.get_blend_size(2), blend_sizes[2]);
-	EL_CHECK_EQUAL_VEC_MAT(clipmap_data.get_blend_size(3), blend_sizes[3]);
 
 	EL_CHECK_EQUAL_VEC_MAT(clipmap_data.get_color(), color);
 }

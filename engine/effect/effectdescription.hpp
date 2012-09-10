@@ -64,6 +64,7 @@ namespace eternal_lands
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
+			static String get_xml_id();
 
 			inline void set_name(const String &name) noexcept
 			{

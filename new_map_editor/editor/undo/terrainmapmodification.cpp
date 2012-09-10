@@ -63,8 +63,8 @@ namespace eternal_lands
 			case mt_terrain_blend_map_changed:
 				editor.set_terrain_blend_map(m_map, get_id());
 				break;
-			case mt_terrain_vector_map_changed:
-				editor.set_terrain_displacment_map(m_map);
+			case mt_terrain_displacement_map_changed:
+				editor.set_terrain_displacement_map(m_map);
 				break;
 			case mt_terrain_dudv_map_changed:
 				editor.set_terrain_dudv_map(m_map);
@@ -73,7 +73,7 @@ namespace eternal_lands
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:
 			case mt_dungeon_changed:
-			case mt_displacment_value_changed:
+			case mt_displacement_value_changed:
 			case mt_height_changed:
 			case mt_blend_values_changed:
 				return false;

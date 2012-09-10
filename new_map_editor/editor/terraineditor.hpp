@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "imagevalue.hpp"
-#include "displacmentvalue.hpp"
+#include "displacementvalue.hpp"
 #include "height.hpp"
 
 /**
@@ -86,7 +86,7 @@ namespace eternal_lands
 	class TerrainEditor
 	{
 		private:
-			ImageSharedPtr m_displacment_image;
+			ImageSharedPtr m_displacement_image;
 			ImageSharedPtr m_normal_image;
 			ImageSharedPtr m_dudv_image;
 			ImageSharedPtrVector m_blend_images;
@@ -111,31 +111,32 @@ namespace eternal_lands
 				const Uint32 index, glm::vec4 &blend);
 			static glm::vec4 get_blend_values(
 				const glm::vec4 &blend);
-			void get_displacment_values(const Uint32 x,
+			void get_displacement_values(const Uint32 x,
 				const Uint32 y,
-				DisplacmentValueVector &terrain_values) const;
+				DisplacementValueVector &terrain_values) const;
 			void get_blend_values(const Uint32 x, const Uint32 y,
 				ImageValueVector &blend_values) const;
 
 		public:
 			TerrainEditor();
 			~TerrainEditor() noexcept;
-			void set_displacment_values(const DisplacmentValueVector
-				&displacment_values);
+			void set_displacement_values(
+				const DisplacementValueVector
+					&displacement_values);
 			void set_blend_values(
 				const ImageValueVector &blend_values);
 			void set_blend_map(const String &name,
 				const Uint16 index);
-			void set_displacment_map(const String &name);
+			void set_displacement_map(const String &name);
 			void set_dudv_map(const String &name);
 			void init(const glm::uvec2 &size);
-			void get_displacment_values(const glm::uvec2 &vertex,
+			void get_displacement_values(const glm::uvec2 &vertex,
 				const glm::vec2 &size,
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
-				DisplacmentValueVector
-					&displacment_values) const;
+				DisplacementValueVector
+					&displacement_values) const;
 			void get_blend_values(const glm::uvec2 &vertex,
 				const glm::vec2 &size,
 				const float attenuation_size,
@@ -169,14 +170,14 @@ namespace eternal_lands
 				const glm::vec2 &position,
 				const glm::vec2& size,
 				const BrushShapeType shape);
-			void change_displacment_values(const glm::vec3 &data,
+			void change_displacement_values(const glm::vec3 &data,
 				const glm::bvec3 &mask, const glm::vec2 &size,
 				const glm::uvec2 &vertex,
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
 				const BrushEffectType effect,
-				DisplacmentValueVector &displacment_values)
+				DisplacementValueVector &displacement_values)
 				const;
 			void change_blend_values(const glm::vec2 &size,
 				const glm::uvec2 &vertex,
@@ -212,10 +213,10 @@ namespace eternal_lands
 				return m_blend_map_count;
 			}
 
-			inline const ImageSharedPtr &get_displacment_image()
+			inline const ImageSharedPtr &get_displacement_image()
 				const noexcept
 			{
-				return m_displacment_image;
+				return m_displacement_image;
 			}
 
 			inline const ImageSharedPtr &get_normal_image()

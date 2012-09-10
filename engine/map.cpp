@@ -41,23 +41,19 @@ namespace eternal_lands
 	Map::Map(const CodecManagerSharedPtr &codec_manager,
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars,
+		const EffectCacheWeakPtr &effect_cache,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const MaterialCacheSharedPtr &material_cache,
 		const MaterialBuilderWeakPtr &material_builder,
-		const TextureCacheWeakPtr &texture_cache,
-		const String &name): m_mesh_builder(mesh_builder),
-		m_mesh_cache(mesh_cache), m_material_cache(material_cache),
+		const TextureCacheWeakPtr &texture_cache):
+		m_global_vars(global_vars), m_effect_cache(effect_cache),
+		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
+		m_material_cache(material_cache),
 		m_material_builder(material_builder),
-		m_texture_cache(texture_cache), m_name(name), m_id(0),
-		m_dungeon(false)
+		m_texture_cache(texture_cache), m_id(0), m_dungeon(false),
+		m_codec_manager(codec_manager), m_file_system(file_system)
 	{
-		ImageCompressionTypeSet compressions;
-		ImageSharedPtr vector_map, normal_map, dudv_map;
-		MaterialSharedPtrVector materials;
-		String file_name, vector_map_name, normal_map_name;
-		String dudv_map_name;
-
 		m_light_tree.reset(new RStarTree());
 		m_object_tree.reset(new RStarTree());
 
@@ -65,80 +61,90 @@ namespace eternal_lands
 
 		init_terrain(global_vars, mesh_builder, mesh_cache,	
 			material_cache);
-
-		file_name = FileSystem::get_name_without_extension(name);
-
-		{
-			ClipmapData clipmap_data;
-			StringArray16 albedo_maps;
-			ImageSharedPtrArray4 blend_images;
-			Vec4Array4 blend_sizes;
-
-			albedo_maps[0] = String(UTF8("3dobjects/tile1.dds"));
-			albedo_maps[1] = String(UTF8("3dobjects/tile2.dds"));
-			albedo_maps[2] = String(UTF8("textures/tile3.dds"));
-			albedo_maps[3] = String(UTF8("3dobjects/tile3.dds"));
-
-			blend_images[0] = codec_manager->load_image(
-				String(UTF8("textures/blend0.dds")),
-				file_system, ImageCompressionTypeSet(), false,
-				false);
-
-			blend_sizes[0] = glm::vec4(0.1f);
-			blend_sizes[1] = glm::vec4(0.1f);
-			blend_sizes[2] = glm::vec4(0.1f);
-			blend_sizes[3] = glm::vec4(0.1f);
-
-			clipmap_data.set_albedo_maps(albedo_maps);
-			clipmap_data.set_blend_images(blend_images);
-			clipmap_data.set_blend_sizes(blend_sizes);
-			clipmap_data.set_color(
-				glm::vec4(0.3f, 0.9f, 0.1f, 1.0f));
-
-			build_clipmap_material(clipmap_data);
-		}
-
-		vector_map_name = String(file_name.get() + UTF8("_vector.png"));
-		normal_map_name = String(file_name.get() + UTF8("_normal.dds"));
-		dudv_map_name = String(file_name.get() + UTF8("_dudv.dds"));
-
-		if (!file_system->get_file_readable(vector_map_name) ||
-			!file_system->get_file_readable(normal_map_name) ||
-			!file_system->get_file_readable(dudv_map_name))
-		{
-			return;
-		}
-
-		if (global_vars->get_opengl_3_0())
-		{
-			compressions.insert(ict_rgtc);
-		}
-
-		vector_map = codec_manager->load_image(vector_map_name,
-			file_system, compressions, true, false);
-
-		normal_map = codec_manager->load_image(normal_map_name,
-			file_system, compressions, true, false);
-
-		dudv_map = codec_manager->load_image(dudv_map_name,
-			file_system, compressions, true, false);
-
-		init_walk_height_map(vector_map->decompress(false, true));
-
-		set_terrain(vector_map, normal_map, dudv_map);
 	}
 
 	Map::~Map() noexcept
 	{
 	}
 
-	void Map::init_walk_height_map(const ImageSharedPtr &vector_map)
+	void Map::load_data(const String& name)
+	{
+		ImageCompressionTypeSet compressions;
+		ImageSharedPtr displacement_map, normal_map, dudv_map;
+		MaterialSharedPtrVector materials;
+		String file_name, displacement_map_name, normal_map_name;
+		String dudv_map_name;
+
+		file_name = FileSystem::get_name_without_extension(name);
+
+		displacement_map_name = String(file_name.get() +
+			UTF8("_vector.png"));
+		normal_map_name = String(file_name.get() + UTF8("_normal.dds"));
+		dudv_map_name = String(file_name.get() + UTF8("_dudv.dds"));
+
+		if (!m_file_system->get_file_readable(displacement_map_name) ||
+			!m_file_system->get_file_readable(normal_map_name) ||
+			!m_file_system->get_file_readable(dudv_map_name))
+		{
+			return;
+		}
+
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			compressions.insert(ict_rgtc);
+		}
+
+		displacement_map = m_codec_manager->load_image(
+			displacement_map_name, m_file_system, compressions,
+			true, false);
+
+		normal_map = m_codec_manager->load_image(normal_map_name,
+			m_file_system, compressions, true, false);
+
+		dudv_map = m_codec_manager->load_image(dudv_map_name,
+			m_file_system, compressions, true, false);
+
+		init_walk_height_map(displacement_map->decompress(false, true));
+
+		set_terrain(displacement_map, normal_map, dudv_map);
+
+		{
+			ClipmapData clipmap_data;
+			StringVector albedo_maps;
+			ImageSharedPtrVector blend_images;
+
+			albedo_maps.push_back(String(
+				UTF8("3dobjects/tile1.dds")));
+			albedo_maps.push_back(String(
+				UTF8("3dobjects/tile11.dds")));
+			albedo_maps.push_back(String(
+				UTF8("3dobjects/tile3.dds")));
+			albedo_maps.push_back(String(
+				UTF8("3dobjects/tile4.dds")));
+			albedo_maps.push_back(String(
+				UTF8("3dobjects/tile5.dds")));
+
+			blend_images.push_back(m_codec_manager->load_image(
+				String(UTF8("textures/blend0.dds")),
+				m_file_system, ImageCompressionTypeSet(), false,
+				false));
+
+			clipmap_data.set_albedo_maps(albedo_maps);
+			clipmap_data.set_blend_images(blend_images);
+			clipmap_data.set_color(
+				glm::vec4(0.3f, 0.9f, 0.1f, 1.0f));
+
+			build_clipmap_material(clipmap_data);
+		}
+	}
+
+	void Map::init_walk_height_map(const ImageSharedPtr &displacement_map)
 	{
 		glm::uvec2 size;
 		Uint32 x, y;
 		float scale, z;
 
-		size = glm::uvec2(vector_map->get_sizes());
+		size = glm::uvec2(displacement_map->get_sizes());
 
 		scale = AbstractTerrainManager::get_vector_scale().z;
 
@@ -148,7 +154,8 @@ namespace eternal_lands
 		{
 			for (x = 0; x < size.x; ++x)
 			{
-				z = vector_map->get_pixel(x, y, 0, 0, 0).z;
+				z = displacement_map->get_pixel(x, y, 0, 0,
+					0).z;
 
 				m_walk_height_map[x][y] = z * scale;
 			}
@@ -392,11 +399,12 @@ namespace eternal_lands
 				String(UTF8("simple-terrain")))));
 	}
 
-	void Map::set_terrain(const ImageSharedPtr &vector_map,
+	void Map::set_terrain(const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
 	{
-		m_terrain_manager->update(vector_map, normal_map, dudv_map);
+		m_terrain_manager->update(displacement_map, normal_map,
+			dudv_map);
 	}
 
 	bool Map::get_terrain() const
@@ -406,131 +414,11 @@ namespace eternal_lands
 
 	void Map::build_clipmap_material(const ClipmapData &clipmap_data)
 	{
-/*		if (global_vars->get_opengl_3_0())
-		{
-			build_clipmap_material_with_texture_arrays(
-				clipmap_data);
-
-			return;
-		}
-*/
-		build_clipmap_material_simple(clipmap_data);
-	}
-
-	void Map::build_clipmap_material_simple(
-		const ClipmapData &clipmap_data)
-	{
-		MaterialDescription material;
-		TextureSharedPtr texture;
-
-		material.set_name(String(UTF8("clipmap")));
-		material.set_blend_sizes(clipmap_data.get_blend_sizes());
-		material.set_effect(
-			String(UTF8("clipmap-simple-blend-4-screen-quad")));
-
-		m_clipmap_material = get_material_builder()->get_material(
-			material);
-
-		texture = get_texture_cache()->get_texture(
-			clipmap_data.get_albedo_map(0));
-		m_clipmap_material->set_texture(texture, spt_effect_0);
-
-		texture = get_texture_cache()->get_texture(
-			clipmap_data.get_albedo_map(1));
-		m_clipmap_material->set_texture(texture, spt_effect_1);
-
-		texture = get_texture_cache()->get_texture(
-			clipmap_data.get_albedo_map(2));
-		m_clipmap_material->set_texture(texture, spt_effect_2);
-
-		texture = get_texture_cache()->get_texture(
-			clipmap_data.get_albedo_map(3));
-		m_clipmap_material->set_texture(texture, spt_effect_3);
-
-		texture = get_texture_cache()->get_texture(
-			clipmap_data.get_blend_image(0));
-		m_clipmap_material->set_texture(texture, spt_effect_7);
-
-		m_clipmap_material->set_blend_sizes(
-			clipmap_data.get_blend_sizes());
-	}
-
-	void Map::build_clipmap_material_with_texture_arrays(
-		const ClipmapData &clipmap_data)
-	{
-		StringVector albedo_names, normal_names, specular_names;
-		ImageSharedPtrVector blend_images;
-		MaterialDescription material;
-		TextureSharedPtr texture;
-		String effect;
-		Uint16 i, count;
-
-		material.set_name(String(UTF8("clipmap")));
-
-		count = clipmap_data.get_blend_count() * 4;
-		count = std::min(count, clipmap_data.get_albedo_count());
-
-		if (count <= 4)
-		{
-			effect = String(UTF8("clipmap-blend-4-screen-quad"));
-		}
-
-		if (count <= 8)
-		{
-			effect = String(UTF8("clipmap-blend-8-screen-quad"));
-		}
-
-		if (count <= 12)
-		{
-			effect = String(UTF8("clipmap-blend-12-screen-quad"));
-		}
-
-		if (count <= 16)
-		{
-			effect = String(UTF8("clipmap-blend-16-screen-quad"));
-		}
-
-		material.set_effect(effect);
-
-		m_clipmap_material = get_material_builder()->get_material(
-			material);
-
-		for (i = 0; i < count; ++i)
-		{
-			albedo_names.push_back(clipmap_data.get_albedo_map(i));
-			normal_names.push_back(clipmap_data.get_normal_map(i));
-			specular_names.push_back(
-				clipmap_data.get_specular_map(i));
-		}
-
-		for (i = 0; i < (count / 4); ++i)
-		{
-			blend_images.push_back(clipmap_data.get_blend_image(i));
-		}
-
-		texture = get_texture_cache()->get_texture_array(albedo_names,
-			String(UTF8("albedo clipmap")));
-
-		m_clipmap_material->set_texture(texture, spt_effect_0);
-
-		m_clipmap_material->set_blend_sizes(
-			clipmap_data.get_blend_sizes());
-
-/*
-		texture = get_texture_cache()->get_texture_array(normal_names,
-			String(UTF8("normal clipmap")));
-
-		m_clipmap_material->set_texture(texture, spt_normal);
-
-		texture = get_texture_cache()->get_texture_array(specular_names,
-			String(UTF8("specular clipmap")));
-
-		m_clipmap_material->set_texture(texture, spt_specular);
-*/
-		texture = get_texture_cache()->get_texture_array(blend_images,
-			String(UTF8("blend clipmap")));
-
-		m_clipmap_material->set_texture(texture, spt_effect_7);
+		m_clipmap_material = m_terrain_manager->build_clipmap_material(
+			get_material_builder(), EffectCacheSharedPtr(),
+			get_texture_cache(), clipmap_data.get_albedo_maps(),
+			clipmap_data.get_specular_maps(),
+			clipmap_data.get_blend_images(), false);
 	}
 
 }

@@ -33,10 +33,10 @@ namespace eternal_lands
 		private:
 			const CodecManagerSharedPtr m_codec_manager;
 			const GlobalVarsSharedPtr m_global_vars;
+			const EffectCacheSharedPtr m_effect_cache;
 			const MeshBuilderSharedPtr m_mesh_builder;
 			const MeshCacheSharedPtr m_mesh_cache;
 			const MeshDataCacheSharedPtr m_mesh_data_cache;
-			const EffectCacheSharedPtr m_effect_cache;
 			const MaterialCacheSharedPtr m_material_cache;
 			const MaterialDescriptionCacheSharedPtr
 				m_material_description_cache;
@@ -151,10 +151,10 @@ namespace eternal_lands
 			MapLoader(const CodecManagerSharedPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
+				const EffectCacheSharedPtr &effect_cache,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MeshDataCacheSharedPtr &mesh_data_cache,
-				const EffectCacheSharedPtr &effect_cache,
 				const MaterialCacheSharedPtr &material_cache,
 				const MaterialDescriptionCacheSharedPtr
 					&material_description_cache,

@@ -76,7 +76,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			UvTool(const ImageSharedPtr &vector_map,
+			UvTool(const ImageSharedPtr &displacement_map,
 				const glm::vec3 &offset_scale,
 				const glm::vec2 &position_scale);
 

@@ -497,13 +497,13 @@ namespace eternal_lands
 		}
 	}
 
-	void EditorMapData::set_terrain_displacment_values(
-		const DisplacmentValueVector &displacment_values)
+	void EditorMapData::set_terrain_displacement_values(
+		const DisplacementValueVector &displacement_values)
 	{
-		m_terrain_editor.set_displacment_values(displacment_values);
+		m_terrain_editor.set_displacement_values(displacement_values);
 
 		m_scene->set_terrain(
-			m_terrain_editor.get_displacment_image(),
+			m_terrain_editor.get_displacement_image(),
 			m_terrain_editor.get_normal_image(),
 			m_terrain_editor.get_dudv_image());
 	}
@@ -531,7 +531,7 @@ namespace eternal_lands
 		m_terrain_editor.set_blend_map(name, index);
 	}
 
-	void EditorMapData::set_terrain_displacment_map(const String &name)
+	void EditorMapData::set_terrain_displacement_map(const String &name)
 	{
 	}
 
@@ -649,7 +649,7 @@ namespace eternal_lands
 	{
 		m_terrain_editor.init(size);
 
-		m_scene->set_terrain(m_terrain_editor.get_displacment_image(),
+		m_scene->set_terrain(m_terrain_editor.get_displacement_image(),
 			m_terrain_editor.get_normal_image(),
 			m_terrain_editor.get_dudv_image());
 		m_scene->rebuild_terrain_map();

@@ -23,6 +23,11 @@ namespace eternal_lands
 	{
 	}
 
+	String EffectDescription::get_xml_id()
+	{
+		return String(UTF8("effect"));
+	}
+
 	void EffectDescription::load_xml(const FileSystemSharedPtr &file_system,
 		const String &file_name)
 	{
@@ -38,8 +43,8 @@ namespace eternal_lands
 	{
 		xmlNodePtr it;
 
-		if (xmlStrcmp(node->name,
-			BAD_CAST UTF8("effect")) != 0)
+		if (xmlStrcmp(node->name, BAD_CAST get_xml_id().get().c_str())
+			!= 0)
 		{
 			return;
 		}
@@ -110,7 +115,7 @@ namespace eternal_lands
 	void EffectDescription::save_xml(
 		const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(String(UTF8("effect")));
+		writer->start_element(get_xml_id());
 		writer->write_element(String(UTF8("name")), get_name());
 		writer->write_element(String(UTF8("world_transformation")),
 			get_world_transformation());

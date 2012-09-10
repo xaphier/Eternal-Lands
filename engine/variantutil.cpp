@@ -585,7 +585,7 @@ namespace eternal_lands
 
 					for (i = 1; i < count; ++i)
 					{
-						m_str << L" " << value[i];
+						m_str << " " << value[i];
 					}
 				}
 
@@ -605,7 +605,7 @@ namespace eternal_lands
 
 					for (i = 1; i < count; ++i)
 					{
-						m_str << L" " << value[i];
+						m_str << " " << value[i];
 					}
 				}
 
@@ -625,7 +625,7 @@ namespace eternal_lands
 
 					for (i = 1; i < count; ++i)
 					{
-						m_str << L" " << value[i];
+						m_str << " " << value[i];
 					}
 				}
 
@@ -645,7 +645,7 @@ namespace eternal_lands
 
 					for (i = 1; i < count; ++i)
 					{
-						m_str << L" " << value[i];
+						m_str << " " << value[i];
 					}
 				}
 
@@ -665,7 +665,7 @@ namespace eternal_lands
 
 					for (i = 1; i < count; ++i)
 					{
-						m_str << L" " << value[i];
+						m_str << " " << value[i];
 					}
 				}
 
@@ -685,7 +685,7 @@ namespace eternal_lands
 
 					for (i = 1; i < count; ++i)
 					{
-						m_str << L" " << value[i];
+						m_str << " " << value[i];
 					}
 				}
 

@@ -215,6 +215,7 @@ namespace eternal_lands
 		map_loader.reset(new EditorMapLoader(
 			get_scene_resources().get_codec_manager(),
 			get_file_system(), get_global_vars(),
+			get_scene_resources().get_effect_cache(),
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_mesh_data_cache(),
@@ -228,11 +229,11 @@ namespace eternal_lands
 		map_loader->load(name);
 	}
 
-	void EditorScene::set_terrain(const ImageSharedPtr &vector_map,
+	void EditorScene::set_terrain(const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
 	{
-		get_map()->set_terrain(vector_map, normal_map, dudv_map);
+		get_map()->set_terrain(displacement_map, normal_map, dudv_map);
 	}
 
 	void EditorScene::depth_read()
@@ -284,8 +285,6 @@ namespace eternal_lands
 			glm::vec2(selection_rect.x, selection_rect.y) +
 			glm::vec2(selection_rect.z, selection_rect.w),
 			selections);
-
-		std::cout << selections.size() << std::endl;
 	}
 
 }

@@ -31,7 +31,7 @@ world_position.xy = world_position.xy * 2.0 - 1.0;
 world_position = world_position * terrain_vector_scale + position.xyz;
 
 world_position = vec4(world_position, 1.0) * world_transformation;
-terrain_texture_coordinate = position.xy + (world_transformation[0].w, world_transformation[1].w);
+terrain_texture_coordinate = world_position.xy;
 </source>
    <version>120</version>
   </shader_source_data>

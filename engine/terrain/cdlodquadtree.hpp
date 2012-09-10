@@ -79,7 +79,7 @@ namespace eternal_lands
 			void select_bounding_box(const Frustum &frustum,
 				const glm::vec3 &camera,
 				BoundingBox &bounding_box) const;
-			void init(const ImageSharedPtr &vector_map,
+			void init(const ImageSharedPtr &displacement_map,
 				const float patch_scale);
 			void clear();
 			static const Uvec2Array4 &get_quad_order(

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf8"?>
+<effect>
+	<name>actor</name>
+	<world_transformation>bone_animation</world_transformation>
+	<texture_coodrinates>static</texture_coodrinates>
+	<main>default_mapping</main>
+	<node_based>false</node_based>
+	<receives_shadows>true</receives_shadows>
+	<transparent>true</transparent>
+	<lighting>diffuse</lighting>
+</effect>
+

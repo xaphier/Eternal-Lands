@@ -52,7 +52,9 @@ namespace eternal_lands
 				return m_shader_source_builder;
 			}
 
-			void load_xml(const xmlNodePtr node);
+			void load_effect(
+				const FileSystemSharedPtr &file_system,
+				const String &file_name);
 
 		public:
 			/**
@@ -71,10 +73,10 @@ namespace eternal_lands
 			const EffectSharedPtr &get_simple_effect();
 			void reload();
 			void set_debug_shader(const ShaderBuildType debug);
-			void load_xml(const FileSystemSharedPtr &file_system,
-				const String &file_name);
+			void load_xml(const FileSystemSharedPtr &file_system);
 			StringVector get_effect_names() const;
-			void save_xml(const String &file_name) const;
+			void add_effect(
+				const EffectDescription &effect_description);
 
 	};
 

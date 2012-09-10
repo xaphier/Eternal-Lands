@@ -26,47 +26,36 @@ namespace eternal_lands
 	class ClipmapData
 	{
 		private:
-			StringArray16 m_albedo_maps;
-			StringArray16 m_normal_maps;
-			StringArray16 m_specular_maps;
-			ImageSharedPtrArray4 m_blend_images;
-			Vec4Array4 m_blend_sizes;
+			StringVector m_albedo_maps;
+			StringVector m_specular_maps;
+			StringVector m_normal_maps;
+			ImageSharedPtrVector m_blend_images;
 			glm::vec4 m_color;
 
 		public:
 			ClipmapData();
 			~ClipmapData() noexcept;
-			Uint16 get_albedo_count() const;
-			Uint16 get_normal_count() const;
-			Uint16 get_specular_count() const;
-			Uint16 get_blend_count() const;
-
-			inline void set_blend_sizes(
-				const Vec4Array4 &blend_sizes) noexcept
-			{
-				m_blend_sizes = blend_sizes;
-			}
 
 			inline void set_albedo_maps(
-				const StringArray16 &albedo_maps) noexcept
+				const StringVector &albedo_maps) noexcept
 			{
 				m_albedo_maps = albedo_maps;
 			}
 
 			inline void set_normal_maps(
-				const StringArray16 &normal_maps) noexcept
+				const StringVector &normal_maps) noexcept
 			{
 				m_normal_maps = normal_maps;
 			}
 
 			inline void set_specular_maps(
-				const StringArray16 &specular_maps) noexcept
+				const StringVector &specular_maps) noexcept
 			{
 				m_specular_maps = specular_maps;
 			}
 
 			inline void set_blend_images(
-				const ImageSharedPtrArray4 &blend_images)
+				const ImageSharedPtrVector &blend_images)
 				noexcept
 			{
 				m_blend_images = blend_images;
@@ -77,33 +66,28 @@ namespace eternal_lands
 				m_color = color;
 			}
 
-			inline const StringArray16 &get_albedo_maps() const
+			inline const StringVector &get_albedo_maps() const
 				noexcept
 			{
 				return m_albedo_maps;
 			}
 
-			inline const StringArray16 &get_normal_maps() const
+			inline const StringVector &get_normal_maps() const
 				noexcept
 			{
 				return m_normal_maps;
 			}
 
-			inline const StringArray16 &get_specular_maps() const
+			inline const StringVector &get_specular_maps() const
 				noexcept
 			{
 				return m_specular_maps;
 			}
 
-			inline const ImageSharedPtrArray4 &get_blend_images()
+			inline const ImageSharedPtrVector &get_blend_images()
 				const noexcept
 			{
 				return m_blend_images;
-			}
-
-			inline const Vec4Array4 &get_blend_sizes() const noexcept
-			{
-				return m_blend_sizes;
 			}
 
 			inline const String &get_albedo_map(const Uint16 index)
@@ -140,12 +124,6 @@ namespace eternal_lands
 					UTF8("index too big."));
 
 				return m_blend_images[index];
-			}
-
-			inline const glm::vec4 &get_blend_size(
-				const Uint16 index) const
-			{
-				return m_blend_sizes[index];
 			}
 
 			inline const glm::vec4 &get_color() const noexcept

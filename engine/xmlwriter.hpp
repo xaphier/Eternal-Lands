@@ -35,6 +35,8 @@ namespace eternal_lands
 			void end_element();
 			void write_element(const String &name,
 				const String &value);
+			void write_bitset64_element(const String &name,
+				const BitSet64 &value);
 			void write_uuid_element(const String &name,
 				const boost::uuids::uuid &value);
 			void write_bool_element(const String &name,

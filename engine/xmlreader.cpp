@@ -23,8 +23,8 @@ namespace eternal_lands
 		if (m_doc == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(UTF8("Error reading the xml "
-					"data")));
+				<< errinfo_message(UTF8("Error reading the xml"
+					" data")));
 		}
 	}
 
@@ -39,8 +39,8 @@ namespace eternal_lands
 		if (m_doc == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(UTF8("Error reading the xml "
-					"file"))
+				<< errinfo_message(UTF8("Error reading the xml"
+					" file"))
 				<< boost::errinfo_file_name(name));
 		}
 	}
@@ -59,8 +59,8 @@ namespace eternal_lands
 		if (m_doc == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(UTF8("Error reading the xml "
-					"file"))
+				<< errinfo_message(UTF8("Error reading the xml"
+					" file"))
 				<< boost::errinfo_file_name(file_name));
 		}
 	}
@@ -74,8 +74,8 @@ namespace eternal_lands
 		if (m_doc == 0)
 		{
 			EL_THROW_EXCEPTION(IoErrorException()
-				<< errinfo_message(UTF8("Error reading the xml "
-					"file"))
+				<< errinfo_message(UTF8("Error reading the xml"
+					" file"))
 				<< boost::errinfo_file_name(
 					reader->get_name()));
 		}

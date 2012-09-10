@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
 		el::spt_effect_11).get(), "effect_sampler_11");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
-		el::spt_light_colors).get(), "light_colors_sampler");
+		el::spt_effect_13).get(), "effect_sampler_13");
 	BOOST_CHECK_EQUAL(el::SamplerParameterUtil::get_str(
-		el::spt_shadow).get(), "shadow_sampler");
+		el::spt_effect_15).get(), "effect_sampler_15");
 }

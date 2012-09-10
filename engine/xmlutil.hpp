@@ -59,6 +59,8 @@ namespace eternal_lands
 			static Sint16 get_sint16_value(const xmlNodePtr node);
 			static Uint16 get_uint16_value(const xmlNodePtr node);
 			static String get_string_value(const xmlNodePtr node);
+			static BitSet64 get_bitset64_value(
+				const xmlNodePtr node);
 			static Variant get_variant_value(const xmlNodePtr node);
 			static StringVariantPair get_string_variant(
 				const xmlNodePtr node);

@@ -29,26 +29,35 @@ namespace eternal_lands
 			boost::scoped_ptr<CdLodQuadTree> m_cd_lod_quad_tree;
 			MaterialSharedPtr m_material;
 			AbstractMeshSharedPtr m_mesh;
+			TextureSharedPtr m_displacement_texture;
+			TextureSharedPtr m_normal_texture;
+			TextureSharedPtr m_dudv_texture;
+
+			virtual TextureSharedPtr get_displacement_texture()
+				const;
+			virtual TextureSharedPtr get_normal_texture() const;
+			virtual TextureSharedPtr get_dudv_texture() const;
 
 		public:
 			CdLodTerrainManager(
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialSharedPtr &material);
-			virtual ~CdLodTerrainManager() noexcept;
+			virtual ~CdLodTerrainManager() noexcept override;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const override;
 			virtual void intersect(const Frustum &frustum,
 				const glm::vec3 &camera,
-				BoundingBox &bounding_box) const;
+				BoundingBox &bounding_box) const override;
 			virtual void intersect(const Frustum &frustum,
 				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const override;
 			virtual void set_clipmap_texture(
 				const TextureSharedPtr &texture) override;
-			virtual void update(const ImageSharedPtr &vector_map,
+			virtual void update(
+				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map);
-			virtual void clear();
+				const ImageSharedPtr &dudv_map) override;
+			virtual void clear() override;
 
 			inline const MaterialSharedPtr &get_material() const
 				noexcept

@@ -36,6 +36,7 @@ namespace eternal_lands
 			const CodecManagerSharedPtr m_codec_manager;
 			const FileSystemSharedPtr m_file_system;
 			const GlobalVarsSharedPtr m_global_vars;
+			const EffectCacheSharedPtr m_effect_cache;
 			const MeshBuilderSharedPtr m_mesh_builder;
 			const MeshCacheSharedPtr m_mesh_cache;
 			const MeshDataCacheSharedPtr m_mesh_data_cache;
@@ -44,7 +45,6 @@ namespace eternal_lands
 			const TextureCacheWeakPtr m_texture_cache;
 			ReaderSharedPtr m_reader;
 			EditorMapData &m_data;
-			MapSharedPtr m_map;
 			StringVector m_material_names;
 			StringSet m_harvestables, m_entrables;
 
@@ -96,6 +96,12 @@ namespace eternal_lands
 				return m_texture_cache;
 			}
 
+			inline const EffectCacheSharedPtr &get_effect_cache()
+				const noexcept
+			{
+				return m_effect_cache;
+			}
+
 			inline const ReaderSharedPtr &get_reader() const
 			{
 				return m_reader;
@@ -138,6 +144,7 @@ namespace eternal_lands
 				const CodecManagerSharedPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
+				const EffectCacheSharedPtr &effect_cache,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MeshDataCacheSharedPtr &mesh_data_cache,

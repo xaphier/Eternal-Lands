@@ -50,7 +50,7 @@ world_tangent = vec4(world_normal, 1.0);
 world_position = vec4(world_position, 1.0) * world_transformation;
 world_normal = normalize(world_normal * mat3(world_transformation));
 world_tangent.xyz = normalize(world_tangent.xyz * mat3(world_transformation));
-terrain_texture_coordinate = position.xy + (world_transformation[0].w, world_transformation[1].w);
+terrain_texture_coordinate = world_position.xy;
 </source>
    <version>120</version>
   </shader_source_data>

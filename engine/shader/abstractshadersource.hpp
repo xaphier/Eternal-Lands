@@ -30,13 +30,14 @@ namespace eternal_lands
 		private:
 			String m_name;
 
-		protected:
-			AbstractShaderSource();
-
 			virtual ShaderSourceParameterVector get_parameters(
 				const ShaderVersionType version) const = 0;
 			virtual String get_source(
 				const ShaderVersionType version) const = 0;
+			virtual void load_xml_node(const xmlNodePtr node) = 0;
+
+		protected:
+			AbstractShaderSource();
 			void build_function_source(
 				const ShaderSourceParameterVector &locals,
 				const ParameterSizeTypeUint16Map &sizes,
@@ -70,6 +71,10 @@ namespace eternal_lands
 			bool check_source_parameter(
 				const ShaderVersionType version,
 				const String &name) const;
+			void load_xml(const String &file_name);
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &file_name);
+			void load_xml(const xmlNodePtr node);
 			String get_typed_name() const;
 			virtual ShaderSourceType get_type() const = 0;
 			virtual bool get_has_data(
