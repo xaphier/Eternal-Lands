@@ -322,7 +322,7 @@ namespace eternal_lands
 		return plane_type_names[plane_type];
 	}
 
-	OutStream& operator<<(OutStream &str, const PlaneType value)
+	OutStream &operator<<(OutStream &str, const PlaneType value)
 	{
 		str << Frustum::get_str(value);
 

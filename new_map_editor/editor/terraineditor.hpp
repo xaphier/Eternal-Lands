@@ -16,6 +16,7 @@
 #include "imagevalue.hpp"
 #include "displacementvalue.hpp"
 #include "height.hpp"
+#include "shader/shadersourceterrain.hpp"
 
 /**
  * @file
@@ -89,13 +90,18 @@ namespace eternal_lands
 			ImageSharedPtr m_displacement_image;
 			ImageSharedPtr m_normal_image;
 			ImageSharedPtr m_dudv_image;
-			ImageSharedPtrVector m_blend_images;
+			ImageSharedPtr m_blend_image;
+			ShaderSourceTerrain m_shader_source_terrain;
+			StringVector m_albedo_maps;
 			boost::array<glm::vec3,  65536> m_normals;
-			Uint16 m_blend_map_count;
+			Uint16 m_layer_count;
+			bool m_enabled;
 
 			glm::uvec2 get_best_normal(const glm::vec3 &normal)
 				const;
 			glm::vec3 get_position(const glm::ivec2 &index)
+				const;
+			glm::vec3 get_smooth_position(const glm::vec2 &index)
 				const;
 			glm::vec3 get_direction(const glm::vec3 &centre,
 				const glm::ivec2 &index) const;
@@ -125,11 +131,8 @@ namespace eternal_lands
 					&displacement_values);
 			void set_blend_values(
 				const ImageValueVector &blend_values);
-			void set_blend_map(const String &name,
-				const Uint16 index);
-			void set_displacement_map(const String &name);
-			void set_dudv_map(const String &name);
-			void init(const glm::uvec2 &size);
+			void init(const glm::uvec2 &size,
+				const String &texture);
 			void get_displacement_values(const glm::uvec2 &vertex,
 				const glm::vec2 &size,
 				const float attenuation_size,
@@ -146,8 +149,8 @@ namespace eternal_lands
 			static const glm::vec3 &get_terrain_offset();
 			static const glm::vec3 &get_terrain_offset_min();
 			static const glm::vec3 &get_terrain_offset_max();
-			glm::uvec2 get_vertex(const glm::vec3 &world_position)
-				const;
+			bool get_vertex(const glm::vec3 &world_position,
+				glm::uvec2 &result) const;
 			static glm::vec3 calc_brush(const glm::vec3 &value,
 				const glm::vec3 &data,
 				const glm::vec3 &average,
@@ -198,19 +201,26 @@ namespace eternal_lands
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
 				const BrushEffectType effect);
+			Uint16 get_layer_count() const;
+			void set_water(const glm::uvec2 vertex,
+				const float direction, const float speed,
+				const Uint16 index);
 
-			inline void set_blend_map_count(
-				const Uint16 blend_map_count)
+			inline void set_albedo_map(const String &name,
+				const Uint16 index)
 			{
-				m_blend_map_count = blend_map_count;
-
-				m_blend_images.resize((blend_map_count + 3) /
-					4);
+				m_albedo_maps[index] = name;
 			}
 
-			inline Uint32 get_blend_maps_count() const
+			inline void set_blend_data(const ShaderBlendData &data,
+				const Uint16 index)
 			{
-				return m_blend_map_count;
+				m_shader_source_terrain.set_data(data, index);
+			}
+
+			static inline Uint32 get_max_layer_count()
+			{
+				return 17;
 			}
 
 			inline const ImageSharedPtr &get_displacement_image()
@@ -219,22 +229,51 @@ namespace eternal_lands
 				return m_displacement_image;
 			}
 
-			inline const ImageSharedPtr &get_normal_image()
-				const noexcept
+			inline const ImageSharedPtr &get_normal_image() const
+				noexcept
 			{
 				return m_normal_image;
 			}
 
-			inline const ImageSharedPtr &get_dudv_image()
-				const noexcept
+			inline const ImageSharedPtr &get_dudv_image() const
+				noexcept
 			{
 				return m_dudv_image;
 			}
 
-			inline const ImageSharedPtrVector &get_blend_images()
+			inline const ImageSharedPtr &get_blend_image() const
+				noexcept
+			{
+				return m_blend_image;
+			}
+
+			inline const StringVector &get_albedo_maps() const
+				noexcept
+			{
+				return m_albedo_maps;
+			}
+
+			inline const String &get_albedo_map(const Uint16 index)
 				const noexcept
 			{
-				return m_blend_images;
+				return m_albedo_maps[index];
+			}
+
+			inline const ShaderBlendData &get_blend_data(
+				const Uint16 index) const
+			{
+				return m_shader_source_terrain.get_data(index);
+			}
+
+			inline String get_effect_main() const
+			{
+				return m_shader_source_terrain.save_xml_string(
+					);
+			}
+
+			inline bool get_enabled() const
+			{
+				return m_enabled;
 			}
 
 	};

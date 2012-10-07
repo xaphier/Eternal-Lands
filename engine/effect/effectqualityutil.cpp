@@ -92,14 +92,14 @@ namespace eternal_lands
 		return effect_quality_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectQualityType value)
+	OutStream &operator<<(OutStream &str, const EffectQualityType value)
 	{
 		str << EffectQualityUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectQualityType &value)
+	InStream &operator>>(InStream &str, EffectQualityType &value)
 	{
 		std::string string;
 

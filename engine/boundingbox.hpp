@@ -619,7 +619,7 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const BoundingBox &value);
+	OutStream &operator<<(OutStream &str, const BoundingBox &value);
 
 }
 

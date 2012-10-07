@@ -41,7 +41,7 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const Variant &value);
+	OutStream &operator<<(OutStream &str, const Variant &value);
 
 }
 

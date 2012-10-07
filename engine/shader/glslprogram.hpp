@@ -75,10 +75,6 @@ namespace eternal_lands
 					&uniform_buffer_description_cache,
 				const FileSystemSharedPtr &file_system,
 				const String &file_name);
-			void load_xml(
-				const UniformBufferDescriptionCacheSharedPtr
-					&uniform_buffer_description_cache,
-				const String &file_name);
 
 			inline GLuint get_program() const noexcept
 			{
@@ -92,10 +88,6 @@ namespace eternal_lands
 				const boost::uuids::uuid &uuid);
 			GlslProgram(const FileSystemSharedPtr &file_system,
 				const UniformBufferDescriptionCacheSharedPtr
-					&uniform_buffer_description_cache,
-				const String &file_name,
-				const boost::uuids::uuid &uuid);
-			GlslProgram(const UniformBufferDescriptionCacheSharedPtr
 					&uniform_buffer_description_cache,
 				const String &file_name,
 				const boost::uuids::uuid &uuid);

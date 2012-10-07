@@ -682,7 +682,7 @@ namespace eternal_lands
 		writer->end_element();
 	}
 
-	OutStream& operator<<(OutStream &str,
+	OutStream &operator<<(OutStream &str,
 		const ShaderSourceParameter &value)
 	{
 		value.log(str);

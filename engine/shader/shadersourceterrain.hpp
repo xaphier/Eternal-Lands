@@ -36,7 +36,6 @@ namespace eternal_lands
 			ShaderBlendDataVector m_data;
 			BitSet64 m_use_randomized_uvs;
 			bool m_use_specular;
-			bool m_use_texture_arrays;
 
 			void write_blend(const String &indent,
 				const Uint16 index, OutStream &str) const;
@@ -51,23 +50,26 @@ namespace eternal_lands
 			void write_specular_fetch(const String &indent,
 				const Uint16 index, const bool use_glsl_130,
 				OutStream &str) const;
-			void save_xml(const XmlWriterSharedPtr &writer) const;
 			bool get_use_normal_map() const;
 			bool get_use_displacement_map() const;
 			bool get_use_randomized_uv() const;
 			virtual ShaderSourceParameterVector get_parameters(
 				const ShaderVersionType version) const;
 			virtual String get_source(
-				const ShaderVersionType version) const;
-			virtual void load_xml_node(const xmlNodePtr node);
+				const ShaderVersionType version) const
+				override;
+			virtual void do_load_xml(const xmlNodePtr node)
+				override;
+			virtual void do_save_xml(
+				const XmlWriterSharedPtr &xml_writer) const
+				override;
 
 		public:
 			ShaderSourceTerrain();
-			~ShaderSourceTerrain() noexcept;
-			void save_xml(const String &file_name) const;
-			virtual ShaderSourceType get_type() const;
+			virtual ~ShaderSourceTerrain() noexcept override;
+			virtual ShaderSourceType get_type() const override;
 			virtual bool get_has_data(
-				const ShaderVersionType version) const;
+				const ShaderVersionType version) const override;
 			static String get_xml_id();
 			static Uint32 get_non_array_sampler_count();
 			static SamplerParameterType get_albedo_sampler(
@@ -120,17 +122,6 @@ namespace eternal_lands
 				noexcept
 			{
 				m_use_specular = use_specular;
-			}
-
-			inline bool get_use_texture_arrays() const noexcept
-			{
-				return m_use_texture_arrays;
-			}
-
-			inline void set_use_texture_arrays(
-				const bool use_texture_arrays) noexcept
-			{
-				m_use_texture_arrays = use_texture_arrays;
 			}
 
 			inline bool get_use_randomized_uv(const Uint16 index)

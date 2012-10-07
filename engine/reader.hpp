@@ -177,6 +177,22 @@ namespace eternal_lands
 			float read_float_be();
 
 			/**
+			 * Reads a dynamic Uint64.
+			 * @return The read Uint64.
+			 */
+			Uint64 read_dynamic_uint();
+
+			/**
+			 * Reads an utf-8 encoded string and returns it. The
+			 * size is read as dynamic uint.
+			 * @return The read string.
+			 */
+			inline String read_dynamic_utf8_string()
+			{
+				return read_utf8_string(read_dynamic_uint());
+			}
+
+			/**
 			 */
 			inline Uint64 get_bytes_left() const
 			{

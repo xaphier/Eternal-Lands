@@ -6,9 +6,7 @@
  ****************************************************************************/
 
 #include "prerequisites.hpp"
-#include "exceptions.hpp"
 #include "texturetargetutil.hpp"
-#include "utf.hpp"
 #define BOOST_TEST_MODULE texture_target
 #include <boost/test/unit_test.hpp>
 

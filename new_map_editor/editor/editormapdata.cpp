@@ -20,7 +20,6 @@
 #include "codec/codecmanager.hpp"
 #include "shader/shaderbuildutil.hpp"
 #include "effect/effectcache.hpp"
-#include "abstractterrainmanager.hpp"
 #include "writer.hpp"
 
 namespace eternal_lands
@@ -31,9 +30,8 @@ namespace eternal_lands
 
 		typedef std::multimap<String, Uint32> StringUint32MultiMap;
 
-		void update_materials_list(const StringVector &materials,
-			StringVector &material_list,
-			StringUint32MultiMap &index_map,
+		void update_names_list(const StringVector &materials,
+			StringVector &names, StringUint32MultiMap &index_map,
 			Uint32 &material_index, Uint32 &material_count)
 		{
 			StringUint32MultiMap::const_iterator it, begin, end;
@@ -59,7 +57,7 @@ namespace eternal_lands
 				material_index = it->second;
 
 				if ((material_index + material_count) >=
-					material_list.size())
+					names.size())
 				{
 					continue;
 				}
@@ -68,7 +66,7 @@ namespace eternal_lands
 
 				for (i = 0; i < material_count; ++i)
 				{
-					if (material_list[i + material_index]
+					if (names[i + material_index]
 						!= materials[i])
 					{
 						found = false;
@@ -84,15 +82,15 @@ namespace eternal_lands
 
 			if (!found)
 			{
-				material_index = material_list.size();
+				material_index = names.size();
 
 				for (i = 0; i < material_count; ++i)
 				{
 					index_map.insert(
 						std::pair<String, Uint32>(
 							materials[i],
-							material_list.size()));
-					material_list.push_back(materials[i]);
+							names.size()));
+					names.push_back(materials[i]);
 				}
 			}
 		}
@@ -502,7 +500,7 @@ namespace eternal_lands
 	{
 		m_terrain_editor.set_displacement_values(displacement_values);
 
-		m_scene->set_terrain(
+		m_scene->set_terrain_geometry_maps(
 			m_terrain_editor.get_displacement_image(),
 			m_terrain_editor.get_normal_image(),
 			m_terrain_editor.get_dudv_image());
@@ -512,39 +510,39 @@ namespace eternal_lands
 		const ImageValueVector &blend_values)
 	{
 		m_terrain_editor.set_blend_values(blend_values);
-/*
-		m_scene->set_terrain(
-			m_terrain_editor.get_terrain_vector_image(),
-			m_terrain_editor.get_terrain_normal_image(),
-			m_terrain_editor.get_terrain_dudv_image());
-*/
+
+		m_scene->set_terrain_blend_map(
+			m_terrain_editor.get_blend_image());
 	}
 
 	void EditorMapData::set_terrain_albedo_map(const String &name,
 		const Uint16 index)
 	{
+		m_terrain_editor.set_albedo_map(name, index);
+
+		m_scene->set_terrain_material_maps(
+			m_terrain_editor.get_albedo_maps(), StringVector());
 	}
 
-	void EditorMapData::set_terrain_blend_map(const String &name,
+	void EditorMapData::set_terrain_blend_data(const ShaderBlendData &data,
 		const Uint16 index)
 	{
-		m_terrain_editor.set_blend_map(name, index);
-	}
+		m_terrain_editor.set_blend_data(data, index);
 
-	void EditorMapData::set_terrain_displacement_map(const String &name)
-	{
+		m_scene->set_terrain_effect_main(
+			m_terrain_editor.get_effect_main());
 	}
-
-	void EditorMapData::set_terrain_dudv_map(const String &name)
-	{
-	}
-
-	String tmp;
 
 	const String &EditorMapData::get_terrain_albedo_map(
 		const Uint16 index) const
 	{
-		return tmp;
+		return m_terrain_editor.get_albedo_map(index);
+	}
+
+	const ShaderBlendData &EditorMapData::get_terrain_blend_data(
+		const Uint16 index) const
+	{
+		return m_terrain_editor.get_blend_data(index);
 	}
 
 	Uint32 EditorMapData::get_free_object_id() const
@@ -645,13 +643,25 @@ namespace eternal_lands
 			ImageCompressionTypeSet(), false, false);
 	}
 
-	void EditorMapData::init_terrain(const glm::uvec2 &size)
+	void EditorMapData::init_terrain(const glm::uvec2 &size,
+		const String &texture)
 	{
-		m_terrain_editor.init(size);
+		m_terrain_editor.init(size, texture);
 
-		m_scene->set_terrain(m_terrain_editor.get_displacement_image(),
+		m_scene->set_terrain_geometry_maps(
+			m_terrain_editor.get_displacement_image(),
 			m_terrain_editor.get_normal_image(),
 			m_terrain_editor.get_dudv_image());
+
+		m_scene->set_terrain_blend_map(
+			m_terrain_editor.get_blend_image());
+
+		m_scene->set_terrain_material_maps(
+			m_terrain_editor.get_albedo_maps(), StringVector());
+
+		m_scene->set_terrain_effect_main(
+			m_terrain_editor.get_effect_main());
+
 		m_scene->rebuild_terrain_map();
 	}
 
@@ -703,6 +713,12 @@ namespace eternal_lands
 		m_scene->set_depth_selection(position);
 	}
 
+	bool EditorMapData::get_water_vertex(const glm::vec3 &start_position,
+		const glm::vec3 &world_position, glm::uvec2 &result) const
+	{
+		return true;
+	}
+
 	void EditorMapData::save(const String &file_name) const
 	{
 		WriterSharedPtr writer;
@@ -721,7 +737,7 @@ namespace eternal_lands
 		std::map<Uint32, LightData>::const_iterator light_end;
 		std::map<Uint32, ParticleData>::const_iterator particle_it;
 		std::map<Uint32, ParticleData>::const_iterator particle_end;
-		StringVector material_list;
+		StringVector names;
 		StringUint32MultiMap index_map;
 		glm::vec3 ambient;
 		glm::uvec2 size;
@@ -742,12 +758,12 @@ namespace eternal_lands
 		Uint32 particle_count;
 		Uint32 particle_offset;
 		Uint32 clusters_offset;
-		Uint32 terrain_offset;
-		Uint32 material_name_size;
-		Uint32 material_name_count;
-		Uint32 material_name_offset; 
+		Uint32 name_count;
+		Uint32 name_offset; 
 		Uint32 tile_map_width;
 		Uint32 tile_map_height;
+		Uint32 terrain_offset;
+		Uint32 water_offset;
 		Uint16 dungeon;
 		IdType type;
 
@@ -922,9 +938,9 @@ namespace eternal_lands
 			writer->write_float_le(object_it->second.get_scale().y);
 			writer->write_float_le(object_it->second.get_scale().z);
 
-			update_materials_list(
+			update_names_list(
 				object_it->second.get_material_names(),
-				material_list, index_map, material_index,
+				names, index_map, material_index,
 				material_count);
 
 			writer->write_u32_le(material_index);
@@ -1040,18 +1056,50 @@ namespace eternal_lands
 			}
 		}
 
-		material_name_size =
-			AbstractMapLoader::get_material_name_size();
-		material_name_count = 0;
-		material_name_offset = writer->get_position();
+		name_count = 0;
+		name_offset = writer->get_position();
 
-		BOOST_FOREACH(const String &material, material_list)
+		BOOST_FOREACH(const String &name, names)
 		{
-			material_name_count++;
+			name_count++;
 
-			writer->write_utf8_string(material, 128);
+			writer->write_dynamic_utf8_string(name);
 		}
 
+		terrain_offset = 0;
+		water_offset = 0;
+/*
+		if (terrain)
+		{
+			writer->write_float(uv_scale.x);
+			writer->write_float(uv_scale.y);
+
+			writer->write_dynamic_utf8_string(effect);
+			writer->write_dynamic_utf8_string(displacment_map);
+			writer->write_dynamic_utf8_string(normal_map);
+			writer->write_dynamic_utf8_string(dudv_map);
+			writer->write_dynamic_utf8_string(blend_map);
+
+			{
+				writer->write_dynamic_utf8_string(albedo_map);
+				writer->write_dynamic_utf8_string(specular_map);
+				writer->write_dynamic_utf8_string(normal_map);
+				writer->write_dynamic_utf8_string(height_map);
+			}
+		}
+
+		if (water)
+		{
+			writer->write_dynamic_utf8_string(flow_map);
+
+			writer->write_uint8(water_layer);
+
+			{
+				writer->write_dynamic_utf8_string(name);
+				writer->write_float_le(height);
+			}
+		}
+*/
 		writer->set_position(0);
 
 		writer->write_s8('e');
@@ -1090,11 +1138,12 @@ namespace eternal_lands
 		writer->write_u32_le(particle_offset);
 
 		writer->write_u32_le(0);	// clusters_offset
-		writer->write_u32_le(0);	// terrain_offset
 
-		writer->write_u32_le(material_name_size);
-		writer->write_u32_le(material_name_count);
-		writer->write_u32_le(material_name_offset);
+		writer->write_u32_le(name_count);
+		writer->write_u32_le(name_offset);
+
+		writer->write_u32_le(terrain_offset);
+		writer->write_u32_le(water_offset);
 
 		writer->write_u32_le(0);	// reserved_13
 		writer->write_u32_le(0);	// reserved_14

@@ -19,7 +19,7 @@
 #include "sceneresources.hpp"
 #include "statemanager.hpp"
 #include "sceneview.hpp"
-#include "clipmap.hpp"
+#include "clipmapterrain.hpp"
 #include "effect/effectprogramutil.hpp"
 #include "terrainrenderingdata.hpp"
 
@@ -54,7 +54,7 @@ namespace eternal_lands
 			SceneResources m_scene_resources;
 			TextureSharedPtr m_day_color_correction;
 			TextureSharedPtr m_night_color_correction;
-			Clipmap m_clipmap;
+			ClipmapTerrain m_clipmap_terrain;
 			StateManager m_state_manager;
 			TerrainRenderingData m_visible_terrain;
 			ObjectVisitor m_visible_objects;
@@ -64,10 +64,10 @@ namespace eternal_lands
 			MapSharedPtr m_map;
 			AbstractMeshSharedPtr m_screen_quad;
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
-			AbstractFrameBufferSharedPtr m_clipmap_frame_buffer;
+			AbstractFrameBufferSharedPtr m_clipmap_terrain_frame_buffer;
 			AbstractFrameBufferSharedPtr m_scene_frame_buffer;
 			TextureSharedPtr m_shadow_texture;
-			TextureSharedPtr m_clipmap_texture;
+			TextureSharedPtr m_clipmap_terrain_texture;
 			TextureSharedPtr m_light_index_texture;
 			TextureSharedPtr m_light_position_texture;
 			TextureSharedPtr m_light_color_texture;
@@ -196,7 +196,7 @@ namespace eternal_lands
 				return m_map;
 			}
 
-			inline void set_map(const MapSharedPtr &map) noexcept
+			inline void set_map(const MapSharedPtr &map)
 			{
 				m_map = map;
 				map_changed();

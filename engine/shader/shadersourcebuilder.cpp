@@ -22,12 +22,11 @@
 #include "effect/effect.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
-#include "abstractterrainmanager.hpp"
+#include "abstractterrain.hpp"
 #include "glmutil.hpp"
 #include "glslprogramdescription.hpp"
 #include "uniformbufferusage.hpp"
 #include "colorcorrection.hpp"
-#include "reader.hpp"
 #include "shadersource.hpp"
 #include "shadersourceterrain.hpp"
 #include "effect/effectnodes.hpp"
@@ -279,7 +278,7 @@ namespace eternal_lands
 				parameters, uniform_buffers);
 		}
 
-		OutStream& operator<<(OutStream &str,
+		OutStream &operator<<(OutStream &str,
 			const ShaderSourceLocalType value)
 		{
 			str << get_str(value);
@@ -644,11 +643,11 @@ namespace eternal_lands
 			}
 
 			str << UTF8("const vec3 terrain_vector_scale = vec3(");
-			str << AbstractTerrainManager::get_vector_scale().x;
-			str << ", ";
-			str << AbstractTerrainManager::get_vector_scale().y;
-			str << ", ";
-			str << AbstractTerrainManager::get_vector_scale().z;
+			str << AbstractTerrain::get_vector_scale().x;
+			str << UTF8(", ");
+			str << AbstractTerrain::get_vector_scale().y;
+			str << UTF8(", ");
+			str << AbstractTerrain::get_vector_scale().z;
 			str << UTF8(");\n");
 
 			lut_size = ColorCorrection::get_lut_size();
@@ -656,8 +655,8 @@ namespace eternal_lands
 			offset = 1.0f / (2.0f * lut_size);
 
 			str << UTF8("const vec2 color_correction_scale_offset");
-			str << UTF8(" = vec2(") << scale << ", " << offset;
-			str << UTF8(");\n");
+			str << UTF8(" = vec2(") << scale << UTF8(", ");
+			str << offset << UTF8(");\n");
 		}
 
 		class OptimizeShaderSource
@@ -992,13 +991,15 @@ namespace eternal_lands
 
 	ShaderSourceBuilder::ShaderSourceBuilder(
 		const GlobalVarsSharedPtr &global_vars,
+		const FileSystemSharedPtr &file_system,
 		const UniformBufferDescriptionCacheWeakPtr
 			&uniform_buffer_description_cache):
-		m_global_vars(global_vars),
+		m_global_vars(global_vars), m_file_system(file_system),
 		m_uniform_buffer_description_cache(
 			uniform_buffer_description_cache)
 	{
 		assert(m_global_vars.get() != nullptr);
+		assert(m_file_system.get() != nullptr);
 		assert(!m_uniform_buffer_description_cache.expired());
 
 		m_optimizer.reset(new ShaderSourceOptimizer());
@@ -1055,8 +1056,8 @@ namespace eternal_lands
 		glm::vec4 scale;
 		glm::vec2 offset;
 
-		scale = AbstractTerrainManager::get_vector_scale_rgb10_a2();
-		offset = AbstractTerrainManager::get_vector_offset_rgb10_a2();
+		scale = AbstractTerrain::get_vector_scale_rgb10_a2();
+		offset = AbstractTerrain::get_vector_offset_rgb10_a2();
 
 		functions << indent << UTF8("/**") << std::endl;
 		functions << indent << UTF8(" * Convertes the normalized ");
@@ -1089,44 +1090,24 @@ namespace eternal_lands
 		functions << std::endl;
 	}
 
-	void ShaderSourceBuilder::load_shader_source(
-		const FileSystemSharedPtr &file_system, const String &file_name)
+	void ShaderSourceBuilder::load_shader_source(const String &file_name,
+		AbstractShaderSourceAutoPtr &shader_source) const
 	{
-		std::auto_ptr<AbstractShaderSource> shader_source;
 		XmlReaderSharedPtr xml_reader;
-		ReaderSharedPtr reader;
 		ShaderSourceTypeStringPair index;
-		std::pair<ShaderSourceTypeStringPair, ShaderSourceSharedPtr>
-			data;
 		String name;
-		Uint8Array5 magic;
+
+		shader_source.reset();
 
 		try
 		{
-			reader = file_system->get_file(file_name);
-
-			if (reader->get_size() < 5)
+			if (!XmlReader::get_xml_reader(get_file_system(),
+				file_name, xml_reader))
 			{
 				return;
 			}
 
-			reader->set_position(0);
-
-			BOOST_FOREACH(Uint8 &value, magic)
-			{
-				value = reader->read_u8();
-			}
-
-			reader->set_position(0);
-
-			if ((magic[0] != '<') || (magic[1] != '?') ||
-				(magic[2] != 'x') || (magic[3] != 'm') ||
-				(magic[4] != 'l'))
-			{
-				return;
-			}
-
-			xml_reader = boost::make_shared<XmlReader>(reader);
+			assert(xml_reader.get() != nullptr);
 
 			name = String(std::string(reinterpret_cast<const char*>(
 				xml_reader->get_root_node()->name)));
@@ -1150,12 +1131,51 @@ namespace eternal_lands
 					}
 					else
 					{
+						LOG_ERROR(lt_shader_source,
+							UTF8("Shader source "
+								"'%1%' has "
+								"invalid id "
+								"'%2%'"),
+								file_name %
+								name);
 						return;
 					}
 				}
 			}
 
 			shader_source->load_xml(xml_reader->get_root_node());
+		}
+		catch (boost::exception &exception)
+		{
+			shader_source.reset();
+
+			exception << boost::errinfo_file_name(file_name);
+
+			LOG_EXCEPTION(exception);
+		}
+		catch (std::exception &exception)
+		{
+			shader_source.reset();
+
+			LOG_EXCEPTION(exception);
+		}
+	}
+
+	bool ShaderSourceBuilder::load_shader_source(const String &file_name)
+	{
+		AbstractShaderSourceAutoPtr shader_source;
+		ShaderSourceTypeStringPair index;
+		std::pair<ShaderSourceTypeStringPair, ShaderSourceSharedPtr>
+			data;
+
+		try
+		{
+			load_shader_source(file_name, shader_source);
+
+			if (shader_source.get() == nullptr)
+			{
+				return false;
+			}
 
 			index.first = shader_source->get_type();
 			index.second = shader_source->get_name();
@@ -1165,6 +1185,8 @@ namespace eternal_lands
 			LOG_DEBUG(lt_shader_source, UTF8("Shader source type "
 				"%1%-%2% loaded from file '%3%'"), index.first
 				% index.second % file_name);
+
+			return true;
 		}
 		catch (boost::exception &exception)
 		{
@@ -1172,6 +1194,12 @@ namespace eternal_lands
 
 			LOG_EXCEPTION(exception);
 		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION(exception);
+		}
+
+		return false;
 	}
 
 	void ShaderSourceBuilder::load_sources(const xmlNodePtr node)
@@ -1214,8 +1242,7 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void ShaderSourceBuilder::load_xml(
-		const FileSystemSharedPtr &file_system, const xmlNodePtr node)
+	void ShaderSourceBuilder::load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 		String name, file_name;
@@ -1282,33 +1309,26 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void ShaderSourceBuilder::load_xml(
-		const FileSystemSharedPtr &file_system, const String &file_name)
+	void ShaderSourceBuilder::load_xml(const String &file_name)
 	{
 		XmlReaderSharedPtr xml_reader;
 
-		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
-			file_name));
+		xml_reader = boost::make_shared<XmlReader>(get_file_system(),
+			file_name);
 
-		load_shader_sources(file_system,
-			String(UTF8("shaders/sources")));
-
-		load_shader_sources(file_system,
-			String(UTF8("shaders/terrains")));
-
-		load_xml(file_system, xml_reader->get_root_node());
+		load_xml(xml_reader->get_root_node());
 	}
 
-	void ShaderSourceBuilder::load_shader_sources(
-		const FileSystemSharedPtr &file_system, const String &dir)
+	void ShaderSourceBuilder::load_shader_sources(const String &dir)
 	{
 		StringSet files;
 
-		files = file_system->get_files(dir, String(UTF8("*.xml")));
+		files = get_file_system()->get_files(dir,
+			String(UTF8("*.xml")));
 
 		BOOST_FOREACH(const String &file, files)
 		{
-			load_shader_source(file_system, file);
+			load_shader_source(file);
 		}
 	}
 
@@ -1321,6 +1341,7 @@ namespace eternal_lands
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
+		AbstractShaderSourceAutoPtr shader_source;
 		ShaderSourceTypeStringPairAbstractShaderSourceMap::
 			const_iterator found;
 		ShaderSourceTypeStringMap::const_iterator index;
@@ -1334,28 +1355,47 @@ namespace eternal_lands
 
 		found = m_shader_sources.find(*index);
 
-		if (found == m_shader_sources.end())
+		if (found != m_shader_sources.end())
+		{
+			if (data.get_option(ssbot_use_functions))
+			{
+				found->second->build_function(
+					data.get_version(), locals,
+					array_sizes, String(UTF8("")),
+					String(UTF8("")), indent, stream,
+					functions, globals, uniform_buffers);
+			}
+			else
+			{
+				found->second->build_source(data.get_version(),
+					locals, indent, stream, globals,
+					uniform_buffers);
+			}
+
+			return true;
+		}
+
+		load_shader_source(index->second, shader_source);
+
+		if (shader_source.get() == nullptr)
 		{
 			LOG_ERROR(lt_shader_source, UTF8("Shader source type "
 				"not found %1%-%2%"), index->first %
 				index->second);
+
 			return false;
 		}
 
-		/**
-		 * AMD driver doesn't like functions with array arguments.
-		 */
-		if (data.get_option(ssbot_use_functions) &&
-			!GLEW_AMD_name_gen_delete)
+		if (data.get_option(ssbot_use_functions))
 		{
-			found->second->build_function(data.get_version(),
+			shader_source->build_function(data.get_version(),
 				locals, array_sizes, String(UTF8("")),
 				String(UTF8("")), indent, stream, functions,
 				globals, uniform_buffers);
 		}
 		else
 		{
-			found->second->build_source(data.get_version(), locals,
+			shader_source->build_source(data.get_version(), locals,
 				indent, stream, globals, uniform_buffers);
 		}
 
@@ -3268,9 +3308,10 @@ namespace eternal_lands
 		array_sizes[pst_shadow_maps_count] = std::min(
 			data.get_shadow_maps_count(),
 			ParameterSizeUtil::get_max_size(pst_shadow_maps_count));
-		array_sizes[pst_clipmap_slices] = std::min(get_global_vars(
-			)->get_clipmap_slices(),
-			ParameterSizeUtil::get_max_size(pst_clipmap_slices));
+		array_sizes[pst_clipmap_terrain_slices] = std::min(
+			get_global_vars()->get_clipmap_terrain_slices(),
+			ParameterSizeUtil::get_max_size(
+				pst_clipmap_terrain_slices));
 
 		data.set_option(ssbot_transparent,
 			description.get_transparent());

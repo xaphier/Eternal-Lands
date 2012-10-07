@@ -248,8 +248,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const IntersectionType value);
-	InStream& operator>>(InStream &str, IntersectionType &value);
+	OutStream &operator<<(OutStream &str, const IntersectionType value);
+	InStream &operator>>(InStream &str, IntersectionType &value);
 
 }
 

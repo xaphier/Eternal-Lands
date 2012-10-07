@@ -66,7 +66,7 @@ namespace eternal_lands
 			void write_u8(const Uint8 value);
 
 			/**
-			 * Writes an Sint8.
+			 * Writes a Sint8.
 			 * @param value The Sint8 to write.
 			 */
 			void write_s8(const Sint8 value);
@@ -78,7 +78,7 @@ namespace eternal_lands
 			void write_u16_le(const Uint16 value);
 
 			/**
-			 * Writes an Sint16 swapped to little endian.
+			 * Writes a Sint16 swapped to little endian.
 			 * @param value The Sint16 to write.
 			 */
 			void write_s16_le(const Sint16 value);
@@ -90,7 +90,7 @@ namespace eternal_lands
 			void write_u16_be(const Uint16 value);
 
 			/**
-			 * Writes an Sint16 swapped to big endian.
+			 * Writes a Sint16 swapped to big endian.
 			 * @param value The Sint16 to write.
 			 */
 			void write_s16_be(const Sint16 value);
@@ -102,7 +102,7 @@ namespace eternal_lands
 			void write_u32_le(const Uint32 value);
 
 			/**
-			 * Writes an Sint32 swapped to little endian.
+			 * Writes a Sint32 swapped to little endian.
 			 * @param value The Sint32 to write.
 			 */
 			void write_s32_le(const Sint32 value);
@@ -114,7 +114,7 @@ namespace eternal_lands
 			void write_u32_be(const Uint32 value);
 
 			/**
-			 * Writes an Sint32 swapped to big endian.
+			 * Writes a Sint32 swapped to big endian.
 			 * @param value The Sint32 to write.
 			 */
 			void write_s32_be(const Sint32 value);
@@ -126,7 +126,7 @@ namespace eternal_lands
 			void write_u64_le(const Uint64 value);
 
 			/**
-			 * Writes an Sint64 swapped to little endian.
+			 * Writes a Sint64 swapped to little endian.
 			 * @param value The Sint64 to write.
 			 */
 			void write_s64_le(const Sint64 value);
@@ -138,22 +138,44 @@ namespace eternal_lands
 			void write_u64_be(const Uint64 value);
 
 			/**
-			 * Writes an Sint64 swapped to big endian.
+			 * Writes a Sint64 swapped to big endian.
 			 * @param value The Sint64 to write.
 			 */
 			void write_s64_be(const Sint64 value);
 
 			/**
-			 * Writes an float swapped to little endian.
+			 * Writes a float swapped to little endian.
 			 * @param value The float to write.
 			 */
 			void write_float_le(const float value);
 
 			/**
-			 * Writes an float swapped to big endian.
+			 * Writes a float swapped to big endian.
 			 * @param value The float to write.
 			 */
 			void write_float_be(const float value);
+
+			/**
+			 * Writes a dynamic Uint64.
+			 * @return The read Uint64.
+			 */
+			void write_dynamic_uint(const Uint64 value);
+
+			/**
+			 * Writes an utf-8 encoded string. The size is stored
+			 * as dynamic uint.
+			 * @param str The string to write.
+			 */
+			inline void write_dynamic_utf8_string(
+				const String &str)
+			{
+				Uint64 size;
+
+				size = str.get().size();
+
+				write_dynamic_uint(size);
+				write_utf8_string(str, size);
+			}
 
 			/**
 			 * Returns the current position.

@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(all)
 
 BOOST_AUTO_TEST_CASE(xml)
 {
-	el::XmlBuffer buffer;
+	el::XmlBufferSharedPtr buffer;
 	el::XmlWriterSharedPtr writer;
 	el::XmlReaderSharedPtr reader;
 	el::MaterialDescription tmp_material_description;
@@ -169,13 +169,14 @@ BOOST_AUTO_TEST_CASE(xml)
 	BOOST_CHECK_NO_THROW(tmp_material_description.set_cast_shadows(false));
 	BOOST_CHECK_NO_THROW(tmp_material_description.set_culling(false));
 
-	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
+	buffer = boost::make_shared<el::XmlBuffer>();
+	writer = boost::make_shared<el::XmlWriter>(buffer);
 
 	BOOST_CHECK_NO_THROW(tmp_material_description.save_xml(writer));
 
 	writer.reset();
 
-	reader = el::XmlReaderSharedPtr(new el::XmlReader(buffer.get_buffer()));
+	reader = boost::make_shared<el::XmlReader>(buffer);
 
 	BOOST_CHECK_NO_THROW(material_description.load_xml(
 		reader->get_root_node()));

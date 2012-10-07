@@ -144,14 +144,14 @@ namespace eternal_lands
 		return effect_constant_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectConstantType value)
+	OutStream &operator<<(OutStream &str, const EffectConstantType value)
 	{
 		str << EffectConstantUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectConstantType &value)
+	InStream &operator>>(InStream &str, EffectConstantType &value)
 	{
 		std::string string;
 

@@ -189,7 +189,9 @@ namespace eternal_lands
 				const CubeMapFaceType face);
 			void set_texture_image_2d_multisample();
 			void set_texture_image_3d_multisample();
-
+			void get_image_sizes(const ImageSharedPtr &image,
+				Uint32 &width, Uint32 &height, Uint32 &depth,
+				Uint32 &mipmaps, Uint32 &layer) const;
 			static GLenum get_min_filter(
 				const TextureFilterType texture_filter,
 				const TextureMipmapType texture_mipmap);
@@ -370,13 +372,17 @@ namespace eternal_lands
 			void set_images(const ImageSharedPtrVector &images);
 			void sub_texture(const Uint16 mipmap,
 				const ImageSharedPtr &image,
-				const glm::uvec3 &position);
+				const glm::uvec3 &offsets);
 			void sub_texture(const Uint16 texture_mipmap,
 				const Uint16 image_mipmap,
 				const ImageSharedPtr &image,
-				const glm::uvec3 &texture_position,
-				const glm::uvec3 &image_position,
-				const glm::uvec3 &size);
+				const glm::uvec3 &texture_offsets,
+				const glm::uvec3 &image_offsets,
+				const glm::uvec3 &sizes);
+			void sub_texture(const Uint16 texture_mipmap,
+				const ImageUpdate &image_update,
+				const glm::uvec3 &texture_offsets);
+			void sub_texture(const ImageUpdate &image_update);
 			void init(const Uint32 width, const Uint32 height,
 				const Uint32 depth, const Uint16 mipmaps,
 				const Uint16 samples = 0);
@@ -402,9 +408,9 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const TextureFilterType value);
-	OutStream& operator<<(OutStream &str, const TextureMipmapType value);
-	OutStream& operator<<(OutStream &str, const TextureWrapType value);
+	OutStream &operator<<(OutStream &str, const TextureFilterType value);
+	OutStream &operator<<(OutStream &str, const TextureMipmapType value);
+	OutStream &operator<<(OutStream &str, const TextureWrapType value);
 
 }
 

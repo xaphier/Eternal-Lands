@@ -87,7 +87,7 @@ namespace eternal_lands
 			UniformBufferTypeData(boost::assign::list_of
 				(apt_terrain_scale)
 				(apt_terrain_texture_size)
-				(apt_clipmap_matrices),
+				(apt_clipmap_terrain_matrices),
 				String(UTF8("terrain")),
 				String(UTF8("Terrain"))),
 			UniformBufferTypeData(boost::assign::list_of
@@ -251,14 +251,14 @@ namespace eternal_lands
 		return uniform_buffer_type_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const UniformBufferType value)
+	OutStream &operator<<(OutStream &str, const UniformBufferType value)
 	{
 		str << UniformBufferUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, UniformBufferType &value)
+	InStream &operator>>(InStream &str, UniformBufferType &value)
 	{
 		std::string string;
 

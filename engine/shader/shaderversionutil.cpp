@@ -168,14 +168,14 @@ namespace eternal_lands
 		return shader_version_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const ShaderVersionType value)
+	OutStream &operator<<(OutStream &str, const ShaderVersionType value)
 	{
 		str << ShaderVersionUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, ShaderVersionType &value)
+	InStream &operator>>(InStream &str, ShaderVersionType &value)
 	{
 		std::string string;
 

@@ -123,9 +123,9 @@ BOOST_AUTO_TEST_CASE(size)
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
 		el::pst_shadow_maps_count);
 
-	shader_source_parameter.set_size(el::pst_clipmap_slices);
+	shader_source_parameter.set_size(el::pst_clipmap_terrain_slices);
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
-		el::pst_clipmap_slices);
+		el::pst_clipmap_terrain_slices);
 
 	shader_source_parameter.set_size(el::pst_render_targets);
 	BOOST_CHECK_EQUAL(shader_source_parameter.get_size(),
@@ -151,13 +151,14 @@ BOOST_AUTO_TEST_CASE(scale)
 
 BOOST_AUTO_TEST_CASE(save_xml)
 {
-	el::XmlBuffer buffer;
+	el::XmlBufferSharedPtr buffer;
 	el::XmlWriterSharedPtr writer;
 	el::ShaderSourceParameter shader_source_parameter(
 		el::String(UTF8("fasd")), el::String(UTF8("3sfd23")),
 		el::pt_uvec3, el::pqt_inout, el::pst_bones_count, 14536u);
 
-	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
+	buffer = boost::make_shared<el::XmlBuffer>();
+	writer = boost::make_shared<el::XmlWriter>(buffer);
 
 	BOOST_CHECK_NO_THROW(shader_source_parameter.save_xml(writer));
 	writer.reset();
@@ -165,15 +166,17 @@ BOOST_AUTO_TEST_CASE(save_xml)
 
 BOOST_AUTO_TEST_CASE(load_xml)
 {
-	el::XmlBuffer buffer(UTF8("<?xml version=\"1.0\" encoding=\"utf8\"?>"
-		"<parameter><name>3sfd23</name><type>uvec3</type>"
-		"<qualifier>inout</qualifier><size>bones_count</size>"
-		"<scale>14536</scale></parameter>"));
+	el::XmlBufferSharedPtr buffer;
 	el::XmlReaderSharedPtr xml_reader;
 	el::ShaderSourceParameter shader_source_parameter;
 
-	xml_reader = el::XmlReaderSharedPtr(new el::XmlReader(
-		buffer.get_buffer()));
+	buffer = boost::make_shared<el::XmlBuffer>(UTF8("<?xml version=\"1.0\""
+		" encoding=\"utf8\"?>"
+		"<parameter><name>3sfd23</name><type>uvec3</type>"
+		"<qualifier>inout</qualifier><size>bones_count</size>"
+		"<scale>14536</scale></parameter>"));
+
+	xml_reader = boost::make_shared<el::XmlReader>(buffer);
 
 	BOOST_CHECK_NO_THROW(shader_source_parameter.load_xml(
 		el::String(UTF8("fasd")), xml_reader->get_root_node()));
@@ -192,7 +195,7 @@ BOOST_AUTO_TEST_CASE(load_xml)
 
 BOOST_AUTO_TEST_CASE(save_load_xml)
 {
-	el::XmlBuffer buffer;
+	el::XmlBufferSharedPtr buffer;
 	el::XmlWriterSharedPtr writer;
 	el::XmlReaderSharedPtr reader;
 	el::ShaderSourceParameter shader_source_parameter_load;
@@ -200,13 +203,14 @@ BOOST_AUTO_TEST_CASE(save_load_xml)
 		el::String(UTF8("fasd")), el::String(UTF8("3sfd23")),
 		el::pt_uvec3, el::pqt_inout, el::pst_bones_count, 14536u);
 
-	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
+	buffer = boost::make_shared<el::XmlBuffer>();
+	writer = boost::make_shared<el::XmlWriter>(buffer);
 
 	BOOST_CHECK_NO_THROW(shader_source_parameter_save.save_xml(writer));
 
 	writer.reset();
 
-	reader = el::XmlReaderSharedPtr(new el::XmlReader(buffer.get_buffer()));
+	reader = boost::make_shared<el::XmlReader>(buffer);
 
 	BOOST_CHECK_NO_THROW(shader_source_parameter_load.load_xml(
 		el::String(UTF8("asdggrfgrf34")), reader->get_root_node()));

@@ -202,10 +202,11 @@ namespace eternal_lands
 				}
 			}
 
-			if ((header.m_flags & dds::DDSD_DEPTH) !=
-				dds::DDSD_DEPTH)
+			if (((header.m_flags & dds::DDSD_DEPTH) !=
+				dds::DDSD_DEPTH) || ((header.m_caps.m_caps2 &
+				dds::DDSCAPS2_VOLUME) != dds::DDSCAPS2_VOLUME))
 			{
-				header.m_depth = 1;
+				header.m_depth = 0;
 			}
 			else
 			{
@@ -314,11 +315,16 @@ namespace eternal_lands
 			header.m_pixel_format.m_size = reader->read_u32_le();
 			header.m_pixel_format.m_flags = reader->read_u32_le();
 			header.m_pixel_format.m_fourcc = reader->read_u32_le();
-			header.m_pixel_format.m_bit_count = reader->read_u32_le();
-			header.m_pixel_format.m_red_mask = reader->read_u32_le();
-			header.m_pixel_format.m_green_mask = reader->read_u32_le();
-			header.m_pixel_format.m_blue_mask = reader->read_u32_le();
-			header.m_pixel_format.m_alpha_mask = reader->read_u32_le();
+			header.m_pixel_format.m_bit_count =
+				reader->read_u32_le();
+			header.m_pixel_format.m_red_mask =
+				reader->read_u32_le();
+			header.m_pixel_format.m_green_mask =
+				reader->read_u32_le();
+			header.m_pixel_format.m_blue_mask =
+				reader->read_u32_le();
+			header.m_pixel_format.m_alpha_mask =
+				reader->read_u32_le();
 
 			header.m_caps.m_caps1 = reader->read_u32_le();
 			header.m_caps.m_caps2 = reader->read_u32_le();
@@ -884,15 +890,15 @@ namespace eternal_lands
 			const Uint32 green_mask, const Uint32 blue_mask,
 			const Uint32 alpha_mask, const bool rg_formats)
 		{
-			glm::uvec3 size;
+			glm::uvec3 sizes;
 			Uint32 pixel_size;
 			Uint32 swap_size;
 			GLenum format;
 			GLenum type;
 
-			size[0] = m_header.m_width;
-			size[1] = m_header.m_height;
-			size[2] = m_header.m_depth;
+			sizes[0] = m_header.m_width;
+			sizes[1] = m_header.m_height;
+			sizes[2] = m_header.m_depth;
 
 			if (get_codec_manager().is_fast_load_supported(red_mask,
 				green_mask, blue_mask, alpha_mask, rg_formats,
@@ -902,7 +908,7 @@ namespace eternal_lands
 					m_reader->get_name(),
 					get_cube_map(m_header),
 					get_texture_format(m_header,
-						rg_formats), size,
+						rg_formats), sizes,
 					static_cast<Uint16>(
 					m_header.m_mipmap_count),
 					static_cast<Uint16>(pixel_size * 8),
@@ -944,15 +950,15 @@ namespace eternal_lands
 			const GLenum format, const GLenum type,
 			const Uint16 swap_size, const bool rg_formats)
 		{
-			glm::uvec3 size;
+			glm::uvec3 sizes;
 
-			size[0] = m_header.m_width;
-			size[1] = m_header.m_height;
-			size[2] = m_header.m_depth;
+			sizes[0] = m_header.m_width;
+			sizes[1] = m_header.m_height;
+			sizes[2] = m_header.m_depth;
 
 			m_image = boost::make_shared<Image>(
 				m_reader->get_name(), get_cube_map(m_header),
-				get_texture_format(m_header, rg_formats), size,
+				get_texture_format(m_header, rg_formats), sizes,
 				static_cast<Uint16>(m_header.m_mipmap_count),
 				static_cast<Uint16>(pixel_size), format, type,
 				false);
@@ -962,17 +968,17 @@ namespace eternal_lands
 		void DdsImageLoader::set_format(const TextureFormatType tft,
 			const bool rg_formats)
 		{
-			glm::uvec3 size;
+			glm::uvec3 sizes;
 
-			size[0] = m_header.m_width;
-			size[1] = m_header.m_height;
-			size[2] = m_header.m_depth;
+			sizes[0] = m_header.m_width;
+			sizes[1] = m_header.m_height;
+			sizes[2] = m_header.m_depth;
 
 			assert(TextureFormatUtil::get_compressed(tft));
 
 			m_image = boost::make_shared<Image>(
 				m_reader->get_name(), get_cube_map(m_header),
-				get_texture_format(m_header, rg_formats), size,
+				get_texture_format(m_header, rg_formats), sizes,
 				static_cast<Uint16>(m_header.m_mipmap_count));
 			load(1);
 		}
@@ -1111,7 +1117,7 @@ namespace eternal_lands
 		void DdsImageLoader::uncompress(const TextureFormatType format,
 			const bool rg_formats)
 		{
-			glm::uvec3 size;
+			glm::uvec3 sizes;
 
 			LOG_DEBUG(lt_dds_image, UTF8("Uncompressing DDS file "
 				"'%1%'."), m_reader->get_name());
@@ -1170,12 +1176,12 @@ namespace eternal_lands
 				}
 			}
 
-			size[0] = m_header.m_width;
-			size[1] = m_header.m_height;
-			size[2] = m_header.m_depth;
+			sizes[0] = m_header.m_width;
+			sizes[1] = m_header.m_height;
+			sizes[2] = m_header.m_depth;
 
 			m_image = Dxt::uncompress(m_reader,
-				m_reader->get_name(), size, format,
+				m_reader->get_name(), sizes, format,
 				static_cast<Uint16>(m_header.m_mipmap_count),
 				get_cube_map(m_header), rg_formats);
 		}

@@ -11,7 +11,7 @@
 #include "shader/mappeduniformbuffer.hpp"
 #include "image.hpp"
 #include "logging.hpp"
-#include "abstractterrainmanager.hpp"
+#include "abstractterrain.hpp"
 
 namespace eternal_lands
 {
@@ -147,7 +147,7 @@ namespace eternal_lands
 				tmp.x = tmp.x * 2.0f - 1.0f;
 				tmp.y = tmp.y * 2.0f - 1.0f;
 
-				tmp *= AbstractTerrainManager::get_vector_scale();
+				tmp *= AbstractTerrain::get_vector_scale();
 
 				min = glm::min(min, tmp);
 				max = glm::max(max, tmp);

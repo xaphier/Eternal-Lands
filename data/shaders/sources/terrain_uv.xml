@@ -6,7 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <auto_parameter>clipmap_matrices</auto_parameter>
+     <auto_parameter>clipmap_terrain_matrices</auto_parameter>
     </parameter>
     <parameter>
      <auto_parameter>terrain_scale</auto_parameter>
@@ -36,9 +36,9 @@ int i;
 uv.xy =  terrain_texture_coordinate * terrain_scale.zw;
 uv.z = 1.0;
 
-for (i = 0; i &lt; clipmap_slices; ++i)
+for (i = 0; i &lt; clipmap_terrain_slices; ++i)
 {
-	terrain_uvs[i] = uv * clipmap_matrices[i];
+	terrain_uvs[i] = uv * clipmap_terrain_matrices[i];
 }
 
 world_uv = uv.xy * terrain_texture_size.xy;

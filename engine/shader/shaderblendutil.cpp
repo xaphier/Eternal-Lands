@@ -72,14 +72,14 @@ namespace eternal_lands
 		return shader_blend_type_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const ShaderBlendType value)
+	OutStream &operator<<(OutStream &str, const ShaderBlendType value)
 	{
 		str << ShaderBlendUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, ShaderBlendType &value)
+	InStream &operator>>(InStream &str, ShaderBlendType &value)
 	{
 		std::string string;
 

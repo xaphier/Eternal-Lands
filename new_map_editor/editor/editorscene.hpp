@@ -71,10 +71,22 @@ namespace eternal_lands
 			virtual void add_light(const LightData &light_data);
 			virtual void remove_light(const Uint32 id);
 			void load_map(const String &name, EditorMapData &data);
-			void set_terrain(const ImageSharedPtr &displacement_map,
+			void set_terrain_geometry_maps(
+				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
-			void set_terrain(const ImageSharedPtr &blend_map);
+			void set_terrain_blend_map(
+				const ImageSharedPtr &blend_map);
+			void set_terrain_material_maps(
+				const StringVector &albedo_maps,
+				const StringVector &specular_maps);
+			void update_terrain_geometry_maps(
+				const ImageUpdate &displacement_map,
+				const ImageUpdate &normal_map,
+				const ImageUpdate &dudv_map);
+			void update_terrain_blend_map(
+				const ImageUpdate &blend_map);
+			void set_terrain_effect_main(const String &effect_main);
 			void draw_selection(const glm::uvec4 &selection_rect);
 
 			inline void deselect_object() noexcept

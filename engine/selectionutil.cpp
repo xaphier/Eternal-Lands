@@ -75,14 +75,14 @@ namespace eternal_lands
 		return selection_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const SelectionType value)
+	OutStream &operator<<(OutStream &str, const SelectionType value)
 	{
 		str << SelectionUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, SelectionType &value)
+	InStream &operator>>(InStream &str, SelectionType &value)
 	{
 		std::string string;
 

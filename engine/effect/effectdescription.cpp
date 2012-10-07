@@ -209,7 +209,7 @@ namespace eternal_lands
 		return get_transparent() < effect.get_transparent();
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectDescription &value)
+	OutStream &operator<<(OutStream &str, const EffectDescription &value)
 	{
 		str << "name: " << value.get_name();
 		str << " world_transformation: ";

@@ -16,7 +16,6 @@
 #include "materialdescription.hpp"
 #include "instancesbuilder.hpp"
 #include "materialdescriptioncache.hpp"
-#include "terrain/simpleterrainmanager.hpp"
 #include "globalvars.hpp"
 #include "lightdata.hpp"
 #include "exceptions.hpp"
@@ -140,9 +139,9 @@ namespace eternal_lands
 	{
 		glm::vec3 translation, rotation_angles, scale;
 		String name;
-		StringVector material_names;
 		float transparency;
-		Uint32 id, blended, material_index, material_count, instance_id;
+		Uint32 id, blended, material_index, material_count;
+		Uint32 instance_id;
 		SelectionType selection;
 		BlendType blend;
 		bool self_lit, walkable;
@@ -209,7 +208,7 @@ namespace eternal_lands
 			glm::to_string(rotation_angles) % glm::to_string(scale)
 			% blended);
 
-		if ((material_index + material_count) > m_material_names.size())
+		if ((material_index + material_count) > m_names.size())
 		{
 			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
 				"material name index [%2%] and count [%3%] for"
@@ -225,7 +224,7 @@ namespace eternal_lands
 
 		add_object(translation, rotation_angles, scale, name,
 			transparency, id, selection, blend, walkable,
-			get_material_names(material_index, material_count));
+			get_names(material_index, material_count));
 	}
 
 	void AbstractMapLoader::read_2d_object(const Uint32 index,
@@ -233,7 +232,6 @@ namespace eternal_lands
 	{
 		glm::vec3 translation, rotation_angles;
 		String name;
-		StringVector material_names;
 		Uint32 id;
 
 		get_reader()->set_position(offset);
@@ -256,7 +254,7 @@ namespace eternal_lands
 			glm::to_string(rotation_angles));
 
 		add_object(translation, rotation_angles, glm::vec3(1.0f), name,
-			0.0f, id, st_none, bt_disabled, false, material_names);
+			0.0f, id, st_none, bt_disabled, false, StringVector());
 	}
 
 	void AbstractMapLoader::read_light(const Uint32 index,
@@ -356,6 +354,8 @@ namespace eternal_lands
 		try
 		{
 			get_reader()->set_position(offset);
+
+			
 		}
 		catch (boost::exception &exception)
 		{
@@ -367,12 +367,34 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read_material_name(const Uint32 index,
-		const Uint32 offset, const MapVersionType version)
+	void AbstractMapLoader::read_water(const Uint32 offset,
+		const MapVersionType version)
 	{
-		get_reader()->set_position(offset);
+		if (version == mvt_1_0)
+		{
+			return;
+		}
 
-		m_material_names[index] = get_reader()->read_utf8_string(128);
+		try
+		{
+			get_reader()->set_position(offset);
+
+			
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION(exception);
+		}
+		catch (const std::exception &exception)
+		{
+			LOG_EXCEPTION(exception);
+		}
+	}
+
+	void AbstractMapLoader::read_name(const Uint32 index,
+		const MapVersionType version)
+	{
+		m_names[index] = get_reader()->read_dynamic_utf8_string();
 	}
 
 	void AbstractMapLoader::read_3d_objects(const Uint32 obj_3d_size,
@@ -582,25 +604,21 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read_material_names(
-		const Uint32 material_name_size,
-		const Uint32 material_name_count,
-		const Uint32 material_name_offset,
-		const MapVersionType version)
+	void AbstractMapLoader::read_names(const Uint32 name_count,
+		const Uint32 name_offset, const MapVersionType version)
 	{
 		Uint32 i;
 
-		LOG_DEBUG(lt_map_loader, UTF8("Loading %1% material names."),
-			material_name_count);
+		LOG_DEBUG(lt_map_loader, UTF8("Loading %1% names."),
+			name_count);
 
-		m_material_names.resize(material_name_count);
+		m_names.resize(name_count);
 
-		for (i = 0; i < material_name_count; ++i)
+		for (i = 0; i < name_count; ++i)
 		{
 			try
 			{
-				read_material_name(i, material_name_offset +
-					i * material_name_size, version);
+				read_name(i, version);
 			}
 			catch (boost::exception &exception)
 			{
@@ -614,7 +632,8 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractMapLoader::read(const String &name/*, const MapItemsTypeSet &*/)
+	void AbstractMapLoader::read(const String &name,
+		MapItemsTypeSet skip_items)
 	{
 		glm::vec3 ambient;
 		Uint32 tile_map_offset;
@@ -633,9 +652,9 @@ namespace eternal_lands
 		Uint32 particle_offset;
 		Uint32 clusters_offset;
 		Uint32 terrain_offset;
-		Uint32 material_name_size;
-		Uint32 material_name_count;
-		Uint32 material_name_offset; 
+		Uint32 water_offset;
+		Uint32 name_count;
+		Uint32 name_offset; 
 		Uint32 height_map_width;
 		Uint32 height_map_height;
 		Uint32 tile_map_width;
@@ -710,10 +729,10 @@ namespace eternal_lands
 		particle_offset = get_reader()->read_u32_le();
 		clusters_offset = get_reader()->read_u32_le();
 
+		name_count = get_reader()->read_u32_le();
+		name_offset = get_reader()->read_u32_le();
 		terrain_offset = get_reader()->read_u32_le();
-		material_name_size = get_reader()->read_u32_le();
-		material_name_count = get_reader()->read_u32_le();
-		material_name_offset = get_reader()->read_u32_le();
+		water_offset = get_reader()->read_u32_le();
 
 		switch (version_number)
 		{
@@ -743,9 +762,8 @@ namespace eternal_lands
 		if (version == 0)
 		{
 			terrain_offset = 0;
-			material_name_size = get_material_name_size();
-			material_name_count = 0;
-			material_name_offset = 0;
+			name_count = 0;
+			name_offset = 0;
 		}
 
 		set_tile_map_size(tile_map_width, tile_map_height);
@@ -795,31 +813,53 @@ namespace eternal_lands
 			particle_offset = 0;
 		}
 
-		if (material_name_size != get_material_name_size())
+		read_names(name_count, name_offset, version);
+
+		if (skip_items.count(mit_3d_objects) == 0)
 		{
-			LOG_ERROR(lt_map_loader, UTF8("File '%1%' has wrong "
-				"material name size of %2% instead of %3%."),
-				get_reader()->get_name() %
-				material_name_size % get_material_name_size());
-			material_name_count = 0;
-			material_name_offset = 0;
+			read_3d_objects(obj_3d_size, obj_3d_count,
+				obj_3d_offset, version);
 		}
 
-		read_material_names(material_name_size, material_name_count,
-			material_name_offset, version);
-		read_3d_objects(obj_3d_size, obj_3d_count, obj_3d_offset,
-			version);
-		read_2d_objects(obj_2d_size, obj_2d_count, obj_2d_offset,
-			version);
-		read_lights(light_size, light_count, light_offset,
-			version);
-		read_particles(particle_size, particle_count, particle_offset,
-			version);
-		read_height_map(height_map_width, height_map_height,
-			height_map_offset, version);
-		read_tile_map(tile_map_width, tile_map_height, tile_map_offset,
-			version);
-		read_terrain(terrain_offset, version);
+		if (skip_items.count(mit_2d_objects) == 0)
+		{
+			read_2d_objects(obj_2d_size, obj_2d_count,
+				obj_2d_offset, version);
+		}
+
+		if (skip_items.count(mit_lights) == 0)
+		{
+			read_lights(light_size, light_count, light_offset,
+				version);
+		}
+
+		if (skip_items.count(mit_particles) == 0)
+		{
+			read_particles(particle_size, particle_count,
+				particle_offset, version);
+		}
+
+		if (skip_items.count(mit_height_map) == 0)
+		{
+			read_height_map(height_map_width, height_map_height,
+				height_map_offset, version);
+		}
+
+		if (skip_items.count(mit_tile_map) == 0)
+		{
+			read_tile_map(tile_map_width, tile_map_height,
+				tile_map_offset, version);
+		}
+
+		if (skip_items.count(mit_terrain) == 0)
+		{
+			read_terrain(terrain_offset, version);
+		}
+
+		if (skip_items.count(mit_water) == 0)
+		{
+			read_water(water_offset, version);
+		}
 
 		LOG_DEBUG(lt_map_loader, UTF8("Done loading map '%1%'."),
 			get_reader()->get_name());
@@ -861,32 +901,32 @@ namespace eternal_lands
 			transparency, id, selection, blend);
 	}
 
-	StringVector AbstractMapLoader::get_material_names(const Uint32 index,
+	StringVector AbstractMapLoader::get_names(const Uint32 index,
 		const Uint32 count) const
 	{
 		StringVector result;
 		Uint32 i;
 
-		if (index > m_material_names.size())
+		if (index > m_names.size())
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_parameter_name(UTF8("index"))
 				<< errinfo_range_index(index)
-				<< errinfo_range_max(m_material_names.size()));
+				<< errinfo_range_max(m_names.size()));
 		}
 
-		if ((index + count) > m_material_names.size())
+		if ((index + count) > m_names.size())
 		{
 			EL_THROW_EXCEPTION(RangeErrorException()
 				<< errinfo_message(UTF8("index plus count are "
 					"too big"))
 				<< errinfo_range_index(index + count)
-				<< errinfo_range_max(m_material_names.size()));
+				<< errinfo_range_max(m_names.size()));
 		}
 
 		for (i = 0; i < count; ++i)
 		{
-			result.push_back(m_material_names[i + index]);
+			result.push_back(m_names[i + index]);
 		}
 
 		return result;

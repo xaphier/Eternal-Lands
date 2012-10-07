@@ -525,21 +525,21 @@ namespace eternal_lands
 		return vertex_element_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const VertexElementType value)
+	OutStream &operator<<(OutStream &str, const VertexElementType value)
 	{
 		str << VertexElement::get_str(value);
 
 		return str;
 	}
 
-	OutStream& operator<<(OutStream &str, const VertexSemanticType value)
+	OutStream &operator<<(OutStream &str, const VertexSemanticType value)
 	{
 		str << VertexElement::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, VertexElementType &value)
+	InStream &operator>>(InStream &str, VertexElementType &value)
 	{
 		std::string string;
 
@@ -550,7 +550,7 @@ namespace eternal_lands
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, VertexSemanticType &value)
+	InStream &operator>>(InStream &str, VertexSemanticType &value)
 	{
 		std::string string;
 

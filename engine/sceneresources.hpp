@@ -42,6 +42,7 @@ namespace eternal_lands
 			MaterialScriptManagerSharedPtr
 				m_material_script_manager;
 			ScriptEngineSharedPtr m_script_engine;
+			TerrainBuilderSharedPtr m_terrain_builder;
 			GlslProgramCacheSharedPtr m_glsl_program_cache;
 			UniformBufferDescriptionCacheSharedPtr
 				m_uniform_buffer_description_cache;
@@ -168,6 +169,12 @@ namespace eternal_lands
 				&get_color_correction() const noexcept
 			{
 				return m_color_correction;
+			}
+
+			inline const TerrainBuilderSharedPtr
+				&get_terrain_builder() const noexcept
+			{
+				return m_terrain_builder;;
 			}
 
 	};

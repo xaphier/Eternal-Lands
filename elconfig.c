@@ -231,9 +231,9 @@ int engine_use_in_out = engine_true;
 int engine_use_functions = engine_false;
 int engine_low_quality_terrain = engine_false;
 int engine_use_s3tc_for_actors = engine_true;
-int engine_clipmap_size = 1;
-int engine_clipmap_world_size = 16;
-int engine_clipmap_slices = 4;
+int engine_clipmap_terrain_size = 1;
+int engine_clipmap_terrain_world_size = 16;
+int engine_clipmap_terrain_slices = 4;
 int engine_effect_debug = 0;
 int engine_use_multisample_shadows = engine_true;
 int engine_use_scene_fbo = engine_true;
@@ -288,18 +288,19 @@ void change_engine_view_distance(float* var, float* value)
 {
 	*var = *value;
 	engine_set_view_distance(*var);
+	resize_root_window();
 }
 
-void change_engine_clipmap_size(int* var, int value)
+void change_engine_clipmap_terrain_size(int* var, int value)
 {
 	*var = value;
-	engine_set_clipmap_size(*var);
+	engine_set_clipmap_terrain_size(*var);
 }
 
-void change_engine_clipmap_world_size(int* var, int value)
+void change_engine_clipmap_terrain_world_size(int* var, int value)
 {
 	*var = value;
-	engine_set_clipmap_world_size(*var);
+	engine_set_clipmap_terrain_world_size(*var);
 }
 
 void change_engine_light_system(int* var, int value)
@@ -326,10 +327,10 @@ void change_engine_light_system(int* var, int value)
 	engine_set_light_system(*var);
 }
 
-void change_engine_clipmap_slices(int* var, int value)
+void change_engine_clipmap_terrain_slices(int* var, int value)
 {
 	*var = value;
-	engine_set_clipmap_slices(*var);
+	engine_set_clipmap_terrain_slices(*var);
 }
 
 void change_engine_effect_debug(int* var, int value)
@@ -1903,8 +1904,8 @@ static void init_ELC_vars(void)
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &engine_view_distance, change_engine_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "fog", "fog", &engine_fog, change_engine_fog, engine_true, "Fog", "Fog", GFX);
 	add_var(OPT_BOOL, "low_quality_terrain", "low_quality_terrain", &engine_low_quality_terrain, change_engine_set_low_quality_terrain, engine_false, "Low quality terrain", "Low quality terrain", GFX);
-	add_var(OPT_MULTI_H, "clipmap_size", "clipmap_size", &engine_clipmap_size, change_engine_clipmap_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", 0);
-	add_var(OPT_INT, "clipmap_world_size", "clipmap_world_size", &engine_clipmap_world_size, change_engine_clipmap_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
+	add_var(OPT_MULTI_H, "clipmap_terrain_size", "clipmap_terrain_size", &engine_clipmap_terrain_size, change_engine_clipmap_terrain_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", 0);
+	add_var(OPT_INT, "clipmap_terrain_world_size", "clipmap_terrain_world_size", &engine_clipmap_terrain_world_size, change_engine_clipmap_terrain_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
 	add_var(OPT_MULTI_H, "light_system", "light_system", &engine_light_system, change_engine_light_system, 0, "Light system", "Light system used. Light Index Deferred Renderer needs float point precision at shader level. For the x5 type, support for RGB10_A2 textures is needed (some ATI cards and all OpenGL 3+)", GFX, "default", "LIDR x4", "LIDR x5", "LIDR x8", 0);
 
 	add_var(OPT_BOOL,"skybox_show_sky","sky", &skybox_show_sky, change_sky_var,1,"Show Sky", "Enable the sky box.", GFX);
@@ -1981,7 +1982,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_BOOL,"poor_man","poor",&poor_man,change_poor_man,0,"Poor Man","If the game is running very slow for you, toggle this setting.",TROUBLESHOOT);
 	// TROUBLESHOOT TAB
 
-	add_var(OPT_INT, "clipmap_slices", "clipmap_slices", &engine_clipmap_slices, change_engine_clipmap_slices, 4, "Climap slices", "Clipmap slices for terrain", TROUBLESHOOT, 1, 8);
+	add_var(OPT_INT, "clipmap_terrain_slices", "clipmap_terrain_slices", &engine_clipmap_terrain_slices, change_engine_clipmap_terrain_slices, 4, "Climap slices", "Clipmap slices for terrain", TROUBLESHOOT, 1, 8);
 	add_var(OPT_BOOL, "use_block", "use_block", &engine_use_block, change_engine_set_use_block, engine_true, "Use block", "Use interface block in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_in_out", "use_in_out", &engine_use_in_out, change_engine_set_use_in_out, engine_true, "Use in/out", "Use in/out in shaders", TROUBLESHOOT);
 	add_var(OPT_BOOL, "use_functions", "use_functions", &engine_use_functions, change_engine_set_use_functions, engine_false, "Use functions", "Use functions in shaders", TROUBLESHOOT);

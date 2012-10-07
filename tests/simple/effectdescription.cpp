@@ -53,7 +53,12 @@ BOOST_AUTO_TEST_CASE(get_set)
 
 BOOST_AUTO_TEST_CASE(xml)
 {
-	el::XmlBuffer buffer(UTF8("<?xml version=\"1.0\" encoding=\"utf8\"?>"
+	el::XmlBufferSharedPtr buffer;
+	el::EffectDescription effect_description;
+	el::XmlReaderSharedPtr xml_reader;
+
+	buffer = boost::make_shared<el::XmlBuffer>(UTF8("<?xml version=\"1.0\""
+		" encoding=\"utf8\"?>"
 		"<effect>"
 		"<world_transformation>sfg345sfgv</world_transformation>"
 		"<texture_coodrinates>afdgsr!§$AFD54</texture_coodrinates>"
@@ -62,11 +67,8 @@ BOOST_AUTO_TEST_CASE(xml)
 		"<node_based>false</node_based>"
 		"<receives_shadows>false</receives_shadows>"
 		"<transparent>true</transparent></effect>"));
-	el::EffectDescription effect_description;
-	el::XmlReaderSharedPtr xml_reader;
 
-	xml_reader = el::XmlReaderSharedPtr(new el::XmlReader(
-		buffer.get_buffer()));
+	xml_reader = boost::make_shared<el::XmlReader>(buffer);
 
 	BOOST_CHECK_NO_THROW(effect_description.load_xml(
  		xml_reader->get_root_node()));

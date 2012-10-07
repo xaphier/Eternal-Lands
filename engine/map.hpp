@@ -33,23 +33,22 @@ namespace eternal_lands
 	{
 		private:
 			const GlobalVarsSharedPtr m_global_vars;
-			const EffectCacheWeakPtr m_effect_cache;
 			const MeshBuilderWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
 			const MaterialCacheWeakPtr m_material_cache;
-			const MaterialBuilderWeakPtr m_material_builder;
+			const TerrainBuilderWeakPtr m_terrain_builder;
 			const TextureCacheWeakPtr m_texture_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
-			AbstractTerrainManagerSharedPtr m_terrain_manager;
+			AbstractTerrainSharedPtr m_terrain;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
 			Uint16MultiArray2 m_height_map;
 			Uint16MultiArray2 m_tile_map;
 			FloatMultiArray2 m_walk_height_map;
 			ParticleDataVector m_particles;
-			MaterialSharedPtr m_clipmap_material;
 			glm::vec3 m_ambient;
+			glm::uvec2 m_size;
 			String m_name;
 			Uint32 m_id;
 			bool m_dungeon;
@@ -60,18 +59,6 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_global_vars;
-			}
-
-			inline EffectCacheSharedPtr get_effect_cache() const
-				noexcept
-			{
-				EffectCacheSharedPtr result;
-
-				result = m_effect_cache.lock();
-
-				assert(result.get() != nullptr);
-
-				return result;
 			}
 
 			inline MeshBuilderSharedPtr get_mesh_builder() const
@@ -110,20 +97,20 @@ namespace eternal_lands
 				return result;
 			}
 
-			inline MaterialBuilderSharedPtr get_material_builder()
+			inline TerrainBuilderSharedPtr get_terrain_builder()
 				const noexcept
 			{
-				MaterialBuilderSharedPtr result;
+				TerrainBuilderSharedPtr result;
 
-				result = m_material_builder.lock();
+				result = m_terrain_builder.lock();
 
 				assert(result.get() != nullptr);
 
 				return result;
 			}
 
-			inline TextureCacheSharedPtr get_texture_cache()
-				const noexcept
+			inline TextureCacheSharedPtr get_texture_cache() const
+				noexcept
 			{
 				TextureCacheSharedPtr result;
 
@@ -136,11 +123,6 @@ namespace eternal_lands
 
 			void init_walk_height_map(
 				const ImageSharedPtr &displacement_map);
-			void init_terrain(
-				const GlobalVarsSharedPtr &global_vars,
-				const MeshBuilderSharedPtr &mesh_builder,
-				const MeshCacheSharedPtr &mesh_cache,
-				const MaterialCacheSharedPtr &material_cache);
 			void load_data(const String& name);
 
 		public:
@@ -150,11 +132,10 @@ namespace eternal_lands
 			Map(const CodecManagerSharedPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
-				const EffectCacheWeakPtr &effect_cache,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialCacheSharedPtr &material_cache,
-				const MaterialBuilderWeakPtr &material_builder,
+				const TerrainBuilderWeakPtr &terrain_builder,
 				const TextureCacheWeakPtr &texture_cache);
 
 			/**
@@ -187,15 +168,27 @@ namespace eternal_lands
 			void add_particle(const ParticleData &particle);
 			glm::vec4 get_terrain_size_data() const;
 			glm::vec2 get_terrain_size() const;
-			void set_clipmap_texture(
+			void set_clipmap_terrain_texture(
 				const TextureSharedPtr &texture);
-			void set_terrain(const ImageSharedPtr &displacement_map,
+			void set_terrain_geometry_maps(
+				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
-			void set_blend(const ImageSharedPtrVector &blend_maps);
+			void set_terrain_blend_map(
+				const ImageSharedPtr &blend_map);
+			void update_terrain_geometry_maps(
+				const ImageUpdate &displacement_map,
+				const ImageUpdate &normal_map,
+				const ImageUpdate &dudv_map);
+			void update_terrain_blend_map(
+				const ImageUpdate &blend_map);
+			void set_terrain_material_maps(
+				const StringVector &albedo_maps,
+				const StringVector &specular_maps);
+			void set_terrain_effect_main(const String &effect_main);
 			bool get_terrain() const;
-			void build_clipmap_material(
-				const ClipmapData &clipmap_data);
+			const MaterialSharedPtr &get_clipmap_terrain_material()
+				const;
 
 			inline const Uint32ObjectSharedPtrMap &get_objects()
 				const noexcept
@@ -207,12 +200,6 @@ namespace eternal_lands
 				const noexcept
 			{
 				return m_lights;
-			}
-
-			inline const MaterialSharedPtr &get_clipmap_material()
-				const noexcept
-			{
-				return m_clipmap_material;
 			}
 
 			inline glm::uvec2 get_height_map_size() const noexcept

@@ -27,7 +27,7 @@ namespace eternal_lands
 	{
 	}
 
-	OutStream& operator<<(OutStream &str, const MeshDrawData &value)
+	OutStream &operator<<(OutStream &str, const MeshDrawData &value)
 	{
 		str << "[offset]: " << value.get_offset() << std::endl;
 		str << "[count]: " << value.get_count() << std::endl;

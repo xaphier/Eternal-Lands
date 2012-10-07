@@ -24,10 +24,13 @@
 #include "effect/effectoutput.hpp"
 #include "shader/samplerparameterutil.hpp"
 #include "shader/shadersourceparameter.hpp"
+#include "shader/shaderblenddata.hpp"
 #include "texturetargetutil.hpp"
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
+	int i, count;
+
 	setupUi(this);
 
 	init_actions();
@@ -50,6 +53,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(el_gl_widget, SIGNAL(update_object(bool)), this, SLOT(update_object(bool)));
 	QObject::connect(el_gl_widget, SIGNAL(update_light(bool)), this, SLOT(update_light(bool)));
+	QObject::connect(el_gl_widget, SIGNAL(update_terrain(bool)), this, SLOT(update_terrain(bool)));
 	QObject::connect(el_gl_widget, SIGNAL(deselect()), this, SLOT(deselect()));
 
 	QObject::connect(x_translation, SIGNAL(valueChanged(double)), this, SLOT(update_translation()));
@@ -149,11 +153,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(action_new, SIGNAL(triggered()), this, SLOT(new_map()));
 	QObject::connect(action_open, SIGNAL(triggered()), this, SLOT(open_map()));
-//	QObject::connect(action_settings, SIGNAL(triggered()), this, SLOT(settings()));
 	QObject::connect(action_fog, SIGNAL(triggered()), this, SLOT(set_fog()));
 	QObject::connect(action_ambient, SIGNAL(triggered()), this, SLOT(change_ambient()));
-//	QObject::connect(action_blend_image, SIGNAL(triggered()), this,
-//		SLOT(change_blend_image_name()));
 	QObject::connect(action_time, SIGNAL(valueChanged(int)), el_gl_widget,
 		SLOT(set_game_minute(int)));
 	QObject::connect(action_preferences, SIGNAL(triggered()), this,
@@ -381,6 +382,27 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	connect(color_button, SIGNAL(clicked()), this, SLOT(add_color()));
 	connect(direction_button, SIGNAL(clicked()), this,
 		SLOT(add_direction()));
+
+	count = el::ShaderBlendUtil::get_shader_blend_count();
+
+	for (i = 0; i < count; ++i)
+	{
+		terrain_texture_blend->addItem(QString::fromUtf8(
+			el::ShaderBlendUtil::get_str(
+				static_cast<el::ShaderBlendType>(
+					i)).get().c_str()), i);
+	}
+
+	connect(terrain_layers, SIGNAL(itemSelectionChanged()), this,
+		SLOT(terrain_layers_selection()));
+	connect(terrain_texture_blend, SIGNAL(currentIndexChanged(const int)),
+		this, SLOT(terrain_texture_blend_changed(const int)));
+	connect(terrain_texture_blend_scale, SIGNAL(
+		valueChanged(const double)), this, SLOT(
+		terrain_texture_blend_scale_changed(const double)));
+	connect(terrain_texture_blend_offset, SIGNAL(
+		valueChanged(const double)), this, SLOT(
+		terrain_texture_blend_offset_changed(const double)));
 }
 
 MainWindow::~MainWindow()
@@ -627,33 +649,61 @@ void MainWindow::set_terrain_albedo_map(const QString &str, const int index)
 */
 }
 
-void MainWindow::update_terrain()
+void MainWindow::update_terrain(const bool enabled)
 {
-/*
-	QStringList terrain_albedo_maps;
-	int i;
+	QTreeWidgetItem* item;
+	QStringList headers, str;
+	int i, count;
 
-	for (i = 0; i < 5; i++)
+	terrain_window_content->setEnabled(enabled);
+
+	headers << "Name";
+	headers << "Blend";
+	headers << "Scale";
+	headers << "Offset";
+
+	terrain_layers->clear();
+
+	terrain_layers->setHeaderLabels(headers);
+
+	if (!enabled)
 	{
-		m_terrain_albedo_map_mapper->mapping(i)->blockSignals(true);
+		return;
 	}
 
-	terrain_albedo_maps = el_gl_widget->get_terrain_albedo_maps();
+	str << el_gl_widget->get_terrain_albedo_map(0);
+	str << "-";
+	str << "-";
+	str << "-";
 
-	for (i = 0; i < std::min(terrain_albedo_maps.size(), 5); i++)
+	item = new QTreeWidgetItem(str, QTreeWidgetItem::UserType);
+
+	item->setData(1, Qt::UserRole, -1);
+
+	terrain_layers->addTopLevelItem(item);
+
+	for (i = 1; i < 17; ++i)
 	{
-		set_terrain_albedo_map(terrain_albedo_maps[i], i);
-	}
+		const el::ShaderBlendData &blend_data =
+			el_gl_widget->get_terrain_blend_data(i - 1);
 
-	height_map->setText(el_gl_widget->get_terrain_height_map());
-	blend_map->setText(el_gl_widget->get_terrain_blend_map());
-	dudv_map->setText(el_gl_widget->get_terrain_dudv_map());
+		str.clear();
 
-	for (i = 0; i < 5; i++)
-	{
-		m_terrain_albedo_map_mapper->mapping(i)->blockSignals(false);
+		str << el_gl_widget->get_terrain_albedo_map(i);
+
+		str << QString::fromUtf8(el::ShaderBlendUtil::get_str(
+			blend_data.get_blend()).get().c_str());
+
+		item = new QTreeWidgetItem(str, QTreeWidgetItem::UserType);
+
+		item->setData(1, Qt::UserRole, blend_data.get_blend());
+		item->setData(2, Qt::DisplayRole, blend_data.get_scale_offset(
+			).x);
+		item->setData(3, Qt::DisplayRole, blend_data.get_scale_offset(
+			).y);
+
+		terrain_layers->addTopLevelItem(item);
 	}
-*/
 }
 
 void MainWindow::update_object(const bool select)
@@ -1479,7 +1529,7 @@ void MainWindow::terrain_mode(const bool checked)
 		action_add_objects->setChecked(false);
 		action_add_lights->setChecked(false);
 		action_delete_mode->setChecked(false);
-		el_gl_widget->init_terrain(1025, 1025);
+		el_gl_widget->init_terrain(1025, 1025, "");
 	}
 	else
 	{
@@ -2063,24 +2113,9 @@ void MainWindow::terrain_layer_edit()
 
 	effect = layer_brush_effect->currentIndex();
 
-	switch (effect)
-	{
-		case 0:
-			data = layer_brush_add->value();
+	data = layer_brush_strength->value() * 0.01f;
 
-			break;
-		case 1:
-			data = layer_brush_set->value();
-
-			break;
-		case 2:
-			data = layer_brush_smooth_strength->value();
-			data *= 0.01f;
-
-			break;
-	}
-
-	layer = layer_mask->currentIndex();
+	layer = 0;//layer_mask->currentIndex();
 
 	el_gl_widget->change_terrain_blend_values(size, attenuation_size, data,
 		attenuation, shape, effect, layer);
@@ -2224,25 +2259,6 @@ void MainWindow::rotate_right()
 {
 	camera_yaw->setValue(camera_yaw->value() + 5);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 bool MainWindow::check_save_nodes()
 {
@@ -2867,4 +2883,117 @@ void MainWindow::generate()
 	{
 		std::cout << "fragment parameter: " << *it << std::endl;
 	}
+}
+
+void MainWindow::terrain_layers_selection()
+{
+	QTreeWidgetItem* item;
+	int index;
+
+	terrain_frame->setEnabled(!terrain_layers->selectedItems().isEmpty());
+
+	if (terrain_layers->selectedItems().isEmpty())
+	{
+		return;
+	}
+
+	item = terrain_layers->selectedItems()[0];
+
+	terrain_texture->setText(item->text(0));
+
+	index = terrain_layers->indexOfTopLevelItem(item);
+
+	terrain_blend_frame->setEnabled(index > 0);
+
+	if (index <= 0)
+	{
+		return;
+	}
+
+	terrain_texture_blend->setCurrentIndex(item->data(1,
+		Qt::UserRole).toInt());
+	terrain_texture_blend_scale->setValue(item->data(2,
+		Qt::DisplayRole).toFloat());
+	terrain_texture_blend_offset->setValue(item->data(3,
+		Qt::DisplayRole).toFloat());
+}
+
+void MainWindow::terrain_texture_blend_changed(const int index)
+{
+	QTreeWidgetItem* item;
+	int value;
+
+	if (terrain_layers->selectedItems().isEmpty())
+	{
+		return;
+	}
+
+	item = terrain_layers->selectedItems()[0];
+
+	value = terrain_texture_blend->itemData(index).toInt();
+
+	item->setData(1, Qt::UserRole, value);
+	item->setText(1, el::ShaderBlendUtil::get_str(
+		static_cast<el::ShaderBlendType>(value)).get().c_str());
+
+	set_terrain_blend_data();
+}
+
+void MainWindow::terrain_texture_blend_scale_changed(const double value)
+{
+	terrain_frame->setEnabled(!terrain_layers->selectedItems().isEmpty());
+
+	if (terrain_layers->selectedItems().isEmpty())
+	{
+		return;
+	}
+
+	terrain_layers->selectedItems()[0]->setData(2, Qt::DisplayRole, value);
+
+	set_terrain_blend_data();
+}
+
+void MainWindow::terrain_texture_blend_offset_changed(const double value)
+{
+	terrain_frame->setEnabled(!terrain_layers->selectedItems().isEmpty());
+
+	if (terrain_layers->selectedItems().isEmpty())
+	{
+		return;
+	}
+
+	terrain_layers->selectedItems()[0]->setData(3, Qt::DisplayRole, value);
+
+	set_terrain_blend_data();
+}
+
+void MainWindow::set_terrain_blend_data()
+{
+	QTreeWidgetItem* item;
+	glm::vec2 scale_offset;
+	el::ShaderBlendType blend;
+	int index;
+
+	if (terrain_layers->selectedItems().isEmpty())
+	{
+		return;
+	}
+
+	item = terrain_layers->selectedItems()[0];
+	index = terrain_layers->indexOfTopLevelItem(item);
+
+	if (index <= 0)
+	{
+		return;
+	}
+
+	index--;
+
+	blend = static_cast<el::ShaderBlendType>(
+		item->data(1, Qt::UserRole).toInt());
+	scale_offset.x = item->data(2, Qt::DisplayRole).toFloat();
+	scale_offset.y = item->data(3, Qt::DisplayRole).toFloat();
+
+	el_gl_widget->set_terrain_blend_data(ShaderBlendData(scale_offset,
+		blend), index);
 }

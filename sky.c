@@ -364,14 +364,14 @@ static __inline__ void draw_sphere(sky_sphere *sphere)
 
 void skybox_compute_z_position()
 {
-	if (far_plane < 500.0)
+	if (engine_get_z_near() < 500.0)
 	{
 		float zl = first_person ? 0.0 : zoom_level;
 		float cos_rx = cosf(-rx*M_PI/180.0);
 		float sin_rx = sinf(-rx*M_PI/180.0);
 		float eye_xy = sin_rx*zl*camera_distance;
 		float eye_z = cos_rx*zl*camera_distance-camera_z;
-		float water_end = sin_rx*far_plane+(far_plane*cos_rx-eye_z)*cos_rx/sin_rx;
+		float water_end = sin_rx*engine_get_z_far()+(engine_get_z_far()*cos_rx-eye_z)*cos_rx/sin_rx;
 
 		skybox_z = eye_z*(water_end-500.0+eye_xy)/water_end;
 

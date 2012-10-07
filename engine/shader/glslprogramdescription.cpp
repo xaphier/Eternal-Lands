@@ -182,7 +182,7 @@ namespace eternal_lands
 			description.get_fragment_shader();
 	}
 
-	OutStream& operator<<(OutStream &str,
+	OutStream &operator<<(OutStream &str,
 		const GlslProgramDescription &value)
 	{
 		str << UTF8("vertex_shader") << value.get_vertex_shader();

@@ -31,7 +31,7 @@ namespace eternal_lands
 			 *
 			 * Pointer to the memory. No special alignment is used.
 			 */
-			Uint8ScopedArray m_ptr;
+			Uint8* m_ptr;
 
 			/**
 			 * @brief The size of the memory.

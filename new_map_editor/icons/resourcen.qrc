@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="icons">
     <file>ba.png</file>
+    <file>water.png</file>
     <file>rg.png</file>
     <file>rgb.png</file>
     <file>rgba.png</file>

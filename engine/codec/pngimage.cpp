@@ -155,7 +155,7 @@ namespace eternal_lands
 			bit_depth = png_get_bit_depth(m_png_ptr, m_info_ptr);
 			sizes[0] = png_get_image_width(m_png_ptr, m_info_ptr);
 			sizes[1] = png_get_image_height(m_png_ptr, m_info_ptr);
-			sizes[2] = 1;
+			sizes[2] = 0;
 
 			texture_format = get_texture_format(color_type,
 				bit_depth, rg_formats);

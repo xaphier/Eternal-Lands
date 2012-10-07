@@ -133,7 +133,7 @@ namespace eternal_lands
 
 			sizes[0] = image_width;
 			sizes[1] = image_height;
-			sizes[2] = 1;
+			sizes[2] = 0;
 
 			image = boost::make_shared<Image>(String(UTF8("error")),
 				false, tft_rgb8, sizes, 0);
@@ -141,7 +141,7 @@ namespace eternal_lands
 			rle_decode(rle_pixel_data, image->get_buffer());
 
 			texture = boost::make_shared<Texture>(String(UTF8(
-				"error")), image_width, image_height, 1,
+				"error")), image_width, image_height, 0,
 				0xFFFF, 0, image->get_texture_format(),
 				ttt_texture_2d);
 
@@ -210,34 +210,11 @@ namespace eternal_lands
 		const ImageSharedPtr &image, const String &name) const
 	{
 		TextureSharedPtr texture;
-		TextureTargetType target;
-
-		if (image->get_height() == 1)
-		{
-			target = ttt_texture_1d;
-		}
-		else
-		{
-			if (image->get_cube_map())
-			{
-				target = ttt_texture_cube_map;
-			}
-			else
-			{
-				if (image->get_depth() == 1)
-				{
-					target = ttt_texture_2d;
-				}
-				else
-				{
-					target = ttt_texture_3d;
-				}
-			}
-		}
 
 		texture = boost::make_shared<Texture>(name, image->get_width(),
 			image->get_height(), image->get_depth(), 0xFFFF, 0,
-			image->get_texture_format(), target);
+			image->get_texture_format(),
+			image->get_texture_target());
 
 		texture->set_image(image);
 
@@ -342,6 +319,22 @@ namespace eternal_lands
 		}
 
 		return get_texture_array(images, name);
+	}
+
+	TextureSharedPtr TextureCache::get_texture_array(
+		const ImageSharedPtr &image, const String &name) const
+	{
+		TextureSharedPtr texture;
+
+		texture = boost::make_shared<Texture>(name,
+			image->get_width(), image->get_height(),
+			image->get_depth(), 0xFFFF, 0,
+			image->get_texture_format(),
+			image->get_texture_target());
+
+		texture->set_image(image);
+
+		return texture;
 	}
 
 }

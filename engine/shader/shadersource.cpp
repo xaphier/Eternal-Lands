@@ -74,7 +74,7 @@ namespace eternal_lands
 			sort_shader_source_data);
 	}
 
-	void ShaderSource::load_xml_node(const xmlNodePtr node)
+	void ShaderSource::do_load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 		String source;
@@ -124,34 +124,26 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void ShaderSource::save_xml(const XmlWriterSharedPtr &writer) const
+	void ShaderSource::do_save_xml(const XmlWriterSharedPtr &xml_writer)
+		const
 	{
-		writer->start_element(get_xml_id());
+		xml_writer->start_element(get_xml_id());
 
-		writer->write_element(String(UTF8("name")), get_name());
+		xml_writer->write_element(String(UTF8("name")), get_name());
 
-		writer->write_element(String(UTF8("type")),
+		xml_writer->write_element(String(UTF8("type")),
 			ShaderSourceUtil::get_str(get_type()));
 
-		writer->start_element(String(UTF8("shader_source_datas")));
+		xml_writer->start_element(String(UTF8("shader_source_datas")));
 
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{
-			data.save_xml(writer);
+			data.save_xml(xml_writer);
 		}
 
-		writer->end_element();
+		xml_writer->end_element();
 
-		writer->end_element();
-	}
-
-	void ShaderSource::save_xml(const String &file_name) const
-	{
-		XmlWriterSharedPtr writer;
-
-		writer = XmlWriterSharedPtr(new XmlWriter(file_name));
-
-		save_xml(writer);
+		xml_writer->end_element();
 	}
 
 	ShaderSourceParameterVector ShaderSource::get_parameters(

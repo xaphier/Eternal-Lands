@@ -21,6 +21,7 @@ class ELGLWidget: public QGLWidget
 		glm::mat3 m_camera_yaw_rotate;
 		glm::vec3 m_pos;
 		glm::vec3 m_dir;
+		glm::vec3 m_start_position;
 		glm::vec3 m_world_position;
 		glm::vec3 m_grab_world_position;
 		glm::vec3 m_move_offset;
@@ -109,6 +110,13 @@ class ELGLWidget: public QGLWidget
 		void set_ambient(const glm::vec3 &color);
 		const glm::vec3 &get_ambient() const;
 		void set_fog(const glm::vec3 &color, const float density);
+		void set_terrain_albedo_map(const QString &name,
+			const int index);
+		void set_terrain_blend_data(const ShaderBlendData &blend_data,
+			const int index);
+		QString get_terrain_albedo_map(const int index) const;
+		const ShaderBlendData &get_terrain_blend_data(const int index)
+			const;
 		QString get_blend_image_name() const;
 		QStringList get_materials() const;
 		QStringList get_default_materials(const String &name) const;
@@ -118,7 +126,6 @@ class ELGLWidget: public QGLWidget
 		void export_terrain_map(const QString &file_name,
 			const QString &codec) const;
 		void import_terrain_map(const QString &file_name);
-		QStringList get_terrain_albedo_maps() const;
 		QString get_terrain_height_map() const;
 		QString get_terrain_blend_map() const;
 		QString get_terrain_dudv_map() const;
@@ -256,13 +263,15 @@ class ELGLWidget: public QGLWidget
 		void set_draw_lights(const bool draw_lights);
 		void set_draw_light_spheres(const bool draw_light_spheres);
 		void set_lights_enabled(const bool enabled);
-		void init_terrain(const int width, const int height);
+		void init_terrain(const int width, const int height,
+			const QString texture);
 		void set_object_walkable(const bool value);
 		void set_objects_walkable(const bool value);
 
 	signals:
 		void update_object(const bool select);
 		void update_light(const bool select);
+		void update_terrain(const bool enabled);
 		void deselect();
 		void can_undo(const bool undo);
 		void terrain_edit();

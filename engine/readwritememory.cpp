@@ -11,23 +11,28 @@
 namespace eternal_lands
 {
 
-	ReadWriteMemory::ReadWriteMemory(const Uint64 size): m_size(0)
+	ReadWriteMemory::ReadWriteMemory(const Uint64 size): m_ptr(0),
+		m_size(0)
 	{
 		resize(size);
 	}
 
 	ReadWriteMemory::~ReadWriteMemory() noexcept
 	{
+		if (m_ptr != nullptr)
+		{
+			free(m_ptr);
+		}
 	}
 
 	void* ReadWriteMemory::get_ptr() noexcept
 	{
-		return m_ptr.get();
+		return m_ptr;
 	}
 
 	const void* ReadWriteMemory::get_ptr() const noexcept
 	{
-		return m_ptr.get();
+		return m_ptr;
 	}
 
 	Uint64 ReadWriteMemory::get_size() const noexcept
@@ -41,24 +46,19 @@ namespace eternal_lands
 
 		if (size != get_size())
 		{
-			if ((size > 0) && (get_size() > 0))
+			if (m_ptr == nullptr)
 			{
-				ptr.reset(new Uint8[size]);
-
-				memcpy(ptr.get(), m_ptr.get(),
-					std::min(size, get_size()));
-
-				ptr.swap(m_ptr);
+				m_ptr = static_cast<Uint8*>(calloc(size, 1));
 			}
 			else
 			{
-				if (size > 0)
+				m_ptr = static_cast<Uint8*>(realloc(m_ptr,
+					size));
+
+				if (size > get_size())
 				{
-					m_ptr.reset(new Uint8[size]);
-				}
-				else
-				{
-					m_ptr.reset();
+					memset(m_ptr + get_size(), 0,
+						size - get_size());
 				}
 			}
 		}

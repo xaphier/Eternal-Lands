@@ -86,14 +86,14 @@ namespace eternal_lands
 		return shader_build_type_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const ShaderBuildType value)
+	OutStream &operator<<(OutStream &str, const ShaderBuildType value)
 	{
 		str << ShaderBuildUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, ShaderBuildType &value)
+	InStream &operator>>(InStream &str, ShaderBuildType &value)
 	{
 		std::string string;
 

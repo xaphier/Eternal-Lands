@@ -209,14 +209,14 @@ namespace eternal_lands
 		return texture_target_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const TextureTargetType value)
+	OutStream &operator<<(OutStream &str, const TextureTargetType value)
 	{
 		str << TextureTargetUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, TextureTargetType &value)
+	InStream &operator>>(InStream &str, TextureTargetType &value)
 	{
 		std::string string;
 

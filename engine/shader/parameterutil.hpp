@@ -111,7 +111,7 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const ParameterType value);
+	OutStream &operator<<(OutStream &str, const ParameterType value);
 
 }
 

@@ -53,6 +53,13 @@ namespace eternal_lands
 					false, m_values[index]));
 			}
 
+			inline glm::vec4 get_normalized_value(
+				const Uint16 index) const
+			{
+				return PackTool::unpack_uint_4_4_4_4(true,
+					m_values[index]);
+			}
+
 			inline Uint16 get_packed_value(const Uint16 index) const
 			{
 				return m_values[index];
@@ -65,6 +72,13 @@ namespace eternal_lands
 					false, glm::vec4(value));
 			}
 
+			inline void set_normalized_value(
+				const glm::vec4 &value, const Uint16 index)
+			{
+				m_values[index] = PackTool::pack_uint_4_4_4_4(
+					true, glm::vec4(value));
+			}
+
 			inline void set_packed_value(const Uint16 value,
 				const Uint16 index)
 			{
@@ -73,7 +87,7 @@ namespace eternal_lands
 
 			static inline Uint16 get_image_count()
 			{
-				return Uint16Array16::size();
+				return Uint16Array4::size() * 4;
 			}
 
 	};

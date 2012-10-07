@@ -72,14 +72,14 @@ namespace eternal_lands
 		return effect_program_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectProgramType value)
+	OutStream &operator<<(OutStream &str, const EffectProgramType value)
 	{
 		str << EffectProgramUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectProgramType &value)
+	InStream &operator>>(InStream &str, EffectProgramType &value)
 	{
 		std::string string;
 

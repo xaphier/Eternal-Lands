@@ -1,15 +1,16 @@
 /****************************************************************************
- *            simpleterrainmanager.cpp
+ *            simpleterrain.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "simpleterrainmanager.hpp"
+#include "simpleterrain.hpp"
 #include "rstartree.hpp"
 #include "objectvisitor.hpp"
 #include "codec/codecmanager.hpp"
 #include "image.hpp"
+#include "imageupdate.hpp"
 #include "meshdatatool.hpp"
 #include "submesh.hpp"
 #include "indexbuilder.hpp"
@@ -77,28 +78,25 @@ namespace eternal_lands
 
 	}
 
-	SimpleTerrainManager::SimpleTerrainManager(
-		const GlobalVarsSharedPtr &global_vars,
+	SimpleTerrain::SimpleTerrain(const GlobalVarsSharedPtr &global_vars,
+		const EffectCacheSharedPtr &effect_cache,
 		const MeshBuilderSharedPtr &mesh_builder,
-		const MaterialSharedPtr &material): m_material(material),
-		m_low_quality(global_vars->get_low_quality_terrain())
+		const MaterialBuilderSharedPtr &material_builder,
+		const MaterialCacheSharedPtr &material_cache,
+		const String &material, const String &effect):
+		AbstractTerrain(global_vars, effect_cache, material_builder,
+			material_cache, material, effect)
 	{
 		m_object_tree.reset(new RStarTree());
 
 		init_terrain_pages(mesh_builder, global_vars->get_use_simd());
 	}
 
-	SimpleTerrainManager::~SimpleTerrainManager() noexcept
+	SimpleTerrain::~SimpleTerrain() noexcept
 	{
 	}
 
-	void SimpleTerrainManager::set_clipmap_texture(
-		const TextureSharedPtr &texture)
-	{
-		m_material->set_texture(texture, spt_effect_0);
-	}
-
-	void SimpleTerrainManager::set_terrain_page(
+	void SimpleTerrain::set_terrain_page(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
@@ -172,7 +170,7 @@ namespace eternal_lands
 		mesh->set_sub_meshs(sub_meshs);
 	}
 
-	void SimpleTerrainManager::set_terrain_page_low_quality(
+	void SimpleTerrain::set_terrain_page_low_quality(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
@@ -247,7 +245,7 @@ namespace eternal_lands
 		mesh->set_sub_meshs(sub_meshs);
 	}
 
-	void SimpleTerrainManager::init_terrain_pages(
+	void SimpleTerrain::init_terrain_pages(
 		const MeshBuilderSharedPtr &mesh_builder, const bool use_simd)
 	{
 		MeshDataToolSharedPtr mesh_data_tool;
@@ -263,13 +261,13 @@ namespace eternal_lands
 		Uint32 index, tile_size;
 		VertexSemanticTypeSet semantics;
 
-		materials.push_back(m_material);
+		materials.push_back(get_terrain_material());
 
 		position_scale = glm::vec2(get_patch_scale());
 
 		tile_size = get_tile_size();
 
-		if (get_low_quality())
+		if (get_low_quality_terrain())
 		{
 			tile_size /= 2;
 			position_scale *= 2;
@@ -326,7 +324,7 @@ namespace eternal_lands
 			mesh_data_tool, String(UTF8("terrain")));
 	}
 
-	void SimpleTerrainManager::add_terrain_page(
+	void SimpleTerrain::add_terrain_page(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map,
@@ -342,7 +340,7 @@ namespace eternal_lands
 		glm::vec2 position_scale;
 		Uint32 tile_size;
 
-		materials.push_back(m_material);
+		materials.push_back(get_terrain_material());
 
 		str << UTF8("terrain ") << position.x << UTF8("x");
 		str << position.y;
@@ -354,7 +352,7 @@ namespace eternal_lands
 		tile_size = get_tile_size();
 		position_scale = glm::vec2(get_patch_scale());
 
-		if (get_low_quality())
+		if (get_low_quality_terrain())
 		{
 			tile_size /= 2;
 			position_scale *= 2;
@@ -364,7 +362,7 @@ namespace eternal_lands
 
 		mesh_clone = m_mesh->clone(0x01, true);
 
-		if (get_low_quality())
+		if (get_low_quality_terrain())
 		{
 			set_terrain_page_low_quality(displacement_map,
 				normal_map, dudv_map, mesh_clone, tile_offset,
@@ -392,13 +390,13 @@ namespace eternal_lands
 		m_object_tree->add(object);
 	}
 
-	void SimpleTerrainManager::intersect(const Frustum &frustum,
+	void SimpleTerrain::intersect(const Frustum &frustum,
 		ObjectVisitor &visitor) const
 	{
 		m_object_tree->intersect(frustum, visitor);
 	}
 
-	void SimpleTerrainManager::intersect(const Frustum &frustum,
+	void SimpleTerrain::intersect(const Frustum &frustum,
 		const glm::vec3 &camera, BoundingBox &bounding_box) const
 	{
 		BoundingBoxVisitor visitor;
@@ -408,13 +406,13 @@ namespace eternal_lands
 		bounding_box = visitor.get_bounding_box();
 	}
 
-	void SimpleTerrainManager::intersect(const Frustum &frustum,
+	void SimpleTerrain::intersect(const Frustum &frustum,
 		const glm::vec3 &camera, TerrainVisitor &terrain) const
 	{
 		terrain.set_instances(0);
 	}
 
-	void SimpleTerrainManager::update(
+	void SimpleTerrain::do_set_geometry_maps(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
@@ -449,23 +447,61 @@ namespace eternal_lands
 		set_bounding_box(m_object_tree->get_bounding_box());
 	}
 
-	void SimpleTerrainManager::clear()
+	void SimpleTerrain::do_update_geometry_maps(
+		const ImageUpdate &displacement_map,
+		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
+	{
+		
+		ImageSharedPtr displacement_map_tmp, normal_map_tmp;
+		ImageSharedPtr dudv_map_tmp;
+		Uint32 x, y, height, width;
+
+		m_object_tree->clear();
+
+		set_terrain_size((glm::vec2(displacement_map.get_image(
+			)->get_sizes()) -1.0f) * get_patch_scale());
+
+		displacement_map_tmp = displacement_map.get_image(
+			)->decompress(false, true);
+		normal_map_tmp = normal_map.get_image()->decompress(false,
+			true);
+		dudv_map_tmp = dudv_map.get_image()->decompress(false, true);
+
+		width = displacement_map.get_image()->get_width() /
+			get_tile_size();
+		height = displacement_map.get_image()->get_height() /
+			get_tile_size();
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				add_terrain_page(displacement_map_tmp,
+					normal_map_tmp, dudv_map_tmp,
+					glm::uvec2(x, y));
+			}
+		}
+
+		set_bounding_box(m_object_tree->get_bounding_box());
+	}
+
+	void SimpleTerrain::clear()
 	{
 		m_object_tree->clear();
 		set_bounding_box(m_object_tree->get_bounding_box());
 	}
 
-	TextureSharedPtr SimpleTerrainManager::get_displacement_texture() const
+	TextureSharedPtr SimpleTerrain::get_displacement_texture() const
 	{
 		return TextureSharedPtr();
 	}
 
-	TextureSharedPtr SimpleTerrainManager::get_normal_texture() const
+	TextureSharedPtr SimpleTerrain::get_normal_texture() const
 	{
 		return TextureSharedPtr();
 	}
 
-	TextureSharedPtr SimpleTerrainManager::get_dudv_texture() const
+	TextureSharedPtr SimpleTerrain::get_dudv_texture() const
 	{
 		return TextureSharedPtr();
 	}

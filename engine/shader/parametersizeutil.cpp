@@ -51,8 +51,8 @@ namespace eternal_lands
 			ParameterSizeTypeData(String(UTF8("bones_count")), 80),
 			ParameterSizeTypeData(String(UTF8("shadow_maps_count")),
 				3),
-			ParameterSizeTypeData(String(UTF8("clipmap_slices")),
-				8),
+			ParameterSizeTypeData(
+				String(UTF8("clipmap_terrain_slices")), 8),
 			ParameterSizeTypeData(String(UTF8("render_targets")),
 				4)
 		};
@@ -147,14 +147,14 @@ namespace eternal_lands
 		return parameter_size_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const ParameterSizeType value)
+	OutStream &operator<<(OutStream &str, const ParameterSizeType value)
 	{
 		str << ParameterSizeUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, ParameterSizeType &value)
+	InStream &operator>>(InStream &str, ParameterSizeType &value)
 	{
 		std::string string;
 

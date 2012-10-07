@@ -27,8 +27,6 @@ namespace eternal_lands
 		m_mesh_builder(mesh_builder),
 		m_mesh_data_cache(mesh_data_cache)
 	{
-		MeshCache::MeshCacheItem tmp;
-
 		assert(!m_mesh_builder.expired());
 		assert(!m_mesh_data_cache.expired());
 	}

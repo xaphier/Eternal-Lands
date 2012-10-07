@@ -6,6 +6,7 @@
  ****************************************************************************/
 
 #include "xmlwriter.hpp"
+#include "xmlbuffer.hpp"
 #include "exceptions.hpp"
 #include "variantutil.hpp"
 #include "glmutil.hpp"
@@ -14,9 +15,10 @@
 namespace eternal_lands
 {
 
-	XmlWriter::XmlWriter(xmlBufferPtr buffer)
+	XmlWriter::XmlWriter(const XmlBufferSharedPtr &buffer):
+		m_buffer(buffer)
 	{
-		m_writer = xmlNewTextWriterMemory(buffer, 0);
+		m_writer = xmlNewTextWriterMemory(buffer->get_buffer(), 0);
 
 		/* Create a new XmlWriter for uri, with no compression. */
 		if (m_writer == 0)

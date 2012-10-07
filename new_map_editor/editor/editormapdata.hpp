@@ -60,6 +60,8 @@ namespace eternal_lands
 	{
 		private:
 			TerrainEditor m_terrain_editor;
+			ImageSharedPtr m_water_image;
+			Uint16MultiArray2 m_water_map;
 			std::map<Uint32, EditorObjectDescription> m_objects;
 			std::map<Uint32, LightData> m_lights;
 			std::map<Uint32, ParticleData> m_particles;
@@ -119,11 +121,11 @@ namespace eternal_lands
 				const ImageValueVector &blend_values);
 			void set_terrain_albedo_map(const String &name,
 				const Uint16 index);
-			void set_terrain_blend_map(const String &name,
+			void set_terrain_blend_data(const ShaderBlendData &data,
 				const Uint16 index);
-			void set_terrain_displacement_map(const String &name);
-			void set_terrain_dudv_map(const String &name);
 			const String &get_terrain_albedo_map(
+				const Uint16 index) const;
+			const ShaderBlendData &get_terrain_blend_data(
 				const Uint16 index) const;
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
@@ -149,13 +151,17 @@ namespace eternal_lands
 			StringVector get_default_materials(const String &name)
 				const;
 			ImageSharedPtr get_image(const String &name) const;
-			void init_terrain(const glm::uvec2 &size);
+			void init_terrain(const glm::uvec2 &size,
+				const String &texture);
 			void set_focus(const glm::vec3 &focus) noexcept;
 			void set_debug_mode(const int value);
 			StringVector get_debug_modes() const;
 			double get_depth() const;
 			void save(const String &file_name) const;
 			void draw_selection(const glm::uvec4 &selection_rect);
+			bool get_water_vertex(const glm::vec3 &start_position,
+				const glm::vec3 &world_position,
+				glm::uvec2 &result) const;
 
 			inline void get_terrain_displacement_values(
 				const glm::uvec2 &vertex,
@@ -214,11 +220,17 @@ namespace eternal_lands
 					blend_values);
 			}
 
-			inline glm::uvec2 get_vertex(
-				const glm::vec3 &world_position) const
+			inline bool get_terrain_vertex(
+				const glm::vec3 &world_position,
+				glm::uvec2 &result) const
 			{
 				return m_terrain_editor.get_vertex(
-					world_position);
+					world_position, result);
+			}
+
+			inline bool get_terrain() const
+			{
+				return m_terrain_editor.get_enabled();
 			}
 
 			static inline const glm::vec3 &get_terrain_offset()

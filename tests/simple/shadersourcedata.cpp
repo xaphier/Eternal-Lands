@@ -49,27 +49,29 @@ BOOST_AUTO_TEST_CASE(options)
 	BOOST_CHECK_EQUAL(shader_source_data.get_version(), el::svt_420);
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_save_xml)
+BOOST_AUTO_TEST_CASE(shader_source_data_save_xml)
 {
-	el::XmlBuffer buffer;
+	el::XmlBufferSharedPtr buffer;
 	el::XmlWriterSharedPtr writer;
 	el::ShaderSourceData shader_source_data;
 
-	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
+	buffer = boost::make_shared<el::XmlBuffer>();
+	writer = boost::make_shared<el::XmlWriter>(buffer);
 
 	BOOST_CHECK_NO_THROW(shader_source_data.save_xml(writer));
 	writer.reset();
 }
 
-BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
+BOOST_AUTO_TEST_CASE(shader_source_data_save_load_xml)
 {
-	el::XmlBuffer buffer;
+	el::XmlBufferSharedPtr buffer;
 	el::XmlWriterSharedPtr writer;
 	el::XmlReaderSharedPtr reader;
 	el::ShaderSourceData shader_source_data_load;
 	el::ShaderSourceData shader_source_data_save;
 
-	writer = el::XmlWriterSharedPtr(new el::XmlWriter(buffer.get_buffer()));
+	buffer = boost::make_shared<el::XmlBuffer>();
+	writer = boost::make_shared<el::XmlWriter>(buffer);
 
 	shader_source_data_save.set_source(el::String(UTF8("3sfd23")));
 	shader_source_data_save.set_version(el::svt_150);
@@ -79,7 +81,7 @@ BOOST_AUTO_TEST_CASE(shader_source_parameter_save_load_xml)
 
 	writer.reset();
 
-	reader = el::XmlReaderSharedPtr(new el::XmlReader(buffer.get_buffer()));
+	reader = boost::make_shared<el::XmlReader>(buffer);
 
 	BOOST_CHECK_NO_THROW(shader_source_data_load.load_xml(
 		el::String(UTF8("3sfd23")), reader->get_root_node()));

@@ -121,7 +121,7 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const CubeMapFaceType value);
+	OutStream &operator<<(OutStream &str, const CubeMapFaceType value);
 
 }
 

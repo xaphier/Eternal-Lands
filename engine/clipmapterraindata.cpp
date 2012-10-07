@@ -1,20 +1,20 @@
 /****************************************************************************
- *            clipmapdata.cpp
+ *            clipmapterraindata.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "clipmapdata.hpp"
+#include "clipmapterraindata.hpp"
 
 namespace eternal_lands
 {
 
-	ClipmapData::ClipmapData()
+	ClipmapTerrainData::ClipmapTerrainData()
 	{
 	}
 
-	ClipmapData::~ClipmapData() noexcept
+	ClipmapTerrainData::~ClipmapTerrainData() noexcept
 	{
 	}
 

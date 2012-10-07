@@ -1,6 +1,6 @@
 #include "image.hpp"
 #include "codec/codecmanager.hpp"
-#include "abstractterrainmanager.hpp"
+#include "abstractterrain.hpp"
 #include "readwritememory.hpp"
 #include "reader.hpp"
 #include "writer.hpp"
@@ -71,11 +71,11 @@ namespace
 		glm::vec2 position;
 
 		offset = glm::vec3(image->get_pixel(x, y, 0, 0, 0));
-		offset *= AbstractTerrainManager::get_vector_scale();
+		offset *= AbstractTerrain::get_vector_scale();
 
 		position.x = x;
 		position.y = y;
-		position *= AbstractTerrainManager::get_patch_scale();
+		position *= AbstractTerrain::get_patch_scale();
 
 		return glm::vec3(position, 0.0f) + offset;
 	}

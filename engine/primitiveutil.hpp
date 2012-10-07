@@ -49,8 +49,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const PrimitiveType value);
-	InStream& operator>>(InStream &str, PrimitiveType &value);
+	OutStream &operator<<(OutStream &str, const PrimitiveType value);
+	InStream &operator>>(InStream &str, PrimitiveType &value);
 
 }
 

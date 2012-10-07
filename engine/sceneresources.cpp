@@ -25,6 +25,7 @@
 #include "script/materialscriptmanager.hpp"
 #include "script/scriptengine.hpp"
 #include "hardwarebuffer/hardwarebuffermapper.hpp"
+#include "terrainbuilder.hpp"
 #include "colorcorrection.hpp"
 
 namespace eternal_lands
@@ -48,6 +49,7 @@ namespace eternal_lands
 			boost::make_shared<UniformBufferDescriptionCache>();
 		m_shader_source_builder =
 			boost::make_shared<ShaderSourceBuilder>(global_vars,
+				file_system,
 				get_uniform_buffer_description_cache());
 		m_glsl_program_cache = boost::make_shared<GlslProgramCache>(
 			get_uniform_buffer_description_cache());
@@ -78,6 +80,11 @@ namespace eternal_lands
 			global_vars);
 		m_color_correction = boost::make_shared<ColorCorrection>(
 			get_script_engine());
+		m_terrain_builder = boost::make_shared<TerrainBuilder>(
+			global_vars, get_effect_cache(),
+			get_material_builder(), get_material_cache(),
+			get_mesh_builder(), get_mesh_cache(),
+			get_texture_cache());
 	}
 
 	SceneResources::~SceneResources() throw()
@@ -94,13 +101,34 @@ namespace eternal_lands
 		m_mesh_data_cache.reset();
 		m_actor_data_cache.reset();
 		m_shader_source_builder.reset();
+		m_framebuffer_builder.reset();
+		m_material_builder.reset();
+		m_material_cache.reset();
+		m_material_description_cache.reset();
+		m_material_script_cache.reset();
+		m_material_script_manager.reset();
+		m_script_engine.reset();
+		m_terrain_builder.reset();
+		m_glsl_program_cache.reset();
+		m_uniform_buffer_description_cache.reset();
+		m_hardware_buffer_mapper.reset();
+		m_color_correction.reset();
 	}
 
 	void SceneResources::init(const FileSystemSharedPtr &file_system)
 	{
-		m_shader_source_builder->load_xml(file_system, String(UTF8(
-			"shaders/shaders.xml")));
-		m_effect_cache->load_xml(file_system);
+		m_shader_source_builder->load_xml(
+			String(UTF8("shaders/shaders.xml")));
+
+		m_shader_source_builder->load_shader_sources(
+			String(UTF8("shaders/sources")));
+
+		m_shader_source_builder->load_shader_sources(
+			String(UTF8("shaders/terrains")));
+
+		m_effect_cache->load_xml(file_system,
+			String(UTF8("shaders/effects")));
+
 		m_material_description_cache->load_xml(file_system, String(UTF8(
 			"materials.xml")));
 	}

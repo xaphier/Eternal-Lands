@@ -50,9 +50,7 @@ namespace eternal_lands
 		mt_lights_radius_changed,
 
 		mt_terrain_albedo_map_changed,
-		mt_terrain_blend_map_changed,
-		mt_terrain_displacement_map_changed,
-		mt_terrain_dudv_map_changed,
+		mt_terrain_blend_data_changed,
 		mt_terrain_scale_offset_changed,
 
 		mt_tile_texture_changed,

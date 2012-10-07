@@ -34,7 +34,9 @@ namespace eternal_lands
 				const ShaderVersionType version) const = 0;
 			virtual String get_source(
 				const ShaderVersionType version) const = 0;
-			virtual void load_xml_node(const xmlNodePtr node) = 0;
+			virtual void do_load_xml(const xmlNodePtr node) = 0;
+			virtual void do_save_xml(
+				const XmlWriterSharedPtr &writer) const = 0;
 
 		protected:
 			AbstractShaderSource();
@@ -71,10 +73,13 @@ namespace eternal_lands
 			bool check_source_parameter(
 				const ShaderVersionType version,
 				const String &name) const;
-			void load_xml(const String &file_name);
 			void load_xml(const FileSystemSharedPtr &file_system,
 				const String &file_name);
+			void load_xml(const String &file_name);
 			void load_xml(const xmlNodePtr node);
+			void load_xml_string(const String &str);
+			void save_xml(const String &file_name) const;
+			String save_xml_string() const;
 			String get_typed_name() const;
 			virtual ShaderSourceType get_type() const = 0;
 			virtual bool get_has_data(

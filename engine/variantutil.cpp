@@ -869,7 +869,7 @@ namespace eternal_lands
 		return get_variant(parameter_type, values);
 	}
 
-	OutStream& operator<<(OutStream &str, const Variant &value)
+	OutStream &operator<<(OutStream &str, const Variant &value)
 	{
 		str << L"Variant ";
 		str << L" [type] " << VariantUtil::get_parameter_type(value);

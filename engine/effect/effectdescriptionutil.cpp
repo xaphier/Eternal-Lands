@@ -132,14 +132,14 @@ namespace eternal_lands
 		return effect_description_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectDescriptionType value)
+	OutStream &operator<<(OutStream &str, const EffectDescriptionType value)
 	{
 		str << EffectDescriptionUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectDescriptionType &value)
+	InStream &operator>>(InStream &str, EffectDescriptionType &value)
 	{
 		std::string string;
 

@@ -51,8 +51,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const ShaderVersionType value);
-	InStream& operator>>(InStream &str, ShaderVersionType &value);
+	OutStream &operator<<(OutStream &str, const ShaderVersionType value);
+	InStream &operator>>(InStream &str, ShaderVersionType &value);
 
 }
 

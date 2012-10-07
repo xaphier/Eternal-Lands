@@ -63,8 +63,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const ShaderBuildType value);
-	InStream& operator>>(InStream &str, ShaderBuildType &value);
+	OutStream &operator<<(OutStream &str, const ShaderBuildType value);
+	InStream &operator>>(InStream &str, ShaderBuildType &value);
 
 }
 

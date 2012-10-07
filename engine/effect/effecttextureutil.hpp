@@ -53,8 +53,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const EffectTextureType value);
-	InStream& operator>>(InStream &str, EffectTextureType &value);
+	OutStream &operator<<(OutStream &str, const EffectTextureType value);
+	InStream &operator>>(InStream &str, EffectTextureType &value);
 
 }
 

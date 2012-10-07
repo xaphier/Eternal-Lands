@@ -106,14 +106,14 @@ namespace eternal_lands
 		return sampler_parameter_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const SamplerParameterType value)
+	OutStream &operator<<(OutStream &str, const SamplerParameterType value)
 	{
 		str << SamplerParameterUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, SamplerParameterType &value)
+	InStream &operator>>(InStream &str, SamplerParameterType &value)
 	{
 		std::string string;
 

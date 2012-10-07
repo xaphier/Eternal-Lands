@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
 	{
 		QMessageBox::critical(0, "boost::exception",
 			boost::diagnostic_information(exception).c_str());
+
 	}
 	catch (const std::exception &exception)
 	{

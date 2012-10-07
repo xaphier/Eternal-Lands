@@ -86,8 +86,7 @@ typedef struct
 	int id;
 	int instance_id;
 	char walkable;		/**< inidcator if the object is walkable or not. Used in the map editor for automated walkmap generation. */
-	char reserved[3];	/**< reserved for future expansions. */
-	int effect_index;	/**< effect index or 0xFFFFFFFF if default is used */
+	char reserved[7];	/**< reserved for future expansions. */
 }object3d_io;
 
 /**
@@ -226,9 +225,9 @@ typedef struct
 #endif
     /** @name Reserved for future use 
      * @{ */
+	int names_offset; /**< Offset to the material names data. */
+	int names_no; /**< Offset to the material names data. */
 	int terrain_offset; /**< Offset to the terrain datas. */
-	int material_names_offset; /**< Offset to the material names data. */
-	int effect_names_offset; /**< Offset to the effect names data. */
 	int water_offset; /**< Offset to the water data. */
     /** @} */
     /** @name Reserved for future expansions 

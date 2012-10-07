@@ -340,4 +340,26 @@ namespace eternal_lands
 		return result.f;
 	}
 
+	Uint64 Reader::read_dynamic_uint()
+	{
+		Uint64 result;
+		Uint32 i;
+		Uint8 tmp;
+
+		result = 0;
+		i = 0;
+
+		do
+		{
+			tmp = read_u8();
+
+			result |= (tmp & 0x7F) << (i * 7);
+
+			i++;
+		}
+		while ((tmp > 127) && (i < 11));
+
+		return result;
+	}
+
 }

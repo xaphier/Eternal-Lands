@@ -194,7 +194,7 @@ namespace eternal_lands
 
 			sizes[0] = m_cinfo.output_width;
 			sizes[1] = m_cinfo.output_height;
-			sizes[2] = 1;
+			sizes[2] = 0;
 
 			image = boost::make_shared<Image>(reader->get_name(),
 				false, texture_format, sizes, 0);

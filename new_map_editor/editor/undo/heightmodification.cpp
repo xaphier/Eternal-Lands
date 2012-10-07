@@ -97,17 +97,15 @@ namespace eternal_lands
 			case mt_objects_materials_changed:
 			case mt_objects_walkable_changed:
 			case mt_terrain_albedo_map_changed:
-			case mt_terrain_blend_map_changed:
-			case mt_terrain_displacement_map_changed:
-			case mt_terrain_dudv_map_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:
 			case mt_displacement_value_changed:
 			case mt_dungeon_changed:
-				return false;
 			case mt_height_changed:
 				editor.set_heights(m_heights);
+				return false;
+			case mt_terrain_blend_data_changed:
 			case mt_blend_values_changed:
 				return false;
 		}

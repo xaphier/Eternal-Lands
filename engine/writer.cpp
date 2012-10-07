@@ -297,4 +297,26 @@ namespace eternal_lands
 		write(&tmp.i, sizeof(value));
 	}
 
+	void Writer::write_dynamic_uint(const Uint64 value)
+	{
+		Uint64 temp;
+		Uint16 tmp;
+
+		temp = value;
+
+		do
+		{
+			tmp = temp & 0x7F;
+			temp = temp >> 7;
+
+			if (temp > 0)
+			{
+				tmp |= 0x80;
+			}
+
+			write_u8(tmp);
+		}
+		while (temp > 0);
+	}
+
 }

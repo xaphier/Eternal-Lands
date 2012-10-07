@@ -204,7 +204,7 @@ namespace eternal_lands
 	class AbstractReadWriteMemory;
 	class AbstractRenderTarget;
 	class AbstractTask;
-	class AbstractTerrainManager;
+	class AbstractTerrain;
 	class AbstractWriteMemory;
 	class Actor;
 	class ActorDataCache;
@@ -214,8 +214,8 @@ namespace eternal_lands
 	class BoundedObject;
 	class BoundingBox;
 	class CdLodQuadTree;
-	class Clipmap;
-	class ClipmapData;
+	class ClipmapTerrain;
+	class ClipmapTerrainData;
 	class CodecManager;
 	class ColorCorrection;
 	class ConvexBody;
@@ -242,6 +242,7 @@ namespace eternal_lands
 	class HardwareBuffer;
 	class HardwareBufferMapper;
 	class Image;
+	class ImageUpdate;
 	class IndexUpdateSource;
 	class InstanceBuilder;
 	class InstanceData;
@@ -293,6 +294,7 @@ namespace eternal_lands
 	class StateManager;
 	class SubMesh;
 	class SubObject;
+	class TerrainBuilder;
 	class TerrainData;
 	class TerrainRenderingData;
 	class TerrainVisitor;
@@ -316,7 +318,9 @@ namespace eternal_lands
 	class VertexBuffers;
 	class VertexStream;
 	class VertexStreams;
+	class WaterData;
 	class Writer;
+	class XmlBuffer;
 	class XmlReader;
 	class XmlWriter;
 
@@ -367,7 +371,7 @@ namespace eternal_lands
 	SHARED_PTR(AbstractReadMemory);
 	SHARED_PTR(AbstractReadWriteMemory);
 	SHARED_PTR(AbstractRenderTarget);
-	SHARED_PTR(AbstractTerrainManager);
+	SHARED_PTR(AbstractTerrain);
 	SHARED_PTR(AbstractWriteMemory);
 	SHARED_PTR(Actor);
 	SHARED_PTR(ActorDataCache);
@@ -416,6 +420,7 @@ namespace eternal_lands
 	SHARED_PTR(ShaderSource);
 	SHARED_PTR(ShaderSourceBuilder);
 	SHARED_PTR(ShaderSourceDescriptionLoader);
+	SHARED_PTR(TerrainBuilder);
 	SHARED_PTR(Texture);
 	SHARED_PTR(TextureCache);
 	SHARED_PTR(UniformBuffer);
@@ -426,6 +431,7 @@ namespace eternal_lands
 	SHARED_PTR(VertexStream);
 	SHARED_PTR(VertexStreams);
 	SHARED_PTR(Writer);
+	SHARED_PTR(XmlBuffer);
 	SHARED_PTR(XmlReader);
 	SHARED_PTR(XmlWriter);
 
@@ -445,6 +451,7 @@ namespace eternal_lands
 	WEAK_PTR(SceneResources);
 	WEAK_PTR(ScriptEngine);
 	WEAK_PTR(ShaderSourceBuilder);
+	WEAK_PTR(TerrainBuilder);
 	WEAK_PTR(TextureCache);
 	WEAK_PTR(UniformBufferDescriptionCache);
 
@@ -457,6 +464,7 @@ namespace eternal_lands
 	VECTOR(EffectNodePortPtr);
 	VECTOR(GlslProgramSharedPtr);
 	VECTOR(ImageSharedPtr);
+	VECTOR(ImageUpdate);
 	VECTOR(LightData);
 	VECTOR(LightSharedPtr);
 	VECTOR(MaterialSharedPtr);
@@ -471,6 +479,7 @@ namespace eternal_lands
 	VECTOR(RenderLightData);
 	VECTOR(RenderObjectData);
 	VECTOR(RStarTreeNodeSharedPtr);
+	VECTOR(ShaderBlendData);
 	VECTOR(ShaderSourceData);
 	VECTOR(ShaderSourceParameter);
 	VECTOR(ShadowObject);
@@ -483,6 +492,7 @@ namespace eternal_lands
 	VECTOR(Vec3Array8);
 	VECTOR(VertexElement);
 	VECTOR(VertexElements);
+	VECTOR(WaterData);
 
 	ARRAY(TextureSharedPtr, 2);
 	ARRAY(TextureSharedPtr, 3);

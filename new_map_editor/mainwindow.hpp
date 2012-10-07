@@ -56,7 +56,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		QString m_file_name_nodes;
 		bool m_changed_nodes;
 
-
 		void set_light_color(const glm::vec3 &color);
 		void set_light_color(const QColor &color);
 		void update_terrain();
@@ -85,6 +84,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void save_nodes(const QString &file_name);
 		void load_nodes(const QString &file_name);
 		bool check_save_nodes();
+		void set_terrain_blend_data();
 
 	private slots:
 		void update_object();
@@ -114,6 +114,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void update_materials();
 		void update_object(const bool select);
 		void update_light(const bool select);
+		void update_terrain(const bool enabled);
 		void deselect();
 		void change_light_color();
 		void add_objects(const bool value);
@@ -154,6 +155,10 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void save_nodes();
 		void save_as_nodes();
 		void generate();
+		void terrain_layers_selection();
+		void terrain_texture_blend_changed(const int index);
+		void terrain_texture_blend_scale_changed(const double value);
+		void terrain_texture_blend_offset_changed(const double value);
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

@@ -50,9 +50,9 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str,
+	OutStream &operator<<(OutStream &str,
 		const ParameterQualifierType value);
-	InStream& operator>>(InStream &str, ParameterQualifierType &value);
+	InStream &operator>>(InStream &str, ParameterQualifierType &value);
 
 }
 

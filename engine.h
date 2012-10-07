@@ -68,8 +68,7 @@ void load_harvestable_list();
 void load_entrable_list();
 void engine_update_actor_buffs(actor *act, Uint32 buffs);
 void engine_set_shader_quality(const char* quality);
-void engine_resize_root_window(const float fov, const float aspect,
-	const float z_near);
+void engine_resize_root_window(const float fov, const float aspect);
 int command_lua(char *text, int len);
 
 void engine_cull_scene();
@@ -91,13 +90,16 @@ void engine_set_use_block(const int value);
 void engine_set_use_in_out(const int value);
 void engine_set_use_functions(const int value);
 void engine_set_low_quality_terrain(const int value);
-void engine_set_clipmap_size(const int value);
-void engine_set_clipmap_world_size(const int value);
-void engine_set_clipmap_slices(const int value);
+void engine_set_clipmap_terrain_size(const int value);
+void engine_set_clipmap_terrain_world_size(const int value);
+void engine_set_clipmap_terrain_slices(const int value);
 void engine_set_effect_debug(const int value);
 void engine_set_use_multisample_shadows(const int value);
 void engine_set_use_scene_fbo(const int value);
 void engine_set_light_system(const int value);
+
+float engine_get_z_near();
+float engine_get_z_far();
 
 float get_tile_height_linear(const float x, const float y);
 int engine_has_terrain();

@@ -435,10 +435,10 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const VertexElementType value);
-	OutStream& operator<<(OutStream &str, const VertexSemanticType value);
-	InStream& operator>>(InStream &str, VertexElementType &value);
-	InStream& operator>>(InStream &str, VertexSemanticType &value);
+	OutStream &operator<<(OutStream &str, const VertexElementType value);
+	OutStream &operator<<(OutStream &str, const VertexSemanticType value);
+	InStream &operator>>(InStream &str, VertexElementType &value);
+	InStream &operator>>(InStream &str, VertexSemanticType &value);
 
 }
 

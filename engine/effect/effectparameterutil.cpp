@@ -97,14 +97,14 @@ namespace eternal_lands
 		return effect_parameter_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectParameterType value)
+	OutStream &operator<<(OutStream &str, const EffectParameterType value)
 	{
 		str << EffectParameterUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectParameterType &value)
+	InStream &operator>>(InStream &str, EffectParameterType &value)
 	{
 		std::string string;
 

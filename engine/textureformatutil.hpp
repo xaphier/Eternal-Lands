@@ -327,8 +327,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const TextureFormatType value);
-	InStream& operator>>(InStream &str, TextureFormatType &value);
+	OutStream &operator<<(OutStream &str, const TextureFormatType value);
+	InStream &operator>>(InStream &str, TextureFormatType &value);
 
 }
 

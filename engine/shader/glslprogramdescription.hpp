@@ -136,7 +136,7 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str,
+	OutStream &operator<<(OutStream &str,
 		const GlslProgramDescription &value);
 
 }

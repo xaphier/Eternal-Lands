@@ -93,7 +93,7 @@ namespace eternal_lands
 		apt_material_color,
 		apt_terrain_scale,
 		apt_terrain_texture_size,
-		apt_clipmap_matrices,
+		apt_clipmap_terrain_matrices,
 		/**
 		 * vec4(z_near, z_far, z_near + z_far, z_far - z_near)
 		 */
@@ -134,8 +134,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const AutoParameterType value);
-	InStream& operator>>(InStream &str, AutoParameterType &value);
+	OutStream &operator<<(OutStream &str, const AutoParameterType value);
+	InStream &operator>>(InStream &str, AutoParameterType &value);
 
 }
 

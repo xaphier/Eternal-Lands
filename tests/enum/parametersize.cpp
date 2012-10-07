@@ -99,7 +99,8 @@ BOOST_AUTO_TEST_CASE(get_str_value)
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
 		el::pst_shadow_maps_count).get(), "shadow_maps_count");
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
-		el::pst_clipmap_slices).get(), "clipmap_slices");
+		el::pst_clipmap_terrain_slices).get(),
+		"clipmap_terrain_slices");
 	BOOST_CHECK_EQUAL(el::ParameterSizeUtil::get_str(
 		el::pst_render_targets).get(), "render_targets");
 }

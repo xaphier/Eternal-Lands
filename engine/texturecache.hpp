@@ -82,6 +82,9 @@ namespace eternal_lands
 			TextureSharedPtr get_texture_array(
 				const ImageSharedPtrVector &images,
 				const String &name) const;
+			TextureSharedPtr get_texture_array(
+				const ImageSharedPtr &image, const String &name)
+				const;
 
 	};
 

@@ -95,7 +95,7 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const SubObject &value);
+	OutStream &operator<<(OutStream &str, const SubObject &value);
 
 }
 

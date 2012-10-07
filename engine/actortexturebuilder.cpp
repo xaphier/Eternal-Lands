@@ -71,12 +71,12 @@ namespace eternal_lands
 				srgb_formats, texture_format, image_sizes,
 				mipmap_count);
 
-			if (image_sizes[2] != 1)
+			if (image_sizes[2] != 0)
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
 						reader->get_name())
-					<< errinfo_expected_value(1)
+					<< errinfo_expected_value(0)
 					<< errinfo_value(image_sizes[2])
 					<< errinfo_message(UTF8("Wrong image "
 						"depth")));
@@ -222,12 +222,12 @@ namespace eternal_lands
 			result = codec_manager->load_image(reader,
 				compressions, rg_formats, srgb_formats);
 
-			if (result->get_depth() != 1)
+			if (result->get_depth() != 0)
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
 						reader->get_name()))
-					<< errinfo_expected_value(1)
+					<< errinfo_expected_value(0)
 					<< errinfo_value(result->get_depth())
 					<< errinfo_message(UTF8("Wrong image "
 						"depth"));
@@ -657,7 +657,7 @@ namespace eternal_lands
 
 		sizes[0] = m_size;
 		sizes[1] = m_size;
-		sizes[2] = 1;
+		sizes[2] = 0;
 
 		if (compressed)
 		{
@@ -821,7 +821,7 @@ namespace eternal_lands
 		}
 
 		m_texture = boost::make_shared<Texture>(m_name, m_size,
-			m_size, 1, 0xFFFF, 0, texture_format, ttt_texture_2d);
+			m_size, 0, 0xFFFF, 0, texture_format, ttt_texture_2d);
 	}
 
 	ActorTextureBuilder::~ActorTextureBuilder() noexcept

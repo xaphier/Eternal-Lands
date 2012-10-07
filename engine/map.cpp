@@ -21,19 +21,19 @@
 #include "objectvisitor.hpp"
 #include "renderobjectdata.hpp"
 #include "materialcache.hpp"
-#include "abstractterrainmanager.hpp"
+#include "abstractterrain.hpp"
 #include "particledata.hpp"
-#include "terrain/simpleterrainmanager.hpp"
-#include "terrain/cdlodterrainmanager.hpp"
+#include "terrain/simpleterrain.hpp"
+#include "terrain/cdlodterrain.hpp"
 #include "codec/codecmanager.hpp"
 #include "globalvars.hpp"
 #include "image.hpp"
-#include "clipmapdata.hpp"
 #include "materialbuilder.hpp"
 #include "materialdescription.hpp"
 #include "texturecache.hpp"
 #include "material.hpp"
-#include "effect/effect.hpp"
+
+#include "terrainbuilder.hpp"
 
 namespace eternal_lands
 {
@@ -41,16 +41,15 @@ namespace eternal_lands
 	Map::Map(const CodecManagerSharedPtr &codec_manager,
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars,
-		const EffectCacheWeakPtr &effect_cache,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const MaterialCacheSharedPtr &material_cache,
-		const MaterialBuilderWeakPtr &material_builder,
+		const TerrainBuilderWeakPtr &terrain_builder,
 		const TextureCacheWeakPtr &texture_cache):
-		m_global_vars(global_vars), m_effect_cache(effect_cache),
+		m_global_vars(global_vars),
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_material_cache(material_cache),
-		m_material_builder(material_builder),
+		m_terrain_builder(terrain_builder),
 		m_texture_cache(texture_cache), m_id(0), m_dungeon(false),
 		m_codec_manager(codec_manager), m_file_system(file_system)
 	{
@@ -59,8 +58,7 @@ namespace eternal_lands
 
 		set_ambient(glm::vec3(0.2f));
 
-		init_terrain(global_vars, mesh_builder, mesh_cache,	
-			material_cache);
+		m_terrain = get_terrain_builder()->get_terrain();
 	}
 
 	Map::~Map() noexcept
@@ -71,6 +69,8 @@ namespace eternal_lands
 	{
 		ImageCompressionTypeSet compressions;
 		ImageSharedPtr displacement_map, normal_map, dudv_map;
+		ImageSharedPtr blend_map;
+		StringVector albedo_maps;
 		MaterialSharedPtrVector materials;
 		String file_name, displacement_map_name, normal_map_name;
 		String dudv_map_name;
@@ -106,36 +106,21 @@ namespace eternal_lands
 
 		init_walk_height_map(displacement_map->decompress(false, true));
 
-		set_terrain(displacement_map, normal_map, dudv_map);
+		set_terrain_geometry_maps(displacement_map, normal_map,
+			dudv_map);
 
-		{
-			ClipmapData clipmap_data;
-			StringVector albedo_maps;
-			ImageSharedPtrVector blend_images;
+		albedo_maps.push_back(String(UTF8("3dobjects/tile1.dds")));
+		albedo_maps.push_back(String(UTF8("3dobjects/tile11.dds")));
+		albedo_maps.push_back(String(UTF8("3dobjects/tile3.dds")));
+		albedo_maps.push_back(String(UTF8("3dobjects/tile4.dds")));
+		albedo_maps.push_back(String(UTF8("3dobjects/tile5.dds")));
 
-			albedo_maps.push_back(String(
-				UTF8("3dobjects/tile1.dds")));
-			albedo_maps.push_back(String(
-				UTF8("3dobjects/tile11.dds")));
-			albedo_maps.push_back(String(
-				UTF8("3dobjects/tile3.dds")));
-			albedo_maps.push_back(String(
-				UTF8("3dobjects/tile4.dds")));
-			albedo_maps.push_back(String(
-				UTF8("3dobjects/tile5.dds")));
+		blend_map = m_codec_manager->load_image(
+			String(UTF8("textures/blend0.dds")), m_file_system,
+			ImageCompressionTypeSet(), false, false);
 
-			blend_images.push_back(m_codec_manager->load_image(
-				String(UTF8("textures/blend0.dds")),
-				m_file_system, ImageCompressionTypeSet(), false,
-				false));
-
-			clipmap_data.set_albedo_maps(albedo_maps);
-			clipmap_data.set_blend_images(blend_images);
-			clipmap_data.set_color(
-				glm::vec4(0.3f, 0.9f, 0.1f, 1.0f));
-
-			build_clipmap_material(clipmap_data);
-		}
+		set_terrain_blend_map(blend_map);
+		set_terrain_material_maps(albedo_maps, StringVector());
 	}
 
 	void Map::init_walk_height_map(const ImageSharedPtr &displacement_map)
@@ -146,7 +131,7 @@ namespace eternal_lands
 
 		size = glm::uvec2(displacement_map->get_sizes());
 
-		scale = AbstractTerrainManager::get_vector_scale().z;
+		scale = AbstractTerrain::get_vector_scale().z;
 
 		m_walk_height_map.resize(boost::extents[size.x][size.y]);
 
@@ -319,7 +304,7 @@ namespace eternal_lands
 	{
 		m_light_tree->clear();
 		m_object_tree->clear();
-		m_terrain_manager->clear();
+		m_terrain->clear();
 		m_objects.clear();
 		m_lights.clear();
 		m_particles.clear();
@@ -328,19 +313,19 @@ namespace eternal_lands
 	void Map::intersect_terrain(const Frustum &frustum,
 		const glm::vec3 &camera, BoundingBox &bounding_box) const
 	{
-		m_terrain_manager->intersect(frustum, camera, bounding_box);
+		m_terrain->intersect(frustum, camera, bounding_box);
 	}
 
 	void Map::intersect_terrain(const Frustum &frustum,
 		const glm::vec3 &camera, TerrainVisitor &terrain) const
 	{
-		m_terrain_manager->intersect(frustum, camera, terrain);
+		m_terrain->intersect(frustum, camera, terrain);
 	}
 
 	void Map::intersect(const Frustum &frustum, ObjectVisitor &visitor)
 		const
 	{
-		m_terrain_manager->intersect(frustum, visitor);
+		m_terrain->intersect(frustum, visitor);
 		m_object_tree->intersect(frustum, visitor);
 	}
 
@@ -355,7 +340,7 @@ namespace eternal_lands
 		BoundingBox bounding_box;
 
 		bounding_box = m_object_tree->get_bounding_box();
-		bounding_box.merge(m_terrain_manager->get_bounding_box());
+		bounding_box.merge(m_terrain->get_bounding_box());
 
 		return bounding_box;
 	}
@@ -367,58 +352,70 @@ namespace eternal_lands
 
 	glm::vec4 Map::get_terrain_size_data() const
 	{
-		return m_terrain_manager->get_terrain_size_data();
+		return m_terrain->get_terrain_size_data();
 	}
 
 	glm::vec2 Map::get_terrain_size() const
 	{
-		return m_terrain_manager->get_terrain_size();
+		return m_terrain->get_terrain_size();
 	}
 
-	void Map::set_clipmap_texture(const TextureSharedPtr &texture)
+	void Map::set_clipmap_terrain_texture(const TextureSharedPtr &texture)
 	{
-		m_terrain_manager->set_clipmap_texture(texture);
+		m_terrain->set_clipmap_terrain_texture(texture);
 	}
 
-	void Map::init_terrain(const GlobalVarsSharedPtr &global_vars,
-		const MeshBuilderSharedPtr &mesh_builder,
-		const MeshCacheSharedPtr &mesh_cache,
-		const MaterialCacheSharedPtr &material_cache)
-	{
-		if (global_vars->get_opengl_3_1())
-		{
-			m_terrain_manager.reset(new CdLodTerrainManager(
-				mesh_cache, get_material_cache()->get_material(
-					String(UTF8("cdlod-terrain")))));
-
-			return;
-		}
-
-		m_terrain_manager.reset(new SimpleTerrainManager(global_vars,
-			mesh_builder, get_material_cache()->get_material(
-				String(UTF8("simple-terrain")))));
-	}
-
-	void Map::set_terrain(const ImageSharedPtr &displacement_map,
+	void Map::set_terrain_geometry_maps(
+		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
 	{
-		m_terrain_manager->update(displacement_map, normal_map,
+		m_terrain->set_geometry_maps(displacement_map, normal_map,
 			dudv_map);
+	}
+
+	void Map::set_terrain_blend_map(const ImageSharedPtr &blend_map)
+	{
+		m_terrain->set_blend_map(blend_map, get_texture_cache());
+	}
+
+	void Map::update_terrain_geometry_maps(
+		const ImageUpdate &displacement_map,
+		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
+	{
+		m_terrain->update_geometry_maps(displacement_map, normal_map,
+			dudv_map);
+	}
+
+	void Map::update_terrain_blend_map(const ImageUpdate &blend_map)
+	{
+		m_terrain->update_blend_map(blend_map);
+	}
+
+	void Map::set_terrain_material_maps(const StringVector &albedo_maps,
+		const StringVector &specular_maps)
+	{
+		m_terrain->set_texture_maps(albedo_maps, specular_maps,
+			get_texture_cache());
+	}
+
+	void Map::set_terrain_effect_main(const String &effect_main)
+	{
+		EffectSharedPtr effect;
+
+		effect = get_terrain_builder()->get_effect(effect_main);
+
+		m_terrain->set_effect(effect);
 	}
 
 	bool Map::get_terrain() const
 	{
-		return !m_terrain_manager->get_empty();
+		return !m_terrain->get_empty();
 	}
 
-	void Map::build_clipmap_material(const ClipmapData &clipmap_data)
+	const MaterialSharedPtr &Map::get_clipmap_terrain_material() const
 	{
-		m_clipmap_material = m_terrain_manager->build_clipmap_material(
-			get_material_builder(), EffectCacheSharedPtr(),
-			get_texture_cache(), clipmap_data.get_albedo_maps(),
-			clipmap_data.get_specular_maps(),
-			clipmap_data.get_blend_images(), false);
+		return m_terrain->get_clipmap_terrain_material();
 	}
 
 }

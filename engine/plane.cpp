@@ -191,14 +191,14 @@ namespace eternal_lands
 				"IntersectionType")));
 	}
 
-	OutStream& operator<<(OutStream &str, const IntersectionType value)
+	OutStream &operator<<(OutStream &str, const IntersectionType value)
 	{
 		str << Plane::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, IntersectionType &value)
+	InStream &operator>>(InStream &str, IntersectionType &value)
 	{
 		std::string string;
 

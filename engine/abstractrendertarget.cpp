@@ -49,7 +49,7 @@ namespace eternal_lands
 		VALUE_NOT_IN_SWITCH(value, UTF8("CubeMapFaceType"));
 	}
 
-	OutStream& operator<<(OutStream &str, const CubeMapFaceType value)
+	OutStream &operator<<(OutStream &str, const CubeMapFaceType value)
 	{
 		str << AbstractRenderTarget::get_str(value);
 

@@ -13,7 +13,6 @@
 #include "xmlwriter.hpp"
 #include "logging.hpp"
 #include "filesystem.hpp"
-#include "reader.hpp"
 #include "logging.hpp"
 
 namespace eternal_lands
@@ -94,36 +93,15 @@ namespace eternal_lands
 	{
 		EffectDescription effect_description;
 		XmlReaderSharedPtr xml_reader;
-		ReaderSharedPtr reader;
 		String name;
-		Uint8Array5 magic;
 
 		try
 		{
-			reader = file_system->get_file(file_name);
-
-			if (reader->get_size() < 5)
+			if (!XmlReader::get_xml_reader(file_system,
+				file_name, xml_reader))
 			{
 				return;
 			}
-
-			reader->set_position(0);
-
-			BOOST_FOREACH(Uint8 &value, magic)
-			{
-				value = reader->read_u8();
-			}
-
-			reader->set_position(0);
-
-			if ((magic[0] != '<') || (magic[1] != '?') ||
-				(magic[2] != 'x') || (magic[3] != 'm') ||
-				(magic[4] != 'l'))
-			{
-				return;
-			}
-
-			xml_reader = boost::make_shared<XmlReader>(reader);
 
 			name = String(std::string(reinterpret_cast<const char*>(
 				xml_reader->get_root_node()->name)));
@@ -138,9 +116,7 @@ namespace eternal_lands
 
 			name = effect_description.get_name();
 
-			m_effect_cache[name] = boost::make_shared<Effect>(
-				get_glsl_program_cache(),
-				get_shader_source_builder(),
+			m_effect_cache[name] = build_effect(
 				effect_description);
 
 			LOG_DEBUG(lt_effect, UTF8("Effect '%1%' loaded from "
@@ -154,12 +130,12 @@ namespace eternal_lands
 		}
 	}
 
-	void EffectCache::load_xml(const FileSystemSharedPtr &file_system)
+	void EffectCache::load_xml(const FileSystemSharedPtr &file_system,
+		const String &dir)
 	{
 		StringSet files;
 
-		files = file_system->get_files(String(UTF8("shaders/effects")),
-			String(UTF8("*.xml")));
+		files = file_system->get_files(dir, String(UTF8("*.xml")));
 
 		BOOST_FOREACH(const String &file, files)
 		{
@@ -189,11 +165,16 @@ namespace eternal_lands
 
 		name = effect_description.get_name();
 
-		m_effect_cache[name] = boost::make_shared<Effect>(
-			get_glsl_program_cache(), get_shader_source_builder(),
-			effect_description);
+		m_effect_cache[name] = build_effect(effect_description);
 
 		LOG_DEBUG(lt_effect, UTF8("Effect '%1%' added"), name);
+	}
+
+	EffectSharedPtr EffectCache::build_effect(
+		const EffectDescription &effect_description) const
+	{
+		return boost::make_shared<Effect>(get_glsl_program_cache(),
+			get_shader_source_builder(), effect_description);
 	}
 
 }

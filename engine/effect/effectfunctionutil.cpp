@@ -488,14 +488,14 @@ namespace eternal_lands
 		return effect_function_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectFunctionType value)
+	OutStream &operator<<(OutStream &str, const EffectFunctionType value)
 	{
 		str << EffectFunctionUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectFunctionType &value)
+	InStream &operator>>(InStream &str, EffectFunctionType &value)
 	{
 		std::string string;
 

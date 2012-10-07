@@ -49,8 +49,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const ShaderBlendType value);
-	InStream& operator>>(InStream &str, ShaderBlendType &value);
+	OutStream &operator<<(OutStream &str, const ShaderBlendType value);
+	InStream &operator>>(InStream &str, ShaderBlendType &value);
 
 }
 

@@ -12,6 +12,7 @@
 #include "shadersourceparameterbuilder.hpp"
 #include "shadersourceparameter.hpp"
 #include "shadersourcedata.hpp"
+#include "xmlbuffer.hpp"
 #include "xmlwriter.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
@@ -32,24 +33,59 @@ namespace eternal_lands
 	{
 		XmlReaderSharedPtr xml_reader;
 
-		xml_reader = XmlReaderSharedPtr(new XmlReader(file_system,
-			file_name));
+		xml_reader = boost::make_shared<XmlReader>(file_system,
+			file_name);
 
 		load_xml(xml_reader->get_root_node());
 	}
 
 	void AbstractShaderSource::load_xml(const String &file_name)
 	{
-		XmlReaderSharedPtr reader;
+		XmlReaderSharedPtr xml_reader;
 
-		reader = XmlReaderSharedPtr(new XmlReader(file_name));
+		xml_reader = boost::make_shared<XmlReader>(file_name);
 
-		load_xml(reader->get_root_node());
+		load_xml(xml_reader->get_root_node());
+	}
+
+	void AbstractShaderSource::load_xml_string(const String &str)
+	{
+		XmlReaderSharedPtr xml_reader;
+
+		xml_reader = XmlReader::get_xml_reader_from_string(str);
+
+		load_xml(xml_reader->get_root_node());
 	}
 
 	void AbstractShaderSource::load_xml(const xmlNodePtr node)
 	{
-		load_xml_node(node);
+		do_load_xml(node);
+	}
+
+	void AbstractShaderSource::save_xml(const String &file_name) const
+	{
+		XmlWriterSharedPtr xml_writer;
+
+		xml_writer = boost::make_shared<XmlWriter>(file_name);
+
+		do_save_xml(xml_writer);
+	}
+
+	String AbstractShaderSource::save_xml_string() const
+	{
+		XmlBufferSharedPtr xml_buffer;
+
+		xml_buffer = boost::make_shared<XmlBuffer>();
+
+		{
+			XmlWriterSharedPtr xml_writer;
+
+			xml_writer = boost::make_shared<XmlWriter>(xml_buffer);
+
+			do_save_xml(xml_writer);
+		}
+
+		return xml_buffer->get_string();
 	}
 
 	void AbstractShaderSource::build_source(const ShaderVersionType version,
@@ -94,7 +130,11 @@ namespace eternal_lands
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
 			get_parameters(version))
 		{
-			parameter.write_name(parameter_prefix, stream, first);
+			if (!parameter.get_auto_parameter())
+			{
+				parameter.write_name(parameter_prefix, stream,
+					first);
+			}
 		}
 
 		stream << UTF8(");") << std::endl;
@@ -119,8 +159,11 @@ namespace eternal_lands
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
 			get_parameters(version))
 		{
-			parameter.write_parameter(String(), sizes, stream,
-				first);
+			if (!parameter.get_auto_parameter())
+			{
+				parameter.write_parameter(String(), sizes,
+					stream, first);
+			}
 		}
 
 		stream << UTF8(")") << std::endl;

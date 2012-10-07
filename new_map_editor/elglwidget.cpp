@@ -97,8 +97,6 @@ void ELGLWidget::mouse_click_action()
 	{
 		emit terrain_edit();
 
-		m_editor->update_edit_id();
-
 		return;
 	}
 
@@ -131,8 +129,6 @@ void ELGLWidget::mouse_move_action()
 	if (get_terrain_editing())
 	{
 		emit terrain_edit();
-
-		m_editor->update_edit_id();
 
 		return;
 	}
@@ -318,7 +314,7 @@ void ELGLWidget::ground_tile_edit(const int tile)
 
 void ELGLWidget::water_tile_edit(const int water)
 {
-	m_editor->water_tile_edit(m_world_position, water);
+	m_editor->water_tile_edit(m_start_position, m_world_position, water);
 
 	emit can_undo(m_editor->get_can_undo());
 }
@@ -398,9 +394,9 @@ void ELGLWidget::initializeGL()
 
 	m_global_vars->set_shadow_quality(sqt_no);
 	m_global_vars->set_shadow_map_size(2);
-	m_global_vars->set_clipmap_size(2048);
-	m_global_vars->set_clipmap_world_size(8);
-	m_global_vars->set_clipmap_slices(16);
+	m_global_vars->set_clipmap_terrain_size(2048);
+	m_global_vars->set_clipmap_terrain_world_size(8);
+	m_global_vars->set_clipmap_terrain_slices(16);
 	m_global_vars->set_fog(false);
 	m_global_vars->set_use_simd(true);
 	m_global_vars->set_use_s3tc_for_actors(true);
@@ -537,6 +533,11 @@ void ELGLWidget::paintGL()
 
 		m_world_position = glm::unProject(glm::dvec3(m_select_pos,
 			selected_depth), glm::dmat4(view),
+			glm::dmat4(m_editor->get_projection_matrix()),
+			view_port);
+
+		m_start_position = glm::unProject(glm::dvec3(m_select_pos,
+			0.0), glm::dmat4(view),
 			glm::dmat4(m_editor->get_projection_matrix()),
 			view_port);
 	}
@@ -721,6 +722,7 @@ void ELGLWidget::undo()
 	if (result)
 	{
 		emit deselect();
+		emit update_terrain(m_editor->get_terrain());
 	}
 	else
 	{
@@ -772,6 +774,30 @@ void ELGLWidget::set_ambient(const glm::vec3 &color)
 const glm::vec3 &ELGLWidget::get_ambient() const
 {
 	return m_editor->get_ambient();
+}
+
+void ELGLWidget::set_terrain_albedo_map(const QString &name, const int index)
+{
+	m_editor->set_terrain_albedo_map(String(name.toStdString()), index);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_terrain_blend_data(const ShaderBlendData &blend_data,
+	const int index)
+{
+	m_editor->set_terrain_blend_data(blend_data, index);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+QString ELGLWidget::get_terrain_albedo_map(const int index) const
+{
+	return QString::fromUtf8(m_editor->get_terrain_albedo_map(index).get(
+		).c_str());
+}
+
+const ShaderBlendData &ELGLWidget::get_terrain_blend_data(const int index) const
+{
+	return m_editor->get_terrain_blend_data(index);
 }
 
 void ELGLWidget::move_left()
@@ -837,22 +863,6 @@ void ELGLWidget::add_light(const float radius)
 	m_object = false;
 	m_object_name = String("");
 	m_light_radius = radius;
-}
-
-QStringList ELGLWidget::get_terrain_albedo_maps() const
-{
-	QStringList result;
-
-	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(0).get(
-		).c_str());
-	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(1).get(
-		).c_str());
-	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(2).get(
-		).c_str());
-	result << QString::fromUtf8(m_editor->get_terrain_albedo_map(3).get(
-		).c_str());
-
-	return result;
 }
 
 void ELGLWidget::new_map(const int map_size_x, const int map_size_y, const int blend_image_size_x,
@@ -942,6 +952,7 @@ void ELGLWidget::open_map(const QString &file_name)
 	if (!file_name.isEmpty())
 	{
 		m_editor->load_map(String(file_name.toUtf8()));
+		emit update_terrain(m_editor->get_terrain());
 
 		emit can_undo(m_editor->get_can_undo());
 	}
@@ -1307,9 +1318,13 @@ void ELGLWidget::set_debug_mode(const int value)
 	m_editor->set_debug_mode(std::max(value, 0));
 }
 
-void ELGLWidget::init_terrain(const int width, const int height)
+void ELGLWidget::init_terrain(const int width, const int height,
+	const QString texture)
 {
-	m_editor->init_terrain(glm::uvec2(width, height));
+	m_editor->init_terrain(glm::uvec2(width, height),
+		String(texture.toUtf8()));
+
+	emit update_terrain(m_editor->get_terrain());
 }
 
 QStringList ELGLWidget::get_debug_modes() const

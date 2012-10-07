@@ -126,7 +126,7 @@ namespace eternal_lands
 		return glm::distance(tmp, point);
 	}
 
-	OutStream& operator<<(OutStream &str, const BoundingBox &value)
+	OutStream &operator<<(OutStream &str, const BoundingBox &value)
 	{
 		str << "<" << value.get_min()[0] << ", " << value.get_min()[1];
 		str << ", " << value.get_min()[2] << ">";

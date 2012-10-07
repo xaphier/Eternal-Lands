@@ -19,6 +19,7 @@
 #include "undo/displacementvaluemodification.hpp"
 #include "undo/lightsmodification.hpp"
 #include "undo/objectsmodification.hpp"
+#include "undo/blenddatamodification.hpp"
 #include "scene.hpp"
 #include "codec/codecmanager.hpp"
 #include "logging.hpp"
@@ -137,6 +138,30 @@ namespace eternal_lands
 		}
 
 		m_data.set_terrain_albedo_map(str, index);
+	}
+
+	void Editor::set_terrain_blend_data(const ShaderBlendData &blend_data,
+		const Uint16 index)
+	{
+		ShaderBlendData tmp;
+
+		tmp = m_data.get_terrain_blend_data(index);
+
+		if (blend_data == tmp)
+		{
+			return;
+		}
+
+		if (add_needed(index, mt_terrain_blend_data_changed))
+		{
+			ModificationAutoPtr modification(new
+				BlendDataModification(tmp, index,
+				mt_terrain_blend_data_changed, get_edit_id()));
+
+			m_undo.add(modification);
+		}
+
+		m_data.set_terrain_blend_data(blend_data, index);
 	}
 
 	void Editor::set_ground_tile(const glm::vec2 &point,
@@ -396,9 +421,37 @@ namespace eternal_lands
 		set_ground_tile(glm::vec2(point), height);
 	}
 
-	void Editor::water_tile_edit(const glm::vec3 &point, const Uint8 water)
+	void Editor::water_tile_edit(const glm::vec3 &start,
+		const glm::vec3 &point, const Uint16 water)
 	{
-//		set_ground_tile(glm::vec2(point), water);
+/*
+		glm::uvec2 index;
+		Uint16 tmp;
+
+		if (!m_data.get_water_vertex(start, point, index))
+		{
+			return;
+		}
+
+		tmp = m_data.get_water(index);
+
+		if (water == tmp)
+		{
+			return;
+		}
+
+		if (add_needed(index.x + (index.y << 16),
+			mt_water_changed))
+		{
+			ModificationAutoPtr modification(
+				new WaterModification(index, tmp,
+					get_edit_id()));
+
+			m_undo.add(modification);
+		}
+
+		m_data.set_water(index.x, index.y, water);
+*/
 	}
 
 	void Editor::height_edit(const glm::vec3 &point, const Uint8 height)
@@ -1129,7 +1182,10 @@ namespace eternal_lands
 		DisplacementValueVector displacement_values;
 		glm::uvec2 vertex;
 
-		vertex = m_data.get_vertex(position);
+		if (!m_data.get_terrain_vertex(position, vertex))
+		{
+			return;
+		}
 
 		m_data.get_terrain_displacement_values(vertex, size,
 			attenuation_size,
@@ -1161,16 +1217,19 @@ namespace eternal_lands
 		ImageValueVector blend_values;
 		glm::uvec2 vertex;
 
-		vertex = m_data.get_vertex(position);
+		if (!m_data.get_terrain_vertex(position, vertex))
+		{
+			return;
+		}
 
 		m_data.get_terrain_blend_values(vertex, size, attenuation_size,
 			static_cast<BrushAttenuationType>(attenuation),
 			static_cast<BrushShapeType>(shape), blend_values);
 
-//		ModificationAutoPtr modification(new ImageValueModification(
-//			blend_values, get_edit_id()));
+		ModificationAutoPtr modification(new BlendModification(
+			blend_values, get_edit_id()));
 
-//		m_undo.add(modification);
+		m_undo.add(modification);
 
 		m_data.change_terrain_blend_values(size, vertex,
 			attenuation_size, data,
@@ -1180,6 +1239,28 @@ namespace eternal_lands
 			blend_values);
 
 		m_data.set_terrain_blend_values(blend_values);
+	}
+
+	void Editor::change_terrain_albedo_map(const String &name,
+		const int index)
+	{
+		String str;
+
+		str = m_data.get_terrain_albedo_map(index);
+
+		ModificationAutoPtr modification(new TerrainMapModification(
+			str, index, mt_terrain_albedo_map_changed,
+			get_edit_id()));
+
+		m_undo.add(modification);
+
+		m_data.set_terrain_albedo_map(name, index);
+	}
+
+	void Editor::change_terrain_blend_type(const int blend,
+		const float scale, const float offset, const int index)
+	{
+		
 	}
 
 }

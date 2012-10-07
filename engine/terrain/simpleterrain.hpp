@@ -1,5 +1,5 @@
 /****************************************************************************
- *            simpleterrainmanager.hpp
+ *            simpleterrain.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -13,23 +13,21 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "abstractterrainmanager.hpp"
+#include "abstractterrain.hpp"
 
 /**
  * @file
- * @brief The @c class SimpleTerrainManager.
- * This file contains the @c class SimpleTerrainManager.
+ * @brief The @c class SimpleTerrain.
+ * This file contains the @c class SimpleTerrain.
  */
 namespace eternal_lands
 {
 
-	class SimpleTerrainManager: public AbstractTerrainManager
+	class SimpleTerrain: public AbstractTerrain
 	{
 		private:
 			boost::scoped_ptr<RStarTree> m_object_tree;
-			MaterialSharedPtr m_material;
 			AbstractMeshSharedPtr m_mesh;
-			const bool m_low_quality;
 
 			void init_terrain_pages(
 				const MeshBuilderSharedPtr &mesh_builder,
@@ -49,9 +47,19 @@ namespace eternal_lands
 				const glm::uvec2 &tile_offset,
 				const glm::vec2 &position_scale);
 			virtual TextureSharedPtr get_displacement_texture()
-				const;
-			virtual TextureSharedPtr get_normal_texture() const;
-			virtual TextureSharedPtr get_dudv_texture() const;
+				const override;
+			virtual TextureSharedPtr get_normal_texture() const
+				override;
+			virtual TextureSharedPtr get_dudv_texture() const
+				override;
+			virtual void do_set_geometry_maps(
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map) override;
+			virtual void do_update_geometry_maps(
+				const ImageUpdate &displacement_map,
+				const ImageUpdate &normal_map,
+				const ImageUpdate &dudv_map) override;
 
 		protected:
 			void add_terrain_page(
@@ -62,11 +70,14 @@ namespace eternal_lands
 			void remove_terrain_page(const glm::uvec2 &position);
 
 		public:
-			SimpleTerrainManager(
-				const GlobalVarsSharedPtr &global_vars,
+			SimpleTerrain(const GlobalVarsSharedPtr &global_vars,
+				const EffectCacheSharedPtr &effect_cache,
 				const MeshBuilderSharedPtr &mesh_builder,
-				const MaterialSharedPtr &material);
-			virtual ~SimpleTerrainManager() noexcept override;
+				const MaterialBuilderSharedPtr
+					&material_builder,
+				const MaterialCacheSharedPtr &material_cache,
+				const String &material, const String &effect);
+			virtual ~SimpleTerrain() noexcept override;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const override;
 			virtual void intersect(const Frustum &frustum,
@@ -75,24 +86,7 @@ namespace eternal_lands
 			virtual void intersect(const Frustum &frustum,
 				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const override;
-			virtual void update(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map) override;
-			virtual void set_clipmap_texture(
-				const TextureSharedPtr &texture) override;
 			virtual void clear() override;
-
-			inline const MaterialSharedPtr &get_material() const
-				noexcept
-			{
-				return m_material;
-			}
-
-			inline bool get_low_quality() const noexcept
-			{
-				return m_low_quality;
-			}
 
 	};
 

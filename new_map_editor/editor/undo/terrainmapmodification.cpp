@@ -14,7 +14,7 @@ namespace eternal_lands
 	TerrainMapModification::TerrainMapModification(const String &map,
 		const Uint16 index, const ModificationType type,
 		const Uint32 edit_id): Modification(edit_id, index, type),
-		m_map(map)
+		m_map(map), m_index(index)
 	{
 	}
 
@@ -59,16 +59,9 @@ namespace eternal_lands
 			case mt_objects_walkable_changed:
 				break;
 			case mt_terrain_albedo_map_changed:
-				editor.set_terrain_albedo_map(m_map, get_id());
-			case mt_terrain_blend_map_changed:
-				editor.set_terrain_blend_map(m_map, get_id());
+				editor.set_terrain_albedo_map(m_map, m_index);
 				break;
-			case mt_terrain_displacement_map_changed:
-				editor.set_terrain_displacement_map(m_map);
-				break;
-			case mt_terrain_dudv_map_changed:
-				editor.set_terrain_dudv_map(m_map);
-				break;
+			case mt_terrain_blend_data_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:

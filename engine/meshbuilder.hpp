@@ -106,8 +106,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const VertexFormatType value);
-	InStream& operator>>(InStream &str, VertexFormatType &value);
+	OutStream &operator<<(OutStream &str, const VertexFormatType value);
+	InStream &operator>>(InStream &str, VertexFormatType &value);
 
 }
 

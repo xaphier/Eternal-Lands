@@ -223,53 +223,51 @@ namespace eternal_lands
 		}
 	}
 
-	void EffectNodes::save_xml(const XmlWriterSharedPtr &writer)
+	void EffectNodes::do_save_xml(const XmlWriterSharedPtr &xml_writer)
+		const
 	{
-		writer->start_element(get_xml_id());
+		Uint32 i, count;
 
-		writer->write_element(String(UTF8("name")), get_name());
+		xml_writer->start_element(get_xml_id());
 
-		writer->write_int_element(String(UTF8("ids")), get_ids());
+		xml_writer->write_element(String(UTF8("name")), get_name());
+
+		xml_writer->write_int_element(String(UTF8("ids")), get_ids());
 
 
-		writer->start_element(String(UTF8("texture_units")));
+		xml_writer->start_element(String(UTF8("texture_units")));
 
 		BOOST_FOREACH(const EffectTextureUnit &texture_units,
 			m_texture_units)
 		{
-			texture_units.save_xml(writer);
+			texture_units.save_xml(xml_writer);
 		}
 
-		writer->end_element();
+		xml_writer->end_element();
 
-		writer->start_element(String(UTF8("nodes")));
+		xml_writer->start_element(String(UTF8("nodes")));
 
-		BOOST_FOREACH(EffectNode &node, m_nodes)
+		count = m_nodes.size();
+
+		for (i = 0; i < count; ++i)
 		{
-			node.save_xml(writer);
+			m_nodes[i].save_xml(xml_writer);
 		}
 
-		writer->end_element();
+		xml_writer->end_element();
 
-		writer->start_element(String(UTF8("connections")));
+		xml_writer->start_element(String(UTF8("connections")));
 
-		BOOST_FOREACH(EffectNode &node, m_nodes)
+		count = m_nodes.size();
+
+		for (i = 0; i < count; ++i)
 		{
-			node.save_connections_xml(writer);
+			m_nodes[i].save_connections_xml(xml_writer);
 		}
 
-		writer->end_element();
+		xml_writer->end_element();
 
-		writer->end_element();
-	}
-
-	void EffectNodes::save_xml(const String &file_name)
-	{
-		XmlWriterSharedPtr writer;
-
-		writer = XmlWriterSharedPtr(new XmlWriter(file_name));
-
-		save_xml(writer);
+		xml_writer->end_element();
 	}
 
 	void EffectNodes::load_nodes_xml(const xmlNodePtr node)
@@ -427,7 +425,7 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void EffectNodes::load_xml_node(const xmlNodePtr node)
+	void EffectNodes::do_load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 		String source;

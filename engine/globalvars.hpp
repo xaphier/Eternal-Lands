@@ -73,9 +73,9 @@ namespace eternal_lands
 			float m_shadow_distance;
 			float m_view_distance;
 			Uint16 m_shadow_map_size;
-			Uint16 m_clipmap_size;
-			Uint16 m_clipmap_world_size;
-			Uint16 m_clipmap_slices;
+			Uint16 m_clipmap_terrain_size;
+			Uint16 m_clipmap_terrain_world_size;
+			Uint16 m_clipmap_terrain_slices;
 			ShadowQualityType m_shadow_quality;
 			OpenglVerionType m_opengl_version;
 			LightSystemType m_light_system;
@@ -125,22 +125,25 @@ namespace eternal_lands
 				m_shadow_map_size = shadow_map_size;
 			}
 
-			inline void set_clipmap_size(const Uint16 clipmap_size)
+			inline void set_clipmap_terrain_size(
+				const Uint16 clipmap_terrain_size) noexcept
+			{
+				m_clipmap_terrain_size = clipmap_terrain_size;
+			}
+
+			inline void set_clipmap_terrain_world_size(
+				const Uint16 clipmap_terrain_world_size)
 				noexcept
 			{
-				m_clipmap_size = clipmap_size;
+				m_clipmap_terrain_world_size =
+					clipmap_terrain_world_size;
 			}
 
-			inline void set_clipmap_world_size(
-				const Uint16 clipmap_world_size) noexcept
+			inline void set_clipmap_terrain_slices(
+				const Uint16 clipmap_terrain_slices) noexcept
 			{
-				m_clipmap_world_size = clipmap_world_size;
-			}
-
-			inline void set_clipmap_slices(
-				const Uint16 clipmap_slices) noexcept
-			{
-				m_clipmap_slices = clipmap_slices;
+				m_clipmap_terrain_slices =
+					clipmap_terrain_slices;
 			}
 
 			inline void set_opengl_version(
@@ -271,22 +274,25 @@ namespace eternal_lands
 				return m_shadow_map_size;
 			}
 
-			inline Uint16 get_clipmap_size() const noexcept
+			inline Uint16 get_clipmap_terrain_size() const noexcept
 			{
-				return m_clipmap_size;
+				return m_clipmap_terrain_size;
 			}
 
-			inline Uint16 get_clipmap_world_size() const noexcept
+			inline Uint16 get_clipmap_terrain_world_size() const
+				noexcept
 			{
-				return m_clipmap_world_size;
+				return m_clipmap_terrain_world_size;
 			}
 
-			inline Uint16 get_clipmap_slices() const noexcept
+			inline Uint16 get_clipmap_terrain_slices() const
+				noexcept
 			{
-				return m_clipmap_slices;
+				return m_clipmap_terrain_slices;
 			}
 
-			inline LightSystemType get_light_system() const	noexcept
+			inline LightSystemType get_light_system() const
+				noexcept
 			{
 				return m_light_system;
 			}
@@ -297,7 +303,8 @@ namespace eternal_lands
 				return m_opengl_version;
 			}
 
-			inline bool get_exponential_shadow_maps() const noexcept
+			inline bool get_exponential_shadow_maps() const
+				noexcept
 			{
 				switch (get_shadow_quality())
 				{

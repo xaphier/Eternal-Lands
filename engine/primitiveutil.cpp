@@ -125,14 +125,14 @@ namespace eternal_lands
 				"PrimitiveType")));
 	}
 
-	OutStream& operator<<(OutStream &str, const PrimitiveType value)
+	OutStream &operator<<(OutStream &str, const PrimitiveType value)
 	{
 		str << PrimitiveUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, PrimitiveType &value)
+	InStream &operator>>(InStream &str, PrimitiveType &value)
 	{
 		std::string string;
 

@@ -68,8 +68,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const SamplerParameterType value);
-	InStream& operator>>(InStream &str, SamplerParameterType &value);
+	OutStream &operator<<(OutStream &str, const SamplerParameterType value);
+	InStream &operator>>(InStream &str, SamplerParameterType &value);
 
 }
 

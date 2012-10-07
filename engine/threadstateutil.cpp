@@ -70,7 +70,7 @@ namespace eternal_lands
 		return thread_state_names_count;
 	}
 
-	std::ostream& operator<< (std::ostream &str, const ThreadStateType value)
+	OutStream &operator<<(OutStream &str, const ThreadStateType value)
 	{
 		str << ThreadStateUtil::get_str(value);
 

@@ -73,14 +73,14 @@ namespace eternal_lands
 		return effect_main_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectMainType value)
+	OutStream &operator<<(OutStream &str, const EffectMainType value)
 	{
 		str << EffectMainUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectMainType &value)
+	InStream &operator>>(InStream &str, EffectMainType &value)
 	{
 		std::string string;
 

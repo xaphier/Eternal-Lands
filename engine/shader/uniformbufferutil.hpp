@@ -57,8 +57,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const UniformBufferType value);
-	InStream& operator>>(InStream &str, UniformBufferType &value);
+	OutStream &operator<<(OutStream &str, const UniformBufferType value);
+	InStream &operator>>(InStream &str, UniformBufferType &value);
 
 }
 

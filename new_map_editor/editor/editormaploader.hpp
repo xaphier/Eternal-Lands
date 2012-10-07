@@ -33,15 +33,16 @@ namespace eternal_lands
 	class EditorMapLoader: public AbstractMapLoader
 	{
 		private:
-			const CodecManagerSharedPtr m_codec_manager;
-			const FileSystemSharedPtr m_file_system;
+			const CodecManagerWeakPtr m_codec_manager;
 			const GlobalVarsSharedPtr m_global_vars;
-			const EffectCacheSharedPtr m_effect_cache;
-			const MeshBuilderSharedPtr m_mesh_builder;
-			const MeshCacheSharedPtr m_mesh_cache;
-			const MeshDataCacheSharedPtr m_mesh_data_cache;
-			const MaterialCacheSharedPtr m_material_cache;
-			const MaterialBuilderWeakPtr m_material_builder;
+			const EffectCacheWeakPtr m_effect_cache;
+			const MeshBuilderWeakPtr m_mesh_builder;
+			const MeshCacheWeakPtr m_mesh_cache;
+			const MeshDataCacheWeakPtr m_mesh_data_cache;
+			const MaterialCacheWeakPtr m_material_cache;
+			const MaterialDescriptionCacheWeakPtr
+				m_material_description_cache;
+			const TerrainBuilderWeakPtr m_terrain_builder;
 			const TextureCacheWeakPtr m_texture_cache;
 			ReaderSharedPtr m_reader;
 			EditorMapData &m_data;
@@ -49,10 +50,15 @@ namespace eternal_lands
 			StringSet m_harvestables, m_entrables;
 
 		protected:
-			inline const CodecManagerSharedPtr &get_codec_manager()
-				const
+			inline CodecManagerSharedPtr get_codec_manager() const
 			{
-				return m_codec_manager;
+				CodecManagerSharedPtr result;
+
+				result = m_codec_manager.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
@@ -61,45 +67,100 @@ namespace eternal_lands
 				return m_global_vars;
 			}
 
-			inline const MeshBuilderSharedPtr &get_mesh_builder()
-				const
+			inline MeshBuilderSharedPtr get_mesh_builder() const
+				noexcept
 			{
-				return m_mesh_builder;
+				MeshBuilderSharedPtr result;
+
+				result = m_mesh_builder.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
-			inline const MeshCacheSharedPtr &get_mesh_cache() const
+			inline MeshCacheSharedPtr get_mesh_cache() const
+				noexcept
 			{
-				return m_mesh_cache;
+				MeshCacheSharedPtr result;
+
+				result = m_mesh_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
-			inline const MeshDataCacheSharedPtr
-				&get_mesh_data_cache() const
-			{
-				return m_mesh_data_cache;
-			}
-
-			inline const MaterialCacheSharedPtr
-				&get_material_cache() const
-			{
-				return m_material_cache;
-			}
-
-			inline const MaterialBuilderWeakPtr
-				&get_material_builder() const noexcept
-			{
-				return m_material_builder;
-			}
-
-			inline const TextureCacheWeakPtr
-				&get_texture_cache() const noexcept
-			{
-				return m_texture_cache;
-			}
-
-			inline const EffectCacheSharedPtr &get_effect_cache()
+			inline MeshDataCacheSharedPtr get_mesh_data_cache()
 				const noexcept
 			{
-				return m_effect_cache;
+				MeshDataCacheSharedPtr result;
+
+				result = m_mesh_data_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
+			inline EffectCacheSharedPtr get_effect_cache() const
+				noexcept
+			{
+				EffectCacheSharedPtr result;
+
+				result = m_effect_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
+			inline MaterialCacheSharedPtr get_material_cache()
+				const noexcept
+			{
+				MaterialCacheSharedPtr result;
+
+				result = m_material_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
+			inline MaterialDescriptionCacheSharedPtr
+				get_material_description_cache() const noexcept
+			{
+				MaterialDescriptionCacheSharedPtr result;
+
+				result = m_material_description_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
+			inline TerrainBuilderSharedPtr get_terrain_builder()
+				const noexcept
+			{
+				TerrainBuilderSharedPtr result;
+
+				result = m_terrain_builder.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
+			inline TextureCacheSharedPtr get_texture_cache()
+				const noexcept
+			{
+				TextureCacheSharedPtr result;
+
+				result = m_texture_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
 			inline const ReaderSharedPtr &get_reader() const
@@ -141,15 +202,15 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			EditorMapLoader(
-				const CodecManagerSharedPtr &codec_manager,
+				const CodecManagerWeakPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
-				const EffectCacheSharedPtr &effect_cache,
-				const MeshBuilderSharedPtr &mesh_builder,
-				const MeshCacheSharedPtr &mesh_cache,
-				const MeshDataCacheSharedPtr &mesh_data_cache,
-				const MaterialCacheSharedPtr &material_cache,
-				const MaterialBuilderWeakPtr &material_builder,
+				const EffectCacheWeakPtr &effect_cache,
+				const MeshBuilderWeakPtr &mesh_builder,
+				const MeshCacheWeakPtr &mesh_cache,
+				const MeshDataCacheWeakPtr &mesh_data_cache,
+				const MaterialCacheWeakPtr &material_cache,
+				const TerrainBuilderWeakPtr &terrain_builder,
 				const TextureCacheWeakPtr &texture_cache,
 				const FreeIdsManagerSharedPtr &free_ids,
 				EditorMapData &data);

@@ -156,14 +156,14 @@ namespace eternal_lands
 		return effect_texture_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectTextureType value)
+	OutStream &operator<<(OutStream &str, const EffectTextureType value)
 	{
 		str << EffectTextureUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectTextureType &value)
+	InStream &operator>>(InStream &str, EffectTextureType &value)
 	{
 		std::string string;
 

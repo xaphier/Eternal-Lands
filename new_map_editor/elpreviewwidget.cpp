@@ -85,9 +85,9 @@ void ELPreviewWidget::initializeGL()
 
 	m_global_vars->set_shadow_quality(sqt_no);
 	m_global_vars->set_shadow_map_size(2);
-	m_global_vars->set_clipmap_size(512);
-	m_global_vars->set_clipmap_world_size(8);
-	m_global_vars->set_clipmap_slices(1);
+	m_global_vars->set_clipmap_terrain_size(512);
+	m_global_vars->set_clipmap_terrain_world_size(8);
+	m_global_vars->set_clipmap_terrain_slices(1);
 	m_global_vars->set_fog(false);
 	m_global_vars->set_use_simd(true);
 	m_global_vars->set_use_s3tc_for_actors(true);

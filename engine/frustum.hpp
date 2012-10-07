@@ -128,7 +128,7 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const PlaneType value);
+	OutStream &operator<<(OutStream &str, const PlaneType value);
 
 }
 

@@ -1,5 +1,5 @@
 /****************************************************************************
- *            clipmapdata.hpp
+ *            clipmapterraindata.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -17,13 +17,13 @@
 
 /**
  * @file
- * @brief The @c class ClipmapData.
- * This file contains the @c class ClipmapData.
+ * @brief The @c class ClipmapTerrainData.
+ * This file contains the @c class ClipmapTerrainData.
  */
 namespace eternal_lands
 {
 
-	class ClipmapData
+	class ClipmapTerrainData
 	{
 		private:
 			StringVector m_albedo_maps;
@@ -33,8 +33,8 @@ namespace eternal_lands
 			glm::vec4 m_color;
 
 		public:
-			ClipmapData();
-			~ClipmapData() noexcept;
+			ClipmapTerrainData();
+			~ClipmapTerrainData() noexcept;
 
 			inline void set_albedo_maps(
 				const StringVector &albedo_maps) noexcept

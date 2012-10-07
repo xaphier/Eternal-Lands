@@ -220,7 +220,7 @@ namespace eternal_lands
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_mesh_data_cache(),
 			get_scene_resources().get_material_cache(),
-			get_scene_resources().get_material_builder(),
+			get_scene_resources().get_terrain_builder(),
 			get_scene_resources().get_texture_cache(),
 			get_free_ids(), data));
 
@@ -229,11 +229,51 @@ namespace eternal_lands
 		map_loader->load(name);
 	}
 
-	void EditorScene::set_terrain(const ImageSharedPtr &displacement_map,
+	void EditorScene::set_terrain_geometry_maps(
+		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
 	{
-		get_map()->set_terrain(displacement_map, normal_map, dudv_map);
+		get_map()->set_terrain_geometry_maps(displacement_map,
+			normal_map, dudv_map);
+	}
+
+	void EditorScene::set_terrain_blend_map(
+		const ImageSharedPtr &blend_map)
+	{
+		get_map()->set_terrain_blend_map(blend_map);
+		rebuild_terrain_map();
+	}
+
+	void EditorScene::set_terrain_material_maps(
+		const StringVector &albedo_maps,
+		const StringVector &specular_maps)
+	{
+		get_map()->set_terrain_material_maps(albedo_maps,
+			specular_maps);
+		rebuild_terrain_map();
+	}
+
+	void EditorScene::update_terrain_geometry_maps(
+		const ImageUpdate &displacement_map,
+		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
+	{
+		get_map()->update_terrain_geometry_maps(displacement_map,
+			normal_map, dudv_map);
+		rebuild_terrain_map();
+	}
+
+	void EditorScene::update_terrain_blend_map(
+		const ImageUpdate &blend_map)
+	{
+		get_map()->update_terrain_blend_map(blend_map);
+		rebuild_terrain_map();
+	}
+
+	void EditorScene::set_terrain_effect_main(const String &effect_main)
+	{
+		get_map()->set_terrain_effect_main(effect_main);
+		rebuild_terrain_map();
 	}
 
 	void EditorScene::depth_read()

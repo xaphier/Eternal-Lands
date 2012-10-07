@@ -1,11 +1,11 @@
 /****************************************************************************
- *            clipmap.cpp
+ *            clipmapterrain.cpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
-#include "clipmap.hpp"
+#include "clipmapterrain.hpp"
 #include "texturetargetutil.hpp"
 #include "textureformatutil.hpp"
 #include "materialdescription.hpp"
@@ -24,17 +24,18 @@ namespace eternal_lands
 
 	}
 
-	Clipmap::Clipmap(const MaterialBuilderWeakPtr &material_builder):
+	ClipmapTerrain::ClipmapTerrain(
+		const MaterialBuilderWeakPtr &material_builder):
 		m_material_builder(material_builder), m_world_size(16.0f),
 		m_distance(0.0f), m_size(512), m_dir_index(0), m_slices(4)
 	{
 	}
 
-	Clipmap::~Clipmap() noexcept
+	ClipmapTerrain::~ClipmapTerrain() noexcept
 	{
 	}
 
-	void Clipmap::rebuild(const glm::vec2 &terrain_world_size,
+	void ClipmapTerrain::rebuild(const glm::vec2 &terrain_world_size,
 		const float view_distance, const float world_size,
 		const Uint16 size, const Uint16 slices)
 	{
@@ -58,8 +59,8 @@ namespace eternal_lands
 		m_terrain_texture_size.w = 1.0f / terrain_texture_size.y;
 	}
 
-	bool Clipmap::update(const glm::vec3 &camera, const glm::vec3 &view_dir,
-		const glm::vec2 &focus)
+	bool ClipmapTerrain::update(const glm::vec3 &camera,
+		const glm::vec3 &view_dir, const glm::vec2 &focus)
 	{
 		glm::vec2 dir;
 		Uint16 dir_index;
@@ -85,7 +86,8 @@ namespace eternal_lands
 		return false;
 	}
 
-	Uint16 Clipmap::get_dir_index(const glm::vec2 &view_dir) const noexcept
+	Uint16 ClipmapTerrain::get_dir_index(const glm::vec2 &view_dir) const
+		noexcept
 	{
 		Uint16 dir_index;
 
@@ -119,7 +121,7 @@ namespace eternal_lands
 		return dir_index;
 	}
 
-	void Clipmap::update_slice(const Uint16 slice)
+	void ClipmapTerrain::update_slice(const Uint16 slice)
 	{
 		glm::mat2x3 texture_matrix;
 		glm::vec2 offset, scale;
@@ -128,13 +130,13 @@ namespace eternal_lands
 		world_size = get_world_size() *	static_cast<float>(1 << slice);
 
 		offset = get_focus() - world_size * 0.5f;
-
+/*
 		offset -= dir[get_dir_index()] * world_size * 0.495f;
 //		offset += dir[get_dir_index()] * get_world_size() * 0.5f;
 //		offset -= dir[get_dir_index()] *
 //			(get_world_size() * 0.5f - m_distance);
 		offset += dir[get_dir_index()] * m_distance * 1.05f;
-
+*/
 		offset /= world_size;
 		scale = get_terrain_world_size() / world_size;
 

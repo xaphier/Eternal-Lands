@@ -1,5 +1,5 @@
 /****************************************************************************
- *            abstractterrainmanager.hpp
+ *            abstractterrain.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -18,26 +18,55 @@
 
 /**
  * @file
- * @brief The @c class AbstractTerrainManager.
- * This file contains the @c class AbstractTerrainManager.
+ * @brief The @c class AbstractTerrain.
+ * This file contains the @c class AbstractTerrain.
  */
 namespace eternal_lands
 {
 
-	class AbstractTerrainManager: public boost::noncopyable
+	class AbstractTerrain: public boost::noncopyable
 	{
 		private:
+			const GlobalVarsSharedPtr m_global_vars;
 			BoundingBox m_bounding_box;
 			glm::vec4 m_terrain_size_data;
+			MaterialSharedPtr m_terrain_material;
+			MaterialSharedPtr m_clipmap_terrain_material;
+			const bool m_low_quality_terrain;
 
 			virtual TextureSharedPtr get_displacement_texture()
 				const = 0;
 			virtual TextureSharedPtr get_normal_texture()
 				const = 0;
 			virtual TextureSharedPtr get_dudv_texture() const = 0;
+			virtual void do_set_geometry_maps(
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map) = 0;
+			virtual void do_update_geometry_maps(
+				const ImageUpdate &displacement_map,
+				const ImageUpdate &normal_map,
+				const ImageUpdate &dudv_map) = 0;
+			void update_clipmap_terrain_material();
+			void set_albedo_maps(const StringVector &albedo_maps,
+				const TextureCacheSharedPtr &texture_cache);
+			void set_specular_maps(
+				const StringVector &specular_maps,
+				const TextureCacheSharedPtr &texture_cache);
 
 		protected:
-			AbstractTerrainManager();
+			AbstractTerrain(const GlobalVarsSharedPtr &global_vars,
+				const EffectCacheSharedPtr &effect_cache,
+				const MaterialBuilderSharedPtr
+					&material_builder,
+				const MaterialCacheSharedPtr &material_cache,
+				const String &material, const String &effect);
+
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const noexcept
+			{
+				return m_global_vars;
+			}
 
 			inline void set_bounding_box(
 				const BoundingBox &bounding_box) noexcept
@@ -55,7 +84,7 @@ namespace eternal_lands
 			}
 
 		public:
-			virtual ~AbstractTerrainManager() noexcept;
+			virtual ~AbstractTerrain() noexcept;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const = 0;
 			virtual void intersect(const Frustum &frustum,
@@ -64,12 +93,6 @@ namespace eternal_lands
 			virtual void intersect(const Frustum &frustum,
 				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const = 0;
-			virtual void set_clipmap_texture(
-				const TextureSharedPtr &texture) = 0;
-			virtual void update(
-				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
-				const ImageSharedPtr &dudv_map) = 0;
 			virtual void clear() = 0;
 			static const glm::vec3 &get_vector_scale() noexcept;
 			static const glm::vec3 &get_vector_min() noexcept;
@@ -79,15 +102,24 @@ namespace eternal_lands
 			static const glm::vec2 &get_vector_offset_rgb10_a2()
 				noexcept;
 			static const glm::vec4 &get_vector_rgb10_a2() noexcept;
-			MaterialSharedPtr build_clipmap_material(
-				const MaterialBuilderSharedPtr
-					&material_builder,
-				const EffectCacheSharedPtr &effect_cache,
-				const TextureCacheSharedPtr &texture_cache,
-				const StringVector &albedo_maps,
+			void set_clipmap_terrain_texture(
+				const TextureSharedPtr &texture);
+			void set_geometry_maps(
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map);
+			void set_blend_map(const ImageSharedPtr &blend_map,
+				const TextureCacheSharedPtr &texture_cache);
+			void update_geometry_maps(
+				const ImageUpdate &displacement_map,
+				const ImageUpdate &normal_map,
+				const ImageUpdate &dudv_map);
+			void update_blend_map(
+				const ImageUpdate &blend_map);
+			void set_texture_maps(const StringVector &albedo_maps,
 				const StringVector &specular_maps,
-				const ImageSharedPtrVector &blend_images,
-				const bool texture_arrays) const;
+				const TextureCacheSharedPtr &texture_cache);
+			void set_effect(const EffectSharedPtr &effect);
 
 			inline bool get_empty() const noexcept
 			{
@@ -109,6 +141,23 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_terrain_size_data;
+			}
+
+			inline const MaterialSharedPtr &get_terrain_material()
+				const noexcept
+			{
+				return m_terrain_material;
+			}
+
+			inline const MaterialSharedPtr
+				&get_clipmap_terrain_material() const noexcept
+			{
+				return m_clipmap_terrain_material;
+			}
+
+			inline bool get_low_quality_terrain() const noexcept
+			{
+				return m_low_quality_terrain;
 			}
 
 			static inline Uint16 get_tile_size() noexcept

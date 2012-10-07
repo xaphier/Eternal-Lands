@@ -7,6 +7,7 @@
 
 #include "texture.hpp"
 #include "image.hpp"
+#include "imageupdate.hpp"
 #include "exceptions.hpp"
 #include "logging.hpp"
 
@@ -1006,28 +1007,379 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
+	void Texture::get_image_sizes(const ImageSharedPtr &image,
+		Uint32 &width, Uint32 &height, Uint32 &depth, Uint32 &mipmaps,
+		Uint32 &layer) const
+	{
+		width = image->get_width();
+		height = image->get_height();
+		depth = image->get_depth();
+		layer = image->get_layer();
+		mipmaps = image->get_mipmap_count();
+
+		if (get_target() == image->get_texture_target())
+		{
+			return;
+		}
+
+		switch (get_target())
+		{
+			case ttt_texture_1d:
+				if (image->get_texture_target() ==
+					ttt_texture_1d_array)
+				{
+					if (image->get_layer() > 1)
+					{
+						LOG_DEBUG(lt_texture, UTF8(
+							"Only first layer of "
+							"%1% from image '%2%' "
+							"used for texture "
+							"'%3%'."),
+							image->get_layer() %
+							image->get_name() %
+							get_name());
+					}
+
+					return;
+				}
+
+				if (((image->get_texture_target() ==
+					ttt_texture_2d) ||
+					(image->get_texture_target() ==
+						ttt_texture_rectangle)) &&
+					(image->get_height() <= 1))
+				{
+					return;
+				}
+
+				break;
+			case ttt_texture_1d_array:
+				if (image->get_texture_target() ==
+					ttt_texture_1d)
+				{
+					layer = 1;
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_rectangle)
+				{
+					layer = image->get_height();
+					break;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_2d)
+				{
+					layer = image->get_height();
+
+					if (image->has_mipmaps())
+					{
+						LOG_DEBUG(lt_texture, UTF8(
+							"No mipmaps from image"
+							" '%1%' used for "
+							"texture '%1%'."),
+							image->get_name() %
+							get_name());
+					}
+
+					mipmaps = 0;
+					return;
+				}
+
+				break;
+			case ttt_texture_2d:
+				if (image->get_texture_target() ==
+					ttt_texture_1d)
+				{
+					height = 1;
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_1d_array)
+				{
+					if (image->has_mipmaps())
+					{
+						LOG_DEBUG(lt_texture, UTF8(
+							"No mipmaps from image"
+							" '%1%' used for "
+							"texture '%1%'."),
+							image->get_name() %
+							get_name());
+					}
+
+					mipmaps = 0;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_rectangle)
+				{
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_2d_array)
+				{
+					if (image->get_layer() > 1)
+					{
+						LOG_DEBUG(lt_texture, UTF8(
+							"Only first layer of "
+							"%1% from image '%2%' "
+							"used for texture "
+							"'%3%'."),
+							image->get_layer() %
+							image->get_name() %
+							get_name());
+					}
+					return;
+				}
+
+				if ((image->get_texture_target() ==
+					ttt_texture_3d) &&
+					(image->get_height() <= 1))
+				{
+					return;
+				}
+
+				break;
+			case ttt_texture_rectangle:
+				if (image->has_mipmaps())
+				{
+					LOG_DEBUG(lt_texture, UTF8("No mipmaps"
+						" from image '%1%' used for "
+						"texture '%1%'."),
+						image->get_name() % get_name());
+				}
+
+				mipmaps = 0;
+
+				if (image->get_texture_target() ==
+					ttt_texture_1d)
+				{
+					height = 1;
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_1d_array)
+				{
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_2d)
+				{
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_2d_array)
+				{
+					if (image->get_layer() > 1)
+					{
+						LOG_DEBUG(lt_texture, UTF8(
+							"Only first layer of "
+							"%1% from image '%2%' "
+							"used for texture "
+							"'%3%'."),
+							image->get_layer() %
+							image->get_name() %
+							get_name());
+					}
+
+					return;
+				}
+
+				if ((image->get_texture_target() ==
+					ttt_texture_3d) &&
+					(image->get_height() <= 1))
+				{
+					return;
+				}
+
+				break;
+			case ttt_texture_3d:
+				if (image->get_texture_target() ==
+					ttt_texture_1d)
+				{
+					height = 1;
+					depth = 1;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_1d_array)
+				{
+					depth = 1;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_2d)
+				{
+					depth = 1;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_rectangle)
+				{
+					depth = 1;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_2d_array)
+				{
+					if (image->has_mipmaps())
+					{
+						LOG_DEBUG(lt_texture, UTF8(
+							"No mipmaps from image"
+							" '%1%' used for "
+							"texture '%1%'."),
+							image->get_name() %
+							get_name());
+					}
+
+					mipmaps = 0;
+
+					return;
+				}
+
+				break;
+			case ttt_texture_2d_array:
+				if (image->get_texture_target() ==
+					ttt_texture_1d)
+				{
+					height = 1;
+					depth = 1;
+					layer = 1;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_1d_array)
+				{
+					height = 1;
+					depth = 1;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_2d)
+				{
+					depth = 1;
+					layer = 1;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_rectangle)
+				{
+					depth = 1;
+					layer = 1;
+
+					return;
+				}
+
+				if (image->get_texture_target() ==
+					ttt_texture_3d)
+				{
+					layer = image->get_depth();
+
+					if (image->has_mipmaps())
+					{
+						LOG_DEBUG(lt_texture, UTF8(
+							"No mipmaps from image"
+							" '%1%' used for "
+							"texture '%1%'."),
+							image->get_name() %
+							get_name());
+					}
+
+					mipmaps = 0;
+
+					break;
+				}
+
+				break;
+			case ttt_texture_cube_map:
+				if (image->get_texture_target() ==
+					ttt_texture_cube_map_array)
+				{
+					if (image->get_layer() > 1)
+					{
+						LOG_DEBUG(lt_texture, UTF8(
+							"Only first layer of "
+							"%1% from image '%2%' "
+							"used for texture "
+							"'%3%'."),
+							image->get_layer() %
+							image->get_name() %
+							get_name());
+					}
+
+					return;
+				}
+
+				break;
+			case ttt_texture_cube_map_array:
+				if (image->get_texture_target() ==
+					ttt_texture_cube_map)
+				{
+					layer = 1;
+					depth = 1;
+
+					return;
+				}
+
+				break;
+			case ttt_texture_2d_multisample:
+			case ttt_texture_2d_multisample_array:
+				break;
+		}
+
+		EL_THROW_MESSAGE_EXCEPTION(UTF8("Can't use image '%1%' with "
+			"texture target type '%2%' as source for texture '%3%'"
+			" with texture target type '%4%'"), image->get_name() %
+			image->get_texture_target() % get_name() %
+			get_target(), InvalidParameterException());
+	}
+
 	void Texture::set_image(const ImageSharedPtr &image)
 	{
 		Uint32 width, height, depth, mip, level, mipmaps, layer;
 
 		CHECK_GL_ERROR();
 
-		m_rebuild |= (get_width() != image->get_width()) ||
-			(get_height() != image->get_height()) ||
-			(get_depth() != image->get_depth());
-		set_width(image->get_width());
-		set_height(image->get_height());
-		set_depth(image->get_depth());
+		get_image_sizes(image, width, height, depth, mipmaps, layer);
+
+		m_rebuild |= (get_width() != width) ||
+			(get_height() != height) ||
+			(get_depth() != depth);
+		set_width(width);
+		set_height(height);
+		set_depth(depth);
 
 		build_texture_id();
 		bind();
 
 		CHECK_GL_ERROR_NAME(get_name());
 
-		if (image->has_mipmaps())
+		if (mipmaps > 0)
 		{
-			mipmaps = std::min(image->get_mipmap_count(),
-				get_mipmap_count());
+			mipmaps = std::min(mipmaps, static_cast<Uint32>(
+				get_mipmap_count()));
 			level = mipmaps + 1;
 
 			glTexParameteri(get_gl_target(), GL_TEXTURE_MAX_LEVEL,
@@ -1056,11 +1408,6 @@ namespace eternal_lands
 		}
 
 		m_used_mipmaps = mipmaps;
-
-		width = get_width();
-		height = get_height();
-		depth = get_depth();
-		layer = get_depth();
 
 		LOG_DEBUG(lt_texture, UTF8("Loading texture %1% of format "
 			"%2% and target '%3%'."), get_name() % get_format() %
@@ -1137,22 +1484,25 @@ namespace eternal_lands
 
 	void Texture::set_images(const ImageSharedPtrVector &images)
 	{
-		Uint32 layer, i, w, h, mip, level, mipmaps;
+		Uint32 layer, i, width, height, depth, mip, level, mipmaps;
 
 		CHECK_GL_ERROR();
 
 		RANGE_CECK_MIN(images.size(), 1, UTF8("not enough images."));
 
-		m_rebuild |= (get_width() != images[0]->get_width()) ||
-			(get_height() != images[0]->get_height()) ||
-			(get_depth() != images.size()) ||
-			(get_target() != ttt_texture_2d_array);
-		set_width(images[0]->get_width());
-		set_height(images[0]->get_height());
-		set_target(ttt_texture_2d_array);
-		set_depth(images.size());
+		get_image_sizes(images[0], width, height, depth, mipmaps,
+			layer);
 
-		mipmaps = images[0]->get_mipmap_count();
+		depth = images.size();
+		layer = images.size();
+
+		m_rebuild |= (get_width() != width) ||
+			(get_height() != height) ||
+			(get_depth() != depth);
+
+		set_width(width);
+		set_height(height);
+		set_depth(depth);
 
 		BOOST_FOREACH(const ImageSharedPtr &image, images)
 		{
@@ -1196,10 +1546,10 @@ namespace eternal_lands
 		build_texture_id();
 		bind();
 
-		if (images[0]->has_mipmaps())
+		if (mipmaps > 0)
 		{
-			mipmaps = std::min(images[0]->get_mipmap_count(),
-				get_mipmap_count());
+			mipmaps = std::min(mipmaps, static_cast<Uint32>(
+				get_mipmap_count()));
 			level = mipmaps + 1;
 
 			glTexParameteri(get_gl_target(), GL_TEXTURE_MAX_LEVEL,
@@ -1230,65 +1580,41 @@ namespace eternal_lands
 
 		m_used_mipmaps = mipmaps;
 
-		if (mipmaps > 0)
-		{
-			glTexParameteri(get_gl_target(), GL_TEXTURE_MAX_LEVEL,
-				get_used_mipmaps());
-		}
-		else
-		{
-			if (get_mipmap_count() > 0)
-			{
-				glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-
-				glTexParameteri(get_gl_target(),
-					GL_TEXTURE_MAX_LEVEL,
-					get_mipmap_count());
-
-				glTexParameteri(get_gl_target(),
-					GL_GENERATE_MIPMAP, GL_TRUE);
-			}
-		}
-
 		CHECK_GL_ERROR_NAME(get_name());
-
-		w = get_width();
-		h = get_height();
-		layer = get_depth();
 
 		for (mip = 0; mip < level; mip++)
 		{
-			set_texture_image_3d(w, h, layer, mip);
+			set_texture_image_3d(width, height, layer, mip);
 
-			if (w > 1)
+			if (width > 1)
 			{
-				w = w / 2;
+				width = width / 2;
 			}
 
-			if (h > 1)
+			if (height > 1)
 			{
-				h = h / 2;
+				height = height / 2;
 			}
 		}
 
 		for (i = 0; i < layer; ++i)
 		{
-			w = get_width();
-			h = get_height();
+			width = get_width();
+			height = get_height();
 
 			for (mip = 0; mip < level; mip++)
 			{
-				set_texture_image_2d_layer(w, h, i, mip,
-					images[i]);
+				set_texture_image_2d_layer(width, height, i,
+					mip, images[i]);
 
-				if (w > 1)
+				if (width > 1)
 				{
-					w = w / 2;
+					width = width / 2;
 				}
 
-				if (h > 1)
+				if (height > 1)
 				{
-					h = h / 2;
+					height = height / 2;
 				}
 			}
 		}
@@ -1307,18 +1633,16 @@ namespace eternal_lands
 	}
 
 	void Texture::sub_texture(const Uint16 mipmap,
-		const ImageSharedPtr &image, const glm::uvec3 &position)
+		const ImageSharedPtr &image, const glm::uvec3 &offsets)
 	{
-		glm::uvec3 zero = glm::uvec3(0);
-
-		sub_texture(mipmap, 0, image, position, zero,
+		sub_texture(mipmap, 0, image, offsets, glm::uvec3(0),
 			image->get_sizes());
 	}
 
 	void Texture::sub_texture(const Uint16 texture_mipmap,
 		const Uint16 image_mipmap, const ImageSharedPtr &image,
-		const glm::uvec3 &texture_position,
-		const glm::uvec3 &image_position, const glm::uvec3 &size)
+		const glm::uvec3 &texture_offsets,
+		const glm::uvec3 &image_offsets, const glm::uvec3 &sizes)
 	{
 		CHECK_GL_ERROR();
 
@@ -1329,33 +1653,32 @@ namespace eternal_lands
 		switch (get_target())
 		{
 			case ttt_texture_1d:
-				set_texture_image_1d(size[0], texture_mipmap,
-					image_mipmap, image, texture_position,
-					image_position);
+				set_texture_image_1d(sizes[0], texture_mipmap,
+					image_mipmap, image, texture_offsets,
+					image_offsets);
 				break;
 			case ttt_texture_2d:
 			case ttt_texture_1d_array:
 			case ttt_texture_rectangle:
-				set_texture_image_2d(size[0], size[1],
+				set_texture_image_2d(sizes[0], sizes[1],
 					texture_mipmap, image_mipmap, image,
-					texture_position, image_position);
+					texture_offsets, image_offsets);
 				break;
 			case ttt_texture_3d:
 			case ttt_texture_2d_array:
-				set_texture_image_3d(size[0], size[1], size[2],
-					texture_mipmap, image_mipmap, image,
-					texture_position, image_position);
+				set_texture_image_3d(sizes[0], sizes[1],
+					sizes[2], texture_mipmap, image_mipmap,
+					image, texture_offsets, image_offsets);
 				break;
 			case ttt_texture_cube_map:
-				set_texture_image_cube_map(size[0], size[1],
+				set_texture_image_cube_map(sizes[0], sizes[1],
 					texture_mipmap, image_mipmap, image,
-					texture_position, image_position);
+					texture_offsets, image_offsets);
 				break;
 			case ttt_texture_cube_map_array:
-				set_texture_image_cube_map(size[0], size[1],
-					size[2], texture_mipmap, image_mipmap,
-					image, texture_position,
-					image_position);
+				set_texture_image_cube_map(sizes[0], sizes[1],
+					sizes[2], texture_mipmap, image_mipmap,
+					image, texture_offsets, image_offsets);
 				break;
 			case ttt_texture_2d_multisample:
 			case ttt_texture_2d_multisample_array:
@@ -1368,9 +1691,30 @@ namespace eternal_lands
 
 		CHECK_GL_ERROR_NAME(get_name());
 
+		set_texture_parameter();
+
+		CHECK_GL_ERROR_NAME(get_name());
+
 		unbind();
 
 		CHECK_GL_ERROR_NAME(get_name());
+	}
+
+	void Texture::sub_texture(const Uint16 texture_mipmap,
+		const ImageUpdate &image_update,
+		const glm::uvec3 &texture_offsets)
+	{
+		sub_texture(texture_mipmap, image_update.get_mipmap(),
+			image_update.get_image(), texture_offsets,
+			image_update.get_offsets(), image_update.get_sizes());
+	}
+
+	void Texture::sub_texture(const ImageUpdate &image_update)
+	{
+		sub_texture(image_update.get_mipmap(),
+			image_update.get_mipmap(), image_update.get_image(),
+			image_update.get_offsets(),
+			image_update.get_offsets(), image_update.get_sizes());
 	}
 
 	void Texture::calc_size()
@@ -1465,7 +1809,7 @@ namespace eternal_lands
 		const Uint32 depth, const Uint16 mipmaps,
 		const Uint16 samples)
 	{
-		Uint32 w, h, d, mip, layer;
+		Uint32 w, h, d, mip, layer, max_mipmaps;
 
 		CHECK_GL_ERROR();
 
@@ -1491,8 +1835,9 @@ namespace eternal_lands
 		h = get_height();
 		d = get_depth();
 		layer = get_depth();
+		max_mipmaps = get_used_mipmaps() + 1;
 
-		for (mip = 0; mip < (get_used_mipmaps() + 1); mip++)
+		for (mip = 0; mip < max_mipmaps; mip++)
 		{
 			switch (get_target())
 			{
@@ -1745,6 +2090,9 @@ namespace eternal_lands
 			m_rebuild = false;
 		}
 
+		assert(!m_rebuild);
+		assert(m_texture_id != 0);
+
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
@@ -1811,21 +2159,21 @@ namespace eternal_lands
 		VALUE_NOT_IN_SWITCH(value, UTF8("TextureWrapType"));
 	}
 
-	OutStream& operator<<(OutStream &str, const TextureFilterType value)
+	OutStream &operator<<(OutStream &str, const TextureFilterType value)
 	{
 		str << Texture::get_str(value);
 
 		return str;
 	}
 
-	OutStream& operator<<(OutStream &str, const TextureMipmapType value)
+	OutStream &operator<<(OutStream &str, const TextureMipmapType value)
 	{
 		str << Texture::get_str(value);
 
 		return str;
 	}
 
-	OutStream& operator<<(OutStream &str, const TextureWrapType value)
+	OutStream &operator<<(OutStream &str, const TextureWrapType value)
 	{
 		str << Texture::get_str(value);
 

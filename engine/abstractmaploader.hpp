@@ -35,8 +35,9 @@ namespace eternal_lands
 		mit_height_map,
 		mit_tile_map,
 		mit_walk_map,
-		mit_ambient,
-		mit_options
+		mit_options,
+		mit_terrain,
+		mit_water
 	};
 
 	typedef std::set<MapItemsType> MapItemsTypeSet;
@@ -58,7 +59,7 @@ namespace eternal_lands
 			const FileSystemSharedPtr m_file_system;
 			const FreeIdsManagerSharedPtr m_free_ids;
 			ReaderSharedPtr m_reader;
-			StringVector m_material_names;
+			StringVector m_names;
 			StringSet m_harvestables, m_entrables;
 
 		protected:
@@ -93,8 +94,7 @@ namespace eternal_lands
 			void read_decal(const Uint32 index,
 				const Uint32 offset,
 				const MapVersionType version);
-			void read_material_name(const Uint32 index,
-				const Uint32 offset,
+			void read_name(const Uint32 index,
 				const MapVersionType version);
 
 			void read_3d_objects(const Uint32 obj_3d_size,
@@ -119,10 +119,10 @@ namespace eternal_lands
 				const MapVersionType version);
 			void read_terrain(const Uint32 terrain_offset,
 				const MapVersionType version);
-			void read_material_names(
-				const Uint32 material_name_size,
-				const Uint32 material_name_count,
-				const Uint32 material_name_offset,
+			void read_water(const Uint32 terrain_offset,
+				const MapVersionType version);
+			void read_names(const Uint32 name_count,
+				const Uint32 name_offset,
 				const MapVersionType version);
 			void read_height_map(const Uint32 height_map_width,
 				const Uint32 height_map_height,
@@ -132,7 +132,8 @@ namespace eternal_lands
 				const Uint32 tile_map_height,
 				const Uint32 tile_map_offset,
 				const MapVersionType version);
-			void read(const String &name);
+			void read(const String &name,
+				MapItemsTypeSet skip_items = MapItemsTypeSet());
 			static ObjectDescription get_object_description(
 				const glm::vec3 &translation,
 				const glm::vec3 &rotation_angles,
@@ -143,7 +144,7 @@ namespace eternal_lands
 				const BlendType blend);
 			SelectionType get_selection(const String &name) const
 				noexcept;
-			StringVector get_material_names(const Uint32 index,
+			StringVector get_names(const Uint32 index,
 				const Uint32 count) const;
 
 			virtual void add_object(const glm::vec3 &position,

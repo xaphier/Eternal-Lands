@@ -45,11 +45,16 @@ namespace eternal_lands
 			Uint32 m_ids;
 
 			virtual ShaderSourceParameterVector get_parameters(
-				const ShaderVersionType version) const;
+				const ShaderVersionType version) const
+				override;
 			virtual String get_source(
-				const ShaderVersionType version) const;
-			virtual void load_xml_node(const xmlNodePtr node);
-			void save_xml(const XmlWriterSharedPtr &writer);
+				const ShaderVersionType version) const
+				override;
+			virtual void do_load_xml(const xmlNodePtr node)
+				override;
+			virtual void do_save_xml(
+				const XmlWriterSharedPtr &xml_writer) const
+				override;
 			void load_nodes_xml(const xmlNodePtr node);
 			void load_connection_xml(const xmlNodePtr node,
 				UuidEffectNodePortPtrMap &ports);
@@ -58,7 +63,7 @@ namespace eternal_lands
 
 		public:
 			EffectNodes();
-			virtual ~EffectNodes() noexcept;
+			virtual ~EffectNodes() noexcept override;
 			EffectNodePtr add_color(const String &name);
 			EffectNodePtr add_direction(const String &name);
 			EffectNodePtr add_constant(const String &name,
@@ -79,7 +84,6 @@ namespace eternal_lands
 				ShaderSourceParameterVector
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str);
-			void save_xml(const String &file_name);
 			void remove(const EffectNodePtr effect_node);
 			void set_texture_unit(const String &name,
 				const TextureTargetType target,
@@ -92,9 +96,10 @@ namespace eternal_lands
 				const StringVector &default_texture,
 				const TextureTargetType target,
 				const Uint16 index);
-			virtual ShaderSourceType get_type() const;
+			virtual ShaderSourceType get_type() const override;
 			virtual bool get_has_data(
-				const ShaderVersionType version) const;
+				const ShaderVersionType version) const
+				override;
 			static String get_xml_id();
 
 			inline Uint32 get_node_count() const

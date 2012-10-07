@@ -38,11 +38,14 @@ namespace eternal_lands
 			typedef boost::ptr_map<ShaderSourceTypeStringPair,
 					AbstractShaderSource>
 				ShaderSourceTypeStringPairAbstractShaderSourceMap;
+			typedef std::auto_ptr<AbstractShaderSource>
+				AbstractShaderSourceAutoPtr;
 
 			ShaderSourceTypeStringPairAbstractShaderSourceMap
 				m_shader_sources;
 			ShaderSourceTypeStringMap m_default_sources;
 			const GlobalVarsSharedPtr m_global_vars;
+			const FileSystemSharedPtr m_file_system;
 			const UniformBufferDescriptionCacheWeakPtr
 				m_uniform_buffer_description_cache;
 			boost::scoped_ptr<ShaderSourceOptimizer> m_optimizer;
@@ -51,6 +54,18 @@ namespace eternal_lands
 			Uint16 m_fragment_lights_count;
 			Uint16 m_bones_count;
 			bool m_dynamic_lights_count;
+
+			inline const GlobalVarsSharedPtr &get_global_vars()
+				const noexcept
+			{
+				return m_global_vars;
+			}
+
+			inline const FileSystemSharedPtr &get_file_system()
+				const noexcept
+			{
+				return m_file_system;
+			}
 
 			inline UniformBufferDescriptionCacheSharedPtr
 				get_uniform_buffer_description_cache() const
@@ -151,28 +166,26 @@ namespace eternal_lands
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
-			void load_shader_source(
-				const FileSystemSharedPtr &file_system,
-				const String &file_name);
+			void load_shader_source(const String &file_name,
+				AbstractShaderSourceAutoPtr &shader_source)
+				const;
+			bool load_shader_source(const String &file_name);
 			ShaderSourceTypeStringMap build_sources(
 				const EffectDescription &description) const;
 			bool check(const ShaderSourceTypeStringPair &source,
 				const ShaderVersionType data_type) const;
-			void load_xml(const FileSystemSharedPtr &file_system,
-				const xmlNodePtr node);
+			void load_xml(const xmlNodePtr node);
 			void load_sources(const xmlNodePtr node);
-			void load_shader_sources(
-				const FileSystemSharedPtr &file_system,
-				const String &dir);
 
 		public:
 			ShaderSourceBuilder(
 				const GlobalVarsSharedPtr &global_vars,
+				const FileSystemSharedPtr &file_system,
 				const UniformBufferDescriptionCacheWeakPtr
 					&uniform_buffer_description_cache);
 			~ShaderSourceBuilder() noexcept;
-			void load_xml(const FileSystemSharedPtr &file_system,
-				const String &file_name);
+			void load_xml(const String &file_name);
+			void load_shader_sources(const String &dir);
 			void build(const EffectDescription &description,
 				const ShaderBuildType shader_build,
 				const ShaderOutputType shader_output,
@@ -187,12 +200,6 @@ namespace eternal_lands
 				&get_default_sources() const noexcept
 			{
 				return m_default_sources;
-			}
-
-			inline const GlobalVarsSharedPtr &get_global_vars()
-				const noexcept
-			{
-				return m_global_vars;
 			}
 
 			/**

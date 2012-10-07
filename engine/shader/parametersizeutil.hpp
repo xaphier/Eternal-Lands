@@ -28,7 +28,7 @@ namespace eternal_lands
 		pst_lights_count,
 		pst_bones_count,
 		pst_shadow_maps_count,
-		pst_clipmap_slices,
+		pst_clipmap_terrain_slices,
 		pst_render_targets
 	};
 
@@ -51,8 +51,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const ParameterSizeType value);
-	InStream& operator>>(InStream &str, ParameterSizeType &value);
+	OutStream &operator<<(OutStream &str, const ParameterSizeType value);
+	InStream &operator>>(InStream &str, ParameterSizeType &value);
 
 }
 

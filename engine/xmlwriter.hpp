@@ -25,10 +25,11 @@ namespace eternal_lands
 	class XmlWriter: public boost::noncopyable
 	{
 		private:
+			const XmlBufferSharedPtr m_buffer;
 			xmlTextWriterPtr m_writer;
 
 		public:
-			XmlWriter(xmlBufferPtr buffer);
+			XmlWriter(const XmlBufferSharedPtr &buffer);
 			XmlWriter(const String &file_name);
 			~XmlWriter() noexcept;
 			void start_element(const String &name);

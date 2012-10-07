@@ -289,7 +289,7 @@ namespace eternal_lands
 		return !operator==(material);
 	}
 
-	OutStream& operator<<(OutStream &str, const MaterialDescription &value)
+	OutStream &operator<<(OutStream &str, const MaterialDescription &value)
 	{
 		SamplerParameterType sampler;
 		Uint16 i;

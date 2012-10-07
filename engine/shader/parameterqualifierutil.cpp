@@ -95,7 +95,7 @@ namespace eternal_lands
 		return parameter_qualifier_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str,
+	OutStream &operator<<(OutStream &str,
 		const ParameterQualifierType value)
 	{
 		str << ParameterQualifierUtil::get_str(value);
@@ -103,7 +103,7 @@ namespace eternal_lands
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, ParameterQualifierType &value)
+	InStream &operator>>(InStream &str, ParameterQualifierType &value)
 	{
 		std::string string;
 

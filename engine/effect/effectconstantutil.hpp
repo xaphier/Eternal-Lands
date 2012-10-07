@@ -54,8 +54,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const EffectConstantType value);
-	InStream& operator>>(InStream &str, EffectConstantType &value);
+	OutStream &operator<<(OutStream &str, const EffectConstantType value);
+	InStream &operator>>(InStream &str, EffectConstantType &value);
 
 }
 

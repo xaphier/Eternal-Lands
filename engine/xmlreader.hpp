@@ -25,16 +25,28 @@ namespace eternal_lands
 	class XmlReader: public boost::noncopyable
 	{
 		private:
+			const XmlBufferSharedPtr m_buffer;
 			xmlDocPtr m_doc;
 
+			bool init_from_reader(const ReaderSharedPtr &reader);
+			bool init_from_string(const std::string &str);
+
 		public:
-			XmlReader(xmlBufferPtr buffer);
-			XmlReader(const String &file_name);
+			XmlReader();
+			XmlReader(const XmlBufferSharedPtr &buffer);
 			XmlReader(const FileSystemSharedPtr &file_system,
 				const String &file_name);
-			XmlReader(const ReaderSharedPtr &reader);
+			XmlReader(const String &file_name);
 			~XmlReader() noexcept;
 			xmlNodePtr get_root_node();
+
+			static bool get_xml_reader(
+				const FileSystemSharedPtr &file_system,
+				const String &file_name,
+				XmlReaderSharedPtr &xml_reader);
+
+			static XmlReaderSharedPtr get_xml_reader_from_string(
+				const String &str);
 
 	};
 

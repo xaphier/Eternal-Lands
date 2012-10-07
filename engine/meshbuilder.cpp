@@ -379,7 +379,7 @@ namespace eternal_lands
 				"VertexFormatType")));
 	}
 
-	OutStream& operator<<(OutStream &str,
+	OutStream &operator<<(OutStream &str,
 		const VertexFormatType value)
 	{
 		str << MeshBuilder::get_str(value);
@@ -387,7 +387,7 @@ namespace eternal_lands
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, VertexFormatType &value)
+	InStream &operator>>(InStream &str, VertexFormatType &value)
 	{
 		std::string string;
 

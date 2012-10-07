@@ -169,7 +169,7 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const EffectDescription &value);
+	OutStream &operator<<(OutStream &str, const EffectDescription &value);
 
 }
 

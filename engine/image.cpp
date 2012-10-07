@@ -43,6 +43,161 @@ namespace eternal_lands
 			}
 		}
 
+		Uint16 clamp_mipmap_count(const glm::uvec3 &sizes,
+			const Uint16 mipmap_count, const bool array)
+		{
+			Uint32 tmp;
+			Uint16 result;
+
+			if (array)
+			{
+				tmp = std::max(sizes.x, sizes.y);
+			}
+			else
+			{
+				tmp = std::max(std::max(sizes.x, sizes.y),
+					sizes.z);
+			}
+
+			result = 0;
+
+			while (tmp > 1)
+			{
+				result++;
+				tmp = (tmp + 1) / 2;
+			}
+
+			return std::min(result, mipmap_count);
+		}
+
+		Uint16 get_channel_count(const GLenum format)
+		{
+			switch (format)
+			{
+				case GL_RED:
+				case GL_ALPHA:
+				case GL_LUMINANCE:
+					return 1;
+				case GL_RG:
+				case GL_LUMINANCE_ALPHA:
+					return 2;
+				case GL_RGB:
+				case GL_BGR:
+					return 3;
+				case GL_RGBA:
+				case GL_BGRA:
+					return 4;
+				case GL_NONE:
+					return 0;
+				default:
+					return 0;
+			}
+		}
+
+		Uint16 get_pixel_size(const GLenum type, const GLenum format)
+		{
+			switch (type)
+			{
+				case GL_UNSIGNED_BYTE:
+					return get_channel_count(format) *
+						sizeof(Uint8) * 8;
+				case GL_BYTE:
+					return get_channel_count(format) *
+						sizeof(Sint8) * 8;
+				case GL_UNSIGNED_SHORT:
+					return get_channel_count(format) *
+						sizeof(Uint16) * 8;
+				case GL_SHORT:
+					return get_channel_count(format) *
+						sizeof(Sint16) * 8;
+				case GL_UNSIGNED_INT:
+					return get_channel_count(format) *
+						sizeof(Uint32) * 8;
+				case GL_INT:
+					return get_channel_count(format) *
+						sizeof(Sint32) * 8;
+				case GL_FLOAT:
+					return get_channel_count(format) *
+						sizeof(float) * 8;
+				case GL_HALF_FLOAT:
+					return get_channel_count(format) *
+						sizeof(Uint16) * 8;
+				case GL_UNSIGNED_BYTE_3_3_2:
+				case GL_UNSIGNED_BYTE_2_3_3_REV:
+					return sizeof(Uint8) * 8;
+				case GL_UNSIGNED_SHORT_5_6_5:
+				case GL_UNSIGNED_SHORT_5_6_5_REV:
+				case GL_UNSIGNED_SHORT_4_4_4_4:
+				case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+				case GL_UNSIGNED_SHORT_5_5_5_1:
+				case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+					return sizeof(Uint16) * 8;
+				case GL_UNSIGNED_INT_8_8_8_8:
+				case GL_UNSIGNED_INT_8_8_8_8_REV:
+				case GL_UNSIGNED_INT_10_10_10_2:
+				case GL_UNSIGNED_INT_2_10_10_10_REV:
+				case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				case GL_UNSIGNED_INT_5_9_9_9_REV:
+					return sizeof(Uint32) * 8;
+				case GL_NONE:
+				default:
+					assert(false);
+					return 0;
+			}
+		}
+
+		bool is_valid(const GLenum type, const GLenum format,
+			const bool compressed)
+		{
+			switch (type)
+			{
+				case GL_UNSIGNED_BYTE:
+				case GL_BYTE:
+				case GL_UNSIGNED_SHORT:
+				case GL_SHORT:
+				case GL_UNSIGNED_INT:
+				case GL_INT:
+				case GL_FLOAT:
+				case GL_HALF_FLOAT:
+					return (GL_RGB == format) ||
+						(GL_RGBA == format) ||
+						(GL_BGR == format) ||
+						(GL_BGRA == format) ||
+						(GL_RED == format) ||
+						(GL_RG == format) ||
+						(GL_ALPHA == format) ||
+						(GL_LUMINANCE == format) ||
+						(GL_LUMINANCE_ALPHA == format);
+				case GL_UNSIGNED_BYTE_3_3_2:
+				case GL_UNSIGNED_BYTE_2_3_3_REV:
+				case GL_UNSIGNED_SHORT_5_6_5:
+				case GL_UNSIGNED_SHORT_5_6_5_REV:
+				case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				case GL_UNSIGNED_INT_5_9_9_9_REV:
+					return GL_RGB == format;
+				case GL_UNSIGNED_SHORT_4_4_4_4:
+				case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+				case GL_UNSIGNED_SHORT_5_5_5_1:
+				case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+				case GL_UNSIGNED_INT_8_8_8_8:
+				case GL_UNSIGNED_INT_8_8_8_8_REV:
+				case GL_UNSIGNED_INT_10_10_10_2:
+				case GL_UNSIGNED_INT_2_10_10_10_REV:
+					return (GL_RGBA == format) ||
+						(GL_BGRA == format);
+				case GL_NONE:
+					return compressed &&
+						(GL_NONE == format);
+				default:
+					return false;
+			}
+		}
+
+	}
+
+	Uint16 Image::get_channel_count() const
+	{
+		return eternal_lands::get_channel_count(get_format());
 	}
 
 	Uint32 Image::get_total_size() const
@@ -89,8 +244,16 @@ namespace eternal_lands
 			get_width() >> mipmap);
 		height = std::max(static_cast<Uint32>(1),
 			get_height() >> mipmap);
-		depth = std::max(static_cast<Uint32>(1),
-			get_depth() >> mipmap);
+
+		if (get_array())
+		{
+			depth = std::max(static_cast<Uint32>(1), get_depth());
+		}
+		else
+		{
+			depth = std::max(static_cast<Uint32>(1),
+				get_depth() >> mipmap);
+		}
 
 		assert(width > 0);
 		assert(height > 0);
@@ -134,44 +297,37 @@ namespace eternal_lands
 	Uint32 Image::get_buffer_pixel_offset(const Uint32 x, const Uint32 y,
 		const Uint32 z, const Uint16 mipmap) const
 	{
-		Uint32 width, height, depth;
+		glm::uvec3 sizes;
 
-		width = get_width(mipmap);
-		height = get_height(mipmap);
-		depth = get_depth(mipmap);
+		sizes = get_sizes(mipmap);
 
-		assert(width > 0);
-		assert(height > 0);
-		assert(depth > 0);
+		RANGE_CECK_MAX(mipmap, get_mipmap_count() + 1,
+			UTF8("value mipmap too big"));
+		RANGE_CECK_MAX(x, sizes.x, UTF8("value x too big"));
+		RANGE_CECK_MAX(y, sizes.y, UTF8("value y too big"));
+		RANGE_CECK_MAX(z, sizes.z, UTF8("value z too big"));
 
-		assert(x < width);
-		assert(y < height);
-		assert(z < depth);
-
-		return (get_pixel_size() / 8) * ((z * depth + y) * width + x);
+		return (get_pixel_size() / 8) * ((z * sizes.y + y) * sizes.x +
+			x);
 	}
 
 	Uint32 Image::get_buffer_block_offset(const Uint32 x, const Uint32 y,
 		const Uint32 z, const Uint16 mipmap) const
 	{
-		Uint32 width, height, depth;
+		glm::uvec3 sizes;
 
-		width = get_width(mipmap);
-		height = get_height(mipmap);
-		depth = get_depth(mipmap);
+		sizes = get_sizes(mipmap);
 
-		assert(width > 0);
-		assert(height > 0);
-		assert(depth > 0);
+		sizes.x = (sizes.x + 3) / 4;
+		sizes.y = (sizes.y + 3) / 4;
 
-		width = (width + 3) / 4;
-		height = (height + 3) / 4;
+		RANGE_CECK_MAX(mipmap, get_mipmap_count() + 1,
+			UTF8("value mipmap too big"));
+		RANGE_CECK_MAX(x, sizes.x, UTF8("value x too big"));
+		RANGE_CECK_MAX(y, sizes.y, UTF8("value y too big"));
+		RANGE_CECK_MAX(z, sizes.z, UTF8("value z too big"));
 
-		assert(x < width);
-		assert(y < height);
-		assert(z < depth);
-
-		return get_block_size() * ((z * depth + y) * width + x);
+		return get_block_size() * ((z * sizes.y + y) * sizes.x + x);
 	}
 
 	String Image::get_log_str() const
@@ -194,40 +350,34 @@ namespace eternal_lands
 		const TextureFormatType texture_format,
 		const glm::uvec3 &sizes, const Uint16 mipmap_count,
 		const Uint16 pixel_size, const GLenum format,
-		const GLenum type, const bool sRGB)
+		const GLenum type, const bool sRGB, const bool array)
+
 	{
 		assert(pixel_size >= 4);
 		assert((pixel_size % 4) == 0);
-		assert(sizes[0] > 0);
-		assert(sizes[1] > 0);
-		assert(sizes[2] > 0);
 
 		m_name = name;
 		m_cube_map = cube_map;
 		m_texture_format = texture_format;
 		m_sizes = sizes;
-		m_mipmap_count = mipmap_count;
+		m_mipmap_count = clamp_mipmap_count(sizes, mipmap_count, array);
 		m_pixel_size = pixel_size;
 		m_format = format;
 		m_type = type;
 		m_sRGB = sRGB;
+		m_array = array;
 
 		LOG_DEBUG(lt_image, UTF8("Setting image %1%."), get_log_str());
 
 		m_buffer = boost::make_shared<ReadWriteMemory>(
 			get_total_size());
-
-		memset(get_buffer()->get_ptr(), 0, get_buffer()->get_size());
 	}
 
 	Image::Image(const String &name, const bool cube_map,
 		const TextureFormatType texture_format,
-		const glm::uvec3 &sizes, const Uint16 mipmap_count)
+		const glm::uvec3 &sizes, const Uint16 mipmap_count,
+		const bool array)
 	{
-		assert(sizes[0] > 0);
-		assert(sizes[1] > 0);
-		assert(sizes[2] > 0);
-
 		TextureFormatUtil::get_source_format(texture_format, m_format,
 			m_type);
 
@@ -235,138 +385,15 @@ namespace eternal_lands
 		m_cube_map = cube_map;
 		m_texture_format = texture_format;
 		m_sizes = sizes;
-		m_mipmap_count = mipmap_count;
+		m_mipmap_count = clamp_mipmap_count(sizes, mipmap_count, array);
 		m_pixel_size = TextureFormatUtil::get_size(texture_format);
 		m_sRGB = TextureFormatUtil::get_sRGB(texture_format);
+		m_array = array;
 
 		LOG_DEBUG(lt_image, UTF8("Setting image %1%."), get_log_str());
 
 		m_buffer = boost::make_shared<ReadWriteMemory>(
 			get_total_size());
-
-		memset(get_buffer()->get_ptr(), 0, get_buffer()->get_size());
-	}
-
-	Uint16 Image::get_channel_count(const GLenum format)
-	{
-		switch (format)
-		{
-			case GL_RED:
-			case GL_ALPHA:
-			case GL_LUMINANCE:
-				return 1;
-			case GL_RG:
-			case GL_LUMINANCE_ALPHA:
-				return 2;
-			case GL_RGB:
-			case GL_BGR:
-				return 3;
-			case GL_RGBA:
-			case GL_BGRA:
-				return 4;
-			case GL_NONE:
-				return 0;
-			default:
-				return 0;
-		}
-	}
-
-	Uint16 Image::get_pixel_size(const GLenum type, const GLenum format)
-	{
-		switch (type)
-		{
-			case GL_UNSIGNED_BYTE:
-				return get_channel_count(format) *
-					sizeof(Uint8) * 8;
-			case GL_BYTE:
-				return get_channel_count(format) *
-					sizeof(Sint8) * 8;
-			case GL_UNSIGNED_SHORT:
-				return get_channel_count(format) *
-					sizeof(Uint16) * 8;
-			case GL_SHORT:
-				return get_channel_count(format) *
-					sizeof(Sint16) * 8;
-			case GL_UNSIGNED_INT:
-				return get_channel_count(format) *
-					sizeof(Uint32) * 8;
-			case GL_INT:
-				return get_channel_count(format) *
-					sizeof(Sint32) * 8;
-			case GL_FLOAT:
-				return get_channel_count(format) *
-					sizeof(float) * 8;
-			case GL_HALF_FLOAT:
-				return get_channel_count(format) *
-					sizeof(Uint16) * 8;
-			case GL_UNSIGNED_BYTE_3_3_2:
-			case GL_UNSIGNED_BYTE_2_3_3_REV:
-				return sizeof(Uint8) * 8;
-			case GL_UNSIGNED_SHORT_5_6_5:
-			case GL_UNSIGNED_SHORT_5_6_5_REV:
-			case GL_UNSIGNED_SHORT_4_4_4_4:
-			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
-			case GL_UNSIGNED_SHORT_5_5_5_1:
-			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
-				return sizeof(Uint16) * 8;
-			case GL_UNSIGNED_INT_8_8_8_8:
-			case GL_UNSIGNED_INT_8_8_8_8_REV:
-			case GL_UNSIGNED_INT_10_10_10_2:
-			case GL_UNSIGNED_INT_2_10_10_10_REV:
-			case GL_UNSIGNED_INT_10F_11F_11F_REV:
-			case GL_UNSIGNED_INT_5_9_9_9_REV:
-				return sizeof(Uint32) * 8;
-			case GL_NONE:
-			default:
-				assert(false);
-				return 0;
-		}
-	}
-
-	bool Image::is_valid(const GLenum type, const GLenum format,
-		const bool compressed)
-	{
-		switch (type)
-		{
-			case GL_UNSIGNED_BYTE:
-			case GL_BYTE:
-			case GL_UNSIGNED_SHORT:
-			case GL_SHORT:
-			case GL_UNSIGNED_INT:
-			case GL_INT:
-			case GL_FLOAT:
-			case GL_HALF_FLOAT:
-				return (GL_RGB == format) ||
-					(GL_RGBA == format) ||
-					(GL_BGR == format) ||
-					(GL_BGRA == format) ||
-					(GL_RED == format) ||
-					(GL_RG == format) ||
-					(GL_ALPHA == format) ||
-					(GL_LUMINANCE == format) ||
-					(GL_LUMINANCE_ALPHA == format);
-			case GL_UNSIGNED_BYTE_3_3_2:
-			case GL_UNSIGNED_BYTE_2_3_3_REV:
-			case GL_UNSIGNED_SHORT_5_6_5:
-			case GL_UNSIGNED_SHORT_5_6_5_REV:
-			case GL_UNSIGNED_INT_10F_11F_11F_REV:
-			case GL_UNSIGNED_INT_5_9_9_9_REV:
-				return GL_RGB == format;
-			case GL_UNSIGNED_SHORT_4_4_4_4:
-			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
-			case GL_UNSIGNED_SHORT_5_5_5_1:
-			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
-			case GL_UNSIGNED_INT_8_8_8_8:
-			case GL_UNSIGNED_INT_8_8_8_8_REV:
-			case GL_UNSIGNED_INT_10_10_10_2:
-			case GL_UNSIGNED_INT_2_10_10_10_REV:
-				return (GL_RGBA == format) ||
-					(GL_BGRA == format);
-			case GL_NONE:
-				return compressed && (GL_NONE == format);
-			default:
-				return false;
-		}
 	}
 
 	glm::vec4 Image::get_pixel(const Uint32 x, const Uint32 y,
@@ -375,7 +402,7 @@ namespace eternal_lands
 		glm::vec4 result;
 		Uint32 i, count;
 
-		count = get_channel_count(get_format());
+		count = get_channel_count();
 
 		assert(count > 0);
 		assert(count < 5);
@@ -391,52 +418,70 @@ namespace eternal_lands
 			case GL_UNSIGNED_BYTE:
 				for (i = 0; i < count; ++i)
 				{
-					result[i] = static_cast<const Uint8*>(value)[i];
-					result[i] /= std::numeric_limits<Uint8>::max();
+					result[i] = static_cast<const Uint8*>(
+						value)[i];
+					result[i] /= std::numeric_limits<
+						Uint8>::max();
 				}
 				break;
 			case GL_UNSIGNED_SHORT:
 				for (i = 0; i < count; ++i)
 				{
-					result[i] = static_cast<const Uint16*>(value)[i];
-					result[i] /= std::numeric_limits<Uint16>::max();
+					result[i] = static_cast<const Uint16*>(
+						value)[i];
+					result[i] /= std::numeric_limits<
+						Uint16>::max();
 				}
 				break;
 			case GL_UNSIGNED_INT:
 				for (i = 0; i < count; ++i)
 				{
-					result[i] = static_cast<const Uint32*>(value)[i];
-					result[i] /= std::numeric_limits<Uint32>::max();
+					result[i] = static_cast<const Uint32*>(
+						value)[i];
+					result[i] /= std::numeric_limits<
+						Uint32>::max();
 				}
 				break;
 			case GL_FLOAT:
 				for (i = 0; i < count; ++i)
 				{
-					result[i] = static_cast<const float*>(value)[i];
+					result[i] = static_cast<const float*>(
+						value)[i];
 				}
 				break;
 			case GL_HALF_FLOAT:
 				for (i = 0; i < count; ++i)
 				{
 					result[i] = glm::detail::toFloat32(
-						static_cast<const Uint16*>(value)[i]);
+						static_cast<const Uint16*>(
+							value)[i]);
 				}
 				break;
 			case GL_UNSIGNED_BYTE_3_3_2:
-				result = glm::vec4(PackTool::unpack_uint_3_3_2(true,
-					*static_cast<const Uint8*>(value)), 1.0f);
+				result = glm::vec4(PackTool::unpack_uint_3_3_2(
+					true,
+					*static_cast<const Uint8*>(value)),
+						1.0f);
 				break;
 			case GL_UNSIGNED_BYTE_2_3_3_REV:
-				result = glm::vec4(PackTool::unpack_uint_2_3_3_rev(true,
-					*static_cast<const Uint8*>(value)), 1.0f);
+				result = glm::vec4(
+						PackTool::unpack_uint_2_3_3_rev(
+							true,
+						*static_cast<const Uint8*>(
+							value)), 1.0f);
 				break;
 			case GL_UNSIGNED_SHORT_5_6_5:
-				result = glm::vec4(PackTool::unpack_uint_5_6_5(true,
-					*static_cast<const Uint16*>(value)), 1.0f);
+				result = glm::vec4(PackTool::unpack_uint_5_6_5(
+					true,
+					*static_cast<const Uint16*>(value)),
+					1.0f);
 				break;
 			case GL_UNSIGNED_SHORT_5_6_5_REV:
-				result = glm::vec4(PackTool::unpack_uint_5_6_5_rev(true,
-					*static_cast<const Uint16*>(value)), 1.0f);
+				result = glm::vec4(
+						PackTool::unpack_uint_5_6_5_rev(
+							true,
+						*static_cast<const Uint16*>(
+							value)), 1.0f);
 				break;
 			case GL_UNSIGNED_SHORT_4_4_4_4:
 				result = PackTool::unpack_uint_4_4_4_4(true,
@@ -467,7 +512,8 @@ namespace eternal_lands
 					*static_cast<const Uint32*>(value));
 				break;
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
-				result = PackTool::unpack_uint_2_10_10_10_rev(true,
+				result = PackTool::unpack_uint_2_10_10_10_rev(
+					true,
 					*static_cast<const Uint32*>(value));
 				break;
 			case GL_UNSIGNED_INT_10F_11F_11F_REV:
@@ -480,22 +526,28 @@ namespace eternal_lands
 			case GL_BYTE:
 				for (i = 0; i < count; ++i)
 				{
-					result[i] = static_cast<const Sint8*>(value)[i];
-					result[i] /= std::numeric_limits<Sint8>::max();
+					result[i] = static_cast<const Sint8*>(
+						value)[i];
+					result[i] /= std::numeric_limits<
+						Sint8>::max();
 				}
 				break;
 			case GL_SHORT:
 				for (i = 0; i < count; ++i)
 				{
-					result[i] = static_cast<const Sint16*>(value)[i];
-					result[i] /= std::numeric_limits<Sint16>::max();
+					result[i] = static_cast<const Sint16*>(
+						value)[i];
+					result[i] /= std::numeric_limits<
+						Sint16>::max();
 				}
 				break;
 			case GL_INT:
 				for (i = 0; i < count; ++i)
 				{
-					result[i] = static_cast<const Sint32*>(value)[i];
-					result[i] /= std::numeric_limits<Sint32>::max();
+					result[i] = static_cast<const Sint32*>(
+						value)[i];
+					result[i] /= std::numeric_limits<
+						Sint32>::max();
 				}
 				break;
 			case GL_NONE:
@@ -513,7 +565,7 @@ namespace eternal_lands
 		glm::uvec4 result;
 		Uint32 i, count;
 
-		count = get_channel_count(get_format());
+		count = get_channel_count();
 
 		assert(count > 0);
 		assert(count < 5);
@@ -734,7 +786,7 @@ namespace eternal_lands
 		glm::ivec4 result;
 		Uint32 i, count;
 
-		count = get_channel_count(get_format());
+		count = get_channel_count();
 
 		assert(count > 0);
 		assert(count < 5);
@@ -888,7 +940,7 @@ namespace eternal_lands
 		void* value;
 		Uint32 i, count;
 
-		count = get_channel_count(get_format());
+		count = get_channel_count();
 
 		assert(count > 0);
 		assert(count < 5);
@@ -1054,7 +1106,7 @@ namespace eternal_lands
 		void* value;
 		Uint32 i, count;
 
-		count = get_channel_count(get_format());
+		count = get_channel_count();
 
 		assert(count > 0);
 		assert(count < 5);
@@ -1278,7 +1330,7 @@ namespace eternal_lands
 		void* value;
 		Uint32 i, count;
 
-		count = get_channel_count(get_format());
+		count = get_channel_count();
 
 		assert(count > 0);
 		assert(count < 5);
@@ -1444,6 +1496,7 @@ namespace eternal_lands
 		m_format = image.get_format();
 		m_type = image.get_type();
 		m_sRGB = image.get_sRGB();
+		m_array = false;
 
 		m_buffer = boost::make_shared<ReadWriteMemory>(
 			get_total_size());
@@ -1501,6 +1554,7 @@ namespace eternal_lands
 		m_format = image.m_format;
 		m_type = image.m_type;
 		m_sRGB = image.m_sRGB;
+		m_array = image.m_array;
 
 		m_buffer = boost::make_shared<ReadWriteMemory>(
 			get_total_size());
@@ -1535,6 +1589,41 @@ namespace eternal_lands
 	{
 		glReadPixels(x, y, get_width(), get_height(), get_format(),
 			get_type(), get_buffer()->get_ptr());
+	}
+
+	TextureTargetType Image::get_texture_target() const
+	{
+		if (get_cube_map())
+		{
+			if (get_array())
+			{
+				return ttt_texture_cube_map_array;
+			}
+
+			return ttt_texture_cube_map;
+		}
+
+		if (get_array())
+		{
+			if (get_depth() == 0)
+			{
+				return ttt_texture_1d_array;
+			}
+	
+			return ttt_texture_2d_array;
+		}
+
+		if (get_height() == 0)
+		{
+			return ttt_texture_1d;
+		}
+
+		if (get_depth() == 0)
+		{
+			return ttt_texture_2d;
+		}
+
+		return ttt_texture_3d;
 	}
 
 }

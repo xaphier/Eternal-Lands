@@ -1017,14 +1017,6 @@ namespace eternal_lands
 			file_name);
 	}
 
-	GlslProgram::GlslProgram(const UniformBufferDescriptionCacheSharedPtr
-			&uniform_buffer_description_cache,
-		const String &file_name, const boost::uuids::uuid &uuid):
-		m_uuid(uuid), m_last_used(0), m_program(0)
-	{
-		load_xml(uniform_buffer_description_cache, file_name);
-	}
-
 	GlslProgram::~GlslProgram() noexcept
 	{
 		if (m_program != 0)
@@ -2689,20 +2681,7 @@ namespace eternal_lands
 	{
 		XmlReaderSharedPtr reader;
 
-		reader = XmlReaderSharedPtr(new XmlReader(file_system,
-			file_name));
-
-		load_xml(uniform_buffer_description_cache,
-			reader->get_root_node());
-	}
-
-	void GlslProgram::load_xml(const UniformBufferDescriptionCacheSharedPtr
-			&uniform_buffer_description_cache,
-		const String &file_name)
-	{
-		XmlReaderSharedPtr reader;
-
-		reader = XmlReaderSharedPtr(new XmlReader(file_name));
+		reader = boost::make_shared<XmlReader>(file_system, file_name);
 
 		load_xml(uniform_buffer_description_cache,
 			reader->get_root_node());

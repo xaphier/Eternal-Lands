@@ -1381,18 +1381,44 @@ extern "C" void engine_set_shader_quality(const char* quality)
 	CATCH_BLOCK
 }
 
-extern "C" void engine_resize_root_window(const float fov, const float aspect,
-	const float z_near)
+extern "C" void engine_resize_root_window(const float fov, const float aspect)
 {
 	TRY_BLOCK
 
 	if (scene.get() != 0)
 	{
 		scene->set_perspective(fov, aspect);
-		scene->set_z_near(z_near);
 	}
 
 	CATCH_BLOCK
+}
+
+extern "C" float engine_get_z_near()
+{
+	TRY_BLOCK
+
+	if (scene.get() != 0)
+	{
+		return scene->get_z_near();
+	}
+
+	CATCH_BLOCK
+
+	return 0.5f;
+}
+
+extern "C" float engine_get_z_far()
+{
+	TRY_BLOCK
+
+	if (global_vars.get() != 0)
+	{
+		return global_vars->get_view_distance();
+	}
+
+	CATCH_BLOCK
+
+	return 100.0f;
 }
 
 extern "C" int command_lua(char *text, int len)
@@ -1599,9 +1625,9 @@ extern "C" void engine_set_use_scene_fbo(const int value)
 	}
 }
 
-extern "C" void engine_set_clipmap_size(const int value)
+extern "C" void engine_set_clipmap_terrain_size(const int value)
 {
-	global_vars->set_clipmap_size(512 << value);
+	global_vars->set_clipmap_terrain_size(512 << value);
 
 	if (scene.get() != 0)
 	{
@@ -1609,9 +1635,9 @@ extern "C" void engine_set_clipmap_size(const int value)
 	}
 }
 
-extern "C" void engine_set_clipmap_world_size(const int value)
+extern "C" void engine_set_clipmap_terrain_world_size(const int value)
 {
-	global_vars->set_clipmap_world_size(value);
+	global_vars->set_clipmap_terrain_world_size(value);
 
 	if (scene.get() != 0)
 	{
@@ -1644,9 +1670,9 @@ extern "C" void engine_set_light_system(const int value)
 	}
 }
 
-extern "C" void engine_set_clipmap_slices(const int value)
+extern "C" void engine_set_clipmap_terrain_slices(const int value)
 {
-	global_vars->set_clipmap_slices(value);
+	global_vars->set_clipmap_terrain_slices(value);
 
 	if (scene.get() != 0)
 	{

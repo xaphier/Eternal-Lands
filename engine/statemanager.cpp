@@ -44,6 +44,8 @@ namespace eternal_lands
 		set_sample_alpha_to_coverage(false);
 		set_polygon_offset_fill(false);
 		glCullFace(GL_BACK);
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		set_restart_index(std::numeric_limits<Uint32>::max());
 		set_use_restart_index(true);
@@ -378,12 +380,60 @@ namespace eternal_lands
 
 	void StateManager::draw(const Uint32 index, const Uint32 instances)
 	{
+/*
+		LOG_DEBUG(lt_opengl, UTF8("shader used: %1%"), m_program->get_uuid());
+
+		for (int i = 0; i < 16; ++i)
+		{
+			if (!m_program_used_texture_units[i])
+			{
+				continue;
+			}
+
+			String name;
+
+			if (m_textures[i].get() != nullptr)
+			{
+				name = m_textures[i]->get_name();
+			}
+			else
+			{
+				name = UTF8("(nullptr)");
+			}
+
+			LOG_DEBUG(lt_opengl, UTF8("texture[%1%] used[%2%]: %3%"), i % m_used_texture_units[i] % name);
+		}
+*/
 		m_mesh->draw(index, instances);
 	}
 
 	void StateManager::draw(const MeshDrawData &draw_data,
 		const Uint32 instances)
 	{
+/*
+		LOG_DEBUG(lt_opengl, UTF8("shader used: %1%"), m_program->get_uuid());
+
+		for (int i = 0; i < 16; ++i)
+		{
+			if (!m_program_used_texture_units[i])
+			{
+				continue;
+			}
+
+			String name;
+
+			if (m_textures[i].get() != nullptr)
+			{
+				name = m_textures[i]->get_name();
+			}
+			else
+			{
+				name = UTF8("(nullptr)");
+			}
+
+			LOG_DEBUG(lt_opengl, UTF8("texture[%1%] used[%2%]: %3%"), i % m_used_texture_units[i] % name);
+		}
+*/
 		m_mesh->draw(draw_data, instances, m_mesh->get_primitive());
 	}
 

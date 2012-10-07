@@ -715,14 +715,14 @@ namespace eternal_lands
 		return texture_format_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const TextureFormatType value)
+	OutStream &operator<<(OutStream &str, const TextureFormatType value)
 	{
 		str << TextureFormatUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, TextureFormatType &value)
+	InStream &operator>>(InStream &str, TextureFormatType &value)
 	{
 		std::string string;
 

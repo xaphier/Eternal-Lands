@@ -1,5 +1,5 @@
 /****************************************************************************
- *            clipmap.hpp
+ *            clipmapterrain.hpp
  *
  * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
@@ -16,13 +16,13 @@
 
 /**
  * @file
- * @brief The @c class Clipmap.
- * This file contains the @c class Clipmap.
+ * @brief The @c class ClipmapTerrain.
+ * This file contains the @c class ClipmapTerrain.
  */
 namespace eternal_lands
 {
 
-	class Clipmap
+	class ClipmapTerrain
 	{
 		private:
 			const MaterialBuilderWeakPtr m_material_builder;
@@ -57,8 +57,9 @@ namespace eternal_lands
 				noexcept;
 
 		public:
-			Clipmap(const MaterialBuilderWeakPtr &material_builder);
-			~Clipmap() noexcept;
+			ClipmapTerrain(
+				const MaterialBuilderWeakPtr &material_builder);
+			~ClipmapTerrain() noexcept;
 			void rebuild(const glm::vec2 &terrain_world_size,
 				const float view_distance,
 				const float world_size,	const Uint16 size,

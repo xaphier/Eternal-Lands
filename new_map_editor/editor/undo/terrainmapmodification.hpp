@@ -21,6 +21,7 @@ namespace eternal_lands
 	{
 		private:
 			const String m_map;
+			const Uint16 m_index;
 
 			virtual bool do_merge(Modification* modification);
 

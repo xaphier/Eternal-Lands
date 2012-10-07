@@ -1,7 +1,7 @@
 /****************************************************************************
  *            xmlbuffer.hpp
  *
- * Author: 2011  Daniel Jungmann <el.3d.source@gmail.com>
+ * Author: 2010-2012  Daniel Jungmann <el.3d.source@gmail.com>
  * Copyright: See COPYING file that comes with this distribution
  ****************************************************************************/
 
@@ -22,35 +22,24 @@
 namespace eternal_lands
 {
 
-	class XmlBuffer
+	class XmlBuffer: public boost::noncopyable
 	{
 		private:
 			xmlBufferPtr m_buffer;
 
 		public:
-			inline XmlBuffer(): m_buffer(0)
-			{
-				m_buffer = xmlBufferCreate();
-			}
+			XmlBuffer();
+			XmlBuffer(const char* str);
+			~XmlBuffer() noexcept;
+			String get_string() const;
+			Uint32 get_size() const;
 
-			inline XmlBuffer(const char* str): m_buffer(0)
-			{
-				m_buffer = xmlBufferCreateStatic(
-					const_cast<char*>(str), strlen(str));
-			}
-
-			inline ~XmlBuffer() throw()
-			{
-				xmlBufferFree(m_buffer);
-				m_buffer = 0;
-			}
-
-			inline xmlBufferPtr &get_buffer()
+			inline xmlBufferPtr get_buffer()
 			{
 				return m_buffer;
 			}
 
-			inline const xmlBufferPtr &get_buffer() const
+			inline const xmlBufferPtr get_buffer() const
 			{
 				return m_buffer;
 			}

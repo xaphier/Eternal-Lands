@@ -16,6 +16,7 @@
 #include "undostack.hpp"
 #include "editormapdata.hpp"
 #include "editorobjectdescription.hpp"
+#include "shader/shaderblenddata.hpp"
 #include <boost/random.hpp>
 #include <boost/random/linear_congruential.hpp>
 #include <boost/random/uniform_int.hpp>
@@ -69,6 +70,9 @@ namespace eternal_lands
 			bool undo();
 			void set_terrain_albedo_map(const String &texture,
 				const Uint16 index);
+			void set_terrain_blend_data(
+				const ShaderBlendData &blend_data,
+				const Uint16 index);
 			void set_ground_tile(const glm::vec2 &point,
 				const Uint16 tile);
 			void add_3d_object(const glm::vec3 &position,
@@ -84,8 +88,8 @@ namespace eternal_lands
 			const glm::vec3 &get_ambient() const;
 			void ground_tile_edit(const glm::vec3 &point,
 				const Uint8 tile);
-			void water_tile_edit(const glm::vec3 &point,
-				const Uint8 water);
+			void water_tile_edit(const glm::vec3 &start,
+				const glm::vec3 &point, const Uint16 water);
 			void height_edit(const glm::vec3 &point,
 				const Uint8 height);
 			void remove_object(const Uint32 id);
@@ -159,6 +163,11 @@ namespace eternal_lands
 				const float attenuation_size, const float data,
 				const int attenuation, const int shape,
 				const int effect, const int layer);
+			void change_terrain_albedo_map(const String &name,
+				const int index);
+			void change_terrain_blend_type(const int blend,
+				const float scale, const float offset,
+				const int index);
 			bool check_default_materials(const String &name,
 				const StringVector &materials) const;
 
@@ -183,6 +192,12 @@ namespace eternal_lands
 				return m_data.get_terrain_albedo_map(index);
 			}
 
+			inline const ShaderBlendData &get_terrain_blend_data(
+				const Uint16 index) const
+			{
+				return m_data.get_terrain_blend_data(index);
+			}
+
 			inline StringVector get_debug_modes() const
 			{
 				return m_data.get_debug_modes();
@@ -193,9 +208,10 @@ namespace eternal_lands
 				m_data.set_debug_mode(value);
 			}
 
-			inline void init_terrain(const glm::uvec2 &size)
+			inline void init_terrain(const glm::uvec2 &size,
+				const String &texture)
 			{
-				m_data.init_terrain(size);
+				m_data.init_terrain(size, texture);
 			}
 
 			inline ImageSharedPtr get_image(const String &name)
@@ -608,6 +624,11 @@ namespace eternal_lands
 			inline void save(const String &file_name)
 			{
 				m_data.save(file_name);
+			}
+
+			inline bool get_terrain() const
+			{
+				return m_data.get_terrain();
 			}
 
 	};

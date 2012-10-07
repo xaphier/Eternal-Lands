@@ -68,14 +68,14 @@ namespace eternal_lands
 		return blend_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const BlendType value)
+	OutStream &operator<<(OutStream &str, const BlendType value)
 	{
 		str << BlendUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, BlendType &value)
+	InStream &operator>>(InStream &str, BlendType &value)
 	{
 		std::string string;
 

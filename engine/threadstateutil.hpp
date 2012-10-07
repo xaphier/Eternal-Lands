@@ -51,8 +51,7 @@ namespace eternal_lands
 
 	};
 
-	std::ostream& operator<< (std::ostream &str,
-		const ThreadStateType value);
+	OutStream &operator<<(OutStream &str, const ThreadStateType value);
 
 }
 

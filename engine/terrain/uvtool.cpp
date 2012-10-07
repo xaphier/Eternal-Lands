@@ -7,7 +7,7 @@
 
 #include "uvtool.hpp"
 #include "image.hpp"
-#include "abstractterrainmanager.hpp"
+#include "abstractterrain.hpp"
 #include "simd/simd.hpp"
 
 namespace eternal_lands

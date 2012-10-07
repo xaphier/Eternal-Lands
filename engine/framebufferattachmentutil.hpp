@@ -82,9 +82,9 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str,
+	OutStream &operator<<(OutStream &str,
 		const FrameBufferAttachmentType value);
-	InStream& operator>>(InStream &str, FrameBufferAttachmentType &value);
+	InStream &operator>>(InStream &str, FrameBufferAttachmentType &value);
 
 }
 

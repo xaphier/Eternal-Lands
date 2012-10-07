@@ -73,10 +73,14 @@ namespace eternal_lands
 			const EffectSharedPtr &get_simple_effect();
 			void reload();
 			void set_debug_shader(const ShaderBuildType debug);
-			void load_xml(const FileSystemSharedPtr &file_system);
+			void load_xml(const FileSystemSharedPtr &file_system,
+				const String &dir);
 			StringVector get_effect_names() const;
 			void add_effect(
 				const EffectDescription &effect_description);
+			EffectSharedPtr build_effect(
+				const EffectDescription &effect_description)
+				const;
 
 	};
 

@@ -84,14 +84,14 @@ namespace eternal_lands
 		return shader_source_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const ShaderSourceType value)
+	OutStream &operator<<(OutStream &str, const ShaderSourceType value)
 	{
 		str << ShaderSourceUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, ShaderSourceType &value)
+	InStream &operator>>(InStream &str, ShaderSourceType &value)
 	{
 		std::string string;
 

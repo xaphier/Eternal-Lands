@@ -48,8 +48,6 @@ float anisotropic_filter = 1.0f;
 int disable_gamma_adjust = 0;
 float gamma_var = 1.00f;
 float perspective = 0.15f;
-float near_plane = 0.5f; // don't cut off anything
-float far_plane = 100.0;   // LOD helper. Cull distant objects. Lower value == higher framerates.
 float far_reflection_plane = 100.0;   // LOD helper. Cull distant reflected objects. Lower value == higher framerates.
 int gl_extensions_loaded = 0;
 int engine_opengl_version = 0;
@@ -852,14 +850,14 @@ void resize_root_window()
 	//hud_x_adjust=(2.0/window_width)*hud_x;
 	//Setup matrix for the sky. If we don't do this the sky looks unhinged when perspective changes.
 	glLoadIdentity();
-	gluPerspective(40.0f, window_ratio, near_plane, 1000.0f);
+	gluPerspective(40.0f, window_ratio, engine_get_z_near(), 1000.0f);
 	glGetDoublev(GL_PROJECTION_MATRIX, skybox_view);
 	glLoadIdentity(); // Reset The Projection Matrix
 
 	//new zoom
 	if (isometric)
 	{
-		glOrtho( -1.0*zoom_level*window_ratio, 1.0*zoom_level*window_ratio, -1.0*zoom_level, 1.0*zoom_level, -near_plane*zoom_level, 60.0 );
+		glOrtho( -1.0*zoom_level*window_ratio, 1.0*zoom_level*window_ratio, -1.0*zoom_level, 1.0*zoom_level, -engine_get_z_near()*zoom_level, 60.0 );
 	}
 	else
 	{
@@ -876,8 +874,9 @@ void resize_root_window()
 			glTranslatef(0.0, 0.0, -zoom_level/perspective);
 		}
 #else
-		gluPerspective(40.0f, window_ratio, near_plane, far_plane);
-		engine_resize_root_window(40.0f, window_ratio, near_plane);
+		gluPerspective(40.0f, window_ratio, engine_get_z_near(),
+			engine_get_z_far());
+		engine_resize_root_window(40.0f, window_ratio);
 #endif
 	}
 

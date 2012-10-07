@@ -84,8 +84,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const CommonParameterType value);
-	InStream& operator>>(InStream &str, CommonParameterType &value);
+	OutStream &operator<<(OutStream &str, const CommonParameterType value);
+	InStream &operator>>(InStream &str, CommonParameterType &value);
 
 }
 

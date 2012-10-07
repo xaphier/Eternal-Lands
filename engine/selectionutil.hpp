@@ -49,8 +49,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const SelectionType value);
-	InStream& operator>>(InStream &str, SelectionType &value);
+	OutStream &operator<<(OutStream &str, const SelectionType value);
+	InStream &operator>>(InStream &str, SelectionType &value);
 
 }
 

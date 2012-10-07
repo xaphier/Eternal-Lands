@@ -45,10 +45,22 @@ namespace eternal_lands
 
 		public:
 			ShaderBlendData();
+			ShaderBlendData(const glm::vec2 &data,
+				const ShaderBlendType blend);
+			ShaderBlendData(const float &data,
+				const ShaderBlendType blend);
+			ShaderBlendData(const ShaderBlendType blend);
 			ShaderBlendData(const xmlNodePtr node);
 			~ShaderBlendData() noexcept;
 			void load_xml(const xmlNodePtr node);
 			void save_xml(const XmlWriterSharedPtr &writer) const;
+
+			inline bool operator==(
+				const ShaderBlendData &blend_data) const
+			{
+				return	(blend_data.m_data == m_data) &&
+					(blend_data.m_blend == m_blend);
+			}
 
 			inline float get_blend_size() const noexcept
 			{

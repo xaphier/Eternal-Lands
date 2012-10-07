@@ -472,9 +472,12 @@ namespace eternal_lands
 
 		for (i = 0; i < face_count; ++i)
 		{
-			width = image->get_width();
-			height = image->get_height();
-			depth = image->get_depth();
+			width = std::max(static_cast<Uint32>(1),
+				image->get_width());
+			height = std::max(static_cast<Uint32>(1),
+				image->get_height());
+			depth = std::max(static_cast<Uint32>(1),
+				image->get_depth());
 
 			for (j = 0; j <= mipmap_count; ++j)
 			{

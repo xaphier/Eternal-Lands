@@ -28,8 +28,7 @@ namespace eternal_lands
 
 	}
 
-	ShaderSourceTerrain::ShaderSourceTerrain(): m_use_specular(false),
-		m_use_texture_arrays(false)
+	ShaderSourceTerrain::ShaderSourceTerrain(): m_use_specular(false)
 	{
 	}
 
@@ -68,7 +67,7 @@ namespace eternal_lands
 		return m_use_randomized_uvs.any();
 	}
 
-	void ShaderSourceTerrain::load_xml_node(const xmlNodePtr node)
+	void ShaderSourceTerrain::do_load_xml(const xmlNodePtr node)
 	{
 		xmlNodePtr it;
 
@@ -109,16 +108,7 @@ namespace eternal_lands
 		while (XmlUtil::next(it, true));
 	}
 
-	void ShaderSourceTerrain::save_xml(const String &file_name) const
-	{
-		XmlWriterSharedPtr writer;
-
-		writer = XmlWriterSharedPtr(new XmlWriter(file_name));
-
-		save_xml(writer);
-	}
-
-	void ShaderSourceTerrain::save_xml(const XmlWriterSharedPtr &writer)
+	void ShaderSourceTerrain::do_save_xml(const XmlWriterSharedPtr &writer)
 		const
 	{
 		writer->start_element(get_xml_id());
@@ -146,7 +136,7 @@ namespace eternal_lands
 		Uint32 i, count;
 		bool use_normal_map, use_displacement_map, use_dudv_map;
 
-		if ((version >= svt_130) && get_use_texture_arrays())
+		if (version >= svt_130)
 		{
 			sampler = pt_sampler2DArray;
 		}
@@ -193,7 +183,7 @@ namespace eternal_lands
 
 		count = m_data.size();
 
-		if ((version >= svt_130) && get_use_texture_arrays())
+		if (version >= svt_130)
 		{
 			count = std::min(count, 1u);
 		}
@@ -228,18 +218,9 @@ namespace eternal_lands
 
 		if (use_glsl_130)
 		{
-			if (get_use_texture_arrays())
-			{
-				str << UTF8("(") << get_blend_sampler();
-				str << UTF8(", vec3(") << cpt_world_uv;
-				str << UTF8(", ") << index << UTF8("));\n");
-			}
-			else
-			{
-				str << UTF8("(") << get_blend_sampler();
-				str << UTF8(", ") << cpt_world_uv;
-				str << UTF8(");\n");
-			}
+			str << UTF8("(") << get_blend_sampler();
+			str << UTF8(", vec3(") << cpt_world_uv;
+			str << UTF8(", ") << index << UTF8("));\n");
 		}
 		else
 		{
@@ -267,17 +248,9 @@ namespace eternal_lands
 
 		if (use_glsl_130)
 		{
-			if (get_use_texture_arrays())
-			{
-				str << UTF8("(") << get_albedo_sampler(0);
-				str << UTF8(", vec3(") << uv << UTF8(", ");
-				str << index << UTF8("));\n");
-			}
-			else
-			{
-				str << UTF8("(") << get_albedo_sampler(index);
-				str << UTF8(", ") << uv << UTF8(");\n");
-			}
+			str << UTF8("(") << get_albedo_sampler(0);
+			str << UTF8(", vec3(") << uv << UTF8(", ");
+			str << index << UTF8("));\n");
 		}
 		else
 		{
@@ -305,17 +278,9 @@ namespace eternal_lands
 
 		if (use_glsl_130)
 		{
-			if (get_use_texture_arrays())
-			{
-				str << UTF8("(") << get_specular_sampler(0);
-				str << UTF8(", vec3(") << uv << UTF8(", ");
-				str << index << UTF8(")).rg;\n");
-			}
-			else
-			{
-				str << UTF8("(") << get_albedo_sampler(index);
-				str << UTF8(", ") << uv << UTF8(").rg;\n");
-			}
+			str << UTF8("(") << get_specular_sampler(0);
+			str << UTF8(", vec3(") << uv << UTF8(", ");
+			str << index << UTF8(")).rg;\n");
 		}
 		else
 		{
@@ -344,8 +309,8 @@ namespace eternal_lands
 				str << m_data[index].get_scale_offset().x;
 				str << UTF8(" + ");
 				str << m_data[index].get_scale_offset().y;
-				str << UTF8(", 0.0, 1.0) /* ") << stream.str();
-				str << UTF8("*/;\n");
+				str << UTF8(", 0.0, 1.0) * ") << stream.str();
+				str << UTF8(";\n");
 				break;
 			case sbt_height:
 				str << indent << UTF8("blend = clamp(height");
@@ -415,6 +380,10 @@ namespace eternal_lands
 		if (use_normal_map || use_displacement_map)
 		{
 			str << UTF8("vec4 tmp;\n");
+		}
+
+		if (use_normal_map || use_displacement_map || use_randomized_uv)
+		{
 			str << UTF8("vec2 uv;\n");
 		}
 
@@ -449,8 +418,10 @@ namespace eternal_lands
 
 		str << UTF8("float blend;\n");
 
-		str << UTF8("uv = ") << cpt_world_uv << UTF8(";\n");
-
+		if (use_normal_map || use_displacement_map)
+		{
+			str << UTF8("uv = ") << cpt_world_uv << UTF8(";\n");
+		}
 /*
 		if (use_dudv_map)
 		{
@@ -505,15 +476,18 @@ namespace eternal_lands
 
 		count = m_data.size();
 
+		count = (count + 3) / 4;
+
 		for (i = 0; i < count; ++i)
 		{
 			write_blend_fetch(indent, i, version >= svt_130, str);
 		}
 
-		str << UTF8("uv = ") << cpt_world_extra_uv << UTF8(";\n");
-
 		if (use_randomized_uv)
 		{
+			str << UTF8("uv = ") << cpt_world_extra_uv;
+			str << UTF8(";\n");
+
 			if (version >= svt_130)
 			{
 				str << UTF8("indices = ivec2(uv) * ");
@@ -523,8 +497,8 @@ namespace eternal_lands
 				str << UTF8("uv.x *= (index & 0x1) * 2.0 - ");
 				str << UTF8("1.0;\n");
 				str << UTF8("uv.y *= (index & 0x2) - 1.0;\n");
-				str << UTF8("uv = mix(uv, uv.yx, step(4.0, ");
-				str << UTF8("index & 0x4));\n");
+				str << UTF8("uv = (index & 0x4) != 0 ? uv.yx");
+				str << UTF8(" : uv;\n");
 			}
 			else
 			{
@@ -532,11 +506,11 @@ namespace eternal_lands
 				str << UTF8("vec2(167.0, 331.0));\n");
 				str << UTF8("indices = mod(vec3(index), ");
 				str << UTF8("vec3(2.0, 4.0, 8.0));\n");
-				str << UTF8("indices.yz = step(vec2(2.0, 4.0");
-				str << UTF8("), index.yz);\n");
-				str << UTF8("uv *= 1.0 - 2.0 * indices.xy;\n");
-				str << UTF8("uv = mix(uv, uv.yx, indices.z)");
+				str << UTF8("indices.y = step(2.0, indices.y)");
 				str << UTF8(";\n");
+				str << UTF8("uv *= 1.0 - 2.0 * indices.xy;\n");
+				str << UTF8("uv = indices.z >= 4.0 ? uv.yx");
+				str << UTF8(" : uv;\n");
 			}
 		}
 
@@ -553,6 +527,8 @@ namespace eternal_lands
 			str << indent << UTF8("output_data_float[0].a = ");
 			str << indent << UTF8("specular.r;\n");
 		}
+
+		count = m_data.size();
 
 		for (i = 0; i < count; ++i)
 		{

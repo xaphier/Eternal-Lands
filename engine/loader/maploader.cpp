@@ -26,18 +26,18 @@
 namespace eternal_lands
 {
 
-	MapLoader::MapLoader(const CodecManagerSharedPtr &codec_manager,
+	MapLoader::MapLoader(const CodecManagerWeakPtr &codec_manager,
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars,
-		const EffectCacheSharedPtr &effect_cache,
-		const MeshBuilderSharedPtr &mesh_builder,
-		const MeshCacheSharedPtr &mesh_cache,
-		const MeshDataCacheSharedPtr &mesh_data_cache,
-		const MaterialCacheSharedPtr &material_cache,
-		const MaterialDescriptionCacheSharedPtr
+		const EffectCacheWeakPtr &effect_cache,
+		const MeshBuilderWeakPtr &mesh_builder,
+		const MeshCacheWeakPtr &mesh_cache,
+		const MeshDataCacheWeakPtr &mesh_data_cache,
+		const MaterialCacheWeakPtr &material_cache,
+		const MaterialDescriptionCacheWeakPtr
 			&material_description_cache,
-		const MaterialBuilderSharedPtr &material_builder,
-		const TextureCacheSharedPtr &texture_cache,
+		const TerrainBuilderWeakPtr &terrain_builder,
+		const TextureCacheWeakPtr &texture_cache,
 		const FreeIdsManagerSharedPtr &free_ids):
 		AbstractMapLoader(file_system, free_ids),
 		m_codec_manager(codec_manager), m_global_vars(global_vars),
@@ -45,19 +45,19 @@ namespace eternal_lands
 		m_mesh_cache(mesh_cache), m_mesh_data_cache(mesh_data_cache),
 		m_material_cache(material_cache),
 		m_material_description_cache(material_description_cache),
-		m_material_builder(material_builder),
+		m_terrain_builder(terrain_builder),
 		m_texture_cache(texture_cache)
 	{
-		assert(m_codec_manager.get() != nullptr);
+		assert(!m_codec_manager.expired());
 		assert(m_global_vars.get() != nullptr);
-		assert(m_effect_cache.get() != nullptr);
-		assert(m_mesh_builder.get() != nullptr);
-		assert(m_mesh_cache.get() != nullptr);
-		assert(m_mesh_data_cache.get() != nullptr);
-		assert(m_material_cache.get() != nullptr);
-		assert(m_material_description_cache.get() != nullptr);
-		assert(m_material_builder.get() != nullptr);
-		assert(m_texture_cache.get() != nullptr);
+		assert(!m_effect_cache.expired());
+		assert(!m_mesh_builder.expired());
+		assert(!m_mesh_cache.expired());
+		assert(!m_mesh_data_cache.expired());
+		assert(!m_material_cache.expired());
+		assert(!m_material_description_cache.expired());
+		assert(!m_terrain_builder.expired());
+		assert(!m_texture_cache.expired());
 	}
 
 	MapLoader::~MapLoader() noexcept
@@ -74,9 +74,9 @@ namespace eternal_lands
 
 		m_map = boost::make_shared<Map>(get_codec_manager(),
 			get_file_system(), get_global_vars(),
-			get_effect_cache(), get_mesh_builder(),
-			get_mesh_cache(), get_material_cache(),
-			get_material_builder(), get_texture_cache());
+			get_mesh_builder(), get_mesh_cache(),
+			get_material_cache(), get_terrain_builder(),
+			get_texture_cache());
 
 		m_map->set_name(name);
 
@@ -115,8 +115,8 @@ namespace eternal_lands
 		if (blend != bt_disabled)
 		{
 			m_map->add_object(get_object_description(translation,
-				rotation_angles, scale, material_names, name,
-				id, selection, blend));
+				rotation_angles, scale, material_names,
+				name, id, selection, blend));
 		}
 		else
 		{

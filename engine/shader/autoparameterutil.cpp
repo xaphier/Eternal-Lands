@@ -111,8 +111,9 @@ namespace eternal_lands
 				String(UTF8("terrain_scale")), pt_vec4),
 			AutoParameterTypeData(
 				String(UTF8("terrain_texture_size")), pt_vec4),
-			AutoParameterTypeData(String(UTF8("clipmap_matrices")),
-				pt_mat2x3, pst_clipmap_slices),
+			AutoParameterTypeData(
+				String(UTF8("clipmap_terrain_matrices")),
+				pt_mat2x3, pst_clipmap_terrain_slices),
 			AutoParameterTypeData(String(UTF8("z_params")),
 				pt_vec4),
 			AutoParameterTypeData(String(UTF8("terrain_instances")),
@@ -271,14 +272,14 @@ namespace eternal_lands
 		return auto_parameter_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const AutoParameterType value)
+	OutStream &operator<<(OutStream &str, const AutoParameterType value)
 	{
 		str << AutoParameterUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, AutoParameterType &value)
+	InStream &operator>>(InStream &str, AutoParameterType &value)
 	{
 		std::string string;
 

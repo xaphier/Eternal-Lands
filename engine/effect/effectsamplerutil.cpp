@@ -100,14 +100,14 @@ namespace eternal_lands
 		return effect_sampler_names_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const EffectSamplerType value)
+	OutStream &operator<<(OutStream &str, const EffectSamplerType value)
 	{
 		str << EffectSamplerUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, EffectSamplerType &value)
+	InStream &operator>>(InStream &str, EffectSamplerType &value)
 	{
 		std::string string;
 

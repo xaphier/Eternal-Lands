@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "textureformatutil.hpp"
+#include "texturetargetutil.hpp"
 #include "readwritememory.hpp"
 
 /**
@@ -30,7 +31,8 @@ namespace eternal_lands
 	 * Abstract basic class for images used for images.
 	 * @see ImageLoader
 	 */
-	class Image: public boost::enable_shared_from_this<Image>
+	class Image: public boost::enable_shared_from_this<Image>,
+		public boost::noncopyable
 	{
 		private:
 			ReadWriteMemorySharedPtr m_buffer;
@@ -43,6 +45,7 @@ namespace eternal_lands
 			GLenum m_type;
 			bool m_sRGB;
 			bool m_cube_map;
+			bool m_array;
 
 			Uint32 get_total_size() const;
 			Uint32 get_buffer_pixel_offset(const Uint32 x,
@@ -53,11 +56,6 @@ namespace eternal_lands
 				const Uint16 mipmap) const;
 			Uint32 get_offset(const Uint16 face,
 				const Uint16 mipmap) const;
-			static bool is_valid(const GLenum type,
-				const GLenum format, const bool compressed);
-			static Uint16 get_channel_count(const GLenum format);
-			static Uint16 get_pixel_size(const GLenum type,
-				const GLenum format);
 
 		public:
 			Image(const String &name, const bool cube_map,
@@ -65,12 +63,14 @@ namespace eternal_lands
 				const glm::uvec3 &sizes,
 				const Uint16 mipmap_count,
 				const Uint16 pixel_size, const GLenum format,
-				const GLenum type, const bool sRGB);
+				const GLenum type, const bool sRGB,
+				const bool array = false);
 
 			Image(const String &name, const bool cube_map,
 				const TextureFormatType texture_format,
 				const glm::uvec3 &sizes,
-				const Uint16 mipmap_count);
+				const Uint16 mipmap_count,
+				const bool array = false);
 
 			/**
 			 * The size of a compressed block.
@@ -139,12 +139,6 @@ namespace eternal_lands
 				const Uint32 y, const Uint32 z,
 				const Uint16 face, const Uint16 mipmap) const
 			{
-				assert(x < get_width(mipmap));
-				assert(y < get_height(mipmap));
-				assert(z < get_depth(mipmap));
-				assert(face < get_face_count());
-				assert(mipmap <= get_mipmap_count());
-
 				return get_offset(face, mipmap) +
 					get_buffer_pixel_offset(x, y, z,
 						mipmap);
@@ -154,12 +148,6 @@ namespace eternal_lands
 				const Uint32 y, const Uint32 z,
 				const Uint16 face, const Uint16 mipmap) const
 			{
-				assert(x < (get_width() / 4));
-				assert(y < (get_height() / 4));
-				assert(z < get_depth());
-				assert(face < get_face_count());
-				assert(mipmap <= get_mipmap_count());
-
 				return get_offset(face, mipmap) +
 					get_buffer_block_offset(x, y, z,
 						mipmap);
@@ -227,8 +215,8 @@ namespace eternal_lands
 
 			/**
 			 * @brief The image width.
-			 * Returns the width of the image. This is always greater than
-			 * zero.
+			 * Returns the width of the image. This is always
+			 * greater than zero.
 			 * @return The width of the image.
 			 */
 			inline Uint32 get_width() const
@@ -238,8 +226,8 @@ namespace eternal_lands
 
 			/**
 			 * @brief The image height.
-			 * Returns the height of the image. This is always greater than
-			 * zero and one for 1d images.
+			 * Returns the height of the image. This is always
+			 * greater than zero and one for 1d images.
 			 * @return The height of the image.
 			 */
 			inline Uint32 get_height() const
@@ -249,8 +237,8 @@ namespace eternal_lands
 
 			/**
 			 * @brief The image depth.
-			 * Returns the depth of the image. This is always greater than
-			 * zero and one for 1d and 2d images.
+			 * Returns the depth of the image. This is always
+			 * greater than zero and one for 1d and 2d images.
 			 * @return The depth of the image.
 			 */
 			inline Uint32 get_depth() const
@@ -316,8 +304,16 @@ namespace eternal_lands
 			 */
 			inline glm::uvec3 get_sizes(const Uint16 mipmap) const
 			{
-				return glm::max(m_sizes >> glm::uvec3(mipmap),
-					1);
+				if (get_array())
+				{
+					return glm::max(glm::uvec3(glm::uvec2(
+						get_sizes()) >> glm::uvec2(
+							mipmap), get_depth()),
+						1);
+				}
+
+				return glm::max(get_sizes() >>
+					glm::uvec3(mipmap), 1);
 			}
 
 			/**
@@ -332,7 +328,8 @@ namespace eternal_lands
 
 			/**
 			 * @brief The opengl format of the image.
-			 * Returns the opengl format of the image data used for loading.
+			 * Returns the opengl format of the image data used for
+			 * loading.
 			 * @return The opengl format of the image.
 			 * @see glTexImage1D
 			 * @see glTexImage2D
@@ -345,7 +342,8 @@ namespace eternal_lands
 
 			/**
 			 * @brief The opengl type of the image.
-			 * Returns the opengl type of the image data used for loading.
+			 * Returns the opengl type of the image data used for
+			 * loading.
 			 * @return The opengl type of the image.
 			 * @see glTexImage1D
 			 * @see glTexImage2D
@@ -357,8 +355,8 @@ namespace eternal_lands
 			}
 
 			/**
-			 * Returns the pointer to the data of the given mipmap level and
-			 * face.
+			 * Returns the pointer to the data of the given mipmap
+			 * level and face.
 			 * @param face The face to use.
 			 * @param mipmap The mipmap level to use.
 			 * @return The pointer to the data.
@@ -415,10 +413,7 @@ namespace eternal_lands
 			 * 4 for rgba etc.
 			 * @return The number of channels.
 			 */
-			inline Uint16 get_channel_count() const
-			{
-				return get_channel_count(get_format());
-			}
+			Uint16 get_channel_count() const;
 
 			/**
 			 * @brief The size of the given mipmap level.
@@ -493,6 +488,14 @@ namespace eternal_lands
 				const Uint16 mipmap, const glm::ivec4 &data);
 
 			/**
+			 * @brief Gets the texture target of the image.
+			 *
+			 * Returns the texture target of the image.
+			 * @return The texture target for the image.
+			 */
+			TextureTargetType get_texture_target() const;
+
+			/**
 			 * @brief Gets the texture format of the image.
 			 *
 			 * Returns the texture format of the image.
@@ -558,6 +561,37 @@ namespace eternal_lands
 				return m_cube_map;
 			}
 
+			/**
+			 * Returns true if it's an array image, false else.
+			 * @return True for array image, false else.
+			 */
+			inline bool get_array() const
+			{
+				return m_array;
+			}
+
+			/**
+			 * Returns the number of array layers (zero for non
+			 * array textures).
+			 * @return The number of array layers.
+			 */
+			inline Uint32 get_layer() const
+			{
+				if (!get_array())
+				{
+					return 0;
+				}
+
+				if (get_depth() == 0)
+				{
+					return std::max(static_cast<Uint32>(1),
+						get_height());
+				}
+
+				return std::max(static_cast<Uint32>(1),
+					get_depth());
+			}
+
 			String get_log_str() const;
 
 	};
@@ -565,4 +599,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_316cc2ee_47d7_4a49_a789_596cb9fc3834 */
-

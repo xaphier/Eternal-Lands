@@ -56,8 +56,8 @@ namespace eternal_lands
 
 	};
 
-	OutStream& operator<<(OutStream &str, const BlendType value);
-	InStream& operator>>(InStream &str, BlendType &value);
+	OutStream &operator<<(OutStream &str, const BlendType value);
+	InStream &operator>>(InStream &str, BlendType &value);
 
 }
 

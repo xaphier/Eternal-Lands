@@ -144,7 +144,7 @@ namespace eternal_lands
 		return frame_buffer_attachment_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str,
+	OutStream &operator<<(OutStream &str,
 		const FrameBufferAttachmentType value)
 	{
 		str << FrameBufferAttachmentUtil::get_str(value);
@@ -152,7 +152,7 @@ namespace eternal_lands
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, FrameBufferAttachmentType &value)
+	InStream &operator>>(InStream &str, FrameBufferAttachmentType &value)
 	{
 		std::string string;
 

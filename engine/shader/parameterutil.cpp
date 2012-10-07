@@ -477,14 +477,14 @@ namespace eternal_lands
 		return parameter_datas_count;
 	}
 
-	OutStream& operator<<(OutStream &str, const ParameterType value)
+	OutStream &operator<<(OutStream &str, const ParameterType value)
 	{
 		str << ParameterUtil::get_str(value);
 
 		return str;
 	}
 
-	InStream& operator>>(InStream &str, ParameterType &value)
+	InStream &operator>>(InStream &str, ParameterType &value)
 	{
 		std::string string;
 
