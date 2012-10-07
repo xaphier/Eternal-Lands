@@ -104,7 +104,7 @@ namespace
 
 	const Uint32 image_width = 32;
 	const Uint32 image_height = 32;
-	const Uint32 image_depth = 1;
+	const Uint32 image_depth = 0;
 	const Uint32 image_mipmap_count = 5;
 
 }
