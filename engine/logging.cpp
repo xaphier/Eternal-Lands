@@ -182,6 +182,7 @@ namespace eternal_lands
 			log_levels[lt_rendering] = log_level;
 			log_levels[lt_uniform_buffer] = log_level;
 			log_levels[lt_effect] = log_level;
+			log_levels[lt_terrain] = log_level;
 			log_levels[lt_opengl] = log_level;
 
 			file_name << log_dir << name << ".log";

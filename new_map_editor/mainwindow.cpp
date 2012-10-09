@@ -682,7 +682,9 @@ void MainWindow::update_terrain(const bool enabled)
 
 	terrain_layers->addTopLevelItem(item);
 
-	for (i = 1; i < 17; ++i)
+	count = 17;
+
+	for (i = 1; i < count; ++i)
 	{
 		const el::ShaderBlendData &blend_data =
 			el_gl_widget->get_terrain_blend_data(i - 1);
@@ -697,10 +699,8 @@ void MainWindow::update_terrain(const bool enabled)
 		item = new QTreeWidgetItem(str, QTreeWidgetItem::UserType);
 
 		item->setData(1, Qt::UserRole, blend_data.get_blend());
-		item->setData(2, Qt::DisplayRole, blend_data.get_scale_offset(
-			).x);
-		item->setData(3, Qt::DisplayRole, blend_data.get_scale_offset(
-			).y);
+		item->setData(2, Qt::DisplayRole, blend_data.get_data().x);
+		item->setData(3, Qt::DisplayRole, blend_data.get_data().y);
 
 		terrain_layers->addTopLevelItem(item);
 	}
@@ -1997,27 +1997,27 @@ void MainWindow::terrain_vector_edit()
 
 	shape = -1;
 
-	if (vector_brush_shape_circle->isChecked())
+	if (brush_shape_circle->isChecked())
 	{
-		size.setX(vector_brush_radius->value());
-		size.setY(vector_brush_radius->value());
+		size.setX(brush_radius->value());
+		size.setY(brush_radius->value());
 
 		shape = 0;
 	}
 
-	if (vector_brush_shape_rect->isChecked())
+	if (brush_shape_rect->isChecked())
 	{
-		size.setX(vector_brush_width->value());
-		size.setY(vector_brush_height->value());
+		size.setX(brush_width->value());
+		size.setY(brush_height->value());
 
 		shape = 1;
 	}
 
-	attenuation_size = vector_brush_attenuation_size->value();
+	attenuation_size = brush_attenuation_size->value();
 
-	attenuation = vector_brush_attenuation->currentIndex();
+	attenuation = brush_attenuation->currentIndex();
 
-	effect = vector_brush_effect->currentIndex();
+	effect = brush_effect->currentIndex();
 
 	mask = 0x7;
 
@@ -2091,27 +2091,27 @@ void MainWindow::terrain_layer_edit()
 
 	shape = -1;
 
-	if (layer_brush_shape_circle->isChecked())
+	if (brush_shape_circle->isChecked())
 	{
-		size.setX(layer_brush_radius->value());
-		size.setY(layer_brush_radius->value());
+		size.setX(brush_radius->value());
+		size.setY(brush_radius->value());
 
 		shape = 0;
 	}
 
-	if (layer_brush_shape_rect->isChecked())
+	if (brush_shape_rect->isChecked())
 	{
-		size.setX(layer_brush_width->value());
-		size.setY(layer_brush_height->value());
+		size.setX(brush_width->value());
+		size.setY(brush_height->value());
 
 		shape = 1;
 	}
 
-	attenuation_size = layer_brush_attenuation_size->value();
+	attenuation_size = brush_attenuation_size->value();
 
-	attenuation = layer_brush_attenuation->currentIndex();
+	attenuation = brush_attenuation->currentIndex();
 
-	effect = layer_brush_effect->currentIndex();
+	effect = brush_effect->currentIndex();
 
 	data = layer_brush_strength->value() * 0.01f;
 
@@ -2899,7 +2899,7 @@ void MainWindow::terrain_layers_selection()
 
 	item = terrain_layers->selectedItems()[0];
 
-	terrain_texture->setText(item->text(0));
+//	terrain_texture->setText(item->text(0));
 
 	index = terrain_layers->indexOfTopLevelItem(item);
 

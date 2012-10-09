@@ -52,6 +52,7 @@ namespace eternal_lands
 		lt_rendering,
 		lt_uniform_buffer,
 		lt_effect,
+		lt_terrain,
 		lt_opengl
 	};
 

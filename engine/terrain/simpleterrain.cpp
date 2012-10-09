@@ -25,6 +25,7 @@
 #include "material.hpp"
 #include "terrainvisitor.hpp"
 #include "boundingboxvisitor.hpp"
+#include "logging.hpp"
 
 namespace eternal_lands
 {
@@ -386,6 +387,10 @@ namespace eternal_lands
 
 		object = boost::make_shared<Object>(object_data,
 			mesh_clone, materials);
+
+		LOG_DEBUG(lt_terrain, UTF8("adding page <%1%, %2%> at %3%"),
+			position.x % position.y % glm::to_string(
+				transformation.get_translation()));
 
 		m_object_tree->add(object);
 	}

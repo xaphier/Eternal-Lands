@@ -15,16 +15,11 @@
 namespace eternal_lands
 {
 
-	ShaderBlendData::ShaderBlendData(): m_blend(sbt_texture)
+	ShaderBlendData::ShaderBlendData(): m_blend(sbt_blend)
 	{
 	}
 
 	ShaderBlendData::ShaderBlendData(const glm::vec2 &data,
-		const ShaderBlendType blend): m_data(data), m_blend(blend)
-	{
-	}
-
-	ShaderBlendData::ShaderBlendData(const float &data,
 		const ShaderBlendType blend): m_data(data), m_blend(blend)
 	{
 	}

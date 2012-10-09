@@ -64,14 +64,18 @@ BOOST_AUTO_TEST_CASE(stream)
 
 BOOST_AUTO_TEST_CASE(get_str_value)
 {
+	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(el::sbt_blend).get(),
+		"blend");
+	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(el::sbt_slope).get(),
+		"slope");
+	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(el::sbt_height).get(),
+		"height");
+	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(el::sbt_texture).get(),
+		"texture");
 	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(
-		el::sbt_texture).get(), "texture");
+		el::sbt_smoothstep_slope).get(), "smoothstep_slope");
 	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(
-		el::sbt_slope).get(), "slope");
+		el::sbt_smoothstep_height).get(), "smoothstep_height");
 	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(
-		el::sbt_height).get(), "height");
-	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(
-		el::sbt_blend).get(), "blend");
-	BOOST_CHECK_EQUAL(el::ShaderBlendUtil::get_str(
-		el::sbt_size).get(), "size");
+		el::sbt_smoothstep_texture).get(), "smoothstep_texture");
 }

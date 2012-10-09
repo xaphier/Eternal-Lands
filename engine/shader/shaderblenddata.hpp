@@ -33,21 +33,9 @@ namespace eternal_lands
 			glm::vec2 m_data;
 			ShaderBlendType m_blend;
 
-			inline const glm::vec2 &get_data() const noexcept
-			{
-				return m_data;
-			}
-
-			inline void set_data(const glm::vec2 &data)
-			{
-				m_data = data;
-			}
-
 		public:
 			ShaderBlendData();
 			ShaderBlendData(const glm::vec2 &data,
-				const ShaderBlendType blend);
-			ShaderBlendData(const float &data,
 				const ShaderBlendType blend);
 			ShaderBlendData(const ShaderBlendType blend);
 			ShaderBlendData(const xmlNodePtr node);
@@ -62,13 +50,7 @@ namespace eternal_lands
 					(blend_data.m_blend == m_blend);
 			}
 
-			inline float get_blend_size() const noexcept
-			{
-				return m_data.x;
-			}
-
-			inline const glm::vec2 &get_scale_offset() const
-				noexcept
+			inline const glm::vec2 &get_data() const noexcept
 			{
 				return m_data;
 			}
@@ -78,18 +60,13 @@ namespace eternal_lands
 				return m_blend;
 			}
 
-			inline void set_blend_size(const float blend_size)
+			inline void set_data(const glm::vec2 &data) noexcept
 			{
-				m_data.x = blend_size;
-			}
-
-			inline void set_scale_offset(
-				const glm::vec2 &scale_offset)
-			{
-				m_data = scale_offset;
+				m_data = data;
 			}
 
 			inline void set_blend(const ShaderBlendType blend)
+				noexcept
 			{
 				m_blend = blend;
 			}

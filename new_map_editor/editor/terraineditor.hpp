@@ -28,9 +28,8 @@ namespace eternal_lands
 
 	enum BrushAttenuationType
 	{
-		bat_const = 0,
-		bat_linear = 1,
-		bat_quadratic = 2
+		bat_linear = 0,
+		bat_quadratic = 1
 	};
 
 	enum BrushShapeType

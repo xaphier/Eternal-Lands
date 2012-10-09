@@ -61,7 +61,7 @@ namespace eternal_lands
 		return boost::make_shared<SimpleTerrain>(get_global_vars(),
 			get_effect_cache(), get_mesh_builder(),
 			get_material_builder(), get_material_cache(),
-			m_cdlod_terrain_material_name,
+			m_simple_terrain_material_name,
 			m_clipmap_terrain_effect_name);
 	}
 

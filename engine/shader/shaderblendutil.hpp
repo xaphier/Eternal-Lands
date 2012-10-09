@@ -28,11 +28,13 @@ namespace eternal_lands
 	 */
 	enum ShaderBlendType
 	{
-		sbt_texture = 0,
+		sbt_blend = 0,
 		sbt_slope,
 		sbt_height,
-		sbt_blend,
-		sbt_size
+		sbt_texture,
+		sbt_smoothstep_slope,
+		sbt_smoothstep_height,
+		sbt_smoothstep_texture
 	};
 	/**
 	 * @}

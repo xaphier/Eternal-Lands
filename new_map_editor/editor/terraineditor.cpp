@@ -279,8 +279,6 @@ namespace eternal_lands
 
 		switch (attenuation)
 		{
-			case bat_const:
-				return 1.0f;
 			case bat_linear:
 				return tmp;
 			case bat_quadratic:

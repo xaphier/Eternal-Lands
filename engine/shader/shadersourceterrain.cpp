@@ -40,7 +40,8 @@ namespace eternal_lands
 	{
 		BOOST_FOREACH(const ShaderBlendData &blend, m_data)
 		{
-			if (blend.get_blend() == sbt_slope)
+			if ((blend.get_blend() == sbt_slope) ||
+				(blend.get_blend() == sbt_smoothstep_slope))
 			{
 				return true;
 			}
@@ -53,7 +54,8 @@ namespace eternal_lands
 	{
 		BOOST_FOREACH(const ShaderBlendData &blend, m_data)
 		{
-			if (blend.get_blend() == sbt_height)
+			if ((blend.get_blend() == sbt_height) ||
+				(blend.get_blend() == sbt_smoothstep_height))
 			{
 				return true;
 			}
@@ -299,38 +301,61 @@ namespace eternal_lands
 
 		switch (m_data[index].get_blend())
 		{
-			case sbt_texture:
-				str << indent << UTF8("blend = albedo.a * ");
+			case sbt_blend:
+				str << indent << UTF8("blend = ");
 				str << stream.str() << UTF8(";\n");
 				break;
 			case sbt_slope:
 				str << indent << UTF8("blend = clamp(slope");
 				str << UTF8(" * ");
-				str << m_data[index].get_scale_offset().x;
+				str << m_data[index].get_data().x;
 				str << UTF8(" + ");
-				str << m_data[index].get_scale_offset().y;
+				str << m_data[index].get_data().y;
 				str << UTF8(", 0.0, 1.0) * ") << stream.str();
 				str << UTF8(";\n");
 				break;
 			case sbt_height:
 				str << indent << UTF8("blend = clamp(height");
 				str << UTF8(" * ");
-				str << m_data[index].get_scale_offset().x;
+				str << m_data[index].get_data().x;
 				str << UTF8(" + ");
-				str << m_data[index].get_scale_offset().y;
+				str << m_data[index].get_data().y;
 				str << UTF8(", 0.0, 1.0) * ") << stream.str();
 				str << UTF8(";\n");
 				break;
-			case sbt_blend:
-				str << indent << UTF8("blend = ");
-				str << stream.str() << UTF8(";\n");
+			case sbt_texture:
+				str << indent << UTF8("blend = clamp(albedo.a");
+				str << UTF8(" * ");
+				str << m_data[index].get_data().x;
+				str << UTF8(" + ");
+				str << m_data[index].get_data().y;
+				str << UTF8(", 0.0, 1.0) * ") << stream.str();
+				str << UTF8(";\n");
 				break;
-			case sbt_size:
+			case sbt_smoothstep_slope:
+				str << indent << UTF8("blend = smoothstep(");
+				str << UTF8("clamp(slope - ");
+				str << m_data[index].get_data().x;
+				str << UTF8(", 0.0, 1.0), clamp(slope + ");
+				str << m_data[index].get_data().y;
+				str << UTF8(", 0.0, 1.0), ") << stream.str();
+				str << UTF8(");\n");
+				break;
+			case sbt_smoothstep_height:
+				str << indent << UTF8("blend = smoothstep(");
+				str << UTF8("clamp(height - ");
+				str << m_data[index].get_data().x;
+				str << UTF8(", 0.0, 1.0), clamp(height + ");
+				str << m_data[index].get_data().y;
+				str << UTF8(", 0.0, 1.0), ") << stream.str();
+				str << UTF8(");\n");
+				break;
+			case sbt_smoothstep_texture:
 				str << indent << UTF8("blend = smoothstep(");
 				str << UTF8("clamp(albedo.a - ");
-				str << m_data[index].get_blend_size();
+				str << m_data[index].get_data().x;
 				str << UTF8(", 0.0, 1.0), clamp(albedo.a + ");
-				str << m_data[index].get_blend_size();
+				str << m_data[index].get_data().y;
 				str << UTF8(", 0.0, 1.0), ") << stream.str();
 				str << UTF8(");\n");
 				break;
@@ -454,7 +479,7 @@ namespace eternal_lands
 
 			str << get_normal_sampler() << UTF8(", uv);\n");
 
-			str << UTF8("slope = decode_normal(tmp.xy).z;\n");
+			str << UTF8("slope = 1.0 - decode_normal(tmp.xy).z;\n");
 		}
 
 		if (use_displacement_map)

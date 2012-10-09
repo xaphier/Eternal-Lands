@@ -16,11 +16,13 @@ namespace eternal_lands
 
 		const String shader_blend_type_names[] =
 		{
-			String(UTF8("texture")),
+			String(UTF8("blend")),
 			String(UTF8("slope")),
 			String(UTF8("height")),
-			String(UTF8("blend")),
-			String(UTF8("size"))
+			String(UTF8("texture")),
+			String(UTF8("smoothstep_slope")),
+			String(UTF8("smoothstep_height")),
+			String(UTF8("smoothstep_texture"))
 		};
 
 		const Uint32 shader_blend_type_names_count =
