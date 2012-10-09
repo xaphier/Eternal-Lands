@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <effect>
-	<name>actor</name>
+	<name>actor-alpha</name>
 	<world_transformation>bone_animation</world_transformation>
 	<texture_coodrinates>static</texture_coodrinates>
 	<main>default_mapping</main>
