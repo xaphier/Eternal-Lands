@@ -303,24 +303,6 @@ namespace eternal_lands
 
 		set_map(map);
 
-		try
-		{
-			m_day_color_correction = get_scene_resources(
-				).get_color_correction()->get_color_correction(
-				String(UTF8("scripts/day.as")));
-			m_night_color_correction = get_scene_resources(
-				).get_color_correction()->get_color_correction(
-				String(UTF8("scripts/night.as")));
-		}
-		catch (const boost::exception &exception)
-		{
-			LOG_EXCEPTION(exception);
-		}
-		catch (const std::exception &exception)
-		{
-			LOG_EXCEPTION(exception);
-		}
-
 		init_light_indexed_deferred_rendering();
 	}
 

@@ -380,6 +380,12 @@ namespace eternal_lands
 
 	void StateManager::draw(const Uint32 index, const Uint32 instances)
 	{
+#ifndef	NDEBUG
+		if (m_program.get() != nullptr)
+		{
+			m_program->log_validate_error();
+		}
+#endif	/* NDEBUG */
 /*
 		LOG_DEBUG(lt_opengl, UTF8("shader used: %1%"), m_program->get_uuid());
 
@@ -410,6 +416,12 @@ namespace eternal_lands
 	void StateManager::draw(const MeshDrawData &draw_data,
 		const Uint32 instances)
 	{
+#ifndef	NDEBUG
+		if (m_program.get() != nullptr)
+		{
+			m_program->log_validate_error();
+		}
+#endif	/* NDEBUG */
 /*
 		LOG_DEBUG(lt_opengl, UTF8("shader used: %1%"), m_program->get_uuid());
 

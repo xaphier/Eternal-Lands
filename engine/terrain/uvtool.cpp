@@ -278,16 +278,16 @@ namespace eternal_lands
 		}
 	}
 
-	void UvTool::relaxed_uv(const bool use_simd)
+	void UvTool::relaxed_uv(const Uint16 count, const bool use_simd)
 	{
 		Vec2Vector new_uvs;
-		Uint32 i;
+		Uint16 i;
 
 		new_uvs.resize(m_uvs.size());
 
 		if (use_simd)
 		{
-			for (i = 0; i < 512; ++i)
+			for (i = 0; i < count; ++i)
 			{
 				relax_sse2(m_half_distances, m_uvs, 0.015f,
 					1.0f, m_width, m_height, new_uvs);
@@ -298,7 +298,7 @@ namespace eternal_lands
 			return;
 		}
 
-		for (i = 0; i < 512; ++i)
+		for (i = 0; i < count; ++i)
 		{
 			relax_default(m_half_distances, m_uvs, 0.015f, 1.0f,
 				m_width, m_height, new_uvs);
@@ -310,15 +310,19 @@ namespace eternal_lands
 	/**
 	 * Converts to signed rg 8 but image
 	 */
-	void UvTool::convert()
+	ImageSharedPtr UvTool::convert(glm::vec2 &dudv_scale)
 	{
+		ImageSharedPtr image;
 		glm::vec2 uv, max, tmp, diff;
-		glm::ivec2 temp;
+		glm::ivec4 temp;
 		Sint32 width, height, x, y, index;
 
 		width = m_width;
 		height = m_height;
 		index = 0;
+
+		image = boost::make_shared<Image>(String(UTF8("Dudv map")),
+			false, tft_rg8_snorm, glm::uvec3(width, height, 0), 0);			
 
 		for (y = 0; y < height; ++y)
 		{
@@ -350,32 +354,31 @@ namespace eternal_lands
 				if (tmp.s < 0.0f)
 				{
 					temp.s = tmp.s * 128.0f - 0.5f;
-					tmp.s = std::max(temp.s, -128) / 128.0f;
 				}
 				else
 				{
 					temp.s = tmp.s * 127.0f + 0.5f;
-					tmp.s = std::min(temp.s, 128) / 127.0f;
 				}
 
 				if (tmp.t < 0.0f)
 				{
 					temp.t = tmp.t * 128.0f - 0.5f;
-					tmp.t = std::max(temp.t, -128) / 128.0f;
 				}
 				else
 				{
 					temp.t = tmp.t * 127.0f + 0.5f;
-					tmp.t = std::min(temp.t, 128) / 127.0f;
 				}
 
 				diff = glm::max(diff, glm::abs(m_uvs[index] -
-					(uv + tmp * max))); 
-				m_uvs[index] = uv + tmp * max;
+					(uv + glm::vec2(temp)))); 
+
+				image->set_pixel_int(x, y, 0, 0, 0, temp);
 
 				++index;
 			}
 		}
+
+		return image;
 	}
 
 }

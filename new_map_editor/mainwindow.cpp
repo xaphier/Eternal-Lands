@@ -72,18 +72,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(mirror_y, SIGNAL(toggled(bool)), this, SLOT(update_mirror()));
 	QObject::connect(mirror_z, SIGNAL(toggled(bool)), this, SLOT(update_mirror()));
 
-	QObject::connect(scales_value, SIGNAL(valueChanged(double)), this, SLOT(update_scales()));
-	QObject::connect(scales_slider, SIGNAL(valueChanged(int)), this, SLOT(update_scales_slider()));
-	QObject::connect(scales_value_x, SIGNAL(valueChanged(double)), this, SLOT(update_scales_x()));
-	QObject::connect(scales_value_y, SIGNAL(valueChanged(double)), this, SLOT(update_scales_y()));
-	QObject::connect(scales_value_z, SIGNAL(valueChanged(double)), this, SLOT(update_scales_z()));
-	QObject::connect(scales_slider_x, SIGNAL(valueChanged(int)), this, SLOT(update_scales_slider_x()));
-	QObject::connect(scales_slider_y, SIGNAL(valueChanged(int)), this, SLOT(update_scales_slider_y()));
-	QObject::connect(scales_slider_z, SIGNAL(valueChanged(int)), this, SLOT(update_scales_slider_z()));
-	QObject::connect(mirrors_x, SIGNAL(toggled(bool)), this, SLOT(update_mirrors()));
-	QObject::connect(mirrors_y, SIGNAL(toggled(bool)), this, SLOT(update_mirrors()));
-	QObject::connect(mirrors_z, SIGNAL(toggled(bool)), this, SLOT(update_mirrors()));
-
 	m_rotations.push_back(x_rotation);
 	m_rotations.push_back(y_rotation);
 	m_rotations.push_back(z_rotation);
@@ -122,9 +110,6 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(radius, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_light_radius(double)));
 	QObject::connect(light_color, SIGNAL(clicked()), this, SLOT(change_light_color()));
-	QObject::connect(x_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
-	QObject::connect(y_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
-	QObject::connect(z_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 
 	QObject::connect(el_gl_widget, SIGNAL(terrain_edit()), this,
 		SLOT(terrain_edit()));
@@ -318,9 +303,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_material_label_witdgets.push_back(material_label_8);
 	m_material_label_witdgets.push_back(material_label_9);
 
-	m_light_witdgets.push_back(x_position);
-	m_light_witdgets.push_back(y_position);
-	m_light_witdgets.push_back(z_position);
+	m_light_witdgets.push_back(x_translation);
+	m_light_witdgets.push_back(y_translation);
+	m_light_witdgets.push_back(z_translation);
 	m_light_witdgets.push_back(radius);
 	m_light_witdgets.push_back(light_color);
 
@@ -411,7 +396,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialized()
 {
-	Uint32 i, count;
+/*	Uint32 i, count;
 
 	count = ground_tile->count();
 
@@ -424,6 +409,7 @@ void MainWindow::initialized()
 
 		ground_tile->setItemIcon(i, QIcon(pixmap));
 	}
+*/
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -440,6 +426,7 @@ void MainWindow::save_settings()
 	settings.beginGroup("window");
 	settings.setValue("geometry", saveGeometry());
 	settings.setValue("state", saveState());
+	settings.setValue("invert z rotation", el_gl_widget->get_invert_z_rotation());
 	settings.setValue("icon size", tool_bar->iconSize());
 	settings.endGroup();
 	save_shortcuts(settings);
@@ -455,7 +442,10 @@ void MainWindow::load_settings()
 	settings.beginGroup("window");
 	restoreGeometry(settings.value("geometry").toByteArray());
 	restoreState(settings.value("state").toByteArray());
-	tool_bar->setIconSize(settings.value("icon size", QSize(24, 24)).value<QSize>());
+	el_gl_widget->set_invert_z_rotation(settings.value("invert z rotation",
+		false).toBool());
+	tool_bar->setIconSize(settings.value("icon size", QSize(24, 24)
+		).value<QSize>());
 	settings.endGroup();
 
 	load_shortcuts(settings);
@@ -725,12 +715,7 @@ void MainWindow::update_object(const bool select)
 
 	update_object();
 
-	if (select)
-	{
-		properties->setCurrentIndex(0);
-	}
-
-	action_remove->setEnabled(properties->currentIndex() == 0);
+	action_remove->setEnabled(select);
 }
 
 void MainWindow::update_light(const bool select)
@@ -753,12 +738,7 @@ void MainWindow::update_light(const bool select)
 		return;
 	}
 		
-	if (select)
-	{
-		properties->setCurrentIndex(1);
-	}
-
-	action_remove->setEnabled(properties->currentIndex() == 1);
+	action_remove->setEnabled(select);
 
 	el_gl_widget->get_light_data(light);
 
@@ -767,9 +747,9 @@ void MainWindow::update_light(const bool select)
 		light_widget->blockSignals(true);
 	}
 
-	x_position->setValue(light.get_position()[0]);
-	y_position->setValue(light.get_position()[1]);
-	z_position->setValue(light.get_position()[2]);
+	x_translation->setValue(light.get_position()[0]);
+	y_translation->setValue(light.get_position()[1]);
+	z_translation->setValue(light.get_position()[2]);
 
 	radius->setValue(light.get_radius());
 
@@ -799,7 +779,7 @@ void MainWindow::update_translation()
 	translation[1] = y_translation->value();
 	translation[2] = z_translation->value();
 
-	el_gl_widget->set_object_translation(translation);
+	el_gl_widget->set_translation(translation);
 }
 
 void MainWindow::update_rotation(const int index)
@@ -814,7 +794,7 @@ void MainWindow::update_rotation(const int index)
 	rotation[1] = y_rotation->value();
 	rotation[2] = z_rotation->value();
 
-	el_gl_widget->set_object_rotation(rotation);
+	el_gl_widget->set_rotation(rotation);
 }
 
 void MainWindow::update_rotation_dial(const int index)
@@ -829,7 +809,7 @@ void MainWindow::update_rotation_dial(const int index)
 	rotation[1] = y_rotation->value();
 	rotation[2] = z_rotation->value();
 
-	el_gl_widget->set_object_rotation(rotation);
+	el_gl_widget->set_rotation(rotation);
 }
 
 void MainWindow::update_scale()
@@ -860,7 +840,7 @@ void MainWindow::update_scale()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_scale_x()
@@ -891,7 +871,7 @@ void MainWindow::update_scale_x()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_scale_y()
@@ -922,7 +902,7 @@ void MainWindow::update_scale_y()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_scale_z()
@@ -953,7 +933,7 @@ void MainWindow::update_scale_z()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_scale_slider()
@@ -984,7 +964,7 @@ void MainWindow::update_scale_slider()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_scale_slider_x()
@@ -1015,7 +995,7 @@ void MainWindow::update_scale_slider_x()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_scale_slider_y()
@@ -1046,7 +1026,7 @@ void MainWindow::update_scale_slider_y()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_scale_slider_z()
@@ -1077,7 +1057,7 @@ void MainWindow::update_scale_slider_z()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_mirror()
@@ -1103,281 +1083,7 @@ void MainWindow::update_mirror()
 		scale.z = -scale.z;
 	}
 
-	el_gl_widget->set_object_scale(scale);
-}
-
-void MainWindow::update_scales()
-{
-	glm::vec3 scale;
-
-	scales_slider->blockSignals(true);
-	scales_slider->setValue(200.0f * (std::log10(
-		scales_value->value()) - 1.0f));
-	scales_slider->blockSignals(false);
-
-	scale.x = scales_value->value() * 0.01f;
-	scale.y = scales_value->value() * 0.01f;
-	scale.z = scales_value->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
-}
-
-void MainWindow::update_scales_x()
-{
-	glm::vec3 scale;
-
-	scales_slider_x->blockSignals(true);
-	scales_slider_x->setValue(200.0f * (std::log10(
-		scales_value_x->value()) - 1.0f));
-	scales_slider_x->blockSignals(false);
-
-	scale.x = scales_value_x->value() * 0.01f;
-	scale.y = scales_value_y->value() * 0.01f;
-	scale.z = scales_value_z->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
-}
-
-void MainWindow::update_scales_y()
-{
-	glm::vec3 scale;
-
-	scales_slider_y->blockSignals(true);
-	scales_slider_y->setValue(200.0f * (std::log10(
-		scales_value_y->value()) - 1.0f));
-	scales_slider_y->blockSignals(false);
-
-	scale.x = scales_value_x->value() * 0.01f;
-	scale.y = scales_value_y->value() * 0.01f;
-	scale.z = scales_value_z->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
-}
-
-void MainWindow::update_scales_z()
-{
-	glm::vec3 scale;
-
-	scales_slider_z->blockSignals(true);
-	scales_slider_z->setValue(200.0f * (std::log10(
-		scales_value_z->value()) - 1.0f));
-	scales_slider_z->blockSignals(false);
-
-	scale.x = scales_value_x->value() * 0.01f;
-	scale.y = scales_value_y->value() * 0.01f;
-	scale.z = scales_value_z->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
-}
-
-void MainWindow::update_scales_slider()
-{
-	glm::vec3 scale;
-
-	scales_value->blockSignals(true);
-	scales_value->setValue(std::pow(10.0f, 1.0f +
-		scales_slider->value() / 200.0f));
-	scales_value->blockSignals(false);
-
-	scale.x = scales_value_x->value() * 0.01f;
-	scale.y = scales_value_y->value() * 0.01f;
-	scale.z = scales_value_z->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
-}
-
-void MainWindow::update_scales_slider_x()
-{
-	glm::vec3 scale;
-
-	scales_value_x->blockSignals(true);
-	scales_value_x->setValue(std::pow(10.0f, 1.0f +
-		scales_slider_x->value() / 200.0f));
-	scales_value_x->blockSignals(false);
-
-	scale.x = scales_value_x->value() * 0.01f;
-	scale.y = scales_value_y->value() * 0.01f;
-	scale.z = scales_value_z->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
-}
-
-void MainWindow::update_scales_slider_y()
-{
-	glm::vec3 scale;
-
-	scales_value_y->blockSignals(true);
-	scales_value_y->setValue(std::pow(10.0f, 1.0f +
-		scales_slider_y->value() / 200.0f));
-	scales_value_y->blockSignals(false);
-
-	scale.x = scales_value_x->value() * 0.01f;
-	scale.y = scales_value_y->value() * 0.01f;
-	scale.z = scales_value_z->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
-}
-
-void MainWindow::update_scales_slider_z()
-{
-	glm::vec3 scale;
-
-	scales_value_z->blockSignals(true);
-	scales_value_z->setValue(std::pow(10.0f, 1.0f +
-		scales_slider_z->value() / 200.0f));
-	scales_value_z->blockSignals(false);
-
-	scale.x = scales_value_x->value() * 0.01f;
-	scale.y = scales_value_y->value() * 0.01f;
-	scale.z = scales_value_z->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
-}
-
-void MainWindow::update_mirrors()
-{
-	glm::vec3 scale;
-
-	scale.x = scales_value_x->value() * 0.01f;
-	scale.y = scales_value_y->value() * 0.01f;
-	scale.z = scales_value_z->value() * 0.01f;
-
-	if (mirrors_x->isChecked())
-	{
-		scale.x = -scale.x;
-	}
-
-	if (mirrors_y->isChecked())
-	{
-		scale.y = -scale.y;
-	}
-
-	if (mirrors_z->isChecked())
-	{
-		scale.z = -scale.z;
-	}
-
-	el_gl_widget->set_objects_scale(scale);
+	el_gl_widget->set_scale(scale);
 }
 
 void MainWindow::update_materials()
@@ -1392,17 +1098,6 @@ void MainWindow::update_materials()
 	}
 
 	el_gl_widget->set_object_materials(materials);
-}
-
-void MainWindow::update_position()
-{
-	glm::vec3 position;
-
-	position[0] = x_position->value();
-	position[1] = y_position->value();
-	position[2] = z_position->value();
-
-	el_gl_widget->set_light_position(position);
 }
 
 void MainWindow::set_light_color(const glm::vec3 &color)
@@ -1465,6 +1160,10 @@ void MainWindow::add_objects(const bool value)
 	action_add_objects->setChecked(false);
 }
 
+void MainWindow::set_default_mode()
+{
+}
+
 void MainWindow::add_lights(const bool value)
 {
 	float radius;
@@ -1524,7 +1223,6 @@ void MainWindow::terrain_mode(const bool checked)
 	if (checked)
 	{
 		action_remove->setEnabled(false);
-		properties->setCurrentIndex(2);
 
 		action_add_objects->setChecked(false);
 		action_add_lights->setChecked(false);
@@ -1583,11 +1281,6 @@ void MainWindow::open_map()
 	action_dungeon->blockSignals(true);
 	action_dungeon->setChecked(el_gl_widget->get_dungeon());
 	action_dungeon->blockSignals(false);
-}
-
-void MainWindow::set_default_mode()
-{
-	properties->setCurrentIndex(3);
 }
 
 void MainWindow::do_save()
@@ -1715,18 +1408,28 @@ void MainWindow::change_preferences()
 	m_preferences->set_click_button(el_gl_widget->get_click_button());
 	m_preferences->set_wheel_zoom_x10(el_gl_widget->get_wheel_zoom_x10());
 	m_preferences->set_swap_wheel_zoom(el_gl_widget->get_swap_wheel_zoom());
+	m_preferences->set_invert_z_rotation(
+		el_gl_widget->get_invert_z_rotation());
 	m_preferences->set_toolbar_icon_size(tool_bar->iconSize());
-	m_preferences->set_dirs(el_gl_widget->get_dirs());
+	m_preferences->set_el_data_dir(m_el_data_dir);
+	m_preferences->set_el2_data_dir(m_el2_data_dir);
+
 	m_preferences->set_textures(m_textures);
 
 	if (m_preferences->exec() == QDialog::Accepted)
 	{
-		el_gl_widget->set_click_button(m_preferences->get_click_button());
-		el_gl_widget->set_wheel_zoom_x10(m_preferences->get_wheel_zoom_x10());
-		el_gl_widget->set_swap_wheel_zoom(m_preferences->get_swap_wheel_zoom());
+		el_gl_widget->set_click_button(
+			m_preferences->get_click_button());
+		el_gl_widget->set_wheel_zoom_x10(
+			m_preferences->get_wheel_zoom_x10());
+		el_gl_widget->set_swap_wheel_zoom(
+			m_preferences->get_swap_wheel_zoom());
+		el_gl_widget->set_invert_z_rotation(
+			m_preferences->get_invert_z_rotation());
 		tool_bar->setIconSize(m_preferences->get_toolbar_icon_size());
-		el_gl_widget->set_dirs(m_preferences->get_dirs());
-		m_objects->set_dirs(m_preferences->get_dirs());
+		m_el_data_dir = m_preferences->get_el_data_dir();
+		m_el2_data_dir = m_preferences->get_el2_data_dir();
+		set_dirs();
 		set_textures(m_preferences->get_textures());
 		save_settings();
 	}
@@ -1802,6 +1505,10 @@ void MainWindow::init_actions()
 	addAction(action_rotate_r);
 	addAction(action_zoom_in);
 	addAction(action_zoom_out);
+	addAction(action_rotate_l);
+	addAction(action_rotate_r);
+	addAction(action_roll_u);
+	addAction(action_roll_d);
 
 	QObject::connect(action_move_l, SIGNAL(triggered()), el_gl_widget, SLOT(move_left()));
 	QObject::connect(action_move_r, SIGNAL(triggered()), el_gl_widget, SLOT(move_right()));
@@ -1811,6 +1518,8 @@ void MainWindow::init_actions()
 	QObject::connect(action_rotate_r, SIGNAL(triggered()), this, SLOT(rotate_right()));
 	QObject::connect(action_zoom_in, SIGNAL(triggered()), el_gl_widget, SLOT(zoom_in()));
 	QObject::connect(action_zoom_out, SIGNAL(triggered()), el_gl_widget, SLOT(zoom_out()));
+	QObject::connect(action_roll_u, SIGNAL(triggered()), this, SLOT(roll_up()));
+	QObject::connect(action_roll_d, SIGNAL(triggered()), this, SLOT(roll_down()));
 }
 
 void MainWindow::save_shortcuts(QSettings &settings)
@@ -1824,7 +1533,8 @@ void MainWindow::save_shortcuts(QSettings &settings)
 			if (!action->isSeparator() && (action->menu() == 0))
 			{
 				settings.setValue(action->data().toString(),
-					action->shortcut().toString(QKeySequence::NativeText));
+					action->shortcut().toString(
+						QKeySequence::NativeText));
 			}
 		}
 	}
@@ -1843,8 +1553,9 @@ void MainWindow::load_shortcuts(QSettings &settings)
 			if (!action->isSeparator() && (action->menu() == 0))
 			{
 				action->setShortcut(QKeySequence(settings.value(
-					action->data().toString(), QKeySequence::mnemonic(
-					action->text()).toString()).toString()));
+					action->data().toString(),
+					QKeySequence::mnemonic(action->text(
+						)).toString()).toString()));
 			}
 		}
 	}
@@ -1856,9 +1567,22 @@ void MainWindow::save_mouse_settings(QSettings &settings)
 {
 	settings.beginGroup("mouse");
 
-	settings.setValue("Click button", PreferencesDialog::mouse_button_to_str(el_gl_widget->get_click_button()));
-	settings.setValue("Wheel zoom x10", PreferencesDialog::key_mod_to_str(el_gl_widget->get_wheel_zoom_x10()));
-	settings.setValue("Swap wheel zoom", el_gl_widget->get_swap_wheel_zoom());
+	settings.setValue("click button",
+		PreferencesDialog::mouse_button_to_str(
+			el_gl_widget->get_click_button()));
+	settings.setValue("wheel zoom x10",
+		PreferencesDialog::key_mod_to_str(
+			el_gl_widget->get_wheel_zoom_x10()));
+	settings.setValue("swap wheel zoom",
+		el_gl_widget->get_swap_wheel_zoom());
+	settings.setValue("rotate x", PreferencesDialog::key_to_str(
+		el_gl_widget->get_rotate_x_key()));
+	settings.setValue("rotate y", PreferencesDialog::key_to_str(
+		el_gl_widget->get_rotate_y_key()));
+	settings.setValue("rotate z", PreferencesDialog::key_to_str(
+		el_gl_widget->get_rotate_z_key()));
+	settings.setValue("scale", PreferencesDialog::key_to_str(
+		el_gl_widget->get_scale_key()));
 
 	settings.endGroup();
 }
@@ -1867,49 +1591,67 @@ void MainWindow::load_mouse_settings(QSettings &settings)
 {
 	settings.beginGroup("mouse");
 
-	el_gl_widget->set_click_button(PreferencesDialog::str_to_mouse_button(settings.value(
-		"Click button", PreferencesDialog::mouse_button_to_str(Qt::LeftButton)).toString()));
-	el_gl_widget->set_wheel_zoom_x10(PreferencesDialog::str_to_key_mod(settings.value(
-		"Wheel zoom x10", PreferencesDialog::key_mod_to_str(Qt::ShiftModifier)).toString()));
-	el_gl_widget->set_swap_wheel_zoom(settings.value("Swap wheel zoom", false).toBool());
-	
+	el_gl_widget->set_click_button(PreferencesDialog::str_to_mouse_button(
+		settings.value("click button",
+		PreferencesDialog::mouse_button_to_str(
+			Qt::LeftButton)).toString()));
+	el_gl_widget->set_wheel_zoom_x10(PreferencesDialog::str_to_key_mod(
+		settings.value("wheel zoom x10",
+		PreferencesDialog::key_mod_to_str(Qt::ShiftModifier)).toString(
+			)));
+	el_gl_widget->set_swap_wheel_zoom(settings.value("swap wheel zoom",
+		false).toBool());
+	el_gl_widget->set_rotate_x_key(PreferencesDialog::str_to_key(
+		settings.value("rotate x",
+		PreferencesDialog::key_to_str(Qt::Key_X)).toString()));
+	el_gl_widget->set_rotate_y_key(PreferencesDialog::str_to_key(
+		settings.value("rotate y",
+		PreferencesDialog::key_to_str(Qt::Key_Y)).toString()));
+	el_gl_widget->set_rotate_z_key(PreferencesDialog::str_to_key(
+		settings.value("rotate z",
+		PreferencesDialog::key_to_str(Qt::Key_Z)).toString()));
+	el_gl_widget->set_scale_key(PreferencesDialog::str_to_key(
+		settings.value("scale",
+		PreferencesDialog::key_to_str(Qt::Key_R)).toString()));
+
 	settings.endGroup();
 }
 
 void MainWindow::save_dirs_settings(QSettings &settings)
 {
-	QStringList dirs;
-	int i, size;
+	settings.beginGroup("dirs");
 
-	dirs = el_gl_widget->get_dirs();
+	settings.setValue("el_data_dir", m_el_data_dir);
+	settings.setValue("el2_data_dir", m_el2_data_dir);
 
-	size = dirs.size();
-
-	settings.beginWriteArray("dirs");
-
-	for (i = 0; i < size; ++i)
-	{
-		settings.setArrayIndex(i);
-		settings.setValue("dir", dirs.at(i));
-	}
-
-	settings.endArray();
+	settings.endGroup();
 }
 
 void MainWindow::load_dirs_settings(QSettings &settings)
 {
+	settings.beginGroup("dirs");
+
+	m_el_data_dir = settings.value("el_data_dir", "").toString();
+	m_el2_data_dir = settings.value("el2_data_dir", "").toString();
+
+	settings.endGroup();
+
+	set_dirs();
+}
+
+void MainWindow::set_dirs()
+{
 	QStringList dirs;
-	int i, size;
 
-	size = settings.beginReadArray("dirs");
-
-	for (i = 0; i < size; ++i)
+	if (!m_el_data_dir.isEmpty())
 	{
-		settings.setArrayIndex(i);
-		dirs.append(settings.value("dir").toString());
+		dirs.append(m_el_data_dir);
 	}
 
-	settings.endArray();
+	if (!m_el2_data_dir.isEmpty())
+	{
+		dirs.append(m_el2_data_dir);
+	}
 
 	el_gl_widget->set_dirs(dirs);
 	m_objects->set_dirs(dirs);
@@ -2123,7 +1865,7 @@ void MainWindow::terrain_layer_edit()
 
 void MainWindow::terrain_edit()
 {
-	switch (paint_tool_box->currentIndex())
+	switch (paint_tool_tabs->currentIndex())
 	{
 		case 0:
 			terrain_vector_edit();
@@ -2132,15 +1874,13 @@ void MainWindow::terrain_edit()
 			terrain_layer_edit();
 			break;
 		case 2:
-			break;
-		case 3:
-			el_gl_widget->ground_tile_edit(
-				ground_tile->currentText().toInt());
-			break;
-		case 4:
 			el_gl_widget->water_tile_edit(0);
 			break;
-		case 5:
+		case 3:
+//			el_gl_widget->ground_tile_edit(
+//				ground_tile->currentText().toInt());
+			break;
+		case 4:
 			el_gl_widget->height_edit(0);
 			break;
 	}
@@ -2258,6 +1998,16 @@ void MainWindow::rotate_left()
 void MainWindow::rotate_right()
 {
 	camera_yaw->setValue(camera_yaw->value() + 5);
+}
+
+void MainWindow::roll_up()
+{
+	camera_roll->setValue(camera_roll->value() + 5);
+}
+
+void MainWindow::roll_down()
+{
+	camera_roll->setValue(camera_roll->value() - 5);
 }
 
 bool MainWindow::check_save_nodes()

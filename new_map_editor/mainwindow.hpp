@@ -54,6 +54,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		QStringList m_sampler_names;
 		el::EffectNodesSharedPtr m_effect_nodes;
 		QString m_file_name_nodes;
+		QString m_el_data_dir;
+		QString m_el2_data_dir;
 		bool m_changed_nodes;
 
 		void set_light_color(const glm::vec3 &color);
@@ -85,6 +87,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void load_nodes(const QString &file_name);
 		bool check_save_nodes();
 		void set_terrain_blend_data();
+		void set_dirs();
 
 	private slots:
 		void update_object();
@@ -101,16 +104,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void update_scale_slider_y();
 		void update_scale_slider_z();
 		void update_mirror();
-		void update_scales();
-		void update_scales_x();
-		void update_scales_y();
-		void update_scales_z();
-		void update_scales_slider();
-		void update_scales_slider_x();
-		void update_scales_slider_y();
-		void update_scales_slider_z();
-		void update_mirrors();
-		void update_position();
 		void update_materials();
 		void update_object(const bool select);
 		void update_light(const bool select);
@@ -140,6 +133,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void change_dungeon();
 		void rotate_left();
 		void rotate_right();
+		void roll_up();
+		void roll_down();
 		void add_color();
 		void add_direction();
 		void add_constant();

@@ -7,16 +7,18 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent)
 	setupUi(this);
 
 	shortcut->installEventFilter(this);
+	rotate_x_key->installEventFilter(this);
+	rotate_y_key->installEventFilter(this);
+	rotate_z_key->installEventFilter(this);
+	scale_key->installEventFilter(this);
 	QObject::connect(clear_button, SIGNAL(clicked()), this, SLOT(clear_shortcuts()));
 	QObject::connect(reset_button, SIGNAL(clicked()), this, SLOT(action_reset()));
 	QObject::connect(default_button, SIGNAL(clicked()), this, SLOT(action_default()));
 	QObject::connect(ok_button, SIGNAL(clicked()), this, SLOT(set_action_shortcuts()));
 	QObject::connect(action_list, SIGNAL(itemSelectionChanged()), this, SLOT(action_changed()));
 	QObject::connect(textures_remove, SIGNAL(clicked()), this, SLOT(remove_texture()));
-	QObject::connect(dirs_add, SIGNAL(clicked()), this, SLOT(add_dir()));
-	QObject::connect(dirs_remove, SIGNAL(clicked()), this, SLOT(remove_dir()));
-	QObject::connect(dirs_up, SIGNAL(clicked()), this, SLOT(up_dir()));
-	QObject::connect(dirs_down, SIGNAL(clicked()), this, SLOT(down_dir()));
+	QObject::connect(el_data_dir_button, SIGNAL(clicked()), this, SLOT(change_el_data_dir()));
+	QObject::connect(el2_data_dir_button, SIGNAL(clicked()), this, SLOT(change_el2_data_dir()));
 
 	click_button->addItem(mouse_button_to_str(Qt::LeftButton));
 	click_button->addItem(mouse_button_to_str(Qt::MidButton));
@@ -31,96 +33,31 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent)
 
 	m_textures_model = new QStringListModel(textures);
 	textures->setModel(m_textures_model);
-
-	m_dirs_model = new QStringListModel(dirs);
-	dirs->setModel(m_dirs_model);
-
-	m_dirs_model->setStringList(m_dirs);
-
-	check_dir_enable();
 }
 
-void PreferencesDialog::add_dir()
+void PreferencesDialog::change_el_data_dir()
 {
 	QString dir;
 
-	dir = QFileDialog::getExistingDirectory(this, "Select directory");
+	dir = QFileDialog::getExistingDirectory(this, "Select directory",
+		m_el_data_dir);
 
 	if (!dir.isEmpty())
 	{
-		m_dirs.append(dir);
-
-		m_dirs_model->setStringList(m_dirs);
+		set_el_data_dir(dir);
 	}
 }
 
-void PreferencesDialog::remove_dir()
+void PreferencesDialog::change_el2_data_dir()
 {
-	if (dirs->currentIndex().isValid())
+	QString dir;
+
+	dir = QFileDialog::getExistingDirectory(this, "Select directory",
+		m_el2_data_dir);
+
+	if (!dir.isEmpty())
 	{
-		m_dirs.removeAt(dirs->currentIndex().row());
-
-		m_dirs_model->setStringList(m_dirs);
-		check_dir_enable();
-	}
-}
-
-void PreferencesDialog::up_dir()
-{
-	int index;
-
-	if (dirs->currentIndex().isValid())
-	{
-		index = dirs->currentIndex().row();
-
-		if (index > 0)
-		{
-			m_dirs.move(index, index - 1);
-
-			m_dirs_model->setStringList(m_dirs);
-
-			check_dir_enable();
-		}
-	}
-}
-
-void PreferencesDialog::down_dir()
-{
-	int index;
-
-	if (dirs->currentIndex().isValid())
-	{
-		index = dirs->currentIndex().row();
-
-		if (index < (m_dirs.size() - 1))
-		{
-			m_dirs.move(index, index + 1);
-
-			m_dirs_model->setStringList(m_dirs);
-
-			check_dir_enable();
-		}
-	}
-}
-
-void PreferencesDialog::check_dir_enable()
-{
-	int index;
-
-	if (dirs->currentIndex().isValid())
-	{
-		index = dirs->currentIndex().row();
-
-		dirs_remove->setEnabled(true);
-
-		dirs_up->setEnabled(index > 0);
-		dirs_down->setEnabled(index < (m_dirs.size() - 1));
-	}
-	else
-	{
-		dirs_remove->setEnabled(false);
-		dirs_up->setEnabled(false);
-		dirs_down->setEnabled(false);
+		set_el2_data_dir(dir);
 	}
 }
 
@@ -227,6 +164,54 @@ void PreferencesDialog::clear_shortcuts()
 	set_shortcut();
 }
 
+void PreferencesDialog::set_rotate_x_key()
+{
+	QKeySequence key_sequence;
+	QString str;
+
+	key_sequence = QKeySequence(m_rotate_x_key);
+
+	str = key_sequence.toString(QKeySequence::NativeText);
+
+	rotate_x_key->setText(str);
+}
+
+void PreferencesDialog::set_rotate_y_key()
+{
+	QKeySequence key_sequence;
+	QString str;
+
+	key_sequence = QKeySequence(m_rotate_y_key);
+
+	str = key_sequence.toString(QKeySequence::NativeText);
+
+	rotate_y_key->setText(str);
+}
+
+void PreferencesDialog::set_rotate_z_key()
+{
+	QKeySequence key_sequence;
+	QString str;
+
+	key_sequence = QKeySequence(m_rotate_z_key);
+
+	str = key_sequence.toString(QKeySequence::NativeText);
+
+	rotate_z_key->setText(str);
+}
+
+void PreferencesDialog::set_scale_key()
+{
+	QKeySequence key_sequence;
+	QString str;
+
+	key_sequence = QKeySequence(m_scale_key);
+
+	str = key_sequence.toString(QKeySequence::NativeText);
+
+	scale_key->setText(str);
+}
+
 int PreferencesDialog::translate_modifiers(Qt::KeyboardModifiers state,
 	const QString &text) const
 {
@@ -280,6 +265,70 @@ void PreferencesDialog::handle_key_event(QKeyEvent *key_event)
 	set_shortcut();
 }
 
+void PreferencesDialog::handle_rotate_x_key_event(QKeyEvent *key_event)
+{
+	int next_key;
+
+	next_key = key_event->key();
+
+	if ((next_key == Qt::Key_Control) || (next_key == Qt::Key_Shift) ||
+		(next_key == Qt::Key_Meta) || (next_key == Qt::Key_Alt) ||
+		(next_key == Qt::Key_Super_L) || (next_key == Qt::Key_AltGr))
+	{
+		return;
+	}
+
+	set_rotate_x_key(static_cast<Qt::Key>(next_key));
+}
+
+void PreferencesDialog::handle_rotate_y_key_event(QKeyEvent *key_event)
+{
+	int next_key;
+
+	next_key = key_event->key();
+
+	if ((next_key == Qt::Key_Control) || (next_key == Qt::Key_Shift) ||
+		(next_key == Qt::Key_Meta) || (next_key == Qt::Key_Alt) ||
+		(next_key == Qt::Key_Super_L) || (next_key == Qt::Key_AltGr))
+	{
+		return;
+	}
+
+	set_rotate_y_key(static_cast<Qt::Key>(next_key));
+}
+
+void PreferencesDialog::handle_rotate_z_key_event(QKeyEvent *key_event)
+{
+	int next_key;
+
+	next_key = key_event->key();
+
+	if ((next_key == Qt::Key_Control) || (next_key == Qt::Key_Shift) ||
+		(next_key == Qt::Key_Meta) || (next_key == Qt::Key_Alt) ||
+		(next_key == Qt::Key_Super_L) || (next_key == Qt::Key_AltGr))
+	{
+		return;
+	}
+
+	set_rotate_z_key(static_cast<Qt::Key>(next_key));
+}
+
+void PreferencesDialog::handle_scale_key_event(QKeyEvent *key_event)
+{
+	int next_key;
+
+	next_key = key_event->key();
+
+	if ((next_key == Qt::Key_Control) || (next_key == Qt::Key_Shift) ||
+		(next_key == Qt::Key_Meta) || (next_key == Qt::Key_Alt) ||
+		(next_key == Qt::Key_Super_L) || (next_key == Qt::Key_AltGr))
+	{
+		return;
+	}
+
+	set_scale_key(static_cast<Qt::Key>(next_key));
+}
+
 bool PreferencesDialog::eventFilter(QObject *obj, QEvent *event)
 {
 	if ((obj == shortcut) && (event->type() == QEvent::KeyPress))
@@ -288,10 +337,36 @@ bool PreferencesDialog::eventFilter(QObject *obj, QEvent *event)
 
 		return true;
 	}
-	else
+
+	if ((obj == rotate_x_key) && (event->type() == QEvent::KeyPress))
 	{
-		return false;
+		handle_rotate_x_key_event(static_cast<QKeyEvent*>(event));
+
+		return true;
 	}
+
+	if ((obj == rotate_y_key) && (event->type() == QEvent::KeyPress))
+	{
+		handle_rotate_y_key_event(static_cast<QKeyEvent*>(event));
+
+		return true;
+	}
+
+	if ((obj == rotate_z_key) && (event->type() == QEvent::KeyPress))
+	{
+		handle_rotate_z_key_event(static_cast<QKeyEvent*>(event));
+
+		return true;
+	}
+
+	if ((obj == scale_key) && (event->type() == QEvent::KeyPress))
+	{
+		handle_scale_key_event(static_cast<QKeyEvent*>(event));
+
+		return true;
+	}
+
+	return false;
 }
 
 void PreferencesDialog::set_actions(const QList<QAction*> &actions)
@@ -341,6 +416,11 @@ bool PreferencesDialog::get_swap_wheel_zoom() const
 	return swap_wheel_zoom->isChecked();
 }
 
+bool PreferencesDialog::get_invert_z_rotation() const
+{
+	return invert_z_rotation->isChecked();
+}
+
 void PreferencesDialog::set_click_button(const Qt::MouseButton value)
 {
 	click_button->setCurrentIndex(click_button->findText(
@@ -356,6 +436,11 @@ void PreferencesDialog::set_wheel_zoom_x10(const Qt::KeyboardModifier value)
 void PreferencesDialog::set_swap_wheel_zoom(const bool value)
 {
 	swap_wheel_zoom->setChecked(value);
+}
+
+void PreferencesDialog::set_invert_z_rotation(const bool value)
+{
+	invert_z_rotation->setChecked(value);
 }
 
 Qt::MouseButton PreferencesDialog::str_to_mouse_button(const QString &str)
@@ -404,6 +489,20 @@ Qt::KeyboardModifier PreferencesDialog::str_to_key_mod(const QString &str)
 	return Qt::NoModifier;
 }
 
+Qt::Key PreferencesDialog::str_to_key(const QString &str)
+{
+	QKeySequence key;
+
+	key = QKeySequence(str);
+
+	if (key.count() > 0)
+	{
+		return static_cast<Qt::Key>(key[0]);
+	}
+
+	return Qt::Key_unknown;
+}
+
 QString PreferencesDialog::mouse_button_to_str(const Qt::MouseButton value)
 {
 	switch (value)
@@ -438,6 +537,15 @@ QString PreferencesDialog::key_mod_to_str(const Qt::KeyboardModifier value)
 		default:
 			return "Disabled";
 	}
+}
+
+QString PreferencesDialog::key_to_str(const Qt::Key value)
+{
+	QKeySequence key;
+
+	key = QKeySequence(value);
+
+	return key.toString();
 }
 
 QSize PreferencesDialog::get_toolbar_icon_size() const
@@ -488,16 +596,51 @@ void PreferencesDialog::set_toolbar_icon_size(const QSize &size)
 	icon_size_medium->setChecked(true);
 }
 
-void PreferencesDialog::set_dirs(const QStringList &dirs)
-{
-	m_dirs = dirs;
-	m_dirs_model->setStringList(m_dirs);
-	check_dir_enable();
-}
-
 void PreferencesDialog::set_textures(const QStringList &textures)
 {
 	m_textures = textures;
 	m_textures_model->setStringList(m_textures);
 	remove_texture_enable();
+}
+
+void PreferencesDialog::set_el_data_dir(const QString &el_data_dir)
+{
+	m_el_data_dir = el_data_dir;
+
+	el_data_dir_button->setText(el_data_dir);
+}
+
+void PreferencesDialog::set_el2_data_dir(const QString &el2_data_dir)
+{
+	m_el2_data_dir = el2_data_dir;
+
+	el2_data_dir_button->setText(el2_data_dir);
+}
+
+void PreferencesDialog::set_rotate_x_key(const Qt::Key rotate_x_key)
+{
+	m_rotate_x_key = rotate_x_key;
+
+	set_rotate_x_key();
+}
+
+void PreferencesDialog::set_rotate_y_key(const Qt::Key rotate_y_key)
+{
+	m_rotate_y_key = rotate_y_key;
+
+	set_rotate_y_key();
+}
+
+void PreferencesDialog::set_rotate_z_key(const Qt::Key rotate_z_key)
+{
+	m_rotate_z_key = rotate_z_key;
+
+	set_rotate_z_key();
+}
+
+void PreferencesDialog::set_scale_key(const Qt::Key scale_key)
+{
+	m_scale_key = scale_key;
+
+	set_scale_key();
 }

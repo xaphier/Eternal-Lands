@@ -3,12 +3,8 @@
 	<name>default-terrain</name>
 	<use_specular>false</use_specular>
 	<shader_blend_data>
-		<blend>slope</blend>
-		<data>-2.5 2.5</data>
-	</shader_blend_data>
-<!--	<shader_blend_data>
 		<blend>blend</blend>
-		<data>0.1 0.0</data>
+		<data>1.0 0.0</data>
 	</shader_blend_data>
 	<shader_blend_data>
 		<blend>blend</blend>
@@ -17,6 +13,10 @@
 	<shader_blend_data>
 		<blend>blend</blend>
 		<data>0.1 0.0</data>
-	</shader_blend_data>-->
-	<use_randomized_uvs>11</use_randomized_uvs>
+	</shader_blend_data>
+	<shader_blend_data>
+		<blend>blend</blend>
+		<data>0.1 0.0</data>
+	</shader_blend_data>
+	<use_randomized_uvs>00000</use_randomized_uvs>
 </shader_source_terrain>

@@ -47,7 +47,7 @@ namespace eternal_lands
 			UniformBufferDescriptionCacheSharedPtr
 				m_uniform_buffer_description_cache;
 			HardwareBufferMapperSharedPtr m_hardware_buffer_mapper;
-			ColorCorrectionSharedPtr m_color_correction;
+			ThreadPoolSharedPtr m_thread_pool;
 
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
@@ -165,16 +165,16 @@ namespace eternal_lands
 				return m_hardware_buffer_mapper;
 			}
 
-			inline const ColorCorrectionSharedPtr
-				&get_color_correction() const noexcept
-			{
-				return m_color_correction;
-			}
-
 			inline const TerrainBuilderSharedPtr
 				&get_terrain_builder() const noexcept
 			{
 				return m_terrain_builder;;
+			}
+
+			inline const ThreadPoolSharedPtr &get_thread_pool()
+				const noexcept
+			{
+				return m_thread_pool;
 			}
 
 	};

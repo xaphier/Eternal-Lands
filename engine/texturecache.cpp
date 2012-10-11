@@ -329,8 +329,7 @@ namespace eternal_lands
 		texture = boost::make_shared<Texture>(name,
 			image->get_width(), image->get_height(),
 			image->get_depth(), 0xFFFF, 0,
-			image->get_texture_format(),
-			image->get_texture_target());
+			image->get_texture_format(), ttt_texture_2d_array);
 
 		texture->set_image(image);
 

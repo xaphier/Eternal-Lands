@@ -499,7 +499,8 @@ extern "C" void init_file_system()
 
 	file_system.reset(new el::FileSystem());
 
-	file_system->add_dir(el::String(UTF8(".")));
+	file_system->add_dir(el::String(el::string_to_utf8(datadir)));
+	file_system->add_dir(el::String(el::string_to_utf8(el2_data_dir)));
 
 	config_dir = el::string_to_utf8(get_path_config_base());
 
@@ -510,16 +511,6 @@ extern "C" void init_file_system()
 	update_dir = config_dir;
 	update_dir += UTF8("/updates");
 	update_dir += str.str();
-
-	file_system->add_dir(el::String(update_dir));
-
-	update_dir = config_dir;
-	update_dir += UTF8("/updates/2_0_alpha");
-
-	file_system->add_dir(el::String(update_dir));
-
-	update_dir = config_dir;
-	update_dir += UTF8("/updates/data");
 
 	file_system->add_dir(el::String(update_dir));
 

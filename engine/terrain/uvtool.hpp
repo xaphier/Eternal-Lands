@@ -85,8 +85,9 @@ namespace eternal_lands
 			 */
 			~UvTool() noexcept;
 
-			void relaxed_uv(const bool use_simd);
-			void convert();
+			void relaxed_uv(const Uint16 count,
+				const bool use_simd);
+			ImageSharedPtr convert(glm::vec2 &dudv_scale);
 
 			inline const glm::vec2 &get_uv(const Uint16 x,
 				const Uint16 y) const

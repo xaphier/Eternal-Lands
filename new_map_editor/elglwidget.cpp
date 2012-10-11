@@ -15,6 +15,7 @@
 
 ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 {
+	m_mouse_move = kpt_nothing;
 	m_select = false;
 	m_select_depth = false;
 	m_zoom = 10.0f;
@@ -33,6 +34,11 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 
 	m_timer = new QTimer(this);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
+
+	m_rotate_x_key = Qt::Key_X;
+	m_rotate_y_key = Qt::Key_Y;
+	m_rotate_z_key = Qt::Key_Z;
+	m_scale_key = Qt::Key_R;
 }
 
 ELGLWidget::~ELGLWidget()
@@ -120,15 +126,139 @@ void ELGLWidget::mouse_click_action()
 	}
 }
 
+void ELGLWidget::keyPressEvent(QKeyEvent *event)
+{
+	if (event->key() == m_rotate_x_key)
+	{
+		m_mouse_move = kpt_rotate_x;
+	}
+
+	if (event->key() == m_rotate_y_key)
+	{
+		m_mouse_move = kpt_rotate_y;
+	}
+
+	if (event->key() == m_rotate_z_key)
+	{
+		m_mouse_move = kpt_rotate_z;
+	}
+
+	if (event->key() == m_scale_key)
+	{
+		m_mouse_move = kpt_scale;
+	}
+}
+
+void ELGLWidget::keyReleaseEvent(QKeyEvent *event)
+{
+	if (event->key() == m_rotate_x_key)
+	{
+		if (m_mouse_move == kpt_rotate_x)
+		{
+			m_mouse_move = kpt_nothing;
+		}
+	}
+
+	if (event->key() == m_rotate_y_key)
+	{
+		if (m_mouse_move == kpt_rotate_y)
+		{
+			m_mouse_move = kpt_nothing;
+		}
+	}
+
+	if (event->key() == m_rotate_z_key)
+	{
+		if (m_mouse_move == kpt_rotate_z)
+		{
+			m_mouse_move = kpt_nothing;
+		}
+	}
+
+	if (event->key() == m_scale_key)
+	{
+		if (m_mouse_move == kpt_scale)
+		{
+			m_mouse_move = kpt_nothing;
+		}
+	}
+}
+
 void ELGLWidget::mouse_move_action()
 {
 	EditorObjectDescription object_description;
 	LightData light_data;
-	glm::vec3 position;
+	glm::vec3 position, rotation;
+	glm::vec2 dir;
+	Uint16 rotate_index;
+	bool rotating, scaling;
 
 	if (get_terrain_editing())
 	{
 		emit terrain_edit();
+
+		return;
+	}
+
+	rotate_index = 0;
+	rotating = false;
+	scaling = false;
+
+	switch (m_mouse_move)
+	{
+		case kpt_nothing:
+			break;
+		case kpt_rotate_x:
+			rotating = true;
+			rotate_index = 0;
+			break;
+		case kpt_rotate_y:
+			rotating = true;
+			rotate_index = 1;
+			break;
+		case kpt_rotate_z:
+			rotating = true;
+			rotate_index = 2;
+			break;
+		case kpt_scale:
+			scaling = true;
+			break;
+	}
+
+	if (rotating)
+	{
+		dir = glm::normalize(glm::vec2(m_select_pos) -
+			glm::vec2(m_selected_screen_position));
+
+		switch (m_editor->get_renderable())
+		{
+			default:
+			case rt_none:
+			case rt_particle:
+				break;
+			case rt_light:
+				break;
+			case rt_object:
+				get_object_description(object_description);
+
+				rotation =
+					object_description.get_rotation_angles(
+						);
+
+				rotation[rotate_index] = glm::degrees(
+					glm::atan(dir.x, dir.y));
+
+				if (get_invert_z_rotation())
+				{
+					rotation.z = 360.0f - rotation.z;
+				}
+
+				m_editor->set_object_rotation(rotation);
+				emit can_undo(m_editor->get_can_undo());
+				emit update_object(true);
+
+				break;
+		}
 
 		return;
 	}
@@ -142,6 +272,7 @@ void ELGLWidget::mouse_move_action()
 		{
 			default:
 			case rt_none:
+			case rt_particle:
 				break;
 			case rt_light:
 				m_editor->get_light_data(light_data);
@@ -149,11 +280,11 @@ void ELGLWidget::mouse_move_action()
 				m_move_offset = light_data.get_position();
 				break;
 			case rt_object:
-				m_editor->get_object_description(
-					object_description);
+				get_object_description(object_description);
 
 				m_move_offset =
 					object_description.get_translation();
+
 				break;
 		}
 
@@ -167,6 +298,10 @@ void ELGLWidget::mouse_move_action()
 
 		switch (m_editor->get_renderable())
 		{
+			default:
+			case rt_none:
+			case rt_particle:
+				break;
 			case rt_light:
 				m_editor->set_light_position(position);
 				emit can_undo(m_editor->get_can_undo());
@@ -176,9 +311,6 @@ void ELGLWidget::mouse_move_action()
 				m_editor->set_object_translation(position);
 				emit can_undo(m_editor->get_can_undo());
 				emit update_object(true);
-				break;
-			case rt_none:
-			default:
 				break;
 		}
 	}
@@ -445,10 +577,12 @@ void ELGLWidget::resizeGL(int width, int height)
 
 void ELGLWidget::paintGL()
 {
+	EditorObjectDescription object_description;
+	LightData light_data;
 	glm::mat4 view;
 	glm::mat3 rotate;
 	glm::ivec4 view_port;
-	glm::vec3 dir, pos;
+	glm::vec3 dir, pos, selected_position;
 	double selected_depth;
 	Uint32 id;
 
@@ -503,6 +637,8 @@ void ELGLWidget::paintGL()
 			case rt_none:
 				emit deselect();
 				break;
+			case rt_particle:
+				break;
 			case rt_light:
 				emit update_light(true);
 				break;
@@ -542,6 +678,30 @@ void ELGLWidget::paintGL()
 			view_port);
 	}
 
+	switch (m_editor->get_renderable())
+	{
+		default:
+		case rt_none:
+		case rt_particle:
+			break;
+		case rt_light:
+			m_editor->get_light_data(light_data);
+
+			selected_position = light_data.get_position();
+			break;
+		case rt_object:
+			get_object_description(object_description);
+
+			selected_position =
+				object_description.get_translation();
+
+			break;
+	}
+
+	m_selected_screen_position = glm::uvec2(glm::project(
+		glm::dvec3(selected_position), glm::dmat4(view),
+		glm::dmat4(m_editor->get_projection_matrix()), view_port));
+
 	if (m_mouse_click_action)
 	{
 		m_mouse_click_action = false;
@@ -560,7 +720,18 @@ void ELGLWidget::paintGL()
 void ELGLWidget::get_object_description(
 	EditorObjectDescription &object_description) const
 {
+	glm::vec3 rotation;
+
 	m_editor->get_object_description(object_description);
+
+	if (get_invert_z_rotation())
+	{
+		rotation = object_description.get_rotation_angles();
+
+		rotation.z = 360.0f - rotation.z;
+
+		object_description.set_rotation_angles(rotation);
+	}
 }
 
 RenderableType ELGLWidget::get_renderable() const
@@ -615,21 +786,67 @@ void ELGLWidget::set_object_transparency(const float value)
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::set_object_translation(const glm::vec3 &translation)
+void ELGLWidget::set_translation(const glm::vec3 &translation)
 {
-	m_editor->set_object_translation(translation);
+	if (m_editor->get_objects_selected())
+	{
+		m_editor->set_objects_translation(translation);
+	}
+
+	if (m_editor->get_lights_selected())
+	{
+		m_editor->set_lights_position(translation);
+	}
+
+	if (m_editor->get_object_selected())
+	{
+		m_editor->set_object_translation(translation);
+	}
+
+	if (m_editor->get_light_selected())
+	{
+		m_editor->set_light_position(translation);
+	}
+
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::set_object_rotation(const glm::vec3 &rotation)
+void ELGLWidget::set_rotation(const glm::vec3 &rotation)
 {
-	m_editor->set_object_rotation(rotation);
+	glm::vec3 tmp_rotation;
+
+	tmp_rotation = rotation;
+
+	if (get_invert_z_rotation())
+	{
+		tmp_rotation.z = 360.0f - tmp_rotation.z;
+	}
+
+	if (m_editor->get_objects_selected())
+	{
+		m_editor->set_objects_rotation(tmp_rotation);
+	}
+
+	if (m_editor->get_object_selected())
+	{
+		m_editor->set_object_rotation(tmp_rotation);
+	}
+
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::set_object_scale(const glm::vec3 &scale)
+void ELGLWidget::set_scale(const glm::vec3 &scale)
 {
-	m_editor->set_object_scale(scale);
+	if (m_editor->get_objects_selected())
+	{
+		m_editor->set_objects_scale(scale);
+	}
+
+	if (m_editor->get_object_selected())
+	{
+		m_editor->set_object_scale(scale);
+	}
+
 	emit can_undo(m_editor->get_can_undo());
 }
 
@@ -651,33 +868,9 @@ void ELGLWidget::set_objects_transparency(const float value)
 	emit can_undo(m_editor->get_can_undo());
 }
 
-void ELGLWidget::set_objects_translation(const glm::vec3 &translation)
-{
-	m_editor->set_objects_translation(translation);
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::set_objects_rotation(const glm::vec3 &rotation)
-{
-	m_editor->set_objects_rotation(rotation);
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::set_objects_scale(const glm::vec3 &scale)
-{
-	m_editor->set_objects_scale(scale);
-	emit can_undo(m_editor->get_can_undo());
-}
-
 void ELGLWidget::remove_light()
 {
 	m_editor->remove_light();
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::set_light_position(const glm::vec3 &position)
-{
-	m_editor->set_light_position(position);
 	emit can_undo(m_editor->get_can_undo());
 }
 
@@ -690,12 +883,6 @@ void ELGLWidget::set_light_radius(const double radius)
 void ELGLWidget::set_light_color(const glm::vec3 &color)
 {
 	m_editor->set_light_color(color);
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::set_lights_position(const glm::vec3 &position)
-{
-	m_editor->set_lights_position(position);
 	emit can_undo(m_editor->get_can_undo());
 }
 

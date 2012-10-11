@@ -426,7 +426,6 @@ namespace eternal_lands
 
 	FileSystem::FileSystem()
 	{
-		add_dir(String(UTF8(".")));
 	}
 
 	FileSystem::~FileSystem() noexcept

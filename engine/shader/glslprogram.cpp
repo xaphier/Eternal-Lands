@@ -2449,6 +2449,19 @@ namespace eternal_lands
 			"successful: %2%"), get_uuid() % get_program_log());
 	}
 
+	void GlslProgram::log_validate_error()
+	{
+		glValidateProgram(m_program);
+
+		if (program_validate_status())
+		{
+			return;
+		}
+
+		LOG_ERROR(lt_glsl_program, UTF8("Program '%1%' validation: "
+			"%2%"), get_uuid() % get_program_log());
+	}
+
 	void GlslProgram::unbind()
 	{
 		glUseProgram(0);

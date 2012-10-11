@@ -8,6 +8,15 @@
 
 using namespace eternal_lands;
 
+enum KeyPressType
+{
+	kpt_nothing,
+	kpt_rotate_x,
+	kpt_rotate_y,
+	kpt_rotate_z,
+	kpt_scale
+};
+
 class ELGLWidget: public QGLWidget
 {
 	Q_OBJECT
@@ -25,8 +34,11 @@ class ELGLWidget: public QGLWidget
 		glm::vec3 m_world_position;
 		glm::vec3 m_grab_world_position;
 		glm::vec3 m_move_offset;
+		glm::vec3 m_rotation_offset;
+		glm::vec3 m_scale_offset;
 		glm::uvec4 m_selection_rect;
 		glm::uvec2 m_select_pos, m_half_size;
+		glm::uvec2 m_selected_screen_position;
 		String m_object_name;
 		float m_light_radius;
 		float m_zoom;
@@ -43,10 +55,16 @@ class ELGLWidget: public QGLWidget
 		bool m_mouse_click_action;
 		bool m_mouse_move_action;
 		bool m_grab_world_position_valid;
+		KeyPressType m_mouse_move;
 		BlendType m_blend;
 		Qt::MouseButton m_click_button;
 		Qt::KeyboardModifier m_wheel_zoom_x10;
+		Qt::Key m_rotate_x_key;
+		Qt::Key m_rotate_y_key;
+		Qt::Key m_rotate_z_key;
+		Qt::Key m_scale_key;
 		bool m_swap_wheel_zoom;
+		bool m_invert_z_rotation;
 
 		inline bool get_terrain_editing() const
 		{
@@ -71,7 +89,8 @@ class ELGLWidget: public QGLWidget
 		virtual void initializeGL();
 		virtual void resizeGL(int width, int height);
 		virtual void paintGL();
-
+		virtual void keyPressEvent(QKeyEvent *event);
+		virtual void keyReleaseEvent(QKeyEvent *event);
 		virtual void mouseReleaseEvent(QMouseEvent *event);
 		virtual void mousePressEvent(QMouseEvent *event);
 		virtual void mouseMoveEvent(QMouseEvent *event);
@@ -85,20 +104,15 @@ class ELGLWidget: public QGLWidget
 		RenderableType get_renderable() const;
 		glm::vec3 get_light_color() const;
 		void get_light_data(LightData &light) const;
-		void set_light_position(const glm::vec3 &position);
 		void set_light_color(const glm::vec3 &color);
-		void set_object_translation(const glm::vec3 &translation);
-		void set_object_rotation(const glm::vec3 &rotation);
-		void set_object_scale(const glm::vec3 &scale);
 		void set_object_selection(const SelectionType selection);
 		void set_object_blend(const BlendType blend);
 		void set_object_transparency(const float transparency);
 		void set_object_materials(const StringVector &materials);
-		void set_lights_position(const glm::vec3 &position);
 		void set_lights_color(const glm::vec3 &color);
-		void set_objects_translation(const glm::vec3 &translation);
-		void set_objects_rotation(const glm::vec3 &rotation);
-		void set_objects_scale(const glm::vec3 &scale);
+		void set_translation(const glm::vec3 &translation);
+		void set_rotation(const glm::vec3 &rotation);
+		void set_scale(const glm::vec3 &scale);
 		void set_objects_selection(const SelectionType selection);
 		void set_objects_blend(const BlendType blend);
 		void set_objects_transparency(const float transparency);
@@ -167,9 +181,34 @@ class ELGLWidget: public QGLWidget
 			return m_wheel_zoom_x10;
 		}
 
+		inline Qt::Key get_rotate_x_key() const
+		{
+			return m_rotate_x_key;
+		}
+
+		inline Qt::Key get_rotate_y_key() const
+		{
+			return m_rotate_y_key;
+		}
+
+		inline Qt::Key get_rotate_z_key() const
+		{
+			return m_rotate_z_key;
+		}
+
+		inline Qt::Key get_scale_key() const
+		{
+			return m_scale_key;
+		}
+
 		inline bool get_swap_wheel_zoom() const
 		{
 			return m_swap_wheel_zoom;
+		}
+
+		inline bool get_invert_z_rotation() const
+		{
+			return m_invert_z_rotation;
 		}
 
 		inline void set_click_button(const Qt::MouseButton click_button)
@@ -183,9 +222,34 @@ class ELGLWidget: public QGLWidget
 			m_wheel_zoom_x10 = wheel_zoom_x10;
 		}
 
+		inline void set_rotate_x_key(const Qt::Key rotate_x_key)
+		{
+			m_rotate_x_key = rotate_x_key;
+		}
+
+		inline void set_rotate_y_key(const Qt::Key rotate_y_key)
+		{
+			m_rotate_y_key = rotate_y_key;
+		}
+
+		inline void set_rotate_z_key(const Qt::Key rotate_z_key)
+		{
+			m_rotate_z_key = rotate_z_key;
+		}
+
+		inline void set_scale_key(const Qt::Key scale_key)
+		{
+			m_scale_key = scale_key;
+		}
+
 		inline void set_swap_wheel_zoom(const bool swap_wheel_zoom)
 		{
 			m_swap_wheel_zoom = swap_wheel_zoom;
+		}
+
+		inline void set_invert_z_rotation(const bool invert_z_rotation)
+		{
+			m_invert_z_rotation = invert_z_rotation;
 		}
 
 		inline const QStringList &get_dirs() const

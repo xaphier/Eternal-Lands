@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>529</width>
-    <height>363</height>
+    <width>475</width>
+    <height>414</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,9 +41,15 @@
         <normaloff>:/icons/keyboard.png</normaloff>:/icons/keyboard.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>&amp;Keyboard</string>
+       <string>Keyboard</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="margin">
+        <number>2</number>
+       </property>
        <item>
         <widget class="QTreeWidget" name="action_list">
          <property name="sizePolicy">
@@ -75,6 +81,9 @@
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>2</number>
+         </property>
          <item>
           <spacer name="verticalSpacer">
            <property name="orientation">
@@ -166,17 +175,128 @@
         <normaloff>:/icons/mouse.png</normaloff>:/icons/mouse.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>&amp;Mouse</string>
+       <string>Mouse</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0" colspan="2">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Roate x</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="text">
+          <string>Clear</string>
+         </property>
+         <property name="icon">
+          <iconset resource="icons/resourcen.qrc">
+           <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Scale</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Wheel zoom x10 button</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="rotate_x_key"/>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="rotate_y_key"/>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="scale_key"/>
+       </item>
+       <item row="4" column="2">
+        <widget class="QPushButton" name="pushButton_5">
+         <property name="text">
+          <string>Clear</string>
+         </property>
+         <property name="icon">
+          <iconset resource="icons/resourcen.qrc">
+           <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="rotate_z_key"/>
+       </item>
+       <item row="3" column="2">
+        <widget class="QPushButton" name="pushButton_4">
+         <property name="text">
+          <string>Clear</string>
+         </property>
+         <property name="icon">
+          <iconset resource="icons/resourcen.qrc">
+           <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Roate y</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Roate z</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QPushButton" name="pushButton_6">
+         <property name="text">
+          <string>Clear</string>
+         </property>
+         <property name="icon">
+          <iconset resource="icons/resourcen.qrc">
+           <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Click button</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
         <widget class="QCheckBox" name="swap_wheel_zoom">
          <property name="text">
           <string>Swap wheel zoom</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="2" rowspan="4">
+       <item row="1" column="1" colspan="2">
+        <widget class="QComboBox" name="click_button"/>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="QComboBox" name="wheel_zoom_x10">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3" rowspan="18">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -189,34 +309,7 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Wheel zoom x10 button</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="wheel_zoom_x10">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Click button</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="click_button"/>
-       </item>
-       <item row="3" column="0" colspan="2">
+       <item row="15" column="0" rowspan="3" colspan="3">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -231,21 +324,34 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="toolbar_tab">
+     <widget class="QWidget" name="gui_tab">
       <attribute name="icon">
        <iconset resource="icons/resourcen.qrc">
-        <normaloff>:/icons/gtk-execute.png</normaloff>:/icons/gtk-execute.png</iconset>
+        <normaloff>:/icons/gui.png</normaloff>:/icons/gui.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>&amp;Toolbar</string>
+       <string>GUI</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QCheckBox" name="invert_z_rotation">
+         <property name="text">
+          <string>Invert z rotation</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Icon Size</string>
+          <string>Toolbar icon size</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="margin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QRadioButton" name="icon_size_small">
             <property name="text">
@@ -322,126 +428,61 @@
         <normaloff>:/icons/folder.png</normaloff>:/icons/folder.png</iconset>
       </attribute>
       <attribute name="title">
-       <string>&amp;Dirs</string>
+       <string>Dirs</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
-       <item>
-        <widget class="QListView" name="dirs"/>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="margin">
+        <number>2</number>
+       </property>
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>EL data dir</string>
+         </property>
+        </widget>
        </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <spacer name="verticalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="dirs_clear">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Clear</string>
-           </property>
-           <property name="icon">
-            <iconset resource="icons/resourcen.qrc">
-             <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="dirs_add">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Add</string>
-           </property>
-           <property name="icon">
-            <iconset resource="icons/resourcen.qrc">
-             <normaloff>:/icons/gtk-add.png</normaloff>:/icons/gtk-add.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="dirs_remove">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Remove</string>
-           </property>
-           <property name="icon">
-            <iconset resource="icons/resourcen.qrc">
-             <normaloff>:/icons/editclear.png</normaloff>:/icons/editclear.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="dirs_up">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Up</string>
-           </property>
-           <property name="icon">
-            <iconset resource="icons/resourcen.qrc">
-             <normaloff>:/icons/gtk-go-up.png</normaloff>:/icons/gtk-go-up.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="dirs_down">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Down</string>
-           </property>
-           <property name="icon">
-            <iconset resource="icons/resourcen.qrc">
-             <normaloff>:/icons/gtk-go-down.png</normaloff>:/icons/gtk-go-down.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="el_data_dir_button">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>EL2 data dir</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="el2_data_dir_button">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>158</width>
+           <height>145</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -451,7 +492,7 @@
       </property>
       <attribute name="icon">
        <iconset resource="icons/resourcen.qrc">
-        <normaloff>:/icons/googleearth-icon.png</normaloff>:/icons/googleearth-icon.png</iconset>
+        <normaloff>:/icons/terrain.png</normaloff>:/icons/terrain.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Textures</string>
@@ -548,7 +589,7 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>&amp;Cancel</string>
+        <string>Cancel</string>
        </property>
        <property name="icon">
         <iconset resource="icons/resourcen.qrc">
@@ -565,11 +606,39 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="text">
-        <string>&amp;Ok</string>
+        <string>Ok</string>
        </property>
        <property name="icon">
         <iconset resource="icons/resourcen.qrc">
          <normaloff>:/icons/gtk-apply.png</normaloff>:/icons/gtk-apply.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="import_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Import</string>
+       </property>
+       <property name="icon">
+        <iconset resource="icons/resourcen.qrc">
+         <normaloff>:/icons/fileopen.png</normaloff>:/icons/fileopen.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="export_button">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Export</string>
+       </property>
+       <property name="icon">
+        <iconset resource="icons/resourcen.qrc">
+         <normaloff>:/icons/filesave.png</normaloff>:/icons/filesave.png</iconset>
        </property>
       </widget>
      </item>

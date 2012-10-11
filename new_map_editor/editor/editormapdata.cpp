@@ -1067,13 +1067,16 @@ namespace eternal_lands
 		}
 
 		terrain_offset = 0;
-		water_offset = 0;
-/*
-		if (terrain)
-		{
-			writer->write_float(uv_scale.x);
-			writer->write_float(uv_scale.y);
 
+		if (m_terrain_editor.get_enabled())
+		{
+			terrain_offset = writer->get_position();
+
+			writer->write_float_le(
+				m_terrain_editor.get_dudv_scale().x);
+			writer->write_float_le(
+				m_terrain_editor.get_dudv_scale().y);
+/*
 			writer->write_dynamic_utf8_string(effect);
 			writer->write_dynamic_utf8_string(displacment_map);
 			writer->write_dynamic_utf8_string(normal_map);
@@ -1086,8 +1089,11 @@ namespace eternal_lands
 				writer->write_dynamic_utf8_string(normal_map);
 				writer->write_dynamic_utf8_string(height_map);
 			}
+*/
 		}
 
+		water_offset = 0;
+/*
 		if (water)
 		{
 			writer->write_dynamic_utf8_string(flow_map);

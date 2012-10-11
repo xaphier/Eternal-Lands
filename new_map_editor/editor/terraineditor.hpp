@@ -93,6 +93,7 @@ namespace eternal_lands
 			ShaderSourceTerrain m_shader_source_terrain;
 			StringVector m_albedo_maps;
 			boost::array<glm::vec3,  65536> m_normals;
+			glm::vec2 m_dudv_scale;
 			Uint16 m_layer_count;
 			bool m_enabled;
 
@@ -262,6 +263,11 @@ namespace eternal_lands
 				const Uint16 index) const
 			{
 				return m_shader_source_terrain.get_data(index);
+			}
+
+			inline const glm::vec2 &get_dudv_scale() const
+			{
+				return m_dudv_scale;
 			}
 
 			inline String get_effect_main() const

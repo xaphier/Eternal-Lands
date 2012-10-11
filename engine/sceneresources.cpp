@@ -26,7 +26,7 @@
 #include "script/scriptengine.hpp"
 #include "hardwarebuffer/hardwarebuffermapper.hpp"
 #include "terrainbuilder.hpp"
-#include "colorcorrection.hpp"
+#include "thread/threadpool.hpp"
 
 namespace eternal_lands
 {
@@ -34,6 +34,7 @@ namespace eternal_lands
 	SceneResources::SceneResources(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system)
 	{
+		m_thread_pool = boost::make_shared<ThreadPool>(4);
 		m_script_engine = boost::make_shared<ScriptEngine>(file_system);
 		m_material_script_cache =
 			boost::make_shared<MaterialScriptCache>(
@@ -78,8 +79,6 @@ namespace eternal_lands
 			file_system, global_vars);
 		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
 			global_vars);
-		m_color_correction = boost::make_shared<ColorCorrection>(
-			get_script_engine());
 		m_terrain_builder = boost::make_shared<TerrainBuilder>(
 			global_vars, get_effect_cache(),
 			get_material_builder(), get_material_cache(),
@@ -112,7 +111,8 @@ namespace eternal_lands
 		m_glsl_program_cache.reset();
 		m_uniform_buffer_description_cache.reset();
 		m_hardware_buffer_mapper.reset();
-		m_color_correction.reset();
+		m_terrain_builder.reset();
+		m_thread_pool.reset();
 	}
 
 	void SceneResources::init(const FileSystemSharedPtr &file_system)
@@ -129,8 +129,8 @@ namespace eternal_lands
 		m_effect_cache->load_xml(file_system,
 			String(UTF8("shaders/effects")));
 
-		m_material_description_cache->load_xml(file_system, String(UTF8(
-			"materials.xml")));
+		m_material_description_cache->load_xml(file_system,
+			String(UTF8("materials.xml")));
 	}
 
 }

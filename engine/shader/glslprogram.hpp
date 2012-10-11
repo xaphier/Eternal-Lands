@@ -239,6 +239,7 @@ namespace eternal_lands
 			bool validate();
 			void log_validate_status();
 			void unbind();
+			void log_validate_error();
 
 			inline void set_bool_parameter(
 				const AutoParameterType parameter,

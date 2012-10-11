@@ -1,5 +1,10 @@
 <RCC>
   <qresource prefix="icons">
+    <file>gui.png</file>
+    <file>x-rot.png</file>
+    <file>y-rot.png</file>
+    <file>z-rot.png</file>
+    <file>brush.png</file>
     <file>ba.png</file>
     <file>water.png</file>
     <file>rg.png</file>

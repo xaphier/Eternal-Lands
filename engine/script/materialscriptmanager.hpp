@@ -13,7 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "threadstateutil.hpp"
+#include "thread/threadstateutil.hpp"
 
 /**
  * @file

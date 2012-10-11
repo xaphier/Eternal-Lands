@@ -203,8 +203,8 @@ namespace eternal_lands
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
 	class AbstractRenderTarget;
-	class AbstractTask;
 	class AbstractTerrain;
+	class AbstractThreadTask;
 	class AbstractWriteMemory;
 	class Actor;
 	class ActorDataCache;
@@ -305,6 +305,7 @@ namespace eternal_lands
 	class TextureGlyphe;
 	class TextureFont;
 	class TextureFontCache;
+	class ThreadPool;
 	class Transformation;
 	class UniformBuffer;
 	class UniformBufferDescription;
@@ -423,6 +424,7 @@ namespace eternal_lands
 	SHARED_PTR(TerrainBuilder);
 	SHARED_PTR(Texture);
 	SHARED_PTR(TextureCache);
+	SHARED_PTR(ThreadPool);
 	SHARED_PTR(UniformBuffer);
 	SHARED_PTR(UniformBufferDescription);
 	SHARED_PTR(UniformBufferDescriptionCache);
@@ -525,6 +527,7 @@ namespace eternal_lands
 	typedef boost::ptr_vector<VertexStream> VertexStreamVector;
 	typedef boost::ptr_vector<EffectNode> EffectNodeVector;
 	typedef boost::ptr_vector<EffectNodePort> EffectNodePortVector;
+	typedef boost::ptr_vector<AbstractThreadTask> AbstractThreadTaskVector;
 
 	typedef boost::variant<bool, Sint64, float,
 		glm::ivec2, glm::ivec3, glm::ivec4,

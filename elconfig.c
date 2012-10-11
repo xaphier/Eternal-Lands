@@ -238,6 +238,7 @@ int engine_effect_debug = 0;
 int engine_use_multisample_shadows = engine_true;
 int engine_use_scene_fbo = engine_true;
 int engine_light_system = 0;
+char el2_data_dir[256] = { 0 }; /*!< the default directory where we look for el2 data files (aka installation dir) */
 
 void change_engine_shadow_quality(int* var, int value)
 {
@@ -1081,6 +1082,20 @@ void change_dir_name (char *var, const char *str, int len)
 	file_system_replace_with_dir(var, 0);
 }
 
+void change_el2_dir_name (char *var, const char *str, int len)
+{
+	int idx;
+
+	for (idx= 0; idx < len && str[idx]; idx++) {
+		var[idx]= str[idx];
+	}
+	if (var[idx-1] != '/') {
+		var[idx++]= '/';
+	}
+	var[idx]= '\0';
+	file_system_replace_with_dir(var, 1);
+}
+
 #ifdef ANTI_ALIAS
 void change_aa(int *pointer) {
 	change_var(pointer);
@@ -1832,6 +1847,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_STRING,"browser","b",browser_name,change_string,70,"Browser","Location of your web browser (Windows users leave blank to use default browser)",SERVER);
 	add_var(OPT_BOOL,"write_ini_on_exit", "wini", &write_ini_on_exit, change_var, 1,"Save INI","Save options when you quit",SERVER);
 	add_var(OPT_STRING,"data_dir","dir",datadir,change_dir_name,90,"Data Directory","Place were we keep our data. Can only be changed with a Client restart.",SERVER);
+	add_var(OPT_STRING,"el2_data_dir","el2_dir", el2_data_dir, change_el2_dir_name, 90, "EL2 Data Directory","Place were we keep our data for el2. Can only be changed with a Client restart.",SERVER);
 	add_var(OPT_BOOL,"serverpopup","spu",&use_server_pop_win,change_var,1,"Use Special Text Window","Toggles whether server messages from channel 255 are displayed in a pop up window.",SERVER);
 	/* Note: We don't take any action on the already-running thread, as that wouldn't necessarily be good. */
 	add_var(OPT_BOOL,"autoupdate","aup",&auto_update,change_var,1,"Automatic Updates","Toggles whether updates are automatically downloaded.",SERVER);
