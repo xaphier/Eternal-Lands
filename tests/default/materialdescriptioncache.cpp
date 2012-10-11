@@ -20,6 +20,7 @@ BOOST_AUTO_TEST_CASE(load_xml)
 	el::FileSystemSharedPtr file_system;
 
 	file_system = el::FileSystemSharedPtr(new el::FileSystem());
+	file_system->add_dir(el::String("."));
 
 	BOOST_CHECK_NO_THROW(material_description_cache.load_xml(file_system,
 		el::String("materials.xml")));
