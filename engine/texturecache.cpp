@@ -127,16 +127,16 @@ namespace eternal_lands
 
 		TextureSharedPtr build_error_texture() noexcept
 		{
-			glm::uvec3 sizes;
+			glm::uvec3 size;
 			ImageSharedPtr image;
 			TextureSharedPtr texture;
 
-			sizes[0] = image_width;
-			sizes[1] = image_height;
-			sizes[2] = 0;
+			size[0] = image_width;
+			size[1] = image_height;
+			size[2] = 0;
 
 			image = boost::make_shared<Image>(String(UTF8("error")),
-				false, tft_rgb8, sizes, 0);
+				false, tft_rgb8, size, 0);
 
 			rle_decode(rle_pixel_data, image->get_buffer());
 
@@ -178,7 +178,7 @@ namespace eternal_lands
 	}
 
 	TextureSharedPtr TextureCache::do_load_texture(const String &name,
-		const String &index) const
+		const String &index, const bool merge_layers) const
 	{
 		ImageSharedPtr image;
 		ReaderSharedPtr reader;
@@ -201,7 +201,7 @@ namespace eternal_lands
 		reader = get_file_system()->get_file(name);
 
 		image = get_codec_manager()->load_image(reader, compressions,
-			rg_formats, true);
+			rg_formats, true, merge_layers);
 
 		return do_load_texture(image, index);
 	}
@@ -222,11 +222,11 @@ namespace eternal_lands
 	}
 
 	TextureSharedPtr TextureCache::load_texture(const String &name,
-		const String &index)
+		const String &index, const bool merge_layers)
 	{
 		try
 		{
-			return do_load_texture(name, index);
+			return do_load_texture(name, index, merge_layers);
 		}
 		catch (const boost::exception &exception)
 		{
@@ -255,7 +255,7 @@ namespace eternal_lands
 			return found->second;
 		}
 
-		texture = load_texture(name, index);
+		texture = load_texture(name, index, false);
 
 		m_texture_cache[index] = texture;
 
@@ -313,7 +313,7 @@ namespace eternal_lands
 			reader = get_file_system()->get_file(image_name);
 
 			image = get_codec_manager()->load_image(reader,
-				compressions, rg_formats, true);
+				compressions, rg_formats, true, false);
 
 			images.push_back(image);
 		}

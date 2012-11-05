@@ -4,6 +4,8 @@
 #include <QInputDialog>
 #include <QVector2D>
 #include <QMessageBox>
+#include <QRunnable>
+#include <QThreadPool>
 #include "newmapdialog.hpp"
 #include "lightdata.hpp"
 #include "editor/editorobjectdescription.hpp"
@@ -24,13 +26,52 @@
 #include "effect/effectoutput.hpp"
 #include "shader/samplerparameterutil.hpp"
 #include "shader/shadersourceparameter.hpp"
-#include "shader/shaderblenddata.hpp"
+#include "blenddata.hpp"
 #include "texturetargetutil.hpp"
+#include "logging.hpp"
+
+namespace
+{
+
+	class RelaxUV: public QRunnable
+	{
+		private:
+			ELGLWidget* m_el_gl_widget;
+			QProgressDialog* m_progress_dialog;
+			boost::shared_ptr<QProgress> m_el_progress;
+
+		public:
+			RelaxUV(ELGLWidget* el_gl_widget,
+				QProgressDialog* progress_dialog,
+				boost::shared_ptr<QProgress> el_progress);
+			virtual ~RelaxUV();
+			virtual void run();
+
+	};
+
+	RelaxUV::RelaxUV(ELGLWidget* el_gl_widget,
+		QProgressDialog* progress_dialog,
+		boost::shared_ptr<QProgress> el_progress):
+		m_el_gl_widget(el_gl_widget),
+		m_progress_dialog(progress_dialog), m_el_progress(el_progress)
+	{
+	}
+
+	RelaxUV::~RelaxUV()
+	{
+	}
+
+	void RelaxUV::run()
+	{
+		m_el_progress->cancel(false);
+
+		m_el_gl_widget->relax_terrain_uv(m_el_progress, 5000);
+	}
+
+}
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
-	int i, count;
-
 	setupUi(this);
 
 	init_actions();
@@ -40,12 +81,18 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_settings = new SettingsDialog(this);
 	m_preferences = new PreferencesDialog(this);
 	m_objects = new ObjectsDialog(this);
+	m_terrain_textures = new TerrainTexturesDialog(m_terrain_texture_datas,
+		this);
+	m_all_terrain_textures = new AllTerrainTexturesDialog(m_el_data_dir,
+		m_el_extra_data_dir, this);
+	m_load_map = new LoadMapDialog(this);
+	m_init_terrain = new InitTerrainDialog(this);
 
 	action_time = new QSpinBox(this);
 	action_time->setMaximum(359);
 	action_time->setWrapping(true);
 	action_time->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
-	tool_bar->insertWidget(action_ambient, action_time);
+	toolbar->insertWidget(action_ambient, action_time);
 
 	QObject::connect(action_add_objects, SIGNAL(toggled(bool)), this, SLOT(add_objects(bool)));
 	QObject::connect(action_add_lights, SIGNAL(toggled(bool)), this, SLOT(add_lights(bool)));
@@ -144,6 +191,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SLOT(set_game_minute(int)));
 	QObject::connect(action_preferences, SIGNAL(triggered()), this,
 		SLOT(change_preferences()));
+	QObject::connect(action_terrain_textures, SIGNAL(triggered()), this,
+		SLOT(change_terrain_textures()));
 
 	QObject::connect(action_objects, SIGNAL(toggled(bool)),
 		el_gl_widget, SLOT(set_draw_objects(bool)));
@@ -155,6 +204,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		el_gl_widget, SLOT(set_draw_light_spheres(bool)));
 	QObject::connect(action_lights_enabled, SIGNAL(toggled(bool)),
 		el_gl_widget, SLOT(set_lights_enabled(bool)));
+
+	QObject::connect(action_heights, SIGNAL(toggled(bool)),
+		el_gl_widget, SLOT(set_draw_heights(bool)));
 
 	m_object_selection_mapper = new QSignalMapper(this);
 	m_object_selection_mapper->setMapping(selection_type_0, int(0));
@@ -313,9 +365,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	load_settings();
 
-	m_progress_bar = new QProgressBar(status_bar);
-	status_bar->addPermanentWidget(m_progress_bar, 1);
-	m_progress.reset(new QProgress);
+	m_progress_bar = new QProgressBar(statusbar);
+	statusbar->addPermanentWidget(m_progress_bar, 1);
+	m_progress.reset(new QProgress());
 
 	QObject::connect(m_progress.get(),
 		SIGNAL(set_range(const int, const int)), m_progress_bar,
@@ -326,20 +378,24 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(el_gl_widget, SIGNAL(initialized()), this,
 		SLOT(initialized()), Qt::QueuedConnection);
 
-	vector_brush_add_x->setMinimum(-el_gl_widget->get_terrain_offset_x());
-	vector_brush_add_x->setMaximum(el_gl_widget->get_terrain_offset_x());
-	vector_brush_add_y->setMinimum(-el_gl_widget->get_terrain_offset_y());
-	vector_brush_add_y->setMaximum(el_gl_widget->get_terrain_offset_y());
-	vector_brush_add_z->setMinimum(-el_gl_widget->get_terrain_offset_z());
-	vector_brush_add_z->setMaximum(el_gl_widget->get_terrain_offset_z());
+	QVector3D min, max;
 
-	vector_brush_set_x->setMinimum(el_gl_widget->get_terrain_offset_min_x());
-	vector_brush_set_x->setMaximum(el_gl_widget->get_terrain_offset_max_x());
-	vector_brush_set_y->setMinimum(el_gl_widget->get_terrain_offset_min_y());
-	vector_brush_set_y->setMaximum(el_gl_widget->get_terrain_offset_max_y());
-	vector_brush_set_z->setMinimum(el_gl_widget->get_terrain_offset_min_z());
-	vector_brush_set_z->setMaximum(el_gl_widget->get_terrain_offset_max_z());
+	min = el_gl_widget->get_terrain_offset_min();
+	max = el_gl_widget->get_terrain_offset_max();
 
+	vector_brush_add_x->setMinimum(min.x());
+	vector_brush_add_x->setMaximum(max.x());
+	vector_brush_add_y->setMinimum(min.y());
+	vector_brush_add_y->setMaximum(max.y());
+	vector_brush_add_z->setMinimum(min.z());
+	vector_brush_add_z->setMaximum(max.z());
+
+	vector_brush_set_x->setMinimum(min.x());
+	vector_brush_set_x->setMaximum(max.x());
+	vector_brush_set_y->setMinimum(min.y());
+	vector_brush_set_y->setMaximum(max.y());
+	vector_brush_set_z->setMinimum(min.z());
+	vector_brush_set_z->setMaximum(max.z());
 
 	m_changed_nodes = false;
 
@@ -368,26 +424,62 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	connect(direction_button, SIGNAL(clicked()), this,
 		SLOT(add_direction()));
 
-	count = el::ShaderBlendUtil::get_shader_blend_count();
+	connect(terrain_layers, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+		this, SLOT(layers_double_clicked(QListWidgetItem*)));
 
-	for (i = 0; i < count; ++i)
-	{
-		terrain_texture_blend->addItem(QString::fromUtf8(
-			el::ShaderBlendUtil::get_str(
-				static_cast<el::ShaderBlendType>(
-					i)).get().c_str()), i);
-	}
+	connect(this, SIGNAL(get_albedo_map_data(const QString&, const QSize&,
+		const QSize&, QIcon&, bool&, bool&)), el_gl_widget,
+		SLOT(get_albedo_map_data(const QString&, const QSize&,
+			const QSize&, QIcon&, bool&, bool&)));
 
-	connect(terrain_layers, SIGNAL(itemSelectionChanged()), this,
-		SLOT(terrain_layers_selection()));
-	connect(terrain_texture_blend, SIGNAL(currentIndexChanged(const int)),
-		this, SLOT(terrain_texture_blend_changed(const int)));
-	connect(terrain_texture_blend_scale, SIGNAL(
-		valueChanged(const double)), this, SLOT(
-		terrain_texture_blend_scale_changed(const double)));
-	connect(terrain_texture_blend_offset, SIGNAL(
-		valueChanged(const double)), this, SLOT(
-		terrain_texture_blend_offset_changed(const double)));
+	connect(m_all_terrain_textures, SIGNAL(get_albedo_map_data(
+		const QString&, const QSize&, const QSize&, QIcon&, bool&,
+		bool&)), el_gl_widget, SLOT(get_albedo_map_data(const QString&,
+			const QSize&, const QSize&, QIcon&, bool&, bool&)));
+
+	connect(this, SIGNAL(get_extra_map_data(const QString&, const QSize&,
+		bool&)), el_gl_widget, SLOT(get_extra_map_data(
+			const QString&, const QSize&, bool&)));
+
+	connect(m_all_terrain_textures, SIGNAL(get_extra_map_data(
+		const QString&, const QSize&, bool&)), el_gl_widget,
+		SLOT(get_extra_map_data(const QString&, const QSize&, bool&)));
+
+	connect(action_import_terrain_height_map, SIGNAL(triggered()), this,
+		SLOT(import_terrain_height_map()));
+
+	connect(action_import_terrain_blend_map, SIGNAL(triggered()), this,
+		SLOT(import_terrain_blend_map()));
+
+	connect(action_relax_terrain_uv, SIGNAL(triggered()), this,
+		SLOT(relax_terrain_uv()));
+
+	connect(action_remove_objects, SIGNAL(triggered()), this,
+		SLOT(remove_objects()));
+
+	m_progress_dialog = new QProgressDialog(this);
+
+	m_progress_dialog->setAutoClose(true);
+	m_progress_dialog->setAutoReset(true);
+	m_progress_dialog->setWindowModality(Qt::WindowModal);
+
+	m_el_progress.reset(new QProgress());
+
+	connect(m_el_progress.get(), SIGNAL(set_range(const int, const int)),
+		m_progress_dialog, SLOT(setRange(const int, const int)));
+	connect(m_el_progress.get(), SIGNAL(set_value(const int)),
+		m_progress_dialog, SLOT(setValue(const int)));
+	connect(m_el_progress.get(), SIGNAL(set_string(const QString&)),
+		m_progress_dialog, SLOT(setLabelText(const QString&)));
+	connect(m_el_progress.get(), SIGNAL(start()), m_progress_dialog,
+		SLOT(show()));
+
+	connect(m_progress_dialog, SIGNAL(canceled()), m_el_progress.get(),
+		SLOT(cancel()));
+
+	connect(m_init_terrain, SIGNAL(get_height_map_data(
+		const QString&, QSize&, bool&)), el_gl_widget,
+		SLOT(get_image_data(const QString&, QSize&, bool&)));
 }
 
 MainWindow::~MainWindow()
@@ -396,20 +488,129 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialized()
 {
-/*	Uint32 i, count;
+	QStringTerrainTextureDataQMap::iterator it, end;
+	QIcon icon;
+	int i, count;
+	bool use_blend_size_sampler, ok;
 
-	count = ground_tile->count();
+	end = m_terrain_texture_datas.end();
+	count = m_terrain_texture_datas.size();
+
+	QProgressDialog progress("Updating icons...", "Cancel", 0, count, this);
+
+	progress.setWindowModality(Qt::WindowModal);
+
+	i = 0;
+
+	for (it = m_terrain_texture_datas.begin(); it != end; ++it)
+	{
+		ok = false;
+
+		emit get_albedo_map_data(it->get_albedo_map(),
+			m_preview_icons_size, m_terrain_texture_size, icon,
+			use_blend_size_sampler, ok);
+
+		progress.setValue(i);
+
+		i++;
+
+		if (ok)
+		{
+			it->set_icon(icon);
+			it->set_use_blend_size_sampler(use_blend_size_sampler);
+		}
+	}
+
+	progress.setValue(count);
+}
+
+bool MainWindow::get_terrain_texture_data(const QString &name, QIcon &icon,
+	QString &albedo_map, QString &extra_map, bool &use_blend_size_sampler,
+	bool &use_extra_map) const
+{
+	QStringTerrainTextureDataQMap::const_iterator found;
+
+	found = m_terrain_texture_datas.find(name);
+
+	if (found == m_terrain_texture_datas.constEnd())
+	{
+		return false;
+	}
+
+	icon = found->get_icon();
+	albedo_map = found->get_albedo_map();
+	extra_map = found->get_extra_map();
+	use_blend_size_sampler = found->get_use_blend_size_sampler();
+	use_extra_map = found->get_use_extra_map();
+
+	return true;
+}
+
+QIcon MainWindow::get_terrain_texture_icon(const QString &albedo_map,
+	const QString &extra_map, const bool use_blend_size_sampler,
+	const bool use_extra_map)
+{
+	QStringTerrainTextureDataQMap::const_iterator found;
+	QIcon icon;
+	bool new_use_blend_size_sampler, ok;
+
+	found = m_terrain_texture_datas.find(albedo_map);
+
+	if (found == m_terrain_texture_datas.constEnd())
+	{
+		ok = false;
+
+		emit get_albedo_map_data(albedo_map, m_preview_icons_size,
+			m_terrain_texture_size, icon,
+			new_use_blend_size_sampler, ok);
+
+		m_terrain_texture_datas[albedo_map] = TerrainTextureData(icon,
+			albedo_map, extra_map, use_blend_size_sampler,
+			use_extra_map);
+
+		return icon;
+	}
+
+	assert(found->get_albedo_map() == albedo_map);
+
+	return found->get_icon();
+}
+
+void MainWindow::update_terrain_layers()
+{
+	QListWidgetItem* item;
+	QString name, albedo_map, extra_map;
+	float blend_size;
+	Uint32 i, count;
+	bool use_blend_size_sampler, use_blend_size, use_extra_map;
+
+	count = el_gl_widget->get_terrain_layer_count();
+	std::cout << "count: " << count << std::endl;
+
+	terrain_layers->clear();
 
 	for (i = 0; i < count; ++i)
 	{
-		QPixmap pixmap;
+		name = QString(tr("layer ")) + QString::number(i);
 
-		pixmap = QPixmap::fromImage(el_gl_widget->get_icon(
-			"3dobjects/tile" + ground_tile->itemText(i) + ".dds"));
+		item = new QListWidgetItem(name);
 
-		ground_tile->setItemIcon(i, QIcon(pixmap));
+		el_gl_widget->get_terrain_material(albedo_map,
+			extra_map, blend_size, use_blend_size_sampler,
+			use_blend_size, use_extra_map, i);
+
+		item->setIcon(get_terrain_texture_icon(albedo_map, extra_map,
+			use_blend_size_sampler, use_extra_map));
+		item->setToolTip(albedo_map);
+		item->setData(tlr_index, i);
+		item->setData(tlr_blend_size, blend_size);
+		item->setData(tlr_use_blend_size, use_blend_size);
+		item->setData(tlr_use_blend_size_sampler,
+			use_blend_size_sampler);
+		item->setData(tlr_use_extra_map, use_extra_map);
+
+		terrain_layers->insertItem(i, item);
 	}
-*/
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -421,37 +622,48 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::save_settings()
 {
-	QSettings settings;
+	QSettings settings("settings.conf", QSettings::IniFormat, this);
 
 	settings.beginGroup("window");
 	settings.setValue("geometry", saveGeometry());
 	settings.setValue("state", saveState());
-	settings.setValue("invert z rotation", el_gl_widget->get_invert_z_rotation());
-	settings.setValue("icon size", tool_bar->iconSize());
+	settings.setValue("invert z rotation",
+		el_gl_widget->get_invert_z_rotation());
+	settings.setValue("toolbar icon size", toolbar->iconSize());
+	settings.setValue("texture preview size", m_preview_icons_size);
+	settings.setValue("terrain texture size", m_terrain_texture_size);
 	settings.endGroup();
 	save_shortcuts(settings);
 	save_mouse_settings(settings);
 	save_dirs_settings(settings);
-	save_textures_settings(settings);
+	save_terrain_textures_settings(settings);
 }
 
 void MainWindow::load_settings()
 {
-	QSettings settings;
+	QSettings settings("settings.conf", QSettings::IniFormat, this);
 
 	settings.beginGroup("window");
 	restoreGeometry(settings.value("geometry").toByteArray());
 	restoreState(settings.value("state").toByteArray());
 	el_gl_widget->set_invert_z_rotation(settings.value("invert z rotation",
 		false).toBool());
-	tool_bar->setIconSize(settings.value("icon size", QSize(24, 24)
+	toolbar->setIconSize(settings.value("toolbar icon size", QSize(24, 24)
 		).value<QSize>());
+	m_preview_icons_size = settings.value("texture preview size",
+		QSize(24, 24)).value<QSize>();
+	m_terrain_texture_size = settings.value("terrain preview size",
+		QSize(512, 512)).value<QSize>();
+	terrain_layers->setIconSize(m_preview_icons_size);
+	m_terrain_textures->set_icon_size(m_preview_icons_size);
+	m_all_terrain_textures->set_icon_size(m_preview_icons_size);
+	m_all_terrain_textures->set_image_size(m_terrain_texture_size);
 	settings.endGroup();
 
 	load_shortcuts(settings);
 	load_mouse_settings(settings);
 	load_dirs_settings(settings);
-	load_textures_settings(settings);
+	load_terrain_textures_settings(settings);
 }
 
 void MainWindow::update_object()
@@ -615,84 +827,16 @@ void MainWindow::add_item(const QString &str, QComboBox* combobox)
 	combobox->setCurrentIndex(index);
 }
 
-void MainWindow::set_terrain_albedo_map(const QString &str, const int index)
-{
-/*
-	QComboBox* combobox;
-	int idx;
-
-	combobox = dynamic_cast<QComboBox*>(m_terrain_albedo_map_mapper->mapping(index));
-
-	idx = combobox->findText(str);
-
-	if (idx == -1)
-	{
-		add_item(str, terrain_albedo_map_0);
-		add_item(str, terrain_albedo_map_1);
-		add_item(str, terrain_albedo_map_2);
-		add_item(str, terrain_albedo_map_3);
-		add_item(str, terrain_albedo_map_4);
-		idx = combobox->findText(str);
-	}
-
-	combobox->setCurrentIndex(idx);
-*/
-}
-
 void MainWindow::update_terrain(const bool enabled)
 {
-	QTreeWidgetItem* item;
-	QStringList headers, str;
-	int i, count;
+	terrain_brush_dock->setEnabled(enabled);
+	action_relax_terrain_uv->setEnabled(enabled);
+	action_import_terrain_height_map->setEnabled(enabled);
+	action_import_terrain_blend_map->setEnabled(enabled);
 
-	terrain_window_content->setEnabled(enabled);
-
-	headers << "Name";
-	headers << "Blend";
-	headers << "Scale";
-	headers << "Offset";
-
-	terrain_layers->clear();
-
-	terrain_layers->setHeaderLabels(headers);
-
-	if (!enabled)
+	if (enabled)
 	{
-		return;
-	}
-
-	str << el_gl_widget->get_terrain_albedo_map(0);
-	str << "-";
-	str << "-";
-	str << "-";
-
-	item = new QTreeWidgetItem(str, QTreeWidgetItem::UserType);
-
-	item->setData(1, Qt::UserRole, -1);
-
-	terrain_layers->addTopLevelItem(item);
-
-	count = 17;
-
-	for (i = 1; i < count; ++i)
-	{
-		const el::ShaderBlendData &blend_data =
-			el_gl_widget->get_terrain_blend_data(i - 1);
-
-		str.clear();
-
-		str << el_gl_widget->get_terrain_albedo_map(i);
-
-		str << QString::fromUtf8(el::ShaderBlendUtil::get_str(
-			blend_data.get_blend()).get().c_str());
-
-		item = new QTreeWidgetItem(str, QTreeWidgetItem::UserType);
-
-		item->setData(1, Qt::UserRole, blend_data.get_blend());
-		item->setData(2, Qt::DisplayRole, blend_data.get_data().x);
-		item->setData(3, Qt::DisplayRole, blend_data.get_data().y);
-
-		terrain_layers->addTopLevelItem(item);
+		update_terrain_layers();
 	}
 }
 
@@ -716,6 +860,7 @@ void MainWindow::update_object(const bool select)
 	update_object();
 
 	action_remove->setEnabled(select);
+	action_remove_objects->setEnabled(select);
 }
 
 void MainWindow::update_light(const bool select)
@@ -739,6 +884,7 @@ void MainWindow::update_light(const bool select)
 	}
 		
 	action_remove->setEnabled(select);
+	action_remove_objects->setEnabled(false);
 
 	el_gl_widget->get_light_data(light);
 
@@ -769,6 +915,7 @@ void MainWindow::deselect()
 {
 	set_default_mode();
 	action_remove->setEnabled(false);
+	action_remove_objects->setEnabled(false);
 }
 
 void MainWindow::update_translation()
@@ -1220,19 +1367,62 @@ void MainWindow::remove()
 
 void MainWindow::terrain_mode(const bool checked)
 {
-	if (checked)
-	{
-		action_remove->setEnabled(false);
+	QStringTerrainTextureDataQMap::const_iterator it;
 
-		action_add_objects->setChecked(false);
-		action_add_lights->setChecked(false);
-		action_delete_mode->setChecked(false);
-		el_gl_widget->init_terrain(1025, 1025, "");
-	}
-	else
+	if (!checked)
 	{
 		set_default_mode();
+
+		return;
 	}
+
+	if (!el_gl_widget->get_terrain())
+	{
+		if (m_terrain_texture_datas.size() < 1)
+		{
+			QMessageBox::critical(this, tr("Error"), QString(tr(
+				"No terrain textures set")));
+
+			action_terrain_mode->setChecked(false);
+
+			return;
+		}
+
+		if (m_init_terrain->exec() != QDialog::Accepted)
+		{
+			action_terrain_mode->setChecked(false);
+
+			return;
+		}
+
+		it = m_terrain_texture_datas.constBegin();
+
+		if (m_init_terrain->get_height_map().isEmpty())
+		{
+			el_gl_widget->init_terrain(m_init_terrain->get_size(),
+				it.value().get_albedo_map(),
+				it.value().get_extra_map(),
+				it.value().get_use_blend_size_sampler(),
+				it.value().get_use_extra_map());
+		}
+		else
+		{
+			el_gl_widget->init_terrain(
+				m_init_terrain->get_height_map(),
+				m_init_terrain->get_size(),
+				it.value().get_albedo_map(),
+				it.value().get_extra_map(),
+				it.value().get_use_blend_size_sampler(),
+				it.value().get_use_extra_map());
+		}
+	}
+
+	action_remove->setEnabled(false);
+	action_remove_objects->setEnabled(false);
+
+	action_add_objects->setChecked(false);
+	action_add_lights->setChecked(false);
+	action_delete_mode->setChecked(false);
 }
 
 void MainWindow::delete_mode(const bool checked)
@@ -1249,18 +1439,6 @@ void MainWindow::delete_mode(const bool checked)
 	}
 }
 
-void MainWindow::set_terrain_albedo_map(const int index)
-{
-/*
-	QString file_name;
-
-	file_name = dynamic_cast<QComboBox*>(
-		m_terrain_albedo_map_mapper->mapping(index))->currentText();
-
-	el_gl_widget->set_terrain_albedo_map(file_name, index);
-*/
-}
-
 void MainWindow::set_fog()
 {
 	el_gl_widget->set_fog(glm::vec3(1.0f), 2.5f);
@@ -1273,10 +1451,27 @@ void MainWindow::open_map()
 	file_name = QFileDialog::getOpenFileName(this, tr("Open File"), ".",
 		tr("All EL-maps (*.elm *.elm.gz *.elm.xz);;All files (*)"));
 
-	if (!file_name.isEmpty())
+	if (file_name.isEmpty())
 	{
-		el_gl_widget->open_map(file_name);
+		return;
 	}
+
+	if (m_load_map->exec() != QDialog::Accepted)
+	{
+		return;
+	}
+
+	el_gl_widget->load_map(file_name,
+		m_load_map->get_load_2d_objects(),
+		m_load_map->get_load_3d_objects(),
+		m_load_map->get_load_lights(),
+		m_load_map->get_load_particles(),
+		m_load_map->get_load_materials(),
+		m_load_map->get_load_height_map(),
+		m_load_map->get_load_tile_map(),
+		m_load_map->get_load_walk_map(),
+		m_load_map->get_load_terrain(),
+		m_load_map->get_load_water());
 
 	action_dungeon->blockSignals(true);
 	action_dungeon->setChecked(el_gl_widget->get_dungeon());
@@ -1368,7 +1563,7 @@ void MainWindow::new_map()
 	int blend_image_size_y;
 
 	new_map.reset(new NewMapDialog(this));
-	new_map->set_diffuse_textures(m_textures);
+//	new_map->set_diffuse_textures(m_textures);
 
 	if (new_map->exec() == QDialog::Accepted)
 	{
@@ -1410,11 +1605,10 @@ void MainWindow::change_preferences()
 	m_preferences->set_swap_wheel_zoom(el_gl_widget->get_swap_wheel_zoom());
 	m_preferences->set_invert_z_rotation(
 		el_gl_widget->get_invert_z_rotation());
-	m_preferences->set_toolbar_icon_size(tool_bar->iconSize());
+	m_preferences->set_toolbar_icon_size(toolbar->iconSize());
+	m_preferences->set_texture_preview_size(m_preview_icons_size);
 	m_preferences->set_el_data_dir(m_el_data_dir);
-	m_preferences->set_el2_data_dir(m_el2_data_dir);
-
-	m_preferences->set_textures(m_textures);
+	m_preferences->set_el_extra_data_dir(m_el_extra_data_dir);
 
 	if (m_preferences->exec() == QDialog::Accepted)
 	{
@@ -1426,11 +1620,28 @@ void MainWindow::change_preferences()
 			m_preferences->get_swap_wheel_zoom());
 		el_gl_widget->set_invert_z_rotation(
 			m_preferences->get_invert_z_rotation());
-		tool_bar->setIconSize(m_preferences->get_toolbar_icon_size());
+		toolbar->setIconSize(m_preferences->get_toolbar_icon_size());
+		m_preview_icons_size =
+			m_preferences->get_texture_preview_size();
+		terrain_layers->setIconSize(m_preview_icons_size);
+		m_terrain_textures->set_icon_size(m_preview_icons_size);
+		m_all_terrain_textures->set_icon_size(m_preview_icons_size);
 		m_el_data_dir = m_preferences->get_el_data_dir();
-		m_el2_data_dir = m_preferences->get_el2_data_dir();
+		m_el_extra_data_dir = m_preferences->get_el_extra_data_dir();
 		set_dirs();
-		set_textures(m_preferences->get_textures());
+		save_settings();
+	}
+}
+
+void MainWindow::change_terrain_textures()
+{
+	m_all_terrain_textures->set_terrain_texture_datas(
+		m_terrain_texture_datas);
+
+	if (m_all_terrain_textures->exec() == QDialog::Accepted)
+	{
+		m_terrain_texture_datas =
+			m_all_terrain_textures->get_terrain_texture_datas();
 		save_settings();
 	}
 }
@@ -1443,7 +1654,7 @@ void MainWindow::init_actions()
 	icon.addFile(QString::fromUtf8(":/icons/gtk-execute.png"), QSize(),
 		QIcon::Normal, QIcon::Off);
 
-	action = tool_bar->toggleViewAction();
+	action = toolbar->toggleViewAction();
 	action->setIcon(icon);
 	action->setText("&Toolbar");
 	menu_windows->addAction(action);
@@ -1622,7 +1833,7 @@ void MainWindow::save_dirs_settings(QSettings &settings)
 	settings.beginGroup("dirs");
 
 	settings.setValue("el_data_dir", m_el_data_dir);
-	settings.setValue("el2_data_dir", m_el2_data_dir);
+	settings.setValue("el_extra_data_dir", m_el_extra_data_dir);
 
 	settings.endGroup();
 }
@@ -1632,7 +1843,8 @@ void MainWindow::load_dirs_settings(QSettings &settings)
 	settings.beginGroup("dirs");
 
 	m_el_data_dir = settings.value("el_data_dir", "").toString();
-	m_el2_data_dir = settings.value("el2_data_dir", "").toString();
+	m_el_extra_data_dir = settings.value("el_extra_data_dir",
+		"").toString();
 
 	settings.endGroup();
 
@@ -1648,84 +1860,73 @@ void MainWindow::set_dirs()
 		dirs.append(m_el_data_dir);
 	}
 
-	if (!m_el2_data_dir.isEmpty())
+	if (!m_el_extra_data_dir.isEmpty())
 	{
-		dirs.append(m_el2_data_dir);
+		dirs.append(m_el_extra_data_dir);
 	}
 
 	el_gl_widget->set_dirs(dirs);
 	m_objects->set_dirs(dirs);
 }
 
-void MainWindow::set_textures(const QStringList &textures)
+void MainWindow::save_terrain_textures_settings(QSettings &settings)
 {
-	m_textures = textures;
-
-	m_preferences->set_textures(m_textures);
-/*
-	set_items(m_textures, terrain_albedo_map_0);
-	set_items(m_textures, terrain_albedo_map_1);
-	set_items(m_textures, terrain_albedo_map_2);
-	set_items(m_textures, terrain_albedo_map_3);
-*/
-}
-
-void MainWindow::set_items(const QStringList &strs, QComboBox* combobox)
-{
-	QString selection;
+	QStringTerrainTextureDataQMap::iterator it, end;
+	QStringList data;
 	int index;
 
-	combobox->blockSignals(true);
-
-	selection = combobox->currentText();
-
-	combobox->clear();
-	combobox->addItems(strs);
-
-	index = combobox->findText(selection);
-
-	combobox->setCurrentIndex(index);
-
-	combobox->blockSignals(false);
-}
-
-void MainWindow::save_textures_settings(QSettings &settings)
-{
 	settings.beginGroup("textures");
 
-	settings.setValue("terrain", m_textures);
+	end = m_terrain_texture_datas.end();
+	index = 0;
+
+	data.append(QString());
+	data.append(QString());
+
+	for (it = m_terrain_texture_datas.begin(); it != end; ++it)
+	{
+		data[0] = it->get_albedo_map();
+		data[1] = it->get_extra_map();
+
+		if (!it->get_use_extra_map())
+		{
+			data[1] = QString();
+		}
+
+		settings.setValue(QString("texture_%1").arg(index), data);
+
+		index++;
+	}
 
 	settings.endGroup();
 }
 
-void MainWindow::load_textures_settings(QSettings &settings)
+void MainWindow::load_terrain_textures_settings(QSettings &settings)
 {
 	QStringList textures;
-	int i;
-
-	textures.append("textures/dirt.dds");
-	textures.append("textures/grass.dds");
-	textures.append("textures/mud.dds");
-	textures.append("textures/stone.dds");
-
-	for (i = 1; i <= 50; i++)
-	{
-		textures.append("3dobjects/tile" + QString::number(i) + ".dds");
-	}
-
-	for (i = 231; i <= 233; i++)
-	{
-		textures.append("3dobjects/tile" + QString::number(i) + ".dds");
-	}
-
-	for (i = 240; i <= 242; i++)
-	{
-		textures.append("3dobjects/tile" + QString::number(i) + ".dds");
-	}
+	QStringList data;
 
 	settings.beginGroup("textures");
 
-	set_textures(settings.value("terrain", textures).toStringList());
+	textures = settings.childKeys();
+
+	foreach(const QString &key, textures)
+	{
+		data = settings.value(key, QStringList()).toStringList();
+
+		if (data.size() == 0)
+		{
+			continue;
+		}
+
+		if (data.size() < 2)
+		{
+			data.append(QString());
+		}
+
+		m_terrain_texture_datas[data[0]] = TerrainTextureData(
+			QIcon(), data[0], data[1], false, !data[1].isEmpty());
+	}
 
 	settings.endGroup();
 }
@@ -1827,6 +2028,7 @@ void MainWindow::terrain_vector_edit()
 
 void MainWindow::terrain_layer_edit()
 {
+	QListWidgetItem* item;
 	QVector2D size;
 	float attenuation_size, data;
 	int attenuation, shape, effect, layer;
@@ -1857,7 +2059,14 @@ void MainWindow::terrain_layer_edit()
 
 	data = layer_brush_strength->value() * 0.01f;
 
-	layer = 0;//layer_mask->currentIndex();
+	layer = 0;
+
+	item = terrain_layers->currentItem();
+
+	if (item != 0)
+	{
+		layer = std::max(0, item->data(tlr_index).toInt() - 1);
+	}
 
 	el_gl_widget->change_terrain_blend_values(size, attenuation_size, data,
 		attenuation, shape, effect, layer);
@@ -2635,115 +2844,88 @@ void MainWindow::generate()
 	}
 }
 
-void MainWindow::terrain_layers_selection()
+void MainWindow::layers_double_clicked(QListWidgetItem* item)
 {
-	QTreeWidgetItem* item;
+	QString name, albedo_map, extra_map;
+	QIcon icon;
+	float blend_size;
 	int index;
+	bool use_blend_size_sampler, use_blend_size, use_extra_map;
 
-	terrain_frame->setEnabled(!terrain_layers->selectedItems().isEmpty());
+	m_terrain_textures->update_terrain_texture_datas();
+	m_terrain_textures->set_texture(item->toolTip());
+	m_terrain_textures->set_label(item->text());
+	m_terrain_textures->set_blend_size(item->data(
+		tlr_blend_size).toFloat());
+	m_terrain_textures->set_use_blend_size(item->data(
+		tlr_use_blend_size).toBool());
 
-	if (terrain_layers->selectedItems().isEmpty())
+	if (m_terrain_textures->exec() == QDialog::Accepted)
 	{
-		return;
+		name = m_terrain_textures->get_texture();
+
+		if (!get_terrain_texture_data(name, icon, albedo_map,
+			extra_map, use_blend_size_sampler, use_extra_map))
+		{
+			return;
+		}
+
+		blend_size = m_terrain_textures->get_blend_size();
+		use_blend_size = m_terrain_textures->get_use_blend_size();
+
+		index = item->data(tlr_index).toInt();
+
+		item->setToolTip(name);
+		item->setIcon(icon);
+
+		item->setData(tlr_albedo_map, albedo_map);
+		item->setData(tlr_extra_map, extra_map);
+		item->setData(tlr_blend_size, blend_size);
+		item->setData(tlr_use_blend_size_sampler, use_blend_size_sampler);
+		item->setData(tlr_use_blend_size, use_blend_size);
+		item->setData(tlr_use_extra_map, use_extra_map);
+
+		el_gl_widget->set_terrain_material(albedo_map, extra_map,
+			blend_size, use_blend_size_sampler, use_blend_size,
+			use_extra_map, index);
 	}
-
-	item = terrain_layers->selectedItems()[0];
-
-//	terrain_texture->setText(item->text(0));
-
-	index = terrain_layers->indexOfTopLevelItem(item);
-
-	terrain_blend_frame->setEnabled(index > 0);
-
-	if (index <= 0)
-	{
-		return;
-	}
-
-	terrain_texture_blend->setCurrentIndex(item->data(1,
-		Qt::UserRole).toInt());
-	terrain_texture_blend_scale->setValue(item->data(2,
-		Qt::DisplayRole).toFloat());
-	terrain_texture_blend_offset->setValue(item->data(3,
-		Qt::DisplayRole).toFloat());
 }
 
-void MainWindow::terrain_texture_blend_changed(const int index)
+void MainWindow::import_terrain_height_map()
 {
-	QTreeWidgetItem* item;
-	int value;
+	QString name;
 
-	if (terrain_layers->selectedItems().isEmpty())
+	name = QFileDialog::getOpenFileName(this, "Terrain height map",
+		m_el_data_dir,
+		tr("Images (*.dds *.dds.xz *.png *.jpeg *.jpg)"));
+
+	if (!name.isEmpty())
 	{
-		return;
+		el_gl_widget->import_terrain_height_map(name);
 	}
-
-	item = terrain_layers->selectedItems()[0];
-
-	value = terrain_texture_blend->itemData(index).toInt();
-
-	item->setData(1, Qt::UserRole, value);
-	item->setText(1, el::ShaderBlendUtil::get_str(
-		static_cast<el::ShaderBlendType>(value)).get().c_str());
-
-	set_terrain_blend_data();
 }
 
-void MainWindow::terrain_texture_blend_scale_changed(const double value)
+void MainWindow::import_terrain_blend_map()
 {
-	terrain_frame->setEnabled(!terrain_layers->selectedItems().isEmpty());
+	QString name;
 
-	if (terrain_layers->selectedItems().isEmpty())
+	name = QFileDialog::getOpenFileName(this, "Terrain blend map",
+		m_el_data_dir,
+		tr("Images (*.dds *.dds.xz *.png *.jpeg *.jpg)"));
+
+	if (!name.isEmpty())
 	{
-		return;
+		el_gl_widget->import_terrain_blend_map(name);
 	}
-
-	terrain_layers->selectedItems()[0]->setData(2, Qt::DisplayRole, value);
-
-	set_terrain_blend_data();
 }
 
-void MainWindow::terrain_texture_blend_offset_changed(const double value)
+void MainWindow::relax_terrain_uv()
 {
-	terrain_frame->setEnabled(!terrain_layers->selectedItems().isEmpty());
-
-	if (terrain_layers->selectedItems().isEmpty())
-	{
-		return;
-	}
-
-	terrain_layers->selectedItems()[0]->setData(3, Qt::DisplayRole, value);
-
-	set_terrain_blend_data();
+	QThreadPool::globalInstance()->start(new RelaxUV(el_gl_widget,
+		m_progress_dialog, m_el_progress));
 }
 
-void MainWindow::set_terrain_blend_data()
+void MainWindow::remove_objects()
 {
-	QTreeWidgetItem* item;
-	glm::vec2 scale_offset;
-	el::ShaderBlendType blend;
-	int index;
-
-	if (terrain_layers->selectedItems().isEmpty())
-	{
-		return;
-	}
-
-	item = terrain_layers->selectedItems()[0];
-	index = terrain_layers->indexOfTopLevelItem(item);
-
-	if (index <= 0)
-	{
-		return;
-	}
-
-	index--;
-
-	blend = static_cast<el::ShaderBlendType>(
-		item->data(1, Qt::UserRole).toInt());
-	scale_offset.x = item->data(2, Qt::DisplayRole).toFloat();
-	scale_offset.y = item->data(3, Qt::DisplayRole).toFloat();
-
-	el_gl_widget->set_terrain_blend_data(ShaderBlendData(scale_offset,
-		blend), index);
+	el_gl_widget->remove_objects();
 }

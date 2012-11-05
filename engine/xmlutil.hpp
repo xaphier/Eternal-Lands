@@ -27,6 +27,18 @@ namespace eternal_lands
 		public:
 			static boost::uuids::uuid get_uuid_value(
 				const xmlNodePtr node);
+			static glm::bvec2 get_bvec2_value(
+				const xmlNodePtr node);
+			static glm::bvec3 get_bvec3_value(
+				const xmlNodePtr node);
+			static glm::bvec4 get_bvec4_value(
+				const xmlNodePtr node);
+			static glm::uvec2 get_uvec2_value(
+				const xmlNodePtr node);
+			static glm::uvec3 get_uvec3_value(
+				const xmlNodePtr node);
+			static glm::uvec4 get_uvec4_value(
+				const xmlNodePtr node);
 			static glm::ivec2 get_ivec2_value(
 				const xmlNodePtr node);
 			static glm::ivec3 get_ivec3_value(

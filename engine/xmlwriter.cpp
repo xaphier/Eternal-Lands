@@ -208,6 +208,66 @@ namespace eternal_lands
 		end_element();
 	}
 
+	void XmlWriter::write_bvec2_element(const String &name,
+		const glm::bvec2 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_bvec3_element(const String &name,
+		const glm::bvec3 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_bvec4_element(const String &name,
+		const glm::bvec4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_uvec2_element(const String &name,
+		const glm::uvec2 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_uvec3_element(const String &name,
+		const glm::uvec3 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, String(str.str()));
+	}
+
+	void XmlWriter::write_uvec4_element(const String &name,
+		const glm::uvec4 &value)
+	{
+		StringStream str;
+
+		str << value;
+
+		write_element(name, String(str.str()));
+	}
+
 	void XmlWriter::write_ivec2_element(const String &name,
 		const glm::ivec2 &value)
 	{

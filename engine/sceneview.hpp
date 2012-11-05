@@ -40,6 +40,8 @@ namespace eternal_lands
 			glm::mat4x4 m_view_matrix;
 			glm::mat4x4 m_projection_matrix;
 			glm::mat4x4 m_projection_view_matrix;
+			glm::mat4x4 m_scale_view_matrix;
+			glm::mat4x4 m_ortho_matrix;
 			Mat4x4Vector m_split_projection_view_matrices;
 			Mat4x4Vector m_shadow_view_matrices;
 			Mat4x4Vector m_shadow_projection_matrices;
@@ -50,7 +52,6 @@ namespace eternal_lands
 			glm::mat4x4 *m_current_view_matrix;
 			glm::mat4x4 *m_current_projection_matrix;
 			glm::mat4x4 *m_current_projection_view_matrix;
-			glm::mat4x4 m_ortho_matrix;
 			glm::vec4 m_camera;
 			glm::vec4 m_view_dir;
 			glm::vec4 m_focus;
@@ -91,6 +92,7 @@ namespace eternal_lands
 				const glm::vec3 &light_direction,
 				const float scene_max_height,
 				const Uint16 index);
+			void set_scale_view(const BoundingBox &bounding_box);
 
 			inline void set_ortho_view() noexcept
 			{
@@ -99,6 +101,15 @@ namespace eternal_lands
 					&m_ortho_matrix;
 				m_current_projection_view_matrix =
 					&m_ortho_matrix;
+			}
+
+			inline void set_ortho_scale_view() noexcept
+			{
+				m_current_view_matrix = &m_scale_view_matrix;
+				m_current_projection_matrix =
+					&m_ortho_matrix;
+				m_current_projection_view_matrix =
+					&m_scale_view_matrix;
 			}
 
 			inline void set_default_view() noexcept
@@ -194,6 +205,18 @@ namespace eternal_lands
 				&get_projection_view_matrix() const noexcept
 			{
 				return m_projection_view_matrix;
+			}
+
+			inline const glm::mat4x4 &get_scale_view_matrix() const
+				noexcept
+			{
+				return m_scale_view_matrix;
+			}
+
+			inline const glm::mat4x4 &get_ortho_matrix()
+				const noexcept
+			{
+				return m_ortho_matrix;
 			}
 
 			inline const Mat4x4Vector

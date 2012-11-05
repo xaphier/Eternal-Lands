@@ -44,6 +44,14 @@ namespace eternal_lands
 	{
 	}
 
+	void SceneView::set_scale_view(const BoundingBox &bounding_box)
+	{
+		m_scale_view_matrix = glm::scale(
+			glm::vec3(1.0f, 1.0f, -1.0f) / bounding_box.get_half_size());
+		m_scale_view_matrix = glm::translate(m_scale_view_matrix,
+			-bounding_box.get_center());
+	}
+
 	void SceneView::build_shadow_matrices(const glm::vec3 &light_direction,
 		const float scene_max_height, const Uint16 index)
 	{

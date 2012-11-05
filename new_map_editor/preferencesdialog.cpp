@@ -16,9 +16,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent)
 	QObject::connect(default_button, SIGNAL(clicked()), this, SLOT(action_default()));
 	QObject::connect(ok_button, SIGNAL(clicked()), this, SLOT(set_action_shortcuts()));
 	QObject::connect(action_list, SIGNAL(itemSelectionChanged()), this, SLOT(action_changed()));
-	QObject::connect(textures_remove, SIGNAL(clicked()), this, SLOT(remove_texture()));
 	QObject::connect(el_data_dir_button, SIGNAL(clicked()), this, SLOT(change_el_data_dir()));
-	QObject::connect(el2_data_dir_button, SIGNAL(clicked()), this, SLOT(change_el2_data_dir()));
+	QObject::connect(el_extra_data_dir_button, SIGNAL(clicked()), this, SLOT(change_el_extra_data_dir()));
 
 	click_button->addItem(mouse_button_to_str(Qt::LeftButton));
 	click_button->addItem(mouse_button_to_str(Qt::MidButton));
@@ -30,9 +29,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent)
 	wheel_zoom_x10->addItem(key_mod_to_str(Qt::MetaModifier));
 	wheel_zoom_x10->addItem(key_mod_to_str(Qt::ShiftModifier));
 	wheel_zoom_x10->addItem(key_mod_to_str(Qt::KeypadModifier));
+}
 
-	m_textures_model = new QStringListModel(textures);
-	textures->setModel(m_textures_model);
+PreferencesDialog::~PreferencesDialog()
+{
 }
 
 void PreferencesDialog::change_el_data_dir()
@@ -48,32 +48,16 @@ void PreferencesDialog::change_el_data_dir()
 	}
 }
 
-void PreferencesDialog::change_el2_data_dir()
+void PreferencesDialog::change_el_extra_data_dir()
 {
 	QString dir;
 
 	dir = QFileDialog::getExistingDirectory(this, "Select directory",
-		m_el2_data_dir);
+		m_el_extra_data_dir);
 
 	if (!dir.isEmpty())
 	{
-		set_el2_data_dir(dir);
-	}
-}
-
-void PreferencesDialog::remove_texture_enable()
-{
-	textures_remove->setEnabled(textures->currentIndex().isValid());
-}
-
-void PreferencesDialog::remove_texture()
-{
-	if (textures->currentIndex().isValid())
-	{
-		m_textures.removeAt(textures->currentIndex().row());
-
-		m_textures_model->setStringList(m_textures);
-		remove_texture_enable();
+		set_el_extra_data_dir(dir);
 	}
 }
 
@@ -562,9 +546,9 @@ QSize PreferencesDialog::get_toolbar_icon_size() const
 	{
 		return icon_size_big->iconSize();
 	}
-	if (icon_size_verry_big->isChecked())
+	if (icon_size_very_big->isChecked())
 	{
-		return icon_size_verry_big->iconSize();
+		return icon_size_very_big->iconSize();
 	}
 
 	return icon_size_medium->iconSize();
@@ -587,20 +571,70 @@ void PreferencesDialog::set_toolbar_icon_size(const QSize &size)
 		icon_size_big->setChecked(true);
 		return;
 	}
-	if (size == icon_size_verry_big->iconSize())
+	if (size == icon_size_very_big->iconSize())
 	{
-		icon_size_verry_big->setChecked(true);
+		icon_size_very_big->setChecked(true);
 		return;
 	}
 
 	icon_size_medium->setChecked(true);
 }
 
-void PreferencesDialog::set_textures(const QStringList &textures)
+QSize PreferencesDialog::get_texture_preview_size() const
 {
-	m_textures = textures;
-	m_textures_model->setStringList(m_textures);
-	remove_texture_enable();
+	if (texture_size_very_small->isChecked())
+	{
+		return texture_size_very_small->iconSize();
+	}
+	if (texture_size_small->isChecked())
+	{
+		return texture_size_small->iconSize();
+	}
+	if (texture_size_medium->isChecked())
+	{
+		return texture_size_medium->iconSize();
+	}
+	if (texture_size_big->isChecked())
+	{
+		return texture_size_big->iconSize();
+	}
+	if (texture_size_very_big->isChecked())
+	{
+		return texture_size_very_big->iconSize();
+	}
+
+	return texture_size_medium->iconSize();
+}
+
+void PreferencesDialog::set_texture_preview_size(const QSize &size)
+{
+	if (size == texture_size_very_small->iconSize())
+	{
+		texture_size_very_small->setChecked(true);
+		return;
+	}
+	if (size == texture_size_small->iconSize())
+	{
+		texture_size_small->setChecked(true);
+		return;
+	}
+	if (size == texture_size_medium->iconSize())
+	{
+		texture_size_medium->setChecked(true);
+		return;
+	}
+	if (size == texture_size_big->iconSize())
+	{
+		texture_size_big->setChecked(true);
+		return;
+	}
+	if (size == texture_size_very_big->iconSize())
+	{
+		texture_size_very_big->setChecked(true);
+		return;
+	}
+
+	texture_size_medium->setChecked(true);
 }
 
 void PreferencesDialog::set_el_data_dir(const QString &el_data_dir)
@@ -610,11 +644,11 @@ void PreferencesDialog::set_el_data_dir(const QString &el_data_dir)
 	el_data_dir_button->setText(el_data_dir);
 }
 
-void PreferencesDialog::set_el2_data_dir(const QString &el2_data_dir)
+void PreferencesDialog::set_el_extra_data_dir(const QString &el_extra_data_dir)
 {
-	m_el2_data_dir = el2_data_dir;
+	m_el_extra_data_dir = el_extra_data_dir;
 
-	el2_data_dir_button->setText(el2_data_dir);
+	el_extra_data_dir_button->setText(el_extra_data_dir);
 }
 
 void PreferencesDialog::set_rotate_x_key(const Qt::Key rotate_x_key)

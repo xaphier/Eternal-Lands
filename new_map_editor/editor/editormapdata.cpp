@@ -21,6 +21,8 @@
 #include "shader/shaderbuildutil.hpp"
 #include "effect/effectcache.hpp"
 #include "writer.hpp"
+#include "rstartree.hpp"
+#include "filesystem.hpp"
 
 namespace eternal_lands
 {
@@ -130,6 +132,11 @@ namespace eternal_lands
 		const bool draw_light_spheres)
 	{
 		m_scene->set_draw_light_spheres(draw_light_spheres);
+	}
+
+	void EditorMapData::set_draw_heights(const bool draw_heights)
+	{
+		m_scene->set_draw_heights(draw_heights);
 	}
 
 	void EditorMapData::set_lights_enabled(const bool enabled)
@@ -343,6 +350,36 @@ namespace eternal_lands
 		}
 
 		object_description = found->second;
+
+		return true;
+	}
+
+	bool EditorMapData::get_objects(const Uint32 id,
+		EditorObjectDescriptionVector &object_descriptions) const
+	{
+		std::map<Uint32, EditorObjectDescription>::const_iterator found;
+		std::map<Uint32, EditorObjectDescription>::const_iterator it;
+		std::map<Uint32, EditorObjectDescription>::const_iterator end;
+
+		found = m_objects.find(id);
+		end = m_objects.end();
+
+		object_descriptions.clear();
+
+		if (found == end)
+		{
+			return false;
+		}
+
+		for (it = m_objects.begin(); it != end; ++it)
+		{
+			if (found->second.get_name() ==
+				it->second.get_name())
+			{
+				object_descriptions.push_back(it->second);
+			}
+		}
+
 		return true;
 	}
 
@@ -473,6 +510,8 @@ namespace eternal_lands
 		RANGE_CECK_MAX(y, m_height_map.shape()[1],
 			UTF8("index value too big"));
 
+		m_scene->set_height(x, y, height);
+
 		m_height_map[x][y] = height;
 	}
 
@@ -515,34 +554,19 @@ namespace eternal_lands
 			m_terrain_editor.get_blend_image());
 	}
 
-	void EditorMapData::set_terrain_albedo_map(const String &name,
-		const Uint16 index)
+	void EditorMapData::set_terrain_material(const String &albedo_map,
+		const String &extra_map, const float blend_size,
+		const bool use_blend_size_sampler, const bool use_blend_size,
+		const bool use_extra_map, const Uint16 index)
 	{
-		m_terrain_editor.set_albedo_map(name, index);
+		m_terrain_editor.set_material(albedo_map, extra_map,
+			blend_size, use_blend_size_sampler, use_blend_size,
+			use_extra_map, index);
 
-		m_scene->set_terrain_material_maps(
-			m_terrain_editor.get_albedo_maps(), StringVector());
-	}
-
-	void EditorMapData::set_terrain_blend_data(const ShaderBlendData &data,
-		const Uint16 index)
-	{
-		m_terrain_editor.set_blend_data(data, index);
-
-		m_scene->set_terrain_effect_main(
-			m_terrain_editor.get_effect_main());
-	}
-
-	const String &EditorMapData::get_terrain_albedo_map(
-		const Uint16 index) const
-	{
-		return m_terrain_editor.get_albedo_map(index);
-	}
-
-	const ShaderBlendData &EditorMapData::get_terrain_blend_data(
-		const Uint16 index) const
-	{
-		return m_terrain_editor.get_blend_data(index);
+		m_scene->set_terrain_material(
+			m_terrain_editor.get_albedo_maps(),
+			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_material_data());
 	}
 
 	Uint32 EditorMapData::get_free_object_id() const
@@ -556,18 +580,26 @@ namespace eternal_lands
 		return m_scene->get_free_ids()->get_next_free_light_id();
 	}
 
-	void EditorMapData::load_map(const String &name)
+	void EditorMapData::load_map(const String &name,
+		const MapItemsTypeSet &skip_items)
 	{
 		m_renderable = rt_none;
 
-		m_scene->load_map(name, *this);
+		m_scene->load_map(name, *this, skip_items);
 	}
 
 	void EditorMapData::draw()
 	{
+//		m_scene->cull_map();
 		m_scene->cull();
-		m_scene->draw();	
+
+		m_scene->draw();
 		m_scene->blit_to_back_buffer();
+/*
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		m_scene->draw_scale_view(false);
+*/
 	}
 
 	void EditorMapData::draw_selection(const glm::uvec4 &selection_rect)
@@ -636,33 +668,74 @@ namespace eternal_lands
 			).get_mesh_data_cache()->get_mesh_materials(name);
 	}
 
-	ImageSharedPtr EditorMapData::get_image(const String &name) const
+	ImageSharedPtr EditorMapData::get_image(const String &name,
+		TextureFormatType &format) const
 	{
+		glm::uvec3 size;
+		Uint16 mipmaps;
+		bool cube_map, array;
+
+		m_scene->get_scene_resources().get_codec_manager(
+			)->get_image_information(name,
+				m_scene->get_file_system(), true, true, format,
+				size, mipmaps, cube_map, array);
+
 		return m_scene->get_scene_resources().get_codec_manager(
 			)->load_image(name, m_scene->get_file_system(),
-			ImageCompressionTypeSet(), false, false);
+			ImageCompressionTypeSet(), false, false, false);
+	}
+
+	void EditorMapData::get_image_data(const String &name,
+		TextureFormatType &format, glm::uvec3 &size, Uint16 &mipmaps,
+		bool &cube_map, bool &array) const
+	{
+		m_scene->get_scene_resources().get_codec_manager(
+			)->get_image_information(name,
+				m_scene->get_file_system(), true, true, format,
+				size, mipmaps, cube_map, array);
 	}
 
 	void EditorMapData::init_terrain(const glm::uvec2 &size,
-		const String &texture)
+		const String &albedo_map, const String &extra_map,
+		const bool use_blend_size_sampler, const bool use_extra_map)
 	{
-		m_terrain_editor.init(size, texture);
+		m_terrain_editor.init(size, albedo_map, extra_map,
+			use_blend_size_sampler, use_extra_map);
 
-		m_scene->set_terrain_geometry_maps(
-			m_terrain_editor.get_displacement_image(),
+		m_scene->set_terrain(m_terrain_editor.get_displacement_image(),
 			m_terrain_editor.get_normal_image(),
-			m_terrain_editor.get_dudv_image());
+			m_terrain_editor.get_dudv_image(),
+			m_terrain_editor.get_blend_image(),
+			m_terrain_editor.get_albedo_maps(),
+			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_material_data(),
+			m_terrain_editor.get_dudv_scale());
+	}
 
-		m_scene->set_terrain_blend_map(
-			m_terrain_editor.get_blend_image());
+	void EditorMapData::init_terrain(const String &height_map_name,
+		const glm::uvec2 &size,	const String &albedo_map,
+		const String &extra_map, const bool use_blend_size_sampler,
+		const bool use_extra_map)
+	{
+		ImageSharedPtr height_map;
 
-		m_scene->set_terrain_material_maps(
-			m_terrain_editor.get_albedo_maps(), StringVector());
+		height_map = m_scene->get_scene_resources().get_codec_manager(
+			)->load_image(height_map_name,
+				m_scene->get_file_system(),
+				ImageCompressionTypeSet(), false, false,
+				false);
 
-		m_scene->set_terrain_effect_main(
-			m_terrain_editor.get_effect_main());
+		m_terrain_editor.init(height_map, size, albedo_map, extra_map,
+			use_blend_size_sampler, use_extra_map);
 
-		m_scene->rebuild_terrain_map();
+		m_scene->set_terrain(m_terrain_editor.get_displacement_image(),
+			m_terrain_editor.get_normal_image(),
+			m_terrain_editor.get_dudv_image(),
+			m_terrain_editor.get_blend_image(),
+			m_terrain_editor.get_albedo_maps(),
+			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_material_data(),
+			m_terrain_editor.get_dudv_scale());
 	}
 
 	void EditorMapData::set_focus(const glm::vec3 &focus) noexcept
@@ -728,6 +801,70 @@ namespace eternal_lands
 		save(writer, mvt_1_1);
 	}
 
+	void EditorMapData::import_terrain_height_map(const String &name)
+	{
+		ImageSharedPtr height_map;
+
+		height_map = m_scene->get_scene_resources().get_codec_manager(
+			)->load_image(name, m_scene->get_file_system(),
+			ImageCompressionTypeSet(), false, false, false);
+
+		m_terrain_editor.import_height_map(height_map);
+
+		m_scene->set_terrain(m_terrain_editor.get_displacement_image(),
+			m_terrain_editor.get_normal_image(),
+			m_terrain_editor.get_dudv_image(),
+			m_terrain_editor.get_blend_image(),
+			m_terrain_editor.get_albedo_maps(),
+			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_material_data(),
+			m_terrain_editor.get_dudv_scale());
+	}
+
+	void EditorMapData::import_terrain_blend_map(const String &name)
+	{
+		ImageSharedPtr blend_map;
+
+		blend_map = m_scene->get_scene_resources().get_codec_manager(
+			)->load_image(name, m_scene->get_file_system(),
+			ImageCompressionTypeSet(), false, false, false);
+
+		m_terrain_editor.import_blend_map(blend_map);
+
+		m_scene->set_terrain(m_terrain_editor.get_displacement_image(),
+			m_terrain_editor.get_normal_image(),
+			m_terrain_editor.get_dudv_image(),
+			m_terrain_editor.get_blend_image(),
+			m_terrain_editor.get_albedo_maps(),
+			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_material_data(),
+			m_terrain_editor.get_dudv_scale());
+	}
+
+	void EditorMapData::set_terrain(const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
+		const ImageSharedPtr &blend_map,
+		const StringVector &albedo_maps,
+		const StringVector &extra_maps,
+		const TerrainMaterialData &material_data,
+		const glm::vec2 &dudv_scale,
+		const glm::uvec2 &size)
+	{
+		m_terrain_editor.set(displacement_map, normal_map, dudv_map,
+			blend_map, albedo_maps, extra_maps, material_data,
+			dudv_scale, size);
+
+		m_scene->set_terrain(m_terrain_editor.get_displacement_image(),
+			m_terrain_editor.get_normal_image(),
+			m_terrain_editor.get_dudv_image(),
+			m_terrain_editor.get_blend_image(),
+			m_terrain_editor.get_albedo_maps(),
+			m_terrain_editor.get_extra_maps(),
+			m_terrain_editor.get_material_data(),
+			m_terrain_editor.get_dudv_scale());
+	}
+
 	void EditorMapData::save(const WriterSharedPtr &writer,
 		const MapVersionType version) const
 	{
@@ -739,8 +876,11 @@ namespace eternal_lands
 		std::map<Uint32, ParticleData>::const_iterator particle_end;
 		StringVector names;
 		StringUint32MultiMap index_map;
+		String map_name, displacement_map_name, normal_map_name;
+		String dudv_map_name, blend_map_name;
 		glm::vec3 ambient;
 		glm::uvec2 size;
+		BitSet64 use_blend_sizes;
 		Uint32 x, y, i, id, count;
 		Uint32 material_count, material_index;
 		Uint32 tile_map_offset;
@@ -765,7 +905,17 @@ namespace eternal_lands
 		Uint32 terrain_offset;
 		Uint32 water_offset;
 		Uint16 dungeon;
+		Uint16 index;
 		IdType type;
+
+		map_name = FileSystem::get_name_without_extension(
+			writer->get_name());
+
+		displacement_map_name = String(map_name.get() +
+			UTF8("_displacement.dds"));
+		normal_map_name = String(map_name.get() + UTF8("_normal.dds"));
+		dudv_map_name = String(map_name.get() + UTF8("_dudv.dds"));
+		blend_map_name = String(map_name.get() + UTF8("_blend.dds"));
 
 		writer->write_s8('e');
 		writer->write_s8('l');
@@ -1063,7 +1213,7 @@ namespace eternal_lands
 		{
 			name_count++;
 
-			writer->write_dynamic_utf8_string(name);
+			writer->write_utf8_string(name, 128);
 		}
 
 		terrain_offset = 0;
@@ -1072,36 +1222,97 @@ namespace eternal_lands
 		{
 			terrain_offset = writer->get_position();
 
+			m_scene->get_scene_resources().get_codec_manager(
+				)->save_image_as_dds_dxt10(
+					m_terrain_editor.get_displacement_image(
+						), displacement_map_name);
+			m_scene->get_scene_resources().get_codec_manager(
+				)->save_image_as_dds_dxt10(
+					m_terrain_editor.get_normal_image(),
+					normal_map_name);
+			m_scene->get_scene_resources().get_codec_manager(
+				)->save_image_as_dds_dxt10(
+					m_terrain_editor.get_dudv_image(),
+					dudv_map_name);
+			m_scene->get_scene_resources().get_codec_manager(
+				)->save_image_as_dds_dxt10(
+					m_terrain_editor.get_blend_image(),
+					blend_map_name);
+
+			displacement_map_name = FileSystem::get_file_name(
+				displacement_map_name);
+			normal_map_name = FileSystem::get_file_name(
+				normal_map_name);
+			dudv_map_name = FileSystem::get_file_name(
+				dudv_map_name);
+			blend_map_name = FileSystem::get_file_name(
+				blend_map_name);
+
+			writer->write_utf8_string(displacement_map_name, 128);
+			writer->write_utf8_string(normal_map_name, 128);
+			writer->write_utf8_string(dudv_map_name, 128);
+			writer->write_utf8_string(blend_map_name, 128);
+
 			writer->write_float_le(
 				m_terrain_editor.get_dudv_scale().x);
 			writer->write_float_le(
 				m_terrain_editor.get_dudv_scale().y);
-/*
-			writer->write_dynamic_utf8_string(effect);
-			writer->write_dynamic_utf8_string(displacment_map);
-			writer->write_dynamic_utf8_string(normal_map);
-			writer->write_dynamic_utf8_string(dudv_map);
-			writer->write_dynamic_utf8_string(blend_map);
 
+			writer->write_u32_le(m_terrain_editor.get_size().x);
+			writer->write_u32_le(m_terrain_editor.get_size().y);
+
+			writer->write_u32_le(m_terrain_editor.get_material_data(
+				).get_blend_datas().size() + 1);
+
+			writer->write_u64_le(m_terrain_editor.get_material_data(
+				).get_use_blend_size_samplers().to_ulong());
+			writer->write_u64_le(m_terrain_editor.get_material_data(
+				).get_use_extra_maps().to_ulong());
+
+			index = 0;
+
+			BOOST_FOREACH(const BlendData &blend_data,
+				m_terrain_editor.get_material_data(
+				).get_blend_datas())
 			{
-				writer->write_dynamic_utf8_string(albedo_map);
-				writer->write_dynamic_utf8_string(specular_map);
-				writer->write_dynamic_utf8_string(normal_map);
-				writer->write_dynamic_utf8_string(height_map);
+				use_blend_sizes[index] = 
+					blend_data.get_use_blend_size();
+				index++;
 			}
-*/
+
+			writer->write_u64_le(use_blend_sizes.to_ulong());
+
+			BOOST_FOREACH(const BlendData &blend_data,
+				m_terrain_editor.get_material_data(
+					).get_blend_datas())
+			{
+				writer->write_float_le(
+					blend_data.get_blend_size());
+			}
+
+			BOOST_FOREACH(const String &albedo_map,
+				m_terrain_editor.get_albedo_maps())
+			{
+				writer->write_utf8_string(albedo_map, 128);
+			}
+
+			BOOST_FOREACH(const String &extra_map,
+				m_terrain_editor.get_extra_maps())
+			{
+				writer->write_utf8_string(extra_map, 128);
+			}
 		}
 
 		water_offset = 0;
 /*
 		if (water)
 		{
-			writer->write_dynamic_utf8_string(flow_map);
+			writer->write_utf8_string(flow_map, 128);
 
 			writer->write_uint8(water_layer);
 
 			{
-				writer->write_dynamic_utf8_string(name);
+				writer->write_utf8_string(name, 128);
 				writer->write_float_le(height);
 			}
 		}

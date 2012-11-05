@@ -52,8 +52,6 @@ namespace eternal_lands
 			GlobalVarsSharedPtr m_global_vars;
 			FileSystemSharedPtr m_file_system;
 			SceneResources m_scene_resources;
-			TextureSharedPtr m_day_color_correction;
-			TextureSharedPtr m_night_color_correction;
 			ClipmapTerrain m_clipmap_terrain;
 			StateManager m_state_manager;
 			TerrainRenderingData m_visible_terrain;
@@ -91,10 +89,6 @@ namespace eternal_lands
 			bool m_rebuild_terrain_map;
 			bool m_rebuild_shadow_map;
 
-			void draw_terrain(
-				const TerrainRenderingData &terrain_data,
-				const EffectProgramType type,
-				const bool lights);
 			void get_lights(const BoundingBox &bounding_box,
 				Uint16 &lights_count);
 			void do_draw_object_old_lights(
@@ -106,15 +100,6 @@ namespace eternal_lands
 				const BitSet64 visibility_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance);
-			void draw_object_old_lights(
-				const ObjectSharedPtr &object,
-				const BitSet64 visibility_mask,
-				const EffectProgramType type,
-				const Uint16 instances, const Uint16 distance);
-			void draw_object(const ObjectSharedPtr &object,
-				const BitSet64 visibility_mask,
-				const EffectProgramType type,
-				const Uint16 instances, const Uint16 distance);
 			void draw_light(const glm::vec3 &position,
 				const float size, const Uint8 light_index);
 			void draw_light_camera_inside(const glm::vec3 &position,
@@ -122,8 +107,6 @@ namespace eternal_lands
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids,
 				Uint32 &query_index);
-			void cull_shadow(const Frustum &frustum,
-				const glm::vec3 &camera, const Uint16 index);
 			void cull_shadows();
 			void update_terrain_texture(
 				const MaterialSharedPtr &material,
@@ -133,11 +116,9 @@ namespace eternal_lands
 			void update_terrain_texture();
 			void build_terrain_map();
 			void build_shadow_map();
-			void set_view_port();
 			void draw_shadow(const Uint16 index);
 			void draw_shadows();
 			void draw_depth();
-			void draw_default();
 			void draw_lights();
 			void init_light_indexed_deferred_rendering();
 			void update_light_index_texture();
@@ -158,6 +139,28 @@ namespace eternal_lands
 			void map_changed();
 			bool switch_program(
 				const GlslProgramSharedPtr &program);
+			void init_terrain_rendering_data(
+				TerrainRenderingData &terrain_rendering_data);
+			void cull(const glm::mat4 &projection_view_matrix,
+				const glm::vec3 &camera, const bool shadow,
+				TerrainRenderingData &terrain_data,
+				ObjectVisitor &objects) const;
+			void draw_terrain(
+				const TerrainRenderingData &terrain_data,
+				const EffectProgramType type,
+				const bool lights);
+			void draw_object(const ObjectSharedPtr &object,
+				const BitSet64 visibility_mask,
+				const EffectProgramType type,
+				const Uint16 instances, const Uint16 distance);
+
+			void draw_object_old_lights(
+				const ObjectSharedPtr &object,
+				const BitSet64 visibility_mask,
+				const EffectProgramType type,
+				const Uint16 instances, const Uint16 distance);
+			void set_view_port();
+			void draw_default();
 
 			inline void update_program_vars_id() noexcept
 			{

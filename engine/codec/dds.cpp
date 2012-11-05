@@ -17,7 +17,7 @@ namespace eternal_lands
 			const Uint32 depth, const Uint32 mipmaps,
 			const Uint32 red_mask, const Uint32 green_mask,
 			const Uint32 blue_mask, const Uint32 alpha_mask,
-			DdsHeader &header)
+			bool cube_map, DdsHeader &header)
 		{
 			Uint32 bpp;
 
@@ -36,6 +36,13 @@ namespace eternal_lands
 			else
 			{
 				header.m_caps.m_caps1 = DDSCAPS_TEXTURE;
+			}
+
+			if (cube_map)
+			{
+				header.m_caps.m_caps1 |= DDSCAPS_COMPLEX;
+				header.m_caps.m_caps2 |= DDSCAPS2_CUBEMAP |
+					DDSCAPS2_CUBEMAP_ALL_FACES;
 			}
 
 			if (mipmaps > 0)
@@ -77,7 +84,7 @@ namespace eternal_lands
 		void build_dds_fourcc_header(const Uint32 width,
 			const Uint32 height, const Uint32 depth,
 			const Uint32 mipmaps, const Uint32 fourcc,
-			const Uint32 bpp, DdsHeader &header)
+			const Uint32 bpp, bool cube_map, DdsHeader &header)
 		{
 			memset(&header, 0, sizeof(header));
 
@@ -94,6 +101,13 @@ namespace eternal_lands
 			else
 			{
 				header.m_caps.m_caps1 = DDSCAPS_TEXTURE;
+			}
+
+			if (cube_map)
+			{
+				header.m_caps.m_caps1 |= DDSCAPS_COMPLEX;
+				header.m_caps.m_caps2 |= DDSCAPS2_CUBEMAP |
+					DDSCAPS2_CUBEMAP_ALL_FACES;
 			}
 
 			if (mipmaps > 0)
@@ -232,6 +246,92 @@ namespace eternal_lands
 			}
 
 			return false;
+		}
+
+		void build_dxt10_dds_header(const Uint32 width,
+			const Uint32 height, const Uint32 depth,
+			const Uint32 layer, const Uint32 mipmaps,
+			const Uint32 format, const Uint32 bpp,
+			const Uint32 flags, const bool cube_map,
+			const bool linear_size, DdsHeader &header,
+			DdsHeader10 &header_dxt10)
+		{
+			Uint32 size;
+
+			memset(&header, 0, sizeof(header));
+			memset(&header_dxt10, 0, sizeof(header_dxt10));
+
+			header.m_size = DDS_HEADER_SIZE;
+			header.m_flags = DDSD_MIN_FLAGS | DDSD_PITCH;
+
+			if (linear_size)
+			{
+				header.m_flags |= DDSD_LINEARSIZE;
+				size = ((width + 3) >> 2) * ((height + 3) >> 2)
+					* bpp * 16;
+			}
+			else
+			{
+				header.m_flags |= DDSD_PITCH;
+				size = width * bpp;
+			}
+
+			if (depth > 0)
+			{
+				header.m_flags |= DDSD_DEPTH;
+				header.m_caps.m_caps1 = DDSCAPS_COMPLEX |
+					DDSCAPS_TEXTURE;
+				header.m_caps.m_caps2 = DDSCAPS2_VOLUME;
+
+				header_dxt10.m_resource_dimension =
+					DDS_DIMENSION_TEXTURE3D;
+			}
+			else
+			{
+				header.m_caps.m_caps1 = DDSCAPS_TEXTURE;
+
+				if (height > 0)
+				{
+					header_dxt10.m_resource_dimension =
+						DDS_DIMENSION_TEXTURE2D;
+				}
+				else
+				{
+					header_dxt10.m_resource_dimension =
+						DDS_DIMENSION_TEXTURE1D;
+				}
+			}
+
+			header_dxt10.m_dxgi_format = format;
+			header_dxt10.m_array_size = std::max(1u, layer);
+
+			if (cube_map)
+			{
+				header_dxt10.m_misc_flag = DDS_MISC_TEXTURECUBE;
+				header.m_caps.m_caps2 |= DDSCAPS2_CUBEMAP |
+					DDSCAPS2_CUBEMAP_ALL_FACES;
+			}
+
+			if (mipmaps > 0)
+			{
+				header.m_flags |= DDSD_MIPMAPCOUNT;
+				header.m_caps.m_caps1 |= DDSCAPS_MIPMAP;
+				header.m_caps.m_caps1 |= DDSCAPS_COMPLEX;
+			}
+
+			header.m_pixel_format.m_size = DDS_PIXEL_FORMAT_SIZE;
+
+			header.m_pixel_format.m_flags = flags | DDPF_FOURCC;
+
+			header.m_pixel_format.m_fourcc = DDSFMT_DX10;
+
+			header.m_pixel_format.m_bit_count = bpp;
+
+			header.m_height = std::max(1u, height);
+			header.m_width = std::max(1u, width);
+			header.m_size_or_pitch = size;
+			header.m_depth = depth;
+			header.m_mipmap_count = mipmaps;
 		}
 
 	}

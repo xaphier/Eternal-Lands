@@ -42,7 +42,7 @@ namespace eternal_lands
 				const Uint32 offset, const Uint32 count,
 				const Uint32 min_vertex,
 				const Uint32 max_vertex,
-				const Uint32 base_vertex,
+				const Sint32 base_vertex,
 				const bool packed = true);
 			SubMesh();
 			~SubMesh() noexcept;

@@ -56,12 +56,8 @@ namespace eternal_lands
 				const Vec2Vector &uvs, const float damping,
 				const float clamping, const Uint32 width,
 				const Uint32 height, Vec2Vector &new_uvs);
+			void build_data(const ImageSharedPtr &height_map);
 			void build_data(const ImageSharedPtr &height_map,
-				const glm::vec3 &offset_scale,
-				const glm::vec2 &position_scale);
-			void build_data(const ImageSharedPtr &height_map,
-				const glm::vec3 &offset_scale,
-				const glm::vec2 &position_scale,
 				const Sint32 x, const Sint32 y);
 
 			static inline float get_half_distance(
@@ -76,17 +72,18 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			UvTool(const ImageSharedPtr &displacement_map,
-				const glm::vec3 &offset_scale,
-				const glm::vec2 &position_scale);
+			UvTool(const ImageSharedPtr &displacement_map);
 
 			/**
 			 * Default destructor.
 			 */
 			~UvTool() noexcept;
 
-			void relaxed_uv(const Uint16 count,
-				const bool use_simd);
+			void relax_uv(
+				const AbstractProgressSharedPtr &progress,
+				const Uint16 count, const bool use_simd);
+			void convert(ImageSharedPtr &dudv_map,
+				glm::vec2 &dudv_scale);
 			ImageSharedPtr convert(glm::vec2 &dudv_scale);
 
 			inline const glm::vec2 &get_uv(const Uint16 x,

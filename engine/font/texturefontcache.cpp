@@ -44,25 +44,25 @@ namespace eternal_lands
 		const Uint16 height, const Uint16 max_char_count)
 	{
 		StringVariantMap values;
-		glm::uvec3 sizes;
+		glm::uvec3 size;
 		SubMeshVector sub_meshs;
 		Uint32Vector indices;
 		Uint32 i;
 		bool use_16_bit_indices;
 
-		sizes[0] = width;
-		sizes[1] = height;
-		sizes[2] = 1;
+		size[0] = width;
+		size[1] = height;
+		size[2] = 1;
 
 		if (global_vars->get_opengl_3_0())
 		{
 			m_image = boost::make_shared<Image>(String(
-				UTF8("Fonts")), false, tft_r8, sizes, 0);
+				UTF8("Fonts")), false, tft_r8, size, 0);
 		}
 		else
 		{
 			m_image = boost::make_shared<Image>(String(
-				UTF8("Fonts")), false, tft_l8, sizes, 0);
+				UTF8("Fonts")), false, tft_l8, size, 0);
 		}
 
 		m_atlas = boost::make_shared<Atlas>(width, height);

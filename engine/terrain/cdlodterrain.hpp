@@ -32,12 +32,6 @@ namespace eternal_lands
 			TextureSharedPtr m_normal_texture;
 			TextureSharedPtr m_dudv_texture;
 
-			virtual TextureSharedPtr get_displacement_texture()
-				const override;
-			virtual TextureSharedPtr get_normal_texture() const
-				override;
-			virtual TextureSharedPtr get_dudv_texture() const
-				override;
 			virtual void do_set_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,

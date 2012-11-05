@@ -70,7 +70,7 @@ namespace eternal_lands
 					const ReaderSharedPtr &reader,
 					const bool rg_formats,
 					TextureFormatType &texture_format,
-					glm::uvec3 &sizes, Uint16 &mipmaps);
+					glm::uvec3 &size, Uint16 &mipmaps);
 
 		};
 
@@ -136,7 +136,7 @@ namespace eternal_lands
 
 		void J2kDecompress::get_image_information(
 			const ReaderSharedPtr &reader, const bool rg_formats,
-			TextureFormatType &texture_format, glm::uvec3 &sizes,
+			TextureFormatType &texture_format, glm::uvec3 &size,
 			Uint16 &mipmaps)
 		{
 		}
@@ -153,12 +153,12 @@ namespace eternal_lands
 
 	void J2kImage::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, TextureFormatType &texture_format,
-		glm::uvec3 &sizes, Uint16 &mipmaps)
+		glm::uvec3 &size, Uint16 &mipmaps)
 	{
 /*		JpegDecompress jpeg_decompress;
 
 		jpeg_decompress.get_image_information(reader, rg_formats,
-			texture_format, sizes, mipmaps);
+			texture_format, size, mipmaps);
 */	}
 
 	bool J2kImage::check_load(const Uint8Array32 &id)

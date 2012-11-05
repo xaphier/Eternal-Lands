@@ -14,6 +14,7 @@
 #include "globalvars.hpp"
 #include "materialcache.hpp"
 #include "texture.hpp"
+#include "imageupdate.hpp"
 
 namespace eternal_lands
 {
@@ -21,26 +22,10 @@ namespace eternal_lands
 	namespace
 	{
 
-		const glm::vec3 vector_scale = glm::vec3(8.0f, 8.0f, 32.0f);
-
-		const glm::vec3 vector_min = glm::vec3(-vector_scale.x,
-			-vector_scale.y, 0.0f);
-
-		const glm::vec3 vector_max = vector_scale;
-
-		//	2.0f, 2.0f, 4.0f * 1023.0f / 4095.0f, 3.0f / 4095.0f
-		const glm::vec4 vector_scale_rgb10_a2 = glm::vec4(
-			vector_scale.x * 2.0f, vector_scale.y * 2.0f,
-			(vector_scale.z * 4.0f * 1023.0f) / 4095.0f,
-			(vector_scale.z * 3.0f) / 4095.0f);
-
-		//	-1.0f, -1.0f
-		const glm::vec2 vector_offset_rgb10_a2 = glm::vec2(
-			-vector_scale.x, -vector_scale.y);
-
-		//	2.0f, 2.0f, 4.0f * 1023.0f / 4095.0f, 3.0f / 4095.0f
-		const glm::vec4 vector_rgb10_a2 = glm::vec4(2.0f, 2.0f,
-			(4.0f * 1023.0f) / 4095.0f, 3.0f / 4095.0f);
+		const float vector_scale = 32.0f;
+		const glm::vec3 vector_min = glm::vec3(-vector_scale,
+			-vector_scale, 0.0f);
+		const glm::vec3 vector_max = glm::vec3(vector_scale);
 
 	}
 
@@ -69,11 +54,6 @@ namespace eternal_lands
 	{
 	}
 
-	const glm::vec3 &AbstractTerrain::get_vector_scale() noexcept
-	{
-		return vector_scale;
-	}
-
 	const glm::vec3 &AbstractTerrain::get_vector_min() noexcept
 	{
 		return vector_min;
@@ -84,21 +64,9 @@ namespace eternal_lands
 		return vector_max;
 	}
 
-	const glm::vec4 &AbstractTerrain::get_vector_scale_rgb10_a2()
-		noexcept
+	const float AbstractTerrain::get_vector_scale() noexcept
 	{
-		return vector_scale_rgb10_a2;
-	}
-
-	const glm::vec2 &AbstractTerrain::get_vector_offset_rgb10_a2()
-		noexcept
-	{
-		return vector_offset_rgb10_a2;
-	}
-
-	const glm::vec4 &AbstractTerrain::get_vector_rgb10_a2() noexcept
-	{
-		return vector_rgb10_a2;
+		return vector_scale;
 	}
 
 	void AbstractTerrain::set_clipmap_terrain_texture(
@@ -107,44 +75,12 @@ namespace eternal_lands
 		m_terrain_material->set_texture(texture, spt_effect_0);
 	}
 
-	void AbstractTerrain::update_clipmap_terrain_material()
-	{
-		TextureSharedPtr dudv_texture, displacement_texture;
-		TextureSharedPtr normal_texture;
-
-		dudv_texture = get_dudv_texture();
-		normal_texture = get_normal_texture();
-		displacement_texture = get_displacement_texture();
-
-		if (dudv_texture.get() != nullptr)
-		{
-			m_clipmap_terrain_material->set_texture(dudv_texture,
-				ShaderSourceTerrain::get_dudv_sampler());
-		}
-
-		if (displacement_texture.get() != nullptr)
-		{
-			m_clipmap_terrain_material->set_texture(
-				displacement_texture,
-				ShaderSourceTerrain::get_displacement_sampler(
-					));
-		}
-
-		if (normal_texture.get() != nullptr)
-		{
-			m_clipmap_terrain_material->set_texture(normal_texture,
-				ShaderSourceTerrain::get_normal_sampler());
-		}
-	}
-
 	void AbstractTerrain::set_geometry_maps(
 		const ImageSharedPtr &displacement_map,
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
 	{
 		do_set_geometry_maps(displacement_map, normal_map, dudv_map);
-
-		update_clipmap_terrain_material();
 	}
 
 	void AbstractTerrain::set_blend_map(
@@ -169,7 +105,7 @@ namespace eternal_lands
 		texture->set_image(blend_map);
 
 		m_clipmap_terrain_material->set_texture(texture,
-			ShaderSourceTerrain::get_blend_sampler());
+			ShaderSourceTerrain::get_blend_sampler(0));
 	}
 
 	void AbstractTerrain::update_geometry_maps(
@@ -177,34 +113,113 @@ namespace eternal_lands
 		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
 	{
 		do_update_geometry_maps(displacement_map, normal_map, dudv_map);
-
-		update_clipmap_terrain_material();
 	}
 
-	void AbstractTerrain::update_blend_map(
-		const ImageUpdate &blend_image)
+	void AbstractTerrain::update_blend_map(const ImageUpdate &blend_image)
 	{
-		m_clipmap_terrain_material->get_texture(
-			ShaderSourceTerrain::get_blend_sampler())->sub_texture(
-			blend_image);
+		glm::uvec3 offsets, size;
+		Uint32 i, count, mipmap;
+
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			m_clipmap_terrain_material->get_texture(
+				ShaderSourceTerrain::get_blend_sampler(0)
+					)->sub_texture(blend_image);
+
+			return;
+		}
+
+		offsets = blend_image.get_offsets();
+		mipmap = blend_image.get_mipmap();
+		size = blend_image.get_size();
+
+		count = size.z;
+
+		size.z = 1;
+
+		for (i = 0; i < count; ++i)
+		{
+			m_clipmap_terrain_material->get_texture(
+				ShaderSourceTerrain::get_blend_sampler(
+					i))->sub_texture(mipmap, mipmap,
+						blend_image.get_image(),
+						offsets, offsets, size);
+
+			offsets.z++;
+		}
 	}
 
-	void AbstractTerrain::set_texture_maps(
-		const StringVector &albedo_maps,
-		const StringVector &specular_maps,
+	void AbstractTerrain::set_texture_maps(const StringVector &albedo_maps,
+		const StringVector &extra_maps,
+		const BitSet64 &use_blend_size_samplers,
+		const BitSet64 &use_extra_maps,
 		const TextureCacheSharedPtr &texture_cache)
 	{
-		set_albedo_maps(albedo_maps, texture_cache);
-		set_specular_maps(specular_maps, texture_cache);
+		set_albedo_maps(albedo_maps, use_blend_size_samplers,
+			texture_cache);
+		set_extra_maps(extra_maps, use_extra_maps, texture_cache);
 	}
 
 	void AbstractTerrain::set_albedo_maps(const StringVector &albedo_maps,
+		const BitSet64 &use_blend_size_samplers,
 		const TextureCacheSharedPtr &texture_cache)
 	{
 		TextureSharedPtr texture;
+		StringVector albedo_blend_maps, albedo_no_blend_maps;
 		Uint32 i, count;
 
-		count = ShaderSourceTerrain::get_non_array_sampler_count();
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			count = std::min(albedo_maps.size(),
+				use_blend_size_samplers.size());
+
+			m_clipmap_terrain_material->set_texture(texture,
+				ShaderSourceTerrain::get_albedo_sampler(0));
+
+			m_clipmap_terrain_material->set_texture(texture,
+				ShaderSourceTerrain::get_albedo_sampler(1));
+
+			for (i = 0; i < count; ++i)
+			{
+				if (use_blend_size_samplers[i])
+				{
+					albedo_blend_maps.push_back(
+						albedo_maps[i]);
+				}
+				else
+				{
+					albedo_no_blend_maps.push_back(
+						albedo_maps[i]);
+				}
+			}
+
+			if (albedo_no_blend_maps.size() > 0)
+			{
+				texture = texture_cache->get_texture_array(
+					albedo_no_blend_maps,
+					String(UTF8("terrain-albedo")));
+
+				m_clipmap_terrain_material->set_texture(
+					texture, ShaderSourceTerrain::
+						get_albedo_sampler(0));
+			}
+
+			if (albedo_blend_maps.size() > 0)
+			{
+				texture = texture_cache->get_texture_array(
+					albedo_blend_maps,
+					String(UTF8("terrain-albedo-blend")));
+
+				m_clipmap_terrain_material->set_texture(
+					texture, ShaderSourceTerrain::
+						get_albedo_sampler(1));
+			}
+
+			return;
+		}
+
+		count = ShaderSourceTerrain::get_non_array_albedo_sampler_count(
+			);
 
 		for (i = 0; i < count; ++i)
 		{
@@ -217,21 +232,10 @@ namespace eternal_lands
 			return;
 		}
 
-		if (get_global_vars()->get_opengl_3_0())
-		{
-			texture = texture_cache->get_texture_array(
-				albedo_maps,
-				String(UTF8("terrain-albedo")));
-
-			m_clipmap_terrain_material->set_texture(texture,
-				ShaderSourceTerrain::get_albedo_sampler(0));
-
-			return;
-		}
-
 		count = albedo_maps.size();
 		count = std::min(count,
-			ShaderSourceTerrain::get_non_array_sampler_count());
+			ShaderSourceTerrain::get_non_array_albedo_sampler_count(
+				));
 
 		for (i = 0; i < count; ++i)
 		{
@@ -242,54 +246,57 @@ namespace eternal_lands
 		}
 	}
 
-	void AbstractTerrain::set_specular_maps(
-		const StringVector &specular_maps,
+	void AbstractTerrain::set_extra_maps(const StringVector &extra_maps,
+		const BitSet64 &use_extra_maps,
 		const TextureCacheSharedPtr &texture_cache)
 	{
 		TextureSharedPtr texture;
+		StringVector names;
 		Uint32 i, count;
 
-		count = ShaderSourceTerrain::get_non_array_sampler_count();
-
-		for (i = 0; i < count; ++i)
-		{
-			m_clipmap_terrain_material->set_texture(texture,
-				ShaderSourceTerrain::get_specular_sampler(i));
-		}
-
-		if (specular_maps.size() == 0)
+		if (!get_global_vars()->get_opengl_3_0())
 		{
 			return;
 		}
 
-		if (get_global_vars()->get_opengl_3_0())
-		{
-			texture = texture_cache->get_texture_array(
-				specular_maps,
-				String(UTF8("terrain-specular")));
-
-			m_clipmap_terrain_material->set_texture(texture,
-				ShaderSourceTerrain::get_specular_sampler(0));
-
-			return;
-		}
-
-		count = specular_maps.size();
-		count = std::min(count,
-			ShaderSourceTerrain::get_non_array_sampler_count());
+		count = std::min(extra_maps.size(), use_extra_maps.size());
 
 		for (i = 0; i < count; ++i)
 		{
-			texture = texture_cache->get_texture(specular_maps[i]);
-
-			m_clipmap_terrain_material->set_texture(texture,
-				ShaderSourceTerrain::get_specular_sampler(i));
+			if (use_extra_maps[i])
+			{
+				names.push_back(extra_maps[i]);
+			}
 		}
+
+		m_clipmap_terrain_material->set_texture(texture,
+			ShaderSourceTerrain::get_extra_sampler());
+
+		if (names.size() == 0)
+		{
+			return;
+		}
+
+		texture = texture_cache->get_texture_array(names,
+			String(UTF8("terrain-extra")));
+
+		m_clipmap_terrain_material->set_texture(texture,
+			ShaderSourceTerrain::get_extra_sampler());
 	}
 
 	void AbstractTerrain::set_effect(const EffectSharedPtr &effect)
 	{
 		m_clipmap_terrain_material->set_effect(effect);
+	}
+
+	void AbstractTerrain::set_dudv_scale(const glm::vec2 &dudv_scale)
+	{
+		m_clipmap_terrain_material->set_dudv_scale(dudv_scale);
+	}
+
+	const glm::vec2 &AbstractTerrain::get_dudv_scale() const
+	{
+		return m_clipmap_terrain_material->get_dudv_scale();
 	}
 
 }

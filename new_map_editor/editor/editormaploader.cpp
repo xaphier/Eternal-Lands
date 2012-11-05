@@ -29,16 +29,14 @@ namespace eternal_lands
 		const TerrainBuilderWeakPtr &terrain_builder,
 		const TextureCacheWeakPtr &texture_cache,
 		const FreeIdsManagerSharedPtr &free_ids,
-		EditorMapData &data): AbstractMapLoader(file_system, free_ids),
-		m_codec_manager(codec_manager), m_global_vars(global_vars),
+		EditorMapData &data): AbstractMapLoader(codec_manager,
+			file_system, free_ids, global_vars),
 		m_effect_cache(effect_cache), m_mesh_builder(mesh_builder),
 		m_mesh_cache(mesh_cache), m_mesh_data_cache(mesh_data_cache),
 		m_material_cache(material_cache),
 		m_terrain_builder(terrain_builder),
 		m_texture_cache(texture_cache), m_data(data)
 	{
-		assert(!m_codec_manager.expired());;
-		assert(m_global_vars.get() != nullptr);
 		assert(!m_effect_cache.expired());;
 		assert(!m_mesh_builder.expired());;
 		assert(!m_mesh_cache.expired());;
@@ -133,9 +131,10 @@ namespace eternal_lands
 	{
 	}
 
-	void EditorMapLoader::load(const String &name)
+	void EditorMapLoader::load(const String &name,
+		const MapItemsTypeSet &skip_items)
 	{
-		read(name);
+		read(name, skip_items);
 	}
 
 	MapSharedPtr EditorMapLoader::get_map(const String &name)
@@ -151,6 +150,22 @@ namespace eternal_lands
 		result->set_name(name);
 
 		return result;
+	}
+
+	void EditorMapLoader::set_terrain(
+		const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
+		const ImageSharedPtr &blend_map,
+		const StringVector &albedo_maps,
+		const StringVector &extra_maps,
+		const TerrainMaterialData &material_data,
+		const glm::vec2 &dudv_scale,
+		const glm::uvec2 &sizes)
+	{
+		m_data.set_terrain(displacement_map, normal_map,
+			dudv_map, blend_map, albedo_maps, extra_maps,
+			material_data, dudv_scale, sizes);
 	}
 
 }

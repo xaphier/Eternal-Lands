@@ -8,6 +8,7 @@
 #include "uvtool.hpp"
 #include "image.hpp"
 #include "abstractterrain.hpp"
+#include "abstractprogress.hpp"
 #include "simd/simd.hpp"
 
 namespace eternal_lands
@@ -27,10 +28,9 @@ namespace eternal_lands
 
 	}
 
-	UvTool::UvTool(const ImageSharedPtr &displacement_map,
-		const glm::vec3 &offset_scale, const glm::vec2 &position_scale)
+	UvTool::UvTool(const ImageSharedPtr &displacement_map)
 	{
-		build_data(displacement_map, offset_scale, position_scale);
+		build_data(displacement_map);
 	}
 
 	UvTool::~UvTool() noexcept
@@ -38,7 +38,6 @@ namespace eternal_lands
 	}
 
 	void UvTool::build_data(const ImageSharedPtr &displacement_map,
-		const glm::vec3 &offset_scale, const glm::vec2 &position_scale,
 		const Sint32 x, const Sint32 y)
 	{
 		Vec4Array2 half_distances;
@@ -50,13 +49,13 @@ namespace eternal_lands
 		width = m_width;
 		height = m_height;
 
-		uv = glm::vec2(x, y) * position_scale;
+		uv = glm::vec2(x, y) * AbstractTerrain::get_patch_scale();
 
 		m_uvs.push_back(uv);
 
-		p0 = glm::vec3(glm::vec2(x, y) * position_scale, 0.0f);
-		p0 += glm::vec3(displacement_map->get_pixel(x, y, 0, 0, 0.0f))
-			* offset_scale;
+		p0 = glm::vec3(uv, 0.0f);
+		p0 += AbstractTerrain::get_offset_scaled_0_1(
+			displacement_map->get_pixel(x, y, 0, 0, 0));
 
 		for (i = 0; i < 8; ++i)
 		{
@@ -72,10 +71,10 @@ namespace eternal_lands
 				continue;
 			}
 
-			p1 = glm::vec3(glm::vec2(xx, yy) * position_scale,
-				0.0f);
-			p1 += glm::vec3(displacement_map->get_pixel(xx, yy, 0,
-				0, 0.0f)) * offset_scale;
+			p1 = glm::vec3(glm::vec2(xx, yy) *
+				AbstractTerrain::get_patch_scale(), 0.0f);
+			p1 += AbstractTerrain::get_offset_scaled_0_1(
+				displacement_map->get_pixel(xx, yy, 0, 0, 0));
 
 			half_distances[i / 4][i % 4] = 0.5f *
 				glm::distance(p0, p1);
@@ -85,8 +84,7 @@ namespace eternal_lands
 		m_half_distances.push_back(half_distances[1]);
 	}
 
-	void UvTool::build_data(const ImageSharedPtr &displacement_map,
-		const glm::vec3 &offset_scale, const glm::vec2 &position_scale)
+	void UvTool::build_data(const ImageSharedPtr &displacement_map)
 	{
 		Sint32 width, height, x, y;
 
@@ -103,8 +101,7 @@ namespace eternal_lands
 		{
 			for (x = 0; x < width; ++x)
 			{
-				build_data(displacement_map, offset_scale,
-					position_scale, x, y);
+				build_data(displacement_map, x, y);
 			}
 		}
 	}
@@ -194,29 +191,34 @@ namespace eternal_lands
 		const float damping, const float clamping, const Uint32 width,
 		const Uint32 height, Vec2Vector &new_uvs)
 	{
-		glm::uvec2 position, size;
+		glm::uvec2 size;
 		Uint32 i, j;
 
 		size = glm::uvec2(width, height);
-		position = glm::uvec2(0);
 
+		#pragma omp parallel for
 		for (i = 0; i < width; ++i)
 		{
+			glm::uvec2 position;
+
 			position.x = i;
+			position.y = 0;
 
 			relax_edge(half_distances, uvs, position, size,
 				damping, clamping, new_uvs);
 		}
 
+		#pragma omp parallel for private(i)
 		for (j = 1; j < (height - 1); ++j)
 		{
+			glm::uvec2 position;
+
 			position.x = 0;
 			position.y = j;
 
 			relax_edge(half_distances, uvs, position, size,
 				damping, clamping, new_uvs);
 
-			#pragma omp parallel for
 			for (i = 1; i < (width - 1); ++i)
 			{
 				relax(half_distances, uvs, damping, clamping,
@@ -230,8 +232,11 @@ namespace eternal_lands
 				damping, clamping, new_uvs);
 		}
 
+		#pragma omp parallel for
 		for (i = 0; i < width; ++i)
 		{
+			glm::uvec2 position;
+
 			position.x = i;
 			position.y = height - 1;
 
@@ -245,15 +250,18 @@ namespace eternal_lands
 		const float damping, const float clamping, const Uint32 width,
 		const Uint32 height, Vec2Vector &new_uvs)
 	{
-		glm::uvec2 position, size;
+		glm::uvec2 size;
 		Uint32 i;
 
 		size = glm::uvec2(width, height);
-		position = glm::uvec2(0);
 
+		#pragma omp parallel for
 		for (i = 0; i < width; ++i)
 		{
+			glm::uvec2 position;
+
 			position.x = i;
+			position.y = 0;
 
 			relax_edge(half_distances, uvs, position, size,
 				damping, clamping, new_uvs);
@@ -268,8 +276,11 @@ namespace eternal_lands
 				glm::value_ptr(new_uvs[i * width]));
 		}
 
+		#pragma omp parallel for
 		for (i = 0; i < width; ++i)
 		{
+			glm::uvec2 position;
+
 			position.x = i;
 			position.y = height - 1;
 
@@ -278,21 +289,37 @@ namespace eternal_lands
 		}
 	}
 
-	void UvTool::relaxed_uv(const Uint16 count, const bool use_simd)
+	void UvTool::relax_uv(const AbstractProgressSharedPtr &progress,
+		const Uint16 count, const bool use_simd)
 	{
 		Vec2Vector new_uvs;
 		Uint16 i;
 
 		new_uvs.resize(m_uvs.size());
 
+		progress->set_text(String(UTF8("relax uv")));
+		progress->init(0, count);
+
+		if (progress->get_canceled())
+		{
+			return;
+		}
+
 		if (use_simd)
 		{
 			for (i = 0; i < count; ++i)
 			{
+				if (progress->get_canceled())
+				{
+					return;
+				}
+
 				relax_sse2(m_half_distances, m_uvs, 0.015f,
 					1.0f, m_width, m_height, new_uvs);
 
 				std::swap(new_uvs, m_uvs);
+
+				progress->stepp(1);
 			}
 
 			return;
@@ -300,19 +327,25 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
+			if (progress->get_canceled())
+			{
+				return;
+			}
+
 			relax_default(m_half_distances, m_uvs, 0.015f, 1.0f,
 				m_width, m_height, new_uvs);
 
 			std::swap(new_uvs, m_uvs);
+
+			progress->stepp(1);
 		}
 	}
 
 	/**
 	 * Converts to signed rg 8 but image
 	 */
-	ImageSharedPtr UvTool::convert(glm::vec2 &dudv_scale)
+	void UvTool::convert(ImageSharedPtr &dudv_map, glm::vec2 &dudv_scale)
 	{
-		ImageSharedPtr image;
 		glm::vec2 uv, max, tmp, diff;
 		glm::ivec4 temp;
 		Sint32 width, height, x, y, index;
@@ -321,8 +354,9 @@ namespace eternal_lands
 		height = m_height;
 		index = 0;
 
-		image = boost::make_shared<Image>(String(UTF8("Dudv map")),
-			false, tft_rg8_snorm, glm::uvec3(width, height, 0), 0);			
+		CECK_TABLE_SIZES_EQUAL(dudv_map->get_size(),
+			glm::uvec3(m_width, m_height, 0),
+			UTF8("Image has wrong size"));
 
 		for (y = 0; y < height; ++y)
 		{
@@ -338,6 +372,8 @@ namespace eternal_lands
 				++index;
 			}
 		}
+
+		dudv_scale = max;
 
 		index = 0;
 
@@ -372,13 +408,27 @@ namespace eternal_lands
 				diff = glm::max(diff, glm::abs(m_uvs[index] -
 					(uv + glm::vec2(temp)))); 
 
-				image->set_pixel_int(x, y, 0, 0, 0, temp);
+				dudv_map->set_pixel_int(x, y, 0, 0, 0, temp);
 
 				++index;
 			}
 		}
+	}
 
-		return image;
+	/**
+	 * Converts to signed rg 8 but image
+	 */
+	ImageSharedPtr UvTool::convert(glm::vec2 &dudv_scale)
+	{
+		ImageSharedPtr dudv_map;
+
+		dudv_map = boost::make_shared<Image>(String(UTF8("Dudv map")),
+			false, tft_rg8_snorm, glm::uvec3(m_width, m_height, 0),
+			0);			
+
+		convert(dudv_map, dudv_scale);
+
+		return dudv_map;
 	}
 
 }

@@ -13,6 +13,7 @@
 #include "effect/effect.hpp"
 #include "effect/effectcache.hpp"
 #include "effect/effectdescription.hpp"
+#include "shader/shadersourceterrain.hpp"
 
 namespace eternal_lands
 {
@@ -65,9 +66,10 @@ namespace eternal_lands
 			m_clipmap_terrain_effect_name);
 	}
 
-	EffectSharedPtr TerrainBuilder::get_effect(const String &effect_main)
-		const
+	EffectSharedPtr TerrainBuilder::get_effect(const String &name,
+		const TerrainMaterialData &material_data) const
 	{
+		ShaderSourceTerrainSharedPtr shader_source_terrain;
 		EffectSharedPtr result;
 		EffectDescription effect_description;
 
@@ -76,7 +78,14 @@ namespace eternal_lands
 
 		effect_description = result->get_description();
 
-		effect_description.set_main(effect_main);
+		shader_source_terrain =
+			boost::make_shared<ShaderSourceTerrain>();
+
+		shader_source_terrain->set_name(name);
+		shader_source_terrain->set_material_data(material_data);
+
+		effect_description.set_main(
+			shader_source_terrain->save_xml_string());
 
 		result = get_effect_cache()->build_effect(effect_description);
 

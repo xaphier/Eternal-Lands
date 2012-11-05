@@ -19,9 +19,32 @@
 #include "renderobjectdata.hpp"
 #include "thread/materiallock.hpp"
 #include "effect/effect.hpp"
+#include "rstartree.hpp"
 
 namespace eternal_lands
 {
+
+#ifndef	NDEBUG
+#define	STRING_MARKER(description, arguments)	\
+	do	\
+	{	\
+		if (GLEW_GREMEDY_string_marker)	\
+		{	\
+			BoostFormat format_string(description);	\
+			\
+			format_string % arguments;	\
+			\
+			glStringMarkerGREMEDY(0, format_string.str().c_str());	\
+		}	\
+	}	\
+	while (false)
+#else
+#define	STRING_MARKER(description, arguments)	\
+	do	\
+	{	\
+	}	\
+	while (false)
+#endif
 
 	EditorScene::EditorScene(const GlobalVarsSharedPtr &global_vars,
 		const FileSystemSharedPtr &file_system):
@@ -42,6 +65,12 @@ namespace eternal_lands
 		m_selection_material = get_scene_resources(
 			).get_material_builder()->get_material(
 				material_description);
+
+		m_height_tree.reset(new RStarTree());
+
+		init_terrain_rendering_data(m_top_down_terrain);
+
+		glGenQueries(1, &m_querie_id);
 	}
 
 	EditorScene::~EditorScene() throw()
@@ -109,6 +138,71 @@ namespace eternal_lands
 		Scene::add_light(light_data);
 	}
 
+	void EditorScene::set_height(const Uint16 x, const Uint16 y,
+		const Uint16 height)
+	{
+		std::pair<Uint32ObjectSharedPtrMap::iterator, bool> temp;
+		Uint32ObjectSharedPtrMap::iterator found;
+		ObjectData object_data;
+		ObjectSharedPtr object;
+		AbstractMeshSharedPtr mesh;
+		MaterialSharedPtrVector materials;
+		MaterialDescription material_description;
+		Transformation transformation;
+		glm::vec3 offset;
+		Uint32 id;
+
+		id = x + (y << 10);
+
+		found = m_heights.find(id);
+
+		if (found != m_heights.end())
+		{
+			m_height_tree->remove(found->second);
+
+			m_heights.erase(found);
+		}
+
+		offset.x = x * 0.5f;
+		offset.y = y * 0.5f;
+		offset.z = height * 0.2f - 2.2f;
+
+		assert(glm::all(glm::lessThanEqual(glm::abs(offset),
+			glm::vec3(1e7f))));
+
+		transformation.set_translation(offset);
+		transformation.set_scale(glm::vec3(0.5f, 0.5f, 1.0f));
+
+		object_data.set_name(String(UTF8("plane_2")));
+		object_data.set_selection(st_none);
+		object_data.set_world_transformation(transformation);
+		object_data.set_transparency(0.5f);
+		object_data.set_blend(bt_alpha_transparency_value);
+		object_data.set_id(id);
+		material_description.set_cast_shadows(false);
+
+		get_scene_resources().get_mesh_cache()->get_mesh(
+			object_data.get_name(), mesh);
+
+		material_description.set_color(
+			glm::vec4(0.0f, 1.0f, 0.3f, 1.0f));
+		material_description.set_name(String(UTF8("height")));
+		material_description.set_effect(String(UTF8("light-index")));
+
+		materials.push_back(get_scene_resources().get_material_builder(
+			)->get_material(material_description));
+
+		object = boost::make_shared<Object>(object_data, mesh,
+			materials);
+
+		temp = m_heights.insert(Uint32ObjectSharedPtrMap::value_type(
+			object_data.get_id(), object));
+
+		assert(temp.second);
+
+		m_height_tree->add(object);
+	}
+
 	void EditorScene::remove_light(const Uint32 id)
 	{
 		Uint32ObjectSharedPtrMap::iterator found;
@@ -165,6 +259,11 @@ namespace eternal_lands
 			Scene::intersect(frustum, shadow, visitor);
 		}
 
+		if (get_draw_heights() && !shadow)
+		{
+			m_height_tree->intersect(frustum, visitor);
+		}
+
 		BOOST_FOREACH(RenderObjectData& object, visitor.get_objects())
 		{
 			if (object.get_object()->get_id() == m_selected_object)
@@ -204,13 +303,16 @@ namespace eternal_lands
 		}
 	}
 
-	void EditorScene::load_map(const String &name, EditorMapData &data)
+	void EditorScene::load_map(const String &name, EditorMapData &data,
+		const MapItemsTypeSet &skip_items)
 	{
 		boost::scoped_ptr<EditorMapLoader> map_loader;
 
 		clear();
 		m_light_objects.clear();
 		m_light_sphere_objects.clear();
+		m_heights.clear();
+		m_height_tree->clear();
 
 		map_loader.reset(new EditorMapLoader(
 			get_scene_resources().get_codec_manager(),
@@ -226,7 +328,7 @@ namespace eternal_lands
 
 		set_map(map_loader->get_map(name));
 
-		map_loader->load(name);
+		map_loader->load(name, skip_items);
 	}
 
 	void EditorScene::set_terrain_geometry_maps(
@@ -245,12 +347,12 @@ namespace eternal_lands
 		rebuild_terrain_map();
 	}
 
-	void EditorScene::set_terrain_material_maps(
-		const StringVector &albedo_maps,
-		const StringVector &specular_maps)
+	void EditorScene::set_terrain_material(const StringVector &albedo_maps,
+		const StringVector &extra_maps,
+		const TerrainMaterialData &material_data)
 	{
-		get_map()->set_terrain_material_maps(albedo_maps,
-			specular_maps);
+		get_map()->set_terrain_material(albedo_maps, extra_maps,
+			material_data);
 		rebuild_terrain_map();
 	}
 
@@ -270,9 +372,31 @@ namespace eternal_lands
 		rebuild_terrain_map();
 	}
 
-	void EditorScene::set_terrain_effect_main(const String &effect_main)
+	void EditorScene::set_terrain_dudv_scale(const glm::vec2 &dudv_scale)
 	{
-		get_map()->set_terrain_effect_main(effect_main);
+		get_map()->set_terrain_dudv_scale(dudv_scale);
+		rebuild_terrain_map();
+	}
+
+	void EditorScene::set_terrain(const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
+		const ImageSharedPtr &blend_map,
+		const StringVector &albedo_maps,
+		const StringVector &extra_maps,
+		const TerrainMaterialData &material_data,
+		const glm::vec2 &dudv_scale)
+	{
+		get_map()->set_terrain_geometry_maps(displacement_map,
+			normal_map, dudv_map);
+
+		get_map()->set_terrain_blend_map(blend_map);
+
+		get_map()->set_terrain_material(albedo_maps, extra_maps,
+			material_data);
+
+		get_map()->set_terrain_dudv_scale(dudv_scale);
+
 		rebuild_terrain_map();
 	}
 
@@ -325,6 +449,81 @@ namespace eternal_lands
 			glm::vec2(selection_rect.x, selection_rect.y) +
 			glm::vec2(selection_rect.z, selection_rect.w),
 			selections);
+	}
+
+	void EditorScene::cull_map()
+	{
+		DEBUG_CHECK_GL_ERROR();
+
+		get_scene_view().set_scale_view(get_map()->get_bounding_box());
+
+		get_scene_view().set_ortho_scale_view();
+
+		cull(get_scene_view().get_current_projection_view_matrix(),
+			glm::vec3(get_scene_view().get_camera()), false,
+			m_top_down_terrain, m_top_down_objects);
+	}
+
+	void EditorScene::draw_scale_view(const bool depth_only)
+	{
+		EffectProgramType type;
+
+		STRING_MARKER(UTF8("drawing top down depth: %1%"), depth_only);
+
+		CHECK_GL_ERROR();
+
+		set_view_port();
+
+		CHECK_GL_ERROR();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		get_state_manager().init();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		glDepthFunc(GL_LEQUAL);
+
+		if (depth_only)
+		{
+			type = ept_depth;
+		}
+		else
+		{
+			type = ept_default;
+		}
+
+		get_scene_view().set_ortho_scale_view();
+
+		get_state_manager().switch_color_mask(glm::bvec4(!depth_only));
+		get_state_manager().switch_depth_mask(true);
+		get_state_manager().switch_culling(false);
+
+		draw_terrain(m_top_down_terrain, type, true);
+
+		glBeginQuery(GL_SAMPLES_PASSED, m_querie_id);
+
+		BOOST_FOREACH(RenderObjectData &object,
+			m_top_down_objects.get_objects())
+		{
+			draw_object_old_lights(object.get_object(),
+				object.get_visibility_mask(), type, 1,
+				object.get_distance());
+		}
+
+		glEndQuery(GL_SAMPLES_PASSED);
+
+		GLuint count;
+
+		count = 0;
+
+		glGetQueryObjectuiv(m_querie_id, GL_QUERY_RESULT, &count);
+
+		unbind_all();
+
+		DEBUG_CHECK_GL_ERROR();
+
+		update_program_vars_id();
 	}
 
 }

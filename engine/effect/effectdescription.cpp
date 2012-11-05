@@ -17,6 +17,12 @@ namespace eternal_lands
 		m_output(sot_float), m_receives_shadows(true),
 		m_transparent(false)
 	{
+		BOOST_FOREACH(Uint8 &output_channel, m_output_channels)
+		{
+			output_channel = 0;
+		}
+
+		m_output_channels[0] = 3;
 	}
 
 	EffectDescription::~EffectDescription() noexcept
@@ -108,6 +114,13 @@ namespace eternal_lands
 			{
 				set_transparent(XmlUtil::get_bool_value(it));
 			}
+
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("output_channels")) == 0)
+			{
+				set_output_channels_str(
+					XmlUtil::get_string_value(it));
+			}
 		}
 		while (XmlUtil::next(it, true));
 	}
@@ -131,12 +144,16 @@ namespace eternal_lands
 			get_receives_shadows());
 		writer->write_bool_element(String(UTF8("transparent")),
 			get_transparent());
+		writer->write_element(String(UTF8("output_channels")),
+			get_output_channels_str());
 		writer->end_element();
 	}
 
 	bool EffectDescription::operator==(const EffectDescription &effect)
 		const
 	{
+		Uint16 i;
+
 		if (get_world_transformation() !=
 			effect.get_world_transformation())
 		{
@@ -164,6 +181,15 @@ namespace eternal_lands
 			return false;
 		}
 
+		for (i = 0; i < m_output_channels.size(); ++i)
+		{
+			if (get_output_channels(i) !=
+				effect.get_output_channels(i))
+			{
+				return false;
+			}
+		}
+
 		return get_transparent() == effect.get_transparent();
 	}
 
@@ -176,6 +202,8 @@ namespace eternal_lands
 	bool EffectDescription::operator<(const EffectDescription &effect)
 		const
 	{
+		Uint16 i, j;
+
 		if (get_world_transformation() !=
 			effect.get_world_transformation())
 		{
@@ -206,6 +234,20 @@ namespace eternal_lands
 				effect.get_receives_shadows();
 		}
 
+		for (i = 0; i < m_output_channels.size(); ++i)
+		{
+			for (j = 0; j < 4; ++j)
+			{
+				if (get_output_channels(i)[j] !=
+					effect.get_output_channels(i)[j])
+				{
+					return get_output_channels(i)[j] <
+						effect.get_output_channels(
+							i)[j];
+				}
+			}
+		}
+
 		return get_transparent() < effect.get_transparent();
 	}
 
@@ -220,6 +262,10 @@ namespace eternal_lands
 		str << " lighting: " << value.get_lighting();
 		str << " receives_shadows: " << value.get_receives_shadows();
 		str << " transparent: " << value.get_transparent();
+		str << " output_channels 0: " << value.get_output_channels(0);
+		str << " output_channels 1: " << value.get_output_channels(1);
+		str << " output_channels 2: " << value.get_output_channels(2);
+		str << " output_channels 3: " << value.get_output_channels(3);
 
 		return str;
 	}

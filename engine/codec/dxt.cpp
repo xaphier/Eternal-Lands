@@ -313,36 +313,69 @@ namespace eternal_lands
 			unpack_ati2(first_block, second_block, values);
 		}
 
+		void merge_r_layers(const glm::vec4 &current_value,
+			const Uint16 layer, glm::vec4 &value)
+		{
+			float color;
+
+			color = value.r;
+
+			value = current_value;
+
+			value[layer] = color;
+		}
+
+		void merge_rg_layers(const glm::vec4 &current_value,
+			const Uint16 layer, glm::vec4 &value)
+		{
+			if (layer > 0)
+			{
+				value.r = current_value.r;
+				value.g = current_value.g;
+
+				value.b = value.r;
+				value.a = value.g;
+			}
+		}
+
 		void uncompress_block(const ReaderSharedPtr &reader,
 			const ImageSharedPtr &image,
 			const TextureFormatType format,
 			const Uint32 x, const Uint32 y, const Uint32 z,
 			const Uint16 face, const Uint16 mipmap,
-			const Uint32 width, const Uint32 height)
+			const Uint32 width, const Uint32 height,
+			const Uint16 layer, const bool merge_layers)
 		{
 			Vec4Array16 values;
+			glm::vec4 value, current_value;
 			Uint32 bx, by, sx, sy;
 
 			switch (format)
 			{
 				case tft_rgb_dxt1:
 				case tft_rgba_dxt1:
+				case tft_srgb_dxt1:
+				case tft_srgb_a_dxt1:
 					read_and_uncompress_dxt1_block(reader,
 						values);
 					break;
 				case tft_rgba_dxt3:
+				case tft_srgb_a_dxt3:
 					read_and_uncompress_dxt3_block(reader,
 						values);
 					break;
 				case tft_rgba_dxt5:
+				case tft_srgb_a_dxt5:
 					read_and_uncompress_dxt5_block(reader,
 						values);
 					break;
 				case tft_r_rgtc1:
+				case tft_signed_r_rgtc1:
 					read_and_uncompress_ati1_block(reader,
 						values);
 					break;
 				case tft_rg_rgtc2:
+				case tft_signed_rg_rgtc2:
 					read_and_uncompress_ati2_block(reader,
 						values);
 					break;
@@ -361,9 +394,29 @@ namespace eternal_lands
 			{
 				for (bx = 0; bx < sx; bx++)
 				{
+					value = values[by * 4 + bx];
+
+					current_value = image->get_pixel(x + bx,
+						y + by, z, face, mipmap);
+
+					if (((format == tft_signed_r_rgtc1) ||
+						(format == tft_r_rgtc1)) &&
+						merge_layers)
+					{
+						merge_r_layers(current_value,
+							layer, value);
+					}
+
+					if (((format == tft_signed_rg_rgtc2) ||
+						(format == tft_rg_rgtc2)) &&
+						merge_layers)
+					{
+						merge_rg_layers(current_value,
+							layer, value);
+					}
+
 					image->set_pixel(x + bx, y + by, z,
-						face, mipmap,
-						values[by * 4 + bx]);
+						face, mipmap, value);
 				}
 			}
 		}
@@ -372,9 +425,24 @@ namespace eternal_lands
 			const ImageSharedPtr &image,
 			const TextureFormatType format, const Uint32 width,
 			const Uint32 height, const Uint32 depth,
-			const Uint16 face, const Uint16 mipmap)
+			const Uint16 face, const Uint16 mipmap,
+			const bool merge_layers)
 		{
-			Uint32 x, y, z;
+			Uint32 x, y, z, layers;
+
+			layers = 1;
+
+			if (((format == tft_signed_rg_rgtc2) ||
+				(format == tft_rg_rgtc2)) && merge_layers)
+			{
+				layers = 2;
+			}
+
+			if (((format == tft_signed_r_rgtc1) ||
+				(format == tft_r_rgtc1)) && merge_layers)
+			{
+				layers = 4;
+			}
 
 			// slices are done individually
 			for (z = 0; z < depth; z++)
@@ -385,105 +453,142 @@ namespace eternal_lands
 					for (x = 0; x < width; x += 4)
 					{
 						uncompress_block(reader, image,
-							format, x, y, z, face,
-							mipmap, width, height);
+							format, x, y,
+							z / layers, face,
+							mipmap, width, height,
+							z % layers,
+							merge_layers);
 					}
 				}
+			}
+		}
+
+		TextureFormatType get_uncompressed_texture_format(
+			const String &name,
+			const TextureFormatType texture_format,
+			const Uint16 layers, const bool rg_formats,
+			const bool merge_layers, bool &can_merge_layers)
+		{
+			can_merge_layers = false;
+
+			switch (texture_format)
+			{
+				case tft_rgb_dxt1:
+				case tft_rgba_dxt1:
+				case tft_rgba_dxt3:
+				case tft_rgba_dxt5:
+					return tft_rgba8;
+				case tft_srgb_dxt1:
+				case tft_srgb_a_dxt1:
+				case tft_srgb_a_dxt3:
+				case tft_srgb_a_dxt5:
+					return tft_srgb8_a8;
+				case tft_r_rgtc1:
+					if (merge_layers && ((layers % 4) == 0))
+					{
+						can_merge_layers = true;
+
+						return tft_rgba8;
+					}
+
+					if (rg_formats)
+					{
+						return tft_r8;
+					}
+
+					return tft_l8;
+				case tft_signed_r_rgtc1:
+					if (merge_layers && ((layers % 4) == 0))
+					{
+						can_merge_layers = true;
+
+						return tft_rgba8_snorm;
+					}
+
+					return tft_r8_snorm;
+				case tft_rg_rgtc2:
+					if (merge_layers && ((layers % 2) == 0))
+					{
+						can_merge_layers = true;
+
+						return tft_rgba8;
+					}
+
+					if (rg_formats)
+					{
+						return tft_rg8;
+					}
+
+					return tft_la8;
+				case tft_signed_rg_rgtc2:
+					if (merge_layers && ((layers % 2) == 0))
+					{
+						can_merge_layers = true;
+
+						return tft_rgba8_snorm;
+					}
+
+					return tft_rg8_snorm;
+				default:
+					EL_THROW_EXCEPTION(
+						InvalidParameterException()
+						<< boost::errinfo_file_name(
+							name));
 			}
 		}
 
 	}
 
 	ImageSharedPtr Dxt::uncompress(const ReaderSharedPtr &reader,
-		const String &name, const glm::uvec3 &sizes,
+		const String &name, const glm::uvec3 &size,
 		const TextureFormatType texture_format, const Uint16 mipmaps,
-		const bool cube_map, const bool rg_formats)
+		const bool cube_map, const bool rg_formats,
+		const bool merge_layers)
 	{
 		ImageSharedPtr image;
 		Uint32 width, height, depth, face_count, mipmap_count;
 		Uint32 i, j;
 		TextureFormatType uncompressed_format;
+		bool can_merge_layers;
 
 		LOG_DEBUG(lt_dds_image, UTF8("Uncompressing DDS file '%1%'."),
 			reader->get_name());
 
-		if ((sizes.x % 4) != 0)
+		if ((size.x % 4) != 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< boost::errinfo_file_name(
 					reader->get_name()));
 		}
 
-		if ((sizes.y % 4) != 0)
+		if ((size.y % 4) != 0)
 		{
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< boost::errinfo_file_name(
 					reader->get_name()));
 		}
 
-		if ((texture_format == tft_rgb_dxt1) ||
-			(texture_format == tft_rgba_dxt1) ||
-			(texture_format == tft_rgba_dxt3) ||
-			(texture_format == tft_rgba_dxt5))
-		{
-			uncompressed_format = tft_rgba8;
-		}
-		else
-		{
-			if (texture_format == tft_rg_rgtc2)
-			{
-				if (rg_formats)
-				{
-					uncompressed_format = tft_rg8;
-				}
-				else
-				{
-					uncompressed_format = tft_la8;
-				}
-			}
-			else
-			{
-				if (texture_format == tft_r_rgtc1)
-				{
-					if (rg_formats)
-					{
-						uncompressed_format = tft_r8;
-					}
-					else
-					{
-						uncompressed_format = tft_l8;
-					}
-				}
-				else
-				{
-					EL_THROW_EXCEPTION(
-						InvalidParameterException()
-							<< boost::errinfo_file_name(
-								reader->get_name()));
-				}
-			}
-		}
+		uncompressed_format = get_uncompressed_texture_format(
+			reader->get_name(), texture_format, size.z,
+			rg_formats, merge_layers, can_merge_layers);
 
 		image = boost::make_shared<Image>(name, cube_map,
-			uncompressed_format, sizes, mipmaps);
+			uncompressed_format, size, mipmaps);
 
 		face_count = image->get_face_count();
 		mipmap_count = image->get_mipmap_count();
 
 		for (i = 0; i < face_count; ++i)
 		{
-			width = std::max(static_cast<Uint32>(1),
-				image->get_width());
-			height = std::max(static_cast<Uint32>(1),
-				image->get_height());
-			depth = std::max(static_cast<Uint32>(1),
-				image->get_depth());
+			width = std::max(1u, image->get_width());
+			height = std::max(1u, image->get_height());
+			depth = std::max(1u, image->get_depth());
 
 			for (j = 0; j <= mipmap_count; ++j)
 			{
 				read_uncompress_face(reader, image,
 					texture_format, width, height, depth,
-					i, j);
+					i, j, can_merge_layers);
 
 				if (width > 1)
 				{

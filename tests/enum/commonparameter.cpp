@@ -38,6 +38,8 @@ BOOST_AUTO_TEST_CASE(get_parameter_type)
 
 	count = el::CommonParameterUtil::get_common_parameter_count();
 
+	type = el::pt_float;
+
 	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(type = el::CommonParameterUtil::get_type(
@@ -88,6 +90,8 @@ BOOST_AUTO_TEST_CASE(get_type)
 	el::ParameterType type;
 
 	count = el::CommonParameterUtil::get_common_parameter_count();
+
+	type = el::pt_float;
 
 	for (i = 0; i < count; i++)
 	{

@@ -145,7 +145,7 @@ BOOST_AUTO_TEST_CASE(read_image)
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
 		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(codec_manager,
-			reader, compressions, true, false));
+			reader, compressions, true, false, false));
 
 		BOOST_CHECK_EQUAL(image->get_texture_format(),
 			texture_formats[i]);
@@ -154,6 +154,8 @@ BOOST_AUTO_TEST_CASE(read_image)
 		BOOST_CHECK_EQUAL(image->get_depth(), image_depth);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(),
 			image_mipmap_count);
+		BOOST_CHECK_EQUAL(image->get_array(), false);
+		BOOST_CHECK_EQUAL(image->get_cube_map(), false);
 	}
 }
 
@@ -180,7 +182,7 @@ BOOST_AUTO_TEST_CASE(read_image_uncompressed)
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
 		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(codec_manager,
-			reader, compressions, true, false));
+			reader, compressions, true, false, false));
 
 		BOOST_CHECK_EQUAL(image->get_texture_format(),
 			uncompressed_texture_formats[i]);
@@ -189,6 +191,8 @@ BOOST_AUTO_TEST_CASE(read_image_uncompressed)
 		BOOST_CHECK_EQUAL(image->get_depth(), image_depth);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(),
 			image_mipmap_count);
+		BOOST_CHECK_EQUAL(image->get_array(), false);
+		BOOST_CHECK_EQUAL(image->get_cube_map(), false);
 	}
 }
 
@@ -214,10 +218,12 @@ BOOST_AUTO_TEST_CASE(read_image_color)
 
 		name = String(str.str());
 
+		std::cout << name << std::endl;
+
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
 		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(codec_manager,
-			reader, compressions, true, false));
+			reader, compressions, true, false, false));
 
 		BOOST_CHECK_EQUAL(image->get_texture_format(),
 			texture_formats_color[i]);
@@ -226,10 +232,12 @@ BOOST_AUTO_TEST_CASE(read_image_color)
 		BOOST_CHECK_EQUAL(image->get_depth(), image_depth);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(),
 			image_mipmap_count);
+		BOOST_CHECK_EQUAL(image->get_array(), false);
+		BOOST_CHECK_EQUAL(image->get_cube_map(), false);
 
-		width = image_width;
-		height = image_height;
-		depth = image_depth;
+		width = std::max(1u, image_width);
+		height = std::max(1u, image_height);
+		depth = std::max(1u, image_depth);
 
 		for (z = 0; z < depth; ++z)
 		{
@@ -287,7 +295,7 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
 		image0 = DdsImage::load_image(codec_manager, reader,
-			compressions, true, false);
+			compressions, true, false, false);
 
 		BOOST_CHECK_EQUAL(image0->get_texture_format(),
 			uncompressed_texture_formats[i]);
@@ -296,6 +304,8 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 		BOOST_CHECK_EQUAL(image0->get_depth(), image_depth);
 		BOOST_CHECK_EQUAL(image0->get_mipmap_count(),
 			image_mipmap_count);
+		BOOST_CHECK_EQUAL(image0->get_array(), false);
+		BOOST_CHECK_EQUAL(image0->get_cube_map(), false);
 
 		stream = boost::make_shared<StringStream>();
 
@@ -313,7 +323,7 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 		reader = boost::make_shared<Reader>(buffer, name);	
 
 		image1 = DdsImage::load_image(codec_manager, reader,
-			compressions, true, false);
+			compressions, true, false, false);
 
 		BOOST_CHECK_EQUAL(image1->get_texture_format(),
 			uncompressed_texture_formats[i]);
@@ -322,10 +332,12 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 		BOOST_CHECK_EQUAL(image1->get_depth(), image_depth);
 		BOOST_CHECK_EQUAL(image1->get_mipmap_count(),
 			image_mipmap_count);
+		BOOST_CHECK_EQUAL(image1->get_array(), false);
+		BOOST_CHECK_EQUAL(image1->get_cube_map(), false);
 
-		width = image_width;
-		height = image_height;
-		depth = image_depth;
+		width = std::max(1u, image_width);
+		height = std::max(1u, image_height);
+		depth = std::max(1u, image_depth);
 
 		for (m = 0; m < image_mipmap_count; ++m)
 		{
@@ -385,9 +397,9 @@ BOOST_AUTO_TEST_CASE(write_read_color)
 			texture_formats_color_fourcc[i],
 			glm::uvec3(image_width, image_height, image_depth), 0);
 
-		width = image_width;
-		height = image_height;
-		depth = image_depth;
+		width = std::max(1u, image_width);
+		height = std::max(1u, image_height);
+		depth = std::max(1u, image_depth);
 
 		for (z = 0; z < depth; ++z)
 		{
@@ -417,7 +429,7 @@ BOOST_AUTO_TEST_CASE(write_read_color)
 		reader = boost::make_shared<Reader>(buffer, name);	
 
 		image1 = DdsImage::load_image(codec_manager, reader,
-			compressions, true, false);
+			compressions, true, false, false);
 
 		BOOST_CHECK_EQUAL(image1->get_texture_format(),
 			texture_formats_color_fourcc[i]);
@@ -425,6 +437,8 @@ BOOST_AUTO_TEST_CASE(write_read_color)
 		BOOST_CHECK_EQUAL(image1->get_height(), image_height);
 		BOOST_CHECK_EQUAL(image1->get_depth(), image_depth);
 		BOOST_CHECK_EQUAL(image1->get_mipmap_count(), 0);
+		BOOST_CHECK_EQUAL(image1->get_array(), false);
+		BOOST_CHECK_EQUAL(image1->get_cube_map(), false);
 
 		count = TextureFormatUtil::get_count(
 			texture_formats_color_fourcc[i]);

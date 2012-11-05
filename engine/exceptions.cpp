@@ -51,6 +51,9 @@ namespace eternal_lands
 
 	String get_stack_string()
 	{
+#ifdef	NDEBUG
+		return String();
+#else	/* NDEBUG */
 #ifdef	WIN32
 		return String();
 #else	/* WIN32 */
@@ -107,6 +110,7 @@ namespace eternal_lands
 
 		return String(str.str());
 #endif	/* WIN32 */
+#endif	/* NDEBUG */
 	}
 
 }

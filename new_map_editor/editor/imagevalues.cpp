@@ -70,8 +70,8 @@ namespace eternal_lands
 			{
 				for (j = 0; j < image_count; ++j)
 				{
-					data[idx0] = image_values[
-						idx1].get_packed_value(j);
+//					data[idx0] = image_values[
+//						idx1].get_packed_value(j);
 					idx0++;
 				}
 				idx1++;
@@ -130,8 +130,8 @@ namespace eternal_lands
 
 				for (j = 0; j < image_count; ++j)
 				{
-					image_values[idx1].set_packed_value(
-						data[idx0], j);
+//					image_values[idx1].set_packed_value(
+//						data[idx0], j);
 					idx0++;
 				}
 

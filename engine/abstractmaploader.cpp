@@ -22,6 +22,10 @@
 #include "freeidsmanager.hpp"
 #include "glmutil.hpp"
 #include "simplexnoise.hpp"
+#include "blenddata.hpp"
+#include "codec/codecmanager.hpp"
+#include "terrain/terrainmaterialdata.hpp"
+#include "image.hpp"
 
 namespace eternal_lands
 {
@@ -101,10 +105,18 @@ namespace eternal_lands
 	}
 
 	AbstractMapLoader::AbstractMapLoader(
+		const CodecManagerWeakPtr &codec_manager,
 		const FileSystemSharedPtr &file_system,
-		const FreeIdsManagerSharedPtr &free_ids):
-		m_file_system(file_system), m_free_ids(free_ids)
+		const FreeIdsManagerSharedPtr &free_ids,
+		const GlobalVarsSharedPtr &global_vars):
+		m_codec_manager(codec_manager), m_file_system(file_system),
+		m_free_ids(free_ids), m_global_vars(global_vars)
 	{
+		assert(!m_codec_manager.expired());
+		assert(m_global_vars.get() != nullptr);
+		assert(m_free_ids.get() != nullptr);
+		assert(m_file_system.get() != nullptr);
+
 		m_harvestables = load_harvestables(file_system);
 		m_entrables = load_entrables(file_system);
 	}
@@ -343,9 +355,38 @@ namespace eternal_lands
 		add_decal(position, scale, rotation, texture, index);
 	}
 
+	void AbstractMapLoader::read_water_layer(const Uint32 index,
+		const Uint32 offset, const MapVersionType version)
+	{
+		String name;
+		float height;
+
+		name = get_reader()->read_utf8_string(128);
+		height = get_reader()->read_float_le();
+
+//		add_water_layer(name, height, index);
+	}
+
 	void AbstractMapLoader::read_terrain(const Uint32 offset,
 		const MapVersionType version)
 	{
+		TerrainMaterialData material_data;
+		ImageCompressionTypeSet compressions;
+		ImageSharedPtr displacement_map, normal_map, dudv_map;
+		ImageSharedPtr blend_map;
+		BlendDataVector blend_datas;
+		BlendData blend_data;
+		StringVector albedo_maps, extra_maps;
+		String displacement_map_name, normal_map_name, dudv_map_name;
+		String blend_map_name, albedo_map, extra_map, dir_name;
+		glm::uvec3 image_size;
+		glm::uvec2 size;
+		glm::vec2 dudv_scale;
+		BitSet64 use_blend_size_samplers, use_extra_maps;
+		BitSet64 use_blend_sizes;
+		float blend_size;
+		Uint32 i, count;
+
 		if (version == mvt_1_0)
 		{
 			return;
@@ -355,7 +396,148 @@ namespace eternal_lands
 		{
 			get_reader()->set_position(offset);
 
-			
+			dir_name = FileSystem::get_dir_name(
+				m_reader->get_name());
+
+			if (!dir_name.get().empty())
+			{
+				dir_name = String(dir_name.get() + UTF8("/"));
+			}
+
+			displacement_map_name = String(dir_name.get() + 
+				get_reader()->read_utf8_string(128).get());
+			normal_map_name = String(dir_name.get() + 
+				get_reader()->read_utf8_string(128).get());
+			dudv_map_name = String(dir_name.get() + 
+				get_reader()->read_utf8_string(128).get());
+			blend_map_name = String(dir_name.get() + 
+				get_reader()->read_utf8_string(128).get());
+
+			dudv_scale.x = get_reader()->read_float_le();
+			dudv_scale.y = get_reader()->read_float_le();
+
+			size.x = get_reader()->read_u32_le();
+			size.y = get_reader()->read_u32_le();
+
+			count = get_reader()->read_u32_le();
+
+			use_blend_size_samplers = get_reader()->read_u64_le();
+			use_extra_maps = get_reader()->read_u64_le();
+			use_blend_sizes = get_reader()->read_u64_le();
+
+			for (i = 0; i < (count - 1); ++i)
+			{
+				blend_size = get_reader()->read_float_le();
+
+				blend_data.set_blend_size(blend_size);
+				blend_data.set_use_blend_size(
+					use_blend_sizes[i]);
+
+				blend_datas.push_back(blend_data);
+			}
+
+			for (i = 0; i < count; ++i)
+			{
+				albedo_map = get_reader()->read_utf8_string(
+					128);
+
+				albedo_maps.push_back(albedo_map);
+			}
+
+			for (i = 0; i < count; ++i)
+			{
+				extra_map = get_reader()->read_utf8_string(
+					128);
+
+				extra_maps.push_back(extra_map);
+			}
+
+			if (get_global_vars()->get_opengl_3_0())
+			{
+				compressions.insert(ict_rgtc);
+			}
+
+			displacement_map = get_codec_manager()->load_image(
+				displacement_map_name, get_file_system(),
+				compressions, true, false, false);
+
+			normal_map = get_codec_manager()->load_image(
+				normal_map_name, get_file_system(),
+				compressions, true, false, false);
+
+			dudv_map = get_codec_manager()->load_image(
+				dudv_map_name, get_file_system(), compressions,
+				true, false, false);
+
+			blend_map = get_codec_manager()->load_image(
+				blend_map_name, get_file_system(),
+				compressions, true, false, false);
+
+			image_size = displacement_map->get_size();
+
+			if ((image_size.x != size.x) &&
+				((image_size.y) != size.y) &&
+				((image_size.z) != 0))
+			{
+				EL_THROW_EXCEPTION(SizeErrorException()
+					<< errinfo_message(UTF8(
+						"Image has wrong size"))
+					<< errinfo_width(image_size.x)
+					<< errinfo_height(image_size.y)
+					<< errinfo_depth(image_size.z)
+					<< errinfo_expected_width(size.x)
+					<< errinfo_expected_height(size.y)
+					<< errinfo_expected_depth(0)
+					<< boost::errinfo_file_name(
+						displacement_map_name));
+			}
+
+			image_size = normal_map->get_size();
+
+			if ((image_size.x != size.x) &&
+				((image_size.y) != size.y) &&
+				((image_size.z) != 0))
+			{
+				EL_THROW_EXCEPTION(SizeErrorException()
+					<< errinfo_message(UTF8(
+						"Image has wrong size"))
+					<< errinfo_width(image_size.x)
+					<< errinfo_height(image_size.y)
+					<< errinfo_depth(image_size.z)
+					<< errinfo_expected_width(size.x)
+					<< errinfo_expected_height(size.y)
+					<< errinfo_expected_depth(0)
+					<< boost::errinfo_file_name(
+						normal_map_name));
+			}
+
+			image_size = dudv_map->get_size();
+
+			if ((image_size.x != size.x) &&
+				((image_size.y) != size.y) &&
+				((image_size.z) != 0))
+			{
+				EL_THROW_EXCEPTION(SizeErrorException()
+					<< errinfo_message(UTF8(
+						"Image has wrong size"))
+					<< errinfo_width(image_size.x)
+					<< errinfo_height(image_size.y)
+					<< errinfo_depth(image_size.z)
+					<< errinfo_expected_width(size.x)
+					<< errinfo_expected_height(size.y)
+					<< errinfo_expected_depth(0)
+					<< boost::errinfo_file_name(
+						dudv_map_name));
+			}
+
+			material_data.set_use_blend_size_samplers(
+				use_blend_size_samplers);
+			material_data.set_use_extra_maps(use_extra_maps);
+			material_data.set_blend_datas(blend_datas);
+
+			set_terrain(displacement_map, normal_map, dudv_map,
+				blend_map, albedo_maps, extra_maps,
+				material_data, dudv_scale, size);
 		}
 		catch (boost::exception &exception)
 		{
@@ -370,6 +552,10 @@ namespace eternal_lands
 	void AbstractMapLoader::read_water(const Uint32 offset,
 		const MapVersionType version)
 	{
+		String name, material, flow_map;
+		float height;
+		Uint32 i, count;
+
 		if (version == mvt_1_0)
 		{
 			return;
@@ -379,7 +565,18 @@ namespace eternal_lands
 		{
 			get_reader()->set_position(offset);
 
-			
+			flow_map = get_reader()->read_utf8_string(128);
+			count = get_reader()->read_u8();
+
+			for (i = 0; i < count; ++i)
+			{
+				name = get_reader()->read_utf8_string(128);
+				material = get_reader(
+					)->read_dynamic_utf8_string();
+				height = get_reader()->read_float_le();
+			}
+
+//			add_water(water_layers, flow_map, water);
 		}
 		catch (boost::exception &exception)
 		{
@@ -781,6 +978,8 @@ namespace eternal_lands
 				obj_3d_size % get_3d_object_size());
 			obj_3d_count = 0;
 			obj_3d_offset = 0;
+
+			skip_items.insert(mit_3d_objects);
 		}
 
 		if (obj_2d_size != get_2d_object_size())
@@ -791,6 +990,8 @@ namespace eternal_lands
 				obj_2d_size % get_2d_object_size());
 			obj_2d_count = 0;
 			obj_2d_offset = 0;
+
+			skip_items.insert(mit_2d_objects);
 		}
 
 		if (light_size != get_light_size())
@@ -801,6 +1002,8 @@ namespace eternal_lands
 				light_size % get_light_size());
 			light_count = 0;
 			light_offset = 0;
+
+			skip_items.insert(mit_lights);
 		}
 
 		if (particle_size != get_particle_size())
@@ -811,6 +1014,18 @@ namespace eternal_lands
 				particle_size % get_particle_size());
 			particle_count = 0;
 			particle_offset = 0;
+
+			skip_items.insert(mit_particles);
+		}
+
+		if (terrain_offset == 0)
+		{
+			skip_items.insert(mit_terrain);
+		}
+
+		if (water_offset == 0)
+		{
+			skip_items.insert(mit_water);
 		}
 
 		read_names(name_count, name_offset, version);

@@ -124,13 +124,16 @@ class ELGLWidget: public QGLWidget
 		void set_ambient(const glm::vec3 &color);
 		const glm::vec3 &get_ambient() const;
 		void set_fog(const glm::vec3 &color, const float density);
-		void set_terrain_albedo_map(const QString &name,
+		void set_terrain_material(const QString &albedo_map,
+			const QString &extra_map, const float blend_size,
+			const bool use_blend_size_sampler,
+			const bool use_blend_size, const bool use_extra_map,
 			const int index);
-		void set_terrain_blend_data(const ShaderBlendData &blend_data,
-			const int index);
-		QString get_terrain_albedo_map(const int index) const;
-		const ShaderBlendData &get_terrain_blend_data(const int index)
-			const;
+		void get_terrain_material(QString &albedo_map,
+			QString &extra_map, float &blend_size,
+			bool &use_blend_size_sampler,
+			bool &use_blend_size, bool &use_extra_map,
+			const int index) const;
 		QString get_blend_image_name() const;
 		QStringList get_materials() const;
 		QStringList get_default_materials(const String &name) const;
@@ -148,7 +151,6 @@ class ELGLWidget: public QGLWidget
 		static void get_file_extensions_filter(QString &filter,
 			QString &default_extension, const QString &codec);
 		void set_dirs(const QStringList &dirs);
-		QImage get_icon(const QString &name);
 		void change_terrain_blend_values(const QVector2D &size,
 			const float attenuation_size, const float data,
 			const int attenuation, const int shape,
@@ -161,15 +163,21 @@ class ELGLWidget: public QGLWidget
 			const QVector2D &size, const float attenuation_size,
 			const int mask, const int attenuation,
 			const int shape, const int effect);
-		float get_terrain_offset_x() const;
-		float get_terrain_offset_y() const;
-		float get_terrain_offset_z() const;
-		float get_terrain_offset_min_x() const;
-		float get_terrain_offset_min_y() const;
-		float get_terrain_offset_min_z() const;
-		float get_terrain_offset_max_x() const;
-		float get_terrain_offset_max_y() const;
-		float get_terrain_offset_max_z() const;
+		static QVector3D get_terrain_offset_min();
+		static QVector3D get_terrain_offset_max();
+		void relax_terrain_uv(
+			const AbstractProgressSharedPtr &progress,
+			const int count);
+		void import_terrain_height_map(const QString &name);
+		void import_terrain_blend_map(const QString &name);
+		void load_map(const QString &file_name,
+			const bool load_2d_objects, const bool load_3d_objects,
+			const bool load_lights, const bool load_particles,
+			const bool load_materials, const bool load_height_map,
+			const bool load_tile_map, const bool load_walk_map,
+			const bool load_terrain, const bool load_water);
+		bool get_terrain() const;
+		int get_terrain_layer_count() const;
 
 		inline Qt::MouseButton get_click_button() const
 		{
@@ -270,6 +278,7 @@ class ELGLWidget: public QGLWidget
 	public slots:
 		void remove_object();
 		void remove_light();
+		void remove_objects();
 		void set_light_radius(const double radius);
 		void set_lights_radius(const double radius);
 		void undo();
@@ -293,8 +302,6 @@ class ELGLWidget: public QGLWidget
 		void set_terrain_editing(const bool enabled);
 		void set_terrain_type_index(const int index);
 		void set_terrain_layer_index(const int index);
-		void set_terrain_albedo_map(const QString &name,
-			const Uint32 index);
 		void set_random_translation_x(const bool value);
 		void set_random_translation_y(const bool value);
 		void set_random_translation_z(const bool value);
@@ -319,18 +326,30 @@ class ELGLWidget: public QGLWidget
 		void disable_object();
 		void disable_light();
 		void save(const QString &name) const;
-		void open_map(const QString &file_name);
 		void set_blend_image_name(const QString &blend_image_name);
 		void set_game_minute(const int game_minute);
 		void set_draw_objects(const bool draw_objects);
 		void set_draw_terrain(const bool draw_terrain);
 		void set_draw_lights(const bool draw_lights);
 		void set_draw_light_spheres(const bool draw_light_spheres);
+		void set_draw_heights(const bool draw_heights);
 		void set_lights_enabled(const bool enabled);
-		void init_terrain(const int width, const int height,
-			const QString texture);
+		void init_terrain(const QSize &size, const QString &albedo_map,
+			const QString &extra_map,
+			const bool use_blend_size_sampler,
+			const bool use_extra_map);
+		void init_terrain(const QString &height_map, const QSize &size,
+			const QString &albedo_map, const QString &extra_map,
+			const bool use_blend_size_sampler,
+			const bool use_extra_map);
 		void set_object_walkable(const bool value);
 		void set_objects_walkable(const bool value);
+		void get_albedo_map_data(const QString &name,
+			const QSize &icon_size, const QSize &image_size,
+			QIcon &icon, bool &use_blend_size_sampler, bool &ok);
+		void get_extra_map_data(const QString &name,
+			const QSize &image_size, bool &ok);
+		void get_image_data(const QString &name, QSize &size, bool &ok);
 
 	signals:
 		void update_object(const bool select);

@@ -54,6 +54,7 @@ namespace eternal_lands
 			case mt_object_selection_changed:
 			case mt_object_materials_changed:
 			case mt_object_walkable_changed:
+			case mt_objects_removed:
 			case mt_objects_translation_changed:
 			case mt_objects_rotation_changed:
 			case mt_objects_scale_changed:
@@ -62,8 +63,7 @@ namespace eternal_lands
 			case mt_objects_selection_changed:
 			case mt_objects_materials_changed:
 			case mt_objects_walkable_changed:
-			case mt_terrain_albedo_map_changed:
-			case mt_terrain_blend_data_changed:
+			case mt_terrain_material_changed:
 			case mt_terrain_scale_offset_changed:
 			case mt_tile_texture_changed:
 			case mt_scene_ambient_changed:

@@ -168,10 +168,12 @@ namespace eternal_lands
 					"mipmaps."), name);
 			}
 
-			if (((header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
+			if ((((header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
 				== dds::DDPF_FOURCC) &&
 				((header.m_pixel_format.m_flags & dds::DDPF_RGB)
-				== dds::DDPF_RGB))
+				== dds::DDPF_RGB)) &&
+				(header.m_pixel_format.m_fourcc !=
+					dds::DDSFMT_DX10))
 			{
 				EL_THROW_MESSAGE_EXCEPTION(UTF8("DDS file "
 					"'%1%' has fourcc and rgb flag set"),
@@ -276,8 +278,50 @@ namespace eternal_lands
 			}
 		}
 
+		void init_dxt10_dds_image(const ReaderSharedPtr &reader,
+			dds::DdsHeader &header, dds::DdsHeader10 &header_dxt10)
+		{
+			header_dxt10.m_dxgi_format = reader->read_u32_le();
+			header_dxt10.m_resource_dimension =
+				reader->read_u32_le();
+			header_dxt10.m_misc_flag = reader->read_u32_le();
+			header_dxt10.m_array_size = reader->read_u32_le();
+			header_dxt10.m_reserved = reader->read_u32_le();
+
+			if ((header_dxt10.m_resource_dimension ==
+				dds::DDS_DIMENSION_TEXTURE2D) &&
+				((header_dxt10.m_misc_flag &
+					dds::DDS_MISC_TEXTURECUBE)
+						!= 0))
+			{
+				header.m_caps.m_caps2 |= dds::DDSCAPS2_CUBEMAP |
+					dds::DDSCAPS2_CUBEMAP_ALL_FACES;
+			}
+			else
+			{
+				if (header_dxt10.m_resource_dimension ==
+					dds::DDS_DIMENSION_TEXTURE3D)
+				{
+					header.m_flags |= dds::DDSD_DEPTH;
+					header.m_caps.m_caps2 |= dds::DDSCAPS2_VOLUME;
+				}
+			}
+
+			if ((header_dxt10.m_resource_dimension !=
+				dds::DDS_DIMENSION_TEXTURE1D) &&
+				(header_dxt10.m_resource_dimension !=
+					dds::DDS_DIMENSION_TEXTURE2D) &&
+				(header_dxt10.m_resource_dimension !=
+					dds::DDS_DIMENSION_TEXTURE3D))
+			{
+				EL_THROW_EXCEPTION(DdsErrorException()
+					<< boost::errinfo_file_name(
+						reader->get_name()));
+			}
+		}
+
 		void init_dds_image(const ReaderSharedPtr &reader,
-			dds::DdsHeader &header)
+			dds::DdsHeader &header, dds::DdsHeader10 &header_dxt10)
 		{
 			Uint8Array4 magic;
 
@@ -332,6 +376,14 @@ namespace eternal_lands
 			header.m_caps.m_caps4 = reader->read_u32_le();
 
 			header.m_reserved2 = reader->read_u32_le();
+
+			memset(&header_dxt10, 0, sizeof(header_dxt10));
+
+			if (header.m_pixel_format.m_fourcc == dds::DDSFMT_DX10)
+			{
+				init_dxt10_dds_image(reader, header,
+					header_dxt10);
+			}
 
 			validate_header(reader->get_name(), header);
 		}
@@ -525,6 +577,526 @@ namespace eternal_lands
 
 				EL_THROW_EXCEPTION(DdsUnkownFormatException());
 			}
+		}
+
+		TextureFormatType get_texture_format(const Uint32 format)
+		{
+			switch (format)
+			{
+				case dds::DXGI_FORMAT_UNKNOWN:
+					EL_THROW_EXCEPTION(
+						DdsUnkownFormatException());
+					break;
+				case dds::DXGI_FORMAT_R32G32B32A32_TYPELESS:
+				case dds::DXGI_FORMAT_R32G8X24_TYPELESS:
+				case dds::DXGI_FORMAT_X32_TYPELESS_G8X24_UINT:
+				case dds::DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS:
+				case dds::DXGI_FORMAT_R32G32B32_TYPELESS:
+				case dds::DXGI_FORMAT_R16G16B16A16_TYPELESS:
+				case dds::DXGI_FORMAT_R32G32_TYPELESS:
+				case dds::DXGI_FORMAT_R10G10B10A2_TYPELESS:
+				case dds::DXGI_FORMAT_R8G8B8A8_TYPELESS:
+				case dds::DXGI_FORMAT_R16G16_TYPELESS:
+				case dds::DXGI_FORMAT_R32_TYPELESS:
+				case dds::DXGI_FORMAT_R24G8_TYPELESS:
+				case dds::DXGI_FORMAT_R24_UNORM_X8_TYPELESS:
+				case dds::DXGI_FORMAT_X24_TYPELESS_G8_UINT:
+				case dds::DXGI_FORMAT_R8G8_TYPELESS:
+				case dds::DXGI_FORMAT_R16_TYPELESS:
+				case dds::DXGI_FORMAT_R8_TYPELESS:
+				case dds::DXGI_FORMAT_BC1_TYPELESS:
+				case dds::DXGI_FORMAT_BC2_TYPELESS:
+				case dds::DXGI_FORMAT_BC3_TYPELESS:
+				case dds::DXGI_FORMAT_BC4_TYPELESS:
+				case dds::DXGI_FORMAT_BC5_TYPELESS:
+				case dds::DXGI_FORMAT_B8G8R8A8_TYPELESS:
+				case dds::DXGI_FORMAT_B8G8R8X8_TYPELESS:
+				case dds::DXGI_FORMAT_BC6H_TYPELESS:
+				case dds::DXGI_FORMAT_BC7_TYPELESS:
+					EL_THROW_EXCEPTION(
+						DdsFormatNotSupportedException()
+						<< errinfo_item_id(format));
+					break;
+				case dds::DXGI_FORMAT_R8G8_B8G8_UNORM:
+				case dds::DXGI_FORMAT_G8R8_G8B8_UNORM:
+				case dds::DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM:
+				case dds::DXGI_FORMAT_BC6H_UF16:
+				case dds::DXGI_FORMAT_BC6H_SF16:
+				case dds::DXGI_FORMAT_BC7_UNORM:
+				case dds::DXGI_FORMAT_BC7_UNORM_SRGB:
+					EL_THROW_EXCEPTION(
+						DdsFormatNotSupportedException()
+						<< errinfo_item_id(format));
+					break;
+				case dds::DXGI_FORMAT_D32_FLOAT_S8X24_UINT:
+					return tft_depth32f_stencil8;
+				case dds::DXGI_FORMAT_R32G32B32A32_FLOAT:
+					return tft_rgba32f;
+				case dds::DXGI_FORMAT_R32G32B32A32_UINT:
+					return tft_rgba32_ui;
+				case dds::DXGI_FORMAT_R32G32B32A32_SINT:
+					return tft_rgba32_i;
+				case dds::DXGI_FORMAT_R32G32B32_FLOAT:
+					return tft_rgb32f;
+				case dds::DXGI_FORMAT_R32G32B32_UINT:
+					return tft_rgb32_ui;
+				case dds::DXGI_FORMAT_R32G32B32_SINT:
+					return tft_rgb32_i;
+				case dds::DXGI_FORMAT_R16G16B16A16_FLOAT:
+					return tft_rgba16f;
+				case dds::DXGI_FORMAT_R16G16B16A16_UNORM:
+					return tft_rgba16;
+				case dds::DXGI_FORMAT_R16G16B16A16_UINT:
+					return tft_rgba16_ui;
+				case dds::DXGI_FORMAT_R16G16B16A16_SNORM:
+					return tft_rgba16_snorm;
+				case dds::DXGI_FORMAT_R16G16B16A16_SINT:
+					return tft_rgba16_i;
+				case dds::DXGI_FORMAT_R32G32_FLOAT:
+					return tft_rg32f;
+				case dds::DXGI_FORMAT_R32G32_UINT:
+					return tft_rg32_ui;
+				case dds::DXGI_FORMAT_R32G32_SINT:
+					return tft_rg32_i;
+				case dds::DXGI_FORMAT_R10G10B10A2_UNORM:
+					return tft_rgb10_a2;
+				case dds::DXGI_FORMAT_R10G10B10A2_UINT:
+					return tft_rgb10_a2_ui;
+				case dds::DXGI_FORMAT_R11G11B10_FLOAT:
+					return tft_r10f_b11f_g10f;
+				case dds::DXGI_FORMAT_R8G8B8A8_UNORM:
+					return tft_rgba8;
+				case dds::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
+					return tft_srgb8_a8;
+				case dds::DXGI_FORMAT_R8G8B8A8_UINT:
+					return tft_rgba8_ui;
+				case dds::DXGI_FORMAT_R8G8B8A8_SNORM:
+					return tft_rgba8_snorm;
+				case dds::DXGI_FORMAT_R8G8B8A8_SINT:
+					return tft_rgba8_i;
+				case dds::DXGI_FORMAT_R16G16_FLOAT:
+					return tft_rg16f;
+				case dds::DXGI_FORMAT_R16G16_UNORM:
+					return tft_rg16;
+				case dds::DXGI_FORMAT_R16G16_UINT:
+					return tft_rg16_ui;
+				case dds::DXGI_FORMAT_R16G16_SNORM:
+					return tft_rg16_snorm;
+				case dds::DXGI_FORMAT_R16G16_SINT:
+					return tft_rg16_i;
+				case dds::DXGI_FORMAT_D32_FLOAT:
+					return tft_depth32f;
+				case dds::DXGI_FORMAT_R32_FLOAT:
+					return tft_r32f;
+				case dds::DXGI_FORMAT_R32_UINT:
+					return tft_r32_ui;
+				case dds::DXGI_FORMAT_R32_SINT:
+					return tft_r32_i;
+				case dds::DXGI_FORMAT_D24_UNORM_S8_UINT:
+					return tft_depth24_stencil8;
+				case dds::DXGI_FORMAT_R8G8_UNORM:
+					return tft_rg8;
+				case dds::DXGI_FORMAT_R8G8_UINT:
+					return tft_rg8_ui;
+				case dds::DXGI_FORMAT_R8G8_SNORM:
+					return tft_rg8_snorm;
+				case dds::DXGI_FORMAT_R8G8_SINT:
+					return tft_rg8_i;
+				case dds::DXGI_FORMAT_R16_FLOAT:
+					return tft_r16f;
+				case dds::DXGI_FORMAT_D16_UNORM:
+					return tft_depth16;
+				case dds::DXGI_FORMAT_R16_UNORM:
+					return tft_r16;
+				case dds::DXGI_FORMAT_R16_UINT:
+					return tft_r16_ui;
+				case dds::DXGI_FORMAT_R16_SNORM:
+					return tft_r16_snorm;
+				case dds::DXGI_FORMAT_R16_SINT:
+					return tft_r16_i;
+				case dds::DXGI_FORMAT_R8_UNORM:
+					return tft_r8;
+				case dds::DXGI_FORMAT_R8_UINT:
+					return tft_r8_ui;
+				case dds::DXGI_FORMAT_R8_SNORM:
+					return tft_r8_snorm;
+				case dds::DXGI_FORMAT_R8_SINT:
+					return tft_r8_i;
+				case dds::DXGI_FORMAT_A8_UNORM:
+					return tft_a8;
+				case dds::DXGI_FORMAT_R1_UNORM:
+					break;
+				case dds::DXGI_FORMAT_R9G9B9E5_SHAREDEXP:
+					return tft_rgb9_e5;
+				case dds::DXGI_FORMAT_BC1_UNORM:
+					return tft_rgba_dxt1;
+				case dds::DXGI_FORMAT_BC1_UNORM_SRGB:
+					return tft_srgb_a_dxt1;
+				case dds::DXGI_FORMAT_BC2_UNORM:
+					return tft_rgba_dxt3;
+				case dds::DXGI_FORMAT_BC2_UNORM_SRGB:
+					return tft_srgb_a_dxt3;
+				case dds::DXGI_FORMAT_BC3_UNORM:
+					return tft_rgba_dxt5;
+				case dds::DXGI_FORMAT_BC3_UNORM_SRGB:
+					return tft_srgb_a_dxt5;
+				case dds::DXGI_FORMAT_BC4_UNORM:
+					return tft_r_rgtc1;
+				case dds::DXGI_FORMAT_BC4_SNORM:
+					return tft_signed_r_rgtc1;
+				case dds::DXGI_FORMAT_BC5_UNORM:
+					return tft_rg_rgtc2;
+				case dds::DXGI_FORMAT_BC5_SNORM:
+					return tft_signed_rg_rgtc2;
+				case dds::DXGI_FORMAT_B5G6R5_UNORM:
+					return tft_r5g6b5;
+				case dds::DXGI_FORMAT_B5G5R5A1_UNORM:
+					return tft_rgb5_a1;
+				case dds::DXGI_FORMAT_B8G8R8A8_UNORM:
+					return tft_rgba8;
+				case dds::DXGI_FORMAT_B8G8R8X8_UNORM:
+					return tft_rgb8;
+				case dds::DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
+					return tft_srgb8;
+				case dds::DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:
+					return tft_srgb8_a8;
+			}
+
+			EL_THROW_EXCEPTION(DdsUnkownFormatException()
+				<< errinfo_item_id(format));
+		}
+
+		bool get_dxt10_format(const TextureFormatType texture_format,
+			Uint32 &format, Uint32 &size, Uint32 &swap_size,
+			Uint32 &flags, bool &linear_size)
+		{
+			linear_size = TextureFormatUtil::get_compressed(
+				texture_format);
+
+			size = TextureFormatUtil::get_size(texture_format);
+
+			switch (texture_format)
+			{
+				case tft_depth32f_stencil8:
+					format = dds::DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+					swap_size = 4;
+					return true;
+				case tft_rgba32f:
+					format = dds::DXGI_FORMAT_R32G32B32A32_FLOAT;
+					swap_size = 4;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba32_ui:
+					format = dds::DXGI_FORMAT_R32G32B32A32_UINT;
+					swap_size = 4;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba32_i:
+					format = dds::DXGI_FORMAT_R32G32B32A32_SINT;
+					swap_size = 4;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgb32f:
+					format = dds::DXGI_FORMAT_R32G32B32_FLOAT;
+					swap_size = 4;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgb32_ui:
+					format = dds::DXGI_FORMAT_R32G32B32_UINT;
+					swap_size = 4;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rgb32_i:
+					format = dds::DXGI_FORMAT_R32G32B32_SINT;
+					swap_size = 4;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rgba16f:
+					format = dds::DXGI_FORMAT_R16G16B16A16_FLOAT;
+					swap_size = 2;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba16:
+					format = dds::DXGI_FORMAT_R16G16B16A16_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba16_ui:
+					format = dds::DXGI_FORMAT_R16G16B16A16_UINT;
+					swap_size = 2;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba16_snorm:
+					format = dds::DXGI_FORMAT_R16G16B16A16_SNORM;
+					swap_size = 2;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba16_i:
+					format = dds::DXGI_FORMAT_R16G16B16A16_SINT;
+					swap_size = 2;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rg32f:
+					format = dds::DXGI_FORMAT_R32G32_FLOAT;
+					swap_size = 4;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg32_ui:
+					format = dds::DXGI_FORMAT_R32G32_UINT;
+					swap_size = 4;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg32_i:
+					format = dds::DXGI_FORMAT_R32G32_SINT;
+					swap_size = 4;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rgb10_a2:
+					format = dds::DXGI_FORMAT_R10G10B10A2_UNORM;
+					swap_size = 4;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgb10_a2_ui:
+					format = dds::DXGI_FORMAT_R10G10B10A2_UINT;
+					swap_size = 4;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_r10f_b11f_g10f:
+					format = dds::DXGI_FORMAT_R11G11B10_FLOAT;
+					swap_size = 4;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rgba8:
+					format = dds::DXGI_FORMAT_R8G8B8A8_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_srgb8_a8:
+					format = dds::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+					swap_size = 1;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba8_ui:
+					format = dds::DXGI_FORMAT_R8G8B8A8_UINT;
+					swap_size = 1;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba8_snorm:
+					format = dds::DXGI_FORMAT_R8G8B8A8_SNORM;
+					swap_size = 1;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rgba8_i:
+					format = dds::DXGI_FORMAT_R8G8B8A8_SINT;
+					swap_size = 1;
+					flags = dds::DDPF_RGBA;
+					return true;
+				case tft_rg16f:
+					format = dds::DXGI_FORMAT_R16G16_FLOAT;
+					swap_size = 2;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg16:
+					format = dds::DXGI_FORMAT_R16G16_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg16_ui:
+					format = dds::DXGI_FORMAT_R16G16_UINT;
+					swap_size = 2;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg16_snorm:
+					format = dds::DXGI_FORMAT_R16G16_SNORM;
+					swap_size = 2;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg16_i:
+					format = dds::DXGI_FORMAT_R16G16_SINT;
+					swap_size = 2;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_depth32f:
+					format = dds::DXGI_FORMAT_D32_FLOAT;
+					swap_size = 4;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r32f:
+					format = dds::DXGI_FORMAT_R32_FLOAT;
+					swap_size = 4;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r32_ui:
+					format = dds::DXGI_FORMAT_R32_UINT;
+					swap_size = 4;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r32_i:
+					format = dds::DXGI_FORMAT_R32_SINT;
+					swap_size = 4;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_depth24_stencil8:
+					format = dds::DXGI_FORMAT_D24_UNORM_S8_UINT;
+					swap_size = 4;
+					return true;
+				case tft_rg8:
+					format = dds::DXGI_FORMAT_R8G8_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg8_ui:
+					format = dds::DXGI_FORMAT_R8G8_UINT;
+					swap_size = 1;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg8_snorm:
+					format = dds::DXGI_FORMAT_R8G8_SNORM;
+					swap_size = 1;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rg8_i:
+					format = dds::DXGI_FORMAT_R8G8_SINT;
+					swap_size = 1;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_r16f:
+					format = dds::DXGI_FORMAT_R16_FLOAT;
+					swap_size = 2;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_depth16:
+					format = dds::DXGI_FORMAT_D16_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r16:
+					format = dds::DXGI_FORMAT_R16_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r16_ui:
+					format = dds::DXGI_FORMAT_R16_UINT;
+					swap_size = 2;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r16_snorm:
+					format = dds::DXGI_FORMAT_R16_SNORM;
+					swap_size = 2;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r16_i:
+					format = dds::DXGI_FORMAT_R16_SINT;
+					swap_size = 2;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r8:
+					format = dds::DXGI_FORMAT_R8_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r8_ui:
+					format = dds::DXGI_FORMAT_R8_UINT;
+					swap_size = 1;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r8_snorm:
+					format = dds::DXGI_FORMAT_R8_SNORM;
+					swap_size = 1;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_r8_i:
+					format = dds::DXGI_FORMAT_R8_SINT;
+					swap_size = 1;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_a8:
+					format = dds::DXGI_FORMAT_A8_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_ALPHA;
+					return true;
+				case tft_rgb9_e5:
+					format = dds::DXGI_FORMAT_R9G9B9E5_SHAREDEXP;
+					swap_size = 4;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_rgb_dxt1:
+				case tft_rgba_dxt1:
+					format = dds::DXGI_FORMAT_BC1_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_srgb_dxt1:
+				case tft_srgb_a_dxt1:
+					format = dds::DXGI_FORMAT_BC1_UNORM_SRGB;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_rgba_dxt3:
+					format = dds::DXGI_FORMAT_BC2_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_srgb_a_dxt3:
+					format = dds::DXGI_FORMAT_BC2_UNORM_SRGB;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_rgba_dxt5:
+					format = dds::DXGI_FORMAT_BC3_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_srgb_a_dxt5:
+					format = dds::DXGI_FORMAT_BC3_UNORM_SRGB;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_r_rgtc1:
+					format = dds::DXGI_FORMAT_BC4_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_signed_r_rgtc1:
+					format = dds::DXGI_FORMAT_BC4_SNORM;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_rg_rgtc2:
+					format = dds::DXGI_FORMAT_BC5_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_signed_rg_rgtc2:
+					format = dds::DXGI_FORMAT_BC5_SNORM;
+					swap_size = 1;
+					flags = dds::DDPF_FOURCC;
+					return true;
+				case tft_l8:
+					format = dds::DXGI_FORMAT_R8_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_la8:
+					format = dds::DXGI_FORMAT_R8G8_UNORM;
+					swap_size = 1;
+					flags = dds::DDPF_RGB;
+					return true;
+				case tft_l16:
+					format = dds::DXGI_FORMAT_R16_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_LUMINANCE;
+					return true;
+				case tft_la16:
+					format = dds::DXGI_FORMAT_R16G16_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_RGB;
+					return true;
+				default:
+					break;
+			}
+
+			return false;
 		}
 
 		bool get_rgba_masks_needed(const Uint32 fourcc)
@@ -821,6 +1393,7 @@ namespace eternal_lands
 		{
 			private:
 				dds::DdsHeader m_header;
+				dds::DdsHeader10 m_header_dxt10;
 				ImageSharedPtr m_image;
 				ReaderSharedPtr m_reader;
 				const CodecManager &m_codec_manager;
@@ -828,23 +1401,40 @@ namespace eternal_lands
 				void load_supported(
 					const ImageCompressionTypeSet
 					&compression, const bool rg_formats);
+				void load_supported_dxt10(
+					const ImageCompressionTypeSet
+					&compression, const bool rg_formats,
+					const bool merge_layers);
 				void set_format(const TextureFormatType tft,
 					const bool rg_formats);
-				void uncompress(const TextureFormatType format,
+				void set_dxt10_format(
+					const TextureFormatType texture_format,
 					const bool rg_formats);
+				void uncompress(const TextureFormatType format,
+					const bool rg_formats,
+					const bool merge_layers);
 				void load(const ImageCompressionTypeSet
-					&compression, const bool rg_formats);
+					&compression, const bool rg_formats,
+					const bool merge_layers);
 				void load(const Uint16 swap_size);
 				void set_format_mask(const Uint32 red_mask,
 					const Uint32 green_mask,
 					const Uint32 blue_mask,
 					const Uint32 alpha_mask,
 					const bool rg_formats);
+				void set_format_mask(const Uint32 red_mask,
+					const Uint32 green_mask,
+					const Uint32 blue_mask,
+					const Uint32 alpha_mask,
+					const TextureFormatType format,
+					const bool rg_formats);
 				void set_format(const Uint32 pixel_size,
 					const GLenum format, const GLenum type,
 					const Uint16 swap_size,
 					const bool rg_formats);
 				Uint16 get_faces() const;
+				glm::uvec3 get_size() const;
+				bool get_array() const;
 
 				inline const CodecManager &get_codec_manager()
 					const
@@ -857,7 +1447,8 @@ namespace eternal_lands
 					const CodecManager &codec_manager,
 					const ReaderSharedPtr &reader,
 					const ImageCompressionTypeSet
-					&compression, const bool rg_formats);
+					&compression, const bool rg_formats,
+					const bool merge_layers);
 
 				inline const ImageSharedPtr &get_image()
 				{
@@ -870,13 +1461,14 @@ namespace eternal_lands
 			const CodecManager &codec_manager,
 			const ReaderSharedPtr &reader,
 			const ImageCompressionTypeSet &compression,
-			const bool rg_formats):
+			const bool rg_formats, const bool merge_layers):
 			m_reader(reader), m_codec_manager(codec_manager)
 		{
 			try
 			{
-				init_dds_image(m_reader, m_header);
-				load(compression, rg_formats);
+				init_dds_image(m_reader, m_header,
+					m_header_dxt10);
+				load(compression, rg_formats, merge_layers);
 			}
 			catch (boost::exception &exception)
 			{
@@ -886,19 +1478,52 @@ namespace eternal_lands
 			}
 		}
 
+		glm::uvec3 DdsImageLoader::get_size() const
+		{
+			if (m_header.m_pixel_format.m_fourcc !=
+				dds::DDSFMT_DX10)
+			{
+				return glm::uvec3(m_header.m_width,
+					m_header.m_height, m_header.m_depth);
+			}
+
+			switch (m_header_dxt10.m_resource_dimension)
+			{
+				case dds::DDS_DIMENSION_TEXTURE1D:
+					return glm::uvec3(m_header.m_width,
+						m_header_dxt10.m_array_size, 0);
+				case dds::DDS_DIMENSION_TEXTURE2D:
+					return glm::uvec3(m_header.m_width,
+						m_header.m_height,
+						m_header_dxt10.m_array_size);
+				case dds::DDS_DIMENSION_TEXTURE3D:
+					return glm::uvec3(m_header.m_width,
+						m_header.m_height,
+						m_header.m_depth);
+			};
+
+			return glm::uvec3(0);
+		}
+
+		bool DdsImageLoader::get_array() const
+		{
+			if (m_header.m_pixel_format.m_fourcc !=
+				dds::DDSFMT_DX10)
+			{
+				return false;
+			}
+
+			return m_header_dxt10.m_array_size > 0;
+		}
+
 		void DdsImageLoader::set_format_mask(const Uint32 red_mask,
 			const Uint32 green_mask, const Uint32 blue_mask,
 			const Uint32 alpha_mask, const bool rg_formats)
 		{
-			glm::uvec3 sizes;
 			Uint32 pixel_size;
 			Uint32 swap_size;
 			GLenum format;
 			GLenum type;
-
-			sizes[0] = m_header.m_width;
-			sizes[1] = m_header.m_height;
-			sizes[2] = m_header.m_depth;
 
 			if (get_codec_manager().is_fast_load_supported(red_mask,
 				green_mask, blue_mask, alpha_mask, rg_formats,
@@ -908,8 +1533,41 @@ namespace eternal_lands
 					m_reader->get_name(),
 					get_cube_map(m_header),
 					get_texture_format(m_header,
-						rg_formats), sizes,
+						rg_formats), get_size(),
 					static_cast<Uint16>(
+					m_header.m_mipmap_count),
+					static_cast<Uint16>(pixel_size * 8),
+					format, type, false);
+
+				load(swap_size);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(DdsErrorException()
+					<< boost::errinfo_file_name(
+						m_reader->get_name()));
+			}
+		}
+
+		void DdsImageLoader::set_format_mask(const Uint32 red_mask,
+			const Uint32 green_mask, const Uint32 blue_mask,
+			const Uint32 alpha_mask,
+			const TextureFormatType texture_format,
+			const bool rg_formats)
+		{
+			Uint32 pixel_size;
+			Uint32 swap_size;
+			GLenum format;
+			GLenum type;
+
+			if (get_codec_manager().is_fast_load_supported(red_mask,
+				green_mask, blue_mask, alpha_mask, rg_formats,
+				type, format, pixel_size, swap_size))
+			{
+				m_image = boost::make_shared<Image>(
+					m_reader->get_name(),
+					get_cube_map(m_header), texture_format,
+					get_size(), static_cast<Uint16>(
 					m_header.m_mipmap_count),
 					static_cast<Uint16>(pixel_size * 8),
 					format, type, false);
@@ -925,10 +1583,19 @@ namespace eternal_lands
 
 		void DdsImageLoader::load(
 			const ImageCompressionTypeSet &compression,
-			const bool rg_formats)
+			const bool rg_formats, const bool merge_layers)
 		{
 			LOG_DEBUG(lt_dds_image, UTF8("Loading file '%1%'."),
 				m_reader->get_name());
+
+			if (m_header.m_pixel_format.m_fourcc ==
+				dds::DDSFMT_DX10)
+			{
+				load_supported_dxt10(compression, rg_formats,
+					merge_layers);
+
+				return;
+			}
 
 			if ((m_header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
 				!= dds::DDPF_FOURCC)
@@ -939,53 +1606,96 @@ namespace eternal_lands
 					m_header.m_pixel_format.m_blue_mask,
 					m_header.m_pixel_format.m_alpha_mask,
 					rg_formats);
+
+				return;
 			}
-			else
-			{
-				load_supported(compression, rg_formats);
-			}
+
+			load_supported(compression, rg_formats);
 		}
 
 		void DdsImageLoader::set_format(const Uint32 pixel_size,
 			const GLenum format, const GLenum type,
 			const Uint16 swap_size, const bool rg_formats)
 		{
-			glm::uvec3 sizes;
-
-			sizes[0] = m_header.m_width;
-			sizes[1] = m_header.m_height;
-			sizes[2] = m_header.m_depth;
-
 			m_image = boost::make_shared<Image>(
 				m_reader->get_name(), get_cube_map(m_header),
-				get_texture_format(m_header, rg_formats), sizes,
+				get_texture_format(m_header, rg_formats),
+				get_size(),
 				static_cast<Uint16>(m_header.m_mipmap_count),
 				static_cast<Uint16>(pixel_size), format, type,
 				false);
+
 			load(swap_size);
 		}
 
 		void DdsImageLoader::set_format(const TextureFormatType tft,
 			const bool rg_formats)
 		{
-			glm::uvec3 sizes;
-
-			sizes[0] = m_header.m_width;
-			sizes[1] = m_header.m_height;
-			sizes[2] = m_header.m_depth;
-
 			assert(TextureFormatUtil::get_compressed(tft));
 
 			m_image = boost::make_shared<Image>(
 				m_reader->get_name(), get_cube_map(m_header),
-				get_texture_format(m_header, rg_formats), sizes,
-				static_cast<Uint16>(m_header.m_mipmap_count));
+				get_texture_format(m_header, rg_formats),
+				get_size(), static_cast<Uint16>(
+					m_header.m_mipmap_count), get_array());
+
 			load(1);
+		}
+
+		void DdsImageLoader::set_dxt10_format(
+			const TextureFormatType texture_format,
+			const bool rg_formats)
+		{
+			TextureFormatType tmp;
+			Uint32 format, bpp, swap_size, flags;
+			bool linear_size;
+
+			get_dxt10_format(texture_format, format, bpp,
+				swap_size, flags, linear_size), 
+
+			tmp = texture_format;
+
+			if (!rg_formats)
+			{
+				switch (texture_format)
+				{
+					case tft_r8:
+						tmp = tft_l8;
+						break;
+					case tft_rg8:
+						tmp = tft_la8;
+						break;
+					case tft_r16:
+						tmp = tft_l16;
+						break;
+					case tft_rg16:
+						tmp = tft_la16;
+						break;
+					default:
+						break;
+				};
+			}
+
+			m_image = boost::make_shared<Image>(
+				m_reader->get_name(), get_cube_map(m_header),
+				tmp, get_size(), static_cast<Uint16>(
+					m_header.m_mipmap_count), get_array());
+
+			load(swap_size);
 		}
 
 		void DdsImageLoader::load(const Uint16 swap_size)
 		{
-			m_reader->set_position(dds::DDS_DATA_POSITION);
+			if (m_header.m_pixel_format.m_fourcc ==
+				dds::DDSFMT_DX10)
+			{
+				m_reader->set_position(dds::DDS_DATA_POSITION +
+					dds::DDS_HEADER_SIZE_DX10);
+			}
+			else
+			{
+				m_reader->set_position(dds::DDS_DATA_POSITION);
+			}
 
 			m_reader->read_le(*m_image->get_buffer(), swap_size);
 		}
@@ -1006,7 +1716,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt1,
-							rg_formats);
+							rg_formats, false);
 						return;
 					}
 
@@ -1017,7 +1727,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt3,
-							rg_formats);
+							rg_formats, false);
 						return;
 					}
 
@@ -1028,7 +1738,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt5,
-							rg_formats);
+							rg_formats, false);
 						return;
 					}
 
@@ -1038,7 +1748,7 @@ namespace eternal_lands
 					if (compression.count(ict_rgtc) == 0)
 					{
 						uncompress(tft_r_rgtc1,
-							rg_formats);
+							rg_formats, false);
 						return;
 					}
 
@@ -1048,7 +1758,7 @@ namespace eternal_lands
 					if (compression.count(ict_rgtc) == 0)
 					{
 						uncompress(tft_rg_rgtc2,
-							rg_formats);
+							rg_formats, false);
 						return;
 					}
 
@@ -1114,10 +1824,416 @@ namespace eternal_lands
 			EL_THROW_EXCEPTION(DdsUnkownFormatException());
 		}
 
-		void DdsImageLoader::uncompress(const TextureFormatType format,
-			const bool rg_formats)
+		void DdsImageLoader::load_supported_dxt10(
+			const ImageCompressionTypeSet &compression,
+			const bool rg_formats, const bool merge_layers)
 		{
-			glm::uvec3 sizes;
+			Uint32 format;
+
+			format = m_header_dxt10.m_dxgi_format;
+
+			switch (format)
+			{
+				case dds::DXGI_FORMAT_UNKNOWN:
+					EL_THROW_EXCEPTION(
+						DdsUnkownFormatException());
+					break;
+				case dds::DXGI_FORMAT_R32G32B32A32_TYPELESS:
+				case dds::DXGI_FORMAT_R32G8X24_TYPELESS:
+				case dds::DXGI_FORMAT_X32_TYPELESS_G8X24_UINT:
+				case dds::DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS:
+				case dds::DXGI_FORMAT_R32G32B32_TYPELESS:
+				case dds::DXGI_FORMAT_R16G16B16A16_TYPELESS:
+				case dds::DXGI_FORMAT_R32G32_TYPELESS:
+				case dds::DXGI_FORMAT_R10G10B10A2_TYPELESS:
+				case dds::DXGI_FORMAT_R8G8B8A8_TYPELESS:
+				case dds::DXGI_FORMAT_R16G16_TYPELESS:
+				case dds::DXGI_FORMAT_R32_TYPELESS:
+				case dds::DXGI_FORMAT_R24G8_TYPELESS:
+				case dds::DXGI_FORMAT_R24_UNORM_X8_TYPELESS:
+				case dds::DXGI_FORMAT_X24_TYPELESS_G8_UINT:
+				case dds::DXGI_FORMAT_R8G8_TYPELESS:
+				case dds::DXGI_FORMAT_R16_TYPELESS:
+				case dds::DXGI_FORMAT_R8_TYPELESS:
+				case dds::DXGI_FORMAT_BC1_TYPELESS:
+				case dds::DXGI_FORMAT_BC2_TYPELESS:
+				case dds::DXGI_FORMAT_BC3_TYPELESS:
+				case dds::DXGI_FORMAT_BC4_TYPELESS:
+				case dds::DXGI_FORMAT_BC5_TYPELESS:
+				case dds::DXGI_FORMAT_B8G8R8A8_TYPELESS:
+				case dds::DXGI_FORMAT_B8G8R8X8_TYPELESS:
+				case dds::DXGI_FORMAT_BC6H_TYPELESS:
+				case dds::DXGI_FORMAT_BC7_TYPELESS:
+					EL_THROW_EXCEPTION(
+						DdsFormatNotSupportedException()
+						<< errinfo_item_id(format));
+					break;
+				case dds::DXGI_FORMAT_R8G8_B8G8_UNORM:
+				case dds::DXGI_FORMAT_G8R8_G8B8_UNORM:
+				case dds::DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM:
+				case dds::DXGI_FORMAT_BC6H_UF16:
+				case dds::DXGI_FORMAT_BC6H_SF16:
+				case dds::DXGI_FORMAT_BC7_UNORM:
+				case dds::DXGI_FORMAT_BC7_UNORM_SRGB:
+					EL_THROW_EXCEPTION(
+						DdsFormatNotSupportedException()
+						<< errinfo_item_id(format));
+					break;
+				case dds::DXGI_FORMAT_D32_FLOAT_S8X24_UINT:
+					set_dxt10_format(tft_depth32f_stencil8,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32B32A32_FLOAT:
+					set_dxt10_format(tft_rgba32f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32B32A32_UINT:
+					set_dxt10_format(tft_rgba32_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32B32A32_SINT:
+					set_dxt10_format(tft_rgba32_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32B32_FLOAT:
+					set_dxt10_format(tft_rgb32f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32B32_UINT:
+					set_dxt10_format(tft_rgb32_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32B32_SINT:
+					set_dxt10_format(tft_rgb32_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16B16A16_FLOAT:
+					set_dxt10_format(tft_rgba16f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16B16A16_UNORM:
+					set_dxt10_format(tft_rgba16,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16B16A16_UINT:
+					set_dxt10_format(tft_rgba16_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16B16A16_SNORM:
+					set_dxt10_format(tft_rgba16_snorm,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16B16A16_SINT:
+					set_dxt10_format(tft_rgba16_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32_FLOAT:
+					set_dxt10_format(tft_rg32f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32_UINT:
+					set_dxt10_format(tft_rg32_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32G32_SINT:
+					set_dxt10_format(tft_rg32_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R10G10B10A2_UNORM:
+					set_dxt10_format(tft_rgb10_a2,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R10G10B10A2_UINT:
+					set_dxt10_format(tft_rgb10_a2_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R11G11B10_FLOAT:
+					set_dxt10_format(tft_r10f_b11f_g10f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8B8A8_UNORM:
+					set_dxt10_format(tft_rgba8,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
+					set_dxt10_format(tft_srgb8_a8,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8B8A8_UINT:
+					set_dxt10_format(tft_rgba8_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8B8A8_SNORM:
+					set_dxt10_format(tft_rgba8_snorm,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8B8A8_SINT:
+					set_dxt10_format(tft_rgba8_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16_FLOAT:
+					set_dxt10_format(tft_rg16f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16_UNORM:
+					set_dxt10_format(tft_rg16,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16_UINT:
+					set_dxt10_format(tft_rg16_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16_SNORM:
+					set_dxt10_format(tft_rg16_snorm,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16G16_SINT:
+					set_dxt10_format(tft_rg16_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_D32_FLOAT:
+					set_dxt10_format(tft_depth32f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32_FLOAT:
+					set_dxt10_format(tft_r32f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32_UINT:
+					set_dxt10_format(tft_r32_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R32_SINT:
+					set_dxt10_format(tft_r32_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_D24_UNORM_S8_UINT:
+					set_dxt10_format(tft_depth24_stencil8,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8_UNORM:
+					set_dxt10_format(tft_rg8,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8_UINT:
+					set_dxt10_format(tft_rg8_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8_SNORM:
+					set_dxt10_format(tft_rg8_snorm,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8G8_SINT:
+					set_dxt10_format(tft_rg8_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16_FLOAT:
+					set_dxt10_format(tft_r16f,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_D16_UNORM:
+					set_dxt10_format(tft_depth16,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16_UNORM:
+					set_dxt10_format(tft_r16,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16_UINT:
+					set_dxt10_format(tft_r16_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16_SNORM:
+					set_dxt10_format(tft_r16_snorm,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R16_SINT:
+					set_dxt10_format(tft_r16_i,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8_UNORM:
+					set_dxt10_format(tft_r8, rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8_UINT:
+					set_dxt10_format(tft_r8_ui,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8_SNORM:
+					set_dxt10_format(tft_r8_snorm,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R8_SINT:
+					set_dxt10_format(tft_r8_i, rg_formats);
+					return;
+				case dds::DXGI_FORMAT_A8_UNORM:
+					set_dxt10_format(tft_a8, rg_formats);
+					return;
+				case dds::DXGI_FORMAT_R1_UNORM:
+					break;
+				case dds::DXGI_FORMAT_R9G9B9E5_SHAREDEXP:
+					set_dxt10_format(tft_rgb9_e5,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC1_UNORM:
+					if (compression.count(ict_s3tc) == 0)
+					{
+						uncompress(tft_rgba_dxt1,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_rgba_dxt1,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC1_UNORM_SRGB:
+					if (compression.count(ict_s3tc) == 0)
+					{
+						uncompress(tft_srgb_a_dxt1,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_srgb_a_dxt1,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC2_UNORM:
+					if (compression.count(ict_s3tc) == 0)
+					{
+						uncompress(tft_rgba_dxt3,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_rgba_dxt3,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC2_UNORM_SRGB:
+					if (compression.count(ict_s3tc) == 0)
+					{
+						uncompress(tft_srgb_a_dxt3,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_srgb_a_dxt3,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC3_UNORM:
+					if (compression.count(ict_s3tc) == 0)
+					{
+						uncompress(tft_rgba_dxt5,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_rgba_dxt5,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC3_UNORM_SRGB:
+					if (compression.count(ict_s3tc) == 0)
+					{
+						uncompress(tft_srgb_a_dxt5,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_srgb_a_dxt5,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC4_UNORM:
+					if (compression.count(ict_rgtc) == 0)
+					{
+						uncompress(tft_r_rgtc1,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_r_rgtc1,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC4_SNORM:
+					if (compression.count(ict_rgtc) == 0)
+					{
+						uncompress(tft_signed_r_rgtc1,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_signed_r_rgtc1,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC5_UNORM:
+					if (compression.count(ict_rgtc) == 0)
+					{
+						uncompress(tft_rg_rgtc2,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_rg_rgtc2,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_BC5_SNORM:
+					if (compression.count(ict_rgtc) == 0)
+					{
+						uncompress(tft_signed_rg_rgtc2,
+							rg_formats,
+							merge_layers);
+						return;
+					}
+
+					set_dxt10_format(tft_signed_rg_rgtc2,
+						rg_formats);
+					return;
+				case dds::DXGI_FORMAT_B5G6R5_UNORM:
+					set_format_mask(0x0000F800, 0x000007E0,
+						0x0000001F, 0x00000000,
+						tft_r5g6b5, rg_formats);
+					return;
+				case dds::DXGI_FORMAT_B5G5R5A1_UNORM:
+					set_format_mask(0x00007C00, 0x000003E0,
+						0x0000001F, 0x00008000,
+						tft_rgb5_a1, rg_formats);
+					return;
+				case dds::DXGI_FORMAT_B8G8R8A8_UNORM:
+					set_format_mask(0x00FF0000, 0x0000FF00,
+						0x000000FF, 0xFF000000,
+						tft_rgba8, rg_formats);
+					return;
+				case dds::DXGI_FORMAT_B8G8R8X8_UNORM:
+					set_format_mask(0x00FF0000, 0x0000FF00,
+						0x000000FF, 0xFF000000,
+						tft_rgb8, rg_formats);
+					return;
+				case dds::DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
+					set_format_mask(0x00FF0000, 0x0000FF00,
+						0x000000FF, 0xFF000000,
+						tft_srgb8, rg_formats);
+					return;
+				case dds::DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:
+					set_format_mask(0x00FF0000, 0x0000FF00,
+						0x000000FF, 0xFF000000,
+						tft_srgb8_a8, rg_formats);
+					return;
+			}
+
+			EL_THROW_EXCEPTION(DdsUnkownFormatException()
+				<< errinfo_item_id(format));
+		}
+
+		void DdsImageLoader::uncompress(const TextureFormatType format,
+			const bool rg_formats, const bool merge_layers)
+		{
+			glm::uvec3 size;
 
 			LOG_DEBUG(lt_dds_image, UTF8("Uncompressing DDS file "
 				"'%1%'."), m_reader->get_name());
@@ -1176,14 +2292,15 @@ namespace eternal_lands
 				}
 			}
 
-			sizes[0] = m_header.m_width;
-			sizes[1] = m_header.m_height;
-			sizes[2] = m_header.m_depth;
+			size[0] = m_header.m_width;
+			size[1] = m_header.m_height;
+			size[2] = m_header.m_depth;
 
 			m_image = Dxt::uncompress(m_reader,
-				m_reader->get_name(), sizes, format,
+				m_reader->get_name(), size, format,
 				static_cast<Uint16>(m_header.m_mipmap_count),
-				get_cube_map(m_header), rg_formats);
+				get_cube_map(m_header), rg_formats,
+				merge_layers);
 		}
 
 	}
@@ -1191,12 +2308,13 @@ namespace eternal_lands
 	ImageSharedPtr DdsImage::load_image(const CodecManager &codec_manager,
 		const ReaderSharedPtr &reader,
 		const ImageCompressionTypeSet &compression,
-		const bool rg_formats, const bool srgb_formats)
+		const bool rg_formats, const bool srgb_formats,
+		const bool merge_layers)
 	{
 		try
 		{
 			DdsImageLoader dds_image_loader(codec_manager, reader,
-				compression, rg_formats);
+				compression, rg_formats, merge_layers);
 
 			return dds_image_loader.get_image();
 		}
@@ -1210,23 +2328,36 @@ namespace eternal_lands
 
 	void DdsImage::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, const bool srgb_formats,
-		TextureFormatType &texture_format, glm::uvec3 &sizes,
-		Uint16 &mipmaps)
+		TextureFormatType &texture_format, glm::uvec3 &size,
+		Uint16 &mipmaps, bool &cube_map, bool &array)
 	{
 		dds::DdsHeader header;
+		dds::DdsHeader10 header_dxt10;
 
 		try
 		{
-			init_dds_image(reader, header);
+			init_dds_image(reader, header, header_dxt10);
 
 			texture_format = get_texture_format(header,
 				rg_formats);
 
-			sizes[0] = header.m_width;
-			sizes[1] = header.m_height;
-			sizes[2] = header.m_depth;
+			size[0] = header.m_width;
+			size[1] = header.m_height;
+			size[2] = header.m_depth;
 
 			mipmaps = header.m_mipmap_count;
+
+			cube_map = get_cube_map(header);
+
+			if (header_dxt10.m_array_size > 0)
+			{
+				array = true;
+				size[2] = header_dxt10.m_array_size;
+			}
+			else
+			{
+				array = false;
+			}
 		}
 		catch (boost::exception &exception)
 		{
@@ -1323,6 +2454,7 @@ namespace eternal_lands
 		Uint32 red_mask, green_mask, blue_mask, alpha_mask, size;
 		Uint32 swap_size, fourcc;
 		Uint32 width, height, depth, mipmaps;
+		bool cube_map;
 
 		try
 		{
@@ -1331,13 +2463,15 @@ namespace eternal_lands
 			width = image->get_width();
 			height = image->get_height();
 			depth = image->get_depth();
+			cube_map = image->get_cube_map();
 			mipmaps = image->get_mipmap_count() + 1;
 
 			if (dds::get_fourcc(type, format, size, swap_size,
 				fourcc))
 			{
 				dds::build_dds_fourcc_header(width, height,
-					depth, mipmaps, fourcc, size, header);
+					depth, mipmaps, fourcc, size, cube_map,
+					header);
 			}
 			else
 			{
@@ -1348,7 +2482,7 @@ namespace eternal_lands
 					dds::build_dds_header(width, height,
 						depth, mipmaps, red_mask,
 						green_mask, blue_mask,
-						alpha_mask, header);
+						alpha_mask, cube_map, header);
 				}
 				else
 				{
@@ -1403,6 +2537,96 @@ namespace eternal_lands
 		}
 	}
 
+	void DdsImage::save_image_dxt10(const ImageSharedPtr &image,
+		const WriterSharedPtr &writer)
+	{
+		dds::DdsHeader header;
+		dds::DdsHeader10 header_dxt10;
+		TextureFormatType texture_format;
+		Uint32 size, swap_size, format, layer, flags;
+		Uint32 width, height, depth, mipmaps;
+		bool cube_map, linear_size;
+
+		try
+		{
+			texture_format = image->get_texture_format();
+			width = image->get_width();
+			height = image->get_height();
+			depth = image->get_depth();
+			layer = image->get_layer();
+			mipmaps = image->get_mipmap_count() + 1;
+			cube_map = image->get_cube_map();
+			swap_size = 0;
+
+			if (image->get_array())
+			{
+				depth = 0;
+			}
+
+			if (get_dxt10_format(texture_format, format, size,
+				swap_size, flags, linear_size))
+			{
+				build_dxt10_dds_header(width, height, depth,
+					layer, mipmaps, format, size, flags,
+					cube_map, linear_size, header,
+					header_dxt10);
+			}
+			else
+			{
+				EL_THROW_EXCEPTION(
+					DdsFormatNotSupportedException());
+			}
+
+			writer->write_u32_le(dds::DDSMAGIC);
+			writer->write_u32_le(header.m_size);
+			writer->write_u32_le(header.m_flags);
+			writer->write_u32_le(header.m_height);
+			writer->write_u32_le(header.m_width);
+			writer->write_u32_le(header.m_size_or_pitch);
+			writer->write_u32_le(header.m_depth);
+			writer->write_u32_le(header.m_mipmap_count);
+			writer->write_u32_le(header.m_reserved1[0]);
+			writer->write_u32_le(header.m_reserved1[1]);
+			writer->write_u32_le(header.m_reserved1[2]);
+			writer->write_u32_le(header.m_reserved1[3]);
+			writer->write_u32_le(header.m_reserved1[4]);
+			writer->write_u32_le(header.m_reserved1[5]);
+			writer->write_u32_le(header.m_reserved1[6]);
+			writer->write_u32_le(header.m_reserved1[7]);
+			writer->write_u32_le(header.m_reserved1[8]);
+			writer->write_u32_le(header.m_reserved1[9]);
+			writer->write_u32_le(header.m_reserved1[10]);
+			writer->write_u32_le(header.m_pixel_format.m_size);
+			writer->write_u32_le(header.m_pixel_format.m_flags);
+			writer->write_u32_le(header.m_pixel_format.m_fourcc);
+			writer->write_u32_le(header.m_pixel_format.m_bit_count);
+			writer->write_u32_le(header.m_pixel_format.m_red_mask);
+			writer->write_u32_le(
+				header.m_pixel_format.m_green_mask);
+			writer->write_u32_le(
+				header.m_pixel_format.m_blue_mask);
+			writer->write_u32_le(
+				header.m_pixel_format.m_alpha_mask);
+			writer->write_u32_le(header.m_caps.m_caps1);
+			writer->write_u32_le(header.m_caps.m_caps2);
+			writer->write_u32_le(header.m_caps.m_caps3);
+			writer->write_u32_le(header.m_caps.m_caps4);
+			writer->write_u32_le(header.m_reserved2);
+			writer->write_u32_le(header_dxt10.m_dxgi_format);
+			writer->write_u32_le(header_dxt10.m_resource_dimension);
+			writer->write_u32_le(header_dxt10.m_misc_flag);
+			writer->write_u32_le(header_dxt10.m_array_size);
+			writer->write_u32_le(header_dxt10.m_reserved);
+
+			writer->write_le(*image->get_buffer(), swap_size);
+		}
+		catch (boost::exception &exception)
+		{
+			exception << errinfo_name(image->get_name());
+			throw;
+		}
+	}
+
 	bool DdsImage::can_save(const CodecManager &codec_manager,
 		const ImageSharedPtr &image)
 	{
@@ -1412,11 +2636,26 @@ namespace eternal_lands
 
 		type = image->get_type();
 		format = image->get_format();
+		swap_size = 0;
 
 		return dds::get_fourcc(type, format, size, swap_size, fourcc) ||
 			codec_manager.has_color_bit_mask(type, format,
 				red_mask, green_mask, blue_mask, alpha_mask,
 				size, swap_size);
+	}
+
+	bool DdsImage::can_save_dxt10(const ImageSharedPtr &image)
+	{
+		TextureFormatType texture_format;
+		Uint32 size, swap_size, dxt10_format, flags;
+		bool linear_size;
+
+		swap_size = 0;
+
+		texture_format = image->get_texture_format();
+
+		return get_dxt10_format(texture_format, dxt10_format, size,
+			swap_size, flags, linear_size);
 	}
 
 }

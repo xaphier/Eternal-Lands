@@ -56,27 +56,48 @@ namespace eternal_lands
 	class AbstractMapLoader
 	{
 		private:
+			const CodecManagerWeakPtr m_codec_manager;
 			const FileSystemSharedPtr m_file_system;
 			const FreeIdsManagerSharedPtr m_free_ids;
+			const GlobalVarsSharedPtr m_global_vars;
 			ReaderSharedPtr m_reader;
 			StringVector m_names;
 			StringSet m_harvestables, m_entrables;
 
 		protected:
-			inline const FileSystemSharedPtr &get_file_system()
-				const
+			inline CodecManagerSharedPtr get_codec_manager() const
+				noexcept
 			{
-				return m_file_system;
+				CodecManagerSharedPtr result;
+
+				result = m_codec_manager.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
 			}
 
-			inline const ReaderSharedPtr &get_reader() const
+			inline const FileSystemSharedPtr &get_file_system()
+				const noexcept
 			{
-				return m_reader;
+				return m_file_system;
 			}
 
 			inline FreeIdsManager &get_free_ids()
 			{
 				return *m_free_ids;
+			}
+
+			inline GlobalVarsSharedPtr get_global_vars() const
+				noexcept
+			{
+				return m_global_vars;
+			}
+
+			inline const ReaderSharedPtr &get_reader() const
+				noexcept
+			{
+				return m_reader;
 			}
 
 			void read_3d_object(const Uint32 index,
@@ -95,6 +116,9 @@ namespace eternal_lands
 				const Uint32 offset,
 				const MapVersionType version);
 			void read_name(const Uint32 index,
+				const MapVersionType version);
+			void read_water_layer(const Uint32 index,
+				const Uint32 offset,
 				const MapVersionType version);
 
 			void read_3d_objects(const Uint32 obj_3d_size,
@@ -162,6 +186,9 @@ namespace eternal_lands
 			virtual void add_decal(const glm::vec2 &position,
 				const glm::vec2 &scale, const float rotation,
 				const String &texture, const Uint32 id) = 0;
+/*			virtual void add_water_layer(const String &name,
+				const float height, const Uint32 index);
+*/
 			virtual void set_tile(const Uint16 x, const Uint16 y,
 				const Uint16 tile) = 0;
 			virtual void set_height(const Uint16 x, const Uint16 y,
@@ -173,14 +200,26 @@ namespace eternal_lands
 				const Uint16 height) = 0;
 			virtual void set_dungeon(const bool dungeon) = 0;
 			virtual void instance() = 0;
+			virtual void set_terrain(
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
+				const ImageSharedPtr &blend_map,
+				const StringVector &albedo_maps,
+				const StringVector &extra_maps,
+				const TerrainMaterialData &material_data,
+				const glm::vec2 &dudv_scale,
+				const glm::uvec2 &sizes) = 0;
 
 		public:
 			/**
 			 * Default constructor.
 			 */
 			AbstractMapLoader(
+				const CodecManagerWeakPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
-				const FreeIdsManagerSharedPtr &free_ids);
+				const FreeIdsManagerSharedPtr &free_ids,
+				const GlobalVarsSharedPtr &global_vars);
 
 			/**
 			 * Default destructor.

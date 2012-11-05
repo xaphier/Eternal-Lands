@@ -37,6 +37,8 @@ BOOST_AUTO_TEST_CASE(get_parameter_type)
 
 	count = el::AutoParameterUtil::get_auto_parameter_count();
 
+	type = el::pt_float;
+
 	for (i = 0; i < count; i++)
 	{
 		BOOST_CHECK_NO_THROW(type = el::AutoParameterUtil::get_type(
@@ -87,6 +89,8 @@ BOOST_AUTO_TEST_CASE(get_type)
 	el::ParameterType type;
 
 	count = el::AutoParameterUtil::get_auto_parameter_count();
+
+	type = el::pt_float;
 
 	for (i = 0; i < count; i++)
 	{

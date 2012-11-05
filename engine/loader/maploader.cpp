@@ -39,17 +39,15 @@ namespace eternal_lands
 		const TerrainBuilderWeakPtr &terrain_builder,
 		const TextureCacheWeakPtr &texture_cache,
 		const FreeIdsManagerSharedPtr &free_ids):
-		AbstractMapLoader(file_system, free_ids),
-		m_codec_manager(codec_manager), m_global_vars(global_vars),
-		m_effect_cache(effect_cache), m_mesh_builder(mesh_builder),
-		m_mesh_cache(mesh_cache), m_mesh_data_cache(mesh_data_cache),
+		AbstractMapLoader(codec_manager, file_system, free_ids,
+			global_vars), m_effect_cache(effect_cache),
+		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
+		m_mesh_data_cache(mesh_data_cache),
 		m_material_cache(material_cache),
 		m_material_description_cache(material_description_cache),
 		m_terrain_builder(terrain_builder),
 		m_texture_cache(texture_cache)
 	{
-		assert(!m_codec_manager.expired());
-		assert(m_global_vars.get() != nullptr);
 		assert(!m_effect_cache.expired());
 		assert(!m_mesh_builder.expired());
 		assert(!m_mesh_cache.expired());
@@ -239,6 +237,24 @@ namespace eternal_lands
 	void MapLoader::set_dungeon(const bool dungeon)
 	{
 		m_map->set_dungeon(dungeon);
+	}
+
+	void MapLoader::set_terrain(const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
+		const ImageSharedPtr &blend_map,
+		const StringVector &albedo_maps,
+		const StringVector &extra_maps,
+		const TerrainMaterialData &material_data,
+		const glm::vec2 &dudv_scale,
+		const glm::uvec2 &sizes)
+	{
+		m_map->set_terrain_geometry_maps(displacement_map, normal_map,
+			dudv_map);
+		m_map->set_terrain_blend_map(blend_map);
+		m_map->set_terrain_material(albedo_maps, extra_maps,
+			material_data);
+		m_map->set_terrain_dudv_scale(dudv_scale);
 	}
 
 }

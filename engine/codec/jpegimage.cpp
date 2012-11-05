@@ -137,7 +137,7 @@ namespace eternal_lands
 					const ReaderSharedPtr &reader,
 					const bool rg_formats,
 					TextureFormatType &texture_format,
-					glm::uvec3 &sizes, Uint16 &mipmaps);
+					glm::uvec3 &size, Uint16 &mipmaps);
 
 		};
 
@@ -163,7 +163,7 @@ namespace eternal_lands
 			ImageSharedPtr image;
 			JSAMPROW rowptr[1];
 			ReadWriteMemory buffer;
-			glm::uvec3 sizes;
+			glm::uvec3 size;
 			TextureFormatType texture_format;
 
 			reader->read(buffer);
@@ -192,12 +192,12 @@ namespace eternal_lands
 			texture_format = get_texture_format(
 				m_cinfo.jpeg_color_space, rg_formats);
 
-			sizes[0] = m_cinfo.output_width;
-			sizes[1] = m_cinfo.output_height;
-			sizes[2] = 0;
+			size[0] = m_cinfo.output_width;
+			size[1] = m_cinfo.output_height;
+			size[2] = 0;
 
 			image = boost::make_shared<Image>(reader->get_name(),
-				false, texture_format, sizes, 0);
+				false, texture_format, size, 0);
 
 			jpeg_start_decompress(&m_cinfo);
 
@@ -262,7 +262,7 @@ namespace eternal_lands
 
 		void JpegDecompress::get_image_information(
 			const ReaderSharedPtr &reader, const bool rg_formats,
-			TextureFormatType &texture_format, glm::uvec3 &sizes,
+			TextureFormatType &texture_format, glm::uvec3 &size,
 			Uint16 &mipmaps)
 		{
 			ReadWriteMemory buffer;
@@ -285,9 +285,9 @@ namespace eternal_lands
 			texture_format = get_texture_format(
 				m_cinfo.jpeg_color_space, rg_formats);
 
-			sizes[0] = m_cinfo.output_width;
-			sizes[1] = m_cinfo.output_height;
-			sizes[2] = 1;
+			size[0] = m_cinfo.output_width;
+			size[1] = m_cinfo.output_height;
+			size[2] = 1;
 
 			mipmaps = 0;
 		}
@@ -408,12 +408,16 @@ namespace eternal_lands
 
 	void JpegImage::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, TextureFormatType &texture_format,
-		glm::uvec3 &sizes, Uint16 &mipmaps)
+		glm::uvec3 &size, Uint16 &mipmaps, bool &cube_map,
+		bool &array)
 	{
 		JpegDecompress jpeg_decompress;
 
 		jpeg_decompress.get_image_information(reader, rg_formats,
-			texture_format, sizes, mipmaps);
+			texture_format, size, mipmaps);
+
+		cube_map = false;
+		array = false;
 	}
 
 	bool JpegImage::check_load(const Uint8Array32 &id)

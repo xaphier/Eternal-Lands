@@ -12,6 +12,7 @@
 #include <QVector2D>
 #include <QTimer>
 #include <QImage>
+#include <QIcon>
 
 ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 {
@@ -45,36 +46,98 @@ ELGLWidget::~ELGLWidget()
 {
 }
 
-QImage ELGLWidget::get_icon(const QString &name)
+void ELGLWidget::get_albedo_map_data(const QString &name,
+	const QSize &icon_size, const QSize &image_size, QIcon &icon,
+	bool &use_blend_size_sampler, bool &ok)
 {
 	ImageSharedPtr image;
-	QImage result(32, 32, QImage::Format_ARGB32);
+	QImage tmp;
+	QString message, format_str, valid_formats_str;
+	TextureFormatType format;
 	glm::vec4 color;
-	Uint32 x, y, height, width, mipmap, i, count;
+	Sint32 x, y, height, width, depth, mipmap, i, count;
 
 	try
 	{
-		image = m_editor->get_image(String(name.toUtf8()));
+		image = m_editor->get_image(String(name.toUtf8()), format);
+
+		format_str = QString::fromUtf8(TextureFormatUtil::get_str(
+			format).get().c_str());
+
+		valid_formats_str = "{";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_rgb_dxt1).get(
+				).c_str());
+		valid_formats_str += ", ";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_rgba_dxt1).get(
+				).c_str());
+		valid_formats_str += ", ";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_rgba_dxt5).get(
+				).c_str());
+		valid_formats_str = "}";
 
 		width = image->get_width();
 		height = image->get_height();
-		count = image->get_mipmap_count();
+		depth = image->get_depth();
+		count = image->get_mipmap_count() + 1;
 		mipmap = 0;
+
+		if ((width != image_size.width()) ||
+			(height != image_size.height()) || (depth != 0))
+		{
+			QMessageBox::critical(this, tr("Error"), QString(tr(
+				"File '%1' has wrong size of <%2, %3, %4> "
+				"instead of <%5, %6, 0>")).arg(name).arg(
+					width).arg(height).arg(depth).arg(
+					image_size.width()).arg(
+					image_size.height()));
+
+			ok = false;
+
+			return;
+		}
+
+		if ((format == tft_rgb_dxt1) || (format == tft_rgba_dxt1))
+		{
+			use_blend_size_sampler = false;
+		}
+		else
+		{
+			if (format == tft_rgba_dxt5)
+			{
+				use_blend_size_sampler = true;
+			}
+			else
+			{
+				QMessageBox::critical(this, tr("Error"),
+					QString(tr("File '%1' has wrong format"
+						" %2, only formats %3 "
+						"supported")).arg(name).arg(
+						format_str).arg(
+						valid_formats_str));
+
+				ok = false;
+
+				return;
+			}
+		}
 
 		for (i = 0; i < count; ++i)
 		{
-			if ((width <= 32) && (height <= 32))
+			if ((width <= icon_size.width()) &&
+				(height <= icon_size.height()))
 			{
 				break;
 			}
 
-			width = std::max(width / 2, 1u);
-			height = std::max(height / 2, 1u);
+			width = std::max(width / 2, 1);
+			height = std::max(height / 2, 1);
 			mipmap++;
 		}
 
-		result = QImage(std::max(width, 32u), std::max(height, 32u),
-			QImage::Format_ARGB32);
+		tmp = QImage(width, height, QImage::Format_ARGB32);
 
 		for (y = 0; y < height; ++y)
 		{
@@ -82,17 +145,174 @@ QImage ELGLWidget::get_icon(const QString &name)
 			{
 				color = image->get_pixel(x, y, 0, 0, mipmap);
 
-				result.setPixel(x, y, QColor::fromRgbF(color[0],
+				tmp.setPixel(x, y, QColor::fromRgbF(color[0],
 					color[1], color[2], color[3]).rgba());
 			}
 		}
+
+		icon = QIcon(QPixmap::fromImage(tmp.scaled(icon_size.width(),
+			icon_size.height(), Qt::KeepAspectRatio,
+			Qt::SmoothTransformation)));
+
+		ok = true;
+	}
+	catch (const boost::exception &exception)
+	{
+		message = "";
+
+		if (boost::get_error_info<errinfo_message>(exception) != 0)
+		{
+			message = QString::fromUtf8(boost::get_error_info<
+				errinfo_message>(exception)->c_str());
+		}
+
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(message).arg(
+			name));
+		ok = false;
+	}
+	catch (const std::exception &exception)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(
+				exception.what()).arg(name));
+		ok = false;
 	}
 	catch (...)
 	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error reading file '%1'")).arg(name));
+		ok = false;
 	}
+}
 
-	return result.scaled(32, 32, Qt::KeepAspectRatio,
-		Qt::SmoothTransformation);
+void ELGLWidget::get_extra_map_data(const QString &name,
+	const QSize &image_size, bool &ok)
+{
+	ImageSharedPtr image;
+	QString message, format_str, valid_formats_str;
+	glm::uvec3 size;
+	TextureFormatType format;
+	Uint16 mipmaps;
+	bool cube_map, array;
+
+	try
+	{
+		m_editor->get_image_data(String(name.toUtf8()), format, size,
+			mipmaps, cube_map, array);
+
+		format_str = QString::fromUtf8(TextureFormatUtil::get_str(
+			format).get().c_str());
+		valid_formats_str = QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_rg_rgtc2).get(
+				).c_str());
+
+		if ((size.x != image_size.width()) ||
+			(size.y != image_size.height()) || (size.z != 0))
+		{
+			QMessageBox::critical(this, tr("Error"), QString(tr(
+				"File '%1' has wrong size of <%2, %3, %4> "
+				"instead of <%5, %6, 0>")).arg(name).arg(
+					size.x).arg(size.y).arg(size.z).arg(
+					image_size.width()).arg(
+					image_size.height()));
+
+			ok = false;
+
+			return;
+		}
+
+		if (format != tft_rg_rgtc2)
+		{
+			QMessageBox::critical(this, tr("Error"),
+				QString(tr("File '%1' has wrong format"
+					" %2, only formats %3 supported")).arg(
+					name).arg(format_str).arg(
+					valid_formats_str));
+
+			ok = false;
+
+			return;
+		}
+
+		ok = true;
+	}
+	catch (const boost::exception &exception)
+	{
+		message = "";
+
+		if (boost::get_error_info<errinfo_message>(exception) != 0)
+		{
+			message = QString::fromUtf8(boost::get_error_info<
+				errinfo_message>(exception)->c_str());
+		}
+
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(message).arg(
+			name));
+		ok = false;
+	}
+	catch (const std::exception &exception)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(
+				exception.what()).arg(name));
+		ok = false;
+	}
+	catch (...)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error reading file '%1'")).arg(name));
+		ok = false;
+	}
+}
+
+void ELGLWidget::get_image_data(const QString &name, QSize &size, bool &ok)
+{
+	QString message;
+	glm::uvec3 image_size;
+	TextureFormatType format;
+	Uint16 mipmaps;
+	bool cube_map, array;
+
+	try
+	{
+		m_editor->get_image_data(String(name.toUtf8()), format,
+			image_size, mipmaps, cube_map, array);
+
+		size.setWidth(image_size.x);
+		size.setHeight(image_size.y);
+
+		ok = true;
+	}
+	catch (const boost::exception &exception)
+	{
+		message = "";
+
+		if (boost::get_error_info<errinfo_message>(exception) != 0)
+		{
+			message = QString::fromUtf8(boost::get_error_info<
+				errinfo_message>(exception)->c_str());
+		}
+
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(message).arg(
+			name));
+		ok = false;
+	}
+	catch (const std::exception &exception)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error '%1' reading file '%2'")).arg(
+				exception.what()).arg(name));
+		ok = false;
+	}
+	catch (...)
+	{
+		QMessageBox::critical(this, tr("Error"), QString(tr(
+			"Error reading file '%1'")).arg(name));
+		ok = false;
+	}
 }
 
 void ELGLWidget::mouse_click_action()
@@ -544,7 +764,7 @@ void ELGLWidget::initializeGL()
 	m_editor.reset(new Editor(m_global_vars, m_file_system));
 	m_editor->set_z_near(1.5f);
 
-	m_timer->start(17);
+	m_timer->start(100);
 
 	emit initialized();
 }
@@ -768,6 +988,13 @@ void ELGLWidget::remove_object()
 	}
 }
 
+void ELGLWidget::remove_objects()
+{
+	m_editor->remove_objects();
+	emit can_undo(m_editor->get_can_undo());
+	m_select = false;
+}
+
 void ELGLWidget::set_object_blend(const BlendType value)
 {
 	m_editor->set_object_blend(value);
@@ -963,30 +1190,6 @@ const glm::vec3 &ELGLWidget::get_ambient() const
 	return m_editor->get_ambient();
 }
 
-void ELGLWidget::set_terrain_albedo_map(const QString &name, const int index)
-{
-	m_editor->set_terrain_albedo_map(String(name.toStdString()), index);
-	emit can_undo(m_editor->get_can_undo());
-}
-
-void ELGLWidget::set_terrain_blend_data(const ShaderBlendData &blend_data,
-	const int index)
-{
-	m_editor->set_terrain_blend_data(blend_data, index);
-	emit can_undo(m_editor->get_can_undo());
-}
-
-QString ELGLWidget::get_terrain_albedo_map(const int index) const
-{
-	return QString::fromUtf8(m_editor->get_terrain_albedo_map(index).get(
-		).c_str());
-}
-
-const ShaderBlendData &ELGLWidget::get_terrain_blend_data(const int index) const
-{
-	return m_editor->get_terrain_blend_data(index);
-}
-
 void ELGLWidget::move_left()
 {
 	m_pos += m_camera_yaw_rotate * glm::vec3(-5.0f, 0.0f, 0.0f);
@@ -1134,11 +1337,21 @@ void ELGLWidget::set_terrain_layer_index(const int index)
 	m_terrain_layer_index = std::max(index, 0);
 }
 
-void ELGLWidget::open_map(const QString &file_name)
+void ELGLWidget::load_map(const QString &file_name,
+	const bool load_2d_objects, const bool load_3d_objects,
+	const bool load_lights, const bool load_particles,
+	const bool load_materials, const bool load_height_map,
+	const bool load_tile_map, const bool load_walk_map,
+	const bool load_terrain, const bool load_water)
 {
 	if (!file_name.isEmpty())
 	{
-		m_editor->load_map(String(file_name.toUtf8()));
+		m_editor->load_map(String(file_name.toUtf8()),
+			load_2d_objects, load_3d_objects, load_lights,
+			load_particles, load_materials, load_height_map,
+			load_tile_map, load_walk_map, load_terrain,
+			load_water);
+
 		emit update_terrain(m_editor->get_terrain());
 
 		emit can_undo(m_editor->get_can_undo());
@@ -1164,10 +1377,29 @@ void ELGLWidget::set_fog(const glm::vec3 &color, const float density)
 //	m_editor->get_scene().set_fog(color, density);
 }
 
-void ELGLWidget::set_terrain_albedo_map(const QString &name, const Uint32 index)
+void ELGLWidget::set_terrain_material(const QString &albedo_map,
+	const QString &extra_map, const float blend_size,
+	const bool use_blend_size_sampler, const bool use_blend_size,
+	const bool use_extra_map, const int index)
 {
-	m_editor->set_terrain_albedo_map(String(name.toUtf8()), index);
+	m_editor->set_terrain_material(String(albedo_map.toUtf8()),
+		String(extra_map.toUtf8()), blend_size, use_blend_size_sampler,
+		use_blend_size, use_extra_map, index);
 	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::get_terrain_material(QString &albedo_map,
+	QString &extra_map, float &blend_size, bool &use_blend_size_sampler,
+	bool &use_blend_size, bool &use_extra_map, const int index) const
+{
+	String tmp_albedo_map, tmp_extra_map;
+
+	m_editor->get_terrain_material(tmp_albedo_map, tmp_extra_map,
+		blend_size, use_blend_size_sampler, use_blend_size,
+		use_extra_map, index);
+
+	albedo_map = QString::fromUtf8(tmp_albedo_map.get().c_str());
+	extra_map = QString::fromUtf8(tmp_extra_map.get().c_str());
 }
 
 void ELGLWidget::set_object_selection(const SelectionType selection)
@@ -1343,6 +1575,11 @@ void ELGLWidget::set_draw_light_spheres(const bool draw_light_spheres)
 	m_editor->set_draw_light_spheres(draw_light_spheres);
 }
 
+void ELGLWidget::set_draw_heights(const bool draw_heights)
+{
+	m_editor->set_draw_heights(draw_heights);
+}
+
 void ELGLWidget::set_lights_enabled(const bool enabled)
 {
 	m_editor->set_lights_enabled(enabled);
@@ -1384,132 +1621,31 @@ void ELGLWidget::set_object_materials(const StringVector &materials)
 	emit can_undo(m_editor->get_can_undo());
 }
 
-/*
-void ELGLWidget::get_codecs(QStringList &codecs)
-{
-	StringVector tmp;
-
-	codecs.clear();
-
-	SceneResources::get_codec_manager().get_supported_codecs(tmp);
-
-	BOOST_FOREACH(const String &codec, tmp)
-	{
-		codecs.append(QString::fromStdString(codec));
-	}
-}
-
-void ELGLWidget::get_file_extensions_filter(QString &filter)
-{
-	StringVector codecs;
-	StringVector extensions;
-
-	filter.clear();
-
-	SceneResources::get_codec_manager().get_supported_file_extensions(extensions);
-
-	BOOST_FOREACH(const String &extension, extensions)
-	{
-		if (!filter.isEmpty())
-		{
-			filter += tr(" ");
-		}
-		else
-		{
-			filter = tr("all image formats (");
-		}
-
-		filter += tr("*.") + QString::fromStdString(extension);
-	}
-
-	filter += tr(")");
-
-	SceneResources::get_codec_manager().get_supported_codecs(codecs);
-
-	BOOST_FOREACH(const String &codec, codecs)
-	{
-		QString tmp;
-
-		SceneResources::get_codec_manager().get_supported_file_extensions(extensions,
-			codec);
-
-		BOOST_FOREACH(const String &extension, extensions)
-		{
-			if (!tmp.isEmpty())
-			{
-				tmp += tr(" ");
-			}
-			else
-			{
-				tmp = QString::fromStdString(codec) + tr(" image (");
-			}
-
-			tmp += tr("*.") + QString::fromStdString(extension);
-		}
-
-		tmp += tr(")");
-
-		filter += tr(";;") + tmp;
-	}
-}
-
-void ELGLWidget::get_file_extensions_filter(QString &filter, QString &default_extension,
-	const QString &codec)
-{
-	StringVector extensions;
-
-	filter.clear();
-
-	SceneResources::get_codec_manager().get_supported_file_extensions(extensions,
-		codec.toStdString());
-
-	BOOST_FOREACH(const String &extension, extensions)
-	{
-		if (!filter.isEmpty())
-		{
-			filter += tr(" ");
-		}
-		else
-		{
-			filter = codec + tr(" image (");
-			default_extension = QString::fromStdString(extension);
-		}
-
-		filter += tr("*.") + QString::fromStdString(extension);
-	}
-
-	filter += tr(")");
-}
-
-void ELGLWidget::export_blend_image(const QString &file_name, const QString &codec) const
-{
-	m_editor->export_blend_image(file_name.toUtf8(), codec.toUtf8());
-}
-
-void ELGLWidget::export_terrain_map(const QString &file_name, const QString &codec) const
-{
-	m_editor->export_terrain_map(file_name.toUtf8(), codec.toUtf8());
-}
-
-void ELGLWidget::import_terrain_map(const QString &file_name)
-{
-	m_editor->import_terrain_map(file_name.toUtf8());
-
-	emit can_undo(m_editor->get_can_undo());
-}
-*/
-
 void ELGLWidget::set_debug_mode(const int value)
 {
 	m_global_vars->set_effect_debug(value >= 0);
 	m_editor->set_debug_mode(std::max(value, 0));
 }
 
-void ELGLWidget::init_terrain(const int width, const int height,
-	const QString texture)
+void ELGLWidget::init_terrain(const QSize &size, const QString &albedo_map,
+	const QString &extra_map, const bool use_blend_size_sampler,
+	const bool use_extra_map)
 {
-	m_editor->init_terrain(glm::uvec2(width, height),
-		String(texture.toUtf8()));
+	m_editor->init_terrain(glm::uvec2(size.width(), size.height()),
+		String(albedo_map.toUtf8()), String(extra_map.toUtf8()),
+		use_blend_size_sampler, use_extra_map);
+
+	emit update_terrain(m_editor->get_terrain());
+}
+
+void ELGLWidget::init_terrain(const QString &height_map, const QSize &size,
+	const QString &albedo_map, const QString &extra_map,
+	const bool use_blend_size_sampler, const bool use_extra_map)
+{
+	m_editor->init_terrain(String(height_map.toUtf8()),
+		glm::uvec2(size.width(), size.height()),
+		String(albedo_map.toUtf8()), String(extra_map.toUtf8()),
+		use_blend_size_sampler, use_extra_map);
 
 	emit update_terrain(m_editor->get_terrain());
 }
@@ -1529,47 +1665,42 @@ QStringList ELGLWidget::get_debug_modes() const
 	return result;
 }
 
-float ELGLWidget::get_terrain_offset_x() const
+QVector3D ELGLWidget::get_terrain_offset_min()
 {
-	return Editor::get_terrain_offset().x;
+	return QVector3D(Editor::get_terrain_offset_min().x,
+		Editor::get_terrain_offset_min().y,
+		Editor::get_terrain_offset_min().z);
 }
 
-float ELGLWidget::get_terrain_offset_y() const
+QVector3D ELGLWidget::get_terrain_offset_max()
 {
-	return Editor::get_terrain_offset().y;
+	return QVector3D(Editor::get_terrain_offset_max().x,
+		Editor::get_terrain_offset_max().y,
+		Editor::get_terrain_offset_max().z);
 }
 
-float ELGLWidget::get_terrain_offset_z() const
+void ELGLWidget::relax_terrain_uv(const AbstractProgressSharedPtr &progress,
+	const int count)
 {
-	return Editor::get_terrain_offset().z;
+	m_editor->relax_terrain_uv(progress, count);
 }
 
-float ELGLWidget::get_terrain_offset_min_x() const
+void ELGLWidget::import_terrain_height_map(const QString &name)
 {
-	return Editor::get_terrain_offset_min().x;
+	m_editor->import_terrain_height_map(String(name.toUtf8()));
 }
 
-float ELGLWidget::get_terrain_offset_min_y() const
+void ELGLWidget::import_terrain_blend_map(const QString &name)
 {
-	return Editor::get_terrain_offset_min().y;
+	m_editor->import_terrain_blend_map(String(name.toUtf8()));
 }
 
-float ELGLWidget::get_terrain_offset_min_z() const
+bool ELGLWidget::get_terrain() const
 {
-	return Editor::get_terrain_offset_min().z;
+	return m_editor->get_terrain();
 }
 
-float ELGLWidget::get_terrain_offset_max_x() const
+int ELGLWidget::get_terrain_layer_count() const
 {
-	return Editor::get_terrain_offset_max().x;
-}
-
-float ELGLWidget::get_terrain_offset_max_y() const
-{
-	return Editor::get_terrain_offset_max().y;
-}
-
-float ELGLWidget::get_terrain_offset_max_z() const
-{
-	return Editor::get_terrain_offset_max().z;
+	return m_editor->get_terrain_layer_count();
 }

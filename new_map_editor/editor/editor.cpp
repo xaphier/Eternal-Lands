@@ -14,12 +14,11 @@
 #include "undo/lightmodification.hpp"
 #include "undo/objectmodification.hpp"
 #include "undo/heightmodification.hpp"
-#include "undo/terrainmapmodification.hpp"
+#include "undo/terrainmaterialmodification.hpp"
 #include "undo/groundtilemodification.hpp"
 #include "undo/displacementvaluemodification.hpp"
 #include "undo/lightsmodification.hpp"
 #include "undo/objectsmodification.hpp"
-#include "undo/blenddatamodification.hpp"
 #include "scene.hpp"
 #include "codec/codecmanager.hpp"
 #include "logging.hpp"
@@ -116,52 +115,47 @@ namespace eternal_lands
 		m_undo.add(modification);
 	}
 
-	void Editor::set_terrain_albedo_map(const String &str,
-		const Uint16 index)
+	void Editor::set_terrain_material(const String &albedo_map,
+		const String &extra_map, const float blend_size,
+		const bool use_blend_size_sampler, const bool use_blend_size,
+		const bool use_extra_map, const Uint16 index)
 	{
-		String tmp;
+		String old_albedo_map, old_extra_map;
+		float old_blend_size;
+		bool old_use_blend_size_sampler, old_use_blend_size;
+		bool old_use_extra_map;
 
-		tmp = m_data.get_terrain_albedo_map(index);
+		get_terrain_material(old_albedo_map, old_extra_map,
+			old_blend_size, old_use_blend_size_sampler,
+			old_use_blend_size, old_use_extra_map, index);
 
-		if (str == tmp)
+		if ((old_albedo_map == albedo_map) &&
+			(old_extra_map == extra_map) &&
+			(old_blend_size == blend_size) &&
+			(old_use_blend_size_sampler ==
+				use_blend_size_sampler) &&
+			(old_use_blend_size == use_blend_size) &&
+			(old_use_extra_map == use_extra_map))
 		{
 			return;
 		}
 
-		if (add_needed(index, mt_terrain_albedo_map_changed))
+		if (add_needed(index, mt_terrain_material_changed))
 		{
 			ModificationAutoPtr modification(new
-				TerrainMapModification(tmp, index,
-				mt_terrain_albedo_map_changed, get_edit_id()));
+				TerrainMaterialModification(old_albedo_map,
+					old_extra_map, old_blend_size,
+					old_use_blend_size_sampler,
+					old_use_blend_size, old_use_extra_map,
+					index, mt_terrain_material_changed,
+					get_edit_id()));
 
 			m_undo.add(modification);
 		}
 
-		m_data.set_terrain_albedo_map(str, index);
-	}
-
-	void Editor::set_terrain_blend_data(const ShaderBlendData &blend_data,
-		const Uint16 index)
-	{
-		ShaderBlendData tmp;
-
-		tmp = m_data.get_terrain_blend_data(index);
-
-		if (blend_data == tmp)
-		{
-			return;
-		}
-
-		if (add_needed(index, mt_terrain_blend_data_changed))
-		{
-			ModificationAutoPtr modification(new
-				BlendDataModification(tmp, index,
-				mt_terrain_blend_data_changed, get_edit_id()));
-
-			m_undo.add(modification);
-		}
-
-		m_data.set_terrain_blend_data(blend_data, index);
+		m_data.set_terrain_material(albedo_map, extra_map, blend_size,
+			use_blend_size_sampler, use_blend_size, use_extra_map,
+			index);
 	}
 
 	void Editor::set_ground_tile(const glm::vec2 &point,
@@ -307,114 +301,6 @@ namespace eternal_lands
 		return m_data.get_ambient();
 	}
 
-/*
-	void Editor::terrain_edit(const Uint16Array2 &vertex,
-		const float strength, const float radius,
-		const EditorBrushType brush_type, const Uint16 id)
-	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		HeightVector heights;
-
-		get_scene().get_scene_page_read_write(get_page_id(),
-			scene_page_read_write);
-
-		get_heights(scene_page_read_write, heights, vertex, radius);
-
-		{
-			ModificationAutoPtr modification(new HeightModification(heights,
-				id, get_page_id(), true));
-
-			m_undo.add(modification);
-		}
-
-		change_heights(heights, vertex, strength, radius, get_brush_type(
-			brush_type));
-
-		scene_page_read_write->set_terrain_heights(heights);
-	}
-
-	void Editor::blend_image_edit(const Uint32 id, const Uint16Array2 vertex,
-		const Uint32 index, const float strength, const float radius,
-		const EditorBrushType brush_type)
-	{
-		ScenePageReadWriteIntrusivePtr scene_page_read_write;
-		ImageValueVector blend_values;
-
-		get_scene().get_scene_page_read_write(get_page_id(),
-			scene_page_read_write);
-
-		get_blend_values(blend_values, vertex, radius);
-
-		{
-			ModificationAutoPtr modification(new BlendModification(
-				blend_values, m_blend_image, id, get_page_id()));
-
-			m_undo.add(modification);
-		}
-
-		change_blend_values(blend_values, vertex, index, strength, radius,
-			brush_type);
-
-		BOOST_FOREACH(const ImageValue &value, blend_values)
-		{
-			m_blend_image->set_pixel(value.get_x(), value.get_y(), 0, 0, 0,
-				value.get_value());
-		}
-
-		m_texture->unload();
-	}
-
-	void Editor::terrain_height_edit(const Uint32 id, const glm::vec3 &p0,
-		const glm::vec3 &p1, const float strength, const float radius,
-		const int brush_type)
-	{
-		Ray ray;
-		Uint32Array2 size;
-		Uint16Array2 vertex;
-
-		ray = Ray(p0, glm::normalize(p1 - p0));
-
-		{
-			ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-
-			get_scene().get_scene_page_read_only(get_page_id(),
-				scene_page_read_only);
-
-			size[0] = scene_page_read_only->get_terrain_width();
-			size[1] = scene_page_read_only->get_terrain_height();
-		}
-
-		if (get_scene().intersect_terrain(get_page_id(), ray, size, vertex))
-		{
-			terrain_edit(id, vertex, strength, radius, get_brush_type(
-				brush_type));
-
-			get_scene().set_view_changed();
-		}
-	}
-
-	void Editor::terrain_layer_edit(const Uint32 id, const glm::vec3 &p0,
-		const glm::vec3 &p1, const Uint32 index, const float strength,
-		const float radius, const int brush_type)
-	{
-		Ray ray;
-		Uint32Array2 size;
-		Uint16Array2 vertex;
-
-		ray = Ray(p0, glm::normalize(p1 - p0));
-
-		size[0] = m_blend_image->get_width();
-		size[1] = m_blend_image->get_height();
-
-		if (get_scene().intersect_terrain(get_page_id(), ray, size, vertex))
-		{
-			blend_image_edit(id, vertex, index, strength, radius,
-				get_brush_type(brush_type));
-
-			get_scene().set_view_changed();
-		}
-	}
-*/
 	void Editor::ground_tile_edit(const glm::vec3 &point,
 		const Uint8 height)
 	{
@@ -465,73 +351,67 @@ namespace eternal_lands
 			get_scene().set_view_changed();
 		}
 */	}
-/*
-	void Editor::set_terrain(const MaterialData &terrain_material,
-		const Uint16Array2 map_size, const Uint16Array2 blend_image_size)
+
+	void Editor::load_map(const String &name, const bool load_2d_objects,
+		const bool load_3d_objects, const bool load_lights,
+		const bool load_particles, const bool load_materials,
+		const bool load_height_map, const bool load_tile_map,
+		const bool load_walk_map, const bool load_terrain,
+		const bool load_water)
 	{
-		ImageSharedPtr terrain_map;
-		Uint32Array3 size;
+		MapItemsTypeSet skip_items;
 
-		size[0] = blend_image_size[0];
-		size[1] = blend_image_size[1];
-		size[2] = 1;
-
-		m_blend_image = boost::make_shared<Image>("blend.dds", false,
-			tft_rgba8, size, 0);
-
-		m_texture.reset(new ImageTexture(m_blend_image));
-		m_texture->set_wrap_r(twt_clamp);
-		m_texture->set_wrap_s(twt_clamp);
-		m_texture->set_wrap_t(twt_clamp);
-
-		size[0] = map_size[0] + 1;
-		size[1] = map_size[1] + 1;
-
-		terrain_map = boost::make_shared<Image>("terrain", false,
-			tft_l8, size, 0);
-
-		get_scene().set_terrain(terrain_map, terrain_material, m_texture);
-
-		m_undo.clear();
-	}
-
-	void Editor::get_terrain_material_data(MaterialData &terrain_material)
-		const
-	{
-		ScenePageReadOnlyIntrusivePtr scene_page_read_only;
-		MaterialSharedPtr material;
-
-		get_scene().get_scene_page_read_only(get_global_id().get_page_id(),
-			scene_page_read_only);
-
-		material = scene_page_read_only->get_object_materials(
-			get_global_id().get_id())[0];
-
-		terrain_material = material->get_material_data();
-	}
-
-	void Editor::save(const String &name) const
-	{
-		String path;
-
-		path = AbstractFile::get_path_str(name);
-
-		if (m_blend_image.get() != 0)
+		if (!load_2d_objects)
 		{
-			m_scene.save(name, m_blend_image->get_name());
+			skip_items.insert(mit_2d_objects);
+		}
 
-			m_blend_image->save(path + "/" + m_blend_image->get_name(),
-				"dds");
-		}
-		else
+		if (!load_3d_objects)
 		{
-			m_scene.save(name, "");
+			skip_items.insert(mit_3d_objects);
 		}
-	}
-*/
-	void Editor::load_map(const String &name)
-	{
-		m_data.load_map(name);
+
+		if (!load_lights)
+		{
+			skip_items.insert(mit_lights);
+		}
+
+		if (!load_particles)
+		{
+			skip_items.insert(mit_particles);
+		}
+
+		if (!load_materials)
+		{
+			skip_items.insert(mit_materials);
+		}
+
+		if (!load_height_map)
+		{
+			skip_items.insert(mit_height_map);
+		}
+
+		if (!load_tile_map)
+		{
+			skip_items.insert(mit_tile_map);
+		}
+
+		if (!load_walk_map)
+		{
+			skip_items.insert(mit_walk_map);
+		}
+
+		if (!load_terrain)
+		{
+			skip_items.insert(mit_terrain);
+		}
+
+		if (!load_water)
+		{
+			skip_items.insert(mit_water);
+		}
+
+		m_data.load_map(name, skip_items);
 
 		m_undo.clear();
 	}
@@ -545,6 +425,22 @@ namespace eternal_lands
 		change_object(mt_object_removed, object_description);
 
 		m_data.remove_object(id);
+	}
+
+	void Editor::remove_objects(const Uint32 id)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+
+		m_data.get_objects(id, object_descriptions);
+
+		change_objects(mt_objects_removed, object_descriptions);
+
+		BOOST_FOREACH(
+			const EditorObjectDescription &object_description,
+			object_descriptions)
+		{
+			m_data.remove_object(object_description.get_id());
+		}
 	}
 
 	void Editor::set_object_blend(const Uint32 id, const BlendType blend)
@@ -1241,26 +1137,44 @@ namespace eternal_lands
 		m_data.set_terrain_blend_values(blend_values);
 	}
 
-	void Editor::change_terrain_albedo_map(const String &name,
-		const int index)
+	void Editor::import_terrain_height_map(const String &name)
 	{
-		String str;
+		DisplacementValueVector displacement_values;
 
-		str = m_data.get_terrain_albedo_map(index);
+		m_data.get_all_terrain_displacement_values(
+			displacement_values);
 
-		ModificationAutoPtr modification(new TerrainMapModification(
-			str, index, mt_terrain_albedo_map_changed,
+		ModificationAutoPtr modification(
+			new DisplacementValueModification(displacement_values,
 			get_edit_id()));
 
 		m_undo.add(modification);
 
-		m_data.set_terrain_albedo_map(name, index);
+		m_data.import_terrain_height_map(name);
 	}
 
-	void Editor::change_terrain_blend_type(const int blend,
-		const float scale, const float offset, const int index)
+	void Editor::import_terrain_blend_map(const String &name)
 	{
-		
+		ImageValueVector blend_values;
+
+		m_data.get_all_terrain_blend_values(blend_values);
+
+		ModificationAutoPtr modification(new BlendModification(
+			blend_values, get_edit_id()));
+
+		m_undo.add(modification);
+
+		m_data.import_terrain_blend_map(name);
+	}
+
+	void Editor::relax_terrain_uv(
+		const AbstractProgressSharedPtr &progress, const Uint16 count)
+	{
+#ifdef	USE_SSE2
+		m_data.relax_terrain_uv(progress, count, SDL_HasSSE2());
+#else	/* USE_SSE2 */
+		m_data.relax_terrain_uv(progress, count, false);
+#endif	/* USE_SSE2 */
 	}
 
 }

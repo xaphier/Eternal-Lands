@@ -25,13 +25,20 @@ namespace eternal_lands
 	class WaterData
 	{
 		private:
+			String m_name;
 			String m_material;
 			float m_height;
 
 		public:
 			WaterData();
-			WaterData(const String &material, const float height);
+			WaterData(const String &name, const String &material,
+				const float height);
 			~WaterData() noexcept;
+
+			inline void set_name(const String &name) noexcept
+			{
+				m_name = name;
+			}
 
 			inline void set_material(const String &material)
 				noexcept
@@ -42,6 +49,11 @@ namespace eternal_lands
 			inline void set_height(const float height) noexcept
 			{
 				m_height = height;
+			}
+
+			inline const String &get_name() const noexcept
+			{
+				return m_name;
 			}
 
 			inline const String &get_material() const noexcept

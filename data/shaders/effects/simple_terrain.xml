@@ -8,5 +8,6 @@
 	<receives_shadows>true</receives_shadows>
 	<transparent>false</transparent>
 	<lighting>diffuse</lighting>
+	<output_channels>rgb</output_channels>
 </effect>
 

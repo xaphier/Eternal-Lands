@@ -16,6 +16,7 @@
 #include "effectmainutil.hpp"
 #include "effectdescriptionutil.hpp"
 #include "shader/shaderoutpututil.hpp"
+#include "exceptions.hpp"
 
 /**
  * @file
@@ -44,6 +45,7 @@ namespace eternal_lands
 			EffectDescriptionType m_description;
 			ShaderOutputType m_output;
 			EffectMainType m_main_type;
+			Uint8Array4 m_output_channels;
 			bool m_receives_shadows;
 			bool m_transparent;
 
@@ -119,6 +121,18 @@ namespace eternal_lands
 				m_transparent = transparent;
 			}
 
+			inline void set_output_channel_count(const Uint16 value,
+				const Uint16 render_target)
+			{
+				RANGE_CECK_MAX(render_target,
+					m_output_channels.size(),
+					UTF8("render target too big"));
+				RANGE_CECK_MAX(value, 4, UTF8("value too big"));
+
+				m_output_channels[render_target] =
+					std::min(value, static_cast<Uint16>(4));
+			}
+
 			inline const String &get_name() const noexcept
 			{
 				return m_name;
@@ -165,6 +179,144 @@ namespace eternal_lands
 			inline bool get_transparent() const noexcept
 			{
 				return m_transparent;
+			}
+
+			inline glm::bvec4 get_output_channels(
+				const Uint16 render_target) const
+			{
+				RANGE_CECK_MAX(render_target,
+					m_output_channels.size(),
+					UTF8("render target too big"));
+
+				return glm::bvec4(
+					m_output_channels[render_target] > 0,
+					m_output_channels[render_target] > 1,
+					m_output_channels[render_target] > 2,
+					m_output_channels[render_target] > 3);
+			}
+
+			inline Uint16 get_output_channel_count(
+				const Uint16 render_target) const
+			{
+				RANGE_CECK_MAX(render_target,
+					m_output_channels.size(),
+					UTF8("render target too big"));
+
+				return m_output_channels[render_target];
+			}
+
+			inline Uint8Array4 get_output_channels() const noexcept
+			{
+				return m_output_channels;
+			}
+
+			inline String get_output_channels_str() const
+			{
+				StringStream result;
+				Uint32 i, count;
+				bool first;
+
+				first = true;
+
+				count = m_output_channels.size();
+
+				for (i = 0; i < count; ++i)
+				{
+					switch (m_output_channels[i])
+					{
+						case 1:
+							result << UTF8("r");
+							break;
+						case 2:
+							result << UTF8("rg");
+							break;
+						case 3:
+							result << UTF8("rgb");
+							break;
+						case 4:
+							result << UTF8("rgba");
+							break;
+						default:
+							continue;
+					};
+
+					if (first)
+					{
+						result << UTF8(" ");
+					}
+
+					first = false;
+				}
+
+				return String(result.str());
+			}
+
+			inline void set_output_channels_str(const String &str)
+			{
+				std::vector<std::string> lines;
+				std::vector<std::string>::iterator it;
+				Uint32 i, count;
+
+				boost::split(lines, str.get(),
+					boost::is_any_of(UTF8(" ")),
+					boost::token_compress_on);
+
+				it = lines.begin();
+
+				while (it != lines.end())
+				{
+					boost::algorithm::trim(*it);
+
+					if (it->empty())
+					{
+						it = lines.erase(it);
+					}
+					else
+					{
+						it++;
+					}
+				}
+
+				count = m_output_channels.size();
+
+				for (i = 0; i < count; ++i)
+				{
+					m_output_channels[i] = 0;
+				}
+
+				count = std::min(lines.size(),
+					m_output_channels.size());
+
+				for (i = 0; i < count; ++i)
+				{
+					if ((lines[i] == UTF8("r")) ||
+						(lines[i] == UTF8("1")))
+					{
+						m_output_channels[i] = 1;
+						continue;
+					}
+
+					if ((lines[i] == UTF8("rg")) ||
+						(lines[i] == UTF8("2")))
+					{
+						m_output_channels[i] = 2;
+						continue;
+					}
+
+					if ((lines[i] == UTF8("rgb")) ||
+						(lines[i] == UTF8("3")))
+					{
+						m_output_channels[i] = 3;
+						continue;
+					}
+
+					if ((lines[i] == UTF8("rgba")) ||
+						(lines[i] == UTF8("4")))
+					{
+						m_output_channels[i] = 4;
+						continue;
+					}
+				}
 			}
 
 	};

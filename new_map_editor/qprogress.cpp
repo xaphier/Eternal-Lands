@@ -10,33 +10,46 @@
 QProgress::QProgress()
 {
 	m_value = 0;
+	m_canceled = false;
 }
 
-QProgress::~QProgress() throw()
+QProgress::~QProgress() noexcept
 {
-
 }
 
 void QProgress::init(const Uint32 min_value, const Uint32 max_value)
 {
 	m_value = min_value;
+	m_canceled = false;
 
 	emit set_range(min_value, max_value);
+	emit start();
 }
 
 void QProgress::set_text(const String &str)
 {
-	emit set_string(QString::fromStdString(str));
+	if (!m_canceled)
+	{
+		emit set_string(QString::fromStdString(str));
+	}
 }
 
 void QProgress::stepp(const Uint32 count)
 {
-	m_value += count;
+	if (!m_canceled)
+	{
+		m_value += count;
 
-	emit set_value(m_value);
+		emit set_value(m_value);
+	}
 }
 
 bool QProgress::get_canceled() const
 {
-	return false;
+	return m_canceled;
+}
+
+void QProgress::cancel(const bool value)
+{
+	m_canceled = value;
 }

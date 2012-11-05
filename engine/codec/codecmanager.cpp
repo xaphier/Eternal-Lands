@@ -14,6 +14,7 @@
 #include "pngimage.hpp"
 #include "jpegimage.hpp"
 #include "filesystem.hpp"
+#include "writer.hpp"
 
 namespace eternal_lands
 {
@@ -529,7 +530,8 @@ namespace eternal_lands
 	ImageSharedPtr CodecManager::load_image(const String &name,
 		const FileSystemSharedPtr &file_system,
 		const ImageCompressionTypeSet &compressions,
-		const bool rg_formats, const bool srgb_formats) const
+		const bool rg_formats, const bool srgb_formats,
+		const bool merge_layers) const
 	{
 		Uint8Array32 magic;
 		boost::array<String, 5> file_names;
@@ -567,7 +569,7 @@ namespace eternal_lands
 				JpegImage::check_load(magic))
 			{
 				return load_image(reader, compressions,
-					rg_formats, srgb_formats);
+					rg_formats, srgb_formats, merge_layers);
 			}
 		}
 
@@ -579,7 +581,8 @@ namespace eternal_lands
 
 	ImageSharedPtr CodecManager::load_image(const ReaderSharedPtr &reader,
 		const ImageCompressionTypeSet &compressions,
-		const bool rg_formats, const bool srgb_formats) const
+		const bool rg_formats, const bool srgb_formats,
+		const bool merge_layers) const
 	{
 		Uint8Array32 magic;
 		StringStream str;
@@ -596,7 +599,8 @@ namespace eternal_lands
 		if (DdsImage::check_load(magic))
 		{
 			return DdsImage::load_image(*this, reader,
-				compressions, rg_formats, srgb_formats);
+				compressions, rg_formats, srgb_formats,
+				merge_layers);
 		}
 
 		if (PngImage::check_load(magic))
@@ -624,8 +628,8 @@ namespace eternal_lands
 	void CodecManager::get_image_information(const String &name,
 		const FileSystemSharedPtr &file_system,
 		const bool rg_formats, const bool srgb_formats,
-		TextureFormatType &texture_format, glm::uvec3 &sizes,
-		Uint16 &mipmaps) const
+		TextureFormatType &texture_format, glm::uvec3 &size,
+		Uint16 &mipmaps, bool &cube_map, bool &array) const
 	{
 		Uint8Array32 magic;
 		boost::array<String, 5> file_names;
@@ -663,8 +667,8 @@ namespace eternal_lands
 				JpegImage::check_load(magic))
 			{
 				get_image_information(reader, rg_formats,
-					srgb_formats, texture_format, sizes,
-					mipmaps);
+					srgb_formats, texture_format, size,
+					mipmaps, cube_map, array);
 
 				return;
 			}
@@ -678,8 +682,8 @@ namespace eternal_lands
 
 	void CodecManager::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, const bool srgb_formats,
-		TextureFormatType &texture_format, glm::uvec3 &sizes,
-		Uint16 &mipmaps) const
+		TextureFormatType &texture_format, glm::uvec3 &size,
+		Uint16 &mipmaps, bool &cube_map, bool &array) const
 	{
 		Uint8Array32 magic;
 		StringStream str;
@@ -696,7 +700,8 @@ namespace eternal_lands
 		if (DdsImage::check_load(magic))
 		{
 			DdsImage::get_image_information(reader, rg_formats,
-				srgb_formats, texture_format, sizes, mipmaps);
+				srgb_formats, texture_format, size, mipmaps,
+				cube_map, array);
 
 			return;
 		}
@@ -704,7 +709,8 @@ namespace eternal_lands
 		if (PngImage::check_load(magic))
 		{
 			PngImage::get_image_information(reader, rg_formats,
-				texture_format, sizes, mipmaps);
+				texture_format, size, mipmaps, cube_map,
+				array);
 
 			return;
 		}
@@ -712,7 +718,8 @@ namespace eternal_lands
 		if (JpegImage::check_load(magic))
 		{
 			JpegImage::get_image_information(reader, rg_formats,
-				texture_format, sizes, mipmaps);
+				texture_format, size, mipmaps, cube_map,
+				array);
 
 			return;
 		}
@@ -756,6 +763,52 @@ namespace eternal_lands
 		const WriterSharedPtr &writer)
 	{
 		DdsImage::save_image(*this, image, writer);
+	}
+
+	void CodecManager::save_image_as_dds_dxt10(const ImageSharedPtr &image,
+		const WriterSharedPtr &writer)
+	{
+		DdsImage::save_image_dxt10(image, writer);
+	}
+
+	void CodecManager::save_image_as_png(const ImageSharedPtr &image,
+		const String &name)
+	{
+		WriterSharedPtr writer;
+
+		writer = boost::make_shared<Writer>(name);
+
+		save_image_as_png(image, writer);
+	}
+
+	void CodecManager::save_image_as_jpeg(const ImageSharedPtr &image,
+		const String &name)
+	{
+		WriterSharedPtr writer;
+
+		writer = boost::make_shared<Writer>(name);
+
+		save_image_as_jpeg(image, writer);
+	}
+
+	void CodecManager::save_image_as_dds(const ImageSharedPtr &image,
+		const String &name)
+	{
+		WriterSharedPtr writer;
+
+		writer = boost::make_shared<Writer>(name);
+
+		save_image_as_dds(image, writer);
+	}
+
+	void CodecManager::save_image_as_dds_dxt10(const ImageSharedPtr &image,
+		const String &name)
+	{
+		WriterSharedPtr writer;
+
+		writer = boost::make_shared<Writer>(name);
+
+		save_image_as_dds_dxt10(image, writer);
 	}
 
 }

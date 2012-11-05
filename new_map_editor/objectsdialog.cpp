@@ -41,6 +41,11 @@ namespace eternal_lands
 			glm::vec3 rotation;
 			float scale;
 
+			if (sub_category == nullptr)
+			{
+				return;
+			}
+
 			if (xmlStrcmp(node->name, BAD_CAST UTF8("object")) != 0)
 			{
 				return;
@@ -114,6 +119,11 @@ namespace eternal_lands
 			QTreeWidgetItem* sub_category;
 			QString str;
 
+			if (category == nullptr)
+			{
+				return;
+			}
+
 			if (xmlStrcmp(node->name,
 				BAD_CAST UTF8("sub_category")) != 0)
 			{
@@ -124,6 +134,8 @@ namespace eternal_lands
 			{
 				return;
 			}
+
+			sub_category = nullptr;
 
 			it = XmlUtil::children(node, true);
 
@@ -168,6 +180,8 @@ namespace eternal_lands
 			{
 				return;
 			}
+
+			category = nullptr;
 
 			it = XmlUtil::children(node, true);
 

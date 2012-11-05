@@ -43,7 +43,7 @@ namespace eternal_lands
 			}
 		}
 
-		Uint16 clamp_mipmap_count(const glm::uvec3 &sizes,
+		Uint16 clamp_mipmap_count(const glm::uvec3 &size,
 			const Uint16 mipmap_count, const bool array)
 		{
 			Uint32 tmp;
@@ -51,12 +51,12 @@ namespace eternal_lands
 
 			if (array)
 			{
-				tmp = std::max(sizes.x, sizes.y);
+				tmp = std::max(size.x, size.y);
 			}
 			else
 			{
-				tmp = std::max(std::max(sizes.x, sizes.y),
-					sizes.z);
+				tmp = std::max(std::max(size.x, size.y),
+					size.z);
 			}
 
 			result = 0;
@@ -210,7 +210,7 @@ namespace eternal_lands
 
 		for (i = 0; i <= get_mipmap_count(); ++i)
 		{
-			size += get_size(i) * face_count;
+			size += get_mipmap_size(i) * face_count;
 		}
 
 		return size;
@@ -226,15 +226,15 @@ namespace eternal_lands
 
 		for (i = 0; i < mipmap; ++i)
 		{
-			offset += get_size(i) * face_count;
+			offset += get_mipmap_size(i) * face_count;
 		}
 
-		offset += get_size(mipmap) * face;
+		offset += get_mipmap_size(mipmap) * face;
 
 		return offset;
 	}
 
-	Uint32 Image::get_size(const Uint16 mipmap) const
+	Uint32 Image::get_mipmap_size(const Uint16 mipmap) const
 	{
 		Uint32 width, height, depth;
 
@@ -297,37 +297,37 @@ namespace eternal_lands
 	Uint32 Image::get_buffer_pixel_offset(const Uint32 x, const Uint32 y,
 		const Uint32 z, const Uint16 mipmap) const
 	{
-		glm::uvec3 sizes;
+		glm::uvec3 size;
 
-		sizes = get_sizes(mipmap);
+		size = get_size(mipmap);
 
 		RANGE_CECK_MAX(mipmap, get_mipmap_count() + 1,
 			UTF8("value mipmap too big"));
-		RANGE_CECK_MAX(x, sizes.x, UTF8("value x too big"));
-		RANGE_CECK_MAX(y, sizes.y, UTF8("value y too big"));
-		RANGE_CECK_MAX(z, sizes.z, UTF8("value z too big"));
+		RANGE_CECK_MAX(x, size.x, UTF8("value x too big"));
+		RANGE_CECK_MAX(y, size.y, UTF8("value y too big"));
+		RANGE_CECK_MAX(z, size.z, UTF8("value z too big"));
 
-		return (get_pixel_size() / 8) * ((z * sizes.y + y) * sizes.x +
+		return (get_pixel_size() / 8) * ((z * size.y + y) * size.x +
 			x);
 	}
 
 	Uint32 Image::get_buffer_block_offset(const Uint32 x, const Uint32 y,
 		const Uint32 z, const Uint16 mipmap) const
 	{
-		glm::uvec3 sizes;
+		glm::uvec3 size;
 
-		sizes = get_sizes(mipmap);
+		size = get_size(mipmap);
 
-		sizes.x = (sizes.x + 3) / 4;
-		sizes.y = (sizes.y + 3) / 4;
+		size.x = (size.x + 3) / 4;
+		size.y = (size.y + 3) / 4;
 
 		RANGE_CECK_MAX(mipmap, get_mipmap_count() + 1,
 			UTF8("value mipmap too big"));
-		RANGE_CECK_MAX(x, sizes.x, UTF8("value x too big"));
-		RANGE_CECK_MAX(y, sizes.y, UTF8("value y too big"));
-		RANGE_CECK_MAX(z, sizes.z, UTF8("value z too big"));
+		RANGE_CECK_MAX(x, size.x, UTF8("value x too big"));
+		RANGE_CECK_MAX(y, size.y, UTF8("value y too big"));
+		RANGE_CECK_MAX(z, size.z, UTF8("value z too big"));
 
-		return get_block_size() * ((z * sizes.y + y) * sizes.x + x);
+		return get_block_size() * ((z * size.y + y) * size.x + x);
 	}
 
 	String Image::get_log_str() const
@@ -348,7 +348,7 @@ namespace eternal_lands
 
 	Image::Image(const String &name, const bool cube_map,
 		const TextureFormatType texture_format,
-		const glm::uvec3 &sizes, const Uint16 mipmap_count,
+		const glm::uvec3 &size, const Uint16 mipmap_count,
 		const Uint16 pixel_size, const GLenum format,
 		const GLenum type, const bool sRGB, const bool array)
 
@@ -359,8 +359,8 @@ namespace eternal_lands
 		m_name = name;
 		m_cube_map = cube_map;
 		m_texture_format = texture_format;
-		m_sizes = sizes;
-		m_mipmap_count = clamp_mipmap_count(sizes, mipmap_count, array);
+		m_size = size;
+		m_mipmap_count = clamp_mipmap_count(size, mipmap_count, array);
 		m_pixel_size = pixel_size;
 		m_format = format;
 		m_type = type;
@@ -375,7 +375,7 @@ namespace eternal_lands
 
 	Image::Image(const String &name, const bool cube_map,
 		const TextureFormatType texture_format,
-		const glm::uvec3 &sizes, const Uint16 mipmap_count,
+		const glm::uvec3 &size, const Uint16 mipmap_count,
 		const bool array)
 	{
 		TextureFormatUtil::get_source_format(texture_format, m_format,
@@ -384,8 +384,8 @@ namespace eternal_lands
 		m_name = name;
 		m_cube_map = cube_map;
 		m_texture_format = texture_format;
-		m_sizes = sizes;
-		m_mipmap_count = clamp_mipmap_count(sizes, mipmap_count, array);
+		m_size = size;
+		m_mipmap_count = clamp_mipmap_count(size, mipmap_count, array);
 		m_pixel_size = TextureFormatUtil::get_size(texture_format);
 		m_sRGB = TextureFormatUtil::get_sRGB(texture_format);
 		m_array = array;
@@ -1479,13 +1479,13 @@ namespace eternal_lands
 	{
 		Uint32 i, count;
 
-		m_sizes = image.m_sizes;
+		m_size = image.m_size;
 
 		for (i = 0; i < mipmap; ++i)
 		{
-			m_sizes[0] = std::max(1u, m_sizes[0] / 2);
-			m_sizes[1] = std::max(1u, m_sizes[1] / 2);
-			m_sizes[2] = std::max(1u, m_sizes[2] / 2);
+			m_size[0] = std::max(1u, m_size[0] / 2);
+			m_size[1] = std::max(1u, m_size[1] / 2);
+			m_size[2] = std::max(1u, m_size[2] / 2);
 		}
 
 		m_name = image.get_name();
@@ -1539,8 +1539,8 @@ namespace eternal_lands
 			return;
 		}
 
-		get_buffer()->copy(*image.get_buffer(), image.get_size(mipmap),
-			image.get_offset(face, mipmap), 0);
+		get_buffer()->copy(*image.get_buffer(), image.get_mipmap_size(
+			mipmap), image.get_offset(face, mipmap), 0);
 	}
 
 	Image::Image(const Image &image)
@@ -1548,7 +1548,7 @@ namespace eternal_lands
 		m_name = image.m_name;
 		m_cube_map = image.m_cube_map;
 		m_texture_format = image.m_texture_format;
-		m_sizes = image.m_sizes;
+		m_size = image.m_size;
 		m_mipmap_count = image.m_mipmap_count;
 		m_pixel_size = image.m_pixel_size;
 		m_format = image.m_format;
@@ -1563,7 +1563,7 @@ namespace eternal_lands
 	}
 
 	ImageSharedPtr Image::decompress(const bool copy,
-		const bool rg_formats)
+		const bool rg_formats, const bool merge_layers)
 	{
 		ReaderSharedPtr reader;
 
@@ -1572,9 +1572,9 @@ namespace eternal_lands
 			reader = boost::make_shared<Reader>(get_buffer(),
 				get_name());
 
-			return Dxt::uncompress(reader, get_name(), get_sizes(),
+			return Dxt::uncompress(reader, get_name(), get_size(),
 				get_texture_format(), get_mipmap_count(),
-				get_cube_map(), rg_formats);
+				get_cube_map(), rg_formats, merge_layers);
 		}
 
 		if (copy)

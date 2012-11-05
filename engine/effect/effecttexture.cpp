@@ -431,6 +431,8 @@ namespace eternal_lands
 
 		str << UTF8("texture");
 
+		type = pt_sampler2D; // Make compiler happy
+
 		switch (get_sampler())
 		{
 			case est_sampler_1d:

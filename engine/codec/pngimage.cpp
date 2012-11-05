@@ -90,7 +90,7 @@ namespace eternal_lands
 					const ReaderSharedPtr &reader,
 					const bool rg_formats,
 					TextureFormatType &texture_format,
-					glm::uvec3 &sizes, Uint16 &mipmaps);
+					glm::uvec3 &size, Uint16 &mipmaps);
 
 		};
 
@@ -130,7 +130,7 @@ namespace eternal_lands
 		{
 			ImageSharedPtr image;
 			boost::scoped_array<png_bytep> row_pointers;
-			glm::uvec3 sizes;
+			glm::uvec3 size;
 			Uint32 i, color_type, bit_depth;
 			TextureFormatType texture_format;
 
@@ -153,15 +153,15 @@ namespace eternal_lands
 
 			color_type = png_get_color_type(m_png_ptr, m_info_ptr);
 			bit_depth = png_get_bit_depth(m_png_ptr, m_info_ptr);
-			sizes[0] = png_get_image_width(m_png_ptr, m_info_ptr);
-			sizes[1] = png_get_image_height(m_png_ptr, m_info_ptr);
-			sizes[2] = 0;
+			size[0] = png_get_image_width(m_png_ptr, m_info_ptr);
+			size[1] = png_get_image_height(m_png_ptr, m_info_ptr);
+			size[2] = 0;
 
 			texture_format = get_texture_format(color_type,
 				bit_depth, rg_formats);
 
 			image = boost::make_shared<Image>(reader->get_name(),
-				false, texture_format, sizes, 0);
+				false, texture_format, size, 0);
 
 #ifndef BOOST_BIG_ENDIAN
 			if (bit_depth == 16)
@@ -188,7 +188,7 @@ namespace eternal_lands
 
 		void PngDecompress::get_image_information(
 			const ReaderSharedPtr &reader, const bool rg_formats,
-			TextureFormatType &texture_format, glm::uvec3 &sizes,
+			TextureFormatType &texture_format, glm::uvec3 &size,
 			Uint16 &mipmaps)
 		{
 			Uint32 color_type, bit_depth;
@@ -216,9 +216,9 @@ namespace eternal_lands
 			texture_format = get_texture_format(color_type,
 				bit_depth, rg_formats);
 
-			sizes[0] = png_get_image_width(m_png_ptr, m_info_ptr);
-			sizes[1] = png_get_image_height(m_png_ptr, m_info_ptr);
-			sizes[2] = 1;
+			size[0] = png_get_image_width(m_png_ptr, m_info_ptr);
+			size[1] = png_get_image_height(m_png_ptr, m_info_ptr);
+			size[2] = 1;
 
 			mipmaps = 0;
 		}
@@ -483,12 +483,16 @@ namespace eternal_lands
 
 	void PngImage::get_image_information(const ReaderSharedPtr &reader,
 		const bool rg_formats, TextureFormatType &texture_format,
-		glm::uvec3 &sizes, Uint16 &mipmaps)
+		glm::uvec3 &size, Uint16 &mipmaps, bool &cube_map,
+		bool &array)
 	{
 		PngDecompress png_decompress;
 
 		png_decompress.get_image_information(reader, rg_formats,
-			texture_format, sizes, mipmaps);
+			texture_format, size, mipmaps);
+
+		cube_map = false;
+		array = false;
 	}
 
 	bool PngImage::check_load(const Uint8Array32 &id)

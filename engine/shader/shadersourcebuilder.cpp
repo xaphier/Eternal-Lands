@@ -642,13 +642,9 @@ namespace eternal_lands
 				str << parameter.second << UTF8(";\n");
 			}
 
-			str << UTF8("const vec3 terrain_vector_scale = vec3(");
-			str << AbstractTerrain::get_vector_scale().x;
-			str << UTF8(", ");
-			str << AbstractTerrain::get_vector_scale().y;
-			str << UTF8(", ");
-			str << AbstractTerrain::get_vector_scale().z;
-			str << UTF8(");\n");
+			str << UTF8("const float terrain_vector_scale = ");
+			str << AbstractTerrain::get_vector_scale();
+			str << UTF8(";\n");
 
 			lut_size = ColorCorrection::get_lut_size();
 			scale = (lut_size - 1.0) / lut_size;
@@ -783,6 +779,86 @@ namespace eternal_lands
 			}
 		}
 
+		String get_output_type(const ShaderOutputType shader_output,
+			const Uint16 count)
+		{
+			switch (shader_output)
+			{
+				case sot_int:
+					switch (count)
+					{
+						case 1:
+							return String(UTF8(
+								"int"));
+						case 2:
+							return String(UTF8(
+								"ivec2"));
+						case 3:
+							return String(UTF8(
+								"ivec3"));
+						case 4:
+							return String(UTF8(
+								"ivec4"));
+					}
+					break;
+				case sot_uint:
+					switch (count)
+					{
+						case 1:
+							return String(UTF8(
+								"unsigned "
+									"int"));
+						case 2:
+							return String(UTF8(
+								"uvec2"));
+						case 3:
+							return String(UTF8(
+								"uvec3"));
+						case 4:
+							return String(UTF8(
+								"uvec4"));
+					}
+					break;
+				case sot_float:
+				default:
+					switch (count)
+					{
+						case 1:
+							return String(UTF8(
+								"float"));
+						case 2:
+							return String(UTF8(
+								"vec2"));
+						case 3:
+							return String(UTF8(
+								"vec3"));
+						case 4:
+							return String(UTF8(
+								"vec4"));
+					}
+					break;
+			}
+
+			return String(UTF8("vec4"));
+		}
+
+		String get_output_swizzle(const Uint16 count)
+		{
+			switch (count)
+			{
+				case 1:
+					return String(UTF8(".r"));
+				case 2:
+					return String(UTF8(".rg"));
+				case 3:
+					return String(UTF8(".rgb"));
+				case 4:
+					return String();
+			}
+
+			return String();
+		}
+
 	}
 
 	class ShaderSourceBuilder::ShaderSourceOptimizer
@@ -818,6 +894,7 @@ namespace eternal_lands
 		ssbot_tbn_matrix,
 		ssbot_fog,
 		ssbot_alpha_test,
+		ssbot_alpha_write,
 		ssbot_use_functions,
 		ssbot_lighting,
 		ssbot_light_indexed_deferred,
@@ -833,6 +910,7 @@ namespace eternal_lands
 			ShaderBuildType m_shader_build;
 			ShaderOutputType m_shader_output;
 			std::set<ShaderSourceBuildOptionTypes> m_options;
+			Uint8Array4 m_output_channels;
 			Uint16 m_vertex_lights_count;
 			Uint16 m_fragment_lights_count;
 			Uint16 m_lights_count;
@@ -848,6 +926,11 @@ namespace eternal_lands
 				m_shadow_maps_count(0),
 				m_render_targets_count(0)
 			{
+				BOOST_FOREACH(Uint8 &output_channel,
+					m_output_channels)
+				{
+					output_channel = 0;
+				}
 			}
 
 			inline ShaderSourceBuildData(
@@ -855,6 +938,7 @@ namespace eternal_lands
 				const ShaderVersionType version,
 				const ShaderBuildType shader_build,
 				const ShaderOutputType shader_output,
+				const Uint8Array4 &output_channels,
 				const Uint16 vertex_lights_count,
 				const Uint16 fragment_lights_count,
 				const Uint16 lights_count,
@@ -863,6 +947,7 @@ namespace eternal_lands
 				m_sources(sources), m_version(version),
 				m_shader_build(shader_build),
 				m_shader_output(shader_output),
+				m_output_channels(output_channels),
 				m_vertex_lights_count(vertex_lights_count),
 				m_fragment_lights_count(fragment_lights_count),
 				m_lights_count(lights_count),
@@ -987,6 +1072,16 @@ namespace eternal_lands
 				return m_render_targets_count;
 			}
 
+			inline Uint16 get_output_channel_count(
+				const Uint16 render_target) const
+			{
+				RANGE_CECK_MAX(render_target,
+					m_output_channels.size(),
+					UTF8("render target too big"));
+
+				return m_output_channels[render_target];
+			}
+
 	};
 
 	ShaderSourceBuilder::ShaderSourceBuilder(
@@ -1053,12 +1148,6 @@ namespace eternal_lands
 	void ShaderSourceBuilder::build_decode_terrain_displacement(
 		const String &indent, OutStream &functions) const
 	{
-		glm::vec4 scale;
-		glm::vec2 offset;
-
-		scale = AbstractTerrain::get_vector_scale_rgb10_a2();
-		offset = AbstractTerrain::get_vector_offset_rgb10_a2();
-
 		functions << indent << UTF8("/**") << std::endl;
 		functions << indent << UTF8(" * Convertes the normalized ");
 		functions << UTF8("rgb10_a2 vector to the") << std::endl;
@@ -1073,17 +1162,15 @@ namespace eternal_lands
 		functions << indent << UTF8("vec3 decode_terrain_displacement");
 		functions << UTF8("(const in vec4 vector)") << std::endl;
 		functions << indent << UTF8("{") << std::endl;
-		functions << indent << UTF8("\tvec4 tmp;") << std::endl;
-		functions << indent << UTF8("\tvec3 result;") << std::endl;
+		functions << indent << UTF8("\tvec3 result, tmp;") << std::endl;
 		functions << std::endl;
-		functions << indent << UTF8("\ttmp = vector * ");
-		functions << UTF8("vec4(") << scale.x << UTF8(", ") << scale.y;
-		functions << UTF8(", ") << scale.z << UTF8(", ") << scale.w;
-		functions << UTF8(");") << std::endl;
-		functions << indent << UTF8("\tresult.xy = tmp.xy + ");
-		functions << UTF8("vec2(") << offset.x << UTF8(", ");
-		functions << offset.y << UTF8(");") << std::endl;
-		functions << indent << UTF8("\tresult.z = tmp.z + tmp.w;");
+		functions << indent << UTF8("\tresult = vector.xyz * ");
+		functions << AbstractTerrain::get_vector_scale() << UTF8(";");
+		functions << std::endl;
+		functions << indent << UTF8("\ttmp = step(vector.aaa, vec3(");
+		functions << UTF8("0.5f, 1.5f, 2.5f) / 3.0f);") << std::endl;
+		functions << indent << UTF8("\tresult.xy *= vec2(tmp.x - ");
+		functions << UTF8("tmp.y + tmp.z, tmp.y) * 2.0 - 1.0;");
 		functions << std::endl;
 		functions << indent << UTF8("\treturn result;") << std::endl;
 		functions << indent << UTF8("}") << std::endl;
@@ -2810,7 +2897,7 @@ namespace eternal_lands
 				break;
 			case sbt_depth:
 				main << indent << output;
-				main << UTF8(" = vec4(1.0);\n");
+				main << UTF8(".rgb = vec3(1.0);\n");
 
 				break;
 			case sbt_shadow:
@@ -2822,8 +2909,25 @@ namespace eternal_lands
 					cpt_shadow_map_data, pqt_in, locals,
 					globals, uniform_buffers);
 
-				main << indent << output << UTF8(".rgb = ");
-				main << cpt_shadow_map_data << UTF8(";\n");
+				main << indent << output;
+
+				if (data.get_option(ssbot_alpha_write))
+				{
+					main << UTF8(".rgb");
+				}
+
+				main << UTF8(" = ") << cpt_shadow_map_data;
+
+				if (!data.get_option(ssbot_alpha_write))
+				{
+					main << UTF8(".rgb");
+				}
+				else
+				{
+					main << UTF8(".rrr");
+				}
+
+				main << UTF8(";\n");
 
 				break;
 			case sbt_debug_uv:
@@ -2862,7 +2966,11 @@ namespace eternal_lands
 				{
 					main << indent << output_array[i];
 					main << UTF8(" = ") << output_parameter;
-					main << UTF8("[") << i << UTF8("];\n");
+					main << UTF8("[") << i << UTF8("]");
+					main << get_output_swizzle(
+						data.get_output_channel_count(
+							i));
+					main << UTF8(";\n");
 				}
 				break;
 			case sbt_debug_albedo:
@@ -2997,7 +3105,7 @@ namespace eternal_lands
 				break;
 		}
 
-		if ((data.get_shader_build() != sbt_depth) &&
+		if (data.get_option(ssbot_alpha_write) &&
 			(data.get_shader_build() != sbt_screen_quad))
 		{
 			add_parameter(String(UTF8("fragment")), cpt_albedo,
@@ -3252,8 +3360,9 @@ namespace eternal_lands
 		StringStream version_stream;
 		UniformBufferUsage vertex_uniform_buffers;
 		UniformBufferUsage fragment_uniform_buffers;
+		Uint8Array4 output_channels;
 		String vertex_data, fragment_data, prefix, name_prefix;
-		String vertex, geometry, fragment, type;
+		String vertex, geometry, fragment;
 		ShaderVersionType version_type;
 		Uint16 i, render_target_count;
 		bool use_block, use_in_out;
@@ -3289,9 +3398,22 @@ namespace eternal_lands
 			EffectDescriptionUtil::get_render_targets_count(
 				description.get_description());
 
+		output_channels = description.get_output_channels();
+
+		if (data.get_version() <= svt_150)
+		{
+			BOOST_FOREACH(Uint8 &output_channel, output_channels)
+			{
+				if (output_channel > 0)
+				{
+					output_channel = 4;
+				}
+			}
+		}
+
 		data = ShaderSourceBuildData(sources, version_type,
-			shader_build, shader_output, get_vertex_lights_count(),
-			get_fragment_lights_count(),
+			shader_build, shader_output, output_channels,
+			get_vertex_lights_count(), get_fragment_lights_count(),
 			std::min(get_lights_count(), lights_count),
 			get_global_vars()->get_shadow_map_count(),
 			render_target_count);
@@ -3333,6 +3455,12 @@ namespace eternal_lands
 			!(get_global_vars()->get_exponential_shadow_maps() &&
 			get_global_vars()->get_use_multisample_shadows() &&
 			(shader_build == sbt_shadow)));
+		data.set_option(ssbot_alpha_write,
+			(data.get_version() < svt_150) ||
+			(description.get_transparent() &&
+			get_global_vars()->get_exponential_shadow_maps() &&
+			get_global_vars()->get_use_multisample_shadows() &&
+			(shader_build == sbt_shadow)));
 		data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());
 		data.set_option(ssbot_lighting, !description.get_lighting(
@@ -3360,8 +3488,10 @@ namespace eternal_lands
 		}
 
 		vertex_source << version_stream.str();
+		vertex_source << UTF8("/* ") << description.get_name();
+		vertex_source << UTF8(" ") <<  shader_build << UTF8( "*/\n");
 		vertex_source << UTF8("invariant gl_Position; /* make ");
-		vertex_source << UTF8("existing gl_Position be invariant*/\n");
+		vertex_source << UTF8("existing gl_Position be invariant */\n");
 
 		vertex = String(vertex_source.str());
 
@@ -3460,6 +3590,8 @@ namespace eternal_lands
 			vertex_source.str());
 
 		geometry_source << version_stream.str();
+		geometry_source << UTF8("/* ") << description.get_name();
+		geometry_source << UTF8(" ") <<  shader_build << UTF8( "*/\n");
 		geometry_source << UTF8("layout(points) in;\n");
 		geometry_source << UTF8("layout(triangle_strip) out;\n");
 		geometry_source << UTF8("layout(max_vertices = 4) out;\n");
@@ -3565,6 +3697,8 @@ namespace eternal_lands
 		geometry_source << UTF8("}\n");
 
 		fragment_source << version_stream.str();
+		fragment_source << UTF8("/* ") << description.get_name();
+		fragment_source << UTF8(" ") <<  shader_build << UTF8( "*/\n");
 
 		fragment = String(fragment_source.str());
 
@@ -3624,20 +3758,6 @@ namespace eternal_lands
 				array_sizes, prefix, String(), fragment_source);
 		}
 
-		switch (data.get_shader_output())
-		{
-			case sot_int:
-				type = UTF8("ivec4");
-				break;
-			case sot_uint:
-				type = UTF8("uvec4");
-				break;
-			case sot_float:
-			default:
-				type = UTF8("vec4");
-				break;
-		}
-
 		if (data.get_version() > svt_150)
 		{
 			fragment_source << UTF8("\n");
@@ -3650,7 +3770,10 @@ namespace eternal_lands
 					fragment_source << UTF8("location = ");
 					fragment_source << i;
 					fragment_source << UTF8(") out ");
-					fragment_source << type;
+					fragment_source << get_output_type(
+						data.get_shader_output(),
+						data.get_output_channel_count(
+							i));
 					fragment_source << UTF8(" FragData_");
 					fragment_source << i << UTF8(";\n");
 				}
@@ -3658,8 +3781,27 @@ namespace eternal_lands
 			else
 			{
 				fragment_source << UTF8("layout(location = 0");
-				fragment_source << UTF8(") out vec4 ");
-				fragment_source << UTF8("FragColor;\n");
+				fragment_source << UTF8(") out ");
+
+				if (data.get_option(ssbot_alpha_write))
+				{
+					fragment_source << UTF8("vec4");
+				}
+				else
+				{
+					if (shader_build == sbt_shadow)
+					{
+						fragment_source <<
+							UTF8("float");
+					}
+					else
+					{
+						fragment_source <<
+							UTF8("vec3");
+					}
+				}
+
+				fragment_source << UTF8(" FragColor;\n");
 			}
 		}
 

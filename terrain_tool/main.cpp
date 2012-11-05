@@ -3,7 +3,6 @@
 #include "abstractterrain.hpp"
 #include "readwritememory.hpp"
 #include "reader.hpp"
-#include "writer.hpp"
 
 using namespace eternal_lands;
 
@@ -125,15 +124,14 @@ void update_map_file(const std::string &file_name)
 
 int main(int argc, char *argv[])
 {
-	WriterSharedPtr writer;
 	CodecManager codec_manager;
 	ImageSharedPtr source_image, dest_image;
 	ReaderSharedPtr reader;
 	ReadWriteMemorySharedPtr buffer;
 	glm::vec3 centre, d0, d1, d2, d3, d4, d5, d6, d7, n;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	glm::uvec2 value;
-	Uint32 i, j, width, height, size;
+	Uint32 i, j, width, height, file_size;
 	Sint32 x, y;
 	std::ifstream str;
 
@@ -152,28 +150,28 @@ int main(int argc, char *argv[])
 	str.open(argv[1], std::ios::in | std::ios::binary);
 
 	str.seekg(0, std::ios::end);
-	size = str.tellg();
+	file_size = str.tellg();
 	str.seekg(0, std::ios::beg);
 
-	buffer = boost::make_shared<ReadWriteMemory>(size);
+	buffer = boost::make_shared<ReadWriteMemory>(file_size);
 
-	str.read(static_cast<char*>(buffer->get_ptr()), size);
+	str.read(static_cast<char*>(buffer->get_ptr()), file_size);
 
 	str.close();
 
 	reader = boost::make_shared<Reader>(buffer, String(argv[1]));
 
 	source_image = codec_manager.load_image(reader,
-		ImageCompressionTypeSet(), true, false);
+		ImageCompressionTypeSet(), true, false, false);
 
-	sizes = source_image->get_sizes();
+	size = source_image->get_size();
 
-	sizes.x = ((sizes.x + 3) / 4) * 4;
-	sizes.y = ((sizes.y + 3) / 4) * 4;
-	sizes.z = 1;
+	size.x = ((size.x + 3) / 4) * 4;
+	size.y = ((size.y + 3) / 4) * 4;
+	size.z = 1;
 
 	dest_image = boost::make_shared<Image>(String("terrain normals"),
-		false, tft_rgb8, sizes, 0);
+		false, tft_rgb8, size, 0);
 
 	width = source_image->get_width();
 	height = source_image->get_height();
@@ -243,9 +241,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	writer = boost::make_shared<Writer>(String(argv[2]));
-
-	codec_manager.save_image_as_dds(dest_image, writer);
+	codec_manager.save_image_as_dds(dest_image, String(argv[2]));
 
 	return 1;
 }

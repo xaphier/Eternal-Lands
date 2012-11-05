@@ -40,6 +40,7 @@ namespace eternal_lands
 			const TextureCacheWeakPtr m_texture_cache;
 			boost::scoped_ptr<RStarTree> m_object_tree;
 			boost::scoped_ptr<RStarTree> m_light_tree;
+			ShaderSourceTerrainSharedPtr m_terrain_effect;
 			AbstractTerrainSharedPtr m_terrain;
 			Uint32ObjectSharedPtrMap m_objects;
 			Uint32LightSharedPtrMap m_lights;
@@ -182,13 +183,16 @@ namespace eternal_lands
 				const ImageUpdate &dudv_map);
 			void update_terrain_blend_map(
 				const ImageUpdate &blend_map);
-			void set_terrain_material_maps(
+			void set_terrain_material(
 				const StringVector &albedo_maps,
-				const StringVector &specular_maps);
-			void set_terrain_effect_main(const String &effect_main);
+				const StringVector &extra_maps,
+				const TerrainMaterialData &material_data);
 			bool get_terrain() const;
 			const MaterialSharedPtr &get_clipmap_terrain_material()
 				const;
+			void set_terrain_dudv_scale(
+				const glm::vec2 &dudv_scale);
+			const glm::vec2 &get_terrain_dudv_scale() const;
 
 			inline const Uint32ObjectSharedPtrMap &get_objects()
 				const noexcept

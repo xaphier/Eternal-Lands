@@ -31,8 +31,6 @@ namespace eternal_lands
 	class MapLoader: public AbstractMapLoader
 	{
 		private:
-			const CodecManagerWeakPtr m_codec_manager;
-			const GlobalVarsSharedPtr m_global_vars;
 			const EffectCacheWeakPtr m_effect_cache;
 			const MeshBuilderWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
@@ -48,24 +46,6 @@ namespace eternal_lands
 			StringVector m_material_names;
 
 		protected:
-			inline CodecManagerSharedPtr get_codec_manager() const
-				noexcept
-			{
-				CodecManagerSharedPtr result;
-
-				result = m_codec_manager.lock();
-
-				assert(result.get() != nullptr);
-
-				return result;
-			}
-
-			inline const GlobalVarsSharedPtr &get_global_vars()
-				const noexcept
-			{
-				return m_global_vars;
-			}
-
 			inline MeshBuilderSharedPtr get_mesh_builder() const
 				noexcept
 			{
@@ -195,7 +175,17 @@ namespace eternal_lands
 			virtual void set_tile_map_size(const Uint16 width,
 				const Uint16 height) override;
 			virtual void set_dungeon(const bool dungeon) override;
-			void instance();
+			virtual void set_terrain(
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
+				const ImageSharedPtr &blend_map,
+				const StringVector &albedo_maps,
+				const StringVector &extra_maps,
+				const TerrainMaterialData &material_data,
+				const glm::vec2 &dudv_scale,
+				const glm::uvec2 &sizes) override;
+			virtual void instance() override;
 
 		public:
 			/**

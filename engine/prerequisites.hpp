@@ -200,6 +200,7 @@ namespace eternal_lands
 	class AbstractLogger;
 	class AbstractMesh;
 	class AbstractNodeVisitor;
+	class AbstractProgress;
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
 	class AbstractRenderTarget;
@@ -211,6 +212,7 @@ namespace eternal_lands
 	class ActorTextureBuilder;
 	class AngelScript;
 	class Atlas;
+	class BlendData;
 	class BoundedObject;
 	class BoundingBox;
 	class CdLodQuadTree;
@@ -283,19 +285,21 @@ namespace eternal_lands
 	class RStarTreeNode;
 	class Scene;
 	class SceneResources;
+	class SceneView;
 	class ScriptEngine;
-	class ShaderBlendData;
 	class ShaderSource;
 	class ShaderSourceBuilder;
 	class ShaderSourceData;
 	class ShaderSourceDescriptionLoader;
 	class ShaderSourceParameter;
+	class ShaderSourceTerrain;
 	class ShadowObject;
 	class StateManager;
 	class SubMesh;
 	class SubObject;
 	class TerrainBuilder;
 	class TerrainData;
+	class TerrainMaterialData;
 	class TerrainRenderingData;
 	class TerrainVisitor;
 	class Text;
@@ -369,6 +373,7 @@ namespace eternal_lands
 
 	SHARED_PTR(AbstractFrameBuffer);
 	SHARED_PTR(AbstractMesh);
+	SHARED_PTR(AbstractProgress);
 	SHARED_PTR(AbstractReadMemory);
 	SHARED_PTR(AbstractReadWriteMemory);
 	SHARED_PTR(AbstractRenderTarget);
@@ -421,6 +426,7 @@ namespace eternal_lands
 	SHARED_PTR(ShaderSource);
 	SHARED_PTR(ShaderSourceBuilder);
 	SHARED_PTR(ShaderSourceDescriptionLoader);
+	SHARED_PTR(ShaderSourceTerrain);
 	SHARED_PTR(TerrainBuilder);
 	SHARED_PTR(Texture);
 	SHARED_PTR(TextureCache);
@@ -459,6 +465,7 @@ namespace eternal_lands
 
 	VECTOR(AbstractReadWriteMemorySharedPtr);
 	VECTOR(ActorSharedPtr);
+	VECTOR(BlendData);
 	VECTOR(BoundedObjectSharedPtr);
 	VECTOR(BoundingBox);
 	VECTOR(ConvexBody);
@@ -481,7 +488,6 @@ namespace eternal_lands
 	VECTOR(RenderLightData);
 	VECTOR(RenderObjectData);
 	VECTOR(RStarTreeNodeSharedPtr);
-	VECTOR(ShaderBlendData);
 	VECTOR(ShaderSourceData);
 	VECTOR(ShaderSourceParameter);
 	VECTOR(ShadowObject);

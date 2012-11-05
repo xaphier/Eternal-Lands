@@ -257,34 +257,13 @@ namespace eternal_lands
 
 		m_scene_resources.init(get_file_system());
 
-		if (get_global_vars()->get_opengl_3_1())
+		init_terrain_rendering_data(m_visible_terrain);
+
+		count = m_shadow_terrains.size();
+
+		for (i = 0; i < count; ++i)
 		{
-			DEBUG_CHECK_GL_ERROR();
-
-			m_visible_terrain.set_uniform_buffer(boost::make_shared<
-				UniformBuffer>(
-				get_scene_resources(
-					).get_hardware_buffer_mapper(),
-				get_scene_resources(
-					).get_uniform_buffer_description_cache(),
-				ubt_terrain_instances));
-
-			DEBUG_CHECK_GL_ERROR();
-
-			count = m_shadow_terrains.size();
-
-			for (i = 0; i < count; ++i)
-			{
-				m_shadow_terrains[i].set_uniform_buffer(
-					boost::make_shared<UniformBuffer>(
-						get_scene_resources(
-							).get_hardware_buffer_mapper(),
-						get_scene_resources(
-							).get_uniform_buffer_description_cache(),
-						ubt_terrain_instances));
-			}
-
-			DEBUG_CHECK_GL_ERROR();
+			init_terrain_rendering_data(m_shadow_terrains[i]);
 		}
 
 		get_scene_resources().get_mesh_cache()->get_mesh(
@@ -308,6 +287,24 @@ namespace eternal_lands
 
 	Scene::~Scene() noexcept
 	{
+	}
+
+	void Scene::init_terrain_rendering_data(
+		TerrainRenderingData &terrain_rendering_data)
+	{
+		if (!get_global_vars()->get_opengl_3_1())
+		{
+			return;
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		terrain_rendering_data.set_uniform_buffer(
+			boost::make_shared<UniformBuffer>(get_scene_resources(
+				).get_hardware_buffer_mapper(),
+			get_scene_resources(
+				).get_uniform_buffer_description_cache(),
+			ubt_terrain_instances));
 	}
 
 	ActorSharedPtr Scene::add_actor(const Uint32 type_id, const Uint32 id,
@@ -649,14 +646,55 @@ namespace eternal_lands
 		m_map->intersect(frustum, visitor);
 	}
 
+	void Scene::cull(const glm::mat4 &projection_view_matrix,
+		const glm::vec3 &camera, const bool shadow,
+		TerrainRenderingData &terrain_data, ObjectVisitor &objects)
+		const
+	{
+		Frustum frustum;
+
+		frustum = Frustum(projection_view_matrix);
+
+		objects.next_frame();
+
+		objects.set_projection_view_matrix(projection_view_matrix);
+
+		intersect(frustum, shadow, objects);
+
+		DEBUG_CHECK_GL_ERROR();
+
+		if (get_global_vars()->get_opengl_3_1())
+		{
+			TerrainVisitor terrain_visitor(
+				terrain_data.get_uniform_buffer(
+					)->get_mapped_uniform_buffer());
+
+			DEBUG_CHECK_GL_ERROR();
+
+			intersect_terrain(frustum, camera, terrain_visitor);
+
+			terrain_data.set_mesh(terrain_visitor.get_mesh());
+			terrain_data.set_material(
+				terrain_visitor.get_material());
+			terrain_data.set_instances(
+				terrain_visitor.get_instances());
+		}
+
+		DEBUG_CHECK_GL_ERROR();
+
+		objects.sort(camera);
+	}
+
 	void Scene::cull()
 	{
 		Frustum frustum;
 
 		get_scene_view().update();
 
+		get_scene_view().set_scale_view(get_map()->get_bounding_box());
+
 		frustum = Frustum(
-			get_scene_view().get_projection_view_matrix());
+			get_scene_view().get_scale_view_matrix());
 
 		m_visible_lights.get_lights().clear();
 
@@ -696,11 +734,6 @@ namespace eternal_lands
 
 		m_time = SDL_GetTicks() * 0.001f;
 
-		m_visible_objects.next_frame();
-
-		m_visible_objects.set_projection_view_matrix(
-			get_scene_view().get_projection_view_matrix());
-
 		if (get_global_vars()->get_use_cpu_rasterizer())
 		{
 			m_visible_objects.set_cpu_rasterizer(m_cpu_rasterizer);
@@ -711,33 +744,9 @@ namespace eternal_lands
 				CpuRasterizerSharedPtr());
 		}
 
-		intersect(frustum, false, m_visible_objects);
-
-		DEBUG_CHECK_GL_ERROR();
-
-		if (get_global_vars()->get_opengl_3_1())
-		{
-			TerrainVisitor terrain_visitor(
-				m_visible_terrain.get_uniform_buffer(
-					)->get_mapped_uniform_buffer());
-
-			DEBUG_CHECK_GL_ERROR();
-
-			intersect_terrain(frustum, glm::vec3(
-				get_scene_view().get_camera()),
-				terrain_visitor);
-
-			m_visible_terrain.set_mesh(terrain_visitor.get_mesh());
-			m_visible_terrain.set_material(
-				terrain_visitor.get_material());
-			m_visible_terrain.set_instances(
-				terrain_visitor.get_instances());
-		}
-
-		DEBUG_CHECK_GL_ERROR();
-
-		m_visible_objects.sort(glm::vec3(
-			get_scene_view().get_camera()));
+		cull(get_scene_view().get_scale_view_matrix(),
+			glm::vec3(get_scene_view().get_camera()), false,
+			m_visible_terrain, m_visible_objects);
 
 		intersect(frustum, m_visible_lights);
 
@@ -775,40 +784,11 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			camera = glm::vec3(get_scene_view(
-				).get_shadow_cameras()[i]);
-
-			cull_shadow(Frustum(get_scene_view(
-				).get_shadow_projection_view_matrices()[i]),
-				camera, i);
-		}
-	}
-
-	void Scene::cull_shadow(const Frustum &frustum, const glm::vec3 &camera,
-		const Uint16 index)
-	{
-		m_shadow_objects[index].next_frame();
-
-		intersect(frustum, true, m_shadow_objects[index]);
-
-		m_shadow_objects[index].sort(camera);
-
-		if (get_global_vars()->get_opengl_3_1())
-		{
-			TerrainVisitor terrain_visitor(
-				m_shadow_terrains[index].get_uniform_buffer(
-					)->get_mapped_uniform_buffer());
-
-			DEBUG_CHECK_GL_ERROR();
-
-			intersect_terrain(frustum, camera, terrain_visitor);
-
-			m_shadow_terrains[index].set_mesh(
-				terrain_visitor.get_mesh());
-			m_shadow_terrains[index].set_material(
-				terrain_visitor.get_material());
-			m_shadow_terrains[index].set_instances(
-				terrain_visitor.get_instances());
+			cull(get_scene_view(
+				).get_shadow_projection_view_matrices()[i],
+				glm::vec3(get_scene_view(
+					).get_shadow_cameras()[i]), true,
+				m_shadow_terrains[i], m_shadow_objects[i]);
 		}
 	}
 

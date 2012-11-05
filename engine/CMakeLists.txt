@@ -133,6 +133,11 @@ target_link_libraries(elengine zip)
 target_link_libraries(elengine lz4)
 target_link_libraries(elengine ${ZLIB_LIBRARIES})
 
+if (OPENMP_FOUND)
+	set_target_properties(elengine PROPERTIES COMPILE_FLAGS ${OpenMP_C_FLAGS})
+	set_target_properties(elengine PROPERTIES LINKER_FLAGS ${OpenMP_C_FLAGS})
+endif (OPENMP_FOUND)
+
 if ((${GPA_FOUND} MATCHES "TRUE") AND (${BUILD_GPA} MATCHES "ON"))
 target_link_libraries(elengine ${GPA_LIBRARY})
 endif ((${GPA_FOUND} MATCHES "TRUE") AND (${BUILD_GPA} MATCHES "ON"))

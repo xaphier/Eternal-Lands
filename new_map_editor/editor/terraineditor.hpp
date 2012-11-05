@@ -86,15 +86,17 @@ namespace eternal_lands
 	class TerrainEditor
 	{
 		private:
+			boost::array<glm::vec3,  65536> m_normals;
 			ImageSharedPtr m_displacement_image;
 			ImageSharedPtr m_normal_image;
 			ImageSharedPtr m_dudv_image;
 			ImageSharedPtr m_blend_image;
-			ShaderSourceTerrain m_shader_source_terrain;
+			boost::scoped_ptr<UvTool> m_uv_tool;
+			TerrainMaterialData m_material_data;
 			StringVector m_albedo_maps;
-			boost::array<glm::vec3,  65536> m_normals;
+			StringVector m_extra_maps;
+			glm::uvec3 m_size;
 			glm::vec2 m_dudv_scale;
-			Uint16 m_layer_count;
 			bool m_enabled;
 
 			glm::uvec2 get_best_normal(const glm::vec3 &normal)
@@ -122,6 +124,7 @@ namespace eternal_lands
 				DisplacementValueVector &terrain_values) const;
 			void get_blend_values(const Uint32 x, const Uint32 y,
 				ImageValueVector &blend_values) const;
+			void init(const glm::uvec2 &size);
 
 		public:
 			TerrainEditor();
@@ -132,7 +135,16 @@ namespace eternal_lands
 			void set_blend_values(
 				const ImageValueVector &blend_values);
 			void init(const glm::uvec2 &size,
-				const String &texture);
+				const String &albedo_map,
+				const String &extra_map,
+				const bool use_blend_size_sampler,
+				const bool use_extra_map);
+			void init(const ImageSharedPtr &height_map,
+				const glm::uvec2 &size,
+				const String &albedo_map,
+				const String &extra_map,
+				const bool use_blend_size_sampler,
+				const bool use_extra_map);
 			void get_displacement_values(const glm::uvec2 &vertex,
 				const glm::vec2 &size,
 				const float attenuation_size,
@@ -146,7 +158,6 @@ namespace eternal_lands
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
 				ImageValueVector &blend_values) const;
-			static const glm::vec3 &get_terrain_offset();
 			static const glm::vec3 &get_terrain_offset_min();
 			static const glm::vec3 &get_terrain_offset_max();
 			bool get_vertex(const glm::vec3 &world_position,
@@ -201,10 +212,39 @@ namespace eternal_lands
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
 				const BrushEffectType effect);
-			Uint16 get_layer_count() const;
 			void set_water(const glm::uvec2 vertex,
 				const float direction, const float speed,
 				const Uint16 index);
+			void set_material(const String &albedo_map,
+				const String &extra_map, const float blend_size,
+				const bool use_blend_size_sampler,
+				const bool use_blend_size,
+				const bool use_extra_map, const Uint16 index);
+			void get_material(String &albedo_map,
+				String &extra_map, float &blend_size,
+				bool &use_blend_size_sampler,
+				bool &use_blend_size, bool &use_extra_map,
+				const Uint16 index) const;
+			void import_height_map(
+				const ImageSharedPtr &height_map);
+			void get_all_displacement_values(
+				DisplacementValueVector
+					&displacement_values) const;
+			void get_all_blend_values(
+				ImageValueVector &blend_values) const;
+			void set(const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
+				const ImageSharedPtr &blend_map,
+				const StringVector &albedo_maps,
+				const StringVector &extra_maps,
+				const TerrainMaterialData &material_data,
+				const glm::vec2 &dudv_scale,
+				const glm::uvec2 &size);
+			void relax_uv(
+				const AbstractProgressSharedPtr &progress,
+				const Uint16 count, const bool use_simd);
+			void import_blend_map(const ImageSharedPtr &blend_map);
 
 			inline void set_albedo_map(const String &name,
 				const Uint16 index)
@@ -212,13 +252,45 @@ namespace eternal_lands
 				m_albedo_maps[index] = name;
 			}
 
-			inline void set_blend_data(const ShaderBlendData &data,
+			inline void set_extra_map(const String &name,
 				const Uint16 index)
 			{
-				m_shader_source_terrain.set_data(data, index);
+				m_extra_maps[index] = name;
 			}
 
-			static inline Uint32 get_max_layer_count()
+			inline void set_use_blend_size_sampler(const bool value,
+				const Uint16 index)
+			{
+				m_material_data.set_use_blend_size_sampler(
+					value, index);
+			}
+
+			inline void set_use_extra_map(const bool value,
+				const Uint16 index)
+			{
+				m_material_data.set_use_extra_map(value,
+					index);
+			}
+
+			inline void set_blend_data(const BlendData &blend_data,
+				const Uint16 index)
+			{
+				m_material_data.set_blend_data(blend_data,
+					index);
+			}
+
+			inline void set_material_data(
+				const TerrainMaterialData &material_data)
+			{
+				m_material_data = material_data;
+			}
+
+			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
+			{
+				m_dudv_scale = dudv_scale;
+			}
+
+			static inline Uint16 get_layer_count()
 			{
 				return 17;
 			}
@@ -253,16 +325,53 @@ namespace eternal_lands
 				return m_albedo_maps;
 			}
 
+			inline const StringVector &get_extra_maps() const
+				noexcept
+			{
+				return m_extra_maps;
+			}
+
 			inline const String &get_albedo_map(const Uint16 index)
 				const noexcept
 			{
 				return m_albedo_maps[index];
 			}
 
-			inline const ShaderBlendData &get_blend_data(
+			inline const String &get_extra_map(const Uint16 index)
+				const noexcept
+			{
+				return m_extra_maps[index];
+			}
+
+			inline bool get_use_blend_size_sampler(
 				const Uint16 index) const
 			{
-				return m_shader_source_terrain.get_data(index);
+				return m_material_data.
+					get_use_blend_size_sampler(index);
+			}
+
+			inline bool get_use_extra_map(const Uint16 index) const
+			{
+				return m_material_data.get_use_extra_map(index);
+			}
+
+			inline const BlendData &get_blend_data(
+				const Uint16 index) const
+			{
+				return m_material_data.get_blend_data(index);
+			}
+
+			inline float get_blend_size(const Uint16 index) const
+			{
+				return m_material_data.get_blend_data(
+					index).get_blend_size();
+			}
+
+			inline bool get_use_blend_size(const Uint16 index)
+				const
+			{
+				return m_material_data.get_blend_data(
+					index).get_use_blend_size();
 			}
 
 			inline const glm::vec2 &get_dudv_scale() const
@@ -270,10 +379,15 @@ namespace eternal_lands
 				return m_dudv_scale;
 			}
 
-			inline String get_effect_main() const
+			inline const glm::uvec3 &get_size() const
 			{
-				return m_shader_source_terrain.save_xml_string(
-					);
+				return m_size;
+			}
+
+			inline const TerrainMaterialData &get_material_data()
+				const noexcept
+			{
+				return m_material_data;
 			}
 
 			inline bool get_enabled() const

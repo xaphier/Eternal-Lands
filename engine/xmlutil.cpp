@@ -13,6 +13,144 @@
 namespace eternal_lands
 {
 
+	glm::bvec2 XmlUtil::get_bvec2_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::bvec2 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::bvec2();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::bvec3 XmlUtil::get_bvec3_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::bvec3 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::bvec3();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::bvec4 XmlUtil::get_bvec4_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::bvec4 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::bvec4();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::uvec2 XmlUtil::get_uvec2_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::uvec2 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::uvec2();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::uvec3 XmlUtil::get_uvec3_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::uvec3 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::uvec3();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
+	glm::uvec4 XmlUtil::get_uvec4_value(const xmlNodePtr node)
+	{
+		StringStream str;
+		glm::uvec4 result;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		if (node->children == 0)
+		{
+			return glm::uvec4();
+		}
+
+		str << node->children->content;
+		str >> result;
+
+		return result;
+	}
+
 	glm::ivec2 XmlUtil::get_ivec2_value(const xmlNodePtr node)
 	{
 		StringStream str;

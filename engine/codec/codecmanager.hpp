@@ -288,38 +288,56 @@ namespace eternal_lands
 			ImageSharedPtr load_image(
 				const ReaderSharedPtr &reader,
 				const ImageCompressionTypeSet &compressions,
-				const bool rg_formats, const bool srgb_formats)
-				const;
+				const bool rg_formats, const bool srgb_formats,
+				const bool merge_layers) const;
 
 			ImageSharedPtr load_image(const String &name,
 				const FileSystemSharedPtr &file_system,
 				const ImageCompressionTypeSet &compressions,
-				const bool rg_formats, const bool srgb_formats)
-				const;
+				const bool rg_formats, const bool srgb_formats,
+				const bool merge_layers) const;
 
 			void get_image_information(
 				const ReaderSharedPtr &reader,
 				const bool rg_formats, const bool srgb_formats,
 				TextureFormatType &texture_format,
-				glm::uvec3 &sizes, Uint16 &mipmaps) const;
+				glm::uvec3 &size, Uint16 &mipmaps,
+				bool &cube_map, bool &array) const;
 
 			void get_image_information(const String &name,
 				const FileSystemSharedPtr &file_system,
 				const bool rg_formats, const bool srgb_formats,
 				TextureFormatType &texture_format,
-				glm::uvec3 &sizes, Uint16 &mipmaps) const;
+				glm::uvec3 &size, Uint16 &mipmaps,
+				bool &cube_map, bool &array) const;
 
 			void get_supported_file_extensions(
 				StringVector &extensions) const noexcept;
 
-			void save_image_as_png(const ImageSharedPtr &image,
+			static void save_image_as_png(
+				const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
-
-			void save_image_as_jpeg(const ImageSharedPtr &image,
+			static void save_image_as_jpeg(
+				const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
-
 			void save_image_as_dds(const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
+			static void save_image_as_dds_dxt10(
+				const ImageSharedPtr &image,
+				const WriterSharedPtr &writer);
+
+			static void save_image_as_png(
+				const ImageSharedPtr &image,
+				const String &name);
+			static void save_image_as_jpeg(
+				const ImageSharedPtr &image,
+				const String &name);
+			void save_image_as_dds(
+				const ImageSharedPtr &image,
+				const String &name);
+			static void save_image_as_dds_dxt10(
+				const ImageSharedPtr &image,
+				const String &name);
 
 	};
 

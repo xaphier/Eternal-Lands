@@ -38,7 +38,7 @@ namespace eternal_lands
 			ReadWriteMemorySharedPtr m_buffer;
 			String m_name;
 			TextureFormatType m_texture_format;
-			glm::uvec3 m_sizes;
+			glm::uvec3 m_size;
 			Uint16 m_mipmap_count;
 			Uint16 m_pixel_size;
 			GLenum m_format;
@@ -60,7 +60,7 @@ namespace eternal_lands
 		public:
 			Image(const String &name, const bool cube_map,
 				const TextureFormatType texture_format,
-				const glm::uvec3 &sizes,
+				const glm::uvec3 &size,
 				const Uint16 mipmap_count,
 				const Uint16 pixel_size, const GLenum format,
 				const GLenum type, const bool sRGB,
@@ -68,7 +68,7 @@ namespace eternal_lands
 
 			Image(const String &name, const bool cube_map,
 				const TextureFormatType texture_format,
-				const glm::uvec3 &sizes,
+				const glm::uvec3 &size,
 				const Uint16 mipmap_count,
 				const bool array = false);
 
@@ -118,10 +118,12 @@ namespace eternal_lands
 			 * is uncompressed else just a copy of the handle.
 			 * @param rg_formats Use RG and R as format for
 			 * uncompressed image.
+			 * @param merge_layers Merge multiple layers (two or
+			 * four) of a red or red-green into in a rgba format.
 			 * @return the uncompressed image.
 			 */
 			ImageSharedPtr decompress(const bool copy,
-				const bool rg_formats);
+				const bool rg_formats, const bool merge_layers);
 
 			void read_framebuffer(const Uint32 x, const Uint32 y);
 
@@ -221,7 +223,7 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_width() const
 			{
-				return m_sizes.x;
+				return m_size.x;
 			}
 
 			/**
@@ -232,7 +234,7 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_height() const
 			{
-				return m_sizes.y;
+				return m_size.y;
 			}
 
 			/**
@@ -243,18 +245,18 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_depth() const
 			{
-				return m_sizes.z;
+				return m_size.z;
 			}
 
 			/**
-			 * @brief The image sizes.
+			 * @brief The image size.
 			 * Returns the width, height and depth of the image.
 			 * They are always greater than zero.
-			 * @return The sizes of the image.
+			 * @return The size of the image.
 			 */
-			inline const glm::uvec3 &get_sizes() const
+			inline const glm::uvec3 &get_size() const
 			{
-				return m_sizes;
+				return m_size;
 			}
 
 			/**
@@ -266,7 +268,7 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_width(const Uint16 mipmap) const
 			{
-				return get_sizes(mipmap).x;
+				return get_size(mipmap).x;
 			}
 
 			/**
@@ -279,7 +281,7 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_height(const Uint16 mipmap) const
 			{
-				return get_sizes(mipmap).y;
+				return get_size(mipmap).y;
 			}
 
 			/**
@@ -292,27 +294,27 @@ namespace eternal_lands
 			 */
 			inline Uint32 get_depth(const Uint16 mipmap) const
 			{
-				return get_sizes(mipmap).z;
+				return get_size(mipmap).z;
 			}
 
 			/**
-			 * @brief The image sizes.
+			 * @brief The image size.
 			 * Returns the width, height and depth of the image at
 			 * the given mipmap level. This is always greater than
 			 * zero.
-			 * @return The sizes of the image.
+			 * @return The size of the image.
 			 */
-			inline glm::uvec3 get_sizes(const Uint16 mipmap) const
+			inline glm::uvec3 get_size(const Uint16 mipmap) const
 			{
 				if (get_array())
 				{
 					return glm::max(glm::uvec3(glm::uvec2(
-						get_sizes()) >> glm::uvec2(
+						get_size()) >> glm::uvec2(
 							mipmap), get_depth()),
 						1);
 				}
 
-				return glm::max(get_sizes() >>
+				return glm::max(get_size() >>
 					glm::uvec3(mipmap), 1);
 			}
 
@@ -422,7 +424,7 @@ namespace eternal_lands
 			 * @param mipmap The mipmap level to use.
 			 * @return The size of the given mipmap level.
 			 */
-			Uint32 get_size(const Uint16 mipmap) const;
+			Uint32 get_mipmap_size(const Uint16 mipmap) const;
 
 			/**
 			 * @brief The size of the given volume.

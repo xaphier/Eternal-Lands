@@ -34,6 +34,7 @@
 #include "material.hpp"
 
 #include "terrainbuilder.hpp"
+#include "terrain/terrainmaterialdata.hpp"
 
 namespace eternal_lands
 {
@@ -71,6 +72,7 @@ namespace eternal_lands
 		ImageSharedPtr displacement_map, normal_map, dudv_map;
 		ImageSharedPtr blend_map;
 		StringVector albedo_maps;
+		TerrainMaterialData material_data;
 		MaterialSharedPtrVector materials;
 		String file_name, displacement_map_name, normal_map_name;
 		String dudv_map_name;
@@ -78,7 +80,7 @@ namespace eternal_lands
 		file_name = FileSystem::get_name_without_extension(name);
 
 		displacement_map_name = String(file_name.get() +
-			UTF8("_vector.png"));
+			UTF8("_vector.dds"));
 		normal_map_name = String(file_name.get() + UTF8("_normal.dds"));
 		dudv_map_name = String(file_name.get() + UTF8("_dudv.dds"));
 
@@ -96,15 +98,16 @@ namespace eternal_lands
 
 		displacement_map = m_codec_manager->load_image(
 			displacement_map_name, m_file_system, compressions,
-			true, false);
+			true, false, false);
 
 		normal_map = m_codec_manager->load_image(normal_map_name,
-			m_file_system, compressions, true, false);
+			m_file_system, compressions, true, false, false);
 
 		dudv_map = m_codec_manager->load_image(dudv_map_name,
-			m_file_system, compressions, true, false);
+			m_file_system, compressions, true, false, false);
 
-		init_walk_height_map(displacement_map->decompress(false, true));
+		init_walk_height_map(displacement_map->decompress(false, true,
+			false));
 
 		set_terrain_geometry_maps(displacement_map, normal_map,
 			dudv_map);
@@ -115,12 +118,15 @@ namespace eternal_lands
 		albedo_maps.push_back(String(UTF8("3dobjects/tile4.dds")));
 		albedo_maps.push_back(String(UTF8("3dobjects/tile5.dds")));
 
+		material_data.resize(5);
+
 		blend_map = m_codec_manager->load_image(
 			String(UTF8("textures/blend0.dds")), m_file_system,
-			ImageCompressionTypeSet(), false, false);
+			ImageCompressionTypeSet(), false, false, true);
 
 		set_terrain_blend_map(blend_map);
-		set_terrain_material_maps(albedo_maps, StringVector());
+		set_terrain_material(albedo_maps, StringVector(),
+			material_data);
 	}
 
 	void Map::init_walk_height_map(const ImageSharedPtr &displacement_map)
@@ -129,9 +135,9 @@ namespace eternal_lands
 		Uint32 x, y;
 		float scale, z;
 
-		size = glm::uvec2(displacement_map->get_sizes());
+		size = glm::uvec2(displacement_map->get_size());
 
-		scale = AbstractTerrain::get_vector_scale().z;
+		scale = AbstractTerrain::get_vector_scale();
 
 		m_walk_height_map.resize(boost::extents[size.x][size.y]);
 
@@ -392,18 +398,19 @@ namespace eternal_lands
 		m_terrain->update_blend_map(blend_map);
 	}
 
-	void Map::set_terrain_material_maps(const StringVector &albedo_maps,
-		const StringVector &specular_maps)
-	{
-		m_terrain->set_texture_maps(albedo_maps, specular_maps,
-			get_texture_cache());
-	}
-
-	void Map::set_terrain_effect_main(const String &effect_main)
+	void Map::set_terrain_material(const StringVector &albedo_maps,
+		const StringVector &extra_maps,
+		const TerrainMaterialData &material_data)
 	{
 		EffectSharedPtr effect;
 
-		effect = get_terrain_builder()->get_effect(effect_main);
+		m_terrain->set_texture_maps(albedo_maps, extra_maps,
+			material_data.get_use_blend_size_samplers(),
+			material_data.get_use_extra_maps(),
+			get_texture_cache());
+
+		effect = get_terrain_builder()->get_effect(get_name(),
+			material_data);
 
 		m_terrain->set_effect(effect);
 	}
@@ -416,6 +423,16 @@ namespace eternal_lands
 	const MaterialSharedPtr &Map::get_clipmap_terrain_material() const
 	{
 		return m_terrain->get_clipmap_terrain_material();
+	}
+
+	void Map::set_terrain_dudv_scale(const glm::vec2 &dudv_scale)
+	{
+		m_terrain->set_dudv_scale(dudv_scale);
+	}
+
+	const glm::vec2 &Map::get_terrain_dudv_scale() const
+	{
+		return m_terrain->get_dudv_scale();
 	}
 
 }

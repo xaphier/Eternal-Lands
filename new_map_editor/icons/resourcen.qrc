@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>remove_object.png</file>
+    <file>height.png</file>
     <file>gui.png</file>
     <file>x-rot.png</file>
     <file>y-rot.png</file>

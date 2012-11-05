@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AllTerrainTextures</class>
+ <widget class="QDialog" name="AllTerrainTextures">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>638</width>
+    <height>425</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Terrain textures</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="icons/resourcen.qrc">
+    <normaloff>:/icons/terrain.png</normaloff>:/icons/terrain.png</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="margin">
+    <number>2</number>
+   </property>
+   <property name="spacing">
+    <number>2</number>
+   </property>
+   <item row="4" column="4">
+    <widget class="QPushButton" name="textures_change_extra">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Change Extra</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/resourcen.qrc">
+       <normaloff>:/icons/application-x-desktop.png</normaloff>:/icons/application-x-desktop.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="7" column="3" colspan="2">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>218</width>
+       <height>31</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="4">
+    <widget class="QPushButton" name="textures_clear">
+     <property name="text">
+      <string>Clear</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/resourcen.qrc">
+       <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QPushButton" name="pushButton">
+     <property name="text">
+      <string>Ok</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/resourcen.qrc">
+       <normaloff>:/icons/gtk-apply.png</normaloff>:/icons/gtk-apply.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>Cancel</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/resourcen.qrc">
+       <normaloff>:/icons/gtk-cancel.png</normaloff>:/icons/gtk-cancel.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="7" colspan="4">
+    <widget class="QListWidget" name="terrain_textures">
+     <property name="isWrapping" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::IconMode</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="4">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>98</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="4">
+    <widget class="QPushButton" name="textures_add">
+     <property name="text">
+      <string>Add</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/resourcen.qrc">
+       <normaloff>:/icons/gtk-add.png</normaloff>:/icons/gtk-add.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>231</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="5" column="4">
+    <widget class="QPushButton" name="textures_remove_extra">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Remove extra</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/resourcen.qrc">
+       <normaloff>:/icons/remove_object.png</normaloff>:/icons/remove_object.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <widget class="QPushButton" name="textures_remove">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Remove</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons/resourcen.qrc">
+       <normaloff>:/icons/editclear.png</normaloff>:/icons/editclear.png</iconset>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="icons/resourcen.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>AllTerrainTextures</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>253</x>
+     <y>371</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>275</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>AllTerrainTextures</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>341</x>
+     <y>371</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>275</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

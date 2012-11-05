@@ -36,9 +36,10 @@ namespace eternal_lands
 			TextureSharedPtr m_error_texture;
 
 			TextureSharedPtr load_texture(const String &name,
-				const String &index);
+				const String &index, const bool merge_layers);
 			TextureSharedPtr do_load_texture(const String &name,
-				const String &index) const;
+				const String &index, const bool merge_layers)
+				const;
 			TextureSharedPtr do_load_texture(
 				const ImageSharedPtr &image,
 				const String &name) const;

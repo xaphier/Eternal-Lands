@@ -13,10 +13,11 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "textureformatutil.hpp"
 #include "undostack.hpp"
 #include "editormapdata.hpp"
 #include "editorobjectdescription.hpp"
-#include "shader/shaderblenddata.hpp"
+#include "blenddata.hpp"
 #include <boost/random.hpp>
 #include <boost/random/linear_congruential.hpp>
 #include <boost/random/uniform_int.hpp>
@@ -68,10 +69,12 @@ namespace eternal_lands
 			Editor(const GlobalVarsSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
 			bool undo();
-			void set_terrain_albedo_map(const String &texture,
-				const Uint16 index);
-			void set_terrain_blend_data(
-				const ShaderBlendData &blend_data,
+			void set_terrain_material(const String &albedo_map,
+				const String &extra_map,
+				const float blend_size,
+				const bool use_blend_size_sampler,
+				const bool use_blend_size,
+				const bool use_extra_map,
 				const Uint16 index);
 			void set_ground_tile(const glm::vec2 &point,
 				const Uint16 tile);
@@ -93,8 +96,19 @@ namespace eternal_lands
 			void height_edit(const glm::vec3 &point,
 				const Uint8 height);
 			void remove_object(const Uint32 id);
+			void remove_objects(const Uint32 id);
 			void save(const String &name) const;
-			void load_map(const String &name);
+			void load_map(const String &name,
+				const bool load_2d_objects,
+				const bool load_3d_objects,
+				const bool load_lights,
+				const bool load_particles,
+				const bool load_materials,
+				const bool load_height_map,
+				const bool load_tile_map,
+				const bool load_walk_map,
+				const bool load_terrain,
+				const bool load_water);
 			void set_object_transparency(const Uint32 id,
 				const float transparency);
 			void set_object_translation(const Uint32 id,
@@ -145,11 +159,6 @@ namespace eternal_lands
 				const;
 			void get_light_data(const Uint32 id,
 				LightData &light_data) const;
-			void export_blend_image(const String &file_name,
-				const String &type) const;
-			void export_terrain_map(const String &file_name,
-				const String &type) const;
-			void import_terrain_map(const String &file_name);
 			void change_terrain_displacement_values(
 				const glm::vec3 &position,
 				const glm::vec3 &data, const glm::bvec3 &mask,
@@ -163,18 +172,13 @@ namespace eternal_lands
 				const float attenuation_size, const float data,
 				const int attenuation, const int shape,
 				const int effect, const int layer);
-			void change_terrain_albedo_map(const String &name,
-				const int index);
-			void change_terrain_blend_type(const int blend,
-				const float scale, const float offset,
-				const int index);
 			bool check_default_materials(const String &name,
 				const StringVector &materials) const;
-
-			static inline const glm::vec3 &get_terrain_offset()
-			{
-				return EditorMapData::get_terrain_offset();
-			}
+			void import_terrain_height_map(const String &name);
+			void import_terrain_blend_map(const String &name);
+			void relax_terrain_uv(
+				const AbstractProgressSharedPtr &progress,
+				const Uint16 count);
 
 			static inline const glm::vec3 &get_terrain_offset_min()
 			{
@@ -186,16 +190,16 @@ namespace eternal_lands
 				return EditorMapData::get_terrain_offset_max();
 			}
 
-			inline const String &get_terrain_albedo_map(
+			void get_terrain_material(String &albedo_map,
+				String &extra_map, float &blend_size,
+				bool &use_blend_size_sampler,
+				bool &use_blend_size, bool &use_extra_map,
 				const Uint16 index) const
 			{
-				return m_data.get_terrain_albedo_map(index);
-			}
-
-			inline const ShaderBlendData &get_terrain_blend_data(
-				const Uint16 index) const
-			{
-				return m_data.get_terrain_blend_data(index);
+				m_data.get_terrain_material(albedo_map,
+					extra_map, blend_size,
+					use_blend_size_sampler, use_blend_size,
+					use_extra_map, index);
 			}
 
 			inline StringVector get_debug_modes() const
@@ -209,15 +213,41 @@ namespace eternal_lands
 			}
 
 			inline void init_terrain(const glm::uvec2 &size,
-				const String &texture)
+				const String &albedo_map,
+				const String &extra_map,
+				const bool use_blend_size_sampler,
+				const bool use_extra_map)
 			{
-				m_data.init_terrain(size, texture);
+				m_data.init_terrain(size, albedo_map,
+					extra_map, use_blend_size_sampler,
+					use_extra_map);
 			}
 
-			inline ImageSharedPtr get_image(const String &name)
+			inline void init_terrain(const String &height_map_name,
+				const glm::uvec2 &size,
+				const String &albedo_map,
+				const String &extra_map,
+				const bool use_blend_size_sampler,
+				const bool use_extra_map)
+			{
+				m_data.init_terrain(height_map_name, size,
+					albedo_map, extra_map,
+					use_blend_size_sampler, use_extra_map);
+			}
+
+			inline ImageSharedPtr get_image(const String &name,
+				TextureFormatType &format) const
+			{
+				return m_data.get_image(name, format);
+			}
+
+			inline void get_image_data(const String &name,
+				TextureFormatType &format, glm::uvec3 &size,
+				Uint16 &mipmaps, bool &cube_map, bool &array)
 				const
 			{
-				return m_data.get_image(name);
+				return m_data.get_image_data(name, format,
+					size, mipmaps, cube_map, array);
 			}
 
 			inline void set_draw_objects(const bool draw_objects)
@@ -240,6 +270,11 @@ namespace eternal_lands
 			{
 				m_data.set_draw_light_spheres(
 					draw_light_spheres);
+			}
+
+			inline void set_draw_heights(const bool draw_heights)
+			{
+				m_data.set_draw_heights(draw_heights);
 			}
 
 			inline void set_lights_enabled(const bool enabled)
@@ -352,6 +387,12 @@ namespace eternal_lands
 			{
 				assert(get_object_selected());
 				remove_object(get_id());
+			}
+
+			inline void remove_objects()
+			{
+				assert(get_object_selected());
+				remove_objects(get_id());
 			}
 
 			inline void set_object_blend(const BlendType blend)
@@ -629,6 +670,11 @@ namespace eternal_lands
 			inline bool get_terrain() const
 			{
 				return m_data.get_terrain();
+			}
+
+			inline Uint16 get_terrain_layer_count() const
+			{
+				return m_data.get_terrain_layer_count();
 			}
 
 	};

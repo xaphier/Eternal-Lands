@@ -143,31 +143,31 @@ BOOST_AUTO_TEST_CASE(default_creation)
 	boost::variate_generator<boost::mt19937&,
 		boost::uniform_int<Uint16> > random_int(rng, range);
 	el::ImageSharedPtr image;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count;
 	bool cube_map;
 
 	BOOST_FOREACH(const el::TextureFormatType texture_format, get_all())
 	{
-		sizes.x = random_int();
-		sizes.y = random_int();
-		sizes.z = random_int();
+		size.x = random_int();
+		size.y = random_int();
+		size.z = random_int();
 		cube_map = (random_int() % 2) == 0;
 
-		mipmap_count = std::max(std::max(sizes.x, sizes.y), sizes.z);
+		mipmap_count = std::max(std::max(size.x, size.y), size.z);
 		mipmap_count = std::log(mipmap_count) / std::log(2);
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, sizes, mipmap_count);
+			cube_map, texture_format, size, mipmap_count);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
-		BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-		BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-		BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
-		BOOST_CHECK_EQUAL(image->get_width(), sizes.x);
-		BOOST_CHECK_EQUAL(image->get_height(), sizes.y);
-		BOOST_CHECK_EQUAL(image->get_depth(), sizes.z);
+		BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+		BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+		BOOST_CHECK_EQUAL(image->get_size().z, size.z);
+		BOOST_CHECK_EQUAL(image->get_width(), size.x);
+		BOOST_CHECK_EQUAL(image->get_height(), size.y);
+		BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 	}
 }
@@ -179,32 +179,32 @@ BOOST_AUTO_TEST_CASE(get_value)
 	boost::variate_generator<boost::mt19937&,
 		boost::uniform_int<Uint16> > random_int(rng, range);
 	el::ImageSharedPtr image;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count, x, y, z, m, w, h, d;
 	bool cube_map;
 
 	BOOST_FOREACH(const el::TextureFormatType texture_format, get_all())
 	{
-		sizes.x = random_int();
-		sizes.y = random_int();
-		sizes.z = random_int();
+		size.x = random_int();
+		size.y = random_int();
+		size.z = random_int();
 
-		mipmap_count = std::max(std::max(sizes.x, sizes.y), sizes.z);
+		mipmap_count = std::max(std::max(size.x, size.y), size.z);
 		mipmap_count = std::log(mipmap_count) / std::log(2);
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, sizes, mipmap_count);
+			cube_map, texture_format, size, mipmap_count);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
-		BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-		BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-		BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
+		BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+		BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+		BOOST_CHECK_EQUAL(image->get_size().z, size.z);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
-		w = sizes.x;
-		h = sizes.y;
-		d = sizes.z;
+		w = size.x;
+		h = size.y;
+		d = size.z;
 
 		for (m = 0; m < mipmap_count; ++m)
 		{	
@@ -237,30 +237,30 @@ BOOST_AUTO_TEST_CASE(set_get_8_bit_values)
 	boost::variate_generator<boost::mt19937&,
 		boost::uniform_int<Uint16> > random_int(rng, range);
 	el::ImageSharedPtr image;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
 	BOOST_FOREACH(const el::TextureFormatType texture_format, get_8_bit())
 	{
-		sizes.x = 64;
-		sizes.y = 64;
-		sizes.z = 64;
+		size.x = 64;
+		size.y = 64;
+		size.z = 64;
 		cube_map = (random_int() % 2) == 0;
 
 		mipmap_count = 6;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, sizes, mipmap_count);
+			cube_map, texture_format, size, mipmap_count);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
-		BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-		BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-		BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
-		BOOST_CHECK_EQUAL(image->get_width(), sizes.x);
-		BOOST_CHECK_EQUAL(image->get_height(), sizes.y);
-		BOOST_CHECK_EQUAL(image->get_depth(), sizes.z);
+		BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+		BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+		BOOST_CHECK_EQUAL(image->get_size().z, size.z);
+		BOOST_CHECK_EQUAL(image->get_width(), size.x);
+		BOOST_CHECK_EQUAL(image->get_height(), size.y);
+		BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
 		for (i = 0; i < 128; ++i)
@@ -300,30 +300,30 @@ BOOST_AUTO_TEST_CASE(set_get_16_bit_values)
 	boost::variate_generator<boost::mt19937&,
 		boost::uniform_int<Uint16> > random_int(rng, range);
 	el::ImageSharedPtr image;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
 	BOOST_FOREACH(const el::TextureFormatType texture_format, get_16_bit())
 	{
-		sizes.x = 64;
-		sizes.y = 64;
-		sizes.z = 64;
+		size.x = 64;
+		size.y = 64;
+		size.z = 64;
 		cube_map = (random_int() % 2) == 0;
 
 		mipmap_count = 6;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, sizes, mipmap_count);
+			cube_map, texture_format, size, mipmap_count);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
-		BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-		BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-		BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
-		BOOST_CHECK_EQUAL(image->get_width(), sizes.x);
-		BOOST_CHECK_EQUAL(image->get_height(), sizes.y);
-		BOOST_CHECK_EQUAL(image->get_depth(), sizes.z);
+		BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+		BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+		BOOST_CHECK_EQUAL(image->get_size().z, size.z);
+		BOOST_CHECK_EQUAL(image->get_width(), size.x);
+		BOOST_CHECK_EQUAL(image->get_height(), size.y);
+		BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
 		for (i = 0; i < 128; ++i)
@@ -363,30 +363,30 @@ BOOST_AUTO_TEST_CASE(set_get_32_bit_values)
 	boost::variate_generator<boost::mt19937&,
 		boost::uniform_int<Uint32> > random_int(rng, range);
 	el::ImageSharedPtr image;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
 	BOOST_FOREACH(const el::TextureFormatType texture_format, get_32_bit())
 	{
-		sizes.x = 64;
-		sizes.y = 64;
-		sizes.z = 64;
+		size.x = 64;
+		size.y = 64;
+		size.z = 64;
 		cube_map = (random_int() % 2) == 0;
 
 		mipmap_count = 6;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, sizes, mipmap_count);
+			cube_map, texture_format, size, mipmap_count);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
-		BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-		BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-		BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
-		BOOST_CHECK_EQUAL(image->get_width(), sizes.x);
-		BOOST_CHECK_EQUAL(image->get_height(), sizes.y);
-		BOOST_CHECK_EQUAL(image->get_depth(), sizes.z);
+		BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+		BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+		BOOST_CHECK_EQUAL(image->get_size().z, size.z);
+		BOOST_CHECK_EQUAL(image->get_width(), size.x);
+		BOOST_CHECK_EQUAL(image->get_height(), size.y);
+		BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 		BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
 		for (i = 0; i < 128; ++i)
@@ -429,28 +429,28 @@ BOOST_AUTO_TEST_CASE(set_get_r3g3b2_value)
 	std::vector<Uvec4Array2> values;
 	Uvec4Array2 value;
 	glm::uvec3 color;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
-	sizes.x = 64;
-	sizes.y = 64;
-	sizes.z = 64;
+	size.x = 64;
+	size.y = 64;
+	size.z = 64;
 	cube_map = (random_int() % 2) == 0;
 
 	mipmap_count = 6;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
-		cube_map, el::tft_r3g3b2, sizes, mipmap_count);
+		cube_map, el::tft_r3g3b2, size, mipmap_count);
 
 	BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 	BOOST_CHECK_EQUAL(image->get_texture_format(), el::tft_r3g3b2);
-	BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-	BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-	BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
-	BOOST_CHECK_EQUAL(image->get_width(), sizes.x);
-	BOOST_CHECK_EQUAL(image->get_height(), sizes.y);
-	BOOST_CHECK_EQUAL(image->get_depth(), sizes.z);
+	BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+	BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+	BOOST_CHECK_EQUAL(image->get_size().z, size.z);
+	BOOST_CHECK_EQUAL(image->get_width(), size.x);
+	BOOST_CHECK_EQUAL(image->get_height(), size.y);
+	BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 	BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
 	for (i = 0; i < 128; ++i)
@@ -556,28 +556,28 @@ BOOST_AUTO_TEST_CASE(set_get_rgba4_value)
 	std::vector<Uvec4Array2> values;
 	Uvec4Array2 value;
 	glm::uvec4 color;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
-	sizes.x = 64;
-	sizes.y = 64;
-	sizes.z = 64;
+	size.x = 64;
+	size.y = 64;
+	size.z = 64;
 	cube_map = (random_int() % 2) == 0;
 
 	mipmap_count = 6;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
-		cube_map, el::tft_rgba4, sizes, mipmap_count);
+		cube_map, el::tft_rgba4, size, mipmap_count);
 
 	BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 	BOOST_CHECK_EQUAL(image->get_texture_format(), el::tft_rgba4);
-	BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-	BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-	BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
-	BOOST_CHECK_EQUAL(image->get_width(), sizes.x);
-	BOOST_CHECK_EQUAL(image->get_height(), sizes.y);
-	BOOST_CHECK_EQUAL(image->get_depth(), sizes.z);
+	BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+	BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+	BOOST_CHECK_EQUAL(image->get_size().z, size.z);
+	BOOST_CHECK_EQUAL(image->get_width(), size.x);
+	BOOST_CHECK_EQUAL(image->get_height(), size.y);
+	BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 	BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
 	for (i = 0; i < 128; ++i)
@@ -693,28 +693,28 @@ BOOST_AUTO_TEST_CASE(set_get_r5g6b5_value)
 	std::vector<Uvec4Array2> values;
 	Uvec4Array2 value;
 	glm::uvec3 color;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
-	sizes.x = 64;
-	sizes.y = 64;
-	sizes.z = 64;
+	size.x = 64;
+	size.y = 64;
+	size.z = 64;
 	cube_map = (random_int() % 2) == 0;
 
 	mipmap_count = 6;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
-		cube_map, el::tft_r5g6b5, sizes, mipmap_count);
+		cube_map, el::tft_r5g6b5, size, mipmap_count);
 
 	BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 	BOOST_CHECK_EQUAL(image->get_texture_format(), el::tft_r5g6b5);
-	BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-	BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-	BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
-	BOOST_CHECK_EQUAL(image->get_width(), sizes.x);
-	BOOST_CHECK_EQUAL(image->get_height(), sizes.y);
-	BOOST_CHECK_EQUAL(image->get_depth(), sizes.z);
+	BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+	BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+	BOOST_CHECK_EQUAL(image->get_size().z, size.z);
+	BOOST_CHECK_EQUAL(image->get_width(), size.x);
+	BOOST_CHECK_EQUAL(image->get_height(), size.y);
+	BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 	BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
 	for (i = 0; i < 128; ++i)
@@ -820,28 +820,28 @@ BOOST_AUTO_TEST_CASE(set_get_rgb5_a1_value)
 	std::vector<Uvec4Array2> values;
 	Uvec4Array2 value;
 	glm::uvec4 color;
-	glm::uvec3 sizes;
+	glm::uvec3 size;
 	Uint32 mipmap_count, x, y, z, f, m, data, i;
 	bool cube_map;
 
-	sizes.x = 64;
-	sizes.y = 64;
-	sizes.z = 64;
+	size.x = 64;
+	size.y = 64;
+	size.z = 64;
 	cube_map = (random_int() % 2) == 0;
 
 	mipmap_count = 6;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
-		cube_map, el::tft_rgb5_a1, sizes, mipmap_count);
+		cube_map, el::tft_rgb5_a1, size, mipmap_count);
 
 	BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 	BOOST_CHECK_EQUAL(image->get_texture_format(), el::tft_rgb5_a1);
-	BOOST_CHECK_EQUAL(image->get_sizes().x, sizes.x);
-	BOOST_CHECK_EQUAL(image->get_sizes().y, sizes.y);
-	BOOST_CHECK_EQUAL(image->get_sizes().z, sizes.z);
-	BOOST_CHECK_EQUAL(image->get_width(), sizes.x);
-	BOOST_CHECK_EQUAL(image->get_height(), sizes.y);
-	BOOST_CHECK_EQUAL(image->get_depth(), sizes.z);
+	BOOST_CHECK_EQUAL(image->get_size().x, size.x);
+	BOOST_CHECK_EQUAL(image->get_size().y, size.y);
+	BOOST_CHECK_EQUAL(image->get_size().z, size.z);
+	BOOST_CHECK_EQUAL(image->get_width(), size.x);
+	BOOST_CHECK_EQUAL(image->get_height(), size.y);
+	BOOST_CHECK_EQUAL(image->get_depth(), size.z);
 	BOOST_CHECK_EQUAL(image->get_mipmap_count(), mipmap_count);
 
 	for (i = 0; i < 128; ++i)

@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "textureformatutil.hpp"
 #include "editorobjectdescription.hpp"
 #include "imagevalue.hpp"
 #include "displacementvalue.hpp"
@@ -97,7 +98,11 @@ namespace eternal_lands
 			bool remove_light(const Uint32 id);
 			bool remove_particle(const Uint32 id);
 			bool get_object(const Uint32 id,
-				EditorObjectDescription &object) const;
+				EditorObjectDescription &object_description)
+				const;
+			bool get_objects(const Uint32 id,
+				EditorObjectDescriptionVector
+					&object_descriptions) const;
 			bool get_light(const Uint32 id, LightData &light) const;
 			bool get_particle(const Uint32 id,
 				ParticleData &particle) const;
@@ -119,14 +124,11 @@ namespace eternal_lands
 					&displacement_values);
 			void set_terrain_blend_values(
 				const ImageValueVector &blend_values);
-			void set_terrain_albedo_map(const String &name,
-				const Uint16 index);
-			void set_terrain_blend_data(const ShaderBlendData &data,
-				const Uint16 index);
-			const String &get_terrain_albedo_map(
-				const Uint16 index) const;
-			const ShaderBlendData &get_terrain_blend_data(
-				const Uint16 index) const;
+			void set_terrain_material(const String &albedo_map,
+				const String &extra_map, const float blend_size,
+				const bool use_blend_size_sampler,
+				const bool use_blend_size,
+				const bool use_extra_map, const Uint16 index);
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
 			void set_view_matrix(const glm::mat4 &view_matrix);
@@ -136,7 +138,8 @@ namespace eternal_lands
 			void set_ortho(const glm::vec4 &ortho);
 			void set_view_port(const glm::uvec4 &view_port);
 			const glm::mat4 &get_projection_matrix() const;
-			void load_map(const String &name);
+			void load_map(const String &name,
+				const MapItemsTypeSet &skip_items);
 			void draw();
 			void select(const glm::uvec2 &position,
 				const glm::uvec2 &half_size);
@@ -144,15 +147,30 @@ namespace eternal_lands
 			void set_draw_objects(const bool draw_objects);
 			void set_draw_terrain(const bool draw_terrain);
 			void set_draw_lights(const bool draw_lights);
+			void set_draw_heights(const bool draw_heights);
 			void set_draw_light_spheres(
 				const bool draw_light_spheres);
 			void set_lights_enabled(const bool enabled);
 			StringVector get_materials() const;
 			StringVector get_default_materials(const String &name)
 				const;
-			ImageSharedPtr get_image(const String &name) const;
+			ImageSharedPtr get_image(const String &name,
+				TextureFormatType &format) const;
+			void get_image_data(const String &name,
+				TextureFormatType &format, glm::uvec3 &sizes,
+				Uint16 &mipmaps, bool &cube_map, bool &array)
+				const;
 			void init_terrain(const glm::uvec2 &size,
-				const String &texture);
+				const String &albedo_map,
+				const String &extra_map,
+				const bool use_blend_size_sampler,
+				const bool use_extra_map);
+			void init_terrain(const String &height_map_name,
+				const glm::uvec2 &size,
+				const String &albedo_map,
+				const String &extra_map,
+				const bool use_blend_size_sampler,
+				const bool use_extra_map);
 			void set_focus(const glm::vec3 &focus) noexcept;
 			void set_debug_mode(const int value);
 			StringVector get_debug_modes() const;
@@ -162,6 +180,49 @@ namespace eternal_lands
 			bool get_water_vertex(const glm::vec3 &start_position,
 				const glm::vec3 &world_position,
 				glm::uvec2 &result) const;
+			void import_terrain_height_map(const String &name);
+			void import_terrain_blend_map(const String &name);
+			void set_terrain(
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
+				const ImageSharedPtr &blend_map,
+				const StringVector &albedo_maps,
+				const StringVector &extra_maps,
+				const TerrainMaterialData &material_data,
+				const glm::vec2 &dudv_scale,
+				const glm::uvec2 &size);
+
+			inline 	void relax_terrain_uv(
+				const AbstractProgressSharedPtr &progress,
+				const Uint16 count, const bool use_simd)
+			{
+				m_terrain_editor.relax_uv(progress, count,
+					use_simd);
+			}
+
+			inline void import_terrain_blend_map(
+				const ImageSharedPtr &blend_map)
+			{
+				m_terrain_editor.import_blend_map(blend_map);
+			}
+
+			inline const glm::vec2 &get_terrain_dudv_scale() const
+			{
+				return m_terrain_editor.get_dudv_scale();
+			}
+
+			inline void get_terrain_material(String &albedo_map,
+				String &extra_map, float &blend_size,
+				bool &use_blend_size_sampler,
+				bool &use_blend_size, bool &use_extra_map,
+				const Uint16 index) const
+			{
+				m_terrain_editor.get_material(albedo_map,
+					extra_map, blend_size,
+					use_blend_size_sampler, use_blend_size,
+					use_extra_map, index);
+			}
 
 			inline void get_terrain_displacement_values(
 				const glm::uvec2 &vertex,
@@ -233,9 +294,9 @@ namespace eternal_lands
 				return m_terrain_editor.get_enabled();
 			}
 
-			static inline const glm::vec3 &get_terrain_offset()
+			inline Uint16 get_terrain_layer_count() const
 			{
-				return TerrainEditor::get_terrain_offset();
+				return m_terrain_editor.get_layer_count();
 			}
 
 			static inline const glm::vec3 &get_terrain_offset_min()
@@ -281,6 +342,21 @@ namespace eternal_lands
 			inline RenderableType get_renderable() const noexcept
 			{
 				return m_renderable;
+			}
+
+			inline void get_all_terrain_displacement_values(
+				DisplacementValueVector &displacement_values)
+				const
+			{
+				m_terrain_editor.get_all_displacement_values(
+					displacement_values);
+			}
+
+			inline void get_all_terrain_blend_values(
+				ImageValueVector &blend_values) const
+			{
+				m_terrain_editor.get_all_blend_values(
+					blend_values);
 			}
 
 	};

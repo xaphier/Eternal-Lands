@@ -38,20 +38,20 @@ namespace eternal_lands
 	{
 		glm::vec4 color;
 		glm::vec3 position;
-		glm::uvec3 sizes;
+		glm::uvec3 size;
 		Uint32 x, y, z;
 		int r;
 
-		sizes = image->get_sizes(mipmap);
+		size = image->get_size(mipmap);
 
-		for (x = 0; x < sizes.x; ++x)
+		for (x = 0; x < size.x; ++x)
 		{
-			for (y = 0; y < sizes.y; ++y)
+			for (y = 0; y < size.y; ++y)
 			{
-				for (z = 0; z < sizes.z; ++z)
+				for (z = 0; z < size.z; ++z)
 				{
 					position = glm::vec3(x, y, z);
-					position /= glm::vec3(sizes);
+					position /= glm::vec3(size);
 
 					prepare(context);
 

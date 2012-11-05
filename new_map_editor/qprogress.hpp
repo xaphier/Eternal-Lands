@@ -29,20 +29,25 @@ class QProgress: public QObject, public AbstractProgress
 
 	private:
 		Uint32 m_value;
+		bool m_canceled;
 
 	public:
 		QProgress();
-		virtual ~QProgress() throw();
+		virtual ~QProgress() noexcept;
 		virtual void init(const Uint32 min_value,
 			const Uint32 max_value);
 		virtual void set_text(const String &str);
 		virtual void stepp(const Uint32 count);
 		virtual bool get_canceled() const;
 
+	public slots:
+		void cancel(const bool value = true);
+
 	signals:
 		void set_range(const int min_value, const int max_value);
 		void set_value(const int value);
 		void set_string(const QString &str);
+		void start();
 
 };
 

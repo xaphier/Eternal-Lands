@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "scene.hpp"
 #include "renderobjectdata.hpp"
+#include "abstractmaploader.hpp"
 
 /**
  * @file
@@ -36,7 +37,11 @@ namespace eternal_lands
 		private:
 			Uint32ObjectSharedPtrMap m_light_objects;
 			Uint32ObjectSharedPtrMap m_light_sphere_objects;
+			Uint32ObjectSharedPtrMap m_heights;
+			boost::scoped_ptr<RStarTree> m_height_tree;
 			MaterialSharedPtr m_selection_material;
+			TerrainRenderingData m_top_down_terrain;
+			ObjectVisitor m_top_down_objects;
 			glm::uvec2 m_depth_selection;
 			double m_depth;
 			Uint32 m_selected_object;
@@ -44,6 +49,8 @@ namespace eternal_lands
 			bool m_draw_terrain;
 			bool m_draw_lights;
 			bool m_draw_light_spheres;
+			bool m_draw_heights;
+			GLuint m_querie_id;
 
 		protected:
 			virtual void depth_read();
@@ -70,24 +77,40 @@ namespace eternal_lands
 			virtual ~EditorScene() throw();
 			virtual void add_light(const LightData &light_data);
 			virtual void remove_light(const Uint32 id);
-			void load_map(const String &name, EditorMapData &data);
+			void load_map(const String &name, EditorMapData &data,
+				const MapItemsTypeSet &skip_items);
 			void set_terrain_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
 				const ImageSharedPtr &dudv_map);
 			void set_terrain_blend_map(
 				const ImageSharedPtr &blend_map);
-			void set_terrain_material_maps(
+			void set_terrain_material(
 				const StringVector &albedo_maps,
-				const StringVector &specular_maps);
+				const StringVector &extra_maps,
+				const TerrainMaterialData &material_data);
+			void set_terrain_dudv_scale(
+				const glm::vec2 &dudv_scale);
 			void update_terrain_geometry_maps(
 				const ImageUpdate &displacement_map,
 				const ImageUpdate &normal_map,
 				const ImageUpdate &dudv_map);
 			void update_terrain_blend_map(
 				const ImageUpdate &blend_map);
-			void set_terrain_effect_main(const String &effect_main);
 			void draw_selection(const glm::uvec4 &selection_rect);
+			void set_height(const Uint16 x, const Uint16 y,
+				const Uint16 height);
+			void cull_map();
+			void draw_scale_view(const bool depth_only);
+			void set_terrain(
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &dudv_map,
+				const ImageSharedPtr &blend_map,
+				const StringVector &albedo_maps,
+				const StringVector &extra_maps,
+				const TerrainMaterialData &material_data,
+				const glm::vec2 &dudv_scale);
 
 			inline void deselect_object() noexcept
 			{
@@ -143,6 +166,11 @@ namespace eternal_lands
 				return m_draw_light_spheres;
 			}
 
+			inline bool get_draw_heights() const noexcept
+			{
+				return m_draw_heights;
+			}
+
 			inline void set_draw_objects(const bool draw_objects)
 				noexcept
 			{
@@ -165,6 +193,12 @@ namespace eternal_lands
 				const bool draw_light_spheres) noexcept
 			{
 				m_draw_light_spheres = draw_light_spheres;
+			}
+
+			inline void set_draw_heights(const bool draw_heights)
+				noexcept
+			{
+				m_draw_heights = draw_heights;
 			}
 
 	};

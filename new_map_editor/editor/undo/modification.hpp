@@ -30,6 +30,7 @@ namespace eternal_lands
 		mt_object_materials_changed,
 		mt_object_walkable_changed,
 
+		mt_objects_removed,
 		mt_objects_translation_changed,
 		mt_objects_rotation_changed,
 		mt_objects_scale_changed,
@@ -49,8 +50,7 @@ namespace eternal_lands
 		mt_lights_color_changed,
 		mt_lights_radius_changed,
 
-		mt_terrain_albedo_map_changed,
-		mt_terrain_blend_data_changed,
+		mt_terrain_material_changed,
 		mt_terrain_scale_offset_changed,
 
 		mt_tile_texture_changed,

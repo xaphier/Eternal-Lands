@@ -43,6 +43,7 @@ namespace eternal_lands
 		public virtual boost::exception {};
 	class RangeErrorException: public virtual InvalidParameterException {};
 	class ArraySizeErrorException: public virtual RangeErrorException {};
+	class SizeErrorException: public virtual RangeErrorException {};
 	class InvalidTokenException:
 		public virtual InvalidParameterException {};
 	class OpenGlException: public virtual std::exception,
@@ -82,22 +83,40 @@ namespace eternal_lands
 		errinfo_range_max;
 	typedef boost::error_info<struct errinfo_range_index_, Sint64>
 		errinfo_range_index;
+	typedef boost::error_info<struct errinfo_range_expected_, Sint64>
+		errinfo_range_expected;
 	typedef boost::error_info<struct errinfo_float_range_min_, float>
 		errinfo_float_range_min;
 	typedef boost::error_info<struct errinfo_float_range_max_, float>
 		errinfo_float_range_max;
 	typedef boost::error_info<struct errinfo_float_range_index_, float>
 		errinfo_float_range_index;
-	typedef boost::error_info<struct errinfo_table_size_, Uint64>
-		errinfo_table_size;
-	typedef boost::error_info<struct errinfo_table_index_, Uint64>
-		errinfo_table_index;
+	typedef boost::error_info<struct errinfo_size_, Uint64>
+		errinfo_size;
 	typedef boost::error_info<struct errinfo_array_index_0_, Uint64>
 		errinfo_array_index_0;
 	typedef boost::error_info<struct errinfo_array_index_1_, Uint64>
 		errinfo_array_index_1;
 	typedef boost::error_info<struct errinfo_array_index_2_, Uint64>
 		errinfo_array_index_2;
+	typedef boost::error_info<struct errinfo_array_size_0_, Uint64>
+		errinfo_array_size_0;
+	typedef boost::error_info<struct errinfo_array_size_1_, Uint64>
+		errinfo_array_size_1;
+	typedef boost::error_info<struct errinfo_array_size_2_, Uint64>
+		errinfo_array_size_2;
+	typedef boost::error_info<struct errinfo_width_, Uint64>
+		errinfo_width;
+	typedef boost::error_info<struct errinfo_height_, Uint64>
+		errinfo_height;
+	typedef boost::error_info<struct errinfo_depth_, Uint64>
+		errinfo_depth;
+	typedef boost::error_info<struct errinfo_expected_width_, Uint64>
+		errinfo_expected_width;
+	typedef boost::error_info<struct errinfo_expected_height_, Uint64>
+		errinfo_expected_height;
+	typedef boost::error_info<struct errinfo_expected_depth_, Uint64>
+		errinfo_expected_depth;
 	typedef boost::error_info<struct errinfo_name_, std::string>
 		errinfo_name;
 	typedef boost::error_info<struct errinfo_type_name_, std::string>
@@ -245,8 +264,52 @@ namespace eternal_lands
 			EL_THROW_EXCEPTION(RangeErrorException()	\
 				<< errinfo_message((message))	\
 				<< errinfo_range_index((index))	\
-				<< errinfo_range_min((min)));	\
+				<< errinfo_range_min((min))	\
 				<< errinfo_range_max((max)));	\
+		}	\
+	}	\
+	while (false)
+#endif
+
+#ifndef	NDEBUG
+#define RANGE_CECK_EQUAL(index, expected, message)	\
+	assert(((index) == (expected)) && (message))
+#else
+#define RANGE_CECK_EQUAL(index, expected, message)	\
+	do	\
+	{	\
+		if ((index) != (expected))	\
+		{	\
+			EL_THROW_EXCEPTION(RangeErrorException()	\
+				<< errinfo_message((message))	\
+				<< errinfo_range_index((index))	\
+				<< errinfo_range_expected((expected)));	\
+		}	\
+	}	\
+	while (false)
+#endif
+
+#ifndef	NDEBUG
+#define CECK_TABLE_SIZES_EQUAL(size, expected, message)	\
+	assert(((size.x) == (expected.x)) &&	\
+		((size.y) == (expected.y)) &&	\
+		((size.z) == (expected.z)) && (message))
+#else
+#define CECK_TABLE_SIZES_EQUAL(size, expected, message)	\
+	do	\
+	{	\
+		if (((size.x) != (expected.x)) ||	\
+			((size.y) != (expected.y)) ||	\
+			((size.z) != (expected.z)))	\
+		{	\
+			EL_THROW_EXCEPTION(SizeErrorException()	\
+				<< errinfo_message((message))	\
+				<< errinfo_width((size.x))	\
+				<< errinfo_height((size.y))	\
+				<< errinfo_depth((size.z))	\
+				<< errinfo_expected_width((expected.x))	\
+				<< errinfo_expected_height((expected.y))	\
+				<< errinfo_expected_depth((expected.z)));	\
 		}	\
 	}	\
 	while (false)

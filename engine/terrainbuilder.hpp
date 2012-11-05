@@ -124,7 +124,8 @@ namespace eternal_lands
 				const TextureCacheWeakPtr &texture_cache);
 			~TerrainBuilder() noexcept;
 			AbstractTerrainSharedPtr get_terrain() const;
-			EffectSharedPtr get_effect(const String &effect_main)
+			EffectSharedPtr get_effect(const String &name,
+				const TerrainMaterialData &material_data)
 				const;
 
 	};

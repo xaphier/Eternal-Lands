@@ -13,7 +13,6 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
-#include "terraindata.hpp"
 #include "boundingbox.hpp"
 
 /**
@@ -34,11 +33,6 @@ namespace eternal_lands
 			MaterialSharedPtr m_clipmap_terrain_material;
 			const bool m_low_quality_terrain;
 
-			virtual TextureSharedPtr get_displacement_texture()
-				const = 0;
-			virtual TextureSharedPtr get_normal_texture()
-				const = 0;
-			virtual TextureSharedPtr get_dudv_texture() const = 0;
 			virtual void do_set_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,
@@ -47,11 +41,11 @@ namespace eternal_lands
 				const ImageUpdate &displacement_map,
 				const ImageUpdate &normal_map,
 				const ImageUpdate &dudv_map) = 0;
-			void update_clipmap_terrain_material();
 			void set_albedo_maps(const StringVector &albedo_maps,
+				const BitSet64 &blend_size_textures,
 				const TextureCacheSharedPtr &texture_cache);
-			void set_specular_maps(
-				const StringVector &specular_maps,
+			void set_extra_maps(const StringVector &extra_maps,
+				const BitSet64 &use_extra_maps,
 				const TextureCacheSharedPtr &texture_cache);
 
 		protected:
@@ -94,14 +88,6 @@ namespace eternal_lands
 				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const = 0;
 			virtual void clear() = 0;
-			static const glm::vec3 &get_vector_scale() noexcept;
-			static const glm::vec3 &get_vector_min() noexcept;
-			static const glm::vec3 &get_vector_max() noexcept;
-			static const glm::vec4 &get_vector_scale_rgb10_a2()
-				noexcept;
-			static const glm::vec2 &get_vector_offset_rgb10_a2()
-				noexcept;
-			static const glm::vec4 &get_vector_rgb10_a2() noexcept;
 			void set_clipmap_terrain_texture(
 				const TextureSharedPtr &texture);
 			void set_geometry_maps(
@@ -117,9 +103,16 @@ namespace eternal_lands
 			void update_blend_map(
 				const ImageUpdate &blend_map);
 			void set_texture_maps(const StringVector &albedo_maps,
-				const StringVector &specular_maps,
+				const StringVector &extra_maps,
+				const BitSet64 &blend_size_textures,
+				const BitSet64 &use_extra_maps,
 				const TextureCacheSharedPtr &texture_cache);
 			void set_effect(const EffectSharedPtr &effect);
+			void set_dudv_scale(const glm::vec2 &dudv_scale);
+			const glm::vec2 &get_dudv_scale() const;
+			static const glm::vec3 &get_vector_min() noexcept;
+			static const glm::vec3 &get_vector_max() noexcept;
+			static const float get_vector_scale() noexcept;
 
 			inline bool get_empty() const noexcept
 			{
@@ -170,24 +163,33 @@ namespace eternal_lands
 				return 0.25f;
 			}
 
+			static inline glm::vec3 get_offset_scaled_0_1(
+				const glm::vec4 &value)
+			{
+				glm::vec3 result, tmp;
+
+				result = glm::vec3(value) * get_vector_scale();
+				tmp = glm::step(glm::vec3(value.a),
+					glm::vec3(0.5f, 1.5f, 2.5f) / 3.0f);
+				result.x *= (tmp.x - tmp.y + tmp.z) * 2.0f -
+					1.0f;
+				result.y *= tmp.y * 2.0f - 1.0f;
+
+				return result;
+			}
+
 			static inline glm::vec3 get_offset_scaled_rgb10_a2(
 				const glm::uvec4 &value)
 			{
-				glm::vec4 tmp;
-				glm::vec3 result;
+				glm::vec3 result, tmp;
 
-				tmp = value;
-				tmp *= glm::vec4(1.0f / 1023.0f,
-					1.0f / 1023.0f, 1.0f / 1023.0f,
-					1.0f / 3.0f);
-
-				tmp *= get_vector_scale_rgb10_a2();
-
-				result = glm::vec3(tmp);
-
-				result.x += get_vector_offset_rgb10_a2().x;
-				result.y += get_vector_offset_rgb10_a2().y;
-				result.z += tmp.w;
+				result = glm::vec3(value) * get_vector_scale()
+					/ 1023.0f;
+				tmp = glm::step(glm::vec3(value.a) / 3.0f,
+					glm::vec3(0.5f, 1.5f, 2.5f) / 3.0f);
+				result.x *= (tmp.x - tmp.y + tmp.z) * 2.0f -
+					1.0f;
+				result.y *= tmp.y * 2.0f - 1.0f;
 
 				return result;
 			}
@@ -195,46 +197,38 @@ namespace eternal_lands
 			static inline glm::uvec4 get_value_scaled_rgb10_a2(
 				const glm::vec3 &offset)
 			{
-				glm::uvec4 result;
-				glm::vec3 tmp;
+				glm::uvec3 tmp;
+				Uint16 signs;
 
-				tmp = offset / get_vector_scale();
-				tmp.x = tmp.x * 0.5f + 0.5f;
-				tmp.y = tmp.y * 0.5f + 0.5f;
+				tmp = (glm::abs(offset) * 1023.0f /
+					get_vector_scale()) + 0.5f;
 
-				tmp = glm::clamp(tmp, glm::vec3(0.0f),
-					glm::vec3(1.0f));
+				signs = 0;
 
-				tmp *= glm::vec3(1023.0f, 1023.0f, 4095.0f);
-				tmp += 0.5f;
+				if (offset.x < 0.0f)
+				{
+					signs += 1;
+				}
 
-				result.x = tmp.x;
-				result.y = tmp.y;
-				result.z = tmp.z;
-				result.w = result.z % 4;
-				result.z = result.z / 4;
+				if (offset.y < 0.0f)
+				{
+					signs += 2;
+				}
 
-				return result;
+				return glm::uvec4(tmp, signs);
 			}
 
 			static inline glm::vec3 get_offset_rgb10_a2(
 				const glm::uvec4 &value)
 			{
-				glm::vec4 tmp;
-				glm::vec3 result;
+				glm::vec3 result, tmp;
 
-				tmp = value;
-				tmp *= glm::vec4(1.0f / 1023.0f,
-					1.0f / 1023.0f, 1.0f / 1023.0f,
-					1.0f / 3.0f);
-
-				tmp *= get_vector_rgb10_a2();
-
-				result = glm::vec3(tmp);
-
-				result.x -= 1.0f;
-				result.y -= 1.0f;
-				result.z += tmp.w;
+				result = glm::vec3(value) / 1023.0f;
+				tmp = glm::step(glm::vec3(value.a) / 3.0f,
+					glm::vec3(0.5f, 1.5f, 2.5f) / 3.0f);
+				result.x *= (tmp.x - tmp.y + tmp.z) * 2.0f -
+					1.0f;
+				result.y *= tmp.y * 2.0f - 1.0f;
 
 				return result;
 			}
@@ -242,28 +236,24 @@ namespace eternal_lands
 			static inline glm::uvec4 get_value_rgb10_a2(
 				const glm::vec3 &offset)
 			{
-				glm::uvec4 result;
-				glm::vec3 tmp;
+				glm::uvec3 tmp;
+				Uint16 signs;
 
-				tmp = offset;
+				tmp = glm::abs(offset) * 1023.0f + 0.5f;
 
-				tmp.x = tmp.x * 0.5f + 0.5f;
-				tmp.y = tmp.y * 0.5f + 0.5f;
+				signs = 0;
 
-				tmp = glm::clamp(tmp, glm::vec3(0.0f),
-					glm::vec3(1.0f));
+				if (offset.x < 0.0f)
+				{
+					signs += 1;
+				}
 
-				tmp.x *= 1023.0f;
-				tmp.y *= 1023.0f;
-				tmp.z *= 4095.0f;
+				if (offset.y < 0.0f)
+				{
+					signs += 2;
+				}
 
-				result.x = tmp.x + 0.5f;
-				result.y = tmp.y + 0.5f;
-				result.z = tmp.z + 0.5f;
-				result.w = result.z % 4;
-				result.z = result.z / 4;
-
-				return result;
+				return glm::uvec4(tmp, signs);
 			}
 
 	};

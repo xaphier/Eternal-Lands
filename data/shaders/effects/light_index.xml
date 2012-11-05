@@ -9,5 +9,6 @@
 	<transparent>false</transparent>
 	<lighting></lighting>
 	<description>screen_quad_1</description>
+	<output_channels>rgba</output_channels>
 </effect>
 

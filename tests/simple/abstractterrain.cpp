@@ -15,9 +15,21 @@ namespace el = eternal_lands;
 
 BOOST_AUTO_TEST_CASE(get_vector_scale)
 {
-	BOOST_CHECK_GT(el::AbstractTerrain::get_vector_scale().x, 0.0f);
-	BOOST_CHECK_GT(el::AbstractTerrain::get_vector_scale().y, 0.0f);
-	BOOST_CHECK_GT(el::AbstractTerrain::get_vector_scale().z, 0.0f);
+	BOOST_CHECK_GT(el::AbstractTerrain::get_vector_scale(), 0.0f);
+}
+
+BOOST_AUTO_TEST_CASE(get_vector_min)
+{
+	BOOST_CHECK_LE(el::AbstractTerrain::get_vector_min().x, 0.0f);
+	BOOST_CHECK_LE(el::AbstractTerrain::get_vector_min().y, 0.0f);
+	BOOST_CHECK_LE(el::AbstractTerrain::get_vector_min().z, 0.0f);
+}
+
+BOOST_AUTO_TEST_CASE(get_vector_max)
+{
+	BOOST_CHECK_GT(el::AbstractTerrain::get_vector_max().x, 0.0f);
+	BOOST_CHECK_GT(el::AbstractTerrain::get_vector_max().y, 0.0f);
+	BOOST_CHECK_GT(el::AbstractTerrain::get_vector_max().z, 0.0f);
 }
 
 BOOST_AUTO_TEST_CASE(get_tile_size)
@@ -72,7 +84,7 @@ BOOST_AUTO_TEST_CASE(get_offset_scaled_rgb10_a2)
 	glm::vec3 temp, scale;
 	Uint32 i;
 
-	scale = el::AbstractTerrain::get_vector_scale();
+	scale = glm::vec3(el::AbstractTerrain::get_vector_scale());
 
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
@@ -105,7 +117,7 @@ BOOST_AUTO_TEST_CASE(get_value_scaled_rgb10_a2)
 	glm::vec3 tmp, scale;
 	Uint32 i;
 
-	scale = el::AbstractTerrain::get_vector_scale();
+	scale = glm::vec3(el::AbstractTerrain::get_vector_scale());
 
 	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
 	{
@@ -115,8 +127,6 @@ BOOST_AUTO_TEST_CASE(get_value_scaled_rgb10_a2)
 
 		temp = el::AbstractTerrain::get_value_scaled_rgb10_a2(
 			tmp * scale);
-
-		scale = el::AbstractTerrain::get_vector_scale();
 
 		BOOST_CHECK_LE(temp.x, 1023);
 		BOOST_CHECK_LE(temp.y, 1023);
@@ -147,5 +157,102 @@ BOOST_AUTO_TEST_CASE(get_value_rgb10_a2)
 		BOOST_CHECK_LE(temp.y, 1023);
 		BOOST_CHECK_LE(temp.z, 1023);
 		BOOST_CHECK_LE(temp.w, 3);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(convert_scaled_rgb10_a2)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint32> >
+		random_uint32(rng, range);
+	glm::uvec4 offset, tmp;
+	glm::vec3 temp;
+	float scale;
+	Uint32 i;
+
+	scale = el::AbstractTerrain::get_vector_scale();
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		offset.x = random_uint32() % 1024;
+		offset.y = random_uint32() % 1024;
+		offset.z = random_uint32() % 1024;
+		offset.w = random_uint32() % 4;
+
+		if (offset.x == 0)
+		{
+			offset.w = offset.w & 0x02;
+		}
+
+		if (offset.y == 0)
+		{
+			offset.w = offset.w & 0x01;
+		}
+
+		temp = el::AbstractTerrain::get_offset_scaled_rgb10_a2(offset);
+
+		BOOST_CHECK_GE(temp.x, -scale - el::epsilon);
+		BOOST_CHECK_LE(temp.x, scale + el::epsilon);
+
+		BOOST_CHECK_GE(temp.y, -scale - el::epsilon);
+		BOOST_CHECK_LE(temp.y, scale + el::epsilon);
+
+		BOOST_CHECK_GE(temp.z, 0.0f - el::epsilon);
+		BOOST_CHECK_LE(temp.z, scale + el::epsilon);
+
+		tmp = el::AbstractTerrain::get_value_scaled_rgb10_a2(temp);
+
+		BOOST_CHECK_EQUAL(offset.x, tmp.x);
+		BOOST_CHECK_EQUAL(offset.y, tmp.y);
+		BOOST_CHECK_EQUAL(offset.z, tmp.z);
+		BOOST_CHECK_EQUAL(offset.w, tmp.w);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(convert_rgb10_a2)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint32> >
+		random_uint32(rng, range);
+	glm::uvec4 offset, tmp;
+	glm::vec3 temp;
+	Uint32 i;
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		offset.x = random_uint32() % 1024;
+		offset.y = random_uint32() % 1024;
+		offset.z = random_uint32() % 1024;
+		offset.w = random_uint32() % 4;
+
+		if (offset.x == 0)
+		{
+			offset.w = offset.w & 0x02;
+		}
+
+		if (offset.y == 0)
+		{
+			offset.w = offset.w & 0x01;
+		}
+
+		temp = el::AbstractTerrain::get_offset_rgb10_a2(offset);
+
+		BOOST_CHECK_GE(temp.x, -1.0f - el::epsilon);
+		BOOST_CHECK_LE(temp.x, 1.0f + el::epsilon);
+
+		BOOST_CHECK_GE(temp.y, -1.0f - el::epsilon);
+		BOOST_CHECK_LE(temp.y, 1.0f + el::epsilon);
+
+		BOOST_CHECK_GE(temp.z, 0.0f - el::epsilon);
+		BOOST_CHECK_LE(temp.z, 1.0f + el::epsilon);
+
+		tmp = el::AbstractTerrain::get_value_rgb10_a2(temp);
+
+		BOOST_CHECK_EQUAL(offset.x, tmp.x);
+		BOOST_CHECK_EQUAL(offset.y, tmp.y);
+		BOOST_CHECK_EQUAL(offset.z, tmp.z);
+		BOOST_CHECK_EQUAL(offset.w, tmp.w);
 	}
 }

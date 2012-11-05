@@ -33,24 +33,27 @@ BOOST_AUTO_TEST_CASE(static_functions)
 {
 	int i, count;
 
-	BOOST_CHECK_GT(ShaderSourceTerrain::get_non_array_sampler_count(),
-		0);
+	BOOST_CHECK_GT(ShaderSourceTerrain::
+		get_non_array_albedo_sampler_count(), 0);
 
-	count = ShaderSourceTerrain::get_non_array_sampler_count();
+	count = ShaderSourceTerrain::get_non_array_albedo_sampler_count();
 
 	for (i = 0; i < count; ++i)
 	{
 		BOOST_CHECK_NO_THROW(
 			ShaderSourceTerrain::get_albedo_sampler(i));
-		BOOST_CHECK_NO_THROW(
-			ShaderSourceTerrain::get_specular_sampler(i));
 	}
 
-	BOOST_CHECK_NO_THROW(ShaderSourceTerrain::get_blend_sampler());
-	BOOST_CHECK_NO_THROW(ShaderSourceTerrain::get_dudv_sampler());
-	BOOST_CHECK_NO_THROW(
-		ShaderSourceTerrain::get_displacement_sampler());
-	BOOST_CHECK_NO_THROW(ShaderSourceTerrain::get_normal_sampler());
+	BOOST_CHECK_GT(ShaderSourceTerrain::
+		get_non_array_blend_sampler_count(), 0);
+
+	count = ShaderSourceTerrain::get_non_array_blend_sampler_count();
+
+	for (i = 0; i < count; ++i)
+	{
+		BOOST_CHECK_NO_THROW(
+			ShaderSourceTerrain::get_blend_sampler(i));
+	}
 }
 
 BOOST_AUTO_TEST_CASE(static_functions_extended)
@@ -59,10 +62,10 @@ BOOST_AUTO_TEST_CASE(static_functions_extended)
 	SamplerParameterType sampler;
 	int i, count;
 
-	BOOST_CHECK_GT(ShaderSourceTerrain::get_non_array_sampler_count(),
-		0);
+	BOOST_CHECK_GT(ShaderSourceTerrain::
+		get_non_array_albedo_sampler_count(), 0);
 
-	count = ShaderSourceTerrain::get_non_array_sampler_count();
+	count = ShaderSourceTerrain::get_non_array_albedo_sampler_count();
 
 	for (i = 0; i < count; ++i)
 	{
@@ -72,40 +75,20 @@ BOOST_AUTO_TEST_CASE(static_functions_extended)
 			(samplers)(sampler));
 
 		samplers.insert(sampler);
+	}
 
-		sampler = ShaderSourceTerrain::get_specular_sampler(i);
+	BOOST_CHECK_GT(ShaderSourceTerrain::
+		get_non_array_blend_sampler_count(), 0);
+
+	count = ShaderSourceTerrain::get_non_array_blend_sampler_count();
+
+	for (i = 0; i < count; ++i)
+	{
+		sampler = ShaderSourceTerrain::get_blend_sampler(i);
 
 		BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
 			(samplers)(sampler));
 
 		samplers.insert(sampler);
 	}
-
-	sampler = ShaderSourceTerrain::get_blend_sampler();
-
-	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
-		(samplers)(sampler));
-
-	samplers.insert(sampler);
-
-	sampler = ShaderSourceTerrain::get_dudv_sampler();
-
-	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
-		(samplers)(sampler));
-
-	samplers.insert(sampler);
-
-	sampler = ShaderSourceTerrain::get_displacement_sampler();
-
-	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
-		(samplers)(sampler));
-
-	samplers.insert(sampler);
-
-	sampler = ShaderSourceTerrain::get_normal_sampler();
-
-	BOOST_CHECK_PREDICATE(value_not_in_set<SamplerParameterType>,
-		(samplers)(sampler));
-
-	samplers.insert(sampler);
 }

@@ -24,70 +24,82 @@ namespace eternal_lands
 		class ActorTextureErrorException:
 			public virtual IoErrorException {};
 
-		boost::array<Uint32Array2, 12> actor_part_sizes =
+		boost::array<glm::uvec2, 12> actor_part_sizes =
 		{ {
-			{ { 32, 32 } },	/* head */
-			{ { 39, 36 } },	/* shield */
-			{ { 62, 38 } },	/* cape */
-			{ { 39, 14 } },	/* helmet */
-			{ { 39, 36 } },	/* weapon */
-			{ { 49, 54 } },	/* torso */
-			{ { 40, 40 } },	/* arms */
-			{ { 34, 48 } },	/* hair */
-			{ { 39, 40 } },	/* boots */
-			{ { 40, 40 } },	/* pants */
-			{ { 16, 16 } },	/* hands */
-			{ { 10, 26 } }	/* neck **/
+			glm::uvec2(32, 32),	/* head */
+			glm::uvec2(39, 36),	/* shield */
+			glm::uvec2(62, 38),	/* cape */
+			glm::uvec2(39, 14),	/* helmet */
+			glm::uvec2(39, 36),	/* weapon */
+			glm::uvec2(49, 54),	/* torso */
+			glm::uvec2(40, 40),	/* arms */
+			glm::uvec2(34, 48),	/* hair */
+			glm::uvec2(39, 40),	/* boots */
+			glm::uvec2(40, 40),	/* pants */
+			glm::uvec2(16, 16),	/* hands */
+			glm::uvec2(10, 26)	/* neck **/
 		} };
 
-		boost::array<Uint32Array2, 12> actor_part_offsets =
+		boost::array<glm::uvec2, 12> actor_part_offsets =
 		{ {
-			{ { 34,  0 } },	/* head */
-			{ { 50, 38 } },	/* shield */
-			{ { 66,  0 } },	/* cape */
-			{ { 40, 74 } },	/* helmet */
-			{ { 89, 38 } },	/* weapon */
-			{ { 79, 74 } },	/* torso */
-			{ {  0, 48 } },	/* arms */
-			{ {  0,  0 } },	/* hair */
-			{ {  0, 88 } },	/* boots */
-			{ { 39, 88 } },	/* pants */
-			{ { 34, 32 } },	/* hands */
-			{ { 40, 48 } }	/* neck **/
+			glm::uvec2(34,  0),	/* head */
+			glm::uvec2(50, 38),	/* shield */
+			glm::uvec2(66,  0),	/* cape */
+			glm::uvec2(40, 74),	/* helmet */
+			glm::uvec2(89, 38),	/* weapon */
+			glm::uvec2(79, 74),	/* torso */
+			glm::uvec2( 0, 48),	/* arms */
+			glm::uvec2( 0,  0),	/* hair */
+			glm::uvec2( 0, 88),	/* boots */
+			glm::uvec2(39, 88),	/* pants */
+			glm::uvec2(34, 32),	/* hands */
+			glm::uvec2(40, 48)	/* neck **/
 		} };
 
 		TextureFormatType check_size(
 			const CodecManagerSharedPtr &codec_manager,
 			const ReaderSharedPtr &reader,
-			const Uint32Array2 &sizes, const Uint16 scale,
+			const glm::uvec2 &size, const Uint16 scale,
 			const bool rg_formats, const bool srgb_formats)
 		{
 			TextureFormatType texture_format;
-			glm::uvec3 image_sizes;
+			glm::uvec3 image_size;
 			Uint32 width, height;
 			Uint16 mipmap, mipmap_count;
+			bool cube_map, array;
 
 			codec_manager->get_image_information(reader, rg_formats,
-				srgb_formats, texture_format, image_sizes,
-				mipmap_count);
+				srgb_formats, texture_format, image_size,
+				mipmap_count, cube_map, array);
 
-			if (image_sizes[2] != 0)
+			if (image_size[2] != 0)
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
 						reader->get_name())
 					<< errinfo_expected_value(0)
-					<< errinfo_value(image_sizes[2])
+					<< errinfo_value(image_size[2])
 					<< errinfo_message(UTF8("Wrong image "
 						"depth")));
 			}
 
-			width = image_sizes[0];
-			height = image_sizes[1];
+			if (cube_map)
+			{
+				EL_THROW_EXCEPTION(ActorTextureErrorException()
+					<< boost::errinfo_file_name(
+						reader->get_name())
+					<< errinfo_expected_value(0)
+					<< errinfo_value(cube_map)
+					<< errinfo_message(UTF8("Wrong image, "
+						"cube map")));
+			}
+
+			width = image_size[0];
+			height = image_size[1];
 			mipmap = 0;
 
-			while ((width > (sizes[0] * scale)) ||
-				(height > (sizes[1] * scale)))
+			while ((width > (size[0] * scale)) ||
+				(height > (size[1] * scale)))
 			{
 				width /= 2;
 				height /= 2;
@@ -105,25 +117,25 @@ namespace eternal_lands
 						"mipmaps")));
 			}
 
-			if (width != (sizes[0] * scale))
+			if (width != (size[0] * scale))
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
 						reader->get_name())
 					<< errinfo_expected_value(
-						sizes[0] * scale)
+						size[0] * scale)
 					<< errinfo_value(width)
 					<< errinfo_message(UTF8("Wrong image "
 						"width")));
 			}
 
-			if (height != (sizes[1] * scale))
+			if (height != (size[1] * scale))
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
 						reader->get_name())
 					<< errinfo_expected_value(
-						sizes[1] * scale)
+						size[1] * scale)
 					<< errinfo_value(height)
 					<< errinfo_message(UTF8("Wrong image "
 						"height")));
@@ -140,13 +152,13 @@ namespace eternal_lands
 
 		bool get_alpha(const CodecManagerSharedPtr &codec_manager,
 			const ReaderSharedPtr &reader,
-			const Uint32Array2 &sizes, const Uint16 scale,
+			const glm::uvec2 &size, const Uint16 scale,
 			bool &compressed)
 		{
 			TextureFormatType texture_format;
 
 			texture_format = check_size(codec_manager, reader,
-				sizes, scale, false, false);
+				size, scale, false, false);
 
 			compressed &= (texture_format == tft_rgb_dxt1) ||
 				(texture_format == tft_rgba_dxt1) ||
@@ -159,7 +171,7 @@ namespace eternal_lands
 			const ReaderSharedPtr &texture_reader,
 			const ReaderSharedPtr &base_reader,
 			const ReaderSharedPtr &mask_reader,
-			const Uint32Array2 &sizes, const Uint16 scale,
+			const glm::uvec2 &size, const Uint16 scale,
 			bool &compressed)
 		{
 			Uint32 count;
@@ -170,16 +182,16 @@ namespace eternal_lands
 				(mask_reader.get() == nullptr))
 			{
 				return get_alpha(codec_manager, texture_reader,
-					sizes, scale, compressed);
+					size, scale, compressed);
 			}
 
 			alpha = get_alpha(check_size(codec_manager,
-				texture_reader, sizes, scale, false, false));
+				texture_reader, size, scale, false, false));
 			alpha |= get_alpha(check_size(codec_manager,
-				base_reader, sizes, scale, false, false));
+				base_reader, size, scale, false, false));
 
 			texture_format = check_size(codec_manager,
-				mask_reader, sizes, scale, false, false);
+				mask_reader, size, scale, false, false);
 
 			count = TextureFormatUtil::get_count(texture_format);
 
@@ -211,7 +223,7 @@ namespace eternal_lands
 		ImageSharedPtr get_image(
 			const CodecManagerSharedPtr &codec_manager,
 			const ReaderSharedPtr &reader,
-			const Uint32Array2 &sizes, const Uint16 scale,
+			const glm::uvec2 &size, const Uint16 scale,
 			const ImageCompressionTypeSet &compressions,
 			const bool rg_formats, const bool srgb_formats,
 			Uint16 &mipmap)
@@ -220,7 +232,7 @@ namespace eternal_lands
 			Uint32 width, height;
 
 			result = codec_manager->load_image(reader,
-				compressions, rg_formats, srgb_formats);
+				compressions, rg_formats, srgb_formats, false);
 
 			if (result->get_depth() != 0)
 			{
@@ -237,8 +249,8 @@ namespace eternal_lands
 			height = result->get_height();
 			mipmap = 0;
 
-			while ((width > (sizes[0] * scale)) ||
-				(height > (sizes[1] * scale)))
+			while ((width > (size[0] * scale)) ||
+				(height > (size[1] * scale)))
 			{
 				width /= 2;
 				height /= 2;
@@ -257,25 +269,25 @@ namespace eternal_lands
 						"mipmaps"));
 			}
 
-			if (width != (sizes[0] * scale))
+			if (width != (size[0] * scale))
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
 						reader->get_name()))
 					<< errinfo_expected_value(
-						sizes[0] * scale)
+						size[0] * scale)
 					<< errinfo_value(width)
 					<< errinfo_message(UTF8("Wrong image "
 						"width"));
 			}
 
-			if (height != (sizes[1] * scale))
+			if (height != (size[1] * scale))
 			{
 				EL_THROW_EXCEPTION(ActorTextureErrorException()
 					<< boost::errinfo_file_name(
 						reader->get_name()))
 					<< errinfo_expected_value(
-						sizes[1] * scale)
+						size[1] * scale)
 					<< errinfo_value(height)
 					<< errinfo_message(UTF8("Wrong image "
 						"height"));
@@ -285,66 +297,69 @@ namespace eternal_lands
 		}
 
 		void set_image_lines(const ImageSharedPtr &src_image,
-			const Uint32Array2 &sizes, const Uint16 scale,
-			const Uint32Array2 &offsets, const Uint16 mipmap,
+			const glm::uvec2 &size, const Uint16 scale,
+			const glm::uvec2 &offset, const Uint16 mipmap,
 			ImageSharedPtr image)
 		{
-			Uint32 y, height, offset_x, offset_y, size;
+			Uint32 y, height, offset_x, offset_y, memory_size;
 
-			height = sizes[1] * scale;
-			offset_x = offsets[0] * scale;
-			offset_y = offsets[1] * scale;
+			height = size[1] * scale;
+			offset_x = offset[0] * scale;
+			offset_y = offset[1] * scale;
 
-			size = sizes[0] * scale * image->get_pixel_size() / 8;
+			memory_size = size[0] * scale * image->get_pixel_size()
+				/ 8;
 
 			for (y = 0; y < height; y++)
 			{
 				memcpy(image->get_pixel_data(offset_x,
 					y + offset_y, 0, 0, 0),
 					src_image->get_pixel_data(0, y, 0, 0,
-					mipmap), size);
+					mipmap), memory_size);
 			}
 		}
 
 		void set_image_block_lines(const ImageSharedPtr &src_image,
-			const Uint32Array2 &sizes, const Uint16 scale,
-			const Uint32Array2 &offsets, const Uint16 mipmap,
+			const glm::uvec2 &size, const Uint16 scale,
+			const glm::uvec2 &offset, const Uint16 mipmap,
 			ImageSharedPtr image)
 		{
-			Uint32 y, height, offset_x, offset_y, size;
+			Uint32 y, height, offset_x, offset_y, memory_size;
 
 			assert((scale % 4) == 0);
 
-			height = sizes[1] * scale / 4;
-			offset_x = offsets[0] * scale / 4;
-			offset_y = offsets[1] * scale / 4;
+			height = size[1] * scale / 4;
+			offset_x = offset[0] * scale / 4;
+			offset_y = offset[1] * scale / 4;
 
-			size = sizes[0] * scale * image->get_block_size() / 4;
+			memory_size = size[0] * scale * image->get_block_size()
+				/ 4;
 
 			for (y = 0; y < height; y++)
 			{
 				memcpy(image->get_block_data(offset_x,
 					y + offset_y, 0, 0, 0),
 					src_image->get_block_data(0, y, 0, 0,
-					mipmap), size);
+					mipmap), memory_size);
 			}
 		}
 
 		void set_image_blocks(const ImageSharedPtr &src_image,
-			const Uint32Array2 &sizes, const Uint16 scale,
-			const Uint32Array2 &offsets, const Uint16 mipmap,
+			const glm::uvec2 &size, const Uint16 scale,
+			const glm::uvec2 &offset, const Uint16 mipmap,
 			ImageSharedPtr image)
 		{
-			Uint32 x, y, widht, height, offset_x, offset_y, size;
+			Uint32 x, y, widht, height, offset_x, offset_y;
+			Uint32 memory_size;
 
 			assert((scale % 4) == 0);
 
-			widht = sizes[0] * scale / 4;
-			height = sizes[1] * scale / 4;
-			offset_x = offsets[0] * scale / 4;
-			offset_y = offsets[1] * scale / 4;
+			widht = size[0] * scale / 4;
+			height = size[1] * scale / 4;
+			offset_x = offset[0] * scale / 4;
+			offset_y = offset[1] * scale / 4;
 
-			size = src_image->get_block_size();
+			memory_size = src_image->get_block_size();
 
 			for (y = 0; y < height; y++)
 			{
@@ -358,15 +373,15 @@ namespace eternal_lands
 						x + offset_x, y + offset_y, 0,
 						0, 0)) + 8,
 						src_image->get_block_data(x, y,
-						0, 0, mipmap), size);
+						0, 0, mipmap), memory_size);
 				}
 			}
 		}
 
 		void set_image(const CodecManagerSharedPtr &codec_manager,
 			const ReaderSharedPtr &reader,
-			const Uint32Array2 &sizes, const Uint16 scale,
-			const Uint32Array2 &offsets, ImageSharedPtr image,
+			const glm::uvec2 &size, const Uint16 scale,
+			const glm::uvec2 &offset, ImageSharedPtr image,
 			const ImageCompressionTypeSet &compressions)
 		{
 			glm::vec4 temp;
@@ -374,7 +389,7 @@ namespace eternal_lands
 			Uint32 x, y, width, height;
 			Uint16 mipmap;
 
-			tmp = get_image(codec_manager, reader, sizes, scale,
+			tmp = get_image(codec_manager, reader, size, scale,
 				compressions, false, false, mipmap);
 
 			if ((tmp->get_texture_format() == tft_rgb_dxt1) ||
@@ -385,16 +400,16 @@ namespace eternal_lands
 					(image->get_texture_format() ==
 						tft_rgba_dxt1))
 				{
-					set_image_block_lines(tmp, sizes, scale,
-						offsets, mipmap, image);
+					set_image_block_lines(tmp, size, scale,
+						offset, mipmap, image);
 					return;
 				}
 
 				if ((image->get_texture_format() ==
 					tft_rgba_dxt5))
 				{
-					set_image_blocks(tmp, sizes, scale,
-						offsets, mipmap, image);
+					set_image_blocks(tmp, size, scale,
+						offset, mipmap, image);
 					return;
 				}
 			}
@@ -404,8 +419,8 @@ namespace eternal_lands
 				if ((image->get_texture_format() ==
 					tft_rgba_dxt5))
 				{
-					set_image_block_lines(tmp, sizes, scale,
-						offsets, mipmap, image);
+					set_image_block_lines(tmp, size, scale,
+						offset, mipmap, image);
 					return;
 				}
 			}
@@ -413,7 +428,7 @@ namespace eternal_lands
 			if (TextureFormatUtil::get_compressed(
 				tmp->get_texture_format()))
 			{
-				tmp = get_image(codec_manager, reader, sizes,
+				tmp = get_image(codec_manager, reader, size,
 					scale, ImageCompressionTypeSet(),
 					false, false, mipmap);
 			}
@@ -422,8 +437,8 @@ namespace eternal_lands
 			{
 				if ((image->get_texture_format() == tft_rgba8))
 				{
-					set_image_lines(tmp, sizes, scale,
-						offsets, mipmap, image);
+					set_image_lines(tmp, size, scale,
+						offset, mipmap, image);
 					return;
 				}
 			}
@@ -432,14 +447,14 @@ namespace eternal_lands
 			{
 				if ((image->get_texture_format() == tft_rgb8))
 				{
-					set_image_lines(tmp, sizes, scale,
-						offsets, mipmap, image);
+					set_image_lines(tmp, size, scale,
+						offset, mipmap, image);
 					return;
 				}
 			}
 
-			width = sizes[0] * scale;
-			height = sizes[1] * scale;
+			width = size[0] * scale;
+			height = size[1] * scale;
 
 			for (y = 0; y < height; y++)
 			{
@@ -449,8 +464,8 @@ namespace eternal_lands
 						mipmap);
 
 					image->set_pixel(
-						x + offsets[0] * scale,
-						y + offsets[1] * scale, 0, 0, 0,
+						x + offset[0] * scale,
+						y + offset[1] * scale, 0, 0, 0,
 						temp);
 				}
 			}
@@ -460,8 +475,8 @@ namespace eternal_lands
 			const ReaderSharedPtr &texture_reader,
 			const ReaderSharedPtr &base_reader,
 			const ReaderSharedPtr &mask_reader,
-			const Uint32Array2 &sizes, const Uint16 scale,
-			const Uint32Array2 &offsets, ImageSharedPtr image,
+			const glm::uvec2 &size, const Uint16 scale,
+			const glm::uvec2 &offset, ImageSharedPtr image,
 			const ImageCompressionTypeSet &compressions)
 		{
 			glm::vec4 t0, t1, value, temp;
@@ -474,24 +489,24 @@ namespace eternal_lands
 				(mask_reader.get() == nullptr))
 			{
 				return set_image(codec_manager, texture_reader,
-					sizes, scale, offsets, image,
+					size, scale, offset, image,
 					compressions);
 			}
 
 			texture_image = get_image(codec_manager, texture_reader,
-				sizes, scale, ImageCompressionTypeSet(),
+				size, scale, ImageCompressionTypeSet(),
 				false, false, texture_mipmap);
 
 			base_image = get_image(codec_manager, base_reader,
-				sizes, scale, ImageCompressionTypeSet(),
+				size, scale, ImageCompressionTypeSet(),
 				false, false, base_mipmap);
 
 			mask_image = get_image(codec_manager, mask_reader,
-				sizes, scale, ImageCompressionTypeSet(),
+				size, scale, ImageCompressionTypeSet(),
 				false, false, mask_mipmap);
 
-			width = sizes[0] * scale;
-			height = sizes[1] * scale;
+			width = size[0] * scale;
+			height = size[1] * scale;
 
 			for (y = 0; y < height; y++)
 			{
@@ -509,8 +524,8 @@ namespace eternal_lands
 					temp = t0 * blend;
 					temp += t1 * (1.0f - blend);
 					image->set_pixel(
-						x + offsets[0] * scale,
-						y + offsets[1] * scale, 0, 0, 0,
+						x + offset[0] * scale,
+						y + offset[1] * scale, 0, 0, 0,
 						temp);
 				}
 			}
@@ -522,7 +537,7 @@ namespace eternal_lands
 	{
 		ActorPartTextureTypeStringMap::iterator it, end;
 		std::map<ActorPartTextureType, ReaderSharedPtr> parts;
-		glm::uvec3 sizes;
+		glm::uvec3 size;
 		ImageCompressionTypeSet compressions;
 		bool compressed;
 
@@ -655,9 +670,9 @@ namespace eternal_lands
 				compressed);
 		}
 
-		sizes[0] = m_size;
-		sizes[1] = m_size;
-		sizes[2] = 0;
+		size[0] = m_size;
+		size[1] = m_size;
+		size[2] = 0;
 
 		if (compressed)
 		{
@@ -666,12 +681,12 @@ namespace eternal_lands
 			compressions.insert(ict_s3tc);
 
 			m_image = boost::make_shared<Image>(m_name, false,
-				tft_rgba_dxt5, sizes, 0);
+				tft_rgba_dxt5, size, 0);
 		}
 		else
 		{
 			m_image = boost::make_shared<Image>(m_name, false,
-				tft_rgba8, sizes, 0);
+				tft_rgba8, size, 0);
 		}
 
 		if (parts[aptt_pants_tex].get() != nullptr)

@@ -1489,4 +1489,217 @@ namespace eternal_lands
 		}
 	}
 
+	void MeshDataTool::build_quad_map(const Uint16MultiArray2 &types,
+		const FloatVector &heights, const Uint16Vector &materials,
+		const Vec4Vector &colors, const glm::vec4 &uv_scale_offset,
+		const glm::vec2 &quad_size, Uint16Vector &material_sub_meshs)
+	{
+		std::multimap<Uint16, Uint16>::const_iterator it, end;
+		std::multimap<Uint16, Uint16> material_indices;
+		BoolMultiArray2 vertexes;
+		Uint16MultiArray2 indices;
+		glm::vec4 normal, position, uv;
+		std::pair<Uint16, Uint16> idx;
+		Uint32 vertex_count, x, y, width, height, index, last_material;
+		Uint32 sub_meshs, restart, offset, count, index_count;
+		Uint32 min_vertex, max_vertex;
+		bool value, start;
+
+		normal = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+		position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		uv = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		start = 0;
+		offset = 0;
+		width = types.shape()[0];
+		height = types.shape()[1];
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				index = types[x][y];
+
+				if (index == std::numeric_limits<Uint16>::max())
+				{
+					continue;
+				}
+
+				idx.first = materials[index];
+				idx.second = index;
+				material_indices.insert(idx);
+			}
+		}
+
+		material_sub_meshs.clear();
+
+		if (material_indices.size() == 0)
+		{
+			return;
+		}
+
+		end = material_indices.end();
+		sub_meshs = 0;
+		min_vertex = 0;
+		index_count = 0;
+		vertex_count = 0;
+		last_material = material_indices.begin()->first;
+		restart = std::numeric_limits<Uint32>::max();
+
+		material_sub_meshs.push_back(sub_meshs);
+
+		for (it = material_indices.begin(); it != end; ++it)
+		{
+			if (last_material != it->first)
+			{
+				sub_meshs++;
+
+				start = true;
+
+				offset = index_count;
+
+				min_vertex = vertex_count;
+
+				material_sub_meshs.push_back(sub_meshs);
+			}
+
+			index = it->second;
+
+			for (y = 0; y < height; ++y)
+			{
+				for (x = 0; x < width; ++x)
+				{
+					value = types[x][y] == index;
+					vertexes[x + 0][y + 0] = value;
+					vertexes[x + 1][y + 0] = value;
+					vertexes[x + 0][y + 1] = value;
+					vertexes[x + 1][y + 1] = value;
+				}
+			}
+
+			position.z = heights[index];
+
+			for (y = 0; y < (height + 1); ++y)
+			{
+				for (x = 0; x < (width + 1); ++x)
+				{
+					if (!vertexes[x][y])
+					{
+						continue;
+					}
+
+					position.x = x * quad_size.x;
+					position.y = y * quad_size.y;
+
+					uv.x = x * uv_scale_offset.x;
+					uv.y = y * uv_scale_offset.y;
+					uv.x += uv_scale_offset.z;
+					uv.y += uv_scale_offset.w;
+
+					set_vertex_data(vst_position,
+						vertex_count, position);
+
+					set_vertex_data(vst_normal,
+						vertex_count, normal);
+
+					set_vertex_data(vst_color,
+						vertex_count, colors[index]);
+
+					set_vertex_data(vst_texture_coordinate,
+						vertex_count, uv);
+
+					indices[x][y] = vertex_count;
+
+					vertex_count++;
+				}
+			}
+
+			max_vertex = vertex_count - 1;
+
+			for (y = 0; y < height; ++y)
+			{
+				if (get_use_restart_index())
+				{
+					if (!start)
+					{
+						set_index_data(index_count,
+							restart);
+
+						index_count++;
+					}
+
+					set_index_data(index_count,
+						indices[x][y]);
+
+					index_count++;
+
+					set_index_data(index_count,
+						indices[x][y + 1]);
+
+					index_count++;
+				}
+
+				start = false;
+
+				for (x = 0; x < width; ++x)
+				{
+					if (types[x][y] != index)
+					{
+						continue;
+					}
+
+					if (get_use_restart_index())
+					{
+						set_index_data(index_count,
+							indices[x + 1][y]);
+
+						index_count++;
+
+						set_index_data(index_count,
+							indices[x + 1][y + 1]);
+
+						index_count++;
+					}
+					else
+					{
+						set_index_data(index_count,
+							indices[x][y]);
+
+						index_count++;
+
+						set_index_data(index_count,
+							indices[x][y + 1]);
+
+						index_count++;
+
+						set_index_data(index_count,
+							indices[x + 1][y]);
+
+						index_count++;
+
+
+						set_index_data(index_count,
+							indices[x][y + 1]);
+
+						index_count++;
+
+						set_index_data(index_count,
+							indices[x + 1][y + 1]);
+
+						index_count++;
+
+						set_index_data(index_count,
+							indices[x + 1][y]);
+
+						index_count++;
+					}
+				}
+			}
+
+			count = index_count - offset;
+
+			set_sub_mesh_data(sub_meshs, SubMesh(BoundingBox(),
+				offset, count, min_vertex, max_vertex, 0));
+		}
+	}
+
 }

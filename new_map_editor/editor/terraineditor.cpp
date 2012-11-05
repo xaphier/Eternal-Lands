@@ -8,6 +8,7 @@
 #include "terraineditor.hpp"
 #include "image.hpp"
 #include "abstractterrain.hpp"
+#include "terrain/uvtool.hpp"
 
 namespace eternal_lands
 {
@@ -90,10 +91,10 @@ namespace eternal_lands
 		{
 			for (i = 0; i < count; ++i)
 			{
-				m_blend_image->set_pixel_packed_uint16(
+				m_blend_image->set_pixel_uint(
 					blend_value.get_x(),
 					blend_value.get_y(), i, 0, 0,
-					blend_value.get_packed_value(i));
+					blend_value.get_value(i));
 			}
 		}
 	}
@@ -178,8 +179,8 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			value.set_packed_value(m_blend_image->
-				get_pixel_packed_uint16(x, y, i, 0, 0), i);
+			value.set_value(m_blend_image->get_pixel_uint(x, y, i,
+				0, 0), i);
 		}
 
 		blend_values.push_back(value);
@@ -401,7 +402,7 @@ namespace eternal_lands
 
 		BOOST_FOREACH(const ImageValue &blend_value, blend_values)
 		{
-			average += blend_value.get_value(idx0)[idx1];
+			average += blend_value.get_normalized_value(idx0)[idx1];
 		}
 
 		average /= blend_values.size();
@@ -461,52 +462,79 @@ namespace eternal_lands
 		return calc_effect(value, data, average, strength, effect);
 	}
 
-	void TerrainEditor::init(const glm::uvec2 &size, const String &texture)
+	void TerrainEditor::init(const glm::uvec2 &size)
 	{
-		glm::uvec3 sizes;
-		Uint32 x, y, z, i;
+		glm::uvec3 tmp;
 
-		sizes = glm::uvec3(size, 0);
+		tmp = glm::uvec3(size, 0);
+
+		tmp.x += AbstractTerrain::get_tile_size() - 1;
+		tmp.y += AbstractTerrain::get_tile_size() - 1;
+
+		tmp.x = (tmp.x - 1) / AbstractTerrain::get_tile_size();
+		tmp.y = (tmp.y - 1) / AbstractTerrain::get_tile_size();
+
+		tmp.x = tmp.x * AbstractTerrain::get_tile_size() + 1;
+		tmp.y = tmp.y * AbstractTerrain::get_tile_size() + 1;
+
+		m_size.x = tmp.x;
+		m_size.y = tmp.y;
+		m_size.z = 4;
 
 		m_displacement_image = boost::make_shared<Image>(
 			String(UTF8("displacement map")),
-			false, tft_rgb10_a2, sizes, 0);
+			false, tft_rgb10_a2, tmp, 0);
 
 		m_normal_image = boost::make_shared<Image>(
 			String(UTF8("normal map")),
-			false, tft_rgba8, sizes, 0);
+			false, tft_rgba8, tmp, 0);
 
 		m_dudv_image = boost::make_shared<Image>(
 			String(UTF8("dudv map")),
-			false, tft_rgba8, sizes, 0);
+			false, tft_rg8, tmp, 0);
 
-		for (y = 0; y < size.y; ++y)
+		m_blend_image = boost::make_shared<Image>(String(
+			UTF8("blend map")), false, tft_rgba8, m_size, 0, true);
+
+		m_albedo_maps.resize(get_layer_count());
+		m_extra_maps.resize(get_layer_count());
+		m_material_data.resize(get_layer_count() - 1);
+
+		m_enabled = true;
+
+		m_uv_tool.reset(new UvTool(m_displacement_image));
+	}
+
+	void TerrainEditor::init(const glm::uvec2 &size,
+		const String &albedo_map, const String &extra_map,
+		const bool use_blend_size_sampler, const bool use_extra_map)
+	{
+		Uint32 x, y, z, i;
+
+		init(size);
+
+		for (y = 0; y < m_size.y; ++y)
 		{
-			for (x = 0; x < size.x; ++x)
+			for (x = 0; x < m_size.x; ++x)
 			{
 				m_displacement_image->set_pixel_uint(x, y, 0,
-					0, 0, glm::uvec4(512, 512, 0, 0));
+					0, 0, glm::uvec4(0, 0, 0, 0));
 			}
 		}
 
-		for (y = 0; y < size.y; ++y)
+		for (y = 0; y < m_size.y; ++y)
 		{
-			for (x = 0; x < size.x; ++x)
+			for (x = 0; x < m_size.x; ++x)
 			{
 				update_normal(glm::ivec2(x, y));
 			}
 		}
 
-		sizes = glm::uvec3(size, 4);
-
-		m_blend_image = boost::make_shared<Image>(String(
-			UTF8("blend map")), false, tft_rgba4, sizes, 0, true);
-
-		for (z = 0; z < sizes.z; ++z)
+		for (z = 0; z < m_size.z; ++z)
 		{
-			for (y = 0; y < sizes.y; ++y)
+			for (y = 0; y < m_size.y; ++y)
 			{
-				for (x = 0; x < sizes.x; ++x)
+				for (x = 0; x < m_size.x; ++x)
 				{
 					m_blend_image->set_pixel(x, y, z,
 						0, 0, glm::vec4(0.0f));
@@ -514,28 +542,24 @@ namespace eternal_lands
 			}
 		}
 
-		m_albedo_maps.resize(17);
-
-		m_albedo_maps[0] = String(UTF8("3dobjects/tile1.dds"));
-
-		for (i = 1; i < 17; ++i)
+		for (i = 0; i < get_layer_count(); ++i)
 		{
-			StringStream str;
-
-			str << UTF8("3dobjects/tile11.dds");
-
-			m_albedo_maps[i] = String(str.str());
+			set_albedo_map(albedo_map, i);
+			set_extra_map(extra_map, i);
+			set_use_blend_size_sampler(use_blend_size_sampler, i);
+			set_use_extra_map(use_extra_map, i);
 		}
+	}
 
-		m_shader_source_terrain.resize(16);
+	void TerrainEditor::init(const ImageSharedPtr &height_map,
+		const glm::uvec2 &size, const String &albedo_map,
+		const String &extra_map, const bool use_blend_size_sampler,
+		const bool use_extra_map)
+	{
+		init(size, albedo_map, extra_map, use_blend_size_sampler,
+			use_extra_map);
 
-		for (i = 0; i < 16; ++i)
-		{
-			m_shader_source_terrain.set_data(ShaderBlendData(
-				glm::vec2(1.0f, 0.0f), sbt_blend), i);
-		}
-
-		m_enabled = true;
+		import_height_map(height_map);
 	}
 
 	glm::uvec2 TerrainEditor::get_best_normal(const glm::vec3 &normal) const
@@ -625,7 +649,6 @@ namespace eternal_lands
 	glm::vec3 TerrainEditor::get_normal(const glm::ivec2 &index) const
 	{
 		glm::vec3 centre, d0, d1, d2, d3, d4, d5, d6, d7, n;
-		glm::uvec3 sizes;
 		glm::uvec2 value;
 
 		centre = get_position(index);
@@ -677,11 +700,6 @@ namespace eternal_lands
 		{
 			update_normal(index);
 		}
-	}
-
-	const glm::vec3 &TerrainEditor::get_terrain_offset()
-	{
-		return AbstractTerrain::get_vector_scale();
 	}
 
 	const glm::vec3 &TerrainEditor::get_terrain_offset_min()
@@ -746,6 +764,257 @@ namespace eternal_lands
 		return min_distance < std::sqrt(3.0f *
 			AbstractTerrain::get_patch_scale() *
 			AbstractTerrain::get_tile_size());
+	}
+
+	void TerrainEditor::set_material(const String &albedo_map,
+		const String &extra_map, const float blend_size,
+		const bool use_blend_size_sampler, const bool use_blend_size,
+		const bool use_extra_map, const Uint16 index)
+	{
+		set_albedo_map(albedo_map, index);
+		set_extra_map(extra_map, index);
+		set_use_blend_size_sampler(use_blend_size_sampler, index);
+		set_use_extra_map(use_extra_map, index);
+
+		if (index > 0)
+		{
+			set_blend_data(BlendData(blend_size, use_blend_size),
+				index - 1);
+		}
+	}
+
+	void TerrainEditor::get_material(String &albedo_map,
+		String &extra_map, float &blend_size,
+		bool &use_blend_size_sampler, bool &use_blend_size,
+		bool &use_extra_map, const Uint16 index) const
+	{
+		albedo_map = get_albedo_map(index);
+		extra_map = get_extra_map(index);
+		use_blend_size_sampler = get_use_blend_size_sampler(index);
+		use_extra_map = get_use_extra_map(index);
+
+		blend_size = 1.0f;
+		use_blend_size = false;
+
+		if (index > 0)
+		{
+			blend_size = get_blend_size(index - 1);
+			use_blend_size = get_use_blend_size(index - 1);
+		}
+	}
+
+	void TerrainEditor::import_height_map(const ImageSharedPtr &height_map)
+	{
+		ImageSharedPtr height_image;
+		glm::uvec3 size;
+		float height;
+		Uint32 x, y;
+
+		height_image = height_map->decompress(false, true, false);
+
+		size = height_image->get_size();
+		size = glm::max(size, glm::uvec3(1));
+
+		for (y = 0; y < m_size.y; ++y)
+		{
+			for (x = 0; x < m_size.x; ++x)
+			{
+				if ((x < size.x) && (y < size.y))
+				{
+					height = height_image->get_pixel_uint(x,
+						y, 0, 0, 0).r;
+				}
+
+				m_displacement_image->set_pixel_uint(x, y, 0,
+					0, 0, glm::uvec4(0, 0, height, 0));
+			}
+		}
+
+		for (y = 0; y < m_size.y; ++y)
+		{
+			for (x = 0; x < m_size.x; ++x)
+			{
+				update_normal(glm::ivec2(x, y));
+			}
+		}
+	}
+
+	void TerrainEditor::get_all_displacement_values(
+		DisplacementValueVector	&displacement_values) const
+	{
+		Uint32 x, y;
+
+		displacement_values.clear();
+
+		for (y = 0; y < m_size.y; ++y)
+		{
+			for (x = 0; x < m_size.x; ++x)
+			{
+				get_displacement_values(x, y,
+					displacement_values);
+			}
+		}
+	}
+
+	void TerrainEditor::get_all_blend_values(
+		ImageValueVector &blend_values) const
+	{
+		Uint32 x, y;
+
+		blend_values.clear();
+
+		for (y = 0; y < m_size.y; ++y)
+		{
+			for (x = 0; x < m_size.x; ++x)
+			{
+				get_blend_values(x, y, blend_values);
+			}
+		}
+	}
+
+	void TerrainEditor::set(const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map,
+		const ImageSharedPtr &blend_map,
+		const StringVector &albedo_maps,
+		const StringVector &extra_maps,
+		const TerrainMaterialData &material_data,
+		const glm::vec2 &dudv_scale,
+		const glm::uvec2 &size)
+	{
+		glm::uvec3 image_size;
+		Uint32 width, height, depth;
+
+		m_size.x = size.x;
+		m_size.y = size.y;
+		m_size.z = 4;
+
+		width = m_size.x;
+		height = m_size.y;
+		depth = m_size.z;
+
+		image_size = displacement_map->get_size();
+
+		if ((image_size.x != width) && ((image_size.y) != height) &&
+			((image_size.z) != 0))
+		{
+			EL_THROW_EXCEPTION(SizeErrorException()
+				<< errinfo_message(UTF8("Image has wrong size"))
+				<< errinfo_width(image_size.x)
+				<< errinfo_height(image_size.y)
+				<< errinfo_depth(image_size.z)
+				<< errinfo_expected_width(width)
+				<< errinfo_expected_height(height)
+				<< errinfo_expected_depth(0)
+				<< boost::errinfo_file_name(
+					displacement_map->get_name()));
+		}
+
+		image_size = normal_map->get_size();
+
+		if ((image_size.x != width) && ((image_size.y) != height) &&
+			((image_size.z) != 0))
+		{
+			EL_THROW_EXCEPTION(SizeErrorException()
+				<< errinfo_message(UTF8("Image has wrong size"))
+				<< errinfo_width(image_size.x)
+				<< errinfo_height(image_size.y)
+				<< errinfo_depth(image_size.z)
+				<< errinfo_expected_width(width)
+				<< errinfo_expected_height(height)
+				<< errinfo_expected_depth(0)
+				<< boost::errinfo_file_name(
+					normal_map->get_name()));
+		}
+
+		image_size = dudv_map->get_size();
+
+		if ((image_size.x != width) && ((image_size.y) != height) &&
+			((image_size.z) != 0))
+		{
+			EL_THROW_EXCEPTION(SizeErrorException()
+				<< errinfo_message(UTF8("Image has wrong size"))
+				<< errinfo_width(image_size.x)
+				<< errinfo_height(image_size.y)
+				<< errinfo_depth(image_size.z)
+				<< errinfo_expected_width(width)
+				<< errinfo_expected_height(height)
+				<< errinfo_expected_depth(0)
+				<< boost::errinfo_file_name(
+					dudv_map->get_name()));
+		}
+
+		image_size = blend_map->get_size();
+
+		if ((image_size.x != width) && ((image_size.y) != height) &&
+			((image_size.z) != depth))
+		{
+			EL_THROW_EXCEPTION(SizeErrorException()
+				<< errinfo_message(UTF8("Image has wrong size"))
+				<< errinfo_width(image_size.x)
+				<< errinfo_height(image_size.y)
+				<< errinfo_depth(image_size.z)
+				<< errinfo_expected_width(width)
+				<< errinfo_expected_height(height)
+				<< errinfo_expected_depth(depth)
+				<< boost::errinfo_file_name(
+					blend_map->get_name()));
+		}
+
+		m_displacement_image = displacement_map->decompress(false,
+			true, false);
+		m_normal_image = normal_map->decompress(false, true, false);
+		m_dudv_image = dudv_map->decompress(false, true, false);
+		m_blend_image = blend_map->decompress(false, true, false);
+
+		m_albedo_maps = albedo_maps;
+		m_extra_maps = extra_maps;
+		m_material_data = material_data;
+		m_dudv_scale = dudv_scale;
+
+		m_albedo_maps.resize(get_layer_count());
+		m_extra_maps.resize(get_layer_count());
+		m_material_data.resize(get_layer_count() - 1);
+
+		m_enabled = true;
+
+		m_uv_tool.reset(new UvTool(m_displacement_image));
+	}
+
+	void TerrainEditor::import_blend_map(const ImageSharedPtr &blend_map)
+	{
+		ImageSharedPtr blend_image;
+		glm::vec4 value;
+		glm::uvec3 size;
+		Uint32 x, y, z;
+
+		blend_image = blend_map->decompress(false, true, false);
+
+		size = glm::min(m_size, blend_image->get_size());
+		size = glm::max(size, glm::uvec3(1));
+
+		for (z = 0; z < m_size.z; ++z)
+		{
+			for (y = 0; y < m_size.y; ++y)
+			{
+				for (x = 0; x < m_size.x; ++x)
+				{
+					value = blend_image->get_pixel(x, y, z,
+						0, 0);
+
+					m_blend_image->set_pixel(x, y, z,
+						0, 0, value);
+				}
+			}
+		}
+	}
+
+	void TerrainEditor::relax_uv(const AbstractProgressSharedPtr &progress,
+		const Uint16 count, const bool use_simd)
+	{
+		m_uv_tool->relax_uv(progress, count, use_simd);
+
+		m_uv_tool->convert(m_dudv_image, m_dudv_scale);
 	}
 
 }

@@ -14,8 +14,9 @@ namespace eternal_lands
 	{
 	}
 
-	WaterData::WaterData(const String &material, const float height):
-		m_material(material), m_height(height)
+	WaterData::WaterData(const String &name, const String &material,
+		const float height): m_name(name), m_material(material),
+		m_height(height)
 	{
 	}
 

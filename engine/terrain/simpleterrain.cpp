@@ -44,13 +44,14 @@ namespace eternal_lands
 			x1 = std::min(x + 1, image->get_width() - 1);
 			y1 = std::min(y + 1, image->get_height() - 1);
 
-			result = glm::vec3(image->get_pixel(x0, y0, 0, 0, 0));
-			result += glm::vec3(image->get_pixel(x1, y0, 0, 0,
-				0));
-			result += glm::vec3(image->get_pixel(x0, y1, 0, 0,
-				0));
-			result += glm::vec3(image->get_pixel(x1, y1, 0,
-				0, 0));
+			result = AbstractTerrain::get_offset_scaled_0_1(
+				image->get_pixel(x0, y0, 0, 0, 0));
+			result += AbstractTerrain::get_offset_scaled_0_1(
+				image->get_pixel(x1, y0, 0, 0, 0));
+			result += AbstractTerrain::get_offset_scaled_0_1(
+				image->get_pixel(x0, y1, 0, 0, 0));
+			result += AbstractTerrain::get_offset_scaled_0_1(
+				image->get_pixel(x1, y1, 0, 0, 0));
 
 			return result * 0.25f;
 		}
@@ -130,8 +131,11 @@ namespace eternal_lands
 			{
 				pos = tile_offset + glm::uvec2(x, y);
 
-				vector = glm::vec3(displacement_map->get_pixel(
-					pos.x, pos.y, 0, 0, 0));
+				data = displacement_map->get_pixel(pos.x,
+					pos.y, 0, 0, 0);
+
+				vector = AbstractTerrain::get_offset_scaled_0_1(
+					data);
 
 				normal = glm::vec2(normal_map->get_pixel(pos.x,
 					pos.y, 0, 0, 0));
@@ -139,20 +143,18 @@ namespace eternal_lands
 				dudv = glm::vec2(dudv_map->get_pixel(pos.x,
 					pos.y, 0, 0, 0));;
 
+				vectors.push_back(data);
+
 				data.x = normal.x;
 				data.y = normal.y;
 				data.z = dudv.x;
 				data.w = dudv.y;
 
-				vectors.push_back(glm::vec4(vector, 1.0f));
 				normals.push_back(data);
 
 				position = glm::vec3(glm::vec2(x, y) *
 					position_scale, 0.0f);
-				position += (glm::vec3(vector) *
-					glm::vec3(2.0f, 2.0f, 1.0f) -
-					glm::vec3(1.0f, 1.0f, 0.0f)) *
-					get_vector_scale();
+				position += vector;
 
 				min = glm::min(min, position);
 				max = glm::max(max, position);
@@ -221,13 +223,9 @@ namespace eternal_lands
 				vectors.push_back(glm::vec4(vector, 1.0f));
 				normals.push_back(data);
 
-
 				position = glm::vec3(glm::vec2(x, y) *
 					position_scale, 0.0f);
-				position += (glm::vec3(vector) *
-					glm::vec3(2.0f, 2.0f, 1.0f) -
-					glm::vec3(1.0f, 1.0f, 0.0f)) *
-					get_vector_scale();
+				position += vector;
 
 				min = glm::min(min, position);
 				max = glm::max(max, position);
@@ -428,13 +426,13 @@ namespace eternal_lands
 
 		m_object_tree->clear();
 
-		set_terrain_size((glm::vec2(displacement_map->get_sizes())
+		set_terrain_size((glm::vec2(displacement_map->get_size())
 			-1.0f) * get_patch_scale());
 
 		displacement_map_tmp = displacement_map->decompress(false,
-			true);
-		normal_map_tmp = normal_map->decompress(false, true);
-		dudv_map_tmp = dudv_map->decompress(false, true);
+			true, false);
+		normal_map_tmp = normal_map->decompress(false, true, false);
+		dudv_map_tmp = dudv_map->decompress(false, true, false);
 
 		width = displacement_map->get_width() / get_tile_size();
 		height = displacement_map->get_height() / get_tile_size();
@@ -464,13 +462,14 @@ namespace eternal_lands
 		m_object_tree->clear();
 
 		set_terrain_size((glm::vec2(displacement_map.get_image(
-			)->get_sizes()) -1.0f) * get_patch_scale());
+			)->get_size()) -1.0f) * get_patch_scale());
 
 		displacement_map_tmp = displacement_map.get_image(
-			)->decompress(false, true);
+			)->decompress(false, true, false);
 		normal_map_tmp = normal_map.get_image()->decompress(false,
-			true);
-		dudv_map_tmp = dudv_map.get_image()->decompress(false, true);
+			true, false);
+		dudv_map_tmp = dudv_map.get_image()->decompress(false, true,
+			false);
 
 		width = displacement_map.get_image()->get_width() /
 			get_tile_size();
@@ -494,21 +493,6 @@ namespace eternal_lands
 	{
 		m_object_tree->clear();
 		set_bounding_box(m_object_tree->get_bounding_box());
-	}
-
-	TextureSharedPtr SimpleTerrain::get_displacement_texture() const
-	{
-		return TextureSharedPtr();
-	}
-
-	TextureSharedPtr SimpleTerrain::get_normal_texture() const
-	{
-		return TextureSharedPtr();
-	}
-
-	TextureSharedPtr SimpleTerrain::get_dudv_texture() const
-	{
-		return TextureSharedPtr();
 	}
 
 }

@@ -126,13 +126,13 @@ namespace eternal_lands
 		min = glm::vec3(std::numeric_limits<float>::max());
 		max = glm::vec3(-std::numeric_limits<float>::max());
 
-		if (glm::any(glm::lessThan(glm::uvec2(image->get_sizes()),
+		if (glm::any(glm::lessThan(glm::uvec2(image->get_size()),
 			offset + size)))
 		{
 			return;
 		}
 
-		count = glm::uvec2(image->get_sizes()) - offset;
+		count = glm::uvec2(image->get_size()) - offset;
 		count = glm::min(count, size);
 
 		for (y = 0; y < count.y; ++y)
@@ -141,13 +141,9 @@ namespace eternal_lands
 			{
 				index = offset + glm::uvec2(x, y);
 
-				tmp = glm::vec3(image->get_pixel(index.x,
-					index.y, 0, 0, 0));
-
-				tmp.x = tmp.x * 2.0f - 1.0f;
-				tmp.y = tmp.y * 2.0f - 1.0f;
-
-				tmp *= AbstractTerrain::get_vector_scale();
+				tmp = AbstractTerrain::get_offset_scaled_0_1(
+					image->get_pixel(index.x, index.y, 0,
+						0, 0));
 
 				min = glm::min(min, tmp);
 				max = glm::max(max, tmp);

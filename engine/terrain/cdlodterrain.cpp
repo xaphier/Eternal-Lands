@@ -81,13 +81,13 @@ namespace eternal_lands
 		glm::vec3 min, max;
 		float patch_scale;
 
-		set_terrain_size((glm::vec2(displacement_map->get_sizes())
+		set_terrain_size((glm::vec2(displacement_map->get_size())
 			-1.0f) * get_patch_scale());
 
 		patch_scale = get_patch_scale();
 
 		m_cd_lod_quad_tree->init(displacement_map->decompress(false,
-			true), patch_scale);
+			true, false), patch_scale);
 
 		min = m_cd_lod_quad_tree->get_min();
 		max = m_cd_lod_quad_tree->get_max();
@@ -150,12 +150,12 @@ namespace eternal_lands
 		float patch_scale;
 
 		set_terrain_size((glm::vec2(displacement_map.get_image(
-			)->get_sizes()) -1.0f) * get_patch_scale());
+			)->get_size()) -1.0f) * get_patch_scale());
 
 		patch_scale = get_patch_scale();
 
 		m_cd_lod_quad_tree->init(displacement_map.get_image(
-			)->decompress(false, true), patch_scale);
+			)->decompress(false, true, false), patch_scale);
 
 		min = m_cd_lod_quad_tree->get_min();
 		max = m_cd_lod_quad_tree->get_max();
@@ -176,21 +176,6 @@ namespace eternal_lands
 	{
 		m_cd_lod_quad_tree->clear();
 		set_bounding_box(BoundingBox());
-	}
-
-	TextureSharedPtr CdLodTerrain::get_displacement_texture() const
-	{
-		return m_displacement_texture;
-	}
-
-	TextureSharedPtr CdLodTerrain::get_normal_texture() const
-	{
-		return m_normal_texture;
-	}
-
-	TextureSharedPtr CdLodTerrain::get_dudv_texture() const
-	{
-		return m_dudv_texture;
 	}
 
 }

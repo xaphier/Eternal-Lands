@@ -46,6 +46,18 @@ namespace eternal_lands
 				const float value);
 			void write_int_element(const String &name,
 				const Sint64 value);
+			void write_bvec2_element(const String &name,
+				const glm::bvec2 &value);
+			void write_bvec3_element(const String &name,
+				const glm::bvec3 &value);
+			void write_bvec4_element(const String &name,
+				const glm::bvec4 &value);
+			void write_uvec2_element(const String &name,
+				const glm::uvec2 &value);
+			void write_uvec3_element(const String &name,
+				const glm::uvec3 &value);
+			void write_uvec4_element(const String &name,
+				const glm::uvec4 &value);
 			void write_ivec2_element(const String &name,
 				const glm::ivec2 &value);
 			void write_ivec3_element(const String &name,

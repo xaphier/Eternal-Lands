@@ -254,10 +254,10 @@ namespace eternal_lands
 			}
 
 			/**
-			 * @brief Gets the half sizes
+			 * @brief Gets the half size
 			*
-			 * Returns the half sizes of the bounding box.
-			 * @return The half sizes of the box.
+			 * Returns the half size of the bounding box.
+			 * @return The half size of the box.
 			 */
 			inline glm::vec3 get_half_size() const noexcept
 			{
@@ -274,10 +274,10 @@ namespace eternal_lands
 			}
 
 			/**
-			 * @brief Gets the half sizes
+			 * @brief Gets the half size
 			*
-			 * Returns the half sizes of the bounding box.
-			 * @return The half sizes of the box.
+			 * Returns the half size of the bounding box.
+			 * @return The half size of the box.
 			 */
 			inline bool get_empty() const noexcept
 			{

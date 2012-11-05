@@ -81,6 +81,7 @@ namespace eternal_lands
 			+ DDS_PIXEL_FORMAT_SIZE + DDS_CAPS_SIZE;
 		const Uint32 DDS_DATA_POSITION		= DDS_MAGIC_NUMBER_SIZE
 			+ DDS_HEADER_SIZE;
+		const Uint32 DDS_HEADER_SIZE_DX10	= 5 * sizeof(Uint32);
 
 		/* Header caps. */
 		const Uint32 DDSD_CAPS			= 0x00000001;
@@ -325,11 +326,19 @@ namespace eternal_lands
 			const Uint32 depth, const Uint32 mipmaps,
 			const Uint32 red_mask, const Uint32 green_mask,
 			const Uint32 blue_mask, const Uint32 alpha_mask,
-			DdsHeader &header);
+			const bool cube_map, DdsHeader &header);
 		void build_dds_fourcc_header(const Uint32 width,
 			const Uint32 height, const Uint32 depth,
 			const Uint32 mipmaps, const Uint32 fourcc,
-			const Uint32 bpp, DdsHeader &header);
+			const Uint32 bpp, const bool cube_map,
+			DdsHeader &header);
+		void build_dxt10_dds_header(const Uint32 width,
+			const Uint32 height, const Uint32 depth,
+			const Uint32 layer, const Uint32 mipmaps,
+			const Uint32 format, const Uint32 bpp,
+			const Uint32 flags, const bool cube_map,
+			const bool linear_size, DdsHeader &header,
+			DdsHeader10 &header_dxt10);
 		bool get_fourcc(const GLenum type, const GLenum format,
 			Uint32 &size, Uint32 &swap_size, Uint32 &fourcc);
 

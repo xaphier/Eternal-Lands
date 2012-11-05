@@ -189,7 +189,7 @@ namespace eternal_lands
 				const CubeMapFaceType face);
 			void set_texture_image_2d_multisample();
 			void set_texture_image_3d_multisample();
-			void get_image_sizes(const ImageSharedPtr &image,
+			void get_image_size(const ImageSharedPtr &image,
 				Uint32 &width, Uint32 &height, Uint32 &depth,
 				Uint32 &mipmaps, Uint32 &layer) const;
 			static GLenum get_min_filter(
@@ -378,10 +378,12 @@ namespace eternal_lands
 				const ImageSharedPtr &image,
 				const glm::uvec3 &texture_offsets,
 				const glm::uvec3 &image_offsets,
-				const glm::uvec3 &sizes);
+				const glm::uvec3 &size);
 			void sub_texture(const Uint16 texture_mipmap,
 				const ImageUpdate &image_update,
 				const glm::uvec3 &texture_offsets);
+			void sub_texture(const ImageUpdate &image_update,
+				const Uint32 layer);
 			void sub_texture(const ImageUpdate &image_update);
 			void init(const Uint32 width, const Uint32 height,
 				const Uint32 depth, const Uint16 mipmaps,

@@ -18,13 +18,13 @@ namespace eternal_lands
 	ImageUpdate::ImageUpdate(const ImageSharedPtr &image,
 		const Uint16 mipmap): m_image(image), m_mipmap(mipmap)
 	{
-		m_sizes = m_image->get_sizes();
+		m_size = m_image->get_size();
 	}
 
 	ImageUpdate::ImageUpdate(const ImageSharedPtr &image,
-		const glm::uvec3 &offsets, const glm::uvec3 &sizes,
+		const glm::uvec3 &offsets, const glm::uvec3 &size,
 		const Uint16 mipmap): m_image(image), m_offsets(offsets),
-		m_sizes(sizes), m_mipmap(mipmap)
+		m_size(size), m_mipmap(mipmap)
 	{
 	}
 
