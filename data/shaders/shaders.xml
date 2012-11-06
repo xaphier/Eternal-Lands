@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf8"?>
 <shaders>
 	<shadow_scale>0.7</shadow_scale>
-	<vertex_lights_count>3</vertex_lights_count>
-	<fragment_lights_count>5</fragment_lights_count>
+	<vertex_lights_count>0</vertex_lights_count>
+	<fragment_lights_count>3</fragment_lights_count>
 	<bones_count>80</bones_count>
 	<dynamic_lights_count>false</dynamic_lights_count>
 	<sources>

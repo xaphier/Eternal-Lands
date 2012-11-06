@@ -350,7 +350,7 @@ namespace eternal_lands
 				mipmaps++;
 			}
 
-			format = tft_rgb8;//tft_r_rgtc1;
+			format = tft_rgba8;
 		}
 		else
 		{
@@ -514,42 +514,32 @@ namespace eternal_lands
 		m_map->intersect(frustum, visitor);
 	}
 
-	void Scene::cull(const MappedUniformBufferSharedPtr &terrain_buffer,
+	void Scene::cull(const Frustum &frustum,
 		const glm::mat4 &projection_view_matrix,
 		const glm::vec3 &camera, const bool shadow,
-		TerrainRenderingData &terrain_data, ObjectVisitor &objects)
-		const
+		ObjectVisitor &objects) const
 	{
-		Frustum frustum;
-
-		frustum = Frustum(projection_view_matrix);
-
 		objects.next_frame();
 
 		objects.set_projection_view_matrix(projection_view_matrix);
 
 		intersect(frustum, shadow, objects);
 
-		DEBUG_CHECK_GL_ERROR();
-
-		if (get_global_vars()->get_opengl_3_1())
-		{
-			TerrainVisitor terrain_visitor(terrain_buffer);
-
-			DEBUG_CHECK_GL_ERROR();
-
-			intersect_terrain(frustum, camera, terrain_visitor);
-
-			terrain_data.set_mesh(terrain_visitor.get_mesh());
-			terrain_data.set_material(
-				terrain_visitor.get_material());
-			terrain_data.set_instances(
-				terrain_visitor.get_instances());
-		}
-
-		DEBUG_CHECK_GL_ERROR();
-
 		objects.sort(camera);
+	}
+
+	void Scene::cull_terrain(const Frustum &frustum,
+		const MappedUniformBufferSharedPtr &terrain_buffer,
+		const glm::vec3 &camera, TerrainRenderingData &terrain_data)
+		const
+	{
+		TerrainVisitor terrain_visitor(terrain_buffer);
+
+		intersect_terrain(frustum, camera, terrain_visitor);
+
+		terrain_data.set_mesh(terrain_visitor.get_mesh());
+		terrain_data.set_material(terrain_visitor.get_material());
+		terrain_data.set_instances(terrain_visitor.get_instances());
 	}
 
 	void Scene::cull()
@@ -557,9 +547,14 @@ namespace eternal_lands
 		Frustum frustum;
 		MappedUniformBufferSharedPtr visible_terrain_buffer;
 		boost::array<MappedUniformBufferSharedPtr, 4>
-			shadow_terrains_buffer;
+			shadow_terrain_buffers;
+		boost::array<Frustum, 4> shadow_frutums;
 		glm::vec3 camera;
 		Uint32 i, count;
+		bool use_terrain;
+
+		use_terrain = get_global_vars()->get_opengl_3_1() &&
+			get_terrain();
 
 		get_scene_view().update();
 
@@ -573,7 +568,7 @@ namespace eternal_lands
 
 		count = get_scene_view().get_shadow_map_count();
 
-		if (get_global_vars()->get_opengl_3_1())
+		if (use_terrain)
 		{
 			visible_terrain_buffer =
 				m_visible_terrain.get_uniform_buffer(
@@ -581,7 +576,7 @@ namespace eternal_lands
 
 			for (i = 0; i < count; ++i)
 			{
-				shadow_terrains_buffer[i] =
+				shadow_terrain_buffers[i] =
 					m_shadow_terrains[i].get_uniform_buffer(
 						)->get_mapped_uniform_buffer();
 			}
@@ -645,13 +640,31 @@ namespace eternal_lands
 				CpuRasterizerSharedPtr());
 		}
 
+		frustum = Frustum(get_scene_view(
+			).get_projection_view_matrix());
+
+		for (i = 0; i < count; ++i)
+		{
+			shadow_frutums[i] = Frustum(get_scene_view(
+				).get_shadow_projection_view_matrices()[i]);
+		}
+
 		#pragma omp parallel sections
 		{
 			#pragma omp section
-			cull(visible_terrain_buffer,
-				get_scene_view().get_scale_view_matrix(),
-				glm::vec3(get_scene_view().get_camera()), false,
-				m_visible_terrain, m_visible_objects);
+			cull(frustum,
+				get_scene_view().get_projection_view_matrix(),
+				glm::vec3(get_scene_view().get_camera()),
+				false, m_visible_objects);
+
+			#pragma omp section
+			if (use_terrain)
+			{
+				cull_terrain(frustum, visible_terrain_buffer,
+					glm::vec3(get_scene_view(
+						).get_camera()),
+					m_visible_terrain);
+			}
 
 			#pragma omp section
 			{
@@ -660,66 +673,99 @@ namespace eternal_lands
 				m_visible_lights.update_camera(glm::vec3(
 					get_scene_view().get_camera()));
 			}
-#if	0
-			#pragma omp section
-			for (i = 0; i < count; ++i)
-			{
-				cull(shadow_terrains_buffer[i], get_scene_view(
-					).get_shadow_projection_view_matrices()[i],
-					glm::vec3(get_scene_view(
-						).get_shadow_cameras()[i]), true,
-					m_shadow_terrains[i], m_shadow_objects[i]);
-			}
-#else
+
 			#pragma omp section
 			if (count > 0)
 			{
-				cull(shadow_terrains_buffer[0], get_scene_view(
-					).get_shadow_projection_view_matrices()[0],
+				cull(shadow_frutums[0], get_scene_view(
+					).get_shadow_projection_view_matrices(
+						)[0],
 					glm::vec3(get_scene_view(
-						).get_shadow_cameras()[0]), true,
-					m_shadow_terrains[0], m_shadow_objects[0]);
+						).get_shadow_cameras()[0]),
+					true, m_shadow_objects[0]);
+			}
+
+			#pragma omp section
+			if ((count > 0) && use_terrain)
+			{
+				cull_terrain(shadow_frutums[0],
+					shadow_terrain_buffers[0],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[0]),
+					m_shadow_terrains[0]);
 			}
 
 			#pragma omp section
 			if (count > 1)
 			{
-				cull(shadow_terrains_buffer[1], get_scene_view(
-					).get_shadow_projection_view_matrices()[1],
+				cull(shadow_frutums[1], get_scene_view(
+					).get_shadow_projection_view_matrices(
+						)[1],
 					glm::vec3(get_scene_view(
-						).get_shadow_cameras()[1]), true,
-					m_shadow_terrains[1], m_shadow_objects[1]);
+						).get_shadow_cameras()[1]),
+					true, m_shadow_objects[1]);
+			}
+
+			#pragma omp section
+			if ((count > 1) && use_terrain)
+			{
+				cull_terrain(shadow_frutums[1],
+					shadow_terrain_buffers[1],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[1]),
+					m_shadow_terrains[1]);
 			}
 
 			#pragma omp section
 			if (count > 2)
 			{
-				cull(shadow_terrains_buffer[2], get_scene_view(
-					).get_shadow_projection_view_matrices()[2],
+				cull(shadow_frutums[2], get_scene_view(
+					).get_shadow_projection_view_matrices(
+						)[2],
 					glm::vec3(get_scene_view(
-						).get_shadow_cameras()[2]), true,
-					m_shadow_terrains[2], m_shadow_objects[2]);
+						).get_shadow_cameras()[2]),
+					true, m_shadow_objects[2]);
+			}
+
+			#pragma omp section
+			if ((count > 2) && use_terrain)
+			{
+				cull_terrain(shadow_frutums[2],
+					shadow_terrain_buffers[2],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[2]),
+					m_shadow_terrains[2]);
 			}
 
 			#pragma omp section
 			if (count > 3)
 			{
-				cull(shadow_terrains_buffer[3], get_scene_view(
-					).get_shadow_projection_view_matrices()[3],
+				cull(shadow_frutums[3], get_scene_view(
+					).get_shadow_projection_view_matrices(
+						)[3],
 					glm::vec3(get_scene_view(
-						).get_shadow_cameras()[3]), true,
-					m_shadow_terrains[3], m_shadow_objects[3]);
+						).get_shadow_cameras()[3]),
+					true, m_shadow_objects[3]);
 			}
-#endif
+
+			#pragma omp section
+			if ((count > 3) && use_terrain)
+			{
+				cull_terrain(shadow_frutums[3],
+					shadow_terrain_buffers[3],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[3]),
+					m_shadow_terrains[3]);
+			}
 		}
 
-		if (get_global_vars()->get_opengl_3_1())
+		if (get_global_vars()->get_opengl_3_1() && get_terrain())
 		{
 			visible_terrain_buffer.reset();
 
 			for (i = 0; i < count; ++i)
 			{
-				shadow_terrains_buffer[i].reset();
+				shadow_terrain_buffers[i].reset();
 			}
 		}
 

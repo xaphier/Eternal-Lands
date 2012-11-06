@@ -136,12 +136,15 @@ namespace eternal_lands
 				const GlslProgramSharedPtr &program);
 			void init_terrain_rendering_data(
 				TerrainRenderingData &terrain_rendering_data);
-			void cull(const MappedUniformBufferSharedPtr
-					&terrain_buffer,
+			void cull(const Frustum &frustum,
 				const glm::mat4 &projection_view_matrix,
 				const glm::vec3 &camera, const bool shadow,
-				TerrainRenderingData &terrain_data,
 				ObjectVisitor &objects) const;
+			void cull_terrain(const Frustum &frustum,
+				const MappedUniformBufferSharedPtr
+					&terrain_buffer,
+				const glm::vec3 &camera,
+				TerrainRenderingData &terrain_data) const;
 			void draw_terrain(
 				const TerrainRenderingData &terrain_data,
 				const EffectProgramType type,

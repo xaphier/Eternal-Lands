@@ -127,30 +127,6 @@ namespace eternal_lands
 		ShaderSourceParameterBuilder::add_parameter(source,
 			cpt_output_data_float, pqt_out, result);
 
-#if	0
-		if (use_dudv_map)
-		{
-			ShaderSourceParameterBuilder::add_parameter(source,
-				get_dudv_sampler(), pt_sampler2D, result);
-
-			ShaderSourceParameterBuilder::add_parameter(source,
-				apt_dudv_scale, result);
-		}
-
-		if (use_normal_map)
-		{
-			ShaderSourceParameterBuilder::add_parameter(source,
-				get_normal_sampler(), pt_sampler2D, result);
-		}
-
-		if (use_displacement_map)
-		{
-			ShaderSourceParameterBuilder::add_parameter(source,
-				get_displacement_sampler(), pt_sampler2D,
-				result);
-		}
-#endif
-
 		if (use_glsl_130)
 		{
 			if (get_use_any_extra_map())
@@ -176,6 +152,8 @@ namespace eternal_lands
 
 			ShaderSourceParameterBuilder::add_parameter(source,
 				get_blend_sampler(0), sampler, result);
+
+			return result;
 		}
 
 		count = std::min((get_blend_datas_size() + 3) / 4,
@@ -333,63 +311,6 @@ namespace eternal_lands
 
 		str << UTF8("float blend;\n");
 
-#if	0
-		if (use_normal_map || use_displacement_map)
-		{
-			str << UTF8("uv = ") << cpt_world_uv << UTF8(";\n");
-		}
-/*
-		if (use_dudv_map)
-		{
-			str << UTF8("uv += texture");
-
-			if (version >= svt_130)
-			{
-				str << UTF8("(");
-			}
-			else
-			{
-				str << UTF8("2D(");
-			}
-
-			str << get_dudv_sampler() << UTF8(", uv).xy * ");
-
-			str << apt_dudv_scale << UTF8(";\n");
-		}
-*/
-		if (use_normal_map)
-		{
-			if (version >= svt_130)
-			{
-				str << UTF8("tmp = texture(");
-			}
-			else
-			{
-				str << UTF8("tmp = texture2D(");
-			}
-
-			str << get_normal_sampler() << UTF8(", uv);\n");
-
-			str << UTF8("slope = 1.0 - decode_normal(tmp.xy).z;\n");
-		}
-
-		if (use_displacement_map)
-		{
-			if (version >= svt_130)
-			{
-				str << UTF8("tmp = texture(");
-			}
-			else
-			{
-				str << UTF8("tmp = texture2D(");
-			}
-
-			str << get_displacement_sampler() << UTF8(", uv);\n");
-
-			str << UTF8("height = decode_terrain_displacement(");
-			str << UTF8("tmp).z;\n");
-		}
-#endif
 		count = get_blend_datas_size();
 
 		count = (count + 3) / 4;

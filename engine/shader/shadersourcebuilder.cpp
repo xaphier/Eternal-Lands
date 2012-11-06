@@ -1556,6 +1556,18 @@ namespace eternal_lands
 		stream << UTF8(" < 4; ++i)\n");
 		stream << indent << UTF8("{\n");
 
+		/**
+		 * Exit loop if no more lights
+		 */
+		stream << loop_indent << UTF8("/* Exit loop if no more ");
+		stream << UTF8("lights */\n");
+		stream << loop_indent << UTF8("if (all(lessThanEqual(");
+		stream << sslt_floor_values_4;
+		stream << UTF8(", vec4(0))))\n");
+		stream << loop_indent << UTF8("{\n");
+		stream << loop_indent << UTF8("\tbreak;\n");
+		stream << loop_indent << UTF8("}\n");
+
 		stream << loop_indent;
 		stream << UTF8("/* Shift two bits down */\n");
 		stream << loop_indent;
@@ -1623,79 +1635,87 @@ namespace eternal_lands
 		{
 			stream << loop_indent;
 			stream << sslt_light_indices;
-				stream << UTF8(" = vec4(");
-				stream << sslt_packed_light_indices_3;
-				stream << UTF8(", 0.0);\n");
-			}
-
-			/**
-			 * Unpack each lighting channel
-			 */
-			stream << indent << UTF8("/* Unpack each ");
-			stream << UTF8("lighting channel */\n");
-
-			stream << indent << sslt_unpack_const_3;
-
-			stream << UTF8("= vec3(4.0, 16.0, 64.0)");
-
-			if (data.get_version() < svt_130)
-			{
-				stream << UTF8(" / 64.0");
-			}
-
-			stream << UTF8(";\n");
-
-			/**
-			 * Expand the packed light values to the 0 .. 1023 range
-			 */
-			stream << indent << UTF8("/* Expand the packed");
-			stream << UTF8(" light values to the 0 .. 1023 range");
-			stream << UTF8("  */\n");
-
-			stream << indent << sslt_floor_values_3;
-			stream << UTF8(" = ceil(");
+			stream << UTF8(" = vec4(");
 			stream << sslt_packed_light_indices_3;
-			stream << UTF8(" * 1022.5);\n");
+			stream << UTF8(", 0.0);\n");
+		}
 
-			stream << indent << UTF8("for (") << sslt_i;
-			stream << UTF8(" = 0; ") << sslt_i;
-			stream << UTF8(" < 5; ++i)\n");
-			stream << indent << UTF8("{\n");
+		/**
+		 * Unpack each lighting channel
+		 */
+		stream << indent << UTF8("/* Unpack each lighting channel ");
+		stream << UTF8("*/\n");
 
-			stream << loop_indent;
-			stream << UTF8("/* Shift two bits down */\n");
-			stream << loop_indent;
-			stream << sslt_packed_light_indices_3 << UTF8(" = ");
-			stream << sslt_floor_values_3 << UTF8(" * 0.25;\n");
+		stream << indent << sslt_unpack_const_3;
 
-			stream << loop_indent;
-			stream << UTF8("/* Remove shifted bits */\n");
-			stream << loop_indent << sslt_floor_values_3;
-			stream << UTF8(" = floor(");
-			stream << sslt_packed_light_indices_3 << UTF8(");\n");
+		stream << UTF8("= vec3(4.0, 16.0, 64.0)");
 
-			if (data.get_version() < svt_130)
-			{
-				stream << loop_indent << sslt_light_index;
-				stream << UTF8(" = ");
-			}
-			else
-			{
-				stream << loop_indent << sslt_index;
-				stream << UTF8(" = int(");
-			}
+		if (data.get_version() < svt_130)
+		{
+			stream << UTF8(" / 64.0");
+		}
 
-			stream << UTF8("dot(") << sslt_packed_light_indices_3;
-			stream << UTF8(" - ") << sslt_floor_values_3;
-			stream << UTF8(", ") << sslt_unpack_const_3;
-			stream << UTF8(")");
+		stream << UTF8(";\n");
 
-			if (data.get_version() >= svt_130)
-			{
-				stream << UTF8(" + 0.5)");
-			}
+		/**
+		 * Expand the packed light values to the 0 .. 1023 range
+		 */
+		stream << indent << UTF8("/* Expand the packed light values ");
+		stream << UTF8("to the 0 .. 1023 range */\n");
 
-			stream << UTF8(";\n");
+		stream << indent << sslt_floor_values_3 << UTF8(" = ceil(");
+		stream << sslt_packed_light_indices_3 << UTF8(" * 1022.5);\n");
+
+		stream << indent << UTF8("for (") << sslt_i << UTF8(" = 0; ");
+		stream << sslt_i << UTF8(" < 5; ++i)\n");
+		stream << indent << UTF8("{\n");
+
+		/**
+		 * Exit loop if no more lights
+		 */
+		stream << loop_indent << UTF8("/* Exit loop if no more ");
+		stream << UTF8("lights */\n");
+		stream << loop_indent << UTF8("if (all(lessThanEqual(");
+		stream << sslt_floor_values_3;
+		stream << UTF8(", vec3(0))))\n");
+		stream << loop_indent << UTF8("{\n");
+		stream << loop_indent << UTF8("\tbreak;\n");
+		stream << loop_indent << UTF8("}\n");
+
+		stream << loop_indent;
+		stream << UTF8("/* Shift two bits down */\n");
+		stream << loop_indent;
+		stream << sslt_packed_light_indices_3 << UTF8(" = ");
+		stream << sslt_floor_values_3 << UTF8(" * 0.25;\n");
+
+		stream << loop_indent;
+		stream << UTF8("/* Remove shifted bits */\n");
+		stream << loop_indent << sslt_floor_values_3;
+		stream << UTF8(" = floor(");
+		stream << sslt_packed_light_indices_3 << UTF8(");\n");
+
+		if (data.get_version() < svt_130)
+		{
+			stream << loop_indent << sslt_light_index;
+			stream << UTF8(" = ");
+		}
+		else
+		{
+			stream << loop_indent << sslt_index;
+			stream << UTF8(" = int(");
+		}
+
+		stream << UTF8("dot(") << sslt_packed_light_indices_3;
+		stream << UTF8(" - ") << sslt_floor_values_3;
+		stream << UTF8(", ") << sslt_unpack_const_3;
+		stream << UTF8(")");
+
+		if (data.get_version() >= svt_130)
+		{
+			stream << UTF8(" + 0.5)");
+		}
+
+		stream << UTF8(";\n");
 	}
 
 	void ShaderSourceBuilder::build_light_index_x8_lights(
@@ -1766,6 +1786,18 @@ namespace eternal_lands
 		stream << UTF8(" = 0; ") << sslt_i;
 		stream << UTF8(" < 8; ++i)\n");
 		stream << indent << UTF8("{\n");
+
+		/**
+		 * Exit loop if no more lights
+		 */
+		stream << loop_indent << UTF8("/* Exit loop if no more ");
+		stream << UTF8("lights */\n");
+		stream << loop_indent << UTF8("if (all(lessThanEqual(");
+		stream << sslt_floor_values_4;
+		stream << UTF8(", ve4(0))))\n");
+		stream << loop_indent << UTF8("{\n");
+		stream << loop_indent << UTF8("\tbreak;\n");
+		stream << loop_indent << UTF8("}\n");
 
 		stream << loop_indent;
 		stream << UTF8("/* Shift two bits down */\n");
@@ -1977,26 +2009,6 @@ namespace eternal_lands
 					local_loop_indent, stream);
 				break;
 		};
-
-		/**
-		 * Skip zero light
-		 */
-		stream << local_loop_indent << UTF8("/* Skip zero light */\n");
-		stream << local_loop_indent << UTF8("if (");
-
-		if (data.get_version() < svt_130)
-		{
-			stream << sslt_light_index;
-		}
-		else
-		{
-			stream << sslt_index;
-		}
-
-		stream << UTF8(" == 0)\n");
-		stream << local_loop_indent << UTF8("{\n");
-		stream << local_loop_indent << UTF8("\tcontinue;\n");
-		stream << local_loop_indent << UTF8("}\n");
 
 		if (data.get_shader_build() == sbt_debug_light_index)
 		{

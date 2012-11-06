@@ -455,6 +455,7 @@ namespace eternal_lands
 
 	void EditorScene::cull_map()
 	{
+		Frustum top_down_frustum;
 		MappedUniformBufferSharedPtr top_down_terrain_buffer;
 
 		DEBUG_CHECK_GL_ERROR();
@@ -466,10 +467,16 @@ namespace eternal_lands
 
 		get_scene_view().set_ortho_scale_view();
 
-		cull(top_down_terrain_buffer,
-			get_scene_view().get_current_projection_view_matrix(),
+		top_down_frustum = Frustum(get_scene_view(
+			).get_scale_view_matrix());
+
+		cull(top_down_frustum, get_scene_view().get_scale_view_matrix(),
 			glm::vec3(get_scene_view().get_camera()), false,
-			m_top_down_terrain, m_top_down_objects);
+			m_top_down_objects);
+
+		cull_terrain(top_down_frustum, top_down_terrain_buffer,
+			glm::vec3(get_scene_view().get_camera()),
+			m_top_down_terrain);
 
 		top_down_terrain_buffer.reset();
 	}
