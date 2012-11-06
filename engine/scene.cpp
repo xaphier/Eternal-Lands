@@ -759,7 +759,7 @@ namespace eternal_lands
 			}
 		}
 
-		if (get_global_vars()->get_opengl_3_1() && get_terrain())
+		if (use_terrain)
 		{
 			visible_terrain_buffer.reset();
 

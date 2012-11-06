@@ -111,6 +111,7 @@ namespace eternal_lands
 				const StringVector &extra_maps,
 				const TerrainMaterialData &material_data,
 				const glm::vec4 &dudv_scale_offset);
+			glm::vec3 get_map_center() const;
 
 			inline void deselect_object() noexcept
 			{

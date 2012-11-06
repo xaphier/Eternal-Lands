@@ -11,17 +11,92 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent)
 	rotate_y_key->installEventFilter(this);
 	rotate_z_key->installEventFilter(this);
 	scale_key->installEventFilter(this);
-	QObject::connect(clear_button, SIGNAL(clicked()), this, SLOT(clear_shortcuts()));
-	QObject::connect(reset_button, SIGNAL(clicked()), this, SLOT(action_reset()));
-	QObject::connect(default_button, SIGNAL(clicked()), this, SLOT(action_default()));
-	QObject::connect(ok_button, SIGNAL(clicked()), this, SLOT(set_action_shortcuts()));
-	QObject::connect(action_list, SIGNAL(itemSelectionChanged()), this, SLOT(action_changed()));
-	QObject::connect(el_data_dir_button, SIGNAL(clicked()), this, SLOT(change_el_data_dir()));
-	QObject::connect(el_extra_data_dir_button, SIGNAL(clicked()), this, SLOT(change_el_extra_data_dir()));
+	QObject::connect(clear_button, SIGNAL(clicked()), this,
+		SLOT(clear_shortcuts()));
+	QObject::connect(reset_button, SIGNAL(clicked()), this,
+		SLOT(action_reset()));
+	QObject::connect(default_button, SIGNAL(clicked()), this,
+		SLOT(action_default()));
+	QObject::connect(ok_button, SIGNAL(clicked()), this,
+		SLOT(set_action_shortcuts()));
+	QObject::connect(action_list, SIGNAL(itemSelectionChanged()), this,
+		SLOT(action_changed()));
+	QObject::connect(el_data_dir_button, SIGNAL(clicked()), this,
+		SLOT(change_el_data_dir()));
+	QObject::connect(el_extra_data_dir_button, SIGNAL(clicked()), this,
+		SLOT(change_el_extra_data_dir()));
+	QObject::connect(select_rect_button, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(change_select_rect_button(const int)));
+	QObject::connect(click_button, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(change_click_button(const int)));
+	QObject::connect(grab_button, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(change_grab_button(const int)));
+	QObject::connect(view_rotate_button, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(change_view_rotate_button(const int)));
+	QObject::connect(select_rect_key_mod, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(change_select_rect_key_mod(const int)));
+	QObject::connect(click_key_mod, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(change_click_key_mod(const int)));
+	QObject::connect(grab_key_mod, SIGNAL(currentIndexChanged(int)), this,
+		SLOT(change_grab_key_mod(const int)));
+	QObject::connect(view_rotate_key_mod, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(change_view_rotate_key_mod(const int)));
 
+	click_button->addItem(mouse_button_to_str(Qt::NoButton));
 	click_button->addItem(mouse_button_to_str(Qt::LeftButton));
-	click_button->addItem(mouse_button_to_str(Qt::MidButton));
 	click_button->addItem(mouse_button_to_str(Qt::RightButton));
+	click_button->addItem(mouse_button_to_str(Qt::MidButton));
+	click_button->addItem(mouse_button_to_str(Qt::XButton1));
+	click_button->addItem(mouse_button_to_str(Qt::XButton2));
+
+	click_key_mod->addItem(key_mod_to_str(Qt::NoModifier));
+	click_key_mod->addItem(key_mod_to_str(Qt::AltModifier));
+	click_key_mod->addItem(key_mod_to_str(Qt::ControlModifier));
+	click_key_mod->addItem(key_mod_to_str(Qt::MetaModifier));
+	click_key_mod->addItem(key_mod_to_str(Qt::ShiftModifier));
+	click_key_mod->addItem(key_mod_to_str(Qt::KeypadModifier));
+
+	select_rect_button->addItem(mouse_button_to_str(Qt::NoButton));
+	select_rect_button->addItem(mouse_button_to_str(Qt::LeftButton));
+	select_rect_button->addItem(mouse_button_to_str(Qt::RightButton));
+	select_rect_button->addItem(mouse_button_to_str(Qt::MidButton));
+	select_rect_button->addItem(mouse_button_to_str(Qt::XButton1));
+	select_rect_button->addItem(mouse_button_to_str(Qt::XButton2));
+
+	select_rect_key_mod->addItem(key_mod_to_str(Qt::NoModifier));
+	select_rect_key_mod->addItem(key_mod_to_str(Qt::AltModifier));
+	select_rect_key_mod->addItem(key_mod_to_str(Qt::ControlModifier));
+	select_rect_key_mod->addItem(key_mod_to_str(Qt::MetaModifier));
+	select_rect_key_mod->addItem(key_mod_to_str(Qt::ShiftModifier));
+	select_rect_key_mod->addItem(key_mod_to_str(Qt::KeypadModifier));
+
+	grab_button->addItem(mouse_button_to_str(Qt::NoButton));
+	grab_button->addItem(mouse_button_to_str(Qt::LeftButton));
+	grab_button->addItem(mouse_button_to_str(Qt::RightButton));
+	grab_button->addItem(mouse_button_to_str(Qt::MidButton));
+	grab_button->addItem(mouse_button_to_str(Qt::XButton1));
+	grab_button->addItem(mouse_button_to_str(Qt::XButton2));
+
+	grab_key_mod->addItem(key_mod_to_str(Qt::NoModifier));
+	grab_key_mod->addItem(key_mod_to_str(Qt::AltModifier));
+	grab_key_mod->addItem(key_mod_to_str(Qt::ControlModifier));
+	grab_key_mod->addItem(key_mod_to_str(Qt::MetaModifier));
+	grab_key_mod->addItem(key_mod_to_str(Qt::ShiftModifier));
+	grab_key_mod->addItem(key_mod_to_str(Qt::KeypadModifier));
+
+	view_rotate_button->addItem(mouse_button_to_str(Qt::NoButton));
+	view_rotate_button->addItem(mouse_button_to_str(Qt::LeftButton));
+	view_rotate_button->addItem(mouse_button_to_str(Qt::RightButton));
+	view_rotate_button->addItem(mouse_button_to_str(Qt::MidButton));
+	view_rotate_button->addItem(mouse_button_to_str(Qt::XButton1));
+	view_rotate_button->addItem(mouse_button_to_str(Qt::XButton2));
+
+	view_rotate_key_mod->addItem(key_mod_to_str(Qt::NoModifier));
+	view_rotate_key_mod->addItem(key_mod_to_str(Qt::AltModifier));
+	view_rotate_key_mod->addItem(key_mod_to_str(Qt::ControlModifier));
+	view_rotate_key_mod->addItem(key_mod_to_str(Qt::MetaModifier));
+	view_rotate_key_mod->addItem(key_mod_to_str(Qt::ShiftModifier));
+	view_rotate_key_mod->addItem(key_mod_to_str(Qt::KeypadModifier));
 
 	wheel_zoom_x10->addItem(key_mod_to_str(Qt::NoModifier));
 	wheel_zoom_x10->addItem(key_mod_to_str(Qt::AltModifier));
@@ -33,6 +108,249 @@ PreferencesDialog::PreferencesDialog(QWidget *parent): QDialog(parent)
 
 PreferencesDialog::~PreferencesDialog()
 {
+}
+
+void PreferencesDialog::disable_all_mouse_button_checks()
+{
+	select_rect_button->blockSignals(true);
+	click_button->blockSignals(true);
+	grab_button->blockSignals(true);
+	view_rotate_button->blockSignals(true);
+	select_rect_key_mod->blockSignals(true);
+	click_key_mod->blockSignals(true);
+	grab_key_mod->blockSignals(true);
+	view_rotate_key_mod->blockSignals(true);
+}
+
+void PreferencesDialog::enable_all_mouse_button_checks()
+{
+	select_rect_button->blockSignals(false);
+	click_button->blockSignals(false);
+	grab_button->blockSignals(false);
+	view_rotate_button->blockSignals(false);
+	select_rect_key_mod->blockSignals(false);
+	click_key_mod->blockSignals(false);
+	grab_key_mod->blockSignals(false);
+	view_rotate_key_mod->blockSignals(false);
+
+	select_rect_key_mod->setEnabled(
+		select_rect_button->currentIndex() > 0);
+	click_key_mod->setEnabled(click_button->currentIndex() > 0);
+	grab_key_mod->setEnabled(grab_button->currentIndex() > 0);
+	view_rotate_key_mod->setEnabled(
+		view_rotate_button->currentIndex() > 0);
+}
+
+void PreferencesDialog::change_select_rect_button(const int index)
+{
+	select_rect_key_mod->setEnabled(index > 0);
+
+	if (index > 0)
+	{
+		if ((get_select_rect_button() == get_click_button()) &&
+			(get_select_rect_key_mod() == get_click_key_mod()))
+		{
+			click_button->setCurrentIndex(0);
+		}
+
+		if ((get_select_rect_button() == get_grab_button()) &&
+			(get_select_rect_key_mod() == get_grab_key_mod()))
+		{
+			grab_button->setCurrentIndex(0);
+		}
+
+		if ((get_select_rect_button() == get_view_rotate_button()) &&
+			(get_select_rect_key_mod() ==
+				get_view_rotate_key_mod()))
+		{
+			view_rotate_button->setCurrentIndex(0);
+		}
+	}
+}
+
+void PreferencesDialog::change_click_button(const int index)
+{
+	click_key_mod->setEnabled(index > 0);
+
+	if (index > 0)
+	{
+		if ((get_click_button() == get_select_rect_button()) &&
+			(get_click_key_mod() == get_select_rect_key_mod()))
+		{
+			select_rect_button->setCurrentIndex(0);
+		}
+
+		if ((get_click_button() == get_grab_button()) &&
+			(get_click_key_mod() == get_grab_key_mod()))
+		{
+			grab_button->setCurrentIndex(0);
+		}
+
+		if ((get_click_button() == get_view_rotate_button()) &&
+			(get_click_key_mod() == get_view_rotate_key_mod()))
+		{
+			view_rotate_button->setCurrentIndex(0);
+		}
+	}
+}
+
+void PreferencesDialog::change_grab_button(const int index)
+{
+	grab_key_mod->setEnabled(index > 0);
+
+	if (index > 0)
+	{
+		if ((get_grab_button() == get_select_rect_button()) &&
+			(get_grab_key_mod() == get_select_rect_key_mod()))
+		{
+			select_rect_button->setCurrentIndex(0);
+		}
+
+		if ((get_grab_button() == get_click_button()) &&
+			(get_grab_key_mod() == get_click_key_mod()))
+		{
+			click_button->setCurrentIndex(0);
+		}
+
+		if ((get_grab_button() == get_view_rotate_button()) &&
+			(get_grab_key_mod() == get_view_rotate_key_mod()))
+		{
+			view_rotate_button->setCurrentIndex(0);
+		}
+	}
+}
+
+void PreferencesDialog::change_view_rotate_button(const int index)
+{
+	view_rotate_key_mod->setEnabled(index > 0);
+
+	if (index > 0)
+	{
+		if ((get_view_rotate_button() == get_select_rect_button()) &&
+			(get_view_rotate_key_mod() ==
+				get_select_rect_key_mod()))
+		{
+			select_rect_button->setCurrentIndex(0);
+		}
+
+		if ((get_view_rotate_button() == get_click_button()) &&
+			(get_view_rotate_key_mod() == get_click_key_mod()))
+		{
+			click_button->setCurrentIndex(0);
+		}
+
+		if ((get_view_rotate_button() == get_grab_button()) &&
+			(get_view_rotate_key_mod() == get_grab_key_mod()))
+		{
+			grab_button->setCurrentIndex(0);
+		}
+	}
+}
+
+void PreferencesDialog::change_select_rect_key_mod(const int index)
+{
+	select_rect_key_mod->setEnabled(index > 0);
+
+	if (index > 0)
+	{
+		if ((get_select_rect_button() == get_click_button()) &&
+			(get_select_rect_key_mod() == get_click_key_mod()))
+		{
+			click_button->setCurrentIndex(0);
+		}
+
+		if ((get_select_rect_button() == get_grab_button()) &&
+			(get_select_rect_key_mod() == get_grab_key_mod()))
+		{
+			grab_button->setCurrentIndex(0);
+		}
+
+		if ((get_select_rect_button() == get_view_rotate_button()) &&
+			(get_select_rect_key_mod() ==
+				get_view_rotate_key_mod()))
+		{
+			view_rotate_button->setCurrentIndex(0);
+		}
+	}
+}
+
+void PreferencesDialog::change_click_key_mod(const int index)
+{
+	click_key_mod->setEnabled(index > 0);
+
+	if (index > 0)
+	{
+		if ((get_click_button() == get_select_rect_button()) &&
+			(get_click_key_mod() == get_select_rect_key_mod()))
+		{
+			select_rect_button->setCurrentIndex(0);
+		}
+
+		if ((get_click_button() == get_grab_button()) &&
+			(get_click_key_mod() == get_grab_key_mod()))
+		{
+			grab_button->setCurrentIndex(0);
+		}
+
+		if ((get_click_button() == get_view_rotate_button()) &&
+			(get_click_key_mod() == get_view_rotate_key_mod()))
+		{
+			view_rotate_button->setCurrentIndex(0);
+		}
+	}
+}
+
+void PreferencesDialog::change_grab_key_mod(const int index)
+{
+	grab_key_mod->setEnabled(index > 0);
+
+	if (index > 0)
+	{
+		if ((get_grab_button() == get_select_rect_button()) &&
+			(get_grab_key_mod() == get_select_rect_key_mod()))
+		{
+			select_rect_button->setCurrentIndex(0);
+		}
+
+		if ((get_grab_button() == get_click_button()) &&
+			(get_grab_key_mod() == get_click_key_mod()))
+		{
+			click_button->setCurrentIndex(0);
+		}
+
+		if ((get_grab_button() == get_view_rotate_button()) &&
+			(get_grab_key_mod() == get_view_rotate_key_mod()))
+		{
+			view_rotate_button->setCurrentIndex(0);
+		}
+	}
+}
+
+void PreferencesDialog::change_view_rotate_key_mod(const int index)
+{
+	view_rotate_key_mod->setEnabled(index > 0);
+
+	if (index > 0)
+	{
+		if ((get_view_rotate_button() == get_select_rect_button()) &&
+			(get_view_rotate_key_mod() ==
+				get_select_rect_key_mod()))
+		{
+			select_rect_button->setCurrentIndex(0);
+		}
+
+		if ((get_view_rotate_button() == get_click_button()) &&
+			(get_view_rotate_key_mod() == get_click_key_mod()))
+		{
+			click_button->setCurrentIndex(0);
+		}
+
+		if ((get_view_rotate_button() == get_grab_button()) &&
+			(get_view_rotate_key_mod() == get_grab_key_mod()))
+		{
+			grab_button->setCurrentIndex(0);
+		}
+	}
 }
 
 void PreferencesDialog::change_el_data_dir()
@@ -385,9 +703,44 @@ void PreferencesDialog::set_actions(const QList<QAction*> &actions)
 	}
 }
 
+Qt::MouseButton PreferencesDialog::get_select_rect_button() const
+{
+	return str_to_mouse_button(select_rect_button->currentText());
+}
+
 Qt::MouseButton PreferencesDialog::get_click_button() const
 {
 	return str_to_mouse_button(click_button->currentText());
+}
+
+Qt::MouseButton PreferencesDialog::get_grab_button() const
+{
+	return str_to_mouse_button(grab_button->currentText());
+}
+
+Qt::MouseButton PreferencesDialog::get_view_rotate_button() const
+{
+	return str_to_mouse_button(view_rotate_button->currentText());
+}
+
+Qt::KeyboardModifier PreferencesDialog::get_select_rect_key_mod() const
+{
+	return str_to_key_mod(select_rect_key_mod->currentText());
+}
+
+Qt::KeyboardModifier PreferencesDialog::get_click_key_mod() const
+{
+	return str_to_key_mod(click_key_mod->currentText());
+}
+
+Qt::KeyboardModifier PreferencesDialog::get_grab_key_mod() const
+{
+	return str_to_key_mod(grab_key_mod->currentText());
+}
+
+Qt::KeyboardModifier PreferencesDialog::get_view_rotate_key_mod() const
+{
+	return str_to_key_mod(view_rotate_key_mod->currentText());
 }
 
 Qt::KeyboardModifier PreferencesDialog::get_wheel_zoom_x10() const
@@ -405,10 +758,54 @@ bool PreferencesDialog::get_invert_z_rotation() const
 	return invert_z_rotation->isChecked();
 }
 
+void PreferencesDialog::set_select_rect_button(const Qt::MouseButton value)
+{
+	select_rect_button->setCurrentIndex(select_rect_button->findText(
+		mouse_button_to_str(value)));
+}
+
 void PreferencesDialog::set_click_button(const Qt::MouseButton value)
 {
 	click_button->setCurrentIndex(click_button->findText(
 		mouse_button_to_str(value)));
+}
+
+void PreferencesDialog::set_grab_button(const Qt::MouseButton value)
+{
+	grab_button->setCurrentIndex(grab_button->findText(
+		mouse_button_to_str(value)));
+}
+
+void PreferencesDialog::set_view_rotate_button(const Qt::MouseButton value)
+{
+	view_rotate_button->setCurrentIndex(view_rotate_button->findText(
+		mouse_button_to_str(value)));
+}
+
+void PreferencesDialog::set_select_rect_key_mod(
+	const Qt::KeyboardModifier value)
+{
+	select_rect_key_mod->setCurrentIndex(
+		select_rect_key_mod->findText(key_mod_to_str(value)));
+}
+
+void PreferencesDialog::set_click_key_mod(const Qt::KeyboardModifier value)
+{
+	click_key_mod->setCurrentIndex(click_key_mod->findText(
+		key_mod_to_str(value)));
+}
+
+void PreferencesDialog::set_grab_key_mod(const Qt::KeyboardModifier value)
+{
+	grab_key_mod->setCurrentIndex(grab_key_mod->findText(
+		key_mod_to_str(value)));
+}
+
+void PreferencesDialog::set_view_rotate_key_mod(
+	const Qt::KeyboardModifier value)
+{
+	view_rotate_key_mod->setCurrentIndex(
+		view_rotate_key_mod->findText(key_mod_to_str(value)));
 }
 
 void PreferencesDialog::set_wheel_zoom_x10(const Qt::KeyboardModifier value)
@@ -429,44 +826,57 @@ void PreferencesDialog::set_invert_z_rotation(const bool value)
 
 Qt::MouseButton PreferencesDialog::str_to_mouse_button(const QString &str)
 {
-	if (str == "Left")
+	if (str == mouse_button_to_str(Qt::NoButton))
+	{
+		return Qt::NoButton;
+	}
+	if (str == mouse_button_to_str(Qt::LeftButton))
 	{
 		return Qt::LeftButton;
 	}
-	if (str == "Middle")
-	{
-		return Qt::MidButton;
-	}
-	if (str == "Right")
+	if (str == mouse_button_to_str(Qt::RightButton))
 	{
 		return Qt::RightButton;
 	}
-	return Qt::LeftButton;
+	if (str == mouse_button_to_str(Qt::MidButton))
+	{
+		return Qt::MidButton;
+	}
+	if (str == mouse_button_to_str(Qt::XButton1))
+	{
+		return Qt::XButton1;
+	}
+	if (str == mouse_button_to_str(Qt::XButton2))
+	{
+		return Qt::XButton2;
+	}
+
+	return Qt::MidButton;
 }
 
 Qt::KeyboardModifier PreferencesDialog::str_to_key_mod(const QString &str)
 {
-	if (str == "Disabled")
+	if (str == key_mod_to_str(Qt::NoModifier))
 	{
 		return Qt::NoModifier;
 	}
-	if (str == "Alt")
+	if (str == key_mod_to_str(Qt::AltModifier))
 	{
 		return Qt::AltModifier;
 	}
-	if (str == "Control")
+	if (str == key_mod_to_str(Qt::ControlModifier))
 	{
 		return Qt::ControlModifier;
 	}
-	if (str == "Meta")
+	if (str == key_mod_to_str(Qt::MetaModifier))
 	{
 		return Qt::MetaModifier;
 	}
-	if (str == "Shift")
+	if (str == key_mod_to_str(Qt::ShiftModifier))
 	{
 		return Qt::ShiftModifier;
 	}
-	if (str == "NumLock")
+	if (str == key_mod_to_str(Qt::KeypadModifier))
 	{
 		return Qt::KeypadModifier;
 	}
@@ -491,14 +901,20 @@ QString PreferencesDialog::mouse_button_to_str(const Qt::MouseButton value)
 {
 	switch (value)
 	{
+		case Qt::NoButton:
+			return "Disabled";
 		case Qt::LeftButton:
 			return "Left";
 		case  Qt::MidButton:
 			return "Middle";
 		case Qt::RightButton:
 			return "Right";
+		case Qt::XButton1:
+			return "Extra 1";
+		case Qt::XButton2:
+			return "Extra 2";
 		default:
-			return "Left";
+			return "Disabled";
 	}
 }
 

@@ -39,6 +39,9 @@ class ELGLWidget: public QGLWidget
 		glm::uvec4 m_selection_rect;
 		glm::uvec2 m_select_pos, m_half_size;
 		glm::uvec2 m_selected_screen_position;
+		glm::uvec2 m_press_screen_position;
+		glm::vec3 m_press_pos;
+		glm::vec2 m_camera_yaw_roll;
 		String m_object_name;
 		float m_light_radius;
 		float m_zoom;
@@ -57,7 +60,16 @@ class ELGLWidget: public QGLWidget
 		bool m_grab_world_position_valid;
 		KeyPressType m_mouse_move;
 		BlendType m_blend;
+		Qt::MouseButton m_press_button;
+		Qt::MouseButton m_select_rect_button;
 		Qt::MouseButton m_click_button;
+		Qt::MouseButton m_grab_button;
+		Qt::MouseButton m_view_rotate_button;
+		Qt::KeyboardModifier m_press_key_mod;
+		Qt::KeyboardModifier m_select_rect_key_mod;
+		Qt::KeyboardModifier m_click_key_mod;
+		Qt::KeyboardModifier m_grab_key_mod;
+		Qt::KeyboardModifier m_view_rotate_key_mod;
 		Qt::KeyboardModifier m_wheel_zoom_x10;
 		Qt::Key m_rotate_x_key;
 		Qt::Key m_rotate_y_key;
@@ -79,6 +91,40 @@ class ELGLWidget: public QGLWidget
 		inline Uint32 get_terrain_layer_index() const
 		{
 			return m_terrain_layer_index;
+		}
+
+		bool get_select_rect_event(QMouseEvent *event) const
+		{
+			return event->buttons().testFlag(
+				get_select_rect_button()) &&
+				(event->modifiers().testFlag(
+					get_select_rect_key_mod()) ||
+				(get_select_rect_key_mod() == Qt::NoModifier));
+		}
+
+		bool get_click_event(QMouseEvent *event) const
+		{
+			return event->buttons().testFlag(get_click_button()) &&
+				(event->modifiers().testFlag(
+					get_click_key_mod()) ||
+				(get_click_key_mod() == Qt::NoModifier));
+		}
+
+		bool get_grab_event(QMouseEvent *event) const
+		{
+			return event->buttons().testFlag(get_grab_button()) &&
+				(event->modifiers().testFlag(
+					get_grab_key_mod()) ||
+				(get_grab_key_mod() == Qt::NoModifier));
+		}
+
+		bool get_view_rotate_event(QMouseEvent *event) const
+		{
+			return event->buttons().testFlag(
+				get_view_rotate_button()) &&
+				(event->modifiers().testFlag(
+					get_view_rotate_key_mod()) ||
+				(get_view_rotate_key_mod() == Qt::NoModifier));
 		}
 
 		void mouse_click_action();
@@ -179,9 +225,54 @@ class ELGLWidget: public QGLWidget
 		bool get_terrain() const;
 		int get_terrain_layer_count() const;
 
+		inline Qt::MouseButton get_press_button() const
+		{
+			return m_press_button;
+		}
+
+		inline Qt::MouseButton get_select_rect_button() const
+		{
+			return m_select_rect_button;
+		}
+
 		inline Qt::MouseButton get_click_button() const
 		{
 			return m_click_button;
+		}
+
+		inline Qt::MouseButton get_grab_button() const
+		{
+			return m_grab_button;
+		}
+
+		inline Qt::MouseButton get_view_rotate_button() const
+		{
+			return m_view_rotate_button;
+		}
+
+		inline Qt::KeyboardModifier get_press_key_mod() const
+		{
+			return m_press_key_mod;
+		}
+
+		inline Qt::KeyboardModifier get_select_rect_key_mod() const
+		{
+			return m_select_rect_key_mod;
+		}
+
+		inline Qt::KeyboardModifier get_click_key_mod() const
+		{
+			return m_click_key_mod;
+		}
+
+		inline Qt::KeyboardModifier get_grab_key_mod() const
+		{
+			return m_grab_key_mod;
+		}
+
+		inline Qt::KeyboardModifier get_view_rotate_key_mod() const
+		{
+			return m_view_rotate_key_mod;
 		}
 
 		inline Qt::KeyboardModifier get_wheel_zoom_x10() const
@@ -219,9 +310,61 @@ class ELGLWidget: public QGLWidget
 			return m_invert_z_rotation;
 		}
 
+		inline void set_press_button(const Qt::MouseButton press_button)
+		{
+			m_press_button = press_button;
+		}
+
+		inline void set_select_rect_button(
+			const Qt::MouseButton select_rect_button)
+		{
+			m_select_rect_button = select_rect_button;
+		}
+
 		inline void set_click_button(const Qt::MouseButton click_button)
 		{
 			m_click_button = click_button;
+		}
+
+		inline void set_grab_button(const Qt::MouseButton grab_button)
+		{
+			m_grab_button = grab_button;
+		}
+
+		inline void set_view_rotate_button(
+			const Qt::MouseButton view_rotate_button)
+		{
+			m_view_rotate_button = view_rotate_button;
+		}
+
+		inline void set_press_key_mod(
+			const Qt::KeyboardModifier press_key_mod)
+		{
+			m_press_key_mod = press_key_mod;
+		}
+
+		inline void set_select_rect_key_mod(
+			const Qt::KeyboardModifier select_rect_key_mod)
+		{
+			m_select_rect_key_mod = select_rect_key_mod;
+		}
+
+		inline void set_click_key_mod(
+			const Qt::KeyboardModifier click_key_mod)
+		{
+			m_click_key_mod = click_key_mod;
+		}
+
+		inline void set_grab_key_mod(
+			const Qt::KeyboardModifier grab_key_mod)
+		{
+			m_grab_key_mod = grab_key_mod;
+		}
+
+		inline void set_view_rotate_key_mod(
+			const Qt::KeyboardModifier view_rotate_key_mod)
+		{
+			m_view_rotate_key_mod = view_rotate_key_mod;
 		}
 
 		inline void set_wheel_zoom_x10(
@@ -360,6 +503,8 @@ class ELGLWidget: public QGLWidget
 		void can_undo(const bool undo);
 		void terrain_edit();
 		void initialized();
+		void changed_camera_yaw(const int yaw);
+		void changed_camera_roll(const int roll);
 
 };
 

@@ -543,4 +543,9 @@ namespace eternal_lands
 		update_program_vars_id();
 	}
 
+	glm::vec3 EditorScene::get_map_center() const
+	{
+		return get_map()->get_bounding_box().get_center();
+	}
+
 }

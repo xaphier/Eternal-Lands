@@ -195,6 +195,7 @@ namespace eternal_lands
 				const glm::vec4 &dudv_scale_offset,
 				const glm::uvec2 &size);
 			void update_terrain_dudv();
+			const glm::vec3 &get_map_center() const;
 
 			inline void relax_terrain_uv(
 				const AbstractProgressSharedPtr &progress,

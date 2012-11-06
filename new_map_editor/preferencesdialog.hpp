@@ -44,17 +44,42 @@ class PreferencesDialog: public QDialog, public Ui::Preferences
 		void change_el_data_dir();
 		void change_el_extra_data_dir();
 
+		void change_select_rect_button(const int index);
+		void change_click_button(const int index);
+		void change_grab_button(const int index);
+		void change_view_rotate_button(const int index);
+		void change_click_key_mod(const int index);
+		void change_select_rect_key_mod(const int index);
+		void change_grab_key_mod(const int index);
+		void change_view_rotate_key_mod(const int index);
+
 	public:
 		PreferencesDialog(QWidget *parent = 0);
 		virtual ~PreferencesDialog();
 		void set_actions(const QList<QAction*> &actions);
+		Qt::MouseButton get_select_rect_button() const;
 		Qt::MouseButton get_click_button() const;
+		Qt::MouseButton get_grab_button() const;
+		Qt::MouseButton get_view_rotate_button() const;
+		Qt::KeyboardModifier get_select_rect_key_mod() const;
+		Qt::KeyboardModifier get_click_key_mod() const;
+		Qt::KeyboardModifier get_grab_key_mod() const;
+		Qt::KeyboardModifier get_view_rotate_key_mod() const;
 		Qt::KeyboardModifier get_wheel_zoom_x10() const;
 		bool get_swap_wheel_zoom() const;
 		bool get_invert_z_rotation() const;
 		QSize get_toolbar_icon_size() const;
 		QSize get_texture_preview_size() const;
+		void set_select_rect_button(const Qt::MouseButton value);
 		void set_click_button(const Qt::MouseButton value);
+		void set_grab_button(const Qt::MouseButton value);
+		void set_view_rotate_button(const Qt::MouseButton value);
+		void set_select_rect_key_mod(
+			const Qt::KeyboardModifier value);
+		void set_click_key_mod(const Qt::KeyboardModifier value);
+		void set_grab_key_mod(const Qt::KeyboardModifier value);
+		void set_view_rotate_key_mod(
+			const Qt::KeyboardModifier value);
 		void set_wheel_zoom_x10(const Qt::KeyboardModifier value);
 		void set_swap_wheel_zoom(const bool value);
 		void set_toolbar_icon_size(const QSize &size);
@@ -67,6 +92,8 @@ class PreferencesDialog: public QDialog, public Ui::Preferences
 		void set_rotate_z_key(const Qt::Key rotate_z_key);
 		void set_scale_key(const Qt::Key scale_key);
 		void set_invert_z_rotation(const bool value);
+		void disable_all_mouse_button_checks();
+		void enable_all_mouse_button_checks();
 
 		inline const QString &get_el_data_dir() const
 		{

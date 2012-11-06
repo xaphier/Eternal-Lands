@@ -598,6 +598,11 @@ namespace eternal_lands
 		m_scene->load_map(name, *this, skip_items);
 	}
 
+	const glm::vec3 &EditorMapData::get_map_center() const
+	{
+		return m_scene->get_map_center();
+	}
+
 	void EditorMapData::draw()
 	{
 //		m_scene->cull_map();

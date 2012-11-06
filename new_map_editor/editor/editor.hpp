@@ -191,6 +191,11 @@ namespace eternal_lands
 				return EditorMapData::get_terrain_offset_max();
 			}
 
+			inline const glm::vec3 &get_map_center() const
+			{
+				return m_data.get_map_center();
+			}
+
 			void get_terrain_material(String &albedo_map,
 				String &extra_map, float &blend_size,
 				bool &use_blend_size_sampler,

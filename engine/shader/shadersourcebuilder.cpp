@@ -1794,7 +1794,7 @@ namespace eternal_lands
 		stream << UTF8("lights */\n");
 		stream << loop_indent << UTF8("if (all(lessThanEqual(");
 		stream << sslt_floor_values_4;
-		stream << UTF8(", ve4(0))))\n");
+		stream << UTF8(", vec4(0))))\n");
 		stream << loop_indent << UTF8("{\n");
 		stream << loop_indent << UTF8("\tbreak;\n");
 		stream << loop_indent << UTF8("}\n");

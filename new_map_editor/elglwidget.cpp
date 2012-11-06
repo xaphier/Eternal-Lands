@@ -40,6 +40,10 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_rotate_y_key = Qt::Key_Y;
 	m_rotate_z_key = Qt::Key_Z;
 	m_scale_key = Qt::Key_R;
+	set_press_button(Qt::NoButton);
+	set_click_button(Qt::LeftButton);
+	set_grab_button(Qt::RightButton);
+	set_view_rotate_button(Qt::MidButton);
 }
 
 ELGLWidget::~ELGLWidget()
@@ -538,7 +542,12 @@ void ELGLWidget::mouse_move_action()
 
 void ELGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (event->button() != m_click_button)
+	if (event->button() == get_press_button())
+	{
+		set_press_button(Qt::NoButton);
+	}
+
+	if (event->button() != get_click_button())
 	{
 		m_selection_rect.z = 0;
 		m_selection_rect.w = 0;
@@ -547,14 +556,29 @@ void ELGLWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void ELGLWidget::mousePressEvent(QMouseEvent *event)
 {
-	if (event->buttons().testFlag(m_click_button) &&
-		event->modifiers().testFlag(Qt::ControlModifier))
+	if (!get_select_rect_event(event) && !get_click_event(event) &&
+		!get_grab_event(event) && !get_view_rotate_event(event))
+	{
+		return;
+	}
+
+	if ((event->x() < 0) || (event->y() < 0) || (event->x() >= width())
+		|| (event->y() >= height()))
+	{
+		return;
+	}
+
+	set_press_button(event->button());
+
+	m_press_screen_position.x = event->x();
+	m_press_screen_position.y = height() - event->y();
+	m_press_pos = m_pos;
+	m_camera_yaw_roll = glm::vec2(m_camera_yaw, m_camera_roll);
+
+	if (get_select_rect_event(event))
 	{
 		m_select_pos.x = event->x();
 		m_select_pos.y = height() - event->y();
-
-		std::cout << "selection rect pos: " << glm::to_string(
-			m_select_pos) << std::endl;
 
 		m_select = false;
 		m_select_depth = false;
@@ -564,13 +588,7 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 		return;
 	}
 
-	if (event->button() != m_click_button)
-	{
-		return;
-	}
-
-	if ((event->x() < 0) || (event->y() < 0) || (event->x() >= width())
-		|| (event->y() >= height()))
+	if (!get_click_event(event))
 	{
 		return;
 	}
@@ -591,11 +609,10 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
 	glm::uvec2 min, max, pos;
+	glm::vec2 move, tmp;
 
-	if (!event->buttons().testFlag(m_click_button))
+	if (!event->buttons().testFlag(get_press_button()))
 	{
-		m_grab_world_position_valid = false;
-
 		return;
 	}
 
@@ -605,12 +622,46 @@ void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 		return;
 	}
 
-	if (event->buttons().testFlag(m_click_button) &&
-		event->modifiers().testFlag(Qt::ControlModifier))
-	{
-		pos.x = event->x();
-		pos.y = height() - event->y();
+	pos.x = event->x();
+	pos.y = height() - event->y();
 
+	move = m_press_screen_position;
+	move -= pos;
+
+	move /= glm::vec2(width(), height());
+
+	if (get_grab_event(event))
+	{
+		m_pos = m_press_pos + m_camera_yaw_rotate *
+			glm::vec3(move * 2.5f * m_zoom, 0.0f);
+		return;
+	}
+
+	if (get_view_rotate_event(event))
+	{
+		tmp = m_camera_yaw_roll + move * 90.0f;
+		tmp.y = glm::clamp(tmp.y, 0.0f, 90.0f);
+
+		while (tmp.x < -180.0f)
+		{
+			tmp.x += 360.0f;
+		}
+
+		while (tmp.x > 180.0f)
+		{
+			tmp.x -= 360.0f;
+		}
+
+		emit changed_camera_yaw(tmp.x);
+		emit changed_camera_roll(tmp.y);
+
+		rotate_yaw(tmp.x);
+		rotate_roll(tmp.y);
+		return;
+	}
+
+	if (get_select_rect_event(event))
+	{
 		min = glm::min(m_select_pos, pos);
 		max = glm::max(m_select_pos, pos);
 
@@ -618,6 +669,13 @@ void ELGLWidget::mouseMoveEvent(QMouseEvent *event)
 		m_selection_rect.y = min.y;
 		m_selection_rect.z = max.x - min.x;
 		m_selection_rect.w = max.y - min.y;
+
+		return;
+	}
+
+	if (!get_click_event(event))
+	{
+		m_grab_world_position_valid = false;
 
 		return;
 	}
@@ -689,7 +747,7 @@ void ELGLWidget::wheelEvent(QWheelEvent *event)
 		m_zoom += event->delta() / 50.0f * (m_swap_wheel_zoom ? -1.0f : 1.0f);
 	}
 
-	m_zoom = std::max(1.0f, std::min(50.0f, m_zoom));
+	m_zoom = std::max(1.0f, std::min(75.0f, m_zoom));
 
 	update_ortho();
 }
@@ -773,7 +831,7 @@ void ELGLWidget::update_ortho()
 {
 	m_editor->set_ortho(glm::vec4(-m_aspect, m_aspect, -1.0f,
 		1.0f) * m_zoom);
-	m_editor->set_z_near(-10.0f);
+	m_editor->set_z_near(-150.0f);
 }
 
 void ELGLWidget::resizeGL(int width, int height)
@@ -1192,22 +1250,22 @@ const glm::vec3 &ELGLWidget::get_ambient() const
 
 void ELGLWidget::move_left()
 {
-	m_pos += m_camera_yaw_rotate * glm::vec3(-5.0f, 0.0f, 0.0f);
+	m_pos += m_camera_yaw_rotate * glm::vec3(-0.5f * m_zoom, 0.0f, 0.0f);
 }
 
 void ELGLWidget::move_right()
 {
-	m_pos += m_camera_yaw_rotate * glm::vec3(5.0f, 0.0f, 0.0f);
+	m_pos += m_camera_yaw_rotate * glm::vec3(0.5f * m_zoom, 0.0f, 0.0f);
 }
 
 void ELGLWidget::move_up()
 {
-	m_pos += m_camera_yaw_rotate * glm::vec3(0.0f, 5.0f, 0.0f);
+	m_pos += m_camera_yaw_rotate * glm::vec3(0.0f, 0.5f * m_zoom, 0.0f);
 }
 
 void ELGLWidget::move_down()
 {
-	m_pos += m_camera_yaw_rotate * glm::vec3(0.0f, -5.0f, 0.0f);
+	m_pos += m_camera_yaw_rotate * glm::vec3(0.0f, -0.5f * m_zoom, 0.0f);
 }
 
 void ELGLWidget::rotate_yaw(const int angle)
@@ -1226,7 +1284,7 @@ void ELGLWidget::rotate_roll(const int angle)
 void ELGLWidget::zoom_in()
 {
 	m_zoom -= 0.5f;
-	m_zoom = std::max(1.0f, std::min(50.0f, m_zoom));
+	m_zoom = std::max(1.0f, std::min(75.0f, m_zoom));
 
 	update_ortho();
 }
@@ -1234,7 +1292,7 @@ void ELGLWidget::zoom_in()
 void ELGLWidget::zoom_out()
 {
 	m_zoom += 0.5f;
-	m_zoom = std::max(1.0f, std::min(50.0f, m_zoom));
+	m_zoom = std::max(1.0f, std::min(75.0f, m_zoom));
 
 	update_ortho();
 }
@@ -1355,6 +1413,9 @@ void ELGLWidget::load_map(const QString &file_name,
 		emit update_terrain(m_editor->get_terrain());
 
 		emit can_undo(m_editor->get_can_undo());
+
+		m_pos = m_editor->get_map_center();
+		m_pos.z = 0.0f;
 	}
 }
 

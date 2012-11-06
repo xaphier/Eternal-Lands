@@ -440,6 +440,12 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	connect(m_init_terrain, SIGNAL(get_height_map_data(
 		const QString&, QSize&, bool&)), el_gl_widget,
 		SLOT(get_image_data(const QString&, QSize&, bool&)));
+
+	connect(el_gl_widget, SIGNAL(changed_camera_yaw(const int)),
+		camera_yaw, SLOT(setValue(int)));
+
+	connect(el_gl_widget, SIGNAL(changed_camera_roll(const int)),
+		camera_roll, SLOT(setValue(int)));
 }
 
 MainWindow::~MainWindow()
@@ -1559,7 +1565,22 @@ void MainWindow::new_map()
 void MainWindow::change_preferences()
 {
 	m_preferences->set_actions(findChildren<QAction*>());
+	m_preferences->disable_all_mouse_button_checks();
+	m_preferences->set_select_rect_button(
+		el_gl_widget->get_select_rect_button());
 	m_preferences->set_click_button(el_gl_widget->get_click_button());
+	m_preferences->set_grab_button(el_gl_widget->get_grab_button());
+	m_preferences->set_view_rotate_button(
+		el_gl_widget->get_view_rotate_button());
+	m_preferences->set_select_rect_key_mod(
+		el_gl_widget->get_select_rect_key_mod());
+	m_preferences->set_click_key_mod(
+		el_gl_widget->get_click_key_mod());
+	m_preferences->set_grab_key_mod(
+		el_gl_widget->get_grab_key_mod());
+	m_preferences->set_view_rotate_key_mod(
+		el_gl_widget->get_view_rotate_key_mod());
+	m_preferences->enable_all_mouse_button_checks();
 	m_preferences->set_wheel_zoom_x10(el_gl_widget->get_wheel_zoom_x10());
 	m_preferences->set_swap_wheel_zoom(el_gl_widget->get_swap_wheel_zoom());
 	m_preferences->set_invert_z_rotation(
@@ -1571,8 +1592,22 @@ void MainWindow::change_preferences()
 
 	if (m_preferences->exec() == QDialog::Accepted)
 	{
+		el_gl_widget->set_select_rect_button(
+			m_preferences->get_select_rect_button());
 		el_gl_widget->set_click_button(
 			m_preferences->get_click_button());
+		el_gl_widget->set_grab_button(
+			m_preferences->get_grab_button());
+		el_gl_widget->set_view_rotate_button(
+			m_preferences->get_view_rotate_button());
+		el_gl_widget->set_select_rect_key_mod(
+			m_preferences->get_select_rect_key_mod());
+		el_gl_widget->set_click_key_mod(
+			m_preferences->get_click_key_mod());
+		el_gl_widget->set_grab_key_mod(
+			m_preferences->get_grab_key_mod());
+		el_gl_widget->set_view_rotate_key_mod(
+			m_preferences->get_view_rotate_key_mod());
 		el_gl_widget->set_wheel_zoom_x10(
 			m_preferences->get_wheel_zoom_x10());
 		el_gl_widget->set_swap_wheel_zoom(
@@ -1737,9 +1772,30 @@ void MainWindow::save_mouse_settings(QSettings &settings)
 {
 	settings.beginGroup("mouse");
 
+	settings.setValue("select rect button",
+		PreferencesDialog::mouse_button_to_str(
+			el_gl_widget->get_select_rect_button()));
 	settings.setValue("click button",
 		PreferencesDialog::mouse_button_to_str(
 			el_gl_widget->get_click_button()));
+	settings.setValue("grab button",
+		PreferencesDialog::mouse_button_to_str(
+			el_gl_widget->get_grab_button()));
+	settings.setValue("view rotate button",
+		PreferencesDialog::mouse_button_to_str(
+			el_gl_widget->get_view_rotate_button()));
+	settings.setValue("select rect key mod",
+		PreferencesDialog::key_mod_to_str(
+			el_gl_widget->get_select_rect_key_mod()));
+	settings.setValue("click key mod",
+		PreferencesDialog::key_mod_to_str(
+			el_gl_widget->get_click_key_mod()));
+	settings.setValue("grab key mod",
+		PreferencesDialog::key_mod_to_str(
+			el_gl_widget->get_grab_key_mod()));
+	settings.setValue("view rotate key mod",
+		PreferencesDialog::key_mod_to_str(
+			el_gl_widget->get_view_rotate_key_mod()));
 	settings.setValue("wheel zoom x10",
 		PreferencesDialog::key_mod_to_str(
 			el_gl_widget->get_wheel_zoom_x10()));
@@ -1761,10 +1817,44 @@ void MainWindow::load_mouse_settings(QSettings &settings)
 {
 	settings.beginGroup("mouse");
 
+	el_gl_widget->set_select_rect_button(
+		PreferencesDialog::str_to_mouse_button(
+			settings.value("select rect button",
+			PreferencesDialog::mouse_button_to_str(
+				Qt::LeftButton)).toString()));
 	el_gl_widget->set_click_button(PreferencesDialog::str_to_mouse_button(
 		settings.value("click button",
 		PreferencesDialog::mouse_button_to_str(
 			Qt::LeftButton)).toString()));
+	el_gl_widget->set_grab_button(PreferencesDialog::str_to_mouse_button(
+		settings.value("grab button",
+		PreferencesDialog::mouse_button_to_str(
+			Qt::RightButton)).toString()));
+	el_gl_widget->set_view_rotate_button(
+		PreferencesDialog::str_to_mouse_button(
+			settings.value("view rotate button",
+			PreferencesDialog::mouse_button_to_str(
+				Qt::MiddleButton)).toString()));
+	el_gl_widget->set_select_rect_key_mod(
+		PreferencesDialog::str_to_key_mod(
+			settings.value("select rect key mod",
+			PreferencesDialog::key_mod_to_str(
+				Qt::ControlModifier)).toString()));
+	el_gl_widget->set_click_key_mod(
+		PreferencesDialog::str_to_key_mod(
+			settings.value("click key mod",
+			PreferencesDialog::key_mod_to_str(
+				Qt::NoModifier)).toString()));
+	el_gl_widget->set_grab_key_mod(
+		PreferencesDialog::str_to_key_mod(
+			settings.value("grab key mod",
+			PreferencesDialog::key_mod_to_str(
+				Qt::NoModifier)).toString()));
+	el_gl_widget->set_view_rotate_key_mod(
+		PreferencesDialog::str_to_key_mod(
+			settings.value("view rotate key mod",
+			PreferencesDialog::key_mod_to_str(
+				Qt::NoModifier)).toString()));
 	el_gl_widget->set_wheel_zoom_x10(PreferencesDialog::str_to_key_mod(
 		settings.value("wheel zoom x10",
 		PreferencesDialog::key_mod_to_str(Qt::ShiftModifier)).toString(

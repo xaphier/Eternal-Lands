@@ -184,49 +184,7 @@
        <property name="spacing">
         <number>2</number>
        </property>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Roate x</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QPushButton" name="pushButton_3">
-         <property name="text">
-          <string>Clear</string>
-         </property>
-         <property name="icon">
-          <iconset resource="icons/resourcen.qrc">
-           <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Scale</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Wheel zoom x10 button</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="rotate_x_key">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
+       <item row="6" column="1">
         <widget class="QLineEdit" name="rotate_y_key">
          <property name="minimumSize">
           <size>
@@ -236,17 +194,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="scale_key">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
+       <item row="7" column="2">
         <widget class="QPushButton" name="pushButton_5">
          <property name="text">
           <string>Clear</string>
@@ -257,7 +205,17 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="3" column="1">
+        <widget class="QComboBox" name="grab_button"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Wheel zoom x10 button</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
         <widget class="QLineEdit" name="rotate_z_key">
          <property name="minimumSize">
           <size>
@@ -267,8 +225,29 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
-        <widget class="QPushButton" name="pushButton_4">
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>View rotate button</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Roate z</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Roate y</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QPushButton" name="pushButton_3">
          <property name="text">
           <string>Clear</string>
          </property>
@@ -278,21 +257,10 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Roate y</string>
-         </property>
-        </widget>
+       <item row="3" column="2">
+        <widget class="QComboBox" name="grab_key_mod"/>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_6">
-         <property name="text">
-          <string>Roate z</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
+       <item row="8" column="2">
         <widget class="QPushButton" name="pushButton_6">
          <property name="text">
           <string>Clear</string>
@@ -303,25 +271,19 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_3">
+       <item row="6" column="2">
+        <widget class="QPushButton" name="pushButton_4">
          <property name="text">
-          <string>Click button</string>
+          <string>Clear</string>
+         </property>
+         <property name="icon">
+          <iconset resource="icons/resourcen.qrc">
+           <normaloff>:/icons/dialog-error.png</normaloff>:/icons/dialog-error.png</iconset>
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QCheckBox" name="swap_wheel_zoom">
-         <property name="text">
-          <string>Swap wheel zoom</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" colspan="2">
-        <widget class="QComboBox" name="click_button"/>
-       </item>
-       <item row="0" column="1" colspan="2">
-        <widget class="QComboBox" name="wheel_zoom_x10">
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="rotate_x_key">
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -330,7 +292,64 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="3" rowspan="18">
+       <item row="4" column="2">
+        <widget class="QComboBox" name="view_rotate_key_mod"/>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Scale</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Roate x</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Grab button</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLineEdit" name="scale_key">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Click button</string>
+         </property>
+        </widget>
+       </item>
+       <item row="18" column="0" rowspan="3" colspan="3">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>148</width>
+           <height>133</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="1">
+        <widget class="QComboBox" name="view_rotate_button"/>
+       </item>
+       <item row="0" column="3" rowspan="21">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -343,18 +362,41 @@
          </property>
         </spacer>
        </item>
-       <item row="15" column="0" rowspan="3" colspan="3">
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="2" column="2">
+        <widget class="QComboBox" name="select_rect_key_mod"/>
+       </item>
+       <item row="9" column="0">
+        <widget class="QCheckBox" name="swap_wheel_zoom">
+         <property name="text">
+          <string>Swap wheel zoom</string>
          </property>
-         <property name="sizeHint" stdset="0">
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QComboBox" name="click_key_mod"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Select rect button</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="click_button"/>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="QComboBox" name="wheel_zoom_x10">
+         <property name="minimumSize">
           <size>
-           <width>148</width>
-           <height>133</height>
+           <width>100</width>
+           <height>0</height>
           </size>
          </property>
-        </spacer>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="select_rect_button"/>
        </item>
       </layout>
      </widget>

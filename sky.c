@@ -20,6 +20,7 @@
 #include "textures.h"
 #include "vmath.h"
 #include "weather.h"
+#include "engine.h"
 
 float skybox_clouds[360][4];
 float skybox_clouds_detail[360][4];
