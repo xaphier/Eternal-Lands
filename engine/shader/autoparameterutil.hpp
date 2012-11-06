@@ -86,7 +86,7 @@ namespace eternal_lands
 		apt_split_distances,
 		apt_layers,
 		apt_texture_matrices,
-		apt_dudv_scale,
+		apt_dudv_scale_offset,
 		/**
 		 * vec4 (red, green, blue, alpha) material color
 		 */

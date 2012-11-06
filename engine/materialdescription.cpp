@@ -91,10 +91,11 @@ namespace eternal_lands
 				set_color(XmlUtil::get_vec4_value(it));
 			}
 
-			if (xmlStrcmp(it->name, BAD_CAST UTF8("dudv_scale"))
-				== 0)
+			if (xmlStrcmp(it->name,
+				BAD_CAST UTF8("dudv_scale_offset")) == 0)
 			{
-				set_dudv_scale(XmlUtil::get_vec2_value(it));
+				set_dudv_scale_offset(XmlUtil::get_vec4_value(
+					it));
 			}
 
 			if (xmlStrcmp(it->name, BAD_CAST UTF8("cast_shadows"))
@@ -135,8 +136,8 @@ namespace eternal_lands
 		writer->write_mat2x3_element(String(UTF8("texture_matrix_1")),
 			get_texture_matrix(1));
 		writer->write_vec4_element(String(UTF8("color")), get_color());
-		writer->write_vec2_element(String(UTF8("dudv_scale")),
-			get_dudv_scale());
+		writer->write_vec4_element(String(UTF8("dudv_scale_offset")),
+			get_dudv_scale_offset());
 		writer->write_bool_element(String(UTF8("cast_shadows")),
 			get_cast_shadows());
 		writer->write_bool_element(String(UTF8("culling")),

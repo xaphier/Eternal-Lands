@@ -13,7 +13,7 @@ namespace eternal_lands
 	MaterialData::MaterialData(): m_cast_shadows(true), m_culling(true)
 	{
 		m_color = glm::vec4(0.0f);
-		m_dudv_scale = glm::vec2(1.0f);
+		m_dudv_scale_offset = glm::vec4(1.0f, 1.0f, 0.0f, 0.0f);
 	}
 
 	MaterialData::~MaterialData() noexcept

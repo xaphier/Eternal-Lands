@@ -71,7 +71,7 @@ namespace eternal_lands
 				String(UTF8("Scene"))),
 			UniformBufferTypeData(boost::assign::list_of
 				(apt_texture_matrices)
-				(apt_dudv_scale),
+				(apt_dudv_scale_offset),
 				String(UTF8("material")),
 				String(UTF8("Material"))),
 			UniformBufferTypeData(boost::assign::list_of

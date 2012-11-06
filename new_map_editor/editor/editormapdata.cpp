@@ -580,6 +580,16 @@ namespace eternal_lands
 		return m_scene->get_free_ids()->get_next_free_light_id();
 	}
 
+	void EditorMapData::use_object_id(const Uint32 id)
+	{
+		m_scene->get_free_ids()->use_object_id(id);
+	}
+
+	void EditorMapData::use_light_id(const Uint32 id)
+	{
+		m_scene->get_free_ids()->use_light_id(id);
+	}
+
 	void EditorMapData::load_map(const String &name,
 		const MapItemsTypeSet &skip_items)
 	{
@@ -709,7 +719,7 @@ namespace eternal_lands
 			m_terrain_editor.get_albedo_maps(),
 			m_terrain_editor.get_extra_maps(),
 			m_terrain_editor.get_material_data(),
-			m_terrain_editor.get_dudv_scale());
+			m_terrain_editor.get_dudv_scale_offset());
 	}
 
 	void EditorMapData::init_terrain(const String &height_map_name,
@@ -735,7 +745,7 @@ namespace eternal_lands
 			m_terrain_editor.get_albedo_maps(),
 			m_terrain_editor.get_extra_maps(),
 			m_terrain_editor.get_material_data(),
-			m_terrain_editor.get_dudv_scale());
+			m_terrain_editor.get_dudv_scale_offset());
 	}
 
 	void EditorMapData::set_focus(const glm::vec3 &focus) noexcept
@@ -818,7 +828,7 @@ namespace eternal_lands
 			m_terrain_editor.get_albedo_maps(),
 			m_terrain_editor.get_extra_maps(),
 			m_terrain_editor.get_material_data(),
-			m_terrain_editor.get_dudv_scale());
+			m_terrain_editor.get_dudv_scale_offset());
 	}
 
 	void EditorMapData::import_terrain_blend_map(const String &name)
@@ -838,7 +848,7 @@ namespace eternal_lands
 			m_terrain_editor.get_albedo_maps(),
 			m_terrain_editor.get_extra_maps(),
 			m_terrain_editor.get_material_data(),
-			m_terrain_editor.get_dudv_scale());
+			m_terrain_editor.get_dudv_scale_offset());
 	}
 
 	void EditorMapData::set_terrain(const ImageSharedPtr &displacement_map,
@@ -848,12 +858,12 @@ namespace eternal_lands
 		const StringVector &albedo_maps,
 		const StringVector &extra_maps,
 		const TerrainMaterialData &material_data,
-		const glm::vec2 &dudv_scale,
+		const glm::vec4 &dudv_scale_offset,
 		const glm::uvec2 &size)
 	{
 		m_terrain_editor.set(displacement_map, normal_map, dudv_map,
 			blend_map, albedo_maps, extra_maps, material_data,
-			dudv_scale, size);
+			dudv_scale_offset, size);
 
 		m_scene->set_terrain(m_terrain_editor.get_displacement_image(),
 			m_terrain_editor.get_normal_image(),
@@ -862,7 +872,18 @@ namespace eternal_lands
 			m_terrain_editor.get_albedo_maps(),
 			m_terrain_editor.get_extra_maps(),
 			m_terrain_editor.get_material_data(),
-			m_terrain_editor.get_dudv_scale());
+			m_terrain_editor.get_dudv_scale_offset());
+	}
+
+	void EditorMapData::update_terrain_dudv()
+	{
+		m_scene->set_terrain_geometry_maps(
+			m_terrain_editor.get_displacement_image(),
+			m_terrain_editor.get_normal_image(),
+			m_terrain_editor.get_dudv_image());
+
+		m_scene->set_terrain_dudv_scale_offset(
+			m_terrain_editor.get_dudv_scale_offset());
 	}
 
 	void EditorMapData::save(const WriterSharedPtr &writer,
@@ -1254,9 +1275,13 @@ namespace eternal_lands
 			writer->write_utf8_string(blend_map_name, 128);
 
 			writer->write_float_le(
-				m_terrain_editor.get_dudv_scale().x);
+				m_terrain_editor.get_dudv_scale_offset().x);
 			writer->write_float_le(
-				m_terrain_editor.get_dudv_scale().y);
+				m_terrain_editor.get_dudv_scale_offset().y);
+			writer->write_float_le(
+				m_terrain_editor.get_dudv_scale_offset().z);
+			writer->write_float_le(
+				m_terrain_editor.get_dudv_scale_offset().w);
 
 			writer->write_u32_le(m_terrain_editor.get_size().x);
 			writer->write_u32_le(m_terrain_editor.get_size().y);

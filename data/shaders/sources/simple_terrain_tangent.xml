@@ -6,7 +6,7 @@
   <shader_source_data>
    <parameters>
     <parameter>
-     <auto_parameter>dudv_scale</auto_parameter>
+     <auto_parameter>dudv_scale_offset</auto_parameter>
     </parameter>
     <parameter>
      <vertex_semantic>morph_normal</vertex_semantic>
@@ -51,7 +51,7 @@ world_position = vec4(world_position, 1.0) * world_transformation;
 world_normal = normalize(world_normal * mat3(world_transformation));
 world_tangent.xyz = normalize(world_tangent.xyz * mat3(world_transformation));
 terrain_texture_coordinate = world_position.xy;
-terrain_texture_coordinate += morph_normal.zw * dudv_scale;
+terrain_texture_coordinate += morph_normal.zw * dudv_scale_offset.xy + dudv_scale_offset.zw;
 </source>
    <version>120</version>
   </shader_source_data>

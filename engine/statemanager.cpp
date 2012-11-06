@@ -380,6 +380,7 @@ namespace eternal_lands
 
 	void StateManager::draw(const Uint32 index, const Uint32 instances)
 	{
+#if	0
 #ifndef	NDEBUG
 		if (m_program.get() != nullptr)
 		{
@@ -410,12 +411,14 @@ namespace eternal_lands
 			LOG_DEBUG(lt_opengl, UTF8("texture[%1%] used[%2%]: %3%"), i % m_used_texture_units[i] % name);
 		}
 */
+#endif
 		m_mesh->draw(index, instances);
 	}
 
 	void StateManager::draw(const MeshDrawData &draw_data,
 		const Uint32 instances)
 	{
+#if	0
 #ifndef	NDEBUG
 		if (m_program.get() != nullptr)
 		{
@@ -446,6 +449,7 @@ namespace eternal_lands
 			LOG_DEBUG(lt_opengl, UTF8("texture[%1%] used[%2%]: %3%"), i % m_used_texture_units[i] % name);
 		}
 */
+#endif
 		m_mesh->draw(draw_data, instances, m_mesh->get_primitive());
 	}
 

@@ -350,6 +350,7 @@ class ELGLWidget: public QGLWidget
 		void get_extra_map_data(const QString &name,
 			const QSize &image_size, bool &ok);
 		void get_image_data(const QString &name, QSize &size, bool &ok);
+		void update_terrain_dudv();
 
 	signals:
 		void update_object(const bool select);

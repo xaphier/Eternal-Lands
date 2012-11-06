@@ -98,138 +98,6 @@ namespace eternal_lands
 
 		};
 
-		class CullingTask
-		{
-			private:
-			public:
-				CullingTask();
-				virtual ~CullingTask() noexcept;
-				virtual void operator()();
-
-		};
-
-		CullingTask::CullingTask()
-		{
-		}
-
-		CullingTask::~CullingTask() noexcept
-		{
-		}
-
-		void CullingTask::operator()()
-		{
-		}
-
-	}
-
-	class Scene::TerrainVisitorTask
-	{
-		private:
-			const Scene &m_scene;
-			const Frustum m_frustum;
-			const glm::vec3 m_camera;
-			TerrainVisitor m_terrain_visitor;
-
-		public:
-			TerrainVisitorTask(const Scene &scene,
-				const Frustum &frustum,
-				const glm::vec3 &camera,
-				const MappedUniformBufferSharedPtr
-					&mapped_uniform_buffer);
-			virtual ~TerrainVisitorTask() noexcept;
-			virtual void operator()();
-
-	};
-
-	Scene::TerrainVisitorTask::TerrainVisitorTask(const Scene &scene,
-		const Frustum &frustum, const glm::vec3 &camera,
-		const MappedUniformBufferSharedPtr &mapped_uniform_buffer):
-		m_scene(scene), m_frustum(frustum), m_camera(camera),
-		m_terrain_visitor(mapped_uniform_buffer)
-	{
-	}
-
-	Scene::TerrainVisitorTask::~TerrainVisitorTask() noexcept
-	{
-	}
-
-	void Scene::TerrainVisitorTask::operator()()
-	{
-		m_scene.intersect_terrain(m_frustum, m_camera,
-			m_terrain_visitor);
-	}
-
-	class Scene::ObjectVisitorTask
-	{
-		private:
-			const Scene &m_scene;
-			const Frustum m_frustum;
-			const glm::vec3 m_camera;
-			const bool m_shadow;
-			ObjectVisitor &m_visitor;
-
-		public:
-			ObjectVisitorTask(const Scene &scene,
-				const Frustum &frustum,
-				const glm::vec3 &camera,
-				const bool shadow,
-				ObjectVisitor &visitor);
-			virtual ~ObjectVisitorTask() noexcept;
-			virtual void operator()();
-
-	};
-
-	Scene::ObjectVisitorTask::ObjectVisitorTask(const Scene &scene,
-		const Frustum &frustum, const glm::vec3 &camera,
-		const bool shadow, ObjectVisitor &visitor): m_scene(scene),
-		m_frustum(frustum), m_camera(camera), m_shadow(shadow),
-		m_visitor(visitor)
-	{
-	}
-
-	Scene::ObjectVisitorTask::~ObjectVisitorTask() noexcept
-	{
-	}
-
-	void Scene::ObjectVisitorTask::operator()()
-	{
-		m_scene.intersect(m_frustum, m_shadow, m_visitor);
-		m_visitor.sort(m_camera);
-	}
-
-	class Scene::LightVisitorTask
-	{
-		private:
-			const Scene &m_scene;
-			const Frustum m_frustum;
-			const glm::vec3 m_camera;
-			LightVisitor &m_visitor;
-
-		public:
-			LightVisitorTask(const Scene &scene,
-				const Frustum &frustum,
-				const glm::vec3 &camera,
-				LightVisitor &visitor);
-			virtual ~LightVisitorTask() noexcept;
-			virtual void operator()();
-
-	};
-
-	Scene::LightVisitorTask::LightVisitorTask(const Scene &scene,
-		const Frustum &frustum, const glm::vec3 &camera,
-		LightVisitor &visitor): m_scene(scene), m_frustum(frustum),
-		m_camera(camera), m_visitor(visitor)
-	{
-	}
-
-	Scene::LightVisitorTask::~LightVisitorTask() noexcept
-	{
-	}
-
-	void Scene::LightVisitorTask::operator()()
-	{
-		m_scene.intersect(m_frustum, m_visitor);
-		m_visitor.sort(m_camera);
 	}
 
 	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
@@ -646,7 +514,8 @@ namespace eternal_lands
 		m_map->intersect(frustum, visitor);
 	}
 
-	void Scene::cull(const glm::mat4 &projection_view_matrix,
+	void Scene::cull(const MappedUniformBufferSharedPtr &terrain_buffer,
+		const glm::mat4 &projection_view_matrix,
 		const glm::vec3 &camera, const bool shadow,
 		TerrainRenderingData &terrain_data, ObjectVisitor &objects)
 		const
@@ -665,9 +534,7 @@ namespace eternal_lands
 
 		if (get_global_vars()->get_opengl_3_1())
 		{
-			TerrainVisitor terrain_visitor(
-				terrain_data.get_uniform_buffer(
-					)->get_mapped_uniform_buffer());
+			TerrainVisitor terrain_visitor(terrain_buffer);
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -688,10 +555,37 @@ namespace eternal_lands
 	void Scene::cull()
 	{
 		Frustum frustum;
+		MappedUniformBufferSharedPtr visible_terrain_buffer;
+		boost::array<MappedUniformBufferSharedPtr, 4>
+			shadow_terrains_buffer;
+		glm::vec3 camera;
+		Uint32 i, count;
 
 		get_scene_view().update();
 
 		get_scene_view().set_scale_view(get_map()->get_bounding_box());
+
+		if (m_rebuild_shadow_map)
+		{
+			build_shadow_map();
+			m_rebuild_shadow_map = false;
+		}
+
+		count = get_scene_view().get_shadow_map_count();
+
+		if (get_global_vars()->get_opengl_3_1())
+		{
+			visible_terrain_buffer =
+				m_visible_terrain.get_uniform_buffer(
+					)->get_mapped_uniform_buffer();
+
+			for (i = 0; i < count; ++i)
+			{
+				shadow_terrains_buffer[i] =
+					m_shadow_terrains[i].get_uniform_buffer(
+						)->get_mapped_uniform_buffer();
+			}
+		}
 
 		frustum = Frustum(
 			get_scene_view().get_scale_view_matrix());
@@ -732,6 +626,13 @@ namespace eternal_lands
 			}
 		}
 
+		for (i = 0; i < count; ++i)
+		{
+			get_scene_view().build_shadow_matrices(
+				glm::vec3(get_main_light_direction()),
+				m_map->get_bounding_box().get_max().z, i);
+		}
+
 		m_time = SDL_GetTicks() * 0.001f;
 
 		if (get_global_vars()->get_use_cpu_rasterizer())
@@ -744,51 +645,88 @@ namespace eternal_lands
 				CpuRasterizerSharedPtr());
 		}
 
-		cull(get_scene_view().get_scale_view_matrix(),
-			glm::vec3(get_scene_view().get_camera()), false,
-			m_visible_terrain, m_visible_objects);
+		#pragma omp parallel sections
+		{
+			#pragma omp section
+			cull(visible_terrain_buffer,
+				get_scene_view().get_scale_view_matrix(),
+				glm::vec3(get_scene_view().get_camera()), false,
+				m_visible_terrain, m_visible_objects);
 
-		intersect(frustum, m_visible_lights);
+			#pragma omp section
+			{
+				intersect(frustum, m_visible_lights);
 
-		m_visible_lights.update_camera(glm::vec3(
-			get_scene_view().get_camera()));
+				m_visible_lights.update_camera(glm::vec3(
+					get_scene_view().get_camera()));
+			}
+#if	0
+			#pragma omp section
+			for (i = 0; i < count; ++i)
+			{
+				cull(shadow_terrains_buffer[i], get_scene_view(
+					).get_shadow_projection_view_matrices()[i],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[i]), true,
+					m_shadow_terrains[i], m_shadow_objects[i]);
+			}
+#else
+			#pragma omp section
+			if (count > 0)
+			{
+				cull(shadow_terrains_buffer[0], get_scene_view(
+					).get_shadow_projection_view_matrices()[0],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[0]), true,
+					m_shadow_terrains[0], m_shadow_objects[0]);
+			}
 
-		cull_shadows();
+			#pragma omp section
+			if (count > 1)
+			{
+				cull(shadow_terrains_buffer[1], get_scene_view(
+					).get_shadow_projection_view_matrices()[1],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[1]), true,
+					m_shadow_terrains[1], m_shadow_objects[1]);
+			}
+
+			#pragma omp section
+			if (count > 2)
+			{
+				cull(shadow_terrains_buffer[2], get_scene_view(
+					).get_shadow_projection_view_matrices()[2],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[2]), true,
+					m_shadow_terrains[2], m_shadow_objects[2]);
+			}
+
+			#pragma omp section
+			if (count > 3)
+			{
+				cull(shadow_terrains_buffer[3], get_scene_view(
+					).get_shadow_projection_view_matrices()[3],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[3]), true,
+					m_shadow_terrains[3], m_shadow_objects[3]);
+			}
+#endif
+		}
+
+		if (get_global_vars()->get_opengl_3_1())
+		{
+			visible_terrain_buffer.reset();
+
+			for (i = 0; i < count; ++i)
+			{
+				shadow_terrains_buffer[i].reset();
+			}
+		}
 
 		if (m_rebuild_terrain_map)
 		{
 			build_terrain_map();
 			m_rebuild_terrain_map = false;
-		}
-	}
-
-	void Scene::cull_shadows()
-	{
-		glm::vec3 camera;
-		Uint32 i, count;
-
-		count = get_scene_view().get_shadow_map_count();
-
-		if (m_rebuild_shadow_map)
-		{
-			build_shadow_map();
-			m_rebuild_shadow_map = false;
-		}
-
-		for (i = 0; i < count; ++i)
-		{
-			get_scene_view().build_shadow_matrices(
-				glm::vec3(get_main_light_direction()),
-				m_map->get_bounding_box().get_max().z, i);
-		}
-
-		for (i = 0; i < count; ++i)
-		{
-			cull(get_scene_view(
-				).get_shadow_projection_view_matrices()[i],
-				glm::vec3(get_scene_view(
-					).get_shadow_cameras()[i]), true,
-				m_shadow_terrains[i], m_shadow_objects[i]);
 		}
 	}
 

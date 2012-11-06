@@ -160,12 +160,12 @@ namespace eternal_lands
 		const StringVector &albedo_maps,
 		const StringVector &extra_maps,
 		const TerrainMaterialData &material_data,
-		const glm::vec2 &dudv_scale,
+		const glm::vec4 &dudv_scale_offset,
 		const glm::uvec2 &sizes)
 	{
 		m_data.set_terrain(displacement_map, normal_map,
 			dudv_map, blend_map, albedo_maps, extra_maps,
-			material_data, dudv_scale, sizes);
+			material_data, dudv_scale_offset, sizes);
 	}
 
 }

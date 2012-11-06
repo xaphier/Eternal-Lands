@@ -218,8 +218,6 @@ BOOST_AUTO_TEST_CASE(read_image_color)
 
 		name = String(str.str());
 
-		std::cout << name << std::endl;
-
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
 		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(codec_manager,

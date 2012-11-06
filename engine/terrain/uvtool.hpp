@@ -33,7 +33,8 @@ namespace eternal_lands
 		private:
 			Vec2Vector m_uvs;
 			AlignedVec4Array m_half_distances;
-			Uint32 m_width, m_height;
+			const ImageSharedPtr m_displacement_map;
+			const Uint32 m_width, m_height;
 
 			static void relax_edge(
 				const AlignedVec4Array &half_distances,
@@ -56,9 +57,9 @@ namespace eternal_lands
 				const Vec2Vector &uvs, const float damping,
 				const float clamping, const Uint32 width,
 				const Uint32 height, Vec2Vector &new_uvs);
-			void build_data(const ImageSharedPtr &height_map);
-			void build_data(const ImageSharedPtr &height_map,
-				const Sint32 x, const Sint32 y);
+			void build_uv();
+			void build_half_size();
+			void build_half_size(const Sint32 x, const Sint32 y);
 
 			static inline float get_half_distance(
 				const AlignedVec4Array &half_distances,
@@ -79,12 +80,13 @@ namespace eternal_lands
 			 */
 			~UvTool() noexcept;
 
+			void rebuild_half_distances();
 			void relax_uv(
 				const AbstractProgressSharedPtr &progress,
 				const Uint16 count, const bool use_simd);
 			void convert(ImageSharedPtr &dudv_map,
-				glm::vec2 &dudv_scale);
-			ImageSharedPtr convert(glm::vec2 &dudv_scale);
+				glm::vec4 &dudv_scale_offset);
+			ImageSharedPtr convert(glm::vec4 &dudv_scale_offset);
 
 			inline const glm::vec2 &get_uv(const Uint16 x,
 				const Uint16 y) const

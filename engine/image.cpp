@@ -334,13 +334,14 @@ namespace eternal_lands
 	{
 		BoostFormat format_string(UTF8("'%1%' %2% faces with "
 			"format %3% of size %4%x%5%x%6% with %7% mipmaps and "
-			"%8% bits per pixel, using color space %9%, giving a "
-			"total size of %10%"));
+			"%8% bits per pixel, using color space %9%, being a "
+			"texture array %10%, giving a total size of %11%"));
 
 		format_string % get_name() % get_face_count() %
 			get_texture_format() % get_width() % get_height() %
 			get_depth() % get_mipmap_count() % get_pixel_size() %
 			(get_sRGB() ? UTF8("sRGB") : UTF8("RGB")) %
+			(get_array() ? UTF8("yes") : UTF8("no")) %
 			get_total_size();
 
 		return String(format_string.str());

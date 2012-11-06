@@ -20,6 +20,7 @@
 #include "thread/materiallock.hpp"
 #include "effect/effect.hpp"
 #include "rstartree.hpp"
+#include "shader/uniformbuffer.hpp"
 
 namespace eternal_lands
 {
@@ -372,9 +373,10 @@ namespace eternal_lands
 		rebuild_terrain_map();
 	}
 
-	void EditorScene::set_terrain_dudv_scale(const glm::vec2 &dudv_scale)
+	void EditorScene::set_terrain_dudv_scale_offset(
+		const glm::vec4 &dudv_scale_offset)
 	{
-		get_map()->set_terrain_dudv_scale(dudv_scale);
+		get_map()->set_terrain_dudv_scale_offset(dudv_scale_offset);
 		rebuild_terrain_map();
 	}
 
@@ -385,7 +387,7 @@ namespace eternal_lands
 		const StringVector &albedo_maps,
 		const StringVector &extra_maps,
 		const TerrainMaterialData &material_data,
-		const glm::vec2 &dudv_scale)
+		const glm::vec4 &dudv_scale_offset)
 	{
 		get_map()->set_terrain_geometry_maps(displacement_map,
 			normal_map, dudv_map);
@@ -395,7 +397,7 @@ namespace eternal_lands
 		get_map()->set_terrain_material(albedo_maps, extra_maps,
 			material_data);
 
-		get_map()->set_terrain_dudv_scale(dudv_scale);
+		get_map()->set_terrain_dudv_scale_offset(dudv_scale_offset);
 
 		rebuild_terrain_map();
 	}
@@ -453,15 +455,23 @@ namespace eternal_lands
 
 	void EditorScene::cull_map()
 	{
+		MappedUniformBufferSharedPtr top_down_terrain_buffer;
+
 		DEBUG_CHECK_GL_ERROR();
+
+		top_down_terrain_buffer = m_top_down_terrain.get_uniform_buffer(
+			)->get_mapped_uniform_buffer();
 
 		get_scene_view().set_scale_view(get_map()->get_bounding_box());
 
 		get_scene_view().set_ortho_scale_view();
 
-		cull(get_scene_view().get_current_projection_view_matrix(),
+		cull(top_down_terrain_buffer,
+			get_scene_view().get_current_projection_view_matrix(),
 			glm::vec3(get_scene_view().get_camera()), false,
 			m_top_down_terrain, m_top_down_objects);
+
+		top_down_terrain_buffer.reset();
 	}
 
 	void EditorScene::draw_scale_view(const bool depth_only)

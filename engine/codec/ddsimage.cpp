@@ -1480,6 +1480,8 @@ namespace eternal_lands
 
 		glm::uvec3 DdsImageLoader::get_size() const
 		{
+			Uint32 layer;
+
 			if (m_header.m_pixel_format.m_fourcc !=
 				dds::DDSFMT_DX10)
 			{
@@ -1487,15 +1489,21 @@ namespace eternal_lands
 					m_header.m_height, m_header.m_depth);
 			}
 
+			layer = 0;
+
+			if (get_array())
+			{
+				layer = m_header_dxt10.m_array_size;
+			}
+
 			switch (m_header_dxt10.m_resource_dimension)
 			{
 				case dds::DDS_DIMENSION_TEXTURE1D:
 					return glm::uvec3(m_header.m_width,
-						m_header_dxt10.m_array_size, 0);
+						layer, 0);
 				case dds::DDS_DIMENSION_TEXTURE2D:
 					return glm::uvec3(m_header.m_width,
-						m_header.m_height,
-						m_header_dxt10.m_array_size);
+						m_header.m_height, layer);
 				case dds::DDS_DIMENSION_TEXTURE3D:
 					return glm::uvec3(m_header.m_width,
 						m_header.m_height,
@@ -1513,7 +1521,7 @@ namespace eternal_lands
 				return false;
 			}
 
-			return m_header_dxt10.m_array_size > 0;
+			return m_header_dxt10.m_array_size > 1;
 		}
 
 		void DdsImageLoader::set_format_mask(const Uint32 red_mask,

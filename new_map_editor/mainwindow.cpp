@@ -4,7 +4,6 @@
 #include <QInputDialog>
 #include <QVector2D>
 #include <QMessageBox>
-#include <QRunnable>
 #include <QThreadPool>
 #include "newmapdialog.hpp"
 #include "lightdata.hpp"
@@ -29,46 +28,7 @@
 #include "blenddata.hpp"
 #include "texturetargetutil.hpp"
 #include "logging.hpp"
-
-namespace
-{
-
-	class RelaxUV: public QRunnable
-	{
-		private:
-			ELGLWidget* m_el_gl_widget;
-			QProgressDialog* m_progress_dialog;
-			boost::shared_ptr<QProgress> m_el_progress;
-
-		public:
-			RelaxUV(ELGLWidget* el_gl_widget,
-				QProgressDialog* progress_dialog,
-				boost::shared_ptr<QProgress> el_progress);
-			virtual ~RelaxUV();
-			virtual void run();
-
-	};
-
-	RelaxUV::RelaxUV(ELGLWidget* el_gl_widget,
-		QProgressDialog* progress_dialog,
-		boost::shared_ptr<QProgress> el_progress):
-		m_el_gl_widget(el_gl_widget),
-		m_progress_dialog(progress_dialog), m_el_progress(el_progress)
-	{
-	}
-
-	RelaxUV::~RelaxUV()
-	{
-	}
-
-	void RelaxUV::run()
-	{
-		m_el_progress->cancel(false);
-
-		m_el_gl_widget->relax_terrain_uv(m_el_progress, 5000);
-	}
-
-}
+#include "relaxuv.hpp"
 
 MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 {
@@ -585,7 +545,6 @@ void MainWindow::update_terrain_layers()
 	bool use_blend_size_sampler, use_blend_size, use_extra_map;
 
 	count = el_gl_widget->get_terrain_layer_count();
-	std::cout << "count: " << count << std::endl;
 
 	terrain_layers->clear();
 
@@ -2921,8 +2880,14 @@ void MainWindow::import_terrain_blend_map()
 
 void MainWindow::relax_terrain_uv()
 {
-	QThreadPool::globalInstance()->start(new RelaxUV(el_gl_widget,
-		m_progress_dialog, m_el_progress));
+	RelaxUV* relax_uv;
+
+	relax_uv = new RelaxUV(el_gl_widget, m_progress_dialog, m_el_progress);
+
+	QObject::connect(relax_uv, SIGNAL(done()), el_gl_widget,
+		SLOT(update_terrain_dudv()));
+
+	QThreadPool::globalInstance()->start(relax_uv);
 }
 
 void MainWindow::remove_objects()

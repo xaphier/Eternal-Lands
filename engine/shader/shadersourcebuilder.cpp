@@ -2920,7 +2920,7 @@ namespace eternal_lands
 
 				if (!data.get_option(ssbot_alpha_write))
 				{
-					main << UTF8(".rgb");
+					main << UTF8(".r");
 				}
 				else
 				{

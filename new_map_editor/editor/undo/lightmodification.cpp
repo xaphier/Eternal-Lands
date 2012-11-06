@@ -33,6 +33,7 @@ namespace eternal_lands
 			case mt_light_added:
 				return editor.remove_light(m_data.get_id());
 			case mt_light_removed:
+				editor.use_light_id(m_data.get_id());
 				editor.add_light(m_data, sct_select);
 				return false;
 			case mt_light_position_changed:

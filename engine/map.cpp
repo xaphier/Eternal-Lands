@@ -378,6 +378,9 @@ namespace eternal_lands
 	{
 		m_terrain->set_geometry_maps(displacement_map, normal_map,
 			dudv_map);
+
+		init_walk_height_map(displacement_map->decompress(false, true,
+			false));
 	}
 
 	void Map::set_terrain_blend_map(const ImageSharedPtr &blend_map)
@@ -425,14 +428,15 @@ namespace eternal_lands
 		return m_terrain->get_clipmap_terrain_material();
 	}
 
-	void Map::set_terrain_dudv_scale(const glm::vec2 &dudv_scale)
+	void Map::set_terrain_dudv_scale_offset(
+		const glm::vec4 &dudv_scale_offset)
 	{
-		m_terrain->set_dudv_scale(dudv_scale);
+		m_terrain->set_dudv_scale_offset(dudv_scale_offset);
 	}
 
-	const glm::vec2 &Map::get_terrain_dudv_scale() const
+	const glm::vec4 &Map::get_terrain_dudv_scale_offset() const
 	{
-		return m_terrain->get_dudv_scale();
+		return m_terrain->get_dudv_scale_offset();
 	}
 
 }

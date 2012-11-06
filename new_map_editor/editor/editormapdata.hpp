@@ -131,6 +131,8 @@ namespace eternal_lands
 				const bool use_extra_map, const Uint16 index);
 			Uint32 get_free_object_id() const;
 			Uint32 get_free_light_id() const;
+			void use_object_id(const Uint32 id);
+			void use_light_id(const Uint32 id);
 			void set_view_matrix(const glm::mat4 &view_matrix);
 			void set_z_near(const float z_near);
 			void set_perspective(const float fov,
@@ -190,10 +192,11 @@ namespace eternal_lands
 				const StringVector &albedo_maps,
 				const StringVector &extra_maps,
 				const TerrainMaterialData &material_data,
-				const glm::vec2 &dudv_scale,
+				const glm::vec4 &dudv_scale_offset,
 				const glm::uvec2 &size);
+			void update_terrain_dudv();
 
-			inline 	void relax_terrain_uv(
+			inline void relax_terrain_uv(
 				const AbstractProgressSharedPtr &progress,
 				const Uint16 count, const bool use_simd)
 			{
@@ -207,9 +210,10 @@ namespace eternal_lands
 				m_terrain_editor.import_blend_map(blend_map);
 			}
 
-			inline const glm::vec2 &get_terrain_dudv_scale() const
+			inline const glm::vec4 &get_terrain_dudv_scale_offset()
+				const
 			{
-				return m_terrain_editor.get_dudv_scale();
+				return m_terrain_editor.get_dudv_scale_offset();
 			}
 
 			inline void get_terrain_material(String &albedo_map,

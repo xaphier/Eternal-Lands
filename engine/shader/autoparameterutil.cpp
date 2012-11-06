@@ -103,8 +103,8 @@ namespace eternal_lands
 			AutoParameterTypeData(
 				String(UTF8("texture_matrices")), pt_mat2x3,
 				pst_one, 2),
-			AutoParameterTypeData(String(UTF8("dudv_scale")),
-				pt_vec2),
+			AutoParameterTypeData(String(UTF8("dudv_scale_offset")),
+				pt_vec4),
 			AutoParameterTypeData(String(UTF8("material_color")),
 				pt_vec4),
 			AutoParameterTypeData(

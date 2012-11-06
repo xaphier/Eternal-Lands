@@ -178,8 +178,8 @@ namespace eternal_lands
 			get_texture_matrices());
 		state_manager.get_program()->set_parameter(apt_material_color,
 			get_color());
-		state_manager.get_program()->set_parameter(apt_dudv_scale,
-			get_dudv_scale());
+		state_manager.get_program()->set_parameter(
+			apt_dudv_scale_offset, get_dudv_scale_offset());
 	}
 
 	const EffectDescription &Material::get_effect_description() const

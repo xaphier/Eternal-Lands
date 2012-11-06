@@ -48,6 +48,8 @@ namespace eternal_lands
 					&object_description,
 					m_object_descriptions)
 				{
+					editor.use_object_id(
+						object_description.get_id());
 					editor.add_object(object_description,
 						sct_no);
 				}

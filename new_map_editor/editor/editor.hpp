@@ -179,6 +179,7 @@ namespace eternal_lands
 			void relax_terrain_uv(
 				const AbstractProgressSharedPtr &progress,
 				const Uint16 count);
+			void update_terrain_dudv();
 
 			static inline const glm::vec3 &get_terrain_offset_min()
 			{

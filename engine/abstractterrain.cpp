@@ -289,14 +289,15 @@ namespace eternal_lands
 		m_clipmap_terrain_material->set_effect(effect);
 	}
 
-	void AbstractTerrain::set_dudv_scale(const glm::vec2 &dudv_scale)
+	void AbstractTerrain::set_dudv_scale_offset(
+		const glm::vec4 &dudv_scale_offset)
 	{
-		m_clipmap_terrain_material->set_dudv_scale(dudv_scale);
+		m_terrain_material->set_dudv_scale_offset(dudv_scale_offset);
 	}
 
-	const glm::vec2 &AbstractTerrain::get_dudv_scale() const
+	const glm::vec4 &AbstractTerrain::get_dudv_scale_offset() const
 	{
-		return m_clipmap_terrain_material->get_dudv_scale();
+		return m_terrain_material->get_dudv_scale_offset();
 	}
 
 }

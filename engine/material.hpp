@@ -154,9 +154,10 @@ namespace eternal_lands
 				m_data.set_color(color);
 			}
 
-			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
+			inline void set_dudv_scale_offset(
+				const glm::vec4 &dudv_scale_offset)
 			{
-				m_data.set_dudv_scale(dudv_scale);
+				m_data.set_dudv_scale_offset(dudv_scale_offset);
 			}
 
 			inline void set_cast_shadows(const bool cast_shadows)
@@ -186,9 +187,9 @@ namespace eternal_lands
 				return m_data.get_color();
 			}
 
-			inline const glm::vec2 &get_dudv_scale() const
+			inline const glm::vec4 &get_dudv_scale_offset() const
 			{
-				return m_data.get_dudv_scale();
+				return m_data.get_dudv_scale_offset();
 			}
 
 			inline bool get_cast_shadows() const

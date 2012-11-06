@@ -39,10 +39,6 @@ namespace eternal_lands
 	class Scene
 	{
 		private:
-			class TerrainVisitorTask;
-			class ObjectVisitorTask;
-			class LightVisitorTask;
-
 			typedef std::pair<Uint32, SelectionType>
 				PairUint32SelectionType;
 			typedef std::vector<PairUint32SelectionType>
@@ -107,7 +103,6 @@ namespace eternal_lands
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids,
 				Uint32 &query_index);
-			void cull_shadows();
 			void update_terrain_texture(
 				const MaterialSharedPtr &material,
 				const Mat2x3Array2 &texture_matrices,
@@ -141,7 +136,9 @@ namespace eternal_lands
 				const GlslProgramSharedPtr &program);
 			void init_terrain_rendering_data(
 				TerrainRenderingData &terrain_rendering_data);
-			void cull(const glm::mat4 &projection_view_matrix,
+			void cull(const MappedUniformBufferSharedPtr
+					&terrain_buffer,
+				const glm::mat4 &projection_view_matrix,
 				const glm::vec3 &camera, const bool shadow,
 				TerrainRenderingData &terrain_data,
 				ObjectVisitor &objects) const;

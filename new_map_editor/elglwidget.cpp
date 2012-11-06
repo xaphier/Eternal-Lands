@@ -1685,6 +1685,11 @@ void ELGLWidget::relax_terrain_uv(const AbstractProgressSharedPtr &progress,
 	m_editor->relax_terrain_uv(progress, count);
 }
 
+void ELGLWidget::update_terrain_dudv()
+{
+	m_editor->update_terrain_dudv();
+}
+
 void ELGLWidget::import_terrain_height_map(const QString &name)
 {
 	m_editor->import_terrain_height_map(String(name.toUtf8()));

@@ -381,7 +381,7 @@ namespace eternal_lands
 		String blend_map_name, albedo_map, extra_map, dir_name;
 		glm::uvec3 image_size;
 		glm::uvec2 size;
-		glm::vec2 dudv_scale;
+		glm::vec4 dudv_scale_offset;
 		BitSet64 use_blend_size_samplers, use_extra_maps;
 		BitSet64 use_blend_sizes;
 		float blend_size;
@@ -413,8 +413,10 @@ namespace eternal_lands
 			blend_map_name = String(dir_name.get() + 
 				get_reader()->read_utf8_string(128).get());
 
-			dudv_scale.x = get_reader()->read_float_le();
-			dudv_scale.y = get_reader()->read_float_le();
+			dudv_scale_offset.x = get_reader()->read_float_le();
+			dudv_scale_offset.y = get_reader()->read_float_le();
+			dudv_scale_offset.z = get_reader()->read_float_le();
+			dudv_scale_offset.w = get_reader()->read_float_le();
 
 			size.x = get_reader()->read_u32_le();
 			size.y = get_reader()->read_u32_le();
@@ -537,7 +539,7 @@ namespace eternal_lands
 
 			set_terrain(displacement_map, normal_map, dudv_map,
 				blend_map, albedo_maps, extra_maps,
-				material_data, dudv_scale, size);
+				material_data, dudv_scale_offset, size);
 		}
 		catch (boost::exception &exception)
 		{

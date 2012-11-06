@@ -108,8 +108,9 @@ namespace eternal_lands
 				const BitSet64 &use_extra_maps,
 				const TextureCacheSharedPtr &texture_cache);
 			void set_effect(const EffectSharedPtr &effect);
-			void set_dudv_scale(const glm::vec2 &dudv_scale);
-			const glm::vec2 &get_dudv_scale() const;
+			void set_dudv_scale_offset(
+				const glm::vec4 &dudv_scale_offset);
+			const glm::vec4 &get_dudv_scale_offset() const;
 			static const glm::vec3 &get_vector_min() noexcept;
 			static const glm::vec3 &get_vector_max() noexcept;
 			static const float get_vector_scale() noexcept;

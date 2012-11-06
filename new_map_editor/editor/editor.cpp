@@ -1170,11 +1170,20 @@ namespace eternal_lands
 	void Editor::relax_terrain_uv(
 		const AbstractProgressSharedPtr &progress, const Uint16 count)
 	{
+#if	0
 #ifdef	USE_SSE2
 		m_data.relax_terrain_uv(progress, count, SDL_HasSSE2());
 #else	/* USE_SSE2 */
 		m_data.relax_terrain_uv(progress, count, false);
 #endif	/* USE_SSE2 */
+#else
+		m_data.relax_terrain_uv(progress, count, false);
+#endif
+	}
+
+	void Editor::update_terrain_dudv()
+	{
+		m_data.update_terrain_dudv();
 	}
 
 }

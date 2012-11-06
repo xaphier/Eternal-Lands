@@ -27,7 +27,7 @@ namespace eternal_lands
 		private:
 			Mat2x3Array2 m_texture_matrices;
 			glm::vec4 m_color;
-			glm::vec2 m_dudv_scale;
+			glm::vec4 m_dudv_scale_offset;
 			bool m_cast_shadows;
 			bool m_culling;
 
@@ -52,9 +52,10 @@ namespace eternal_lands
 				return m_color;
 			}
 
-			inline const glm::vec2 &get_dudv_scale() const noexcept
+			inline const glm::vec4 &get_dudv_scale_offset() const
+				noexcept
 			{
-				return m_dudv_scale;
+				return m_dudv_scale_offset;
 			}
 
 			inline bool get_cast_shadows() const noexcept
@@ -70,6 +71,7 @@ namespace eternal_lands
 			inline void set_texture_matrices(
 				const Mat2x3Array2 &texture_matrices) noexcept
 			{
+#ifndef	NDEBUG
 				BOOST_FOREACH(const glm::mat2x3 &value,
 					texture_matrices)
 				{
@@ -80,7 +82,7 @@ namespace eternal_lands
 					assert(std::isfinite(value[1][1]));
 					assert(std::isfinite(value[1][2]));
 				}
-
+#endif	/* NDEBUG */
 				m_texture_matrices = texture_matrices;
 			}
 
@@ -88,13 +90,14 @@ namespace eternal_lands
 				const glm::mat2x3 &texture_matrix,
 				const Uint16 index)
 			{
+#ifndef	NDEBUG
 				assert(std::isfinite(texture_matrix[0][0]));
 				assert(std::isfinite(texture_matrix[0][1]));
 				assert(std::isfinite(texture_matrix[0][2]));
 				assert(std::isfinite(texture_matrix[1][0]));
 				assert(std::isfinite(texture_matrix[1][1]));
 				assert(std::isfinite(texture_matrix[1][2]));
-
+#endif	/* NDEBUG */
 				m_texture_matrices[index] =
 					texture_matrix;
 			}
@@ -104,10 +107,10 @@ namespace eternal_lands
 				m_color = color;
 			}
 
-			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
-				noexcept
+			inline void set_dudv_scale_offset(
+				const glm::vec4 &dudv_scale_offset) noexcept
 			{
-				m_dudv_scale = dudv_scale;
+				m_dudv_scale_offset = dudv_scale_offset;
 			}
 
 			inline void set_cast_shadows(const bool cast_shadows)

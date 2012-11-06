@@ -208,7 +208,7 @@ namespace eternal_lands
 				const StringVector &albedo_maps,
 				const StringVector &extra_maps,
 				const TerrainMaterialData &material_data,
-				const glm::vec2 &dudv_scale,
+				const glm::vec4 &dudv_scale_offset,
 				const glm::uvec2 &sizes) = 0;
 
 		public:

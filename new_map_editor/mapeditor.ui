@@ -902,6 +902,9 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="terrain_brush_dock">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="windowIcon">
     <iconset resource="icons/resourcen.qrc">
      <normaloff>:/icons/brush.png</normaloff>:/icons/brush.png</iconset>
@@ -1387,7 +1390,7 @@
              <item row="0" column="0">
               <widget class="QCheckBox" name="vector_brush_smooth_x">
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="text">
                 <string>X</string>
@@ -1419,7 +1422,7 @@
              <item row="0" column="2">
               <widget class="QSpinBox" name="vector_brush_smooth_strength_x">
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1441,7 +1444,7 @@
              <item row="1" column="0">
               <widget class="QCheckBox" name="vector_brush_smooth_y">
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="text">
                 <string>Y</string>
@@ -1473,7 +1476,7 @@
              <item row="1" column="2">
               <widget class="QSpinBox" name="vector_brush_smooth_strength_y">
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1495,7 +1498,7 @@
              <item row="2" column="0">
               <widget class="QCheckBox" name="vector_brush_smooth_z">
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="text">
                 <string>Z</string>
@@ -1527,7 +1530,7 @@
              <item row="2" column="2">
               <widget class="QSpinBox" name="vector_brush_smooth_strength_z">
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -4138,10 +4141,10 @@
      <normaloff>:/icons/editclear.png</normaloff>:/icons/editclear.png</iconset>
    </property>
    <property name="text">
-    <string>Remove objecs</string>
+    <string>Remove all copies of object</string>
    </property>
    <property name="toolTip">
-    <string>Remove objecs</string>
+    <string>Remove all copies of object</string>
    </property>
   </action>
   <action name="action_relax_terrain_uv">

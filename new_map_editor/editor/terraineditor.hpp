@@ -96,7 +96,7 @@ namespace eternal_lands
 			StringVector m_albedo_maps;
 			StringVector m_extra_maps;
 			glm::uvec3 m_size;
-			glm::vec2 m_dudv_scale;
+			glm::vec4 m_dudv_scale_offset;
 			bool m_enabled;
 
 			glm::uvec2 get_best_normal(const glm::vec3 &normal)
@@ -239,7 +239,7 @@ namespace eternal_lands
 				const StringVector &albedo_maps,
 				const StringVector &extra_maps,
 				const TerrainMaterialData &material_data,
-				const glm::vec2 &dudv_scale,
+				const glm::vec4 &dudv_scale_offset,
 				const glm::uvec2 &size);
 			void relax_uv(
 				const AbstractProgressSharedPtr &progress,
@@ -285,9 +285,10 @@ namespace eternal_lands
 				m_material_data = material_data;
 			}
 
-			inline void set_dudv_scale(const glm::vec2 &dudv_scale)
+			inline void set_dudv_scale_offset(
+				const glm::vec4 &dudv_scale_offset)
 			{
-				m_dudv_scale = dudv_scale;
+				m_dudv_scale_offset = dudv_scale_offset;
 			}
 
 			static inline Uint16 get_layer_count()
@@ -374,9 +375,9 @@ namespace eternal_lands
 					index).get_use_blend_size();
 			}
 
-			inline const glm::vec2 &get_dudv_scale() const
+			inline const glm::vec4 &get_dudv_scale_offset() const
 			{
-				return m_dudv_scale;
+				return m_dudv_scale_offset;
 			}
 
 			inline const glm::uvec3 &get_size() const

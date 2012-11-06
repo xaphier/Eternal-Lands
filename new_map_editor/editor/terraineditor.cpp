@@ -487,11 +487,11 @@ namespace eternal_lands
 
 		m_normal_image = boost::make_shared<Image>(
 			String(UTF8("normal map")),
-			false, tft_rgba8, tmp, 0);
+			false, tft_rg8, tmp, 0);
 
 		m_dudv_image = boost::make_shared<Image>(
 			String(UTF8("dudv map")),
-			false, tft_rg8, tmp, 0);
+			false, tft_rg16, tmp, 0);
 
 		m_blend_image = boost::make_shared<Image>(String(
 			UTF8("blend map")), false, tft_rgba8, m_size, 0, true);
@@ -879,7 +879,7 @@ namespace eternal_lands
 		const StringVector &albedo_maps,
 		const StringVector &extra_maps,
 		const TerrainMaterialData &material_data,
-		const glm::vec2 &dudv_scale,
+		const glm::vec4 &dudv_scale_offset,
 		const glm::uvec2 &size)
 	{
 		glm::uvec3 image_size;
@@ -970,7 +970,7 @@ namespace eternal_lands
 		m_albedo_maps = albedo_maps;
 		m_extra_maps = extra_maps;
 		m_material_data = material_data;
-		m_dudv_scale = dudv_scale;
+		m_dudv_scale_offset = dudv_scale_offset;
 
 		m_albedo_maps.resize(get_layer_count());
 		m_extra_maps.resize(get_layer_count());
@@ -1014,7 +1014,7 @@ namespace eternal_lands
 	{
 		m_uv_tool->relax_uv(progress, count, use_simd);
 
-		m_uv_tool->convert(m_dudv_image, m_dudv_scale);
+		m_uv_tool->convert(m_dudv_image, m_dudv_scale_offset);
 	}
 
 }

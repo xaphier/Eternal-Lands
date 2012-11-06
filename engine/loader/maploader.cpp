@@ -246,7 +246,7 @@ namespace eternal_lands
 		const StringVector &albedo_maps,
 		const StringVector &extra_maps,
 		const TerrainMaterialData &material_data,
-		const glm::vec2 &dudv_scale,
+		const glm::vec4 &dudv_scale_offset,
 		const glm::uvec2 &sizes)
 	{
 		m_map->set_terrain_geometry_maps(displacement_map, normal_map,
@@ -254,7 +254,7 @@ namespace eternal_lands
 		m_map->set_terrain_blend_map(blend_map);
 		m_map->set_terrain_material(albedo_maps, extra_maps,
 			material_data);
-		m_map->set_terrain_dudv_scale(dudv_scale);
+		m_map->set_terrain_dudv_scale_offset(dudv_scale_offset);
 	}
 
 }

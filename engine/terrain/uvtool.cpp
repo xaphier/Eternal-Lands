@@ -28,34 +28,36 @@ namespace eternal_lands
 
 	}
 
-	UvTool::UvTool(const ImageSharedPtr &displacement_map)
+	UvTool::UvTool(const ImageSharedPtr &displacement_map):
+		m_displacement_map(displacement_map),
+		m_width(displacement_map->get_width()),
+		m_height(displacement_map->get_height())
 	{
-		build_data(displacement_map);
+		build_uv();
+		build_half_size();
 	}
 
 	UvTool::~UvTool() noexcept
 	{
 	}
 
-	void UvTool::build_data(const ImageSharedPtr &displacement_map,
-		const Sint32 x, const Sint32 y)
+	void UvTool::build_half_size(const Sint32 x, const Sint32 y)
 	{
 		Vec4Array2 half_distances;
 		glm::vec3 p0, p1;
 		glm::ivec2 offset;
-		glm::vec2 uv;
 		Sint32 width, height, xx, yy, i;
+		Uint32 index;
 
 		width = m_width;
 		height = m_height;
 
-		uv = glm::vec2(x, y) * AbstractTerrain::get_patch_scale();
-
-		m_uvs.push_back(uv);
-
-		p0 = glm::vec3(uv, 0.0f);
+		p0 = glm::vec3(glm::vec2(x, y) *
+			AbstractTerrain::get_patch_scale(), 0.0f);
 		p0 += AbstractTerrain::get_offset_scaled_0_1(
-			displacement_map->get_pixel(x, y, 0, 0, 0));
+			m_displacement_map->get_pixel(x, y, 0, 0, 0));
+
+		index = (x + y * m_width) * 2;
 
 		for (i = 0; i < 8; ++i)
 		{
@@ -74,34 +76,47 @@ namespace eternal_lands
 			p1 = glm::vec3(glm::vec2(xx, yy) *
 				AbstractTerrain::get_patch_scale(), 0.0f);
 			p1 += AbstractTerrain::get_offset_scaled_0_1(
-				displacement_map->get_pixel(xx, yy, 0, 0, 0));
+				m_displacement_map->get_pixel(xx, yy, 0, 0, 0));
 
 			half_distances[i / 4][i % 4] = 0.5f *
 				glm::distance(p0, p1);
 		}
 
-		m_half_distances.push_back(half_distances[0]);
-		m_half_distances.push_back(half_distances[1]);
+		m_half_distances[index + 0] = half_distances[0];
+		m_half_distances[index + 1] = half_distances[1];
 	}
 
-	void UvTool::build_data(const ImageSharedPtr &displacement_map)
+	void UvTool::build_half_size()
 	{
-		Sint32 width, height, x, y;
+		Uint32 x, y;
 
-		m_width = displacement_map->get_width();
-		m_height = displacement_map->get_height();
+		m_half_distances.resize(m_width * m_height * 2);
 
-		width = m_width;
-		height = m_height;
-
-		m_uvs.reserve(width * height);
-		m_half_distances.reserve(width * height * 2);
-
-		for (y = 0; y < height; ++y)
+//		#pragma omp parallel for private(x)
+		for (y = 0; y < m_height; ++y)
 		{
-			for (x = 0; x < width; ++x)
+			for (x = 0; x < m_width; ++x)
 			{
-				build_data(displacement_map, x, y);
+				build_half_size(x, y);
+			}
+		}
+	}
+
+	void UvTool::build_uv()
+	{
+		glm::vec2 uv;
+		Uint32 x, y;
+
+		m_uvs.resize(m_width * m_height);
+
+		for (y = 0; y < m_height; ++y)
+		{
+			for (x = 0; x < m_width; ++x)
+			{
+				uv = glm::vec2(x, y);
+				uv *= AbstractTerrain::get_patch_scale();
+
+				m_uvs[x + y * m_width] = uv;
 			}
 		}
 	}
@@ -125,7 +140,8 @@ namespace eternal_lands
 			dir = uvs[idx] - uv;
 			distance = glm::length(dir);
 			dir /= std::max(distance, 1e-7f);
-			factor = distance - half_distances[i / 4][i % 4];
+			factor = distance - get_half_distance(half_distances,
+				index, i);
 			velocity += dir * factor;
 		}
 
@@ -173,17 +189,17 @@ namespace eternal_lands
 		offset = velocity * damping;
 		offset = glm::clamp(offset, -clamping, clamping);
 
-		uv += offset;
-
-		if (!((position.x == 0) || (position.x == (size.x - 1))))
+		if ((position.x > 0) && (position.x < (size.x - 1)))
 		{
-			new_uvs[index].s = uv.s;
+			uv.s += offset.s;
 		}
 
-		if (!((position.y == 0) || (position.y == (size.y - 1))))
+		if ((position.y > 0) && (position.y < (size.y - 1)))
 		{
-			new_uvs[index].t = uv.t;
+			uv.t += offset.t;
 		}
+
+		new_uvs[index] = uv;
 	}
 
 	void UvTool::relax_default(
@@ -295,10 +311,12 @@ namespace eternal_lands
 		Vec2Vector new_uvs;
 		Uint16 i;
 
+		build_half_size();
+
 		new_uvs.resize(m_uvs.size());
 
 		progress->set_text(String(UTF8("relax uv")));
-		progress->init(0, count);
+		progress->init(0, count / 10);
 
 		if (progress->get_canceled())
 		{
@@ -309,17 +327,21 @@ namespace eternal_lands
 		{
 			for (i = 0; i < count; ++i)
 			{
-				if (progress->get_canceled())
-				{
-					return;
-				}
-
 				relax_sse2(m_half_distances, m_uvs, 0.015f,
-					1.0f, m_width, m_height, new_uvs);
+					AbstractTerrain::get_patch_scale(),
+					m_width, m_height, new_uvs);
 
 				std::swap(new_uvs, m_uvs);
 
-				progress->stepp(1);
+				if ((i % 10) == 0)
+				{
+					if (progress->get_canceled())
+					{
+						return;
+					}
+
+					progress->stepp(1);
+				}
 			}
 
 			return;
@@ -327,27 +349,31 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			if (progress->get_canceled())
-			{
-				return;
-			}
-
-			relax_default(m_half_distances, m_uvs, 0.015f, 1.0f,
+			relax_default(m_half_distances, m_uvs, 0.015f,
+				AbstractTerrain::get_patch_scale(),
 				m_width, m_height, new_uvs);
 
 			std::swap(new_uvs, m_uvs);
 
-			progress->stepp(1);
+			if ((i % 10) == 0)
+			{
+				if (progress->get_canceled())
+				{
+					return;
+				}
+
+				progress->stepp(1);
+			}
 		}
 	}
 
 	/**
 	 * Converts to signed rg 8 but image
 	 */
-	void UvTool::convert(ImageSharedPtr &dudv_map, glm::vec2 &dudv_scale)
+	void UvTool::convert(ImageSharedPtr &dudv_map,
+		glm::vec4 &dudv_scale_offset)
 	{
-		glm::vec2 uv, max, tmp, diff;
-		glm::ivec4 temp;
+		glm::vec2 uv, min, max, tmp, diff, scale;
 		Sint32 width, height, x, y, index;
 
 		width = m_width;
@@ -358,6 +384,9 @@ namespace eternal_lands
 			glm::uvec3(m_width, m_height, 0),
 			UTF8("Image has wrong size"));
 
+		min = glm::vec2(std::numeric_limits<float>::max());
+		max = glm::vec2(-std::numeric_limits<float>::max());
+
 		for (y = 0; y < height; ++y)
 		{
 			for (x = 0; x < width; ++x)
@@ -365,15 +394,24 @@ namespace eternal_lands
 				uv.s = x;
 				uv.t = y;
 
+				uv *= AbstractTerrain::get_patch_scale();
+
 				tmp = m_uvs[index] - uv;
+				min = glm::min(min, tmp);
 				max = glm::max(max, tmp);
-				max = glm::max(max, glm::abs(tmp));
 
 				++index;
 			}
 		}
 
-		dudv_scale = max;
+		diff = glm::max(max - min, 0.001f);
+
+		dudv_scale_offset.x = diff.x;
+		dudv_scale_offset.y = diff.y;
+		dudv_scale_offset.z = min.x;
+		dudv_scale_offset.w = min.y;
+
+		scale = 1.0f / diff;
 
 		index = 0;
 
@@ -384,31 +422,14 @@ namespace eternal_lands
 				uv.s = x;
 				uv.t = y;
 
+				uv *= AbstractTerrain::get_patch_scale();
+
 				tmp = m_uvs[index] - uv;
-				tmp /= max;
+				tmp -= min;
+				tmp *= scale;
 
-				if (tmp.s < 0.0f)
-				{
-					temp.s = tmp.s * 128.0f - 0.5f;
-				}
-				else
-				{
-					temp.s = tmp.s * 127.0f + 0.5f;
-				}
-
-				if (tmp.t < 0.0f)
-				{
-					temp.t = tmp.t * 128.0f - 0.5f;
-				}
-				else
-				{
-					temp.t = tmp.t * 127.0f + 0.5f;
-				}
-
-				diff = glm::max(diff, glm::abs(m_uvs[index] -
-					(uv + glm::vec2(temp)))); 
-
-				dudv_map->set_pixel_int(x, y, 0, 0, 0, temp);
+				dudv_map->set_pixel(x, y, 0, 0, 0,
+					glm::vec4(tmp, 0.0f, 1.0f));
 
 				++index;
 			}
@@ -418,15 +439,15 @@ namespace eternal_lands
 	/**
 	 * Converts to signed rg 8 but image
 	 */
-	ImageSharedPtr UvTool::convert(glm::vec2 &dudv_scale)
+	ImageSharedPtr UvTool::convert(glm::vec4 &dudv_scale_offset)
 	{
 		ImageSharedPtr dudv_map;
 
 		dudv_map = boost::make_shared<Image>(String(UTF8("Dudv map")),
-			false, tft_rg8_snorm, glm::uvec3(m_width, m_height, 0),
+			false, tft_rg16, glm::uvec3(m_width, m_height, 0),
 			0);			
 
-		convert(dudv_map, dudv_scale);
+		convert(dudv_map, dudv_scale_offset);
 
 		return dudv_map;
 	}

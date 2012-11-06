@@ -190,9 +190,9 @@ namespace eternal_lands
 			bool get_terrain() const;
 			const MaterialSharedPtr &get_clipmap_terrain_material()
 				const;
-			void set_terrain_dudv_scale(
-				const glm::vec2 &dudv_scale);
-			const glm::vec2 &get_terrain_dudv_scale() const;
+			void set_terrain_dudv_scale_offset(
+				const glm::vec4 &dudv_scale_offset);
+			const glm::vec4 &get_terrain_dudv_scale_offset() const;
 
 			inline const Uint32ObjectSharedPtrMap &get_objects()
 				const noexcept

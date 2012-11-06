@@ -89,8 +89,8 @@ namespace eternal_lands
 				const StringVector &albedo_maps,
 				const StringVector &extra_maps,
 				const TerrainMaterialData &material_data);
-			void set_terrain_dudv_scale(
-				const glm::vec2 &dudv_scale);
+			void set_terrain_dudv_scale_offset(
+				const glm::vec4 &dudv_scale_offset);
 			void update_terrain_geometry_maps(
 				const ImageUpdate &displacement_map,
 				const ImageUpdate &normal_map,
@@ -110,7 +110,7 @@ namespace eternal_lands
 				const StringVector &albedo_maps,
 				const StringVector &extra_maps,
 				const TerrainMaterialData &material_data,
-				const glm::vec2 &dudv_scale);
+				const glm::vec4 &dudv_scale_offset);
 
 			inline void deselect_object() noexcept
 			{
