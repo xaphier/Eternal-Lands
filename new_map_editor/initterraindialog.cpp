@@ -102,3 +102,19 @@ QString InitTerrainDialog::get_height_map() const
 {
 	return height_map_name->text();
 }
+
+void InitTerrainDialog::set_map_size(const QSize &size)
+{
+	QSize patches;
+
+	map_size_x->setText(QString::number(size.width()) + tr("m"));
+	map_size_y->setText(QString::number(size.height()) + tr("m"));
+
+	patches = size;
+
+	patches /= eternal_lands::AbstractTerrain::get_patch_scale();
+	patches /= eternal_lands::AbstractTerrain::get_tile_size();
+
+	patches_x->setValue(patches.width());
+	patches_y->setValue(patches.height());
+}

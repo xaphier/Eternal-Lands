@@ -543,9 +543,19 @@ namespace eternal_lands
 		update_program_vars_id();
 	}
 
-	glm::vec3 EditorScene::get_map_center() const
+	glm::vec3 EditorScene::get_map_min() const
 	{
-		return get_map()->get_bounding_box().get_center();
+		return get_map()->get_bounding_box().get_min();
+	}
+
+	glm::vec3 EditorScene::get_map_max() const
+	{
+		return get_map()->get_bounding_box().get_max();
+	}
+
+	void EditorScene::set_map_size(const glm::uvec2 &size)
+	{
+		get_map()->set_size(size);
 	}
 
 }

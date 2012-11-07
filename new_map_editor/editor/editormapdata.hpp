@@ -195,7 +195,25 @@ namespace eternal_lands
 				const glm::vec4 &dudv_scale_offset,
 				const glm::uvec2 &size);
 			void update_terrain_dudv();
-			const glm::vec3 &get_map_center() const;
+			glm::vec3 get_map_min() const;
+			glm::vec3 get_map_max() const;
+			void clear_invisible_terrain_layers();
+			void pack_terrain_layers();
+			const glm::uvec2 &get_map_size() const;
+			void set_map_size(const glm::uvec2 &size);
+
+			inline void clear_terrain()
+			{
+				m_terrain_editor.clear();
+			}
+
+			inline void get_terrain_layers_usage(
+				Uint32Vector &use_layer_pixels, Uint32 &pixels)
+				const
+			{
+				m_terrain_editor.get_layer_usage(
+					use_layer_pixels, pixels);
+			}
 
 			inline void relax_terrain_uv(
 				const AbstractProgressSharedPtr &progress,
@@ -314,18 +332,18 @@ namespace eternal_lands
 				return TerrainEditor::get_terrain_offset_max();
 			}
 
-			inline void set_height_map_size(const Uint16 width,
-				const Uint16 height) noexcept
+			inline void set_height_map_size(const glm::uvec2 &size)
+				noexcept
 			{
 				m_height_map.resize(
-					boost::extents[width][height]);
+					boost::extents[size.x][size.y]);
 			}
 
-			inline void set_tile_map_size(const Uint16 width,
-				const Uint16 height) noexcept
+			inline void set_tile_map_size(const glm::uvec2 &size)
+				noexcept
 			{
 				m_tile_map.resize(
-					boost::extents[width][height]);
+					boost::extents[size.x][size.y]);
 			}
 
 			inline glm::uvec2 get_tile_map_size() const noexcept

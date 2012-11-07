@@ -3,8 +3,9 @@
 
 #include "prerequisites.hpp"
 #include "editor/editor.hpp"
-#include <QtOpenGL/QGLWidget>
-#include <QtGui/QKeyEvent>
+#include <QGLWidget>
+#include <QKeyEvent>
+#include <QBitArray>
 
 using namespace eternal_lands;
 
@@ -53,8 +54,8 @@ class ELGLWidget: public QGLWidget
 		bool m_select;
 		bool m_select_depth;
 		bool m_terrain_editing;
-		bool m_object;
-		bool m_light;
+		bool m_object_adding;
+		bool m_light_adding;
 		bool m_mouse_click_action;
 		bool m_mouse_move_action;
 		bool m_grab_world_position_valid;
@@ -81,6 +82,16 @@ class ELGLWidget: public QGLWidget
 		inline bool get_terrain_editing() const
 		{
 			return m_terrain_editing;
+		}
+
+		inline bool get_object_adding() const
+		{
+			return m_object_adding;
+		}
+
+		inline bool get_light_adding() const
+		{
+			return m_light_adding;
 		}
 
 		inline Uint32 get_terrain_type_index() const
@@ -180,7 +191,6 @@ class ELGLWidget: public QGLWidget
 			bool &use_blend_size_sampler,
 			bool &use_blend_size, bool &use_extra_map,
 			const int index) const;
-		QString get_blend_image_name() const;
 		QStringList get_materials() const;
 		QStringList get_default_materials(const String &name) const;
 		QStringList get_debug_modes() const;
@@ -224,6 +234,11 @@ class ELGLWidget: public QGLWidget
 			const bool load_terrain, const bool load_water);
 		bool get_terrain() const;
 		int get_terrain_layer_count() const;
+		QSize get_map_size() const;
+		QVector3D get_map_min() const;
+		QVector3D get_map_max() const;
+		void get_terrain_layers_usage(QVector<int> &use_layer_pixels,
+			int &pixels) const;
 
 		inline Qt::MouseButton get_press_button() const
 		{
@@ -421,7 +436,7 @@ class ELGLWidget: public QGLWidget
 	public slots:
 		void remove_object();
 		void remove_light();
-		void remove_objects();
+		void remove_all_copies_of_object();
 		void set_light_radius(const double radius);
 		void set_lights_radius(const double radius);
 		void undo();
@@ -469,8 +484,6 @@ class ELGLWidget: public QGLWidget
 		void disable_object();
 		void disable_light();
 		void save(const QString &name) const;
-		void set_blend_image_name(const QString &blend_image_name);
-		void set_game_minute(const int game_minute);
 		void set_draw_objects(const bool draw_objects);
 		void set_draw_terrain(const bool draw_terrain);
 		void set_draw_lights(const bool draw_lights);
@@ -494,6 +507,8 @@ class ELGLWidget: public QGLWidget
 			const QSize &image_size, bool &ok);
 		void get_image_data(const QString &name, QSize &size, bool &ok);
 		void update_terrain_dudv();
+		void clear_invisible_terrain_layers();
+		void pack_terrain_layers();
 
 	signals:
 		void update_object(const bool select);

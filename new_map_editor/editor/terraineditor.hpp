@@ -125,6 +125,7 @@ namespace eternal_lands
 			void get_blend_values(const Uint32 x, const Uint32 y,
 				ImageValueVector &blend_values) const;
 			void init(const glm::uvec2 &size);
+			BitSet64 get_used_layers() const;
 
 		public:
 			TerrainEditor();
@@ -245,6 +246,14 @@ namespace eternal_lands
 				const AbstractProgressSharedPtr &progress,
 				const Uint16 count, const bool use_simd);
 			void import_blend_map(const ImageSharedPtr &blend_map);
+			void rebuild_normal_map();
+			void import_dudv_map(const ImageSharedPtr &dudv_map,
+				const glm::vec4 &dudv_scale_offset);
+			void get_layer_usage(Uint32Vector &use_layer_pixels,
+				Uint32 &pixels) const;
+			void clear_invisible_layers();
+			void pack_layers();
+			void clear();
 
 			inline void set_albedo_map(const String &name,
 				const Uint16 index)

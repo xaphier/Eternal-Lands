@@ -427,7 +427,7 @@ namespace eternal_lands
 		m_data.remove_object(id);
 	}
 
-	void Editor::remove_objects(const Uint32 id)
+	void Editor::remove_all_copies_of_object(const Uint32 id)
 	{
 		EditorObjectDescriptionVector object_descriptions;
 
@@ -1184,6 +1184,23 @@ namespace eternal_lands
 	void Editor::update_terrain_dudv()
 	{
 		m_data.update_terrain_dudv();
+	}
+
+	void Editor::get_terrain_layers_usage(Uint32Vector &use_layer_pixels,
+		Uint32 &pixels) const
+	{
+		return m_data.get_terrain_layers_usage(use_layer_pixels,
+			pixels);
+	}
+
+	void Editor::clear_invisible_terrain_layers()
+	{
+		m_data.clear_invisible_terrain_layers();
+	}
+
+	void Editor::pack_terrain_layers()
+	{
+		m_data.pack_terrain_layers();
 	}
 
 }

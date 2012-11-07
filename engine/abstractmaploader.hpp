@@ -194,10 +194,11 @@ namespace eternal_lands
 			virtual void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height) = 0;
 			virtual void set_ambient(const glm::vec3 &ambient) = 0;
-			virtual void set_height_map_size(const Uint16 width,
-				const Uint16 height) = 0;
-			virtual void set_tile_map_size(const Uint16 width,
-				const Uint16 height) = 0;
+			virtual void set_map_size(const glm::uvec2 &size) = 0;
+			virtual void set_height_map_size(
+				const glm::uvec2 &size) = 0;
+			virtual void set_tile_map_size(const glm::uvec2 &size)
+				= 0;
 			virtual void set_dungeon(const bool dungeon) = 0;
 			virtual void instance() = 0;
 			virtual void set_terrain(

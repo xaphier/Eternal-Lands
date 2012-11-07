@@ -23,7 +23,8 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	m_terrain_editing = false;
 	m_terrain_type_index = 0;
 	m_terrain_layer_index = 0;
-	m_light = false;
+	m_object_adding = false;
+	m_light_adding = false;
 	m_blend = bt_disabled;
 	m_camera_roll = 45.0f;
 	m_camera_yaw = 0.0f;
@@ -330,7 +331,7 @@ void ELGLWidget::mouse_click_action()
 		return;
 	}
 
-	if (m_object)
+	if (get_object_adding())
 	{
 		m_editor->add_3d_object(m_world_position, m_object_name,
 			st_select);
@@ -340,7 +341,7 @@ void ELGLWidget::mouse_click_action()
 		return;
 	}
 
-	if (m_light)
+	if (get_light_adding())
 	{
 		m_editor->add_light(m_world_position, m_light_radius);
 		emit update_light(false);
@@ -596,7 +597,7 @@ void ELGLWidget::mousePressEvent(QMouseEvent *event)
 	m_select_pos.x = event->x();
 	m_select_pos.y = height() - event->y();
 
-	m_select = !get_terrain_editing();
+	m_select = !(get_terrain_editing() || get_object_adding() || get_light_adding());
 	m_select_depth = true;
 	m_mouse_click_action = true;
 	m_grab_world_position_valid = false;
@@ -1046,9 +1047,9 @@ void ELGLWidget::remove_object()
 	}
 }
 
-void ELGLWidget::remove_objects()
+void ELGLWidget::remove_all_copies_of_object()
 {
-	m_editor->remove_objects();
+	m_editor->remove_all_copies_of_object();
 	emit can_undo(m_editor->get_can_undo());
 	m_select = false;
 }
@@ -1299,16 +1300,16 @@ void ELGLWidget::zoom_out()
 
 void ELGLWidget::add_object(const String &object)
 {
-	m_light = false;
-	m_object = true;
+	m_light_adding = false;
+	m_object_adding = true;
 	m_object_name = object;
 	m_light_radius = 0.0f;
 }
 
 void ELGLWidget::add_light(const float radius)
 {
-	m_light = true;
-	m_object = false;
+	m_light_adding = true;
+	m_object_adding = false;
 	m_object_name = String("");
 	m_light_radius = radius;
 }
@@ -1383,6 +1384,12 @@ void ELGLWidget::new_map(const QString &image, const int blend_image_size_x,
 void ELGLWidget::set_terrain_editing(const bool enabled)
 {
 	m_terrain_editing = enabled;
+
+	if (enabled)
+	{
+		m_light_adding = false;
+		m_object_adding = false;
+	}
 }
 
 void ELGLWidget::set_terrain_type_index(const int index)
@@ -1414,7 +1421,8 @@ void ELGLWidget::load_map(const QString &file_name,
 
 		emit can_undo(m_editor->get_can_undo());
 
-		m_pos = m_editor->get_map_center();
+		m_pos = m_editor->get_map_max() + m_editor->get_map_min();
+		m_pos *= 0.5f;
 		m_pos.z = 0.0f;
 	}
 }
@@ -1576,35 +1584,19 @@ void ELGLWidget::set_random_scale_max(const double value)
 
 void ELGLWidget::disable_object()
 {
-	m_object = false;
+	m_object_adding = false;
 	m_object_name = String("");
 }
 
 void ELGLWidget::disable_light()
 {
-	m_light = false;
+	m_light_adding = false;
 	m_light_radius = 0.0f;
 }
 
 void ELGLWidget::save(const QString &name) const
 {
 	m_editor->save(String(name.toUtf8()));
-}
-
-QString ELGLWidget::get_blend_image_name() const
-{
-//	return QString::fromStdString(m_editor->get_blend_image_name());
-	return QString();
-}
-
-void ELGLWidget::set_blend_image_name(const QString &blend_image)
-{
-//	m_editor->set_blend_image_name(String(blend_image.toUtf8()));
-}
-
-void ELGLWidget::set_game_minute(const int game_minute)
-{
-//	m_editor->get_scene().set_game_minute(game_minute);
 }
 
 glm::vec3 ELGLWidget::get_light_color() const
@@ -1769,4 +1761,61 @@ bool ELGLWidget::get_terrain() const
 int ELGLWidget::get_terrain_layer_count() const
 {
 	return m_editor->get_terrain_layer_count();
+}
+
+QVector3D ELGLWidget::get_map_min() const
+{
+	glm::vec3 map_min;
+
+	map_min = m_editor->get_map_min();
+
+	return QVector3D(map_min.x, map_min.y, map_min.z);
+}
+
+QVector3D ELGLWidget::get_map_max() const
+{
+	glm::vec3 map_max;
+
+	map_max = m_editor->get_map_max();
+
+	return QVector3D(map_max.x, map_max.y, map_max.z);
+}
+
+QSize ELGLWidget::get_map_size() const
+{
+	glm::uvec2 map_size;
+
+	map_size = m_editor->get_map_size();
+
+	return QSize(map_size.x, map_size.y);
+}
+
+void ELGLWidget::get_terrain_layers_usage(QVector<int> &use_layer_pixels,
+	int &pixels) const
+{
+	Uint32Vector tmp;
+	Uint32 i, count, temp;
+
+	m_editor->get_terrain_layers_usage(tmp, temp);
+
+	count = tmp.size();
+
+	use_layer_pixels.resize(count);
+
+	for (i = 0; i < count; ++i)
+	{
+		use_layer_pixels[i] = tmp[i];
+	}
+
+	pixels = temp;
+}
+
+void ELGLWidget::clear_invisible_terrain_layers()
+{
+	m_editor->clear_invisible_terrain_layers();
+}
+
+void ELGLWidget::pack_terrain_layers()
+{
+	m_editor->pack_terrain_layers();
 }

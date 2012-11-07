@@ -96,7 +96,7 @@ namespace eternal_lands
 			void height_edit(const glm::vec3 &point,
 				const Uint8 height);
 			void remove_object(const Uint32 id);
-			void remove_objects(const Uint32 id);
+			void remove_all_copies_of_object(const Uint32 id);
 			void save(const String &name) const;
 			void load_map(const String &name,
 				const bool load_2d_objects,
@@ -180,6 +180,11 @@ namespace eternal_lands
 				const AbstractProgressSharedPtr &progress,
 				const Uint16 count);
 			void update_terrain_dudv();
+			void get_terrain_layers_usage(
+				Uint32Vector &use_layer_pixels, Uint32 &pixels)
+				const;
+			void clear_invisible_terrain_layers();
+			void pack_terrain_layers();
 
 			static inline const glm::vec3 &get_terrain_offset_min()
 			{
@@ -191,9 +196,19 @@ namespace eternal_lands
 				return EditorMapData::get_terrain_offset_max();
 			}
 
-			inline const glm::vec3 &get_map_center() const
+			inline glm::vec3 get_map_min() const
 			{
-				return m_data.get_map_center();
+				return m_data.get_map_min();
+			}
+
+			inline glm::vec3 get_map_max() const
+			{
+				return m_data.get_map_max();
+			}
+
+			inline const glm::uvec2 &get_map_size() const
+			{
+				return m_data.get_map_size();
 			}
 
 			void get_terrain_material(String &albedo_map,
@@ -325,19 +340,31 @@ namespace eternal_lands
 				return m_data.get_projection_matrix();
 			}
 
-			inline void get_object_description(
+			inline bool get_object_description(
 				EditorObjectDescription &object_description)
 				const
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				get_object_description(get_id(),
 					object_description);
+
+				return true;
 			}
 
-			inline void get_light_data(LightData &light_data) const
+			inline bool get_light_data(LightData &light_data) const
 			{
-				assert(get_light_selected());
+				if (!get_light_selected())
+				{
+					return false;
+				}
+
 				get_light_data(get_id(), light_data);
+
+				return true;
 			}
 
 			inline bool get_object_selected() const
@@ -389,168 +416,318 @@ namespace eternal_lands
 				return m_undo.can_undo();
 			}
 
-			inline void remove_object()
+			inline bool remove_object()
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				remove_object(get_id());
+
+				return true;
 			}
 
-			inline void remove_objects()
+			inline bool remove_all_copies_of_object()
 			{
-				assert(get_object_selected());
-				remove_objects(get_id());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
+				remove_all_copies_of_object(get_id());
+
+				return true;
 			}
 
-			inline void set_object_blend(const BlendType blend)
+			inline bool set_object_blend(const BlendType blend)
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				set_object_blend(get_id(), blend);
+
+				return true;
 			}
 
-			inline void set_object_walkable(const bool walkable)
+			inline bool set_object_walkable(const bool walkable)
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				set_object_walkable(get_id(), walkable);
+
+				return true;
 			}
 
-			inline void set_object_transparency(
+			inline bool set_object_transparency(
 				const float transparency)
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				set_object_transparency(get_id(),
 					transparency);
+
+				return true;
 			}
 
-			inline void set_object_translation(
+			inline bool set_object_translation(
 				const glm::vec3 &translation)
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				set_object_translation(get_id(), translation);
+
+				return true;
 			}
 
-			inline void set_object_rotation(
+			inline bool set_object_rotation(
 				const glm::vec3 &rotation)
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				set_object_rotation(get_id(), rotation);
+
+				return true;
 			}
 
-			inline void set_object_scale(const glm::vec3 &scale)
+			inline bool set_object_scale(const glm::vec3 &scale)
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				set_object_scale(get_id(), scale);
+
+				return true;
 			}
 
-			inline void set_object_selection(
+			inline bool set_object_selection(
 				const SelectionType selection)
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				set_object_selection(get_id(), selection);
+
+				return true;
 			}
 
-			inline void set_object_materials(
+			inline bool set_object_materials(
 				const StringVector &materials)
 			{
-				assert(get_object_selected());
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
 				set_object_materials(get_id(), materials);
+
+				return true;
 			}
 
-			inline void set_objects_blend(const BlendType blend)
+			inline bool set_objects_blend(const BlendType blend)
 			{
-				assert(get_objects_selected());
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
 				set_objects_blend(get_ids(), blend);
+
+				return true;
 			}
 
-			inline void set_objects_walkable(const bool walkable)
+			inline bool set_objects_walkable(const bool walkable)
 			{
-				assert(get_objects_selected());
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
 				set_objects_walkable(get_ids(), walkable);
+
+				return true;
 			}
 
-			inline void set_objects_transparency(
+			inline bool set_objects_transparency(
 				const float transparency)
 			{
-				assert(get_objects_selected());
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
 				set_objects_transparency(get_ids(),
 					transparency);
+
+				return true;
 			}
 
-			inline void set_objects_translation(
+			inline bool set_objects_translation(
 				const glm::vec3 &translation)
 			{
-				assert(get_objects_selected());
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
 				set_objects_translation(get_ids(), translation);
+
+				return true;
 			}
 
-			inline void set_objects_rotation(
+			inline bool set_objects_rotation(
 				const glm::vec3 &rotation)
 			{
-				assert(get_objects_selected());
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
 				set_objects_rotation(get_ids(), rotation);
+
+				return true;
 			}
 
-			inline void set_objects_scale(const glm::vec3 &scale)
+			inline bool set_objects_scale(const glm::vec3 &scale)
 			{
-				assert(get_objects_selected());
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
 				set_objects_scale(get_ids(), scale);
+
+				return true;
 			}
 
-			inline void set_objects_selection(
+			inline bool set_objects_selection(
 				const SelectionType selection)
 			{
-				assert(get_objects_selected());
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
 				set_objects_selection(get_ids(), selection);
+
+				return true;
 			}
 
-			inline void set_objects_materials(
+			inline bool set_objects_materials(
 				const StringVector &materials)
 			{
-				assert(get_objects_selected());
+				if (!get_objects_selected())
+				{
+					return false;
+				}
+
 				set_objects_materials(get_ids(), materials);
+
+				return true;
 			}
 
-			inline void remove_light()
+			inline bool remove_light()
 			{
-				assert(get_light_selected());
+				if (!get_light_selected())
+				{
+					return false;
+				}
+
 				remove_light(get_id());
+
+				return true;
 			}
 
-			inline void set_light_position(
+			inline bool set_light_position(
 				const glm::vec3 &position)
 			{
-				assert(get_light_selected());
+				if (!get_light_selected())
+				{
+					return false;
+				}
+
 				set_light_position(get_id(), position);
+
+				return true;
 			}
 
-			inline void set_light_radius(const float radius)
+			inline bool set_light_radius(const float radius)
 			{
-				assert(get_light_selected());
+				if (!get_light_selected())
+				{
+					return false;
+				}
+
 				set_light_radius(get_id(), radius);
+
+				return true;
 			}
 
-			inline void set_light_color(const glm::vec3 &color)
+			inline bool set_light_color(const glm::vec3 &color)
 			{
-				assert(get_light_selected());
+				if (!get_light_selected())
+				{
+					return false;
+				}
+
 				set_light_color(get_id(), color);
+
+				return true;
 			}
 
-			inline void set_lights_position(
+			inline bool set_lights_position(
 				const glm::vec3 &position)
 			{
-				assert(get_lights_selected());
+				if (!get_lights_selected())
+				{
+					return false;
+				}
+
 				set_lights_position(get_ids(), position);
+
+				return true;
 			}
 
-			inline void set_lights_radius(const float radius)
+			inline bool set_lights_radius(const float radius)
 			{
-				assert(get_lights_selected());
+				if (!get_lights_selected())
+				{
+					return false;
+				}
+
 				set_lights_radius(get_ids(), radius);
+
+				return true;
 			}
 
-			inline void set_lights_color(const glm::vec3 &color)
+			inline bool set_lights_color(const glm::vec3 &color)
 			{
-				assert(get_lights_selected());
+				if (!get_lights_selected())
+				{
+					return false;
+				}
+
 				set_lights_color(get_ids(), color);
+
+				return true;
 			}
 
 			inline void set_random_translation(const bool value,

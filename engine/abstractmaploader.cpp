@@ -835,6 +835,7 @@ namespace eternal_lands
 		MapItemsTypeSet skip_items)
 	{
 		glm::vec3 ambient;
+		glm::uvec2 height_map_size, map_size, tile_map_size;
 		Uint32 tile_map_offset;
 		Uint32 height_map_offset;
 		Uint32 obj_3d_size;
@@ -854,10 +855,6 @@ namespace eternal_lands
 		Uint32 water_offset;
 		Uint32 name_count;
 		Uint32 name_offset; 
-		Uint32 height_map_width;
-		Uint32 height_map_height;
-		Uint32 tile_map_width;
-		Uint32 tile_map_height;
 		Sint8Array4 magic_number;
 		Uint16 version_number, version_major, version_minor;
 		MapVersionType version;
@@ -882,8 +879,8 @@ namespace eternal_lands
 					m_reader->get_name()));
 		}
 
-		tile_map_width = get_reader()->read_u32_le();
-		tile_map_height = get_reader()->read_u32_le();
+		tile_map_size.x = get_reader()->read_u32_le();
+		tile_map_size.y = get_reader()->read_u32_le();
 		tile_map_offset = get_reader()->read_u32_le();
 		height_map_offset = get_reader()->read_u32_le();
 		obj_3d_size = get_reader()->read_u32_le();
@@ -896,9 +893,11 @@ namespace eternal_lands
 		light_count = get_reader()->read_u32_le();
 		light_offset = get_reader()->read_u32_le();
 
+		height_map_size = tile_map_size * 2u * get_tile_size();
+		map_size = tile_map_size * get_tile_size();
+
 		LOG_DEBUG(lt_map_loader, UTF8("map size <%1%, %2%>."),
-			(tile_map_width * get_tile_size())%
-			(tile_map_height * get_tile_size()));
+			map_size.x % map_size.y);
 
 		dungeon = get_reader()->read_u8() != 0;
 
@@ -965,12 +964,9 @@ namespace eternal_lands
 			name_offset = 0;
 		}
 
-		set_tile_map_size(tile_map_width, tile_map_height);
-
-		height_map_width = tile_map_width * 2 * get_tile_size();
-		height_map_height = tile_map_height * 2 * get_tile_size();
-
-		set_height_map_size(height_map_width, height_map_height);
+		set_map_size(map_size);
+		set_tile_map_size(tile_map_size);
+		set_height_map_size(height_map_size);
 
 		if (obj_3d_size != get_3d_object_size())
 		{
@@ -1058,13 +1054,13 @@ namespace eternal_lands
 
 		if (skip_items.count(mit_height_map) == 0)
 		{
-			read_height_map(height_map_width, height_map_height,
+			read_height_map(height_map_size.x, height_map_size.y,
 				height_map_offset, version);
 		}
 
 		if (skip_items.count(mit_tile_map) == 0)
 		{
-			read_tile_map(tile_map_width, tile_map_height,
+			read_tile_map(tile_map_size.x, tile_map_size.y,
 				tile_map_offset, version);
 		}
 

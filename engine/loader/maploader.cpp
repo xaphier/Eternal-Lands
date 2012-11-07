@@ -222,16 +222,19 @@ namespace eternal_lands
 		m_map->set_ambient(ambient);
 	}
 
-	void MapLoader::set_height_map_size(const Uint16 width,
-		const Uint16 height)
+	void MapLoader::set_map_size(const glm::uvec2 &size)
 	{
-		m_map->set_height_map_size(width, height);
+		m_map->set_size(size);
 	}
 
-	void MapLoader::set_tile_map_size(const Uint16 width,
-		const Uint16 height)
+	void MapLoader::set_height_map_size(const glm::uvec2 &size)
 	{
-		m_map->set_tile_map_size(width, height);
+		m_map->set_height_map_size(size);
+	}
+
+	void MapLoader::set_tile_map_size(const glm::uvec2 &size)
+	{
+		m_map->set_tile_map_size(size);
 	}
 
 	void MapLoader::set_dungeon(const bool dungeon)

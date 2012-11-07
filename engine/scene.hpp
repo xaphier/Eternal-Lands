@@ -262,6 +262,7 @@ namespace eternal_lands
 			bool get_terrain() const;
 			void set_view_port(const glm::uvec4 &view_port);
 			void update_light_system();
+			const glm::uvec2 &get_map_size() const;
 
 			inline const glm::uvec4 &get_view_port() const noexcept
 			{

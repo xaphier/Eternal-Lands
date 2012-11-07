@@ -368,10 +368,10 @@ namespace eternal_lands
 	}
 
 	/**
-	 * Converts to signed rg 8 but image
+	 * Converts to image
 	 */
 	void UvTool::convert(ImageSharedPtr &dudv_map,
-		glm::vec4 &dudv_scale_offset)
+		glm::vec4 &dudv_scale_offset) const
 	{
 		glm::vec2 uv, min, max, tmp, diff, scale;
 		Sint32 width, height, x, y, index;
@@ -437,9 +437,9 @@ namespace eternal_lands
 	}
 
 	/**
-	 * Converts to signed rg 8 but image
+	 * Converts to unsigned rg 16 bit image
 	 */
-	ImageSharedPtr UvTool::convert(glm::vec4 &dudv_scale_offset)
+	ImageSharedPtr UvTool::convert(glm::vec4 &dudv_scale_offset) const
 	{
 		ImageSharedPtr dudv_map;
 
@@ -450,6 +450,48 @@ namespace eternal_lands
 		convert(dudv_map, dudv_scale_offset);
 
 		return dudv_map;
+	}
+
+	/**
+	 * Imports from unsigned rg 16 bit image
+	 */
+	void UvTool::import(const ImageSharedPtr &dudv_map,
+		const glm::vec4 &dudv_scale_offset)
+	{
+		glm::vec2 uv, min, tmp, diff;
+		Sint32 width, height, x, y, index;
+
+		width = m_width;
+		height = m_height;
+		index = 0;
+
+		CECK_TABLE_SIZES_EQUAL(dudv_map->get_size(),
+			glm::uvec3(m_width, m_height, 0),
+			UTF8("Image has wrong size"));
+
+		diff.x = dudv_scale_offset.x;
+		diff.y = dudv_scale_offset.y;
+		min.x = dudv_scale_offset.z;
+		min.y = dudv_scale_offset.w;
+
+		for (y = 0; y < height; ++y)
+		{
+			for (x = 0; x < width; ++x)
+			{
+				uv.s = x;
+				uv.t = y;
+
+				uv *= AbstractTerrain::get_patch_scale();
+
+				tmp = glm::vec2(dudv_map->get_pixel(x, y, 0,
+					0, 0));
+
+				tmp = tmp * diff + min;
+				m_uvs[index] = uv + tmp;
+
+				++index;
+			}
+		}
 	}
 
 }

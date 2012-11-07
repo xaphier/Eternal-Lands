@@ -170,10 +170,12 @@ namespace eternal_lands
 				const Uint16 height) override;
 			virtual void set_ambient(const glm::vec3 &ambient)
 				override;
-			virtual void set_height_map_size(const Uint16 width,
-				const Uint16 height) override;
-			virtual void set_tile_map_size(const Uint16 width,
-				const Uint16 height) override;
+			virtual void set_map_size(const glm::uvec2 &size)
+				override;
+			virtual void set_height_map_size(
+				const glm::uvec2 &size) override;
+			virtual void set_tile_map_size(const glm::uvec2 &size)
+				override;
 			virtual void set_dungeon(const bool dungeon) override;
 			virtual void set_terrain(
 				const ImageSharedPtr &displacement_map,

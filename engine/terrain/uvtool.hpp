@@ -84,9 +84,24 @@ namespace eternal_lands
 			void relax_uv(
 				const AbstractProgressSharedPtr &progress,
 				const Uint16 count, const bool use_simd);
+
+			/**
+			 * Converts to image
+			 */
 			void convert(ImageSharedPtr &dudv_map,
-				glm::vec4 &dudv_scale_offset);
-			ImageSharedPtr convert(glm::vec4 &dudv_scale_offset);
+				glm::vec4 &dudv_scale_offset) const;
+
+			/**
+			 * Converts to unsigned rg 16 bit image
+			 */
+			ImageSharedPtr convert(glm::vec4 &dudv_scale_offset)
+				const;
+
+			/**
+			 * Imports from unsigned rg 16 bit image
+			 */
+			void import(const ImageSharedPtr &dudv_map,
+				const glm::vec4 &dudv_scale_offset);
 
 			inline const glm::vec2 &get_uv(const Uint16 x,
 				const Uint16 y) const

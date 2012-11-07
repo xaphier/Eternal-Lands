@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>execute_clear_layers.png</file>
     <file>remove_object.png</file>
     <file>height.png</file>
     <file>gui.png</file>

@@ -227,11 +227,10 @@ namespace eternal_lands
 				return result;
 			}
 
-			void set_height_map_size(const Uint16 width,
-				const Uint16 height)
+			void set_height_map_size(const glm::uvec2 &size)
 			{
 				m_height_map.resize(
-					boost::extents[width][height]);
+					boost::extents[size.x][size.y]);
 			}
 
 			inline void set_height(const Uint16 x, const Uint16 y,
@@ -277,11 +276,10 @@ namespace eternal_lands
 				return result;
 			}
 
-			void set_tile_map_size(const Uint16 width,
-				const Uint16 height)
+			void set_tile_map_size(const glm::uvec2 &size)
 			{
 				m_tile_map.resize(
-					boost::extents[width][height]);
+					boost::extents[size.x][size.y]);
 			}
 
 			inline void set_tile(const Uint16 x, const Uint16 y,
@@ -336,6 +334,16 @@ namespace eternal_lands
 			inline const String &get_name() const noexcept
 			{
 				return m_name;
+			}
+
+			inline void set_size(const glm::uvec2 &size) noexcept
+			{
+				m_size = size;
+			}
+
+			inline const glm::uvec2 &get_size() const noexcept
+			{
+				return m_size;
 			}
 
 			inline Uint32 get_id() const noexcept

@@ -145,7 +145,10 @@
     <addaction name="action_import_terrain_height_map"/>
     <addaction name="action_import_terrain_blend_map"/>
     <addaction name="action_relax_terrain_uv"/>
-    <addaction name="action_remove_objects"/>
+    <addaction name="action_show_used_terrain_layers"/>
+    <addaction name="action_clear_invisible_terrain_layers"/>
+    <addaction name="action_pack_terrain_layers"/>
+    <addaction name="action_remove_all_copies_of_object"/>
     <addaction name="action_replace"/>
     <addaction name="action_find"/>
    </widget>
@@ -903,7 +906,7 @@
   </widget>
   <widget class="QDockWidget" name="terrain_brush_dock">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="windowIcon">
     <iconset resource="icons/resourcen.qrc">
@@ -1380,6 +1383,9 @@
             </layout>
            </widget>
            <widget class="QWidget" name="page_8">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <layout class="QGridLayout" name="gridLayout_6">
              <property name="margin">
               <number>0</number>
@@ -1390,7 +1396,7 @@
              <item row="0" column="0">
               <widget class="QCheckBox" name="vector_brush_smooth_x">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>X</string>
@@ -1402,6 +1408,9 @@
              </item>
              <item row="0" column="1">
               <widget class="QSlider" name="vector_brush_smooth_strength_slider_x">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="maximum">
                 <number>100</number>
                </property>
@@ -1422,7 +1431,7 @@
              <item row="0" column="2">
               <widget class="QSpinBox" name="vector_brush_smooth_strength_x">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1444,7 +1453,7 @@
              <item row="1" column="0">
               <widget class="QCheckBox" name="vector_brush_smooth_y">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>Y</string>
@@ -1476,7 +1485,7 @@
              <item row="1" column="2">
               <widget class="QSpinBox" name="vector_brush_smooth_strength_y">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1498,7 +1507,7 @@
              <item row="2" column="0">
               <widget class="QCheckBox" name="vector_brush_smooth_z">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>Z</string>
@@ -1530,7 +1539,7 @@
              <item row="2" column="2">
               <widget class="QSpinBox" name="vector_brush_smooth_strength_z">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -4132,7 +4141,7 @@
     <string>Import terrain height map</string>
    </property>
   </action>
-  <action name="action_remove_objects">
+  <action name="action_remove_all_copies_of_object">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -4175,6 +4184,51 @@
    </property>
    <property name="toolTip">
     <string>Import terrain blend map</string>
+   </property>
+  </action>
+  <action name="action_show_used_terrain_layers">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/gtk-zoom-100.png</normaloff>:/icons/gtk-zoom-100.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show used terrain layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Show used terrain layers</string>
+   </property>
+  </action>
+  <action name="action_clear_invisible_terrain_layers">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/execute_clear_layers.png</normaloff>:/icons/execute_clear_layers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear invisible terrain layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear invisible terrain layers</string>
+   </property>
+  </action>
+  <action name="action_pack_terrain_layers">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/execute_clear_layers.png</normaloff>:/icons/execute_clear_layers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pack terrain layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Pack terrain layers</string>
    </property>
   </action>
  </widget>

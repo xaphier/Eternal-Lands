@@ -2475,4 +2475,9 @@ namespace eternal_lands
 			get_view_port()[2], get_view_port()[3]);
 	}
 
+	const glm::uvec2 &Scene::get_map_size() const
+	{
+		return get_map()->get_size();
+	}
+
 }

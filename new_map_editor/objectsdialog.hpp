@@ -12,7 +12,7 @@ class ObjectsDialog: public QDialog, public Ui::Objects
 	Q_OBJECT
 
 	private:
-		std::string m_object;
+		QString m_object;
 		unsigned short m_type;
 		unsigned short m_server_id;
 
@@ -22,8 +22,9 @@ class ObjectsDialog: public QDialog, public Ui::Objects
 		ObjectsDialog(QWidget* parent);
 		virtual ~ObjectsDialog();		
 		void set_dirs(const QStringList &dirs);
+		void set_object(const QString &object);
 
-		inline const std::string &get_object() const
+		inline const QString &get_object() const
 		{
 			return m_object;
 		}

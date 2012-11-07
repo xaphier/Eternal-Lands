@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>382</height>
+    <width>730</width>
+    <height>378</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,9 +40,17 @@
      <property name="animated">
       <bool>true</bool>
      </property>
+     <attribute name="headerDefaultSectionSize">
+      <number>160</number>
+     </attribute>
      <column>
       <property name="text">
        <string>Name</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>File name</string>
       </property>
      </column>
     </widget>
@@ -74,6 +82,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="ok">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>ok</string>
        </property>

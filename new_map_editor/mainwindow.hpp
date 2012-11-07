@@ -151,7 +151,6 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void save();
 		void save_as();
 		void change_ambient();
-		void change_blend_image_name();
 		void new_map();
 		void change_preferences();
 		void terrain_edit();
@@ -185,8 +184,9 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void change_terrain_textures();
 		void import_terrain_height_map();
 		void import_terrain_blend_map();
-		void remove_objects();
+		void remove_all_copies_of_object();
 		void relax_terrain_uv();
+		void show_used_terrain_layers();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

@@ -110,16 +110,19 @@ namespace eternal_lands
 		m_data.set_ambient(ambient);
 	}
 
-	void EditorMapLoader::set_height_map_size(const Uint16 width,
-		const Uint16 height)
+	void EditorMapLoader::set_map_size(const glm::uvec2 &size)
 	{
-		m_data.set_height_map_size(width, height);
+		m_data.set_map_size(size);
 	}
 
-	void EditorMapLoader::set_tile_map_size(const Uint16 width,
-		const Uint16 height)
+	void EditorMapLoader::set_height_map_size(const glm::uvec2 &size)
 	{
-		m_data.set_tile_map_size(width, height);
+		m_data.set_height_map_size(size);
+	}
+
+	void EditorMapLoader::set_tile_map_size(const glm::uvec2 &size)
+	{
+		m_data.set_tile_map_size(size);
 	}
 		
 	void EditorMapLoader::set_dungeon(const bool dungeon)
@@ -134,6 +137,7 @@ namespace eternal_lands
 	void EditorMapLoader::load(const String &name,
 		const MapItemsTypeSet &skip_items)
 	{
+		m_data.clear_terrain();
 		read(name, skip_items);
 	}
 

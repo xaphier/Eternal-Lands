@@ -147,8 +147,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_open, SIGNAL(triggered()), this, SLOT(open_map()));
 	QObject::connect(action_fog, SIGNAL(triggered()), this, SLOT(set_fog()));
 	QObject::connect(action_ambient, SIGNAL(triggered()), this, SLOT(change_ambient()));
-	QObject::connect(action_time, SIGNAL(valueChanged(int)), el_gl_widget,
-		SLOT(set_game_minute(int)));
+//	QObject::connect(action_time, SIGNAL(valueChanged(int)), el_gl_widget,
+//		SLOT(set_game_minute(int)));
 	QObject::connect(action_preferences, SIGNAL(triggered()), this,
 		SLOT(change_preferences()));
 	QObject::connect(action_terrain_textures, SIGNAL(triggered()), this,
@@ -414,8 +414,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	connect(action_relax_terrain_uv, SIGNAL(triggered()), this,
 		SLOT(relax_terrain_uv()));
 
-	connect(action_remove_objects, SIGNAL(triggered()), this,
-		SLOT(remove_objects()));
+	connect(action_remove_all_copies_of_object, SIGNAL(triggered()), this,
+		SLOT(remove_all_copies_of_object()));
 
 	m_progress_dialog = new QProgressDialog(this);
 
@@ -446,6 +446,13 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	connect(el_gl_widget, SIGNAL(changed_camera_roll(const int)),
 		camera_roll, SLOT(setValue(int)));
+
+	connect(action_show_used_terrain_layers, SIGNAL(triggered()),
+		this, SLOT(show_used_terrain_layers()));
+	connect(action_clear_invisible_terrain_layers, SIGNAL(triggered()),
+		el_gl_widget, SLOT(clear_invisible_terrain_layers()));
+	connect(action_pack_terrain_layers, SIGNAL(triggered()),
+		el_gl_widget, SLOT(pack_terrain_layers()));
 }
 
 MainWindow::~MainWindow()
@@ -798,6 +805,9 @@ void MainWindow::update_terrain(const bool enabled)
 	action_relax_terrain_uv->setEnabled(enabled);
 	action_import_terrain_height_map->setEnabled(enabled);
 	action_import_terrain_blend_map->setEnabled(enabled);
+	action_show_used_terrain_layers->setEnabled(enabled);
+	action_clear_invisible_terrain_layers->setEnabled(enabled);
+	action_pack_terrain_layers->setEnabled(enabled);
 
 	if (enabled)
 	{
@@ -825,7 +835,7 @@ void MainWindow::update_object(const bool select)
 	update_object();
 
 	action_remove->setEnabled(select);
-	action_remove_objects->setEnabled(select);
+	action_remove_all_copies_of_object->setEnabled(select);
 }
 
 void MainWindow::update_light(const bool select)
@@ -849,7 +859,7 @@ void MainWindow::update_light(const bool select)
 	}
 		
 	action_remove->setEnabled(select);
-	action_remove_objects->setEnabled(false);
+	action_remove_all_copies_of_object->setEnabled(false);
 
 	el_gl_widget->get_light_data(light);
 
@@ -880,7 +890,7 @@ void MainWindow::deselect()
 {
 	set_default_mode();
 	action_remove->setEnabled(false);
-	action_remove_objects->setEnabled(false);
+	action_remove_all_copies_of_object->setEnabled(false);
 }
 
 void MainWindow::update_translation()
@@ -1247,6 +1257,8 @@ void MainWindow::change_light_color()
 
 void MainWindow::add_objects(const bool value)
 {
+	EditorObjectDescription object_description;
+
 	if (!value)
 	{
 		el_gl_widget->disable_object();
@@ -1254,9 +1266,15 @@ void MainWindow::add_objects(const bool value)
 		return;
 	}
 
+	el_gl_widget->get_object_description(object_description);
+
+	m_objects->set_object(QString::fromUtf8(object_description.get_name(
+		).get().c_str()));
+
 	if (m_objects->exec() == QDialog::Accepted)
 	{
-		el_gl_widget->add_object(String(m_objects->get_object()));
+		el_gl_widget->add_object(String(m_objects->get_object().toUtf8(
+			)));
 
 		action_add_lights->setChecked(false);
 		action_delete_mode->setChecked(false);
@@ -1353,6 +1371,8 @@ void MainWindow::terrain_mode(const bool checked)
 			return;
 		}
 
+		m_init_terrain->set_map_size(el_gl_widget->get_map_size());
+
 		if (m_init_terrain->exec() != QDialog::Accepted)
 		{
 			action_terrain_mode->setChecked(false);
@@ -1383,7 +1403,7 @@ void MainWindow::terrain_mode(const bool checked)
 	}
 
 	action_remove->setEnabled(false);
-	action_remove_objects->setEnabled(false);
+	action_remove_all_copies_of_object->setEnabled(false);
 
 	action_add_objects->setChecked(false);
 	action_add_lights->setChecked(false);
@@ -1499,22 +1519,6 @@ void MainWindow::change_ambient()
 void MainWindow::change_dungeon()
 {
 	el_gl_widget->set_dungeon(action_dungeon->isChecked());
-}
-
-void MainWindow::change_blend_image_name()
-{
-	QString blend_image_name;
-	bool ok;
-
-	blend_image_name = el_gl_widget->get_blend_image_name();
-
-	blend_image_name = QInputDialog::getText(this, tr("Blend image"),
-		tr("File name:"), QLineEdit::Normal, blend_image_name, &ok);
-
-	if (ok && !blend_image_name.isEmpty())
-	{
-		el_gl_widget->set_blend_image_name(blend_image_name);
-	}
 }
 
 void MainWindow::new_map()
@@ -2270,20 +2274,14 @@ void MainWindow::roll_down()
 
 bool MainWindow::check_save_nodes()
 {
-	QMessageBox message_box;
-
 	if (!m_changed_nodes)
 	{
 		return true;
 	}
 
-	message_box.setText("The document has been modified.");
-	message_box.setInformativeText("Do you want to save your changes?");
-	message_box.setStandardButtons(QMessageBox::Yes | QMessageBox::No
-		| QMessageBox::Cancel);
-	message_box.setDefaultButton(QMessageBox::Yes);
-
-	switch (message_box.exec())
+	switch (QMessageBox::question(this, "The document has been modified",
+		"Do you want to save your changes?", QMessageBox::Yes |
+		QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes))
 	{
 		case QMessageBox::Yes:
 			save();
@@ -2980,7 +2978,29 @@ void MainWindow::relax_terrain_uv()
 	QThreadPool::globalInstance()->start(relax_uv);
 }
 
-void MainWindow::remove_objects()
+void MainWindow::remove_all_copies_of_object()
 {
-	el_gl_widget->remove_objects();
+	el_gl_widget->remove_all_copies_of_object();
+}
+
+void MainWindow::show_used_terrain_layers()
+{
+	QVector<int> terrain_layers_usage;
+	QString message;
+	int i, count, pixels, size;
+
+	el_gl_widget->get_terrain_layers_usage(terrain_layers_usage, pixels);
+
+	count = terrain_layers_usage.size();
+
+	size = roundf(std::log10(pixels) + 0.5f);
+
+	for (i = 0; i < count; ++i)
+	{
+		message += QString("layer %1: %2(%3%)\n").arg(i).arg(
+			terrain_layers_usage[i], size).arg((100.0f *
+				terrain_layers_usage[i]) / pixels, 6, 'f', 2);
+	}
+
+	QMessageBox::information(this, "Layer usage", message);
 }

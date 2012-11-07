@@ -4,28 +4,6 @@
 #include <xmlutil.hpp>
 #include <QVector3D>
 
-ObjectsDialog::ObjectsDialog(QWidget* parent): QDialog(parent)
-{
-	setupUi(this);
-
-	QObject::connect(tree, SIGNAL(itemSelectionChanged()), this,
-		SLOT(selected()));
-}
-
-ObjectsDialog::~ObjectsDialog()
-{
-}
-
-void ObjectsDialog::selected()
-{
-	if (tree->selectedItems().size() > 0)
-	{
-		m_object = (*tree->selectedItems().begin())->data(0, Qt::UserRole).toString().toStdString();
-		el_gl_widget->set_object((*tree->selectedItems().begin())->data(0, Qt::UserRole).toString(),
-			(*tree->selectedItems().begin())->data(1, Qt::UserRole).value<QVector3D>());
-	}
-}
-
 namespace eternal_lands
 {
 
@@ -241,6 +219,42 @@ namespace eternal_lands
 
 }
 
+ObjectsDialog::ObjectsDialog(QWidget* parent): QDialog(parent)
+{
+	setupUi(this);
+
+	QObject::connect(tree, SIGNAL(itemSelectionChanged()), this,
+		SLOT(selected()));
+}
+
+ObjectsDialog::~ObjectsDialog()
+{
+}
+
+void ObjectsDialog::selected()
+{
+	if (tree->selectedItems().size() == 0)
+	{
+		ok->setEnabled(false);
+
+		return;
+	}
+
+	if (tree->selectedItems()[0]->text(1).isEmpty())
+	{
+		ok->setEnabled(false);
+
+		return;
+	}
+
+	ok->setEnabled(true);
+
+	m_object = (*tree->selectedItems().begin())->data(0,
+		Qt::UserRole).toString();
+	el_gl_widget->set_object(m_object, tree->selectedItems()[0]->data(1,
+		Qt::UserRole).value<QVector3D>());
+}
+
 void ObjectsDialog::load_objects()
 {
 	QList<QTreeWidgetItem*> items;
@@ -271,5 +285,26 @@ void ObjectsDialog::set_dirs(const QStringList &dirs)
 	catch (const std::exception &exception)
 	{
 		QMessageBox::critical(0, "Error", exception.what());
+	}
+}
+
+void ObjectsDialog::set_object(const QString &object)
+{
+	QList<QTreeWidgetItem*> items;
+
+	items = tree->findItems(object, Qt::MatchFixedString | Qt::MatchWrap |
+		Qt::MatchRecursive, 1);
+
+	if (items.size() > 0)
+	{
+		m_object = object;
+
+		tree->setCurrentItem(items[0]);
+	}
+	else
+	{
+		m_object = QString();
+
+		tree->setCurrentItem(0);
 	}
 }

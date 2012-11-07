@@ -21,6 +21,7 @@ class InitTerrainDialog: public QDialog, public Ui::InitTerrain
 		InitTerrainDialog(QWidget *parent = 0);
 		virtual ~InitTerrainDialog();
 		QString get_height_map() const;
+		void set_map_size(const QSize &size);
 
 		inline const QSize &get_size() const
 		{
