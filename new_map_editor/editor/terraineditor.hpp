@@ -258,6 +258,10 @@ namespace eternal_lands
 			void clear_invisible_layers();
 			void pack_layers();
 			void clear();
+			glm::vec3 get_displacement_value(
+				const glm::uvec2 &vertex) const;
+			glm::vec3 get_normal_value(const glm::uvec2 &vertex)
+				const;
 
 			inline void set_albedo_map(const String &name,
 				const Uint16 index)

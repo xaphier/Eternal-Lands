@@ -23,9 +23,9 @@ namespace eternal_lands
 	namespace
 	{
 
-		const float vector_scale = 32.0f;
-		const glm::vec3 vector_min = glm::vec3(-vector_scale,
-			-vector_scale, 0.0f);
+		const glm::vec3 vector_scale = glm::vec3(32.0f, 32.0f, 64.0f);
+		const glm::vec3 vector_min = glm::vec3(-vector_scale.x,
+			-vector_scale.y, 0.0f);
 		const glm::vec3 vector_max = glm::vec3(vector_scale);
 
 	}
@@ -65,7 +65,7 @@ namespace eternal_lands
 		return vector_max;
 	}
 
-	const float AbstractTerrain::get_vector_scale() noexcept
+	const glm::vec3 &AbstractTerrain::get_vector_scale() noexcept
 	{
 		return vector_scale;
 	}

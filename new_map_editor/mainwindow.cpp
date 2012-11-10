@@ -419,6 +419,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	connect(action_remove_all_copies_of_object, SIGNAL(triggered()), this,
 		SLOT(remove_all_copies_of_object()));
+	connect(action_replace_all_copies_of_object, SIGNAL(triggered()), this,
+		SLOT(replace_all_copies_of_object()));
 
 	m_progress_dialog = new QProgressDialog(this);
 
@@ -456,6 +458,19 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		el_gl_widget, SLOT(clear_invisible_terrain_layers()));
 	connect(action_pack_terrain_layers, SIGNAL(triggered()),
 		el_gl_widget, SLOT(pack_terrain_layers()));
+
+	pick_displacement->setDefaultAction(action_pick_displacement);
+	pick_normal->setDefaultAction(action_pick_normal);
+
+	connect(action_pick_displacement, SIGNAL(triggered()), el_gl_widget,
+		SLOT(pick_terrain_displacement()));
+	connect(action_pick_normal, SIGNAL(triggered()), el_gl_widget,
+		SLOT(pick_terrain_normal()));
+
+	connect(el_gl_widget, SIGNAL(terrain_displacement(const QVector3D&)),
+		this, SLOT(terrain_displacement(const QVector3D&)));
+	connect(el_gl_widget, SIGNAL(terrain_normal(const QVector3D&)), this,
+		SLOT(terrain_normal(const QVector3D&)));
 }
 
 MainWindow::~MainWindow()
@@ -878,6 +893,7 @@ void MainWindow::update_object(const bool select)
 
 	action_remove->setEnabled(select);
 	action_remove_all_copies_of_object->setEnabled(select);
+	action_replace_all_copies_of_object->setEnabled(select);
 }
 
 void MainWindow::update_light(const bool select)
@@ -914,6 +930,7 @@ void MainWindow::update_light(const bool select)
 
 	action_remove->setEnabled(select);
 	action_remove_all_copies_of_object->setEnabled(false);
+	action_replace_all_copies_of_object->setEnabled(false);
 
 	el_gl_widget->get_light_data(light);
 
@@ -945,6 +962,7 @@ void MainWindow::deselect()
 	set_default_mode();
 	action_remove->setEnabled(false);
 	action_remove_all_copies_of_object->setEnabled(false);
+	action_replace_all_copies_of_object->setEnabled(false);
 
 	object_dock->widget()->setEnabled(false);
 	materials_dock->widget()->setEnabled(false);
@@ -1483,6 +1501,7 @@ void MainWindow::terrain_mode(const bool checked)
 
 	action_remove->setEnabled(false);
 	action_remove_all_copies_of_object->setEnabled(false);
+	action_replace_all_copies_of_object->setEnabled(false);
 
 	action_add_objects->setChecked(false);
 	action_add_lights->setChecked(false);
@@ -3102,4 +3121,40 @@ void MainWindow::show_used_terrain_layers()
 	}
 
 	QMessageBox::information(this, "Layer usage", message);
+}
+
+void MainWindow::terrain_displacement(const QVector3D &displacement)
+{
+	vector_brush_set_x->setValue(displacement.x());
+	vector_brush_set_y->setValue(displacement.y());
+	vector_brush_set_z->setValue(displacement.z());
+}
+
+void MainWindow::terrain_normal(const QVector3D &normal)
+{
+	QVector3D value;
+
+	value = normal * scale_picked_normal->value();
+
+	vector_brush_add_x->setValue(value.x());
+	vector_brush_add_y->setValue(value.y());
+	vector_brush_add_z->setValue(value.z());
+}
+
+void MainWindow::replace_all_copies_of_object()
+{
+	EditorObjectDescription object_description;
+
+	el_gl_widget->get_object_description(object_description);
+
+	m_objects->set_object(QString::fromUtf8(object_description.get_name(
+		).get().c_str()));
+
+	if (m_objects->exec() != QDialog::Accepted)
+	{
+		return;
+	}
+
+	el_gl_widget->set_all_copies_of_object_name(String(
+		m_objects->get_object().toUtf8()));
 }

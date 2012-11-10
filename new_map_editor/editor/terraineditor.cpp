@@ -566,8 +566,8 @@ namespace eternal_lands
 		{
 			for (x = 0; x < m_size.x; ++x)
 			{
-				m_displacement_image->set_pixel_uint(x, y, 0,
-					0, 0, glm::uvec4(0, 0, 0, 0));
+				m_displacement_image->set_pixel(x, y, 0, 0, 0,
+					glm::vec4(0.5f, 0.5f, 0.0f, 0.0f));
 			}
 		}
 
@@ -771,14 +771,12 @@ namespace eternal_lands
 		min_distance = std::numeric_limits<float>::max();
 
 		min = glm::ivec2(glm::vec2(world_position -
-			AbstractTerrain::get_patch_scale() *
-			AbstractTerrain::get_tile_size()) /
+			AbstractTerrain::get_vector_scale()) /
 			AbstractTerrain::get_patch_scale());
 
 		max = glm::ivec2(glm::vec2(world_position +
-			AbstractTerrain::get_patch_scale() *
-			AbstractTerrain::get_tile_size()) /
-			AbstractTerrain::get_patch_scale());
+			AbstractTerrain::get_vector_scale()) /
+			AbstractTerrain::get_patch_scale()) + 1;
 
 		size.x = m_displacement_image->get_width();
 		size.y = m_displacement_image->get_height();
@@ -810,9 +808,8 @@ namespace eternal_lands
 			}
 		}
 
-		return min_distance < std::sqrt(3.0f *
-			AbstractTerrain::get_patch_scale() *
-			AbstractTerrain::get_tile_size());
+		return min_distance <= glm::length(
+			AbstractTerrain::get_vector_scale());
 	}
 
 	void TerrainEditor::set_material(const String &albedo_map,
@@ -864,18 +861,20 @@ namespace eternal_lands
 		size = height_image->get_size();
 		size = glm::max(size, glm::uvec3(1));
 
+		height = 0;
+
 		for (y = 0; y < m_size.y; ++y)
 		{
 			for (x = 0; x < m_size.x; ++x)
 			{
 				if ((x < size.x) && (y < size.y))
 				{
-					height = height_image->get_pixel_uint(x,
-						y, 0, 0, 0).r;
+					height = height_image->get_pixel(
+						x, y, 0, 0, 0).r;
 				}
 
-				m_displacement_image->set_pixel_uint(x, y, 0,
-					0, 0, glm::uvec4(0, 0, height, 0));
+				m_displacement_image->set_pixel(x, y, 0, 0, 0,
+					glm::vec4(0.5f, 0.5f, height, 0));
 			}
 		}
 
@@ -1369,6 +1368,20 @@ namespace eternal_lands
 		m_size = glm::vec3(0);
 		m_dudv_scale_offset = glm::vec4(0.0f);
 		m_enabled = false;
+	}
+
+	glm::vec3 TerrainEditor::get_displacement_value(
+		const glm::uvec2 &vertex) const
+	{
+		return AbstractTerrain::get_offset_scaled_rgb10_a2(
+			m_displacement_image->get_pixel_packed_uint32(vertex.x,
+				vertex.y, 0, 0, 0));
+	}
+
+	glm::vec3 TerrainEditor::get_normal_value(const glm::uvec2 &vertex)
+		const
+	{
+		return get_normal(glm::ivec2(vertex));
 	}
 
 }

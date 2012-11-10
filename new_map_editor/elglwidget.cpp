@@ -45,6 +45,8 @@ ELGLWidget::ELGLWidget(QWidget *parent): QGLWidget(parent)
 	set_click_button(Qt::LeftButton);
 	set_grab_button(Qt::RightButton);
 	set_view_rotate_button(Qt::MidButton);
+
+	m_terrain_picking = tpt_nothing;
 }
 
 ELGLWidget::~ELGLWidget()
@@ -322,11 +324,41 @@ void ELGLWidget::get_image_data(const QString &name, QSize &size, bool &ok)
 
 void ELGLWidget::mouse_click_action()
 {
+	glm::vec3 displacement, normal;
+
 	m_editor->update_edit_id();
 
 	if (get_terrain_editing())
 	{
-		emit terrain_edit();
+		switch (m_terrain_picking)
+		{
+			case tpt_nothing:
+				emit terrain_edit();
+				break;
+			case tpt_displacement:
+				if (!m_editor->get_terrain_displacement(
+					m_world_position, displacement))
+				{
+					break;
+				}
+
+				emit terrain_displacement(QVector3D(
+					displacement.x, displacement.y,
+					displacement.z));
+				break;
+			case tpt_normal:
+				if (!m_editor->get_terrain_normal(
+					m_world_position, normal))
+				{
+					break;
+				}
+
+				emit terrain_normal(QVector3D(normal.x,
+					normal.y, normal.z));
+				break;
+		};
+
+		m_terrain_picking = tpt_nothing;
 
 		return;
 	}
@@ -1827,4 +1859,20 @@ void ELGLWidget::clear_invisible_terrain_layers()
 void ELGLWidget::pack_terrain_layers()
 {
 	m_editor->pack_terrain_layers();
+}
+
+void ELGLWidget::pick_terrain_displacement()
+{
+	m_terrain_picking = tpt_displacement;
+}
+
+void ELGLWidget::pick_terrain_normal()
+{
+	m_terrain_picking = tpt_normal;
+}
+
+void ELGLWidget::set_all_copies_of_object_name(const String &name)
+{
+	m_editor->set_all_copies_of_object_name(name);
+	emit can_undo(m_editor->get_can_undo());
 }

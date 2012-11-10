@@ -29,6 +29,7 @@ namespace eternal_lands
 		mt_object_selection_changed,
 		mt_object_materials_changed,
 		mt_object_walkable_changed,
+		mt_object_name_changed,
 
 		mt_objects_removed,
 		mt_objects_translation_changed,
@@ -39,6 +40,7 @@ namespace eternal_lands
 		mt_objects_selection_changed,
 		mt_objects_materials_changed,
 		mt_objects_walkable_changed,
+		mt_objects_name_changed,
 
 		mt_light_added,
 		mt_light_removed,

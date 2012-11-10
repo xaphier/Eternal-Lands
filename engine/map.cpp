@@ -68,65 +68,6 @@ namespace eternal_lands
 
 	void Map::load_data(const String& name)
 	{
-		ImageCompressionTypeSet compressions;
-		ImageSharedPtr displacement_map, normal_map, dudv_map;
-		ImageSharedPtr blend_map;
-		StringVector albedo_maps;
-		TerrainMaterialData material_data;
-		MaterialSharedPtrVector materials;
-		String file_name, displacement_map_name, normal_map_name;
-		String dudv_map_name;
-
-		file_name = FileSystem::get_name_without_extension(name);
-
-		displacement_map_name = String(file_name.get() +
-			UTF8("_vector.dds"));
-		normal_map_name = String(file_name.get() + UTF8("_normal.dds"));
-		dudv_map_name = String(file_name.get() + UTF8("_dudv.dds"));
-
-		if (!m_file_system->get_file_readable(displacement_map_name) ||
-			!m_file_system->get_file_readable(normal_map_name) ||
-			!m_file_system->get_file_readable(dudv_map_name))
-		{
-			return;
-		}
-
-		if (get_global_vars()->get_opengl_3_0())
-		{
-			compressions.insert(ict_rgtc);
-		}
-
-		displacement_map = m_codec_manager->load_image(
-			displacement_map_name, m_file_system, compressions,
-			true, false, false);
-
-		normal_map = m_codec_manager->load_image(normal_map_name,
-			m_file_system, compressions, true, false, false);
-
-		dudv_map = m_codec_manager->load_image(dudv_map_name,
-			m_file_system, compressions, true, false, false);
-
-		init_walk_height_map(displacement_map->decompress(false, true,
-			false));
-
-		set_terrain_geometry_maps(displacement_map, normal_map,
-			dudv_map);
-
-		albedo_maps.push_back(String(UTF8("3dobjects/tile1.dds")));
-		albedo_maps.push_back(String(UTF8("3dobjects/tile11.dds")));
-		albedo_maps.push_back(String(UTF8("3dobjects/tile3.dds")));
-		albedo_maps.push_back(String(UTF8("3dobjects/tile4.dds")));
-		albedo_maps.push_back(String(UTF8("3dobjects/tile5.dds")));
-
-		material_data.resize(5);
-
-		blend_map = m_codec_manager->load_image(
-			String(UTF8("textures/blend0.dds")), m_file_system,
-			ImageCompressionTypeSet(), false, false, true);
-
-		set_terrain_blend_map(blend_map);
-		set_terrain_material(albedo_maps, StringVector(),
-			material_data);
 	}
 
 	void Map::init_walk_height_map(const ImageSharedPtr &displacement_map)
@@ -137,7 +78,7 @@ namespace eternal_lands
 
 		size = glm::uvec2(displacement_map->get_size());
 
-		scale = AbstractTerrain::get_vector_scale();
+		scale = AbstractTerrain::get_vector_scale().z;
 
 		m_walk_height_map.resize(boost::extents[size.x][size.y]);
 

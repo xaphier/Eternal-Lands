@@ -405,30 +405,9 @@ namespace eternal_lands
 
 		lights_count = 1;
 
-		if (m_map->get_dungeon())
-		{
-			m_light_positions_array[0] =
-				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-			m_light_colors_array[0] =
-				glm::vec4(glm::vec3(0.2f), 0.0f);
-		}
-		else
-		{
-			m_light_positions_array[0] = m_main_light_direction;
+		assert(get_global_vars()->get_light_system() == lst_default);
 
-			if (get_lights())
-			{
-				m_light_colors_array[0] = m_main_light_color +
-					glm::vec4(glm::vec3(0.3f), 0.0f);
-			}
-			else
-			{
-				m_light_colors_array[0] = m_main_light_color +
-					glm::vec4(glm::vec3(0.1f), 0.0f);
-			}
-		}
-
-		if (m_map->get_dungeon() || get_lights())
+		if (get_map()->get_dungeon() || get_lights())
 		{
 			BOOST_FOREACH(const RenderLightData &light,
 				m_visible_lights.get_lights())
@@ -667,6 +646,7 @@ namespace eternal_lands
 			}
 
 			#pragma omp section
+			if (get_map()->get_dungeon() || get_lights())
 			{
 				intersect(frustum, m_visible_lights);
 
@@ -822,7 +802,7 @@ namespace eternal_lands
 			program->set_parameter(apt_clipmap_terrain_matrices,
 				m_clipmap_terrain.get_texture_matrices());
 
-			if (m_map->get_dungeon())
+			if (get_map()->get_dungeon())
 			{
 				program->set_parameter(apt_ambient,
 					glm::vec4(m_map->get_ambient(), 1.0f));
@@ -882,7 +862,10 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			if (lights)
+			lights_count = 1;
+
+			if (lights && (get_global_vars()->get_light_system() ==
+				lst_default))
 			{
 				tmp = std::numeric_limits<float>::max();
 
@@ -1736,6 +1719,7 @@ namespace eternal_lands
 		}
 
 		STRING_MARKER(UTF8("drawing mode '%1%'"), UTF8("lights"));
+
 		m_scene_frame_buffer->bind();
 		m_scene_frame_buffer->set_view_port();
 		m_scene_frame_buffer->attach(m_light_index_texture,

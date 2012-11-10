@@ -188,6 +188,9 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void remove_all_copies_of_object();
 		void relax_terrain_uv();
 		void show_used_terrain_layers();
+		void terrain_displacement(const QVector3D &displacement);
+		void terrain_normal(const QVector3D &normal);
+		void replace_all_copies_of_object();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

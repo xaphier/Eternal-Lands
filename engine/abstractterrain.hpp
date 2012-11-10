@@ -113,7 +113,7 @@ namespace eternal_lands
 			const glm::vec4 &get_dudv_scale_offset() const;
 			static const glm::vec3 &get_vector_min() noexcept;
 			static const glm::vec3 &get_vector_max() noexcept;
-			static const float get_vector_scale() noexcept;
+			static const glm::vec3 &get_vector_scale() noexcept;
 
 			inline bool get_empty() const noexcept
 			{
@@ -167,32 +167,25 @@ namespace eternal_lands
 			static inline glm::vec3 get_offset_scaled_0_1(
 				const glm::vec4 &value)
 			{
-				glm::vec3 result, tmp;
+				glm::vec3 result;
 
-				result = glm::vec3(value) * get_vector_scale();
-				tmp = glm::step(glm::vec3(value.a),
-					glm::vec3(0.5f, 1.5f, 2.5f) / 3.0f);
-				result.x *= (tmp.x - tmp.y + tmp.z) * 2.0f -
-					1.0f;
-				result.y *= tmp.y * 2.0f - 1.0f;
+				result = glm::vec3(value);
+				result.x = result.x * 2.0f - 1.0f;
+				result.y = result.y * 2.0f - 1.0f;
 
-				return result;
+				return result * get_vector_scale();
 			}
 
 			static inline glm::vec3 get_offset_scaled_rgb10_a2(
 				const glm::uvec4 &value)
 			{
-				glm::vec3 result, tmp;
+				glm::vec3 result;
 
-				result = glm::vec3(value) * get_vector_scale()
-					/ 1023.0f;
-				tmp = glm::step(glm::vec3(value.a) / 3.0f,
-					glm::vec3(0.5f, 1.5f, 2.5f) / 3.0f);
-				result.x *= (tmp.x - tmp.y + tmp.z) * 2.0f -
-					1.0f;
-				result.y *= tmp.y * 2.0f - 1.0f;
+				result = glm::vec3(value) / 1023.0f;
+				result.x = result.x * 2.0f - 1.0f;
+				result.y = result.y * 2.0f - 1.0f;
 
-				return result;
+				return result * get_vector_scale();
 			}
 
 			static inline glm::vec3 get_offset_scaled_rgb10_a2(
@@ -202,57 +195,33 @@ namespace eternal_lands
 
 				result = glm::vec3((value >> 22) & 0x3FF,
 					(value >> 12) & 0x3FF,
-					(value >> 02) & 0x3FF) *
-					(get_vector_scale() / 1023.0f);
+					(value >> 02) & 0x3FF) / 1023.0f;
+				result.x = result.x * 2.0f - 1.0f;
+				result.y = result.y * 2.0f - 1.0f;
 
-				if ((value & 0x00000001) != 0)
-				{
-					result.x = -result.x;
-				}
-
-				if ((value & 0x00000002) != 0)
-				{
-					result.y = -result.y;
-				}
-
-				return result;
+				return result * get_vector_scale();
 			}
 
 			static inline glm::uvec4 get_value_scaled_rgb10_a2(
 				const glm::vec3 &offset)
 			{
-				glm::uvec3 tmp;
-				Uint16 signs;
+				glm::vec3 result;
 
-				tmp = (glm::abs(offset) * 1023.0f /
-					get_vector_scale()) + 0.5f;
+				result = offset / get_vector_scale();
+				result.x = result.x * 0.5f + 0.5f;
+				result.y = result.y * 0.5f + 0.5f;
 
-				signs = 0;
-
-				if (offset.x < 0.0f)
-				{
-					signs += 1;
-				}
-
-				if (offset.y < 0.0f)
-				{
-					signs += 2;
-				}
-
-				return glm::uvec4(tmp, signs);
+				return glm::uvec4(result * 1023.0f + 0.5f, 0);
 			}
 
 			static inline glm::vec3 get_offset_rgb10_a2(
 				const glm::uvec4 &value)
 			{
-				glm::vec3 result, tmp;
+				glm::vec3 result;
 
 				result = glm::vec3(value) / 1023.0f;
-				tmp = glm::step(glm::vec3(value.a) / 3.0f,
-					glm::vec3(0.5f, 1.5f, 2.5f) / 3.0f);
-				result.x *= (tmp.x - tmp.y + tmp.z) * 2.0f -
-					1.0f;
-				result.y *= tmp.y * 2.0f - 1.0f;
+				result.x = result.x * 2.0f - 1.0f;
+				result.y = result.y * 2.0f - 1.0f;
 
 				return result;
 			}
@@ -260,24 +229,13 @@ namespace eternal_lands
 			static inline glm::uvec4 get_value_rgb10_a2(
 				const glm::vec3 &offset)
 			{
-				glm::uvec3 tmp;
-				Uint16 signs;
+				glm::vec3 result;
 
-				tmp = glm::abs(offset) * 1023.0f + 0.5f;
+				result = offset;
+				result.x = result.x * 0.5f + 0.5f;
+				result.y = result.y * 0.5f + 0.5f;
 
-				signs = 0;
-
-				if (offset.x < 0.0f)
-				{
-					signs += 1;
-				}
-
-				if (offset.y < 0.0f)
-				{
-					signs += 2;
-				}
-
-				return glm::uvec4(tmp, signs);
+				return glm::uvec4(result * 1023.0f + 0.5f, 0);
 			}
 
 	};

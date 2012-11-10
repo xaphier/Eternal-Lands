@@ -291,8 +291,12 @@ void ObjectsDialog::set_dirs(const QStringList &dirs)
 void ObjectsDialog::set_object(const QString &object)
 {
 	QList<QTreeWidgetItem*> items;
+	QString str;
 
-	items = tree->findItems(object, Qt::MatchFixedString | Qt::MatchWrap |
+	str = object;
+	str.replace("\\", "/");
+
+	items = tree->findItems(str, Qt::MatchFixedString | Qt::MatchWrap |
 		Qt::MatchRecursive, 1);
 
 	if (items.size() > 0)

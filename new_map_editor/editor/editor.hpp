@@ -79,7 +79,7 @@ namespace eternal_lands
 			void set_ground_tile(const glm::vec2 &point,
 				const Uint16 tile);
 			void add_3d_object(const glm::vec3 &position,
-				const String &mesh,
+				const String &name,
 				const SelectionType selection);
 			void add_light(const glm::vec3 &position,
 				const float radius);
@@ -125,6 +125,10 @@ namespace eternal_lands
 				const bool walkable);
 			void set_object_materials(const Uint32 id,
 				const StringVector &materials);
+			void set_object_name(const Uint32 id,
+				const String &name);
+			void set_all_copies_of_object_name(const Uint32 id,
+				const String &name);
 			void set_objects_transparency(const Uint32Set &ids,
 				const float transparency);
 			void set_objects_translation(const Uint32Set &ids,
@@ -141,6 +145,8 @@ namespace eternal_lands
 				const bool walkable);
 			void set_objects_materials(const Uint32Set &ids,
 				const StringVector &materials);
+			void set_objects_name(const Uint32Set &ids,
+				const String &name);
 			void remove_light(const Uint32 id);
 			void set_light_position(const Uint32 id,
 				const glm::vec3 &position);
@@ -187,6 +193,12 @@ namespace eternal_lands
 			void pack_terrain_layers();
 			void deselect();
 			void clear();
+			bool get_terrain_displacement(
+				const glm::vec3 &position,
+				glm::vec3 &displacement) const;
+			bool get_terrain_normal(
+				const glm::vec3 &position, glm::vec3 &normal)
+				const;
 
 			static inline const glm::vec3 &get_terrain_offset_min()
 			{
@@ -438,6 +450,19 @@ namespace eternal_lands
 				}
 
 				remove_all_copies_of_object(get_id());
+
+				return true;
+			}
+
+			inline bool set_all_copies_of_object_name(
+				const String &name)
+			{
+				if (!get_object_selected())
+				{
+					return false;
+				}
+
+				set_all_copies_of_object_name(get_id(), name);
 
 				return true;
 			}

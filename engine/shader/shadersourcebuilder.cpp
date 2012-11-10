@@ -631,9 +631,6 @@ namespace eternal_lands
 			const ParameterSizeTypeUint16Map &array_sizes,
 			OutStream &str)
 		{
-			float scale, offset;
-			Uint16 lut_size;
-
 			BOOST_FOREACH(const ParameterSizeTypeUint16Pair
 				&parameter, array_sizes)
 			{
@@ -641,18 +638,6 @@ namespace eternal_lands
 				str << parameter.first << UTF8(" = ");
 				str << parameter.second << UTF8(";\n");
 			}
-
-			str << UTF8("const float terrain_vector_scale = ");
-			str << AbstractTerrain::get_vector_scale();
-			str << UTF8(";\n");
-
-			lut_size = ColorCorrection::get_lut_size();
-			scale = (lut_size - 1.0) / lut_size;
-			offset = 1.0f / (2.0f * lut_size);
-
-			str << UTF8("const vec2 color_correction_scale_offset");
-			str << UTF8(" = vec2(") << scale << UTF8(", ");
-			str << offset << UTF8(");\n");
 		}
 
 		class OptimizeShaderSource
@@ -1164,13 +1149,16 @@ namespace eternal_lands
 		functions << indent << UTF8("{") << std::endl;
 		functions << indent << UTF8("\tvec3 result, tmp;") << std::endl;
 		functions << std::endl;
-		functions << indent << UTF8("\tresult = vector.xyz * ");
-		functions << AbstractTerrain::get_vector_scale() << UTF8(";");
-		functions << std::endl;
-		functions << indent << UTF8("\ttmp = step(vector.aaa, vec3(");
-		functions << UTF8("0.5f, 1.5f, 2.5f) / 3.0f);") << std::endl;
-		functions << indent << UTF8("\tresult.xy *= vec2(tmp.x - ");
-		functions << UTF8("tmp.y + tmp.z, tmp.y) * 2.0 - 1.0;");
+		functions << indent << UTF8("\tresult = vector.xyz;");
+		functions << indent << UTF8("\tresult.xy = result.xy * 2.0 -");
+		functions << UTF8(" 1.0;") << std::endl;
+		functions << indent << UTF8("\tresult *= vec3(");
+		functions << AbstractTerrain::get_vector_scale().x;
+		functions << UTF8(",");
+		functions << AbstractTerrain::get_vector_scale().y;
+		functions << UTF8(",");
+		functions << AbstractTerrain::get_vector_scale().z;
+		functions << UTF8(");") << std::endl;
 		functions << std::endl;
 		functions << indent << UTF8("\treturn result;") << std::endl;
 		functions << indent << UTF8("}") << std::endl;

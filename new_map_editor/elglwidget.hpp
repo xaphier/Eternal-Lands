@@ -18,6 +18,13 @@ enum KeyPressType
 	kpt_scale
 };
 
+enum TerrainPickingType
+{
+	tpt_nothing,
+	tpt_displacement,
+	tpt_normal
+};
+
 class ELGLWidget: public QGLWidget
 {
 	Q_OBJECT
@@ -59,6 +66,7 @@ class ELGLWidget: public QGLWidget
 		bool m_mouse_click_action;
 		bool m_mouse_move_action;
 		bool m_grab_world_position_valid;
+		TerrainPickingType m_terrain_picking;
 		KeyPressType m_mouse_move;
 		BlendType m_blend;
 		Qt::MouseButton m_press_button;
@@ -239,6 +247,7 @@ class ELGLWidget: public QGLWidget
 		QVector3D get_map_max() const;
 		void get_terrain_layers_usage(QVector<int> &use_layer_pixels,
 			int &pixels) const;
+		void set_all_copies_of_object_name(const String &name);
 
 		inline Qt::MouseButton get_press_button() const
 		{
@@ -509,6 +518,8 @@ class ELGLWidget: public QGLWidget
 		void update_terrain_dudv();
 		void clear_invisible_terrain_layers();
 		void pack_terrain_layers();
+		void pick_terrain_displacement();
+		void pick_terrain_normal();
 
 	signals:
 		void update_object(const bool select);
@@ -520,6 +531,8 @@ class ELGLWidget: public QGLWidget
 		void initialized();
 		void changed_camera_yaw(const int yaw);
 		void changed_camera_roll(const int roll);
+		void terrain_displacement(const QVector3D &displacement);
+		void terrain_normal(const QVector3D &normal);
 
 };
 

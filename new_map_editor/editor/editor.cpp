@@ -186,7 +186,7 @@ namespace eternal_lands
 	}
 
 	void Editor::add_3d_object(const glm::vec3 &position,
-		const String &mesh, const SelectionType selection)
+		const String &name, const SelectionType selection)
 	{
 		EditorObjectDescription object_description;
 		glm::vec3 translation, rotation, vrandom;
@@ -238,7 +238,7 @@ namespace eternal_lands
 		object_description.set_rotation_angles(rotation);
 		object_description.set_scale(glm::vec3(scale));
 		object_description.set_selection(selection);
-		object_description.set_name(mesh);
+		object_description.set_name(name);
 		object_description.set_id(id);
 
 		m_data.add_object(object_description, sct_no);
@@ -617,6 +617,43 @@ namespace eternal_lands
 		}
 	}
 
+	void Editor::set_object_name(const Uint32 id, const String &name)
+	{
+		EditorObjectDescription object_description;
+
+		m_data.get_object(id, object_description);
+
+		if (object_description.get_name() != name)
+		{
+			change_object(mt_object_name_changed,
+				object_description);
+
+			object_description.set_name(name);
+
+			m_data.modify_object(object_description);
+		}
+	}
+
+	void Editor::set_all_copies_of_object_name(const Uint32 id,
+		const String &name)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, count;
+
+		m_data.get_objects(id, object_descriptions);
+
+		change_objects(mt_objects_name_changed, object_descriptions);
+
+		count = object_descriptions.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_name(name);
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
 	void Editor::set_objects_blend(const Uint32Set &ids,
 		const BlendType blend)
 	{
@@ -893,6 +930,38 @@ namespace eternal_lands
 				object_descriptions[i].set_material_names(
 					materials);
 			}
+
+			m_data.modify_object(object_descriptions[i]);
+		}
+	}
+
+	void Editor::set_objects_name(const Uint32Set &ids, const String &name)
+	{
+		EditorObjectDescriptionVector object_descriptions;
+		Uint32 i, index, count;
+
+		count = ids.size();
+
+		if (count == 0)
+		{
+			return;
+		}
+
+		object_descriptions.resize(count);
+
+		index = 0;
+
+		BOOST_FOREACH(const Uint32 id, ids)
+		{
+			m_data.get_object(id, object_descriptions[index]);
+			index++;
+		}
+
+		change_objects(mt_objects_name_changed, object_descriptions);
+
+		for (i = 0; i < count; ++i)
+		{
+			object_descriptions[i].set_name(name);
 
 			m_data.modify_object(object_descriptions[i]);
 		}
@@ -1208,6 +1277,36 @@ namespace eternal_lands
 	{
 		m_undo.clear();
 		m_data.clear();
+	}
+
+	bool Editor::get_terrain_displacement(const glm::vec3 &position,
+		glm::vec3 &displacement) const
+	{
+		glm::uvec2 vertex;
+
+		if (!m_data.get_terrain_vertex(position, vertex))
+		{
+			return false;
+		}
+
+		displacement = m_data.get_terrain_displacement(vertex);
+
+		return true;
+	}
+
+	bool Editor::get_terrain_normal(const glm::vec3 &position,
+		glm::vec3 &normal) const
+	{
+		glm::uvec2 vertex;
+
+		if (!m_data.get_terrain_vertex(position, vertex))
+		{
+			return false;
+		}
+
+		normal = m_data.get_terrain_normal(vertex);
+
+		return true;
 	}
 
 }

@@ -203,6 +203,20 @@ namespace eternal_lands
 			void set_map_size(const glm::uvec2 &size);
 			void clear();
 
+			inline glm::vec3 get_terrain_displacement(
+				const glm::uvec2 &vertex) const
+			{
+				return m_terrain_editor.get_displacement_value(
+					vertex);
+			}
+
+			inline glm::vec3 get_terrain_normal(
+				const glm::uvec2 &vertex) const
+			{
+				return m_terrain_editor.get_normal_value(
+					vertex);
+			}
+
 			inline void deselect()
 			{
 				m_renderable = rt_none;
