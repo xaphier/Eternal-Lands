@@ -960,6 +960,7 @@ namespace eternal_lands
 		if (version == 0)
 		{
 			terrain_offset = 0;
+			water_offset = 0;
 			name_count = 0;
 			name_offset = 0;
 		}

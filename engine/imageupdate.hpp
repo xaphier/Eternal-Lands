@@ -33,7 +33,7 @@ namespace eternal_lands
 	{
 		private:
 			ImageSharedPtr m_image;
-			glm::uvec3 m_offsets;
+			glm::uvec3 m_offset;
 			glm::uvec3 m_size;
 			Uint16 m_mipmap;
 
@@ -42,7 +42,7 @@ namespace eternal_lands
 			ImageUpdate(const ImageSharedPtr &image,
 				const Uint16 mipmap = 0);
 			ImageUpdate(const ImageSharedPtr &image,
-				const glm::uvec3 &offsets,
+				const glm::uvec3 &offset,
 				const glm::uvec3 &size,
 				const Uint16 mipmap = 0);
 			~ImageUpdate() noexcept;
@@ -53,10 +53,10 @@ namespace eternal_lands
 				m_image = image;
 			}
 
-			inline void set_offset(const glm::uvec3 &offsets)
+			inline void set_offset(const glm::uvec3 &offset)
 				noexcept
 			{
-				m_offsets = offsets;
+				m_offset = offset;
 			}
 
 			inline void set_size(const glm::uvec3 &size) noexcept
@@ -74,9 +74,9 @@ namespace eternal_lands
 				return m_image;
 			}
 
-			inline const glm::uvec3 &get_offsets() const noexcept
+			inline const glm::uvec3 &get_offset() const noexcept
 			{
-				return m_offsets;
+				return m_offset;
 			}
 
 			inline const glm::uvec3 &get_size() const noexcept

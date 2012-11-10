@@ -17,12 +17,13 @@ namespace eternal_lands
 	namespace
 	{
 
+		/* For SSE2 usage */
 		boost::array<glm::ivec2, 8> direction_indices = {
 			{
 				glm::ivec2(-1, -1), glm::ivec2( 0, -1),
-				glm::ivec2( 1, -1), glm::ivec2(-1,  0),
-				glm::ivec2( 1,  0), glm::ivec2(-1,  1),
-				glm::ivec2( 0,  1), glm::ivec2( 1,  1)
+				glm::ivec2(-1,  1), glm::ivec2( 0,  1),
+				glm::ivec2( 1, -1), glm::ivec2( 1,  1),
+				glm::ivec2(-1,  0), glm::ivec2( 1,  0)
 			}
 		};
 
@@ -92,7 +93,7 @@ namespace eternal_lands
 
 		m_half_distances.resize(m_width * m_height * 2);
 
-//		#pragma omp parallel for private(x)
+		#pragma omp parallel for private(x)
 		for (y = 0; y < m_height; ++y)
 		{
 			for (x = 0; x < m_width; ++x)
@@ -286,10 +287,24 @@ namespace eternal_lands
 		#pragma omp parallel for
 		for (i = 1; i < (height - 1); ++i)
 		{
+			glm::uvec2 position;
+
 			SIMD::relax_uv_line(glm::value_ptr(uvs[i * width]),
 				half_distances.get_ptr_at(i * width * 2),
 				damping, clamping, width,
 				glm::value_ptr(new_uvs[i * width]));
+
+			position.x = 0;
+			position.y = i;
+
+			relax_edge(half_distances, uvs, position, size,
+				damping, clamping, new_uvs);
+
+			position.x = width - 1;
+			position.y = i;
+
+			relax_edge(half_distances, uvs, position, size,
+				damping, clamping, new_uvs);
 		}
 
 		#pragma omp parallel for
@@ -316,7 +331,7 @@ namespace eternal_lands
 		new_uvs.resize(m_uvs.size());
 
 		progress->set_text(String(UTF8("relax uv")));
-		progress->init(0, count / 10);
+		progress->init(0, count / 100);
 
 		if (progress->get_canceled())
 		{
@@ -327,13 +342,13 @@ namespace eternal_lands
 		{
 			for (i = 0; i < count; ++i)
 			{
-				relax_sse2(m_half_distances, m_uvs, 0.015f,
+				relax_sse2(m_half_distances, m_uvs, 0.05f,
 					AbstractTerrain::get_patch_scale(),
 					m_width, m_height, new_uvs);
 
 				std::swap(new_uvs, m_uvs);
 
-				if ((i % 10) == 0)
+				if ((i % 100) == 0)
 				{
 					if (progress->get_canceled())
 					{
@@ -349,13 +364,13 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			relax_default(m_half_distances, m_uvs, 0.015f,
+			relax_default(m_half_distances, m_uvs, 0.05f,
 				AbstractTerrain::get_patch_scale(),
 				m_width, m_height, new_uvs);
 
 			std::swap(new_uvs, m_uvs);
 
-			if ((i % 10) == 0)
+			if ((i % 100) == 0)
 			{
 				if (progress->get_canceled())
 				{

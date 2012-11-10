@@ -50,11 +50,11 @@ namespace eternal_lands
 
 			void clear();
 
+			bool get_is_id_free(const Uint32 id) const;
+
 			Uint32 get_next_free_id();
 
 			void free_id(const Uint32 id);
-
-			void free_typeless_id(const Uint32 typeless_id);
 
 			void use_id(const Uint32 id);
 

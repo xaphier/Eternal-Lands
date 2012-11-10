@@ -14,6 +14,7 @@
 #include "globalvars.hpp"
 #include "materialcache.hpp"
 #include "texture.hpp"
+#include "image.hpp"
 #include "imageupdate.hpp"
 
 namespace eternal_lands
@@ -80,6 +81,22 @@ namespace eternal_lands
 		const ImageSharedPtr &normal_map,
 		const ImageSharedPtr &dudv_map)
 	{
+		String texture_format_str, rgb10_a2_str;
+
+		if (displacement_map->get_texture_format() != tft_rgb10_a2)
+		{
+			rgb10_a2_str = TextureFormatUtil::get_str(tft_rgb10_a2);
+
+			texture_format_str = TextureFormatUtil::get_str(
+				displacement_map->get_texture_format());
+
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_item_name(
+					displacement_map->get_name())
+				<< errinfo_string_value(texture_format_str)
+				<< errinfo_expected_string_value(rgb10_a2_str));
+		}
+
 		do_set_geometry_maps(displacement_map, normal_map, dudv_map);
 	}
 
@@ -112,12 +129,31 @@ namespace eternal_lands
 		const ImageUpdate &displacement_map,
 		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
 	{
+		String texture_format_str, rgb10_a2_str;
+
+		if (displacement_map.get_image()->get_texture_format() !=
+			tft_rgb10_a2)
+		{
+			rgb10_a2_str = TextureFormatUtil::get_str(tft_rgb10_a2);
+
+			texture_format_str = TextureFormatUtil::get_str(
+				displacement_map.get_image(
+					)->get_texture_format());
+
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_item_name(
+					displacement_map.get_image(
+						)->get_name())
+				<< errinfo_string_value(texture_format_str)
+				<< errinfo_expected_string_value(rgb10_a2_str));
+		}
+
 		do_update_geometry_maps(displacement_map, normal_map, dudv_map);
 	}
 
 	void AbstractTerrain::update_blend_map(const ImageUpdate &blend_image)
 	{
-		glm::uvec3 offsets, size;
+		glm::uvec3 offset, size;
 		Uint32 i, count, mipmap;
 
 		if (get_global_vars()->get_opengl_3_0())
@@ -129,7 +165,7 @@ namespace eternal_lands
 			return;
 		}
 
-		offsets = blend_image.get_offsets();
+		offset = blend_image.get_offset();
 		mipmap = blend_image.get_mipmap();
 		size = blend_image.get_size();
 
@@ -143,9 +179,9 @@ namespace eternal_lands
 				ShaderSourceTerrain::get_blend_sampler(
 					i))->sub_texture(mipmap, mipmap,
 						blend_image.get_image(),
-						offsets, offsets, size);
+						offset, offset, size);
 
-			offsets.z++;
+			offset.z++;
 		}
 	}
 

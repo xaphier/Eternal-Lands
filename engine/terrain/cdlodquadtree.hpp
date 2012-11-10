@@ -40,8 +40,11 @@ namespace eternal_lands
 			Uint32 m_lod_count;
 
 		protected:
-			void init_min_max(const ImageSharedPtr &image,
-				const glm::uvec2 &position, const Uint16 level,
+			void init_min_max(const glm::uvec2 &position,
+				const Uint16 level, glm::vec3 &min,
+				glm::vec3 &max);
+			void get_min_max_rgb10_a2(const ImageSharedPtr &image,
+				const glm::uvec2 &offset, const Uint32 size,
 				glm::vec3 &min, glm::vec3 &max);
 			void get_min_max(const ImageSharedPtr &image,
 				const glm::uvec2 &offset, const Uint32 size,
@@ -67,6 +70,14 @@ namespace eternal_lands
 				const Uint16 max_instance_count,
 				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
+			void update_level_zero(
+				const ImageSharedPtr &displacement_map,
+				const glm::uvec2 &offset,
+				const glm::uvec2 &size);
+			void update_level_zero_rgb10_a2(
+				const ImageSharedPtr &displacement_map,
+				const glm::uvec2 &offset,
+				const glm::uvec2 &size);
 
 		public:
 			CdLodQuadTree();

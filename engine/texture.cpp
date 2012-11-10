@@ -525,8 +525,8 @@ namespace eternal_lands
 
 		LOG_DEBUG(lt_texture, UTF8("Setting texture mipmap leve %1% of"
 			" 2d texture '%2%' with width %3% and height %4% using"
-			" %5%compressed data and target '%7%' from image "
-			"mipmap %6% '%7%'."), texture_mipmap % get_name() %
+			" %5%compressed data and target '%6%' from image "
+			"mipmap %7% '%8%'."), texture_mipmap % get_name() %
 			width % height % (compressed ? UTF8("") : UTF8("un")) %
 			get_target() % image_mipmap % image->get_name());
 
@@ -1639,16 +1639,16 @@ namespace eternal_lands
 	}
 
 	void Texture::sub_texture(const Uint16 mipmap,
-		const ImageSharedPtr &image, const glm::uvec3 &offsets)
+		const ImageSharedPtr &image, const glm::uvec3 &offset)
 	{
-		sub_texture(mipmap, 0, image, offsets, glm::uvec3(0),
+		sub_texture(mipmap, 0, image, offset, glm::uvec3(0),
 			image->get_size());
 	}
 
 	void Texture::sub_texture(const Uint16 texture_mipmap,
 		const Uint16 image_mipmap, const ImageSharedPtr &image,
-		const glm::uvec3 &texture_offsets,
-		const glm::uvec3 &image_offsets, const glm::uvec3 &size)
+		const glm::uvec3 &texture_offset,
+		const glm::uvec3 &image_offset, const glm::uvec3 &size)
 	{
 		CHECK_GL_ERROR();
 
@@ -1660,31 +1660,31 @@ namespace eternal_lands
 		{
 			case ttt_texture_1d:
 				set_texture_image_1d(size[0], texture_mipmap,
-					image_mipmap, image, texture_offsets,
-					image_offsets);
+					image_mipmap, image, texture_offset,
+					image_offset);
 				break;
 			case ttt_texture_2d:
 			case ttt_texture_1d_array:
 			case ttt_texture_rectangle:
 				set_texture_image_2d(size[0], size[1],
 					texture_mipmap, image_mipmap, image,
-					texture_offsets, image_offsets);
+					texture_offset, image_offset);
 				break;
 			case ttt_texture_3d:
 			case ttt_texture_2d_array:
 				set_texture_image_3d(size[0], size[1],
 					size[2], texture_mipmap, image_mipmap,
-					image, texture_offsets, image_offsets);
+					image, texture_offset, image_offset);
 				break;
 			case ttt_texture_cube_map:
 				set_texture_image_cube_map(size[0], size[1],
 					texture_mipmap, image_mipmap, image,
-					texture_offsets, image_offsets);
+					texture_offset, image_offset);
 				break;
 			case ttt_texture_cube_map_array:
 				set_texture_image_cube_map(size[0], size[1],
 					size[2], texture_mipmap, image_mipmap,
-					image, texture_offsets, image_offsets);
+					image, texture_offset, image_offset);
 				break;
 			case ttt_texture_2d_multisample:
 			case ttt_texture_2d_multisample_array:
@@ -1708,31 +1708,31 @@ namespace eternal_lands
 
 	void Texture::sub_texture(const Uint16 texture_mipmap,
 		const ImageUpdate &image_update,
-		const glm::uvec3 &texture_offsets)
+		const glm::uvec3 &texture_offset)
 	{
 		sub_texture(texture_mipmap, image_update.get_mipmap(),
-			image_update.get_image(), texture_offsets,
-			image_update.get_offsets(), image_update.get_size());
+			image_update.get_image(), texture_offset,
+			image_update.get_offset(), image_update.get_size());
 	}
 
 	void Texture::sub_texture(const ImageUpdate &image_update)
 	{
 		sub_texture(image_update.get_mipmap(),
 			image_update.get_mipmap(), image_update.get_image(),
-			image_update.get_offsets(),
-			image_update.get_offsets(), image_update.get_size());
+			image_update.get_offset(),
+			image_update.get_offset(), image_update.get_size());
 	}
 
 	void Texture::sub_texture(const ImageUpdate &image_update,
 		const Uint32 layer)
 	{
-		glm::uvec3 texture_offsets;
+		glm::uvec3 texture_offset;
 
-		texture_offsets = image_update.get_offsets();
-		texture_offsets.z = layer;
+		texture_offset = image_update.get_offset();
+		texture_offset.z = layer;
 
 		sub_texture(image_update.get_mipmap(), image_update,
-			texture_offsets);
+			texture_offset);
 	}
 
 	void Texture::calc_size()

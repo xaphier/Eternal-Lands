@@ -132,4 +132,31 @@ namespace eternal_lands
 		m_free_decal_ids.use_id(id);
 	}
 
+	bool FreeIdsManager::get_is_object_id_free(const Uint32 id) const
+	{
+		Uint16 type;
+
+		type = FreeIds::get_type_value(id);
+
+		RANGE_CECK_MAX(type, m_free_ids.size(),
+			UTF8("type value too big"));
+
+		m_free_ids[type].get_is_id_free(id);
+	}
+
+	bool FreeIdsManager::get_is_light_id_free(const Uint32 id) const
+	{
+		m_free_light_ids.get_is_id_free(id);
+	}
+
+	bool FreeIdsManager::get_is_particle_id_free(const Uint32 id) const
+	{
+		m_free_particle_ids.get_is_id_free(id);
+	}
+
+	bool FreeIdsManager::get_is_decal_id_free(const Uint32 id) const
+	{
+		m_free_decal_ids.get_is_id_free(id);
+	}
+
 }

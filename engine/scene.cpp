@@ -1176,7 +1176,11 @@ namespace eternal_lands
 
 		get_scene_view().set_shadow_view(index);
 
-		draw_terrain(m_shadow_terrains[index], ept_shadow, false);
+		if (get_terrain())
+		{
+			draw_terrain(m_shadow_terrains[index], ept_shadow,
+				false);
+		}
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_shadow_objects[index].get_objects())
@@ -1256,7 +1260,10 @@ namespace eternal_lands
 
 		index = 0;
 
-		draw_terrain(m_visible_terrain, ept_depth, false);
+		if (get_terrain())
+		{
+			draw_terrain(m_visible_terrain, ept_depth, false);
+		}
 
 		no_depth_read = false;
 
@@ -1352,7 +1359,10 @@ namespace eternal_lands
 
 		blend = bt_disabled;
 
-		draw_terrain(m_visible_terrain, effect, true);
+		if (get_terrain())
+		{
+			draw_terrain(m_visible_terrain, effect, true);
+		}
 
 		BOOST_FOREACH(const RenderObjectData &object,
 			m_visible_objects.get_objects())

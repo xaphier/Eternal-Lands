@@ -185,6 +185,8 @@ namespace eternal_lands
 				const;
 			void clear_invisible_terrain_layers();
 			void pack_terrain_layers();
+			void deselect();
+			void clear();
 
 			static inline const glm::vec3 &get_terrain_offset_min()
 			{

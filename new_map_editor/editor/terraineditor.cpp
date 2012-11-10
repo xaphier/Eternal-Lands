@@ -9,6 +9,7 @@
 #include "image.hpp"
 #include "abstractterrain.hpp"
 #include "terrain/uvtool.hpp"
+#include "imageupdate.hpp"
 
 namespace eternal_lands
 {
@@ -40,15 +41,24 @@ namespace eternal_lands
 	}
 
 	void TerrainEditor::set_displacement_values(
-		const DisplacementValueVector &displacement_values)
+		const DisplacementValueVector &displacement_values,
+		ImageUpdate &displacement_map, ImageUpdate &normal_map,
+		ImageUpdate &dudv_map)
 	{
 		Ivec2Set indices;
+		glm::uvec3 displacement_min, displacement_max;
+		glm::uvec3 normal_min, normal_max;
 		glm::ivec2 index, min, max;
 		Sint32 x, y;
 
 		min = glm::ivec2(0);
-		max = glm::ivec2(m_displacement_image->get_width(),
+		max = glm::ivec2(m_displacement_image->get_width() - 1,
 			m_displacement_image->get_height()) - 1;
+
+		displacement_min = glm::uvec3(glm::uvec2(m_size), 0);
+		displacement_max = glm::uvec3(0, 0, 1);
+		normal_min = glm::uvec3(glm::uvec2(m_size), 0);
+		normal_max = glm::uvec3(0, 0, 1);
 
 		BOOST_FOREACH(const DisplacementValue &displacement_value,
 			displacement_values)
@@ -57,6 +67,14 @@ namespace eternal_lands
 				displacement_value.get_x(),
 				displacement_value.get_y(), 0, 0, 0,
 				displacement_value.get_packed_value());
+
+			index.x = displacement_value.get_x();
+			index.y = displacement_value.get_y();
+
+			displacement_min = glm::min(displacement_min,
+				glm::uvec3(index, 0));
+			displacement_max = glm::max(displacement_max,
+				glm::uvec3(index, 1));
 
 			for (y = -1; y < 2; ++y)
 			{
@@ -71,21 +89,44 @@ namespace eternal_lands
 					index = glm::max(index, min);
 
 					indices.insert(index);
+
+					normal_min = glm::min(normal_min,
+						glm::uvec3(index, 0));
+					normal_max = glm::max(normal_max,
+						glm::uvec3(index, 1));
 				}
 			}
 		}
 
 		update_normals(indices);
+
+
+		displacement_min = glm::uvec3(0, 0, 0);
+		displacement_max = glm::uvec3(glm::uvec2(m_size), 1);
+		normal_min = glm::uvec3(0, 0, 0);
+		normal_max = glm::uvec3(glm::uvec2(m_size), 1);
+
+		displacement_map = ImageUpdate(m_displacement_image,
+			displacement_min, displacement_max - displacement_min);
+		normal_map = ImageUpdate(m_normal_image, normal_min,
+			normal_max - normal_min);
+		dudv_map = ImageUpdate(m_dudv_image, glm::uvec3(0),
+			glm::uvec3(0));
 	}
 
 	void TerrainEditor::set_blend_values(
-		const ImageValueVector &blend_values)
+		const ImageValueVector &blend_values, ImageUpdate &blend_map)
 	{
+		glm::uvec3 blend_min, blend_max;
+		glm::uvec2 index;
 		Uint16 i, count;
 
 		assert(get_blend_image()->get_depth() <= 4);
 
 		count = get_blend_image()->get_depth();
+
+		blend_min = glm::uvec3(glm::uvec2(m_size), 0);
+		blend_max = glm::uvec3(0, 0, count);
 
 		BOOST_FOREACH(const ImageValue &blend_value, blend_values)
 		{
@@ -96,7 +137,17 @@ namespace eternal_lands
 					blend_value.get_y(), i, 0, 0,
 					blend_value.get_value(i));
 			}
+
+			index.x = blend_value.get_x();
+			index.y = blend_value.get_y();
+
+			blend_min = glm::min(blend_min, glm::uvec3(index, 0));
+			blend_max = glm::max(blend_max, glm::uvec3(index,
+				count));
 		}
+
+		blend_map = ImageUpdate(m_blend_image, blend_min,
+			blend_max - blend_min);
 	}
 
 	void TerrainEditor::get_displacement_values(const Uint32 x,
@@ -352,7 +403,7 @@ namespace eternal_lands
 			displacement_values)
 		{
 			average += AbstractTerrain::get_offset_scaled_rgb10_a2(
-				displacement_value.get_value());
+				displacement_value.get_packed_value());
 		}
 
 		average /= displacement_values.size();
@@ -361,7 +412,7 @@ namespace eternal_lands
 			displacement_values)
 		{
 			value = AbstractTerrain::get_offset_scaled_rgb10_a2(
-				displacement_value.get_value());
+				displacement_value.get_packed_value());
 
 			index.x = displacement_value.get_x();
 			index.y = displacement_value.get_y();
@@ -597,7 +648,7 @@ namespace eternal_lands
 		glm::vec2 position;
 
 		offset = AbstractTerrain::get_offset_scaled_rgb10_a2(
-			m_displacement_image->get_pixel_uint(index.x,
+			m_displacement_image->get_pixel_packed_uint32(index.x,
 				index.y, 0, 0, 0));
 
 		position.x = index.x;

@@ -23,6 +23,7 @@
 #include "writer.hpp"
 #include "rstartree.hpp"
 #include "filesystem.hpp"
+#include "imageupdate.hpp"
 
 namespace eternal_lands
 {
@@ -266,6 +267,9 @@ namespace eternal_lands
 		m_objects.erase(object_description.get_id());
 		m_scene->remove_object(object_description.get_id());
 
+		m_scene->get_free_ids()->use_object_id(
+			object_description.get_id());
+
 		m_objects.insert(std::pair<Uint32,
 			EditorObjectDescription>(object_description.get_id(),
 				object_description));
@@ -277,6 +281,8 @@ namespace eternal_lands
 		m_lights.erase(light.get_id());
 		m_scene->remove_light(light.get_id());
 
+		m_scene->get_free_ids()->use_light_id(light.get_id());
+
 		m_lights.insert(std::pair<Uint32,
 			LightData>(light.get_id(), light));
 		m_scene->add_light(light);
@@ -286,6 +292,8 @@ namespace eternal_lands
 	{
 		m_particles.erase(particle.get_id());
 //		m_scene->remove_particle(particle.get_id());
+
+//		m_scene->get_free_ids()->use_particle_id(particle.get_id());
 
 		m_particles.insert(std::pair<Uint32,
 			ParticleData>(particle.get_id(), particle));
@@ -433,7 +441,10 @@ namespace eternal_lands
 		id = m_scene->get_free_ids()->get_object_id(x + (y << 10),
 			it_tile_object);
 
-		m_scene->remove_object(id);
+		if (!m_scene->get_free_ids()->get_is_object_id_free(id))
+		{
+			m_scene->remove_object(id);
+		}
 
 		m_tile_map[x][y] = tile;
 
@@ -537,21 +548,23 @@ namespace eternal_lands
 	void EditorMapData::set_terrain_displacement_values(
 		const DisplacementValueVector &displacement_values)
 	{
-		m_terrain_editor.set_displacement_values(displacement_values);
+		ImageUpdate displacement_map, normal_map, dudv_map;
 
-		m_scene->set_terrain_geometry_maps(
-			m_terrain_editor.get_displacement_image(),
-			m_terrain_editor.get_normal_image(),
-			m_terrain_editor.get_dudv_image());
+		m_terrain_editor.set_displacement_values(displacement_values,
+			displacement_map, normal_map, dudv_map);
+
+		m_scene->update_terrain_geometry_maps(displacement_map,
+			normal_map, dudv_map);
 	}
 
 	void EditorMapData::set_terrain_blend_values(
 		const ImageValueVector &blend_values)
 	{
-		m_terrain_editor.set_blend_values(blend_values);
+		ImageUpdate blend_map;
 
-		m_scene->set_terrain_blend_map(
-			m_terrain_editor.get_blend_image());
+		m_terrain_editor.set_blend_values(blend_values, blend_map);
+
+		m_scene->update_terrain_blend_map(blend_map);
 	}
 
 	void EditorMapData::set_terrain_material(const String &albedo_map,
@@ -932,6 +945,15 @@ namespace eternal_lands
 	void EditorMapData::set_map_size(const glm::uvec2 &size)
 	{
 		m_scene->set_map_size(size);
+	}
+
+	void EditorMapData::clear()
+	{
+		m_terrain_editor.clear();
+		m_water_image.reset();
+		m_objects.clear();
+		m_lights.clear();
+		m_particles.clear();
 	}
 
 	void EditorMapData::save(const WriterSharedPtr &writer,

@@ -372,16 +372,16 @@ namespace eternal_lands
 			void set_images(const ImageSharedPtrVector &images);
 			void sub_texture(const Uint16 mipmap,
 				const ImageSharedPtr &image,
-				const glm::uvec3 &offsets);
+				const glm::uvec3 &offset);
 			void sub_texture(const Uint16 texture_mipmap,
 				const Uint16 image_mipmap,
 				const ImageSharedPtr &image,
-				const glm::uvec3 &texture_offsets,
-				const glm::uvec3 &image_offsets,
+				const glm::uvec3 &texture_offset,
+				const glm::uvec3 &image_offset,
 				const glm::uvec3 &size);
 			void sub_texture(const Uint16 texture_mipmap,
 				const ImageUpdate &image_update,
-				const glm::uvec3 &texture_offsets);
+				const glm::uvec3 &texture_offset);
 			void sub_texture(const ImageUpdate &image_update,
 				const Uint32 layer);
 			void sub_texture(const ImageUpdate &image_update);

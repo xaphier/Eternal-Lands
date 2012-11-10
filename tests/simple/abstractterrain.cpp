@@ -7,6 +7,7 @@
 
 #include "prerequisites.hpp"
 #include "abstractterrain.hpp"
+#include "packtool.hpp"
 #include <boost/random.hpp>
 #define BOOST_TEST_MODULE light
 #include <boost/test/unit_test.hpp>
@@ -249,6 +250,59 @@ BOOST_AUTO_TEST_CASE(convert_rgb10_a2)
 		BOOST_CHECK_LE(temp.z, 1.0f + el::epsilon);
 
 		tmp = el::AbstractTerrain::get_value_rgb10_a2(temp);
+
+		BOOST_CHECK_EQUAL(offset.x, tmp.x);
+		BOOST_CHECK_EQUAL(offset.y, tmp.y);
+		BOOST_CHECK_EQUAL(offset.z, tmp.z);
+		BOOST_CHECK_EQUAL(offset.w, tmp.w);
+	}
+}
+
+BOOST_AUTO_TEST_CASE(convert_packed_scaled_rgb10_a2)
+{
+	boost::mt19937 rng;
+	boost::uniform_int<Uint32> range(0, std::numeric_limits<Uint32>::max());
+	boost::variate_generator<boost::mt19937&, boost::uniform_int<Uint32> >
+		random_uint32(rng, range);
+	glm::uvec4 offset, tmp;
+	glm::vec3 temp;
+	float scale;
+	Uint32 i, value;
+
+	scale = el::AbstractTerrain::get_vector_scale();
+
+	for (i = 0; i < std::numeric_limits<Uint16>::max(); i++)
+	{
+		offset.x = random_uint32() % 1024;
+		offset.y = random_uint32() % 1024;
+		offset.z = random_uint32() % 1024;
+		offset.w = random_uint32() % 4;
+
+		if (offset.x == 0)
+		{
+			offset.w = offset.w & 0x02;
+		}
+
+		if (offset.y == 0)
+		{
+			offset.w = offset.w & 0x01;
+		}
+
+		value = el::PackTool::pack_uint_10_10_10_2(false,
+			glm::vec4(offset));
+
+		temp = el::AbstractTerrain::get_offset_scaled_rgb10_a2(value);
+
+		BOOST_CHECK_GE(temp.x, -scale - el::epsilon);
+		BOOST_CHECK_LE(temp.x, scale + el::epsilon);
+
+		BOOST_CHECK_GE(temp.y, -scale - el::epsilon);
+		BOOST_CHECK_LE(temp.y, scale + el::epsilon);
+
+		BOOST_CHECK_GE(temp.z, 0.0f - el::epsilon);
+		BOOST_CHECK_LE(temp.z, scale + el::epsilon);
+
+		tmp = el::AbstractTerrain::get_value_scaled_rgb10_a2(temp);
 
 		BOOST_CHECK_EQUAL(offset.x, tmp.x);
 		BOOST_CHECK_EQUAL(offset.y, tmp.y);

@@ -195,6 +195,29 @@ namespace eternal_lands
 				return result;
 			}
 
+			static inline glm::vec3 get_offset_scaled_rgb10_a2(
+				const Uint32 value)
+			{
+				glm::vec3 result;
+
+				result = glm::vec3((value >> 22) & 0x3FF,
+					(value >> 12) & 0x3FF,
+					(value >> 02) & 0x3FF) *
+					(get_vector_scale() / 1023.0f);
+
+				if ((value & 0x00000001) != 0)
+				{
+					result.x = -result.x;
+				}
+
+				if ((value & 0x00000002) != 0)
+				{
+					result.y = -result.y;
+				}
+
+				return result;
+			}
+
 			static inline glm::uvec4 get_value_scaled_rgb10_a2(
 				const glm::vec3 &offset)
 			{

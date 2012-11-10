@@ -857,6 +857,7 @@ namespace eternal_lands
 	}
 
 #ifdef	USE_SSE2
+
 	namespace
 	{
 
@@ -866,18 +867,20 @@ namespace eternal_lands
 			const __m128 clamping)
 		{
 			__m128 t5, t6, t7, t8, t9, t10, t11, t12, t13, t14;
+			__m128 t15, t16;
 
 			/* direction */
-			t5 = _mm_sub_ps(t4, t0);
-			t6 = _mm_sub_ps(t4, t1);
-			t7 = _mm_sub_ps(t4, t2);
-			t8 = _mm_sub_ps(t4, t3);
+			t5 = _mm_sub_ps(t0, t4);
+			t6 = _mm_sub_ps(t1, t4);
+			t7 = _mm_sub_ps(t2, t4);
+			t8 = _mm_sub_ps(t3, t4);
 
 			/* dot */
 			t9 = _mm_mul_ps(t5, t5);
 			t10 = _mm_mul_ps(t6, t6);
 			t11 = _mm_mul_ps(t7, t7);
 			t12 = _mm_mul_ps(t8, t8);
+
 #ifdef	USE_SSE3
 			t9 = _mm_hadd_ps(t9, t10);
 			t10 = _mm_hadd_ps(t11, t12);
@@ -895,23 +898,39 @@ namespace eternal_lands
 			t9 = _mm_add_ps(tmp0, tmp1);
 			t10 = _mm_add_ps(tmp2, tmp3);
 #endif	/* USE_SSE3 */
+
 			/* distance */
+			// distance = glm::length(dir);
 			t9 = _mm_sqrt_ps(t9);
 			t10 = _mm_sqrt_ps(t10);
 
-			/* factor */
-			t13 = _mm_load_ps(distances);
-			t14 = _mm_load_ps(distances + 4);
+			t15 = t9;
+			t16 = t10;
 
-			t11 = _mm_sub_ps(t13, t9);
-			t12 = _mm_sub_ps(t14, t10);
-
+			// dir /= std::max(distance, 1e-7f);
 			t9 = _mm_max_ps(t9, _mm_set1_ps(1e-7f));
 			t10 = _mm_max_ps(t10, _mm_set1_ps(1e-7f));
 
-			t9 = _mm_div_ps(t11, t9);
-			t10 = _mm_div_ps(t12, t10);
+			t11 = _mm_unpacklo_ps(t9, t9);
+			t12 = _mm_unpackhi_ps(t9, t9);
+			t13 = _mm_unpacklo_ps(t10, t10);
+			t14 = _mm_unpackhi_ps(t10, t10);
 
+			t5 = _mm_div_ps(t5, t11);
+			t6 = _mm_div_ps(t6, t12);
+			t7 = _mm_div_ps(t7, t13);
+			t8 = _mm_div_ps(t8, t14);
+
+			/* factor */
+			// factor = distance - get_half_distance(half_distances,
+			//	index, i);
+			t13 = _mm_load_ps(distances);
+			t14 = _mm_load_ps(distances + 4);
+
+			t9 = _mm_sub_ps(t15, t13);
+			t10 = _mm_sub_ps(t16, t14);
+
+			// velocity += dir * factor;
 			t11 = _mm_unpacklo_ps(t9, t9);
 			t12 = _mm_unpackhi_ps(t9, t9);
 			t13 = _mm_unpacklo_ps(t10, t10);
@@ -933,7 +952,6 @@ namespace eternal_lands
 			t13 = _mm_min_ps(t13, clamping);
 			t13 = _mm_max_ps(t13, -clamping);
 
-			/* store */
 			return t13;
 		}
 
@@ -991,13 +1009,6 @@ namespace eternal_lands
 		t7 = (__m128)_mm_load_sd(((double*)uv2) + 1);
 
 		default_line_shuffle_simd(t0, t1, t2, t3, t4, t5, t6, t7);
-		result = relax_uv_simd(t0, t1, t2, t3, t4, distances,
-			t_damping, t_clamping);
-
-		result = _mm_and_ps(result, (__m128)_mm_setr_epi32(0, -1, 0, -1));
-		result = _mm_add_ps(result, t4);
-
-		_mm_store_sd((double*)new_uv, (__m128d)result);
 
 		for (i = 1; i < count; i++)
 		{
@@ -1014,20 +1025,6 @@ namespace eternal_lands
 
 			_mm_store_sd(((double*)new_uv) + i, (__m128d)result);
 		}
-
-		t5 = (__m128)_mm_unpackhi_pd((__m128d)t3, (__m128d)t3);
-		t6 = t5;
-		t7 = t5;
-
-		default_line_shuffle_simd(t0, t1, t2, t3, t4, t5, t6, t7);
-	
-		result = relax_uv_simd(t0, t1, t2, t3, t4,
-			distances + count * 8, t_damping, t_clamping);
-
-		result = _mm_and_ps(result, (__m128)_mm_setr_epi32(0, -1, 0, -1));
-		result = _mm_add_ps(result, t4);
-
-		_mm_store_sd(((double*)new_uv) + count, (__m128d)result);
 #endif	/* USE_SSE2 */
 	}
 

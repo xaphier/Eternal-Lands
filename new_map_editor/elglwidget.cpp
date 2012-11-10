@@ -425,6 +425,11 @@ void ELGLWidget::mouse_move_action()
 		return;
 	}
 
+	if (get_object_adding() || get_light_adding())
+	{
+		return;
+	}
+
 	rotate_index = 0;
 	rotating = false;
 	scaling = false;
@@ -906,6 +911,8 @@ void ELGLWidget::paintGL()
 
 	if (m_select)
 	{
+		assert(!(get_terrain_editing() || get_object_adding() || get_light_adding()));
+
 		m_select = false;
 
 		m_editor->select(m_select_pos, m_half_size);
@@ -1411,6 +1418,8 @@ void ELGLWidget::load_map(const QString &file_name,
 {
 	if (!file_name.isEmpty())
 	{
+		m_editor->clear();
+
 		m_editor->load_map(String(file_name.toUtf8()),
 			load_2d_objects, load_3d_objects, load_lights,
 			load_particles, load_materials, load_height_map,

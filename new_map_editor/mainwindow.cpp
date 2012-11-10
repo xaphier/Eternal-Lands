@@ -117,6 +117,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	QObject::connect(radius, SIGNAL(valueChanged(double)), el_gl_widget, SLOT(set_light_radius(double)));
 	QObject::connect(light_color, SIGNAL(clicked()), this, SLOT(change_light_color()));
+	QObject::connect(x_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
+	QObject::connect(y_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
+	QObject::connect(z_position, SIGNAL(valueChanged(double)), this, SLOT(update_position()));
 
 	QObject::connect(el_gl_widget, SIGNAL(terrain_edit()), this,
 		SLOT(terrain_edit()));
@@ -315,9 +318,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_material_label_witdgets.push_back(material_label_8);
 	m_material_label_witdgets.push_back(material_label_9);
 
-	m_light_witdgets.push_back(x_translation);
-	m_light_witdgets.push_back(y_translation);
-	m_light_witdgets.push_back(z_translation);
+	m_light_witdgets.push_back(x_position);
+	m_light_witdgets.push_back(y_position);
+	m_light_witdgets.push_back(z_position);
 	m_light_witdgets.push_back(radius);
 	m_light_witdgets.push_back(light_color);
 
@@ -801,7 +804,6 @@ void MainWindow::add_item(const QString &str, QComboBox* combobox)
 
 void MainWindow::update_terrain(const bool enabled)
 {
-	terrain_brush_dock->setEnabled(enabled);
 	action_relax_terrain_uv->setEnabled(enabled);
 	action_import_terrain_height_map->setEnabled(enabled);
 	action_import_terrain_blend_map->setEnabled(enabled);
@@ -817,6 +819,8 @@ void MainWindow::update_terrain(const bool enabled)
 
 void MainWindow::update_object(const bool select)
 {
+	QList<QDockWidget *> dock_widgets;
+
 	if (select && action_delete_mode->isChecked())
 	{
 		el_gl_widget->remove_object();
@@ -831,6 +835,44 @@ void MainWindow::update_object(const bool select)
 
 		return;
 	}
+
+	if (select)
+	{
+		object_dock->raise();
+
+		dock_widgets = tabifiedDockWidgets(object_dock);
+
+		if (dock_widgets.lastIndexOf(transformation_dock) == -1)
+		{
+			transformation_dock->raise();
+
+			if (dock_widgets.lastIndexOf(materials_dock) == -1)
+			{
+				dock_widgets = tabifiedDockWidgets(
+					transformation_dock);
+
+				if (dock_widgets.lastIndexOf(materials_dock) ==
+					-1)
+				{
+					materials_dock->raise();
+				}
+			}
+		}
+		else
+		{
+			if (dock_widgets.lastIndexOf(materials_dock) == -1)
+			{
+				materials_dock->raise();
+			}
+		}
+	}
+
+	object_dock->widget()->setEnabled(select);
+	materials_dock->widget()->setEnabled(select);
+	transformation_dock->widget()->setEnabled(select);
+	light_dock->widget()->setEnabled(false);
+	terrain_dock->widget()->setEnabled(false);
+	randomize_dock->widget()->setEnabled(false);
 
 	update_object();
 
@@ -857,7 +899,19 @@ void MainWindow::update_light(const bool select)
 
 		return;
 	}
-		
+
+	if (select)
+	{
+		light_dock->raise();
+	}
+
+	object_dock->widget()->setEnabled(false);
+	materials_dock->widget()->setEnabled(false);
+	transformation_dock->widget()->setEnabled(false);
+	light_dock->widget()->setEnabled(select);
+	terrain_dock->widget()->setEnabled(false);
+	randomize_dock->widget()->setEnabled(false);
+
 	action_remove->setEnabled(select);
 	action_remove_all_copies_of_object->setEnabled(false);
 
@@ -868,9 +922,9 @@ void MainWindow::update_light(const bool select)
 		light_widget->blockSignals(true);
 	}
 
-	x_translation->setValue(light.get_position()[0]);
-	y_translation->setValue(light.get_position()[1]);
-	z_translation->setValue(light.get_position()[2]);
+	x_position->setValue(light.get_position()[0]);
+	y_position->setValue(light.get_position()[1]);
+	z_position->setValue(light.get_position()[2]);
 
 	radius->setValue(light.get_radius());
 
@@ -891,6 +945,12 @@ void MainWindow::deselect()
 	set_default_mode();
 	action_remove->setEnabled(false);
 	action_remove_all_copies_of_object->setEnabled(false);
+
+	object_dock->widget()->setEnabled(false);
+	materials_dock->widget()->setEnabled(false);
+	transformation_dock->widget()->setEnabled(false);
+	light_dock->widget()->setEnabled(false);
+	terrain_dock->widget()->setEnabled(false);
 }
 
 void MainWindow::update_translation()
@@ -902,6 +962,17 @@ void MainWindow::update_translation()
 	translation[2] = z_translation->value();
 
 	el_gl_widget->set_translation(translation);
+}
+
+void MainWindow::update_position()
+{
+	glm::vec3 position;
+
+	position[0] = x_position->value();
+	position[1] = y_position->value();
+	position[2] = z_position->value();
+
+	el_gl_widget->set_translation(position);
 }
 
 void MainWindow::update_rotation(const int index)
@@ -1282,6 +1353,9 @@ void MainWindow::add_objects(const bool value)
 
 		set_default_mode();
 
+		randomize_dock->widget()->setEnabled(true);
+		randomize_dock->raise();
+
 		return;
 	}
 
@@ -1292,6 +1366,11 @@ void MainWindow::add_objects(const bool value)
 
 void MainWindow::set_default_mode()
 {
+	object_dock->widget()->setEnabled(false);
+	materials_dock->widget()->setEnabled(false);
+	transformation_dock->widget()->setEnabled(false);
+	light_dock->widget()->setEnabled(false);
+	terrain_dock->widget()->setEnabled(false);
 }
 
 void MainWindow::add_lights(const bool value)
@@ -1408,6 +1487,14 @@ void MainWindow::terrain_mode(const bool checked)
 	action_add_objects->setChecked(false);
 	action_add_lights->setChecked(false);
 	action_delete_mode->setChecked(false);
+
+	terrain_dock->widget()->setEnabled(checked);
+	object_dock->widget()->setEnabled(false);
+	materials_dock->widget()->setEnabled(false);
+	transformation_dock->widget()->setEnabled(false);
+	light_dock->widget()->setEnabled(false);
+	randomize_dock->widget()->setEnabled(false);
+	terrain_dock->raise();
 }
 
 void MainWindow::delete_mode(const bool checked)
@@ -1417,6 +1504,13 @@ void MainWindow::delete_mode(const bool checked)
 		action_add_objects->setChecked(false);
 		action_add_lights->setChecked(false);
 		action_terrain_mode->setChecked(false);
+
+		object_dock->widget()->setEnabled(false);
+		materials_dock->widget()->setEnabled(false);
+		transformation_dock->widget()->setEnabled(false);
+		light_dock->widget()->setEnabled(false);
+		terrain_dock->widget()->setEnabled(false);
+		randomize_dock->widget()->setEnabled(false);
 	}
 	else
 	{
@@ -1457,6 +1551,11 @@ void MainWindow::open_map()
 		m_load_map->get_load_walk_map(),
 		m_load_map->get_load_terrain(),
 		m_load_map->get_load_water());
+
+	action_add_objects->setChecked(false);
+	action_add_lights->setChecked(false);
+	action_delete_mode->setChecked(false);
+	action_terrain_mode->setChecked(false);
 
 	action_dungeon->blockSignals(true);
 	action_dungeon->setChecked(el_gl_widget->get_dungeon());
@@ -1895,9 +1994,9 @@ void MainWindow::load_dirs_settings(QSettings &settings)
 {
 	settings.beginGroup("dirs");
 
-	m_el_data_dir = settings.value("el_data_dir", "").toString();
+	m_el_data_dir = settings.value("el_data_dir", "/usr/share/games/EternalLands").toString();
 	m_el_extra_data_dir = settings.value("el_extra_data_dir",
-		"").toString();
+		"/home/daniel/Develop/el-opengl2/Eternal-Lands/data").toString();
 
 	settings.endGroup();
 

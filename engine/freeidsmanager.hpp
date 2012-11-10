@@ -75,6 +75,10 @@ namespace eternal_lands
 			Uint32 get_next_free_decal_id();
 			void free_decal_id(const Uint32 id);
 			void use_decal_id(const Uint32 id);
+			bool get_is_object_id_free(const Uint32 id) const;
+			bool get_is_light_id_free(const Uint32 id) const;
+			bool get_is_particle_id_free(const Uint32 id) const;
+			bool get_is_decal_id_free(const Uint32 id) const;
 
 			FreeIds &get_free_object_ids(const IdType type)
 			{

@@ -126,6 +126,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void set_object_blend(const int);
 		void set_object_selection(const int);
 		void update_translation();
+		void update_position();
 		void update_scale();
 		void update_scale_x();
 		void update_scale_y();

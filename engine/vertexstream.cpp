@@ -110,7 +110,7 @@ namespace eternal_lands
 		catch (boost::exception &exception)
 		{
 			BoostFormat format_string(UTF8("Range error while "
-				"writing at semantic %2% of type %3%."));
+				"writing at semantic %1% of type %2%."));
 
 			BOOST_FOREACH(const VertexElement &element,
 				get_vertex_elements().get_vertex_elements())
@@ -155,7 +155,7 @@ namespace eternal_lands
 		catch (boost::exception &exception)
 		{
 			BoostFormat format_string(UTF8("Range error while "
-				"writing at semantic %2% of type %3%."));
+				"writing at semantic %1% of type %2%."));
 
 			BOOST_FOREACH(const VertexElement &element,
 				get_vertex_elements().get_vertex_elements())
@@ -202,7 +202,7 @@ namespace eternal_lands
 		catch (boost::exception &exception)
 		{
 			BoostFormat format_string(UTF8("Range error while "
-				"writing at semantic %2% of type %3%."));
+				"writing at semantic %1% of type %2%."));
 
 			BOOST_FOREACH(const VertexElement &element,
 				get_vertex_elements().get_vertex_elements())

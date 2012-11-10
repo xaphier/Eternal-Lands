@@ -12,6 +12,7 @@
 #include "image.hpp"
 #include "logging.hpp"
 #include "abstractterrain.hpp"
+#include "imageupdate.hpp"
 
 namespace eternal_lands
 {
@@ -115,6 +116,44 @@ namespace eternal_lands
 	{
 	}
 
+	void CdLodQuadTree::get_min_max_rgb10_a2(const ImageSharedPtr &image,
+		const glm::uvec2 &offset, const Uint32 size, glm::vec3 &min,
+		glm::vec3 &max)
+	{
+		glm::vec3 tmp;
+		glm::uvec2 index, count;
+		Uint32 x, y;
+
+		min = glm::vec3(std::numeric_limits<float>::max());
+		max = glm::vec3(-std::numeric_limits<float>::max());
+
+		if (glm::any(glm::lessThan(glm::uvec2(image->get_size()),
+			offset + size)))
+		{
+			return;
+		}
+
+		count = glm::uvec2(image->get_size()) - offset;
+		count = glm::min(count, size);
+
+		for (y = 0; y < count.y; ++y)
+		{
+			for (x = 0; x < count.x; ++x)
+			{
+				index = offset + glm::uvec2(x, y);
+
+				tmp = AbstractTerrain::
+					get_offset_scaled_rgb10_a2(
+						image->get_pixel_packed_uint32(
+							index.x, index.y, 0,
+							0, 0));
+
+				min = glm::min(min, tmp);
+				max = glm::max(max, tmp);
+			}
+		}
+	}
+
 	void CdLodQuadTree::get_min_max(const ImageSharedPtr &image,
 		const glm::uvec2 &offset, const Uint32 size, glm::vec3 &min,
 		glm::vec3 &max)
@@ -178,6 +217,22 @@ namespace eternal_lands
 
 		calculate_lod_params();
 
+		size = (get_grid_size() + get_patch_size() - 2u) /
+			get_patch_size();
+
+		if ((displacement_map->get_format() == GL_RGBA) &&
+			(displacement_map->get_type() ==
+				GL_UNSIGNED_INT_10_10_10_2))
+		{
+			update_level_zero_rgb10_a2(displacement_map,
+				glm::uvec2(0), size);
+		}
+		else
+		{
+			update_level_zero(displacement_map, glm::uvec2(0),
+				size);
+		}
+
 		level = get_lod_count() - 1;
 
 		step = m_lods[level].patch_scale * get_patch_size();
@@ -196,8 +251,8 @@ namespace eternal_lands
 				max = glm::vec3(
 					-std::numeric_limits<float>::max());
 
-				init_min_max(displacement_map, glm::uvec2(x, y),
-					level, min, max);
+				init_min_max(glm::uvec2(x, y), level, min,
+					max);
 
 				m_min = glm::min(m_min, min);
 				m_max = glm::max(m_max, max);
@@ -217,9 +272,64 @@ namespace eternal_lands
 		m_lod_count = 0;
 	}
 
-	void CdLodQuadTree::init_min_max(const ImageSharedPtr &displacement_map,
-		const glm::uvec2 &position, const Uint16 level, glm::vec3 &min,
-		glm::vec3 &max)
+	void CdLodQuadTree::update_level_zero_rgb10_a2(
+		const ImageSharedPtr &displacement_map,
+		const glm::uvec2 &offset, const glm::uvec2 &size)
+	{
+		Uint32 x, y;
+
+		#pragma omp parallel for private(x)
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				glm::vec3 min, max;
+
+				min = glm::vec3(std::numeric_limits<
+					float>::max());
+				max = glm::vec3(-std::numeric_limits<
+					float>::max());
+
+				get_min_max_rgb10_a2(displacement_map,
+					glm::uvec2(x, y) * get_patch_size(),
+					get_patch_size() + 1, min, max);
+
+				m_lods[0].min_max[x][y][0] = min;
+				m_lods[0].min_max[x][y][1] = max;
+			}
+		}
+	}
+
+	void CdLodQuadTree::update_level_zero(
+		const ImageSharedPtr &displacement_map,
+		const glm::uvec2 &offset, const glm::uvec2 &size)
+	{
+		Uint32 x, y;
+
+		#pragma omp parallel for private(x)
+		for (y = 0; y < size.y; ++y)
+		{
+			for (x = 0; x < size.x; ++x)
+			{
+				glm::vec3 min, max;
+
+				min = glm::vec3(std::numeric_limits<
+					float>::max());
+				max = glm::vec3(-std::numeric_limits<
+					float>::max());
+
+				get_min_max(displacement_map,
+					glm::uvec2(x, y) * get_patch_size(),
+					get_patch_size() + 1, min, max);
+
+				m_lods[0].min_max[x][y][0] = min;
+				m_lods[0].min_max[x][y][1] = max;
+			}
+		}
+	}
+
+	void CdLodQuadTree::init_min_max(const glm::uvec2 &position,
+		const Uint16 level, glm::vec3 &min, glm::vec3 &max)
 	{
 		glm::vec3 tmin, tmax;
 
@@ -231,33 +341,29 @@ namespace eternal_lands
 
 		if (level == 0)
 		{
-			get_min_max(displacement_map, position *
-				get_patch_size(), get_patch_size() + 1, min,
-				max);
-
-			m_lods[level].min_max[position.x][position.y][0] = min;
-			m_lods[level].min_max[position.x][position.y][1] = max;
+			min = m_lods[level].min_max[position.x][position.y][0];
+			max = m_lods[level].min_max[position.x][position.y][1];
 
 			return;
 		}
 
-		init_min_max(displacement_map, position * 2u + glm::uvec2(0, 0),
-			level - 1, min, max);
+		init_min_max(position * 2u + glm::uvec2(0, 0), level - 1, min,
+			max);
 
-		init_min_max(displacement_map, position * 2u + glm::uvec2(0, 1),
-			level - 1, tmin, tmax);
-
-		min = glm::min(min, tmin);
-		max = glm::max(max, tmax);
-
-		init_min_max(displacement_map, position * 2u + glm::uvec2(1, 0),
-			level - 1, tmin, tmax);
+		init_min_max(position * 2u + glm::uvec2(0, 1), level - 1, tmin,
+			tmax);
 
 		min = glm::min(min, tmin);
 		max = glm::max(max, tmax);
 
-		init_min_max(displacement_map, position * 2u + glm::uvec2(1, 1),
-			level - 1, tmin, tmax);
+		init_min_max(position * 2u + glm::uvec2(1, 0), level - 1, tmin,
+			tmax);
+
+		min = glm::min(min, tmin);
+		max = glm::max(max, tmax);
+
+		init_min_max(position * 2u + glm::uvec2(1, 1), level - 1, tmin,
+			tmax);
 
 		min = glm::min(min, tmin);
 		max = glm::max(max, tmax);

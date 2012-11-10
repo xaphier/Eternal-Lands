@@ -9,14 +9,15 @@
 #include <meshdatatool.hpp>
 #include <boundingbox.hpp>
 #include <lightdata.hpp>
-#include <QtCore/QTimer>
+#include <freeidsmanager.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/transform2.hpp>
 #include <QTimer>
 
 ELPreviewWidget::ELPreviewWidget(QWidget* parent): QGLWidget(parent),
 	m_global_vars(boost::make_shared<GlobalVars>()),
-	m_file_system(boost::make_shared<FileSystem>())
+	m_file_system(boost::make_shared<FileSystem>()),
+	m_scene(0)
 {
 	m_timer = new QTimer(this);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
@@ -24,7 +25,12 @@ ELPreviewWidget::ELPreviewWidget(QWidget* parent): QGLWidget(parent),
 
 ELPreviewWidget::~ELPreviewWidget()
 {
-	delete m_scene;
+	if (m_scene != 0)
+	{
+		delete m_scene;
+	}
+
+	m_scene = 0;
 }
 
 void ELPreviewWidget::mousePressEvent(QMouseEvent *event)
@@ -159,8 +165,14 @@ void ELPreviewWidget::update_object()
 		MeshDataToolSharedPtr mesh_data_tool;
 		String name;
 		float max;
+		Uint32 id;
 
-		m_scene->remove_object(0);
+		id = m_scene->get_free_ids()->get_object_id(0, it_tile_object);
+
+		if (!m_scene->get_free_ids()->get_is_object_id_free(id))
+		{
+			m_scene->remove_object(id);
+		}
 
 		name = String(m_object.toUtf8().data());
 
@@ -185,9 +197,11 @@ void ELPreviewWidget::update_object()
 			world_transformation.set_translation(
 				-bounding_box.get_center() / max);
 
+			m_scene->get_free_ids()->use_object_id(id);
+
 			m_scene->add_object(ObjectDescription(
 				world_transformation, StringVector(),
-				name, 1.0f, 0, st_select, bt_disabled));
+				name, 1.0f, id, st_select, bt_disabled));
 		}
 	}
 	catch (...)

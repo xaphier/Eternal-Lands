@@ -132,9 +132,13 @@ namespace eternal_lands
 			~TerrainEditor() noexcept;
 			void set_displacement_values(
 				const DisplacementValueVector
-					&displacement_values);
+					&displacement_values,
+				ImageUpdate &displacement_map,
+				ImageUpdate &normal_map,
+				ImageUpdate &dudv_map);
 			void set_blend_values(
-				const ImageValueVector &blend_values);
+				const ImageValueVector &blend_values,
+				ImageUpdate &blend_map);
 			void init(const glm::uvec2 &size,
 				const String &albedo_map,
 				const String &extra_map,

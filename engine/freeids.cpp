@@ -51,12 +51,25 @@ namespace eternal_lands
 
 	void FreeIds::free_id(const Uint32 id)
 	{
+		assert(!get_is_id_free(id));
 		m_free_typeless_ids.insert(get_typeless_id(id));
 	}
 
-	void FreeIds::free_typeless_id(const Uint32 typeless_id)
+	bool FreeIds::get_is_id_free(const Uint32 id) const
 	{
-		m_free_typeless_ids.insert(typeless_id);
+		Uint32Set::iterator found;
+		Uint32 typeless_id;
+
+		typeless_id = get_typeless_id(id);
+
+		if (m_next_free_typeless_id <= typeless_id)
+		{
+			return true;
+		}
+
+		found = m_free_typeless_ids.find(typeless_id);
+
+		return found != m_free_typeless_ids.end();
 	}
 
 	void FreeIds::use_id(const Uint32 id)
@@ -65,6 +78,8 @@ namespace eternal_lands
 		Uint32 i, typeless_id;
 
 		typeless_id = get_typeless_id(id);
+
+		assert(get_is_id_free(id));
 
 		if (m_next_free_typeless_id <= typeless_id)
 		{

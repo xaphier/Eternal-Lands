@@ -201,6 +201,14 @@ namespace eternal_lands
 			void pack_terrain_layers();
 			const glm::uvec2 &get_map_size() const;
 			void set_map_size(const glm::uvec2 &size);
+			void clear();
+
+			inline void deselect()
+			{
+				m_renderable = rt_none;
+				m_ids.clear();
+				m_id = std::numeric_limits<Uint32>::max();
+			}
 
 			inline void clear_terrain()
 			{
