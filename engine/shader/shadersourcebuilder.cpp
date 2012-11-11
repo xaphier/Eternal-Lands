@@ -1150,6 +1150,7 @@ namespace eternal_lands
 		functions << indent << UTF8("\tvec3 result, tmp;") << std::endl;
 		functions << std::endl;
 		functions << indent << UTF8("\tresult = vector.xyz;");
+		functions << std::endl;
 		functions << indent << UTF8("\tresult.xy = result.xy * 2.0 -");
 		functions << UTF8(" 1.0;") << std::endl;
 		functions << indent << UTF8("\tresult *= vec3(");

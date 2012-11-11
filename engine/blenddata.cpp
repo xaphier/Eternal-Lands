@@ -52,7 +52,7 @@ namespace eternal_lands
 	{
 		xmlNodePtr it;
 
-		if (xmlStrcmp(node->name, BAD_CAST UTF8("shader_blend_data"))
+		if (xmlStrcmp(node->name, BAD_CAST UTF8("blend_data"))
 			!= 0)
 		{
 			return;
@@ -79,7 +79,7 @@ namespace eternal_lands
 
 	void BlendData::save_xml(const XmlWriterSharedPtr &writer) const
 	{
-		writer->start_element(String(UTF8("shader_blend_data")));
+		writer->start_element(String(UTF8("blend_data")));
 
 		writer->write_float_element(String(UTF8("blend_size")),
 			get_blend_size());

@@ -146,6 +146,9 @@ namespace eternal_lands
 				count));
 		}
 
+		blend_min = glm::uvec3(0);
+		blend_max = glm::uvec3(m_size);
+
 		blend_map = ImageUpdate(m_blend_image, blend_min,
 			blend_max - blend_min);
 	}

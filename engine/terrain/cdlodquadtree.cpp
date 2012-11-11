@@ -483,12 +483,13 @@ namespace eternal_lands
 		max = min + glm::vec3(size, 0.0f);
 
 		pos = position / patch_size;
-		min += m_lods[level].min_max[pos.x][pos.y][0];
-		max += m_lods[level].min_max[pos.x][pos.y][1];
+		min += m_lods[level].min_max[pos.x][pos.y][0] - 0.5f;
+		max += m_lods[level].min_max[pos.x][pos.y][1] + 0.5f;
 
 		min = glm::min(min, max - 0.05f);
 
 		box.set_min_max(min, max);
+		box.scale(1.05f);
 
 		if (frustum.intersect(box, mask, out_mask) == it_outside)
 		{

@@ -72,8 +72,8 @@ namespace eternal_lands
 					XmlUtil::get_bitset64_value(it));
 			}
 
-			if (xmlStrcmp(it->name,
-				BAD_CAST UTF8("shader_blend_data")) == 0)
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("blend_data"))
+				== 0)
 			{
 				append_blend_data(BlendData(it));
 			}
