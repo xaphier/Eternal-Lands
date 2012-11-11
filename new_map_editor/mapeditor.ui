@@ -1116,6 +1116,9 @@
         <layout class="QGridLayout" name="gridLayout_11">
          <item row="0" column="0">
           <widget class="QStackedWidget" name="vector_brush_effect">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="currentIndex">
             <number>0</number>
            </property>
@@ -1417,6 +1420,9 @@
              </item>
              <item row="1" column="1">
               <widget class="QSlider" name="vector_brush_smooth_strength_slider_y">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="maximum">
                 <number>100</number>
                </property>
@@ -1471,6 +1477,9 @@
              </item>
              <item row="2" column="1">
               <widget class="QSlider" name="vector_brush_smooth_strength_slider_z">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="maximum">
                 <number>100</number>
                </property>
