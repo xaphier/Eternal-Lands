@@ -742,12 +742,12 @@ void ELGLWidget::change_terrain_displacement_values(const QVector3D &data,
 }
 
 void ELGLWidget::change_terrain_blend_values(const QVector2D &size,
-	const float attenuation_size, const float data,
+	const float attenuation_size, const float strength,
 	const int attenuation, const int shape, const int effect,
 	const int layer)
 {
 	m_editor->change_terrain_blend_values(m_world_position,
-		glm::vec2(size.x(), size.y()), attenuation_size, data,
+		glm::vec2(size.x(), size.y()), attenuation_size, strength,
 		attenuation, shape, effect, layer);
 
 	emit can_undo(m_editor->get_can_undo());
@@ -1874,5 +1874,12 @@ void ELGLWidget::pick_terrain_normal()
 void ELGLWidget::set_all_copies_of_object_name(const String &name)
 {
 	m_editor->set_all_copies_of_object_name(name);
+	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::fill_terrain_blend_layer(const float strength,
+	const int effect, const int layer)
+{
+	m_editor->fill_terrain_blend_layer(strength, effect, layer);
 	emit can_undo(m_editor->get_can_undo());
 }

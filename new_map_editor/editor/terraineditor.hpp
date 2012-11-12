@@ -38,18 +38,25 @@ namespace eternal_lands
 		bst_rect = 1
 	};
 
-	enum BrushEffectType
-	{
-		bet_add = 0,
-		bet_set = 1,
-		bet_smooth = 2
-	};
-
 	enum BrushSourceType
 	{
 		bst_value = 0,
 		bst_slope = 1,
 		bst_height = 2
+	};
+
+	enum DisplacementEffectType
+	{
+		det_add = 0,
+		det_set = 1,
+		det_smooth = 2
+	};
+
+	enum BlendEffectType
+	{
+		bet_set = 0,
+		bet_slope = 1,
+		bet_inverse_slope = 2
 	};
 
 	class LessIvec2
@@ -108,6 +115,8 @@ namespace eternal_lands
 			glm::vec3 get_direction(const glm::vec3 &centre,
 				const glm::ivec2 &index) const;
 			glm::vec3 get_normal(const glm::ivec2 &index) const;
+			glm::vec3 get_smooth_normal(const glm::vec2 &index)
+				const;
 			void update_normal(const glm::ivec2 &index);
 			void update_normals(const Ivec2Set &positions);
 			void get_blend_values(const glm::uvec2 &vertex,
@@ -126,6 +135,7 @@ namespace eternal_lands
 				ImageValueVector &blend_values) const;
 			void init(const glm::uvec2 &size);
 			BitSet64 get_used_layers() const;
+			float get_blend_slope(const glm::ivec2 &index) const;
 
 		public:
 			TerrainEditor();
@@ -167,8 +177,8 @@ namespace eternal_lands
 			static const glm::vec3 &get_terrain_offset_max();
 			bool get_vertex(const glm::vec3 &world_position,
 				glm::uvec2 &result) const;
-			static glm::vec3 calc_brush(const glm::vec3 &value,
-				const glm::vec3 &data,
+			static glm::vec3 calc_displacement_brush(
+				const glm::vec3 &value, const glm::vec3 &data,
 				const glm::vec3 &average,
 				const glm::bvec3 &mask,
 				const glm::vec2 &center,
@@ -177,11 +187,12 @@ namespace eternal_lands
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
-				const BrushEffectType effect);
-			static glm::vec3 calc_effect(const glm::vec3 &value,
-				const glm::vec3 &data, const glm::vec3 &average,
+				const DisplacementEffectType effect);
+			static glm::vec3 calc_displacement_effect(
+				const glm::vec3 &value,	const glm::vec3 &data,
+				const glm::vec3 &average,
 				const glm::vec3 &strength,
-				const BrushEffectType effect);
+				const DisplacementEffectType effect);
 			static float calc_attenuation(const float distance,
 				const float attenuation_size,
 				const BrushAttenuationType attenuation);
@@ -195,28 +206,30 @@ namespace eternal_lands
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
-				const BrushEffectType effect,
+				const DisplacementEffectType effect,
 				DisplacementValueVector &displacement_values)
 				const;
 			void change_blend_values(const glm::vec2 &size,
 				const glm::uvec2 &vertex,
-				const float attenuation_size, const float data,
+				const float attenuation_size,
+				const float strength,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
-				const BrushEffectType effect, const int layer,
+				const BlendEffectType effect,
+				const Uint16 layer,
 				ImageValueVector &blend_values) const;
-			static float calc_effect(const float value,
-				const float data, const float average,
+			static float calc_blend_effect(const float value,
+				const float data, const float slope,
 				const float strength,
-				const BrushEffectType effect);
-			static float calc_brush(const glm::vec2 &center,
+				const BlendEffectType effect);
+			static float calc_blend_brush(const glm::vec2 &center,
 				const glm::vec2 &position,
 				const glm::vec2 &size, const float value,
-				const float attenuation_size, const float data,
-				const float average,
+				const float attenuation_size,
+				const float data, const float slope,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
-				const BrushEffectType effect);
+				const BlendEffectType effect);
 			void set_water(const glm::uvec2 vertex,
 				const float direction, const float speed,
 				const Uint16 index);
@@ -262,6 +275,9 @@ namespace eternal_lands
 				const glm::uvec2 &vertex) const;
 			glm::vec3 get_normal_value(const glm::uvec2 &vertex)
 				const;
+			void fill_blend_layer(const float strength,
+				const BlendEffectType effect,
+				const Uint16 layer, ImageUpdate &blend_map);
 
 			inline void set_albedo_map(const String &name,
 				const Uint16 index)

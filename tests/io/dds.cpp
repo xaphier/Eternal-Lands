@@ -460,3 +460,111 @@ BOOST_AUTO_TEST_CASE(write_read_color)
 		}
 	}
 }
+
+BOOST_AUTO_TEST_CASE(write_read_dxt10)
+{
+	CodecManager codec_manager;
+	ImageCompressionTypeSet compressions;
+	ReaderSharedPtr reader;
+	WriterSharedPtr writer;
+	ReadWriteMemorySharedPtr buffer;
+	boost::shared_ptr<StringStream> stream;
+	std::vector<TextureFormatType> texture_formats;
+	glm::vec4 c0, c1;
+	ImageSharedPtr image0, image1;
+	String name;
+	Uint32 width, height, depth, count;
+	Uint32 i, j, x, y, z;
+
+	DdsImage::get_dxt10_formats(texture_formats);
+
+	for (i = 0; i < texture_formats.size(); i++)
+	{
+		std::stringstream str;
+
+		count = TextureFormatUtil::get_count(texture_formats[i]);
+
+		if (count == 0)
+		{
+			continue;
+		}
+
+		if (TextureFormatUtil::get_compressed(texture_formats[i]))
+		{
+			continue;
+		}
+
+		str << UTF8("test-dds ") << texture_formats[i];
+
+		name = String(str.str());
+
+		stream = boost::make_shared<StringStream>();
+
+		writer = boost::make_shared<Writer>(stream, name);
+
+		image0 = boost::make_shared<Image>(name, false,
+			texture_formats[i], glm::uvec3(image_width,
+				image_height, image_depth), 0);
+
+		width = std::max(1u, image_width);
+		height = std::max(1u, image_height);
+		depth = std::max(1u, image_depth);
+
+		for (z = 0; z < depth; ++z)
+		{
+			for (y = 0; y < height; ++y)
+			{
+				for (x = 0; x < width; ++x)
+				{
+					c0.r = (((x / 4) % 4) % 2);
+					c0.g = (((x / 4) % 4) / 2);
+					c0.b = (((y / 4) % 4) % 2);
+					c0.a = (((y / 4) % 4) / 2);
+
+					image0->set_pixel(x, y, z, 0, 0, c0);
+				}
+			}
+		}
+
+		BOOST_CHECK_NO_THROW(DdsImage::save_image_dxt10(image0,
+			writer));
+
+		buffer = boost::make_shared<ReadWriteMemory>(
+			writer->get_position());
+
+		stream->read(static_cast<char*>(buffer->get_ptr()),
+			buffer->get_size());
+
+		reader = boost::make_shared<Reader>(buffer, name);	
+
+		image1 = DdsImage::load_image(codec_manager, reader,
+			compressions, true, false, false);
+
+		BOOST_CHECK_EQUAL(image1->get_texture_format(),
+			texture_formats[i]);
+		BOOST_CHECK_EQUAL(image1->get_width(), image_width);
+		BOOST_CHECK_EQUAL(image1->get_height(), image_height);
+		BOOST_CHECK_EQUAL(image1->get_depth(), image_depth);
+		BOOST_CHECK_EQUAL(image1->get_mipmap_count(), 0);
+		BOOST_CHECK_EQUAL(image1->get_array(), false);
+		BOOST_CHECK_EQUAL(image1->get_cube_map(), false);
+
+		for (z = 0; z < depth; ++z)
+		{
+			for (y = 0; y < height; ++y)
+			{
+				for (x = 0; x < width; ++x)
+				{
+					c0 = image0->get_pixel(x, y, z, 0, 0);
+					c1 = image1->get_pixel(x, y, z, 0, 0);
+
+					for (j = 0; j < count; ++j)
+					{
+						BOOST_CHECK_CLOSE(c0[j], c1[j],
+							1.0);
+					}
+				}
+			}
+		}
+	}
+}

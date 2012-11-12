@@ -1168,7 +1168,7 @@ namespace eternal_lands
 			vertex, attenuation_size,
 			static_cast<BrushAttenuationType>(attenuation),
 			static_cast<BrushShapeType>(shape),
-			static_cast<BrushEffectType>(effect),
+			static_cast<DisplacementEffectType>(effect),
 			displacement_values);
 
 		m_data.set_terrain_displacement_values(displacement_values);
@@ -1200,7 +1200,7 @@ namespace eternal_lands
 			attenuation_size, data,
 			static_cast<BrushAttenuationType>(attenuation),
 			static_cast<BrushShapeType>(shape),
-			static_cast<BrushEffectType>(effect), layer,
+			static_cast<BlendEffectType>(effect), layer,
 			blend_values);
 
 		m_data.set_terrain_blend_values(blend_values);
@@ -1307,6 +1307,22 @@ namespace eternal_lands
 		normal = m_data.get_terrain_normal(vertex);
 
 		return true;
+	}
+
+	void Editor::fill_terrain_blend_layer(const float strength,
+		const int effect, const int layer)
+	{
+		ImageValueVector blend_values;
+
+		m_data.get_all_terrain_blend_values(blend_values);
+
+		ModificationAutoPtr modification(new BlendModification(
+			blend_values, get_edit_id()));
+
+		m_undo.add(modification);
+
+		m_data.fill_terrain_blend_layer(strength,
+			static_cast<BlendEffectType>(effect), layer);
 	}
 
 }

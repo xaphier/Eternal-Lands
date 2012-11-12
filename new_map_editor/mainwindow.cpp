@@ -471,6 +471,9 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		this, SLOT(terrain_displacement(const QVector3D&)));
 	connect(el_gl_widget, SIGNAL(terrain_normal(const QVector3D&)), this,
 		SLOT(terrain_normal(const QVector3D&)));
+
+	connect(action_fill_terrain_blend_layer, SIGNAL(triggered()), this,
+		SLOT(fill_terrain_blend_layer()));
 }
 
 MainWindow::~MainWindow()
@@ -598,6 +601,16 @@ void MainWindow::update_terrain_layers()
 		item->setData(tlr_use_blend_size_sampler,
 			use_blend_size_sampler);
 		item->setData(tlr_use_extra_map, use_extra_map);
+
+		if (i == 0)
+		{
+			item->setFlags(Qt::ItemIsEnabled);
+		}
+		else
+		{
+			item->setFlags(Qt::ItemIsSelectable |
+				Qt::ItemIsEnabled);
+		}
 
 		terrain_layers->insertItem(i, item);
 	}
@@ -825,6 +838,7 @@ void MainWindow::update_terrain(const bool enabled)
 	action_show_used_terrain_layers->setEnabled(enabled);
 	action_clear_invisible_terrain_layers->setEnabled(enabled);
 	action_pack_terrain_layers->setEnabled(enabled);
+	action_fill_terrain_blend_layer->setEnabled(enabled);
 
 	if (enabled)
 	{
@@ -2102,7 +2116,7 @@ void MainWindow::load_terrain_textures_settings(QSettings &settings)
 	settings.endGroup();
 }
 
-void MainWindow::terrain_vector_edit()
+void MainWindow::terrain_displacement_edit()
 {
 	QVector3D data;
 	QVector2D size;
@@ -2131,7 +2145,7 @@ void MainWindow::terrain_vector_edit()
 
 	attenuation = brush_attenuation->currentIndex();
 
-	effect = brush_effect->currentIndex();
+	effect = displacement_effect->currentIndex();
 
 	mask = 0x7;
 
@@ -2197,11 +2211,11 @@ void MainWindow::terrain_vector_edit()
 		attenuation_size, mask, attenuation, shape, effect);
 }
 
-void MainWindow::terrain_layer_edit()
+void MainWindow::terrain_blend_edit()
 {
 	QListWidgetItem* item;
 	QVector2D size;
-	float attenuation_size, data;
+	float attenuation_size, strength;
 	int attenuation, shape, effect, layer;
 
 	shape = -1;
@@ -2226,9 +2240,9 @@ void MainWindow::terrain_layer_edit()
 
 	attenuation = brush_attenuation->currentIndex();
 
-	effect = brush_effect->currentIndex();
+	effect = blend_effect->currentIndex();
 
-	data = layer_brush_strength->value() * 0.01f;
+	strength = blend_strength->value() * 0.01f;
 
 	layer = 0;
 
@@ -2239,8 +2253,8 @@ void MainWindow::terrain_layer_edit()
 		layer = std::max(0, item->data(tlr_index).toInt() - 1);
 	}
 
-	el_gl_widget->change_terrain_blend_values(size, attenuation_size, data,
-		attenuation, shape, effect, layer);
+	el_gl_widget->change_terrain_blend_values(size, attenuation_size,
+		strength, attenuation, shape, effect, layer);
 }
 
 void MainWindow::terrain_edit()
@@ -2248,10 +2262,10 @@ void MainWindow::terrain_edit()
 	switch (paint_tool_tabs->currentIndex())
 	{
 		case 0:
-			terrain_vector_edit();
+			terrain_displacement_edit();
 			break;
 		case 1:
-			terrain_layer_edit();
+			terrain_blend_edit();
 			break;
 		case 2:
 			el_gl_widget->water_tile_edit(0);
@@ -3017,13 +3031,13 @@ void MainWindow::layers_double_clicked(QListWidgetItem* item)
 	int index;
 	bool use_blend_size_sampler, use_blend_size, use_extra_map;
 
-	m_terrain_textures->update_terrain_texture_datas();
-	m_terrain_textures->set_texture(item->toolTip());
 	m_terrain_textures->set_label(item->text());
 	m_terrain_textures->set_blend_size(item->data(
 		tlr_blend_size).toFloat());
 	m_terrain_textures->set_use_blend_size(item->data(
 		tlr_use_blend_size).toBool());
+	m_terrain_textures->update_terrain_texture_datas();
+	m_terrain_textures->set_texture(item->toolTip());
 
 	if (m_terrain_textures->exec() == QDialog::Accepted)
 	{
@@ -3157,4 +3171,56 @@ void MainWindow::replace_all_copies_of_object()
 
 	el_gl_widget->set_all_copies_of_object_name(String(
 		m_objects->get_object().toUtf8()));
+}
+
+void MainWindow::fill_terrain_blend_layer()
+{
+	QListWidgetItem* item;
+	QStringList values;
+	QString value;
+	float strength;
+	int effect, layer;
+	bool ok;
+
+	layer = 0;
+
+	item = terrain_layers->currentItem();
+
+	if (item != 0)
+	{
+		layer = std::max(0, item->data(tlr_index).toInt() - 1);
+	}
+
+	ok = false;
+
+	values.push_back("set");
+	values.push_back("slope");
+	values.push_back("inverse slope");
+
+	value = QInputDialog::getItem(this, "Select fill effect",
+		"Effect", values, 0, false, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	effect = values.indexOf(value);
+
+	if (effect == -1)
+	{
+		return;
+	}
+
+	ok = false;
+
+	strength = QInputDialog::getDouble(this, "Select fill strength",
+		"Strength", 0.5f, 0.0f, 1.0f, 2, &ok);
+
+	if (!ok)
+	{
+		return;
+	}
+
+	el_gl_widget->fill_terrain_blend_layer(strength, effect, layer);
 }

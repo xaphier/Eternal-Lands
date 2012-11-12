@@ -33,10 +33,10 @@ namespace eternal_lands
 	namespace
 	{
 
-		glm::vec3 get_low_quality_pixel_3(const ImageSharedPtr &image,
+		glm::vec4 get_low_quality_pixel_3(const ImageSharedPtr &image,
 			const Uint32 x, const Uint32 y)
 		{
-			glm::vec3 result;
+			glm::vec4 result;
 			Uint32 x0, y0, x1, y1;
 
 			x0 = std::min(x, image->get_width() - 1);
@@ -44,14 +44,10 @@ namespace eternal_lands
 			x1 = std::min(x + 1, image->get_width() - 1);
 			y1 = std::min(y + 1, image->get_height() - 1);
 
-			result = AbstractTerrain::get_offset_scaled_0_1(
-				image->get_pixel(x0, y0, 0, 0, 0));
-			result += AbstractTerrain::get_offset_scaled_0_1(
-				image->get_pixel(x1, y0, 0, 0, 0));
-			result += AbstractTerrain::get_offset_scaled_0_1(
-				image->get_pixel(x0, y1, 0, 0, 0));
-			result += AbstractTerrain::get_offset_scaled_0_1(
-				image->get_pixel(x1, y1, 0, 0, 0));
+			result = image->get_pixel(x0, y0, 0, 0, 0);
+			result += image->get_pixel(x1, y0, 0, 0, 0);
+			result += image->get_pixel(x0, y1, 0, 0, 0);
+			result += image->get_pixel(x1, y1, 0, 0, 0);
 
 			return result * 0.25f;
 		}
@@ -206,8 +202,11 @@ namespace eternal_lands
 			{
 				pos = (tile_offset + glm::uvec2(x, y)) * 2u;
 
-				vector = get_low_quality_pixel_3(
+				data = get_low_quality_pixel_3(
 					displacement_map, pos.x, pos.y);
+
+				vector = AbstractTerrain::get_offset_scaled_0_1(
+					data);
 
 				normal = get_low_quality_pixel_2(normal_map,
 					pos.x, pos.y);
@@ -215,12 +214,13 @@ namespace eternal_lands
 				dudv = get_low_quality_pixel_2(dudv_map,
 					pos.x, pos.y);
 
+				vectors.push_back(data);
+
 				data.x = normal.x;
 				data.y = normal.y;
 				data.z = dudv.x;
 				data.w = dudv.y;
 
-				vectors.push_back(glm::vec4(vector, 1.0f));
 				normals.push_back(data);
 
 				position = glm::vec3(glm::vec2(x, y) *

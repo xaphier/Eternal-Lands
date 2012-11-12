@@ -2666,4 +2666,70 @@ namespace eternal_lands
 			swap_size, flags, linear_size);
 	}
 
+	void DdsImage::get_dxt10_formats(
+		std::vector<TextureFormatType> &texture_formats)
+	{
+		texture_formats.push_back(tft_depth32f_stencil8);
+		texture_formats.push_back(tft_rgba32f);
+		texture_formats.push_back(tft_rgba32_ui);
+		texture_formats.push_back(tft_rgba32_i);
+		texture_formats.push_back(tft_rgb32f);
+		texture_formats.push_back(tft_rgb32_ui);
+		texture_formats.push_back(tft_rgb32_i);
+		texture_formats.push_back(tft_rgba16f);
+		texture_formats.push_back(tft_rgba16);
+		texture_formats.push_back(tft_rgba16_ui);
+		texture_formats.push_back(tft_rgba16_snorm);
+		texture_formats.push_back(tft_rgba16_i);
+		texture_formats.push_back(tft_rg32f);
+		texture_formats.push_back(tft_rg32_ui);
+		texture_formats.push_back(tft_rg32_i);
+		texture_formats.push_back(tft_rgb10_a2);
+		texture_formats.push_back(tft_rgb10_a2_ui);
+		texture_formats.push_back(tft_r10f_b11f_g10f);
+		texture_formats.push_back(tft_rgba8);
+		texture_formats.push_back(tft_srgb8_a8);
+		texture_formats.push_back(tft_rgba8_ui);
+		texture_formats.push_back(tft_rgba8_snorm);
+		texture_formats.push_back(tft_rgba8_i);
+		texture_formats.push_back(tft_rg16f);
+		texture_formats.push_back(tft_rg16);
+		texture_formats.push_back(tft_rg16_ui);
+		texture_formats.push_back(tft_rg16_snorm);
+		texture_formats.push_back(tft_rg16_i);
+		texture_formats.push_back(tft_depth32f);
+		texture_formats.push_back(tft_r32f);
+		texture_formats.push_back(tft_r32_ui);
+		texture_formats.push_back(tft_r32_i);
+		texture_formats.push_back(tft_depth24_stencil8);
+		texture_formats.push_back(tft_rg8);
+		texture_formats.push_back(tft_rg8_ui);
+		texture_formats.push_back(tft_rg8_snorm);
+		texture_formats.push_back(tft_rg8_i);
+		texture_formats.push_back(tft_r16f);
+		texture_formats.push_back(tft_depth16);
+		texture_formats.push_back(tft_r16);
+		texture_formats.push_back(tft_r16_ui);
+		texture_formats.push_back(tft_r16_snorm);
+		texture_formats.push_back(tft_r16_i);
+		texture_formats.push_back(tft_r8);
+		texture_formats.push_back(tft_r8_ui);
+		texture_formats.push_back(tft_r8_snorm);
+		texture_formats.push_back(tft_r8_i);
+		texture_formats.push_back(tft_a8);
+		texture_formats.push_back(tft_rgb9_e5);
+		texture_formats.push_back(tft_rgb_dxt1);
+		texture_formats.push_back(tft_rgba_dxt1);
+		texture_formats.push_back(tft_srgb_dxt1);
+		texture_formats.push_back(tft_srgb_a_dxt1);
+		texture_formats.push_back(tft_rgba_dxt3);
+		texture_formats.push_back(tft_srgb_a_dxt3);
+		texture_formats.push_back(tft_rgba_dxt5);
+		texture_formats.push_back(tft_srgb_a_dxt5);
+		texture_formats.push_back(tft_r_rgtc1);
+		texture_formats.push_back(tft_signed_r_rgtc1);
+		texture_formats.push_back(tft_rg_rgtc2);
+		texture_formats.push_back(tft_signed_rg_rgtc2);
+	}
+
 }

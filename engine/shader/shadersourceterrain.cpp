@@ -109,6 +109,8 @@ namespace eternal_lands
 		Uint32 i, count;
 		bool use_glsl_130;
 
+		source = get_name();
+
 		use_glsl_130 = version >= svt_130;
 
 		if (use_glsl_130)
@@ -210,16 +212,37 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceTerrain::write_albedo_fetch(const String &indent,
-		const Uint16 index, const bool use_glsl_130,
-		OutStream &str) const
+		const Uint16 index, const bool use_glsl_130, OutStream &str) const
 	{
+		Uint16 i, sampler, layer;
+		bool use_blend_size_sampler;
+
 		str << indent << UTF8("albedo = texture");
+
+		layer = 0;
+		sampler = 0;
+
+		use_blend_size_sampler = get_use_blend_size_sampler(index);
+
+		if (use_blend_size_sampler)
+		{
+			sampler = 1;
+		}
+
+		for (i = 0; i < index; ++i)
+		{
+			if (get_use_blend_size_sampler(i) ==
+				use_blend_size_sampler)
+			{
+				layer++;
+			}
+		}
 
 		if (use_glsl_130)
 		{
-			str << UTF8("(") << get_albedo_sampler(0);
+			str << UTF8("(") << get_albedo_sampler(sampler);
 			str << UTF8(", vec3(") << cpt_world_extra_uv;
-			str << UTF8(", ") << index << UTF8("));\n");
+			str << UTF8(", ") << layer << UTF8("));\n");
 		}
 		else
 		{
@@ -249,8 +272,7 @@ namespace eternal_lands
 
 		if (get_blend_data(index).get_use_blend_size())
 		{
-			str << indent << UTF8("blend = smoothstep(");
-			str << UTF8("clamp(albedo.a - ");
+			str << UTF8("smoothstep(clamp(albedo.a - ");
 			str << get_blend_data(index).get_blend_size();
 			str << UTF8(", 0.0, 1.0), clamp(albedo.a + ");
 			str << get_blend_data(index).get_blend_size();

@@ -1524,4 +1524,93 @@ namespace eternal_lands
 		return glm::vec3(fenc * g, 1.0f - f / 2.0f);
 	}
 
+#define	GET_STRING(str)	String(UTF8(#str))
+
+#define PACK_FORMAT(type)	\
+	case pft_##type##_1:	\
+		return GET_STRING((type##_1));	\
+	case pft_##type##_2:	\
+		return GET_STRING((type##_2));	\
+	case pft_##type##_3:	\
+		return GET_STRING((type##_3));	\
+	case pft_##type##_4:	\
+		return GET_STRING((type##_4));
+
+#define PACK_FORMAT_INT(type)	\
+	PACK_FORMAT(unsigned_##type)	\
+	PACK_FORMAT(signed_##type)	\
+	PACK_FORMAT(unsigned_normalized_##type)	\
+	PACK_FORMAT(signed_normalized_##type)
+
+#define PACK_FORMAT_PACKED_3(type, x, y, z)	\
+	case pft_unsigned_##type##_##x##_##y##_##z:	\
+		return GET_STRING((unsigned_##type##_##x##_##y##_##z));	\
+	case pft_signed_##type##_##x##_##y##_##z:	\
+		return GET_STRING((signed_##type##_##x##_##y##_##z));	\
+	case pft_unsigned_normalized_##type##_##x##_##y##_##z:	\
+		return GET_STRING((unsigned_normalized_##type##_##x##_##y##_##z));	\
+	case pft_signed_normalized_##type##_##x##_##y##_##z:	\
+		return GET_STRING((signed_normalized_##type##_##x##_##y##_##z));	\
+	case pft_unsigned_##type##_rev_##z##_##y##_##x:	\
+		return GET_STRING((unsigned_##type##_rev_##z##_##y##_##x));	\
+	case pft_signed_##type##_rev_##z##_##y##_##x:	\
+		return GET_STRING((signed_##type##_rev_##z##_##y##_##x));	\
+	case pft_unsigned_normalized_##type##_rev_##z##_##y##_##x:	\
+		return GET_STRING((unsigned_normalized_##type##_rev_##z##_##y##_##x));	\
+	case pft_signed_normalized_##type##_rev_##z##_##y##_##x:	\
+		return GET_STRING((signed_normalized_##type##_##x##_##y##_##z));
+
+#define PACK_FORMAT_PACKED_4(type, x, y, z, w)	\
+	case pft_unsigned_##type##_##x##_##y##_##z##_##w:	\
+		return GET_STRING((unsigned_##type##_##x##_##y##_##z##_##w));	\
+	case pft_signed_##type##_##x##_##y##_##z##_##w:	\
+		return GET_STRING((signed_##type##_##x##_##y##_##z##_##w));	\
+	case pft_unsigned_normalized_##type##_##x##_##y##_##z##_##w:	\
+		return GET_STRING((unsigned_normalized_##type##_##x##_##y##_##z##_##w));	\
+	case pft_signed_normalized_##type##_##x##_##y##_##z##_##w:	\
+		return GET_STRING((signed_normalized_##type##_##x##_##y##_##z##_##w));	\
+	case pft_unsigned_##type##_rev_##w##_##z##_##y##_##x:	\
+		return GET_STRING((unsigned_##type##_rev_##w##_##z##_##y##_##x));	\
+	case pft_signed_##type##_rev_##w##_##z##_##y##_##x:	\
+		return GET_STRING((signed_##type##_rev_##w##_##z##_##y##_##x));	\
+	case pft_unsigned_normalized_##type##_rev_##w##_##z##_##y##_##x:	\
+		return GET_STRING((unsigned_normalized_##type##_rev_##w##_##z##_##y##_##x));	\
+	case pft_signed_normalized_##type##_rev_##w##_##z##_##y##_##x:	\
+		return GET_STRING((signed_normalized_##type##_rev_##w##_##z##_##y##_##x));
+
+	String PackTool::get_str(const PackFormatType pack_format)
+	{
+		switch (pack_format)
+		{
+			PACK_FORMAT_INT(byte)
+			PACK_FORMAT_INT(short)
+			PACK_FORMAT_INT(int)
+			PACK_FORMAT(float)
+			PACK_FORMAT(half)
+			PACK_FORMAT_PACKED_3(byte, 3, 3, 2)
+			PACK_FORMAT_PACKED_4(short, 4, 4, 4, 4)
+			PACK_FORMAT_PACKED_3(short, 5, 6, 5)
+			PACK_FORMAT_PACKED_4(short, 5, 5, 5, 1)
+			PACK_FORMAT_PACKED_4(int, 10, 10, 10, 2)
+			case pft_rgb9_e5:
+				return String(UTF8("rgb9_e5"));
+			case pft_r10f_g11f_b10f:
+				return String(UTF8("r10f_g11f_b10f"));
+		}
+
+		return String();
+	};
+
+#undef	PACK_FORMAT
+#undef	PACK_FORMAT_INT
+#undef	PACK_FORMAT_PACKED_3
+#undef	PACK_FORMAT_PACKED_4
+
+	OutStream &operator<<(OutStream &str, const PackFormatType value)
+	{
+		str << PackTool::get_str(value);
+
+		return str;
+	}
+
 }

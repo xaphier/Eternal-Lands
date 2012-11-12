@@ -56,7 +56,7 @@
     </parameter>
    </parameters>
    <source>mat2x4 terrain_instance;
-vec3 vertex_position;
+vec3 vertex_position, morph_position;
 vec2 fenc, vertex_uv, morph_dir;
 float f, g, morph, dist;
 
@@ -64,21 +64,22 @@ terrain_instance = terrain_instances[gl_InstanceID];
 
 morph_dir = fract(position.xy * 0.5) * terrain_instance[0].w;
 vertex_uv = terrain_instance[0].xy + position.xy * terrain_instance[0].z;
-vertex_position = vec3(vertex_uv * terrain_lod_offset.w, 0.0);
-//dist = length(vertex_position + terrain_lod_offset.xyz);
-dist = length(vertex_position + terrain_lod_offset.xyz + decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, terrain_instance[1].z)));
+morph_position = vec3(vertex_uv * terrain_lod_offset.w, 0);
+vertex_position = morph_position;
+morph_position.xy += decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, 0.0)).xy;
+dist = length(morph_position + terrain_lod_offset.xyz);
 morph = clamp(dist * terrain_instance[1].x + terrain_instance[1].y, 0.0, 1.0);
 vertex_uv += morph_dir * morph;
 vertex_uv *= terrain_lod_offset.w;
 vertex_position = vec3(vertex_uv, 0.0);
 vertex_uv *= terrain_scale.zw;
-vertex_position += decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, terrain_instance[1].z + morph));
+terrain_texture_coordinate = vertex_position.xy;
+vertex_position += decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, 0.0));
 world_position = vertex_position;
 
 world_normal = decode_normal(textureLod(effect_sampler_9, vertex_uv, terrain_instance[1].z + morph).rg);
 world_tangent = vec4(world_normal, 1.0);
 
-terrain_texture_coordinate = vertex_position.xy;
 terrain_texture_coordinate += textureLod(effect_sampler_10, vertex_uv, terrain_instance[1].z + morph).rg * dudv_scale_offset.xy + dudv_scale_offset.zw;
 </source>
    <version>140</version>

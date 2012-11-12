@@ -124,7 +124,6 @@ namespace eternal_lands
 
 			void init_walk_height_map(
 				const ImageSharedPtr &displacement_map);
-			void load_data(const String& name);
 
 		public:
 			/**
@@ -328,7 +327,6 @@ namespace eternal_lands
 			inline void set_name(const String &name) noexcept
 			{
 				m_name = name;
-				load_data(name);
 			}
 
 			inline const String &get_name() const noexcept

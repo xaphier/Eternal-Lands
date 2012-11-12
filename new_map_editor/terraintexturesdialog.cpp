@@ -10,16 +10,31 @@ TerrainTexturesDialog::TerrainTexturesDialog(
 	QObject::connect(terrain_textures,
 		SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
 		SLOT(accept()));
+
+	QObject::connect(terrain_textures,
+		SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+		this, SLOT(texture_clicked(QListWidgetItem*,
+			QListWidgetItem*)));
 }
 
 TerrainTexturesDialog::~TerrainTexturesDialog()
 {
 }
 
-void TerrainTexturesDialog::texture_clicked(QListWidgetItem* item)
+void TerrainTexturesDialog::texture_clicked(QListWidgetItem* item,
+	QListWidgetItem* previous)
 {
-	blend_size->setEnabled(item != 0);
-	blend_size_value->setEnabled(item != 0);
+	if (item == 0)
+	{
+		blend_size->setEnabled(false);
+		blend_size_value->setEnabled(false);
+
+		return;
+	}
+
+	blend_size->setEnabled(item->data(Qt::UserRole).toBool());
+	blend_size_value->setEnabled(item->data(Qt::UserRole).toBool() &&
+		blend_size->isChecked());
 }
 
 void TerrainTexturesDialog::update_terrain_texture_datas()
@@ -99,7 +114,6 @@ void TerrainTexturesDialog::set_blend_size(const float value)
 {
 	blend_size_value->setValue(value);
 }
-
 
 bool TerrainTexturesDialog::get_use_blend_size() const
 {

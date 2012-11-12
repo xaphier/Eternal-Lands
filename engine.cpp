@@ -1550,6 +1550,9 @@ extern "C" void engine_set_opengl_version(const int value)
 	}
 
 	global_vars->set_opengl_version(version);
+
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
 
 extern "C" void engine_set_use_simd(const int value)

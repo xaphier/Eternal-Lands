@@ -956,6 +956,17 @@ namespace eternal_lands
 		m_particles.clear();
 	}
 
+	void EditorMapData::fill_terrain_blend_layer(const float strength,
+		const BlendEffectType effect, const Uint16 layer)
+	{
+		ImageUpdate blend_map;
+
+		m_terrain_editor.fill_blend_layer(strength, effect, layer,
+			blend_map);
+
+		m_scene->update_terrain_blend_map(blend_map);
+	}
+
 	void EditorMapData::save(const WriterSharedPtr &writer,
 		const MapVersionType version) const
 	{

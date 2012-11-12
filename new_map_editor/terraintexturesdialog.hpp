@@ -13,7 +13,8 @@ class TerrainTexturesDialog: public QDialog, public Ui::TerrainTextures
 		const QStringTerrainTextureDataQMap &m_terrain_texture_datas;
 
 	private slots:
-		void texture_clicked(QListWidgetItem* item);
+		void texture_clicked(QListWidgetItem* item,
+			QListWidgetItem* previous);
 
 	public:
 		TerrainTexturesDialog(const QStringTerrainTextureDataQMap

@@ -175,9 +175,10 @@ namespace eternal_lands
 			void change_terrain_blend_values(
 				const glm::vec3 &position,
 				const glm::vec2 &size,
-				const float attenuation_size, const float data,
-				const int attenuation, const int shape,
-				const int effect, const int layer);
+				const float attenuation_size,
+				const float strength, const int attenuation,
+				const int shape, const int effect,
+				const int layer);
 			bool check_default_materials(const String &name,
 				const StringVector &materials) const;
 			void import_terrain_height_map(const String &name);
@@ -199,6 +200,8 @@ namespace eternal_lands
 			bool get_terrain_normal(
 				const glm::vec3 &position, glm::vec3 &normal)
 				const;
+			void fill_terrain_blend_layer(const float strenght,
+				const int mask, const int layer);
 
 			static inline const glm::vec3 &get_terrain_offset_min()
 			{

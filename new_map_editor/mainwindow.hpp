@@ -104,8 +104,8 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void set_selection(const SelectionType value);
 		void save_dirs_settings(QSettings &settings);
 		void load_dirs_settings(QSettings &settings);
-		void terrain_vector_edit();
-		void terrain_layer_edit();
+		void terrain_displacement_edit();
+		void terrain_blend_edit();
 		void save_nodes(const QString &file_name);
 		void load_nodes(const QString &file_name);
 		bool check_save_nodes();
@@ -191,6 +191,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void terrain_displacement(const QVector3D &displacement);
 		void terrain_normal(const QVector3D &normal);
 		void replace_all_copies_of_object();
+		void fill_terrain_blend_layer();
 
 	protected:
 		virtual void closeEvent(QCloseEvent* event);

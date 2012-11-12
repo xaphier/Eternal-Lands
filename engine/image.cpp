@@ -75,17 +75,23 @@ namespace eternal_lands
 			switch (format)
 			{
 				case GL_RED:
+				case GL_RED_INTEGER:
 				case GL_ALPHA:
 				case GL_LUMINANCE:
 					return 1;
 				case GL_RG:
+				case GL_RG_INTEGER:
 				case GL_LUMINANCE_ALPHA:
 					return 2;
 				case GL_RGB:
 				case GL_BGR:
+				case GL_RGB_INTEGER:
+				case GL_BGR_INTEGER:
 					return 3;
 				case GL_RGBA:
 				case GL_BGRA:
+				case GL_RGBA_INTEGER:
+				case GL_BGRA_INTEGER:
 					return 4;
 				case GL_NONE:
 					return 0;

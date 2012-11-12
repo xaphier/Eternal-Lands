@@ -119,6 +119,18 @@
      <property name="enabled">
       <bool>false</bool>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buttonSymbols">
+      <enum>QAbstractSpinBox::PlusMinus</enum>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.050000000000000</double>
+     </property>
     </widget>
    </item>
   </layout>
@@ -156,6 +168,22 @@
     <hint type="destinationlabel">
      <x>199</x>
      <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blend_size</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>blend_size_value</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>249</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>298</x>
+     <y>249</y>
     </hint>
    </hints>
   </connection>

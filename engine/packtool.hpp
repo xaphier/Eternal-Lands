@@ -518,7 +518,11 @@ namespace eternal_lands
 				const bool use_simd,
 				AbstractWriteMemory &buffer);
 
+			static String get_str(const PackFormatType pack_format);
+
 	};
+
+	OutStream &operator<<(OutStream &str, const PackFormatType value);
 
 }
 

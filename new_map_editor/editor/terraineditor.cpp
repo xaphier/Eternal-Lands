@@ -343,17 +343,18 @@ namespace eternal_lands
 		return 0.0f;
 	}
 
-	glm::vec3 TerrainEditor::calc_effect(const glm::vec3 &value,
-		const glm::vec3 &data, const glm::vec3 &average,
-		const glm::vec3 &strength, const BrushEffectType effect)
+	glm::vec3 TerrainEditor::calc_displacement_effect(
+		const glm::vec3 &value, const glm::vec3 &data,
+		const glm::vec3 &average, const glm::vec3 &strength,
+		const DisplacementEffectType effect)
 	{
 		switch (effect)
 		{
-			case bet_add:
+			case det_add:
 				return glm::mix(value, value + data, strength);
-			case bet_set:
+			case det_set:
 				return glm::mix(value, data, strength);
-			case bet_smooth:
+			case det_smooth:
 				return glm::mix(value, average, data *
 					strength);
 		};
@@ -361,13 +362,13 @@ namespace eternal_lands
 		return data;
 	}
 
-	glm::vec3 TerrainEditor::calc_brush(const glm::vec3 &value,
-		const glm::vec3 &data, const glm::vec3 &average,
-		const glm::bvec3 &mask, const glm::vec2 &center,
-		const glm::vec2 &position, const glm::vec2 &size,
-		const float attenuation_size,
+	glm::vec3 TerrainEditor::calc_displacement_brush(
+		const glm::vec3 &value, const glm::vec3 &data,
+		const glm::vec3 &average, const glm::bvec3 &mask,
+		const glm::vec2 &center, const glm::vec2 &position,
+		const glm::vec2 &size, const float attenuation_size,
 		const BrushAttenuationType attenuation,
-		const BrushShapeType shape, const BrushEffectType effect)
+		const BrushShapeType shape, const DisplacementEffectType effect)
 	{
 		glm::vec3 strength;
 		float distance;
@@ -379,14 +380,15 @@ namespace eternal_lands
 		strength *= calc_attenuation(distance, attenuation_size,
 			attenuation);
 
-		return calc_effect(value, data, average, strength, effect);
+		return calc_displacement_effect(value, data, average, strength,
+			effect);
 	}
 
 	void TerrainEditor::change_displacement_values(const glm::vec3 &data,
 		const glm::bvec3 &mask, const glm::vec2 &size,
 		const glm::uvec2 &vertex, const float attenuation_size,
 		const BrushAttenuationType attenuation,
-		const BrushShapeType shape, const BrushEffectType effect,
+		const BrushShapeType shape, const DisplacementEffectType effect,
 		DisplacementValueVector &displacement_values) const
 	{
 		glm::vec3 average, value, normal;
@@ -421,9 +423,9 @@ namespace eternal_lands
 			index.y = displacement_value.get_y();
 			position = index;
 
-			value = calc_brush(value, data, average, mask, center,
-				position, size, attenuation_size, attenuation,
-				shape, effect);
+			value = calc_displacement_brush(value, data, average,
+				mask, center, position, size, attenuation_size,
+				attenuation, shape, effect);
 
 			displacement_value.set_value(
 				AbstractTerrain::get_value_scaled_rgb10_a2(
@@ -433,14 +435,14 @@ namespace eternal_lands
 
 	void TerrainEditor::change_blend_values(const glm::vec2 &size,
 		const glm::uvec2 &vertex, const float attenuation_size,
-		const float data, const BrushAttenuationType attenuation,
-		const BrushShapeType shape, const BrushEffectType effect,
-		const int layer, ImageValueVector &blend_values) const
+		const float strength, const BrushAttenuationType attenuation,
+		const BrushShapeType shape, const BlendEffectType effect,
+		const Uint16 layer, ImageValueVector &blend_values) const
 	{
 		glm::vec4 value;
 		glm::vec2 center, position;
 		glm::ivec2 index;
-		float average, tmp;
+		float tmp, slope;
 		Uint16 idx0, idx1;
 
 		if (blend_values.size() < 1)
@@ -448,18 +450,12 @@ namespace eternal_lands
 			return;
 		}
 
+		assert(layer < get_layer_count());
+
 		center = glm::vec2(vertex);
 
 		idx0 = layer / 4;
 		idx1 = layer % 4;
-		average = 0.0f;
-
-		BOOST_FOREACH(const ImageValue &blend_value, blend_values)
-		{
-			average += blend_value.get_normalized_value(idx0)[idx1];
-		}
-
-		average /= blend_values.size();
 
 		BOOST_FOREACH(ImageValue &blend_value, blend_values)
 		{
@@ -471,8 +467,10 @@ namespace eternal_lands
 			index.y = blend_value.get_y();
 			position = index;
 
-			tmp = calc_brush(center, position, size, tmp,
-				attenuation_size, data, average, attenuation,
+			slope = get_blend_slope(index);
+
+			tmp = calc_blend_brush(center, position, size, tmp,
+				attenuation_size, strength, slope, attenuation,
 				shape, effect);
 
 			value[idx1] = glm::clamp(tmp, 0.0f, 1.0f);
@@ -481,30 +479,35 @@ namespace eternal_lands
 		}
 	}
 
-	float TerrainEditor::calc_effect(const float value, const float data,
-		const float average, const float strength,
-		const BrushEffectType effect)
+	float TerrainEditor::calc_blend_effect(const float value,
+		const float data, const float slope, const float strength,
+		const BlendEffectType effect)
 	{
+		float tmp;
+	
 		switch (effect)
 		{
-			case bet_add:
-				return glm::mix(value, value + data, strength);
 			case bet_set:
 				return glm::mix(value, data, strength);
-			case bet_smooth:
-				return glm::mix(value, average, data *
-					strength);
+			case bet_slope:
+				tmp = glm::smoothstep(data - 0.01f,
+					data + 0.01f, slope);
+				return glm::mix(value, tmp, strength);
+			case bet_inverse_slope:
+				tmp = glm::smoothstep(data - 0.01f,
+					data + 0.01f, 1.0f - slope);
+				return glm::mix(value, tmp, strength);
 		};
 
 		return data;
 	}
 
-	float TerrainEditor::calc_brush(const glm::vec2 &center,
+	float TerrainEditor::calc_blend_brush(const glm::vec2 &center,
 		const glm::vec2 &position, const glm::vec2 &size,
 		const float value, const float attenuation_size,
-		const float data, const float average,		
+		const float data, const float slope,
 		const BrushAttenuationType attenuation,
-		const BrushShapeType shape, const BrushEffectType effect)
+		const BrushShapeType shape, const BlendEffectType effect)
 	{
 		float strength, distance;
 
@@ -513,7 +516,7 @@ namespace eternal_lands
 		strength = calc_attenuation(distance, attenuation_size,
 			attenuation);
 
-		return calc_effect(value, data, average, strength, effect);
+		return calc_blend_effect(value, data, slope, strength, effect);
 	}
 
 	void TerrainEditor::init(const glm::uvec2 &size)
@@ -666,14 +669,15 @@ namespace eternal_lands
 	{
 		glm::vec3 p0, p1, p2, p3, t0, t1;
 		glm::vec2 fract;
-		glm::ivec2 idx;
+		glm::ivec2 idx, size;
 
 		idx = index;
+		size = glm::ivec2(m_size) - 1;
 
 		p0 = get_position(idx);
-		p1 = get_position(idx + glm::ivec2(1, 0));
-		p2 = get_position(idx + glm::ivec2(0, 1));
-		p3 = get_position(idx + glm::ivec2(1, 1));
+		p1 = get_position(glm::min(idx + glm::ivec2(1, 0), size));
+		p2 = get_position(glm::min(idx + glm::ivec2(0, 1), size));
+		p3 = get_position(glm::min(idx + glm::ivec2(1, 1), size));
 
 		fract = glm::fract(index);
 
@@ -724,6 +728,51 @@ namespace eternal_lands
 		n += glm::cross(d7, d0);
 
 		return glm::normalize(n);
+	}
+
+	glm::vec3 TerrainEditor::get_smooth_normal(const glm::vec2 &index)
+		const
+	{
+		glm::vec3 p0, p1, p2, p3, t0, t1;
+		glm::vec2 fract;
+		glm::ivec2 idx, size;
+
+		idx = index;
+		size = glm::ivec2(m_size) - 1;
+
+		p0 = get_normal(glm::clamp(idx, glm::ivec2(0), size));
+		p1 = get_normal(glm::clamp(idx + glm::ivec2(1, 0),
+			glm::ivec2(0), size));
+		p2 = get_normal(glm::clamp(idx + glm::ivec2(0, 1),
+			glm::ivec2(0), size));
+		p3 = get_normal(glm::clamp(idx + glm::ivec2(1, 1),
+			glm::ivec2(0), size));
+
+		fract = glm::fract(index);
+
+		t0 = glm::mix(p0, p1, fract.x);
+		t1 = glm::mix(p2, p3, fract.x);
+
+		return glm::mix(t0, t1, fract.y);
+	}
+
+	float TerrainEditor::get_blend_slope(const glm::ivec2 &index) const
+	{
+		glm::vec2 position, dudv;
+
+		dudv = glm::vec2(m_dudv_image->get_pixel(index.x, index.y,
+			0, 0, 0));
+
+		dudv.x *= m_dudv_scale_offset.x;
+		dudv.y *= m_dudv_scale_offset.y;
+		dudv.x += m_dudv_scale_offset.z;
+		dudv.y += m_dudv_scale_offset.w;
+
+		dudv /= AbstractTerrain::get_patch_scale();
+
+		position = glm::vec2(index) - dudv;
+
+		return 1.0f - get_smooth_normal(position).z;
 	}
 
 	void TerrainEditor::update_normal(const glm::ivec2 &index)
@@ -1385,6 +1434,79 @@ namespace eternal_lands
 		const
 	{
 		return get_normal(glm::ivec2(vertex));
+	}
+
+
+	void TerrainEditor::fill_blend_layer(const float strength,
+		const BlendEffectType effect, const Uint16 layer,
+		ImageUpdate &blend_map)
+	{
+		glm::uvec3 blend_min, blend_max;
+		Uint32 x, y, z, channel;
+
+		assert(layer < (m_size.z * 4));
+
+		channel = layer % 4;
+		z = layer / 4;
+
+//		#pragma omp parallel for private(x)
+		for (y = 0; y < m_size.y; ++y)
+		{
+			for (x = 0; x < m_size.x; ++x)
+			{
+				glm::vec4 value;
+				glm::ivec2 index;
+				float mask_value, slope;
+
+				value = m_blend_image->get_pixel(x, y, z, 0, 0);
+
+				index.x = x;
+				index.y = y;
+
+				mask_value = value[channel];
+
+				slope = get_blend_slope(index);
+
+				switch (effect)
+				{
+					case bet_set:
+						mask_value = strength;
+						break;
+					case bet_slope:
+						mask_value = slope;
+						if (strength < 1.0f)
+						{
+							mask_value =
+								glm::smoothstep(
+								1.0f - strength,
+								1.0f, slope);
+						}
+						break;
+					case bet_inverse_slope:
+						mask_value = 1.0f - slope;
+						if (strength < 1.0f)
+						{
+							mask_value =
+								glm::smoothstep(
+								1.0f - strength,
+								1.0f,
+								1.0f - slope);
+						}
+						break;
+				};
+
+				value[channel] = glm::clamp(mask_value, 0.0f,
+					1.0f);
+
+				m_blend_image->set_pixel(x, y, z, 0, 0, value);
+			}
+		}		
+
+		blend_min = glm::uvec3(0, 0, z);
+		blend_max = glm::uvec3(m_size.x, m_size.y, z + 1);
+
+		blend_map = ImageUpdate(m_blend_image, blend_min,
+			blend_max - blend_min);
 	}
 
 }

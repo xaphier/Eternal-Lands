@@ -216,7 +216,7 @@ class ELGLWidget: public QGLWidget
 			QString &default_extension, const QString &codec);
 		void set_dirs(const QStringList &dirs);
 		void change_terrain_blend_values(const QVector2D &size,
-			const float attenuation_size, const float data,
+			const float attenuation_size, const float strength,
 			const int attenuation, const int shape,
 			const int effect, const int layer);
 		void ground_tile_edit(const int tile);
@@ -248,6 +248,8 @@ class ELGLWidget: public QGLWidget
 		void get_terrain_layers_usage(QVector<int> &use_layer_pixels,
 			int &pixels) const;
 		void set_all_copies_of_object_name(const String &name);
+		void fill_terrain_blend_layer(const float strength,
+			const int effect, const int layer);
 
 		inline Qt::MouseButton get_press_button() const
 		{

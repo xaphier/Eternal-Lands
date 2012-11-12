@@ -53,6 +53,9 @@ namespace eternal_lands
 			static void check_all_fourcc_support(
 				const CodecManager &codec_manager,
 				const bool rg_formats);
+			static void get_dxt10_formats(
+				std::vector<TextureFormatType>
+					&texture_formats);
 
 	};
 

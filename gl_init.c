@@ -455,6 +455,8 @@ void init_video()
 	glCullFace(GL_BACK);
 	glEnable(GL_NORMALIZE);
 	glClearStencil(0);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 #ifdef ANTI_ALIAS
 	if (anti_alias) {

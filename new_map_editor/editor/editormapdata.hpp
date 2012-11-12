@@ -202,6 +202,9 @@ namespace eternal_lands
 			const glm::uvec2 &get_map_size() const;
 			void set_map_size(const glm::uvec2 &size);
 			void clear();
+			void fill_terrain_blend_layer(const float strength,
+				const BlendEffectType effect,
+				const Uint16 layer);
 
 			inline glm::vec3 get_terrain_displacement(
 				const glm::uvec2 &vertex) const
@@ -289,7 +292,7 @@ namespace eternal_lands
 				const float attenuation_size,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
-				const BrushEffectType effect,
+				const DisplacementEffectType effect,
 				DisplacementValueVector &displacement_values)
 				const
 			{
@@ -313,15 +316,16 @@ namespace eternal_lands
 
 			inline void change_terrain_blend_values(
 				const glm::vec2 &size, const glm::uvec2 &vertex,
-				const float attenuation_size, const float data,
+				const float attenuation_size,
+				const float strength,
 				const BrushAttenuationType attenuation,
 				const BrushShapeType shape,
-				const BrushEffectType effect,
-				const int layer,
+				const BlendEffectType effect,
+				const Uint16 layer,
 				ImageValueVector &blend_values) const
 			{
 				m_terrain_editor.change_blend_values(size,
-					vertex, attenuation_size, data,
+					vertex, attenuation_size, strength,
 					attenuation, shape, effect, layer,
 					blend_values);
 			}
