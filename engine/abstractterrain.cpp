@@ -105,24 +105,67 @@ namespace eternal_lands
 		const TextureCacheSharedPtr &texture_cache)
 	{
 		TextureSharedPtr texture;
+		ImageUpdate blend_image;
+		Uint32 i, j, mipmaps, count, width, height;
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
 			texture = texture_cache->get_texture_array(
 				blend_map, String(UTF8("terrain-blend")));
+
+			texture->set_wrap_s(twt_clamp);
+			texture->set_wrap_t(twt_clamp);
+
+			m_clipmap_terrain_material->set_texture(texture,
+				ShaderSourceTerrain::get_blend_sampler(0));
+
+			return;
 		}
-		else
+
+		count = glm::clamp(blend_map->get_layer(), 1u,
+			ShaderSourceTerrain::get_non_array_blend_sampler_count(
+				));
+
+		mipmaps = blend_map->get_mipmap_count();
+
+		for (i = 0; i < count; ++i)
 		{
-			texture = texture_cache->get_texture(blend_map);
+			StringStream str;
+
+			str << blend_map->get_name() << UTF8("-layer-") << i;
+
+			texture = boost::make_shared<Texture>(String(str.str()),
+				blend_map->get_width(), blend_map->get_height(),
+				0, 0xFFFF, 0, blend_map->get_texture_format(),
+				ttt_texture_2d);
+
+			width = blend_map->get_width();
+			height = blend_map->get_height();
+
+			texture->set_wrap_s(twt_clamp);
+			texture->set_wrap_t(twt_clamp);
+			texture->init(width, height, 0, mipmaps, 0);
+
+			for (j = 0; j <= mipmaps; ++j)
+			{
+				texture->sub_texture(j, j, blend_map,
+					glm::uvec3(0), glm::uvec3(0, 0, i),
+					glm::uvec3(width, height, 0));
+
+				if (width > 1)
+				{
+					width = width / 2;
+				}
+
+				if (height > 1)
+				{
+					height = height / 2;
+				}
+			}
+
+			m_clipmap_terrain_material->set_texture(texture,
+				ShaderSourceTerrain::get_blend_sampler(i));
 		}
-
-		texture->set_wrap_s(twt_clamp);
-		texture->set_wrap_t(twt_clamp);
-
-		texture->set_image(blend_map);
-
-		m_clipmap_terrain_material->set_texture(texture,
-			ShaderSourceTerrain::get_blend_sampler(0));
 	}
 
 	void AbstractTerrain::update_geometry_maps(

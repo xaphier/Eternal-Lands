@@ -14,6 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "parametersizeutil.hpp"
+#include "shaderutil.hpp"
 #include "shaderversionutil.hpp"
 
 /**
@@ -28,6 +29,7 @@ namespace eternal_lands
 	{
 		private:
 			ShaderSourceParameterVector m_parameters;
+			ShaderTypeSet m_shader_types;
 			ShaderVersionType m_version;
 			String m_source;
 
@@ -50,6 +52,12 @@ namespace eternal_lands
 				m_source = source;
 			}
 
+			inline void set_shader_types(
+				const ShaderTypeSet &shader_types) noexcept
+			{
+				m_shader_types = shader_types;
+			}
+
 			inline void set_version(const ShaderVersionType version)
 				noexcept
 			{
@@ -62,6 +70,12 @@ namespace eternal_lands
 				return m_parameters;
 			}
 
+			inline const ShaderTypeSet &get_shader_types() const
+				noexcept
+			{
+				return m_shader_types;
+			}
+
 			inline const String &get_source() const noexcept
 			{
 				return m_source;
@@ -70,6 +84,12 @@ namespace eternal_lands
 			inline ShaderVersionType get_version() const noexcept
 			{
 				return m_version;
+			}
+
+			inline bool get_has_shader_type(
+				const ShaderType shader_type) const
+			{
+				return get_shader_types().count(shader_type) > 0;
 			}
 
 	};

@@ -83,6 +83,7 @@ world_tangent = vec4(world_normal, 1.0);
 terrain_texture_coordinate += textureLod(effect_sampler_10, vertex_uv, terrain_instance[1].z + morph).rg * dudv_scale_offset.xy + dudv_scale_offset.zw;
 </source>
    <version>140</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
   <shader_source_data>
    <parameters>
@@ -121,6 +122,7 @@ world_tangent = tangent.xyz;
 terrain_texture_coordinate = position.xy;
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

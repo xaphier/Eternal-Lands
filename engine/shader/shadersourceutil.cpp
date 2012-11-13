@@ -6,8 +6,6 @@
  ****************************************************************************/
 
 #include "shadersourceutil.hpp"
-#include "commonparameterutil.hpp"
-#include "parameterqualifierutil.hpp"
 #include "exceptions.hpp"
 
 namespace eternal_lands
@@ -24,8 +22,7 @@ namespace eternal_lands
 			String(UTF8("view_direction")),
 			String(UTF8("view_transformation")),
 			String(UTF8("fog")),
-			String(UTF8("vertex_light")),
-			String(UTF8("fragment_light")),
+			String(UTF8("light")),
 			String(UTF8("uv")),
 			String(UTF8("shadow_uv")),
 			String(UTF8("shadow_mapping")),

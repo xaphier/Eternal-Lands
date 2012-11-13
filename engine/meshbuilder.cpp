@@ -170,8 +170,8 @@ namespace eternal_lands
 		font[vst_texture_coordinate] = vet_ushort2_normalized;
 		font[vst_color] = vet_ubyte4_normalized;
 
-		simple_terrain_1[vst_morph_position] = vet_ubyte4_normalized;
-		simple_terrain_1[vst_morph_normal] = vet_byte4_normalized;
+		simple_terrain_1[vst_morph_position] = vet_ushort4_normalized;
+		simple_terrain_1[vst_morph_normal] = vet_short4_normalized;
 
 		set_format(vft_sprite, VertexElements(sprite));
 		set_format(vft_font, VertexElements(font));

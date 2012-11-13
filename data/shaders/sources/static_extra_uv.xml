@@ -24,6 +24,7 @@
 world_extra_uv = vec3(texture_coordinate.xy, 1.0) * texture_matrices[1];
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

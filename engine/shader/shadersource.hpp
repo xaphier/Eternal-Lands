@@ -30,9 +30,10 @@ namespace eternal_lands
 			ShaderSourceDataVector m_datas;
 
 			virtual ShaderSourceParameterVector get_parameters(
+				const ShaderType shader_type,
 				const ShaderVersionType version) const
 				override;
-			virtual String get_source(
+			virtual String get_source(const ShaderType shader_type,
 				const ShaderVersionType version) const
 				override;
 			virtual void do_load_xml(const xmlNodePtr node)
@@ -46,10 +47,11 @@ namespace eternal_lands
 		public:
 			ShaderSource();
 			virtual ~ShaderSource() noexcept override;
-			virtual bool get_has_data(
+			virtual bool get_has_data(const ShaderType shader_type,
 				const ShaderVersionType version) const
 				override;
 			const ShaderSourceData &get_data(
+				const ShaderType shader_type,
 				const ShaderVersionType version) const;
 			void set_datas(const ShaderSourceDataVector &datas);
 			static String get_xml_id();

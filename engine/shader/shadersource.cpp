@@ -147,22 +147,25 @@ namespace eternal_lands
 	}
 
 	ShaderSourceParameterVector ShaderSource::get_parameters(
+		const ShaderType shader_type, const ShaderVersionType version)
+		const
+	{
+		return get_data(shader_type, version).get_parameters();
+	}
+
+	String ShaderSource::get_source(const ShaderType shader_type,
 		const ShaderVersionType version) const
 	{
-		return get_data(version).get_parameters();
+		return get_data(shader_type, version).get_source();
 	}
 
-	String ShaderSource::get_source(const ShaderVersionType version) const
-	{
-		return get_data(version).get_source();
-	}
-
-	bool ShaderSource::get_has_data(const ShaderVersionType version)
-		const
+	bool ShaderSource::get_has_data(const ShaderType shader_type,
+		const ShaderVersionType version) const
 	{
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{
-			if (data.get_version() <= version)
+			if ((data.get_version() <= version) &&
+				data.get_has_shader_type(shader_type))
 			{
 				return true;
 			}
@@ -172,19 +175,30 @@ namespace eternal_lands
 	}
 
 	const ShaderSourceData &ShaderSource::get_data(
+		const ShaderType shader_type,
 		const ShaderVersionType version) const
 	{
 		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
 		{
-			if (data.get_version() <= version)
+			if ((data.get_version() <= version) &&
+				data.get_has_shader_type(shader_type))
 			{
 				return data;
 			}
 		}
 
+		std::cout << get_datas().size() << std::endl;
+		std::cout << get_typed_name() << std::endl;
+
+		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
+		{
+			std::cout << data.get_version() << std::endl;
+			std::cout << data.get_shader_types() << std::endl;
+		}
+
 		EL_THROW_MESSAGE_EXCEPTION(UTF8("No shader source data with "
-			"shader version %1% in '%2%' found."),
-			version % get_typed_name(), ItemNotFoundException());
+			"shader %1% version %2% in '%3%' found."), shader_type
+			% version % get_typed_name(), ItemNotFoundException());
 	}
 
 	void ShaderSource::set_datas(const ShaderSourceDataVector &datas)

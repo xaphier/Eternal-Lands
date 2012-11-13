@@ -45,9 +45,10 @@ namespace eternal_lands
 			Uint32 m_ids;
 
 			virtual ShaderSourceParameterVector get_parameters(
+				const ShaderType shader_type,
 				const ShaderVersionType version) const
 				override;
-			virtual String get_source(
+			virtual String get_source(const ShaderType shader_type,
 				const ShaderVersionType version) const
 				override;
 			virtual void do_load_xml(const xmlNodePtr node)
@@ -83,7 +84,8 @@ namespace eternal_lands
 				ShaderSourceParameterVector &vertex_parameters,
 				ShaderSourceParameterVector
 					&fragment_parameters,
-				OutStream &vertex_str, OutStream &fragment_str);
+				OutStream &vertex_str, OutStream &fragment_str)
+				const;
 			void remove(const EffectNodePtr effect_node);
 			void set_texture_unit(const String &name,
 				const TextureTargetType target,
@@ -97,7 +99,7 @@ namespace eternal_lands
 				const TextureTargetType target,
 				const Uint16 index);
 			virtual ShaderSourceType get_type() const override;
-			virtual bool get_has_data(
+			virtual bool get_has_data(const ShaderType shader_type,
 				const ShaderVersionType version) const
 				override;
 			static String get_xml_id();

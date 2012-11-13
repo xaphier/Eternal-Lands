@@ -29,7 +29,7 @@ void Node::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 	el::StringStream vertex_str, fragment_str;
 	el::Uint16StringMap array_layers;
 	el::StringUint16Map parameters;
-	el::EffectNodePtrSet vertex_written, fragment_written;
+	el::UuidSet vertex_written, fragment_written;
 	el::EffectChangeType change;
 	el::StringUint16Map::const_iterator it, end;
 	el::ShaderVersionType version;

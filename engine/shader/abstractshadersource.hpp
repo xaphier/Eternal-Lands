@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "shadersourceutil.hpp"
 #include "parametersizeutil.hpp"
+#include "shaderutil.hpp"
 #include "shaderversionutil.hpp"
 
 /**
@@ -31,8 +32,9 @@ namespace eternal_lands
 			String m_name;
 
 			virtual ShaderSourceParameterVector get_parameters(
+				const ShaderType shader_type,
 				const ShaderVersionType version) const = 0;
-			virtual String get_source(
+			virtual String get_source(const ShaderType shader_type,
 				const ShaderVersionType version) const = 0;
 			virtual void do_load_xml(const xmlNodePtr node) = 0;
 			virtual void do_save_xml(
@@ -44,6 +46,7 @@ namespace eternal_lands
 				const ShaderSourceParameterVector &locals,
 				const ParameterSizeTypeUint16Map &sizes,
 				const String &indent, const String &name,
+				const ShaderType shader_type,
 				const ShaderVersionType version,
 				OutStream &stream,
 				ShaderSourceParameterVector &globals,
@@ -51,26 +54,33 @@ namespace eternal_lands
 			void build_function_use(const String &indent,
 				const String &name,
 				const String &parameter_prefix,
+				const ShaderType shader_type,
 				const ShaderVersionType version,
 				OutStream &stream) const;
 
 		public:
 			virtual ~AbstractShaderSource() noexcept;
-			void build_source(const ShaderVersionType version,
+			void build_source(
 				const ShaderSourceParameterVector &locals, 
-				const String &indent, OutStream &stream,
+				const String &indent,
+				const ShaderType shader_type,
+				const ShaderVersionType version,
+				OutStream &stream,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
-			void build_function(const ShaderVersionType version,
+			void build_function(
 				const ShaderSourceParameterVector &locals,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const String &indent,
 				const String &parameter_prefix,
-				const String &use_indent, OutStream &stream,
-				OutStream &function,
+				const String &use_indent,
+				const ShaderType shader_type,
+				const ShaderVersionType version,
+				OutStream &stream, OutStream &function,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
 			bool check_source_parameter(
+				const ShaderType shader_type,
 				const ShaderVersionType version,
 				const String &name) const;
 			void load_xml(const FileSystemSharedPtr &file_system,
@@ -82,7 +92,7 @@ namespace eternal_lands
 			String save_xml_string() const;
 			String get_typed_name() const;
 			virtual ShaderSourceType get_type() const = 0;
-			virtual bool get_has_data(
+			virtual bool get_has_data(const ShaderType shader_type,
 				const ShaderVersionType version) const = 0;
 
 			inline void set_name(const String &name) noexcept

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
  <name>diffuse</name>
- <type>fragment_light</type>
+ <type>light</type>
  <shader_source_datas>
   <shader_source_data>
    <parameters>
@@ -43,6 +43,49 @@ diffuse_color = light_color.rgb * scale * nxdir;
 specular_color = vec3(0.0);
 </source>
    <version>120</version>
+   <shader_types>fragment</shader_types>
+  </shader_source_data>
+  <shader_source_data>
+   <parameters>
+    <parameter>
+     <common_parameter>diffuse_color</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>light_color</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>light_position</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>specular_color</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_normal</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>world_position</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+   </parameters>
+   <source>vec3 dir;
+float dist, scale, nxdir;
+
+dir = light_position.xyz - world_position * light_color.a;
+dist = dot(dir, dir);
+dir *= inversesqrt(dist);
+//nxdir = pow(dot(world_normal, dir) * 0.5 + 0.5, 2.0);
+nxdir = max(0.0, dot(world_normal, dir));
+scale = max(0.0, 1.0 - dist * light_position.w);
+diffuse_color = light_color.rgb * scale * nxdir;
+specular_color = vec3(0.0);
+</source>
+   <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

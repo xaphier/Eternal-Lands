@@ -100,8 +100,8 @@ namespace eternal_lands
 				ShaderSourceParameterVector
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &vertex_written,
-				EffectNodePtrSet &fragment_written) = 0;
+				UuidSet &vertex_written,
+				UuidSet &fragment_written) const = 0;
 			virtual String get_description() const = 0;
 			void update();
 			static String get_var_name(const Uint32 id,

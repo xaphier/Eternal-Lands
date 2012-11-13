@@ -50,6 +50,7 @@ world_position = normalize(new_position) * len;
 world_position += vec3(world_transformation[0].w, world_transformation[1].w, world_transformation[2].w);
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

@@ -7,7 +7,6 @@
 
 #include "effect.hpp"
 #include "shader/glslprogram.hpp"
-#include "shader/glslprogramdescription.hpp"
 #include "exceptions.hpp"
 #include "shader/shadersourcebuilder.hpp"
 #include "shader/samplerparameterutil.hpp"
@@ -111,7 +110,7 @@ namespace eternal_lands
 
 	void Effect::do_load()
 	{
-		GlslProgramDescription program_description;
+		ShaderTypeStringMap program_description;
 		Uint16 fragment_lights_count, vertex_lights_count;
 		Uint16 lights_count;
 
@@ -200,21 +199,26 @@ namespace eternal_lands
 
 	void Effect::error_load()
 	{
+		ShaderTypeStringMap description;
 		String none;
 
 		m_programs[ept_default].reset();
 		m_programs[ept_shadow].reset();
 		m_programs[ept_depth].reset();
 
+		description[st_vertex] = vertex_shader;
+		description[st_fragment] = fragment_shader;
+
 		/* Default shader */
 		m_programs[ept_default] = get_glsl_program_cache()->get_program(
-			GlslProgramDescription(vertex_shader, none, none, none,
-				fragment_shader));
+			description);
+
+		description[st_vertex] = depth_vertex_shader;
+		description[st_fragment] = depth_fragment_shader;
 
 		/* Depth shader */
 		m_programs[ept_depth] = get_glsl_program_cache()->get_program(
-			GlslProgramDescription(depth_vertex_shader, none, none,
-				none, depth_fragment_shader));
+			description);
 
 		/* Shadow shader */
 		m_programs[ept_shadow] = m_programs[ept_depth];

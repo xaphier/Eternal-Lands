@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "shaderutil.hpp"
 
 /**
  * @file
@@ -30,8 +31,8 @@ namespace eternal_lands
 	class GlslProgramCache
 	{
 		private:
-			typedef std::map<GlslProgramDescription,
-				GlslProgramSharedPtr> GlslProgramCacheMap;
+			typedef std::map<String, GlslProgramSharedPtr>
+				GlslProgramCacheMap;
 
 			const UniformBufferDescriptionCacheWeakPtr
 				m_uniform_buffer_description_cache;
@@ -53,6 +54,9 @@ namespace eternal_lands
 				return result;
 			}
 
+			String get_index(	
+				const ShaderTypeStringMap &description) const;
+
 		public:
 			/**
 			 * Default constructor.
@@ -67,7 +71,7 @@ namespace eternal_lands
 			~GlslProgramCache() noexcept;
 
 			const GlslProgramSharedPtr &get_program(
-				const GlslProgramDescription &description);
+				const ShaderTypeStringMap &description);
 
 	};
 

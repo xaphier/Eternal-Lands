@@ -44,8 +44,9 @@ namespace eternal_lands
 			void write_extra_fetch(const String &indent,
 				const Uint16 index, OutStream &str) const;
 			virtual ShaderSourceParameterVector get_parameters(
+				const ShaderType shader_type,
 				const ShaderVersionType version) const;
-			virtual String get_source(
+			virtual String get_source(const ShaderType shader_type,
 				const ShaderVersionType version) const
 				override;
 			virtual void do_load_xml(const xmlNodePtr node)
@@ -58,7 +59,7 @@ namespace eternal_lands
 			ShaderSourceTerrain();
 			virtual ~ShaderSourceTerrain() noexcept override;
 			virtual ShaderSourceType get_type() const override;
-			virtual bool get_has_data(
+			virtual bool get_has_data(const ShaderType shader_type,
 				const ShaderVersionType version) const override;
 			static String get_xml_id();
 			static Uint32 get_non_array_albedo_sampler_count();

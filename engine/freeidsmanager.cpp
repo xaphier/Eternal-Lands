@@ -146,17 +146,17 @@ namespace eternal_lands
 
 	bool FreeIdsManager::get_is_light_id_free(const Uint32 id) const
 	{
-		m_free_light_ids.get_is_id_free(id);
+		return m_free_light_ids.get_is_id_free(id);
 	}
 
 	bool FreeIdsManager::get_is_particle_id_free(const Uint32 id) const
 	{
-		m_free_particle_ids.get_is_id_free(id);
+		return m_free_particle_ids.get_is_id_free(id);
 	}
 
 	bool FreeIdsManager::get_is_decal_id_free(const Uint32 id) const
 	{
-		m_free_decal_ids.get_is_id_free(id);
+		return m_free_decal_ids.get_is_id_free(id);
 	}
 
 }

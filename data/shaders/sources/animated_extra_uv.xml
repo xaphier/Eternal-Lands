@@ -27,6 +27,7 @@
 world_extra_uv = vec3(texture_coordinate.xy, time) * texture_matrices[1];
 </source>
    <version>120</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

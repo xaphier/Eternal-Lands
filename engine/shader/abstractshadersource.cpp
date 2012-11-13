@@ -88,15 +88,16 @@ namespace eternal_lands
 		return xml_buffer->get_string();
 	}
 
-	void AbstractShaderSource::build_source(const ShaderVersionType version,
+	void AbstractShaderSource::build_source(
 		const ShaderSourceParameterVector &locals, 
-		const String &indent, OutStream &stream,
+		const String &indent, const ShaderType shader_type,
+		const ShaderVersionType version, OutStream &stream,
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
 		std::vector<std::string> lines;
 
-		boost::split(lines, get_source(version).get(),
+		boost::split(lines, get_source(shader_type, version).get(),
 			boost::is_any_of(UTF8("\n")),
 			boost::token_compress_on);
 
@@ -110,7 +111,7 @@ namespace eternal_lands
 		stream << indent << UTF8("}") << std::endl;
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
-			get_parameters(version))
+			get_parameters(shader_type, version))
 		{
 			ShaderSourceParameterBuilder::add_parameter(parameter,
 				locals, globals, uniform_buffers);
@@ -119,7 +120,8 @@ namespace eternal_lands
 
 	void AbstractShaderSource::build_function_use(const String &indent,
 		const String &name, const String &parameter_prefix,
-		const ShaderVersionType version, OutStream &stream) const
+		const ShaderType shader_type, const ShaderVersionType version,
+		OutStream &stream) const
 	{
 		bool first;
 
@@ -128,7 +130,7 @@ namespace eternal_lands
 		first = true;
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
-			get_parameters(version))
+			get_parameters(shader_type, version))
 		{
 			if (!parameter.get_auto_parameter())
 			{
@@ -143,8 +145,9 @@ namespace eternal_lands
 	void AbstractShaderSource::build_function_source(
 		const ShaderSourceParameterVector &locals,
 		const ParameterSizeTypeUint16Map &sizes, const String &indent,
-		const String &name, const ShaderVersionType version,
-		OutStream &stream, ShaderSourceParameterVector &globals,
+		const String &name, const ShaderType shader_type,
+		const ShaderVersionType version, OutStream &stream,
+		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
 		std::vector<std::string> lines;
@@ -157,7 +160,7 @@ namespace eternal_lands
 		first = true;
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
-			get_parameters(version))
+			get_parameters(shader_type, version))
 		{
 			if (!parameter.get_auto_parameter())
 			{
@@ -168,7 +171,7 @@ namespace eternal_lands
 
 		stream << UTF8(")") << std::endl;
 
-		boost::split(lines, get_source(version).get(),
+		boost::split(lines, get_source(shader_type, version).get(),
 			boost::is_any_of(UTF8("\n")),
 			boost::token_compress_on);
 
@@ -182,7 +185,7 @@ namespace eternal_lands
 		stream << indent << UTF8("}") << std::endl;
 
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
-			get_parameters(version))
+			get_parameters(shader_type, version))
 		{
 			ShaderSourceParameterBuilder::add_parameter(parameter,
 				locals, globals, uniform_buffers);
@@ -190,11 +193,11 @@ namespace eternal_lands
 	}
 
 	void AbstractShaderSource::build_function(
-		const ShaderVersionType version,
 		const ShaderSourceParameterVector &locals,
 		const ParameterSizeTypeUint16Map &array_sizes,
 		const String &indent, const String &parameter_prefix,
-		const String &use_indent, OutStream &stream,
+		const String &use_indent, const ShaderType shader_type,
+		const ShaderVersionType version, OutStream &stream,
 		OutStream &function, ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
@@ -205,18 +208,19 @@ namespace eternal_lands
 		stream << UTF8(" */\n");
 
 		build_function_source(locals, array_sizes, indent,
-			get_typed_name(), version, function, globals,
-			uniform_buffers);
+			get_typed_name(), shader_type, version, function,
+			globals, uniform_buffers);
 
 		build_function_use(use_indent, get_typed_name(),
-			parameter_prefix, version, stream);
+			parameter_prefix, shader_type, version, stream);
 	}
 
 	bool AbstractShaderSource::check_source_parameter(
-		const ShaderVersionType version, const String &name) const
+		const ShaderType shader_type, const ShaderVersionType version,
+		const String &name) const
 	{
 		BOOST_FOREACH(const ShaderSourceParameter &parameter,
-			get_parameters(version))
+			get_parameters(shader_type, version))
 		{
 			if ((parameter.get_name() == name) &&
 				(parameter.get_qualifier() != pqt_out))

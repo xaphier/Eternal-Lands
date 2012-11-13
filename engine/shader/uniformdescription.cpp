@@ -15,8 +15,9 @@ namespace eternal_lands
 		m_size(std::numeric_limits<Uint32>::max()),
 		m_array_stride(std::numeric_limits<Uint32>::max()),
 		m_matrix_stride(std::numeric_limits<Uint32>::max()),
-		m_is_row_major(false)
+		m_is_row_major(false), m_compact(false)
 	{
+		update_compact();
 	}
 
 	UniformDescription::UniformDescription(
@@ -26,8 +27,9 @@ namespace eternal_lands
 		m_size(std::numeric_limits<Uint32>::max()),
 		m_array_stride(std::numeric_limits<Uint32>::max()),
 		m_matrix_stride(std::numeric_limits<Uint32>::max()),
-		m_is_row_major(false)
+		m_is_row_major(false), m_compact(false)
 	{
+		update_compact();
 	}
 
 	UniformDescription::UniformDescription(
@@ -36,8 +38,10 @@ namespace eternal_lands
 		const Uint32 matrix_stride, const bool is_row_major):
 		m_auto_parameter(auto_parameter), m_offset(offset),
 		m_size(size), m_array_stride(array_stride),
-		m_matrix_stride(matrix_stride), m_is_row_major(is_row_major)
+		m_matrix_stride(matrix_stride), m_is_row_major(is_row_major),
+		m_compact(false)
 	{
+		update_compact();
 	}
 
 	UniformDescription::~UniformDescription() noexcept

@@ -23,6 +23,7 @@ shadow += textureProjLod(effect_sampler_15, shadow_uvs[0], 0.0);
 shadow = clamp(shadow, 0.0, 1.0);
 </source>
    <version>130</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
   <shader_source_data>
    <parameters>
@@ -44,6 +45,7 @@ shadow += shadow2DProj(effect_sampler_15, shadow_uvs[0]).r;
 shadow = clamp(shadow, 0.0, 1.0);
 </source>
    <version>120</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

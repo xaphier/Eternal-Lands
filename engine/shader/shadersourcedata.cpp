@@ -88,6 +88,13 @@ namespace eternal_lands
 					ShaderVersionUtil::get_shader_version(
 						XmlUtil::get_string_value(it)));
 			}
+
+			if (xmlStrcmp(it->name, BAD_CAST UTF8("shader_types"))
+				== 0)
+			{
+				set_shader_types(ShaderUtil::get_shaders(
+					XmlUtil::get_string_value(it)));
+			}
 		}
 		while (XmlUtil::next(it, true));
 	}
@@ -109,6 +116,8 @@ namespace eternal_lands
 		writer->write_element(String(UTF8("source")), get_source());
 		writer->write_element(String(UTF8("version")),
 			ShaderVersionUtil::get_str(get_version()));
+		writer->write_element(String(UTF8("shader_types")),
+			ShaderUtil::get_str(get_shader_types()));
 
 		writer->end_element();
 	}

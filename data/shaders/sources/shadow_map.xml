@@ -13,6 +13,7 @@
    <source>shadow_map_data = gl_FragCoord.zzz;
 </source>
    <version>120</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

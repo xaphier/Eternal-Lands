@@ -34,6 +34,7 @@ emission = vec3(1.0);
 specular = vec3(0.0);
 fragment_normal = normalize(world_normal);</source>
    <version>120</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

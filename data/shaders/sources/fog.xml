@@ -20,6 +20,7 @@
    <source>fog = min(exp2(dot(view_position, view_position) * fog_data.a), 1.0);
 </source>
    <version>120</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

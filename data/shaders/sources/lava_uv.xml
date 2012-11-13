@@ -25,6 +25,7 @@ uv[1] = world_position.xy * 0.15 + vec2(1.5, -1.5) * time * 0.02;
 uv[2] = world_position.xy * 0.2 + vec2(-0.5, 2.0) * time * 0.015;
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

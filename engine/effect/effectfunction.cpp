@@ -257,24 +257,26 @@ namespace eternal_lands
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &vertex_written,
-		EffectNodePtrSet &fragment_written)
+		UuidSet &vertex_written, UuidSet &fragment_written) const
 	{
 		StringVector inputs;
 		String output;
+		EffectNodePortVector::const_iterator it, end;
 		EffectChangeType input_change;
 
 		input_change = ect_constant;
 
-		BOOST_FOREACH(const EffectNodePort &port, get_ports())
+		end = get_ports().end();
+
+		for (it = get_ports().begin(); it != end; ++it)
 		{
-			if (port.get_input())
+			if (it->get_input())
 			{
 				inputs.push_back(
-					port.get_connected_var_swizzled());
+					it->get_connected_var_swizzled());
 
 				input_change = std::max(input_change,
-					port.get_change());
+					it->get_change());
 			}
 		}
 
@@ -283,11 +285,11 @@ namespace eternal_lands
 			input_change = change;
 		}
 
-		BOOST_FOREACH(EffectNodePort &port, get_ports())
+		for (it = get_ports().begin(); it != end; ++it)
 		{
-			if (port.get_input())
+			if (it->get_input())
 			{
-				port.write(array_layers, version, quality,
+				it->write(array_layers, version, quality,
 					input_change, parameters,
 					vertex_parameters, fragment_parameters,
 					vertex_str, fragment_str,
@@ -300,21 +302,21 @@ namespace eternal_lands
 
 		if (input_change == ect_fragment)
 		{
-			if (fragment_written.count(this) > 0)
+			if (fragment_written.count(get_uuid()) > 0)
 			{
 				return;
 			}
 
-			fragment_written.insert(this);
+			fragment_written.insert(get_uuid());
 		}
 		else
 		{
-			if (vertex_written.count(this) > 0)
+			if (vertex_written.count(get_uuid()) > 0)
 			{
 				return;
 			}
 
-			vertex_written.insert(this);
+			vertex_written.insert(get_uuid());
 		}
 
 		str << get_value_count_type_str() << UTF8(" ");

@@ -54,8 +54,8 @@ namespace eternal_lands
 				ShaderSourceParameterVector
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &vertex_written,
-				EffectNodePtrSet &fragment_written) override;
+				UuidSet &vertex_written,
+				UuidSet &fragment_written) const override;
 			virtual String get_description() const override;
 
 			inline EffectConstantType get_type() const noexcept

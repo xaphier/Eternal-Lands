@@ -15,6 +15,7 @@
    </parameters>
    <source>output_data_float[0] = material_color;</source>
    <version>120</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

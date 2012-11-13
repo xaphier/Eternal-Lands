@@ -7,7 +7,6 @@
 
 #include "glslprogramcache.hpp"
 #include "glslprogram.hpp"
-#include "glslprogramdescription.hpp"
 #include "xmlreader.hpp"
 #include "xmlutil.hpp"
 #include "xmlwriter.hpp"
@@ -32,13 +31,44 @@ namespace eternal_lands
 	{
 	}
 
+	String GlslProgramCache::get_index(
+		const ShaderTypeStringMap &description) const
+	{
+		StringStream index, result;
+		ShaderTypeStringMap::const_iterator found, end;
+		std::size_t hash;
+		Uint32 i, count;
+
+		end = description.end();
+		hash = 0;
+		count = ShaderUtil::get_shader_count();
+
+		for (i = 0; i < count; ++i)
+		{
+			found = description.find(static_cast<ShaderType>(i));
+
+			if (found != end)
+			{
+				boost::hash_combine(hash, found->second.get());
+				index << found->second;
+			}
+		}
+
+		result << hash << index.str();
+
+		return String(result.str());
+	}
+
 	const GlslProgramSharedPtr &GlslProgramCache::get_program(
-		const GlslProgramDescription &description)
+		const ShaderTypeStringMap &description)
 	{
 		GlslProgramCacheMap::iterator found;
 		GlslProgramSharedPtr glsl_program;
+		String index;
 
-		found = m_glsl_program_cache.find(description);
+		index = get_index(description);
+
+		found = m_glsl_program_cache.find(index);
 
 		if (found != m_glsl_program_cache.end())
 		{
@@ -51,9 +81,9 @@ namespace eternal_lands
 			get_uniform_buffer_description_cache(), description,
 			boost::uuids::random_generator()());
 
-		m_glsl_program_cache[description] = glsl_program;
+		m_glsl_program_cache[index] = glsl_program;
 
-		return m_glsl_program_cache[description];
+		return m_glsl_program_cache[index];
 	}
 
 }

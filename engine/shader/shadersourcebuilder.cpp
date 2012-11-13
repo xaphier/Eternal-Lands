@@ -24,7 +24,6 @@
 #include "xmlutil.hpp"
 #include "abstractterrain.hpp"
 #include "glmutil.hpp"
-#include "glslprogramdescription.hpp"
 #include "uniformbufferusage.hpp"
 #include "colorcorrection.hpp"
 #include "shadersource.hpp"
@@ -890,6 +889,7 @@ namespace eternal_lands
 	class ShaderSourceBuilder::ShaderSourceBuildData
 	{
 		private:
+			ShaderSourceSharedPrMap m_shader_sources;
 			ShaderSourceTypeStringMap m_sources;
 			ShaderVersionType m_version;
 			ShaderBuildType m_shader_build;
@@ -1067,6 +1067,31 @@ namespace eternal_lands
 				return m_output_channels[render_target];
 			}
 
+			bool get_shader_source(
+				const ShaderSourceTypeStringPair &index,
+				AbstractShaderSourceSharedPtr &shader_source)
+			{
+				ShaderSourceSharedPrMap::const_iterator found;
+
+				found = m_shader_sources.find(index);
+
+				if (found != m_shader_sources.end())
+				{
+					shader_source = found->second;
+
+					return true;
+				}
+
+				return false;
+			}
+
+			void insert_shader_source(
+				const ShaderSourceTypeStringPair &index,
+				AbstractShaderSourceSharedPtr &shader_source)
+			{
+				m_shader_sources[index] = shader_source;
+			}
+
 	};
 
 	ShaderSourceBuilder::ShaderSourceBuilder(
@@ -1166,8 +1191,56 @@ namespace eternal_lands
 		functions << std::endl;
 	}
 
+	bool ShaderSourceBuilder::get_shader_source(
+		const ShaderSourceType shader_source_type,
+		ShaderSourceBuildData &build_data,
+		AbstractShaderSourceSharedPtr &shader_source) const
+	{
+		ShaderSourceSharedPrMap::const_iterator found;
+		ShaderSourceTypeStringMap::const_iterator index;
+
+		index = build_data.get_sources().find(shader_source_type);
+
+		if (index == build_data.get_sources().end())
+		{
+			shader_source.reset();
+
+			return false;
+		}
+
+		found = m_shader_sources.find(*index);
+
+		if (found != m_shader_sources.end())
+		{
+			shader_source = found->second;
+
+			return true;
+		}
+
+		if (build_data.get_shader_source(*index, shader_source))
+		{
+			return true;
+		}
+
+		load_shader_source(index->second, shader_source);
+
+		if (shader_source.get() != nullptr)
+		{
+			build_data.insert_shader_source(*index, shader_source);
+
+			return true;
+		}
+
+		shader_source.reset();
+
+		LOG_ERROR(lt_shader_source, UTF8("Shader source type not found"
+			" %1%-%2%"), index->first % index->second);
+
+		return false;
+	}
+
 	void ShaderSourceBuilder::load_shader_source(const String &file_name,
-		AbstractShaderSourceAutoPtr &shader_source) const
+		AbstractShaderSourceSharedPtr &shader_source) const
 	{
 		XmlReaderSharedPtr xml_reader;
 		ShaderSourceTypeStringPair index;
@@ -1190,20 +1263,23 @@ namespace eternal_lands
 
 			if (name == ShaderSourceTerrain::get_xml_id())
 			{
-				shader_source.reset(new ShaderSourceTerrain());
+				shader_source =	boost::make_shared<
+					ShaderSourceTerrain>();
 			}
 			else
 			{
 				if (name == EffectNodes::get_xml_id())
 				{
-					shader_source.reset(new EffectNodes());
+					shader_source = boost::make_shared<
+						EffectNodes>();
 				}
 				else
 				{
 					if (name == ShaderSource::get_xml_id())
 					{
-						shader_source.reset(
-							new ShaderSource());
+						shader_source =
+							boost::make_shared<
+								ShaderSource>();
 					}
 					else
 					{
@@ -1239,7 +1315,7 @@ namespace eternal_lands
 
 	bool ShaderSourceBuilder::load_shader_source(const String &file_name)
 	{
-		AbstractShaderSourceAutoPtr shader_source;
+		AbstractShaderSourceSharedPtr shader_source;
 		ShaderSourceTypeStringPair index;
 		std::pair<ShaderSourceTypeStringPair, ShaderSourceSharedPtr>
 			data;
@@ -1256,7 +1332,7 @@ namespace eternal_lands
 			index.first = shader_source->get_type();
 			index.second = shader_source->get_name();
 
-			m_shader_sources.insert(index, shader_source);
+			m_shader_sources[index] = shader_source;
 
 			LOG_DEBUG(lt_shader_source, UTF8("Shader source type "
 				"%1%-%2% loaded from file '%3%'"), index.first
@@ -1409,77 +1485,41 @@ namespace eternal_lands
 	}
 
 	bool ShaderSourceBuilder::build_function(
-		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
 		const ShaderSourceParameterVector &locals,
-		const ShaderSourceType shader_source_type,
-		const String &indent, OutStream &stream, OutStream &functions,
+		const String &indent, const ShaderSourceType shader_source_type,
+		const ShaderType shader_type, ShaderSourceBuildData &build_data,
+		OutStream &stream, OutStream &functions,
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
-		AbstractShaderSourceAutoPtr shader_source;
-		ShaderSourceTypeStringPairAbstractShaderSourceMap::
-			const_iterator found;
-		ShaderSourceTypeStringMap::const_iterator index;
+		AbstractShaderSourceSharedPtr shader_source;
 
-		index = data.get_sources().find(shader_source_type);
-
-		if (index == data.get_sources().end())
+		if (!get_shader_source(shader_source_type, build_data,
+			shader_source))
 		{
 			return false;
 		}
 
-		found = m_shader_sources.find(*index);
-
-		if (found != m_shader_sources.end())
+		if (build_data.get_option(ssbot_use_functions))
 		{
-			if (data.get_option(ssbot_use_functions))
-			{
-				found->second->build_function(
-					data.get_version(), locals,
-					array_sizes, String(UTF8("")),
-					String(UTF8("")), indent, stream,
-					functions, globals, uniform_buffers);
-			}
-			else
-			{
-				found->second->build_source(data.get_version(),
-					locals, indent, stream, globals,
-					uniform_buffers);
-			}
-
-			return true;
-		}
-
-		load_shader_source(index->second, shader_source);
-
-		if (shader_source.get() == nullptr)
-		{
-			LOG_ERROR(lt_shader_source, UTF8("Shader source type "
-				"not found %1%-%2%"), index->first %
-				index->second);
-
-			return false;
-		}
-
-		if (data.get_option(ssbot_use_functions))
-		{
-			shader_source->build_function(data.get_version(),
-				locals, array_sizes, String(UTF8("")),
-				String(UTF8("")), indent, stream, functions,
-				globals, uniform_buffers);
+			shader_source->build_function(locals, array_sizes,
+				String(UTF8("")), String(UTF8("")), indent,
+				shader_type, build_data.get_version(), stream,
+				functions, globals, uniform_buffers);
 		}
 		else
 		{
-			shader_source->build_source(data.get_version(), locals,
-				indent, stream, globals, uniform_buffers);
+			shader_source->build_source(locals, indent,
+				shader_type, build_data.get_version(), stream,
+				globals, uniform_buffers);
 		}
 
 		return true;
 	}
 
 	void ShaderSourceBuilder::build_light_index_x4_lights(
-		const ShaderSourceBuildData &data,
+		const ShaderSourceBuildData &build_data,
 		const String &indent, const String &loop_indent,
 		OutStream &stream) const
 	{
@@ -1491,7 +1531,7 @@ namespace eternal_lands
 
 		stream << indent << sslt_packed_light_indices_4;
 
-		if (data.get_version() >= svt_130)
+		if (build_data.get_version() >= svt_130)
 		{
 			stream << UTF8(" = texelFetch(") << spt_effect_14;
 			stream << UTF8(", ivec2(gl_FragCoord.xy), 0);\n");
@@ -1503,7 +1543,8 @@ namespace eternal_lands
 			stream << sslt_project_space << UTF8(");\n");
 		}
 
-		if (data.get_shader_build() == sbt_debug_packed_light_index)
+		if (build_data.get_shader_build() ==
+			sbt_debug_packed_light_index)
 		{
 			stream << loop_indent;
 			stream << sslt_light_indices << UTF8(" = ");
@@ -1521,7 +1562,7 @@ namespace eternal_lands
 
 		stream << UTF8("= vec4(4.0, 16.0, 64.0, 256.0)");
 
-		if (data.get_version() < svt_130)
+		if (build_data.get_version() < svt_130)
 		{
 			stream << UTF8(" / 256.0");
 		}
@@ -1571,7 +1612,7 @@ namespace eternal_lands
 		stream << sslt_packed_light_indices_4;
 		stream << UTF8(");\n");
 
-		if (data.get_version() < svt_130)
+		if (build_data.get_version() < svt_130)
 		{
 			stream << loop_indent << sslt_light_index;
 			stream << UTF8(" = ");
@@ -1587,7 +1628,7 @@ namespace eternal_lands
 		stream << UTF8(", ") << sslt_unpack_const_4;
 		stream << UTF8(")");
 
-		if (data.get_version() >= svt_130)
+		if (build_data.get_version() >= svt_130)
 		{
 			stream << UTF8(" + 0.5)");
 		}
@@ -1596,7 +1637,7 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceBuilder::build_light_index_x5_lights(
-		const ShaderSourceBuildData &data,
+		const ShaderSourceBuildData &build_data,
 		const String &indent, const String &loop_indent,
 		OutStream &stream) const
 	{
@@ -1608,7 +1649,7 @@ namespace eternal_lands
 
 		stream << indent << sslt_packed_light_indices_3;
 
-		if (data.get_version() >= svt_130)
+		if (build_data.get_version() >= svt_130)
 		{
 			stream << UTF8(" = texelFetch(") << spt_effect_14;
 			stream << UTF8(", ivec2(gl_FragCoord.xy), 0).rgb;\n");
@@ -1620,7 +1661,8 @@ namespace eternal_lands
 			stream << sslt_project_space << UTF8(").rgb;\n");
 		}
 
-		if (data.get_shader_build() == sbt_debug_packed_light_index)
+		if (build_data.get_shader_build() ==
+			sbt_debug_packed_light_index)
 		{
 			stream << loop_indent;
 			stream << sslt_light_indices;
@@ -1639,7 +1681,7 @@ namespace eternal_lands
 
 		stream << UTF8("= vec3(4.0, 16.0, 64.0)");
 
-		if (data.get_version() < svt_130)
+		if (build_data.get_version() < svt_130)
 		{
 			stream << UTF8(" / 64.0");
 		}
@@ -1683,7 +1725,7 @@ namespace eternal_lands
 		stream << UTF8(" = floor(");
 		stream << sslt_packed_light_indices_3 << UTF8(");\n");
 
-		if (data.get_version() < svt_130)
+		if (build_data.get_version() < svt_130)
 		{
 			stream << loop_indent << sslt_light_index;
 			stream << UTF8(" = ");
@@ -1699,7 +1741,7 @@ namespace eternal_lands
 		stream << UTF8(", ") << sslt_unpack_const_3;
 		stream << UTF8(")");
 
-		if (data.get_version() >= svt_130)
+		if (build_data.get_version() >= svt_130)
 		{
 			stream << UTF8(" + 0.5)");
 		}
@@ -1708,7 +1750,7 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceBuilder::build_light_index_x8_lights(
-		const ShaderSourceBuildData &data,
+		const ShaderSourceBuildData &build_data,
 		const String &indent, const String &loop_indent,
 		OutStream &stream) const
 	{
@@ -1720,7 +1762,7 @@ namespace eternal_lands
 
 		stream << indent << sslt_packed_light_indices_4;
 
-		if (data.get_version() >= svt_130)
+		if (build_data.get_version() >= svt_130)
 		{
 			stream << UTF8(" = texelFetch(");
 			stream << spt_effect_14;
@@ -1734,7 +1776,8 @@ namespace eternal_lands
 			stream << sslt_project_space << UTF8(");\n");
 		}
 
-		if (data.get_shader_build() == sbt_debug_packed_light_index)
+		if (build_data.get_shader_build() ==
+			sbt_debug_packed_light_index)
 		{
 			stream << loop_indent;
 			stream << sslt_light_indices << UTF8(" = ");
@@ -1752,7 +1795,7 @@ namespace eternal_lands
 
 		stream << UTF8("= vec4(4.0, 16.0, 64.0, 256.0)");
 
-		if (data.get_version() < svt_130)
+		if (build_data.get_version() < svt_130)
 		{
 			stream << UTF8(" / 256.0");
 		}
@@ -1802,7 +1845,7 @@ namespace eternal_lands
 		stream << sslt_packed_light_indices_4;
 		stream << UTF8(");\n");
 
-		if (data.get_version() < svt_130)
+		if (build_data.get_version() < svt_130)
 		{
 			stream << loop_indent << sslt_light_index;
 			stream << UTF8(" = ");
@@ -1818,7 +1861,7 @@ namespace eternal_lands
 		stream << UTF8(", ") << sslt_unpack_const_4;
 		stream << UTF8(")");
 
-		if (data.get_version() >= svt_130)
+		if (build_data.get_version() >= svt_130)
 		{
 			stream << UTF8(" + 0.5)");
 		}
@@ -1827,10 +1870,10 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceBuilder::build_light_index_lights(
-		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
 		const ShaderSourceParameterVector &locals, 
-		const String &indent, const bool shadow, OutStream &main,
+		const String &indent, const bool shadow,
+		ShaderSourceBuildData &build_data, OutStream &main,
 		OutStream &functions, ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
@@ -1890,7 +1933,7 @@ namespace eternal_lands
 
 		stream << UTF8("\n");
 
-		if (data.get_shader_build() == sbt_debug_diffuse_light)
+		if (build_data.get_shader_build() == sbt_debug_diffuse_light)
 		{
 			add_parameter(String(UTF8("lighting")),
 				sslt_diffuse_colors_sum, pqt_out,
@@ -1905,8 +1948,10 @@ namespace eternal_lands
 				uniform_buffers);
 		}
 
-		if ((data.get_shader_build() == sbt_debug_packed_light_index) ||
-			(data.get_shader_build() == sbt_debug_light_index))
+		if ((build_data.get_shader_build() ==
+			sbt_debug_packed_light_index) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_light_index))
 		{
 			add_parameter(String(UTF8("lighting")),
 				sslt_light_indices, pqt_out,
@@ -1928,7 +1973,7 @@ namespace eternal_lands
 		add_parameter(String(UTF8("lighting")), cpt_emission, pqt_in,
 			function_locals, function_parameters, uniform_buffers);
 
-		if (data.get_shader_build() == sbt_debug_specular_light)
+		if (build_data.get_shader_build() == sbt_debug_specular_light)
 		{
 			add_parameter(String(UTF8("lighting")),
 				sslt_specular_colors_sum, pqt_out,
@@ -1965,7 +2010,7 @@ namespace eternal_lands
 
 		stream << UTF8("\n");
 
-		if (data.get_version() < svt_130)
+		if (build_data.get_version() < svt_130)
 		{
 			add_parameter(String(UTF8("lighting")),
 				sslt_project_space, pqt_in, function_locals,
@@ -1986,20 +2031,23 @@ namespace eternal_lands
 			case lst_default:
 				return;
 			case lst_lidr_x4:
-				build_light_index_x4_lights(data, local_indent,
-					local_loop_indent, stream);
+				build_light_index_x4_lights(build_data,
+					local_indent, local_loop_indent,
+					stream);
 				break;
 			case lst_lidr_x5:
-				build_light_index_x5_lights(data, local_indent,
-					local_loop_indent, stream);
+				build_light_index_x5_lights(build_data,
+					local_indent, local_loop_indent,
+					stream);
 				break;
 			case lst_lidr_x8:
-				build_light_index_x8_lights(data, local_indent,
-					local_loop_indent, stream);
+				build_light_index_x8_lights(build_data,
+					local_indent, local_loop_indent,
+					stream);
 				break;
 		};
 
-		if (data.get_shader_build() == sbt_debug_light_index)
+		if (build_data.get_shader_build() == sbt_debug_light_index)
 		{
 			stream << local_loop_indent << sslt_light_indices;
 			stream << UTF8(".gba = ") << sslt_light_indices;
@@ -2014,7 +2062,7 @@ namespace eternal_lands
 
 		stream << local_loop_indent << cpt_light_color;
 
-		if (data.get_version() >= svt_130)
+		if (build_data.get_version() >= svt_130)
 		{
 			stream << UTF8(" = texelFetch(") << spt_effect_13;
 			stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
@@ -2031,7 +2079,7 @@ namespace eternal_lands
 
 		stream << local_loop_indent << cpt_light_position;
 
-		if (data.get_version() >= svt_130)
+		if (build_data.get_version() >= svt_130)
 		{
 			stream << UTF8(" = texelFetch(") << spt_effect_12;
 			stream << UTF8(", ") << sslt_index << UTF8(", 0);\n");
@@ -2043,8 +2091,8 @@ namespace eternal_lands
 			stream << UTF8(");\n");
 		}
 
-		build_function(data, array_sizes, function_locals,
-			sst_fragment_light, local_loop_indent, stream,
+		build_function(array_sizes, function_locals, local_loop_indent,
+			sst_light, st_fragment, build_data, stream,
 			functions, function_parameters, uniform_buffers);
 
 		bak = function_locals;
@@ -2083,7 +2131,7 @@ namespace eternal_lands
 		}
 		else
 		{
-			stream << data.get_fragment_lights_count();
+			stream << build_data.get_fragment_lights_count();
 		}
 
 		stream << UTF8("; ++") << sslt_i << UTF8(")\n");
@@ -2107,8 +2155,8 @@ namespace eternal_lands
 		stream << UTF8(" = ") << apt_light_positions;
 		stream << UTF8("[") << sslt_i << UTF8("];\n");
 
-		build_function(data, array_sizes, bak, sst_fragment_light,
-			local_loop_indent, stream, functions,
+		build_function(array_sizes, bak, local_loop_indent, sst_light,
+			st_fragment, build_data, stream, functions,
 			function_parameters, uniform_buffers);
 
 		add_local(String(UTF8("lighting")), cpt_diffuse_color, pqt_in,
@@ -2185,10 +2233,10 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceBuilder::build_lights(
-		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
 		const ShaderSourceParameterVector &locals,
-		const String &indent, const bool vertex, const bool shadow,
+		const String &indent, const ShaderType shader_type,
+		const bool shadow, ShaderSourceBuildData &build_data,
 		OutStream &main, OutStream &functions,
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
@@ -2196,7 +2244,6 @@ namespace eternal_lands
 		ShaderSourceParameterVector function_locals;
 		ShaderSourceParameterVector function_parameters;
 		CommonParameterType output_color;
-		ShaderSourceType light;
 		StringStream stream;
 		String local_indent, local_loop_indent;
 		String lighting;
@@ -2207,22 +2254,20 @@ namespace eternal_lands
 		local_indent = indent.get() + UTF8("\t");
 		local_loop_indent = local_indent.get() + UTF8("\t");
 
-		if (vertex)
+		if (shader_type != st_fragment)
 		{
 			output_color = cpt_vertex_color;
 			light_offset = get_fragment_lights_count();
-			lights_count = data.get_lights_count();
+			lights_count = build_data.get_lights_count();
 			dynamic_lights_count = true;
-			light = sst_vertex_light;
 		}
 		else
 		{
 			output_color = cpt_fragment_color;
 			light_offset = 0;
-			lights_count = data.get_fragment_lights_count();
+			lights_count = build_data.get_fragment_lights_count();
 			dynamic_lights_count =
 				get_dynamic_lights_count();
-			light = sst_fragment_light;
 		}
 
 		add_local(String(UTF8("lighting")), sslt_i, pqt_out,
@@ -2234,7 +2279,7 @@ namespace eternal_lands
 
 		stream << UTF8("\n");
 
-		if (data.get_shader_build() == sbt_debug_diffuse_light)
+		if (build_data.get_shader_build() == sbt_debug_diffuse_light)
 		{
 			add_parameter(String(UTF8("lighting")),
 				sslt_diffuse_colors_sum, pqt_out,
@@ -2252,7 +2297,8 @@ namespace eternal_lands
 		stream << local_indent << sslt_diffuse_colors_sum;
 		stream << UTF8(" = ");
 
-		if (vertex || (data.get_vertex_lights_count() == 0))
+		if ((shader_type != st_fragment) ||
+			(build_data.get_vertex_lights_count() == 0))
 		{
 			add_parameter(String(UTF8("lighting")), apt_ambient,
 				function_locals, function_parameters,
@@ -2269,14 +2315,14 @@ namespace eternal_lands
 			stream << cpt_vertex_color << UTF8(";\n");
 		}
 
-		if (!vertex)
+		if (shader_type == st_fragment)
 		{
 			add_parameter(String(UTF8("lighting")), cpt_emission,
 				pqt_in, function_locals, function_parameters,
 				uniform_buffers);
 
 
-			if (data.get_shader_build() == 
+			if (build_data.get_shader_build() == 
 				sbt_debug_specular_light)
 			{
 				add_parameter(String(UTF8("lighting")),
@@ -2299,7 +2345,7 @@ namespace eternal_lands
 			stream << UTF8(" = vec3(0.0);\n");
 		}
 
-		if (!vertex && shadow)
+		if ((shader_type == st_fragment) && shadow)
 		{
 			add_parameter(String(UTF8("lighting")), cpt_shadow,
 				pqt_in, function_locals, function_parameters,
@@ -2318,7 +2364,7 @@ namespace eternal_lands
 		stream << UTF8(" = ") << light_offset << UTF8("; ") << sslt_i;
 		stream << UTF8(" < ");
 
-		if (dynamic_lights_count && !vertex)
+		if (dynamic_lights_count && (shader_type == st_fragment))
 		{
 			add_parameter(String(UTF8("lighting")),
 				apt_dynamic_lights_count, function_locals,
@@ -2352,8 +2398,8 @@ namespace eternal_lands
 		stream << UTF8(" = ") << apt_light_positions;
 		stream << UTF8("[") << sslt_i << UTF8("];\n");
 
-		build_function(data, array_sizes, function_locals, light,
-			local_loop_indent, stream, functions,
+		build_function(array_sizes, function_locals, local_loop_indent,
+			sst_light, shader_type, build_data, stream, functions,
 			function_parameters, uniform_buffers);
 
 		make_parameter_local(
@@ -2369,7 +2415,7 @@ namespace eternal_lands
 		stream << local_loop_indent << sslt_diffuse_colors_sum;
 		stream << UTF8(" += ") << cpt_diffuse_color;
 
-		if (!vertex && shadow)
+		if ((shader_type == st_fragment) && shadow)
 		{
 			add_parameter(String(UTF8("lighting")), cpt_shadow,
 				pqt_in, function_locals, function_parameters,
@@ -2381,7 +2427,7 @@ namespace eternal_lands
 
 		stream << UTF8(";\n");
 
-		if (!vertex)
+		if (shader_type == st_fragment)
 		{
 			add_local(String(UTF8("lighting")), cpt_specular_color,
 				pqt_in, function_locals, function_parameters,
@@ -2399,7 +2445,7 @@ namespace eternal_lands
 			stream << UTF8(";\n");
 		}
 
-		if (!vertex && shadow)
+		if ((shader_type == st_fragment) && shadow)
 		{
 			stream << local_loop_indent << sslt_shadow_values;
 			stream << UTF8(".xy = ") << sslt_shadow_values;
@@ -2414,7 +2460,7 @@ namespace eternal_lands
 		stream << local_indent << output_color << UTF8(" = ");
 		stream << sslt_diffuse_colors_sum;
 
-		if (!vertex)
+		if (shader_type == st_fragment)
 		{
 			add_parameter(String(UTF8("lighting")), cpt_albedo,
 				pqt_in, function_locals, function_parameters,
@@ -2425,7 +2471,7 @@ namespace eternal_lands
 
 		stream << UTF8(";\n");
 
-		if (!vertex)
+		if (shader_type == st_fragment)
 		{
 			add_parameter(String(UTF8("lighting")), cpt_specular,
 				pqt_in, function_locals, function_parameters,
@@ -2449,10 +2495,9 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceBuilder::build_vertex_source(
-		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
-		OutStream &main, OutStream &functions,
-		ShaderSourceParameterVector &globals,
+		ShaderSourceBuildData &build_data, OutStream &main,
+		OutStream &functions, ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
 		ShaderSourceParameterVector locals;
@@ -2461,27 +2506,28 @@ namespace eternal_lands
 		indent = UTF8("\t");
 		gl_Position = UTF8("gl_Position");
 
-		if (data.get_option(ssbot_tangent))
+		if (build_data.get_option(ssbot_tangent))
 		{
-			build_function(data, array_sizes, locals,
-				sst_world_tangent_transformation, indent, main,
-				functions, globals, uniform_buffers);
+			build_function(array_sizes, locals, indent,
+				sst_world_tangent_transformation, st_vertex,
+				build_data, main, functions, globals,
+				uniform_buffers);
 		}
 		else
 		{
-			if (data.get_option(ssbot_normal))
+			if (build_data.get_option(ssbot_normal))
 			{
-				build_function(data, array_sizes, locals,
+				build_function(array_sizes, locals, indent,
 					sst_world_normal_transformation,
-					indent, main, functions, globals,
-					uniform_buffers);
+					st_vertex, build_data, main, functions,
+					globals, uniform_buffers);
 			}
 			else
 			{
-				build_function(data, array_sizes, locals,
-					sst_world_depth_transformation,	indent,
-					main, functions, globals,
-					uniform_buffers);
+				build_function(array_sizes, locals, indent,
+					sst_world_depth_transformation,
+					st_vertex, build_data, main, functions,
+					globals, uniform_buffers);
 			}
 		}
 
@@ -2497,7 +2543,7 @@ namespace eternal_lands
 		main << UTF8(" * vec4(") << cpt_world_position;
 		main << UTF8(", 1.0);\n");
 
-		if (data.get_version() < svt_130)
+		if (build_data.get_version() < svt_130)
 		{		
 			add_parameter(String(UTF8("lighting")),
 				sslt_project_space, pqt_out, locals, globals,
@@ -2512,61 +2558,62 @@ namespace eternal_lands
 			main << UTF8(".w);\n");
 		}
 
-		if (data.get_option(ssbot_view_position))
+		if (build_data.get_option(ssbot_view_position))
 		{
-			build_function(data, array_sizes, locals,
-				sst_view_transformation, indent, main,
-				functions, globals, uniform_buffers);
+			build_function(array_sizes, locals, indent,
+				sst_view_transformation, st_vertex, build_data,
+				main, functions, globals, uniform_buffers);
 		}
 
-		if ((data.get_shader_build() == sbt_default) ||
-			(data.get_shader_build() == sbt_debug_shadow) ||
-			(data.get_shader_build() == sbt_debug_diffuse_light) ||
-			(data.get_shader_build() == sbt_debug_specular_light))
+		if ((build_data.get_shader_build() == sbt_default) ||
+			(build_data.get_shader_build() == sbt_debug_shadow) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_diffuse_light) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_specular_light))
 		{
-			if (data.get_option(ssbot_fog))
+			if (build_data.get_option(ssbot_fog))
 			{
-				build_function(data, array_sizes, locals,
-					sst_fog, indent, main, functions,
-					globals, uniform_buffers);
+				build_function(array_sizes, locals, indent,
+					sst_fog, st_vertex, build_data, main,
+					functions, globals, uniform_buffers);
 			}
 
-			if ((data.get_vertex_lights_count() > 0) &&
-				data.get_option(ssbot_lighting))
+			if ((build_data.get_vertex_lights_count() > 0) &&
+				build_data.get_option(ssbot_lighting))
 			{
-				build_lights(data, array_sizes, locals, indent,
-					true, false, main, functions, globals,
+				build_lights(array_sizes, locals, indent,
+					st_vertex, false, build_data, main,
+					functions, globals, uniform_buffers);
+			}
+
+			if ((build_data.get_shadow_maps_count() > 0) &&
+				(build_data.get_fragment_lights_count() > 0))
+			{
+				build_function(array_sizes, locals, indent,
+					sst_shadow_uv, st_vertex, build_data,
+					main, functions, globals,
 					uniform_buffers);
 			}
-
-			if ((data.get_shadow_maps_count() > 0) &&
-				(data.get_fragment_lights_count() > 0))
-			{
-				build_function(data, array_sizes, locals,
-					sst_shadow_uv, indent, main, functions,
-					globals, uniform_buffers);
-			}
 		}
 
-		build_function(data, array_sizes, locals, sst_uv,
-			indent, main, functions, globals, uniform_buffers);
+		build_function(array_sizes, locals, indent, sst_uv, st_vertex,
+			build_data, main, functions, globals, uniform_buffers);
 
-		if (data.get_option(ssbot_node_based_effect))
+		if (build_data.get_option(ssbot_node_based_effect))
 		{
-/*
-		build_function(data, array_sizes, locals, sst_vertex_effect,
-			indent, main, functions, globals, uniform_buffers,
-			used_sources);
-*/
+			build_function(array_sizes, locals, indent,
+				sst_main_effect, st_vertex, build_data, main,
+				functions, globals, uniform_buffers);
 		}
 	}
 
 	void ShaderSourceBuilder::build_geometry_source(
-		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
 		const ShaderSourceParameterVector &varyings,
 		const String &in_prefix, const String &out_prefix,
-		const bool use_block, OutStream &main, OutStream &functions,
+		const bool use_block, ShaderSourceBuildData &build_data,
+		OutStream &main, OutStream &functions,
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
 	{
@@ -2674,8 +2721,8 @@ namespace eternal_lands
 	}
 
 	void ShaderSourceBuilder::build_fragment_source(
-		const ShaderSourceBuildData &data,
 		const ParameterSizeTypeUint16Map &array_sizes,
+		ShaderSourceBuildData &build_data,
 		OutStream &main, OutStream &functions,
 		ShaderSourceParameterVector &globals,
 		UniformBufferUsage &uniform_buffers) const
@@ -2689,7 +2736,7 @@ namespace eternal_lands
 
 		indent = UTF8("\t");
 
-		if (data.get_version() > svt_150)
+		if (build_data.get_version() > svt_150)
 		{
 			output = UTF8("FragColor");
 		}
@@ -2704,7 +2751,7 @@ namespace eternal_lands
 		{
 			StringStream str;
 
-			if (data.get_version() > svt_150)
+			if (build_data.get_version() > svt_150)
 			{
 				str << UTF8("FragData_") << i;
 			}
@@ -2718,39 +2765,33 @@ namespace eternal_lands
 
 		shadows = false;
 
-		if (data.get_option(ssbot_shadow_uv_ddx_ddy))
+		if (build_data.get_option(ssbot_shadow_uv_ddx_ddy))
 		{
-			build_function(data, array_sizes, locals,
-				sst_shadow_uv_ddx_ddy, indent, main, functions,
-				globals, uniform_buffers);
+			build_function(array_sizes, locals, indent,
+				sst_shadow_uv_ddx_ddy, st_fragment, build_data,
+				main, functions, globals, uniform_buffers);
 		}
 
-		if (data.get_option(ssbot_view_direction))
+		if (build_data.get_option(ssbot_view_direction))
 		{
-			build_function(data, array_sizes, locals,
-				sst_view_direction, indent, main, functions,
-				globals, uniform_buffers);
+			build_function(array_sizes, locals, indent,
+				sst_view_direction, st_fragment, build_data,
+				main, functions, globals, uniform_buffers);
 		}
 
-		if (data.get_option(ssbot_tbn_matrix))
+		if (build_data.get_option(ssbot_tbn_matrix))
 		{
-			build_function(data, array_sizes, locals,
-				sst_tbn_matrix, indent, main, functions,
-				globals, uniform_buffers);
+			build_function(array_sizes, locals, indent,
+				sst_tbn_matrix, st_fragment, build_data, main,
+				functions, globals, uniform_buffers);
 		}
 
-		if (data.get_option(ssbot_node_based_effect))
-		{
-		}
-		else
-		{
-			build_function(data, array_sizes, locals,
-				sst_main_effect, indent, main, functions,
-				globals, uniform_buffers);
-		}
+		build_function(array_sizes, locals, indent, sst_main_effect,
+			st_fragment, build_data, main, functions, globals,
+			uniform_buffers);
 
-		if (data.get_option(ssbot_transparent) &&
-			data.get_option(ssbot_alpha_test))
+		if (build_data.get_option(ssbot_transparent) &&
+			build_data.get_option(ssbot_alpha_test))
 		{
 			add_parameter(String(UTF8("fragment")),	cpt_albedo,
 				pqt_in, locals, globals, uniform_buffers);
@@ -2762,40 +2803,44 @@ namespace eternal_lands
 			main << UTF8("}\n");
 		}
 
-		if ((data.get_shader_build() == sbt_default) ||
-			(data.get_shader_build() == sbt_debug_shadow) ||
-			(data.get_shader_build() == sbt_debug_diffuse_light) ||
-			(data.get_shader_build() == sbt_debug_specular_light) ||
-			(data.get_shader_build() ==
+		if ((build_data.get_shader_build() == sbt_default) ||
+			(build_data.get_shader_build() == sbt_debug_shadow) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_diffuse_light) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_specular_light) ||
+			(build_data.get_shader_build() ==
 				sbt_debug_packed_light_index) ||
-			(data.get_shader_build() == sbt_debug_light_index))
+			(build_data.get_shader_build() ==
+				sbt_debug_light_index))
 		{
-			if ((data.get_fragment_lights_count() > 0) &&
-				data.get_option(ssbot_lighting))
+			if ((build_data.get_fragment_lights_count() > 0) &&
+				build_data.get_option(ssbot_lighting))
 			{
-				if (data.get_shadow_maps_count() > 0)
+				if (build_data.get_shadow_maps_count() > 0)
 				{
-					shadows = build_function(data,
-						array_sizes, locals,
-						sst_shadow_mapping, indent,
+					shadows = build_function(array_sizes,
+						locals, indent,
+						sst_shadow_mapping,
+						st_fragment, build_data,
 						main, functions, globals,
 						uniform_buffers);
 				}
 
-				if (data.get_option(
+				if (build_data.get_option(
 					ssbot_light_indexed_deferred))
 				{
-					build_light_index_lights(data,
-						array_sizes, locals, indent,
-						shadows, main, functions,
+					build_light_index_lights(array_sizes,
+						locals, indent, shadows,
+						build_data, main, functions,
 						globals, uniform_buffers);
 				}
 				else
 				{
-					build_lights(data, array_sizes, locals,
-						indent, false, shadows, main,
-						functions, globals,
-						uniform_buffers);
+					build_lights(array_sizes, locals,
+						indent, st_fragment, shadows,
+						build_data, main, functions,
+						globals, uniform_buffers);
 				}
 			}
 			else
@@ -2815,11 +2860,12 @@ namespace eternal_lands
 					cpt_emission, pqt_in, locals, globals,
 					uniform_buffers);
 
-				if (data.get_option(ssbot_lighting))
+				if (build_data.get_option(ssbot_lighting))
 				{
 					main << UTF8(" * (");
 
-					if (data.get_vertex_lights_count() > 0)
+					if (build_data.get_vertex_lights_count(
+						) > 0)
 					{
 						add_parameter(String(
 							UTF8("fragment")),
@@ -2850,7 +2896,7 @@ namespace eternal_lands
 		}
 
 
-		switch (data.get_shader_output())
+		switch (build_data.get_shader_output())
 		{
 			case sot_int:
 				output_parameter = cpt_output_data_int;
@@ -2864,7 +2910,7 @@ namespace eternal_lands
 				break;
 		}
 
-		switch (data.get_shader_build())
+		switch (build_data.get_shader_build())
 		{
 			case sbt_default:
 				add_parameter(String(UTF8("fragment")),
@@ -2873,7 +2919,7 @@ namespace eternal_lands
 
 				main << indent << output << UTF8(".rgb = ");
 
-				if (data.get_option(ssbot_fog))
+				if (build_data.get_option(ssbot_fog))
 				{
 					add_parameter(String(UTF8("fragment")),
 						cpt_fog, pqt_in, locals,
@@ -2902,9 +2948,10 @@ namespace eternal_lands
 
 				break;
 			case sbt_shadow:
-				build_function(data, array_sizes, locals,
-					sst_shadow_map, indent, main,
-					functions, globals, uniform_buffers);
+				build_function(array_sizes, locals, indent,
+					sst_shadow_map, st_fragment,
+					build_data, main, functions, globals,
+					uniform_buffers);
 
 				add_parameter(String(UTF8("fragment")),
 					cpt_shadow_map_data, pqt_in, locals,
@@ -2912,14 +2959,14 @@ namespace eternal_lands
 
 				main << indent << output;
 
-				if (data.get_option(ssbot_alpha_write))
+				if (build_data.get_option(ssbot_alpha_write))
 				{
 					main << UTF8(".rgb");
 				}
 
 				main << UTF8(" = ") << cpt_shadow_map_data;
 
-				if (!data.get_option(ssbot_alpha_write))
+				if (!build_data.get_option(ssbot_alpha_write))
 				{
 					main << UTF8(".r");
 				}
@@ -2961,16 +3008,15 @@ namespace eternal_lands
 					output_parameter, pqt_in, locals,
 					globals, uniform_buffers);
 
-				count = data.get_render_targets_count();
+				count = build_data.get_render_targets_count();
 
 				for (i = 0; i < count; ++i)
 				{
 					main << indent << output_array[i];
 					main << UTF8(" = ") << output_parameter;
 					main << UTF8("[") << i << UTF8("]");
-					main << get_output_swizzle(
-						data.get_output_channel_count(
-							i));
+					main << get_output_swizzle(build_data.
+						get_output_channel_count(i));
 					main << UTF8(";\n");
 				}
 				break;
@@ -3013,9 +3059,11 @@ namespace eternal_lands
 			case sbt_debug_shadow:
 				main << indent << output << UTF8(".rgb = ");
 
-				if ((data.get_fragment_lights_count() == 0) ||
-					(data.get_shadow_maps_count() == 0) ||
-					!data.get_option(ssbot_lighting))
+				if ((build_data.get_fragment_lights_count() ==
+					0) ||
+					(build_data.get_shadow_maps_count() ==
+						0) ||
+					!build_data.get_option(ssbot_lighting))
 				{
 					main << UTF8("vec3(1.0);\n");
 					break;
@@ -3045,8 +3093,9 @@ namespace eternal_lands
 			case sbt_debug_diffuse_light:
 				main << indent << output << UTF8(".rgb = ");
 
-				if ((data.get_fragment_lights_count() == 0) ||
-					!data.get_option(ssbot_lighting))
+				if ((build_data.get_fragment_lights_count()
+					== 0) ||
+					!build_data.get_option(ssbot_lighting))
 				{
 					main << UTF8("vec3(0.0);\n");
 					break;
@@ -3060,8 +3109,9 @@ namespace eternal_lands
 			case sbt_debug_specular_light:
 				main << indent << output << UTF8(".rgb = ");
 
-				if ((data.get_fragment_lights_count() == 0) ||
-					!data.get_option(ssbot_lighting))
+				if ((build_data.get_fragment_lights_count()
+					== 0) ||
+					!build_data.get_option(ssbot_lighting))
 				{
 					main << UTF8("vec3(0.0);\n");
 					break;
@@ -3075,8 +3125,9 @@ namespace eternal_lands
 			case sbt_debug_packed_light_index:
 				main << indent << output << UTF8(".rgb = ");
 
-				if ((data.get_fragment_lights_count() == 0) ||
-					!data.get_option(ssbot_lighting))
+				if ((build_data.get_fragment_lights_count()
+					== 0) ||
+					!build_data.get_option(ssbot_lighting))
 				{
 					main << UTF8("vec3(0.0);\n");
 					break;
@@ -3091,8 +3142,9 @@ namespace eternal_lands
 			case sbt_debug_light_index:
 				main << indent << output << UTF8(".rgb = ");
 
-				if ((data.get_fragment_lights_count() == 0) ||
-					!data.get_option(ssbot_lighting))
+				if ((build_data.get_fragment_lights_count()
+					== 0) ||
+					!build_data.get_option(ssbot_lighting))
 				{
 					main << UTF8("vec3(0.0);\n");
 					break;
@@ -3106,8 +3158,8 @@ namespace eternal_lands
 				break;
 		}
 
-		if (data.get_option(ssbot_alpha_write) &&
-			(data.get_shader_build() != sbt_screen_quad))
+		if (build_data.get_option(ssbot_alpha_write) &&
+			(build_data.get_shader_build() != sbt_screen_quad))
 		{
 			add_parameter(String(UTF8("fragment")), cpt_albedo,
 				pqt_in, locals, globals, uniform_buffers);
@@ -3117,55 +3169,41 @@ namespace eternal_lands
 		}
 	}
 
-	bool ShaderSourceBuilder::check_function(
-		const ShaderSourceBuildData &data, const String &name,
-		const ShaderSourceType shader_source_type) const
+	bool ShaderSourceBuilder::check_function(const String &name,
+		const ShaderSourceType shader_source_type,
+		const ShaderType shader_type,
+		ShaderSourceBuildData &build_data) const
 	{
-		ShaderSourceTypeStringPairAbstractShaderSourceMap::
-			const_iterator found;
-		ShaderSourceTypeStringMap::const_iterator index;
+		AbstractShaderSourceSharedPtr shader_source;
 
-		index = data.get_sources().find(shader_source_type);
-
-		if (index == data.get_sources().end())
+		if (!get_shader_source(shader_source_type, build_data,
+			shader_source))
 		{
 			return false;
 		}
 
-		found = m_shader_sources.find(*index);
-
-		if (found == m_shader_sources.end())
-		{
-			LOG_ERROR(lt_shader_source, UTF8("Shader source type "
-				"not found %1%-%2%"), index->first %
-				index->second);
-			return false;
-		}
-
-		return found->second->check_source_parameter(data.get_version(),
-			name);
+		return shader_source->check_source_parameter(shader_type,
+			build_data.get_version(), name);
 	}
-
+/**********************
 	bool ShaderSourceBuilder::check(
 		const ShaderSourceTypeStringPair &source,
 		const ShaderVersionType version) const
 	{
-		ShaderSourceTypeStringPairAbstractShaderSourceMap::
-			const_iterator found;
+		AbstractShaderSourceSharedPtr shader_source;
 
-		found = m_shader_sources.find(source);
-
-		if (found == m_shader_sources.end())
+		if (!get_shader_source(shader_source_type, build_data,
+			shader_source))
 		{
 			return false;
 		}
 
-		return found->second->get_has_data(version);
+		return shader_source->get_has_data(version);
 	}
-
+*/
 	bool ShaderSourceBuilder::get_source_parameter(
-		const ShaderSourceBuildData &data,
-		const CommonParameterType common_parameter) const
+		const CommonParameterType common_parameter,
+		ShaderSourceBuildData &build_data) const
 	{
 		String name;
 		bool result;
@@ -3173,94 +3211,112 @@ namespace eternal_lands
 		name = CommonParameterUtil::get_str(common_parameter);
 		result = false;
 
-		if (data.get_option(ssbot_view_position))
+		if (build_data.get_option(ssbot_view_position))
 		{
-			result |= check_function(data, name,
-				sst_view_transformation);
+			result |= check_function(name, sst_view_transformation,
+				st_vertex, build_data);
 		}
 
-		if ((data.get_shader_build() == sbt_default) ||
-			(data.get_shader_build() == sbt_debug_shadow) ||
-			(data.get_shader_build() == sbt_debug_diffuse_light) ||
-			(data.get_shader_build() == sbt_debug_specular_light) ||
-			(data.get_shader_build() ==
+		if ((build_data.get_shader_build() == sbt_default) ||
+			(build_data.get_shader_build() == sbt_debug_shadow) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_diffuse_light) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_specular_light) ||
+			(build_data.get_shader_build() ==
 				sbt_debug_packed_light_index) ||
-			(data.get_shader_build() == sbt_debug_light_index))
+			(build_data.get_shader_build() ==
+				sbt_debug_light_index))
 		{
-			if (data.get_option(ssbot_fog))
+			if (build_data.get_option(ssbot_fog))
 			{
-				result |= check_function(data, name, sst_fog);
+				result |= check_function(name, sst_fog,
+					st_vertex, build_data);
 			}
 
-			if (data.get_vertex_lights_count() > 0)
+			if (build_data.get_vertex_lights_count() > 0)
 			{
-				result |= check_function(data, name,
-					sst_vertex_light);
+				result |= check_function(name, sst_light,
+					st_vertex, build_data);
 			}
 
-			if ((data.get_shadow_maps_count() > 0) &&
-				(data.get_fragment_lights_count() > 0))
+			if ((build_data.get_shadow_maps_count() > 0) &&
+				(build_data.get_fragment_lights_count() > 0))
 			{
-				result |= check_function(data, name,
-					sst_shadow_uv);
+				result |= check_function(name, sst_shadow_uv,
+					st_vertex, build_data);
 			}
 		}
 
-		result |= check_function(data, name, sst_uv);
-//		result |= check_function(data, name, sst_vertex_effect);
+		result |= check_function(name, sst_uv, st_vertex, build_data);
 
-		if ((data.get_shader_build() == sbt_debug_uv) &&
+		if (build_data.get_option(ssbot_node_based_effect))
+		{
+			result |= check_function(name, sst_main_effect,
+				st_vertex, build_data);
+		}
+
+		if ((build_data.get_shader_build() == sbt_debug_uv) &&
 			(common_parameter == cpt_world_uv))
 		{
 			result = true;
 		}
 
-		if (data.get_option(ssbot_shadow_uv_ddx_ddy))
+		if (build_data.get_option(ssbot_shadow_uv_ddx_ddy))
 		{
-			result |= check_function(data, name,
-				sst_shadow_uv_ddx_ddy);
+			result |= check_function(name, sst_shadow_uv_ddx_ddy,
+				st_fragment, build_data);
 		}
 
-		if (data.get_option(ssbot_view_direction))
+		if (build_data.get_option(ssbot_view_direction))
 		{
-			result |= check_function(data, name,
-				sst_view_direction);
+			result |= check_function(name, sst_view_direction,
+				st_fragment, build_data);
 		}
 
-		if (data.get_option(ssbot_tbn_matrix) ||
-			(data.get_shader_build() == sbt_debug_tbn_matrix_0) ||
-			(data.get_shader_build() == sbt_debug_tbn_matrix_1) ||
-			(data.get_shader_build() == sbt_debug_tbn_matrix_2))
+		if (build_data.get_option(ssbot_tbn_matrix) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_tbn_matrix_0) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_tbn_matrix_1) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_tbn_matrix_2))
 		{
-			result |= check_function(data, name, sst_tbn_matrix);
+			result |= check_function(name, sst_tbn_matrix,
+				st_fragment, build_data);
 		}
 
-		result |= check_function(data, name, sst_main_effect);
+		result |= check_function(name, sst_main_effect, st_fragment,
+			build_data);
 
 		if (common_parameter == cpt_albedo)
 		{
 			result = true;
 		}
 
-		if (((data.get_shader_build() == sbt_default) &&
-			(data.get_fragment_lights_count() > 0)) ||
-			(data.get_shader_build() == sbt_debug_shadow) ||
-			(data.get_shader_build() == sbt_debug_diffuse_light) ||
-			(data.get_shader_build() == sbt_debug_specular_light))
+		if (((build_data.get_shader_build() == sbt_default) &&
+			(build_data.get_fragment_lights_count() > 0)) ||
+			(build_data.get_shader_build() == sbt_debug_shadow) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_diffuse_light) ||
+			(build_data.get_shader_build() ==
+				sbt_debug_specular_light))
 		{
-			if (data.get_shadow_maps_count() > 0)
+			if (build_data.get_shadow_maps_count() > 0)
 			{
-				result |= check_function(data, name,
-					sst_shadow_mapping);
+				result |= check_function(name,
+					sst_shadow_mapping, st_fragment,
+					build_data);
 			}
 
-			result |= check_function(data, name,
-				sst_fragment_light);
+			result |= check_function(name, sst_light, st_fragment,
+				build_data);
 		}
 
-		if (data.get_shader_build() == sbt_shadow)
+		if (build_data.get_shader_build() == sbt_shadow)
 		{
-			result |= check_function(data, name, sst_shadow_map);
+			result |= check_function(name, sst_shadow_map,
+				st_fragment, build_data);
 		}
 
 		if (result)
@@ -3300,7 +3356,7 @@ namespace eternal_lands
 			description.get_world_transformation();
 		sources[sst_uv] = description.get_texture_coodrinates();
 		sources[sst_main_effect] = description.get_main();
-		sources[sst_fragment_light] = description.get_lighting();
+		sources[sst_light] = description.get_lighting();
 
 		if (!description.get_receives_shadows())
 		{
@@ -3321,14 +3377,7 @@ namespace eternal_lands
 
 		if (description.get_lighting().get().empty())
 		{
-			found = sources.find(sst_vertex_light);
-
-			if (found != sources.end())
-			{
-				sources.erase(found);
-			}
-
-			found = sources.find(sst_fragment_light);
+			found = sources.find(sst_light);
 
 			if (found != sources.end())
 			{
@@ -3343,9 +3392,9 @@ namespace eternal_lands
 		const ShaderBuildType shader_build,
 		const ShaderOutputType shader_output,
 		const Uint16 lights_count,
-		GlslProgramDescription &program_description) const
+		ShaderTypeStringMap &program_description) const
 	{
-		ShaderSourceBuildData data;
+		ShaderSourceBuildData build_data;
 		ShaderSourceParameterVector attributes, varyings;
 		ShaderSourceParameterVector geometry_in_parameters;
 		ShaderSourceParameterVector geometry_out_parameters;
@@ -3370,12 +3419,7 @@ namespace eternal_lands
 
 		sources = build_sources(description);
 
-		program_description.set_vertex_shader(String(UTF8("")));
-		program_description.set_tess_control_shader(String(UTF8("")));
-		program_description.set_tess_evaluation_shader(String(
-			UTF8("")));
-		program_description.set_geometry_shader(String(UTF8("")));
-		program_description.set_fragment_shader(String(UTF8("")));
+		program_description.clear();
 
 		version_type = get_shader_version_type(get_global_vars(
 			)->get_opengl_version());
@@ -3401,7 +3445,7 @@ namespace eternal_lands
 
 		output_channels = description.get_output_channels();
 
-		if (data.get_version() <= svt_150)
+		if (build_data.get_version() <= svt_150)
 		{
 			BOOST_FOREACH(Uint8 &output_channel, output_channels)
 			{
@@ -3412,67 +3456,70 @@ namespace eternal_lands
 			}
 		}
 
-		data = ShaderSourceBuildData(sources, version_type,
+		build_data = ShaderSourceBuildData(sources, version_type,
 			shader_build, shader_output, output_channels,
 			get_vertex_lights_count(), get_fragment_lights_count(),
 			std::min(get_lights_count(), lights_count),
 			get_global_vars()->get_shadow_map_count(),
 			render_target_count);
 
-		use_block = (data.get_version() >= svt_150) &&
+		use_block = (build_data.get_version() >= svt_150) &&
 			get_global_vars()->get_use_block();
-		use_in_out = (data.get_version() >= svt_130) &&
+		use_in_out = (build_data.get_version() >= svt_130) &&
 			get_global_vars()->get_use_in_out();
 
-		array_sizes[pst_lights_count] = std::min(data.get_lights_count(),
+		array_sizes[pst_lights_count] = std::min(
+			build_data.get_lights_count(),
 			ParameterSizeUtil::get_max_size(pst_lights_count));
 		array_sizes[pst_bones_count] = std::min(get_bones_count(),
 			ParameterSizeUtil::get_max_size(pst_bones_count));
 		array_sizes[pst_shadow_maps_count] = std::min(
-			data.get_shadow_maps_count(),
+			build_data.get_shadow_maps_count(),
 			ParameterSizeUtil::get_max_size(pst_shadow_maps_count));
 		array_sizes[pst_clipmap_terrain_slices] = std::min(
 			get_global_vars()->get_clipmap_terrain_slices(),
 			ParameterSizeUtil::get_max_size(
 				pst_clipmap_terrain_slices));
 
-		data.set_option(ssbot_transparent,
+		build_data.set_option(ssbot_transparent,
 			description.get_transparent());
-		data.set_option(ssbot_view_direction, get_source_parameter(data,
-			cpt_world_view_direction));
-		data.set_option(ssbot_shadow_uv_ddx_ddy,
-			get_source_parameter(data, cpt_shadow_uv_ddx_ddy));
-		data.set_option(ssbot_tbn_matrix, get_source_parameter(data,
-			cpt_tbn_matrix));
-		data.set_option(ssbot_view_position, get_source_parameter(data,
-			cpt_view_position));
-		data.set_option(ssbot_normal, get_source_parameter(data,
-			cpt_world_normal));
-		data.set_option(ssbot_tangent, get_source_parameter(data,
-			cpt_world_tangent));
-		data.set_option(ssbot_transparent,
+		build_data.set_option(ssbot_view_direction,
+			get_source_parameter(cpt_world_view_direction,
+			build_data));
+		build_data.set_option(ssbot_shadow_uv_ddx_ddy,
+			get_source_parameter(cpt_shadow_uv_ddx_ddy,
+			build_data));
+		build_data.set_option(ssbot_tbn_matrix, get_source_parameter(
+			cpt_tbn_matrix, build_data));
+		build_data.set_option(ssbot_view_position,
+			get_source_parameter(cpt_view_position, build_data));
+		build_data.set_option(ssbot_normal, get_source_parameter(
+			cpt_world_normal, build_data));
+		build_data.set_option(ssbot_tangent, get_source_parameter(
+			cpt_world_tangent, build_data));
+		build_data.set_option(ssbot_transparent,
 			description.get_transparent());
-		data.set_option(ssbot_alpha_test,
+		build_data.set_option(ssbot_alpha_test,
 			!(get_global_vars()->get_exponential_shadow_maps() &&
 			get_global_vars()->get_use_multisample_shadows() &&
 			(shader_build == sbt_shadow)));
-		data.set_option(ssbot_alpha_write,
-			(data.get_version() < svt_150) ||
+		build_data.set_option(ssbot_alpha_write,
+			(build_data.get_version() < svt_150) ||
 			(description.get_transparent() &&
 			get_global_vars()->get_exponential_shadow_maps() &&
 			get_global_vars()->get_use_multisample_shadows() &&
 			(shader_build == sbt_shadow)));
-		data.set_option(ssbot_use_functions,
+		build_data.set_option(ssbot_use_functions,
 			get_global_vars()->get_use_functions());
-		data.set_option(ssbot_lighting, !description.get_lighting(
-			).get().empty());
-		data.set_option(ssbot_light_indexed_deferred,
+		build_data.set_option(ssbot_lighting,
+			!description.get_lighting().get().empty());
+		build_data.set_option(ssbot_light_indexed_deferred,
 			get_global_vars()->get_light_system() != lst_default);
 
-		build_fragment_source(data, array_sizes, fragment_main,
+		build_fragment_source(array_sizes, build_data, fragment_main,
 			fragment_functions, fragment_globals,
 			fragment_uniform_buffers);
-		build_vertex_source(data, array_sizes, vertex_main,
+		build_vertex_source(array_sizes, build_data, vertex_main,
 			vertex_functions, vertex_globals,
 			vertex_uniform_buffers);
 
@@ -3507,7 +3554,7 @@ namespace eternal_lands
 
 		vertex_source << UTF8("/* vertex shader input */\n");
 
-		if (data.get_version() > svt_150)
+		if (build_data.get_version() > svt_150)
 		{
 			write_attributes(String(), attributes, array_sizes,
 				vertex_source);
@@ -3759,7 +3806,7 @@ namespace eternal_lands
 				array_sizes, prefix, String(), fragment_source);
 		}
 
-		if (data.get_version() > svt_150)
+		if (build_data.get_version() > svt_150)
 		{
 			fragment_source << UTF8("\n");
 
@@ -3772,8 +3819,8 @@ namespace eternal_lands
 					fragment_source << i;
 					fragment_source << UTF8(") out ");
 					fragment_source << get_output_type(
-						data.get_shader_output(),
-						data.get_output_channel_count(
+						build_data.get_shader_output(),
+						build_data.get_output_channel_count(
 							i));
 					fragment_source << UTF8(" FragData_");
 					fragment_source << i << UTF8(";\n");
@@ -3784,7 +3831,7 @@ namespace eternal_lands
 				fragment_source << UTF8("layout(location = 0");
 				fragment_source << UTF8(") out ");
 
-				if (data.get_option(ssbot_alpha_write))
+				if (build_data.get_option(ssbot_alpha_write))
 				{
 					fragment_source << UTF8("vec4");
 				}
@@ -3867,16 +3914,15 @@ namespace eternal_lands
 			fragment = fragment_source.str();
 		}
 
-		program_description.set_vertex_shader(vertex);
-		program_description.set_geometry_shader(geometry);
-		program_description.set_fragment_shader(fragment);
+		program_description[st_vertex] = vertex;
+		program_description[st_geometry] = geometry;
+		program_description[st_fragment] = fragment;
 	}
 
 	StringVector ShaderSourceBuilder::get_shader_source_names(
 		const ShaderSourceType shader_source) const
 	{
-		ShaderSourceTypeStringPairAbstractShaderSourceMap::
-			const_iterator it, end;
+		ShaderSourceSharedPrMap::const_iterator it, end;
 		StringVector result;
 
 		end = m_shader_sources.end();

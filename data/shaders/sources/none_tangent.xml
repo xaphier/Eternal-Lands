@@ -32,6 +32,7 @@ world_normal = normal.xyz;
 world_tangent = tangent.xyz;
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

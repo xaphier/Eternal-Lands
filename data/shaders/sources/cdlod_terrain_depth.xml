@@ -55,6 +55,7 @@ vertex_position += decode_terrain_displacement(textureLod(effect_sampler_8, vert
 world_position = vertex_position;
 </source>
    <version>140</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
   <shader_source_data>
    <parameters>
@@ -70,6 +71,7 @@ world_position = vertex_position;
 terrain_texture_coordinate = position.xy;
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

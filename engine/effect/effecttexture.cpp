@@ -292,8 +292,7 @@ namespace eternal_lands
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &vertex_written,
-		EffectNodePtrSet &fragment_written)
+		UuidSet &vertex_written, UuidSet &fragment_written) const
 	{
 		BoostFormat normal_format(UTF8(
 			"vec4 %1% = %4%;\n"
@@ -329,30 +328,33 @@ namespace eternal_lands
 		StringStream str;
 		Uint16StringMap::const_iterator found;
 		String world_uv, uv, scale, dPdx, dPdy, layer;
+		EffectNodePortVector::const_iterator it, end;
 		SamplerParameterType sampler;
 		ParameterType type;
 		bool use_grad;
 
-		if (fragment_written.count(this) > 0)
+		if (fragment_written.count(get_uuid()) > 0)
 		{
 			return;
 		}
 
-		fragment_written.insert(this);
+		fragment_written.insert(get_uuid());
 
 		sampler = static_cast<SamplerParameterType>(m_texture_unit);
 
 		found = array_layers.find(get_texture_unit());
 
-		BOOST_FOREACH(EffectNodePort &port, get_ports())
+		end = get_ports().end();
+
+		for (it = get_ports().begin(); it != end; ++it)
 		{
-			if (port.get_input())
+			if (it->get_input())
 			{
-				if (port.get_name() == UTF8("dPdx"))
+				if (it->get_name() == UTF8("dPdx"))
 				{
-					dPdx = port.
+					dPdx = it->
 						get_connected_var_swizzled();
-					port.write(array_layers, version,
+					it->write(array_layers, version,
 						quality, ect_fragment,
 						parameters, vertex_parameters,
 						fragment_parameters,
@@ -363,11 +365,11 @@ namespace eternal_lands
 					continue;
 				}
 
-				if (port.get_name() == UTF8("dPdy"))
+				if (it->get_name() == UTF8("dPdy"))
 				{
-					dPdy = port.
+					dPdy = it->
 						get_connected_var_swizzled();
-					port.write(array_layers, version,
+					it->write(array_layers, version,
 						quality, ect_fragment,
 						parameters, vertex_parameters,
 						fragment_parameters,
@@ -378,11 +380,11 @@ namespace eternal_lands
 					continue;
 				}
 
-				if (port.get_name() == UTF8("layer"))
+				if (it->get_name() == UTF8("layer"))
 				{
-					layer = port.
+					layer = it->
 						get_connected_var_swizzled();
-					port.write(array_layers, version,
+					it->write(array_layers, version,
 						quality, ect_fragment,
 						parameters, vertex_parameters,
 						fragment_parameters,
@@ -393,11 +395,11 @@ namespace eternal_lands
 					continue;
 				}
 
-				if (port.get_name() == UTF8("parallax"))
+				if (it->get_name() == UTF8("parallax"))
 				{
-					scale = port.
+					scale = it->
 						get_connected_var_swizzled();
-					port.write(array_layers, version,
+					it->write(array_layers, version,
 						quality, ect_fragment,
 						parameters, vertex_parameters,
 						fragment_parameters,
@@ -410,8 +412,8 @@ namespace eternal_lands
 				/* Can only be the port used as input for
 				 * the texture coordinates.
 				 */
-				uv = port.get_connected_var_swizzled();
-				port.write(array_layers, version, quality,
+				uv = it->get_connected_var_swizzled();
+				it->write(array_layers, version, quality,
 					ect_fragment, parameters,
 					vertex_parameters, fragment_parameters,
 					vertex_str, fragment_str,

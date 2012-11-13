@@ -31,7 +31,7 @@ namespace eternal_lands
 				AutoParameterTypeUint32Map;
 			UniformDescriptionVector m_uniforms;
 			AutoParameterTypeUint32Map m_auto_parameters;
-			UniformBufferType m_type;
+			const UniformBufferType m_type;
 			Uint32 m_size;
 
 		public:
@@ -39,8 +39,6 @@ namespace eternal_lands
 			~UniformBufferDescription() noexcept;
 			void write(const String &indent, OutStream &str) const;
 			void log(OutStream &str) const;
-			UniformDescription &get_uniform_description(
-				const AutoParameterType auto_parameter);
 			const UniformDescription &get_uniform_description(
 				const AutoParameterType auto_parameter) const;
 			bool get_uniform_description(
@@ -73,17 +71,6 @@ namespace eternal_lands
 				const
 			{
 				return m_uniforms;
-			}
-
-			inline void set_type(const UniformBufferType type)
-				noexcept
-			{
-				m_type = type;
-			}
-
-			inline void set_size(const Uint32 size) noexcept
-			{
-				m_size = size;
 			}
 
 	};

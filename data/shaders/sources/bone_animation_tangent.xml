@@ -96,6 +96,7 @@ world_tangent.xyz = normalize(world_tangent.xyz * mat3(world_transformation));
 world_tangent.w = step(0.0, world_tangent.w) * 2.0 - 1.0;
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

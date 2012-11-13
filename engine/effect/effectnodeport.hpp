@@ -95,8 +95,8 @@ namespace eternal_lands
 				ShaderSourceParameterVector
 					&fragment_parameters,
 				OutStream &vertex_str, OutStream &fragment_str,
-				EffectNodePtrSet &vertex_written,
-				EffectNodePtrSet &fragment_written);
+				UuidSet &vertex_written,
+				UuidSet &fragment_written) const;
 			BitSet16 get_var_indices() const;
 
 			inline EffectNodePortPtr get_connection() const

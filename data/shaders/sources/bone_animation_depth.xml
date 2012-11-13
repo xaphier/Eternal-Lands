@@ -75,6 +75,7 @@ world_position += 2.0 * (dual[0].w * dual[1].xyz - dual[1].w * dual[0].xyz + cro
 world_position = vec4(world_position, 1.0) * world_transformation;
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

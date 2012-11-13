@@ -21,6 +21,7 @@
 world_position = vec4(world_position, 1.0) * world_transformation;
 </source>
    <version>120</version>
+   <shader_types>vertex</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

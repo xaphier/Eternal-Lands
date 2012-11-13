@@ -18,6 +18,7 @@
 #include "commonparameterutil.hpp"
 #include "shaderbuildutil.hpp"
 #include "shaderoutpututil.hpp"
+#include "shaderutil.hpp"
 
 /**
  * @file
@@ -35,14 +36,11 @@ namespace eternal_lands
 
 			typedef std::pair<ShaderSourceType, String>
 				ShaderSourceTypeStringPair;
-			typedef boost::ptr_map<ShaderSourceTypeStringPair,
-					AbstractShaderSource>
-				ShaderSourceTypeStringPairAbstractShaderSourceMap;
-			typedef std::auto_ptr<AbstractShaderSource>
-				AbstractShaderSourceAutoPtr;
+			typedef std::map<ShaderSourceTypeStringPair,
+					AbstractShaderSourceSharedPtr>
+				ShaderSourceSharedPrMap;
 
-			ShaderSourceTypeStringPairAbstractShaderSourceMap
-				m_shader_sources;
+			ShaderSourceSharedPrMap m_shader_sources;
 			ShaderSourceTypeStringMap m_default_sources;
 			const GlobalVarsSharedPtr m_global_vars;
 			const FileSystemSharedPtr m_file_system;
@@ -99,81 +97,97 @@ namespace eternal_lands
 				const String &indent, OutStream &functions)
 				const;
 
-			bool check_function(const ShaderSourceBuildData &data,
-				const String &name,
-				const ShaderSourceType shader_source_type)
+			/**
+			 * Checks if the given shader source is loaded here or
+			 * in the data, returns true and set the shader_source.
+			 * If the shader source is not loaded, it tries to load
+			 * it and add it to the build data, returns true and
+			 * set the shader_source. If that fails, it returns
+			 * flase.
+			 */
+			bool get_shader_source(
+				const ShaderSourceType shader_source_type,
+				ShaderSourceBuildData &build_data,
+				AbstractShaderSourceSharedPtr &shader_source)
 				const;
+
+			bool check_function(const String &name,
+				const ShaderSourceType shader_source_type,
+				const ShaderType shader_type,
+				ShaderSourceBuildData &build_data) const;
 			bool get_source_parameter(
-				const ShaderSourceBuildData &data,
-				const CommonParameterType common_parameter)
-				const;
+				const CommonParameterType common_parameter,
+				ShaderSourceBuildData &build_data) const;
 			void build_lights(
-				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
-				const String &indent, const bool vertex,
-				const bool shadow, OutStream &main,
-				OutStream &functions,
+				const String &indent,
+				const ShaderType shader_type, const bool shadow,
+				ShaderSourceBuildData &build_data,
+				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
 			void build_light_index_lights(
-				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
 				const String &indent, const bool shadow,
+				ShaderSourceBuildData &build_data,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
 			void build_light_index_x4_lights(
-				const ShaderSourceBuildData &data,
+				const ShaderSourceBuildData &build_data,
 				const String &indent, const String &loop_indent,
 				OutStream &stream) const;
 			void build_light_index_x5_lights(
-				const ShaderSourceBuildData &data,
+				const ShaderSourceBuildData &build_data,
 				const String &indent, const String &loop_indent,
 				OutStream &stream) const;
 			void build_light_index_x8_lights(
-				const ShaderSourceBuildData &data,
+				const ShaderSourceBuildData &build_data,
 				const String &indent, const String &loop_indent,
 				OutStream &stream) const;
 			bool build_function(
-				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &locals, 
+				const String &indent,
 				const ShaderSourceType shader_source_type,
-				const String &indent, OutStream &stream,
-				OutStream &functions,
+				const ShaderType shader_type,
+				ShaderSourceBuildData &build_data,
+				OutStream &stream, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
 			void build_vertex_source(
-				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
+				ShaderSourceBuildData &build_data,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
 			void build_geometry_source(
-				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
 				const ShaderSourceParameterVector &varyings,
 				const String &in_prefix,
 				const String &out_prefix, const bool use_blocks,
+				ShaderSourceBuildData &build_data,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
 			void build_fragment_source(
-				const ShaderSourceBuildData &data,
 				const ParameterSizeTypeUint16Map &array_sizes,
+				ShaderSourceBuildData &build_data,
 				OutStream &main, OutStream &functions,
 				ShaderSourceParameterVector &globals,
 				UniformBufferUsage &uniform_buffers) const;
 			void load_shader_source(const String &file_name,
-				AbstractShaderSourceAutoPtr &shader_source)
+				AbstractShaderSourceSharedPtr &shader_source)
 				const;
 			bool load_shader_source(const String &file_name);
 			ShaderSourceTypeStringMap build_sources(
 				const EffectDescription &description) const;
-			bool check(const ShaderSourceTypeStringPair &source,
-				const ShaderVersionType data_type) const;
+			bool check(const ShaderSourceType shader_source_type,
+				ShaderSourceBuildData &build_data,
+				AbstractShaderSourceSharedPtr &shader_source)
+				const;
 			void load_xml(const xmlNodePtr node);
 			void load_sources(const xmlNodePtr node);
 
@@ -190,8 +204,7 @@ namespace eternal_lands
 				const ShaderBuildType shader_build,
 				const ShaderOutputType shader_output,
 				const Uint16 lights_count,
-				GlslProgramDescription &program_description)
-				const;
+				ShaderTypeStringMap &program_description) const;
 			void set_shadow_map_type(const String &name);
 			StringVector get_shader_source_names(
 				const ShaderSourceType shader_source) const;

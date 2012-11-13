@@ -75,29 +75,28 @@ namespace eternal_lands
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &vertex_written,
-		EffectNodePtrSet &fragment_written)
+		UuidSet &vertex_written, UuidSet &fragment_written) const
 	{
 		OutStream &str = change == ect_fragment ? fragment_str :
 			vertex_str;
 
 		if (change == ect_fragment)
 		{
-			if (fragment_written.count(this) > 0)
+			if (fragment_written.count(get_uuid()) > 0)
 			{
 				return;
 			}
 
-			fragment_written.insert(this);
+			fragment_written.insert(get_uuid());
 		}
 		else
 		{
-			if (vertex_written.count(this) > 0)
+			if (vertex_written.count(get_uuid()) > 0)
 			{
 				return;
 			}
 
-			vertex_written.insert(this);
+			vertex_written.insert(get_uuid());
 		}
 
 		str << UTF8("constant ");

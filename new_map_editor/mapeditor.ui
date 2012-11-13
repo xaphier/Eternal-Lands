@@ -1100,7 +1100,7 @@
            </item>
            <item>
             <property name="text">
-             <string>set</string>
+             <string>flatten</string>
             </property>
            </item>
            <item>
@@ -1530,7 +1530,7 @@
           <widget class="QComboBox" name="blend_effect">
            <item>
             <property name="text">
-             <string>set</string>
+             <string>paint</string>
             </property>
            </item>
            <item>

@@ -204,6 +204,7 @@ namespace eternal_lands
 	class AbstractReadMemory;
 	class AbstractReadWriteMemory;
 	class AbstractRenderTarget;
+	class AbstractShaderSource;
 	class AbstractTerrain;
 	class AbstractThreadTask;
 	class AbstractWriteMemory;
@@ -240,7 +241,6 @@ namespace eternal_lands
 	class GlobalVars;
 	class GlslProgram;
 	class GlslProgramCache;
-	class GlslProgramDescription;
 	class HardwareBuffer;
 	class HardwareBufferMapper;
 	class Image;
@@ -376,6 +376,7 @@ namespace eternal_lands
 	SHARED_PTR(AbstractProgress);
 	SHARED_PTR(AbstractReadMemory);
 	SHARED_PTR(AbstractReadWriteMemory);
+	SHARED_PTR(AbstractShaderSource);
 	SHARED_PTR(AbstractRenderTarget);
 	SHARED_PTR(AbstractTerrain);
 	SHARED_PTR(AbstractWriteMemory);
@@ -558,6 +559,7 @@ namespace eternal_lands
 		Uint32TextAttributeUint32PairMap;
 	typedef std::set<EffectNodePtr> EffectNodePtrSet;
 	typedef std::set<EffectNodePortPtr> EffectNodePortPtrSet;
+	typedef std::set<boost::uuids::uuid> UuidSet;
 
 	typedef boost::shared_array<double> DoubleSharedArray;
 

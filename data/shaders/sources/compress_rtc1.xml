@@ -66,6 +66,7 @@ output_data_uint[0].g = (i0.w &gt;&gt;  1) | (i1.z &lt;&lt;  2) | (i1.w &lt;&lt;
 output_data_uint[0].ba = uvec2(0.0, 1.0);
 </source>
    <version>130</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

@@ -101,7 +101,8 @@ namespace eternal_lands
 	}
 
 	ShaderSourceParameterVector ShaderSourceTerrain::get_parameters(
-		const ShaderVersionType version) const
+		const ShaderType shader_type, const ShaderVersionType version)
+		const
 	{
 		ShaderSourceParameterVector result;
 		ParameterType sampler;
@@ -299,8 +300,8 @@ namespace eternal_lands
 		}
 	}
 
-	String ShaderSourceTerrain::get_source(const ShaderVersionType version)
-		const
+	String ShaderSourceTerrain::get_source(const ShaderType shader_type,
+		const ShaderVersionType version) const
 	{
 		StringStream str;
 		String indent;
@@ -401,8 +402,8 @@ namespace eternal_lands
 		return sst_main_effect;
 	}
 
-	bool ShaderSourceTerrain::get_has_data(const ShaderVersionType version)
-		const
+	bool ShaderSourceTerrain::get_has_data(const ShaderType shader_type,
+		const ShaderVersionType version) const
 	{
 		return true;
 	}

@@ -113,15 +113,51 @@ namespace eternal_lands
 	}
 
 	ShaderSourceParameterVector EffectNodes::get_parameters(
+		const ShaderType shader_type,
 		const ShaderVersionType version) const
 	{
-		ShaderSourceParameterVector result;
+		ShaderSourceParameterVector vertex_parameters;
+		ShaderSourceParameterVector fragment_parameters;
+		StringStream vertex_str, fragment_str;
+		Uint16StringMap array_layers;
 
-		return result;
+		write(array_layers, version, eqt_high, vertex_parameters,
+			fragment_parameters, vertex_str, fragment_str);
+
+		if (shader_type == st_vertex)
+		{
+			return vertex_parameters;
+		}
+
+		if (shader_type == st_fragment)
+		{
+			return fragment_parameters;
+		}
+
+		return ShaderSourceParameterVector();
 	}
 
-	String EffectNodes::get_source(const ShaderVersionType version) const
+	String EffectNodes::get_source(const ShaderType shader_type,
+		const ShaderVersionType version) const
 	{
+		ShaderSourceParameterVector vertex_parameters;
+		ShaderSourceParameterVector fragment_parameters;
+		StringStream vertex_str, fragment_str;
+		Uint16StringMap array_layers;
+
+		write(array_layers, version, eqt_high, vertex_parameters,
+			fragment_parameters, vertex_str, fragment_str);
+
+		if (shader_type == st_vertex)
+		{
+			return String(vertex_str.str());
+		}
+
+		if (shader_type == st_fragment)
+		{
+			return String(fragment_str.str());
+		}
+
 		return String();
 	}
 
@@ -130,9 +166,9 @@ namespace eternal_lands
 		const EffectQualityType quality,
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
-		OutStream &vertex_str, OutStream &fragment_str)
+		OutStream &vertex_str, OutStream &fragment_str) const
 	{
-		EffectNodePtrSet vertex_written, fragment_written;
+		UuidSet vertex_written, fragment_written;
 		StringUint16Map parameters;
 		StringUint16Map::const_iterator it, end;
 		ParameterType type;
@@ -142,7 +178,7 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			if (dynamic_cast<EffectOutput*>(&m_nodes[i]) == 0)
+			if (dynamic_cast<const EffectOutput*>(&m_nodes[i]) == 0)
 			{
 				continue;
 			}
@@ -513,9 +549,11 @@ namespace eternal_lands
 		return sst_main_effect;
 	}
 
-	bool EffectNodes::get_has_data(const ShaderVersionType version) const
+	bool EffectNodes::get_has_data(const ShaderType shader_type,
+		const ShaderVersionType version) const
 	{
-		return true;
+		return (shader_type == st_vertex) ||
+			(shader_type == st_fragment);
 	}
 
 }

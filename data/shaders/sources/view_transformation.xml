@@ -20,6 +20,7 @@
    <source>view_position = vec3(view_matrix * vec4(world_position, 1.0));
 </source>
    <version>120</version>
+   <shader_types>vertex fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

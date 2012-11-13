@@ -20,6 +20,7 @@
    <source>shadow_map_data = vec3(exp(dot(current_shadow_distance_transform, vec4(world_position, 1.0))));
 </source>
    <version>120</version>
+   <shader_types>fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

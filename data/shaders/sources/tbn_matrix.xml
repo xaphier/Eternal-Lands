@@ -23,6 +23,7 @@ tbn_matrix[1] = cross(world_normal, world_tangent.xyz) * world_tangent.w;
 tbn_matrix[2] = world_normal;
 </source>
    <version>120</version>
+   <shader_types>vertex fragment</shader_types>
   </shader_source_data>
  </shader_source_datas>
 </shader_source>

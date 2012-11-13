@@ -6,7 +6,6 @@
  ****************************************************************************/
 
 #include "glslprogram.hpp"
-#include "glslprogramdescription.hpp"
 #include "exceptions.hpp"
 #include "logging.hpp"
 #include "shader/parameterutil.hpp"
@@ -1000,7 +999,7 @@ namespace eternal_lands
 
 	GlslProgram::GlslProgram(const UniformBufferDescriptionCacheSharedPtr
 			&uniform_buffer_description_cache,
-		const GlslProgramDescription &description,
+		const ShaderTypeStringMap &description,
 		const boost::uuids::uuid &uuid): m_uuid(uuid), m_last_used(0),
 		m_program(0)
 	{
@@ -1972,7 +1971,7 @@ namespace eternal_lands
 		GLint uniform_block_name_length, uniform_block_active_uniforms;
 		ParameterType type;
 		AutoParameterType auto_parameter;
-		bool init;
+		bool matrix, array;
 
 		glGetProgramiv(m_program, GL_ACTIVE_UNIFORM_MAX_LENGTH,
 			&max_buffer_size);
@@ -2022,14 +2021,6 @@ namespace eternal_lands
 
 		uniform_buffer_description = uniform_buffer_description_cache->
 			get_uniform_buffer_description(uniform_buffer);
-
-		init = uniform_buffer_description->get_size() == 0;
-
-		if (init)
-		{
-			uniform_buffer_description->set_size(
-				uniform_block_data_size);
-		}
 
 		if (uniform_buffer_description->get_size() !=
 			static_cast<Uint32>(uniform_block_data_size))
@@ -2098,83 +2089,41 @@ namespace eternal_lands
 				length)));
 
 			type = ParameterUtil::get_parameter(uniform_type);
+			matrix = ParameterUtil::get_matrix(type);
+			array = uniform_size > 1;
 
 			auto_parameter = AutoParameterUtil::get_auto_parameter(
 				name);
 
-			UniformDescription &uniform_description =
+			const UniformDescription &uniform_description =
 				uniform_buffer_description->
 					get_uniform_description(auto_parameter);
-
-			if (uniform_size < 1)
-			{
-				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_size"))
-					<< errinfo_range_index(uniform_size)
-					<< errinfo_range_min(1));
-			}
 
 			if (static_cast<Sint64>(uniform_block_index) !=
 				static_cast<Sint64>(index))
 			{
+				StringStream err;
+
+				err << name << UTF8("-uniform_block_index");
+
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_block_index"))
+					<< errinfo_parameter_name(err.str())
 					<< errinfo_value(uniform_block_index)
 					<< errinfo_expected_value(index));
 			}
 
-			if (uniform_offset < 0)
-			{
-				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_offset"))
-					<< errinfo_range_index(uniform_offset)
-					<< errinfo_range_min(0));
-			}
-
-			if (uniform_array_stride < 0)
-			{
-				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_array_stride"))
-					<< errinfo_range_index(
-						uniform_array_stride)
-					<< errinfo_range_min(0));
-			}
-
-			if (uniform_matrix_stride < 0)
-			{
-				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_matrix_stride"))
-					<< errinfo_range_index(
-						uniform_matrix_stride)
-					<< errinfo_range_min(0));
-			}
-
-			if (init)
-			{
-				uniform_description.set_size(uniform_size);
-				uniform_description.set_offset(uniform_offset);
-				uniform_description.set_array_stride(
-					uniform_array_stride);
-				uniform_description.set_matrix_stride(
-					uniform_matrix_stride);
-				uniform_description.set_is_row_major(
-					uniform_is_row_major == GL_TRUE);
-			}
-
 			if (uniform_description.get_type() != type)
 			{
+				StringStream err;
+
 				tmp_str0 = ParameterUtil::get_str(type);
 				tmp_str1 = ParameterUtil::get_str(
 					uniform_description.get_type());
 
+				err << name << UTF8("-type");
+
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("type"))
+					<< errinfo_parameter_name(err.str())
 					<< errinfo_string_value(tmp_str0)
 					<< errinfo_expected_string_value(
 						tmp_str1));
@@ -2183,9 +2132,12 @@ namespace eternal_lands
 			if (uniform_description.get_size() !=
 				static_cast<Uint32>(uniform_size))
 			{
+				StringStream err;
+
+				err << name << UTF8("-uniform_size");
+
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_size"))
+					<< errinfo_parameter_name(err.str())
 					<< errinfo_value(uniform_size)
 					<< errinfo_expected_value(
 						uniform_description.
@@ -2195,45 +2147,59 @@ namespace eternal_lands
 			if (uniform_description.get_offset() !=
 				static_cast<Uint32>(uniform_offset))
 			{
+				StringStream err;
+
+				err << name << UTF8("-uniform_offset");
+
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_offset"))
+					<< errinfo_parameter_name(err.str())
 					<< errinfo_value(uniform_offset)
 					<< errinfo_expected_value(
 						uniform_description.
 							get_offset()));
 			}
 
-			if (uniform_description.get_array_stride() !=
-				static_cast<Uint32>(uniform_array_stride))
+			if ((uniform_description.get_array_stride() !=
+				static_cast<Uint32>(uniform_array_stride)) &&
+				array)
 			{
+				StringStream err;
+
+				err << name << UTF8("-uniform_array_stride");
+
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_array_stride"))
+					<< errinfo_parameter_name(err.str())
 					<< errinfo_value(uniform_array_stride)
 					<< errinfo_expected_value(
 						uniform_description.
 							get_array_stride()));
 			}
 
-			if (uniform_description.get_matrix_stride() !=
-				static_cast<Uint32>(uniform_matrix_stride))
+			if ((uniform_description.get_matrix_stride() !=
+				static_cast<Uint32>(uniform_matrix_stride)) &&
+				matrix)
 			{
+				StringStream err;
+
+				err << name << UTF8("-uniform_matrix_stride");
+
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_matrix_stride"))
+					<< errinfo_parameter_name(err.str())
 					<< errinfo_value(uniform_matrix_stride)
 					<< errinfo_expected_value(
 						uniform_description.
 							get_matrix_stride()));
 			}
 
-			if (uniform_description.get_is_row_major() !=
-				(uniform_is_row_major == GL_TRUE))
+			if ((uniform_description.get_is_row_major() !=
+				(uniform_is_row_major == GL_TRUE)) && matrix)
 			{
+				StringStream err;
+
+				err << name << UTF8("-uniform_is_row_major");
+
 				EL_THROW_EXCEPTION(InvalidParameterException()
-					<< errinfo_parameter_name(
-						UTF8("uniform_is_row_major"))
+					<< errinfo_parameter_name(err.str())
 					<< errinfo_value(uniform_is_row_major
 						== GL_TRUE)
 					<< errinfo_expected_value(
@@ -2474,54 +2440,93 @@ namespace eternal_lands
 
 	void GlslProgram::do_build(const UniformBufferDescriptionCacheSharedPtr
 			&uniform_buffer_description_cache,
-		const GlslProgramDescription &description)
+		const ShaderTypeStringMap &description)
 	{
+		ShaderTypeStringMap::const_iterator found, end;
+		String str;
 		GlslShaderObject vertex(GL_VERTEX_SHADER);
 		GlslShaderObject fragment(GL_FRAGMENT_SHADER);
 
 		m_program = glCreateProgram();
 
-		vertex.load(description.get_vertex_shader());
+		end = description.end();
+
+		str = String();
+
+		found = description.find(st_vertex);
+
+		if (found != end)
+		{
+			str = found->second;
+		}
+
+		vertex.load(str);
 		vertex.compile();
 		glAttachShader(get_program(), vertex.get_shader());
 
-		fragment.load(description.get_fragment_shader());
+		str = String();
+
+		found = description.find(st_fragment);
+
+		if (found != end)
+		{
+			str = found->second;
+		}
+
+		fragment.load(str);
 		fragment.compile();
 		glAttachShader(get_program(), fragment.get_shader());
 
-		if (!description.get_tess_control_shader().get().empty())
+		found = description.find(st_tess_control);
+
+		str = String();
+
+		if (found != end)
 		{
-			GlslShaderObject tess_control(GL_TESS_CONTROL_SHADER);
+			if (!found->second.get().empty())
+			{
+				GlslShaderObject tess_control(
+					GL_TESS_CONTROL_SHADER);
 
-			tess_control.load(
-				description.get_tess_control_shader());
-			tess_control.compile();
+				tess_control.load(found->second);
+				tess_control.compile();
 
-			glAttachShader(get_program(),
-				tess_control.get_shader());
+				glAttachShader(get_program(),
+					tess_control.get_shader());
+			}
 		}
 
-		if (!description.get_tess_evaluation_shader().get().empty())
+		found = description.find(st_tess_evaluation);
+
+		if (found != end)
 		{
-			GlslShaderObject tess_evaluation(
-				GL_TESS_EVALUATION_SHADER);
+			if (!found->second.get().empty())
+			{
+				GlslShaderObject tess_evaluation(
+					GL_TESS_EVALUATION_SHADER);
 
-			tess_evaluation.load(
-				description.get_tess_evaluation_shader());
-			tess_evaluation.compile();
+				tess_evaluation.load(found->second);
+				tess_evaluation.compile();
 
-			glAttachShader(get_program(),
-				tess_evaluation.get_shader());
+				glAttachShader(get_program(),
+					tess_evaluation.get_shader());
+			}
 		}
 
-		if (!description.get_geometry_shader().get().empty())
+		found = description.find(st_geometry);
+
+		if (found != end)
 		{
-			GlslShaderObject geometry(GL_GEOMETRY_SHADER);
+			if (!found->second.get().empty())
+			{
+				GlslShaderObject geometry(GL_GEOMETRY_SHADER);
 
-			geometry.load(description.get_geometry_shader());
-			geometry.compile();
+				geometry.load(found->second);
+				geometry.compile();
 
-			glAttachShader(get_program(), geometry.get_shader());
+				glAttachShader(get_program(),
+					geometry.get_shader());
+			}
 		}
 
 		bind_attribute_locations();
@@ -2552,8 +2557,9 @@ namespace eternal_lands
 
 	void GlslProgram::build(const UniformBufferDescriptionCacheSharedPtr
 			&uniform_buffer_description_cache,
-		const GlslProgramDescription &description)
+		const ShaderTypeStringMap &description)
 	{
+		ShaderTypeStringMap::const_iterator found, end;
 		Uint32 i, count;
 
 		LOG_DEBUG(lt_glsl_program, UTF8("Building Shader %1%"),
@@ -2565,18 +2571,51 @@ namespace eternal_lands
 		}
 		catch (boost::exception &exception)
 		{
-			exception << errinfo_parameter_name(
+			exception << errinfo_item_name(
 				boost::uuids::to_string(get_uuid()));
-			exception << errinfo_vertex_shader_source(
-				description.get_vertex_shader());
-			exception << errinfo_tess_control_shader_source(
-				description.get_tess_control_shader());
-			exception << errinfo_tess_evaluation_shader_source(
-				description.get_tess_evaluation_shader());
-			exception << errinfo_geometry_shader_source(
-				description.get_geometry_shader());
-			exception << errinfo_fragment_shader_source(
-				description.get_fragment_shader());
+
+			end = description.end();
+
+			found = description.find(st_vertex);
+
+			if (found != end)
+			{
+				exception << errinfo_vertex_shader_source(
+					found->second);
+			}
+
+			found = description.find(st_tess_control);
+
+			if (found != end)
+			{
+				exception << errinfo_tess_control_shader_source(
+					found->second);
+			}
+
+			found = description.find(st_tess_evaluation);
+
+			if (found != end)
+			{
+				exception <<
+					errinfo_tess_evaluation_shader_source(
+						found->second);
+			}
+
+			found = description.find(st_geometry);
+
+			if (found != end)
+			{
+				exception << errinfo_geometry_shader_source(
+					found->second);
+			}
+
+			found = description.find(st_fragment);
+
+			if (found != end)
+			{
+				exception << errinfo_fragment_shader_source(
+					found->second);
+			}
 
 			throw;
 		}
@@ -2622,6 +2661,7 @@ namespace eternal_lands
 	{
 		String vertex_shader, tess_control_shader;
 		String tess_evaluation_shader, geometry_shader, fragment_shader;
+		ShaderTypeStringMap description;
 		StringVariantMap values;
 		xmlNodePtr it;
 
@@ -2681,10 +2721,33 @@ namespace eternal_lands
 		}
 		while (XmlUtil::next(it, true));
 
-		build(uniform_buffer_description_cache,	GlslProgramDescription(
-				vertex_shader, tess_control_shader,
-				tess_evaluation_shader, geometry_shader,
-				fragment_shader));
+		if (!vertex_shader.get().empty())
+		{
+			description[st_vertex] = vertex_shader;
+		}
+
+		if (!tess_control_shader.get().empty())
+		{
+			description[st_tess_control] = tess_control_shader;
+		}
+
+		if (!tess_evaluation_shader.get().empty())
+		{
+			description[st_tess_evaluation] =
+				tess_evaluation_shader;
+		}
+
+		if (!geometry_shader.get().empty())
+		{
+			description[st_geometry] = geometry_shader;
+		}
+
+		if (!fragment_shader.get().empty())
+		{
+			description[st_fragment] = fragment_shader;
+		}
+
+		build(uniform_buffer_description_cache,	description);
 	}
 
 	void GlslProgram::load_xml(const UniformBufferDescriptionCacheSharedPtr

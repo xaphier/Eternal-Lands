@@ -54,33 +54,35 @@ namespace eternal_lands
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &vertex_written,
-		EffectNodePtrSet &fragment_written)
+		UuidSet &vertex_written, UuidSet &fragment_written) const
 	{
 		String default_value;
+		EffectNodePortVector::const_iterator it, end;
 
-		if (fragment_written.count(this) > 0)
+		if (fragment_written.count(get_uuid()) > 0)
 		{
 			return;
 		}
 
-		fragment_written.insert(this);
+		fragment_written.insert(get_uuid());
 
-		BOOST_FOREACH(EffectNodePort &port, get_ports())
+		end = get_ports().end();
+
+		for (it = get_ports().begin(); it != end; ++it)
 		{
-			assert(port.get_input());
+			assert(it->get_input());
 
-			if (!port.get_input())
+			if (!it->get_input())
 			{
 				continue;
 			}
 
-			port.write(array_layers, version, quality,
+			it->write(array_layers, version, quality,
 				ect_fragment, parameters, vertex_parameters,
 				fragment_parameters, vertex_str, fragment_str,
 				vertex_written, fragment_written);
 
-			if (port.get_name() == UTF8("albedo/diffuse color"))
+			if (it->get_name() == UTF8("albedo/diffuse color"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_albedo);
@@ -89,7 +91,7 @@ namespace eternal_lands
 				default_value = UTF8("vec3(1.0)");
 			}
 
-			if (port.get_name() == UTF8("alpha"))
+			if (it->get_name() == UTF8("alpha"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_albedo);
@@ -98,7 +100,7 @@ namespace eternal_lands
 				default_value = UTF8("1.0");
 			}
 
-			if (port.get_name() == UTF8("specular color"))
+			if (it->get_name() == UTF8("specular color"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_specular);
@@ -107,7 +109,7 @@ namespace eternal_lands
 				default_value = UTF8("vec3(1.0)");
 			}
 
-			if (port.get_name() == UTF8("roughness"))
+			if (it->get_name() == UTF8("roughness"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_roughness);
@@ -115,7 +117,7 @@ namespace eternal_lands
 				default_value = UTF8("1.0");
 			}
 
-			if (port.get_name() == UTF8("emission"))
+			if (it->get_name() == UTF8("emission"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_emission);
@@ -123,7 +125,7 @@ namespace eternal_lands
 				default_value = UTF8("vec3(0.0)");
 			}
 
-			if (port.get_name() == UTF8("normal"))
+			if (it->get_name() == UTF8("normal"))
 			{
 				fragment_str << CommonParameterUtil::get_str(
 					cpt_fragment_normal);
@@ -133,10 +135,10 @@ namespace eternal_lands
 
 			fragment_str << UTF8(" = ");
 
-			if (port.get_connected())
+			if (it->get_connected())
 			{
 				fragment_str <<
-					port.get_connected_var_swizzled();
+					it->get_connected_var_swizzled();
 			}
 			else
 			{

@@ -7,7 +7,7 @@
 
 #include "filter.hpp"
 #include "shader/glslprogram.hpp"
-#include "shader/glslprogramdescription.hpp"
+#include "shader/shaderutil.hpp"
 #include "shader/samplerparameterutil.hpp"
 #include "meshcache.hpp"
 #include "statemanager.hpp"
@@ -218,6 +218,7 @@ namespace eternal_lands
 		const Uint16 half_taps_minus_one, const bool layer,
 		const bool vertical)
 	{
+		ShaderTypeStringMap description;
 		std::string name;
 		String none;
 		Uint16 index;
@@ -239,11 +240,12 @@ namespace eternal_lands
 			name += UTF8(" layer");
 		}
 
+		description[st_vertex] = get_vertex_str(version);
+		description[st_fragment] = get_fragment_str(version,
+			channel_count, half_taps_minus_one, layer, vertical);
+
 		m_programs[index] = glsl_program_cache->get_program(
-			GlslProgramDescription(get_vertex_str(version), none,
-				none, none, get_fragment_str(version,
-					channel_count, half_taps_minus_one,
-					layer, vertical)));
+			description);
 	}
 
 	Filter::Filter(const GlslProgramCacheSharedPtr &glsl_program_cache,
@@ -399,6 +401,7 @@ namespace eternal_lands
 		const Uint16 version, const Uint16 channel_count,
 		const Uint16 sample_count)
 	{
+		ShaderTypeStringMap description;
 		String name, none;
 		Uint16 index;
 
@@ -406,11 +409,12 @@ namespace eternal_lands
 
 		name = UTF8("filter multisample");
 
+		description[st_vertex] = get_multisample_vertex_str(version);
+		description[st_fragment] = get_multisample_fragment_str(
+			version, channel_count, sample_count);
+
 		m_multisample_programs[index] = glsl_program_cache->get_program(
-			GlslProgramDescription(get_multisample_vertex_str(
-					version), none, none, none,
-				get_multisample_fragment_str(version,
-					channel_count, sample_count)));
+			description);
 	}
 
 	String Filter::get_vertex_str(const Uint16 version)

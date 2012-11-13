@@ -370,8 +370,7 @@ namespace eternal_lands
 		ShaderSourceParameterVector &vertex_parameters,
 		ShaderSourceParameterVector &fragment_parameters,
 		OutStream &vertex_str, OutStream &fragment_str,
-		EffectNodePtrSet &vertex_written,
-		EffectNodePtrSet &fragment_written)
+		UuidSet &vertex_written, UuidSet &fragment_written) const
 	{
 		EffectChangeType new_change;
 

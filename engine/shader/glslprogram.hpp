@@ -14,7 +14,8 @@
 
 #include "prerequisites.hpp"
 #include "vertexelement.hpp"
-#include "shader/autoparameterutil.hpp"
+#include "autoparameterutil.hpp"
+#include "shaderutil.hpp"
 
 /**
  * @file
@@ -61,10 +62,10 @@ namespace eternal_lands
 			void do_build(
 				const UniformBufferDescriptionCacheSharedPtr
 					&uniform_buffer_description_cache,
-				const GlslProgramDescription &description);
+				const ShaderTypeStringMap &description);
 			void build(const UniformBufferDescriptionCacheSharedPtr
 					&uniform_buffer_description_cache,
-				const GlslProgramDescription &description);
+				const ShaderTypeStringMap &description);
 			void update_used_texture_units();
 			void load_xml(
 				const UniformBufferDescriptionCacheSharedPtr
@@ -84,7 +85,7 @@ namespace eternal_lands
 		public:
 			GlslProgram(const UniformBufferDescriptionCacheSharedPtr
 					&uniform_buffer_description_cache,
-				const GlslProgramDescription &description,
+				const ShaderTypeStringMap &description,
 				const boost::uuids::uuid &uuid);
 			GlslProgram(const FileSystemSharedPtr &file_system,
 				const UniformBufferDescriptionCacheSharedPtr

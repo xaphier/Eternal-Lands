@@ -1293,7 +1293,7 @@ namespace eternal_lands
 		String albedo_map, extra_map;
 		float blend_size;
 		bool use_blend_size_sampler, use_blend_size, use_extra_map;
-		Uint32 x, y, z, i, count;
+		Uint32 x, y, z, i, count, layer, channel;
 		Sint32 index;
 
 		mask = get_used_layers();
@@ -1320,15 +1320,21 @@ namespace eternal_lands
 
 					for (i = 0; i < 4; ++i)
 					{
-						if (mask[z * 4 + i + 1])
+						if (!mask[z * 4 + i + 1])
 						{
-							if (index >= 0)
-							{
-								values[index / 4][index % 4] = value[i];
-							}
-
-							index++;
+							continue;
 						}
+
+						layer = index / 4;
+						channel = index % 4;
+
+						if (index >= 0)
+						{
+							values[layer][channel] =
+								value[i];
+						}
+
+						index++;
 					}
 				}
 
@@ -1449,7 +1455,7 @@ namespace eternal_lands
 		channel = layer % 4;
 		z = layer / 4;
 
-//		#pragma omp parallel for private(x)
+		#pragma omp parallel for private(x)
 		for (y = 0; y < m_size.y; ++y)
 		{
 			for (x = 0; x < m_size.x; ++x)
