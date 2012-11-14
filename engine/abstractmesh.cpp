@@ -39,8 +39,8 @@ namespace eternal_lands
 
 	void AbstractMesh::init(const VertexFormatSharedPtr &vertex_format,
 		const MeshDataToolSharedPtr &source,
-		const bool static_indices, const bool static_vertices,
-		const bool static_instances)
+		const Uint32 instance_count, const bool static_indices,
+		const bool static_vertices, const bool static_instances)
 	{
 		AbstractWriteMemorySharedPtr buffer;
 		VertexStreamBitset used_vertex_buffers;
@@ -67,7 +67,7 @@ namespace eternal_lands
 		m_vertex_format = vertex_format;
 		m_index_count = source->get_index_count();
 		m_vertex_count = source->get_vertex_count();
-		m_instance_count = 0;
+		m_instance_count = instance_count;
 		m_sub_meshs = source->get_sub_meshs();
 		m_min_max_boxes = source->get_min_max_boxes();
 		m_primitive = source->get_primitive();
@@ -181,6 +181,7 @@ namespace eternal_lands
 		mesh.m_vertex_format = m_vertex_format;
 		mesh.m_vertex_count = m_vertex_count;
 		mesh.m_index_count = m_index_count;
+		mesh.m_instance_count = m_instance_count;
 		mesh.m_primitive = m_primitive;
 		mesh.m_use_16_bit_indices = m_use_16_bit_indices;
 		mesh.m_use_restart_index = m_use_restart_index;

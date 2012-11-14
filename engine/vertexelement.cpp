@@ -209,9 +209,9 @@ namespace eternal_lands
 			String(UTF8("morph_normal")),
 			String(UTF8("morph_tangent")),
 			String(UTF8("morph_texture_coordinate")),
-			String(UTF8("world_matrix_0")),
-			String(UTF8("world_matrix_1")),
-			String(UTF8("world_matrix_2"))
+			String(UTF8("instance_data_0")),
+			String(UTF8("instance_data_1")),
+			String(UTF8("instance_data_2"))
 		};
 
 		const Uint32 vertex_semantic_type_names_count =

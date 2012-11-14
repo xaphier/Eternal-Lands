@@ -31,6 +31,7 @@ namespace eternal_lands
 			const MaterialCacheWeakPtr m_material_cache;
 			const MeshBuilderWeakPtr m_mesh_builder;
 			const MeshCacheWeakPtr m_mesh_cache;
+			const MeshDataCacheWeakPtr m_mesh_data_cache;
 			const TextureCacheWeakPtr m_texture_cache;
 			String m_cdlod_terrain_material_name;
 			String m_simple_terrain_material_name;
@@ -102,6 +103,18 @@ namespace eternal_lands
 				return result;
 			}
 
+			inline MeshDataCacheSharedPtr get_mesh_data_cache()
+				const noexcept
+			{
+				MeshDataCacheSharedPtr result;
+
+				result = m_mesh_data_cache.lock();
+
+				assert(result.get() != nullptr);
+
+				return result;
+			}
+
 			inline TextureCacheSharedPtr get_texture_cache() const
 				noexcept
 			{
@@ -121,6 +134,7 @@ namespace eternal_lands
 				const MaterialCacheWeakPtr &material_cache,
 				const MeshBuilderWeakPtr &mesh_builder,
 				const MeshCacheWeakPtr &mesh_cache,
+				const MeshDataCacheWeakPtr &mesh_data_cache,
 				const TextureCacheWeakPtr &texture_cache);
 			~TerrainBuilder() noexcept;
 			AbstractTerrainSharedPtr get_terrain() const;

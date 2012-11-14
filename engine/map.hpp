@@ -164,6 +164,8 @@ namespace eternal_lands
 				ObjectVisitor &visitor) const;
 			void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
+			void init_terrain_rendering_data(
+				TerrainRenderingData &rendering_data) const;
 			BoundingBox get_bounding_box() const;
 			void add_particle(const ParticleData &particle);
 			glm::vec4 get_terrain_size_data() const;

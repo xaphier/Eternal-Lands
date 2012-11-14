@@ -11,8 +11,10 @@ namespace eternal_lands
 {
 
 	TerrainVisitor::TerrainVisitor(
-		const MappedUniformBufferSharedPtr &mapped_uniform_buffer):
-		m_mapped_uniform_buffer(mapped_uniform_buffer), m_instances(0)
+		const AbstractWriteMemorySharedPtr &buffer,
+		const Uint64 offset, const Uint16 max_instances):
+		m_buffer(buffer), m_offset(offset), m_instances(0),
+		m_max_instances(max_instances)
 	{
 	}
 

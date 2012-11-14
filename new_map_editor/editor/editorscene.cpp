@@ -21,6 +21,8 @@
 #include "effect/effect.hpp"
 #include "rstartree.hpp"
 #include "shader/uniformbuffer.hpp"
+#include "globalvars.hpp"
+#include "abstractmesh.hpp"
 
 namespace eternal_lands
 {
@@ -68,8 +70,6 @@ namespace eternal_lands
 				material_description);
 
 		m_height_tree.reset(new RStarTree());
-
-		init_terrain_rendering_data(m_top_down_terrain);
 
 		glGenQueries(1, &m_querie_id);
 	}
@@ -456,12 +456,11 @@ namespace eternal_lands
 	void EditorScene::cull_map()
 	{
 		Frustum top_down_frustum;
-		MappedUniformBufferSharedPtr top_down_terrain_buffer;
+		AbstractWriteMemorySharedPtr top_down_terrain_buffer;
+		Uint16 offset;
+		Uint16 max_instances;
 
 		DEBUG_CHECK_GL_ERROR();
-
-		top_down_terrain_buffer = m_top_down_terrain.get_uniform_buffer(
-			)->get_mapped_uniform_buffer();
 
 		get_scene_view().set_scale_view(get_map()->get_bounding_box());
 
@@ -474,9 +473,18 @@ namespace eternal_lands
 			glm::vec3(get_scene_view().get_camera()), false,
 			m_top_down_objects);
 
-		cull_terrain(top_down_frustum, top_down_terrain_buffer,
-			glm::vec3(get_scene_view().get_camera()),
-			m_top_down_terrain);
+		if (get_global_vars()->get_opengl_3_3() && get_terrain())
+		{
+			offset = m_top_down_terrain.get_offset();
+			max_instances =	m_top_down_terrain.get_max_instances();
+
+			top_down_terrain_buffer = m_top_down_terrain.get_mesh(
+				)->get_vertex_buffer(1);
+
+			cull_terrain(top_down_frustum, top_down_terrain_buffer,
+				glm::vec3(get_scene_view().get_camera()),
+				offset, max_instances, m_top_down_terrain);
+		}
 
 		top_down_terrain_buffer.reset();
 	}
@@ -556,6 +564,11 @@ namespace eternal_lands
 	void EditorScene::set_map_size(const glm::uvec2 &size)
 	{
 		get_map()->set_size(size);
+	}
+
+	void EditorScene::map_changed()
+	{
+		get_map()->init_terrain_rendering_data(m_top_down_terrain);
 	}
 
 }

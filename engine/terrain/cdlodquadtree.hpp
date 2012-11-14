@@ -38,6 +38,7 @@ namespace eternal_lands
 			glm::uvec2 m_grid_size;
 			float m_patch_scale;
 			Uint32 m_lod_count;
+			const bool m_low_quality;
 
 		protected:
 			void init_min_max(const glm::uvec2 &position,
@@ -51,23 +52,24 @@ namespace eternal_lands
 				glm::vec3 &min, glm::vec3 &max);
 			void calculate_lod_params();
 			void add_patch_to_queue(const glm::uvec2 &position,
-				const MappedUniformBufferSharedPtr &instances,
-				const Uint16 level,
-				const Uint16 max_instance_count,
+				const AbstractWriteMemorySharedPtr &instances,
+				const Uint64 offset, const Uint16 level,
+				const Uint16 max_instances,
 				Uint32 &instance_index) const;
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera_position,
 				const glm::uvec2 &position,
-				const MappedUniformBufferSharedPtr &instances,
-				const BitSet64 mask, const Uint16 level,
-				const Uint16 max_instance_count,
+				const AbstractWriteMemorySharedPtr &instances,
+				const Uint64 offset, const BitSet64 mask,
+				const Uint16 level,
+				const Uint16 max_instances,
 				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
 			void select_bounding_box(const Frustum &frustum,
 				const glm::vec3 &camera_position,
 				const glm::uvec2 &position,
 				const BitSet64 mask, const Uint16 level,
-				const Uint16 max_instance_count,
+				const Uint16 max_instances,
 				BoundingBox &bounding_box,
 				Uint32 &instance_count) const;
 			void update_level_zero(
@@ -80,15 +82,28 @@ namespace eternal_lands
 				const glm::uvec2 &size);
 
 		public:
-			CdLodQuadTree();
+			CdLodQuadTree(const bool low_quality);
 			~CdLodQuadTree() noexcept;
+			/**
+			 * @param camera The camera position that is used for
+			 * lod calculation.
+			 * @param instances Memory where to write the instance
+			 * data. Data is written as eight floats for each
+			 * instance, no padding between the floats.
+			 * @param offset Offset to the instance data.
+			 * @param max_instances Maximum number of instances to
+			 * write in the instances memory buffer.
+			 */
 			void select_quads_for_drawing(const Frustum &frustum,
 				const glm::vec3 &camera,
-				const MappedUniformBufferSharedPtr &instances,
+				const AbstractWriteMemorySharedPtr &instances,
+				const Uint64 offset, const Uint16 max_instances,
 				BoundingBox &bounding_box,
+				glm::vec4 &terrain_lod_offset, 
 				Uint32 &instance_count) const;
 			void select_bounding_box(const Frustum &frustum,
 				const glm::vec3 &camera,
+				const Uint16 max_instances,
 				BoundingBox &bounding_box) const;
 			void init(const ImageSharedPtr &displacement_map,
 				const float patch_scale);

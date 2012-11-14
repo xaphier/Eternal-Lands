@@ -40,7 +40,7 @@ namespace eternal_lands
 			String(UTF8("morph_mesh_extra_uv")),
 			String(UTF8("instanced_mesh_extra_uv")),
 			String(UTF8("simple_terrain")),
-			String(UTF8("terrain")),
+			String(UTF8("cdlod_terrain")),
 			String(UTF8("sprite")),
 			String(UTF8("font"))
 		};
@@ -55,15 +55,17 @@ namespace eternal_lands
 		m_global_vars(global_vars),
 		m_hardware_buffer_mapper(hardware_buffer_mapper)
 	{
-		VertexDescriptionMap mesh, morph_mesh, terrain;
+		VertexDescriptionMap mesh, morph_mesh;
 		VertexDescriptionMap instanced_mesh_0, instanced_mesh_1;
 		VertexDescriptionMap animated_mesh_2_bones;
 		VertexDescriptionMap animated_mesh_4_bones;
 		VertexDescriptionMap animated_mesh_6_bones;
 		VertexDescriptionMap animated_mesh_8_bones;
 		VertexDescriptionMap simple_terrain_0, simple_terrain_1;
+		VertexDescriptionMap cdlod_terrain_0, cdlod_terrain_1;
 		VertexDescriptionMap sprite, font;
 		VertexElementsVector simple_terrain, instanced_mesh;
+		VertexElementsVector cdlod_terrain;
 		VertexElementType position, position4, texture_coordinate;
 		VertexElementType normal, extra_texture_coordinate;
 
@@ -76,7 +78,7 @@ namespace eternal_lands
 			extra_texture_coordinate = vet_half4;
 			font[vst_position] = vet_half2;
 			simple_terrain_0[vst_position] = vet_half2;
-			terrain[vst_position] = vet_half2;
+			cdlod_terrain_0[vst_position] = vet_half2;
 		}
 		else
 		{
@@ -86,7 +88,7 @@ namespace eternal_lands
 			extra_texture_coordinate = vet_float4;
 			font[vst_position] = vet_float2;
 			simple_terrain_0[vst_position] = vet_float2;
-			terrain[vst_position] = vet_float2;
+			cdlod_terrain_0[vst_position] = vet_float2;
 		}
 
 		if (get_global_vars()->get_opengl_3_3())
@@ -160,9 +162,12 @@ namespace eternal_lands
 		instanced_mesh_0[vst_tangent] = normal;
 		instanced_mesh_0[vst_texture_coordinate] = texture_coordinate;
 
-		instanced_mesh_1[vst_world_matrix_0] = vet_float4;
-		instanced_mesh_1[vst_world_matrix_1] = vet_float4;
-		instanced_mesh_1[vst_world_matrix_2] = vet_float4;
+		instanced_mesh_1[vst_instance_data_0] = vet_float4;
+		instanced_mesh_1[vst_instance_data_1] = vet_float4;
+		instanced_mesh_1[vst_instance_data_2] = vet_float4;
+
+		cdlod_terrain_1[vst_instance_data_0] = vet_float4;
+		cdlod_terrain_1[vst_instance_data_1] = vet_float4;
 
 		sprite[vst_position] = position;
 		sprite[vst_texture_coordinate] = vet_ushort2_normalized;
@@ -197,7 +202,10 @@ namespace eternal_lands
 
 		set_format(vft_instanced_mesh, instanced_mesh);
 
-		set_format(vft_terrain, terrain);
+		cdlod_terrain.push_back(VertexElements(cdlod_terrain_0));
+		cdlod_terrain.push_back(VertexElements(cdlod_terrain_1, 1));
+
+		set_format(vft_cdlod_terrain, cdlod_terrain);
 
 		mesh[vst_texture_coordinate] = extra_texture_coordinate;
 		morph_mesh[vst_texture_coordinate] = extra_texture_coordinate;
@@ -301,15 +309,17 @@ namespace eternal_lands
 	AbstractMeshSharedPtr MeshBuilder::get_mesh(
 		const VertexFormatType vertex_format,
 		const MeshDataToolSharedPtr &mesh_data_tool, const String &name,
-		const bool static_indices, const bool static_vertices,
-		const bool static_instances) const
+		const Uint32 instances, const bool static_indices,
+		const bool static_vertices, const bool static_instances) const
 	{
 		AbstractMeshSharedPtr result;
 
 		result = get_mesh(name, static_indices, static_vertices,
 			static_instances);
 
-		result->init(get_vertex_format(vertex_format), mesh_data_tool);
+		result->init(get_vertex_format(vertex_format), mesh_data_tool,
+			instances, static_indices, static_vertices,
+			static_instances);
 
 		return result;
 	}

@@ -53,16 +53,17 @@ namespace eternal_lands
 			GLuint m_querie_id;
 
 		protected:
-			virtual void depth_read();
+			virtual void depth_read() override;
 			virtual void intersect_terrain(const Frustum &frustum,
 				const glm::vec3 &camera,
-				BoundingBox &bounding_box) const;
+				BoundingBox &bounding_box) const override;
 			virtual void intersect_terrain(const Frustum &frustum,
 				const glm::vec3 &camera,
-				TerrainVisitor &terrain) const;
+				TerrainVisitor &terrain) const override;
 			virtual void intersect(const Frustum &frustum,
 				const bool shadow, ObjectVisitor &visitor)
-				const;
+				const override;
+			virtual void map_changed() override;
 
 		public:
 			/**
@@ -74,9 +75,10 @@ namespace eternal_lands
 			/**
 			 * Default destructor.
 			 */
-			virtual ~EditorScene() throw();
-			virtual void add_light(const LightData &light_data);
-			virtual void remove_light(const Uint32 id);
+			virtual ~EditorScene() noexcept;
+			virtual void add_light(const LightData &light_data)
+				override;
+			virtual void remove_light(const Uint32 id) override;
 			void load_map(const String &name, EditorMapData &data,
 				const MapItemsTypeSet &skip_items);
 			void set_terrain_geometry_maps(

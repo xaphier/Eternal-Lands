@@ -83,10 +83,10 @@ namespace eternal_lands
 			global_vars, get_effect_cache(),
 			get_material_builder(), get_material_cache(),
 			get_mesh_builder(), get_mesh_cache(),
-			get_texture_cache());
+			get_mesh_data_cache(), get_texture_cache());
 	}
 
-	SceneResources::~SceneResources() throw()
+	SceneResources::~SceneResources() noexcept
 	{
 	}
 

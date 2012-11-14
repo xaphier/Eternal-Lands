@@ -1946,9 +1946,9 @@ namespace eternal_lands
 		bind_attribute_location(vst_morph_normal);
 		bind_attribute_location(vst_morph_tangent);
 		bind_attribute_location(vst_morph_texture_coordinate);
-		bind_attribute_location(vst_world_matrix_0);
-		bind_attribute_location(vst_world_matrix_1);
-		bind_attribute_location(vst_world_matrix_2);
+		bind_attribute_location(vst_instance_data_0);
+		bind_attribute_location(vst_instance_data_1);
+		bind_attribute_location(vst_instance_data_2);
 	}
 
 	void GlslProgram::check_uniform_buffer(

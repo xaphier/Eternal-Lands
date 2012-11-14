@@ -85,6 +85,24 @@ namespace eternal_lands
 			void get_mesh(const String &name,
 				AbstractMeshSharedPtr &mesh);
 
+			/**
+			 * Sets the given mesh and material in the cache.
+			 * @param name Index name of the mesh.
+			 * @param mesh Mesh to set in the cache.
+			 * @param materials Default materials for the mesh.
+			 */
+			void set_mesh(const String &name,
+				const AbstractMeshSharedPtr &mesh,
+				const StringVector &materials);
+
+			/**
+			 * Adds the given mesh and material to the cache.
+			 * @param name Index name of the mesh.
+			 * @return True if there is a mesh in the cache with
+			 * the name, false else.
+			 */
+			bool get_has_mesh(const String &name) const;
+
 	};
 
 }

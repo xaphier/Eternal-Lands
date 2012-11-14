@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(construct)
 		el::String(UTF8("displacement_map")), false, el::tft_rgb32f,
 		glm::uvec3(129, 129, 1), 0);
 
-	BOOST_CHECK_NO_THROW(tree.reset(new el::CdLodQuadTree()));
+	BOOST_CHECK_NO_THROW(tree.reset(new el::CdLodQuadTree(false)));
 	BOOST_CHECK_NO_THROW(tree->init(displacement_map, 0.25f));
 
 	BOOST_CHECK_EQUAL(tree->get_max_lod_count(), 8);

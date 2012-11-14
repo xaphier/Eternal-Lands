@@ -80,6 +80,9 @@ namespace eternal_lands
 			virtual void intersect(const Frustum &frustum,
 				const glm::vec3 &camera,
 				TerrainVisitor &terrain) const override;
+			virtual void init_rendering_data(
+				TerrainRenderingData &rendering_data) const
+				override;
 			virtual void clear() override;
 
 	};

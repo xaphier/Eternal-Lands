@@ -8,8 +8,11 @@
 #include "cdlodterrain.hpp"
 #include "material.hpp"
 #include "terrainvisitor.hpp"
+#include "terrainrenderingdata.hpp"
 #include "abstractmesh.hpp"
+#include "meshbuilder.hpp"
 #include "meshcache.hpp"
+#include "meshdatacache.hpp"
 #include "cdlodquadtree.hpp"
 #include "texture.hpp"
 #include "image.hpp"
@@ -21,7 +24,9 @@ namespace eternal_lands
 
 	CdLodTerrain::CdLodTerrain(const GlobalVarsSharedPtr &global_vars,
 		const EffectCacheSharedPtr &effect_cache,
+		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
+		const MeshDataCacheSharedPtr &mesh_data_cache,
 		const MaterialBuilderSharedPtr &material_builder,
 		const MaterialCacheSharedPtr &material_cache,
 		const String &material, const String &effect):
@@ -29,12 +34,33 @@ namespace eternal_lands
 			material_cache, material, effect)
 	{
 		StringStream str;
+		String mesh_name, name;
 
 		str << UTF8("terrain_") << CdLodQuadTree::get_patch_size();
 
-		mesh_cache->get_mesh(String(str.str()), m_mesh);
+		mesh_name = String(str.str());
 
-		m_cd_lod_quad_tree.reset(new CdLodQuadTree());
+		str << UTF8("-instanced-") << 512;
+
+		name = String(str.str());
+
+		if (!mesh_cache->get_has_mesh(name))
+		{
+			MeshDataToolSharedPtr mesh_data_tool;
+
+			mesh_data_cache->get_mesh_data(mesh_name,
+				mesh_data_tool);
+
+			m_mesh = mesh_builder->get_mesh(vft_cdlod_terrain,
+				mesh_data_tool, name, 512, true, true, false);
+		}
+		else
+		{
+			mesh_cache->get_mesh(name, m_mesh);
+		}
+
+		m_cd_lod_quad_tree.reset(new CdLodQuadTree(
+			get_low_quality_terrain()));
 	}
 
 	CdLodTerrain::~CdLodTerrain() noexcept
@@ -50,27 +76,36 @@ namespace eternal_lands
 		const glm::vec3 &camera, BoundingBox &bounding_box) const
 	{
 		m_cd_lod_quad_tree->select_bounding_box(frustum, camera,
-			bounding_box);
+			0xFFFF, bounding_box);
 	}
 
 	void CdLodTerrain::intersect(const Frustum &frustum,
 		const glm::vec3 &camera, TerrainVisitor &terrain) const
 	{
 		BoundingBox bounding_box;
-		Uint32 instance_count;
+		glm::vec4 terrain_lod_offset;
+		Uint32 instances;
 
 		terrain.set_instances(0);
 
-		terrain.set_mesh(m_mesh);
 		terrain.set_material(get_terrain_material());
 
 		m_cd_lod_quad_tree->select_quads_for_drawing(frustum, camera,
-			terrain.get_mapped_uniform_buffer(), bounding_box,
-			instance_count);
+			terrain.get_buffer(), terrain.get_offset(),
+			terrain.get_max_instances(), bounding_box,
+			terrain_lod_offset, instances);
 
-		terrain.set_instances(instance_count);
-
+		terrain.set_instances(instances);
+		terrain.set_terrain_lod_offset(terrain_lod_offset);
 		terrain.set_bounding_box(bounding_box);
+	}
+
+	void CdLodTerrain::init_rendering_data(
+		TerrainRenderingData &rendering_data) const
+	{
+		rendering_data.set_mesh(m_mesh->clone(0x01, true));
+		rendering_data.set_offset(0);
+		rendering_data.set_max_instances(m_mesh->get_instance_count());
 	}
 
 	void CdLodTerrain::do_set_geometry_maps(

@@ -51,7 +51,7 @@ namespace eternal_lands
 		AbstractMeshSharedPtr &mesh, StringVector &materials)
 	{
 		MeshCache::MeshCacheItem tmp;
-		MeshCacheMap::iterator found;
+		MeshCacheMap::const_iterator found;
 
 		found = m_mesh_cache.find(name);
 
@@ -77,6 +77,27 @@ namespace eternal_lands
 		StringVector materials;
 
 		get_mesh(name, mesh, materials);
+	}
+
+	void MeshCache::set_mesh(const String &name,
+		const AbstractMeshSharedPtr &mesh,
+		const StringVector &materials)
+	{
+		MeshCache::MeshCacheItem tmp;
+
+		tmp.m_mesh = mesh;
+		tmp.m_materials = materials;
+
+		m_mesh_cache[name] = tmp;
+	}
+
+	bool MeshCache::get_has_mesh(const String &name) const
+	{
+		MeshCacheMap::const_iterator found;
+
+		found = m_mesh_cache.find(name);
+
+		return found != m_mesh_cache.end();
 	}
 
 }

@@ -24,6 +24,7 @@
 #include "alignedarrays.hpp"
 #include "material.hpp"
 #include "terrainvisitor.hpp"
+#include "terrainrenderingdata.hpp"
 #include "boundingboxvisitor.hpp"
 #include "logging.hpp"
 
@@ -413,6 +414,14 @@ namespace eternal_lands
 		const glm::vec3 &camera, TerrainVisitor &terrain) const
 	{
 		terrain.set_instances(0);
+	}
+
+	void SimpleTerrain::init_rendering_data(
+		TerrainRenderingData &rendering_data) const
+	{
+		rendering_data.set_mesh(AbstractMeshSharedPtr());
+		rendering_data.set_offset(0);
+		rendering_data.set_max_instances(0);
 	}
 
 	void SimpleTerrain::do_set_geometry_maps(

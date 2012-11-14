@@ -10,7 +10,8 @@
 namespace eternal_lands
 {
 
-	TerrainRenderingData::TerrainRenderingData(): m_instances(0)
+	TerrainRenderingData::TerrainRenderingData(): m_offset(0),
+		m_instances(0), m_max_instances(0)
 	{
 	}
 

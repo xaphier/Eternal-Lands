@@ -50,7 +50,8 @@
 
 #include "../client_serv.h"
 
-#include "colorcorrection.hpp"
+#include "shader/uniformdescription.hpp"
+#include "shader/uniformbufferdescription.hpp"
 
 namespace eternal_lands
 {
@@ -110,7 +111,6 @@ namespace eternal_lands
 		m_rebuild_terrain_map(true), m_rebuild_shadow_map(true)
 	{
 		MapSharedPtr map;
-		Uint32 i, count;
 
 		m_light_positions_array.resize(8);
 		m_light_colors_array.resize(8);
@@ -124,15 +124,6 @@ namespace eternal_lands
 		glGenQueries(m_querie_ids.size(), m_querie_ids.data());
 
 		m_scene_resources.init(get_file_system());
-
-		init_terrain_rendering_data(m_visible_terrain);
-
-		count = m_shadow_terrains.size();
-
-		for (i = 0; i < count; ++i)
-		{
-			init_terrain_rendering_data(m_shadow_terrains[i]);
-		}
 
 		get_scene_resources().get_mesh_cache()->get_mesh(
 			String(UTF8("quad")), m_screen_quad);
@@ -155,24 +146,6 @@ namespace eternal_lands
 
 	Scene::~Scene() noexcept
 	{
-	}
-
-	void Scene::init_terrain_rendering_data(
-		TerrainRenderingData &terrain_rendering_data)
-	{
-		if (!get_global_vars()->get_opengl_3_1())
-		{
-			return;
-		}
-
-		DEBUG_CHECK_GL_ERROR();
-
-		terrain_rendering_data.set_uniform_buffer(
-			boost::make_shared<UniformBuffer>(get_scene_resources(
-				).get_hardware_buffer_mapper(),
-			get_scene_resources(
-				).get_uniform_buffer_description_cache(),
-			ubt_terrain_instances));
 	}
 
 	ActorSharedPtr Scene::add_actor(const Uint32 type_id, const Uint32 id,
@@ -508,31 +481,35 @@ namespace eternal_lands
 	}
 
 	void Scene::cull_terrain(const Frustum &frustum,
-		const MappedUniformBufferSharedPtr &terrain_buffer,
-		const glm::vec3 &camera, TerrainRenderingData &terrain_data)
+		const AbstractWriteMemorySharedPtr &buffer,
+		const glm::vec3 &camera, const Uint64 offset,
+		const Uint16 max_instances, TerrainRenderingData &terrain_data)
 		const
 	{
-		TerrainVisitor terrain_visitor(terrain_buffer);
+		TerrainVisitor terrain_visitor(buffer, offset, max_instances);
 
 		intersect_terrain(frustum, camera, terrain_visitor);
 
-		terrain_data.set_mesh(terrain_visitor.get_mesh());
 		terrain_data.set_material(terrain_visitor.get_material());
 		terrain_data.set_instances(terrain_visitor.get_instances());
+		terrain_data.set_terrain_lod_offset(
+			terrain_visitor.get_terrain_lod_offset());
 	}
 
 	void Scene::cull()
 	{
 		Frustum frustum;
-		MappedUniformBufferSharedPtr visible_terrain_buffer;
-		boost::array<MappedUniformBufferSharedPtr, 4>
+		AbstractWriteMemorySharedPtr visible_terrain_buffer;
+		boost::array<AbstractWriteMemorySharedPtr, 4>
 			shadow_terrain_buffers;
 		boost::array<Frustum, 4> shadow_frutums;
 		glm::vec3 camera;
+		Uint16 offset;
 		Uint32 i, count;
+		Uint16 max_instances;
 		bool use_terrain;
 
-		use_terrain = get_global_vars()->get_opengl_3_1() &&
+		use_terrain = get_global_vars()->get_opengl_3_3() &&
 			get_terrain();
 
 		get_scene_view().update();
@@ -549,15 +526,13 @@ namespace eternal_lands
 
 		if (use_terrain)
 		{
-			visible_terrain_buffer =
-				m_visible_terrain.get_uniform_buffer(
-					)->get_mapped_uniform_buffer();
+			visible_terrain_buffer = m_visible_terrain.get_mesh(
+				)->get_vertex_buffer(1);
 
 			for (i = 0; i < count; ++i)
 			{
-				shadow_terrain_buffers[i] =
-					m_shadow_terrains[i].get_uniform_buffer(
-						)->get_mapped_uniform_buffer();
+				shadow_terrain_buffers[i] = m_shadow_terrains[
+					i].get_mesh()->get_vertex_buffer(1);
 			}
 		}
 
@@ -639,10 +614,14 @@ namespace eternal_lands
 			#pragma omp section
 			if (use_terrain)
 			{
+				offset = m_visible_terrain.get_offset();
+				max_instances =
+					m_visible_terrain.get_max_instances();
+
 				cull_terrain(frustum, visible_terrain_buffer,
 					glm::vec3(get_scene_view(
-						).get_camera()),
-					m_visible_terrain);
+						).get_camera()), offset,
+					max_instances, m_visible_terrain);
 			}
 
 			#pragma omp section
@@ -668,10 +647,15 @@ namespace eternal_lands
 			#pragma omp section
 			if ((count > 0) && use_terrain)
 			{
+				offset = m_shadow_terrains[0].get_offset();
+				max_instances = m_shadow_terrains[
+					0].get_max_instances();
+
 				cull_terrain(shadow_frutums[0],
 					shadow_terrain_buffers[0],
 					glm::vec3(get_scene_view(
 						).get_shadow_cameras()[0]),
+					offset, max_instances,
 					m_shadow_terrains[0]);
 			}
 
@@ -689,10 +673,15 @@ namespace eternal_lands
 			#pragma omp section
 			if ((count > 1) && use_terrain)
 			{
+				offset = m_shadow_terrains[1].get_offset();
+				max_instances = m_shadow_terrains[
+					1].get_max_instances();
+
 				cull_terrain(shadow_frutums[1],
 					shadow_terrain_buffers[1],
 					glm::vec3(get_scene_view(
 						).get_shadow_cameras()[1]),
+					offset, max_instances,
 					m_shadow_terrains[1]);
 			}
 
@@ -710,10 +699,15 @@ namespace eternal_lands
 			#pragma omp section
 			if ((count > 2) && use_terrain)
 			{
+				offset = m_shadow_terrains[2].get_offset();
+				max_instances = m_shadow_terrains[
+					2].get_max_instances();
+
 				cull_terrain(shadow_frutums[2],
 					shadow_terrain_buffers[2],
 					glm::vec3(get_scene_view(
 						).get_shadow_cameras()[2]),
+					offset, max_instances,
 					m_shadow_terrains[2]);
 			}
 
@@ -731,10 +725,15 @@ namespace eternal_lands
 			#pragma omp section
 			if ((count > 3) && use_terrain)
 			{
+				offset = m_shadow_terrains[3].get_offset();
+				max_instances = m_shadow_terrains[
+					3].get_max_instances();
+
 				cull_terrain(shadow_frutums[3],
 					shadow_terrain_buffers[3],
 					glm::vec3(get_scene_view(
 						).get_shadow_cameras()[3]),
+					offset, max_instances,
 					m_shadow_terrains[3]);
 			}
 		}
@@ -858,10 +857,6 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			terrain_data.get_uniform_buffer()->bind();
-
-			DEBUG_CHECK_GL_ERROR();
-
 			lights_count = 1;
 
 			if (lights && (get_global_vars()->get_light_system() ==
@@ -887,6 +882,9 @@ namespace eternal_lands
 				apt_light_positions, m_light_positions_array);
 			get_state_manager().get_program()->set_parameter(
 				apt_light_colors, m_light_colors_array);
+			get_state_manager().get_program()->set_parameter(
+				apt_terrain_lod_offset,
+				terrain_data.get_terrain_lod_offset());
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -2174,10 +2172,22 @@ namespace eternal_lands
 
 	void Scene::map_changed()
 	{
+		Uint32 i, count;
+
 		rebuild_terrain_map();
 		rebuild_shadow_map();
 
 		update_light_system();
+
+		get_map()->init_terrain_rendering_data(m_visible_terrain);
+
+		count = m_shadow_terrains.size();
+
+		for (i = 0; i < count; ++i)
+		{
+			get_map()->init_terrain_rendering_data(
+				m_shadow_terrains[i]);
+		}
 	}
 
 	void Scene::update_light_system()

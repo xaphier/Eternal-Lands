@@ -152,6 +152,7 @@ namespace eternal_lands
 
 			void init(const VertexFormatSharedPtr &vertex_format,
 				const MeshDataToolSharedPtr &source,
+				const Uint32 instance_count,
 				const bool static_indices = true,
 				const bool static_vertices = true,
 				const bool static_instances = true);

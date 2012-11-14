@@ -75,4 +75,3 @@ namespace eternal_lands
 }
 
 #endif	/* UUID_34cfccfb_1db3_4aef_990e_b6299747c7c9 */
-

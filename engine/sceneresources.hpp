@@ -52,7 +52,7 @@ namespace eternal_lands
 		public:
 			SceneResources(const GlobalVarsSharedPtr &global_vars,
 				const FileSystemSharedPtr &file_system);
-			~SceneResources() throw();
+			~SceneResources() noexcept;
 			void clear();
 			void init(const FileSystemSharedPtr &file_system);
 

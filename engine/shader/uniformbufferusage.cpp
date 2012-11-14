@@ -38,10 +38,12 @@ namespace eternal_lands
 					get_uniform_buffer_description(type));
 		}
 #else
+#if	0
 		m_usable_uniform_buffers.push_back(
 			uniform_buffer_description_cache->
 				get_uniform_buffer_description(
 					ubt_terrain_instances));
+#endif
 #endif
 	}
 

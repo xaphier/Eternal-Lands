@@ -24,11 +24,13 @@ namespace eternal_lands
 		const MaterialCacheWeakPtr &material_cache,
 		const MeshBuilderWeakPtr &mesh_builder,
 		const MeshCacheWeakPtr &mesh_cache,
+		const MeshDataCacheWeakPtr &mesh_data_cache,
 		const TextureCacheWeakPtr &texture_cache):
 		m_global_vars(global_vars), m_effect_cache(effect_cache),
 		m_material_builder(material_builder),
 		m_material_cache(material_cache), m_mesh_builder(mesh_builder),
-		m_mesh_cache(mesh_cache), m_texture_cache(texture_cache)
+		m_mesh_cache(mesh_cache), m_mesh_data_cache(mesh_data_cache),
+		m_texture_cache(texture_cache)
 	{
 		assert(global_vars.get() != nullptr);
 		assert(!m_effect_cache.expired());
@@ -36,6 +38,7 @@ namespace eternal_lands
 		assert(!m_material_cache.expired());
 		assert(!m_mesh_builder.expired());
 		assert(!m_mesh_cache.expired());
+		assert(!m_mesh_data_cache.expired());
 		assert(!m_texture_cache.expired());
 
 		m_cdlod_terrain_material_name = String(UTF8("cdlod-terrain"));
@@ -49,11 +52,12 @@ namespace eternal_lands
 
 	AbstractTerrainSharedPtr TerrainBuilder::get_terrain() const
 	{
-		if (get_global_vars()->get_opengl_3_1())
+		if (get_global_vars()->get_opengl_3_3())
 		{
 			return boost::make_shared<CdLodTerrain>(
 				get_global_vars(), get_effect_cache(),
-				get_mesh_cache(), get_material_builder(),
+				get_mesh_builder(), get_mesh_cache(),
+				get_mesh_data_cache(), get_material_builder(),
 				get_material_cache(),
 				m_cdlod_terrain_material_name,
 				m_clipmap_terrain_effect_name);

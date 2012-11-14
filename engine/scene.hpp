@@ -131,19 +131,17 @@ namespace eternal_lands
 			virtual void intersect(const Frustum &frustum,
 				LightVisitor &visitor) const;
 			virtual void depth_read();
-			void map_changed();
+			virtual void map_changed();
 			bool switch_program(
 				const GlslProgramSharedPtr &program);
-			void init_terrain_rendering_data(
-				TerrainRenderingData &terrain_rendering_data);
 			void cull(const Frustum &frustum,
 				const glm::mat4 &projection_view_matrix,
 				const glm::vec3 &camera, const bool shadow,
 				ObjectVisitor &objects) const;
 			void cull_terrain(const Frustum &frustum,
-				const MappedUniformBufferSharedPtr
-					&terrain_buffer,
-				const glm::vec3 &camera,
+				const AbstractWriteMemorySharedPtr &buffer,
+				const glm::vec3 &camera, const Uint64 offset,
+				const Uint16 max_instances,
 				TerrainRenderingData &terrain_data) const;
 			void draw_terrain(
 				const TerrainRenderingData &terrain_data,
@@ -153,7 +151,6 @@ namespace eternal_lands
 				const BitSet64 visibility_mask,
 				const EffectProgramType type,
 				const Uint16 instances, const Uint16 distance);
-
 			void draw_object_old_lights(
 				const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,

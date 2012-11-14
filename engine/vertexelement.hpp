@@ -42,9 +42,9 @@ namespace eternal_lands
 		vst_morph_normal = 10,
 		vst_morph_tangent = 11,
 		vst_morph_texture_coordinate = 12,
-		vst_world_matrix_0 = 13,
-		vst_world_matrix_1 = 14,
-		vst_world_matrix_2 = 15
+		vst_instance_data_0 = 13,
+		vst_instance_data_1 = 14,
+		vst_instance_data_2 = 15
 	};
 	/**
 	 * @}

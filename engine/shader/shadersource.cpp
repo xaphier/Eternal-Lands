@@ -187,15 +187,6 @@ namespace eternal_lands
 			}
 		}
 
-		std::cout << get_datas().size() << std::endl;
-		std::cout << get_typed_name() << std::endl;
-
-		BOOST_FOREACH(const ShaderSourceData &data, get_datas())
-		{
-			std::cout << data.get_version() << std::endl;
-			std::cout << data.get_shader_types() << std::endl;
-		}
-
 		EL_THROW_MESSAGE_EXCEPTION(UTF8("No shader source data with "
 			"shader %1% version %2% in '%3%' found."), shader_type
 			% version % get_typed_name(), ItemNotFoundException());

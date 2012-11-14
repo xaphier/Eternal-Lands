@@ -302,6 +302,15 @@ namespace eternal_lands
 		m_light_tree->intersect(frustum, visitor);
 	}
 
+	void Map::init_terrain_rendering_data(
+		TerrainRenderingData &rendering_data) const
+	{
+		if (get_terrain())
+		{
+			m_terrain->init_rendering_data(rendering_data);
+		}
+	}
+
 	BoundingBox Map::get_bounding_box() const
 	{
 		BoundingBox bounding_box;

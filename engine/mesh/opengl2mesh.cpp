@@ -127,6 +127,9 @@ namespace eternal_lands
 
 			m_vertex_data[i].reset();
 
+			assert((get_vertex_elements(i).get_divisor() == 0) ||
+				get_supports_vertex_attribute_divisor());
+
 			if ((get_vertex_elements(i).get_count() > 0) &&
 				((get_vertex_elements(i).get_divisor() == 0) ||
 				get_supports_vertex_attribute_divisor()))
@@ -144,6 +147,8 @@ namespace eternal_lands
 				}
 
 				size *= get_vertex_elements(i).get_stride();
+
+				assert(size > 0);
 
 				m_vertex_data[i]->bind(btt_vertex);
 				m_vertex_data[i]->set_size(btt_vertex, size,

@@ -38,6 +38,12 @@ namespace eternal_lands
 					&uniform_buffer_description);
 			~MappedUniformBuffer() noexcept;
 
+			inline const AbstractWriteMemorySharedPtr &get_memory()
+				const
+			{
+				return m_memory;
+			}
+
 			void set_parameter(const AutoParameterType parameter,
 				const bool value, const Uint32 index = 0);
 			void set_parameter(const AutoParameterType parameter,
