@@ -428,4 +428,38 @@ namespace eternal_lands
 		write_element(name, String(str.str()));
 	}
 
+	void XmlWriter::write_string(const String &value)
+	{
+		if (xmlTextWriterWriteString(m_writer,
+			BAD_CAST value.get().c_str()) < 0)
+		{
+			EL_THROW_EXCEPTION(IoErrorException()
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterWriteString")));
+		}
+	}
+
+	void XmlWriter::write_property(const String &property,
+		const String &value)
+	{
+		if (xmlTextWriterWriteAttribute(m_writer,
+			BAD_CAST property.get().c_str(),
+			BAD_CAST value.get().c_str()) < 0)
+		{
+			EL_THROW_EXCEPTION(IoErrorException()
+				<< errinfo_message(UTF8("Error at "
+					"xmlTextWriterWriteAttribute")));
+		}
+	}
+
+	void XmlWriter::write_bool_property(const String &property,
+		const bool value)
+	{
+		StringStream str;
+
+		str << std::boolalpha << value;
+
+		write_property(property, String(str.str()));
+	}
+
 }

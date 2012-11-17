@@ -36,10 +36,11 @@ namespace eternal_lands
 			TextureSharedPtr m_error_texture;
 
 			TextureSharedPtr load_texture(const String &name,
-				const String &index, const bool merge_layers);
+				const String &index, const bool sRGB,
+				const bool merge_layers);
 			TextureSharedPtr do_load_texture(const String &name,
-				const String &index, const bool merge_layers)
-				const;
+				const String &index, const bool sRGB,
+				const bool merge_layers) const;
 			TextureSharedPtr do_load_texture(
 				const ImageSharedPtr &image,
 				const String &name) const;
@@ -73,13 +74,14 @@ namespace eternal_lands
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
 			~TextureCache() noexcept;
-			const TextureSharedPtr &get_texture(const String &name);
+			const TextureSharedPtr &get_texture(const String &name,
+				const bool sRGB);
 			const TextureSharedPtr &get_error_texture();
 			TextureSharedPtr get_texture(
 				const ImageSharedPtr &image) const;
 			TextureSharedPtr get_texture_array(
 				const StringVector &image_names,
-				const String &name) const;
+				const String &name, const bool sRGB) const;
 			TextureSharedPtr get_texture_array(
 				const ImageSharedPtrVector &images,
 				const String &name) const;

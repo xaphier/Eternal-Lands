@@ -467,7 +467,8 @@ namespace eternal_lands
 			const String &name,
 			const TextureFormatType texture_format,
 			const Uint16 layers, const bool rg_formats,
-			const bool merge_layers, bool &can_merge_layers)
+			const bool sRGB, const bool merge_layers,
+			bool &can_merge_layers)
 		{
 			can_merge_layers = false;
 
@@ -477,6 +478,11 @@ namespace eternal_lands
 				case tft_rgba_dxt1:
 				case tft_rgba_dxt3:
 				case tft_rgba_dxt5:
+					if (sRGB)
+					{
+						return tft_srgb8_a8;
+					}
+
 					return tft_rgba8;
 				case tft_srgb_dxt1:
 				case tft_srgb_a_dxt1:
@@ -542,7 +548,7 @@ namespace eternal_lands
 	ImageSharedPtr Dxt::uncompress(const ReaderSharedPtr &reader,
 		const String &name, const glm::uvec3 &size,
 		const TextureFormatType texture_format, const Uint16 mipmaps,
-		const bool cube_map, const bool rg_formats,
+		const bool cube_map, const bool rg_formats, const bool sRGB,
 		const bool merge_layers)
 	{
 		ImageSharedPtr image;
@@ -570,7 +576,7 @@ namespace eternal_lands
 
 		uncompressed_format = get_uncompressed_texture_format(
 			reader->get_name(), texture_format, size.z,
-			rg_formats, merge_layers, can_merge_layers);
+			rg_formats, sRGB, merge_layers, can_merge_layers);
 
 		image = boost::make_shared<Image>(name, cube_map,
 			uncompressed_format, size, mipmaps);

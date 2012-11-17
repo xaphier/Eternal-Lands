@@ -99,6 +99,11 @@ namespace eternal_lands
 			void write_string_variant_map(const String &element,
 				const String &elements,
 				const StringVariantMap &variants);
+			void write_string(const String &value);
+			void write_property(const String &property,
+				const String &value);
+			void write_bool_property(const String &property,
+				const bool value);
 
 	};
 

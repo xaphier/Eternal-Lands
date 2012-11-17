@@ -39,16 +39,57 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_parameters.push_back(parameters_1);
 	m_parameters.push_back(parameters_2);
 	m_parameters.push_back(parameters_3);
+	m_parameters.push_back(parameters_4);
+	m_parameters.push_back(parameters_5);
 
 	m_sources.push_back(source_0);
 	m_sources.push_back(source_1);
 	m_sources.push_back(source_2);
 	m_sources.push_back(source_3);
+	m_sources.push_back(source_4);
+	m_sources.push_back(source_5);
 
 	m_glsl_versions.push_back(glsl_version_0);
 	m_glsl_versions.push_back(glsl_version_1);
 	m_glsl_versions.push_back(glsl_version_2);
 	m_glsl_versions.push_back(glsl_version_3);
+	m_glsl_versions.push_back(glsl_version_4);
+	m_glsl_versions.push_back(glsl_version_5);
+
+	m_vertexes.push_back(vertex_0);
+	m_vertexes.push_back(vertex_1);
+	m_vertexes.push_back(vertex_2);
+	m_vertexes.push_back(vertex_3);
+	m_vertexes.push_back(vertex_4);
+	m_vertexes.push_back(vertex_5);
+
+	m_tess_controls.push_back(tess_control_0);
+	m_tess_controls.push_back(tess_control_1);
+	m_tess_controls.push_back(tess_control_2);
+	m_tess_controls.push_back(tess_control_3);
+	m_tess_controls.push_back(tess_control_4);
+	m_tess_controls.push_back(tess_control_5);
+
+	m_tess_evaluations.push_back(tess_evaluation_0);
+	m_tess_evaluations.push_back(tess_evaluation_1);
+	m_tess_evaluations.push_back(tess_evaluation_2);
+	m_tess_evaluations.push_back(tess_evaluation_3);
+	m_tess_evaluations.push_back(tess_evaluation_4);
+	m_tess_evaluations.push_back(tess_evaluation_5);
+
+	m_geometrys.push_back(geometry_0);
+	m_geometrys.push_back(geometry_1);
+	m_geometrys.push_back(geometry_2);
+	m_geometrys.push_back(geometry_3);
+	m_geometrys.push_back(geometry_4);
+	m_geometrys.push_back(geometry_5);
+
+	m_fragments.push_back(fragment_0);
+	m_fragments.push_back(fragment_1);
+	m_fragments.push_back(fragment_2);
+	m_fragments.push_back(fragment_3);
+	m_fragments.push_back(fragment_4);
+	m_fragments.push_back(fragment_5);
 
 	foreach(QPlainTextEdit* source, m_sources)
 	{
@@ -80,11 +121,15 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_add_mapper->setMapping(add_1, int(1));
 	m_add_mapper->setMapping(add_2, int(2));
 	m_add_mapper->setMapping(add_3, int(3));
+	m_add_mapper->setMapping(add_4, int(4));
+	m_add_mapper->setMapping(add_5, int(5));
 
 	QObject::connect(add_0, SIGNAL(clicked()), m_add_mapper, SLOT(map()));
 	QObject::connect(add_1, SIGNAL(clicked()), m_add_mapper, SLOT(map()));
 	QObject::connect(add_2, SIGNAL(clicked()), m_add_mapper, SLOT(map()));
 	QObject::connect(add_3, SIGNAL(clicked()), m_add_mapper, SLOT(map()));
+	QObject::connect(add_4, SIGNAL(clicked()), m_add_mapper, SLOT(map()));
+	QObject::connect(add_5, SIGNAL(clicked()), m_add_mapper, SLOT(map()));
 	QObject::connect(m_add_mapper, SIGNAL(mapped(const int)), this,
 		SLOT(add_parameter(const int)));
 
@@ -92,11 +137,15 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_edit_mapper->setMapping(edit_1, int(1));
 	m_edit_mapper->setMapping(edit_2, int(2));
 	m_edit_mapper->setMapping(edit_3, int(3));
+	m_edit_mapper->setMapping(edit_4, int(4));
+	m_edit_mapper->setMapping(edit_5, int(5));
 
 	QObject::connect(edit_0, SIGNAL(clicked()), m_edit_mapper, SLOT(map()));
 	QObject::connect(edit_1, SIGNAL(clicked()), m_edit_mapper, SLOT(map()));
 	QObject::connect(edit_2, SIGNAL(clicked()), m_edit_mapper, SLOT(map()));
 	QObject::connect(edit_3, SIGNAL(clicked()), m_edit_mapper, SLOT(map()));
+	QObject::connect(edit_4, SIGNAL(clicked()), m_edit_mapper, SLOT(map()));
+	QObject::connect(edit_5, SIGNAL(clicked()), m_edit_mapper, SLOT(map()));
 	QObject::connect(m_edit_mapper, SIGNAL(mapped(const int)), this,
 		SLOT(edit_parameter(const int)));
 
@@ -104,6 +153,8 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_remove_mapper->setMapping(remove_1, int(1));
 	m_remove_mapper->setMapping(remove_2, int(2));
 	m_remove_mapper->setMapping(remove_3, int(3));
+	m_remove_mapper->setMapping(remove_4, int(4));
+	m_remove_mapper->setMapping(remove_5, int(5));
 
 	QObject::connect(remove_0, SIGNAL(clicked()), m_remove_mapper,
 		SLOT(map()));
@@ -113,6 +164,10 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 		SLOT(map()));
 	QObject::connect(remove_3, SIGNAL(clicked()), m_remove_mapper,
 		SLOT(map()));
+	QObject::connect(remove_4, SIGNAL(clicked()), m_remove_mapper,
+		SLOT(map()));
+	QObject::connect(remove_5, SIGNAL(clicked()), m_remove_mapper,
+		SLOT(map()));
 	QObject::connect(m_remove_mapper, SIGNAL(mapped(const int)), this,
 		SLOT(remove_parameter(const int)));
 
@@ -120,11 +175,15 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	m_copy_mapper->setMapping(copy_1, int(1));
 	m_copy_mapper->setMapping(copy_2, int(2));
 	m_copy_mapper->setMapping(copy_3, int(3));
+	m_copy_mapper->setMapping(copy_4, int(4));
+	m_copy_mapper->setMapping(copy_5, int(5));
 
 	QObject::connect(copy_0, SIGNAL(clicked()), m_copy_mapper, SLOT(map()));
 	QObject::connect(copy_1, SIGNAL(clicked()), m_copy_mapper, SLOT(map()));
 	QObject::connect(copy_2, SIGNAL(clicked()), m_copy_mapper, SLOT(map()));
 	QObject::connect(copy_3, SIGNAL(clicked()), m_copy_mapper, SLOT(map()));
+	QObject::connect(copy_4, SIGNAL(clicked()), m_copy_mapper, SLOT(map()));
+	QObject::connect(copy_5, SIGNAL(clicked()), m_copy_mapper, SLOT(map()));
 	QObject::connect(m_copy_mapper, SIGNAL(mapped(const int)), this,
 		SLOT(copy_parameters(const int)));
 
@@ -303,6 +362,7 @@ void MainWindow::save(const QString &file_name)
 	boost::scoped_ptr<el::ShaderSource> shader_source;
 	el::ShaderSourceDataVector shader_source_datas;
 	el::ShaderSourceParameterVector shader_source_parameters;
+	el::ShaderTypeSet shader_types;
 	int i, j, count, index, item_count;
 
 	shader_source.reset(new el::ShaderSource());
@@ -327,6 +387,35 @@ void MainWindow::save(const QString &file_name)
 					m_glsl_versions[i]->itemData(
 						index).toInt()));
 		}
+
+		shader_types.clear();
+
+		if (m_vertexes[i]->isChecked())
+		{
+			shader_types.insert(el::st_vertex);
+		}
+
+		if (m_tess_controls[i]->isChecked())
+		{
+			shader_types.insert(el::st_tess_control);
+		}
+
+		if (m_tess_evaluations[i]->isChecked())
+		{
+			shader_types.insert(el::st_tess_evaluation);
+		}
+
+		if (m_geometrys[i]->isChecked())
+		{
+			shader_types.insert(el::st_geometry);
+		}
+
+		if (m_fragments[i]->isChecked())
+		{
+			shader_types.insert(el::st_fragment);
+		}
+
+		shader_source_datas[i].set_shader_types(shader_types);
 
 		shader_source_datas[i].set_source(el::String(
 			m_sources[i]->toPlainText().toUtf8()));
@@ -457,6 +546,21 @@ void MainWindow::load(const QString &file_name)
 		index = m_glsl_versions[i]->findData(shader_source->get_datas(
 			)[i].get_version());
 		m_glsl_versions[i]->setCurrentIndex(index);
+
+		m_vertexes[i]->setChecked(shader_source->get_datas(
+			)[i].get_has_shader_type(el::st_vertex));
+
+		m_tess_controls[i]->setChecked(shader_source->get_datas(
+			)[i].get_has_shader_type(el::st_tess_control));
+
+		m_tess_evaluations[i]->setChecked(shader_source->get_datas(
+			)[i].get_has_shader_type(el::st_tess_evaluation));
+
+		m_geometrys[i]->setChecked(shader_source->get_datas(
+			)[i].get_has_shader_type(el::st_geometry));
+
+		m_fragments[i]->setChecked(shader_source->get_datas(
+			)[i].get_has_shader_type(el::st_fragment));
 
 		m_sources[i]->setPlainText(QString::fromUtf8(
 			shader_source->get_datas()[i].get_source().get(
@@ -690,11 +794,15 @@ void MainWindow::source_data_count_changed(const int index)
 	copy_1->setEnabled(index > 1);
 	copy_2->setEnabled(index > 2);
 	copy_3->setEnabled(index > 3);
+	copy_4->setEnabled(index > 4);
+	copy_5->setEnabled(index > 5);
 
 	source_datas->setTabEnabled(0, index > 0);
 	source_datas->setTabEnabled(1, index > 1);
 	source_datas->setTabEnabled(2, index > 2);
 	source_datas->setTabEnabled(3, index > 3);
+	source_datas->setTabEnabled(4, index > 4);
+	source_datas->setTabEnabled(5, index > 5);
 
 	changed();
 }

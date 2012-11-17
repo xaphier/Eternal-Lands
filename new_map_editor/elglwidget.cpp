@@ -77,13 +77,25 @@ void ELGLWidget::get_albedo_map_data(const QString &name,
 				).c_str());
 		valid_formats_str += ", ";
 		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_srgb_dxt1).get(
+				).c_str());
+		valid_formats_str += ", ";
+		valid_formats_str += QString::fromUtf8(
 			TextureFormatUtil::get_str(tft_rgba_dxt1).get(
+				).c_str());
+		valid_formats_str += ", ";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_srgb_a_dxt1).get(
 				).c_str());
 		valid_formats_str += ", ";
 		valid_formats_str += QString::fromUtf8(
 			TextureFormatUtil::get_str(tft_rgba_dxt5).get(
 				).c_str());
-		valid_formats_str = "}";
+		valid_formats_str += ", ";
+		valid_formats_str += QString::fromUtf8(
+			TextureFormatUtil::get_str(tft_srgb_a_dxt5).get(
+				).c_str());
+		valid_formats_str += "}";
 
 		width = image->get_width();
 		height = image->get_height();
@@ -106,13 +118,16 @@ void ELGLWidget::get_albedo_map_data(const QString &name,
 			return;
 		}
 
-		if ((format == tft_rgb_dxt1) || (format == tft_rgba_dxt1))
+		if ((format == tft_rgb_dxt1) || (format == tft_srgb_dxt1) ||
+			(format == tft_rgba_dxt1) ||
+			(format == tft_srgb_a_dxt1))
 		{
 			use_blend_size_sampler = false;
 		}
 		else
 		{
-			if (format == tft_rgba_dxt5)
+			if ((format == tft_rgba_dxt5) ||
+				(format == tft_srgb_a_dxt5))
 			{
 				use_blend_size_sampler = true;
 			}

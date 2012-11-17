@@ -60,7 +60,7 @@ namespace eternal_lands
 			const CodecManagerSharedPtr &codec_manager,
 			const ReaderSharedPtr &reader,
 			const glm::uvec2 &size, const Uint16 scale,
-			const bool rg_formats, const bool srgb_formats)
+			const bool rg_formats, const bool sRGB)
 		{
 			TextureFormatType texture_format;
 			glm::uvec3 image_size;
@@ -69,8 +69,8 @@ namespace eternal_lands
 			bool cube_map, array;
 
 			codec_manager->get_image_information(reader, rg_formats,
-				srgb_formats, texture_format, image_size,
-				mipmap_count, cube_map, array);
+				sRGB, texture_format, image_size, mipmap_count,
+				cube_map, array);
 
 			if (image_size[2] != 0)
 			{
@@ -147,22 +147,26 @@ namespace eternal_lands
 		bool get_alpha(const TextureFormatType texture_format)
 		{
 			return (TextureFormatUtil::get_count(texture_format)
-				== 4) && (texture_format != tft_rgba_dxt1);
+				== 4) && (texture_format != tft_rgba_dxt1) &&
+				(texture_format != tft_srgb_a_dxt1);
 		}
 
 		bool get_alpha(const CodecManagerSharedPtr &codec_manager,
 			const ReaderSharedPtr &reader,
 			const glm::uvec2 &size, const Uint16 scale,
-			bool &compressed)
+			const bool sRGB, bool &compressed)
 		{
 			TextureFormatType texture_format;
 
 			texture_format = check_size(codec_manager, reader,
-				size, scale, false, false);
+				size, scale, false, sRGB);
 
 			compressed &= (texture_format == tft_rgb_dxt1) ||
+				(texture_format == tft_srgb_dxt1) ||
 				(texture_format == tft_rgba_dxt1) ||
-				(texture_format == tft_rgba_dxt5);
+				(texture_format == tft_srgb_a_dxt1) ||
+				(texture_format == tft_rgba_dxt5) ||
+				(texture_format == tft_srgb_a_dxt5);
 
 			return get_alpha(texture_format);
 		}
@@ -172,7 +176,7 @@ namespace eternal_lands
 			const ReaderSharedPtr &base_reader,
 			const ReaderSharedPtr &mask_reader,
 			const glm::uvec2 &size, const Uint16 scale,
-			bool &compressed)
+			const bool sRGB, bool &compressed)
 		{
 			Uint32 count;
 			TextureFormatType texture_format;
@@ -182,16 +186,16 @@ namespace eternal_lands
 				(mask_reader.get() == nullptr))
 			{
 				return get_alpha(codec_manager, texture_reader,
-					size, scale, compressed);
+					size, scale, sRGB, compressed);
 			}
 
 			alpha = get_alpha(check_size(codec_manager,
-				texture_reader, size, scale, false, false));
+				texture_reader, size, scale, false, sRGB));
 			alpha |= get_alpha(check_size(codec_manager,
-				base_reader, size, scale, false, false));
+				base_reader, size, scale, false, sRGB));
 
 			texture_format = check_size(codec_manager,
-				mask_reader, size, scale, false, false);
+				mask_reader, size, scale, false, sRGB);
 
 			count = TextureFormatUtil::get_count(texture_format);
 
@@ -225,14 +229,14 @@ namespace eternal_lands
 			const ReaderSharedPtr &reader,
 			const glm::uvec2 &size, const Uint16 scale,
 			const ImageCompressionTypeSet &compressions,
-			const bool rg_formats, const bool srgb_formats,
+			const bool rg_formats, const bool sRGB,
 			Uint16 &mipmap)
 		{
 			ImageSharedPtr result;
 			Uint32 width, height;
 
 			result = codec_manager->load_image(reader,
-				compressions, rg_formats, srgb_formats, false);
+				compressions, rg_formats, sRGB, false);
 
 			if (result->get_depth() != 0)
 			{
@@ -381,8 +385,9 @@ namespace eternal_lands
 		void set_image(const CodecManagerSharedPtr &codec_manager,
 			const ReaderSharedPtr &reader,
 			const glm::uvec2 &size, const Uint16 scale,
-			const glm::uvec2 &offset, ImageSharedPtr image,
-			const ImageCompressionTypeSet &compressions)
+			const glm::uvec2 &offset, const ImageSharedPtr &image,
+			const ImageCompressionTypeSet &compressions,
+			const bool sRGB)
 		{
 			glm::vec4 temp;
 			ImageSharedPtr tmp;
@@ -390,15 +395,21 @@ namespace eternal_lands
 			Uint16 mipmap;
 
 			tmp = get_image(codec_manager, reader, size, scale,
-				compressions, false, false, mipmap);
+				compressions, false, sRGB, mipmap);
 
 			if ((tmp->get_texture_format() == tft_rgb_dxt1) ||
-				(tmp->get_texture_format() == tft_rgba_dxt1))
+				(tmp->get_texture_format() == tft_srgb_dxt1) ||
+				(tmp->get_texture_format() == tft_rgba_dxt1) ||
+				(tmp->get_texture_format() == tft_srgb_a_dxt1))
 			{
 				if ((image->get_texture_format() ==
 					tft_rgb_dxt1) ||
 					(image->get_texture_format() ==
-						tft_rgba_dxt1))
+						tft_srgb_dxt1) ||
+					(image->get_texture_format() ==
+						tft_rgba_dxt1) ||
+					(image->get_texture_format() ==
+						tft_srgb_a_dxt1))
 				{
 					set_image_block_lines(tmp, size, scale,
 						offset, mipmap, image);
@@ -406,7 +417,9 @@ namespace eternal_lands
 				}
 
 				if ((image->get_texture_format() ==
-					tft_rgba_dxt5))
+					tft_rgba_dxt5) ||
+					(image->get_texture_format() ==
+						tft_srgb_a_dxt5))
 				{
 					set_image_blocks(tmp, size, scale,
 						offset, mipmap, image);
@@ -414,10 +427,13 @@ namespace eternal_lands
 				}
 			}
 
-			if (tmp->get_texture_format() == tft_rgba_dxt5)
+			if ((tmp->get_texture_format() == tft_rgba_dxt5) ||
+				(tmp->get_texture_format() == tft_srgb_a_dxt5))
 			{
 				if ((image->get_texture_format() ==
-					tft_rgba_dxt5))
+					tft_rgba_dxt5) ||
+					(image->get_texture_format() ==
+						tft_srgb_a_dxt5))
 				{
 					set_image_block_lines(tmp, size, scale,
 						offset, mipmap, image);
@@ -430,12 +446,15 @@ namespace eternal_lands
 			{
 				tmp = get_image(codec_manager, reader, size,
 					scale, ImageCompressionTypeSet(),
-					false, false, mipmap);
+					false, true, mipmap);
 			}
 
-			if (tmp->get_texture_format() == tft_rgba8)
+			if ((tmp->get_texture_format() == tft_rgba8) ||
+				(tmp->get_texture_format() == tft_srgb8_a8))
 			{
-				if ((image->get_texture_format() == tft_rgba8))
+				if ((image->get_texture_format() == tft_rgba8)
+					|| (image->get_texture_format() ==
+					tft_srgb8_a8))
 				{
 					set_image_lines(tmp, size, scale,
 						offset, mipmap, image);
@@ -443,9 +462,12 @@ namespace eternal_lands
 				}
 			}
 
-			if (tmp->get_texture_format() == tft_rgb8)
+			if ((tmp->get_texture_format() == tft_rgb8) ||
+				(tmp->get_texture_format() == tft_srgb8))
 			{
-				if ((image->get_texture_format() == tft_rgb8))
+				if ((image->get_texture_format() == tft_rgb8) ||
+					(image->get_texture_format() ==
+						tft_srgb8))
 				{
 					set_image_lines(tmp, size, scale,
 						offset, mipmap, image);
@@ -476,8 +498,9 @@ namespace eternal_lands
 			const ReaderSharedPtr &base_reader,
 			const ReaderSharedPtr &mask_reader,
 			const glm::uvec2 &size, const Uint16 scale,
-			const glm::uvec2 &offset, ImageSharedPtr image,
-			const ImageCompressionTypeSet &compressions)
+			const glm::uvec2 &offset, const ImageSharedPtr &image,
+			const ImageCompressionTypeSet &compressions,
+			const bool sRGB)
 		{
 			glm::vec4 t0, t1, value, temp;
 			ImageSharedPtr texture_image, base_image, mask_image;
@@ -490,20 +513,20 @@ namespace eternal_lands
 			{
 				return set_image(codec_manager, texture_reader,
 					size, scale, offset, image,
-					compressions);
+					compressions, sRGB);
 			}
 
 			texture_image = get_image(codec_manager, texture_reader,
 				size, scale, ImageCompressionTypeSet(),
-				false, false, texture_mipmap);
+				false, sRGB, texture_mipmap);
 
 			base_image = get_image(codec_manager, base_reader,
 				size, scale, ImageCompressionTypeSet(),
-				false, false, base_mipmap);
+				false, sRGB, base_mipmap);
 
 			mask_image = get_image(codec_manager, mask_reader,
 				size, scale, ImageCompressionTypeSet(),
-				false, false, mask_mipmap);
+				false, sRGB, mask_mipmap);
 
 			width = size[0] * scale;
 			height = size[1] * scale;
@@ -539,7 +562,8 @@ namespace eternal_lands
 		std::map<ActorPartTextureType, ReaderSharedPtr> parts;
 		glm::uvec3 size;
 		ImageCompressionTypeSet compressions;
-		bool compressed;
+		TextureFormatType texture_format;
+		bool compressed, sRGB;
 
 		end = m_parts.end();
 
@@ -566,6 +590,7 @@ namespace eternal_lands
 
 		m_alphas.reset();
 		compressed = m_global_vars->get_use_s3tc_for_actors();
+		sRGB = get_global_vars()->get_use_linear_lighting();
 
 		if (parts[aptt_pants_tex].get() != nullptr)
 		{
@@ -573,7 +598,7 @@ namespace eternal_lands
 				parts[aptt_pants_tex], parts[aptt_legs_base],
 				parts[aptt_pants_mask],
 				actor_part_sizes[apt_pants], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_boots_tex].get() != nullptr)
@@ -582,7 +607,7 @@ namespace eternal_lands
 				parts[aptt_boots_tex], parts[aptt_boots_base],
 				parts[aptt_boots_mask],
 				actor_part_sizes[apt_boots], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_torso_tex].get() != nullptr)
@@ -591,7 +616,7 @@ namespace eternal_lands
 				parts[aptt_torso_tex], parts[aptt_body_base],
 				parts[aptt_torso_mask],
 				actor_part_sizes[apt_torso], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_arms_tex].get() != nullptr)
@@ -600,7 +625,7 @@ namespace eternal_lands
 				parts[aptt_arms_tex], parts[aptt_arms_base],
 				parts[aptt_arms_mask],
 				actor_part_sizes[apt_arms], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_hands_tex].get() != nullptr)
@@ -610,7 +635,7 @@ namespace eternal_lands
 				parts[aptt_hands_tex_save],
 				parts[aptt_hands_mask],
 				actor_part_sizes[apt_hands], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_head_tex].get() != nullptr)
@@ -619,7 +644,7 @@ namespace eternal_lands
 				parts[aptt_head_tex], parts[aptt_head_base],
 				parts[aptt_head_mask],
 				actor_part_sizes[apt_head], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_hair_tex].get() != nullptr)
@@ -627,7 +652,7 @@ namespace eternal_lands
 			m_alphas[apt_hair] = get_alpha(get_codec_manager(),
 				parts[aptt_hair_tex],
 				actor_part_sizes[apt_hair], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_weapon_tex].get() != nullptr)
@@ -635,7 +660,7 @@ namespace eternal_lands
 			m_alphas[apt_weapon] = get_alpha(get_codec_manager(),
 				parts[aptt_weapon_tex],
 				actor_part_sizes[apt_weapon], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_shield_tex].get() != nullptr)
@@ -643,7 +668,7 @@ namespace eternal_lands
 			m_alphas[apt_shield] = get_alpha(get_codec_manager(),
 				parts[aptt_shield_tex],
 				actor_part_sizes[apt_shield], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_helmet_tex].get() != nullptr)
@@ -651,7 +676,7 @@ namespace eternal_lands
 			m_alphas[apt_helmet] = get_alpha(get_codec_manager(),
 				parts[aptt_helmet_tex],
 				actor_part_sizes[apt_helmet], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_neck_tex].get() != nullptr)
@@ -659,7 +684,7 @@ namespace eternal_lands
 			m_alphas[apt_neck] = get_alpha(get_codec_manager(),
 				parts[aptt_neck_tex],
 				actor_part_sizes[apt_neck], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		if (parts[aptt_cape_tex].get() != nullptr)
@@ -667,7 +692,7 @@ namespace eternal_lands
 			m_alphas[apt_cape] = get_alpha(get_codec_manager(),
 				parts[aptt_cape_tex],
 				actor_part_sizes[apt_cape], m_scale,
-				compressed);
+				sRGB, compressed);
 		}
 
 		size[0] = m_size;
@@ -680,14 +705,29 @@ namespace eternal_lands
 
 			compressions.insert(ict_s3tc);
 
-			m_image = boost::make_shared<Image>(m_name, false,
-				tft_rgba_dxt5, size, 0);
+			if (sRGB)
+			{
+				texture_format = tft_srgb_a_dxt5;
+			}
+			else
+			{
+				texture_format = tft_rgba_dxt5;
+			}
 		}
 		else
 		{
-			m_image = boost::make_shared<Image>(m_name, false,
-				tft_rgba8, size, 0);
+			if (sRGB)
+			{
+				texture_format = tft_srgb8_a8;
+			}
+			else
+			{
+				texture_format = tft_rgba8;
+			}
 		}
+
+		m_image = boost::make_shared<Image>(m_name, false,
+			texture_format, size, 0);
 
 		if (parts[aptt_pants_tex].get() != nullptr)
 		{
@@ -695,7 +735,7 @@ namespace eternal_lands
 				parts[aptt_legs_base], parts[aptt_pants_mask],
 				actor_part_sizes[apt_pants], m_scale,
 				actor_part_offsets[apt_pants], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_boots_tex].get() != nullptr)
@@ -704,7 +744,7 @@ namespace eternal_lands
 				parts[aptt_boots_base], parts[aptt_boots_mask],
 				actor_part_sizes[apt_boots], m_scale,
 				actor_part_offsets[apt_boots], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_torso_tex].get() != nullptr)
@@ -713,7 +753,7 @@ namespace eternal_lands
 				parts[aptt_body_base], parts[aptt_torso_mask],
 				actor_part_sizes[apt_torso], m_scale,
 				actor_part_offsets[apt_torso], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_arms_tex].get() != nullptr)
@@ -722,7 +762,7 @@ namespace eternal_lands
 				parts[aptt_arms_base], parts[aptt_arms_mask],
 				actor_part_sizes[apt_arms], m_scale,
 				actor_part_offsets[apt_arms], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_hands_tex].get() != nullptr)
@@ -732,7 +772,7 @@ namespace eternal_lands
 				parts[aptt_hands_mask],
 				actor_part_sizes[apt_hands], m_scale,
 				actor_part_offsets[apt_hands], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_head_tex].get() != nullptr)
@@ -741,7 +781,7 @@ namespace eternal_lands
 				parts[aptt_head_base], parts[aptt_head_mask],
 				actor_part_sizes[apt_head], m_scale,
 				actor_part_offsets[apt_head], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_hair_tex].get() != nullptr)
@@ -749,7 +789,7 @@ namespace eternal_lands
 			set_image(get_codec_manager(), parts[aptt_hair_tex],
 				actor_part_sizes[apt_hair], m_scale,
 				actor_part_offsets[apt_hair], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_weapon_tex].get() != nullptr)
@@ -757,7 +797,7 @@ namespace eternal_lands
 			set_image(get_codec_manager(), parts[aptt_weapon_tex],
 				actor_part_sizes[apt_weapon], m_scale,
 				actor_part_offsets[apt_weapon], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_shield_tex].get() != nullptr)
@@ -765,7 +805,7 @@ namespace eternal_lands
 			set_image(get_codec_manager(), parts[aptt_shield_tex],
 				actor_part_sizes[apt_shield], m_scale,
 				actor_part_offsets[apt_shield], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_helmet_tex].get() != nullptr)
@@ -773,7 +813,7 @@ namespace eternal_lands
 			set_image(get_codec_manager(), parts[aptt_helmet_tex],
 				actor_part_sizes[apt_helmet], m_scale,
 				actor_part_offsets[apt_helmet], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_neck_tex].get() != nullptr)
@@ -781,7 +821,7 @@ namespace eternal_lands
 			set_image(get_codec_manager(), parts[aptt_neck_tex],
 				actor_part_sizes[apt_neck], m_scale,
 				actor_part_offsets[apt_neck], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 
 		if (parts[aptt_cape_tex].get() != nullptr)
@@ -789,7 +829,7 @@ namespace eternal_lands
 			set_image(get_codec_manager(), parts[aptt_cape_tex],
 				actor_part_sizes[apt_cape], m_scale,
 				actor_part_offsets[apt_cape], m_image,
-				compressions);
+				compressions, sRGB);
 		}
 	}
 
@@ -816,6 +856,7 @@ namespace eternal_lands
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
 		TextureFormatType texture_format;
+		bool sRGB;
 
 		assert(!m_codec_manager.expired());
 		assert(m_file_system.get() != nullptr);
@@ -826,13 +867,29 @@ namespace eternal_lands
 		m_compression = m_global_vars->get_use_s3tc_for_actors();
 		m_alphas.reset();
 
+		sRGB = get_global_vars()->get_use_linear_lighting();
+
 		if (m_compression)
 		{
-			texture_format = tft_rgba_dxt5;
+			if (sRGB)
+			{
+				texture_format = tft_srgb_a_dxt5;
+			}
+			else
+			{
+				texture_format = tft_rgba_dxt5;
+			}
 		}
 		else
 		{
-			texture_format = tft_rgba8;
+			if (sRGB)
+			{
+				texture_format = tft_srgb8_a8;
+			}
+			else
+			{
+				texture_format = tft_rgba8;
+			}
 		}
 
 		m_texture = boost::make_shared<Texture>(m_name, m_size,

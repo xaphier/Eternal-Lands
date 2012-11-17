@@ -100,7 +100,8 @@ namespace eternal_lands
 			~Material() noexcept;
 			void init(const MaterialDescription &material);
 			void set_texture(const String &name,
-				const SamplerParameterType sampler);
+				const SamplerParameterType sampler,
+				const bool sRGB);
 			const String &get_texture_name(
 				const SamplerParameterType sampler) const;
 			void set_effect(const String &effect);

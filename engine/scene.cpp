@@ -99,6 +99,45 @@ namespace eternal_lands
 
 		};
 
+		class StateSetUtil
+		{
+			private:
+				StateManager &m_manager;
+				StateSet m_state_set;
+
+			public:
+				inline StateSetUtil(StateManager &manager):
+					m_manager(manager)
+				{
+					m_state_set = m_manager.get_state_set();
+				}
+
+				inline ~StateSetUtil() noexcept
+				{
+					m_manager.set_state_set(m_state_set);
+				}
+
+		};
+
+		class GlQuery
+		{
+			private:
+				const GLenum m_query;
+
+			public:
+				inline GlQuery(const GLenum query,
+					const GLuint id): m_query(query)
+				{
+					glBeginQuery(m_query, id);
+				}
+
+				inline ~GlQuery() noexcept
+				{
+					glEndQuery(m_query);
+				}
+
+		};
+			
 	}
 
 	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
@@ -222,6 +261,36 @@ namespace eternal_lands
 
 	void Scene::build_shadow_map()
 	{
+		LOG_DEBUG(lt_rendering, UTF8("Building shadow map %1%"),
+			UTF8("started"));
+
+		try
+		{
+			do_build_shadow_map();
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building shadow map "
+				"caught exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building shadow map "
+				"caught exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building shadow map "
+				"caught '%1%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Building shadow map %1%"),
+			UTF8("done"));
+	}
+
+	void Scene::do_build_shadow_map()
+	{
 		Uint32 shadow_map_width, shadow_map_height, shadow_map_size;
 		Uint16 mipmaps, shadow_map_count, samples;
 		TextureTargetType target;
@@ -303,7 +372,7 @@ namespace eternal_lands
 		m_shadow_frame_buffer->unbind();
 	}
 
-	void Scene::build_terrain_map()
+	void Scene::do_build_terrain_map()
 	{
 		Uint32 size;
 		Uint16 mipmaps;
@@ -323,12 +392,27 @@ namespace eternal_lands
 				mipmaps++;
 			}
 
-			format = tft_rgba8;
+			if (get_global_vars()->get_use_linear_lighting())
+			{
+				format = tft_srgb8_a8;
+			}
+			else
+			{
+				format = tft_rgba8;
+			}
 		}
 		else
 		{
 			target = ttt_texture_3d;
-			format = tft_r5g6b5;
+
+			if (get_global_vars()->get_use_linear_lighting())
+			{
+				format = tft_srgb8;
+			}
+			else
+			{
+				format = tft_rgb8;
+			}
 		}
 
 		m_clipmap_terrain.rebuild(m_map->get_terrain_size(),
@@ -365,6 +449,36 @@ namespace eternal_lands
 		}
 	}
 
+	void Scene::build_terrain_map()
+	{
+		LOG_DEBUG(lt_rendering, UTF8("Building terrain map %1%"),
+			UTF8("started"));
+
+		try
+		{
+			do_build_terrain_map();
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building terrain map "
+				"caught exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building terrain map "
+				"caught exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building terrain map "
+				"caught '%1%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Building terrain map %1%"),
+			UTF8("done"));
+	}
+
 	void Scene::clear()
 	{
 		m_actors.clear();
@@ -379,30 +493,33 @@ namespace eternal_lands
 		lights_count = 1;
 
 		assert(get_global_vars()->get_light_system() == lst_default);
-
-		if (get_map()->get_dungeon() || get_lights())
+/*
+		if (!get_map()->get_dungeon() && !get_lights())
 		{
-			BOOST_FOREACH(const RenderLightData &light,
-				m_visible_lights.get_lights())
+			return;
+		}
+*/
+		BOOST_FOREACH(const RenderLightData &light,
+			m_visible_lights.get_lights())
+		{
+			if (!light.get_light()->intersect(bounding_box))
 			{
-				if (light.get_light()->intersect(bounding_box))
-				{
-					m_light_positions_array[lights_count] =
-						glm::vec4(light.get_light()->
-							get_position(),
-						light.get_light()->
-							get_inv_sqr_radius());
-					m_light_colors_array[lights_count] =
-						glm::vec4(light.get_light()->
-							get_color(), 1.0);
-					lights_count++;
+				continue;
+			}
 
-					if (lights_count >=
-						m_light_positions_array.size())
-					{
-						break;
-					}
-				}
+			m_light_positions_array[lights_count] =
+				glm::vec4(light.get_light()->get_position(),
+					light.get_light()->get_inv_sqr_radius(
+						));
+
+			m_light_colors_array[lights_count] = glm::vec4(
+				light.get_light()->get_color(), 1.0);
+
+			lights_count++;
+
+			if (lights_count >= m_light_positions_array.size())
+			{
+				break;
 			}
 		}
 
@@ -556,23 +673,13 @@ namespace eternal_lands
 		{
 			m_light_positions_array[0] =
 				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
-			m_light_colors_array[0] =
-				glm::vec4(glm::vec3(0.3f), 0.0f);
+			m_light_colors_array[0] = glm::vec4(glm::vec3(0.25f),
+				0.0f);
 		}
 		else
 		{
 			m_light_positions_array[0] = m_main_light_direction;
-
-			if (get_lights())
-			{
-				m_light_colors_array[0] = m_main_light_color +
-					glm::vec4(glm::vec3(0.4f), 0.0f);
-			}
-			else
-			{
-				m_light_colors_array[0] = m_main_light_color +
-					glm::vec4(glm::vec3(0.1f), 0.0f);
-			}
+			m_light_colors_array[0] = m_main_light_color;
 		}
 
 		for (i = 0; i < count; ++i)
@@ -808,16 +915,8 @@ namespace eternal_lands
 			}
 			else
 			{
-				if (get_lights())
-				{
-					program->set_parameter(apt_ambient,
-						m_main_light_ambient);
-				}
-				else
-				{
-					program->set_parameter(apt_ambient,
-						m_main_light_ambient);
-				}
+				program->set_parameter(apt_ambient,
+					m_main_light_ambient);
 			}
 
 			program->set_parameter(apt_dynamic_lights_count, 4);
@@ -901,22 +1000,34 @@ namespace eternal_lands
 		catch (boost::exception &exception)
 		{
 			LOG_EXCEPTION_STR(UTF8("While rendering %1% terrain "
-				"instance(s) caught exception '%2%'"),
+				"instance%2% caught exception '%3%'"),
 				terrain_data.get_instances() %
+				(terrain_data.get_instances() > 1 ? UTF8("s") :
+					UTF8("")) %
 				boost::diagnostic_information(exception));
 		}
 		catch (std::exception &exception)
 		{
 			LOG_EXCEPTION_STR(UTF8("While rendering %1% terrain "
-				"instance(s) caught exception '%2%'"),
+				"instance%2% caught exception '%3%'"),
 				terrain_data.get_instances() %
-				exception.what());
+				(terrain_data.get_instances() > 1 ? UTF8("s") :
+					UTF8("")) % exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% terrain "
+				"instance%2% caught '%3%'"),
+				terrain_data.get_instances() %
+				(terrain_data.get_instances() > 1 ? UTF8("s") :
+					UTF8("")) % UTF8("unknown error"));
 		}
 	}
 
 	void Scene::do_draw_object(const ObjectSharedPtr &object,
 		const BitSet64 visibility_mask, const EffectProgramType type,
-		const Uint16 instances, const Uint16 distance)
+		const Uint16 instances, const Uint16 distance,
+		const bool flip_face_culling)
 	{
 		Uint16 count, i;
 		bool object_data_set;
@@ -924,7 +1035,7 @@ namespace eternal_lands
 		get_state_manager().switch_mesh(object->get_mesh());
 
 		get_state_manager().switch_flip_back_face_culling(
-			object->get_world_transformation(
+			flip_face_culling ^ object->get_world_transformation(
 				).get_flip_back_face_culling());
 
 		DEBUG_CHECK_GL_ERROR();
@@ -982,7 +1093,8 @@ namespace eternal_lands
 
 	void Scene::do_draw_object_old_lights(const ObjectSharedPtr &object,
 		const BitSet64 visibility_mask, const EffectProgramType type,
-		const Uint16 instances, const Uint16 distance)
+		const Uint16 instances, const Uint16 distance,
+		const bool flip_face_culling)
 	{
 		Uint16 count, i, lights_count;
 		bool object_data_set;
@@ -990,7 +1102,7 @@ namespace eternal_lands
 		get_state_manager().switch_mesh(object->get_mesh());
 
 		get_state_manager().switch_flip_back_face_culling(
-			object->get_world_transformation(
+			flip_face_culling ^ object->get_world_transformation(
 				).get_flip_back_face_culling());
 
 		DEBUG_CHECK_GL_ERROR();
@@ -1058,67 +1170,89 @@ namespace eternal_lands
 
 	void Scene::draw_object_old_lights(const ObjectSharedPtr &object,
 		const BitSet64 visibility_mask, const EffectProgramType type,
-		const Uint16 instances, const Uint16 distance)
+		const Uint16 instances, const Uint16 distance,
+		const bool flip_face_culling)
 	{
 		try
 		{
 			STRING_MARKER(UTF8("object name '%1%', mesh name "
-				"'%2%', instances %3%, visibility mask %4%"),
-				object->get_name() %
+				"'%2%', instances %3%, visibility mask %4%, "
+				"flip face culling %5%"), object->get_name() %
 				object->get_mesh()->get_name() % instances %
-				visibility_mask);
+				visibility_mask % (flip_face_culling ?
+					UTF8("yes") : UTF8("no")));
 
 			do_draw_object_old_lights(object, visibility_mask,
-				type, instances, distance);
+				type, instances, distance, flip_face_culling);
 		}
 		catch (boost::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance(s)"
-				"of object '%2%' caught exception '%3%'"),
-				instances % object->get_name() %
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance%2%"
+				"of object '%3%' caught exception '%4%'"),
+				instances % (instances > 1 ? UTF8("s") :
+					UTF8("")) % object->get_name() %
 				boost::diagnostic_information(exception));
 		}
 		catch (std::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance(s)"
-				"of object '%2%' caught exception '%3%'"),
-				instances % object->get_name() %
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance%2%"
+				"of object '%3%' caught exception '%4%'"),
+				instances % (instances > 1 ? UTF8("s") :
+					UTF8("")) % object->get_name() %
 				exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance%2%"
+				"of object '%3%' caught '%4%'"), instances %
+				(instances > 1 ? UTF8("s") : UTF8("")) %
+				object->get_name() % UTF8("unknown error"));
 		}
 	}
 
 	void Scene::draw_object(const ObjectSharedPtr &object,
 		const BitSet64 visibility_mask, const EffectProgramType type,
-		const Uint16 instances, const Uint16 distance)
+		const Uint16 instances, const Uint16 distance,
+		const bool flip_face_culling)
 	{
 		try
 		{
 			STRING_MARKER(UTF8("object name '%1%', mesh name "
-				"'%2%', instances %3%, visibility mask %4%"),
-				object->get_name() %
+				"'%2%', instances %3%, visibility mask %4%, "
+				"flip face culling %5%"), object->get_name() %
 				object->get_mesh()->get_name() % instances %
-				visibility_mask);
+				visibility_mask % (flip_face_culling ?
+					UTF8("yes") : UTF8("no")));
 
 			do_draw_object(object, visibility_mask, type,
-				instances, distance);
+				instances, distance, flip_face_culling);
 		}
 		catch (boost::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance(s)"
-				"of object '%2%' caught exception '%3%'"),
-				instances % object->get_name() %
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance%2%"
+				"of object '%3%' caught exception '%4%'"),
+				instances % (instances > 1 ? UTF8("s") :
+					UTF8("")) % object->get_name() %
 				boost::diagnostic_information(exception));
 		}
 		catch (std::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance(s)"
-				"of object '%2%' caught exception '%3%'"),
-				instances % object->get_name() %
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance%2%"
+				"of object '%3%' caught exception '%4%'"),
+				instances % (instances > 1 ? UTF8("s") :
+					UTF8("")) % object->get_name() %
 				exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While rendering %1% instance%2%"
+				"of object '%3%' caught '%4%'"), instances %
+				(instances > 1 ? UTF8("s") : UTF8("")) %
+				object->get_name() % UTF8("unknown error"));
 		}
 	}
 
-	void Scene::draw_shadow(const Uint16 index)
+	void Scene::do_update_shadow_map(const Uint16 slice)
 	{
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1127,12 +1261,12 @@ namespace eternal_lands
 		if (get_scene_view().get_exponential_shadow_maps())
 		{
 			m_shadow_frame_buffer->attach(m_shadow_texture,
-				fbat_color_0, index);
+				fbat_color_0, slice);
 		}
 		else
 		{
 			m_shadow_frame_buffer->attach(m_shadow_texture,
-				fbat_depth, index);
+				fbat_depth, slice);
 		}
 
 		m_shadow_frame_buffer->clear(glm::vec4(1e38f), 0);
@@ -1140,7 +1274,7 @@ namespace eternal_lands
 
 		DEBUG_CHECK_GL_ERROR();
 
-		STRING_MARKER(UTF8("drawing shadows %1%"), index);
+		STRING_MARKER(UTF8("Updating shadow map slice %1%"), slice);
 
 		get_state_manager().switch_color_mask(glm::bvec4(
 			get_scene_view().get_exponential_shadow_maps()));
@@ -1150,25 +1284,26 @@ namespace eternal_lands
 
 		if (!get_scene_view().get_exponential_shadow_maps())
 		{
-			glCullFace(GL_FRONT);
+			get_state_manager().switch_flip_back_face_culling(
+				false);
 		}
 
 		DEBUG_CHECK_GL_ERROR();
 
-		get_scene_view().set_shadow_view(index);
+		get_scene_view().set_shadow_view(slice);
 
 		if (get_terrain())
 		{
-			draw_terrain(m_shadow_terrains[index], ept_shadow,
+			draw_terrain(m_shadow_terrains[slice], ept_shadow,
 				false);
 		}
 
 		BOOST_FOREACH(const RenderObjectData &object,
-			m_shadow_objects[index].get_objects())
+			m_shadow_objects[slice].get_objects())
 		{
 			draw_object(object.get_object(),
 				object.get_visibility_mask(), ept_shadow, 1,
-				object.get_distance());
+				object.get_distance(), false);
 		}
 
 		update_program_vars_id();
@@ -1180,54 +1315,106 @@ namespace eternal_lands
 		get_state_manager().unbind_all();
 	}
 
-	void Scene::draw_shadows()
+	void Scene::update_shadow_map(const Uint16 slice)
 	{
-		Uint16 i;
+		LOG_DEBUG(lt_rendering, UTF8("Updating shadow map slice %1% "
+			"%2%"), slice % UTF8("started"));
 
-		DEBUG_CHECK_GL_ERROR();
-
-		m_shadow_frame_buffer->bind();
-
-		m_shadow_frame_buffer->set_view_port();
-
-		if (get_global_vars()->get_opengl_3_2())
+		try
 		{
-			glEnable(GL_DEPTH_CLAMP);
+			do_update_shadow_map(slice);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"slice %1% caught exception '%2%'"), slice %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"slice %1% caught exception '%2%'"), slice %
+				exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"slice %1% caught '%2%'"), slice %
+				UTF8("unknown error"));
 		}
 
-		for (i = 0; i < get_scene_view().get_shadow_map_count(); ++i)
-		{
-			draw_shadow(i);
-		}
-
-		unbind_all();
-
-		if (get_global_vars()->get_opengl_3_2())
-		{
-			glDisable(GL_DEPTH_CLAMP);
-		}
-
-		DEBUG_CHECK_GL_ERROR();
-
-		m_shadow_frame_buffer->unbind();
-
-		DEBUG_CHECK_GL_ERROR();
-
-		get_state_manager().switch_texture(spt_effect_15,
-			m_shadow_texture);
-
-		DEBUG_CHECK_GL_ERROR();
-
-		if (get_scene_view().get_exponential_shadow_maps())
-		{
-			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-		}
-
-		DEBUG_CHECK_GL_ERROR();
+		LOG_DEBUG(lt_rendering, UTF8("Updating shadow map slice %1% "
+			"%2%"), slice % UTF8("done"));
 	}
 
-	void Scene::draw_depth()
+	void Scene::update_shadow_map()
 	{
+		StateSetUtil state_set(get_state_manager());
+		Uint16 i;
+
+		LOG_DEBUG(lt_rendering, UTF8("Updating shadow map %1%"),
+			UTF8("started"));
+
+		try
+		{
+			DEBUG_CHECK_GL_ERROR();
+
+			m_shadow_frame_buffer->bind();
+
+			m_shadow_frame_buffer->set_view_port();
+
+			get_state_manager().switch_depth_clamp(true);
+
+			for (i = 0; i < get_scene_view(
+				).get_shadow_map_count(); ++i)
+			{
+				update_shadow_map(i);
+			}
+
+			unbind_all();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_shadow_frame_buffer->unbind();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			get_state_manager().switch_texture(spt_effect_15,
+				m_shadow_texture);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			if (get_scene_view().get_exponential_shadow_maps())
+			{
+				glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+			}
+
+			DEBUG_CHECK_GL_ERROR();
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"caught exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"caught exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"caught '%1%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Updating shadow map %1%"),
+			UTF8("done"));
+	}
+
+	void Scene::do_draw_depth()
+	{
+		StateSetUtil state_set(get_state_manager());
 		Uint32 index;
 		bool no_depth_read;
 
@@ -1263,13 +1450,11 @@ namespace eternal_lands
 
 			object.set_occlusion_culling(index);
 
-			glBeginQuery(GL_SAMPLES_PASSED, m_querie_ids[index]);
+			GlQuery query(GL_SAMPLES_PASSED, m_querie_ids[index]);
 
 			draw_object(object.get_object(),
 				object.get_visibility_mask(), ept_depth, 1,
-				object.get_distance());
-
-			glEndQuery(GL_SAMPLES_PASSED);
+				object.get_distance(), false);
 
 			index++;
 		}
@@ -1289,14 +1474,13 @@ namespace eternal_lands
 
 				object.set_occlusion_culling(index);
 
-				glBeginQuery(GL_SAMPLES_PASSED,
+				GlQuery query(GL_SAMPLES_PASSED,
 					m_querie_ids[index]);
 
 				draw_object(object.get_object(),
 					object.get_visibility_mask(),
-					ept_depth, 1, object.get_distance());
-
-				glEndQuery(GL_SAMPLES_PASSED);
+					ept_depth, 1, object.get_distance(),
+					false);
 
 				index++;
 			}
@@ -1309,8 +1493,39 @@ namespace eternal_lands
 		update_program_vars_id();
 	}
 
-	void Scene::draw_default()
+	void Scene::draw_depth()
 	{
+		LOG_DEBUG(lt_rendering, UTF8("Drawing depth %1%"),
+			UTF8("started"));
+
+		try
+		{
+			do_draw_depth();
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While drawing depth "
+				"caught exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While drawing depth "
+				"caught exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While drawing depth "
+				"caught '%1%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Drawing depth %1%"),
+			UTF8("done"));
+	}
+
+	void Scene::do_draw_default()
+	{
+		StateSetUtil state_set(get_state_manager());
 		Uint32 index, count;
 		EffectProgramType effect;
 		BlendType blend;
@@ -1323,6 +1538,11 @@ namespace eternal_lands
 		get_scene_view().set_default_view();
 
 		get_state_manager().switch_multisample(true);
+
+		if (get_global_vars()->get_use_linear_lighting())
+		{
+			get_state_manager().switch_framebuffer_sRGB(true);
+		}
 
 		DEBUG_CHECK_GL_ERROR();
 
@@ -1401,13 +1621,13 @@ namespace eternal_lands
 			{
 				draw_object_old_lights(object.get_object(),
 					object.get_visibility_mask(), effect,
-					1, object.get_distance());
+					1, object.get_distance(), false);
 			}
 			else
 			{
 				draw_object(object.get_object(),
 					object.get_visibility_mask(), effect,
-					1, object.get_distance());
+					1, object.get_distance(), false);
 			}
 		}
 
@@ -1421,17 +1641,54 @@ namespace eternal_lands
 		m_frame_id++;
 	}
 
+	void Scene::draw_default()
+	{
+		LOG_DEBUG(lt_rendering, UTF8("Drawing default %1%"),
+			UTF8("started"));
+
+		try
+		{
+			do_draw_default();
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While default depth "
+				"caught exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While default depth "
+				"caught exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While default depth "
+				"caught '%1%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Drawing default %1%"),
+			UTF8("done"));
+	}
+
 	void Scene::depth_read()
 	{
 	}
 
-	void Scene::update_terrain_texture(const MaterialSharedPtr &material,
+	void Scene::update_terrain_map(const MaterialSharedPtr &material,
 		const Mat2x3Array2 &texture_matrices, const Uint16 index)
 	{
+		StateSetUtil state_set(get_state_manager());
+
 		m_clipmap_terrain_frame_buffer->bind();
 		m_clipmap_terrain_frame_buffer->attach(
 			m_clipmap_terrain_texture, fbat_color_0, index);
 		m_clipmap_terrain_frame_buffer->clear(glm::vec4(0.0f), 0);
+
+		if (get_global_vars()->get_use_linear_lighting())
+		{
+			get_state_manager().switch_framebuffer_sRGB(true);
+		}
 
 		MaterialLock material_lock(material);
 
@@ -1456,11 +1713,14 @@ namespace eternal_lands
 		DEBUG_CHECK_GL_ERROR();
 	}
 
-	void Scene::update_terrain_texture(const Uint16 slice)
+	void Scene::update_terrain_map(const Uint16 slice)
 	{
 		Mat2x3Array2 texture_matrices;
 		glm::mat2x3 texture_matrix;
 		glm::vec2 tile_scale;
+
+		LOG_DEBUG(lt_rendering, UTF8("Updating terrain map slice %1% "
+			"%2%"), slice % UTF8("started"));
 
 		try
 		{
@@ -1481,7 +1741,7 @@ namespace eternal_lands
 			texture_matrices[1][0] *= tile_scale.x;
 			texture_matrices[1][1] *= tile_scale.y;
 
-			update_terrain_texture(
+			update_terrain_map(
 				m_map->get_clipmap_terrain_material(),
 				texture_matrices, slice);
 		}
@@ -1497,56 +1757,91 @@ namespace eternal_lands
 				"%1% caught exception '%2%'"), slice %
 				exception.what());
 		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating terrain slice "
+				"%1% caught '%2%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Updating terrain map slice %1% "
+			"%2%"), slice % UTF8("done"));
 	}
 
-	void Scene::update_terrain_texture()
+	void Scene::update_terrain_map()
 	{
+		StateSetUtil state_set(get_state_manager());
 		Mat2x3Array2 texture_matrices;
 		glm::mat2x3 texture_matrix;
 		Uint32 i, count;
 
-		DEBUG_CHECK_GL_ERROR();
+		LOG_DEBUG(lt_rendering, UTF8("Updating shadow map %1%"),
+			UTF8("started"));
 
-		m_clipmap_terrain_frame_buffer->set_view_port();
-
-		DEBUG_CHECK_GL_ERROR();
-
-		get_scene_view().set_ortho_view();
-		get_state_manager().switch_depth_mask(false);
-		get_state_manager().switch_depth_test(false);
-		get_state_manager().switch_blend(true);
-		get_state_manager().switch_multisample(false);
-		get_state_manager().switch_mesh(get_screen_quad());
-
-		count = m_clipmap_terrain.get_slices();
-
-		for (i = 0; i < count; ++i)
+		try
 		{
-			update_terrain_texture(i);
+			DEBUG_CHECK_GL_ERROR();
+
+			m_clipmap_terrain_frame_buffer->set_view_port();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			get_scene_view().set_ortho_view();
+			get_state_manager().switch_depth_mask(false);
+			get_state_manager().switch_depth_test(false);
+			get_state_manager().switch_blend(true);
+			get_state_manager().switch_multisample(false);
+			get_state_manager().switch_mesh(get_screen_quad());
+
+			count = m_clipmap_terrain.get_slices();
+
+			for (i = 0; i < count; ++i)
+			{
+				update_terrain_map(i);
+			}
+
+			update_program_vars_id();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			unbind_all();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_clipmap_terrain_frame_buffer->blit_buffers();
+			m_clipmap_terrain_frame_buffer->unbind();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			if (get_global_vars()->get_opengl_3_0())
+			{
+				get_state_manager().switch_texture(
+					spt_effect_0,
+					m_clipmap_terrain_texture);
+
+				glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+			}
+
+			DEBUG_CHECK_GL_ERROR();
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"caught exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"caught exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+				"caught '%1%'"), UTF8("unknown error"));
 		}
 
-		update_program_vars_id();
-
-		DEBUG_CHECK_GL_ERROR();
-
-		unbind_all();
-
-		DEBUG_CHECK_GL_ERROR();
-
-		m_clipmap_terrain_frame_buffer->blit_buffers();
-		m_clipmap_terrain_frame_buffer->unbind();
-
-		DEBUG_CHECK_GL_ERROR();
-
-		if (get_global_vars()->get_opengl_3_0())
-		{
-			get_state_manager().switch_texture(spt_effect_0,
-				m_clipmap_terrain_texture);
-
-			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-		}
-
-		DEBUG_CHECK_GL_ERROR();
+		LOG_DEBUG(lt_rendering, UTF8("Updating shadow map %1%"),
+			UTF8("done"));
 	}
 
 	void Scene::init_light_indexed_deferred_rendering()
@@ -1623,7 +1918,6 @@ namespace eternal_lands
 			static_cast<Uint16>(light_index) %
 			glm::to_string(color));
 
-		glCullFace(GL_FRONT);
 		/************/
 		glStencilFunc(GL_ALWAYS, light_index, 0xFFFFFFFF);
 		glStencilOp(GL_KEEP, GL_REPLACE, GL_KEEP); 
@@ -1633,12 +1927,11 @@ namespace eternal_lands
 		get_state_manager().switch_blend(false);
 
 		// Draw a sphere the radius of the light
-		draw_object(m_light_sphere, 0xFFFFFFFF, ept_depth, 1, 0);
+		draw_object(m_light_sphere, 0xFFFFFFFF, ept_depth, 1, 0, true);
 
 		// Set the stencil to only pass on equal value
 		glStencilFunc(GL_EQUAL, light_index, 0xFFFFFFFF);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); 
-		glCullFace(GL_BACK);
 		/************/
 
 		get_state_manager().switch_color_mask(glm::bvec4(true));
@@ -1646,7 +1939,8 @@ namespace eternal_lands
 
 		//TODO: Render lowers detail spheres when light is far away?
 		// Draw a sphere the radius of the light
-		draw_object(m_light_sphere, 0xFFFFFFFF, ept_default, 1, 0);
+		draw_object(m_light_sphere, 0xFFFFFFFF, ept_default, 1, 0,
+			false);
 	}
 
 	void Scene::draw_light_camera_inside(const glm::vec3 &position,
@@ -1699,16 +1993,13 @@ namespace eternal_lands
 			static_cast<Uint16>(light_index) %
 			glm::to_string(color));
 
-		get_state_manager().switch_color_mask(glm::bvec4(true));
-		get_state_manager().switch_depth_mask(false);
-		get_state_manager().switch_blend(true);
-		get_state_manager().switch_culling(true);
-
-		draw_object(m_light_sphere, 0xFFFFFFFF, ept_default, 1, 0);
+		draw_object(m_light_sphere, 0xFFFFFFFF, ept_default, 1, 0,
+			true);
 	}
 
 	void Scene::draw_lights()
 	{
+		StateSetUtil state_set(get_state_manager());
 		Uint32Uint32Map::const_iterator found;
 
 		if (get_global_vars()->get_light_system() == lst_default)
@@ -1754,13 +2045,8 @@ namespace eternal_lands
 				break;
 		};
 
-		glEnable(GL_STENCIL_TEST);
-
-		if (get_global_vars()->get_opengl_3_2())
-		{
-			glEnable(GL_DEPTH_CLAMP);
-		}
-
+		get_state_manager().switch_stencil_test(true);
+		get_state_manager().switch_depth_clamp(true);
 		get_state_manager().switch_depth_mask(false);
 		get_state_manager().switch_blend(true);
 		get_state_manager().switch_culling(true);
@@ -1785,9 +2071,7 @@ namespace eternal_lands
 				found->second);
 		}
 
-		glDisable(GL_STENCIL_TEST);
-
-		glCullFace(GL_FRONT);
+		get_state_manager().switch_stencil_test(false);
 		glDepthFunc(GL_GREATER);
 
 		get_state_manager().switch_color_mask(glm::bvec4(true));
@@ -1816,12 +2100,6 @@ namespace eternal_lands
 				found->second);
 		}
 
-		if (get_global_vars()->get_opengl_3_2())
-		{
-			glDisable(GL_DEPTH_CLAMP);
-		}
-
-		glCullFace(GL_FRONT);
 		glDepthFunc(GL_LEQUAL);
 
 		update_program_vars_id();
@@ -1867,9 +2145,7 @@ namespace eternal_lands
 
 		if (get_scene_view().get_shadow_map_count() > 0)
 		{
-			STRING_MARKER(UTF8("drawing mode '%1%'"),
-				UTF8("shadows"));
-			draw_shadows();
+			update_shadow_map();
 		}
 
 		if (get_terrain())
@@ -1879,7 +2155,7 @@ namespace eternal_lands
 				glm::vec3(get_scene_view().get_view_dir()),
 				glm::vec2(get_scene_view().get_focus())))
 			{
-				update_terrain_texture();
+				update_terrain_map();
 			}
 		}
 
@@ -1937,14 +2213,12 @@ namespace eternal_lands
 			data.first = object.get_object()->get_id();
 			data.second = object.get_object()->get_selection();
 
-			glBeginQuery(GL_SAMPLES_PASSED,
+			GlQuery query(GL_SAMPLES_PASSED,
 				m_querie_ids[query_index]);
 
 			draw_object(object.get_object(),
 				object.get_visibility_mask(), ept_depth, 1,
-				object.get_distance());
-
-			glEndQuery(GL_SAMPLES_PASSED);
+				object.get_distance(), false);
 
 			ids.push_back(data);
 			query_index++;
@@ -1978,7 +2252,7 @@ namespace eternal_lands
 			data.second = object.get_object()->get_sub_objects(
 				)[i].get_selection();
 
-			glBeginQuery(GL_SAMPLES_PASSED,
+			GlQuery query(GL_SAMPLES_PASSED,
 				m_querie_ids[query_index]);
 
 			index = object.get_object()->get_sub_objects(
@@ -2014,8 +2288,6 @@ namespace eternal_lands
 
 			get_state_manager().draw(object.get_object(
 				)->get_sub_objects()[i], 1);
-
-			glEndQuery(GL_SAMPLES_PASSED);
 
 			ids.push_back(data);
 			query_index++;
@@ -2275,6 +2547,7 @@ namespace eternal_lands
 
 			position = glm::vec4(it->second->get_position(),
 				it->second->get_inv_sqr_radius());
+
 			color = glm::vec4(it->second->get_color(), 1.0f);
 
 			light_position_image->set_pixel(index, 0, 0, 0, 0,
@@ -2289,41 +2562,67 @@ namespace eternal_lands
 		m_light_position_texture->set_image(light_position_image);
 		m_light_color_texture->set_image(light_color_image);
 
-		update_light_index_texture();
+		build_light_index_map();
 	}
 
-	void Scene::update_light_index_texture()
+	void Scene::build_light_index_map()
 	{
 		TextureFormatType format;
 
-		switch (get_global_vars()->get_light_system())
+		LOG_DEBUG(lt_rendering, UTF8("Building light index map %1%"),
+			UTF8("started"));
+
+		try
 		{
-			case lst_default:
-				m_light_index_texture.reset();
-				return;
-			case lst_lidr_x4:
-				format = tft_rgba8;
-				break;
-			case lst_lidr_x5:
-				format = tft_rgb10_a2;
-				break;
-			case lst_lidr_x8:
-				format = tft_rgba16;
-				break;
-		};
+			switch (get_global_vars()->get_light_system())
+			{
+				case lst_default:
+					m_light_index_texture.reset();
+					return;
+				case lst_lidr_x4:
+					format = tft_rgba8;
+					break;
+				case lst_lidr_x5:
+					format = tft_rgb10_a2;
+					break;
+				case lst_lidr_x8:
+					format = tft_rgba16;
+					break;
+			};
 
-		m_light_index_texture = boost::make_shared<Texture>(
-			String(UTF8("light index")), get_view_port().z,
-			get_view_port().w, 1, 0, 0, format, ttt_texture_2d);
+			m_light_index_texture = boost::make_shared<Texture>(
+				String(UTF8("light index")), get_view_port().z,
+				get_view_port().w, 1, 0, 0, format,
+				ttt_texture_2d);
 
-		m_light_index_texture->set_wrap_s(twt_clamp);
-		m_light_index_texture->set_wrap_t(twt_clamp);
-		m_light_index_texture->set_wrap_r(twt_clamp);
-		m_light_index_texture->set_mag_filter(tft_nearest);
-		m_light_index_texture->set_min_filter(tft_nearest);
-		m_light_index_texture->set_mipmap_filter(tmt_none);
-		m_light_index_texture->init(get_view_port().z,
-			get_view_port().w, 0, 0);
+			m_light_index_texture->set_wrap_s(twt_clamp);
+			m_light_index_texture->set_wrap_t(twt_clamp);
+			m_light_index_texture->set_wrap_r(twt_clamp);
+			m_light_index_texture->set_mag_filter(tft_nearest);
+			m_light_index_texture->set_min_filter(tft_nearest);
+			m_light_index_texture->set_mipmap_filter(tmt_none);
+			m_light_index_texture->init(get_view_port().z,
+				get_view_port().w, 0, 0);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building light index map "
+				"caught exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building light index map "
+				"caught exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While building light index map "
+				"caught '%1%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Building light index map %1%"),
+			UTF8("done"));
 	}
 
 	const ParticleDataVector &Scene::get_particles() const
@@ -2409,6 +2708,7 @@ namespace eternal_lands
 
 	void Scene::set_view_port(const glm::uvec4 &view_port)
 	{
+		TextureFormatType texture_format;
 		Uint16 mipmaps;
 
 		m_cpu_rasterizer = boost::make_shared<CpuRasterizer>(
@@ -2452,9 +2752,18 @@ namespace eternal_lands
 				String(UTF8("scene")), view_port.z,
 				view_port.w, 0, true);
 
+		if (get_global_vars()->get_use_linear_lighting())
+		{
+			texture_format = tft_srgb8_a8;
+		}
+		else
+		{
+			texture_format = tft_rgba8;
+		}
+
 		m_scene_texture = boost::make_shared<Texture>(
 			String(UTF8("scene")), view_port.z, view_port.w, 1,
-			mipmaps, 0, tft_rgba8, ttt_texture_2d);
+			mipmaps, 0, texture_format, ttt_texture_2d);
 
 		m_scene_texture->set_wrap_s(twt_clamp);
 		m_scene_texture->set_wrap_t(twt_clamp);
@@ -2468,7 +2777,7 @@ namespace eternal_lands
 		m_scene_frame_buffer->set_draw_buffer(0, true);
 		m_scene_frame_buffer->unbind();
 
-		update_light_index_texture();
+		build_light_index_map();
 
 		get_scene_view().set_view_port(view_port);
 	}

@@ -91,32 +91,48 @@ namespace eternal_lands
 				const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
 				const EffectProgramType type,
-				const Uint16 instances, const Uint16 distance);
+				const Uint16 instances, const Uint16 distance,
+				const bool flip_face_culling);
 			void do_draw_object(const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
 				const EffectProgramType type,
-				const Uint16 instances, const Uint16 distance);
+				const Uint16 instances, const Uint16 distance,
+				const bool flip_face_culling);
+			void do_draw_light(const glm::vec3 &position,
+				const float size, const Uint8 light_index);
+			void do_draw_light_camera_inside(const glm::vec3 &position,
+				const float size, const Uint8 light_index);
 			void draw_light(const glm::vec3 &position,
 				const float size, const Uint8 light_index);
 			void draw_light_camera_inside(const glm::vec3 &position,
 				const float size, const Uint8 light_index);
+			void do_pick_object(const RenderObjectData &object,
+				PairUint32SelectionTypeVector &ids,
+				Uint32 &query_index);
 			void pick_object(const RenderObjectData &object,
 				PairUint32SelectionTypeVector &ids,
 				Uint32 &query_index);
-			void update_terrain_texture(
+			void update_terrain_map(
 				const MaterialSharedPtr &material,
 				const Mat2x3Array2 &texture_matrices,
-				const Uint16 index);
-			void update_terrain_texture(const Uint16 slice);
-			void update_terrain_texture();
+				const Uint16 slice);
+			void update_terrain_map(const Uint16 slice);
+			void update_terrain_map();
+			void do_build_terrain_map();
 			void build_terrain_map();
+			void do_build_shadow_map();
 			void build_shadow_map();
-			void draw_shadow(const Uint16 index);
-			void draw_shadows();
+			void update_shadow_map(const Uint16 slice);
+			void update_shadow_map();
 			void draw_depth();
 			void draw_lights();
+			void do_update_shadow_map(const Uint16 slice);
+			void do_draw_depth();
+			void do_draw_lights();
 			void init_light_indexed_deferred_rendering();
-			void update_light_index_texture();
+			void build_light_index_map();
+			void do_draw_default();
+			void do_update_light_system();
 
 		protected:
 			virtual void intersect_terrain(const Frustum &frustum,
@@ -150,12 +166,14 @@ namespace eternal_lands
 			void draw_object(const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
 				const EffectProgramType type,
-				const Uint16 instances, const Uint16 distance);
+				const Uint16 instances, const Uint16 distance,
+				const bool flip_face_culling);
 			void draw_object_old_lights(
 				const ObjectSharedPtr &object,
 				const BitSet64 visibility_mask,
 				const EffectProgramType type,
-				const Uint16 instances, const Uint16 distance);
+				const Uint16 instances, const Uint16 distance,
+				const bool flip_face_culling);
 			void set_view_port();
 			void draw_default();
 

@@ -409,6 +409,7 @@ void makeScreenShot ()
 	LOG_TO_CONSOLE(c_green1, fname);
 
 	/* read the pixels from the GL scene */
+	glPixelStorei(GL_PACK_ALIGNMENT, 4);
 	glGetIntegerv(GL_PACK_ALIGNMENT, &align);
 	pixels = malloc(h * align * ((3 * w - 1) / align + 1));
 	glReadPixels (0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, pixels);
@@ -425,6 +426,7 @@ void makeScreenShot ()
 	IMG_SavePNG (surf, fname);
 	free (pixels);
 	SDL_FreeSurface (surf);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
 }
 #endif
 

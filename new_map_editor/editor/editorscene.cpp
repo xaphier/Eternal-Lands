@@ -400,6 +400,7 @@ namespace eternal_lands
 		get_map()->set_terrain_dudv_scale_offset(dudv_scale_offset);
 
 		rebuild_terrain_map();
+		map_changed();
 	}
 
 	void EditorScene::depth_read()
@@ -533,7 +534,7 @@ namespace eternal_lands
 		{
 			draw_object_old_lights(object.get_object(),
 				object.get_visibility_mask(), type, 1,
-				object.get_distance());
+				object.get_distance(), false);
 		}
 
 		glEndQuery(GL_SAMPLES_PASSED);
@@ -568,6 +569,8 @@ namespace eternal_lands
 
 	void EditorScene::map_changed()
 	{
+		Scene::map_changed();
+
 		get_map()->init_terrain_rendering_data(m_top_down_terrain);
 	}
 

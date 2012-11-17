@@ -185,7 +185,7 @@ void AllTerrainTexturesDialog::remove_extra_texture()
 
 	item = terrain_textures->currentItem();
 
-	if (item != 0)
+	if (item == 0)
 	{
 		return;
 	}
@@ -209,7 +209,7 @@ void AllTerrainTexturesDialog::change_extra_texture()
 
 	item = terrain_textures->currentItem();
 
-	if (item != 0)
+	if (item == 0)
 	{
 		return;
 	}
@@ -264,6 +264,9 @@ void AllTerrainTexturesDialog::change_extra_texture()
 
 	m_terrain_texture_datas[albedo_map].set_extra_map(extra_map);
 	m_terrain_texture_datas[albedo_map].set_use_extra_map(true);
+
+	item->setData(tr_extra_map, extra_map);
+	item->setData(tr_use_extra_map, true);
 }
 
 void AllTerrainTexturesDialog::clear_textures()

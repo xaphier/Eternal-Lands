@@ -395,7 +395,8 @@ namespace eternal_lands
 		}
 
 		TextureFormatType get_texture_format(
-			const dds::DdsHeader &header, const bool rg_formats)
+			const dds::DdsHeader &header, const bool rg_formats,
+			const bool sRGB)
 		{
 			Uint32 red_mask, green_mask, blue_mask, alpha_mask;
 			Uint32 luminace_mask;
@@ -480,12 +481,22 @@ namespace eternal_lands
 				if ((red <= 8) && (green <= 8) && (blue <= 8) &&
 					(alpha == 0))
 				{
+					if (sRGB)
+					{
+						return tft_srgb8;
+					}
+
 					return tft_rgb8;
 				}
 
 				if ((red <= 8) && (green <= 8) && (blue <= 8) &&
 					(alpha <= 8))
 				{
+					if (sRGB)
+					{
+						return tft_srgb8_a8;
+					}
+
 					return tft_rgba8;
 				}
 
@@ -495,6 +506,11 @@ namespace eternal_lands
 					return tft_rgb10_a2;
 				}
 
+				if (sRGB)
+				{
+					return tft_srgb8_a8;
+				}
+
 				return tft_rgba8;
 			}
 			else
@@ -502,12 +518,27 @@ namespace eternal_lands
 				switch (header.m_pixel_format.m_fourcc)
 				{
 					case dds::DDSFMT_DXT1:
+						if (sRGB)
+						{
+							return tft_srgb_a_dxt1;
+						}
+
 						return tft_rgba_dxt1;
 					case dds::DDSFMT_DXT2:
 					case dds::DDSFMT_DXT3:
+						if (sRGB)
+						{
+							return tft_srgb_a_dxt3;
+						}
+
 						return tft_rgba_dxt3;
 					case dds::DDSFMT_DXT4:
 					case dds::DDSFMT_DXT5:
+						if (sRGB)
+						{
+							return tft_srgb_a_dxt5;
+						}
+
 						return tft_rgba_dxt5;
 					case dds::DDSFMT_ATI1:
 						return tft_r_rgtc1;
@@ -526,6 +557,11 @@ namespace eternal_lands
 					case dds::DDSFMT_A16B16G16R16F:
 						return tft_rgba16f;
 					case dds::DDSFMT_R8G8B8:
+						if (sRGB)
+						{
+							return tft_srgb8;
+						}
+
 						return tft_rgb8;
 					case dds::DDSFMT_A8R8G8B8:
 						return tft_rgba8;
@@ -546,6 +582,11 @@ namespace eternal_lands
 					case dds::DDSFMT_A2B10G10R10:
 						return tft_rgb10_a2;
 					case dds::DDSFMT_A8B8G8R8:
+						if (sRGB)
+						{
+							return tft_srgb8_a8;
+						}
+
 						return tft_rgba8;
 					case dds::DDSFMT_G16R16:
 						return tft_rg16;
@@ -1400,38 +1441,43 @@ namespace eternal_lands
 
 				void load_supported(
 					const ImageCompressionTypeSet
-					&compression, const bool rg_formats);
+					&compression, const bool rg_formats,
+					const bool sRGB);
 				void load_supported_dxt10(
 					const ImageCompressionTypeSet
 					&compression, const bool rg_formats,
 					const bool merge_layers);
-				void set_format(const TextureFormatType tft,
-					const bool rg_formats);
+				void set_format(const bool rg_formats,
+					const bool sRGB);
 				void set_dxt10_format(
 					const TextureFormatType texture_format,
 					const bool rg_formats);
 				void uncompress(const TextureFormatType format,
-					const bool rg_formats,
+					const bool rg_formats, const bool sRGB,
 					const bool merge_layers);
 				void load(const ImageCompressionTypeSet
 					&compression, const bool rg_formats,
+					const bool sRGB,
 					const bool merge_layers);
 				void load(const Uint16 swap_size);
 				void set_format_mask(const Uint32 red_mask,
 					const Uint32 green_mask,
 					const Uint32 blue_mask,
 					const Uint32 alpha_mask,
-					const bool rg_formats);
+					const bool rg_formats,
+					const bool sRGB);
 				void set_format_mask(const Uint32 red_mask,
 					const Uint32 green_mask,
 					const Uint32 blue_mask,
 					const Uint32 alpha_mask,
 					const TextureFormatType format,
-					const bool rg_formats);
+					const bool rg_formats,
+					const bool sRGB);
 				void set_format(const Uint32 pixel_size,
 					const GLenum format, const GLenum type,
 					const Uint16 swap_size,
-					const bool rg_formats);
+					const bool rg_formats,
+					const bool sRGB);
 				Uint16 get_faces() const;
 				glm::uvec3 get_size() const;
 				bool get_array() const;
@@ -1448,6 +1494,7 @@ namespace eternal_lands
 					const ReaderSharedPtr &reader,
 					const ImageCompressionTypeSet
 					&compression, const bool rg_formats,
+					const bool sRGB,
 					const bool merge_layers);
 
 				inline const ImageSharedPtr &get_image()
@@ -1461,14 +1508,16 @@ namespace eternal_lands
 			const CodecManager &codec_manager,
 			const ReaderSharedPtr &reader,
 			const ImageCompressionTypeSet &compression,
-			const bool rg_formats, const bool merge_layers):
-			m_reader(reader), m_codec_manager(codec_manager)
+			const bool rg_formats, const bool sRGB,
+			const bool merge_layers): m_reader(reader),
+			m_codec_manager(codec_manager)
 		{
 			try
 			{
 				init_dds_image(m_reader, m_header,
 					m_header_dxt10);
-				load(compression, rg_formats, merge_layers);
+				load(compression, rg_formats, sRGB,
+					merge_layers);
 			}
 			catch (boost::exception &exception)
 			{
@@ -1526,7 +1575,8 @@ namespace eternal_lands
 
 		void DdsImageLoader::set_format_mask(const Uint32 red_mask,
 			const Uint32 green_mask, const Uint32 blue_mask,
-			const Uint32 alpha_mask, const bool rg_formats)
+			const Uint32 alpha_mask, const bool rg_formats,
+			const bool sRGB)
 		{
 			Uint32 pixel_size;
 			Uint32 swap_size;
@@ -1541,7 +1591,7 @@ namespace eternal_lands
 					m_reader->get_name(),
 					get_cube_map(m_header),
 					get_texture_format(m_header,
-						rg_formats), get_size(),
+						rg_formats, sRGB), get_size(),
 					static_cast<Uint16>(
 					m_header.m_mipmap_count),
 					static_cast<Uint16>(pixel_size * 8),
@@ -1561,7 +1611,7 @@ namespace eternal_lands
 			const Uint32 green_mask, const Uint32 blue_mask,
 			const Uint32 alpha_mask,
 			const TextureFormatType texture_format,
-			const bool rg_formats)
+			const bool rg_formats, const bool sRGB)
 		{
 			Uint32 pixel_size;
 			Uint32 swap_size;
@@ -1578,7 +1628,7 @@ namespace eternal_lands
 					get_size(), static_cast<Uint16>(
 					m_header.m_mipmap_count),
 					static_cast<Uint16>(pixel_size * 8),
-					format, type, false);
+					format, type, sRGB);
 				load(swap_size);
 			}
 			else
@@ -1591,7 +1641,8 @@ namespace eternal_lands
 
 		void DdsImageLoader::load(
 			const ImageCompressionTypeSet &compression,
-			const bool rg_formats, const bool merge_layers)
+			const bool rg_formats, const bool sRGB,
+			const bool merge_layers)
 		{
 			LOG_DEBUG(lt_dds_image, UTF8("Loading file '%1%'."),
 				m_reader->get_name());
@@ -1613,37 +1664,40 @@ namespace eternal_lands
 					m_header.m_pixel_format.m_green_mask,
 					m_header.m_pixel_format.m_blue_mask,
 					m_header.m_pixel_format.m_alpha_mask,
-					rg_formats);
+					rg_formats, sRGB);
 
 				return;
 			}
 
-			load_supported(compression, rg_formats);
+			load_supported(compression, rg_formats, sRGB);
 		}
 
 		void DdsImageLoader::set_format(const Uint32 pixel_size,
 			const GLenum format, const GLenum type,
-			const Uint16 swap_size, const bool rg_formats)
+			const Uint16 swap_size, const bool rg_formats,
+			const bool sRGB)
 		{
 			m_image = boost::make_shared<Image>(
 				m_reader->get_name(), get_cube_map(m_header),
-				get_texture_format(m_header, rg_formats),
+				get_texture_format(m_header, rg_formats, sRGB),
 				get_size(),
 				static_cast<Uint16>(m_header.m_mipmap_count),
 				static_cast<Uint16>(pixel_size), format, type,
-				false);
+				sRGB);
 
 			load(swap_size);
 		}
 
-		void DdsImageLoader::set_format(const TextureFormatType tft,
-			const bool rg_formats)
+		void DdsImageLoader::set_format(const bool rg_formats,
+			const bool sRGB)
 		{
-			assert(TextureFormatUtil::get_compressed(tft));
+			assert(TextureFormatUtil::get_compressed(
+				get_texture_format(m_header, rg_formats,
+				sRGB)));
 
 			m_image = boost::make_shared<Image>(
 				m_reader->get_name(), get_cube_map(m_header),
-				get_texture_format(m_header, rg_formats),
+				get_texture_format(m_header, rg_formats, sRGB),
 				get_size(), static_cast<Uint16>(
 					m_header.m_mipmap_count), get_array());
 
@@ -1710,7 +1764,7 @@ namespace eternal_lands
 
 		void DdsImageLoader::load_supported(
 			const ImageCompressionTypeSet &compression,
-			const bool rg_formats)
+			const bool rg_formats, const bool sRGB)
 		{
 			Uint32 fourcc, red_mask, green_mask, blue_mask;
 			Uint32 alpha_mask;
@@ -1724,53 +1778,58 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt1,
-							rg_formats, false);
+							rg_formats, sRGB,
+							false);
 						return;
 					}
 
-					set_format(tft_rgba_dxt1, rg_formats);
+					set_format(rg_formats, sRGB);
 					return;
 				case dds::DDSFMT_DXT2:
 				case dds::DDSFMT_DXT3:
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt3,
-							rg_formats, false);
+							rg_formats, sRGB,
+							false);
 						return;
 					}
 
-					set_format(tft_rgba_dxt3, rg_formats);
+					set_format(rg_formats, sRGB);
 					return;
 				case dds::DDSFMT_DXT4:
 				case dds::DDSFMT_DXT5:
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt5,
-							rg_formats, false);
+							rg_formats, sRGB,
+							false);
 						return;
 					}
 
-					set_format(tft_rgba_dxt5, rg_formats);
+					set_format(rg_formats, sRGB);
 					return;
 				case dds::DDSFMT_ATI1:
 					if (compression.count(ict_rgtc) == 0)
 					{
 						uncompress(tft_r_rgtc1,
-							rg_formats, false);
+							rg_formats, false,
+							false);
 						return;
 					}
 
-					set_format(tft_r_rgtc1, rg_formats);
+					set_format(rg_formats, false);
 					return;
 				case dds::DDSFMT_ATI2:
 					if (compression.count(ict_rgtc) == 0)
 					{
 						uncompress(tft_rg_rgtc2,
-							rg_formats, false);
+							rg_formats, false,
+							false);
 						return;
 					}
 
-					set_format(tft_rg_rgtc2, rg_formats);
+					set_format(rg_formats, false);
 					return;
 				case dds::DDSFMT_R32F:
 				case dds::DDSFMT_G32R32F:
@@ -1778,7 +1837,7 @@ namespace eternal_lands
 					get_format(fourcc, pixel_size, format,
 						type);
 					set_format(pixel_size, format, type, 4,
-						rg_formats);
+						rg_formats, false);
 					return;
 				case dds::DDSFMT_R16F:
 				case dds::DDSFMT_G16R16F:
@@ -1786,7 +1845,7 @@ namespace eternal_lands
 					get_format(fourcc, pixel_size, format,
 						type);
 					set_format(pixel_size, format, type, 2,
-						rg_formats);
+						rg_formats, false);
 					return;
 				case dds::DDSFMT_X1R5G5B5:
 				case dds::DDSFMT_X4R4G4B4:
@@ -1812,7 +1871,7 @@ namespace eternal_lands
 						alpha_mask);
 					set_format_mask(red_mask, green_mask,
 						blue_mask, alpha_mask,
-						rg_formats);
+						rg_formats, sRGB);
 					return;
 				case dds::DDSFMT_L16:
 				case dds::DDSFMT_G16R16:
@@ -1820,13 +1879,13 @@ namespace eternal_lands
 					get_format(fourcc, pixel_size, format,
 						type);
 					set_format(pixel_size, format, type, 2,
-						rg_formats);
+						rg_formats, false);
 					return;
 				case dds::DDSFMT_A16B16G16R16_SIGNED:
 					get_format(fourcc, pixel_size, format,
 						type);
 					set_format(pixel_size, format, type, 2,
-						rg_formats);
+						rg_formats, false);
 					return;
 			}
 			EL_THROW_EXCEPTION(DdsUnkownFormatException());
@@ -2086,7 +2145,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt1,
-							rg_formats,
+							rg_formats, false,
 							merge_layers);
 						return;
 					}
@@ -2098,7 +2157,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_srgb_a_dxt1,
-							rg_formats,
+							rg_formats, true,
 							merge_layers);
 						return;
 					}
@@ -2110,7 +2169,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt3,
-							rg_formats,
+							rg_formats, false,
 							merge_layers);
 						return;
 					}
@@ -2122,7 +2181,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_srgb_a_dxt3,
-							rg_formats,
+							rg_formats, true,
 							merge_layers);
 						return;
 					}
@@ -2134,7 +2193,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_rgba_dxt5,
-							rg_formats,
+							rg_formats, false,
 							merge_layers);
 						return;
 					}
@@ -2146,7 +2205,7 @@ namespace eternal_lands
 					if (compression.count(ict_s3tc) == 0)
 					{
 						uncompress(tft_srgb_a_dxt5,
-							rg_formats,
+							rg_formats, true,
 							merge_layers);
 						return;
 					}
@@ -2158,7 +2217,7 @@ namespace eternal_lands
 					if (compression.count(ict_rgtc) == 0)
 					{
 						uncompress(tft_r_rgtc1,
-							rg_formats,
+							rg_formats, false,
 							merge_layers);
 						return;
 					}
@@ -2170,7 +2229,7 @@ namespace eternal_lands
 					if (compression.count(ict_rgtc) == 0)
 					{
 						uncompress(tft_signed_r_rgtc1,
-							rg_formats,
+							rg_formats, false,
 							merge_layers);
 						return;
 					}
@@ -2182,7 +2241,7 @@ namespace eternal_lands
 					if (compression.count(ict_rgtc) == 0)
 					{
 						uncompress(tft_rg_rgtc2,
-							rg_formats,
+							rg_formats, false,
 							merge_layers);
 						return;
 					}
@@ -2194,7 +2253,7 @@ namespace eternal_lands
 					if (compression.count(ict_rgtc) == 0)
 					{
 						uncompress(tft_signed_rg_rgtc2,
-							rg_formats,
+							rg_formats, false,
 							merge_layers);
 						return;
 					}
@@ -2205,32 +2264,32 @@ namespace eternal_lands
 				case dds::DXGI_FORMAT_B5G6R5_UNORM:
 					set_format_mask(0x0000F800, 0x000007E0,
 						0x0000001F, 0x00000000,
-						tft_r5g6b5, rg_formats);
+						tft_r5g6b5, rg_formats, false);
 					return;
 				case dds::DXGI_FORMAT_B5G5R5A1_UNORM:
 					set_format_mask(0x00007C00, 0x000003E0,
 						0x0000001F, 0x00008000,
-						tft_rgb5_a1, rg_formats);
+						tft_rgb5_a1, rg_formats, false);
 					return;
 				case dds::DXGI_FORMAT_B8G8R8A8_UNORM:
 					set_format_mask(0x00FF0000, 0x0000FF00,
 						0x000000FF, 0xFF000000,
-						tft_rgba8, rg_formats);
+						tft_rgba8, rg_formats, false);
 					return;
 				case dds::DXGI_FORMAT_B8G8R8X8_UNORM:
 					set_format_mask(0x00FF0000, 0x0000FF00,
 						0x000000FF, 0xFF000000,
-						tft_rgb8, rg_formats);
+						tft_rgb8, rg_formats, false);
 					return;
 				case dds::DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
 					set_format_mask(0x00FF0000, 0x0000FF00,
 						0x000000FF, 0xFF000000,
-						tft_srgb8, rg_formats);
+						tft_srgb8, rg_formats, true);
 					return;
 				case dds::DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:
 					set_format_mask(0x00FF0000, 0x0000FF00,
 						0x000000FF, 0xFF000000,
-						tft_srgb8_a8, rg_formats);
+						tft_srgb8_a8, rg_formats, true);
 					return;
 			}
 
@@ -2239,7 +2298,8 @@ namespace eternal_lands
 		}
 
 		void DdsImageLoader::uncompress(const TextureFormatType format,
-			const bool rg_formats, const bool merge_layers)
+			const bool rg_formats, const bool sRGB,
+			const bool merge_layers)
 		{
 			glm::uvec3 size;
 
@@ -2265,7 +2325,11 @@ namespace eternal_lands
 			if ((format == tft_rgb_dxt1) ||
 				(format == tft_rgba_dxt1) ||
 				(format == tft_rgba_dxt3) ||
-				(format == tft_rgba_dxt5))
+				(format == tft_rgba_dxt5) ||
+				(format == tft_srgb_dxt1) ||
+				(format == tft_srgb_a_dxt1) ||
+				(format == tft_srgb_a_dxt3) ||
+				(format == tft_srgb_a_dxt5))
 			{
 				m_header.m_pixel_format.m_red_mask = 0xFF000000;
 				m_header.m_pixel_format.m_green_mask = 0x00FF0000;
@@ -2307,7 +2371,7 @@ namespace eternal_lands
 			m_image = Dxt::uncompress(m_reader,
 				m_reader->get_name(), size, format,
 				static_cast<Uint16>(m_header.m_mipmap_count),
-				get_cube_map(m_header), rg_formats,
+				get_cube_map(m_header), rg_formats, sRGB,
 				merge_layers);
 		}
 
@@ -2316,13 +2380,12 @@ namespace eternal_lands
 	ImageSharedPtr DdsImage::load_image(const CodecManager &codec_manager,
 		const ReaderSharedPtr &reader,
 		const ImageCompressionTypeSet &compression,
-		const bool rg_formats, const bool srgb_formats,
-		const bool merge_layers)
+		const bool rg_formats, const bool sRGB, const bool merge_layers)
 	{
 		try
 		{
 			DdsImageLoader dds_image_loader(codec_manager, reader,
-				compression, rg_formats, merge_layers);
+				compression, rg_formats, sRGB, merge_layers);
 
 			return dds_image_loader.get_image();
 		}
@@ -2335,7 +2398,7 @@ namespace eternal_lands
 	}
 
 	void DdsImage::get_image_information(const ReaderSharedPtr &reader,
-		const bool rg_formats, const bool srgb_formats,
+		const bool rg_formats, const bool sRGB,
 		TextureFormatType &texture_format, glm::uvec3 &size,
 		Uint16 &mipmaps, bool &cube_map, bool &array)
 	{
@@ -2347,7 +2410,7 @@ namespace eternal_lands
 			init_dds_image(reader, header, header_dxt10);
 
 			texture_format = get_texture_format(header,
-				rg_formats);
+				rg_formats, sRGB);
 
 			size[0] = header.m_width;
 			size[1] = header.m_height;

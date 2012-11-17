@@ -496,6 +496,21 @@ namespace eternal_lands
 			 */
 			static glm::vec3 decode_rgb9e5(const Uint32 value);
 
+			/**
+			 * Swizzles the values.
+			 * @param masks The mask of the values in the input
+			 * sbuffer.
+			 * @param position The position of the values write
+			 * in the output buffer.
+			 * @param count The number of values to swizzle.
+			 * @param in_buffer The input buffer.
+			 * @param out_buffer The output buffer.
+			 */
+			static void swizzle(const glm::uvec4 &masks,
+				const glm::uvec4 &position, const Uint32 count,
+				const AbstractReadMemory &in_buffer,
+				AbstractWriteMemory &out_buffer);
+
 			static glm::vec4 unpack_vec4(
 				const AbstractReadMemory &buffer,
 				const Uint64 offset, const PackFormatType type);

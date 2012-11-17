@@ -258,7 +258,8 @@ namespace eternal_lands
 	{
 		str << indent << UTF8("extra = texture(");
 		str << get_extra_sampler() << UTF8(", vec3(");
-		str << cpt_world_extra_uv << UTF8(", )).rg;\n");
+		str << cpt_world_extra_uv << UTF8(", ") << index;
+		str << UTF8(")).rg;\n");
 	}
 
 	void ShaderSourceTerrain::write_blend(const String &indent,
@@ -357,13 +358,21 @@ namespace eternal_lands
 
 		index = 0;
 
-		if (get_use_extra_map(0) && use_glsl_130)
+		if (use_glsl_130)
 		{
-			write_extra_fetch(indent, index, str);
-			str << indent << UTF8("output_data_float[0].a = ");
-			str << indent << UTF8("extra.r;\n");
+			if (get_use_extra_map(0))
+			{
+				write_extra_fetch(indent, index, str);
+				str << indent << UTF8("output_data_float[0].a");
+				str << UTF8(" = extra.r;\n");
 
-			index++;
+				index++;
+			}
+			else
+			{
+				str << indent << UTF8("output_data_float[0].a");
+				str << UTF8(" = 0.0f;\n");
+			}
 		}
 
 		count = get_blend_datas_size();
@@ -378,15 +387,23 @@ namespace eternal_lands
 		{
 			write_albedo_fetch(indent, i + 1, use_glsl_130, str);
 
-			if (get_use_extra_map(i + 1) && use_glsl_130)
+			if (use_glsl_130 && get_use_extra_maps().any())
 			{
-				write_extra_fetch(indent, index, str);
+				if (get_use_extra_map(i + 1))
+				{
+					write_extra_fetch(indent, index, str);
 
-				index++;
+					index++;
+				}
+				else
+				{
+					str << indent << UTF8("extra = vec2(");
+					str << UTF8("0.0f);\n");
+				}
 			}
 
 			write_blend(indent, i, str);
-			write_mix_result(indent, get_use_extra_map(i + 1), str);
+			write_mix_result(indent, use_glsl_130 && get_use_extra_maps().any(), str);
 		}
 
 		return String(str.str());

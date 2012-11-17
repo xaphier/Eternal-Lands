@@ -40,7 +40,7 @@ namespace eternal_lands
 
 		mesh_name = String(str.str());
 
-		str << UTF8("-instanced-") << 512;
+		str << UTF8("-instanced-") << 1024;
 
 		name = String(str.str());
 
@@ -52,7 +52,7 @@ namespace eternal_lands
 				mesh_data_tool);
 
 			m_mesh = mesh_builder->get_mesh(vft_cdlod_terrain,
-				mesh_data_tool, name, 512, true, true, false);
+				mesh_data_tool, name, 1024, true, true, false);
 		}
 		else
 		{

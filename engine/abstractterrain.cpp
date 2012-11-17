@@ -276,7 +276,7 @@ namespace eternal_lands
 			{
 				texture = texture_cache->get_texture_array(
 					albedo_no_blend_maps,
-					String(UTF8("terrain-albedo")));
+					String(UTF8("terrain-albedo")), true);
 
 				m_clipmap_terrain_material->set_texture(
 					texture, ShaderSourceTerrain::
@@ -287,7 +287,8 @@ namespace eternal_lands
 			{
 				texture = texture_cache->get_texture_array(
 					albedo_blend_maps,
-					String(UTF8("terrain-albedo-blend")));
+					String(UTF8("terrain-albedo-blend")),
+					true);
 
 				m_clipmap_terrain_material->set_texture(
 					texture, ShaderSourceTerrain::
@@ -318,7 +319,8 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			texture = texture_cache->get_texture(albedo_maps[i]);
+			texture = texture_cache->get_texture(albedo_maps[i],
+				true);
 
 			m_clipmap_terrain_material->set_texture(texture,
 				ShaderSourceTerrain::get_albedo_sampler(i));
@@ -357,7 +359,7 @@ namespace eternal_lands
 		}
 
 		texture = texture_cache->get_texture_array(names,
-			String(UTF8("terrain-extra")));
+			String(UTF8("terrain-extra")), false);
 
 		m_clipmap_terrain_material->set_texture(texture,
 			ShaderSourceTerrain::get_extra_sampler());

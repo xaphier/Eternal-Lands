@@ -54,6 +54,8 @@ namespace eternal_lands
 				{
 					set_texture(XmlUtil::get_string_value(
 						it), sampler);
+					set_sRGB(XmlUtil::get_bool_property(it,
+						String(UTF8("sRGB"))), sampler);
 				}
 			}
 
@@ -127,8 +129,12 @@ namespace eternal_lands
 		{
 			sampler = static_cast<SamplerParameterType>(i);
 
-			writer->write_element(SamplerParameterUtil::get_str(
-				sampler), get_texture(sampler));
+			writer->start_element(SamplerParameterUtil::get_str(
+				sampler));
+			writer->write_string(get_texture(sampler));
+			writer->write_bool_property(String(UTF8("sRGB")),
+				get_sRGB(sampler));
+			writer->end_element();
 		}
 
 		writer->write_mat2x3_element(String(UTF8("texture_matrix_0")),

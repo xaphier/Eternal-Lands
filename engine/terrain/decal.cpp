@@ -18,7 +18,7 @@ namespace eternal_lands
 		m_transform_matrix(description.get_transform_matrix())
 	{
 		m_texture = texture_cache->get_texture(
-			description.get_texture());
+			description.get_texture(), true);
 	}
 
 	Decal::~Decal() noexcept

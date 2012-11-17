@@ -746,6 +746,7 @@ extern "C" void engine_cull_scene()
 	if (main_light_direction.z < 0.0f)
 	{
 		main_light_direction = -main_light_direction;
+		main_light_color = glm::vec3(0.1f);
 	}
 
 	glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(view_matrix));
@@ -1673,6 +1674,11 @@ extern "C" void engine_set_clipmap_terrain_slices(const int value)
 		scene->get_scene_resources().get_effect_cache()->reload();
 		scene->rebuild_terrain_map();
 	}
+}
+
+extern "C" void engine_set_use_linear_lighting(const int value)
+{
+	global_vars->set_use_linear_lighting(value != 0);
 }
 
 extern "C" int engine_get_opengl_3_0()

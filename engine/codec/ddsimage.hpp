@@ -28,7 +28,7 @@ namespace eternal_lands
 		public:
 			static void get_image_information(
 				const ReaderSharedPtr &reader,
-				const bool rg_formats, const bool srgb_formats,
+				const bool rg_formats, const bool sRGB,
 				TextureFormatType &texture_format,
 				glm::uvec3 &size, Uint16 &mipmaps,
 				bool &cube_map, bool &array);
@@ -36,7 +36,7 @@ namespace eternal_lands
 				const CodecManager &codec_manager,
 				const ReaderSharedPtr &reader,
 				const ImageCompressionTypeSet &compression,
-				const bool rg_formats, const bool srgb_formats,
+				const bool rg_formats, const bool sRGB,
 				const bool merge_layers);
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();

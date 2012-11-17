@@ -288,25 +288,25 @@ namespace eternal_lands
 			ImageSharedPtr load_image(
 				const ReaderSharedPtr &reader,
 				const ImageCompressionTypeSet &compressions,
-				const bool rg_formats, const bool srgb_formats,
+				const bool rg_formats, const bool sRGB,
 				const bool merge_layers) const;
 
 			ImageSharedPtr load_image(const String &name,
 				const FileSystemSharedPtr &file_system,
 				const ImageCompressionTypeSet &compressions,
-				const bool rg_formats, const bool srgb_formats,
+				const bool rg_formats, const bool sRGB,
 				const bool merge_layers) const;
 
 			void get_image_information(
 				const ReaderSharedPtr &reader,
-				const bool rg_formats, const bool srgb_formats,
+				const bool rg_formats, const bool sRGB,
 				TextureFormatType &texture_format,
 				glm::uvec3 &size, Uint16 &mipmaps,
 				bool &cube_map, bool &array) const;
 
 			void get_image_information(const String &name,
 				const FileSystemSharedPtr &file_system,
-				const bool rg_formats, const bool srgb_formats,
+				const bool rg_formats, const bool sRGB,
 				TextureFormatType &texture_format,
 				glm::uvec3 &size, Uint16 &mipmaps,
 				bool &cube_map, bool &array) const;

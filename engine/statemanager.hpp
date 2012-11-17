@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "stateset.hpp"
 
 /**
  * @file
@@ -37,20 +38,7 @@ namespace eternal_lands
 			BitSet32 m_program_used_texture_units;
 			BitSet32 m_used_texture_units;
 			BitSet32 m_used_attributes;
-			glm::bvec4 m_color_mask;
-			Uint32 m_restart_index;
-			Uint16 m_texture_unit;
-			bool m_multisample;
-			bool m_blend;
-			bool m_culling;
-			bool m_depth_mask;
-			bool m_depth_test;
-			bool m_scissor_test;
-			bool m_sample_alpha_to_coverage;
-			bool m_use_restart_index;
-			bool m_polygon_offset_fill;
-			bool m_stencil_test;
-			bool m_flip_back_face_culling;
+			StateSet m_state_set;
 
 			inline const GlobalVarsSharedPtr &get_global_vars()
 				const
@@ -86,6 +74,9 @@ namespace eternal_lands
 				noexcept;
 			void set_flip_back_face_culling(
 				const bool flip_back_face_culling) noexcept;
+			void set_depth_clamp(const bool depth_clamp) noexcept;
+			void set_framebuffer_sRGB(const bool framebuffer_sRGB)
+				noexcept;
 
 		public:
 			/**
@@ -97,6 +88,12 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~StateManager() noexcept;
+			void set_state_set(const StateSet &state_set);
+
+			inline const StateSet &get_state_set() const noexcept
+			{
+				return m_state_set;
+			}
 
 			inline bool switch_mesh(
 				const AbstractMeshSharedPtr &mesh)
@@ -145,7 +142,8 @@ namespace eternal_lands
 			inline bool switch_multisample(const bool multisample)
 				noexcept
 			{
-				if (m_multisample == multisample)
+				if (m_state_set.get_multisample() ==
+					multisample)
 				{
 					return false;
 				}
@@ -157,7 +155,7 @@ namespace eternal_lands
 
 			inline bool switch_blend(const bool blend) noexcept
 			{
-				if (m_blend == blend)
+				if (m_state_set.get_blend() == blend)
 				{
 					return false;
 				}
@@ -170,7 +168,8 @@ namespace eternal_lands
 			inline bool switch_stencil_test(const bool stencil_test)
 				noexcept
 			{
-				if (m_stencil_test == stencil_test)
+				if (m_state_set.get_stencil_test() ==
+					stencil_test)
 				{
 					return false;
 				}
@@ -182,7 +181,7 @@ namespace eternal_lands
 
 			inline bool switch_culling(const bool culling) noexcept
 			{
-				if (m_culling == culling)
+				if (m_state_set.get_culling() == culling)
 				{
 					return false;
 				}
@@ -195,8 +194,9 @@ namespace eternal_lands
 			inline bool switch_color_mask(
 				const glm::bvec4 &color_mask) noexcept
 			{
-				if (glm::all(glm::equal(m_color_mask,
-					color_mask)))
+				if (glm::all(glm::equal(
+					m_state_set.get_color_mask(),
+						color_mask)))
 				{
 					return false;
 				}
@@ -209,7 +209,7 @@ namespace eternal_lands
 			inline bool switch_depth_mask(const bool depth_mask)
 				noexcept
 			{
-				if (m_depth_mask == depth_mask)
+				if (m_state_set.get_depth_mask() == depth_mask)
 				{
 					return false;
 				}
@@ -222,7 +222,7 @@ namespace eternal_lands
 			inline bool switch_depth_test(const bool depth_test)
 				noexcept
 			{
-				if (m_depth_test == depth_test)
+				if (m_state_set.get_depth_test() == depth_test)
 				{
 					return false;
 				}
@@ -235,7 +235,8 @@ namespace eternal_lands
 			inline bool switch_scissor_test(const bool scissor_test)
 				noexcept
 			{
-				if (m_scissor_test == scissor_test)
+				if (m_state_set.get_scissor_test() ==
+					scissor_test)
 				{
 					return false;
 				}
@@ -248,7 +249,7 @@ namespace eternal_lands
 			inline bool switch_polygon_offset_fill(
 				const bool polygon_offset_fill) noexcept
 			{
-				if (m_polygon_offset_fill ==
+				if (m_state_set.get_polygon_offset_fill() ==
 					polygon_offset_fill)
 				{
 					return false;
@@ -262,8 +263,8 @@ namespace eternal_lands
 			inline bool switch_sample_alpha_to_coverage(
 				const bool sample_alpha_to_coverage) noexcept
 			{
-				if (m_sample_alpha_to_coverage ==
-					sample_alpha_to_coverage)
+				if (m_state_set.get_sample_alpha_to_coverage()
+					== sample_alpha_to_coverage)
 				{
 					return false;
 				}
@@ -277,7 +278,8 @@ namespace eternal_lands
 			inline bool switch_restart_index(
 				const Uint32 restart_index) noexcept
 			{
-				if (m_restart_index == restart_index)
+				if (m_state_set.get_restart_index() ==
+					restart_index)
 				{
 					return false;
 				}
@@ -290,7 +292,8 @@ namespace eternal_lands
 			inline bool switch_use_restart_index(
 				const bool use_restart_index) noexcept
 			{
-				if (m_use_restart_index == use_restart_index)
+				if (m_state_set.get_use_restart_index() ==
+					use_restart_index)
 				{
 					return false;
 				}
@@ -303,7 +306,7 @@ namespace eternal_lands
 			inline bool switch_flip_back_face_culling(
 				const bool flip_back_face_culling) noexcept
 			{
-				if (m_flip_back_face_culling ==
+				if (m_state_set.get_flip_back_face_culling() ==
 					flip_back_face_culling)
 				{
 					return false;
@@ -311,6 +314,35 @@ namespace eternal_lands
 
 				set_flip_back_face_culling(
 					flip_back_face_culling);
+
+				return true;
+			}
+
+
+			inline bool switch_depth_clamp(const bool depth_clamp)
+				noexcept
+			{
+				if (m_state_set.get_depth_clamp() ==
+					depth_clamp)
+				{
+					return false;
+				}
+
+				set_depth_clamp(depth_clamp);
+
+				return true;
+			}
+
+			inline bool switch_framebuffer_sRGB(
+				const bool framebuffer_sRGB) noexcept
+			{
+				if (m_state_set.get_framebuffer_sRGB() ==
+					framebuffer_sRGB)
+				{
+					return false;
+				}
+
+				set_framebuffer_sRGB(framebuffer_sRGB);
 
 				return true;
 			}

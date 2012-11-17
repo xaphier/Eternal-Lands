@@ -123,7 +123,7 @@ namespace eternal_lands
 
 				static TextureFormatType get_texture_format(
 					const J_COLOR_SPACE color_space,
-					const bool rg_formats);
+					const bool rg_formats, const bool sRGB);
 				static J_COLOR_SPACE get_color_space(
 					const J_COLOR_SPACE color_space);
 
@@ -132,10 +132,11 @@ namespace eternal_lands
 				~JpegDecompress();
 				ImageSharedPtr get_image(
 					const ReaderSharedPtr &reader,
-					const bool rg_formats);
+					const bool rg_formats,
+					const bool sRGB);
 				void get_image_information(
 					const ReaderSharedPtr &reader,
-					const bool rg_formats,
+					const bool rg_formats, const bool sRGB,
 					TextureFormatType &texture_format,
 					glm::uvec3 &size, Uint16 &mipmaps);
 
@@ -158,7 +159,8 @@ namespace eternal_lands
 		}
 
 		ImageSharedPtr JpegDecompress::get_image(
-			const ReaderSharedPtr &reader, const bool rg_formats)
+			const ReaderSharedPtr &reader, const bool rg_formats,
+			const bool sRGB)
 		{
 			ImageSharedPtr image;
 			JSAMPROW rowptr[1];
@@ -190,7 +192,7 @@ namespace eternal_lands
 			jpeg_calc_output_dimensions(&m_cinfo);
 
 			texture_format = get_texture_format(
-				m_cinfo.jpeg_color_space, rg_formats);
+				m_cinfo.jpeg_color_space, rg_formats, sRGB);
 
 			size[0] = m_cinfo.output_width;
 			size[1] = m_cinfo.output_height;
@@ -218,7 +220,7 @@ namespace eternal_lands
 
 		TextureFormatType JpegDecompress::get_texture_format(
 			const J_COLOR_SPACE color_space,
-			const bool rg_formats)
+			const bool rg_formats, const bool sRGB)
 		{
 			switch (color_space)
 			{
@@ -233,6 +235,11 @@ namespace eternal_lands
 				case JCS_YCbCr:
 				case JCS_CMYK:
 				case JCS_YCCK:
+					if (sRGB)
+					{
+						return tft_srgb8;
+					}
+
 					return tft_rgb8;
 				case JCS_UNKNOWN:
 				default:
@@ -262,8 +269,8 @@ namespace eternal_lands
 
 		void JpegDecompress::get_image_information(
 			const ReaderSharedPtr &reader, const bool rg_formats,
-			TextureFormatType &texture_format, glm::uvec3 &size,
-			Uint16 &mipmaps)
+			const bool sRGB, TextureFormatType &texture_format,
+			glm::uvec3 &size, Uint16 &mipmaps)
 		{
 			ReadWriteMemory buffer;
 
@@ -283,7 +290,7 @@ namespace eternal_lands
 			jpeg_read_header(&m_cinfo, true);
 
 			texture_format = get_texture_format(
-				m_cinfo.jpeg_color_space, rg_formats);
+				m_cinfo.jpeg_color_space, rg_formats, sRGB);
 
 			size[0] = m_cinfo.output_width;
 			size[1] = m_cinfo.output_height;
@@ -390,6 +397,8 @@ namespace eternal_lands
 				case GL_LUMINANCE8:
 				case GL_RGB:
 				case GL_RGB8:
+				case GL_SRGB:
+				case GL_SRGB8:
 					return true;
 				default:
 					return false;
@@ -399,21 +408,21 @@ namespace eternal_lands
 	}
 
 	ImageSharedPtr JpegImage::load_image(const ReaderSharedPtr &reader,
-		const bool rg_formats)
+		const bool rg_formats, const bool sRGB)
 	{
 		JpegDecompress jpeg_decompress;
 
-		return jpeg_decompress.get_image(reader, rg_formats);
+		return jpeg_decompress.get_image(reader, rg_formats, sRGB);
 	}
 
 	void JpegImage::get_image_information(const ReaderSharedPtr &reader,
-		const bool rg_formats, TextureFormatType &texture_format,
-		glm::uvec3 &size, Uint16 &mipmaps, bool &cube_map,
-		bool &array)
+		const bool rg_formats, const bool sRGB,
+		TextureFormatType &texture_format, glm::uvec3 &size,
+		Uint16 &mipmaps, bool &cube_map, bool &array)
 	{
 		JpegDecompress jpeg_decompress;
 
-		jpeg_decompress.get_image_information(reader, rg_formats,
+		jpeg_decompress.get_image_information(reader, rg_formats, sRGB,
 			texture_format, size, mipmaps);
 
 		cube_map = false;

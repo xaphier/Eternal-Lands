@@ -111,11 +111,12 @@ namespace eternal_lands
 	void Material::set_texture(const MaterialDescription &material,
 		const SamplerParameterType sampler)
 	{
-		set_texture(material.get_texture(sampler), sampler);
+		set_texture(material.get_texture(sampler), sampler,
+			material.get_sRGB(sampler));
 	}
 
 	void Material::set_texture(const String &name,
-		const SamplerParameterType sampler)
+		const SamplerParameterType sampler, const bool sRGB)
 	{
 		assert(sampler < m_textures.size());
 
@@ -126,7 +127,8 @@ namespace eternal_lands
 			return;
 		}
 
-		m_textures[sampler] = get_texture_cache()->get_texture(name);
+		m_textures[sampler] = get_texture_cache()->get_texture(name,
+			sRGB);
 	}
 
 	const String &Material::get_texture_name(

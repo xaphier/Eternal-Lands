@@ -178,12 +178,13 @@ namespace eternal_lands
 	}
 
 	TextureSharedPtr TextureCache::do_load_texture(const String &name,
-		const String &index, const bool merge_layers) const
+		const String &index, const bool sRGB, const bool merge_layers)
+		const
 	{
 		ImageSharedPtr image;
 		ReaderSharedPtr reader;
 		ImageCompressionTypeSet compressions;
-		bool rg_formats;
+		bool rg_formats, use_sRGB;
 
 		if (GLEW_EXT_texture_compression_s3tc)
 		{
@@ -200,8 +201,10 @@ namespace eternal_lands
 
 		reader = get_file_system()->get_file(name);
 
+		use_sRGB = sRGB && get_global_vars()->get_use_linear_lighting();
+
 		image = get_codec_manager()->load_image(reader, compressions,
-			rg_formats, true, merge_layers);
+			rg_formats, use_sRGB, merge_layers);
 
 		return do_load_texture(image, index);
 	}
@@ -222,11 +225,12 @@ namespace eternal_lands
 	}
 
 	TextureSharedPtr TextureCache::load_texture(const String &name,
-		const String &index, const bool merge_layers)
+		const String &index, const bool sRGB, const bool merge_layers)
 	{
 		try
 		{
-			return do_load_texture(name, index, merge_layers);
+			return do_load_texture(name, index, sRGB,
+				merge_layers);
 		}
 		catch (const boost::exception &exception)
 		{
@@ -240,7 +244,8 @@ namespace eternal_lands
 		return get_error_texture();
 	}
 
-	const TextureSharedPtr &TextureCache::get_texture(const String &name)
+	const TextureSharedPtr &TextureCache::get_texture(const String &name,
+		const bool sRGB)
 	{
 		TextureSharedPtr texture;
 		TextureCacheMap::iterator found;
@@ -255,7 +260,7 @@ namespace eternal_lands
 			return found->second;
 		}
 
-		texture = load_texture(name, index, false);
+		texture = load_texture(name, index, sRGB, false);
 
 		m_texture_cache[index] = texture;
 
@@ -284,13 +289,14 @@ namespace eternal_lands
 	}
 
 	TextureSharedPtr TextureCache::get_texture_array(
-		const StringVector &image_names, const String &name) const
+		const StringVector &image_names, const String &name,
+		const bool sRGB) const
 	{
 		ImageSharedPtr image;
 		ImageSharedPtrVector images;
 		ReaderSharedPtr reader;
 		ImageCompressionTypeSet compressions;
-		bool rg_formats;
+		bool rg_formats, use_sRGB;
 
 		RANGE_CECK_MIN(image_names.size(), 1,
 			UTF8("not enough images."));
@@ -308,12 +314,14 @@ namespace eternal_lands
 			rg_formats = true;
 		}
 
+		use_sRGB = sRGB && get_global_vars()->get_use_linear_lighting();
+
 		BOOST_FOREACH(const String &image_name, image_names)
 		{
 			reader = get_file_system()->get_file(image_name);
 
 			image = get_codec_manager()->load_image(reader,
-				compressions, rg_formats, true, false);
+				compressions, rg_formats, use_sRGB, false);
 
 			images.push_back(image);
 		}

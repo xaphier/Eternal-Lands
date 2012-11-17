@@ -1581,7 +1581,8 @@ namespace eternal_lands
 
 			return Dxt::uncompress(reader, get_name(), get_size(),
 				get_texture_format(), get_mipmap_count(),
-				get_cube_map(), rg_formats, merge_layers);
+				get_cube_map(), rg_formats, get_sRGB(),
+				merge_layers);
 		}
 
 		if (copy)

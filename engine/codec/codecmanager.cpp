@@ -530,7 +530,7 @@ namespace eternal_lands
 	ImageSharedPtr CodecManager::load_image(const String &name,
 		const FileSystemSharedPtr &file_system,
 		const ImageCompressionTypeSet &compressions,
-		const bool rg_formats, const bool srgb_formats,
+		const bool rg_formats, const bool sRGB,
 		const bool merge_layers) const
 	{
 		Uint8Array32 magic;
@@ -569,7 +569,7 @@ namespace eternal_lands
 				JpegImage::check_load(magic))
 			{
 				return load_image(reader, compressions,
-					rg_formats, srgb_formats, merge_layers);
+					rg_formats, sRGB, merge_layers);
 			}
 		}
 
@@ -581,7 +581,7 @@ namespace eternal_lands
 
 	ImageSharedPtr CodecManager::load_image(const ReaderSharedPtr &reader,
 		const ImageCompressionTypeSet &compressions,
-		const bool rg_formats, const bool srgb_formats,
+		const bool rg_formats, const bool sRGB,
 		const bool merge_layers) const
 	{
 		Uint8Array32 magic;
@@ -599,18 +599,17 @@ namespace eternal_lands
 		if (DdsImage::check_load(magic))
 		{
 			return DdsImage::load_image(*this, reader,
-				compressions, rg_formats, srgb_formats,
-				merge_layers);
+				compressions, rg_formats, sRGB, merge_layers);
 		}
 
 		if (PngImage::check_load(magic))
 		{
-			return PngImage::load_image(reader, rg_formats);
+			return PngImage::load_image(reader, rg_formats, sRGB);
 		}
 
 		if (JpegImage::check_load(magic))
 		{
-			return JpegImage::load_image(reader, rg_formats);
+			return JpegImage::load_image(reader, rg_formats, sRGB);
 		}
 
 		BOOST_FOREACH(const Uint8 value, magic)
@@ -627,7 +626,7 @@ namespace eternal_lands
 
 	void CodecManager::get_image_information(const String &name,
 		const FileSystemSharedPtr &file_system,
-		const bool rg_formats, const bool srgb_formats,
+		const bool rg_formats, const bool sRGB,
 		TextureFormatType &texture_format, glm::uvec3 &size,
 		Uint16 &mipmaps, bool &cube_map, bool &array) const
 	{
@@ -666,9 +665,9 @@ namespace eternal_lands
 				PngImage::check_load(magic) ||
 				JpegImage::check_load(magic))
 			{
-				get_image_information(reader, rg_formats,
-					srgb_formats, texture_format, size,
-					mipmaps, cube_map, array);
+				get_image_information(reader, rg_formats, sRGB,
+					texture_format, size, mipmaps,
+					cube_map, array);
 
 				return;
 			}
@@ -681,7 +680,7 @@ namespace eternal_lands
 	}
 
 	void CodecManager::get_image_information(const ReaderSharedPtr &reader,
-		const bool rg_formats, const bool srgb_formats,
+		const bool rg_formats, const bool sRGB,
 		TextureFormatType &texture_format, glm::uvec3 &size,
 		Uint16 &mipmaps, bool &cube_map, bool &array) const
 	{
@@ -700,7 +699,7 @@ namespace eternal_lands
 		if (DdsImage::check_load(magic))
 		{
 			DdsImage::get_image_information(reader, rg_formats,
-				srgb_formats, texture_format, size, mipmaps,
+				sRGB, texture_format, size, mipmaps,
 				cube_map, array);
 
 			return;
@@ -709,7 +708,7 @@ namespace eternal_lands
 		if (PngImage::check_load(magic))
 		{
 			PngImage::get_image_information(reader, rg_formats,
-				texture_format, size, mipmaps, cube_map,
+				sRGB, texture_format, size, mipmaps, cube_map,
 				array);
 
 			return;
@@ -718,7 +717,7 @@ namespace eternal_lands
 		if (JpegImage::check_load(magic))
 		{
 			JpegImage::get_image_information(reader, rg_formats,
-				texture_format, size, mipmaps, cube_map,
+				sRGB, texture_format, size, mipmaps, cube_map,
 				array);
 
 			return;

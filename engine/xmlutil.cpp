@@ -903,4 +903,62 @@ namespace eternal_lands
 		return true;
 	}
 
+	bool XmlUtil::get_bool_property(const xmlNodePtr node,
+		const String &property)
+	{
+		const xmlAttr *attr;
+
+		if (node == 0)
+		{
+			EL_THROW_EXCEPTION(InvalidParameterException()
+				<< errinfo_message(UTF8("parameter is zero"))
+				<< errinfo_parameter_name(UTF8("node")));
+		}
+
+		for (attr = node->properties; attr; attr = attr->next)
+		{
+			if ((attr->type == XML_ATTRIBUTE_NODE) &&
+				(xmlStrcasecmp(attr->name,
+					BAD_CAST property.get().c_str()) == 0))
+			{
+				if (attr->children == 0)
+				{
+					return false;
+				}
+
+				if (xmlStrcmp(attr->children->content,
+					BAD_CAST UTF8("true")) == 0)
+				{
+					return true;
+				}
+
+				if (xmlStrcmp(attr->children->content,
+					BAD_CAST UTF8("yes")) == 0)
+				{
+					return true;
+				}
+
+				if (xmlStrcmp(attr->children->content,
+					BAD_CAST UTF8("false")) == 0)
+				{
+					return false;
+				}
+
+				if (xmlStrcmp(attr->children->content,
+					BAD_CAST UTF8("no")) == 0)
+				{
+					return false;
+				}
+
+				return boost::lexical_cast<bool>(
+					attr->children->content);
+			}
+		}
+
+		EL_THROW_EXCEPTION(ItemNotFoundException()
+			<< errinfo_message(UTF8("Property not found"))
+			<< errinfo_item_name(property)
+			<< errinfo_parameter_name((char*)node->name));
+	}
+
 }

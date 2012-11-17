@@ -89,6 +89,8 @@ namespace eternal_lands
 				const bool elements_only);
 			static bool has_children(const xmlNodePtr node,
 				const bool elements_only);
+			static bool get_bool_property(const xmlNodePtr node,
+				const String &property);
 
 	};
 

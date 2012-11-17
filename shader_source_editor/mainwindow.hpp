@@ -23,6 +23,11 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		std::vector<QComboBox*> m_glsl_versions;
 		std::vector<QSyntaxHighlighter*> m_highlighters;
 		std::vector<QString> m_plain_text;
+		std::vector<QCheckBox*> m_vertexes;
+		std::vector<QCheckBox*> m_tess_controls;
+		std::vector<QCheckBox*> m_tess_evaluations;
+		std::vector<QCheckBox*> m_geometrys;
+		std::vector<QCheckBox*> m_fragments;
 		QSignalMapper* m_parameters_mapper;
 		QSignalMapper* m_source_mapper;
 		QSignalMapper* m_add_mapper;

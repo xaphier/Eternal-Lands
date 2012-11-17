@@ -97,6 +97,7 @@ void engine_set_effect_debug(const int value);
 void engine_set_use_multisample_shadows(const int value);
 void engine_set_use_scene_fbo(const int value);
 void engine_set_light_system(const int value);
+void engine_set_use_linear_lighting(const int value);
 
 float engine_get_z_near();
 float engine_get_z_far();

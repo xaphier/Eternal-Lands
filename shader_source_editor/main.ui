@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>853</width>
+    <width>864</width>
     <height>600</height>
    </rect>
   </property>
@@ -30,7 +30,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>name</string>
+          <string>Name</string>
          </property>
         </widget>
        </item>
@@ -50,7 +50,7 @@
           <number>1</number>
          </property>
          <property name="maximum">
-          <number>4</number>
+          <number>6</number>
          </property>
         </widget>
        </item>
@@ -73,7 +73,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>types</string>
+          <string>Type</string>
          </property>
         </widget>
        </item>
@@ -102,7 +102,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox_14">
           <property name="title">
-           <string>parameter</string>
+           <string>Parameter</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_6">
            <property name="margin">
@@ -174,18 +174,18 @@
          <widget class="QGroupBox" name="groupBox_15">
           <property name="minimumSize">
            <size>
-            <width>100</width>
+            <width>150</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>100</width>
+            <width>150</width>
             <height>16777215</height>
            </size>
           </property>
           <property name="title">
-           <string>options</string>
+           <string>Options</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="spacing">
@@ -197,12 +197,54 @@
            <item>
             <widget class="QLabel" name="label_8">
              <property name="text">
-              <string>glsl version</string>
+              <string>Glsl version</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QComboBox" name="glsl_version_0"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>Shader</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="vertex_0">
+             <property name="text">
+              <string>vertex</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_control_0">
+             <property name="text">
+              <string>tess control</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_evaluation_0">
+             <property name="text">
+              <string>tess evaluation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="geometry_0">
+             <property name="text">
+              <string>geometry</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="fragment_0">
+             <property name="text">
+              <string>fragment</string>
+             </property>
+            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer_4">
@@ -215,7 +257,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>0</width>
-               <height>80</height>
+               <height>5</height>
               </size>
              </property>
             </spacer>
@@ -226,7 +268,7 @@
         <item row="1" column="0" colspan="2">
          <widget class="QGroupBox" name="groupBox_10">
           <property name="title">
-           <string>source</string>
+           <string>Source</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <property name="spacing">
@@ -257,7 +299,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox_5">
           <property name="title">
-           <string>parameter</string>
+           <string>Parameter</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <property name="margin">
@@ -326,23 +368,23 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QGroupBox" name="groupBox_11">
+         <widget class="QGroupBox" name="groupBox_19">
           <property name="minimumSize">
            <size>
-            <width>100</width>
+            <width>150</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>100</width>
+            <width>150</width>
             <height>16777215</height>
            </size>
           </property>
           <property name="title">
-           <string>options</string>
+           <string>Options</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
            <property name="spacing">
             <number>2</number>
            </property>
@@ -350,9 +392,9 @@
             <number>2</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_5">
+            <widget class="QLabel" name="label_15">
              <property name="text">
-              <string>glsl version</string>
+              <string>Glsl version</string>
              </property>
             </widget>
            </item>
@@ -360,7 +402,49 @@
             <widget class="QComboBox" name="glsl_version_1"/>
            </item>
            <item>
-            <spacer name="verticalSpacer_3">
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>Shader</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="vertex_1">
+             <property name="text">
+              <string>vertex</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_control_1">
+             <property name="text">
+              <string>tess control</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_evaluation_1">
+             <property name="text">
+              <string>tess evaluation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="geometry_1">
+             <property name="text">
+              <string>geometry</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="fragment_1">
+             <property name="text">
+              <string>fragment</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_7">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -370,7 +454,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>0</width>
-               <height>80</height>
+               <height>5</height>
               </size>
              </property>
             </spacer>
@@ -381,7 +465,7 @@
         <item row="1" column="0" colspan="2">
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
-           <string>source</string>
+           <string>Source</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <property name="spacing">
@@ -412,7 +496,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox_7">
           <property name="title">
-           <string>parameter</string>
+           <string>Sarameter</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
            <property name="margin">
@@ -481,21 +565,21 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QGroupBox" name="groupBox_12">
+         <widget class="QGroupBox" name="groupBox_16">
           <property name="minimumSize">
            <size>
-            <width>100</width>
+            <width>150</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>100</width>
+            <width>150</width>
             <height>16777215</height>
            </size>
           </property>
           <property name="title">
-           <string>options</string>
+           <string>Options</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <property name="spacing">
@@ -505,14 +589,56 @@
             <number>2</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_6">
+            <widget class="QLabel" name="label_9">
              <property name="text">
-              <string>glsl version</string>
+              <string>Glsl version</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QComboBox" name="glsl_version_2"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Shader</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="vertex_2">
+             <property name="text">
+              <string>vertex</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_control_2">
+             <property name="text">
+              <string>tess control</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_evaluation_2">
+             <property name="text">
+              <string>tess evaluation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="geometry_2">
+             <property name="text">
+              <string>geometry</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="fragment_2">
+             <property name="text">
+              <string>fragment</string>
+             </property>
+            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer_2">
@@ -525,7 +651,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>0</width>
-               <height>80</height>
+               <height>5</height>
               </size>
              </property>
             </spacer>
@@ -536,7 +662,7 @@
         <item row="1" column="0" colspan="2">
          <widget class="QGroupBox" name="groupBox_6">
           <property name="title">
-           <string>source</string>
+           <string>Source</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <property name="spacing">
@@ -567,7 +693,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox_9">
           <property name="title">
-           <string>parameter</string>
+           <string>Parameter</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
            <property name="margin">
@@ -639,18 +765,18 @@
          <widget class="QGroupBox" name="groupBox_13">
           <property name="minimumSize">
            <size>
-            <width>100</width>
+            <width>150</width>
             <height>0</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>100</width>
+            <width>150</width>
             <height>16777215</height>
            </size>
           </property>
           <property name="title">
-           <string>options</string>
+           <string>Options</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="spacing">
@@ -662,12 +788,54 @@
            <item>
             <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>glsl version</string>
+              <string>Glsl version</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QComboBox" name="glsl_version_3"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Shader</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="vertex_3">
+             <property name="text">
+              <string>vertex</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_control_3">
+             <property name="text">
+              <string>tess control</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_evaluation_3">
+             <property name="text">
+              <string>tess evaluation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="geometry_3">
+             <property name="text">
+              <string>geometry</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="fragment_3">
+             <property name="text">
+              <string>fragment</string>
+             </property>
+            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer">
@@ -680,7 +848,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>0</width>
-               <height>80</height>
+               <height>5</height>
               </size>
              </property>
             </spacer>
@@ -691,7 +859,7 @@
         <item row="1" column="0" colspan="2">
          <widget class="QGroupBox" name="groupBox_8">
           <property name="title">
-           <string>source</string>
+           <string>Source</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <property name="spacing">
@@ -708,6 +876,400 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="source_data_4">
+       <attribute name="title">
+        <string>Source data 4</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_11">
+        <property name="margin">
+         <number>2</number>
+        </property>
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox_11">
+          <property name="title">
+           <string>Parameter</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_10">
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item row="0" column="0" rowspan="5">
+            <widget class="QTreeWidget" name="parameters_4">
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string notr="true">1</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="add_4">
+             <property name="text">
+              <string>add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="edit_4">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>edit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="remove_4">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>remove</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QPushButton" name="copy_4">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>copy</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="clear_4">
+             <property name="text">
+              <string>clear</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox_17">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Options</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Glsl version</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="glsl_version_4"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Shader</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="vertex_4">
+             <property name="text">
+              <string>vertex</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_control_4">
+             <property name="text">
+              <string>tess control</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_evaluation_4">
+             <property name="text">
+              <string>tess evaluation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="geometry_4">
+             <property name="text">
+              <string>geometry</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="fragment_4">
+             <property name="text">
+              <string>fragment</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>5</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_12">
+          <property name="title">
+           <string>Source</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QPlainTextEdit" name="source_4"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="source_data_5">
+       <attribute name="title">
+        <string>Source data 5</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_13">
+        <property name="margin">
+         <number>2</number>
+        </property>
+        <property name="spacing">
+         <number>2</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="groupBox_20">
+          <property name="title">
+           <string>Parameter</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_12">
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <item row="0" column="0" rowspan="5">
+            <widget class="QTreeWidget" name="parameters_5">
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string notr="true">1</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="add_5">
+             <property name="text">
+              <string>add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="edit_5">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>edit</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="remove_5">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>remove</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QPushButton" name="copy_5">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>copy</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="clear_5">
+             <property name="text">
+              <string>clear</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox_18">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Options</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_12">
+             <property name="text">
+              <string>Glsl version</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="glsl_version_5"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>Shader</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="vertex_5">
+             <property name="text">
+              <string>vertex</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_control_5">
+             <property name="text">
+              <string>tess control</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="tess_evaluation_5">
+             <property name="text">
+              <string>tess evaluation</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="geometry_5">
+             <property name="text">
+              <string>geometry</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="fragment_5">
+             <property name="text">
+              <string>fragment</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>5</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QGroupBox" name="groupBox_21">
+          <property name="title">
+           <string>Source</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QPlainTextEdit" name="source_5"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -717,7 +1279,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>853</width>
+     <width>864</width>
      <height>24</height>
     </rect>
    </property>
@@ -805,7 +1367,6 @@
   <tabstop>remove_0</tabstop>
   <tabstop>clear_0</tabstop>
   <tabstop>copy_0</tabstop>
-  <tabstop>glsl_version_0</tabstop>
   <tabstop>source_0</tabstop>
   <tabstop>parameters_1</tabstop>
   <tabstop>add_1</tabstop>
@@ -813,7 +1374,6 @@
   <tabstop>remove_1</tabstop>
   <tabstop>clear_1</tabstop>
   <tabstop>copy_1</tabstop>
-  <tabstop>glsl_version_1</tabstop>
   <tabstop>source_1</tabstop>
   <tabstop>parameters_2</tabstop>
   <tabstop>add_2</tabstop>
@@ -821,7 +1381,6 @@
   <tabstop>remove_2</tabstop>
   <tabstop>clear_2</tabstop>
   <tabstop>copy_2</tabstop>
-  <tabstop>glsl_version_2</tabstop>
   <tabstop>source_2</tabstop>
   <tabstop>parameters_3</tabstop>
   <tabstop>add_3</tabstop>

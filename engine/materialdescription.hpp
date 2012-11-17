@@ -28,6 +28,7 @@ namespace eternal_lands
 	{
 		private:
 			MaterialStringArray m_textures;
+			BitSet64 m_sRGBs;
 			String m_name;
 			String m_effect;
 			String m_script;
@@ -59,6 +60,21 @@ namespace eternal_lands
 				assert(index < m_textures.size());
 
 				return m_textures[index];
+			}
+
+			inline void set_sRGB(const bool sRGB,
+				const Uint16 index)
+			{
+				assert(index < m_sRGBs.size());
+
+				m_sRGBs[index] = sRGB;
+			}
+
+			inline bool get_sRGB(const Uint16 index) const
+			{
+				assert(index < m_sRGBs.size());
+
+				return m_sRGBs[index];
 			}
 
 			inline const String &get_name() const noexcept

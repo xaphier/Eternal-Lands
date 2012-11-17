@@ -23,13 +23,13 @@ namespace eternal_lands
 		public:
 			static void get_image_information(
 				const ReaderSharedPtr &reader,
-				const bool rg_formats,
+				const bool rg_formats, const bool sRGB,
 				TextureFormatType &texture_format,
 				glm::uvec3 &size, Uint16 &mipmaps,
 				bool &cube_map, bool &array);
 			static ImageSharedPtr load_image(
 				const ReaderSharedPtr &reader,
-				const bool rg_formats);
+				const bool rg_formats, const bool sRGB);
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();
 			static void save_image(const ImageSharedPtr &image,
