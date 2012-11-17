@@ -314,7 +314,8 @@ namespace eternal_lands
 	{
 		m_state_set.set_framebuffer_sRGB(framebuffer_sRGB);
 
-		if (!get_global_vars()->get_opengl_3_0())
+		if (!get_global_vars()->get_opengl_3_0() &&
+			!GL_EXT_framebuffer_sRGB && !GL_ARB_framebuffer_sRGB)
 		{
 			return;
 		}

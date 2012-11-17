@@ -94,6 +94,16 @@ namespace eternal_lands
 				return m_random_int();
 			}
 
+			inline Sint32 get_random_int()
+			{
+				return m_random_int();
+			}
+
+			inline bool get_random_bool()
+			{
+				return (m_random_int() % 2) == 0;
+			}
+
 	};
 
 }

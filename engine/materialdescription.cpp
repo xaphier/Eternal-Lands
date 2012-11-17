@@ -131,9 +131,9 @@ namespace eternal_lands
 
 			writer->start_element(SamplerParameterUtil::get_str(
 				sampler));
-			writer->write_string(get_texture(sampler));
 			writer->write_bool_property(String(UTF8("sRGB")),
 				get_sRGB(sampler));
+			writer->write_string(get_texture(sampler));
 			writer->end_element();
 		}
 

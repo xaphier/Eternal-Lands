@@ -439,15 +439,17 @@ void change_engine_use_linear_lighting(int* var)
 	else
 	{
 		if (!gl_extensions_loaded || GL_EXT_framebuffer_sRGB ||
-			engine_get_opengl_3_0() || (var == 0))
+			GL_ARB_framebuffer_sRGB || engine_get_opengl_3_0() ||
+			(var == 0))
 		{
 			*var = engine_true;
 		}
 		else
 		{
 			*var = engine_false;
-			LOG_TO_CONSOLE(c_green2, "OpenGL 3.0 or "
-				"GL_EXT_framebuffer_sRGB needed");
+			LOG_TO_CONSOLE(c_green2, "OpenGL 3.0, "
+				"GL_EXT_framebuffer_sRGB or "
+				"GL_ARB_framebuffer_sRGB needed");
 		}
 	}
 }

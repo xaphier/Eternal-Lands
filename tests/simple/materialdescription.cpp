@@ -37,6 +37,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 	for (i = 0; i < el::material_texture_count; ++i)
 	{
 		BOOST_CHECK_EQUAL(material_description.get_texture(i), "");
+		BOOST_CHECK_EQUAL(material_description.get_sRGB(i), false);
 	}
 
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(0),
@@ -57,6 +58,7 @@ BOOST_AUTO_TEST_CASE(all)
 	el::MaterialStringArray textures;
 	el::String name, effect, script;
 	el::Mat2x3Array2 texture_matrices;
+	el::BitSet64 sRGB;
 	glm::vec4 color;
 	Uint32 i;
 
@@ -80,6 +82,11 @@ BOOST_AUTO_TEST_CASE(all)
 		name = get_random_name();
 	}
 
+	for (i = 0; i < el::material_texture_count; ++i)
+	{
+		sRGB[i] = get_random_bool();
+	}
+
 	name = get_random_name();
 	effect = get_random_name();
 	script = get_random_name();
@@ -88,6 +95,7 @@ BOOST_AUTO_TEST_CASE(all)
 	{
 		BOOST_CHECK_NO_THROW(material_description.set_texture(
 			textures[i], i));
+		BOOST_CHECK_NO_THROW(material_description.set_sRGB(sRGB[i], i));
 	}
 
 	BOOST_CHECK_NO_THROW(material_description.set_texture_matrices(
@@ -103,6 +111,7 @@ BOOST_AUTO_TEST_CASE(all)
 	{
 		BOOST_CHECK_EQUAL(material_description.get_texture(i),
 			textures[i]);
+		BOOST_CHECK_EQUAL(material_description.get_sRGB(i), sRGB[i]);
 	}
 
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(0),
@@ -127,6 +136,7 @@ BOOST_AUTO_TEST_CASE(xml)
 	el::MaterialStringArray textures;
 	el::String name, effect, script;
 	el::Mat2x3Array2 texture_matrices;
+	el::BitSet64 sRGB;
 	glm::vec4 color;
 	Uint32 i;
 
@@ -150,6 +160,11 @@ BOOST_AUTO_TEST_CASE(xml)
 		name = get_random_name();
 	}
 
+	for (i = 0; i < el::material_texture_count; ++i)
+	{
+		sRGB[i] = get_random_bool();
+	}
+
 	name = get_random_name();
 	effect = get_random_name();
 	script = get_random_name();
@@ -158,6 +173,8 @@ BOOST_AUTO_TEST_CASE(xml)
 	{
 		BOOST_CHECK_NO_THROW(tmp_material_description.set_texture(
 			textures[i], i));
+		BOOST_CHECK_NO_THROW(tmp_material_description.set_sRGB(sRGB[i],
+			i));
 	}
 
 	BOOST_CHECK_NO_THROW(tmp_material_description.set_texture_matrices(
@@ -187,6 +204,7 @@ BOOST_AUTO_TEST_CASE(xml)
 	{
 		BOOST_CHECK_EQUAL(material_description.get_texture(i),
 			textures[i]);
+		BOOST_CHECK_EQUAL(material_description.get_sRGB(i), sRGB[i]);
 	}
 
 	EL_CHECK_EQUAL_VEC_MAT(material_description.get_texture_matrix(0),
