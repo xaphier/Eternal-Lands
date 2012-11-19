@@ -92,6 +92,7 @@ namespace eternal_lands
 			bool m_effect_debug;
 			bool m_use_scene_fbo;
 			bool m_use_linear_lighting;
+			bool m_use_multithreaded_culling;
 
 		public:
 			GlobalVars();
@@ -234,6 +235,13 @@ namespace eternal_lands
 				const bool use_linear_lighting) noexcept
 			{
 				m_use_linear_lighting = use_linear_lighting;
+			}
+
+			inline void set_use_multithreaded_culling(
+				const bool use_multithreaded_culling) noexcept
+			{
+				m_use_multithreaded_culling =
+					use_multithreaded_culling;
 			}
 
 			inline const String &get_quality() const noexcept
@@ -425,6 +433,12 @@ namespace eternal_lands
 			inline bool get_use_linear_lighting() const noexcept
 			{
 				return m_use_linear_lighting;
+			}
+
+			inline bool get_use_multithreaded_culling() const
+				noexcept
+			{
+				return m_use_multithreaded_culling;
 			}
 
 	};

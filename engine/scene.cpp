@@ -621,13 +621,39 @@ namespace eternal_lands
 		const glm::vec3 &camera, const bool shadow,
 		ObjectVisitor &objects) const
 	{
-		objects.next_frame();
+		LOG_DEBUG(lt_rendering, UTF8("Culling objects %1%"),
+			UTF8("started"));
 
-		objects.set_projection_view_matrix(projection_view_matrix);
+		try
+		{
+			objects.next_frame();
 
-		intersect(frustum, shadow, objects);
+			objects.set_projection_view_matrix(
+				projection_view_matrix);
 
-		objects.sort(camera);
+			intersect(frustum, shadow, objects);
+
+			objects.sort(camera);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling objects caught "
+				"exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling objects caught "
+				"exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling objects caught "
+				"'%1%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Culling objects %1%"),
+			UTF8("done"));
 	}
 
 	void Scene::cull_terrain(const Frustum &frustum,
@@ -636,17 +662,45 @@ namespace eternal_lands
 		const Uint16 max_instances, TerrainRenderingData &terrain_data)
 		const
 	{
-		TerrainVisitor terrain_visitor(buffer, offset, max_instances);
+		LOG_DEBUG(lt_rendering, UTF8("Culling terrain %1%"),
+			UTF8("started"));
 
-		intersect_terrain(frustum, camera, terrain_visitor);
+		try
+		{
+			TerrainVisitor terrain_visitor(buffer, offset,
+				max_instances);
 
-		terrain_data.set_material(terrain_visitor.get_material());
-		terrain_data.set_instances(terrain_visitor.get_instances());
-		terrain_data.set_terrain_lod_offset(
-			terrain_visitor.get_terrain_lod_offset());
+			intersect_terrain(frustum, camera, terrain_visitor);
+
+			terrain_data.set_material(
+				terrain_visitor.get_material());
+			terrain_data.set_instances(
+				terrain_visitor.get_instances());
+			terrain_data.set_terrain_lod_offset(
+				terrain_visitor.get_terrain_lod_offset());
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling terrain caught "
+				"exception '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling terrain caught "
+				"exception '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling terrain caught "
+				"'%1%'"), UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Culling terrain %1%"),
+			UTF8("done"));
 	}
 
-	void Scene::cull()
+	void Scene::do_cull()
 	{
 		Frustum frustum;
 		AbstractWriteMemorySharedPtr visible_terrain_buffer;
@@ -743,6 +797,7 @@ namespace eternal_lands
 				).get_shadow_projection_view_matrices()[i]);
 		}
 
+		if (get_global_vars()->get_use_multithreaded_culling())
 		#pragma omp parallel sections
 		{
 			#pragma omp section
@@ -877,6 +932,129 @@ namespace eternal_lands
 					m_shadow_terrains[3]);
 			}
 		}
+		else
+		{
+			cull(frustum,
+				get_scene_view().get_projection_view_matrix(),
+				glm::vec3(get_scene_view().get_camera()),
+				false, m_visible_objects);
+
+			if (use_terrain)
+			{
+				offset = m_visible_terrain.get_offset();
+				max_instances =
+					m_visible_terrain.get_max_instances();
+
+				cull_terrain(frustum, visible_terrain_buffer,
+					glm::vec3(get_scene_view(
+						).get_camera()), offset,
+					max_instances, m_visible_terrain);
+			}
+
+			if (get_map()->get_dungeon() || get_lights())
+			{
+				intersect(frustum, m_visible_lights);
+
+				m_visible_lights.update_camera(glm::vec3(
+					get_scene_view().get_camera()));
+			}
+
+			if (count > 0)
+			{
+				cull(shadow_frutums[0], get_scene_view(
+					).get_shadow_projection_view_matrices(
+						)[0],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[0]),
+					true, m_shadow_objects[0]);
+			}
+
+			if ((count > 0) && use_terrain)
+			{
+				offset = m_shadow_terrains[0].get_offset();
+				max_instances = m_shadow_terrains[
+					0].get_max_instances();
+
+				cull_terrain(shadow_frutums[0],
+					shadow_terrain_buffers[0],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[0]),
+					offset, max_instances,
+					m_shadow_terrains[0]);
+			}
+
+			if (count > 1)
+			{
+				cull(shadow_frutums[1], get_scene_view(
+					).get_shadow_projection_view_matrices(
+						)[1],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[1]),
+					true, m_shadow_objects[1]);
+			}
+
+			if ((count > 1) && use_terrain)
+			{
+				offset = m_shadow_terrains[1].get_offset();
+				max_instances = m_shadow_terrains[
+					1].get_max_instances();
+
+				cull_terrain(shadow_frutums[1],
+					shadow_terrain_buffers[1],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[1]),
+					offset, max_instances,
+					m_shadow_terrains[1]);
+			}
+
+			if (count > 2)
+			{
+				cull(shadow_frutums[2], get_scene_view(
+					).get_shadow_projection_view_matrices(
+						)[2],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[2]),
+					true, m_shadow_objects[2]);
+			}
+
+			if ((count > 2) && use_terrain)
+			{
+				offset = m_shadow_terrains[2].get_offset();
+				max_instances = m_shadow_terrains[
+					2].get_max_instances();
+
+				cull_terrain(shadow_frutums[2],
+					shadow_terrain_buffers[2],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[2]),
+					offset, max_instances,
+					m_shadow_terrains[2]);
+			}
+
+			if (count > 3)
+			{
+				cull(shadow_frutums[3], get_scene_view(
+					).get_shadow_projection_view_matrices(
+						)[3],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[3]),
+					true, m_shadow_objects[3]);
+			}
+
+			if ((count > 3) && use_terrain)
+			{
+				offset = m_shadow_terrains[3].get_offset();
+				max_instances = m_shadow_terrains[
+					3].get_max_instances();
+
+				cull_terrain(shadow_frutums[3],
+					shadow_terrain_buffers[3],
+					glm::vec3(get_scene_view(
+						).get_shadow_cameras()[3]),
+					offset, max_instances,
+					m_shadow_terrains[3]);
+			}
+		}
 
 		if (use_terrain)
 		{
@@ -893,6 +1071,34 @@ namespace eternal_lands
 			build_terrain_map();
 			m_rebuild_terrain_map = false;
 		}
+	}
+
+	void Scene::cull()
+	{
+		LOG_DEBUG(lt_rendering, UTF8("Culling %1%"), UTF8("started"));
+
+		try
+		{
+			do_cull();
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling caught exception"
+				" '%1%'"),
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling caught exception"
+				" '%1%'"), exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While culling caught '%1%'"),
+				UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Culling %1%"), UTF8("done"));
 	}
 
 	bool Scene::switch_program(const GlslProgramSharedPtr &program)

@@ -136,6 +136,7 @@ namespace eternal_lands
 			void build_light_index_map();
 			void do_draw_default();
 			void do_update_light_system();
+			void do_cull();
 
 		protected:
 			virtual void intersect_terrain(const Frustum &frustum,

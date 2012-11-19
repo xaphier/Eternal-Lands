@@ -1681,6 +1681,11 @@ extern "C" void engine_set_use_linear_lighting(const int value)
 	global_vars->set_use_linear_lighting(value != 0);
 }
 
+extern "C" void engine_set_use_multithreaded_culling(const int value)
+{
+	global_vars->set_use_multithreaded_culling(value != 0);
+}
+
 extern "C" int engine_get_opengl_3_0()
 {
 	return global_vars->get_opengl_3_0();

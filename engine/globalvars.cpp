@@ -41,6 +41,7 @@ namespace eternal_lands
 		m_effect_debug = false;
 		m_use_scene_fbo = true;
 		m_use_linear_lighting = true;
+		m_use_multithreaded_culling = true;
 	}
 
 	GlobalVars::~GlobalVars() noexcept
