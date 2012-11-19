@@ -200,6 +200,24 @@ namespace eternal_lands
 			void set_texture_parameter();
 			void build_texture_id();
 			void calc_size();
+			void do_sub_texture(const Uint16 texture_mipmap,
+				const Uint16 image_mipmap,
+				const ImageSharedPtr &image,
+				const glm::uvec3 &texture_offset,
+				const glm::uvec3 &image_offset,
+				const glm::uvec3 &size);
+			void do_set_image(const ImageSharedPtr &image);
+			void do_set_images(const ImageSharedPtrVector &images);
+			void do_init(const Uint32 width, const Uint32 height,
+				const Uint32 depth, const Uint16 mipmaps,
+				const Uint16 samples = 0);
+			void do_attach_ext(const GLenum attachment,
+				const Uint32 level, const Uint32 layer);
+			void do_attach(const GLenum attachment,
+				const Uint32 level, const Uint32 layer);
+			void do_attach(const GLenum attachment,
+				const CubeMapFaceType face, const Uint32 level,
+				const Uint32 layer);
 
 			inline bool get_use_mipmaps() const
 			{
@@ -393,12 +411,8 @@ namespace eternal_lands
 			void attach(const GLenum attachment, const Uint32 level,
 				const Uint32 layer);
 			void attach(const GLenum attachment,
-				const CubeMapFaceType face, const Uint32 level);
-			void attach(const GLenum attachment,
 				const CubeMapFaceType face, const Uint32 level,
 				const Uint32 layer);
-			void attach(const GLenum attachment,
-				const Uint32 level);
 
 			inline void change_format(const TextureFormatType value)
 				noexcept

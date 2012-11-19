@@ -338,7 +338,13 @@ namespace eternal_lands
 
 	void Map::set_clipmap_terrain_texture(const TextureSharedPtr &texture)
 	{
-		m_terrain->set_clipmap_terrain_texture(texture);
+		m_terrain->set_clipmap_texture(texture);
+	}
+
+	void Map::set_clipmap_terrain_normal_texture(
+		const TextureSharedPtr &texture)
+	{
+		m_terrain->set_clipmap_normal_texture(texture);
 	}
 
 	void Map::set_terrain_geometry_maps(

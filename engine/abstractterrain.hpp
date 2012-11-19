@@ -90,7 +90,9 @@ namespace eternal_lands
 			virtual void init_rendering_data(
 				TerrainRenderingData &rendering_data) const = 0;
 			virtual void clear() = 0;
-			void set_clipmap_terrain_texture(
+			void set_clipmap_texture(
+				const TextureSharedPtr &texture);
+			void set_clipmap_normal_texture(
 				const TextureSharedPtr &texture);
 			void set_geometry_maps(
 				const ImageSharedPtr &displacement_map,

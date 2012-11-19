@@ -1362,7 +1362,7 @@ namespace eternal_lands
 			get_target(), InvalidParameterException());
 	}
 
-	void Texture::set_image(const ImageSharedPtr &image)
+	void Texture::do_set_image(const ImageSharedPtr &image)
 	{
 		Uint32 width, height, depth, mip, level, mipmaps, layer;
 
@@ -1488,7 +1488,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void Texture::set_images(const ImageSharedPtrVector &images)
+	void Texture::do_set_images(const ImageSharedPtrVector &images)
 	{
 		Uint32 layer, i, width, height, depth, mip, level, mipmaps;
 
@@ -1645,7 +1645,7 @@ namespace eternal_lands
 			image->get_size());
 	}
 
-	void Texture::sub_texture(const Uint16 texture_mipmap,
+	void Texture::do_sub_texture(const Uint16 texture_mipmap,
 		const Uint16 image_mipmap, const ImageSharedPtr &image,
 		const glm::uvec3 &texture_offset,
 		const glm::uvec3 &image_offset, const glm::uvec3 &size)
@@ -1823,7 +1823,7 @@ namespace eternal_lands
 		}
 	}
 
-	void Texture::init(const Uint32 width, const Uint32 height,
+	void Texture::do_init(const Uint32 width, const Uint32 height,
 		const Uint32 depth, const Uint16 mipmaps,
 		const Uint16 samples)
 	{
@@ -1914,7 +1914,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void Texture::attach_ext(const GLenum attachment, const Uint32 level,
+	void Texture::do_attach_ext(const GLenum attachment, const Uint32 level,
 		const Uint32 layer)
 	{
 		CHECK_GL_ERROR();
@@ -1951,7 +1951,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void Texture::attach(const GLenum attachment, const Uint32 level,
+	void Texture::do_attach(const GLenum attachment, const Uint32 level,
 		const Uint32 layer)
 	{
 		CHECK_GL_ERROR();
@@ -2000,66 +2000,7 @@ namespace eternal_lands
 		CHECK_GL_ERROR_NAME(get_name());
 	}
 
-	void Texture::attach(const GLenum attachment, const Uint32 level)
-	{
-		CHECK_GL_ERROR();
-
-		switch (get_target())
-		{
-			case ttt_texture_3d:
-			case ttt_texture_1d_array:
-			case ttt_texture_2d_array:
-			case ttt_texture_cube_map:
-			case ttt_texture_cube_map_array:
-				glFramebufferTexture(GL_FRAMEBUFFER,
-					attachment, get_texture_id(), level);
-				break;
-			case ttt_texture_2d_multisample_array:
-				glFramebufferTexture(GL_FRAMEBUFFER,
-					attachment, get_texture_id(), 0);
-				break;
-			case ttt_texture_1d:
-			case ttt_texture_2d:
-			case ttt_texture_2d_multisample:
-			case ttt_texture_rectangle:
-			default:
-				assert(false);
-				break;
-		}
-
-		CHECK_GL_ERROR_NAME(get_name());
-	}
-
-	void Texture::attach(const GLenum attachment,
-		const CubeMapFaceType face, const Uint32 level)
-	{
-		CHECK_GL_ERROR();
-
-		switch (get_target())
-		{
-			case ttt_texture_cube_map:
-				glFramebufferTexture2D(GL_FRAMEBUFFER,
-					attachment, face, get_texture_id(),
-					level);
-				break;
-			case ttt_texture_1d:
-			case ttt_texture_2d:
-			case ttt_texture_1d_array:
-			case ttt_texture_rectangle:
-			case ttt_texture_3d:
-			case ttt_texture_2d_array:
-			case ttt_texture_cube_map_array:
-			case ttt_texture_2d_multisample:
-			case ttt_texture_2d_multisample_array:
-			default:
-				assert(false);
-				break;
-		}
-
-		CHECK_GL_ERROR_NAME(get_name());
-	}
-
-	void Texture::attach(const GLenum attachment,
+	void Texture::do_attach(const GLenum attachment,
 		const CubeMapFaceType face, const Uint32 level,
 		const Uint32 layer)
 	{
@@ -2073,10 +2014,14 @@ namespace eternal_lands
 			case ttt_texture_rectangle:
 			case ttt_texture_3d:
 			case ttt_texture_2d_array:
-			case ttt_texture_cube_map:
 			case ttt_texture_2d_multisample:
 			case ttt_texture_2d_multisample_array:
 				assert(false);
+				break;
+			case ttt_texture_cube_map:
+				glFramebufferTexture2D(GL_FRAMEBUFFER,
+					attachment, face, get_texture_id(),
+					level);
 				break;
 			case ttt_texture_cube_map_array:
 				glFramebufferTexture3D(GL_FRAMEBUFFER,
@@ -2086,6 +2031,300 @@ namespace eternal_lands
 		}
 
 		CHECK_GL_ERROR_NAME(get_name());
+	}
+
+	void Texture::sub_texture(const Uint16 texture_mipmap,
+		const Uint16 image_mipmap, const ImageSharedPtr &image,
+		const glm::uvec3 &texture_offset,
+		const glm::uvec3 &image_offset, const glm::uvec3 &size)
+	{
+		String name;
+
+		name = UTF8("(nullptr)");
+
+		if (image.get() != nullptr)
+		{
+			name = image->get_name();
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Set sub texture '%1%' to '%2%' "
+			"%3%"), get_name() % name % UTF8("started"));
+
+		try
+		{
+			do_sub_texture(texture_mipmap, image_mipmap, image,
+				texture_offset, image_offset, size);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting sub texture "
+				"'%1%' to '%2%' caught exception '%3%'"),
+				get_name() % name %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting sub texture "
+				"'%1%' to '%2%' caught exception '%3%'"),
+				get_name() % name % exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting sub texture "
+				"'%1%' to '%2%' caught %3%"), get_name() %
+				name % UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Set sub texture '%1%' to '%2%' "
+			"%3%"), get_name() % name % UTF8("done"));
+	}
+
+	void Texture::set_image(const ImageSharedPtr &image)
+	{
+		String name;
+
+		name = UTF8("(nullptr)");
+
+		if (image.get() != nullptr)
+		{
+			name = image->get_name();
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Set texture '%1%' to image '%2%' "
+			"%3%"), get_name() % name % UTF8("started"));
+
+		try
+		{
+			do_set_image(image);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting texture '%1%' to"
+				" image '%2%' caught exception '%3%'"),
+				get_name() % name %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting texture '%1%' to"
+				" image '%2%' caught exception '%3%'"),
+				get_name() % name % exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting texture '%1%' to"
+				" image '%2%' caught '%3%'"), get_name() %
+				name % UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Set texture '%1%' to image '%2%' "
+			"%3%"), get_name() % name % UTF8("done"));
+	}
+
+	void Texture::set_images(const ImageSharedPtrVector &images)
+	{
+		StringStream str;
+		String name;
+
+		BOOST_FOREACH(const ImageSharedPtr &image, images)
+		{
+			if (image.get() != nullptr)
+			{
+				str << image->get_name() << std::endl;
+			}
+			else
+			{
+				str << UTF8("(nullptr)") << std::endl;
+			}
+		}
+
+		name = String(str.str());
+
+		LOG_DEBUG(lt_texture, UTF8("Set texture '%1%' to images '%2%' "
+			"%3%"), get_name() % name % UTF8("started"));
+
+		try
+		{
+			do_set_images(images);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting texture '%1%' to"
+				" images '%2%' caught exception '%3%'"),
+				get_name() % name %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting texture '%1%' to"
+				" images '%2%' caught exception '%3%'"),
+				get_name() % name % exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While setting texture '%1%' to"
+				" images '%2%' caught '%3%'"), get_name() %
+				name % UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Set texture '%1%' to images '%2%' "
+			"%3%"), get_name() % name % UTF8("done"));
+	}
+
+	void Texture::init(const Uint32 width, const Uint32 height,
+		const Uint32 depth, const Uint16 mipmaps, const Uint16 samples)
+	{
+		LOG_DEBUG(lt_texture, UTF8("Init texture '%1%' to <%2%, %3%, "
+			"%4%>-%5% (%6%) %7%"), get_name() % width % height %
+			depth % mipmaps % samples % UTF8("started"));
+
+		try
+		{
+			do_init(width, height, depth, mipmaps, samples);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While initializing texture "
+				"'%1%' to <%2%, %3%, %4%>-%5% (%6%) caught "
+				"exception '%7%'"), get_name() % width % height
+				% depth % mipmaps % samples %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While initializing texture "
+				"'%1%' to <%2%, %3%, %4%>-%5% (%6%) caught "
+				"exception '%7%'"), get_name() % width % height
+				% depth % mipmaps % samples % exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While initializing texture "
+				"'%1%' to <%2%, %3%, %4%>-%5% (%6%) caught "
+				"'%7%'"), get_name() % width % height
+				% depth % mipmaps % samples %
+				UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Init texture '%1%' to <%2%, %3%, "
+			"%4%>-%5% (%6%) %7%"), get_name() % width % height %
+			depth % mipmaps % samples % UTF8("done"));
+	}
+
+	void Texture::attach_ext(const GLenum attachment, const Uint32 level,
+		const Uint32 layer)
+	{
+		LOG_DEBUG(lt_texture, UTF8("Attach texture '%1%' to level %2% "
+			"at layer %3% %4%"), get_name() % level % layer %
+			UTF8("started"));
+
+		try
+		{
+			do_attach_ext(attachment, level, layer);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attaching texture '%1%' "
+				"to level %2% at layer %3% caught exception "
+				"'%4%'"), get_name() % level % layer %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attaching texture '%1%' "
+				"to level %2% at layer %3% caught exception "
+				"'%4%'"), get_name() % level % layer %
+				exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attaching texture '%1%' "
+				"to level %2% at layer %3% caught '%4%'"),
+				get_name() % level % layer %
+				UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Attach texture '%1%' to level %2% "
+			"at layer %3% %4%"), get_name() % level % layer %
+			UTF8("done"));
+	}
+
+	void Texture::attach(const GLenum attachment, const Uint32 level,
+		const Uint32 layer)
+	{
+		LOG_DEBUG(lt_texture, UTF8("Attach texture '%1%' to level %2% "
+			"at layer %3% %4%"), get_name() % level % layer %
+			UTF8("started"));
+
+		try
+		{
+			do_attach(attachment, level, layer);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attaching texture '%1%' "
+				"to level %2% at layer %3% caught exception "
+				"'%4%'"), get_name() % level % layer %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attaching texture '%1%' "
+				"to level %2% at layer %3% caught exception "
+				"'%4%'"), get_name() % level % layer %
+				exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attaching texture '%1%' "
+				"to level %2% at layer %3% caught '%4%'"),
+				get_name() % level % layer %
+				UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Attach texture '%1%' to level %2% "
+			"at layer %3% %4%"), get_name() % level % layer %
+			UTF8("done"));
+	}
+
+	void Texture::attach(const GLenum attachment,
+		const CubeMapFaceType face, const Uint32 level,
+		const Uint32 layer)
+	{
+		LOG_DEBUG(lt_texture, UTF8("Attach texture '%1%' to face %2% "
+			"and level %3% at layer %4% %5%"), get_name() % face %
+			level % layer % UTF8("started"));
+
+		try
+		{
+			do_attach(attachment, face, level, layer);
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attachingtexture '%1%' "
+				"to face %2% and level %3% at layer %4% caught"
+				" exception '%5%'"), get_name() % face %
+				level % layer %
+				boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attachingtexture '%1%' "
+				"to face %2% and level %3% at layer %4% caught"
+				" exception '%5%'"), get_name() % face %
+				level % layer % exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While attachingtexture '%1%' "
+				"to face %2% and level %3% at layer %4% caught"
+				" '%5%'"), get_name() % face % level % layer %
+				UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_texture, UTF8("Attach texture '%1%' to face %2% "
+			"and level %3% at layer %4% %5%"), get_name() % face %
+			level % layer % UTF8("done"));
 	}
 
 	void Texture::build_texture_id()

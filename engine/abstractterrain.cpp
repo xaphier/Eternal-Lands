@@ -70,10 +70,16 @@ namespace eternal_lands
 		return vector_scale;
 	}
 
-	void AbstractTerrain::set_clipmap_terrain_texture(
+	void AbstractTerrain::set_clipmap_texture(
 		const TextureSharedPtr &texture)
 	{
 		m_terrain_material->set_texture(texture, spt_effect_0);
+	}
+
+	void AbstractTerrain::set_clipmap_normal_texture(
+		const TextureSharedPtr &texture)
+	{
+		m_terrain_material->set_texture(texture, spt_effect_1);
 	}
 
 	void AbstractTerrain::set_geometry_maps(

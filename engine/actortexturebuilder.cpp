@@ -565,6 +565,9 @@ namespace eternal_lands
 		TextureFormatType texture_format;
 		bool compressed, sRGB;
 
+		LOG_DEBUG(lt_actor_texture, UTF8("Building actor '%1%' images "
+			"%2%"), get_name() % UTF8("started"));
+
 		end = m_parts.end();
 
 		for (it = m_parts.begin(); it != end; ++it)
@@ -831,15 +834,24 @@ namespace eternal_lands
 				actor_part_offsets[apt_cape], m_image,
 				compressions, sRGB);
 		}
+
+		LOG_DEBUG(lt_actor_texture, UTF8("Building actor '%1%' images "
+			"%2%"), get_name() % UTF8("done"));
 	}
 
 	void ActorTextureBuilder::build_actor_texture()
 	{
+		LOG_DEBUG(lt_actor_texture, UTF8("Building actor '%1%' texture"
+			" %2%"), get_name() % UTF8("started"));
+
 		CHECK_GL_ERROR();
 
 		m_texture->set_image(m_image);
 
 		CHECK_GL_ERROR_NAME(get_name());
+
+		LOG_DEBUG(lt_actor_texture, UTF8("Building actor '%1%' texture"
+			" %2%"), get_name() % UTF8("done"));
 	}
 
 	void ActorTextureBuilder::set_parts(

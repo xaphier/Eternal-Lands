@@ -172,6 +172,8 @@ namespace eternal_lands
 			glm::vec2 get_terrain_size() const;
 			void set_clipmap_terrain_texture(
 				const TextureSharedPtr &texture);
+			void set_clipmap_terrain_normal_texture(
+				const TextureSharedPtr &texture);
 			void set_terrain_geometry_maps(
 				const ImageSharedPtr &displacement_map,
 				const ImageSharedPtr &normal_map,

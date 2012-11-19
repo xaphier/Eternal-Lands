@@ -60,8 +60,10 @@ namespace eternal_lands
 			AbstractFrameBufferSharedPtr m_shadow_frame_buffer;
 			AbstractFrameBufferSharedPtr m_clipmap_terrain_frame_buffer;
 			AbstractFrameBufferSharedPtr m_scene_frame_buffer;
+			MaterialSharedPtr m_normal_map_material;
 			TextureSharedPtr m_shadow_texture;
 			TextureSharedPtr m_clipmap_terrain_texture;
+			TextureSharedPtr m_clipmap_terrain_normal_texture;
 			TextureSharedPtr m_light_index_texture;
 			TextureSharedPtr m_light_position_texture;
 			TextureSharedPtr m_light_color_texture;
@@ -116,6 +118,7 @@ namespace eternal_lands
 				const MaterialSharedPtr &material,
 				const Mat2x3Array2 &texture_matrices,
 				const Uint16 slice);
+			void update_terrain_normal_map(const Uint16 slice);
 			void update_terrain_map(const Uint16 slice);
 			void update_terrain_map();
 			void do_build_terrain_map();

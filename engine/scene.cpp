@@ -426,7 +426,7 @@ namespace eternal_lands
 				String(UTF8("terrain")), size, size, 0, false);
 
 		m_clipmap_terrain_texture = boost::make_shared<Texture>(
-			String(UTF8("terrain")), size, size,
+			String(UTF8("terrain map")), size, size,
 			m_clipmap_terrain.get_slices(), mipmaps, 0, format,
 			target);
 
@@ -435,6 +435,36 @@ namespace eternal_lands
 		m_clipmap_terrain_texture->set_wrap_r(twt_clamp);
 		m_clipmap_terrain_texture->init(size, size,
 			m_clipmap_terrain.get_slices(), mipmaps);
+
+		if (get_global_vars()->get_opengl_3_0())
+		{
+			MaterialDescription material_description;
+
+			material_description.set_name(
+				String(UTF8("normal_map")));
+			material_description.set_effect(
+				String(UTF8("normal_map")));
+
+			m_normal_map_material = get_scene_resources(
+				).get_material_builder()->get_material(
+					material_description);
+
+			m_clipmap_terrain_normal_texture =
+				boost::make_shared<Texture>(
+					String(UTF8("terrain normal map")),
+					size, size,
+					m_clipmap_terrain.get_slices(),
+					mipmaps, 0, tft_rg8, target);
+
+			m_clipmap_terrain_normal_texture->set_wrap_s(twt_clamp);
+			m_clipmap_terrain_normal_texture->set_wrap_t(twt_clamp);
+			m_clipmap_terrain_normal_texture->set_wrap_r(twt_clamp);
+			m_clipmap_terrain_normal_texture->init(size, size,
+				m_clipmap_terrain.get_slices(), mipmaps);
+
+			m_normal_map_material->set_texture(
+				m_clipmap_terrain_texture, spt_effect_0);
+		}
 
 		m_clipmap_terrain_frame_buffer->bind();
 		m_clipmap_terrain_frame_buffer->attach(
@@ -446,6 +476,9 @@ namespace eternal_lands
 		{
 			m_map->set_clipmap_terrain_texture(
 				m_clipmap_terrain_texture);
+
+			m_map->set_clipmap_terrain_normal_texture(
+				m_clipmap_terrain_normal_texture);
 		}
 	}
 
@@ -1724,7 +1757,7 @@ namespace eternal_lands
 
 		try
 		{
-			STRING_MARKER(UTF8("Updating terrain slice %1%"),
+			STRING_MARKER(UTF8("Updating terrain map slice %1%"),
 				slice);
 
 			tile_scale = m_map->get_terrain_size() /
@@ -1747,24 +1780,87 @@ namespace eternal_lands
 		}
 		catch (boost::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While updating terrain slice "
-				"%1% caught exception '%2%'"), slice %
+			LOG_EXCEPTION_STR(UTF8("While updating terrain map "
+				"slice %1% caught exception '%2%'"), slice %
 				boost::diagnostic_information(exception));
 		}
 		catch (std::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While updating terrain slice "
-				"%1% caught exception '%2%'"), slice %
+			LOG_EXCEPTION_STR(UTF8("While updating terrain map "
+				"slice %1% caught exception '%2%'"), slice %
 				exception.what());
 		}
 		catch (...)
 		{
-			LOG_EXCEPTION_STR(UTF8("While updating terrain slice "
-				"%1% caught '%2%'"), UTF8("unknown error"));
+			LOG_EXCEPTION_STR(UTF8("While updating terrain map "
+				"slice %1% caught '%2%'"), slice %
+				UTF8("unknown error"));
 		}
 
 		LOG_DEBUG(lt_rendering, UTF8("Updating terrain map slice %1% "
 			"%2%"), slice % UTF8("done"));
+	}
+
+	void Scene::update_terrain_normal_map(const Uint16 slice)
+	{
+		StateSetUtil state_set(get_state_manager());
+
+		LOG_DEBUG(lt_rendering, UTF8("Updating terrain normal map "
+			"slice %1% %2%"), slice % UTF8("started"));
+
+		try
+		{
+			STRING_MARKER(UTF8("Updating terrain normal map slice "
+				"%1%"), slice);
+
+			m_clipmap_terrain_frame_buffer->bind();
+			m_clipmap_terrain_frame_buffer->attach(
+				m_clipmap_terrain_normal_texture, fbat_color_0,
+				slice);
+			m_clipmap_terrain_frame_buffer->clear(glm::vec4(0.0f),
+				0);
+
+			MaterialLock material_lock(m_normal_map_material);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			switch_program(material_lock->get_effect(
+				)->get_program(ept_default));
+
+			DEBUG_CHECK_GL_ERROR();
+
+			material_lock->bind(get_state_manager());
+
+			get_state_manager().get_program()->set_parameter(
+				apt_layers, glm::ivec4(slice));
+
+			DEBUG_CHECK_GL_ERROR();
+
+			get_state_manager().draw(0, 1);
+
+			DEBUG_CHECK_GL_ERROR();
+		}
+		catch (boost::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating terrain normal "
+				"map slice %1% caught exception '%2%'"), slice
+				% boost::diagnostic_information(exception));
+		}
+		catch (std::exception &exception)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating terrain normal "
+				"map slice %1% caught exception '%2%'"), slice
+				% exception.what());
+		}
+		catch (...)
+		{
+			LOG_EXCEPTION_STR(UTF8("While updating terrain normal "
+				"map slice %1% caught '%2%'"), slice %
+				UTF8("unknown error"));
+		}
+
+		LOG_DEBUG(lt_rendering, UTF8("Updating terrain normal map "
+			"slice %1% %2%"), slice % UTF8("done"));
 	}
 
 	void Scene::update_terrain_map()
@@ -1774,7 +1870,7 @@ namespace eternal_lands
 		glm::mat2x3 texture_matrix;
 		Uint32 i, count;
 
-		LOG_DEBUG(lt_rendering, UTF8("Updating shadow map %1%"),
+		LOG_DEBUG(lt_rendering, UTF8("Updating terrain map %1%"),
 			UTF8("started"));
 
 		try
@@ -1812,35 +1908,77 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			if (get_global_vars()->get_opengl_3_0())
+			if (!get_global_vars()->get_opengl_3_0())
 			{
-				get_state_manager().switch_texture(
-					spt_effect_0,
-					m_clipmap_terrain_texture);
-
-				glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+				return;
 			}
+
+			get_state_manager().switch_texture(spt_effect_0,
+				m_clipmap_terrain_texture);
+
+			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+
+			DEBUG_CHECK_GL_ERROR();
+
+			/**
+			 * Build normal map.
+			 */
+			m_clipmap_terrain_frame_buffer->set_view_port();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			get_scene_view().set_ortho_view();
+			get_state_manager().switch_depth_mask(false);
+			get_state_manager().switch_depth_test(false);
+			get_state_manager().switch_blend(true);
+			get_state_manager().switch_multisample(false);
+			get_state_manager().switch_mesh(get_screen_quad());
+
+			count = m_clipmap_terrain.get_slices();
+
+			for (i = 0; i < count; ++i)
+			{
+				update_terrain_normal_map(i);
+			}
+
+			update_program_vars_id();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			unbind_all();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			m_clipmap_terrain_frame_buffer->blit_buffers();
+			m_clipmap_terrain_frame_buffer->unbind();
+
+			DEBUG_CHECK_GL_ERROR();
+
+			get_state_manager().switch_texture(spt_effect_0,
+				m_clipmap_terrain_normal_texture);
+
+			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
 
 			DEBUG_CHECK_GL_ERROR();
 		}
 		catch (boost::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+			LOG_EXCEPTION_STR(UTF8("While updating terrain map "
 				"caught exception '%1%'"),
 				boost::diagnostic_information(exception));
 		}
 		catch (std::exception &exception)
 		{
-			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+			LOG_EXCEPTION_STR(UTF8("While updating terrain map "
 				"caught exception '%1%'"), exception.what());
 		}
 		catch (...)
 		{
-			LOG_EXCEPTION_STR(UTF8("While updating shadow map "
+			LOG_EXCEPTION_STR(UTF8("While updating terrain map "
 				"caught '%1%'"), UTF8("unknown error"));
 		}
 
-		LOG_DEBUG(lt_rendering, UTF8("Updating shadow map %1%"),
+		LOG_DEBUG(lt_rendering, UTF8("Updating terrain map %1%"),
 			UTF8("done"));
 	}
 
