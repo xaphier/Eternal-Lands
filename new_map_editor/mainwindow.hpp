@@ -151,7 +151,7 @@ class MainWindow: public QMainWindow, public Ui::MainWindow
 		void open_map();
 		void save();
 		void save_as();
-		void change_ambient();
+		void change_ground_hemisphere();
 		void new_map();
 		void change_preferences();
 		void terrain_edit();

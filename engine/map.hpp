@@ -48,13 +48,11 @@ namespace eternal_lands
 			Uint16MultiArray2 m_tile_map;
 			FloatMultiArray2 m_walk_height_map;
 			ParticleDataVector m_particles;
-			glm::vec3 m_ambient;
+			glm::vec4 m_ground_hemisphere;
 			glm::uvec2 m_size;
 			String m_name;
 			Uint32 m_id;
 			bool m_dungeon;
-			const CodecManagerSharedPtr m_codec_manager;
-			const FileSystemSharedPtr m_file_system;
 
 			inline GlobalVarsSharedPtr get_global_vars() const
 				noexcept
@@ -129,9 +127,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			Map(const CodecManagerSharedPtr &codec_manager,
-				const FileSystemSharedPtr &file_system,
-				const GlobalVarsSharedPtr &global_vars,
+			Map(const GlobalVarsSharedPtr &global_vars,
 				const MeshBuilderSharedPtr &mesh_builder,
 				const MeshCacheSharedPtr &mesh_cache,
 				const MaterialCacheSharedPtr &material_cache,
@@ -181,11 +177,12 @@ namespace eternal_lands
 			void set_terrain_blend_map(
 				const ImageSharedPtr &blend_map);
 			void update_terrain_geometry_maps(
-				const ImageUpdate &displacement_map,
-				const ImageUpdate &normal_map,
-				const ImageUpdate &dudv_map);
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_tangent_map,
+				const ImageSharedPtr &dudv_map);
 			void update_terrain_blend_map(
-				const ImageUpdate &blend_map);
+				const ImageSharedPtr &blend_map,
+				const BitSet64 &layers);
 			void set_terrain_material(
 				const StringVector &albedo_maps,
 				const StringVector &extra_maps,
@@ -193,6 +190,7 @@ namespace eternal_lands
 			bool get_terrain() const;
 			const MaterialSharedPtr &get_clipmap_terrain_material()
 				const;
+			const MaterialSharedPtr &get_terrain_material() const;
 			void set_terrain_dudv_scale_offset(
 				const glm::vec4 &dudv_scale_offset);
 			const glm::vec4 &get_terrain_dudv_scale_offset() const;
@@ -307,15 +305,16 @@ namespace eternal_lands
 				return m_tile_map[x][y];
 			}
 
-			inline void set_ambient(const glm::vec3 &ambient)
-				noexcept
+			inline void set_ground_hemisphere(
+				const glm::vec4 &ground_hemisphere) noexcept
 			{
-				m_ambient = ambient;
+				m_ground_hemisphere = ground_hemisphere;
 			}
 
-			inline const glm::vec3 &get_ambient() const noexcept
+			inline const glm::vec4 &get_ground_hemisphere() const
+				noexcept
 			{
-				return m_ambient;
+				return m_ground_hemisphere;
 			}
 
 			inline void set_dungeon(const bool dungeon) noexcept

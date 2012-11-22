@@ -34,31 +34,31 @@ namespace eternal_lands
 				const bool use_simd);
 			void set_terrain_page(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map,
 				const AbstractMeshSharedPtr &mesh,
 				const glm::uvec2 &tile_offset,
 				const glm::vec2 &position_scale);
 			void set_terrain_page_low_quality(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map,
 				const AbstractMeshSharedPtr &mesh,
 				const glm::uvec2 &tile_offset,
 				const glm::vec2 &position_scale);
 			virtual void do_set_geometry_maps(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map) override;
 			virtual void do_update_geometry_maps(
-				const ImageUpdate &displacement_map,
-				const ImageUpdate &normal_map,
-				const ImageUpdate &dudv_map) override;
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_tangent_map,
+				const ImageSharedPtr &dudv_map) override;
 
 		protected:
 			void add_terrain_page(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map,
 				const glm::uvec2 &position);
 			void remove_terrain_page(const glm::uvec2 &position);
@@ -70,7 +70,8 @@ namespace eternal_lands
 				const MaterialBuilderSharedPtr
 					&material_builder,
 				const MaterialCacheSharedPtr &material_cache,
-				const String &material, const String &effect);
+				const StringArray3 &material,
+				const String &effect);
 			virtual ~SimpleTerrain() noexcept override;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const override;

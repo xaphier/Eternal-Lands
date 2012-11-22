@@ -10,7 +10,6 @@
 #include "objectvisitor.hpp"
 #include "codec/codecmanager.hpp"
 #include "image.hpp"
-#include "imageupdate.hpp"
 #include "meshdatatool.hpp"
 #include "submesh.hpp"
 #include "indexbuilder.hpp"
@@ -82,7 +81,7 @@ namespace eternal_lands
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MaterialBuilderSharedPtr &material_builder,
 		const MaterialCacheSharedPtr &material_cache,
-		const String &material, const String &effect):
+		const StringArray3 &material, const String &effect):
 		AbstractTerrain(global_vars, effect_cache, material_builder,
 			material_cache, material, effect)
 	{
@@ -97,7 +96,7 @@ namespace eternal_lands
 
 	void SimpleTerrain::set_terrain_page(
 		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map,
 		const AbstractMeshSharedPtr &mesh,
 		const glm::uvec2 &tile_offset,
@@ -134,7 +133,8 @@ namespace eternal_lands
 				vector = AbstractTerrain::get_offset_scaled_0_1(
 					data);
 
-				normal = glm::vec2(normal_map->get_pixel(pos.x,
+				normal = glm::vec2(
+					normal_tangent_map->get_pixel(pos.x,
 					pos.y, 0, 0, 0));
 
 				dudv = glm::vec2(dudv_map->get_pixel(pos.x,
@@ -172,7 +172,7 @@ namespace eternal_lands
 
 	void SimpleTerrain::set_terrain_page_low_quality(
 		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map,
 		const AbstractMeshSharedPtr &mesh,
 		const glm::uvec2 &tile_offset,
@@ -209,8 +209,8 @@ namespace eternal_lands
 				vector = AbstractTerrain::get_offset_scaled_0_1(
 					data);
 
-				normal = get_low_quality_pixel_2(normal_map,
-					pos.x, pos.y);
+				normal = get_low_quality_pixel_2(
+					normal_tangent_map, pos.x, pos.y);
 
 				dudv = get_low_quality_pixel_2(dudv_map,
 					pos.x, pos.y);
@@ -326,7 +326,7 @@ namespace eternal_lands
 
 	void SimpleTerrain::add_terrain_page(
 		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map,
 		const glm::uvec2 &position)
 	{
@@ -365,12 +365,12 @@ namespace eternal_lands
 		if (get_low_quality_terrain())
 		{
 			set_terrain_page_low_quality(displacement_map,
-				normal_map, dudv_map, mesh_clone, tile_offset,
-				position_scale);
+				normal_tangent_map, dudv_map, mesh_clone,
+				tile_offset, position_scale);
 		}
 		else
 		{
-			set_terrain_page(displacement_map, normal_map,
+			set_terrain_page(displacement_map, normal_tangent_map,
 				dudv_map, mesh_clone, tile_offset,
 				position_scale);
 		}
@@ -426,21 +426,22 @@ namespace eternal_lands
 
 	void SimpleTerrain::do_set_geometry_maps(
 		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map)
 	{
-		ImageSharedPtr displacement_map_tmp, normal_map_tmp;
+		ImageSharedPtr displacement_map_tmp, normal_tangent_map_tmp;
 		ImageSharedPtr dudv_map_tmp;
 		Uint32 x, y, height, width;
 
 		m_object_tree->clear();
 
 		set_terrain_size((glm::vec2(displacement_map->get_size())
-			-1.0f) * get_patch_scale());
+			- 1.0f) * get_patch_scale());
 
 		displacement_map_tmp = displacement_map->decompress(false,
 			true, false);
-		normal_map_tmp = normal_map->decompress(false, true, false);
+		normal_tangent_map_tmp = normal_tangent_map->decompress(false,
+			true, false);
 		dudv_map_tmp = dudv_map->decompress(false, true, false);
 
 		width = displacement_map->get_width() / get_tile_size();
@@ -451,7 +452,7 @@ namespace eternal_lands
 			for (x = 0; x < width; ++x)
 			{
 				add_terrain_page(displacement_map_tmp,
-					normal_map_tmp, dudv_map_tmp,
+					normal_tangent_map_tmp, dudv_map_tmp,
 					glm::uvec2(x, y));
 			}
 		}
@@ -460,37 +461,35 @@ namespace eternal_lands
 	}
 
 	void SimpleTerrain::do_update_geometry_maps(
-		const ImageUpdate &displacement_map,
-		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
+		const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_tangent_map,
+		const ImageSharedPtr &dudv_map)
 	{
 		
-		ImageSharedPtr displacement_map_tmp, normal_map_tmp;
+		ImageSharedPtr displacement_map_tmp, normal_tangent_map_tmp;
 		ImageSharedPtr dudv_map_tmp;
 		Uint32 x, y, height, width;
 
 		m_object_tree->clear();
 
-		set_terrain_size((glm::vec2(displacement_map.get_image(
-			)->get_size()) -1.0f) * get_patch_scale());
+		set_terrain_size((glm::vec2(displacement_map->get_size())
+			- 1.0f) * get_patch_scale());
 
-		displacement_map_tmp = displacement_map.get_image(
-			)->decompress(false, true, false);
-		normal_map_tmp = normal_map.get_image()->decompress(false,
+		displacement_map_tmp = displacement_map->decompress(false,
 			true, false);
-		dudv_map_tmp = dudv_map.get_image()->decompress(false, true,
-			false);
+		normal_tangent_map_tmp = normal_tangent_map->decompress(false,
+			true, false);
+		dudv_map_tmp = dudv_map->decompress(false, true, false);
 
-		width = displacement_map.get_image()->get_width() /
-			get_tile_size();
-		height = displacement_map.get_image()->get_height() /
-			get_tile_size();
+		width = displacement_map->get_width() / get_tile_size();
+		height = displacement_map->get_height() / get_tile_size();
 
 		for (y = 0; y < height; ++y)
 		{
 			for (x = 0; x < width; ++x)
 			{
 				add_terrain_page(displacement_map_tmp,
-					normal_map_tmp, dudv_map_tmp,
+					normal_tangent_map_tmp, dudv_map_tmp,
 					glm::uvec2(x, y));
 			}
 		}

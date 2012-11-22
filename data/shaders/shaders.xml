@@ -24,11 +24,6 @@
 		<tbn_matrix>default</tbn_matrix>
 		<albedo_mapping>default</albedo_mapping>
 		<uv>default</uv>
-		<uv_mapping>disabled</uv_mapping>
-		<uv_depth_mapping>disabled</uv_depth_mapping>
-		<normal_mapping>disabled</normal_mapping>
-		<specular_mapping>default</specular_mapping>
-		<emission_mapping>disabled</emission_mapping>
 		<world_uv_ddx_ddy>default</world_uv_ddx_ddy>
 		<world_extra_uv_ddx_ddy>default</world_extra_uv_ddx_ddy>
 		<shadow_uv_ddx_ddy>default</shadow_uv_ddx_ddy>

@@ -15,6 +15,7 @@
 #include "prerequisites.hpp"
 #include "textureformatutil.hpp"
 #include "texturetargetutil.hpp"
+#include "cubemapfaceutil.hpp"
 
 /**
  * @file
@@ -23,23 +24,6 @@
  */
 namespace eternal_lands
 {
-
-	/**
-	 * Types of cube map faces.
-	 * @{
-	 */
-	enum CubeMapFaceType
-	{
-		cmft_negative_x = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
-		cmft_negative_y = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
-		cmft_negative_z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z,
-		cmft_positive_x = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
-		cmft_positive_y = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
-		cmft_positive_z = GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-	};
-	/**
-	 * @}
-	 */
 
 	/**
 	 * @brief base @c class for render targets.
@@ -86,7 +70,6 @@ namespace eternal_lands
 			virtual void attach(const GLenum attachment,
 				const CubeMapFaceType face, const Uint32 level,
 				const Uint32 layer) = 0;
-			static String get_str(const CubeMapFaceType value);
 
 			inline TextureFormatType get_format() const noexcept
 			{
@@ -120,8 +103,6 @@ namespace eternal_lands
 			}
 
 	};
-
-	OutStream &operator<<(OutStream &str, const CubeMapFaceType value);
 
 }
 

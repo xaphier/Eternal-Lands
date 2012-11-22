@@ -94,10 +94,10 @@ namespace eternal_lands
 	{
 		private:
 			boost::array<glm::vec3,  65536> m_normals;
-			ImageSharedPtr m_displacement_image;
-			ImageSharedPtr m_normal_image;
-			ImageSharedPtr m_dudv_image;
-			ImageSharedPtr m_blend_image;
+			ImageSharedPtr m_displacement_map;
+			ImageSharedPtr m_normal_tangent_map;
+			ImageSharedPtr m_dudv_map;
+			ImageSharedPtr m_blend_map;
 			boost::scoped_ptr<UvTool> m_uv_tool;
 			TerrainMaterialData m_material_data;
 			StringVector m_albedo_maps;
@@ -117,8 +117,10 @@ namespace eternal_lands
 			glm::vec3 get_normal(const glm::ivec2 &index) const;
 			glm::vec3 get_smooth_normal(const glm::vec2 &index)
 				const;
-			void update_normal(const glm::ivec2 &index);
-			void update_normals(const Ivec2Set &positions);
+			void update_normal_tangent_map(
+				const glm::ivec2 &index);
+			void update_normal_tangent_map(
+				const Ivec2Set &positions);
 			void get_blend_values(const glm::uvec2 &vertex,
 				const float radius,
 				ImageValueVector &blend_values) const;
@@ -136,19 +138,20 @@ namespace eternal_lands
 			void init(const glm::uvec2 &size);
 			BitSet64 get_used_layers() const;
 			float get_blend_slope(const glm::ivec2 &index) const;
+			glm::vec2 get_uv(const glm::ivec2 &index) const;
+			glm::vec2 get_uv_direction(const glm::vec2 &uv,
+				const glm::ivec2 &index) const;
+			glm::uvec4 get_packed_normal_tangent(
+				const glm::ivec2 &index) const;
 
 		public:
 			TerrainEditor();
 			~TerrainEditor() noexcept;
 			void set_displacement_values(
 				const DisplacementValueVector
-					&displacement_values,
-				ImageUpdate &displacement_map,
-				ImageUpdate &normal_map,
-				ImageUpdate &dudv_map);
+					&displacement_values);
 			void set_blend_values(
-				const ImageValueVector &blend_values,
-				ImageUpdate &blend_map);
+				const ImageValueVector &blend_values);
 			void init(const glm::uvec2 &size,
 				const String &albedo_map,
 				const String &extra_map,
@@ -251,7 +254,7 @@ namespace eternal_lands
 			void get_all_blend_values(
 				ImageValueVector &blend_values) const;
 			void set(const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,
@@ -263,7 +266,7 @@ namespace eternal_lands
 				const AbstractProgressSharedPtr &progress,
 				const Uint16 count, const bool use_simd);
 			void import_blend_map(const ImageSharedPtr &blend_map);
-			void rebuild_normal_map();
+			void rebuild_normal_tangent_map();
 			void import_dudv_map(const ImageSharedPtr &dudv_map,
 				const glm::vec4 &dudv_scale_offset);
 			void get_layer_usage(Uint32Vector &use_layer_pixels,
@@ -277,7 +280,7 @@ namespace eternal_lands
 				const;
 			void fill_blend_layer(const float strength,
 				const BlendEffectType effect,
-				const Uint16 layer, ImageUpdate &blend_map);
+				const Uint16 layer);
 
 			inline void set_albedo_map(const String &name,
 				const Uint16 index)
@@ -329,28 +332,28 @@ namespace eternal_lands
 				return 17;
 			}
 
-			inline const ImageSharedPtr &get_displacement_image()
+			inline const ImageSharedPtr &get_displacement_map()
 				const noexcept
 			{
-				return m_displacement_image;
+				return m_displacement_map;
 			}
 
-			inline const ImageSharedPtr &get_normal_image() const
-				noexcept
+			inline const ImageSharedPtr &get_normal_tangent_map()
+				const noexcept
 			{
-				return m_normal_image;
+				return m_normal_tangent_map;
 			}
 
-			inline const ImageSharedPtr &get_dudv_image() const
+			inline const ImageSharedPtr &get_dudv_map() const
 				noexcept
 			{
-				return m_dudv_image;
+				return m_dudv_map;
 			}
 
-			inline const ImageSharedPtr &get_blend_image() const
+			inline const ImageSharedPtr &get_blend_map() const
 				noexcept
 			{
-				return m_blend_image;
+				return m_blend_map;
 			}
 
 			inline const StringVector &get_albedo_maps() const

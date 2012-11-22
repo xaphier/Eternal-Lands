@@ -14,7 +14,7 @@
 
 #include "prerequisites.hpp"
 #include "textureformatutil.hpp"
-#include "readwritememory.hpp"
+#include "cubemapfaceutil.hpp"
 
 /**
  * @file
@@ -32,25 +32,36 @@ namespace eternal_lands
 	class ImageUpdate
 	{
 		private:
-			ImageSharedPtr m_image;
+			String m_name;
+			AbstractReadMemorySharedPtr m_buffer;
 			glm::uvec3 m_offset;
 			glm::uvec3 m_size;
+			CubeMapFaceType m_face;
+			GLenum m_format;
+			GLenum m_type;
 			Uint16 m_mipmap;
+			bool m_compressed;
 
 		public:
-			ImageUpdate();
-			ImageUpdate(const ImageSharedPtr &image,
-				const Uint16 mipmap = 0);
-			ImageUpdate(const ImageSharedPtr &image,
+			ImageUpdate(const String &name,
+				const AbstractReadMemorySharedPtr &buffer,
 				const glm::uvec3 &offset,
 				const glm::uvec3 &size,
-				const Uint16 mipmap = 0);
+				const CubeMapFaceType face,
+				const GLenum format, const GLenum type,
+				const Uint16 mipmap, const bool compressed);
 			~ImageUpdate() noexcept;
 
-			inline void set_image(const ImageSharedPtr &image)
+			inline void set_name(const String &name) noexcept
+			{
+				m_name = name;
+			}
+
+			inline void set_buffer(
+				const AbstractReadMemorySharedPtr &buffer)
 				noexcept
 			{
-				m_image = image;
+				m_buffer = buffer;
 			}
 
 			inline void set_offset(const glm::uvec3 &offset)
@@ -64,14 +75,42 @@ namespace eternal_lands
 				m_size = size;
 			}
 
+			inline void set_face(const CubeMapFaceType face)
+				noexcept
+			{
+				m_face = face;
+			}
+
+			inline void set_format(const GLenum format) noexcept
+			{
+				m_format = format;
+			}
+
+			inline void set_type(const GLenum type) noexcept
+			{
+				m_type = type;
+			}
+
 			inline void set_mipmap(const Uint16 mipmap) noexcept
 			{
 				m_mipmap = mipmap;
 			}
 
-			inline const ImageSharedPtr &get_image() const noexcept
+			inline void set_compressed(const bool compressed)
+				noexcept
 			{
-				return m_image;
+				m_compressed = compressed;
+			}
+
+			inline const String &get_name() const noexcept
+			{
+				return m_name;
+			}
+
+			inline const AbstractReadMemorySharedPtr &get_buffer()
+				const noexcept
+			{
+				return m_buffer;
 			}
 
 			inline const glm::uvec3 &get_offset() const noexcept
@@ -84,9 +123,29 @@ namespace eternal_lands
 				return m_size;
 			}
 
+			inline CubeMapFaceType get_face() const noexcept
+			{
+				return m_face;
+			}
+
+			inline GLenum get_format() const noexcept
+			{
+				return m_format;
+			}
+
+			inline GLenum get_type() const noexcept
+			{
+				return m_type;
+			}
+
 			inline Uint16 get_mipmap() const noexcept
 			{
 				return m_mipmap;
+			}
+
+			inline bool get_compressed() const noexcept
+			{
+				return m_compressed;
 			}
 
 	};

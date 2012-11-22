@@ -136,7 +136,7 @@ namespace eternal_lands
 			size[2] = 0;
 
 			image = boost::make_shared<Image>(String(UTF8("error")),
-				false, tft_rgb8, size, 0);
+				false, tft_rgb8, size, 0, false);
 
 			rle_decode(rle_pixel_data, image->get_buffer());
 
@@ -152,13 +152,10 @@ namespace eternal_lands
 
 	}
 
-	TextureCache::TextureCache(const CodecManagerWeakPtr &codec_manager,
-		const FileSystemSharedPtr &file_system,
+	TextureCache::TextureCache(const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
-		m_codec_manager(codec_manager), m_file_system(file_system),
-		m_global_vars(global_vars)
+		m_file_system(file_system), m_global_vars(global_vars)
 	{
-		assert(!m_codec_manager.expired());
 		assert(m_file_system.get() != nullptr);
 		assert(m_global_vars.get() != nullptr);
 	}
@@ -203,7 +200,7 @@ namespace eternal_lands
 
 		use_sRGB = sRGB && get_global_vars()->get_use_linear_lighting();
 
-		image = get_codec_manager()->load_image(reader, compressions,
+		image = CodecManager::load_image(reader, compressions,
 			rg_formats, use_sRGB, merge_layers);
 
 		return do_load_texture(image, index);
@@ -320,7 +317,7 @@ namespace eternal_lands
 		{
 			reader = get_file_system()->get_file(image_name);
 
-			image = get_codec_manager()->load_image(reader,
+			image = CodecManager::load_image(reader,
 				compressions, rg_formats, use_sRGB, false);
 
 			images.push_back(image);

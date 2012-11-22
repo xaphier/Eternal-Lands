@@ -186,8 +186,8 @@ class ELGLWidget: public QGLWidget
 		void add_light(const float radius);
 		void set_dungeon(const bool dungeon);
 		bool get_dungeon() const;
-		void set_ambient(const glm::vec3 &color);
-		const glm::vec3 &get_ambient() const;
+		void set_ground_hemisphere(const glm::vec4 &ground_hemisphere);
+		const glm::vec4 &get_ground_hemisphere() const;
 		void set_fog(const glm::vec3 &color, const float density);
 		void set_terrain_material(const QString &albedo_map,
 			const QString &extra_map, const float blend_size,
@@ -522,6 +522,7 @@ class ELGLWidget: public QGLWidget
 		void pack_terrain_layers();
 		void pick_terrain_displacement();
 		void pick_terrain_normal();
+		void set_terrain_normal_mapping(const bool enabled);
 
 	signals:
 		void update_object(const bool select);

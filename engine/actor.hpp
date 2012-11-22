@@ -64,7 +64,6 @@ namespace eternal_lands
 			void add_mesh(const Uint32 id);
 			void remove_mesh(const Uint32 id);
 			void init_enhanced_actor(
-				const CodecManagerWeakPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
 			void set_parts(

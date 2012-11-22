@@ -164,7 +164,7 @@ namespace eternal_lands
 				bit_depth, rg_formats, sRGB);
 
 			image = boost::make_shared<Image>(reader->get_name(),
-				false, texture_format, size, 0);
+				false, texture_format, size, 0, false);
 
 #ifndef BOOST_BIG_ENDIAN
 			if (bit_depth == 16)

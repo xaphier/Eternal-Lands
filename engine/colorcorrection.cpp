@@ -32,7 +32,7 @@ namespace eternal_lands
 		boost::scoped_ptr<ImageScript> image_script;
 
 		image = boost::make_shared<Image>(name, false, tft_rgb10_a2,
-			glm::uvec3(get_lut_size()), 0);
+			glm::uvec3(get_lut_size()), 0, false);
 
 		m_context = get_script_engine()->get_context();
 

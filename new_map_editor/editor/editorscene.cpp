@@ -315,9 +315,8 @@ namespace eternal_lands
 		m_heights.clear();
 		m_height_tree->clear();
 
-		map_loader.reset(new EditorMapLoader(
-			get_scene_resources().get_codec_manager(),
-			get_file_system(), get_global_vars(),
+		map_loader.reset(new EditorMapLoader(get_file_system(),
+			get_global_vars(),
 			get_scene_resources().get_effect_cache(),
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
@@ -334,11 +333,11 @@ namespace eternal_lands
 
 	void EditorScene::set_terrain_geometry_maps(
 		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map)
 	{
 		get_map()->set_terrain_geometry_maps(displacement_map,
-			normal_map, dudv_map);
+			normal_tangent_map, dudv_map);
 	}
 
 	void EditorScene::set_terrain_blend_map(
@@ -358,18 +357,19 @@ namespace eternal_lands
 	}
 
 	void EditorScene::update_terrain_geometry_maps(
-		const ImageUpdate &displacement_map,
-		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
+		const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_tangent_map,
+		const ImageSharedPtr &dudv_map)
 	{
 		get_map()->update_terrain_geometry_maps(displacement_map,
-			normal_map, dudv_map);
+			normal_tangent_map, dudv_map);
 		rebuild_terrain_map();
 	}
 
 	void EditorScene::update_terrain_blend_map(
-		const ImageUpdate &blend_map)
+		const ImageSharedPtr &blend_map)
 	{
-		get_map()->update_terrain_blend_map(blend_map);
+		get_map()->update_terrain_blend_map(blend_map, 0xFFFF);
 		rebuild_terrain_map();
 	}
 
@@ -381,7 +381,7 @@ namespace eternal_lands
 	}
 
 	void EditorScene::set_terrain(const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map,
 		const ImageSharedPtr &blend_map,
 		const StringVector &albedo_maps,
@@ -390,7 +390,7 @@ namespace eternal_lands
 		const glm::vec4 &dudv_scale_offset)
 	{
 		get_map()->set_terrain_geometry_maps(displacement_map,
-			normal_map, dudv_map);
+			normal_tangent_map, dudv_map);
 
 		get_map()->set_terrain_blend_map(blend_map);
 

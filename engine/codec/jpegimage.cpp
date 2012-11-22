@@ -199,7 +199,7 @@ namespace eternal_lands
 			size[2] = 0;
 
 			image = boost::make_shared<Image>(reader->get_name(),
-				false, texture_format, size, 0);
+				false, texture_format, size, 0, false);
 
 			jpeg_start_decompress(&m_cinfo);
 

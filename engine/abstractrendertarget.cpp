@@ -24,36 +24,4 @@ namespace eternal_lands
 	{
 	}
 
-	String AbstractRenderTarget::get_str(const CubeMapFaceType value)
-	{
-		switch (value)
-		{
-			case cmft_negative_x:
-				return String(UTF8("negative_x"));
-			case cmft_negative_y:
-				return String(UTF8("negative_y"));
-			case cmft_negative_z:
-				return String(UTF8("negative_z"));
-			case cmft_positive_x:
-				return String(UTF8("positive_x"));
-			case cmft_positive_y:
-				return String(UTF8("positive_y"));
-			case cmft_positive_z:
-				return String(UTF8("positive_z"));
-		}
-		/**
-		 * We should be never here. If so, it's a programming error,
-		 * because we forgot to add all types to the switch or an
-		 * invalid int was used (with a type cast)!
-		 */
-		VALUE_NOT_IN_SWITCH(value, UTF8("CubeMapFaceType"));
-	}
-
-	OutStream &operator<<(OutStream &str, const CubeMapFaceType value)
-	{
-		str << AbstractRenderTarget::get_str(value);
-
-		return str;
-	}
-
 }

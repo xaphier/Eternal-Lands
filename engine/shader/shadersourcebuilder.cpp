@@ -1965,10 +1965,14 @@ namespace eternal_lands
 		stream << local_indent << sslt_diffuse_colors_sum;
 		stream << UTF8(" = ");
 
-		add_parameter(String(UTF8("lighting")), apt_ambient,
-			function_locals, function_parameters, uniform_buffers);
+		add_parameter(String(UTF8("lighting")),
+			apt_sky_ground_hemispheres, function_locals,
+			function_parameters, uniform_buffers);
 
-		stream << apt_ambient << UTF8(".rgb;\n");
+		stream << apt_sky_ground_hemispheres << UTF8("[0].rgb + ");
+		stream << apt_sky_ground_hemispheres << UTF8("[1].rgb * ");
+		stream << UTF8("(0.5 * ") << cpt_fragment_normal;
+		stream << UTF8(".z + 0.5);\n");
 
 		add_parameter(String(UTF8("lighting")), cpt_emission, pqt_in,
 			function_locals, function_parameters, uniform_buffers);
@@ -2300,11 +2304,26 @@ namespace eternal_lands
 		if ((shader_type != st_fragment) ||
 			(build_data.get_vertex_lights_count() == 0))
 		{
-			add_parameter(String(UTF8("lighting")), apt_ambient,
-				function_locals, function_parameters,
-				uniform_buffers);
+			add_parameter(String(UTF8("lighting")),
+				apt_sky_ground_hemispheres, function_locals,
+				function_parameters, uniform_buffers);
 
-			stream << apt_ambient << UTF8(".rgb;\n");
+			stream << apt_sky_ground_hemispheres;
+			stream << UTF8("[0].rgb + ");
+			stream << apt_sky_ground_hemispheres;
+			stream << UTF8("[1].rgb * ");
+			stream << UTF8("(0.5 * ");
+
+			if (shader_type == st_fragment)
+			{
+				stream << cpt_fragment_normal;
+			}
+			else
+			{
+				stream << cpt_world_normal;
+			}
+
+			stream << UTF8(".z + 0.5);\n");
 		}
 		else
 		{
@@ -2879,12 +2898,14 @@ namespace eternal_lands
 					{
 						add_parameter(String(
 							UTF8("fragment")),
-							apt_ambient, locals,
-							globals,
+							apt_sky_ground_hemispheres,
+							locals, globals,
 							uniform_buffers);
 
-						main << apt_ambient;
-						main << UTF8(".rgb");
+						main << apt_sky_ground_hemispheres;
+						main << UTF8("[0].rgb + ");
+						main << apt_sky_ground_hemispheres;
+						main << UTF8("[1].rgb * 0.5");
 					}
 
 					main << UTF8(" + ") << cpt_emission;

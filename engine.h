@@ -89,7 +89,7 @@ void engine_set_use_s3tc_for_actors(const int value);
 void engine_set_use_block(const int value);
 void engine_set_use_in_out(const int value);
 void engine_set_use_functions(const int value);
-void engine_set_low_quality_terrain(const int value);
+void engine_set_terrain_quality(const int value);
 void engine_set_clipmap_terrain_size(const int value);
 void engine_set_clipmap_terrain_world_size(const int value);
 void engine_set_clipmap_terrain_slices(const int value);

@@ -83,7 +83,7 @@ namespace eternal_lands
 				const MapItemsTypeSet &skip_items);
 			void set_terrain_geometry_maps(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map);
 			void set_terrain_blend_map(
 				const ImageSharedPtr &blend_map);
@@ -94,11 +94,11 @@ namespace eternal_lands
 			void set_terrain_dudv_scale_offset(
 				const glm::vec4 &dudv_scale_offset);
 			void update_terrain_geometry_maps(
-				const ImageUpdate &displacement_map,
-				const ImageUpdate &normal_map,
-				const ImageUpdate &dudv_map);
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_tangent_map,
+				const ImageSharedPtr &dudv_map);
 			void update_terrain_blend_map(
-				const ImageUpdate &blend_map);
+				const ImageSharedPtr &blend_map);
 			void draw_selection(const glm::uvec4 &selection_rect);
 			void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height);
@@ -106,7 +106,7 @@ namespace eternal_lands
 			void draw_scale_view(const bool depth_only);
 			void set_terrain(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,

@@ -10,6 +10,7 @@
 #include "logging.hpp"
 #include "reader.hpp"
 #include "codec/dxt.hpp"
+#include "codec/codecmanager.hpp"
 
 namespace eternal_lands
 {
@@ -28,13 +29,17 @@ namespace eternal_lands
 				case GL_RG:
 				case GL_LUMINANCE_ALPHA:
 				case GL_RGB:
+				case GL_RGB_INTEGER:
 					return data;
 				case GL_BGR:
+				case GL_BGR_INTEGER:
 					return T(data.b, data.g, data.r,
 						data.a);
 				case GL_RGBA:
+				case GL_RGBA_INTEGER:
 					return data;
 				case GL_BGRA:
+				case GL_BGRA_INTEGER:
 					return T(data.b, data.g, data.r,
 						data.a);
 				case GL_NONE:
@@ -163,6 +168,21 @@ namespace eternal_lands
 				case GL_SHORT:
 				case GL_UNSIGNED_INT:
 				case GL_INT:
+					return (GL_RGB == format) ||
+						(GL_RGBA == format) ||
+						(GL_BGR == format) ||
+						(GL_BGRA == format) ||
+						(GL_RED == format) ||
+						(GL_RG == format) ||
+						(GL_RGB_INTEGER == format) ||
+						(GL_RGBA_INTEGER == format) ||
+						(GL_BGR_INTEGER == format) ||
+						(GL_BGRA_INTEGER == format) ||
+						(GL_RED_INTEGER == format) ||
+						(GL_RG_INTEGER == format) ||
+						(GL_ALPHA == format) ||
+						(GL_LUMINANCE == format) ||
+						(GL_LUMINANCE_ALPHA == format);
 				case GL_FLOAT:
 				case GL_HALF_FLOAT:
 					return (GL_RGB == format) ||
@@ -356,19 +376,16 @@ namespace eternal_lands
 	Image::Image(const String &name, const bool cube_map,
 		const TextureFormatType texture_format,
 		const glm::uvec3 &size, const Uint16 mipmap_count,
-		const Uint16 pixel_size, const GLenum format,
-		const GLenum type, const bool sRGB, const bool array)
+		const GLenum format, const GLenum type, const bool sRGB,
+		const bool array)
 
 	{
-		assert(pixel_size >= 4);
-		assert((pixel_size % 4) == 0);
-
 		m_name = name;
 		m_cube_map = cube_map;
 		m_texture_format = texture_format;
 		m_size = size;
 		m_mipmap_count = clamp_mipmap_count(size, mipmap_count, array);
-		m_pixel_size = pixel_size;
+		m_pixel_size = eternal_lands::get_pixel_size(type, format);
 		m_format = format;
 		m_type = type;
 		m_sRGB = sRGB;
@@ -1581,8 +1598,8 @@ namespace eternal_lands
 
 			return Dxt::uncompress(reader, get_name(), get_size(),
 				get_texture_format(), get_mipmap_count(),
-				get_cube_map(), rg_formats, get_sRGB(),
-				merge_layers);
+				get_cube_map(), get_array(), rg_formats,
+				get_sRGB(), merge_layers);
 		}
 
 		if (copy)
@@ -1632,6 +1649,91 @@ namespace eternal_lands
 		}
 
 		return ttt_texture_3d;
+	}
+
+	ReadWriteMemorySharedPtr Image::swizzle(const glm::uvec4 &position)
+		const
+	{
+		ReadWriteMemorySharedPtr result;
+		glm::uvec4 masks, swapped_position;
+		Uint32 size, swap_size, values, count;
+		bool integer_format;
+
+		values = get_channel_count();
+
+		assert(values > 0);
+		assert(values < 5);
+
+		count = m_buffer->get_size();
+
+		swapped_position = position;
+
+		if ((get_format() == GL_BGR) || (get_format() == GL_BGRA) ||
+			(get_format() == GL_BGR_INTEGER) ||
+			(get_format() == GL_BGRA_INTEGER))
+		{
+			std::swap(swapped_position.r, swapped_position.b);
+		}
+
+		result = boost::make_shared<ReadWriteMemory>(count);
+
+		bool tmp;
+
+		switch (get_type())
+		{
+			case GL_BYTE:
+			case GL_UNSIGNED_BYTE:
+				count /= values * sizeof(Uint8);
+				PackTool::swizzle_u8(swapped_position, values,
+					count, *m_buffer, *result);
+				return result;
+			case GL_SHORT:
+			case GL_HALF_FLOAT:
+			case GL_UNSIGNED_SHORT:
+				count /= values * sizeof(Uint16);
+				PackTool::swizzle_u16(swapped_position, values,
+					count, *m_buffer, *result);
+				return result;
+			case GL_INT:
+			case GL_FLOAT:
+			case GL_UNSIGNED_INT:
+				count /= values * sizeof(Uint32);
+				PackTool::swizzle_u32(swapped_position, values,
+					count, *m_buffer, *result);
+				return result;
+			case GL_UNSIGNED_BYTE_3_3_2:
+			case GL_UNSIGNED_BYTE_2_3_3_REV:
+			case GL_UNSIGNED_SHORT_5_6_5:
+			case GL_UNSIGNED_SHORT_5_6_5_REV:
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV:
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+			case GL_UNSIGNED_INT_8_8_8_8:
+			case GL_UNSIGNED_INT_8_8_8_8_REV:
+			case GL_UNSIGNED_INT_10_10_10_2:
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				tmp = CodecManager::has_color_bit_mask(
+					get_type(), get_format(), masks, size,
+					swap_size, integer_format);
+
+				assert(tmp);
+
+				count /= size;
+
+				PackTool::swizzle(masks, position, count,
+					*m_buffer, *result);
+				return result;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+			case GL_NONE:
+			default:
+				memcpy(result->get_ptr(), m_buffer->get_ptr(),
+					count);
+				return result;
+		}
+
+		return result;
 	}
 
 }

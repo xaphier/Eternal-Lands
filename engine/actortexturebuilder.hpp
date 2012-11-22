@@ -71,25 +71,12 @@ namespace eternal_lands
 			ActorPartTextureTypeStringMap m_parts;
 			ImageSharedPtr m_image;
 			TextureSharedPtr m_texture;
-			const CodecManagerWeakPtr m_codec_manager;
 			const FileSystemSharedPtr m_file_system;
 			const GlobalVarsSharedPtr m_global_vars;
 			Uint32 m_size;
 			Uint16 m_scale;
 			BitSet16 m_alphas;
 			bool m_compression;
-
-			inline CodecManagerSharedPtr get_codec_manager() const
-				noexcept
-			{
-				CodecManagerSharedPtr result;
-
-				result = m_codec_manager.lock();
-
-				assert(result.get() != nullptr);
-
-				return result;
-			}
 
 			inline const FileSystemSharedPtr &get_file_system()
 				const noexcept
@@ -105,7 +92,6 @@ namespace eternal_lands
 
 		public:
 			ActorTextureBuilder(
-				const CodecManagerWeakPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
 				const String &name);

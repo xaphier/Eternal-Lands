@@ -548,8 +548,8 @@ namespace eternal_lands
 	ImageSharedPtr Dxt::uncompress(const ReaderSharedPtr &reader,
 		const String &name, const glm::uvec3 &size,
 		const TextureFormatType texture_format, const Uint16 mipmaps,
-		const bool cube_map, const bool rg_formats, const bool sRGB,
-		const bool merge_layers)
+		const bool cube_map, const bool array, const bool rg_formats,
+		const bool sRGB, const bool merge_layers)
 	{
 		ImageSharedPtr image;
 		Uint32 width, height, depth, face_count, mipmap_count;
@@ -579,7 +579,7 @@ namespace eternal_lands
 			rg_formats, sRGB, merge_layers, can_merge_layers);
 
 		image = boost::make_shared<Image>(name, cube_map,
-			uncompressed_format, size, mipmaps);
+			uncompressed_format, size, mipmaps, array);
 
 		face_count = image->get_face_count();
 		mipmap_count = image->get_mipmap_count();

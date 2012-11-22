@@ -62,9 +62,14 @@ namespace eternal_lands
 		 */
 		apt_light_colors,
 		/**
-		 * vec4(red, green, blue, alpha) ambient
+		 * mat2x4(ground_red, ground_green, ground_blue,
+		 * 	ground_specular, sky_red - ground_red,
+		 * 	sky_green - ground_green, sky_blue - ground_blue,
+		 * 	sky_specular - ground_specular)
+		 * The data alows with a simple map instruction to linear blend
+		 * between sky and ground hemisphere. 
 		 */
-		apt_ambient,
+		apt_sky_ground_hemispheres,
 		/**
 		 * ivec3(vertex_lights_count, fragment_lights_count,
 		 * 	lights_count)

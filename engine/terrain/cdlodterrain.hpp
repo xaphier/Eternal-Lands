@@ -34,12 +34,12 @@ namespace eternal_lands
 
 			virtual void do_set_geometry_maps(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map) override;
 			virtual void do_update_geometry_maps(
-				const ImageUpdate &displacement_map,
-				const ImageUpdate &normal_map,
-				const ImageUpdate &dudv_map) override;
+				const ImageSharedPtr &displacement_map,
+				const ImageSharedPtr &normal_tangent_map,
+				const ImageSharedPtr &dudv_map) override;
 
 		public:
 			CdLodTerrain(const GlobalVarsSharedPtr &global_vars,
@@ -50,7 +50,8 @@ namespace eternal_lands
 				const MaterialBuilderSharedPtr
 					&material_builder,
 				const MaterialCacheSharedPtr &material_cache,
-				const String &material, const String &effect);
+				const StringArray3 &material,
+				const String &effect);
 			virtual ~CdLodTerrain() noexcept override;
 			virtual void intersect(const Frustum &frustum,
 				ObjectVisitor &visitor) const override;

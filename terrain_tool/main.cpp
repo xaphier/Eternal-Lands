@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
 	size.z = 1;
 
 	dest_image = boost::make_shared<Image>(String("terrain normals"),
-		false, tft_rgb8, size, 0);
+		false, tft_rgb8, size, 0, false);
 
 	width = source_image->get_width();
 	height = source_image->get_height();

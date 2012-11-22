@@ -75,7 +75,11 @@ namespace eternal_lands
 			 * Default destructor.
 			 */
 			~MeshDataTool() noexcept;
-
+			static glm::vec4
+				get_gram_schmidth_orthogonalize_tangent(
+					const glm::vec3 &normal,
+					const glm::vec3 &tangent,
+					const glm::vec3 &bitangent);
 			void update_sub_meshs_packed();
 			void update_sub_meshs_bounding_box();
 			void build_tangent(const bool morph_target,

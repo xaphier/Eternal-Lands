@@ -226,7 +226,7 @@ void ELGLWidget::get_extra_map_data(const QString &name,
 		format_str = QString::fromUtf8(TextureFormatUtil::get_str(
 			format).get().c_str());
 		valid_formats_str = QString::fromUtf8(
-			TextureFormatUtil::get_str(tft_rg_rgtc2).get(
+			TextureFormatUtil::get_str(tft_r_rgtc1).get(
 				).c_str());
 
 		if ((size.x != image_size.width()) ||
@@ -244,7 +244,7 @@ void ELGLWidget::get_extra_map_data(const QString &name,
 			return;
 		}
 
-		if (format != tft_rg_rgtc2)
+		if (format != tft_r_rgtc1)
 		{
 			QMessageBox::critical(this, tr("Error"),
 				QString(tr("File '%1' has wrong format"
@@ -859,18 +859,20 @@ void ELGLWidget::initializeGL()
 	m_global_vars->set_shadow_map_size(2);
 	m_global_vars->set_clipmap_terrain_size(2048);
 	m_global_vars->set_clipmap_terrain_world_size(8);
-	m_global_vars->set_clipmap_terrain_slices(16);
+	m_global_vars->set_clipmap_terrain_slices(8);
 	m_global_vars->set_fog(false);
 	m_global_vars->set_use_simd(true);
 	m_global_vars->set_use_s3tc_for_actors(true);
 	m_global_vars->set_use_block(true);
 	m_global_vars->set_use_in_out(true);
 	m_global_vars->set_use_functions(false);
-	m_global_vars->set_low_quality_terrain(false);
+	m_global_vars->set_terrain_quality(qt_high);
 	m_global_vars->set_use_multisample_shadows(false);
 	m_global_vars->set_effect_debug(false);
 	m_global_vars->set_use_scene_fbo(true);
 	m_global_vars->set_use_cpu_rasterizer(false);
+	m_global_vars->set_use_linear_lighting(false);
+	m_global_vars->set_use_multithreaded_culling(false);
 
 	m_editor.reset(new Editor(m_global_vars, m_file_system));
 	m_editor->set_z_near(1.5f);
@@ -1292,15 +1294,15 @@ bool ELGLWidget::get_dungeon() const
 	return m_editor->get_dungeon();
 }
 
-void ELGLWidget::set_ambient(const glm::vec3 &color)
+void ELGLWidget::set_ground_hemisphere(const glm::vec4 &ground_hemisphere)
 {
-	m_editor->set_ambient(color);
+	m_editor->set_ground_hemisphere(ground_hemisphere);
 	emit can_undo(m_editor->get_can_undo());
 }
 
-const glm::vec3 &ELGLWidget::get_ambient() const
+const glm::vec4 &ELGLWidget::get_ground_hemisphere() const
 {
-	return m_editor->get_ambient();
+	return m_editor->get_ground_hemisphere();
 }
 
 void ELGLWidget::move_left()
@@ -1897,4 +1899,16 @@ void ELGLWidget::fill_terrain_blend_layer(const float strength,
 {
 	m_editor->fill_terrain_blend_layer(strength, effect, layer);
 	emit can_undo(m_editor->get_can_undo());
+}
+
+void ELGLWidget::set_terrain_normal_mapping(const bool enabled)
+{
+	if (enabled)
+	{
+		m_global_vars->set_terrain_quality(qt_high);
+	}
+	else
+	{
+		m_global_vars->set_terrain_quality(qt_medium);
+	}
 }

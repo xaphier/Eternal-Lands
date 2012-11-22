@@ -6,25 +6,20 @@
  ****************************************************************************/
 
 #include "imageupdate.hpp"
-#include "image.hpp"
+#include "readwritememory.hpp"
 
 namespace eternal_lands
 {
 
-	ImageUpdate::ImageUpdate(): m_mipmap(0)
-	{
-	}
-
-	ImageUpdate::ImageUpdate(const ImageSharedPtr &image,
-		const Uint16 mipmap): m_image(image), m_mipmap(mipmap)
-	{
-		m_size = m_image->get_size();
-	}
-
-	ImageUpdate::ImageUpdate(const ImageSharedPtr &image,
+	ImageUpdate::ImageUpdate(const String &name,
+		const AbstractReadMemorySharedPtr &buffer,
 		const glm::uvec3 &offset, const glm::uvec3 &size,
-		const Uint16 mipmap): m_image(image), m_offset(offset),
-		m_size(size), m_mipmap(mipmap)
+		const CubeMapFaceType face, const GLenum format,
+		const GLenum type, const Uint16 mipmap,
+		const bool compressed): m_name(name), m_buffer(buffer),
+		m_offset(offset), m_size(size), m_face(face),
+		m_format(format), m_type(type), m_mipmap(mipmap),
+		m_compressed(compressed)
 	{
 	}
 

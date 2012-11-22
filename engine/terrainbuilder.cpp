@@ -41,8 +41,18 @@ namespace eternal_lands
 		assert(!m_mesh_data_cache.expired());
 		assert(!m_texture_cache.expired());
 
-		m_cdlod_terrain_material_name = String(UTF8("cdlod-terrain"));
-		m_simple_terrain_material_name = String(UTF8("simple-terrain"));
+		m_cdlod_terrain_material_name[qt_low] =
+			String(UTF8("cdlod-terrain-low-quality"));
+		m_cdlod_terrain_material_name[qt_medium] =
+			String(UTF8("cdlod-terrain-medium-quality"));
+		m_cdlod_terrain_material_name[qt_high] =
+			String(UTF8("cdlod-terrain-high-quality"));
+		m_simple_terrain_material_name[qt_low] =
+			String(UTF8("simple-terrain-all-quality"));
+		m_simple_terrain_material_name[qt_medium] =
+			String(UTF8("simple-terrain-all-quality"));
+		m_simple_terrain_material_name[qt_high] =
+			String(UTF8("simple-terrain-all-quality"));
 		m_clipmap_terrain_effect_name = String(UTF8("terrain"));
 	}
 

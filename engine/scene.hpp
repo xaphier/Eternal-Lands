@@ -75,9 +75,10 @@ namespace eternal_lands
 			Vec4Vector m_light_colors_array;
 			SceneView m_scene_view;
 			CpuRasterizerSharedPtr m_cpu_rasterizer;
+			glm::mat2x4 m_sky_ground_hemispheres;
 			glm::vec4 m_main_light_direction;
 			glm::vec4 m_main_light_color;
-			glm::vec4 m_main_light_ambient;
+			glm::vec4 m_sky_hemisphere;
 			glm::vec4 m_fog;
 			FreeIdsManagerSharedPtr m_free_ids;
 			Uint64 m_frame_id;
@@ -274,8 +275,9 @@ namespace eternal_lands
 			glm::uvec2 get_tile_map_size() const;
 			void set_dungeon(const bool dungeon);
 			bool get_dungeon() const;
-			void set_ambient(const glm::vec3 &color);
-			const glm::vec3 &get_ambient() const;
+			void set_ground_hemisphere(
+				const glm::vec4 &ground_hemisphere);
+			const glm::vec4 &get_ground_hemisphere() const;
 			float get_walk_height(const Uint16 x, const Uint16 y)
 				const;
 			bool get_terrain() const;
@@ -334,17 +336,16 @@ namespace eternal_lands
 				return m_scene_view.get_z_near();
 			}
 
-			inline void set_main_light_ambient(
-				const glm::vec3 &main_light_ambient) noexcept
+			inline void set_sky_hemisphere(
+				const glm::vec4 &sky_hemisphere) noexcept
 			{
-				m_main_light_ambient =
-					glm::vec4(main_light_ambient, 0.0f);
+				m_sky_hemisphere = sky_hemisphere;
 			}
 
-			inline const glm::vec4 &get_main_light_ambient() const
+			inline const glm::vec4 &get_sky_hemisphere() const
 				noexcept
 			{
-				return m_main_light_ambient;
+				return m_sky_hemisphere;
 			}
 
 			inline void set_main_light_color(

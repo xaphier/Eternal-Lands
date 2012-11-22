@@ -43,21 +43,18 @@ namespace eternal_lands
 	};
 
 	ActorDataCache::ActorDataCache(const MeshBuilderWeakPtr &mesh_builder,
-		const CodecManagerWeakPtr &codec_manager,
 		const MaterialCacheWeakPtr &material_cache,
 		const MaterialBuilderWeakPtr &material_builder,
 		const MaterialDescriptionCacheWeakPtr
 			&material_description_cache,
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars):
-		m_mesh_builder(mesh_builder), m_codec_manager(codec_manager),
-		m_material_cache(material_cache),
+		m_mesh_builder(mesh_builder), m_material_cache(material_cache),
 		m_material_builder(material_builder),
 		m_material_description_cache(material_description_cache),
 		m_file_system(file_system), m_global_vars(global_vars)
 	{
 		assert(!m_mesh_builder.expired());
-		assert(!m_codec_manager.expired());
 		assert(!m_material_cache.expired());
 		assert(!m_material_builder.expired());
 		assert(!m_material_description_cache.expired());
@@ -171,8 +168,8 @@ namespace eternal_lands
 				materials, found->second.m_index_source,
 				found->second.m_core_model));
 
-			result->init_enhanced_actor(get_codec_manager(),
-				get_file_system(), get_global_vars());
+			result->init_enhanced_actor(get_file_system(),
+				get_global_vars());
 		}
 		else
 		{

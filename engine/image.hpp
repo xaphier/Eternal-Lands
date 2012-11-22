@@ -62,15 +62,17 @@ namespace eternal_lands
 				const TextureFormatType texture_format,
 				const glm::uvec3 &size,
 				const Uint16 mipmap_count,
-				const Uint16 pixel_size, const GLenum format,
-				const GLenum type, const bool sRGB,
-				const bool array = false);
+				const GLenum format, const GLenum type,
+				const bool sRGB, const bool array);
 
 			Image(const String &name, const bool cube_map,
 				const TextureFormatType texture_format,
 				const glm::uvec3 &size,
 				const Uint16 mipmap_count,
-				const bool array = false);
+				const bool array);
+
+			ReadWriteMemorySharedPtr swizzle(
+				const glm::uvec4 &position) const;
 
 			/**
 			 * The size of a compressed block.
@@ -159,6 +161,33 @@ namespace eternal_lands
 				const
 			{
 				return m_buffer;
+			}
+
+			/**
+			 * Returns the pointer to the data of the given
+			 * location.
+			 * @param x The x position.
+			 * @param y The y position.
+			 * @param z The z position.
+			 * @param face The face to use.
+			 * @param mipmap The mipmap level to use.
+			 * @return The pointer to the data.
+			 */
+			inline void* get_data(const Uint32 x, const Uint32 y,
+				const Uint32 z, const Uint16 face,
+				const Uint16 mipmap)
+			{
+				if (get_compressed())
+				{
+					return static_cast<Uint8*>(get_buffer(
+						)->get_ptr()) +
+						get_block_offset(x, y,z, face,
+							mipmap);
+				}
+
+				return static_cast<Uint8*>(get_buffer(
+					)->get_ptr()) + get_pixel_offset(x, y,
+						z, face, mipmap);
 			}
 
 			/**
@@ -577,7 +606,7 @@ namespace eternal_lands
 			 * array textures).
 			 * @return The number of array layers.
 			 */
-			inline Uint32 get_layer() const
+			inline Uint32 get_layer_count() const
 			{
 				if (!get_array())
 				{

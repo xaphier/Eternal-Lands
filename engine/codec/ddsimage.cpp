@@ -454,6 +454,28 @@ namespace eternal_lands
 					}
 				}
 
+				if ((red <= 8) && (green == 0) && (blue == 0)
+					&& (alpha == 0))
+				{
+					if (rg_formats)
+					{
+						return tft_r8;
+					}
+
+					return tft_l8;
+				}
+
+				if ((red <= 8) && (green <= 8) && (blue == 0)
+					&& (alpha == 0))
+				{
+					if (rg_formats)
+					{
+						return tft_rg8;
+					}
+
+					return tft_la8;
+				}
+
 				if ((red <= 3) && (green <= 3) && (blue <= 2) &&
 					(alpha == 0))
 				{
@@ -801,6 +823,8 @@ namespace eternal_lands
 					return tft_srgb8;
 				case dds::DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:
 					return tft_srgb8_a8;
+				case dds::DXGI_FORMAT_B4G4R4A4_UNORM:
+					return tft_rgba4;
 			}
 
 			EL_THROW_EXCEPTION(DdsUnkownFormatException()
@@ -808,13 +832,15 @@ namespace eternal_lands
 		}
 
 		bool get_dxt10_format(const TextureFormatType texture_format,
-			Uint32 &format, Uint32 &size, Uint32 &swap_size,
-			Uint32 &flags, bool &linear_size)
+			glm::uvec4 &position, Uint32 &format, Uint32 &size,
+			Uint32 &swap_size, Uint32 &flags, bool &linear_size)
 		{
 			linear_size = TextureFormatUtil::get_compressed(
 				texture_format);
 
 			size = TextureFormatUtil::get_size(texture_format);
+
+			position = glm::uvec4(0, 1, 2, 3);
 
 			switch (texture_format)
 			{
@@ -896,11 +922,13 @@ namespace eternal_lands
 					format = dds::DXGI_FORMAT_R10G10B10A2_UNORM;
 					swap_size = 4;
 					flags = dds::DDPF_RGBA;
+					position = glm::uvec4(3, 2, 1, 0);
 					return true;
 				case tft_rgb10_a2_ui:
 					format = dds::DXGI_FORMAT_R10G10B10A2_UINT;
 					swap_size = 4;
 					flags = dds::DDPF_RGBA;
+					position = glm::uvec4(3, 2, 1, 0);
 					return true;
 				case tft_r10f_b11f_g10f:
 					format = dds::DXGI_FORMAT_R11G11B10_FLOAT;
@@ -1133,6 +1161,24 @@ namespace eternal_lands
 					swap_size = 2;
 					flags = dds::DDPF_RGB;
 					return true;
+				case tft_r5g6b5:
+					format = dds::DXGI_FORMAT_B5G6R5_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_RGB;
+					position = glm::uvec4(2, 1, 0, 3);
+					return true;
+				case tft_rgb5_a1:
+					format = dds::DXGI_FORMAT_B5G5R5A1_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_RGBA;
+					position = glm::uvec4(2, 1, 0, 3);
+					return true;
+				case tft_rgba4:
+					format = dds::DXGI_FORMAT_B4G4R4A4_UNORM;
+					swap_size = 2;
+					flags = dds::DDPF_RGBA;
+					position = glm::uvec4(2, 1, 0, 3);
+					return true;
 				default:
 					break;
 			}
@@ -1182,9 +1228,7 @@ namespace eternal_lands
 			EL_THROW_EXCEPTION(DdsUnkownFormatException());
 		}
 
-		void get_rgba_masks(const Uint32 fourcc, Uint32 &red_mask,
-			Uint32 &green_mask, Uint32 &blue_mask,
-			Uint32 &alpha_mask)
+		void get_rgba_masks(const Uint32 fourcc, glm::uvec4 &masks)
 		{
 			switch (fourcc)
 			{
@@ -1207,88 +1251,88 @@ namespace eternal_lands
 				case dds::DDSFMT_A16B16G16R16_SIGNED:
 					return;
 				case dds::DDSFMT_R8G8B8:
-					red_mask = 0x00FF0000;
-					green_mask = 0x0000FF00;
-					blue_mask = 0x000000FF;
-					alpha_mask = 0x00000000;
+					masks.r = 0x00FF0000;
+					masks.g = 0x0000FF00;
+					masks.b = 0x000000FF;
+					masks.a = 0x00000000;
 					return;
 				case dds::DDSFMT_A8R8G8B8:
-					red_mask = 0x00FF0000;
-					green_mask = 0x0000FF00;
-					blue_mask = 0x000000FF;
-					alpha_mask = 0xFF000000;
+					masks.r = 0x00FF0000;
+					masks.g = 0x0000FF00;
+					masks.b = 0x000000FF;
+					masks.a = 0xFF000000;
 					return;
 				case dds::DDSFMT_R5G6B5:
-					red_mask = 0x0000F800;
-					green_mask = 0x000007E0;
-					blue_mask = 0x0000001F;
-					alpha_mask = 0x00000000;
+					masks.r = 0x0000F800;
+					masks.g = 0x000007E0;
+					masks.b = 0x0000001F;
+					masks.a = 0x00000000;
 					return;
 				case dds::DDSFMT_X1R5G5B5:
-					red_mask = 0x00007C00;
-					green_mask = 0x000003E0;
-					blue_mask = 0x0000001F;
-					alpha_mask = 0x00008000;
+					masks.r = 0x00007C00;
+					masks.g = 0x000003E0;
+					masks.b = 0x0000001F;
+					masks.a = 0x00008000;
 					return;
 				case dds::DDSFMT_A1R5G5B5:
-					red_mask = 0x00007C00;
-					green_mask = 0x000003E0;
-					blue_mask = 0x0000001F;
-					alpha_mask = 0x00008000;
+					masks.r = 0x00007C00;
+					masks.g = 0x000003E0;
+					masks.b = 0x0000001F;
+					masks.a = 0x00008000;
 					return;
 				case dds::DDSFMT_A4R4G4B4:
-					red_mask = 0x00000F00;
-					green_mask = 0x000000F0;
-					blue_mask = 0x0000000F;
-					alpha_mask = 0x0000F000;
+					masks.r = 0x00000F00;
+					masks.g = 0x000000F0;
+					masks.b = 0x0000000F;
+					masks.a = 0x0000F000;
 					return;
 				case dds::DDSFMT_X4R4G4B4:
-					red_mask = 0x00000F00;
-					green_mask = 0x000000F0;
-					blue_mask = 0x0000000F;
-					alpha_mask = 0x0000F000;
+					masks.r = 0x00000F00;
+					masks.g = 0x000000F0;
+					masks.b = 0x0000000F;
+					masks.a = 0x0000F000;
 					return;
 				case dds::DDSFMT_R3G3B2:
-					red_mask = 0x000000E0;
-					green_mask = 0x0000001C;
-					blue_mask = 0x00000003;
-					alpha_mask = 0x00000000;
+					masks.r = 0x000000E0;
+					masks.g = 0x0000001C;
+					masks.b = 0x00000003;
+					masks.a = 0x00000000;
 					return;
 				case dds::DDSFMT_A8:
-					red_mask = 0x00000000;
-					green_mask = 0x00000000;
-					blue_mask = 0x00000000;
-					alpha_mask = 0x000000FF;
+					masks.r = 0x00000000;
+					masks.g = 0x00000000;
+					masks.b = 0x00000000;
+					masks.a = 0x000000FF;
 					return;
 				case dds::DDSFMT_A2R10G10B10:
-					red_mask = 0x000003FF;
-					green_mask = 0x000FFC00;
-					blue_mask = 0x3FF00000;
-					alpha_mask = 0xC0000000;
+					masks.r = 0x000003FF;
+					masks.g = 0x000FFC00;
+					masks.b = 0x3FF00000;
+					masks.a = 0xC0000000;
 					return;
 				case dds::DDSFMT_A2B10G10R10:
-					red_mask = 0x3FF00000;
-					green_mask = 0x000FFC00;
-					blue_mask = 0x000003FF;
-					alpha_mask = 0xC0000000;
+					masks.r = 0x3FF00000;
+					masks.g = 0x000FFC00;
+					masks.b = 0x000003FF;
+					masks.a = 0xC0000000;
 					return;
 				case dds::DDSFMT_L8:
-					red_mask = 0x000000FF;
-					green_mask = 0x00000000;
-					blue_mask = 0x00000000;
-					alpha_mask = 0x00000000;
+					masks.r = 0x000000FF;
+					masks.g = 0x00000000;
+					masks.b = 0x00000000;
+					masks.a = 0x00000000;
 					return;
 				case dds::DDSFMT_A8L8:
-					red_mask = 0x000000FF;
-					green_mask = 0x00000000;
-					blue_mask = 0x00000000;
-					alpha_mask = 0x0000FF00;
+					masks.r = 0x000000FF;
+					masks.g = 0x00000000;
+					masks.b = 0x00000000;
+					masks.a = 0x0000FF00;
 					return;
 				case dds::DDSFMT_A8B8G8R8:
-					red_mask = 0x000000FF;
-					green_mask = 0x0000FF00;
-					blue_mask = 0x00FF0000;
-					alpha_mask = 0xFF000000;
+					masks.r = 0x000000FF;
+					masks.g = 0x0000FF00;
+					masks.b = 0x00FF0000;
+					masks.a = 0xFF000000;
 					return;
 			}
 
@@ -1385,27 +1429,25 @@ namespace eternal_lands
 			EL_THROW_EXCEPTION(DdsUnkownFormatException());
 		}
 
-		void check_fourcc_support(const CodecManager &codec_manager,
-			const Uint32 fourcc, const String &format_str,
-			const Uint32 pixel_size, const bool rg_formats)
+		void check_fourcc_support(const Uint32 fourcc,
+			const String &format_str, const Uint32 pixel_size,
+				const bool rg_formats)
 		{
-			Uint32 red_mask, green_mask, blue_mask, alpha_mask;
+			glm::uvec4 masks;
 			Uint32 bits;
 			GLenum format, type;
 			bool supported;
 
 			if (get_rgba_masks_needed(fourcc))
 			{
-				get_rgba_masks(fourcc, red_mask, green_mask,
-					blue_mask, alpha_mask);
+				get_rgba_masks(fourcc, masks);
 
 				supported =
-					codec_manager.is_fast_load_supported(
-					red_mask, green_mask, blue_mask,
-					alpha_mask, rg_formats);
+					CodecManager::is_fast_load_supported(
+						masks, rg_formats, false);
 
-				bits = __builtin_popcount(red_mask | blue_mask |
-					green_mask | alpha_mask);
+				bits = __builtin_popcount(masks[0] | masks[1] |
+					masks[2] | masks[3]);
 			}
 			else
 			{
@@ -1437,7 +1479,6 @@ namespace eternal_lands
 				dds::DdsHeader10 m_header_dxt10;
 				ImageSharedPtr m_image;
 				ReaderSharedPtr m_reader;
-				const CodecManager &m_codec_manager;
 
 				void load_supported(
 					const ImageCompressionTypeSet
@@ -1460,16 +1501,10 @@ namespace eternal_lands
 					const bool sRGB,
 					const bool merge_layers);
 				void load(const Uint16 swap_size);
-				void set_format_mask(const Uint32 red_mask,
-					const Uint32 green_mask,
-					const Uint32 blue_mask,
-					const Uint32 alpha_mask,
+				void set_format_mask(const glm::uvec4 &masks,
 					const bool rg_formats,
 					const bool sRGB);
-				void set_format_mask(const Uint32 red_mask,
-					const Uint32 green_mask,
-					const Uint32 blue_mask,
-					const Uint32 alpha_mask,
+				void set_format_mask(const glm::uvec4 &masks,
 					const TextureFormatType format,
 					const bool rg_formats,
 					const bool sRGB);
@@ -1482,16 +1517,8 @@ namespace eternal_lands
 				glm::uvec3 get_size() const;
 				bool get_array() const;
 
-				inline const CodecManager &get_codec_manager()
-					const
-				{
-					return m_codec_manager;
-				}
-
 			public:
-				DdsImageLoader(
-					const CodecManager &codec_manager,
-					const ReaderSharedPtr &reader,
+				DdsImageLoader(const ReaderSharedPtr &reader,
 					const ImageCompressionTypeSet
 					&compression, const bool rg_formats,
 					const bool sRGB,
@@ -1504,13 +1531,10 @@ namespace eternal_lands
 
 		};
 
-		DdsImageLoader::DdsImageLoader(
-			const CodecManager &codec_manager,
-			const ReaderSharedPtr &reader,
+		DdsImageLoader::DdsImageLoader(const ReaderSharedPtr &reader,
 			const ImageCompressionTypeSet &compression,
 			const bool rg_formats, const bool sRGB,
-			const bool merge_layers): m_reader(reader),
-			m_codec_manager(codec_manager)
+			const bool merge_layers): m_reader(reader)
 		{
 			try
 			{
@@ -1573,19 +1597,17 @@ namespace eternal_lands
 			return m_header_dxt10.m_array_size > 1;
 		}
 
-		void DdsImageLoader::set_format_mask(const Uint32 red_mask,
-			const Uint32 green_mask, const Uint32 blue_mask,
-			const Uint32 alpha_mask, const bool rg_formats,
-			const bool sRGB)
+		void DdsImageLoader::set_format_mask(const glm::uvec4 &masks,
+			const bool rg_formats, const bool sRGB)
 		{
 			Uint32 pixel_size;
 			Uint32 swap_size;
 			GLenum format;
 			GLenum type;
 
-			if (get_codec_manager().is_fast_load_supported(red_mask,
-				green_mask, blue_mask, alpha_mask, rg_formats,
-				type, format, pixel_size, swap_size))
+			if (CodecManager::is_fast_load_supported(masks,
+				rg_formats, false, type, format, pixel_size,
+				swap_size))
 			{
 				m_image = boost::make_shared<Image>(
 					m_reader->get_name(),
@@ -1593,9 +1615,8 @@ namespace eternal_lands
 					get_texture_format(m_header,
 						rg_formats, sRGB), get_size(),
 					static_cast<Uint16>(
-					m_header.m_mipmap_count),
-					static_cast<Uint16>(pixel_size * 8),
-					format, type, false);
+					m_header.m_mipmap_count), format, type,
+					false, get_array());
 
 				load(swap_size);
 			}
@@ -1607,9 +1628,7 @@ namespace eternal_lands
 			}
 		}
 
-		void DdsImageLoader::set_format_mask(const Uint32 red_mask,
-			const Uint32 green_mask, const Uint32 blue_mask,
-			const Uint32 alpha_mask,
+		void DdsImageLoader::set_format_mask(const glm::uvec4 &masks,
 			const TextureFormatType texture_format,
 			const bool rg_formats, const bool sRGB)
 		{
@@ -1618,17 +1637,16 @@ namespace eternal_lands
 			GLenum format;
 			GLenum type;
 
-			if (get_codec_manager().is_fast_load_supported(red_mask,
-				green_mask, blue_mask, alpha_mask, rg_formats,
-				type, format, pixel_size, swap_size))
+			if (CodecManager::is_fast_load_supported(masks,
+				rg_formats, false, type, format, pixel_size,
+				swap_size))
 			{
 				m_image = boost::make_shared<Image>(
 					m_reader->get_name(),
 					get_cube_map(m_header), texture_format,
 					get_size(), static_cast<Uint16>(
-					m_header.m_mipmap_count),
-					static_cast<Uint16>(pixel_size * 8),
-					format, type, sRGB);
+					m_header.m_mipmap_count), format, type,
+					sRGB, get_array());
 				load(swap_size);
 			}
 			else
@@ -1659,11 +1677,11 @@ namespace eternal_lands
 			if ((m_header.m_pixel_format.m_flags & dds::DDPF_FOURCC)
 				!= dds::DDPF_FOURCC)
 			{
-				set_format_mask(
+				set_format_mask(glm::uvec4(
 					m_header.m_pixel_format.m_red_mask,
 					m_header.m_pixel_format.m_green_mask,
 					m_header.m_pixel_format.m_blue_mask,
-					m_header.m_pixel_format.m_alpha_mask,
+					m_header.m_pixel_format.m_alpha_mask),
 					rg_formats, sRGB);
 
 				return;
@@ -1682,8 +1700,7 @@ namespace eternal_lands
 				get_texture_format(m_header, rg_formats, sRGB),
 				get_size(),
 				static_cast<Uint16>(m_header.m_mipmap_count),
-				static_cast<Uint16>(pixel_size), format, type,
-				sRGB);
+				format, type, sRGB, get_array());
 
 			load(swap_size);
 		}
@@ -1708,11 +1725,12 @@ namespace eternal_lands
 			const TextureFormatType texture_format,
 			const bool rg_formats)
 		{
+			glm::uvec4 position;
 			TextureFormatType tmp;
 			Uint32 format, bpp, swap_size, flags;
 			bool linear_size;
 
-			get_dxt10_format(texture_format, format, bpp,
+			get_dxt10_format(texture_format, position, format, bpp,
 				swap_size, flags, linear_size), 
 
 			tmp = texture_format;
@@ -1766,9 +1784,8 @@ namespace eternal_lands
 			const ImageCompressionTypeSet &compression,
 			const bool rg_formats, const bool sRGB)
 		{
-			Uint32 fourcc, red_mask, green_mask, blue_mask;
-			Uint32 alpha_mask;
-			Uint32 pixel_size, format, type;
+			glm::uvec4 masks;
+			Uint32 fourcc, pixel_size, format, type;
 
 			fourcc = m_header.m_pixel_format.m_fourcc;
 
@@ -1862,16 +1879,9 @@ namespace eternal_lands
 				case dds::DDSFMT_A8B8G8R8:
 				case dds::DDSFMT_A8L8:
 					assert(get_rgba_masks_needed(fourcc));
-					red_mask = 0x00000000;
-					green_mask = 0x00000000;
-					blue_mask = 0x00000000;
-					alpha_mask = 0x00000000;
-					get_rgba_masks(fourcc, red_mask,
-						green_mask, blue_mask,
-						alpha_mask);
-					set_format_mask(red_mask, green_mask,
-						blue_mask, alpha_mask,
-						rg_formats, sRGB);
+					get_rgba_masks(fourcc, masks);
+					set_format_mask(masks, rg_formats,
+						sRGB);
 					return;
 				case dds::DDSFMT_L16:
 				case dds::DDSFMT_G16R16:
@@ -2262,34 +2272,46 @@ namespace eternal_lands
 						rg_formats);
 					return;
 				case dds::DXGI_FORMAT_B5G6R5_UNORM:
-					set_format_mask(0x0000F800, 0x000007E0,
-						0x0000001F, 0x00000000,
-						tft_r5g6b5, rg_formats, false);
+					set_format_mask(glm::uvec4(0x0000F800,
+						0x000007E0, 0x0000001F,
+						0x00000000), tft_r5g6b5,
+						rg_formats, false);
 					return;
 				case dds::DXGI_FORMAT_B5G5R5A1_UNORM:
-					set_format_mask(0x00007C00, 0x000003E0,
-						0x0000001F, 0x00008000,
-						tft_rgb5_a1, rg_formats, false);
+					set_format_mask(glm::uvec4(0x00007C00,
+						0x000003E0, 0x0000001F,
+						0x00008000), tft_rgb5_a1,
+						rg_formats, false);
 					return;
 				case dds::DXGI_FORMAT_B8G8R8A8_UNORM:
-					set_format_mask(0x00FF0000, 0x0000FF00,
-						0x000000FF, 0xFF000000,
-						tft_rgba8, rg_formats, false);
+					set_format_mask(glm::uvec4(0x00FF0000,
+						0x0000FF00, 0x000000FF,
+						0xFF000000), tft_rgba8,
+						rg_formats, false);
 					return;
 				case dds::DXGI_FORMAT_B8G8R8X8_UNORM:
-					set_format_mask(0x00FF0000, 0x0000FF00,
-						0x000000FF, 0xFF000000,
-						tft_rgb8, rg_formats, false);
+					set_format_mask(glm::uvec4(0x00FF0000,
+						0x0000FF00, 0x000000FF,
+						0xFF000000), tft_rgb8,
+						rg_formats, false);
 					return;
 				case dds::DXGI_FORMAT_B8G8R8A8_UNORM_SRGB:
-					set_format_mask(0x00FF0000, 0x0000FF00,
-						0x000000FF, 0xFF000000,
-						tft_srgb8, rg_formats, true);
+					set_format_mask(glm::uvec4(0x00FF0000,
+						0x0000FF00, 0x000000FF,
+						0xFF000000), tft_srgb8,
+						rg_formats, true);
 					return;
 				case dds::DXGI_FORMAT_B8G8R8X8_UNORM_SRGB:
-					set_format_mask(0x00FF0000, 0x0000FF00,
-						0x000000FF, 0xFF000000,
-						tft_srgb8_a8, rg_formats, true);
+					set_format_mask(glm::uvec4(0x00FF0000,
+						0x0000FF00, 0x000000FF,
+						0xFF000000), tft_srgb8_a8,
+						rg_formats, true);
+					return;
+				case dds::DXGI_FORMAT_B4G4R4A4_UNORM:
+					set_format_mask(glm::uvec4(0x00000F00,
+						0x000000F0, 0x0000000F,
+						0x0000F000), tft_rgba4,
+						rg_formats, false);
 					return;
 			}
 
@@ -2371,21 +2393,20 @@ namespace eternal_lands
 			m_image = Dxt::uncompress(m_reader,
 				m_reader->get_name(), size, format,
 				static_cast<Uint16>(m_header.m_mipmap_count),
-				get_cube_map(m_header), rg_formats, sRGB,
-				merge_layers);
+				get_cube_map(m_header), get_array(), rg_formats,
+				sRGB, merge_layers);
 		}
 
 	}
 
-	ImageSharedPtr DdsImage::load_image(const CodecManager &codec_manager,
-		const ReaderSharedPtr &reader,
+	ImageSharedPtr DdsImage::load_image(const ReaderSharedPtr &reader,
 		const ImageCompressionTypeSet &compression,
 		const bool rg_formats, const bool sRGB, const bool merge_layers)
 	{
 		try
 		{
-			DdsImageLoader dds_image_loader(codec_manager, reader,
-				compression, rg_formats, sRGB, merge_layers);
+			DdsImageLoader dds_image_loader(reader, compression,
+				rg_formats, sRGB, merge_layers);
 
 			return dds_image_loader.get_image();
 		}
@@ -2449,83 +2470,80 @@ namespace eternal_lands
 		return String(UTF8("dds-image"));
 	}
 
-	void DdsImage::check_all_fourcc_support(
-		const CodecManager &codec_manager, const bool rg_formats)
+	void DdsImage::check_all_fourcc_support(const bool rg_formats)
 	{
-		check_fourcc_support(codec_manager, dds::DDSFMT_R8G8B8,
+		check_fourcc_support(dds::DDSFMT_R8G8B8,
 			String(UTF8("R8G8B8")), 24, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A8R8G8B8,
+		check_fourcc_support(dds::DDSFMT_A8R8G8B8,
 			String(UTF8("A8R8G8B8")), 32, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_R5G6B5,
+		check_fourcc_support(dds::DDSFMT_R5G6B5,
 			String(UTF8("R5G6B5")), 16, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_X1R5G5B5,
+		check_fourcc_support(dds::DDSFMT_X1R5G5B5,
 			String(UTF8("X1R5G5B5")), 16, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A1R5G5B5,
+		check_fourcc_support(dds::DDSFMT_A1R5G5B5,
 			String(UTF8("A1R5G5B5")), 16, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A4R4G4B4,
+		check_fourcc_support(dds::DDSFMT_A4R4G4B4,
 			String(UTF8("A4R4G4B4")), 16, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_R3G3B2,
+		check_fourcc_support(dds::DDSFMT_R3G3B2,
 			String(UTF8("R3G3B2")), 8, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A8,
+		check_fourcc_support(dds::DDSFMT_A8,
 			String(UTF8("A8")), 8, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_X4R4G4B4,
+		check_fourcc_support(dds::DDSFMT_X4R4G4B4,
 			String(UTF8("X4R4G4B4")), 16, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A2B10G10R10,
+		check_fourcc_support(dds::DDSFMT_A2B10G10R10,
 			String(UTF8("A2B10G10R10")), 32, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A8B8G8R8,
+		check_fourcc_support(dds::DDSFMT_A8B8G8R8,
 			String(UTF8("A8B8G8R8")), 32, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_G16R16,
+		check_fourcc_support(dds::DDSFMT_G16R16,
 			String(UTF8("G16R16")), 32, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A2R10G10B10,
+		check_fourcc_support(dds::DDSFMT_A2R10G10B10,
 			String(UTF8("A2R10G10B10")), 32, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A16B16G16R16,
+		check_fourcc_support(dds::DDSFMT_A16B16G16R16,
 			String(UTF8("A16B16G16R16")), 64, rg_formats);
-		check_fourcc_support(codec_manager,
-			dds::DDSFMT_A16B16G16R16_SIGNED,
+		check_fourcc_support(dds::DDSFMT_A16B16G16R16_SIGNED,
 			String(UTF8("A16B16G16R16_SIGNED")), 64, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_L8,
+		check_fourcc_support(dds::DDSFMT_L8,
 			String(UTF8("L8")), 8, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A8L8,
+		check_fourcc_support(dds::DDSFMT_A8L8,
 			String(UTF8("A8L8")), 16, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_L16,
+		check_fourcc_support(dds::DDSFMT_L16,
 			String(UTF8("L16")), 16, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_DXT1,
+		check_fourcc_support(dds::DDSFMT_DXT1,
 			String(UTF8("DXT1")), 4, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_DXT2,
+		check_fourcc_support(dds::DDSFMT_DXT2,
 			String(UTF8("DXT2")), 8, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_DXT3,
+		check_fourcc_support(dds::DDSFMT_DXT3,
 			String(UTF8("DXT3")), 8, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_DXT4,
+		check_fourcc_support(dds::DDSFMT_DXT4,
 			String(UTF8("DXT4")), 8, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_DXT5,
+		check_fourcc_support(dds::DDSFMT_DXT5,
 			String(UTF8("DXT5")), 8, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_ATI1,
+		check_fourcc_support(dds::DDSFMT_ATI1,
 			String(UTF8("ATI1")), 4, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_ATI2,
+		check_fourcc_support(dds::DDSFMT_ATI2,
 			String(UTF8("ATI2")), 8, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_R16F,
+		check_fourcc_support(dds::DDSFMT_R16F,
 			String(UTF8("R16F")), 16, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_G16R16F,
+		check_fourcc_support(dds::DDSFMT_G16R16F,
 			String(UTF8("G16R16F")), 32, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A16B16G16R16F,
+		check_fourcc_support(dds::DDSFMT_A16B16G16R16F,
 			String(UTF8("A16B16G16R16F")), 64, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_R32F,
+		check_fourcc_support(dds::DDSFMT_R32F,
 			String(UTF8("R32F")), 32, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_G32R32F,
+		check_fourcc_support(dds::DDSFMT_G32R32F,
 			String(UTF8("G32R32F")), 64, rg_formats);
-		check_fourcc_support(codec_manager, dds::DDSFMT_A32B32G32R32F,
+		check_fourcc_support(dds::DDSFMT_A32B32G32R32F,
 			String(UTF8("A32B32G32R32F")), 128, rg_formats);
 	}
 
-	void DdsImage::save_image(const CodecManager &codec_manager,
-		const ImageSharedPtr &image, const WriterSharedPtr &writer)
+	void DdsImage::save_image(const ImageSharedPtr &image,
+		const WriterSharedPtr &writer)
 	{
 		dds::DdsHeader header;
+		glm::uvec4 masks;
 		GLenum type, format;
-		Uint32 red_mask, green_mask, blue_mask, alpha_mask, size;
-		Uint32 swap_size, fourcc;
-		Uint32 width, height, depth, mipmaps;
-		bool cube_map;
+		Uint32 size, swap_size, fourcc, width, height, depth, mipmaps;
+		bool cube_map, integer_format;
 
 		try
 		{
@@ -2546,14 +2564,20 @@ namespace eternal_lands
 			}
 			else
 			{
-				if (codec_manager.has_color_bit_mask(type,
-					format, red_mask, green_mask,
-					blue_mask, alpha_mask, size, swap_size))
+				if (CodecManager::has_color_bit_mask(type,
+					format, masks, size, swap_size,
+					integer_format))
 				{
+					if (integer_format)
+					{
+						EL_THROW_EXCEPTION(
+							DdsFormatNotSupportedException(
+							));
+					}
 					dds::build_dds_header(width, height,
-						depth, mipmaps, red_mask,
-						green_mask, blue_mask,
-						alpha_mask, cube_map, header);
+						depth, mipmaps, masks.r,
+						masks.g, masks.b, masks.a,
+						cube_map, header);
 				}
 				else
 				{
@@ -2613,8 +2637,9 @@ namespace eternal_lands
 	{
 		dds::DdsHeader header;
 		dds::DdsHeader10 header_dxt10;
+		glm::uvec4 position;
 		TextureFormatType texture_format;
-		Uint32 size, swap_size, format, layer, flags;
+		Uint32 size, swap_size, format, layer_count, flags;
 		Uint32 width, height, depth, mipmaps;
 		bool cube_map, linear_size;
 
@@ -2624,7 +2649,7 @@ namespace eternal_lands
 			width = image->get_width();
 			height = image->get_height();
 			depth = image->get_depth();
-			layer = image->get_layer();
+			layer_count = image->get_layer_count();
 			mipmaps = image->get_mipmap_count() + 1;
 			cube_map = image->get_cube_map();
 			swap_size = 0;
@@ -2634,12 +2659,12 @@ namespace eternal_lands
 				depth = 0;
 			}
 
-			if (get_dxt10_format(texture_format, format, size,
-				swap_size, flags, linear_size))
+			if (get_dxt10_format(texture_format, position, format,
+				size, swap_size, flags, linear_size))
 			{
 				build_dxt10_dds_header(width, height, depth,
-					layer, mipmaps, format, size, flags,
-					cube_map, linear_size, header,
+					layer_count, mipmaps, format, size,
+					flags, cube_map, linear_size, header,
 					header_dxt10);
 			}
 			else
@@ -2689,7 +2714,7 @@ namespace eternal_lands
 			writer->write_u32_le(header_dxt10.m_array_size);
 			writer->write_u32_le(header_dxt10.m_reserved);
 
-			writer->write_le(*image->get_buffer(), swap_size);
+			writer->write_le(*image->swizzle(position), swap_size);
 		}
 		catch (boost::exception &exception)
 		{
@@ -2698,25 +2723,27 @@ namespace eternal_lands
 		}
 	}
 
-	bool DdsImage::can_save(const CodecManager &codec_manager,
-		const ImageSharedPtr &image)
+	bool DdsImage::can_save(const ImageSharedPtr &image)
 	{
+		glm::uvec4 masks;
 		GLenum type, format;
-		Uint32 red_mask, green_mask, blue_mask, alpha_mask, size;
-		Uint32 swap_size, fourcc;
+		Uint32 swap_size, fourcc, size;
+		bool integer_format;
 
 		type = image->get_type();
 		format = image->get_format();
 		swap_size = 0;
+		integer_format = false;
 
 		return dds::get_fourcc(type, format, size, swap_size, fourcc) ||
-			codec_manager.has_color_bit_mask(type, format,
-				red_mask, green_mask, blue_mask, alpha_mask,
-				size, swap_size);
+			(CodecManager::has_color_bit_mask(type, format, masks,
+				size, swap_size, integer_format) &&
+					!integer_format);
 	}
 
 	bool DdsImage::can_save_dxt10(const ImageSharedPtr &image)
 	{
+		glm::uvec4 position;
 		TextureFormatType texture_format;
 		Uint32 size, swap_size, dxt10_format, flags;
 		bool linear_size;
@@ -2725,8 +2752,8 @@ namespace eternal_lands
 
 		texture_format = image->get_texture_format();
 
-		return get_dxt10_format(texture_format, dxt10_format, size,
-			swap_size, flags, linear_size);
+		return get_dxt10_format(texture_format, position, dxt10_format,
+			size, swap_size, flags, linear_size);
 	}
 
 	void DdsImage::get_dxt10_formats(
@@ -2793,6 +2820,9 @@ namespace eternal_lands
 		texture_formats.push_back(tft_signed_r_rgtc1);
 		texture_formats.push_back(tft_rg_rgtc2);
 		texture_formats.push_back(tft_signed_rg_rgtc2);
+		texture_formats.push_back(tft_rgb5_a1);
+		texture_formats.push_back(tft_r5g6b5);
+		texture_formats.push_back(tft_rgba4);
 	}
 
 }

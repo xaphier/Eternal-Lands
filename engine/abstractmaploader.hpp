@@ -56,7 +56,6 @@ namespace eternal_lands
 	class AbstractMapLoader
 	{
 		private:
-			const CodecManagerWeakPtr m_codec_manager;
 			const FileSystemSharedPtr m_file_system;
 			const FreeIdsManagerSharedPtr m_free_ids;
 			const GlobalVarsSharedPtr m_global_vars;
@@ -65,18 +64,6 @@ namespace eternal_lands
 			StringSet m_harvestables, m_entrables;
 
 		protected:
-			inline CodecManagerSharedPtr get_codec_manager() const
-				noexcept
-			{
-				CodecManagerSharedPtr result;
-
-				result = m_codec_manager.lock();
-
-				assert(result.get() != nullptr);
-
-				return result;
-			}
-
 			inline const FileSystemSharedPtr &get_file_system()
 				const noexcept
 			{
@@ -193,7 +180,8 @@ namespace eternal_lands
 				const Uint16 tile) = 0;
 			virtual void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height) = 0;
-			virtual void set_ambient(const glm::vec3 &ambient) = 0;
+			virtual void set_ground_hemisphere(
+				const glm::vec4 &ground_hemisphere) = 0;
 			virtual void set_map_size(const glm::uvec2 &size) = 0;
 			virtual void set_height_map_size(
 				const glm::uvec2 &size) = 0;
@@ -203,7 +191,7 @@ namespace eternal_lands
 			virtual void instance() = 0;
 			virtual void set_terrain(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,
@@ -217,7 +205,6 @@ namespace eternal_lands
 			 * Default constructor.
 			 */
 			AbstractMapLoader(
-				const CodecManagerWeakPtr &codec_manager,
 				const FileSystemSharedPtr &file_system,
 				const FreeIdsManagerSharedPtr &free_ids,
 				const GlobalVarsSharedPtr &global_vars);

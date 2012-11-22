@@ -26,8 +26,7 @@
 namespace eternal_lands
 {
 
-	MapLoader::MapLoader(const CodecManagerWeakPtr &codec_manager,
-		const FileSystemSharedPtr &file_system,
+	MapLoader::MapLoader(const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars,
 		const EffectCacheWeakPtr &effect_cache,
 		const MeshBuilderWeakPtr &mesh_builder,
@@ -39,10 +38,9 @@ namespace eternal_lands
 		const TerrainBuilderWeakPtr &terrain_builder,
 		const TextureCacheWeakPtr &texture_cache,
 		const FreeIdsManagerSharedPtr &free_ids):
-		AbstractMapLoader(codec_manager, file_system, free_ids,
-			global_vars), m_effect_cache(effect_cache),
-		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
-		m_mesh_data_cache(mesh_data_cache),
+		AbstractMapLoader(file_system, free_ids, global_vars),
+		m_effect_cache(effect_cache),m_mesh_builder(mesh_builder),
+		m_mesh_cache(mesh_cache), m_mesh_data_cache(mesh_data_cache),
 		m_material_cache(material_cache),
 		m_material_description_cache(material_description_cache),
 		m_terrain_builder(terrain_builder),
@@ -70,8 +68,7 @@ namespace eternal_lands
 			get_global_vars()->get_use_simd(),
 			get_global_vars()->get_opengl_3_2()));
 
-		m_map = boost::make_shared<Map>(get_codec_manager(),
-			get_file_system(), get_global_vars(),
+		m_map = boost::make_shared<Map>(get_global_vars(),
 			get_mesh_builder(), get_mesh_cache(),
 			get_material_cache(), get_terrain_builder(),
 			get_texture_cache());
@@ -217,9 +214,10 @@ namespace eternal_lands
 		m_map->set_height(x, y, height);
 	}
 
-	void MapLoader::set_ambient(const glm::vec3 &ambient)
+	void MapLoader::set_ground_hemisphere(
+		const glm::vec4 &ground_hemisphere)
 	{
-		m_map->set_ambient(ambient);
+		m_map->set_ground_hemisphere(ground_hemisphere);
 	}
 
 	void MapLoader::set_map_size(const glm::uvec2 &size)
@@ -243,7 +241,7 @@ namespace eternal_lands
 	}
 
 	void MapLoader::set_terrain(const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map,
 		const ImageSharedPtr &blend_map,
 		const StringVector &albedo_maps,
@@ -252,8 +250,8 @@ namespace eternal_lands
 		const glm::vec4 &dudv_scale_offset,
 		const glm::uvec2 &sizes)
 	{
-		m_map->set_terrain_geometry_maps(displacement_map, normal_map,
-			dudv_map);
+		m_map->set_terrain_geometry_maps(displacement_map,
+			normal_tangent_map, dudv_map);
 		m_map->set_terrain_blend_map(blend_map);
 		m_map->set_terrain_material(albedo_maps, extra_maps,
 			material_data);

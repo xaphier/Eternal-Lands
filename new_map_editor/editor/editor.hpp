@@ -87,8 +87,9 @@ namespace eternal_lands
 				const Uint8 texture);
 			void set_dungeon(const bool dungeon);
 			bool get_dungeon() const;
-			void set_ambient(const glm::vec3 &color);
-			const glm::vec3 &get_ambient() const;
+			void set_ground_hemisphere(
+				const glm::vec4 &ground_hemisphere);
+			const glm::vec4 &get_ground_hemisphere() const;
 			void ground_tile_edit(const glm::vec3 &point,
 				const Uint8 tile);
 			void water_tile_edit(const glm::vec3 &start,

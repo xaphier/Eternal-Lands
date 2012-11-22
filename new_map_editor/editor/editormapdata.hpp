@@ -106,8 +106,9 @@ namespace eternal_lands
 			bool get_light(const Uint32 id, LightData &light) const;
 			bool get_particle(const Uint32 id,
 				ParticleData &particle) const;
-			void set_ambient(const glm::vec3 &color);
-			const glm::vec3 &get_ambient() const;
+			void set_ground_hemisphere(
+				const glm::vec4 &ground_hemisphere);
+			const glm::vec4 &get_ground_hemisphere() const;
 			void set_dungeon(const bool dungeon);
 			bool get_dungeon() const;
 			void set_tile(const Uint16 x, const Uint16 y,
@@ -186,7 +187,7 @@ namespace eternal_lands
 			void import_terrain_blend_map(const String &name);
 			void set_terrain(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,

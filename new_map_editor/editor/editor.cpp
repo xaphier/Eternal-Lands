@@ -7,7 +7,7 @@
 
 #include "editor.hpp"
 #include "height.hpp"
-#include "undo/ambientmodification.hpp"
+#include "undo/groundhemispheremodification.hpp"
 #include "undo/blendmodification.hpp"
 #include "undo/dungeonmodification.hpp"
 #include "undo/heightmodification.hpp"
@@ -282,23 +282,24 @@ namespace eternal_lands
 		return m_data.get_dungeon();
 	}
 
-	void Editor::set_ambient(const glm::vec3 &color)
+	void Editor::set_ground_hemisphere(const glm::vec4 &ground_hemisphere)
 	{
-		if (add_needed(0, mt_scene_ambient_changed))
+		if (add_needed(0, mt_scene_ground_hemisphere_changed))
 		{
 			ModificationAutoPtr modification(new
-				AmbientModification(m_data.get_ambient(),
-				get_edit_id()));
+				GroundHemisphereModification(
+					m_data.get_ground_hemisphere(),
+					get_edit_id()));
 
 			m_undo.add(modification);
 		}
 
-		m_data.set_ambient(color);
+		m_data.set_ground_hemisphere(ground_hemisphere);
 	}
 
-	const glm::vec3 &Editor::get_ambient() const
+	const glm::vec4 &Editor::get_ground_hemisphere() const
 	{
-		return m_data.get_ambient();
+		return m_data.get_ground_hemisphere();
 	}
 
 	void Editor::ground_tile_edit(const glm::vec3 &point,

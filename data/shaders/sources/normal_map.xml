@@ -39,7 +39,7 @@ br = textureLod(effect_sampler_0, vec3(world_uv + size * vec2(-1,  1), layers.x)
 dx = tr + 2*r + br - tl - 2*l - bl;
 dy = bl + 2*b + br - tl - 2*t - tr;
 
-output_data_float[0] = vec4(normalize(vec3(dx, dy, 0.5)), 1.0);
+output_data_float[0] = vec4(normalize(vec3(dx, dy, exp2(layers[0]))).xy * 0.5 + 0.5, 0.0, 1.0);
 </source>
    <version>130</version>
    <shader_types>fragment</shader_types>

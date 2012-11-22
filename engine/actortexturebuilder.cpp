@@ -56,9 +56,7 @@ namespace eternal_lands
 			glm::uvec2(40, 48)	/* neck **/
 		} };
 
-		TextureFormatType check_size(
-			const CodecManagerSharedPtr &codec_manager,
-			const ReaderSharedPtr &reader,
+		TextureFormatType check_size(const ReaderSharedPtr &reader,
 			const glm::uvec2 &size, const Uint16 scale,
 			const bool rg_formats, const bool sRGB)
 		{
@@ -68,7 +66,7 @@ namespace eternal_lands
 			Uint16 mipmap, mipmap_count;
 			bool cube_map, array;
 
-			codec_manager->get_image_information(reader, rg_formats,
+			CodecManager::get_image_information(reader, rg_formats,
 				sRGB, texture_format, image_size, mipmap_count,
 				cube_map, array);
 
@@ -151,15 +149,14 @@ namespace eternal_lands
 				(texture_format != tft_srgb_a_dxt1);
 		}
 
-		bool get_alpha(const CodecManagerSharedPtr &codec_manager,
-			const ReaderSharedPtr &reader,
+		bool get_alpha(const ReaderSharedPtr &reader,
 			const glm::uvec2 &size, const Uint16 scale,
 			const bool sRGB, bool &compressed)
 		{
 			TextureFormatType texture_format;
 
-			texture_format = check_size(codec_manager, reader,
-				size, scale, false, sRGB);
+			texture_format = check_size(reader, size, scale, false,
+				sRGB);
 
 			compressed &= (texture_format == tft_rgb_dxt1) ||
 				(texture_format == tft_srgb_dxt1) ||
@@ -171,8 +168,7 @@ namespace eternal_lands
 			return get_alpha(texture_format);
 		}
 
-		bool get_alpha(const CodecManagerSharedPtr &codec_manager,
-			const ReaderSharedPtr &texture_reader,
+		bool get_alpha(const ReaderSharedPtr &texture_reader,
 			const ReaderSharedPtr &base_reader,
 			const ReaderSharedPtr &mask_reader,
 			const glm::uvec2 &size, const Uint16 scale,
@@ -185,17 +181,17 @@ namespace eternal_lands
 			if ((base_reader.get() == nullptr) ||
 				(mask_reader.get() == nullptr))
 			{
-				return get_alpha(codec_manager, texture_reader,
-					size, scale, sRGB, compressed);
+				return get_alpha(texture_reader, size, scale,
+					sRGB, compressed);
 			}
 
-			alpha = get_alpha(check_size(codec_manager,
-				texture_reader, size, scale, false, sRGB));
-			alpha |= get_alpha(check_size(codec_manager,
-				base_reader, size, scale, false, sRGB));
+			alpha = get_alpha(check_size(texture_reader, size,
+				scale, false, sRGB));
+			alpha |= get_alpha(check_size(base_reader, size, scale,
+				false, sRGB));
 
-			texture_format = check_size(codec_manager,
-				mask_reader, size, scale, false, sRGB);
+			texture_format = check_size(mask_reader, size, scale,
+				false, sRGB);
 
 			count = TextureFormatUtil::get_count(texture_format);
 
@@ -224,9 +220,7 @@ namespace eternal_lands
 					"is needed")));
 		}
 
-		ImageSharedPtr get_image(
-			const CodecManagerSharedPtr &codec_manager,
-			const ReaderSharedPtr &reader,
+		ImageSharedPtr get_image(const ReaderSharedPtr &reader,
 			const glm::uvec2 &size, const Uint16 scale,
 			const ImageCompressionTypeSet &compressions,
 			const bool rg_formats, const bool sRGB,
@@ -235,8 +229,8 @@ namespace eternal_lands
 			ImageSharedPtr result;
 			Uint32 width, height;
 
-			result = codec_manager->load_image(reader,
-				compressions, rg_formats, sRGB, false);
+			result = CodecManager::load_image(reader, compressions,
+				rg_formats, sRGB, false);
 
 			if (result->get_depth() != 0)
 			{
@@ -382,8 +376,7 @@ namespace eternal_lands
 			}
 		}
 
-		void set_image(const CodecManagerSharedPtr &codec_manager,
-			const ReaderSharedPtr &reader,
+		void set_image(const ReaderSharedPtr &reader,
 			const glm::uvec2 &size, const Uint16 scale,
 			const glm::uvec2 &offset, const ImageSharedPtr &image,
 			const ImageCompressionTypeSet &compressions,
@@ -394,8 +387,8 @@ namespace eternal_lands
 			Uint32 x, y, width, height;
 			Uint16 mipmap;
 
-			tmp = get_image(codec_manager, reader, size, scale,
-				compressions, false, sRGB, mipmap);
+			tmp = get_image(reader, size, scale, compressions,
+				false, sRGB, mipmap);
 
 			if ((tmp->get_texture_format() == tft_rgb_dxt1) ||
 				(tmp->get_texture_format() == tft_srgb_dxt1) ||
@@ -444,9 +437,9 @@ namespace eternal_lands
 			if (TextureFormatUtil::get_compressed(
 				tmp->get_texture_format()))
 			{
-				tmp = get_image(codec_manager, reader, size,
-					scale, ImageCompressionTypeSet(),
-					false, true, mipmap);
+				tmp = get_image(reader, size, scale,
+					ImageCompressionTypeSet(), false, true,
+					mipmap);
 			}
 
 			if ((tmp->get_texture_format() == tft_rgba8) ||
@@ -493,8 +486,7 @@ namespace eternal_lands
 			}
 		}
 
-		void set_image(const CodecManagerSharedPtr &codec_manager,
-			const ReaderSharedPtr &texture_reader,
+		void set_image(const ReaderSharedPtr &texture_reader,
 			const ReaderSharedPtr &base_reader,
 			const ReaderSharedPtr &mask_reader,
 			const glm::uvec2 &size, const Uint16 scale,
@@ -511,22 +503,21 @@ namespace eternal_lands
 			if ((base_reader.get() == nullptr) ||
 				(mask_reader.get() == nullptr))
 			{
-				return set_image(codec_manager, texture_reader,
-					size, scale, offset, image,
-					compressions, sRGB);
+				return set_image(texture_reader, size, scale,
+					offset, image, compressions, sRGB);
 			}
 
-			texture_image = get_image(codec_manager, texture_reader,
-				size, scale, ImageCompressionTypeSet(),
-				false, sRGB, texture_mipmap);
+			texture_image = get_image(texture_reader, size, scale,
+				ImageCompressionTypeSet(), false, sRGB,
+				texture_mipmap);
 
-			base_image = get_image(codec_manager, base_reader,
-				size, scale, ImageCompressionTypeSet(),
-				false, sRGB, base_mipmap);
+			base_image = get_image(base_reader, size, scale,
+				ImageCompressionTypeSet(), false, sRGB,
+				base_mipmap);
 
-			mask_image = get_image(codec_manager, mask_reader,
-				size, scale, ImageCompressionTypeSet(),
-				false, sRGB, mask_mipmap);
+			mask_image = get_image(mask_reader, size, scale,
+				ImageCompressionTypeSet(), false, sRGB,
+				mask_mipmap);
 
 			width = size[0] * scale;
 			height = size[1] * scale;
@@ -597,44 +588,39 @@ namespace eternal_lands
 
 		if (parts[aptt_pants_tex].get() != nullptr)
 		{
-			m_alphas[apt_pants] = get_alpha(get_codec_manager(),
-				parts[aptt_pants_tex], parts[aptt_legs_base],
-				parts[aptt_pants_mask],
+			m_alphas[apt_pants] = get_alpha(parts[aptt_pants_tex],
+				parts[aptt_legs_base], parts[aptt_pants_mask],
 				actor_part_sizes[apt_pants], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_boots_tex].get() != nullptr)
 		{
-			m_alphas[apt_boots] = get_alpha(get_codec_manager(),
-				parts[aptt_boots_tex], parts[aptt_boots_base],
-				parts[aptt_boots_mask],
+			m_alphas[apt_boots] = get_alpha(parts[aptt_boots_tex],
+				parts[aptt_boots_base], parts[aptt_boots_mask],
 				actor_part_sizes[apt_boots], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_torso_tex].get() != nullptr)
 		{
-			m_alphas[apt_torso] = get_alpha(get_codec_manager(),
-				parts[aptt_torso_tex], parts[aptt_body_base],
-				parts[aptt_torso_mask],
+			m_alphas[apt_torso] = get_alpha(parts[aptt_torso_tex],
+				parts[aptt_body_base], parts[aptt_torso_mask],
 				actor_part_sizes[apt_torso], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_arms_tex].get() != nullptr)
 		{
-			m_alphas[apt_arms] = get_alpha(get_codec_manager(),
-				parts[aptt_arms_tex], parts[aptt_arms_base],
-				parts[aptt_arms_mask],
+			m_alphas[apt_arms] = get_alpha(parts[aptt_arms_tex],
+				parts[aptt_arms_base], parts[aptt_arms_mask],
 				actor_part_sizes[apt_arms], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_hands_tex].get() != nullptr)
 		{
-			m_alphas[apt_pants] = get_alpha(get_codec_manager(),
-				parts[aptt_hands_tex],
+			m_alphas[apt_pants] = get_alpha(parts[aptt_hands_tex],
 				parts[aptt_hands_tex_save],
 				parts[aptt_hands_mask],
 				actor_part_sizes[apt_hands], m_scale,
@@ -643,57 +629,50 @@ namespace eternal_lands
 
 		if (parts[aptt_head_tex].get() != nullptr)
 		{
-			m_alphas[apt_head] = get_alpha(get_codec_manager(),
-				parts[aptt_head_tex], parts[aptt_head_base],
-				parts[aptt_head_mask],
+			m_alphas[apt_head] = get_alpha(parts[aptt_head_tex],
+				parts[aptt_head_base], parts[aptt_head_mask],
 				actor_part_sizes[apt_head], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_hair_tex].get() != nullptr)
 		{
-			m_alphas[apt_hair] = get_alpha(get_codec_manager(),
-				parts[aptt_hair_tex],
+			m_alphas[apt_hair] = get_alpha(parts[aptt_hair_tex],
 				actor_part_sizes[apt_hair], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_weapon_tex].get() != nullptr)
 		{
-			m_alphas[apt_weapon] = get_alpha(get_codec_manager(),
-				parts[aptt_weapon_tex],
+			m_alphas[apt_weapon] = get_alpha(parts[aptt_weapon_tex],
 				actor_part_sizes[apt_weapon], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_shield_tex].get() != nullptr)
 		{
-			m_alphas[apt_shield] = get_alpha(get_codec_manager(),
-				parts[aptt_shield_tex],
+			m_alphas[apt_shield] = get_alpha(parts[aptt_shield_tex],
 				actor_part_sizes[apt_shield], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_helmet_tex].get() != nullptr)
 		{
-			m_alphas[apt_helmet] = get_alpha(get_codec_manager(),
-				parts[aptt_helmet_tex],
+			m_alphas[apt_helmet] = get_alpha(parts[aptt_helmet_tex],
 				actor_part_sizes[apt_helmet], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_neck_tex].get() != nullptr)
 		{
-			m_alphas[apt_neck] = get_alpha(get_codec_manager(),
-				parts[aptt_neck_tex],
+			m_alphas[apt_neck] = get_alpha(parts[aptt_neck_tex],
 				actor_part_sizes[apt_neck], m_scale,
 				sRGB, compressed);
 		}
 
 		if (parts[aptt_cape_tex].get() != nullptr)
 		{
-			m_alphas[apt_cape] = get_alpha(get_codec_manager(),
-				parts[aptt_cape_tex],
+			m_alphas[apt_cape] = get_alpha(parts[aptt_cape_tex],
 				actor_part_sizes[apt_cape], m_scale,
 				sRGB, compressed);
 		}
@@ -730,12 +709,12 @@ namespace eternal_lands
 		}
 
 		m_image = boost::make_shared<Image>(m_name, false,
-			texture_format, size, 0);
+			texture_format, size, 0, false);
 
 		if (parts[aptt_pants_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_pants_tex],
-				parts[aptt_legs_base], parts[aptt_pants_mask],
+			set_image(parts[aptt_pants_tex], parts[aptt_legs_base],
+				parts[aptt_pants_mask],
 				actor_part_sizes[apt_pants], m_scale,
 				actor_part_offsets[apt_pants], m_image,
 				compressions, sRGB);
@@ -743,8 +722,8 @@ namespace eternal_lands
 
 		if (parts[aptt_boots_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_boots_tex],
-				parts[aptt_boots_base], parts[aptt_boots_mask],
+			set_image(parts[aptt_boots_tex], parts[aptt_boots_base],
+				parts[aptt_boots_mask],
 				actor_part_sizes[apt_boots], m_scale,
 				actor_part_offsets[apt_boots], m_image,
 				compressions, sRGB);
@@ -752,8 +731,8 @@ namespace eternal_lands
 
 		if (parts[aptt_torso_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_torso_tex],
-				parts[aptt_body_base], parts[aptt_torso_mask],
+			set_image(parts[aptt_torso_tex], parts[aptt_body_base],
+				parts[aptt_torso_mask],
 				actor_part_sizes[apt_torso], m_scale,
 				actor_part_offsets[apt_torso], m_image,
 				compressions, sRGB);
@@ -761,8 +740,8 @@ namespace eternal_lands
 
 		if (parts[aptt_arms_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_arms_tex],
-				parts[aptt_arms_base], parts[aptt_arms_mask],
+			set_image(parts[aptt_arms_tex], parts[aptt_arms_base],
+				parts[aptt_arms_mask],
 				actor_part_sizes[apt_arms], m_scale,
 				actor_part_offsets[apt_arms], m_image,
 				compressions, sRGB);
@@ -770,7 +749,7 @@ namespace eternal_lands
 
 		if (parts[aptt_hands_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_hands_tex],
+			set_image(parts[aptt_hands_tex],
 				parts[aptt_hands_tex_save],
 				parts[aptt_hands_mask],
 				actor_part_sizes[apt_hands], m_scale,
@@ -780,8 +759,8 @@ namespace eternal_lands
 
 		if (parts[aptt_head_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_head_tex],
-				parts[aptt_head_base], parts[aptt_head_mask],
+			set_image(parts[aptt_head_tex], parts[aptt_head_base],
+				parts[aptt_head_mask],
 				actor_part_sizes[apt_head], m_scale,
 				actor_part_offsets[apt_head], m_image,
 				compressions, sRGB);
@@ -789,7 +768,7 @@ namespace eternal_lands
 
 		if (parts[aptt_hair_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_hair_tex],
+			set_image(parts[aptt_hair_tex],
 				actor_part_sizes[apt_hair], m_scale,
 				actor_part_offsets[apt_hair], m_image,
 				compressions, sRGB);
@@ -797,7 +776,7 @@ namespace eternal_lands
 
 		if (parts[aptt_weapon_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_weapon_tex],
+			set_image(parts[aptt_weapon_tex],
 				actor_part_sizes[apt_weapon], m_scale,
 				actor_part_offsets[apt_weapon], m_image,
 				compressions, sRGB);
@@ -805,7 +784,7 @@ namespace eternal_lands
 
 		if (parts[aptt_shield_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_shield_tex],
+			set_image(parts[aptt_shield_tex],
 				actor_part_sizes[apt_shield], m_scale,
 				actor_part_offsets[apt_shield], m_image,
 				compressions, sRGB);
@@ -813,7 +792,7 @@ namespace eternal_lands
 
 		if (parts[aptt_helmet_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_helmet_tex],
+			set_image(parts[aptt_helmet_tex],
 				actor_part_sizes[apt_helmet], m_scale,
 				actor_part_offsets[apt_helmet], m_image,
 				compressions, sRGB);
@@ -821,7 +800,7 @@ namespace eternal_lands
 
 		if (parts[aptt_neck_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_neck_tex],
+			set_image(parts[aptt_neck_tex],
 				actor_part_sizes[apt_neck], m_scale,
 				actor_part_offsets[apt_neck], m_image,
 				compressions, sRGB);
@@ -829,7 +808,7 @@ namespace eternal_lands
 
 		if (parts[aptt_cape_tex].get() != nullptr)
 		{
-			set_image(get_codec_manager(), parts[aptt_cape_tex],
+			set_image(parts[aptt_cape_tex],
 				actor_part_sizes[apt_cape], m_scale,
 				actor_part_offsets[apt_cape], m_image,
 				compressions, sRGB);
@@ -861,16 +840,14 @@ namespace eternal_lands
 	}
 
 	ActorTextureBuilder::ActorTextureBuilder(
-		const CodecManagerWeakPtr &codec_manager,
 		const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars, const String &name):
-		m_name(name), m_codec_manager(codec_manager),
-		m_file_system(file_system), m_global_vars(global_vars)
+		m_name(name), m_file_system(file_system),
+		m_global_vars(global_vars)
 	{
 		TextureFormatType texture_format;
 		bool sRGB;
 
-		assert(!m_codec_manager.expired());
 		assert(m_file_system.get() != nullptr);
 		assert(m_global_vars.get() != nullptr);
 

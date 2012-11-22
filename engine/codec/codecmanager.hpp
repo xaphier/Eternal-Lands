@@ -25,212 +25,27 @@ namespace eternal_lands
 
 	class CodecManager
 	{
-		private:
-			class GlFastLoadInfo
-			{
-				private:
-					Uint32 m_red_mask;
-					Uint32 m_blue_mask;
-					Uint32 m_green_mask;
-					Uint32 m_alpha_mask;
-					Uint32 m_size;
-					Uint32 m_swap_size;
-					GLenum m_type;
-					GLenum m_format;
-					Uint16 m_channels;
-					bool m_rg_format;
-
-				public:
-					inline Uint32 get_red_mask() const
-						noexcept
-					{
-						return m_red_mask;
-					}
-
-					inline Uint32 get_blue_mask() const
-						noexcept
-					{
-						return m_blue_mask;
-					}
-
-					inline Uint32 get_green_mask() const
-						noexcept
-					{
-						return m_green_mask;
-					}
-
-					inline Uint32 get_alpha_mask() const
-						noexcept
-					{
-						return m_alpha_mask;
-					}
-
-					inline Uint32 get_size() const noexcept
-					{
-						return m_size;
-					}
-
-					inline Uint32 get_swap_size() const
-						noexcept
-					{
-						return m_swap_size;
-					}
-
-					inline GLenum get_type() const noexcept
-					{
-						return m_type;
-					}
-
-					inline GLenum get_format() const
-						noexcept
-					{
-						return m_format;
-					}
-
-					inline Uint16 get_channels() const
-						noexcept
-					{
-						return m_channels;
-					}
-
-					inline bool get_rg_format() const
-						noexcept
-					{
-						return m_rg_format;
-					}
-
-					inline void set_red_mask(
-						const Uint32 red_mask) noexcept
-					{
-						m_red_mask = red_mask;
-					}
-
-					inline void set_blue_mask(
-						const Uint32 blue_mask) noexcept
-					{
-						m_blue_mask = blue_mask;
-					}
-
-					inline void set_green_mask(
-						const Uint32 green_mask)
-						noexcept
-					{
-						m_green_mask = green_mask;
-					}
-
-					inline void set_alpha_mask(
-						const Uint32 alpha_mask)
-						noexcept
-					{
-						m_alpha_mask = alpha_mask;
-					}
-
-					inline void set_size(const Uint32 size)
-						noexcept
-					{
-						m_size = size;
-					}
-
-					inline void set_swap_size(
-						const Uint32 swap_size) noexcept
-					{
-						m_swap_size = swap_size;
-					}
-
-					inline void set_type(const GLenum type)
-						noexcept
-					{
-						m_type = type;
-					}
-
-					inline void set_format(
-						const GLenum format) noexcept
-					{
-						m_format = format;
-					}
-
-					inline void set_rg_format(
-						const bool rg_format) noexcept
-					{
-						m_rg_format = rg_format;
-					}
-
-					inline void set_channels(
-						const Uint16 channels) noexcept
-					{
-						m_channels = channels;
-					}
-
-			};
-
-			class GlPackedPixelType
-			{
-				private:
-					Uint32 m_red_mask;
-					Uint32 m_blue_mask;
-					Uint32 m_green_mask;
-					Uint32 m_alpha_mask;
-					GLenum m_type;
-
-					Uint32 get_size() const noexcept;
-
-				public:
-					GlPackedPixelType(const Uint32 red_mask,
-						const Uint32 green_mask,
-						const Uint32 blue_mask,
-						const Uint32 alpha_mask,
-						const GLenum type);
-					bool has_alpha() const noexcept;
-					GlFastLoadInfo build(
-						const GLenum format,
-						const bool swap_colors,
-						const bool ignore_alpha) const
-						noexcept;
-			};
-
-			std::vector<GlFastLoadInfo> m_flast_load_infos;
-
-			void add_packed_gl_pixel_type(
-				const GlPackedPixelType &pixel_type) noexcept;
-			void add_red_gl_pixel_type(const GLenum type,
-				const Uint32 mask) noexcept;
-			void add_red_green_gl_pixel_type(const GLenum type,
-				const Uint32 mask) noexcept;
-			void add_luminance_gl_pixel_type(const GLenum type,
-				const Uint32 mask) noexcept;
-			void add_alpha_gl_pixel_type(const GLenum type,
-				const Uint32 mask) noexcept;
-			void add_luminance_alpha_gl_pixel_type(
-				const GLenum type, const Uint32 mask) noexcept;
-			void add_color_gl_pixel_type(const GLenum type,
-				const Uint32 mask) noexcept;
-			void add_color_alpha_gl_pixel_type(const GLenum type,
-				const Uint32 mask) noexcept;
-			void add_gl_pixel_types();
-
 		public:
-			CodecManager();
-			~CodecManager() noexcept;
-
 			/**
 			 * Tries to find a combination of opengl format and
 			 * type that matchs the given color bit masks. If a
 			 * maching combination one is found, true is returned.
 			 * If no matching combination is found, false is
 			 * returned.
-			 * @param red_mask The bit mask for red.
-			 * @param green_mask The bit mask for green.
-			 * @param blue_mask The bit mask for blue.
-			 * @param alpha_mask The bit mask for alpha.
+			 * @param masks The bit masks for red, green, blue and
+			 * alpha.
+			 * @param rg_formats True if red only and red-green
+			 * only formats should be used.
+			 * @param integer_formats True if integer formats should
+			 * be used.
 			 * @see glTexImage1D
 			 * @see glTexImage2D
 			 * @see glTexImage3D
 			 */
-			bool is_fast_load_supported(const Uint32 red_mask,
-				const Uint32 green_mask,
-				const Uint32 blue_mask,
-				const Uint32 alpha_mask, const bool rga_formats)
-				const noexcept;
+			static bool is_fast_load_supported(
+				const glm::uvec4 &masks,
+				const bool rg_formats,
+				const bool integer_formats);
 
 			/**
 			 * Tries to find a combination of opengl format and
@@ -239,10 +54,12 @@ namespace eternal_lands
 			 * the parameter gl_type, gl_format, size and swap_size
 			 * are set with the correct values. If no matching
 			 * combination is found, only false is returned.
-			 * @param red_mask The bit mask for red.
-			 * @param green_mask The bit mask for green.
-			 * @param blue_mask The bit mask for blue.
-			 * @param alpha_mask The bit mask for alpha.
+			 * @param masks The bit masks for red, green, blue and
+			 * alpha.
+			 * @param rg_formats True if red only and red-green
+			 * only formats should be used.
+			 * @param integer_formats True if integer formats should
+			 * be used.
 			 * @param type If fast load is supported, this
 			 * parameter is filled with the needed opengl type.
 			 * @param format If fast load is supported, this
@@ -254,12 +71,11 @@ namespace eternal_lands
 			 * @see glTexImage2D
 			 * @see glTexImage3D
 			 */
-			bool is_fast_load_supported(const Uint32 red_mask,
-				const Uint32 green_mask,
-				const Uint32 blue_mask,
-				const Uint32 alpha_mask, const bool rg_formats,
-				GLenum &type, GLenum &format, Uint32 &size,
-				Uint32 &swap_size) const noexcept;
+			static bool is_fast_load_supported(
+				const glm::uvec4 &masks, const bool rg_formats,
+				const bool integer_formats, GLenum &type,
+				GLenum &format, Uint32 &size,
+				Uint32 &swap_size);
 
 			/**
 			 * Tries to find for a combination of opengl format and
@@ -269,50 +85,48 @@ namespace eternal_lands
 			 * alpha_mask, size and swap_size are set with the
 			 * correct values. If no matching combination is found,
 			 * only false is returned.
-			 * @param red_mask The bit mask for red.
-			 * @param green_mask The bit mask for green.
-			 * @param blue_mask The bit mask for blue.
-			 * @param alpha_mask The bit mask for alpha.
-			 * @param type opengl type.
-			 * @param format opengl format.
+			 * @param type The opengl type.
+			 * @param format The opengl format.
+			 * @param masks The bit masks for red, green, blue and
+			 * alpha.
 			 * @param size The size in bytes per pixel.
 			 * @param swap_size The size of the data to swap.
+			 * @param integer_format True if integer format.
 			 * @return True if fast load is supported, else false.
 			 */
-			bool has_color_bit_mask(const GLenum type,
-				const GLenum format, Uint32 &red_mask,
-				Uint32 &green_mask, Uint32 &blue_mask,
-				Uint32 &alpha_mask, Uint32 &size,
-				Uint32 &swap_size) const noexcept;
+			static bool has_color_bit_mask(const GLenum type,
+				const GLenum format, glm::uvec4 &masks,
+				Uint32 &size, Uint32 &swap_size,
+				bool &integer_format);
 
-			ImageSharedPtr load_image(
+			static ImageSharedPtr load_image(
 				const ReaderSharedPtr &reader,
 				const ImageCompressionTypeSet &compressions,
 				const bool rg_formats, const bool sRGB,
-				const bool merge_layers) const;
+				const bool merge_layers);
 
-			ImageSharedPtr load_image(const String &name,
+			static ImageSharedPtr load_image(const String &name,
 				const FileSystemSharedPtr &file_system,
 				const ImageCompressionTypeSet &compressions,
 				const bool rg_formats, const bool sRGB,
-				const bool merge_layers) const;
+				const bool merge_layers);
 
-			void get_image_information(
+			static void get_image_information(
 				const ReaderSharedPtr &reader,
 				const bool rg_formats, const bool sRGB,
 				TextureFormatType &texture_format,
 				glm::uvec3 &size, Uint16 &mipmaps,
-				bool &cube_map, bool &array) const;
+				bool &cube_map, bool &array);
 
-			void get_image_information(const String &name,
+			static void get_image_information(const String &name,
 				const FileSystemSharedPtr &file_system,
 				const bool rg_formats, const bool sRGB,
 				TextureFormatType &texture_format,
 				glm::uvec3 &size, Uint16 &mipmaps,
-				bool &cube_map, bool &array) const;
+				bool &cube_map, bool &array);
 
-			void get_supported_file_extensions(
-				StringVector &extensions) const noexcept;
+			static void get_supported_file_extensions(
+				StringVector &extensions);
 
 			static void save_image_as_png(
 				const ImageSharedPtr &image,
@@ -320,7 +134,8 @@ namespace eternal_lands
 			static void save_image_as_jpeg(
 				const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
-			void save_image_as_dds(const ImageSharedPtr &image,
+			static void save_image_as_dds(
+				const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
 			static void save_image_as_dds_dxt10(
 				const ImageSharedPtr &image,
@@ -332,7 +147,7 @@ namespace eternal_lands
 			static void save_image_as_jpeg(
 				const ImageSharedPtr &image,
 				const String &name);
-			void save_image_as_dds(
+			static void save_image_as_dds(
 				const ImageSharedPtr &image,
 				const String &name);
 			static void save_image_as_dds_dxt10(

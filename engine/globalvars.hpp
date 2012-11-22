@@ -13,6 +13,7 @@
 #endif	/* __cplusplus */
 
 #include "prerequisites.hpp"
+#include "qualityutil.hpp"
 
 /**
  * @file
@@ -41,7 +42,7 @@ namespace eternal_lands
 		sqt_medium,
 		sqt_high,
 		sqt_ultra
-	};		
+	};
 
 	enum LightSystemType
 	{
@@ -77,6 +78,7 @@ namespace eternal_lands
 			Uint16 m_clipmap_terrain_world_size;
 			Uint16 m_clipmap_terrain_slices;
 			ShadowQualityType m_shadow_quality;
+			QualityType m_terrain_quality;
 			OpenglVerionType m_opengl_version;
 			LightSystemType m_light_system;
 			bool m_fog;
@@ -87,7 +89,6 @@ namespace eternal_lands
 			bool m_use_block;
 			bool m_use_in_out;
 			bool m_use_functions;
-			bool m_low_quality_terrain;
 			bool m_use_multisample_shadows;
 			bool m_effect_debug;
 			bool m_use_scene_fbo;
@@ -115,12 +116,6 @@ namespace eternal_lands
 				m_view_distance = view_distance;
 			}
 
-			inline void set_shadow_quality(
-				const ShadowQualityType shadow_quality) noexcept
-			{
-				m_shadow_quality = shadow_quality;
-			}
-
 			inline void set_shadow_map_size(
 				const Uint16 shadow_map_size) noexcept
 			{
@@ -146,6 +141,18 @@ namespace eternal_lands
 			{
 				m_clipmap_terrain_slices =
 					clipmap_terrain_slices;
+			}
+
+			inline void set_shadow_quality(
+				const ShadowQualityType shadow_quality) noexcept
+			{
+				m_shadow_quality = shadow_quality;
+			}
+
+			inline void set_terrain_quality(
+				const QualityType terrain_quality) noexcept
+			{
+				m_terrain_quality = terrain_quality;
 			}
 
 			inline void set_opengl_version(
@@ -206,12 +213,6 @@ namespace eternal_lands
 				m_use_functions = use_functions;
 			}
 
-			inline void set_low_quality_terrain(
-				const bool low_quality_terrain) noexcept
-			{
-				m_low_quality_terrain = low_quality_terrain;
-			}
-
 			inline void set_use_multisample_shadows(
 				const bool use_multisample_shadows) noexcept
 			{
@@ -259,12 +260,6 @@ namespace eternal_lands
 				return m_view_distance;
 			}
 
-			inline ShadowQualityType get_shadow_quality() const
-				noexcept
-			{
-				return m_shadow_quality;
-			}
-
 			inline Uint16 get_shadow_map_count() const noexcept
 			{
 				switch (get_shadow_quality())
@@ -304,6 +299,17 @@ namespace eternal_lands
 				noexcept
 			{
 				return m_clipmap_terrain_slices;
+			}
+
+			inline ShadowQualityType get_shadow_quality() const
+				noexcept
+			{
+				return m_shadow_quality;
+			}
+
+			inline QualityType get_terrain_quality() const noexcept
+			{
+				return m_terrain_quality;
 			}
 
 			inline LightSystemType get_light_system() const
@@ -408,11 +414,6 @@ namespace eternal_lands
 			inline bool get_use_functions() const noexcept
 			{
 				return m_use_functions;
-			}
-
-			inline bool get_low_quality_terrain() const noexcept
-			{
-				return m_low_quality_terrain;
 			}
 
 			inline bool get_use_multisample_shadows() const noexcept

@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	action_time->setMaximum(359);
 	action_time->setWrapping(true);
 	action_time->setCorrectionMode(QAbstractSpinBox::CorrectToNearestValue);
-	toolbar->insertWidget(action_ambient, action_time);
+	toolbar->insertWidget(action_ground_hemisphere, action_time);
 
 	QObject::connect(action_add_objects, SIGNAL(toggled(bool)), this, SLOT(add_objects(bool)));
 	QObject::connect(action_add_lights, SIGNAL(toggled(bool)), this, SLOT(add_lights(bool)));
@@ -149,7 +149,7 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 	QObject::connect(action_new, SIGNAL(triggered()), this, SLOT(new_map()));
 	QObject::connect(action_open, SIGNAL(triggered()), this, SLOT(open_map()));
 	QObject::connect(action_fog, SIGNAL(triggered()), this, SLOT(set_fog()));
-	QObject::connect(action_ambient, SIGNAL(triggered()), this, SLOT(change_ambient()));
+	QObject::connect(action_ground_hemisphere, SIGNAL(triggered()), this, SLOT(change_ground_hemisphere()));
 //	QObject::connect(action_time, SIGNAL(valueChanged(int)), el_gl_widget,
 //		SLOT(set_game_minute(int)));
 	QObject::connect(action_preferences, SIGNAL(triggered()), this,
@@ -474,6 +474,16 @@ MainWindow::MainWindow(QWidget* parent): QMainWindow(parent)
 
 	connect(action_fill_terrain_blend_layer, SIGNAL(triggered()), this,
 		SLOT(fill_terrain_blend_layer()));
+
+	connect(action_terrain_normal_mapping, SIGNAL(toggled(bool)),
+		el_gl_widget, SLOT(set_terrain_normal_mapping(const bool)));
+
+	object_dock->widget()->setEnabled(false);
+	materials_dock->widget()->setEnabled(false);
+	transformation_dock->widget()->setEnabled(false);
+	light_dock->widget()->setEnabled(false);
+	terrain_dock->widget()->setEnabled(false);
+	randomize_dock->widget()->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -1626,25 +1636,26 @@ void MainWindow::save_as()
 	}
 }
 
-void MainWindow::change_ambient()
+void MainWindow::change_ground_hemisphere()
 {
 	QColor color;
-	glm::vec3 ambient_color;
+	glm::vec4 ground_hemisphere;
 
-	ambient_color = el_gl_widget->get_ambient();
+	ground_hemisphere = el_gl_widget->get_ground_hemisphere();
 
-	color = QColor::fromRgbF(ambient_color[0], ambient_color[1],
-		ambient_color[2]);
+	color = QColor::fromRgbF(ground_hemisphere[0], ground_hemisphere[1],
+		ground_hemisphere[2]);
 
-	color = QColorDialog::getColor(color, this, tr("Scene ambient color"));
+	color = QColorDialog::getColor(color, this,
+		tr("Map ground hemisphere"));
 
 	if (color.isValid())
 	{
-		ambient_color[0] = color.redF();
-		ambient_color[1] = color.greenF();
-		ambient_color[2] = color.blueF();
+		ground_hemisphere[0] = color.redF();
+		ground_hemisphere[1] = color.greenF();
+		ground_hemisphere[2] = color.blueF();
 
-		el_gl_widget->set_ambient(ambient_color);
+		el_gl_widget->set_ground_hemisphere(ground_hemisphere);
 	}
 }
 

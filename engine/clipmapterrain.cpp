@@ -62,6 +62,7 @@ namespace eternal_lands
 	bool ClipmapTerrain::update(const glm::vec3 &camera,
 		const glm::vec3 &view_dir, const glm::vec2 &focus)
 	{
+#if	0
 		glm::vec2 dir;
 		Uint16 dir_index;
 
@@ -82,7 +83,15 @@ namespace eternal_lands
 
 			return true;
 		}
+#else
+		if (glm::distance(focus, get_focus()) > 1.0f)
+		{
+			m_focus = focus;
+			m_distance = glm::distance(glm::vec2(camera), focus);
 
+			return true;
+		}
+#endif
 		return false;
 	}
 

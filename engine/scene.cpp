@@ -137,7 +137,9 @@ namespace eternal_lands
 				}
 
 		};
-			
+
+		SDL_mutex* mutex = 0;
+
 	}
 
 	Scene::Scene(const GlobalVarsSharedPtr &global_vars,
@@ -151,12 +153,16 @@ namespace eternal_lands
 	{
 		MapSharedPtr map;
 
+		mutex = SDL_CreateMutex();
+
+		SDL_LockMutex(mutex);
+
 		m_light_positions_array.resize(8);
 		m_light_colors_array.resize(8);
 
 		set_main_light_direction(glm::vec3(0.0f, 0.0f, 1.0f));
 		set_main_light_color(glm::vec3(0.2f));
-		set_main_light_ambient(glm::vec3(0.2f));
+		set_sky_hemisphere(glm::vec4(0.2f));
 
 		m_free_ids = boost::make_shared<FreeIdsManager>();
 
@@ -167,9 +173,7 @@ namespace eternal_lands
 		get_scene_resources().get_mesh_cache()->get_mesh(
 			String(UTF8("quad")), m_screen_quad);
 
-		map = boost::make_shared<Map>(
-			get_scene_resources().get_codec_manager(),
-			get_file_system(), get_global_vars(),
+		map = boost::make_shared<Map>(get_global_vars(),
 			get_scene_resources().get_mesh_builder(),
 			get_scene_resources().get_mesh_cache(),
 			get_scene_resources().get_material_cache(),
@@ -185,6 +189,9 @@ namespace eternal_lands
 
 	Scene::~Scene() noexcept
 	{
+		SDL_UnlockMutex(mutex);
+
+		SDL_DestroyMutex(mutex);
 	}
 
 	ActorSharedPtr Scene::add_actor(const Uint32 type_id, const Uint32 id,
@@ -436,9 +443,11 @@ namespace eternal_lands
 		m_clipmap_terrain_texture->init(size, size,
 			m_clipmap_terrain.get_slices(), mipmaps);
 
-		if (get_global_vars()->get_opengl_3_0())
+		if (get_global_vars()->get_terrain_quality() >= qt_high)
 		{
 			MaterialDescription material_description;
+
+			assert(get_global_vars()->get_opengl_3_0());
 
 			material_description.set_name(
 				String(UTF8("normal_map")));
@@ -464,6 +473,12 @@ namespace eternal_lands
 
 			m_normal_map_material->set_texture(
 				m_clipmap_terrain_texture, spt_effect_0);
+		}
+		else
+		{
+			m_normal_map_material.reset();
+
+			m_clipmap_terrain_normal_texture.reset();
 		}
 
 		m_clipmap_terrain_frame_buffer->bind();
@@ -756,17 +771,27 @@ namespace eternal_lands
 			light_color = glm::vec4(0.0f);
 		}
 
-		if (m_map->get_dungeon())
+		if (get_map()->get_dungeon())
 		{
 			m_light_positions_array[0] =
 				glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
 			m_light_colors_array[0] = glm::vec4(glm::vec3(0.25f),
 				0.0f);
+
+			m_sky_ground_hemispheres = glm::mat2x4(
+				get_map()->get_ground_hemisphere(),
+				glm::vec4(0.2f) -
+					get_map()->get_ground_hemisphere());
 		}
 		else
 		{
 			m_light_positions_array[0] = m_main_light_direction;
 			m_light_colors_array[0] = m_main_light_color;
+
+			m_sky_ground_hemispheres = glm::mat2x4(
+				get_map()->get_ground_hemisphere(),
+				m_sky_hemisphere -
+					get_map()->get_ground_hemisphere());
 		}
 
 		for (i = 0; i < count; ++i)
@@ -796,6 +821,8 @@ namespace eternal_lands
 			shadow_frutums[i] = Frustum(get_scene_view(
 				).get_shadow_projection_view_matrices()[i]);
 		}
+
+		SDL_UnlockMutex(mutex);
 
 		if (get_global_vars()->get_use_multithreaded_culling())
 		#pragma omp parallel sections
@@ -1056,6 +1083,8 @@ namespace eternal_lands
 			}
 		}
 
+		SDL_LockMutex(mutex);
+
 		if (use_terrain)
 		{
 			visible_terrain_buffer.reset();
@@ -1147,18 +1176,9 @@ namespace eternal_lands
 			program->set_parameter(apt_clipmap_terrain_matrices,
 				m_clipmap_terrain.get_texture_matrices());
 
-			if (get_map()->get_dungeon())
-			{
-				program->set_parameter(apt_ambient,
-					glm::vec4(m_map->get_ambient(), 1.0f));
-			}
-			else
-			{
-				program->set_parameter(apt_ambient,
-					m_main_light_ambient);
-			}
-
-			program->set_parameter(apt_dynamic_lights_count, 4);
+			program->set_parameter(apt_sky_ground_hemispheres,
+				m_sky_ground_hemispheres);
+			program->set_parameter(apt_dynamic_lights_count, 3);
 			program->set_parameter(apt_light_positions,
 				m_light_positions_array);
 			program->set_parameter(apt_light_colors,
@@ -1191,7 +1211,7 @@ namespace eternal_lands
 			get_state_manager().switch_mesh(
 				terrain_data.get_mesh());
 
-			MaterialLock material(terrain_data.get_material());
+			MaterialLock material(get_map()->get_terrain_material());
 
 			DEBUG_CHECK_GL_ERROR();
 
@@ -1494,8 +1514,6 @@ namespace eternal_lands
 	void Scene::do_update_shadow_map(const Uint16 slice)
 	{
 		DEBUG_CHECK_GL_ERROR();
-
-		get_state_manager().init();
 
 		if (get_scene_view().get_exponential_shadow_maps())
 		{
@@ -2090,7 +2108,7 @@ namespace eternal_lands
 			get_scene_view().set_ortho_view();
 			get_state_manager().switch_depth_mask(false);
 			get_state_manager().switch_depth_test(false);
-			get_state_manager().switch_blend(true);
+			get_state_manager().switch_blend(false);
 			get_state_manager().switch_multisample(false);
 			get_state_manager().switch_mesh(get_screen_quad());
 
@@ -2114,58 +2132,62 @@ namespace eternal_lands
 
 			DEBUG_CHECK_GL_ERROR();
 
-			if (!get_global_vars()->get_opengl_3_0())
+			if (get_global_vars()->get_opengl_3_0())
 			{
-				return;
+				get_state_manager().switch_texture(spt_effect_0,
+					m_clipmap_terrain_texture);
+
+				glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+				DEBUG_CHECK_GL_ERROR();
 			}
-
-			get_state_manager().switch_texture(spt_effect_0,
-				m_clipmap_terrain_texture);
-
-			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-
-			DEBUG_CHECK_GL_ERROR();
 
 			/**
 			 * Build normal map.
 			 */
-			m_clipmap_terrain_frame_buffer->set_view_port();
 
-			DEBUG_CHECK_GL_ERROR();
-
-			get_scene_view().set_ortho_view();
-			get_state_manager().switch_depth_mask(false);
-			get_state_manager().switch_depth_test(false);
-			get_state_manager().switch_blend(true);
-			get_state_manager().switch_multisample(false);
-			get_state_manager().switch_mesh(get_screen_quad());
-
-			count = m_clipmap_terrain.get_slices();
-
-			for (i = 0; i < count; ++i)
+			if (get_global_vars()->get_terrain_quality() >= qt_high)
 			{
-				update_terrain_normal_map(i);
+				assert(get_global_vars()->get_opengl_3_0());
+
+				m_clipmap_terrain_frame_buffer->set_view_port();
+
+				DEBUG_CHECK_GL_ERROR();
+
+				get_scene_view().set_ortho_view();
+				get_state_manager().switch_depth_mask(false);
+				get_state_manager().switch_depth_test(false);
+				get_state_manager().switch_blend(false);
+				get_state_manager().switch_multisample(false);
+				get_state_manager().switch_mesh(
+					get_screen_quad());
+
+				count = m_clipmap_terrain.get_slices();
+
+				for (i = 0; i < count; ++i)
+				{
+					update_terrain_normal_map(i);
+				}
+
+				update_program_vars_id();
+
+				DEBUG_CHECK_GL_ERROR();
+
+				unbind_all();
+
+				DEBUG_CHECK_GL_ERROR();
+
+				m_clipmap_terrain_frame_buffer->blit_buffers();
+				m_clipmap_terrain_frame_buffer->unbind();
+
+				DEBUG_CHECK_GL_ERROR();
+
+				get_state_manager().switch_texture(spt_effect_0,
+					m_clipmap_terrain_normal_texture);
+
+				glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+
+				DEBUG_CHECK_GL_ERROR();
 			}
-
-			update_program_vars_id();
-
-			DEBUG_CHECK_GL_ERROR();
-
-			unbind_all();
-
-			DEBUG_CHECK_GL_ERROR();
-
-			m_clipmap_terrain_frame_buffer->blit_buffers();
-			m_clipmap_terrain_frame_buffer->unbind();
-
-			DEBUG_CHECK_GL_ERROR();
-
-			get_state_manager().switch_texture(spt_effect_0,
-				m_clipmap_terrain_normal_texture);
-
-			glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-
-			DEBUG_CHECK_GL_ERROR();
 		}
 		catch (boost::exception &exception)
 		{
@@ -2771,7 +2793,6 @@ namespace eternal_lands
 		clear();
 
 		map_loader.reset(new MapLoader(
-			get_scene_resources().get_codec_manager(),
 			m_file_system, m_global_vars,
 			get_scene_resources().get_effect_cache(),
 			get_scene_resources().get_mesh_builder(),
@@ -2867,11 +2888,11 @@ namespace eternal_lands
 
 		light_position_image = boost::make_shared<Image>(
 			String(UTF8("light position")), false, tft_rgba32f,
-			glm::uvec3(count, 0, 0), 0);
+			glm::uvec3(count, 0, 0), 0, false);
 
 		light_color_image = boost::make_shared<Image>(
 			String(UTF8("light color")), false, color_format,
-			glm::uvec3(count, 0, 0), 0);
+			glm::uvec3(count, 0, 0), 0, false);
 
 		light_position_image->set_pixel(0, 0, 0, 0, 0, glm::vec4());
 		light_color_image->set_pixel(0, 0, 0, 0, 0, glm::vec4());
@@ -3009,14 +3030,14 @@ namespace eternal_lands
 		return m_map->get_dungeon();
 	}
 
-	const glm::vec3 &Scene::get_ambient() const
+	const glm::vec4 &Scene::get_ground_hemisphere() const
 	{
-		return m_map->get_ambient();
+		return m_map->get_ground_hemisphere();
 	}
 
-	void Scene::set_ambient(const glm::vec3 &color)
+	void Scene::set_ground_hemisphere(const glm::vec4 &ground_hemisphere)
 	{
-		m_map->set_ambient(color);
+		m_map->set_ground_hemisphere(ground_hemisphere);
 	}
 
 	float Scene::get_walk_height(const Uint16 x, const Uint16 y) const

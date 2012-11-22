@@ -30,7 +30,6 @@ namespace eternal_lands
 				TextureCacheMap;
 
 			TextureCacheMap m_texture_cache;
-			const CodecManagerWeakPtr m_codec_manager;
 			const FileSystemSharedPtr m_file_system;
 			const GlobalVarsSharedPtr m_global_vars;
 			TextureSharedPtr m_error_texture;
@@ -45,18 +44,6 @@ namespace eternal_lands
 				const ImageSharedPtr &image,
 				const String &name) const;
 
-			inline CodecManagerSharedPtr get_codec_manager() const
-				noexcept
-			{
-				CodecManagerSharedPtr result;
-
-				result = m_codec_manager.lock();
-
-				assert(result.get() != nullptr);
-
-				return result;
-			}
-
 			inline const FileSystemSharedPtr &get_file_system()
 				const noexcept
 			{
@@ -70,8 +57,7 @@ namespace eternal_lands
 			}
 
 		public:
-			TextureCache(const CodecManagerWeakPtr &codec_manager,
-				const FileSystemSharedPtr &file_system,
+			TextureCache(const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars);
 			~TextureCache() noexcept;
 			const TextureSharedPtr &get_texture(const String &name,

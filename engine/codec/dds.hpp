@@ -320,21 +320,22 @@ namespace eternal_lands
 			DXGI_FORMAT_BC7_TYPELESS = 97,
 			DXGI_FORMAT_BC7_UNORM = 98,
 			DXGI_FORMAT_BC7_UNORM_SRGB = 99,
+			DXGI_FORMAT_B4G4R4A4_UNORM = 115,
 		};
 
 		void build_dds_header(const Uint32 width, const Uint32 height,
-			const Uint32 depth, const Uint32 mipmaps,
+			const Uint32 depth, const Uint32 mipmap_count,
 			const Uint32 red_mask, const Uint32 green_mask,
 			const Uint32 blue_mask, const Uint32 alpha_mask,
 			const bool cube_map, DdsHeader &header);
 		void build_dds_fourcc_header(const Uint32 width,
 			const Uint32 height, const Uint32 depth,
-			const Uint32 mipmaps, const Uint32 fourcc,
+			const Uint32 mipmap_count, const Uint32 fourcc,
 			const Uint32 bpp, const bool cube_map,
 			DdsHeader &header);
 		void build_dxt10_dds_header(const Uint32 width,
 			const Uint32 height, const Uint32 depth,
-			const Uint32 layer, const Uint32 mipmaps,
+			const Uint32 layer_count, const Uint32 mipmap_count,
 			const Uint32 format, const Uint32 bpp,
 			const Uint32 flags, const bool cube_map,
 			const bool linear_size, DdsHeader &header,

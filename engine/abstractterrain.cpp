@@ -15,7 +15,6 @@
 #include "materialcache.hpp"
 #include "texture.hpp"
 #include "image.hpp"
-#include "imageupdate.hpp"
 
 namespace eternal_lands
 {
@@ -35,20 +34,39 @@ namespace eternal_lands
 		const EffectCacheSharedPtr &effect_cache,
 		const MaterialBuilderSharedPtr &material_builder,
 		const MaterialCacheSharedPtr &material_cache,
-		const String &material, const String &effect):
-		m_global_vars(global_vars),
-		m_low_quality_terrain(global_vars->get_low_quality_terrain())
+		const StringArray3 &material, const String &effect):
+		m_global_vars(global_vars), m_low_quality_terrain(
+			global_vars->get_terrain_quality() == qt_low)
 	{
 		MaterialDescription material_description;
 
-		m_terrain_material = material_cache->get_material(material);
+		m_terrain_materials[qt_low] = material_cache->get_material(
+			material[qt_low]);
+		m_terrain_materials[qt_medium] = material_cache->get_material(
+			material[qt_medium]);
+		m_terrain_materials[qt_high] = material_cache->get_material(
+			material[qt_high]);
 
-		material_description.set_name(
-			String(UTF8("clipmap-terrain-material")));
+		material_description.set_name(String(
+			UTF8("clipmap-terrain-low-quality-material")));
 		material_description.set_effect(effect);
 
-		m_clipmap_terrain_material = material_builder->get_material(
-			material_description);
+		m_clipmap_terrain_materials[qt_low] =
+			material_builder->get_material(material_description);
+
+		material_description.set_name(String(
+			UTF8("clipmap-terrain-medium-quality-material")));
+		material_description.set_effect(effect);
+
+		m_clipmap_terrain_materials[qt_medium] =
+			material_builder->get_material(material_description);
+
+		material_description.set_name(String(
+			UTF8("clipmap-terrain-high-quality-material")));
+		material_description.set_effect(effect);
+
+		m_clipmap_terrain_materials[qt_high] =
+			material_builder->get_material(material_description);
 	}
 
 	AbstractTerrain::~AbstractTerrain() noexcept
@@ -73,13 +91,19 @@ namespace eternal_lands
 	void AbstractTerrain::set_clipmap_texture(
 		const TextureSharedPtr &texture)
 	{
-		m_terrain_material->set_texture(texture, spt_effect_0);
+		get_terrain_material(qt_low)->set_texture(texture,
+			spt_effect_0);
+		get_terrain_material(qt_medium)->set_texture(texture,
+			spt_effect_0);
+		get_terrain_material(qt_high)->set_texture(texture,
+			spt_effect_0);
 	}
 
 	void AbstractTerrain::set_clipmap_normal_texture(
 		const TextureSharedPtr &texture)
 	{
-		m_terrain_material->set_texture(texture, spt_effect_1);
+		get_terrain_material(qt_high)->set_texture(texture,
+			spt_effect_1);
 	}
 
 	void AbstractTerrain::set_geometry_maps(
@@ -111,8 +135,8 @@ namespace eternal_lands
 		const TextureCacheSharedPtr &texture_cache)
 	{
 		TextureSharedPtr texture;
-		ImageUpdate blend_image;
-		Uint32 i, j, mipmaps, count, width, height;
+		BitSet64 layers;
+		Uint32 i, mipmap_count, count;
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
@@ -122,17 +146,24 @@ namespace eternal_lands
 			texture->set_wrap_s(twt_clamp);
 			texture->set_wrap_t(twt_clamp);
 
-			m_clipmap_terrain_material->set_texture(texture,
+			get_clipmap_terrain_material(qt_low)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_blend_sampler(0));
+			get_clipmap_terrain_material(qt_medium)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_blend_sampler(0));
+			get_clipmap_terrain_material(qt_high)->set_texture(
+				texture,
 				ShaderSourceTerrain::get_blend_sampler(0));
 
 			return;
 		}
 
-		count = glm::clamp(blend_map->get_layer(), 1u,
+		mipmap_count = blend_map->get_mipmap_count();
+
+		count = glm::clamp(blend_map->get_layer_count(), 1u,
 			ShaderSourceTerrain::get_non_array_blend_sampler_count(
 				));
-
-		mipmaps = blend_map->get_mipmap_count();
 
 		for (i = 0; i < count; ++i)
 		{
@@ -142,57 +173,47 @@ namespace eternal_lands
 
 			texture = boost::make_shared<Texture>(String(str.str()),
 				blend_map->get_width(), blend_map->get_height(),
-				0, 0xFFFF, 0, blend_map->get_texture_format(),
+				0, mipmap_count, 0,
+				blend_map->get_texture_format(),
 				ttt_texture_2d);
-
-			width = blend_map->get_width();
-			height = blend_map->get_height();
 
 			texture->set_wrap_s(twt_clamp);
 			texture->set_wrap_t(twt_clamp);
-			texture->init(width, height, 0, mipmaps, 0);
+			texture->init(blend_map->get_width(),
+				blend_map->get_height(), 0, mipmap_count, 0);
 
-			for (j = 0; j <= mipmaps; ++j)
-			{
-				texture->sub_texture(j, j, blend_map,
-					glm::uvec3(0), glm::uvec3(0, 0, i),
-					glm::uvec3(width, height, 0));
+			texture->update_image_layer(blend_map, 0xFFFF, 0xFFFF,
+				i);
 
-				if (width > 1)
-				{
-					width = width / 2;
-				}
-
-				if (height > 1)
-				{
-					height = height / 2;
-				}
-			}
-
-			m_clipmap_terrain_material->set_texture(texture,
+			get_clipmap_terrain_material(qt_low)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_blend_sampler(i));
+			get_clipmap_terrain_material(qt_medium)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_blend_sampler(i));
+			get_clipmap_terrain_material(qt_high)->set_texture(
+				texture,
 				ShaderSourceTerrain::get_blend_sampler(i));
 		}
 	}
 
 	void AbstractTerrain::update_geometry_maps(
-		const ImageUpdate &displacement_map,
-		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
+		const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &dudv_map)
 	{
 		String texture_format_str, rgb10_a2_str;
 
-		if (displacement_map.get_image()->get_texture_format() !=
-			tft_rgb10_a2)
+		if (displacement_map->get_texture_format() != tft_rgb10_a2)
 		{
 			rgb10_a2_str = TextureFormatUtil::get_str(tft_rgb10_a2);
 
 			texture_format_str = TextureFormatUtil::get_str(
-				displacement_map.get_image(
-					)->get_texture_format());
+				displacement_map->get_texture_format());
 
 			EL_THROW_EXCEPTION(InvalidParameterException()
 				<< errinfo_item_name(
-					displacement_map.get_image(
-						)->get_name())
+					displacement_map->get_name())
 				<< errinfo_string_value(texture_format_str)
 				<< errinfo_expected_string_value(rgb10_a2_str));
 		}
@@ -200,37 +221,53 @@ namespace eternal_lands
 		do_update_geometry_maps(displacement_map, normal_map, dudv_map);
 	}
 
-	void AbstractTerrain::update_blend_map(const ImageUpdate &blend_image)
+	void AbstractTerrain::update_blend_map(
+		const ImageSharedPtr &blend_image, const BitSet64 &layers)
 	{
 		glm::uvec3 offset, size;
-		Uint32 i, count, mipmap;
+		Uint32 i, count;
 
 		if (get_global_vars()->get_opengl_3_0())
 		{
-			m_clipmap_terrain_material->get_texture(
+			get_clipmap_terrain_material(qt_low)->get_texture(
 				ShaderSourceTerrain::get_blend_sampler(0)
-					)->sub_texture(blend_image);
+					)->update_image(blend_image);
+
+			get_clipmap_terrain_material(qt_medium)->get_texture(
+				ShaderSourceTerrain::get_blend_sampler(0)
+					)->update_image(blend_image);
+
+			get_clipmap_terrain_material(qt_high)->get_texture(
+				ShaderSourceTerrain::get_blend_sampler(0)
+					)->update_image(blend_image);
 
 			return;
 		}
 
-		offset = blend_image.get_offset();
-		mipmap = blend_image.get_mipmap();
-		size = blend_image.get_size();
-
-		count = size.z;
-
-		size.z = 1;
+		count = ShaderSourceTerrain::get_non_array_blend_sampler_count(
+			);
 
 		for (i = 0; i < count; ++i)
 		{
-			m_clipmap_terrain_material->get_texture(
-				ShaderSourceTerrain::get_blend_sampler(
-					i))->sub_texture(mipmap, mipmap,
-						blend_image.get_image(),
-						offset, offset, size);
+			if (!layers[i])
+			{
+				continue;
+			}
 
-			offset.z++;
+			get_clipmap_terrain_material(qt_low)->get_texture(
+				ShaderSourceTerrain::get_blend_sampler(
+					i))->update_image_layer(blend_image,
+						0xFFFF, 0xFFFF, i);
+
+			get_clipmap_terrain_material(qt_medium)->get_texture(
+				ShaderSourceTerrain::get_blend_sampler(
+					i))->update_image_layer(blend_image,
+						0xFFFF, 0xFFFF, i);
+
+			get_clipmap_terrain_material(qt_high)->get_texture(
+				ShaderSourceTerrain::get_blend_sampler(
+					i))->update_image_layer(blend_image,
+						0xFFFF, 0xFFFF, i);
 		}
 	}
 
@@ -258,10 +295,28 @@ namespace eternal_lands
 			count = std::min(albedo_maps.size(),
 				use_blend_size_samplers.size());
 
-			m_clipmap_terrain_material->set_texture(texture,
+			get_clipmap_terrain_material(qt_low)->set_texture(
+				texture,
 				ShaderSourceTerrain::get_albedo_sampler(0));
 
-			m_clipmap_terrain_material->set_texture(texture,
+			get_clipmap_terrain_material(qt_medium)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_albedo_sampler(0));
+
+			get_clipmap_terrain_material(qt_high)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_albedo_sampler(0));
+
+			get_clipmap_terrain_material(qt_low)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_albedo_sampler(1));
+
+			get_clipmap_terrain_material(qt_medium)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_albedo_sampler(1));
+
+			get_clipmap_terrain_material(qt_high)->set_texture(
+				texture,
 				ShaderSourceTerrain::get_albedo_sampler(1));
 
 			for (i = 0; i < count; ++i)
@@ -284,9 +339,20 @@ namespace eternal_lands
 					albedo_no_blend_maps,
 					String(UTF8("terrain-albedo")), true);
 
-				m_clipmap_terrain_material->set_texture(
-					texture, ShaderSourceTerrain::
-						get_albedo_sampler(0));
+				get_clipmap_terrain_material(
+					qt_low)->set_texture(texture,
+						ShaderSourceTerrain::
+							get_albedo_sampler(0));
+
+				get_clipmap_terrain_material(
+					qt_medium)->set_texture(texture,
+						ShaderSourceTerrain::
+							get_albedo_sampler(0));
+
+				get_clipmap_terrain_material(
+					qt_high)->set_texture(texture,
+						ShaderSourceTerrain::
+							get_albedo_sampler(0));
 			}
 
 			if (albedo_blend_maps.size() > 0)
@@ -296,9 +362,20 @@ namespace eternal_lands
 					String(UTF8("terrain-albedo-blend")),
 					true);
 
-				m_clipmap_terrain_material->set_texture(
-					texture, ShaderSourceTerrain::
-						get_albedo_sampler(1));
+				get_clipmap_terrain_material(
+					qt_low)->set_texture(texture,
+						ShaderSourceTerrain::
+							get_albedo_sampler(1));
+
+				get_clipmap_terrain_material(
+					qt_medium)->set_texture(texture,
+						ShaderSourceTerrain::
+							get_albedo_sampler(1));
+
+				get_clipmap_terrain_material(
+					qt_high)->set_texture(texture,
+						ShaderSourceTerrain::
+							get_albedo_sampler(1));
 			}
 
 			return;
@@ -309,7 +386,16 @@ namespace eternal_lands
 
 		for (i = 0; i < count; ++i)
 		{
-			m_clipmap_terrain_material->set_texture(texture,
+			get_clipmap_terrain_material(qt_low)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_albedo_sampler(i));
+
+			get_clipmap_terrain_material(qt_medium)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_albedo_sampler(i));
+
+			get_clipmap_terrain_material(qt_high)->set_texture(
+				texture,
 				ShaderSourceTerrain::get_albedo_sampler(i));
 		}
 
@@ -328,7 +414,16 @@ namespace eternal_lands
 			texture = texture_cache->get_texture(albedo_maps[i],
 				true);
 
-			m_clipmap_terrain_material->set_texture(texture,
+			get_clipmap_terrain_material(qt_low)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_albedo_sampler(i));
+
+			get_clipmap_terrain_material(qt_medium)->set_texture(
+				texture,
+				ShaderSourceTerrain::get_albedo_sampler(i));
+
+			get_clipmap_terrain_material(qt_high)->set_texture(
+				texture,
 				ShaderSourceTerrain::get_albedo_sampler(i));
 		}
 	}
@@ -356,7 +451,13 @@ namespace eternal_lands
 			}
 		}
 
-		m_clipmap_terrain_material->set_texture(texture,
+		get_clipmap_terrain_material(qt_low)->set_texture(texture,
+			ShaderSourceTerrain::get_extra_sampler());
+
+		get_clipmap_terrain_material(qt_medium)->set_texture(texture,
+			ShaderSourceTerrain::get_extra_sampler());
+
+		get_clipmap_terrain_material(qt_high)->set_texture(texture,
 			ShaderSourceTerrain::get_extra_sampler());
 
 		if (names.size() == 0)
@@ -367,24 +468,51 @@ namespace eternal_lands
 		texture = texture_cache->get_texture_array(names,
 			String(UTF8("terrain-extra")), false);
 
-		m_clipmap_terrain_material->set_texture(texture,
+		get_clipmap_terrain_material(qt_low)->set_texture(texture,
+			ShaderSourceTerrain::get_extra_sampler());
+
+		get_clipmap_terrain_material(qt_medium)->set_texture(texture,
+			ShaderSourceTerrain::get_extra_sampler());
+
+		get_clipmap_terrain_material(qt_high)->set_texture(texture,
 			ShaderSourceTerrain::get_extra_sampler());
 	}
 
-	void AbstractTerrain::set_effect(const EffectSharedPtr &effect)
+	void AbstractTerrain::set_effect(const EffectSharedPtr &effect,
+		const QualityType quality)
 	{
-		m_clipmap_terrain_material->set_effect(effect);
+		get_clipmap_terrain_material(quality)->set_effect(effect);
 	}
 
 	void AbstractTerrain::set_dudv_scale_offset(
 		const glm::vec4 &dudv_scale_offset)
 	{
-		m_terrain_material->set_dudv_scale_offset(dudv_scale_offset);
+		get_clipmap_terrain_material(qt_low)->set_dudv_scale_offset(
+			dudv_scale_offset);
+		get_clipmap_terrain_material(qt_medium)->set_dudv_scale_offset(
+			dudv_scale_offset);
+		get_clipmap_terrain_material(qt_high)->set_dudv_scale_offset(
+			dudv_scale_offset);
 	}
 
 	const glm::vec4 &AbstractTerrain::get_dudv_scale_offset() const
 	{
-		return m_terrain_material->get_dudv_scale_offset();
+		return get_clipmap_terrain_material(
+			qt_low)->get_dudv_scale_offset();
+	}
+
+	const MaterialSharedPtr	&AbstractTerrain::get_terrain_material() const
+		noexcept
+	{
+		return get_terrain_material(
+			get_global_vars()->get_terrain_quality());
+	}
+
+	const MaterialSharedPtr	&AbstractTerrain::get_clipmap_terrain_material()
+		const noexcept
+	{
+		return get_clipmap_terrain_material(
+			get_global_vars()->get_terrain_quality());
 	}
 
 }

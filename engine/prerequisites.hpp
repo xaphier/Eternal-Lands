@@ -219,7 +219,6 @@ namespace eternal_lands
 	class CdLodQuadTree;
 	class ClipmapTerrain;
 	class ClipmapTerrainData;
-	class CodecManager;
 	class ColorCorrection;
 	class ConvexBody;
 	class CpuRasterizer;
@@ -385,7 +384,6 @@ namespace eternal_lands
 	SHARED_PTR(ActorTextureBuilder);
 	SHARED_PTR(Atlas);
 	SHARED_PTR(BoundedObject);
-	SHARED_PTR(CodecManager);
 	SHARED_PTR(ColorCorrection);
 	SHARED_PTR(CpuRasterizer);
 	SHARED_PTR(Effect);
@@ -445,7 +443,6 @@ namespace eternal_lands
 	SHARED_PTR(XmlWriter);
 
 	WEAK_PTR(ActorDataCache);
-	WEAK_PTR(CodecManager);
 	WEAK_PTR(EffectCache);
 	WEAK_PTR(GlslProgramCache);
 	WEAK_PTR(HardwareBufferMapper);
@@ -514,6 +511,11 @@ namespace eternal_lands
 	ARRAY(ImageSharedPtr, 3);
 	ARRAY(ImageSharedPtr, 4);
 	ARRAY(ImageSharedPtr, 8);
+
+	ARRAY(MaterialSharedPtr, 2);
+	ARRAY(MaterialSharedPtr, 3);
+	ARRAY(MaterialSharedPtr, 4);
+	ARRAY(MaterialSharedPtr, 8);
 
 	typedef boost::array<TextureSharedPtr, material_texture_count>
 		MaterialTextureSharedPtrArray;

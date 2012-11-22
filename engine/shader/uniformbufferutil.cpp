@@ -62,7 +62,7 @@ namespace eternal_lands
 				(apt_projection_matrix)
 				(apt_projection_view_matrix)
 				(apt_reflection_matrix)
-				(apt_ambient)
+				(apt_sky_ground_hemispheres)
 				(apt_time)
 				(apt_fog_data)
 				(apt_camera)

@@ -82,7 +82,8 @@ namespace eternal_lands
 				pt_vec4, pst_lights_count),
 			AutoParameterTypeData(String(UTF8("light_colors")),
 				pt_vec4, pst_lights_count),
-			AutoParameterTypeData(String(UTF8("ambient")), pt_vec4),
+			AutoParameterTypeData(String(UTF8(
+				"sky_ground_hemispheres")), pt_mat2x4),
 			AutoParameterTypeData(String(UTF8(
 				"dynamic_lights_count")), pt_int),
 			AutoParameterTypeData(String(UTF8("bones")), pt_mat2x4,

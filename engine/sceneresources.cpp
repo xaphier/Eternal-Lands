@@ -10,7 +10,6 @@
 #include "meshcache.hpp"
 #include "effect/effectcache.hpp"
 #include "meshdatacache.hpp"
-#include "codec/codecmanager.hpp"
 #include "texturecache.hpp"
 #include "actordatacache.hpp"
 #include "shader/shadersourcebuilder.hpp"
@@ -56,9 +55,8 @@ namespace eternal_lands
 			get_uniform_buffer_description_cache());
 		m_effect_cache = boost::make_shared<EffectCache>(
 			get_glsl_program_cache(), get_shader_source_builder());
-		m_codec_manager = boost::make_shared<CodecManager>();
 		m_texture_cache = boost::make_shared<TextureCache>(
-			get_codec_manager(), file_system, global_vars);
+			file_system, global_vars);
 		m_material_description_cache =
 			boost::make_shared<MaterialDescriptionCache>();
 		m_material_builder = boost::make_shared<MaterialBuilder>(
@@ -73,10 +71,10 @@ namespace eternal_lands
 		m_mesh_cache = boost::make_shared<MeshCache>(
 			get_mesh_builder(), get_mesh_data_cache());
 		m_actor_data_cache = boost::make_shared<ActorDataCache>(
-			get_mesh_builder(), get_codec_manager(),
-			get_material_cache(), get_material_builder(),
-			get_material_description_cache(),
-			file_system, global_vars);
+			get_mesh_builder(), get_material_cache(),
+			get_material_builder(),
+			get_material_description_cache(), file_system,
+			global_vars);
 		m_framebuffer_builder = boost::make_shared<FrameBufferBuilder>(
 			global_vars);
 		m_terrain_builder = boost::make_shared<TerrainBuilder>(
@@ -96,7 +94,6 @@ namespace eternal_lands
 		m_mesh_cache.reset();
 		m_effect_cache.reset();
 		m_texture_cache.reset();
-		m_codec_manager.reset();
 		m_mesh_data_cache.reset();
 		m_actor_data_cache.reset();
 		m_shader_source_builder.reset();

@@ -8,12 +8,20 @@
 	</material>
 
 	<material>
-		<name>simple-terrain</name>
-		<effect>simple-terrain</effect>
+		<name>simple-terrain-all-quality</name>
+		<effect>simple-terrain-all-quality</effect>
 	</material>
 	<material>
-		<name>cdlod-terrain</name>
-		<effect>cdlod-terrain</effect>
+		<name>cdlod-terrain-low-quality</name>
+		<effect>cdlod-terrain-low-quality</effect>
+	</material>
+	<material>
+		<name>cdlod-terrain-medium-quality</name>
+		<effect>cdlod-terrain-medium-quality</effect>
+	</material>
+	<material>
+		<name>cdlod-terrain-high-quality</name>
+		<effect>cdlod-terrain-high-quality</effect>
 	</material>
 	<material>
 		<name>lava</name>

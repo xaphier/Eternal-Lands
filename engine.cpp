@@ -596,9 +596,9 @@ extern "C" Uint32 engine_load_map(const char* name)
 			dungeon = 0;
 		}
 
-		ambient_r = scene->get_ambient().r;
-		ambient_g = scene->get_ambient().g;
-		ambient_b = scene->get_ambient().b;
+		ambient_r = scene->get_ground_hemisphere().r;
+		ambient_g = scene->get_ground_hemisphere().g;
+		ambient_b = scene->get_ground_hemisphere().b;
 
 		size = scene->get_tile_map_size();
 
@@ -716,8 +716,8 @@ extern "C" void exit_file_system()
 extern "C" void engine_cull_scene()
 {
 	glm::mat4 view_matrix;
-	glm::vec3 focus, main_light_ambient, main_light_color;
-	glm::vec3 main_light_direction;
+	glm::vec4 sky_hemisphere;
+	glm::vec3 focus, main_light_color, main_light_direction;
 	actor* me;
 	Uint32 i;
 
@@ -736,9 +736,11 @@ extern "C" void engine_cull_scene()
 		scene->set_focus(focus);
 	}
 
+	sky_hemisphere.a = 0.2f;
+
 	for (i = 0; i < 3; i++)
 	{
-		main_light_ambient[i] = skybox_light_ambient_color[i];
+		sky_hemisphere[i] = skybox_light_ambient_color[i];
 		main_light_color[i] = skybox_light_diffuse_color[i];
 		main_light_direction[i] = sun_position[i];
 	}
@@ -752,7 +754,7 @@ extern "C" void engine_cull_scene()
 	glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(view_matrix));
 
 	scene->set_view_matrix(view_matrix);
-	scene->set_main_light_ambient(main_light_ambient);
+	scene->set_sky_hemisphere(sky_hemisphere);
 	scene->set_main_light_color(main_light_color);
 	scene->set_main_light_direction(main_light_direction);
 	scene->set_lights(!is_day);
@@ -1605,9 +1607,25 @@ extern "C" void engine_set_use_functions(const int value)
 	}
 }
 
-extern "C" void engine_set_low_quality_terrain(const int value)
+extern "C" void engine_set_terrain_quality(const int value)
 {
-	global_vars->set_low_quality_terrain(value != 0);
+	switch (value)
+	{
+		case qt_low:
+			global_vars->set_terrain_quality(qt_low);
+			break;
+		case qt_medium:
+			global_vars->set_terrain_quality(qt_medium);
+			break;
+		case qt_high:
+			global_vars->set_terrain_quality(qt_high);
+			break;
+	};
+
+	if (scene.get() != 0)
+	{
+		scene->rebuild_terrain_map();
+	}
 }
 
 extern "C" void engine_set_use_scene_fbo(const int value)

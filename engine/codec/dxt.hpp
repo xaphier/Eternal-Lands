@@ -47,8 +47,8 @@ namespace eternal_lands
 				const String &name, const glm::uvec3 &size,
 				const TextureFormatType texture_format,
 				const Uint16 mipmaps, const bool cube_map,
-				const bool rg_formats, const bool sRGB,
-				const bool merge_layers);
+				const bool array, const bool rg_formats,
+				const bool sRGB, const bool merge_layers);
 
 	};
 

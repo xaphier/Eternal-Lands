@@ -141,7 +141,7 @@ namespace eternal_lands
 		RANGE_CECK_MAX(type, m_free_ids.size(),
 			UTF8("type value too big"));
 
-		m_free_ids[type].get_is_id_free(id);
+		return m_free_ids[type].get_is_id_free(id);
 	}
 
 	bool FreeIdsManager::get_is_light_id_free(const Uint32 id) const

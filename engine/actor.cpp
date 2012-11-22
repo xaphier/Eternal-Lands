@@ -63,16 +63,14 @@ namespace eternal_lands
 		}
 	}
 
-	void Actor::init_enhanced_actor(
-		const CodecManagerWeakPtr &codec_manager,
-		const FileSystemSharedPtr &file_system,
+	void Actor::init_enhanced_actor(const FileSystemSharedPtr &file_system,
 		const GlobalVarsSharedPtr &global_vars)
 	{
 		assert(m_index_source.get() != nullptr);
 
 		m_actor_texture_builder =
-			boost::make_shared<ActorTextureBuilder>(codec_manager,
-				file_system, global_vars, get_name());
+			boost::make_shared<ActorTextureBuilder>(file_system,
+				global_vars, get_name());
 
 		get_materials()[0]->set_texture(
 			m_actor_texture_builder->get_texture(), spt_effect_0);

@@ -33,7 +33,6 @@ namespace eternal_lands
 				glm::uvec3 &size, Uint16 &mipmaps,
 				bool &cube_map, bool &array);
 			static ImageSharedPtr load_image(
-				const CodecManager &codec_manager,
 				const ReaderSharedPtr &reader,
 				const ImageCompressionTypeSet &compression,
 				const bool rg_formats, const bool sRGB,
@@ -41,17 +40,14 @@ namespace eternal_lands
 			static bool check_load(const Uint8Array32 &id);
 			static String get_image_str();
 			static void save_image(
-				const CodecManager &codec_manager,
 				const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
 			static void save_image_dxt10(
 				const ImageSharedPtr &image,
 				const WriterSharedPtr &writer);
-			static bool can_save(const CodecManager &codec_manager,
-				const ImageSharedPtr &image);
+			static bool can_save(const ImageSharedPtr &image);
 			static bool can_save_dxt10(const ImageSharedPtr &image);
 			static void check_all_fourcc_support(
-				const CodecManager &codec_manager,
 				const bool rg_formats);
 			static void get_dxt10_formats(
 				std::vector<TextureFormatType>

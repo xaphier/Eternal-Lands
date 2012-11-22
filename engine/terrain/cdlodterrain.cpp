@@ -16,7 +16,6 @@
 #include "cdlodquadtree.hpp"
 #include "texture.hpp"
 #include "image.hpp"
-#include "imageupdate.hpp"
 #include "globalvars.hpp"
 
 namespace eternal_lands
@@ -29,7 +28,7 @@ namespace eternal_lands
 		const MeshDataCacheSharedPtr &mesh_data_cache,
 		const MaterialBuilderSharedPtr &material_builder,
 		const MaterialCacheSharedPtr &material_cache,
-		const String &material, const String &effect):
+		const StringArray3 &material, const String &effect):
 		AbstractTerrain(global_vars, effect_cache, material_builder,
 			material_cache, material, effect)
 	{
@@ -110,14 +109,14 @@ namespace eternal_lands
 
 	void CdLodTerrain::do_set_geometry_maps(
 		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map)
 	{
 		glm::vec3 min, max;
 		float patch_scale;
 
 		set_terrain_size((glm::vec2(displacement_map->get_size())
-			-1.0f) * get_patch_scale());
+			- 1.0f) * get_patch_scale());
 
 		patch_scale = get_patch_scale();
 
@@ -146,21 +145,30 @@ namespace eternal_lands
 		m_displacement_texture->set_wrap_r(twt_clamp);
 		m_displacement_texture->set_image(displacement_map);
 
-		get_terrain_material()->set_texture(m_displacement_texture,
+		get_terrain_material(qt_low)->set_texture(m_displacement_texture,
+			spt_effect_8);
+		get_terrain_material(qt_medium)->set_texture(m_displacement_texture,
+			spt_effect_8);
+		get_terrain_material(qt_high)->set_texture(m_displacement_texture,
 			spt_effect_8);
 
 		m_normal_texture = boost::make_shared<Texture>(
-			normal_map->get_name(), normal_map->get_width(),
-			normal_map->get_height(), 1, 0xFFFF, 0,
-			normal_map->get_texture_format(),
+			normal_tangent_map->get_name(),
+			normal_tangent_map->get_width(),
+			normal_tangent_map->get_height(), 1, 0xFFFF, 0,
+			normal_tangent_map->get_texture_format(),
 			ttt_texture_2d);
 
 		m_normal_texture->set_wrap_s(twt_clamp);
 		m_normal_texture->set_wrap_t(twt_clamp);
 		m_normal_texture->set_wrap_r(twt_clamp);
-		m_normal_texture->set_image(normal_map);
+		m_normal_texture->set_image(normal_tangent_map);
 
-		get_terrain_material()->set_texture(m_normal_texture,
+		get_terrain_material(qt_low)->set_texture(m_normal_texture,
+			spt_effect_9);
+		get_terrain_material(qt_medium)->set_texture(m_normal_texture,
+			spt_effect_9);
+		get_terrain_material(qt_high)->set_texture(m_normal_texture,
 			spt_effect_9);
 
 		m_dudv_texture = boost::make_shared<Texture>(
@@ -173,24 +181,29 @@ namespace eternal_lands
 		m_dudv_texture->set_wrap_r(twt_clamp);
 		m_dudv_texture->set_image(dudv_map);
 
-		get_terrain_material()->set_texture(m_dudv_texture,
+		get_terrain_material(qt_low)->set_texture(m_dudv_texture,
+			spt_effect_10);
+		get_terrain_material(qt_medium)->set_texture(m_dudv_texture,
+			spt_effect_10);
+		get_terrain_material(qt_high)->set_texture(m_dudv_texture,
 			spt_effect_10);
 	}
 
 	void CdLodTerrain::do_update_geometry_maps(
-		const ImageUpdate &displacement_map,
-		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
+		const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_tangent_map,
+		const ImageSharedPtr &dudv_map)
 	{
 		glm::vec3 min, max;
 		float patch_scale;
 
-		set_terrain_size((glm::vec2(displacement_map.get_image(
-			)->get_size()) -1.0f) * get_patch_scale());
+		set_terrain_size((glm::vec2(displacement_map->get_size())
+			- 1.0f) * get_patch_scale());
 
 		patch_scale = get_patch_scale();
 
-		m_cd_lod_quad_tree->init(displacement_map.get_image(
-			)->decompress(false, true, false), patch_scale);
+		m_cd_lod_quad_tree->init(displacement_map->decompress(false,
+			true, false), patch_scale);
 
 		min = m_cd_lod_quad_tree->get_min();
 		max = m_cd_lod_quad_tree->get_max();
@@ -202,9 +215,9 @@ namespace eternal_lands
 
 		set_bounding_box(BoundingBox(min, max));
 
-		m_displacement_texture->sub_texture(displacement_map);
-		m_normal_texture->sub_texture(normal_map);
-		m_dudv_texture->sub_texture(dudv_map);
+		m_displacement_texture->update_image(displacement_map);
+		m_normal_texture->update_image(normal_tangent_map);
+		m_dudv_texture->update_image(dudv_map);
 	}
 
 	void CdLodTerrain::clear()

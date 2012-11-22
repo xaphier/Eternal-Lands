@@ -102,7 +102,7 @@
     <addaction name="action_undo"/>
     <addaction name="action_reload"/>
     <addaction name="separator"/>
-    <addaction name="action_ambient"/>
+    <addaction name="action_ground_hemisphere"/>
     <addaction name="action_dungeon"/>
     <addaction name="action_map_settings"/>
     <addaction name="separator"/>
@@ -186,13 +186,14 @@
    <addaction name="action_water"/>
    <addaction name="action_heights"/>
    <addaction name="separator"/>
-   <addaction name="action_ambient"/>
+   <addaction name="action_ground_hemisphere"/>
    <addaction name="action_dungeon"/>
    <addaction name="action_remove"/>
    <addaction name="action_undo"/>
    <addaction name="action_reload"/>
    <addaction name="separator"/>
    <addaction name="action_wire_frame"/>
+   <addaction name="action_terrain_normal_mapping"/>
    <addaction name="action_light_spheres"/>
    <addaction name="action_lights_enabled"/>
    <addaction name="separator"/>
@@ -3959,7 +3960,7 @@
     <string>Terrain mode</string>
    </property>
   </action>
-  <action name="action_ambient">
+  <action name="action_ground_hemisphere">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -4371,6 +4372,24 @@
     <string>Fill terrain blend layer</string>
    </property>
   </action>
+  <action name="action_terrain_normal_mapping">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons/resourcen.qrc">
+     <normaloff>:/icons/terrain_nm.png</normaloff>:/icons/terrain_nm.png</iconset>
+   </property>
+   <property name="text">
+    <string>Terrain normal mapping</string>
+   </property>
+   <property name="toolTip">
+    <string>Terrain normal mapping</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -4436,22 +4455,6 @@
    <sender>action_objects</sender>
    <signal>toggled(bool)</signal>
    <receiver>action_add_objects</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>action_dungeon</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>action_ambient</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

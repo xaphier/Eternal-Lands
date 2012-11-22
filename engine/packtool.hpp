@@ -511,6 +511,147 @@ namespace eternal_lands
 				const AbstractReadMemory &in_buffer,
 				AbstractWriteMemory &out_buffer);
 
+			/**
+			 * Swizzles the 8 bit values.
+			 * @param position The position of the values write
+			 * in the output buffer.
+			 * @param values The number of values in each swizzle.
+			 * @param count The total number of values to swizzle.
+			 * @param in_buffer The input buffer.
+			 * @param out_buffer The output buffer.
+			 */
+			static void swizzle_u8(const glm::uvec4 &position,
+				const Uint32 values, const Uint32 count,
+				const AbstractReadMemory &in_buffer,
+				AbstractWriteMemory &out_buffer);
+
+			/**
+			 * Swizzles the 16 bit values.
+			 * @param position The position of the values write
+			 * in the output buffer.
+			 * @param values The number of values in each swizzle.
+			 * @param count The total number of values to swizzle.
+			 * @param in_buffer The input buffer.
+			 * @param out_buffer The output buffer.
+			 */
+			static void swizzle_u16(const glm::uvec4 &position,
+				const Uint32 values, const Uint32 count,
+				const AbstractReadMemory &in_buffer,
+				AbstractWriteMemory &out_buffer);
+
+			/**
+			 * Swizzles the 32 bit values.
+			 * @param position The position of the values write
+			 * in the output buffer.
+			 * @param values The number of values in each swizzle.
+			 * @param count The total number of values to swizzle.
+			 * @param in_buffer The input buffer.
+			 * @param out_buffer The output buffer.
+			 */
+			static void swizzle_u32(const glm::uvec4 &position,
+				const Uint32 values, const Uint32 count,
+				const AbstractReadMemory &in_buffer,
+				AbstractWriteMemory &out_buffer);
+
+			/**
+			 * Build swizzle left and right shift values. Returns
+			 * true if data is valid for 8 bit swizzles.
+			 * @param masks The mask of the values in the input
+			 * sbuffer.
+			 * @param position The position of the values write
+			 * in the output buffer.
+			 * @param lshifts The left shift value to swizzle.
+			 * Output parameter.
+			 * @param rshifts The right shift value to swizzle.
+			 * Output parameter.
+			 * @return True if 8 bit swizzle is valid, false else.
+			 */
+			static bool build_swizzle_u8_shifts(
+				const glm::uvec4 &masks,
+				const glm::uvec4 &position,
+				glm::ivec4 &lshifts, glm::ivec4 &rshifts);
+
+			/**
+			 * Build swizzle left and right shift values. Returns
+			 * true if data is valid for 16 bit swizzles.
+			 * @param masks The mask of the values in the input
+			 * sbuffer.
+			 * @param position The position of the values write
+			 * in the output buffer.
+			 * @param lshifts The left shift value to swizzle.
+			 * Output parameter.
+			 * @param rshifts The right shift value to swizzle.
+			 * Output parameter.
+			 * @return True if 16 bit swizzle is valid, false else.
+			 */
+			static bool build_swizzle_u16_shifts(
+				const glm::uvec4 &masks,
+				const glm::uvec4 &position,
+				glm::ivec4 &lshifts, glm::ivec4 &rshifts);
+
+			/**
+			 * Build swizzle left and right shift values. Returns
+			 * true if data is valid for 32 bit swizzles.
+			 * @param masks The mask of the values in the input
+			 * sbuffer.
+			 * @param position The position of the values write
+			 * in the output buffer.
+			 * @param lshifts The left shift value used for
+			 * swizzle. Output parameter.
+			 * @param rshifts The right shift value used for
+			 * swizzle. Output parameter.
+			 * @return True if 32 bit swizzle is valid, false else.
+			 */
+			static bool build_swizzle_u32_shifts(
+				const glm::uvec4 &masks,
+				const glm::uvec4 &position,
+				glm::ivec4 &lshifts, glm::ivec4 &rshifts);
+
+			/**
+			 * Swizzles the 8 bit values.
+			 * @param masks The mask of the values in the input
+			 * sbuffer.
+			 * @param lshifts The left shift value used for
+			 * swizzle.
+			 * @param rshifts The right shift value used for
+			 * swizzle.
+			 * @param value The value to swizzle.
+			 * @return The swizzled value.
+			 */
+			static Uint8 swizzle_u8(const glm::uvec4 &masks,
+				const glm::ivec4 &lshifts,
+				const glm::ivec4 &rshifts, const Uint8 value);
+
+			/**
+			 * Swizzles the 16 bit values.
+			 * @param masks The mask of the values in the input
+			 * sbuffer.
+			 * @param lshifts The left shift value used for
+			 * swizzle.
+			 * @param rshifts The right shift value used for
+			 * swizzle.
+			 * @param value The value to swizzle.
+			 * @return The swizzled value.
+			 */
+			static Uint16 swizzle_u16(const glm::uvec4 &masks,
+				const glm::ivec4 &lshifts,
+				const glm::ivec4 &rshifts, const Uint16 value);
+
+			/**
+			 * Swizzles the 32 bit values.
+			 * @param masks The mask of the values in the input
+			 * sbuffer.
+			 * @param lshifts The left shift value used for
+			 * swizzle.
+			 * @param rshifts The right shift value used for
+			 * swizzle.
+			 * @param value The value to swizzle.
+			 * @return The swizzled value.
+			 */
+			static Uint32 swizzle_u32(const glm::uvec4 &masks,
+				const glm::ivec4 &lshifts,
+				const glm::ivec4 &rshifts, const Uint32 value);
+
 			static glm::vec4 unpack_vec4(
 				const AbstractReadMemory &buffer,
 				const Uint64 offset, const PackFormatType type);

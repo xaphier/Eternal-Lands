@@ -272,34 +272,6 @@ namespace eternal_lands
 			bitangent = glm::vec3(t0.x * p1 - t1.x * p0) * r;
 		}
 
-		glm::vec4 get_gram_schmidth_orthogonalize_tangent(
-			const glm::vec3 &normal, const glm::vec3 &tangent,
-			const glm::vec3 &bitangent)
-		{
-			glm::vec4 result;
-			glm::vec3 temp;
-			float len;
-        
-			// Gram-Schmidt orthogonalize
-			temp = tangent - normal * glm::dot(normal, tangent);
-			len = glm::dot(temp, temp);
-
-			if (len < epsilon)
-			{
-				result = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			}
-			else
-			{
-				result = glm::vec4(temp / std::sqrt(len), 0.0f);
-			}
-        
-			// Calculate handedness
-			result.w = (glm::dot(glm::cross(normal, tangent),
-				bitangent) < 0.0f) ? -1.0f : 1.0f;
-
-			return result;
-		}
-
 	}
 
 	MeshDataTool::MeshDataTool(const String &name,
@@ -1700,6 +1672,34 @@ namespace eternal_lands
 			set_sub_mesh_data(sub_meshs, SubMesh(BoundingBox(),
 				offset, count, min_vertex, max_vertex, 0));
 		}
+	}
+
+	glm::vec4 MeshDataTool::get_gram_schmidth_orthogonalize_tangent(
+		const glm::vec3 &normal, const glm::vec3 &tangent,
+		const glm::vec3 &bitangent)
+	{
+		glm::vec4 result;
+		glm::vec3 temp;
+		float len;
+        
+		// Gram-Schmidt orthogonalize
+		temp = tangent - normal * glm::dot(normal, tangent);
+		len = glm::dot(temp, temp);
+
+		if (len < epsilon)
+		{
+			result = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+		}
+		else
+		{
+			result = glm::vec4(temp / std::sqrt(len), 0.0f);
+		}
+        
+		// Calculate handedness
+		result.w = (glm::dot(glm::cross(normal, tangent),
+			bitangent) < 0.0f) ? -1.0f : 1.0f;
+
+		return result;
 	}
 
 }

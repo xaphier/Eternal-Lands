@@ -497,125 +497,41 @@ namespace eternal_lands
 			return static_cast<int>(f.field.biasedexponent) - 127;
 		}
 
-		void swizzle_u8(const glm::uvec4 &masks,
-			const glm::ivec4 &shifts, const Uint32 count,
-			const AbstractReadMemory &in_buffer,
-			AbstractWriteMemory &out_buffer)
+		Uint32 build_swizzle_shifts(const glm::uvec4 &masks,
+			const glm::uvec4 &position, glm::ivec4 &lshifts,
+			glm::ivec4 &rshifts)
 		{
-			glm::ivec4 lshifts, rshifts;
-			Uint32 i, data, value;
+			glm::ivec4 shifts, bits;
+			Uint32 i, j;
+
+			for (i = 0; i < 4; ++i)
+			{
+				if (masks[i] != 0)
+				{
+					bits[position[i]] = __builtin_popcountl(
+						masks[i]);
+				}
+			}
+
+			for (i = 0; i < 4; ++i)
+			{
+				shifts[i] = 0;
+
+				for (j = 0; j < position[i]; ++j)
+				{
+					shifts[i] += bits[j];
+				}
+
+				if (masks[i] != 0)
+				{
+					shifts[i] -= __builtin_ctzl(masks[i]);
+				}
+			}
 
 			lshifts = glm::max(shifts, glm::ivec4(0));
 			rshifts = glm::max(-shifts, glm::ivec4(0));
 
-			for (i = 0; i < count; ++i)
-			{
-				data = static_cast<const Uint8*>(
-					in_buffer.get_ptr())[i];
-
-				value = ((data & masks[0]) << lshifts[0]) >>
-					rshifts[0];
-				value |= ((data & masks[1]) << lshifts[1]) >>
-					rshifts[1];
-				value |= ((data & masks[2]) << lshifts[2]) >>
-					rshifts[2];
-				value |= ((data & masks[3]) << lshifts[3]) >>
-					rshifts[3];
-
-				static_cast<Uint8*>(out_buffer.get_ptr())[i] =
-					value;
-			}
-		}
-
-		void swizzle_u16(const glm::uvec4 &masks,
-			const glm::ivec4 &shifts, const Uint32 count,
-			const AbstractReadMemory &in_buffer,
-			AbstractWriteMemory &out_buffer)
-		{
-			glm::ivec4 lshifts, rshifts;
-			Uint32 i, data, value;
-
-			lshifts = glm::max(shifts, glm::ivec4(0));
-			rshifts = glm::max(-shifts, glm::ivec4(0));
-
-			for (i = 0; i < count; ++i)
-			{
-				data = static_cast<const Uint16*>(
-					in_buffer.get_ptr())[i];
-
-				value = ((data & masks[0]) << lshifts[0]) >>
-					rshifts[0];
-				value |= ((data & masks[1]) << lshifts[1]) >>
-					rshifts[1];
-				value |= ((data & masks[2]) << lshifts[2]) >>
-					rshifts[2];
-				value |= ((data & masks[3]) << lshifts[3]) >>
-					rshifts[3];
-
-				static_cast<Uint16*>(out_buffer.get_ptr())[i] =
-					value;
-			}
-		}
-
-		void swizzle_u32(const glm::uvec4 &masks,
-			const glm::ivec4 &shifts, const Uint32 count,
-			const AbstractReadMemory &in_buffer,
-			AbstractWriteMemory &out_buffer)
-		{
-			glm::ivec4 lshifts, rshifts;
-			Uint32 i, data, value;
-
-			lshifts = glm::max(shifts, glm::ivec4(0));
-			rshifts = glm::max(-shifts, glm::ivec4(0));
-
-			for (i = 0; i < count; ++i)
-			{
-				data = static_cast<const Uint32*>(
-					in_buffer.get_ptr())[i];
-
-				value = ((data & masks[0]) << lshifts[0]) >>
-					rshifts[0];
-				value |= ((data & masks[1]) << lshifts[1]) >>
-					rshifts[1];
-				value |= ((data & masks[2]) << lshifts[2]) >>
-					rshifts[2];
-				value |= ((data & masks[3]) << lshifts[3]) >>
-					rshifts[3];
-
-				static_cast<Uint32*>(out_buffer.get_ptr())[i] =
-					value;
-			}
-		}
-
-		void swizzle_u64(const glm::uvec4 &masks,
-			const glm::ivec4 &shifts, const Uint32 count,
-			const AbstractReadMemory &in_buffer,
-			AbstractWriteMemory &out_buffer)
-		{
-			glm::ivec4 lshifts, rshifts;
-			Uint64 data, value;
-			Uint32 i;
-
-			lshifts = glm::max(shifts, glm::ivec4(0));
-			rshifts = glm::max(-shifts, glm::ivec4(0));
-
-			for (i = 0; i < count; ++i)
-			{
-				data = static_cast<const Uint64*>(
-					in_buffer.get_ptr())[i];
-
-				value = ((data & masks[0]) << lshifts[0]) >>
-					rshifts[0];
-				value |= ((data & masks[1]) << lshifts[1]) >>
-					rshifts[1];
-				value |= ((data & masks[2]) << lshifts[2]) >>
-					rshifts[2];
-				value |= ((data & masks[3]) << lshifts[3]) >>
-					rshifts[3];
-
-				static_cast<Uint64*>(out_buffer.get_ptr())[i] =
-					value;
-			}
+			return masks[0] | masks[1] | masks[2] | masks[3];
 		}
 
 	}
@@ -1139,71 +1055,245 @@ namespace eternal_lands
 		}
 	}
 
+	Uint8 PackTool::swizzle_u8(const glm::uvec4 &masks,
+		const glm::ivec4 &lshifts, const glm::ivec4 &rshifts,
+		const Uint8 value)
+	{
+		Uint8 result;
+
+		result = ((value & masks[0]) << lshifts[0]) >> rshifts[0];
+		result |= ((value & masks[1]) << lshifts[1]) >> rshifts[1];
+		result |= ((value & masks[2]) << lshifts[2]) >> rshifts[2];
+		result |= ((value & masks[3]) << lshifts[3]) >> rshifts[3];
+
+		return result;
+	}
+
+	Uint16 PackTool::swizzle_u16(const glm::uvec4 &masks,
+		const glm::ivec4 &lshifts, const glm::ivec4 &rshifts,
+		const Uint16 value)
+	{
+		Uint16 result;
+
+		result = ((value & masks[0]) << lshifts[0]) >> rshifts[0];
+		result |= ((value & masks[1]) << lshifts[1]) >> rshifts[1];
+		result |= ((value & masks[2]) << lshifts[2]) >> rshifts[2];
+		result |= ((value & masks[3]) << lshifts[3]) >> rshifts[3];
+
+		return result;
+	}
+
+	Uint32 PackTool::swizzle_u32(const glm::uvec4 &masks,
+		const glm::ivec4 &lshifts, const glm::ivec4 &rshifts,
+		const Uint32 value)
+	{
+		Uint32 result;
+
+		result = ((value & masks[0]) << lshifts[0]) >> rshifts[0];
+		result |= ((value & masks[1]) << lshifts[1]) >> rshifts[1];
+		result |= ((value & masks[2]) << lshifts[2]) >> rshifts[2];
+		result |= ((value & masks[3]) << lshifts[3]) >> rshifts[3];
+
+		return result;
+	}
+
+	bool PackTool::build_swizzle_u8_shifts(const glm::uvec4 &masks,
+		const glm::uvec4 &position, glm::ivec4 &lshifts,
+		glm::ivec4 &rshifts)
+	{
+		Uint32 mask;
+
+		mask = build_swizzle_shifts(masks, position, lshifts, rshifts);
+
+		return (mask & 0xFF) == mask;
+	}
+
+	bool PackTool::build_swizzle_u16_shifts(const glm::uvec4 &masks,
+		const glm::uvec4 &position, glm::ivec4 &lshifts,
+		glm::ivec4 &rshifts)
+	{
+		Uint32 mask;
+
+		mask = build_swizzle_shifts(masks, position, lshifts, rshifts);
+
+		return (mask & 0xFFFF) == mask;
+	}
+
+	bool PackTool::build_swizzle_u32_shifts(const glm::uvec4 &masks,
+		const glm::uvec4 &position, glm::ivec4 &lshifts,
+		glm::ivec4 &rshifts)
+	{
+		Uint32 mask;
+
+		mask = build_swizzle_shifts(masks, position, lshifts, rshifts);
+
+		return (mask & 0xFFFFFFFF) == mask;
+	}
+
 	void PackTool::swizzle(const glm::uvec4 &masks,
 		const glm::uvec4 &position, const Uint32 count,
 		const AbstractReadMemory &in_buffer,
 		AbstractWriteMemory &out_buffer)
 	{
-		glm::ivec4 shifts, bits;
-		Uint64 mask;
-		Uint32 i, j;
+		glm::ivec4 lshifts, rshifts;
+		Uint32 i, mask;
 
-		for (i = 0; i < 4; ++i)
-		{
-			if (masks[i] != 0)
-			{
-				bits[position[i]] = __builtin_popcountl(
-					masks[i]);
-			}
-		}
-
-		for (i = 0; i < 4; ++i)
-		{
-			shifts[i] = 0;
-
-			for (j = 0; j < position[i]; ++j)
-			{
-				shifts[i] += bits[j];
-			}
-
-			if (masks[i] != 0)
-			{
-				shifts[i] -= __builtin_ctzl(masks[i]);
-			}
-		}
-
-		mask = masks[0] | masks[1] | masks[2] | masks[3];
+		mask = build_swizzle_shifts(masks, position, lshifts, rshifts);
 
 		if ((mask & 0xFF) == mask)
 		{
-			swizzle_u8(masks, shifts, count, in_buffer,
-				out_buffer);
+			assert(in_buffer.get_size() >=
+				(count * sizeof(Uint8)));
+			assert(out_buffer.get_size() >=
+				(count * sizeof(Uint8)));
+
+			for (i = 0; i < count; ++i)
+			{
+				static_cast<Uint8*>(out_buffer.get_ptr())[i] =
+					swizzle_u8(masks, lshifts, rshifts,
+					static_cast<const Uint8*>(
+						in_buffer.get_ptr())[i]);
+			}
 
 			return;
 		}
 
 		if ((mask & 0xFFFF) == mask)
 		{
-			swizzle_u16(masks, shifts, count, in_buffer,
-				out_buffer);
+			assert(in_buffer.get_size() >=
+				(count * sizeof(Uint16)));
+			assert(out_buffer.get_size() >=
+				(count * sizeof(Uint16)));
+
+			for (i = 0; i < count; ++i)
+			{
+				static_cast<Uint16*>(out_buffer.get_ptr())[i] =
+					swizzle_u16(masks, lshifts, rshifts,
+					static_cast<const Uint16*>(
+						in_buffer.get_ptr())[i]);
+			}
 
 			return;
 		}
 
 		if ((mask & 0xFFFFFFFF) == mask)
 		{
-			swizzle_u32(masks, shifts, count, in_buffer,
-				out_buffer);
+			assert(in_buffer.get_size() >=
+				(count * sizeof(Uint32)));
+			assert(out_buffer.get_size() >=
+				(count * sizeof(Uint32)));
+
+			for (i = 0; i < count; ++i)
+			{
+				static_cast<Uint32*>(out_buffer.get_ptr())[i] =
+					swizzle_u32(masks, lshifts, rshifts,
+					static_cast<const Uint32*>(
+						in_buffer.get_ptr())[i]);
+			}
 
 			return;
 		}
+	}
 
-		if ((mask & 0xFFFFFFFFFFFFFFFF) == mask)
+	void PackTool::swizzle_u8(const glm::uvec4 &position,
+		const Uint32 values, const Uint32 count,
+		const AbstractReadMemory &in_buffer,
+		AbstractWriteMemory &out_buffer)
+	{
+		glm::uvec4 tmp;
+		Uint32 i, j;
+
+		assert(in_buffer.get_size() >= (count * values *
+			sizeof(Uint8)));
+		assert(out_buffer.get_size() >= (count * values *
+			sizeof(Uint8)));
+
+		for (i = 0; i < values; ++i)
 		{
-			swizzle_u64(masks, shifts, count, in_buffer,
-				out_buffer);
+			assert(position[i] < values);
+		}
 
-			return;
+		for (i = 0; i < count; ++i)
+		{
+			for (j = 0; j < values; ++j)
+			{
+				tmp[j] = static_cast<const Uint8*>(
+					in_buffer.get_ptr())[i * values + j];
+			}
+
+			for (j = 0; j < values; ++j)
+			{
+				static_cast<Uint8*>(out_buffer.get_ptr())[
+					i * values + position[j]] = tmp[j];
+			}
+		}
+	}
+
+	void PackTool::swizzle_u16(const glm::uvec4 &position,
+		const Uint32 values, const Uint32 count,
+		const AbstractReadMemory &in_buffer,
+		AbstractWriteMemory &out_buffer)
+	{
+		glm::uvec4 tmp;
+		Uint32 i, j;
+
+		assert(in_buffer.get_size() >= (count * values *
+			sizeof(Uint16)));
+		assert(out_buffer.get_size() >= (count * values *
+			sizeof(Uint16)));
+
+		for (i = 0; i < values; ++i)
+		{
+			assert(position[i] < values);
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			for (j = 0; j < values; ++j)
+			{
+				tmp[j] = static_cast<const Uint16*>(
+					in_buffer.get_ptr())[i * values + j];
+			}
+
+			for (j = 0; j < values; ++j)
+			{
+				static_cast<Uint16*>(out_buffer.get_ptr())[
+					i * values + position[j]] = tmp[j];
+			}
+		}
+	}
+
+	void PackTool::swizzle_u32(const glm::uvec4 &position,
+		const Uint32 values, const Uint32 count,
+		const AbstractReadMemory &in_buffer,
+		AbstractWriteMemory &out_buffer)
+	{
+		glm::uvec4 tmp;
+		Uint32 i, j;
+
+		assert(in_buffer.get_size() >= (count * values *
+			sizeof(Uint32)));
+		assert(out_buffer.get_size() >= (count * values *
+			sizeof(Uint32)));
+
+		for (i = 0; i < values; ++i)
+		{
+			assert(position[i] < values);
+		}
+
+		for (i = 0; i < count; ++i)
+		{
+			for (j = 0; j < values; ++j)
+			{
+				tmp[j] = static_cast<const Uint32*>(
+					in_buffer.get_ptr())[i * values + j];
+			}
+
+			for (j = 0; j < values; ++j)
+			{
+				static_cast<Uint32*>(out_buffer.get_ptr())[
+					i * values + position[j]] = tmp[j];
+			}
 		}
 	}
 

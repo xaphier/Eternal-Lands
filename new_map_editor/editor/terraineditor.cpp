@@ -10,6 +10,7 @@
 #include "abstractterrain.hpp"
 #include "terrain/uvtool.hpp"
 #include "imageupdate.hpp"
+#include "meshdatatool.hpp"
 
 namespace eternal_lands
 {
@@ -41,40 +42,23 @@ namespace eternal_lands
 	}
 
 	void TerrainEditor::set_displacement_values(
-		const DisplacementValueVector &displacement_values,
-		ImageUpdate &displacement_map, ImageUpdate &normal_map,
-		ImageUpdate &dudv_map)
+		const DisplacementValueVector &displacement_values)
 	{
 		Ivec2Set indices;
-		glm::uvec3 displacement_min, displacement_max;
-		glm::uvec3 normal_min, normal_max;
 		glm::ivec2 index, min, max;
 		Sint32 x, y;
 
 		min = glm::ivec2(0);
-		max = glm::ivec2(m_displacement_image->get_width() - 1,
-			m_displacement_image->get_height()) - 1;
-
-		displacement_min = glm::uvec3(glm::uvec2(m_size), 0);
-		displacement_max = glm::uvec3(0, 0, 1);
-		normal_min = glm::uvec3(glm::uvec2(m_size), 0);
-		normal_max = glm::uvec3(0, 0, 1);
+		max = glm::ivec2(m_displacement_map->get_width() - 1,
+			m_displacement_map->get_height()) - 1;
 
 		BOOST_FOREACH(const DisplacementValue &displacement_value,
 			displacement_values)
 		{
-			m_displacement_image->set_pixel_packed_uint32(
+			m_displacement_map->set_pixel_packed_uint32(
 				displacement_value.get_x(),
 				displacement_value.get_y(), 0, 0, 0,
 				displacement_value.get_packed_value());
-
-			index.x = displacement_value.get_x();
-			index.y = displacement_value.get_y();
-
-			displacement_min = glm::min(displacement_min,
-				glm::uvec3(index, 0));
-			displacement_max = glm::max(displacement_max,
-				glm::uvec3(index, 1));
 
 			for (y = -1; y < 2; ++y)
 			{
@@ -89,68 +73,32 @@ namespace eternal_lands
 					index = glm::max(index, min);
 
 					indices.insert(index);
-
-					normal_min = glm::min(normal_min,
-						glm::uvec3(index, 0));
-					normal_max = glm::max(normal_max,
-						glm::uvec3(index, 1));
 				}
 			}
 		}
 
-		update_normals(indices);
-
-
-		displacement_min = glm::uvec3(0, 0, 0);
-		displacement_max = glm::uvec3(glm::uvec2(m_size), 1);
-		normal_min = glm::uvec3(0, 0, 0);
-		normal_max = glm::uvec3(glm::uvec2(m_size), 1);
-
-		displacement_map = ImageUpdate(m_displacement_image,
-			displacement_min, displacement_max - displacement_min);
-		normal_map = ImageUpdate(m_normal_image, normal_min,
-			normal_max - normal_min);
-		dudv_map = ImageUpdate(m_dudv_image, glm::uvec3(0),
-			glm::uvec3(0));
+		update_normal_tangent_map(indices);
 	}
 
 	void TerrainEditor::set_blend_values(
-		const ImageValueVector &blend_values, ImageUpdate &blend_map)
+		const ImageValueVector &blend_values)
 	{
-		glm::uvec3 blend_min, blend_max;
-		glm::uvec2 index;
 		Uint16 i, count;
 
-		assert(get_blend_image()->get_depth() <= 4);
+		assert(get_blend_map()->get_depth() <= 4);
 
-		count = get_blend_image()->get_depth();
-
-		blend_min = glm::uvec3(glm::uvec2(m_size), 0);
-		blend_max = glm::uvec3(0, 0, count);
+		count = get_blend_map()->get_depth();
 
 		BOOST_FOREACH(const ImageValue &blend_value, blend_values)
 		{
 			for (i = 0; i < count; ++i)
 			{
-				m_blend_image->set_pixel_uint(
+				m_blend_map->set_pixel_uint(
 					blend_value.get_x(),
 					blend_value.get_y(), i, 0, 0,
 					blend_value.get_value(i));
 			}
-
-			index.x = blend_value.get_x();
-			index.y = blend_value.get_y();
-
-			blend_min = glm::min(blend_min, glm::uvec3(index, 0));
-			blend_max = glm::max(blend_max, glm::uvec3(index,
-				count));
 		}
-
-		blend_min = glm::uvec3(0);
-		blend_max = glm::uvec3(m_size);
-
-		blend_map = ImageUpdate(m_blend_image, blend_min,
-			blend_max - blend_min);
 	}
 
 	void TerrainEditor::get_displacement_values(const Uint32 x,
@@ -160,8 +108,8 @@ namespace eternal_lands
 		DisplacementValue value(x, y);
 
 		value.set_packed_value(
-			m_displacement_image->get_pixel_packed_uint32(x, y,
-				0, 0, 0));
+			m_displacement_map->get_pixel_packed_uint32(x, y, 0, 0,
+				0));
 
 		displacement_values.push_back(value);
 	}
@@ -189,12 +137,12 @@ namespace eternal_lands
 			static_cast<Sint64>(0));
 
 		tmp = static_cast<float>(vertex.x) + max_size.x;
-		temp = m_displacement_image->get_width();
+		temp = m_displacement_map->get_width();
 		max_x = std::min(static_cast<Sint64>(tmp),
 			static_cast<Sint64>(temp - 1));
 
 		tmp = static_cast<float>(vertex.y) + max_size.y;
-		temp = m_displacement_image->get_height();
+		temp = m_displacement_map->get_height();
 		max_y = std::min(static_cast<Sint64>(tmp),
 			static_cast<Sint64>(temp - 1));
 
@@ -227,13 +175,13 @@ namespace eternal_lands
 		ImageValue value(x, y);
 		Uint16 i, count;
 
-		assert(get_blend_image()->get_depth() <= 4);
+		assert(get_blend_map()->get_depth() <= 4);
 
-		count = get_blend_image()->get_depth();
+		count = get_blend_map()->get_depth();
 
 		for (i = 0; i < count; ++i)
 		{
-			value.set_value(m_blend_image->get_pixel_uint(x, y, i,
+			value.set_value(m_blend_map->get_pixel_uint(x, y, i,
 				0, 0), i);
 		}
 
@@ -263,12 +211,12 @@ namespace eternal_lands
 			static_cast<Sint64>(0));
 
 		tmp = static_cast<float>(vertex.x) + max_size.x;
-		temp = m_blend_image->get_width();
+		temp = m_blend_map->get_width();
 		max_x = std::min(static_cast<Sint64>(tmp),
 			static_cast<Sint64>(temp - 1));
 
 		tmp = static_cast<float>(vertex.y) + max_size.y;
-		temp = m_blend_image->get_height();
+		temp = m_blend_map->get_height();
 		max_y = std::min(static_cast<Sint64>(tmp),
 			static_cast<Sint64>(temp - 1));
 
@@ -538,17 +486,19 @@ namespace eternal_lands
 		m_size.y = tmp.y;
 		m_size.z = 4;
 
-		m_displacement_image = boost::make_shared<Image>(
+		m_displacement_map = boost::make_shared<Image>(
 			String(UTF8("displacement map")), false, tft_rgb10_a2,
-			tmp, 0);
+			tmp, 0, false);
 
-		m_normal_image = boost::make_shared<Image>(
-			String(UTF8("normal map")), false, tft_rg8, tmp, 0);
+		m_normal_tangent_map = boost::make_shared<Image>(
+			String(UTF8("normal tangent map")), false, tft_rgba8,
+			tmp, 0, false);
 
-		m_dudv_image = boost::make_shared<Image>(
-			String(UTF8("dudv map")), false, tft_rg16, tmp, 0);
+		m_dudv_map = boost::make_shared<Image>(
+			String(UTF8("dudv map")), false, tft_rg16, tmp, 0,
+			false);
 
-		m_blend_image = boost::make_shared<Image>(String(
+		m_blend_map = boost::make_shared<Image>(String(
 			UTF8("blend map")), false, tft_rgba8, m_size, 0, true);
 
 		m_albedo_maps.resize(get_layer_count());
@@ -557,7 +507,7 @@ namespace eternal_lands
 
 		m_enabled = true;
 
-		m_uv_tool.reset(new UvTool(m_displacement_image));
+		m_uv_tool.reset(new UvTool(m_displacement_map));
 	}
 
 	void TerrainEditor::init(const glm::uvec2 &size,
@@ -572,7 +522,7 @@ namespace eternal_lands
 		{
 			for (x = 0; x < m_size.x; ++x)
 			{
-				m_displacement_image->set_pixel(x, y, 0, 0, 0,
+				m_displacement_map->set_pixel(x, y, 0, 0, 0,
 					glm::vec4(0.5f, 0.5f, 0.0f, 0.0f));
 			}
 		}
@@ -581,7 +531,7 @@ namespace eternal_lands
 		{
 			for (x = 0; x < m_size.x; ++x)
 			{
-				update_normal(glm::ivec2(x, y));
+				update_normal_tangent_map(glm::ivec2(x, y));
 			}
 		}
 
@@ -591,7 +541,7 @@ namespace eternal_lands
 			{
 				for (x = 0; x < m_size.x; ++x)
 				{
-					m_blend_image->set_pixel(x, y, z,
+					m_blend_map->set_pixel(x, y, z,
 						0, 0, glm::vec4(0.0f));
 				}
 			}
@@ -654,7 +604,7 @@ namespace eternal_lands
 		glm::vec2 position;
 
 		offset = AbstractTerrain::get_offset_scaled_rgb10_a2(
-			m_displacement_image->get_pixel_packed_uint32(index.x,
+			m_displacement_map->get_pixel_packed_uint32(index.x,
 				index.y, 0, 0, 0));
 
 		position.x = index.x;
@@ -692,9 +642,9 @@ namespace eternal_lands
 	{
 		if ((index.x < 0) || (index.y < 0) ||
 			(index.x >= static_cast<Sint32>(
-				m_displacement_image->get_width())) ||
+				m_displacement_map->get_width())) ||
 			(index.y >= static_cast<Sint32>(
-				m_displacement_image->get_height())))
+				m_displacement_map->get_height())))
 		{
 			return glm::vec3(0.0f);
 		}
@@ -704,30 +654,160 @@ namespace eternal_lands
 
 	glm::vec3 TerrainEditor::get_normal(const glm::ivec2 &index) const
 	{
-		glm::vec3 centre, d0, d1, d2, d3, d4, d5, d6, d7, n;
-		glm::uvec2 value;
+		Vec3Array8 d;
+		glm::vec3 centre, n;
+		Uint32 i;
 
 		centre = get_position(index);
 
-		d0 = get_direction(centre, index + glm::ivec2(-1, -1));
-		d1 = get_direction(centre, index + glm::ivec2( 0, -1));
-		d2 = get_direction(centre, index + glm::ivec2( 1, -1));
-		d3 = get_direction(centre, index + glm::ivec2( 1,  0));
-		d4 = get_direction(centre, index + glm::ivec2( 1,  1));
-		d5 = get_direction(centre, index + glm::ivec2( 0,  1));
-		d6 = get_direction(centre, index + glm::ivec2(-1,  1));
-		d7 = get_direction(centre, index + glm::ivec2(-1,  0));
+		d[0] = get_direction(centre, index + glm::ivec2(-1, -1));
+		d[1] = get_direction(centre, index + glm::ivec2( 0, -1));
+		d[2] = get_direction(centre, index + glm::ivec2( 1, -1));
+		d[3] = get_direction(centre, index + glm::ivec2( 1,  0));
+		d[4] = get_direction(centre, index + glm::ivec2( 1,  1));
+		d[5] = get_direction(centre, index + glm::ivec2( 0,  1));
+		d[6] = get_direction(centre, index + glm::ivec2(-1,  1));
+		d[7] = get_direction(centre, index + glm::ivec2(-1,  0));
 
-		n = glm::cross(d0, d1);
-		n += glm::cross(d1, d2);
-		n += glm::cross(d2, d3);
-		n += glm::cross(d3, d4);
-		n += glm::cross(d4, d5);
-		n += glm::cross(d5, d6);
-		n += glm::cross(d6, d7);
-		n += glm::cross(d7, d0);
+		n = glm::vec3(0.0f);
+
+		for (i = 0; i < 8; ++i)
+		{
+			n += glm::cross(d[i], d[(i + 1) % 8]);
+		}
 
 		return glm::normalize(n);
+	}
+
+	glm::vec2 TerrainEditor::get_uv(const glm::ivec2 &index) const
+	{
+		glm::vec2 uv, dudv;
+
+		dudv = glm::vec2(m_dudv_map->get_pixel(index.x, index.y, 0,
+			0, 0));
+
+		dudv.x *= m_dudv_scale_offset.x;
+		dudv.y *= m_dudv_scale_offset.y;
+		dudv.x += m_dudv_scale_offset.z;
+		dudv.y += m_dudv_scale_offset.w;
+
+		uv = glm::vec2(index) * AbstractTerrain::get_patch_scale();
+
+		return uv + dudv;
+	}
+
+	glm::vec2 TerrainEditor::get_uv_direction(const glm::vec2 &uv,
+		const glm::ivec2 &index) const
+	{
+		if ((index.x < 0) || (index.y < 0) ||
+			(index.x >= static_cast<Sint32>(
+				m_dudv_map->get_width())) ||
+			(index.y >= static_cast<Sint32>(
+				m_dudv_map->get_height())))
+		{
+			return glm::vec2(0.0f);
+		}
+
+		return get_uv(index) - uv;
+	}
+
+	glm::uvec4 TerrainEditor::get_packed_normal_tangent(
+		const glm::ivec2 &index) const
+	{
+		Vec3Array8 d;
+		Vec2Array8 dudv;
+		glm::vec4 temp;
+		glm::uvec4 result;
+		glm::vec3 centre, tangent, bitangent, normal;
+		glm::vec2 uv;
+		glm::uvec2 value;
+		float r, tmp;
+		Uint32 i, idx0, idx1;
+
+		centre = get_position(index);
+
+		d[0] = get_direction(centre, index + glm::ivec2(-1, -1));
+		d[1] = get_direction(centre, index + glm::ivec2( 0, -1));
+		d[2] = get_direction(centre, index + glm::ivec2( 1, -1));
+		d[3] = get_direction(centre, index + glm::ivec2( 1,  0));
+		d[4] = get_direction(centre, index + glm::ivec2( 1,  1));
+		d[5] = get_direction(centre, index + glm::ivec2( 0,  1));
+		d[6] = get_direction(centre, index + glm::ivec2(-1,  1));
+		d[7] = get_direction(centre, index + glm::ivec2(-1,  0));
+
+		uv = get_uv(index);
+
+		dudv[0] = get_uv_direction(uv, index + glm::ivec2(-1, -1));
+		dudv[1] = get_uv_direction(uv, index + glm::ivec2( 0, -1));
+		dudv[2] = get_uv_direction(uv, index + glm::ivec2( 1, -1));
+		dudv[3] = get_uv_direction(uv, index + glm::ivec2( 1,  0));
+		dudv[4] = get_uv_direction(uv, index + glm::ivec2( 1,  1));
+		dudv[5] = get_uv_direction(uv, index + glm::ivec2( 0,  1));
+		dudv[6] = get_uv_direction(uv, index + glm::ivec2(-1,  1));
+		dudv[7] = get_uv_direction(uv, index + glm::ivec2(-1,  0));
+
+		tangent = glm::vec3(0.0f);
+		bitangent = glm::vec3(0.0f);
+		normal = glm::vec3(0.0f);
+
+		for (i = 0; i < 8; ++i)
+		{
+			idx0 = i;
+			idx1 = (i + 1) % 8;
+
+			r = 1.0f;
+
+			tmp = dudv[idx0].x * dudv[idx1].y -
+				dudv[idx1].x * dudv[idx0].y;
+
+			if (std::abs(tmp) > 0.0001f)
+			{
+				r = 1.0f / tmp;
+			}
+
+			tangent += glm::vec3(dudv[idx1].y * d[idx0] -
+				dudv[idx0].y * d[idx1]) * r;
+
+			bitangent += glm::vec3(dudv[idx0].x * d[idx1] -
+				dudv[idx1].x * d[idx0]) * r;
+
+			normal += glm::cross(d[idx0], d[idx1]);
+		}
+
+		tangent = glm::normalize(tangent);
+		bitangent =  glm::normalize(bitangent);
+		normal =  glm::normalize(normal);
+
+		temp = MeshDataTool::get_gram_schmidth_orthogonalize_tangent(
+			normal, tangent, bitangent);
+
+		tangent = glm::vec3(temp);
+
+		value = PackTool::encode_normal_optimized_uint8(normal);
+
+		if (std::abs(1.0f - glm::dot(normal,
+			PackTool::decode_normal_optimized_uint8(value)))
+				> 0.01f)
+		{
+			value = get_best_normal(normal);
+		}
+
+		result.x = value.x;
+		result.y = value.y;
+
+		value = PackTool::encode_normal_optimized_uint8(tangent);
+
+		if (std::abs(1.0f - glm::dot(tangent,
+			PackTool::decode_normal_optimized_uint8(value)))
+				> 0.01f)
+		{
+			value = get_best_normal(tangent);
+		}
+
+		result.z = value.x;
+		result.w = value.y;
+
+		return result;
 	}
 
 	glm::vec3 TerrainEditor::get_smooth_normal(const glm::vec2 &index)
@@ -760,7 +840,7 @@ namespace eternal_lands
 	{
 		glm::vec2 position, dudv;
 
-		dudv = glm::vec2(m_dudv_image->get_pixel(index.x, index.y,
+		dudv = glm::vec2(m_dudv_map->get_pixel(index.x, index.y,
 			0, 0, 0));
 
 		dudv.x *= m_dudv_scale_offset.x;
@@ -775,31 +855,21 @@ namespace eternal_lands
 		return 1.0f - get_smooth_normal(position).z;
 	}
 
-	void TerrainEditor::update_normal(const glm::ivec2 &index)
+	void TerrainEditor::update_normal_tangent_map(const glm::ivec2 &index)
 	{
-		glm::vec3 normal;
-		glm::uvec2 value;
+		glm::uvec4 value;
 
-		normal = get_normal(index);
+		value = get_packed_normal_tangent(index);
 
-		value = PackTool::encode_normal_optimized_uint8(normal);
-
-		if (std::abs(1.0f - glm::dot(normal,
-			PackTool::decode_normal_optimized_uint8(value)))
-				> 0.01f)
-		{
-			value = get_best_normal(normal);
-		}
-
-		m_normal_image->set_pixel_uint(index.x, index.y, 0, 0, 0,
-			glm::uvec4(value, 0, 0));
+		m_normal_tangent_map->set_pixel_uint(index.x, index.y, 0, 0, 0,
+			value);
 	}
 
-	void TerrainEditor::update_normals(const Ivec2Set &indices)
+	void TerrainEditor::update_normal_tangent_map(const Ivec2Set &indices)
 	{
 		BOOST_FOREACH(const glm::ivec2 &index, indices)
 		{
-			update_normal(index);
+			update_normal_tangent_map(index);
 		}
 	}
 
@@ -830,8 +900,8 @@ namespace eternal_lands
 			AbstractTerrain::get_vector_scale()) /
 			AbstractTerrain::get_patch_scale()) + 1;
 
-		size.x = m_displacement_image->get_width();
-		size.y = m_displacement_image->get_height();
+		size.x = m_displacement_map->get_width();
+		size.y = m_displacement_map->get_height();
 		size -= 1;
 
 		min = glm::clamp(min, glm::ivec2(0), size);
@@ -925,7 +995,7 @@ namespace eternal_lands
 						x, y, 0, 0, 0).r;
 				}
 
-				m_displacement_image->set_pixel(x, y, 0, 0, 0,
+				m_displacement_map->set_pixel(x, y, 0, 0, 0,
 					glm::vec4(0.5f, 0.5f, height, 0));
 			}
 		}
@@ -934,7 +1004,7 @@ namespace eternal_lands
 		{
 			for (x = 0; x < m_size.x; ++x)
 			{
-				update_normal(glm::ivec2(x, y));
+				update_normal_tangent_map(glm::ivec2(x, y));
 			}
 		}
 	}
@@ -973,7 +1043,7 @@ namespace eternal_lands
 	}
 
 	void TerrainEditor::set(const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map,
 		const ImageSharedPtr &blend_map,
 		const StringVector &albedo_maps,
@@ -1005,13 +1075,13 @@ namespace eternal_lands
 					displacement_map->get_name()));
 		}
 
-		m_displacement_image = displacement_map->decompress(false,
+		m_displacement_map = displacement_map->decompress(false,
 			true, false);
 
-		m_uv_tool.reset(new UvTool(m_displacement_image));
+		m_uv_tool.reset(new UvTool(m_displacement_map));
 
-		rebuild_normal_map();
 		import_dudv_map(dudv_map, dudv_scale_offset);
+		rebuild_normal_tangent_map();
 		import_blend_map(blend_map);
 
 		m_albedo_maps = albedo_maps;
@@ -1033,7 +1103,7 @@ namespace eternal_lands
 		glm::uvec3 size;
 		Uint32 x, y, z;
 
-		m_blend_image = boost::make_shared<Image>(
+		m_blend_map = boost::make_shared<Image>(
 			String(UTF8("blend map")), false, tft_rgba8, m_size, 0,
 			true);
 
@@ -1056,8 +1126,8 @@ namespace eternal_lands
 					value = blend_image->get_pixel(x, y, z,
 						0, 0);
 
-					m_blend_image->set_pixel(x, y, z,
-						0, 0, value);
+					m_blend_map->set_pixel(x, y, z, 0, 0,
+						value);
 				}
 			}
 		}
@@ -1068,22 +1138,22 @@ namespace eternal_lands
 	{
 		m_uv_tool->relax_uv(progress, count, use_simd);
 
-		m_uv_tool->convert(m_dudv_image, m_dudv_scale_offset);
+		m_uv_tool->convert(m_dudv_map, m_dudv_scale_offset);
 	}
 
-	void TerrainEditor::rebuild_normal_map()
+	void TerrainEditor::rebuild_normal_tangent_map()
 	{
 		Uint32 x, y;
 
-		m_normal_image = boost::make_shared<Image>(
-			String(UTF8("normal map")), false, tft_rg8,
-			glm::uvec3(m_size.x, m_size.y, 0), 0);
+		m_normal_tangent_map = boost::make_shared<Image>(
+			String(UTF8("normal tangent map")), false, tft_rgba8,
+			glm::uvec3(m_size.x, m_size.y, 0), 0, false);
 
 		for (y = 0; y < m_size.y; ++y)
 		{
 			for (x = 0; x < m_size.x; ++x)
 			{
-				update_normal(glm::ivec2(x, y));
+				update_normal_tangent_map(glm::ivec2(x, y));
 			}
 		}
 	}
@@ -1096,9 +1166,9 @@ namespace eternal_lands
 		glm::uvec3 size;
 		Uint32 x, y;
 
-		m_dudv_image = boost::make_shared<Image>(
+		m_dudv_map = boost::make_shared<Image>(
 			String(UTF8("dudv map")), false, tft_rg16,
-			glm::uvec3(m_size.x, m_size.y, 0), 0);
+			glm::uvec3(m_size.x, m_size.y, 0), 0, false);
 
 		if (dudv_map.get() == nullptr)
 		{
@@ -1107,7 +1177,7 @@ namespace eternal_lands
 
 		dudv_image = dudv_map->decompress(false, true, false);
 
-		size = glm::min(m_size, dudv_map->get_size());
+		size = glm::min(m_size, dudv_image->get_size());
 		size = glm::max(size, glm::uvec3(1));
 
 		for (y = 0; y < size.y; ++y)
@@ -1116,11 +1186,11 @@ namespace eternal_lands
 			{
 				value = dudv_image->get_pixel(x, y, 0, 0, 0);
 
-				m_dudv_image->set_pixel(x, y, 0, 0, 0, value);
+				m_dudv_map->set_pixel(x, y, 0, 0, 0, value);
 			}
 		}
 
-		m_uv_tool->import(m_dudv_image, m_dudv_scale_offset);
+		m_uv_tool->import(m_dudv_map, m_dudv_scale_offset);
 	}
 
 	BitSet64 TerrainEditor::get_used_layers() const
@@ -1142,7 +1212,7 @@ namespace eternal_lands
 
 				for (z = 0; z < size.z; ++z)
 				{
-					value = m_blend_image->get_pixel(x, y,
+					value = m_blend_map->get_pixel(x, y,
 						z, 0, 0);
 
 					for (i = 0; i < 4; ++i)
@@ -1187,7 +1257,7 @@ namespace eternal_lands
 			{
 				for (z = 0; z < size.z; ++z)
 				{
-					value = m_blend_image->get_pixel(x, y,
+					value = m_blend_map->get_pixel(x, y,
 						z, 0, 0);
 
 					for (i = 0; i < 4; ++i)
@@ -1266,7 +1336,7 @@ namespace eternal_lands
 
 				for (z = 0; z < size.z; ++z)
 				{
-					value = m_blend_image->get_pixel(x, y,
+					value = m_blend_map->get_pixel(x, y,
 						z, 0, 0);
 
 					for (i = 0; i < 4; ++i)
@@ -1277,7 +1347,7 @@ namespace eternal_lands
 						}
 					}
 
-					m_blend_image->set_pixel(x, y,
+					m_blend_map->set_pixel(x, y,
 						z, 0, 0, value);
 				}
 			}
@@ -1315,7 +1385,7 @@ namespace eternal_lands
 
 				for (z = 0; z < size.z; ++z)
 				{
-					value = m_blend_image->get_pixel(x, y,
+					value = m_blend_map->get_pixel(x, y,
 						z, 0, 0);
 
 					for (i = 0; i < 4; ++i)
@@ -1340,7 +1410,7 @@ namespace eternal_lands
 
 				for (z = 0; z < size.z; ++z)
 				{
-					m_blend_image->set_pixel(x, y, z, 0, 0,
+					m_blend_map->set_pixel(x, y, z, 0, 0,
 						values[z]);
 				}
 			}
@@ -1387,7 +1457,7 @@ namespace eternal_lands
 			{
 				for (z = 0; z < size.z; ++z)
 				{
-					value = m_blend_image->get_pixel(x, y,
+					value = m_blend_map->get_pixel(x, y,
 						z, 0, 0);
 
 					for (i = 0; i < 4; ++i)
@@ -1415,10 +1485,10 @@ namespace eternal_lands
 
 	void TerrainEditor::clear()
 	{
-		m_displacement_image.reset();
-		m_normal_image.reset();
-		m_dudv_image.reset();
-		m_blend_image.reset();
+		m_displacement_map.reset();
+		m_normal_tangent_map.reset();
+		m_dudv_map.reset();
+		m_blend_map.reset();
 		m_uv_tool.reset();
 		m_material_data.clear();
 		m_albedo_maps.clear();
@@ -1432,7 +1502,7 @@ namespace eternal_lands
 		const glm::uvec2 &vertex) const
 	{
 		return AbstractTerrain::get_offset_scaled_rgb10_a2(
-			m_displacement_image->get_pixel_packed_uint32(vertex.x,
+			m_displacement_map->get_pixel_packed_uint32(vertex.x,
 				vertex.y, 0, 0, 0));
 	}
 
@@ -1444,10 +1514,8 @@ namespace eternal_lands
 
 
 	void TerrainEditor::fill_blend_layer(const float strength,
-		const BlendEffectType effect, const Uint16 layer,
-		ImageUpdate &blend_map)
+		const BlendEffectType effect, const Uint16 layer)
 	{
-		glm::uvec3 blend_min, blend_max;
 		Uint32 x, y, z, channel;
 
 		assert(layer < (m_size.z * 4));
@@ -1464,7 +1532,7 @@ namespace eternal_lands
 				glm::ivec2 index;
 				float mask_value, slope;
 
-				value = m_blend_image->get_pixel(x, y, z, 0, 0);
+				value = m_blend_map->get_pixel(x, y, z, 0, 0);
 
 				index.x = x;
 				index.y = y;
@@ -1504,15 +1572,9 @@ namespace eternal_lands
 				value[channel] = glm::clamp(mask_value, 0.0f,
 					1.0f);
 
-				m_blend_image->set_pixel(x, y, z, 0, 0, value);
+				m_blend_map->set_pixel(x, y, z, 0, 0, value);
 			}
 		}		
-
-		blend_min = glm::uvec3(0, 0, z);
-		blend_max = glm::uvec3(m_size.x, m_size.y, z + 1);
-
-		blend_map = ImageUpdate(m_blend_image, blend_min,
-			blend_max - blend_min);
 	}
 
 }

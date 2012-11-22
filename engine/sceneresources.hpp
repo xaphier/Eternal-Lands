@@ -29,7 +29,6 @@ namespace eternal_lands
 			MeshCacheSharedPtr m_mesh_cache;
 			EffectCacheSharedPtr m_effect_cache;
 			TextureCacheSharedPtr m_texture_cache;
-			CodecManagerSharedPtr m_codec_manager;
 			MeshDataCacheSharedPtr m_mesh_data_cache;
 			ActorDataCacheSharedPtr m_actor_data_cache;
 			ShaderSourceBuilderSharedPtr m_shader_source_builder;
@@ -78,12 +77,6 @@ namespace eternal_lands
 				const noexcept
 			{
 				return m_texture_cache;
-			}
-
-			inline const CodecManagerSharedPtr &get_codec_manager()
-				const noexcept
-			{
-				return m_codec_manager;
 			}
 
 			inline const MeshDataCacheSharedPtr

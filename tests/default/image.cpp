@@ -158,7 +158,7 @@ BOOST_AUTO_TEST_CASE(default_creation)
 		mipmap_count = std::log(mipmap_count) / std::log(2);
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, size, mipmap_count);
+			cube_map, texture_format, size, mipmap_count, false);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
@@ -251,7 +251,7 @@ BOOST_AUTO_TEST_CASE(set_get_8_bit_values)
 		mipmap_count = 6;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, size, mipmap_count);
+			cube_map, texture_format, size, mipmap_count, false);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
@@ -314,7 +314,7 @@ BOOST_AUTO_TEST_CASE(set_get_16_bit_values)
 		mipmap_count = 6;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, size, mipmap_count);
+			cube_map, texture_format, size, mipmap_count, false);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
@@ -377,7 +377,7 @@ BOOST_AUTO_TEST_CASE(set_get_32_bit_values)
 		mipmap_count = 6;
 
 		image = boost::make_shared<el::Image>(el::String("image"),
-			cube_map, texture_format, size, mipmap_count);
+			cube_map, texture_format, size, mipmap_count, false);
 
 		BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 		BOOST_CHECK_EQUAL(image->get_texture_format(), texture_format);
@@ -441,7 +441,7 @@ BOOST_AUTO_TEST_CASE(set_get_r3g3b2_value)
 	mipmap_count = 6;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
-		cube_map, el::tft_r3g3b2, size, mipmap_count);
+		cube_map, el::tft_r3g3b2, size, mipmap_count, false);
 
 	BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 	BOOST_CHECK_EQUAL(image->get_texture_format(), el::tft_r3g3b2);
@@ -568,7 +568,7 @@ BOOST_AUTO_TEST_CASE(set_get_rgba4_value)
 	mipmap_count = 6;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
-		cube_map, el::tft_rgba4, size, mipmap_count);
+		cube_map, el::tft_rgba4, size, mipmap_count, false);
 
 	BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 	BOOST_CHECK_EQUAL(image->get_texture_format(), el::tft_rgba4);
@@ -705,7 +705,7 @@ BOOST_AUTO_TEST_CASE(set_get_r5g6b5_value)
 	mipmap_count = 6;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
-		cube_map, el::tft_r5g6b5, size, mipmap_count);
+		cube_map, el::tft_r5g6b5, size, mipmap_count, false);
 
 	BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 	BOOST_CHECK_EQUAL(image->get_texture_format(), el::tft_r5g6b5);
@@ -832,7 +832,7 @@ BOOST_AUTO_TEST_CASE(set_get_rgb5_a1_value)
 	mipmap_count = 6;
 
 	image = boost::make_shared<el::Image>(el::String("image"),
-		cube_map, el::tft_rgb5_a1, size, mipmap_count);
+		cube_map, el::tft_rgb5_a1, size, mipmap_count, false);
 
 	BOOST_CHECK_EQUAL(image->get_cube_map(), cube_map);
 	BOOST_CHECK_EQUAL(image->get_texture_format(), el::tft_rgb5_a1);

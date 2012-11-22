@@ -33,8 +33,8 @@ namespace eternal_lands
 			const MeshCacheWeakPtr m_mesh_cache;
 			const MeshDataCacheWeakPtr m_mesh_data_cache;
 			const TextureCacheWeakPtr m_texture_cache;
-			String m_cdlod_terrain_material_name;
-			String m_simple_terrain_material_name;
+			StringArray3 m_cdlod_terrain_material_name;
+			StringArray3 m_simple_terrain_material_name;
 			String m_clipmap_terrain_effect_name;
 
 			inline const GlobalVarsSharedPtr &get_global_vars()

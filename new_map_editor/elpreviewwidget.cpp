@@ -90,7 +90,7 @@ void ELPreviewWidget::initializeGL()
 	m_global_vars->set_view_distance(250.0f);
 
 	m_global_vars->set_shadow_quality(sqt_no);
-	m_global_vars->set_shadow_map_size(2);
+	m_global_vars->set_shadow_map_size(0);
 	m_global_vars->set_clipmap_terrain_size(512);
 	m_global_vars->set_clipmap_terrain_world_size(8);
 	m_global_vars->set_clipmap_terrain_slices(1);
@@ -100,16 +100,19 @@ void ELPreviewWidget::initializeGL()
 	m_global_vars->set_use_block(true);
 	m_global_vars->set_use_in_out(true);
 	m_global_vars->set_use_functions(false);
-	m_global_vars->set_low_quality_terrain(false);
+	m_global_vars->set_terrain_quality(qt_low);
 	m_global_vars->set_use_multisample_shadows(false);
 	m_global_vars->set_effect_debug(false);
 	m_global_vars->set_use_scene_fbo(false);
 	m_global_vars->set_use_cpu_rasterizer(false);
+	m_global_vars->set_use_linear_lighting(false);
+	m_global_vars->set_use_multithreaded_culling(false);
 
 	m_scene = new Scene(m_global_vars, m_file_system);
 
 	m_scene->set_lights(true);
-	m_scene->set_ambient(glm::vec3(0.2f));
+	m_scene->set_sky_hemisphere(glm::vec4(0.2f));
+	m_scene->set_ground_hemisphere(glm::vec4(0.2f, 0.2f, 0.2f, 0.0f));
 	m_scene->add_light(LightData(glm::vec3(0.0f, -5.0f, 0.0f),
 		glm::vec3(1.0f), 10.0f, 0));
 

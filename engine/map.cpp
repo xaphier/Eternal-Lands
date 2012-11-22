@@ -39,9 +39,7 @@
 namespace eternal_lands
 {
 
-	Map::Map(const CodecManagerSharedPtr &codec_manager,
-		const FileSystemSharedPtr &file_system,
-		const GlobalVarsSharedPtr &global_vars,
+	Map::Map(const GlobalVarsSharedPtr &global_vars,
 		const MeshBuilderSharedPtr &mesh_builder,
 		const MeshCacheSharedPtr &mesh_cache,
 		const MaterialCacheSharedPtr &material_cache,
@@ -51,13 +49,12 @@ namespace eternal_lands
 		m_mesh_builder(mesh_builder), m_mesh_cache(mesh_cache),
 		m_material_cache(material_cache),
 		m_terrain_builder(terrain_builder),
-		m_texture_cache(texture_cache), m_id(0), m_dungeon(false),
-		m_codec_manager(codec_manager), m_file_system(file_system)
+		m_texture_cache(texture_cache), m_id(0), m_dungeon(false)
 	{
 		m_light_tree.reset(new RStarTree());
 		m_object_tree.reset(new RStarTree());
 
-		set_ambient(glm::vec3(0.2f));
+		set_ground_hemisphere(glm::vec4(0.2f, 0.2f, 0.2f, 0.0f));
 
 		m_terrain = get_terrain_builder()->get_terrain();
 	}
@@ -349,11 +346,11 @@ namespace eternal_lands
 
 	void Map::set_terrain_geometry_maps(
 		const ImageSharedPtr &displacement_map,
-		const ImageSharedPtr &normal_map,
+		const ImageSharedPtr &normal_tangent_map,
 		const ImageSharedPtr &dudv_map)
 	{
-		m_terrain->set_geometry_maps(displacement_map, normal_map,
-			dudv_map);
+		m_terrain->set_geometry_maps(displacement_map,
+			normal_tangent_map, dudv_map);
 
 		init_walk_height_map(displacement_map->decompress(false, true,
 			false));
@@ -365,22 +362,25 @@ namespace eternal_lands
 	}
 
 	void Map::update_terrain_geometry_maps(
-		const ImageUpdate &displacement_map,
-		const ImageUpdate &normal_map, const ImageUpdate &dudv_map)
+		const ImageSharedPtr &displacement_map,
+		const ImageSharedPtr &normal_tangent_map,
+		const ImageSharedPtr &dudv_map)
 	{
-		m_terrain->update_geometry_maps(displacement_map, normal_map,
-			dudv_map);
+		m_terrain->update_geometry_maps(displacement_map,
+			normal_tangent_map, dudv_map);
 	}
 
-	void Map::update_terrain_blend_map(const ImageUpdate &blend_map)
+	void Map::update_terrain_blend_map(const ImageSharedPtr &blend_map,
+		const BitSet64 &layers)
 	{
-		m_terrain->update_blend_map(blend_map);
+		m_terrain->update_blend_map(blend_map, layers);
 	}
 
 	void Map::set_terrain_material(const StringVector &albedo_maps,
 		const StringVector &extra_maps,
 		const TerrainMaterialData &material_data)
 	{
+		TerrainMaterialData material_data_no_extra;
 		EffectSharedPtr effect;
 
 		m_terrain->set_texture_maps(albedo_maps, extra_maps,
@@ -388,10 +388,19 @@ namespace eternal_lands
 			material_data.get_use_extra_maps(),
 			get_texture_cache());
 
+		material_data_no_extra = material_data;
+		material_data_no_extra.set_use_extra_maps(0);
+
+		effect = get_terrain_builder()->get_effect(get_name(),
+			material_data_no_extra);
+
+		m_terrain->set_effect(effect, qt_low);
+		m_terrain->set_effect(effect, qt_medium);
+
 		effect = get_terrain_builder()->get_effect(get_name(),
 			material_data);
 
-		m_terrain->set_effect(effect);
+		m_terrain->set_effect(effect, qt_high);
 	}
 
 	bool Map::get_terrain() const
@@ -402,6 +411,11 @@ namespace eternal_lands
 	const MaterialSharedPtr &Map::get_clipmap_terrain_material() const
 	{
 		return m_terrain->get_clipmap_terrain_material();
+	}
+
+	const MaterialSharedPtr &Map::get_terrain_material() const
+	{
+		return m_terrain->get_terrain_material();
 	}
 
 	void Map::set_terrain_dudv_scale_offset(

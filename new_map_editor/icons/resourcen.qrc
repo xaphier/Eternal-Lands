@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>terrain_nm.png</file>
     <file>vector_field.png</file>
     <file>execute_clear_layers.png</file>
     <file>remove_object.png</file>

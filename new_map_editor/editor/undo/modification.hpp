@@ -56,7 +56,7 @@ namespace eternal_lands
 		mt_terrain_scale_offset_changed,
 
 		mt_tile_texture_changed,
-		mt_scene_ambient_changed,
+		mt_scene_ground_hemisphere_changed,
 		mt_dungeon_changed,
 		mt_displacement_value_changed,
 		mt_height_changed,

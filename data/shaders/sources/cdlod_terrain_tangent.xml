@@ -58,7 +58,8 @@
      <auto_parameter>world_transformation</auto_parameter>
     </parameter>
    </parameters>
-   <source>vec3 vertex_position, morph_position;
+   <source>vec4 normal_tangent;
+vec3 vertex_position, morph_position;
 vec2 fenc, vertex_uv, morph_dir;
 float f, g, morph, dist;
 
@@ -77,8 +78,10 @@ terrain_texture_coordinate = vertex_position.xy;
 vertex_position += decode_terrain_displacement(textureLod(effect_sampler_8, vertex_uv, 0.0));
 world_position = vertex_position;
 
-world_normal = decode_normal(textureLod(effect_sampler_9, vertex_uv, instance_data_1.z + morph).rg);
-world_tangent = vec4(world_normal, 1.0);
+normal_tangent = textureLod(effect_sampler_9, vertex_uv, instance_data_1.z + morph);
+
+world_normal = decode_normal(normal_tangent.rg);
+world_tangent = vec4(decode_normal(normal_tangent.ba), 1.0);
 
 terrain_texture_coordinate += textureLod(effect_sampler_10, vertex_uv, instance_data_1.z + morph).rg * dudv_scale_offset.xy + dudv_scale_offset.zw;
 </source>

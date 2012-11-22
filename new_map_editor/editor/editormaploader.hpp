@@ -169,8 +169,8 @@ namespace eternal_lands
 				const Uint16 tile) override;
 			virtual void set_height(const Uint16 x, const Uint16 y,
 				const Uint16 height) override;
-			virtual void set_ambient(const glm::vec3 &ambient)
-				override;
+			virtual void set_ground_hemisphere(
+				const glm::vec4 &ground_hemisphere) override;
 			virtual void set_map_size(const glm::uvec2 &size)
 				override;
 			virtual void set_height_map_size(
@@ -180,7 +180,7 @@ namespace eternal_lands
 			virtual void set_dungeon(const bool dungeon) override;
 			virtual void set_terrain(
 				const ImageSharedPtr &displacement_map,
-				const ImageSharedPtr &normal_map,
+				const ImageSharedPtr &normal_tangent_map,
 				const ImageSharedPtr &dudv_map,
 				const ImageSharedPtr &blend_map,
 				const StringVector &albedo_maps,
@@ -194,9 +194,7 @@ namespace eternal_lands
 			/**
 			 * Default constructor.
 			 */
-			EditorMapLoader(
-				const CodecManagerWeakPtr &codec_manager,
-				const FileSystemSharedPtr &file_system,
+			EditorMapLoader(const FileSystemSharedPtr &file_system,
 				const GlobalVarsSharedPtr &global_vars,
 				const EffectCacheWeakPtr &effect_cache,
 				const MeshBuilderWeakPtr &mesh_builder,

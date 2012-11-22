@@ -111,18 +111,13 @@ namespace
 
 BOOST_AUTO_TEST_CASE(fourcc)
 {
-	CodecManager codec_manager;
-
-	BOOST_CHECK_NO_THROW(DdsImage::check_all_fourcc_support(codec_manager,
-		false));
-	BOOST_CHECK_NO_THROW(DdsImage::check_all_fourcc_support(codec_manager,
-		true));
+	BOOST_CHECK_NO_THROW(DdsImage::check_all_fourcc_support(false));
+	BOOST_CHECK_NO_THROW(DdsImage::check_all_fourcc_support(true));
 }
 
 BOOST_AUTO_TEST_CASE(read_image)
 {
 	FileSystem file_system;
-	CodecManager codec_manager;
 	ImageCompressionTypeSet compressions;
 	ReaderSharedPtr reader;
 	ImageSharedPtr image;
@@ -144,8 +139,8 @@ BOOST_AUTO_TEST_CASE(read_image)
 
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
-		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(codec_manager,
-			reader, compressions, true, false, false));
+		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(reader,
+			compressions, true, false, false));
 
 		BOOST_CHECK_EQUAL(image->get_texture_format(),
 			texture_formats[i]);
@@ -162,7 +157,6 @@ BOOST_AUTO_TEST_CASE(read_image)
 BOOST_AUTO_TEST_CASE(read_image_uncompressed)
 {
 	FileSystem file_system;
-	CodecManager codec_manager;
 	ImageCompressionTypeSet compressions;
 	ReaderSharedPtr reader;
 	ImageSharedPtr image;
@@ -181,8 +175,8 @@ BOOST_AUTO_TEST_CASE(read_image_uncompressed)
 
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
-		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(codec_manager,
-			reader, compressions, true, false, false));
+		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(reader,
+			compressions, true, false, false));
 
 		BOOST_CHECK_EQUAL(image->get_texture_format(),
 			uncompressed_texture_formats[i]);
@@ -199,7 +193,6 @@ BOOST_AUTO_TEST_CASE(read_image_uncompressed)
 BOOST_AUTO_TEST_CASE(read_image_color)
 {
 	FileSystem file_system;
-	CodecManager codec_manager;
 	ImageCompressionTypeSet compressions;
 	ReaderSharedPtr reader;
 	ImageSharedPtr image;
@@ -220,8 +213,8 @@ BOOST_AUTO_TEST_CASE(read_image_color)
 
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
-		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(codec_manager,
-			reader, compressions, true, false, false));
+		BOOST_CHECK_NO_THROW(image = DdsImage::load_image(reader,
+			compressions, true, false, false));
 
 		BOOST_CHECK_EQUAL(image->get_texture_format(),
 			texture_formats_color[i]);
@@ -268,7 +261,6 @@ BOOST_AUTO_TEST_CASE(read_image_color)
 BOOST_AUTO_TEST_CASE(read_write_read)
 {
 	FileSystem file_system;
-	CodecManager codec_manager;
 	ImageCompressionTypeSet compressions;
 	ReaderSharedPtr reader;
 	WriterSharedPtr writer;
@@ -292,8 +284,8 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 
 		BOOST_CHECK_NO_THROW(reader = file_system.get_file(name));
 
-		image0 = DdsImage::load_image(codec_manager, reader,
-			compressions, true, false, false);
+		image0 = DdsImage::load_image(reader, compressions, true,
+			false, false);
 
 		BOOST_CHECK_EQUAL(image0->get_texture_format(),
 			uncompressed_texture_formats[i]);
@@ -309,8 +301,7 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 
 		writer = boost::make_shared<Writer>(stream, name);
 
-		BOOST_CHECK_NO_THROW(DdsImage::save_image(codec_manager,
-			image0, writer));
+		BOOST_CHECK_NO_THROW(DdsImage::save_image(image0, writer));
 
 		buffer = boost::make_shared<ReadWriteMemory>(
 			writer->get_position());
@@ -320,8 +311,8 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 
 		reader = boost::make_shared<Reader>(buffer, name);	
 
-		image1 = DdsImage::load_image(codec_manager, reader,
-			compressions, true, false, false);
+		image1 = DdsImage::load_image(reader, compressions, true,
+			false, false);
 
 		BOOST_CHECK_EQUAL(image1->get_texture_format(),
 			uncompressed_texture_formats[i]);
@@ -367,7 +358,6 @@ BOOST_AUTO_TEST_CASE(read_write_read)
 
 BOOST_AUTO_TEST_CASE(write_read_color)
 {
-	CodecManager codec_manager;
 	ImageCompressionTypeSet compressions;
 	ReaderSharedPtr reader;
 	WriterSharedPtr writer;
@@ -393,7 +383,8 @@ BOOST_AUTO_TEST_CASE(write_read_color)
 
 		image0 = boost::make_shared<Image>(name, false,
 			texture_formats_color_fourcc[i],
-			glm::uvec3(image_width, image_height, image_depth), 0);
+			glm::uvec3(image_width, image_height, image_depth), 0,
+			false);
 
 		width = std::max(1u, image_width);
 		height = std::max(1u, image_height);
@@ -415,8 +406,7 @@ BOOST_AUTO_TEST_CASE(write_read_color)
 			}
 		}
 
-		BOOST_CHECK_NO_THROW(DdsImage::save_image(codec_manager,
-			image0, writer));
+		BOOST_CHECK_NO_THROW(DdsImage::save_image(image0, writer));
 
 		buffer = boost::make_shared<ReadWriteMemory>(
 			writer->get_position());
@@ -426,8 +416,8 @@ BOOST_AUTO_TEST_CASE(write_read_color)
 
 		reader = boost::make_shared<Reader>(buffer, name);	
 
-		image1 = DdsImage::load_image(codec_manager, reader,
-			compressions, true, false, false);
+		image1 = DdsImage::load_image(reader, compressions, true,
+			false, false);
 
 		BOOST_CHECK_EQUAL(image1->get_texture_format(),
 			texture_formats_color_fourcc[i]);
@@ -463,7 +453,6 @@ BOOST_AUTO_TEST_CASE(write_read_color)
 
 BOOST_AUTO_TEST_CASE(write_read_dxt10)
 {
-	CodecManager codec_manager;
 	ImageCompressionTypeSet compressions;
 	ReaderSharedPtr reader;
 	WriterSharedPtr writer;
@@ -504,7 +493,7 @@ BOOST_AUTO_TEST_CASE(write_read_dxt10)
 
 		image0 = boost::make_shared<Image>(name, false,
 			texture_formats[i], glm::uvec3(image_width,
-				image_height, image_depth), 0);
+				image_height, image_depth), 0, false);
 
 		width = std::max(1u, image_width);
 		height = std::max(1u, image_height);
@@ -537,8 +526,8 @@ BOOST_AUTO_TEST_CASE(write_read_dxt10)
 
 		reader = boost::make_shared<Reader>(buffer, name);	
 
-		image1 = DdsImage::load_image(codec_manager, reader,
-			compressions, true, false, false);
+		image1 = DdsImage::load_image(reader, compressions, true,
+			false, false);
 
 		BOOST_CHECK_EQUAL(image1->get_texture_format(),
 			texture_formats[i]);

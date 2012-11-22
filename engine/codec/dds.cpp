@@ -14,7 +14,7 @@ namespace eternal_lands
 	{
 
 		void build_dds_header(const Uint32 width, const Uint32 height,
-			const Uint32 depth, const Uint32 mipmaps,
+			const Uint32 depth, const Uint32 mipmap_count,
 			const Uint32 red_mask, const Uint32 green_mask,
 			const Uint32 blue_mask, const Uint32 alpha_mask,
 			bool cube_map, DdsHeader &header)
@@ -45,7 +45,7 @@ namespace eternal_lands
 					DDSCAPS2_CUBEMAP_ALL_FACES;
 			}
 
-			if (mipmaps > 0)
+			if (mipmap_count > 0)
 			{
 				header.m_flags |= DDSD_MIPMAPCOUNT;
 				header.m_caps.m_caps1 |= DDSCAPS_MIPMAP;
@@ -78,12 +78,12 @@ namespace eternal_lands
 			header.m_width = width;
 			header.m_size_or_pitch = ((bpp + 7) / 8) * width;
 			header.m_depth = depth;
-			header.m_mipmap_count = mipmaps;
+			header.m_mipmap_count = mipmap_count;
 		}
 
 		void build_dds_fourcc_header(const Uint32 width,
 			const Uint32 height, const Uint32 depth,
-			const Uint32 mipmaps, const Uint32 fourcc,
+			const Uint32 mipmap_count, const Uint32 fourcc,
 			const Uint32 bpp, bool cube_map, DdsHeader &header)
 		{
 			memset(&header, 0, sizeof(header));
@@ -110,7 +110,7 @@ namespace eternal_lands
 					DDSCAPS2_CUBEMAP_ALL_FACES;
 			}
 
-			if (mipmaps > 0)
+			if (mipmap_count > 0)
 			{
 				header.m_flags |= DDSD_MIPMAPCOUNT;
 				header.m_caps.m_caps1 |= DDSCAPS_MIPMAP;
@@ -129,7 +129,7 @@ namespace eternal_lands
 			header.m_width = width;
 			header.m_size_or_pitch = ((bpp + 7) / 8) * width;
 			header.m_depth = depth;
-			header.m_mipmap_count = mipmaps;
+			header.m_mipmap_count = mipmap_count;
 		}
 
 		bool get_fourcc(const GLenum type, const GLenum format,
@@ -250,7 +250,7 @@ namespace eternal_lands
 
 		void build_dxt10_dds_header(const Uint32 width,
 			const Uint32 height, const Uint32 depth,
-			const Uint32 layer, const Uint32 mipmaps,
+			const Uint32 layer_count, const Uint32 mipmap_count,
 			const Uint32 format, const Uint32 bpp,
 			const Uint32 flags, const bool cube_map,
 			const bool linear_size, DdsHeader &header,
@@ -303,7 +303,7 @@ namespace eternal_lands
 			}
 
 			header_dxt10.m_dxgi_format = format;
-			header_dxt10.m_array_size = std::max(1u, layer);
+			header_dxt10.m_array_size = std::max(1u, layer_count);
 
 			if (cube_map)
 			{
@@ -312,7 +312,7 @@ namespace eternal_lands
 					DDSCAPS2_CUBEMAP_ALL_FACES;
 			}
 
-			if (mipmaps > 0)
+			if (mipmap_count > 0)
 			{
 				header.m_flags |= DDSD_MIPMAPCOUNT;
 				header.m_caps.m_caps1 |= DDSCAPS_MIPMAP;
@@ -331,7 +331,7 @@ namespace eternal_lands
 			header.m_width = std::max(1u, width);
 			header.m_size_or_pitch = size;
 			header.m_depth = depth;
-			header.m_mipmap_count = mipmaps;
+			header.m_mipmap_count = mipmap_count;
 		}
 
 	}

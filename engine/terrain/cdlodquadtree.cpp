@@ -12,7 +12,6 @@
 #include "image.hpp"
 #include "logging.hpp"
 #include "abstractterrain.hpp"
-#include "imageupdate.hpp"
 
 namespace eternal_lands
 {

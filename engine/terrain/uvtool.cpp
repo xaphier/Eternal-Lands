@@ -460,7 +460,7 @@ namespace eternal_lands
 
 		dudv_map = boost::make_shared<Image>(String(UTF8("Dudv map")),
 			false, tft_rg16, glm::uvec3(m_width, m_height, 0),
-			0);			
+			0, false);			
 
 		convert(dudv_map, dudv_scale_offset);
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf8"?>
+<effect>
+	<name>simple-terrain-all-quality</name>
+	<world_transformation>simple-terrain</world_transformation>
+	<texture_coodrinates>terrain</texture_coodrinates>
+	<main>terrain-mapping</main>
+	<node_based>false</node_based>
+	<receives_shadows>true</receives_shadows>
+	<transparent>false</transparent>
+	<lighting>diffuse</lighting>
+	<output_channels>rgb</output_channels>
+</effect>
+

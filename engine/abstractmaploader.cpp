@@ -105,14 +105,12 @@ namespace eternal_lands
 	}
 
 	AbstractMapLoader::AbstractMapLoader(
-		const CodecManagerWeakPtr &codec_manager,
 		const FileSystemSharedPtr &file_system,
 		const FreeIdsManagerSharedPtr &free_ids,
 		const GlobalVarsSharedPtr &global_vars):
-		m_codec_manager(codec_manager), m_file_system(file_system),
-		m_free_ids(free_ids), m_global_vars(global_vars)
+		m_file_system(file_system), m_free_ids(free_ids),
+		m_global_vars(global_vars)
 	{
-		assert(!m_codec_manager.expired());
 		assert(m_global_vars.get() != nullptr);
 		assert(m_free_ids.get() != nullptr);
 		assert(m_file_system.get() != nullptr);
@@ -372,13 +370,14 @@ namespace eternal_lands
 	{
 		TerrainMaterialData material_data;
 		ImageCompressionTypeSet compressions;
-		ImageSharedPtr displacement_map, normal_map, dudv_map;
+		ImageSharedPtr displacement_map, normal_tangent_map, dudv_map;
 		ImageSharedPtr blend_map;
 		BlendDataVector blend_datas;
 		BlendData blend_data;
 		StringVector albedo_maps, extra_maps;
-		String displacement_map_name, normal_map_name, dudv_map_name;
-		String blend_map_name, albedo_map, extra_map, dir_name;
+		String displacement_map_name, normal_tangent_map_name;
+		String dudv_map_name, blend_map_name, albedo_map, extra_map;
+		String dir_name;
 		glm::uvec3 image_size;
 		glm::uvec2 size;
 		glm::vec4 dudv_scale_offset;
@@ -406,7 +405,7 @@ namespace eternal_lands
 
 			displacement_map_name = String(dir_name.get() + 
 				get_reader()->read_utf8_string(128).get());
-			normal_map_name = String(dir_name.get() + 
+			normal_tangent_map_name = String(dir_name.get() + 
 				get_reader()->read_utf8_string(128).get());
 			dudv_map_name = String(dir_name.get() + 
 				get_reader()->read_utf8_string(128).get());
@@ -459,21 +458,21 @@ namespace eternal_lands
 				compressions.insert(ict_rgtc);
 			}
 
-			displacement_map = get_codec_manager()->load_image(
+			displacement_map = CodecManager::load_image(
 				displacement_map_name, get_file_system(),
 				compressions, true, false, false);
 
-			normal_map = get_codec_manager()->load_image(
-				normal_map_name, get_file_system(),
+			normal_tangent_map = CodecManager::load_image(
+				normal_tangent_map_name, get_file_system(),
 				compressions, true, false, false);
 
-			dudv_map = get_codec_manager()->load_image(
+			dudv_map = CodecManager::load_image(
 				dudv_map_name, get_file_system(), compressions,
 				true, false, false);
 
-			blend_map = get_codec_manager()->load_image(
-				blend_map_name, get_file_system(),
-				compressions, true, false, false);
+			blend_map = CodecManager::load_image(blend_map_name,
+				get_file_system(), compressions, true, false,
+				false);
 
 			image_size = displacement_map->get_size();
 
@@ -494,7 +493,7 @@ namespace eternal_lands
 						displacement_map_name));
 			}
 
-			image_size = normal_map->get_size();
+			image_size = normal_tangent_map->get_size();
 
 			if ((image_size.x != size.x) &&
 				((image_size.y) != size.y) &&
@@ -510,7 +509,7 @@ namespace eternal_lands
 					<< errinfo_expected_height(size.y)
 					<< errinfo_expected_depth(0)
 					<< boost::errinfo_file_name(
-						normal_map_name));
+						normal_tangent_map_name));
 			}
 
 			image_size = dudv_map->get_size();
@@ -537,8 +536,8 @@ namespace eternal_lands
 			material_data.set_use_extra_maps(use_extra_maps);
 			material_data.set_blend_datas(blend_datas);
 
-			set_terrain(displacement_map, normal_map, dudv_map,
-				blend_map, albedo_maps, extra_maps,
+			set_terrain(displacement_map, normal_tangent_map,
+				dudv_map, blend_map, albedo_maps, extra_maps,
 				material_data, dudv_scale_offset, size);
 		}
 		catch (boost::exception &exception)
@@ -834,7 +833,7 @@ namespace eternal_lands
 	void AbstractMapLoader::read(const String &name,
 		MapItemsTypeSet skip_items)
 	{
-		glm::vec3 ambient;
+		glm::vec4 ground_hemisphere;
 		glm::uvec2 height_map_size, map_size, tile_map_size;
 		Uint32 tile_map_offset;
 		Uint32 height_map_offset;
@@ -913,14 +912,15 @@ namespace eternal_lands
 		version_number = version_major << 8;
 		version_number |= version_minor;
 
-		ambient.r = get_reader()->read_float_le();
-		ambient.g = get_reader()->read_float_le();
-		ambient.b = get_reader()->read_float_le();
+		ground_hemisphere.r = get_reader()->read_float_le();
+		ground_hemisphere.g = get_reader()->read_float_le();
+		ground_hemisphere.b = get_reader()->read_float_le();
+		ground_hemisphere.a = 0.0f;
 
-		LOG_DEBUG(lt_map_loader, UTF8("ambient color <%1%, %2%, %3%>."),
-			ambient.r % ambient.g % ambient.b);
+		LOG_DEBUG(lt_map_loader, UTF8("ground hemisphere color %1%."),
+			glm::to_string(ground_hemisphere));
 
-		set_ambient(ambient);
+		set_ground_hemisphere(ground_hemisphere);
 
 		particle_size = get_reader()->read_u32_le();
 		particle_count = get_reader()->read_u32_le();
