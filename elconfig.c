@@ -1952,7 +1952,7 @@ static void init_ELC_vars(void)
 	add_var(OPT_FLOAT, "shadow_distance", "shadow_distance", &engine_shadow_distance, change_engine_shadow_distance, 40, "Maximum Shadow Distance", "Adjusts how far the shadows are displayed.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_FLOAT, "view_distance", "view_distance", &engine_view_distance, change_engine_view_distance, 80, "Maximum View Distance", "Adjusts how far you can see.", GFX, 20.0, 200.0, 5.0);
 	add_var(OPT_BOOL, "fog", "fog", &engine_fog, change_engine_fog, engine_true, "Fog", "Fog", GFX);
-	add_var(OPT_MULTI_H, "terrain_quality", "terrain_quality", &engine_terrain_quality, change_engine_set_terrain_quality, 1, "Terrain quality", "Terrain quality", GFX, "low", "medium", "high");
+	add_var(OPT_MULTI_H, "terrain_quality", "terrain_quality", &engine_terrain_quality, change_engine_set_terrain_quality, 1, "Terrain quality", "Terrain quality", GFX, "low", "medium", "high", 0);
 	add_var(OPT_MULTI_H, "clipmap_terrain_size", "clipmap_terrain_size", &engine_clipmap_terrain_size, change_engine_clipmap_terrain_size, 1, "Climap size", "Clipmap used for terrain size", GFX, "512", "1024", "2048", 0);
 	add_var(OPT_INT, "clipmap_terrain_world_size", "clipmap_terrain_world_size", &engine_clipmap_terrain_world_size, change_engine_clipmap_terrain_world_size, 16, "Climap world size", "Clipmap used for terrain world size", GFX, 1, 32);
 	add_var(OPT_MULTI_H, "light_system", "light_system", &engine_light_system, change_engine_light_system, 0, "Light system", "Light system used. Light Index Deferred Renderer needs float point precision at shader level. For the x5 type, support for RGB10_A2 textures is needed (some ATI cards and all OpenGL 3+)", GFX, "default", "LIDR x4", "LIDR x5", "LIDR x8", 0);
