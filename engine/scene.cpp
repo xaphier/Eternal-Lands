@@ -1588,6 +1588,11 @@ namespace eternal_lands
 		get_state_manager().switch_color_mask(glm::bvec4(
 			get_scene_view().get_exponential_shadow_maps()));
 
+		if (get_global_vars()->get_use_multisample_shadows())
+		{
+			get_state_manager().switch_multisample(true);
+		}
+
 		get_state_manager().switch_polygon_offset_fill(true);
 		glPolygonOffset(1.0f, 32.0f);
 
