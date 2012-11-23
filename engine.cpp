@@ -736,19 +736,20 @@ extern "C" void engine_cull_scene()
 		scene->set_focus(focus);
 	}
 
-	sky_hemisphere.a = 0.2f;
-
 	for (i = 0; i < 3; i++)
 	{
-		sky_hemisphere[i] = skybox_light_ambient_color[i];
-		main_light_color[i] = skybox_light_diffuse_color[i];
+		sky_hemisphere[i] = skybox_light_ambient_color[i] * 1.5f;
+		main_light_color[i] = skybox_light_diffuse_color[i] * 1.1f;
 		main_light_direction[i] = sun_position[i];
 	}
+
+	sky_hemisphere.a = 0.5f * glm::dot(main_light_color,
+		glm::vec3(0.33f, 0.59f, 0.11f));
 
 	if (main_light_direction.z < 0.0f)
 	{
 		main_light_direction = -main_light_direction;
-		main_light_color = glm::vec3(0.1f);
+		main_light_color = glm::vec3(0.5f);
 	}
 
 	glGetFloatv(GL_MODELVIEW_MATRIX, glm::value_ptr(view_matrix));

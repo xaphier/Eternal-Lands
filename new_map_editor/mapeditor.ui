@@ -3962,14 +3962,17 @@
   </action>
   <action name="action_ground_hemisphere">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="icons/resourcen.qrc">
      <normaloff>:/icons/gtk-color-picker.png</normaloff>:/icons/gtk-color-picker.png</iconset>
    </property>
    <property name="text">
-    <string>Ambient</string>
+    <string>Ground hemisphere</string>
+   </property>
+   <property name="toolTip">
+    <string>Ground hemisphere</string>
    </property>
   </action>
   <action name="action_preferences">

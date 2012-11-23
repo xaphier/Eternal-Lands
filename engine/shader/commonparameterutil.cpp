@@ -92,13 +92,11 @@ namespace eternal_lands
 				pt_float),
 			CommonParameterTypeData(String(UTF8("fragment_normal")),
 				pt_vec3),
-			CommonParameterTypeData(
-				String(UTF8("fragment_position")), pt_vec3),
 			CommonParameterTypeData(String(UTF8("fog")), pt_float),
 			CommonParameterTypeData(String(UTF8("shadow_uvs")),
 				pt_vec4, pst_shadow_maps_count),
-			CommonParameterTypeData(
-				String(UTF8("shadow_view_distance")), pt_vec4),
+			CommonParameterTypeData(String(UTF8(
+				"shadow_view_distance")), pt_vec4),
 			CommonParameterTypeData(String(UTF8("shadow_map_data")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("tbn_matrix")),
@@ -109,20 +107,20 @@ namespace eternal_lands
 				pt_vec2),
 			CommonParameterTypeData(String(UTF8("terrain_uvs")),
 				pt_vec2, pst_clipmap_terrain_slices),
-			CommonParameterTypeData(
-				String(UTF8("shadow_uv_ddx_ddy")), pt_vec4),
+			CommonParameterTypeData(String(UTF8(
+				"shadow_uv_ddx_ddy")), pt_vec4),
 			CommonParameterTypeData(String(UTF8("vertex_color")),
 				pt_vec3),
 			CommonParameterTypeData(String(UTF8("fragment_color")),
 				pt_vec3),
-			CommonParameterTypeData(
-				String(UTF8("output_data_float")), pt_vec4,
+			CommonParameterTypeData(String(UTF8(
+				"output_data_float")), pt_vec4,
 				pst_render_targets),
-			CommonParameterTypeData(
-				String(UTF8("output_data_int")), pt_ivec4,
+			CommonParameterTypeData(String(UTF8(
+				"output_data_int")), pt_ivec4,
 				pst_render_targets),
-			CommonParameterTypeData(
-				String(UTF8("output_data_uint")), pt_uvec4,
+			CommonParameterTypeData(String(UTF8(
+				"output_data_uint")), pt_uvec4,
 				pst_render_targets)
 		};
 

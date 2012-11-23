@@ -138,7 +138,51 @@ namespace eternal_lands
 
 		};
 
-		SDL_mutex* mutex = 0;
+		float rgb_to_srgb(const float color)
+		{
+			if (color <= 0.04045)
+			{
+				return color / 12.92f;
+			}
+
+			return std::pow((color + 0.055f) / 1.055f, 2.4f);
+		}
+
+		glm::vec3 rgb_to_srgb(const glm::vec3 &color)
+		{
+			return glm::vec3(rgb_to_srgb(color.r),
+				rgb_to_srgb(color.g), rgb_to_srgb(color.b));
+		}
+
+		glm::vec4 rgb_to_srgb(const glm::vec4 &color)
+		{
+			return glm::vec4(rgb_to_srgb(color.r),
+				rgb_to_srgb(color.g), rgb_to_srgb(color.b),
+				rgb_to_srgb(color.a));
+		}
+
+		float srgb_to_rgb(const float color)
+		{
+			if (color < 0.0031308f)
+			{
+				return color * 12.92f;
+			}
+
+			return pow(color, 0.41666f) * 1.055 - 0.055;
+		}
+
+		glm::vec3 srgb_to_rgb(const glm::vec3 &color)
+		{
+			return glm::vec3(srgb_to_rgb(color.r),
+				srgb_to_rgb(color.g), srgb_to_rgb(color.b));
+		}
+
+		glm::vec4 srgb_to_rgb(const glm::vec4 &color)
+		{
+			return glm::vec4(srgb_to_rgb(color.r),
+				srgb_to_rgb(color.g), srgb_to_rgb(color.b),
+				srgb_to_rgb(color.a));
+		}
 
 	}
 
@@ -152,10 +196,6 @@ namespace eternal_lands
 		m_rebuild_terrain_map(true), m_rebuild_shadow_map(true)
 	{
 		MapSharedPtr map;
-
-		mutex = SDL_CreateMutex();
-
-		SDL_LockMutex(mutex);
 
 		m_light_positions_array.resize(8);
 		m_light_colors_array.resize(8);
@@ -189,9 +229,6 @@ namespace eternal_lands
 
 	Scene::~Scene() noexcept
 	{
-		SDL_UnlockMutex(mutex);
-
-		SDL_DestroyMutex(mutex);
 	}
 
 	ActorSharedPtr Scene::add_actor(const Uint32 type_id, const Uint32 id,
@@ -536,6 +573,7 @@ namespace eternal_lands
 	void Scene::get_lights(const BoundingBox &bounding_box,
 		Uint16 &lights_count)
 	{
+		glm::vec3 color;
 		Uint32 i, size;
 
 		lights_count = 1;
@@ -560,8 +598,15 @@ namespace eternal_lands
 					light.get_light()->get_inv_sqr_radius(
 						));
 
-			m_light_colors_array[lights_count] = glm::vec4(
-				light.get_light()->get_color(), 1.0);
+			color = light.get_light()->get_color();
+
+			if (get_global_vars()->get_use_linear_lighting())
+			{
+				color = rgb_to_srgb(color);
+			}
+
+			m_light_colors_array[lights_count] = glm::vec4(color,
+				1.0f);
 
 			lights_count++;
 
@@ -722,10 +767,9 @@ namespace eternal_lands
 		boost::array<AbstractWriteMemorySharedPtr, 4>
 			shadow_terrain_buffers;
 		boost::array<Frustum, 4> shadow_frutums;
-		glm::vec3 camera;
-		Uint16 offset;
+		glm::vec4 ground_hemisphere, sky_hemisphere;
 		Uint32 i, count;
-		Uint16 max_instances;
+		Uint16 offset, max_instances;
 		bool use_terrain;
 
 		use_terrain = get_global_vars()->get_opengl_3_3() &&
@@ -778,21 +822,33 @@ namespace eternal_lands
 			m_light_colors_array[0] = glm::vec4(glm::vec3(0.25f),
 				0.0f);
 
-			m_sky_ground_hemispheres = glm::mat2x4(
-				get_map()->get_ground_hemisphere(),
-				glm::vec4(0.2f) -
-					get_map()->get_ground_hemisphere());
+			ground_hemisphere = get_map()->get_ground_hemisphere();
+			sky_hemisphere = glm::vec4(0.2f);
 		}
 		else
 		{
 			m_light_positions_array[0] = m_main_light_direction;
 			m_light_colors_array[0] = m_main_light_color;
 
-			m_sky_ground_hemispheres = glm::mat2x4(
-				get_map()->get_ground_hemisphere(),
-				m_sky_hemisphere -
-					get_map()->get_ground_hemisphere());
+			ground_hemisphere = get_map()->get_ground_hemisphere();
+			sky_hemisphere = m_sky_hemisphere;
 		}
+
+		if (get_global_vars()->get_use_linear_lighting())
+		{
+			m_light_colors_array[0].r = rgb_to_srgb(
+				m_light_colors_array[0].r);
+			m_light_colors_array[0].g = rgb_to_srgb(
+				m_light_colors_array[0].g);
+			m_light_colors_array[0].b = rgb_to_srgb(
+				m_light_colors_array[0].b);
+
+			sky_hemisphere = rgb_to_srgb(sky_hemisphere);
+			ground_hemisphere = rgb_to_srgb(ground_hemisphere);
+		}
+
+		m_sky_ground_hemispheres = glm::mat2x4(ground_hemisphere,
+			sky_hemisphere - ground_hemisphere);
 
 		for (i = 0; i < count; ++i)
 		{
@@ -822,10 +878,8 @@ namespace eternal_lands
 				).get_shadow_projection_view_matrices()[i]);
 		}
 
-		SDL_UnlockMutex(mutex);
-
 		if (get_global_vars()->get_use_multithreaded_culling())
-		#pragma omp parallel sections
+		#pragma omp parallel sections private (offset, max_instances)
 		{
 			#pragma omp section
 			cull(frustum,
@@ -1082,8 +1136,6 @@ namespace eternal_lands
 					m_shadow_terrains[3]);
 			}
 		}
-
-		SDL_LockMutex(mutex);
 
 		if (use_terrain)
 		{
@@ -2913,7 +2965,16 @@ namespace eternal_lands
 			position = glm::vec4(it->second->get_position(),
 				it->second->get_inv_sqr_radius());
 
-			color = glm::vec4(it->second->get_color(), 1.0f);
+			if (get_global_vars()->get_use_linear_lighting())
+			{
+				color = glm::vec4(rgb_to_srgb(
+					it->second->get_color()), 1.0f);
+			}
+			else
+			{
+				color = glm::vec4(it->second->get_color(),
+					1.0f);
+			}
 
 			light_position_image->set_pixel(index, 0, 0, 0, 0,
 				position);

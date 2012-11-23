@@ -7,7 +7,7 @@
 	<node_based>false</node_based>
 	<receives_shadows>true</receives_shadows>
 	<transparent>true</transparent>
-	<lighting>diffuse</lighting>
+	<lighting>specular</lighting>
 	<output_channels>rgb</output_channels>
 </effect>
 

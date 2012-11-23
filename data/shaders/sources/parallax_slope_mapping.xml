@@ -26,6 +26,10 @@
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
+     <common_parameter>roughness</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
      <common_parameter>specular</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
@@ -67,8 +71,8 @@ for (i = 0; i &lt; 4; i++)
 fragment_normal = tbn_matrix * normal.xyz;
 albedo = textureGrad(effect_sampler_0, uv.xy, ddx, ddy);
 emission = vec3(0.0);
-specular = vec3(0.0);
-</source>
+specular = vec3(1.0);
+roughness = normal.a;</source>
    <version>130</version>
    <shader_types>fragment</shader_types>
   </shader_source_data>
@@ -92,6 +96,10 @@ specular = vec3(0.0);
     </parameter>
     <parameter>
      <common_parameter>fragment_normal</common_parameter>
+     <qualifier>out</qualifier>
+    </parameter>
+    <parameter>
+     <common_parameter>roughness</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
     <parameter>
@@ -132,8 +140,8 @@ for (i = 0; i &lt; 4; i++)
 fragment_normal = tbn_matrix * normal.xyz;
 albedo = texture2D(effect_sampler_0, uv.xy);
 emission = vec3(0.0);
-specular = vec3(0.0);
-</source>
+specular = vec3(1.0);
+roughness = normal.a;</source>
    <version>120</version>
    <shader_types>fragment</shader_types>
   </shader_source_data>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf8"?>
 <shader_source>
- <name>normal-terrain-mapping</name>
+ <name>parallax-terrain-mapping</name>
  <type>main_effect</type>
  <shader_source_datas>
   <shader_source_data>

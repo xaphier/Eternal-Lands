@@ -1995,8 +1995,33 @@ namespace eternal_lands
 		stream << local_indent << sslt_diffuse_colors_sum;
 		stream << UTF8(" += ") << cpt_emission << UTF8(";\n");
 
+		add_parameter(String(UTF8("lighting")), cpt_specular, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+		add_parameter(String(UTF8("lighting")), cpt_roughness, pqt_in,
+			function_locals, function_parameters, uniform_buffers);
+		add_parameter(String(UTF8("lighting")), cpt_fragment_normal,
+			pqt_in, function_locals, function_parameters,
+			uniform_buffers);
+		add_parameter(String(UTF8("lighting")),
+			cpt_world_view_direction, pqt_in, function_locals,
+			function_parameters, uniform_buffers);
+		add_parameter(String(UTF8("lighting")),
+			apt_sky_ground_hemispheres, function_locals,
+			function_parameters, uniform_buffers);
+
 		stream << local_indent << sslt_specular_colors_sum;
-		stream << UTF8(" = vec3(0.0);\n");
+		stream << UTF8(" = mix(") << cpt_specular << UTF8(", min(");
+		stream << UTF8("60.0 * ") << cpt_specular << UTF8(", 1.0), ");
+		stream << UTF8("pow(1.0 - ") << cpt_roughness << UTF8(" * ");
+		stream << UTF8("max(0.0, dot(") << cpt_fragment_normal;
+		stream << UTF8(", ") << cpt_world_view_direction;
+		stream << UTF8(".xyz)), 4.0)) * (");
+		stream << apt_sky_ground_hemispheres << UTF8("[0].a + ");
+		stream << apt_sky_ground_hemispheres << UTF8("[1].a * ");
+		stream << UTF8("clamp(reflect(") << cpt_world_view_direction;
+		stream << UTF8(".xyz, ") << cpt_fragment_normal << UTF8(").z");
+		stream << UTF8(" / (1.0 - ") << cpt_roughness << UTF8("), ");
+		stream << UTF8("-1.0, 1.0));\n");
 
 		if (shadow)
 		{
@@ -2939,6 +2964,7 @@ namespace eternal_lands
 					globals, uniform_buffers);
 
 				main << indent << output << UTF8(".rgb = ");
+				main << UTF8("1.0 - exp(-");
 
 				if (build_data.get_option(ssbot_fog))
 				{
@@ -2960,7 +2986,7 @@ namespace eternal_lands
 					main << cpt_fragment_color;
 				}
 
-				main << UTF8(";\n");
+				main << UTF8(");\n");
 
 				break;
 			case sbt_depth:

@@ -22,6 +22,10 @@
      <qualifier>in</qualifier>
     </parameter>
     <parameter>
+     <common_parameter>roughness</common_parameter>
+     <qualifier>in</qualifier>
+    </parameter>
+    <parameter>
      <common_parameter>specular_color</common_parameter>
      <qualifier>out</qualifier>
     </parameter>
@@ -34,12 +38,19 @@
      <qualifier>in</qualifier>
     </parameter>
    </parameters>
-   <source>vec3 dir, reflect_dir;
-float dist, scale, nxdir, diffuse, specular, hxdir;
+   <source>vec3 dir, reflect_dir, h;
+float dist, scale, nxdir, diffuse, specular, hxdir, exponent, n_dot_h, n_dot_l, l_dot_h;
 
 dir = light_position.xyz - world_position * light_color.a;
 dist = dot(dir, dir);
 dir *= inversesqrt(dist);
+
+h = normalize(world_view_direction.xyz + dir);
+
+n_dot_l = max(0.0, dot(fragment_normal, dir));
+n_dot_h = max(0.0, dot(fragment_normal, h));
+l_dot_h = max(0.0, dot(dir, h));
+
 nxdir = max(0.0, dot(fragment_normal, dir));
 scale = max(0.0, 1.0 - dist * light_position.w);
 diffuse = scale * nxdir;
@@ -49,9 +60,10 @@ specular_color = vec3(0.0);
 
 if (diffuse &gt; 0.0)
 {
-	reflect_dir = reflect(-dir, fragment_normal);
-	hxdir = max(0.0, dot(-world_view_direction.xyz, reflect_dir));
-	specular = pow(hxdir, 5) * scale;
+	exponent = exp2(12.0 * roughness);
+
+	specular = ((1.0 + exponent) / (8.0 * pow(l_dot_h, 3.0))) * pow(n_dot_h, exponent) * n_dot_l * scale;
+
 	diffuse_color += light_color.rgb * diffuse;
 	specular_color += light_color.rgb * specular;
 }
